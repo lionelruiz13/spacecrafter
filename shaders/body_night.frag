@@ -36,9 +36,9 @@ in vec3 ViewDirection;
 
 void main(void)
 {
-	vec3 daytime = vec3(texture2D(mapTexture, TexCoord));
-	vec3 night = vec3(texture2D(NightTexture, TexCoord));
-	vec3 reflective = vec3(texture2D(SpecularTexture, TexCoord)); 
+	vec3 daytime = vec3(texture(mapTexture, TexCoord));
+	vec3 night = vec3(texture(NightTexture, TexCoord));
+	vec3 reflective = vec3(texture(SpecularTexture, TexCoord)); 
 	vec3 halfangle = normalize(Light + ViewDirection);
 	const float specularExp = 25.0;
 	float NdotH = dot(Normal, halfangle);
@@ -51,9 +51,9 @@ void main(void)
 	vec4 cloudColor = vec4(0.0, 0.0, 0.0, 0.0);
 	float cloudDiffuse = 0.0;
 	if(Clouds != 0) {
-		cloudColor = texture2D(CloudTexture, TexCoord);
+		cloudColor = texture(CloudTexture, TexCoord);
 		vec3 light_b = normalize(TangentLight);
-		vec3 normal_b = 2.0 * vec3(texture2D(CloudNormalTexture, TexCoord)) - vec3(1.0); 
+		vec3 normal_b = 2.0 * vec3(texture(CloudNormalTexture, TexCoord)) - vec3(1.0); 
 		cloudDiffuse = max(dot(normal_b, light_b), 0.0);
 	}
 	float shadowScale = 1.0;
@@ -69,7 +69,7 @@ void main(void)
 			distance = acos(dot(Light, normalize(moon)));
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture2D(shadowTexture, ratio)); 
+			lookup = vec3(texture(shadowTexture, ratio)); 
 			shadowScale = shadowScale * lookup.r;
 		}
 		if(MoonRadius2 != 0.0) {
@@ -78,7 +78,7 @@ void main(void)
 			distance = acos(dot(Light, normalize(moon)));
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture2D(shadowTexture, ratio)); 
+			lookup = vec3(texture(shadowTexture, ratio)); 
 			shadowScale = shadowScale * lookup.r;
 		}
 		if(MoonRadius3 != 0.0) {
@@ -87,7 +87,7 @@ void main(void)
 			distance = acos(dot(Light, normalize(moon)));
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture2D(shadowTexture, ratio)); 
+			lookup = vec3(texture(shadowTexture, ratio)); 
 			shadowScale = shadowScale * lookup.r;
 		}
 		if(MoonRadius4 != 0.0) {
@@ -96,7 +96,7 @@ void main(void)
 			distance = acos(dot(Light, normalize(moon)));
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture2D(shadowTexture, ratio)); 
+			lookup = vec3(texture(shadowTexture, ratio)); 
 			shadowScale = shadowScale * lookup.r;
 		}
 	}

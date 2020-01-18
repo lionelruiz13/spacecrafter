@@ -65,7 +65,7 @@ smooth out vec2 TexCoord;
 
 in TES_OUT
 {
-    in vec4 gl_Position; 	
+    in vec4 glPosition; 	
     in vec2 TexCoord;
     in vec3 Normal;
     //~ in vec3 tangent;
@@ -238,7 +238,7 @@ void main()
 
 	for(int i=0; i<3; i++) {
 
-		glPosition = vec3(gs_in[i].gl_Position);
+		glPosition = vec3(gs_in[i].glPosition);
 		//~ sans normalMap
 		//~ glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius ;
 		//~ avec normalMap

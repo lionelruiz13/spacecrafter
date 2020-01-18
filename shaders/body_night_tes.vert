@@ -32,7 +32,7 @@ uniform float planetOneMinusOblateness;
 // };
 
 out VS_OUT{
-	vec4 gl_Position;
+	vec4 glPosition;
     vec2 TexCoord;
     vec3 Normal;
 } vs_out;
@@ -45,7 +45,7 @@ void main()
 	Position.y =position.y * planetScaledRadius;
 	Position.z =position.z * planetScaledRadius * planetOneMinusOblateness;
 	// gl_Position = vec4(Position, 1.0);
-	vs_out.gl_Position = vec4(Position, 1.0);
+	vs_out.glPosition = vec4(Position, 1.0);
 
 	vs_out.TexCoord = texcoord;
 	vs_out.Normal = normal;

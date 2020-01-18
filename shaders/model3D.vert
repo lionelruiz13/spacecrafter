@@ -51,8 +51,8 @@ out vec3 ModelLight;
 
 uniform mat4 inverseModelViewProjectionMatrix;
 //~ uniform mat4 ModelViewMatrix;
-uniform ivec4 viewport; 
-uniform vec3 viewport_center;
+//~ uniform ivec4 viewport; 
+//~ uniform vec3 viewport_center;
 uniform vec3 clipping_fov;
 
 //~ uniform float zNear;

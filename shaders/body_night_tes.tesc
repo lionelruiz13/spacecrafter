@@ -29,13 +29,13 @@ uniform mat4 Model;
 
 
 in VS_OUT{
-    in vec4 gl_Position;
+    in vec4 glPosition;
     in vec2 TexCoord;
     in vec3 Normal;
 }tcs_in[];
 
 out TCS_OUT{
-    out vec4 gl_Position;
+    out vec4 glPosition;
     out vec2 TexCoord;
     out vec3 Normal;
     //~ out vec3 tangent;
@@ -80,6 +80,6 @@ void main(void)
     tcs_out[ID].TexCoord      = tcs_in[ID].TexCoord;
     tcs_out[ID].Normal  = tcs_in[ID].Normal;
     //~ tcs_out[ID].tangent = tcs_in[ID].tangent;
-    tcs_out[ID].gl_Position = tcs_in[ID].gl_Position;
+    tcs_out[ID].glPosition = tcs_in[ID].glPosition;
     // gl_out[ID].gl_Position = gl_in[ID].gl_Position;
 }
