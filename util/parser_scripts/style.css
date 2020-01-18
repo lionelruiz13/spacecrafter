@@ -1,0 +1,193 @@
+/* Page */
+body {
+	background-image: url(img/fond2.jpg);
+	background-repeat:repeat;
+	width: 70%;
+	margin-left: auto;
+	margin-right: auto;
+}
+/* Blocs de la page */
+body>header, article, img, aside {
+	border-radius : 10px;
+	border : 1px solid black;
+	margin : 1%;
+}
+.logo {
+	border: none;
+}
+/* Entête de la page */
+body>header {
+	background-image: url(img/fond.jpg);
+	color : white;
+	text-align : center;
+	margin-bottom : 0;
+	border-style: double;
+	border-width: medium;
+	border-color : white;
+}
+/* Menu contenant tous les liens vers les commandes */
+.menu {
+	padding-right : 15px; 
+	overflow : auto;
+	background-color : #E0E0E0;
+	color : #0035C8;
+	border-style: solid;
+	border-width: medium;
+	border-color: #374097;
+	page-break-before : always;
+}
+/* Titre du menu contenant tous les liens vers les commandes */
+.menu>h3 {
+	text-align : center;
+	color :#374097;
+}
+/* Lien dans le menu */
+.menu a:link {
+	color : black;
+}
+/* Lien survolé ou focussé dans le menu */
+.menu a:hover, a:focus {
+	font-weight : bold;
+}
+/* Lien visité dans le menu */
+.menu a:visited {
+	color : black;
+}
+/* Section contenant les commandes */
+.commande {
+	width : 80%;
+	float: right;
+	margin-top : 1%;
+}
+/* Image dans la section contenant les commandes */
+.commande img {
+	height : 150px;
+}
+/* Titre de la liste des commandes */
+.commande>h2 {
+	padding-left : 5%;
+	color : #7a7a7a;
+}
+/* Article contenant une commande dans la section contenant les commandes */
+.commande>article {
+	background-color: white;
+	overflow : auto;
+	padding : 1%;
+	padding-left : 3%;
+	margin-top : 5%;
+	margin-bottom : 5%;
+	page-break-before : always;
+}
+/* Entête de la commande */
+.commande>article>header {
+	margin-bottom : 3%;
+}
+/* Titre de la commande */
+.commande>article>header>h2 {
+	color: black;
+	font-weight: bold;
+}
+/* Arguments et son type ou valeur possibles pour chauque argument dans la section contenant les commandes */
+.commande h4 {
+	margin-top : 2%;
+	margin-bottom : 1%;
+}
+/* Description et particularite dans la section contenant les commandes */
+.commande p {
+	 margin : 0;
+}
+/* Paragraphe contenant une description (d'une commande, d'un argument ou d'une valeur) */
+.description {
+	color: black;
+}
+/* Paragraphe contenant une particularité (d'une commande, d'un argument ou d'une valeur) */
+.particularite {
+	color: #7a7a7a;
+	font-style: italic;
+}
+/* Section d'un article (de la section commandes) contentant les arguments d'une commande */
+.listearguments {
+}
+/* Uniquement la section d'un article (de la section commandes) contentant les arguments d'une commande */
+.listearguments>section {
+	margin : 3%;
+}
+/* Titre contenant le champ "Nom : Type" d'un argument */
+.listearguments>h3 {
+	color : #374097;
+}
+/* Nom d'un arguemnt */
+.argument {
+	color: purple;
+}
+/* Type d'un argument */
+.argumenttype {
+	color: red;
+}
+/* Section d'un article (de la section commandes) contentant les parametres d'une commande */
+.listeparameters {
+	
+}
+/* Uniquement la section d'un article (de la section commandes) contentant les parametres d'une commande */
+.listeparameters>section {
+	margin : 3%;
+}
+/* Titre contenant le champ "Nom : Type" d'un argument */
+.listeparameters>h3 {
+	color : #374097;
+}
+/* Nom d'un parameter */
+.parameter {
+	color: purple;
+}
+/* Type d'un parameter */
+.parametertype {
+	color: red;
+}
+/* Section contenant la liste des valeurs possibles pour un argument */
+.listevaleurs {
+}
+/* Valeur possible d'un argument */
+.valeur {
+	font-weight : bold;
+	color : #374097;
+}
+/* Section d'un article (de la section commandes) contenant un exemple */
+.exemple {
+	color: black;
+}
+/* Titre "Exemple" */
+.exemple>h2 {
+	margin-bottom : 1%;
+}
+/* Champs contenant l'exemple */
+.exemple>pre {
+	margin-top : 1%;
+}
+/* Lien de retour au menu */
+.retour {
+	padding-left : 5%;
+}
+/* Lien de retour au menu visité ou non */
+.retour a:link, a:visited, a:active {
+	color : #374097;
+	padding-left : 5%;
+}
+/* Lien de retour au menu survolé ou focussé */
+.retour a:hover, a:focus {
+	font-weight : bold;
+}
+/* Gestion de l'impression */
+@media print {
+	body, header, section, article, aside {
+		background : none;
+	}
+	.commande {
+		width : 100%;
+		float : none;
+	}
+	
+	.retour {
+		display: none !important;
+	}
+}

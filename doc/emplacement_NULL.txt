@@ -1,0 +1,367 @@
+app.cpp:394:	shaderViewportShape =  NULL;
+app.cpp:400:	shaderColorInverse =  NULL;
+app.cpp:430:	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+app.cpp:1227:				SDL_WaitEvent(NULL);
+app.cpp:1292:	time_t tTime = time ( NULL );
+
+app_settings.cpp:49:AppSettings* AppSettings::m_instance = NULL;
+
+atmosphere.cpp:41:Atmosphere::Atmosphere() : tab_sky(NULL), world_adaptation_luminance(0.f), atm_intensity(0),
+
+audio.cpp:47:	track = NULL;
+audio.cpp:53:		sound[i]=NULL;
+audio.cpp:64:		if(sound[i] !=NULL)
+audio.cpp:89:	if (track == NULL) {
+audio.cpp:100:	if (track != NULL) {
+audio.cpp:119:	if (track==NULL) return;
+audio.cpp:125:	if (Mix_GetMusicType(NULL) == MUS_MP3)
+audio.cpp:134:	if (track==NULL) return;
+audio.cpp:148:	if (track !=NULL) {
+audio.cpp:161:	if (track !=NULL) {
+audio.cpp:176:	if (track !=NULL) {
+audio.cpp:180:	track=NULL;
+audio.cpp:218:		if(sound[i] ==NULL) {
+audio.cpp:220:			if (sound[i] == NULL) {
+audio.cpp:234:		if(sound[i] !=NULL)
+audio.cpp:249:			sound[i]=NULL;
+audio.hpp:75:	Mix_Music *track = NULL;
+
+body.cpp:46:s_font* Body::planet_name_font = NULL;
+body.cpp:51:s_texture *Body::defaultTexMap = NULL;
+body.cpp:52:s_texture *Body::tex_eclipse_map = NULL;
+body.cpp:98:	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+body.cpp:136:	tex_map(NULL), tex_halo(NULL), tex_norm(NULL), eye_sun(0.0f, 0.0f, 0.0f),
+body.cpp:158:		if(defaultTexMap == NULL)
+body.cpp:207:	tex_map = NULL;
+body.cpp:209:	tex_halo = NULL;
+body.cpp:211:	tex_norm = NULL;
+body.cpp:213:	orbit = NULL;
+body.cpp:684:#define NEAR_NULL 0.000001
+body.cpp:689:	if(orbit_fader.getInterstate()*visibilityFader.getInterstate() > NEAR_NULL) { //Si l'orbite est visible
+
+body_bigbody.cpp:83:	rings(NULL), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
+body_bigbody.cpp:119:	rings = NULL;
+body_bigbody.cpp:122:	tex_night = NULL;
+body_bigbody.cpp:124:	tex_specular = NULL;
+body_bigbody.cpp:126:	tex_cloud = NULL;
+body_bigbody.cpp:128:	tex_norm_cloud = NULL;
+
+body_sun.cpp:90:	tex_big_halo = NULL;
+
+cardinals.cpp:37:Cardinals::Cardinals(float _radius) : radius(_radius), font(NULL), color(0.6,0.2,0.2)
+cardinals.cpp:50:	font = NULL;
+
+constellation.cpp:49:Constellation::Constellation() : asterism(NULL), art_tex(NULL)
+constellation.cpp:56:	asterism = NULL;
+constellation.cpp:59:	art_tex = NULL;
+constellation.cpp:136:			asterism = NULL;
+constellation.cpp:144:			asterism = NULL;
+constellation.cpp:357:	return NULL;
+
+constellation_mgr.cpp:45:	asterFont(NULL),
+constellation_mgr.cpp:65:	asterFont = NULL;
+constellation_mgr.cpp:148:	Constellation *cons = NULL;
+constellation_mgr.cpp:226:			cons = NULL;
+constellation_mgr.cpp:347:	return NULL;
+constellation_mgr.cpp:361:	return NULL;
+constellation_mgr.cpp:399:			if (aster != NULL) {
+constellation_mgr.cpp:545:	if (c != NULL) setSelectedConst(c);
+constellation_mgr.cpp:554:	if (c != NULL) unsetSelectedConst(c);
+constellation_mgr.cpp:563:	if (c != NULL) {
+constellation_mgr.cpp:567:	return NULL;
+constellation_mgr.cpp:585:	if (c != NULL) {
+constellation_mgr.cpp:688:	Constellation *cons = NULL;
+constellation_mgr.cpp:712:	vector<Vec3f> *points = NULL;
+constellation_mgr.cpp:772://! Return the matching constellation object's pointer if exists or NULL
+constellation_mgr.cpp:785:	return NULL;
+constellation_mgr.hpp:156:		if (!s) setSelectedConst(NULL);
+constellation_mgr.hpp:165:		setSelected(Object(NULL));
+constellation_mgr.hpp:172:	//! Return the matching constellation object's pointer if exists or NULL
+
+core.cpp:45:	projection(NULL), selected_object(NULL), hip_stars(NULL),
+core.cpp:46:	nebulas(NULL), illuminates(NULL), ssystem(NULL), milky_way(NULL),
+core.cpp:119:	tcp = NULL;
+core.cpp:160:	if (_tcp!=NULL) {
+core.cpp:212:	landscape = NULL;
+core.cpp:214:	observatory = NULL;
+core.cpp:218:	meteors = NULL;
+core.cpp:223:	skyloc = NULL;
+core.cpp:994:		selected_object = NULL;
+core.cpp:1040:	selected_object = NULL;
+core.cpp:1789:		selected_object=NULL;
+core.hpp:330:		selected_object=NULL;
+core.hpp:781:	void inimBackup();					// init at NULL all var
+
+geodesic_grid.cpp:120:	cacheSearchResult = NULL;
+
+grid.cpp:36:littleGrid::littleGrid() : result(NULL)
+grid.cpp:548:	Points = NULL;
+grid.cpp:550:	result=NULL;
+
+hip_star_mgr.cpp:185:	shaderStars =  NULL;
+hip_star_mgr.cpp:194:	dataColor = NULL;
+hip_star_mgr.cpp:195:	dataMag = NULL;
+hip_star_mgr.cpp:196:	dataPos= NULL;
+hip_star_mgr.cpp:219:		it->second = NULL;
+hip_star_mgr.cpp:238:	dataColor = NULL;
+hip_star_mgr.cpp:240:	dataMag = NULL;
+hip_star_mgr.cpp:242:	dataPos= NULL;
+hip_star_mgr.cpp:649:	vector<ObjectBaseP > v = searchAround(pos, 0.8, NULL);
+hip_star_mgr.cpp:760:		return NULL;
+hip_star_mgr.cpp:764:	if (ss.fail()) return NULL;
+hip_star_mgr.cpp:768:	return NULL;
+hip_star_mgr.hpp:162:	//! Return the matching Stars object's pointer if exists or NULL
+hip_star_mgr.hpp:167:	//! Return the matching star if exists or NULL
+
+illuminate.cpp:40:s_texture * Illuminate::illuminateTex= NULL;
+illuminate_mgr.cpp:58:	Illuminate::illuminateTex = NULL;
+illuminate_mgr.cpp:181:	return NULL;
+
+image_mgr.cpp:95:	return NULL;
+
+init_parser.cpp:38:InitParser::InitParser(void) : dico(NULL)
+init_parser.cpp:46:	dico = NULL;
+init_parser.cpp:52:	FILE * fp = NULL;
+init_parser.cpp:62:	dico = NULL;
+init_parser.cpp:73:	FILE * fp = NULL;
+init_parser.cpp:88:	if (iniparser_getstring(dico, key.c_str(), NULL)) return string(iniparser_getstring(dico, key.c_str(), NULL));
+init_parser.cpp:239:	dictionary_set(dico, sec.c_str(), NULL);	// Add the section key
+
+io.cpp:183:	if(SDLNet_ResolveHost(&serverIP, NULL, this->port) < 0) {
+io.cpp:191:	if (socketSet == NULL) {
+io.cpp:199:	if (running == NULL) {
+io.cpp:207:	if(clientSocketTab == NULL) {
+io.cpp:213:	if(clientBroadcastTab == NULL) {
+io.cpp:219:		clientSocketTab[i] = NULL; //Initialisation de tous les sockets clients à NULL
+io.cpp:225:	if(buffer == NULL) {
+io.cpp:233:	if (outputting == NULL) {
+io.cpp:241:	if (inputting == NULL) {
+io.cpp:282:	if (thread == NULL) {
+io.cpp:315:		if (clientSocketTab[client] != NULL) { //S'il le socket est utilisé
+io.cpp:560:				if (clientSocketTab[socket] == NULL) {
+io.cpp:573:			if(clientSocketTab[freeSpot] == NULL) { //Erreu lors de l'acceptation du client
+io.cpp:608:			if(tempSock == NULL) { //Erreur lors de l'acceptation du client
+io.cpp:641:		if(clientSocketTab[client] != NULL) { //Si le socket est ouvert
+io.cpp:788:			if(file != NULL) { //Fichier ouvert
+io.cpp:948:	clientSocketTab[client] = NULL; //Nullation du socket client
+io.cpp:1018:	lock=NULL;
+io.cpp:1046:	if (in ==NULL) return 1;
+
+landscape.cpp:39:	fog_tex = NULL;
+landscape.cpp:40:	map_tex = NULL;
+landscape.cpp:41:	map_tex_night = NULL;
+landscape.cpp:97:	Landscape* ldscp = NULL;
+landscape.cpp:285:	map_tex = NULL;
+landscape.cpp:287:	map_tex_night = NULL;
+landscape.cpp:299:	shaderLandscape =  NULL;
+landscape.cpp:550:	shaderLandscape =  NULL;
+
+log.cpp:199:	time_t tTime = time(NULL);
+
+mCity_mgr.cpp:87:		return NULL;
+mCity_mgr.cpp:143:		if (fgets(linetmp, 100, fic) != NULL) {
+
+milkyway.cpp:38:	normal_tex = NULL;
+milkyway.cpp:39:	default_tex = NULL;
+milkyway.cpp:44:	shaderMilkyway =  NULL;
+milkyway.cpp:61:	normal_tex = NULL;
+milkyway.cpp:62:	if (default_tex!= NULL) delete default_tex;
+milkyway.cpp:63:	default_tex = NULL;
+milkyway.cpp:68:	if (default_tex==NULL) { //fist time to read this texture
+milkyway.cpp:72:		if (normal_tex != default_tex && normal_tex != NULL) { //suppression de l'ancien normal_tex s'il ne pointe pas vers default_tex
+milkyway.cpp:74:			normal_tex = NULL;
+
+nebula.cpp:51:s_texture * Nebula::tex_NEBULA = NULL;
+nebula.cpp:55:s_font* Nebula::nebulaFont = NULL;
+nebula.cpp:71:	neb_tex(NULL)
+nebula.cpp:74:	tex_circle = NULL;
+nebula.cpp:225:	neb_tex = NULL;
+nebula.cpp:447:	//~ if (tex_circle == NULL) {
+nebula.hpp:74:	std::string getShortInfoString(const Navigator * nav = NULL) const;
+nebula.hpp:90:	double getCloseFov(const Navigator * nav = NULL) const;
+nebula.hpp:93:	float getMag(const Navigator * nav = NULL) const {
+nebula.hpp:144:	float get_on_screen_size(const Projector* prj, const Navigator * nav = NULL, bool orb_only = false) {
+
+nebula_mgr.cpp:62:	Nebula::tex_NEBULA = NULL;
+nebula_mgr.cpp:65:	Nebula::nebulaFont = NULL;
+nebula_mgr.cpp:68:	shaderNebulaHint = NULL;
+nebula_mgr.cpp:121:	if (Nebula::tex_NEBULA == NULL)	succes=false;
+nebula_mgr.cpp:348:	return NULL;
+nebula_mgr.cpp:399:	Nebula * plusProche=NULL;
+nebula_mgr.cpp:410:	} else return NULL;
+nebula_mgr.cpp:454:	if (e != NULL) {
+nebula_mgr.cpp:531:	return NULL;
+
+object_base.cpp:54:s_texture * ObjectBase::pointer_star = NULL;
+object_base.cpp:55:s_texture * ObjectBase::pointer_planet = NULL;
+object_base.cpp:56:s_texture * ObjectBase::pointer_nebula = NULL;
+object_base.cpp:223:	pointer_star = NULL;
+object_base.cpp:225:	pointer_planet = NULL;
+object_base.cpp:227:	pointer_nebula = NULL;
+object_base.hpp:121:	                                 const Navigator *nav = NULL,
+observer.cpp:117:	Body *p = NULL;
+observer.cpp:124:	if (p==NULL) {
+orbit.cpp:503:	positionFunction = NULL;
+orbit.cpp:504:	osculatingFunction = NULL;
+orbit.cpp:648:	afterApprox(NULL),
+orbit.cpp:649:	beforeApprox(NULL),
+orbit.cpp:656:	assert(orbit != NULL);
+orbit.cpp:725:	if (primary != NULL)
+orbit.cpp:727:	if (beforeApprox != NULL)
+orbit.cpp:729:	if (afterApprox != NULL)
+orbit.cpp:767:	secondary(NULL),
+orbit.cpp:775:	if (barycenter != NULL)
+orbit.hpp:41:		return NULL;
+orbit.hpp:176:		return (positionFunction != NULL);
+ring.cpp:76:	tex = NULL;
+s_font.cpp:38:	myFont=NULL;
+s_font.cpp:215:	if(myFont==NULL) fprintf(stderr,"myFont == NULL\n");
+
+
+s_texture.cpp:205:	unsigned char* a = NULL;
+s_texture.cpp:274:			unsigned char *top = NULL;
+s_texture.cpp:275:			unsigned char *bottom = NULL;
+s_texture.cpp:388:	texRecap* tmp=NULL;
+
+script.cpp:45:	pNext=NULL;
+script.cpp:52:	if (pNext != NULL) delete pNext;
+script.cpp:63:	pFirst=NULL;
+script.cpp:64:	pLast=NULL;
+script.cpp:65:	p2First=NULL;
+script.cpp:66:	p2Last=NULL;
+script.cpp:71:	if (pFirst != NULL) delete pFirst;
+script.cpp:78:	while (pMove !=NULL) {
+script.cpp:87:	if (pFirst != NULL) delete pFirst;
+script.cpp:88:	pFirst = NULL;
+script.cpp:89:	pLast = NULL;
+script.cpp:90:	p2First = NULL;
+script.cpp:91:	p2Last = NULL;
+script.cpp:96:	if (pFirst == NULL) {
+script.cpp:118:	Token *token=NULL;
+script.cpp:136:		p2Last=NULL;
+script.cpp:137:		p2First=NULL;
+script.cpp:145:	if (pFirst == NULL) {
+script.cpp:156:	if (p2First == NULL) {
+script.cpp:168:	if (pFirst == NULL) {
+script.cpp:178:		if (command=="script action end" && (pFirst->pNext != NULL)) {
+script.cpp:183:		pMove->pNext=NULL;
+
+script_mgr.cpp:182:			if (fp == NULL)
+script_mgr.cpp:296:	if ((dp = opendir(directory.c_str())) != NULL) {
+script_mgr.cpp:298:		while ((entryp = readdir(dp)) != NULL) {
+
+sdl_facade.cpp:68:	window=NULL;
+sdl_facade.cpp:98:	if (window == NULL) {
+sdl_facade.cpp:102:		if (window == NULL) {
+
+shader.cpp:58:		if(log == NULL) {
+
+signals.cpp:32:App* ISignals::m_app = NULL;
+signals.cpp:73:	sigaction( SIGTSTP, &restore, NULL );
+signals.cpp:84:	sigaction( SIGTSTP, &act, NULL );
+signals.cpp:90:	sigaction( SIGCONT, &restore, NULL );
+signals.cpp:102:	sigaction ( sigid, &act, NULL);
+signals.cpp:110:	sigaction ( sigid, &act, NULL);
+
+sky_localizer.cpp:39:	if ((dp = opendir(cultureDir.c_str())) == NULL) {
+sky_localizer.cpp:44:	while ((entryp = readdir(dp)) != NULL) {
+
+skygrid.cpp:80:	font = NULL;
+
+skygrid_mgr.cpp:153:	SkyGrid* tmp=NULL;
+
+skyline.cpp:44:	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f), font(NULL)
+skyline.cpp:52:	font = NULL;
+
+skyline.cpp:431:	points = NULL;
+skyline.cpp:433:	punts = NULL;
+skyline.cpp:1004:	points = NULL;
+skyline.cpp:1239:	points = NULL;
+skyline.cpp:1462:	points = NULL;
+skyline.cpp:1886:	draw_labels = (font != NULL);
+skyline.cpp:2020:	circlep = NULL;
+
+
+skyline_mgr.cpp:233:	SkyLine* tmp=NULL;
+
+solarsystem.cpp:46:	:sun(nullptr),moon(NULL),earth(NULL),
+solarsystem.cpp:47:	 moonScale(1.), planet_name_font(NULL),
+solarsystem.cpp:78:		*iter = NULL;
+solarsystem.cpp:80:	sun = NULL;
+solarsystem.cpp:81:	moon = NULL;
+solarsystem.cpp:82:	earth = NULL;
+solarsystem.cpp:153:	Body *parent = NULL;
+solarsystem.cpp:173:	if ( bodyHash[englishName]!=NULL )
+solarsystem.cpp:179:		if (parent == NULL) {
+solarsystem.cpp:187:	Orbit* orb = NULL;
+solarsystem.cpp:638:	if (body == NULL) return result;
+solarsystem.cpp:663:			bodyHash[name] = NULL;
+solarsystem.cpp:704:				bodyHash[name] = NULL;
+solarsystem.cpp:1064:	return NULL;
+solarsystem.cpp:1079:	return NULL;
+solarsystem.cpp:1087:	Body * closest = NULL;
+solarsystem.cpp:1106:	} else return NULL;
+solarsystem.cpp:1223:			if ((*iter)->get_parent() != NULL && (*iter)->get_parent()->getEnglishName() != "Sun") {
+
+starManager.cpp:122:	return NULL;
+starManager.cpp:146:	Cube *tmp = NULL;
+starManager.cpp:149:	if ( tmp == NULL) { //retourne un pointeur null ni le cube n'existe pas
+starManager.cpp:343:	return NULL;
+starManager.cpp:368:	HyperCube *tmp=NULL;
+starManager.cpp:371:	if (tmp == NULL) { //retourne un pointeur null ni l'hypercube n'existe pas
+
+text_mgr.cpp:138:	if (token != NULL)	{
+
+translator.cpp:37:Translator* Translator::lastUsed = NULL;
+translator.cpp:52:	Translator::lastUsed = NULL;
+translator.cpp:118:	if ((dp = opendir(localeDir.c_str())) == NULL) {
+translator.cpp:123:	while ((entryp = readdir(dp)) != NULL) {
+
+ubo_cam.cpp:11:	glBufferData(GL_UNIFORM_BUFFER,	sizeof(UBOData), NULL, GL_DYNAMIC_DRAW);
+
+ui.cpp:50:	tuiFont(NULL),
+ui.cpp:52:	tui_root(NULL),
+ui.cpp:81:	tuiFont = NULL;
+ui.cpp:83:	tui_root=NULL;
+
+ui_tui.cpp:55:			(*iter)=NULL;
+ui_tui.cpp:661:	CallbackComponent(), JD(_JD), current_edit(NULL), label(_label),
+ui_tui.cpp:662:	y(NULL), m(NULL), d(NULL), h(NULL), mn(NULL), s(NULL)
+ui_tui.cpp:897:	if (difftime(time(NULL), tempo) > 3) {
+ui_tui.cpp:913:		tempo = time(NULL);
+ui_tui.cpp:928:	if (difftime(time(NULL), tempo) < 3) {
+ui_tui.cpp:944:	if (difftime(time(NULL), tempo) < 3) return false;  // no edits while displays Done message
+ui_tui.cpp:952:				tempo = time(NULL);
+ui_tui.cpp:981:	CallbackComponent(), current_edit(NULL), label(_label),
+ui_tui.cpp:982:	a(NULL), b(NULL), c(NULL)
+ui_tui.hpp:304:		if (current==childs.end()) return NULL;
+
+utility.cpp:199:	if (s == NULL || !*s)
+utility.cpp:202:	if ((mptr = (char *) malloc(count)) == NULL)
+utility.cpp:210:	if (strpbrk(ptr,"SsWw") != NULL)
+utility.cpp:216:	if ((hh = strpbrk(ptr,"Hh")) != NULL && hh < ptr + 3)
+utility.cpp:218:	else if (strpbrk(ptr,"SsNn") != NULL)
+utility.cpp:223:	if ((ptr = strtok(ptr,delim1)) != NULL)
+utility.cpp:230:	if ((ptr = strtok(NULL,delim1)) != NULL) {
+utility.cpp:241:	if ((ptr = strtok(NULL,delim2)) != NULL) {
+utility.cpp:242:		if ((dec = strchr(ptr,',')) != NULL)
+utility.cpp:244:		seconds = strtod (ptr, NULL);
+utility.cpp:251:	if ((ptr = strtok(NULL," \n\t")) != NULL) {
+
+video_player.cpp:86:	if(avformat_open_input(&pFormatCtx,fileName.c_str(),NULL,NULL)!=0) {
+video_player.cpp:90:	if(avformat_find_stream_info(pFormatCtx,NULL)<0) {
+video_player.cpp:107:	if(pCodec==NULL) {
+video_player.cpp:111:	if(avcodec_open2(pCodecCtx, pCodec,NULL)<0) {
+video_player.cpp:129:	img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+video_player.cpp:221:	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, screen_w, screen_h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+viewport.cpp:34:	shaderViewPort =  NULL;
+
+zone_array.cpp:265:		if (mmap_start != NULL) {
+zone_array.cpp:275:		zones = NULL;
+zone_array.cpp:335:	 mmap_start(NULL), mapping_handle(NULL)
+zone_array.cpp:404:					mapping_handle = CreateFileMapping(file_handle,NULL,PAGE_READONLY, 0,0,NULL);
+zone_array.cpp:405:					if (mapping_handle == NULL) {
+zone_array.cpp:406:						// yes, NULL indicates failure, not INVALID_HANDLE_VALUE
+zone_array.cpp:414:						if (mmap_start == NULL) {
+

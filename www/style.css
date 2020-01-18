@@ -1,0 +1,43 @@
+form{
+    
+   position:absolute;
+   top:40%;
+   left:40%;
+   width:600px;
+   height:200px;
+   margin-left:-150px;
+   margin-top:-100px;
+   background: rgba(16, 32, 224, 0.5);
+   text-align: center;
+   border-radius: 10px;
+   border-style: solid;
+   border-color:white;
+   color: white;
+}
+
+body{
+    
+    background-image: url(espace.jpeg);
+    background-repeat:no-repeat;
+    background-size: 100%;
+}
+
+html {
+    height: 100%
+}
+
+.logo {
+    
+    display:block;
+    float: right;
+    width:300px;
+    border-radius: 10px;
+}
+
+input[type=submit]{
+    
+ background-color: green;
+ color: white;
+ border-radius: 5px;
+    
+}

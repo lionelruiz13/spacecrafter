@@ -1,0 +1,323 @@
+/*
+ * Spacecrafter astronomy simulation and visualization
+ *
+ * Copyright 2017 Immersive Adventure
+ *
+ *
+ */
+
+#include <fstream>
+#include <SDL2/SDL.h>
+
+#include "spacecrafter.hpp"
+#include "mediaModule/video_player.hpp"
+#include "tools/log.hpp"
+#include "tools/s_texture.hpp"
+
+
+VideoPlayer::VideoPlayer()
+{
+	isAlive = false;
+	isInPause = false;
+	isSeeking = false;
+	img_convert_ctx = NULL;
+}
+
+VideoPlayer::~VideoPlayer()
+{
+	playStop();
+}
+
+void VideoPlayer::pause()
+{
+	if (isInPause==false) {
+		isInPause = true;
+		startPause = SDL_GetTicks();
+		// std::cout << "Debut de la pause" << std::endl;
+	} else {
+		endPause = SDL_GetTicks();
+		isInPause = !isInPause;
+		firstCount = firstCount + (endPause - startPause);
+		d_lastCount = d_lastCount + (endPause - startPause);
+		lastCount = (int)d_lastCount;
+		// std::cout << "Fin de la pause" << std::endl;
+	}
+}
+
+void VideoPlayer::init()
+{
+	isAlive = false;
+	isInPause= false;
+	isSeeking = false;
+	#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
+	    av_register_all();
+	#endif
+	avformat_network_init();
+	pFormatCtx = avformat_alloc_context();
+}
+
+bool VideoPlayer::RestartVideo()
+{
+	if(av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0) {
+		printf("av_seek_frame forward failed. \n");
+		return false;
+	}
+
+	firstCount =  SDL_GetTicks();
+	nbFrames = 0;
+
+	return true;
+}
+
+void VideoPlayer::getInfo()
+{
+	if (isAlive) {
+		cLog::get()->write("--------------- File Information ----------------");
+		av_dump_format(pFormatCtx,0,fileName.c_str(),0);
+		cLog::get()->write("-------------------------------------------------");
+	}
+}
+
+int VideoPlayer::play(const std::string& _fileName)
+{
+	if (isAlive)
+		playStop();
+	std::ifstream fichier(_fileName.c_str());
+	if (!fichier.fail()) { // verifie si le fichier vidéo existe
+		cLog::get()->write("Videoplayer: reading file "+ _fileName, LOG_TYPE::L_INFO);
+		fileName = _fileName;
+	} else {
+		cLog::get()->write("Videoplayer: error reading file "+ _fileName + " abording...", LOG_TYPE::L_ERROR);
+		return -2;
+	}
+
+	init();
+
+	//tests internes à ffmpeg
+	if(avformat_open_input(&pFormatCtx,fileName.c_str(),NULL,NULL)!=0) {
+		cLog::get()->write("Couldn't open input stream.", LOG_TYPE::L_ERROR);
+		avformat_close_input(&pFormatCtx);
+		return -1;
+	}
+	if(avformat_find_stream_info(pFormatCtx,NULL)<0) {
+		cLog::get()->write("Couldn't find stream information.", LOG_TYPE::L_ERROR);
+		avformat_close_input(&pFormatCtx);
+		return -1;
+	}
+	videoindex=-1;
+	for(unsigned int i=0; i<pFormatCtx->nb_streams; i++)
+		if(pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+			videoindex=i;
+			break;
+		}
+	if(videoindex==-1) {
+		cLog::get()->write("Didn't find a video stream.", LOG_TYPE::L_ERROR);
+		avformat_close_input(&pFormatCtx);
+		return -1;
+	}
+
+	video_st = pFormatCtx->streams[videoindex];
+
+	pCodecCtx= avcodec_alloc_context3(NULL);
+	avcodec_parameters_to_context(pCodecCtx, pFormatCtx->streams[videoindex]->codecpar);
+
+	pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
+	if(pCodec==NULL) {
+		cLog::get()->write("Unsupported pCodec for video file", LOG_TYPE::L_ERROR);
+		avformat_close_input(&pFormatCtx);
+		return -1;
+	}
+	if(avcodec_open2(pCodecCtx, pCodec,NULL)<0) {
+		cLog::get()->write("Could not open codec.", LOG_TYPE::L_ERROR);
+		avformat_close_input(&pFormatCtx);
+		return -1;
+	}
+
+	video_w = pCodecCtx->width;
+	video_h = pCodecCtx->height;
+
+	AVRational frame_rate = av_guess_frame_rate(pFormatCtx, video_st, NULL);
+
+	frameRate = frame_rate.num/(double)frame_rate.den;
+	frameRateDuration = 1000*frame_rate.den/(double)frame_rate.num;
+	// std::cout << "frameRate " << frameRate << std::endl << "frameRateDuration " << frameRateDuration << std::endl;
+	nbTotalFrame = static_cast<int>(((pFormatCtx->duration)/1000)/frameRateDuration);
+	// std::cout << "nbTotalFrame " << nbTotalFrame << std::endl;
+
+	initTexture();
+
+	img_convert_ctx = NULL;
+	img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+	if(img_convert_ctx==NULL) {
+		cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
+		return -1;
+	}
+
+	pFrame = av_frame_alloc();
+	pFrameRGB=av_frame_alloc();
+	unsigned char *out_buffer;
+	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1));
+	av_image_fill_arrays(pFrame->data, pFrame->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+	av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+
+	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
+
+	firstCount = SDL_GetTicks();
+	lastCount = firstCount;
+	d_lastCount = firstCount;
+	nbFrames = 0;
+	isAlive = true;
+	elapsedTime =0.0;
+	this->update();
+	return 0;
+}
+
+void VideoPlayer::update()
+{
+	if (! isAlive)
+		return;
+
+	if (isInPause) {
+		return;
+	}
+	int timePassed = SDL_GetTicks()- lastCount;
+
+	if ( timePassed > (int)frameRateDuration) {
+		getNextVideoFrame();
+		d_lastCount = firstCount + (int)(frameRateDuration*nbFrames);
+		lastCount = (int)d_lastCount;
+	}
+}
+
+void VideoPlayer::getNextFrame()
+{
+	bool getNextFrame= false;
+
+	while(!getNextFrame) {
+
+		if(av_read_frame(pFormatCtx, packet)<0) {
+			cLog::get()->write("fin de fichier");
+			isAlive= false;
+			return;
+		}
+
+		if(packet->stream_index==videoindex) {
+
+			int ret = avcodec_send_packet(pCodecCtx, packet);
+			if(ret < 0) {
+				cLog::get()->write("Decode Error.", LOG_TYPE::L_ERROR);
+				continue ;
+			}
+			ret = avcodec_receive_frame(pCodecCtx, pFrame);
+			if(ret < 0 ) {
+				cLog::get()->write("not got frame\n", LOG_TYPE::L_ERROR);
+				continue;
+			}
+
+			if (isSeeking && pFrame->key_frame==1) {
+				isSeeking=false;
+			}
+			getNextFrame = true;
+			av_packet_unref(packet);
+			}
+		}
+}
+
+
+void VideoPlayer::getNextVideoFrame()
+{
+	this->getNextFrame();
+	nbFrames ++;
+	elapsedTime += frameRateDuration;
+
+	if (!isSeeking) {
+		sws_scale(img_convert_ctx, pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameRGB->data[0]);
+	}
+}
+
+
+void VideoPlayer::playStop()
+{
+	if (isAlive==false)
+		return;
+	else {
+		isAlive = false;
+		sws_freeContext(img_convert_ctx);
+		av_frame_free(&pFrameRGB);
+		av_frame_free(&pFrame);
+		avcodec_close(pCodecCtx);
+	}
+}
+
+
+void VideoPlayer::initTexture()
+{
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, video_w, video_h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+}
+
+
+/* lets take a leap forward the video */
+bool VideoPlayer::JumpVideo(float deltaTime, float &reallyDeltaTime)
+{
+	if (isAlive==false)
+		return false;
+	if (isInPause==true)
+		this->pause();
+
+	int64_t frameToSkeep = (1000.0*deltaTime) / frameRateDuration;
+	// std::cout << "On est a la frame " << nbFrames << " et on en rajoute " << frameToSkeep << std::endl;
+	return seekVideo(frameToSkeep, reallyDeltaTime);
+}
+
+
+/* lets take a leap forward the video */
+bool VideoPlayer::Invertflow(float &reallyDeltaTime)
+{
+	if (isAlive==false)
+		return false;
+	if (isInPause==true)
+		this->pause();
+
+	return seekVideo(nbTotalFrame - 2*nbFrames, reallyDeltaTime);
+}
+
+
+bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
+{
+	nbFrames = nbFrames + frameToSkeep;
+
+	//saut avant le début de la vidéo
+	if (nbFrames <= 0) {
+		// std::cout << " --> Saut avant le début " << std::endl;
+		this->RestartVideo();
+		reallyDeltaTime=0.0;
+		return true;
+	}
+	if(nbFrames < nbTotalFrame) { // on verifie qu'on ne saute pas hors vidéo
+		if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, nbFrames * frameRateDuration *1000 , INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+			printf("av_seek_frame forward failed. \n");
+			return false;
+		}
+		firstCount = firstCount - (int)( frameToSkeep * frameRateDuration);
+		
+		elapsedTime += nbFrames * frameRateDuration;
+		reallyDeltaTime= nbFrames * frameRateDuration/1000.0;
+		isSeeking = true;
+		return true;
+	}
+	// fin de fichier ... vidéo s'arrête
+	this->playStop();
+	// std::cout << "Saut après la fin" << std::endl;
+	reallyDeltaTime= -1.0;
+	return true;
+}

@@ -1,0 +1,86 @@
+##################################
+#								 #
+#	Configuration de la caméra 	 #
+#								 #
+##################################
+
+# IMPORTANT
+# #########
+# Toute ligne qui commence par un # est une ligne de commentaire.
+# Seul le symbole = donne de l'importance à une ligne, 
+# sinon elle est ignorée comme une ligne de commentaire.
+# Il est important de respecter l'ordre des variables et 
+# de mettre uniquement la valeur désirée après un =.
+# Il est possible de mettre ce que vous voulez avant un =.
+
+# Les valeurs:
+# ############
+# Les nombres ayant une décimale indiquent que ce sont des nombres réels.
+# Vous n'êtes pas obligés de mettre une décimal mais vous pouvez l'utiiliser au besoin.
+# Les angles sont en radians, les durées en millisecondes pour les transitions.
+
+# Fonctions de transition:
+# ########################
+# lorsqu'une fonction de transition est demandée, les valeurs suivantes sont possibles:
+# INSTANT LINEAR SMOOTH SMOOTHER QUICKANDSMOOTHER
+# Ce qui va bien avec le déplacement: LINEAR SMOOTH SMOOTHER
+# Ce qui va bien avec le zoom: INSTANT LINEAR QUICKANDSMOOTHER voir SMOOTH SMOOTHER avec une petite durée.
+
+# Sensibilité de la souris: 
+# #########################
+# correspond au nombre d'étapes pour un tour.
+# Mettre une valeur plus élevée pour la baisser, plus basse pour l'élever.
+# Cette sensibilité (1024) peut vous paraître trop élevée en fonction de votre souris, n'hésitez pas à la régler!
+
+# Le joystick:
+# ############
+# Il n'est pas possible de lever ou baisser la caméra au maximum sans avoir un effet saccadé
+# ou une orientation imprévue de la caméra due à un produit vectoriel null,
+# et par conséquent une orientation indéterminée (un roulis aléatoire)
+# Pour éviter cela, on empêche la caméra d'aller aux pôle en mettant une marge,
+# même minuscule à ce niveau qu'elle ne peut franchir.
+# A la demande d'olivier, il est possible de ne pas mettre cette marge,
+# et de se retrouver la tête à l'envers lorsqu'on dépasse un pôle
+# (et tout axes de rotation de la caméra inversés)
+# Si vous utilisez beaucoup le joystick, vous apprécierez certainement 
+# un faible nombre d'étapes de la distance la plus proche à la plus éloignée.
+
+
+Position initiale:
+# Il est possible que cette position soit ignorée par le logiciel.
+X = 0.0
+Y = 0.0
+Z = 0.0
+
+Durée de la transition de déplacement (ms) = 5000
+Fonction de la transition de déplacement   = SMOOTHER
+
+
+
+Plus courte distance à l'objet regardé      			 = 1.08
+Distance à l'objet observé la plus éloignée 			 = 5.0
+Nombre d'éttapes du plus loin au plus près   			 = 48
+Etape initiale (0 la plus proche, n+1 la plus éloignée)  = 0
+
+Durée d'un zoom de la caméra (ms) = 250
+Fonction de zoom de la caméra     = QUICKANDSMOOTHER
+
+
+Vitesse de rotation de la caméra via joystick (rad/sec) = 0.30
+Autoriser la limite de rotation de la caméraaux pôles   = OUI
+Marge aux pôles					= 0.08
+Marge de repos du joystick 		= 6000
+
+Sensibilité de la souris 		= 256
+
+Angle horizontal initial (mouvement) = 0.0
+Angle vertical initiale	(mouvement)	 = 0.0
+Angle horizontal initiale (rotation) = 0.0
+Angle vertical initiale	(rotation)	 = 0.0
+
+Inverser l'axe X de la souris	= NON
+Inverser l'axe Y de la souris	= NON
+Inverser l'axe X du joystick de déplacement	= NON
+Inverser l'axe Y du joystick de déplacement	= NON
+Inverser l'axe X du joystick de rotation	= NON
+Inverser l'axe Y du joystick de rotation	= NON
