@@ -163,15 +163,15 @@ public:
 		imageMgr->clone(name,i);
 	}
 
-	int imageDrop(const std::string &name) {
+	void imageDrop(const std::string &name) {
 		return imageMgr->drop_image(name);
 	}
 
-	int imageDropAll() {
+	void imageDropAll() {
 		return imageMgr->dropAllImages();
 	}
 
-	int imageDropAllNoPersistent() {
+	void imageDropAllNoPersistent() {
 		return imageMgr->dropAllNoPersistent();
 	}
 

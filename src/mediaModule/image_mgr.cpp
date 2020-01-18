@@ -29,7 +29,7 @@
 #include <iostream>
 #include "mediaModule/image_mgr.hpp"
 #include "tools/s_texture.hpp"
-
+#include <algorithm>
 
 
 ImageMgr::ImageMgr()
@@ -57,12 +57,13 @@ int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::strin
 	this->drop_image(name);
 	Image::IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
 	s_texture* imgVideo = new s_texture(name, imgTex);
-	Image *img = new Image(imgVideo, name, img_pos);
+	std::unique_ptr<Image> img = std::make_unique<Image>(imgVideo, name, img_pos);
 
 	if (!img || img->imageLoaded()) {
-		active_images.push_back(img);
+		active_images.push_back(std::move(img));
 		return 1;
-	} else return 0;
+	} else 
+		return 0;
 
 }
 
@@ -82,61 +83,41 @@ int ImageMgr::loadImage(const std::string& filename, const std::string& name, co
 	// if name already exists, replace with new image
 	this->drop_image(name);
 	Image::IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
-	Image *img = new Image(filename, name, img_pos, mipmap);
+	std::unique_ptr<Image> img = std::make_unique<Image>(filename, name, img_pos, mipmap);
 
 	if (!img || img->imageLoaded()) {
-		active_images.push_back(img);
+		active_images.push_back(std::move(img));
 		return 1;
-	} else return 0;
+	} else 
+		return 0;
 
 }
 
-int ImageMgr::drop_image(const std::string& name)
-{
-	for (std::list<Image*>::iterator iter = active_images.begin(); iter != active_images.end(); ++iter) {
-		if ((*iter)->getName()==name) {
-			currentImg= nullptr;
-			delete (*iter);
-			iter = active_images.erase(iter);
-			iter--;
-		}
-	}
-	return 0;  // not found
-}
-
-int ImageMgr::dropAllNoPersistent()
-{
-	currentImg= nullptr;
-	// memory leak
-	//~ active_images.remove_if([](Image* img){ if (!img->imageIsPersistent()) return true; else return false;});
-	for (std::list<Image*>::iterator iter = active_images.begin(); iter != active_images.end(); ++iter) {
-		//~ cout << "iter " << (*iter)->getName() << endl;
-		if (!(*iter)->imageIsPersistent()) {
-			delete (*iter);
-			//~ (*iter)=nullptr;
-			iter = active_images.erase(iter);
-			iter--;
-		}
-	}
-	return 0;
-}
-
-int ImageMgr::dropAllImages()
+void ImageMgr::drop_image(const std::string &name)
 {
 	currentImg = nullptr;
-	for (std::list<Image*>::iterator iter = active_images.begin(); iter != active_images.end(); ++iter) {
-		delete *iter;
-	}
+	active_images.remove_if([& name ](const std::unique_ptr<Image> & ptr ){return ptr->getName() == name ;});
+}
+
+void ImageMgr::dropAllNoPersistent()
+{
+	currentImg= nullptr;
+    active_images.remove_if([](const std::unique_ptr<Image> &  img){ return !img->imageIsPersistent();}) ;
+}
+
+void ImageMgr::dropAllImages()
+{
+	currentImg = nullptr;
 	active_images.clear();
-	return 0;
 }
 
 bool ImageMgr::setImage(const std::string& name)
 {
-	for (std::list<Image*>::iterator iter = active_images.begin(); iter != active_images.end(); ++iter) {
-		if ((*iter)->getName()==name) {
-			currentImg = *iter;
-			return true;}
+	auto iter = std::find_if(active_images.begin(), active_images.end(), [&name](const std::unique_ptr<Image> &ptr) { return ptr->getName() == name; });
+	if (iter != active_images.end())
+	{
+		currentImg = (*iter).get();
+		return true;
 	}
 	currentImg = nullptr;
 	return false;
@@ -144,14 +125,14 @@ bool ImageMgr::setImage(const std::string& name)
 
 void ImageMgr::update(int delta_time)
 {
-	for (std::list<Image*>::iterator iter = active_images.begin(); iter != active_images.end(); ++iter) {
+	for (auto iter = active_images.begin(); iter != active_images.end(); ++iter) {
 		(*iter)->update(delta_time);
 	}
 }
 
 void ImageMgr::draw(const Navigator * nav, Projector * prj)
 {
-	for (std::list<Image*>::iterator iter = active_images.begin(); iter != active_images.end(); ++iter) {
+	for (auto iter = active_images.begin(); iter != active_images.end(); ++iter) {
 		(*iter)->draw(nav, prj);
 	}
 }
@@ -196,26 +177,24 @@ void ImageMgr::setKeyColor(const Vec3f& _color, float _intensity) {
 		currentImg -> setKeyColor(_color, _intensity);
 }
 
-
-void ImageMgr::clone(const std::string& _name, int i)
+void ImageMgr::clone(const std::string &_name, int i)
 {
-	if (i<2||i>3) return;
-	Image* tmp = nullptr;
-	for (std::list<Image*>::iterator iter = active_images.begin(); iter != active_images.end(); ++iter) {
-		if ((*iter)->getName()== _name) {
-			tmp = (*iter);
-			break;
+	if (i < 2 || i > 3)
+		return;
+	Image *tmp = nullptr;
+
+	auto iter = std::find_if(active_images.begin(), active_images.end(), [&_name](const std::unique_ptr<Image> &ptr) { return ptr->getName() == _name; });
+	if (iter != active_images.end())
+	{
+		tmp = (*iter).get();
+		if (i == 2)
+		{
+			active_images.push_back(std::make_unique<Image>(tmp, 180.f));
 		}
-	}
-	if (tmp == nullptr) return;
-	if (i==2) {
-		Image* tmp2 = new Image(tmp,180.f);
-		active_images.push_back(tmp2);
-	}
-	if (i==3) {
-		Image* tmp3 = new Image(tmp,240.f);
-		active_images.push_back(tmp3);
-		Image* tmp2 = new Image(tmp,120.f);
-		active_images.push_back(tmp2);
+		if (i == 3)
+		{
+			active_images.push_back(std::make_unique<Image>(tmp, 240.f));
+			active_images.push_back(std::make_unique<Image>(tmp, 120.f));
+		}
 	}
 }

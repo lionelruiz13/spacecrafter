@@ -28,6 +28,7 @@
 
 #include <list>
 #include <string>
+#include <memory>
 #include <map>
 #include <GL/glew.h>
 #include "mediaModule/image.hpp"
@@ -62,11 +63,11 @@ public:
 	//! charge une image venant directement de l'OpenGL
 	int loadImage(GLuint imgTex, const std::string& name, const std::string& coordinate);
 	//! supprime du conteneur l'image name
-	int drop_image(const std::string &name);
+	void drop_image(const std::string &name);
 	//! supprime toutes les images du conteneur non persistantes
-	int dropAllNoPersistent();
+	void dropAllNoPersistent();
 	//! supprime toutes les images du conteneur
-	int dropAllImages();
+	void dropAllImages();
 
 	//! modifie la persistance de currentImg
 	void setPersistent(bool value);
@@ -99,8 +100,8 @@ private:
 	//! convertit une chaine de caractère en enum IMAGE_POSITIONING
 	Image::IMAGE_POSITIONING  convertStrToPosition( const std::string & coordinate) const;
 
-	Image* currentImg=nullptr;
-	std::list<Image*> active_images;
+	Image * currentImg=nullptr;
+	std::list<std::unique_ptr<Image>> active_images;
 };
 
 
