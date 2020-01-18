@@ -143,18 +143,24 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	commander->executeCommand("multiplier rate 1");
-	play_paused = 0;
-	if(!playing)
+	// commander->executeCommand("multiplier rate 1");
+	// play_paused = 0;
+	if(!playing) {
+		//std::cout << "resume script ignoré car !playing == true" << std::endl;
 		return;
+	}
 
 	if (m_incCount != 0) { //cas ou le script est en accéléré
 		m_incCount = 0;
+		//std::cout << "resume script m_incCount = 0 " << std::endl;
 		media->audioMusicSync();
 	}
 
+	play_paused = 0;
 	media->audioMusicResume();
+	//std::cout << "resume script timerate action resume" << std::endl;
 	commander->executeCommand("timerate action resume");
+	commander->executeCommand("multiplier rate 1");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
