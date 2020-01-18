@@ -97,7 +97,7 @@ int ImageMgr::drop_image(const std::string& name)
 		if ((*iter)->getName()==name) {
 			currentImg= nullptr;
 			delete (*iter);
-			active_images.erase(iter);
+			iter = active_images.erase(iter);
 			iter--;
 		}
 	}
