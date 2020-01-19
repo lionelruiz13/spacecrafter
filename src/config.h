@@ -6,10 +6,10 @@
 #define _CONFIG_H_
 
 #define PACKAGE  "spacecrafter"
-#define VERSION "18.12.29"
-#define APP_NAME "spacecrafter 18.12.29"
+#define VERSION "20.01.12"
+#define APP_NAME "spacecrafter 20.01.12"
 #define APP_LOWER_NAME "spacecrafter"
-#define USER_NAME "Immersive Adventure"
+#define USER_NAME "LSS Open Project"
 #define USER_EDITION "User friendly"
 
 #endif
