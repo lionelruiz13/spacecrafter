@@ -498,7 +498,11 @@ void App::start_main_loop()
 			internalFPS->wait();
 			internalFPS->setTickCount();
 
-			deltaTime = internalFPS->getDeltaTime();
+			if (!flagOnVideo)
+				deltaTime = internalFPS->getDeltaTime();
+			else
+				deltaTime = internalFPS->getVideoDeltaTime(); 
+			
 
 			// UNCOMMENT IF SAVE30FPS
 			//if (deltaTime > internalFPS->getFrameDuration()) deltaTime = internalFPS->getFrameDuration();

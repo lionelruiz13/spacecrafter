@@ -69,6 +69,12 @@ public:
 		return tickCount - lastCount;
 	}
 
+	//! renvoie la durée théorique d'un tour de boucle lors d'une vidéo
+	unsigned int getVideoDeltaTime() {
+		lastCount = tickCount - frameDuration;
+		return frameDuration;
+	}
+
 	//! fixe le FPS du logiciel lorsque l'on exécutera un enregistrement de script
 	void setScriptFps(float fps) {
 		scriptFPS = fps;
@@ -111,6 +117,9 @@ public:
 
 	// Détermine la durée d'attente entre deux frames pour obtenir le FPS théorique
 	void wait();
+
+	// Détermine la durée d'attente entre deux frames pour obtenir le FPS théorique lorsqu'une capture vidéo est lancée
+	void waitOnVideo();
 
 	//! Calcule le FPS par seconde et corrige les différences
 	void afterOneSecond();
