@@ -1929,9 +1929,14 @@ int AppCommandInterface::commandExternalViewer()
 	}
 
 	if (argAction=="stop") {
-		CallSystem::killAllPidFromVLC();
-		if (!media->externalMplayerIsAlive())
-			CallSystem::killAllPidFromMPlayer();
+		std::string action1="NONE";;
+		//CallSystem::killAllPidFromVLC();
+		//if (!media->externalMplayerIsAlive())
+		//	CallSystem::killAllPidFromMPlayer();
+		action1="killall mplayer";
+		CallSystem::useSystemCommand(action1);
+		action1="killall vlc";
+		CallSystem::useSystemCommand(action1);
 		return executeCommandStatus();
 	}
 
