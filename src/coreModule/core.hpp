@@ -337,6 +337,7 @@ public:
 	//! Does not deselect selected constellation
 	void unSelect(void) {
 		selected_object=nullptr;
+		old_selected_object=nullptr;
 		ssystem->setSelected(Object());
 	}
 
