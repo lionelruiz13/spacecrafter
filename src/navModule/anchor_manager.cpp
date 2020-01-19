@@ -207,6 +207,7 @@ void AnchorManager::removeAnchor(const Body * body)noexcept
 
 			if(temp->getBody() == body) {
 				removeAnchor(it->first);
+				return; // @TODO Olivier : why ?
 			}
 		}
 	}
