@@ -63,7 +63,7 @@ class EventHandler;
 
 
 
-enum class APP_FLAG : char {NONE, VISIBLE, ALIVE, ON_VIDEO, TAKE_VIDEO, COLOR_INVERSE};
+enum class APP_FLAG : char {NONE, VISIBLE, ALIVE, ON_VIDEO, COLOR_INVERSE};
  
 /**
 @author initial Fabien Chereau
@@ -149,7 +149,6 @@ private:
 	bool flagAlive; 				//!< indique si l'application doit s'arrêter ou pas
 	bool flagVisible;				//!< say if your App Is Visible or not
 	bool flagOnVideo; 				//!< indique si une video est en cours de visionnage
-	bool flagTakeVideo;				//!< indique si on est en mode capture d'écran
 	bool flagColorInverse;			//!< indique si les couleurs de l'écran sont inversées
 	bool flagAlwaysVisible;			//!< say if SC should always remain visible
 

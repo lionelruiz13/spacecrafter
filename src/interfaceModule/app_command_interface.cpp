@@ -2920,7 +2920,6 @@ int AppCommandInterface::commandDomemasters()
 		}
 		if (argAction == "record") {
 			saveScreenInterface->takeVideoShot();
-			stapp->toggle(APP_FLAG::TAKE_VIDEO);
 			return executeCommandStatus();
 		} else
 			debug_message = _("Command 'domemasters': unknown action value");

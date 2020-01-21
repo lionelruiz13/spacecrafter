@@ -66,7 +66,10 @@ public:
 
 	//! renvoie la durée d'un tour de boucle 
 	unsigned int getDeltaTime() const {
-		return tickCount - lastCount;
+		if (recVideoMode)
+			return frameVideoDuration;
+		else
+			return tickCount - lastCount;
 	}
 
 	//! renvoie la durée théorique d'un tour de boucle lors d'une vidéo
@@ -87,11 +90,13 @@ public:
 
 	//! bascule en mode enregistrement de script
 	void fixScriptFps() {
+		recVideoMode = true;
 		frameVideoDuration= (unsigned int) (SECONDEDURATION/scriptFPS);
 	}
 
 	//! bascule en mode normal
 	void fixMaxFps() {
+		recVideoMode = false;
 		frameDuration= (unsigned int) (SECONDEDURATION/maxFPS);
 	}
 
@@ -138,6 +143,7 @@ private:
 	uint64_t tickCount = 0;
 	uint16_t frameDuration=0;
 	uint16_t frameVideoDuration=0;
+	bool recVideoMode = false;
 
 /* UNCOMMENT IF SAVE30FPS
 	const float SECONDEDURATIONF=1000.0;
