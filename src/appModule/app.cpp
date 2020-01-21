@@ -163,6 +163,8 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 						flagOnVideo = _value; break;
 		case APP_FLAG::COLOR_INVERSE : 
 						flagColorInverse = _value; break;
+		case APP_FLAG::TAKE_VIDEO :
+						flagTakeVideo = _value; break;
 		default: break;
 	}
 }
@@ -178,6 +180,8 @@ void App::toggle(APP_FLAG layerValue)
 						flagOnVideo = !flagOnVideo; break;
 		case APP_FLAG::COLOR_INVERSE : 
 						flagColorInverse = !flagColorInverse; break;
+		case APP_FLAG::TAKE_VIDEO :
+						flagTakeVideo = !flagTakeVideo; break;
 		default: break;
 	}
 }
@@ -454,6 +458,7 @@ void App::start_main_loop()
 {
 	flagVisible = true;		// At The Beginning, Our App Is Visible
 	flagAlive = true; 		// au debut, on veut que l'application ne s'arrete pas :)
+	flagTakeVideo = false;  // au début, on n'enregistre pas les frames 
 
 	//center mouse in middle screen
 	mSdl->warpMouseInCenter();
@@ -498,14 +503,10 @@ void App::start_main_loop()
 			internalFPS->wait();
 			internalFPS->setTickCount();
 
-			if (!flagOnVideo)
+			if (!flagTakeVideo)
 				deltaTime = internalFPS->getDeltaTime();
 			else
 				deltaTime = internalFPS->getVideoDeltaTime(); 
-			
-
-			// UNCOMMENT IF SAVE30FPS
-			//if (deltaTime > internalFPS->getFrameDuration()) deltaTime = internalFPS->getFrameDuration();
 
 			this->update(deltaTime);		// And update the motions and data
 			this->draw(deltaTime);			// Do the drawings!

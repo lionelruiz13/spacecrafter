@@ -71,13 +71,13 @@ public:
 
 	//! renvoie la durée théorique d'un tour de boucle lors d'une vidéo
 	unsigned int getVideoDeltaTime() {
-		lastCount = tickCount - frameDuration;
-		return frameDuration;
+		return frameVideoDuration;
 	}
 
 	//! fixe le FPS du logiciel lorsque l'on exécutera un enregistrement de script
 	void setScriptFps(float fps) {
 		scriptFPS = fps;
+		fixScriptFps();
 	}
 
 	//! fixe le FPS du logiciel en mode normal
@@ -87,7 +87,7 @@ public:
 
 	//! bascule en mode enregistrement de script
 	void fixScriptFps() {
-		frameDuration= (unsigned int) (SECONDEDURATION/scriptFPS);
+		frameVideoDuration= (unsigned int) (SECONDEDURATION/scriptFPS);
 	}
 
 	//! bascule en mode normal
@@ -137,6 +137,7 @@ private:
 	uint64_t initCount = 0;
 	uint64_t tickCount = 0;
 	uint16_t frameDuration=0;
+	uint16_t frameVideoDuration=0;
 
 /* UNCOMMENT IF SAVE30FPS
 	const float SECONDEDURATIONF=1000.0;
