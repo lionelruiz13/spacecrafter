@@ -38,20 +38,8 @@ void Fps::addFrame() {
 void Fps::afterOneSecond()
 {
 	fps = frame;
-	frame = 0; 
-/* UNCOMMENT IF SAVE30FPS
-	if (calculatedTime-timeBase > SECONDEDURATION) {
-		fps=frame*SECONDEDURATIONF/(calculatedTime-timeBase);
-		timeBase+=SECONDEDURATION;
-		frame -= fps;
-		int delay =int(effectiveCalculatedTime)-calculatedTime;
-		if (delay>0) {
-		calculatedTime += delay;
-		}
-		return true;
-	} else {
-		return false;
-	} */
+	frame = 0;
+}
 }
 
 void Fps::wait()

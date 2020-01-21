@@ -111,9 +111,9 @@ public:
 	}
 
 	//! Indique la durée d'une frame en int
-	unsigned int getFrameDuration() const {
-		return frameDuration;
-	}
+	// unsigned int getFrameDuration() const {
+	// 	return frameDuration;
+	// }
 
 	//! indique le FPS actuel
 	int getFps() const {
@@ -123,13 +123,10 @@ public:
 	// Détermine la durée d'attente entre deux frames pour obtenir le FPS théorique
 	void wait();
 
-	// Détermine la durée d'attente entre deux frames pour obtenir le FPS théorique lorsqu'une capture vidéo est lancée
-	void waitOnVideo();
-
 	//! Calcule le FPS par seconde et corrige les différences
 	void afterOneSecond();
 
-	//! faonction callback lancée par SDL2
+	//! fonction callback lancée par SDL2
 	static Uint32 callbackfunc(Uint32 interval, void *param);
 private:
 	uint64_t numberFrames=0;
@@ -145,10 +142,6 @@ private:
 	uint16_t frameVideoDuration=0;
 	bool recVideoMode = false;
 
-/* UNCOMMENT IF SAVE30FPS
-	const float SECONDEDURATIONF=1000.0;
-	const int SECONDEDURATION=1000;
-*/
 	const float SECONDEDURATION=1000.0;
 };
 
