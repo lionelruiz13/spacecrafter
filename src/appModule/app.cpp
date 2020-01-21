@@ -208,7 +208,7 @@ void App::init()
 	AppSettings::Instance()->loadAppSettings( &conf );
 
 	internalFPS->setMaxFps(conf.getDouble ("video","maximum_fps"));
-	internalFPS->setScriptFps(conf.getDouble ("video","script_fps"));
+	internalFPS->setVideoFps(conf.getDouble ("video","video_fps"));
 
 	std::string appLocaleName = conf.getStr("localization", "app_locale"); //, "system");
 	spaceDate->setTimeFormat(spaceDate->stringToSTimeFormat(conf.getStr("localization:time_display_format")));
@@ -459,7 +459,7 @@ void App::start_main_loop()
 	mSdl->warpMouseInCenter();
 
 	internalFPS->init();
-	internalFPS->fixMaxFps();
+	internalFPS->selectMaxFps();
 
 	SDL_TimerID my_timer_id = SDL_AddTimer(1000, internalFPS->callbackfunc, nullptr);
 

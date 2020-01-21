@@ -40,7 +40,6 @@ void Fps::afterOneSecond()
 	fps = frame;
 	frame = 0;
 }
-}
 
 void Fps::wait()
 {

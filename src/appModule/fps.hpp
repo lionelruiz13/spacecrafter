@@ -56,7 +56,7 @@ public:
 		return numberFrames;
 	}
 
-	//! ajoute la durée théorique d'une frame  écoulée
+	//! ajoute la durée théorique d'une frame écoulée
 	void addCalculatedTime(int delta_time) {
 		calculatedTime += delta_time;
 	}
@@ -77,25 +77,24 @@ public:
 		return frameVideoDuration;
 	}
 
-	//! fixe le FPS du logiciel lorsque l'on exécutera un enregistrement de script
-	void setScriptFps(float fps) {
-		scriptFPS = fps;
-		fixScriptFps();
+	//! indique à quel FPS le logiciel doit tourner en mode capture vidéo
+	void setVideoFps(float fps) {
+		videoFPS = fps;
 	}
 
-	//! fixe le FPS du logiciel en mode normal
+	//! indique à quel FPS le logiciel doit tourner en mode normal
 	void setMaxFps(float fps) {
 		maxFPS = fps;
 	}
 
-	//! bascule en mode enregistrement de script
-	void fixScriptFps() {
+	//! bascule en mode enregistrement de vidéo
+	void selectVideoFps() {
 		recVideoMode = true;
-		frameVideoDuration= (unsigned int) (SECONDEDURATION/scriptFPS);
+		frameVideoDuration= (unsigned int) (SECONDEDURATION/videoFPS);
 	}
 
-	//! bascule en mode normal
-	void fixMaxFps() {
+	//! bascule en mode normal 
+	void selectMaxFps() {
 		recVideoMode = false;
 		frameDuration= (unsigned int) (SECONDEDURATION/maxFPS);
 	}
@@ -133,7 +132,7 @@ private:
 	int frame = 0;
 	int fps = 0;
 	uint64_t calculatedTime = 0;
-	float scriptFPS=0.f;
+	float videoFPS=0.f;
 	float maxFPS=0.f;
 	uint64_t lastCount = 0;
 	uint64_t initCount = 0;

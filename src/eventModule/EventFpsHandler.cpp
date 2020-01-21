@@ -33,10 +33,10 @@ void EventFpsHandler::handle(const Event* e)
     FpsEvent * event = (FpsEvent *)e;
     switch(event->getOrder()) {
         case FPS_ORDER::LOW_FPS :
-            clock->fixScriptFps(); break;
+            clock->selectVideoFps(); break;
 
         case FPS_ORDER::HIGH_FPS :
-            clock->fixMaxFps(); break;
+            clock->selectMaxFps(); break;
 
         case FPS_ORDER::AFTER_ONE_SECOND :
             clock->afterOneSecond(); break;
