@@ -77,7 +77,7 @@ static void checkVideoSettings(InitParser &user_conf)
 	videoSettings["screen_h"]="768";
 	videoSettings["bbp_mode"]="24";
 	videoSettings["maximum_fps"]="60";
-	videoSettings["script_fps"]="30";
+	videoSettings["rec_video_fps"]="30";
 
 	for (std::map<std::string,std::string>::iterator it=videoSettings.begin(); it!=videoSettings.end(); ++it) {
 		if (!user_conf.findEntry("video:"+it->first))
