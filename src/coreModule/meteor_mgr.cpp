@@ -68,8 +68,8 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 
 	// step through and update all active meteors
 	int n =0;
-	if (active.empty())
-		return;
+	//if (active.empty())
+	//	return;
 
 	for (std::vector<Meteor*>::iterator iter = active.begin(); iter != active.end(); ++iter) {
 		n++;
