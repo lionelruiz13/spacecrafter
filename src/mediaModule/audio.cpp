@@ -169,23 +169,25 @@ void Audio::musicResume()
 	}
 }
 
-void Audio::musicHalt()
-{
-	Mix_HaltMusic();
-	music_isPlaying=0;
-	elapsed_seconds=0.0;
-}
-
 void Audio::musicDrop()
 {
-	if (track !=nullptr) {
-		Mix_HaltMusic();
-		Mix_FreeMusic(track);
-	}
-	track=nullptr;
+	Mix_HaltMusic();
+	Mix_FreeMusic(track);
 	music_isPlaying=0;
 	elapsed_seconds=0.0;
+	track=nullptr;
 }
+
+// void Audio::musicDrop()
+// {
+	// if (track !=nullptr) {
+		// Mix_HaltMusic();
+		// Mix_FreeMusic(track);
+	// }
+	// track=nullptr;
+	// music_isPlaying=0;
+	// elapsed_seconds=0.0;
+// }
 
 void Audio::decrementVolume(int value)
 {

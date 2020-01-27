@@ -120,7 +120,7 @@ public:
 
 	void audioMusicHalt() {
 		if (mediaState.video_state != V_STATE::V_PLAY) {
-			audio->musicHalt();
+			audio->musicDrop();
 		}
 	}
 

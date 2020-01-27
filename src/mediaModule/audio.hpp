@@ -54,7 +54,7 @@ public:
 	void musicPause();
 	void musicResume();
 	void musicRewind();
-	void musicHalt();
+	//void musicHalt();
 	void musicSync();
 	void musicDrop();
 	void musicJump(float secondJump);

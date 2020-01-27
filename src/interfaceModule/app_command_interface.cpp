@@ -2156,7 +2156,7 @@ int AppCommandInterface::commandScript()
 		if (argAction=="end") {
 			scriptInterface->cancelScript();
 			stcore->textClear(); // del all usr text
-			media->audioMusicHalt();
+			media->audioMusicDrop();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
 		} else if (argAction=="play" && !filen.empty()) {

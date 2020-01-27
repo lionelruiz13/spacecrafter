@@ -69,7 +69,7 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 
 	mediaState.video_state=V_STATE::V_PLAY;
 
-	audioMusicHalt();
+	audioMusicDrop();
 	vr360->displayStop();
 	viewPort->displayStop();
 
@@ -118,7 +118,7 @@ int Media::playerPlay(const std::string &type,const  std::string &videoname, con
 	cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
 	int tmp = playerPlay(type, videoname, _name, _position);
 	if (tmp >0) {
-		audioMusicHalt();
+		audioMusicDrop();
 		audioMusicPlay(audioname, false);
 		return 0;
 	}
