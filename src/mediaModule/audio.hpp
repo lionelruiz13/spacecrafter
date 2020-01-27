@@ -34,7 +34,7 @@
 #include <SDL2/SDL_mixer.h>
 
 
-#define MAX_CHANNELS 8
+// #define MAX_CHANNELS 8
 
 
 class Audio {
@@ -62,19 +62,19 @@ public:
 
 	void update(int delta_time);
 
-	//sound
-	void chunkLoad(const std::string& filename);
-	void chunkPlay();
-	void chunkPause();
-	void chunkResume();
-	void chunkHalt();
-	void chunkDrop(const std::string& filename);
+	// //sound
+	// void chunkLoad(const std::string& filename);
+	// void chunkPlay();
+	// void chunkPause();
+	// void chunkResume();
+	// void chunkHalt();
+	// void chunkDrop(const std::string& filename);
 
 private:
 	int master_volume;
 	Mix_Music *track = nullptr;
-	Mix_Chunk *sound[MAX_CHANNELS];
-	std::string sound_name[MAX_CHANNELS];
+	// Mix_Chunk *sound[MAX_CHANNELS];
+	// std::string sound_name[MAX_CHANNELS];
 	std::string music_name;
 	double elapsed_seconds;  //! current offset into the track
 	bool music_isPlaying;
