@@ -49,10 +49,9 @@ Media::~Media()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::audioMusicLoad(const std::string &filename)
+void Media::audioMusicPlay(const std::string &filename, bool loop)
 {
-	audio->musicLoad(filename);
-	audioMusicPlay(false);
+	audio->musicPlay(filename, loop);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,8 +119,7 @@ int Media::playerPlay(const std::string &type,const  std::string &videoname, con
 	int tmp = playerPlay(type, videoname, _name, _position);
 	if (tmp >0) {
 		audioMusicHalt();
-		audioMusicLoad(audioname);
-		audioMusicPlay(0);
+		audioMusicPlay(audioname, false);
 		return 0;
 	}
 	return tmp;

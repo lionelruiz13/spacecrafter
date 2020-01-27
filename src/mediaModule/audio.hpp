@@ -50,8 +50,7 @@ public:
 	void decrementVolume(int value=5);
 
 	//music
-	void musicLoad(const std::string& filename);
-	void musicPlay(bool loop);
+	void musicPlay(const std::string& filename, bool loop);
 	void musicPause();
 	void musicResume();
 	void musicRewind();

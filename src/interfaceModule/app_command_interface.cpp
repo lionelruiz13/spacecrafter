@@ -2239,8 +2239,7 @@ int AppCommandInterface::commandAudio()
 		} else if (argAction=="play"){
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
-					media->audioMusicLoad(myFile);
-					media->audioMusicPlay(isTrue(args["loop"]));
+					media->audioMusicPlay(myFile, isTrue(args["loop"]));
 					return executeCommandStatus();
 				} else {
 					debug_message = _("command 'audio': filename not found");

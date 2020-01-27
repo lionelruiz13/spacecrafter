@@ -103,11 +103,7 @@ public:
 		audio->decrementVolume(value);
 	}
 
-	void audioMusicLoad(const std::string &filename);
-
-	void audioMusicPlay(bool loop) {
-		audio->musicPlay(loop);
-	}
+	void audioMusicPlay(const std::string &filename,bool loop);
 
 	void audioMusicPause() {
 		if (!audioNoPause)

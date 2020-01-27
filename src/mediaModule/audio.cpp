@@ -81,30 +81,33 @@ Audio::~Audio()
 //~ return ((h*60+m)*60+s);
 //~ }
 
-void Audio::musicLoad(const std::string& filename)
+void Audio::musicPlay(const std::string& filename, bool loop)
 {
 	track = Mix_LoadMUS(filename.c_str());
 	if (track == nullptr) {
-		music_isPlaying = false;
 		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
-	} else music_isPlaying = 1;
-	music_name = filename;
-	elapsed_seconds=0.0;
-}
-
-
-void Audio::musicPlay(bool loop)
-{
+		return;
+	}
 	if (track != nullptr) {
-		music_isPlaying = true;
-		elapsed_seconds = 0.0;
 		if (loop) {
-			if (Mix_PlayMusic(track, -1)< 0)
+			if (Mix_PlayMusic(track, -1)< 0) {
 				cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+				return;
+			} else {
+				music_isPlaying = true;
+				elapsed_seconds = 0.0;
+			}
 		} else {
-			if (Mix_PlayMusic(track, 0) < 0)
+			if (Mix_PlayMusic(track, 0) < 0) {
 				cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+				return;
+			} else {
+				music_isPlaying = true;
+				elapsed_seconds = 0.0;
+			}
 		}
+	} else {
+		cLog::get()->write("Audio::musicPlay track==nullptr", LOG_TYPE::L_DEBUG );
 	}
 }
 
