@@ -69,6 +69,9 @@ struct HalfSpace {
 	bool contains(const Vec3d &v) const {
 		return (v*n>=d);
 	}
+	HalfSpace& operator=(const HalfSpace&) = default;
+	
+
 	bool operator==(const HalfSpace& other) const {
 		return (n==other.n && d==other.d);
 	}
