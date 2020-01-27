@@ -2230,12 +2230,16 @@ int AppCommandInterface::commandAudio()
 	if (!argAction.empty()) {
 		if (argAction =="drop") {
 			media->audioMusicDrop();
+			return executeCommandStatus();
 		} else if (argAction=="sync") {
 			media->audioMusicSync();
+			return executeCommandStatus();
 		} else if (argAction=="pause") {
 			media->audioMusicPause();
+			return executeCommandStatus();
 		} else if (argAction=="resume") {
 			media->audioMusicResume();
+			return executeCommandStatus();
 		} else if (argAction=="play"){
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
