@@ -116,6 +116,8 @@ public:
 	//! Special constructor for 4 halfspaces convex
 	ConvexS(const Vec3d &e0,const Vec3d &e1,const Vec3d &e2, const Vec3d &e3);
 
+	ConvexS& operator=(const ConvexS&) = default;
+
 	//! Tell whether the points of the passed Polygon are all outside of at least one HalfSpace
 	bool areAllPointsOutsideOneSide(const Polygon& poly) const {
 		for (const_iterator iter=begin(); iter!=end(); ++iter) {
