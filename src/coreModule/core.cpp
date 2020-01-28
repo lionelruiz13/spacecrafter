@@ -1556,7 +1556,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 
 	// default color override
 	asterisms->setLineColor(Utility::strToVec3f(conf.getStr(section,"const_lines_color")));
-	starLines-> setColor(Utility::strToVec3f(conf.getStr(section,"const_lines_color")));
+	starLines-> setColor(Utility::strToVec3f(conf.getStr(section,"const_lines3D_color")));
 	asterisms->setBoundaryColor(Utility::strToVec3f(conf.getStr(section,"const_boundary_color")));
 	asterisms->setLabelColor(Utility::strToVec3f(conf.getStr(section,"const_names_color")));
 	asterisms->setArtColor(Utility::strToVec3f(conf.getStr(section,"const_art_color")));
