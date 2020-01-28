@@ -281,6 +281,7 @@ static void checkColorSettings(InitParser &user_conf)
 	colorSettings["object_trails_color"] = "1,0.5,0";
 	colorSettings["equator_color"] = "0.5,1,0.5";
 	colorSettings["const_lines_color"] = "0.05,0.05,0.3";
+	colorSettings["const_lines3D_color"] = "0.5,0.2,0.2";
 	colorSettings["const_boundary_color"] = "0.4,0.3,0";
 	colorSettings["const_names_color"] = "0.6,0.7,0";
 	colorSettings["const_art_color"] = "1,1,1";
