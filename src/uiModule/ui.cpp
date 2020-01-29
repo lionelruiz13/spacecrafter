@@ -1363,12 +1363,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					CallSystem::killAllPidFromVLC();
 					media->audioMusicHalt();
-					// Mix_CloseAudio();
-					// cLog::get()->write("Close Audio", LOG_TYPE::L_DEBUG );
-					// if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
-					// 	cLog::get()->write("Error while reopening Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
-					// } else
-					// cLog::get()->write("SDL Sound re loaded once again", LOG_TYPE::L_INFO);
+					Mix_CloseAudio();
+					cLog::get()->write("Close Audio", LOG_TYPE::L_DEBUG );
+					if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
+						cLog::get()->write("Error while reopening Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+					} else
+					cLog::get()->write("SDL Sound re loaded once again", LOG_TYPE::L_INFO);
 					break;
 				case SUPER:
 					event = new ScriptEvent( IDIR+"internal/chut.sts");
