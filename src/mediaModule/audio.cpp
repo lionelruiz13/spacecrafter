@@ -89,7 +89,7 @@ void Audio::musicPlay(const std::string& filename, bool loop)
 		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
 		return;
 	}
-	// if (track != nullptr) {
+	if (track != nullptr) {
 		if (loop) {
 			if (Mix_PlayMusic(track, -1)< 0) {
 				cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
@@ -107,9 +107,9 @@ void Audio::musicPlay(const std::string& filename, bool loop)
 				elapsed_seconds = 0.0;
 			}
 		}
-	// } else {
-	// 	cLog::get()->write("Audio::musicPlay track==nullptr", LOG_TYPE::L_DEBUG );
-	// }
+	} else {
+		cLog::get()->write("Audio::musicPlay track==nullptr", LOG_TYPE::L_DEBUG );
+	}
 }
 
 
