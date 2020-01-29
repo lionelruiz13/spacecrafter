@@ -83,6 +83,10 @@ Audio::~Audio()
 
 void Audio::musicLoad(const std::string& filename)
 {
+	if (track!=nullptr) {
+		cLog::get()->write("Another music was played ...  " +music_name, LOG_TYPE::L_DEBUG);
+		this->musicDrop();
+	}
 	track = Mix_LoadMUS(filename.c_str());
 	if (track == nullptr) {
 		music_isPlaying = false;
