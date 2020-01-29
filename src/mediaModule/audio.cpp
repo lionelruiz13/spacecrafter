@@ -116,12 +116,7 @@ void Audio::musicPlay(const std::string& filename, bool loop)
 // used solely to track elapsed seconds of play
 void Audio::update(int delta_time)
 {
-	if (track)  {
-		elapsed_seconds += delta_time/1000.f;
-		if (Mix_PlayingMusic()==false) {
-			this->musicDrop();
-		}
-	}
+	if (track ) elapsed_seconds += delta_time/1000.f;
 }
 
 // sychronize with elapsed time no longer starts playback if paused or disabled
