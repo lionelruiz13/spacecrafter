@@ -91,9 +91,11 @@ void Audio::musicLoad(const std::string& filename)
 	if (track == nullptr) {
 		music_isPlaying = false;
 		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
-	} else music_isPlaying = 1;
-	music_name = filename;
-	elapsed_seconds=0.0;
+	} else  {
+		music_isPlaying = true;
+		music_name = filename;
+		elapsed_seconds=0.0;
+	}
 }
 
 
@@ -162,10 +164,10 @@ void Audio::musicPause()
 	if (track !=nullptr) {
 		if (music_isPlaying==true) {
 			Mix_PauseMusic();
-			music_isPlaying=0;
+			music_isPlaying=false;
 		} else {
 			Mix_ResumeMusic();
-			music_isPlaying=1;
+			music_isPlaying=true;
 		}
 	}
 }
@@ -194,6 +196,7 @@ void Audio::musicDrop()
 	track=nullptr;
 	music_isPlaying=0;
 	elapsed_seconds=0.0;
+	music_name.clear();
 }
 
 void Audio::decrementVolume(int value)
