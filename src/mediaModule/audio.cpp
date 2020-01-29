@@ -47,8 +47,8 @@ Audio::Audio()
 	master_volume=SDL_MIX_MAXVOLUME/3*2;
 	elapsed_seconds=0.0;
 	cLog::get()->write("Audio initialization successful", LOG_TYPE::L_INFO);
-	// for (int i=0; i<MAX_CHANNELS; i++)
-	// 	sound[i]=nullptr;
+	for (int i=0; i<MAX_CHANNELS; i++)
+		sound[i]=nullptr;
 }
 
 Audio::~Audio()
@@ -58,10 +58,10 @@ Audio::~Audio()
 		Mix_HaltMusic(); // stop playing
 		Mix_FreeMusic(track);  // free memory
 	}
-	// for (int i=0; i<MAX_CHANNELS; i++) {
-	// 	if(sound[i] !=nullptr)
-	// 		Mix_FreeChunk(sound[i]);
-	// }
+	for (int i=0; i<MAX_CHANNELS; i++) {
+		if(sound[i] !=nullptr)
+			Mix_FreeChunk(sound[i]);
+	}
 	Mix_CloseAudio();
 	cLog::get()->write("Audio support end", LOG_TYPE::L_INFO);
 }
@@ -214,54 +214,54 @@ void Audio::setVolume(int _value)
 	Mix_VolumeMusic(master_volume);
 }
 
-// void Audio::chunkLoad(const std::string& filename)
-// {
-// 	for (int i=0; i<MAX_CHANNELS; i++) {
-// 		if(sound[i] ==nullptr) {
-// 			sound[i]=Mix_LoadWAV(filename.c_str());
-// 			if (sound[i] == nullptr) {
-// 				cLog::get()->write("Nothing to do because no existing sound with this name", LOG_TYPE::L_ERROR);
-// 				return;
-// 			}
-// 			sound_name[i]=filename.c_str();
-// 			return;
-// 		}
-// 	}
-// 	cLog::get()->write("Nothing to do because no channel free", LOG_TYPE::L_WARNING);
-// }
+void Audio::chunkLoad(const std::string& filename)
+{
+	for (int i=0; i<MAX_CHANNELS; i++) {
+		if(sound[i] ==nullptr) {
+			sound[i]=Mix_LoadWAV(filename.c_str());
+			if (sound[i] == nullptr) {
+				cLog::get()->write("Nothing to do because no existing sound with this name", LOG_TYPE::L_ERROR);
+				return;
+			}
+			sound_name[i]=filename.c_str();
+			return;
+		}
+	}
+	cLog::get()->write("Nothing to do because no channel free", LOG_TYPE::L_WARNING);
+}
 
-// void Audio::chunkPlay()
-// {
-// 	for (int i=0; i<MAX_CHANNELS; i++) {
-// 		if(sound[i] !=nullptr)
-// 			Mix_PlayChannel(-1,sound[i],0);
-// 	}
-// }
+void Audio::chunkPlay()
+{
+	for (int i=0; i<MAX_CHANNELS; i++) {
+		if(sound[i] !=nullptr)
+			Mix_PlayChannel(-1,sound[i],0);
+	}
+}
 
-// void Audio::chunkPause()
-// {
-// 	Mix_Pause(-1);
-// }
+void Audio::chunkPause()
+{
+	Mix_Pause(-1);
+}
 
-// void Audio::chunkDrop(const std::string& filename)
-// {
-// 	for (int i=0; i<MAX_CHANNELS; i++) {
-// 		if(sound_name[i] == filename.c_str()) {
-// 			Mix_FreeChunk(sound[i]);
-// 			sound[i]=nullptr;
-// 			sound_name[i] =="";
-// 			return;
-// 		}
-// 	}
-// 	cLog::get()->write("Nothing to do because no existing sound with this name", LOG_TYPE::L_WARNING);
-// }
+void Audio::chunkDrop(const std::string& filename)
+{
+	for (int i=0; i<MAX_CHANNELS; i++) {
+		if(sound_name[i] == filename.c_str()) {
+			Mix_FreeChunk(sound[i]);
+			sound[i]=nullptr;
+			sound_name[i] =="";
+			return;
+		}
+	}
+	cLog::get()->write("Nothing to do because no existing sound with this name", LOG_TYPE::L_WARNING);
+}
 
-// void Audio::chunkResume()
-// {
-// 	Mix_Resume(-1);
-// }
+void Audio::chunkResume()
+{
+	Mix_Resume(-1);
+}
 
-// void Audio::chunkHalt()
-// {
-// 	Mix_HaltChannel(-1);
-// }
+void Audio::chunkHalt()
+{
+	Mix_HaltChannel(-1);
+}
