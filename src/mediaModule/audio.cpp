@@ -57,7 +57,6 @@ Audio::~Audio()
 		music_isPlaying=false;
 		Mix_HaltMusic(); // stop playing
 		Mix_FreeMusic(track);  // free memory
-		track = nullptr;
 	}
 	// for (int i=0; i<MAX_CHANNELS; i++) {
 	// 	if(sound[i] !=nullptr)
