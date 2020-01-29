@@ -116,7 +116,15 @@ void Audio::musicPlay(bool loop)
 // used solely to track elapsed seconds of play
 void Audio::update(int delta_time)
 {
-	if (track ) elapsed_seconds += delta_time/1000.f;
+	if (track ) {
+		if (Mix_PlayingMusic()!=1) {
+			if (Mix_PausedMusic()!=1) {
+				cLog::get()->write("Audio::update seen track ended...", LOG_TYPE::L_DEBUG);
+				this->musicDrop();
+			}
+		}
+		elapsed_seconds += delta_time/1000.f;
+	}
 }
 
 // sychronize with elapsed time no longer starts playback if paused or disabled
