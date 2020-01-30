@@ -49,6 +49,12 @@ Audio::Audio()
 	cLog::get()->write("Audio initialization successful", LOG_TYPE::L_INFO);
 	// for (int i=0; i<MAX_CHANNELS; i++)
 	// 	sound[i]=nullptr;
+	// load support for the OGG sample/music formats
+	int flags=MIX_INIT_OGG;
+	int initted=Mix_Init(MIX_INIT_OGG);
+	if((initted&flags) != flags) {
+		cLog::get()->write("Audio::audio Mix_Init: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+	}
 }
 
 Audio::~Audio()
@@ -65,6 +71,7 @@ Audio::~Audio()
 	// }
 	Mix_CloseAudio();
 	cLog::get()->write("Audio support end", LOG_TYPE::L_INFO);
+	Mix_Quit();
 }
 
 
@@ -77,6 +84,7 @@ void Audio::musicDebug()
 		Mix_HaltMusic(); // stop playing
 		Mix_FreeMusic(track);  // free memory
 		Mix_CloseAudio();
+		Mix_Quit();
 		master_volume=SDL_MIX_MAXVOLUME/3*2;
 		elapsed_seconds=0.0;
 		if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
@@ -94,10 +102,14 @@ void Audio::musicDebug()
 			cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
 		} else
 			cLog::get()->write("SDL Sound loaded", LOG_TYPE::L_INFO);
+		int flags=MIX_INIT_OGG;
+		int initted=Mix_Init(MIX_INIT_OGG);
+		if((initted&flags) != flags) {
+		cLog::get()->write("Audio::audio Mix_Init: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+		}
 	}
-	
-
 }
+
 //~ float Audio::music_get_length(std::string filename)
 //~ {
 //~ FILE *plop;
