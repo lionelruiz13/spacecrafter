@@ -67,6 +67,37 @@ Audio::~Audio()
 	cLog::get()->write("Audio support end", LOG_TYPE::L_INFO);
 }
 
+
+void Audio::musicDebug()
+{
+	cLog::get()->write("Audio Debug mode", LOG_TYPE::L_DEBUG);	
+	if(track!=nullptr) {
+		cLog::get()->write("Audio::musicDebug with "+ music_name, LOG_TYPE::L_DEBUG );
+		music_isPlaying=false;
+		Mix_HaltMusic(); // stop playing
+		Mix_FreeMusic(track);  // free memory
+		Mix_CloseAudio();
+		master_volume=SDL_MIX_MAXVOLUME/3*2;
+		elapsed_seconds=0.0;
+		if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
+			cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+		} else
+			cLog::get()->write("SDL Sound loaded", LOG_TYPE::L_INFO);
+	} else {
+		cLog::get()->write("Audio::musicDebug without music", LOG_TYPE::L_DEBUG );
+		master_volume=SDL_MIX_MAXVOLUME/3*2;
+		elapsed_seconds=0.0;
+		Mix_CloseAudio();
+		master_volume=SDL_MIX_MAXVOLUME/3*2;
+		elapsed_seconds=0.0;
+		if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
+			cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+		} else
+			cLog::get()->write("SDL Sound loaded", LOG_TYPE::L_INFO);
+	}
+	
+
+}
 //~ float Audio::music_get_length(std::string filename)
 //~ {
 //~ FILE *plop;
