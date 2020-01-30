@@ -53,7 +53,7 @@ Audio::Audio()
 
 Audio::~Audio()
 {
-	if(track) {
+	if(track!=nullptr) {
 		cLog::get()->write("Audio::~Audio end of "+ music_name, LOG_TYPE::L_DEBUG );
 		music_isPlaying=false;
 		Mix_HaltMusic(); // stop playing
@@ -123,7 +123,7 @@ void Audio::musicPlay(bool loop)
 // used solely to track elapsed seconds of play
 void Audio::update(int delta_time)
 {
-	if (track ) {
+	if (track!=nullptr) {
 		if (Mix_PlayingMusic()!=1) {
 			if (Mix_PausedMusic()!=1) {
 				cLog::get()->write("Audio::update seen track ended...", LOG_TYPE::L_DEBUG);
