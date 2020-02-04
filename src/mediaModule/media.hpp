@@ -95,9 +95,9 @@ public:
 		audio->setVolume(_value);
 	}
 
-	void audioDebug() {
-		audio->musicDebug();
-	}
+	// void audioDebug() {
+	// 	audio->musicDebug();
+	// }
 
 	void audioVolumeIncrement(int value=5) {
 		audio->incrementVolume(value);

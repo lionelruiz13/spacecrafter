@@ -59,7 +59,7 @@ public:
 	void musicSync();
 	void musicDrop();
 	void musicJump(float secondJump);
-	void musicDebug();
+	// void musicDebug();
 
 	void update(int delta_time);
 
