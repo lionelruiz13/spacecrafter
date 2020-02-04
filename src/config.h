@@ -6,8 +6,8 @@
 #define _CONFIG_H_
 
 #define PACKAGE  "spacecrafter"
-#define VERSION "20.01.19"
-#define APP_NAME "spacecrafter 20.01.19"
+#define VERSION "20.02.04"
+#define APP_NAME "spacecrafter 20.02.04"
 #define APP_LOWER_NAME "spacecrafter"
 #define USER_NAME "LSS Open Project"
 #define USER_EDITION "Planetarium Edition"
