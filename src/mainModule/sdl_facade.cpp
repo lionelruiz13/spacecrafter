@@ -204,12 +204,6 @@ void SDLFacade::initSDL()
 		exit(-1);
 	}
 
-	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
-		cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
-		exit(-1);
-	} else
-		cLog::get()->write("SDL Sound loaded", LOG_TYPE::L_INFO);
-
 	// Make sure that SDL_Quit will be called in case of exit()
 	atexit(TTF_Quit);
 	atexit(SDL_Quit);

@@ -42,6 +42,12 @@
 
 Audio::Audio()
 {
+	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
+		cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+		exit(-1);
+	} else
+		cLog::get()->write("SDL Sound loaded", LOG_TYPE::L_INFO);
+
 	track = nullptr;
 	music_isPlaying = false;
 	master_volume=SDL_MIX_MAXVOLUME/3*2;
