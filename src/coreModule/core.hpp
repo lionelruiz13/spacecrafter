@@ -627,7 +627,7 @@ public:
 	void setFontScheme(void);
 
 	double getZoomSpeed() {
-		return zoom_speed;
+		return vzm.zoom_speed;
 	}
 	float getAutoMoveDuration() {
 		return auto_move_duration;
@@ -1831,6 +1831,11 @@ public:
 	void saveCurrentConfig(InitParser &conf);
 
 private:
+	struct ViewZoomMove {
+		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
+		double move_speed, zoom_speed;		// Speed of movement and zooming
+	};
+
 	void ssystemComputePreDraw();
 	void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos);
 	void hipStarMgrPreDraw();
@@ -1960,8 +1965,9 @@ private:
 	bool firstTime= true;               // For init to track if reload or first time setup
 	std::string defaultLandscape; 
 	std::string tempLandscape; 
-	double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
-	double move_speed, zoom_speed;		// Speed of movement and zooming
+	// double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
+	// double move_speed, zoom_speed;		// Speed of movement and zooming
+	ViewZoomMove vzm;					// var for ViewZoomMove
 	float InitFov;						// Default viewing FOV
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds

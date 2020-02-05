@@ -49,10 +49,11 @@
 Core::Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, _settings->getLocaleDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
-	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr),
-	deltaAlt(0.), deltaAz(0.), deltaFov(0.),deltaHeight(0.),
-	move_speed(0.00025)
+	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr)
+	// deltaAlt(0.), deltaAz(0.), deltaFov(0.),deltaHeight(0.),
+	// move_speed(0.00025)
 {
+	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
 	settings = _settings;
 	media = _media;
@@ -476,8 +477,8 @@ void Core::init(const InitParser& conf)
 	setFlagManualAutoZoom( conf.getBoolean("navigation:flag_manual_zoom") );
 
 	setAutomoveDuration( conf.getDouble ("navigation","auto_move_duration") );
-	move_speed			= conf.getDouble("navigation","move_speed");
-	zoom_speed			= conf.getDouble("navigation","zoom_speed");
+	vzm.move_speed			= conf.getDouble("navigation","move_speed");
+	vzm.zoom_speed			= conf.getDouble("navigation","zoom_speed");
 
 	// Viewing Mode
 	std::string tmpstr = conf.getStr("navigation:viewing_mode");
@@ -1739,59 +1740,59 @@ std::string Core::getCursorPos(int x, int y)
 void Core::turnRight(int s)
 {
 	if (s && FlagEnableMoveKeys) {
-		deltaAz = 1;
+		vzm.deltaAz = 1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
-	} else deltaAz = 0;
+	} else vzm.deltaAz = 0;
 }
 
 void Core::turnLeft(int s)
 {
 	if (s && FlagEnableMoveKeys) {
-		deltaAz = -1;
+		vzm.deltaAz = -1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
 
-	} else deltaAz = 0;
+	} else vzm.deltaAz = 0;
 }
 
 void Core::turnUp(int s)
 {
 	if (s && FlagEnableMoveKeys) {
-		deltaAlt = 1;
+		vzm.deltaAlt = 1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
-	} else deltaAlt = 0;
+	} else vzm.deltaAlt = 0;
 }
 
 void Core::turnDown(int s)
 {
 	if (s && FlagEnableMoveKeys) {
-		deltaAlt = -1;
+		vzm.deltaAlt = -1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
-	} else deltaAlt = 0;
+	} else vzm.deltaAlt = 0;
 }
 
 
 void Core::zoomIn(int s)
 {
-	if (FlagEnableZoomKeys) deltaFov = -1*(s!=0);
+	if (FlagEnableZoomKeys) vzm.deltaFov = -1*(s!=0);
 }
 
 void Core::zoomOut(int s)
 {
-	if (FlagEnableZoomKeys) deltaFov = (s!=0);
+	if (FlagEnableZoomKeys) vzm.deltaFov = (s!=0);
 }
 
 void Core::raiseHeight(int s)
 {
-	deltaHeight = 1.01*(s!=0);
+	vzm.deltaHeight = 1.01*(s!=0);
 }
 
 void Core::lowerHeight(int s)
 {
-	deltaHeight = 0.99*(s!=0);
+	vzm.deltaHeight = 0.99*(s!=0);
 }
 
 //! Make the first screen position correspond to the second (useful for mouse dragging)
@@ -1817,57 +1818,57 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 void Core::updateMove(int delta_time)
 {
 	// the more it is zoomed, the more the mooving speed is low (in angle)
-	double depl=move_speed*delta_time*projection->getFov();
-	double deplzoom=zoom_speed*delta_time*projection->getFov();
+	double depl=vzm.move_speed*delta_time*projection->getFov();
+	double deplzoom=vzm.zoom_speed*delta_time*projection->getFov();
 
-	if (deltaAz<0) {
-		deltaAz = -depl/30;
-		if (deltaAz<-0.2) deltaAz = -0.2;
+	if (vzm.deltaAz<0) {
+		vzm.deltaAz = -depl/30;
+		if (vzm.deltaAz<-0.2) vzm.deltaAz = -0.2;
 	} else {
-		if (deltaAz>0) {
-			deltaAz = (depl/30);
-			if (deltaAz>0.2) deltaAz = 0.2;
+		if (vzm.deltaAz>0) {
+			vzm.deltaAz = (depl/30);
+			if (vzm.deltaAz>0.2) vzm.deltaAz = 0.2;
 		}
 	}
-	if (deltaAlt<0) {
-		deltaAlt = -depl/30;
-		if (deltaAlt<-0.2) deltaAlt = -0.2;
+	if (vzm.deltaAlt<0) {
+		vzm.deltaAlt = -depl/30;
+		if (vzm.deltaAlt<-0.2) vzm.deltaAlt = -0.2;
 	} else {
-		if (deltaAlt>0) {
-			deltaAlt = depl/30;
-			if (deltaAlt>0.2) deltaAlt = 0.2;
-		}
-	}
-
-	if (deltaFov<0) {
-		deltaFov = -deplzoom*5;
-		if (deltaFov<-0.15*projection->getFov()) deltaFov = -0.15*projection->getFov();
-	} else {
-		if (deltaFov>0) {
-			deltaFov = deplzoom*5;
-			if (deltaFov>20) deltaFov = 20;
+		if (vzm.deltaAlt>0) {
+			vzm.deltaAlt = depl/30;
+			if (vzm.deltaAlt>0.2) vzm.deltaAlt = 0.2;
 		}
 	}
 
-	if (deltaHeight!=0) {
-		getObservatory()->setAltitude(getObservatory()->getAltitude()*deltaHeight);
+	if (vzm.deltaFov<0) {
+		vzm.deltaFov = -deplzoom*5;
+		if (vzm.deltaFov<-0.15*projection->getFov()) vzm.deltaFov = -0.15*projection->getFov();
+	} else {
+		if (vzm.deltaFov>0) {
+			vzm.deltaFov = deplzoom*5;
+			if (vzm.deltaFov>20) vzm.deltaFov = 20;
+		}
 	}
 
-	if (deltaFov != 0 ) {
-		projection->changeFov(deltaFov);
+	if (vzm.deltaHeight!=0) {
+		getObservatory()->setAltitude(getObservatory()->getAltitude()*vzm.deltaHeight);
+	}
+
+	if (vzm.deltaFov != 0 ) {
+		projection->changeFov(vzm.deltaFov);
 		std::ostringstream oss;
-		oss << "zoom delta_fov " << deltaFov;
+		oss << "zoom delta_fov " << vzm.deltaFov;
 		if (!recordActionCallback.empty()) recordActionCallback(oss.str());
 	}
 
-	if (deltaAz != 0 || deltaAlt != 0) {
-		navigation->updateMove(projection, deltaAz, deltaAlt, projection->getFov());
+	if (vzm.deltaAz != 0 || vzm.deltaAlt != 0) {
+		navigation->updateMove(projection, vzm.deltaAz, vzm.deltaAlt, projection->getFov());
 		std::ostringstream oss;
-		oss << "look delta_az " << deltaAz << " delta_alt " << deltaAlt;
+		oss << "look delta_az " << vzm.deltaAz << " delta_alt " << vzm.deltaAlt;
 		if (!recordActionCallback.empty()) recordActionCallback(oss.str());
 	} else {
 		// must perform call anyway, but don't record!
-		navigation->updateMove(projection, deltaAz, deltaAlt, projection->getFov());
+		navigation->updateMove(projection, vzm.deltaAz, vzm.deltaAlt, projection->getFov());
 	}
 }
 
