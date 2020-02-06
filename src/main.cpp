@@ -187,7 +187,7 @@ int main(int argc, char **argv)
 	Log->openScript(logpath + "script.log");
 	Log->openTcp(logpath + "tcp.log");
 	#else // on windows
-	std::string logpath("c:\\spacecrafter\\log\\");
+	std::string logpath("log\\");
 	Log->open(logpath + "spacecrafter.log");
 	Log->openScript(logpath + "script.log");
 	Log->openTcp(logpath + "tcp.log");
