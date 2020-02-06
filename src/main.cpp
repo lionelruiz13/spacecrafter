@@ -165,11 +165,11 @@ int main(int argc, char **argv)
 	std::string CDIR = homeDir + "/." + APP_LOWER_NAME+"/";
 	std::string DATA_ROOT = std::string(CONFIG_DATA_DIR);
 	#else //win32
-	string homeDir = "C:\\spacecrafter\\";
-	string CDIR = "C:\\spacecrafter\\";
-	string DATA_ROOT="C:\\spacecrafter\\";
-	string CONFIG_DATA_DIR="C:\\spacecrafter\\";
-	string LOCALEDIR="C:\\spacecrafter\\";
+	std::string homeDir = "";
+	std::string CDIR = "";
+	std::string DATA_ROOT="";
+	std::string CONFIG_DATA_DIR="";
+	std::string LOCALEDIR="";
 	#endif
 	std::string dirResult;
 	// Check the command line
