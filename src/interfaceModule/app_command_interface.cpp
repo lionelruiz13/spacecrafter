@@ -235,7 +235,7 @@ void AppCommandInterface::initialiseCommandsName()
 	m_commands["timerate"] = SC_COMMAND::SC_TIMERATE;
 
 	m_commands["wait"] = SC_COMMAND::SC_WAIT;
-	m_commands["zoom"] = SC_COMMAND::SC_ZOOM;
+	m_commands["zoom"] = SC_COMMAND::SC_ZOOMR;
 }
 
 AppCommandInterface::~AppCommandInterface()
@@ -407,7 +407,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_TEXT :	return commandText(); break;
 		case SC_COMMAND::SC_TIMERATE :	return commandTimerate(); break;
 		case SC_COMMAND::SC_WAIT :	return commandWait(wait); break;
-		case SC_COMMAND::SC_ZOOM :	return commandZoom(wait); break;
+		case SC_COMMAND::SC_ZOOMR :	return commandZoom(wait); break;
 		default:	break;
 	}
 	return 1;
