@@ -20,7 +20,9 @@ VideoPlayer::VideoPlayer()
 	isAlive = false;
 	isInPause = false;
 	isSeeking = false;
+#ifndef WIN32
 	img_convert_ctx = NULL;
+#endif
 }
 
 VideoPlayer::~VideoPlayer()
