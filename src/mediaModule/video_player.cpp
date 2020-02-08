@@ -49,15 +49,18 @@ void VideoPlayer::init()
 	isAlive = false;
 	isInPause= false;
 	isSeeking = false;
+#ifndef WIN32
 	#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
 	    av_register_all();
 	#endif
 	avformat_network_init();
 	pFormatCtx = avformat_alloc_context();
+#endif
 }
 
 bool VideoPlayer::RestartVideo()
 {
+#ifndef WIN32
 	if(av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0) {
 		printf("av_seek_frame forward failed. \n");
 		return false;
@@ -67,19 +70,23 @@ bool VideoPlayer::RestartVideo()
 	nbFrames = 0;
 
 	return true;
+#endif
 }
 
 void VideoPlayer::getInfo()
 {
+#ifndef WIN32
 	if (isAlive) {
 		cLog::get()->write("--------------- File Information ----------------");
 		av_dump_format(pFormatCtx,0,fileName.c_str(),0);
 		cLog::get()->write("-------------------------------------------------");
 	}
+#endif
 }
 
 int VideoPlayer::play(const std::string& _fileName)
 {
+#ifndef WIN32
 	if (isAlive)
 		playStop();
 	std::ifstream fichier(_fileName.c_str());
@@ -170,10 +177,12 @@ int VideoPlayer::play(const std::string& _fileName)
 	elapsedTime =0.0;
 	this->update();
 	return 0;
+#endif
 }
 
 void VideoPlayer::update()
 {
+#ifndef WIN32
 	if (! isAlive)
 		return;
 
@@ -187,10 +196,12 @@ void VideoPlayer::update()
 		d_lastCount = firstCount + (int)(frameRateDuration*nbFrames);
 		lastCount = (int)d_lastCount;
 	}
+#endif
 }
 
 void VideoPlayer::getNextFrame()
 {
+#ifndef WIN32
 	bool getNextFrame= false;
 
 	while(!getNextFrame) {
@@ -221,11 +232,13 @@ void VideoPlayer::getNextFrame()
 			av_packet_unref(packet);
 			}
 		}
+#endif
 }
 
 
 void VideoPlayer::getNextVideoFrame()
 {
+#ifndef WIN32
 	this->getNextFrame();
 	nbFrames ++;
 	elapsedTime += frameRateDuration;
@@ -235,11 +248,13 @@ void VideoPlayer::getNextVideoFrame()
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameRGB->data[0]);
 	}
+#endif
 }
 
 
 void VideoPlayer::playStop()
 {
+#ifndef WIN32
 	if (isAlive==false)
 		return;
 	else {
@@ -249,6 +264,7 @@ void VideoPlayer::playStop()
 		av_frame_free(&pFrame);
 		avcodec_close(pCodecCtx);
 	}
+#endif
 }
 
 
@@ -274,9 +290,11 @@ bool VideoPlayer::JumpVideo(float deltaTime, float &reallyDeltaTime)
 	if (isInPause==true)
 		this->pause();
 
+#ifndef WIN32
 	int64_t frameToSkeep = (1000.0*deltaTime) / frameRateDuration;
 	// std::cout << "On est a la frame " << nbFrames << " et on en rajoute " << frameToSkeep << std::endl;
 	return seekVideo(frameToSkeep, reallyDeltaTime);
+#endif
 }
 
 
@@ -294,6 +312,7 @@ bool VideoPlayer::Invertflow(float &reallyDeltaTime)
 
 bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 {
+#ifndef WIN32
 	nbFrames = nbFrames + frameToSkeep;
 
 	//saut avant le début de la vidéo
@@ -320,4 +339,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	// std::cout << "Saut après la fin" << std::endl;
 	reallyDeltaTime= -1.0;
 	return true;
+#else
+	return false;
+#endif
 }

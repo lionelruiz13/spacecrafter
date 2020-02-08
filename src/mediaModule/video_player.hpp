@@ -16,6 +16,7 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
+#ifndef WIN32
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -23,7 +24,7 @@ extern "C"
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
 }
-
+#endif
 
 class s_texture;
 
@@ -117,6 +118,7 @@ private:
 	Uint32 startPause;
 	Uint32 endPause;
 
+#ifndef WIN32
 	//parametres liés à ffmpeg
 	AVFormatContext	*pFormatCtx;
 	int				videoindex;
@@ -126,4 +128,5 @@ private:
 	AVStream *video_st;
 	AVPacket *packet;
 	struct SwsContext *img_convert_ctx;
+#endif
 };
