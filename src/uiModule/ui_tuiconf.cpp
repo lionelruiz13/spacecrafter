@@ -429,7 +429,7 @@ void UI::initTui()
 	tui_menu_administration->addComponent(tui_admin_shutdown);
 
 	// get system info
-	std::string systemInfo=std::string(APP_NAME);
+	std::string systemInfo=std::string(APP_NAME)+" "+std::string(EDITION);
 	tui_admin_info = new s_tui::Display(std::string("Label: "),std::string(systemInfo));
 	tui_menu_administration->addComponent(tui_admin_info);
 	tui_admin_resolution = new s_tui::Display(std::string("Label: "),m_sdl->getStrResolution());
