@@ -372,7 +372,7 @@ public:
 		return selected_object.getShortInfoString(navigation);
 	}
 
-	//! Get a 1 line string briefly describing the currently NAV eddition selected object
+	//! Get a 1 line string briefly describing the currently NAV edition selected object
 	std::string getSelectedObjectShortInfoNav(void) const {
 		return selected_object.getShortInfoNavString(navigation, timeMgr, observatory);
 	}
@@ -1959,7 +1959,7 @@ private:
 	void updateMove(int delta_time);
 	bool FlagEnableZoomKeys;
 	bool FlagEnableMoveKeys;
-	bool flagNav = false; 				// define the NAV version eddition
+	bool flagNav = false; 				// define the NAV version edition
 	bool FlagAntialiasLines;            // whether to antialias all line drawing
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup

@@ -59,7 +59,7 @@ public:
 	//! The returned string can typically be used for object labeling in the sky
 	std::string getShortInfoString(const Navigator *nav) const;
 
-	//! This string is info for old nav eddition
+	//! This string is info for old nav edition
 	std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const;
 
 	//! return the Ra et Dec for a star
