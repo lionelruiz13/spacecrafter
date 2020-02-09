@@ -404,12 +404,12 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 				#else
 				HANDLE file_handle = (void*)_get_osfhandle(_fileno(f));
 				if (file_handle == INVALID_HANDLE_VALUE) {
-					cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: _get_osfhandle(_fileno(f)) failed" << endl;
+					std::cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: _get_osfhandle(_fileno(f)) failed" << std::endl;
 				} else {
 					mapping_handle = CreateFileMapping(file_handle,NULL,PAGE_READONLY, 0,0,NULL);
 					if (mapping_handle == NULL) {
 						// yes, NULL indicates failure, not INVALID_HANDLE_VALUE
-						cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: CreateFileMapping failed: " << GetLastError() << endl;
+						std::cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray: CreateFileMapping failed: " << GetLastError() << std::endl;
 					} else {
 						mmap_start = MapViewOfFile(mapping_handle,
 						                           FILE_MAP_READ,
@@ -417,10 +417,10 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 						                           start_in_file-mmap_offset,
 						                           mmap_offset+sizeof(Star)*nr_of_stars);
 						if (mmap_start == NULL) {
-							cerr << "ERROR: SpecialZoneArray(" << level
+							std::cerr << "ERROR: SpecialZoneArray(" << level
 							     << ")::SpecialZoneArray: "
 							     "MapViewOfFile failed: " << GetLastError()
-							     << ", page_size: " << page_size << endl;
+							     << ", page_size: " << page_size << std::endl;
 							stars = 0;
 							nr_of_stars = 0;
 							delete[] getZones();
