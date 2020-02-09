@@ -109,7 +109,11 @@ void MilkyWay::defineZodiacalState(const std::string& tex_file, float _intensity
 {
 	if (zodiacal.tex==nullptr) { //fist time to read this texture
 		zodiacal.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		zodiacal.intensity = std::clamp(_intensity, 0.f, 1.f);
+		#ifndef WIN32
+			zodiacal.intensity = std::max(std::min(_intensity, 1.f), 1.f);
+		#else
+			zodiacal.intensity = std::clamp(_intensity, 0.f, 1.f);
+		#endif
 		zodiacal.name = tex_file;
 	} else {
 		cLog::get()->write("Milkyway: zodicalState already exist, function aborded" , LOG_TYPE::L_WARNING);
@@ -121,17 +125,29 @@ void MilkyWay::defineInitialMilkywayState(const std::string& path_file,const std
 {
 	if (defaultMilky.tex==nullptr) {
 		defaultMilky.tex = new s_texture(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		defaultMilky.intensity = std::clamp(_intensity, 0.f, 1.f);
+		#ifndef WIN32
+			defaultMilky.intensity = std::max(std::min(_intensity, 1.f), 1.f);
+		#else
+			defaultMilky.intensity = std::clamp(_intensity, 0.f, 1.f);
+		#endif
 		defaultMilky.name = path_file +tex_file;
 		currentMilky.tex = new s_texture(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		currentMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
+		#ifndef WIN32
+			currentMilky.intensity =  std::max(std::min(_intensity, 1.f), 1.f);
+		#else
+			currentMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
+		#endif
 		currentMilky.name = path_file +tex_file;
 		intensityMilky.set(currentMilky.intensity);
 
 		if (!iris_tex_file.empty()) {
 			useIrisMilky = true;
 			irisMilky.tex = new s_texture(path_file + iris_tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-			irisMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
+			#ifndef WIN32
+				irisMilky.intensity =  std::max(std::min(_intensity, 1.f), 1.f);
+			#else
+				irisMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
+			#endif
 			irisMilky.name = path_file + iris_tex_file;
 			cLog::get()->write("Milkyway: define irisMilky, name "+ iris_tex_file, LOG_TYPE::L_DEBUG);
 		} else
