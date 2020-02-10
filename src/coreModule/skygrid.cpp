@@ -251,6 +251,8 @@ void SkyGrid::draw(const Projector* prj) const
 							sprintf( str, "%d°E", (24-nm)*15);
 						else
 							sprintf( str, "%dh", nm);
+					} else if ( gtype == ALTAZIMUTAL ) {
+						sprintf( str, "%d°", nm<12 ? ((12-nm)*15) : ((36-nm)*15) );					
 					} else {
 						sprintf( str, "%d°", nm<12 ? (360-(12-nm)*15) : (360-(36-nm)*15) );
 					}
