@@ -1706,7 +1706,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					current_landscape = core->observatoryGetLandscapeName();
 					break;
 				case KWIN:
-					this->executeCommand(std::string("body name home_planet skin_use toggle"));				
+					this->executeCommand(std::string("body name selected skin_use toggle"));				
 					break;
 				case CTRL :
 					event = new FlagEvent( FLAG_NAMES::FN_CLOUDS , FLAG_VALUES::FV_TOGGLE,"flag clouds toggle");
