@@ -3085,6 +3085,7 @@ int AppCommandInterface::commandBody()
 	std::string argAction = args["action"];
 	std::string argName = args["name"];
     if (argName == "home_planet") argName = stcore->getObservatory()->getHomePlanetEnglishName();
+    //if (argName == "selected") argName = stcore->selected_object.getEnglishName();
 	std::string argMode = args["mode"];
 
 	// traitement des OJM
