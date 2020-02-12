@@ -1398,12 +1398,14 @@ public:
 
 	//! Switch 
 	void planetSwitchTexMap(const std::string &_name, bool b) {
-		ssystem->switchPlanetTexMap(_name, b);
+		if (_name=="selected") ssystem->switchPlanetTexMap(selected_object.getEnglishName(), b); 
+		else ssystem->switchPlanetTexMap(_name, b);
 	}
 
 	//! Switch 
 	bool planetGetSwitchTexMap(const std::string &_name) {
-		return ssystem->getSwitchPlanetTexMap(_name);
+		if (_name=="selected") return ssystem->getSwitchPlanetTexMap(selected_object.getEnglishName());
+		else return ssystem->getSwitchPlanetTexMap(_name);
 	}
 
 	void planetCreateTexSkin(const std::string &name, const std::string &texName){
