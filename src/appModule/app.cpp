@@ -208,7 +208,7 @@ void App::init()
 	AppSettings::Instance()->loadAppSettings( &conf );
 
 	internalFPS->setMaxFps(conf.getDouble ("video","maximum_fps"));
-	internalFPS->setVideoFps(conf.getDouble ("video","video_fps"));
+	internalFPS->setVideoFps(conf.getDouble("video","rec_video_fps"));
 
 	std::string appLocaleName = conf.getStr("localization", "app_locale"); //, "system");
 	spaceDate->setTimeFormat(spaceDate->stringToSTimeFormat(conf.getStr("localization:time_display_format")));
