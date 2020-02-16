@@ -55,7 +55,7 @@ SaveScreen::~SaveScreen()
 
 	//verification que tous les threads soient terminés
 	while (isAllFree() != true) {
-		SDL_Delay(50);
+		SDL_Delay(10);
 	}
 
 	for(unsigned int i = 0; i < nb_cores; i++) {
@@ -104,7 +104,7 @@ void SaveScreen::getFreeIndex()
 			}
 		}
 		mtx.unlock();
-		SDL_Delay(50);
+		SDL_Delay(10);
 		//~ printf("tout est occupé\n");
 	}
 	//~ printf("valeur de freeSlot %i\n",freeSlot);
