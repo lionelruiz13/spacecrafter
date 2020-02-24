@@ -125,6 +125,7 @@ void AppCommandInterface::initialiseFlagsName()
 	m_flags["nautical_alt"]= FLAG_NAMES::FN_NAUTICAL;
 	m_flags["nautical_ra"]= FLAG_NAMES::FN_NAUTICEQ;
 	m_flags["object_coordinates"]=FLAG_NAMES::FN_OBJCOORD;
+	m_flags["mouse_coordinates"]=FLAG_NAMES::FN_MOUSECOORD;
 	m_flags["angular_distance"]=FLAG_NAMES::FN_ANG_DIST;
 	m_flags["loxodromy"]=FLAG_NAMES::FN_LOXODROMY;
 	m_flags["orthodromy"]=FLAG_NAMES::FN_ORTHODROMY;
@@ -777,11 +778,18 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				
 			stcore->objCoordSetFlag(newval);
 			break;
+
+		case FLAG_NAMES::FN_MOUSECOORD :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->mouseCoordGetFlag();
+				
+			stcore->mouseCoordSetFlag(newval);
+			break;
 		
 		case FLAG_NAMES::FN_ANG_DIST :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !stcore->angDistGetFlag();
-			
+
 			stcore->angDistSetFlag(newval);
 			break;
 
@@ -1458,6 +1466,8 @@ int AppCommandInterface::commandColor()
 			stcore->nauticeqSetColor( Vcolor );
 		else if(argProperty == "object_coordinates")
 			stcore->objCoordSetColor( Vcolor );
+		else if(argProperty == "mouse_coordinates")
+			stcore->mouseCoordSetColor( Vcolor );
 		else if(argProperty == "angular_distance")
 			stcore->angDistSetColor( Vcolor );
 		else if(argProperty == "loxodromy")

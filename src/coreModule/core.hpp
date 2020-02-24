@@ -1287,6 +1287,19 @@ public:
 		return objCoord->getColor();
 	}
 
+	//! Set flag for displaying Mouse Position
+	void mouseCoordSetFlag(bool b) {
+		mouseCoord->setFlagShow(b);
+	}
+	//! Get flag for displaying Mouse Position
+	bool mouseCoordGetFlag(void) const {
+		return mouseCoord->getFlagShow();
+	}
+
+	Vec3f mouseCoordGetColor(void) const {
+		return mouseCoord->getColor();
+	}
+
 	//! Set flag for displaying Angular Distance
 	void angDistSetFlag(bool b) {
 		angDist->setFlagShow(b);
@@ -1337,6 +1350,9 @@ public:
 	}
 	void objCoordSetColor(const Vec3f& v) {
 		objCoord->setColor(v);
+	}
+	void mouseCoordSetColor(const Vec3f& v) {
+		mouseCoord->setColor(v);
 	}
 	void angDistSetColor(const Vec3f& v) {
 		angDist->setColor(v);
