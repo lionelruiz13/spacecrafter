@@ -1958,6 +1958,7 @@ private:
 	SkyPerson * nautical;				// Nautical azimuth drawing
 	SkyPerson * nauticeq;				// Nautical equatorial drawing
 	SkyPerson * objCoord;				// Mouse position drawing
+	SkyPerson * mouseCoord;				// Mouse position drawing
 	SkyPerson * angDist;				// Angular distance drawing
 	SkyPerson * loxodromy;				// Loxodromy drawing
 	SkyPerson * orthodromy;				// Orthodromy drawing
