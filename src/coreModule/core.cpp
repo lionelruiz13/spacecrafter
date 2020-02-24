@@ -1744,6 +1744,12 @@ std::string Core::getCursorPos(int x, int y)
 	return std::string("RA : ") + Utility::printAngleHMS(tempRA) + "\n" +"DE : " + Utility::printAngleDMS(tempDE);
 }
 
+Vec3f Core::getCursorPosEqu(int x, int y)
+{
+	Vec3d v;
+	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
+	return v;
+}
 void Core::turnRight(int s)
 {
 	if (s && FlagEnableMoveKeys) {

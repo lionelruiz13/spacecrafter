@@ -1850,6 +1850,7 @@ public:
 	}
 
 	void saveCurrentConfig(InitParser &conf);
+	Vec3f getCursorPosEqu(int x, int y);
 
 private:
 	struct ViewZoomMove {
