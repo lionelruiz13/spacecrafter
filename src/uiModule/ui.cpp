@@ -257,7 +257,18 @@ int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_V
 	{
 		// Deselect the selected object
 		if (button==s_gui::S_GUI_MOUSE_RIGHT && state==s_gui::S_GUI_RELEASED) {
-			this->executeCommand("select");
+			switch(key_Modifier) {
+				case NONE:
+			                this->executeCommand("select");
+					break;
+
+				case KWIN:
+					event = new CommandEvent("flag mouse_coordinates toggle");
+					EventManager::getInstance()->queue(event);
+					break;
+				default:
+					break;
+			}
 			return 1;
 		}
 		if (button==s_gui::S_GUI_MOUSE_MIDDLE && state==s_gui::S_GUI_RELEASED) {
