@@ -787,7 +787,7 @@ void Core::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 
 void Core::hipStarMgrPreDraw()
 {
-	hip_stars->preDraw(geodesic_grid, tone_converter, projection, timeMgr,observatory->getAltitude());
+	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow());
 }
 
 void Core::uboCamUpdate()
