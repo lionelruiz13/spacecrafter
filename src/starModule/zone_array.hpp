@@ -29,6 +29,7 @@
 
 #include "spacecrafter.hpp"
 #include "starModule/zone_data.hpp"
+#include "navModule/navigator.hpp"
 #include "starModule/hip_star.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/fmath.hpp"
@@ -76,7 +77,7 @@ public:
 	virtual void updateHipIndex(HipIndexStruct hip_index[]) const {};
 	virtual void searchAround(int index,const Vec3d &v,double cos_lim_fov, std::vector<ObjectBaseP > &result) = 0;
 
-	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, int max_mag_star_name,float names_brightness, std::vector<starDBtoDraw>&) const = 0;
+	virtual void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name,float names_brightness, std::vector<starDBtoDraw>&, bool atmosphere) const = 0;
 
 	bool isInitialized(void) const {
 		return (nr_of_zones>0);
@@ -117,7 +118,7 @@ private:
 	#endif
 	void scaleAxis(void);
 	void searchAround(int index,const Vec3d &v,double cos_lim_fov, std::vector<ObjectBaseP > &result);
-	void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, int max_mag_star_name,float names_brightness, std::vector<starDBtoDraw>&) const;
+	void draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name,float names_brightness, std::vector<starDBtoDraw>&, bool atmosphere) const;
 };
 
 template<class Star> void SpecialZoneArray<Star>::scaleAxis(void)

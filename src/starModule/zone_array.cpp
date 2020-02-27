@@ -283,7 +283,7 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 
 
 template<class Star>
-void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw) const
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, bool atmosphere) const
 {
 	SpecialZoneData<Star> *const z = getZones() + index;
 	Vec3d xy;
@@ -293,9 +293,26 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 	                               * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
 	                               / star_position_scale;
 	for (const Star *s=z->getStars(); s<end; s++) {
+		double alt, az;
+		Vec3d starJ2000 = s->getJ2000Pos(z,movement_factor);
+		Vec3d local_pos = nav->earthEquToLocal(nav->j2000ToEarthEqu(starJ2000));
+
+		// Correct star position accounting for atmospheric refraction
+		if (atmosphere) {
+		    Utility::rectToSphe(&az,&alt,local_pos);
+		    float press_temp_corr = (1013.f)/1010.f * 283.f/(273.f+10.f) / 60.f; //temperature and pressure correction based on Stellarium's code
+		    const float rad2deg = 180.0f/C_PI;
+		    const float deg2rad = C_PI/180.0f;
+		    float ha = rad2deg*alt;
+		    float r = press_temp_corr * (1.f / tan((ha+7.31f/(ha+4.4f))*deg2rad) + 0.0013515f); //Bennett formula
+		    ha += r;
+		    alt = deg2rad*ha;
+		    Utility::spheToRect(az, alt, local_pos);
+		}
+
 		if (is_inside
-		        ? prj->projectJ2000(s->getJ2000Pos(z,movement_factor),xy)
-		        : prj->projectJ2000Check(s->getJ2000Pos(z,movement_factor),xy)) {
+		        ? prj->projectLocal(local_pos,xy)
+		        : prj->projectLocalCheck(local_pos,xy)) {
 			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(s->getMag()), HipStarMgr::color_table[s->getBVIndex()])) {
 				break;
 			}

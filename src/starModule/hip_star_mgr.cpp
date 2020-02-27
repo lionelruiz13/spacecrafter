@@ -627,7 +627,7 @@ int MagConverter::computeRCMag(float mag, const ToneReproductor *eye, float rc_m
 }
 
 //! Draw all the stars
-double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, TimeMgr* timeMgr, float altitude)
+double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere)
 {
 	starNameToDraw.clear();
 	double twinkle_param=1.;
@@ -674,10 +674,10 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		}
 		int zone;
 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,true,rcmag_table,prj, max_mag_star_name,names_brightness, starNameToDraw);
+			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw, atmosphere);
 		}
 		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,false,rcmag_table,prj, max_mag_star_name,names_brightness, starNameToDraw);
+			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw, atmosphere);
 		}
 
 	}
