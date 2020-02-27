@@ -348,7 +348,7 @@ std::string Body::getShortInfoString(const Navigator * nav) const
 {
 	std::ostringstream oss;
 	oss << _(englishName);  // UI translation can differ from sky translation
-	oss << ", " << getTypePlanet(typePlanet) << ":";
+	oss << " : " << _(getTypePlanet(typePlanet)) << " ";
 	oss.setf(std::ios::fixed);
 	oss.precision(2);
 	oss << "  " << _("Magnitude: ") << computeMagnitude(nav->getObserverHelioPos());
@@ -405,8 +405,8 @@ std::string Body::getShortInfoNavString(const Navigator * nav, const TimeMgr * t
 	while (tempRA<0)    tempRA+=2*C_PI;
 
 	oss << _("SA ") << Utility::printAngleDMS(2*C_PI-tempRA)
-	    << " GHA " << Utility::printAngleDMS(GHA*C_PI/180.0)
-	    << " LHA " << Utility::printAngleDMS(HA*C_PI/180.0);
+	    << _(" GHA ") << Utility::printAngleDMS(GHA*C_PI/180.0)
+	    << _(" LHA ") << Utility::printAngleDMS(HA*C_PI/180.0);
 	// calculate alt az
 	Vec3d local_pos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA,&tempDE,local_pos);
@@ -414,7 +414,7 @@ std::string Body::getShortInfoNavString(const Navigator * nav, const TimeMgr * t
 	if (tempRA > C_PI*2) tempRA -= C_PI*2;
 	oss << "@" << _(" Az/Alt/coA: ") << Utility::printAngleDMS(tempRA) << "/" << Utility::printAngleDMS(tempDE) << "/" << Utility::printAngleDMS(((C_PI/180.f)*90.)-tempDE) << " LPA " << Utility::printAngleDMS(PA*C_PI/180.0);
 	if (englishName == "Sun") {
-		oss << " Day length: " ;
+		oss << _(" Day length: ") ;
 		if (daytime<-1) oss << "00h00m00s";
 		else if (daytime>1) oss << "24h00m00s";
 		else {
