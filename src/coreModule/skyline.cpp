@@ -961,7 +961,7 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
-		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
 		//~ glEnable(GL_TEXTURE_2D);
 
