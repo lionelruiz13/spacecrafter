@@ -154,6 +154,7 @@ void UI::saveCurrentConfig(InitParser &conf)
 /*******************************************************************************/
 int UI::handleMove(int x, int y)
 {
+	core->setMouse(x,y);
 	// Do not allow use of mouse while script is playing otherwise script can get confused
 	if (scriptInterface->isScriptPlaying() && ! FlagMouseUsableInScript) return 0;
 
@@ -256,7 +257,18 @@ int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_V
 	{
 		// Deselect the selected object
 		if (button==s_gui::S_GUI_MOUSE_RIGHT && state==s_gui::S_GUI_RELEASED) {
-			this->executeCommand("select");
+			switch(key_Modifier) {
+				case NONE:
+			                this->executeCommand("select");
+					break;
+
+				case KWIN:
+					event = new CommandEvent("flag mouse_coordinates toggle");
+					EventManager::getInstance()->queue(event);
+					break;
+				default:
+					break;
+			}
 			return 1;
 		}
 		if (button==s_gui::S_GUI_MOUSE_MIDDLE && state==s_gui::S_GUI_RELEASED) {

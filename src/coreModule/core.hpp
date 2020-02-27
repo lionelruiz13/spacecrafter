@@ -120,6 +120,9 @@ public:
 	//! Returns false and doesn't change if skyculture is invalid
 	bool setSkyCulture(const std::string& cultureName);
 
+	// Set mouse position
+        void setMouse(int x, int y);
+
 	//! Set the current sky culture from the passed directory
 	bool setSkyCultureDir(const std::string& culturedir);
 
@@ -1284,6 +1287,19 @@ public:
 		return objCoord->getColor();
 	}
 
+	//! Set flag for displaying Mouse Position
+	void mouseCoordSetFlag(bool b) {
+		mouseCoord->setFlagShow(b);
+	}
+	//! Get flag for displaying Mouse Position
+	bool mouseCoordGetFlag(void) const {
+		return mouseCoord->getFlagShow();
+	}
+
+	Vec3f mouseCoordGetColor(void) const {
+		return mouseCoord->getColor();
+	}
+
 	//! Set flag for displaying Angular Distance
 	void angDistSetFlag(bool b) {
 		angDist->setFlagShow(b);
@@ -1334,6 +1350,9 @@ public:
 	}
 	void objCoordSetColor(const Vec3f& v) {
 		objCoord->setColor(v);
+	}
+	void mouseCoordSetColor(const Vec3f& v) {
+		mouseCoord->setColor(v);
 	}
 	void angDistSetColor(const Vec3f& v) {
 		angDist->setColor(v);
@@ -1831,6 +1850,7 @@ public:
 	}
 
 	void saveCurrentConfig(InitParser &conf);
+	Vec3f getCursorPosEqu(int x, int y);
 
 private:
 	struct ViewZoomMove {
@@ -1917,6 +1937,8 @@ private:
 	Observer * observatory;			// Manage observer position
 	Projector * projection;				// Manage the projection mode and matrix
 	Object selected_object;			// The selected object
+	int mouseX;
+	int mouseY;
 	Object old_selected_object;		// The old selected object
 	class HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
@@ -1936,6 +1958,7 @@ private:
 	SkyPerson * nautical;				// Nautical azimuth drawing
 	SkyPerson * nauticeq;				// Nautical equatorial drawing
 	SkyPerson * objCoord;				// Mouse position drawing
+	SkyPerson * mouseCoord;				// Mouse position drawing
 	SkyPerson * angDist;				// Angular distance drawing
 	SkyPerson * loxodromy;				// Loxodromy drawing
 	SkyPerson * orthodromy;				// Orthodromy drawing

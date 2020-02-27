@@ -119,6 +119,7 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	nautical = new SkyPerson(SkyPerson::AL);
 	nauticeq = new SkyPerson(SkyPerson::EQ);
 	objCoord = new SkyPerson(SkyPerson::AL);
+	mouseCoord = new SkyPerson(SkyPerson::AL);
 	angDist = new SkyPerson(SkyPerson::AL);
 	loxodromy = new SkyPerson(SkyPerson::EQ);
 	orthodromy = new SkyPerson(SkyPerson::AL);
@@ -134,6 +135,8 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	oort =  new Oort();
 	dso3d = new Dso3d();
 	tully = new Tully();
+	mouseX = 0;
+	mouseY = 0;
 
 	bodytrace= new BodyTrace();
 	object_pointer_visibility = 1;
@@ -151,6 +154,11 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	executorInUniverse->defineDownMode(executorInGalaxy);
 
 	currentExecutor = executorInSolarSystem;
+}
+
+void Core::setMouse(int x, int y) {
+	mouseX = x;
+	mouseY = y;
 }
 
 void Core::tcpGetStatus(std::string value) const
@@ -252,6 +260,7 @@ Core::~Core()
 	delete nautical;
 	delete nauticeq;
 	delete objCoord;
+	delete mouseCoord;
 	delete angDist;
 	delete loxodromy;
 	delete orthodromy;
@@ -555,6 +564,7 @@ void Core::init(const InitParser& conf)
 	nautical->setFlagShow(conf.getBoolean("viewing:flag_nautical_alt"));
 	nauticeq->setFlagShow(conf.getBoolean("viewing:flag_nautical_ra"));
 	objCoord->setFlagShow(conf.getBoolean("viewing:flag_object_coordinates"));
+	mouseCoord->setFlagShow(conf.getBoolean("viewing:flag_mouse_coordinates"));
 	angDist->setFlagShow(conf.getBoolean("viewing:flag_angular_distance"));
 	loxodromy->setFlagShow(conf.getBoolean("viewing:flag_loxodromy"));
 	orthodromy->setFlagShow(conf.getBoolean("viewing:flag_orthodromy"));
@@ -672,6 +682,7 @@ void Core::updateInSolarSystem(int delta_time)
 	nautical->update(delta_time);
 	nauticeq->update(delta_time);
 	objCoord->update(delta_time);
+	mouseCoord->update(delta_time);
 	angDist->update(delta_time);
 	loxodromy->update(delta_time);
 	orthodromy->update(delta_time);
@@ -937,6 +948,7 @@ void Core::drawInSolarSystem(int delta_time)
 	nauticeq->nautical_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
 
 	objCoord->objCoord_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
+	mouseCoord->objCoord_draw(projection, navigation, getCursorPosEqu(mouseX, mouseY));
 	angDist->angDist_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 	loxodromy->loxodromy_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 	orthodromy->orthodromy_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
@@ -1576,6 +1588,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	nautical->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_alt_color")));
 	nauticeq->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_ra_color")));
 	objCoord->setColor(Utility::strToVec3f(conf.getStr(section,"object_coordinates_color")));
+	mouseCoord->setColor(Utility::strToVec3f(conf.getStr(section,"mouse_coordinates_color")));
 	angDist->setColor(Utility::strToVec3f(conf.getStr(section,"angular_distance_color")));
 	loxodromy->setColor(Utility::strToVec3f(conf.getStr(section, "loxodromy_color")));
 	orthodromy->setColor(Utility::strToVec3f(conf.getStr(section, "orthodromy_color")));
@@ -1671,6 +1684,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    ("color:nautical_alt", Utility::vec3fToStr(nauticalGetColor()));
 	conf.setStr    ("color:nautical_ra", Utility::vec3fToStr(nauticeqGetColor()));
 	conf.setStr    ("color:object_coordinates", Utility::vec3fToStr(objCoordGetColor()));
+	conf.setStr    ("color:mouse_coordinates", Utility::vec3fToStr(mouseCoordGetColor()));
 	conf.setStr    ("color:angular_distance", Utility::vec3fToStr(angDistGetColor()));
 	conf.setStr    ("color:loxodromy", Utility::vec3fToStr(loxodromyGetColor()));
 	conf.setStr    ("color:orthodromy", Utility::vec3fToStr(orthodromyGetColor()));
@@ -1737,6 +1751,12 @@ std::string Core::getCursorPos(int x, int y)
 	return std::string("RA : ") + Utility::printAngleHMS(tempRA) + "\n" +"DE : " + Utility::printAngleDMS(tempDE);
 }
 
+Vec3f Core::getCursorPosEqu(int x, int y)
+{
+	Vec3d v;
+	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
+	return v;
+}
 void Core::turnRight(int s)
 {
 	if (s && FlagEnableMoveKeys) {

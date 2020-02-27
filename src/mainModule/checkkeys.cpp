@@ -359,6 +359,7 @@ static void checkViewingSettings(InitParser &user_conf)
 	viewingSettings["flag_nautical_ra"] = "false";
 	viewingSettings["flag_nautical_alt"] = "false";
 	viewingSettings["flag_object_coordinates"] = "false";
+	viewingSettings["flag_mouse_coordinates"] = "false";
 	viewingSettings["flag_angular_distance"] = "false";
 	viewingSettings["flag_loxodromy"] = "false";
 	viewingSettings["flag_orthodromy"] = "false";
