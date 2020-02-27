@@ -541,7 +541,7 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 
 	Mat4f TRANSFO= Mat4f::translation( Vec3f(cx, cy, 0) );
 	//TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 1 * nav->getHeading()*C_PI/180. );
-	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 1 *C_PI/180. );
+	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 *C_PI/180. );
 	TRANSFO = TRANSFO*Mat4f::translation( Vec3f(image_xpos*vieww/2, image_ypos*viewh/2, 0) );
 	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), (-image_rotation-90) *C_PI/180. );
 
