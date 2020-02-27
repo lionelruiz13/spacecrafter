@@ -1287,6 +1287,16 @@ public:
 		return objCoord->getColor();
 	}
 
+	//! Set flag for activating atmospheric refraction correction
+	void atmosphericRefractionSetFlag(bool b) {
+		FlagAtmosphericRefraction = b;
+	}
+
+	//! Get flag for activating atmospheric refraction correction
+	bool atmosphericRefractionGetFlag(void) const {
+		return FlagAtmosphericRefraction;
+	}
+
 	//! Set flag for displaying Mouse Position
 	void mouseCoordSetFlag(bool b) {
 		mouseCoord->setFlagShow(b);
@@ -1984,6 +1994,7 @@ private:
 	void updateMove(int delta_time);
 	bool FlagEnableZoomKeys;
 	bool FlagEnableMoveKeys;
+	bool FlagAtmosphericRefraction = false;
 	bool flagNav = false; 				// define the NAV version edition
 	bool FlagAntialiasLines;            // whether to antialias all line drawing
 	bool FlagManualZoom;				// Define whether auto zoom can go further

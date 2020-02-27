@@ -140,6 +140,7 @@ void AppCommandInterface::initialiseFlagsName()
 	m_flags["landscape"]= FLAG_NAMES::FN_LANDSCAPE;
 	m_flags["stars"]= FLAG_NAMES::FN_STARS;
 	m_flags["star_names"]= FLAG_NAMES::FN_STAR_NAMES;
+	m_flags["atmospheric_refraction"]=FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION;
 
 	m_flags["planets"]= FLAG_NAMES::FN_PLANETS;
 	m_flags["planet_names"]= FLAG_NAMES::FN_PLANET_NAMES;
@@ -1038,6 +1039,12 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !stcore->hideSatellitesFlag();
 
 			stcore->setHideSatellites(newval);
+			break;
+		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->atmosphericRefractionGetFlag();
+
+			stcore->atmosphericRefractionSetFlag(newval);
 			break;
 		
 		default:

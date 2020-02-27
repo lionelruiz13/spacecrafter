@@ -366,6 +366,7 @@ static void checkViewingSettings(InitParser &user_conf)
 	viewingSettings["flag_oort"] = "true";
 	viewingSettings["flag_moon_scaled"] = "true";
 	viewingSettings["flag_sun_scaled"] = "false";
+	viewingSettings["flag_atmospheric_refraction"] = "false";
 	viewingSettings["moon_scale"] = "5";
 	viewingSettings["sun_scale"] = "5";
 	viewingSettings["light_pollution_limiting_magnitude"] = "6";
