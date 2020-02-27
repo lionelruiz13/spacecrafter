@@ -304,9 +304,11 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		    const float rad2deg = 180.0f/C_PI;
 		    const float deg2rad = C_PI/180.0f;
 		    float ha = rad2deg*alt;
-		    float r = press_temp_corr * (1.f / tan((ha+7.31f/(ha+4.4f))*deg2rad) + 0.0013515f); //Bennett formula
-		    ha += r;
-		    alt = deg2rad*ha;
+		    if (ha > 0.22879f) {
+			    float r = press_temp_corr * (1.f / tan((ha+7.31f/(ha+4.4f))*deg2rad) + 0.0013515f); //Bennett formula
+			    ha += r;
+			    alt = deg2rad*ha;
+		    }
 		    Utility::spheToRect(az, alt, local_pos);
 		}
 
