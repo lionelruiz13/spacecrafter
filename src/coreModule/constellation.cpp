@@ -113,18 +113,19 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 	if (!line_fader.getInterstate()) return;
 
 	Vec3d gettemp1,gettemp2,startemp1,startemp2;
+	double ra1,de1,ra2,de2,rat,det;
 
 	for (unsigned int i=0; i<nb_segments; ++i) {
 		// orthodromy on line
-		double ra1,de1,ra2,de2,rat,det;
 		Utility::rectToSphe(&ra1,&de1,asterism[2*i]->getObsJ2000Pos(0));
 		Utility::rectToSphe(&ra2,&de2,asterism[2*i+1]->getObsJ2000Pos(0));
-		if ((ra2-ra1)>C_PI) ra1+=2*C_PI; 
-		if ((ra1-ra2)>C_PI) ra2+=2*C_PI; 
-		Utility::spheToRect(ra1,de1, gettemp1);
-		int npoints=11;
-		float delta=(ra1-ra2)/(npoints-1);
-		for(int i=0; i<npoints ; i++) {
+		if ((abs(ra2-ra1)>0.000001) && (abs(de2-de1)>0.000001)) {
+		  if ((ra2-ra1)>C_PI) ra1+=2*C_PI; 
+		  if ((ra1-ra2)>C_PI) ra2+=2*C_PI; 
+		  Utility::spheToRect(ra1,de1, gettemp1);
+		  int npoints=11;
+		  float delta=(ra1-ra2)/(npoints-1);
+		  for(int i=0; i<npoints ; i++) {
 			rat=ra1-delta*i;
 			det=atan(((tan(de2)*sin(rat-ra1))/sin(ra2-ra1+0.00001))+(tan(de1)*sin(ra2-rat))/sin(ra2-ra1+0.00001));
 			Utility::spheToRect(rat,det, gettemp2);
@@ -145,7 +146,8 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 			}
 			gettemp1=gettemp2;
 			startemp1=startemp2;
-		}
+		  }
+	    }
 	}
 }
 
