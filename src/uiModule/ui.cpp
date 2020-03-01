@@ -263,8 +263,8 @@ int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_V
 					break;
 
 				case KWIN:
-					event = new CommandEvent("flag mouse_coordinates toggle");
-					EventManager::getInstance()->queue(event);
+					this->executeCommand("flag mouse_coordinates toggle");
+					//EventManager::getInstance()->queue(event);
 					break;
 				default:
 					break;
@@ -1181,10 +1181,34 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 
 
 		case SDL_SCANCODE_G :
-			if ( scriptInterface->isScriptPlaying() )
-				this->executeCommand("script action end");
-			else
-				this->executeCommand("timerate rate 0");
+			switch(key_Modifier) {
+				case NONE:
+					if ( scriptInterface->isScriptPlaying() ) {
+						this->executeCommand("script action end");
+						core->timeResetMultiplier();
+					} else
+						this->executeCommand("timerate rate 0");
+					break;
+				case SUPER:
+					event = new CommandEvent("flag galactic_center toggle");
+					EventManager::getInstance()->queue(event);
+					key_Modifier= NONE;
+					break;
+				case SHIFT:
+					event = new CommandEvent("flag galactic_line toggle");
+					EventManager::getInstance()->queue(event);
+					break;
+				case KWIN:
+					event = new CommandEvent("flag galactic_pole toggle");
+					EventManager::getInstance()->queue(event);
+					break;
+				case CTRL :
+					event = new CommandEvent("flag galactic_grid toggle");
+					EventManager::getInstance()->queue(event);
+					break;
+				default:
+					break;
+			}
 			break;
 
 		case SDL_SCANCODE_H :
