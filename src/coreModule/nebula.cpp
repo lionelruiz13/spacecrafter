@@ -313,7 +313,17 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	float ad_lum=eye->adaptLuminance(luminance);
 
 	float color = 1;
-	if (flagBright && sky_brightness < 0.011 && (getOnScreenSize(prj, nav) > prj->getViewportHeight()/64.)) {
+	float nebulaScreenSize = getOnScreenSize(prj,nav);
+	float minZoom = prj->getViewportHeight()/75.;
+	float maxZoom = prj->getViewportHeight()/60.;
+
+
+	if (flagBright && sky_brightness < 0.011 && ( nebulaScreenSize < maxZoom) && (nebulaScreenSize > minZoom)) {
+	       // fade the nebula while zooming
+	       color = (nebulaScreenSize - minZoom) / ( maxZoom - minZoom );
+	       color *= nebulaBrightness;
+	} else if (flagBright && sky_brightness < 0.011 && (getOnScreenSize(prj, nav) > maxZoom)) {
+
 		//cout << "Bright nebula drawn for" << getEnglishName() << endl;
 		color *= nebulaBrightness;
 	} else {
