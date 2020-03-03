@@ -49,6 +49,9 @@ public:
 	static void deleteShader();
 
 	void updateShader(double delta_time);
+	LinearFader getOrbitFader() {
+		return orbit_fader;
+	}
 
 	virtual void computeOrbit(double date);
 

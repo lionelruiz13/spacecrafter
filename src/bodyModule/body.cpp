@@ -500,7 +500,7 @@ void Body::compute_position(const double date)
 {
 	OsculatingFunctionType *oscFunc = orbit->getOsculatingFunction();
 
-	if(orbitPlot != nullptr && flags.flag_orbit==true) {
+	if(orbitPlot != nullptr && orbitPlot->getOrbitFader().getInterstate()) {
 		orbitPlot->init();
 		orbitPlot->computeOrbit(date);
 	}
