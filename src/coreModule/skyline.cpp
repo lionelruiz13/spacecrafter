@@ -136,7 +136,7 @@ SkyLine_Pole::SkyLine_Pole(SKY_LINE_POLE_TYPE _line_pole_type, double _radius = 
 			proj_func = &Projector::projectEarthEcliptic;
 			break;
 		case GALACTIC_POLE:
-			proj_func = &Projector::projectEarthGalactic;
+			proj_func = &Projector::projectJ2000Galactic;
 			break;
 		default :
 			proj_func = &Projector::projectEarthEqu;
@@ -670,7 +670,7 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 SkyLine_Galactic_Center::SkyLine_Galactic_Center( double _radius = 1., unsigned int _nb_segment = 48):
 	SkyLine(_radius, _nb_segment)
 {
-	proj_func = &Projector::projectEarthGalactic;
+	proj_func = &Projector::projectJ2000Galactic;
 	inclination=0*C_PI/180.;
 	derivation = 90*C_PI/180.;
 }
@@ -1227,7 +1227,7 @@ SkyLine_Equator::SkyLine_Equator(SKY_LINE_EQUATOR_LINE _line_equator_type, doubl
 			proj_func = &Projector::projectEarthEqu;
 			break;
 		case GALACTIC_EQUATOR :
-			proj_func = &Projector::projectEarthGalactic;
+			proj_func = &Projector::projectJ2000Galactic;
 			break;
 		default :
 			proj_func = &Projector::projectEarthEqu;

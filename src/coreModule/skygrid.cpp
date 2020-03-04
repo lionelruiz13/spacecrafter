@@ -207,7 +207,7 @@ void SkyGrid::draw(const Projector* prj) const
 			shaderSkyGrid->setUniform("Mat", prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(C_PI/180)) );
 			break;
 		case GALACTIC :
-			shaderSkyGrid->setUniform("Mat", prj->getMatEarthEquToEye()* Mat4f::zrotation(14.8595*(C_PI/180))*Mat4f::yrotation(-61.8717*(C_PI/180))*Mat4f::zrotation(55.5*(C_PI/180)) );
+			shaderSkyGrid->setUniform("Mat", prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(C_PI/180))*Mat4f::yrotation(-61.8717*(C_PI/180))*Mat4f::zrotation(55.5*(C_PI/180)) );
 			break;
 		case ALTAZIMUTAL :
 			shaderSkyGrid->setUniform("Mat", prj->getMatLocalToEye() );

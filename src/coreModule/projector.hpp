@@ -136,8 +136,8 @@ public:
 	inline bool projectEarthEcliptic(const Vec3d& v, Vec3d& win) const {
 		return projectCustom(v, win, mat_earth_equ_to_eye*Mat4d::xrotation(23.4392803055555555556*(C_PI/180)));
 	}
-	inline bool projectEarthGalactic(const Vec3d& v, Vec3d& win) const {
-		return projectCustom(v, win, mat_earth_equ_to_eye*Mat4d::zrotation(14.8595*(C_PI/180))*Mat4d::yrotation(-61.8717*(C_PI/180))*Mat4d::zrotation(55.5*(C_PI/180)));
+	inline bool projectJ2000Galactic(const Vec3d& v, Vec3d& win) const {
+		return projectCustom(v, win, mat_j2000_to_eye*Mat4d::zrotation(14.8595*(C_PI/180))*Mat4d::yrotation(-61.8717*(C_PI/180))*Mat4d::zrotation(55.5*(C_PI/180)));
 	}
 
 	inline bool projectEarthEquFixed(const Vec3d& v, Vec3d& win) const {

@@ -162,7 +162,7 @@ public:
 	             double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 50)
 		:SkyGrid(_nb_meridian, _nb_parallel, _radius, _nb_alt_segment, _nb_azi_segment) {
 		gtype = GALACTIC;
-		proj_func = &Projector::projectEarthGalactic;
+		proj_func = &Projector::projectJ2000Galactic;
 	}
 };
 #endif // __SKYGRID_H__
