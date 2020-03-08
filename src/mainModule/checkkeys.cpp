@@ -424,7 +424,7 @@ static void checkAstroSettings(InitParser &user_conf)
 	astroSettings["flag_milky_way"]="true";
 	astroSettings["flag_zodiacal_light"]="false";
 	astroSettings["flag_bright_nebulae"]="true";
-	astroSettings["milky_way_fader_duration"]="2000";
+	astroSettings["milky_way_fader_duration"]="2";
 	astroSettings["milky_way_intensity"]="0.7";
 	astroSettings["zodiacal_intensity"]="0.7";
 	astroSettings["milky_way_texture"]="milkyway.png";
