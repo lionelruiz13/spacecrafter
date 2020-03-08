@@ -437,7 +437,7 @@ void Core::init(const InitParser& conf)
 		milky_way->defineInitialMilkywayState(settings->getTextureDir() , conf.getStr("astro:milky_way_texture"), 
 				conf.getStr("astro:milky_way_iris_texture"), conf.getDouble("astro","milky_way_intensity"));
 		milky_way->defineZodiacalState(settings->getTextureDir() + conf.getStr("astro:zodiacal_light_texture"), conf.getDouble("astro","zodiacal_intensity"));
-		milky_way->setFaderDuration(conf.getInt("astro:milky_way_fader_duration"));
+		milky_way->setFaderDuration(conf.getInt("astro:milky_way_fader_duration")*1000);
 
 		atmosphere->initGridViewport(projection);
 		atmosphere->initGridPos();

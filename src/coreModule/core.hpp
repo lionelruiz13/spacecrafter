@@ -1053,7 +1053,7 @@ public:
 	}
 
 	void milkyWaySetDuration(float f) {
-		milky_way->setFaderDuration(f);
+		milky_way->setFaderDuration(f*1000);
 	}
 
 	void milkyWayRestoreIntensity() {
