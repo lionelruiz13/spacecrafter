@@ -282,6 +282,7 @@ void SkyPerson::objCoord_draw(const Projector *prj,const Navigator *nav, Vec3d e
 	if (!fader.getInterstate()) return;
 	double tempDE, tempRA;
 	float alt, az, aza, alta, ra, dec, mn;
+	double fov = prj->getFov()/360.f;
 	Utility::rectToSphe(&tempRA,&tempDE,equPos);
 	// calculate ra dec
 	ra=tempRA*rad2deg;
@@ -295,18 +296,18 @@ void SkyPerson::objCoord_draw(const Projector *prj,const Navigator *nav, Vec3d e
 	if (tempRA > C_PI*2) tempRA -= C_PI*2;
 	az = (tempRA)*rad2deg;
 	alt = tempDE*rad2deg;
-	aza = (C_PI*0.99-tempRA)*rad2deg;
+	aza = (C_PI-tempRA-(0.1*fov))*rad2deg;
 	// ALT
-	alta = (tempDE-0.05)*rad2deg;
+	alta = (tempDE-(0.05*fov*2))*rad2deg;
 	Utility::spheToRect(aza*deg2rad, alta*deg2rad, pt3);
-	Utility::spheToRect(aza*deg2rad+0.001, alta*deg2rad, pt4);
+	Utility::spheToRect(aza*deg2rad+(0.001*fov), alta*deg2rad, pt4);
 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) { 
 		double angle;
 		const double dx = pt1[0]-pt2[0];
 		const double dy = pt1[1]-pt2[1];
 		const double dq = dx*dx+dy*dy;
 		const double d = sqrt(dq);
-		angle = acos((pt1[1]-pt2[1])/(d+0.000001));
+		angle = acos((pt1[1]-pt2[1])/(d+0.000001*fov));
 		if ( pt1[0] < pt2[0] ) angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
@@ -326,14 +327,14 @@ void SkyPerson::objCoord_draw(const Projector *prj,const Navigator *nav, Vec3d e
 	// AZ
 	alta = tempDE*rad2deg;
 	Utility::spheToRect(aza*deg2rad, alta*deg2rad, pt3);
-	Utility::spheToRect(aza*deg2rad+0.001, alta*deg2rad, pt4);
+	Utility::spheToRect(aza*deg2rad+(0.001*fov), alta*deg2rad, pt4);
 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) { 
 		double angle;
 		const double dx = pt1[0]-pt2[0];
 		const double dy = pt1[1]-pt2[1];
 		const double dq = dx*dx+dy*dy;
 		const double d = sqrt(dq);
-		angle = acos((pt1[1]-pt2[1])/(d+0.000001));
+		angle = acos((pt1[1]-pt2[1])/(d+0.000001*fov));
 		if ( pt1[0] < pt2[0] ) angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
@@ -352,16 +353,16 @@ void SkyPerson::objCoord_draw(const Projector *prj,const Navigator *nav, Vec3d e
 		oss.clear();	
 	}
 	// RA
-	alta = (tempDE+0.1)*rad2deg;
+	alta = (tempDE+(0.1*fov*2))*rad2deg;
 	Utility::spheToRect(aza*deg2rad, alta*deg2rad, pt3);
-	Utility::spheToRect(aza*deg2rad+0.001, alta*deg2rad, pt4);
+	Utility::spheToRect(aza*deg2rad+(0.001*fov), alta*deg2rad, pt4);
 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) { 
 		double angle;
 		const double dx = pt1[0]-pt2[0];
 		const double dy = pt1[1]-pt2[1];
 		const double dq = dx*dx+dy*dy;
 		const double d = sqrt(dq);
-		angle = acos((pt1[1]-pt2[1])/(d+0.000001));
+		angle = acos((pt1[1]-pt2[1])/(d+0.000001*fov));
 		if ( pt1[0] < pt2[0] ) angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
@@ -378,9 +379,9 @@ void SkyPerson::objCoord_draw(const Projector *prj,const Navigator *nav, Vec3d e
 		oss.clear();	
 	}
 	// DEC
-	alta = (tempDE+0.05)*rad2deg;
+	alta = (tempDE+(0.05 * fov * 2))*rad2deg;
 	Utility::spheToRect(aza*deg2rad, alta*deg2rad, pt3);
-	Utility::spheToRect(aza*deg2rad+0.001, alta*deg2rad, pt4);
+	Utility::spheToRect(aza*deg2rad+(0.001*fov), alta*deg2rad, pt4);
 
 	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) { 
 		double angle;
@@ -388,7 +389,7 @@ void SkyPerson::objCoord_draw(const Projector *prj,const Navigator *nav, Vec3d e
 		const double dy = pt1[1]-pt2[1];
 		const double dq = dx*dx+dy*dy;
 		const double d = sqrt(dq);
-		angle = acos((pt1[1]-pt2[1])/(d+0.000001));
+		angle = acos((pt1[1]-pt2[1])/(d+0.000001*fov));
 		if ( pt1[0] < pt2[0] ) angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
@@ -405,7 +406,6 @@ void SkyPerson::objCoord_draw(const Projector *prj,const Navigator *nav, Vec3d e
 		font->print(2,-2,oss.str(), color, MVP*TRANSFO ,1,1);
 		oss.clear();	
 	}
-
 
 }
 
