@@ -460,7 +460,7 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 		//Vec3f punts[3*nb_segment+3];
 		inclination *= sign;
 
-		for (unsigned int i=0; i<nb_segment; ++i) {
+		for (unsigned int i=0; i<nb_segment; i += 2) {
 			for (unsigned int j=0; j<nb_segment+1; ++j) {
 				Utility::spheToRect((float)j/(nb_segment)*2.f*C_PI, inclination, points[j+nb_segment+1]);
 				points[j+nb_segment+1] *= radius;
