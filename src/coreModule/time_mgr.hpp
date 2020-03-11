@@ -47,6 +47,9 @@ public:
 	double getJDay(void) const {
 		return JDay;
 	}
+
+	void changeTimeSpeed(double _time_speed, double duration);
+
 	void setTimeSpeed(double ts) {
 		//std::cout << "TimeSpeed is "<< time_speed << " & it became " << ts << std::endl;
 		time_speed=ts;
@@ -99,8 +102,11 @@ private:
 	double time_speed;				// Positive : forward, Negative : Backward, 1 = 1sec/sec
 	double JDay;        			// Curent time in Julian day
 	bool FlagTimePause;				// say if software time is in pause 
+	bool FlagChangeTimeSpeed;
+	double start_time_speed, end_time_speed;
 	double temp_time_velocity;		//! Used to store time speed while in pause
 	int time_multiplier;			//! used for adjusting delta_time for script speeds
+	float move_to_coef, move_to_mult;
 };
 
 #endif

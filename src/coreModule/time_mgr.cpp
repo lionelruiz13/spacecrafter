@@ -21,6 +21,19 @@ TimeMgr::~TimeMgr()
 // Increment time
 void TimeMgr::update(int delta_time)
 {
+
+	if (FlagChangeTimeSpeed) {
+		move_to_mult += move_to_coef*delta_time;
+
+		if ( move_to_mult >= 1) {
+			move_to_mult = 1;
+			FlagChangeTimeSpeed = 0;
+			saveTimeSpeed();
+			setTimePause(false);
+		}
+		time_speed = start_time_speed - move_to_mult*(start_time_speed-end_time_speed);
+	}
+
 	JDay+=time_speed*(double)delta_time/1000.;
 
 	// Fix time limits to avoid ephemeris breakdowns
@@ -28,6 +41,18 @@ void TimeMgr::update(int delta_time)
 	if(JDay < SpaceDate::getMinSimulationJD()) JDay = SpaceDate::getMinSimulationJD();
 }
 
+
+// move gradually to a new time speed
+void TimeMgr::changeTimeSpeed(double _time_speed, double duration)
+{
+	FlagChangeTimeSpeed = 1;
+
+	start_time_speed = time_speed;
+	end_time_speed = _time_speed;
+
+	move_to_coef = 1.0f/(duration*1000);
+	move_to_mult = 0;
+}
 
 double TimeMgr::dateSunRise (double jd, double longitude, double latitude)
 {
