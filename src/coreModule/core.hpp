@@ -1798,6 +1798,11 @@ public:
 	void timeSetSpeed(double ts) {
 		timeMgr->setTimeSpeed(ts);
 	}
+
+	void timeChangeSpeed(double ts, double duration) {
+		timeMgr->changeTimeSpeed(ts, duration);
+	}
+
 	//! Get time speed in JDay/sec
 	double timeGetSpeed(void) const {
 		return timeMgr->getTimeSpeed();

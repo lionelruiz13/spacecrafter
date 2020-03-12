@@ -2584,12 +2584,18 @@ int AppCommandInterface::commandTimerate()
 	std::string argRate = args["rate"];
 	std::string argAction = args["action"];
 	std::string argStep = args["step"];
+	std::string argDuration = args["duration"];
 
 	// NOTE: accuracy issue related to frame rate
 	if (!argRate.empty()) {
-		stcore->timeSetSpeed(evalDouble(argRate)*JD_SECOND);
-		stcore->timeSaveSpeed();
-		stcore->timeSetFlagPause(false);
+		if (argDuration.empty()) {
+			stcore->timeSetSpeed(evalDouble(argRate)*JD_SECOND);
+			stcore->timeSaveSpeed();
+			stcore->timeSetFlagPause(false);
+		} else {
+			std::cout << "Changing timerate to " << argRate << " duration: " << argDuration << std::endl;
+			stcore->timeChangeSpeed(evalDouble(argRate)*JD_SECOND, stod(argDuration));
+		}
 	} else if (argAction=="pause") {
 		// TODO why is this in stelapp?  should be in stelcore - Rob
 		stcore->timeSetFlagPause(!stcore->timeGetFlagPause());
