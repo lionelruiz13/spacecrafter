@@ -288,7 +288,7 @@ void SkyLineMgr::Create(std::string type_obj)
 
 		case LINE_CIRCUMPOLAR :
 			cLog::get()->write("SkyLineMgr creating LINE_CIRCUMPOLAR" , LOG_TYPE::L_INFO);
-			tmp=new SkyLine_CircumPolar(1.0,72);
+			tmp=new SkyLine_CircumPolar(1.0,144);
 			m_map[type_obj]= tmp;
 			return;
 			break;

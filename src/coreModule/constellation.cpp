@@ -328,7 +328,7 @@ void Constellation::drawBoundary(const Projector* prj, std::vector<float> &vBoun
 		if (singleSelected) points = isolatedBoundarySegments[i];
 		else points = sharedBoundarySegments[i];
 
-		for (j=0; j<points->size()-1; j++) {
+		for (j=0; j<points->size()-1; j += 2) {
 			if (prj->projectJ2000LineCheck(points->at(j),pt1,points->at(j+1),pt2)) {
 
 				vBoundariesPos.push_back(pt1[0]);
