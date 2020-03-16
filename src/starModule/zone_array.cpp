@@ -300,7 +300,7 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		// Correct star position accounting for atmospheric refraction
 		if (atmosphere) {
 		    Utility::rectToSphe(&az,&alt,local_pos);
-		    float press_temp_corr = (1013.f)/1010.f * 283.f/(273.f+10.f) / 60.f; //temperature and pressure correction based on Stellarium's code
+		    //float press_temp_corr = (1013.f)/1010.f * 283.f/(273.f+10.f) / 60.f; //temperature and pressure correction based on Stellarium's code
 		    const float rad2deg = 180.0f/C_PI;
 		    const float deg2rad = C_PI/180.0f;
 		    float ha = rad2deg*alt;
