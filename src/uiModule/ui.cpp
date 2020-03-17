@@ -1515,6 +1515,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
+					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION , FLAG_VALUES::FV_TOGGLE,"flag atmospheric_refraction toggle");
+					EventManager::getInstance()->queue(event);					
 					break;
 				case KWIN:
 					if (scriptInterface->isScriptRecording()) {
