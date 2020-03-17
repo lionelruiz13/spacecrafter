@@ -306,9 +306,8 @@ void Core::init(const InitParser& conf)
 {
 	flagNav= conf.getBoolean("main", "flag_navigation");
 	setFlagNav(flagNav);
-	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");
-	setFlagNav(FlagAtmosphericRefraction);
 	inimBackup();
+	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");
 	FontFileNameGeneral = settings->getUserFontDir()+conf.getStr("font", "font_general_name");
 	FontFileNamePlanet = settings->getUserFontDir()+conf.getStr("font", "font_planet_name");
 	FontFileNameConstellation = settings->getUserFontDir()+conf.getStr("font", "font_constellation_name");
