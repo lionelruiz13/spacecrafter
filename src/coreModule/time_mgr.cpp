@@ -8,6 +8,11 @@
 TimeMgr::TimeMgr()
 {
 	JDay=0.;
+	FlagChangeTimeSpeed = 0;
+	move_to_coef = 0;
+	move_to_mult = 0;
+	start_time_speed = 0;
+	end_time_speed = 0;
 	time_speed= JD_SECOND;
 	time_multiplier = 1.0;
 	temp_time_velocity = time_speed;
