@@ -8,6 +8,7 @@
 
 #include <fstream>
 #include <SDL2/SDL.h>
+#include <chrono>
 
 #include "spacecrafter.hpp"
 #include "mediaModule/video_player.hpp"
@@ -165,8 +166,11 @@ int VideoPlayer::play(const std::string& _fileName)
 	pFrame = av_frame_alloc();
 	pFrameRGB=av_frame_alloc();
 	unsigned char *out_buffer;
+	std::cout << "video de taille: " << pCodecCtx->width << " " << pCodecCtx->height << std::endl;
+	std::cout << "taille d'une frame: "<< av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1) << std::endl;
 	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1));
 	av_image_fill_arrays(pFrame->data, pFrame->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+	//av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize,out_buffer, AV_PIX_FMT_YUV420P ,pCodecCtx->width, pCodecCtx->height,1);
 	av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
 
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
@@ -244,11 +248,17 @@ void VideoPlayer::getNextVideoFrame()
 	this->getNextFrame();
 	nbFrames ++;
 	elapsedTime += frameRateDuration;
-
 	if (!isSeeking) {
+		auto start = std::chrono::steady_clock::now();
 		sws_scale(img_convert_ctx, pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
+		auto end = std::chrono::steady_clock::now();
+		std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 		glBindTexture(GL_TEXTURE_2D, texture);
+		start = std::chrono::steady_clock::now();
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameRGB->data[0]);
+
+		end = std::chrono::steady_clock::now();
+		std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 	}
 #endif
 }
@@ -280,7 +290,7 @@ void VideoPlayer::initTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, video_w, video_h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, video_w, video_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 }
 
 
