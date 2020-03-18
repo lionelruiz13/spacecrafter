@@ -62,7 +62,13 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 	//~ printf("media->playerPlay sans son\n");
 	//~ printf("Fichier video : %s\n", filename.c_str());
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
-	int tmp = player->play(filename);
+	int tmp;
+	
+	if (type == "IMAGE")
+		tmp = player->play(filename, true);
+	else
+		tmp = player->play(filename, false);
+	
 	if (tmp !=0) {
 		cLog::get()->write("Media::playerPlay error playing videofilename "+filename, LOG_TYPE::L_ERROR);
 		return tmp;

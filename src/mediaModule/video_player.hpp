@@ -46,7 +46,7 @@ public:
 	void update();
 
 	//! initialise la ffmpeg avec le nom du fichier passé en argument
-	int play(const std::string& fileName, bool convertToRBG = true);
+	int play(const std::string& fileName, bool convertToRBG);
 
 	//! termine la lecture d'une vidéo en cours
 	void playStop();
