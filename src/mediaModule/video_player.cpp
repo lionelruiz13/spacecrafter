@@ -87,7 +87,7 @@ void VideoPlayer::getInfo()
 #endif
 }
 
-int VideoPlayer::play(const std::string& _fileName)
+int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 {
 #ifndef WIN32
 	if (isAlive)
@@ -154,24 +154,41 @@ int VideoPlayer::play(const std::string& _fileName)
 	nbTotalFrame = static_cast<int>(((pFormatCtx->duration)/1000)/frameRateDuration);
 	// std::cout << "nbTotalFrame " << nbTotalFrame << std::endl;
 
+	isDisplayRVB = convertToRBG;
 	initTexture();
 
 	img_convert_ctx = NULL;
-	img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
-	if(img_convert_ctx==NULL) {
-		cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
-		return -1;
-	}
-
-	pFrameYUV = av_frame_alloc();
-	pFrameRGB=av_frame_alloc();
 	unsigned char *out_buffer;
-	std::cout << "video de taille: " << pCodecCtx->width << " " << pCodecCtx->height << std::endl;
-	std::cout << "taille d'une frame: "<< av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1) << std::endl;
-	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1));
-	av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
-	//av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize,out_buffer, AV_PIX_FMT_YUV420P ,pCodecCtx->width, pCodecCtx->height,1);
-	av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+
+	if (isDisplayRVB) {
+		img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+		if(img_convert_ctx==NULL) {
+			cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
+			return -1;
+		}
+		pFrameYUV = av_frame_alloc();
+		pFrameRGB=av_frame_alloc();
+		std::cout << "video de taille: " << pCodecCtx->width << " " << pCodecCtx->height << std::endl;
+		std::cout << "taille d'une frame: "<< av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1) << std::endl;
+		out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1));
+		av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+		av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+	} else {
+		img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+		if(img_convert_ctx==NULL) {
+			cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
+			return -1;
+		}
+		
+		if(pCodecCtx->pix_fmt != AV_PIX_FMT_YUV420P) {
+			cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
+			return -1;
+		}
+
+		pFrameYUV = av_frame_alloc();
+		out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
+		av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
+	}
 
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
 
@@ -249,16 +266,23 @@ void VideoPlayer::getNextVideoFrame()
 	nbFrames ++;
 	elapsedTime += frameRateDuration;
 	if (!isSeeking) {
-		auto start = std::chrono::steady_clock::now();
-		sws_scale(img_convert_ctx, pFrameYUV->data, pFrameYUV->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
-		auto end = std::chrono::steady_clock::now();
-		std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
-		glBindTexture(GL_TEXTURE_2D, texture);
-		start = std::chrono::steady_clock::now();
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameRGB->data[0]);
-
-		end = std::chrono::steady_clock::now();
-		std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+		if (isDisplayRVB) {
+			auto start = std::chrono::steady_clock::now();
+			sws_scale(img_convert_ctx, pFrameYUV->data, pFrameYUV->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
+			auto end = std::chrono::steady_clock::now();
+			std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			glBindTexture(GL_TEXTURE_2D, texture);
+			start = std::chrono::steady_clock::now();
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameRGB->data[0]);
+			end = std::chrono::steady_clock::now();
+			std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+		} else {
+			glBindTexture(GL_TEXTURE_2D, texture);
+			auto start = std::chrono::steady_clock::now();
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameYUV->data[0]);
+			auto end = std::chrono::steady_clock::now();
+			std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+		}
 	}
 #endif
 }
@@ -290,7 +314,10 @@ void VideoPlayer::initTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, video_w, video_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	if (isDisplayRVB)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, video_w, video_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	else
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, video_w, video_h, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
 }
 
 

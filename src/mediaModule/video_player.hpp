@@ -46,7 +46,7 @@ public:
 	void update();
 
 	//! initialise la ffmpeg avec le nom du fichier passé en argument
-	int play(const std::string& fileName);
+	int play(const std::string& fileName, bool convertToRBG = true);
 
 	//! termine la lecture d'une vidéo en cours
 	void playStop();
@@ -95,6 +95,7 @@ private:
 	GLuint texture;
 
 	bool isAlive;			//!< indique si une vidéo est en cours de lecture
+	bool isDisplayRVB;		//!< indique si le rendu doit être converti en RVG ou pas
 	std::string fileName; 	//!< nom de la vidéo à lire
 	int video_w;			
 	int video_h;
