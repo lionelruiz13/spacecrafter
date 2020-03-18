@@ -307,6 +307,7 @@ void Core::init(const InitParser& conf)
 	flagNav= conf.getBoolean("main", "flag_navigation");
 	setFlagNav(flagNav);
 	inimBackup();
+	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");
 	FontFileNameGeneral = settings->getUserFontDir()+conf.getStr("font", "font_general_name");
 	FontFileNamePlanet = settings->getUserFontDir()+conf.getStr("font", "font_planet_name");
 	FontFileNameConstellation = settings->getUserFontDir()+conf.getStr("font", "font_constellation_name");
@@ -787,7 +788,7 @@ void Core::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 
 void Core::hipStarMgrPreDraw()
 {
-	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow());
+	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow() && atmosphericRefractionGetFlag());
 }
 
 void Core::uboCamUpdate()

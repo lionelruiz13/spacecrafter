@@ -140,6 +140,7 @@ void AppCommandInterface::initialiseFlagsName()
 	m_flags["landscape"]= FLAG_NAMES::FN_LANDSCAPE;
 	m_flags["stars"]= FLAG_NAMES::FN_STARS;
 	m_flags["star_names"]= FLAG_NAMES::FN_STAR_NAMES;
+	m_flags["atmospheric_refraction"]=FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION;
 
 	m_flags["planets"]= FLAG_NAMES::FN_PLANETS;
 	m_flags["planet_names"]= FLAG_NAMES::FN_PLANET_NAMES;
@@ -1039,6 +1040,12 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			stcore->setHideSatellites(newval);
 			break;
+		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->atmosphericRefractionGetFlag();
+
+			stcore->atmosphericRefractionSetFlag(newval);
+			break;
 		
 		default:
 			cLog::get()->write("no effect with case " + m_flag_it->first,LOG_TYPE::L_DEBUG);
@@ -1214,12 +1221,14 @@ int AppCommandInterface::commandDso()
 
 		if (argAction == "drop" && !argName.empty() ) {
 			// Delete an existing nebulae, but only if was added by a script!
+			stcore->unSelect();
 			debug_message = stcore->removeNebula(argName);
 			return executeCommandStatus();
 		}
 
 		if (argAction == "clear") {
 			// drop all nebulae that are not in the original config file
+			stcore->unSelect();
 			debug_message = stcore->removeSupplementalNebulae();
 			return executeCommandStatus();
 		}
