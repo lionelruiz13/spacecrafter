@@ -124,7 +124,7 @@ private:
 	int				videoindex;
 	AVCodecContext	*pCodecCtx;
 	AVCodec			*pCodec;
-	AVFrame	*pFrame,*pFrameRGB;
+	AVFrame	*pFrameYUV,*pFrameRGB;
 	AVStream *video_st;
 	AVPacket *packet;
 	struct SwsContext *img_convert_ctx;
