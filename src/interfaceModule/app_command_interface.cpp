@@ -2870,8 +2870,10 @@ int AppCommandInterface::commandMedia()
 								cLog::get()->write("command 'media':: succesfull locale audio "+audioName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 								media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition );
 							}
-						else
+						else {
 							cLog::get()->write("command 'media':: locale audio not found "+audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+							media->playerPlay(type, fileVideo.toString(), argName, argPosition );
+						}
 						}
 				} else {
 					// si l'audio existe sous forme -fr.ogg alors on le modifie en appliquant la langue de la sky_culture
