@@ -18,7 +18,6 @@
 
 ViewPort::ViewPort()
 {
-	texture = 0;
 	isAlive = false;
 	transparency = false;
 	fader = false;
@@ -80,8 +79,10 @@ void ViewPort::draw()
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	shaderViewPort->use();
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	for(int i=0; i<3; i++) {
+		glActiveTexture(GL_TEXTURE0+i);
+		glBindTexture(GL_TEXTURE_2D, videoTex[i]);
+	}
 	shaderViewPort->setUniform("transparency",transparency);
 	shaderViewPort->setUniform("noColor",noColor);
 	shaderViewPort->setUniform("fader", fader.getInterstate() );
