@@ -21,7 +21,7 @@
 #include "tools/fader.hpp"
 #include "yuv_wrapper.hpp"
 
-#define VR360_FADER_DURATION 5000
+#define VR360_FADER_DURATION 500
 
 class Projector;
 class Navigator;
@@ -35,7 +35,9 @@ public:
 	VR360& operator = (VR360 const &) = delete;
 
 	void setTexture(YUV_WRAPPER _tex) {
-		videoTex = _tex.TexY;
+		videoTex[0] = _tex.TexY;
+		videoTex[1] = _tex.TexU;
+		videoTex[2] = _tex.TexV;
 	}
 
 	void modeCube() {
@@ -66,7 +68,7 @@ private:
 
 	OjmL* sphere = nullptr;
 	OjmL* cube = nullptr;
-	GLuint videoTex=0;
+	GLuint videoTex[3];
 	bool isAlive = false;
 	bool canDraw = false;
 

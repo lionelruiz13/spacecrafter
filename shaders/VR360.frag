@@ -4,7 +4,9 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=0) uniform sampler2D texunit0;
+layout (binding=0) uniform sampler2D s_texture_y;
+layout (binding=1) uniform sampler2D s_texture_u;
+layout (binding=2) uniform sampler2D s_texture_v;
 uniform float intensity;
 
 vec3 tex_color;
@@ -15,10 +17,18 @@ out vec4 FragColor;
  
 void main(void)
 {
-	vec3 tex_color = intensity * vec3(texture(texunit0,TexCoord)).rgb;
+    highp float y = texture2D(s_texture_y, TexCoord).r;  
+    highp float u = texture2D(s_texture_u, TexCoord).r - 0.5;  
+    highp float v = texture2D(s_texture_v, TexCoord).r - 0.5;  
+    highp float r = y +             1.402 * v;  
+    highp float g = y - 0.344 * u - 0.714 * v;  
+    highp float b = y + 1.772 * u;  
+    FragColor = vec4(r,g,b,1.0);  
+
+	//vec3 tex_color = intensity * (vec3(texture(texunit0,TexCoord)).rgb;
 	//yuv_color = intensity * vec3(texture(texunit0,TexCoord)).rgb;
 	//tex_color.r = yuv_color.r+1.13983*yuv_color.b;
 	//tex_color.g = yuv_color.r-0.39465*yuv_color.g-0.58060*yuv_color.b;
 	//tex_color.b = yuv_color.r+2.03211*yuv_color.g;
-	FragColor = vec4 (tex_color,1.0);
+	//FragColor = vec4 (tex_color,1.0);
 }
