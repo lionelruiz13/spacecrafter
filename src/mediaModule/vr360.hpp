@@ -21,7 +21,7 @@
 #include "tools/fader.hpp"
 #include "yuv_wrapper.hpp"
 
-#define VR360_FADER_DURATION 500
+#define VR360_FADER_DURATION 3000
 
 class Projector;
 class Navigator;
