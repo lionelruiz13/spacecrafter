@@ -19,6 +19,7 @@
 
 #include "tools/shader.hpp"
 #include "tools/fader.hpp"
+#include "yuv_wrapper.hpp"
 
 #define VR360_FADER_DURATION 5000
 
@@ -33,8 +34,8 @@ public:
 	VR360(VR360 const &) = delete;
 	VR360& operator = (VR360 const &) = delete;
 
-	void setTexture(GLuint _tex) {
-		videoTex = _tex;
+	void setTexture(YUV_WRAPPER _tex) {
+		videoTex = _tex.TexY;
 	}
 
 	void modeCube() {

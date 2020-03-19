@@ -82,19 +82,19 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 
 	if (playerGetAlive()) {
 		if (type == "VR360") {
-			vr360->setTexture(player->getVideoTexture());
+			vr360->setTexture(player->getYUV_VideoTexture());
 			vr360->modeSphere();
 			vr360->display(true);
 			mediaState.video_type=V_TYPE::V_VR360;
 			return 1;
 		} else if (type == "VRCUBE") {
-			vr360->setTexture(player->getVideoTexture());
+			vr360->setTexture(player->getYUV_VideoTexture());
 			vr360->modeCube();
 			vr360->display(true);
 			mediaState.video_type=V_TYPE::V_VRCUBE;
 			return 1;
 		} else if (type == "VIEWPORT") {
-			viewPort->setTexture(player->getVideoTexture());
+			viewPort->setTexture(player->getYUV_VideoTexture());
 			viewPort->display(true);
 			mediaState.video_type=V_TYPE::V_VIEWPORT;
 			return 2;

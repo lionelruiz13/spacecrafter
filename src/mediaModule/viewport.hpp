@@ -21,6 +21,7 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/fader.hpp"
+#include "yuv_wrapper.hpp"
 
 #define VP_FADER_DURATION 3000
 
@@ -35,9 +36,9 @@ public:
 	//! trace une texture sur le viewport
 	void draw();
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
-	//! \param tex, id de texture dans la CG
-	void setTexture(GLuint tex) {
-		texture = tex;
+	//! \param tex, YUV_WRAPPER YUV dans la CG
+	void setTexture(YUV_WRAPPER _tex) {
+		texture = _tex.TexY;
 	}
 
 	//! indique si la classe doit etre active ou pas

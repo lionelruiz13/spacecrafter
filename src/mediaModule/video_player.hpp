@@ -18,6 +18,7 @@
 
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "yuv_wrapper.hpp"
 
 #ifndef WIN32
 extern "C"
@@ -80,7 +81,11 @@ public:
 
 	//! Renvoie l'ID de la texture dans le GPU représentant la frame lue du fichier vidéo
 	GLuint getVideoTexture() {
-		return texture;
+		return RGBtexture;
+	}
+
+	YUV_WRAPPER getYUV_VideoTexture() {
+		return YUV_Texture;
 	}
 
 private:
@@ -95,7 +100,9 @@ private:
 	//! initialise une texture à la taille de la vidéo
 	void initTexture();
 	 //! texture représentant la frame actuelle
-	GLuint texture;
+	GLuint RGBtexture;
+	YUV_WRAPPER YUV_Texture;
+	GLuint YUVtexture[3];
 
 	bool isAlive;			//!< indique si une vidéo est en cours de lecture
 	bool isDisplayRVB;		//!< indique si le rendu doit être converti en RVG ou pas
