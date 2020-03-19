@@ -6,6 +6,9 @@
  *
  */
 
+#ifndef _VIDEOPLAYER_HPP_
+#define _VIDEOPLAYER_HPP_
+
 #include <stdio.h>
 #include <inttypes.h>
 #include <unistd.h>
@@ -131,3 +134,6 @@ private:
 	struct SwsContext *img_convert_ctx;
 #endif
 };
+
+
+#endif // VIDEOPLAYER_HPP
