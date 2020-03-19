@@ -166,13 +166,13 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 			cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
 			return -1;
 		}
-		pFrameYUV = av_frame_alloc();
-		pFrameRGB=av_frame_alloc();
-		std::cout << "video de taille: " << pCodecCtx->width << " " << pCodecCtx->height << std::endl;
-		std::cout << "taille d'une frame: "<< av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1) << std::endl;
+		pFrameIn = av_frame_alloc();
+		pFrameOut=av_frame_alloc();
+		//std::cout << "video de taille: " << pCodecCtx->width << " " << pCodecCtx->height << std::endl;
+		//std::cout << "taille d'une frame: "<< av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1) << std::endl;
 		out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1));
-		av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
-		av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+		av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
+		av_image_fill_arrays(pFrameOut->data, pFrameOut->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
 	} else {
 		img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
 		if(img_convert_ctx==NULL) {
@@ -184,10 +184,11 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 			cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
 			return -1;
 		}
-
-		pFrameYUV = av_frame_alloc();
+		pFrameIn = av_frame_alloc();
+		pFrameOut=av_frame_alloc();
 		out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
-		av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
+		av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
+		av_image_fill_arrays(pFrameOut->data, pFrameOut->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
 	}
 
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
@@ -242,13 +243,13 @@ void VideoPlayer::getNextFrame()
 				cLog::get()->write("Decode Error.", LOG_TYPE::L_ERROR);
 				continue ;
 			}
-			ret = avcodec_receive_frame(pCodecCtx, pFrameYUV);
+			ret = avcodec_receive_frame(pCodecCtx, pFrameIn);
 			if(ret < 0 ) {
 				cLog::get()->write("not got frame\n", LOG_TYPE::L_ERROR);
 				continue;
 			}
 
-			if (isSeeking && pFrameYUV->key_frame==1) {
+			if (isSeeking && pFrameIn->key_frame==1) {
 				isSeeking=false;
 			}
 			getNextFrame = true;
@@ -267,25 +268,33 @@ void VideoPlayer::getNextVideoFrame()
 	elapsedTime += frameRateDuration;
 	if (!isSeeking) {
 		if (isDisplayRVB) {
-			//auto start = std::chrono::steady_clock::now();
-			sws_scale(img_convert_ctx, pFrameYUV->data, pFrameYUV->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
-			//auto end = std::chrono::steady_clock::now();
-			//std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			auto start = std::chrono::steady_clock::now();
+			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
+			auto end = std::chrono::steady_clock::now();
+			if (nbFrames%30==0)
+				std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 			glBindTexture(GL_TEXTURE_2D, RGBtexture);
-			//start = std::chrono::steady_clock::now();
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameRGB->data[0]);
-			//end = std::chrono::steady_clock::now();
-			//std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			start = std::chrono::steady_clock::now();
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameOut->data[0]);
+			end = std::chrono::steady_clock::now();
+			if (nbFrames%30==0)
+				std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 		} else {
 			const int widths[3]  = { video_w, video_w / 2, video_w / 2 };  
-			const int heights[3] = { video_h, video_h / 2, video_h / 2 };  
-			//auto start = std::chrono::steady_clock::now();
+			const int heights[3] = { video_h, video_h / 2, video_h / 2 }; 
+			auto start = std::chrono::steady_clock::now();
+			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
+			auto end = std::chrono::steady_clock::now();
+			if (nbFrames%30==0)
+				std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			start = std::chrono::steady_clock::now();
 			for (int i = 0; i < 3; ++i) {  
     			glBindTexture(GL_TEXTURE_2D, YUVtexture[i]);  
-    			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameYUV->data[i]);
+    			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 			}
-			//auto end = std::chrono::steady_clock::now();
-			//std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			end = std::chrono::steady_clock::now();
+			if (nbFrames%30==0)
+				std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 		}
 	}
 #endif
@@ -300,8 +309,8 @@ void VideoPlayer::playStop()
 	else {
 		isAlive = false;
 		sws_freeContext(img_convert_ctx);
-		av_frame_free(&pFrameRGB);
-		av_frame_free(&pFrameYUV);
+		av_frame_free(&pFrameOut);
+		av_frame_free(&pFrameIn);
 		avcodec_close(pCodecCtx);
 	}
 #endif
