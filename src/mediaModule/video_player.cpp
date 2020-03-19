@@ -267,25 +267,25 @@ void VideoPlayer::getNextVideoFrame()
 	elapsedTime += frameRateDuration;
 	if (!isSeeking) {
 		if (isDisplayRVB) {
-			auto start = std::chrono::steady_clock::now();
+			//auto start = std::chrono::steady_clock::now();
 			sws_scale(img_convert_ctx, pFrameYUV->data, pFrameYUV->linesize, 0, pCodecCtx->height, pFrameRGB->data, pFrameRGB->linesize);
-			auto end = std::chrono::steady_clock::now();
-			std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			//auto end = std::chrono::steady_clock::now();
+			//std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 			glBindTexture(GL_TEXTURE_2D, RGBtexture);
-			start = std::chrono::steady_clock::now();
+			//start = std::chrono::steady_clock::now();
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameRGB->data[0]);
-			end = std::chrono::steady_clock::now();
-			std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			//end = std::chrono::steady_clock::now();
+			//std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 		} else {
 			const int widths[3]  = { video_w, video_w / 2, video_w / 2 };  
 			const int heights[3] = { video_h, video_h / 2, video_h / 2 };  
-			auto start = std::chrono::steady_clock::now();
+			//auto start = std::chrono::steady_clock::now();
 			for (int i = 0; i < 3; ++i) {  
     			glBindTexture(GL_TEXTURE_2D, YUVtexture[i]);  
     			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameYUV->data[i]);
 			}
-			auto end = std::chrono::steady_clock::now();
-			std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+			//auto end = std::chrono::steady_clock::now();
+			//std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 		}
 	}
 #endif
@@ -324,6 +324,7 @@ void VideoPlayer::initTexture()
 		YUV_Texture.TexY = YUVtexture[0];
 		YUV_Texture.TexU = YUVtexture[1];
 		YUV_Texture.TexV = YUVtexture[2];
+		//std::cout << "valeurs " << YUV_Texture.TexY << " " << YUV_Texture.TexU << " " << YUV_Texture.TexV << std::endl;
 		const int  widths[3]  = { video_w, video_w / 2, video_w / 2 };  
 		const int  heights[3] = { video_h, video_h / 2, video_h / 2 };  
 		for (int i = 0; i < 3; ++i) {  
