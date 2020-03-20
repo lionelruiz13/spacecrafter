@@ -237,25 +237,25 @@ void VideoPlayer::getNextFrame()
 		}
 
 		if(packet->stream_index==videoindex) {
-
 			int ret = avcodec_send_packet(pCodecCtx, packet);
 			if(ret < 0) {
-				cLog::get()->write("Decode Error.", LOG_TYPE::L_ERROR);
-				continue ;
+				cLog::get()->write("Decode Error", LOG_TYPE::L_ERROR);
+			continue ;
 			}
 			ret = avcodec_receive_frame(pCodecCtx, pFrameIn);
 			if(ret < 0 ) {
-				cLog::get()->write("not got frame\n", LOG_TYPE::L_ERROR);
+				cLog::get()->write("not got frame", LOG_TYPE::L_DEBUG);
 				continue;
 			}
-
 			if (isSeeking && pFrameIn->key_frame==1) {
 				isSeeking=false;
 			}
-			getNextFrame = true;
-			av_packet_unref(packet);
+			if (!(ret<0)) {
+				getNextFrame = true;
+				av_packet_unref(packet);
 			}
 		}
+	}
 #endif
 }
 
