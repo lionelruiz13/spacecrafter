@@ -199,7 +199,7 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 	nbFrames = 0;
 	isAlive = true;
 	elapsedTime =0.0;
-	this->update();
+	this->getNextVideoFrame();
 	return 0;
 #endif
 }
