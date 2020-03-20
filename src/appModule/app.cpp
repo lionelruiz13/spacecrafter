@@ -372,7 +372,6 @@ void App::draw(int delta_time)
 
 	core->draw(delta_time);
 	core->imageDraw();
-	core->textDraw();
 
 	// Draw the Graphical ui and the Text ui
 	ui->draw();
@@ -382,6 +381,8 @@ void App::draw(int delta_time)
 
 	//draw video frame to classical viewport
 	media->drawViewPort();
+	//draw text user
+	core->textDraw();
 
 	// Fill with black around the circle
 	appDraw->drawViewportShape();
