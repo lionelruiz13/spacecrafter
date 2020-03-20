@@ -1889,8 +1889,7 @@ private:
 	//! @param delta_time the time increment in ms.
 	void drawInUniverse(int delta_time);
 
-	void preDraw(float clipping_min, float clipping_max); 
-	void postDraw();
+	void applyClippingPlanes(float clipping_min, float clipping_max); 
 
 	//! Update all the objects in solarsystem mode with respect to the time.
 	//! @param delta_time the time increment in ms.

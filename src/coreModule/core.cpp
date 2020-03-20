@@ -881,7 +881,7 @@ void Core::updateInUniverse(int delta_time)
 
 
 //! Execute commun first drawing functions
-void Core::preDraw(float clipping_min, float clipping_max)
+void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 {
 	// Init openGL viewing with fov, screen size and clip planes
 	projection->setClippingPlanes(clipping_min ,clipping_max);

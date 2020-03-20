@@ -101,7 +101,7 @@ void CoreExecutorInSolarSystem::update(int delta_time)
 
 void CoreExecutorInSolarSystem::draw(int delta_time)
 {
-	core->preDraw(0.000001 ,200);
+	core->applyClippingPlanes(0.000001 ,200);
 	core->drawInSolarSystem(delta_time);
 	core->postDraw();
 }
@@ -178,7 +178,7 @@ void CoreExecutorInGalaxy::update(int delta_time)
 
 void CoreExecutorInGalaxy::draw(int delta_time)
 {
-	core->preDraw(0.01, 2000.01);
+	core->applyClippingPlanes(0.01, 2000.01);
 	core->drawInGalaxy(delta_time);
 	core->postDraw();
 }
@@ -249,7 +249,7 @@ void CoreExecutorInUniverse::update(int delta_time)
 
 void CoreExecutorInUniverse::draw(int delta_time)
 {
-	core->preDraw(0.0001 ,2000.1);
+	core->applyClippingPlanes(0.0001 ,2000.1);
 	core->drawInUniverse(delta_time);
 	core->postDraw();
 }
