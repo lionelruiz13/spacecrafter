@@ -1729,6 +1729,17 @@ void Core::setFontScheme() //TODO deja fait ailleurs ?
 	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 }
 
+void Core::loadFont(int baseSize, std::string &name) {
+	ssystem->setFont(baseSize+4, name);
+	skyGridMgr->setFont(baseSize, name);
+	skyLineMgr->setFont(baseSize, name);
+	cardinals_points->setFont(baseSize+20, name);
+	asterisms->setFont(baseSize+6, name);
+	hip_stars->setFont(baseSize, name);
+	text_usr->setFont(baseSize+8, name);
+	skyLineMgr->setFont(baseSize, name);
+}
+
 //! Get a color used to display info about the currently selected object
 Vec3f Core::getSelectedObjectInfoColor(void) const
 {
