@@ -1867,6 +1867,9 @@ public:
 	void saveCurrentConfig(InitParser &conf);
 	Vec3f getCursorPosEqu(int x, int y);
 
+	void imageDraw();
+	void textDraw();
+
 private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
@@ -1890,6 +1893,7 @@ private:
 	void drawInUniverse(int delta_time);
 
 	void applyClippingPlanes(float clipping_min, float clipping_max); 
+	//void postDraw();
 
 	//! Update all the objects in solarsystem mode with respect to the time.
 	//! @param delta_time the time increment in ms.

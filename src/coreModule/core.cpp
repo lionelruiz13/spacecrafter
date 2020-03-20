@@ -892,10 +892,13 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 }
 
-//! Execute commun last drawing functions
-void Core::postDraw()
+void Core::imageDraw()
 {
 	media->imageDraw(navigation, projection);
+}
+
+void Core::textDraw()
+{
 	text_usr->draw(projection);
 }
 
