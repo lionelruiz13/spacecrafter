@@ -250,10 +250,10 @@ void VideoPlayer::getNextFrame()
 			if (isSeeking && pFrameIn->key_frame==1) {
 				isSeeking=false;
 			}
-			if (!(ret<0)) {
+			//if (!(ret<0)) {
 				getNextFrame = true;
 				av_packet_unref(packet);
-			}
+			//}
 		}
 	}
 #endif
