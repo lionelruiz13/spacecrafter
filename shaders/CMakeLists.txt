@@ -20,6 +20,7 @@ INSTALL(FILES
 	body_orbit3d.vert body_orbit3d.geom body_orbit3d.frag 
 	body_Axis.vert body_Axis.frag
 	moon_normal.frag moon_normal.vert
+	moon_normal_tes.frag moon_normal_tes.tesc moon_normal_tes.tese moon_normal_tes.geom moon_normal_tes.vert
 	moon_bump.frag moon_bump.vert
 	splash.frag splash.vert
 	font_print.frag font_print.vert
