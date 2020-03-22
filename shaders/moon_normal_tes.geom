@@ -93,7 +93,7 @@ uniform mat4 inverseModelViewProjectionMatrix;
 //~ uniform vec3 viewport_center;
 uniform vec3 clipping_fov;
 
-uniform float coeffHeightMap = 0.05;
+uniform float coeffHeightMap = 0.25;
 
 //~ uniform float zNear;
 //~ uniform float zFar;
