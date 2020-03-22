@@ -91,8 +91,8 @@ void Moon::selectShader()
 		return;
 	}
 	if (tex_heightmap) { //altimetrie Shader
-		myShader = SHADER_MOON_BUMP_TES;
-		myShaderProg = BodyShader::getShaderMoonBumpTes();
+		myShader = SHADER_MOON_NORMAL_TES;
+		myShaderProg = BodyShader::getShaderMoonNormalTes();
 		return;
 	}
 
@@ -125,7 +125,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
 			break;
 
-		case SHADER_MOON_BUMP_TES:
+		case SHADER_MOON_NORMAL_TES:
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
 
@@ -174,7 +174,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	Vec3f tmp= v3fNull;
 	Vec3f tmp2(0.4, 0.12, 0.0);
 
-	if (myShader == SHADER_MOON_BUMP || SHADER_MOON_BUMP_TES) {
+	if (myShader == SHADER_MOON_BUMP || SHADER_MOON_NORMAL_TES) {
 		if(getEnglishName() == "Moon")
 			myShaderProg->setUniform("UmbraColor",tmp2);
 		else

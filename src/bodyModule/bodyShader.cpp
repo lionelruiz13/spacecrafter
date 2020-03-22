@@ -37,7 +37,7 @@ shaderProgram* BodyShader::shaderNormal=nullptr;
 shaderProgram* BodyShader::shaderNormalTes=nullptr;
 shaderProgram* BodyShader::shaderMoonNormal=nullptr;
 shaderProgram* BodyShader::shaderMoonBump=nullptr;
-shaderProgram* BodyShader::shaderMoonBumpTes=nullptr;
+shaderProgram* BodyShader::shaderMoonNormalTes=nullptr;
 shaderProgram* BodyShader::shaderArtificial=nullptr;
 
 
@@ -271,26 +271,26 @@ void BodyShader::createShader()
 
 
 
-	shaderMoonBumpTes = new shaderProgram();
-	shaderMoonBumpTes->init( "moon_bump_tes.vert","moon_bump_tes.tesc", "moon_bump_tes.tese","moon_bump_tes.geom", "moon_bump_tes.frag");
-	shaderMoonBumpTes->setUniformLocation("UmbraColor");
+	shaderMoonNormalTes = new shaderProgram();
+	shaderMoonNormalTes->init( "moon_bump_tes.vert","moon_bump_tes.tesc", "moon_bump_tes.tese","moon_bump_tes.geom", "moon_bump_tes.frag");
+	shaderMoonNormalTes->setUniformLocation("UmbraColor");
 	//commum
-	shaderMoonBumpTes->setUniformLocation("planetRadius");
-	shaderMoonBumpTes->setUniformLocation("planetScaledRadius");
-	shaderMoonBumpTes->setUniformLocation("planetOneMinusOblateness");
+	shaderMoonNormalTes->setUniformLocation("planetRadius");
+	shaderMoonNormalTes->setUniformLocation("planetScaledRadius");
+	shaderMoonNormalTes->setUniformLocation("planetOneMinusOblateness");
 
-	shaderMoonBumpTes->setUniformLocation("SunHalfAngle");
-	shaderMoonBumpTes->setUniformLocation("LightPosition");
-	shaderMoonBumpTes->setUniformLocation("ModelViewProjectionMatrix");
-	shaderMoonBumpTes->setUniformLocation("ModelViewMatrix");
-	shaderMoonBumpTes->setUniformLocation("NormalMatrix");
+	shaderMoonNormalTes->setUniformLocation("SunHalfAngle");
+	shaderMoonNormalTes->setUniformLocation("LightPosition");
+	shaderMoonNormalTes->setUniformLocation("ModelViewProjectionMatrix");
+	shaderMoonNormalTes->setUniformLocation("ModelViewMatrix");
+	shaderMoonNormalTes->setUniformLocation("NormalMatrix");
 
-	shaderMoonBumpTes->setUniformLocation("MoonPosition1");
-	shaderMoonBumpTes->setUniformLocation("MoonRadius1");
+	shaderMoonNormalTes->setUniformLocation("MoonPosition1");
+	shaderMoonNormalTes->setUniformLocation("MoonRadius1");
 
 	//fisheye
-	shaderMoonBumpTes->setUniformLocation("inverseModelViewProjectionMatrix");
-	shaderMoonBumpTes->setUniformLocation("clipping_fov");
+	shaderMoonNormalTes->setUniformLocation("inverseModelViewProjectionMatrix");
+	shaderMoonNormalTes->setUniformLocation("clipping_fov");
 
 
 	shaderMoonNormal = new shaderProgram();
@@ -327,6 +327,6 @@ void BodyShader::deleteShader()
 
 	if (shaderArtificial) delete shaderArtificial;
 	if (shaderMoonBump) delete shaderMoonBump;
-	if (shaderMoonBumpTes) delete shaderMoonBumpTes;
+	if (shaderMoonNormalTes) delete shaderMoonNormalTes;
 	if (shaderMoonNormal) delete shaderMoonNormal;
 }
