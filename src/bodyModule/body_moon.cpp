@@ -130,14 +130,11 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
 
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex_norm->getID());
+			glBindTexture(GL_TEXTURE_2D, tex_heightmap->getID());
 
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, tex_heightmap->getID());
-		
+	
 			break;
 
 		case SHADER_MOON_NORMAL :
