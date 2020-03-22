@@ -12,7 +12,7 @@
 layout ( triangles ) in;
 layout ( triangle_strip , max_vertices = 3) out;
 
-layout (binding=6) uniform sampler2D heightmapTexture;
+layout (binding=1) uniform sampler2D heightmapTexture;
 
 layout (std140) uniform cam_block
 {
