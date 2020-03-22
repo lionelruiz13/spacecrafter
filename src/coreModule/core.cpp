@@ -930,10 +930,9 @@ void Core::switchMode(const std::string &mode)
 //! Execute all the drawing functions
 void Core::drawInSolarSystem(int delta_time)
 {
+	milky_way->draw(tone_converter, projection, navigation, timeMgr->getJulian());
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
-
-	milky_way->draw(tone_converter, projection, navigation, timeMgr->getJulian());
 	nebulas->draw(projection, navigation, tone_converter, atmosphere->getFlagShow() ? sky_brightness : 0);
 	oort->draw(observatory->getAltitude(), projection, navigation);
 	illuminates->draw(projection, navigation);

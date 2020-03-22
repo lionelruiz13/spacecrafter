@@ -6,6 +6,9 @@
  *
  */
 
+#ifndef _VIDEOPLAYER_HPP_
+#define _VIDEOPLAYER_HPP_
+
 #include <stdio.h>
 #include <inttypes.h>
 #include <unistd.h>
@@ -15,6 +18,7 @@
 
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "yuv_wrapper.hpp"
 
 #ifndef WIN32
 extern "C"
@@ -46,7 +50,7 @@ public:
 	void update();
 
 	//! initialise la ffmpeg avec le nom du fichier passé en argument
-	int play(const std::string& fileName);
+	int play(const std::string& fileName, bool convertToRBG);
 
 	//! termine la lecture d'une vidéo en cours
 	void playStop();
@@ -77,7 +81,11 @@ public:
 
 	//! Renvoie l'ID de la texture dans le GPU représentant la frame lue du fichier vidéo
 	GLuint getVideoTexture() {
-		return texture;
+		return RGBtexture;
+	}
+
+	YUV_WRAPPER getYUV_VideoTexture() {
+		return YUV_Texture;
 	}
 
 private:
@@ -92,9 +100,12 @@ private:
 	//! initialise une texture à la taille de la vidéo
 	void initTexture();
 	 //! texture représentant la frame actuelle
-	GLuint texture;
+	GLuint RGBtexture;
+	YUV_WRAPPER YUV_Texture;
+	GLuint YUVtexture[3];
 
 	bool isAlive;			//!< indique si une vidéo est en cours de lecture
+	bool isDisplayRVB;		//!< indique si le rendu doit être converti en RVG ou pas
 	std::string fileName; 	//!< nom de la vidéo à lire
 	int video_w;			
 	int video_h;
@@ -124,9 +135,12 @@ private:
 	int				videoindex;
 	AVCodecContext	*pCodecCtx;
 	AVCodec			*pCodec;
-	AVFrame	*pFrame,*pFrameRGB;
+	AVFrame	*pFrameIn,*pFrameOut;
 	AVStream *video_st;
 	AVPacket *packet;
 	struct SwsContext *img_convert_ctx;
 #endif
 };
+
+
+#endif // VIDEOPLAYER_HPP

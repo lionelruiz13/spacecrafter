@@ -112,8 +112,10 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 
 	shaderVR360->use();
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, videoTex);
+	for(int i=0; i<3; i++) {
+		glActiveTexture(GL_TEXTURE0+i);
+		glBindTexture(GL_TEXTURE_2D, videoTex[i]);
+	}
 	
 	shaderVR360->setUniform("intensity", showFader.getInterstate());
 

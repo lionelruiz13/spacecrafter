@@ -21,6 +21,7 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/fader.hpp"
+#include "yuv_wrapper.hpp"
 
 #define VP_FADER_DURATION 3000
 
@@ -35,9 +36,11 @@ public:
 	//! trace une texture sur le viewport
 	void draw();
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
-	//! \param tex, id de texture dans la CG
-	void setTexture(GLuint tex) {
-		texture = tex;
+	//! \param tex, YUV_WRAPPER YUV dans la CG
+	void setTexture(YUV_WRAPPER _tex) {
+		videoTex[0] = _tex.TexY;
+		videoTex[1] = _tex.TexU;
+		videoTex[2] = _tex.TexV;
 	}
 
 	//! indique si la classe doit etre active ou pas
@@ -89,7 +92,7 @@ private:
 	// Données openGL
 	DataGL viewport;
 	// indique quelle texture est utilisée pour affichage
-	GLuint texture;
+	GLuint videoTex[3];
 	// active la classe
 	bool isAlive;
 	// initialise la variable définissant si on saute le fading ou non

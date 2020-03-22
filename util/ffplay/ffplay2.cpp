@@ -24,6 +24,8 @@
 #include <signal.h>
 #include <stdint.h>
 #include <iostream>
+#include <chrono>
+#include <iostream>
 
 extern "C" {
 #include <libavutil/avstring.h>
@@ -48,6 +50,8 @@ extern "C" {
 #include <SDL2/SDL_thread.h>
 
 #include <assert.h>
+
+using namespace std;
 
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MIN_FRAMES 25
@@ -943,6 +947,7 @@ static int upload_texture(SDL_Texture **tex, AVFrame *frame, struct SwsContext *
         return -1;
     switch (sdl_pix_fmt) {
         case SDL_PIXELFORMAT_UNKNOWN:
+			printf("case SDL_PIXELFORMAT_UNKNOWN\n");
             /* This should only happen if we are not using avfilter... */
             *img_convert_ctx = sws_getCachedContext(*img_convert_ctx,
                 frame->width, frame->height, static_cast<AVPixelFormat>(frame->format), frame->width, frame->height,
@@ -960,14 +965,22 @@ static int upload_texture(SDL_Texture **tex, AVFrame *frame, struct SwsContext *
             }
             break;
         case SDL_PIXELFORMAT_IYUV:
+			//printf("case SDL_PIXELFORMAT_IYUV\n");
             if (frame->linesize[0] > 0 && frame->linesize[1] > 0 && frame->linesize[2] > 0) {
+				auto start = std::chrono::steady_clock::now();
                 ret = SDL_UpdateYUVTexture(*tex, NULL, frame->data[0], frame->linesize[0],
                                                        frame->data[1], frame->linesize[1],
                                                        frame->data[2], frame->linesize[2]);
+				auto end = std::chrono::steady_clock::now();
+				std::cout << "1 SDL_UpdateYUVTexture : " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " µs" << std::endl;
+                                                       
             } else if (frame->linesize[0] < 0 && frame->linesize[1] < 0 && frame->linesize[2] < 0) {
+				auto start = std::chrono::steady_clock::now();
                 ret = SDL_UpdateYUVTexture(*tex, NULL, frame->data[0] + frame->linesize[0] * (frame->height                    - 1), -frame->linesize[0],
                                                        frame->data[1] + frame->linesize[1] * (AV_CEIL_RSHIFT(frame->height, 1) - 1), -frame->linesize[1],
                                                        frame->data[2] + frame->linesize[2] * (AV_CEIL_RSHIFT(frame->height, 1) - 1), -frame->linesize[2]);
+				auto end = std::chrono::steady_clock::now();
+				std::cout << "2 SDL_UpdateYUVTexture : " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " µs" << std::endl;
             } else {
                 av_log(NULL, AV_LOG_ERROR, "Mixed negative and positive linesizes are not supported.\n");
                 return -1;
