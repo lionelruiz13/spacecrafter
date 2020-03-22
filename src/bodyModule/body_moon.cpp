@@ -192,7 +192,10 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 		myShaderProg->setUniform("MoonRadius1",0.0);
 
 
-	currentObj->draw(screen_sz);
+	if ( myShader == SHADER_MOON_NORMAL_TES )
+		currentObj->draw(screen_sz, GL_PATCHES);
+	else
+		currentObj->draw(screen_sz);
 
 	myShaderProg->unuse();
 
