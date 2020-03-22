@@ -159,7 +159,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	Vec3f tmp= v3fNull;
 	Vec3f tmp2(0.4, 0.12, 0.0);
 
-	if (myShader == SHADER_MOON_BUMP) {
+	if (myShader == SHADER_MOON_BUMP || SHADER_MOON_BUMP_TES) {
 		if(getEnglishName() == "Moon")
 			myShaderProg->setUniform("UmbraColor",tmp2);
 		else
