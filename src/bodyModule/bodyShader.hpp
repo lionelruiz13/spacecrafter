@@ -38,12 +38,12 @@
 
 enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4, SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_BUMP = 7, SHADER_ARTIFICIAL = 8};
 
-struct bodyShaderStatus {
+/*struct bodyShaderStatus {
 	bool map;
 	bool night;
 	bool norm;
 	bool ring;
-};
+};*/
 
 class BodyShader {
 
