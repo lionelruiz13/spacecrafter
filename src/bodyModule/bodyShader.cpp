@@ -272,7 +272,7 @@ void BodyShader::createShader()
 
 
 	shaderMoonNormalTes = new shaderProgram();
-	shaderMoonNormalTes->init( "moon_bump_tes.vert","moon_bump_tes.tesc", "moon_bump_tes.tese","moon_bump_tes.geom", "moon_bump_tes.frag");
+	shaderMoonNormalTes->init( "moon_normal_tes.vert","moon_normal_tes.tesc", "moon_normal_tes.tese","moon_normal_tes.geom", "moon_normal_tes.frag");
 	shaderMoonNormalTes->setUniformLocation("UmbraColor");
 	//commum
 	shaderMoonNormalTes->setUniformLocation("planetRadius");
