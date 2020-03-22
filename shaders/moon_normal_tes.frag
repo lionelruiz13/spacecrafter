@@ -16,6 +16,7 @@ uniform float MoonRadius1;
 
 // uniform vec3 MoonPosition; 
 uniform float Ambient;
+uniform vec3 UmbraColor;
 
 // smooth in vec2 TexCoord;
 // in float Ambient; 
@@ -36,16 +37,18 @@ in GS_OUT {
 } fs_in;
 
 void main(void)
-{ 
+{
+	vec3 umbra = vec3(0.0, 0.0, 0.0);
 	float diffuse = max(fs_in.NdotL, 0.0);
-	vec3 color = vec3(texture(mapTexture, fs_in.TexCoord)).rgb;
-
+	vec4 color = texture(mapTexture, fs_in.TexCoord);
+	float shadowScale = 1.0;
 	if(diffuse != 0.0) {
 		vec3 moon;
 		float moonHalfAngle;
 		vec2 ratio;
 		float distance;
 		vec3 lookup;
+		float shadowScale = 1.0;
 		if(MoonRadius1 != 0.0) {
 			moon = MoonPosition1 - fs_in.Position;
 			moonHalfAngle = atan( MoonRadius1/ length(moon) ); 
@@ -53,9 +56,11 @@ void main(void)
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
 			lookup = vec3(texture(shadowTexture, ratio)); 
+			shadowScale = shadowScale * lookup.r; 
 			diffuse = diffuse * lookup.r;
+			umbra = UmbraColor;
 		}
 	}
-	FragColor = vec4(color*(min(diffuse+Ambient, 1.0)), 1.0);
+	FragColor = vec4(color.rgb*(min(diffuse*(shadowScale+umbra*max(0.0,1.0-shadowScale))+Ambient, 1.0)), 1.0);
 }
 
