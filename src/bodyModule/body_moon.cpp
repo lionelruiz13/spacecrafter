@@ -88,13 +88,18 @@ void Moon::selectShader()
 	if (tex_norm) { //bump Shader
 		myShader = SHADER_MOON_BUMP;
 		myShaderProg = BodyShader::getShaderMoonBump();
-		useShaderMoonNormal = false;
+		return;
+	}
+	if (tex_heightmap) { //altimetrie Shader
+		myShader = SHADER_MOON_BUMP_TES;
+		myShaderProg = BodyShader::getShaderMoonBumpTes();
+		return;
 	}
 
-	if (useShaderMoonNormal) { // normal shaders
-		myShader = SHADER_MOON_NORMAL;
-		myShaderProg = BodyShader::getShaderMoonNormal();
-	}
+	//if (useShaderMoonNormal) { // normal shaders
+	myShader = SHADER_MOON_NORMAL;
+	myShaderProg = BodyShader::getShaderMoonNormal();
+	//}
 }
 
 void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
