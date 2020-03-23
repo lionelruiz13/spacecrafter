@@ -12,7 +12,7 @@
 layout ( triangles ) in;
 layout ( triangle_strip , max_vertices = 3) out;
 
-layout (binding=1) uniform sampler2D heightmapTexture;
+layout (binding=3) uniform sampler2D heightmapTexture;
 
 layout (std140) uniform cam_block
 {
@@ -82,7 +82,7 @@ out GS_OUT {
     vec2 TexCoord;
     vec3 Normal;
     vec3 Light;
-	float NdotL;
+	vec3 TangentLight;
 } gs_out;
 
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
@@ -254,12 +254,16 @@ void main()
 
 		//Other
 		Normal = normalize(mat3(NormalMatrix) * gs_in[i].Normal);
-		NdotL = dot(Normal, Light);
+		//NdotL = dot(Normal, Light);
+		vec3 binormal = vec3(0,-Normal.z,Normal.y);
+		vec3 tangent = cross(Normal,binormal);
+		vec3 TangentLight = vec3(dot(Light, tangent), dot(Light, binormal), dot(Light, Normal)); 
 
 		gs_out.Position = Position;
 		gs_out.Light = Light;
 		gs_out.Normal = Normal;
-		gs_out.NdotL = NdotL;
+		gs_out.TangentLight=TangentLight;
+		//gs_out.NdotL = NdotL;
 		gs_out.TexCoord = gs_in[i].TexCoord;
 		
 		EmitVertex();
