@@ -108,7 +108,7 @@ void BodyShader::createShader()
 
 	shaderBump = new shaderProgram();
 	shaderBump->init( "body_bump.vert","", "","", "body_bump.frag");
-	shaderBump->setUniformLocation("UmbraColor");
+	//shaderBump->setUniformLocation("UmbraColor");
 
 	//commum
 	shaderBump->setUniformLocation("planetRadius");
@@ -138,7 +138,7 @@ void BodyShader::createShader()
 	shaderRinged->init( "body_ringed.vert", "body_ringed.frag");
 	shaderRinged->setUniformLocation("RingInnerRadius");
 	shaderRinged->setUniformLocation("RingOuterRadius");
-	shaderRinged->setUniformLocation("UmbraColor");
+	//shaderRinged->setUniformLocation("UmbraColor");
 
 	//commum
 	shaderRinged->setUniformLocation("planetRadius");
@@ -167,7 +167,7 @@ void BodyShader::createShader()
 
 	shaderNormal = new shaderProgram();
 	shaderNormal->init( "body_normal.vert", "body_normal.frag");
-	shaderNormal->setUniformLocation("UmbraColor");
+	//shaderNormal->setUniformLocation("UmbraColor");
 
 	//commum
 	shaderNormal->setUniformLocation("planetRadius");
@@ -195,7 +195,7 @@ void BodyShader::createShader()
 
 	shaderNormalTes = new shaderProgram();
 	shaderNormalTes->init( "body_normal_tes.vert", "body_normal_tes.tesc", "body_normal_tes.tese", "body_normal_tes.geom", "body_normal_tes.frag");
-	shaderNormalTes->setUniformLocation("UmbraColor");
+	//shaderNormalTes->setUniformLocation("UmbraColor");
 
 	//commum
 	shaderNormalTes->setUniformLocation("planetRadius");
@@ -295,7 +295,7 @@ void BodyShader::createShader()
 
 	shaderMoonNormal = new shaderProgram();
 	shaderMoonNormal->init( "moon_normal.vert", "moon_normal.frag");
-	shaderMoonNormal->setUniformLocation("UmbraColor");
+	//shaderMoonNormal->setUniformLocation("UmbraColor");
 
 	//commum
 	shaderMoonNormal->setUniformLocation("planetRadius");
