@@ -42,7 +42,7 @@
 #include "tools/stateGL.hpp"
 #include "ojmModule/objl.hpp"
 #include "bodyModule/orbit_plot.hpp"
-#include "bodyModule/atmosphere_ext.hpp"
+//#include "bodyModule/atmosphere_ext.hpp"
 #include "tools/scalable.hpp"
 #include "bodyModule/bodyShader.hpp"
 #include "rotation_elements.hpp"
@@ -552,7 +552,7 @@ protected:
 	Axis * axis = nullptr;
 	OrbitPlot * orbitPlot = nullptr;
 	Halo * halo = nullptr;
-	AtmosphereExt * atmExt = nullptr;
+	//AtmosphereExt * atmExt = nullptr;
 
 	Mat4f model;
 	Mat4f view;

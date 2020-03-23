@@ -44,7 +44,7 @@
 #include "bodyModule/axis.hpp"
 #include "bodyModule/halo.hpp"
 #include "bodyModule/orbit_plot.hpp"
-#include "bodyModule/atmosphere_ext.hpp"
+//#include "bodyModule/atmosphere_ext.hpp"
 #include "tools/s_font.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/translator.hpp"
@@ -144,14 +144,14 @@ Body::Body(Body *parent,
 	tex_current = tex_map;
 }
 
-void Body::setAtmExt(double radiusFactor, const std::string &gradient)
-{
-	std::cout << "Atmosphere created for : " << this->getEnglishName() << std::endl;
-	atmExt = new AtmosphereExt(currentObj, radiusFactor, gradient);
-	//~ atmExt->setPlanetRadius(1.0f);
-	//~ atmExt->setSunPos(Vec3f(0.0f,0.0f,0.0f));
-	//~ atmExt->setAtmAlphaScale(1.0f);
-}
+// void Body::setAtmExt(double radiusFactor, const std::string &gradient)
+// {
+// 	std::cout << "Atmosphere created for : " << this->getEnglishName() << std::endl;
+// 	atmExt = new AtmosphereExt(currentObj, radiusFactor, gradient);
+// 	//~ atmExt->setPlanetRadius(1.0f);
+// 	//~ atmExt->setSunPos(Vec3f(0.0f,0.0f,0.0f));
+// 	//~ atmExt->setAtmAlphaScale(1.0f);
+// }
 
 Body::~Body()
 {
@@ -169,8 +169,8 @@ Body::~Body()
 	axis = nullptr;
 	if (halo) delete halo;
 	halo = nullptr;
-	if (atmExt) delete atmExt;
-	atmExt = nullptr;
+	// if (atmExt) delete atmExt;
+	// atmExt = nullptr;
 	if (myColor) delete myColor;
 	myColor = nullptr;
 }
@@ -1002,8 +1002,8 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 			drawBody(prj, nav, mat, screen_sz);
 		}
 
-		if(atmExt != nullptr)
-			drawAtmExt(prj, nav, observatory);
+		// if(atmExt != nullptr)
+		// 	drawAtmExt(prj, nav, observatory);
 
 		drawn = true;
 	}
@@ -1014,7 +1014,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	return drawn;
 }
-
+/*
 void Body::drawAtmExt(const Projector* prj, const Navigator* nav, const Observer* observatory)
 {
 	atmExt->use();
@@ -1037,7 +1037,7 @@ void Body::drawAtmExt(const Projector* prj, const Navigator* nav, const Observer
 
 	atmExt->draw(screen_sz);
 	atmExt->unuse();
-}
+}*/
 
 bool Body::skipDrawingThisBody(const Observer* observatory, bool drawHomePlanet)
 {

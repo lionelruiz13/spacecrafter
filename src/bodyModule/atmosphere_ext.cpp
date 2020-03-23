@@ -1,4 +1,4 @@
-
+/*
 #include "bodyModule/atmosphere_ext.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/app_settings.hpp"
@@ -132,3 +132,4 @@ void AtmosphereExt::setInverseModelViewProjectionMatrix(Mat4f inverseModelViewPr
 //~	atmProg.use();
 	atmProg.setUniform("inverseModelViewProjectionMatrix",inverseModelViewProjectionMatrix);
 }
+*/
