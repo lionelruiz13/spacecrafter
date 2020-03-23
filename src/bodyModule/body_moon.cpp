@@ -166,7 +166,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	myShaderProg->setUniform("ModelViewMatrix",matrix);
 	myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
 
-	int index=1;
+	//int index=1;
 	myShaderProg->setUniform("LightPosition",eye_sun);
 	myShaderProg->setUniform("SunHalfAngle",sun_half_angle);
 
@@ -188,11 +188,11 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	tmp = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
 	myShaderProg->setUniform("MoonPosition1",tmp);
 	myShaderProg->setUniform("MoonRadius1",parent->getRadius());
-	index++;
+	//index++;
 
 	// clear any leftover values
-	if (index==1) // No moon data
-		myShaderProg->setUniform("MoonRadius1",0.0);
+	//if (index==1) // No moon data
+	//	myShaderProg->setUniform("MoonRadius1",0.0);
 
 
 	if ( myShader == SHADER_MOON_NORMAL_TES )
