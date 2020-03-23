@@ -328,13 +328,13 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	Vec3f tmp= v3fNull;
 	Vec3f tmp2(0.4, 0.12, 0.0);
 
-	if (myShader == SHADER_BUMP) {
-		if(getEnglishName() == "Moon") {
-			myShaderProg->setUniform("UmbraColor",tmp2);
-		}
-		else
-			myShaderProg->setUniform("UmbraColor",tmp);
-	}
+	// if (myShader == SHADER_BUMP) {
+	// 	if(getEnglishName() == "Moon") {
+	// 		myShaderProg->setUniform("UmbraColor",tmp2);
+	// 	}
+	// 	else
+	// 		myShaderProg->setUniform("UmbraColor",tmp);
+	// }
 
 	Vec3d planet_helio = get_heliocentric_ecliptic_pos();
 	Vec3d light = -planet_helio;
