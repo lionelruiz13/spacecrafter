@@ -689,6 +689,7 @@ float Body::get_on_screen_bounding_size(const Projector* prj, const Navigator * 
 	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./C_PI/prj->getFov()*prj->getViewportHeight();
 }
 
+/*
 void Body::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
 	StateGL::enable(GL_CULL_FACE);
@@ -824,7 +825,7 @@ void Body::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	glActiveTexture(GL_TEXTURE0);
 	StateGL::disable(GL_CULL_FACE);
 }
-
+*/
 
 // Start/stop accumulating new trail data (clear old data)
 void Body::startTrail(bool b)
