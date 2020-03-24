@@ -1296,6 +1296,7 @@ void SolarSystem::setSelected(const Object &obj)
 
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
+	Body::updateTesselation(delta_time);
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		it->second->body->update(delta_time, nav, timeMgr);
 	}

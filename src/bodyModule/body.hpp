@@ -472,6 +472,14 @@ public:
 		bodyTesselation->earth_altimetrie_factor = 1;		
 	}
 
+	static void updateTesselation (int delta_time) {
+		bodyTesselation->min_tes_level.update(delta_time);
+		bodyTesselation->max_tes_level.update(delta_time);
+		bodyTesselation->planet_altimetrie_factor.update(delta_time);
+		bodyTesselation->moon_altimetrie_factor.update(delta_time);
+		bodyTesselation->earth_altimetrie_factor.update(delta_time);
+	}
+
 	void setAtmExt(double radiusFactor, const std::string &gradient);
 
 	static bool setTexHaloMap(const std::string &texMap);
