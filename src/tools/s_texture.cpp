@@ -314,9 +314,16 @@ void s_texture::getDimensions(int &width, int &height) const
 float s_texture::getAverageLuminance() const
 {
 	glBindTexture(GL_TEXTURE_2D, texID);
-	GLint w, h , level=3;
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &w);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_HEIGHT, &h);
+	GLint w, h , level=0;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+
+	//garde fou si texture trop petite
+	if (w>64 && h>64) {
+		level = 3;
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &w);
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_HEIGHT, &h);
+	}
 	GLfloat* p = (GLfloat*)calloc(w*h, sizeof(GLfloat));
 	assert(p);
 
