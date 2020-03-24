@@ -79,11 +79,11 @@ struct BodyTexture {
 };
 
 struct BodyTesselation {
-	int min_tes_level;
-	int max_tes_level;
-	int planet_altimetrie_factor;
-	int moon_altimetrie_factor;
-	int earth_altimetrie_factor;
+	Scalable<int> min_tes_level;
+	Scalable<int> max_tes_level;
+	Scalable<int> planet_altimetrie_factor;
+	Scalable<int> moon_altimetrie_factor;
+	Scalable<int> earth_altimetrie_factor;
 	int min_tes_level_ini;
 	int max_tes_level_ini;
 	int planet_altimetrie_factor_ini;
@@ -281,33 +281,43 @@ public:
 	}
 
 	static void setMinTes(int v, bool ini = false) {
-		bodyTesselation->min_tes_level = v;
-		if (ini)
+		if (ini) {
+			bodyTesselation->min_tes_level.set(v);
 			bodyTesselation->min_tes_level_ini = v;
+		} else
+			bodyTesselation->min_tes_level = v;
 	}
 
 	static void setMaxTes(int v, bool ini = false) {
-		bodyTesselation->max_tes_level = v;
-		if (ini)
+		if (ini) {
 			bodyTesselation->max_tes_level_ini = v;
+			bodyTesselation->max_tes_level.set(v);
+		} else
+		bodyTesselation->max_tes_level = v;
 	}
 
 	static void setPlanetTes(int v, bool ini = false) {
-		bodyTesselation->planet_altimetrie_factor = v;
-		if (ini)
+		if (ini) {
 			bodyTesselation->planet_altimetrie_factor_ini = v;
+			bodyTesselation->planet_altimetrie_factor.set(v);
+		} else
+		bodyTesselation->planet_altimetrie_factor = v;
 	}
 
 	static void setMoonTes(int v, bool ini = false) {
-		bodyTesselation->moon_altimetrie_factor = v;
-		if (ini)
+		if (ini) {
 			bodyTesselation->moon_altimetrie_factor_ini = v;
+			bodyTesselation->moon_altimetrie_factor.set(v);
+		} else
+			bodyTesselation->moon_altimetrie_factor = v;
 	}
 
 	static void setEarthTes(int v, bool ini = false) {
-		bodyTesselation->earth_altimetrie_factor = v;
-		if (ini)
+		if (ini) {
 			bodyTesselation->earth_altimetrie_factor_ini = v;
+			bodyTesselation->earth_altimetrie_factor.set(v);
+		} else
+			bodyTesselation->earth_altimetrie_factor = v;
 	}
 
 	// fixe une couleur
@@ -436,11 +446,16 @@ public:
 	static void createTesselationParams() {
 		bodyTesselation =  new(BodyTesselation);
 		assert(bodyTesselation != nullptr);
-		bodyTesselation->min_tes_level = 1;
-		bodyTesselation->max_tes_level = 1;
-		bodyTesselation->planet_altimetrie_factor = 1;
-		bodyTesselation->moon_altimetrie_factor = 1;
-		bodyTesselation->earth_altimetrie_factor = 1;
+		bodyTesselation->min_tes_level.set(1);
+		bodyTesselation->max_tes_level.set(1);
+		bodyTesselation->planet_altimetrie_factor.set(1);
+		bodyTesselation->moon_altimetrie_factor.set(1);
+		bodyTesselation->earth_altimetrie_factor.set(1);
+		bodyTesselation->min_tes_level_ini=1;
+		bodyTesselation->max_tes_level_ini=1;
+		bodyTesselation->planet_altimetrie_factor_ini=1;
+		bodyTesselation->moon_altimetrie_factor_ini=1;
+		bodyTesselation->earth_altimetrie_factor_ini=1;
 	}
 
 	static void deleteTesselationParams() {
