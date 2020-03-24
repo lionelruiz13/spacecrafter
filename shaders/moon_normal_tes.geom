@@ -36,6 +36,7 @@ uniform mat4 ModelViewMatrix;
 uniform mat4 ViewProjection;
 uniform mat4 Model;
 
+uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 
 
 in gl_PerVertex
@@ -93,7 +94,7 @@ uniform mat4 inverseModelViewProjectionMatrix;
 //~ uniform vec3 viewport_center;
 uniform vec3 clipping_fov;
 
-uniform float coeffHeightMap = 0.25;
+float coeffHeightMap = 0.05 * TesParam[2];
 
 //~ uniform float zNear;
 //~ uniform float zFar;

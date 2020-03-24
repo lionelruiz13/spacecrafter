@@ -11,7 +11,7 @@ layout(vertices=3) out;
 //NEW UNIFORMS
 uniform mat4 ViewProjection;
 uniform mat4 Model;
-
+uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 // in gl_PerVertex
 // {
 //   vec4 gl_Position;
@@ -43,9 +43,9 @@ out TCS_OUT{
 
 #define ID gl_InvocationID
 
-const int   MinTessLevel=1;
-const int   MaxTessLevel=1;
-const float MaxDepth=1.0;
+int MinTessLevel=TesParam[0];
+int MaxTessLevel=TesParam[1];
+const float MaxDepth=8.0;
 const float MinDepth=1.0;
 
 void main(void)
