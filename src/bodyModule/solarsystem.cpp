@@ -1456,15 +1456,15 @@ void SolarSystem::planetTesselation(std::string name, int value) {
 		Body::setMaxTes(value);
 		return;
 	}
-	if (name=="planet_altimetrie_factor") {
+	if (name=="planet_altimetry_factor") {
 		Body::setPlanetTes(value);
 		return;
 	}
-	if (name=="moon_altimetrie_factor") {
+	if (name=="moon_altimetry_factor") {
 		Body::setMoonTes(value);
 		return;
 	}
-	if (name=="earth_altimetrie_factor") {
+	if (name=="earth_altimetry_factor") {
 		Body::setEarthTes(value);
 		return;
 	}

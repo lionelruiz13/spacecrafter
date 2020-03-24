@@ -84,7 +84,7 @@ Moon::~Moon()
 void Moon::selectShader()
 {
 	//bool useShaderMoonNormal = true;
-	if (tex_heightmap) { //altimetrie Shader
+	if (tex_heightmap) { //altimetry Shader
 		myShader = SHADER_MOON_NORMAL_TES;
 		myShaderProg = BodyShader::getShaderMoonNormalTes();
 		return;
@@ -196,7 +196,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	//tesselation
 	if ( myShader == SHADER_MOON_NORMAL_TES) {
 		myShaderProg->setUniform("TesParam", 
-				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->moon_altimetrie_factor) );
+				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->moon_altimetry_factor) );
 	}
 
 	if ( myShader == SHADER_MOON_NORMAL_TES )

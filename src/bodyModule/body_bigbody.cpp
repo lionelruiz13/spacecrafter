@@ -314,11 +314,11 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	//tesselation
 	if ( myShader == SHADER_NIGHT_TES) {
 		myShaderProg->setUniform("TesParam", 
-				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->earth_altimetrie_factor) );
+				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->earth_altimetry_factor) );
 	}
 	if ( myShader == SHADER_NORMAL_TES) {
 		myShaderProg->setUniform("TesParam", 
-				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->planet_altimetrie_factor) );
+				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->planet_altimetry_factor) );
 	}
 
 
