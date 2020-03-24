@@ -62,6 +62,7 @@ s_texture *Body::defaultTexMap = nullptr;
 s_texture *Body::tex_eclipse_map = nullptr;
 
 AtmosphereParams *Body::defaultAtmosphereParams = nullptr;
+BodyTesselation *Body::bodyTesselation = nullptr;
 
 Body::Body(Body *parent,
            const std::string& englishName,

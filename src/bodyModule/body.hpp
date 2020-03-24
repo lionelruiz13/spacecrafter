@@ -77,6 +77,19 @@ struct BodyTexture {
 	std::string tex_skin;
 };
 
+struct BodyTesselation {
+	int min_tes_level;
+	int max_tes_level;
+	int planet_altimetrie_factor;
+	int moon_altimetrie_factor;
+	int earth_altimetrie_factor;
+	int min_tes_level_ini;
+	int max_tes_level_ini;
+	int planet_altimetrie_factor_ini;
+	int moon_altimetrie_factor_ini;
+	int earth_altimetrie_factor_ini;
+};
+
 
 typedef struct body_flags {
 	bool flag_trail, flag_hints, flag_axis, flag_orbit, flag_halo;
@@ -266,6 +279,36 @@ public:
 		return object_size_limit;
 	}
 
+	static void setMinTes(int v, bool ini = false) {
+		bodyTesselation->min_tes_level = v;
+		if (ini)
+			bodyTesselation->min_tes_level_ini = v;
+	}
+
+	static void setMaxTes(int v, bool ini = false) {
+		bodyTesselation->max_tes_level = v;
+		if (ini)
+			bodyTesselation->max_tes_level_ini = v;
+	}
+
+	static void setPlanetTes(int v, bool ini = false) {
+		bodyTesselation->planet_altimetrie_factor = v;
+		if (ini)
+			bodyTesselation->planet_altimetrie_factor_ini = v;
+	}
+
+	static void setMoonTes(int v, bool ini = false) {
+		bodyTesselation->moon_altimetrie_factor = v;
+		if (ini)
+			bodyTesselation->moon_altimetrie_factor_ini = v;
+	}
+
+	static void setEarthTes(int v, bool ini = false) {
+		bodyTesselation->earth_altimetrie_factor = v;
+		if (ini)
+			bodyTesselation->earth_altimetrie_factor_ini = v;
+	}
+
 	// fixe une couleur
 	void setColor(const std::string& colorName,  const Vec3f& oc);
 
@@ -389,6 +432,30 @@ public:
 		defaultAtmosphereParams = nullptr;
 	}
 
+	static void createTesselationParams() {
+		bodyTesselation =  new(BodyTesselation);
+		assert(bodyTesselation != nullptr);
+		bodyTesselation->min_tes_level = 1;
+		bodyTesselation->max_tes_level = 1;
+		bodyTesselation->planet_altimetrie_factor = 1;
+		bodyTesselation->moon_altimetrie_factor = 1;
+		bodyTesselation->earth_altimetrie_factor = 1;
+	}
+
+	static void deleteTesselationParams() {
+		if (bodyTesselation)
+			delete bodyTesselation;
+		bodyTesselation = nullptr;
+	}
+
+	static void resetTesselationParams() {
+		bodyTesselation->min_tes_level = 1;
+		bodyTesselation->max_tes_level = 1;
+		bodyTesselation->planet_altimetrie_factor = 1;
+		bodyTesselation->moon_altimetrie_factor = 1;
+		bodyTesselation->earth_altimetrie_factor = 1;		
+	}
+
 	void setAtmExt(double radiusFactor, const std::string &gradient);
 
 	static bool setTexHaloMap(const std::string &texMap);
@@ -475,7 +542,7 @@ protected:
 	AtmosphereParams* atmosphereParams=nullptr;
 
 	static AtmosphereParams *defaultAtmosphereParams;
-
+	static BodyTesselation *bodyTesselation; 	// all global parameters with shader tesselaiton 
 	float sol_local_day;			//time of a sideral day in this planet
 	float albedo;					// Body albedo
 	Mat4d rot_local_to_parent;
