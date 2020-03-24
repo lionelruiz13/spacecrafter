@@ -296,11 +296,11 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 				FILE *ftest = fopen(localFile.c_str(), "r");
 				if (!ftest) {
 					// Load from application texture directory
-					cons->art_tex = new s_texture(texfile, TEX_LOAD_TYPE_PNG_BLEND1, true);  // use mipmaps
+					cons->art_tex = new s_texture(texfile, TEX_LOAD_TYPE_PNG_SOLID, true);  // use mipmaps
 				} else {
 					// Load from local directory
 					fclose(ftest);
-					cons->art_tex = new s_texture(/*true,*/ localFile, TEX_LOAD_TYPE_PNG_BLEND1, true);  // use mipmaps
+					cons->art_tex = new s_texture(/*true,*/ localFile, TEX_LOAD_TYPE_PNG_SOLID, true);  // use mipmaps
 				}
 
 				if(cons->art_tex->getID() == 0) continue;  // otherwise no texture
