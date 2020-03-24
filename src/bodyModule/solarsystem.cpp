@@ -518,15 +518,15 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 	// 	if (/*!gradient.empty() &&*/ radiusRatio!=0.f)
 	// 		p->setAtmExt(radiusRatio, gradient);
 	// }
-	// if (!param["has_atmosphere"].empty()) {
-	// 	AtmosphereParams* tmp = nullptr;
-	// 	tmp = new(AtmosphereParams);
-	// 	tmp->hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
-	// 	tmp->limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
-	// 	tmp->limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
-	// 	tmp->limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);
-	// 	p->setAtmosphereParams(tmp);
-	// }
+	if (!param["has_atmosphere"].empty()) {
+		AtmosphereParams* tmp = nullptr;
+		tmp = new(AtmosphereParams);
+		tmp->hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
+		tmp->limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
+		tmp->limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
+		tmp->limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);
+		p->setAtmosphereParams(tmp);
+	}
 
 
 	// Use J2000 N pole data if available
