@@ -193,7 +193,11 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	// clear any leftover values
 	//if (index==1) // No moon data
 	//	myShaderProg->setUniform("MoonRadius1",0.0);
-
+	//tesselation
+	if ( myShader == SHADER_MOON_NORMAL_TES) {
+		myShaderProg->setUniform("TesParam", 
+				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->moon_altimetrie_factor) );
+	}
 
 	if ( myShader == SHADER_MOON_NORMAL_TES )
 		currentObj->draw(screen_sz, GL_PATCHES);

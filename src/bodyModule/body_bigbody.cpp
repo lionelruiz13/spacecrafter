@@ -311,6 +311,17 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 		myShaderProg->setUniform("ViewProjection", proj*view);
 		myShaderProg->setUniform("Model", model);
 	}
+	//tesselation
+	if ( myShader == SHADER_NIGHT_TES) {
+		myShaderProg->setUniform("TesParam", 
+				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->earth_altimetrie_factor) );
+	}
+	if ( myShader == SHADER_NORMAL_TES) {
+		myShaderProg->setUniform("TesParam", 
+				Vec3f(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->planet_altimetrie_factor) );
+	}
+
+
 
 	//paramètres commun aux shaders sauf Sun
 	myShaderProg->setUniform("planetRadius",initialRadius);

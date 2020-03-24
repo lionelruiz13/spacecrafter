@@ -79,6 +79,7 @@ void BodyShader::createShader()
 	shaderNightTes->setUniformLocation("Clouds");
 	shaderNightTes->setUniformLocation("CloudNormalTexture");
 	shaderNightTes->setUniformLocation("CloudTexture");
+	shaderNightTes->setUniformLocation("TesParam");
 
 	//commum
 	shaderNightTes->setUniformLocation("planetRadius");
@@ -196,6 +197,7 @@ void BodyShader::createShader()
 	shaderNormalTes = new shaderProgram();
 	shaderNormalTes->init( "body_normal_tes.vert", "body_normal_tes.tesc", "body_normal_tes.tese", "body_normal_tes.geom", "body_normal_tes.frag");
 	//shaderNormalTes->setUniformLocation("UmbraColor");
+	shaderNormalTes->setUniformLocation("TesParam");
 
 	//commum
 	shaderNormalTes->setUniformLocation("planetRadius");
@@ -274,6 +276,8 @@ void BodyShader::createShader()
 	shaderMoonNormalTes = new shaderProgram();
 	shaderMoonNormalTes->init( "moon_normal_tes.vert","moon_normal_tes.tesc", "moon_normal_tes.tese","moon_normal_tes.geom", "moon_normal_tes.frag");
 	shaderMoonNormalTes->setUniformLocation("UmbraColor");
+	shaderMoonNormalTes->setUniformLocation("TesParam");
+
 	//commum
 	shaderMoonNormalTes->setUniformLocation("planetRadius");
 	shaderMoonNormalTes->setUniformLocation("planetScaledRadius");
