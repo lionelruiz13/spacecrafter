@@ -3228,6 +3228,11 @@ int AppCommandInterface::commandBody()
 		return executeCommandStatus();
 	}
 
+	if (!args["tesselation"].empty()) {
+		stcore->planetTesselation(args["tesselation"], evalInt(args["value"]));
+		return executeCommandStatus();
+	}
+
 	debug_message = _("Command 'body': unknown argument");
 	return executeCommandStatus();
 }

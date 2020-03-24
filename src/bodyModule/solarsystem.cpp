@@ -81,6 +81,7 @@ SolarSystem::SolarSystem()
 	Body::createShader();
 	BodyShader::createShader();
 	Body::createDefaultAtmosphereParams();
+	Body::createTesselationParams();
 	
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
@@ -720,6 +721,7 @@ void SolarSystem::initialSolarSystemBodies(){
 			it->second->isHidden = it->second->initialHidden;
 		}
 	}
+	Body::resetTesselationParams();
 }
 
 void SolarSystem::toggleHideSatellites(bool val){
@@ -1442,4 +1444,27 @@ void SolarSystem::setDefaultBodyColor(const std::string& colorName, const Vec3f&
 
 const Vec3f SolarSystem::getDefaultBodyColor(const std::string& colorName) const{
 	return BodyColor::getDefault(colorName);
+}
+
+void SolarSystem::planetTesselation(std::string name, int value) {
+	if (name=="min_tes_level") {
+		Body::setMinTes(value);
+		return;
+	}
+	if (name=="max_tes_level") {
+		Body::setMaxTes(value);
+		return;
+	}
+	if (name=="planet_altimetrie_factor") {
+		Body::setPlanetTes(value);
+		return;
+	}
+	if (name=="moon_altimetrie_factor") {
+		Body::setMoonTes(value);
+		return;
+	}
+	if (name=="earth_altimetrie_factor") {
+		Body::setEarthTes(value);
+		return;
+	}
 }

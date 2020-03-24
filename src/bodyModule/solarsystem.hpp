@@ -249,6 +249,8 @@ public:
 		return Body::getSizeLimit();
 	}
 
+	// send tesselation parms to body: name design the param to change to value
+	void planetTesselation(std::string name, int value);
 
 	//! Set if Moon display is scaled
 	void setFlagMoonScale(bool b) {
@@ -353,7 +355,17 @@ public:
 		BodyColor::setDefault(_halo, _label, _orbit, _trail);
 	}
 
+	//initialise the body tesselation value
+	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
+		Body::setMinTes(minTes, true);
+		Body::setMaxTes(maxTes, true);
+		Body::setPlanetTes(planetTes,true);
+		Body::setMoonTes(moonTes,true);
+		Body::setEarthTes(earthTes,true);
+	}
+
 	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
+	// réinitialise les paramètes de la tesselaiton
 	// prend en compte la taille et le flag caché ou pas
 	void initialSolarSystemBodies();
 

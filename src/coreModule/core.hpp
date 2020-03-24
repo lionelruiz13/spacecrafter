@@ -1505,6 +1505,11 @@ public:
 		return ssystem->getPlanetSizeScale(name);
 	}
 
+	// send param tesselation, name design the param to change to value
+	void planetTesselation(std::string name, int value) {
+		ssystem->planetTesselation(name,value);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// StarLines---------------------------
 	////////////////////////////////////////////////////////////////////////////////
