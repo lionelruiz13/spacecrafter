@@ -1589,7 +1589,17 @@ int AppCommandInterface::commandSet()
 	else if (args["constellation_art_fade_duration"]!="") stcore->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"]));
 	else if (args["constellation_art_intensity"]!="") stcore->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"]));
 	else if (args["light_pollution_limiting_magnitude"]!="") stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"]));
-	else if (args["heading"]!="") {
+	else if (args["font"] != "") {
+		FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
+		if (myFile) {
+			int size = 10;
+			if (args["size"] != "") size = evalInt(args["size"]);
+			stcore->loadFont(size, args["font"]);
+		} else {
+			debug_message= "command_set_font font not found";
+			cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		}
+	} else if (args["heading"]!="") {
 		if (args["heading"]=="default") {
 			stcore->setDefaultHeading();
 		}
