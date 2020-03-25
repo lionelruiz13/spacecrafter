@@ -1,8 +1,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include "TargetCamera.h"
+#include "TargetCamera.hpp"
 #include <iostream>
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 #include <algorithm>
 

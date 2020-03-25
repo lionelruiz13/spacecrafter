@@ -10,6 +10,9 @@
 #include <string>
 #include <iostream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <math.h>
 
 #include "TargetCamera.hpp"
@@ -17,23 +20,22 @@
 #include "SDLFacade.hpp"
 
 #define __main__
-#include "../../src/log.hpp"
-#include "../../src/shader.hpp"
-#include "../../src/ojm.hpp"
+#include "shader.hpp"
+#include "ojm.hpp"
 
 // camera matrices. it's easier if they are global
-Mat4f view_mat;
-Mat4f proj_mat;
-Mat4f normal_mat;
-//~ Vec3f cam_pos(0.0f, 0.0f, 50.0f);
-Vec3f ojmMesh_pos_wor(0.0f,0.0f,0.0f);
+glm::mat4 view_mat;
+glm::mat4 proj_mat;
+glm::mat4 normal_mat;
+//~ glm::vec3 cam_pos(0.0f, 0.0f, 50.0f);
+glm::vec3 ojmMesh_pos_wor(0.0f,0.0f,0.0f);
 
 float dt = 1.f;
 const float MOVE_SPEED = 0.5f;
   
 const float MOUSE_FILTER_WEIGHT=0.75f;
 const int MOUSE_HISTORY_BUFFER_SIZE = 10;
-Vec2f mouseHistory[MOUSE_HISTORY_BUFFER_SIZE];
+glm::vec2 mouseHistory[MOUSE_HISTORY_BUFFER_SIZE];
 
 float mouseX=0, mouseY=0; //filtered mouse values
 bool useFiltering = true;
@@ -44,7 +46,7 @@ void filterMouseMoves(float dx, float dy) {
     }
 
     // Store current mouse entry at front of array.
-    mouseHistory[0] = Vec2f(dx, dy);
+    mouseHistory[0] = glm::vec2(dx, dy);
 
     float averageX = 0.0f;
     float averageY = 0.0f;
@@ -54,7 +56,7 @@ void filterMouseMoves(float dx, float dy) {
     // Filter the mouse.
     for (int i = 0; i < MOUSE_HISTORY_BUFFER_SIZE; ++i)
     {
-		Vec2f tmp=mouseHistory[i];
+		glm::vec2 tmp=mouseHistory[i];
         averageX += tmp[0] * currentWeight;
         averageY += tmp[1] * currentWeight;
         averageTotal += 1.0f * currentWeight;
@@ -78,30 +80,29 @@ std::string programName = "OJM_VIEWER";
 int main (int argc, char **argv)
 {
 	SDLFacade* mainSDL = nullptr;
-	CFreeCamera cam; 
+	CFreeCamera cam;
+	std::string fileToLoad;
 /*--------------------------------START OPENGL--------------------------------*/
 
 	mainSDL = new SDLFacade(gl_width, gl_height);
 	mainSDL->init(programName);
 
-	Log.open("prog.log", "script.log", "openGL.log", "tcp.log");
-	Log.write("test !");
 	float lum = 0.5;
 
 /*------------------------------CREATE GEOMETRY-------------------------------*/
 	if (argc!=2) {
 		printf("%s need Argument\n", argv[0]);
 		printf("Exemple: %s <file.ojm>\n", argv[0]);
-		return -1;
-	}
-	Ojm ojmMesh(argv[1],"", 10.0f);
+		fileToLoad = "Voyager.ojm";
+	} else
+		fileToLoad = argv[1];
+
+	Ojm ojmMesh(fileToLoad,"", 10.0f);
 
 	if (!ojmMesh.getOk()) {
 		printf("ojm not ok\n");
 		return -2;
 	}
-
-	shaderProgram::setShaderDir("/usr/local/share/spacecrafter/shaders/");
 
 /*-------------------------------CREATE SHADERS-------------------------------*/
 	shaderProgram* shaderOJM;
@@ -118,13 +119,11 @@ int main (int argc, char **argv)
 	shaderOJM->setUniformLocation("Material.Ks");
 	shaderOJM->setUniformLocation("Material.Ns");
 	shaderOJM->setUniformLocation("useTexture");
-	//~ shaderOJM->setUniformLocation("T");
-	shaderOJM->printInformations();
 
 
 /*---------------------------SET RENDERING DEFAULTS---------------------------*/
 
-	Mat4f model_mat = Mat4f::translation(ojmMesh_pos_wor) * Mat4f::xrotation(90.0*C_PI/180);
+	glm::mat4 model_mat = glm::translate(glm::mat4(), ojmMesh_pos_wor) * glm::rotate(glm::mat4(1),90.0f, glm::vec3(1,0,0));
 
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glEnable(GL_CULL_FACE); // enable cull_face
@@ -133,8 +132,8 @@ int main (int argc, char **argv)
 	glClearColor(0.5, 0.5, 0.5, 1.0); // grey background to help spot mistakes
 	glViewport(0, 0, gl_width, gl_height);
 
-	cam.SetPosition(Vec3f(5,5,5));
-	//~ cam.SetTarget(Vec3f(0,0,0));
+	cam.SetPosition(glm::vec3(5,5,5));
+	//~ cam.SetTarget(glm::vec3(0,0,0));
 	cam.SetupProjection(45, (GLfloat)gl_width/gl_height);	
 
 
@@ -144,7 +143,7 @@ int main (int argc, char **argv)
 
 	// control keys
 	bool cam_moved = false;
-	//~ Vec3f move (0.0, 0.0, 0.0);
+	//~ glm::vec3 move (0.0, 0.0, 0.0);
 	//~ float cam_yaw = 0.0f; // y-rotation in degrees
 	//~ float cam_pitch = 0.0f;
 	//~ float cam_roll = 0.0;
@@ -162,7 +161,7 @@ int main (int argc, char **argv)
 
 		// control keys
 		cam_moved = false;
-		//~ move=Vec3f(0.0, 0.0, 0.0);
+		//~ move=glm::vec3(0.0, 0.0, 0.0);
 		//~ cam_yaw = 0.0f; // y-rotation in degrees
 		//~ cam_pitch = 0.0f;
 		//~ cam_roll = 0.0;
@@ -265,7 +264,7 @@ int main (int argc, char **argv)
 		view_mat = cam.GetViewMatrix();
 		proj_mat = cam.GetProjectionMatrix();
 
-		normal_mat = ((view_mat * model_mat).inverse()).transpose();
+		normal_mat = glm::transpose(glm::inverse(view_mat * model_mat));
 
 		shaderOJM->use();
 		shaderOJM->setUniform("ModelViewMatrix" , view_mat * model_mat);
@@ -273,8 +272,8 @@ int main (int argc, char **argv)
 		shaderOJM->setUniform("NormalMatrix" , normal_mat);
 		shaderOJM->setUniform("MVP" , proj_mat * view_mat * model_mat);
 
-		shaderOJM->setUniform("Light.Position" , view_mat *  Vec4f(0.0, 0.0, 0.0, 1.0));
-		shaderOJM->setUniform("Light.Intensity" , lum*Vec3f(1.0, 1.0, 1.0));
+		shaderOJM->setUniform("Light.Position" , view_mat *  glm::vec4(0.0, 0.0, 0.0, 1.0));
+		shaderOJM->setUniform("Light.Intensity" , lum*glm::vec3(1.0, 1.0, 1.0));
 
 		ojmMesh.draw(shaderOJM);
 		glUseProgram(0);

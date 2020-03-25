@@ -1,4 +1,4 @@
-#include "AbstractCamera.h"  
+#include "AbstractCamera.hpp"  
  
 
 glm::vec3 CAbstractCamera::UP = glm::vec3(0,1,0);

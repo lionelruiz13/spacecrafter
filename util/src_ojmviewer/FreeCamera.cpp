@@ -1,4 +1,5 @@
-#include "FreeCamera.h"
+#include "FreeCamera.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 
 CFreeCamera::CFreeCamera()
