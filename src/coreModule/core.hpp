@@ -1981,6 +1981,7 @@ private:
 	MilkyWay * milky_way;				// Our galaxy
 	MeteorMgr * meteors;				// Manage meteor showers
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
+	Landscape * inactiveLandscape;			// Background landscape to switch smoothly between landscapes
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
 	SkyLocalizer *skyloc;				// for sky cultures and locales
 	BodyTrace * bodytrace;				// the pen bodytrace
