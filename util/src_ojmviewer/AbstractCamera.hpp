@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../src/vecmath.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 class CAbstractCamera
 {
@@ -8,32 +8,30 @@ public:
 	CAbstractCamera(void);
 	~CAbstractCamera(void);
 	 
-	void SetupProjection(const float fovy=45.0f, const float aspectRatio=1.33333f);
+	void SetupProjection(const float fovy, const float aspectRatio, const float near=0.1f, const float far=1000.0f);
 	
 	virtual void Update() = 0;
-	virtual void Rotate(const float yaw, const float pitch, const float roll) = 0;
-	//virtual void Translate(const float dx, const float dy, const float dz) = 0;
+	virtual void Rotate(const float yaw, const float pitch, const float roll); 
 
-	const Mat4f GetViewMatrix() const;
-	const Mat4f GetProjectionMatrix() const;
+	const glm::mat4 GetViewMatrix() const;
+	const glm::mat4 GetProjectionMatrix() const;
 
-	void SetPosition(const Vec3f v);
-	const Vec3f GetPosition() const;
+	void SetPosition(const glm::vec3& v);
+	const glm::vec3 GetPosition() const;
+	 
 
-	Mat4f GetMatrixUsingYawPitchRoll(const float yaw, const float pitch, const float roll);
-
+	void SetFOV(const float fov);
 	const float GetFOV() const;
 	const float GetAspectRatio() const; 
 
-	
 protected:	 
-	float fov, aspect_ratio;
-	static Vec3f UP;
-	Vec3f look;
-	Vec3f up;
-	Vec3f right; 
-	Vec3f position;
-	Mat4f V; //view matrix
-	Mat4f P; //projection matrix
+	float yaw, pitch, roll, fov, aspect_ratio, Znear, Zfar;
+	static glm::vec3 UP;
+	glm::vec3 look;
+	glm::vec3 up;
+	glm::vec3 right; 
+	glm::vec3 position;
+	glm::mat4 V; //view matrix
+	glm::mat4 P; //projection matrix
 };
 
