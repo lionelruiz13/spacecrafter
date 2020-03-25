@@ -456,6 +456,16 @@ void UI::localizeTui()
 	if (tuiFont) delete tuiFont;
 
 	tuiFont = new s_font(FontSizeMenuTui, FontNameMenu);
+
+	//Use translated text to determine if the font supports the language
+	bool languageSupported = tuiFont->allGlyphsProvided(_("Set UI Locale: "));
+	//load fallback font if the characters are not supported by the current font
+	if (!languageSupported) {
+		std::string uniFontName = AppSettings::Instance()->getUserDir()+"fonts/unifont-12.1.04.ttf";
+		tuiFont = new s_font(24, uniFontName);
+		core->loadFont(16, uniFontName);
+	}
+
 	if (!tuiFont) {
 		cLog::get()->write("Error while creating font name tuiFont",LOG_TYPE::L_ERROR);
 		exit(-1);
@@ -747,12 +757,31 @@ void UI::tuiCbTuiGeneralChangeLandscape()
 // Set a new sky culture
 void UI::tuiCbTuiGeneralChangeSkyCulture()
 {
+
 	this->executeCommand( std::string("set sky_culture ") +std::string(tui_general_sky_culture->getCurrent()));
 }
 
 // Set a new sky locale
 void UI::tuiCbTuiGeneralChangeSkyLocale()
 {
+
+	std::string previousLang = app->getAppLanguage();
+
+	app->setAppLanguage(std::string(tui_general_sky_locale->getCurrent()));
+	if (tuiFont) delete tuiFont;
+
+	tuiFont = new s_font(FontSizeMenuTui, FontNameMenu);
+
+	//Use translated text to determine if the font supports the language
+	bool languageSupported = tuiFont->allGlyphsProvided(_("Set UI Locale: "));
+	//load fallback font if the characters are not supported by the current font
+	if (!languageSupported) {
+		std::string uniFontName = AppSettings::Instance()->getUserDir()+"fonts/unifont-12.1.04.ttf";
+		core->loadFont(16, uniFontName);
+	} else {
+		core->loadFont(10, FontNameMenu);
+	}
+	app->setAppLanguage(previousLang);
 	this->executeCommand( std::string("set sky_locale " +std::string(tui_general_sky_locale->getCurrent())));
 }
 
