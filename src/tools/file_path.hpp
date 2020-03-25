@@ -59,6 +59,7 @@ public:
 							IMAGE,///< le répertoire image
 							TEXTURE,///< le répertoire des textures
 							DATA, ///< le répertoire data
+							FONTS, ///< le répertoire fonts
 							MODEL3D,///< le répertoire model3D
 							SCRIPT ///< le répertoire de script
 							};
