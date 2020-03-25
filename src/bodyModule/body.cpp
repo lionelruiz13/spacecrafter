@@ -937,7 +937,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 	model = mat.convert();
 	view = nav->getHelioToEyeMat().convert();
 	vp = prj->getMatProjection().convert() * view;
-	viewBeforeLookAt = Mat4d::getViewFromLookAt(nav->getHelioToEyeMat()).convert();
+	//viewBeforeLookAt = Mat4d::getViewFromLookAt(nav->getHelioToEyeMat()).convert();
 
 	mat = nav->getHelioToEyeMat() * mat;
 

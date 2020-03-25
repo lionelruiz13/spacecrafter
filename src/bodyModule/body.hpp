@@ -648,7 +648,7 @@ protected:
 	Mat4f model;
 	Mat4f view;
 	Mat4f vp;
-	Mat4f viewBeforeLookAt;
+	//Mat4f viewBeforeLookAt;
 	Mat4f proj;
 	Mat4f matrix;
 
