@@ -12,6 +12,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 #include <math.h>
 
@@ -123,7 +125,7 @@ int main (int argc, char **argv)
 
 /*---------------------------SET RENDERING DEFAULTS---------------------------*/
 
-	glm::mat4 model_mat = glm::translate(glm::mat4(), ojmMesh_pos_wor) * glm::rotate(glm::mat4(1),90.0f, glm::vec3(1,0,0));
+	glm::mat4 model_mat = glm::translate(glm::mat4(1), ojmMesh_pos_wor) * glm::rotate(glm::mat4(1),90.0f, glm::vec3(1,0,0));
 
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glEnable(GL_CULL_FACE); // enable cull_face
@@ -132,7 +134,7 @@ int main (int argc, char **argv)
 	glClearColor(0.5, 0.5, 0.5, 1.0); // grey background to help spot mistakes
 	glViewport(0, 0, gl_width, gl_height);
 
-	cam.SetPosition(glm::vec3(5,5,5));
+	cam.SetPosition(glm::vec3(10,0,0));
 	//~ cam.SetTarget(glm::vec3(0,0,0));
 	cam.SetupProjection(45, (GLfloat)gl_width/gl_height);	
 
@@ -153,6 +155,10 @@ int main (int argc, char **argv)
 	unsigned int current_time = previous_time;
 	unsigned int elapsed_time = 0;
 	double elapsed_seconds;
+
+	//std::cout << "calGetPos  " << glm::to_string(cam.GetPosition() ) << std::endl;
+	//std::cout << "calGetProj " << glm::to_string(cam.GetProjectionMatrix() ) << std::endl;
+	//std::cout << "model_mat  " << glm::to_string( model_mat ) << std::endl;
 
 	while (loop) 
 	{
@@ -262,9 +268,12 @@ int main (int argc, char **argv)
 		cam.Update();
 
 		view_mat = cam.GetViewMatrix();
+		//std::cout << "view_mat " << glm::to_string( view_mat ) << std::endl;
 		proj_mat = cam.GetProjectionMatrix();
+		//std::cout << "proj_mat " << glm::to_string( proj_mat ) << std::endl;
 
 		normal_mat = glm::transpose(glm::inverse(view_mat * model_mat));
+		//std::cout << "normal_mat " << glm::to_string( normal_mat ) << std::endl;
 
 		shaderOJM->use();
 		shaderOJM->setUniform("ModelViewMatrix" , view_mat * model_mat);
