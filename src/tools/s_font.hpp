@@ -69,7 +69,7 @@ public:
 	static void createShader();
 	static void deleteShader();
 	bool isGlyphProvided(Uint16 ch);
-	bool allGlyphsProvided(std::string &str);
+	bool allGlyphsProvided(const std::string &str);
 protected:
 
 	renderedStringHash_t renderCache;
