@@ -162,7 +162,7 @@ public:
 	}
 
 	//! get flag for Activate/Deactivate planets display
-	bool getFlagPlanets(void) const {
+	bool getFlagShow(void) const {
 		return flagShow;
 	}
 

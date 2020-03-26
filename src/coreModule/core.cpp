@@ -1282,7 +1282,7 @@ Object Core::cleverFind(const Vec3d& v) const
 	ypos = winpos[1];
 
 	// Collect the planets inside the range
-	if (ssystem->getFlagPlanets()) {
+	if (ssystem->getFlagShow()) {
 		temp = ssystem->searchAround(v, fov_around, navigation, observatory, projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 

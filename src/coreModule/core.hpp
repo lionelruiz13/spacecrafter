@@ -1384,7 +1384,7 @@ public:
 	}
 	//! Get flag for displaying Planets
 	bool planetsGetFlag(void) const {
-		return ssystem->getFlagPlanets();
+		return ssystem->getFlagShow();
 	}
 
 	//! Set flag for displaying Planets Trails

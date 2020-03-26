@@ -832,7 +832,7 @@ void SolarSystem::computeTransMatrices(double date,const Observer * obs)
 
 void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 {
-	if (!getFlagPlanets()) 
+	if (!getFlagShow()) 
 		return; // 0;
 
 	// Compute each Body distance to the observer
@@ -927,7 +927,7 @@ void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 // We are supposed to be in heliocentric coordinate
 void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* observatory, const ToneReproductor* eye, /*bool flag_point,*/ bool drawHomePlanet)
 {
-	if (!getFlagPlanets()) 
+	if (!getFlagShow()) 
 		return; // 0;
 	
 	int nBuckets = listBuckets.size();
