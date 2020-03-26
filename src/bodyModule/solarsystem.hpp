@@ -31,6 +31,7 @@
 #include <functional>
 #include <map>
 
+#include "bodyModule/body_common.hpp"
 #include "bodyModule/body_sun.hpp"
 #include "bodyModule/body_moon.hpp"
 #include "bodyModule/body_bigbody.hpp"
@@ -147,6 +148,9 @@ public:
 	Moon* getMoon(void) const {
 		return moon;
 	}
+
+	// get flag for Activate/Deactivate Body composant
+	bool getFlag(BODY_FLAG name);
 
 	//! set flag for Activate/Deactivate planets axis
 	void setFlagAxis(bool b);

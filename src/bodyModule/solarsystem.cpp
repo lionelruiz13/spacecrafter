@@ -1410,6 +1410,18 @@ void SolarSystem::bodyTraceBodyChange(const std::string &bodyName)
 	}	
 }
 
+bool SolarSystem::getFlag(BODY_FLAG name)
+{
+	switch (name) {
+		case BODY_FLAG::F_TRAIL: return flagTrails; break;
+		case BODY_FLAG::F_HINTS: return flagHints; break;
+		case BODY_FLAG::F_AXIS : return flagAxis; break;
+		case BODY_FLAG::F_ORBIT : return (flagPlanetsOrbits||flagSatellitesOrbits); break;
+		case BODY_FLAG::F_CLOUDS: return Body::getFlagClouds(); break;
+		default: break;
+	}
+	return false;
+}
 
 void SolarSystem::setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c)
 {
