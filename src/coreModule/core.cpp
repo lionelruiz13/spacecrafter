@@ -1332,7 +1332,7 @@ Object Core::cleverFind(const Vec3d& v) const
 			}
 		}
 		if ((*iter).getType()==OBJECT_BODY) {
-			if ( ssystem->getFlagHints() ) {
+			if ( ssystem->getFlag(BODY_FLAG::F_HINTS)) {
 				// easy to select, especially pluto
 				mag -= 15.f;
 			} else {
@@ -1905,7 +1905,7 @@ void Core::updateMove(int delta_time)
 bool Core::setHomePlanet(const std::string &planet)
 {
 	// reset planet trails due to changed perspective
-	ssystem->startTrails( ssystem->getFlagTrails() );
+	ssystem->startTrails( ssystem->getFlag(BODY_FLAG::F_TRAIL));
 	if (planet=="selected") return anchorManager->switchToAnchor(selected_object.getEnglishName()); else return anchorManager->switchToAnchor(planet);
 }
 

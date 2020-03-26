@@ -565,11 +565,11 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 	    Utility::strToDouble(param["axial_tilt"],0.) );
 
 	// Clone current flags to new body unless one is currently selected
-	p->setFlagHints(getFlagHints());
-	p->setFlagTrail(getFlagTrails());
+	p->setFlagHints(flagHints);
+	p->setFlagTrail(flagTrails);
 
 	if (!selected || selected == Object(sun)) {
-		p->setFlagOrbit(getFlagOrbits());
+		p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
 	}
 	
 	BodyContainer  * container = new BodyContainer();
@@ -1290,8 +1290,8 @@ void SolarSystem::setSelected(const Object &obj)
 		selected = Object();
 	}
 	// Undraw other objects hints, orbit, trails etc..
-	setFlagOrbits(getFlagOrbits());
-	setFlagTrails(getFlagTrails());  // TODO should just hide trail display and not affect data collection
+	setFlagOrbits(flagTrails);
+	setFlagTrails(flagTrails);  // TODO should just hide trail display and not affect data collection
 }
 
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
