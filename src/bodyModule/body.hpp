@@ -480,7 +480,7 @@ public:
 		bodyTesselation->earth_altimetry_factor.update(delta_time);
 	}
 
-	void setAtmExt(double radiusFactor, const std::string &gradient);
+	//void setAtmExt(double radiusFactor, const std::string &gradient);
 
 	static bool setTexHaloMap(const std::string &texMap);
 
