@@ -64,7 +64,7 @@ public:
 	};
 
 	static shaderProgram * getShaderNightTes() {
-		return shaderNightTes;
+		return myEarth;
 	};
 
 	static shaderProgram * getShaderRinged() {
@@ -88,7 +88,7 @@ public:
 	};
 
 	static shaderProgram * getShaderMoonNormalTes() {
-		return shaderMoonNormalTes;
+		return myMoon;
 	};
 
 	static shaderProgram * getShaderArtificial() {
@@ -98,13 +98,13 @@ public:
 protected:
 	static shaderProgram *shaderBump;
 	static shaderProgram *shaderNight;
-	static shaderProgram *shaderNightTes;
+	static shaderProgram *myEarth;
 	static shaderProgram *shaderRinged;
 	static shaderProgram *shaderNormal;
 	static shaderProgram *shaderNormalTes;
 	static shaderProgram *shaderMoonNormal;
 	static shaderProgram *shaderMoonBump;
-	static shaderProgram *shaderMoonNormalTes;
+	static shaderProgram *myMoon;
 	static shaderProgram *shaderArtificial;
 };
 
