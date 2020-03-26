@@ -38,6 +38,9 @@ uniform mat4 Model;
 
 uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 
+
+float coeffHeightMap = 0.05 * float(TesParam[2]);
+
 // in gl_PerVertex
 // {
 //   vec4 gl_Position;
@@ -94,8 +97,6 @@ uniform mat4 inverseModelViewProjectionMatrix;
 //~ uniform ivec4 viewport; 
 //~ uniform vec3 viewport_center;
 uniform vec3 clipping_fov;
-
-float coeffHeightMap = 0.05 * float(TesParam[2]);
 
 //~ uniform float zNear;
 //~ uniform float zFar;
