@@ -1951,6 +1951,7 @@ bool Core::selectObject(const Object &obj)
 
 			if (selected_object.getType()==OBJECT_STAR) {
 				asterisms->setSelected(selected_object);
+				hip_stars->setSelected(selected_object);
 				// potentially record this action
 				if (!recordActionCallback.empty()) recordActionCallback("select " + selected_object.getEnglishName());
 			} else {
