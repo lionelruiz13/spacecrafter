@@ -258,6 +258,16 @@ public:
 		return names_fader==true;
 	}
 
+	//! Set whether selected stars must be displayed alone
+	void setFlagIsolateSelected(bool s) {
+		isolateSelected = s;
+	}
+
+	//! Get whether selected stars are displayed alone
+	bool getFlagIsolateSelected(void) const {
+		return isolateSelected;
+	}
+
 	//! Set display flag for Star Scientific names.
 	void setFlagStarsSciNames(bool b) {
 		flagStarSciName=b;
@@ -460,6 +470,7 @@ private:
 	bool flagStarTwinkle;
 	float twinkleAmount;
 	bool gravityLabel;
+	bool isolateSelected;
 	std::map<std::string, bool> selected_star;
 
 	s_texture* starTexture; //! star texture

@@ -881,9 +881,20 @@ public:
 	void constellationSetFlagIsolateSelected(bool b) {
 		asterisms->setFlagIsolateSelected(b);
 	}
+
 	//! Get whether selected constellation is drawn alone
 	bool constellationGetFlagIsolateSelected(void) {
 		return asterisms->getFlagIsolateSelected();
+	}
+
+	//! Set whether to draw the names for the selected stars or every star
+	void starSetFlagIsolateSelected(bool b) {
+		return hip_stars->setFlagIsolateSelected(b);
+	}
+
+	//! Get whether to draw the names for the selected stars or every star
+	bool starGetFlagIsolateSelected(void) {
+		return hip_stars->getFlagIsolateSelected();
 	}
 
 	//! Get constellation line color

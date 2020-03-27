@@ -1659,6 +1659,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble ("stars:star_scale", starGetScale());
 	conf.setDouble ("stars:star_mag_scale", starGetMagScale());
 	conf.setDouble("stars:max_mag_star_name", starGetMaxMagName());
+	conf.setBoolean("viewing:flag_star_pick", starGetFlagIsolateSelected());
 	conf.setBoolean("stars:flag_star_twinkle", starGetFlagTwinkle());
 	conf.setDouble("stars:star_twinkle_amount", starGetTwinkleAmount());
 	conf.setDouble("stars:star_limiting_mag", starGetLimitingMag());
@@ -1709,6 +1710,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("astro:flag_bright_nebulae", nebulaGetFlagBright());
 	conf.setBoolean("astro:flag_stars", starGetFlag());
 	conf.setBoolean("astro:flag_star_name", starGetFlagName());
+	conf.setBoolean("viewing:flag_star_pick", starGetFlagIsolateSelected());
 	conf.setBoolean("astro:flag_nebula", nebulaGetFlag());
 	conf.setBoolean("astro:flag_nebula_names", nebulaGetFlagNames());
 	conf.setBoolean("astro:flag_nebula_hints", nebulaGetFlagHints());
