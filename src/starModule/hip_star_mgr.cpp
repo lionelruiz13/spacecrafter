@@ -674,10 +674,10 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		}
 		int zone;
 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected);
+			it->second->draw(zone,true,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
 		}
 		for (GeodesicSearchBorderIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {
-			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected);
+			it->second->draw(zone,false,rcmag_table,prj,nav,max_mag_star_name,names_brightness, starNameToDraw,  selected_star, atmosphere, isolateSelected && !selected_star.empty());
 		}
 
 	}
