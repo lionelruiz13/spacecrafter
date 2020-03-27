@@ -1251,6 +1251,7 @@ void Core::deselect(void)
 {
 	unSelect();
 	asterisms->deselect();
+	hip_stars->deselect();
 }
 
 // - allow selection of large nearby planets more easily and do not select hidden planets

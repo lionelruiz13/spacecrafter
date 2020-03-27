@@ -253,6 +253,10 @@ public:
 		selected_star.insert(std::pair<std::string, bool>(star.getNameI18n(), true));
 	}
 
+	void deselect() {
+		selected_star.clear();
+	}
+
 	//! Get display flag for Star names (labels).
 	bool getFlagNames(void) const {
 		return names_fader==true;
