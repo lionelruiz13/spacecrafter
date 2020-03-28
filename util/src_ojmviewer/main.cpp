@@ -41,6 +41,9 @@ glm::vec2 mouseHistory[MOUSE_HISTORY_BUFFER_SIZE];
 
 float mouseX=0, mouseY=0; //filtered mouse values
 bool useFiltering = true;
+int state = 0, oldX=0, oldY=0;
+float rX=0, rY=0, fov = 45;
+
 
 void filterMouseMoves(float dx, float dy) {
     for (int i = MOUSE_HISTORY_BUFFER_SIZE - 1; i > 0; --i) {
@@ -72,8 +75,8 @@ void filterMouseMoves(float dx, float dy) {
 
 
 
-int gl_width = 1024;
-int gl_height = 900;
+int gl_width = 1920;
+int gl_height = 1080;
 
 std::string programName = "OJM_VIEWER";
 
@@ -134,10 +137,22 @@ int main (int argc, char **argv)
 	glClearColor(0.5, 0.5, 0.5, 1.0); // grey background to help spot mistakes
 	glViewport(0, 0, gl_width, gl_height);
 
-	cam.SetPosition(glm::vec3(10,0,0));
-	//~ cam.SetTarget(glm::vec3(0,0,0));
 	cam.SetupProjection(45, (GLfloat)gl_width/gl_height);	
-
+	glm::vec3 p = glm::vec3(10,0,0);
+	cam.SetPosition(p);
+	glm::vec3 look =  glm::normalize(p);
+	
+	//rotate the camera for proper orientation
+	float yaw = glm::degrees(float(atan2(look.z, look.x)+M_PI));
+	float pitch = glm::degrees(asin(look.y));
+	rX = yaw;
+	rY = pitch;
+	if(useFiltering) {
+		for (int i = 0; i < MOUSE_HISTORY_BUFFER_SIZE ; ++i) {
+			mouseHistory[i] = glm::vec2(rX, rY);
+		}
+	}
+	cam.Rotate(rX,rY,0);
 
 /*-------------------------------RENDERING LOOP-------------------------------*/
 	bool loop = true;
@@ -261,6 +276,26 @@ int main (int argc, char **argv)
 					break;
 				}
 			}
+
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				int x = event.motion.x;
+				int y = event.motion.y;
+				rY += (y - oldY)/5.0f;
+				rX += (oldX-x)/5.0f;
+				if(useFiltering)
+					filterMouseMoves(rX, rY);
+				else {
+					mouseX = rX;
+					mouseY = rY;
+				}
+				cam.Rotate(-mouseX,mouseY, 0);
+				oldX = x;
+				oldY = y;
+			}
+
+		
+
 		}
 
 		//~ if (cam_moved)
