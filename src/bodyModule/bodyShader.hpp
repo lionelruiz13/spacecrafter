@@ -37,7 +37,7 @@
 
 
 enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4, 
-				SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_NORMAL_TES = 61 , SHADER_MOON_BUMP = 7, SHADER_ARTIFICIAL = 8};
+				SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_NORMAL_TES = 61 , SHADER_MOON_BUMP = 7, SHADER_MOON_NIGHT=32, SHADER_ARTIFICIAL = 8};
 
 /*struct bodyShaderStatus {
 	bool map;
@@ -83,6 +83,10 @@ public:
 		return shaderMoonNormal;
 	};
 
+	static shaderProgram * getShaderMoonNight() {
+		return shaderMoonNight;
+	};
+
 	static shaderProgram * getShaderMoonBump() {
 		return shaderMoonBump;
 	};
@@ -98,6 +102,7 @@ public:
 protected:
 	static shaderProgram *shaderBump;
 	static shaderProgram *shaderNight;
+	static shaderProgram *shaderMoonNight;
 	static shaderProgram *myEarth;
 	static shaderProgram *shaderRinged;
 	static shaderProgram *shaderNormal;

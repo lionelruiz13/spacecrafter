@@ -62,4 +62,5 @@ protected :
 
 	SHADER_USE myShader;  			// the name of the shader used for his display
 	shaderProgram *myShaderProg;	// Shader moderne
+	s_texture * tex_night;			// for moon with night event to see
 };

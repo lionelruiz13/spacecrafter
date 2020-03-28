@@ -90,6 +90,12 @@ void Moon::selectShader()
 		return;
 	}
 
+	if (tex_night) { //altimetry Shader
+		myShader = SHADER_MOON_NIGHT;
+		myShaderProg = BodyShader::getShaderMoonNight();
+		return;
+	}
+
 	if (tex_norm) { //bump Shader
 		myShader = SHADER_MOON_BUMP;
 		myShaderProg = BodyShader::getShaderMoonBump();
@@ -137,6 +143,17 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
 	
+			break;
+
+		case SHADER_MOON_NIGHT :
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
+
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
+			
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, tex_night->getID());			
 			break;
 
 		case SHADER_MOON_NORMAL :

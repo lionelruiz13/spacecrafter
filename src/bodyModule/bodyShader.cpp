@@ -35,6 +35,7 @@ shaderProgram* BodyShader::myEarth=nullptr;
 shaderProgram* BodyShader::shaderRinged=nullptr;
 shaderProgram* BodyShader::shaderNormal=nullptr;
 shaderProgram* BodyShader::shaderNormalTes=nullptr;
+shaderProgram* BodyShader::shaderMoonNight=nullptr;
 shaderProgram* BodyShader::shaderMoonNormal=nullptr;
 shaderProgram* BodyShader::shaderMoonBump=nullptr;
 shaderProgram* BodyShader::myMoon=nullptr;
@@ -73,6 +74,31 @@ void BodyShader::createShader()
 
 	shaderNight->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderNight->setUniformLocation("clipping_fov");	
+
+	shaderMoonNight = new shaderProgram();
+	shaderMoonNight->init( "body_moon_night.vert", "body_moon_night.frag");
+	shaderMoonNight->setUniformLocation("Clouds");
+	shaderMoonNight->setUniformLocation("CloudNormalTexture");
+	shaderMoonNight->setUniformLocation("CloudTexture");
+
+	//commum
+	shaderMoonNight->setUniformLocation("planetRadius");
+	shaderMoonNight->setUniformLocation("planetScaledRadius");
+	shaderMoonNight->setUniformLocation("planetOneMinusOblateness");
+
+	shaderMoonNight->setUniformLocation("SunHalfAngle");
+	shaderMoonNight->setUniformLocation("LightPosition");
+	shaderMoonNight->setUniformLocation("ModelViewProjectionMatrix");
+	shaderMoonNight->setUniformLocation("ModelViewMatrix");
+	shaderMoonNight->setUniformLocation("NormalMatrix");
+	shaderMoonNight->setUniformLocation("ViewProjection");
+	shaderMoonNight->setUniformLocation("Model");
+
+	shaderMoonNight->setUniformLocation("MoonPosition1");
+	shaderMoonNight->setUniformLocation("MoonRadius1");
+
+	shaderMoonNight->setUniformLocation("inverseModelViewProjectionMatrix");
+	shaderMoonNight->setUniformLocation("clipping_fov");	
 
 	myEarth= new shaderProgram();
 	myEarth->init( "my_earth.vert", "my_earth.tesc","my_earth.tese", "my_earth.geom", "my_earth.frag");
@@ -324,6 +350,7 @@ void BodyShader::createShader()
 void BodyShader::deleteShader()
 {
 	if (shaderNight) delete shaderNight;
+	if (shaderMoonNight) delete shaderMoonNight;
 	if (myEarth) delete myEarth;
 	if (shaderBump) delete shaderBump;
 	if (shaderRinged) delete shaderRinged;
