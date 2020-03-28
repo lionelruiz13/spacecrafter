@@ -58,6 +58,7 @@ INSTALL(FILES
 	body_ringed.vert body_ringed.frag 
 	ring_planet.vert ring_planet.frag
 	body_night.frag body_night.vert
+	body_moon_night.frag body_moon_night.vert
 	my_earth.frag my_earth.tesc my_earth.tese my_earth.geom my_earth.vert
 	colorInverse.frag colorInverse.vert
 	milkyway.frag milkyway.vert
