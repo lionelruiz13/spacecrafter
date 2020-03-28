@@ -24,6 +24,7 @@ CTargetCamera::~CTargetCamera(void)
 }
  
 void CTargetCamera::Update() {
+	 
 	glm::mat4 R = glm::yawPitchRoll(yaw,pitch,0.0f);
 	glm::vec3 T = glm::vec3(0,0,distance);
 	T = glm::vec3(R*glm::vec4(T,0.0f));

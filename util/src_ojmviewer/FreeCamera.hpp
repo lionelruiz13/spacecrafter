@@ -9,6 +9,7 @@ public:
 	~CFreeCamera(void);
 
 	void Update();
+	 
 	void Walk(const float dt);
 	void Strafe(const float dt);
 	void Lift(const float dt);
