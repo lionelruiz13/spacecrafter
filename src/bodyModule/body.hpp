@@ -150,9 +150,9 @@ public:
 	Mat4d getRotEquatorialToVsop87(void) const;
 	void setRotEquatorialToVsop87(const Mat4d &m);
 
-	const RotationElements &getRotationElements(void) const {
-		return re;
-	}
+	// const RotationElements &getRotationElements(void) const {
+	// 	return re;
+	// }
 
 	// Compute the position in the parent Body coordinate system
 	void computePositionWithoutOrbits(double date);
