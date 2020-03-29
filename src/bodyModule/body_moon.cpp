@@ -88,19 +88,19 @@ Moon::~Moon()
 void Moon::selectShader()
 {
 	//bool useShaderMoonNormal = true;
-	if (tex_heightmap) { //altimetry Shader
+	if (tex_heightmap!=nullptr) { //altimetry Shader
 		myShader = SHADER_MOON_NORMAL_TES;
 		myShaderProg = BodyShader::getShaderMoonNormalTes();
 		return;
 	}
 
-	if (tex_night) { //altimetry Shader
+	if (tex_night!=nullptr) { //altimetry Shader
 		myShader = SHADER_MOON_NIGHT;
 		myShaderProg = BodyShader::getShaderMoonNight();
 		return;
 	}
 
-	if (tex_norm) { //bump Shader
+	if (tex_norm!=nullptr) { //bump Shader
 		myShader = SHADER_MOON_BUMP;
 		myShaderProg = BodyShader::getShaderMoonBump();
 		return;
