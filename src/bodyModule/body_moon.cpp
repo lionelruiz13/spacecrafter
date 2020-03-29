@@ -73,9 +73,7 @@ Moon::Moon(Body *parent,
 		 _bodyTexture)
 {
 	if (_bodyTexture->tex_night != "") {
-		std::cout << englishName << " a une texture de nuit " << _bodyTexture->tex_night << std::endl;
 		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
-		std::cout << englishName << " texture id " << tex_night->getID() << std::endl;
 	}
 	//more adding could be placed here for the constructor of Moon
 	selectShader();
