@@ -10,9 +10,9 @@ layout (binding=0) uniform sampler2D mapTexture;   //DayTexture
 layout (binding=2) uniform sampler2D NightTexture;
 //layout (binding=3) uniform sampler2D SpecularTexture;
 layout (binding=1) uniform sampler2D shadowTexture;
-uniform int Clouds;
-uniform sampler2D CloudTexture;
-uniform sampler2D CloudNormalTexture;
+// uniform int Clouds;
+// uniform sampler2D CloudTexture;
+// uniform sampler2D CloudNormalTexture;
 uniform float SunHalfAngle;
 
 uniform vec3 MoonPosition1;
