@@ -26,6 +26,7 @@
 #include "bodyModule/body_moon.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/file_path.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/orbit_3d.hpp"
@@ -74,6 +75,9 @@ Moon::Moon(Body *parent,
 	//more adding could be placed here for the constructor of Moon
 	selectShader();
 	orbitPlot = new Orbit3D(this);
+	if (_bodyTexture->tex_night != "") {
+		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+	}
 }
 
 Moon::~Moon()
