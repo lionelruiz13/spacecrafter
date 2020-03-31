@@ -16,18 +16,7 @@ struct BodyTexture {
 	std::string tex_skin;
 };
 
-struct BodyTesselation {
-	Scalable<int> min_tes_level;
-	Scalable<int> max_tes_level;
-	Scalable<int> planet_altimetry_factor;
-	Scalable<int> moon_altimetry_factor;
-	Scalable<int> earth_altimetry_factor;
-	int min_tes_level_ini;
-	int max_tes_level_ini;
-	int planet_altimetry_factor_ini;
-	int moon_altimetry_factor_ini;
-	int earth_altimetry_factor_ini;
-};
+
 
 enum class BODY_FLAG : char {F_NONE, F_TRAIL, F_HINTS, F_AXIS, F_ORBIT, F_HALO, F_CLOUDS};
 

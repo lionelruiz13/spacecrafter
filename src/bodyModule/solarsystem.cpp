@@ -81,7 +81,10 @@ SolarSystem::SolarSystem()
 	Body::createShader();
 	BodyShader::createShader();
 	Body::createDefaultAtmosphereParams();
-	Body::createTesselationParams();
+	bodyTesselation =  new(BodyTesselation);
+	assert(bodyTesselation != nullptr);
+	bodyTesselation->createTesselationParams();
+	Body::setTesselation(bodyTesselation);
 	
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
@@ -119,6 +122,9 @@ SolarSystem::~SolarSystem()
 	Body::deleteDefaultTexMap();
 	Body::deleteDefaultatmosphereParams();
 	Body::deleteShader();
+	if (bodyTesselation)
+		delete bodyTesselation;
+	bodyTesselation = nullptr;
 
 	sun = nullptr;
 	moon = nullptr;
@@ -721,7 +727,7 @@ void SolarSystem::initialSolarSystemBodies(){
 			it->second->isHidden = it->second->initialHidden;
 		}
 	}
-	Body::resetTesselationParams();
+	bodyTesselation->resetTesselationParams();
 }
 
 void SolarSystem::toggleHideSatellites(bool val){
@@ -1296,7 +1302,7 @@ void SolarSystem::setSelected(const Object &obj)
 
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
-	Body::updateTesselation(delta_time);
+	bodyTesselation->updateTesselation(delta_time);
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		it->second->body->update(delta_time, nav, timeMgr);
 	}
@@ -1461,23 +1467,23 @@ const Vec3f SolarSystem::getDefaultBodyColor(const std::string& colorName) const
 
 void SolarSystem::planetTesselation(std::string name, int value) {
 	if (name=="min_tes_level") {
-		Body::setMinTes(value);
+		bodyTesselation->setMinTes(value);
 		return;
 	}
 	if (name=="max_tes_level") {
-		Body::setMaxTes(value);
+		bodyTesselation->setMaxTes(value);
 		return;
 	}
 	if (name=="planet_altimetry_factor") {
-		Body::setPlanetTes(value);
+		bodyTesselation->setPlanetTes(value);
 		return;
 	}
 	if (name=="moon_altimetry_factor") {
-		Body::setMoonTes(value);
+		bodyTesselation->setMoonTes(value);
 		return;
 	}
 	if (name=="earth_altimetry_factor") {
-		Body::setEarthTes(value);
+		bodyTesselation->setEarthTes(value);
 		return;
 	}
 }

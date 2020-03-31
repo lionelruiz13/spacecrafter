@@ -43,6 +43,7 @@
 #include "ojmModule/objl.hpp"
 #include "bodyModule/orbit_plot.hpp"
 #include "body_common.hpp"
+#include "body_tesselation.hpp"
 //#include "bodyModule/atmosphere_ext.hpp"
 #include "tools/scalable.hpp"
 #include "bodyModule/bodyShader.hpp"
@@ -258,45 +259,7 @@ public:
 		return object_size_limit;
 	}
 
-	static void setMinTes(int v, bool ini = false) {
-		if (ini) {
-			bodyTesselation->min_tes_level.set(v);
-			bodyTesselation->min_tes_level_ini = v;
-		} else
-			bodyTesselation->min_tes_level = v;
-	}
-
-	static void setMaxTes(int v, bool ini = false) {
-		if (ini) {
-			bodyTesselation->max_tes_level_ini = v;
-			bodyTesselation->max_tes_level.set(v);
-		} else
-		bodyTesselation->max_tes_level = v;
-	}
-
-	static void setPlanetTes(int v, bool ini = false) {
-		if (ini) {
-			bodyTesselation->planet_altimetry_factor_ini = v;
-			bodyTesselation->planet_altimetry_factor.set(v);
-		} else
-		bodyTesselation->planet_altimetry_factor = v;
-	}
-
-	static void setMoonTes(int v, bool ini = false) {
-		if (ini) {
-			bodyTesselation->moon_altimetry_factor_ini = v;
-			bodyTesselation->moon_altimetry_factor.set(v);
-		} else
-			bodyTesselation->moon_altimetry_factor = v;
-	}
-
-	static void setEarthTes(int v, bool ini = false) {
-		if (ini) {
-			bodyTesselation->earth_altimetry_factor_ini = v;
-			bodyTesselation->earth_altimetry_factor.set(v);
-		} else
-			bodyTesselation->earth_altimetry_factor = v;
-	}
+	
 
 	// fixe une couleur
 	void setColor(const std::string& colorName,  const Vec3f& oc);
@@ -421,43 +384,9 @@ public:
 		defaultAtmosphereParams = nullptr;
 	}
 
-	static void createTesselationParams() {
-		bodyTesselation =  new(BodyTesselation);
-		assert(bodyTesselation != nullptr);
-		bodyTesselation->min_tes_level.set(1);
-		bodyTesselation->max_tes_level.set(1);
-		bodyTesselation->planet_altimetry_factor.set(1);
-		bodyTesselation->moon_altimetry_factor.set(1);
-		bodyTesselation->earth_altimetry_factor.set(1);
-		bodyTesselation->min_tes_level_ini=1;
-		bodyTesselation->max_tes_level_ini=1;
-		bodyTesselation->planet_altimetry_factor_ini=1;
-		bodyTesselation->moon_altimetry_factor_ini=1;
-		bodyTesselation->earth_altimetry_factor_ini=1;
+	static void setTesselation(BodyTesselation *_bodyTesselation) {
+		Body::bodyTesselation = _bodyTesselation;
 	}
-
-	static void deleteTesselationParams() {
-		if (bodyTesselation)
-			delete bodyTesselation;
-		bodyTesselation = nullptr;
-	}
-
-	static void resetTesselationParams() {
-		bodyTesselation->min_tes_level = 1;
-		bodyTesselation->max_tes_level = 1;
-		bodyTesselation->planet_altimetry_factor = 1;
-		bodyTesselation->moon_altimetry_factor = 1;
-		bodyTesselation->earth_altimetry_factor = 1;		
-	}
-
-	static void updateTesselation (int delta_time) {
-		bodyTesselation->min_tes_level.update(delta_time);
-		bodyTesselation->max_tes_level.update(delta_time);
-		bodyTesselation->planet_altimetry_factor.update(delta_time);
-		bodyTesselation->moon_altimetry_factor.update(delta_time);
-		bodyTesselation->earth_altimetry_factor.update(delta_time);
-	}
-
 	//void setAtmExt(double radiusFactor, const std::string &gradient);
 
 	static bool setTexHaloMap(const std::string &texMap);

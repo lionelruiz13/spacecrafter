@@ -217,7 +217,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	//tesselation
 	if ( myShader == SHADER_MOON_NORMAL_TES) {
 		myShaderProg->setUniform("TesParam", 
-				Vec3i(bodyTesselation->min_tes_level,bodyTesselation->max_tes_level, bodyTesselation->moon_altimetry_factor) );
+				Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor() ));
 	}
 
 	if ( myShader == SHADER_MOON_NORMAL_TES )

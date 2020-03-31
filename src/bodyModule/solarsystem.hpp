@@ -31,6 +31,7 @@
 #include <functional>
 #include <map>
 
+#include "bodyModule/body_tesselation.hpp"
 #include "bodyModule/body_common.hpp"
 #include "bodyModule/body_sun.hpp"
 #include "bodyModule/body_moon.hpp"
@@ -361,11 +362,11 @@ public:
 
 	//initialise the body tesselation value
 	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
-		Body::setMinTes(minTes, true);
-		Body::setMaxTes(maxTes, true);
-		Body::setPlanetTes(planetTes,true);
-		Body::setMoonTes(moonTes,true);
-		Body::setEarthTes(earthTes,true);
+		bodyTesselation->setMinTes(minTes, true);
+		bodyTesselation->setMaxTes(maxTes, true);
+		bodyTesselation->setPlanetTes(planetTes,true);
+		bodyTesselation->setMoonTes(moonTes,true);
+		bodyTesselation->setEarthTes(earthTes,true);
 	}
 
 	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
@@ -407,6 +408,7 @@ private:
 
 	Body* findBody(const std::string &name);
 	BodyContainer * findBodyContainer(const std::string &name);
+	BodyTesselation *bodyTesselation=nullptr;
 
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str);
