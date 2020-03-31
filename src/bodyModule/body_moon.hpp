@@ -37,12 +37,10 @@ public:
 	     BodyColor* _myColor,
 	     float _sol_local_day,
 	     float albedo,
-	    //  const std::string& tex_map_name,
 	     Orbit *orbit,
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-	    //  const std::string& tex_norm_name
 		 BodyTexture* _bodyTexture
 		 );
 
@@ -60,7 +58,6 @@ protected :
 		return;
 	}
 
-//	SHADER_USE myShader;  			// the name of the shader used for his display
 	shaderProgram *myShaderProg;	// Shader moderne
 	s_texture * tex_night=nullptr;			// for moon with night event to see
 };

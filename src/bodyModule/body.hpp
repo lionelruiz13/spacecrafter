@@ -44,7 +44,6 @@
 #include "bodyModule/orbit_plot.hpp"
 #include "body_common.hpp"
 #include "body_tesselation.hpp"
-//#include "bodyModule/atmosphere_ext.hpp"
 #include "tools/scalable.hpp"
 #include "bodyModule/bodyShader.hpp"
 #include "rotation_elements.hpp"
@@ -150,10 +149,6 @@ public:
 	double getSiderealTime(double jd) const;
 	Mat4d getRotEquatorialToVsop87(void) const;
 	void setRotEquatorialToVsop87(const Mat4d &m);
-
-	// const RotationElements &getRotationElements(void) const {
-	// 	return re;
-	// }
 
 	// Compute the position in the parent Body coordinate system
 	void computePositionWithoutOrbits(double date);
@@ -387,7 +382,6 @@ public:
 	static void setTesselation(BodyTesselation *_bodyTesselation) {
 		Body::bodyTesselation = _bodyTesselation;
 	}
-	//void setAtmExt(double radiusFactor, const std::string &gradient);
 
 	static bool setTexHaloMap(const std::string &texMap);
 
@@ -491,14 +485,6 @@ protected:
 	SHADER_USE myShader;  			// the name of the shader used for his display
 	shaderProgram *myShaderProg;	// Shader moderne
 
-	// static shaderProgram *shaderBump;
-	// static shaderProgram *shaderNight;
-	// static shaderProgram *shaderRinged;
-	// static shaderProgram *shaderNormal;
-	// static shaderProgram *shaderMoonNormal;
-	// static shaderProgram *shaderMoonBump;
-	// static shaderProgram *shaderArtificial;
-
 	ObjL *currentObj = nullptr;
 
 	double distance;				// Temporary variable used to store the distance to a given point it is used for sorting while drawing
@@ -550,18 +536,13 @@ protected:
 	Axis * axis = nullptr;
 	OrbitPlot * orbitPlot = nullptr;
 	Halo * halo = nullptr;
-	//AtmosphereExt * atmExt = nullptr;
 
 	Mat4f model;
 	Mat4f view;
 	Mat4f vp;
-	//Mat4f viewBeforeLookAt;
 	Mat4f proj;
 	Mat4f matrix;
 
 };
 
 #endif // _BODY_HPP_
-
-
-

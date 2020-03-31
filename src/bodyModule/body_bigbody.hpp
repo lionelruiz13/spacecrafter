@@ -40,16 +40,10 @@ public:
 	        BodyColor* _myColor,
 	        float _sol_local_day,
 	        float albedo,
-	        // const std::string& tex_map_name,
 	        Orbit *orbit,
 	        bool close_orbit,
 	        ObjL* _currentObj,
 	        double orbit_bounding_radius,
-	        // const std::string& tex_norm_name,
-	        // const std::string& tex_night_name,
-	        // const std::string& tex_specular_name,
-	        // const std::string& tex_cloud_name,
-	        // const std::string& tex_norm_cloud_name
 			BodyTexture* _bodyTexture);
 
 	virtual ~BigBody();

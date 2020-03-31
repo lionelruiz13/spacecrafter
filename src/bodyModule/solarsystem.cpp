@@ -513,17 +513,6 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 			cLog::get()->write("Undefined body", LOG_TYPE::L_ERROR);
 	}
 
-	// détermination de l'atmosphère extérieure
-	// if(!param["has_atmosphere"].empty() && Utility::strToBool(param["has_atmosphere"]) == true){
-	// 	//~ bool hasAtmExt = Utility::strToBool(param["has_atmosphere"]);
-	// 	std::string gradient = param["atmosphere_gradient"];
-	// 	float radiusRatio = Utility::strToDouble(param["atmosphere_radius_ratio"]);
-
-	// 	cout << "radiusRatio " << radiusRatio << " gradient " << gradient << endl;
-
-	// 	if (/*!gradient.empty() &&*/ radiusRatio!=0.f)
-	// 		p->setAtmExt(radiusRatio, gradient);
-	// }
 	if (!param["has_atmosphere"].empty()) {
 		AtmosphereParams* tmp = nullptr;
 		tmp = new(AtmosphereParams);
@@ -864,7 +853,6 @@ void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 	listBuckets.clear();
 	depthBucket db;
 
-	//~ pd.startTimer("SolarSystem::draw$loop1"); //Debug
 	for (auto it = renderedBodies.begin(); it!= renderedBodies.end();it++) {
 		if ( (*it)->body->get_parent() == sun
 		        // This will only work with natural planets
@@ -1008,7 +996,6 @@ void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* o
 			depthTest = true;
 			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
 		}
-		//needClearDepthBuffer = (*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, selected == (*it)->body);
 		if ((*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, selected == (*it)->body)) needClearDepthBuffer = true;
 	}
 	prj->setClippingPlanes(z_near,z_far);  // Restore old clipping planes

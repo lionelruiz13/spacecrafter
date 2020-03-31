@@ -44,7 +44,6 @@
 #include "bodyModule/axis.hpp"
 #include "bodyModule/halo.hpp"
 #include "bodyModule/orbit_plot.hpp"
-//#include "bodyModule/atmosphere_ext.hpp"
 #include "tools/s_font.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/translator.hpp"
@@ -145,15 +144,6 @@ Body::Body(Body *parent,
 	tex_current = tex_map;
 }
 
-// void Body::setAtmExt(double radiusFactor, const std::string &gradient)
-// {
-// 	std::cout << "Atmosphere created for : " << this->getEnglishName() << std::endl;
-// 	atmExt = new AtmosphereExt(currentObj, radiusFactor, gradient);
-// 	//~ atmExt->setPlanetRadius(1.0f);
-// 	//~ atmExt->setSunPos(Vec3f(0.0f,0.0f,0.0f));
-// 	//~ atmExt->setAtmAlphaScale(1.0f);
-// }
-
 Body::~Body()
 {
 	if (tex_map && tex_map != defaultTexMap) delete tex_map;
@@ -170,8 +160,6 @@ Body::~Body()
 	axis = nullptr;
 	if (halo) delete halo;
 	halo = nullptr;
-	// if (atmExt) delete atmExt;
-	// atmExt = nullptr;
 	if (myColor) delete myColor;
 	myColor = nullptr;
 }
@@ -689,151 +677,12 @@ float Body::get_on_screen_bounding_size(const Projector* prj, const Navigator * 
 	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./C_PI/prj->getFov()*prj->getViewportHeight();
 }
 
-/*
-void Body::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
-{
-	StateGL::enable(GL_CULL_FACE);
-	StateGL::disable(GL_BLEND);
-
-	glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-	myShaderProg->use();
-
-	//load specific values for shader
-	switch (myShader) {
-
-		case SHADER_BUMP:
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex_norm->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-			break;
-
-		case SHADER_NORMAL :
-		default: //shader normal
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-			myShaderProg->setUniform("mapTexture",0);
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-			myShaderProg->setUniform("shadowTexture",2);
-			break;
-	}
-	//paramétrage des matrices pour opengl4
-	Mat4f proj = prj->getMatProjection().convert();
-	//TODO mettre extra rotation en cache
-	Mat4f matrix=mat.convert();
-	matrix = matrix * Mat4f::zrotation(C_PI/180*(axis_rotation + 90));
-
-	Mat4f inv_matrix = matrix.inverse();
-	myShaderProg->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	myShaderProg->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("clipping_fov",prj->getClippingFov());
-	myShaderProg->setUniform("planetScaledRadius",radius);
-
-	if ( myShader == SHADER_RINGED )
-		myShaderProg->setUniform("ModelViewMatrixInverse", inv_matrix);
-
-	//paramètres commun aux shaders sauf Sun
-	myShaderProg->setUniform("planetRadius",initialRadius);
-	myShaderProg->setUniform("planetOneMinusOblateness",one_minus_oblateness);
-
-	//utilisable si on est pas le soleil
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
-
-	int index=1;
-	myShaderProg->setUniform("LightPosition",eye_sun);
-	myShaderProg->setUniform("SunHalfAngle",sun_half_angle);
-
-	double length;
-	double moonDotLight;
-	Vec3f tmp(0,0,0);
-	Vec3f tmp2(0.4, 0.12, 0.0);
-
-	if (myShader == SHADER_BUMP || myShader == SHADER_MOON_BUMP) {
-		if(getEnglishName() == "Moon") {
-			myShaderProg->setUniform("UmbraColor",tmp2);
-		}
-		else
-			myShaderProg->setUniform("UmbraColor",tmp);
-	}
-
-	Vec3d planet_helio = get_heliocentric_ecliptic_pos();
-	Vec3d light = -planet_helio;
-	light.normalize();
-
-	// Parent may shadow this satellite
-	if( isSatellite() ) {
-		tmp = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
-		myShaderProg->setUniform("MoonPosition1",tmp);
-		myShaderProg->setUniform("MoonRadius1",parent->getRadius());
-		index++;
-	}
-
-	std::list<Body*>::iterator iter;
-	for(iter=satellites.begin(); iter!=satellites.end() && index <= 4; iter++) {
-		tmp2 = (*iter)->get_heliocentric_ecliptic_pos() - planet_helio;
-		length = tmp2.length();
-		tmp2.normalize();
-		moonDotLight = tmp2.dot(light);
-		if(moonDotLight > 0 && length*sin(acos(moonDotLight)) <= radius + 2*(*iter)->getRadius()) {
-			tmp = nav->getHelioToEyeMat() * (*iter)->get_heliocentric_ecliptic_pos();
-
-			if (index==1) {
-				myShaderProg->setUniform("MoonPosition1",tmp);
-				myShaderProg->setUniform("MoonRadius1",(*iter)->getRadius()/(*iter)->getSphereScale());
-			}
-			else if (index==2) {
-				myShaderProg->setUniform("MoonPosition2",tmp);
-				myShaderProg->setUniform("MoonRadius2",(*iter)->getRadius()/(*iter)->getSphereScale());
-			}
-			else if (index==3) {
-				myShaderProg->setUniform("MoonPosition3",tmp);
-				myShaderProg->setUniform("MoonRadius3",(*iter)->getRadius()/(*iter)->getSphereScale());
-			}
-			else if (index==4) {
-				myShaderProg->setUniform("MoonPosition4",tmp);
-				myShaderProg->setUniform("MoonRadius4",(*iter)->getRadius()/(*iter)->getSphereScale());
-			}
-
-			index++;
-		}
-	}
-
-	// clear any leftover values
-	for(; index<=4; index++) {
-		if (index==1) // No moon data
-			myShaderProg->setUniform("MoonRadius1",0.0);
-		if (index==2)
-			myShaderProg->setUniform("MoonRadius2",0.0);
-		if (index==3)
-			myShaderProg->setUniform("MoonRadius3",0.0);
-		if (index==4)
-			myShaderProg->setUniform("MoonRadius4",0.0);
-	}
-
-	currentObj->draw(screen_sz);
-
-	myShaderProg->unuse();
-	glActiveTexture(GL_TEXTURE0);
-	StateGL::disable(GL_CULL_FACE);
-}
-*/
-
 // Start/stop accumulating new trail data (clear old data)
 void Body::startTrail(bool b)
 {
 	if(trail != nullptr)
 		trail->startTrail(b);
 }
-
 
 void Body::translateName(Translator& trans)
 {
@@ -937,7 +786,6 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 	model = mat.convert();
 	view = nav->getHelioToEyeMat().convert();
 	vp = prj->getMatProjection().convert() * view;
-	//viewBeforeLookAt = Mat4d::getViewFromLookAt(nav->getHelioToEyeMat()).convert();
 
 	mat = nav->getHelioToEyeMat() * mat;
 
@@ -1003,10 +851,6 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 			drawAxis(prj,mat);
 			drawBody(prj, nav, mat, screen_sz);
 		}
-
-		// if(atmExt != nullptr)
-		// 	drawAtmExt(prj, nav, observatory);
-
 		drawn = true;
 	}
 
@@ -1016,30 +860,6 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	return drawn;
 }
-/*
-void Body::drawAtmExt(const Projector* prj, const Navigator* nav, const Observer* observatory)
-{
-	atmExt->use();
-	atmExt->setPlanetRadius(this->getRadius());
-	atmExt->setAtmAlphaScale(0.5f);
-	atmExt->setSunPos(Vec3f(0.0f,0.0f,0.0f));
-
-	// --------------------------------------------------------------------
-	// Ici les paramètres qui vont faire que le shader sera 100% opérationnel.
-	// --------------------------------------------------------------------
-	atmExt->setCameraPositionBeforeLookAt(nav->getObserverHelioPos());
-	atmExt->setPlanetPos(this->get_heliocentric_ecliptic_pos().convert());
-	// --------------------------------------------------------------------
-
-	//deformation fisheye pour les vertex
-	atmExt->setModelView(matrix);
-	atmExt->setModelViewProjectionMatrix(proj*matrix);
-	atmExt->setInverseModelViewProjectionMatrix((proj*matrix).inverse());
-	atmExt->setClippingFov(prj->getClippingFov());
-
-	atmExt->draw(screen_sz);
-	atmExt->unuse();
-}*/
 
 bool Body::skipDrawingThisBody(const Observer* observatory, bool drawHomePlanet)
 {
@@ -1108,5 +928,4 @@ Vec3d Body::getPositionAtDate(double jDate) const
 	delete[] v;
 
 	return pos;
-
 }

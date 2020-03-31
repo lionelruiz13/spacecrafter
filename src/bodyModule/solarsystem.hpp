@@ -156,11 +156,6 @@ public:
 	//! set flag for Activate/Deactivate planets axis
 	void setFlagAxis(bool b);
 
-	//! get flag for Activate/Deactivate planets axis
-	// bool getFlagAxis(void) const {
-	// 	return flagAxis;
-	// };
-
 	//! set flag for Activate/Deactivate planets display
 	void setFlagPlanets(bool b) {
 		flagShow = b;
@@ -174,28 +169,14 @@ public:
 	//! set flag for Activate/Deactivate planets trails display
 	void setFlagTrails(bool b);
 
-	//! get flag for Activate/Deactivate planets trails display
-	// bool getFlagTrails(void) const {
-	// 	return flagTrails;
-	// }
-
 	//! set flag for Activate/Deactivate planets hints display
 	void setFlagHints(bool b);
-
-	//! get flag for Activate/Deactivate planets hints display
-	// bool getFlagHints(void) const {
-	// 	return flagHints;
-	// }
 
 	//! Activate/Deactivate planet&&satellites orbits display
 	void setFlagOrbits(bool b) {
 		setFlagPlanetsOrbits(b);
 		setFlagSatellitesOrbits(b);
 	}
-
-	// bool getFlagOrbits(void) const {
-	// 	return (flagPlanetsOrbits||flagSatellitesOrbits);
-	// }
 
 	//! Set flag for Activate/Deactivate planets orbits display
 	void setFlagPlanetsOrbits(bool b);
@@ -313,10 +294,6 @@ public:
 	void setFlagClouds(bool b) {
 		Body::setFlagClouds(b);
 	}
-	//! Get flag for displaying Atmosphere
-	// bool getFlagClouds(void) const {
-	// 	return Body::getFlagClouds();
-	// }
 
 	bool getHideSatellitesFlag(){
 		return flagHideSatellites;

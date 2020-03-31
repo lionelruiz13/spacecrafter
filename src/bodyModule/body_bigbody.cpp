@@ -45,16 +45,10 @@ BigBody::BigBody(Body *parent,
                  BodyColor* _myColor,
                  float _sol_local_day,
                  float albedo,
-                //  const std::string& tex_map_name,
                  Orbit *orbit,
                  bool close_orbit,
                  ObjL* _currentObj,
                  double orbit_bounding_radius,
-                //  const std::string& tex_norm_name,
-                //  const std::string& tex_night_name,
-                //  const std::string& tex_specular_name,
-                //  const std::string& tex_cloud_name,
-                //  const std::string& tex_norm_cloud_name,
 				 BodyTexture* _bodyTexture
                 ) :
 	Body(parent,
@@ -66,12 +60,10 @@ BigBody::BigBody(Body *parent,
 	     _myColor,
 	     _sol_local_day,
 	     albedo,
-	    //  tex_map_name,
 	     orbit,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-	    //  tex_norm_name
 		 _bodyTexture
 		 ),
 	rings(NULL), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
@@ -338,14 +330,6 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	double moonDotLight;
 	Vec3f tmp= v3fNull;
 	Vec3f tmp2(0.4, 0.12, 0.0);
-
-	// if (myShader == SHADER_BUMP) {
-	// 	if(getEnglishName() == "Moon") {
-	// 		myShaderProg->setUniform("UmbraColor",tmp2);
-	// 	}
-	// 	else
-	// 		myShaderProg->setUniform("UmbraColor",tmp);
-	// }
 
 	Vec3d planet_helio = get_heliocentric_ecliptic_pos();
 	Vec3d light = -planet_helio;

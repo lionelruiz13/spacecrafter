@@ -48,12 +48,10 @@ Moon::Moon(Body *parent,
            BodyColor* _myColor,
            float _sol_local_day,
            float albedo,
-        //    const std::string& tex_map_name,
            Orbit *orbit,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-        //    const std::string& tex_norm_name
 		   BodyTexture* _bodyTexture):
 	Body(parent,
 	     englishName,
@@ -64,12 +62,10 @@ Moon::Moon(Body *parent,
 	     _myColor,
 	     _sol_local_day,
 	     albedo,
-	    //  tex_map_name,
 	     orbit,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-	    //  tex_norm_name
 		 _bodyTexture)
 {
 	if (_bodyTexture->tex_night != "") {
@@ -209,11 +205,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	tmp = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
 	myShaderProg->setUniform("MoonPosition1",tmp);
 	myShaderProg->setUniform("MoonRadius1",parent->getRadius());
-	//index++;
 
-	// clear any leftover values
-	//if (index==1) // No moon data
-	//	myShaderProg->setUniform("MoonRadius1",0.0);
 	//tesselation
 	if ( myShader == SHADER_MOON_NORMAL_TES) {
 		myShaderProg->setUniform("TesParam", 
