@@ -283,7 +283,7 @@ template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 
 
 template<class Star>
-void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, bool atmosphere) const
+void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_table, Projector *prj, Navigator *nav, int max_mag_star_name, float names_brightness, std::vector<starDBtoDraw> &starNameToDraw, std::map<std::string, bool> selected_stars,  bool atmosphere, bool isolateSelected) const
 {
 	SpecialZoneData<Star> *const z = getZones() + index;
 	Vec3d xy;
@@ -318,15 +318,29 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 			if (0 > hip_star_mgr.drawStar(prj,xy,rcmag_table + 2*(s->getMag()), HipStarMgr::color_table[s->getBVIndex()])) {
 				break;
 			}
-			if (s->getMag() < max_mag_star_name) {
+			if (!isolateSelected) {
+				if (s->getMag() < max_mag_star_name) {
+					const std::string starname = s->getNameI18n();
+					if (!starname.empty()) {
+						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][1]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][2]*0.75,
+								names_brightness);
+						// prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
+						starNameToDraw.push_back(std::make_tuple(xy[0],xy[1], starname, Color));
+					}
+				}
+			} else {
 				const std::string starname = s->getNameI18n();
-				if (!starname.empty()) {
-					Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
-					            HipStarMgr::color_table[s->getBVIndex()][1]*0.75,
-					            HipStarMgr::color_table[s->getBVIndex()][2]*0.75,
-					            names_brightness);
-					// prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
-					starNameToDraw.push_back(std::make_tuple(xy[0],xy[1], starname, Color));
+				if (selected_stars.find(starname) != selected_stars.end()) {
+					if (!starname.empty()) {
+						Vec4f Color(HipStarMgr::color_table[s->getBVIndex()][0]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][1]*0.75,
+								HipStarMgr::color_table[s->getBVIndex()][2]*0.75,
+								names_brightness);
+						// prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
+						starNameToDraw.push_back(std::make_tuple(xy[0],xy[1], starname, Color));
+					}
 				}
 			}
 		}

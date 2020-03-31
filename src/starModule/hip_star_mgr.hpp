@@ -31,6 +31,7 @@
 #include <tuple>
 #include "tools/fader.hpp"
 #include "tools/object_type.hpp"
+#include "tools/object.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
@@ -247,9 +248,28 @@ public:
 	void setFlagNames(bool b) {
 		names_fader=b;
 	}
+
+	void setSelected(Object star) {
+		selected_star.insert(std::pair<std::string, bool>(star.getNameI18n(), true));
+	}
+
+	void deselect() {
+		selected_star.clear();
+	}
+
 	//! Get display flag for Star names (labels).
 	bool getFlagNames(void) const {
 		return names_fader==true;
+	}
+
+	//! Set whether selected stars must be displayed alone
+	void setFlagIsolateSelected(bool s) {
+		isolateSelected = s;
+	}
+
+	//! Get whether selected stars are displayed alone
+	bool getFlagIsolateSelected(void) const {
+		return isolateSelected;
 	}
 
 	//! Set display flag for Star Scientific names.
@@ -454,6 +474,8 @@ private:
 	bool flagStarTwinkle;
 	float twinkleAmount;
 	bool gravityLabel;
+	bool isolateSelected;
+	std::map<std::string, bool> selected_star;
 
 	s_texture* starTexture; //! star texture
 
