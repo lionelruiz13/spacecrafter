@@ -108,9 +108,16 @@ public:
 		return description;
 	}
 
+	void ignoreNextTick() {
+		ignoreTick = true;
+	}
+
 	void update(int delta_time) {
-		land_fader.update(delta_time);
-		fog_fader.update(delta_time);
+		if (!ignoreTick) {
+			land_fader.update(delta_time);
+			fog_fader.update(delta_time);
+		}
+		ignoreTick = false;
 	}
 	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
 
@@ -140,6 +147,7 @@ protected:
 	s_texture* map_tex;
 	s_texture* map_tex_night;
 	bool haveNightTex;
+	bool ignoreTick;
 	float fog_alt_angle;
 	float fog_angle_shift;
 

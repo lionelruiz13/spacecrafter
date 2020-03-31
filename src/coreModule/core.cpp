@@ -127,6 +127,7 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	cardinals_points = new Cardinals();
 	meteors = new MeteorMgr(10, 60);
 	landscape = new Landscape();
+	inactiveLandscape = new Landscape();
 	skyloc = new SkyLocalizer(settings->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height);
 	asterisms = new ConstellationMgr(hip_stars);
@@ -265,6 +266,7 @@ Core::~Core()
 	delete loxodromy;
 	delete orthodromy;
 	delete landscape;
+	delete inactiveLandscape;
 	delete cardinals_points;
 	landscape = nullptr;
 	delete observatory;
@@ -690,6 +692,7 @@ void Core::updateInSolarSystem(int delta_time)
 	asterisms->update(delta_time);
 	atmosphere->update(delta_time);
 	landscape->update(delta_time);
+	inactiveLandscape->update(delta_time);
 	hip_stars->update(delta_time);
 	nebulas->update(delta_time);
 	cardinals_points->update(delta_time);
@@ -750,6 +753,7 @@ void Core::updateInSolarSystem(int delta_time)
 	}
 	// TODO: should calculate dimming with solar eclipse even without atmosphere on
 	landscape->setSkyBrightness(sky_brightness+0.05);
+	inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
 	// - if above troposphere equivalent on Earth in altitude
 	
 	if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
@@ -830,6 +834,7 @@ void Core::updateInGalaxy(int delta_time)
 	text_usr->update(delta_time);
 	dso3d->update(delta_time);
 	landscape->update(delta_time);
+	inactiveLandscape->update(delta_time);
 	
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -974,8 +979,10 @@ void Core::drawInSolarSystem(int delta_time)
 		atmosphere->draw(projection, observatory->getHomePlanetEnglishName());
 
 	// Draw the landscape
-	if (bodyDecor->canDrawLandscape()) //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
+	if (bodyDecor->canDrawLandscape()) { //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
 		landscape->draw(tone_converter, projection, navigation);
+		inactiveLandscape->draw(tone_converter, projection, navigation);
+	}
 
 	cardinals_points->draw(projection, observatory->getLatitude());
 }
@@ -1001,8 +1008,10 @@ void Core::drawInGalaxy(int delta_time)
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
 	starNav->draw(navigation, projection);
 
-	if (bodyDecor->canDrawLandscape()) //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
+	if (bodyDecor->canDrawLandscape()) { //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
 		landscape->draw(tone_converter, projection, navigation);
+		inactiveLandscape->draw(tone_converter, projection, navigation);
+	}
 }
 
 //! Execute all the drawing functions
@@ -1032,11 +1041,29 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	if (!newLandscape) return 0;
 
 	if (landscape) {
-		// Copy parameters from previous landscape to new one
-		newLandscape->setFlagShow(landscape->getFlagShow());
-		newLandscape->setFlagShowFog(landscape->getFlagShowFog());
-		delete landscape;
+		bool previousLandscapeFlag = landscapeGetFlag();
+
+		//Switch between the inactive and active background
+		Landscape* tempLandscape = landscape;
 		landscape = newLandscape;
+		inactiveLandscape = tempLandscape;
+
+		//Fade off the old landscape
+		inactiveLandscape->setFlagShow(false);
+		//Fade in the new landscape (only if the landscape was activated)
+		if (previousLandscapeFlag) {
+			landscapeSetFlag(false);
+			landscapeSetFlag(true);
+		}
+
+		/* We ignore the next update tick for the landscapes because when the landscape is very big
+		 * it takes a long time to load, then the fader receives a bigger time delta than its duration
+		 * and it doesn't fade in. To avoid that and always fade in the next update tick is ignored.
+		 *
+		 * TODO: this is quite ugly and should be replaced with a more elegant solution
+		 */
+		landscape->ignoreNextTick();
+		inactiveLandscape->ignoreNextTick();
 	}
 	observatory->setLandscapeName(new_landscape_name);
 	observatory->setSpacecraft(false);
