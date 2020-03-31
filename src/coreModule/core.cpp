@@ -1053,6 +1053,15 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 			landscapeSetFlag(false);
 			landscapeSetFlag(true);
 		}
+
+		/* We ignore the next update tick for the landscapes because when the landscape is very big
+		 * it takes a long time to load, then the fader receives a bigger time delta than its duration
+		 * and it doesn't fade in. To avoid that and always fade in the next update tick is ignored.
+		 *
+		 * TODO: this is quite ugly and should be replaced with a more elegant solution
+		 */
+		landscape->ignoreNextTick();
+		inactiveLandscape->ignoreNextTick();
 	}
 	observatory->setLandscapeName(new_landscape_name);
 	observatory->setSpacecraft(false);
