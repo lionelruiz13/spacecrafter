@@ -26,6 +26,7 @@
 #include "bodyModule/body_moon.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/file_path.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/orbit_3d.hpp"
@@ -47,12 +48,10 @@ Moon::Moon(Body *parent,
            BodyColor* _myColor,
            float _sol_local_day,
            float albedo,
-        //    const std::string& tex_map_name,
            Orbit *orbit,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-        //    const std::string& tex_norm_name
 		   BodyTexture* _bodyTexture):
 	Body(parent,
 	     englishName,
@@ -63,14 +62,15 @@ Moon::Moon(Body *parent,
 	     _myColor,
 	     _sol_local_day,
 	     albedo,
-	    //  tex_map_name,
 	     orbit,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-	    //  tex_norm_name
 		 _bodyTexture)
 {
+	if (_bodyTexture->tex_night != "") {
+		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+	}
 	//more adding could be placed here for the constructor of Moon
 	selectShader();
 	orbitPlot = new Orbit3D(this);
@@ -83,18 +83,28 @@ Moon::~Moon()
 
 void Moon::selectShader()
 {
-	bool useShaderMoonNormal = true;
+	//bool useShaderMoonNormal = true;
+	if (tex_heightmap!=nullptr) { //altimetry Shader
+		myShader = SHADER_MOON_NORMAL_TES;
+		myShaderProg = BodyShader::getShaderMoonNormalTes();
+		return;
+	}
 
-	if (tex_norm) { //bump Shader
+	if (tex_night!=nullptr) { //altimetry Shader
+		myShader = SHADER_MOON_NIGHT;
+		myShaderProg = BodyShader::getShaderMoonNight();
+		return;
+	}
+
+	if (tex_norm!=nullptr) { //bump Shader
 		myShader = SHADER_MOON_BUMP;
 		myShaderProg = BodyShader::getShaderMoonBump();
-		useShaderMoonNormal = false;
+		return;
 	}
-
-	if (useShaderMoonNormal) { // normal shaders
-		myShader = SHADER_MOON_NORMAL;
-		myShaderProg = BodyShader::getShaderMoonNormal();
-	}
+	//if (useShaderMoonNormal) { // normal shaders
+	myShader = SHADER_MOON_NORMAL;
+	myShaderProg = BodyShader::getShaderMoonNormal();
+	//}
 }
 
 void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
@@ -118,6 +128,32 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
+			break;
+
+		case SHADER_MOON_NORMAL_TES:
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
+
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, tex_norm->getID());
+
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, tex_heightmap->getID());
+
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
+	
+			break;
+
+		case SHADER_MOON_NIGHT :
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
+
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
+			
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, tex_night->getID());			
 			break;
 
 		case SHADER_MOON_NORMAL :
@@ -147,14 +183,14 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	myShaderProg->setUniform("ModelViewMatrix",matrix);
 	myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
 
-	int index=1;
+	//int index=1;
 	myShaderProg->setUniform("LightPosition",eye_sun);
 	myShaderProg->setUniform("SunHalfAngle",sun_half_angle);
 
 	Vec3f tmp= v3fNull;
 	Vec3f tmp2(0.4, 0.12, 0.0);
 
-	if (myShader == SHADER_MOON_BUMP) {
+	if (myShader == SHADER_MOON_BUMP || myShader == SHADER_MOON_NORMAL_TES) {
 		if(getEnglishName() == "Moon")
 			myShaderProg->setUniform("UmbraColor",tmp2);
 		else
@@ -169,14 +205,17 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	tmp = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
 	myShaderProg->setUniform("MoonPosition1",tmp);
 	myShaderProg->setUniform("MoonRadius1",parent->getRadius());
-	index++;
 
-	// clear any leftover values
-	if (index==1) // No moon data
-		myShaderProg->setUniform("MoonRadius1",0.0);
+	//tesselation
+	if ( myShader == SHADER_MOON_NORMAL_TES) {
+		myShaderProg->setUniform("TesParam", 
+				Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor() ));
+	}
 
-
-	currentObj->draw(screen_sz);
+	if ( myShader == SHADER_MOON_NORMAL_TES )
+		currentObj->draw(screen_sz, GL_PATCHES);
+	else
+		currentObj->draw(screen_sz);
 
 	myShaderProg->unuse();
 

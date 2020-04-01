@@ -27,6 +27,7 @@
 #define _CORE_H_
 
 #include <string>
+#include "bodyModule/body_common.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 #include "bodyModule/body_decor.hpp"
 #include "bodyModule/body_trace.hpp"
@@ -493,7 +494,7 @@ public:
 	}
 	//! Get flag for displaying Atmosphere
 	bool getFlagClouds(void) const {
-		return ssystem->getFlagClouds();
+		return ssystem->getFlag(BODY_FLAG::F_CLOUDS);
 	}
 
 	//! Ajoute year année(s) et month mois à la date actuelle sans toucher aux autres paramètres de la date
@@ -1395,7 +1396,7 @@ public:
 	}
 	//! Get flag for displaying Planets
 	bool planetsGetFlag(void) const {
-		return ssystem->getFlagPlanets();
+		return ssystem->getFlagShow();
 	}
 
 	//! Set flag for displaying Planets Trails
@@ -1404,7 +1405,7 @@ public:
 	}
 	//! Get flag for displaying Planets Trails
 	bool planetsGetFlagTrails() const {
-		return ssystem->getFlagTrails();
+		return ssystem->getFlag(BODY_FLAG::F_TRAIL);
 	}
 
 	//! Set flag for displaying Planets Axis
@@ -1413,7 +1414,7 @@ public:
 	}
 	//! Get flag for displaying Planets Axis
 	bool planetsGetFlagAxis(void) const {
-		return ssystem->getFlagAxis();
+		return ssystem->getFlag(BODY_FLAG::F_AXIS);
 	}
 
 
@@ -1423,7 +1424,7 @@ public:
 	}
 	//! Get flag for displaying Planets Hints
 	bool planetsGetFlagHints(void) const {
-		return ssystem->getFlagHints();
+		return ssystem->getFlag(BODY_FLAG::F_HINTS);
 	}
 
 	//! Set flag for displaying Planets Orbits
@@ -1514,6 +1515,11 @@ public:
 	//! Get planets viewer scaling factor
 	float planetGetSizeScale(std::string name) {
 		return ssystem->getPlanetSizeScale(name);
+	}
+
+	// send param tesselation, name design the param to change to value
+	void planetTesselation(std::string name, int value) {
+		ssystem->planetTesselation(name,value);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

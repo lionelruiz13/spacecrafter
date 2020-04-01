@@ -20,7 +20,6 @@ void BodyDecor::anchorAssign(bool Spacecraft)
 		drawLandscape = false;
 	}
 	drawMeteor = false;
-	//atmosphere->setFlagShow(false);
 	// on est dans l'espace
 	drawBody = true;
 	milky->useIrisTexture(true);

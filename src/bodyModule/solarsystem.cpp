@@ -81,6 +81,10 @@ SolarSystem::SolarSystem()
 	Body::createShader();
 	BodyShader::createShader();
 	Body::createDefaultAtmosphereParams();
+	bodyTesselation =  new(BodyTesselation);
+	assert(bodyTesselation != nullptr);
+	bodyTesselation->createTesselationParams();
+	Body::setTesselation(bodyTesselation);
 	
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
@@ -118,6 +122,9 @@ SolarSystem::~SolarSystem()
 	Body::deleteDefaultTexMap();
 	Body::deleteDefaultatmosphereParams();
 	Body::deleteShader();
+	if (bodyTesselation)
+		delete bodyTesselation;
+	bodyTesselation = nullptr;
 
 	sun = nullptr;
 	moon = nullptr;
@@ -506,17 +513,6 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 			cLog::get()->write("Undefined body", LOG_TYPE::L_ERROR);
 	}
 
-	// détermination de l'atmosphère extérieure
-	// if(!param["has_atmosphere"].empty() && Utility::strToBool(param["has_atmosphere"]) == true){
-	// 	//~ bool hasAtmExt = Utility::strToBool(param["has_atmosphere"]);
-	// 	std::string gradient = param["atmosphere_gradient"];
-	// 	float radiusRatio = Utility::strToDouble(param["atmosphere_radius_ratio"]);
-
-	// 	cout << "radiusRatio " << radiusRatio << " gradient " << gradient << endl;
-
-	// 	if (/*!gradient.empty() &&*/ radiusRatio!=0.f)
-	// 		p->setAtmExt(radiusRatio, gradient);
-	// }
 	if (!param["has_atmosphere"].empty()) {
 		AtmosphereParams* tmp = nullptr;
 		tmp = new(AtmosphereParams);
@@ -564,11 +560,11 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 	    Utility::strToDouble(param["axial_tilt"],0.) );
 
 	// Clone current flags to new body unless one is currently selected
-	p->setFlagHints(getFlagHints());
-	p->setFlagTrail(getFlagTrails());
+	p->setFlagHints(flagHints);
+	p->setFlagTrail(flagTrails);
 
 	if (!selected || selected == Object(sun)) {
-		p->setFlagOrbit(getFlagOrbits());
+		p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
 	}
 	
 	BodyContainer  * container = new BodyContainer();
@@ -720,6 +716,7 @@ void SolarSystem::initialSolarSystemBodies(){
 			it->second->isHidden = it->second->initialHidden;
 		}
 	}
+	bodyTesselation->resetTesselationParams();
 }
 
 void SolarSystem::toggleHideSatellites(bool val){
@@ -830,7 +827,7 @@ void SolarSystem::computeTransMatrices(double date,const Observer * obs)
 
 void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 {
-	if (!getFlagPlanets()) 
+	if (!getFlagShow()) 
 		return; // 0;
 
 	// Compute each Body distance to the observer
@@ -856,7 +853,6 @@ void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 	listBuckets.clear();
 	depthBucket db;
 
-	//~ pd.startTimer("SolarSystem::draw$loop1"); //Debug
 	for (auto it = renderedBodies.begin(); it!= renderedBodies.end();it++) {
 		if ( (*it)->body->get_parent() == sun
 		        // This will only work with natural planets
@@ -925,7 +921,7 @@ void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 // We are supposed to be in heliocentric coordinate
 void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* observatory, const ToneReproductor* eye, /*bool flag_point,*/ bool drawHomePlanet)
 {
-	if (!getFlagPlanets()) 
+	if (!getFlagShow()) 
 		return; // 0;
 	
 	int nBuckets = listBuckets.size();
@@ -1000,7 +996,6 @@ void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* o
 			depthTest = true;
 			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
 		}
-		//needClearDepthBuffer = (*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, selected == (*it)->body);
 		if ((*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, selected == (*it)->body)) needClearDepthBuffer = true;
 	}
 	prj->setClippingPlanes(z_near,z_far);  // Restore old clipping planes
@@ -1288,12 +1283,13 @@ void SolarSystem::setSelected(const Object &obj)
 		selected = Object();
 	}
 	// Undraw other objects hints, orbit, trails etc..
-	setFlagOrbits(getFlagOrbits());
-	setFlagTrails(getFlagTrails());  // TODO should just hide trail display and not affect data collection
+	setFlagOrbits(flagTrails);
+	setFlagTrails(flagTrails);  // TODO should just hide trail display and not affect data collection
 }
 
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
+	bodyTesselation->updateTesselation(delta_time);
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		it->second->body->update(delta_time, nav, timeMgr);
 	}
@@ -1407,6 +1403,18 @@ void SolarSystem::bodyTraceBodyChange(const std::string &bodyName)
 	}	
 }
 
+bool SolarSystem::getFlag(BODY_FLAG name)
+{
+	switch (name) {
+		case BODY_FLAG::F_TRAIL: return flagTrails; break;
+		case BODY_FLAG::F_HINTS: return flagHints; break;
+		case BODY_FLAG::F_AXIS : return flagAxis; break;
+		case BODY_FLAG::F_ORBIT : return (flagPlanetsOrbits||flagSatellitesOrbits); break;
+		case BODY_FLAG::F_CLOUDS: return Body::getFlagClouds(); break;
+		default: break;
+	}
+	return false;
+}
 
 void SolarSystem::setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c)
 {
@@ -1442,4 +1450,27 @@ void SolarSystem::setDefaultBodyColor(const std::string& colorName, const Vec3f&
 
 const Vec3f SolarSystem::getDefaultBodyColor(const std::string& colorName) const{
 	return BodyColor::getDefault(colorName);
+}
+
+void SolarSystem::planetTesselation(std::string name, int value) {
+	if (name=="min_tes_level") {
+		bodyTesselation->setMinTes(value);
+		return;
+	}
+	if (name=="max_tes_level") {
+		bodyTesselation->setMaxTes(value);
+		return;
+	}
+	if (name=="planet_altimetry_factor") {
+		bodyTesselation->setPlanetTes(value);
+		return;
+	}
+	if (name=="moon_altimetry_factor") {
+		bodyTesselation->setMoonTes(value);
+		return;
+	}
+	if (name=="earth_altimetry_factor") {
+		bodyTesselation->setEarthTes(value);
+		return;
+	}
 }

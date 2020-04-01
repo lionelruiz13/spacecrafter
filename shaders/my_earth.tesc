@@ -1,5 +1,5 @@
 //
-// body normal tessellation
+// body night tessellation
 //
 
 #version 430 core
@@ -12,30 +12,30 @@ layout(vertices=3) out;
 uniform mat4 ViewProjection;
 uniform mat4 Model;
 uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+// in gl_PerVertex
+// {
+//   vec4 gl_Position;
+//   float gl_PointSize;
+//   float gl_ClipDistance[];
+// } gl_in[gl_MaxPatchVertices];
 
-in gl_PerVertex
-{
-  vec4 gl_Position;
-  float gl_PointSize;
-  float gl_ClipDistance[];
-} gl_in[gl_MaxPatchVertices];
 
-
-out gl_PerVertex
-{
-  vec4 gl_Position;
-  float gl_PointSize;
-  float gl_ClipDistance[];
-} gl_out[];
+// out gl_PerVertex
+// {
+//   vec4 gl_Position;
+//   float gl_PointSize;
+//   float gl_ClipDistance[];
+// } gl_out[];
 
 
 in VS_OUT{
+    in vec4 glPosition;
     in vec2 TexCoord;
     in vec3 Normal;
-    //~ in vec3 tangent;
 }tcs_in[];
 
 out TCS_OUT{
+    out vec4 glPosition;
     out vec2 TexCoord;
     out vec3 Normal;
     //~ out vec3 tangent;
@@ -67,17 +67,19 @@ void main(void)
 
     if(ID==0)
     {
-        gl_TessLevelInner[0]=float(tessLevel);
+        gl_TessLevelInner[0]=1;
+        gl_TessLevelInner[1]=1;
 
-        gl_TessLevelOuter[0]=float(tessLevel);
-        gl_TessLevelOuter[1]=float(tessLevel);
-        gl_TessLevelOuter[2]=float(tessLevel);
+        gl_TessLevelOuter[0]=1;
+        gl_TessLevelOuter[1]=1;
+        gl_TessLevelOuter[2]=1;
+        gl_TessLevelOuter[3]=1;
     }
 
 
     tcs_out[ID].TexCoord      = tcs_in[ID].TexCoord;
     tcs_out[ID].Normal  = tcs_in[ID].Normal;
     //~ tcs_out[ID].tangent = tcs_in[ID].tangent;
-
-    gl_out[ID].gl_Position = gl_in[ID].gl_Position;
+    tcs_out[ID].glPosition = tcs_in[ID].glPosition;
+    // gl_out[ID].gl_Position = gl_in[ID].gl_Position;
 }

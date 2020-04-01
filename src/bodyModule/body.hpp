@@ -42,10 +42,12 @@
 #include "tools/stateGL.hpp"
 #include "ojmModule/objl.hpp"
 #include "bodyModule/orbit_plot.hpp"
-#include "bodyModule/atmosphere_ext.hpp"
+#include "body_common.hpp"
+#include "body_tesselation.hpp"
 #include "tools/scalable.hpp"
 #include "bodyModule/bodyShader.hpp"
 #include "rotation_elements.hpp"
+#include "tools/scalable.hpp"
 
 
 
@@ -65,17 +67,7 @@ class Observer;
 
 class BodyColor;
 
-struct BodyTexture {
-	std::string tex_map;
-	std::string tex_map_alternative;
-	std::string tex_norm;
-  	std::string tex_night;
-	std::string tex_specular;
-	std::string tex_cloud;
-	std::string tex_cloud_normal;
-	std::string tex_heightmap;
-	std::string tex_skin;
-};
+
 
 
 typedef struct body_flags {
@@ -157,10 +149,6 @@ public:
 	double getSiderealTime(double jd) const;
 	Mat4d getRotEquatorialToVsop87(void) const;
 	void setRotEquatorialToVsop87(const Mat4d &m);
-
-	const RotationElements &getRotationElements(void) const {
-		return re;
-	}
 
 	// Compute the position in the parent Body coordinate system
 	void computePositionWithoutOrbits(double date);
@@ -265,6 +253,8 @@ public:
 	static float getSizeLimit(void) {
 		return object_size_limit;
 	}
+
+	
 
 	// fixe une couleur
 	void setColor(const std::string& colorName,  const Vec3f& oc);
@@ -389,7 +379,9 @@ public:
 		defaultAtmosphereParams = nullptr;
 	}
 
-	void setAtmExt(double radiusFactor, const std::string &gradient);
+	static void setTesselation(BodyTesselation *_bodyTesselation) {
+		Body::bodyTesselation = _bodyTesselation;
+	}
 
 	static bool setTexHaloMap(const std::string &texMap);
 
@@ -456,7 +448,7 @@ protected:
 	}
 
 	// Draw the 3D body: pshere or model3d
-	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz) = 0;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
 
@@ -475,7 +467,7 @@ protected:
 	AtmosphereParams* atmosphereParams=nullptr;
 
 	static AtmosphereParams *defaultAtmosphereParams;
-
+	static BodyTesselation *bodyTesselation; 	// all global parameters with shader tesselaiton 
 	float sol_local_day;			//time of a sideral day in this planet
 	float albedo;					// Body albedo
 	Mat4d rot_local_to_parent;
@@ -492,14 +484,6 @@ protected:
 	Vec3f eye_planet;
 	SHADER_USE myShader;  			// the name of the shader used for his display
 	shaderProgram *myShaderProg;	// Shader moderne
-
-	// static shaderProgram *shaderBump;
-	// static shaderProgram *shaderNight;
-	// static shaderProgram *shaderRinged;
-	// static shaderProgram *shaderNormal;
-	// static shaderProgram *shaderMoonNormal;
-	// static shaderProgram *shaderMoonBump;
-	// static shaderProgram *shaderArtificial;
 
 	ObjL *currentObj = nullptr;
 
@@ -552,18 +536,13 @@ protected:
 	Axis * axis = nullptr;
 	OrbitPlot * orbitPlot = nullptr;
 	Halo * halo = nullptr;
-	AtmosphereExt * atmExt = nullptr;
 
 	Mat4f model;
 	Mat4f view;
 	Mat4f vp;
-	Mat4f viewBeforeLookAt;
 	Mat4f proj;
 	Mat4f matrix;
 
 };
 
 #endif // _BODY_HPP_
-
-
-

@@ -1,9 +1,11 @@
 #include "FreeCamera.hpp"
-
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/euler_angles.hpp>
 
 CFreeCamera::CFreeCamera()
 {
-	translation =v3fNull;
+	translation =glm::vec3(0); 
+	speed = 0.5f; // 0.5 m/s
 }
 
 
@@ -12,37 +14,51 @@ CFreeCamera::~CFreeCamera(void)
 }
  
 void CFreeCamera::Update() {
-	Mat4f R = GetMatrixUsingYawPitchRoll(yaw,pitch,roll); 
+	glm::mat4 R = glm::yawPitchRoll(yaw,pitch,roll); 
 	position+=translation;
-	translation=v3fNull;
 
-	look = Vec3f(R*Vec4f(0,0,1,0));
-	Vec3f tgt  = position+look;
-	up   = Vec3f(R*Vec4f(0,1,0,0));
-	right =  look^up;
-	V = Mat4f::lookAt(position, tgt, up);
+	//set this when no movement decay is needed
+	translation=glm::vec3(0); 
 
-	//normalize
-	//look = glm::normalize(look);
-	//up = glm::normalize(up);
-	//right = glm::normalize(right);
-}
+	look = glm::vec3(R*glm::vec4(0,0,1,0));	
+	up   = glm::vec3(R*glm::vec4(0,1,0,0));
+	right = glm::cross(look, up);
 
-void CFreeCamera::Rotate(const float y, const float p, const float r) {
-	yaw+=y;
-	pitch+=p;
-	roll+=r;
+	glm::vec3 tgt  = position+look;
+	V = glm::lookAt(position, tgt, up); 
 }
 
 
-void CFreeCamera::Walk(const float amount) {
-	translation += (look*amount);
+
+
+void CFreeCamera::Walk(const float dt) {
+	translation += (look*speed*dt);
+	Update();
 }
 
-void CFreeCamera::Strafe(const float amount) {
-	translation += (right*amount);
+void CFreeCamera::Strafe(const float dt) {
+	translation += (right*speed*dt);
+	Update();
 }
 
-void CFreeCamera::Lift(const float amount) {
-	translation += (up*amount);
+void CFreeCamera::Lift(const float dt) {
+	translation += (up*speed*dt);
+	Update();
+}
+ 
+void CFreeCamera::SetTranslation(const glm::vec3& t) {
+	translation = t;
+	Update();
+}
+
+glm::vec3 CFreeCamera::GetTranslation() const {
+	return translation;
+}
+
+void CFreeCamera::SetSpeed(const float s) {
+	speed = s;
+}
+
+const float CFreeCamera::GetSpeed() const {
+	return speed;
 }

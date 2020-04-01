@@ -31,6 +31,8 @@
 #include <functional>
 #include <map>
 
+#include "bodyModule/body_tesselation.hpp"
+#include "bodyModule/body_common.hpp"
 #include "bodyModule/body_sun.hpp"
 #include "bodyModule/body_moon.hpp"
 #include "bodyModule/body_bigbody.hpp"
@@ -148,13 +150,11 @@ public:
 		return moon;
 	}
 
+	// get flag for Activate/Deactivate Body composant
+	bool getFlag(BODY_FLAG name);
+
 	//! set flag for Activate/Deactivate planets axis
 	void setFlagAxis(bool b);
-
-	//! get flag for Activate/Deactivate planets axis
-	bool getFlagAxis(void) const {
-		return flagAxis;
-	};
 
 	//! set flag for Activate/Deactivate planets display
 	void setFlagPlanets(bool b) {
@@ -162,34 +162,20 @@ public:
 	}
 
 	//! get flag for Activate/Deactivate planets display
-	bool getFlagPlanets(void) const {
+	bool getFlagShow(void) const {
 		return flagShow;
 	}
 
 	//! set flag for Activate/Deactivate planets trails display
 	void setFlagTrails(bool b);
 
-	//! get flag for Activate/Deactivate planets trails display
-	bool getFlagTrails(void) const {
-		return flagTrails;
-	}
-
 	//! set flag for Activate/Deactivate planets hints display
 	void setFlagHints(bool b);
-
-	//! get flag for Activate/Deactivate planets hints display
-	bool getFlagHints(void) const {
-		return flagHints;
-	}
 
 	//! Activate/Deactivate planet&&satellites orbits display
 	void setFlagOrbits(bool b) {
 		setFlagPlanetsOrbits(b);
 		setFlagSatellitesOrbits(b);
-	}
-
-	bool getFlagOrbits(void) const {
-		return (flagPlanetsOrbits||flagSatellitesOrbits);
 	}
 
 	//! Set flag for Activate/Deactivate planets orbits display
@@ -249,6 +235,8 @@ public:
 		return Body::getSizeLimit();
 	}
 
+	// send tesselation parms to body: name design the param to change to value
+	void planetTesselation(std::string name, int value);
 
 	//! Set if Moon display is scaled
 	void setFlagMoonScale(bool b) {
@@ -306,10 +294,6 @@ public:
 	void setFlagClouds(bool b) {
 		Body::setFlagClouds(b);
 	}
-	//! Get flag for displaying Atmosphere
-	bool getFlagClouds(void) const {
-		return Body::getFlagClouds();
-	}
 
 	bool getHideSatellitesFlag(){
 		return flagHideSatellites;
@@ -353,7 +337,17 @@ public:
 		BodyColor::setDefault(_halo, _label, _orbit, _trail);
 	}
 
+	//initialise the body tesselation value
+	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
+		bodyTesselation->setMinTes(minTes, true);
+		bodyTesselation->setMaxTes(maxTes, true);
+		bodyTesselation->setPlanetTes(planetTes,true);
+		bodyTesselation->setMoonTes(moonTes,true);
+		bodyTesselation->setEarthTes(earthTes,true);
+	}
+
 	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
+	// réinitialise les paramètes de la tesselaiton
 	// prend en compte la taille et le flag caché ou pas
 	void initialSolarSystemBodies();
 
@@ -391,6 +385,7 @@ private:
 
 	Body* findBody(const std::string &name);
 	BodyContainer * findBodyContainer(const std::string &name);
+	BodyTesselation *bodyTesselation=nullptr;
 
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str);

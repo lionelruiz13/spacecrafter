@@ -78,6 +78,11 @@ static void checkVideoSettings(InitParser &user_conf)
 	videoSettings["bbp_mode"]="24";
 	videoSettings["maximum_fps"]="60";
 	videoSettings["rec_video_fps"]="30";
+	videoSettings["min_tes_level"]="1";
+	videoSettings["max_tes_level"]="1";
+	videoSettings["planet_altimetry_level"]="1";
+	videoSettings["earth_altimetry_level"]="1";
+	videoSettings["moon_altimetry_level"]="1";
 
 	for (std::map<std::string,std::string>::iterator it=videoSettings.begin(); it!=videoSettings.end(); ++it) {
 		if (!user_conf.findEntry("video:"+it->first))

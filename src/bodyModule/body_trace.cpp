@@ -42,7 +42,6 @@ BodyTrace::BodyTrace()
 		bodyData[i].size=0;
 		bodyData[i].old_punt[0]=0.0;
 		bodyData[i].old_punt[1]=0.0;
-		// bodyData[i].color= Vec3f(1.f,0.f,0.f);
 		bodyData[i].hide=false;
 	}
 	bodyData[0].color= Vec3f(1.0,0.0,0.0);

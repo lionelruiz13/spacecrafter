@@ -20,6 +20,7 @@ INSTALL(FILES
 	body_orbit3d.vert body_orbit3d.geom body_orbit3d.frag 
 	body_Axis.vert body_Axis.frag
 	moon_normal.frag moon_normal.vert
+	my_moon.frag my_moon.tesc my_moon.tese my_moon.geom my_moon.vert
 	moon_bump.frag moon_bump.vert
 	splash.frag splash.vert
 	font_print.frag font_print.vert
@@ -57,7 +58,8 @@ INSTALL(FILES
 	body_ringed.vert body_ringed.frag 
 	ring_planet.vert ring_planet.frag
 	body_night.frag body_night.vert
-	body_night_tes.frag body_night_tes.tesc body_night_tes.tese body_night_tes.geom body_night_tes.vert
+	body_moon_night.frag body_moon_night.vert
+	my_earth.frag my_earth.tesc my_earth.tese my_earth.geom my_earth.vert
 	colorInverse.frag colorInverse.vert
 	milkyway.frag milkyway.vert
 	person.frag person.geom person.vert
@@ -69,5 +71,5 @@ INSTALL(FILES
 	videoplayer.vert videoplayer.frag
 
 	DESTINATION share/${PACKAGE}/shaders
-	)
+)
 

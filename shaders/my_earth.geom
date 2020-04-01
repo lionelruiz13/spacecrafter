@@ -1,5 +1,5 @@
 //
-// body normal tessellation
+// body night tessellation
 //
 
 #version 430
@@ -38,25 +38,28 @@ uniform mat4 Model;
 
 uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 
-in gl_PerVertex
-{
-  vec4 gl_Position;
-  float gl_PointSize;
-  float gl_ClipDistance[];
-} gl_in[];
+
+float coeffHeightMap = 0.05 * float(TesParam[2]);
+
+// in gl_PerVertex
+// {
+//   vec4 gl_Position;
+//   float gl_PointSize;
+//   float gl_ClipDistance[];
+// } gl_in[];
 
 
-out gl_PerVertex
-{
-  vec4 gl_Position;
-  float gl_PointSize;
-  float gl_ClipDistance[];
-};
+// out gl_PerVertex
+// {
+//   vec4 gl_Position;
+//   float gl_PointSize;
+//   float gl_ClipDistance[];
+// };
 
 
 //out
 smooth out vec2 TexCoord;
-out float Ambient;
+
 //~ out vec3 Normal;
 //~ out vec3 Position;
 //~ out vec3 TangentLight;
@@ -65,6 +68,7 @@ out float Ambient;
 
 in TES_OUT
 {
+    in vec4 glPosition; 	
     in vec2 TexCoord;
     in vec3 Normal;
     //~ in vec3 tangent;
@@ -81,8 +85,9 @@ out GS_OUT {
     vec3 Position;
     vec2 TexCoord;
     vec3 Normal;
+    vec3 TangentLight;
     vec3 Light;
-	float NdotL;
+    vec3 ViewDirection;
 } gs_out;
 
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
@@ -92,8 +97,6 @@ uniform mat4 inverseModelViewProjectionMatrix;
 //~ uniform ivec4 viewport; 
 //~ uniform vec3 viewport_center;
 uniform vec3 clipping_fov;
-
-float coeffHeightMap = 0.05 * TesParam[2];
 
 //~ uniform float zNear;
 //~ uniform float zFar;
@@ -230,15 +233,13 @@ vec4 posToFisheye(vec3 pos)
 
 void main()
 {
+	vec3 binormal, Normal, tangent;
 	vec3 glPosition;
-	vec3 positionL, Position, Light, Normal;
-	float NdotL;
-
-	Ambient = ambient;
+	vec3 positionL, Position, Light, ViewDirection, TangentLight;
 
 	for(int i=0; i<3; i++) {
 
-		glPosition = vec3(gl_in[i].gl_Position);
+		glPosition = vec3(gs_in[i].glPosition);
 		//~ sans normalMap
 		//~ glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius ;
 		//~ avec normalMap
@@ -251,15 +252,20 @@ void main()
 
 		Position = vec3(ModelViewMatrix * vec4(positionL,1.0));
  		Light = normalize(LightPosition - Position);
+		ViewDirection = normalize(-Position);
 
 		//Other
 		Normal = normalize(mat3(NormalMatrix) * gs_in[i].Normal);
-		NdotL = dot(Normal, Light);
+		binormal = vec3(0,-Normal.z,Normal.y);
+		tangent = cross(Normal,binormal);
+
+		TangentLight = vec3(dot(Light, tangent), dot(Light, binormal), dot(Light, Normal)); 
 
 		gs_out.Position = Position;
 		gs_out.Light = Light;
+		gs_out.ViewDirection = ViewDirection;
 		gs_out.Normal = Normal;
-		gs_out.NdotL = NdotL;
+		gs_out.TangentLight = TangentLight;
 		gs_out.TexCoord = gs_in[i].TexCoord;
 		
 		EmitVertex();

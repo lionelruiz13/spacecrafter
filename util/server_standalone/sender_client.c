@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
        return 1;
     }
     
-    //~ sleep(2);
+    sleep(2);
     
     //preparation buffer avant envoi
     memset(sendBuff, '\0', SIZEBUFFER); 
@@ -116,7 +116,9 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"constellation name UMa type line color xff0000"); 
     //~ strcpy(sendBuff,"constellation name UMa type label color xff0000"); 
     //~ strcpy(sendBuff,"constellation name UMa  intensity 1.0");
-    strcpy(sendBuff,"set date_display_number 1");
+    //~ strcpy(sendBuff,"set date_display_number 1");
+    //~ strcpy(sendBuff,"body tesselation moon_altimetry_factor value 5");
+    strcpy(sendBuff,"body tesselation max_tes_level value 4");
     //~ strcpy(sendBuff,"timerate action decrement"); 
     
 	

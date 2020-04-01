@@ -41,12 +41,10 @@ Sun::Sun(Body *parent,
          BodyColor* myColor,
          float _sol_local_day,
          float albedo,
-        //  const std::string& tex_map_name,
          Orbit *orbit,
          bool close_orbit,
          ObjL* _currentObj,
          double orbit_bounding_radius,
-        //  const std::string& tex_norm_name
 		 BodyTexture* _bodyTexture):
 	Body(parent,
 	     englishName,
@@ -57,12 +55,10 @@ Sun::Sun(Body *parent,
 	     myColor,
 	     _sol_local_day,
 	     albedo,
-	    //  tex_map_name,
 	     orbit,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-	    //  tex_norm_name
 		_bodyTexture
 	    )
 {

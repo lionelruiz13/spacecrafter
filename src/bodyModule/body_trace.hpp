@@ -92,18 +92,6 @@ public:
 	}
 
 	void addData(const Navigator *nav, double alt, double ra);
-	
-	// void setPen(bool b) {
-	// 	is_tracing = b;
-	// 	if (b==false)
-	// 		currentUsedList+=1;
-	// 	if (currentUsedList==NB_MAX_LIST)
-	// 		currentUsedList=NB_MAX_LIST-1;
-	// }
-
-	// bool getPen(void) const {
-	// 	return is_tracing;
-	// }
 
 	void upPen() {
 		is_tracing = false;

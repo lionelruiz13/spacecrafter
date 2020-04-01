@@ -44,12 +44,10 @@ SmallBody::SmallBody(Body *parent,
                      BodyColor* _myColor,
                      float _sol_local_day,
                      float albedo,
-                    //  const std::string& tex_map_name,
                      Orbit *orbit,
                      bool close_orbit,
                      ObjL* _currentObj,
                      double orbit_bounding_radius,
-                    //  const std::string& tex_norm_name
 					 BodyTexture* _bodyTexture):
 	Body(parent,
 	     englishName,
@@ -60,12 +58,10 @@ SmallBody::SmallBody(Body *parent,
 	     _myColor,
 	     _sol_local_day,
 	     albedo,
-	    //  tex_map_name,
 	     orbit,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-	    //  tex_norm_name
 		 _bodyTexture)
 {
 	if (_typePlanet == COMET) {

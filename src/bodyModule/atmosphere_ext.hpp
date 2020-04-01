@@ -1,3 +1,4 @@
+/*
 #ifndef ATMOSPHERE_EXT_HPP_INCLUDED
 #define ATMOSPHERE_EXT_HPP_INCLUDED
 
@@ -45,3 +46,4 @@ private:
 };
 
 #endif // ATMOSPHERE_HPP_INCLUDED
+*/
