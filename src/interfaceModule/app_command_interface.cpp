@@ -2912,7 +2912,16 @@ int AppCommandInterface::commandMedia()
 			std::string argB= args["b"];
 			AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG,argB);
 			if (testColor) {
-				std::string argIntensity = args["intensity"];
+				// VRAI
+				//std::string argIntensity = args["intensity"];
+				// PATCH
+				std::string argIntensity;
+				if (!args["instensity"].empty())
+					argIntensity = args["instensity"];
+				else
+					argIntensity = args["intensity"];
+				// fin du PATCH			
+				
 				if (!argIntensity.empty())
 					media->setKeyColor(Vcolor,Utility::strToDouble(argIntensity)) ;
 				else
