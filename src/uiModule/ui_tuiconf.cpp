@@ -40,6 +40,7 @@
 #include "tools/sky_localizer.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
+#include "tools/file_path.hpp"
 #include "uiModule/ui.hpp"
 
 
@@ -462,8 +463,13 @@ void UI::localizeTui()
 	//load fallback font if the characters are not supported by the current font
 	if (!languageSupported) {
 		std::string uniFontName = AppSettings::Instance()->getUserDir()+"fonts/unifont-12.1.04.ttf";
-		tuiFont = new s_font(24, uniFontName);
-		core->loadFont(16, uniFontName);
+		FilePath fontFile  = FilePath("unifont-12.1.04.ttf", FilePath::TFP::FONTS);
+		if (fontFile) {
+			tuiFont = new s_font(24, uniFontName);
+			core->loadFont(16, uniFontName);
+		} else {
+			cLog::get()->write( "unifont-12.1.04.ttf not found" ,LOG_TYPE::L_ERROR);
+		}
 	}
 
 	if (!tuiFont) {
@@ -776,8 +782,13 @@ void UI::tuiCbTuiGeneralChangeSkyLocale()
 	bool languageSupported = tuiFont->allGlyphsProvided(_("Set UI Locale: "));
 	//load fallback font if the characters are not supported by the current font
 	if (!languageSupported) {
+		FilePath fontFile  = FilePath("unifont-12.1.04.ttf", FilePath::TFP::FONTS);
 		std::string uniFontName = AppSettings::Instance()->getUserDir()+"fonts/unifont-12.1.04.ttf";
-		core->loadFont(16, uniFontName);
+		if (fontFile) {
+			core->loadFont(16, fontFile.toString());
+		} else {
+			cLog::get()->write( "unifont-12.1.04.ttf not found" ,LOG_TYPE::L_ERROR);
+		}
 	} else {
 		core->loadFont(10, FontNameMenu);
 	}
