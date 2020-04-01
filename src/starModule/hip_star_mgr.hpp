@@ -250,7 +250,12 @@ public:
 	}
 
 	void setSelected(Object star) {
-		selected_star.insert(std::pair<std::string, bool>(star.getNameI18n(), true));
+		auto it = selected_star.find(star.getNameI18n());
+		if (it != selected_star.end()) {
+			selected_star.erase(it);
+		} else {
+			selected_star.insert(std::pair<std::string, bool>(star.getNameI18n(), true));
+		}
 	}
 
 	void deselect() {
