@@ -1594,7 +1594,7 @@ int AppCommandInterface::commandSet()
 		if (myFile) {
 			int size = 10;
 			if (args["size"] != "") size = evalInt(args["size"]);
-			stcore->loadFont(size, args["font"]);
+			stcore->loadFont(size, myFile.toString());
 		} else {
 			debug_message= "command_set_font font not found";
 			cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );

@@ -1729,7 +1729,7 @@ void Core::setFontScheme() //TODO deja fait ailleurs ?
 	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 }
 
-void Core::loadFont(int baseSize, std::string &name) {
+void Core::loadFont(int baseSize, const std::string name) {
 	ssystem->setFont(baseSize+4, name);
 	skyGridMgr->setFont(baseSize, name);
 	skyLineMgr->setFont(baseSize, name);
