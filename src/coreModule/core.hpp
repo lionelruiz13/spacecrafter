@@ -630,6 +630,8 @@ public:
 	//! Load font scheme from ini file
 	void setFontScheme(void);
 
+	void loadFont(int baseSize, const std::string name);
+
 	double getZoomSpeed() {
 		return vzm.zoom_speed;
 	}

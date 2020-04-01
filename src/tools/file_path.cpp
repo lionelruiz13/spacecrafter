@@ -127,6 +127,7 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 				case TFP::IMAGE : fullFileName = AppSettings::Instance()->getPictureDir() + fileName; break;
 				case TFP::TEXTURE : fullFileName = AppSettings::Instance()->getTextureDir() + fileName; break;
 				case TFP::DATA  : fullFileName = AppSettings::Instance()->getUserDir() + fileName; break;
+				case TFP::FONTS  : fullFileName = AppSettings::Instance()->getUserFontDir() + fileName; break;
 				case TFP::MODEL3D : fullFileName = AppSettings::Instance()->getModel3DDir() + fileName; break;
 				default: fullFileName = fileName; break;
 				};
