@@ -522,9 +522,12 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 
 	double alt = (obsPos-bodyPos).length() * AU * 1000 - planetRadius;
 
+
 	currentAnchor = targetBody;
 	observer->setAnchorPoint(targetBody);
 	targetBody->update();
+
+	double angle = targetBody->getBody()->getAxisAngle()*(180.0f/C_PI);
 
 	observer->setAltitude(alt);
 	observer->setLatitude(0);
@@ -614,7 +617,16 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 	}
 
 	observer->setLatitude( (lower+upper)/2 );
-	navigator->setHeading(0);
+
+	//angle to heading
+	if (angle > 180) angle = -(-180 + (angle - 180));
+	if (angle < -180) angle = 180 + (angle + 180);
+
+	//set the heading to the same angle that the planet was originally seen at
+	navigator->setHeading(-angle);
+
+	//Changethe heading to 0 gradually so that the planet axis is vertical
+	navigator->changeHeading(0, 5000);
 
 	return true;
 
