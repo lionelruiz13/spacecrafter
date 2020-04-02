@@ -421,6 +421,9 @@ public:
 
 	void createTexSkin(const std::string &texName);
 
+	double getAxisAngle() const;
+
+
 protected:
 
 	bool useParentPrecession(double jd) {
@@ -564,6 +567,3 @@ protected:
 };
 
 #endif // _BODY_HPP_
-
-
-
