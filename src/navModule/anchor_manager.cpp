@@ -522,12 +522,7 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 
 	double alt = (obsPos-bodyPos).length() * AU * 1000 - planetRadius;
 
-
 	currentAnchor = targetBody;
-	const double rad2deg = 180.0f/C_PI;
-	double angle = targetBody->getBody()->get_phase(obsPos)*rad2deg;
-	std::cout << "Angle : " << angle << std::endl;
-
 	observer->setAnchorPoint(targetBody);
 	targetBody->update();
 
@@ -561,8 +556,6 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 		lower = 0;
 		upper = 180;
 	}
-
-
 
 	while(interval > 0.00001){
 		
@@ -620,11 +613,8 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 		interval = interval/2;
 	}
 
-	double latitude = (lower+upper)/2;
-
-	observer->setLatitude(latitude);
-	navigator->setHeading(-angle);
-	navigator->changeHeading(0, 2000);
+	observer->setLatitude( (lower+upper)/2 );
+	navigator->setHeading(0);
 
 	return true;
 
