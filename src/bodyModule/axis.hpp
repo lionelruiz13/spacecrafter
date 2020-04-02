@@ -43,6 +43,12 @@ public:
 
 	void computeAxis(const Projector* prj, const Mat4d& mat);
 
+	double getAngle() {
+		return axisAngle;
+	}
+
+	void computeAxisAngle(const Projector* prj, const Mat4d& mat);
+
 	static void createShader();
 	static void deleteShader();
 
@@ -53,6 +59,7 @@ private :
 	static shaderProgram* shaderAxis;
 	static DataGL AxisData;
 
+	double axisAngle;
 	std::vector<float> vecAxisPos;
 	bool drawaxis = false;  // display or not Body axis
 
