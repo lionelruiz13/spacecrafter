@@ -75,7 +75,7 @@ void SkyLineMgr::setInternalNav(bool a)
 }
 
 
-bool SkyLineMgr::isExist(std::string type_obj)
+bool SkyLineMgr::isExist(SKYLINE_TYPE type_obj)
 {
 	auto it=m_map.find(type_obj);
 	//si l'itérateur ne vaut pas map.end(), cela signifie que que la clé à été trouvée
@@ -93,7 +93,7 @@ void SkyLineMgr::setFont(float font_size, const std::string& font_name)
 }
 
 
-void SkyLineMgr::flipFlagShow(std::string typeObj)
+void SkyLineMgr::flipFlagShow(SKYLINE_TYPE typeObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -106,7 +106,7 @@ void SkyLineMgr::flipFlagShow(std::string typeObj)
 }
 
 
-void SkyLineMgr::setFlagShow(std::string typeObj, bool a)
+void SkyLineMgr::setFlagShow(SKYLINE_TYPE typeObj, bool a)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -119,7 +119,7 @@ void SkyLineMgr::setFlagShow(std::string typeObj, bool a)
 }
 
 
-bool SkyLineMgr::getFlagShow(std::string typeObj)
+bool SkyLineMgr::getFlagShow(SKYLINE_TYPE typeObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -132,7 +132,7 @@ bool SkyLineMgr::getFlagShow(std::string typeObj)
 }
 
 
-void SkyLineMgr::setColor(std::string typeObj, const Vec3f& c)
+void SkyLineMgr::setColor(SKYLINE_TYPE typeObj, const Vec3f& c)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -144,7 +144,7 @@ void SkyLineMgr::setColor(std::string typeObj, const Vec3f& c)
 	cLog::get()->write("SkyLineMgr error : setColor not found " + typeObj , LOG_TYPE::L_WARNING);
 }
 
-const Vec3f& SkyLineMgr::getColor(std::string typeObj)
+const Vec3f& SkyLineMgr::getColor(SKYLINE_TYPE typeObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -158,79 +158,79 @@ const Vec3f& SkyLineMgr::getColor(std::string typeObj)
 }
 
 
-SkyLineMgr::LINE_TYPE SkyLineMgr::stringToType(const std::string& typeObj)
+SKYLINE_TYPE SkyLineMgr::stringToType(const std::string& typeObj)
 {
 	if (typeObj == "LINE_CIRCLE_POLAR")
-		return SkyLineMgr::LINE_CIRCLE_POLAR;
+		return SKYLINE_TYPE::LINE_CIRCLE_POLAR;
 
 	if (typeObj == "LINE_POINT_POLAR")
-		return SkyLineMgr::LINE_POINT_POLAR;
+		return SKYLINE_TYPE::LINE_POINT_POLAR;
 
 	if (typeObj == "LINE_ECLIPTIC_POLE")
-		return SkyLineMgr::LINE_ECLIPTIC_POLE;
+		return SKYLINE_TYPE::LINE_ECLIPTIC_POLE;
 
 	if (typeObj == "LINE_GALACTIC_POLE")
-		return SkyLineMgr::LINE_GALACTIC_POLE;
+		return SKYLINE_TYPE::LINE_GALACTIC_POLE;
 
 	if (typeObj == "LINE_ANALEMMA")
-		return SkyLineMgr::LINE_ANALEMMA;
+		return SKYLINE_TYPE::LINE_ANALEMMA;
 
 	if (typeObj == "LINE_ANALEMMALINE")
-		return SkyLineMgr::LINE_ANALEMMALINE;
+		return SKYLINE_TYPE::LINE_ANALEMMALINE;
 
 	if (typeObj == "LINE_CIRCUMPOLAR")
-		return SkyLineMgr::LINE_CIRCUMPOLAR;
+		return SKYLINE_TYPE::LINE_CIRCUMPOLAR;
 
 	if (typeObj == "LINE_GALACTIC_CENTER")
-		return SkyLineMgr::LINE_GALACTIC_CENTER;
+		return SKYLINE_TYPE::LINE_GALACTIC_CENTER;
 
 	if (typeObj == "LINE_GALACTIC_EQUATOR")
-		return SkyLineMgr::LINE_GALACTIC_EQUATOR;
+		return SKYLINE_TYPE::LINE_GALACTIC_EQUATOR;
 
 	if (typeObj == "LINE_VERNAL")
-		return SkyLineMgr::LINE_VERNAL;
+		return SKYLINE_TYPE::LINE_VERNAL;
 
 	if (typeObj == "LINE_ANALEMMA")
-		return SkyLineMgr::LINE_ANALEMMA;
+		return SKYLINE_TYPE::LINE_ANALEMMA;
 
 	if (typeObj == "LINE_ANALEMMALINE")
-		return SkyLineMgr::LINE_ANALEMMALINE;
+		return SKYLINE_TYPE::LINE_ANALEMMALINE;
 
 	if (typeObj == "LINE_GREENWICH")
-		return SkyLineMgr::LINE_GREENWICH;
+		return SKYLINE_TYPE::LINE_GREENWICH;
 
 	if (typeObj == "LINE_ARIES")
-		return SkyLineMgr::LINE_ARIES;
+		return SKYLINE_TYPE::LINE_ARIES;
 
 	if (typeObj == "LINE_MERIDIAN")
-		return SkyLineMgr::LINE_MERIDIAN;
+		return SKYLINE_TYPE::LINE_MERIDIAN;
 
 	if (typeObj == "LINE_TROPIC")
-		return SkyLineMgr::LINE_TROPIC;
+		return SKYLINE_TYPE::LINE_TROPIC;
 
 	if (typeObj == "LINE_EQUATOR")
-		return SkyLineMgr::LINE_EQUATOR;
+		return SKYLINE_TYPE::LINE_EQUATOR;
 
 	if (typeObj == "LINE_ECLIPTIC")
-		return SkyLineMgr::LINE_ECLIPTIC;
+		return SKYLINE_TYPE::LINE_ECLIPTIC;
 
 	if (typeObj == "LINE_PRECESSION")
-		return SkyLineMgr::LINE_PRECESSION;
+		return SKYLINE_TYPE::LINE_PRECESSION;
 
 	if (typeObj == "LINE_VERTICAL")
-		return SkyLineMgr::LINE_VERTICAL;
+		return SKYLINE_TYPE::LINE_VERTICAL;
 
 	if (typeObj == "LINE_ZENITH")
-		return SkyLineMgr::LINE_ZENITH;
+		return SKYLINE_TYPE::LINE_ZENITH;
 
 	if (typeObj == "LINE_ZODIAC")
-		return SkyLineMgr::LINE_ZODIAC;
+		return SKYLINE_TYPE::LINE_ZODIAC;
 
-	return SkyLineMgr::LINE_UNKNOWN;
+	return SKYLINE_TYPE::LINE_UNKNOWN;
 }
 
 
-void SkyLineMgr::Create(std::string type_obj)
+void SkyLineMgr::Create(SKYLINE_TYPE type_obj)
 {
 	SkyLine* tmp=nullptr;
 	auto it=m_map.find(type_obj);
@@ -241,9 +241,10 @@ void SkyLineMgr::Create(std::string type_obj)
 		return;
 	}
 
-	LINE_TYPE typeObj=stringToType(type_obj);
+	//SKYLINE_TYPE typeObj = stringToType(type_obj);
 
-	switch (typeObj) {
+	//switch (typeObj) {
+	switch (type_obj) {
 		case LINE_CIRCLE_POLAR :
 			cLog::get()->write("SkyLineMgr creating LINE_CIRCLE_POLAR" , LOG_TYPE::L_INFO);
 			tmp=new SkyLine_Pole(SkyLine_Pole::POLE,66.5,72);

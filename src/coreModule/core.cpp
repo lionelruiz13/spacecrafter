@@ -45,6 +45,7 @@
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
+#include "coreModule/SkyGridLine_common.hpp"
 
 Core::Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, _settings->getLocaleDir(), ""),
@@ -91,28 +92,28 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	skyGridMgr->Create("GRID_ALTAZIMUTAL");
 
 	skyLineMgr = new SkyLineMgr();
-	skyLineMgr->Create("LINE_CIRCLE_POLAR");
-	skyLineMgr->Create("LINE_POINT_POLAR");
-	skyLineMgr->Create("LINE_ECLIPTIC_POLE");
-	skyLineMgr->Create("LINE_GALACTIC_POLE");
-	skyLineMgr->Create("LINE_ANALEMMA");
-	skyLineMgr->Create("LINE_ANALEMMALINE");
-	skyLineMgr->Create("LINE_CIRCUMPOLAR");
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_POINT_POLAR);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ANALEMMA);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ANALEMMALINE);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
 
-	skyLineMgr->Create("LINE_GALACTIC_CENTER");
-	skyLineMgr->Create("LINE_VERNAL");
-	skyLineMgr->Create("LINE_GREENWICH");
-	skyLineMgr->Create("LINE_ARIES");
-	skyLineMgr->Create("LINE_EQUATOR");
-	skyLineMgr->Create("LINE_GALACTIC_EQUATOR");
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_VERNAL);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GREENWICH);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ARIES);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_EQUATOR);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
 
-	skyLineMgr->Create("LINE_MERIDIAN");
-	skyLineMgr->Create("LINE_TROPIC");
-	skyLineMgr->Create("LINE_ECLIPTIC");
-	skyLineMgr->Create("LINE_PRECESSION");
-	skyLineMgr->Create("LINE_VERTICAL");
-	skyLineMgr->Create("LINE_ZODIAC");
-	skyLineMgr->Create("LINE_ZENITH");
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_MERIDIAN);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_TROPIC);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_PRECESSION);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_VERTICAL);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
 	personal = new SkyPerson(SkyPerson::AL);
 	personeq = new SkyPerson(SkyPerson::EQ);
@@ -550,24 +551,24 @@ void Core::init(const InitParser& conf)
 	skyGridMgr->setFlagShow("GRID_ECLIPTIC",conf.getBoolean("viewing:flag_ecliptic_grid"));
 	skyGridMgr->setFlagShow("GRID_GALACTIC",conf.getBoolean("viewing:flag_galactic_grid"));
 
-	skyLineMgr->setFlagShow("LINE_EQUATOR", conf.getBoolean("viewing:flag_equator_line"));
-	skyLineMgr->setFlagShow("LINE_GALACTIC_EQUATOR", conf.getBoolean("viewing:flag_galactic_line"));
-	skyLineMgr->setFlagShow("LINE_ECLIPTIC", conf.getBoolean("viewing:flag_ecliptic_line"));
-	skyLineMgr->setFlagShow("LINE_PRECESSION", conf.getBoolean("viewing:flag_precession_circle"));
-	skyLineMgr->setFlagShow("LINE_CIRCUMPOLAR", conf.getBoolean("viewing:flag_circumpolar_circle"));
-	skyLineMgr->setFlagShow("LINE_TROPIC", conf.getBoolean("viewing:flag_tropic_lines"));
-	skyLineMgr->setFlagShow("LINE_MERIDIAN", conf.getBoolean("viewing:flag_meridian_line"));
-	skyLineMgr->setFlagShow("LINE_ZENITH", conf.getBoolean("viewing:flag_zenith_line"));
-	skyLineMgr->setFlagShow("LINE_CIRCLE_POLAR", conf.getBoolean("viewing:flag_polar_circle"));
-	skyLineMgr->setFlagShow("LINE_POINT_POLAR", conf.getBoolean("viewing:flag_polar_point"));
-	skyLineMgr->setFlagShow("LINE_ECLIPTIC_POLE", conf.getBoolean("viewing:flag_ecliptic_center"));
-	skyLineMgr->setFlagShow("LINE_GALACTIC_POLE", conf.getBoolean("viewing:flag_galactic_pole"));
-	skyLineMgr->setFlagShow("LINE_GALACTIC_CENTER", conf.getBoolean("viewing:flag_galactic_center"));
-	skyLineMgr->setFlagShow("LINE_VERNAL", conf.getBoolean("viewing:flag_vernal_points"));
-	skyLineMgr->setFlagShow("LINE_ANALEMMALINE", conf.getBoolean("viewing:flag_analemma_line"));
-	skyLineMgr->setFlagShow("LINE_ANALEMMA", conf.getBoolean("viewing:flag_analemma"));
-	skyLineMgr->setFlagShow("LINE_ARIES", conf.getBoolean("viewing:flag_aries_line"));
-	skyLineMgr->setFlagShow("LINE_ZODIAC", conf.getBoolean("viewing:flag_zodiac"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_EQUATOR, conf.getBoolean("viewing:flag_equator_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, conf.getBoolean("viewing:flag_galactic_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, conf.getBoolean("viewing:flag_ecliptic_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_PRECESSION, conf.getBoolean("viewing:flag_precession_circle"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, conf.getBoolean("viewing:flag_circumpolar_circle"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_TROPIC, conf.getBoolean("viewing:flag_tropic_lines"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, conf.getBoolean("viewing:flag_meridian_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZENITH, conf.getBoolean("viewing:flag_zenith_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, conf.getBoolean("viewing:flag_polar_circle"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, conf.getBoolean("viewing:flag_polar_point"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, conf.getBoolean("viewing:flag_ecliptic_center"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, conf.getBoolean("viewing:flag_galactic_pole"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, conf.getBoolean("viewing:flag_galactic_center"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERNAL, conf.getBoolean("viewing:flag_vernal_points"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, conf.getBoolean("viewing:flag_analemma_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, conf.getBoolean("viewing:flag_analemma"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ARIES, conf.getBoolean("viewing:flag_aries_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, conf.getBoolean("viewing:flag_zodiac"));
 	personal->setFlagShow(conf.getBoolean("viewing:flag_personal"));
 	personeq->setFlagShow(conf.getBoolean("viewing:flag_personeq"));
 	nautical->setFlagShow(conf.getBoolean("viewing:flag_nautical_alt"));
@@ -577,8 +578,8 @@ void Core::init(const InitParser& conf)
 	angDist->setFlagShow(conf.getBoolean("viewing:flag_angular_distance"));
 	loxodromy->setFlagShow(conf.getBoolean("viewing:flag_loxodromy"));
 	orthodromy->setFlagShow(conf.getBoolean("viewing:flag_orthodromy"));
-	skyLineMgr->setFlagShow("LINE_GREENWICH", conf.getBoolean("viewing:flag_greenwich_line"));
-	skyLineMgr->setFlagShow("LINE_VERTICAL", conf.getBoolean("viewing:flag_vertical_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GREENWICH, conf.getBoolean("viewing:flag_greenwich_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean("viewing:flag_vertical_line"));
 	cardinals_points->setFlagShow(conf.getBoolean("viewing:flag_cardinal_points"));
 
 	setFlagMoonScaled(conf.getBoolean("viewing", "flag_moon_scaled"));
@@ -1555,7 +1556,7 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 //! @brief Set the sky locale and reload the sky objects names for gettext translation
 void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 {
-	if ( !hip_stars || !cardinals_points || !asterisms || ! skyLineMgr->isExist("LINE_ECLIPTIC")) return; // objects not initialized yet
+	if ( !hip_stars || !cardinals_points || !asterisms || ! skyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
 
 	std::string oldLocale = getSkyLanguage();
 
@@ -1586,20 +1587,20 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyGridMgr->setColor("GRID_EQUATORIAL", Utility::strToVec3f(conf.getStr(section,"equatorial_color")));
 	skyGridMgr->setColor("GRID_ECLIPTIC", Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
 	skyGridMgr->setColor("GRID_GALACTIC", Utility::strToVec3f(conf.getStr(section,"galactic_color")));
-	skyLineMgr->setColor("LINE_ECLIPTIC", Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
-	skyLineMgr->setColor("LINE_ECLIPTIC_POLE",Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_CENTER",Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_POLE",Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
 
 	nebulas->setLabelColor(Utility::strToVec3f(conf.getStr(section,"nebula_label_color")));
 	nebulas->setCircleColor(Utility::strToVec3f(conf.getStr(section,"nebula_circle_color")));
 
-	skyLineMgr->setColor("LINE_PRECESSION", Utility::strToVec3f(conf.getStr(section,"precession_circle_color")));
-	skyLineMgr->setColor("LINE_CIRCUMPOLAR", Utility::strToVec3f(conf.getStr(section,"circumpolar_circle_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_EQUATOR", Utility::strToVec3f(conf.getStr(section,"galactic_color")));
-	skyLineMgr->setColor("LINE_VERNAL", Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
-	skyLineMgr->setColor("LINE_EQUATOR", Utility::strToVec3f(conf.getStr(section,"equator_color")));
-	skyLineMgr->setColor("LINE_TROPIC", Utility::strToVec3f(conf.getStr(section,"equator_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_PRECESSION, Utility::strToVec3f(conf.getStr(section,"precession_circle_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, Utility::strToVec3f(conf.getStr(section,"circumpolar_circle_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Utility::strToVec3f(conf.getStr(section,"galactic_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL, Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,"equator_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,"equator_color")));
 
 	ssystem->setDefaultBodyColor(conf.getStr(section,"planet_names_color"), conf.getStr(section,"planet_names_color"), 
 								conf.getStr(section,"planet_orbits_color"), conf.getStr(section,"object_trails_color"));
@@ -1611,15 +1612,15 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	asterisms->setLabelColor(Utility::strToVec3f(conf.getStr(section,"const_names_color")));
 	asterisms->setArtColor(Utility::strToVec3f(conf.getStr(section,"const_art_color")));
 
-	skyLineMgr->setColor("LINE_ANALEMMALINE", Utility::strToVec3f(conf.getStr(section,"analemma_line_color")));
-	skyLineMgr->setColor("LINE_ANALEMMA", Utility::strToVec3f(conf.getStr(section,"analemma_color")));
-	skyLineMgr->setColor("LINE_ARIES",Utility::strToVec3f(conf.getStr(section,"aries_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Utility::strToVec3f(conf.getStr(section,"analemma_line_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMA, Utility::strToVec3f(conf.getStr(section,"analemma_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ARIES,Utility::strToVec3f(conf.getStr(section,"aries_color")));
 	cardinals_points->setColor(Utility::strToVec3f(conf.getStr(section,"cardinal_color")));
-	skyLineMgr->setColor("LINE_ECLIPTIC_POLE",Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_POLE",Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_CENTER",Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
-	skyLineMgr->setColor("LINE_GREENWICH",Utility::strToVec3f(conf.getStr(section,"greenwich_color")));
-	skyLineMgr->setColor("LINE_MERIDIAN",Utility::strToVec3f(conf.getStr(section,"meridian_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GREENWICH,Utility::strToVec3f(conf.getStr(section,"greenwich_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_MERIDIAN,Utility::strToVec3f(conf.getStr(section,"meridian_color")));
 	personal->setColor(Utility::strToVec3f(conf.getStr(section,"personal_color")));
 	personeq->setColor(Utility::strToVec3f(conf.getStr(section,"personeq_color")));
 	nautical->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_alt_color")));
@@ -1629,13 +1630,13 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	angDist->setColor(Utility::strToVec3f(conf.getStr(section,"angular_distance_color")));
 	loxodromy->setColor(Utility::strToVec3f(conf.getStr(section, "loxodromy_color")));
 	orthodromy->setColor(Utility::strToVec3f(conf.getStr(section, "orthodromy_color")));
-	skyLineMgr->setColor("LINE_CIRCLE_POLAR", Utility::strToVec3f(conf.getStr(section,"polar_color")));
-	skyLineMgr->setColor("LINE_POINT_POLAR", Utility::strToVec3f(conf.getStr(section,"polar_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Utility::strToVec3f(conf.getStr(section,"polar_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_POINT_POLAR, Utility::strToVec3f(conf.getStr(section,"polar_color")));
 	text_usr->setColor(Utility::strToVec3f(conf.getStr(section,"text_usr_color")));
-	skyLineMgr->setColor("LINE_VERNAL",Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
-	skyLineMgr->setColor("LINE_VERTICAL",Utility::strToVec3f(conf.getStr(section,"vertical_color")));
-	skyLineMgr->setColor("LINE_ZENITH",Utility::strToVec3f(conf.getStr(section,"zenith_color")));
-	skyLineMgr->setColor("LINE_ZODIAC",Utility::strToVec3f(conf.getStr(section,"zodiac_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL,Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERTICAL,Utility::strToVec3f(conf.getStr(section,"vertical_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZENITH,Utility::strToVec3f(conf.getStr(section,"zenith_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,"zodiac_color")));
 
 	oort->setColor(Utility::strToVec3f(conf.getStr(section,"oort_color")));
 }
@@ -1663,25 +1664,25 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("viewing:flag_galactic_grid", skyGridMgrGetFlagShow("GRID_GALACTIC"));
 	conf.setBoolean("viewing:flag_azimutal_grid", skyGridMgrGetFlagShow("GRID_ALTAZIMUTAL"));
 	conf.setBoolean("viewing:flag_equator_line", skyGridMgrGetFlagShow("LINE_EQUATOR"));
-	conf.setBoolean("viewing:flag_ecliptic_line", skyLineMgrGetFlagShow("LINE_ECLIPTIC"));
+	conf.setBoolean("viewing:flag_ecliptic_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
 	conf.setBoolean("viewing:flag_cardinal_points", cardinalsPointsGetFlag());
-	conf.setBoolean("viewing:flag_zenith_line", skyLineMgrGetFlagShow("LINE_ZENITH"));
-	conf.setBoolean("viewing:flag_polar_circle", skyLineMgrGetFlagShow("LINE_CIRCLE_POLAR"));
-	conf.setBoolean("viewing:flag_polar_point", skyLineMgrGetFlagShow("LINE_POINT_POLAR"));
-	conf.setBoolean("viewing:flag_ecliptic_center", skyLineMgrGetFlagShow("LINE_ECLIPTIC_POLE"));
-	conf.setBoolean("viewing:flag_galactic_pole", skyLineMgrGetFlagShow("LINE_GALACTIC_POLE"));
-	conf.setBoolean("viewing:flag_galactic_center", skyLineMgrGetFlagShow("LINE_GALACTIC_CENTER"));
-	conf.setBoolean("viewing:flag_vernal_points", skyLineMgrGetFlagShow("LINE_VERNAL"));
-	conf.setBoolean("viewing:flag_analemma", skyLineMgrGetFlagShow("LINE_ANALEMMA"));
-	conf.setBoolean("viewing:flag_analemma_line", skyLineMgrGetFlagShow("LINE_ANALEMMALINE"));
-	conf.setBoolean("viewing:flag_aries_line", skyLineMgrGetFlagShow("LINE_ARIES"));
-	conf.setBoolean("viewing:flag_zodiac", skyLineMgrGetFlagShow("LINE_ZODIAC"));
-	conf.setBoolean("viewing:flag_greenwich_line", skyLineMgrGetFlagShow("LINE_GREENWICH"));
-	conf.setBoolean("viewing:flag_vertical_line", skyLineMgrGetFlagShow("LINE_VERTICAL"));
-	conf.setBoolean("viewing:flag_meridian_line", skyLineMgrGetFlagShow("LINE_MERIDIAN"));
-	conf.setBoolean("viewing:flag_precession_circle", skyLineMgrGetFlagShow("LINE_PRECESSION"));
-	conf.setBoolean("viewing:flag_circumpolar_circle", skyLineMgrGetFlagShow("LINE_CIRCUMPOLAR"));
-	conf.setBoolean("viewing:flag_tropic_lines", skyLineMgrGetFlagShow("LINE_TROPIC"));
+	conf.setBoolean("viewing:flag_zenith_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZENITH));
+	conf.setBoolean("viewing:flag_polar_circle", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR));
+	conf.setBoolean("viewing:flag_polar_point", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR));
+	conf.setBoolean("viewing:flag_ecliptic_center", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE));
+	conf.setBoolean("viewing:flag_galactic_pole", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE));
+	conf.setBoolean("viewing:flag_galactic_center", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER));
+	conf.setBoolean("viewing:flag_vernal_points", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERNAL));
+	conf.setBoolean("viewing:flag_analemma", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA));
+	conf.setBoolean("viewing:flag_analemma_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE));
+	conf.setBoolean("viewing:flag_aries_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ARIES));
+	conf.setBoolean("viewing:flag_zodiac", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZODIAC));
+	conf.setBoolean("viewing:flag_greenwich_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GREENWICH));
+	conf.setBoolean("viewing:flag_vertical_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERTICAL));
+	conf.setBoolean("viewing:flag_meridian_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN));
+	conf.setBoolean("viewing:flag_precession_circle", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
+	conf.setBoolean("viewing:flag_circumpolar_circle", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
+	conf.setBoolean("viewing:flag_tropic_lines", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC));
 	conf.setBoolean("viewing:flag_moon_scaled", getFlagMoonScaled());
 	conf.setBoolean("viewing:flag_sun_scaled", getFlagSunScaled());
 	conf.setDouble ("viewing:constellation_art_intensity", constellationGetArtIntensity());
@@ -1703,20 +1704,20 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    ("color:azimuthal_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_ALTAZIMUTAL")));
 	conf.setStr    ("color:equatorial_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_EQUATORIAL")));
 	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_ECLIPTIC")));
-	conf.setStr    ("color:equator_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_EQUATOR")));
-	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ECLIPTIC")));
-	conf.setStr    ("color:meridian_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_MERIDIAN")));
-	conf.setStr    ("color:zenith_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ZENITH")));
-	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_CIRCLE_POLAR")));
-	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_POINT_POLAR")));
-	conf.setStr    ("color:ecliptic_center_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ECLIPTIC_POLE")));
-	conf.setStr    ("color:galactic_pole_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_GALACTIC_POLE")));
-	conf.setStr    ("color:galactic_center_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_GALACTIC_CENTER")));
-	conf.setStr    ("color:vernal_points_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_VERNAL")));
-	conf.setStr    ("color:analemma_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ANALEMMA")));
-	conf.setStr    ("color:analemma_line_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ANALEMMALINE")));
-	conf.setStr    ("color:aries_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ARIES")));
-	conf.setStr    ("color:zodiac_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ZODIAC")));
+	conf.setStr    ("color:equator_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR)));
+	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC)));
+	conf.setStr    ("color:meridian_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_MERIDIAN)));
+	conf.setStr    ("color:zenith_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ZENITH)));
+	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR)));
+	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_POINT_POLAR)));
+	conf.setStr    ("color:ecliptic_center_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE)));
+	conf.setStr    ("color:galactic_pole_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_GALACTIC_POLE)));
+	conf.setStr    ("color:galactic_center_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER)));
+	conf.setStr    ("color:vernal_points_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_VERNAL)));
+	conf.setStr    ("color:analemma_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ANALEMMA)));
+	conf.setStr    ("color:analemma_line_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ANALEMMALINE)));
+	conf.setStr    ("color:aries_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ARIES)));
+	conf.setStr    ("color:zodiac_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ZODIAC)));
 	conf.setStr    ("color:personal_color", Utility::vec3fToStr(personalGetColor()));
 	conf.setStr    ("color:personeq_color", Utility::vec3fToStr(personeqGetColor()));
 	conf.setStr    ("color:nautical_alt", Utility::vec3fToStr(nauticalGetColor()));
@@ -1726,15 +1727,15 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    ("color:angular_distance", Utility::vec3fToStr(angDistGetColor()));
 	conf.setStr    ("color:loxodromy", Utility::vec3fToStr(loxodromyGetColor()));
 	conf.setStr    ("color:orthodromy", Utility::vec3fToStr(orthodromyGetColor()));
-	conf.setStr    ("color:greenwich_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_GREENWICH")));
-	conf.setStr    ("color:vertical_line", Utility::vec3fToStr(skyLineMgrGetColor("LINE_VERTICAL")));
+	conf.setStr    ("color:greenwich_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_GREENWICH)));
+	conf.setStr    ("color:vertical_line", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_VERTICAL)));
 	conf.setStr    ("color:const_lines_color", Utility::vec3fToStr(constellationGetColorLine()));
 	conf.setStr    ("color:const_names_color", Utility::vec3fToStr(constellationGetColorNames()));
 	conf.setStr    ("color:const_art_color", Utility::vec3fToStr(constellationGetColorArt()));
 	conf.setStr    ("color:const_boundary_color", Utility::vec3fToStr(constellationGetColorBoundaries()));
 	conf.setStr	   ("color:nebula_label_color", Utility::vec3fToStr(nebulaGetColorLabels()));
 	conf.setStr	   ("color:nebula_circle_color", Utility::vec3fToStr(nebulaGetColorCircle()));
-	conf.setStr	   ("color:precession_circle_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_PRECESSION")));
+	conf.setStr	   ("color:precession_circle_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_PRECESSION)));
 	conf.setStr    ("color:cardinal_color", Utility::vec3fToStr(cardinalsPointsGetColor()));
 	// Navigation section
 	conf.setBoolean("navigation:flag_manual_zoom", getFlagManualAutoZoom());

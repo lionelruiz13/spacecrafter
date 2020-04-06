@@ -674,15 +674,15 @@ void UI::tuiUpdateWidgets()
 	tui_colors_planet_orbits_color->setVector(core->planetGetDefaultColor("orbit"));
 
 	tui_colors_object_trails_color->setVector(core->planetGetDefaultColor("trail"));
-	tui_colors_meridian_color->setVector(core->skyLineMgrGetColor("LINE_MERIDIAN"));
+	tui_colors_meridian_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_MERIDIAN));
 	tui_colors_azimuthal_color->setVector(core->skyGridMgrGetColor("GRID_ALTAZIMUTAL"));
 	tui_colors_equatorial_color->setVector(core->skyGridMgrGetColor("GRID_EQUATORIAL"));
-	tui_colors_equator_color->setVector(core->skyLineMgrGetColor("LINE_EQUATOR"));
-	tui_colors_ecliptic_color->setVector(core->skyLineMgrGetColor("LINE_ECLIPTIC"));
+	tui_colors_equator_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR));
+	tui_colors_ecliptic_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC));
 	tui_colors_nebula_label_color->setVector(core->nebulaGetColorLabels());
 	tui_colors_nebula_circle_color->setVector(core->nebulaGetColorCircle());
-	tui_colors_precession_circle_color->setVector(core->skyLineMgrGetColor("LINE_PRECESSION"));
-	tui_colors_circumpolar_circle_color->setVector(core->skyLineMgrGetColor("LINE_CIRCUMPOLAR"));
+	tui_colors_precession_circle_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_PRECESSION));
+	tui_colors_circumpolar_circle_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 
 	// *** Effects
 	tui_effect_zoom_duration->setValue(core->getAutomoveDuration());
@@ -1004,13 +1004,13 @@ void UI::tuiCbChangeColor()
 
 	core->skyGridMgrSetColor("GRID_ALTAZIMUTAL" , tui_colors_azimuthal_color->getVector() );
 	core->skyGridMgrSetColor("GRID_EQUATORIAL"  , tui_colors_equatorial_color->getVector() );
-	core->skyLineMgrSetColor("LINE_EQUATOR", tui_colors_equator_color->getVector() );
-	core->skyLineMgrSetColor("LINE_ECLIPTIC", tui_colors_ecliptic_color->getVector() );
-	core->skyLineMgrSetColor("LINE_MERIDIAN", tui_colors_meridian_color->getVector() ); 
+	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, tui_colors_equator_color->getVector() );
+	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, tui_colors_ecliptic_color->getVector() );
+	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, tui_colors_meridian_color->getVector() ); 
 	core->nebulaSetColorLabels(tui_colors_nebula_label_color->getVector() );
 	core->nebulaSetColorCircle(tui_colors_nebula_circle_color->getVector() );
-	core->skyLineMgrSetColor("LINE_PRECESSION", tui_colors_precession_circle_color->getVector() );
-	core->skyLineMgrSetColor("LINE_CIRCUMPOLAR", tui_colors_circumpolar_circle_color->getVector() );
+	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, tui_colors_precession_circle_color->getVector() );
+	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, tui_colors_circumpolar_circle_color->getVector() );
 }
 
 
