@@ -390,6 +390,8 @@ void Navigator::changeHeading(double _heading, int duration)
 void Navigator::update(int delta_time)
 {
 	if (flag_change_heading) {
+		if (delta_time > 100) return;
+		std::cout << "Changing heading from " << start_heading << " to " << end_heading << " delta_time " << delta_time << std::endl;
 		move_to_mult += move_to_coef*delta_time;
 
 		if ( move_to_mult >= 1) {
