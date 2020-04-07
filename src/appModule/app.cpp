@@ -42,6 +42,7 @@
 #include "appModule/mkfifo.hpp"
 #include "coreModule/callbacks.hpp"
 #include "coreModule/core.hpp"
+#include "coreModule/coreLink.hpp"
 #include "eventModule/event_handler.hpp"
 #include "eventModule/event_manager.hpp"
 #include "interfaceModule/app_command_interface.hpp"
@@ -81,6 +82,7 @@ App::App( SDLFacade* const sdl ) :
 	screenFader =  new ScreenFader();
 
 	core = new Core(settings, width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
+	coreLink = new CoreLink(core);
 
 	screenFader->initShader();
 
@@ -145,6 +147,7 @@ App::~App()
 	delete scriptMgr;
 	delete media;
 	delete commander;
+	delete coreLink;
 	delete core;
 	delete saveScreenInterface;
 	delete internalFPS;

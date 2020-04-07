@@ -54,6 +54,7 @@ class Media;
 class Mkfifo;
 class UI;
 class Core;
+class CoreLink;
 class AppDraw;
 class SaveScreenInterface;
 class ServerSocket;
@@ -174,6 +175,7 @@ private:
 
 	//! The assicated Core instance
 	Core* core = nullptr;
+	CoreLink* coreLink = nullptr;
 	SDLFacade* mSdl = nullptr;
 	SaveScreenInterface* saveScreenInterface = nullptr;
 	ServerSocket * tcp = nullptr;
