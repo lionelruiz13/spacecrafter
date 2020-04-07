@@ -1444,37 +1444,37 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "galactic_grid")
 			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor );
 		else if(argProperty == "equator_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor );
 		else if(argProperty == "galactic_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Vcolor );
 		else if(argProperty == "ecliptic_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, Vcolor );
 		else if(argProperty == "meridian_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, Vcolor );
 		else if(argProperty == "zenith_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZENITH, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZENITH, Vcolor );
 		else if(argProperty == "polar_point")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_POINT_POLAR, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_POINT_POLAR, Vcolor );
 		else if(argProperty == "polar_circle")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Vcolor );
 		else if(argProperty == "ecliptic_center")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, Vcolor );
 		else if(argProperty == "galactic_pole")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_POLE, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_POLE, Vcolor );
 		else if(argProperty == "galactic_center")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER, Vcolor );
 		else if(argProperty == "vernal_points")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERNAL, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERNAL, Vcolor );
 		else if(argProperty == "analemma")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMA, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMA, Vcolor );
 		else if(argProperty == "analemma_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Vcolor );
 		else if(argProperty == "greenwich_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GREENWICH, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GREENWICH, Vcolor );
 		else if(argProperty == "aries_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ARIES, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ARIES, Vcolor );
 		else if(argProperty == "zodiac")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZODIAC, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZODIAC, Vcolor );
 		else if(argProperty == "personal")
 			stcore->personalSetColor( Vcolor );
 		else if(argProperty == "personeq")
@@ -1494,13 +1494,13 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "orthodromy")
 			stcore->orthodromySetColor( Vcolor );
 		else if(argProperty == "vertical_line")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );
 		else if(argProperty == "nebula_names")
 			stcore->nebulaSetColorLabels( Vcolor );
 		else if(argProperty == "nebula_circle")
 			stcore->nebulaSetColorCircle( Vcolor );
 		else if(argProperty == "precession_circle")
-			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor );
+			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor );
 		else if(argProperty == "text_usr_color")
 			stcore->textSetDefaultColor( Vcolor );
 		else if ((argProperty == "star_table") && (args["index"] !="" ))

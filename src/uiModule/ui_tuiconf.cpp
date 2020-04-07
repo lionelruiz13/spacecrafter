@@ -1004,13 +1004,13 @@ void UI::tuiCbChangeColor()
 
 	core->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL , tui_colors_azimuthal_color->getVector() );
 	core->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL  , tui_colors_equatorial_color->getVector() );
-	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, tui_colors_equator_color->getVector() );
-	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, tui_colors_ecliptic_color->getVector() );
-	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, tui_colors_meridian_color->getVector() ); 
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, tui_colors_equator_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, tui_colors_ecliptic_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, tui_colors_meridian_color->getVector() ); 
 	core->nebulaSetColorLabels(tui_colors_nebula_label_color->getVector() );
 	core->nebulaSetColorCircle(tui_colors_nebula_circle_color->getVector() );
-	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, tui_colors_precession_circle_color->getVector() );
-	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, tui_colors_circumpolar_circle_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, tui_colors_precession_circle_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, tui_colors_circumpolar_circle_color->getVector() );
 }
 
 

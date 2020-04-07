@@ -1573,9 +1573,9 @@ public:
 	// Skyline et Skygrid---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	void skyLineMgrSetColor(SKYLINE_TYPE name, Vec3f a) {
-		skyLineMgr->setColor(name, a);
-	}
+	// void skyLineMgrSetColor(SKYLINE_TYPE name, Vec3f a) {
+	// 	skyLineMgr->setColor(name, a);
+	// }
 
 	void skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a) {
 		skyGridMgr->setColor(name, a);
