@@ -34,14 +34,15 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
+#include "coreModule/SkyGridLine_common.hpp"
 
-enum class GRID_TYPE : char {
-	GRID_EQUATORIAL,
-	GRID_ECLIPTIC,
-	GRID_GALACTIC,
-	GRID_ALTAZIMUTAL,
-	GRID_UNKNOWN
-};
+// enum class GRID_TYPE : char {
+// 	GRID_EQUATORIAL,
+// 	GRID_ECLIPTIC,
+// 	GRID_GALACTIC,
+// 	GRID_ALTAZIMUTAL,
+// 	GRID_UNKNOWN
+// };
 
 
 class SkyGridMgr {
@@ -55,7 +56,7 @@ public:
 		return m_map.size();
 	};
 	//Celle qui va créer les objets
-	void Create(std::string type_obj);
+	void Create(SKYGRID_TYPE type_obj);
 	void draw(const Projector* prj);
 	void update(int delta_time);
 
@@ -63,17 +64,17 @@ public:
 
 	void setInternalNav(bool a);
 
-	void setColor(std::string typeObj, const Vec3f& c);
-	const Vec3f& getColor(std::string typeObj);
+	void setColor(SKYGRID_TYPE typeObj, const Vec3f& c);
+	const Vec3f& getColor(SKYGRID_TYPE typeObj);
 
 	//! change FlagShow: inverse la valeur du flag
-	void setFlagShow(std::string typeObj, bool b);
-	bool getFlagShow(std::string typeObj);
-	void flipFlagShow(std::string typeObj);
+	void setFlagShow(SKYGRID_TYPE typeObj, bool b);
+	bool getFlagShow(SKYGRID_TYPE typeObj);
+	void flipFlagShow(SKYGRID_TYPE typeObj);
 
 private:
-	GRID_TYPE stringToType(const std::string& typeObj);
-	std::map<std::string ,SkyGrid*> m_map;
+	SKYGRID_TYPE stringToType(const std::string& typeObj);
+	std::map<SKYGRID_TYPE ,SkyGrid*> m_map;
 
 	Vec3f baseColor;
 };

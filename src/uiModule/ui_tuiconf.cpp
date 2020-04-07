@@ -675,8 +675,8 @@ void UI::tuiUpdateWidgets()
 
 	tui_colors_object_trails_color->setVector(core->planetGetDefaultColor("trail"));
 	tui_colors_meridian_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_MERIDIAN));
-	tui_colors_azimuthal_color->setVector(core->skyGridMgrGetColor("GRID_ALTAZIMUTAL"));
-	tui_colors_equatorial_color->setVector(core->skyGridMgrGetColor("GRID_EQUATORIAL"));
+	tui_colors_azimuthal_color->setVector(core->skyGridMgrGetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
+	tui_colors_equatorial_color->setVector(core->skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL));
 	tui_colors_equator_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR));
 	tui_colors_ecliptic_color->setVector(core->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC));
 	tui_colors_nebula_label_color->setVector(core->nebulaGetColorLabels());
@@ -1002,8 +1002,8 @@ void UI::tuiCbChangeColor()
 	core->planetSetDefaultColor("label", tui_colors_planet_names_color->getVector() );
 	core->planetSetDefaultColor("trail",tui_colors_object_trails_color->getVector() );
 
-	core->skyGridMgrSetColor("GRID_ALTAZIMUTAL" , tui_colors_azimuthal_color->getVector() );
-	core->skyGridMgrSetColor("GRID_EQUATORIAL"  , tui_colors_equatorial_color->getVector() );
+	core->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL , tui_colors_azimuthal_color->getVector() );
+	core->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL  , tui_colors_equatorial_color->getVector() );
 	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, tui_colors_equator_color->getVector() );
 	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, tui_colors_ecliptic_color->getVector() );
 	core->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, tui_colors_meridian_color->getVector() ); 

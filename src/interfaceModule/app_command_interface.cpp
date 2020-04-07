@@ -556,34 +556,34 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_AZIMUTHAL_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow("GRID_ALTAZIMUTAL");
-				stcore->skyGridMgrFlipFlagShow("GRID_ALTAZIMUTAL");
+				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
+				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 			} else
-				stcore->skyGridMgrSetFlagShow("GRID_ALTAZIMUTAL", newval);
+				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_EQUATORIAL_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow("GRID_EQUATORIAL");
-				stcore->skyGridMgrFlipFlagShow("GRID_EQUATORIAL");
+				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
+				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
 			} else
-				stcore->skyGridMgrSetFlagShow("GRID_EQUATORIAL", newval);
+				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_ECLIPTIC_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow("GRID_ECLIPTIC");
-				stcore->skyGridMgrFlipFlagShow("GRID_ECLIPTIC");
+				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
+				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
 			} else
-				stcore->skyGridMgrSetFlagShow("GRID_ECLIPTIC", newval);
+				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow("GRID_GALACTIC");
-				stcore->skyGridMgrFlipFlagShow("GRID_GALACTIC");
+				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
+				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
 			} else
-				stcore->skyGridMgrSetFlagShow("GRID_GALACTIC", newval);
+				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_GALACTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_EQUATOR_LINE :
@@ -1434,13 +1434,13 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "planet_trails")
 			stcore->planetSetDefaultColor("trail", Vcolor );
 		else if(argProperty == "azimuthal_grid")
-			stcore->skyGridMgrSetColor("GRID_ALTAZIMUTAL", Vcolor );
+			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor );
 		else if(argProperty == "equator_grid")
-			stcore->skyGridMgrSetColor("GRID_EQUATORIAL", Vcolor );
+			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor );
 		else if(argProperty == "ecliptic_grid")
-			stcore->skyGridMgrSetColor("GRID_ECLIPTIC", Vcolor );
+			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor );
 		else if(argProperty == "galactic_grid")
-			stcore->skyGridMgrSetColor("GRID_GALACTIC", Vcolor );
+			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor );
 		else if(argProperty == "equator_line")
 			stcore->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor );
 		else if(argProperty == "galactic_line")

@@ -86,10 +86,10 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 		
 
 	skyGridMgr = new SkyGridMgr();
-	skyGridMgr->Create("GRID_EQUATORIAL");
-	skyGridMgr->Create("GRID_ECLIPTIC");
-	skyGridMgr->Create("GRID_GALACTIC");
-	skyGridMgr->Create("GRID_ALTAZIMUTAL");
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 
 	skyLineMgr = new SkyLineMgr();
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
@@ -546,10 +546,10 @@ void Core::init(const InitParser& conf)
 	asterisms->setArtIntensity(conf.getDouble("viewing","constellation_art_intensity"));
 	asterisms->setArtFadeDuration(conf.getDouble("viewing","constellation_art_fade_duration"));
 
-	skyGridMgr->setFlagShow("GRID_ALTAZIMUTAL",conf.getBoolean("viewing:flag_azimutal_grid"));
-	skyGridMgr->setFlagShow("GRID_EQUATORIAL",conf.getBoolean("viewing:flag_equatorial_grid"));
-	skyGridMgr->setFlagShow("GRID_ECLIPTIC",conf.getBoolean("viewing:flag_ecliptic_grid"));
-	skyGridMgr->setFlagShow("GRID_GALACTIC",conf.getBoolean("viewing:flag_galactic_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL,conf.getBoolean("viewing:flag_azimutal_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL,conf.getBoolean("viewing:flag_equatorial_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC,conf.getBoolean("viewing:flag_ecliptic_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_GALACTIC,conf.getBoolean("viewing:flag_galactic_grid"));
 
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_EQUATOR, conf.getBoolean("viewing:flag_equator_line"));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, conf.getBoolean("viewing:flag_galactic_line"));
@@ -1583,10 +1583,10 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 
 	// simple default color, rather than black which doesn't show up
 	// Load colors from config file
-	skyGridMgr->setColor("GRID_ALTAZIMUTAL", Utility::strToVec3f(conf.getStr(section,"azimuthal_color")));
-	skyGridMgr->setColor("GRID_EQUATORIAL", Utility::strToVec3f(conf.getStr(section,"equatorial_color")));
-	skyGridMgr->setColor("GRID_ECLIPTIC", Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
-	skyGridMgr->setColor("GRID_GALACTIC", Utility::strToVec3f(conf.getStr(section,"galactic_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Utility::strToVec3f(conf.getStr(section,"azimuthal_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_EQUATORIAL, Utility::strToVec3f(conf.getStr(section,"equatorial_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_GALACTIC, Utility::strToVec3f(conf.getStr(section,"galactic_color")));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
@@ -1659,11 +1659,15 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("viewing:flag_constellation_pick", constellationGetFlagIsolateSelected());
 	conf.setDouble("viewing:moon_scale", getMoonScale());
 	conf.setDouble("viewing:sun_scale", getSunScale());
-	conf.setBoolean("viewing:flag_equatorial_grid", skyGridMgrGetFlagShow("GRID_EQUATORIAL"));
-	conf.setBoolean("viewing:flag_ecliptic_grid", skyGridMgrGetFlagShow("GRID_ECLIPTIC"));
-	conf.setBoolean("viewing:flag_galactic_grid", skyGridMgrGetFlagShow("GRID_GALACTIC"));
-	conf.setBoolean("viewing:flag_azimutal_grid", skyGridMgrGetFlagShow("GRID_ALTAZIMUTAL"));
-	conf.setBoolean("viewing:flag_equator_line", skyGridMgrGetFlagShow("LINE_EQUATOR"));
+	conf.setBoolean("viewing:flag_equatorial_grid", skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
+	conf.setBoolean("viewing:flag_ecliptic_grid", skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
+	conf.setBoolean("viewing:flag_galactic_grid", skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
+	conf.setBoolean("viewing:flag_azimutal_grid", skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
+
+	conf.setBoolean("viewing:flag_equator_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_EQUATOR));
+	// Ici, la fonction était skyGridMgrGetFlagShow, avec LINE_EQUATOR.
+	// LINE_EQUATOR étant de type SKYLINE_TYPE, j'ai du changer la fonction par skyLineMgrGetFlagShow
+
 	conf.setBoolean("viewing:flag_ecliptic_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
 	conf.setBoolean("viewing:flag_cardinal_points", cardinalsPointsGetFlag());
 	conf.setBoolean("viewing:flag_zenith_line", skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZENITH));
@@ -1701,9 +1705,9 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble("stars:star_twinkle_amount", starGetTwinkleAmount());
 	conf.setDouble("stars:star_limiting_mag", starGetLimitingMag());
 	// Color section
-	conf.setStr    ("color:azimuthal_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_ALTAZIMUTAL")));
-	conf.setStr    ("color:equatorial_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_EQUATORIAL")));
-	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_ECLIPTIC")));
+	conf.setStr    ("color:azimuthal_color", Utility::vec3fToStr(skyGridMgrGetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
+	conf.setStr    ("color:equatorial_color", Utility::vec3fToStr(skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
+	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyGridMgrGetColor(SKYGRID_TYPE::GRID_ECLIPTIC)));
 	conf.setStr    ("color:equator_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR)));
 	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC)));
 	conf.setStr    ("color:meridian_color", Utility::vec3fToStr(skyLineMgrGetColor(SKYLINE_TYPE::LINE_MERIDIAN)));

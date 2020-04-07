@@ -72,7 +72,7 @@ void SkyGridMgr::setFont(float font_size, const std::string& font_name)
 }
 
 
-void SkyGridMgr::flipFlagShow(std::string typeObj)
+void SkyGridMgr::flipFlagShow(SKYGRID_TYPE typeObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -84,7 +84,7 @@ void SkyGridMgr::flipFlagShow(std::string typeObj)
 }
 
 
-void SkyGridMgr::setFlagShow(std::string typeObj, bool a)
+void SkyGridMgr::setFlagShow(SKYGRID_TYPE typeObj, bool a)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -96,7 +96,7 @@ void SkyGridMgr::setFlagShow(std::string typeObj, bool a)
 }
 
 
-bool SkyGridMgr::getFlagShow(std::string typeObj)
+bool SkyGridMgr::getFlagShow(SKYGRID_TYPE typeObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -108,7 +108,7 @@ bool SkyGridMgr::getFlagShow(std::string typeObj)
 }
 
 
-void SkyGridMgr::setColor(std::string typeObj, const Vec3f& c)
+void SkyGridMgr::setColor(SKYGRID_TYPE typeObj, const Vec3f& c)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -119,7 +119,7 @@ void SkyGridMgr::setColor(std::string typeObj, const Vec3f& c)
 	cLog::get()->write("SkyGridMgr error : setColor not found " + typeObj , LOG_TYPE::L_WARNING);
 }
 
-const Vec3f& SkyGridMgr::getColor(std::string typeObj)
+const Vec3f& SkyGridMgr::getColor(SKYGRID_TYPE typeObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		if (it->first==typeObj) {
@@ -131,24 +131,24 @@ const Vec3f& SkyGridMgr::getColor(std::string typeObj)
 }
 
 
-GRID_TYPE SkyGridMgr::stringToType(const std::string& typeObj)
+SKYGRID_TYPE SkyGridMgr::stringToType(const std::string& typeObj)
 {
 	if (typeObj == "GRID_EQUATORIAL")
-		return GRID_TYPE::GRID_EQUATORIAL;
+		return SKYGRID_TYPE::GRID_EQUATORIAL;
 
 	if (typeObj == "GRID_ALTAZIMUTAL")
-		return GRID_TYPE::GRID_ALTAZIMUTAL;
+		return SKYGRID_TYPE::GRID_ALTAZIMUTAL;
 
 	if (typeObj == "GRID_ECLIPTIC")
-		return GRID_TYPE::GRID_ECLIPTIC;
+		return SKYGRID_TYPE::GRID_ECLIPTIC;
 
 	if (typeObj == "GRID_GALACTIC")
-		return GRID_TYPE::GRID_GALACTIC;
+		return SKYGRID_TYPE::GRID_GALACTIC;
 
-	return GRID_TYPE::GRID_UNKNOWN;
+	return SKYGRID_TYPE::GRID_UNKNOWN;
 }
 
-void SkyGridMgr::Create(std::string type_obj)
+void SkyGridMgr::Create(SKYGRID_TYPE type_obj)
 {
 	SkyGrid* tmp=nullptr;
 	auto it=m_map.find(type_obj);
@@ -159,31 +159,32 @@ void SkyGridMgr::Create(std::string type_obj)
 		return;
 	}
 
-	GRID_TYPE typeObj=stringToType(type_obj);
+	//SKYGRID_TYPE typeObj=stringToType(type_obj);
 
-	switch (typeObj) {
-		case GRID_TYPE::GRID_EQUATORIAL :
+	//switch (typeObj) {
+	switch (type_obj) {
+		case GRID_EQUATORIAL :
 			cLog::get()->write("SkyGridMgr creating GRID EQUATORIAL" , LOG_TYPE::L_INFO);
 			tmp=new GridEquatorial();
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
-		case GRID_TYPE::GRID_ALTAZIMUTAL:
+		case GRID_ALTAZIMUTAL:
 			cLog::get()->write("SkyGridMgr creating GRID ALTAZIMUTAL" , LOG_TYPE::L_INFO);
 			tmp=new GridAltAzimutal();
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
-		case GRID_TYPE::GRID_ECLIPTIC :
+		case GRID_ECLIPTIC :
 			cLog::get()->write("SkyGridMgr creating GRID ECLIPTIC" , LOG_TYPE::L_INFO);
 			tmp=new GridEcliptic();
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
-		case GRID_TYPE::GRID_GALACTIC :
+		case GRID_GALACTIC :
 			cLog::get()->write("SkyGridMgr creating GRID GALACTIC" , LOG_TYPE::L_INFO);
 			tmp=new GridGalactic();
 			m_map[type_obj]= tmp;

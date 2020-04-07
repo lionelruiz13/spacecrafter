@@ -1575,7 +1575,7 @@ public:
 		skyLineMgr->setColor(name, a);
 	}
 
-	void skyGridMgrSetColor(std::string name, Vec3f a) {
+	void skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a) {
 		skyGridMgr->setColor(name, a);
 	}
 
@@ -1583,7 +1583,7 @@ public:
 		return skyLineMgr->getColor(name);
 	}
 
-	const Vec3f& skyGridMgrGetColor(std::string name) {
+	const Vec3f& skyGridMgrGetColor(SKYGRID_TYPE name) {
 		return skyGridMgr->getColor(name);
 	}
 
@@ -1591,7 +1591,7 @@ public:
 		skyLineMgr->flipFlagShow(name);
 	}
 
-	void skyGridMgrFlipFlagShow(std::string name) {
+	void skyGridMgrFlipFlagShow(SKYGRID_TYPE name) {
 		skyGridMgr->flipFlagShow(name);
 	}
 
@@ -1599,7 +1599,7 @@ public:
 		skyLineMgr->setFlagShow(name, value);
 	}
 
-	void skyGridMgrSetFlagShow(std::string name, bool value) {
+	void skyGridMgrSetFlagShow(SKYGRID_TYPE name, bool value) {
 		skyGridMgr->setFlagShow(name, value);
 	}
 
@@ -1607,7 +1607,7 @@ public:
 		return skyLineMgr->getFlagShow(name);
 	}
 
-	bool skyGridMgrGetFlagShow(std::string name) {
+	bool skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
 		return skyGridMgr->getFlagShow(name);
 	}
 
