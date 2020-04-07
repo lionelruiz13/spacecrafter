@@ -1577,41 +1577,41 @@ public:
 	// 	skyLineMgr->setColor(name, a);
 	// }
 
-	void skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a) {
-		skyGridMgr->setColor(name, a);
-	}
+	// void skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a) {
+	// 	skyGridMgr->setColor(name, a);
+	// }
 
-	const Vec3f& skyLineMgrGetColor(SKYLINE_TYPE name) {
-		return skyLineMgr->getColor(name);
-	}
+	// const Vec3f& skyLineMgrGetColor(SKYLINE_TYPE name) {
+	// 	return skyLineMgr->getColor(name);
+	// }
 
-	const Vec3f& skyGridMgrGetColor(SKYGRID_TYPE name) {
-		return skyGridMgr->getColor(name);
-	}
+	// const Vec3f& skyGridMgrGetColor(SKYGRID_TYPE name) {
+	// 	return skyGridMgr->getColor(name);
+	// }
 
-	void skyLineMgrFlipFlagShow(SKYLINE_TYPE name) {
-		skyLineMgr->flipFlagShow(name);
-	}
+	// void skyLineMgrFlipFlagShow(SKYLINE_TYPE name) {
+	// 	skyLineMgr->flipFlagShow(name);
+	// }
 
-	void skyGridMgrFlipFlagShow(SKYGRID_TYPE name) {
-		skyGridMgr->flipFlagShow(name);
-	}
+	// void skyGridMgrFlipFlagShow(SKYGRID_TYPE name) {
+	// 	skyGridMgr->flipFlagShow(name);
+	// }
 
-	void skyLineMgrSetFlagShow(SKYLINE_TYPE name, bool value) {
-		skyLineMgr->setFlagShow(name, value);
-	}
+	// void skyLineMgrSetFlagShow(SKYLINE_TYPE name, bool value) {
+	// 	skyLineMgr->setFlagShow(name, value);
+	// }
 
-	void skyGridMgrSetFlagShow(SKYGRID_TYPE name, bool value) {
-		skyGridMgr->setFlagShow(name, value);
-	}
+	// void skyGridMgrSetFlagShow(SKYGRID_TYPE name, bool value) {
+	// 	skyGridMgr->setFlagShow(name, value);
+	// }
 
-	bool skyLineMgrGetFlagShow(SKYLINE_TYPE name) {
-		return skyLineMgr->getFlagShow(name);
-	}
+	// bool skyLineMgrGetFlagShow(SKYLINE_TYPE name) {
+	// 	return skyLineMgr->getFlagShow(name);
+	// }
 
-	bool skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
-		return skyGridMgr->getFlagShow(name);
-	}
+	// bool skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
+	// 	return skyGridMgr->getFlagShow(name);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Stars---------------------------

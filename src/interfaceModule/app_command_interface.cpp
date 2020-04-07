@@ -558,194 +558,194 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_AZIMUTHAL_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
-				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
+				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
+				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 			} else
-				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL, newval);
+				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_EQUATORIAL_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
-				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
+				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
+				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
 			} else
-				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL, newval);
+				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_ECLIPTIC_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
-				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
+				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
+				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
 			} else
-				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC, newval);
+				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_GRID :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
-				stcore->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
+				newval = coreLink->skyGridMgrGetFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
+				coreLink->skyGridMgrFlipFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
 			} else
-				stcore->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_GALACTIC, newval);
+				coreLink->skyGridMgrSetFlagShow(SKYGRID_TYPE::GRID_GALACTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_EQUATOR_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_EQUATOR, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_EQUATOR, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, newval);
 			break;
 
 		case FLAG_NAMES::FN_ECLIPTIC_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_PRECESSION_CIRCLE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_PRECESSION, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_PRECESSION, newval);
 			break;
 
 		case FLAG_NAMES::FN_TROPIC_LINES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_TROPIC);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_TROPIC);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_TROPIC);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_TROPIC, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_TROPIC, newval);
 			break;
 
 		case FLAG_NAMES::FN_CIRCUMPOLAR_CIRCLE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, newval);
 			break;
 
 		case FLAG_NAMES::FN_MERIDIAN_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, newval);
 			break;
 
 		case FLAG_NAMES::FN_ZENITH_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZENITH);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ZENITH);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZENITH);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ZENITH);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZENITH, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZENITH, newval);
 			break;
 
 		case FLAG_NAMES::FN_POLAR_CIRCLE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, newval);
 			break;
 
 		case FLAG_NAMES::FN_POLAR_POINT :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, newval);
 			break;
 
 		case FLAG_NAMES::FN_ECLIPTIC_CENTER :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_POLE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, newval);
 			break;
 
 		case FLAG_NAMES::FN_GALACTIC_CENTER :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, newval);
 			break;
 
 		case FLAG_NAMES::FN_VERNAL_POINTS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERNAL);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_VERNAL);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERNAL);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_VERNAL);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERNAL, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERNAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_ANALEMMA_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, newval);
 			break;
 
 		case FLAG_NAMES::FN_ANALEMMA :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, newval);
 			break;
 
 		case FLAG_NAMES::FN_ARIES_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ARIES);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ARIES);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ARIES);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ARIES);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ARIES, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ARIES, newval);
 			break;
 
 		case FLAG_NAMES::FN_ZODIAC :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZODIAC, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_ZODIAC, newval);
 			break;
 
 		case FLAG_NAMES::FN_GREENWICH_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GREENWICH, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_GREENWICH, newval);
 			break;
 
 		case FLAG_NAMES::FN_VERTICAL_LINE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = stcore->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
-				stcore->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
+				newval = coreLink->skyLineMgrGetFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
+				coreLink->skyLineMgrFlipFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
 			} else
-				stcore->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERTICAL, newval);
+				coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_VERTICAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_PERSONAL :
@@ -1436,13 +1436,13 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "planet_trails")
 			stcore->planetSetDefaultColor("trail", Vcolor );
 		else if(argProperty == "azimuthal_grid")
-			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor );
+			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor );
 		else if(argProperty == "equator_grid")
-			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor );
+			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor );
 		else if(argProperty == "ecliptic_grid")
-			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor );
+			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor );
 		else if(argProperty == "galactic_grid")
-			stcore->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor );
+			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor );
 		else if(argProperty == "equator_line")
 			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor );
 		else if(argProperty == "galactic_line")
