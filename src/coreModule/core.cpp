@@ -45,7 +45,7 @@
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
-#include "coreModule/SkyGridLine_common.hpp"
+#include "coreModule/core_common.hpp"
 
 Core::Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, _settings->getLocaleDir(), ""),
