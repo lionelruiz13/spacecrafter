@@ -54,7 +54,7 @@ public:
 	void update(int delta_time);
 
 	void setFont(float font_size, const std::string& font_name);
-	void setFont(float font_size, SKYLINE_TYPE font_name);
+	//void setFont(float font_size, SKYLINE_TYPE font_name);
 
 	void setInternalNav(bool a);
 

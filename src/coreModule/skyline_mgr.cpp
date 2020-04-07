@@ -229,7 +229,6 @@ SKYLINE_TYPE SkyLineMgr::stringToType(const std::string& typeObj)
 	return SKYLINE_TYPE::LINE_UNKNOWN;
 }
 
-
 void SkyLineMgr::Create(SKYLINE_TYPE type_obj)
 {
 	SkyLine* tmp=nullptr;
