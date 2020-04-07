@@ -35,7 +35,7 @@
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/time_mgr.hpp"
-#include "coreModule/SkyGridLine_common.hpp"
+#include "coreModule/core_common.hpp"
 
 class SkyLineMgr {
 public:

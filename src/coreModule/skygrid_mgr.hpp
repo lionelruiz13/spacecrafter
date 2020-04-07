@@ -34,7 +34,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
-#include "coreModule/SkyGridLine_common.hpp"
+#include "coreModule/core_common.hpp"
 
 // enum class GRID_TYPE : char {
 // 	GRID_EQUATORIAL,
