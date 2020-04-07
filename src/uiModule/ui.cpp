@@ -1495,9 +1495,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case KWIN:
 					break;
 				case CTRL :
-					this->executeCommand(IDIR+"internal/sky_culture1.sts");				
-					//event = new ScriptEvent(IDIR+"internal/sky_culture1.sts");
-					//EventManager::getInstance()->queue(event);
+					event = new ScriptEvent(IDIR+"internal/sky_culture1.sts");
+					EventManager::getInstance()->queue(event);
 					break;
 				default:
 					break;
