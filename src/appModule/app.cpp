@@ -87,7 +87,7 @@ App::App( SDLFacade* const sdl ) :
 	screenFader->initShader();
 
 	ui = new UI(core, this, mSdl, media);
-	commander = new AppCommandInterface(core, this, ui, media);
+	commander = new AppCommandInterface(core, coreLink, this, ui, media);
 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = new Fps();

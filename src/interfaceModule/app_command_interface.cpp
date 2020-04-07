@@ -35,6 +35,7 @@
 #include "appModule/app.hpp"
 #include "appModule/save_screen_interface.hpp"
 #include "coreModule/core.hpp"
+#include "coreModule/coreLink.hpp"
 #include "eventModule/event_manager.hpp"
 #include "eventModule/ScreenFaderEvent.hpp"
 #include "interfaceModule/app_command_interface.hpp"
@@ -49,9 +50,10 @@
 #include "uiModule/ui.hpp"
 
 
-AppCommandInterface::AppCommandInterface(Core * core, App * app, UI* _ui,  Media* _media)
+AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, App * app, UI* _ui,  Media* _media)
 {
 	stcore = core;
+	coreLink = _coreLink;
 	stapp = app;
 	media = _media;
 	ui = _ui;

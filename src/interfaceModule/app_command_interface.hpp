@@ -36,7 +36,7 @@
 #include "base_command_interface.hpp"
 
 class Core;
-class CoreIO;
+class CoreLink;
 class App;
 class UI;
 class ScriptInterface;
@@ -47,7 +47,7 @@ class SaveScreenInterface;
 class AppCommandInterface {
 
 public:
-	AppCommandInterface(Core * core, App * app, UI* _ui, Media* _media);
+	AppCommandInterface(Core * core, CoreLink *_coreLink, App * app, UI* _ui, Media* _media);
 	~AppCommandInterface();
 	AppCommandInterface(AppCommandInterface const &) = delete;
 	AppCommandInterface& operator = (AppCommandInterface const &) = delete;
@@ -115,6 +115,7 @@ protected:
 
 private:
 	Core * stcore = nullptr;
+	CoreLink *coreLink = nullptr;
 	App * stapp = nullptr;
 	UI* ui = nullptr;
 	Media* media = nullptr;
