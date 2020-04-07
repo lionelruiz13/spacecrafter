@@ -32,6 +32,7 @@
 #include <algorithm>
 #include "appModule/app.hpp"
 #include "coreModule/core.hpp"
+#include "coreModule/coreLink.hpp"
 #include "eventModule/event_manager.hpp"
 #include "eventModule/ScriptEvent.hpp"
 #include "eventModule/CommandEvent.hpp"
@@ -58,7 +59,7 @@ static const double DURATION_COMMAND = 0.1;
 std::string default_landscape = "";
 std::string current_landscape = "";
 
-UI::UI(Core * _core, App * _app, SDLFacade *_m_sdl,  Media* _media) :
+UI::UI(Core * _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl,  Media* _media) :
 	tuiFont(nullptr),
 	FlagShowTuiMenu(0),
 	tui_root(nullptr),
@@ -71,6 +72,7 @@ UI::UI(Core * _core, App * _app, SDLFacade *_m_sdl,  Media* _media) :
 		exit(-1);
 	}
 	core = _core;
+	coreLink = _coreLink;
 	media = _media;
 	m_sdl= _m_sdl;
 	app = _app;

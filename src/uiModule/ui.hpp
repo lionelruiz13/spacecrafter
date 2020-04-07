@@ -54,7 +54,7 @@ enum S_GUI_VALUE {
 class App;
 class Core;
 class Media;
-class CoreIO;
+class CoreLink;
 class s_font;
 class ScriptInterface;
 class AppCommandInterface;
@@ -72,7 +72,7 @@ enum class UI_FLAG : char {SHOW_FPS, SHOW_LATLON, SHOW_FOV,
 class UI {
 
 public:
-	UI(Core *, App * _app, SDLFacade* _m_sdl, Media* _media);	// Create the ui. Need to call init() before use
+	UI(Core *, CoreLink *, App * _app, SDLFacade* _m_sdl, Media* _media);	// Create the ui. Need to call init() before use
 	virtual ~UI();		// Delete the ui
 	void init(const InitParser& conf);		// Initialize the ui.
 
@@ -197,6 +197,7 @@ public:
 
 private:
 	Core * core;
+	CoreLink * coreLink=nullptr;
 	App * app;
 	SDLFacade* m_sdl;
 	Media * media;

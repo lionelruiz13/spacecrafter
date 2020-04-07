@@ -42,7 +42,7 @@
 #include "tools/log.hpp"
 #include "tools/file_path.hpp"
 #include "uiModule/ui.hpp"
-
+#include "coreModule/coreLink.hpp"
 
 // Draw simple gravity text ui.
 void UI::drawGravityUi()
