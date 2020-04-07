@@ -96,6 +96,8 @@ public:
 	friend class CoreExecutorInGalaxy;
 	friend class CoreExecutorInUniverse;
 
+	friend class CoreLink;
+
 	//! Possible mount modes
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
