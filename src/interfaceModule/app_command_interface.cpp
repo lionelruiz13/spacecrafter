@@ -1676,13 +1676,13 @@ int AppCommandInterface::commandSet()
 	else if (args["time_zone"]!="")spaceDate->setCustomTimezone(args["time_zone"]);
 	else if (args["ambient_light"]!="") {
 		if (args["ambient_light"]=="increment") {
-			stcore->uboSetAmbientLight(stcore->uboGetAmbientLight()+0.01);
+			coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
 		}
 		else if (args["ambient_light"]=="decrement"){
-			stcore->uboSetAmbientLight(stcore->uboGetAmbientLight()-0.01);
+			coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
 		}
 		else{
-			stcore->uboSetAmbientLight(evalDouble(args["ambient_light"]));
+			coreLink->uboSetAmbientLight(evalDouble(args["ambient_light"]));
 		}
 	} else if (args["text_fading_duration"]!="") coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"]));
 	else if (args["milky_way_fader_duration"]!="") stcore->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"]));
