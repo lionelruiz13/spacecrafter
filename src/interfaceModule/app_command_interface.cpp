@@ -500,9 +500,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_STAR_TWINKLE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->starGetFlagTwinkle();
+				newval = !coreLink->starGetFlagTwinkle();
 
-			stcore->starSetFlagTwinkle(newval);
+			coreLink->starSetFlagTwinkle(newval);
 			break;
 
 		case FLAG_NAMES::FN_SHOW_TUI_DATETIME :
@@ -552,7 +552,7 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !stcore->atmosphereGetFlag();
 
 			if (!newval) stcore->fogSetFlag(false); // turn off fog with atmosphere
-			stcore->starSetFlagTwinkle(newval); // twinkle stars depending on atmosphere activated
+			coreLink->starSetFlagTwinkle(newval); // twinkle stars depending on atmosphere activated
 			stcore->atmosphereSetFlag(newval);
 			break;
 
@@ -846,16 +846,16 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_STARS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->starGetFlag();
+				newval = !coreLink->starGetFlag();
 
-			stcore->starSetFlag(newval);
+			coreLink->starSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_NAMES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->starGetFlagName();
+				newval = !coreLink->starGetFlagName();
 
-			stcore->starSetFlagName(newval);
+			coreLink->starSetFlagName(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_PICK :
@@ -1032,9 +1032,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_STARS_TRACE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->starGetTraceFlag();
+				newval = !coreLink->starGetTraceFlag();
 
-			stcore->starSetTraceFlag(newval);
+			coreLink->starSetTraceFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_LINES :
@@ -1504,7 +1504,7 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "text_usr_color")
 			coreLink->textSetDefaultColor( Vcolor );
 		else if ((argProperty == "star_table") && (args["index"] !="" ))
-			stcore->starSetColorTable(evalInt(args["index"]), Vcolor );
+			coreLink->starSetColorTable(evalInt(args["index"]), Vcolor );
 		else {
 			debug_message = _("Command 'color': unknown property");
 			executeCommandStatus(); // renvoie de l'erreur
@@ -1641,7 +1641,7 @@ int AppCommandInterface::commandSet()
 			stcore->setLandscape(args["landscape_name"]);
 	} else if (args["line_width"]!="") stcore->setLineWidth(evalDouble(args["line_width"]));
 	else if (args["max_mag_nebula_name"]!="") stcore->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"]));
-	else if (args["max_mag_star_name"]!="") stcore->starSetMaxMagName(evalDouble(args["max_mag_star_name"]));
+	else if (args["max_mag_star_name"]!="") coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"]));
 	else if (args["moon_scale"]!="") {
 		stcore->setMoonScale(evalDouble(args["moon_scale"]));
 	} else if (args["sun_scale"]!="") {
@@ -1663,16 +1663,16 @@ int AppCommandInterface::commandSet()
 		else
 			stcore->setSkyLanguage(args["sky_locale"]);
 	} else if (args["ui_locale"]!="") stapp->setAppLanguage(args["ui_locale"]);
-	else if (args["star_mag_scale"]!="") stcore->starSetMagScale(evalDouble(args["star_mag_scale"]));
-	else if (args["star_size_limit"]!="") stcore->starSetSizeLimit(evalDouble(args["star_size_limit"]));
+	else if (args["star_mag_scale"]!="") coreLink->starSetMagScale(evalDouble(args["star_mag_scale"]));
+	else if (args["star_size_limit"]!="") coreLink->starSetSizeLimit(evalDouble(args["star_size_limit"]));
 	else if (args["planet_size_limit"]!="") stcore->setPlanetsSizeLimit(evalDouble(args["planet_size_limit"]));
 	else if (args["star_scale"]!="") {
 		float scale = evalDouble(args["star_scale"]);
-		stcore->starSetScale(scale);
+		coreLink->starSetScale(scale);
 		stcore->planetsSetScale(scale);
-	} else if (args["star_twinkle_amount"]!="") stcore->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"]));
-	else if (args["star_fader_duration"]!="") stcore->starSetDuration(evalDouble(args["star_fader_duration"]));
-	else if (args["star_limiting_mag"]!="") stcore->starSetLimitingMag(evalDouble(args["star_limiting_mag"]));
+	} else if (args["star_twinkle_amount"]!="") coreLink->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"]));
+	else if (args["star_fader_duration"]!="") coreLink->starSetDuration(evalDouble(args["star_fader_duration"]));
+	else if (args["star_limiting_mag"]!="") coreLink->starSetLimitingMag(evalDouble(args["star_limiting_mag"]));
 	else if (args["time_zone"]!="")spaceDate->setCustomTimezone(args["time_zone"]);
 	else if (args["ambient_light"]!="") {
 		if (args["ambient_light"]=="increment") {

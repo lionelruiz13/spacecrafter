@@ -657,11 +657,11 @@ void UI::tuiUpdateWidgets()
 	tui_general_sky_locale->setValue(std::string(core->getSkyLanguage()));
 
 	// 4. Stars
-	tui_stars_show->setValue(core->starGetFlag());
-	tui_star_labelmaxmag->setValue(core->starGetMaxMagName());
-	tui_stars_twinkle->setValue(core->starGetTwinkleAmount());
-	tui_star_magscale->setValue(core->starGetMagScale());
-	tui_star_limitingmag->setValue(core->starGetLimitingMag());
+	tui_stars_show->setValue(coreLink->starGetFlag());
+	tui_star_labelmaxmag->setValue(coreLink->starGetMaxMagName());
+	tui_stars_twinkle->setValue(coreLink->starGetTwinkleAmount());
+	tui_star_magscale->setValue(coreLink->starGetMagScale());
+	tui_star_limitingmag->setValue(coreLink->starGetLimitingMag());
 
 	// 5. Colors
 	tui_colors_const_line_color->setVector(core->constellationGetColorLine());
@@ -687,7 +687,7 @@ void UI::tuiUpdateWidgets()
 	// *** Effects
 	tui_effect_zoom_duration->setValue(core->getAutomoveDuration());
 	tui_effect_manual_zoom->setValue(core->getFlagManualAutoZoom());
-	tui_effect_object_scale->setValue(core->starGetScale());
+	tui_effect_object_scale->setValue(coreLink->starGetScale());
 	tui_effect_star_size_limit->setValue(core->starGetSizeLimit());
 	tui_effect_planet_size_limit->setValue(core->getPlanetsSizeLimit());
 	tui_effect_milkyway_intensity->setValue(core->milkyWayGetIntensity());

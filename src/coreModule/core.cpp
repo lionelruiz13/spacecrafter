@@ -1697,13 +1697,13 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("landscape:flag_atmosphere", atmosphereGetFlag());
 	conf.setBoolean("landscape:flag_fog", fogGetFlag());
 	// Star section
-	conf.setDouble ("stars:star_scale", starGetScale());
-	conf.setDouble ("stars:star_mag_scale", starGetMagScale());
-	conf.setDouble("stars:max_mag_star_name", starGetMaxMagName());
+	conf.setDouble ("stars:star_scale", hip_stars->getScale()); //starGetScale());
+	conf.setDouble ("stars:star_mag_scale", hip_stars->getMagScale()); //starGetMagScale());
+	conf.setDouble("stars:max_mag_star_name", hip_stars->getMaxMagName()); //starGetMaxMagName());
 	conf.setBoolean("viewing:flag_star_pick", starGetFlagIsolateSelected());
-	conf.setBoolean("stars:flag_star_twinkle", starGetFlagTwinkle());
-	conf.setDouble("stars:star_twinkle_amount", starGetTwinkleAmount());
-	conf.setDouble("stars:star_limiting_mag", starGetLimitingMag());
+	conf.setBoolean("stars:flag_star_twinkle", hip_stars->getFlagTwinkle()); //starGetFlagTwinkle());
+	conf.setDouble("stars:star_twinkle_amount", hip_stars->getTwinkleAmount()); //starGetTwinkleAmount());
+	conf.setDouble("stars:star_limiting_mag", hip_stars->getMagConverterMaxScaled60DegMag()); //starGetLimitingMag());
 	// Color section
 	conf.setStr    ("color:azimuthal_color", Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
 	conf.setStr    ("color:equatorial_color", Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
@@ -1749,8 +1749,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	// Astro section
 	conf.setBoolean("astro:flag_object_trails", planetsGetFlagTrails());
 	conf.setBoolean("astro:flag_bright_nebulae", nebulaGetFlagBright());
-	conf.setBoolean("astro:flag_stars", starGetFlag());
-	conf.setBoolean("astro:flag_star_name", starGetFlagName());
+	conf.setBoolean("astro:flag_stars", hip_stars->getFlagStars()); //starGetFlag());
+	conf.setBoolean("astro:flag_star_name", hip_stars->getFlagNames()); //starGetFlagName());
 	conf.setBoolean("viewing:flag_star_pick", starGetFlagIsolateSelected());
 	conf.setBoolean("astro:flag_nebula", nebulaGetFlag());
 	conf.setBoolean("astro:flag_nebula_names", nebulaGetFlagNames());
