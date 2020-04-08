@@ -1669,7 +1669,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	// LINE_EQUATOR étant de type SKYLINE_TYPE, j'ai du changer la fonction par skyLineMgr->getFlagShow
 
 	conf.setBoolean("viewing:flag_ecliptic_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
-	conf.setBoolean("viewing:flag_cardinal_points", cardinalsPointsGetFlag());
+	conf.setBoolean("viewing:flag_cardinal_points", cardinals_points->getFlagShow()); //cardinalsPointsGetFlag());
 	conf.setBoolean("viewing:flag_zenith_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZENITH));
 	conf.setBoolean("viewing:flag_polar_circle", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR));
 	conf.setBoolean("viewing:flag_polar_point", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR));
@@ -1740,7 +1740,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr	   ("color:nebula_label_color", Utility::vec3fToStr(nebulaGetColorLabels()));
 	conf.setStr	   ("color:nebula_circle_color", Utility::vec3fToStr(nebulaGetColorCircle()));
 	conf.setStr	   ("color:precession_circle_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_PRECESSION)));
-	conf.setStr    ("color:cardinal_color", Utility::vec3fToStr(cardinalsPointsGetColor()));
+	conf.setStr    ("color:cardinal_color", Utility::vec3fToStr(cardinals_points->getColor())); //cardinalsPointsGetColor()));
 	// Navigation section
 	conf.setBoolean("navigation:flag_manual_zoom", getFlagManualAutoZoom());
 	conf.setDouble ("navigation:auto_move_duration", getAutoMoveDuration());

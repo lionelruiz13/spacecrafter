@@ -811,9 +811,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_CARDINAL_POINTS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->cardinalsPointsGetFlag();
+				newval = !coreLink->cardinalsPointsGetFlag();
 
-			stcore->cardinalsPointsSetFlag(newval);
+			coreLink->cardinalsPointsSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_CLOUDS :
@@ -1428,7 +1428,7 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "constellation_boundaries")
 			stcore->constellationSetColorBoundaries( Vcolor );
 		else if(argProperty == "cardinal_points")
-			stcore->cardinalsPointsSetColor( Vcolor );
+			coreLink->cardinalsPointsSetColor( Vcolor );
 		else if(argProperty == "planet_orbits")
 			stcore->planetSetDefaultColor("orbit", Vcolor );
 		else if(argProperty == "planet_names")

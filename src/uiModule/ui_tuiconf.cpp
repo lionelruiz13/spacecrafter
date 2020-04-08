@@ -666,7 +666,7 @@ void UI::tuiUpdateWidgets()
 	// 5. Colors
 	tui_colors_const_line_color->setVector(core->constellationGetColorLine());
 	tui_colors_const_label_color->setVector(core->constellationGetColorNames());
-	tui_colors_cardinal_color->setVector(core->cardinalsPointsGetColor());
+	tui_colors_cardinal_color->setVector(coreLink->cardinalsPointsGetColor());
 	tui_colors_const_art_intensity->setValue(core->constellationGetArtIntensity());
 	tui_colors_const_art_color->setVector(core->constellationGetColorArt());
 	tui_colors_const_boundary_color->setVector(core->constellationGetColorBoundaries());
@@ -994,7 +994,7 @@ void UI::tuiCbChangeColor()
 {
 	core->constellationSetColorLine( tui_colors_const_line_color->getVector() );
 	core->constellationSetColorNames( tui_colors_const_label_color->getVector() );
-	core->cardinalsPointsSetColor( tui_colors_cardinal_color->getVector() );
+	coreLink->cardinalsPointsSetColor( tui_colors_cardinal_color->getVector() );
 	core->constellationSetArtIntensity(tui_colors_const_art_intensity->getValue() );
 	core->constellationSetColorArt( tui_colors_const_art_color->getVector() );
 	core->constellationSetColorBoundaries(tui_colors_const_boundary_color->getVector() );
