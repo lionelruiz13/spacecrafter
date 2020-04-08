@@ -2,7 +2,6 @@
 #define CORELINK_HPP
 
 #include "coreModule/core.hpp"
-#include "coreModule/starLines.hpp"
 
 class CoreLink {
 public: 
@@ -178,6 +177,25 @@ public:
 	void timeResetMultiplier() {
 		core->timeMgr->setTimeMultiplier(1.0);
 	};
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Tully---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	void tullySetFlagShow(bool v) {
+		core->tully->setFlagShow(v);
+	}
+
+	bool tullyGetFlagShow() {
+		return core->tully->getFlagShow();
+	}
+
+	void tullySetColor(const std::string &colorMode)
+	{
+		if (colorMode=="white")
+			core->tully->setWhiteColor(true);
+		if (colorMode=="custom")
+			core->tully->setWhiteColor(false);
+	}
 
     CoreLink(Core* _core);
     ~CoreLink();

@@ -1807,21 +1807,21 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Tully---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	void tullySetFlagShow(bool v) {
-		tully->setFlagShow(v);
-	}
+	// void tullySetFlagShow(bool v) {
+	// 	tully->setFlagShow(v);
+	// }
 
-	bool tullyGetFlagShow() {
-		return tully->getFlagShow();
-	}
+	// bool tullyGetFlagShow() {
+	// 	return tully->getFlagShow();
+	// }
 
-	void tullySetColor(const std::string &colorMode)
-	{
-		if (colorMode=="white")
-			tully->setWhiteColor(true);
-		if (colorMode=="custom")
-			tully->setWhiteColor(false);
-	}
+	// void tullySetColor(const std::string &colorMode)
+	// {
+	// 	if (colorMode=="white")
+	// 		tully->setWhiteColor(true);
+	// 	if (colorMode=="custom")
+	// 		tully->setWhiteColor(false);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Time---------------------------
