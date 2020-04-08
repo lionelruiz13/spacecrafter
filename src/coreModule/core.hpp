@@ -256,30 +256,30 @@ public:
 		return auto_move_duration;
 	}
 
-	//! Zoom to the given FOV (in degree)
-	void zoomTo(double aim_fov, float move_duration = 1.) {
-		projection->zoomTo(aim_fov, move_duration);
-	}
+	// //! Zoom to the given FOV (in degree)
+	// void zoomTo(double aim_fov, float move_duration = 1.) {
+	// 	projection->zoomTo(aim_fov, move_duration);
+	// }
 
-	//! Get current FOV (in degree)
-	float getFov(void) const {
-		return projection->getFov();
-	}
+	// //! Get current FOV (in degree)
+	// float getFov(void) const {
+	// 	return projection->getFov();
+	// }
 
-	//! If is currently zooming, return the target FOV, otherwise return current FOV
-	double getAimFov(void) const {
-		return projection->getAimFov();
-	}
+	// //! If is currently zooming, return the target FOV, otherwise return current FOV
+	// double getAimFov(void) const {
+	// 	return projection->getAimFov();
+	// }
 
-	//! Set the current FOV (in degree)
-	void setFov(double f) {
-		projection->setFov(f);
-	}
+	// //! Set the current FOV (in degree)
+	// void setFov(double f) {
+	// 	projection->setFov(f);
+	// }
 
-	//! Set the maximum FOV (in degree)
-	void setMaxFov(double f) {
-		projection->setMaxFov(f);
-	}
+	// //! Set the maximum FOV (in degree)
+	// void setMaxFov(double f) {
+	// 	projection->setMaxFov(f);
+	// }
 
 	//! Go and zoom temporarily to the selected object.
 	void autoZoomIn(float move_duration = 1.f, bool allow_manual_zoom = 1);

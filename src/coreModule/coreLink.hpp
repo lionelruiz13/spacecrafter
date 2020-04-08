@@ -405,6 +405,35 @@ public:
 		core->nebulas->selectType(hide, typeName);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// FOV ( projection )
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! Zoom to the given FOV (in degree)
+	void zoomTo(double aim_fov, float move_duration = 1.) {
+		core->projection->zoomTo(aim_fov, move_duration);
+	}
+
+	//! Get current FOV (in degree)
+	float getFov(void) const {
+		return core->projection->getFov();
+	}
+
+	//! If is currently zooming, return the target FOV, otherwise return current FOV
+	double getAimFov(void) const {
+		return core->projection->getAimFov();
+	}
+
+	//! Set the current FOV (in degree)
+	void setFov(double f) {
+		core->projection->setFov(f);
+	}
+
+	//! Set the maximum FOV (in degree)
+	void setMaxFov(double f) {
+		core->projection->setMaxFov(f);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 
