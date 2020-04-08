@@ -664,12 +664,12 @@ void UI::tuiUpdateWidgets()
 	tui_star_limitingmag->setValue(coreLink->starGetLimitingMag());
 
 	// 5. Colors
-	tui_colors_const_line_color->setVector(core->constellationGetColorLine());
-	tui_colors_const_label_color->setVector(core->constellationGetColorNames());
+	tui_colors_const_line_color->setVector(coreLink->constellationGetColorLine());
+	tui_colors_const_label_color->setVector(coreLink->constellationGetColorNames());
 	tui_colors_cardinal_color->setVector(coreLink->cardinalsPointsGetColor());
-	tui_colors_const_art_intensity->setValue(core->constellationGetArtIntensity());
-	tui_colors_const_art_color->setVector(core->constellationGetColorArt());
-	tui_colors_const_boundary_color->setVector(core->constellationGetColorBoundaries());
+	tui_colors_const_art_intensity->setValue(coreLink->constellationGetArtIntensity());
+	tui_colors_const_art_color->setVector(coreLink->constellationGetColorArt());
+	tui_colors_const_boundary_color->setVector(coreLink->constellationGetColorBoundaries());
 	tui_colors_planet_names_color->setVector(core->planetGetDefaultColor("label"));
 	tui_colors_planet_orbits_color->setVector(core->planetGetDefaultColor("orbit"));
 
@@ -992,12 +992,12 @@ void UI::tuiCbEffectsNebulaeLabelMagnitude()
 
 void UI::tuiCbChangeColor()
 {
-	core->constellationSetColorLine( tui_colors_const_line_color->getVector() );
-	core->constellationSetColorNames( tui_colors_const_label_color->getVector() );
+	coreLink->constellationSetColorLine( tui_colors_const_line_color->getVector() );
+	coreLink->constellationSetColorNames( tui_colors_const_label_color->getVector() );
 	coreLink->cardinalsPointsSetColor( tui_colors_cardinal_color->getVector() );
-	core->constellationSetArtIntensity(tui_colors_const_art_intensity->getValue() );
-	core->constellationSetColorArt( tui_colors_const_art_color->getVector() );
-	core->constellationSetColorBoundaries(tui_colors_const_boundary_color->getVector() );
+	coreLink->constellationSetArtIntensity(tui_colors_const_art_intensity->getValue() );
+	coreLink->constellationSetColorArt( tui_colors_const_art_color->getVector() );
+	coreLink->constellationSetColorBoundaries(tui_colors_const_boundary_color->getVector() );
 	core->planetSetDefaultColor("orbit", tui_colors_planet_orbits_color->getVector() );
 	core->planetSetDefaultColor("label", tui_colors_planet_names_color->getVector() );
 	core->planetSetDefaultColor("trail",tui_colors_object_trails_color->getVector() );

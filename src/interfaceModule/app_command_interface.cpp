@@ -465,37 +465,37 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_CONSTELLATION_DRAWING :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->constellationGetFlagLines();
+				newval = !coreLink->constellationGetFlagLines();
 
-			stcore->constellationSetFlagLines(newval);
+			coreLink->constellationSetFlagLines(newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_NAMES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->constellationGetFlagNames();
+				newval = !coreLink->constellationGetFlagNames();
 
-			stcore->constellationSetFlagNames(newval);
+			coreLink->constellationSetFlagNames(newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_ART :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->constellationGetFlagArt();
+				newval = !coreLink->constellationGetFlagArt();
 
-			stcore->constellationSetFlagArt(newval);
+			coreLink->constellationSetFlagArt(newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->constellationGetFlagBoundaries();
+				newval = !coreLink->constellationGetFlagBoundaries();
 
-			stcore->constellationSetFlagBoundaries(newval);
+			coreLink->constellationSetFlagBoundaries(newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_PICK :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->constellationGetFlagIsolateSelected();
+				newval = !coreLink->constellationGetFlagIsolateSelected();
 
-			stcore->constellationSetFlagIsolateSelected(newval);
+			coreLink->constellationSetFlagIsolateSelected(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_TWINKLE :
@@ -860,9 +860,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_STAR_PICK :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->starGetFlagIsolateSelected();
+				newval = !coreLink->starGetFlagIsolateSelected();
 
-			stcore->starSetFlagIsolateSelected(newval);
+			coreLink->starSetFlagIsolateSelected(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANETS :
@@ -1420,13 +1420,13 @@ int AppCommandInterface::commandColor()
 	std::string argProperty = args["property"];
 	if  (argProperty!="") {
 		if(argProperty == "constellation_lines")
-			stcore->constellationSetColorLine( Vcolor );
+			coreLink->constellationSetColorLine( Vcolor );
 		else if(argProperty == "constellation_names")
-			stcore->constellationSetColorNames( Vcolor );
+			coreLink->constellationSetColorNames( Vcolor );
 		else if(argProperty == "constellation_art")
-			stcore->constellationSetColorArt( Vcolor );
+			coreLink->constellationSetColorArt( Vcolor );
 		else if(argProperty == "constellation_boundaries")
-			stcore->constellationSetColorBoundaries( Vcolor );
+			coreLink->constellationSetColorBoundaries( Vcolor );
 		else if(argProperty == "cardinal_points")
 			coreLink->cardinalsPointsSetColor( Vcolor );
 		else if(argProperty == "planet_orbits")
@@ -1596,8 +1596,8 @@ int AppCommandInterface::commandSet()
 {
 	if (args["atmosphere_fade_duration"]!="") stcore->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"]));
 	else if (args["auto_move_duration"]!="") stcore->setAutomoveDuration( evalDouble(args["auto_move_duration"]));
-	else if (args["constellation_art_fade_duration"]!="") stcore->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"]));
-	else if (args["constellation_art_intensity"]!="") stcore->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"]));
+	else if (args["constellation_art_fade_duration"]!="") coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"]));
+	else if (args["constellation_art_intensity"]!="") coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"]));
 	else if (args["light_pollution_limiting_magnitude"]!="") stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"]));
 	else if (args["font"] != "") {
 		FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
@@ -1825,7 +1825,7 @@ int AppCommandInterface::commandConstellation()
 
 	std::string argIntensity = args["intensity"];
 	if (!argIntensity.empty()) {
-		stcore->constellationSetArtIntensity(argName, evalDouble(argIntensity));
+		coreLink->constellationSetArtIntensity(argName, evalDouble(argIntensity));
 		return executeCommandStatus();
 	}
 
@@ -1847,10 +1847,10 @@ int AppCommandInterface::commandConstellation()
 		debug_message.clear();
 
 	if (type=="line") {
-		stcore->constellationSetLineColor(argName, Vcolor);
+		coreLink->constellationSetLineColor(argName, Vcolor);
 		return executeCommandStatus();
 	} else if (type=="label") {
-		stcore->constellationSetColorNames(argName, Vcolor);
+		coreLink->constellationSetColorNames(argName, Vcolor);
 		return executeCommandStatus();
 	} else {
 		debug_message = "command 'constellation': unknown type";
