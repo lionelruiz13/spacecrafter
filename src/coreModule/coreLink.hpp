@@ -197,6 +197,29 @@ public:
 			core->tully->setWhiteColor(false);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// StarNavigator---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	void starNavigatorClear(){
+		core->starNav->clear();
+	}
+
+	void starNavigatorLoad(const std::string &fileName, bool binaryMode){
+		core->starNav->loadData(fileName, binaryMode);
+	}
+
+	void starNavigatorLoadRaw(const std::string &fileName){
+		core->starNav->loadRawData(fileName);
+	}
+
+	void starNavigatorLoadOther(const std::string &fileName){
+		core->starNav->loadOtherData(fileName);
+	}
+
+	void starNavigatorSave(const std::string &fileName, bool binaryMode){
+		core->starNav->saveData(fileName, binaryMode);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 

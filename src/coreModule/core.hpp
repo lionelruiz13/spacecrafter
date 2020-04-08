@@ -1715,25 +1715,25 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// StarNavigator---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	void starNavigatorClear(){
-		starNav->clear();
-	}
+	// void starNavigatorClear(){
+	// 	starNav->clear();
+	// }
 
-	void starNavigatorLoad(const std::string &fileName, bool binaryMode){
-		starNav->loadData(fileName, binaryMode);
-	}
+	// void starNavigatorLoad(const std::string &fileName, bool binaryMode){
+	// 	starNav->loadData(fileName, binaryMode);
+	// }
 
-	void starNavigatorLoadRaw(const std::string &fileName){
-		starNav->loadRawData(fileName);
-	}
+	// void starNavigatorLoadRaw(const std::string &fileName){
+	// 	starNav->loadRawData(fileName);
+	// }
 
-	void starNavigatorLoadOther(const std::string &fileName){
-		starNav->loadOtherData(fileName);
-	}
+	// void starNavigatorLoadOther(const std::string &fileName){
+	// 	starNav->loadOtherData(fileName);
+	// }
 
-	void starNavigatorSave(const std::string &fileName, bool binaryMode){
-		starNav->saveData(fileName, binaryMode);
-	}
+	// void starNavigatorSave(const std::string &fileName, bool binaryMode){
+	// 	starNav->saveData(fileName, binaryMode);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// SunTrace---------------------------
