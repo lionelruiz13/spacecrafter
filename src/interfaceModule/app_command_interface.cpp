@@ -1018,9 +1018,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_BODY_TRACE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->bodyTraceGetFlag();
+				newval = !coreLink->bodyTraceGetFlag();
 
-			stcore->bodyTraceSetFlag(newval);
+			coreLink->bodyTraceSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_COLOR_INVERSE :
@@ -1332,25 +1332,25 @@ int AppCommandInterface::commandBodyTrace()
 	std::string argPen = args["pen"];
 	if (!argPen.empty()) {
 		if (args["target"]!="") {
-			stcore->bodyTraceBodyChange(args["target"]);
+			coreLink->bodyTraceBodyChange(args["target"]);
 		}
 
 		if (isTrue(argPen)) {
-			stcore->bodyPenDown();
+			coreLink->bodyPenDown();
 			return executeCommandStatus();
 			// stcore->bodyTraceSetPen(true);
 			// stcore->bodyTraceSetFlag(true);
 		}
 		else {
 			if (isFalse(argPen)) {
-			stcore->bodyPenUp();
+			coreLink->bodyPenUp();
 			return executeCommandStatus();	
 			// stcore->bodyTraceSetPen(false);
 			// stcore->bodyTraceSetFlag(false);
 			}
 			else {
 				if (argPen =="toggle") {
-					stcore->bodyPenToggle();
+					coreLink->bodyPenToggle();
 					return executeCommandStatus();
 					// stcore->bodyTraceSetPen(! stcore->bodyTraceGetPen());
 				}
@@ -1362,15 +1362,15 @@ int AppCommandInterface::commandBodyTrace()
 		}
 	}
 	if (args["action"]=="clear") {
-		stcore->bodyTraceClear();
+		coreLink->bodyTraceClear();
 		return executeCommandStatus();
 	}
 	if (args["target"]!="") {
-		stcore->bodyTraceBodyChange(args["target"]);
+		coreLink->bodyTraceBodyChange(args["target"]);
 		return executeCommandStatus();
 	}
 	if (args["hide"]!="") {
-		stcore->bodyTraceHide(args["hide"]);
+		coreLink->bodyTraceHide(args["hide"]);
 		return executeCommandStatus();
 	}
 	debug_message = _("command 'body_trace' : unknown argument");
@@ -1381,25 +1381,25 @@ int AppCommandInterface::commandSuntrace()
 {
 	std::string argPen = args["pen"];
 	if (!argPen.empty()) {
-		stcore->bodyTraceBodyChange(args["Sun"]);
+		coreLink->bodyTraceBodyChange(args["Sun"]);
 		if (isTrue(argPen)) { //pen =="true" || pen=="on") {
-			stcore->bodyPenDown();
+			coreLink->bodyPenDown();
 			return executeCommandStatus();
 		} else if (isFalse(argPen)) { //pen =="false" || pen=="off") {
-			stcore->bodyPenUp();
+			coreLink->bodyPenUp();
 			return executeCommandStatus();
 		} else if (argPen =="toggle") {
-			stcore->bodyPenToggle();
+			coreLink->bodyPenToggle();
 			return executeCommandStatus();
 		}
 	}
 	if (args["action"]=="clear") {
-		stcore->bodyTraceBodyChange("Sun");
-		stcore->bodyTraceClear();
+		coreLink->bodyTraceBodyChange("Sun");
+		coreLink->bodyTraceClear();
 	}
 	if (args["hide"]!="") {
-		stcore->bodyTraceBodyChange("Sun");
-		stcore->bodyTraceHide(args["hide"]);
+		coreLink->bodyTraceBodyChange("Sun");
+		coreLink->bodyTraceHide(args["hide"]);
 	}
 	return executeCommandStatus();
 }
