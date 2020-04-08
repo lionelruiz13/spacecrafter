@@ -198,6 +198,104 @@ public:
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
+	// Stars---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	void starSetFlag(bool b) {
+		core->hip_stars->setFlagStars(b);
+		core->starNav->setFlagStars(b);
+	}
+
+	bool starGetFlag(void) const {
+		return core->hip_stars->getFlagStars();
+	}
+
+	void starSetTraceFlag(bool b) {
+		core->hip_stars->setFlagTrace(b);
+	}
+
+	bool starGetTraceFlag(void) const {
+		return core->hip_stars->getFlagTrace();
+	}
+
+	void starSetColorTable(int p, Vec3f a) {
+		core->hip_stars->setColorStarTable(p,a);
+	}
+
+	void starSetDuration(float f) {
+		return core->hip_stars->setFaderDuration(f);
+	}
+
+	void starSetFlagName(bool b) {
+		core->hip_stars->setFlagNames(b);
+	}
+	bool starGetFlagName(void) const {
+		return core->hip_stars->getFlagNames();
+	}
+
+	void starSetLimitingMag(float f) {
+		core->hip_stars->setMagConverterMaxScaled60DegMag(f);
+	}
+	float starGetLimitingMag(void) const {
+		return core->hip_stars->getMagConverterMaxScaled60DegMag();
+	}
+
+	void starSetFlagSciName(bool b) {
+		core->hip_stars->setFlagSciNames(b);
+	}
+	bool starGetFlagSciName(void) const {
+		return core->hip_stars->getFlagSciNames();
+	}
+
+	void starSetFlagTwinkle(bool b) {
+		core->hip_stars->setFlagTwinkle(b);
+	}
+	bool starGetFlagTwinkle(void) const {
+		return core->hip_stars->getFlagTwinkle();
+	}
+
+	void starSetMaxMagName(float f) {
+		core->hip_stars->setMaxMagName(f);
+	}
+	float starGetMaxMagName(void) const {
+		return core->hip_stars->getMaxMagName();
+	}
+
+	void starSetSizeLimit(float f) {
+		core->starNav->setStarSizeLimit(f);
+		core->setStarSizeLimit(f);
+	}
+
+	void starSetMaxMagSciName(float f) {
+		core->hip_stars->setMaxMagName(f);
+	}
+	float starGetMaxMagSciName(void) const {
+		return core->hip_stars->getMaxMagName();
+	}
+
+	void starSetScale(float f) {
+		core->starNav->setScale(f);
+		core->hip_stars->setScale(f);
+	}
+	float starGetScale(void) const {
+		return core->hip_stars->getScale();
+	}
+
+	void starSetMagScale(float f) {
+		core->starNav->setMagScale(f);
+		core->hip_stars->setMagScale(f);
+	}
+	float starGetMagScale(void) const {
+		return core->hip_stars->getMagScale();
+	}
+
+	void starSetTwinkleAmount(float f) {
+		core->hip_stars->setTwinkleAmount(f);
+	}
+	float  starGetTwinkleAmount(void) const {
+		return core->hip_stars->getTwinkleAmount();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
 	// StarNavigator---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	void starNavigatorClear(){
