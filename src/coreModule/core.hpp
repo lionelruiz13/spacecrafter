@@ -1772,37 +1772,37 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Text_usr---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	bool textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, Vec3f &color, int duration) {
-		return text_usr->add(name, text,altitude, azimuth, textSize, color, duration);
-	}
+	// bool textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, Vec3f &color, int duration) {
+	// 	return text_usr->add(name, text,altitude, azimuth, textSize, color, duration);
+	// }
 
-	bool textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, int duration) {
-		return text_usr->add(name, text,altitude, azimuth, textSize, duration);
-	}
+	// bool textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, int duration) {
+	// 	return text_usr->add(name, text,altitude, azimuth, textSize, duration);
+	// }
 
-	void textDel(std::string name) {
-		text_usr->del(name);
-	}
+	// void textDel(std::string name) {
+	// 	text_usr->del(name);
+	// }
 
-	void textClear() {
-		text_usr->clear();
-	}
+	// void textClear() {
+	// 	text_usr->clear();
+	// }
 
-	void textNameUpdate(std::string name, std::string text) {
-		text_usr->nameUpdate(name, text);
-	}
+	// void textNameUpdate(std::string name, std::string text) {
+	// 	text_usr->nameUpdate(name, text);
+	// }
 
-	void textDisplay(std::string name , bool displ) {
-		text_usr->textDisplay(name, displ);
-	}
+	// void textDisplay(std::string name , bool displ) {
+	// 	text_usr->textDisplay(name, displ);
+	// }
 
-	void textFadingDuration(int a) {
-		text_usr->setFadingDuration(a);
-	}
+	// void textFadingDuration(int a) {
+	// 	text_usr->setFadingDuration(a);
+	// }
 
-	void textSetDefaultColor(const Vec3f& v) {
-		text_usr->setColor(v);
-	}
+	// void textSetDefaultColor(const Vec3f& v) {
+	// 	text_usr->setColor(v);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Tully---------------------------

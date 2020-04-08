@@ -92,6 +92,41 @@ public:
 		return core->skyGridMgr->getFlagShow(name);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Text_usr---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	bool textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, Vec3f &color, int duration) {
+		return core->text_usr->add(name, text,altitude, azimuth, textSize, color, duration);
+	}
+
+	bool textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, int duration) {
+		return core->text_usr->add(name, text,altitude, azimuth, textSize, duration);
+	}
+
+	void textDel(std::string name) {
+		core->text_usr->del(name);
+	}
+
+	void textClear() {
+		core->text_usr->clear();
+	}
+
+	void textNameUpdate(std::string name, std::string text) {
+		core->text_usr->nameUpdate(name, text);
+	}
+
+	void textDisplay(std::string name , bool displ) {
+		core->text_usr->textDisplay(name, displ);
+	}
+
+	void textFadingDuration(int a) {
+		core->text_usr->setFadingDuration(a);
+	}
+
+	void textSetDefaultColor(const Vec3f& v) {
+		core->text_usr->setColor(v);
+	}
 
     CoreLink(Core* _core);
     ~CoreLink();
