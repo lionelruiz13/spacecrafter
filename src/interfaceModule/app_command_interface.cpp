@@ -1502,7 +1502,7 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "precession_circle")
 			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor );
 		else if(argProperty == "text_usr_color")
-			stcore->textSetDefaultColor( Vcolor );
+			coreLink->textSetDefaultColor( Vcolor );
 		else if ((argProperty == "star_table") && (args["index"] !="" ))
 			stcore->starSetColorTable(evalInt(args["index"]), Vcolor );
 		else {
@@ -1684,7 +1684,7 @@ int AppCommandInterface::commandSet()
 		else{
 			stcore->uboSetAmbientLight(evalDouble(args["ambient_light"]));
 		}
-	} else if (args["text_fading_duration"]!="") stcore-> textFadingDuration(Utility::strToInt(args["text_fading_duration"]));
+	} else if (args["text_fading_duration"]!="") coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"]));
 	else if (args["milky_way_fader_duration"]!="") stcore->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"]));
 	else if (args["milky_way_intensity"]!="") {
 		if (args["milky_way_intensity"]=="default")
@@ -2097,7 +2097,7 @@ int AppCommandInterface::commandText()
 	std::string argAction = args["action"];
 
 	if (argAction=="clear") {
-		stcore->textClear();
+		coreLink->textClear();
 		return executeCommandStatus();
 	}
 
@@ -2108,7 +2108,7 @@ int AppCommandInterface::commandText()
 	}
 
 	if (argAction=="drop") {
-		stcore->textDel(argName);
+		coreLink->textDel(argName);
 		return executeCommandStatus();
 	}
 
@@ -2122,7 +2122,7 @@ int AppCommandInterface::commandText()
 		}
 
 		if (argAction=="update") {
-			stcore->textNameUpdate(argName, argString);
+			coreLink->textNameUpdate(argName, argString);
 			return executeCommandStatus();
 		} else if (argAction=="load") {
 			std::string argAzimuth = args["azimuth"];
@@ -2142,17 +2142,17 @@ int AppCommandInterface::commandText()
 				std::string argB= args["b"];
 				AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 				if (testColor)
-					stcore->textAdd(argName,argString, altitude, azimuth, argSize, Vcolor, durationText);
+					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, Vcolor, durationText);
 				else {
 					debug_message.clear();
-					stcore->textAdd(argName,argString, altitude, azimuth, argSize, durationText);
+					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, durationText);
 				}
 				// test si l'utilisateur spécifie argDisplay
 				if (!argDisplay.empty()) {
 					if ( isTrue(argDisplay) )
-						stcore->textDisplay(argName,true);
+						coreLink->textDisplay(argName,true);
 					else
-						stcore->textDisplay(argName,false);
+						coreLink->textDisplay(argName,false);
 					return executeCommandStatus();
 				}
 				return executeCommandStatus();
@@ -2166,9 +2166,9 @@ int AppCommandInterface::commandText()
 	// test argDisplay en commande indépendante
 	if (!argDisplay.empty()) {
 		if ( isTrue(argDisplay) )
-			stcore->textDisplay(argName,true);
+			coreLink->textDisplay(argName,true);
 		else
-			stcore->textDisplay(argName,false);
+			coreLink->textDisplay(argName,false);
 		return executeCommandStatus();
 	}
 
@@ -2194,7 +2194,7 @@ int AppCommandInterface::commandScript()
 	if (!argAction.empty()) {
 		if (argAction=="end") {
 			scriptInterface->cancelScript();
-			stcore->textClear(); // del all usr text
+			coreLink->textClear(); // del all usr text
 			media->audioMusicHalt();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
