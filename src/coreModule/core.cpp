@@ -2180,7 +2180,7 @@ void Core::setmBackup()
 {
 	if (mBackup.jday !=0) {
 		timeMgr->setJDay(mBackup.jday);
-		setFov(mBackup.fov);
+		projection->setFov(mBackup.fov); //setFov(mBackup.fov);
 		moveObserver (mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
 	}
 	setHomePlanet(mBackup.home_planet_name);
@@ -2193,7 +2193,7 @@ void Core::getmBackup()
 	mBackup.longitude=getObservatory()->getLongitude();
 	mBackup.altitude=getObservatory()->getAltitude();
 	mBackup.pos_name=getObservatory()->getName();
-	mBackup.fov=getFov();
+	mBackup.fov = projection->getFov(); //getFov();
 	mBackup.home_planet_name=getObservatory()->getHomePlanetEnglishName();
 }
 

@@ -246,10 +246,10 @@ int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_V
 		case s_gui::S_GUI_MOUSE_MIDDLE :
 			break;
 		case s_gui::S_GUI_MOUSE_WHEELUP :
-			core->zoomTo(core->getAimFov()-MouseZoom*core->getAimFov()/60., 0.2);
+			coreLink->zoomTo(coreLink->getAimFov()-MouseZoom*coreLink->getAimFov()/60., 0.2);
 			return 1;
 		case s_gui::S_GUI_MOUSE_WHEELDOWN :
-			core->zoomTo(core->getAimFov()+MouseZoom*core->getAimFov()/60., 0.2);
+			coreLink->zoomTo(coreLink->getAimFov()+MouseZoom*coreLink->getAimFov()/60., 0.2);
 			return 1;
 		default:
 			break;

@@ -61,7 +61,7 @@ void UI::drawGravityUi()
 			if (core->getObservatory()->getHomePlanetEnglishName()!= "")
 			os << " " << _(core->getObservatory()->getHomePlanetEnglishName());
 		}
-		if (FlagShowFov) os << " fov " << std::setprecision(3) << core->getFov();
+		if (FlagShowFov) os << " fov " << std::setprecision(3) << coreLink->getFov();
 		if (FlagShowFps) os << "  FPS " << app->getFpsClock();
 		if (FlagShowLatLon) {
 			os << " Lat: " << Utility::printAngleDMS(core->observatoryGetLatitude()*3.1415926/180)

@@ -2593,9 +2593,9 @@ int AppCommandInterface::commandZoom(unsigned long int &wait)
 
 	} else if (args["fov"]!="") {
 		// zoom to specific field of view
-		stcore->zoomTo( evalDouble(args["fov"]), evalDouble(args["duration"]));
+		coreLink->zoomTo( evalDouble(args["fov"]), evalDouble(args["duration"]));
 
-	} else if (args["delta_fov"]!="") stcore->setFov(stcore->getFov() + evalDouble(args["delta_fov"]));
+	} else if (args["delta_fov"]!="") coreLink->setFov(coreLink->getFov() + evalDouble(args["delta_fov"]));
 	// should we record absolute fov instead of delta? isn't usually smooth playback
 	else if (args["center"]=="on") {
 		float cdelay=5;
