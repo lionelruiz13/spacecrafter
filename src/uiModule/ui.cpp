@@ -551,7 +551,7 @@ void UI::pauseScript()
 {
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
-		core->timeResetMultiplier();
+		coreLink->timeResetMultiplier();
 	} else
 		this->executeCommand("timerate action pause");;
 }
@@ -721,7 +721,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_K :
 			if ( scriptInterface->isScriptPlaying() ) {
 				this->executeCommand("script action resume");
-				core->timeResetMultiplier();
+				coreLink->timeResetMultiplier();
 			} else
 				media->playerPause();
 			break;
@@ -804,7 +804,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 	}
 
 	if(!scriptInterface->isScriptPlaying())
-		core->timeResetMultiplier();  // if no script in progress always real time
+		coreLink->timeResetMultiplier();  // if no script in progress always real time
 
 	switch (key) {
 
@@ -1187,7 +1187,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action end");
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate rate 0");
 					break;
@@ -1218,7 +1218,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;
@@ -1311,7 +1311,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					if ( scriptInterface->isScriptPlaying() ) {
 						event = new CommandEvent("script action resume");
 						EventManager::getInstance()->queue(event);
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else {
 						event = new CommandEvent("timerate rate 1");
 						EventManager::getInstance()->queue(event);
@@ -2094,7 +2094,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;

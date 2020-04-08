@@ -247,7 +247,7 @@ void App::init()
 	cLog::get()->write("Read daykeymode as <" + DayKeyMode + ">", LOG_TYPE::L_INFO);
 
 	if (StartupTimeMode=="preset" || StartupTimeMode=="Preset")
-		core->setJDay(PresetSkyTime - spaceDate->getGMTShift(PresetSkyTime) * JD_HOUR);
+		coreLink->setJDay(PresetSkyTime - spaceDate->getGMTShift(PresetSkyTime) * JD_HOUR);
 	else core->setTimeNow();
 
 	// initialisation of the User Interface
@@ -347,7 +347,7 @@ void App::update(int delta_time)
 	internalFPS->addCalculatedTime(delta_time);
 
 	// change time rate if needed to fast forward scripts
-	delta_time *= core->timeGetMultiplier();
+	delta_time *= coreLink->timeGetMultiplier();
 	// run command from a running script
 	scriptMgr->update(delta_time);
 	if (!scriptMgr->isPaused() || !scriptMgr->isFaster() )	media->audioUpdate(delta_time);

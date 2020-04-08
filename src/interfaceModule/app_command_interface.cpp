@@ -2618,31 +2618,31 @@ int AppCommandInterface::commandTimerate()
 	// NOTE: accuracy issue related to frame rate
 	if (!argRate.empty()) {
 		if (argDuration.empty()) {
-			stcore->timeSetSpeed(evalDouble(argRate)*JD_SECOND);
-			stcore->timeSaveSpeed();
-			stcore->timeSetFlagPause(false);
+			coreLink->timeSetSpeed(evalDouble(argRate)*JD_SECOND);
+			coreLink->timeSaveSpeed();
+			coreLink->timeSetFlagPause(false);
 		} else {
 			std::cout << "Changing timerate to " << argRate << " duration: " << argDuration << std::endl;
-			stcore->timeChangeSpeed(evalDouble(argRate)*JD_SECOND, stod(argDuration));
+			coreLink->timeChangeSpeed(evalDouble(argRate)*JD_SECOND, stod(argDuration));
 		}
 	} else if (argAction=="pause") {
 		// TODO why is this in stelapp?  should be in stelcore - Rob
-		stcore->timeSetFlagPause(!stcore->timeGetFlagPause());
-		if (stcore->timeGetFlagPause()) {
+		coreLink->timeSetFlagPause(!coreLink->timeGetFlagPause());
+		if (coreLink->timeGetFlagPause()) {
 			// TODO pause should be all handled in core methods
-			stcore->timeSaveSpeed();
-			stcore->timeSetSpeed(0);
+			coreLink->timeSaveSpeed();
+			coreLink->timeSetSpeed(0);
 		} else {
-			stcore->timeLoadSpeed();
+			coreLink->timeLoadSpeed();
 		}
 	} else if (argAction=="resume") {
-		stcore->timeSetFlagPause(false);
-		stcore->timeLoadSpeed();
+		coreLink->timeSetFlagPause(false);
+		coreLink->timeLoadSpeed();
 
 	} else if (argAction=="increment") {
 		// speed up time rate
-		stcore->timeSetFlagPause(false);
-		double s = stcore->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
+		double s = coreLink->timeGetSpeed();
 
 		double sstep = 2.;
 
@@ -2653,15 +2653,15 @@ int AppCommandInterface::commandTimerate()
 		else if (s<-JD_SECOND) s/=sstep;
 		else if (s>=0. && s<JD_SECOND) s=JD_SECOND;
 		else if (s>=-JD_SECOND && s<0.) s=0.;
-		stcore->timeSetSpeed(s);
-		stcore->timeSaveSpeed();
+		coreLink->timeSetSpeed(s);
+		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
 
 	} else if (argAction=="sincrement") {
 		// speed up time rate
-		stcore->timeSetFlagPause(false);
-		double s = stcore->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
+		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
 		Observer *observatory = stcore->getObservatory();
 		if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=3;
@@ -2672,13 +2672,13 @@ int AppCommandInterface::commandTimerate()
 		else if (s<-JD_SECOND) s/=sstep;
 		else if (s>=0. && s<JD_SECOND) s=JD_SECOND;
 		else if (s>=-JD_SECOND && s<0.) s=0.;
-		stcore->timeSetSpeed(s);
-		stcore->timeSaveSpeed();
+		coreLink->timeSetSpeed(s);
+		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
 	} else if (argAction=="decrement") {
-		stcore->timeSetFlagPause(false);
-		double s = stcore->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
+		double s = coreLink->timeGetSpeed();
 
 		double sstep = 2.;
 
@@ -2689,13 +2689,13 @@ int AppCommandInterface::commandTimerate()
 		else if (s<=-JD_SECOND) s*=sstep;
 		else if (s>-JD_SECOND && s<=0.) s=-JD_SECOND;
 		else if (s>0. && s<=JD_SECOND) s=0.;
-		stcore->timeSetSpeed(s);
-		stcore->timeSaveSpeed();
+		coreLink->timeSetSpeed(s);
+		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
 	} else if (argAction=="sdecrement") {
-		stcore->timeSetFlagPause(false);
-		double s = stcore->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
+		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
 		Observer *observatory = stcore->getObservatory();
 		if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=-3;
@@ -2707,8 +2707,8 @@ int AppCommandInterface::commandTimerate()
 		else if (s<=-JD_SECOND) s*=sstep;
 		else if (s>-JD_SECOND && s<=0.) s=-JD_SECOND;
 		else if (s>0. && s<=JD_SECOND) s=0.;
-		stcore->timeSetSpeed(s);
-		stcore->timeSaveSpeed();//stapp->temp_time_velocity = stcore->timeGetSpeed();
+		coreLink->timeSetSpeed(s);
+		coreLink->timeSaveSpeed();//stapp->temp_time_velocity = stcore->timeGetSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
 	} else
@@ -2799,9 +2799,9 @@ int AppCommandInterface::commandMultiplier()
 	// script rate multiplier
 	std::string argRate = args["rate"];
 	if (!argRate.empty()) {
-		stcore->timeSetMultiplier(evalDouble(argRate));
-		if (!stcore->timeGetFlagPause())
-			stcore->timeLoadSpeed();
+		coreLink->timeSetMultiplier(evalDouble(argRate));
+		if (!coreLink->timeGetFlagPause())
+			coreLink->timeLoadSpeed();
 		return executeCommandStatus();
 	}
 
@@ -2809,30 +2809,30 @@ int AppCommandInterface::commandMultiplier()
 	if (!argAction.empty()) {
 		if (argAction=="increment") {
 			// speed up script rate
-			double s = stcore->timeGetMultiplier();
+			double s = coreLink->timeGetMultiplier();
 			double sstep = 10.0;
 
 			if( !args["step"].empty() )
 				sstep = evalDouble(args["step"]);
 
-			stcore->timeSetMultiplier(s*sstep);
-			if (!stcore->timeGetFlagPause())
-				stcore->timeLoadSpeed();
+			coreLink->timeSetMultiplier(s*sstep);
+			if (!coreLink->timeGetFlagPause())
+				coreLink->timeLoadSpeed();
 			// for safest script replay, record as absolute amount
 			commandline = "multiplier rate " + Utility::doubleToStr(s*sstep);
 			return executeCommandStatus();
 		}
 		if (argAction=="decrement") {
 			// slow rate
-			double s = stcore->timeGetMultiplier();
+			double s = coreLink->timeGetMultiplier();
 			double sstep = 10.0;
 
 			if( !args["step"].empty() )
 				sstep = evalDouble(args["step"]);
 
-			if (!stcore->timeGetFlagPause())
-				stcore->timeLoadSpeed();
-			stcore->timeSetMultiplier(s/sstep);
+			if (!coreLink->timeGetFlagPause())
+				coreLink->timeLoadSpeed();
+			coreLink->timeSetMultiplier(s/sstep);
 
 			// for safest script replay, record as absolute amount
 			commandline = "multiplier rate " + Utility::doubleToStr(s/sstep);
@@ -2995,7 +2995,7 @@ int AppCommandInterface::commandDate()
 	std::string argJday = args["jday"];
 	if (!argJday.empty() ) {
 		//TODO stcore doit renvoyer un code rectour erreur
-		stcore->setJDay( evalDouble(argJday) );
+		coreLink->setJDay( evalDouble(argJday) );
 		return executeCommandStatus();
 	}
 
@@ -3008,12 +3008,12 @@ int AppCommandInterface::commandDate()
 
 		if (argLocal[0] == 'T') {
 			// set time only (don't change day)
-			std::string sky_date =spaceDate->getISO8601TimeLocal(stcore->getJDay());
+			std::string sky_date =spaceDate->getISO8601TimeLocal(coreLink->getJDay());
 			new_date = sky_date.substr(0,10) + argLocal;
 		} else new_date = argLocal;
 
 		if (SpaceDate::StringToJday( new_date, jd )) {
-			stcore->setJDay(jd - (spaceDate->getGMTShift(jd) * JD_HOUR));
+			coreLink->setJDay(jd - (spaceDate->getGMTShift(jd) * JD_HOUR));
 		} else {
 			debug_message = _("Error parsing date local");
 		}
@@ -3025,7 +3025,7 @@ int AppCommandInterface::commandDate()
 	if (!argUtc.empty()) {
 		double jd;
 		if (SpaceDate::StringToJday(argUtc, jd ) ) {
-			stcore->setJDay(jd);
+			coreLink->setJDay(jd);
 		} else {
 			debug_message = _("Error parsing date utc");
 		}
@@ -3043,7 +3043,7 @@ int AppCommandInterface::commandDate()
 		}
 		float sol_local_day = home->getSolLocalDay();
 		if (abs(sol_local_day)>366.0) sol_local_day=1.0;
-		stcore->setJDay(stcore->getJDay() + days*sol_local_day );
+		coreLink->setJDay(coreLink->getJDay() + days*sol_local_day );
 		return executeCommandStatus();
 	}
 
@@ -3075,7 +3075,7 @@ int AppCommandInterface::commandDate()
 		float sol_sidereal_day = home->getSiderealDay();
 		if (abs(sol_sidereal_day)>366.0) sol_sidereal_day=1.0;
 		days *= sol_sidereal_day;
-		stcore->setJDay(stcore->getJDay()+days);
+		coreLink->setJDay(coreLink->getJDay()+days);
 		return executeCommandStatus();
 	}
 
@@ -3084,25 +3084,25 @@ int AppCommandInterface::commandDate()
 	if (!argLoad.empty()) {
 		if (argLoad=="current") {
 			// set date to current date
-			stcore->setJDay(SpaceDate::JulianFromSys());
+			coreLink->setJDay(SpaceDate::JulianFromSys());
 		} else if (argLoad=="preset") {
 			// set date to preset (or current) date, based on user setup
 			// TODO: should this record as the actual date used?
 			if (stapp->getStartupTimeMode()=="preset" || stapp->getStartupTimeMode()=="Preset")
-				stcore->setJDay(stapp->getPresetSkyTime() -spaceDate->getGMTShift(stapp->getPresetSkyTime()) * JD_HOUR);
-			else stcore->setJDay(SpaceDate::JulianFromSys());
+				coreLink->setJDay(stapp->getPresetSkyTime() -spaceDate->getGMTShift(stapp->getPresetSkyTime()) * JD_HOUR);
+			else coreLink->setJDay(SpaceDate::JulianFromSys());
 		} else if (argLoad=="keep_time") {
-					double jd = stcore->getJDay();
+					double jd = coreLink->getJDay();
 					ln_date current_date,temps;
 					SpaceDate::JulianToDate(jd,&current_date);
 					temps=current_date;
-					stcore->setJDay(SpaceDate::JulianFromSys());
-					jd = stcore->getJDay();
+					coreLink->setJDay(SpaceDate::JulianFromSys());
+					jd = coreLink->getJDay();
 					SpaceDate::JulianToDate(jd,&current_date);
 					current_date.hours=temps.hours;
 					current_date.minutes=temps.minutes;
 					current_date.seconds=temps.seconds;
-					stcore->setJDay(SpaceDate::JulianDayFromDateTime(current_date.years,current_date.months,current_date.days,current_date.hours,current_date.minutes,current_date.seconds));
+					coreLink->setJDay(SpaceDate::JulianDayFromDateTime(current_date.years,current_date.months,current_date.days,current_date.hours,current_date.minutes,current_date.seconds));
 		} else
 			debug_message = _("Command 'date': unknown load value");
 		return executeCommandStatus();
@@ -3112,21 +3112,21 @@ int AppCommandInterface::commandDate()
 	std::string argSun = args["sun"];
 	if (!argSun.empty()) {
 		if (argSun=="set") {
-			double tmp=stcore->dateSunSet(stcore->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
+			double tmp=stcore->dateSunSet(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
-				stcore->setJDay(tmp);
+				coreLink->setJDay(tmp);
 		} else if (argSun=="rise") {
-			double tmp=stcore->dateSunRise(stcore->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
+			double tmp=stcore->dateSunRise(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
-				stcore->setJDay(tmp);
+				coreLink->setJDay(tmp);
 		} else if (argSun=="meridian") {
-			double tmp=stcore->dateSunMeridian(stcore->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
+			double tmp=stcore->dateSunMeridian(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
-				stcore->setJDay(tmp);
+				coreLink->setJDay(tmp);
 		} else if (argSun=="midnight") {
-			double tmp=stcore->dateSunMeridian(stcore->getJDay(), stcore->observatoryGetLongitude()+180, -stcore->observatoryGetLatitude());
+			double tmp=stcore->dateSunMeridian(coreLink->getJDay(), stcore->observatoryGetLongitude()+180, -stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
-				stcore->setJDay(tmp);
+				coreLink->setJDay(tmp);
 		} else
 			_("Command 'date': unknown sun value");
 		return executeCommandStatus();

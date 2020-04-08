@@ -52,7 +52,7 @@ void UI::drawGravityUi()
 	StateGL::enable(GL_BLEND);
 
 	if (FlagShowTuiDateTime) {
-		double jd = core->getJDay();
+		double jd = coreLink->getJDay();
 		std::ostringstream os;
 
 		os << spaceDate->getPrintableDateLocal(jd) << " " << spaceDate->getPrintableTimeLocal(jd);
@@ -75,7 +75,7 @@ void UI::drawGravityUi()
 		}
 
 		if (core->getFlagNav()) {
-			std::string info = spaceDate->getPrintableTimeNav(core->getJDay(), core->observatoryGetLatitude(), core->observatoryGetLongitude());
+			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), core->observatoryGetLatitude(), core->observatoryGetLongitude());
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
 			s_2= info.substr(info.find("@")+1);
@@ -641,7 +641,7 @@ void UI::tuiUpdateWidgets()
 
 
 	// 2. Date & Time
-	tui_time_skytime->setJDay(core->getJDay() + spaceDate->getGMTShift(core->getJDay())*JD_HOUR);
+	tui_time_skytime->setJDay(coreLink->getJDay() + spaceDate->getGMTShift(coreLink->getJDay())*JD_HOUR);
 	tui_time_settmz->settz(spaceDate->getCustomTzName());
 	tui_time_presetskytime->setJDay(app->getPresetSkyTime());
 	tui_time_startuptime->setCurrent(std::string(app->getStartupTimeMode()));
