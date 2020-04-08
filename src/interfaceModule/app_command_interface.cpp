@@ -1011,9 +1011,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_TULLY :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->tullyGetFlagShow();
+				newval = !coreLink->tullyGetFlagShow();
 
-			stcore->tullySetFlagShow(newval);
+			coreLink->tullySetFlagShow(newval);
 			break;
 
 		case FLAG_NAMES::FN_BODY_TRACE :
@@ -1704,7 +1704,7 @@ int AppCommandInterface::commandSet()
 										EventManager::getInstance()->queue(event);
 										}
 	else if(args["stall_radius_unit"]!="") stcore->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"]));
-	else if(args["tully_color_mode"]!="") stcore->tullySetColor(args["tully_color_mode"]);
+	else if(args["tully_color_mode"]!="") coreLink->tullySetColor(args["tully_color_mode"]);
 	else if(args["datetime_display_position"]!="") ui->setDateTimePosition(evalInt(args["datetime_display_position"]));
 	else if(args["datetime_display_number"]!="") ui->setDateDisplayNumber(evalInt(args["datetime_display_number"]));
 	else {
