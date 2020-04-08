@@ -1252,11 +1252,11 @@ int AppCommandInterface::commandDso()
 		std::string argType = args["type"];
 		if (!argType.empty() ) {
 			if (argType=="all")
-				if (isTrue(argHidden)) stcore->dsoHideAll();
+				if (isTrue(argHidden)) coreLink->dsoHideAll();
 				else
-					stcore->dsoShowAll();
+					coreLink->dsoShowAll();
 			else
-				stcore->dsoSelectType(isTrue(argHidden),argType);
+				coreLink->dsoSelectType(isTrue(argHidden),argType);
 
 			return executeCommandStatus();
 		}
@@ -1264,16 +1264,16 @@ int AppCommandInterface::commandDso()
 		std::string argConstellation = args["constellation"];
 		if (!argConstellation.empty()) {
 			if (argConstellation=="all")
-				if (isTrue(argHidden)) stcore->dsoHideAll();
+				if (isTrue(argHidden)) coreLink->dsoHideAll();
 				else
-					stcore->dsoShowAll();
+					coreLink->dsoShowAll();
 			else
-				stcore->dsoSelectConstellation(isTrue(argHidden),argConstellation);
+				coreLink->dsoSelectConstellation(isTrue(argHidden),argConstellation);
 			return executeCommandStatus();
 		}
 
 		if ( !argName.empty()  ) {
-			stcore->dsoSelectName(argName, isTrue(argHidden));
+			coreLink->dsoSelectName(argName, isTrue(argHidden));
 			return executeCommandStatus();
 		}
 
