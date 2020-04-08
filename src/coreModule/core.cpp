@@ -115,15 +115,15 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
-	personal = new SkyPerson(SkyPerson::AL);
-	personeq = new SkyPerson(SkyPerson::EQ);
-	nautical = new SkyPerson(SkyPerson::AL);
-	nauticeq = new SkyPerson(SkyPerson::EQ);
-	objCoord = new SkyPerson(SkyPerson::AL);
-	mouseCoord = new SkyPerson(SkyPerson::AL);
-	angDist = new SkyPerson(SkyPerson::AL);
-	loxodromy = new SkyPerson(SkyPerson::EQ);
-	orthodromy = new SkyPerson(SkyPerson::AL);
+	personal = new SkyPerson(SkyDisplay::AL);
+	personeq = new SkyPerson(SkyDisplay::EQ);
+	nautical = new SkyNautic(SkyDisplay::AL);
+	nauticeq = new SkyNautic(SkyDisplay::EQ);
+	objCoord = new SkyCoords();
+	mouseCoord = new SkyCoords();
+	angDist = new SkyAngDist();
+	loxodromy = new SkyLoxodromy();
+	orthodromy = new SkyOrthodromy();
 	
 	cardinals_points = new Cardinals();
 	meteors = new MeteorMgr(10, 60);
@@ -959,14 +959,14 @@ void Core::drawInSolarSystem(int delta_time)
 
 	personal->draw(projection, navigation);
 	personeq->draw(projection, navigation);
-	nautical->nautical_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
-	nauticeq->nautical_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
+	nautical->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
+	nauticeq->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
 
-	objCoord->objCoord_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
-	mouseCoord->objCoord_draw(projection, navigation, getCursorPosEqu(mouseX, mouseY));
-	angDist->angDist_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-	loxodromy->loxodromy_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-	orthodromy->orthodromy_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
+	objCoord->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
+	mouseCoord->draw(projection, navigation, getCursorPosEqu(mouseX, mouseY));
+	angDist->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
+	loxodromy->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
+	orthodromy->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 
 	ssystem->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 

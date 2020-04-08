@@ -27,7 +27,7 @@
 
 #ifndef __SKYPERSON_H__
 #define __SKYPERSON_H__
-
+/*
 #include <string>
 #include <fstream>
 #include "tools/fader.hpp"
@@ -110,7 +110,7 @@ private:
 	const float pi_div_2 = 1.5707963;		// pi/2
 	
 };
-
+*/
 #endif // __SKYPERSON_H__
 
 

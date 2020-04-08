@@ -149,11 +149,11 @@ void SkyDisplay::draw_text(const Projector *prj,const Navigator *nav)
 //
 ////////////////////////////////////////////////////////////////////////
 
-SkyPersonR::SkyPersonR(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
+SkyPerson::SkyPerson(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 {
 }
 
-void SkyPersonR::loadData(std::string filename)
+void SkyPerson::loadData(std::string filename)
 {
 	double alpha, delta,x,y,z;
 	int nblines;
@@ -195,7 +195,7 @@ void SkyPersonR::loadData(std::string filename)
 	//~ glEnableVertexAttribArray(0);
 }
 
-void SkyPersonR::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+void SkyPerson::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate()) return;
 

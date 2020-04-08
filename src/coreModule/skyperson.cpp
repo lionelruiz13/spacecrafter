@@ -24,7 +24,7 @@
  * See the TRADEMARKS file for free open project usage requirements.
  *
  */
-
+/*
 #include "bodyModule/body.hpp"
 #include "coreModule/skyperson.hpp"
 #include "tools/s_texture.hpp"
@@ -636,3 +636,4 @@ void SkyPerson:: orthodromy_draw(const Projector *prj,const Navigator *nav, Vec3
 	font->print(2,-2,oss.str(), color, MVP*TRANSFO ,1,1);
 	oss.clear();
 }
+*/

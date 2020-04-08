@@ -104,10 +104,10 @@ private:
 	
 };
 
-class SkyPersonR : public SkyDisplay {
+class SkyPerson : public SkyDisplay {
 public:
-    SkyPersonR(PROJECTION_TYPE ptype);
-    ~SkyPersonR();
+    SkyPerson(PROJECTION_TYPE ptype);
+    // ~SkyPerson();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) override;
 	void loadData(std::string filename) override;
@@ -118,7 +118,7 @@ private:
 class SkyNautic : public SkyDisplay {
 public:
     SkyNautic(PROJECTION_TYPE ptype);
-    ~SkyNautic();
+    // ~SkyNautic();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
@@ -129,7 +129,7 @@ private:
 class SkyCoords : public SkyDisplay {
 public:
     SkyCoords();
-    ~SkyCoords();
+    // ~SkyCoords();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
@@ -139,7 +139,7 @@ private:
 class SkyAngDist : public SkyDisplay {
 public:
     SkyAngDist();
-    ~SkyAngDist();
+    // ~SkyAngDist();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
 
@@ -149,7 +149,7 @@ private:
 class SkyLoxodromy : public SkyDisplay {
 public:
     SkyLoxodromy();
-    ~SkyLoxodromy();
+    // ~SkyLoxodromy();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
 
@@ -159,7 +159,7 @@ private:
 class SkyOrthodromy : public SkyDisplay {
 public:
     SkyOrthodromy();
-    ~SkyOrthodromy();
+    // ~SkyOrthodromy();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
 

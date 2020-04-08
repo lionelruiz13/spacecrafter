@@ -51,6 +51,7 @@
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skyline.hpp"
 #include "coreModule/skyperson.hpp"
+#include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
 #include "coreModule/starNavigator.hpp"
 #include "coreModule/text_mgr.hpp"
@@ -1992,15 +1993,17 @@ private:
 	Oort * oort;						//! oort cloud
 	Dso3d *dso3d;						//! dso catalog for in_galaxy
 	Tully *tully;						//! tully galaxies
+
 	SkyPerson * personal;				// Personal azimuth drawing
 	SkyPerson * personeq;				// Personal equatorial drawing
-	SkyPerson * nautical;				// Nautical azimuth drawing
-	SkyPerson * nauticeq;				// Nautical equatorial drawing
-	SkyPerson * objCoord;				// Mouse position drawing
-	SkyPerson * mouseCoord;				// Mouse position drawing
-	SkyPerson * angDist;				// Angular distance drawing
-	SkyPerson * loxodromy;				// Loxodromy drawing
-	SkyPerson * orthodromy;				// Orthodromy drawing
+	SkyNautic * nautical;				// Nautical azimuth drawing
+	SkyNautic * nauticeq;				// Nautical equatorial drawing
+	SkyCoords * objCoord;				// Mouse position drawing
+	SkyCoords * mouseCoord;				// Mouse position drawing
+	SkyAngDist * angDist;				// Angular distance drawing
+	SkyLoxodromy * loxodromy;				// Loxodromy drawing
+	SkyOrthodromy * orthodromy;				// Orthodromy drawing
+
 	Cardinals * cardinals_points;		// Cardinals points
 	MilkyWay * milky_way;				// Our galaxy
 	MeteorMgr * meteors;				// Manage meteor showers
