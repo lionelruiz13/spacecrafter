@@ -2,12 +2,52 @@
 #define CORELINK_HPP
 
 #include "coreModule/core.hpp"
-
+#include "coreModule/starLines.hpp"
 
 class CoreLink {
 public: 
 
+	////////////////////////////////////////////////////////////////////////////////
+	// StarLines---------------------------
+	////////////////////////////////////////////////////////////////////////////////
 
+	//! Set flag for displaying
+	void starLinesSetFlag(bool b) {
+		core->starLines->setFlagShow(b);
+	}
+
+	//! Get flag for displaying
+	bool starLinesGetFlag(void) const {
+		return core->starLines->getFlagShow();
+	}
+
+	//! Vide tous les tampons de tracé
+	void starLinesDrop(void) const {
+		core->starLines->drop();
+	}
+
+	//! Charge un ensemble d'asterismes d'un fichier
+	void starLinesLoadData(const std::string &fileName) {
+		core->starLines->loadData(fileName);
+	}
+
+	//! Charge un asterisme à partir d'une ligne
+	void starLinesLoadAsterism(std::string record) const {
+		core->starLines->loadStringData(record);
+	}
+
+	//! supprime le catalogue complet des asterismes
+	void starLinesClear() {
+		core->starLines->clear();
+	}
+
+	void starLinesLoadCat(const std::string &fileName){
+		core->starLines->loadHipCatalogue(fileName);
+	}
+
+	void starLinesLoadBinCat(const std::string &fileName){
+		core->starLines->loadHipBinCatalogue(fileName);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Skyline et Skygrid---------------------------
@@ -57,8 +97,7 @@ public:
     ~CoreLink();
 
 private: 
-    Core *core=nullptr;
-
+    Core *core = nullptr;
 };
 
 #endif

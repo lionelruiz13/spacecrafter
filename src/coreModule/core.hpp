@@ -1531,43 +1531,43 @@ public:
 	// StarLines---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	//! Set flag for displaying
-	void starLinesSetFlag(bool b) {
-		starLines->setFlagShow(b);
-	}
+	// //! Set flag for displaying
+	// void starLinesSetFlag(bool b) {
+	// 	starLines->setFlagShow(b);
+	// }
 
-	//! Get flag for displaying
-	bool starLinesGetFlag(void) const {
-		return starLines->getFlagShow();
-	}
+	// //! Get flag for displaying
+	// bool starLinesGetFlag(void) const {
+	// 	return starLines->getFlagShow();
+	// }
 
-	//! Vide tous les tampons de tracé
-	void starLinesDrop(void) const {
-		starLines->drop();
-	}
+	// //! Vide tous les tampons de tracé
+	// void starLinesDrop(void) const {
+	// 	starLines->drop();
+	// }
 
-	//! Charge un ensemble d'asterismes d'un fichier
-	void starLinesLoadData(const std::string &fileName) {
-		starLines->loadData(fileName);
-	}
+	// //! Charge un ensemble d'asterismes d'un fichier
+	// void starLinesLoadData(const std::string &fileName) {
+	// 	starLines->loadData(fileName);
+	// }
 
-	//! Charge un asterisme à partir d'une ligne
-	void starLinesLoadAsterism(std::string record) const {
-		starLines->loadStringData(record);
-	}
+	// //! Charge un asterisme à partir d'une ligne
+	// void starLinesLoadAsterism(std::string record) const {
+	// 	starLines->loadStringData(record);
+	// }
 
-	//! supprime le cata logue complet des asterismes
-	void starLinesClear() {
-		starLines->clear();
-	}
+	// //! supprime le cata logue complet des asterismes
+	// void starLinesClear() {
+	// 	starLines->clear();
+	// }
 
-	void starLinesLoadCat(const std::string &fileName){
-		starLines->loadHipCatalogue(fileName);
-	}
+	// void starLinesLoadCat(const std::string &fileName){
+	// 	starLines->loadHipCatalogue(fileName);
+	// }
 
-	void starLinesLoadBinCat(const std::string &fileName){
-		starLines->loadHipBinCatalogue(fileName);
-	}
+	// void starLinesLoadBinCat(const std::string &fileName){
+	// 	starLines->loadHipBinCatalogue(fileName);
+	// }
 
 
 	////////////////////////////////////////////////////////////////////////////////
