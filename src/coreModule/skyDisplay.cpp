@@ -149,6 +149,10 @@ void SkyDisplay::draw_text(const Projector *prj,const Navigator *nav)
 //
 ////////////////////////////////////////////////////////////////////////
 
+SkyPersonR::SkyPersonR(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
+{
+}
+
 void SkyPersonR::loadData(std::string filename)
 {
 	double alpha, delta,x,y,z;
@@ -216,6 +220,9 @@ void SkyPersonR::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, V
 	draw_text(prj, nav);
 }
 
+
+SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
+{}
 
 void SkyNautic::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
@@ -296,6 +303,10 @@ void SkyNautic::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Ve
 
 	draw_text(prj, nav);
 }
+
+
+SkyCoords::SkyCoords() : SkyDisplay(PROJECTION_TYPE::AL)
+{}
 
 void SkyCoords::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldPos)
 {
@@ -429,6 +440,10 @@ void SkyCoords::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Ve
 	}
 }
 
+
+SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
+{}
+
 void SkyAngDist::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate()) return;
@@ -515,6 +530,11 @@ void SkyAngDist::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, V
 	oss.clear();
 }
 
+
+SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::AL)
+{}
+
+
 void SkyLoxodromy::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate() or (equPos==oldEquPos)) return;
@@ -577,6 +597,11 @@ void SkyLoxodromy::draw(const Projector *prj,const Navigator *nav, Vec3d equPos,
 	font->print(2,-2,oss.str(), color, MVP*TRANSFO ,1,1);
 	oss.clear();	
 }
+
+
+SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
+{}
+
 
 void SkyOrthodromy::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {

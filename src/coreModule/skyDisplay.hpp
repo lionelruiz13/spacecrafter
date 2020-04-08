@@ -106,7 +106,7 @@ private:
 
 class SkyPersonR : public SkyDisplay {
 public:
-    SkyPersonR();
+    SkyPersonR(PROJECTION_TYPE ptype);
     ~SkyPersonR();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) override;
@@ -117,7 +117,7 @@ private:
 
 class SkyNautic : public SkyDisplay {
 public:
-    SkyNautic();
+    SkyNautic(PROJECTION_TYPE ptype);
     ~SkyNautic();
 
     void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
