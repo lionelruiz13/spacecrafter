@@ -1039,9 +1039,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_STAR_LINES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->starLinesGetFlag();
+				newval = !coreLink->starLinesGetFlag();
 
-			stcore->starLinesSetFlag(newval);
+			coreLink->starLinesSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_SATELLITES :
@@ -1744,7 +1744,7 @@ int AppCommandInterface::commandConfiguration()
 		if (argModule=="star_lines"){
 
 			if (argAction == "clear") {
-				stcore->starLinesClear();
+				coreLink->starLinesClear();
 				return executeCommandStatus();
 			}
 
@@ -1757,9 +1757,9 @@ int AppCommandInterface::commandConfiguration()
 
 			if (argAction == "load") {
 				if (binaryMode)
-					stcore->starLinesLoadBinCat(argName);
+					coreLink->starLinesLoadBinCat(argName);
 				else
-					stcore->starLinesLoadCat(argName);
+					coreLink->starLinesLoadCat(argName);
 				return executeCommandStatus();
 			} else
 				debug_message = "command 'configuration': unknown starNavigator action argument";
@@ -2542,15 +2542,15 @@ int AppCommandInterface::commandLook()
 int AppCommandInterface::commandStarLines()
 {
 	if (args["action"]=="drop") {
-		stcore->starLinesDrop();
+		coreLink->starLinesDrop();
 		return executeCommandStatus();
 	}
 	if (args["load"]!="") {
-		stcore->starLinesLoadData(scriptInterface->getScriptPath() + args["load"]);
+		coreLink->starLinesLoadData(scriptInterface->getScriptPath() + args["load"]);
 		return executeCommandStatus();
 	}
 	if (args["asterism"]!="") {
-		stcore->starLinesLoadAsterism(args["asterism"]);
+		coreLink->starLinesLoadAsterism(args["asterism"]);
 		return executeCommandStatus();
 	}
 	debug_message = _("Command 'star_lines': wrong argument");
