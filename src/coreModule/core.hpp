@@ -950,20 +950,20 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// dateSun---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	//! return the JD time when the sun go down
-	double dateSunRise(double _jd, double _longitude, double _latitude) {
-		return timeMgr->dateSunRise(_jd,_longitude, _latitude);
-	}
+	// //! return the JD time when the sun go down
+	// double dateSunRise(double _jd, double _longitude, double _latitude) {
+	// 	return timeMgr->dateSunRise(_jd,_longitude, _latitude);
+	// }
 
-	//! return the JD time when the sun set up
-	double dateSunSet(double _jd, double _longitude, double _latitude) {
-		return timeMgr->dateSunSet(_jd,_longitude, _latitude);
-	}
+	// //! return the JD time when the sun set up
+	// double dateSunSet(double _jd, double _longitude, double _latitude) {
+	// 	return timeMgr->dateSunSet(_jd,_longitude, _latitude);
+	// }
 
-	//! return the JD time when the sun cross the meridian
-	double dateSunMeridian(double _jd, double _longitude, double _latitude) {
-		return timeMgr->dateSunMeridian(_jd,_longitude, _latitude);
-	}
+	// //! return the JD time when the sun cross the meridian
+	// double dateSunMeridian(double _jd, double _longitude, double _latitude) {
+	// 	return timeMgr->dateSunMeridian(_jd,_longitude, _latitude);
+	// }
 
 
 	////////////////////////////////////////////////////////////////////////////////
