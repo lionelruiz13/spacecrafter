@@ -1703,7 +1703,7 @@ int AppCommandInterface::commandSet()
 	else if(args["screen_fader"]!="") {Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
 										EventManager::getInstance()->queue(event);
 										}
-	else if(args["stall_radius_unit"]!="") stcore->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"]));
+	else if(args["stall_radius_unit"]!="") coreLink->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"]));
 	else if(args["tully_color_mode"]!="") coreLink->tullySetColor(args["tully_color_mode"]);
 	else if(args["datetime_display_position"]!="") ui->setDateTimePosition(evalInt(args["datetime_display_position"]));
 	else if(args["datetime_display_number"]!="") ui->setDateDisplayNumber(evalInt(args["datetime_display_number"]));
@@ -2517,10 +2517,10 @@ int AppCommandInterface::commandLook()
 		std::string argTime = args["duration"];
 
 		if(argTime.empty()){
-			stcore->lookAt(stod(argAz), stod(argAlt));
+			coreLink->lookAt(stod(argAz), stod(argAlt));
 		}
 		else{
-			stcore->lookAt(stod(argAz), stod(argAlt), stod(argTime));
+			coreLink->lookAt(stod(argAz), stod(argAlt), stod(argTime));
 		}
 
 		return executeCommandStatus();
@@ -3151,15 +3151,15 @@ int AppCommandInterface::commandBody()
 			argFileName = argFileName +"/"+argFileName +".ojm";
 			Vec3f Position( evalDouble(args["pos_x"]), evalDouble(args["pos_y"]), evalDouble(args["pos_z"] ));
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::MODEL3D);
-			stcore->BodyOJMLoad(argMode, argName, myFile.toString(), myFile.getPath() , Position, evalDouble(args["scale"]));
+			coreLink->BodyOJMLoad(argMode, argName, myFile.toString(), myFile.getPath() , Position, evalDouble(args["scale"]));
 			return executeCommandStatus();
 		}
 		if (argAction =="remove") {
-			stcore->BodyOJMRemove(argMode, argName);
+			coreLink->BodyOJMRemove(argMode, argName);
 			return executeCommandStatus();
 		}
 		if (argAction =="clear") {
-			stcore->BodyOJMRemoveAll(argMode);
+			coreLink->BodyOJMRemoveAll(argMode);
 			return executeCommandStatus();
 		}
 	}
@@ -3294,7 +3294,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			duration = stod(argDuration);
 		}
 
-		bool result = stcore->cameraAlignWithBody(argBody, duration);
+		bool result = coreLink->cameraAlignWithBody(argBody, duration);
 
 		if (!result)
 			debug_message = "error align_with_body body";
@@ -3312,7 +3312,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		}
 
 		if(argTarget == "point"){
-			bool result = stcore->cameraTransitionToPoint("temp_point");
+			bool result = coreLink->cameraTransitionToPoint("temp_point");
 
 			if (!result)
 				debug_message = "error transition_to point";
@@ -3327,7 +3327,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 				return executeCommandStatus();
 			}
 
-			bool result = stcore->cameraTransitionToBody(argName);
+			bool result = coreLink->cameraTransitionToBody(argName);
 
 			if (!result)
 				debug_message = "error transition_to body";
@@ -3361,9 +3361,9 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			bool result;
 
 			if(argTime.empty())
-				result = stcore->cameraMoveToPoint(stod(argX), stod(argY), stod(argZ));
+				result = coreLink->cameraMoveToPoint(stod(argX), stod(argY), stod(argZ));
 			else {
-				result = stcore->cameraMoveToPoint(stod(argX), stod(argY), stod(argZ),stod(argTime));
+				result = coreLink->cameraMoveToPoint(stod(argX), stod(argY), stod(argZ),stod(argTime));
 				wait = evalInt(argTime)*1000;
 			}
 
@@ -3386,9 +3386,9 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			bool result;
 
 			if(argAltitude.empty())
-				result = stcore->cameraMoveToBody(argBodyName, stod(argTime));
+				result = coreLink->cameraMoveToBody(argBodyName, stod(argTime));
 			else
-				result = stcore->cameraMoveToBody(argBodyName, stod(argTime), stod(argAltitude));
+				result = coreLink->cameraMoveToBody(argBodyName, stod(argTime), stod(argAltitude));
 
 			if (!result)
 				debug_message = "error move_to body";
@@ -3408,9 +3408,9 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		std::string argFileName = args["filename"];
 
 		if (argFileName.empty())
-			result = stcore->cameraSave();
+			result = coreLink->cameraSave();
 		else
-			result = stcore->cameraSave(argFileName);
+			result = coreLink->cameraSave(argFileName);
 
 		if (!result)
 			debug_message = "error saving camera";
@@ -3425,7 +3425,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			return executeCommandStatus();
 		}
 
-		bool result = stcore->loadCameraPosition(argFileName);
+		bool result = coreLink->loadCameraPosition(argFileName);
 
 		if (!result)
 			debug_message = "error loading CameraAnchor";
@@ -3462,7 +3462,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if (argAction == "create" ) {
 		// load an anchor via script
-		bool result = stcore->cameraAddAnchor(args);
+		bool result = coreLink->cameraAddAnchor(args);
 		if (!result)
 			debug_message = "error creating CameraAnchor";
 		return executeCommandStatus();
@@ -3470,7 +3470,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if (argAction == "drop") {
 		// Delete an existing anchor
-		bool result = stcore->cameraRemoveAnchor(argName);
+		bool result = coreLink->cameraRemoveAnchor(argName);
 		if (!result)
 			debug_message = "error drop CameraAnchor";
 		return executeCommandStatus();
@@ -3478,7 +3478,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if (argAction == "switch") {
 		// change the anchor
-		bool result = stcore->cameraSwitchToAnchor(argName);
+		bool result = coreLink->cameraSwitchToAnchor(argName);
 		if (!result)
 			debug_message = "error switch CameraAnchor";
 		return executeCommandStatus();
@@ -3489,7 +3489,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 		bool value = valueStr == "true";
 
-		bool result = stcore->cameraSetFollowRotation(argName, value);
+		bool result = coreLink->cameraSetFollowRotation(argName, value);
 		if (!result)
 			debug_message = "error camera follow_rotation";
 		return executeCommandStatus();
