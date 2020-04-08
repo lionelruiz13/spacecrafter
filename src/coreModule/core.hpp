@@ -1880,13 +1880,13 @@ public:
 	// UBO---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	void uboSetAmbientLight(float v) {
-		ubo_cam->setAmbientLight(v);
-	}
+	// void uboSetAmbientLight(float v) {
+	// 	ubo_cam->setAmbientLight(v);
+	// }
 
-	float uboGetAmbientLight() {
-		return ubo_cam->getAmbientLight();
-	}
+	// float uboGetAmbientLight() {
+	// 	return ubo_cam->getAmbientLight();
+	// }
 
 	void saveCurrentConfig(InitParser &conf);
 	Vec3f getCursorPosEqu(int x, int y);

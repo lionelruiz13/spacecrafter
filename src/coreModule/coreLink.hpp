@@ -364,6 +364,18 @@ public:
 			core->ssystem->bodyTraceBodyChange(bodyName);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// UBO---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	void uboSetAmbientLight(float v) {
+		core->ubo_cam->setAmbientLight(v);
+	}
+
+	float uboGetAmbientLight() {
+		return core->ubo_cam->getAmbientLight();
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 
