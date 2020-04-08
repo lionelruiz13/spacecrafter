@@ -531,7 +531,7 @@ void SkyAngDist::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, V
 }
 
 
-SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::AL)
+SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
 {}
 
 
