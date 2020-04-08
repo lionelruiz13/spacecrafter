@@ -1767,7 +1767,7 @@ int AppCommandInterface::commandConfiguration()
 		if (argModule=="star_navigator"){
 
 			if (argAction == "clear") {
-				stcore->starNavigatorClear();
+				coreLink->starNavigatorClear();
 				return executeCommandStatus();
 			}
 
@@ -1787,15 +1787,15 @@ int AppCommandInterface::commandConfiguration()
 					return executeCommandStatus();
 				} else {
 					if (argMode == "raw") {
-						stcore->starNavigatorLoadRaw(argName);
+						coreLink->starNavigatorLoadRaw(argName);
 						return executeCommandStatus();
 					} else 
 					if (argMode == "sc") {
-						stcore->starNavigatorLoad(argName, binaryMode);
+						coreLink->starNavigatorLoad(argName, binaryMode);
 						return executeCommandStatus();
 					} else 
 					if (argMode == "other") {
-						stcore->starNavigatorLoadOther(argName);
+						coreLink->starNavigatorLoadOther(argName);
 						return executeCommandStatus();
 					} else {
 						debug_message = "command 'configuration': unknown starNavigator mode parameter";
@@ -1804,7 +1804,7 @@ int AppCommandInterface::commandConfiguration()
 				}
 			} else
 			if (argAction == "save") {
-				stcore->starNavigatorSave(argName, binaryMode);
+				coreLink->starNavigatorSave(argName, binaryMode);
 			} else
 				debug_message = "command 'configuration': unknown starNavigator action argument";
 		} else
