@@ -970,30 +970,30 @@ public:
 	// DSO---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	//! hide a particular DSO
-	void dsoSelectName(std::string DSOName, bool hide) const {
-		return nebulas->selectName(hide, DSOName);
-	}
+	// //! hide a particular DSO
+	// void dsoSelectName(std::string DSOName, bool hide) const {
+	// 	return nebulas->selectName(hide, DSOName);
+	// }
 
-	//! hide all DSO
-	void dsoHideAll() const {
-		nebulas->hideAll();
-	}
+	// //! hide all DSO
+	// void dsoHideAll() const {
+	// 	nebulas->hideAll();
+	// }
 
-	//! show (unhide) all DSO
-	void dsoShowAll() const {
-		nebulas->showAll();
-	}
+	// //! show (unhide) all DSO
+	// void dsoShowAll() const {
+	// 	nebulas->showAll();
+	// }
 
-	//! select all DSO in constellationName to be hidden or showed
-	void dsoSelectConstellation(bool hide, std::string constellationName) const {
-		nebulas->selectConstellation(hide, constellationName);
-	}
+	// //! select all DSO in constellationName to be hidden or showed
+	// void dsoSelectConstellation(bool hide, std::string constellationName) const {
+	// 	nebulas->selectConstellation(hide, constellationName);
+	// }
 
-	//! select all DSO with typeName to be hidden or showed
-	void dsoSelectType(bool hide, std::string typeName) const {
-		nebulas->selectType(hide, typeName);
-	}
+	// //! select all DSO with typeName to be hidden or showed
+	// void dsoSelectType(bool hide, std::string typeName) const {
+	// 	nebulas->selectType(hide, typeName);
+	// }
 
 
 	////////////////////////////////////////////////////////////////////////////////

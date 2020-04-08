@@ -376,6 +376,35 @@ public:
 		return core->ubo_cam->getAmbientLight();
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// DSO---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! hide a particular DSO
+	void dsoSelectName(std::string DSOName, bool hide) const {
+		return core->nebulas->selectName(hide, DSOName);
+	}
+
+	//! hide all DSO
+	void dsoHideAll() const {
+		core->nebulas->hideAll();
+	}
+
+	//! show (unhide) all DSO
+	void dsoShowAll() const {
+		core->nebulas->showAll();
+	}
+
+	//! select all DSO in constellationName to be hidden or showed
+	void dsoSelectConstellation(bool hide, std::string constellationName) const {
+		core->nebulas->selectConstellation(hide, constellationName);
+	}
+
+	//! select all DSO with typeName to be hidden or showed
+	void dsoSelectType(bool hide, std::string typeName) const {
+		core->nebulas->selectType(hide, typeName);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 
