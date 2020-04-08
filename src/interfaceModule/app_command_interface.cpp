@@ -3112,19 +3112,19 @@ int AppCommandInterface::commandDate()
 	std::string argSun = args["sun"];
 	if (!argSun.empty()) {
 		if (argSun=="set") {
-			double tmp=stcore->dateSunSet(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
+			double tmp=coreLink->dateSunSet(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
 		} else if (argSun=="rise") {
-			double tmp=stcore->dateSunRise(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
+			double tmp=coreLink->dateSunRise(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
 		} else if (argSun=="meridian") {
-			double tmp=stcore->dateSunMeridian(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
+			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), stcore->observatoryGetLongitude(), stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
 		} else if (argSun=="midnight") {
-			double tmp=stcore->dateSunMeridian(coreLink->getJDay(), stcore->observatoryGetLongitude()+180, -stcore->observatoryGetLatitude());
+			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), stcore->observatoryGetLongitude()+180, -stcore->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
 		} else
