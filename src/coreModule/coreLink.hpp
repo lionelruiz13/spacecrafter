@@ -322,6 +322,48 @@ public:
 		core->starNav->saveData(fileName, binaryMode);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// SunTrace---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	//! Set flag for displaying SunTrace
+	void bodyTraceSetFlag(bool b) const {
+		core->bodytrace->setFlagShow(b);
+	}
+	//! Get flag for displaying SunTrace
+	bool bodyTraceGetFlag(void) const {
+		return core->bodytrace->getFlagShow();
+	}
+
+	void bodyPenUp() const {
+		core->bodytrace->upPen();
+	}
+
+	void bodyPenDown() const {
+		core->bodytrace->downPen();
+	}
+
+	void bodyPenToggle() const {
+		core->bodytrace->togglePen();
+	}
+
+	void bodyTraceClear () const {
+		core->bodytrace->clear();
+	}
+
+	void bodyTraceHide(std::string value) const {
+		if (value=="all")
+			core->bodytrace->hide(-1);
+		else
+			core->bodytrace->hide(Utility::strToInt(value));
+	}
+
+	void bodyTraceBodyChange(std::string bodyName) const {
+		if (bodyName=="selected") 
+			core->ssystem->bodyTraceBodyChange(core->selected_object.getEnglishName()); 
+		else 
+			core->ssystem->bodyTraceBodyChange(bodyName);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 

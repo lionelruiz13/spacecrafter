@@ -1740,36 +1740,36 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// SunTrace---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	//! Set flag for displaying SunTrace
-	void bodyTraceSetFlag(bool b) const {
-		bodytrace->setFlagShow(b);
-	}
-	//! Get flag for displaying SunTrace
-	bool bodyTraceGetFlag(void) const {
-		return bodytrace->getFlagShow();
-	}
+	// //! Set flag for displaying SunTrace
+	// void bodyTraceSetFlag(bool b) const {
+	// 	bodytrace->setFlagShow(b);
+	// }
+	// //! Get flag for displaying SunTrace
+	// bool bodyTraceGetFlag(void) const {
+	// 	return bodytrace->getFlagShow();
+	// }
 
-	void bodyPenUp() const {
-		bodytrace->upPen();
-	}
+	// void bodyPenUp() const {
+	// 	bodytrace->upPen();
+	// }
 
-	void bodyPenDown() const {
-		bodytrace->downPen();
-	}
+	// void bodyPenDown() const {
+	// 	bodytrace->downPen();
+	// }
 
-	void bodyPenToggle() const {
-		bodytrace->togglePen();
-	}
+	// void bodyPenToggle() const {
+	// 	bodytrace->togglePen();
+	// }
 
-	void bodyTraceClear () const {
-		bodytrace->clear();
-	}
+	// void bodyTraceClear () const {
+	// 	bodytrace->clear();
+	// }
 
-	void bodyTraceHide(std::string value) const;
+	// void bodyTraceHide(std::string value) const;
 
-	void bodyTraceBodyChange(std::string bodyName) const {
-		if (bodyName=="selected") ssystem->bodyTraceBodyChange(selected_object.getEnglishName()); else ssystem->bodyTraceBodyChange(bodyName);
-	}
+	// void bodyTraceBodyChange(std::string bodyName) const {
+	// 	if (bodyName=="selected") ssystem->bodyTraceBodyChange(selected_object.getEnglishName()); else ssystem->bodyTraceBodyChange(bodyName);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Text_usr---------------------------

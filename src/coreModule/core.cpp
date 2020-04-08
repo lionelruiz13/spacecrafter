@@ -621,13 +621,13 @@ void Core::updateMode()
 	}
 }
 
-void Core::bodyTraceHide(std::string value) const
-{
-	if (value=="all")
-		bodytrace->hide(-1);
-	else
-		bodytrace->hide(Utility::strToInt(value));
-}
+// void Core::bodyTraceHide(std::string value) const
+// {
+// 	if (value=="all")
+// 		bodytrace->hide(-1);
+// 	else
+// 		bodytrace->hide(Utility::strToInt(value));
+// }
 
 bool Core::illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation)
 {
