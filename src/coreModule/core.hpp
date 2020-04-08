@@ -803,23 +803,23 @@ public:
 	// CardinalsPoints---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	//! Set flag for displaying Cardinals Points
-	void cardinalsPointsSetFlag(bool b) {
-		cardinals_points->setFlagShow(b);
-	}
-	//! Get flag for displaying Cardinals Points
-	bool cardinalsPointsGetFlag(void) const {
-		return cardinals_points->getFlagShow();
-	}
+	// //! Set flag for displaying Cardinals Points
+	// void cardinalsPointsSetFlag(bool b) {
+	// 	cardinals_points->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Cardinals Points
+	// bool cardinalsPointsGetFlag(void) const {
+	// 	return cardinals_points->getFlagShow();
+	// }
 
-	//! Set Cardinals Points color
-	void cardinalsPointsSetColor(const Vec3f& v) {
-		cardinals_points->setColor(v);
-	}
-	//! Get Cardinals Points color
-	Vec3f cardinalsPointsGetColor(void) const {
-		return cardinals_points->getColor();
-	}
+	// //! Set Cardinals Points color
+	// void cardinalsPointsSetColor(const Vec3f& v) {
+	// 	cardinals_points->setColor(v);
+	// }
+	// //! Get Cardinals Points color
+	// Vec3f cardinalsPointsGetColor(void) const {
+	// 	return cardinals_points->getColor();
+	// }
 
 
 	////////////////////////////////////////////////////////////////////////////////

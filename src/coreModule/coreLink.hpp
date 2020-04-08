@@ -546,6 +546,28 @@ public:
 		return core->anchorManager->alignCameraToBody(name,duration);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// CardinalsPoints---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! Set flag for displaying Cardinals Points
+	void cardinalsPointsSetFlag(bool b) {
+		core->cardinals_points->setFlagShow(b);
+	}
+	//! Get flag for displaying Cardinals Points
+	bool cardinalsPointsGetFlag(void) const {
+		return core->cardinals_points->getFlagShow();
+	}
+
+	//! Set Cardinals Points color
+	void cardinalsPointsSetColor(const Vec3f& v) {
+		core->cardinals_points->setColor(v);
+	}
+	//! Get Cardinals Points color
+	Vec3f cardinalsPointsGetColor(void) const {
+		return core->cardinals_points->getColor();
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 
