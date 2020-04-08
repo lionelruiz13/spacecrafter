@@ -105,7 +105,41 @@ void SkyDisplay::clear()
 }
 
 void SkyDisplay::loadData(std::string filename)
+{}
+
+
+
+//a optimiser
+void SkyDisplay::draw_text(const Projector *prj,const Navigator *nav)
 {
+	if (((dataSky.size()/3)==198) || ((dataSky.size()/3)==396))
+		//double alpha = 0.f; // Il me faut la premiere valeur en alpha de personal.txt ou personeq.txt selon
+
+		for (int i=-9; i<10; i++) {
+			std::ostringstream oss;
+			//création des positions de points dans pt3,pt4
+			Utility::spheToRect(aperson-0.31415926,(i-0.0001)*grad2rad, pt3);
+			Utility::spheToRect(aperson-0.31415926+0.01,(i-0.0001)*grad2rad, pt4);
+			//test si pt3,pt4 est affichable et transmet à pt1,pt2 sa position
+			if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) { 
+				double angle;
+				const double dx = pt1[0]-pt2[0];
+				const double dy = pt1[1]-pt2[1];
+				const double dq = dx*dx+dy*dy;
+				const double d = sqrt(dq);
+				angle = acos((pt1[1]-pt2[1])/(d+0.000001));
+				if ( pt1[0] < pt2[0] ) angle *= -1;
+				if (i==-9) angle += 3.1415926;
+				Mat4f MVP = prj->getMatProjectionOrtho2D();
+				//suite de transformations de position à partir des coordonnées de pt1
+				Mat4f TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
+				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), pi_div_2-angle);
+				//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
+				oss << i*10 << "°";
+				font->print(2,-2,oss.str(), color, MVP*TRANSFO ,1,1);
+				oss.clear();
+			}
+		}
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -261,39 +295,6 @@ void SkyNautic::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Ve
 	shaderSkyDisplay->unuse();
 
 	draw_text(prj, nav);
-}
-
-//a optimiser
-void SkyDisplay::draw_text(const Projector *prj,const Navigator *nav)
-{
-	if (((dataSky.size()/3)==198) || ((dataSky.size()/3)==396))
-		//double alpha = 0.f; // Il me faut la premiere valeur en alpha de personal.txt ou personeq.txt selon
-
-		for (int i=-9; i<10; i++) {
-			std::ostringstream oss;
-			//création des positions de points dans pt3,pt4
-			Utility::spheToRect(aperson-0.31415926,(i-0.0001)*grad2rad, pt3);
-			Utility::spheToRect(aperson-0.31415926+0.01,(i-0.0001)*grad2rad, pt4);
-			//test si pt3,pt4 est affichable et transmet à pt1,pt2 sa position
-			if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) { 
-				double angle;
-				const double dx = pt1[0]-pt2[0];
-				const double dy = pt1[1]-pt2[1];
-				const double dq = dx*dx+dy*dy;
-				const double d = sqrt(dq);
-				angle = acos((pt1[1]-pt2[1])/(d+0.000001));
-				if ( pt1[0] < pt2[0] ) angle *= -1;
-				if (i==-9) angle += 3.1415926;
-				Mat4f MVP = prj->getMatProjectionOrtho2D();
-				//suite de transformations de position à partir des coordonnées de pt1
-				Mat4f TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
-				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), pi_div_2-angle);
-				//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
-				oss << i*10 << "°";
-				font->print(2,-2,oss.str(), color, MVP*TRANSFO ,1,1);
-				oss.clear();
-			}
-		}
 }
 
 void SkyCoords::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldPos)
