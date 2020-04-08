@@ -1827,52 +1827,52 @@ public:
 	// Time---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! Set time speed in JDay/sec
-	void timeSetSpeed(double ts) {
-		timeMgr->setTimeSpeed(ts);
-	}
+	// void timeSetSpeed(double ts) {
+	// 	timeMgr->setTimeSpeed(ts);
+	// }
 
-	void timeChangeSpeed(double ts, double duration) {
-		timeMgr->changeTimeSpeed(ts, duration);
-	}
+	// void timeChangeSpeed(double ts, double duration) {
+	// 	timeMgr->changeTimeSpeed(ts, duration);
+	// }
 
-	//! Get time speed in JDay/sec
-	double timeGetSpeed(void) const {
-		return timeMgr->getTimeSpeed();
-	}
+	// //! Get time speed in JDay/sec
+	// double timeGetSpeed(void) const {
+	// 	return timeMgr->getTimeSpeed();
+	// }
 
-	void timeLoadSpeed(void) const {
-		return timeMgr->loadTimeSpeed();
-	}
-	void timeSaveSpeed() const  {
-		timeMgr-> saveTimeSpeed();
-	}
+	// void timeLoadSpeed(void) const {
+	// 	return timeMgr->loadTimeSpeed();
+	// }
+	// void timeSaveSpeed() const  {
+	// 	timeMgr-> saveTimeSpeed();
+	// }
 
-	//! Set the current date in Julian Day
-	void setJDay(double JD) {
-		timeMgr->setJDay(JD);
-	}
-	//! Get the current date in Julian Day
-	double getJDay(void) const {
-		return timeMgr->getJDay();
-	}
+	// //! Set the current date in Julian Day
+	// void setJDay(double JD) {
+	// 	timeMgr->setJDay(JD);
+	// }
+	// //! Get the current date in Julian Day
+	// double getJDay(void) const {
+	// 	return timeMgr->getJDay();
+	// }
 
-	bool timeGetFlagPause() const {
-		return timeMgr->getTimePause();
-	}
+	// bool timeGetFlagPause() const {
+	// 	return timeMgr->getTimePause();
+	// }
 
-	void timeSetFlagPause(bool _value) const {
-		timeMgr->setTimePause(_value);
-	}
+	// void timeSetFlagPause(bool _value) const {
+	// 	timeMgr->setTimePause(_value);
+	// }
 
-	double timeGetMultiplier() const {
-		return timeMgr->getTimeMultiplier();
-	}
-	void timeSetMultiplier(double _value) {
-		timeMgr->setTimeMultiplier(_value);
-	}
-	void timeResetMultiplier() {
-		timeMgr->setTimeMultiplier(1.0);
-	};
+	// double timeGetMultiplier() const {
+	// 	return timeMgr->getTimeMultiplier();
+	// }
+	// void timeSetMultiplier(double _value) {
+	// 	timeMgr->setTimeMultiplier(_value);
+	// }
+	// void timeResetMultiplier() {
+	// 	timeMgr->setTimeMultiplier(1.0);
+	// };
 
 	////////////////////////////////////////////////////////////////////////////////
 	// UBO---------------------------

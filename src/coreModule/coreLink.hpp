@@ -128,6 +128,57 @@ public:
 		core->text_usr->setColor(v);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Time---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	//! Set time speed in JDay/sec
+	void timeSetSpeed(double ts) {
+		core->timeMgr->setTimeSpeed(ts);
+	}
+
+	void timeChangeSpeed(double ts, double duration) {
+		core->timeMgr->changeTimeSpeed(ts, duration);
+	}
+
+	//! Get time speed in JDay/sec
+	double timeGetSpeed(void) const {
+		return core->timeMgr->getTimeSpeed();
+	}
+
+	void timeLoadSpeed(void) const {
+		return core->timeMgr->loadTimeSpeed();
+	}
+	void timeSaveSpeed() const  {
+		core->timeMgr-> saveTimeSpeed();
+	}
+
+	//! Set the current date in Julian Day
+	void setJDay(double JD) {
+		core->timeMgr->setJDay(JD);
+	}
+	//! Get the current date in Julian Day
+	double getJDay(void) const {
+		return core->timeMgr->getJDay();
+	}
+
+	bool timeGetFlagPause() const {
+		return core->timeMgr->getTimePause();
+	}
+
+	void timeSetFlagPause(bool _value) const {
+		core->timeMgr->setTimePause(_value);
+	}
+
+	double timeGetMultiplier() const {
+		return core->timeMgr->getTimeMultiplier();
+	}
+	void timeSetMultiplier(double _value) {
+		core->timeMgr->setTimeMultiplier(_value);
+	}
+	void timeResetMultiplier() {
+		core->timeMgr->setTimeMultiplier(1.0);
+	};
+
     CoreLink(Core* _core);
     ~CoreLink();
 
