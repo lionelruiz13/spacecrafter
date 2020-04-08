@@ -434,6 +434,100 @@ public:
 		core->projection->setMaxFov(f);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Body---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	void BodyOJMLoad(const std::string &mode, const std::string &name, const std::string &filename, const std::string &pathFile, const Vec3f &Position, const float multiplier) {
+		core->ojmMgr->load(mode, name, filename, pathFile, Position, multiplier);
+	}
+
+	void BodyOJMRemove(const std::string &mode, const std::string &name){
+		core->ojmMgr->remove(mode, name);
+	}
+
+	void BodyOJMRemoveAll(const std::string &mode){
+		core->ojmMgr->removeAll(mode);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Camera---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	
+	bool cameraAddAnchor(stringHash_t& param) {
+		return core->anchorManager->addAnchor(param); 
+	}
+
+	bool cameraRemoveAnchor(const std::string &name) {
+		return core->anchorManager->removeAnchor(name);
+	}
+
+	bool cameraSwitchToAnchor(const std::string &name) {
+		return core->anchorManager->switchToAnchor(name);
+	}
+
+	bool cameraMoveToPoint(double x, double y, double z){
+		return core->anchorManager->setCurrentAnchorPos(Vec3d(x,y,z));
+	}
+	
+	bool cameraMoveToPoint(double x, double y, double z, double time){
+		return core->anchorManager->moveTo(Vec3d(x,y,z),time);
+	}
+	
+	bool cameraMoveToBody(const std::string& bodyName, double time, double alt = -1.0){
+
+		if(bodyName == "selected"){
+			return core->anchorManager->moveToBody(core->getSelectedPlanetEnglishName(), time, alt);
+		}
+
+		if(bodyName == "default"){
+			return core->anchorManager->moveToBody(core->ssystem->getEarth()->getEnglishName(), time, alt);
+		}
+
+		return core->anchorManager->moveToBody(bodyName,time, alt);
+	}
+	
+	bool cameraMoveRelativeXYZ( double x, double y, double z) {
+		return core->anchorManager->moveRelativeXYZ(x,y,z);
+	}
+	
+	bool cameraTransitionToPoint(const std::string& name){
+		return core->anchorManager->transitionToPoint(name);
+	}
+	
+	bool cameraTransitionToBody(const std::string& name){
+
+		if(name == "selected"){
+			return core->anchorManager->transitionToBody(core->getSelectedPlanetEnglishName());
+		}
+
+		return core->anchorManager->transitionToBody(name);
+	}
+
+	bool cameraSave(const std::string& name = "anchor"){
+		return core->anchorManager->saveCameraPosition(core->settings->getUserDir() + "anchors/" + name);
+	}
+	
+	bool loadCameraPosition(const std::string& filename){
+		return core->anchorManager->loadCameraPosition(core->settings->getUserDir() + "anchors/" + filename);
+	}
+	
+	bool lookAt(double az, double alt, double time = 1.){
+		return core->navigation->lookAt(az, alt, time);
+	}
+	
+	bool cameraSetFollowRotation(const std::string& name, bool value){
+		return core->anchorManager->setFollowRotation(value);
+	}
+
+	void cameraSetRotationMultiplierCondition(float v) {
+		core->anchorManager->setRotationMultiplierCondition(v);
+	}
+
+	bool cameraAlignWithBody(const std::string& name, double duration){
+		return core->anchorManager->alignCameraToBody(name,duration);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 

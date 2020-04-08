@@ -709,95 +709,95 @@ public:
 	// Body---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	void BodyOJMLoad(const std::string &mode, const std::string &name, const std::string &filename, const std::string &pathFile, const Vec3f &Position, const float multiplier) {
-		ojmMgr->load(mode, name, filename, pathFile, Position, multiplier);
-	}
+	// void BodyOJMLoad(const std::string &mode, const std::string &name, const std::string &filename, const std::string &pathFile, const Vec3f &Position, const float multiplier) {
+	// 	ojmMgr->load(mode, name, filename, pathFile, Position, multiplier);
+	// }
 
-	void BodyOJMRemove(const std::string &mode, const std::string &name){
-		ojmMgr->remove(mode, name);
-	}
+	// void BodyOJMRemove(const std::string &mode, const std::string &name){
+	// 	ojmMgr->remove(mode, name);
+	// }
 
-	void BodyOJMRemoveAll(const std::string &mode){
-		ojmMgr->removeAll(mode);
-	}
+	// void BodyOJMRemoveAll(const std::string &mode){
+	// 	ojmMgr->removeAll(mode);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Camera---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	
-	bool cameraAddAnchor(stringHash_t& param) {
-		return anchorManager->addAnchor(param); 
-	}
+	// bool cameraAddAnchor(stringHash_t& param) {
+	// 	return anchorManager->addAnchor(param); 
+	// }
 
-	bool cameraRemoveAnchor(const std::string &name) {
-		return anchorManager->removeAnchor(name);
-	}
+	// bool cameraRemoveAnchor(const std::string &name) {
+	// 	return anchorManager->removeAnchor(name);
+	// }
 
-	bool cameraSwitchToAnchor(const std::string &name) {
-		return anchorManager->switchToAnchor(name);
-	}
+	// bool cameraSwitchToAnchor(const std::string &name) {
+	// 	return anchorManager->switchToAnchor(name);
+	// }
 
-	bool cameraMoveToPoint(double x, double y, double z){
-		return anchorManager->setCurrentAnchorPos(Vec3d(x,y,z));
-	}
+	// bool cameraMoveToPoint(double x, double y, double z){
+	// 	return anchorManager->setCurrentAnchorPos(Vec3d(x,y,z));
+	// }
 	
-	bool cameraMoveToPoint(double x, double y, double z, double time){
-		return anchorManager->moveTo(Vec3d(x,y,z),time);
-	}
+	// bool cameraMoveToPoint(double x, double y, double z, double time){
+	// 	return anchorManager->moveTo(Vec3d(x,y,z),time);
+	// }
 	
-	bool cameraMoveToBody(const std::string& bodyName, double time, double alt = -1.0){
+	// bool cameraMoveToBody(const std::string& bodyName, double time, double alt = -1.0){
 
-		if(bodyName == "selected"){
-			return anchorManager->moveToBody(getSelectedPlanetEnglishName(), time, alt);
-		}
+	// 	if(bodyName == "selected"){
+	// 		return anchorManager->moveToBody(getSelectedPlanetEnglishName(), time, alt);
+	// 	}
 
-		if(bodyName == "default"){
-			return anchorManager->moveToBody(ssystem->getEarth()->getEnglishName(), time, alt);
-		}
+	// 	if(bodyName == "default"){
+	// 		return anchorManager->moveToBody(ssystem->getEarth()->getEnglishName(), time, alt);
+	// 	}
 
-		return anchorManager->moveToBody(bodyName,time, alt);
-	}
+	// 	return anchorManager->moveToBody(bodyName,time, alt);
+	// }
 	
-	bool cameraMoveRelativeXYZ( double x, double y, double z) {
-		return anchorManager->moveRelativeXYZ(x,y,z);
-	}
+	// bool cameraMoveRelativeXYZ( double x, double y, double z) {
+	// 	return anchorManager->moveRelativeXYZ(x,y,z);
+	// }
 	
-	bool cameraTransitionToPoint(const std::string& name){
-		return anchorManager->transitionToPoint(name);
-	}
+	// bool cameraTransitionToPoint(const std::string& name){
+	// 	return anchorManager->transitionToPoint(name);
+	// }
 	
-	bool cameraTransitionToBody(const std::string& name){
+	// bool cameraTransitionToBody(const std::string& name){
 
-		if(name == "selected"){
-			return anchorManager->transitionToBody(getSelectedPlanetEnglishName());
-		}
+	// 	if(name == "selected"){
+	// 		return anchorManager->transitionToBody(getSelectedPlanetEnglishName());
+	// 	}
 
-		return anchorManager->transitionToBody(name);
-	}
+	// 	return anchorManager->transitionToBody(name);
+	// }
 
-	bool cameraSave(const std::string& name = "anchor"){
-		return anchorManager->saveCameraPosition(settings->getUserDir() + "anchors/" + name);
-	}
+	// bool cameraSave(const std::string& name = "anchor"){
+	// 	return anchorManager->saveCameraPosition(settings->getUserDir() + "anchors/" + name);
+	// }
 	
-	bool loadCameraPosition(const std::string& filename){
-		return anchorManager->loadCameraPosition(settings->getUserDir() + "anchors/" + filename);
-	}
+	// bool loadCameraPosition(const std::string& filename){
+	// 	return anchorManager->loadCameraPosition(settings->getUserDir() + "anchors/" + filename);
+	// }
 	
-	bool lookAt(double az, double alt, double time = 1.){
-		return navigation->lookAt(az, alt, time);
-	}
+	// bool lookAt(double az, double alt, double time = 1.){
+	// 	return navigation->lookAt(az, alt, time);
+	// }
 	
-	bool cameraSetFollowRotation(const std::string& name, bool value){
-		return anchorManager->setFollowRotation(value);
-	}
+	// bool cameraSetFollowRotation(const std::string& name, bool value){
+	// 	return anchorManager->setFollowRotation(value);
+	// }
 
-	void cameraSetRotationMultiplierCondition(float v) {
-		anchorManager->setRotationMultiplierCondition(v);
-	}
+	// void cameraSetRotationMultiplierCondition(float v) {
+	// 	anchorManager->setRotationMultiplierCondition(v);
+	// }
 
-	bool cameraAlignWithBody(const std::string& name, double duration){
-		return anchorManager->alignCameraToBody(name,duration);
-	}
+	// bool cameraAlignWithBody(const std::string& name, double duration){
+	// 	return anchorManager->alignCameraToBody(name,duration);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// CardinalsPoints---------------------------
