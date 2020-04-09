@@ -304,6 +304,7 @@ static void checkColorSettings(InitParser &user_conf)
 	colorSettings["nautical_alt_color"] = "0.8,0.8,0";
 	colorSettings["nautical_ra_color"] = "0.3,0.3,0.3";
 	colorSettings["object_coordinates_color"] = "0.8,0.8,0";
+	colorSettings["mouse_coordinates_color"] = "0.8,0.8,0";
 	colorSettings["angular_distance_color"] = "0.8,0.8,0";
 	colorSettings["loxodromy_color"] = "0.9,0.4,0.4";	// Set color
 	colorSettings["orthodromy_color"] = "0.4,0.4,0.9";	// Set color
