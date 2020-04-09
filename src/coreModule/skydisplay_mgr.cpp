@@ -27,6 +27,7 @@
 
 #include "coreModule/skydisplay_mgr.hpp"
 #include "tools/log.hpp"
+#include "tools/s_font.hpp"
 
 SkyDisplayMgr::SkyDisplayMgr()
 {
@@ -66,6 +67,8 @@ void SkyDisplayMgr::update(int delta_time)
 
 void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
 {
+	s_font* test = new s_font(font_size, font_name);
+	SkyDisplay::setFont(test);
 	// for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 	// 	it->second->setFont(font_size, font_name);
 	// }

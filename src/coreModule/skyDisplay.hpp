@@ -85,6 +85,10 @@ public:
 
 	void clear() ;
 
+	static void setFont(s_font* _font){
+		skydisplay_font = _font;
+	}
+
 	void createShader();
 	void deleteShader();
 
@@ -95,7 +99,8 @@ protected:
 	LinearFader fader;
 	Vec3d pt0, pt1, pt2, pt3, pt4, pt5;
 
-	s_font * font;
+	static s_font* skydisplay_font;
+
 	std::vector<float> dataSky;
 	PROJECTION_TYPE ptype;
 	DataGL sData;

@@ -448,6 +448,7 @@ void Core::init(const InitParser& conf)
 	// Init fonts : should be moved in a specific fonction
 	skyGridMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
+	skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);
 
 	cardinals_points->setFont(FontSizeCardinalPoints, FontFileNameGeneral);
 	asterisms->setFont(FontSizeConstellation, FontFileNameConstellation);
