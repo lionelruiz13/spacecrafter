@@ -1196,25 +1196,25 @@ public:
 	// 	observatory->setLongitude(l);
 	// }
 
-	void observatorySetAltitude(double l) {
-		observatory->setAltitude(l);
-	}
+	// void observatorySetAltitude(double l) {
+	// 	observatory->setAltitude(l);
+	// }
 	
-	void observatorySetSpacecraft(double l) {
-		observatory->setSpacecraft(bool(l));
-	}
+	// void observatorySetSpacecraft(double l) {
+	// 	observatory->setSpacecraft(bool(l));
+	// }
 
-	void observatorySaveBodyInSolarSystem() {
-		observatory->saveBodyInSolarSystem();
-	}
+	// void observatorySaveBodyInSolarSystem() {
+	// 	observatory->saveBodyInSolarSystem();
+	// }
 
-	void observatoryLoadBodyInSolarSystem() {
-		observatory->loadBodyInSolarSystem();
-	}
+	// void observatoryLoadBodyInSolarSystem() {
+	// 	observatory->loadBodyInSolarSystem();
+	// }
 
-	void observatoryFixBodyToSun() {
-		observatory->fixBodyToSun();
-	}
+	// void observatoryFixBodyToSun() {
+	// 	observatory->fixBodyToSun();
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Oort    ---------------------------
