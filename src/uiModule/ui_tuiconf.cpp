@@ -670,10 +670,10 @@ void UI::tuiUpdateWidgets()
 	tui_colors_const_art_intensity->setValue(coreLink->constellationGetArtIntensity());
 	tui_colors_const_art_color->setVector(coreLink->constellationGetColorArt());
 	tui_colors_const_boundary_color->setVector(coreLink->constellationGetColorBoundaries());
-	tui_colors_planet_names_color->setVector(core->planetGetDefaultColor("label"));
-	tui_colors_planet_orbits_color->setVector(core->planetGetDefaultColor("orbit"));
+	tui_colors_planet_names_color->setVector(coreLink->planetGetDefaultColor("label"));
+	tui_colors_planet_orbits_color->setVector(coreLink->planetGetDefaultColor("orbit"));
 
-	tui_colors_object_trails_color->setVector(core->planetGetDefaultColor("trail"));
+	tui_colors_object_trails_color->setVector(coreLink->planetGetDefaultColor("trail"));
 	tui_colors_meridian_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_MERIDIAN));
 	tui_colors_azimuthal_color->setVector(coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
 	tui_colors_equatorial_color->setVector(coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL));
@@ -694,7 +694,7 @@ void UI::tuiUpdateWidgets()
 	tui_effect_cursor_timeout->setValue(MouseCursorTimeout);
 	tui_effect_light_pollution->setValue(core->getLightPollutionLimitingMagnitude());
 	tui_effect_nebulae_label_magnitude->setValue(core->nebulaGetMaxMagHints());
-	tui_effect_light_travel->setValue(core->getFlagLightTravelTime());
+	tui_effect_light_travel->setValue(coreLink->getFlagLightTravelTime());
 	tui_effect_view_offset->setValue(core->getViewOffset());
 	tui_effect_antialias->setValue(core->getFlagAntialiasLines());
 	tui_effect_line_width->setValue(core->getLineWidth());
@@ -998,9 +998,9 @@ void UI::tuiCbChangeColor()
 	coreLink->constellationSetArtIntensity(tui_colors_const_art_intensity->getValue() );
 	coreLink->constellationSetColorArt( tui_colors_const_art_color->getVector() );
 	coreLink->constellationSetColorBoundaries(tui_colors_const_boundary_color->getVector() );
-	core->planetSetDefaultColor("orbit", tui_colors_planet_orbits_color->getVector() );
-	core->planetSetDefaultColor("label", tui_colors_planet_names_color->getVector() );
-	core->planetSetDefaultColor("trail",tui_colors_object_trails_color->getVector() );
+	coreLink->planetSetDefaultColor("orbit", tui_colors_planet_orbits_color->getVector() );
+	coreLink->planetSetDefaultColor("label", tui_colors_planet_names_color->getVector() );
+	coreLink->planetSetDefaultColor("trail",tui_colors_object_trails_color->getVector() );
 
 	coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL , tui_colors_azimuthal_color->getVector() );
 	coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL  , tui_colors_equatorial_color->getVector() );

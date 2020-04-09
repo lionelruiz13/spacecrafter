@@ -412,9 +412,9 @@ void Core::init(const InitParser& conf)
 	ssystem->setFlagPlanets(conf.getBoolean("astro:flag_planets"));
 	ssystem->setFlagHints(conf.getBoolean("astro:flag_planets_hints"));
 	ssystem->setFlagPlanetsOrbits(conf.getBoolean("astro:flag_planets_orbits"));
-	setFlagLightTravelTime(conf.getBoolean("astro", "flag_light_travel_time"));
+	ssystem->setFlagLightTravelTime(conf.getBoolean("astro", "flag_light_travel_time"));
 	ssystem->setFlagTrails(conf.getBoolean("astro", "flag_object_trails"));
-	startPlanetsTrails(conf.getBoolean("astro", "flag_object_trails"));
+	ssystem->startTrails(conf.getBoolean("astro", "flag_object_trails")); //startPlanetsTrails(conf.getBoolean("astro", "flag_object_trails"));
 	nebulas->setFlagShow(conf.getBoolean("astro:flag_nebula"));
 	nebulas->setFlagHints(conf.getBoolean("astro","flag_nebula_hints"));
 	nebulas->setNebulaNames(conf.getBoolean("astro","flag_nebula_names"));
@@ -431,7 +431,7 @@ void Core::init(const InitParser& conf)
 	setPlanetsSizeLimit(conf.getDouble("astro", "planet_size_marginal_limit"));
 
 	ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
-	setFlagClouds(true);
+	ssystem->setFlagClouds(true);
 
 	observatory->load(conf, "init_location");
 
@@ -492,7 +492,7 @@ void Core::init(const InitParser& conf)
 	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
 	navigation->updateViewMat(projection, projection->getFov());
 
-	setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
+	ssystem->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
 
 	std::string skyLocaleName = conf.getStr("localization", "sky_locale");
 	mBackup.initial_skyLocale=skyLocaleName;
@@ -604,10 +604,10 @@ void Core::init(const InitParser& conf)
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean("viewing:flag_vertical_line"));
 	cardinals_points->setFlagShow(conf.getBoolean("viewing:flag_cardinal_points"));
 
-	setFlagMoonScaled(conf.getBoolean("viewing", "flag_moon_scaled"));
-	setMoonScale(conf.getDouble ("viewing","moon_scale"), true); //? toujours true TODO
-	setFlagSunScaled(conf.getBoolean("viewing", "flag_sun_scaled"));
-	setSunScale(conf.getDouble ("viewing","sun_scale"), true); //? toujours true TODO
+	ssystem->setFlagMoonScale(conf.getBoolean("viewing", "flag_moon_scaled"));
+	ssystem->setMoonScale(conf.getDouble ("viewing","moon_scale"), true); //? toujours true TODO
+	ssystem->setFlagSunScale(conf.getBoolean("viewing", "flag_sun_scaled"));
+	ssystem->setSunScale(conf.getDouble ("viewing","sun_scale"), true); //? toujours true TODO
 
 	oort->setFlagShow(conf.getBoolean("viewing:flag_oort"));
 
@@ -620,7 +620,7 @@ void Core::init(const InitParser& conf)
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
 	mCity->loadCities(settings-> getDataDir() + "mcities.fab");
-	initialSolarSystemBodies();
+	ssystem->initialSolarSystemBodies();
 
 	defaultLandscape = observatoryGetLandscapeName();
 	tempLandscape = observatoryGetLandscapeName();
@@ -1221,21 +1221,21 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		istr >> hpnum;
 		selected_object = hip_stars->searchHP(hpnum).get();
 		asterisms->setSelected(selected_object);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="star") {
 		selected_object = hip_stars->search(id).get();
 		asterisms->setSelected(selected_object);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		setPlanetsSelected(id);
+		ssystem->setSelected(id); //setPlanetsSelected(id);
 		selected_object = ssystem->getSelected();
 		asterisms->setSelected(Object());
 
 	} else if (type=="nebula") {
 		selected_object = nebulas->search(id);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 		asterisms->setSelected(Object());
 
 	} else if (type=="constellation") {
@@ -1244,7 +1244,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		asterisms->setSelected(id);
 
 		selected_object = nullptr;
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="constellation_star") {
 		// For Find capability, select a star in constellation so can center view on constellation
@@ -1257,7 +1257,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		//		const unsigned int hpnum = asterisms->getFirstSelectedHP();
 		//		selected_object = hip_stars->searchHP(hpnum);
 		//		asterisms->setSelected(selected_object);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 		//		// Some stars are shared, so now force constellation
 		//		asterisms->setSelected(id);
 	} else {
@@ -1293,7 +1293,7 @@ void Core::selectZodiac()
 	asterisms->setSelected("Psc");
 	asterisms->setSelected("Lib");
 	selected_object = nullptr;
-	setPlanetsSelected("");
+	ssystem->setSelected(""); //setPlanetsSelected("");
 }
 
 //! Find and select an object near given equatorial position
@@ -1699,8 +1699,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("viewing:flag_constellation_art", asterisms->getFlagArt()); //constellationGetFlagArt());
 	conf.setBoolean("viewing:flag_constellation_boundaries", asterisms->getFlagBoundaries()); //constellationGetFlagBoundaries());
 	conf.setBoolean("viewing:flag_constellation_pick", asterisms->getFlagIsolateSelected()); //constellationGetFlagIsolateSelected());
-	conf.setDouble("viewing:moon_scale", getMoonScale());
-	conf.setDouble("viewing:sun_scale", getSunScale());
+	conf.setDouble("viewing:moon_scale", ssystem->getMoonScale());
+	conf.setDouble("viewing:sun_scale", ssystem->getSunScale());
 	conf.setBoolean("viewing:flag_equatorial_grid", skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
 	conf.setBoolean("viewing:flag_ecliptic_grid", skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
 	conf.setBoolean("viewing:flag_galactic_grid", skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
@@ -1729,8 +1729,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("viewing:flag_precession_circle", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
 	conf.setBoolean("viewing:flag_circumpolar_circle", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 	conf.setBoolean("viewing:flag_tropic_lines", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
-	conf.setBoolean("viewing:flag_moon_scaled", getFlagMoonScaled());
-	conf.setBoolean("viewing:flag_sun_scaled", getFlagSunScaled());
+	conf.setBoolean("viewing:flag_moon_scaled", ssystem->getFlagMoonScale()); //getFlagMoonScaled());
+	conf.setBoolean("viewing:flag_sun_scaled", ssystem->getFlagSunScale()); //getFlagSunScaled());
 	conf.setDouble ("viewing:constellation_art_intensity", asterisms->getArtIntensity()); //constellationGetArtIntensity());
 	conf.setDouble ("viewing:constellation_art_fade_duration", asterisms->getArtFadeDuration()); //constellationGetArtFadeDuration());
 	conf.setDouble("viewing:light_pollution_limiting_magnitude", getLightPollutionLimitingMagnitude());
@@ -1800,7 +1800,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble ("navigation:zoom_speed", getZoomSpeed());
 	conf.setDouble ("navigation:heading", getHeading());
 	// Astro section
-	conf.setBoolean("astro:flag_object_trails", planetsGetFlagTrails());
+	conf.setBoolean("astro:flag_object_trails", ssystem->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
 	conf.setBoolean("astro:flag_bright_nebulae", nebulaGetFlagBright());
 	conf.setBoolean("astro:flag_stars", hip_stars->getFlagStars()); //starGetFlag());
 	conf.setBoolean("astro:flag_star_name", hip_stars->getFlagNames()); //starGetFlagName());
@@ -1809,10 +1809,10 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("astro:flag_nebula_names", nebulaGetFlagNames());
 	conf.setBoolean("astro:flag_nebula_hints", nebulaGetFlagHints());
 	conf.setDouble("astro:max_mag_nebula_name", nebulaGetMaxMagHints());
-	conf.setBoolean("astro:flag_planets", planetsGetFlag());
-	conf.setBoolean("astro:flag_planets_hints", planetsGetFlagHints());
-	conf.setBoolean("astro:flag_planets_orbits", planetsGetFlagOrbits());
-	conf.setBoolean("astro:flag_light_travel_time", getFlagLightTravelTime());
+	conf.setBoolean("astro:flag_planets", ssystem->getFlagShow()); //planetsGetFlag());
+	conf.setBoolean("astro:flag_planets_hints", ssystem->getFlag(BODY_FLAG::F_HINTS)); //planetsGetFlagHints());
+	conf.setBoolean("astro:flag_planets_orbits", ssystem->getFlagPlanetsOrbits()); //planetsGetFlagOrbits());
+	conf.setBoolean("astro:flag_light_travel_time", ssystem->getFlagLightTravelTime()); //getFlagLightTravelTime());
 	conf.setBoolean("astro:flag_milky_way", milkyWayGetFlag());
 	conf.setDouble("astro:milky_way_intensity", milkyWayGetIntensity());
 	conf.setDouble("astro:star_size_limit", starGetSizeLimit());

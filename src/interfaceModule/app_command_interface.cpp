@@ -535,9 +535,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_LIGHT_TRAVEL_TIME :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagLightTravelTime();
+				newval = !coreLink->getFlagLightTravelTime();
 
-			stcore->setFlagLightTravelTime(newval);
+			coreLink->setFlagLightTravelTime(newval);
 			break;
 
 		case FLAG_NAMES::FN_FOG :
@@ -829,23 +829,23 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_CLOUDS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagClouds();
+				newval = !coreLink->getFlagClouds();
 
-			stcore->setFlagClouds(newval);
+			coreLink->setFlagClouds(newval);
 			break;
 
 		case FLAG_NAMES::FN_MOON_SCALED :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagMoonScaled();
+				newval = !coreLink->getFlagMoonScaled();
 
-			stcore->setFlagMoonScaled(newval);
+			coreLink->setFlagMoonScaled(newval);
 			break;
 
 		case FLAG_NAMES::FN_SUN_SCALED :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagSunScaled();
+				newval = !coreLink->getFlagSunScaled();
 
-			stcore->setFlagSunScaled(newval);
+			coreLink->setFlagSunScaled(newval);
 			break;
 
 		case FLAG_NAMES::FN_LANDSCAPE :
@@ -878,54 +878,54 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_PLANETS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->planetsGetFlag();
+				newval = !coreLink->planetsGetFlag();
 
-			stcore->planetsSetFlag(newval);
+			coreLink->planetsSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANET_NAMES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->planetsGetFlagHints();
+				newval = !coreLink->planetsGetFlagHints();
 
-			stcore->planetsSetFlagHints(newval);
-			if (stcore->planetsGetFlagHints()) stcore->planetsSetFlag(true); // for safety if script turns planets off
+			coreLink->planetsSetFlagHints(newval);
+			if (coreLink->planetsGetFlagHints()) coreLink->planetsSetFlag(true); // for safety if script turns planets off
 			break;
 
 		case FLAG_NAMES::FN_PLANET_ORBITS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->planetsGetFlagOrbits() && !stcore->satellitesGetFlagOrbits();
+				newval = !coreLink->planetsGetFlagOrbits() && !coreLink->satellitesGetFlagOrbits();
 
-			stcore->planetsSetFlagOrbits(newval);
-			stcore->satellitesSetFlagOrbits(newval);
+			coreLink->planetsSetFlagOrbits(newval);
+			coreLink->satellitesSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANETS_AXIS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->planetsGetFlagAxis();
+				newval = !coreLink->planetsGetFlagAxis();
 
-			stcore->planetsSetFlagAxis(newval);
+			coreLink->planetsSetFlagAxis(newval);
 			break;
 
 		case FLAG_NAMES::FN_ORBITS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->planetsGetFlagOrbits() && !stcore->satellitesGetFlagOrbits();
+				newval = !coreLink->planetsGetFlagOrbits() && !coreLink->satellitesGetFlagOrbits();
 
-			stcore->planetsSetFlagOrbits(newval);
-			stcore->satellitesSetFlagOrbits(newval);
+			coreLink->planetsSetFlagOrbits(newval);
+			coreLink->satellitesSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_PLANETS_ORBITS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->planetsGetFlagOrbits();
+				newval = !coreLink->planetsGetFlagOrbits();
 
-			stcore->planetsSetFlagOrbits(newval);
+			coreLink->planetsSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_SATELLITES_ORBITS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->satellitesGetFlagOrbits();
+				newval = !coreLink->satellitesGetFlagOrbits();
 
-			stcore->satellitesSetFlagOrbits(newval);
+			coreLink->satellitesSetFlagOrbits(newval);
 			break;
 
 		case FLAG_NAMES::FN_NEBULAE :
@@ -980,9 +980,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_OBJECT_TRAILS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->planetsGetFlagTrails();
+				newval = !coreLink->planetsGetFlagTrails();
 
-			stcore->planetsSetFlagTrails(newval);
+			coreLink->planetsSetFlagTrails(newval);
 			break;
 
 		case FLAG_NAMES::FN_TRACK_OBJECT :
@@ -1057,9 +1057,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_SATELLITES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->hideSatellitesFlag();
+				newval = !coreLink->hideSatellitesFlag();
 
-			stcore->setHideSatellites(newval);
+			coreLink->setHideSatellites(newval);
 			break;
 		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
@@ -1171,7 +1171,7 @@ int AppCommandInterface::commandPlanetScale()
 	std::string argName = args["name"];
 	std::string argScale = args["scale"];
 	if (!argName.empty() && !argScale.empty()) {
-		stcore->planetSetSizeScale(argName, evalDouble(argScale));
+		coreLink->planetSetSizeScale(argName, evalDouble(argScale));
 	} else
 		debug_message = _("command 'planet_scale' : missing name or scale argument");
 
@@ -1441,11 +1441,11 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "cardinal_points")
 			coreLink->cardinalsPointsSetColor( Vcolor );
 		else if(argProperty == "planet_orbits")
-			stcore->planetSetDefaultColor("orbit", Vcolor );
+			coreLink->planetSetDefaultColor("orbit", Vcolor );
 		else if(argProperty == "planet_names")
-			stcore->planetSetDefaultColor("label", Vcolor );
+			coreLink->planetSetDefaultColor("label", Vcolor );
 		else if(argProperty == "planet_trails")
-			stcore->planetSetDefaultColor("trail", Vcolor );
+			coreLink->planetSetDefaultColor("trail", Vcolor );
 		else if(argProperty == "azimuthal_grid")
 			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor );
 		else if(argProperty == "equator_grid")
@@ -1654,9 +1654,9 @@ int AppCommandInterface::commandSet()
 	else if (args["max_mag_nebula_name"]!="") stcore->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"]));
 	else if (args["max_mag_star_name"]!="") coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"]));
 	else if (args["moon_scale"]!="") {
-		stcore->setMoonScale(evalDouble(args["moon_scale"]));
+		coreLink->setMoonScale(evalDouble(args["moon_scale"]));
 	} else if (args["sun_scale"]!="") {
-		stcore->setSunScale(evalDouble(args["sun_scale"]));
+		coreLink->setSunScale(evalDouble(args["sun_scale"]));
 	} else if (args["milky_way_texture"]!="") {
 		if(args["milky_way_texture"]=="default") stcore->milkyWayRestoreDefault();
 		else {
@@ -1680,7 +1680,7 @@ int AppCommandInterface::commandSet()
 	else if (args["star_scale"]!="") {
 		float scale = evalDouble(args["star_scale"]);
 		coreLink->starSetScale(scale);
-		stcore->planetsSetScale(scale);
+		coreLink->planetsSetScale(scale);
 	} else if (args["star_twinkle_amount"]!="") coreLink->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"]));
 	else if (args["star_fader_duration"]!="") coreLink->starSetDuration(evalDouble(args["star_fader_duration"]));
 	else if (args["star_limiting_mag"]!="") coreLink->starSetLimitingMag(evalDouble(args["star_limiting_mag"]));
@@ -3179,9 +3179,9 @@ int AppCommandInterface::commandBody()
 	if (!argSkinUse.empty()) {
 		std::cout << "lancement de la commande skin_use" << std::endl;
 		if (argSkinUse=="toggle") {
-			stcore->planetSwitchTexMap(argName, !stcore->planetGetSwitchTexMap(argName));
+			coreLink->planetSwitchTexMap(argName, !coreLink->planetGetSwitchTexMap(argName));
 		} else
-			stcore->planetSwitchTexMap(argName, isTrue(argSkinUse));
+			coreLink->planetSwitchTexMap(argName, isTrue(argSkinUse));
 
 		return executeCommandStatus();
 	}
@@ -3189,7 +3189,7 @@ int AppCommandInterface::commandBody()
 	std::string argSkinTex = args["skin_tex"];
 	if (!argSkinTex.empty()) {
 		std::cout << "lancement de la commande skin_tex" << std::endl;
-		stcore->planetCreateTexSkin(argName, argSkinTex);
+		coreLink->planetCreateTexSkin(argName, argSkinTex);
 		return executeCommandStatus();
 	}
 
@@ -3211,7 +3211,7 @@ int AppCommandInterface::commandBody()
 				cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 			}
 		} else if (argAction == "initial") {
-			stcore->initialSolarSystemBodies();
+			coreLink->initialSolarSystemBodies();
 		} else {
 			debug_message = "command 'body' : unknown action argument";
 		}
@@ -3225,11 +3225,11 @@ int AppCommandInterface::commandBody()
 		std::string argHidden = args["hidden"];
 		if (!argHidden.empty()) {
 			if (isTrue(argHidden)) {
-				stcore->setPlanetHidden(args["name"], true);
+				coreLink->setPlanetHidden(args["name"], true);
 			} else if (isFalse(argHidden)) {
-				stcore->setPlanetHidden(args["name"], false);
+				coreLink->setPlanetHidden(args["name"], false);
 			} else if (argHidden == "toggle") {
-				stcore->setPlanetHidden(args["name"], !stcore->getPlanetHidden(args["name"]));
+				coreLink->setPlanetHidden(args["name"], !coreLink->getPlanetHidden(args["name"]));
 			} else
 				debug_message = _("Command 'body': unknown hidden value");
 			return executeCommandStatus();
@@ -3239,9 +3239,9 @@ int AppCommandInterface::commandBody()
 		std::string argOrbit = args["orbit"];
 		if (!argOrbit.empty()) {
 			if (isTrue(argOrbit)) {
-				stcore->planetsSetFlagOrbits(args["name"], true);
+				coreLink->planetsSetFlagOrbits(args["name"], true);
 			} else if (isFalse(argOrbit)) {
-				stcore->planetsSetFlagOrbits(args["name"], false);
+				coreLink->planetsSetFlagOrbits(args["name"], false);
 			} else
 				debug_message = _("Command 'body': unknown orbit value");
 			return executeCommandStatus();
@@ -3261,7 +3261,7 @@ int AppCommandInterface::commandBody()
 			if (!testColor)
 				return executeCommandStatus();
 
-			stcore->planetSetColor(argName, argColor, Vcolor);
+			coreLink->planetSetColor(argName, argColor, Vcolor);
 			return executeCommandStatus();
 		}
 		debug_message = _("Command 'body': case name unknown argument");
@@ -3269,7 +3269,7 @@ int AppCommandInterface::commandBody()
 	}
 
 	if (!args["tesselation"].empty()) {
-		stcore->planetTesselation(args["tesselation"], evalInt(args["value"]));
+		coreLink->planetTesselation(args["tesselation"], evalInt(args["value"]));
 		return executeCommandStatus();
 	}
 
