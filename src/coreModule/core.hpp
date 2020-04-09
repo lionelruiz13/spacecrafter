@@ -1002,14 +1002,14 @@ public:
 	// Fog---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	//! Set flag for displaying Fog
-	void fogSetFlag(bool b) {
-		landscape->setFlagShowFog(b);
-	}
-	//! Get flag for displaying Fog
-	bool fogGetFlag(void) const {
-		return landscape->getFlagShowFog();
-	}
+	// //! Set flag for displaying Fog
+	// void fogSetFlag(bool b) {
+	// 	landscape->setFlagShowFog(b);
+	// }
+	// //! Get flag for displaying Fog
+	// bool fogGetFlag(void) const {
+	// 	return landscape->getFlagShowFog();
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Illuminate---------------------------
@@ -1027,66 +1027,66 @@ public:
 	// Landscape---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	//! Get flag for displaying Landscape
-	void landscapeSetFlag(bool b) {
-		landscape->setFlagShow(b);
-	}
-	//! Get flag for displaying Landscape
-	bool landscapeGetFlag(void) const {
-		return landscape->getFlagShow();
-	}
+	// //! Get flag for displaying Landscape
+	// void landscapeSetFlag(bool b) {
+	// 	landscape->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Landscape
+	// bool landscapeGetFlag(void) const {
+	// 	return landscape->getFlagShow();
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Milky Way---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	//! Set flag for displaying Milky Way
-	void milkyWaySetFlag(bool b) {
-		milky_way->setFlagShow(b);
-	}
-	//! Get flag for displaying Milky Way
-	bool milkyWayGetFlag(void) const {
-		return milky_way->getFlagShow();
-	}
+	// //! Set flag for displaying Milky Way
+	// void milkyWaySetFlag(bool b) {
+	// 	milky_way->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Milky Way
+	// bool milkyWayGetFlag(void) const {
+	// 	return milky_way->getFlagShow();
+	// }
 
-	//! Set flag for displaying Zodiacal Light
-	void milkyWaySetFlagZodiacal(bool b) {
-		milky_way->setFlagZodiacal(b);
-	}
-	//! Get flag for displaying Zodiacal Light
-	bool milkyWayGetFlagZodiacal(void) const {
-		return milky_way->getFlagZodiacal();
-	}
+	// //! Set flag for displaying Zodiacal Light
+	// void milkyWaySetFlagZodiacal(bool b) {
+	// 	milky_way->setFlagZodiacal(b);
+	// }
+	// //! Get flag for displaying Zodiacal Light
+	// bool milkyWayGetFlagZodiacal(void) const {
+	// 	return milky_way->getFlagZodiacal();
+	// }
 
-	//! Set Milky Way intensity
-	void milkyWaySetIntensity(float f) {
-		milky_way->setIntensity(f);
-	}
-	//! Get Milky Way intensity
-	float milkyWayGetIntensity(void) const {
-		return milky_way->getIntensity();
-	}
+	// //! Set Milky Way intensity
+	// void milkyWaySetIntensity(float f) {
+	// 	milky_way->setIntensity(f);
+	// }
+	// //! Get Milky Way intensity
+	// float milkyWayGetIntensity(void) const {
+	// 	return milky_way->getIntensity();
+	// }
 
-	void milkyWayRestoreDefault() {
-		milky_way->restoreDefaultMilky();
-	}
+	// void milkyWayRestoreDefault() {
+	// 	milky_way->restoreDefaultMilky();
+	// }
 
-	void milkyWaySetDuration(float f) {
-		milky_way->setFaderDuration(f*1000);
-	}
+	// void milkyWaySetDuration(float f) {
+	// 	milky_way->setFaderDuration(f*1000);
+	// }
 
-	void milkyWayRestoreIntensity() {
-		milky_way->restoreIntensity();
-	}
+	// void milkyWayRestoreIntensity() {
+	// 	milky_way->restoreIntensity();
+	// }
 
-	void milkyWayUseIris(bool useIt) {
-		milky_way->useIrisTexture(useIt);
-	}
+	// void milkyWayUseIris(bool useIt) {
+	// 	milky_way->useIrisTexture(useIt);
+	// }
 
-	//! Change Milkyway texture
-	void milkyWayChange(std::string mdir, float _intensity) {
-		milky_way->changeMilkywayState(mdir, _intensity);
-	}
+	// //! Change Milkyway texture
+	// void milkyWayChange(std::string mdir, float _intensity) {
+	// 	milky_way->changeMilkywayState(mdir, _intensity);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Nebulae---------------------------
@@ -1187,7 +1187,7 @@ public:
 	double observatoryGetAltitude() {
 		return observatory->getAltitude();
 	}
-
+ 
 	void observatorySetLatitude(double l) {
 		observatory->setLatitude(l);
 	}

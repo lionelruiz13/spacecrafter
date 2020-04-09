@@ -913,11 +913,90 @@ public:
 	// 	return core->ssystem->getPlanetSizeScale(name);
 	// }
 	///////////////////////////////////////////////////////////
-	
+
 	// send param tesselation, name design the param to change to value
 	void planetTesselation(std::string name, int value) {
 		core->ssystem->planetTesselation(name,value);
 	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Fog---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! Set flag for displaying Fog
+	void fogSetFlag(bool b) {
+		core->landscape->setFlagShowFog(b);
+	}
+	//! Get flag for displaying Fog
+	bool fogGetFlag(void) const {
+		return core->landscape->getFlagShowFog();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Landscape---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! Get flag for displaying Landscape
+	void landscapeSetFlag(bool b) {
+		core->landscape->setFlagShow(b);
+	}
+	//! Get flag for displaying Landscape
+	bool landscapeGetFlag(void) const {
+		return core->landscape->getFlagShow();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Milky Way---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! Set flag for displaying Milky Way
+	void milkyWaySetFlag(bool b) {
+		core->milky_way->setFlagShow(b);
+	}
+	//! Get flag for displaying Milky Way
+	bool milkyWayGetFlag(void) const {
+		return core->milky_way->getFlagShow();
+	}
+
+	//! Set flag for displaying Zodiacal Light
+	void milkyWaySetFlagZodiacal(bool b) {
+		core->milky_way->setFlagZodiacal(b);
+	}
+	//! Get flag for displaying Zodiacal Light
+	bool milkyWayGetFlagZodiacal(void) const {
+		return core->milky_way->getFlagZodiacal();
+	}
+
+	//! Set Milky Way intensity
+	void milkyWaySetIntensity(float f) {
+		core->milky_way->setIntensity(f);
+	}
+	//! Get Milky Way intensity
+	float milkyWayGetIntensity(void) const {
+		return core->milky_way->getIntensity();
+	}
+
+	void milkyWayRestoreDefault() {
+		core->milky_way->restoreDefaultMilky();
+	}
+
+	void milkyWaySetDuration(float f) {
+		core->milky_way->setFaderDuration(f*1000);
+	}
+
+	void milkyWayRestoreIntensity() {
+		core->milky_way->restoreIntensity();
+	}
+
+	// void milkyWayUseIris(bool useIt) {
+	// 	core->milky_way->useIrisTexture(useIt);
+	// }
+
+	//! Change Milkyway texture
+	void milkyWayChange(std::string mdir, float _intensity) {
+		core->milky_way->changeMilkywayState(mdir, _intensity);
+	}
+
 
     CoreLink(Core* _core);
     ~CoreLink();
