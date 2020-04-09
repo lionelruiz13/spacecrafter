@@ -750,74 +750,74 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_PERSONAL :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONAL);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_PERSONAL);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONAL);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_PERSONAL);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONAL, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_PERSONEQ :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_PERSONEQ);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_PERSONEQ);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_PERSONEQ, newval);
 			break;
 
 		case FLAG_NAMES::FN_NAUTICAL :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_NAUTICAL);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_NAUTICAL);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICAL, newval);
 			break;
 
 		case FLAG_NAMES::FN_NAUTICEQ :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_NAUTICEQ, newval);
 			break;
 			
 		case FLAG_NAMES::FN_OBJCOORD :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_OBJCOORDS, newval);
 			break;
 
 		case FLAG_NAMES::FN_MOUSECOORD :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_MOUSECOORDS, newval);
 			break;
 		
 		case FLAG_NAMES::FN_ANG_DIST :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ANGDIST);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_ANGDIST);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ANGDIST);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_ANGDIST);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ANGDIST, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ANGDIST, newval);
 			break;
 
 		case FLAG_NAMES::FN_LOXODROMY:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_LOXODROMY);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_LOXODROMY);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_LOXODROMY, newval);
 			break;
 
 		case FLAG_NAMES::FN_ORTHODROMY:
 			if (flag_value==FLAG_VALUES::FV_TOGGLE) {
-				newval = !stcore->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY);
-				stcore->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+				newval = !coreLink->skyDisplayMgrGetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+				coreLink->skyDisplayMgrFlipFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY);
 			} else
-				stcore->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY, newval);
+				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY, newval);
 			break;
 
 		case FLAG_NAMES::FN_CARDINAL_POINTS :
@@ -1201,11 +1201,11 @@ int AppCommandInterface::commandPersonal()
 				fileName = "personal.txt";
 			if ( !Utility::isAbsolute(fileName))
 				fileName = scriptInterface->getScriptPath() + fileName;
-			stcore->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONAL, fileName);
+			coreLink->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONAL, fileName);
 			return executeCommandStatus();
 		}
 		if (argAction=="clear") {
-			stcore->skyDisplayMgrClear(SKYDISPLAY_NAME::SKY_PERSONAL);
+			coreLink->skyDisplayMgrClear(SKYDISPLAY_NAME::SKY_PERSONAL);
 			return executeCommandStatus();
 		}
 		debug_message = "command_personal: Unknown 'action' value";
@@ -1306,11 +1306,11 @@ int AppCommandInterface::commandPersoneq()
 				fileName = "personeq.txt";
 			if ( !Utility::isAbsolute(fileName))
 				fileName = scriptInterface->getScriptPath() + fileName;
-			stcore->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONEQ, fileName);
+			coreLink->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONEQ, fileName);
 			return executeCommandStatus();
 		}
 		if (argAction=="clear") {
-			stcore->skyDisplayMgrClear(SKYDISPLAY_NAME::SKY_PERSONEQ);
+			coreLink->skyDisplayMgrClear(SKYDISPLAY_NAME::SKY_PERSONEQ);
 			return executeCommandStatus();
 		}
 		debug_message = "command_personeq: Unknown 'action' value";
@@ -1487,23 +1487,23 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "zodiac")
 			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZODIAC, Vcolor );
 		else if(argProperty == "personal")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONAL, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONAL, Vcolor );
 		else if(argProperty == "personeq")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONEQ, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONEQ, Vcolor );
 		else if(argProperty == "nautical_alt")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICAL, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICAL, Vcolor );
 		else if(argProperty == "nautical_ra")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICEQ, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICEQ, Vcolor );
 		else if(argProperty == "object_coordinates")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_OBJCOORDS, Vcolor ); 
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_OBJCOORDS, Vcolor ); 
 		else if(argProperty == "mouse_coordinates")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS, Vcolor );
 		else if(argProperty == "angular_distance")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ANGDIST, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ANGDIST, Vcolor );
 		else if(argProperty == "loxodromy")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_LOXODROMY, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_LOXODROMY, Vcolor );
 		else if(argProperty == "orthodromy")
-			stcore->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ORTHODROMY, Vcolor );
+			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ORTHODROMY, Vcolor );
 		else if(argProperty == "vertical_line")
 			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );
 		else if(argProperty == "nebula_names")
