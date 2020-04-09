@@ -249,7 +249,7 @@ std::string SkyDisplayMgr::getSkyName(SKYDISPLAY_NAME nameObj)
 			return "SkyObjCoords";
 			break;
 		case SKYDISPLAY_NAME::SKY_MOUSECOORDS:
-			return "SkymouseCoords";
+			return "SkyMouseCoords";
 			break;
 		case SKYDISPLAY_NAME::SKY_ANGDIST:
 			return "SkyAngDist";
