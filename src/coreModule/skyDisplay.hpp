@@ -36,6 +36,7 @@ class Projector;
 class Navigator;
 class ToneReproductor;
 class Translator;
+class s_font;
 
 //! Class which manages a personal line to display around the sky
 class SkyDisplay {
