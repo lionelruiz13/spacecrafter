@@ -77,6 +77,10 @@ public:
 		return fader;
 	}
 
+	void flipFlagShow() {
+		fader = !fader;
+	}
+
 	virtual void loadData(std::string filename);
 
 	void clear() ;
