@@ -1086,6 +1086,17 @@ public:
 		core->nebulas->setCircleColor(v);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Oort    ---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	bool oortGetFlagShow() {
+		return core->oort->getFlagShow();
+	}
+
+	void oortSetFlagShow(bool b) {
+		core->oort->setFlagShow(b);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 

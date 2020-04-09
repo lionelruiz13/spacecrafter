@@ -1015,9 +1015,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_OORT :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->oortGetFlagShow();
+				newval = !coreLink->oortGetFlagShow();
 
-			stcore->oortSetFlagShow(newval);
+			coreLink->oortSetFlagShow(newval);
 			break;
 
 		case FLAG_NAMES::FN_TULLY :
