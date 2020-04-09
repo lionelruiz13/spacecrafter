@@ -1494,42 +1494,18 @@ int AppCommandInterface::commandColor()
 	m_color_it = m_color.find(argProperty);
 
 	switch(m_color_it->second) {
-		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:
-			coreLink->constellationSetColorLine( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES:
-			coreLink->constellationSetColorNames( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_CONSTELLATION_ART:
-			coreLink->constellationSetColorArt( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_CONSTELLATION_BOUNDARIES:
-			coreLink->constellationSetColorBoundaries( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_CARDINAL_POINTS:
-			coreLink->cardinalsPointsSetColor( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_PLANET_ORBITS:
-			coreLink->planetSetDefaultColor("orbit", Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_PLANET_NAMES:
-			coreLink->planetSetDefaultColor("label", Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_PLANET_TRAILS:
-			coreLink->planetSetDefaultColor("trail", Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_AZIMUTHAL_GRID:
-			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_EQUATOR_GRID:
-			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_ECLIPTIC_GRID:
-			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_GALACTIC_GRID:
-			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor );
-		break;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:		coreLink->constellationSetColorLine( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES:		coreLink->constellationSetColorNames( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_ART: 			coreLink->constellationSetColorArt( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_CONSTELLATION_BOUNDARIES:	coreLink->constellationSetColorBoundaries( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_CARDINAL_POINTS:			coreLink->cardinalsPointsSetColor( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_PLANET_ORBITS:				coreLink->planetSetDefaultColor("orbit", Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_PLANET_NAMES:				coreLink->planetSetDefaultColor("label", Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_PLANET_TRAILS:				coreLink->planetSetDefaultColor("trail", Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_AZIMUTHAL_GRID:				coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_EQUATOR_GRID:				coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_ECLIPTIC_GRID:				coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_GALACTIC_GRID:				coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_EQUATOR_LINE:
 			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor );
 		break;
@@ -1590,39 +1566,17 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_NAUTICAL_RA:
 			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICEQ, Vcolor );
 		break;
-		case COLORCOMMAND_NAMES::CC_OBJECT_COORDINATES:
-			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_OBJCOORDS, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_MOUSE_COORDINATES:
-			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_ANGULAR_DISTANCE:
-			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ANGDIST, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_LOXODROMY:
-			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_LOXODROMY, Vcolor );
-		break; 
-		case COLORCOMMAND_NAMES::CC_ORTHODROMY:
-			coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ORTHODROMY, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_VERTICAL_LINE:
-			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_NEBULA_NAMES:
-			coreLink->nebulaSetColorLabels( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_NEBULA_CIRCLE:
-			coreLink->nebulaSetColorCircle( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE:
-			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR:
-			coreLink->textSetDefaultColor( Vcolor );
-		break;
-		case COLORCOMMAND_NAMES::CC_STAR_TABLE:
-			coreLink->starSetColorTable(evalInt(args["index"]), Vcolor );
-		break;
+		case COLORCOMMAND_NAMES::CC_OBJECT_COORDINATES:		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_OBJCOORDS, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_MOUSE_COORDINATES:		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_ANGULAR_DISTANCE:		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ANGDIST, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_LOXODROMY:				coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_LOXODROMY, Vcolor ); break; 
+		case COLORCOMMAND_NAMES::CC_ORTHODROMY:				coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ORTHODROMY, Vcolor );	break;
+		case COLORCOMMAND_NAMES::CC_VERTICAL_LINE:			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );	break;
+		case COLORCOMMAND_NAMES::CC_NEBULA_NAMES:			coreLink->nebulaSetColorLabels( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_NEBULA_CIRCLE: 			coreLink->nebulaSetColorCircle( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE: 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		coreLink->textSetDefaultColor( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args["index"]), Vcolor ); break;
 		default: 
 			debug_message = _("Command 'color': unknown property");
 			executeCommandStatus(); // renvoie de l'erreur
