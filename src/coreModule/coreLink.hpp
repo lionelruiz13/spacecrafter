@@ -1129,6 +1129,60 @@ public:
 		core->skyDisplayMgr->loadData(nameObj,fileName);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Observatory---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	std::string observatoryGetLandscapeName() {
+		return core->observatory->getLandscapeName();
+	}
+
+	double observatoryGetLatitude() {
+		return core->observatory->getLatitude();
+	}
+
+	double observatoryGetLongitude() {
+		return core->observatory->getLongitude();
+	}
+
+	double observatoryGetAltitude() {
+		return core->observatory->getAltitude();
+	}
+ 
+	// Fonctions non utilisée ?
+	// -------------------------------
+	// void observatorySetLatitude(double l) {
+	// 	core->observatory->setLatitude(l);
+	// }
+	///////////////////////////////////////////////////////////
+
+	void observatorySetLongitude(double l) {
+		core->observatory->setLongitude(l);
+	}
+
+	// Fonctions non utilisée ?
+	// -------------------------------
+	// void observatorySetAltitude(double l) {
+	// 	core->observatory->setAltitude(l);
+	// }
+	
+	// void observatorySetSpacecraft(double l) {
+	// 	core->observatory->setSpacecraft(bool(l));
+	// }
+
+	// void observatorySaveBodyInSolarSystem() {
+	// 	core->observatory->saveBodyInSolarSystem();
+	// }
+
+	// void observatoryLoadBodyInSolarSystem() {
+	// 	core->observatory->loadBodyInSolarSystem();
+	// }
+
+	// void observatoryFixBodyToSun() {
+	// 	core->observatory->fixBodyToSun();
+	// }
+	///////////////////////////////////////////////////////////
+	
     CoreLink(Core* _core);
     ~CoreLink();
 

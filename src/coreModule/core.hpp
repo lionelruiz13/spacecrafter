@@ -1172,29 +1172,29 @@ public:
 	// Observatory---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	std::string observatoryGetLandscapeName() {
-		return observatory->getLandscapeName();
-	}
+	// std::string observatoryGetLandscapeName() {
+	// 	return observatory->getLandscapeName();
+	// }
 
-	double observatoryGetLatitude() {
-		return observatory->getLatitude();
-	}
+	// double observatoryGetLatitude() {
+	// 	return observatory->getLatitude();
+	// }
 
-	double observatoryGetLongitude() {
-		return observatory->getLongitude();
-	}
+	// double observatoryGetLongitude() {
+	// 	return observatory->getLongitude();
+	// }
 
-	double observatoryGetAltitude() {
-		return observatory->getAltitude();
-	}
+	// double observatoryGetAltitude() {
+	// 	return observatory->getAltitude();
+	// }
  
-	void observatorySetLatitude(double l) {
-		observatory->setLatitude(l);
-	}
+	// void observatorySetLatitude(double l) {
+	// 	observatory->setLatitude(l);
+	// }
 
-	void observatorySetLongitude(double l) {
-		observatory->setLongitude(l);
-	}
+	// void observatorySetLongitude(double l) {
+	// 	observatory->setLongitude(l);
+	// }
 
 	void observatorySetAltitude(double l) {
 		observatory->setAltitude(l);
