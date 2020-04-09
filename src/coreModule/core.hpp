@@ -1091,82 +1091,82 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Nebulae---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	//! Set flag for displaying Nebulae
-	void nebulaSetFlag(bool b) {
-		nebulas->setFlagShow(b);
-		dso3d->setFlagShow(b);
-	}
-	//! Get flag for displaying Nebulae
-	bool nebulaGetFlag(void) const {
-		return nebulas->getFlagShow();
-	}
+	// //! Set flag for displaying Nebulae
+	// void nebulaSetFlag(bool b) {
+	// 	nebulas->setFlagShow(b);
+	// 	dso3d->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Nebulae
+	// bool nebulaGetFlag(void) const {
+	// 	return nebulas->getFlagShow();
+	// }
 
-	//! Set flag for displaying Nebulae Hints
-	void nebulaSetFlagHints(bool b) {
-		nebulas->setFlagHints(b);
-	}
-	//! Get flag for displaying Nebulae Hints
-	bool nebulaGetFlagHints(void) const {
-		return nebulas->getFlagHints();
-	}
+	// //! Set flag for displaying Nebulae Hints
+	// void nebulaSetFlagHints(bool b) {
+	// 	nebulas->setFlagHints(b);
+	// }
+	// //! Get flag for displaying Nebulae Hints
+	// bool nebulaGetFlagHints(void) const {
+	// 	return nebulas->getFlagHints();
+	// }
 
-	//! Set Nebulae Hints circle scale
-	void nebulaSetCircleScale(float f) {
-		nebulas->setNebulaCircleScale(f);
-	}
-	//! Get Nebulae Hints circle scale
-	float nebulaGetCircleScale(void) const {
-		return nebulas->getNebulaCircleScale();
-	}
+	// //! Set Nebulae Hints circle scale
+	// void nebulaSetCircleScale(float f) {
+	// 	nebulas->setNebulaCircleScale(f);
+	// }
+	// //! Get Nebulae Hints circle scale
+	// float nebulaGetCircleScale(void) const {
+	// 	return nebulas->getNebulaCircleScale();
+	// }
 
-	//! Set flag for displaying Nebulae as bright
-	void nebulaSetFlagBright(bool b) {
-		nebulas->setFlagBright(b);
-	}
-	//! Get flag for displaying Nebulae as brigth
-	bool nebulaGetFlagBright(void) const {
-		return nebulas->getFlagBright();
-	}
+	// //! Set flag for displaying Nebulae as bright
+	// void nebulaSetFlagBright(bool b) {
+	// 	nebulas->setFlagBright(b);
+	// }
+	// //! Get flag for displaying Nebulae as brigth
+	// bool nebulaGetFlagBright(void) const {
+	// 	return nebulas->getFlagBright();
+	// }
 
-	//! Set maximum magnitude at which nebulae hints are displayed
-	void nebulaSetMaxMagHints(float f) {
-		nebulas->setMaxMagHints(f);
-	}
-	//! Get maximum magnitude at which nebulae hints are displayed
-	float nebulaGetMaxMagHints(void) const {
-		return nebulas->getMaxMagHints();
-	}
+	// //! Set maximum magnitude at which nebulae hints are displayed
+	// void nebulaSetMaxMagHints(float f) {
+	// 	nebulas->setMaxMagHints(f);
+	// }
+	// //! Get maximum magnitude at which nebulae hints are displayed
+	// float nebulaGetMaxMagHints(void) const {
+	// 	return nebulas->getMaxMagHints();
+	// }
 
-	//! return the color for the DSO object
-	Vec3f nebulaGetColorLabels(void) const {
-		return nebulas->getLabelColor();
-	}
+	// //! return the color for the DSO object
+	// Vec3f nebulaGetColorLabels(void) const {
+	// 	return nebulas->getLabelColor();
+	// }
 
-	//! return the color of the DSO circle
-	Vec3f nebulaGetColorCircle(void) const {
-		return nebulas->getCircleColor();
-	}
+	// //! return the color of the DSO circle
+	// Vec3f nebulaGetColorCircle(void) const {
+	// 	return nebulas->getCircleColor();
+	// }
 
-	void nebulaSetPictoSize(int value) const {
-		nebulas->setPictoSize(value);
-	}
+	// void nebulaSetPictoSize(int value) const {
+	// 	nebulas->setPictoSize(value);
+	// }
 
-	//!set Flag DSO Name who display DSO name
-	void nebulaSetFlagNames (bool value) {
-		nebulas->setNebulaNames(value);
-	}
+	// //!set Flag DSO Name who display DSO name
+	// void nebulaSetFlagNames (bool value) {
+	// 	nebulas->setNebulaNames(value);
+	// }
 
-	//!get flag DSO Name who display DSO name
-	bool nebulaGetFlagNames () {
-		return nebulas->getNebulaNames();
-	}
+	// //!get flag DSO Name who display DSO name
+	// bool nebulaGetFlagNames () {
+	// 	return nebulas->getNebulaNames();
+	// }
 
-	void nebulaSetColorLabels(const Vec3f& v) {
-		nebulas->setLabelColor(v);
-	}
-	void nebulaSetColorCircle(const Vec3f& v) {
-		nebulas->setCircleColor(v);
-	}
+	// void nebulaSetColorLabels(const Vec3f& v) {
+	// 	nebulas->setLabelColor(v);
+	// }
+	// void nebulaSetColorCircle(const Vec3f& v) {
+	// 	nebulas->setCircleColor(v);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Observatory---------------------------

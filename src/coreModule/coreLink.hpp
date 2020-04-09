@@ -988,15 +988,103 @@ public:
 		core->milky_way->restoreIntensity();
 	}
 
+	// Fonctions non utilisée ?
+	// -------------------------------
 	// void milkyWayUseIris(bool useIt) {
 	// 	core->milky_way->useIrisTexture(useIt);
 	// }
+	///////////////////////////////////////////////////////////
 
 	//! Change Milkyway texture
 	void milkyWayChange(std::string mdir, float _intensity) {
 		core->milky_way->changeMilkywayState(mdir, _intensity);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Nebulae---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	//! Set flag for displaying Nebulae
+	void nebulaSetFlag(bool b) {
+		core->nebulas->setFlagShow(b);
+		core->dso3d->setFlagShow(b);
+	}
+	//! Get flag for displaying Nebulae
+	bool nebulaGetFlag(void) const {
+		return core->nebulas->getFlagShow();
+	}
+
+	//! Set flag for displaying Nebulae Hints
+	void nebulaSetFlagHints(bool b) {
+		core->nebulas->setFlagHints(b);
+	}
+	//! Get flag for displaying Nebulae Hints
+	bool nebulaGetFlagHints(void) const {
+		return core->nebulas->getFlagHints();
+	}
+
+	// Fonctions non utilisée ?
+	// -------------------------------
+	// //! Set Nebulae Hints circle scale
+	// void nebulaSetCircleScale(float f) {
+	// 	core->nebulas->setNebulaCircleScale(f);
+	// }
+	// //! Get Nebulae Hints circle scale
+	// float nebulaGetCircleScale(void) const {
+	// 	return core->nebulas->getNebulaCircleScale();
+	// }
+	///////////////////////////////////////////////////////////
+
+	//! Set flag for displaying Nebulae as bright
+	void nebulaSetFlagBright(bool b) {
+		core->nebulas->setFlagBright(b);
+	}
+	//! Get flag for displaying Nebulae as brigth
+	bool nebulaGetFlagBright(void) const {
+		return core->nebulas->getFlagBright();
+	}
+
+	//! Set maximum magnitude at which nebulae hints are displayed
+	void nebulaSetMaxMagHints(float f) {
+		core->nebulas->setMaxMagHints(f);
+	}
+	//! Get maximum magnitude at which nebulae hints are displayed
+	float nebulaGetMaxMagHints(void) const {
+		return core->nebulas->getMaxMagHints();
+	}
+
+	//! return the color for the DSO object
+	Vec3f nebulaGetColorLabels(void) const {
+		return core->nebulas->getLabelColor();
+	}
+
+	//! return the color of the DSO circle
+	Vec3f nebulaGetColorCircle(void) const {
+		return core->nebulas->getCircleColor();
+	}
+
+	// Fonctions non utilisée ?
+	// -------------------------------
+	// void nebulaSetPictoSize(int value) const {
+	// 	core->nebulas->setPictoSize(value);
+	// }
+	///////////////////////////////////////////////////////////
+
+	//!set Flag DSO Name who display DSO name
+	void nebulaSetFlagNames (bool value) {
+		core->nebulas->setNebulaNames(value);
+	}
+
+	//!get flag DSO Name who display DSO name
+	bool nebulaGetFlagNames () {
+		return core->nebulas->getNebulaNames();
+	}
+
+	void nebulaSetColorLabels(const Vec3f& v) {
+		core->nebulas->setLabelColor(v);
+	}
+	void nebulaSetColorCircle(const Vec3f& v) {
+		core->nebulas->setCircleColor(v);
+	}
 
     CoreLink(Core* _core);
     ~CoreLink();
