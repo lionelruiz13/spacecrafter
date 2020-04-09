@@ -63,6 +63,7 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, App *
 	min_random = 0.0;
 	initialiseCommandsName();
 	initialiseFlagsName();
+	initialiseColorCommand();
 }
 
 void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {
@@ -241,6 +242,59 @@ void AppCommandInterface::initialiseCommandsName()
 
 	m_commands["wait"] = SC_COMMAND::SC_WAIT;
 	m_commands["zoom"] = SC_COMMAND::SC_ZOOMR;
+}
+
+void AppCommandInterface::initialiseColorCommand(){
+	m_color["constellation_lines"] = COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES;
+	m_color["constellation_names"] = COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES;
+	m_color["constellation_art"] = COLORCOMMAND_NAMES::CC_CONSTELLATION_ART;
+	m_color["constellation_boundaries"] = COLORCOMMAND_NAMES::CC_CONSTELLATION_BOUNDARIES;
+	m_color["cardinal_points"] = COLORCOMMAND_NAMES::CC_CARDINAL_POINTS;
+    m_color["planet_orbits"] = COLORCOMMAND_NAMES:: CC_PLANET_ORBITS;
+
+    m_color["planet_names"] = COLORCOMMAND_NAMES::CC_PLANET_NAMES;
+    m_color["planet_trails"] = COLORCOMMAND_NAMES:: CC_PLANET_TRAILS;
+    m_color["azimuthal_grid"] = COLORCOMMAND_NAMES:: CC_AZIMUTHAL_GRID;
+    m_color["equator_grid"] = COLORCOMMAND_NAMES::CC_EQUATOR_GRID;
+    m_color["ecliptic_grid"] = COLORCOMMAND_NAMES::CC_ECLIPTIC_GRID;
+	m_color["galactic_grid"] = COLORCOMMAND_NAMES::CC_GALACTIC_GRID;
+
+    m_color["galactic_grid"] = COLORCOMMAND_NAMES::CC_EQUATOR_LINE;
+    m_color["galactic_line"] = COLORCOMMAND_NAMES::CC_GALACTIC_LINE;
+    m_color["ecliptic_line"] = COLORCOMMAND_NAMES::CC_ECLIPTIC_LINE;
+    m_color["meridian_line"] = COLORCOMMAND_NAMES::CC_MERIDIAN_LINE;
+    m_color["zenith_line"] = COLORCOMMAND_NAMES::CC_ZENITH_LINE;
+	m_color["polar_point"] = COLORCOMMAND_NAMES::CC_POLAR_POINT;
+
+    m_color["polar_circle"] = COLORCOMMAND_NAMES::CC_POLAR_CIRCLE;
+    m_color["ecliptic_center"] = COLORCOMMAND_NAMES::CC_ECLIPTIC_CENTER;
+    m_color["galactic_pole"] = COLORCOMMAND_NAMES::CC_GALACTIC_POLE;
+    m_color["galactic_center"] = COLORCOMMAND_NAMES::CC_GALACTIC_CENTER;
+    m_color["vernal_points"] = COLORCOMMAND_NAMES::CC_VERNAL_POINTS;
+	m_color["analemma"] = COLORCOMMAND_NAMES::CC_ANALEMMA;
+
+    m_color["analemma_line"] = COLORCOMMAND_NAMES::CC_ANALEMMA_LINE;
+    m_color["greenwich_line"] = COLORCOMMAND_NAMES::CC_GREENWICH_LINE;
+    m_color["aries_line"] = COLORCOMMAND_NAMES::CC_ARIES_LINE;
+    m_color["zodiac"] = COLORCOMMAND_NAMES::CC_ZODIAC;
+    m_color["personal"] = COLORCOMMAND_NAMES::CC_PERSONAL;
+    m_color["personeq"] = COLORCOMMAND_NAMES::CC_PERSONEQ;
+    
+    m_color["nautical_alt"] = COLORCOMMAND_NAMES::CC_NAUTICAL_ALT;
+    m_color["nautical_ra"] = COLORCOMMAND_NAMES::CC_NAUTICAL_RA;
+    m_color["object_coordinates"] = COLORCOMMAND_NAMES::CC_OBJECT_COORDINATES;
+    m_color["mouse_coordinates"] = COLORCOMMAND_NAMES::CC_MOUSE_COORDINATES;
+    m_color["angular_distance"] = COLORCOMMAND_NAMES::CC_ANGULAR_DISTANCE;
+    m_color["loxodromy"] = COLORCOMMAND_NAMES::CC_LOXODROMY;
+    
+    m_color["orthodromy"] = COLORCOMMAND_NAMES::CC_ORTHODROMY;
+    m_color["vertical_line"] = COLORCOMMAND_NAMES::CC_VERTICAL_LINE;
+    m_color["nebula_names"] = COLORCOMMAND_NAMES::CC_NEBULA_NAMES;
+    m_color["nebula_circle"] = COLORCOMMAND_NAMES::CC_NEBULA_CIRCLE;
+    m_color["precession_circle"] = COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE;
+	m_color["text_usr_color"] = COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR;
+
+	m_color["star_table"] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
 }
 
 AppCommandInterface::~AppCommandInterface()
@@ -1415,7 +1469,12 @@ int AppCommandInterface::commandSuntrace()
 	return executeCommandStatus();
 }
 
-int AppCommandInterface::commandColor()
+	//m_commands["add"] = SC_COMMAND::SC_ADD;
+	//m_commands["audio"] = SC_COMMAND::SC_AUDIO;
+	//m_commands["body_trace"] = SC_COMMAND::SC_BODY_TRACE;
+	//m_commands["audio"] = SC_COMMAND::SC_AUDIO;
+
+int AppCommandInterface::commandColor() 
 {
 	//gestion de la couleur
 	Vec3f Vcolor;
