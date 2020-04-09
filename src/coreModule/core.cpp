@@ -248,7 +248,7 @@ void Core::tcpGetPosition()
 {
 	char tmp[1024];
 	memset(tmp, '\0', 1024);
-	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatoryGetLatitude(), observatoryGetLongitude(), observatoryGetAltitude(), timeMgr->getJDay(), getHeading());
+	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatory->getLatitude(), observatory->getLongitude(), observatory->getAltitude(), timeMgr->getJDay(), getHeading());
 	cLog::get()->write(tmp);
 	tcp->setOutput(tmp);
 }
@@ -622,8 +622,8 @@ void Core::init(const InitParser& conf)
 	mCity->loadCities(settings-> getDataDir() + "mcities.fab");
 	ssystem->initialSolarSystemBodies();
 
-	defaultLandscape = observatoryGetLandscapeName();
-	tempLandscape = observatoryGetLandscapeName();
+	defaultLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
+	tempLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
 
 	firstTime = 0;
 }

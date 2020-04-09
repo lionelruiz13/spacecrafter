@@ -122,8 +122,8 @@ void UI::init(const InitParser& conf)
 	// set up mouse cursor timeout
 	MouseTimeLeft = MouseCursorTimeout*1000;
 
-	default_landscape = core->observatoryGetLandscapeName();
-	current_landscape = core->observatoryGetLandscapeName();
+	default_landscape = coreLink->observatoryGetLandscapeName();
+	current_landscape = coreLink->observatoryGetLandscapeName();
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
 }
 
@@ -393,7 +393,7 @@ void UI::moveLon(double x)
 
 void UI::lowerHeight(double x)
 {
-	double latimem = core->observatoryGetAltitude();
+	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
 	core->moveRelAltObserver(latimem, DURATION_COMMAND);
 	this->executeCommand("add r 1");
@@ -401,7 +401,7 @@ void UI::lowerHeight(double x)
 
 void UI::raiseHeight(double x)
 {
-	double latimem = core->observatoryGetAltitude();
+	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
 	core->moveRelAltObserver(latimem, DURATION_COMMAND);
 	this->executeCommand("add r -1");
@@ -1743,7 +1743,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama2.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					break;
 				case KWIN:
 					this->executeCommand(std::string("body name selected skin_use toggle"));				
@@ -2119,7 +2119,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/panorama1.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					key_Modifier= NONE;
 					break;
 				case KWIN:
@@ -2127,12 +2127,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama3.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/panorama5.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					break;
 				default:
 					break;

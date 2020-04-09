@@ -64,18 +64,18 @@ void UI::drawGravityUi()
 		if (FlagShowFov) os << " fov " << std::setprecision(3) << coreLink->getFov();
 		if (FlagShowFps) os << "  FPS " << app->getFpsClock();
 		if (FlagShowLatLon) {
-			os << " Lat: " << Utility::printAngleDMS(core->observatoryGetLatitude()*3.1415926/180)
-			   << " Lon: " << Utility::printAngleDMS(core->observatoryGetLongitude()*3.1415926/180);
-			if (core->observatoryGetAltitude()>1000) {
+			os << " Lat: " << Utility::printAngleDMS(coreLink->observatoryGetLatitude()*3.1415926/180)
+			   << " Lon: " << Utility::printAngleDMS(coreLink->observatoryGetLongitude()*3.1415926/180);
+			if (coreLink->observatoryGetAltitude()>1000) {
 /*			    if (true)
 					os << " Alt: " << core->observatoryGetAltitude()/2.E+10 << "al";
 			    else //*/
-					os << " Alt: " << core->observatoryGetAltitude()/1000 << "km";
+					os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << "km";
 			}
 		}
 
 		if (core->getFlagNav()) {
-			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), core->observatoryGetLatitude(), core->observatoryGetLongitude());
+			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), coreLink->observatoryGetLatitude(), coreLink->observatoryGetLongitude());
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
 			s_2= info.substr(info.find("@")+1);
@@ -634,9 +634,9 @@ void UI::tuiUpdateWidgets()
 	if (!FlagShowTuiMenu) return;
 
 	// 1. Location
-	tui_location_latitude->setValue(core->observatoryGetLatitude());
-	tui_location_longitude->setValue(core->observatoryGetLongitude());
-	tui_location_altitude->setValue(core->observatoryGetAltitude());
+	tui_location_latitude->setValue(coreLink->observatoryGetLatitude());
+	tui_location_longitude->setValue(coreLink->observatoryGetLongitude());
+	tui_location_altitude->setValue(coreLink->observatoryGetAltitude());
 	tui_location_heading->setValue(core->getHeading());
 
 
@@ -652,7 +652,7 @@ void UI::tuiUpdateWidgets()
 	tui_time_day_key->setCurrent(std::string(app->getDayKeyMode()));
 
 	// 3. general
-	tui_general_landscape->setValue(std::string(core->observatoryGetLandscapeName()));
+	tui_general_landscape->setValue(std::string(coreLink->observatoryGetLandscapeName()));
 	tui_general_sky_culture->setValue(std::string(core->getSkyCultureDir()));
 	tui_general_sky_locale->setValue(std::string(core->getSkyLanguage()));
 
@@ -891,7 +891,7 @@ void UI::tuiCbEffectsMilkywayIntensity()
 void UI::tuiCbSetlocation()
 {
 	// change to human readable coordinates with current values, then change
-	core->observatorySetLongitude(core->observatoryGetLongitude());
+	coreLink->observatorySetLongitude(coreLink->observatoryGetLongitude());
 
 	core->getObservatory()->moveTo(tui_location_latitude->getValue(),
 	                                tui_location_longitude->getValue(),
