@@ -36,6 +36,7 @@
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 
+class shaderProgram;
 
 class SkyDisplayMgr {
 public:
@@ -71,5 +72,6 @@ private:
 	SkyDisplay* personAL = nullptr;
 	SkyDisplay* personEQ = nullptr;
 	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
+	shaderProgram *shaderSkyDisplay=nullptr;
 };
 #endif //SKYDISPLAY_MGR_HPP

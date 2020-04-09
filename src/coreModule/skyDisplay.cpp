@@ -48,11 +48,12 @@ const float pi_div_2 = 1.5707963;		// pi/2
 // -------------------- SKYLINE_PERSONAL  ---------------------------------------------
 
 s_font* SkyDisplay::skydisplay_font = nullptr;
+shaderProgram* SkyDisplay::shaderSkyDisplay = nullptr;
 
 SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
 {
 	ptype = _ptype;
-	createShader();
+	createVao();
 	switch (ptype) {
 		case AL:
 			proj_func = &Projector::projectLocal;
@@ -72,16 +73,16 @@ SkyDisplay::~SkyDisplay()
 	dataSky.clear();
 	// if (font)
 	// 	delete font;
-	deleteShader();
+	deleteVao();
 }
 
-void SkyDisplay::createShader()
+void SkyDisplay::createVao()
 {
-	shaderSkyDisplay = new shaderProgram();
-	shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
-	shaderSkyDisplay->setUniformLocation("color");
-	shaderSkyDisplay->setUniformLocation("fader");
-	shaderSkyDisplay->setUniformLocation("Mat");
+	// shaderSkyDisplay = new shaderProgram();
+	// shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
+	// shaderSkyDisplay->setUniformLocation("color");
+	// shaderSkyDisplay->setUniformLocation("fader");
+	// shaderSkyDisplay->setUniformLocation("Mat");
 
 	glGenVertexArrays(1, &sData.vao);
 	glBindVertexArray(sData.vao);
@@ -90,11 +91,10 @@ void SkyDisplay::createShader()
 	glEnableVertexAttribArray(0);
 }
 
-void SkyDisplay::deleteShader()
+void SkyDisplay::deleteVao()
 {
-	if (shaderSkyDisplay != nullptr)
-		shaderSkyDisplay = nullptr;
-
+	// if (shaderSkyDisplay != nullptr)
+	// 	shaderSkyDisplay = nullptr;
 	glDeleteBuffers(1, &sData.pos);
 	glDeleteVertexArrays(1, &sData.vao);
 }

@@ -28,10 +28,18 @@
 #include "coreModule/skydisplay_mgr.hpp"
 #include "tools/log.hpp"
 #include "tools/s_font.hpp"
+#include "tools/shader.hpp"
 
 SkyDisplayMgr::SkyDisplayMgr()
 {
 	//baseColor=Vec3f(0.f, 0.f, 0.f);
+	shaderSkyDisplay = new shaderProgram();
+	shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
+	shaderSkyDisplay->setUniformLocation("color");
+	shaderSkyDisplay->setUniformLocation("fader");
+	shaderSkyDisplay->setUniformLocation("Mat");
+
+	SkyDisplay::setShader(shaderSkyDisplay);
 }
 
 void SkyDisplayMgr::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
@@ -49,13 +57,14 @@ void SkyDisplayMgr::drawPerson(const Projector *prj,const Navigator *nav)
 	}
 }
 
-
 SkyDisplayMgr::~SkyDisplayMgr()
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
+	if (shaderSkyDisplay != nullptr)
+		shaderSkyDisplay = nullptr;
 }
 
 void SkyDisplayMgr::update(int delta_time)

@@ -89,8 +89,12 @@ public:
 		skydisplay_font = _font;
 	}
 
-	void createShader();
-	void deleteShader();
+	static void setShader(shaderProgram *_shaderSkyDisplay) {
+		shaderSkyDisplay = _shaderSkyDisplay;
+	}
+
+	void createVao();
+	void deleteVao();
 
 protected:
 	Vec3f color;
@@ -104,7 +108,7 @@ protected:
 	std::vector<float> dataSky;
 	PROJECTION_TYPE ptype;
 	DataGL sData;
-	shaderProgram *shaderSkyDisplay;
+	static shaderProgram *shaderSkyDisplay;
 	double aperson;
 private:
 	// const float deg2rad = 3.1415926/180.;   // Convert deg to radian
