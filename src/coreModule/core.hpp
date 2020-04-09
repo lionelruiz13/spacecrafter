@@ -1393,33 +1393,33 @@ public:
 	// 	orthodromy->setColor(v);
 	// }
 
-	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
-		return skyDisplayMgr->getFlagShow(nameObj);
-	}
+	// bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
+	// 	return skyDisplayMgr->getFlagShow(nameObj);
+	// }
 
-	void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v) {
-		skyDisplayMgr->setFlagShow(nameObj,v);
-	}
+	// void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v) {
+	// 	skyDisplayMgr->setFlagShow(nameObj,v);
+	// }
 
-	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
-		skyDisplayMgr->flipFlagShow(nameObj);
-	}
+	// void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
+	// 	skyDisplayMgr->flipFlagShow(nameObj);
+	// }
 
-	Vec3f SkyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj) {
-		return skyDisplayMgr->getColor(nameObj);
-	}
+	// Vec3f SkyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj) {
+	// 	return skyDisplayMgr->getColor(nameObj);
+	// }
 
-	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
-		skyDisplayMgr->setColor(nameObj,v);
-	}
+	// void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
+	// 	skyDisplayMgr->setColor(nameObj,v);
+	// }
 
-	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj) {
-		skyDisplayMgr->clear(nameObj);
-	}
+	// void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj) {
+	// 	skyDisplayMgr->clear(nameObj);
+	// }
 
-	void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName) {
-		skyDisplayMgr->loadData(nameObj,fileName);
-	}
+	// void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName) {
+	// 	skyDisplayMgr->loadData(nameObj,fileName);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Planets---------------------------

@@ -1097,6 +1097,38 @@ public:
 		core->oort->setFlagShow(b);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
+		return core->skyDisplayMgr->getFlagShow(nameObj);
+	}
+
+	void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v) {
+		core->skyDisplayMgr->setFlagShow(nameObj,v);
+	}
+
+	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
+		core->skyDisplayMgr->flipFlagShow(nameObj);
+	}
+
+	// Fonctions non utilisée ?
+	// -------------------------------
+	// Vec3f SkyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj) {
+	// 	return core->skyDisplayMgr->getColor(nameObj);
+	// }
+	///////////////////////////////////////////////////////////
+
+	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
+		core->skyDisplayMgr->setColor(nameObj,v);
+	}
+
+	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj) {
+		core->skyDisplayMgr->clear(nameObj);
+	}
+
+	void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName) {
+		core->skyDisplayMgr->loadData(nameObj,fileName);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 
