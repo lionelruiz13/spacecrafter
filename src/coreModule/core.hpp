@@ -50,7 +50,6 @@
 #include "coreModule/skygrid.hpp"
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skyline.hpp"
-#include "coreModule/skyperson.hpp"
 #include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
 #include "coreModule/starNavigator.hpp"
