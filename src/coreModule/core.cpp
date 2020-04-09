@@ -115,16 +115,26 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
-	personal = new SkyPerson(SkyDisplay::AL);
-	personeq = new SkyPerson(SkyDisplay::EQ);
-	nautical = new SkyNautic(SkyDisplay::AL);
-	nauticeq = new SkyNautic(SkyDisplay::EQ);
-	objCoord = new SkyCoords();
-	mouseCoord = new SkyCoords();
-	angDist = new SkyAngDist();
-	loxodromy = new SkyLoxodromy();
-	orthodromy = new SkyOrthodromy();
-	
+	// personal = new SkyPerson(SkyDisplay::AL);
+	// personeq = new SkyPerson(SkyDisplay::EQ);
+	// nautical = new SkyNautic(SkyDisplay::AL);
+	// nauticeq = new SkyNautic(SkyDisplay::EQ);
+	// objCoord = new SkyCoords();
+	// mouseCoord = new SkyCoords();
+	// angDist = new SkyAngDist();
+	// loxodromy = new SkyLoxodromy();
+	// orthodromy = new SkyOrthodromy();
+	skyDisplayMgr = new SkyDisplayMgr();
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICAL);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ANGDIST);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_LOXODROMY);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+
 	cardinals_points = new Cardinals();
 	meteors = new MeteorMgr(10, 60);
 	landscape = new Landscape();
@@ -257,15 +267,16 @@ Core::~Core()
 	delete illuminates;
 	delete skyGridMgr;
 	delete skyLineMgr;
-	delete personal;
-	delete personeq;
-	delete nautical;
-	delete nauticeq;
-	delete objCoord;
-	delete mouseCoord;
-	delete angDist;
-	delete loxodromy;
-	delete orthodromy;
+	delete skyDisplayMgr;
+	// delete personal;
+	// delete personeq;
+	// delete nautical;
+	// delete nauticeq;
+	// delete objCoord;
+	// delete mouseCoord;
+	// delete angDist;
+	// delete loxodromy;
+	// delete orthodromy;
 	delete landscape;
 	delete inactiveLandscape;
 	delete cardinals_points;
@@ -569,15 +580,26 @@ void Core::init(const InitParser& conf)
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, conf.getBoolean("viewing:flag_analemma"));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ARIES, conf.getBoolean("viewing:flag_aries_line"));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, conf.getBoolean("viewing:flag_zodiac"));
-	personal->setFlagShow(conf.getBoolean("viewing:flag_personal"));
-	personeq->setFlagShow(conf.getBoolean("viewing:flag_personeq"));
-	nautical->setFlagShow(conf.getBoolean("viewing:flag_nautical_alt"));
-	nauticeq->setFlagShow(conf.getBoolean("viewing:flag_nautical_ra"));
-	objCoord->setFlagShow(conf.getBoolean("viewing:flag_object_coordinates"));
-	mouseCoord->setFlagShow(conf.getBoolean("viewing:flag_mouse_coordinates"));
-	angDist->setFlagShow(conf.getBoolean("viewing:flag_angular_distance"));
-	loxodromy->setFlagShow(conf.getBoolean("viewing:flag_loxodromy"));
-	orthodromy->setFlagShow(conf.getBoolean("viewing:flag_orthodromy"));
+
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONAL, conf.getBoolean("viewing:flag_personal") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONEQ, conf.getBoolean("viewing:flag_personeq") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICAL, conf.getBoolean("viewing:flag_nautical_alt") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICEQ, conf.getBoolean("viewing:flag_nautical_ra") );
+
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_OBJCOORDS, conf.getBoolean("viewing:flag_object_coordinates") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_MOUSECOORDS, conf.getBoolean("viewing:flag_mouse_coordinates") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ANGDIST, conf.getBoolean("viewing:flag_angular_distance") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_LOXODROMY, conf.getBoolean("viewing:flag_loxodromy") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ORTHODROMY, conf.getBoolean("viewing:flag_orthodromy") );
+	// personal->setFlagShow(conf.getBoolean("viewing:flag_personal"));
+	// personeq->setFlagShow(conf.getBoolean("viewing:flag_personeq"));
+	// nautical->setFlagShow(conf.getBoolean("viewing:flag_nautical_alt"));
+	// nauticeq->setFlagShow(conf.getBoolean("viewing:flag_nautical_ra"));
+	// objCoord->setFlagShow(conf.getBoolean("viewing:flag_object_coordinates"));
+	// mouseCoord->setFlagShow(conf.getBoolean("viewing:flag_mouse_coordinates"));
+	// angDist->setFlagShow(conf.getBoolean("viewing:flag_angular_distance"));
+	// loxodromy->setFlagShow(conf.getBoolean("viewing:flag_loxodromy"));
+	// orthodromy->setFlagShow(conf.getBoolean("viewing:flag_orthodromy"));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GREENWICH, conf.getBoolean("viewing:flag_greenwich_line"));
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean("viewing:flag_vertical_line"));
 	cardinals_points->setFlagShow(conf.getBoolean("viewing:flag_cardinal_points"));
@@ -687,15 +709,16 @@ void Core::updateInSolarSystem(int delta_time)
 	// Update faders
 	skyGridMgr->update(delta_time);
 	skyLineMgr->update(delta_time);
-	personal->update(delta_time);
-	personeq->update(delta_time);
-	nautical->update(delta_time);
-	nauticeq->update(delta_time);
-	objCoord->update(delta_time);
-	mouseCoord->update(delta_time);
-	angDist->update(delta_time);
-	loxodromy->update(delta_time);
-	orthodromy->update(delta_time);
+	// personal->update(delta_time);
+	// personeq->update(delta_time);
+	// nautical->update(delta_time);
+	// nauticeq->update(delta_time);
+	// objCoord->update(delta_time);
+	// mouseCoord->update(delta_time);
+	// angDist->update(delta_time);
+	// loxodromy->update(delta_time);
+	// orthodromy->update(delta_time);
+	skyDisplayMgr->update(delta_time);
 	asterisms->update(delta_time);
 	atmosphere->update(delta_time);
 	landscape->update(delta_time);
@@ -832,10 +855,12 @@ void Core::updateInGalaxy(int delta_time)
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update faders
-	personal->update(delta_time);
-	personeq->update(delta_time);
-	nautical->update(delta_time);
-	nauticeq->update(delta_time);
+	// personal->update(delta_time);
+	// personeq->update(delta_time);
+	// nautical->update(delta_time);
+	// nauticeq->update(delta_time);
+	skyDisplayMgr->update(delta_time);
+
 	starLines->update(delta_time);
 	milky_way->update(delta_time);
 	text_usr->update(delta_time);
@@ -871,10 +896,12 @@ void Core::updateInUniverse(int delta_time)
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update faders
-	personal->update(delta_time);
-	personeq->update(delta_time);
-	nautical->update(delta_time);
-	nauticeq->update(delta_time);
+	// personal->update(delta_time);
+	// personeq->update(delta_time);
+	// nautical->update(delta_time);
+	// nauticeq->update(delta_time);
+	skyDisplayMgr->update(delta_time);
+
 	tully->update(delta_time);
 	// milky3d->update(delta_time);
 	text_usr->update(delta_time);
@@ -957,16 +984,17 @@ void Core::drawInSolarSystem(int delta_time)
 	skyLineMgr->draw(projection, navigation, timeMgr, observatory);
 	bodytrace->draw(projection, navigation);
 
-	personal->draw(projection, navigation);
-	personeq->draw(projection, navigation);
-	nautical->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
-	nauticeq->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
+	// personal->draw(projection, navigation);
+	// personeq->draw(projection, navigation);
+	// nautical->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
+	// nauticeq->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
 
-	objCoord->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
-	mouseCoord->draw(projection, navigation, getCursorPosEqu(mouseX, mouseY));
-	angDist->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-	loxodromy->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-	orthodromy->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
+	// objCoord->draw(projection, navigation, selected_object.getEarthEquPos(navigation));
+	// mouseCoord->draw(projection, navigation, getCursorPosEqu(mouseX, mouseY));
+	// angDist->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
+	// loxodromy->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
+	// orthodromy->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
+	skyDisplayMgr->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 
 	ssystem->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
@@ -1006,8 +1034,9 @@ void Core::drawInGalaxy(int delta_time)
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	//tracé des lignes sans activation du tampon de profondeur.
-	personal->draw(projection, navigation);
-	personeq->draw(projection, navigation);
+	// personal->draw(projection, navigation);
+	// personeq->draw(projection, navigation);
+	skyDisplayMgr->drawPerson(projection, navigation);
 	starLines->draw(navigation);
 	
 	// transparence.
@@ -1033,8 +1062,9 @@ void Core::drawInUniverse(int delta_time)
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	tully->draw(observatory->getAltitude(), projection, navigation);
 
-	personal->draw(projection, navigation);
-	personeq->draw(projection, navigation);
+	// personal->draw(projection, navigation);
+	// personeq->draw(projection, navigation);
+	skyDisplayMgr->drawPerson(projection, navigation);
 }
 
 bool Core::setLandscape(const std::string& new_landscape_name)
@@ -1621,15 +1651,27 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GREENWICH,Utility::strToVec3f(conf.getStr(section,"greenwich_color")));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_MERIDIAN,Utility::strToVec3f(conf.getStr(section,"meridian_color")));
-	personal->setColor(Utility::strToVec3f(conf.getStr(section,"personal_color")));
-	personeq->setColor(Utility::strToVec3f(conf.getStr(section,"personeq_color")));
-	nautical->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_alt_color")));
-	nauticeq->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_ra_color")));
-	objCoord->setColor(Utility::strToVec3f(conf.getStr(section,"object_coordinates_color")));
-	mouseCoord->setColor(Utility::strToVec3f(conf.getStr(section,"mouse_coordinates_color")));
-	angDist->setColor(Utility::strToVec3f(conf.getStr(section,"angular_distance_color")));
-	loxodromy->setColor(Utility::strToVec3f(conf.getStr(section, "loxodromy_color")));
-	orthodromy->setColor(Utility::strToVec3f(conf.getStr(section, "orthodromy_color")));
+	
+	// personal->setColor(Utility::strToVec3f(conf.getStr(section,"personal_color")));
+	// personeq->setColor(Utility::strToVec3f(conf.getStr(section,"personeq_color")));
+	// nautical->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_alt_color")));
+	// nauticeq->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_ra_color")));
+	// objCoord->setColor(Utility::strToVec3f(conf.getStr(section,"object_coordinates_color")));
+	// mouseCoord->setColor(Utility::strToVec3f(conf.getStr(section,"mouse_coordinates_color")));
+	// angDist->setColor(Utility::strToVec3f(conf.getStr(section,"angular_distance_color")));
+	// loxodromy->setColor(Utility::strToVec3f(conf.getStr(section, "loxodromy_color")));
+	// orthodromy->setColor(Utility::strToVec3f(conf.getStr(section, "orthodromy_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONAL,Utility::strToVec3f(conf.getStr(section,"personal_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONEQ,Utility::strToVec3f(conf.getStr(section,"personeq_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_NAUTICAL,Utility::strToVec3f(conf.getStr(section,"nautical_alt_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_NAUTICEQ,Utility::strToVec3f(conf.getStr(section,"nautical_ra_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_OBJCOORDS,Utility::strToVec3f(conf.getStr(section,"object_coordinates_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS,Utility::strToVec3f(conf.getStr(section,"mouse_coordinates_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ANGDIST,Utility::strToVec3f(conf.getStr(section,"angular_distance_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_LOXODROMY,Utility::strToVec3f(conf.getStr(section,"loxodromy_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ORTHODROMY,Utility::strToVec3f(conf.getStr(section,"orthodromy_color")));
+
+
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Utility::strToVec3f(conf.getStr(section,"polar_color")));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_POINT_POLAR, Utility::strToVec3f(conf.getStr(section,"polar_color")));
 	text_usr->setColor(Utility::strToVec3f(conf.getStr(section,"text_usr_color")));
@@ -1722,15 +1764,26 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    ("color:analemma_line_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMALINE)));
 	conf.setStr    ("color:aries_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ARIES)));
 	conf.setStr    ("color:zodiac_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ZODIAC)));
-	conf.setStr    ("color:personal_color", Utility::vec3fToStr(personalGetColor()));
-	conf.setStr    ("color:personeq_color", Utility::vec3fToStr(personeqGetColor()));
-	conf.setStr    ("color:nautical_alt", Utility::vec3fToStr(nauticalGetColor()));
-	conf.setStr    ("color:nautical_ra", Utility::vec3fToStr(nauticeqGetColor()));
-	conf.setStr    ("color:object_coordinates", Utility::vec3fToStr(objCoordGetColor()));
-	conf.setStr    ("color:mouse_coordinates", Utility::vec3fToStr(mouseCoordGetColor()));
-	conf.setStr    ("color:angular_distance", Utility::vec3fToStr(angDistGetColor()));
-	conf.setStr    ("color:loxodromy", Utility::vec3fToStr(loxodromyGetColor()));
-	conf.setStr    ("color:orthodromy", Utility::vec3fToStr(orthodromyGetColor()));
+
+	// conf.setStr    ("color:personal_color", Utility::vec3fToStr(personalGetColor()));
+	// conf.setStr    ("color:personeq_color", Utility::vec3fToStr(personeqGetColor()));
+	// conf.setStr    ("color:nautical_alt", Utility::vec3fToStr(nauticalGetColor()));
+	// conf.setStr    ("color:nautical_ra", Utility::vec3fToStr(nauticeqGetColor()));
+	// conf.setStr    ("color:object_coordinates", Utility::vec3fToStr(objCoordGetColor()));
+	// conf.setStr    ("color:mouse_coordinates", Utility::vec3fToStr(mouseCoordGetColor()));
+	// conf.setStr    ("color:angular_distance", Utility::vec3fToStr(angDistGetColor()));
+	// conf.setStr    ("color:loxodromy", Utility::vec3fToStr(loxodromyGetColor()));
+	// conf.setStr    ("color:orthodromy", Utility::vec3fToStr(orthodromyGetColor()));
+	conf.setStr    ("color:personal_color",     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONAL)));
+	conf.setStr    ("color:personeq_color",     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONEQ)));
+	conf.setStr    ("color:nautical_alt",       Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICAL)));
+	conf.setStr    ("color:nautical_ra",        Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICEQ)));
+	conf.setStr    ("color:object_coordinates", Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_OBJCOORDS)));
+	conf.setStr    ("color:mouse_coordinates",  Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS)));
+	conf.setStr    ("color:angular_distance",   Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ANGDIST)));
+	conf.setStr    ("color:loxodromy",          Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_LOXODROMY)));
+	conf.setStr    ("color:orthodromy",         Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ORTHODROMY)));
+
 	conf.setStr    ("color:greenwich_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GREENWICH)));
 	conf.setStr    ("color:vertical_line", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_VERTICAL)));
 	conf.setStr    ("color:const_lines_color", Utility::vec3fToStr(asterisms->getLineColor())); //constellationGetColorLine()));

@@ -50,6 +50,7 @@
 #include "coreModule/skygrid.hpp"
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skyline.hpp"
+#include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
 #include "coreModule/starNavigator.hpp"
@@ -1228,80 +1229,80 @@ public:
 	// PersonXX---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! Set flag for displaying Personalized Azimuthal Line
-	void personalSetFlag(bool b) {
-		personal->setFlagShow(b);
-	}
-	//! Get flag for displaying Personalized Azimuthal Line
-	bool personalGetFlag(void) const {
-		return personal->getFlagShow();
-	}
-	Vec3f personalGetColor(void) const {
-		return personal->getColor();
-	}
+	// void personalSetFlag(bool b) {
+	// 	personal->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Personalized Azimuthal Line
+	// bool personalGetFlag(void) const {
+	// 	return personal->getFlagShow();
+	// }
+	// Vec3f personalGetColor(void) const {
+	// 	return personal->getColor();
+	// }
 
-	void personalLoad(std::string filename) const {
-		personal->loadData(filename);
-	}
+	// void personalLoad(std::string filename) const {
+	// 	personal->loadData(filename);
+	// }
 
-	void personalClear() const {
-		personal->clear();
-	};
+	// void personalClear() const {
+	// 	personal->clear();
+	// };
 
-	//! Set flag for displaying Personalized Equatorial Line
-	void personeqSetFlag(bool b) {
-		personeq->setFlagShow(b);
-	}
-	//! Get flag for displaying Personalized Equatorial Line
-	bool personeqGetFlag(void) const {
-		return personeq->getFlagShow();
-	}
-	Vec3f personeqGetColor(void) const {
-		return personeq->getColor();
-	}
+	// //! Set flag for displaying Personalized Equatorial Line
+	// void personeqSetFlag(bool b) {
+	// 	personeq->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Personalized Equatorial Line
+	// bool personeqGetFlag(void) const {
+	// 	return personeq->getFlagShow();
+	// }
+	// Vec3f personeqGetColor(void) const {
+	// 	return personeq->getColor();
+	// }
 
-	void personeqLoad(std::string filename) const {
-		personeq->loadData(filename);
-	}
+	// void personeqLoad(std::string filename) const {
+	// 	personeq->loadData(filename);
+	// }
 
-	void personeqClear() const {
-		personeq->clear();
-	};
+	// void personeqClear() const {
+	// 	personeq->clear();
+	// };
 	
-	//! Set flag for displaying Nautical Azimuthal Line
-	void nauticalSetFlag(bool b) {
-		nautical->setFlagShow(b);
-	}
-	//! Get flag for displaying Nautical Azimuthal Line
-	bool nauticalGetFlag(void) const {
-		return nautical->getFlagShow();
-	}
-	Vec3f nauticalGetColor(void) const {
-		return nautical->getColor();
-	}
+	// //! Set flag for displaying Nautical Azimuthal Line
+	// void nauticalSetFlag(bool b) {
+	// 	nautical->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Nautical Azimuthal Line
+	// bool nauticalGetFlag(void) const {
+	// 	return nautical->getFlagShow();
+	// }
+	// Vec3f nauticalGetColor(void) const {
+	// 	return nautical->getColor();
+	// }
 
-	//! Set flag for displaying Nautical Equatorial Line
-	void nauticeqSetFlag(bool b) {
-		nauticeq->setFlagShow(b);
-	}
-	//! Get flag for displaying Nautical Equatorial Line
-	bool nauticeqGetFlag(void) const {
-		return nauticeq->getFlagShow();
-	}
-	Vec3f nauticeqGetColor(void) const {
-		return nauticeq->getColor();
-	}
+	// //! Set flag for displaying Nautical Equatorial Line
+	// void nauticeqSetFlag(bool b) {
+	// 	nauticeq->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Nautical Equatorial Line
+	// bool nauticeqGetFlag(void) const {
+	// 	return nauticeq->getFlagShow();
+	// }
+	// Vec3f nauticeqGetColor(void) const {
+	// 	return nauticeq->getColor();
+	// }
 
-	//! Set flag for displaying Mouse Position
-	void objCoordSetFlag(bool b) {
-		objCoord->setFlagShow(b);
-	}
-	//! Get flag for displaying Mouse Position
-	bool objCoordGetFlag(void) const {
-		return objCoord->getFlagShow();
-	}
-	Vec3f objCoordGetColor(void) const {
-		return objCoord->getColor();
-	}
+	// //! Set flag for displaying Mouse Position
+	// void objCoordSetFlag(bool b) {
+	// 	objCoord->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Mouse Position
+	// bool objCoordGetFlag(void) const {
+	// 	return objCoord->getFlagShow();
+	// }
+	// Vec3f objCoordGetColor(void) const {
+	// 	return objCoord->getColor();
+	// }
 
 	//! Set flag for activating atmospheric refraction correction
 	void atmosphericRefractionSetFlag(bool b) {
@@ -1313,83 +1314,110 @@ public:
 		return FlagAtmosphericRefraction;
 	}
 
-	//! Set flag for displaying Mouse Position
-	void mouseCoordSetFlag(bool b) {
-		mouseCoord->setFlagShow(b);
-	}
-	//! Get flag for displaying Mouse Position
-	bool mouseCoordGetFlag(void) const {
-		return mouseCoord->getFlagShow();
+	// //! Set flag for displaying Mouse Position
+	// void mouseCoordSetFlag(bool b) {
+	// 	mouseCoord->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Mouse Position
+	// bool mouseCoordGetFlag(void) const {
+	// 	return mouseCoord->getFlagShow();
+	// }
+
+	// Vec3f mouseCoordGetColor(void) const {
+	// 	return mouseCoord->getColor();
+	// }
+
+	// //! Set flag for displaying Angular Distance
+	// void angDistSetFlag(bool b) {
+	// 	angDist->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Angular Distance
+	// bool angDistGetFlag(void) const {
+	// 	return angDist->getFlagShow();
+	// }
+	// Vec3f angDistGetColor(void) const {
+	// 	return angDist->getColor();
+	// }
+
+	// //! Set flag for displaying Angular Distance
+	// void loxodromySetFlag(bool b) {
+	// 	loxodromy->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Angular Distance
+	// bool loxodromyGetFlag(void) const {
+	// 	return loxodromy->getFlagShow();
+	// }
+	// Vec3f loxodromyGetColor(void) const {
+	// 	return loxodromy->getColor();
+	// }
+
+	// //! Set flag for displaying Angular Distance
+	// void orthodromySetFlag(bool b) {
+	// 	orthodromy->setFlagShow(b);
+	// }
+	// //! Get flag for displaying Angular Distance
+	// bool orthodromyGetFlag(void) const {
+	// 	return orthodromy->getFlagShow();
+	// }
+	// Vec3f orthodromyGetColor(void) const {
+	// 	return orthodromy->getColor();
+	// }
+
+	// void personalSetColor(const Vec3f& v) {
+	// 	personal->setColor(v);
+	// }
+	// void personeqSetColor(const Vec3f& v) {
+	// 	personeq->setColor(v);
+	// }
+	// void nauticalSetColor(const Vec3f& v) {
+	// 	nautical->setColor(v);
+	// }
+	// void nauticeqSetColor(const Vec3f& v) {
+	// 	nauticeq->setColor(v);
+	// }
+	// void objCoordSetColor(const Vec3f& v) {
+	// 	objCoord->setColor(v);
+	// }
+	// void mouseCoordSetColor(const Vec3f& v) {
+	// 	mouseCoord->setColor(v);
+	// }
+	// void angDistSetColor(const Vec3f& v) {
+	// 	angDist->setColor(v);
+	// }
+	// void loxodromySetColor(const Vec3f& v) {
+	// 	loxodromy->setColor(v);
+	// }
+	// void orthodromySetColor(const Vec3f& v) {
+	// 	orthodromy->setColor(v);
+	// }
+
+	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
+		return skyDisplayMgr->getFlagShow(nameObj);
 	}
 
-	Vec3f mouseCoordGetColor(void) const {
-		return mouseCoord->getColor();
+	void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v) {
+		skyDisplayMgr->setFlagShow(nameObj,v);
 	}
 
-	//! Set flag for displaying Angular Distance
-	void angDistSetFlag(bool b) {
-		angDist->setFlagShow(b);
-	}
-	//! Get flag for displaying Angular Distance
-	bool angDistGetFlag(void) const {
-		return angDist->getFlagShow();
-	}
-	Vec3f angDistGetColor(void) const {
-		return angDist->getColor();
+	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
+		skyDisplayMgr->flipFlagShow(nameObj);
 	}
 
-	//! Set flag for displaying Angular Distance
-	void loxodromySetFlag(bool b) {
-		loxodromy->setFlagShow(b);
-	}
-	//! Get flag for displaying Angular Distance
-	bool loxodromyGetFlag(void) const {
-		return loxodromy->getFlagShow();
-	}
-	Vec3f loxodromyGetColor(void) const {
-		return loxodromy->getColor();
+	Vec3f SkyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj) {
+		return skyDisplayMgr->getColor(nameObj);
 	}
 
-	//! Set flag for displaying Angular Distance
-	void orthodromySetFlag(bool b) {
-		orthodromy->setFlagShow(b);
-	}
-	//! Get flag for displaying Angular Distance
-	bool orthodromyGetFlag(void) const {
-		return orthodromy->getFlagShow();
-	}
-	Vec3f orthodromyGetColor(void) const {
-		return orthodromy->getColor();
+	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
+		skyDisplayMgr->setColor(nameObj,v);
 	}
 
-	void personalSetColor(const Vec3f& v) {
-		personal->setColor(v);
-	}
-	void personeqSetColor(const Vec3f& v) {
-		personeq->setColor(v);
-	}
-	void nauticalSetColor(const Vec3f& v) {
-		nautical->setColor(v);
-	}
-	void nauticeqSetColor(const Vec3f& v) {
-		nauticeq->setColor(v);
-	}
-	void objCoordSetColor(const Vec3f& v) {
-		objCoord->setColor(v);
-	}
-	void mouseCoordSetColor(const Vec3f& v) {
-		mouseCoord->setColor(v);
-	}
-	void angDistSetColor(const Vec3f& v) {
-		angDist->setColor(v);
-	}
-	void loxodromySetColor(const Vec3f& v) {
-		loxodromy->setColor(v);
-	}
-	void orthodromySetColor(const Vec3f& v) {
-		orthodromy->setColor(v);
+	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj) {
+		skyDisplayMgr->clear(nameObj);
 	}
 
+	void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName) {
+		skyDisplayMgr->loadData(nameObj,fileName);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Planets---------------------------
@@ -1991,19 +2019,20 @@ private:
 	Media* media;
 	SkyGridMgr * skyGridMgr;			//! gestionnaire des grilles
 	SkyLineMgr* skyLineMgr;				//! gestionnaire de lignes
+	SkyDisplayMgr* skyDisplayMgr; 		//! gestionnaire de skyDisplay
 	Oort * oort;						//! oort cloud
 	Dso3d *dso3d;						//! dso catalog for in_galaxy
 	Tully *tully;						//! tully galaxies
 
-	SkyPerson * personal;				// Personal azimuth drawing
-	SkyPerson * personeq;				// Personal equatorial drawing
-	SkyNautic * nautical;				// Nautical azimuth drawing
-	SkyNautic * nauticeq;				// Nautical equatorial drawing
-	SkyCoords * objCoord;				// Mouse position drawing
-	SkyCoords * mouseCoord;				// Mouse position drawing
-	SkyAngDist * angDist;				// Angular distance drawing
-	SkyLoxodromy * loxodromy;				// Loxodromy drawing
-	SkyOrthodromy * orthodromy;				// Orthodromy drawing
+	// SkyPerson * personal;				// Personal azimuth drawing
+	// SkyPerson * personeq;				// Personal equatorial drawing
+	// SkyNautic * nautical;				// Nautical azimuth drawing
+	// SkyNautic * nauticeq;				// Nautical equatorial drawing
+	// SkyCoords * objCoord;				// Mouse position drawing
+	// SkyCoords * mouseCoord;				// Mouse position drawing
+	// SkyAngDist * angDist;				// Angular distance drawing
+	// SkyLoxodromy * loxodromy;				// Loxodromy drawing
+	// SkyOrthodromy * orthodromy;				// Orthodromy drawing
 
 	Cardinals * cardinals_points;		// Cardinals points
 	MilkyWay * milky_way;				// Our galaxy

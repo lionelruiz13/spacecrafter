@@ -72,6 +72,26 @@ void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
 }
 
 
+void SkyDisplayMgr::clear(SKYDISPLAY_NAME nameObj)
+{
+	auto it=m_map.find(nameObj);
+	if(it!=m_map.end()) {
+		it->second->clear();
+		return;
+	}
+	cLog::get()->write("SkyDisplayMgr error : clear not found " + getSkyName(nameObj), LOG_TYPE::L_WARNING);
+}
+
+void SkyDisplayMgr::loadData(SKYDISPLAY_NAME nameObj, const std::string& filename)
+{
+	auto it=m_map.find(nameObj);
+	if(it!=m_map.end()) {
+		it->second->loadData(filename);
+		return;
+	}
+	cLog::get()->write("SkyDisplayMgr error : loadData not found " + getSkyName(nameObj), LOG_TYPE::L_WARNING);
+}
+
 void SkyDisplayMgr::flipFlagShow(SKYDISPLAY_NAME nameObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
