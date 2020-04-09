@@ -690,7 +690,7 @@ void UI::tuiUpdateWidgets()
 	tui_effect_object_scale->setValue(coreLink->starGetScale());
 	tui_effect_star_size_limit->setValue(core->starGetSizeLimit());
 	tui_effect_planet_size_limit->setValue(core->getPlanetsSizeLimit());
-	tui_effect_milkyway_intensity->setValue(core->milkyWayGetIntensity());
+	tui_effect_milkyway_intensity->setValue(coreLink->milkyWayGetIntensity());
 	tui_effect_cursor_timeout->setValue(MouseCursorTimeout);
 	tui_effect_light_pollution->setValue(core->getLightPollutionLimitingMagnitude());
 	tui_effect_nebulae_label_magnitude->setValue(core->nebulaGetMaxMagHints());

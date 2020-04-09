@@ -1078,7 +1078,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	if (!newLandscape) return 0;
 
 	if (landscape) {
-		bool previousLandscapeFlag = landscapeGetFlag();
+		bool previousLandscapeFlag = landscape->getFlagShow(); //landscapeGetFlag();
 
 		//Switch between the inactive and active background
 		Landscape* tempLandscape = landscape;
@@ -1089,8 +1089,8 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 		inactiveLandscape->setFlagShow(false);
 		//Fade in the new landscape (only if the landscape was activated)
 		if (previousLandscapeFlag) {
-			landscapeSetFlag(false);
-			landscapeSetFlag(true);
+			landscape->setFlagShow(false); //landscapeSetFlag(false);
+			landscape->setFlagShow(true); //landscapeSetFlag(true);
 		}
 
 		/* We ignore the next update tick for the landscapes because when the landscape is very big
@@ -1735,9 +1735,9 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble ("viewing:constellation_art_fade_duration", asterisms->getArtFadeDuration()); //constellationGetArtFadeDuration());
 	conf.setDouble("viewing:light_pollution_limiting_magnitude", getLightPollutionLimitingMagnitude());
 	// Landscape section
-	conf.setBoolean("landscape:flag_landscape", landscapeGetFlag());
+	conf.setBoolean("landscape:flag_landscape", landscape->getFlagShow()); //landscapeGetFlag());
 	conf.setBoolean("landscape:flag_atmosphere", atmosphereGetFlag());
-	conf.setBoolean("landscape:flag_fog", fogGetFlag());
+	conf.setBoolean("landscape:flag_fog", landscape->getFlagShowFog()); //fogGetFlag());
 	// Star section
 	conf.setDouble ("stars:star_scale", hip_stars->getScale()); //starGetScale());
 	conf.setDouble ("stars:star_mag_scale", hip_stars->getMagScale()); //starGetMagScale());
@@ -1813,8 +1813,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("astro:flag_planets_hints", ssystem->getFlag(BODY_FLAG::F_HINTS)); //planetsGetFlagHints());
 	conf.setBoolean("astro:flag_planets_orbits", ssystem->getFlagPlanetsOrbits()); //planetsGetFlagOrbits());
 	conf.setBoolean("astro:flag_light_travel_time", ssystem->getFlagLightTravelTime()); //getFlagLightTravelTime());
-	conf.setBoolean("astro:flag_milky_way", milkyWayGetFlag());
-	conf.setDouble("astro:milky_way_intensity", milkyWayGetIntensity());
+	conf.setBoolean("astro:flag_milky_way", milky_way->getFlagShow()); //milkyWayGetFlag());
+	conf.setDouble("astro:milky_way_intensity", milky_way->getIntensity()); //milkyWayGetIntensity());
 	conf.setDouble("astro:star_size_limit", starGetSizeLimit());
 	conf.setDouble("astro:planet_size_marginal_limit", getPlanetsSizeLimit());
 }

@@ -542,16 +542,16 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_FOG :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->fogGetFlag();
+				newval = !coreLink->fogGetFlag();
 
-			stcore->fogSetFlag(newval);
+			coreLink->fogSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_ATMOSPHERE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !stcore->atmosphereGetFlag();
 
-			if (!newval) stcore->fogSetFlag(false); // turn off fog with atmosphere
+			if (!newval) coreLink->fogSetFlag(false); // turn off fog with atmosphere
 			coreLink->starSetFlagTwinkle(newval); // twinkle stars depending on atmosphere activated
 			stcore->atmosphereSetFlag(newval);
 			break;
@@ -850,9 +850,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_LANDSCAPE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->landscapeGetFlag();
+				newval = !coreLink->landscapeGetFlag();
 
-			stcore->landscapeSetFlag(newval);
+			coreLink->landscapeSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_STARS :
@@ -959,16 +959,16 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_MILKY_WAY :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->milkyWayGetFlag();
+				newval = !coreLink->milkyWayGetFlag();
 
-			stcore->milkyWaySetFlag(newval);
+			coreLink->milkyWaySetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_ZODIAC_LIGHT :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->milkyWayGetFlagZodiacal();
+				newval = !coreLink->milkyWayGetFlagZodiacal();
 
-			stcore->milkyWaySetFlagZodiacal(newval);
+			coreLink->milkyWaySetFlagZodiacal(newval);
 			break;
 
 		case FLAG_NAMES::FN_BRIGHT_NEBULAE :
@@ -1658,12 +1658,12 @@ int AppCommandInterface::commandSet()
 	} else if (args["sun_scale"]!="") {
 		coreLink->setSunScale(evalDouble(args["sun_scale"]));
 	} else if (args["milky_way_texture"]!="") {
-		if(args["milky_way_texture"]=="default") stcore->milkyWayRestoreDefault();
+		if(args["milky_way_texture"]=="default") coreLink->milkyWayRestoreDefault();
 		else {
 			if (args["milky_way_intensity"]!="")
-				stcore->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], evalDouble(args["milky_way_intensity"]) );
+				coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], evalDouble(args["milky_way_intensity"]) );
 			else
-				stcore->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
+				coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
 		}
 	} else if (args["sky_culture"]!="") {
 		if (args["sky_culture"]=="default") stcore->setInitialSkyCulture();
@@ -1696,14 +1696,14 @@ int AppCommandInterface::commandSet()
 			coreLink->uboSetAmbientLight(evalDouble(args["ambient_light"]));
 		}
 	} else if (args["text_fading_duration"]!="") coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"]));
-	else if (args["milky_way_fader_duration"]!="") stcore->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"]));
+	else if (args["milky_way_fader_duration"]!="") coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"]));
 	else if (args["milky_way_intensity"]!="") {
 		if (args["milky_way_intensity"]=="default")
-			stcore->milkyWayRestoreIntensity();
+			coreLink->milkyWayRestoreIntensity();
 		else
-			stcore->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
+			coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
 		// safety feature to be able to turn back on
-		if (stcore->milkyWayGetIntensity()) stcore->milkyWaySetFlag(true);
+		if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
 	} else if (args["zoom_offset"]!="") {
 		stcore->setViewOffset(evalDouble(args["zoom_offset"]));
 	}
