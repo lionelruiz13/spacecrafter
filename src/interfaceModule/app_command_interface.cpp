@@ -1487,6 +1487,10 @@ int AppCommandInterface::commandColor()
 		return executeCommandStatus();
 
 	std::string argProperty = args["property"];
+	if (argProperty.empty()) {
+		debug_message = _("Command 'color': unknown expected argument 'property'");
+		return executeCommandStatus();
+	}
 	m_color_it = m_color.find(argProperty);
 
 	switch(m_color_it->second) {
@@ -1720,9 +1724,6 @@ int AppCommandInterface::commandColor()
 	// 	}
 	// 	return executeCommandStatus(); // as well
 	// }
-
-	debug_message = _("Command 'color': unknown expected argument 'property'");
-	return executeCommandStatus();
 }
 
 int AppCommandInterface::commandIlluminate()
