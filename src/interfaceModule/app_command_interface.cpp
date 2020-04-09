@@ -930,16 +930,16 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_NEBULAE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->nebulaGetFlag();
+				newval = !coreLink->nebulaGetFlag();
 
-			stcore->nebulaSetFlag(newval);
+			coreLink->nebulaSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_NEBULA_HINTS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->nebulaGetFlagHints();
+				newval = !coreLink->nebulaGetFlagHints();
 
-			stcore->nebulaSetFlagHints(newval);
+			coreLink->nebulaSetFlagHints(newval);
 			break;
 
 		case FLAG_NAMES::FN_DSO_PICTOGRAMS :
@@ -951,10 +951,10 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_NEBULA_NAMES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->nebulaGetFlagNames();
+				newval = !coreLink->nebulaGetFlagNames();
 
-			if (newval) stcore->nebulaSetFlagNames(true); // make sure visible
-			stcore->nebulaSetFlagNames(newval);
+			if (newval) coreLink->nebulaSetFlagNames(true); // make sure visible
+			coreLink->nebulaSetFlagNames(newval);
 			break;
 
 		case FLAG_NAMES::FN_MILKY_WAY :
@@ -973,9 +973,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_BRIGHT_NEBULAE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->nebulaGetFlagBright();
+				newval = !coreLink->nebulaGetFlagBright();
 
-			stcore->nebulaSetFlagBright(newval);
+			coreLink->nebulaSetFlagBright(newval);
 			break;
 
 		case FLAG_NAMES::FN_OBJECT_TRAILS :
@@ -1507,9 +1507,9 @@ int AppCommandInterface::commandColor()
 		else if(argProperty == "vertical_line")
 			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );
 		else if(argProperty == "nebula_names")
-			stcore->nebulaSetColorLabels( Vcolor );
+			coreLink->nebulaSetColorLabels( Vcolor );
 		else if(argProperty == "nebula_circle")
-			stcore->nebulaSetColorCircle( Vcolor );
+			coreLink->nebulaSetColorCircle( Vcolor );
 		else if(argProperty == "precession_circle")
 			coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor );
 		else if(argProperty == "text_usr_color")
@@ -1651,7 +1651,7 @@ int AppCommandInterface::commandSet()
 		else
 			stcore->setLandscape(args["landscape_name"]);
 	} else if (args["line_width"]!="") stcore->setLineWidth(evalDouble(args["line_width"]));
-	else if (args["max_mag_nebula_name"]!="") stcore->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"]));
+	else if (args["max_mag_nebula_name"]!="") coreLink->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"]));
 	else if (args["max_mag_star_name"]!="") coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"]));
 	else if (args["moon_scale"]!="") {
 		coreLink->setMoonScale(evalDouble(args["moon_scale"]));

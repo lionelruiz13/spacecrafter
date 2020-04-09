@@ -1790,8 +1790,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    ("color:const_names_color", Utility::vec3fToStr(asterisms->getLabelColor())); //constellationGetColorNames()));
 	conf.setStr    ("color:const_art_color", Utility::vec3fToStr(asterisms->getArtColor())); //constellationGetColorArt()));
 	conf.setStr    ("color:const_boundary_color", Utility::vec3fToStr(asterisms->getBoundaryColor())); //constellationGetColorBoundaries()));
-	conf.setStr	   ("color:nebula_label_color", Utility::vec3fToStr(nebulaGetColorLabels()));
-	conf.setStr	   ("color:nebula_circle_color", Utility::vec3fToStr(nebulaGetColorCircle()));
+	conf.setStr	   ("color:nebula_label_color", Utility::vec3fToStr(nebulas->getLabelColor())); //nebulaGetColorLabels()));
+	conf.setStr	   ("color:nebula_circle_color", Utility::vec3fToStr(nebulas->getCircleColor())); //nebulaGetColorCircle()));
 	conf.setStr	   ("color:precession_circle_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_PRECESSION)));
 	conf.setStr    ("color:cardinal_color", Utility::vec3fToStr(cardinals_points->getColor())); //cardinalsPointsGetColor()));
 	// Navigation section
@@ -1801,14 +1801,14 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble ("navigation:heading", getHeading());
 	// Astro section
 	conf.setBoolean("astro:flag_object_trails", ssystem->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
-	conf.setBoolean("astro:flag_bright_nebulae", nebulaGetFlagBright());
+	conf.setBoolean("astro:flag_bright_nebulae", nebulas->getFlagBright()); //nebulaGetFlagBright());
 	conf.setBoolean("astro:flag_stars", hip_stars->getFlagStars()); //starGetFlag());
 	conf.setBoolean("astro:flag_star_name", hip_stars->getFlagNames()); //starGetFlagName());
 	conf.setBoolean("viewing:flag_star_pick", hip_stars->getFlagIsolateSelected()); //starGetFlagIsolateSelected());
-	conf.setBoolean("astro:flag_nebula", nebulaGetFlag());
-	conf.setBoolean("astro:flag_nebula_names", nebulaGetFlagNames());
-	conf.setBoolean("astro:flag_nebula_hints", nebulaGetFlagHints());
-	conf.setDouble("astro:max_mag_nebula_name", nebulaGetMaxMagHints());
+	conf.setBoolean("astro:flag_nebula", nebulas->getFlagShow()); //nebulaGetFlag());
+	conf.setBoolean("astro:flag_nebula_names", nebulas->getNebulaNames()); //nebulaGetFlagNames());
+	conf.setBoolean("astro:flag_nebula_hints", nebulas->getFlagHints()); //nebulaGetFlagHints());
+	conf.setDouble("astro:max_mag_nebula_name", nebulas->getMaxMagHints()); //nebulaGetMaxMagHints());
 	conf.setBoolean("astro:flag_planets", ssystem->getFlagShow()); //planetsGetFlag());
 	conf.setBoolean("astro:flag_planets_hints", ssystem->getFlag(BODY_FLAG::F_HINTS)); //planetsGetFlagHints());
 	conf.setBoolean("astro:flag_planets_orbits", ssystem->getFlagPlanetsOrbits()); //planetsGetFlagOrbits());
