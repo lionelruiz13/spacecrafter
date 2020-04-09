@@ -36,14 +36,6 @@
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 
-// enum class GRID_TYPE : char {
-// 	GRID_EQUATORIAL,
-// 	GRID_ECLIPTIC,
-// 	GRID_GALACTIC,
-// 	GRID_ALTAZIMUTAL,
-// 	GRID_UNKNOWN
-// };
-
 
 class SkyDisplayMgr {
 public:
@@ -72,8 +64,8 @@ public:
 	void flipFlagShow(SKYDISPLAY_NAME nameObj);
 
 private:
-    std::string getSkyName(SKYDISPLAY_NAME nameObj);
-	std::map<SKYDISPLAY_NAME ,SkyDisplay*> m_map;
+	std::string getSkyName(SKYDISPLAY_NAME nameObj);
+	std::map<SKYDISPLAY_NAME,SkyDisplay*> m_map;
 	SkyDisplay* personAL = nullptr;
 	SkyDisplay* personEQ = nullptr;
 	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
