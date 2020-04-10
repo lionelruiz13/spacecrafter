@@ -73,9 +73,9 @@ public:
 	void flipFlagShow(SKYGRID_TYPE typeObj);
 
 private:
+	std::string typeToString(SKYGRID_TYPE typeObj);
 	SKYGRID_TYPE stringToType(const std::string& typeObj);
 	std::map<SKYGRID_TYPE ,SkyGrid*> m_map;
-
 	Vec3f baseColor;
 };
 #endif

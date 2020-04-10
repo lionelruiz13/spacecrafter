@@ -25,7 +25,7 @@ enum SKYLINE_TYPE : char {
 		LINE_UNKNOWN
 	};
 
-enum SKYGRID_TYPE : char {
+enum class SKYGRID_TYPE : char {
 	GRID_EQUATORIAL,
 	GRID_ECLIPTIC,
 	GRID_GALACTIC,

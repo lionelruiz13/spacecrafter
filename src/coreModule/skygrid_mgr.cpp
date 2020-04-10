@@ -43,7 +43,7 @@ void SkyGridMgr::draw(const Projector* prj)
 SkyGridMgr::~SkyGridMgr()
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		cLog::get()->write("SkyGridMgr : delete " + it->first , LOG_TYPE::L_INFO);
+		cLog::get()->write("SkyGridMgr : delete " + typeToString(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
 }
@@ -80,7 +80,7 @@ void SkyGridMgr::flipFlagShow(SKYGRID_TYPE typeObj)
 			return;
 		}
 	}
-	cLog::get()->write("SkyGridMgr error : flipFlagShow not found " + typeObj , LOG_TYPE::L_WARNING);
+	cLog::get()->write("SkyGridMgr error : flipFlagShow not found " + typeToString(typeObj) , LOG_TYPE::L_WARNING);
 }
 
 
@@ -92,7 +92,7 @@ void SkyGridMgr::setFlagShow(SKYGRID_TYPE typeObj, bool a)
 			return;
 		}
 	}
-	cLog::get()->write("SkyGridMgr error : setFlagShow not found " + typeObj , LOG_TYPE::L_WARNING);
+	cLog::get()->write("SkyGridMgr error : setFlagShow not found " + typeToString(typeObj) , LOG_TYPE::L_WARNING);
 }
 
 
@@ -103,7 +103,7 @@ bool SkyGridMgr::getFlagShow(SKYGRID_TYPE typeObj)
 			return it->second->getFlagShow();
 		}
 	}
-	cLog::get()->write("SkyGridMgr error : getFlagShow not found " + typeObj , LOG_TYPE::L_WARNING);
+	cLog::get()->write("SkyGridMgr error : getFlagShow not found " + typeToString(typeObj) , LOG_TYPE::L_WARNING);
 	return false;
 }
 
@@ -116,7 +116,7 @@ void SkyGridMgr::setColor(SKYGRID_TYPE typeObj, const Vec3f& c)
 			return;
 		}
 	}
-	cLog::get()->write("SkyGridMgr error : setColor not found " + typeObj , LOG_TYPE::L_WARNING);
+	cLog::get()->write("SkyGridMgr error : setColor not found " + typeToString(typeObj) , LOG_TYPE::L_WARNING);
 }
 
 const Vec3f& SkyGridMgr::getColor(SKYGRID_TYPE typeObj)
@@ -126,7 +126,7 @@ const Vec3f& SkyGridMgr::getColor(SKYGRID_TYPE typeObj)
 			return it->second->getColor();
 		}
 	}
-	cLog::get()->write("SkyGridMgr error : getColor not found " + typeObj , LOG_TYPE::L_WARNING);
+	cLog::get()->write("SkyGridMgr error : getColor not found " + typeToString(typeObj) , LOG_TYPE::L_WARNING);
 	return baseColor;
 }
 
@@ -148,6 +148,17 @@ SKYGRID_TYPE SkyGridMgr::stringToType(const std::string& typeObj)
 	return SKYGRID_TYPE::GRID_UNKNOWN;
 }
 
+std::string SkyGridMgr::typeToString(SKYGRID_TYPE typeObj)
+{
+	switch ( typeObj) {
+		case SKYGRID_TYPE::GRID_EQUATORIAL : return "GRID_EQUATORIAL"; break;
+		case SKYGRID_TYPE::GRID_ECLIPTIC : return "GRID_ECLIPTIC"; break;
+		case SKYGRID_TYPE::GRID_GALACTIC : return "GRID_GALACTIC"; break;
+		case SKYGRID_TYPE::GRID_ALTAZIMUTAL : return "GRID_ALTAZIMUTAL"; break;
+		default : return "GRID_UNKNOWN"; break;
+	}
+}
+
 void SkyGridMgr::Create(SKYGRID_TYPE type_obj)
 {
 	SkyGrid* tmp=nullptr;
@@ -155,7 +166,7 @@ void SkyGridMgr::Create(SKYGRID_TYPE type_obj)
 
 	//si l'itérateur ne vaut pas map.end(), cela signifie que que la clé à été trouvée
 	if(it!=m_map.end()) {
-		cLog::get()->write("SkyGridMgr SkyGrid already create " + type_obj , LOG_TYPE::L_ERROR);
+		cLog::get()->write("SkyGridMgr SkyGrid already create " + typeToString(type_obj) , LOG_TYPE::L_ERROR);
 		return;
 	}
 
@@ -163,36 +174,36 @@ void SkyGridMgr::Create(SKYGRID_TYPE type_obj)
 
 	//switch (typeObj) {
 	switch (type_obj) {
-		case GRID_EQUATORIAL :
-			cLog::get()->write("SkyGridMgr creating GRID EQUATORIAL" , LOG_TYPE::L_INFO);
+		case SKYGRID_TYPE::GRID_EQUATORIAL :
+			cLog::get()->write("SkyGridMgr creating " + typeToString(SKYGRID_TYPE::GRID_EQUATORIAL)  , LOG_TYPE::L_INFO);
 			tmp=new GridEquatorial();
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
-		case GRID_ALTAZIMUTAL:
-			cLog::get()->write("SkyGridMgr creating GRID ALTAZIMUTAL" , LOG_TYPE::L_INFO);
+		case SKYGRID_TYPE::GRID_ALTAZIMUTAL:
+			cLog::get()->write("SkyGridMgr creating " + typeToString(SKYGRID_TYPE::GRID_ALTAZIMUTAL) , LOG_TYPE::L_INFO);
 			tmp=new GridAltAzimutal();
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
-		case GRID_ECLIPTIC :
-			cLog::get()->write("SkyGridMgr creating GRID ECLIPTIC" , LOG_TYPE::L_INFO);
+		case SKYGRID_TYPE::GRID_ECLIPTIC :
+			cLog::get()->write("SkyGridMgr creating " + typeToString(SKYGRID_TYPE::GRID_ECLIPTIC) , LOG_TYPE::L_INFO);
 			tmp=new GridEcliptic();
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
-		case GRID_GALACTIC :
-			cLog::get()->write("SkyGridMgr creating GRID GALACTIC" , LOG_TYPE::L_INFO);
+		case SKYGRID_TYPE::GRID_GALACTIC :
+			cLog::get()->write("SkyGridMgr creating " + typeToString(SKYGRID_TYPE::GRID_GALACTIC) , LOG_TYPE::L_INFO);
 			tmp=new GridGalactic();
 			m_map[type_obj]= tmp;
 			return;
 			break;
 
 		default: // grille inconnue
-			cLog::get()->write("SkyGridMgr SkyGrid unknown " + type_obj , LOG_TYPE::L_ERROR);
+			cLog::get()->write("SkyGridMgr SkyGrid unknown " + typeToString(type_obj) , LOG_TYPE::L_ERROR);
 			break;
 	}
 }
