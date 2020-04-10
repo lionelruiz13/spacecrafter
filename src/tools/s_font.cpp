@@ -65,20 +65,6 @@ s_font::~s_font()
 }
 
 
-bool s_font::allGlyphsProvided(const std::string& str) {
-	bool provided = true;
-	for (auto it = str.cbegin() ; it < str.cend(); ++it)
-	{
-		provided &= isGlyphProvided(*it);
-	}
-	return provided;
-}
-
-bool s_font::isGlyphProvided(Uint16 ch) {
-	return TTF_GlyphIsProvided(myFont, ch);
-}
-
-
 void s_font::createShader()
 {
 	//HORIZONTAL
