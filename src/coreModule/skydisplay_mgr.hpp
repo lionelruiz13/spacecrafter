@@ -30,13 +30,13 @@
 #include <string>
 
 #include "skyDisplay.hpp"
-#include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 
 class shaderProgram;
+class s_font;
 
 class SkyDisplayMgr {
 public:
@@ -72,6 +72,7 @@ private:
 	SkyDisplay* personAL = nullptr;
 	SkyDisplay* personEQ = nullptr;
 	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
+	s_font* skyDisplayFont = nullptr;
 	shaderProgram *shaderSkyDisplay=nullptr;
 };
 #endif //SKYDISPLAY_MGR_HPP

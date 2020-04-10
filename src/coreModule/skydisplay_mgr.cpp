@@ -65,6 +65,8 @@ SkyDisplayMgr::~SkyDisplayMgr()
 	}
 	if (shaderSkyDisplay != nullptr)
 		delete shaderSkyDisplay;
+	if (skyDisplayFont != nullptr)
+		delete skyDisplayFont;
 }
 
 void SkyDisplayMgr::update(int delta_time)
@@ -76,8 +78,8 @@ void SkyDisplayMgr::update(int delta_time)
 
 void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
 {
-	s_font* test = new s_font(font_size, font_name);
-	SkyDisplay::setFont(test);
+	skyDisplayFont = new s_font(font_size, font_name);
+	SkyDisplay::setFont(skyDisplayFont);
 	// for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 	// 	it->second->setFont(font_size, font_name);
 	// }
