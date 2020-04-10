@@ -68,8 +68,7 @@ public:
 
 	static void createShader();
 	static void deleteShader();
-	bool isGlyphProvided(Uint16 ch);
-	bool allGlyphsProvided(const std::string &str);
+
 protected:
 
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
