@@ -371,6 +371,16 @@ public:
 		selected_object.getRaDeValue(navigation,ra,de);
 	}
 
+	bool getStarEarthEquPosition(int HP, double &az, double &alt) {
+		Object star = hip_stars->searchHP(HP).get();
+		if (star) {
+			Vec3d earthEqu = star.getEarthEquPos(navigation);
+			Utility::rectToSphe(&az, &alt, earthEqu);
+			return true;
+		}
+		return false;
+	}
+
 	//! Get a 1 line string briefly describing the currently selected object
 	std::string getSelectedObjectShortInfo(void) const {
 		return selected_object.getShortInfoString(navigation);
