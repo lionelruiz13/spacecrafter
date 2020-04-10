@@ -64,7 +64,7 @@ SkyDisplayMgr::~SkyDisplayMgr()
 		delete it->second;
 	}
 	if (shaderSkyDisplay != nullptr)
-		shaderSkyDisplay = nullptr;
+		delete shaderSkyDisplay;
 }
 
 void SkyDisplayMgr::update(int delta_time)
