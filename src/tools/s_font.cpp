@@ -368,8 +368,11 @@ renderedString_struct s_font::renderString(const std::string &s) const
 
 //! Draw text with baseline more or less parallel with horizon
 //! justify: -1 left, 0 center, 1 right align (not impemented yet)
-void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache, bool outline)
+void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor) //, bool cache, bool outline)
 {
+	bool cache = true;
+	int outline = 1;
+
 	if(str == "") return;
 
 	renderedString_struct rendering;
