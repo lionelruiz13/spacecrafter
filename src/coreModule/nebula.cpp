@@ -441,7 +441,7 @@ void Nebula::drawName(const Projector* prj)
 	prj->printGravity180(nebulaFont, XY[0], XY[1], nebulaname, Color, shift, shift);
 
 	// draw image credit, if it fits easily
-	if (credit != "" && size > nebulaFont->getStrLen(credit, 1)) {
+	if (credit != "" && size > nebulaFont->getStrLen(credit)) {
 		prj->printGravity180(nebulaFont, XY[0]-shift-40, XY[1]+-shift-40, credit, Color, 0, 0);
 	}
 }

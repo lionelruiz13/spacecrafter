@@ -64,7 +64,7 @@ public:
 
 	renderedString_struct renderString(const std::string &s) const;
 
-	float getStrLen(const std::string& s, bool cache = 0);
+	float getStrLen(const std::string& s/*, bool cache = 0*/);
 
 	static void createShader();
 	static void deleteShader();

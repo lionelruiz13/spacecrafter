@@ -222,7 +222,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	if(!cache) glDeleteTextures( 1, &currentRender.stringTexture);
 }
 
-float s_font::getStrLen(const std::string& s, bool cache)
+float s_font::getStrLen(const std::string& s/*, bool cache*/)
 {
 
 	if(s == "") return 0;
@@ -230,6 +230,15 @@ float s_font::getStrLen(const std::string& s, bool cache)
 
 	if( renderCache[s].textureW != 0 ) return renderCache[s].stringW;
 
+	int w,h;
+	if(TTF_SizeText(myFont,s.c_str(),&w,&h)) {
+		printf("ERROR TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i\n",w,h);
+			return w;
+		} else {// perhaps print the current TTF_GetError(), the string can't be rendered...
+			//printf("ERROR : TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i but say ==0 \n",w,h);
+			return w;
+	}
+	/*
 	Mat4f MVP;
 
 	// otherwise calculate (and cache if desired)
@@ -246,6 +255,7 @@ float s_font::getStrLen(const std::string& s, bool cache)
 			return w;
 		}
 	}
+	*/
 }
 
 
