@@ -79,26 +79,26 @@ void UI::drawGravityUi()
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
 			s_2= info.substr(info.find("@")+1);
-			core->printHorizontal(tuiFont, 10,120, s_1 ,text_ui, 1);
-			core->printHorizontal(tuiFont, 4 ,120, s_2 ,text_ui, 1);
+			core->printHorizontal(tuiFont, 10,120, s_1 ,text_ui, 1, 1);
+			core->printHorizontal(tuiFont, 4 ,120, s_2 ,text_ui, 1, 1);
 
 		} else {
 			int PosDateTimeL = PosDateTime;
 			switch(FlagNumberPrint) {
 				case 3 :
 					PosDateTimeL=PosDateTimeL%120;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(),text_ui,  1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+120), os.str(), text_ui, 1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+240), os.str(), text_ui, 1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(),text_ui,  1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+120), os.str(), text_ui, 1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+240), os.str(), text_ui, 1,1);
 					break;
 				case 2 :
 					PosDateTimeL=PosDateTimeL%180;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui, 1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+180), os.str(), text_ui, 1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui, 1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+180), os.str(), text_ui, 1,1);
 					break;
 				default:
 					PosDateTimeL=PosDateTimeL%360;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui,  1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui,  1, 1);
 			}
 		}
 	}
@@ -112,11 +112,11 @@ void UI::drawGravityUi()
 			std::string s_1, s_2;
 			s_1= info2.substr(0, info2.find("@"));
 			s_2= info2.substr(info2.find("@")+1);
-			core->printHorizontal(tuiFont, 4 , PosObjectInfo, s_2 , tmpColor, 1);
-			core->printHorizontal(tuiFont, 10 ,PosObjectInfo, s_1 , tmpColor, 1);
-			core->printHorizontal(tuiFont, 16, PosObjectInfo , info, tmpColor, 1);
+			core->printHorizontal(tuiFont, 4 , PosObjectInfo, s_2 , tmpColor, 1,1);
+			core->printHorizontal(tuiFont, 10 ,PosObjectInfo, s_1 , tmpColor, 1,1);
+			core->printHorizontal(tuiFont, 16, PosObjectInfo , info, tmpColor, 1,1);
 		} else
-			core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor,  1);
+			core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor,  1,1);
 	}
 }
 
@@ -610,7 +610,7 @@ void UI::drawTui()
 	StateGL::enable(GL_BLEND);
 
 	if (tui_root) {
-		core->printHorizontal(tuiFont, 5, PosMenuM, tui_root->getString() , text_tui_root, 1);
+		core->printHorizontal(tuiFont, 5, PosMenuM, tui_root->getString() , text_tui_root, 1, 1);
 	}
 }
 
