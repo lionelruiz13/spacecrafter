@@ -99,5 +99,5 @@ void Text::draw(const Projector* prj, s_font *textFont[])
 		case FontSize::T_XX_LARGE: tmp = textFont[6]; break;
 		default: tmp = textFont[3]; break; // cas medium
 	}
-	tmp->printHorizontal(prj, altitude, azimuth, text,textColor, 1, true/*, true*/);
+	tmp->printHorizontal(prj, altitude, azimuth, text,textColor); //, 1, true/*, true*/);
 }
