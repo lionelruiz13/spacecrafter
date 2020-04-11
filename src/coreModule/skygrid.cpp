@@ -261,9 +261,9 @@ void SkyGrid::draw(const Projector* prj) const
 					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -C_PI_2-angle );
 
 					if ( gtype == EQUATORIAL ) {
-						font->print(2,-2,str, Color, MVP*TRANSFO ,1,1);
+						font->print(2,-2,str, Color, MVP*TRANSFO ,1);
 					} else {
-						font->print(6,-2,str, Color, MVP*TRANSFO ,1,1);
+						font->print(6,-2,str, Color, MVP*TRANSFO ,1);
 					}
 
 				} else if (nm % 8 == 0 && i != 16) {
@@ -284,7 +284,7 @@ void SkyGrid::draw(const Projector* prj) const
 					Mat4f TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle);
 
-					font->print(2,-2,str, Color, MVP*TRANSFO ,1,1);
+					font->print(2,-2,str, Color, MVP*TRANSFO ,1);
 				}
 			}
 		}

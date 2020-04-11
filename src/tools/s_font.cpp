@@ -117,8 +117,9 @@ void s_font::deleteShader()
 //! print out a string
 //! cache == 0 means do not cache rendered string texture
 //! cache == -1 means do not actually draw, just cache
-void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown, int cache)
+void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown/*, int cache*/)
 {
+	bool cache = true;
 	if(s == "") return;
 
 	renderedString_struct currentRender;
@@ -134,7 +135,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 		currentRender = renderCache[s];
 	}
 
-	if(cache==-1) return; // do not draw, just wanted to cache
+	//if(cache==-1) return; // do not draw, just wanted to cache
 
 	StateGL::enable(GL_BLEND);
 
@@ -233,7 +234,7 @@ float s_font::getStrLen(const std::string& s, bool cache)
 
 	// otherwise calculate (and cache if desired)
 	if(cache) {
-		print(0, 0, s, Vec4f (1.0,1.0, 1.0, 1.0), MVP , 0, -1);
+		print(0, 0, s, Vec4f (1.0,1.0, 1.0, 1.0), MVP , 0); //, -1);
 		return renderCache[s].stringW;
 	} else {
 		int w,h;
