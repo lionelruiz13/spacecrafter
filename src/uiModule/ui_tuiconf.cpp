@@ -610,7 +610,7 @@ void UI::drawTui()
 	StateGL::enable(GL_BLEND);
 
 	if (tui_root) {
-		core->printHorizontal(tuiFont, 5, PosMenuM, tui_root->getString() , text_tui_root, -1);
+		core->printHorizontal(tuiFont, 5, PosMenuM, tui_root->getString() , text_tui_root, 1);
 	}
 }
 
