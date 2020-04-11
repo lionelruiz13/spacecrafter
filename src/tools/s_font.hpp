@@ -56,7 +56,7 @@ public:
 	s_font(float size_i, const std::string& ttfFileName);
 	virtual ~s_font();
 
-	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown = 1, int cache = 0);
+	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown , int cache );
 	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache = 0, bool outline = 0);
 
 	void clearCache(const std::string& s);
