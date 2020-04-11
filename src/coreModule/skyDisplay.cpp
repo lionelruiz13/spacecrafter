@@ -137,7 +137,7 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 				TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 				//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
 				oss << i * 10 << "°";
-				skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+				skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 				oss.clear();
 			}
 		}
@@ -367,7 +367,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// AZ
@@ -404,7 +404,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// RA
@@ -433,7 +433,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "m";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// DEC
@@ -469,7 +469,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 }
@@ -568,7 +568,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	if (mn < 10)
 		oss << "0";
 	oss << mn << "'";
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 	oss.clear();
 }
 
@@ -639,7 +639,7 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), 3 * pi_div_2 - angle);
 	oss << truncf(distM) << " nmi"; // for km *1.85185
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 	oss.clear();
 }
 
@@ -728,6 +728,6 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), C_PI - pi_div_2 + angle);
 	std::ostringstream oss;
 	oss << truncf(ang * 60) << " nmi"; // for km *1.85185
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 	oss.clear();
 }

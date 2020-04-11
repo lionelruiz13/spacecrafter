@@ -386,7 +386,7 @@ Vec3d Projector::sVertex3v(double x, double y, double z, const Mat4d& mat) const
 	return v;
 }
 
-void Projector::printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color, bool speed_optimize, float xshift, float yshift) const
+void Projector::printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color,/* bool speed_optimize,*/ float xshift, float yshift) const
 {
 	static float dx, dy, d, theta, psi;
 
@@ -410,6 +410,6 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 	TRANSFO = TRANSFO*Mat4f::translation( Vec3f(xshift, -yshift, 0) );
 	TRANSFO = TRANSFO*Mat4f::scaling( Vec3f(1, -1, 1) );
 
-	font->print(0, 0, str, Color, MVP*TRANSFO ,0, speed_optimize);  // ASSUME speed optimized strings should be cached
+	font->print(0, 0, str, Color, MVP*TRANSFO ,0);//, speed_optimize);  // ASSUME speed optimized strings should be cached
 }
 

@@ -757,7 +757,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 void HipStarMgr::drawStarName( Projector* prj )
 {
 	for (auto const& token : starNameToDraw) {
-		prj->printGravity180(starFont, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), true,4,4);
+		prj->printGravity180(starFont, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
 		//  prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
 	}
 	//cout << "Nombre de nom à afficher : " << starNameToDraw.size() << endl;
