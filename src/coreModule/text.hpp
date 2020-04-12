@@ -60,9 +60,7 @@ public:
 	}
 
 	//! modifie le message du text
-	void textUpdate(const std::string &_text){
-		text=_text;
-	};
+	void textUpdate(const std::string &_text, s_font *textFont[]);
 
 	//! affiche le texte à l'écran 
 	void draw(const Projector* prj, s_font *textFont[]);
