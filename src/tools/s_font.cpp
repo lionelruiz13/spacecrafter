@@ -507,8 +507,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		meshPoints.push_back(Vec2f(center[0]+p*d,center[1]+q*d));
 	}
 
-	int shiftx = 0;
-	int shifty = 0;
+	// int shiftx = 0;
+	// int shifty = 0;
 
 	Vec3f Color (texColor[0], texColor[1], texColor[2]);
 
@@ -517,8 +517,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	glBindVertexArray(sFont.vao);
 
 
-	for (int pass=0; pass<0*4+1; pass++) {
-		if(1) {
+	// for (int pass=0; pass<0*4+1; pass++) {
+		// if(1) {
 			/*if(pass < 4 ) {
 				Color = v3fNull;
 				shaderHorizontal->setUniform("Color", Color);
@@ -526,19 +526,19 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 				else shiftx = 1;
 				if(pass%2) shifty = -1;
 				else shifty = 1;
-			} else {*/
-				Color = Vec3f(texColor[0], texColor[1], texColor[2]);
-				shaderHorizontal->setUniform("Color", Color);
-				shiftx = shifty = 0;
+			// } else {*/
+			// 	Color = Vec3f(texColor[0], texColor[1], texColor[2]);
+			// 	shaderHorizontal->setUniform("Color", Color);
+				// shiftx = shifty = 0;
 			//}
-		}
+		// }
 
 		for (int i=0; i<=steps; i++) {
 
-			vecPos.push_back(meshPoints[i*2][0]+shiftx);
-			vecPos.push_back(meshPoints[i*2][1]+shifty);
-			vecPos.push_back(meshPoints[i*2+1][0]+shiftx);
-			vecPos.push_back(meshPoints[i*2+1][1]+shifty);
+			vecPos.push_back(meshPoints[i*2][0]/*+shiftx*/);
+			vecPos.push_back(meshPoints[i*2][1]/*+shifty*/);
+			vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
+			vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
 
 			vecTex.push_back((float)i/steps*textureExtentW);
 			vecTex.push_back(0.0);
@@ -559,7 +559,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 
 		vecPos.clear();
 		vecTex.clear();
-	}
+	// }
 
 	shaderHorizontal->unuse();
 	if (!cache) {
