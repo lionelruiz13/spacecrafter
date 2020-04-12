@@ -21,13 +21,12 @@
 // Class to manage fonts
 
 #include <vector>
+#include "tools/log.hpp"
 #include "tools/s_font.hpp"
 #include "tools/utility.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
-
-
 
 shaderProgram* s_font::shaderHorizontal=nullptr;
 shaderProgram* s_font::shaderPrint=nullptr;
@@ -43,7 +42,7 @@ s_font::s_font(float size_i, const std::string& ttfFileName) //: lineHeightEstim
 	//printf("TTF_OpenFont file: %s  size: %f\n", fontName.c_str() , fontSize);
 	myFont = TTF_OpenFont( fontName.c_str(), fontSize);
 	if(!myFont) {
-		printf("TTF_OpenFont error: %s\n", TTF_GetError());
+		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
 		exit(-1);
 	}
 	//cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << endl;
@@ -226,17 +225,18 @@ float s_font::getStrLen(const std::string& s/*, bool cache*/)
 {
 
 	if(s == "") return 0;
-	if(myFont==nullptr) fprintf(stderr,"myFont == NULL\n");
+	//if(myFont==nullptr) fprintf(stderr,"myFont == NULL\n");
 
 	if( renderCache[s].textureW != 0 ) return renderCache[s].stringW;
 
 	int w,h;
 	if(TTF_SizeText(myFont,s.c_str(),&w,&h)) {
-		printf("ERROR TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i\n",w,h);
-			return w;
-		} else {// perhaps print the current TTF_GetError(), the string can't be rendered...
-			//printf("ERROR : TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i but say ==0 \n",w,h);
-			return w;
+	//	printf("ERROR TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i\n",w,h);
+		cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
+		return w;
+	} else {// perhaps print the current TTF_GetError(), the string can't be rendered...
+		//printf("ERROR : TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i but say ==0 \n",w,h);
+		return w;
 	}
 	/*
 	Mat4f MVP;
@@ -319,7 +319,11 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	renderedString_struct nothing;
 	nothing.textureW = nothing.textureH = nothing.stringW = nothing.stringH = 0;
 	nothing.stringTexture = 0;
-	if(!surface) return nothing;
+	if(!surface)  {
+		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
+		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
+		return nothing;
+	}
 
 	SDL_Rect tmp;
 	tmp.x=1;
