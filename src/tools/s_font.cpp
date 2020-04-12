@@ -380,6 +380,54 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
     //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 
+
+	if (withBorder) {
+	// ***********************************
+	//
+	// création de la bordure
+	//
+	// ***********************************
+	SDL_Surface *border = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
+	if(!border)  {
+		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
+		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
+		if(text) SDL_FreeSurface(text);
+		return rendering;
+	}
+
+	SDL_Rect tmp;
+	int shiftx = 0;
+	int shifty = 0;
+	for(int pass=0; pass < 4 ; pass++) {
+		if(pass<2) shiftx = -1;
+			else shiftx = 1;
+		if(pass%2) shifty = -1;
+			else shifty = 1;
+
+		//why (1;1) ? le texture initiale commence en (1;1)
+		tmp.x=1+shiftx;
+		tmp.y=1+shifty;
+		tmp.w=text->w;
+		tmp.h=text->h;
+		SDL_BlitSurface(text, &tmp, border, NULL);
+	}
+
+	if (border->format->Rmask == 0x000000ff)
+		texture_format = GL_RGBA;
+	else
+		texture_format = GL_BGRA;
+
+	glGenTextures( 1, &rendering.borderTexture);
+	glBindTexture( GL_TEXTURE_2D, rendering.borderTexture);
+
+    // disable mipmapping on the new texture
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
+	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
+	if(border) SDL_FreeSurface(border);
+	}
+
 	if(surface) SDL_FreeSurface(surface);
 	if(text) SDL_FreeSurface(text);
 	return rendering;
@@ -512,6 +560,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	}
 
 	shaderHorizontal->unuse();
-	if (!cache)
+	if (!cache) {
 		glDeleteTextures( 1, &rendering.stringTexture);
+		glDeleteTextures( 1, &rendering.borderTexture);
+	}
 }
