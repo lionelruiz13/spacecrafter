@@ -62,8 +62,6 @@ public:
 	void clearCache(const std::string& s);
 	void clearCache();
 
-	renderedString_struct renderString(const std::string &s) const;
-
 	float getStrLen(const std::string& s/*, bool cache = 0*/);
 
 	static void createShader();
@@ -71,6 +69,9 @@ public:
 	bool isGlyphProvided(Uint16 ch);
 	bool allGlyphsProvided(const std::string &str);
 protected:
+
+	renderedString_struct renderString(const std::string &s) const;
+
 
 	renderedStringHash_t renderCache;
 
