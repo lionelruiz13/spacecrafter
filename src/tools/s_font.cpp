@@ -287,10 +287,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 {
 
 	renderedString_struct rendering;
-	SDL_Color color;
-	color.r=255;
-	color.g=255;
-	color.b=255;
+	SDL_Color color={255,255,255,0};
 	SDL_Surface *text = TTF_RenderUTF8_Blended(myFont, s.c_str(), color ); //write in white
 
 	// Calculate opengl texture size required
