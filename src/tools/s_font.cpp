@@ -300,36 +300,36 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	// opengl texture dimensions must be powers of 2
 	//~ rendering.textureW = getNextPowerOf2((int)rendering.stringW);
 	//~ rendering.textureH = getNextPowerOf2((int)rendering.stringH);
-	rendering.textureW = text->w;
-	rendering.textureH = text->h;
+	rendering.textureW = text->w+2;
+	rendering.textureH = text->h+2;
 
-	//~ Uint32 rmask, gmask, bmask, amask;
+	Uint32 rmask, gmask, bmask, amask;
 
 	/* SDL interprets each pixel as a 32-bit number, so our masks must depend on the endianness (byte order) of the machine */
-	//~ #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	//~ rmask = 0xff000000;
-	//~ gmask = 0x00ff0000;
-	//~ bmask = 0x0000ff00;
-	//~ amask = 0x000000ff;
-	//~ #else
-	//~ rmask = 0x000000ff;
-	//~ gmask = 0x0000ff00;
-	//~ bmask = 0x00ff0000;
-	//~ amask = 0xff000000;
-	//~ #endif
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	 rmask = 0xff000000;
+	 gmask = 0x00ff0000;
+	 bmask = 0x0000ff00;
+	 amask = 0x000000ff;
+	#else
+	 rmask = 0x000000ff;
+	 gmask = 0x0000ff00;
+	 bmask = 0x00ff0000;
+	 amask = 0xff000000;
+	#endif
 
-	//~ SDL_Surface *surface = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
-	//~ renderedString_struct nothing;
-	//~ nothing.textureW = nothing.textureH = nothing.stringW = nothing.stringH = 0;
-	//~ nothing.stringTexture = 0;
-	//~ if(!surface) return nothing;
+	SDL_Surface *surface = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
+	renderedString_struct nothing;
+	nothing.textureW = nothing.textureH = nothing.stringW = nothing.stringH = 0;
+	nothing.stringTexture = 0;
+	if(!surface) return nothing;
 
-	//~ SDL_Rect tmp;
-	//~ tmp.x=0;
-	//~ tmp.y=0;
-	//~ tmp.w=text->w;
-	//~ tmp.h=text->h;
-	//~ SDL_BlitSurface(text, &tmp, surface, &tmp);
+	SDL_Rect tmp;
+	tmp.x=1;
+	tmp.y=1;
+	tmp.w=text->w;
+	tmp.h=text->h;
+	SDL_BlitSurface(text, &tmp, surface, NULL);
 
     // disable mipmapping on the new texture
     //~ glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -344,23 +344,23 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 	// get the number of channels in the SDL surface
-	//~ GLenum texture_format;
-	//~ GLint nOfColors = surface->format->BytesPerPixel;
-	//~ if (nOfColors == 4) {     // contains an alpha channel
-		//~ if (surface->format->Rmask == 0x000000ff)
-			//~ texture_format = GL_RGBA;
-		//~ else
-			//~ texture_format = GL_BGRA;
-	//~ } else if (nOfColors == 3) {     // no alpha channel
-		//~ if (surface->format->Rmask == 0x000000ff)  // THIS IS WRONG for someplatforms
-			//~ texture_format = GL_RGB;
-		//~ else
-			//~ texture_format = GL_BGR;
-	//~ } else {
-		//~ cerr << "Error: unable to convert surface to font texture.\n";
-		//~ if(surface) SDL_FreeSurface(surface);
-		//~ return nothing;
-	//~ }
+	GLenum texture_format = GL_RGBA;
+	// GLint nOfColors = surface->format->BytesPerPixel;
+	// if (nOfColors == 4) {     // contains an alpha channel
+	// 	if (surface->format->Rmask == 0x000000ff)
+	// 		texture_format = GL_RGBA;
+	// 	else
+	// 		texture_format = GL_BGRA;
+	// } else if (nOfColors == 3) {     // no alpha channel
+	// 	if (surface->format->Rmask == 0x000000ff)  // THIS IS WRONG for someplatforms
+	// 		texture_format = GL_RGB;
+	// 	else
+	// 		texture_format = GL_BGR;
+	// } else {
+	// 	//cerr << "Error: unable to convert surface to font texture.\n";
+	// 	if(surface) SDL_FreeSurface(surface);
+	// 	return nothing;
+	// }
 
 	glGenTextures( 1, &rendering.stringTexture);
 	glBindTexture( GL_TEXTURE_2D, rendering.stringTexture);
@@ -368,10 +368,10 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
     // disable mipmapping on the new texture
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
-	//~ glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
+    //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
+	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 
-	//~ if(surface) SDL_FreeSurface(surface);
+	if(surface) SDL_FreeSurface(surface);
 	if(text) SDL_FreeSurface(text);
 	return rendering;
 }
