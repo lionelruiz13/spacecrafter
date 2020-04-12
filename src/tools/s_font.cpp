@@ -119,17 +119,17 @@ void s_font::deleteShader()
 //! cache == -1 means do not actually draw, just cache
 void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown/*, int cache*/)
 {
-	bool cache = true;
+	//bool cache = true;
 	if(s == "") return;
 
 	renderedString_struct currentRender;
 
 	// If not cached, create texture
-	if( !cache || renderCache[s].textureW == 0 ) {
+	if( /*!cache ||*/ renderCache[s].textureW == 0 ) {
 		currentRender = renderString(s);
-		if( cache ) {
+		//if( cache ) {
 			renderCache[s] = currentRender;
-		}
+		//}
 	} else {
 		// read from cache
 		currentRender = renderCache[s];
@@ -219,7 +219,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 
 	shaderPrint->unuse();
 
-	if(!cache) glDeleteTextures( 1, &currentRender.stringTexture);
+	//if(!cache) glDeleteTextures( 1, &currentRender.stringTexture);
 }
 
 float s_font::getStrLen(const std::string& s/*, bool cache*/)
@@ -397,7 +397,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	// Get rendered texture
 	if(renderCache[str].textureW == 0) {
 		rendering = renderString(str);
-		if(cache) renderCache[str] = rendering;
+		if(cache)
+			renderCache[str] = rendering;
 	} else {
 		rendering = renderCache[str];
 	}
@@ -504,5 +505,6 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	}
 
 	shaderHorizontal->unuse();
-	if(!cache) glDeleteTextures( 1, &rendering.stringTexture);
+	if (!cache)
+		glDeleteTextures( 1, &rendering.stringTexture);
 }
