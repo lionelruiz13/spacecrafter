@@ -41,6 +41,7 @@ class Projector;
 
 typedef struct {
 	GLuint stringTexture;  // Rendered string texture reference - remember to delete when done
+	GLuint borderTexture;  // Rendered string bordered texture -  remember to delete when done
 	float textureW; 	   // Width of texture in pixels
 	float textureH; 	   // Height of texture in pixels
 	float stringW; 	       // Width of string portion in pixels
