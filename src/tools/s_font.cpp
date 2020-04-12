@@ -346,7 +346,14 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 	// get the number of channels in the SDL surface
-	GLenum texture_format = GL_RGBA;
+	GLenum texture_format;
+	if (surface->format->Rmask == 0x000000ff)
+		texture_format = GL_RGBA;
+	else
+		texture_format = GL_BGRA;
+
+	// get the number of channels in the SDL surface
+	// GLenum texture_format = GL_RGBA;
 	// GLint nOfColors = surface->format->BytesPerPixel;
 	// if (nOfColors == 4) {     // contains an alpha channel
 	// 	if (surface->format->Rmask == 0x000000ff)
