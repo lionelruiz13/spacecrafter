@@ -322,6 +322,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	if(!surface)  {
 		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
 		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
+		if(text) SDL_FreeSurface(text);
 		return nothing;
 	}
 
