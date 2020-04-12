@@ -381,8 +381,7 @@ renderedString_struct s_font::renderString(const std::string &s) const
 //! justify: -1 left, 0 center, 1 right align (not impemented yet)
 void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache) //, bool cache, bool outline)
 {
-	bool cache = true;
-	int outline = 1;
+	//int outline = 1;
 
 	if(str == "") return;
 
@@ -459,9 +458,9 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	glBindVertexArray(sFont.vao);
 
 
-	for (int pass=0; pass<outline*4+1; pass++) {
+	for (int pass=0; pass<1*4+1; pass++) {
 
-		if(outline) {
+		if(1) {
 			if(pass < 4 ) {
 				Color = v3fNull;
 				shaderHorizontal->setUniform("Color", Color);
