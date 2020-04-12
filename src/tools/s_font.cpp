@@ -126,7 +126,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 
 	// If not cached, create texture
 	if( /*!cache ||*/ renderCache[s].textureW == 0 ) {
-		currentRender = renderString(s);
+		currentRender = renderString(s, false);
 		//if( cache ) {
 			renderCache[s] = currentRender;
 		//}
@@ -283,7 +283,7 @@ void s_font::clearCache()
 }
 
 //! Render a string to a texture
-renderedString_struct s_font::renderString(const std::string &s) const
+renderedString_struct s_font::renderString(const std::string &s, bool withBorder) const
 {
 
 	renderedString_struct rendering;
@@ -395,7 +395,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 
 	// Get rendered texture
 	if(renderCache[str].textureW == 0) {
-		rendering = renderString(str);
+		rendering = renderString(str, true);
 		if(cache)
 			renderCache[str] = rendering;
 	} else {

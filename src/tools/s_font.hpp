@@ -70,7 +70,7 @@ public:
 	bool allGlyphsProvided(const std::string &str);
 protected:
 
-	renderedString_struct renderString(const std::string &s) const;
+	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 
 
 	renderedStringHash_t renderCache;
