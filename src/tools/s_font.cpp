@@ -458,21 +458,20 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	glBindVertexArray(sFont.vao);
 
 
-	for (int pass=0; pass<1*4+1; pass++) {
-
+	for (int pass=0; pass<0*4+1; pass++) {
 		if(1) {
-			if(pass < 4 ) {
+			/*if(pass < 4 ) {
 				Color = v3fNull;
 				shaderHorizontal->setUniform("Color", Color);
 				if(pass<2) shiftx = -1;
 				else shiftx = 1;
 				if(pass%2) shifty = -1;
 				else shifty = 1;
-			} else {
+			} else {*/
 				Color = Vec3f(texColor[0], texColor[1], texColor[2]);
 				shaderHorizontal->setUniform("Color", Color);
 				shiftx = shifty = 0;
-			}
+			//}
 		}
 
 		for (int i=0; i<=steps; i++) {
