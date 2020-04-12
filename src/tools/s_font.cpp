@@ -481,6 +481,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	shaderHorizontal->use();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	float theta = C_PI + atan2f(dx, dy - 1);
