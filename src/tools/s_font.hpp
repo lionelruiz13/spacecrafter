@@ -46,6 +46,7 @@ typedef struct {
 	float textureH; 	   // Height of texture in pixels
 	float stringW; 	       // Width of string portion in pixels
 	float stringH; 	       // Height of string portion in pixels
+	bool haveBorder;	   // if the text has a bordered texture
 } renderedString_struct;
 
 typedef std::map< std::string, renderedString_struct > renderedStringHash_t;

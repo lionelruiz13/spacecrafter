@@ -264,6 +264,8 @@ void s_font::clearCache(const std::string& s)
 {
 	if( renderCache[s].textureW != 0 ) {
 		glDeleteTextures( 1, &renderCache[s].stringTexture);
+		if (renderCache[s].haveBorder)
+			glDeleteTextures( 1, &renderCache[s].borderTexture);
 		renderCache.erase(s);
 	}
 
@@ -275,6 +277,8 @@ void s_font::clearCache()
 	for ( renderedStringHashIter_t iter = renderCache.begin(); iter != renderCache.end(); ++iter ) {
 		if( (*iter).second.textureW != 0 ) {
 			glDeleteTextures( 1, &((*iter).second.stringTexture));
+			if ((*iter).second.haveBorder)
+				glDeleteTextures( 1, &((*iter).second.borderTexture));
 			//cout << "Cleared cache for string: " << (*iter).first << endl;
 		}
 	}
@@ -293,6 +297,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	// Calculate opengl texture size required
 	rendering.stringW = text->w;
 	rendering.stringH = text->h;
+	rendering.haveBorder =  false;
 
 	// opengl texture dimensions must be powers of 2
 	//~ rendering.textureW = getNextPowerOf2((int)rendering.stringW);
@@ -318,6 +323,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	SDL_Surface *surface = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
 	renderedString_struct nothing;
 	nothing.textureW = nothing.textureH = nothing.stringW = nothing.stringH = 0;
+	nothing.haveBorder =false;
 	nothing.stringTexture = 0;
 	if(!surface)  {
 		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
@@ -425,7 +431,8 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
-	if(border) SDL_FreeSurface(border);
+	rendering.haveBorder =true;
+	if (border) SDL_FreeSurface(border);
 	}
 
 	if(surface) SDL_FreeSurface(surface);
