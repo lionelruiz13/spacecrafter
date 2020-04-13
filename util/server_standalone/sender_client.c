@@ -118,7 +118,8 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"constellation name UMa  intensity 1.0");
     //~ strcpy(sendBuff,"set date_display_number 1");
     //~ strcpy(sendBuff,"body tesselation moon_altimetry_factor value 5");
-    strcpy(sendBuff,"body tesselation max_tes_level value 4");
+    //~ strcpy(sendBuff,"body tesselation max_tes_level value 4");
+    strcpy(sendBuff,"color r 0.8 g 0.1 b 0.0 property azimuthal_gridez");
     //~ strcpy(sendBuff,"timerate action decrement"); 
     
 	

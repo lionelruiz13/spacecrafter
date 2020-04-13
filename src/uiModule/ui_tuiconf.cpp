@@ -41,7 +41,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "uiModule/ui.hpp"
-
+#include "coreModule/coreLink.hpp"
 
 // Draw simple gravity text ui.
 void UI::drawGravityUi()
@@ -51,7 +51,7 @@ void UI::drawGravityUi()
 	StateGL::enable(GL_BLEND);
 
 	if (FlagShowTuiDateTime) {
-		double jd = core->getJDay();
+		double jd = coreLink->getJDay();
 		std::ostringstream os;
 
 		os << spaceDate->getPrintableDateLocal(jd) << " " << spaceDate->getPrintableTimeLocal(jd);
@@ -60,21 +60,21 @@ void UI::drawGravityUi()
 			if (core->getObservatory()->getHomePlanetEnglishName()!= "")
 			os << " " << _(core->getObservatory()->getHomePlanetEnglishName());
 		}
-		if (FlagShowFov) os << " fov " << std::setprecision(3) << core->getFov();
+		if (FlagShowFov) os << " fov " << std::setprecision(3) << coreLink->getFov();
 		if (FlagShowFps) os << "  FPS " << app->getFpsClock();
 		if (FlagShowLatLon) {
-			os << " Lat: " << Utility::printAngleDMS(core->observatoryGetLatitude()*3.1415926/180)
-			   << " Lon: " << Utility::printAngleDMS(core->observatoryGetLongitude()*3.1415926/180);
-			if (core->observatoryGetAltitude()>1000) {
+			os << " Lat: " << Utility::printAngleDMS(coreLink->observatoryGetLatitude()*3.1415926/180)
+			   << " Lon: " << Utility::printAngleDMS(coreLink->observatoryGetLongitude()*3.1415926/180);
+			if (coreLink->observatoryGetAltitude()>1000) {
 /*			    if (true)
 					os << " Alt: " << core->observatoryGetAltitude()/2.E+10 << "al";
 			    else //*/
-					os << " Alt: " << core->observatoryGetAltitude()/1000 << "km";
+					os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << "km";
 			}
 		}
 
 		if (core->getFlagNav()) {
-			std::string info = spaceDate->getPrintableTimeNav(core->getJDay(), core->observatoryGetLatitude(), core->observatoryGetLongitude());
+			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), coreLink->observatoryGetLatitude(), coreLink->observatoryGetLongitude());
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
 			s_2= info.substr(info.find("@")+1);
@@ -618,14 +618,14 @@ void UI::tuiUpdateWidgets()
 	if (!FlagShowTuiMenu) return;
 
 	// 1. Location
-	tui_location_latitude->setValue(core->observatoryGetLatitude());
-	tui_location_longitude->setValue(core->observatoryGetLongitude());
-	tui_location_altitude->setValue(core->observatoryGetAltitude());
+	tui_location_latitude->setValue(coreLink->observatoryGetLatitude());
+	tui_location_longitude->setValue(coreLink->observatoryGetLongitude());
+	tui_location_altitude->setValue(coreLink->observatoryGetAltitude());
 	tui_location_heading->setValue(core->getHeading());
 
 
 	// 2. Date & Time
-	tui_time_skytime->setJDay(core->getJDay() + spaceDate->getGMTShift(core->getJDay())*JD_HOUR);
+	tui_time_skytime->setJDay(coreLink->getJDay() + spaceDate->getGMTShift(coreLink->getJDay())*JD_HOUR);
 	tui_time_settmz->settz(spaceDate->getCustomTzName());
 	tui_time_presetskytime->setJDay(app->getPresetSkyTime());
 	tui_time_startuptime->setCurrent(std::string(app->getStartupTimeMode()));
@@ -636,49 +636,49 @@ void UI::tuiUpdateWidgets()
 	tui_time_day_key->setCurrent(std::string(app->getDayKeyMode()));
 
 	// 3. general
-	tui_general_landscape->setValue(std::string(core->observatoryGetLandscapeName()));
+	tui_general_landscape->setValue(std::string(coreLink->observatoryGetLandscapeName()));
 	tui_general_sky_culture->setValue(std::string(core->getSkyCultureDir()));
 	tui_general_sky_locale->setValue(std::string(core->getSkyLanguage()));
 
 	// 4. Stars
-	tui_stars_show->setValue(core->starGetFlag());
-	tui_star_labelmaxmag->setValue(core->starGetMaxMagName());
-	tui_stars_twinkle->setValue(core->starGetTwinkleAmount());
-	tui_star_magscale->setValue(core->starGetMagScale());
-	tui_star_limitingmag->setValue(core->starGetLimitingMag());
+	tui_stars_show->setValue(coreLink->starGetFlag());
+	tui_star_labelmaxmag->setValue(coreLink->starGetMaxMagName());
+	tui_stars_twinkle->setValue(coreLink->starGetTwinkleAmount());
+	tui_star_magscale->setValue(coreLink->starGetMagScale());
+	tui_star_limitingmag->setValue(coreLink->starGetLimitingMag());
 
 	// 5. Colors
-	tui_colors_const_line_color->setVector(core->constellationGetColorLine());
-	tui_colors_const_label_color->setVector(core->constellationGetColorNames());
-	tui_colors_cardinal_color->setVector(core->cardinalsPointsGetColor());
-	tui_colors_const_art_intensity->setValue(core->constellationGetArtIntensity());
-	tui_colors_const_art_color->setVector(core->constellationGetColorArt());
-	tui_colors_const_boundary_color->setVector(core->constellationGetColorBoundaries());
-	tui_colors_planet_names_color->setVector(core->planetGetDefaultColor("label"));
-	tui_colors_planet_orbits_color->setVector(core->planetGetDefaultColor("orbit"));
+	tui_colors_const_line_color->setVector(coreLink->constellationGetColorLine());
+	tui_colors_const_label_color->setVector(coreLink->constellationGetColorNames());
+	tui_colors_cardinal_color->setVector(coreLink->cardinalsPointsGetColor());
+	tui_colors_const_art_intensity->setValue(coreLink->constellationGetArtIntensity());
+	tui_colors_const_art_color->setVector(coreLink->constellationGetColorArt());
+	tui_colors_const_boundary_color->setVector(coreLink->constellationGetColorBoundaries());
+	tui_colors_planet_names_color->setVector(coreLink->planetGetDefaultColor("label"));
+	tui_colors_planet_orbits_color->setVector(coreLink->planetGetDefaultColor("orbit"));
 
-	tui_colors_object_trails_color->setVector(core->planetGetDefaultColor("trail"));
-	tui_colors_meridian_color->setVector(core->skyLineMgrGetColor("LINE_MERIDIAN"));
-	tui_colors_azimuthal_color->setVector(core->skyGridMgrGetColor("GRID_ALTAZIMUTAL"));
-	tui_colors_equatorial_color->setVector(core->skyGridMgrGetColor("GRID_EQUATORIAL"));
-	tui_colors_equator_color->setVector(core->skyLineMgrGetColor("LINE_EQUATOR"));
-	tui_colors_ecliptic_color->setVector(core->skyLineMgrGetColor("LINE_ECLIPTIC"));
-	tui_colors_nebula_label_color->setVector(core->nebulaGetColorLabels());
-	tui_colors_nebula_circle_color->setVector(core->nebulaGetColorCircle());
-	tui_colors_precession_circle_color->setVector(core->skyLineMgrGetColor("LINE_PRECESSION"));
-	tui_colors_circumpolar_circle_color->setVector(core->skyLineMgrGetColor("LINE_CIRCUMPOLAR"));
+	tui_colors_object_trails_color->setVector(coreLink->planetGetDefaultColor("trail"));
+	tui_colors_meridian_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_MERIDIAN));
+	tui_colors_azimuthal_color->setVector(coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
+	tui_colors_equatorial_color->setVector(coreLink->skyGridMgrGetColor(SKYGRID_TYPE::GRID_EQUATORIAL));
+	tui_colors_equator_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_EQUATOR));
+	tui_colors_ecliptic_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_ECLIPTIC));
+	tui_colors_nebula_label_color->setVector(coreLink->nebulaGetColorLabels());
+	tui_colors_nebula_circle_color->setVector(coreLink->nebulaGetColorCircle());
+	tui_colors_precession_circle_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_PRECESSION));
+	tui_colors_circumpolar_circle_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 
 	// *** Effects
 	tui_effect_zoom_duration->setValue(core->getAutomoveDuration());
 	tui_effect_manual_zoom->setValue(core->getFlagManualAutoZoom());
-	tui_effect_object_scale->setValue(core->starGetScale());
+	tui_effect_object_scale->setValue(coreLink->starGetScale());
 	tui_effect_star_size_limit->setValue(core->starGetSizeLimit());
 	tui_effect_planet_size_limit->setValue(core->getPlanetsSizeLimit());
-	tui_effect_milkyway_intensity->setValue(core->milkyWayGetIntensity());
+	tui_effect_milkyway_intensity->setValue(coreLink->milkyWayGetIntensity());
 	tui_effect_cursor_timeout->setValue(MouseCursorTimeout);
 	tui_effect_light_pollution->setValue(core->getLightPollutionLimitingMagnitude());
-	tui_effect_nebulae_label_magnitude->setValue(core->nebulaGetMaxMagHints());
-	tui_effect_light_travel->setValue(core->getFlagLightTravelTime());
+	tui_effect_nebulae_label_magnitude->setValue(coreLink->nebulaGetMaxMagHints());
+	tui_effect_light_travel->setValue(coreLink->getFlagLightTravelTime());
 	tui_effect_view_offset->setValue(core->getViewOffset());
 	tui_effect_antialias->setValue(core->getFlagAntialiasLines());
 	tui_effect_line_width->setValue(core->getLineWidth());
@@ -851,7 +851,7 @@ void UI::tuiCbEffectsMilkywayIntensity()
 void UI::tuiCbSetlocation()
 {
 	// change to human readable coordinates with current values, then change
-	core->observatorySetLongitude(core->observatoryGetLongitude());
+	coreLink->observatorySetLongitude(coreLink->observatoryGetLongitude());
 
 	core->getObservatory()->moveTo(tui_location_latitude->getValue(),
 	                                tui_location_longitude->getValue(),
@@ -952,25 +952,25 @@ void UI::tuiCbEffectsNebulaeLabelMagnitude()
 
 void UI::tuiCbChangeColor()
 {
-	core->constellationSetColorLine( tui_colors_const_line_color->getVector() );
-	core->constellationSetColorNames( tui_colors_const_label_color->getVector() );
-	core->cardinalsPointsSetColor( tui_colors_cardinal_color->getVector() );
-	core->constellationSetArtIntensity(tui_colors_const_art_intensity->getValue() );
-	core->constellationSetColorArt( tui_colors_const_art_color->getVector() );
-	core->constellationSetColorBoundaries(tui_colors_const_boundary_color->getVector() );
-	core->planetSetDefaultColor("orbit", tui_colors_planet_orbits_color->getVector() );
-	core->planetSetDefaultColor("label", tui_colors_planet_names_color->getVector() );
-	core->planetSetDefaultColor("trail",tui_colors_object_trails_color->getVector() );
+	coreLink->constellationSetColorLine( tui_colors_const_line_color->getVector() );
+	coreLink->constellationSetColorNames( tui_colors_const_label_color->getVector() );
+	coreLink->cardinalsPointsSetColor( tui_colors_cardinal_color->getVector() );
+	coreLink->constellationSetArtIntensity(tui_colors_const_art_intensity->getValue() );
+	coreLink->constellationSetColorArt( tui_colors_const_art_color->getVector() );
+	coreLink->constellationSetColorBoundaries(tui_colors_const_boundary_color->getVector() );
+	coreLink->planetSetDefaultColor("orbit", tui_colors_planet_orbits_color->getVector() );
+	coreLink->planetSetDefaultColor("label", tui_colors_planet_names_color->getVector() );
+	coreLink->planetSetDefaultColor("trail",tui_colors_object_trails_color->getVector() );
 
-	core->skyGridMgrSetColor("GRID_ALTAZIMUTAL" , tui_colors_azimuthal_color->getVector() );
-	core->skyGridMgrSetColor("GRID_EQUATORIAL"  , tui_colors_equatorial_color->getVector() );
-	core->skyLineMgrSetColor("LINE_EQUATOR", tui_colors_equator_color->getVector() );
-	core->skyLineMgrSetColor("LINE_ECLIPTIC", tui_colors_ecliptic_color->getVector() );
-	core->skyLineMgrSetColor("LINE_MERIDIAN", tui_colors_meridian_color->getVector() ); 
-	core->nebulaSetColorLabels(tui_colors_nebula_label_color->getVector() );
-	core->nebulaSetColorCircle(tui_colors_nebula_circle_color->getVector() );
-	core->skyLineMgrSetColor("LINE_PRECESSION", tui_colors_precession_circle_color->getVector() );
-	core->skyLineMgrSetColor("LINE_CIRCUMPOLAR", tui_colors_circumpolar_circle_color->getVector() );
+	coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL , tui_colors_azimuthal_color->getVector() );
+	coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL  , tui_colors_equatorial_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, tui_colors_equator_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, tui_colors_ecliptic_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, tui_colors_meridian_color->getVector() ); 
+	coreLink->nebulaSetColorLabels(tui_colors_nebula_label_color->getVector() );
+	coreLink->nebulaSetColorCircle(tui_colors_nebula_circle_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, tui_colors_precession_circle_color->getVector() );
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, tui_colors_circumpolar_circle_color->getVector() );
 }
 
 

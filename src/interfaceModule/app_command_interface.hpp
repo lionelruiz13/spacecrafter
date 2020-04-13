@@ -36,7 +36,7 @@
 #include "base_command_interface.hpp"
 
 class Core;
-class CoreIO;
+class CoreLink;
 class App;
 class UI;
 class ScriptInterface;
@@ -47,7 +47,7 @@ class SaveScreenInterface;
 class AppCommandInterface {
 
 public:
-	AppCommandInterface(Core * core, App * app, UI* _ui, Media* _media);
+	AppCommandInterface(Core * core, CoreLink *_coreLink, App * app, UI* _ui, Media* _media);
 	~AppCommandInterface();
 	AppCommandInterface(AppCommandInterface const &) = delete;
 	AppCommandInterface& operator = (AppCommandInterface const &) = delete;
@@ -115,6 +115,7 @@ protected:
 
 private:
 	Core * stcore = nullptr;
+	CoreLink *coreLink = nullptr;
 	App * stapp = nullptr;
 	UI* ui = nullptr;
 	Media* media = nullptr;
@@ -152,6 +153,7 @@ private:
 
 	void initialiseCommandsName();
 	void initialiseFlagsName();
+	void initialiseColorCommand();
 
 	void deleteVar();
 	void printVar();
@@ -167,6 +169,9 @@ private:
 	//map assurant la transcription entre le texte et le flag associé
 	std::map<const std::string, FLAG_NAMES> m_flags;
 	std::map<const std::string, FLAG_NAMES>::iterator m_flag_it;
+	//map assurant la transcription entre le texte et la couleur associée
+	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
+	std::map<const std::string, COLORCOMMAND_NAMES>::iterator m_color_it;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H

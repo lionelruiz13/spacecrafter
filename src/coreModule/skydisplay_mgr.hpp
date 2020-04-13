@@ -23,59 +23,56 @@
  */
 
 
-#ifndef SKYGRID_MGR_HPP
-#define SKYGRID_MGR_HPP
+#ifndef SKYDISPLAY_MGR_HPP
+#define SKYDISPLAY_MGR_HPP
 
 #include <map>
 #include <string>
 
-#include "skygrid.hpp"
-#include "tools/s_font.hpp"
+#include "skyDisplay.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 
-// enum class GRID_TYPE : char {
-// 	GRID_EQUATORIAL,
-// 	GRID_ECLIPTIC,
-// 	GRID_GALACTIC,
-// 	GRID_ALTAZIMUTAL,
-// 	GRID_UNKNOWN
-// };
+class shaderProgram;
+class s_font;
 
-
-class SkyGridMgr {
+class SkyDisplayMgr {
 public:
-	SkyGridMgr();
-	~SkyGridMgr();
-	SkyGridMgr(SkyGridMgr const &) = delete;
-	SkyGridMgr& operator = (SkyGridMgr const &) = delete;
+	SkyDisplayMgr();
+	~SkyDisplayMgr();
+	SkyDisplayMgr(SkyDisplayMgr const &) = delete;
+	SkyDisplayMgr& operator = (SkyDisplayMgr const &) = delete;
 
 	int size() {
 		return m_map.size();
 	};
 	//Celle qui va créer les objets
-	void Create(SKYGRID_TYPE type_obj);
-	void draw(const Projector* prj);
+	void Create(SKYDISPLAY_NAME nameObj);
+	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
+	void drawPerson(const Projector *prj,const Navigator *nav);
 	void update(int delta_time);
+	void clear(SKYDISPLAY_NAME nameObj);
+	void loadData(SKYDISPLAY_NAME nameObj, const std::string& filename);
 
 	void setFont(float font_size, const std::string& font_name);
 
-	void setInternalNav(bool a);
-
-	void setColor(SKYGRID_TYPE typeObj, const Vec3f& c);
-	const Vec3f& getColor(SKYGRID_TYPE typeObj);
+	void setColor(SKYDISPLAY_NAME nameObj, const Vec3f& c);
+	const Vec3f& getColor(SKYDISPLAY_NAME nameObj);
 
 	//! change FlagShow: inverse la valeur du flag
-	void setFlagShow(SKYGRID_TYPE typeObj, bool b);
-	bool getFlagShow(SKYGRID_TYPE typeObj);
-	void flipFlagShow(SKYGRID_TYPE typeObj);
+	void setFlagShow(SKYDISPLAY_NAME nameObj, bool b);
+	bool getFlagShow(SKYDISPLAY_NAME nameObj);
+	void flipFlagShow(SKYDISPLAY_NAME nameObj);
 
 private:
-	std::string typeToString(SKYGRID_TYPE typeObj);
-	SKYGRID_TYPE stringToType(const std::string& typeObj);
-	std::map<SKYGRID_TYPE ,SkyGrid*> m_map;
-	Vec3f baseColor;
+	std::string getSkyName(SKYDISPLAY_NAME nameObj);
+	std::map<SKYDISPLAY_NAME,SkyDisplay*> m_map;
+	SkyDisplay* personAL = nullptr;
+	SkyDisplay* personEQ = nullptr;
+	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
+	s_font* skyDisplayFont = nullptr;
+	shaderProgram *shaderSkyDisplay=nullptr;
 };
-#endif
+#endif //SKYDISPLAY_MGR_HPP

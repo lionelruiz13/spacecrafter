@@ -30,7 +30,6 @@
 #include "tools/log.hpp"
 #include "tools/fmath.hpp"
 #include "coreModule/ubo_cam.hpp"
-
 #include "coreModule/core_executor.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/anchor_point.hpp"
@@ -45,13 +44,12 @@
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
+#include "coreModule/core_common.hpp"
 
 Core::Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, _settings->getLocaleDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr)
-	// deltaAlt(0.), deltaAz(0.), deltaFov(0.),deltaHeight(0.),
-	// move_speed(0.00025)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
@@ -82,48 +80,48 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	ojmMgr = new OjmMgr();
 	anchorManager = new AnchorManager(observatory,navigation, ssystem, timeMgr, ssystem->getOrbitCreator());
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
-		
 
 	skyGridMgr = new SkyGridMgr();
-	skyGridMgr->Create("GRID_EQUATORIAL");
-	skyGridMgr->Create("GRID_ECLIPTIC");
-	skyGridMgr->Create("GRID_GALACTIC");
-	skyGridMgr->Create("GRID_ALTAZIMUTAL");
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
+	skyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 
 	skyLineMgr = new SkyLineMgr();
-	skyLineMgr->Create("LINE_CIRCLE_POLAR");
-	skyLineMgr->Create("LINE_POINT_POLAR");
-	skyLineMgr->Create("LINE_ECLIPTIC_POLE");
-	skyLineMgr->Create("LINE_GALACTIC_POLE");
-	skyLineMgr->Create("LINE_ANALEMMA");
-	skyLineMgr->Create("LINE_ANALEMMALINE");
-	skyLineMgr->Create("LINE_CIRCUMPOLAR");
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_POINT_POLAR);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ANALEMMA);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ANALEMMALINE);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
 
-	skyLineMgr->Create("LINE_GALACTIC_CENTER");
-	skyLineMgr->Create("LINE_VERNAL");
-	skyLineMgr->Create("LINE_GREENWICH");
-	skyLineMgr->Create("LINE_ARIES");
-	skyLineMgr->Create("LINE_EQUATOR");
-	skyLineMgr->Create("LINE_GALACTIC_EQUATOR");
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_VERNAL);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GREENWICH);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ARIES);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_EQUATOR);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
 
-	skyLineMgr->Create("LINE_MERIDIAN");
-	skyLineMgr->Create("LINE_TROPIC");
-	skyLineMgr->Create("LINE_ECLIPTIC");
-	skyLineMgr->Create("LINE_PRECESSION");
-	skyLineMgr->Create("LINE_VERTICAL");
-	skyLineMgr->Create("LINE_ZODIAC");
-	skyLineMgr->Create("LINE_ZENITH");
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_MERIDIAN);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_TROPIC);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_PRECESSION);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_VERTICAL);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
+	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
-	personal = new SkyPerson(SkyPerson::AL);
-	personeq = new SkyPerson(SkyPerson::EQ);
-	nautical = new SkyPerson(SkyPerson::AL);
-	nauticeq = new SkyPerson(SkyPerson::EQ);
-	objCoord = new SkyPerson(SkyPerson::AL);
-	mouseCoord = new SkyPerson(SkyPerson::AL);
-	angDist = new SkyPerson(SkyPerson::AL);
-	loxodromy = new SkyPerson(SkyPerson::EQ);
-	orthodromy = new SkyPerson(SkyPerson::AL);
-	
+	skyDisplayMgr = new SkyDisplayMgr();
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICAL);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ANGDIST);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_LOXODROMY);
+	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+
 	cardinals_points = new Cardinals();
 	meteors = new MeteorMgr(10, 60);
 	landscape = new Landscape();
@@ -237,7 +235,7 @@ void Core::tcpGetPosition()
 {
 	char tmp[1024];
 	memset(tmp, '\0', 1024);
-	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatoryGetLatitude(), observatoryGetLongitude(), observatoryGetAltitude(), getJDay(), getHeading());
+	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatory->getLatitude(), observatory->getLongitude(), observatory->getAltitude(), timeMgr->getJDay(), getHeading());
 	cLog::get()->write(tmp);
 	tcp->setOutput(tmp);
 }
@@ -256,15 +254,7 @@ Core::~Core()
 	delete illuminates;
 	delete skyGridMgr;
 	delete skyLineMgr;
-	delete personal;
-	delete personeq;
-	delete nautical;
-	delete nauticeq;
-	delete objCoord;
-	delete mouseCoord;
-	delete angDist;
-	delete loxodromy;
-	delete orthodromy;
+	delete skyDisplayMgr;
 	delete landscape;
 	delete inactiveLandscape;
 	delete cardinals_points;
@@ -292,7 +282,6 @@ Core::~Core()
 	delete dso3d;
 	delete tully;
 	delete ojmMgr;
-
 	delete starNav;
 	delete starLines;
 	delete executorInGalaxy;
@@ -391,18 +380,16 @@ void Core::init(const InitParser& conf)
 
 	starNav->setMagConverterMagShift(conf.getDouble("stars","mag_converter_mag_shift"));
 	starNav->setMagConverterMaxMag(conf.getDouble("stars","mag_converter_max_mag"));
-
 	starNav->setStarSizeLimit(conf.getDouble("astro","star_size_limit"));
 	starNav->setScale(conf.getDouble ("stars", "star_scale"));
 	starNav->setMagScale(conf.getDouble ("stars", "star_mag_scale"));
 
-
 	ssystem->setFlagPlanets(conf.getBoolean("astro:flag_planets"));
 	ssystem->setFlagHints(conf.getBoolean("astro:flag_planets_hints"));
 	ssystem->setFlagPlanetsOrbits(conf.getBoolean("astro:flag_planets_orbits"));
-	setFlagLightTravelTime(conf.getBoolean("astro", "flag_light_travel_time"));
+	ssystem->setFlagLightTravelTime(conf.getBoolean("astro", "flag_light_travel_time"));
 	ssystem->setFlagTrails(conf.getBoolean("astro", "flag_object_trails"));
-	startPlanetsTrails(conf.getBoolean("astro", "flag_object_trails"));
+	ssystem->startTrails(conf.getBoolean("astro", "flag_object_trails")); //startPlanetsTrails(conf.getBoolean("astro", "flag_object_trails"));
 	nebulas->setFlagShow(conf.getBoolean("astro:flag_nebula"));
 	nebulas->setFlagHints(conf.getBoolean("astro","flag_nebula_hints"));
 	nebulas->setNebulaNames(conf.getBoolean("astro","flag_nebula_names"));
@@ -419,7 +406,7 @@ void Core::init(const InitParser& conf)
 	setPlanetsSizeLimit(conf.getDouble("astro", "planet_size_marginal_limit"));
 
 	ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
-	setFlagClouds(true);
+	ssystem->setFlagClouds(true);
 
 	observatory->load(conf, "init_location");
 
@@ -436,6 +423,7 @@ void Core::init(const InitParser& conf)
 	// Init fonts : should be moved in a specific fonction
 	skyGridMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
+	skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);
 
 	cardinals_points->setFont(FontSizeCardinalPoints, FontFileNameGeneral);
 	asterisms->setFont(FontSizeConstellation, FontFileNameConstellation);
@@ -480,7 +468,7 @@ void Core::init(const InitParser& conf)
 	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
 	navigation->updateViewMat(projection, projection->getFov());
 
-	setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
+	ssystem->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
 
 	std::string skyLocaleName = conf.getStr("localization", "sky_locale");
 	mBackup.initial_skyLocale=skyLocaleName;
@@ -545,46 +533,48 @@ void Core::init(const InitParser& conf)
 	asterisms->setArtIntensity(conf.getDouble("viewing","constellation_art_intensity"));
 	asterisms->setArtFadeDuration(conf.getDouble("viewing","constellation_art_fade_duration"));
 
-	skyGridMgr->setFlagShow("GRID_ALTAZIMUTAL",conf.getBoolean("viewing:flag_azimutal_grid"));
-	skyGridMgr->setFlagShow("GRID_EQUATORIAL",conf.getBoolean("viewing:flag_equatorial_grid"));
-	skyGridMgr->setFlagShow("GRID_ECLIPTIC",conf.getBoolean("viewing:flag_ecliptic_grid"));
-	skyGridMgr->setFlagShow("GRID_GALACTIC",conf.getBoolean("viewing:flag_galactic_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL,conf.getBoolean("viewing:flag_azimutal_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL,conf.getBoolean("viewing:flag_equatorial_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC,conf.getBoolean("viewing:flag_ecliptic_grid"));
+	skyGridMgr->setFlagShow(SKYGRID_TYPE::GRID_GALACTIC,conf.getBoolean("viewing:flag_galactic_grid"));
 
-	skyLineMgr->setFlagShow("LINE_EQUATOR", conf.getBoolean("viewing:flag_equator_line"));
-	skyLineMgr->setFlagShow("LINE_GALACTIC_EQUATOR", conf.getBoolean("viewing:flag_galactic_line"));
-	skyLineMgr->setFlagShow("LINE_ECLIPTIC", conf.getBoolean("viewing:flag_ecliptic_line"));
-	skyLineMgr->setFlagShow("LINE_PRECESSION", conf.getBoolean("viewing:flag_precession_circle"));
-	skyLineMgr->setFlagShow("LINE_CIRCUMPOLAR", conf.getBoolean("viewing:flag_circumpolar_circle"));
-	skyLineMgr->setFlagShow("LINE_TROPIC", conf.getBoolean("viewing:flag_tropic_lines"));
-	skyLineMgr->setFlagShow("LINE_MERIDIAN", conf.getBoolean("viewing:flag_meridian_line"));
-	skyLineMgr->setFlagShow("LINE_ZENITH", conf.getBoolean("viewing:flag_zenith_line"));
-	skyLineMgr->setFlagShow("LINE_CIRCLE_POLAR", conf.getBoolean("viewing:flag_polar_circle"));
-	skyLineMgr->setFlagShow("LINE_POINT_POLAR", conf.getBoolean("viewing:flag_polar_point"));
-	skyLineMgr->setFlagShow("LINE_ECLIPTIC_POLE", conf.getBoolean("viewing:flag_ecliptic_center"));
-	skyLineMgr->setFlagShow("LINE_GALACTIC_POLE", conf.getBoolean("viewing:flag_galactic_pole"));
-	skyLineMgr->setFlagShow("LINE_GALACTIC_CENTER", conf.getBoolean("viewing:flag_galactic_center"));
-	skyLineMgr->setFlagShow("LINE_VERNAL", conf.getBoolean("viewing:flag_vernal_points"));
-	skyLineMgr->setFlagShow("LINE_ANALEMMALINE", conf.getBoolean("viewing:flag_analemma_line"));
-	skyLineMgr->setFlagShow("LINE_ANALEMMA", conf.getBoolean("viewing:flag_analemma"));
-	skyLineMgr->setFlagShow("LINE_ARIES", conf.getBoolean("viewing:flag_aries_line"));
-	skyLineMgr->setFlagShow("LINE_ZODIAC", conf.getBoolean("viewing:flag_zodiac"));
-	personal->setFlagShow(conf.getBoolean("viewing:flag_personal"));
-	personeq->setFlagShow(conf.getBoolean("viewing:flag_personeq"));
-	nautical->setFlagShow(conf.getBoolean("viewing:flag_nautical_alt"));
-	nauticeq->setFlagShow(conf.getBoolean("viewing:flag_nautical_ra"));
-	objCoord->setFlagShow(conf.getBoolean("viewing:flag_object_coordinates"));
-	mouseCoord->setFlagShow(conf.getBoolean("viewing:flag_mouse_coordinates"));
-	angDist->setFlagShow(conf.getBoolean("viewing:flag_angular_distance"));
-	loxodromy->setFlagShow(conf.getBoolean("viewing:flag_loxodromy"));
-	orthodromy->setFlagShow(conf.getBoolean("viewing:flag_orthodromy"));
-	skyLineMgr->setFlagShow("LINE_GREENWICH", conf.getBoolean("viewing:flag_greenwich_line"));
-	skyLineMgr->setFlagShow("LINE_VERTICAL", conf.getBoolean("viewing:flag_vertical_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_EQUATOR, conf.getBoolean("viewing:flag_equator_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, conf.getBoolean("viewing:flag_galactic_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, conf.getBoolean("viewing:flag_ecliptic_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_PRECESSION, conf.getBoolean("viewing:flag_precession_circle"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, conf.getBoolean("viewing:flag_circumpolar_circle"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_TROPIC, conf.getBoolean("viewing:flag_tropic_lines"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, conf.getBoolean("viewing:flag_meridian_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZENITH, conf.getBoolean("viewing:flag_zenith_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, conf.getBoolean("viewing:flag_polar_circle"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, conf.getBoolean("viewing:flag_polar_point"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, conf.getBoolean("viewing:flag_ecliptic_center"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, conf.getBoolean("viewing:flag_galactic_pole"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, conf.getBoolean("viewing:flag_galactic_center"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERNAL, conf.getBoolean("viewing:flag_vernal_points"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, conf.getBoolean("viewing:flag_analemma_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, conf.getBoolean("viewing:flag_analemma"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ARIES, conf.getBoolean("viewing:flag_aries_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, conf.getBoolean("viewing:flag_zodiac"));
+
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONAL, conf.getBoolean("viewing:flag_personal") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_PERSONEQ, conf.getBoolean("viewing:flag_personeq") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICAL, conf.getBoolean("viewing:flag_nautical_alt") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICEQ, conf.getBoolean("viewing:flag_nautical_ra") );
+
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_OBJCOORDS, conf.getBoolean("viewing:flag_object_coordinates") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_MOUSECOORDS, conf.getBoolean("viewing:flag_mouse_coordinates") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ANGDIST, conf.getBoolean("viewing:flag_angular_distance") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_LOXODROMY, conf.getBoolean("viewing:flag_loxodromy") );
+	skyDisplayMgr->setFlagShow(SKYDISPLAY_NAME::SKY_ORTHODROMY, conf.getBoolean("viewing:flag_orthodromy") );
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_GREENWICH, conf.getBoolean("viewing:flag_greenwich_line"));
+	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean("viewing:flag_vertical_line"));
 	cardinals_points->setFlagShow(conf.getBoolean("viewing:flag_cardinal_points"));
 
-	setFlagMoonScaled(conf.getBoolean("viewing", "flag_moon_scaled"));
-	setMoonScale(conf.getDouble ("viewing","moon_scale"), true); //? toujours true TODO
-	setFlagSunScaled(conf.getBoolean("viewing", "flag_sun_scaled"));
-	setSunScale(conf.getDouble ("viewing","sun_scale"), true); //? toujours true TODO
+	ssystem->setFlagMoonScale(conf.getBoolean("viewing", "flag_moon_scaled"));
+	ssystem->setMoonScale(conf.getDouble ("viewing","moon_scale"), true); //? toujours true TODO
+	ssystem->setFlagSunScale(conf.getBoolean("viewing", "flag_sun_scaled"));
+	ssystem->setSunScale(conf.getDouble ("viewing","sun_scale"), true); //? toujours true TODO
 
 	oort->setFlagShow(conf.getBoolean("viewing:flag_oort"));
 
@@ -597,10 +587,10 @@ void Core::init(const InitParser& conf)
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
 	mCity->loadCities(settings-> getDataDir() + "mcities.fab");
-	initialSolarSystemBodies();
+	ssystem->initialSolarSystemBodies();
 
-	defaultLandscape = observatoryGetLandscapeName();
-	tempLandscape = observatoryGetLandscapeName();
+	defaultLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
+	tempLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
 
 	firstTime = 0;
 }
@@ -618,14 +608,6 @@ void Core::updateMode()
 		std::cout << "Changement de mode pour " << currentExecutor->getName() << std::endl;
 		currentExecutor->onEnter();
 	}
-}
-
-void Core::bodyTraceHide(std::string value) const
-{
-	if (value=="all")
-		bodytrace->hide(-1);
-	else
-		bodytrace->hide(Utility::strToInt(value));
 }
 
 bool Core::illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation)
@@ -686,15 +668,7 @@ void Core::updateInSolarSystem(int delta_time)
 	// Update faders
 	skyGridMgr->update(delta_time);
 	skyLineMgr->update(delta_time);
-	personal->update(delta_time);
-	personeq->update(delta_time);
-	nautical->update(delta_time);
-	nauticeq->update(delta_time);
-	objCoord->update(delta_time);
-	mouseCoord->update(delta_time);
-	angDist->update(delta_time);
-	loxodromy->update(delta_time);
-	orthodromy->update(delta_time);
+	skyDisplayMgr->update(delta_time);
 	asterisms->update(delta_time);
 	atmosphere->update(delta_time);
 	landscape->update(delta_time);
@@ -714,7 +688,6 @@ void Core::updateInSolarSystem(int delta_time)
 	Vec3d temp(0.,0.,0.);
 	Vec3d sunPos = navigation->helioToLocal(temp);
 
-
 	// Compute the moon position in local coordinate
 	Vec3d moon = ssystem->getMoon()->get_heliocentric_ecliptic_pos();
 	Vec3d moonPos = navigation->helioToLocal(moon);
@@ -733,9 +706,6 @@ void Core::updateInSolarSystem(int delta_time)
 	std::future<void> b = std::async(std::launch::async, &Core::atmosphereComputeColor, this, sunPos, moonPos);
 	std::future<void> c = std::async(std::launch::async, &Core::hipStarMgrPreDraw, this);
 
-	/*
-	 * Récupération des résultats de async
-	 */
 	a.get();
 	b.get();
 	c.get();
@@ -761,7 +731,6 @@ void Core::updateInSolarSystem(int delta_time)
 	landscape->setSkyBrightness(sky_brightness+0.05);
 	inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
 	// - if above troposphere equivalent on Earth in altitude
-	
 	if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
 		if ((observatory->getLandscapeName()!=tempLandscape) && (defaultLandscape!=tempLandscape) && !observatory->getSpacecraft()) tempLandscape=observatory->getLandscapeName(); //setLandscape(defaultLandscape);
 		if ((observatory->getLandscapeName()!=defaultLandscape) && !observatory->getSpacecraft()) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
@@ -831,10 +800,8 @@ void Core::updateInGalaxy(int delta_time)
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update faders
-	personal->update(delta_time);
-	personeq->update(delta_time);
-	nautical->update(delta_time);
-	nauticeq->update(delta_time);
+	skyDisplayMgr->update(delta_time);
+
 	starLines->update(delta_time);
 	milky_way->update(delta_time);
 	text_usr->update(delta_time);
@@ -870,10 +837,8 @@ void Core::updateInUniverse(int delta_time)
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update faders
-	personal->update(delta_time);
-	personeq->update(delta_time);
-	nautical->update(delta_time);
-	nauticeq->update(delta_time);
+	skyDisplayMgr->update(delta_time);
+
 	tully->update(delta_time);
 	// milky3d->update(delta_time);
 	text_usr->update(delta_time);
@@ -948,25 +913,12 @@ void Core::drawInSolarSystem(int delta_time)
 	oort->draw(observatory->getAltitude(), projection, navigation);
 	illuminates->draw(projection, navigation);
 	asterisms->draw(projection, navigation);
-
 	starLines->draw(projection);
-
 	hip_stars->draw(geodesic_grid, tone_converter, projection, timeMgr,observatory->getAltitude());
 	skyGridMgr->draw(projection);
 	skyLineMgr->draw(projection, navigation, timeMgr, observatory);
 	bodytrace->draw(projection, navigation);
-
-	personal->draw(projection, navigation);
-	personeq->draw(projection, navigation);
-	nautical->nautical_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
-	nauticeq->nautical_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
-
-	objCoord->objCoord_draw(projection, navigation, selected_object.getEarthEquPos(navigation));
-	mouseCoord->objCoord_draw(projection, navigation, getCursorPosEqu(mouseX, mouseY));
-	angDist->angDist_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-	loxodromy->loxodromy_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-	orthodromy->orthodromy_draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-
+	skyDisplayMgr->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 	ssystem->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Draw the pointer on the currently selected object
@@ -1005,8 +957,7 @@ void Core::drawInGalaxy(int delta_time)
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	//tracé des lignes sans activation du tampon de profondeur.
-	personal->draw(projection, navigation);
-	personeq->draw(projection, navigation);
+	skyDisplayMgr->drawPerson(projection, navigation);
 	starLines->draw(navigation);
 	
 	// transparence.
@@ -1024,16 +975,13 @@ void Core::drawInGalaxy(int delta_time)
 void Core::drawInUniverse(int delta_time)
 {
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	tully->draw(observatory->getAltitude(), projection, navigation);
-
-	personal->draw(projection, navigation);
-	personeq->draw(projection, navigation);
+	skyDisplayMgr->drawPerson(projection, navigation);
 }
 
 bool Core::setLandscape(const std::string& new_landscape_name)
@@ -1047,7 +995,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	if (!newLandscape) return 0;
 
 	if (landscape) {
-		bool previousLandscapeFlag = landscapeGetFlag();
+		bool previousLandscapeFlag = landscape->getFlagShow(); //landscapeGetFlag();
 
 		//Switch between the inactive and active background
 		Landscape* tempLandscape = landscape;
@@ -1058,8 +1006,8 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 		inactiveLandscape->setFlagShow(false);
 		//Fade in the new landscape (only if the landscape was activated)
 		if (previousLandscapeFlag) {
-			landscapeSetFlag(false);
-			landscapeSetFlag(true);
+			landscape->setFlagShow(false); //landscapeSetFlag(false);
+			landscape->setFlagShow(true); //landscapeSetFlag(true);
 		}
 
 		/* We ignore the next update tick for the landscapes because when the landscape is very big
@@ -1190,21 +1138,21 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		istr >> hpnum;
 		selected_object = hip_stars->searchHP(hpnum).get();
 		asterisms->setSelected(selected_object);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="star") {
 		selected_object = hip_stars->search(id).get();
 		asterisms->setSelected(selected_object);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		setPlanetsSelected(id);
+		ssystem->setSelected(id); //setPlanetsSelected(id);
 		selected_object = ssystem->getSelected();
 		asterisms->setSelected(Object());
 
 	} else if (type=="nebula") {
 		selected_object = nebulas->search(id);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 		asterisms->setSelected(Object());
 
 	} else if (type=="constellation") {
@@ -1213,7 +1161,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		asterisms->setSelected(id);
 
 		selected_object = nullptr;
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="constellation_star") {
 		// For Find capability, select a star in constellation so can center view on constellation
@@ -1226,7 +1174,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		//		const unsigned int hpnum = asterisms->getFirstSelectedHP();
 		//		selected_object = hip_stars->searchHP(hpnum);
 		//		asterisms->setSelected(selected_object);
-		setPlanetsSelected("");
+		ssystem->setSelected(""); //setPlanetsSelected("");
 		//		// Some stars are shared, so now force constellation
 		//		asterisms->setSelected(id);
 	} else {
@@ -1262,7 +1210,7 @@ void Core::selectZodiac()
 	asterisms->setSelected("Psc");
 	asterisms->setSelected("Lib");
 	selected_object = nullptr;
-	setPlanetsSelected("");
+	ssystem->setSelected(""); //setPlanetsSelected("");
 }
 
 //! Find and select an object near given equatorial position
@@ -1555,7 +1503,7 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 //! @brief Set the sky locale and reload the sky objects names for gettext translation
 void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 {
-	if ( !hip_stars || !cardinals_points || !asterisms || ! skyLineMgr->isExist("LINE_ECLIPTIC")) return; // objects not initialized yet
+	if ( !hip_stars || !cardinals_points || !asterisms || ! skyLineMgr->isExist(SKYLINE_TYPE::LINE_ECLIPTIC)) return; // objects not initialized yet
 
 	std::string oldLocale = getSkyLanguage();
 
@@ -1582,24 +1530,24 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 
 	// simple default color, rather than black which doesn't show up
 	// Load colors from config file
-	skyGridMgr->setColor("GRID_ALTAZIMUTAL", Utility::strToVec3f(conf.getStr(section,"azimuthal_color")));
-	skyGridMgr->setColor("GRID_EQUATORIAL", Utility::strToVec3f(conf.getStr(section,"equatorial_color")));
-	skyGridMgr->setColor("GRID_ECLIPTIC", Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
-	skyGridMgr->setColor("GRID_GALACTIC", Utility::strToVec3f(conf.getStr(section,"galactic_color")));
-	skyLineMgr->setColor("LINE_ECLIPTIC", Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
-	skyLineMgr->setColor("LINE_ECLIPTIC_POLE",Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_CENTER",Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_POLE",Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Utility::strToVec3f(conf.getStr(section,"azimuthal_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_EQUATORIAL, Utility::strToVec3f(conf.getStr(section,"equatorial_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
+	skyGridMgr->setColor(SKYGRID_TYPE::GRID_GALACTIC, Utility::strToVec3f(conf.getStr(section,"galactic_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC, Utility::strToVec3f(conf.getStr(section,"ecliptic_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
 
 	nebulas->setLabelColor(Utility::strToVec3f(conf.getStr(section,"nebula_label_color")));
 	nebulas->setCircleColor(Utility::strToVec3f(conf.getStr(section,"nebula_circle_color")));
 
-	skyLineMgr->setColor("LINE_PRECESSION", Utility::strToVec3f(conf.getStr(section,"precession_circle_color")));
-	skyLineMgr->setColor("LINE_CIRCUMPOLAR", Utility::strToVec3f(conf.getStr(section,"circumpolar_circle_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_EQUATOR", Utility::strToVec3f(conf.getStr(section,"galactic_color")));
-	skyLineMgr->setColor("LINE_VERNAL", Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
-	skyLineMgr->setColor("LINE_EQUATOR", Utility::strToVec3f(conf.getStr(section,"equator_color")));
-	skyLineMgr->setColor("LINE_TROPIC", Utility::strToVec3f(conf.getStr(section,"equator_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_PRECESSION, Utility::strToVec3f(conf.getStr(section,"precession_circle_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR, Utility::strToVec3f(conf.getStr(section,"circumpolar_circle_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Utility::strToVec3f(conf.getStr(section,"galactic_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL, Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,"equator_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,"equator_color")));
 
 	ssystem->setDefaultBodyColor(conf.getStr(section,"planet_names_color"), conf.getStr(section,"planet_names_color"), 
 								conf.getStr(section,"planet_orbits_color"), conf.getStr(section,"object_trails_color"));
@@ -1610,32 +1558,31 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	asterisms->setBoundaryColor(Utility::strToVec3f(conf.getStr(section,"const_boundary_color")));
 	asterisms->setLabelColor(Utility::strToVec3f(conf.getStr(section,"const_names_color")));
 	asterisms->setArtColor(Utility::strToVec3f(conf.getStr(section,"const_art_color")));
-
-	skyLineMgr->setColor("LINE_ANALEMMALINE", Utility::strToVec3f(conf.getStr(section,"analemma_line_color")));
-	skyLineMgr->setColor("LINE_ANALEMMA", Utility::strToVec3f(conf.getStr(section,"analemma_color")));
-	skyLineMgr->setColor("LINE_ARIES",Utility::strToVec3f(conf.getStr(section,"aries_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Utility::strToVec3f(conf.getStr(section,"analemma_line_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ANALEMMA, Utility::strToVec3f(conf.getStr(section,"analemma_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ARIES,Utility::strToVec3f(conf.getStr(section,"aries_color")));
 	cardinals_points->setColor(Utility::strToVec3f(conf.getStr(section,"cardinal_color")));
-	skyLineMgr->setColor("LINE_ECLIPTIC_POLE",Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_POLE",Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
-	skyLineMgr->setColor("LINE_GALACTIC_CENTER",Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
-	skyLineMgr->setColor("LINE_GREENWICH",Utility::strToVec3f(conf.getStr(section,"greenwich_color")));
-	skyLineMgr->setColor("LINE_MERIDIAN",Utility::strToVec3f(conf.getStr(section,"meridian_color")));
-	personal->setColor(Utility::strToVec3f(conf.getStr(section,"personal_color")));
-	personeq->setColor(Utility::strToVec3f(conf.getStr(section,"personeq_color")));
-	nautical->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_alt_color")));
-	nauticeq->setColor(Utility::strToVec3f(conf.getStr(section,"nautical_ra_color")));
-	objCoord->setColor(Utility::strToVec3f(conf.getStr(section,"object_coordinates_color")));
-	mouseCoord->setColor(Utility::strToVec3f(conf.getStr(section,"mouse_coordinates_color")));
-	angDist->setColor(Utility::strToVec3f(conf.getStr(section,"angular_distance_color")));
-	loxodromy->setColor(Utility::strToVec3f(conf.getStr(section, "loxodromy_color")));
-	orthodromy->setColor(Utility::strToVec3f(conf.getStr(section, "orthodromy_color")));
-	skyLineMgr->setColor("LINE_CIRCLE_POLAR", Utility::strToVec3f(conf.getStr(section,"polar_color")));
-	skyLineMgr->setColor("LINE_POINT_POLAR", Utility::strToVec3f(conf.getStr(section,"polar_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE,Utility::strToVec3f(conf.getStr(section,"ecliptic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_POLE,Utility::strToVec3f(conf.getStr(section,"galactic_pole_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER,Utility::strToVec3f(conf.getStr(section,"galactic_center_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_GREENWICH,Utility::strToVec3f(conf.getStr(section,"greenwich_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_MERIDIAN,Utility::strToVec3f(conf.getStr(section,"meridian_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONAL,Utility::strToVec3f(conf.getStr(section,"personal_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_PERSONEQ,Utility::strToVec3f(conf.getStr(section,"personeq_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_NAUTICAL,Utility::strToVec3f(conf.getStr(section,"nautical_alt_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_NAUTICEQ,Utility::strToVec3f(conf.getStr(section,"nautical_ra_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_OBJCOORDS,Utility::strToVec3f(conf.getStr(section,"object_coordinates_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS,Utility::strToVec3f(conf.getStr(section,"mouse_coordinates_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ANGDIST,Utility::strToVec3f(conf.getStr(section,"angular_distance_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_LOXODROMY,Utility::strToVec3f(conf.getStr(section,"loxodromy_color")));
+	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ORTHODROMY,Utility::strToVec3f(conf.getStr(section,"orthodromy_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Utility::strToVec3f(conf.getStr(section,"polar_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_POINT_POLAR, Utility::strToVec3f(conf.getStr(section,"polar_color")));
 	text_usr->setColor(Utility::strToVec3f(conf.getStr(section,"text_usr_color")));
-	skyLineMgr->setColor("LINE_VERNAL",Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
-	skyLineMgr->setColor("LINE_VERTICAL",Utility::strToVec3f(conf.getStr(section,"vertical_color")));
-	skyLineMgr->setColor("LINE_ZENITH",Utility::strToVec3f(conf.getStr(section,"zenith_color")));
-	skyLineMgr->setColor("LINE_ZODIAC",Utility::strToVec3f(conf.getStr(section,"zodiac_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL,Utility::strToVec3f(conf.getStr(section,"vernal_points_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERTICAL,Utility::strToVec3f(conf.getStr(section,"vertical_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZENITH,Utility::strToVec3f(conf.getStr(section,"zenith_color")));
+	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZODIAC,Utility::strToVec3f(conf.getStr(section,"zodiac_color")));
 
 	oort->setColor(Utility::strToVec3f(conf.getStr(section,"oort_color")));
 }
@@ -1651,112 +1598,112 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("rendering:flag_antialias_lines", getFlagAntialiasLines());
 	conf.setDouble("rendering:line_width", getLineWidth());
 	// viewing section
-	conf.setBoolean("viewing:flag_constellation_drawing", constellationGetFlagLines());
-	conf.setBoolean("viewing:flag_constellation_name", constellationGetFlagNames());
-	conf.setBoolean("viewing:flag_constellation_art", constellationGetFlagArt());
-	conf.setBoolean("viewing:flag_constellation_boundaries", constellationGetFlagBoundaries());
-	conf.setBoolean("viewing:flag_constellation_pick", constellationGetFlagIsolateSelected());
-	conf.setDouble("viewing:moon_scale", getMoonScale());
-	conf.setDouble("viewing:sun_scale", getSunScale());
-	conf.setBoolean("viewing:flag_equatorial_grid", skyGridMgrGetFlagShow("GRID_EQUATORIAL"));
-	conf.setBoolean("viewing:flag_ecliptic_grid", skyGridMgrGetFlagShow("GRID_ECLIPTIC"));
-	conf.setBoolean("viewing:flag_galactic_grid", skyGridMgrGetFlagShow("GRID_GALACTIC"));
-	conf.setBoolean("viewing:flag_azimutal_grid", skyGridMgrGetFlagShow("GRID_ALTAZIMUTAL"));
-	conf.setBoolean("viewing:flag_equator_line", skyGridMgrGetFlagShow("LINE_EQUATOR"));
-	conf.setBoolean("viewing:flag_ecliptic_line", skyLineMgrGetFlagShow("LINE_ECLIPTIC"));
-	conf.setBoolean("viewing:flag_cardinal_points", cardinalsPointsGetFlag());
-	conf.setBoolean("viewing:flag_zenith_line", skyLineMgrGetFlagShow("LINE_ZENITH"));
-	conf.setBoolean("viewing:flag_polar_circle", skyLineMgrGetFlagShow("LINE_CIRCLE_POLAR"));
-	conf.setBoolean("viewing:flag_polar_point", skyLineMgrGetFlagShow("LINE_POINT_POLAR"));
-	conf.setBoolean("viewing:flag_ecliptic_center", skyLineMgrGetFlagShow("LINE_ECLIPTIC_POLE"));
-	conf.setBoolean("viewing:flag_galactic_pole", skyLineMgrGetFlagShow("LINE_GALACTIC_POLE"));
-	conf.setBoolean("viewing:flag_galactic_center", skyLineMgrGetFlagShow("LINE_GALACTIC_CENTER"));
-	conf.setBoolean("viewing:flag_vernal_points", skyLineMgrGetFlagShow("LINE_VERNAL"));
-	conf.setBoolean("viewing:flag_analemma", skyLineMgrGetFlagShow("LINE_ANALEMMA"));
-	conf.setBoolean("viewing:flag_analemma_line", skyLineMgrGetFlagShow("LINE_ANALEMMALINE"));
-	conf.setBoolean("viewing:flag_aries_line", skyLineMgrGetFlagShow("LINE_ARIES"));
-	conf.setBoolean("viewing:flag_zodiac", skyLineMgrGetFlagShow("LINE_ZODIAC"));
-	conf.setBoolean("viewing:flag_greenwich_line", skyLineMgrGetFlagShow("LINE_GREENWICH"));
-	conf.setBoolean("viewing:flag_vertical_line", skyLineMgrGetFlagShow("LINE_VERTICAL"));
-	conf.setBoolean("viewing:flag_meridian_line", skyLineMgrGetFlagShow("LINE_MERIDIAN"));
-	conf.setBoolean("viewing:flag_precession_circle", skyLineMgrGetFlagShow("LINE_PRECESSION"));
-	conf.setBoolean("viewing:flag_circumpolar_circle", skyLineMgrGetFlagShow("LINE_CIRCUMPOLAR"));
-	conf.setBoolean("viewing:flag_tropic_lines", skyLineMgrGetFlagShow("LINE_TROPIC"));
-	conf.setBoolean("viewing:flag_moon_scaled", getFlagMoonScaled());
-	conf.setBoolean("viewing:flag_sun_scaled", getFlagSunScaled());
-	conf.setDouble ("viewing:constellation_art_intensity", constellationGetArtIntensity());
-	conf.setDouble ("viewing:constellation_art_fade_duration", constellationGetArtFadeDuration());
+	conf.setBoolean("viewing:flag_constellation_drawing", asterisms->getFlagLines()); //constellationGetFlagLines());
+	conf.setBoolean("viewing:flag_constellation_name", asterisms->getFlagNames()); //constellationGetFlagNames());
+	conf.setBoolean("viewing:flag_constellation_art", asterisms->getFlagArt()); //constellationGetFlagArt());
+	conf.setBoolean("viewing:flag_constellation_boundaries", asterisms->getFlagBoundaries()); //constellationGetFlagBoundaries());
+	conf.setBoolean("viewing:flag_constellation_pick", asterisms->getFlagIsolateSelected()); //constellationGetFlagIsolateSelected());
+	conf.setDouble("viewing:moon_scale", ssystem->getMoonScale());
+	conf.setDouble("viewing:sun_scale", ssystem->getSunScale());
+	conf.setBoolean("viewing:flag_equatorial_grid", skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
+	conf.setBoolean("viewing:flag_ecliptic_grid", skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
+	conf.setBoolean("viewing:flag_galactic_grid", skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
+	conf.setBoolean("viewing:flag_azimutal_grid", skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
+	conf.setBoolean("viewing:flag_equator_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_EQUATOR));
+	conf.setBoolean("viewing:flag_ecliptic_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
+	conf.setBoolean("viewing:flag_cardinal_points", cardinals_points->getFlagShow()); //cardinalsPointsGetFlag());
+	conf.setBoolean("viewing:flag_zenith_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZENITH));
+	conf.setBoolean("viewing:flag_polar_circle", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR));
+	conf.setBoolean("viewing:flag_polar_point", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR));
+	conf.setBoolean("viewing:flag_ecliptic_center", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE));
+	conf.setBoolean("viewing:flag_galactic_pole", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE));
+	conf.setBoolean("viewing:flag_galactic_center", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER));
+	conf.setBoolean("viewing:flag_vernal_points", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_VERNAL));
+	conf.setBoolean("viewing:flag_analemma", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ANALEMMA));
+	conf.setBoolean("viewing:flag_analemma_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE));
+	conf.setBoolean("viewing:flag_aries_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ARIES));
+	conf.setBoolean("viewing:flag_zodiac", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZODIAC));
+	conf.setBoolean("viewing:flag_greenwich_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_GREENWICH));
+	conf.setBoolean("viewing:flag_vertical_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_VERTICAL));
+	conf.setBoolean("viewing:flag_meridian_line", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_MERIDIAN));
+	conf.setBoolean("viewing:flag_precession_circle", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
+	conf.setBoolean("viewing:flag_circumpolar_circle", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
+	conf.setBoolean("viewing:flag_tropic_lines", skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
+	conf.setBoolean("viewing:flag_moon_scaled", ssystem->getFlagMoonScale()); //getFlagMoonScaled());
+	conf.setBoolean("viewing:flag_sun_scaled", ssystem->getFlagSunScale()); //getFlagSunScaled());
+	conf.setDouble ("viewing:constellation_art_intensity", asterisms->getArtIntensity()); //constellationGetArtIntensity());
+	conf.setDouble ("viewing:constellation_art_fade_duration", asterisms->getArtFadeDuration()); //constellationGetArtFadeDuration());
 	conf.setDouble("viewing:light_pollution_limiting_magnitude", getLightPollutionLimitingMagnitude());
 	// Landscape section
-	conf.setBoolean("landscape:flag_landscape", landscapeGetFlag());
+	conf.setBoolean("landscape:flag_landscape", landscape->getFlagShow()); //landscapeGetFlag());
 	conf.setBoolean("landscape:flag_atmosphere", atmosphereGetFlag());
-	conf.setBoolean("landscape:flag_fog", fogGetFlag());
+	conf.setBoolean("landscape:flag_fog", landscape->getFlagShowFog()); //fogGetFlag());
 	// Star section
-	conf.setDouble ("stars:star_scale", starGetScale());
-	conf.setDouble ("stars:star_mag_scale", starGetMagScale());
-	conf.setDouble("stars:max_mag_star_name", starGetMaxMagName());
-	conf.setBoolean("viewing:flag_star_pick", starGetFlagIsolateSelected());
-	conf.setBoolean("stars:flag_star_twinkle", starGetFlagTwinkle());
-	conf.setDouble("stars:star_twinkle_amount", starGetTwinkleAmount());
-	conf.setDouble("stars:star_limiting_mag", starGetLimitingMag());
+	conf.setDouble ("stars:star_scale", hip_stars->getScale()); //starGetScale());
+	conf.setDouble ("stars:star_mag_scale", hip_stars->getMagScale()); //starGetMagScale());
+	conf.setDouble("stars:max_mag_star_name", hip_stars->getMaxMagName()); //starGetMaxMagName());
+	conf.setBoolean("viewing:flag_star_pick", hip_stars->getFlagIsolateSelected()); //starGetFlagIsolateSelected());
+	conf.setBoolean("stars:flag_star_twinkle", hip_stars->getFlagTwinkle()); //starGetFlagTwinkle());
+	conf.setDouble("stars:star_twinkle_amount", hip_stars->getTwinkleAmount()); //starGetTwinkleAmount());
+	conf.setDouble("stars:star_limiting_mag", hip_stars->getMagConverterMaxScaled60DegMag()); //starGetLimitingMag());
 	// Color section
-	conf.setStr    ("color:azimuthal_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_ALTAZIMUTAL")));
-	conf.setStr    ("color:equatorial_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_EQUATORIAL")));
-	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyGridMgrGetColor("GRID_ECLIPTIC")));
-	conf.setStr    ("color:equator_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_EQUATOR")));
-	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ECLIPTIC")));
-	conf.setStr    ("color:meridian_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_MERIDIAN")));
-	conf.setStr    ("color:zenith_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ZENITH")));
-	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_CIRCLE_POLAR")));
-	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_POINT_POLAR")));
-	conf.setStr    ("color:ecliptic_center_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ECLIPTIC_POLE")));
-	conf.setStr    ("color:galactic_pole_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_GALACTIC_POLE")));
-	conf.setStr    ("color:galactic_center_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_GALACTIC_CENTER")));
-	conf.setStr    ("color:vernal_points_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_VERNAL")));
-	conf.setStr    ("color:analemma_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ANALEMMA")));
-	conf.setStr    ("color:analemma_line_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ANALEMMALINE")));
-	conf.setStr    ("color:aries_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ARIES")));
-	conf.setStr    ("color:zodiac_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_ZODIAC")));
-	conf.setStr    ("color:personal_color", Utility::vec3fToStr(personalGetColor()));
-	conf.setStr    ("color:personeq_color", Utility::vec3fToStr(personeqGetColor()));
-	conf.setStr    ("color:nautical_alt", Utility::vec3fToStr(nauticalGetColor()));
-	conf.setStr    ("color:nautical_ra", Utility::vec3fToStr(nauticeqGetColor()));
-	conf.setStr    ("color:object_coordinates", Utility::vec3fToStr(objCoordGetColor()));
-	conf.setStr    ("color:mouse_coordinates", Utility::vec3fToStr(mouseCoordGetColor()));
-	conf.setStr    ("color:angular_distance", Utility::vec3fToStr(angDistGetColor()));
-	conf.setStr    ("color:loxodromy", Utility::vec3fToStr(loxodromyGetColor()));
-	conf.setStr    ("color:orthodromy", Utility::vec3fToStr(orthodromyGetColor()));
-	conf.setStr    ("color:greenwich_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_GREENWICH")));
-	conf.setStr    ("color:vertical_line", Utility::vec3fToStr(skyLineMgrGetColor("LINE_VERTICAL")));
-	conf.setStr    ("color:const_lines_color", Utility::vec3fToStr(constellationGetColorLine()));
-	conf.setStr    ("color:const_names_color", Utility::vec3fToStr(constellationGetColorNames()));
-	conf.setStr    ("color:const_art_color", Utility::vec3fToStr(constellationGetColorArt()));
-	conf.setStr    ("color:const_boundary_color", Utility::vec3fToStr(constellationGetColorBoundaries()));
-	conf.setStr	   ("color:nebula_label_color", Utility::vec3fToStr(nebulaGetColorLabels()));
-	conf.setStr	   ("color:nebula_circle_color", Utility::vec3fToStr(nebulaGetColorCircle()));
-	conf.setStr	   ("color:precession_circle_color", Utility::vec3fToStr(skyLineMgrGetColor("LINE_PRECESSION")));
-	conf.setStr    ("color:cardinal_color", Utility::vec3fToStr(cardinalsPointsGetColor()));
+	conf.setStr    ("color:azimuthal_color", Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
+	conf.setStr    ("color:equatorial_color", Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
+	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_ECLIPTIC)));
+	conf.setStr    ("color:equator_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_EQUATOR)));
+	conf.setStr    ("color:ecliptic_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ECLIPTIC)));
+	conf.setStr    ("color:meridian_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_MERIDIAN)));
+	conf.setStr    ("color:zenith_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ZENITH)));
+	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR)));
+	conf.setStr    ("color:polar_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_POINT_POLAR)));
+	conf.setStr    ("color:ecliptic_center_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE)));
+	conf.setStr    ("color:galactic_pole_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GALACTIC_POLE)));
+	conf.setStr    ("color:galactic_center_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER)));
+	conf.setStr    ("color:vernal_points_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_VERNAL)));
+	conf.setStr    ("color:analemma_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMA)));
+	conf.setStr    ("color:analemma_line_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ANALEMMALINE)));
+	conf.setStr    ("color:aries_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ARIES)));
+	conf.setStr    ("color:zodiac_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_ZODIAC)));
+	conf.setStr    ("color:personal_color",     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONAL)));
+	conf.setStr    ("color:personeq_color",     Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_PERSONEQ)));
+	conf.setStr    ("color:nautical_alt",       Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICAL)));
+	conf.setStr    ("color:nautical_ra",        Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_NAUTICEQ)));
+	conf.setStr    ("color:object_coordinates", Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_OBJCOORDS)));
+	conf.setStr    ("color:mouse_coordinates",  Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS)));
+	conf.setStr    ("color:angular_distance",   Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ANGDIST)));
+	conf.setStr    ("color:loxodromy",          Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_LOXODROMY)));
+	conf.setStr    ("color:orthodromy",         Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ORTHODROMY)));
+	conf.setStr    ("color:greenwich_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GREENWICH)));
+	conf.setStr    ("color:vertical_line", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_VERTICAL)));
+	conf.setStr    ("color:const_lines_color", Utility::vec3fToStr(asterisms->getLineColor())); //constellationGetColorLine()));
+	conf.setStr    ("color:const_names_color", Utility::vec3fToStr(asterisms->getLabelColor())); //constellationGetColorNames()));
+	conf.setStr    ("color:const_art_color", Utility::vec3fToStr(asterisms->getArtColor())); //constellationGetColorArt()));
+	conf.setStr    ("color:const_boundary_color", Utility::vec3fToStr(asterisms->getBoundaryColor())); //constellationGetColorBoundaries()));
+	conf.setStr	   ("color:nebula_label_color", Utility::vec3fToStr(nebulas->getLabelColor())); //nebulaGetColorLabels()));
+	conf.setStr	   ("color:nebula_circle_color", Utility::vec3fToStr(nebulas->getCircleColor())); //nebulaGetColorCircle()));
+	conf.setStr	   ("color:precession_circle_color", Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_PRECESSION)));
+	conf.setStr    ("color:cardinal_color", Utility::vec3fToStr(cardinals_points->getColor())); //cardinalsPointsGetColor()));
 	// Navigation section
 	conf.setBoolean("navigation:flag_manual_zoom", getFlagManualAutoZoom());
 	conf.setDouble ("navigation:auto_move_duration", getAutoMoveDuration());
 	conf.setDouble ("navigation:zoom_speed", getZoomSpeed());
 	conf.setDouble ("navigation:heading", getHeading());
 	// Astro section
-	conf.setBoolean("astro:flag_object_trails", planetsGetFlagTrails());
-	conf.setBoolean("astro:flag_bright_nebulae", nebulaGetFlagBright());
-	conf.setBoolean("astro:flag_stars", starGetFlag());
-	conf.setBoolean("astro:flag_star_name", starGetFlagName());
-	conf.setBoolean("viewing:flag_star_pick", starGetFlagIsolateSelected());
-	conf.setBoolean("astro:flag_nebula", nebulaGetFlag());
-	conf.setBoolean("astro:flag_nebula_names", nebulaGetFlagNames());
-	conf.setBoolean("astro:flag_nebula_hints", nebulaGetFlagHints());
-	conf.setDouble("astro:max_mag_nebula_name", nebulaGetMaxMagHints());
-	conf.setBoolean("astro:flag_planets", planetsGetFlag());
-	conf.setBoolean("astro:flag_planets_hints", planetsGetFlagHints());
-	conf.setBoolean("astro:flag_planets_orbits", planetsGetFlagOrbits());
-	conf.setBoolean("astro:flag_light_travel_time", getFlagLightTravelTime());
-	conf.setBoolean("astro:flag_milky_way", milkyWayGetFlag());
-	conf.setDouble("astro:milky_way_intensity", milkyWayGetIntensity());
+	conf.setBoolean("astro:flag_object_trails", ssystem->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
+	conf.setBoolean("astro:flag_bright_nebulae", nebulas->getFlagBright()); //nebulaGetFlagBright());
+	conf.setBoolean("astro:flag_stars", hip_stars->getFlagStars()); //starGetFlag());
+	conf.setBoolean("astro:flag_star_name", hip_stars->getFlagNames()); //starGetFlagName());
+	conf.setBoolean("viewing:flag_star_pick", hip_stars->getFlagIsolateSelected()); //starGetFlagIsolateSelected());
+	conf.setBoolean("astro:flag_nebula", nebulas->getFlagShow()); //nebulaGetFlag());
+	conf.setBoolean("astro:flag_nebula_names", nebulas->getNebulaNames()); //nebulaGetFlagNames());
+	conf.setBoolean("astro:flag_nebula_hints", nebulas->getFlagHints()); //nebulaGetFlagHints());
+	conf.setDouble("astro:max_mag_nebula_name", nebulas->getMaxMagHints()); //nebulaGetMaxMagHints());
+	conf.setBoolean("astro:flag_planets", ssystem->getFlagShow()); //planetsGetFlag());
+	conf.setBoolean("astro:flag_planets_hints", ssystem->getFlag(BODY_FLAG::F_HINTS)); //planetsGetFlagHints());
+	conf.setBoolean("astro:flag_planets_orbits", ssystem->getFlagPlanetsOrbits()); //planetsGetFlagOrbits());
+	conf.setBoolean("astro:flag_light_travel_time", ssystem->getFlagLightTravelTime()); //getFlagLightTravelTime());
+	conf.setBoolean("astro:flag_milky_way", milky_way->getFlagShow()); //milkyWayGetFlag());
+	conf.setDouble("astro:milky_way_intensity", milky_way->getIntensity()); //milkyWayGetIntensity());
 	conf.setDouble("astro:star_size_limit", starGetSizeLimit());
 	conf.setDouble("astro:planet_size_marginal_limit", getPlanetsSizeLimit());
 }
@@ -2143,12 +2090,10 @@ std::string Core::removeNebula(const std::string& name)
 	}
 
 	std::string error = nebulas->removeNebula(name, true);
-
 	// Try to find original version, if any
 	if( updateSelection ) selected_object = nebulas->search(name);
 
 	return error;
-
 }
 
 std::string Core::removeSupplementalNebulae()
@@ -2175,7 +2120,7 @@ void Core::setmBackup()
 {
 	if (mBackup.jday !=0) {
 		timeMgr->setJDay(mBackup.jday);
-		setFov(mBackup.fov);
+		projection->setFov(mBackup.fov); //setFov(mBackup.fov);
 		moveObserver (mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
 	}
 	setHomePlanet(mBackup.home_planet_name);
@@ -2188,7 +2133,7 @@ void Core::getmBackup()
 	mBackup.longitude=getObservatory()->getLongitude();
 	mBackup.altitude=getObservatory()->getAltitude();
 	mBackup.pos_name=getObservatory()->getName();
-	mBackup.fov=getFov();
+	mBackup.fov = projection->getFov(); //getFov();
 	mBackup.home_planet_name=getObservatory()->getHomePlanetEnglishName();
 }
 

@@ -42,6 +42,7 @@
 #include "appModule/mkfifo.hpp"
 #include "coreModule/callbacks.hpp"
 #include "coreModule/core.hpp"
+#include "coreModule/coreLink.hpp"
 #include "eventModule/event_handler.hpp"
 #include "eventModule/event_manager.hpp"
 #include "interfaceModule/app_command_interface.hpp"
@@ -81,11 +82,12 @@ App::App( SDLFacade* const sdl ) :
 	screenFader =  new ScreenFader();
 
 	core = new Core(settings, width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
+	coreLink = new CoreLink(core);
 
 	screenFader->initShader();
 
-	ui = new UI(core, this, mSdl, media);
-	commander = new AppCommandInterface(core, this, ui, media);
+	ui = new UI(core, coreLink, this, mSdl, media);
+	commander = new AppCommandInterface(core, coreLink, this, ui, media);
 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = new Fps();
@@ -145,6 +147,7 @@ App::~App()
 	delete scriptMgr;
 	delete media;
 	delete commander;
+	delete coreLink;
 	delete core;
 	delete saveScreenInterface;
 	delete internalFPS;
@@ -244,7 +247,7 @@ void App::init()
 	cLog::get()->write("Read daykeymode as <" + DayKeyMode + ">", LOG_TYPE::L_INFO);
 
 	if (StartupTimeMode=="preset" || StartupTimeMode=="Preset")
-		core->setJDay(PresetSkyTime - spaceDate->getGMTShift(PresetSkyTime) * JD_HOUR);
+		coreLink->setJDay(PresetSkyTime - spaceDate->getGMTShift(PresetSkyTime) * JD_HOUR);
 	else core->setTimeNow();
 
 	// initialisation of the User Interface
@@ -344,7 +347,7 @@ void App::update(int delta_time)
 	internalFPS->addCalculatedTime(delta_time);
 
 	// change time rate if needed to fast forward scripts
-	delta_time *= core->timeGetMultiplier();
+	delta_time *= coreLink->timeGetMultiplier();
 	// run command from a running script
 	scriptMgr->update(delta_time);
 	if (!scriptMgr->isPaused() || !scriptMgr->isFaster() )	media->audioUpdate(delta_time);

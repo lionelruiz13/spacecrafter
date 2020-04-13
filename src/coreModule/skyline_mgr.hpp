@@ -35,6 +35,7 @@
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/time_mgr.hpp"
+#include "coreModule/core_common.hpp"
 
 class SkyLineMgr {
 public:
@@ -47,52 +48,54 @@ public:
 		return m_map.size();
 	};
 	//Celle qui va créer les objets
-	void Create(std::string type_obj);
+	//void Create(std::string type_obj);
+	void Create(SKYLINE_TYPE a);
 	void draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
 	void update(int delta_time);
 
 	void setFont(float font_size, const std::string& font_name);
+	//void setFont(float font_size, SKYLINE_TYPE font_name);
 
 	void setInternalNav(bool a);
 
-	void setColor(std::string typeObj, const Vec3f& c);
-	const Vec3f& getColor(std::string typeObj);
+	void setColor(SKYLINE_TYPE typeObj, const Vec3f& c);
+	const Vec3f& getColor(SKYLINE_TYPE typeObj);
 
 	//! change FlagShow: inverse la valeur du flag
-	void setFlagShow(std::string typeObj, bool b);
-	bool getFlagShow(std::string typeObj);
-	void flipFlagShow(std::string typeObj);
+	void setFlagShow(SKYLINE_TYPE typeObj, bool b);
+	bool getFlagShow(SKYLINE_TYPE typeObj);
+	void flipFlagShow(SKYLINE_TYPE typeObj);
 
 	void translateLabels(Translator& trans);
-	bool isExist(std::string typeObj);
+	bool isExist(SKYLINE_TYPE typeObj);
 
 private:
-	enum LINE_TYPE {
-		LINE_CIRCLE_POLAR,
-		LINE_POINT_POLAR,
-		LINE_ECLIPTIC_POLE,
-		LINE_GALACTIC_POLE,
-		LINE_ANALEMMA,
-		LINE_ANALEMMALINE,
-		LINE_CIRCUMPOLAR,
-		LINE_GALACTIC_CENTER,
-		LINE_VERNAL,
-		LINE_GREENWICH,
-		LINE_ARIES,
-		LINE_EQUATOR,
-		LINE_GALACTIC_EQUATOR,
-		LINE_MERIDIAN,
-		LINE_TROPIC,
-		LINE_ECLIPTIC,
-		LINE_PRECESSION,
-		LINE_VERTICAL,
-		LINE_ZODIAC,
-		LINE_ZENITH,
-		LINE_UNKNOWN
-	};
+	// enum LINE_TYPE {
+	// 	LINE_CIRCLE_POLAR,
+	// 	LINE_POINT_POLAR,
+	// 	LINE_ECLIPTIC_POLE,
+	// 	LINE_GALACTIC_POLE,
+	// 	LINE_ANALEMMA,
+	// 	LINE_ANALEMMALINE,
+	// 	LINE_CIRCUMPOLAR,
+	// 	LINE_GALACTIC_CENTER,
+	// 	LINE_VERNAL,
+	// 	LINE_GREENWICH,
+	// 	LINE_ARIES,
+	// 	LINE_EQUATOR,
+	// 	LINE_GALACTIC_EQUATOR,
+	// 	LINE_MERIDIAN,
+	// 	LINE_TROPIC,
+	// 	LINE_ECLIPTIC,
+	// 	LINE_PRECESSION,
+	// 	LINE_VERTICAL,
+	// 	LINE_ZODIAC,
+	// 	LINE_ZENITH,
+	// 	LINE_UNKNOWN
+	// };
 
-	SkyLineMgr::LINE_TYPE stringToType(const std::string& typeObj);
-	std::map<std::string ,SkyLine*> m_map;
+	SKYLINE_TYPE stringToType(const std::string& typeObj);
+	std::map<SKYLINE_TYPE ,SkyLine*> m_map;
 
 	Vec3f baseColor;
 };

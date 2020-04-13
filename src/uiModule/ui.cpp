@@ -32,6 +32,7 @@
 #include <algorithm>
 #include "appModule/app.hpp"
 #include "coreModule/core.hpp"
+#include "coreModule/coreLink.hpp"
 #include "eventModule/event_manager.hpp"
 #include "eventModule/ScriptEvent.hpp"
 #include "eventModule/CommandEvent.hpp"
@@ -58,7 +59,7 @@ static const double DURATION_COMMAND = 0.1;
 std::string default_landscape = "";
 std::string current_landscape = "";
 
-UI::UI(Core * _core, App * _app, SDLFacade *_m_sdl,  Media* _media) :
+UI::UI(Core * _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl,  Media* _media) :
 	tuiFont(nullptr),
 	FlagShowTuiMenu(0),
 	tui_root(nullptr),
@@ -71,6 +72,7 @@ UI::UI(Core * _core, App * _app, SDLFacade *_m_sdl,  Media* _media) :
 		exit(-1);
 	}
 	core = _core;
+	coreLink = _coreLink;
 	media = _media;
 	m_sdl= _m_sdl;
 	app = _app;
@@ -120,8 +122,8 @@ void UI::init(const InitParser& conf)
 	// set up mouse cursor timeout
 	MouseTimeLeft = MouseCursorTimeout*1000;
 
-	default_landscape = core->observatoryGetLandscapeName();
-	current_landscape = core->observatoryGetLandscapeName();
+	default_landscape = coreLink->observatoryGetLandscapeName();
+	current_landscape = coreLink->observatoryGetLandscapeName();
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
 }
 
@@ -244,10 +246,10 @@ int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_V
 		case s_gui::S_GUI_MOUSE_MIDDLE :
 			break;
 		case s_gui::S_GUI_MOUSE_WHEELUP :
-			core->zoomTo(core->getAimFov()-MouseZoom*core->getAimFov()/60., 0.2);
+			coreLink->zoomTo(coreLink->getAimFov()-MouseZoom*coreLink->getAimFov()/60., 0.2);
 			return 1;
 		case s_gui::S_GUI_MOUSE_WHEELDOWN :
-			core->zoomTo(core->getAimFov()+MouseZoom*core->getAimFov()/60., 0.2);
+			coreLink->zoomTo(coreLink->getAimFov()+MouseZoom*coreLink->getAimFov()/60., 0.2);
 			return 1;
 		default:
 			break;
@@ -391,7 +393,7 @@ void UI::moveLon(double x)
 
 void UI::lowerHeight(double x)
 {
-	double latimem = core->observatoryGetAltitude();
+	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
 	core->moveRelAltObserver(latimem, DURATION_COMMAND);
 	this->executeCommand("add r 1");
@@ -399,7 +401,7 @@ void UI::lowerHeight(double x)
 
 void UI::raiseHeight(double x)
 {
-	double latimem = core->observatoryGetAltitude();
+	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
 	core->moveRelAltObserver(latimem, DURATION_COMMAND);
 	this->executeCommand("add r -1");
@@ -549,7 +551,7 @@ void UI::pauseScript()
 {
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
-		core->timeResetMultiplier();
+		coreLink->timeResetMultiplier();
 	} else
 		this->executeCommand("timerate action pause");;
 }
@@ -719,7 +721,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_K :
 			if ( scriptInterface->isScriptPlaying() ) {
 				this->executeCommand("script action resume");
-				core->timeResetMultiplier();
+				coreLink->timeResetMultiplier();
 			} else
 				media->playerPause();
 			break;
@@ -802,7 +804,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 	}
 
 	if(!scriptInterface->isScriptPlaying())
-		core->timeResetMultiplier();  // if no script in progress always real time
+		coreLink->timeResetMultiplier();  // if no script in progress always real time
 
 	switch (key) {
 
@@ -1185,7 +1187,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action end");
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate rate 0");
 					break;
@@ -1216,7 +1218,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;
@@ -1309,7 +1311,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					if ( scriptInterface->isScriptPlaying() ) {
 						event = new CommandEvent("script action resume");
 						EventManager::getInstance()->queue(event);
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else {
 						event = new CommandEvent("timerate rate 1");
 						EventManager::getInstance()->queue(event);
@@ -1740,7 +1742,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama2.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					break;
 				case KWIN:
 					this->executeCommand(std::string("body name selected skin_use toggle"));				
@@ -2091,7 +2093,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						core->timeResetMultiplier();
+						coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;
@@ -2116,7 +2118,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/panorama1.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					key_Modifier= NONE;
 					break;
 				case KWIN:
@@ -2124,12 +2126,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama3.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/panorama5.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = core->observatoryGetLandscapeName();
+					current_landscape = coreLink->observatoryGetLandscapeName();
 					break;
 				default:
 					break;
@@ -2305,7 +2307,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add r -1");
 					break;
 				case ALT:
-					core->cameraMoveRelativeXYZ(0.,-1.0,0.0);
+					coreLink->cameraMoveRelativeXYZ(0.,-1.0,0.0);
 					break;
 				default:
 					break;
@@ -2334,7 +2336,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case CTRL:
 					break;
 				case ALT:
-					core->cameraMoveRelativeXYZ(0.,0.0,-1.0);
+					coreLink->cameraMoveRelativeXYZ(0.,0.0,-1.0);
 					break;
 
 				default:
@@ -2365,7 +2367,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add s +1");
 					break;
 				case ALT:
-					core->cameraMoveRelativeXYZ(-1.,0.0,0.0);
+					coreLink->cameraMoveRelativeXYZ(-1.,0.0,0.0);
 					break;
 				default:
 					break;
@@ -2424,7 +2426,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add s -1");
 					break;
 				case ALT:
-					core->cameraMoveRelativeXYZ(1.,0.0,0.0);
+					coreLink->cameraMoveRelativeXYZ(1.,0.0,0.0);
 					break;
 				default:
 					break;
@@ -2481,7 +2483,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add r 1");
 					break;
 				case ALT:
-					core->cameraMoveRelativeXYZ(0.,1.0,0.0);
+					coreLink->cameraMoveRelativeXYZ(0.,1.0,0.0);
 					break;
 				default:
 					break;
@@ -2512,7 +2514,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);					
 					break;
 				case ALT:
-					core->cameraMoveRelativeXYZ(0.,0.0,1.0);
+					coreLink->cameraMoveRelativeXYZ(0.,0.0,1.0);
 					break;
 				default:
 					break;
