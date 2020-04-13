@@ -183,8 +183,13 @@ Vec3f ConstellationMgr::getArtColor() const
 
 void ConstellationMgr::setFont(float font_size, const std::string& ttfFileName)
 {
-	if (asterFont) delete asterFont;
+	if (asterFont) {
+		delete asterFont;
+		asterFont=nullptr;
+	}
 	asterFont = new s_font(font_size, ttfFileName);
+	if (!asterFont)
+		cLog::get()->write("ConstellationMgr: no font usable",  LOG_TYPE::L_ERROR);
 	assert(asterFont);
 }
 
