@@ -145,15 +145,18 @@ bool NebulaMgr::loadDeepskyObject(const std::string& cat)
 }
 
 // read from stream
-bool NebulaMgr::initFontName (float font_size, const std::string& font_name)
+void NebulaMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (!Nebula::nebulaFont)
-		Nebula::nebulaFont = new s_font(font_size, font_name); // load Font
+	if (Nebula::nebulaFont) {
+		delete Nebula::nebulaFont;
+		Nebula::nebulaFont= nullptr;
+	}
+	
+	Nebula::nebulaFont = new s_font(font_size, font_name); // load Font
 	if (!Nebula::nebulaFont) {
 		cLog::get()->write("Nebula: Can't create nebulaFont\n", LOG_TYPE::L_ERROR);
-		return false;
+		assert(Nebula::nebulaFont);
 	}
-	return true;
 }
 
 // Clear user added nebula
