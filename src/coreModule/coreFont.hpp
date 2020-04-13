@@ -26,12 +26,15 @@
 #include <string>
 
 class Core;
+class InitParser;
 
 class CoreFont {
 
 public:
-    CoreFont(Core* _core);
+    CoreFont(Core* _core, int _resolution);
     ~CoreFont();
+    void init(const InitParser& conf);
+    void setFont();
 
 private:
     Core* core;
@@ -46,6 +49,8 @@ private:
 	double FontSizePlanet;
 	double FontSizeConstellation;
 	double FontSizeCardinalPoints;
+
+    int resolution;
 };
 
 

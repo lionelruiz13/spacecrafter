@@ -683,17 +683,6 @@ private:
 	//! Find in a "clever" way an object from its screen position
 	Object cleverFind(int x, int y) const;
 
-	std::string FontFileNameGeneral;			//! The font file used by default during initialization
-	std::string FontFileNamePlanet;				//! The font for the planet system
-	std::string FontFileNameConstellation;		//! The font for all asterims
-	std::string FontFileNameMenu;
-	std::string FontFileNameText;
-	double FontSizeText;
-	double FontSizeGeneral;
-	double FontSizePlanet;
-	double FontSizeConstellation;
-	double FontSizeCardinalPoints;
-
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 

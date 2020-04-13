@@ -31,6 +31,8 @@
 #include "tools/fmath.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "coreModule/core_executor.hpp"
+#include "coreModule/core_common.hpp"
+#include "coreModule/coreFont.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
@@ -44,7 +46,7 @@
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
-#include "coreModule/core_common.hpp"
+
 
 Core::Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, _settings->getLocaleDir(), ""),
@@ -55,6 +57,7 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	recordActionCallback = recordCallback;
 	settings = _settings;
 	media = _media;
+	coreFont = new CoreFont(this, std::min(width,height));
 	projection = new Projector( width,height, 60 );
 	glFrontFace(GL_CCW);
 
@@ -299,15 +302,7 @@ void Core::init(const InitParser& conf)
 	setFlagNav(flagNav);
 	inimBackup();
 	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");
-	FontFileNameGeneral = settings->getUserFontDir()+conf.getStr("font", "font_general_name");
-	FontFileNamePlanet = settings->getUserFontDir()+conf.getStr("font", "font_planet_name");
-	FontFileNameConstellation = settings->getUserFontDir()+conf.getStr("font", "font_constellation_name");
-	FontFileNameText =  settings->getUserFontDir()+conf.getStr("font", "font_text_name");
-	FontSizeText =  conf.getDouble("font", "font_text_size");
-	FontSizeGeneral = conf.getDouble ("font","font_general_size");
-	FontSizeConstellation = conf.getDouble("font","font_constellation_size");
-	FontSizePlanet = conf.getDouble("font","font_planet_size");
-	FontSizeCardinalPoints = conf.getDouble("font","font_cardinalpoints_size");
+	coreFont->init(conf);
 
 	// Rendering options
 	setLineWidth(conf.getDouble("rendering", "line_width"));
@@ -350,10 +345,8 @@ void Core::init(const InitParser& conf)
 		hip_stars->iniColorTable();
 		hip_stars->readColorTable();
 		hip_stars->init(conf);
-		// hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
 
 		// Init nebulas
-		// nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
 		nebulas->loadDeepskyObject(settings->getUserDir() + "deepsky_objects.fab");
 
 		landscape->setSlices(conf.getInt("rendering:landscape_slices"));
@@ -422,18 +415,7 @@ void Core::init(const InitParser& conf)
 	navigation->setLocalVision(Vec3f(1,1e-05,0.2));
 
 	// Init fonts : should be moved in a specific fonction
-	hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
-	nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
-	ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
-
-	skyGridMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
-	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
-	skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);
-
-	cardinals_points->setFont(FontSizeCardinalPoints, FontFileNameGeneral);
-	asterisms->setFont(FontSizeConstellation, FontFileNameConstellation);
-	hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
-	text_usr->setFont(FontSizeText, FontFileNameText);
+	coreFont->setFont();
 
 	if (firstTime) {
 		milky_way->defineInitialMilkywayState(settings->getTextureDir() , conf.getStr("astro:milky_way_texture"), 
@@ -1719,7 +1701,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 
 void Core::setFontScheme() //TODO deja fait ailleurs ?
 {
-	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
+	coreFont->setFont();
 }
 
 void Core::loadFont(int baseSize, const std::string name) {
