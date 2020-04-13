@@ -85,6 +85,7 @@ class Dso3d;
 class Media;
 class StarLines;
 class BodyTrace;
+class CoreFont;
 
 //!  @brief Main class for application core processing.
 //!
@@ -98,6 +99,7 @@ public:
 	friend class CoreExecutorInUniverse;
 
 	friend class CoreLink;
+	friend class CoreFont;
 
 	//! Possible mount modes
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
@@ -700,6 +702,7 @@ private:
 	CoreExecutor* executorInGalaxy = nullptr;
 	CoreExecutor* executorInUniverse = nullptr;
 
+	CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	TimeMgr* timeMgr;				// Manage date and time
