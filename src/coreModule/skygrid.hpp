@@ -116,7 +116,7 @@ private:
 	Vec3f color;
 	Vec3f** alt_points;
 	Vec3f** azi_points;
-	s_font* font;
+	s_font* font=nullptr;
 	bool internalNav;
 	LinearFader fader;
 
