@@ -349,7 +349,8 @@ void Core::init(const InitParser& conf)
 		// Init stars
 		hip_stars->iniColorTable();
 		hip_stars->readColorTable();
-		hip_stars->init(FontSizeGeneral, FontFileNameGeneral, conf);
+		hip_stars->init(conf);
+		// hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
 
 		// Init nebulas
 		// nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
@@ -405,7 +406,7 @@ void Core::init(const InitParser& conf)
 	ssystem->setScale(hip_stars->getScale());
 	setPlanetsSizeLimit(conf.getDouble("astro", "planet_size_marginal_limit"));
 
-	ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
+	//ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
 	ssystem->setFlagClouds(true);
 
 	observatory->load(conf, "init_location");
@@ -421,7 +422,10 @@ void Core::init(const InitParser& conf)
 	navigation->setLocalVision(Vec3f(1,1e-05,0.2));
 
 	// Init fonts : should be moved in a specific fonction
+	hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
 	nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
+	ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
+
 	skyGridMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 	skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);
