@@ -332,17 +332,17 @@ std::string HipStarMgr::getSciName(int hip)
 	return "";
 }
 
-void HipStarMgr::init(float font_size, const std::string& font_name, const InitParser &conf)
+void HipStarMgr::init(const InitParser &conf)
 {
 	load_data(conf);
 	InitColorTableFromConfigFile(conf);
 	// Load star texture no mipmap:
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
-	starFont = new s_font(font_size, font_name);
-	if (!starFont) {
-		cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
-		assert(0);
-	}
+	// starFont = new s_font(font_size, font_name);
+	// if (!starFont) {
+	// 	cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
+	// 	assert(0);
+	// }
 }
 
 void HipStarMgr::setGrid(GeodesicGrid* geodesic_grid)
@@ -1028,8 +1028,13 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 //! Define font file name and size to use for star names display
 void HipStarMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (starFont) delete starFont;
+	if (starFont) {
+		delete starFont;
+		starFont=nullptr;
+	}
 	starFont = new s_font(font_size, font_name);
-	assert(starFont);
+	if (!starFont) {
+		cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
+		assert(starFont);
+	}
 }
-
