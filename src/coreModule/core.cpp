@@ -352,7 +352,7 @@ void Core::init(const InitParser& conf)
 		hip_stars->init(FontSizeGeneral, FontFileNameGeneral, conf);
 
 		// Init nebulas
-		nebulas->initFontName(FontSizeGeneral, FontFileNameGeneral);
+		// nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
 		nebulas->loadDeepskyObject(settings->getUserDir() + "deepsky_objects.fab");
 
 		landscape->setSlices(conf.getInt("rendering:landscape_slices"));
@@ -421,6 +421,7 @@ void Core::init(const InitParser& conf)
 	navigation->setLocalVision(Vec3f(1,1e-05,0.2));
 
 	// Init fonts : should be moved in a specific fonction
+	nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
 	skyGridMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
 	skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);

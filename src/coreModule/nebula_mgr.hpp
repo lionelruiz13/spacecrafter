@@ -199,7 +199,7 @@ public:
 
 	//! load the commun font for all DSO
 	//! \return return true if font is correctly loaded false owerwise
-	bool initFontName(float font_size, const std::string& font_name);
+	void setFont(float font_size, const std::string& font_name);
 
 	//! Hide all DSO for display
 	void hideAll();
