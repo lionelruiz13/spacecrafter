@@ -94,6 +94,7 @@ private:
 	// 	LINE_UNKNOWN
 	// };
 
+	std::string typeToString(SKYLINE_TYPE typeObj);
 	SKYLINE_TYPE stringToType(const std::string& typeObj);
 	std::map<SKYLINE_TYPE ,SkyLine*> m_map;
 
