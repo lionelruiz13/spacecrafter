@@ -597,35 +597,6 @@ void Core::updateMode()
 	}
 }
 
-void Core::illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation)
-{
-	// bool created = false;
-	// // if no size, so take default value from flag illuminate_star
-	// if (angular_size==0.0)
-	// 	angular_size=illuminate_size;
-
-	// if(illuminates) {
-		//created = 
-		illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
-	// }
-	// return created;
-}
-
-
-void Core::illuminateRemove(const std::string& name)
-{
-	//std::string error = 
-	illuminates->removeIlluminate(name);
-	//return error;
-}
-
-void Core::illuminateRemoveAll()
-{
-	//return 
-	illuminates->removeAllIlluminate();
-}
-
-
 //! Update all the objects in function of the time
 void Core::updateInSolarSystem(int delta_time)
 {
