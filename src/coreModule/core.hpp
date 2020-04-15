@@ -380,12 +380,12 @@ public:
 		return FlagAntialiasLines;
 	}
 
-	void setLineWidth(float w) {
-		m_lineWidth = w;
-	}
-	float getLineWidth() {
-		return m_lineWidth;
-	}
+	// void setLineWidth(float w) {
+	// 	m_lineWidth = w;
+	// }
+	// float getLineWidth() {
+	// 	return m_lineWidth;
+	// }
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Stars methods
@@ -734,7 +734,7 @@ private:
 	float InitFov;						// Default viewing FOV
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
-	float m_lineWidth;                  // width to use when drawing any line
+	// float m_lineWidth;                  // width to use when drawing any line
 
 	//! Backup Manage
 	backupWorkspace mBackup;			// variable used to remember various indicators in use

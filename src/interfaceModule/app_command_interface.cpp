@@ -1763,7 +1763,7 @@ int AppCommandInterface::commandSet()
 		if ( args["landscape_name"]=="default") stcore->setInitialLandscapeName();
 		else
 			stcore->setLandscape(args["landscape_name"]);
-	} else if (args["line_width"]!="") stcore->setLineWidth(evalDouble(args["line_width"]));
+	} else if (args["line_width"]!="") stapp->setLineWidth(evalDouble(args["line_width"]));
 	else if (args["max_mag_nebula_name"]!="") coreLink->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"]));
 	else if (args["max_mag_star_name"]!="") coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"]));
 	else if (args["moon_scale"]!="") {

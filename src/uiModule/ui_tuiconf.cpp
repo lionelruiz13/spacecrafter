@@ -687,7 +687,7 @@ void UI::tuiUpdateWidgets()
 	tui_effect_light_travel->setValue(coreLink->getFlagLightTravelTime());
 	tui_effect_view_offset->setValue(core->getViewOffset());
 	tui_effect_antialias->setValue(core->getFlagAntialiasLines());
-	tui_effect_line_width->setValue(core->getLineWidth());
+	tui_effect_line_width->setValue(app->getLineWidth());
 
 	// 7. Scripts
 	// each fresh time enter needs to reset to select message

@@ -132,6 +132,9 @@ public:
 		std::string DayKeyMode= _value;
 	}
 
+	void setLineWidth(float w) const;
+	float getLineWidth() const;
+
 	//! modifie un flag de App donnée par APP_FLAG
 	void flag(APP_FLAG layerValue, bool _value);
 	//! modifie un flag via un toggle

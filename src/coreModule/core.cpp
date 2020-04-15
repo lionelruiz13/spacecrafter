@@ -305,7 +305,7 @@ void Core::init(const InitParser& conf)
 	coreFont->init(conf);
 
 	// Rendering options
-	setLineWidth(conf.getDouble("rendering", "line_width"));
+	// setLineWidth(conf.getDouble("rendering", "line_width"));
 	setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
 
 	mBackup.initial_landscapeName=conf.getStr("init_location","landscape_name");
@@ -825,7 +825,7 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	// Init viewport to current projector values
 	projection->applyViewport();
 	// User supplied line width value
-	glLineWidth(m_lineWidth);
+	//glLineWidth(m_lineWidth);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 }
 
@@ -1557,7 +1557,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr("localization:sky_locale", getSkyLanguage());
 	// Rendering section
 	conf.setBoolean("rendering:flag_antialias_lines", getFlagAntialiasLines());
-	conf.setDouble("rendering:line_width", getLineWidth());
+	// conf.setDouble("rendering:line_width", getLineWidth());
 	// viewing section
 	conf.setBoolean("viewing:flag_constellation_drawing", asterisms->getFlagLines()); //constellationGetFlagLines());
 	conf.setBoolean("viewing:flag_constellation_name", asterisms->getFlagNames()); //constellationGetFlagNames());

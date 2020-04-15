@@ -59,7 +59,14 @@ public:
 	void drawViewportShape();
 	//! dessine le rendu final du logiciel en inversant les couleurs
 	void drawColorInverse();
-	
+
+	void setLineWidth(float w) {
+		m_lineWidth = w;
+	}
+	float getLineWidth() const {
+		return m_lineWidth;
+	}
+
 	//! création des shaders
 	void createShader();
 private:
@@ -70,6 +77,8 @@ private:
 	shaderProgram* shaderViewportShape = nullptr;
 	shaderProgram* shaderColorInverse = nullptr;
 	DataGL dataGL;
+
+	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
 
     Uint16 width, height;  						//! Contient la résolution w et h de la fenetre SDL
 };

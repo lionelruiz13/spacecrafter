@@ -155,6 +155,13 @@ App::~App()
 	delete spaceDate;
 }
 
+void App::setLineWidth(float w) const {
+	appDraw->setLineWidth(w);
+}
+
+float App::getLineWidth() const {
+	return appDraw->getLineWidth();
+} 
 
 void App::flag(APP_FLAG layerValue, bool _value) {
 	switch(layerValue) {
@@ -210,6 +217,7 @@ void App::init()
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
 
+	appDraw->setLineWidth(conf.getDouble("rendering", "line_width"));
 	internalFPS->setMaxFps(conf.getDouble ("video","maximum_fps"));
 	internalFPS->setVideoFps(conf.getDouble("video","rec_video_fps"));
 
@@ -370,7 +378,6 @@ void App::update(int delta_time)
 //! Main drawinf function called at each frame
 void App::draw(int delta_time)
 {
-	//draw the first layer que si le mode starsTrace n'est pas actif
 	appDraw->drawFirstLayer();
 
 	core->draw(delta_time);
@@ -429,6 +436,7 @@ void App::saveCurrentConfig(const std::string& confFile)
 	conf.setDouble ("navigation:preset_sky_time", PresetSkyTime);
 	conf.setStr	("navigation:startup_time_mode", StartupTimeMode);
 	conf.setStr	("navigation:day_key_mode", DayKeyMode);
+	conf.setDouble("rendering:line_width", appDraw->getLineWidth());
 
 	ui->saveCurrentConfig(conf);
 	core->saveCurrentConfig(conf);
