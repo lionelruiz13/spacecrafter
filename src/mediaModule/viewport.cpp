@@ -73,9 +73,9 @@ void ViewPort::initParam()
 							-1.f, 0.f, 1.f, 0.f,
 							-1.0, 1.0, 1.0, 1.0};
 	float halfTex[16] =    { 0.0,  0.5, 1.0,  0.5, 
-							0.f, 0.25f, 1.0f, 0.25f,
+							0.f, 0.0f, 1.0f, 0.0f,
 
-							1.f, 0.25f, 0.0f, 0.25f,
+							1.f, 0.0f, 0.0f, 0.0f,
 							1.0, 0.5, 0.0, 0.5};
 
 	glGenBuffers(1,&dual.pos);
@@ -105,6 +105,10 @@ void ViewPort::deleteShader()
 	glDeleteBuffers(1,&viewport.vao);
 	glDeleteBuffers(1,&viewport.tex);
 	glDeleteVertexArrays(1,&viewport.pos);
+
+	glDeleteBuffers(1,&dual.vao);
+	glDeleteBuffers(1,&dual.tex);
+	glDeleteVertexArrays(1,&dual.pos);
 }
 
 void ViewPort::draw()
