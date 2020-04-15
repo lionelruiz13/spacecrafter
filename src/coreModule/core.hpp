@@ -596,13 +596,13 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Illuminate---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	bool illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation);
+	void illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation);
 
-	std::string illuminateRemove(const std::string& name);
-	std::string illuminateRemoveAll();
+	void illuminateRemove(const std::string& name);
+	void illuminateRemoveAll();
 
 	void illuminateSetSize (double value) {
-		illuminate_size=value;
+		illuminates->setDefaultSize(value);
 	}
 
 	//! Set flag for activating atmospheric refraction correction
@@ -760,7 +760,7 @@ private:
 	float m_lineWidth;                  // width to use when drawing any line
 
 	//! size of Illuminate star
-	double illuminate_size;
+	// double illuminate_size;
 
 	//! Backup Manage
 	backupWorkspace mBackup;			// variable used to remember various indicators in use

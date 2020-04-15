@@ -1686,12 +1686,12 @@ int AppCommandInterface::commandIlluminate()
 	if (!argHP.empty() && isFalse(argDisplay)) {
 		std::string identifier;
 		identifier = "I-"+argHP;
-		debug_message = stcore->illuminateRemove( identifier);
+		stcore->illuminateRemove( identifier);
 		return executeCommandStatus();
 	}
 
 	if (args["action"]=="clear") {
-		debug_message=stcore->illuminateRemoveAll();
+		stcore->illuminateRemoveAll();
 		return executeCommandStatus();
 	}
 	return executeCommandStatus();

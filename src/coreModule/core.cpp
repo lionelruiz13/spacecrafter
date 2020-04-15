@@ -314,7 +314,7 @@ void Core::init(const InitParser& conf)
 	setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
 
 	mBackup.initial_landscapeName=conf.getStr("init_location","landscape_name");
-	illuminate_size=conf.getDouble("stars", "illuminate_size");
+	illuminates->setDefaultSize(conf.getDouble("stars", "illuminate_size"));
 
 	glDepthFunc(GL_LEQUAL);
 	glDepthRange(0,1);
@@ -610,29 +610,32 @@ void Core::updateMode()
 	}
 }
 
-bool Core::illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation)
+void Core::illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation)
 {
-	bool created = false;
-	// if no size, so take default value from flag illuminate_star
-	if (angular_size==0.0)
-		angular_size=illuminate_size;
+	// bool created = false;
+	// // if no size, so take default value from flag illuminate_star
+	// if (angular_size==0.0)
+	// 	angular_size=illuminate_size;
 
-	if(illuminates) {
-		created = illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
-	}
-	return created;
+	// if(illuminates) {
+		//created = 
+		illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
+	// }
+	// return created;
 }
 
 
-std::string Core::illuminateRemove(const std::string& name)
+void Core::illuminateRemove(const std::string& name)
 {
-	std::string error = illuminates->removeIlluminate(name);
-	return error;
+	//std::string error = 
+	illuminates->removeIlluminate(name);
+	//return error;
 }
 
-std::string Core::illuminateRemoveAll()
+void Core::illuminateRemoveAll()
 {
-	return illuminates->removeAllIlluminate();
+	//return 
+	illuminates->removeAllIlluminate();
 }
 
 
