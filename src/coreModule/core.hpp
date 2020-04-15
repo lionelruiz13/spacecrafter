@@ -525,9 +525,6 @@ public:
 
 	void loadFont(int baseSize, const std::string name);
 
-	double getZoomSpeed() {
-		return vzm.zoom_speed;
-	}
 	float getAutoMoveDuration() {
 		return auto_move_duration;
 	}
@@ -738,9 +735,6 @@ private:
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
 	float m_lineWidth;                  // width to use when drawing any line
-
-	//! size of Illuminate star
-	// double illuminate_size;
 
 	//! Backup Manage
 	backupWorkspace mBackup;			// variable used to remember various indicators in use
