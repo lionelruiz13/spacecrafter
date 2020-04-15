@@ -64,7 +64,7 @@ class EventHandler;
 
 
 
-enum class APP_FLAG : char {NONE, VISIBLE, ALIVE, ON_VIDEO, COLOR_INVERSE};
+enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, ON_VIDEO, COLOR_INVERSE};
  
 /**
 @author initial Fabien Chereau
@@ -134,6 +134,7 @@ public:
 
 	void setLineWidth(float w) const;
 	float getLineWidth() const;
+	float getFlagAntialiasLines() const;
 
 	//! modifie un flag de App donnée par APP_FLAG
 	void flag(APP_FLAG layerValue, bool _value);

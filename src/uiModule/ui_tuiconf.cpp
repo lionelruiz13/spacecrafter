@@ -686,7 +686,7 @@ void UI::tuiUpdateWidgets()
 	tui_effect_nebulae_label_magnitude->setValue(coreLink->nebulaGetMaxMagHints());
 	tui_effect_light_travel->setValue(coreLink->getFlagLightTravelTime());
 	tui_effect_view_offset->setValue(core->getViewOffset());
-	tui_effect_antialias->setValue(core->getFlagAntialiasLines());
+	tui_effect_antialias->setValue(app->getFlagAntialiasLines());
 	tui_effect_line_width->setValue(app->getLineWidth());
 
 	// 7. Scripts

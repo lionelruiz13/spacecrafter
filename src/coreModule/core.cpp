@@ -306,7 +306,7 @@ void Core::init(const InitParser& conf)
 
 	// Rendering options
 	// setLineWidth(conf.getDouble("rendering", "line_width"));
-	setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
+	// setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
 
 	mBackup.initial_landscapeName=conf.getStr("init_location","landscape_name");
 	illuminates->setDefaultSize(conf.getDouble("stars", "illuminate_size"));
@@ -1557,7 +1557,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr("localization:sky_culture", getSkyCultureDir());
 	conf.setStr("localization:sky_locale", getSkyLanguage());
 	// Rendering section
-	conf.setBoolean("rendering:flag_antialias_lines", getFlagAntialiasLines());
+	// conf.setBoolean("rendering:flag_antialias_lines", getFlagAntialiasLines());
 	// conf.setDouble("rendering:line_width", getLineWidth());
 	// viewing section
 	conf.setBoolean("viewing:flag_constellation_drawing", asterisms->getFlagLines()); //constellationGetFlagLines());

@@ -368,17 +368,17 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Rendering settings
 
-	//! Set rendering flag of antialiased lines
-	void setFlagAntialiasLines(bool b) {
-		FlagAntialiasLines = b;
+	// //! Set rendering flag of antialiased lines
+	// void setFlagAntialiasLines(bool b) {
+	// 	FlagAntialiasLines = b;
 
-		if(b) glEnable(GL_LINE_SMOOTH);
-		else glDisable(GL_LINE_SMOOTH);
-	}
-	//! Get display flag of constellation lines
-	bool getFlagAntialiasLines(void) {
-		return FlagAntialiasLines;
-	}
+	// 	if(b) glEnable(GL_LINE_SMOOTH);
+	// 	else glDisable(GL_LINE_SMOOTH);
+	// }
+	// //! Get display flag of constellation lines
+	// bool getFlagAntialiasLines(void) {
+	// 	return FlagAntialiasLines;
+	// }
 
 	// void setLineWidth(float w) {
 	// 	m_lineWidth = w;
@@ -725,7 +725,7 @@ private:
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
 	bool flagNav = false; 				// define the NAV version edition
-	bool FlagAntialiasLines;            // whether to antialias all line drawing
+	// bool FlagAntialiasLines;            // whether to antialias all line drawing
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup
 	std::string defaultLandscape; 

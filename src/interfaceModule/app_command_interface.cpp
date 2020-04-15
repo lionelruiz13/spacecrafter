@@ -512,9 +512,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 	switch(flagName) {
 		case FLAG_NAMES::FN_ANTIALIAS_LINES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagAntialiasLines();
-
-			stcore->setFlagAntialiasLines(newval);
+				stapp->toggle(APP_FLAG::ANTIALIAS);
+			else
+				stapp->flag(APP_FLAG::ANTIALIAS,newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_DRAWING :

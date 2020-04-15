@@ -70,6 +70,21 @@ public:
 		return m_lineWidth;
 	}
 
+	//! Set rendering flag of antialiased lines
+	void setFlagAntialiasLines(bool b) {
+		antialiasLines = b;
+
+		if(b) glEnable(GL_LINE_SMOOTH);
+		else glDisable(GL_LINE_SMOOTH);
+	}
+	//! Get display flag of constellation lines
+	bool getFlagAntialiasLines(void) {
+		return antialiasLines;
+	}
+	void flipFlagAntialiasLines() {
+		setFlagAntialiasLines(!antialiasLines);
+	}
+
 	//! création des shaders
 	void createShader();
 private:
@@ -82,6 +97,7 @@ private:
 	DataGL dataGL;
 
 	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
+	bool antialiasLines;						//!< using GL_LINE_SMOOTH
 
     Uint16 width, height;  						//! Contient la résolution w et h de la fenetre SDL
 };

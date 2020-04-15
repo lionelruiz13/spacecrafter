@@ -163,16 +163,22 @@ float App::getLineWidth() const {
 	return appDraw->getLineWidth();
 } 
 
+float App::getFlagAntialiasLines() const{
+	return appDraw->getFlagAntialiasLines();
+}
+
 void App::flag(APP_FLAG layerValue, bool _value) {
 	switch(layerValue) {
 		case APP_FLAG::VISIBLE : 
-						flagVisible = _value; break;
+				flagVisible = _value; break;
 		case APP_FLAG::ALIVE :
-						flagAlive = _value; break;
+				flagAlive = _value; break;
 		case APP_FLAG::ON_VIDEO :
-						flagOnVideo = _value; break;
+				flagOnVideo = _value; break;
 		case APP_FLAG::COLOR_INVERSE : 
-						flagColorInverse = _value; break;
+				flagColorInverse = _value; break;
+		case APP_FLAG::ANTIALIAS :
+				appDraw->setFlagAntialiasLines(_value); break;
 		default: break;
 	}
 }
@@ -181,13 +187,15 @@ void App::toggle(APP_FLAG layerValue)
 {
 		switch(layerValue) {
 		case APP_FLAG::VISIBLE : 
-						flagVisible = !flagVisible; break;
+				flagVisible = !flagVisible; break;
 		case APP_FLAG::ALIVE :
-						flagAlive = !flagAlive; break;
+				flagAlive = !flagAlive; break;
 		case APP_FLAG::ON_VIDEO :
-						flagOnVideo = !flagOnVideo; break;
+				flagOnVideo = !flagOnVideo; break;
 		case APP_FLAG::COLOR_INVERSE : 
-						flagColorInverse = !flagColorInverse; break;
+				flagColorInverse = !flagColorInverse; break;
+		case APP_FLAG::ANTIALIAS : 
+				appDraw->flipFlagAntialiasLines(); break;
 		default: break;
 	}
 }
@@ -218,6 +226,8 @@ void App::init()
 	AppSettings::Instance()->loadAppSettings( &conf );
 
 	appDraw->setLineWidth(conf.getDouble("rendering", "line_width"));
+	appDraw->setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
+
 	internalFPS->setMaxFps(conf.getDouble ("video","maximum_fps"));
 	internalFPS->setVideoFps(conf.getDouble("video","rec_video_fps"));
 
@@ -437,6 +447,7 @@ void App::saveCurrentConfig(const std::string& confFile)
 	conf.setStr	("navigation:startup_time_mode", StartupTimeMode);
 	conf.setStr	("navigation:day_key_mode", DayKeyMode);
 	conf.setDouble("rendering:line_width", appDraw->getLineWidth());
+	conf.setBoolean("rendering:flag_antialias_lines", appDraw->getFlagAntialiasLines());
 
 	ui->saveCurrentConfig(conf);
 	core->saveCurrentConfig(conf);
