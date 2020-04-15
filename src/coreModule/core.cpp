@@ -829,10 +829,10 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 }
 
-void Core::imageDraw()
-{
-	media->imageDraw(navigation, projection);
-}
+// void Core::imageDraw()
+// {
+// 	media->imageDraw(navigation, projection);
+// }
 
 void Core::textDraw()
 {
@@ -843,6 +843,7 @@ void Core::textDraw()
 void Core::draw(int delta_time)
 {
 	currentExecutor->draw(delta_time);
+	media->imageDraw(navigation, projection);
 }
 
 void Core::switchMode(const std::string &mode)

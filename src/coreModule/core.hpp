@@ -605,7 +605,7 @@ public:
 	void saveCurrentConfig(InitParser &conf);
 	Vec3f getCursorPosEqu(int x, int y);
 
-	void imageDraw();
+	// void imageDraw();
 	void textDraw();
 
 private:

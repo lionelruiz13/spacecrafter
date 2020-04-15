@@ -381,7 +381,7 @@ void App::draw(int delta_time)
 	appDraw->drawFirstLayer();
 
 	core->draw(delta_time);
-	core->imageDraw();
+	// core->imageDraw();
 
 	// Draw the Graphical ui and the Text ui
 	ui->draw();
