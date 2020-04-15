@@ -72,11 +72,11 @@ void ViewPort::initParam()
 							-1.f, 0.f, 1.f, 0.f,
 							-1.f, 0.f, 1.f, 0.f,
 							-1.0, 1.0, 1.0, 1.0};
-	float halfTex[16] =    { 0.0,  0.5, 1.0,  0.5, 
-							0.f, 0.0f, 1.0f, 0.0f,
+	float halfTex[16] =    { 0.0,  1.0, 1.0,  1.0, 
+							0.f, 0.5f, 1.0f, 0.5f,
 
-							1.f, 0.0f, 0.0f, 0.0f,
-							1.0, 0.5, 0.0, 0.5};
+							1.f, 0.5f, 0.0f, 0.5f,
+							1.0, 1.0f, 0.0, 1.f};
 
 	glGenBuffers(1,&dual.pos);
 	glBindBuffer(GL_ARRAY_BUFFER,dual.pos);
