@@ -1677,21 +1677,21 @@ int AppCommandInterface::commandIlluminate()
 				return executeCommandStatus();
 			}
 			//TODO fix error
-			stcore->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
+			coreLink->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
 		} else
-			stcore->illuminateLoad("", ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
+			coreLink->illuminateLoad("", ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
 		return executeCommandStatus();
 	}
 
 	if (!argHP.empty() && isFalse(argDisplay)) {
 		std::string identifier;
 		identifier = "I-"+argHP;
-		stcore->illuminateRemove( identifier);
+		coreLink->illuminateRemove( identifier);
 		return executeCommandStatus();
 	}
 
 	if (args["action"]=="clear") {
-		stcore->illuminateRemoveAll();
+		coreLink->illuminateRemoveAll();
 		return executeCommandStatus();
 	}
 	return executeCommandStatus();

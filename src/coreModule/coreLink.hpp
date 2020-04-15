@@ -257,6 +257,28 @@ public:
 		return core->hip_stars->getMagConverterMaxScaled60DegMag();
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Illuminate---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	void illuminateSetSize (double value) {
+		core->illuminates->setDefaultSize(value);
+	}
+
+	void illuminateLoad(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float rotation)
+	{
+		core->illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
+	}
+	
+	void illuminateRemove(const std::string& name)
+	{
+		core->illuminates->removeIlluminate(name);
+	}
+	
+	void illuminateRemoveAll()
+	{
+		core->illuminates->removeAllIlluminate();
+	}
+
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// void starSetFlagSciName(bool b) {

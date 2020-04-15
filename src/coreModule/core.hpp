@@ -595,28 +595,6 @@ public:
 		return atmosphere->getFaderDuration();
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-	// Illuminate---------------------------
-	////////////////////////////////////////////////////////////////////////////////
-	void illuminateSetSize (double value) {
-		illuminates->setDefaultSize(value);
-	}
-
-	void illuminateLoad(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float rotation)
-	{
-		illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
-	}
-	
-	void illuminateRemove(const std::string& name)
-	{
-		illuminates->removeIlluminate(name);
-	}
-	
-	void illuminateRemoveAll()
-	{
-		illuminates->removeAllIlluminate();
-	}
-
 	//! Set flag for activating atmospheric refraction correction
 	void atmosphericRefractionSetFlag(bool b) {
 		FlagAtmosphericRefraction = b;
