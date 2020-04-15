@@ -58,6 +58,11 @@ public:
 		noColor = Vec4f::null();
 	}
 
+	//! indique si le viewport affiche l'image sur tout le dôme ou jsute 2fois une moitiée
+	void displayFullScreen(bool v) {
+		fullScreen = v;
+	}
+
 	void disableFader() {
 		fader.setDuration(400);
 	}
@@ -87,18 +92,15 @@ public:
 private:
 	//initialisation shader
 	void initParam();
-	// shader
-	shaderProgram* shaderViewPort;
+	shaderProgram* shaderViewPort; //!< shader
 	// Données openGL
-	DataGL viewport;
-	// indique quelle texture est utilisée pour affichage
-	GLuint videoTex[3];
-	// active la classe
-	bool isAlive;
-	// initialise la variable définissant si on saute le fading ou non
-	bool skipping = false;
-	//active la transparence
-	bool transparency = false;
+	DataGL viewport;	//! affichage fullScreen
+	DataGL dual;		//! affichage 2fois une moitiée
+	GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
+	bool isAlive;		//!< active la classe
+	bool fullScreen; 	//!< indique la façon d'afficher l'image
+	bool skipping = false;		//!< initialise la variable définissant si on saute le fading ou non
+	bool transparency = false;	//!< active la transparence
 	// indique quelle couleur est à effacer de l'image
 	// nocolor[3] indique le delta de couleur
 	Vec4f noColor=Vec4f::null();

@@ -39,6 +39,12 @@ void ViewPort::createShader()
 	shaderViewPort->setUniformLocation("noColor");
 	shaderViewPort->setUniformLocation("fader");
 
+	initParam();
+}
+
+void ViewPort::initParam()
+{
+	// FullScreen mode
 	float viewportPoints[8] = {-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
 	float viewportTex[8] =    { 0.0,  1.0, 1.0,  1.0,  0.0, 0.0, 1.0, 0.0};
 
@@ -60,6 +66,36 @@ void ViewPort::createShader()
 	glBindBuffer (GL_ARRAY_BUFFER, viewport.tex);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 	glEnableVertexAttribArray(1);
+
+	// Dual Half Screen mode
+	float halfPoints[16] = {-1.0, -1.0, 1.0, -1.0,
+							-1.f, 0.f, 1.f, 0.f,
+							-1.f, 0.f, 1.f, 0.f,
+							-1.0, 1.0, 1.0, 1.0};
+	float halfTex[16] =    { 0.0,  0.5, 1.0,  0.5, 
+							0.f, 0.25f, 1.0f, 0.25f,
+
+							1.f, 0.25f, 0.0f, 0.25f,
+							1.0, 0.5, 0.0, 0.5};
+
+	glGenBuffers(1,&dual.pos);
+	glBindBuffer(GL_ARRAY_BUFFER,dual.pos);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*16, halfPoints,GL_STATIC_DRAW);
+
+	glGenBuffers(1,&dual.tex);
+	glBindBuffer(GL_ARRAY_BUFFER,dual.tex);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*16,halfTex,GL_STATIC_DRAW);
+
+	glGenVertexArrays(1,&dual.vao);
+	glBindVertexArray(dual.vao);
+
+	glBindBuffer (GL_ARRAY_BUFFER, dual.pos);
+	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer (GL_ARRAY_BUFFER, dual.tex);
+	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	glEnableVertexAttribArray(1);	
 }
 
 void ViewPort::deleteShader()
@@ -87,8 +123,14 @@ void ViewPort::draw()
 	shaderViewPort->setUniform("noColor",noColor);
 	shaderViewPort->setUniform("fader", fader.getInterstate() );
 
-	glBindVertexArray(viewport.vao);
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	if (fullScreen) {
+		glBindVertexArray(viewport.vao);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	} else {
+		glBindVertexArray(dual.vao);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		glDrawArrays(GL_TRIANGLE_STRIP,4,4);
+	}
 	StateGL::disable(GL_BLEND);
 	shaderViewPort->unuse();
 }
