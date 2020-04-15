@@ -157,7 +157,6 @@ void AppDraw::deleteShader()
 void AppDraw::drawFirstLayer()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glLineWidth(m_lineWidth);
 }
 
 //! Fill with black around the circle

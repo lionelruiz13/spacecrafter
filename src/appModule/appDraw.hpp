@@ -61,6 +61,9 @@ public:
 	void drawColorInverse();
 
 	void setLineWidth(float w) {
+		if (abs(m_lineWidth-w)<0.5f) {
+			glLineWidth(m_lineWidth);
+		}
 		m_lineWidth = w;
 	}
 	float getLineWidth() const {
