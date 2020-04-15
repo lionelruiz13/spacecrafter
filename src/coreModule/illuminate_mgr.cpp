@@ -65,7 +65,7 @@ IlluminateMgr::~IlluminateMgr()
 }
 
 // Load individual Illuminate for script
-bool IlluminateMgr::loadIlluminate(std::string filename, double ra, double de,  double angular_size, std::string name, double r, double g, double b, float tex_rotation)
+bool IlluminateMgr::loadIlluminate(const std::string& filename, double ra, double de,  double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
 {
 	if (angular_size<1.0)
 		angular_size=defaultSize;
@@ -111,7 +111,7 @@ void IlluminateMgr::removeIlluminate(const std::string& name)
 			// Delete Illuminate
 			delete *iter;
 			illuminateArray.erase(iter);
-			cLog::get()->write("Illuminate_mgr: Erased Illuminate " + uname, LOG_TYPE::L_INFO);
+			//cLog::get()->write("Illuminate_mgr: Erased Illuminate " + uname, LOG_TYPE::L_INFO);
 			return;
 		}
 	}

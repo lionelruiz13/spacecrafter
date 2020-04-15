@@ -51,7 +51,7 @@ public:
 	}
 
 	//! Load an individual Illuminate from a script
-	bool loadIlluminate(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float tex_rotation);
+	bool loadIlluminate(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation);
 
 	//! remove user added Illuminate and optionally unhide the original of the same name
 	void removeIlluminate(const std::string& name);
