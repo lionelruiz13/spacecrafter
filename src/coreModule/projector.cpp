@@ -105,7 +105,7 @@ StelGeom::ConvexS Projector::unprojectViewport(void) const
 	// This is quite ugly, but already better than nothing.
 	// Last not least all halfplanes n*x>d really should have d<=0
 	// or at least very small d/n.length().
-	if ((fov < 90) && fov < 360.0) {
+	if ((fov < 90) /*&& fov < 360.0*/) {
 		Vec3d e0,e1,e2,e3;
 		bool ok;
 		if (fov >= 120.0) {
