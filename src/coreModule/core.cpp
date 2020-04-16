@@ -1303,8 +1303,7 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 
 	if (!navigation->getFlagTraking()) {
 		navigation->setFlagTraking(true);
-		navigation->moveTo(selected_object.getEarthEquPos(navigation),
-		                    move_duration, false, 1);
+		navigation->moveTo(selected_object.getEarthEquPos(navigation), move_duration, false, 1);
 		manual_move_duration = move_duration;
 	} else {
 		// faster zoom in manual zoom mode once object is centered
@@ -1852,7 +1851,10 @@ bool Core::setHomePlanet(const std::string &planet)
 {
 	// reset planet trails due to changed perspective
 	ssystem->startTrails( ssystem->getFlag(BODY_FLAG::F_TRAIL));
-	if (planet=="selected") return anchorManager->switchToAnchor(selected_object.getEnglishName()); else return anchorManager->switchToAnchor(planet);
+	if (planet=="selected")
+		return anchorManager->switchToAnchor(selected_object.getEnglishName()); 
+	else 
+		return anchorManager->switchToAnchor(planet);
 }
 
 
