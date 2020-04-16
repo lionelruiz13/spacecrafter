@@ -163,20 +163,20 @@ void Core::setMouse(int x, int y) {
 	mouseY = y;
 }
 
-void Core::tcpGetStatus(std::string value) const
-{
-	std::string toSend="";
-	if (value == "constellation") {
-		toSend = asterisms->getSelectedShortName();
-		cLog::get()->write("Valeur de toSend : " + toSend);
-	} else
-		toSend="Demande inconnue";
+// void Core::tcpGetStatus(std::string value) const
+// {
+// 	std::string toSend="";
+// 	if (value == "constellation") {
+// 		toSend = asterisms->getSelectedShortName();
+// 		cLog::get()->write("Valeur de toSend : " + toSend);
+// 	} else
+// 		toSend="Demande inconnue";
 
-	if (toSend=="")
-		toSend="EOF";
+// 	if (toSend=="")
+// 		toSend="EOF";
 
-	tcpSend(toSend);
-}
+// 	tcpSend(toSend);
+// }
 
 void Core::tcpSend(std::string msg) const
 {

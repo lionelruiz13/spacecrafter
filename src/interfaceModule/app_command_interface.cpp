@@ -1198,7 +1198,9 @@ int AppCommandInterface::commandGet()
 		} else if (argStatus=="planets_position") {
 			stcore->tcpGetPlanetsStatus();
 		} else if (argStatus=="constellation") {
-			stcore->tcpGetStatus(args["status"]);
+			if (tcp)	// à testé vu que tcp peut ne pas être initialisé
+				tcp->setOutput(coreLink->getConstellationSelectedShortName());
+			//stcore->tcpGetStatus(args["status"]);
 		} else if (argStatus=="object") {
 			stcore->tcpGetSelectedObjectInfo();
 		} else

@@ -553,7 +553,7 @@ public:
 
 	//tcp
 	void tcpConfigure(ServerSocket * _tcp);
-	void tcpGetStatus(std::string value) const;
+	// void tcpGetStatus(std::string value) const;
 	void tcpGetPlanetsStatus() const;
 
 	//! return tcpPosition

@@ -692,7 +692,8 @@ std::string ConstellationMgr::getSelectedShortName() const
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = selected.begin(); iter != selected.end(); ++iter)
 		result = result+(*iter)->getShortName();
-
+	if (result.empty())
+		result = "EOL"; //end of line
 	return result;
 }
 
