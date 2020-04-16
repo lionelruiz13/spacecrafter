@@ -143,8 +143,8 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	bodytrace= new BodyTrace();
 	object_pointer_visibility = 1;
 
-	tcp = nullptr;
-	enable_tcp = false;
+	// tcp = nullptr;
+	// enable_tcp = false;
 
 	executorInSolarSystem = new CoreExecutorInSolarSystem(this, observatory);
 	executorInGalaxy = new CoreExecutorInGalaxy(this,observatory);
@@ -178,14 +178,14 @@ void Core::setMouse(int x, int y) {
 // 	tcpSend(toSend);
 // }
 
-void Core::tcpSend(std::string msg) const
-{
-	if (enable_tcp) {
-		tcp->setOutput(msg);
-		cLog::get()->write("Send command : " + msg);
-	} else
-		cLog::get()->write("No send msg because no tcp enable");
-}
+// void Core::tcpSend(std::string msg) const
+// {
+// 	if (enable_tcp) {
+// 		tcp->setOutput(msg);
+// 		cLog::get()->write("Send command : " + msg);
+// 	} else
+// 		cLog::get()->write("No send msg because no tcp enable");
+// }
 
 // void Core::tcpGetSelectedObjectInfo() const
 // {
@@ -197,15 +197,15 @@ void Core::tcpSend(std::string msg) const
 // }
 
 
-void Core::tcpConfigure(ServerSocket * _tcp)
-{
-	if (_tcp!=nullptr) {
-		tcp= _tcp;
-		enable_tcp = true;
-		cLog::get()->write("Core tcp enable");
-	} else
-		cLog::get()->write("Core no tcp enable");
-}
+// void Core::tcpConfigure(ServerSocket * _tcp)
+// {
+// 	if (_tcp!=nullptr) {
+// 		tcp= _tcp;
+// 		enable_tcp = true;
+// 		cLog::get()->write("Core tcp enable");
+// 	} else
+// 		cLog::get()->write("Core no tcp enable");
+// }
 
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const

@@ -66,7 +66,7 @@
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/init_parser.hpp"
-#include "tools/io.hpp"
+//#include "tools/io.hpp"
 #include "tools/object.hpp"
 #include "tools/shader.hpp"
 #include "tools/sky_localizer.hpp"
@@ -549,7 +549,7 @@ public:
 
 
 	//tcp
-	void tcpConfigure(ServerSocket * _tcp);
+	// void tcpConfigure(ServerSocket * _tcp);
 	// void tcpGetStatus(std::string value) const;
 	// void tcpGetPlanetsStatus() const;
 
@@ -643,11 +643,11 @@ private:
 	void updateInUniverse(int delta_time);
 
 	//! envoie directement une chaine de caractère au serveur TCP
-	void tcpSend(std::string msg ) const;
+	// void tcpSend(std::string msg ) const;
 
 	AppSettings * settings;				//! endroit unique pour les chemins des fichiers dans l'application
-	ServerSocket *tcp;
-	bool enable_tcp ;
+	// ServerSocket *tcp;
+	// bool enable_tcp ;
 
 	//! Callback to record actions
 	mBoost::callback<void, std::string> recordActionCallback;

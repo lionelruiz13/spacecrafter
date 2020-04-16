@@ -304,7 +304,7 @@ void App::init()
 			cLog::get()->write("buffer TCP taille " + Utility::intToString(buffer_in_size));
 			tcp = new ServerSocket(port, 16, buffer_in_size, IO_DEBUG_INFO, IO_DEBUG_ALL);
 			tcp->open();
-			core->tcpConfigure(tcp);
+			// core->tcpConfigure(tcp);
 			commander->setTcp(tcp);
 		}
 		#if LINUX // special mkfifo
