@@ -344,7 +344,7 @@ public:
 		return selected_object.getInfoString(navigation);
 	}
 
-	void tcpGetSelectedObjectInfo() const;
+	//void tcpGetSelectedObjectInfo() const;
 
 	void getDeRa(double *ra, double *de) const {
 		selected_object.getRaDeValue(navigation,ra,de);

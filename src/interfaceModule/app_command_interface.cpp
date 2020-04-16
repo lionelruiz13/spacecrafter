@@ -1198,11 +1198,17 @@ int AppCommandInterface::commandGet()
 		} else if (argStatus=="planets_position") {
 			stcore->tcpGetPlanetsStatus();
 		} else if (argStatus=="constellation") {
-			if (tcp)	// à testé vu que tcp peut ne pas être initialisé
+			if (tcp)	// à tester vu que tcp peut ne pas être initialisé
 				tcp->setOutput(coreLink->getConstellationSelectedShortName());
 			//stcore->tcpGetStatus(args["status"]);
 		} else if (argStatus=="object") {
-			stcore->tcpGetSelectedObjectInfo();
+			if (tcp) {	// à tester vu que tcp peut ne pas être initialisé
+				std::string tmp = stcore->getSelectedObjectInfo();
+				if (tmp.empty())
+					tmp = "EOL";
+				tcp->setOutput(tmp);	
+			}
+			//stcore->tcpGetSelectedObjectInfo();
 		} else
 			debug_message = _("command 'get': unknown status value");
 		return executeCommandStatus();

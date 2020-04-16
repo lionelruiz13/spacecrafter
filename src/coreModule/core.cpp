@@ -187,14 +187,14 @@ void Core::tcpSend(std::string msg) const
 		cLog::get()->write("No send msg because no tcp enable");
 }
 
-void Core::tcpGetSelectedObjectInfo() const
-{
-	std::string toSend=getSelectedObjectInfo();
-	if (toSend=="")
-		toSend="EOL";
+// void Core::tcpGetSelectedObjectInfo() const
+// {
+// 	std::string toSend=getSelectedObjectInfo();
+// 	if (toSend=="")
+// 		toSend="EOL";
 
-	tcpSend(toSend);
-}
+// 	tcpSend(toSend);
+// }
 
 
 void Core::tcpConfigure(ServerSocket * _tcp)
