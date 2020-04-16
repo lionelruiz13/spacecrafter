@@ -249,11 +249,11 @@ public:
 	}
 
 	//! Set automove duration in seconds
-	void setAutomoveDuration(float f) {
+	void setAutoMoveDuration(float f) {
 		auto_move_duration = f;
 	}
 	//! Get automove duration in seconds
-	float getAutomoveDuration(void) const {
+	float getAutoMoveDuration(void) const {
 		return auto_move_duration;
 	}
 
@@ -525,9 +525,6 @@ public:
 
 	void loadFont(int baseSize, const std::string name);
 
-	float getAutoMoveDuration() {
-		return auto_move_duration;
-	}
 
 	// MAJ de l'UBO ubo_cam
 	void uboCamUpdate();

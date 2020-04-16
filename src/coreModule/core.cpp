@@ -469,7 +469,7 @@ void Core::init(const InitParser& conf)
 	FlagEnableMoveKeys  = conf.getBoolean("navigation:flag_enable_move_keys");
 	setFlagManualAutoZoom( conf.getBoolean("navigation:flag_manual_zoom") );
 
-	setAutomoveDuration( conf.getDouble ("navigation","auto_move_duration") );
+	setAutoMoveDuration( conf.getDouble ("navigation","auto_move_duration") );
 	vzm.move_speed			= conf.getDouble("navigation","move_speed");
 	vzm.zoom_speed			= conf.getDouble("navigation","zoom_speed");
 
@@ -1980,8 +1980,7 @@ void Core::setFlagTracking(bool b)
 	if (!b || !selected_object) {
 		navigation->setFlagTraking(0);
 	} else if ( !navigation->getFlagTraking()) {
-		navigation->moveTo(selected_object.getEarthEquPos(navigation),
-		                    getAutomoveDuration());
+		navigation->moveTo(selected_object.getEarthEquPos(navigation), getAutoMoveDuration());
 		navigation->setFlagTraking(1);
 	}
 }

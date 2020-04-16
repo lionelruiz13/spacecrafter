@@ -675,7 +675,7 @@ void UI::tuiUpdateWidgets()
 	tui_colors_circumpolar_circle_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 
 	// *** Effects
-	tui_effect_zoom_duration->setValue(core->getAutomoveDuration());
+	tui_effect_zoom_duration->setValue(core->getAutoMoveDuration());
 	tui_effect_manual_zoom->setValue(core->getFlagManualAutoZoom());
 	tui_effect_object_scale->setValue(coreLink->starGetScale());
 	tui_effect_star_size_limit->setValue(core->starGetSizeLimit());
