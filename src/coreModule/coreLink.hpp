@@ -279,16 +279,6 @@ public:
 		core->illuminates->removeAllIlluminate();
 	}
 
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// void starSetFlagSciName(bool b) {
-	// 	core->hip_stars->setFlagSciNames(b);
-	// }
-	// bool starGetFlagSciName(void) const {
-	// 	return core->hip_stars->getFlagSciNames();
-	// }
-	///////////////////////////////////////////////////////////
-
 	void starSetFlagTwinkle(bool b) {
 		core->hip_stars->setFlagTwinkle(b);
 	}
@@ -307,16 +297,6 @@ public:
 		core->starNav->setStarSizeLimit(f);
 		core->setStarSizeLimit(f);
 	}
-
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// void starSetMaxMagSciName(float f) {
-	// 	core->hip_stars->setMaxMagName(f);
-	// }
-	// float starGetMaxMagSciName(void) const {
-	// 	return core->hip_stars->getMaxMagName();
-	// }
-	///////////////////////////////////////////////////////////
 
 	void starSetScale(float f) {
 		core->starNav->setScale(f);
