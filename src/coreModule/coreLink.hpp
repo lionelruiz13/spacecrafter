@@ -395,6 +395,16 @@ public:
 	}
 
 
+	std::string tcpGetPosition() const {
+		char tmp[512];
+		memset(tmp, '\0', 512);
+		sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", 
+			core->observatory->getLatitude(), core->observatory->getLongitude(),
+			core->observatory->getAltitude(), core->timeMgr->getJDay(), 
+			core->getHeading());
+		return tmp;
+	}
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// UBO---------------------------

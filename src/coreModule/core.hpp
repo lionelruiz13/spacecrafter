@@ -554,7 +554,7 @@ public:
 	void tcpGetPlanetsStatus() const;
 
 	//! return tcpPosition
-	void tcpGetPosition();
+	// void tcpGetPosition();
 	
 	////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere---------------------------

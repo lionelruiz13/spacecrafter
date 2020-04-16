@@ -234,14 +234,14 @@ void Core::tcpGetPlanetsStatus() const
 	tcpSend(msgToSend);
 }
 
-void Core::tcpGetPosition()
-{
-	char tmp[1024];
-	memset(tmp, '\0', 1024);
-	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatory->getLatitude(), observatory->getLongitude(), observatory->getAltitude(), timeMgr->getJDay(), getHeading());
-	cLog::get()->write(tmp);
-	tcp->setOutput(tmp);
-}
+// void Core::tcpGetPosition()
+// {
+// 	char tmp[1024];
+// 	memset(tmp, '\0', 1024);
+// 	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatory->getLatitude(), observatory->getLongitude(), observatory->getAltitude(), timeMgr->getJDay(), getHeading());
+// 	cLog::get()->write(tmp);
+// 	tcp->setOutput(tmp);
+// }
 
 Core::~Core()
 {
