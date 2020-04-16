@@ -159,6 +159,7 @@ private:
 	void initialiseCommandsName();
 	void initialiseFlagsName();
 	void initialiseColorCommand();
+	void initialiseSetCommand();
 
 	void deleteVar();
 	void printVar();
@@ -177,6 +178,9 @@ private:
 	//map assurant la transcription entre le texte et la couleur associée
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
 	std::map<const std::string, COLORCOMMAND_NAMES>::iterator m_color_it;
+	//map assurant la transcription entre le texte et la commande interface associé
+	std::map<const std::string, SETCOMMAND_NAMES> m_appcommand;
+	std::map<const std::string, SETCOMMAND_NAMES>::iterator m_appcommand_it;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H

@@ -67,6 +67,7 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	initialiseCommandsName();
 	initialiseFlagsName();
 	initialiseColorCommand();
+	initialiseSetCommand();
 }
 
 void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {
@@ -298,6 +299,55 @@ void AppCommandInterface::initialiseColorCommand(){
 	m_color["text_usr_color"] = COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR;
 
 	m_color["star_table"] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
+}
+
+void AppCommandInterface::initialiseSetCommand() {
+	m_appcommand["atmosphere_fade_duration"] = SETCOMMAND_NAMES::APP_ATMOSPHERE_FADE_DURATION;
+	m_appcommand["auto_move_duration"] = SETCOMMAND_NAMES::APP_AUTO_MOVE_DURATION;
+	m_appcommand["constellation_art_fade_duration"] = SETCOMMAND_NAMES::APP_CONSTELLATION_ART_FADE_DURATION;
+	m_appcommand["constellation_art_intensity"] = SETCOMMAND_NAMES::APP_CONSTELLATION_ART_INTENSITY;
+	m_appcommand["light_pollution_limiting_magnitude"] = SETCOMMAND_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE;
+	m_appcommand["font"] = SETCOMMAND_NAMES::APP_FONT;
+
+	m_appcommand["heading"] = SETCOMMAND_NAMES::APP_HEADING;
+	m_appcommand["home_planet"] = SETCOMMAND_NAMES::APP_HOME_PLANET;
+	m_appcommand["landscape_name"] = SETCOMMAND_NAMES::APP_LANDSCAPE_NAME;
+	m_appcommand["line_width"] = SETCOMMAND_NAMES::APP_LINE_WIDTH;
+	m_appcommand["max_mag_nebula_name"] = SETCOMMAND_NAMES::APP_MAX_MAG_NEBULA_NAME;
+	m_appcommand["max_mag_star_name"] = SETCOMMAND_NAMES::APP_MAX_MAG_STAR_NAME;
+
+	m_appcommand["moon_scale"] = SETCOMMAND_NAMES::APP_MOON_SCALE;
+	m_appcommand["sun_scale"] = SETCOMMAND_NAMES::APP_SUN_SCALE;
+	m_appcommand["milky_way_texture"] = SETCOMMAND_NAMES::APP_MILKY_WAY_TEXTURE;
+	m_appcommand["sky_culture"] = SETCOMMAND_NAMES::APP_SKY_CULTURE;
+	m_appcommand["sky_locale"] = SETCOMMAND_NAMES::APP_SKY_LOCALE;
+	m_appcommand["ui_locale"] = SETCOMMAND_NAMES::APP_UI_LOCALE;
+
+	m_appcommand["star_mag_scale"] = SETCOMMAND_NAMES::APP_STAR_MAG_SCALE;
+	m_appcommand["star_size_limit"] = SETCOMMAND_NAMES::APP_STAR_SIZE_LIMIT;
+	m_appcommand["planet_size_limit"] = SETCOMMAND_NAMES::APP_PLANET_SIZE_LIMIT;
+	m_appcommand["star_scale"] = SETCOMMAND_NAMES::APP_STAR_SCALE;
+	m_appcommand["star_twinkle_amount"] = SETCOMMAND_NAMES::APP_STAR_TWINKLE_AMOUNT;
+	m_appcommand["star_fader_duration"] = SETCOMMAND_NAMES::APP_STAR_FADER_DURATION;
+
+	m_appcommand["star_limiting_mag"] = SETCOMMAND_NAMES::APP_STAR_LIMITING_MAG;
+	m_appcommand["time_zone"] = SETCOMMAND_NAMES::APP_TIME_ZONE;
+	m_appcommand["ambient_light"] = SETCOMMAND_NAMES::APP_AMBIENT_LIGHT;
+	m_appcommand["text_fading_duration"] = SETCOMMAND_NAMES::APP_TEXT_FADING_DURATION;
+	m_appcommand["milky_way_fader_duration"] = SETCOMMAND_NAMES::APP_MILKY_WAY_FADER_DURATION;
+	m_appcommand["milky_way_intensity"] = SETCOMMAND_NAMES::APP_MILKY_WAY_INTENSITY;
+
+	m_appcommand["zoom_offset"] = SETCOMMAND_NAMES::APP_ZOOM_OFFSET;
+	m_appcommand["startup_time_mode"] = SETCOMMAND_NAMES::APP_STARTUP_TIME_MODE;
+	m_appcommand["date_display_format"] = SETCOMMAND_NAMES::APP_DATE_DISPLAY_FORMAT;
+	m_appcommand["time_display_format"] = SETCOMMAND_NAMES::APP_TIME_DISPLAY_FORMAT;
+	m_appcommand["mode"] = SETCOMMAND_NAMES::APP_MODE;
+	m_appcommand["screen_fader"] = SETCOMMAND_NAMES::APP_SCREEN_FADER;
+
+	m_appcommand["stall_radius_unit"] = SETCOMMAND_NAMES::APP_STALL_RADIUS_UNIT;
+	m_appcommand["tully_color_mode"] = SETCOMMAND_NAMES::APP_TULLY_COLOR_MODE;
+	m_appcommand["datetime_display_position"] = SETCOMMAND_NAMES::APP_DATETIME_DISPLAY_POSITION;
+	m_appcommand["datetime_display_number"] = SETCOMMAND_NAMES::APP_DATETIME_DISPLAY_NUMBER;
 }
 
 AppCommandInterface::~AppCommandInterface()
@@ -1648,6 +1698,15 @@ int AppCommandInterface::commandPrint()
 
 int AppCommandInterface::commandSet()
 {
+
+	std::string argProperty = args["property"];
+	if (argProperty.empty()) {
+		debug_message = "command_'set': unknown argument";
+		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+	}
+
+	m_appcommand_it = m_appcommand.find(argProperty);
+
 	if (args["atmosphere_fade_duration"]!="") stcore->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"]));
 	else if (args["auto_move_duration"]!="") stcore->setAutoMoveDuration( evalDouble(args["auto_move_duration"]));
 	else if (args["constellation_art_fade_duration"]!="") coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"]));
