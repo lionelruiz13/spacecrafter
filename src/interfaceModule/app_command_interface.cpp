@@ -1199,7 +1199,12 @@ int AppCommandInterface::commandGet()
 				//stcore->tcpGetPosition();
 			}
 		} else if (argStatus=="planets_position") {
-			stcore->tcpGetPlanetsStatus();
+			if (tcp) {	// à tester vu que tcp peut ne pas être initialisé
+				std::string tmp = coreLink->getPlanetsPosition();
+				if (tmp.empty())
+					tmp = "NPF";	
+				tcp->setOutput(tmp);
+			}
 		} else if (argStatus=="constellation") {
 			if (tcp)	// à tester vu que tcp peut ne pas être initialisé
 				tcp->setOutput(coreLink->getConstellationSelectedShortName());

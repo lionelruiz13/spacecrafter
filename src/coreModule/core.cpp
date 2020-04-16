@@ -223,16 +223,16 @@ void Core::tcpGetListMatchingObjects(const std::string& objPrefix, unsigned int 
 	tcpSend(msgToSend);
 }
 
-void Core::tcpGetPlanetsStatus() const
-{
-	std::string msgToSend;
-	msgToSend = ssystem->getPlanetsPosition();
+// void Core::tcpGetPlanetsStatus() const
+// {
+// 	std::string msgToSend;
+// 	msgToSend = ssystem->getPlanetsPosition();
 
-	if (msgToSend=="")
-		msgToSend="NPF"; // no planet found ! Dramatic
+// 	if (msgToSend=="")
+// 		msgToSend="NPF"; // no planet found ! Dramatic
 
-	tcpSend(msgToSend);
-}
+// 	tcpSend(msgToSend);
+// }
 
 // void Core::tcpGetPosition()
 // {

@@ -394,6 +394,9 @@ public:
 		return core->asterisms->getSelectedShortName();
 	}
 
+	std::string getPlanetsPosition() const {
+		return core->ssystem->getPlanetsPosition();
+	}
 
 	std::string tcpGetPosition() const {
 		char tmp[512];
