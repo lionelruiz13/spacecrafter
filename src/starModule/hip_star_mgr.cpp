@@ -332,17 +332,17 @@ std::string HipStarMgr::getSciName(int hip)
 	return "";
 }
 
-void HipStarMgr::init(float font_size, const std::string& font_name, const InitParser &conf)
+void HipStarMgr::init(const InitParser &conf)
 {
 	load_data(conf);
 	InitColorTableFromConfigFile(conf);
 	// Load star texture no mipmap:
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
-	starFont = new s_font(font_size, font_name);
-	if (!starFont) {
-		cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
-		assert(0);
-	}
+	// starFont = new s_font(font_size, font_name);
+	// if (!starFont) {
+	// 	cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
+	// 	assert(0);
+	// }
 }
 
 void HipStarMgr::setGrid(GeodesicGrid* geodesic_grid)
@@ -757,7 +757,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 void HipStarMgr::drawStarName( Projector* prj )
 {
 	for (auto const& token : starNameToDraw) {
-		prj->printGravity180(starFont, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), true,4,4);
+		prj->printGravity180(starFont, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
 		//  prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
 	}
 	//cout << "Nombre de nom à afficher : " << starNameToDraw.size() << endl;
@@ -1028,8 +1028,13 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 //! Define font file name and size to use for star names display
 void HipStarMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (starFont) delete starFont;
+	if (starFont) {
+		delete starFont;
+		starFont=nullptr;
+	}
 	starFont = new s_font(font_size, font_name);
-	assert(starFont);
+	if (!starFont) {
+		cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
+		assert(starFont);
+	}
 }
-

@@ -23,7 +23,6 @@ INSTALL(FILES
 	my_moon.frag my_moon.tesc my_moon.tese my_moon.geom my_moon.vert
 	moon_bump.frag moon_bump.vert
 	splash.frag splash.vert
-	font_print.frag font_print.vert
 	fbo.frag fbo.vert
 	imageViewport.frag imageViewport.vert
 	#~ imageHorizontal.frag imageHorizontal.vert

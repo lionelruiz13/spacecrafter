@@ -21,13 +21,12 @@
 // Class to manage fonts
 
 #include <vector>
+#include "tools/log.hpp"
 #include "tools/s_font.hpp"
 #include "tools/utility.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
-
-
 
 shaderProgram* s_font::shaderHorizontal=nullptr;
 shaderProgram* s_font::shaderPrint=nullptr;
@@ -43,7 +42,7 @@ s_font::s_font(float size_i, const std::string& ttfFileName) //: lineHeightEstim
 	//printf("TTF_OpenFont file: %s  size: %f\n", fontName.c_str() , fontSize);
 	myFont = TTF_OpenFont( fontName.c_str(), fontSize);
 	if(!myFont) {
-		printf("TTF_OpenFont error: %s\n", TTF_GetError());
+		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
 		exit(-1);
 	}
 	//cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << endl;
@@ -103,24 +102,25 @@ void s_font::deleteShader()
 //! print out a string
 //! cache == 0 means do not cache rendered string texture
 //! cache == -1 means do not actually draw, just cache
-void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown, int cache)
+void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown/*, int cache*/)
 {
+	//bool cache = true;
 	if(s == "") return;
 
 	renderedString_struct currentRender;
 
 	// If not cached, create texture
-	if( !cache || renderCache[s].textureW == 0 ) {
-		currentRender = renderString(s);
-		if( cache ) {
+	if( /*!cache ||*/ renderCache[s].textureW == 0 ) {
+		currentRender = renderString(s, false);
+		//if( cache ) {
 			renderCache[s] = currentRender;
-		}
+		//}
 	} else {
 		// read from cache
 		currentRender = renderCache[s];
 	}
 
-	if(cache==-1) return; // do not draw, just wanted to cache
+	//if(cache==-1) return; // do not draw, just wanted to cache
 
 	StateGL::enable(GL_BLEND);
 
@@ -204,22 +204,32 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 
 	shaderPrint->unuse();
 
-	if(!cache) glDeleteTextures( 1, &currentRender.stringTexture);
+	//if(!cache) glDeleteTextures( 1, &currentRender.stringTexture);
 }
 
-float s_font::getStrLen(const std::string& s, bool cache)
+float s_font::getStrLen(const std::string& s/*, bool cache*/)
 {
 
 	if(s == "") return 0;
-	if(myFont==nullptr) fprintf(stderr,"myFont == NULL\n");
+	//if(myFont==nullptr) fprintf(stderr,"myFont == NULL\n");
 
 	if( renderCache[s].textureW != 0 ) return renderCache[s].stringW;
 
+	int w,h;
+	if(TTF_SizeText(myFont,s.c_str(),&w,&h)) {
+	//	printf("ERROR TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i\n",w,h);
+		cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
+		return w;
+	} else {// perhaps print the current TTF_GetError(), the string can't be rendered...
+		//printf("ERROR : TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i but say ==0 \n",w,h);
+		return w;
+	}
+	/*
 	Mat4f MVP;
 
 	// otherwise calculate (and cache if desired)
 	if(cache) {
-		print(0, 0, s, Vec4f (1.0,1.0, 1.0, 1.0), MVP , 0, -1);
+		print(0, 0, s, Vec4f (1.0,1.0, 1.0, 1.0), MVP , 0); //, -1);
 		return renderCache[s].stringW;
 	} else {
 		int w,h;
@@ -231,6 +241,7 @@ float s_font::getStrLen(const std::string& s, bool cache)
 			return w;
 		}
 	}
+	*/
 }
 
 
@@ -239,6 +250,8 @@ void s_font::clearCache(const std::string& s)
 {
 	if( renderCache[s].textureW != 0 ) {
 		glDeleteTextures( 1, &renderCache[s].stringTexture);
+		if (renderCache[s].haveBorder)
+			glDeleteTextures( 1, &renderCache[s].borderTexture);
 		renderCache.erase(s);
 	}
 
@@ -250,6 +263,8 @@ void s_font::clearCache()
 	for ( renderedStringHashIter_t iter = renderCache.begin(); iter != renderCache.end(); ++iter ) {
 		if( (*iter).second.textureW != 0 ) {
 			glDeleteTextures( 1, &((*iter).second.stringTexture));
+			if ((*iter).second.haveBorder)
+				glDeleteTextures( 1, &((*iter).second.borderTexture));
 			//cout << "Cleared cache for string: " << (*iter).first << endl;
 		}
 	}
@@ -258,53 +273,57 @@ void s_font::clearCache()
 }
 
 //! Render a string to a texture
-renderedString_struct s_font::renderString(const std::string &s) const
+renderedString_struct s_font::renderString(const std::string &s, bool withBorder) const
 {
 
 	renderedString_struct rendering;
-	SDL_Color color;
-	color.r=255;
-	color.g=255;
-	color.b=255;
+	SDL_Color color={255,255,255,0};
 	SDL_Surface *text = TTF_RenderUTF8_Blended(myFont, s.c_str(), color ); //write in white
 
 	// Calculate opengl texture size required
 	rendering.stringW = text->w;
 	rendering.stringH = text->h;
+	rendering.haveBorder =  false;
 
 	// opengl texture dimensions must be powers of 2
 	//~ rendering.textureW = getNextPowerOf2((int)rendering.stringW);
 	//~ rendering.textureH = getNextPowerOf2((int)rendering.stringH);
-	rendering.textureW = text->w;
-	rendering.textureH = text->h;
+	rendering.textureW = text->w+2;
+	rendering.textureH = text->h+2;
 
-	//~ Uint32 rmask, gmask, bmask, amask;
+	Uint32 rmask, gmask, bmask, amask;
 
 	/* SDL interprets each pixel as a 32-bit number, so our masks must depend on the endianness (byte order) of the machine */
-	//~ #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	//~ rmask = 0xff000000;
-	//~ gmask = 0x00ff0000;
-	//~ bmask = 0x0000ff00;
-	//~ amask = 0x000000ff;
-	//~ #else
-	//~ rmask = 0x000000ff;
-	//~ gmask = 0x0000ff00;
-	//~ bmask = 0x00ff0000;
-	//~ amask = 0xff000000;
-	//~ #endif
+	#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+	 rmask = 0xff000000;
+	 gmask = 0x00ff0000;
+	 bmask = 0x0000ff00;
+	 amask = 0x000000ff;
+	#else
+	 rmask = 0x000000ff;
+	 gmask = 0x0000ff00;
+	 bmask = 0x00ff0000;
+	 amask = 0xff000000;
+	#endif
 
-	//~ SDL_Surface *surface = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
-	//~ renderedString_struct nothing;
-	//~ nothing.textureW = nothing.textureH = nothing.stringW = nothing.stringH = 0;
-	//~ nothing.stringTexture = 0;
-	//~ if(!surface) return nothing;
+	SDL_Surface *surface = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
+	renderedString_struct nothing;
+	nothing.textureW = nothing.textureH = nothing.stringW = nothing.stringH = 0;
+	nothing.haveBorder =false;
+	nothing.stringTexture = 0;
+	if(!surface)  {
+		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
+		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
+		if(text) SDL_FreeSurface(text);
+		return nothing;
+	}
 
-	//~ SDL_Rect tmp;
-	//~ tmp.x=0;
-	//~ tmp.y=0;
-	//~ tmp.w=text->w;
-	//~ tmp.h=text->h;
-	//~ SDL_BlitSurface(text, &tmp, surface, &tmp);
+	SDL_Rect tmp;
+	tmp.x=1;
+	tmp.y=1;
+	tmp.w=text->w;
+	tmp.h=text->h;
+	SDL_BlitSurface(text, &tmp, surface, NULL);
 
     // disable mipmapping on the new texture
     //~ glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -319,23 +338,30 @@ renderedString_struct s_font::renderString(const std::string &s) const
 	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 	// get the number of channels in the SDL surface
-	//~ GLenum texture_format;
-	//~ GLint nOfColors = surface->format->BytesPerPixel;
-	//~ if (nOfColors == 4) {     // contains an alpha channel
-		//~ if (surface->format->Rmask == 0x000000ff)
-			//~ texture_format = GL_RGBA;
-		//~ else
-			//~ texture_format = GL_BGRA;
-	//~ } else if (nOfColors == 3) {     // no alpha channel
-		//~ if (surface->format->Rmask == 0x000000ff)  // THIS IS WRONG for someplatforms
-			//~ texture_format = GL_RGB;
-		//~ else
-			//~ texture_format = GL_BGR;
-	//~ } else {
-		//~ cerr << "Error: unable to convert surface to font texture.\n";
-		//~ if(surface) SDL_FreeSurface(surface);
-		//~ return nothing;
-	//~ }
+	GLenum texture_format;
+	if (surface->format->Rmask == 0x000000ff)
+		texture_format = GL_RGBA;
+	else
+		texture_format = GL_BGRA;
+
+	// get the number of channels in the SDL surface
+	// GLenum texture_format = GL_RGBA;
+	// GLint nOfColors = surface->format->BytesPerPixel;
+	// if (nOfColors == 4) {     // contains an alpha channel
+	// 	if (surface->format->Rmask == 0x000000ff)
+	// 		texture_format = GL_RGBA;
+	// 	else
+	// 		texture_format = GL_BGRA;
+	// } else if (nOfColors == 3) {     // no alpha channel
+	// 	if (surface->format->Rmask == 0x000000ff)  // THIS IS WRONG for someplatforms
+	// 		texture_format = GL_RGB;
+	// 	else
+	// 		texture_format = GL_BGR;
+	// } else {
+	// 	//cerr << "Error: unable to convert surface to font texture.\n";
+	// 	if(surface) SDL_FreeSurface(surface);
+	// 	return nothing;
+	// }
 
 	glGenTextures( 1, &rendering.stringTexture);
 	glBindTexture( GL_TEXTURE_2D, rendering.stringTexture);
@@ -343,10 +369,59 @@ renderedString_struct s_font::renderString(const std::string &s) const
     // disable mipmapping on the new texture
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
-	//~ glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
+    //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
+	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 
-	//~ if(surface) SDL_FreeSurface(surface);
+
+	if (withBorder) {
+	// ***********************************
+	//
+	// création de la bordure
+	//
+	// ***********************************
+	SDL_Surface *border = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
+	if(!border)  {
+		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
+		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
+		if(text) SDL_FreeSurface(text);
+		return rendering;
+	}
+
+	SDL_Rect tmp;
+	int shiftx = 0;
+	int shifty = 0;
+	for(int pass=0; pass < 4 ; pass++) {
+		if(pass<2) shiftx = -1;
+			else shiftx = 1;
+		if(pass%2) shifty = -1;
+			else shifty = 1;
+
+		//why (1;1) ? le texture initiale commence en (1;1)
+		tmp.x=1+shiftx;
+		tmp.y=1+shifty;
+		tmp.w=text->w;
+		tmp.h=text->h;
+		SDL_BlitSurface(text, &tmp, border, NULL);
+	}
+
+	if (border->format->Rmask == 0x000000ff)
+		texture_format = GL_RGBA;
+	else
+		texture_format = GL_BGRA;
+
+	glGenTextures( 1, &rendering.borderTexture);
+	glBindTexture( GL_TEXTURE_2D, rendering.borderTexture);
+
+    // disable mipmapping on the new texture
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
+	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
+	rendering.haveBorder =true;
+	if (border) SDL_FreeSurface(border);
+	}
+
+	if(surface) SDL_FreeSurface(surface);
 	if(text) SDL_FreeSurface(text);
 	return rendering;
 }
@@ -354,8 +429,10 @@ renderedString_struct s_font::renderString(const std::string &s) const
 
 //! Draw text with baseline more or less parallel with horizon
 //! justify: -1 left, 0 center, 1 right align (not impemented yet)
-void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache, bool outline)
+void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache) //, bool cache, bool outline)
 {
+	//int outline = 1;
+
 	if(str == "") return;
 
 	renderedString_struct rendering;
@@ -368,8 +445,9 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 
 	// Get rendered texture
 	if(renderCache[str].textureW == 0) {
-		rendering = renderString(str);
-		if(cache) renderCache[str] = rendering;
+		rendering = renderString(str, true);
+		if(cache)
+			renderCache[str] = rendering;
 	} else {
 		rendering = renderCache[str];
 	}
@@ -396,6 +474,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	shaderHorizontal->use();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	float theta = C_PI + atan2f(dx, dy - 1);
@@ -420,8 +500,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		meshPoints.push_back(Vec2f(center[0]+p*d,center[1]+q*d));
 	}
 
-	int shiftx = 0;
-	int shifty = 0;
+	// int shiftx = 0;
+	// int shifty = 0;
 
 	Vec3f Color (texColor[0], texColor[1], texColor[2]);
 
@@ -430,29 +510,28 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	glBindVertexArray(sFont.vao);
 
 
-	for (int pass=0; pass<outline*4+1; pass++) {
-
-		if(outline) {
-			if(pass < 4 ) {
+	// for (int pass=0; pass<0*4+1; pass++) {
+		// if(1) {
+			/*if(pass < 4 ) {
 				Color = v3fNull;
 				shaderHorizontal->setUniform("Color", Color);
 				if(pass<2) shiftx = -1;
 				else shiftx = 1;
 				if(pass%2) shifty = -1;
 				else shifty = 1;
-			} else {
-				Color = Vec3f(texColor[0], texColor[1], texColor[2]);
-				shaderHorizontal->setUniform("Color", Color);
-				shiftx = shifty = 0;
-			}
-		}
+			// } else {*/
+			// 	Color = Vec3f(texColor[0], texColor[1], texColor[2]);
+			// 	shaderHorizontal->setUniform("Color", Color);
+				// shiftx = shifty = 0;
+			//}
+		// }
 
 		for (int i=0; i<=steps; i++) {
 
-			vecPos.push_back(meshPoints[i*2][0]+shiftx);
-			vecPos.push_back(meshPoints[i*2][1]+shifty);
-			vecPos.push_back(meshPoints[i*2+1][0]+shiftx);
-			vecPos.push_back(meshPoints[i*2+1][1]+shifty);
+			vecPos.push_back(meshPoints[i*2][0]/*+shiftx*/);
+			vecPos.push_back(meshPoints[i*2][1]/*+shifty*/);
+			vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
+			vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
 
 			vecTex.push_back((float)i/steps*textureExtentW);
 			vecTex.push_back(0.0);
@@ -473,8 +552,11 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 
 		vecPos.clear();
 		vecTex.clear();
-	}
+	// }
 
 	shaderHorizontal->unuse();
-	if(!cache) glDeleteTextures( 1, &rendering.stringTexture);
+	if (!cache) {
+		glDeleteTextures( 1, &rendering.stringTexture);
+		glDeleteTextures( 1, &rendering.borderTexture);
+	}
 }

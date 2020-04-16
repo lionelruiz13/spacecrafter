@@ -77,7 +77,7 @@ public:
 
 private:
 	float radius;
-	s_font* font;
+	s_font* font=nullptr;
 	Vec3f color;
 	std::string sNorth, sSouth, sEast, sWest;
 	LinearFader fader;

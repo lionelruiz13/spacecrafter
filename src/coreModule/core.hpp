@@ -85,6 +85,7 @@ class Dso3d;
 class Media;
 class StarLines;
 class BodyTrace;
+class CoreFont;
 
 //!  @brief Main class for application core processing.
 //!
@@ -98,6 +99,7 @@ public:
 	friend class CoreExecutorInUniverse;
 
 	friend class CoreLink;
+	friend class CoreFont;
 
 	//! Possible mount modes
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
@@ -438,8 +440,8 @@ public:
 	// Projection
 
 	//! Print the passed string so that it is oriented in the drection of the gravity
-	void printHorizontal(s_font* font, float altitude, float azimuth, const std::string& str, Vec3f textColor, bool outline = 1, /*int justify = 0,*/ bool cache = 0) const {
-		font->printHorizontal(projection, altitude, azimuth, str, textColor, /*justify,*/ cache, outline/*, 0, 0*/);
+	void printHorizontal(s_font* font, float altitude, float azimuth, const std::string& str, Vec3f textColor , bool cache = true/*, int justify = 0, bool outline */) const {
+		font->printHorizontal(projection, altitude, azimuth, str, textColor, cache);//, /*justify, cache, outline, 0, 0*/);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -681,17 +683,6 @@ private:
 	//! Find in a "clever" way an object from its screen position
 	Object cleverFind(int x, int y) const;
 
-	std::string FontFileNameGeneral;			//! The font file used by default during initialization
-	std::string FontFileNamePlanet;				//! The font for the planet system
-	std::string FontFileNameConstellation;		//! The font for all asterims
-	std::string FontFileNameMenu;
-	std::string FontFileNameText;
-	double FontSizeText;
-	double FontSizeGeneral;
-	double FontSizePlanet;
-	double FontSizeConstellation;
-	double FontSizeCardinalPoints;
-
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
@@ -700,6 +691,7 @@ private:
 	CoreExecutor* executorInGalaxy = nullptr;
 	CoreExecutor* executorInUniverse = nullptr;
 
+	CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	TimeMgr* timeMgr;				// Manage date and time

@@ -57,7 +57,7 @@ void Hints::drawHints(const Navigator* nav, const Projector* prj)
 	float tmp = 10.f + body->getOnScreenSize(prj, nav)/2.f; // Shift for nameI18 printing
 
 	Vec4f Color( body->myColor->getLabel(),hint_fader.getInterstate());
-	prj->printGravity180(body->planet_name_font, body->screenPos[0], body->screenPos[1], body->getSkyLabel(nav), Color,1, tmp, tmp);
+	prj->printGravity180(body->planet_name_font, body->screenPos[0], body->screenPos[1], body->getSkyLabel(nav), Color,/*1,*/ tmp, tmp);
 
 	drawHintCircle(nav, prj);
 }

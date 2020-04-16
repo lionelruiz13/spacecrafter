@@ -99,8 +99,12 @@ void TextMgr::clear()
 		delete(*iter);
 	}
 	textUsr.clear();
+	for(int i=0; i<7; i++) {
+		textFont[i]->clearCache();
+	}
 }
 
+//TODO suppression du cache de la fonte
 bool TextMgr::del(const std::string &name)
 {
 	std::vector < Text * >::iterator iter;
@@ -119,7 +123,7 @@ void TextMgr::nameUpdate(const std::string &name, const std::string &text)
 	std::vector < Text * >::iterator iter;
 	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		if ((*iter)->getName() == name) {
-			(*iter)->textUpdate(text);
+			(*iter)->textUpdate(text,textFont);
 			return;
 		}
 	}

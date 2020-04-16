@@ -94,12 +94,15 @@ SolarSystem::SolarSystem()
 
 void SolarSystem::setFont(float font_size, const std::string& font_name)
 {
-	if (planet_name_font) delete planet_name_font;
+	if (planet_name_font) {
+		delete planet_name_font;
+		planet_name_font=nullptr;
+	}
 
 	planet_name_font = new s_font(font_size, font_name);
 	if (!planet_name_font) {
 		cLog::get()->write("Can't create planet_name_font", LOG_TYPE::L_ERROR);
-		exit(-1);
+		assert(planet_name_font);
 	}
 	Body::setFont(planet_name_font);
 }

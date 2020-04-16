@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <iterator>
+#include <cassert>
 
 #include "coreModule/skydisplay_mgr.hpp"
 #include "tools/log.hpp"
@@ -78,7 +79,15 @@ void SkyDisplayMgr::update(int delta_time)
 
 void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
 {
+	if (skyDisplayFont) {
+		delete skyDisplayFont;
+		skyDisplayFont = nullptr;
+	}
 	skyDisplayFont = new s_font(font_size, font_name);
+	if (!skyDisplayFont) {
+		cLog::get()->write("SkyDisplayMgr: Can't create font\n", LOG_TYPE::L_ERROR);
+		assert(skyDisplayFont);
+	}	
 	SkyDisplay::setFont(skyDisplayFont);
 	// for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 	// 	it->second->setFont(font_size, font_name);

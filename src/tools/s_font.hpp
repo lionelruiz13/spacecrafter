@@ -41,10 +41,12 @@ class Projector;
 
 typedef struct {
 	GLuint stringTexture;  // Rendered string texture reference - remember to delete when done
+	GLuint borderTexture;  // Rendered string bordered texture -  remember to delete when done
 	float textureW; 	   // Width of texture in pixels
 	float textureH; 	   // Height of texture in pixels
 	float stringW; 	       // Width of string portion in pixels
 	float stringH; 	       // Height of string portion in pixels
+	bool haveBorder;	   // if the text has a bordered texture
 } renderedString_struct;
 
 typedef std::map< std::string, renderedString_struct > renderedStringHash_t;
@@ -56,20 +58,21 @@ public:
 	s_font(float size_i, const std::string& ttfFileName);
 	virtual ~s_font();
 
-	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown = 1, int cache = 0);
-	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache = 0, bool outline = 0);
+	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown /*, int cache*/ );
+	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache /*, bool outline*/);
 
 	void clearCache(const std::string& s);
 	void clearCache();
 
-	renderedString_struct renderString(const std::string &s) const;
-
-	float getStrLen(const std::string& s, bool cache = 0);
+	float getStrLen(const std::string& s/*, bool cache = 0*/);
 
 	static void createShader();
 	static void deleteShader();
 
 protected:
+
+	renderedString_struct renderString(const std::string &s, bool withBorder) const;
+
 
 	renderedStringHash_t renderCache;
 
