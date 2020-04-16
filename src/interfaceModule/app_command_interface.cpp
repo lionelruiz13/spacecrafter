@@ -1231,14 +1231,18 @@ int AppCommandInterface::commandSearch()
 	std::string argName = args["name"];
 	std::string argMaxObject = args["maxObject"];
 	if (!argName.empty()) {
+		std::string toSend;
 		if (!argMaxObject.empty()) {
-			stcore->tcpGetListMatchingObjects(argName, evalInt(argMaxObject));
+			toSend=stcore->getListMatchingObjects(argName, evalInt(argMaxObject));
 		} else {
-			stcore->tcpGetListMatchingObjects(argName);
+			toSend=stcore->getListMatchingObjects(argName);
 		}
+		if (toSend.empty())
+			toSend="NOF";
+		if (tcp)
+			tcp->setOutput(toSend);
 	} else
 		debug_message = _("command 'search' : missing name argument");
-
 	return executeCommandStatus();
 }
 

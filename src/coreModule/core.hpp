@@ -309,7 +309,7 @@ public:
 	//! @return a vector of matching object name by order of relevance, or an empty vector if nothing match
 	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem=5) const;
 
-	void tcpGetListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem=5) const;
+	std::string getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem=5) const;
 
 	//! Return whether an object is currently selected
 	bool getFlagHasSelected(void) {

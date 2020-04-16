@@ -208,7 +208,7 @@ void Core::tcpConfigure(ServerSocket * _tcp)
 }
 
 
-void Core::tcpGetListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
+std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
 {
 	std::vector<std::string> tmp;
 	std::string msgToSend;
@@ -216,11 +216,7 @@ void Core::tcpGetListMatchingObjects(const std::string& objPrefix, unsigned int 
 	for( std::vector<std::string>::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 		msgToSend = msgToSend + (*itr)+";";
 	}
-
-	if (msgToSend=="")
-		msgToSend="NOF"; // no object found
-
-	tcpSend(msgToSend);
+	return msgToSend;
 }
 
 // void Core::tcpGetPlanetsStatus() const
