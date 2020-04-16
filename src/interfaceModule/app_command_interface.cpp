@@ -44,6 +44,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
 #include "tools/file_path.hpp"
+#include "tools/io.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "tools/utility.hpp"
@@ -325,6 +326,12 @@ bool AppCommandInterface::isFalse(const std::string &a)
 	else
 		return false;
 }
+
+void AppCommandInterface::setTcp(ServerSocket* _tcp)
+{
+	tcp=_tcp;
+}
+
 
 int AppCommandInterface::parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments)
 {
@@ -1469,10 +1476,6 @@ int AppCommandInterface::commandSuntrace()
 	return executeCommandStatus();
 }
 
-	//m_commands["add"] = SC_COMMAND::SC_ADD;
-	//m_commands["audio"] = SC_COMMAND::SC_AUDIO;
-	//m_commands["body_trace"] = SC_COMMAND::SC_BODY_TRACE;
-	//m_commands["audio"] = SC_COMMAND::SC_AUDIO;
 
 int AppCommandInterface::commandColor() 
 {
@@ -1543,101 +1546,6 @@ int AppCommandInterface::commandColor()
 		break;
 	}
 	return executeCommandStatus(); // as well
-
-	//gestion du nom de la couleur a modifier
-	// if  (argProperty!="") {
-	// 	if(argProperty == "constellation_lines")
-	// 		coreLink->constellationSetColorLine( Vcolor );
-	// 	else if(argProperty == "constellation_names")
-	// 		coreLink->constellationSetColorNames( Vcolor );
-	// 	else if(argProperty == "constellation_art")
-	// 		coreLink->constellationSetColorArt( Vcolor );
-	// 	else if(argProperty == "constellation_boundaries")
-	// 		coreLink->constellationSetColorBoundaries( Vcolor );
-	// 	else if(argProperty == "cardinal_points")
-	// 		coreLink->cardinalsPointsSetColor( Vcolor );
-	// 	else if(argProperty == "planet_orbits")
-	// 		coreLink->planetSetDefaultColor("orbit", Vcolor );
-	// 	else if(argProperty == "planet_names")
-	// 		coreLink->planetSetDefaultColor("label", Vcolor );
-	// 	else if(argProperty == "planet_trails")
-	// 		coreLink->planetSetDefaultColor("trail", Vcolor );
-	// 	else if(argProperty == "azimuthal_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor );
-	// 	else if(argProperty == "equator_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor );
-	// 	else if(argProperty == "ecliptic_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor );
-	// 	else if(argProperty == "galactic_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor );
-	// 	else if(argProperty == "equator_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor );
-	// 	else if(argProperty == "galactic_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Vcolor );
-	// 	else if(argProperty == "ecliptic_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, Vcolor );
-	// 	else if(argProperty == "meridian_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, Vcolor );
-	// 	else if(argProperty == "zenith_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZENITH, Vcolor );
-	// 	else if(argProperty == "polar_point")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_POINT_POLAR, Vcolor );
-	// 	else if(argProperty == "polar_circle")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Vcolor );
-	// 	else if(argProperty == "ecliptic_center")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, Vcolor );
-	// 	else if(argProperty == "galactic_pole")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_POLE, Vcolor );
-	// 	else if(argProperty == "galactic_center")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER, Vcolor );
-	// 	else if(argProperty == "vernal_points")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERNAL, Vcolor );
-	// 	else if(argProperty == "analemma")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMA, Vcolor );
-	// 	else if(argProperty == "analemma_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Vcolor );
-	// 	else if(argProperty == "greenwich_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GREENWICH, Vcolor );
-	// 	else if(argProperty == "aries_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ARIES, Vcolor );
-	// 	else if(argProperty == "zodiac")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZODIAC, Vcolor );
-	// 	else if(argProperty == "personal")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONAL, Vcolor );
-	// 	else if(argProperty == "personeq")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONEQ, Vcolor );
-	// 	else if(argProperty == "nautical_alt")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICAL, Vcolor );
-	// 	else if(argProperty == "nautical_ra")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICEQ, Vcolor );
-	// 	else if(argProperty == "object_coordinates")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_OBJCOORDS, Vcolor ); 
-	// 	else if(argProperty == "mouse_coordinates")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS, Vcolor );
-	// 	else if(argProperty == "angular_distance")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ANGDIST, Vcolor );
-	// 	else if(argProperty == "loxodromy")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_LOXODROMY, Vcolor );
-	// 	else if(argProperty == "orthodromy")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ORTHODROMY, Vcolor );
-	// 	else if(argProperty == "vertical_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );
-	// 	else if(argProperty == "nebula_names")
-	// 		coreLink->nebulaSetColorLabels( Vcolor );
-	// 	else if(argProperty == "nebula_circle")
-	// 		coreLink->nebulaSetColorCircle( Vcolor );
-	// 	else if(argProperty == "precession_circle")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor );
-	// 	else if(argProperty == "text_usr_color")
-	// 		coreLink->textSetDefaultColor( Vcolor );
-	// 	else if ((argProperty == "star_table") && (args["index"] !="" ))
-	// 		coreLink->starSetColorTable(evalInt(args["index"]), Vcolor );
-	// 	else {
-	// 		debug_message = _("Command 'color': unknown property");
-	// 		executeCommandStatus(); // renvoie de l'erreur
-	// 	}
-	// 	return executeCommandStatus(); // as well
-	// }
 }
 
 int AppCommandInterface::commandIlluminate()

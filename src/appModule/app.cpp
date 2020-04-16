@@ -305,6 +305,7 @@ void App::init()
 			tcp = new ServerSocket(port, 16, buffer_in_size, IO_DEBUG_INFO, IO_DEBUG_ALL);
 			tcp->open();
 			core->tcpConfigure(tcp);
+			commander->setTcp(tcp);
 		}
 		#if LINUX // special mkfifo
 		if (enable_mkfifo) {

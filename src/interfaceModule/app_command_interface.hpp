@@ -43,6 +43,7 @@ class ScriptInterface;
 class SpaceDate;
 class Media;
 class SaveScreenInterface;
+class ServerSocket;
 
 class AppCommandInterface {
 
@@ -60,6 +61,7 @@ public:
 	void initSaveScreenInterface(SaveScreenInterface* _saveScreenInterface);
 
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, std::string _commandline);
+	void setTcp(ServerSocket* _tcp);
 
 protected:
 	//all different command
@@ -122,6 +124,7 @@ private:
 	ScriptInterface* scriptInterface = nullptr;
 	SpaceDate* spaceDate = nullptr;
 	SaveScreenInterface* saveScreenInterface=nullptr;
+	ServerSocket *tcp = nullptr;
 	std::string commandline;
 	std::string command;
 	stringHash_t args;
