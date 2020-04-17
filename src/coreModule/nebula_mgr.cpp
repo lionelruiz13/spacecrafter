@@ -176,7 +176,7 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 
 			if(!(*iter)->isDeletable()) {
 				if(showOriginal) (*iter)->show(); // make sure original is now visible
-				continue;
+				return;
 			}
 
 			// erase from locator grid

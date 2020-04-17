@@ -1325,14 +1325,14 @@ int AppCommandInterface::commandDso()
 
 		if (argAction == "drop" && !argName.empty() ) {
 			// Delete an existing nebulae, but only if was added by a script!
-			stcore->unSelect();
+			//stcore->unSelect();
 			stcore->removeNebula(argName);
 			return executeCommandStatus();
 		}
 
 		if (argAction == "clear") {
 			// drop all nebulae that are not in the original config file
-			stcore->unSelect();
+			//stcore->unSelect();
 			stcore->removeSupplementalNebulae();
 			return executeCommandStatus();
 		}
