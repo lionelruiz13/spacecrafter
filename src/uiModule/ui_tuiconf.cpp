@@ -56,9 +56,9 @@ void UI::drawGravityUi()
 
 		os << spaceDate->getPrintableDateLocal(jd) << " " << spaceDate->getPrintableTimeLocal(jd);
 
-		if ((FlagShowPlanetname) && (core->getObservatory()->getHomePlanetEnglishName()!="Earth")) {
-			if (core->getObservatory()->getHomePlanetEnglishName()!= "")
-			os << " " << _(core->getObservatory()->getHomePlanetEnglishName());
+		if ((FlagShowPlanetname) && (coreLink->getObserverHomePlanetEnglishName()!="Earth")) {
+			if (coreLink->getObserverHomePlanetEnglishName()!= "")
+			os << " " << _(coreLink->getObserverHomePlanetEnglishName());
 		}
 		if (FlagShowFov) os << " fov " << std::setprecision(3) << coreLink->getFov();
 		if (FlagShowFps) os << "  FPS " << app->getFpsClock();
@@ -859,11 +859,11 @@ void UI::tuiCbSetlocation()
 	// change to human readable coordinates with current values, then change
 	coreLink->observatorySetLongitude(coreLink->observatoryGetLongitude());
 
-	core->getObservatory()->moveTo(tui_location_latitude->getValue(),
-	                                tui_location_longitude->getValue(),
-	                                tui_location_altitude->getValue(),
-	                                int(tui_effect_zoom_duration->getValue()*1000),  // TEMP temporarily using zoom duration
-	                                1); // use relative calculated duration
+	coreLink->getObserverMoveTo(tui_location_latitude->getValue(),
+	                            tui_location_longitude->getValue(),
+	                            tui_location_altitude->getValue(),
+	                            int(tui_effect_zoom_duration->getValue()*1000),  // TEMP temporarily using zoom duration
+	                            1); // use relative calculated duration
 }
 
 
@@ -996,5 +996,5 @@ void UI::tuiUpdateIndependentWidgets()
 	// Since some tui options don't immediately affect actual settings
 	// reset those options to the current values now
 	// (can not do this in tuiUpdateWidgets)
-	tui_location_planet->setValue(std::string(core->getObservatory()->getHomePlanetEnglishName()));
+	tui_location_planet->setValue(std::string(coreLink->getObserverHomePlanetEnglishName() ) );
 }

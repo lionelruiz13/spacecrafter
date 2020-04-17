@@ -2593,7 +2593,7 @@ int AppCommandInterface::commandSelect()
 		select_type = "planet";
 		identifier = args["planet"];
 		if (args["planet"] == "home_planet")
-			identifier = stcore->getObservatory()->getHomePlanetEnglishName();
+			identifier = coreLink->getObserverHomePlanetEnglishName();
 	} else if (args["nebula"]!="") {
 		select_type = "nebula";
 		identifier = args["nebula"];
@@ -3174,7 +3174,7 @@ int AppCommandInterface::commandDate()
 	std::string argRelative = args["relative"];
 	if (!argRelative.empty()) { // value is a float number of days
 		double days = evalDouble(argRelative);
-		const Body* home = stcore->getObservatory()->getHomeBody();
+		const Body* home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
 			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument relative");
 			return executeCommandStatus();
@@ -3205,7 +3205,7 @@ int AppCommandInterface::commandDate()
 	std::string argSidereal = args["sidereal"];
 	if (!argSidereal.empty()) { // value is a float number of sidereal days
 		double days = evalDouble(argSidereal);
-		const Body* home = stcore->getObservatory()->getHomeBody();
+		const Body* home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
 			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument sideral");
 			return executeCommandStatus();
@@ -3278,7 +3278,7 @@ int AppCommandInterface::commandBody()
 	//gestion des actions
 	std::string argAction = args["action"];
 	std::string argName = args["name"];
-    if (argName == "home_planet") argName = stcore->getObservatory()->getHomePlanetEnglishName();
+    if (argName == "home_planet") argName = coreLink->getObserverHomePlanetEnglishName();
     //if (argName == "selected") argName = stcore->selected_object.getEnglishName();
 	std::string argMode = args["mode"];
 

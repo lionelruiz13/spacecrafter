@@ -1207,7 +1207,22 @@ public:
 	// 	core->observatory->fixBodyToSun();
 	// }
 	///////////////////////////////////////////////////////////
-	
+	std::string getObserverName(){
+		return core->getObservatory()->getName(); 
+	}
+
+	std::string getObserverHomePlanetEnglishName() {
+		return core->observatory->getHomePlanetEnglishName();
+	}
+
+	const Body* getObserverHomeBody(){
+		return core->observatory->getHomeBody();
+	}
+
+	void getObserverMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration) {
+		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// city ---------------------------
 	////////////////////////////////////////////////////////////////////////////////
