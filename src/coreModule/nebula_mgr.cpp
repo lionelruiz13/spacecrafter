@@ -210,11 +210,12 @@ std::string NebulaMgr::removeSupplementalNebulae()
 	std::vector<Nebula *>::iterator iter;
 	std::vector<Nebula *>::iterator iter2;
 
-	for (iter=neb_array.begin(); iter!=neb_array.end(); iter++) {
+	for (iter=neb_array.begin(); iter!=neb_array.end(); /*iter++*/) {
 
 		if (!(*iter)->isDeletable()) {
 			(*iter)->show();
 			(*iter)->select();
+			iter++;
 		} else {
 
 			// erase from locator grid
@@ -230,8 +231,8 @@ std::string NebulaMgr::removeSupplementalNebulae()
 
 			// Delete nebula
 			delete *iter;
-			neb_array.erase(iter);
-			iter--;
+			iter=neb_array.erase(iter);
+			//iter--;
 			// cerr << "Erased nebula " << uname << endl;
 		}
 	}
