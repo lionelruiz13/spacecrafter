@@ -51,10 +51,10 @@ void CoreBackup::loadBackup()
 void CoreBackup::saveBackup()
 {
 	mBackup.jday=core->timeMgr->getJDay();
-	mBackup.latitude=core->getObservatory()->getLatitude();
-	mBackup.longitude=core->getObservatory()->getLongitude();
-	mBackup.altitude=core->getObservatory()->getAltitude();
-	mBackup.pos_name=core->getObservatory()->getName();
+	mBackup.latitude=core->observatory->getLatitude();
+	mBackup.longitude=core->observatory->getLongitude();
+	mBackup.altitude=core->observatory->getAltitude();
+	mBackup.pos_name=core->observatory->getName();
 	mBackup.fov = core->projection->getFov(); //getFov();
-	mBackup.home_planet_name=core->getObservatory()->getHomePlanetEnglishName();
+	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
 }
