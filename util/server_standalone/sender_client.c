@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
        return 1;
     }
     
-    sleep(2);
+    //sleep(2);
     
     //preparation buffer avant envoi
     memset(sendBuff, '\0', SIZEBUFFER); 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"color property constellation_lines value x00ff80\n");
     //~ strcpy(sendBuff,"constellation name UMA type line_color color x00ffff\n");
     //~ strcpy(sendBuff,"constellation name UMA type label_color r 1.0 b 0.0 g 0.0\n");
-    //~ strcpy(sendBuff,"constellation name UMA intensity 0.8\n");
+    strcpy(sendBuff,"constellation name UMA intensity 1.0\n");
     //~ strcpy(sendBuff,"set constellation_art_intensity 0.2\n");
     //~ strcpy(sendBuff,"text action load name test string \"!! Vive Spacecrafter !!\" azimuth 10 altitude 30 size X_LARGE r 0.2 g 0.4 b 0.4 display on");
     //~ strcpy(sendBuff,"text action update name test string Coucou");
@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"set date_display_number 1");
     //~ strcpy(sendBuff,"body tesselation moon_altimetry_factor value 5");
     //~ strcpy(sendBuff,"body tesselation max_tes_level value 4");
-    strcpy(sendBuff,"color r 0.8 g 0.1 b 0.0 property azimuthal_gridez");
     //~ strcpy(sendBuff,"timerate action decrement"); 
     
 	

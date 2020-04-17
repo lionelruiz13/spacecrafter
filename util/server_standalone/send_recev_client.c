@@ -81,11 +81,27 @@ int main(int argc, char *argv[])
 				memset(recvBuff, '\0', SIZEBUFFERMAX);
 			}
 	}
-		
+
 
 	//demande du status de la position
 	if (1) {
 		char msg[]="get status position";
+		nb_write = write(sockfd, msg, strlen(msg)+1);
+		if (nb_write == strlen(msg)+1)
+			printf("-> %s : %li\n",msg, strlen(msg)+1);
+		else
+			printf("Error connection, serverlost ?\n");		
+	
+		nb_read = read(sockfd, recvBuff, SIZEBUFFERMAX); 
+			if (nb_read>0) {
+				printf("<- %s : %li\n",recvBuff, strlen(recvBuff));
+				memset(recvBuff, '\0', SIZEBUFFERMAX);
+			}
+	}
+	
+	//demande du status des constellations
+	if (1) {
+		char msg[]="search name m1";// maxObject 3";
 		nb_write = write(sockfd, msg, strlen(msg)+1);
 		if (nb_write == strlen(msg)+1)
 			printf("-> %s : %li\n",msg, strlen(msg)+1);
