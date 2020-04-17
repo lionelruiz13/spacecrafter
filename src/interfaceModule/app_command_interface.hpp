@@ -146,6 +146,7 @@ private:
 
 	std::string debug_message;  //!< for 'executeCommand' error details
 	int parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments);
+	SCD_NAMES parseCommandSet();
 	int executeCommandStatus();
 
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);
@@ -179,8 +180,8 @@ private:
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
 	std::map<const std::string, COLORCOMMAND_NAMES>::iterator m_color_it;
 	//map assurant la transcription entre le texte et la commande interface associé
-	std::map<const std::string, SETCOMMAND_NAMES> m_appcommand;
-	std::map<const std::string, SETCOMMAND_NAMES>::iterator m_appcommand_it;
+	std::map<const std::string, SCD_NAMES> m_appcommand;
+	std::map<const std::string, SCD_NAMES>::iterator m_appcommand_it;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H

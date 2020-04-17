@@ -302,52 +302,52 @@ void AppCommandInterface::initialiseColorCommand(){
 }
 
 void AppCommandInterface::initialiseSetCommand() {
-	m_appcommand["atmosphere_fade_duration"] = SETCOMMAND_NAMES::APP_ATMOSPHERE_FADE_DURATION;
-	m_appcommand["auto_move_duration"] = SETCOMMAND_NAMES::APP_AUTO_MOVE_DURATION;
-	m_appcommand["constellation_art_fade_duration"] = SETCOMMAND_NAMES::APP_CONSTELLATION_ART_FADE_DURATION;
-	m_appcommand["constellation_art_intensity"] = SETCOMMAND_NAMES::APP_CONSTELLATION_ART_INTENSITY;
-	m_appcommand["light_pollution_limiting_magnitude"] = SETCOMMAND_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE;
-	m_appcommand["font"] = SETCOMMAND_NAMES::APP_FONT;
+	m_appcommand["atmosphere_fade_duration"] = SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION;
+	m_appcommand["auto_move_duration"] = SCD_NAMES::APP_AUTO_MOVE_DURATION;
+	m_appcommand["constellation_art_fade_duration"] = SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION;
+	m_appcommand["constellation_art_intensity"] = SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY;
+	m_appcommand["light_pollution_limiting_magnitude"] = SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE;
+	m_appcommand["font"] = SCD_NAMES::APP_FONT;
 
-	m_appcommand["heading"] = SETCOMMAND_NAMES::APP_HEADING;
-	m_appcommand["home_planet"] = SETCOMMAND_NAMES::APP_HOME_PLANET;
-	m_appcommand["landscape_name"] = SETCOMMAND_NAMES::APP_LANDSCAPE_NAME;
-	m_appcommand["line_width"] = SETCOMMAND_NAMES::APP_LINE_WIDTH;
-	m_appcommand["max_mag_nebula_name"] = SETCOMMAND_NAMES::APP_MAX_MAG_NEBULA_NAME;
-	m_appcommand["max_mag_star_name"] = SETCOMMAND_NAMES::APP_MAX_MAG_STAR_NAME;
+	m_appcommand["heading"] = SCD_NAMES::APP_HEADING;
+	m_appcommand["home_planet"] = SCD_NAMES::APP_HOME_PLANET;
+	m_appcommand["landscape_name"] = SCD_NAMES::APP_LANDSCAPE_NAME;
+	m_appcommand["line_width"] = SCD_NAMES::APP_LINE_WIDTH;
+	m_appcommand["max_mag_nebula_name"] = SCD_NAMES::APP_MAX_MAG_NEBULA_NAME;
+	m_appcommand["max_mag_star_name"] = SCD_NAMES::APP_MAX_MAG_STAR_NAME;
 
-	m_appcommand["moon_scale"] = SETCOMMAND_NAMES::APP_MOON_SCALE;
-	m_appcommand["sun_scale"] = SETCOMMAND_NAMES::APP_SUN_SCALE;
-	m_appcommand["milky_way_texture"] = SETCOMMAND_NAMES::APP_MILKY_WAY_TEXTURE;
-	m_appcommand["sky_culture"] = SETCOMMAND_NAMES::APP_SKY_CULTURE;
-	m_appcommand["sky_locale"] = SETCOMMAND_NAMES::APP_SKY_LOCALE;
-	m_appcommand["ui_locale"] = SETCOMMAND_NAMES::APP_UI_LOCALE;
+	m_appcommand["moon_scale"] = SCD_NAMES::APP_MOON_SCALE;
+	m_appcommand["sun_scale"] = SCD_NAMES::APP_SUN_SCALE;
+	m_appcommand["milky_way_texture"] = SCD_NAMES::APP_MILKY_WAY_TEXTURE;
+	m_appcommand["sky_culture"] = SCD_NAMES::APP_SKY_CULTURE;
+	m_appcommand["sky_locale"] = SCD_NAMES::APP_SKY_LOCALE;
+	m_appcommand["ui_locale"] = SCD_NAMES::APP_UI_LOCALE;
 
-	m_appcommand["star_mag_scale"] = SETCOMMAND_NAMES::APP_STAR_MAG_SCALE;
-	m_appcommand["star_size_limit"] = SETCOMMAND_NAMES::APP_STAR_SIZE_LIMIT;
-	m_appcommand["planet_size_limit"] = SETCOMMAND_NAMES::APP_PLANET_SIZE_LIMIT;
-	m_appcommand["star_scale"] = SETCOMMAND_NAMES::APP_STAR_SCALE;
-	m_appcommand["star_twinkle_amount"] = SETCOMMAND_NAMES::APP_STAR_TWINKLE_AMOUNT;
-	m_appcommand["star_fader_duration"] = SETCOMMAND_NAMES::APP_STAR_FADER_DURATION;
+	m_appcommand["star_mag_scale"] = SCD_NAMES::APP_STAR_MAG_SCALE;
+	m_appcommand["star_size_limit"] = SCD_NAMES::APP_STAR_SIZE_LIMIT;
+	m_appcommand["planet_size_limit"] = SCD_NAMES::APP_PLANET_SIZE_LIMIT;
+	m_appcommand["star_scale"] = SCD_NAMES::APP_STAR_SCALE;
+	m_appcommand["star_twinkle_amount"] = SCD_NAMES::APP_STAR_TWINKLE_AMOUNT;
+	m_appcommand["star_fader_duration"] = SCD_NAMES::APP_STAR_FADER_DURATION;
 
-	m_appcommand["star_limiting_mag"] = SETCOMMAND_NAMES::APP_STAR_LIMITING_MAG;
-	m_appcommand["time_zone"] = SETCOMMAND_NAMES::APP_TIME_ZONE;
-	m_appcommand["ambient_light"] = SETCOMMAND_NAMES::APP_AMBIENT_LIGHT;
-	m_appcommand["text_fading_duration"] = SETCOMMAND_NAMES::APP_TEXT_FADING_DURATION;
-	m_appcommand["milky_way_fader_duration"] = SETCOMMAND_NAMES::APP_MILKY_WAY_FADER_DURATION;
-	m_appcommand["milky_way_intensity"] = SETCOMMAND_NAMES::APP_MILKY_WAY_INTENSITY;
+	m_appcommand["star_limiting_mag"] = SCD_NAMES::APP_STAR_LIMITING_MAG;
+	m_appcommand["time_zone"] = SCD_NAMES::APP_TIME_ZONE;
+	m_appcommand["ambient_light"] = SCD_NAMES::APP_AMBIENT_LIGHT;
+	m_appcommand["text_fading_duration"] = SCD_NAMES::APP_TEXT_FADING_DURATION;
+	m_appcommand["milky_way_fader_duration"] = SCD_NAMES::APP_MILKY_WAY_FADER_DURATION;
+	m_appcommand["milky_way_intensity"] = SCD_NAMES::APP_MILKY_WAY_INTENSITY;
 
-	m_appcommand["zoom_offset"] = SETCOMMAND_NAMES::APP_ZOOM_OFFSET;
-	m_appcommand["startup_time_mode"] = SETCOMMAND_NAMES::APP_STARTUP_TIME_MODE;
-	m_appcommand["date_display_format"] = SETCOMMAND_NAMES::APP_DATE_DISPLAY_FORMAT;
-	m_appcommand["time_display_format"] = SETCOMMAND_NAMES::APP_TIME_DISPLAY_FORMAT;
-	m_appcommand["mode"] = SETCOMMAND_NAMES::APP_MODE;
-	m_appcommand["screen_fader"] = SETCOMMAND_NAMES::APP_SCREEN_FADER;
+	m_appcommand["zoom_offset"] = SCD_NAMES::APP_ZOOM_OFFSET;
+	m_appcommand["startup_time_mode"] = SCD_NAMES::APP_STARTUP_TIME_MODE;
+	m_appcommand["date_display_format"] = SCD_NAMES::APP_DATE_DISPLAY_FORMAT;
+	m_appcommand["time_display_format"] = SCD_NAMES::APP_TIME_DISPLAY_FORMAT;
+	m_appcommand["mode"] = SCD_NAMES::APP_MODE;
+	m_appcommand["screen_fader"] = SCD_NAMES::APP_SCREEN_FADER;
 
-	m_appcommand["stall_radius_unit"] = SETCOMMAND_NAMES::APP_STALL_RADIUS_UNIT;
-	m_appcommand["tully_color_mode"] = SETCOMMAND_NAMES::APP_TULLY_COLOR_MODE;
-	m_appcommand["datetime_display_position"] = SETCOMMAND_NAMES::APP_DATETIME_DISPLAY_POSITION;
-	m_appcommand["datetime_display_number"] = SETCOMMAND_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+	m_appcommand["stall_radius_unit"] = SCD_NAMES::APP_STALL_RADIUS_UNIT;
+	m_appcommand["tully_color_mode"] = SCD_NAMES::APP_TULLY_COLOR_MODE;
+	m_appcommand["datetime_display_position"] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
+	m_appcommand["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
 }
 
 AppCommandInterface::~AppCommandInterface()
@@ -1696,134 +1696,159 @@ int AppCommandInterface::commandPrint()
 	return executeCommandStatus();
 }
 
+
+SCD_NAMES AppCommandInterface::parseCommandSet() 
+{
+	for(auto it = m_appcommand.begin(); it != m_appcommand.end(); it++) {
+		if (!args[it->first].empty())
+			return it->second;
+	}
+	return SCD_NAMES::APP_FLAG_NONE;
+}
+
 int AppCommandInterface::commandSet()
 {
+	SCD_NAMES parserSet = parseCommandSet();
 
-	std::string argProperty = args["property"];
-	if (argProperty.empty()) {
+	if (parserSet == SCD_NAMES::APP_FLAG_NONE){
 		debug_message = "command_'set': unknown argument";
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		return executeCommandStatus();
+	}
+	
+	switch(parserSet) { 
+		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : stcore->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"])); break;
+		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(args["auto_move_duration"])); break;
+		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"])); break;
+		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"]));
+		case SCD_NAMES::APP_FONT : 
+						{
+							FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
+							if (myFile) {
+								int size = 10;
+								if (args["size"] != "") size = evalInt(args["size"]);
+								stcore->loadFont(size, myFile.toString());
+							} else {
+								debug_message= "command_set_font font not found";
+								cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+							}
+						} break;
+		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:	stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"])); break;
+		case SCD_NAMES::APP_HEADING: 
+					{
+						if (args["heading"]=="default") {
+							stcore->setDefaultHeading();
+						}
+						else {
+							float fdelay = evalDouble(args["duration"]);
+							double heading = evalDouble(args["heading"]);
+							if (fdelay <= 0) fdelay = 0;
+							if (args["heading"][0] == '+') {
+								heading += stcore->getHeading();
+								if (heading > 180) heading -= 360;
+								std::stringstream oss;
+								oss << "FROM: " << stcore->getHeading() << " TO: " << heading;
+								cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+							}
+							if (args["heading"][0] == '-') {
+								heading += stcore->getHeading();
+								if (heading < -180) heading += 360;
+								std::stringstream oss;
+								oss << "FROM: " << stcore->getHeading() << " TO: " << heading;
+								cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+							}
+							stcore->setHeading(heading, (int)(fdelay*1000));
+						}
+					} break;
+		case SCD_NAMES::APP_HOME_PLANET: if (args["home_planet"]=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(args["home_planet"]); break;
+		case SCD_NAMES::APP_LANDSCAPE_NAME: 
+						{
+							if ( args["landscape_name"]=="default")
+								stcore->setInitialLandscapeName();
+							else
+								stcore->setLandscape(args["landscape_name"]);
+						} break;
+		case SCD_NAMES::APP_LINE_WIDTH:	stapp->setLineWidth(evalDouble(args["line_width"])); break;
+		case SCD_NAMES::APP_MAX_MAG_NEBULA_NAME: coreLink->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"])); break;
+		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"])); break;
+		case SCD_NAMES::APP_MOON_SCALE: coreLink->setMoonScale(evalDouble(args["moon_scale"])); break;
+		case SCD_NAMES::APP_SUN_SCALE: coreLink->setSunScale(evalDouble(args["sun_scale"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_TEXTURE: 
+						{
+							if(args["milky_way_texture"]=="default") coreLink->milkyWayRestoreDefault();
+							else {
+								if (args["milky_way_intensity"]!="")
+									coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], evalDouble(args["milky_way_intensity"]) );
+								else
+									coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
+							}
+						} break;
+		case SCD_NAMES::APP_SKY_CULTURE: 
+						{
+							if (args["sky_culture"]=="default") stcore->setInitialSkyCulture();
+							else
+								stcore->setSkyCultureDir(args["sky_culture"]);
+						} break;
+		case SCD_NAMES::APP_SKY_LOCALE: 
+						{
+							if ( args["sky_locale"]=="default") stcore->setInitialSkyLocale();
+							else
+								stcore->setSkyLanguage(args["sky_locale"]);
+						} break;
+		case SCD_NAMES::APP_UI_LOCALE: stapp->setAppLanguage(args["ui_locale"]); break;
+		case SCD_NAMES::APP_STAR_MAG_SCALE: coreLink->starSetMagScale(evalDouble(args["star_mag_scale"])); break;
+		case SCD_NAMES::APP_STAR_SIZE_LIMIT: coreLink->starSetSizeLimit(evalDouble(args["star_size_limit"])); break;
+		case SCD_NAMES::APP_PLANET_SIZE_LIMIT: stcore->setPlanetsSizeLimit(evalDouble(args["planet_size_limit"])); break;
+		case SCD_NAMES::APP_STAR_SCALE: 
+						{
+							float scale = evalDouble(args["star_scale"]);
+							coreLink->starSetScale(scale);
+							coreLink->planetsSetScale(scale);
+						} break;
+		case SCD_NAMES::APP_STAR_TWINKLE_AMOUNT: coreLink->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"])); break;
+		case SCD_NAMES::APP_STAR_FADER_DURATION: coreLink->starSetDuration(evalDouble(args["star_fader_duration"])); break;
+		case SCD_NAMES::APP_STAR_LIMITING_MAG: coreLink->starSetLimitingMag(evalDouble(args["star_limiting_mag"])); break;
+		case SCD_NAMES::APP_TIME_ZONE: spaceDate->setCustomTimezone(args["time_zone"]); break;
+		case SCD_NAMES::APP_AMBIENT_LIGHT: 
+						{
+								if (args["ambient_light"]=="increment") {
+								coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
+							}
+							else if (args["ambient_light"]=="decrement"){
+								coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
+							}
+							else{
+								coreLink->uboSetAmbientLight(evalDouble(args["ambient_light"]));
+							}
+						} break;	
+		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
+						{
+							if (args["milky_way_intensity"]=="default")
+								coreLink->milkyWayRestoreIntensity();
+							else
+								coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
+							// safety feature to be able to turn back on
+							if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
+						} break;
+		case SCD_NAMES::APP_ZOOM_OFFSET: stcore->setViewOffset(evalDouble(args["zoom_offset"])); break;
+		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(args["startup_time_mode"]); break;
+		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(args["date_display_format"]); break;
+		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(args["time_display_format"]); break;
+		case SCD_NAMES::APP_MODE: stcore->switchMode(args["mode"]); break;
+		case SCD_NAMES::APP_SCREEN_FADER: 
+						{
+							Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
+							EventManager::getInstance()->queue(event);
+						}break;
+		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"])); break;
+		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(args["tully_color_mode"]); break;
+		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(args["datetime_display_position"])); break;
+		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(args["datetime_display_number"])); break;
+		default: break;
 	}
 
-	m_appcommand_it = m_appcommand.find(argProperty);
-
-	if (args["atmosphere_fade_duration"]!="") stcore->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"]));
-	else if (args["auto_move_duration"]!="") stcore->setAutoMoveDuration( evalDouble(args["auto_move_duration"]));
-	else if (args["constellation_art_fade_duration"]!="") coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"]));
-	else if (args["constellation_art_intensity"]!="") coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"]));
-	else if (args["light_pollution_limiting_magnitude"]!="") stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"]));
-	else if (args["font"] != "") {
-		FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
-		if (myFile) {
-			int size = 10;
-			if (args["size"] != "") size = evalInt(args["size"]);
-			stcore->loadFont(size, myFile.toString());
-		} else {
-			debug_message= "command_set_font font not found";
-			cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		}
-	} else if (args["heading"]!="") {
-		if (args["heading"]=="default") {
-			stcore->setDefaultHeading();
-		}
-		else {
-			float fdelay = evalDouble(args["duration"]);
-			double heading = evalDouble(args["heading"]);
-			if (fdelay <= 0) fdelay = 0;
-			if (args["heading"][0] == '+') {
-				heading += stcore->getHeading();
-				if (heading > 180) heading -= 360;
-				std::stringstream oss;
-				oss << "FROM: " << stcore->getHeading() << " TO: " << heading;
-				cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
-			}
-			if (args["heading"][0] == '-') {
-				heading += stcore->getHeading();
-				if (heading < -180) heading += 360;
-				std::stringstream oss;
-				oss << "FROM: " << stcore->getHeading() << " TO: " << heading;
-				cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
-			}
-			stcore->setHeading(heading, (int)(fdelay*1000));
-		}
-	} else if (args["home_planet"]!="") {
-		if (args["home_planet"]=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(args["home_planet"]);
-	} else if (args["landscape_name"]!="") {
-		if ( args["landscape_name"]=="default") stcore->setInitialLandscapeName();
-		else
-			stcore->setLandscape(args["landscape_name"]);
-	} else if (args["line_width"]!="") stapp->setLineWidth(evalDouble(args["line_width"]));
-	else if (args["max_mag_nebula_name"]!="") coreLink->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"]));
-	else if (args["max_mag_star_name"]!="") coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"]));
-	else if (args["moon_scale"]!="") {
-		coreLink->setMoonScale(evalDouble(args["moon_scale"]));
-	} else if (args["sun_scale"]!="") {
-		coreLink->setSunScale(evalDouble(args["sun_scale"]));
-	} else if (args["milky_way_texture"]!="") {
-		if(args["milky_way_texture"]=="default") coreLink->milkyWayRestoreDefault();
-		else {
-			if (args["milky_way_intensity"]!="")
-				coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], evalDouble(args["milky_way_intensity"]) );
-			else
-				coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
-		}
-	} else if (args["sky_culture"]!="") {
-		if (args["sky_culture"]=="default") stcore->setInitialSkyCulture();
-		else
-			stcore->setSkyCultureDir(args["sky_culture"]);
-	} else if (args["sky_locale"]!="") {
-		if ( args["sky_locale"]=="default") stcore->setInitialSkyLocale();
-		else
-			stcore->setSkyLanguage(args["sky_locale"]);
-	} else if (args["ui_locale"]!="") stapp->setAppLanguage(args["ui_locale"]);
-	else if (args["star_mag_scale"]!="") coreLink->starSetMagScale(evalDouble(args["star_mag_scale"]));
-	else if (args["star_size_limit"]!="") coreLink->starSetSizeLimit(evalDouble(args["star_size_limit"]));
-	else if (args["planet_size_limit"]!="") stcore->setPlanetsSizeLimit(evalDouble(args["planet_size_limit"]));
-	else if (args["star_scale"]!="") {
-		float scale = evalDouble(args["star_scale"]);
-		coreLink->starSetScale(scale);
-		coreLink->planetsSetScale(scale);
-	} else if (args["star_twinkle_amount"]!="") coreLink->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"]));
-	else if (args["star_fader_duration"]!="") coreLink->starSetDuration(evalDouble(args["star_fader_duration"]));
-	else if (args["star_limiting_mag"]!="") coreLink->starSetLimitingMag(evalDouble(args["star_limiting_mag"]));
-	else if (args["time_zone"]!="")spaceDate->setCustomTimezone(args["time_zone"]);
-	else if (args["ambient_light"]!="") {
-		if (args["ambient_light"]=="increment") {
-			coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
-		}
-		else if (args["ambient_light"]=="decrement"){
-			coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
-		}
-		else{
-			coreLink->uboSetAmbientLight(evalDouble(args["ambient_light"]));
-		}
-	} else if (args["text_fading_duration"]!="") coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"]));
-	else if (args["milky_way_fader_duration"]!="") coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"]));
-	else if (args["milky_way_intensity"]!="") {
-		if (args["milky_way_intensity"]=="default")
-			coreLink->milkyWayRestoreIntensity();
-		else
-			coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
-		// safety feature to be able to turn back on
-		if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
-	} else if (args["zoom_offset"]!="") {
-		stcore->setViewOffset(evalDouble(args["zoom_offset"]));
-	}
-	else if(args["startup_time_mode"]!="") stapp->setStartupTimeMode(args["startup_time_mode"]);
-	else if(args["date_display_format"]!="")spaceDate->setDateFormatStr(args["date_display_format"]);
-	else if(args["time_display_format"]!="")spaceDate->setTimeFormatStr(args["time_display_format"]);
-	else if(args["mode"]!="") stcore->switchMode(args["mode"]);
-	else if(args["screen_fader"]!="") {Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
-										EventManager::getInstance()->queue(event);
-										}
-	else if(args["stall_radius_unit"]!="") coreLink->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"]));
-	else if(args["tully_color_mode"]!="") coreLink->tullySetColor(args["tully_color_mode"]);
-	else if(args["datetime_display_position"]!="") ui->setDateTimePosition(evalInt(args["datetime_display_position"]));
-	else if(args["datetime_display_number"]!="") ui->setDateDisplayNumber(evalInt(args["datetime_display_number"]));
-	else {
-		debug_message = "command_'set': unknown argument";
-		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-	}
 	return executeCommandStatus();
 }
 
