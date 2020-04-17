@@ -29,12 +29,10 @@
 #include "coreModule/backup_mgr.hpp"
 
 #include "coreModule/core.hpp"
-#include "coreModule/coreLink.hpp"
 
-CoreBackup::CoreBackup(Core* _core, CoreLink *_coreLink)
+CoreBackup::CoreBackup(Core* _core)
 {
 	core = _core;
-	coreLink = _coreLink;
 }
 	
 CoreBackup::~CoreBackup()
@@ -53,10 +51,10 @@ void CoreBackup::loadBackup()
 void CoreBackup::saveBackup()
 {
 	mBackup.jday=core->timeMgr->getJDay();
-	mBackup.latitude = coreLink->observatoryGetLatitude();
-	mBackup.longitude = coreLink->observatoryGetLongitude();
-	mBackup.altitude = coreLink->observatoryGetAltitude();
-	mBackup.pos_name = coreLink->getObserverName(); 
+	mBackup.latitude=core->getObservatory()->getLatitude();
+	mBackup.longitude=core->getObservatory()->getLongitude();
+	mBackup.altitude=core->getObservatory()->getAltitude();
+	mBackup.pos_name=core->getObservatory()->getName();
 	mBackup.fov = core->projection->getFov(); //getFov();
-	mBackup.home_planet_name = coreLink->getObserverHomePlanetEnglishName();
+	mBackup.home_planet_name=core->getObservatory()->getHomePlanetEnglishName();
 }

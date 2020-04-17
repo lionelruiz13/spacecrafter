@@ -52,7 +52,7 @@ class Core;
 class CoreBackup {
 
 public:
-	CoreBackup(Core* _core, CoreLink *_coreLink);
+	CoreBackup(Core* _core);
 	~CoreBackup();
 	void loadBackup();
 	void saveBackup();
@@ -60,7 +60,6 @@ public:
 private:
 	BackupWorkspace mBackup;
 	Core* core= nullptr;
-	CoreLink* coreLink= nullptr;
 };
 
 #endif // _BACKUP_MGR_H_
