@@ -1244,28 +1244,28 @@ int AppCommandInterface::commandFlag()
 int AppCommandInterface::commandGet()
 {
 	std::string argStatus = args["status"];
+	if (!tcp) {
+		cLog::get()->write("No tcp : i can't send ", LOG_TYPE::L_WARNING);
+		return executeCommandStatus();
+	}
+
 	if (!argStatus.empty()) {
 		if (argStatus=="position") {
 			tcp->setOutput(coreLink->tcpGetPosition());
 				//stcore->tcpGetPosition();
 		} else if (argStatus=="planets_position") {
-			if (tcp) {	// à tester vu que tcp peut ne pas être initialisé
-				std::string tmp = coreLink->getPlanetsPosition();
-				if (tmp.empty())
-					tmp = "NPF";	
-				tcp->setOutput(tmp);
-			}
+			std::string tmp = coreLink->getPlanetsPosition();
+			if (tmp.empty())
+				tmp = "NPF";	
+			tcp->setOutput(tmp);
 		} else if (argStatus=="constellation") {
-			if (tcp)	// à tester vu que tcp peut ne pas être initialisé
-				tcp->setOutput(coreLink->getConstellationSelectedShortName());
+			tcp->setOutput(coreLink->getConstellationSelectedShortName());
 			//stcore->tcpGetStatus(args["status"]);
 		} else if (argStatus=="object") {
-			if (tcp) {	// à tester vu que tcp peut ne pas être initialisé
-				std::string tmp = stcore->getSelectedObjectInfo();
-				if (tmp.empty())
-					tmp = "EOL";
-				tcp->setOutput(tmp);	
-			}
+			std::string tmp = stcore->getSelectedObjectInfo();
+			if (tmp.empty())
+				tmp = "EOL";
+			tcp->setOutput(tmp);	
 			//stcore->tcpGetSelectedObjectInfo();
 		} else
 			debug_message = _("command 'get': unknown status value");
