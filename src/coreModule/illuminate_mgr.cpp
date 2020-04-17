@@ -95,6 +95,11 @@ void IlluminateMgr::removeIlluminate(const std::string& name)
 	std::vector <Illuminate*>::iterator iter;
 	std::vector <Illuminate*>::iterator iter2;
 
+	// iter = std::find_if(illuminateArray.begin(),illuminateArray.end(), [&uname](auto &ptr) { return ptr->getName() == uname; });
+	// if (iter == illuminateArray.end())	{
+	// 	cLog::get()->write("Requested Illuminate to delete not found by name " + uname, LOG_TYPE::L_INFO);
+	// 	return;
+	// }
 	for (iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
 		std::string testName = (*iter)->getName();
 
@@ -125,7 +130,7 @@ void IlluminateMgr::removeAllIlluminate()
 	std::vector<Illuminate *>::iterator iter;
 	std::vector<Illuminate *>::iterator iter2;
 
-	for (iter=illuminateArray.begin(); iter!=illuminateArray.end(); iter++) {
+	for (iter=illuminateArray.begin(); iter!=illuminateArray.end(); /*iter++*/) {
 		// erase from locator grid
 		int zone = illuminateGrid.GetNearest((*iter)->XYZ);
 
@@ -137,8 +142,8 @@ void IlluminateMgr::removeAllIlluminate()
 		}
 		// Delete Illuminate
 		delete *iter;
-		illuminateArray.erase(iter);
-		iter--;
+		iter = illuminateArray.erase(iter);
+		//iter--;
 	}
 	// return "";
 }
