@@ -296,7 +296,7 @@ void Core::init(const InitParser& conf)
 {
 	flagNav= conf.getBoolean("main", "flag_navigation");
 	setFlagNav(flagNav);
-	inimBackup();
+	//inimBackup();
 	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");
 	coreFont->init(conf);
 
@@ -2075,34 +2075,34 @@ void Core::setJDayRelative(int year, int month)
 	timeMgr->setJDay(SpaceDate::JulianDayFromDateTime(current_date.years+year,current_date.months+month,current_date.days,current_date.hours,current_date.minutes,current_date.seconds));
 }
 
-void Core::setmBackup()
-{
-	if (mBackup.jday !=0) {
-		timeMgr->setJDay(mBackup.jday);
-		projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-		moveObserver (mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
-	}
-	setHomePlanet(mBackup.home_planet_name);
-}
+// void Core::setmBackup()
+// {
+// 	if (mBackup.jday !=0) {
+// 		timeMgr->setJDay(mBackup.jday);
+// 		projection->setFov(mBackup.fov); //setFov(mBackup.fov);
+// 		moveObserver (mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
+// 	}
+// 	setHomePlanet(mBackup.home_planet_name);
+// }
 
-void Core::getmBackup()
-{
-	mBackup.jday=timeMgr->getJDay();
-	mBackup.latitude=getObservatory()->getLatitude();
-	mBackup.longitude=getObservatory()->getLongitude();
-	mBackup.altitude=getObservatory()->getAltitude();
-	mBackup.pos_name=getObservatory()->getName();
-	mBackup.fov = projection->getFov(); //getFov();
-	mBackup.home_planet_name=getObservatory()->getHomePlanetEnglishName();
-}
+// void Core::getmBackup()
+// {
+// 	mBackup.jday=timeMgr->getJDay();
+// 	mBackup.latitude=getObservatory()->getLatitude();
+// 	mBackup.longitude=getObservatory()->getLongitude();
+// 	mBackup.altitude=getObservatory()->getAltitude();
+// 	mBackup.pos_name=getObservatory()->getName();
+// 	mBackup.fov = projection->getFov(); //getFov();
+// 	mBackup.home_planet_name=getObservatory()->getHomePlanetEnglishName();
+// }
 
-void Core::inimBackup()
-{
-	mBackup.jday=0.0;
-	mBackup.latitude=0.0;
-	mBackup.longitude=0.0;
-	mBackup.altitude=0.0;
-	mBackup.fov=0.0;
-	mBackup.pos_name="";
-	mBackup.home_planet_name="";
-}
+// void Core::inimBackup()
+// {
+// 	mBackup.jday=0.0;
+// 	mBackup.latitude=0.0;
+// 	mBackup.longitude=0.0;
+// 	mBackup.altitude=0.0;
+// 	mBackup.fov=0.0;
+// 	mBackup.pos_name="";
+// 	mBackup.home_planet_name="";
+// }

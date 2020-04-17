@@ -100,6 +100,7 @@ public:
 
 	friend class CoreLink;
 	friend class CoreFont;
+	friend class CoreBackup;
 
 	//! Possible mount modes
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
@@ -542,8 +543,8 @@ public:
 
 	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
 
-	void getmBackup();					//! get the current variables to struct Backup
-	void setmBackup();					//! set a previous Backup  directly in use
+	// void getmBackup();					//! get the current variables to struct Backup
+	// void setmBackup();					//! set a previous Backup  directly in use
 	
 	void switchMode(const std::string &mode);
 
@@ -734,9 +735,10 @@ private:
 	// float m_lineWidth;                  // width to use when drawing any line
 
 	//! Backup Manage
+	//backupWorkspace mBackup;			// variable used to remember various indicators in use
 	InitialValue initialvalue;			// variable used to remember various string indicators in use
 
-	void inimBackup();					// init at NULL all var
+	// void inimBackup();					// init at NULL all var
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
 	
 	AnchorManager * anchorManager=nullptr;

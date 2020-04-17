@@ -36,6 +36,7 @@
 #include "appModule/save_screen_interface.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
+#include "coreModule/backup_mgr.hpp"
 #include "eventModule/event_manager.hpp"
 #include "eventModule/ScreenFaderEvent.hpp"
 #include "interfaceModule/app_command_interface.hpp"
@@ -51,10 +52,11 @@
 #include "uiModule/ui.hpp"
 
 
-AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, App * app, UI* _ui,  Media* _media)
+AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui,  Media* _media)
 {
 	stcore = core;
 	coreLink = _coreLink;
+	coreBackup = _coreBackup;
 	stapp = app;
 	media = _media;
 	ui = _ui;
@@ -2614,11 +2616,11 @@ int AppCommandInterface::commandPosition()
 {
 	std::string argAction = args["action"];
 	if (argAction == "save") {
-		stcore->getmBackup();
+		coreBackup->saveBackup();
 		return executeCommandStatus();
 	}
 	if (argAction == "load") {
-		stcore->setmBackup();
+		coreBackup->loadBackup();
 		return executeCommandStatus();
 	}
 	debug_message = _("Command 'position': unknown parameter");

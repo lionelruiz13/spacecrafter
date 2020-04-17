@@ -37,6 +37,7 @@
 
 class Core;
 class CoreLink;
+class CoreBackup;
 class App;
 class UI;
 class ScriptInterface;
@@ -48,7 +49,7 @@ class ServerSocket;
 class AppCommandInterface {
 
 public:
-	AppCommandInterface(Core * core, CoreLink *_coreLink, App * app, UI* _ui, Media* _media);
+	AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media);
 	~AppCommandInterface();
 	AppCommandInterface(AppCommandInterface const &) = delete;
 	AppCommandInterface& operator = (AppCommandInterface const &) = delete;
@@ -118,6 +119,7 @@ protected:
 private:
 	Core * stcore = nullptr;
 	CoreLink *coreLink = nullptr;
+	CoreBackup* coreBackup = nullptr;
 	App * stapp = nullptr;
 	UI* ui = nullptr;
 	Media* media = nullptr;

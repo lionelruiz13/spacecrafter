@@ -83,11 +83,12 @@ App::App( SDLFacade* const sdl ) :
 
 	core = new Core(settings, width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
 	coreLink = new CoreLink(core);
+	coreBackup = new CoreBackup(core);
 
 	screenFader->initShader();
 
 	ui = new UI(core, coreLink, this, mSdl, media);
-	commander = new AppCommandInterface(core, coreLink, this, ui, media);
+	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = new Fps();
@@ -148,6 +149,7 @@ App::~App()
 	delete media;
 	delete commander;
 	delete coreLink;
+	delete coreBackup;
 	delete core;
 	delete saveScreenInterface;
 	delete internalFPS;
