@@ -1279,7 +1279,7 @@ int AppCommandInterface::commandGet()
 int AppCommandInterface::commandSearch()
 {
 	std::string argName = args["name"];
-	std::string argMaxObject = args["maxObject"];
+	std::string argMaxObject = args["maxobject"];
 	if (!argName.empty()) {
 		std::string toSend;
 		if (!argMaxObject.empty()) {
