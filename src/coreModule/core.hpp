@@ -473,43 +473,43 @@ public:
 		return observatory;
 	}
 
-	//! Move to a new latitude and longitude on home planet
-	void moveObserver(double lat, double lon, double alt, int delay /*, const std::string& name*/) {
-		observatory->moveTo(lat, lon, alt, delay/*, name*/);
-	}
+	// //! Move to a new latitude and longitude on home planet
+	// void moveObserver(double lat, double lon, double alt, int delay /*, const std::string& name*/) {
+	// 	observatory->moveTo(lat, lon, alt, delay/*, name*/);
+	// }
 
-	//! Move to relative latitude where home planet is fixed.
-	void moveRelLatObserver(double lat, int delay) {
-		double latimem=observatory->getLatitude()+lat;
-		if (latimem>90) latimem=90;
-		if (latimem<-90) latimem=-90;
-		moveObserver(latimem,observatory->getLongitude(),observatory->getAltitude(),delay/*,observatory->getName()*/);
-	}
+	// //! Move to relative latitude where home planet is fixed.
+	// void moveRelLatObserver(double lat, int delay) {
+	// 	double latimem=observatory->getLatitude()+lat;
+	// 	if (latimem>90) latimem=90;
+	// 	if (latimem<-90) latimem=-90;
+	// 	moveObserver(latimem,observatory->getLongitude(),observatory->getAltitude(),delay/*,observatory->getName()*/);
+	// }
 
-	//! Move to relative longitude where home planet is fixed.
-	void moveRelLonObserver(double lon, int delay) {
-		moveObserver(observatory->getLatitude(),observatory->getLongitude()+lon,observatory->getAltitude(),delay/*,observatory->getName()*/);
-	}
+	// //! Move to relative longitude where home planet is fixed.
+	// void moveRelLonObserver(double lon, int delay) {
+	// 	moveObserver(observatory->getLatitude(),observatory->getLongitude()+lon,observatory->getAltitude(),delay/*,observatory->getName()*/);
+	// }
 
-	//! Move to relative altitude where home planet is fixed.
-	void moveRelAltObserver(double alt, int delay) {
-		moveObserver(observatory->getLatitude(),observatory->getLongitude(),observatory->getAltitude()+alt,delay/*,observatory->getName()*/);
-	}
+	// //! Move to relative altitude where home planet is fixed.
+	// void moveRelAltObserver(double alt, int delay) {
+	// 	moveObserver(observatory->getLatitude(),observatory->getLongitude(),observatory->getAltitude()+alt,delay/*,observatory->getName()*/);
+	// }
 
-	//! change the Heading value
-	void moveHeadingRelative(float f) {
-		navigation->setHeading(navigation->getHeading() + f);
-	}
+	// //! change the Heading value
+	// void moveHeadingRelative(float f) {
+	// 	navigation->setHeading(navigation->getHeading() + f);
+	// }
 
-	//! Set Meteor Rate in number per hour
-	void setMeteorsRate(int f) {
-		meteors->setZHR(f);
-	}
+	// //! Set Meteor Rate in number per hour
+	// void setMeteorsRate(int f) {
+	// 	meteors->setZHR(f);
+	// }
 
-	//! Get Meteor Rate in number per hour
-	int getMeteorsRate(void) const {
-		return meteors->getZHR();
-	}
+	// //! Get Meteor Rate in number per hour
+	// int getMeteorsRate(void) const {
+	// 	return meteors->getZHR();
+	// }
 
 	void selectZodiac();
 

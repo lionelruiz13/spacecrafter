@@ -563,7 +563,7 @@ void Core::init(const InitParser& conf)
 
 	setLightPollutionLimitingMagnitude(conf.getDouble("viewing","light_pollution_limiting_magnitude"));
 
-	setMeteorsRate(conf.getInt("astro", "meteor_rate"));
+	//setMeteorsRate(conf.getInt("astro", "meteor_rate"));
 
 	atmosphere->setFlagOptoma(conf.getBoolean("main:flag_optoma"));
 

@@ -310,6 +310,23 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, /*const 
 
 }
 
+void Observer::moveRelLatObserver(double lat, int delay) {
+	double latimem = latitude;
+	if (latimem>90) latimem=90;
+	if (latimem<-90) latimem=-90;
+	moveTo(latimem, longitude, altitude, delay);
+}
+
+//! Move to relative longitude where home planet is fixed.
+void Observer::moveRelLonObserver(double lon, int delay) {
+	moveTo(latitude, longitude+lon, altitude, delay);
+}
+
+//! Move to relative altitude where home planet is fixed.
+void Observer::moveRelAltObserver(double alt, int delay) {
+	moveTo(latitude, longitude, altitude+alt, delay);
+}
+
 bool Observer::isOnBodyNamed(const std::string& bodyName){
 	
 	if(anchor == nullptr)

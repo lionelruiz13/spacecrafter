@@ -1462,7 +1462,7 @@ int AppCommandInterface::commandMovetocity()
 		//cout << lon << ":" << lat << ":" << alt << endl;
 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
 			int delay = (int)(1000.*evalDouble(args["duration"]));
-			stcore->moveObserver(lat,lon,alt,delay /*,argName*/);
+			stcore->getObservatory()->moveTo(lat,lon,alt,delay /*,argName*/);
 		}
 	} else
 		debug_message = "command_'movetocity' : unknown argument";
@@ -2207,7 +2207,7 @@ int AppCommandInterface::commandMeteors()
 {
 	std::string argZhr=args["zhr"];
 	if (! argZhr.empty()) {
-		stcore->setMeteorsRate(evalInt(args["zhr"]));
+		coreLink->setMeteorsRate(evalInt(args["zhr"]));
 	} else
 		debug_message = "command 'meteors' : no zhr argument";
 	return executeCommandStatus();
@@ -2925,7 +2925,7 @@ int AppCommandInterface::commandMoveto()
 	delay = (int)(1000.*evalDouble(args["duration"]));
 
 	//TODO recevoir les erreurs de moveObserver
-	stcore->moveObserver(lat,lon,alt,delay/*,name*/);
+	stcore->getObservatory()->moveTo(lat,lon,alt,delay/*,name*/);
 
 	return executeCommandStatus();
 }

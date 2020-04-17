@@ -380,22 +380,22 @@ void UI::moveMouseAz(double x)
 
 void UI::moveLat(double x)
 {
-	core->moveRelLonObserver(x,DURATION_COMMAND);
+	core->getObservatory()->moveRelLonObserver(x,DURATION_COMMAND);
 }
 
 void UI::moveLon(double x)
 {
 	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
-		core->moveRelLatObserver(-x,DURATION_COMMAND);
+		core->getObservatory()->moveRelLatObserver(-x,DURATION_COMMAND);
 	else
-		core->moveRelLatObserver(x,DURATION_COMMAND);
+		core->getObservatory()->moveRelLatObserver(x,DURATION_COMMAND);
 }
 
 void UI::lowerHeight(double x)
 {
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
-	core->moveRelAltObserver(latimem, DURATION_COMMAND);
+	core->getObservatory()->moveRelAltObserver(latimem, DURATION_COMMAND);
 	this->executeCommand("add r 1");
 }
 
@@ -403,7 +403,7 @@ void UI::raiseHeight(double x)
 {
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
-	core->moveRelAltObserver(latimem, DURATION_COMMAND);
+	core->getObservatory()->moveRelAltObserver(latimem, DURATION_COMMAND);
 	this->executeCommand("add r -1");
 }
 
@@ -1042,11 +1042,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case  SDL_SCANCODE_B:
 			switch(key_Modifier) {
 				case NONE:
-					if (core->getMeteorsRate()==10) this->executeCommand("meteors zhr 10000");
+					if (coreLink->getMeteorsRate()==10) this->executeCommand("meteors zhr 10000");
 					else this->executeCommand("meteors zhr 10");
 					break;
 				case SUPER:
-					if (core->getMeteorsRate()<=10000) this->executeCommand("meteors zhr 150000");
+					if (coreLink->getMeteorsRate()<=10000) this->executeCommand("meteors zhr 150000");
 					else this->executeCommand("meteors zhr 10");
 					key_Modifier= NONE;
 					break;
@@ -1761,7 +1761,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_0 :
 			switch(key_Modifier) {
 				case NONE:
-					core->moveRelLatObserver(45,7000);  //latitude , duration
+					core->getObservatory()->moveRelLatObserver(45,7000);  //latitude , duration
 					break;
 				case SUPER:
 					this->executeCommand("moveto lat 90 duration 5");
@@ -1774,7 +1774,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
-					core->moveRelLatObserver(30,5000);  //latitude , duration
+					core->getObservatory()->moveRelLatObserver(30,5000);  //latitude , duration
 					break;
 				default:
 					break;
@@ -2016,7 +2016,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_9 :
 			switch(key_Modifier) {
 				case NONE:
-					core->moveRelLatObserver(-45,7000);  //latitude , duration
+					core->getObservatory()->moveRelLatObserver(-45,7000);  //latitude , duration
 					break;
 				case SUPER:
 					this->executeCommand("moveto lat -90 duration 5");
@@ -2032,7 +2032,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
-					core->moveRelLatObserver(-30,5000);  //latitude , duration
+					core->getObservatory()->moveRelLatObserver(-30,5000);  //latitude , duration
 					break;
 				default:
 					break;
@@ -2269,7 +2269,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					core->moveHeadingRelative(-0.2);
+					coreLink->moveHeadingRelative(-0.2);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S01.sts");
@@ -2277,7 +2277,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL:
-					core->moveHeadingRelative(-1);
+					coreLink->moveHeadingRelative(-1);
 					break;
 				default:
 					break;
@@ -2445,7 +2445,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					core->moveHeadingRelative(0.2);
+					coreLink->moveHeadingRelative(0.2);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S07.sts");
@@ -2453,7 +2453,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL :
-					core->moveHeadingRelative(1);
+					coreLink->moveHeadingRelative(1);
 					break;
 				default:
 					break;

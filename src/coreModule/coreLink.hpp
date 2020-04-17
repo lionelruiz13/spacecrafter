@@ -1231,6 +1231,21 @@ public:
 		core->mCity->getCoordonnatemCity(name,country, longitude, latitude, altitude);
 	}
 
+	//! change the Heading value
+	void moveHeadingRelative(float f) {
+		core->navigation->setHeading(core->navigation->getHeading() + f);
+	}
+
+	//! Set Meteor Rate in number per hour
+	void setMeteorsRate(int f) {
+		core->meteors->setZHR(f);
+	}
+
+	//! Get Meteor Rate in number per hour
+	int getMeteorsRate(void) const {
+		return core->meteors->getZHR();
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 

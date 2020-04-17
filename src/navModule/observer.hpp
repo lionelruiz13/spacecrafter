@@ -159,6 +159,15 @@ public:
 		return defaultAltitude;
 	}
 
+	//! Move to relative latitude where home planet is fixed.
+	void moveRelLatObserver(double lat, int delay);
+
+	//! Move to relative longitude where home planet is fixed.
+	void moveRelLonObserver(double lon, int delay);
+
+	//! Move to relative altitude where home planet is fixed.
+	void moveRelAltObserver(double alt, int delay);
+
 	//! move gradually to a new observation location
 	void moveTo(double lat, double lon, double alt, int duration, /*const std::string& _name,*/  bool calculate_duration=0);  // duration in ms
 	//! for moving observer position gradually
