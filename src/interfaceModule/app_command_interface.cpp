@@ -1718,7 +1718,7 @@ int AppCommandInterface::commandSet()
 		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : stcore->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"])); break;
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(args["auto_move_duration"])); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"])); break;
-		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"]));
+		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"])); break;
 		case SCD_NAMES::APP_FONT : 
 						{
 							FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
