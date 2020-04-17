@@ -142,13 +142,13 @@ public:
 	}
 
 	void setInitialSkyCulture() {
-		printf("Culture %s\n",mBackup.initial_skyCulture.c_str());
-		setSkyCultureDir(mBackup.initial_skyCulture);
+		//printf("Culture %s\n",initialvalue.initial_skyCulture.c_str());
+		setSkyCultureDir(initialvalue.initial_skyCulture);
 	}
 
 	void setInitialSkyLocale() {
-		printf("Locale %s\n",mBackup.initial_skyLocale.c_str());
-		setSkyLanguage(mBackup.initial_skyLocale);
+		//printf("Locale %s\n",initialvalue.initial_skyLocale.c_str());
+		setSkyLanguage(initialvalue.initial_skyLocale);
 	}
 
 	//! Get the I18 available sky culture names
@@ -447,7 +447,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Landscape
 	void setInitialLandscapeName() {
-		setLandscape(mBackup.initial_landscapeName);
+		setLandscape(initialvalue.initial_landscapeName);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -734,7 +734,7 @@ private:
 	// float m_lineWidth;                  // width to use when drawing any line
 
 	//! Backup Manage
-	backupWorkspace mBackup;			// variable used to remember various indicators in use
+	InitialValue initialvalue;			// variable used to remember various string indicators in use
 
 	void inimBackup();					// init at NULL all var
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)

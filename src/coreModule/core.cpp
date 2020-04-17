@@ -304,7 +304,7 @@ void Core::init(const InitParser& conf)
 	// setLineWidth(conf.getDouble("rendering", "line_width"));
 	// setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
 
-	mBackup.initial_landscapeName=conf.getStr("init_location","landscape_name");
+	initialvalue.initial_landscapeName=conf.getStr("init_location","landscape_name");
 	illuminates->setDefaultSize(conf.getDouble("stars", "illuminate_size"));
 
 	glDepthFunc(GL_LEQUAL);
@@ -454,7 +454,7 @@ void Core::init(const InitParser& conf)
 	ssystem->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
 
 	std::string skyLocaleName = conf.getStr("localization", "sky_locale");
-	mBackup.initial_skyLocale=skyLocaleName;
+	initialvalue.initial_skyLocale=skyLocaleName;
 	setSkyLanguage(skyLocaleName);
 
 	int grid_level = hip_stars->getMaxGridLevel();
@@ -495,7 +495,7 @@ void Core::init(const InitParser& conf)
 
 	// Load constellations from the correct sky culture
 	std::string tmp = conf.getStr("localization", "sky_culture");
-	mBackup.initial_skyCulture=tmp;
+	initialvalue.initial_skyCulture=tmp;
 	setSkyCultureDir(tmp);
 	skyCultureDir = tmp;
 
