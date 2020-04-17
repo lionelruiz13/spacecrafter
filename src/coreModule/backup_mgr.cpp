@@ -26,40 +26,35 @@
 //!
 //! This file describe all backup option
 
-#ifndef _BACKUP_MGR_H_
-#define _BACKUP_MGR_H_
+#include "coreModule/backup_mgr.hpp"
 
-#include <string>
+#include "coreModule/core.hpp"
 
-struct InitialValue {
-	std::string initial_skyCulture;
-	std::string initial_skyLocale;
-	std::string initial_landscapeName;
-};
+CoreBackup::CoreBackup(Core* _core)
+{
+	core = _core;
+}
+	
+CoreBackup::~CoreBackup()
+{}
 
-struct BackupWorkspace {
-	double jday= 0.0;
-	double latitude = 0.0;
-	double longitude = 0.0;
-	double altitude = 0.f;
-	float fov = 0.f;
-	std::string home_planet_name;
-	std::string pos_name;
-};
+void CoreBackup::loadBackup()
+{
+	if (mBackup.jday !=0) {
+		core->timeMgr->setJDay(mBackup.jday);
+		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
+		core->moveObserver (mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
+	}
+	core->setHomePlanet(mBackup.home_planet_name);
+}
 
-class Core;
-
-class CoreBackup {
-
-public:
-	CoreBackup(Core* _core);
-	~CoreBackup();
-	void loadBackup();
-	void saveBackup();
-
-private:
-	BackupWorkspace mBackup;
-	Core* core= nullptr;
-};
-
-#endif // _BACKUP_MGR_H_
+void CoreBackup::saveBackup()
+{
+	mBackup.jday=core->timeMgr->getJDay();
+	mBackup.latitude=core->getObservatory()->getLatitude();
+	mBackup.longitude=core->getObservatory()->getLongitude();
+	mBackup.altitude=core->getObservatory()->getAltitude();
+	mBackup.pos_name=core->getObservatory()->getName();
+	mBackup.fov = core->projection->getFov(); //getFov();
+	mBackup.home_planet_name=core->getObservatory()->getHomePlanetEnglishName();
+}
