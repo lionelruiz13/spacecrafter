@@ -1208,6 +1208,14 @@ public:
 	// }
 	///////////////////////////////////////////////////////////
 	
+	////////////////////////////////////////////////////////////////////////////////
+	// city ---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	void getCoordonateemCityCore(const std::string name, const std::string country, double &longitude, double &latitude, int &altitude) {
+		core->mCity->getCoordonnatemCity(name,country, longitude, latitude, altitude);
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 

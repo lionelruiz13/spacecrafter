@@ -1460,7 +1460,7 @@ int AppCommandInterface::commandMovetocity()
 	if (!argName.empty() || !argCountry.empty()) {
 		double lon=0.0, lat=0.0;
 		int alt=0.0;
-		stcore->mCity->getCoordonnatemCity(argName,argCountry, lon, lat, alt);
+		coreLink->getCoordonateemCityCore(argName,argCountry, lon, lat, alt);
 		//cout << lon << ":" << lat << ":" << alt << endl;
 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
 			int delay = (int)(1000.*evalDouble(args["duration"]));

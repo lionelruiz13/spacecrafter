@@ -538,8 +538,6 @@ public:
 		return flagNav;
 	}
 
-	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
-
 	// void getmBackup();					//! get the current variables to struct Backup
 	// void setmBackup();					//! set a previous Backup  directly in use
 	
@@ -739,6 +737,8 @@ private:
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
 	
 	AnchorManager * anchorManager=nullptr;
+
+	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
 };
 
 #endif // _CORE_H_
