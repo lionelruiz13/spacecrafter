@@ -1246,10 +1246,8 @@ int AppCommandInterface::commandGet()
 	std::string argStatus = args["status"];
 	if (!argStatus.empty()) {
 		if (argStatus=="position") {
-			if (tcp) {
-				coreLink->tcpGetPosition();
+			tcp->setOutput(coreLink->tcpGetPosition());
 				//stcore->tcpGetPosition();
-			}
 		} else if (argStatus=="planets_position") {
 			if (tcp) {	// à tester vu que tcp peut ne pas être initialisé
 				std::string tmp = coreLink->getPlanetsPosition();
