@@ -413,9 +413,7 @@ public:
 
 	// for adding planets
 	std::string addSolarSystemBody(stringHash_t& param);
-
 	std::string removeSolarSystemBody(std::string name);
-
 	std::string removeSupplementalSolarSystemBodies();
 
 	//! set flag to display generic Hint or specific DSO type
@@ -432,10 +430,9 @@ public:
 	                double distance, std::string constellation, std::string type);
 
 	//! remove one nebula added by user
-	std::string removeNebula(const std::string& name);
-
+	void removeNebula(const std::string& name);
 	//! remove all user added nebulae
-	std::string removeSupplementalNebulae();
+	void removeSupplementalNebulae();
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Projection

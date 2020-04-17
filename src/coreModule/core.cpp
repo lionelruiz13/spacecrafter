@@ -2037,34 +2037,29 @@ bool Core::loadNebula(double ra, double de, double magnitude, double angular_siz
 	                                  angular_size, rotation, credit, texture_luminance_adjust, true);
 }
 
-std::string Core::removeNebula(const std::string& name)
+void Core::removeNebula(const std::string& name)
 {
 	bool updateSelection = false;
 
 	// Make sure this object is not already selected so won't crash
 	if (selected_object.getType()==OBJECT_NEBULA && selected_object.getEnglishName()==name /*&& selected_object.isDeleteable()*/) {
-
 		updateSelection = true;
 		selected_object=nullptr;
 	}
 
-	std::string error = nebulas->removeNebula(name, true);
+	nebulas->removeNebula(name, true);
 	// Try to find original version, if any
 	if( updateSelection ) selected_object = nebulas->search(name);
-
-	return error;
 }
 
-std::string Core::removeSupplementalNebulae()
+void Core::removeSupplementalNebulae()
 {
 	//  cout << "Deleting planets and object deleteable = " << selected_object.isDeleteable() << endl;
 	// Make sure an object to delete is NOT selected so won't crash
 	if (selected_object.getType()==OBJECT_NEBULA /*&& selected_object.isDeleteable()*/ ) {
 		unSelect();
 	}
-
-	return nebulas->removeSupplementalNebulae();
-
+	nebulas->removeSupplementalNebulae();
 }
 
 void Core::setJDayRelative(int year, int month)
