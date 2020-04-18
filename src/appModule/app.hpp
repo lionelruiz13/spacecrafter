@@ -110,7 +110,7 @@ public:
 	}
 
 	// todo deprecated 
-	void executeCommand(const std::string& _command);
+	// void executeCommand(const std::string& _command);
 
 	void setPresetSkyTime(double _value) {
 		PresetSkyTime = _value;

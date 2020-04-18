@@ -357,9 +357,9 @@ void App::updateFromSharedData()
 
 
 // todo deprecated 
-void App::executeCommand(const std::string& _command) {
-	commander->executeCommand(_command);
-}
+// void App::executeCommand(const std::string& _command) {
+// 	commander->executeCommand(_command);
+// }
 
 void App::update(int delta_time)
 {
@@ -472,7 +472,7 @@ void App::masterput()
 	FILE * tempFile = fopen(action.c_str(),"r");
 	if (tempFile) {
 		fclose(tempFile);
-		cLog::get()->write("MASTERPUT is in action", LOG_TYPE::L_INFO);
+		//cLog::get()->write("MASTERPUT is in action", LOG_TYPE::L_INFO);
 		unlink(action.c_str());
 		scriptMgr->playScript(settings->getFtpDir()+"pub/script.sts");
 	}
