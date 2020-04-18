@@ -43,7 +43,7 @@ void CoreBackup::loadBackup()
 	if (mBackup.jday !=0) {
 		core->timeMgr->setJDay(mBackup.jday);
 		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-		core->getObservatory()->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
+		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
 	}
 	core->setHomePlanet(mBackup.home_planet_name);
 }
