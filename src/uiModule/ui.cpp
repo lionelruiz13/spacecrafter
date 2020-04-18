@@ -544,7 +544,9 @@ void UI::rightClick()
 
 void UI::executeCommand(const std::string& command)
 {
-	app->executeCommand(command);
+	//app->executeCommand(command);
+	Event* event = new CommandEvent(command);
+	EventManager::getInstance()->queue(event);	
 }
 
 void UI::pauseScript()
