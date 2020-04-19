@@ -859,7 +859,7 @@ void UI::tuiCbSetlocation()
 	// change to human readable coordinates with current values, then change
 	coreLink->observatorySetLongitude(coreLink->observatoryGetLongitude());
 
-	coreLink->getObserverMoveTo(tui_location_latitude->getValue(),
+	coreLink->observerMoveTo(tui_location_latitude->getValue(),
 	                            tui_location_longitude->getValue(),
 	                            tui_location_altitude->getValue(),
 	                            int(tui_effect_zoom_duration->getValue()*1000),  // TEMP temporarily using zoom duration

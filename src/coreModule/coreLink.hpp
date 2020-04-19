@@ -1208,7 +1208,7 @@ public:
 	// }
 	///////////////////////////////////////////////////////////
 	std::string getObserverName(){
-		return core->getObservatory()->getName(); 
+		return core->observatory->getName(); 
 	}
 
 	std::string getObserverHomePlanetEnglishName() {
@@ -1219,9 +1219,11 @@ public:
 		return core->observatory->getHomeBody();
 	}
 
-	void getObserverMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration) {
+	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
 	}
+
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// city ---------------------------

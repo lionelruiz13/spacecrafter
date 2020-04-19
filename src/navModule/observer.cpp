@@ -310,7 +310,7 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, /*const 
 
 }
 
-void Observer::moveRelLatObserver(double lat, int delay) {
+void Observer::moveRelLat(double lat, int delay) {
 	double latimem = latitude;
 	if (latimem>90) latimem=90;
 	if (latimem<-90) latimem=-90;
@@ -318,12 +318,12 @@ void Observer::moveRelLatObserver(double lat, int delay) {
 }
 
 //! Move to relative longitude where home planet is fixed.
-void Observer::moveRelLonObserver(double lon, int delay) {
+void Observer::moveRelLon(double lon, int delay) {
 	moveTo(latitude, longitude+lon, altitude, delay);
 }
 
 //! Move to relative altitude where home planet is fixed.
-void Observer::moveRelAltObserver(double alt, int delay) {
+void Observer::moveRelAlt(double alt, int delay) {
 	moveTo(latitude, longitude, altitude+alt, delay);
 }
 
