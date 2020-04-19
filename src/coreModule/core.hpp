@@ -596,7 +596,6 @@ public:
 	}
 
 	void saveCurrentConfig(InitParser &conf);
-	Vec3f getCursorPosEqu(int x, int y);
 
 	// void imageDraw();
 	void textDraw();
@@ -661,6 +660,13 @@ private:
 	//! Find in a "clever" way an object from its screen position
 	Object cleverFind(int x, int y) const;
 
+	std::string getCursorPos(int x, int y);  //not used now
+	Vec3f getCursorPosEqu(int x, int y);  //not used now
+
+	// Increment/decrement smoothly the vision field and position
+	void updateMove(int delta_time);
+
+
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
@@ -712,10 +718,7 @@ private:
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn
-	std::string getCursorPos(int x, int y);  //not used now
 
-	// Increment/decrement smoothly the vision field and position
-	void updateMove(int delta_time);
 	bool FlagEnableZoomKeys;
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
