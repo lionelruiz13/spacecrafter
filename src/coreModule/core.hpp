@@ -469,9 +469,9 @@ public:
 	//! Return the current observatory (as a const object)
 	// made non const so can track when save data!  Hmmm. 20070215
 	// TODO resolve issue
-	Observer* getObservatory(void) {
-		return observatory;
-	}
+	// Observer* getObservatory(void) {
+	// 	return observatory;
+	// }
 
 	// //! Move to a new latitude and longitude on home planet
 	// void moveObserver(double lat, double lon, double alt, int delay /*, const std::string& name*/) {
