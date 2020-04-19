@@ -1236,6 +1236,10 @@ public:
 		core->observatory->moveRelAlt(alt, delay);
 	}
 
+	void observerSetConf(InitParser &conf,const std::string &section) {
+		core->observatory->setConf(conf,section);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// city ---------------------------
 	////////////////////////////////////////////////////////////////////////////////

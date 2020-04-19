@@ -456,7 +456,7 @@ void App::saveCurrentConfig(const std::string& confFile)
 	core->saveCurrentConfig(conf);
 
 	// Get landscape and other observatory info
-	(core->getObservatory())->setConf(conf, "init_location");
+	coreLink->observerSetConf(conf, "init_location");
 	conf.save(confFile);
 }
 
