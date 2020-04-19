@@ -64,9 +64,7 @@
 #include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "starModule/hip_star_mgr.hpp"
-//#include "tools/app_settings.hpp"
 #include "tools/init_parser.hpp"
-//#include "tools/io.hpp"
 #include "tools/object.hpp"
 #include "tools/shader.hpp"
 #include "tools/sky_localizer.hpp"
@@ -126,9 +124,6 @@ public:
 	//! Set the sky culture from I18 name
 	//! Returns false and doesn't change if skyculture is invalid
 	bool setSkyCulture(const std::string& cultureName);
-
-	// Set mouse position
-        // void setMouse(int x, int y);
 
 	//! Set the current sky culture from the passed directory
 	bool setSkyCultureDir(const std::string& culturedir);
@@ -345,8 +340,6 @@ public:
 		return selected_object.getInfoString(navigation);
 	}
 
-	//void tcpGetSelectedObjectInfo() const;
-
 	void getDeRa(double *ra, double *de) const {
 		selected_object.getRaDeValue(navigation,ra,de);
 	}
@@ -365,28 +358,6 @@ public:
 	//! Get a color used to display info about the currently selected object
 	Vec3f getSelectedObjectInfoColor(void) const;
 
-
-	///////////////////////////////////////////////////////////////////////////////////////
-	// Rendering settings
-
-	// //! Set rendering flag of antialiased lines
-	// void setFlagAntialiasLines(bool b) {
-	// 	FlagAntialiasLines = b;
-
-	// 	if(b) glEnable(GL_LINE_SMOOTH);
-	// 	else glDisable(GL_LINE_SMOOTH);
-	// }
-	// //! Get display flag of constellation lines
-	// bool getFlagAntialiasLines(void) {
-	// 	return FlagAntialiasLines;
-	// }
-
-	// void setLineWidth(float w) {
-	// 	m_lineWidth = w;
-	// }
-	// float getLineWidth() {
-	// 	return m_lineWidth;
-	// }
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Stars methods
@@ -462,55 +433,6 @@ public:
 		return lightPollutionLimitingMagnitude;
 	}
 
-
-
-	///////////////////////////////////////////////////////////////////////////////////////
-	// Observer
-	//! Return the current observatory (as a const object)
-	// made non const so can track when save data!  Hmmm. 20070215
-	// TODO resolve issue
-	// Observer* getObservatory(void) {
-	// 	return observatory;
-	// }
-
-	// //! Move to a new latitude and longitude on home planet
-	// void moveObserver(double lat, double lon, double alt, int delay /*, const std::string& name*/) {
-	// 	observatory->moveTo(lat, lon, alt, delay/*, name*/);
-	// }
-
-	// //! Move to relative latitude where home planet is fixed.
-	// void moveRelLatObserver(double lat, int delay) {
-	// 	double latimem=observatory->getLatitude()+lat;
-	// 	if (latimem>90) latimem=90;
-	// 	if (latimem<-90) latimem=-90;
-	// 	moveObserver(latimem,observatory->getLongitude(),observatory->getAltitude(),delay/*,observatory->getName()*/);
-	// }
-
-	// //! Move to relative longitude where home planet is fixed.
-	// void moveRelLonObserver(double lon, int delay) {
-	// 	moveObserver(observatory->getLatitude(),observatory->getLongitude()+lon,observatory->getAltitude(),delay/*,observatory->getName()*/);
-	// }
-
-	// //! Move to relative altitude where home planet is fixed.
-	// void moveRelAltObserver(double alt, int delay) {
-	// 	moveObserver(observatory->getLatitude(),observatory->getLongitude(),observatory->getAltitude()+alt,delay/*,observatory->getName()*/);
-	// }
-
-	// //! change the Heading value
-	// void moveHeadingRelative(float f) {
-	// 	navigation->setHeading(navigation->getHeading() + f);
-	// }
-
-	// //! Set Meteor Rate in number per hour
-	// void setMeteorsRate(int f) {
-	// 	meteors->setZHR(f);
-	// }
-
-	// //! Get Meteor Rate in number per hour
-	// int getMeteorsRate(void) const {
-	// 	return meteors->getZHR();
-	// }
-
 	void selectZodiac();
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -538,20 +460,8 @@ public:
 		return flagNav;
 	}
 
-	// void getmBackup();					//! get the current variables to struct Backup
-	// void setmBackup();					//! set a previous Backup  directly in use
-	
 	void switchMode(const std::string &mode);
 
-
-	//tcp
-	// void tcpConfigure(ServerSocket * _tcp);
-	// void tcpGetStatus(std::string value) const;
-	// void tcpGetPlanetsStatus() const;
-
-	//! return tcpPosition
-	// void tcpGetPosition();
-	
 	////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere---------------------------
 	////////////////////////////////////////////////////////////////////////////////
@@ -637,13 +547,6 @@ private:
 	//! @param delta_time the time increment in ms.
 	void updateInUniverse(int delta_time);
 
-	//! envoie directement une chaine de caractère au serveur TCP
-	// void tcpSend(std::string msg ) const;
-
-	// AppSettings * settings;				//! endroit unique pour les chemins des fichiers dans l'application
-	// ServerSocket *tcp;
-	// bool enable_tcp ;
-
 	//! Callback to record actions
 	mBoost::callback<void, std::string> recordActionCallback;
 
@@ -682,8 +585,6 @@ private:
 	Observer * observatory;			// Manage observer position
 	Projector * projection;				// Manage the projection mode and matrix
 	Object selected_object;			// The selected object
-	// int mouseX;
-	// int mouseY;
 	Object old_selected_object;		// The old selected object
 	class HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
@@ -723,7 +624,6 @@ private:
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
 	bool flagNav = false; 				// define the NAV version edition
-	// bool FlagAntialiasLines;            // whether to antialias all line drawing
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup
 	std::string defaultLandscape; 
@@ -732,14 +632,9 @@ private:
 	float InitFov;						// Default viewing FOV
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
-	// float m_lineWidth;                  // width to use when drawing any line
-
-	//! Backup Manage
-	//backupWorkspace mBackup;			// variable used to remember various indicators in use
-	InitialValue initialvalue;			// variable used to remember various string indicators in use
-
-	// void inimBackup();					// init at NULL all var
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
+
+	InitialValue initialvalue;			// variable used to remember various string indicators in use
 };
 
 #endif // _CORE_H_

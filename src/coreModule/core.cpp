@@ -136,14 +136,8 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	oort =  new Oort();
 	dso3d = new Dso3d();
 	tully = new Tully();
-	// mouseX = 0;
-	// mouseY = 0;
-
 	bodytrace= new BodyTrace();
 	object_pointer_visibility = 1;
-
-	// tcp = nullptr;
-	// enable_tcp = false;
 
 	executorInSolarSystem = new CoreExecutorInSolarSystem(this, observatory);
 	executorInGalaxy = new CoreExecutorInGalaxy(this,observatory);
@@ -157,55 +151,6 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	currentExecutor = executorInSolarSystem;
 }
 
-// void Core::setMouse(int x, int y) {
-// 	mouseX = x;
-// 	mouseY = y;
-// }
-
-// void Core::tcpGetStatus(std::string value) const
-// {
-// 	std::string toSend="";
-// 	if (value == "constellation") {
-// 		toSend = asterisms->getSelectedShortName();
-// 		cLog::get()->write("Valeur de toSend : " + toSend);
-// 	} else
-// 		toSend="Demande inconnue";
-
-// 	if (toSend=="")
-// 		toSend="EOF";
-
-// 	tcpSend(toSend);
-// }
-
-// void Core::tcpSend(std::string msg) const
-// {
-// 	if (enable_tcp) {
-// 		tcp->setOutput(msg);
-// 		cLog::get()->write("Send command : " + msg);
-// 	} else
-// 		cLog::get()->write("No send msg because no tcp enable");
-// }
-
-// void Core::tcpGetSelectedObjectInfo() const
-// {
-// 	std::string toSend=getSelectedObjectInfo();
-// 	if (toSend=="")
-// 		toSend="EOL";
-
-// 	tcpSend(toSend);
-// }
-
-
-// void Core::tcpConfigure(ServerSocket * _tcp)
-// {
-// 	if (_tcp!=nullptr) {
-// 		tcp= _tcp;
-// 		enable_tcp = true;
-// 		cLog::get()->write("Core tcp enable");
-// 	} else
-// 		cLog::get()->write("Core no tcp enable");
-// }
-
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
 {
@@ -218,25 +163,6 @@ std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned 
 	return msgToSend;
 }
 
-// void Core::tcpGetPlanetsStatus() const
-// {
-// 	std::string msgToSend;
-// 	msgToSend = ssystem->getPlanetsPosition();
-
-// 	if (msgToSend=="")
-// 		msgToSend="NPF"; // no planet found ! Dramatic
-
-// 	tcpSend(msgToSend);
-// }
-
-// void Core::tcpGetPosition()
-// {
-// 	char tmp[1024];
-// 	memset(tmp, '\0', 1024);
-// 	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatory->getLatitude(), observatory->getLongitude(), observatory->getAltitude(), timeMgr->getJDay(), getHeading());
-// 	cLog::get()->write(tmp);
-// 	tcp->setOutput(tmp);
-// }
 
 Core::~Core()
 {
@@ -285,7 +211,6 @@ Core::~Core()
 	delete executorInGalaxy;
 	delete executorInSolarSystem;
 	delete executorInUniverse;
-	
 	delete anchorManager;
 }
 
@@ -298,10 +223,6 @@ void Core::init(const InitParser& conf)
 	//inimBackup();
 	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");
 	coreFont->init(conf);
-
-	// Rendering options
-	// setLineWidth(conf.getDouble("rendering", "line_width"));
-	// setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
 
 	initialvalue.initial_landscapeName=conf.getStr("init_location","landscape_name");
 	illuminates->setDefaultSize(conf.getDouble("stars", "illuminate_size"));
@@ -393,8 +314,6 @@ void Core::init(const InitParser& conf)
 
 	ssystem->setScale(hip_stars->getScale());
 	setPlanetsSizeLimit(conf.getDouble("astro", "planet_size_marginal_limit"));
-
-	//ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
 	ssystem->setFlagClouds(true);
 
 	observatory->load(conf, "init_location");
@@ -561,8 +480,6 @@ void Core::init(const InitParser& conf)
 	oort->setFlagShow(conf.getBoolean("viewing:flag_oort"));
 
 	setLightPollutionLimitingMagnitude(conf.getDouble("viewing","light_pollution_limiting_magnitude"));
-
-	//setMeteorsRate(conf.getInt("astro", "meteor_rate"));
 
 	atmosphere->setFlagOptoma(conf.getBoolean("main:flag_optoma"));
 
@@ -819,15 +736,9 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	projection->setClippingPlanes(clipping_min ,clipping_max);
 	// Init viewport to current projector values
 	projection->applyViewport();
-	// User supplied line width value
-	//glLineWidth(m_lineWidth);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 }
 
-// void Core::imageDraw()
-// {
-// 	media->imageDraw(navigation, projection);
-// }
 
 void Core::textDraw()
 {
@@ -1544,15 +1455,11 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 }
 
 //! For use by TUI - saves all current AppSettings::Instance()
-//! @todo Put in stel_core?
 void Core::saveCurrentConfig(InitParser &conf)
 {
 	// localization section
 	conf.setStr("localization:sky_culture", getSkyCultureDir());
 	conf.setStr("localization:sky_locale", getSkyLanguage());
-	// Rendering section
-	// conf.setBoolean("rendering:flag_antialias_lines", getFlagAntialiasLines());
-	// conf.setDouble("rendering:line_width", getLineWidth());
 	// viewing section
 	conf.setBoolean("viewing:flag_constellation_drawing", asterisms->getFlagLines()); //constellationGetFlagLines());
 	conf.setBoolean("viewing:flag_constellation_name", asterisms->getFlagNames()); //constellationGetFlagNames());
@@ -2069,35 +1976,3 @@ void Core::setJDayRelative(int year, int month)
 	SpaceDate::JulianToDate(jd,&current_date);
 	timeMgr->setJDay(SpaceDate::JulianDayFromDateTime(current_date.years+year,current_date.months+month,current_date.days,current_date.hours,current_date.minutes,current_date.seconds));
 }
-
-// void Core::setmBackup()
-// {
-// 	if (mBackup.jday !=0) {
-// 		timeMgr->setJDay(mBackup.jday);
-// 		projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-// 		moveObserver (mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
-// 	}
-// 	setHomePlanet(mBackup.home_planet_name);
-// }
-
-// void Core::getmBackup()
-// {
-// 	mBackup.jday=timeMgr->getJDay();
-// 	mBackup.latitude=observatory->getLatitude();
-// 	mBackup.longitude=observatory->getLongitude();
-// 	mBackup.altitude=observatory->getAltitude();
-// 	mBackup.pos_name=observatory->getName();
-// 	mBackup.fov = projection->getFov(); //getFov();
-// 	mBackup.home_planet_name=observatory->getHomePlanetEnglishName();
-// }
-
-// void Core::inimBackup()
-// {
-// 	mBackup.jday=0.0;
-// 	mBackup.latitude=0.0;
-// 	mBackup.longitude=0.0;
-// 	mBackup.altitude=0.0;
-// 	mBackup.fov=0.0;
-// 	mBackup.pos_name="";
-// 	mBackup.home_planet_name="";
-// }
