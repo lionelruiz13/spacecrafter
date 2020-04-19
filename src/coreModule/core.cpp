@@ -48,24 +48,23 @@
 #include "bodyModule/body_trace.hpp"
 
 
-Core::Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
-	skyTranslator(PACKAGE, _settings->getLocaleDir(), ""),
+Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
+	skyTranslator(PACKAGE, AppSettings::Instance()->getLocaleDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
-	settings = _settings;
 	media = _media;
 	coreFont = new CoreFont(this, std::min(width,height));
 	projection = new Projector( width,height, 60 );
 	glFrontFace(GL_CCW);
 
 	// Set textures directory and suffix
-	s_texture::setTexDir(settings->getTextureDir() );
+	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
 	//set Shaders directory and suffix
-	shaderProgram::setShaderDir(settings->getShaderDir() );
-	shaderProgram::setLogFile(settings->getLogDir()+"shader.log");
+	shaderProgram::setShaderDir(AppSettings::Instance()->getShaderDir() );
+	shaderProgram::setLogFile(AppSettings::Instance()->getLogDir()+"shader.log");
 	shaderProgram::initLogFile();
 
 	ubo_cam = new UBOCam("cam_block");
@@ -129,7 +128,7 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	meteors = new MeteorMgr(10, 60);
 	landscape = new Landscape();
 	inactiveLandscape = new Landscape();
-	skyloc = new SkyLocalizer(settings->getSkyCultureDir());
+	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height);
 	asterisms = new ConstellationMgr(hip_stars);
 	text_usr = new TextMgr();
@@ -330,11 +329,11 @@ void Core::init(const InitParser& conf)
 
 		ssystem->iniTextures();
 
-		ssystem->load(settings->getUserDir() + "ssystem.ini");
+		ssystem->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
 		
 		anchorManager->setRotationMultiplierCondition(conf.getDouble("navigation", "stall_radius_unit"));
 
-		anchorManager->load(settings->getUserDir() + "anchor.ini");
+		anchorManager->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
 		anchorManager->initFirstAnchor(conf.getStr("init_location","home_planet"));
 
 		// Init stars
@@ -343,13 +342,13 @@ void Core::init(const InitParser& conf)
 		hip_stars->init(conf);
 
 		// Init nebulas
-		nebulas->loadDeepskyObject(settings->getUserDir() + "deepsky_objects.fab");
+		nebulas->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
 
 		landscape->setSlices(conf.getInt("rendering:landscape_slices"));
 		landscape->setStacks(conf.getInt("rendering:landscape_stacks"));
 
-		starNav->loadData(settings->getUserDir() + "hip2007.dat", true);
-		starLines->loadHipBinCatalogue(settings->getUserDir() + "asterism.dat");
+		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
+		starLines->loadHipBinCatalogue(AppSettings::Instance()->getUserDir() + "asterism.dat");
 	}
 
 	// Astro section
@@ -414,9 +413,9 @@ void Core::init(const InitParser& conf)
 	coreFont->setFont();
 
 	if (firstTime) {
-		milky_way->defineInitialMilkywayState(settings->getTextureDir() , conf.getStr("astro:milky_way_texture"), 
+		milky_way->defineInitialMilkywayState(AppSettings::Instance()->getTextureDir() , conf.getStr("astro:milky_way_texture"), 
 				conf.getStr("astro:milky_way_iris_texture"), conf.getDouble("astro","milky_way_intensity"));
-		milky_way->defineZodiacalState(settings->getTextureDir() + conf.getStr("astro:zodiacal_light_texture"), conf.getDouble("astro","zodiacal_intensity"));
+		milky_way->defineZodiacalState(AppSettings::Instance()->getTextureDir() + conf.getStr("astro:zodiacal_light_texture"), conf.getDouble("astro","zodiacal_intensity"));
 		milky_way->setFaderDuration(conf.getInt("astro:milky_way_fader_duration")*1000);
 
 		atmosphere->initGridViewport(projection);
@@ -424,13 +423,13 @@ void Core::init(const InitParser& conf)
 
 		oort->populate(conf.getInt("rendering:oort_elements"));
 		tully->setTexture("typegals.png");
-		tully->loadCatalog(settings->getUserDir() + "tully.dat");
+		tully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
 		dso3d->setTexture("dsocat.png");
-		dso3d->loadCatalog(settings->getUserDir() + "dso3d.dat");
+		dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat");
 
 		ojmMgr->init();
 		// 3D object integration test
-		ojmMgr-> load("in_universe", "Milkyway", settings->getModel3DDir() + "Milkyway/Milkyway.ojm",settings->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01f);
+		ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01f);
 
 		// Load the pointer textures
 		Object::initTextures();
@@ -569,7 +568,7 @@ void Core::init(const InitParser& conf)
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-	mCity->loadCities(settings-> getDataDir() + "mcities.fab");
+	mCity->loadCities(AppSettings::Instance()-> getDataDir() + "mcities.fab");
 	ssystem->initialSolarSystemBodies();
 
 	defaultLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
@@ -949,7 +948,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	transform(l_min.begin(), l_min.end(), l_min.begin(), ::tolower);
 	if (new_landscape_name == l_min) return 0;
 
-	Landscape* newLandscape = Landscape::createFromFile(settings->getUserDir() + "landscapes.ini", new_landscape_name);
+	Landscape* newLandscape = Landscape::createFromFile(AppSettings::Instance()->getUserDir() + "landscapes.ini", new_landscape_name);
 	if (!newLandscape) return 0;
 
 	if (landscape) {
@@ -1401,8 +1400,8 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 	skyCultureDir = cultureDir;
 	if (!asterisms) return 0;
 
-	asterisms->loadLinesAndArt(settings->getSkyCultureDir() + skyCultureDir);
-	asterisms->loadNames(settings->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
+	asterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
+	asterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
 	// Re-translated constellation names
 	asterisms->translateNames(skyTranslator);
 
@@ -1414,7 +1413,7 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 	}
 
 	// Load culture star names in english
-	hip_stars->loadCommonNames(settings->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+	hip_stars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
 	// Turn on sci names for western culture only
 	hip_stars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
 
@@ -1465,7 +1464,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	std::string oldLocale = getSkyLanguage();
 
 	// Update the translator with new locale name
-	skyTranslator = Translator(PACKAGE, settings->getLocaleDir(), newSkyLocaleName);
+	skyTranslator = Translator(PACKAGE, AppSettings::Instance()->getLocaleDir(), newSkyLocaleName);
 	cLog::get()->write("Sky locale is " + skyTranslator.getLocaleName(), LOG_TYPE::L_INFO);
 	printf("SkyLocale : %s\n", newSkyLocaleName.c_str());
 
@@ -1479,7 +1478,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 }
 
 
-//! Please keep saveCurrentSettings up to date with any new color settings added here
+//! Please keep saveCurrentAppSettings::Instance() up to date with any new color AppSettings::Instance() added here
 void Core::setColorScheme(const std::string& skinFile, const std::string& section)
 {
 	InitParser conf;
@@ -1544,7 +1543,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	oort->setColor(Utility::strToVec3f(conf.getStr(section,"oort_color")));
 }
 
-//! For use by TUI - saves all current settings
+//! For use by TUI - saves all current AppSettings::Instance()
 //! @todo Put in stel_core?
 void Core::saveCurrentConfig(InitParser &conf)
 {

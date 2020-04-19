@@ -549,13 +549,9 @@ public:
 		return core->anchorManager->transitionToBody(name);
 	}
 
-	bool cameraSave(const std::string& name = "anchor"){
-		return core->anchorManager->saveCameraPosition(core->settings->getUserDir() + "anchors/" + name);
-	}
+	bool cameraSave(const std::string& name = "anchor");
 	
-	bool loadCameraPosition(const std::string& filename){
-		return core->anchorManager->loadCameraPosition(core->settings->getUserDir() + "anchors/" + filename);
-	}
+	bool loadCameraPosition(const std::string& filename);
 	
 	bool lookAt(double az, double alt, double time = 1.){
 		return core->navigation->lookAt(az, alt, time);

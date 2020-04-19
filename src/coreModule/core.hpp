@@ -64,7 +64,7 @@
 #include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "starModule/hip_star_mgr.hpp"
-#include "tools/app_settings.hpp"
+//#include "tools/app_settings.hpp"
 #include "tools/init_parser.hpp"
 //#include "tools/io.hpp"
 #include "tools/object.hpp"
@@ -106,7 +106,7 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
+	Core(int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
 	virtual ~Core();
 	Core(Core const &) = delete;
 	Core& operator = (Core const &) = delete;
@@ -640,7 +640,7 @@ private:
 	//! envoie directement une chaine de caractère au serveur TCP
 	// void tcpSend(std::string msg ) const;
 
-	AppSettings * settings;				//! endroit unique pour les chemins des fichiers dans l'application
+	// AppSettings * settings;				//! endroit unique pour les chemins des fichiers dans l'application
 	// ServerSocket *tcp;
 	// bool enable_tcp ;
 
