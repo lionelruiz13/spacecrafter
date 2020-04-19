@@ -383,9 +383,9 @@ public:
 	void setJDayRelative(int year, int month);
 
 	// for adding planets
-	std::string addSolarSystemBody(stringHash_t& param);
-	std::string removeSolarSystemBody(std::string name);
-	std::string removeSupplementalSolarSystemBodies();
+	void addSolarSystemBody(stringHash_t& param);
+	void removeSolarSystemBody(const std::string& name);
+	void removeSupplementalSolarSystemBodies();
 
 	//! set flag to display generic Hint or specific DSO type
 	void setDsoPictograms (bool value) {
