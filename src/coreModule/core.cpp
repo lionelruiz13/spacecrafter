@@ -137,8 +137,8 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	oort =  new Oort();
 	dso3d = new Dso3d();
 	tully = new Tully();
-	mouseX = 0;
-	mouseY = 0;
+	// mouseX = 0;
+	// mouseY = 0;
 
 	bodytrace= new BodyTrace();
 	object_pointer_visibility = 1;
@@ -158,10 +158,10 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	currentExecutor = executorInSolarSystem;
 }
 
-void Core::setMouse(int x, int y) {
-	mouseX = x;
-	mouseY = y;
-}
+// void Core::setMouse(int x, int y) {
+// 	mouseX = x;
+// 	mouseY = y;
+// }
 
 // void Core::tcpGetStatus(std::string value) const
 // {
@@ -1711,6 +1711,7 @@ Vec3f Core::getCursorPosEqu(int x, int y)
 	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
 	return v;
 }
+
 void Core::turnRight(int s)
 {
 	if (s && FlagEnableMoveKeys) {

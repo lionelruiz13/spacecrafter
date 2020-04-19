@@ -128,7 +128,7 @@ public:
 	bool setSkyCulture(const std::string& cultureName);
 
 	// Set mouse position
-        void setMouse(int x, int y);
+        // void setMouse(int x, int y);
 
 	//! Set the current sky culture from the passed directory
 	bool setSkyCultureDir(const std::string& culturedir);
@@ -676,8 +676,8 @@ private:
 	Observer * observatory;			// Manage observer position
 	Projector * projection;				// Manage the projection mode and matrix
 	Object selected_object;			// The selected object
-	int mouseX;
-	int mouseY;
+	// int mouseX;
+	// int mouseY;
 	Object old_selected_object;		// The old selected object
 	class HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)

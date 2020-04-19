@@ -156,7 +156,7 @@ void UI::saveCurrentConfig(InitParser &conf)
 /*******************************************************************************/
 int UI::handleMove(int x, int y)
 {
-	core->setMouse(x,y);
+	// core->setMouse(x,y);
 	// Do not allow use of mouse while script is playing otherwise script can get confused
 	if (scriptInterface->isScriptPlaying() && ! FlagMouseUsableInScript) return 0;
 
