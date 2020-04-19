@@ -380,22 +380,22 @@ void UI::moveMouseAz(double x)
 
 void UI::moveLat(double x)
 {
-	core->getObservatory()->moveRelLon(x,DURATION_COMMAND);
+	coreLink->observerMoveRelLon(x,DURATION_COMMAND);
 }
 
 void UI::moveLon(double x)
 {
 	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
-		core->getObservatory()->moveRelLat(-x,DURATION_COMMAND);
+		coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
 	else
-		core->getObservatory()->moveRelLat(x,DURATION_COMMAND);
+		coreLink->observerMoveRelLat(x,DURATION_COMMAND);
 }
 
 void UI::lowerHeight(double x)
 {
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
-	core->getObservatory()->moveRelAlt(latimem, DURATION_COMMAND);
+	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
 	this->executeCommand("add r 1");
 }
 
@@ -403,7 +403,7 @@ void UI::raiseHeight(double x)
 {
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
-	core->getObservatory()->moveRelAlt(latimem, DURATION_COMMAND);
+	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
 	this->executeCommand("add r -1");
 }
 
@@ -1763,7 +1763,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_0 :
 			switch(key_Modifier) {
 				case NONE:
-					core->getObservatory()->moveRelLat(45,7000);  //latitude , duration
+					coreLink->observerMoveRelLat(45,7000);  //latitude , duration
 					break;
 				case SUPER:
 					this->executeCommand("moveto lat 90 duration 5");
@@ -1776,7 +1776,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
-					core->getObservatory()->moveRelLat(30,5000);  //latitude , duration
+					coreLink->observerMoveRelLat(30,5000);  //latitude , duration
 					break;
 				default:
 					break;
@@ -2018,7 +2018,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_9 :
 			switch(key_Modifier) {
 				case NONE:
-					core->getObservatory()->moveRelLat(-45,7000);  //latitude , duration
+					coreLink->observerMoveRelLat(-45,7000);  //latitude , duration
 					break;
 				case SUPER:
 					this->executeCommand("moveto lat -90 duration 5");
@@ -2034,7 +2034,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
-					core->getObservatory()->moveRelLat(-30,5000);  //latitude , duration
+					coreLink->observerMoveRelLat(-30,5000);  //latitude , duration
 					break;
 				default:
 					break;

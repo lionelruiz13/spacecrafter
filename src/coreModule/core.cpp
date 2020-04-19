@@ -1825,7 +1825,7 @@ void Core::updateMove(int delta_time)
 	}
 
 	if (vzm.deltaHeight!=0) {
-		getObservatory()->setAltitude(getObservatory()->getAltitude()*vzm.deltaHeight);
+		observatory->setAltitude(observatory->getAltitude()*vzm.deltaHeight);
 	}
 
 	if (vzm.deltaFov != 0 ) {
@@ -2083,12 +2083,12 @@ void Core::setJDayRelative(int year, int month)
 // void Core::getmBackup()
 // {
 // 	mBackup.jday=timeMgr->getJDay();
-// 	mBackup.latitude=getObservatory()->getLatitude();
-// 	mBackup.longitude=getObservatory()->getLongitude();
-// 	mBackup.altitude=getObservatory()->getAltitude();
-// 	mBackup.pos_name=getObservatory()->getName();
+// 	mBackup.latitude=observatory->getLatitude();
+// 	mBackup.longitude=observatory->getLongitude();
+// 	mBackup.altitude=observatory->getAltitude();
+// 	mBackup.pos_name=observatory->getName();
 // 	mBackup.fov = projection->getFov(); //getFov();
-// 	mBackup.home_planet_name=getObservatory()->getHomePlanetEnglishName();
+// 	mBackup.home_planet_name=observatory->getHomePlanetEnglishName();
 // }
 
 // void Core::inimBackup()
