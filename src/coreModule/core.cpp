@@ -915,45 +915,47 @@ bool Core::loadLandscape(stringHash_t& param)
 }
 
 //! Load a solar system body based on a hash of parameters mirroring the ssystem.ini file
-std::string Core::addSolarSystemBody(stringHash_t& param)
+void Core::addSolarSystemBody(stringHash_t& param)
 {
-	return ssystem->addBody(param);
+	ssystem->addBody(param);
 }
 
-std::string Core::removeSolarSystemBody(std::string name)
+void Core::removeSolarSystemBody(const std::string& name)
 {
 	// Make sure this object is not already selected so won't crash
 	if (selected_object.getType()==OBJECT_BODY && selected_object.getEnglishName() == name) {
 		unSelect();
 	}
-
 	// Make sure not standing on this object!
 	const Body *p = observatory->getHomeBody();
 	if (p!= nullptr && p->getEnglishName() == name) {
-		return (std::string("Can not delete current home planet ") + name);
+		cLog::get()->write("Can not delete current home planet " + name);
+		return;
+		// return (std::string("Can not delete current home planet ") + name);
 	}
-
-	if(ssystem->removeBody(name)){
-		return "";
-	}
-	else{
-		return "could not delete given body see logs for more informations";
-	}
+	ssystem->removeBody(name);
+	// if(ssystem->removeBody(name)){
+	// 	return "";
+	// }
+	// else{
+	// 	return "could not delete given body see logs for more informations";
+	// }
 }
 
-std::string Core::removeSupplementalSolarSystemBodies()
+void Core::removeSupplementalSolarSystemBodies()
 {
 	//  cout << "Deleting planets and object deleteable = " << selected_object.isDeleteable() << endl;
 	// Make sure an object to delete is NOT selected so won't crash
 	if (selected_object.getType()==OBJECT_BODY /*&& selected_object.isDeleteable() */) {
 		unSelect();
 	}
-	if(ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName())){
-		return "";
-	}
-	else{
-		return "could not delete given body see logs for more informations";
-	}
+	ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
+	// if(ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName())){
+	// 	return "";
+	// }
+	// else{
+	// 	return "could not delete given body see logs for more informations";
+	// }
 }
 
 

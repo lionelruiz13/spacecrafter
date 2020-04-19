@@ -3329,18 +3329,13 @@ int AppCommandInterface::commandBody()
 			// textures relative to script
 			args["path"] = scriptInterface->getScriptPath();
 			// Load a new solar system object
-			debug_message = stcore->addSolarSystemBody(args);
-
+			stcore->addSolarSystemBody(args);
 		} else if (argAction == "drop" && argName != "") {
 			// Delete an existing object, but only if was added by a script!
-			debug_message  = stcore->removeSolarSystemBody( argName );
+			stcore->removeSolarSystemBody( argName );
 		} else if (argAction == "clear") {
 			// drop all bodies that are not in the original config file
-			std::string error_string = stcore->removeSupplementalSolarSystemBodies();
-			if (error_string != "" ) {
-				debug_message = error_string;
-				cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-			}
+			stcore->removeSupplementalSolarSystemBodies();
 		} else if (argAction == "initial") {
 			coreLink->initialSolarSystemBodies();
 		} else {
