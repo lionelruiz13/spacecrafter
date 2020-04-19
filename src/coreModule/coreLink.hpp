@@ -1223,7 +1223,18 @@ public:
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
 	}
 
-
+	//! Move to relative longitude where home planet is fixed.
+	void observerMoveRelLon(double lon, int delay) {
+		core->observatory->moveRelLon(lon, delay);
+	}
+	//! Move to relative latitude where home planet is fixed.
+	void observerMoveRelLat(double lat, int delay) {
+		core->observatory->moveRelLat(lat, delay);
+	}
+	//! Move to relative altitude where home planet is fixed.
+	void observerMoveRelAlt(double alt, int delay) {
+		core->observatory->moveRelAlt(alt, delay);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// city ---------------------------
