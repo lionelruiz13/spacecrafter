@@ -156,7 +156,7 @@ std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned 
 {
 	std::vector<std::string> tmp;
 	std::string msgToSend;
-	tmp = listMatchingObjectsI18n(objPrefix, maxNbItem);
+	tmp = listMatchingObjectsI18n(objPrefix, maxNbItem,true);
 	for( std::vector<std::string>::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 		msgToSend = msgToSend + (*itr)+";";
 	}
@@ -1846,33 +1846,37 @@ bool Core::selectObject(const Object &obj)
 //! @param objPrefix the first letters of the searched object
 //! @param maxNbItem the maximum number of returned object names
 //! @return a vector of matching object name by order of relevance, or an empty vector if nothing match
-std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const
+std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem, bool withType) const
 {
 	std::vector<std::string> result;
 	std::vector <std::string>::const_iterator iter;
 
 	// Get matching planets
 	std::vector<std::string> matchingPlanets = ssystem->listMatchingObjectsI18n(objPrefix, maxNbItem);
-	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter)
-		result.push_back(*iter);
+	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter) 
+		withType ? result.push_back(*iter+"(P)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingPlanets.size();
 
 	// Get matching constellations
 	std::vector<std::string> matchingConstellations = asterisms->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingConstellations.begin(); iter != matchingConstellations.end(); ++iter)
-		result.push_back(*iter);
+		withType ? result.push_back(*iter+"(C)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingConstellations.size();
 
 	// Get matching nebulae
 	std::vector<std::string> matchingNebulae = nebulas->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingNebulae.begin(); iter != matchingNebulae.end(); ++iter)
-		result.push_back(*iter);
+		withType ? result.push_back(*iter+"(N)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingNebulae.size();
 
 	// Get matching stars
 	std::vector<std::string> matchingStars = hip_stars->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingStars.begin(); iter != matchingStars.end(); ++iter)
-		result.push_back(*iter);
+		withType ? result.push_back(*iter+"(S)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingStars.size();
 
 	std::sort(result.begin(), result.end());

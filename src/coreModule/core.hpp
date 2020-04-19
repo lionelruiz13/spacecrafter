@@ -303,7 +303,7 @@ public:
 	//! @param objPrefix the case insensitive first letters of the searched object
 	//! @param maxNbItem the maximum number of returned object names
 	//! @return a vector of matching object name by order of relevance, or an empty vector if nothing match
-	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem=5) const;
+	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem=5, bool withType= false) const;
 
 	std::string getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem=5) const;
 
