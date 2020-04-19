@@ -2800,8 +2800,9 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		Observer *observatory = stcore->getObservatory();
-		if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=3;
+		//Observer *observatory = stcore->getObservatory();
+		// if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=3;
+		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
 		if( !argStep.empty() )
 			sstep = evalDouble(argStep);
 
@@ -2834,8 +2835,9 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		Observer *observatory = stcore->getObservatory();
-		if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=-3;
+		// Observer *observatory = stcore->getObservatory();
+		// if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=-3;
+		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
 
 		if( !argStep.empty() )
 			sstep = evalDouble(argStep);
@@ -2874,34 +2876,38 @@ int AppCommandInterface::commandMoveto()
 		return executeCommandStatus();
 	}
 
-	Observer *observatory = stcore->getObservatory();
+	// Observer *observatory = stcore->getObservatory();
+	// double lat = observatory->getLatitude();
+	// double lon = observatory->getLongitude();
+	// double alt = observatory->getAltitude();
 
-	double lat = observatory->getLatitude();
-	double lon = observatory->getLongitude();
-	double alt = observatory->getAltitude();
+	double lat = coreLink->observatoryGetLatitude();
+	double lon = coreLink->observatoryGetLongitude();
+	double alt = coreLink->observatoryGetAltitude();
 
-	std::string name = observatory->getName();
-	std::string argName = args["name"];
+
+	// std::string name = coreLink->observatoryGetName();
+	// std::string argName = args["name"];
 	int delay;
 
-	if (!argName.empty()) name = argName;
+	// if (!argName.empty()) name = argName;
 
 	if (!argLat.empty()) {
 		if (argLat=="default")
-			lat = observatory->getDefaultLatitude();
+			lat = coreLink->observatoryGetDefaultLatitude();
 		else if (argLat=="inverse")
 			lat = -lat;
 		else lat = evalDouble(argLat);
 	}
 	if (!argLon.empty()) {
 		if (argLon=="default")
-			lon = observatory->getDefaultLongitude();
+			lon = coreLink->observatoryGetDefaultLongitude();
 		else if (argLon=="inverse")
 			lon = lon+180.0;
 		else lon = evalDouble(argLon);
 	}
 	if (!argAlt.empty()) {
-		if (argAlt=="default") alt = observatory->getDefaultAltitude();
+		if (argAlt=="default") alt = coreLink->observatoryGetDefaultAltitude();
 		else {
 			if (argAlt[0] == '+' || argAlt[0] == '-')
 				alt += evalDouble(argAlt);
@@ -2925,7 +2931,6 @@ int AppCommandInterface::commandMoveto()
 
 	delay = (int)(1000.*evalDouble(args["duration"]));
 
-	//TODO recevoir les erreurs de moveObserver
 	coreLink->observerMoveTo(lat,lon,alt,delay/*,name*/);
 
 	return executeCommandStatus();

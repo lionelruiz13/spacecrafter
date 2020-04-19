@@ -1173,7 +1173,19 @@ public:
 	double observatoryGetAltitude() {
 		return core->observatory->getAltitude();
 	}
- 
+
+	double observatoryGetDefaultLatitude() {
+		return core->observatory->getDefaultLatitude();
+	}
+
+	double observatoryGetDefaultLongitude() {
+		return core->observatory->getDefaultLongitude();
+	}
+
+	double observatoryGetDefaultAltitude() {
+		return core->observatory->getDefaultAltitude();
+	}
+
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// void observatorySetLatitude(double l) {
@@ -1188,7 +1200,7 @@ public:
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// void observatorySetAltitude(double l) {
-	// 	core->observatory->setAltitude(l);
+	//  	core->observatory->setAltitude(l);
 	// }
 	
 	// void observatorySetSpacecraft(double l) {
