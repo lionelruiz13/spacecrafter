@@ -3308,7 +3308,7 @@ int AppCommandInterface::commandBody()
 
 	std::string argSkinUse = args["skin_use"];
 	if (!argSkinUse.empty()) {
-		std::cout << "lancement de la commande skin_use" << std::endl;
+		//std::cout << "lancement de la commande skin_use" << std::endl;
 		if (argSkinUse=="toggle") {
 			coreLink->planetSwitchTexMap(argName, !coreLink->planetGetSwitchTexMap(argName));
 		} else
@@ -3319,7 +3319,7 @@ int AppCommandInterface::commandBody()
 
 	std::string argSkinTex = args["skin_tex"];
 	if (!argSkinTex.empty()) {
-		std::cout << "lancement de la commande skin_tex" << std::endl;
+		//std::cout << "lancement de la commande skin_tex" << std::endl;
 		coreLink->planetCreateTexSkin(argName, argSkinTex);
 		return executeCommandStatus();
 	}
