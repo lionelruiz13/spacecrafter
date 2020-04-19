@@ -1462,7 +1462,8 @@ int AppCommandInterface::commandMovetocity()
 		//cout << lon << ":" << lat << ":" << alt << endl;
 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
 			int delay = (int)(1000.*evalDouble(args["duration"]));
-			stcore->getObservatory()->moveTo(lat,lon,alt,delay /*,argName*/);
+			coreLink->observerMoveTo(lat,lon,alt,delay /*,argName*/);
+
 		}
 	} else
 		debug_message = "command_'movetocity' : unknown argument";
@@ -2925,7 +2926,7 @@ int AppCommandInterface::commandMoveto()
 	delay = (int)(1000.*evalDouble(args["duration"]));
 
 	//TODO recevoir les erreurs de moveObserver
-	stcore->getObservatory()->moveTo(lat,lon,alt,delay/*,name*/);
+	coreLink->observerMoveTo(lat,lon,alt,delay/*,name*/);
 
 	return executeCommandStatus();
 }

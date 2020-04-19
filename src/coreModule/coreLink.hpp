@@ -1219,7 +1219,7 @@ public:
 		return core->observatory->getHomeBody();
 	}
 
-	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration) {
+	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
 		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
 	}
 
