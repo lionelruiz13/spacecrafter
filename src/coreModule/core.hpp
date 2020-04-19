@@ -704,9 +704,11 @@ private:
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	StarLines* starLines;				// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D 
+	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
 	UBOCam* ubo_cam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
+	AnchorManager * anchorManager=nullptr;
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn
@@ -735,10 +737,6 @@ private:
 
 	// void inimBackup();					// init at NULL all var
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
-	
-	AnchorManager * anchorManager=nullptr;
-
-	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
 };
 
 #endif // _CORE_H_
