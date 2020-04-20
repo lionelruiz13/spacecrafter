@@ -2376,6 +2376,19 @@ int AppCommandInterface::commandScript()
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();
 	}
+
+	std::string argSpeed = args["speed"];
+	if (!argSpeed.empty()) {
+		if (argAction=="faster") {
+			scriptInterface->fasterSpeed();
+		} else if (argAction=="slower") {
+			scriptInterface->slowerSpeed();
+		} else if (argAction=="default") {
+			scriptInterface->defaultSpeed();
+		} else
+			debug_message = "command_script : unknown parameter from 'speed' argument";		
+	}
+
 	debug_message = "command_'script' : missing action argument";
 	return executeCommandStatus();
 }
