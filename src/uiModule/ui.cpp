@@ -380,15 +380,15 @@ void UI::moveMouseAz(double x)
 
 void UI::moveLat(double x)
 {
-	coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+	coreLink->observerMoveRelLat(x,DURATION_COMMAND);
 }
 
 void UI::moveLon(double x)
 {
 	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
-		coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
+		coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
 	else
-		coreLink->observerMoveRelLat(x,DURATION_COMMAND);
+		coreLink->observerMoveRelLon(x,DURATION_COMMAND);
 }
 
 void UI::lowerHeight(double x)
@@ -497,7 +497,7 @@ void UI::lowerHeight()
 void UI::speedDecrease()
 {
 	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerScript();
+		scriptInterface->slowerSpeed();
 	else
 		deltaSpeed = DeltaSpeed::DOWN;
 }
@@ -505,7 +505,7 @@ void UI::speedDecrease()
 void UI::speedIncrease()
 {
 	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerScript();
+		scriptInterface->fasterSpeed();
 	else
 		deltaSpeed = DeltaSpeed::UP;
 }
@@ -553,7 +553,7 @@ void UI::pauseScript()
 {
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
-		coreLink->timeResetMultiplier();
+		// coreLink->timeResetMultiplier();
 	} else
 		this->executeCommand("timerate action pause");;
 }
@@ -723,7 +723,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_K :
 			if ( scriptInterface->isScriptPlaying() ) {
 				this->executeCommand("script action resume");
-				coreLink->timeResetMultiplier();
+				// coreLink->timeResetMultiplier();
 			} else
 				media->playerPause();
 			break;
@@ -805,8 +805,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		app->flag(APP_FLAG::ALIVE, false);
 	}
 
-	if(!scriptInterface->isScriptPlaying())
-		coreLink->timeResetMultiplier();  // if no script in progress always real time
+	// if(!scriptInterface->isScriptPlaying())
+	// 	coreLink->timeResetMultiplier();  // if no script in progress always real time
 
 	switch (key) {
 
@@ -1189,7 +1189,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action end");
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate rate 0");
 					break;
@@ -1220,7 +1220,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;
@@ -1279,7 +1279,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if(scriptInterface->isScriptPlaying())
-						scriptInterface->slowerScript();
+						scriptInterface->slowerSpeed();
 					else {
 						event = new CommandEvent("timerate action decrement");
 						EventManager::getInstance()->queue(event);
@@ -1313,7 +1313,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					if ( scriptInterface->isScriptPlaying() ) {
 						event = new CommandEvent("script action resume");
 						EventManager::getInstance()->queue(event);
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else {
 						event = new CommandEvent("timerate rate 1");
 						EventManager::getInstance()->queue(event);
@@ -1343,7 +1343,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if(scriptInterface->isScriptPlaying())
-						scriptInterface->fasterScript();
+						scriptInterface->fasterSpeed();
 					else {
 						event = new CommandEvent("timerate action increment");
 						EventManager::getInstance()->queue(event);
@@ -2095,7 +2095,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;

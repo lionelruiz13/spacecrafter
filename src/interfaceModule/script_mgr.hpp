@@ -64,10 +64,15 @@ public:
 	void pauseScript();
 
 	//! play faster current script
-	void fasterScript();
+	void fasterSpeed();
 
 	//! play slower current script
-	void slowerScript();
+	void slowerSpeed();
+
+	//! play script without acceleration
+	void defaultSpeed(){
+		multiplierRate = 1;
+	}
 
 	//! start playing paused script
 	void resumeScript();
@@ -131,6 +136,10 @@ public:
 		nbrLoop=a;
 	}
 
+	int getMuliplierRate() {
+		return multiplierRate;
+	}
+
 private:
 	std::string getRecordDate();
 	Media* media = nullptr;
@@ -145,7 +154,8 @@ private:
 	std::fstream rec_file;	//!< le pointeur sur le fichier
 	std::string DataDir;
 
-	int m_incCount;
+	int multiplierRate=1; 
+	//int m_incCount;		//!< 0 = lecture de script normal, + script avance rapide , 
 	bool isInLoop; 		//!< on est entrain de lire les instructions d'une loop
 	bool repeatLoop; 	//!< on est entrain de répéter une boucle
 	int nbrLoop;		//!< nombre de tours de boucles restants

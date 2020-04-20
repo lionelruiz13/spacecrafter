@@ -368,7 +368,7 @@ void App::update(int delta_time)
 	internalFPS->addCalculatedTime(delta_time);
 
 	// change time rate if needed to fast forward scripts
-	delta_time *= coreLink->timeGetMultiplier();
+	delta_time *= scriptMgr->getMuliplierRate();
 	// run command from a running script
 	scriptMgr->update(delta_time);
 	if (!scriptMgr->isPaused() || !scriptMgr->isFaster() )	media->audioUpdate(delta_time);

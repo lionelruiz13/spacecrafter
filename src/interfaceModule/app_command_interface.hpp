@@ -93,7 +93,7 @@ protected:
 	int commandMeteors();
 	int commandMoveto();
 	int commandMovetocity();
-	int commandMultiplier();
+	// int commandMultiplier();
 	int commandMultiply();
 	int commandPersonal();
 	int commandPersoneq();

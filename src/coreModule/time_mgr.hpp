@@ -75,14 +75,14 @@ public:
 		FlagTimePause=_value;
 	}
 
-	double getTimeMultiplier() const {
-		// std::cout << "time_multiplier is "<< time_multiplier << std::endl;
-		return time_multiplier;
-	}
-	void setTimeMultiplier(double _value) {
-		//std::cout << "time_multiplier is "<< time_multiplier << " & it became " << _value << std::endl;
-		time_multiplier = _value;
-	}
+	// double getTimeMultiplier() const {
+	// 	std::cout << "time_multiplier is "<< time_multiplier << std::endl;
+	// 	return time_multiplier;
+	// }
+	// void setTimeMultiplier(double _value) {
+	// 	std::cout << "time_multiplier is "<< time_multiplier << " & it became " << _value << std::endl;
+	// 	time_multiplier = _value;
+	// }
 	//! Increment time
 	void update(int delta_time); // ancien update_time
 
@@ -105,7 +105,7 @@ private:
 	bool FlagChangeTimeSpeed;
 	double start_time_speed, end_time_speed;
 	double temp_time_velocity;		//! Used to store time speed while in pause
-	int time_multiplier;			//! used for adjusting delta_time for script speeds
+//	int time_multiplier;			//! used for adjusting delta_time for script speeds
 	float move_to_coef, move_to_mult;
 };
 

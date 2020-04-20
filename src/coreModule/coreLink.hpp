@@ -168,15 +168,16 @@ public:
 		core->timeMgr->setTimePause(_value);
 	}
 
-	double timeGetMultiplier() const {
-		return core->timeMgr->getTimeMultiplier();
-	}
+	// double timeGetMultiplier() const {
+	// 	return core->timeMgr->getTimeMultiplier();
+	// }
+	/*
 	void timeSetMultiplier(double _value) {
 		core->timeMgr->setTimeMultiplier(_value);
 	}
 	void timeResetMultiplier() {
 		core->timeMgr->setTimeMultiplier(1.0);
-	};
+	};*/
 
 	////////////////////////////////////////////////////////////////////////////////
 	// dateSun---------------------------

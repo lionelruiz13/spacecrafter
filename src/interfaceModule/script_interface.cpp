@@ -46,12 +46,16 @@ bool ScriptInterface::isScriptPaused() const {
     return scriptMgr->isPaused();
 }
 
-void ScriptInterface::slowerScript() {
-    return scriptMgr->slowerScript();
+void ScriptInterface::slowerSpeed() {
+    return scriptMgr->slowerSpeed();
 }
 
-void ScriptInterface::fasterScript() {
-    return scriptMgr->fasterScript();
+void ScriptInterface::fasterSpeed() {
+    return scriptMgr->fasterSpeed();
+}
+
+void ScriptInterface::defaultSpeed() {
+    return scriptMgr->defaultSpeed();
 }
 
 void ScriptInterface::resumeScript() {

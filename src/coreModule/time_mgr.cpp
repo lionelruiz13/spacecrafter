@@ -14,7 +14,7 @@ TimeMgr::TimeMgr()
 	start_time_speed = 0;
 	end_time_speed = 0;
 	time_speed= JD_SECOND;
-	time_multiplier = 1.0;
+	// time_multiplier = 1.0;
 	temp_time_velocity = time_speed;
 }
 

@@ -47,7 +47,8 @@ ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_
 	recording = 0;
 	playing = 0;
 	record_elapsed_time = 0;
-	m_incCount = 0;
+	// m_incCount = 0;
+	multiplierRate=1; 
 	nbrLoop =0;
 	isInLoop = false;
 	repeatLoop = false;
@@ -74,8 +75,9 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 	//~ cout << "script_file: " << script_file << endl;
 
 	if ( script->load(fullFileName, script_path) ) {
-		m_incCount = 0;
-		commander->executeCommand("multiplier rate 1");
+		// m_incCount = 0;
+		multiplierRate=1; 
+		//commander->executeCommand("multiplier rate 1");
 		playing = 1;
 		play_paused = 0;
 		elapsed_time = wait_time = 0;
@@ -120,6 +122,7 @@ void ScriptMgr::cancelScript()
 	// images loaded are deleted from stel_command_interface directly
 	playing = 0;
 	play_paused = 0;
+	multiplierRate = 1;
 	nbrLoop =0;
 	indiceInLoop=0;
 	DataDir ="";
@@ -146,51 +149,68 @@ void ScriptMgr::resumeScript()
 		return;
 	}
 
-	if (m_incCount != 0) { //cas ou le script est en accéléré
-		m_incCount = 0;
+	// if (m_incCount != 0) { //cas ou le script est en accéléré
+	// 	m_incCount = 0;
 		//std::cout << "resume script m_incCount = 0 " << std::endl;
-		media->audioMusicSync();
-	}
+	//	media->audioMusicSync();
+	// }
+
 
 	play_paused = 0;
 	media->audioMusicResume();
 	//std::cout << "resume script timerate action resume" << std::endl;
 	commander->executeCommand("timerate action resume");
-	commander->executeCommand("multiplier rate 1");
+	//commander->executeCommand("multiplier rate 1");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
 bool ScriptMgr::isFaster()
 {
-	return (m_incCount > 0);
+	// return (m_incCount > 0);
+	return (multiplierRate!=1); 
 }
 
-void ScriptMgr::fasterScript()
+void ScriptMgr::fasterSpeed()
 {
 	if( !playing || play_paused )
 		return;
 
-	if (m_incCount==0) {
+	if (multiplierRate==1)
 		media->audioMusicPause();
-	}
-	if( ++m_incCount < 3 ) {
-		commander->executeCommand("multiplier action increment step 2");
-	} else
-		--m_incCount;
+
+	if (multiplierRate>4)
+		return;
+
+	multiplierRate *=2;
+	// if (m_incCount==0) {
+	// 	media->audioMusicPause();
+	// }
+	// if( m_incCount < 3 ) {
+	// 	//commander->executeCommand("multiplier action increment step 2");
+	// 	m_incCount++;
+	// } 
+	// else
+	// 	--m_incCount;
 }
 
-void ScriptMgr::slowerScript()
+void ScriptMgr::slowerSpeed()
 {
 	if( !playing || play_paused )
 		return;
 
-	if( --m_incCount > -1 )
-		commander->executeCommand("multiplier action decrement step 2");
-	else {
-		++m_incCount;
-	}
+	if (multiplierRate>1)
+		multiplierRate /=2;	
 
-	if (m_incCount == 0) {
+	// if (m_incCount>0)
+	// 	m_incCount--;
+
+	// if( --m_incCount > -1 )
+	// 	commander->executeCommand("multiplier action decrement step 2");
+	// else {
+	// 	++m_incCount;
+	// }
+
+	if (multiplierRate == 1) {
 		media->audioMusicSync();
 		media->audioMusicResume();
 	}

@@ -221,7 +221,7 @@ void AppCommandInterface::initialiseCommandsName()
 	m_commands["moveto"] = SC_COMMAND::SC_MOVETO;
 	m_commands["movetocity"] = SC_COMMAND::SC_MOVETOCITY;
 
-	m_commands["multiplier"] = SC_COMMAND::SC_MULTIPLIER;
+	// m_commands["multiplier"] = SC_COMMAND::SC_MULTIPLIER;
 	m_commands["multiply"] = SC_COMMAND::SC_MULTIPLY;
 	m_commands["personal"] = SC_COMMAND::SC_PERSONAL;
 	m_commands["personeq"] = SC_COMMAND::SC_PERSONEQ;
@@ -506,7 +506,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MOVETOCITY :	return commandMovetocity(); break;
-		case SC_COMMAND::SC_MULTIPLIER :	return commandMultiplier(); break;
+		// case SC_COMMAND::SC_MULTIPLIER :	return commandMultiplier(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
@@ -2367,13 +2367,28 @@ int AppCommandInterface::commandScript()
 		} else if (argAction=="pause" || argAction=="resume") {
 			scriptInterface->resumeScript();
 		} else if (argAction=="faster") {
-			scriptInterface->fasterScript();
+			scriptInterface->fasterSpeed();
 		} else if (argAction=="slower") {
-			scriptInterface->slowerScript();
+			scriptInterface->slowerSpeed();
+		} else if (argAction=="default") {
+			scriptInterface->defaultSpeed();
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();
 	}
+
+	std::string argSpeed = args["speed"];
+	if (!argSpeed.empty()) {
+		if (argAction=="faster") {
+			scriptInterface->fasterSpeed();
+		} else if (argAction=="slower") {
+			scriptInterface->slowerSpeed();
+		} else if (argAction=="default") {
+			scriptInterface->defaultSpeed();
+		} else
+			debug_message = "command_script : unknown parameter from 'speed' argument";		
+	}
+
 	debug_message = "command_'script' : missing action argument";
 	return executeCommandStatus();
 }
@@ -2936,6 +2951,7 @@ int AppCommandInterface::commandMoveto()
 	return executeCommandStatus();
 }
 
+/*
 int AppCommandInterface::commandMultiplier()
 {
 	// script rate multiplier
@@ -2944,6 +2960,7 @@ int AppCommandInterface::commandMultiplier()
 		coreLink->timeSetMultiplier(evalDouble(argRate));
 		if (!coreLink->timeGetFlagPause())
 			coreLink->timeLoadSpeed();
+		// scriptInterface->
 		return executeCommandStatus();
 	}
 
@@ -2986,6 +3003,7 @@ int AppCommandInterface::commandMultiplier()
 	debug_message = _("Command 'multiplier_rate': unknown argument");
 	return executeCommandStatus();
 }
+*/
 
 
 int AppCommandInterface::commandMedia()
