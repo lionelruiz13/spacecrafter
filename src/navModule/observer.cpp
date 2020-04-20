@@ -311,7 +311,7 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, /*const 
 }
 
 void Observer::moveRelLat(double lat, int delay) {
-	double latimem = latitude;
+	double latimem = lat;
 	if (latimem>90) latimem=90;
 	if (latimem<-90) latimem=-90;
 	moveTo(latimem, longitude, altitude, delay);
