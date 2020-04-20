@@ -388,7 +388,7 @@ void AppCommandInterface::setTcp(ServerSocket* _tcp)
 int AppCommandInterface::parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments)
 {
 	std::istringstream commandstr( command_line );
-	std::string key, value, temp;
+	std::string key, value;
 	char nextc;
 
 	commandstr >> command;
@@ -1998,7 +1998,7 @@ int AppCommandInterface::commandConstellation()
 int AppCommandInterface::commandExternalMplayer()
 {
 	std::string argAction = args["action"];
-	std::string argFileName = args["filename"];
+	//std::string argFileName = args["filename"];
 	if (!argAction.empty()) {
 		if (argAction=="play" && args["filename"]!="") {
 			if (Utility::isAbsolute(args["filename"]))
@@ -2603,7 +2603,7 @@ int AppCommandInterface::commandSelect()
 		select_type = "constellation_star";
 		identifier = args["constellation_star"];
 	} else {
-		select_type = "";
+		//select_type = "";
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
 	}
@@ -3375,7 +3375,7 @@ int AppCommandInterface::commandBody()
 
 
 		std::string argColor = args["color"];
-		std::string argName = args["name"];
+		// std::string argName = args["name"];
 		if (!argColor.empty()) {
 			//gestion de la couleur
 			Vec3f Vcolor;
