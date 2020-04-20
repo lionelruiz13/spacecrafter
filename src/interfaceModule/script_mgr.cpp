@@ -80,10 +80,8 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 		play_paused = 0;
 		elapsed_time = wait_time = 0;
 		return 1;
-	} //else {
-		//~ cancelScript();
-		return 0;
-	//~ }
+	} 
+	return 0;
 }
 
 /*
@@ -143,8 +141,6 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	// commander->executeCommand("multiplier rate 1");
-	// play_paused = 0;
 	if(!playing) {
 		//std::cout << "resume script ignoré car !playing == true" << std::endl;
 		return;
@@ -226,19 +222,6 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		std::string sdir, other_script_filename;
 		sdir = AppSettings::Instance()->getConfigDir();
 
-		// // add a number to be unique
-		// char c[3];
-		// FILE * fp;
-		// for (int j=0; j<100; ++j) { //TODO c'est clairement moche.
-		// 	snprintf(c,3,"%d",j);
-
-		// 	other_script_filename = sdir + "record_" + c + ".sts";
-		// 	fp = fopen(other_script_filename.c_str(), "r");
-		// 	if (fp == NULL)
-		// 		break;
-		// 	else
-		// 		fclose(fp);
-		// }
 		other_script_filename = sdir + "record_" + this->getRecordDate() + ".sts";
 		rec_file.open(other_script_filename.c_str(), std::fstream::out);
 	}
@@ -247,10 +230,8 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		recording = 1;
 		record_elapsed_time = 0;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-		//~ rec_filename = script_filename;
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
-		//~ rec_filename = "";
 	}
 }
 
@@ -300,7 +281,7 @@ void ScriptMgr::update(int delta_time)
 			if (repeatLoop) {
 				//~ printf("tour de boucle %i\n", nbrLoop);
 				if (indiceInLoop < loopVector.size()) {
-					commander->executeCommand(loopVector[indiceInLoop], wait); //, 0);  // untrusted commands
+					commander->executeCommand(loopVector[indiceInLoop], wait);
 					wait_time = wait;
 					indiceInLoop++;
 				} else { //fin de tour de boucle on recommence sauf si nbrLoop==0
@@ -319,7 +300,7 @@ void ScriptMgr::update(int delta_time)
 				if (isInLoop) {//on est dans une boucle et on doit copier la boucle dans une list.
 					loopVector.push_back(comd);
 				}
-				commander->executeCommand(comd, wait); //, 0);  // untrusted commands
+				commander->executeCommand(comd, wait);
 				wait_time = wait;
 			} else {
 				// script done
@@ -379,5 +360,5 @@ std::string ScriptMgr::getScriptPath()
 bool ScriptMgr::playStartupScript()
 {
 	std::string CDIR = AppSettings::Instance()->getScriptDir() + "fscripts/";
-	return playScript(CDIR + "startup.sts"); //, CDIR );
+	return playScript(CDIR + "startup.sts");
 }
