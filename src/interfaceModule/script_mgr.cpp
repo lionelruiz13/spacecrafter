@@ -47,7 +47,6 @@ ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_
 	recording = 0;
 	playing = 0;
 	record_elapsed_time = 0;
-	// m_incCount = 0;
 	multiplierRate=1; 
 	nbrLoop =0;
 	isInLoop = false;
@@ -75,9 +74,7 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 	//~ cout << "script_file: " << script_file << endl;
 
 	if ( script->load(fullFileName, script_path) ) {
-		// m_incCount = 0;
 		multiplierRate=1; 
-		//commander->executeCommand("multiplier rate 1");
 		playing = 1;
 		play_paused = 0;
 		elapsed_time = wait_time = 0;
@@ -89,11 +86,10 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 /*
  * adds the given script at the begining of the current script queue 
  */
-bool ScriptMgr::addScriptFirst(const std::string & script){
-		
+bool ScriptMgr::addScriptFirst(const std::string & script)
+{
 	std::vector <Token*> commands;
 	Token *token=nullptr;
-	
 	std::istringstream iss(script);
 	std::string line;
 	
@@ -105,12 +101,10 @@ bool ScriptMgr::addScriptFirst(const std::string & script){
 			commands.push_back(token);
 		}
 	}
-	
 	//add the tokens to the queue in reverse order (since we add to the begining of the queue
 	for (auto it = commands.rbegin(); it != commands.rend(); it++){
 		this->script->addFirstInQueue(*it);
 	}
-	
 	return true;
 }
 
@@ -149,24 +143,14 @@ void ScriptMgr::resumeScript()
 		return;
 	}
 
-	// if (m_incCount != 0) { //cas ou le script est en accéléré
-	// 	m_incCount = 0;
-		//std::cout << "resume script m_incCount = 0 " << std::endl;
-	//	media->audioMusicSync();
-	// }
-
-
 	play_paused = 0;
 	media->audioMusicResume();
-	//std::cout << "resume script timerate action resume" << std::endl;
 	commander->executeCommand("timerate action resume");
-	//commander->executeCommand("multiplier rate 1");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
 bool ScriptMgr::isFaster()
 {
-	// return (m_incCount > 0);
 	return (multiplierRate!=1); 
 }
 
@@ -182,15 +166,6 @@ void ScriptMgr::fasterSpeed()
 		return;
 
 	multiplierRate *=2;
-	// if (m_incCount==0) {
-	// 	media->audioMusicPause();
-	// }
-	// if( m_incCount < 3 ) {
-	// 	//commander->executeCommand("multiplier action increment step 2");
-	// 	m_incCount++;
-	// } 
-	// else
-	// 	--m_incCount;
 }
 
 void ScriptMgr::slowerSpeed()
@@ -200,15 +175,6 @@ void ScriptMgr::slowerSpeed()
 
 	if (multiplierRate>1)
 		multiplierRate /=2;	
-
-	// if (m_incCount>0)
-	// 	m_incCount--;
-
-	// if( --m_incCount > -1 )
-	// 	commander->executeCommand("multiplier action decrement step 2");
-	// else {
-	// 	++m_incCount;
-	// }
 
 	if (multiplierRate == 1) {
 		media->audioMusicSync();
