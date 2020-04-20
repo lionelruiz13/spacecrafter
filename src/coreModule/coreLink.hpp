@@ -1271,6 +1271,52 @@ public:
 		return core->meteors->getZHR();
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Atmosphere---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! Set flag for displaying Atmosphere
+	void atmosphereSetFlag(bool b) {
+		core->bodyDecor->setAtmosphereState(b);
+	}
+	//! Get flag for displaying Atmosphere
+	bool atmosphereGetFlag(void) const {
+		return core->bodyDecor->getAtmosphereState();
+	}
+
+	//! Set atmosphere fade duration in s
+	void atmosphereSetFadeDuration(float f) {
+		core->atmosphere->setFaderDuration(f);
+	}
+
+	//! Set flag for activating atmospheric refraction correction
+	void atmosphericRefractionSetFlag(bool b) {
+		core->FlagAtmosphericRefraction = b;
+	}
+
+	//! Get flag for activating atmospheric refraction correction
+	bool atmosphericRefractionGetFlag(void) const {
+		return core->FlagAtmosphericRefraction;
+	}
+
+	// Fonctions non utilisée ?
+	// -------------------------------
+	// //! set flag for vp Optoma
+	// void atmosphereSetFlagOptoma(bool b) {
+	// 	core->atmosphere->setFlagOptoma(b);
+	// }
+
+	// //! Get flag for vp Optoma
+	// bool atmosphereGetFlagOptoma(void) const {
+	// 	return core->atmosphere->getFlagOptoma();
+	// }
+
+	// //! Get atmosphere fade duration in s
+	// float atmosphereGetFadeDuration(void) const {
+	// 	return core->atmosphere->getFaderDuration();
+	// }
+	///////////////////////////////////////////////////////////
+
     CoreLink(Core* _core);
     ~CoreLink();
 

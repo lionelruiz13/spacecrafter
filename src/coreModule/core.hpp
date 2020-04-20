@@ -462,49 +462,6 @@ public:
 
 	void switchMode(const std::string &mode);
 
-	////////////////////////////////////////////////////////////////////////////////
-	// Atmosphere---------------------------
-	////////////////////////////////////////////////////////////////////////////////
-
-	//! Set flag for displaying Atmosphere
-	void atmosphereSetFlag(bool b) {
-		bodyDecor->setAtmosphereState(b);
-	}
-	//! Get flag for displaying Atmosphere
-	bool atmosphereGetFlag(void) const {
-		return bodyDecor->getAtmosphereState();
-	}
-
-	//! set flag for vp Optoma
-	void atmosphereSetFlagOptoma(bool b) {
-		atmosphere->setFlagOptoma(b);
-	}
-
-	//! Get flag for vp Optoma
-	bool atmosphereGetFlagOptoma(void) const {
-		return atmosphere->getFlagOptoma();
-	}
-
-	//! Set atmosphere fade duration in s
-	void atmosphereSetFadeDuration(float f) {
-		atmosphere->setFaderDuration(f);
-	}
-
-	//! Get atmosphere fade duration in s
-	float atmosphereGetFadeDuration(void) const {
-		return atmosphere->getFaderDuration();
-	}
-
-	//! Set flag for activating atmospheric refraction correction
-	void atmosphericRefractionSetFlag(bool b) {
-		FlagAtmosphericRefraction = b;
-	}
-
-	//! Get flag for activating atmospheric refraction correction
-	bool atmosphericRefractionGetFlag(void) const {
-		return FlagAtmosphericRefraction;
-	}
-
 	void saveCurrentConfig(InitParser &conf);
 
 	// void imageDraw();
