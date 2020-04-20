@@ -51,7 +51,7 @@ public:
 	void resumeScript();
 	void cancelScript();
 	void pauseScript();
-	void resetScriptTimer();
+	// void resetScriptTimer();
 
 	void cancelRecordScript();
 	void initScriptIterator();

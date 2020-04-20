@@ -245,10 +245,10 @@ void ScriptMgr::cancelRecordScript()
 }
 
 // Allow timer to be reset
-void ScriptMgr::resetTimer()
-{
-	elapsed_time = 0;
-}
+// void ScriptMgr::resetTimer()
+// {
+// 	elapsed_time = 0;
+// }
 
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)

@@ -1314,9 +1314,9 @@ int AppCommandInterface::commandWait(unsigned long int &wait)
 	if ( args["duration"]!="") {
 		float fdelay = evalDouble(args["duration"]);
 		if (fdelay > 0) wait = (int)(fdelay*1000);
-	} else if ( args["action"]=="reset_timer") {
+	} /*else if ( args["action"]=="reset_timer") {
 		scriptInterface->resetScriptTimer();
-	} else {
+	}*/ else {
 		debug_message = _("command_'wait' : unrecognized or malformed argument name.");
 	}
 	return executeCommandStatus();

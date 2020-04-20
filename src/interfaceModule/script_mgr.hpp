@@ -102,7 +102,7 @@ public:
 	};
 
 	bool isFaster( void );
-	void resetTimer();
+	// void resetTimer();
 
 	//! execute commands in running script
 	void update(int delta_time);
