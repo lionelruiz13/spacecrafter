@@ -48,6 +48,7 @@ ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_
 	playing = 0;
 	record_elapsed_time = 0;
 	m_incCount = 0;
+	multiplierRate=1; 
 	nbrLoop =0;
 	isInLoop = false;
 	repeatLoop = false;
@@ -75,6 +76,7 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 
 	if ( script->load(fullFileName, script_path) ) {
 		m_incCount = 0;
+		multiplierRate=1; 
 		commander->executeCommand("multiplier rate 1");
 		playing = 1;
 		play_paused = 0;
@@ -163,6 +165,7 @@ void ScriptMgr::resumeScript()
 bool ScriptMgr::isFaster()
 {
 	return (m_incCount > 0);
+	return (multiplierRate!=1); 
 }
 
 void ScriptMgr::fasterScript()
@@ -170,6 +173,7 @@ void ScriptMgr::fasterScript()
 	if( !playing || play_paused )
 		return;
 
+	multiplierRate *=2;
 	if (m_incCount==0) {
 		media->audioMusicPause();
 	}
@@ -184,11 +188,8 @@ void ScriptMgr::slowerScript()
 	if( !playing || play_paused )
 		return;
 
-	if( --m_incCount > -1 )
-		commander->executeCommand("multiplier action decrement step 2");
-	else {
-		++m_incCount;
-	}
+	if (multiplierRate>1)
+		multiplierRate /=2;	
 
 	if (m_incCount == 0) {
 		media->audioMusicSync();
