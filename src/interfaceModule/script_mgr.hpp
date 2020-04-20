@@ -150,6 +150,7 @@ private:
 	std::string DataDir;
 
 	int multiplierRate=1; 
+	//int m_incCount;		//!< 0 = lecture de script normal, + script avance rapide , 
 	bool isInLoop; 		//!< on est entrain de lire les instructions d'une loop
 	bool repeatLoop; 	//!< on est entrain de répéter une boucle
 	int nbrLoop;		//!< nombre de tours de boucles restants
