@@ -178,6 +178,9 @@ void ScriptMgr::fasterScript()
 	if (multiplierRate==1)
 		media->audioMusicPause();
 
+	if (multiplierRate>4)
+		return;
+
 	multiplierRate *=2;
 	// if (m_incCount==0) {
 	// 	media->audioMusicPause();
