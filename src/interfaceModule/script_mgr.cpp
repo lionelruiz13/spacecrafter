@@ -257,18 +257,24 @@ void ScriptMgr::update(int delta_time)
 
 	if (playing && !play_paused) {
 		elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
+		
+		// if (wait_time>=delta_time) {
+			wait_time -= delta_time;
+			if (wait_time<0)
+				wait_time =0;
+		// }
 
-		if (elapsed_time >= wait_time) {
-			elapsed_time -= wait_time;
+		if (wait_time==0) {
+			//elapsed_time -= wait_time;
 			std::string comd;
 
-			unsigned long int wait;
+			unsigned long int wait=0;
 
 			if (repeatLoop) {
 				//~ printf("tour de boucle %i\n", nbrLoop);
 				if (indiceInLoop < loopVector.size()) {
 					commander->executeCommand(loopVector[indiceInLoop], wait);
-					wait_time = wait;
+					wait_time += wait;
 					indiceInLoop++;
 				} else { //fin de tour de boucle on recommence sauf si nbrLoop==0
 					nbrLoop=nbrLoop-1;
@@ -287,7 +293,7 @@ void ScriptMgr::update(int delta_time)
 					loopVector.push_back(comd);
 				}
 				commander->executeCommand(comd, wait);
-				wait_time = wait;
+				wait_time += wait;
 			} else {
 				// script done
 				DataDir = "";
