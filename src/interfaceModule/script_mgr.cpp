@@ -264,7 +264,7 @@ void ScriptMgr::update(int delta_time)
 				wait_time =0;
 		// }
 
-		if (wait_time==0) {
+		while (wait_time==0) {
 			//elapsed_time -= wait_time;
 			std::string comd;
 
@@ -298,6 +298,7 @@ void ScriptMgr::update(int delta_time)
 				// script done
 				DataDir = "";
 				commander->executeCommand("script action end");
+				return;
 			}
 		}
 	}
