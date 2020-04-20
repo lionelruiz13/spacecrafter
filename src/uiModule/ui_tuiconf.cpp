@@ -627,7 +627,7 @@ void UI::tuiUpdateWidgets()
 	tui_location_latitude->setValue(coreLink->observatoryGetLatitude());
 	tui_location_longitude->setValue(coreLink->observatoryGetLongitude());
 	tui_location_altitude->setValue(coreLink->observatoryGetAltitude());
-	tui_location_heading->setValue(core->getHeading());
+	tui_location_heading->setValue(coreLink->getHeading());
 
 
 	// 2. Date & Time
@@ -685,7 +685,7 @@ void UI::tuiUpdateWidgets()
 	tui_effect_light_pollution->setValue(core->getLightPollutionLimitingMagnitude());
 	tui_effect_nebulae_label_magnitude->setValue(coreLink->nebulaGetMaxMagHints());
 	tui_effect_light_travel->setValue(coreLink->getFlagLightTravelTime());
-	tui_effect_view_offset->setValue(core->getViewOffset());
+	tui_effect_view_offset->setValue(coreLink->getViewOffset());
 	tui_effect_antialias->setValue(app->getFlagAntialiasLines());
 	tui_effect_line_width->setValue(app->getLineWidth());
 
@@ -840,7 +840,7 @@ void UI::tuiCbAdminSetLocale()
 // change heading or view offset
 void UI::tuiCbViewportRelated()
 {
-	core->setHeading(tui_location_heading->getValue(),
+	coreLink->setHeading(tui_location_heading->getValue(),
 	                 int(tui_effect_zoom_duration->getValue()*1000));  // TEMP temporarily using zoom duration
 	core->setViewOffset(tui_effect_view_offset->getValue());
 }

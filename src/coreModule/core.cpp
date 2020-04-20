@@ -1550,7 +1550,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean("navigation:flag_manual_zoom", getFlagManualAutoZoom());
 	conf.setDouble ("navigation:auto_move_duration", getAutoMoveDuration());
 	conf.setDouble ("navigation:zoom_speed", vzm.zoom_speed);
-	conf.setDouble ("navigation:heading", getHeading());
+	conf.setDouble ("navigation:heading", navigation->getHeading());
 	// Astro section
 	conf.setBoolean("astro:flag_object_trails", ssystem->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
 	conf.setBoolean("astro:flag_bright_nebulae", nebulas->getFlagBright()); //nebulaGetFlagBright());
