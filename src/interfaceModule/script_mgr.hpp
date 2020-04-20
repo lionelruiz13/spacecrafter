@@ -69,6 +69,11 @@ public:
 	//! play slower current script
 	void slowerScript();
 
+	//! play script without acceleration
+	void normalerScript(){
+		multiplierRate = 1;
+	}
+
 	//! start playing paused script
 	void resumeScript();
 

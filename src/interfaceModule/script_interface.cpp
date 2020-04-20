@@ -54,6 +54,10 @@ void ScriptInterface::fasterScript() {
     return scriptMgr->fasterScript();
 }
 
+void ScriptInterface::normalerScript() {
+    return scriptMgr->normalerScript();
+}
+
 void ScriptInterface::resumeScript() {
     scriptMgr->resumeScript();
 }

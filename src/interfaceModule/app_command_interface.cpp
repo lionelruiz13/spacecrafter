@@ -2370,6 +2370,8 @@ int AppCommandInterface::commandScript()
 			scriptInterface->fasterScript();
 		} else if (argAction=="slower") {
 			scriptInterface->slowerScript();
+		} else if (argAction=="normaler") {
+			scriptInterface->normalerScript();
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();

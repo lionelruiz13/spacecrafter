@@ -47,6 +47,7 @@ public:
 
 	void slowerScript();
 	void fasterScript();
+	void normalerScript();
 	void resumeScript();
 	void cancelScript();
 	void pauseScript();
