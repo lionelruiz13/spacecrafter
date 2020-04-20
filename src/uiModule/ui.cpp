@@ -497,7 +497,7 @@ void UI::lowerHeight()
 void UI::speedDecrease()
 {
 	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerScript();
+		scriptInterface->slowerSpeed();
 	else
 		deltaSpeed = DeltaSpeed::DOWN;
 }
@@ -505,7 +505,7 @@ void UI::speedDecrease()
 void UI::speedIncrease()
 {
 	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerScript();
+		scriptInterface->fasterSpeed();
 	else
 		deltaSpeed = DeltaSpeed::UP;
 }
@@ -1279,7 +1279,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if(scriptInterface->isScriptPlaying())
-						scriptInterface->slowerScript();
+						scriptInterface->slowerSpeed();
 					else {
 						event = new CommandEvent("timerate action decrement");
 						EventManager::getInstance()->queue(event);
@@ -1343,7 +1343,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if(scriptInterface->isScriptPlaying())
-						scriptInterface->fasterScript();
+						scriptInterface->fasterSpeed();
 					else {
 						event = new CommandEvent("timerate action increment");
 						EventManager::getInstance()->queue(event);

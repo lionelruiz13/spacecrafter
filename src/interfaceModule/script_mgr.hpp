@@ -64,13 +64,13 @@ public:
 	void pauseScript();
 
 	//! play faster current script
-	void fasterScript();
+	void fasterSpeed();
 
 	//! play slower current script
-	void slowerScript();
+	void slowerSpeed();
 
 	//! play script without acceleration
-	void normalerScript(){
+	void defaultSpeed(){
 		multiplierRate = 1;
 	}
 

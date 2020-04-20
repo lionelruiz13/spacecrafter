@@ -170,7 +170,7 @@ bool ScriptMgr::isFaster()
 	return (multiplierRate!=1); 
 }
 
-void ScriptMgr::fasterScript()
+void ScriptMgr::fasterSpeed()
 {
 	if( !playing || play_paused )
 		return;
@@ -193,7 +193,7 @@ void ScriptMgr::fasterScript()
 	// 	--m_incCount;
 }
 
-void ScriptMgr::slowerScript()
+void ScriptMgr::slowerSpeed()
 {
 	if( !playing || play_paused )
 		return;

@@ -45,9 +45,9 @@ public:
 
 	std::string getScriptPath() const;
 
-	void slowerScript();
-	void fasterScript();
-	void normalerScript();
+	void slowerSpeed();
+	void fasterSpeed();
+	void defaultSpeed();
 	void resumeScript();
 	void cancelScript();
 	void pauseScript();

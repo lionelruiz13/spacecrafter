@@ -2367,11 +2367,11 @@ int AppCommandInterface::commandScript()
 		} else if (argAction=="pause" || argAction=="resume") {
 			scriptInterface->resumeScript();
 		} else if (argAction=="faster") {
-			scriptInterface->fasterScript();
+			scriptInterface->fasterSpeed();
 		} else if (argAction=="slower") {
-			scriptInterface->slowerScript();
-		} else if (argAction=="normaler") {
-			scriptInterface->normalerScript();
+			scriptInterface->slowerSpeed();
+		} else if (argAction=="default") {
+			scriptInterface->defaultSpeed();
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();
