@@ -357,6 +357,13 @@ std::string Observer::getHomePlanetNameI18n(void) const
 	return p ? p->getNameI18n() : "";
 }
 
+bool Observer::isEarth() const {
+	return getHomePlanetEnglishName() == "Earth";
+}
+
+bool Observer::isSun() const {
+	return getHomePlanetEnglishName() == "Sun";
+}
 
 std::string Observer::getName(void) const
 {

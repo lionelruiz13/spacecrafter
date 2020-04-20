@@ -70,7 +70,11 @@ public:
 	//! renvoie le nom I18n de la planète de l'observer
 	std::string getHomePlanetNameI18n(void) const;
 
-	//!renvois la position a laquelle l'observer est attaché
+	//! renvoie un booleen permettant de savoir si la planète de l'observer est soit la terre, soit la lune
+	bool isEarth() const;
+	bool isSun() const;
+
+	//! renvois la position a laquelle l'observer est attaché
 	Vec3d getObserverCenterPoint(void) const;
 	
 	//! renvoie la position de l'observer dans le systeme de coordonnée du soleil
