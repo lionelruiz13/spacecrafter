@@ -227,22 +227,22 @@ public:
 
 	void setViewOffset(double offset);
 
-	double getViewOffset() {
-		return navigation->getViewOffset();
-	}
+	// double getViewOffset() {
+	// 	return navigation->getViewOffset();
+	// }
 
-	//! set environment rotation around observer
-	void setHeading(double heading, int duration=0) {
-		navigation->changeHeading(heading, duration);
-	}
+	// //! set environment rotation around observer
+	// void setHeading(double heading, int duration=0) {
+	// 	navigation->changeHeading(heading, duration);
+	// }
 
-	void setDefaultHeading() {
-		navigation->setDefaultHeading();
-	}
+	// void setDefaultHeading() {
+	// 	navigation->setDefaultHeading();
+	// }
 
-	double getHeading() {
-		return navigation->getHeading();
-	}
+	// double getHeading() {
+	// 	return navigation->getHeading();
+	// }
 
 	//! Set automove duration in seconds
 	void setAutoMoveDuration(float f) {

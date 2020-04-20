@@ -1317,6 +1317,23 @@ public:
 	// }
 	///////////////////////////////////////////////////////////
 
+	double getViewOffset() {
+		return core->navigation->getViewOffset();
+	}
+
+	//! set environment rotation around observer
+	void setHeading(double heading, int duration=0) {
+		core->navigation->changeHeading(heading, duration);
+	}
+
+	void setDefaultHeading() {
+		core->navigation->setDefaultHeading();
+	}
+
+	double getHeading() {
+		return core->navigation->getHeading();
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 
