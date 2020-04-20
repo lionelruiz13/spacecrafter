@@ -221,7 +221,7 @@ void AppCommandInterface::initialiseCommandsName()
 	m_commands["moveto"] = SC_COMMAND::SC_MOVETO;
 	m_commands["movetocity"] = SC_COMMAND::SC_MOVETOCITY;
 
-	m_commands["multiplier"] = SC_COMMAND::SC_MULTIPLIER;
+	// m_commands["multiplier"] = SC_COMMAND::SC_MULTIPLIER;
 	m_commands["multiply"] = SC_COMMAND::SC_MULTIPLY;
 	m_commands["personal"] = SC_COMMAND::SC_PERSONAL;
 	m_commands["personeq"] = SC_COMMAND::SC_PERSONEQ;
@@ -506,7 +506,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MOVETOCITY :	return commandMovetocity(); break;
-		case SC_COMMAND::SC_MULTIPLIER :	return commandMultiplier(); break;
+		// case SC_COMMAND::SC_MULTIPLIER :	return commandMultiplier(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
@@ -2936,6 +2936,7 @@ int AppCommandInterface::commandMoveto()
 	return executeCommandStatus();
 }
 
+/*
 int AppCommandInterface::commandMultiplier()
 {
 	// script rate multiplier
@@ -2944,6 +2945,7 @@ int AppCommandInterface::commandMultiplier()
 		coreLink->timeSetMultiplier(evalDouble(argRate));
 		if (!coreLink->timeGetFlagPause())
 			coreLink->timeLoadSpeed();
+		// scriptInterface->
 		return executeCommandStatus();
 	}
 
@@ -2986,6 +2988,7 @@ int AppCommandInterface::commandMultiplier()
 	debug_message = _("Command 'multiplier_rate': unknown argument");
 	return executeCommandStatus();
 }
+*/
 
 
 int AppCommandInterface::commandMedia()
