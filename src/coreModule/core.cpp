@@ -613,7 +613,7 @@ void Core::updateInSolarSystem(int delta_time)
 		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun") && !observatory->getSpacecraft()) {
 			setLandscape(observatory->getHomeBody()->getEnglishName());
 			atmosphere->setFlagShow(true);
-			atmosphereSetFlag(true);
+			bodyDecor->setAtmosphereState(true);
 		}	
 		if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
 		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun") && !observatory->getSpacecraft()) setLandscape("moon");
@@ -640,7 +640,7 @@ void Core::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 
 void Core::hipStarMgrPreDraw()
 {
-	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow() && atmosphericRefractionGetFlag());
+	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow() && FlagAtmosphericRefraction);
 }
 
 void Core::uboCamUpdate()
@@ -1499,7 +1499,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble("viewing:light_pollution_limiting_magnitude", getLightPollutionLimitingMagnitude());
 	// Landscape section
 	conf.setBoolean("landscape:flag_landscape", landscape->getFlagShow()); //landscapeGetFlag());
-	conf.setBoolean("landscape:flag_atmosphere", atmosphereGetFlag());
+	conf.setBoolean("landscape:flag_atmosphere", bodyDecor->getAtmosphereState());
 	conf.setBoolean("landscape:flag_fog", landscape->getFlagShowFog()); //fogGetFlag());
 	// Star section
 	conf.setDouble ("stars:star_scale", hip_stars->getScale()); //starGetScale());

@@ -662,11 +662,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_ATMOSPHERE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->atmosphereGetFlag();
+				newval = !coreLink->atmosphereGetFlag();
 
 			if (!newval) coreLink->fogSetFlag(false); // turn off fog with atmosphere
 			coreLink->starSetFlagTwinkle(newval); // twinkle stars depending on atmosphere activated
-			stcore->atmosphereSetFlag(newval);
+			coreLink->atmosphereSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_AZIMUTHAL_GRID :
@@ -1176,9 +1176,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->atmosphericRefractionGetFlag();
+				newval = !coreLink->atmosphericRefractionGetFlag();
 
-			stcore->atmosphericRefractionSetFlag(newval);
+			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
 		
 		default:
@@ -1716,7 +1716,7 @@ int AppCommandInterface::commandSet()
 	}
 	
 	switch(parserSet) { 
-		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : stcore->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"])); break;
+		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : coreLink->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"])); break;
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(args["auto_move_duration"])); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"])); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"])); break;
