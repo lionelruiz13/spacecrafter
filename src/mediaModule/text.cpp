@@ -28,7 +28,7 @@
 #include <iostream>
 
 #include "tools/log.hpp"
-#include "coreModule/text.hpp"
+#include "mediaModule/text.hpp"
 
 
 

@@ -54,7 +54,7 @@
 #include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
 #include "coreModule/starNavigator.hpp"
-#include "coreModule/text_mgr.hpp"
+#include "mediaModule/text_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/ubo_cam.hpp"
