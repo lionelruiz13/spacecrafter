@@ -297,6 +297,33 @@ void ScriptMgr::update(int delta_time)
 	}
 }
 
+///* au départ
+// runs maximum of one command per update
+// note that waits can drift by up to 1/fps seconds
+// void ScriptMgr::update(int delta_time)
+// {
+// 	if (recording) record_elapsed_time += delta_time;
+// 	if (playing && !play_paused) {
+// 		elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
+// 		if (elapsed_time >= wait_time) {
+// 			// now time to run next command
+// 			elapsed_time -= wait_time;
+// 			std::string comd;
+// 			unsigned long int wait;
+// 			if (script->next_command(comd)) {
+// 				commander->execute_command(comd, wait, 0);  // untrusted commands
+// 				wait_time = wait;
+// 			} else {
+// 				// script done
+// 				commander->execute_command("script action end");
+// 			}
+// 		}
+// 	}
+// }
+/////* fin
+
+
+
 // get a list of script files from directory in alphabetical order
 std::string ScriptMgr::getScriptList(const std::string &directory)
 {
