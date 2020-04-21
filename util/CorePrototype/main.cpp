@@ -4,7 +4,7 @@
 int main() {
     App* app = new App();
 
-    app->init();
+    app->start_main_loop();
 
     return 0;
 }
