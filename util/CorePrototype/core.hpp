@@ -6,20 +6,19 @@
 class Core {
 
 public:
-	Core() {}
-	~Core() {}
+	Core();
+	~Core();
 
-    void init() {
-        std::cout << "initialisation core" << std::endl;
-    }
+    void init();
 
-    void update() {
-        std::cout << "update core" << std::endl;
-    }
+    void update();
 
-	void draw() {
-        std::cout << "draw core" << std::endl;
-    }
+	void draw();
+
+    void setFlagSelectedObjectPointer();
+    void setFlagTracking();
+    void dragView();
+    void unSelect();
 
 private:
 
