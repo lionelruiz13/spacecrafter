@@ -1,10 +1,7 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
-#include"app.hpp"
-#include"AppCommandInterface.hpp"
-#include"ui.hpp"
-
+#include<iostream>
 
 class Core {
 
@@ -12,11 +9,17 @@ public:
 	Core() {}
 	~Core() {}
 
-    void init() {}
+    void init() {
+        std::cout << "initialisation core" << std::endl;
+    }
 
-    void update() {}
+    void update() {
+        std::cout << "update core" << std::endl;
+    }
 
-	void draw() {}
+	void draw() {
+        std::cout << "draw core" << std::endl;
+    }
 
 private:
 
