@@ -26,6 +26,7 @@
 #include <exception>
 #include <string>
 #include <time.h>
+#include <SDL2/SDL.h>
 
 // thanks to internet for color !!
 // http://stackoverflow.com/questions/1961209/making-some-text-in-printf-appear-in-green-and-red
@@ -109,11 +110,14 @@ cLog::~cLog()
 void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE& fichier)
 {
 	writeMutex.lock();
-
-	if (isDebug)
-		writeConsole(texte, type);
-
 	std::string ligne;
+
+	if (isDebug) {
+		writeConsole(texte, type);
+		char value[15]; 
+		sprintf(value, "%012d: ", SDL_GetTicks());
+		ligne.append(std::string(value));
+	}
 
 	switch(type) {
 		case LOG_TYPE::L_WARNING :

@@ -246,7 +246,7 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 {
 	if (!fader.getInterstate()) return;
 	// TODO changer cette condition
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth())) return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -594,7 +594,7 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 {
 	if (!fader.getInterstate()) return;
 	// TODO changer cette condition
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth()))return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 	Vec3f tmp;
@@ -822,7 +822,7 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 {
 	if (!fader.getInterstate()) return;
 	//TODO Changer cette condition !
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth())) return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 //	glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -916,7 +916,7 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 {
 	if (!fader.getInterstate()) return;
 	//TODO Changer cette condition !
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth())) return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -1516,7 +1516,7 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 		return;
 
 	// Not valid on non-planets
-	if ( (observatory->getHomeBody()->isSatellite()) || observatory->getHomePlanetEnglishName() == "Sun") return;
+	if ( (observatory->getHomeBody()->isSatellite()) || observatory->isSun()) return;
 	//~ if ( (observatory->getHomePlanet()->isSatellite()) || observatory->getHomePlanet()->getEnglishName() == "Sun") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -1725,7 +1725,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 	//~ Mat4d m = observatory->getHomePlanet()->getRotEquatorialToVsop87().transpose();
 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
 	//TODO Changer cette condition !
-	bool draw_labels = (observatory->getHomePlanetEnglishName()=="Earth" && font);
+	bool draw_labels = (observatory->isEarth() && font);
 	//~ bool draw_labels = (observatory->getHomePlanet()->getEnglishName()=="Earth" && font);
 
 	// start labeling from the vernal equinox
@@ -1836,7 +1836,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 
 				// TODO cahnger cette condition
 				//~ if (observatory->getHomePlanet()->getEnglishName()=="Earth") {
-				if (observatory->getHomePlanetEnglishName()=="Earth") {
+				if (observatory->isEarth()) {
 					float degree = i-84.5;
 					if (degree < 0) degree += 360;
 					if (internalNav)
@@ -1906,7 +1906,7 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 		return;
 	
 	// TODO : changer cette condition
-	if(observatory->getHomePlanetEnglishName()!="Earth") return;
+	if(!(observatory->isEarth())) return;
 	//~ if(observatory->getHomePlanet()->getEnglishName()!="Earth") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());

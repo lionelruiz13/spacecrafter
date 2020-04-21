@@ -150,6 +150,17 @@ public:
 private:
 };
 
+class SkyMouse : public SkyDisplay {
+public:
+	SkyMouse();
+	~SkyMouse() {};
+
+	void draw(const Projector *prj,const Navigator *nav, Vec3d _equPos= Vec3f(0,0,0), Vec3d _oldEquPos= Vec3f(0,0,0));
+
+private:
+};
+
+
 class SkyAngDist : public SkyDisplay {
 public:
 	SkyAngDist();

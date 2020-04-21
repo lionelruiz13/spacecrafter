@@ -81,13 +81,14 @@ App::App( SDLFacade* const sdl ) :
 
 	screenFader =  new ScreenFader();
 
-	core = new Core(settings, width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
+	core = new Core(width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
 	coreLink = new CoreLink(core);
+	coreBackup = new CoreBackup(core);
 
 	screenFader->initShader();
 
 	ui = new UI(core, coreLink, this, mSdl, media);
-	commander = new AppCommandInterface(core, coreLink, this, ui, media);
+	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = new Fps();
@@ -148,6 +149,7 @@ App::~App()
 	delete media;
 	delete commander;
 	delete coreLink;
+	delete coreBackup;
 	delete core;
 	delete saveScreenInterface;
 	delete internalFPS;
@@ -155,17 +157,30 @@ App::~App()
 	delete spaceDate;
 }
 
+void App::setLineWidth(float w) const {
+	appDraw->setLineWidth(w);
+}
+
+float App::getLineWidth() const {
+	return appDraw->getLineWidth();
+} 
+
+float App::getFlagAntialiasLines() const{
+	return appDraw->getFlagAntialiasLines();
+}
 
 void App::flag(APP_FLAG layerValue, bool _value) {
 	switch(layerValue) {
 		case APP_FLAG::VISIBLE : 
-						flagVisible = _value; break;
+				flagVisible = _value; break;
 		case APP_FLAG::ALIVE :
-						flagAlive = _value; break;
+				flagAlive = _value; break;
 		case APP_FLAG::ON_VIDEO :
-						flagOnVideo = _value; break;
+				flagOnVideo = _value; break;
 		case APP_FLAG::COLOR_INVERSE : 
-						flagColorInverse = _value; break;
+				flagColorInverse = _value; break;
+		case APP_FLAG::ANTIALIAS :
+				appDraw->setFlagAntialiasLines(_value); break;
 		default: break;
 	}
 }
@@ -174,13 +189,15 @@ void App::toggle(APP_FLAG layerValue)
 {
 		switch(layerValue) {
 		case APP_FLAG::VISIBLE : 
-						flagVisible = !flagVisible; break;
+				flagVisible = !flagVisible; break;
 		case APP_FLAG::ALIVE :
-						flagAlive = !flagAlive; break;
+				flagAlive = !flagAlive; break;
 		case APP_FLAG::ON_VIDEO :
-						flagOnVideo = !flagOnVideo; break;
+				flagOnVideo = !flagOnVideo; break;
 		case APP_FLAG::COLOR_INVERSE : 
-						flagColorInverse = !flagColorInverse; break;
+				flagColorInverse = !flagColorInverse; break;
+		case APP_FLAG::ANTIALIAS : 
+				appDraw->flipFlagAntialiasLines(); break;
 		default: break;
 	}
 }
@@ -209,6 +226,9 @@ void App::init()
 	// Initialize video device and other sdl parameters
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
+
+	appDraw->setLineWidth(conf.getDouble("rendering", "line_width"));
+	appDraw->setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
 
 	internalFPS->setMaxFps(conf.getDouble ("video","maximum_fps"));
 	internalFPS->setVideoFps(conf.getDouble("video","rec_video_fps"));
@@ -286,7 +306,8 @@ void App::init()
 			cLog::get()->write("buffer TCP taille " + Utility::intToString(buffer_in_size));
 			tcp = new ServerSocket(port, 16, buffer_in_size, IO_DEBUG_INFO, IO_DEBUG_ALL);
 			tcp->open();
-			core->tcpConfigure(tcp);
+			// core->tcpConfigure(tcp);
+			commander->setTcp(tcp);
 		}
 		#if LINUX // special mkfifo
 		if (enable_mkfifo) {
@@ -336,9 +357,9 @@ void App::updateFromSharedData()
 
 
 // todo deprecated 
-void App::executeCommand(const std::string& _command) {
-	commander->executeCommand(_command);
-}
+// void App::executeCommand(const std::string& _command) {
+// 	commander->executeCommand(_command);
+// }
 
 void App::update(int delta_time)
 {
@@ -347,7 +368,7 @@ void App::update(int delta_time)
 	internalFPS->addCalculatedTime(delta_time);
 
 	// change time rate if needed to fast forward scripts
-	delta_time *= coreLink->timeGetMultiplier();
+	delta_time *= scriptMgr->getMuliplierRate();
 	// run command from a running script
 	scriptMgr->update(delta_time);
 	if (!scriptMgr->isPaused() || !scriptMgr->isFaster() )	media->audioUpdate(delta_time);
@@ -370,11 +391,10 @@ void App::update(int delta_time)
 //! Main drawinf function called at each frame
 void App::draw(int delta_time)
 {
-	//draw the first layer que si le mode starsTrace n'est pas actif
 	appDraw->drawFirstLayer();
 
 	core->draw(delta_time);
-	core->imageDraw();
+	// core->imageDraw();
 
 	// Draw the Graphical ui and the Text ui
 	ui->draw();
@@ -429,12 +449,14 @@ void App::saveCurrentConfig(const std::string& confFile)
 	conf.setDouble ("navigation:preset_sky_time", PresetSkyTime);
 	conf.setStr	("navigation:startup_time_mode", StartupTimeMode);
 	conf.setStr	("navigation:day_key_mode", DayKeyMode);
+	conf.setDouble("rendering:line_width", appDraw->getLineWidth());
+	conf.setBoolean("rendering:flag_antialias_lines", appDraw->getFlagAntialiasLines());
 
 	ui->saveCurrentConfig(conf);
 	core->saveCurrentConfig(conf);
 
 	// Get landscape and other observatory info
-	(core->getObservatory())->setConf(conf, "init_location");
+	coreLink->observerSetConf(conf, "init_location");
 	conf.save(confFile);
 }
 
@@ -450,7 +472,7 @@ void App::masterput()
 	FILE * tempFile = fopen(action.c_str(),"r");
 	if (tempFile) {
 		fclose(tempFile);
-		cLog::get()->write("MASTERPUT is in action", LOG_TYPE::L_INFO);
+		//cLog::get()->write("MASTERPUT is in action", LOG_TYPE::L_INFO);
 		unlink(action.c_str());
 		scriptMgr->playScript(settings->getFtpDir()+"pub/script.sts");
 	}

@@ -102,7 +102,6 @@ int Script::loadInternal(const std::string &script_file,const std::string & scri
 		cLog::get()->write("Unable to open script: " + script_file,  LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
 		return 0;
 	}
-	std::vector <std::string> fields;
 
 	bool is_script_empty=true;
 	std::string line;
@@ -176,7 +175,6 @@ int Script::getFirst(std::string &command, std::string &dataDir)
 		return 0;
 	} else {
 		pMove=pFirst;
-		//pFirst->printToken();
 		dataDir=pFirst->getTokenPath();
 		command=pFirst->getToken();
 		if (command=="script action end" && (pFirst->pNext != nullptr)) {

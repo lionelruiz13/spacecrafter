@@ -54,7 +54,7 @@
 #include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
 #include "coreModule/starNavigator.hpp"
-#include "coreModule/text_mgr.hpp"
+#include "mediaModule/text_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/ubo_cam.hpp"
@@ -64,9 +64,7 @@
 #include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "starModule/hip_star_mgr.hpp"
-#include "tools/app_settings.hpp"
 #include "tools/init_parser.hpp"
-#include "tools/io.hpp"
 #include "tools/object.hpp"
 #include "tools/shader.hpp"
 #include "tools/sky_localizer.hpp"
@@ -100,12 +98,13 @@ public:
 
 	friend class CoreLink;
 	friend class CoreFont;
+	friend class CoreBackup;
 
 	//! Possible mount modes
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
+	Core(int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
 	virtual ~Core();
 	Core(Core const &) = delete;
 	Core& operator = (Core const &) = delete;
@@ -126,9 +125,6 @@ public:
 	//! Returns false and doesn't change if skyculture is invalid
 	bool setSkyCulture(const std::string& cultureName);
 
-	// Set mouse position
-        void setMouse(int x, int y);
-
 	//! Set the current sky culture from the passed directory
 	bool setSkyCultureDir(const std::string& culturedir);
 
@@ -142,13 +138,13 @@ public:
 	}
 
 	void setInitialSkyCulture() {
-		printf("Culture %s\n",mBackup.initial_skyCulture.c_str());
-		setSkyCultureDir(mBackup.initial_skyCulture);
+		//printf("Culture %s\n",initialvalue.initial_skyCulture.c_str());
+		setSkyCultureDir(initialvalue.initial_skyCulture);
 	}
 
 	void setInitialSkyLocale() {
-		printf("Locale %s\n",mBackup.initial_skyLocale.c_str());
-		setSkyLanguage(mBackup.initial_skyLocale);
+		//printf("Locale %s\n",initialvalue.initial_skyLocale.c_str());
+		setSkyLanguage(initialvalue.initial_skyLocale);
 	}
 
 	//! Get the I18 available sky culture names
@@ -231,29 +227,29 @@ public:
 
 	void setViewOffset(double offset);
 
-	double getViewOffset() {
-		return navigation->getViewOffset();
-	}
+	// double getViewOffset() {
+	// 	return navigation->getViewOffset();
+	// }
 
-	//! set environment rotation around observer
-	void setHeading(double heading, int duration=0) {
-		navigation->changeHeading(heading, duration);
-	}
+	// //! set environment rotation around observer
+	// void setHeading(double heading, int duration=0) {
+	// 	navigation->changeHeading(heading, duration);
+	// }
 
-	void setDefaultHeading() {
-		navigation->setDefaultHeading();
-	}
+	// void setDefaultHeading() {
+	// 	navigation->setDefaultHeading();
+	// }
 
-	double getHeading() {
-		return navigation->getHeading();
-	}
+	// double getHeading() {
+	// 	return navigation->getHeading();
+	// }
 
 	//! Set automove duration in seconds
-	void setAutomoveDuration(float f) {
+	void setAutoMoveDuration(float f) {
 		auto_move_duration = f;
 	}
 	//! Get automove duration in seconds
-	float getAutomoveDuration(void) const {
+	float getAutoMoveDuration(void) const {
 		return auto_move_duration;
 	}
 
@@ -307,9 +303,9 @@ public:
 	//! @param objPrefix the case insensitive first letters of the searched object
 	//! @param maxNbItem the maximum number of returned object names
 	//! @return a vector of matching object name by order of relevance, or an empty vector if nothing match
-	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem=5) const;
+	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem=5, bool withType= false) const;
 
-	void tcpGetListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem=5) const;
+	std::string getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem=5) const;
 
 	//! Return whether an object is currently selected
 	bool getFlagHasSelected(void) {
@@ -344,8 +340,6 @@ public:
 		return selected_object.getInfoString(navigation);
 	}
 
-	void tcpGetSelectedObjectInfo() const;
-
 	void getDeRa(double *ra, double *de) const {
 		selected_object.getRaDeValue(navigation,ra,de);
 	}
@@ -364,28 +358,6 @@ public:
 	//! Get a color used to display info about the currently selected object
 	Vec3f getSelectedObjectInfoColor(void) const;
 
-
-	///////////////////////////////////////////////////////////////////////////////////////
-	// Rendering settings
-
-	//! Set rendering flag of antialiased lines
-	void setFlagAntialiasLines(bool b) {
-		FlagAntialiasLines = b;
-
-		if(b) glEnable(GL_LINE_SMOOTH);
-		else glDisable(GL_LINE_SMOOTH);
-	}
-	//! Get display flag of constellation lines
-	bool getFlagAntialiasLines(void) {
-		return FlagAntialiasLines;
-	}
-
-	void setLineWidth(float w) {
-		m_lineWidth = w;
-	}
-	float getLineWidth() {
-		return m_lineWidth;
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Stars methods
@@ -411,11 +383,9 @@ public:
 	void setJDayRelative(int year, int month);
 
 	// for adding planets
-	std::string addSolarSystemBody(stringHash_t& param);
-
-	std::string removeSolarSystemBody(std::string name);
-
-	std::string removeSupplementalSolarSystemBodies();
+	void addSolarSystemBody(stringHash_t& param);
+	void removeSolarSystemBody(const std::string& name);
+	void removeSupplementalSolarSystemBodies();
 
 	//! set flag to display generic Hint or specific DSO type
 	void setDsoPictograms (bool value) {
@@ -431,10 +401,9 @@ public:
 	                double distance, std::string constellation, std::string type);
 
 	//! remove one nebula added by user
-	std::string removeNebula(const std::string& name);
-
+	void removeNebula(const std::string& name);
 	//! remove all user added nebulae
-	std::string removeSupplementalNebulae();
+	void removeSupplementalNebulae();
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Projection
@@ -447,7 +416,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Landscape
 	void setInitialLandscapeName() {
-		setLandscape(mBackup.initial_landscapeName);
+		setLandscape(initialvalue.initial_landscapeName);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -464,55 +433,6 @@ public:
 		return lightPollutionLimitingMagnitude;
 	}
 
-
-
-	///////////////////////////////////////////////////////////////////////////////////////
-	// Observer
-	//! Return the current observatory (as a const object)
-	// made non const so can track when save data!  Hmmm. 20070215
-	// TODO resolve issue
-	Observer* getObservatory(void) {
-		return observatory;
-	}
-
-	//! Move to a new latitude and longitude on home planet
-	void moveObserver(double lat, double lon, double alt, int delay /*, const std::string& name*/) {
-		observatory->moveTo(lat, lon, alt, delay/*, name*/);
-	}
-
-	//! Move to relative latitude where home planet is fixed.
-	void moveRelLatObserver(double lat, int delay) {
-		double latimem=observatory->getLatitude()+lat;
-		if (latimem>90) latimem=90;
-		if (latimem<-90) latimem=-90;
-		moveObserver(latimem,observatory->getLongitude(),observatory->getAltitude(),delay/*,observatory->getName()*/);
-	}
-
-	//! Move to relative longitude where home planet is fixed.
-	void moveRelLonObserver(double lon, int delay) {
-		moveObserver(observatory->getLatitude(),observatory->getLongitude()+lon,observatory->getAltitude(),delay/*,observatory->getName()*/);
-	}
-
-	//! Move to relative altitude where home planet is fixed.
-	void moveRelAltObserver(double alt, int delay) {
-		moveObserver(observatory->getLatitude(),observatory->getLongitude(),observatory->getAltitude()+alt,delay/*,observatory->getName()*/);
-	}
-
-	//! change the Heading value
-	void moveHeadingRelative(float f) {
-		navigation->setHeading(navigation->getHeading() + f);
-	}
-
-	//! Set Meteor Rate in number per hour
-	void setMeteorsRate(int f) {
-		meteors->setZHR(f);
-	}
-
-	//! Get Meteor Rate in number per hour
-	int getMeteorsRate(void) const {
-		return meteors->getZHR();
-	}
-
 	void selectZodiac();
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -525,12 +445,6 @@ public:
 
 	void loadFont(int baseSize, const std::string name);
 
-	double getZoomSpeed() {
-		return vzm.zoom_speed;
-	}
-	float getAutoMoveDuration() {
-		return auto_move_duration;
-	}
 
 	// MAJ de l'UBO ubo_cam
 	void uboCamUpdate();
@@ -546,81 +460,11 @@ public:
 		return flagNav;
 	}
 
-	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
-
-	void getmBackup();					//! get the current variables to struct Backup
-	void setmBackup();					//! set a previous Backup  directly in use
-	
 	void switchMode(const std::string &mode);
 
-
-	//tcp
-	void tcpConfigure(ServerSocket * _tcp);
-	void tcpGetStatus(std::string value) const;
-	void tcpGetPlanetsStatus() const;
-
-	//! return tcpPosition
-	void tcpGetPosition();
-	
-	////////////////////////////////////////////////////////////////////////////////
-	// Atmosphere---------------------------
-	////////////////////////////////////////////////////////////////////////////////
-
-	//! Set flag for displaying Atmosphere
-	void atmosphereSetFlag(bool b) {
-		bodyDecor->setAtmosphereState(b);
-	}
-	//! Get flag for displaying Atmosphere
-	bool atmosphereGetFlag(void) const {
-		return bodyDecor->getAtmosphereState();
-	}
-
-	//! set flag for vp Optoma
-	void atmosphereSetFlagOptoma(bool b) {
-		atmosphere->setFlagOptoma(b);
-	}
-
-	//! Get flag for vp Optoma
-	bool atmosphereGetFlagOptoma(void) const {
-		return atmosphere->getFlagOptoma();
-	}
-
-	//! Set atmosphere fade duration in s
-	void atmosphereSetFadeDuration(float f) {
-		atmosphere->setFaderDuration(f);
-	}
-
-	//! Get atmosphere fade duration in s
-	float atmosphereGetFadeDuration(void) const {
-		return atmosphere->getFaderDuration();
-	}
-
-	////////////////////////////////////////////////////////////////////////////////
-	// Illuminate---------------------------
-	////////////////////////////////////////////////////////////////////////////////
-	bool illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation);
-
-	std::string illuminateRemove(const std::string& name);
-	std::string illuminateRemoveAll();
-
-	void illuminateSetSize (double value) {
-		illuminate_size=value;
-	}
-
-	//! Set flag for activating atmospheric refraction correction
-	void atmosphericRefractionSetFlag(bool b) {
-		FlagAtmosphericRefraction = b;
-	}
-
-	//! Get flag for activating atmospheric refraction correction
-	bool atmosphericRefractionGetFlag(void) const {
-		return FlagAtmosphericRefraction;
-	}
-
 	void saveCurrentConfig(InitParser &conf);
-	Vec3f getCursorPosEqu(int x, int y);
 
-	void imageDraw();
+	// void imageDraw();
 	void textDraw();
 
 private:
@@ -660,13 +504,6 @@ private:
 	//! @param delta_time the time increment in ms.
 	void updateInUniverse(int delta_time);
 
-	//! envoie directement une chaine de caractère au serveur TCP
-	void tcpSend(std::string msg ) const;
-
-	AppSettings * settings;				//! endroit unique pour les chemins des fichiers dans l'application
-	ServerSocket *tcp;
-	bool enable_tcp ;
-
 	//! Callback to record actions
 	mBoost::callback<void, std::string> recordActionCallback;
 
@@ -683,6 +520,13 @@ private:
 	//! Find in a "clever" way an object from its screen position
 	Object cleverFind(int x, int y) const;
 
+	std::string getCursorPos(int x, int y);  //not used now
+	Vec3f getCursorPosEqu(int x, int y);  //not used now
+
+	// Increment/decrement smoothly the vision field and position
+	void updateMove(int delta_time);
+
+
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
@@ -698,8 +542,6 @@ private:
 	Observer * observatory;			// Manage observer position
 	Projector * projection;				// Manage the projection mode and matrix
 	Object selected_object;			// The selected object
-	int mouseX;
-	int mouseY;
 	Object old_selected_object;		// The old selected object
 	class HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
@@ -726,21 +568,19 @@ private:
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	StarLines* starLines;				// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D 
+	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
 	UBOCam* ubo_cam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
+	AnchorManager * anchorManager=nullptr;
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn
-	std::string getCursorPos(int x, int y);  //not used now
 
-	// Increment/decrement smoothly the vision field and position
-	void updateMove(int delta_time);
 	bool FlagEnableZoomKeys;
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
 	bool flagNav = false; 				// define the NAV version edition
-	bool FlagAntialiasLines;            // whether to antialias all line drawing
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup
 	std::string defaultLandscape; 
@@ -749,18 +589,9 @@ private:
 	float InitFov;						// Default viewing FOV
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
-	float m_lineWidth;                  // width to use when drawing any line
-
-	//! size of Illuminate star
-	double illuminate_size;
-
-	//! Backup Manage
-	backupWorkspace mBackup;			// variable used to remember various indicators in use
-
-	void inimBackup();					// init at NULL all var
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
-	
-	AnchorManager * anchorManager=nullptr;
+
+	InitialValue initialvalue;			// variable used to remember various string indicators in use
 };
 
 #endif // _CORE_H_

@@ -80,12 +80,12 @@ Illuminate::~Illuminate()
 
 
 // Read Illuminate data passed in and compute x,y and z;
-bool Illuminate::createIlluminate(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float tex_rotation)
+bool Illuminate::createIlluminate(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
 {
 	Name = name;
 	texColor.set(r,g,b);
 
-	//~ cout << "createIlluminate "<< name << " f: " << filename << " " << ra << " " << de << " " << angular_size << " " << r << " " << g << " " << b << " rot: " << tex_rotation << endl;
+	//std::cout << "createIlluminate "<< name << " f: " << filename << " " << ra << " " << de << " " << angular_size << " " << r << " " << g << " " << b << " rot: " << tex_rotation << std::endl;
 	if (filename!="") {
 		illuminateSpecialTex = new s_texture(/*true,*/ filename.c_str() ,0);
 		if (illuminateSpecialTex != nullptr)

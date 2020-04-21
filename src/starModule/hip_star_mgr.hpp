@@ -276,14 +276,14 @@ public:
 		return isolateSelected;
 	}
 
-	//! Set display flag for Star Scientific names.
-	void setFlagStarsSciNames(bool b) {
-		flagStarSciName=b;
-	}
-	//! Get display flag for Star Scientific names.
-	bool getFlagStarsSciNames(void) const {
-		return flagStarSciName;
-	}
+	// //! Set display flag for Star Scientific names.
+	// void setFlagStarsSciNames(bool b) {
+	// 	flagStarSciName=b;
+	// }
+	// //! Get display flag for Star Scientific names.
+	// bool getFlagStarsSciNames(void) const {
+	// 	return flagStarSciName;
+	// }
 
 	//! Set flag for Star twinkling.
 	void setFlagTwinkle(bool b) {
@@ -473,7 +473,7 @@ private:
 	float starScale;
 	float starMagScale;
 	bool flagStarName;
-	bool flagStarSciName;
+	// bool flagStarSciName;
 	float maxMagStarName;
 	bool flagStarTwinkle;
 	float twinkleAmount;

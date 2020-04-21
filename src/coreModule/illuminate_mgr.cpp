@@ -65,8 +65,11 @@ IlluminateMgr::~IlluminateMgr()
 }
 
 // Load individual Illuminate for script
-bool IlluminateMgr::loadIlluminate(std::string filename, double ra, double de,  double angular_size, std::string name, double r, double g, double b, float tex_rotation)
+bool IlluminateMgr::loadIlluminate(const std::string& filename, double ra, double de,  double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
 {
+	if (angular_size<1.0)
+		angular_size=defaultSize;
+
 	Illuminate *e = searchIlluminate(name);
 	if(e)
 		removeIlluminate(name);
@@ -85,13 +88,18 @@ bool IlluminateMgr::loadIlluminate(std::string filename, double ra, double de,  
 }
 
 // Clear user added Illuminate
-std::string IlluminateMgr::removeIlluminate(const std::string& name)
+void IlluminateMgr::removeIlluminate(const std::string& name)
 {
 	std::string uname = name;
 	transform(uname.begin(), uname.end(), uname.begin(), ::toupper);
 	std::vector <Illuminate*>::iterator iter;
 	std::vector <Illuminate*>::iterator iter2;
 
+	// iter = std::find_if(illuminateArray.begin(),illuminateArray.end(), [&uname](auto &ptr) { return ptr->getName() == uname; });
+	// if (iter == illuminateArray.end())	{
+	// 	cLog::get()->write("Requested Illuminate to delete not found by name " + uname, LOG_TYPE::L_INFO);
+	// 	return;
+	// }
 	for (iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
 		std::string testName = (*iter)->getName();
 
@@ -108,20 +116,21 @@ std::string IlluminateMgr::removeIlluminate(const std::string& name)
 			// Delete Illuminate
 			delete *iter;
 			illuminateArray.erase(iter);
-			cLog::get()->write("Illuminate_mgr: Erased Illuminate " + uname, LOG_TYPE::L_INFO);
-			return "";
+			//cLog::get()->write("Illuminate_mgr: Erased Illuminate " + uname, LOG_TYPE::L_INFO);
+			return;
 		}
 	}
-	return "Requested Illuminate to delete not found by name.";
+	cLog::get()->write("Requested Illuminate to delete not found by name " + uname, LOG_TYPE::L_INFO);
+	// return "Requested Illuminate to delete not found by name.";
 }
 
 // remove all user added Illuminate
-std::string IlluminateMgr::removeAllIlluminate()
+void IlluminateMgr::removeAllIlluminate()
 {
 	std::vector<Illuminate *>::iterator iter;
 	std::vector<Illuminate *>::iterator iter2;
 
-	for (iter=illuminateArray.begin(); iter!=illuminateArray.end(); iter++) {
+	for (iter=illuminateArray.begin(); iter!=illuminateArray.end(); /*iter++*/) {
 		// erase from locator grid
 		int zone = illuminateGrid.GetNearest((*iter)->XYZ);
 
@@ -133,10 +142,10 @@ std::string IlluminateMgr::removeAllIlluminate()
 		}
 		// Delete Illuminate
 		delete *iter;
-		illuminateArray.erase(iter);
-		iter--;
+		iter = illuminateArray.erase(iter);
+		//iter--;
 	}
-	return "";
+	// return "";
 }
 
 // Draw all the Illuminate

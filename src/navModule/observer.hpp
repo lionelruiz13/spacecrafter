@@ -70,7 +70,11 @@ public:
 	//! renvoie le nom I18n de la planète de l'observer
 	std::string getHomePlanetNameI18n(void) const;
 
-	//!renvois la position a laquelle l'observer est attaché
+	//! renvoie un booleen permettant de savoir si la planète de l'observer est soit la terre, soit la lune
+	bool isEarth() const;
+	bool isSun() const;
+
+	//! renvois la position a laquelle l'observer est attaché
 	Vec3d getObserverCenterPoint(void) const;
 	
 	//! renvoie la position de l'observer dans le systeme de coordonnée du soleil
@@ -158,6 +162,15 @@ public:
 	double getDefaultAltitude() {
 		return defaultAltitude;
 	}
+
+	//! Move to relative latitude where home planet is fixed.
+	void moveRelLat(double lat, int delay);
+
+	//! Move to relative longitude where home planet is fixed.
+	void moveRelLon(double lon, int delay);
+
+	//! Move to relative altitude where home planet is fixed.
+	void moveRelAlt(double alt, int delay);
 
 	//! move gradually to a new observation location
 	void moveTo(double lat, double lon, double alt, int duration, /*const std::string& _name,*/  bool calculate_duration=0);  // duration in ms

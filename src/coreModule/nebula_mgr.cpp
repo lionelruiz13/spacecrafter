@@ -160,7 +160,7 @@ void NebulaMgr::setFont(float font_size, const std::string& font_name)
 }
 
 // Clear user added nebula
-std::string NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
+void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 {
 	std::string uname = name;
 	transform(uname.begin(), uname.end(), uname.begin(), ::toupper);
@@ -176,7 +176,7 @@ std::string NebulaMgr::removeNebula(const std::string& name, bool showOriginal=t
 
 			if(!(*iter)->isDeletable()) {
 				if(showOriginal) (*iter)->show(); // make sure original is now visible
-				continue;
+				return;
 			}
 
 			// erase from locator grid
@@ -195,26 +195,26 @@ std::string NebulaMgr::removeNebula(const std::string& name, bool showOriginal=t
 			neb_array.erase(iter);
 //			cerr << "Erased nebula " << uname << endl;
 
-			return "";
+			//return "";
 		}
 	}
-
-	return "Requested nebula to delete not found by name.";
+	cLog::get()->write("DSO: Requested nebula to delete not found " + name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 }
 
 // remove all user added nebula and make standard nebulae visible again
 // all standard nebulae visible become again selected
-std::string NebulaMgr::removeSupplementalNebulae()
+void NebulaMgr::removeSupplementalNebulae()
 {
 
 	std::vector<Nebula *>::iterator iter;
 	std::vector<Nebula *>::iterator iter2;
 
-	for (iter=neb_array.begin(); iter!=neb_array.end(); iter++) {
+	for (iter=neb_array.begin(); iter!=neb_array.end(); /*iter++*/) {
 
 		if (!(*iter)->isDeletable()) {
 			(*iter)->show();
 			(*iter)->select();
+			iter++;
 		} else {
 
 			// erase from locator grid
@@ -230,13 +230,13 @@ std::string NebulaMgr::removeSupplementalNebulae()
 
 			// Delete nebula
 			delete *iter;
-			neb_array.erase(iter);
-			iter--;
+			iter=neb_array.erase(iter);
+			//iter--;
 			// cerr << "Erased nebula " << uname << endl;
 		}
 	}
 
-	return "";
+	// return "";
 }
 
 // Draw all the Nebulae

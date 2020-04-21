@@ -48,24 +48,23 @@
 #include "bodyModule/body_trace.hpp"
 
 
-Core::Core(AppSettings* _settings, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
-	skyTranslator(PACKAGE, _settings->getLocaleDir(), ""),
+Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
+	skyTranslator(PACKAGE, AppSettings::Instance()->getLocaleDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
-	settings = _settings;
 	media = _media;
 	coreFont = new CoreFont(this, std::min(width,height));
 	projection = new Projector( width,height, 60 );
 	glFrontFace(GL_CCW);
 
 	// Set textures directory and suffix
-	s_texture::setTexDir(settings->getTextureDir() );
+	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
 	//set Shaders directory and suffix
-	shaderProgram::setShaderDir(settings->getShaderDir() );
-	shaderProgram::setLogFile(settings->getLogDir()+"shader.log");
+	shaderProgram::setShaderDir(AppSettings::Instance()->getShaderDir() );
+	shaderProgram::setLogFile(AppSettings::Instance()->getLogDir()+"shader.log");
 	shaderProgram::initLogFile();
 
 	ubo_cam = new UBOCam("cam_block");
@@ -129,7 +128,7 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	meteors = new MeteorMgr(10, 60);
 	landscape = new Landscape();
 	inactiveLandscape = new Landscape();
-	skyloc = new SkyLocalizer(settings->getSkyCultureDir());
+	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height);
 	asterisms = new ConstellationMgr(hip_stars);
 	text_usr = new TextMgr();
@@ -137,14 +136,8 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	oort =  new Oort();
 	dso3d = new Dso3d();
 	tully = new Tully();
-	mouseX = 0;
-	mouseY = 0;
-
 	bodytrace= new BodyTrace();
 	object_pointer_visibility = 1;
-
-	tcp = nullptr;
-	enable_tcp = false;
 
 	executorInSolarSystem = new CoreExecutorInSolarSystem(this, observatory);
 	executorInGalaxy = new CoreExecutorInGalaxy(this,observatory);
@@ -158,90 +151,18 @@ Core::Core(AppSettings* _settings, int width, int height, Media* _media, const m
 	currentExecutor = executorInSolarSystem;
 }
 
-void Core::setMouse(int x, int y) {
-	mouseX = x;
-	mouseY = y;
-}
 
-void Core::tcpGetStatus(std::string value) const
-{
-	std::string toSend="";
-	if (value == "constellation") {
-		toSend = asterisms->getSelectedShortName();
-		cLog::get()->write("Valeur de toSend : " + toSend);
-	} else
-		toSend="Demande inconnue";
-
-	if (toSend=="")
-		toSend="EOF";
-
-	tcpSend(toSend);
-}
-
-void Core::tcpSend(std::string msg) const
-{
-	if (enable_tcp) {
-		tcp->setOutput(msg);
-		cLog::get()->write("Send command : " + msg);
-	} else
-		cLog::get()->write("No send msg because no tcp enable");
-}
-
-void Core::tcpGetSelectedObjectInfo() const
-{
-	std::string toSend=getSelectedObjectInfo();
-	if (toSend=="")
-		toSend="EOL";
-
-	tcpSend(toSend);
-}
-
-
-void Core::tcpConfigure(ServerSocket * _tcp)
-{
-	if (_tcp!=nullptr) {
-		tcp= _tcp;
-		enable_tcp = true;
-		cLog::get()->write("Core tcp enable");
-	} else
-		cLog::get()->write("Core no tcp enable");
-}
-
-
-void Core::tcpGetListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
+std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
 {
 	std::vector<std::string> tmp;
 	std::string msgToSend;
-	tmp = listMatchingObjectsI18n(objPrefix, maxNbItem);
+	tmp = listMatchingObjectsI18n(objPrefix, maxNbItem,true);
 	for( std::vector<std::string>::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 		msgToSend = msgToSend + (*itr)+";";
 	}
-
-	if (msgToSend=="")
-		msgToSend="NOF"; // no object found
-
-	tcpSend(msgToSend);
+	return msgToSend;
 }
 
-void Core::tcpGetPlanetsStatus() const
-{
-	std::string msgToSend;
-	msgToSend = ssystem->getPlanetsPosition();
-
-	if (msgToSend=="")
-		msgToSend="NPF"; // no planet found ! Dramatic
-
-	tcpSend(msgToSend);
-}
-
-void Core::tcpGetPosition()
-{
-	char tmp[1024];
-	memset(tmp, '\0', 1024);
-	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", observatory->getLatitude(), observatory->getLongitude(), observatory->getAltitude(), timeMgr->getJDay(), getHeading());
-	cLog::get()->write(tmp);
-	tcp->setOutput(tmp);
-}
 
 Core::~Core()
 {
@@ -290,7 +211,6 @@ Core::~Core()
 	delete executorInGalaxy;
 	delete executorInSolarSystem;
 	delete executorInUniverse;
-	
 	delete anchorManager;
 }
 
@@ -300,16 +220,12 @@ void Core::init(const InitParser& conf)
 {
 	flagNav= conf.getBoolean("main", "flag_navigation");
 	setFlagNav(flagNav);
-	inimBackup();
+	//inimBackup();
 	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");
 	coreFont->init(conf);
 
-	// Rendering options
-	setLineWidth(conf.getDouble("rendering", "line_width"));
-	setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
-
-	mBackup.initial_landscapeName=conf.getStr("init_location","landscape_name");
-	illuminate_size=conf.getDouble("stars", "illuminate_size");
+	initialvalue.initial_landscapeName=conf.getStr("init_location","landscape_name");
+	illuminates->setDefaultSize(conf.getDouble("stars", "illuminate_size"));
 
 	glDepthFunc(GL_LEQUAL);
 	glDepthRange(0,1);
@@ -334,11 +250,11 @@ void Core::init(const InitParser& conf)
 
 		ssystem->iniTextures();
 
-		ssystem->load(settings->getUserDir() + "ssystem.ini");
+		ssystem->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
 		
 		anchorManager->setRotationMultiplierCondition(conf.getDouble("navigation", "stall_radius_unit"));
 
-		anchorManager->load(settings->getUserDir() + "anchor.ini");
+		anchorManager->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
 		anchorManager->initFirstAnchor(conf.getStr("init_location","home_planet"));
 
 		// Init stars
@@ -347,13 +263,13 @@ void Core::init(const InitParser& conf)
 		hip_stars->init(conf);
 
 		// Init nebulas
-		nebulas->loadDeepskyObject(settings->getUserDir() + "deepsky_objects.fab");
+		nebulas->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
 
 		landscape->setSlices(conf.getInt("rendering:landscape_slices"));
 		landscape->setStacks(conf.getInt("rendering:landscape_stacks"));
 
-		starNav->loadData(settings->getUserDir() + "hip2007.dat", true);
-		starLines->loadHipBinCatalogue(settings->getUserDir() + "asterism.dat");
+		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
+		starLines->loadHipBinCatalogue(AppSettings::Instance()->getUserDir() + "asterism.dat");
 	}
 
 	// Astro section
@@ -398,8 +314,6 @@ void Core::init(const InitParser& conf)
 
 	ssystem->setScale(hip_stars->getScale());
 	setPlanetsSizeLimit(conf.getDouble("astro", "planet_size_marginal_limit"));
-
-	//ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
 	ssystem->setFlagClouds(true);
 
 	observatory->load(conf, "init_location");
@@ -418,9 +332,9 @@ void Core::init(const InitParser& conf)
 	coreFont->setFont();
 
 	if (firstTime) {
-		milky_way->defineInitialMilkywayState(settings->getTextureDir() , conf.getStr("astro:milky_way_texture"), 
+		milky_way->defineInitialMilkywayState(AppSettings::Instance()->getTextureDir() , conf.getStr("astro:milky_way_texture"), 
 				conf.getStr("astro:milky_way_iris_texture"), conf.getDouble("astro","milky_way_intensity"));
-		milky_way->defineZodiacalState(settings->getTextureDir() + conf.getStr("astro:zodiacal_light_texture"), conf.getDouble("astro","zodiacal_intensity"));
+		milky_way->defineZodiacalState(AppSettings::Instance()->getTextureDir() + conf.getStr("astro:zodiacal_light_texture"), conf.getDouble("astro","zodiacal_intensity"));
 		milky_way->setFaderDuration(conf.getInt("astro:milky_way_fader_duration")*1000);
 
 		atmosphere->initGridViewport(projection);
@@ -428,13 +342,13 @@ void Core::init(const InitParser& conf)
 
 		oort->populate(conf.getInt("rendering:oort_elements"));
 		tully->setTexture("typegals.png");
-		tully->loadCatalog(settings->getUserDir() + "tully.dat");
+		tully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
 		dso3d->setTexture("dsocat.png");
-		dso3d->loadCatalog(settings->getUserDir() + "dso3d.dat");
+		dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat");
 
 		ojmMgr->init();
 		// 3D object integration test
-		ojmMgr-> load("in_universe", "Milkyway", settings->getModel3DDir() + "Milkyway/Milkyway.ojm",settings->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01f);
+		ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01f);
 
 		// Load the pointer textures
 		Object::initTextures();
@@ -458,7 +372,7 @@ void Core::init(const InitParser& conf)
 	ssystem->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
 
 	std::string skyLocaleName = conf.getStr("localization", "sky_locale");
-	mBackup.initial_skyLocale=skyLocaleName;
+	initialvalue.initial_skyLocale=skyLocaleName;
 	setSkyLanguage(skyLocaleName);
 
 	int grid_level = hip_stars->getMaxGridLevel();
@@ -469,7 +383,7 @@ void Core::init(const InitParser& conf)
 	FlagEnableMoveKeys  = conf.getBoolean("navigation:flag_enable_move_keys");
 	setFlagManualAutoZoom( conf.getBoolean("navigation:flag_manual_zoom") );
 
-	setAutomoveDuration( conf.getDouble ("navigation","auto_move_duration") );
+	setAutoMoveDuration( conf.getDouble ("navigation","auto_move_duration") );
 	vzm.move_speed			= conf.getDouble("navigation","move_speed");
 	vzm.zoom_speed			= conf.getDouble("navigation","zoom_speed");
 
@@ -499,7 +413,7 @@ void Core::init(const InitParser& conf)
 
 	// Load constellations from the correct sky culture
 	std::string tmp = conf.getStr("localization", "sky_culture");
-	mBackup.initial_skyCulture=tmp;
+	initialvalue.initial_skyCulture=tmp;
 	setSkyCultureDir(tmp);
 	skyCultureDir = tmp;
 
@@ -567,13 +481,11 @@ void Core::init(const InitParser& conf)
 
 	setLightPollutionLimitingMagnitude(conf.getDouble("viewing","light_pollution_limiting_magnitude"));
 
-	setMeteorsRate(conf.getInt("astro", "meteor_rate"));
-
 	atmosphere->setFlagOptoma(conf.getBoolean("main:flag_optoma"));
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-	mCity->loadCities(settings-> getDataDir() + "mcities.fab");
+	mCity->loadCities(AppSettings::Instance()-> getDataDir() + "mcities.fab");
 	ssystem->initialSolarSystemBodies();
 
 	defaultLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
@@ -596,32 +508,6 @@ void Core::updateMode()
 		currentExecutor->onEnter();
 	}
 }
-
-bool Core::illuminateLoad(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float rotation)
-{
-	bool created = false;
-	// if no size, so take default value from flag illuminate_star
-	if (angular_size==0.0)
-		angular_size=illuminate_size;
-
-	if(illuminates) {
-		created = illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
-	}
-	return created;
-}
-
-
-std::string Core::illuminateRemove(const std::string& name)
-{
-	std::string error = illuminates->removeIlluminate(name);
-	return error;
-}
-
-std::string Core::illuminateRemoveAll()
-{
-	return illuminates->removeAllIlluminate();
-}
-
 
 //! Update all the objects in function of the time
 void Core::updateInSolarSystem(int delta_time)
@@ -727,7 +613,7 @@ void Core::updateInSolarSystem(int delta_time)
 		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun") && !observatory->getSpacecraft()) {
 			setLandscape(observatory->getHomeBody()->getEnglishName());
 			atmosphere->setFlagShow(true);
-			atmosphereSetFlag(true);
+			bodyDecor->setAtmosphereState(true);
 		}	
 		if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
 		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun") && !observatory->getSpacecraft()) setLandscape("moon");
@@ -754,7 +640,7 @@ void Core::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 
 void Core::hipStarMgrPreDraw()
 {
-	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow() && atmosphericRefractionGetFlag());
+	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow() && FlagAtmosphericRefraction);
 }
 
 void Core::uboCamUpdate()
@@ -850,15 +736,9 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	projection->setClippingPlanes(clipping_min ,clipping_max);
 	// Init viewport to current projector values
 	projection->applyViewport();
-	// User supplied line width value
-	glLineWidth(m_lineWidth);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 }
 
-void Core::imageDraw()
-{
-	media->imageDraw(navigation, projection);
-}
 
 void Core::textDraw()
 {
@@ -869,6 +749,7 @@ void Core::textDraw()
 void Core::draw(int delta_time)
 {
 	currentExecutor->draw(delta_time);
+	media->imageDraw(navigation, projection);
 }
 
 void Core::switchMode(const std::string &mode)
@@ -978,7 +859,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	transform(l_min.begin(), l_min.end(), l_min.begin(), ::tolower);
 	if (new_landscape_name == l_min) return 0;
 
-	Landscape* newLandscape = Landscape::createFromFile(settings->getUserDir() + "landscapes.ini", new_landscape_name);
+	Landscape* newLandscape = Landscape::createFromFile(AppSettings::Instance()->getUserDir() + "landscapes.ini", new_landscape_name);
 	if (!newLandscape) return 0;
 
 	if (landscape) {
@@ -1034,45 +915,47 @@ bool Core::loadLandscape(stringHash_t& param)
 }
 
 //! Load a solar system body based on a hash of parameters mirroring the ssystem.ini file
-std::string Core::addSolarSystemBody(stringHash_t& param)
+void Core::addSolarSystemBody(stringHash_t& param)
 {
-	return ssystem->addBody(param);
+	ssystem->addBody(param);
 }
 
-std::string Core::removeSolarSystemBody(std::string name)
+void Core::removeSolarSystemBody(const std::string& name)
 {
 	// Make sure this object is not already selected so won't crash
 	if (selected_object.getType()==OBJECT_BODY && selected_object.getEnglishName() == name) {
 		unSelect();
 	}
-
 	// Make sure not standing on this object!
 	const Body *p = observatory->getHomeBody();
 	if (p!= nullptr && p->getEnglishName() == name) {
-		return (std::string("Can not delete current home planet ") + name);
+		cLog::get()->write("Can not delete current home planet " + name);
+		return;
+		// return (std::string("Can not delete current home planet ") + name);
 	}
-
-	if(ssystem->removeBody(name)){
-		return "";
-	}
-	else{
-		return "could not delete given body see logs for more informations";
-	}
+	ssystem->removeBody(name);
+	// if(ssystem->removeBody(name)){
+	// 	return "";
+	// }
+	// else{
+	// 	return "could not delete given body see logs for more informations";
+	// }
 }
 
-std::string Core::removeSupplementalSolarSystemBodies()
+void Core::removeSupplementalSolarSystemBodies()
 {
 	//  cout << "Deleting planets and object deleteable = " << selected_object.isDeleteable() << endl;
 	// Make sure an object to delete is NOT selected so won't crash
 	if (selected_object.getType()==OBJECT_BODY /*&& selected_object.isDeleteable() */) {
 		unSelect();
 	}
-	if(ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName())){
-		return "";
-	}
-	else{
-		return "could not delete given body see logs for more informations";
-	}
+	ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
+	// if(ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName())){
+	// 	return "";
+	// }
+	// else{
+	// 	return "could not delete given body see logs for more informations";
+	// }
 }
 
 
@@ -1332,8 +1215,7 @@ void Core::autoZoomIn(float move_duration, bool allow_manual_zoom)
 
 	if (!navigation->getFlagTraking()) {
 		navigation->setFlagTraking(true);
-		navigation->moveTo(selected_object.getEarthEquPos(navigation),
-		                    move_duration, false, 1);
+		navigation->moveTo(selected_object.getEarthEquPos(navigation), move_duration, false, 1);
 		manual_move_duration = move_duration;
 	} else {
 		// faster zoom in manual zoom mode once object is centered
@@ -1431,8 +1313,8 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 	skyCultureDir = cultureDir;
 	if (!asterisms) return 0;
 
-	asterisms->loadLinesAndArt(settings->getSkyCultureDir() + skyCultureDir);
-	asterisms->loadNames(settings->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
+	asterisms->loadLinesAndArt(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir);
+	asterisms->loadNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/constellation_names.eng.fab");
 	// Re-translated constellation names
 	asterisms->translateNames(skyTranslator);
 
@@ -1444,7 +1326,7 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 	}
 
 	// Load culture star names in english
-	hip_stars->loadCommonNames(settings->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+	hip_stars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
 	// Turn on sci names for western culture only
 	hip_stars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
 
@@ -1495,7 +1377,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	std::string oldLocale = getSkyLanguage();
 
 	// Update the translator with new locale name
-	skyTranslator = Translator(PACKAGE, settings->getLocaleDir(), newSkyLocaleName);
+	skyTranslator = Translator(PACKAGE, AppSettings::Instance()->getLocaleDir(), newSkyLocaleName);
 	cLog::get()->write("Sky locale is " + skyTranslator.getLocaleName(), LOG_TYPE::L_INFO);
 	printf("SkyLocale : %s\n", newSkyLocaleName.c_str());
 
@@ -1509,7 +1391,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 }
 
 
-//! Please keep saveCurrentSettings up to date with any new color settings added here
+//! Please keep saveCurrentAppSettings::Instance() up to date with any new color AppSettings::Instance() added here
 void Core::setColorScheme(const std::string& skinFile, const std::string& section)
 {
 	InitParser conf;
@@ -1574,16 +1456,12 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	oort->setColor(Utility::strToVec3f(conf.getStr(section,"oort_color")));
 }
 
-//! For use by TUI - saves all current settings
-//! @todo Put in stel_core?
+//! For use by TUI - saves all current AppSettings::Instance()
 void Core::saveCurrentConfig(InitParser &conf)
 {
 	// localization section
 	conf.setStr("localization:sky_culture", getSkyCultureDir());
 	conf.setStr("localization:sky_locale", getSkyLanguage());
-	// Rendering section
-	conf.setBoolean("rendering:flag_antialias_lines", getFlagAntialiasLines());
-	conf.setDouble("rendering:line_width", getLineWidth());
 	// viewing section
 	conf.setBoolean("viewing:flag_constellation_drawing", asterisms->getFlagLines()); //constellationGetFlagLines());
 	conf.setBoolean("viewing:flag_constellation_name", asterisms->getFlagNames()); //constellationGetFlagNames());
@@ -1623,7 +1501,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble("viewing:light_pollution_limiting_magnitude", getLightPollutionLimitingMagnitude());
 	// Landscape section
 	conf.setBoolean("landscape:flag_landscape", landscape->getFlagShow()); //landscapeGetFlag());
-	conf.setBoolean("landscape:flag_atmosphere", atmosphereGetFlag());
+	conf.setBoolean("landscape:flag_atmosphere", bodyDecor->getAtmosphereState());
 	conf.setBoolean("landscape:flag_fog", landscape->getFlagShowFog()); //fogGetFlag());
 	// Star section
 	conf.setDouble ("stars:star_scale", hip_stars->getScale()); //starGetScale());
@@ -1673,8 +1551,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	// Navigation section
 	conf.setBoolean("navigation:flag_manual_zoom", getFlagManualAutoZoom());
 	conf.setDouble ("navigation:auto_move_duration", getAutoMoveDuration());
-	conf.setDouble ("navigation:zoom_speed", getZoomSpeed());
-	conf.setDouble ("navigation:heading", getHeading());
+	conf.setDouble ("navigation:zoom_speed", vzm.zoom_speed);
+	conf.setDouble ("navigation:heading", navigation->getHeading());
 	// Astro section
 	conf.setBoolean("astro:flag_object_trails", ssystem->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
 	conf.setBoolean("astro:flag_bright_nebulae", nebulas->getFlagBright()); //nebulaGetFlagBright());
@@ -1741,6 +1619,7 @@ Vec3f Core::getCursorPosEqu(int x, int y)
 	projection->unprojectEarthEqu(x,projection->getViewportHeight()-y,v);
 	return v;
 }
+
 void Core::turnRight(int s)
 {
 	if (s && FlagEnableMoveKeys) {
@@ -1855,7 +1734,7 @@ void Core::updateMove(int delta_time)
 	}
 
 	if (vzm.deltaHeight!=0) {
-		getObservatory()->setAltitude(getObservatory()->getAltitude()*vzm.deltaHeight);
+		observatory->setAltitude(observatory->getAltitude()*vzm.deltaHeight);
 	}
 
 	if (vzm.deltaFov != 0 ) {
@@ -1881,7 +1760,10 @@ bool Core::setHomePlanet(const std::string &planet)
 {
 	// reset planet trails due to changed perspective
 	ssystem->startTrails( ssystem->getFlag(BODY_FLAG::F_TRAIL));
-	if (planet=="selected") return anchorManager->switchToAnchor(selected_object.getEnglishName()); else return anchorManager->switchToAnchor(planet);
+	if (planet=="selected")
+		return anchorManager->switchToAnchor(selected_object.getEnglishName()); 
+	else 
+		return anchorManager->switchToAnchor(planet);
 }
 
 
@@ -1966,33 +1848,37 @@ bool Core::selectObject(const Object &obj)
 //! @param objPrefix the first letters of the searched object
 //! @param maxNbItem the maximum number of returned object names
 //! @return a vector of matching object name by order of relevance, or an empty vector if nothing match
-std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const
+std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem, bool withType) const
 {
 	std::vector<std::string> result;
 	std::vector <std::string>::const_iterator iter;
 
 	// Get matching planets
 	std::vector<std::string> matchingPlanets = ssystem->listMatchingObjectsI18n(objPrefix, maxNbItem);
-	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter)
-		result.push_back(*iter);
+	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter) 
+		withType ? result.push_back(*iter+"(P)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingPlanets.size();
 
 	// Get matching constellations
 	std::vector<std::string> matchingConstellations = asterisms->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingConstellations.begin(); iter != matchingConstellations.end(); ++iter)
-		result.push_back(*iter);
+		withType ? result.push_back(*iter+"(C)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingConstellations.size();
 
 	// Get matching nebulae
 	std::vector<std::string> matchingNebulae = nebulas->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingNebulae.begin(); iter != matchingNebulae.end(); ++iter)
-		result.push_back(*iter);
+		withType ? result.push_back(*iter+"(N)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingNebulae.size();
 
 	// Get matching stars
 	std::vector<std::string> matchingStars = hip_stars->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingStars.begin(); iter != matchingStars.end(); ++iter)
-		result.push_back(*iter);
+		withType ? result.push_back(*iter+"(S)") : result.push_back(*iter);
+		// result.push_back(*iter);
 	maxNbItem-=matchingStars.size();
 
 	std::sort(result.begin(), result.end());
@@ -2005,8 +1891,7 @@ void Core::setFlagTracking(bool b)
 	if (!b || !selected_object) {
 		navigation->setFlagTraking(0);
 	} else if ( !navigation->getFlagTraking()) {
-		navigation->moveTo(selected_object.getEarthEquPos(navigation),
-		                    getAutomoveDuration());
+		navigation->moveTo(selected_object.getEarthEquPos(navigation), getAutoMoveDuration());
 		navigation->setFlagTraking(1);
 	}
 }
@@ -2065,34 +1950,29 @@ bool Core::loadNebula(double ra, double de, double magnitude, double angular_siz
 	                                  angular_size, rotation, credit, texture_luminance_adjust, true);
 }
 
-std::string Core::removeNebula(const std::string& name)
+void Core::removeNebula(const std::string& name)
 {
 	bool updateSelection = false;
 
 	// Make sure this object is not already selected so won't crash
 	if (selected_object.getType()==OBJECT_NEBULA && selected_object.getEnglishName()==name /*&& selected_object.isDeleteable()*/) {
-
 		updateSelection = true;
 		selected_object=nullptr;
 	}
 
-	std::string error = nebulas->removeNebula(name, true);
+	nebulas->removeNebula(name, true);
 	// Try to find original version, if any
 	if( updateSelection ) selected_object = nebulas->search(name);
-
-	return error;
 }
 
-std::string Core::removeSupplementalNebulae()
+void Core::removeSupplementalNebulae()
 {
 	//  cout << "Deleting planets and object deleteable = " << selected_object.isDeleteable() << endl;
 	// Make sure an object to delete is NOT selected so won't crash
 	if (selected_object.getType()==OBJECT_NEBULA /*&& selected_object.isDeleteable()*/ ) {
 		unSelect();
 	}
-
-	return nebulas->removeSupplementalNebulae();
-
+	nebulas->removeSupplementalNebulae();
 }
 
 void Core::setJDayRelative(int year, int month)
@@ -2101,36 +1981,4 @@ void Core::setJDayRelative(int year, int month)
 	ln_date current_date;
 	SpaceDate::JulianToDate(jd,&current_date);
 	timeMgr->setJDay(SpaceDate::JulianDayFromDateTime(current_date.years+year,current_date.months+month,current_date.days,current_date.hours,current_date.minutes,current_date.seconds));
-}
-
-void Core::setmBackup()
-{
-	if (mBackup.jday !=0) {
-		timeMgr->setJDay(mBackup.jday);
-		projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-		moveObserver (mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
-	}
-	setHomePlanet(mBackup.home_planet_name);
-}
-
-void Core::getmBackup()
-{
-	mBackup.jday=timeMgr->getJDay();
-	mBackup.latitude=getObservatory()->getLatitude();
-	mBackup.longitude=getObservatory()->getLongitude();
-	mBackup.altitude=getObservatory()->getAltitude();
-	mBackup.pos_name=getObservatory()->getName();
-	mBackup.fov = projection->getFov(); //getFov();
-	mBackup.home_planet_name=getObservatory()->getHomePlanetEnglishName();
-}
-
-void Core::inimBackup()
-{
-	mBackup.jday=0.0;
-	mBackup.latitude=0.0;
-	mBackup.longitude=0.0;
-	mBackup.altitude=0.0;
-	mBackup.fov=0.0;
-	mBackup.pos_name="";
-	mBackup.home_planet_name="";
 }

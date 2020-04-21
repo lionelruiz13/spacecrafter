@@ -219,7 +219,7 @@ void SkyDisplayMgr::Create(SKYDISPLAY_NAME nameObj)
 			break;
 
 		case SKYDISPLAY_NAME::SKY_MOUSECOORDS :
-			tmp= new SkyCoords();
+			tmp= new SkyMouse();
 			m_map[nameObj]= tmp;
 			return;
 			break;

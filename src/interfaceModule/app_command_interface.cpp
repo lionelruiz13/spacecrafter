@@ -36,6 +36,7 @@
 #include "appModule/save_screen_interface.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
+#include "coreModule/backup_mgr.hpp"
 #include "eventModule/event_manager.hpp"
 #include "eventModule/ScreenFaderEvent.hpp"
 #include "interfaceModule/app_command_interface.hpp"
@@ -44,16 +45,18 @@
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
 #include "tools/file_path.hpp"
+#include "tools/io.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
 
 
-AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, App * app, UI* _ui,  Media* _media)
+AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui,  Media* _media)
 {
 	stcore = core;
 	coreLink = _coreLink;
+	coreBackup = _coreBackup;
 	stapp = app;
 	media = _media;
 	ui = _ui;
@@ -64,6 +67,7 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, App *
 	initialiseCommandsName();
 	initialiseFlagsName();
 	initialiseColorCommand();
+	initialiseSetCommand();
 }
 
 void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {
@@ -217,7 +221,7 @@ void AppCommandInterface::initialiseCommandsName()
 	m_commands["moveto"] = SC_COMMAND::SC_MOVETO;
 	m_commands["movetocity"] = SC_COMMAND::SC_MOVETOCITY;
 
-	m_commands["multiplier"] = SC_COMMAND::SC_MULTIPLIER;
+	// m_commands["multiplier"] = SC_COMMAND::SC_MULTIPLIER;
 	m_commands["multiply"] = SC_COMMAND::SC_MULTIPLY;
 	m_commands["personal"] = SC_COMMAND::SC_PERSONAL;
 	m_commands["personeq"] = SC_COMMAND::SC_PERSONEQ;
@@ -297,6 +301,55 @@ void AppCommandInterface::initialiseColorCommand(){
 	m_color["star_table"] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
 }
 
+void AppCommandInterface::initialiseSetCommand() {
+	m_appcommand["atmosphere_fade_duration"] = SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION;
+	m_appcommand["auto_move_duration"] = SCD_NAMES::APP_AUTO_MOVE_DURATION;
+	m_appcommand["constellation_art_fade_duration"] = SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION;
+	m_appcommand["constellation_art_intensity"] = SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY;
+	m_appcommand["light_pollution_limiting_magnitude"] = SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE;
+	m_appcommand["font"] = SCD_NAMES::APP_FONT;
+
+	m_appcommand["heading"] = SCD_NAMES::APP_HEADING;
+	m_appcommand["home_planet"] = SCD_NAMES::APP_HOME_PLANET;
+	m_appcommand["landscape_name"] = SCD_NAMES::APP_LANDSCAPE_NAME;
+	m_appcommand["line_width"] = SCD_NAMES::APP_LINE_WIDTH;
+	m_appcommand["max_mag_nebula_name"] = SCD_NAMES::APP_MAX_MAG_NEBULA_NAME;
+	m_appcommand["max_mag_star_name"] = SCD_NAMES::APP_MAX_MAG_STAR_NAME;
+
+	m_appcommand["moon_scale"] = SCD_NAMES::APP_MOON_SCALE;
+	m_appcommand["sun_scale"] = SCD_NAMES::APP_SUN_SCALE;
+	m_appcommand["milky_way_texture"] = SCD_NAMES::APP_MILKY_WAY_TEXTURE;
+	m_appcommand["sky_culture"] = SCD_NAMES::APP_SKY_CULTURE;
+	m_appcommand["sky_locale"] = SCD_NAMES::APP_SKY_LOCALE;
+	m_appcommand["ui_locale"] = SCD_NAMES::APP_UI_LOCALE;
+
+	m_appcommand["star_mag_scale"] = SCD_NAMES::APP_STAR_MAG_SCALE;
+	m_appcommand["star_size_limit"] = SCD_NAMES::APP_STAR_SIZE_LIMIT;
+	m_appcommand["planet_size_limit"] = SCD_NAMES::APP_PLANET_SIZE_LIMIT;
+	m_appcommand["star_scale"] = SCD_NAMES::APP_STAR_SCALE;
+	m_appcommand["star_twinkle_amount"] = SCD_NAMES::APP_STAR_TWINKLE_AMOUNT;
+	m_appcommand["star_fader_duration"] = SCD_NAMES::APP_STAR_FADER_DURATION;
+
+	m_appcommand["star_limiting_mag"] = SCD_NAMES::APP_STAR_LIMITING_MAG;
+	m_appcommand["time_zone"] = SCD_NAMES::APP_TIME_ZONE;
+	m_appcommand["ambient_light"] = SCD_NAMES::APP_AMBIENT_LIGHT;
+	m_appcommand["text_fading_duration"] = SCD_NAMES::APP_TEXT_FADING_DURATION;
+	m_appcommand["milky_way_fader_duration"] = SCD_NAMES::APP_MILKY_WAY_FADER_DURATION;
+	m_appcommand["milky_way_intensity"] = SCD_NAMES::APP_MILKY_WAY_INTENSITY;
+
+	m_appcommand["zoom_offset"] = SCD_NAMES::APP_ZOOM_OFFSET;
+	m_appcommand["startup_time_mode"] = SCD_NAMES::APP_STARTUP_TIME_MODE;
+	m_appcommand["date_display_format"] = SCD_NAMES::APP_DATE_DISPLAY_FORMAT;
+	m_appcommand["time_display_format"] = SCD_NAMES::APP_TIME_DISPLAY_FORMAT;
+	m_appcommand["mode"] = SCD_NAMES::APP_MODE;
+	m_appcommand["screen_fader"] = SCD_NAMES::APP_SCREEN_FADER;
+
+	m_appcommand["stall_radius_unit"] = SCD_NAMES::APP_STALL_RADIUS_UNIT;
+	m_appcommand["tully_color_mode"] = SCD_NAMES::APP_TULLY_COLOR_MODE;
+	m_appcommand["datetime_display_position"] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
+	m_appcommand["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+}
+
 AppCommandInterface::~AppCommandInterface()
 {
 	m_commands.clear();
@@ -326,10 +379,16 @@ bool AppCommandInterface::isFalse(const std::string &a)
 		return false;
 }
 
+void AppCommandInterface::setTcp(ServerSocket* _tcp)
+{
+	tcp=_tcp;
+}
+
+
 int AppCommandInterface::parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments)
 {
 	std::istringstream commandstr( command_line );
-	std::string key, value, temp;
+	std::string key, value;
 	char nextc;
 
 	commandstr >> command;
@@ -447,7 +506,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MOVETOCITY :	return commandMovetocity(); break;
-		case SC_COMMAND::SC_MULTIPLIER :	return commandMultiplier(); break;
+		// case SC_COMMAND::SC_MULTIPLIER :	return commandMultiplier(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
@@ -512,9 +571,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 	switch(flagName) {
 		case FLAG_NAMES::FN_ANTIALIAS_LINES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->getFlagAntialiasLines();
-
-			stcore->setFlagAntialiasLines(newval);
+				stapp->toggle(APP_FLAG::ANTIALIAS);
+			else
+				stapp->flag(APP_FLAG::ANTIALIAS,newval);
 			break;
 
 		case FLAG_NAMES::FN_CONSTELLATION_DRAWING :
@@ -603,11 +662,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 		case FLAG_NAMES::FN_ATMOSPHERE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->atmosphereGetFlag();
+				newval = !coreLink->atmosphereGetFlag();
 
 			if (!newval) coreLink->fogSetFlag(false); // turn off fog with atmosphere
 			coreLink->starSetFlagTwinkle(newval); // twinkle stars depending on atmosphere activated
-			stcore->atmosphereSetFlag(newval);
+			coreLink->atmosphereSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_AZIMUTHAL_GRID :
@@ -1117,9 +1176,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
-				newval = !stcore->atmosphericRefractionGetFlag();
+				newval = !coreLink->atmosphericRefractionGetFlag();
 
-			stcore->atmosphericRefractionSetFlag(newval);
+			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
 		
 		default:
@@ -1185,15 +1244,29 @@ int AppCommandInterface::commandFlag()
 int AppCommandInterface::commandGet()
 {
 	std::string argStatus = args["status"];
+	if (!tcp) {
+		cLog::get()->write("No tcp : i can't send ", LOG_TYPE::L_WARNING);
+		return executeCommandStatus();
+	}
+
 	if (!argStatus.empty()) {
 		if (argStatus=="position") {
-			stcore->tcpGetPosition();
+			tcp->setOutput(coreLink->tcpGetPosition());
+				//stcore->tcpGetPosition();
 		} else if (argStatus=="planets_position") {
-			stcore->tcpGetPlanetsStatus();
+			std::string tmp = coreLink->getPlanetsPosition();
+			if (tmp.empty())
+				tmp = "NPF";	
+			tcp->setOutput(tmp);
 		} else if (argStatus=="constellation") {
-			stcore->tcpGetStatus(args["status"]);
+			tcp->setOutput(coreLink->getConstellationSelectedShortName());
+			//stcore->tcpGetStatus(args["status"]);
 		} else if (argStatus=="object") {
-			stcore->tcpGetSelectedObjectInfo();
+			std::string tmp = stcore->getSelectedObjectInfo();
+			if (tmp.empty())
+				tmp = "EOL";
+			tcp->setOutput(tmp);	
+			//stcore->tcpGetSelectedObjectInfo();
 		} else
 			debug_message = _("command 'get': unknown status value");
 		return executeCommandStatus();
@@ -1206,16 +1279,20 @@ int AppCommandInterface::commandGet()
 int AppCommandInterface::commandSearch()
 {
 	std::string argName = args["name"];
-	std::string argMaxObject = args["maxObject"];
+	std::string argMaxObject = args["maxobject"];
 	if (!argName.empty()) {
+		std::string toSend;
 		if (!argMaxObject.empty()) {
-			stcore->tcpGetListMatchingObjects(argName, evalInt(argMaxObject));
+			toSend=stcore->getListMatchingObjects(argName, evalInt(argMaxObject));
 		} else {
-			stcore->tcpGetListMatchingObjects(argName);
+			toSend=stcore->getListMatchingObjects(argName);
 		}
+		if (toSend.empty())
+			toSend="NOF";
+		if (tcp)
+			tcp->setOutput(toSend);
 	} else
 		debug_message = _("command 'search' : missing name argument");
-
 	return executeCommandStatus();
 }
 
@@ -1237,9 +1314,9 @@ int AppCommandInterface::commandWait(unsigned long int &wait)
 	if ( args["duration"]!="") {
 		float fdelay = evalDouble(args["duration"]);
 		if (fdelay > 0) wait = (int)(fdelay*1000);
-	} else if ( args["action"]=="reset_timer") {
+	} /*else if ( args["action"]=="reset_timer") {
 		scriptInterface->resetScriptTimer();
-	} else {
+	}*/ else {
 		debug_message = _("command_'wait' : unrecognized or malformed argument name.");
 	}
 	return executeCommandStatus();
@@ -1296,15 +1373,15 @@ int AppCommandInterface::commandDso()
 
 		if (argAction == "drop" && !argName.empty() ) {
 			// Delete an existing nebulae, but only if was added by a script!
-			stcore->unSelect();
-			debug_message = stcore->removeNebula(argName);
+			//stcore->unSelect();
+			stcore->removeNebula(argName);
 			return executeCommandStatus();
 		}
 
 		if (argAction == "clear") {
 			// drop all nebulae that are not in the original config file
-			stcore->unSelect();
-			debug_message = stcore->removeSupplementalNebulae();
+			//stcore->unSelect();
+			stcore->removeSupplementalNebulae();
 			return executeCommandStatus();
 		}
 
@@ -1381,11 +1458,12 @@ int AppCommandInterface::commandMovetocity()
 	if (!argName.empty() || !argCountry.empty()) {
 		double lon=0.0, lat=0.0;
 		int alt=0.0;
-		stcore->mCity->getCoordonnatemCity(argName,argCountry, lon, lat, alt);
+		coreLink->getCoordonateemCityCore(argName,argCountry, lon, lat, alt);
 		//cout << lon << ":" << lat << ":" << alt << endl;
 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
 			int delay = (int)(1000.*evalDouble(args["duration"]));
-			stcore->moveObserver(lat,lon,alt,delay /*,argName*/);
+			coreLink->observerMoveTo(lat,lon,alt,delay /*,argName*/);
+
 		}
 	} else
 		debug_message = "command_'movetocity' : unknown argument";
@@ -1469,10 +1547,6 @@ int AppCommandInterface::commandSuntrace()
 	return executeCommandStatus();
 }
 
-	//m_commands["add"] = SC_COMMAND::SC_ADD;
-	//m_commands["audio"] = SC_COMMAND::SC_AUDIO;
-	//m_commands["body_trace"] = SC_COMMAND::SC_BODY_TRACE;
-	//m_commands["audio"] = SC_COMMAND::SC_AUDIO;
 
 int AppCommandInterface::commandColor() 
 {
@@ -1543,101 +1617,6 @@ int AppCommandInterface::commandColor()
 		break;
 	}
 	return executeCommandStatus(); // as well
-
-	//gestion du nom de la couleur a modifier
-	// if  (argProperty!="") {
-	// 	if(argProperty == "constellation_lines")
-	// 		coreLink->constellationSetColorLine( Vcolor );
-	// 	else if(argProperty == "constellation_names")
-	// 		coreLink->constellationSetColorNames( Vcolor );
-	// 	else if(argProperty == "constellation_art")
-	// 		coreLink->constellationSetColorArt( Vcolor );
-	// 	else if(argProperty == "constellation_boundaries")
-	// 		coreLink->constellationSetColorBoundaries( Vcolor );
-	// 	else if(argProperty == "cardinal_points")
-	// 		coreLink->cardinalsPointsSetColor( Vcolor );
-	// 	else if(argProperty == "planet_orbits")
-	// 		coreLink->planetSetDefaultColor("orbit", Vcolor );
-	// 	else if(argProperty == "planet_names")
-	// 		coreLink->planetSetDefaultColor("label", Vcolor );
-	// 	else if(argProperty == "planet_trails")
-	// 		coreLink->planetSetDefaultColor("trail", Vcolor );
-	// 	else if(argProperty == "azimuthal_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor );
-	// 	else if(argProperty == "equator_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor );
-	// 	else if(argProperty == "ecliptic_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor );
-	// 	else if(argProperty == "galactic_grid")
-	// 		coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_GALACTIC, Vcolor );
-	// 	else if(argProperty == "equator_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, Vcolor );
-	// 	else if(argProperty == "galactic_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, Vcolor );
-	// 	else if(argProperty == "ecliptic_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, Vcolor );
-	// 	else if(argProperty == "meridian_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, Vcolor );
-	// 	else if(argProperty == "zenith_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZENITH, Vcolor );
-	// 	else if(argProperty == "polar_point")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_POINT_POLAR, Vcolor );
-	// 	else if(argProperty == "polar_circle")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Vcolor );
-	// 	else if(argProperty == "ecliptic_center")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, Vcolor );
-	// 	else if(argProperty == "galactic_pole")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_POLE, Vcolor );
-	// 	else if(argProperty == "galactic_center")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GALACTIC_CENTER, Vcolor );
-	// 	else if(argProperty == "vernal_points")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERNAL, Vcolor );
-	// 	else if(argProperty == "analemma")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMA, Vcolor );
-	// 	else if(argProperty == "analemma_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ANALEMMALINE, Vcolor );
-	// 	else if(argProperty == "greenwich_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_GREENWICH, Vcolor );
-	// 	else if(argProperty == "aries_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ARIES, Vcolor );
-	// 	else if(argProperty == "zodiac")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ZODIAC, Vcolor );
-	// 	else if(argProperty == "personal")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONAL, Vcolor );
-	// 	else if(argProperty == "personeq")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_PERSONEQ, Vcolor );
-	// 	else if(argProperty == "nautical_alt")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICAL, Vcolor );
-	// 	else if(argProperty == "nautical_ra")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_NAUTICEQ, Vcolor );
-	// 	else if(argProperty == "object_coordinates")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_OBJCOORDS, Vcolor ); 
-	// 	else if(argProperty == "mouse_coordinates")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_MOUSECOORDS, Vcolor );
-	// 	else if(argProperty == "angular_distance")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ANGDIST, Vcolor );
-	// 	else if(argProperty == "loxodromy")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_LOXODROMY, Vcolor );
-	// 	else if(argProperty == "orthodromy")
-	// 		coreLink->skyDisplayMgrSetColor(SKYDISPLAY_NAME::SKY_ORTHODROMY, Vcolor );
-	// 	else if(argProperty == "vertical_line")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_VERTICAL, Vcolor );
-	// 	else if(argProperty == "nebula_names")
-	// 		coreLink->nebulaSetColorLabels( Vcolor );
-	// 	else if(argProperty == "nebula_circle")
-	// 		coreLink->nebulaSetColorCircle( Vcolor );
-	// 	else if(argProperty == "precession_circle")
-	// 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor );
-	// 	else if(argProperty == "text_usr_color")
-	// 		coreLink->textSetDefaultColor( Vcolor );
-	// 	else if ((argProperty == "star_table") && (args["index"] !="" ))
-	// 		coreLink->starSetColorTable(evalInt(args["index"]), Vcolor );
-	// 	else {
-	// 		debug_message = _("Command 'color': unknown property");
-	// 		executeCommandStatus(); // renvoie de l'erreur
-	// 	}
-	// 	return executeCommandStatus(); // as well
-	// }
 }
 
 int AppCommandInterface::commandIlluminate()
@@ -1677,21 +1656,21 @@ int AppCommandInterface::commandIlluminate()
 				return executeCommandStatus();
 			}
 			//TODO fix error
-			stcore->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
+			coreLink->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
 		} else
-			stcore->illuminateLoad("", ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
+			coreLink->illuminateLoad("", ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
 		return executeCommandStatus();
 	}
 
 	if (!argHP.empty() && isFalse(argDisplay)) {
 		std::string identifier;
 		identifier = "I-"+argHP;
-		debug_message = stcore->illuminateRemove( identifier);
+		coreLink->illuminateRemove( identifier);
 		return executeCommandStatus();
 	}
 
 	if (args["action"]=="clear") {
-		debug_message=stcore->illuminateRemoveAll();
+		coreLink->illuminateRemoveAll();
 		return executeCommandStatus();
 	}
 	return executeCommandStatus();
@@ -1716,125 +1695,159 @@ int AppCommandInterface::commandPrint()
 	return executeCommandStatus();
 }
 
+
+SCD_NAMES AppCommandInterface::parseCommandSet() 
+{
+	for(auto it = m_appcommand.begin(); it != m_appcommand.end(); it++) {
+		if (!args[it->first].empty())
+			return it->second;
+	}
+	return SCD_NAMES::APP_FLAG_NONE;
+}
+
 int AppCommandInterface::commandSet()
 {
-	if (args["atmosphere_fade_duration"]!="") stcore->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"]));
-	else if (args["auto_move_duration"]!="") stcore->setAutomoveDuration( evalDouble(args["auto_move_duration"]));
-	else if (args["constellation_art_fade_duration"]!="") coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"]));
-	else if (args["constellation_art_intensity"]!="") coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"]));
-	else if (args["light_pollution_limiting_magnitude"]!="") stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"]));
-	else if (args["font"] != "") {
-		FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
-		if (myFile) {
-			int size = 10;
-			if (args["size"] != "") size = evalInt(args["size"]);
-			stcore->loadFont(size, myFile.toString());
-		} else {
-			debug_message= "command_set_font font not found";
-			cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		}
-	} else if (args["heading"]!="") {
-		if (args["heading"]=="default") {
-			stcore->setDefaultHeading();
-		}
-		else {
-			float fdelay = evalDouble(args["duration"]);
-			double heading = evalDouble(args["heading"]);
-			if (fdelay <= 0) fdelay = 0;
-			if (args["heading"][0] == '+') {
-				heading += stcore->getHeading();
-				if (heading > 180) heading -= 360;
-				std::stringstream oss;
-				oss << "FROM: " << stcore->getHeading() << " TO: " << heading;
-				cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
-			}
-			if (args["heading"][0] == '-') {
-				heading += stcore->getHeading();
-				if (heading < -180) heading += 360;
-				std::stringstream oss;
-				oss << "FROM: " << stcore->getHeading() << " TO: " << heading;
-				cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
-			}
-			stcore->setHeading(heading, (int)(fdelay*1000));
-		}
-	} else if (args["home_planet"]!="") {
-		if (args["home_planet"]=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(args["home_planet"]);
-	} else if (args["landscape_name"]!="") {
-		if ( args["landscape_name"]=="default") stcore->setInitialLandscapeName();
-		else
-			stcore->setLandscape(args["landscape_name"]);
-	} else if (args["line_width"]!="") stcore->setLineWidth(evalDouble(args["line_width"]));
-	else if (args["max_mag_nebula_name"]!="") coreLink->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"]));
-	else if (args["max_mag_star_name"]!="") coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"]));
-	else if (args["moon_scale"]!="") {
-		coreLink->setMoonScale(evalDouble(args["moon_scale"]));
-	} else if (args["sun_scale"]!="") {
-		coreLink->setSunScale(evalDouble(args["sun_scale"]));
-	} else if (args["milky_way_texture"]!="") {
-		if(args["milky_way_texture"]=="default") coreLink->milkyWayRestoreDefault();
-		else {
-			if (args["milky_way_intensity"]!="")
-				coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], evalDouble(args["milky_way_intensity"]) );
-			else
-				coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
-		}
-	} else if (args["sky_culture"]!="") {
-		if (args["sky_culture"]=="default") stcore->setInitialSkyCulture();
-		else
-			stcore->setSkyCultureDir(args["sky_culture"]);
-	} else if (args["sky_locale"]!="") {
-		if ( args["sky_locale"]=="default") stcore->setInitialSkyLocale();
-		else
-			stcore->setSkyLanguage(args["sky_locale"]);
-	} else if (args["ui_locale"]!="") stapp->setAppLanguage(args["ui_locale"]);
-	else if (args["star_mag_scale"]!="") coreLink->starSetMagScale(evalDouble(args["star_mag_scale"]));
-	else if (args["star_size_limit"]!="") coreLink->starSetSizeLimit(evalDouble(args["star_size_limit"]));
-	else if (args["planet_size_limit"]!="") stcore->setPlanetsSizeLimit(evalDouble(args["planet_size_limit"]));
-	else if (args["star_scale"]!="") {
-		float scale = evalDouble(args["star_scale"]);
-		coreLink->starSetScale(scale);
-		coreLink->planetsSetScale(scale);
-	} else if (args["star_twinkle_amount"]!="") coreLink->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"]));
-	else if (args["star_fader_duration"]!="") coreLink->starSetDuration(evalDouble(args["star_fader_duration"]));
-	else if (args["star_limiting_mag"]!="") coreLink->starSetLimitingMag(evalDouble(args["star_limiting_mag"]));
-	else if (args["time_zone"]!="")spaceDate->setCustomTimezone(args["time_zone"]);
-	else if (args["ambient_light"]!="") {
-		if (args["ambient_light"]=="increment") {
-			coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
-		}
-		else if (args["ambient_light"]=="decrement"){
-			coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
-		}
-		else{
-			coreLink->uboSetAmbientLight(evalDouble(args["ambient_light"]));
-		}
-	} else if (args["text_fading_duration"]!="") coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"]));
-	else if (args["milky_way_fader_duration"]!="") coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"]));
-	else if (args["milky_way_intensity"]!="") {
-		if (args["milky_way_intensity"]=="default")
-			coreLink->milkyWayRestoreIntensity();
-		else
-			coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
-		// safety feature to be able to turn back on
-		if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
-	} else if (args["zoom_offset"]!="") {
-		stcore->setViewOffset(evalDouble(args["zoom_offset"]));
-	}
-	else if(args["startup_time_mode"]!="") stapp->setStartupTimeMode(args["startup_time_mode"]);
-	else if(args["date_display_format"]!="")spaceDate->setDateFormatStr(args["date_display_format"]);
-	else if(args["time_display_format"]!="")spaceDate->setTimeFormatStr(args["time_display_format"]);
-	else if(args["mode"]!="") stcore->switchMode(args["mode"]);
-	else if(args["screen_fader"]!="") {Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
-										EventManager::getInstance()->queue(event);
-										}
-	else if(args["stall_radius_unit"]!="") coreLink->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"]));
-	else if(args["tully_color_mode"]!="") coreLink->tullySetColor(args["tully_color_mode"]);
-	else if(args["datetime_display_position"]!="") ui->setDateTimePosition(evalInt(args["datetime_display_position"]));
-	else if(args["datetime_display_number"]!="") ui->setDateDisplayNumber(evalInt(args["datetime_display_number"]));
-	else {
+	SCD_NAMES parserSet = parseCommandSet();
+
+	if (parserSet == SCD_NAMES::APP_FLAG_NONE){
 		debug_message = "command_'set': unknown argument";
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		return executeCommandStatus();
 	}
+	
+	switch(parserSet) { 
+		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : coreLink->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"])); break;
+		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(args["auto_move_duration"])); break;
+		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"])); break;
+		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"])); break;
+		case SCD_NAMES::APP_FONT : 
+						{
+							FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
+							if (myFile) {
+								int size = 10;
+								if (args["size"] != "") size = evalInt(args["size"]);
+								stcore->loadFont(size, myFile.toString());
+							} else {
+								debug_message= "command_set_font font not found";
+								cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+							}
+						} break;
+		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:	stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"])); break;
+		case SCD_NAMES::APP_HEADING: 
+					{
+						if (args["heading"]=="default") {
+							coreLink->setDefaultHeading();
+						}
+						else {
+							float fdelay = evalDouble(args["duration"]);
+							double heading = evalDouble(args["heading"]);
+							if (fdelay <= 0) fdelay = 0;
+							if (args["heading"][0] == '+') {
+								heading += coreLink->getHeading();
+								if (heading > 180) heading -= 360;
+								std::stringstream oss;
+								oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
+								cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+							}
+							if (args["heading"][0] == '-') {
+								heading += coreLink->getHeading();
+								if (heading < -180) heading += 360;
+								std::stringstream oss;
+								oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
+								cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+							}
+							coreLink->setHeading(heading, (int)(fdelay*1000));
+						}
+					} break;
+		case SCD_NAMES::APP_HOME_PLANET: if (args["home_planet"]=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(args["home_planet"]); break;
+		case SCD_NAMES::APP_LANDSCAPE_NAME: 
+						{
+							if ( args["landscape_name"]=="default")
+								stcore->setInitialLandscapeName();
+							else
+								stcore->setLandscape(args["landscape_name"]);
+						} break;
+		case SCD_NAMES::APP_LINE_WIDTH:	stapp->setLineWidth(evalDouble(args["line_width"])); break;
+		case SCD_NAMES::APP_MAX_MAG_NEBULA_NAME: coreLink->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"])); break;
+		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"])); break;
+		case SCD_NAMES::APP_MOON_SCALE: coreLink->setMoonScale(evalDouble(args["moon_scale"])); break;
+		case SCD_NAMES::APP_SUN_SCALE: coreLink->setSunScale(evalDouble(args["sun_scale"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_TEXTURE: 
+						{
+							if(args["milky_way_texture"]=="default") coreLink->milkyWayRestoreDefault();
+							else {
+								if (args["milky_way_intensity"]!="")
+									coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], evalDouble(args["milky_way_intensity"]) );
+								else
+									coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
+							}
+						} break;
+		case SCD_NAMES::APP_SKY_CULTURE: 
+						{
+							if (args["sky_culture"]=="default") stcore->setInitialSkyCulture();
+							else
+								stcore->setSkyCultureDir(args["sky_culture"]);
+						} break;
+		case SCD_NAMES::APP_SKY_LOCALE: 
+						{
+							if ( args["sky_locale"]=="default") stcore->setInitialSkyLocale();
+							else
+								stcore->setSkyLanguage(args["sky_locale"]);
+						} break;
+		case SCD_NAMES::APP_UI_LOCALE: stapp->setAppLanguage(args["ui_locale"]); break;
+		case SCD_NAMES::APP_STAR_MAG_SCALE: coreLink->starSetMagScale(evalDouble(args["star_mag_scale"])); break;
+		case SCD_NAMES::APP_STAR_SIZE_LIMIT: coreLink->starSetSizeLimit(evalDouble(args["star_size_limit"])); break;
+		case SCD_NAMES::APP_PLANET_SIZE_LIMIT: stcore->setPlanetsSizeLimit(evalDouble(args["planet_size_limit"])); break;
+		case SCD_NAMES::APP_STAR_SCALE: 
+						{
+							float scale = evalDouble(args["star_scale"]);
+							coreLink->starSetScale(scale);
+							coreLink->planetsSetScale(scale);
+						} break;
+		case SCD_NAMES::APP_STAR_TWINKLE_AMOUNT: coreLink->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"])); break;
+		case SCD_NAMES::APP_STAR_FADER_DURATION: coreLink->starSetDuration(evalDouble(args["star_fader_duration"])); break;
+		case SCD_NAMES::APP_STAR_LIMITING_MAG: coreLink->starSetLimitingMag(evalDouble(args["star_limiting_mag"])); break;
+		case SCD_NAMES::APP_TIME_ZONE: spaceDate->setCustomTimezone(args["time_zone"]); break;
+		case SCD_NAMES::APP_AMBIENT_LIGHT: 
+						{
+								if (args["ambient_light"]=="increment") {
+								coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
+							}
+							else if (args["ambient_light"]=="decrement"){
+								coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
+							}
+							else{
+								coreLink->uboSetAmbientLight(evalDouble(args["ambient_light"]));
+							}
+						} break;	
+		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
+						{
+							if (args["milky_way_intensity"]=="default")
+								coreLink->milkyWayRestoreIntensity();
+							else
+								coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
+							// safety feature to be able to turn back on
+							if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
+						} break;
+		case SCD_NAMES::APP_ZOOM_OFFSET: stcore->setViewOffset(evalDouble(args["zoom_offset"])); break;
+		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(args["startup_time_mode"]); break;
+		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(args["date_display_format"]); break;
+		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(args["time_display_format"]); break;
+		case SCD_NAMES::APP_MODE: stcore->switchMode(args["mode"]); break;
+		case SCD_NAMES::APP_SCREEN_FADER: 
+						{
+							Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
+							EventManager::getInstance()->queue(event);
+						}break;
+		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"])); break;
+		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(args["tully_color_mode"]); break;
+		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(args["datetime_display_position"])); break;
+		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(args["datetime_display_number"])); break;
+		default: break;
+	}
+
 	return executeCommandStatus();
 }
 
@@ -1985,7 +1998,7 @@ int AppCommandInterface::commandConstellation()
 int AppCommandInterface::commandExternalMplayer()
 {
 	std::string argAction = args["action"];
-	std::string argFileName = args["filename"];
+	//std::string argFileName = args["filename"];
 	if (!argAction.empty()) {
 		if (argAction=="play" && args["filename"]!="") {
 			if (Utility::isAbsolute(args["filename"]))
@@ -2195,7 +2208,7 @@ int AppCommandInterface::commandMeteors()
 {
 	std::string argZhr=args["zhr"];
 	if (! argZhr.empty()) {
-		stcore->setMeteorsRate(evalInt(args["zhr"]));
+		coreLink->setMeteorsRate(evalInt(args["zhr"]));
 	} else
 		debug_message = "command 'meteors' : no zhr argument";
 	return executeCommandStatus();
@@ -2354,13 +2367,28 @@ int AppCommandInterface::commandScript()
 		} else if (argAction=="pause" || argAction=="resume") {
 			scriptInterface->resumeScript();
 		} else if (argAction=="faster") {
-			scriptInterface->fasterScript();
+			scriptInterface->fasterSpeed();
 		} else if (argAction=="slower") {
-			scriptInterface->slowerScript();
+			scriptInterface->slowerSpeed();
+		} else if (argAction=="default") {
+			scriptInterface->defaultSpeed();
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();
 	}
+
+	std::string argSpeed = args["speed"];
+	if (!argSpeed.empty()) {
+		if (argAction=="faster") {
+			scriptInterface->fasterSpeed();
+		} else if (argAction=="slower") {
+			scriptInterface->slowerSpeed();
+		} else if (argAction=="default") {
+			scriptInterface->defaultSpeed();
+		} else
+			debug_message = "command_script : unknown parameter from 'speed' argument";		
+	}
+
 	debug_message = "command_'script' : missing action argument";
 	return executeCommandStatus();
 }
@@ -2579,7 +2607,7 @@ int AppCommandInterface::commandSelect()
 		select_type = "planet";
 		identifier = args["planet"];
 		if (args["planet"] == "home_planet")
-			identifier = stcore->getObservatory()->getHomePlanetEnglishName();
+			identifier = coreLink->getObserverHomePlanetEnglishName();
 	} else if (args["nebula"]!="") {
 		select_type = "nebula";
 		identifier = args["nebula"];
@@ -2590,7 +2618,7 @@ int AppCommandInterface::commandSelect()
 		select_type = "constellation_star";
 		identifier = args["constellation_star"];
 	} else {
-		select_type = "";
+		//select_type = "";
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
 	}
@@ -2686,11 +2714,11 @@ int AppCommandInterface::commandPosition()
 {
 	std::string argAction = args["action"];
 	if (argAction == "save") {
-		stcore->getmBackup();
+		coreBackup->saveBackup();
 		return executeCommandStatus();
 	}
 	if (argAction == "load") {
-		stcore->setmBackup();
+		coreBackup->loadBackup();
 		return executeCommandStatus();
 	}
 	debug_message = _("Command 'position': unknown parameter");
@@ -2787,8 +2815,9 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		Observer *observatory = stcore->getObservatory();
-		if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=3;
+		//Observer *observatory = stcore->getObservatory();
+		// if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=3;
+		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
 		if( !argStep.empty() )
 			sstep = evalDouble(argStep);
 
@@ -2821,8 +2850,9 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		Observer *observatory = stcore->getObservatory();
-		if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=-3;
+		// Observer *observatory = stcore->getObservatory();
+		// if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=-3;
+		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
 
 		if( !argStep.empty() )
 			sstep = evalDouble(argStep);
@@ -2861,34 +2891,38 @@ int AppCommandInterface::commandMoveto()
 		return executeCommandStatus();
 	}
 
-	Observer *observatory = stcore->getObservatory();
+	// Observer *observatory = stcore->getObservatory();
+	// double lat = observatory->getLatitude();
+	// double lon = observatory->getLongitude();
+	// double alt = observatory->getAltitude();
 
-	double lat = observatory->getLatitude();
-	double lon = observatory->getLongitude();
-	double alt = observatory->getAltitude();
+	double lat = coreLink->observatoryGetLatitude();
+	double lon = coreLink->observatoryGetLongitude();
+	double alt = coreLink->observatoryGetAltitude();
 
-	std::string name = observatory->getName();
-	std::string argName = args["name"];
+
+	// std::string name = coreLink->observatoryGetName();
+	// std::string argName = args["name"];
 	int delay;
 
-	if (!argName.empty()) name = argName;
+	// if (!argName.empty()) name = argName;
 
 	if (!argLat.empty()) {
 		if (argLat=="default")
-			lat = observatory->getDefaultLatitude();
+			lat = coreLink->observatoryGetDefaultLatitude();
 		else if (argLat=="inverse")
 			lat = -lat;
 		else lat = evalDouble(argLat);
 	}
 	if (!argLon.empty()) {
 		if (argLon=="default")
-			lon = observatory->getDefaultLongitude();
+			lon = coreLink->observatoryGetDefaultLongitude();
 		else if (argLon=="inverse")
 			lon = lon+180.0;
 		else lon = evalDouble(argLon);
 	}
 	if (!argAlt.empty()) {
-		if (argAlt=="default") alt = observatory->getDefaultAltitude();
+		if (argAlt=="default") alt = coreLink->observatoryGetDefaultAltitude();
 		else {
 			if (argAlt[0] == '+' || argAlt[0] == '-')
 				alt += evalDouble(argAlt);
@@ -2912,12 +2946,12 @@ int AppCommandInterface::commandMoveto()
 
 	delay = (int)(1000.*evalDouble(args["duration"]));
 
-	//TODO recevoir les erreurs de moveObserver
-	stcore->moveObserver(lat,lon,alt,delay/*,name*/);
+	coreLink->observerMoveTo(lat,lon,alt,delay/*,name*/);
 
 	return executeCommandStatus();
 }
 
+/*
 int AppCommandInterface::commandMultiplier()
 {
 	// script rate multiplier
@@ -2926,6 +2960,7 @@ int AppCommandInterface::commandMultiplier()
 		coreLink->timeSetMultiplier(evalDouble(argRate));
 		if (!coreLink->timeGetFlagPause())
 			coreLink->timeLoadSpeed();
+		// scriptInterface->
 		return executeCommandStatus();
 	}
 
@@ -2968,6 +3003,7 @@ int AppCommandInterface::commandMultiplier()
 	debug_message = _("Command 'multiplier_rate': unknown argument");
 	return executeCommandStatus();
 }
+*/
 
 
 int AppCommandInterface::commandMedia()
@@ -3160,7 +3196,7 @@ int AppCommandInterface::commandDate()
 	std::string argRelative = args["relative"];
 	if (!argRelative.empty()) { // value is a float number of days
 		double days = evalDouble(argRelative);
-		const Body* home = stcore->getObservatory()->getHomeBody();
+		const Body* home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
 			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument relative");
 			return executeCommandStatus();
@@ -3191,7 +3227,7 @@ int AppCommandInterface::commandDate()
 	std::string argSidereal = args["sidereal"];
 	if (!argSidereal.empty()) { // value is a float number of sidereal days
 		double days = evalDouble(argSidereal);
-		const Body* home = stcore->getObservatory()->getHomeBody();
+		const Body* home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
 			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument sideral");
 			return executeCommandStatus();
@@ -3264,7 +3300,7 @@ int AppCommandInterface::commandBody()
 	//gestion des actions
 	std::string argAction = args["action"];
 	std::string argName = args["name"];
-    if (argName == "home_planet") argName = stcore->getObservatory()->getHomePlanetEnglishName();
+    if (argName == "home_planet") argName = coreLink->getObserverHomePlanetEnglishName();
     //if (argName == "selected") argName = stcore->selected_object.getEnglishName();
 	std::string argMode = args["mode"];
 
@@ -3290,7 +3326,7 @@ int AppCommandInterface::commandBody()
 
 	std::string argSkinUse = args["skin_use"];
 	if (!argSkinUse.empty()) {
-		std::cout << "lancement de la commande skin_use" << std::endl;
+		//std::cout << "lancement de la commande skin_use" << std::endl;
 		if (argSkinUse=="toggle") {
 			coreLink->planetSwitchTexMap(argName, !coreLink->planetGetSwitchTexMap(argName));
 		} else
@@ -3301,7 +3337,7 @@ int AppCommandInterface::commandBody()
 
 	std::string argSkinTex = args["skin_tex"];
 	if (!argSkinTex.empty()) {
-		std::cout << "lancement de la commande skin_tex" << std::endl;
+		//std::cout << "lancement de la commande skin_tex" << std::endl;
 		coreLink->planetCreateTexSkin(argName, argSkinTex);
 		return executeCommandStatus();
 	}
@@ -3311,18 +3347,13 @@ int AppCommandInterface::commandBody()
 			// textures relative to script
 			args["path"] = scriptInterface->getScriptPath();
 			// Load a new solar system object
-			debug_message = stcore->addSolarSystemBody(args);
-
+			stcore->addSolarSystemBody(args);
 		} else if (argAction == "drop" && argName != "") {
 			// Delete an existing object, but only if was added by a script!
-			debug_message  = stcore->removeSolarSystemBody( argName );
+			stcore->removeSolarSystemBody( argName );
 		} else if (argAction == "clear") {
 			// drop all bodies that are not in the original config file
-			std::string error_string = stcore->removeSupplementalSolarSystemBodies();
-			if (error_string != "" ) {
-				debug_message = error_string;
-				cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-			}
+			stcore->removeSupplementalSolarSystemBodies();
 		} else if (argAction == "initial") {
 			coreLink->initialSolarSystemBodies();
 		} else {
@@ -3362,7 +3393,7 @@ int AppCommandInterface::commandBody()
 
 
 		std::string argColor = args["color"];
-		std::string argName = args["name"];
+		// std::string argName = args["name"];
 		if (!argColor.empty()) {
 			//gestion de la couleur
 			Vec3f Vcolor;

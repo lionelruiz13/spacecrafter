@@ -41,11 +41,11 @@ public:
 	void printToken();
 	Token * pNext= nullptr;
 
-	std::string getToken() {
+	std::string getToken() const {
 		return elmt;
 	}
 
-	std::string getTokenPath() {
+	std::string getTokenPath() const {
 		return path;
 	}
 

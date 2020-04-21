@@ -54,10 +54,10 @@ public:
 	                       float _distance, std::string tex_name, bool path, float tex_angular_size, float _rotation, std::string _credit, float _luminance, bool deletable = true);
 
 	//! remove user added nebula and optionally unhide the original of the same name
-	std::string removeNebula(const std::string& name, bool showOriginal);
+	void removeNebula(const std::string& name, bool showOriginal);
 
 	//! remove all user added nebula
-	std::string removeSupplementalNebulae();
+	void removeSupplementalNebulae();
 
 	//! Draw all the DSO
 	void draw(const Projector *prj, const Navigator *nav, ToneReproductor *eye, double sky_brightness);
