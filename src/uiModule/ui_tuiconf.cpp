@@ -56,9 +56,9 @@ void UI::drawGravityUi()
 
 		os << spaceDate->getPrintableDateLocal(jd) << " " << spaceDate->getPrintableTimeLocal(jd);
 
-		if ((FlagShowPlanetname) && (core->getObservatory()->getHomePlanetEnglishName()!="Earth")) {
-			if (core->getObservatory()->getHomePlanetEnglishName()!= "")
-			os << " " << _(core->getObservatory()->getHomePlanetEnglishName());
+		if ((FlagShowPlanetname) && (coreLink->getObserverHomePlanetEnglishName()!="Earth")) {
+			if (coreLink->getObserverHomePlanetEnglishName()!= "")
+			os << " " << _(coreLink->getObserverHomePlanetEnglishName());
 		}
 		if (FlagShowFov) os << " fov " << std::setprecision(3) << coreLink->getFov();
 		if (FlagShowFps) os << "  FPS " << app->getFpsClock();
@@ -78,27 +78,29 @@ void UI::drawGravityUi()
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
 			s_2= info.substr(info.find("@")+1);
-			core->printHorizontal(tuiFont, 10,120, s_1 ,text_ui, 1);
-			core->printHorizontal(tuiFont, 4 ,120, s_2 ,text_ui, 1);
-
+			core->printHorizontal(tuiFont, 10,120, s_1 ,text_ui, false);//, 1, 1);
+			core->printHorizontal(tuiFont, 4 ,120, s_2 ,text_ui, false);//, 1, 1);
 		} else {
 			int PosDateTimeL = PosDateTime;
+			//on met les textes en cache car on les affiche plusieurs fois
 			switch(FlagNumberPrint) {
 				case 3 :
 					PosDateTimeL=PosDateTimeL%120;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(),text_ui,  1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+120), os.str(), text_ui, 1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+240), os.str(), text_ui, 1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(),text_ui);//,  1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+120), os.str(), text_ui);//, 1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+240), os.str(), text_ui);//, 1,1);
 					break;
 				case 2 :
 					PosDateTimeL=PosDateTimeL%180;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui, 1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+180), os.str(), text_ui, 1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui);//, 1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+180), os.str(), text_ui);//, 1,1);
 					break;
 				default:
 					PosDateTimeL=PosDateTimeL%360;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui,  1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui);//,  1, 1);
 			}
+			// on n'en a plus besoin aussi on les supprime
+			tuiFont->clearCache(os.str());
 		}
 	}
 
@@ -111,11 +113,14 @@ void UI::drawGravityUi()
 			std::string s_1, s_2;
 			s_1= info2.substr(0, info2.find("@"));
 			s_2= info2.substr(info2.find("@")+1);
-			core->printHorizontal(tuiFont, 4 , PosObjectInfo, s_2 , tmpColor, 1);
-			core->printHorizontal(tuiFont, 10 ,PosObjectInfo, s_1 , tmpColor, 1);
-			core->printHorizontal(tuiFont, 16, PosObjectInfo , info, tmpColor, 1);
+			core->printHorizontal(tuiFont, 4 , PosObjectInfo, s_2 , tmpColor, false);//, 1,1);
+			core->printHorizontal(tuiFont, 10 ,PosObjectInfo, s_1 , tmpColor, false);//, 1,1);
+			core->printHorizontal(tuiFont, 16, PosObjectInfo , info, tmpColor, false);//, 1,1);
+			// tuiFont->clearCache(s_1);
+			// tuiFont->clearCache(s_2);
 		} else
-			core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor,  1);
+			core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor, false);//,  1,1);
+		// tuiFont->clearCache(info);
 	}
 }
 
@@ -594,7 +599,8 @@ void UI::drawTui()
 	StateGL::enable(GL_BLEND);
 
 	if (tui_root) {
-		core->printHorizontal(tuiFont, 5, PosMenuM, tui_root->getString() , text_tui_root, -1);
+		core->printHorizontal(tuiFont, 5, PosMenuM, tui_root->getString() , text_tui_root, false);//, 1, 1);
+		//tuiFont->clearCache(tui_root->getString());
 	}
 }
 
@@ -621,7 +627,7 @@ void UI::tuiUpdateWidgets()
 	tui_location_latitude->setValue(coreLink->observatoryGetLatitude());
 	tui_location_longitude->setValue(coreLink->observatoryGetLongitude());
 	tui_location_altitude->setValue(coreLink->observatoryGetAltitude());
-	tui_location_heading->setValue(core->getHeading());
+	tui_location_heading->setValue(coreLink->getHeading());
 
 
 	// 2. Date & Time
@@ -669,7 +675,7 @@ void UI::tuiUpdateWidgets()
 	tui_colors_circumpolar_circle_color->setVector(coreLink->skyLineMgrGetColor(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 
 	// *** Effects
-	tui_effect_zoom_duration->setValue(core->getAutomoveDuration());
+	tui_effect_zoom_duration->setValue(core->getAutoMoveDuration());
 	tui_effect_manual_zoom->setValue(core->getFlagManualAutoZoom());
 	tui_effect_object_scale->setValue(coreLink->starGetScale());
 	tui_effect_star_size_limit->setValue(core->starGetSizeLimit());
@@ -679,9 +685,9 @@ void UI::tuiUpdateWidgets()
 	tui_effect_light_pollution->setValue(core->getLightPollutionLimitingMagnitude());
 	tui_effect_nebulae_label_magnitude->setValue(coreLink->nebulaGetMaxMagHints());
 	tui_effect_light_travel->setValue(coreLink->getFlagLightTravelTime());
-	tui_effect_view_offset->setValue(core->getViewOffset());
-	tui_effect_antialias->setValue(core->getFlagAntialiasLines());
-	tui_effect_line_width->setValue(core->getLineWidth());
+	tui_effect_view_offset->setValue(coreLink->getViewOffset());
+	tui_effect_antialias->setValue(app->getFlagAntialiasLines());
+	tui_effect_line_width->setValue(app->getLineWidth());
 
 	// 7. Scripts
 	// each fresh time enter needs to reset to select message
@@ -834,7 +840,7 @@ void UI::tuiCbAdminSetLocale()
 // change heading or view offset
 void UI::tuiCbViewportRelated()
 {
-	core->setHeading(tui_location_heading->getValue(),
+	coreLink->setHeading(tui_location_heading->getValue(),
 	                 int(tui_effect_zoom_duration->getValue()*1000));  // TEMP temporarily using zoom duration
 	core->setViewOffset(tui_effect_view_offset->getValue());
 }
@@ -853,11 +859,11 @@ void UI::tuiCbSetlocation()
 	// change to human readable coordinates with current values, then change
 	coreLink->observatorySetLongitude(coreLink->observatoryGetLongitude());
 
-	core->getObservatory()->moveTo(tui_location_latitude->getValue(),
-	                                tui_location_longitude->getValue(),
-	                                tui_location_altitude->getValue(),
-	                                int(tui_effect_zoom_duration->getValue()*1000),  // TEMP temporarily using zoom duration
-	                                1); // use relative calculated duration
+	coreLink->observerMoveTo(tui_location_latitude->getValue(),
+	                            tui_location_longitude->getValue(),
+	                            tui_location_altitude->getValue(),
+	                            int(tui_effect_zoom_duration->getValue()*1000),  // TEMP temporarily using zoom duration
+	                            1); // use relative calculated duration
 }
 
 
@@ -990,5 +996,5 @@ void UI::tuiUpdateIndependentWidgets()
 	// Since some tui options don't immediately affect actual settings
 	// reset those options to the current values now
 	// (can not do this in tuiUpdateWidgets)
-	tui_location_planet->setValue(std::string(core->getObservatory()->getHomePlanetEnglishName()));
+	tui_location_planet->setValue(std::string(coreLink->getObserverHomePlanetEnglishName() ) );
 }

@@ -69,8 +69,8 @@ public:
 
 	// load one object from a hash (returns error message if any)
 	// this public method always adds bodies as deletable
-	std::string addBody(stringHash_t & param) {
-		return addBody(param, true);
+	void addBody(stringHash_t & param) {
+		addBody(param, true);
 	}
 
 	//removes a body that has no satelites
@@ -390,8 +390,8 @@ private:
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str);
 
-	// load one object from a hash (returns error message if any)
-	std::string addBody(stringHash_t & param, bool deletable);
+	// load one object from a hash
+	void addBody(stringHash_t & param, bool deletable);
 
 	Sun* sun=nullptr; //return the Sun
 	Moon* moon=nullptr;	//return the Moon

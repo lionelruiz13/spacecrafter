@@ -168,15 +168,16 @@ public:
 		core->timeMgr->setTimePause(_value);
 	}
 
-	double timeGetMultiplier() const {
-		return core->timeMgr->getTimeMultiplier();
-	}
+	// double timeGetMultiplier() const {
+	// 	return core->timeMgr->getTimeMultiplier();
+	// }
+	/*
 	void timeSetMultiplier(double _value) {
 		core->timeMgr->setTimeMultiplier(_value);
 	}
 	void timeResetMultiplier() {
 		core->timeMgr->setTimeMultiplier(1.0);
-	};
+	};*/
 
 	////////////////////////////////////////////////////////////////////////////////
 	// dateSun---------------------------
@@ -257,15 +258,27 @@ public:
 		return core->hip_stars->getMagConverterMaxScaled60DegMag();
 	}
 
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// void starSetFlagSciName(bool b) {
-	// 	core->hip_stars->setFlagSciNames(b);
-	// }
-	// bool starGetFlagSciName(void) const {
-	// 	return core->hip_stars->getFlagSciNames();
-	// }
-	///////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+	// Illuminate---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	void illuminateSetSize (double value) {
+		core->illuminates->setDefaultSize(value);
+	}
+
+	void illuminateLoad(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float rotation)
+	{
+		core->illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
+	}
+	
+	void illuminateRemove(const std::string& name)
+	{
+		core->illuminates->removeIlluminate(name);
+	}
+	
+	void illuminateRemoveAll()
+	{
+		core->illuminates->removeAllIlluminate();
+	}
 
 	void starSetFlagTwinkle(bool b) {
 		core->hip_stars->setFlagTwinkle(b);
@@ -285,16 +298,6 @@ public:
 		core->starNav->setStarSizeLimit(f);
 		core->setStarSizeLimit(f);
 	}
-
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// void starSetMaxMagSciName(float f) {
-	// 	core->hip_stars->setMaxMagName(f);
-	// }
-	// float starGetMaxMagSciName(void) const {
-	// 	return core->hip_stars->getMaxMagName();
-	// }
-	///////////////////////////////////////////////////////////
 
 	void starSetScale(float f) {
 		core->starNav->setScale(f);
@@ -383,6 +386,29 @@ public:
 		else 
 			core->ssystem->bodyTraceBodyChange(bodyName);
 	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// for TCP usage  ---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	std::string getConstellationSelectedShortName() const {
+		return core->asterisms->getSelectedShortName();
+	}
+
+	std::string getPlanetsPosition() const {
+		return core->ssystem->getPlanetsPosition();
+	}
+
+	std::string tcpGetPosition() const {
+		char tmp[512];
+		memset(tmp, '\0', 512);
+		sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", 
+			core->observatory->getLatitude(), core->observatory->getLongitude(),
+			core->observatory->getAltitude(), core->timeMgr->getJDay(), 
+			core->navigation->getHeading());
+		return tmp;
+	}
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// UBO---------------------------
@@ -524,13 +550,9 @@ public:
 		return core->anchorManager->transitionToBody(name);
 	}
 
-	bool cameraSave(const std::string& name = "anchor"){
-		return core->anchorManager->saveCameraPosition(core->settings->getUserDir() + "anchors/" + name);
-	}
+	bool cameraSave(const std::string& name = "anchor");
 	
-	bool loadCameraPosition(const std::string& filename){
-		return core->anchorManager->loadCameraPosition(core->settings->getUserDir() + "anchors/" + filename);
-	}
+	bool loadCameraPosition(const std::string& filename);
 	
 	bool lookAt(double az, double alt, double time = 1.){
 		return core->navigation->lookAt(az, alt, time);
@@ -1148,7 +1170,19 @@ public:
 	double observatoryGetAltitude() {
 		return core->observatory->getAltitude();
 	}
- 
+
+	double observatoryGetDefaultLatitude() {
+		return core->observatory->getDefaultLatitude();
+	}
+
+	double observatoryGetDefaultLongitude() {
+		return core->observatory->getDefaultLongitude();
+	}
+
+	double observatoryGetDefaultAltitude() {
+		return core->observatory->getDefaultAltitude();
+	}
+
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// void observatorySetLatitude(double l) {
@@ -1163,7 +1197,7 @@ public:
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// void observatorySetAltitude(double l) {
-	// 	core->observatory->setAltitude(l);
+	//  	core->observatory->setAltitude(l);
 	// }
 	
 	// void observatorySetSpacecraft(double l) {
@@ -1182,7 +1216,125 @@ public:
 	// 	core->observatory->fixBodyToSun();
 	// }
 	///////////////////////////////////////////////////////////
-	
+	std::string getObserverName(){
+		return core->observatory->getName(); 
+	}
+
+	std::string getObserverHomePlanetEnglishName() {
+		return core->observatory->getHomePlanetEnglishName();
+	}
+
+	const Body* getObserverHomeBody(){
+		return core->observatory->getHomeBody();
+	}
+
+	void observerMoveTo(double lat, double lon, double alt, int duration, bool calculate_duration=0) {
+		core->observatory->moveTo(lat, lon, alt, duration, calculate_duration);
+	}
+
+	//! Move to relative longitude where home planet is fixed.
+	void observerMoveRelLon(double lon, int delay) {
+		core->observatory->moveRelLon(lon, delay);
+	}
+	//! Move to relative latitude where home planet is fixed.
+	void observerMoveRelLat(double lat, int delay) {
+		core->observatory->moveRelLat(lat, delay);
+	}
+	//! Move to relative altitude where home planet is fixed.
+	void observerMoveRelAlt(double alt, int delay) {
+		core->observatory->moveRelAlt(alt, delay);
+	}
+
+	void observerSetConf(InitParser &conf,const std::string &section) {
+		core->observatory->setConf(conf,section);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// city ---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	void getCoordonateemCityCore(const std::string name, const std::string country, double &longitude, double &latitude, int &altitude) {
+		core->mCity->getCoordonnatemCity(name,country, longitude, latitude, altitude);
+	}
+
+	//! change the Heading value
+	void moveHeadingRelative(float f) {
+		core->navigation->setHeading(core->navigation->getHeading() + f);
+	}
+
+	//! Set Meteor Rate in number per hour
+	void setMeteorsRate(int f) {
+		core->meteors->setZHR(f);
+	}
+
+	//! Get Meteor Rate in number per hour
+	int getMeteorsRate(void) const {
+		return core->meteors->getZHR();
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Atmosphere---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+	//! Set flag for displaying Atmosphere
+	void atmosphereSetFlag(bool b) {
+		core->bodyDecor->setAtmosphereState(b);
+	}
+	//! Get flag for displaying Atmosphere
+	bool atmosphereGetFlag(void) const {
+		return core->bodyDecor->getAtmosphereState();
+	}
+
+	//! Set atmosphere fade duration in s
+	void atmosphereSetFadeDuration(float f) {
+		core->atmosphere->setFaderDuration(f);
+	}
+
+	//! Set flag for activating atmospheric refraction correction
+	void atmosphericRefractionSetFlag(bool b) {
+		core->FlagAtmosphericRefraction = b;
+	}
+
+	//! Get flag for activating atmospheric refraction correction
+	bool atmosphericRefractionGetFlag(void) const {
+		return core->FlagAtmosphericRefraction;
+	}
+
+	// Fonctions non utilisée ?
+	// -------------------------------
+	// //! set flag for vp Optoma
+	// void atmosphereSetFlagOptoma(bool b) {
+	// 	core->atmosphere->setFlagOptoma(b);
+	// }
+
+	// //! Get flag for vp Optoma
+	// bool atmosphereGetFlagOptoma(void) const {
+	// 	return core->atmosphere->getFlagOptoma();
+	// }
+
+	// //! Get atmosphere fade duration in s
+	// float atmosphereGetFadeDuration(void) const {
+	// 	return core->atmosphere->getFaderDuration();
+	// }
+	///////////////////////////////////////////////////////////
+
+	double getViewOffset() {
+		return core->navigation->getViewOffset();
+	}
+
+	//! set environment rotation around observer
+	void setHeading(double heading, int duration=0) {
+		core->navigation->changeHeading(heading, duration);
+	}
+
+	void setDefaultHeading() {
+		core->navigation->setDefaultHeading();
+	}
+
+	double getHeading() {
+		return core->navigation->getHeading();
+	}
+
     CoreLink(Core* _core);
     ~CoreLink();
 

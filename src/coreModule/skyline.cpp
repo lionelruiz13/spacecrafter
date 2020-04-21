@@ -54,7 +54,10 @@ SkyLine::~SkyLine()
 
 void SkyLine::setFont(float font_size, const std::string& font_name)
 {
-	if (font) delete font;
+	if (font) {
+		delete font;
+		font = nullptr;
+	}
 	font = new s_font(font_size, font_name);
 	assert(font);
 }
@@ -243,7 +246,7 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 {
 	if (!fader.getInterstate()) return;
 	// TODO changer cette condition
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth())) return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -338,7 +341,7 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 				//~ glEnable(GL_TEXTURE_2D);
 
-				font->print(0,-5,oss.str(), Color, MVP*TRANSFO ,1,1);
+				font->print(0,-5,oss.str(), Color, MVP*TRANSFO ,1);
 				//~ glPopMatrix();
 				//~ glDisable(GL_TEXTURE_2D);
 			}
@@ -591,7 +594,7 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 {
 	if (!fader.getInterstate()) return;
 	// TODO changer cette condition
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth()))return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 	Vec3f tmp;
@@ -819,7 +822,7 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 {
 	if (!fader.getInterstate()) return;
 	//TODO Changer cette condition !
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth())) return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 //	glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -872,7 +875,7 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
 		//~ glEnable(GL_TEXTURE_2D);
-		if (font) font->print(2,-2,"GM", Color, MVP*TRANSFO ,1,1);
+		if (font) font->print(2,-2,"GM", Color, MVP*TRANSFO ,1);
 		//~ glDisable(GL_TEXTURE_2D);
 		//~ glPopMatrix();
 	}
@@ -913,7 +916,7 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 {
 	if (!fader.getInterstate()) return;
 	//TODO Changer cette condition !
-	if (observatory->getHomePlanetEnglishName() !="Earth") return;
+	if (!(observatory->isEarth())) return;
 	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -966,7 +969,7 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 		//~ glEnable(GL_TEXTURE_2D);
 
 
-		if (font) font->print(2,-2,"Aries", Color, MVP*TRANSFO ,1,1);
+		if (font) font->print(2,-2,"Aries", Color, MVP*TRANSFO ,1);
 		//~ glDisable(GL_TEXTURE_2D);
 		//~ glPopMatrix();
 	}
@@ -1107,7 +1110,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 					//~ glEnable(GL_TEXTURE_2D);
 
 
-					if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1,1);
+					if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
 					//~ glPopMatrix();
 					//~ glDisable(GL_TEXTURE_2D);
 				}
@@ -1190,7 +1193,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 
 
 			//~ glEnable(GL_TEXTURE_2D);
-			if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1,1);
+			if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
 			//~ glDisable(GL_TEXTURE_2D);
 		}
 	}
@@ -1330,7 +1333,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 
 					//~ glEnable(GL_TEXTURE_2D);
 
-					if (font) font->print(-24,-2,oss.str(), Color, MVP*TRANSFO ,1,1);
+					if (font) font->print(-24,-2,oss.str(), Color, MVP*TRANSFO ,1);
 					//~ glPopMatrix();
 					//~ glDisable(GL_TEXTURE_2D);
 				}
@@ -1424,8 +1427,10 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				}
 				//~ glEnable(GL_TEXTURE_2D);
 
-				if (((i+1)%2==0) && font && ((internalNav) && (line_equator_type != GALACTIC_EQUATOR))) font->print(-26,-2,oss.str(), Color, MVP*TRANSFO ,1,1);
-				if (((i+1)%2==0) && font && !((internalNav) && (line_equator_type != GALACTIC_EQUATOR))) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1,1);
+				if (((i+1)%2==0) && font && ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
+					font->print(-26,-2,oss.str(), Color, MVP*TRANSFO ,1);
+				if (((i+1)%2==0) && font && !((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
+					font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
 
 				//~ glDisable(GL_TEXTURE_2D);
 			}
@@ -1511,7 +1516,7 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 		return;
 
 	// Not valid on non-planets
-	if ( (observatory->getHomeBody()->isSatellite()) || observatory->getHomePlanetEnglishName() == "Sun") return;
+	if ( (observatory->getHomeBody()->isSatellite()) || observatory->isSun()) return;
 	//~ if ( (observatory->getHomePlanet()->isSatellite()) || observatory->getHomePlanet()->getEnglishName() == "Sun") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -1720,7 +1725,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 	//~ Mat4d m = observatory->getHomePlanet()->getRotEquatorialToVsop87().transpose();
 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
 	//TODO Changer cette condition !
-	bool draw_labels = (observatory->getHomePlanetEnglishName()=="Earth" && font);
+	bool draw_labels = (observatory->isEarth() && font);
 	//~ bool draw_labels = (observatory->getHomePlanet()->getEnglishName()=="Earth" && font);
 
 	// start labeling from the vernal equinox
@@ -1831,7 +1836,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 
 				// TODO cahnger cette condition
 				//~ if (observatory->getHomePlanet()->getEnglishName()=="Earth") {
-				if (observatory->getHomePlanetEnglishName()=="Earth") {
+				if (observatory->isEarth()) {
 					float degree = i-84.5;
 					if (degree < 0) degree += 360;
 					if (internalNav)
@@ -1850,7 +1855,7 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 
 				//~ glEnable(GL_TEXTURE_2D);
 
-				font->print(0,-10,oss.str(), Color, MVP*TRANSFO ,1,1);
+				font->print(0,-10,oss.str(), Color, MVP*TRANSFO ,1);
 				//~ glPopMatrix();
 				//~ glDisable(GL_TEXTURE_2D);
 			}
@@ -1901,7 +1906,7 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 		return;
 	
 	// TODO : changer cette condition
-	if(observatory->getHomePlanetEnglishName()!="Earth") return;
+	if(!(observatory->isEarth())) return;
 	//~ if(observatory->getHomePlanet()->getEnglishName()!="Earth") return;
 
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
@@ -1993,7 +1998,7 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 
 					//~ glEnable(GL_TEXTURE_2D);
 
-					font->print(0,-2,oss.str(), Color, MVP*TRANSFO ,1,1);
+					font->print(0,-2,oss.str(), Color, MVP*TRANSFO ,1);
 
 					//~ glBegin (GL_LINES);
 					//~ glVertex2f(-3,0);
@@ -2129,7 +2134,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 			//~ glEnd();
 
 			//~ glEnable(GL_TEXTURE_2D);
-			if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1,1);
+			if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
 			//~ glDisable(GL_TEXTURE_2D);
 			//~ glPopMatrix();
 		}
@@ -2262,7 +2267,7 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 		//~ glEnable(GL_TEXTURE_2D);
 
-		if (font) font->print(10,-10,oss.str(), Color, MVP*TRANSFO ,1,1);
+		if (font) font->print(10,-10,oss.str(), Color, MVP*TRANSFO ,1);
 		//~ glDisable(GL_TEXTURE_2D);
 		//~ glPopMatrix();
 	}
@@ -2317,7 +2322,7 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 );
 
 		//~ glEnable(GL_TEXTURE_2D);
-		if (font) font->print(10,-10,oss.str(), Color, MVP*TRANSFO ,1,1);
+		if (font) font->print(10,-10,oss.str(), Color, MVP*TRANSFO ,1);
 		//~ glDisable(GL_TEXTURE_2D);
 		//~ glPopMatrix();
 	}

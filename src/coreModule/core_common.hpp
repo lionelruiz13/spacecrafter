@@ -1,7 +1,7 @@
 #ifndef CORE_COMMON_HPP
 #define CORE_COMMON_HPP
 
-enum SKYLINE_TYPE : char {
+enum class SKYLINE_TYPE : char {
 		LINE_CIRCLE_POLAR,
 		LINE_POINT_POLAR,
 		LINE_ECLIPTIC_POLE,

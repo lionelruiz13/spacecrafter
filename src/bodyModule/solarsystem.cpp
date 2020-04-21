@@ -94,12 +94,15 @@ SolarSystem::SolarSystem()
 
 void SolarSystem::setFont(float font_size, const std::string& font_name)
 {
-	if (planet_name_font) delete planet_name_font;
+	if (planet_name_font) {
+		delete planet_name_font;
+		planet_name_font=nullptr;
+	}
 
 	planet_name_font = new s_font(font_size, font_name);
 	if (!planet_name_font) {
 		cLog::get()->write("Can't create planet_name_font", LOG_TYPE::L_ERROR);
-		exit(-1);
+		assert(planet_name_font);
 	}
 	Body::setFont(planet_name_font);
 }
@@ -154,7 +157,7 @@ void SolarSystem::load(const std::string& planetfile)
 			} else {
 				if (bodyParams.size() !=0) {
 					//TODO récupérer cette erreur s'il y en a !
-					std::cout << addBody(bodyParams, false);  // config file bodies are not deletable
+					addBody(bodyParams, false);  // config file bodies are not deletable
 					bodyParams.clear();
 				}
 			}
@@ -223,7 +226,7 @@ SolarSystem::BodyContainer* SolarSystem::findBodyContainer(const std::string &na
 
 // Init and load one solar system object
 // This is a the private method
-std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
+void SolarSystem::addBody(stringHash_t & param, bool deletable)
 {
 	//~ AutoPerfDebug apd(&pd, "SolarSystem::addBody$"); //Debug
 	BODY_TYPE typePlanet= UNKNOWN;
@@ -242,8 +245,10 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 	typePlanet= setPlanetType(type_Body);
 
 	// do not add if no name or no parent or no typePlanet
-	if (englishName=="")
-		return("Can not add body with no name");
+	if (englishName=="") {
+		cLog::get()->write("SolarSystem: can not add body with no name", LOG_TYPE::L_WARNING);
+		return;
+	}
 
 	// no parent ? so it's Sun
 	if (str_parent=="")
@@ -254,15 +259,19 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 		typePlanet = ASTEROID;
 
 	// Do not add if body already exists - name must be unique
-	if ( findBody(englishName)!=nullptr )
-		return (std::string("Can not add body named \"") + englishName + std::string("\" because a body of that name already exists\n"));
+	if ( findBody(englishName)!=nullptr ) {
+		cLog::get()->write("SolarSystem: Can not add body named " + englishName + " because a body of that name already exist", LOG_TYPE::L_WARNING);
+		return;
+	//	return (std::string("Can not add body named \"") + englishName + std::string("\" because a body of that name already exists\n"));
+	}
 
 	if (str_parent!="none") {
 		parent = findBody(str_parent);
 
 		if (parent == nullptr) {
-			std::string error = std::string("WARNING : can't find parent for ") + englishName;
-			return error;
+			//std::string error = std::string("WARNING : can't find parent for ") + englishName;
+			cLog::get()->write("SolarSystem: can't find parent for " + englishName, LOG_TYPE::L_WARNING);
+			return;
 		}
 	}
 
@@ -287,7 +296,7 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 		if (!sorb->isValid()) {
 			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
 			cLog::get()->write(error, LOG_TYPE::L_ERROR);
-			return error;
+			return;
 		}
 
 		// NB. moon has to be added later
@@ -301,7 +310,7 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 		if (!sorb->isValid()) {
 			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
 			cLog::get()->write(error, LOG_TYPE::L_ERROR);
-			return error;
+			return ;
 		}
 
 		orb = new MixedOrbit(sorb,
@@ -583,8 +592,6 @@ std::string SolarSystem::addBody(stringHash_t & param, bool deletable)
 	anchorManager->addAnchor(englishName, p);	
 
 	p->updateBoundingRadii();
-	return("");  // OK
-
 }
 
 bool SolarSystem::removeBodyNoSatellite(const std::string &name)

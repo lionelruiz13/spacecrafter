@@ -64,10 +64,15 @@ public:
 	void pauseScript();
 
 	//! play faster current script
-	void fasterScript();
+	void fasterSpeed();
 
 	//! play slower current script
-	void slowerScript();
+	void slowerSpeed();
+
+	//! play script without acceleration
+	void defaultSpeed(){
+		multiplierRate = 1;
+	}
 
 	//! start playing paused script
 	void resumeScript();
@@ -97,7 +102,7 @@ public:
 	};
 
 	bool isFaster( void );
-	void resetTimer();
+	// void resetTimer();
 
 	//! execute commands in running script
 	void update(int delta_time);
@@ -131,13 +136,17 @@ public:
 		nbrLoop=a;
 	}
 
+	int getMuliplierRate() {
+		return multiplierRate;
+	}
+
 private:
 	std::string getRecordDate();
 	Media* media = nullptr;
 	AppCommandInterface * commander = nullptr;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
-	unsigned long int elapsed_time;  //!< ms since last script command executed
-	unsigned long int wait_time;     //!< ms until next script command should be executed
+	// unsigned long int elapsed_time;  //!< ms since last script command executed
+	long int wait_time;     //!< ms until next script command should be executed
 	unsigned long int record_elapsed_time;  //!< ms since last command recorded
 	bool recording;  //!< is a script being recorded?
 	bool playing;    //!< is a script playing?  (could be paused)
@@ -145,7 +154,7 @@ private:
 	std::fstream rec_file;	//!< le pointeur sur le fichier
 	std::string DataDir;
 
-	int m_incCount;
+	int multiplierRate=1; 
 	bool isInLoop; 		//!< on est entrain de lire les instructions d'une loop
 	bool repeatLoop; 	//!< on est entrain de répéter une boucle
 	int nbrLoop;		//!< nombre de tours de boucles restants

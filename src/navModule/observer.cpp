@@ -310,6 +310,23 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, /*const 
 
 }
 
+void Observer::moveRelLat(double lat, int delay) {
+	double latimem = latitude+lat;
+	if (latimem>90) latimem=90;
+	if (latimem<-90) latimem=-90;
+	moveTo(latimem, longitude, altitude, delay);
+}
+
+//! Move to relative longitude where home planet is fixed.
+void Observer::moveRelLon(double lon, int delay) {
+	moveTo(latitude, longitude+lon, altitude, delay);
+}
+
+//! Move to relative altitude where home planet is fixed.
+void Observer::moveRelAlt(double alt, int delay) {
+	moveTo(latitude, longitude, altitude+alt, delay);
+}
+
 bool Observer::isOnBodyNamed(const std::string& bodyName){
 	
 	if(anchor == nullptr)
@@ -340,6 +357,13 @@ std::string Observer::getHomePlanetNameI18n(void) const
 	return p ? p->getNameI18n() : "";
 }
 
+bool Observer::isEarth() const {
+	return getHomePlanetEnglishName() == "Earth";
+}
+
+bool Observer::isSun() const {
+	return getHomePlanetEnglishName() == "Sun";
+}
 
 std::string Observer::getName(void) const
 {

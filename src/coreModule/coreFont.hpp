@@ -1,7 +1,5 @@
 /*
- * Spacecrafter astronomy simulation and visualization
- *
- * Copyright (C) 2014 of the LSS Team & Association Sirius
+ * Copyright (C) 2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,44 +20,38 @@
  *
  */
 
-//!  @brief File for backup application core processing.
-//!
-//! This file describe all backup option
-
-#ifndef _BACKUP_MGR_H_
-#define _BACKUP_MGR_H_
+#ifndef _COREFONT_HPP_
+#define _COREFONT_HPP_
 
 #include <string>
 
-struct InitialValue {
-	std::string initial_skyCulture;
-	std::string initial_skyLocale;
-	std::string initial_landscapeName;
-};
-
-struct BackupWorkspace {
-	double jday= 0.0;
-	double latitude = 0.0;
-	double longitude = 0.0;
-	double altitude = 0.f;
-	float fov = 0.f;
-	std::string home_planet_name;
-	std::string pos_name;
-};
-
 class Core;
+class InitParser;
 
-class CoreBackup {
+class CoreFont {
 
 public:
-	CoreBackup(Core* _core);
-	~CoreBackup();
-	void loadBackup();
-	void saveBackup();
+    CoreFont(Core* _core, int _resolution);
+    ~CoreFont();
+    void init(const InitParser& conf);
+    void setFont();
 
 private:
-	BackupWorkspace mBackup;
-	Core* core= nullptr;
+    Core* core;
+
+	std::string FontFileNameGeneral;			//! The font file used by default during initialization
+	std::string FontFileNamePlanet;				//! The font for the planet system
+	std::string FontFileNameConstellation;		//! The font for all asterims
+	std::string FontFileNameMenu;
+	std::string FontFileNameText;
+	double FontSizeText;
+	double FontSizeGeneral;
+	double FontSizePlanet;
+	double FontSizeConstellation;
+	double FontSizeCardinalPoints;
+
+    int resolution;
 };
 
-#endif // _BACKUP_MGR_H_
+
+#endif //_COREFONT_HPP_

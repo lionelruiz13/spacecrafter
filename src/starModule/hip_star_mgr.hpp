@@ -146,8 +146,7 @@ public:
 	//! - Lets various display flags from the ini parser object
 	//!
 	//! @param conf The ini parser object containing relevant settings.
-	virtual void init(float font_size, const std::string& font_name, const InitParser &conf);
-
+	virtual void init(const InitParser &conf);
 
 	//! draw the stars and the star selection indicator if necessary
 	virtual double draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, TimeMgr* timeMgr, float altitude);
@@ -277,14 +276,14 @@ public:
 		return isolateSelected;
 	}
 
-	//! Set display flag for Star Scientific names.
-	void setFlagStarsSciNames(bool b) {
-		flagStarSciName=b;
-	}
-	//! Get display flag for Star Scientific names.
-	bool getFlagStarsSciNames(void) const {
-		return flagStarSciName;
-	}
+	// //! Set display flag for Star Scientific names.
+	// void setFlagStarsSciNames(bool b) {
+	// 	flagStarSciName=b;
+	// }
+	// //! Get display flag for Star Scientific names.
+	// bool getFlagStarsSciNames(void) const {
+	// 	return flagStarSciName;
+	// }
 
 	//! Set flag for Star twinkling.
 	void setFlagTwinkle(bool b) {
@@ -421,7 +420,7 @@ public:
 		return mag_converter->computeRCMag(mag,eye,rc_mag);
 	}
 
-	//! Define font size to use for star names display.
+	//! - Loads the star font (for labels on named stars)
 	void setFont(float font_size, const std::string& font_name);
 
 	//! Show scientific or catalog names on stars without common names.
@@ -474,7 +473,7 @@ private:
 	float starScale;
 	float starMagScale;
 	bool flagStarName;
-	bool flagStarSciName;
+	// bool flagStarSciName;
 	float maxMagStarName;
 	bool flagStarTwinkle;
 	float twinkleAmount;
@@ -509,7 +508,7 @@ private:
 	static double current_JDay;
 
 	double fontSize;
-	s_font* starFont;
+	s_font* starFont=nullptr;
 	static bool flagSciNames;
 	float twinkle_amount;
 
@@ -532,7 +531,7 @@ private:
 	//FBO and render buffer object ID
 	GLuint fboID, rbID;
 	//offscreen render texture ID
-GLuint renderTextureID;
+	GLuint renderTextureID;
 };
 
 

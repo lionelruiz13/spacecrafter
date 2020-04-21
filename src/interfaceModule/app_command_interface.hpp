@@ -37,17 +37,19 @@
 
 class Core;
 class CoreLink;
+class CoreBackup;
 class App;
 class UI;
 class ScriptInterface;
 class SpaceDate;
 class Media;
 class SaveScreenInterface;
+class ServerSocket;
 
 class AppCommandInterface {
 
 public:
-	AppCommandInterface(Core * core, CoreLink *_coreLink, App * app, UI* _ui, Media* _media);
+	AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media);
 	~AppCommandInterface();
 	AppCommandInterface(AppCommandInterface const &) = delete;
 	AppCommandInterface& operator = (AppCommandInterface const &) = delete;
@@ -60,6 +62,7 @@ public:
 	void initSaveScreenInterface(SaveScreenInterface* _saveScreenInterface);
 
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, std::string _commandline);
+	void setTcp(ServerSocket* _tcp);
 
 protected:
 	//all different command
@@ -90,7 +93,7 @@ protected:
 	int commandMeteors();
 	int commandMoveto();
 	int commandMovetocity();
-	int commandMultiplier();
+	// int commandMultiplier();
 	int commandMultiply();
 	int commandPersonal();
 	int commandPersoneq();
@@ -116,12 +119,14 @@ protected:
 private:
 	Core * stcore = nullptr;
 	CoreLink *coreLink = nullptr;
+	CoreBackup* coreBackup = nullptr;
 	App * stapp = nullptr;
 	UI* ui = nullptr;
 	Media* media = nullptr;
 	ScriptInterface* scriptInterface = nullptr;
 	SpaceDate* spaceDate = nullptr;
 	SaveScreenInterface* saveScreenInterface=nullptr;
+	ServerSocket *tcp = nullptr;
 	std::string commandline;
 	std::string command;
 	stringHash_t args;
@@ -141,6 +146,7 @@ private:
 
 	std::string debug_message;  //!< for 'executeCommand' error details
 	int parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments);
+	SCD_NAMES parseCommandSet();
 	int executeCommandStatus();
 
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);
@@ -154,6 +160,7 @@ private:
 	void initialiseCommandsName();
 	void initialiseFlagsName();
 	void initialiseColorCommand();
+	void initialiseSetCommand();
 
 	void deleteVar();
 	void printVar();
@@ -172,6 +179,9 @@ private:
 	//map assurant la transcription entre le texte et la couleur associée
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
 	std::map<const std::string, COLORCOMMAND_NAMES>::iterator m_color_it;
+	//map assurant la transcription entre le texte et la commande interface associé
+	std::map<const std::string, SCD_NAMES> m_appcommand;
+	std::map<const std::string, SCD_NAMES>::iterator m_appcommand_it;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H

@@ -156,7 +156,7 @@ void UI::saveCurrentConfig(InitParser &conf)
 /*******************************************************************************/
 int UI::handleMove(int x, int y)
 {
-	core->setMouse(x,y);
+	// core->setMouse(x,y);
 	// Do not allow use of mouse while script is playing otherwise script can get confused
 	if (scriptInterface->isScriptPlaying() && ! FlagMouseUsableInScript) return 0;
 
@@ -380,22 +380,22 @@ void UI::moveMouseAz(double x)
 
 void UI::moveLat(double x)
 {
-	core->moveRelLonObserver(x,DURATION_COMMAND);
+	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
+		coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
+	else
+		coreLink->observerMoveRelLat(x,DURATION_COMMAND);
 }
 
 void UI::moveLon(double x)
 {
-	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
-		core->moveRelLatObserver(-x,DURATION_COMMAND);
-	else
-		core->moveRelLatObserver(x,DURATION_COMMAND);
+	coreLink->observerMoveRelLon(x,DURATION_COMMAND);
 }
 
 void UI::lowerHeight(double x)
 {
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
-	core->moveRelAltObserver(latimem, DURATION_COMMAND);
+	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
 	this->executeCommand("add r 1");
 }
 
@@ -403,7 +403,7 @@ void UI::raiseHeight(double x)
 {
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
-	core->moveRelAltObserver(latimem, DURATION_COMMAND);
+	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
 	this->executeCommand("add r -1");
 }
 
@@ -497,7 +497,7 @@ void UI::lowerHeight()
 void UI::speedDecrease()
 {
 	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerScript();
+		scriptInterface->slowerSpeed();
 	else
 		deltaSpeed = DeltaSpeed::DOWN;
 }
@@ -505,7 +505,7 @@ void UI::speedDecrease()
 void UI::speedIncrease()
 {
 	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerScript();
+		scriptInterface->fasterSpeed();
 	else
 		deltaSpeed = DeltaSpeed::UP;
 }
@@ -544,14 +544,16 @@ void UI::rightClick()
 
 void UI::executeCommand(const std::string& command)
 {
-	app->executeCommand(command);
+	//app->executeCommand(command);
+	Event* event = new CommandEvent(command);
+	EventManager::getInstance()->queue(event);	
 }
 
 void UI::pauseScript()
 {
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
-		coreLink->timeResetMultiplier();
+		// coreLink->timeResetMultiplier();
 	} else
 		this->executeCommand("timerate action pause");;
 }
@@ -721,7 +723,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_K :
 			if ( scriptInterface->isScriptPlaying() ) {
 				this->executeCommand("script action resume");
-				coreLink->timeResetMultiplier();
+				// coreLink->timeResetMultiplier();
 			} else
 				media->playerPause();
 			break;
@@ -803,8 +805,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		app->flag(APP_FLAG::ALIVE, false);
 	}
 
-	if(!scriptInterface->isScriptPlaying())
-		coreLink->timeResetMultiplier();  // if no script in progress always real time
+	// if(!scriptInterface->isScriptPlaying())
+	// 	coreLink->timeResetMultiplier();  // if no script in progress always real time
 
 	switch (key) {
 
@@ -1042,11 +1044,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case  SDL_SCANCODE_B:
 			switch(key_Modifier) {
 				case NONE:
-					if (core->getMeteorsRate()==10) this->executeCommand("meteors zhr 10000");
+					if (coreLink->getMeteorsRate()==10) this->executeCommand("meteors zhr 10000");
 					else this->executeCommand("meteors zhr 10");
 					break;
 				case SUPER:
-					if (core->getMeteorsRate()<=10000) this->executeCommand("meteors zhr 150000");
+					if (coreLink->getMeteorsRate()<=10000) this->executeCommand("meteors zhr 150000");
 					else this->executeCommand("meteors zhr 10");
 					key_Modifier= NONE;
 					break;
@@ -1187,7 +1189,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action end");
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate rate 0");
 					break;
@@ -1218,7 +1220,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;
@@ -1277,7 +1279,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if(scriptInterface->isScriptPlaying())
-						scriptInterface->slowerScript();
+						scriptInterface->slowerSpeed();
 					else {
 						event = new CommandEvent("timerate action decrement");
 						EventManager::getInstance()->queue(event);
@@ -1311,7 +1313,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					if ( scriptInterface->isScriptPlaying() ) {
 						event = new CommandEvent("script action resume");
 						EventManager::getInstance()->queue(event);
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else {
 						event = new CommandEvent("timerate rate 1");
 						EventManager::getInstance()->queue(event);
@@ -1341,7 +1343,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					if(scriptInterface->isScriptPlaying())
-						scriptInterface->fasterScript();
+						scriptInterface->fasterSpeed();
 					else {
 						event = new CommandEvent("timerate action increment");
 						EventManager::getInstance()->queue(event);
@@ -1761,7 +1763,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_0 :
 			switch(key_Modifier) {
 				case NONE:
-					core->moveRelLatObserver(45,7000);  //latitude , duration
+					coreLink->observerMoveRelLat(45,7000);  //latitude , duration
 					break;
 				case SUPER:
 					this->executeCommand("moveto lat 90 duration 5");
@@ -1774,7 +1776,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
-					core->moveRelLatObserver(30,5000);  //latitude , duration
+					coreLink->observerMoveRelLat(30,5000);  //latitude , duration
 					break;
 				default:
 					break;
@@ -2016,7 +2018,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_9 :
 			switch(key_Modifier) {
 				case NONE:
-					core->moveRelLatObserver(-45,7000);  //latitude , duration
+					coreLink->observerMoveRelLat(-45,7000);  //latitude , duration
 					break;
 				case SUPER:
 					this->executeCommand("moveto lat -90 duration 5");
@@ -2032,7 +2034,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
-					core->moveRelLatObserver(-30,5000);  //latitude , duration
+					coreLink->observerMoveRelLat(-30,5000);  //latitude , duration
 					break;
 				default:
 					break;
@@ -2093,7 +2095,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case NONE:
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action pause");
-						coreLink->timeResetMultiplier();
+						// coreLink->timeResetMultiplier();
 					} else
 						this->executeCommand("timerate action pause");
 					break;
@@ -2269,7 +2271,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					core->moveHeadingRelative(-0.2);
+					coreLink->moveHeadingRelative(-0.2);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S01.sts");
@@ -2277,7 +2279,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL:
-					core->moveHeadingRelative(-1);
+					coreLink->moveHeadingRelative(-1);
 					break;
 				default:
 					break;
@@ -2445,7 +2447,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					core->moveHeadingRelative(0.2);
+					coreLink->moveHeadingRelative(0.2);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S07.sts");
@@ -2453,7 +2455,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL :
-					core->moveHeadingRelative(1);
+					coreLink->moveHeadingRelative(1);
 					break;
 				default:
 					break;

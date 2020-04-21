@@ -47,7 +47,7 @@ ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_
 	recording = 0;
 	playing = 0;
 	record_elapsed_time = 0;
-	m_incCount = 0;
+	multiplierRate=1; 
 	nbrLoop =0;
 	isInLoop = false;
 	repeatLoop = false;
@@ -74,26 +74,23 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 	//~ cout << "script_file: " << script_file << endl;
 
 	if ( script->load(fullFileName, script_path) ) {
-		m_incCount = 0;
-		commander->executeCommand("multiplier rate 1");
+		multiplierRate=1; 
 		playing = 1;
 		play_paused = 0;
-		elapsed_time = wait_time = 0;
+		// elapsed_time = 0;
+		wait_time = 0;
 		return 1;
-	} //else {
-		//~ cancelScript();
-		return 0;
-	//~ }
+	} 
+	return 0;
 }
 
 /*
  * adds the given script at the begining of the current script queue 
  */
-bool ScriptMgr::addScriptFirst(const std::string & script){
-		
+bool ScriptMgr::addScriptFirst(const std::string & script)
+{
 	std::vector <Token*> commands;
 	Token *token=nullptr;
-	
 	std::istringstream iss(script);
 	std::string line;
 	
@@ -105,12 +102,10 @@ bool ScriptMgr::addScriptFirst(const std::string & script){
 			commands.push_back(token);
 		}
 	}
-	
 	//add the tokens to the queue in reverse order (since we add to the begining of the queue
 	for (auto it = commands.rbegin(); it != commands.rend(); it++){
 		this->script->addFirstInQueue(*it);
 	}
-	
 	return true;
 }
 
@@ -122,6 +117,7 @@ void ScriptMgr::cancelScript()
 	// images loaded are deleted from stel_command_interface directly
 	playing = 0;
 	play_paused = 0;
+	multiplierRate = 1;
 	nbrLoop =0;
 	indiceInLoop=0;
 	DataDir ="";
@@ -143,58 +139,45 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	// commander->executeCommand("multiplier rate 1");
-	// play_paused = 0;
 	if(!playing) {
 		//std::cout << "resume script ignoré car !playing == true" << std::endl;
 		return;
 	}
 
-	if (m_incCount != 0) { //cas ou le script est en accéléré
-		m_incCount = 0;
-		//std::cout << "resume script m_incCount = 0 " << std::endl;
-		media->audioMusicSync();
-	}
-
 	play_paused = 0;
 	media->audioMusicResume();
-	//std::cout << "resume script timerate action resume" << std::endl;
 	commander->executeCommand("timerate action resume");
-	commander->executeCommand("multiplier rate 1");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
 bool ScriptMgr::isFaster()
 {
-	return (m_incCount > 0);
+	return (multiplierRate!=1); 
 }
 
-void ScriptMgr::fasterScript()
+void ScriptMgr::fasterSpeed()
 {
 	if( !playing || play_paused )
 		return;
 
-	if (m_incCount==0) {
+	if (multiplierRate==1)
 		media->audioMusicPause();
-	}
-	if( ++m_incCount < 3 ) {
-		commander->executeCommand("multiplier action increment step 2");
-	} else
-		--m_incCount;
+
+	if (multiplierRate>4)
+		return;
+
+	multiplierRate *=2;
 }
 
-void ScriptMgr::slowerScript()
+void ScriptMgr::slowerSpeed()
 {
 	if( !playing || play_paused )
 		return;
 
-	if( --m_incCount > -1 )
-		commander->executeCommand("multiplier action decrement step 2");
-	else {
-		++m_incCount;
-	}
+	if (multiplierRate>1)
+		multiplierRate /=2;	
 
-	if (m_incCount == 0) {
+	if (multiplierRate == 1) {
 		media->audioMusicSync();
 		media->audioMusicResume();
 	}
@@ -226,19 +209,6 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		std::string sdir, other_script_filename;
 		sdir = AppSettings::Instance()->getConfigDir();
 
-		// // add a number to be unique
-		// char c[3];
-		// FILE * fp;
-		// for (int j=0; j<100; ++j) { //TODO c'est clairement moche.
-		// 	snprintf(c,3,"%d",j);
-
-		// 	other_script_filename = sdir + "record_" + c + ".sts";
-		// 	fp = fopen(other_script_filename.c_str(), "r");
-		// 	if (fp == NULL)
-		// 		break;
-		// 	else
-		// 		fclose(fp);
-		// }
 		other_script_filename = sdir + "record_" + this->getRecordDate() + ".sts";
 		rec_file.open(other_script_filename.c_str(), std::fstream::out);
 	}
@@ -247,10 +217,8 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 		recording = 1;
 		record_elapsed_time = 0;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-		//~ rec_filename = script_filename;
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
-		//~ rec_filename = "";
 	}
 }
 
@@ -278,10 +246,10 @@ void ScriptMgr::cancelRecordScript()
 }
 
 // Allow timer to be reset
-void ScriptMgr::resetTimer()
-{
-	elapsed_time = 0;
-}
+// void ScriptMgr::resetTimer()
+// {
+// 	elapsed_time = 0;
+// }
 
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
@@ -289,19 +257,25 @@ void ScriptMgr::update(int delta_time)
 	if (recording) record_elapsed_time += delta_time;
 
 	if (playing && !play_paused) {
-		elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
+		// elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
+		
+		// if (wait_time>=delta_time) {
+			wait_time -= delta_time;
+			if (wait_time<0)
+				wait_time =0;
+		// }
 
-		if (elapsed_time >= wait_time) {
-			elapsed_time -= wait_time;
+		while (wait_time==0) {
+			//elapsed_time -= wait_time;
 			std::string comd;
 
-			unsigned long int wait;
+			unsigned long int wait=0;
 
 			if (repeatLoop) {
 				//~ printf("tour de boucle %i\n", nbrLoop);
 				if (indiceInLoop < loopVector.size()) {
-					commander->executeCommand(loopVector[indiceInLoop], wait); //, 0);  // untrusted commands
-					wait_time = wait;
+					commander->executeCommand(loopVector[indiceInLoop], wait);
+					wait_time += wait;
 					indiceInLoop++;
 				} else { //fin de tour de boucle on recommence sauf si nbrLoop==0
 					nbrLoop=nbrLoop-1;
@@ -319,16 +293,44 @@ void ScriptMgr::update(int delta_time)
 				if (isInLoop) {//on est dans une boucle et on doit copier la boucle dans une list.
 					loopVector.push_back(comd);
 				}
-				commander->executeCommand(comd, wait); //, 0);  // untrusted commands
-				wait_time = wait;
+				commander->executeCommand(comd, wait);
+				wait_time += wait;
 			} else {
 				// script done
 				DataDir = "";
 				commander->executeCommand("script action end");
+				return;
 			}
 		}
 	}
 }
+
+///* au départ
+// runs maximum of one command per update
+// note that waits can drift by up to 1/fps seconds
+// void ScriptMgr::update(int delta_time)
+// {
+// 	if (recording) record_elapsed_time += delta_time;
+// 	if (playing && !play_paused) {
+// 		elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
+// 		if (elapsed_time >= wait_time) {
+// 			// now time to run next command
+// 			elapsed_time -= wait_time;
+// 			std::string comd;
+// 			unsigned long int wait;
+// 			if (script->next_command(comd)) {
+// 				commander->execute_command(comd, wait, 0);  // untrusted commands
+// 				wait_time = wait;
+// 			} else {
+// 				// script done
+// 				commander->execute_command("script action end");
+// 			}
+// 		}
+// 	}
+// }
+/////* fin
+
+
 
 // get a list of script files from directory in alphabetical order
 std::string ScriptMgr::getScriptList(const std::string &directory)
@@ -379,5 +381,5 @@ std::string ScriptMgr::getScriptPath()
 bool ScriptMgr::playStartupScript()
 {
 	std::string CDIR = AppSettings::Instance()->getScriptDir() + "fscripts/";
-	return playScript(CDIR + "startup.sts"); //, CDIR );
+	return playScript(CDIR + "startup.sts");
 }

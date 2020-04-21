@@ -89,7 +89,7 @@ protected:
 	Vec3f color;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 	LinearFader fader;
-	s_font * font;
+	s_font * font=nullptr;
 	bool internalNav;
 	mutable Vec3d pt1;
 	mutable Vec3d pt2;

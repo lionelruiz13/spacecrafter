@@ -236,7 +236,13 @@ public:
 	void sVertex3(double x, double y, double z, const Mat4d& mat) const;
 	Vec3d sVertex3v(double x, double y, double z, const Mat4d& mat) const;
 
-	void printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color, bool speed_optimize = 1, float xshift = 0, float yshift = 0) const;
+	Vec3d getCursorPosEqu(int x, int y) const {
+		Vec3d v;
+		unprojectEarthEqu(x,getViewportHeight()-y,v);
+		return v;
+	}
+
+	void printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color, /*bool speed_optimize = 1,*/ float xshift = 0, float yshift = 0) const;
 
 	//! Un-project the entire viewport depending on mapping, maskType,
 	//! viewport_fov_diameter, viewport_center, and viewport dimensions.

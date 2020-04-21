@@ -46,14 +46,18 @@ public:
 	//! search by name and return an Illuminate object
 	Illuminate *searchIlluminate(const std::string& name);
 
+	void setDefaultSize(double v) {
+		defaultSize =v;
+	}
+
 	//! Load an individual Illuminate from a script
-	bool loadIlluminate(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float tex_rotation);
+	bool loadIlluminate(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation);
 
 	//! remove user added Illuminate and optionally unhide the original of the same name
-	std::string removeIlluminate(const std::string& name);
+	void removeIlluminate(const std::string& name);
 
 	//! remove all user added Illuminate
-	std::string removeAllIlluminate();
+	void removeAllIlluminate();
 
 	//! Draw all the Illuminate
 	void draw(Projector *prj, const Navigator *nav);
@@ -62,6 +66,7 @@ private:
 	std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate list
 	std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
 	littleGrid illuminateGrid;					//!< Grid for opimisation
+	double defaultSize;
 };
 
 #endif // _ILLUMINATE_MGR_H_

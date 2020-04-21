@@ -137,7 +137,7 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 				TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 				//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
 				oss << i * 10 << "°";
-				skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+				skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 				oss.clear();
 			}
 		}
@@ -367,7 +367,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// AZ
@@ -404,7 +404,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// RA
@@ -433,7 +433,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "m";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// DEC
@@ -469,10 +469,184 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 }
+
+
+SkyMouse::SkyMouse() : SkyDisplay(PROJECTION_TYPE::AL)
+{
+}
+
+void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)
+{
+	if (!fader.getInterstate())
+		return;
+
+	int x,y;
+	SDL_GetMouseState(&x,&y);
+	Vec3d equPos = prj->getCursorPosEqu(x, y);
+
+
+	double tempDE, tempRA;
+	float alt, az, aza, alta, ra, dec, mn;
+	double fov = prj->getFov() / 360.f;
+	Utility::rectToSphe(&tempRA, &tempDE, equPos);
+	// calculate ra dec
+	ra = tempRA * rad2deg;
+	if (ra < 0)
+		ra = 360. + ra;
+	ra = ra * 24. / 360.;
+	dec = tempDE * rad2deg;
+	// calculate alt az position
+	Vec3d localPos = nav->earthEquToLocal(equPos);
+	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+	tempRA = 3 * C_PI - tempRA; // N is zero, E is 90 degrees
+	if (tempRA > C_PI * 2)
+		tempRA -= C_PI * 2;
+	az = (tempRA)*rad2deg;
+	alt = tempDE * rad2deg;
+	aza = (C_PI - tempRA - (0.1 * fov)) * rad2deg;
+	// ALT
+	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
+	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+		double angle;
+		const double dx = pt1[0] - pt2[0];
+		const double dy = pt1[1] - pt2[1];
+		const double dq = dx * dx + dy * dy;
+		const double d = sqrt(dq);
+		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+		if (pt1[0] < pt2[0])
+			angle *= -1;
+		std::ostringstream oss;
+		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		//suite de transformations de position à partir des coordonnées de punts
+		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		oss << "alt:";
+		if (alt < 0.) {
+			alt = -alt;
+			oss << "-";
+		}
+		else
+			oss << "+";
+		if (alt < 10.)
+			oss << "0";
+		oss << truncf(alt) << "°";
+		mn = truncf((alt - truncf(alt)) * 60);
+		if (mn < 10)
+			oss << "0";
+		oss << mn << "'";
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		oss.clear();
+	}
+	// AZ
+	alta = tempDE * rad2deg;
+	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+		double angle;
+		const double dx = pt1[0] - pt2[0];
+		const double dy = pt1[1] - pt2[1];
+		const double dq = dx * dx + dy * dy;
+		const double d = sqrt(dq);
+		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+		if (pt1[0] < pt2[0])
+			angle *= -1;
+		std::ostringstream oss;
+		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		//suite de transformations de position à partir des coordonnées de punts
+		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		oss << "az :";
+		if (az < 0.) {
+			az = -az;
+			oss << "-";
+		}
+		else
+			oss << "+";
+		if (az < 100.)
+			oss << "0";
+		if (az < 10.)
+			oss << "0";
+		oss << truncf(az) << "°";
+		mn = truncf((az - truncf(az)) * 60);
+		if (mn < 10)
+			oss << "0";
+		oss << mn << "'";
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		oss.clear();
+	}
+	// RA
+	alta = (tempDE + (0.1 * fov * 2)) * rad2deg;
+	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+		double angle;
+		const double dx = pt1[0] - pt2[0];
+		const double dy = pt1[1] - pt2[1];
+		const double dq = dx * dx + dy * dy;
+		const double d = sqrt(dq);
+		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+		if (pt1[0] < pt2[0])
+			angle *= -1;
+		std::ostringstream oss;
+		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		//suite de transformations de position à partir des coordonnées de punts
+		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		oss << "ra :";
+		if (ra < 10.)
+			oss << "0";
+		oss << truncf(ra) << "h";
+		mn = truncf((ra - truncf(ra)) * 60);
+		if (mn < 10)
+			oss << "0";
+		oss << mn << "m";
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		oss.clear();
+	}
+	// DEC
+	alta = (tempDE + (0.05 * fov * 2)) * rad2deg;
+	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
+	Utility::spheToRect(aza * deg2rad + (0.001 * fov), alta * deg2rad, pt4);
+
+	if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+		double angle;
+		const double dx = pt1[0] - pt2[0];
+		const double dy = pt1[1] - pt2[1];
+		const double dq = dx * dx + dy * dy;
+		const double d = sqrt(dq);
+		angle = acos((pt1[1] - pt2[1]) / (d + 0.000001 * fov));
+		if (pt1[0] < pt2[0])
+			angle *= -1;
+		std::ostringstream oss;
+		Mat4f MVP = prj->getMatProjectionOrtho2D();
+		//suite de transformations de position à partir des coordonnées de punts
+		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+		oss << "dec:";
+		if (dec < 0.) {
+			dec = -dec;
+			oss << "-";
+		}
+		else
+			oss << "+";
+		if (dec < 10.)
+			oss << "0";
+		oss << truncf(dec) << "°";
+		mn = truncf((dec - truncf(dec)) * 60);
+		if (mn < 10)
+			oss << "0";
+		oss << mn << "'";
+		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		oss.clear();
+	}
+}
+
 
 SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
 {
@@ -568,7 +742,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	if (mn < 10)
 		oss << "0";
 	oss << mn << "'";
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 	oss.clear();
 }
 
@@ -639,7 +813,7 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), 3 * pi_div_2 - angle);
 	oss << truncf(distM) << " nmi"; // for km *1.85185
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 	oss.clear();
 }
 
@@ -728,6 +902,6 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), C_PI - pi_div_2 + angle);
 	std::ostringstream oss;
 	oss << truncf(ang * 60) << " nmi"; // for km *1.85185
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1, 1);
+	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
 	oss.clear();
 }

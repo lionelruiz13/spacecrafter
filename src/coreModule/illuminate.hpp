@@ -48,7 +48,7 @@ public:
 	bool createIlluminate(const std::string&);
 
 	//! Create Illuminate from passed data and then read in texture
-	bool createIlluminate(std::string filename, double ra, double de, double angular_size, std::string name, double r, double g, double b, float tex_rotation);
+	bool createIlluminate(const std::string& filename, double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
 
 private:
 	void drawTex(const Projector* prj, const Navigator * nav);

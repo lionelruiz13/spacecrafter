@@ -28,7 +28,7 @@
 #include <iostream>
 
 #include "tools/log.hpp"
-#include "coreModule/text.hpp"
+#include "mediaModule/text.hpp"
 
 
 
@@ -99,5 +99,21 @@ void Text::draw(const Projector* prj, s_font *textFont[])
 		case FontSize::T_XX_LARGE: tmp = textFont[6]; break;
 		default: tmp = textFont[3]; break; // cas medium
 	}
-	tmp->printHorizontal(prj, altitude, azimuth, text,textColor, 1, true/*, true*/);
+	tmp->printHorizontal(prj, altitude, azimuth, text,textColor, true); //, 1, true/*, true*/);
+}
+
+void Text::textUpdate(const std::string &_text, s_font *textFont[]){
+	s_font *tmp;
+	switch (textSize) {
+		case FontSize::T_XX_SMALL: tmp = textFont[0]; break;
+		case FontSize::T_X_SMALL: tmp = textFont[1]; break;
+		case FontSize::T_SMALL: tmp = textFont[2]; break;
+		case FontSize::T_MEDIUM: tmp = textFont[3]; break;
+		case FontSize::T_LARGE: tmp = textFont[4]; break;
+		case FontSize::T_X_LARGE: tmp = textFont[5]; break;
+		case FontSize::T_XX_LARGE: tmp = textFont[6]; break;
+		default: tmp = textFont[3]; break; // cas medium
+	}
+	tmp->clearCache(text);
+	text=_text;
 }
