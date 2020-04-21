@@ -145,7 +145,7 @@ private:
 	Media* media = nullptr;
 	AppCommandInterface * commander = nullptr;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
-	unsigned long int elapsed_time;  //!< ms since last script command executed
+	// unsigned long int elapsed_time;  //!< ms since last script command executed
 	long int wait_time;     //!< ms until next script command should be executed
 	unsigned long int record_elapsed_time;  //!< ms since last command recorded
 	bool recording;  //!< is a script being recorded?

@@ -77,7 +77,8 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 		multiplierRate=1; 
 		playing = 1;
 		play_paused = 0;
-		elapsed_time = wait_time = 0;
+		// elapsed_time = 0;
+		wait_time = 0;
 		return 1;
 	} 
 	return 0;
@@ -256,7 +257,7 @@ void ScriptMgr::update(int delta_time)
 	if (recording) record_elapsed_time += delta_time;
 
 	if (playing && !play_paused) {
-		elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
+		// elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
 		
 		// if (wait_time>=delta_time) {
 			wait_time -= delta_time;
