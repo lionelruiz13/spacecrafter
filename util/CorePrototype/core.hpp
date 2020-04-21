@@ -1,6 +1,11 @@
 #ifndef CORE_HPP
 #define CORE_HPP
 
+#include"app.hpp"
+#include"AppCommandInterface.hpp"
+#include"ui.hpp"
+
+
 class Core {
 
 public:

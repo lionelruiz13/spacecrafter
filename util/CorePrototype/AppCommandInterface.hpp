@@ -1,9 +1,9 @@
 #ifndef APPCOMMANDINTERFACE_HPP
 #define APPCOMMANDINTERFACE_HPP
 
-class Core;
-class App;
-class Ui;
+#include"core.hpp"
+#include"app.hpp"
+#include"ui.hpp"
 
 class AppCommandInterface {
 

@@ -1,9 +1,9 @@
 #ifndef UI_HPP
 #define UI_HPP
 
-class App;
-class Core;
-class AppCommandInterface;
+#include"core.hpp"
+#include"AppCommandInterface.hpp"
+#include"app.hpp"
 
 class Ui {
 
