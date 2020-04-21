@@ -5,22 +5,27 @@
 #include"app.hpp"
 #include"ui.hpp"
 
+
 class AppCommandInterface {
 
 public:
-	AppCommandInterface();
-	~AppCommandInterface();
+	AppCommandInterface(Core * _core,  App * _app, UI* _ui ) {
+		core = _core;
+		app = _app;
+		ui = _ui;
+	}
+	~AppCommandInterface() {}
 
-    void init();
+    void init() {}
 
-    void update();
+    void update() {}
 
-	void draw();
+	void draw() {}
 
 private:
 
-	Core * stcore = nullptr;
-	App * stapp = nullptr;
+	Core * core = nullptr;
+	App * app = nullptr;
 	Ui* ui = nullptr;
 };
 

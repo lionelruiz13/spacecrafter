@@ -9,14 +9,14 @@
 class Core {
 
 public:
-	Core();
-	~Core();
+	Core() {}
+	~Core() {}
 
-    void init();
+    void init() {}
 
-    void update();
+    void update() {}
 
-	void draw();
+	void draw() {}
 
 private:
 

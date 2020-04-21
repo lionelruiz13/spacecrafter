@@ -5,17 +5,21 @@
 #include"AppCommandInterface.hpp"
 #include"app.hpp"
 
+
 class Ui {
 
 public:
-	Ui();
-	~Ui();
+	Ui(Core * _core, App * _app) {
+        core = _core;
+        app = _app;
+    }
+	~Ui() {}
 
-    void init();
+    void init() {}
 
-    void update();
+    void update() {}
 
-	void draw();
+	void draw() {}
 
 private:
     
