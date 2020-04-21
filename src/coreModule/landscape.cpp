@@ -205,6 +205,7 @@ void Landscape::setFlagShow(bool b)
 	land_fader=b;
 }
 
+void Landscape::setRotation(float rotation) {}
 void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) {}
 
 // Draw the horizon fog

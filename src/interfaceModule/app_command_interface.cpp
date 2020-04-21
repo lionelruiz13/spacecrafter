@@ -2222,8 +2222,13 @@ int AppCommandInterface::commandLandscape()
 			// textures are relative to script
 			args["path"] = scriptInterface->getScriptPath();
 			stcore->loadLandscape(args); //TODO retour d'erreurs
-		} else
+		} else if (argAction == "rotate") {
+			if (!args["rotation"].empty()) {
+				coreLink->rotateLandscape((C_PI/180.0)*evalDouble(args["rotation"]));
+			}
+		} else {
 			debug_message = "command 'landscape' : invalid action parameter";
+		}
 	} else
 		debug_message = "command 'landscape' : unknown argument";
 	return executeCommandStatus();
