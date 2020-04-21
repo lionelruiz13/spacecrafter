@@ -8,14 +8,23 @@
 class App {
 
 public:
-	App();
-	~App();
+	App() {
+        core = new Core();
+        commander = new AppCommandInterface(core, this, ui);
+        ui = new Ui(core, this);
+    }
 
-    void init();
+	~App() {
+        delete commander;
+        delete core;
+        delete ui;
+    }
 
-    void update();
+    void init() {}
 
-	void draw();
+    void update() {}
+
+	void draw();{}
 
 private:
 
