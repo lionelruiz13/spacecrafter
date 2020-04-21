@@ -380,15 +380,15 @@ void UI::moveMouseAz(double x)
 
 void UI::moveLat(double x)
 {
-	coreLink->observerMoveRelLat(x,DURATION_COMMAND);
+	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
+		coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
+	else
+		coreLink->observerMoveRelLat(x,DURATION_COMMAND);
 }
 
 void UI::moveLon(double x)
 {
-	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
-		coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
-	else
-		coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+	coreLink->observerMoveRelLon(x,DURATION_COMMAND);
 }
 
 void UI::lowerHeight(double x)
