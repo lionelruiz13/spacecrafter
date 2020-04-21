@@ -8,35 +8,15 @@
 class App {
 
 public:
-	App() {
-        core = new Core();
-        commander = new AppCommandInterface(core, this, ui);
-        ui = new Ui(core, this);
+	App();
 
-        commander->init();
+	~App();
 
-    }
+    void init();
 
-	~App() {
-        delete commander;
-        delete core;
-        delete ui;
-    }
+    void update();
 
-    void init() {
-        core->init();
-        ui->init();
-    }
-
-    void update() {
-        ui->update();
-        core->update();
-    }
-
-	void draw() {
-        core->draw();
-        ui->draw();
-    }
+    void draw();
 
     void start_main_loop();
 
@@ -46,6 +26,7 @@ private:
     Ui* ui = nullptr;
     Core* core = nullptr;
     
+    bool flagVisible;
 };
 
 #endif

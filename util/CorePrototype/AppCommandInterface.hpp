@@ -1,7 +1,7 @@
 #ifndef APPCOMMANDINTERFACE_HPP
 #define APPCOMMANDINTERFACE_HPP
 
-class Core;
+#include"core.hpp"
 class App;
 class Ui;
 
@@ -10,20 +10,14 @@ class Ui;
 class AppCommandInterface {
 
 public:
-	AppCommandInterface(Core * _core,  App * _app, Ui* _ui ) {
-		core = _core;
-		app = _app;
-		ui = _ui;
-	}
-	~AppCommandInterface() {}
+	AppCommandInterface(Core * _core,  App * _app, Ui* _ui );
+	~AppCommandInterface();
 
-    void init() {
-		std::cout << "initialisation AppCommandInterface" << std::endl;
-	}
+    void init();
 
-    void update() {}
+    void update();
 
-	void draw() {}
+	void draw();
 
 private:
 

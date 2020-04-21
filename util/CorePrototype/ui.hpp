@@ -1,31 +1,22 @@
 #ifndef UI_HPP
 #define UI_HPP
 
+#include"core.hpp"
 class App;
-class Core;
 
 #include<iostream>
 
 class Ui {
 
 public:
-	Ui(Core* _core, App *_app) {
-        core = _core;
-        app = _app;
-    }
-	~Ui() {}
+	Ui(Core* _core, App *_app) ;
+	~Ui();
 
-    void init() {
-        std::cout << "initialisation ui" << std::endl;
-    }
+    void init() ;
 
-    void update() {
-        std::cout << "update ui" << std::endl;
-    }
+    void update();
 
-	void draw() {
-        std::cout << "draw ui" << std::endl;
-    }
+	void draw();
 
 private:
     
