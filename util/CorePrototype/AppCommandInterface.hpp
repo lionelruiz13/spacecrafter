@@ -1,22 +1,25 @@
 #ifndef APPCOMMANDINTERFACE_HPP
 #define APPCOMMANDINTERFACE_HPP
 
-#include"core.hpp"
-#include"app.hpp"
-#include"ui.hpp"
+class Core;
+class App;
+class Ui;
 
+#include<iostream>
 
 class AppCommandInterface {
 
 public:
-	AppCommandInterface(Core * _core,  App * _app, UI* _ui ) {
+	AppCommandInterface(Core * _core,  App * _app, Ui* _ui ) {
 		core = _core;
 		app = _app;
 		ui = _ui;
 	}
 	~AppCommandInterface() {}
 
-    void init() {}
+    void init() {
+		std::cout << "initialisation AppCommandInterface" << std::endl;
+	}
 
     void update() {}
 

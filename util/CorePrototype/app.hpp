@@ -12,6 +12,9 @@ public:
         core = new Core();
         commander = new AppCommandInterface(core, this, ui);
         ui = new Ui(core, this);
+
+        commander->init();
+
     }
 
 	~App() {
@@ -20,18 +23,29 @@ public:
         delete ui;
     }
 
-    void init() {}
+    void init() {
+        core->init();
+        ui->init();
+    }
 
-    void update() {}
+    void update() {
+        ui->update();
+        core->update();
+    }
 
-	void draw();{}
+	void draw() {
+        core->draw();
+        ui->draw();
+    }
+
+    void start_main_loop();
 
 private:
 
-    AppCommandInterface * commander = nullptr;
-    Ui * ui = nullptr;
+    AppCommandInterface* commander = nullptr;
+    Ui* ui = nullptr;
     Core* core = nullptr;
-
+    
 };
 
 #endif
