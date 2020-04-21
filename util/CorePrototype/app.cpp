@@ -31,14 +31,13 @@ void App::draw() {
 }
 
 void App::start_main_loop() {
-    flagVisible = true;
+    int i = 0;
 
-    while(flagVisible){
-
+    while(i != 1){
 
         this->update();
         this->draw();
 
-        
+        i++;
     }
 }
