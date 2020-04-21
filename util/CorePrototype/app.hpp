@@ -26,7 +26,6 @@ private:
     Ui* ui = nullptr;
     Core* core = nullptr;
     
-    bool flagVisible;
 };
 
 #endif
