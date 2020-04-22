@@ -128,9 +128,10 @@ void ScriptMgr::cancelScript()
 
 void ScriptMgr::pauseScript()
 {
+	//std::cout << "Je suis dans pauseScript" << std::endl;
 	if(!playing)
 		return;
-
+	//std::cout << "Je suis dans pauseScript et je met la machine de script en pause" << std::endl;
 	play_paused = 1;
 	media->audioMusicPause();
 	commander->executeCommand("timerate action pause");
@@ -139,15 +140,18 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
+	//std::cout << "Je suis dans resumeScript" << std::endl;
 	if(!playing) {
 		//std::cout << "resume script ignoré car !playing == true" << std::endl;
 		return;
 	}
+	//std::cout << "Je suis dans pauseScript et je remet la machine de script en route" << std::endl;
 
 	play_paused = 0;
 	media->audioMusicResume();
 	commander->executeCommand("timerate action resume");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+	//std::cout << "ScriptMgr::script action resume" << std::endl;
 }
 
 bool ScriptMgr::isFaster()
