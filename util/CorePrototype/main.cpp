@@ -1,15 +1,17 @@
 #include <iostream>
-#include"app.hpp"
+#include <unistd.h>
+#include "app.hpp"
 
-#include<iostream>
 
 int main() {
     App* app = new App();
 
-    std::cout << " --- DRAW --- " << std::endl;
-    app->draw();
-    std::cout << std::endl << " --- UPDATE --- " << std::endl;
-    app->update();
-
+	for (int i=0;i<3; i++) {
+		std::cout << std::endl << " --- DRAW --- " << std::endl;
+		app->draw();
+		std::cout << std::endl << " --- UPDATE --- " << std::endl;
+		app->update();
+		sleep(1);
+	}
     return 0;
 }

@@ -13,12 +13,19 @@ void AppCommandInterface::init() {
 }
 
 void AppCommandInterface::update() {
+	std::cout << "AppCommandInterface update" << std::endl;
     core->setFlagSelectedObjectPointer();
     core->setFlagTracking();
     core->unSelect();
+    coreLink->getObj1();
+    coreLink->getObj2();
+    coreLink->getObj3_universe();
+    coreLink->getObj4_galaxy();
+    coreLink->getCamera();
 }
 
 void AppCommandInterface::draw() {
+	std::cout << "AppCommandInterface draw" << std::endl;
     coreLink->getObj1();
     coreLink->getObj2();
     coreLink->getObj3_universe();
