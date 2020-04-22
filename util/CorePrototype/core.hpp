@@ -7,6 +7,8 @@
 class Core {
 
 public:
+    friend class CoreLink;
+    
 	Core();
 	~Core();
 
