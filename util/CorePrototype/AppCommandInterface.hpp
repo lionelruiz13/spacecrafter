@@ -2,6 +2,7 @@
 #define APPCOMMANDINTERFACE_HPP
 
 #include"core.hpp"
+#include"coreLink.hpp"
 class App;
 class Ui;
 
@@ -10,7 +11,7 @@ class Ui;
 class AppCommandInterface {
 
 public:
-	AppCommandInterface(Core * _core,  App * _app, Ui* _ui );
+	AppCommandInterface(Core * _core, CoreLink *_coreLink, App * _app, Ui* _ui );
 	~AppCommandInterface();
 
     void init();
@@ -22,6 +23,7 @@ public:
 private:
 
 	Core * core = nullptr;
+	CoreLink* coreLink = nullptr;
 	App * app = nullptr;
 	Ui* ui = nullptr;
 };
