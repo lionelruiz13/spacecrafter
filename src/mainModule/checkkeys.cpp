@@ -34,7 +34,7 @@ static void checkMainSettings(InitParser &user_conf)
 	mainSettings["flag_masterput"]="false";
 	mainSettings["flag_navigation"]="false";
 	mainSettings["flag_optoma"]="false";
-	mainSettings["script_debug"]="false";
+	// mainSettings["script_debug"]="false";
 	mainSettings["cpu_info"]="false";
 	mainSettings["flag_always_visible"]="true";
 
