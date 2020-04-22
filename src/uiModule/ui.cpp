@@ -549,7 +549,7 @@ void UI::executeCommand(const std::string& command)
 	EventManager::getInstance()->queue(event);	
 }
 
-void UI::pauseScript()
+void UI::pauseScriptOrTimeRate()
 {
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
