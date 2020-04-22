@@ -11,6 +11,7 @@ void Ui::init() {
 }
 
 void Ui::update() {
+	std::cout << "ui update" << std::endl;
     core->setFlagSelectedObjectPointer();
     core->setFlagTracking();
     core->dragView();
