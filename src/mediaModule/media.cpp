@@ -95,6 +95,13 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 			return 1;
 		} else if (type == "VIEWPORT") {
 			viewPort->setTexture(player->getYUV_VideoTexture());
+			viewPort->displayFullScreen(true);
+			viewPort->display(true);
+			mediaState.video_type=V_TYPE::V_VIEWPORT;
+			return 2;
+		} else if (type == "DUAL_VIEWPORT") {
+			viewPort->setTexture(player->getYUV_VideoTexture());
+			viewPort->displayFullScreen(false);
 			viewPort->display(true);
 			mediaState.video_type=V_TYPE::V_VIEWPORT;
 			return 2;
