@@ -81,7 +81,7 @@ public:
 		fader = !fader;
 	}
 
-	virtual void loadData(std::string filename);
+	virtual void loadData(const std::string& filename){};
 
 	void clear() ;
 
@@ -124,7 +124,7 @@ public:
 	~SkyPerson() {};
 
 	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) override;
-	void loadData(std::string filename) override;
+	void loadData(const std::string& filename) override;
 
 private:
 };

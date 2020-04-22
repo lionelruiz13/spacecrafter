@@ -104,10 +104,6 @@ void SkyDisplay::clear()
 	dataSky.clear();
 }
 
-void SkyDisplay::loadData(std::string filename)
-{
-}
-
 //a optimiser
 void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 {
@@ -154,7 +150,7 @@ SkyPerson::SkyPerson(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 {
 }
 
-void SkyPerson::loadData(std::string filename)
+void SkyPerson::loadData(const std::string& filename)
 {
 	double alpha, delta, x, y, z;
 	int nblines;
