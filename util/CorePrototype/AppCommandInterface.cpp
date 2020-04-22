@@ -1,8 +1,9 @@
 #include"AppCommandInterface.hpp"
 
-AppCommandInterface::AppCommandInterface(Core * _core,  App * _app, Ui* _ui ) {
+AppCommandInterface::AppCommandInterface(Core * _core, CoreLink *_coreLink, App * _app, Ui* _ui ) {
 		core = _core;
-		app = _app;
+		coreLink = _coreLink;
+        app = _app;
 		ui = _ui;
 	}
 AppCommandInterface::~AppCommandInterface() {}
@@ -17,4 +18,10 @@ void AppCommandInterface::update() {
     core->unSelect();
 }
 
-void AppCommandInterface::draw() {}
+void AppCommandInterface::draw() {
+    coreLink->getObj1();
+    coreLink->getObj2();
+    coreLink->getObj3_universe();
+    coreLink->getObj4_galaxy();
+    coreLink->getCamera();
+}
