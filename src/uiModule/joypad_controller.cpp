@@ -412,7 +412,7 @@ joy_button_action JoypadController::getButtonActionFromString(std::string &actio
 	}
 
 	if(actionStr == "script_pause") {
-		action.onPressAction = &UI::pauseScript;
+		action.onPressAction = &UI::pauseScriptOrTimeRate;
 		return action;
 	}
 

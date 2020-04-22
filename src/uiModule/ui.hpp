@@ -157,7 +157,7 @@ public:
 
 	void stopSpeedIncrease();
 
-	void pauseScript();
+	void pauseScriptOrTimeRate();
 
 	void centerMouse();
 
