@@ -493,6 +493,7 @@ void App::start_main_loop()
 
 	// Start the main loop
 	while (flagAlive) {
+		//std::cout << "Frame" <<std::endl;
 		if (flagOnVideo != media->playerGetAlive()) {
 			if (media->playerGetAlive() == false) {
 				//std::cout << "vidéo arretée" << std::endl;

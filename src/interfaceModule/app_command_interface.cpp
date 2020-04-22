@@ -1687,6 +1687,7 @@ int AppCommandInterface::commandPrint()
 			argName = "NONE";
 
 		oss << "[" << argName <<"] " << argValue;
+		//std::cout << oss.str() << std::endl;
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING);
 	} else
@@ -2775,10 +2776,11 @@ int AppCommandInterface::commandTimerate()
 			coreLink->timeSaveSpeed();
 			coreLink->timeSetFlagPause(false);
 		} else {
-			std::cout << "Changing timerate to " << argRate << " duration: " << argDuration << std::endl;
+			//std::cout << "Changing timerate to " << argRate << " duration: " << argDuration << std::endl;
 			coreLink->timeChangeSpeed(evalDouble(argRate)*JD_SECOND, stod(argDuration));
 		}
 	} else if (argAction=="pause") {
+		//std::cout << "Changing timerate to pause" << std::endl;
 		// TODO why is this in stelapp?  should be in stelcore - Rob
 		coreLink->timeSetFlagPause(!coreLink->timeGetFlagPause());
 		if (coreLink->timeGetFlagPause()) {
@@ -2789,6 +2791,7 @@ int AppCommandInterface::commandTimerate()
 			coreLink->timeLoadSpeed();
 		}
 	} else if (argAction=="resume") {
+		//std::cout << "Changing timerate to resume" << std::endl;
 		coreLink->timeSetFlagPause(false);
 		coreLink->timeLoadSpeed();
 
@@ -3693,14 +3696,15 @@ int AppCommandInterface::commandDefine()
 	if (args.begin() != args.end()) {
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
-		//~ printf("Command define :  %s => %s\n",mArg.c_str(), mValue.c_str());
+		//std::cout << "Command define : " <<  mArg.c_str() << " => " << mValue.c_str() << std::endl;
 		if (mValue == "random") {
 			float value = (float)rand()/RAND_MAX* (max_random-min_random)+ min_random;
 			variables[mArg] = Utility::floatToStr(value);
 		} else {
 			//~ printf("mValue = %s\n", mValue.c_str());
-			//~ cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << endl;
+			//std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
 			variables[mArg] = Utility::doubleToString( evalDouble(mValue) );
+		//	this->printVar();
 		}
 	} else {
 		debug_message = "Unexpected error in command_define";
@@ -3839,11 +3843,11 @@ void AppCommandInterface::printVar()
 		std::cout << "No variable available" << std::endl;
 		return;
 	}
-
+	std::cout << "+++++++++++++++++" << std::endl;
 	for (var_it=variables.begin(); var_it!=variables.end(); ++var_it) {
-		std::cout << "-----------------" << std::endl;
 		std::cout << var_it->first << " => " << var_it->second << '\n';
 	}
+	std::cout << "-----------------" << std::endl;
 }
 
 void AppCommandInterface::deleteVar()
