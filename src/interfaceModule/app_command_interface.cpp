@@ -1197,10 +1197,10 @@ FLAG_VALUES AppCommandInterface::convertStrToFlagValues(const std::string &value
 		return FLAG_VALUES::FV_OFF;
 }
 
-std::string AppCommandInterface::getErrorString( void )
-{
-	return( debug_message );
-}
+// std::string AppCommandInterface::getErrorString( void )
+// {
+// 	return( debug_message );
+// }
 
 int AppCommandInterface::executeCommandStatus()
 {
