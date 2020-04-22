@@ -2,8 +2,9 @@
 
 App::App() {
     core = new Core();
-    commander = new AppCommandInterface(core, this, ui);
+    coreLink = new CoreLink(core);
     ui = new Ui(core, this);
+    commander = new AppCommandInterface(core, coreLink, this, ui);
 
     commander->init();
 

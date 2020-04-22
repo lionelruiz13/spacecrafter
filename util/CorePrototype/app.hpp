@@ -2,6 +2,7 @@
 #define APP_HPP
 
 #include"core.hpp"
+#include"coreLink.hpp"
 #include"AppCommandInterface.hpp"
 #include"ui.hpp"
 
@@ -25,7 +26,7 @@ private:
     AppCommandInterface* commander = nullptr;
     Ui* ui = nullptr;
     Core* core = nullptr;
-    
+    CoreLink* coreLink = nullptr;
 };
 
 #endif
