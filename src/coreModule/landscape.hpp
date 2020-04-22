@@ -119,6 +119,9 @@ public:
 		}
 		ignoreTick = false;
 	}
+
+	virtual void setRotation(float rotation);
+
 	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
 
 	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
@@ -159,6 +162,8 @@ protected:
 	shaderProgram* shaderFog;
 	DataGL landscape;
 	DataGL fog;
+private:
+	float rotate_z;
 };
 
 class LandscapeFisheye : public Landscape {
@@ -169,6 +174,9 @@ public:
 	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
 	void create(const std::string _name, bool _fullpath, const std::string _maptex, double _texturefov,
 	            const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
+	virtual void setRotation(float rotation) {
+		rotate_z = rotation;
+	}
 private:
 	void getLandscapeFisheye(double radius, int slices, int stacks, double texture_fov,  GLfloat * datatex, GLfloat * datapos);
 	void initShader();
@@ -185,6 +193,9 @@ public:
 	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
 	void create(const std::string _name, bool _fullpath, const std::string _maptex, const float _base_altitude,
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
+	virtual void setRotation(float rotation) {
+		rotate_z = rotation;
+	}
 private:
 	void getLandscapeSpherical(double radius, double one_minus_oblateness, int slices, int stacks,
 	                           double bottom_altitude, double top_altitude , GLfloat * datatex, GLfloat * datapos);

@@ -2222,8 +2222,13 @@ int AppCommandInterface::commandLandscape()
 			// textures are relative to script
 			args["path"] = scriptInterface->getScriptPath();
 			stcore->loadLandscape(args); //TODO retour d'erreurs
-		} else
+		} else if (argAction == "rotate") {
+			if (!args["rotation"].empty()) {
+				coreLink->rotateLandscape((C_PI/180.0)*evalDouble(args["rotation"]));
+			}
+		} else {
 			debug_message = "command 'landscape' : invalid action parameter";
+		}
 	} else
 		debug_message = "command 'landscape' : unknown argument";
 	return executeCommandStatus();
@@ -2491,6 +2496,9 @@ int AppCommandInterface::commandImage()
 			return executeCommandStatus();
 		}
 		std::string argCoordinate = args["coordinate_system"];
+		if (!args["hp"].empty()) {
+			argCoordinate = "equatorial";
+		}
 		bool mipmap = 0; // Default off for historical reasons
 		if (isTrue(args["mipmap"]))
 			mipmap = 1;
@@ -2523,6 +2531,7 @@ int AppCommandInterface::commandImage()
 	std::string argAccelerate_y = args["accelerate_az"];
 	std::string argDecelerate_x = args["decelerate_alt"];
 	std::string argDecelerate_y = args["decelerate_az"];
+	std::string argHP = args["hp"];
 
 	if (!argAlpha.empty())
 		media->imageSetAlpha(evalDouble(argAlpha), evalDouble(argDuration));
@@ -2535,6 +2544,22 @@ int AppCommandInterface::commandImage()
 	
 	if (!argRatio.empty())
 		media->imageSetRatio(evalDouble(argRatio), evalDouble(argDuration));
+
+	if (!argHP.empty()) {
+		const float rad2deg = 180.0f/C_PI;
+		double az, alt;
+		bool isStar = stcore->getStarEarthEquPosition(evalInt(argHP), az, alt);
+		if (isStar) {
+			media->imageSetLocation(alt*rad2deg, true,
+					az*rad2deg, true,
+					evalDouble(argDuration),
+					(argAccelerate_x=="on"), (argDecelerate_x=="on"),
+					(argAccelerate_y=="on"), (argDecelerate_y=="on"));
+		} else {
+			debug_message = _("command 'image': HP number ") + argHP + _(" is not a valid star");
+			return executeCommandStatus();
+		}
+	}
 
 	if (!argXpos.empty() || !argYpos.empty())
 		media->imageSetLocation(evalDouble(argXpos), !argXpos.empty(),
