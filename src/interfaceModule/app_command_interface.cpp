@@ -471,7 +471,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		return 1;
 	}
 
-	m_commands_it = m_commands.find(command);
+	auto m_commands_it = m_commands.find(command);
 	if (m_commands_it == m_commands.end()) {
 		//~ cout <<"error command "<< command << endl;
 		debug_message = _("Unrecognized or malformed command name");
@@ -536,7 +536,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 bool AppCommandInterface::setFlag(const std::string &name, const std::string &value, bool &newval)
 {
 	//test name if exist and get his value
-	m_flag_it = m_flags.find(name);
+	auto m_flag_it = m_flags.find(name);
 	if (m_flag_it == m_flags.end()) {
 		//~ cout <<"error command "<< command << endl;
 		debug_message = _("Unrecognized or malformed flag name");
@@ -1182,8 +1182,7 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 		
 		default:
-			cLog::get()->write("no effect with case " + m_flag_it->first,LOG_TYPE::L_DEBUG);
-
+			cLog::get()->write("no effect with unknown case " /*+ flagName*/ ,LOG_TYPE::L_DEBUG);
 			break;
 	}
 	return true; // flag was found and updated
@@ -1565,7 +1564,7 @@ int AppCommandInterface::commandColor()
 		debug_message = _("Command 'color': unknown expected argument 'property'");
 		return executeCommandStatus();
 	}
-	m_color_it = m_color.find(argProperty);
+	auto m_color_it = m_color.find(argProperty);
 
 	switch(m_color_it->second) {
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:	coreLink->constellationSetColorLine( Vcolor ); break;
@@ -3689,7 +3688,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 std::string AppCommandInterface::evalString (const std::string &var)
 {
-	var_it = variables.find(var);
+	auto var_it = variables.find(var);
 	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
 		return var;
 	else // trouvé on renvoie la valeur de ce qui est stocké en mémoire
@@ -3701,7 +3700,7 @@ double AppCommandInterface::evalDouble (const std::string &var)
 	if (var.empty())
 		return 0.0;
 
-	var_it = variables.find(var);
+	auto var_it = variables.find(var);
 	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
 		return Utility::strToDouble(var);
 	else // trouvé on renvoie la valeur de ce qui est stocké en mémoire
@@ -3743,7 +3742,7 @@ int AppCommandInterface::commandAdd()
 	if (args.begin() != args.end()) {
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
-		var_it = variables.find(mArg);
+		auto var_it = variables.find(mArg);
 
 		if (var_it == variables.end()) { //pas trouvé donc on renvoie la valeur de la chaine
 			debug_message = "not possible to operate with undefined variable";
@@ -3767,7 +3766,7 @@ int AppCommandInterface::commandMultiply()
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
 
-		var_it = variables.find(mArg);
+		auto var_it = variables.find(mArg);
 		if (var_it == variables.end()) {
 			debug_message = "not possible to operate with undefined variable";
 			return executeCommandStatus();
@@ -3869,7 +3868,7 @@ void AppCommandInterface::printVar()
 		return;
 	}
 	std::cout << "+++++++++++++++++" << std::endl;
-	for (var_it=variables.begin(); var_it!=variables.end(); ++var_it) {
+	for (auto var_it=variables.begin(); var_it!=variables.end(); ++var_it) {
 		std::cout << var_it->first << " => " << var_it->second << '\n';
 	}
 	std::cout << "-----------------" << std::endl;
