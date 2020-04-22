@@ -101,7 +101,7 @@ protected:
 	int commandPosition();
 	int commandPrint();
 	int commandRandom();
-	int commandScript();
+	int commandScript(unsigned long int &wait);
 	int commandSearch();
 	int commandSelect();
 	int commandSet();

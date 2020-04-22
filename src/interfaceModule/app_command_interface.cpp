@@ -514,7 +514,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_POSITION :	return commandPosition(); break;
 		case SC_COMMAND::SC_PRINT :	return commandPrint(); break;
 		case SC_COMMAND::SC_RANDOM :	return commandRandom(); break;
-		case SC_COMMAND::SC_SCRIPT :	return commandScript(); break;
+		case SC_COMMAND::SC_SCRIPT :	return commandScript(wait); break;
 		case SC_COMMAND::SC_SEARCH :	return commandSearch(); break;
 		case SC_COMMAND::SC_SELECT :	return commandSelect(); break;
 		case SC_COMMAND::SC_SET :	return commandSet(); break;
@@ -2329,7 +2329,7 @@ int AppCommandInterface::commandSkyCulture()
 	return executeCommandStatus();
 }
 
-int AppCommandInterface::commandScript()
+int AppCommandInterface::commandScript(unsigned long int &wait)
 {
 	std::string argAction = args["action"];
 	std::string filen = args["filename"];
@@ -2368,6 +2368,7 @@ int AppCommandInterface::commandScript()
 			scriptInterface->cancelRecordScript();
 			recordable = 0;  // don't record this command!
 		} else if (argAction=="pause" && !scriptInterface->isScriptPaused()) {
+			wait = 1;
 			scriptInterface->pauseScript();
 		} else if (argAction=="pause" || argAction=="resume") {
 			scriptInterface->resumeScript();
