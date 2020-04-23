@@ -232,4 +232,55 @@ std::map<const std::string, COLORCOMMAND_NAMES> AppCommandInit::initialiseColorC
 
     return m_color;
 }
-std::map<const std::string, SCD_NAMES> AppCommandInit::initialiseSetCommand() {}
+std::map<const std::string, SCD_NAMES> AppCommandInit::initialiseSetCommand() {
+    std::map<const std::string, SCD_NAMES> m_appcommand;
+    
+    m_appcommand["atmosphere_fade_duration"] = SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION;
+	m_appcommand["auto_move_duration"] = SCD_NAMES::APP_AUTO_MOVE_DURATION;
+	m_appcommand["constellation_art_fade_duration"] = SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION;
+	m_appcommand["constellation_art_intensity"] = SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY;
+	m_appcommand["light_pollution_limiting_magnitude"] = SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE;
+	m_appcommand["font"] = SCD_NAMES::APP_FONT;
+
+	m_appcommand["heading"] = SCD_NAMES::APP_HEADING;
+	m_appcommand["home_planet"] = SCD_NAMES::APP_HOME_PLANET;
+	m_appcommand["landscape_name"] = SCD_NAMES::APP_LANDSCAPE_NAME;
+	m_appcommand["line_width"] = SCD_NAMES::APP_LINE_WIDTH;
+	m_appcommand["max_mag_nebula_name"] = SCD_NAMES::APP_MAX_MAG_NEBULA_NAME;
+	m_appcommand["max_mag_star_name"] = SCD_NAMES::APP_MAX_MAG_STAR_NAME;
+
+	m_appcommand["moon_scale"] = SCD_NAMES::APP_MOON_SCALE;
+	m_appcommand["sun_scale"] = SCD_NAMES::APP_SUN_SCALE;
+	m_appcommand["milky_way_texture"] = SCD_NAMES::APP_MILKY_WAY_TEXTURE;
+	m_appcommand["sky_culture"] = SCD_NAMES::APP_SKY_CULTURE;
+	m_appcommand["sky_locale"] = SCD_NAMES::APP_SKY_LOCALE;
+	m_appcommand["ui_locale"] = SCD_NAMES::APP_UI_LOCALE;
+
+	m_appcommand["star_mag_scale"] = SCD_NAMES::APP_STAR_MAG_SCALE;
+	m_appcommand["star_size_limit"] = SCD_NAMES::APP_STAR_SIZE_LIMIT;
+	m_appcommand["planet_size_limit"] = SCD_NAMES::APP_PLANET_SIZE_LIMIT;
+	m_appcommand["star_scale"] = SCD_NAMES::APP_STAR_SCALE;
+	m_appcommand["star_twinkle_amount"] = SCD_NAMES::APP_STAR_TWINKLE_AMOUNT;
+	m_appcommand["star_fader_duration"] = SCD_NAMES::APP_STAR_FADER_DURATION;
+
+	m_appcommand["star_limiting_mag"] = SCD_NAMES::APP_STAR_LIMITING_MAG;
+	m_appcommand["time_zone"] = SCD_NAMES::APP_TIME_ZONE;
+	m_appcommand["ambient_light"] = SCD_NAMES::APP_AMBIENT_LIGHT;
+	m_appcommand["text_fading_duration"] = SCD_NAMES::APP_TEXT_FADING_DURATION;
+	m_appcommand["milky_way_fader_duration"] = SCD_NAMES::APP_MILKY_WAY_FADER_DURATION;
+	m_appcommand["milky_way_intensity"] = SCD_NAMES::APP_MILKY_WAY_INTENSITY;
+
+	m_appcommand["zoom_offset"] = SCD_NAMES::APP_ZOOM_OFFSET;
+	m_appcommand["startup_time_mode"] = SCD_NAMES::APP_STARTUP_TIME_MODE;
+	m_appcommand["date_display_format"] = SCD_NAMES::APP_DATE_DISPLAY_FORMAT;
+	m_appcommand["time_display_format"] = SCD_NAMES::APP_TIME_DISPLAY_FORMAT;
+	m_appcommand["mode"] = SCD_NAMES::APP_MODE;
+	m_appcommand["screen_fader"] = SCD_NAMES::APP_SCREEN_FADER;
+
+	m_appcommand["stall_radius_unit"] = SCD_NAMES::APP_STALL_RADIUS_UNIT;
+	m_appcommand["tully_color_mode"] = SCD_NAMES::APP_TULLY_COLOR_MODE;
+	m_appcommand["datetime_display_position"] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
+	m_appcommand["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+
+    return m_appcommand;
+}

@@ -160,10 +160,10 @@ private:
 
 	AppCommandInit *appInit = nullptr;
 
-	void initialiseCommandsName();
-	void initialiseFlagsName();
-	void initialiseColorCommand();
-	void initialiseSetCommand();
+	// void initialiseCommandsName();
+	// void initialiseFlagsName();
+	// void initialiseColorCommand();
+	// void initialiseSetCommand();
 
 	void deleteVar();
 	void printVar();
