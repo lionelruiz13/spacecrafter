@@ -82,6 +82,7 @@ public:
 	}
 
 	virtual void loadData(const std::string& filename){};
+	virtual void loadString(const std::string& message){};
 
 	void clear() ;
 
@@ -125,6 +126,7 @@ public:
 
 	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) override;
 	void loadData(const std::string& filename) override;
+	void loadString(const std::string& message) override;
 
 private:
 };

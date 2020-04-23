@@ -192,6 +192,49 @@ void SkyPerson::loadData(const std::string& filename)
 	//~ glEnableVertexAttribArray(0);
 }
 
+
+void SkyPerson::loadString(const std::string& message)
+{
+    std::string delimiter = ";";
+    float ftemp;
+	std::string txt = message;
+
+    //Vérifie la présence d'une lettre
+    for(std::string::size_type i = 0; i < txt.length(); i++)
+    {
+        char c = message[i];
+        if(!isdigit(c)||c!=';'){ //check si le caractère est une lettre
+			cLog::get()->write("Skyperson error loading data "+ c, LOG_TYPE::L_WARNING);
+            txt.erase(i, 1);
+        }
+    }
+
+    size_t pos = 0;
+    std::string token;
+    //Décompose la chaine de caractère
+    while ((pos = message.find(delimiter)) != std::string::npos) {
+        token = txt.substr(0, pos);
+        ftemp = std::stof(token);
+        dataSky.push_back(ftemp);
+        txt.erase(0, pos + delimiter.length());
+    }
+	
+	// on vérifie quand même que le contenu est bien un multiple de 6
+	// sinon on supprime les dernières valeurs.
+	while(dataSky.size()%6!=0) {
+		dataSky.pop_back();
+		cLog::get()->write("Skyperson loading incomplete data", LOG_TYPE::L_WARNING);
+	}
+
+	//on charge les points dans un vbo
+	glBindVertexArray(sData.vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+}
+
+
 void SkyPerson::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate())
