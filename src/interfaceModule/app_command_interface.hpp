@@ -39,6 +39,7 @@ class Core;
 class CoreLink;
 class CoreBackup;
 class App;
+class AppCommandInit;
 class UI;
 class ScriptInterface;
 class SpaceDate;
@@ -156,6 +157,8 @@ private:
 	double evalDouble(const std::string &var);
 	int evalInt (const std::string &var);
 	std::string evalString (const std::string &var);
+
+	AppCommandInit *appInit = nullptr;
 
 	void initialiseCommandsName();
 	void initialiseFlagsName();
