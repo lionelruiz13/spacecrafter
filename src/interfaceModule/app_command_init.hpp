@@ -5,11 +5,14 @@
 
 class AppCommandInit {
 public: 
-    AppCommandInit(AppCommandInterface* _app);
+    AppCommandInit();
     ~AppCommandInit();
 
-private: 
-    AppCommandInterface *app = nullptr;
+    std::map<const std::string, SC_COMMAND> initialiseCommandsName();
+    std::map<const std::string, FLAG_NAMES> initialiseFlagsName();
+    std::map<const std::string, COLORCOMMAND_NAMES> initialiseColorCommand();
+    std::map<const std::string, SCD_NAMES> initialiseSetCommand();
+
 };
 
 #endif
