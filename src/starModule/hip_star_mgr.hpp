@@ -248,13 +248,10 @@ public:
 		names_fader=b;
 	}
 
-	void setSelected(Object star) {
-		auto it = selected_star.find(star.getNameI18n());
-		if (it != selected_star.end()) {
-			selected_star.erase(it);
-		} else {
-			selected_star.insert(std::pair<std::string, bool>(star.getNameI18n(), true));
-		}
+	void setSelected(Object star);
+
+	std::vector<int> getSelected() {
+		return selected_stars;
 	}
 
 	void deselect() {
@@ -464,6 +461,7 @@ private:
 	void load_data(const InitParser &conf);
 
 	void drawStarName( Projector* prj );
+	int getHPFromStarName(const std::string& name) const;
 
 	LinearFader names_fader;
 	LinearFader starsFader;
@@ -480,6 +478,7 @@ private:
 	bool gravityLabel;
 	bool isolateSelected;
 	std::map<std::string, bool> selected_star;
+	std::vector<int> selected_stars;
 
 	s_texture* starTexture; //! star texture
 

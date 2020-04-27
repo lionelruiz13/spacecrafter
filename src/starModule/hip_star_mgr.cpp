@@ -947,12 +947,23 @@ ObjectBaseP HipStarMgr::searchByNameI18n(const std::string& nameI18n) const
 
 	return ObjectBaseP();
 }
+void HipStarMgr::setSelected(Object star) {
+	auto it = selected_star.find(star.getNameI18n());
+	if (it != selected_star.end()) {
+		selected_star.erase(it);
+	} else {
+		selected_star.insert(std::pair<std::string, bool>(star.getNameI18n(), true));
+	}
 
-ObjectBaseP HipStarMgr::searchByName(const std::string& name) const
-{
+	int HP = getHPFromStarName(star.getNameI18n());
+	if (HP >= 0) {
+		selected_stars.push_back(HP);
+	}
+}
+
+int HipStarMgr::getHPFromStarName(const std::string& name) const {
 	std::string objw = name;
 	transform(objw.begin(), objw.end(), objw.begin(), ::toupper);
-
 	// Search by HP number if it's an HP formated number
 	// Please help, if you know a better way to do this:
 	if (name.length() >= 2 && name[0]=='H' && name[1]=='P') {
@@ -972,16 +983,22 @@ ObjectBaseP HipStarMgr::searchByName(const std::string& name) const
 			}
 		}
 		if (hp_ok) {
-			return searchHP(nr);
+			return(nr);
 		}
 	}
+	std::map<std::string,int>::const_iterator il(common_names_index_i18n.find(objw));
+	if (il!=common_names_index_i18n.end()) {
+		return il->second;
+	} else {
+		return -1;
+	}
+}
 
-	std::map<std::string,int>::const_iterator it(common_names_index_i18n.find(objw));
-
-	// Search by sci name
-	it = sci_names_index_i18n.find(objw);
-	if (it!=sci_names_index_i18n.end()) {
-		return searchHP(it->second);
+ObjectBaseP HipStarMgr::searchByName(const std::string& name) const
+{
+	int HP = getHPFromStarName(name);
+	if (HP >= 0) {
+		return searchHP(HP);
 	}
 
 	return ObjectBaseP();
