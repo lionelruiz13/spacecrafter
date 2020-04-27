@@ -1819,12 +1819,14 @@ bool Core::selectObject(const Object &obj)
 				hip_stars->setSelected(selected_object);
 
 				// Build a constellation with the currently selected stars
-				auto selected_stars = hip_stars->getSelected();
-				std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()/2);
-				for (int star : selected_stars) {
-					starLinesCommand += " " + std::to_string(star);
+				if (starLines->getFlagSelected()) {
+					auto selected_stars = hip_stars->getSelected();
+					std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()/2);
+					for (int star : selected_stars) {
+						starLinesCommand += " " + std::to_string(star);
+					}
+					starLines->loadStringData(starLinesCommand);
 				}
-				starLines->loadStringData(starLinesCommand);
 
 				// potentially record this action
 				if (!recordActionCallback.empty()) recordActionCallback("select " + selected_object.getEnglishName());

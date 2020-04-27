@@ -176,6 +176,7 @@ void AppCommandInterface::initialiseFlagsName()
 
 	m_flags["stars_trace"]= FLAG_NAMES::FN_STARS_TRACE;
 	m_flags["star_lines"]= FLAG_NAMES::FN_STAR_LINES;
+	m_flags["star_lines_selected"]= FLAG_NAMES::FN_STAR_LINES_SELECTED;
 	m_flags["sky_draw"]= FLAG_NAMES::FN_SKY_DRAW;
 	m_flags["dso_pictograms"]= FLAG_NAMES::FN_DSO_PICTOGRAMS;
 	m_flags["zodiacal_light"]= FLAG_NAMES::FN_ZODIAC_LIGHT;
@@ -1166,6 +1167,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->starLinesGetFlag();
 
 			coreLink->starLinesSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_STAR_LINES_SELECTED :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starLinesSelectedGetFlag();
+
+			coreLink->starLinesSelectedSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_SATELLITES :
