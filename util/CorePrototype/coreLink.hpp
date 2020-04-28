@@ -25,7 +25,7 @@ public:
     }
 
     void getCamera(){
-        core->camera->getObjet();
+        core->camera->getCamera();
     }
 
     void setObj1(std::string n){
@@ -44,8 +44,8 @@ public:
         core->obj4_galaxy->setObjet(n);
     }
 
-    void setCamera(std::string n){
-        core->camera->setObjet(n);
+    void setCamera(int p, int t){
+        core->camera->setCamera(p, t);
     }
 
 private: 

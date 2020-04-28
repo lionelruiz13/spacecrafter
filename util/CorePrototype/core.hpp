@@ -2,6 +2,7 @@
 #define CORE_HPP
 
 #include"objet.hpp"
+#include"camera.hpp"
 #include<iostream>
 
 class Core {
@@ -28,7 +29,7 @@ private:
     Objet* obj2;
     Objet* obj3_universe;
     Objet* obj4_galaxy;
-    Objet* camera;
+    Camera* camera;
 };
 
 #endif

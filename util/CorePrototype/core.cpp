@@ -5,7 +5,7 @@ Core::Core() {
     obj2 = new Objet("obj2");
     obj3_universe = new Objet("obj3_universe");
     obj4_galaxy = new Objet("obj4_galaxy");
-    camera = new Objet("camera");
+    camera = new Camera(0,0);
 }
 Core::~Core() {
     delete obj1;
@@ -25,7 +25,6 @@ void Core::update() {
     obj2->update();
     obj3_universe->update();
     obj4_galaxy->update();
-    camera->update();
 }
 
 void Core::draw() {
@@ -34,7 +33,6 @@ void Core::draw() {
     obj2->draw();
     obj3_universe->draw();
     obj4_galaxy->draw();
-    camera->draw();
 }
 
 void Core::setFlagSelectedObjectPointer() {
