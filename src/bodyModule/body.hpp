@@ -413,6 +413,9 @@ public:
 
 	void createTexSkin(const std::string &texName);
 
+	double getAxisAngle() const;
+
+
 protected:
 
 	bool useParentPrecession(double jd) {

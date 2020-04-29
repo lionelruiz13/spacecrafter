@@ -34,7 +34,7 @@
 /*
  * returns the position for a movement at given date
  * 
- * The trajectory followed is a straight line between two points, however the speed is a cosine function.
+ * The trajectory followed is a straight line between two points, however the speed is a logistic function.
  * This allows the speed to be low at the start and finish, but hight in between.
  * 
  */
@@ -47,7 +47,12 @@ Vec3d AnchorManager::getTravelPosition(double JD)
 	if(JD < startTime)
 		JD = startTime;
 
-	double movement = distanceToTavel * ( cos( C_PI * ( (JD-startTime)/travelTime - 1 ) ) + 1) / 2 ;
+	double s = 1;
+	double u = 2;
+	double x = (((JD-startTime)/travelTime)*25)-5;
+
+	double logistic = 1/(1 + exp(-(x-u)/s));
+	double movement = distanceToTavel * logistic;
 
 	return startPosition + direction * movement;
 
@@ -522,9 +527,12 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 
 	double alt = (obsPos-bodyPos).length() * AU * 1000 - planetRadius;
 
+
 	currentAnchor = targetBody;
 	observer->setAnchorPoint(targetBody);
 	targetBody->update();
+
+	double angle = targetBody->getBody()->getAxisAngle()*(180.0f/C_PI);
 
 	observer->setAltitude(alt);
 	observer->setLatitude(0);
@@ -614,7 +622,16 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 	}
 
 	observer->setLatitude( (lower+upper)/2 );
-	navigator->setHeading(0);
+
+	//angle to heading
+	if (angle > 180) angle = -(-180 + (angle - 180));
+	if (angle < -180) angle = 180 + (angle + 180);
+
+	//set the heading to the same angle that the planet was originally seen at
+	navigator->setHeading(-angle);
+
+	//Changethe heading to 0 gradually so that the planet axis is vertical
+	navigator->changeHeading(0, 5000);
 
 	return true;
 

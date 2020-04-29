@@ -809,8 +809,14 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 	// Draw the name, and the circle if it's not too close from the body it's turning around
 	// this prevents name overlaping (ie for jupiter satellites)
 	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
+
+	//Compute the angle of the axis
+	axis->computeAxisAngle(prj, mat);
 }
 
+double Body::getAxisAngle() const {
+	return axis->getAngle();
+}
 
 bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected)
 {
