@@ -256,6 +256,7 @@ public:
 
 	void deselect() {
 		selected_star.clear();
+		selected_stars.clear();
 	}
 
 	//! Get display flag for Star names (labels).
