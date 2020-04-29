@@ -1,5 +1,12 @@
 #include "interfaceModule/app_command_init.hpp"
+#include "coreModule/coreLink.hpp"
+#include "tools/log.hpp"
 
+AppCommandInit::AppCommandInit(AppCommandInterface* _app, CoreLink* _coreLink,  Core * core) {
+	appCommandInterface = _app;
+	coreLink = _coreLink;
+	stcore = core;
+}
 
 AppCommandInit::AppCommandInit() {}
 
@@ -220,6 +227,7 @@ void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOM
 
 	m_color["star_table"] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
 }
+
 void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_appcommand) {   
     m_appcommand["atmosphere_fade_duration"] = SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION;
 	m_appcommand["auto_move_duration"] = SCD_NAMES::APP_AUTO_MOVE_DURATION;
