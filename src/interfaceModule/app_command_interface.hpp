@@ -32,6 +32,8 @@
 #ifndef _APP_COMMAND_INTERFACE_H_
 #define _APP_COMMAND_INTERFACE_H_
 
+#include<functional>
+
 #include "tools/utility.hpp"
 #include "base_command_interface.hpp"
 
@@ -65,6 +67,11 @@ public:
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, std::string _commandline);
 	void setTcp(ServerSocket* _tcp);
 
+	struct stFct{
+		std::function<void(FLAG_VALUES,  std::function<bool()>,  std::function<void(bool)>, bool &)> fctP;
+		std::function<bool()> GetFct = nullptr;
+		std::function<void(bool)> SetFct = nullptr;
+	};
 protected:
 	//all different command
 	int commandAdd();
@@ -185,6 +192,8 @@ private:
 	//map assurant la transcription entre le texte et la commande interface associé
 	std::map<const std::string, SCD_NAMES> m_appcommand;
 	//std::map<const std::string, SCD_NAMES>::iterator m_appcommand_it;
+	//map assurant la transcriptio entre le type et les fonctions associés
+	std::map<FLAG_NAMES, stFct> m_setFlag;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H
