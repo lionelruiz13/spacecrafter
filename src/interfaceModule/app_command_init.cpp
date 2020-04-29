@@ -8,8 +8,6 @@ AppCommandInit::AppCommandInit(AppCommandInterface* _app, CoreLink* _coreLink,  
 	stcore = core;
 }
 
-AppCommandInit::AppCommandInit() {}
-
 AppCommandInit::~AppCommandInit() {}
 
 void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands) {
@@ -275,4 +273,183 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_appcommand["tully_color_mode"] = SCD_NAMES::APP_TULLY_COLOR_MODE;
 	m_appcommand["datetime_display_position"] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
 	m_appcommand["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+}
+
+void AppCommandInit::initialiseSetFlag(std::map<FLAG_NAMES, AppCommandInterface::stFct> &m_setFlag) {
+	m_setFlag[FLAG_NAMES::FN_ANTIALIAS_LINES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->constellationGetFlagLines();},
+		  [&](bool x){ coreLink->constellationSetFlagLines(x);} };
+	m_setFlag[FLAG_NAMES::FN_CONSTELLATION_NAMES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->constellationGetFlagNames();},
+		  [&](bool x){ coreLink->constellationSetFlagNames(x);} };
+	m_setFlag[FLAG_NAMES::FN_CONSTELLATION_ART] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->constellationGetFlagArt();},
+		  [&](bool x){ coreLink->constellationSetFlagArt(x);} };
+	m_setFlag[FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->constellationGetFlagBoundaries();},
+		  [&](bool x){ coreLink->constellationSetFlagBoundaries(x);} };
+	m_setFlag[FLAG_NAMES::FN_CONSTELLATION_PICK] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->constellationGetFlagIsolateSelected();},
+		  [&](bool x){ coreLink->constellationSetFlagIsolateSelected(x);} };
+	m_setFlag[FLAG_NAMES::FN_STAR_TWINKLE] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->starGetFlagTwinkle();},
+		  [&](bool x){ coreLink->starSetFlagTwinkle(x);} };
+	m_setFlag[FLAG_NAMES::FN_MANUAL_ZOOM] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return stcore->getFlagManualAutoZoom();},
+		  [&](bool x){ stcore->setFlagManualAutoZoom(x);} };
+	m_setFlag[FLAG_NAMES::FN_NAVIGATION] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return stcore->getFlagNav();},
+		  [&](bool x){ stcore->setFlagNav(x);} };
+	m_setFlag[FLAG_NAMES::FN_LIGHT_TRAVEL_TIME] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->getFlagLightTravelTime();},
+		  [&](bool x){ coreLink->setFlagLightTravelTime(x);} };
+	m_setFlag[FLAG_NAMES::FN_FOG] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->fogGetFlag();},
+		  [&](bool x){ coreLink->fogSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_FOG] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->fogGetFlag();},
+		  [&](bool x){if(!x){ coreLink->fogSetFlag(false); } coreLink->starSetFlagTwinkle(x); coreLink->atmosphereSetFlag(x);}};
+	m_setFlag[FLAG_NAMES::FN_CARDINAL_POINTS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->cardinalsPointsGetFlag();},
+		  [&](bool x){ coreLink->cardinalsPointsSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_CLOUDS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->getFlagClouds();},
+		  [&](bool x){ coreLink->setFlagClouds(x);} };
+	m_setFlag[FLAG_NAMES::FN_MOON_SCALED] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->getFlagMoonScaled();},
+		  [&](bool x){ coreLink->setFlagMoonScaled(x);} };
+	m_setFlag[FLAG_NAMES::FN_SUN_SCALED] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->getFlagSunScaled();},
+		  [&](bool x){ coreLink->setFlagSunScaled(x);} };
+	m_setFlag[FLAG_NAMES::FN_LANDSCAPE] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->landscapeGetFlag();},
+		  [&](bool x){ coreLink->landscapeSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_STARS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->starGetFlag();},
+		  [&](bool x){ coreLink->starSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_STAR_NAMES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->starGetFlagName();},
+		  [&](bool x){ coreLink->starSetFlagName(x);} };
+	m_setFlag[FLAG_NAMES::FN_STAR_PICK] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->starGetFlagIsolateSelected();},
+		  [&](bool x){ coreLink->starSetFlagIsolateSelected(x);} };
+	m_setFlag[FLAG_NAMES::FN_PLANETS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->planetsGetFlag();},
+		  [&](bool x){ coreLink->planetsSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_PLANET_NAMES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->planetsGetFlagHints();},
+		  [&](bool x){ coreLink->planetsSetFlagHints(x); if (coreLink->planetsGetFlagHints()) coreLink->planetsSetFlag(true);} };
+	m_setFlag[FLAG_NAMES::FN_PLANET_ORBITS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->planetsGetFlagOrbits();},
+		  [&](bool x){ coreLink->planetsSetFlagOrbits(x); coreLink->satellitesSetFlagOrbits(x);} };
+	m_setFlag[FLAG_NAMES::FN_PLANETS_AXIS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->planetsGetFlagAxis();},
+		  [&](bool x){ coreLink->planetsSetFlagAxis(x);} };
+	m_setFlag[FLAG_NAMES::FN_ORBITS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->planetsGetFlagOrbits();},
+		  [&](bool x){ coreLink->planetsSetFlagOrbits(x); coreLink->satellitesSetFlagOrbits(x);} };
+	m_setFlag[FLAG_NAMES::FN_PLANETS_ORBITS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->planetsGetFlagOrbits();},
+		  [&](bool x){ coreLink->planetsSetFlagOrbits(x);} };
+	m_setFlag[FLAG_NAMES::FN_SATELLITES_ORBITS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->satellitesGetFlagOrbits();},
+		  [&](bool x){ coreLink->satellitesSetFlagOrbits(x);} };
+	m_setFlag[FLAG_NAMES::FN_NEBULAE] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->nebulaGetFlag();},
+		  [&](bool x){ coreLink->nebulaSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_NEBULA_HINTS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->nebulaGetFlagHints();},
+		  [&](bool x){ coreLink->nebulaSetFlagHints(x);} };
+	m_setFlag[FLAG_NAMES::FN_DSO_PICTOGRAMS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return stcore->getDsoPictograms();},
+		  [&](bool x){ stcore->setDsoPictograms(x);} };
+	m_setFlag[FLAG_NAMES::FN_NEBULA_NAMES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->nebulaGetFlagNames();},
+		  [&](bool x){ if (x) coreLink->nebulaSetFlagNames(true); coreLink->nebulaSetFlagNames(x);} };
+	m_setFlag[FLAG_NAMES::FN_MILKY_WAY] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->milkyWayGetFlag();},
+		  [&](bool x){ coreLink->milkyWaySetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_ZODIAC_LIGHT] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->milkyWayGetFlagZodiacal();},
+		  [&](bool x){ coreLink->milkyWaySetFlagZodiacal(x);} };
+	m_setFlag[FLAG_NAMES::FN_BRIGHT_NEBULAE] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->nebulaGetFlagBright();},
+		  [&](bool x){ coreLink->nebulaSetFlagBright(x);} };
+	m_setFlag[FLAG_NAMES::FN_OBJECT_TRAILS] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->planetsGetFlagTrails();},
+		  [&](bool x){ coreLink->planetsSetFlagTrails(x);} };
+	m_setFlag[FLAG_NAMES::FN_TRACK_OBJECT] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return stcore->getFlagTracking();},
+		  [&](bool x){ stcore->setFlagTracking(x);} };
+	m_setFlag[FLAG_NAMES::FN_SCRIPT_GUI_DEBUG] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return !cLog::get()->getDebug();},
+		  [&](bool x){ cLog::get()->setDebug(x);} };
+	m_setFlag[FLAG_NAMES::FN_LOCK_SKY_POSITION] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return stcore->getFlagLockSkyPosition();},
+		  [&](bool x){ stcore->setFlagLockSkyPosition(x);} };
+	m_setFlag[FLAG_NAMES::FN_OORT] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->oortGetFlagShow();},
+		  [&](bool x){ coreLink->oortSetFlagShow(x);} };
+	m_setFlag[FLAG_NAMES::FN_TULLY] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->tullyGetFlagShow();},
+		  [&](bool x){ coreLink->tullySetFlagShow(x);} };
+	m_setFlag[FLAG_NAMES::FN_BODY_TRACE] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->bodyTraceGetFlag();},
+		  [&](bool x){ coreLink->bodyTraceSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_STARS_TRACE] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->starGetTraceFlag();},
+		  [&](bool x){ coreLink->starSetTraceFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_STAR_LINES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->starLinesGetFlag();},
+		  [&](bool x){ coreLink->starLinesSetFlag(x);} };
+	m_setFlag[FLAG_NAMES::FN_SATELLITES] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->hideSatellitesFlag();},
+		  [&](bool x){ coreLink->setHideSatellites(x);} };
+	m_setFlag[FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION] = 
+		{ [&](FLAG_VALUES f,  std::function<bool()> f1,  std::function<void(bool)> f2, bool &b){ appCommandInterface->setFlagFct(f, f1, f2, b);},
+          [&](){ return coreLink->atmosphericRefractionGetFlag();},
+		  [&](bool x){ coreLink->atmosphericRefractionSetFlag(x);} };
 }
