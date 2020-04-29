@@ -1822,7 +1822,7 @@ bool Core::selectObject(const Object &obj)
 				if (starLines->getFlagSelected()) {
 					auto selected_stars = hip_stars->getSelected();
 					std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()-1);
-					for (int i = 0; i + 1 < selected_stars.size(); i++) {
+					for (std::size_t i = 0; i + 1 < selected_stars.size(); i++) {
 						starLinesCommand += " " + std::to_string(selected_stars[i]);
 						starLinesCommand += " " + std::to_string(selected_stars[i+1]);
 					}
