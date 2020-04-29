@@ -66,10 +66,10 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	max_random = 1.0;
 	min_random = 0.0;
 	appInit = new AppCommandInit();
-	m_commands = appInit->initialiseCommandsName();
-	m_flags = appInit->initialiseFlagsName();
-	m_color = appInit->initialiseColorCommand();
-	m_appcommand = appInit->initialiseSetCommand();
+	appInit->initialiseCommandsName(m_commands);
+	appInit->initialiseFlagsName(m_flags);
+	appInit->initialiseColorCommand(m_color);
+	appInit->initialiseSetCommand(m_appcommand);
 }
 
 void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {

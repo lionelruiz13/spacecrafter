@@ -8,10 +8,10 @@ public:
     AppCommandInit();
     ~AppCommandInit();
 
-    std::map<const std::string, SC_COMMAND> initialiseCommandsName();
-    std::map<const std::string, FLAG_NAMES> initialiseFlagsName();
-    std::map<const std::string, COLORCOMMAND_NAMES> initialiseColorCommand();
-    std::map<const std::string, SCD_NAMES> initialiseSetCommand();
+    void initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands);
+    void initialiseFlagsName(std::map<const std::string, FLAG_NAMES> &m_flags);
+    void initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color);
+    void initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_appcommand);
 
 };
 
