@@ -52,7 +52,6 @@
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
 
-
 AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui,  Media* _media)
 {
 	stcore = core;
@@ -65,11 +64,12 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	swapIfCommand = false;
 	max_random = 1.0;
 	min_random = 0.0;
-	appInit = new AppCommandInit();
+	appInit = new AppCommandInit(this, coreLink, core);
 	appInit->initialiseCommandsName(m_commands);
 	appInit->initialiseFlagsName(m_flags);
 	appInit->initialiseColorCommand(m_color);
 	appInit->initialiseSetCommand(m_appcommand);
+	appInit->initialiseSetFlag(m_setFlag);
 }
 
 void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {
