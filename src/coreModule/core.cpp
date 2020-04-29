@@ -1821,9 +1821,10 @@ bool Core::selectObject(const Object &obj)
 				// Build a constellation with the currently selected stars
 				if (starLines->getFlagSelected()) {
 					auto selected_stars = hip_stars->getSelected();
-					std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()/2);
-					for (int star : selected_stars) {
-						starLinesCommand += " " + std::to_string(star);
+					std::string starLinesCommand = "customConst " + std::to_string(selected_stars.size()-1);
+					for (int i = 0; i + 1 < selected_stars.size(); i++) {
+						starLinesCommand += " " + std::to_string(selected_stars[i]);
+						starLinesCommand += " " + std::to_string(selected_stars[i+1]);
 					}
 					starLines->loadStringData(starLinesCommand);
 				}
