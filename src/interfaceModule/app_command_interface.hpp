@@ -72,9 +72,19 @@ public:
 		std::function<bool()> GetFct = nullptr;
 		std::function<void(bool)> SetFct = nullptr;
 	};
+
+	// Structure pour future amélioration
+	// struct stFctEnum{
+	// 	std::function<void(FLAG_VALUES, std::function<bool()>, std::function<void()>, std::function<void(bool)>, bool &)> fctP;
+	// 	std::function<bool()> GetFct = nullptr;
+	// 	std::function<void()> FlagFct = nullptr;
+	// 	std::function<void(bool)> SetFct = nullptr;
+	// };
+
 	//Fonctions de traitement pour setFlag
 	void setFlagFct(FLAG_VALUES flag_value, std::function<bool()> GetFct, std::function<void(bool)> SetFct, bool &newval);
 	//void setFlagFct2(FLAG_VALUES flag_value, std::function<bool()> GetFct, std::function<void()> FlagFct, std::function<void(bool)> SetFct, bool &newval);
+
 protected:
 	//all different command
 	int commandAdd();
@@ -197,6 +207,7 @@ private:
 	//std::map<const std::string, SCD_NAMES>::iterator m_appcommand_it;
 	//map assurant la transcriptio entre le type et les fonctions associés
 	std::map<FLAG_NAMES, stFct> m_setFlag;
+	//std::map<FLAG_NAMES, stFct>::iterator m_setFlag_it;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H
