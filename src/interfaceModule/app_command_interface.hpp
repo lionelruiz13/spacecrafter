@@ -72,6 +72,9 @@ public:
 		std::function<bool()> GetFct = nullptr;
 		std::function<void(bool)> SetFct = nullptr;
 	};
+	//Fonctions de traitement pour setFlag
+	void setFlagFct(FLAG_VALUES flag_value, std::function<bool()> GetFct, std::function<void(bool)> SetFct, bool &newval);
+	//void setFlagFct2(FLAG_VALUES flag_value, std::function<bool()> GetFct, std::function<void()> FlagFct, std::function<void(bool)> SetFct, bool &newval);
 protected:
 	//all different command
 	int commandAdd();

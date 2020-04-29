@@ -563,6 +563,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, s
 	return true;
 }
 
+void AppCommandInterface::setFlagFct(FLAG_VALUES flag_value,  std::function<bool()> GetFct,  std::function<void(bool)> SetFct, bool &newval){    
+    if(flag_value==FLAG_VALUES::FV_TOGGLE) { newval = !GetFct(); }
+    SetFct(newval);
+}
+
 bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval)
 {
 	if (flag_value==FLAG_VALUES::FV_ON)
