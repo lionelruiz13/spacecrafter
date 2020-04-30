@@ -1,6 +1,8 @@
 #include"CoreMode3.hpp"
 
-CoreMode3::CoreMode3() {}
+CoreMode3::CoreMode3() {
+    maCamera3 = new Camera("CoreMode3");
+}
 CoreMode3::~CoreMode3() {}
 
 void CoreMode3::draw() {
@@ -16,10 +18,10 @@ void CoreMode3::update() {
 void CoreMode3::onEnter(Objet* _obj3_galaxy, Camera * &cam) {
     obj3_galaxy = _obj3_galaxy;
     Camera* camTemp = cam;
-    cam = maCamera;
-    maCamera = camTemp;
+    cam = maCamera3;
+    maCamera3 = camTemp;
 }
 
 void CoreMode3::onExit(Camera * &cam) {
-    cam = maCamera;
+    cam = maCamera3;
 }

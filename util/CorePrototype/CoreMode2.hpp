@@ -20,11 +20,11 @@ public:
 
 protected:
     void maCamera();
-    
+
 private:
     Objet* obj2_universe;
 
-    Camera* maCamera;
+    Camera* maCamera2;
 };
 
 #endif

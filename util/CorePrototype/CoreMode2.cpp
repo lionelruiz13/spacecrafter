@@ -1,6 +1,8 @@
 #include"CoreMode2.hpp"
 
-CoreMode2::CoreMode2() {}
+CoreMode2::CoreMode2() {
+    maCamera2 = new Camera("CoreMode2");
+}
 CoreMode2::~CoreMode2() {}
 
 void CoreMode2::draw() {
@@ -16,10 +18,10 @@ void CoreMode2::update() {
 void CoreMode2::onEnter(Objet* _obj2_universe, Camera * &cam) {
      obj2_universe = _obj2_universe;
      Camera* camTemp = cam;
-    cam = maCamera;
-    maCamera = camTemp;
+    cam = maCamera2;
+    maCamera2 = camTemp;
 }
 
 void CoreMode2::onExit(Camera * &cam) {
-    cam = maCamera;
+    cam = maCamera2;
 }

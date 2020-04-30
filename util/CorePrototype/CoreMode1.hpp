@@ -20,12 +20,12 @@ public:
 
 protected:
     void maCamera();
-    
+
 private:
     Objet* obj1a;
     Objet* obj1b;
 
-    Camera* maCamera;
+    Camera* maCamera1;
 };
 
 #endif

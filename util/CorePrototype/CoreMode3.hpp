@@ -17,14 +17,14 @@ public:
     void update();
     void onEnter(Objet* _obj3_galaxy, Camera* &cam);
     void onExit(Camera * &cam);
-    
+
 protected:
     void maCamera();
 
 private:
     Objet* obj3_galaxy;
 
-    Camera* maCamera;
+    Camera* maCamera3;
 };
 
 #endif

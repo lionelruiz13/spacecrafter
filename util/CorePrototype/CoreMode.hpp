@@ -19,9 +19,9 @@ public:
 
 protected:
     void maCamera();
-    
+
 private:
-    Camera* maCamera;
+    Camera* maCamera0;
 };
 
 #endif
