@@ -230,7 +230,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_DESELECT :	return commandDeselect(); break;
 		case SC_COMMAND::SC_DOMEMASTERS :	return commandDomemasters(); break;
 		case SC_COMMAND::SC_DSO :	return commandDso(); break;
-		case SC_COMMAND::SC_EXERNASC_MPLAYER :	return commandExternalMplayer(); break;
+		//case SC_COMMAND::SC_EXERNASC_MPLAYER :	return commandExternalMplayer(); break;
 		case SC_COMMAND::SC_EXTERNASC_VIEWER :	return commandExternalViewer(); break;
 		case SC_COMMAND::SC_FLAG :	return commandFlag(); break;
 		case SC_COMMAND::SC_GET :	return commandGet(); break;
@@ -1429,7 +1429,7 @@ int AppCommandInterface::commandConstellation()
 		return executeCommandStatus();
 	}
 }
-
+/*
 int AppCommandInterface::commandExternalMplayer()
 {
 	std::string argAction = args["action"];
@@ -1482,7 +1482,7 @@ int AppCommandInterface::commandExternalMplayer()
 	}
 	debug_message= _("command 'externalmplayer' : unknown argument");
 	return executeCommandStatus();
-}
+}*/
 
 int AppCommandInterface::commandExternalViewer()
 {
