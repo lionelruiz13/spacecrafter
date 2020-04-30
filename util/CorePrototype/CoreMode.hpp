@@ -17,6 +17,9 @@ public:
     void onEnter();
     void onExit();
 
+protected:
+    void maCamera();
+    
 private:
     Camera* maCamera;
 };

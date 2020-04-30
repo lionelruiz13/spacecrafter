@@ -15,8 +15,11 @@ public:
 
     void draw();
     void update();
-    void onEnter();
-    void onExit();
+    void onEnter(Objet* _obj3_galaxy, Camera* &cam);
+    void onExit(Camera * &cam);
+    
+protected:
+    void maCamera();
 
 private:
     Objet* obj3_galaxy;

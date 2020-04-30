@@ -15,12 +15,15 @@ public:
 
     void draw();
     void update();
-    void onEnter();
-    void onExit();
+    void onEnter(Objet* _obj2_universe, Camera* &cam);
+    void onExit(Camera * &cam);
 
+protected:
+    void maCamera();
+    
 private:
     Objet* obj2_universe;
-    
+
     Camera* maCamera;
 };
 
