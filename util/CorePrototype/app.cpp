@@ -5,8 +5,13 @@ App::App() {
     coreLink = new CoreLink(core);
     ui = new Ui(core, this);
     commander = new AppCommandInterface(core, coreLink, this, ui);
-
     commander->init();
+
+    pCore1 = new CoreMode1();
+    pCore2 = new CoreMode2();
+    pCore3 = new CoreMode3();
+
+    pCore = pCore1;
 
 }
 

@@ -5,7 +5,7 @@ DEPS =
 LIBS= -lm
 
 
-OBJ = main.o app.o core.o ui.o AppCommandInterface.o coreLink.o
+OBJ = main.o app.o core.o ui.o AppCommandInterface.o coreLink.o CoreMode.o CoreMode1.o CoreMode2.o CoreMode3.o
 
 %.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CPPFLAGS)
