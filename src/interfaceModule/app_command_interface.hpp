@@ -42,6 +42,7 @@ class CoreLink;
 class CoreBackup;
 class App;
 class AppCommandInit;
+class AppCommandEval;
 class UI;
 class ScriptInterface;
 class SpaceDate;
@@ -179,19 +180,19 @@ private:
 	std::string evalString (const std::string &var);
 
 	AppCommandInit *appInit = nullptr;
-
+	AppCommandEval *appEval = nullptr;
 	// void initialiseCommandsName();
 	// void initialiseFlagsName();
 	// void initialiseColorCommand();
 	// void initialiseSetCommand();
 
-	void deleteVar();
-	void printVar();
-	double max_random;
-	double min_random;
+	// void deleteVar();
+	// void printVar();
+	// double max_random;
+	// double min_random;
 
 	//variables utilisées dans le moteur de scripts
-	std::map<const std::string, std::string> variables;
+	// std::map<const std::string, std::string> variables;
 	//std::map<const std::string, std::string>::iterator var_it;
 	//map assurant la transcription entre le texte et la commande associée
 	std::map<const std::string, SC_COMMAND> m_commands;

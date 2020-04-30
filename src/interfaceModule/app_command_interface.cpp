@@ -41,6 +41,7 @@
 #include "eventModule/ScreenFaderEvent.hpp"
 #include "interfaceModule/app_command_interface.hpp"
 #include "interfaceModule/app_command_init.hpp"
+#include "interfaceModule/app_command_eval.hpp"
 #include "interfaceModule/script_interface.hpp"
 #include "mediaModule/media.hpp"
 #include "tools/app_settings.hpp"
@@ -62,8 +63,9 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	ui = _ui;
 	swapCommand = false;
 	swapIfCommand = false;
-	max_random = 1.0;
-	min_random = 0.0;
+	//max_random = 1.0;
+	//min_random = 0.0;
+	appEval = new AppCommandEval();
 	appInit = new AppCommandInit(this, coreLink, core);
 	appInit->initialiseCommandsName(m_commands);
 	appInit->initialiseFlagsName(m_flags);
@@ -1558,7 +1560,7 @@ int AppCommandInterface::commandClear()
 	std::string argState = args["state"];
 
 	if (argState == "variable") {
-		deleteVar();
+		appEval->deleteVar();
 		return executeCommandStatus();
 	}
 
@@ -3096,30 +3098,24 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 std::string AppCommandInterface::evalString (const std::string &var)
 {
-	auto var_it = variables.find(var);
-	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
-		return var;
-	else // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		return var_it->second;
+	if (var.empty())
+		return "";
+	return appEval->evalString(var);
 }
 
 double AppCommandInterface::evalDouble (const std::string &var)
 {
 	if (var.empty())
 		return 0.0;
-
-	auto var_it = variables.find(var);
-	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
-		return Utility::strToDouble(var);
-	else // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		return Utility::strToDouble(var_it->second);
+	return appEval->evalDouble(var);
 }
 
 
 int AppCommandInterface::evalInt (const std::string &var)
 {
-	double tmp=evalDouble(var);
-	return (int) tmp;
+	if (var.empty())
+		return 0;
+	return appEval->evalInt(var);
 }
 
 
@@ -3129,15 +3125,7 @@ int AppCommandInterface::commandDefine()
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
 		//std::cout << "Command define : " <<  mArg.c_str() << " => " << mValue.c_str() << std::endl;
-		if (mValue == "random") {
-			float value = (float)rand()/RAND_MAX* (max_random-min_random)+ min_random;
-			variables[mArg] = Utility::floatToStr(value);
-		} else {
-			//~ printf("mValue = %s\n", mValue.c_str());
-			//std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
-			variables[mArg] = Utility::doubleToString( evalDouble(mValue) );
-		//	this->printVar();
-		}
+		appEval->define(mArg,mValue);
 	} else {
 		debug_message = "Unexpected error in command_define";
 	}
@@ -3150,16 +3138,7 @@ int AppCommandInterface::commandAdd()
 	if (args.begin() != args.end()) {
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
-		auto var_it = variables.find(mArg);
-
-		if (var_it == variables.end()) { //pas trouvé donc on renvoie la valeur de la chaine
-			debug_message = "not possible to operate with undefined variable";
-			return executeCommandStatus();
-		} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-			double tmp = Utility::strToDouble( variables[mArg] ) +evalDouble (mValue);
-			variables[mArg] = Utility::floatToStr(tmp);
-			return executeCommandStatus();
-		}
+		appEval->commandAdd(mArg,mValue);
 	} else { //est ce que ce cas peut vraiment se produire ?
 		debug_message = "unexpected error in command_addition";
 	}
@@ -3170,19 +3149,9 @@ int AppCommandInterface::commandMultiply()
 {
 	// could loop if want to allow that syntax
 	if (args.begin() != args.end()) {
-
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
-
-		auto var_it = variables.find(mArg);
-		if (var_it == variables.end()) {
-			debug_message = "not possible to operate with undefined variable";
-			return executeCommandStatus();
-		} else {
-			double tmp = Utility::strToDouble( variables[mArg] ) * Utility::strToDouble (mValue);
-			variables[mArg] = Utility::floatToStr(tmp);
-			return executeCommandStatus();
-		}
+		appEval->commandMul(mArg,mValue);
 	} else {
 		debug_message = "unexpected error in command__addition";
 	}
@@ -3242,7 +3211,7 @@ int AppCommandInterface::commandStruct()
 	}
 
 	if (args["print"] =="var") {
-		printVar();
+		appEval->printVar();
 	}
 
 	return executeCommandStatus();
@@ -3253,36 +3222,16 @@ int AppCommandInterface::commandRandom()
 {
 	bool status = false;
 	std::string argMin = args["min"];
-	std::string argMax = args["max"];
-
 	if (!argMin.empty()) {
-		min_random = evalDouble(argMin);
+		appEval->commandRandomMin(argMin);
 		status = true;
 	}
+	std::string argMax = args["max"];
 	if (!argMax.empty()) {
-		max_random = evalDouble(argMax);
+		appEval->commandRandomMax(argMin);
 		status = true;
 	}
 	if (status == false)
 		debug_message= _("unknown random parameter");
 	return executeCommandStatus();
-}
-
-
-void AppCommandInterface::printVar()
-{
-	if (variables.size() ==0) {
-		std::cout << "No variable available" << std::endl;
-		return;
-	}
-	std::cout << "+++++++++++++++++" << std::endl;
-	for (auto var_it=variables.begin(); var_it!=variables.end(); ++var_it) {
-		std::cout << var_it->first << " => " << var_it->second << '\n';
-	}
-	std::cout << "-----------------" << std::endl;
-}
-
-void AppCommandInterface::deleteVar()
-{
-	variables.clear();
 }
