@@ -5,7 +5,7 @@ Core::Core() {
     obj1b = new Objet("obj1b");
     obj2_universe = new Objet("obj2_universe");
     obj3_galaxy = new Objet("obj3_galaxy");
-    camera = new Camera(0,0);
+    camera = new Camera("Core");
 }
 Core::~Core() {
     delete obj1a;

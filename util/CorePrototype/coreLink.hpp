@@ -44,8 +44,8 @@ public:
         core->obj3_galaxy->setObjet(n);
     }
 
-    void setCamera(int p, int t){
-        core->camera->setCamera(p, t);
+    void setCamera(std::string n){
+        core->camera->setCamera(n);
     }
 
 private: 

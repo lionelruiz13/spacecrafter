@@ -7,21 +7,19 @@
 class Camera {
 
 public:
-	Camera(int p, int t): pan(p), tilt(t) {}
+	Camera(std::string n): name(n) {}
 	~Camera() {}
 
     void getCamera() {
-        std::cout << "pan = " + std::to_string(pan) + " ; tilt = " + std::to_string(tilt) << std::endl;
+        std::cout << "Camera " + name << std::endl;
     }
 
-	void setCamera(int p, int t){
-        pan = p;
-        tilt = t;
+	void setCamera(std::string n){
+        name = n;
     }
 
 private:
-    int pan;
-    int tilt;
+    std::string name;
 };
 
 #endif
