@@ -25,10 +25,14 @@ public:
     void unSelect();
 
 private:
-    Objet* obj1;
-    Objet* obj2;
-    Objet* obj3_universe;
-    Objet* obj4_galaxy;
+    //core 1
+    Objet* obj1a;
+    Objet* obj1b;
+    //core 2
+    Objet* obj2_universe;
+    //core3
+    Objet* obj3_galaxy;
+    //partout
     Camera* camera;
 };
 

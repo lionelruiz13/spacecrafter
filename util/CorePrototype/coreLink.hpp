@@ -9,19 +9,19 @@ public:
     ~CoreLink();
 
     void getObj1(){
-        core->obj1->getObjet();
+        core->obj1a->getObjet();
     }
 
     void getObj2(){
-        core->obj2->getObjet();
+        core->obj1b->getObjet();
     }
 
     void getObj3_universe(){
-        core->obj3_universe->getObjet();
+        core->obj2_universe->getObjet();
     }
 
     void getObj4_galaxy(){
-        core->obj4_galaxy->getObjet();
+        core->obj3_galaxy->getObjet();
     }
 
     void getCamera(){
@@ -29,19 +29,19 @@ public:
     }
 
     void setObj1(std::string n){
-        core->obj1->setObjet(n);
+        core->obj1a->setObjet(n);
     }
 
     void setObj2(std::string n){
-        core->obj2->setObjet(n);
+        core->obj1b->setObjet(n);
     }
 
     void setObj3_universe(std::string n){
-        core->obj3_universe->setObjet(n);
+        core->obj2_universe->setObjet(n);
     }
 
     void setObj4_galaxy(std::string n){
-        core->obj4_galaxy->setObjet(n);
+        core->obj3_galaxy->setObjet(n);
     }
 
     void setCamera(int p, int t){
