@@ -196,43 +196,61 @@ void SkyPerson::loadData(const std::string& filename)
 void SkyPerson::loadString(const std::string& message)
 {
 	//on récupère d'abord les 2 nombres et ensuite on les converit...
-    // std::string delimiter = ";";
-    // float ftemp;
-	// std::string txt = message;
-
+    std::string delimiter = ";";
+    float ftemp;
+	std::string txt = message;
+	// std::cout << message << std::endl;
     //Vérifie la présence d'une lettre
-    // for(std::string::size_type i = 0; i < txt.length(); i++)
-    // {
-        // char c = message[i];
-        // if(!isdigit(c)||c!=';'){ //check si le caractère est une lettre
-			// cLog::get()->write("Skyperson error loading data "+ c, LOG_TYPE::L_WARNING);
-            // txt.erase(i, 1);
-        // }
-    // }
-// 
-    // size_t pos = 0;
-    // std::string token;
+    for(std::string::size_type i = 0; i < txt.length(); i++)
+    {
+        char c = txt[i];
+        if(!(isdigit(c)||c==';'||c=='.')){ //check si le caractère est une lettre
+			cLog::get()->write("Skyperson error loading dataStr, check dataStr", LOG_TYPE::L_WARNING);
+			// std::cout << "   " << c << std::endl;
+            txt.erase(i, 1);
+        }
+    }
+	// std::cout << txt << std::endl;
+
+    size_t pos = 0;
+    std::string token;
+
+	std::vector<float> dataTmp;
     //Décompose la chaine de caractère
-    // while ((pos = message.find(delimiter)) != std::string::npos) {
-        // token = txt.substr(0, pos);
-        // ftemp = std::stof(token);
-        // dataSky.push_back(ftemp);
-        // txt.erase(0, pos + delimiter.length());
-    // }
-	// 
-	// on vérifie quand même que le contenu est bien un multiple de 6
+    while ((pos = txt.find(delimiter)) != std::string::npos) {
+        token = txt.substr(0, pos);
+		// std::cout << "   " << token << " | " ;
+	    //fonction plus résistante aux erreurs
+		std::istringstream dstr( token );
+		dstr >> ftemp;
+		//ftemp = std::stof(token);
+
+        dataTmp.push_back(ftemp);
+        txt.erase(0, pos + delimiter.length());
+		// std::cout << txt  << std::endl;
+    }
+	// on vérifie quand même que le contenu est bien un multiple de 2
 	// sinon on supprime les dernières valeurs.
-	// while(dataSky.size()%6!=0) {
-		// dataSky.pop_back();
-		// cLog::get()->write("Skyperson loading incomplete data", LOG_TYPE::L_WARNING);
-	// }
+	if (dataTmp.size()%2!=0) {
+		dataTmp.pop_back();
+	 	cLog::get()->write("Skyperson loading incomplete data", LOG_TYPE::L_WARNING);
+	}
+	
+	// std::cout << "dataTmp a " << dataTmp.size()  << std::endl;
+
+	Vec3f punts;
+	for (auto it =dataTmp.begin(); it!=dataTmp.end(); it++) {
+			Utility::spheToRect(*it, *++it, punts);
+			// std::cout << punts[0] << "|"<< punts[1] << "|"<< punts[2] << std::endl;
+			for(int i=0; i<3; i++)
+				dataSky.push_back(punts[i]);
+	}
 
 	//on charge les points dans un vbo
-	// glBindVertexArray(sData.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindVertexArray(sData.vao);
+	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 
