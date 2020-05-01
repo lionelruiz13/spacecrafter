@@ -52,6 +52,15 @@ public:
 		showFader = b;
 	}
 
+	void setFlagSelected(bool b) {
+		selectedFader = b;
+	}
+
+	//! récupère l'état du fader
+	bool getFlagSelected(void) const {
+		return selectedFader;
+	}
+
 	//! récupère l'état du fader
 	bool getFlagShow(void) const {
 		return showFader;
@@ -113,6 +122,7 @@ protected:
 	Vec3f searchInHip(int HIP);
 	// fader d'affichage
 	LinearFader showFader;
+	LinearFader selectedFader;
 	// état global de la classe
 	bool isAlive;
 	// indique si l'on doit recharger les tampons dans la CG

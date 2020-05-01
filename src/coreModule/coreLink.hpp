@@ -15,6 +15,15 @@ public:
 		core->starLines->setFlagShow(b);
 	}
 
+	void starLinesSelectedSetFlag(bool b) {
+		core->starLines->setFlagSelected(b);
+	}
+
+	bool starLinesSelectedGetFlag(void) const {
+		return core->starLines->getFlagSelected();
+	}
+
+
 	//! Get flag for displaying
 	bool starLinesGetFlag(void) const {
 		return core->starLines->getFlagShow();
