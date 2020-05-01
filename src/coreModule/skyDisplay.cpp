@@ -107,7 +107,7 @@ void SkyDisplay::clear()
 //a optimiser
 void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 {
-	if (((dataSky.size() / 3) == 198) || ((dataSky.size() / 3) == 396))
+	//if (((dataSky.size() / 3) == 198) || ((dataSky.size() / 3) == 396))
 		//double alpha = 0.f; // Il me faut la premiere valeur en alpha de personal.txt ou personeq.txt selon
 
 		for (int i = -9; i < 10; i++) {
