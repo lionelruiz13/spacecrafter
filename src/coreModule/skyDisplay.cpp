@@ -259,7 +259,7 @@ void SkyPerson::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 
 	shaderSkyDisplay->unuse();
 
-	draw_text(prj, nav);
+	//draw_text(prj, nav);
 }
 
 SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
