@@ -1349,6 +1349,10 @@ int AppCommandInterface::commandPersonal()
 		debug_message = "command_personal: Unknown 'action' value";
 		return executeCommandStatus();
 	}
+	if (!args["xy"].empty()) {
+		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONAL, args["xy"]);
+		return executeCommandStatus();
+	}
 	debug_message = "command_'personal' : unrecognized or malformed argument";
 
 	return executeCommandStatus();
@@ -1452,6 +1456,10 @@ int AppCommandInterface::commandPersoneq()
 			return executeCommandStatus();
 		}
 		debug_message = "command_personeq: Unknown 'action' value";
+		return executeCommandStatus();
+	}
+	if (!args["xy"].empty()) {
+		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONEQ, args["xy"]);
 		return executeCommandStatus();
 	}
 	debug_message = "command_'personeq' : unrecognized or malformed argument";

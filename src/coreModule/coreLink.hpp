@@ -1164,6 +1164,10 @@ public:
 		core->skyDisplayMgr->loadData(nameObj,fileName);
 	}
 
+	void skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr) {
+		core->skyDisplayMgr->loadString(nameObj,dataStr);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Observatory---------------------------
 	////////////////////////////////////////////////////////////////////////////////

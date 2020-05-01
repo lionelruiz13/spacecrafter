@@ -55,6 +55,7 @@ public:
 	void update(int delta_time);
 	void clear(SKYDISPLAY_NAME nameObj);
 	void loadData(SKYDISPLAY_NAME nameObj, const std::string& filename);
+	void loadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr);
 
 	void setFont(float font_size, const std::string& font_name);
 

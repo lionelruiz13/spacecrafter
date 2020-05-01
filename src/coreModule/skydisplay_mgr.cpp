@@ -115,6 +115,16 @@ void SkyDisplayMgr::loadData(SKYDISPLAY_NAME nameObj, const std::string& filenam
 	cLog::get()->write("SkyDisplayMgr error : loadData not found " + getSkyName(nameObj), LOG_TYPE::L_WARNING);
 }
 
+void SkyDisplayMgr::loadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr)
+{
+	auto it=m_map.find(nameObj);
+	if(it!=m_map.end()) {
+		it->second->loadString(dataStr);
+		return;
+	}
+	cLog::get()->write("SkyDisplayMgr error : loadString not found " + getSkyName(nameObj), LOG_TYPE::L_WARNING);
+}
+
 void SkyDisplayMgr::flipFlagShow(SKYDISPLAY_NAME nameObj)
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
