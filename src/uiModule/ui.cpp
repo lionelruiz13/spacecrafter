@@ -1496,6 +1496,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					//EventManager::getInstance()->queue(event);
 					break;
 				case KWIN:
+					this->executeCommand("star_lines action drop");
+					this->executeCommand("flag star_lines_selected toggle");
 					break;
 				case CTRL :
 					event = new ScriptEvent(IDIR+"internal/sky_culture1.sts");
@@ -2099,6 +2101,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					// 	// coreLink->timeResetMultiplier();
 					// } else
 					// 	this->executeCommand("timerate action pause");
+					event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
+					EventManager::getInstance()->queue(event);
+					current_landscape = coreLink->observatoryGetLandscapeName();
+					key_Modifier= NONE;
 					this->pauseScriptOrTimeRate();
 					break;
 				case SUPER:
@@ -2107,6 +2113,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case KWIN:
 					break;
 				case CTRL :
+					event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
+					EventManager::getInstance()->queue(event);
+					current_landscape = coreLink->observatoryGetLandscapeName();
+					key_Modifier= NONE;
 					break;
 				default:
 					break;
