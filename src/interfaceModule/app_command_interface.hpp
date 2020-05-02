@@ -95,7 +95,6 @@ protected:
 	int commandMeteors();
 	int commandMoveto();
 	int commandMovetocity();
-	// int commandMultiplier();
 	int commandMultiply();
 	int commandPersonal();
 	int commandPersoneq();
@@ -154,38 +153,21 @@ private:
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);
 	bool setFlag(const std::string &name, const std::string &value, bool &newval);
 
-	// std::string getErrorString();
 	double evalDouble(const std::string &var);
 	int evalInt (const std::string &var);
 	std::string evalString (const std::string &var);
 
 	AppCommandInit *appInit = nullptr;
 	AppCommandEval *appEval = nullptr;
-	// void initialiseCommandsName();
-	// void initialiseFlagsName();
-	// void initialiseColorCommand();
-	// void initialiseSetCommand();
 
-	// void deleteVar();
-	// void printVar();
-	// double max_random;
-	// double min_random;
-
-	//variables utilisées dans le moteur de scripts
-	// std::map<const std::string, std::string> variables;
-	//std::map<const std::string, std::string>::iterator var_it;
 	//map assurant la transcription entre le texte et la commande associée
 	std::map<const std::string, SC_COMMAND> m_commands;
-	//std::map<const std::string, SC_COMMAND>::iterator m_commands_it;
 	//map assurant la transcription entre le texte et le flag associé
 	std::map<const std::string, FLAG_NAMES> m_flags;
-	//std::map<const std::string, FLAG_NAMES>::iterator m_flag_it;
 	//map assurant la transcription entre le texte et la couleur associée
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
-	//std::map<const std::string, COLORCOMMAND_NAMES>::iterator m_color_it;
 	//map assurant la transcription entre le texte et la commande interface associé
 	std::map<const std::string, SCD_NAMES> m_appcommand;
-	//std::map<const std::string, SCD_NAMES>::iterator m_appcommand_it;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H

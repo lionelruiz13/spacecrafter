@@ -64,8 +64,6 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	ui = _ui;
 	swapCommand = false;
 	swapIfCommand = false;
-	//max_random = 1.0;
-	//min_random = 0.0;
 	appEval = new AppCommandEval();
 	appInit = new AppCommandInit();
 	appInit->initialiseCommandsName(m_commands);
@@ -168,7 +166,6 @@ int AppCommandInterface::executeCommand(const std::string &commandline )
 {
 	unsigned long int delay;
 	return executeCommand(commandline, delay);
-	// delay is ignored, as not needed by the ui callers
 }
 
 //! @brief called by script executors and transform a std::string to instruction
@@ -245,7 +242,6 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MOVETOCITY :	return commandMovetocity(); break;
-		// case SC_COMMAND::SC_MULTIPLIER :	return commandMultiplier(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
@@ -921,7 +917,7 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			break;
 		
 		default:
-			cLog::get()->write("no effect with unknown case " /*+ flagName*/ ,LOG_TYPE::L_DEBUG);
+			cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
 			break;
 	}
 	return true; // flag was found and updated
@@ -987,7 +983,6 @@ int AppCommandInterface::commandGet()
 	if (!argStatus.empty()) {
 		if (argStatus=="position") {
 			tcp->setOutput(coreLink->tcpGetPosition());
-				//stcore->tcpGetPosition();
 		} else if (argStatus=="planets_position") {
 			std::string tmp = coreLink->getPlanetsPosition();
 			if (tmp.empty())
@@ -995,13 +990,11 @@ int AppCommandInterface::commandGet()
 			tcp->setOutput(tmp);
 		} else if (argStatus=="constellation") {
 			tcp->setOutput(coreLink->getConstellationSelectedShortName());
-			//stcore->tcpGetStatus(args["status"]);
 		} else if (argStatus=="object") {
 			std::string tmp = stcore->getSelectedObjectInfo();
 			if (tmp.empty())
 				tmp = "EOL";
 			tcp->setOutput(tmp);	
-			//stcore->tcpGetSelectedObjectInfo();
 		} else
 			debug_message = _("command 'get': unknown status value");
 		return executeCommandStatus();
@@ -1049,9 +1042,7 @@ int AppCommandInterface::commandWait(unsigned long int &wait)
 	if ( args["duration"]!="") {
 		float fdelay = evalDouble(args["duration"]);
 		if (fdelay > 0) wait = (int)(fdelay*1000);
-	} /*else if ( args["action"]=="reset_timer") {
-		scriptInterface->resetScriptTimer();
-	}*/ else {
+	} else {
 		debug_message = _("command_'wait' : unrecognized or malformed argument name.");
 	}
 	return executeCommandStatus();
@@ -1096,7 +1087,6 @@ int AppCommandInterface::commandDso()
 			else
 				path = scriptInterface->getScriptPath() + argPath;
 
-			//TODO faire que loadNebula gère comme body ses arguments et renvoie un string
 			bool status = stcore->loadNebula(evalDouble(args["ra"]), evalDouble(args["de"]), evalDouble(args["magnitude"]),
 			                                evalDouble(args["angular_size"]), evalDouble(args["rotation"]), argName,
 			                                path + args["filename"], args["credit"], evalDouble(args["texture_luminance_adjust"]),
@@ -1108,14 +1098,12 @@ int AppCommandInterface::commandDso()
 
 		if (argAction == "drop" && !argName.empty() ) {
 			// Delete an existing nebulae, but only if was added by a script!
-			//stcore->unSelect();
 			stcore->removeNebula(argName);
 			return executeCommandStatus();
 		}
 
 		if (argAction == "clear") {
 			// drop all nebulae that are not in the original config file
-			//stcore->unSelect();
 			stcore->removeSupplementalNebulae();
 			return executeCommandStatus();
 		}
@@ -1197,7 +1185,7 @@ int AppCommandInterface::commandMovetocity()
 		//cout << lon << ":" << lat << ":" << alt << endl;
 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
 			int delay = (int)(1000.*evalDouble(args["duration"]));
-			coreLink->observerMoveTo(lat,lon,alt,delay /*,argName*/);
+			coreLink->observerMoveTo(lat,lon,alt,delay );
 
 		}
 	} else
@@ -1216,21 +1204,15 @@ int AppCommandInterface::commandBodyTrace()
 		if (isTrue(argPen)) {
 			coreLink->bodyPenDown();
 			return executeCommandStatus();
-			// stcore->bodyTraceSetPen(true);
-			// stcore->bodyTraceSetFlag(true);
 		}
 		else {
 			if (isFalse(argPen)) {
-			coreLink->bodyPenUp();
-			return executeCommandStatus();	
-			// stcore->bodyTraceSetPen(false);
-			// stcore->bodyTraceSetFlag(false);
-			}
-			else {
+				coreLink->bodyPenUp();
+				return executeCommandStatus();	
+			} else {
 				if (argPen =="toggle") {
 					coreLink->bodyPenToggle();
 					return executeCommandStatus();
-					// stcore->bodyTraceSetPen(! stcore->bodyTraceGetPen());
 				}
 				else{
 					debug_message= _("Command 'body_trace': unknown pen value");
@@ -1260,10 +1242,10 @@ int AppCommandInterface::commandSuntrace()
 	std::string argPen = args["pen"];
 	if (!argPen.empty()) {
 		coreLink->bodyTraceBodyChange(args["Sun"]);
-		if (isTrue(argPen)) { //pen =="true" || pen=="on") {
+		if (isTrue(argPen)) {
 			coreLink->bodyPenDown();
 			return executeCommandStatus();
-		} else if (isFalse(argPen)) { //pen =="false" || pen=="off") {
+		} else if (isFalse(argPen)) {
 			coreLink->bodyPenUp();
 			return executeCommandStatus();
 		} else if (argPen =="toggle") {
@@ -1348,10 +1330,10 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args["index"]), Vcolor ); break;
 		default: 
 			debug_message = _("Command 'color': unknown property");
-			executeCommandStatus(); // renvoie de l'erreur
+			executeCommandStatus();
 		break;
 	}
-	return executeCommandStatus(); // as well
+	return executeCommandStatus();
 }
 
 int AppCommandInterface::commandIlluminate()
@@ -1390,7 +1372,6 @@ int AppCommandInterface::commandIlluminate()
 				debug_message = _("command 'illuminate': filename not found");
 				return executeCommandStatus();
 			}
-			//TODO fix error
 			coreLink->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
 		} else
 			coreLink->illuminateLoad("", ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
@@ -1734,7 +1715,6 @@ int AppCommandInterface::commandConstellation()
 int AppCommandInterface::commandExternalMplayer()
 {
 	std::string argAction = args["action"];
-	//std::string argFileName = args["filename"];
 	if (!argAction.empty()) {
 		if (argAction=="play" && args["filename"]!="") {
 			if (Utility::isAbsolute(args["filename"]))
@@ -1842,9 +1822,6 @@ int AppCommandInterface::commandExternalViewer()
 
 	if (argAction=="stop") {
 		std::string action1="NONE";;
-		//CallSystem::killAllPidFromVLC();
-		//if (!media->externalMplayerIsAlive())
-		//	CallSystem::killAllPidFromMPlayer();
 		action1="killall mplayer";
 		CallSystem::useSystemCommand(action1);
 		action1="killall vlc";
@@ -1916,7 +1893,6 @@ int AppCommandInterface::commandClear()
 	executeCommand("flag fog off");
 	executeCommand("flag nebula_hints off");
 	executeCommand("flag nebula_names off");
-//	executeCommand("flag nebula_text_names off");
 	executeCommand("flag object_trails off");
 	executeCommand("flag planet_names off");
 	executeCommand("flag planet_orbits off");
@@ -1927,7 +1903,6 @@ int AppCommandInterface::commandClear()
 	executeCommand("flag show_tui_short_obj_info off");
 
 	// make sure planets, stars, etc. are turned on!
-	// milkyway is left to user, for those without 3d cards
 	executeCommand("flag stars on");
 	executeCommand("flag planets on");
 	executeCommand("flag nebulae on");
@@ -1957,7 +1932,7 @@ int AppCommandInterface::commandLandscape()
 		if (argAction == "load") {
 			// textures are relative to script
 			args["path"] = scriptInterface->getScriptPath();
-			stcore->loadLandscape(args); //TODO retour d'erreurs
+			stcore->loadLandscape(args);
 		} else
 			debug_message = "command 'landscape' : invalid action parameter";
 	} else
@@ -2067,7 +2042,7 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 	if (!argAction.empty()) {
 		if (argAction=="end") {
 			scriptInterface->cancelScript();
-			coreLink->textClear(); // del all usr text
+			coreLink->textClear();
 			media->audioMusicHalt();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
@@ -2355,7 +2330,6 @@ int AppCommandInterface::commandSelect()
 		select_type = "constellation_star";
 		identifier = args["constellation_star"];
 	} else {
-		//select_type = "";
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
 	}
@@ -2516,7 +2490,6 @@ int AppCommandInterface::commandTimerate()
 		}
 	} else if (argAction=="pause") {
 		//std::cout << "Changing timerate to pause" << std::endl;
-		// TODO why is this in stelapp?  should be in stelcore - Rob
 		coreLink->timeSetFlagPause(!coreLink->timeGetFlagPause());
 		if (coreLink->timeGetFlagPause()) {
 			// TODO pause should be all handled in core methods
@@ -2526,10 +2499,8 @@ int AppCommandInterface::commandTimerate()
 			coreLink->timeLoadSpeed();
 		}
 	} else if (argAction=="resume") {
-		//std::cout << "Changing timerate to resume" << std::endl;
 		coreLink->timeSetFlagPause(false);
 		coreLink->timeLoadSpeed();
-
 	} else if (argAction=="increment") {
 		// speed up time rate
 		coreLink->timeSetFlagPause(false);
@@ -2554,8 +2525,6 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		//Observer *observatory = stcore->getObservatory();
-		// if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=3;
 		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
 		if( !argStep.empty() )
 			sstep = evalDouble(argStep);
@@ -2589,8 +2558,6 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		// Observer *observatory = stcore->getObservatory();
-		// if ((abs(s)<3) && (observatory->getAltitude()>150E9)) s=-3;
 		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
 
 		if( !argStep.empty() )
@@ -2601,7 +2568,7 @@ int AppCommandInterface::commandTimerate()
 		else if (s>-JD_SECOND && s<=0.) s=-JD_SECOND;
 		else if (s>0. && s<=JD_SECOND) s=0.;
 		coreLink->timeSetSpeed(s);
-		coreLink->timeSaveSpeed();//stapp->temp_time_velocity = stcore->timeGetSpeed();
+		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
 	} else
@@ -2629,23 +2596,11 @@ int AppCommandInterface::commandMoveto()
 		debug_message = "command 'move_to' : missing lat && lon && alt";
 		return executeCommandStatus();
 	}
-
-	// Observer *observatory = stcore->getObservatory();
-	// double lat = observatory->getLatitude();
-	// double lon = observatory->getLongitude();
-	// double alt = observatory->getAltitude();
-
 	double lat = coreLink->observatoryGetLatitude();
 	double lon = coreLink->observatoryGetLongitude();
 	double alt = coreLink->observatoryGetAltitude();
 
-
-	// std::string name = coreLink->observatoryGetName();
-	// std::string argName = args["name"];
 	int delay;
-
-	// if (!argName.empty()) name = argName;
-
 	if (!argLat.empty()) {
 		if (argLat=="default")
 			lat = coreLink->observatoryGetDefaultLatitude();
@@ -2685,7 +2640,7 @@ int AppCommandInterface::commandMoveto()
 
 	delay = (int)(1000.*evalDouble(args["duration"]));
 
-	coreLink->observerMoveTo(lat,lon,alt,delay/*,name*/);
+	coreLink->observerMoveTo(lat,lon,alt,delay);
 
 	return executeCommandStatus();
 }
@@ -2986,7 +2941,6 @@ int AppCommandInterface::commandBody()
 	std::string argAction = args["action"];
 	std::string argName = args["name"];
     if (argName == "home_planet") argName = coreLink->getObserverHomePlanetEnglishName();
-    //if (argName == "selected") argName = stcore->selected_object.getEnglishName();
 	std::string argMode = args["mode"];
 
 	// traitement des OJM
@@ -3078,7 +3032,6 @@ int AppCommandInterface::commandBody()
 
 
 		std::string argColor = args["color"];
-		// std::string argName = args["name"];
 		if (!argColor.empty()) {
 			//gestion de la couleur
 			Vec3f Vcolor;
