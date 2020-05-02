@@ -67,7 +67,7 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	//max_random = 1.0;
 	//min_random = 0.0;
 	appEval = new AppCommandEval();
-	appInit = new AppCommandInit(this, coreLink, core);
+	appInit = new AppCommandInit();
 	appInit->initialiseCommandsName(m_commands);
 	appInit->initialiseFlagsName(m_flags);
 	appInit->initialiseColorCommand(m_color);
