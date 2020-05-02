@@ -577,18 +577,54 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 	else if (flag_value==FLAG_VALUES::FV_OFF)
 		newval= false;
 
-	auto m_setFlag_it = m_setFlag.find(flagName);
-
-	if( m_setFlag_it != m_setFlag.end()) {
-		m_setFlag_it->second.fctP(flag_value,  m_setFlag_it->second.GetFct,  m_setFlag_it->second.SetFct, newval);
-	}
-	else {
 	switch(flagName) {
 		case FLAG_NAMES::FN_ANTIALIAS_LINES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				stapp->toggle(APP_FLAG::ANTIALIAS);
 			else
 				stapp->flag(APP_FLAG::ANTIALIAS,newval);
+			break;
+
+		case FLAG_NAMES::FN_CONSTELLATION_DRAWING :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->constellationGetFlagLines();
+
+			coreLink->constellationSetFlagLines(newval);
+			break;
+
+		case FLAG_NAMES::FN_CONSTELLATION_NAMES :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->constellationGetFlagNames();
+
+			coreLink->constellationSetFlagNames(newval);
+			break;
+
+		case FLAG_NAMES::FN_CONSTELLATION_ART :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->constellationGetFlagArt();
+
+			coreLink->constellationSetFlagArt(newval);
+			break;
+
+		case FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->constellationGetFlagBoundaries();
+
+			coreLink->constellationSetFlagBoundaries(newval);
+			break;
+
+		case FLAG_NAMES::FN_CONSTELLATION_PICK :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->constellationGetFlagIsolateSelected();
+
+			coreLink->constellationSetFlagIsolateSelected(newval);
+			break;
+
+		case FLAG_NAMES::FN_STAR_TWINKLE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starGetFlagTwinkle();
+
+			coreLink->starSetFlagTwinkle(newval);
 			break;
 
 		case FLAG_NAMES::FN_SHOW_TUI_DATETIME :
@@ -603,6 +639,43 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				ui->toggle(UI_FLAG::SHOW_TUISHORTOBJ_INFO);
 			else
 				ui->flag(UI_FLAG::SHOW_TUISHORTOBJ_INFO, newval);
+			break;
+
+		case FLAG_NAMES::FN_MANUAL_ZOOM :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->getFlagManualAutoZoom();
+
+			stcore->setFlagManualAutoZoom(newval);
+			break;
+
+		case FLAG_NAMES::FN_NAVIGATION :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->getFlagNav();
+
+			stcore->setFlagNav(newval);
+			break;
+
+		case FLAG_NAMES::FN_LIGHT_TRAVEL_TIME :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->getFlagLightTravelTime();
+
+			coreLink->setFlagLightTravelTime(newval);
+			break;
+
+		case FLAG_NAMES::FN_FOG :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->fogGetFlag();
+
+			coreLink->fogSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_ATMOSPHERE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->atmosphereGetFlag();
+
+			if (!newval) coreLink->fogSetFlag(false); // turn off fog with atmosphere
+			coreLink->starSetFlagTwinkle(newval); // twinkle stars depending on atmosphere activated
+			coreLink->atmosphereSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_AZIMUTHAL_GRID :
@@ -869,11 +942,218 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				coreLink->skyDisplayMgrSetFlag(SKYDISPLAY_NAME::SKY_ORTHODROMY, newval);
 			break;
 
+		case FLAG_NAMES::FN_CARDINAL_POINTS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->cardinalsPointsGetFlag();
+
+			coreLink->cardinalsPointsSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_CLOUDS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->getFlagClouds();
+
+			coreLink->setFlagClouds(newval);
+			break;
+
+		case FLAG_NAMES::FN_MOON_SCALED :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->getFlagMoonScaled();
+
+			coreLink->setFlagMoonScaled(newval);
+			break;
+
+		case FLAG_NAMES::FN_SUN_SCALED :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->getFlagSunScaled();
+
+			coreLink->setFlagSunScaled(newval);
+			break;
+
+		case FLAG_NAMES::FN_LANDSCAPE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->landscapeGetFlag();
+
+			coreLink->landscapeSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_STARS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starGetFlag();
+
+			coreLink->starSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_STAR_NAMES :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starGetFlagName();
+
+			coreLink->starSetFlagName(newval);
+			break;
+
+		case FLAG_NAMES::FN_STAR_PICK :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starGetFlagIsolateSelected();
+
+			coreLink->starSetFlagIsolateSelected(newval);
+			break;
+
+		case FLAG_NAMES::FN_PLANETS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->planetsGetFlag();
+
+			coreLink->planetsSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_PLANET_NAMES :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->planetsGetFlagHints();
+
+			coreLink->planetsSetFlagHints(newval);
+			if (coreLink->planetsGetFlagHints()) coreLink->planetsSetFlag(true); // for safety if script turns planets off
+			break;
+
+		case FLAG_NAMES::FN_PLANET_ORBITS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->planetsGetFlagOrbits() && !coreLink->satellitesGetFlagOrbits();
+
+			coreLink->planetsSetFlagOrbits(newval);
+			coreLink->satellitesSetFlagOrbits(newval);
+			break;
+
+		case FLAG_NAMES::FN_PLANETS_AXIS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->planetsGetFlagAxis();
+
+			coreLink->planetsSetFlagAxis(newval);
+			break;
+
+		case FLAG_NAMES::FN_ORBITS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->planetsGetFlagOrbits() && !coreLink->satellitesGetFlagOrbits();
+
+			coreLink->planetsSetFlagOrbits(newval);
+			coreLink->satellitesSetFlagOrbits(newval);
+			break;
+
+		case FLAG_NAMES::FN_PLANETS_ORBITS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->planetsGetFlagOrbits();
+
+			coreLink->planetsSetFlagOrbits(newval);
+			break;
+
+		case FLAG_NAMES::FN_SATELLITES_ORBITS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->satellitesGetFlagOrbits();
+
+			coreLink->satellitesSetFlagOrbits(newval);
+			break;
+
+		case FLAG_NAMES::FN_NEBULAE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->nebulaGetFlag();
+
+			coreLink->nebulaSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_NEBULA_HINTS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->nebulaGetFlagHints();
+
+			coreLink->nebulaSetFlagHints(newval);
+			break;
+
+		case FLAG_NAMES::FN_DSO_PICTOGRAMS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->getDsoPictograms();
+
+			stcore->setDsoPictograms(newval);
+			break;
+
+		case FLAG_NAMES::FN_NEBULA_NAMES :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->nebulaGetFlagNames();
+
+			if (newval) coreLink->nebulaSetFlagNames(true); // make sure visible
+			coreLink->nebulaSetFlagNames(newval);
+			break;
+
+		case FLAG_NAMES::FN_MILKY_WAY :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->milkyWayGetFlag();
+
+			coreLink->milkyWaySetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_ZODIAC_LIGHT :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->milkyWayGetFlagZodiacal();
+
+			coreLink->milkyWaySetFlagZodiacal(newval);
+			break;
+
+		case FLAG_NAMES::FN_BRIGHT_NEBULAE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->nebulaGetFlagBright();
+
+			coreLink->nebulaSetFlagBright(newval);
+			break;
+
+		case FLAG_NAMES::FN_OBJECT_TRAILS :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->planetsGetFlagTrails();
+
+			coreLink->planetsSetFlagTrails(newval);
+			break;
+
+		case FLAG_NAMES::FN_TRACK_OBJECT :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->getFlagTracking();
+
+			stcore->setFlagTracking(newval);
+			break;
+
+		case FLAG_NAMES::FN_SCRIPT_GUI_DEBUG :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !cLog::get()->getDebug();
+
+			cLog::get()->setDebug(newval);
+			break;
+
+		case FLAG_NAMES::FN_LOCK_SKY_POSITION :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !stcore->getFlagLockSkyPosition();
+
+			stcore->setFlagLockSkyPosition(newval);
+			break;
+
 		case FLAG_NAMES::FN_SHOW_LATLON :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				ui->toggle(UI_FLAG::SHOW_LATLON);
 			else
 				ui->flag(UI_FLAG::SHOW_LATLON, newval);
+			break;
+
+		case FLAG_NAMES::FN_OORT :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->oortGetFlagShow();
+
+			coreLink->oortSetFlagShow(newval);
+			break;
+
+		case FLAG_NAMES::FN_TULLY :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->tullyGetFlagShow();
+
+			coreLink->tullySetFlagShow(newval);
+			break;
+
+		case FLAG_NAMES::FN_BODY_TRACE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->bodyTraceGetFlag();
+
+			coreLink->bodyTraceSetFlag(newval);
 			break;
 
 		case FLAG_NAMES::FN_COLOR_INVERSE :
@@ -883,10 +1163,36 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				stapp->flag(APP_FLAG::COLOR_INVERSE, newval);
 			break;
 
+		case FLAG_NAMES::FN_STARS_TRACE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starGetTraceFlag();
+
+			coreLink->starSetTraceFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_STAR_LINES :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starLinesGetFlag();
+
+			coreLink->starLinesSetFlag(newval);
+			break;
+
+		case FLAG_NAMES::FN_SATELLITES :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->hideSatellitesFlag();
+
+			coreLink->setHideSatellites(newval);
+			break;
+		case FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->atmosphericRefractionGetFlag();
+
+			coreLink->atmosphericRefractionSetFlag(newval);
+			break;
+		
 		default:
 			cLog::get()->write("no effect with unknown case " /*+ flagName*/ ,LOG_TYPE::L_DEBUG);
 			break;
-	}
 	}
 	return true; // flag was found and updated
 }
