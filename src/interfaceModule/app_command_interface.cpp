@@ -89,6 +89,9 @@ void AppCommandInterface::initSaveScreenInterface(SaveScreenInterface* _saveScre
 AppCommandInterface::~AppCommandInterface()
 {
 	m_commands.clear();
+	m_flags.clear();
+	m_color.clear();
+	m_appcommand.clear();
 }
 
 bool AppCommandInterface::isBoolean(const std::string &a)
