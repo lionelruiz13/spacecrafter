@@ -53,6 +53,7 @@
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
 
+
 AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui,  Media* _media)
 {
 	stcore = core;
@@ -71,7 +72,6 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	appInit->initialiseFlagsName(m_flags);
 	appInit->initialiseColorCommand(m_color);
 	appInit->initialiseSetCommand(m_appcommand);
-	appInit->initialiseSetFlag(m_setFlag);
 }
 
 void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {
