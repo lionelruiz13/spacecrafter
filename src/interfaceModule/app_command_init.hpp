@@ -15,8 +15,6 @@ public:
     void initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color);
     void initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_appcommand);
 
-    void initialiseSetFlag(std::map<FLAG_NAMES, AppCommandInterface::stFct> &m_setFlag);
-
 private:
     AppCommandInterface* appCommandInterface=nullptr;
     Core * stcore = nullptr;
