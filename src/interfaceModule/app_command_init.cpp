@@ -1,13 +1,7 @@
 #include "interfaceModule/app_command_init.hpp"
-#include "coreModule/coreLink.hpp"
-#include "tools/log.hpp"
 
-AppCommandInit::AppCommandInit(AppCommandInterface *_app, CoreLink *_coreLink, Core *core)
-{
-	appCommandInterface = _app;
-	coreLink = _coreLink;
-	stcore = core;
-}
+AppCommandInit::AppCommandInit()
+{}
 
 AppCommandInit::~AppCommandInit() {}
 
