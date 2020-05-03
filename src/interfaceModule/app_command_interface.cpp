@@ -2066,7 +2066,7 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 			std::string file_with_path = FilePath(filen, FilePath::TFP::SCRIPT);
 			std::string new_script_path="";
 
-			for (unsigned int i=0; i<=file_with_path.length(); i++) {
+			for (unsigned int i=0; i<file_with_path.length(); i++) {
 				if (file_with_path[i]=='/') {
 					le=i;
 				}
