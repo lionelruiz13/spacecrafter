@@ -212,6 +212,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		//~ cout <<"error command "<< command << endl;
 		debug_message = _("Unrecognized or malformed command name");
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		appInit->searchSimilarCommand(command);
 		return 0;
 	}
 
@@ -274,8 +275,9 @@ bool AppCommandInterface::setFlag(const std::string &name, const std::string &va
 	auto m_flag_it = m_flags.find(name);
 	if (m_flag_it == m_flags.end()) {
 		//~ cout <<"error command "<< command << endl;
-		debug_message = _("Unrecognized or malformed flag name");
+		//debug_message = _("Unrecognized or malformed flag name");
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		appInit->searchSimilarFlag(name);
 		return false;
 	}
 
