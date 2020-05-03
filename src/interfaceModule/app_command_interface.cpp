@@ -1284,6 +1284,12 @@ int AppCommandInterface::commandColor()
 	}
 	auto m_color_it = m_color.find(argProperty);
 
+	if (m_color_it ==m_color.end()) {
+			debug_message = _("Command 'color': unknown property");
+			appInit->searchSimilarColor(argProperty);
+			return executeCommandStatus();
+	}
+
 	switch(m_color_it->second) {
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES:	coreLink->constellationSetColorLine( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES:	coreLink->constellationSetColorNames( Vcolor ); break;
@@ -1329,8 +1335,6 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		coreLink->textSetDefaultColor( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args["index"]), Vcolor ); break;
 		default: 
-			debug_message = _("Command 'color': unknown property");
-			executeCommandStatus();
 		break;
 	}
 	return executeCommandStatus();
