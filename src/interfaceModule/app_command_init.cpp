@@ -1,9 +1,12 @@
 #include "interfaceModule/app_command_init.hpp"
+#include <vector>
+#include "tools/log.hpp"
 
 AppCommandInit::AppCommandInit()
 {}
 
-AppCommandInit::~AppCommandInit() {}
+AppCommandInit::~AppCommandInit()
+{}
 
 void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands)
 {
@@ -41,7 +44,6 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands["moveto"] = SC_COMMAND::SC_MOVETO;
 	m_commands["movetocity"] = SC_COMMAND::SC_MOVETOCITY;
 
-	// m_commands["multiplier"] = SC_COMMAND::SC_MULTIPLIER;
 	m_commands["multiply"] = SC_COMMAND::SC_MULTIPLY;
 	m_commands["personal"] = SC_COMMAND::SC_PERSONAL;
 	m_commands["personeq"] = SC_COMMAND::SC_PERSONEQ;
@@ -66,6 +68,11 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 
 	m_commands["wait"] = SC_COMMAND::SC_WAIT;
 	m_commands["zoom"] = SC_COMMAND::SC_ZOOMR;
+
+	//make a copy to futur exploitation
+	for (const auto& i : m_commands) {
+		commandList.push_back(i.first);
+	}
 }
 
 void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES> &m_flags)
@@ -168,6 +175,11 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 
 	m_flags["tully"] = FLAG_NAMES::FN_TULLY;
 	m_flags["satellites"] = FLAG_NAMES::FN_SATELLITES;
+
+	//make a copy to futur exploitation
+	for (const auto& i : m_flags) {
+		flagList.push_back(i.first);
+	}
 }
 
 void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color)
@@ -222,6 +234,11 @@ void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOM
 	m_color["text_usr_color"] = COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR;
 
 	m_color["star_table"] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
+
+	//make a copy to futur exploitation
+	for (const auto& i : m_color) {
+		colorList.push_back(i.first);
+	}
 }
 
 void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_appcommand)
@@ -272,4 +289,58 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_appcommand["tully_color_mode"] = SCD_NAMES::APP_TULLY_COLOR_MODE;
 	m_appcommand["datetime_display_position"] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
 	m_appcommand["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+
+	//make a copy to futur exploitation
+	for (const auto& i : m_appcommand) {
+		setList.push_back(i.first);
+	}
+}
+
+template<typename T> typename T::size_type LevensteinDistance(const T &source, const T &target)
+{
+    if (source.size() > target.size()) {
+        return LevensteinDistance(target, source);
+    }
+
+    using TSizeType = typename T::size_type;
+    const TSizeType min_size = source.size(), max_size = target.size();
+    std::vector<TSizeType> lev_dist(min_size + 1);
+
+    for (TSizeType i = 0; i <= min_size; ++i) {
+        lev_dist[i] = i;
+    }
+
+    for (TSizeType j = 1; j <= max_size; ++j) {
+        TSizeType previous_diagonal = lev_dist[0], previous_diagonal_save;
+        ++lev_dist[0];
+
+        for (TSizeType i = 1; i <= min_size; ++i) {
+            previous_diagonal_save = lev_dist[i];
+            if (source[i - 1] == target[j - 1]) {
+                lev_dist[i] = previous_diagonal;
+            } else {
+                lev_dist[i] = std::min(std::min(lev_dist[i - 1], lev_dist[i]), previous_diagonal) + 1;
+            }
+            previous_diagonal = previous_diagonal_save;
+        }
+    }
+    return lev_dist[min_size];
+}
+
+void AppCommandInit::searchNeighbour(const std::string &source, const std::list<std::string> &target)
+{
+	int distance = 0;
+	int minDistance = 99999;
+	std::string solution;
+
+	for(const auto &i : target) {
+		distance = LevensteinDistance(source,i);
+		if (distance < minDistance) {
+			minDistance = distance;
+			solution = i;
+		}
+	}
+	std::string helpMsg = source + " is unknown. Did you mean "+ solution + " ?";
+	cLog::get()->write( helpMsg,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+	//std::cout << source << " a pour proche valeur " << solution << std::endl;
 }

@@ -1,7 +1,9 @@
 #ifndef APPCOMMANDINIT_HPP
 #define APPCOMMANDINIT_HPP
 
-#include"interfaceModule/app_command_interface.hpp"
+#include "interfaceModule/app_command_interface.hpp"
+#include <map>
+#include <list>
 
 class AppCommandInit {
 public: 
@@ -13,6 +15,27 @@ public:
     void initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color);
     void initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_appcommand);
 
+    void searchSimilarCommand(const std::string& source) {
+        this->searchNeighbour(source,commandList);
+    }
+    void searchSimilarFlag(const std::string& source) {
+        this->searchNeighbour(source,flagList);
+    }
+    void searchSimilarColor(const std::string& source) {
+        this->searchNeighbour(source,colorList);
+    }
+    void searchSimilarSet(const std::string& source) {
+        this->searchNeighbour(source,setList);
+    }
+
+    //template<typename T> void searchNeighbour(const std::string &source, const std::map<std::string , T> &target);
+private:
+    void searchNeighbour(const std::string &source, const std::list<std::string> &target);
+    //for conivence
+    std::list<std::string> commandList;
+    std::list<std::string> flagList;
+    std::list<std::string> colorList;
+    std::list<std::string> setList;
 };
 
 #endif
