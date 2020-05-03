@@ -1423,7 +1423,9 @@ int AppCommandInterface::commandPrint()
 SCD_NAMES AppCommandInterface::parseCommandSet() 
 {
 	for(auto it = m_appcommand.begin(); it != m_appcommand.end(); it++) {
-		if (!args[it->first].empty())
+		// if (!args[it->first].empty())
+		// 	return it->second;
+		if (args.find(it->first) != args.end())
 			return it->second;
 	}
 	return SCD_NAMES::APP_FLAG_NONE;
@@ -1431,14 +1433,19 @@ SCD_NAMES AppCommandInterface::parseCommandSet()
 
 int AppCommandInterface::commandSet()
 {
-	SCD_NAMES parserSet = parseCommandSet();
-
-	if (parserSet == SCD_NAMES::APP_FLAG_NONE){
-		debug_message = "command_'set': unknown argument";
-		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+	// cas ou l'on tappe juste set
+	if (args.begin() == args.end()) {
+		debug_message = "command_'set': malformed command";
+		//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return executeCommandStatus();
 	}
-	
+
+	//debug 
+	//for (const auto&i : args )
+	//	std::cout << i.first << "->" << i.second << std::endl;
+
+	SCD_NAMES parserSet = parseCommandSet();
+
 	switch(parserSet) { 
 		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : coreLink->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"])); break;
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(args["auto_move_duration"])); break;
@@ -1569,7 +1576,14 @@ int AppCommandInterface::commandSet()
 		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(args["tully_color_mode"]); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(args["datetime_display_position"])); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(args["datetime_display_number"])); break;
-		default: break;
+		default:
+			debug_message = "command_'set': unknown argument";
+			//for (const auto&i : args )
+			//	std::cout << i.first << "->" << i.second << std::endl;
+			appInit->searchSimilarSet(args.begin()->first);
+			//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+			return executeCommandStatus();
+		break;
 	}
 
 	return executeCommandStatus();
