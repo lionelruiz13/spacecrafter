@@ -942,12 +942,13 @@ int AppCommandInterface::executeCommandStatus()
 		//    cout << commandline << endl;
 		return true;
 	} else {
-		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 
 		std::stringstream oss;
-		oss << "Could not execute: " << commandline << std::endl << debug_message;
-		cLog::get()->write( oss.str(),LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		std::cerr << oss.str() << std::endl;
+		//oss << "Could not execute: " << commandline /*<< std::endl*/ << debug_message;
+		cLog::get()->write( "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+		//std::cerr << oss.str() << std::endl;
 		return false;
 	}
 }
