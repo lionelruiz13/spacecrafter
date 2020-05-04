@@ -1379,7 +1379,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	// Update the translator with new locale name
 	skyTranslator = Translator(PACKAGE, AppSettings::Instance()->getLocaleDir(), newSkyLocaleName);
 	cLog::get()->write("Sky locale is " + skyTranslator.getLocaleName(), LOG_TYPE::L_INFO);
-	printf("SkyLocale : %s\n", newSkyLocaleName.c_str());
+	//printf("SkyLocale : %s\n", newSkyLocaleName.c_str());
 
 	// Translate all labels with the new language
 	cardinals_points->translateLabels(skyTranslator);
