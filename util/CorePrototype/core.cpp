@@ -1,17 +1,17 @@
 #include"core.hpp"
 
 Core::Core() {
-    obj1 = new Objet("obj1");
-    obj2 = new Objet("obj2");
-    obj3_universe = new Objet("obj3_universe");
-    obj4_galaxy = new Objet("obj4_galaxy");
-    camera = new Objet("camera");
+    obj1a = new Objet("obj1a");
+    obj1b = new Objet("obj1b");
+    obj2_universe = new Objet("obj2_universe");
+    obj3_galaxy = new Objet("obj3_galaxy");
+    camera = new Camera("Core");
 }
 Core::~Core() {
-    delete obj1;
-    delete obj2;
-    delete obj3_universe;
-    delete obj4_galaxy;
+    delete obj1a;
+    delete obj1b;
+    delete obj2_universe;
+    delete obj3_galaxy;
     delete camera;
 }
 
@@ -21,20 +21,10 @@ void Core::init() {
 
 void Core::update() {
     std::cout << "update core" << std::endl;
-    obj1->update();
-    obj2->update();
-    obj3_universe->update();
-    obj4_galaxy->update();
-    camera->update();
 }
 
 void Core::draw() {
     std::cout << "draw core" << std::endl;
-    obj1->draw();
-    obj2->draw();
-    obj3_universe->draw();
-    obj4_galaxy->draw();
-    camera->draw();
 }
 
 void Core::setFlagSelectedObjectPointer() {
