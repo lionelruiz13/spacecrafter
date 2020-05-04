@@ -51,13 +51,13 @@ static void checkIoSettings(InitParser &user_conf)
 	std::map<std::string,std::string> ioSettings;
 	ioSettings["enable_mkfifo"]="false";
 	ioSettings["enable_tcp"]="true";
-	ioSettings["enable_mplayer"]="false";
+	// ioSettings["enable_mplayer"]="false";
 	ioSettings["tcp_port_in"]="7805";
 	ioSettings["tcp_buffer_in_size"]="1024";
 	ioSettings["mkfifo_file_in"]="/tmp/spacecrafter.fifo";
 	ioSettings["mkfifo_buffer_in_size"]="256";
-	ioSettings["mplayer_name"]="/usr/bin/mplayer";
-	ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
+	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
+	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
 
 	for (std::map<std::string,std::string>::iterator it=ioSettings.begin(); it!=ioSettings.end(); ++it) {
 		if (!user_conf.findEntry("io:"+it->first))

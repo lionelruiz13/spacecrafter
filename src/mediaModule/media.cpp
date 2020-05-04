@@ -25,14 +25,14 @@
 #include "mediaModule/media.hpp"
 #include "tools/log.hpp"
 
-Media::Media(unsigned int _width, unsigned int _height)
+Media::Media(/*unsigned int _width, unsigned int _height*/)
 {
-	width = _width;
-	height = _height;
+	// width = _width;
+	// height = _height;
 	audio = new Audio();
 	imageMgr = new ImageMgr();
 	player = new VideoPlayer();
-	external = new ExternalMplayer(width, height);
+	//external = new ExternalMplayer(width, height);
 	mediaState = {V_TYPE::V_NO, V_STATE::V_OFF, A_TYPE::A_NO, A_STATE::A_OFF};
 }
 
@@ -42,7 +42,7 @@ Media::~Media()
 	if (audio)	delete audio;
 	if (imageMgr) delete imageMgr;
 	if (player) delete player;
-	if (external) delete external;
+	//if (external) delete external;
 	if (vr360) delete vr360;
 	if (viewPort) delete viewPort;
 }
@@ -223,19 +223,19 @@ void Media::createViewPort()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::externalInit(const std::string &_mplayerFilename, const std::string &_mplayerMkfifoName, bool _mplayerEnable)
-{
-	mplayerFilename = _mplayerFilename;
-	mplayerMkfifoName = _mplayerMkfifoName;
-	mplayerEnable = _mplayerEnable;
-	external->init(mplayerFilename, mplayerMkfifoName, mplayerEnable);
-}
+// void Media::externalInit(const std::string &_mplayerFilename, const std::string &_mplayerMkfifoName, bool _mplayerEnable)
+// {
+// 	mplayerFilename = _mplayerFilename;
+// 	mplayerMkfifoName = _mplayerMkfifoName;
+// 	mplayerEnable = _mplayerEnable;
+// 	external->init(mplayerFilename, mplayerMkfifoName, mplayerEnable);
+// }
 
-void Media::externalReset()
-{
-	if (external)
-		delete external;
+// void Media::externalReset()
+// {
+// 	if (external)
+// 		delete external;
 
-	external = new ExternalMplayer(width,height);
-	external->init(mplayerFilename, mplayerMkfifoName, mplayerEnable);
-}
+// 	external = new ExternalMplayer(width,height);
+// 	external->init(mplayerFilename, mplayerMkfifoName, mplayerEnable);
+// }

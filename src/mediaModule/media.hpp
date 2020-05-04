@@ -29,7 +29,7 @@
 #include "mediaModule/audio.hpp"
 #include "mediaModule/image_mgr.hpp"
 #include "mediaModule/video_player.hpp"
-#include "mediaModule/external_mplayer.hpp"
+//#include "mediaModule/external_mplayer.hpp"
 #include "mediaModule/vr360.hpp"
 #include "mediaModule/viewport.hpp"
 #include "tools/app_settings.hpp"
@@ -40,7 +40,7 @@ class Navigator;
 class Media {
 
 public:
-	Media(unsigned int _width, unsigned int _height);
+	Media(/*unsigned int _width, unsigned int _height*/);
 	~Media();
 	Media(Media const &) = delete;
 	Media& operator = (Media const &) = delete;
@@ -271,63 +271,64 @@ public:
 	//interface external
 	//
 	////////////////////////////////////////////////////////////////////////////
-	void externalReset();
 
-	void externalPlay(const std::string &filename) {
-		external->play(filename);
-	}
+	// void externalReset();
+// 
+	// void externalPlay(const std::string &filename) {
+		// external->play(filename);
+	// }
+// 
+	// void externalExecute(const std::string &msg) {
+		// external->execute(msg);
+	// }
+// 
+	// void externalStop() {
+		// external->stop();
+	// }
+// 
+	// void externalPause() {
+		// external->pause();
+	// }
+// 
+	// void externalSpeed(double value) {
+		// external->speed(value);
+	// }
+// 
+	// void externalVolume(double value) {
+		// external->volume(value);
+	// }
+// 
+	// void externalJumpRelative(int secondes) {
+		// external->jumpRelative(secondes);
+	// }
+// 
+	// void externalJumpAbsolute(int secondes) {
+		// external->jumpAbsolute(secondes);
+	// }
+// 
+	// void externalUpdate(int delta_time) {
+		// external->update(delta_time);
+	// }
+// 
+//	void externalInit(const std::string &_mplayerFilename, const std::string &_mplayerMkfifoName, bool _mplayerEnable);
 
-	void externalExecute(const std::string &msg) {
-		external->execute(msg);
-	}
-
-	void externalStop() {
-		external->stop();
-	}
-
-	void externalPause() {
-		external->pause();
-	}
-
-	void externalSpeed(double value) {
-		external->speed(value);
-	}
-
-	void externalVolume(double value) {
-		external->volume(value);
-	}
-
-	void externalJumpRelative(int secondes) {
-		external->jumpRelative(secondes);
-	}
-
-	void externalJumpAbsolute(int secondes) {
-		external->jumpAbsolute(secondes);
-	}
-
-	void externalUpdate(int delta_time) {
-		external->update(delta_time);
-	}
-
-	void externalInit(const std::string &_mplayerFilename, const std::string &_mplayerMkfifoName, bool _mplayerEnable);
-
-	bool externalMplayerIsAlive() {
-		return mplayerEnable;
-	}
+	// bool externalMplayerIsAlive() {
+		// return mplayerEnable;
+	// }
 
 private:
 	Audio * audio = nullptr;
 	ImageMgr* imageMgr = nullptr;
 	VideoPlayer* player = nullptr;
-	ExternalMplayer* external = nullptr;
+	//ExternalMplayer* external = nullptr;
 	VR360* vr360 = nullptr;
 	ViewPort* viewPort = nullptr;
 
 	// utilisé pour reset de External_Viewer
-	unsigned int width;
-	unsigned int height;
-	std::string mplayerFilename;
-	std::string mplayerMkfifoName;
+	// unsigned int width;
+	// unsigned int height;
+	// std::string mplayerFilename;
+	// std::string mplayerMkfifoName;
 	std::string skyLanguage;
 	bool mplayerEnable;
 	bool audioNoPause=false;

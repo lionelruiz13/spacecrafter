@@ -571,7 +571,7 @@ void UI::handleInputs(SDL_Event E)
 
         case SDL_USEREVENT: {
             /* and now we can call the function we wanted to call in the timer but couldn't because of the multithreading problems */
-			media->externalUpdate(0); // @TODO  cette valeur ne sert à rien
+			//media->externalUpdate(0); // @TODO  cette valeur ne sert à rien
 			Event* event = new FpsEvent(FPS_ORDER::AFTER_ONE_SECOND);
 			EventManager::getInstance()->queue(event);	
             break;

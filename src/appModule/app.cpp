@@ -74,7 +74,7 @@ App::App( SDLFacade* const sdl ) :
 
 	settings = AppSettings::Instance();
 
-	media = new Media( width, height );
+	media = new Media( /*width, height*/ );
 	saveScreenInterface = new SaveScreenInterface(width, height);
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
@@ -284,10 +284,10 @@ void App::init()
 	if (! initialized) {
 
 		appDraw->createShader();
-		bool mplayerEnable =conf.getBoolean("io:enable_mplayer");
-		std::string mplayerFileName =conf.getStr("io:mplayer_name");
-		std::string mplayerMkfifoName = conf.getStr("io:mplayer_mkfifo_name");
-		media->externalInit(mplayerFileName, mplayerMkfifoName,mplayerEnable);
+		// bool mplayerEnable =conf.getBoolean("io:enable_mplayer");
+		// std::string mplayerFileName =conf.getStr("io:mplayer_name");
+		// std::string mplayerMkfifoName = conf.getStr("io:mplayer_mkfifo_name");
+		//media->externalInit(mplayerFileName, mplayerMkfifoName,mplayerEnable);
 		media->createViewPort();
 		media->createVR360();
 		media->createImageShader();

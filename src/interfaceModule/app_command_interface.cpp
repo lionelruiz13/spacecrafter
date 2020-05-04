@@ -231,7 +231,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_DESELECT :	return commandDeselect(); break;
 		case SC_COMMAND::SC_DOMEMASTERS :	return commandDomemasters(); break;
 		case SC_COMMAND::SC_DSO :	return commandDso(); break;
-		case SC_COMMAND::SC_EXERNASC_MPLAYER :	return commandExternalMplayer(); break;
+	//	case SC_COMMAND::SC_EXERNASC_MPLAYER :	return commandExternalMplayer(); break;
 		case SC_COMMAND::SC_EXTERNASC_VIEWER :	return commandExternalViewer(); break;
 		case SC_COMMAND::SC_FLAG :	return commandFlag(); break;
 		case SC_COMMAND::SC_GET :	return commandGet(); break;
@@ -1741,58 +1741,58 @@ int AppCommandInterface::commandConstellation()
 	}
 }
 
-int AppCommandInterface::commandExternalMplayer()
-{
-	std::string argAction = args["action"];
-	if (!argAction.empty()) {
-		if (argAction=="play" && args["filename"]!="") {
-			if (Utility::isAbsolute(args["filename"]))
-				media->externalPlay(args["filename"]);
-			else
-				media->externalPlay(scriptInterface->getScriptPath()+args["filename"]);
-			return executeCommandStatus();
-		}
-		if (argAction=="stop") {
-			media->externalStop();
-			return executeCommandStatus();
-		}
-		if (argAction=="pause") {
-			media->externalPause();
-			return executeCommandStatus();
-		}
-		if (argAction=="reset") {
-			media->externalReset();
-			return executeCommandStatus();
-		}
-		debug_message = _("Command 'externalMplayer': unknown action value");
-		return executeCommandStatus();
-	}
-
-	std::string argJumpRelative=args["jump_relative"];
-	if (!argJumpRelative.empty()) {
-		media->externalJumpRelative(evalDouble(argJumpRelative));
-		return executeCommandStatus();
-	}
-
-	if (args["jump_absolute"]!="") {
-		media->externalJumpAbsolute(evalDouble(args["jump_absolute"]));
-		return executeCommandStatus();
-	}
-	if (args["speed"]!="") {
-		media->externalSpeed(evalDouble(args["speed"]));
-		return executeCommandStatus();
-	}
-	if (args["volume"]!="") {
-		media->externalVolume(evalDouble(args["volume"]));
-		return executeCommandStatus();
-	}
-	if (args["execute"]!="") {
-		media->externalExecute(args["execute"]);
-		return executeCommandStatus();
-	}
-	debug_message= _("command 'externalmplayer' : unknown argument");
-	return executeCommandStatus();
-}
+// int AppCommandInterface::commandExternalMplayer()
+// {
+	// std::string argAction = args["action"];
+	// if (!argAction.empty()) {
+		// if (argAction=="play" && args["filename"]!="") {
+			// if (Utility::isAbsolute(args["filename"]))
+				// media->externalPlay(args["filename"]);
+			// else
+				// media->externalPlay(scriptInterface->getScriptPath()+args["filename"]);
+			// return executeCommandStatus();
+		// }
+		// if (argAction=="stop") {
+			// media->externalStop();
+			// return executeCommandStatus();
+		// }
+		// if (argAction=="pause") {
+			// media->externalPause();
+			// return executeCommandStatus();
+		// }
+		// if (argAction=="reset") {
+			// media->externalReset();
+			// return executeCommandStatus();
+		// }
+		// debug_message = _("Command 'externalMplayer': unknown action value");
+		// return executeCommandStatus();
+	// }
+// 
+	// std::string argJumpRelative=args["jump_relative"];
+	// if (!argJumpRelative.empty()) {
+		// media->externalJumpRelative(evalDouble(argJumpRelative));
+		// return executeCommandStatus();
+	// }
+// 
+	// if (args["jump_absolute"]!="") {
+		// media->externalJumpAbsolute(evalDouble(args["jump_absolute"]));
+		// return executeCommandStatus();
+	// }
+	// if (args["speed"]!="") {
+		// media->externalSpeed(evalDouble(args["speed"]));
+		// return executeCommandStatus();
+	// }
+	// if (args["volume"]!="") {
+		// media->externalVolume(evalDouble(args["volume"]));
+		// return executeCommandStatus();
+	// }
+	// if (args["execute"]!="") {
+		// media->externalExecute(args["execute"]);
+		// return executeCommandStatus();
+	// }
+	// debug_message= _("command 'externalmplayer' : unknown argument");
+	// return executeCommandStatus();
+// }
 
 int AppCommandInterface::commandExternalViewer()
 {

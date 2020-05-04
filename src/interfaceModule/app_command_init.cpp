@@ -29,7 +29,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands["deselect"] = SC_COMMAND::SC_DESELECT;
 	m_commands["domemasters"] = SC_COMMAND::SC_DOMEMASTERS;
 	m_commands["dso"] = SC_COMMAND::SC_DSO;
-	m_commands["external_mplayer"] = SC_COMMAND::SC_EXERNASC_MPLAYER;
+	//m_commands["external_mplayer"] = SC_COMMAND::SC_EXERNASC_MPLAYER;
 	m_commands["external_viewer"] = SC_COMMAND::SC_EXTERNASC_VIEWER;
 
 	m_commands["flag"] = SC_COMMAND::SC_FLAG;

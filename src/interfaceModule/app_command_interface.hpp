@@ -83,7 +83,7 @@ protected:
 	int commandDeselect();
 	int commandDomemasters();
 	int commandDso();
-	int commandExternalMplayer();
+	//int commandExternalMplayer();
 	int commandExternalViewer();
 	int commandFlag();
 	int commandGet();
