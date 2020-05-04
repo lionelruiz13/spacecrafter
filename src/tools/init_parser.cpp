@@ -264,3 +264,17 @@ void InitParser::freeDico()
 {
 	iniparser_freedict(dico);
 }
+
+std::list<std::string> InitParser::getKeyFromSection(int i) const  //get all key for section s
+{
+	int nbKey = iniparser_getsecnkeys(dico, iniparser_getsecname(dico, i));
+	//std::cout << nbKey<< std::endl;
+	const char* keys[nbKey];
+	std::list<std::string> keyList;
+	iniparser_getseckeys(dico, iniparser_getsecname(dico, i), keys);
+	for (auto j =0; j< nbKey; j++) {
+		//std::cout << "|->" << keys[j]<< std::endl;
+		keyList.push_back(keys[j]);
+	}
+	return keyList;
+}

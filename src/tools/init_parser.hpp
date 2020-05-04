@@ -28,6 +28,7 @@
 #define _INIT_PARSER_H_
 
 #include <string>
+#include <list>
 #include <iostream>
 #include "iniparser/iniparser.h"
 
@@ -73,6 +74,7 @@ public:
 
 	int getNsec() const;					// Get number of sections.
 	std::string getSecname(int n) const;			// Get name for section n.
+	std::list<std::string> getKeyFromSection(int i) const; 	//get all key for section i
 	int findEntry(const std::string& entry) const;	// Return 1 if the entry exists, 0 otherwise
 
 private:
