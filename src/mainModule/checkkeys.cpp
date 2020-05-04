@@ -479,6 +479,14 @@ void checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION
 	user_conf.load(fullpathfile);
 
 	if (user_conf.getStr("main:version") == _VERSION) {
+		// std::cout << "nothing to do" << std::endl;
+		// for (auto i =0; i<user_conf.getNsec(); i++) {
+		// 	std::cout << user_conf.getSecname(i) << std::endl;
+	
+		// 	std::list<std::string> tmp = user_conf.getKeyFromSection(i);
+		// 	for (auto it=tmp.begin(); it != tmp.end(); ++it) 
+		// 		std::cout << "|->" << *it << std::endl;
+		// }
 		return; //(nothing to do, config.ini isn't outdated)
 	}
 
@@ -514,8 +522,8 @@ void checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION
 
 	checkLocationSettings(user_conf);
 
+	std::cout << "i did " << std::endl;
 	user_conf.setStr("main:version", _VERSION);
-
 	user_conf.save(fullpathfile);
 }
 
