@@ -252,7 +252,7 @@ bool CallSystem::killAllPidFromVLC()
 		FILE *cmd = popen("ps aux | grep vlc | wc -l", "r");
 		fgets(line, LEN, cmd);
 		pclose(cmd);
-		if (std::stoi(line)>1)
+		if (std::stoi(line)>2)
 			return useSystemCommand("killall vlc &");
 		else
 			return false;
@@ -271,7 +271,7 @@ bool CallSystem::killAllPidFromMPlayer()
 		FILE *cmd = popen("ps aux | grep mplayer | wc -l", "r");
 		fgets(line, LEN, cmd);
 		pclose(cmd);
-		if (std::stoi(line)>1)
+		if (std::stoi(line)>2)
 			return useSystemCommand("killall mplayer &");
 		else
 			return false;
