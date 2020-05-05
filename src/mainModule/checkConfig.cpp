@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2014_2015 Association Sirius & LSS team
+ * Copyright (C) 2014_2020 Association Sirius & LSS team
  * Spacecrafter astronomy simulation and visualization
  *
  * This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
  *
  */
 
-#include "mainModule/checkkeys.hpp"
+#include "mainModule/checkConfig.hpp"
 
 CheckConfig::CheckConfig()
 {

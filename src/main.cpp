@@ -39,7 +39,7 @@
 
 #include "spacecrafter.hpp"
 #include "appModule/app.hpp"
-#include "mainModule/checkkeys.hpp"
+#include "mainModule/checkConfig.hpp"
 #include "mainModule/sdl_facade.hpp"
 #include "mainModule/signals.hpp"
 #include "tools/call_system.hpp"
