@@ -38,6 +38,8 @@ public:
     void checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION);
 
 private:
+	void insertKeyFromTmpSettings(std::string nameSection);
+
 	void checkMainSettings();
 	void checkIoSettings();
 	void checkVideoSettings();
@@ -56,21 +58,8 @@ private:
 
     InitParser user_conf;
     std::list<std::string> sectionSettings;
-	std::map<std::string,std::string> astroSettings;
-    std::map<std::string,std::string> navigationSettings;
-    std::map<std::string,std::string> init_locationSettings;
-    std::map<std::string,std::string> viewingSettings;
-	std::map<std::string,std::string> colorSettings;
-    std::map<std::string,std::string> landscapeSettings;
-	std::map<std::string,std::string> tuiSettings;
-	std::map<std::string,std::string> fontSettings;
-	std::map<std::string,std::string> guiSettings;
-	std::map<std::string,std::string> starsSettings;
-	std::map<std::string,std::string> localizationSettings;
-	std::map<std::string,std::string> renderingSettings;
-	std::map<std::string,std::string> videoSettings;
-	std::map<std::string,std::string> ioSettings;
-	std::map<std::string,std::string> mainSettings;
+	std::list<std::string> sectionKeySettings;
+	std::map<std::string,std::string> tmpSettings;
 };
 
 

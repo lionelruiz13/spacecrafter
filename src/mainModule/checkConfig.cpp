@@ -27,448 +27,404 @@
 
 CheckConfig::CheckConfig()
 {
-
-
 }
 
 CheckConfig::~CheckConfig()
 {
 	sectionSettings.clear();
-	astroSettings.clear();
-	navigationSettings.clear();
-	init_locationSettings.clear();
-	viewingSettings.clear();
-	colorSettings.clear();
-	landscapeSettings.clear();
-	tuiSettings.clear();
-	fontSettings.clear();
-	guiSettings.clear();
-	starsSettings.clear();
-	localizationSettings.clear();
-	renderingSettings.clear();
-	videoSettings.clear();
-	ioSettings.clear();
-	mainSettings.clear();
+	sectionKeySettings.clear();
+	tmpSettings.clear();
 }
 
 void CheckConfig::checkMainSettings()
 {
-	sectionSettings.push_back("main");
-
-	mainSettings["debug"]="false";
+	tmpSettings["debug"]="false";
 	// mainSettings["debug_opengl"]="false";
-	mainSettings["flag_masterput"]="false";
-	mainSettings["flag_navigation"]="false";
-	mainSettings["flag_optoma"]="false";
+	tmpSettings["flag_masterput"]="false";
+	tmpSettings["flag_navigation"]="false";
+	tmpSettings["flag_optoma"]="false";
 	// mainSettings["script_debug"]="false";
-	mainSettings["cpu_info"]="false";
-	mainSettings["flag_always_visible"]="true";
+	tmpSettings["cpu_info"]="false";
+	tmpSettings["flag_always_visible"]="true";
 
-	for (std::map<std::string,std::string>::iterator it=mainSettings.begin(); it!=mainSettings.end(); ++it) {
-		if (!user_conf.findEntry("main:"+it->first))
-			user_conf.setStr("main:"+it->first, it->second);
-	}
+	sectionSettings.push_back("main");
+	insertKeyFromTmpSettings("main");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkIoSettings()
 {
-	sectionSettings.push_back("io");
-
-	ioSettings["enable_mkfifo"]="false";
-	ioSettings["enable_tcp"]="true";
+	tmpSettings["enable_mkfifo"]="false";
+	tmpSettings["enable_tcp"]="true";
 	// ioSettings["enable_mplayer"]="false";
-	ioSettings["tcp_port_in"]="7805";
-	ioSettings["tcp_buffer_in_size"]="1024";
-	ioSettings["mkfifo_file_in"]="/tmp/spacecrafter.fifo";
-	ioSettings["mkfifo_buffer_in_size"]="256";
+	tmpSettings["tcp_port_in"]="7805";
+	tmpSettings["tcp_buffer_in_size"]="1024";
+	tmpSettings["mkfifo_file_in"]="/tmp/spacecrafter.fifo";
+	tmpSettings["mkfifo_buffer_in_size"]="256";
 	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
 	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
 
-	for (std::map<std::string,std::string>::iterator it=ioSettings.begin(); it!=ioSettings.end(); ++it) {
-		if (!user_conf.findEntry("io:"+it->first))
-			user_conf.setStr("io:"+it->first, it->second);
-	}
+	sectionSettings.push_back("io");
+	insertKeyFromTmpSettings("io");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkVideoSettings()
 {
-	sectionSettings.push_back("video");
-	videoSettings["autoscreen"]="false";
-	videoSettings["fullscreen"]="false";
-	videoSettings["screen_w"]="1024";
-	videoSettings["screen_h"]="768";
-	videoSettings["bbp_mode"]="24";
-	videoSettings["maximum_fps"]="60";
-	videoSettings["rec_video_fps"]="30";
-	videoSettings["min_tes_level"]="1";
-	videoSettings["max_tes_level"]="1";
-	videoSettings["planet_altimetry_level"]="1";
-	videoSettings["earth_altimetry_level"]="1";
-	videoSettings["moon_altimetry_level"]="1";
+	tmpSettings["autoscreen"]="false";
+	tmpSettings["fullscreen"]="false";
+	tmpSettings["screen_w"]="1024";
+	tmpSettings["screen_h"]="768";
+	tmpSettings["bbp_mode"]="24";
+	tmpSettings["maximum_fps"]="60";
+	tmpSettings["rec_video_fps"]="30";
+	tmpSettings["min_tes_level"]="1";
+	tmpSettings["max_tes_level"]="1";
+	tmpSettings["planet_altimetry_level"]="1";
+	tmpSettings["earth_altimetry_level"]="1";
+	tmpSettings["moon_altimetry_level"]="1";
 
-	for (std::map<std::string,std::string>::iterator it=videoSettings.begin(); it!=videoSettings.end(); ++it) {
-		if (!user_conf.findEntry("video:"+it->first))
-			user_conf.setStr("video:"+it->first, it->second);
-	}
+	sectionSettings.push_back("video");
+	insertKeyFromTmpSettings("video");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkRenderingSettings()
 {
-	sectionSettings.push_back("rendering");
-	renderingSettings["flag_antialias_lines"]="true";
-	renderingSettings["antialiasing"]="8";
-	renderingSettings["line_width"]="1.5";
-	renderingSettings["landscape_slices"]="80";
-	renderingSettings["landscape_stacks"]="20";
+	tmpSettings["flag_antialias_lines"]="true";
+	tmpSettings["antialiasing"]="8";
+	tmpSettings["line_width"]="1.5";
+	tmpSettings["landscape_slices"]="80";
+	tmpSettings["landscape_stacks"]="20";
 	//~ renderingSettings["milkyway_slices"]="80";
 	//~ renderingSettings["milkyway_stacks"]="20";
 	//~ renderingSettings["sphere_low"]="10";
 	//~ renderingSettings["sphere_medium"]="60";
 	//~ renderingSettings["sphere_high"]="80";
-	renderingSettings["rings_low"]="64";
-	renderingSettings["rings_medium"]="256";
-	renderingSettings["rings_high"]="512";
-	renderingSettings["oort_elements"]="10000";
+	tmpSettings["rings_low"]="64";
+	tmpSettings["rings_medium"]="256";
+	tmpSettings["rings_high"]="512";
+	tmpSettings["oort_elements"]="10000";
 
-	for (std::map<std::string,std::string>::iterator it=renderingSettings.begin(); it!=renderingSettings.end(); ++it) {
-		if (!user_conf.findEntry("rendering:"+it->first))
-			user_conf.setStr("rendering:"+it->first, it->second);
-	}
+	sectionSettings.push_back("rendering");
+	insertKeyFromTmpSettings("rendering");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkLocalizationSettings()
 {
-	sectionSettings.push_back("localization");
-	localizationSettings["sky_culture"]="western-color";
-	localizationSettings["sky_locale"]="fr";
-	localizationSettings["time_display_format"]="24h";
-	localizationSettings["date_display_format"]="ddmmyyyy";
-	localizationSettings["app_locale"]="fr";
-	localizationSettings["time_zone"]="Europe/Paris";
+	tmpSettings["sky_culture"]="western-color";
+	tmpSettings["sky_locale"]="fr";
+	tmpSettings["time_display_format"]="24h";
+	tmpSettings["date_display_format"]="ddmmyyyy";
+	tmpSettings["app_locale"]="fr";
+	tmpSettings["time_zone"]="Europe/Paris";
 
-	for (std::map<std::string,std::string>::iterator it=localizationSettings.begin(); it!=localizationSettings.end(); ++it) {
-		if (!user_conf.findEntry("localization:"+it->first))
-			user_conf.setStr("localization:"+it->first, it->second);
-	}
+	sectionSettings.push_back("localization");
+	insertKeyFromTmpSettings("localization");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkStarSettings()
 {
-	sectionSettings.push_back("stars");
-	starsSettings["star_scale"]="1.0";
-	starsSettings["star_mag_scale"]="1.0";
-	starsSettings["star_twinkle_amount"]="0.4";
-	starsSettings["max_mag_star_name"]="1.5";
-	starsSettings["flag_star_twinkle"]="true";
-	starsSettings["star_limiting_mag"]="6.5";
-	starsSettings["mag_converter_min_fov"]="0.1";
-	starsSettings["mag_converter_max_fov"]="60";
-	starsSettings["mag_converter_mag_shift"]="0.0";
-	starsSettings["mag_converter_max_mag"]="30";
-	starsSettings["illuminate_size"]="60";
+	tmpSettings["star_scale"]="1.0";
+	tmpSettings["star_mag_scale"]="1.0";
+	tmpSettings["star_twinkle_amount"]="0.4";
+	tmpSettings["max_mag_star_name"]="1.5";
+	tmpSettings["flag_star_twinkle"]="true";
+	tmpSettings["star_limiting_mag"]="6.5";
+	tmpSettings["mag_converter_min_fov"]="0.1";
+	tmpSettings["mag_converter_max_fov"]="60";
+	tmpSettings["mag_converter_mag_shift"]="0.0";
+	tmpSettings["mag_converter_max_mag"]="30";
+	tmpSettings["illuminate_size"]="60";
 
-	for (std::map<std::string,std::string>::iterator it=starsSettings.begin(); it!=starsSettings.end(); ++it) {
-		if (!user_conf.findEntry("stars:"+it->first))
-			user_conf.setStr("stars:"+it->first, it->second);
-	}
+	sectionSettings.push_back("stars");
+	insertKeyFromTmpSettings("stars");
+	tmpSettings.clear();
 }
 
 void CheckConfig::checkGuiSettings()
 {
-	sectionSettings.push_back("gui");
-	guiSettings["flag_show_fps"]="false";
-	guiSettings["flag_show_fov"]="false";
-	guiSettings["flag_show_latlon"]="false";
-	guiSettings["flag_number_print"]="1";
-	guiSettings["datetime_display_position"]="105";
-	guiSettings["object_info_display_position"]="300";
-	guiSettings["flag_show_planetname"]="true";
-	guiSettings["mouse_cursor_timeout"]="1";
-	guiSettings["menu_display_position"]="-150";
-	guiSettings["flag_mouse_usable_in_script"]="true";
+	tmpSettings["flag_show_fps"]="false";
+	tmpSettings["flag_show_fov"]="false";
+	tmpSettings["flag_show_latlon"]="false";
+	tmpSettings["flag_number_print"]="1";
+	tmpSettings["datetime_display_position"]="105";
+	tmpSettings["object_info_display_position"]="300";
+	tmpSettings["flag_show_planetname"]="true";
+	tmpSettings["mouse_cursor_timeout"]="1";
+	tmpSettings["menu_display_position"]="-150";
+	tmpSettings["flag_mouse_usable_in_script"]="true";
 
-	for (std::map<std::string,std::string>::iterator it=guiSettings.begin(); it!=guiSettings.end(); ++it) {
-		if (!user_conf.findEntry("gui:"+it->first))
-			user_conf.setStr("gui:"+it->first, it->second);
-	}
+	sectionSettings.push_back("gui");
+	insertKeyFromTmpSettings("gui");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkFontSettings()
 {
-	sectionSettings.push_back("font");
-	fontSettings["font_general_name"]="DejaVuSansMono.ttf";
-	fontSettings["font_general_size"]="12";
-	fontSettings["font_menu_name"]="DejaVuSans.ttf";
-	fontSettings["font_menutui_size"]="18";
-	fontSettings["font_planet_name"]="DejaVuSans.ttf";
-	fontSettings["font_planet_size"]="20";
-	fontSettings["font_constellation_name"]="DejaVuSans.ttf";
-	fontSettings["font_constellation_size"]="22";
-	fontSettings["font_cardinalpoints_size"]="30";
-	fontSettings["font_text_name"]="DejaVuSans.ttf";
-	fontSettings["font_text_size"]="16";
-	fontSettings["font_menugui_size"]="12.5";
+	tmpSettings["font_general_name"]="DejaVuSansMono.ttf";
+	tmpSettings["font_general_size"]="12";
+	tmpSettings["font_menu_name"]="DejaVuSans.ttf";
+	tmpSettings["font_menutui_size"]="18";
+	tmpSettings["font_planet_name"]="DejaVuSans.ttf";
+	tmpSettings["font_planet_size"]="20";
+	tmpSettings["font_constellation_name"]="DejaVuSans.ttf";
+	tmpSettings["font_constellation_size"]="22";
+	tmpSettings["font_cardinalpoints_size"]="30";
+	tmpSettings["font_text_name"]="DejaVuSans.ttf";
+	tmpSettings["font_text_size"]="16";
+	tmpSettings["font_menugui_size"]="12.5";
 
-	for (std::map<std::string,std::string>::iterator it=fontSettings.begin(); it!=fontSettings.end(); ++it) {
-		if (!user_conf.findEntry("font:"+it->first))
-			user_conf.setStr("font:"+it->first, it->second);
-	}
+	sectionSettings.push_back("font");
+	insertKeyFromTmpSettings("font");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkTuiSettings()
 {
-	sectionSettings.push_back("tui");
-	tuiSettings["flag_enable_tui_menu"]="true";
-	tuiSettings["flag_show_gravity_ui"]="true";
-	tuiSettings["flag_show_tui_datetime"]="false";
-	tuiSettings["flag_show_tui_short_obj_info"]="false";
-	tuiSettings["text_ui"] = "0.5,1.0,0.5";
-	tuiSettings["text_tui_root"] = "0.5,0.7,1.0";
+	tmpSettings["flag_enable_tui_menu"]="true";
+	tmpSettings["flag_show_gravity_ui"]="true";
+	tmpSettings["flag_show_tui_datetime"]="false";
+	tmpSettings["flag_show_tui_short_obj_info"]="false";
+	tmpSettings["text_ui"] = "0.5,1.0,0.5";
+	tmpSettings["text_tui_root"] = "0.5,0.7,1.0";
 
-	for (std::map<std::string,std::string>::iterator it=tuiSettings.begin(); it!=tuiSettings.end(); ++it) {
-		if (!user_conf.findEntry("tui:"+it->first))
-			user_conf.setStr("tui:"+it->first, it->second);
-	}
+	sectionSettings.push_back("tui");
+	insertKeyFromTmpSettings("tui");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkLandscapeSettings()
 {
+	tmpSettings["flag_landscape"]="true";
+	tmpSettings["flag_fog"]="false";
+	tmpSettings["flag_atmosphere"]="true";
+
 	sectionSettings.push_back("landscape");
-	landscapeSettings["flag_landscape"]="true";
-	landscapeSettings["flag_fog"]="false";
-	landscapeSettings["flag_atmosphere"]="true";
-
-	for (std::map<std::string,std::string>::iterator it=landscapeSettings.begin(); it!=landscapeSettings.end(); ++it) {
-		if (!user_conf.findEntry("landscape:"+it->first))
-			user_conf.setStr("landscape:"+it->first, it->second);
-	}
+	insertKeyFromTmpSettings("landscape");
+	tmpSettings.clear();
 }
-
 
 
 void CheckConfig::checkColorSettings()
 {
-	sectionSettings.push_back("color");
-	colorSettings["azimuthal_color"] = "0,0.4,0.6";
-	colorSettings["equatorial_color"] = "0.5,1,0.5";
-	colorSettings["ecliptic_color"] = "1,0.2,0.2";
-	colorSettings["galactic_color"] = "0.8,0.8,0.8";
-	colorSettings["ecliptic_color"] = "1,0.2,0.2";
-	colorSettings["ecliptic_center_color"] = "0.8,0.8,0.8";
-	colorSettings["galactic_center_color"] = "0.8,0.8,0.8";
-	colorSettings["galactic_pole_color"] = "0.8,0.8,0.8";
-	colorSettings["nebula_label_color"] = "0.5,0.5,0.5";
-	colorSettings["nebula_circle_color"] = "0.15,0.15,0.15";
-	colorSettings["precession_circle_color"] = "0.6,0.4,0";
-	colorSettings["circumpolar_circle_color"] = "0.8,0.8,0.8";
-	colorSettings["oort_color"] = "0.0,0.5,1.0";
-	colorSettings["galactic_color"] = "0.8,0.8,0.8";
-	colorSettings["vernal_points_color"] = "0.8,0.8,0.8";
-	colorSettings["planet_halo_color"] = "1.0,1.0,1.0";
-	colorSettings["planet_names_color"] = "0.3,0.7,1";
-	colorSettings["planet_orbits_color"] = "0.2,0.2,0.2";
-	colorSettings["object_trails_color"] = "1,0.5,0";
-	colorSettings["equator_color"] = "0.5,1,0.5";
-	colorSettings["const_lines_color"] = "0.05,0.05,0.3";
-	colorSettings["const_lines3D_color"] = "0.5,0.2,0.2";
-	colorSettings["const_boundary_color"] = "0.4,0.3,0";
-	colorSettings["const_names_color"] = "0.6,0.7,0";
-	colorSettings["const_art_color"] = "1,1,1";
-	colorSettings["analemma_line_color"] = "1,0.5,0";
-	colorSettings["analemma_color"] = "1,1,0.5";
-	colorSettings["aries_color"] = "0.8,0.8,0.8";
-	colorSettings["cardinal_color"] = "1,1,0.6";
-	colorSettings["ecliptic_center_color"] = "0.8,0.8,0.8";
-	colorSettings["galactic_pole_color"] = "0.8,0.8,0.8";
-	colorSettings["galactic_center_color"] = "0.8,0.8,0.8";
-	colorSettings["greenwich_color"] = "1,0,0";
-	colorSettings["meridian_color"] = "0,0.8,1";
-	colorSettings["personal_color"] = "0.8,0.8,0";
-	colorSettings["personeq_color"] = "0.3,0.3,0.3";
-	colorSettings["nautical_alt_color"] = "0.8,0.8,0";
-	colorSettings["nautical_ra_color"] = "0.3,0.3,0.3";
-	colorSettings["object_coordinates_color"] = "0.8,0.8,0";
-	colorSettings["mouse_coordinates_color"] = "0.8,0.8,0";
-	colorSettings["angular_distance_color"] = "0.8,0.8,0";
-	colorSettings["loxodromy_color"] = "0.9,0.4,0.4";
-	colorSettings["orthodromy_color"] = "0.4,0.4,0.9";
-	colorSettings["polar_color"] = "0.5,0.3,0";
-	colorSettings["text_usr_color"] = "0.8,0.8,0.8";
-	colorSettings["vernal_points_color"] = "0.8,0.8,0.8";
-	colorSettings["vertical_color"] = "0.0,0.8,1.0";
-	colorSettings["zenith_color"] = "0.0,1.0,0.0";
-	colorSettings["zodiac_color"] = "1.0,0,1.0";
+	tmpSettings["azimuthal_color"] = "0,0.4,0.6";
+	tmpSettings["equatorial_color"] = "0.5,1,0.5";
+	tmpSettings["ecliptic_color"] = "1,0.2,0.2";
+	tmpSettings["galactic_color"] = "0.8,0.8,0.8";
+	tmpSettings["ecliptic_color"] = "1,0.2,0.2";
+	tmpSettings["ecliptic_center_color"] = "0.8,0.8,0.8";
+	tmpSettings["galactic_center_color"] = "0.8,0.8,0.8";
+	tmpSettings["galactic_pole_color"] = "0.8,0.8,0.8";
+	tmpSettings["nebula_label_color"] = "0.5,0.5,0.5";
+	tmpSettings["nebula_circle_color"] = "0.15,0.15,0.15";
+	tmpSettings["precession_circle_color"] = "0.6,0.4,0";
+	tmpSettings["circumpolar_circle_color"] = "0.8,0.8,0.8";
+	tmpSettings["oort_color"] = "0.0,0.5,1.0";
+	tmpSettings["galactic_color"] = "0.8,0.8,0.8";
+	tmpSettings["vernal_points_color"] = "0.8,0.8,0.8";
+	tmpSettings["planet_halo_color"] = "1.0,1.0,1.0";
+	tmpSettings["planet_names_color"] = "0.3,0.7,1";
+	tmpSettings["planet_orbits_color"] = "0.2,0.2,0.2";
+	tmpSettings["object_trails_color"] = "1,0.5,0";
+	tmpSettings["equator_color"] = "0.5,1,0.5";
+	tmpSettings["const_lines_color"] = "0.05,0.05,0.3";
+	tmpSettings["const_lines3D_color"] = "0.5,0.2,0.2";
+	tmpSettings["const_boundary_color"] = "0.4,0.3,0";
+	tmpSettings["const_names_color"] = "0.6,0.7,0";
+	tmpSettings["const_art_color"] = "1,1,1";
+	tmpSettings["analemma_line_color"] = "1,0.5,0";
+	tmpSettings["analemma_color"] = "1,1,0.5";
+	tmpSettings["aries_color"] = "0.8,0.8,0.8";
+	tmpSettings["cardinal_color"] = "1,1,0.6";
+	tmpSettings["ecliptic_center_color"] = "0.8,0.8,0.8";
+	tmpSettings["galactic_pole_color"] = "0.8,0.8,0.8";
+	tmpSettings["galactic_center_color"] = "0.8,0.8,0.8";
+	tmpSettings["greenwich_color"] = "1,0,0";
+	tmpSettings["meridian_color"] = "0,0.8,1";
+	tmpSettings["personal_color"] = "0.8,0.8,0";
+	tmpSettings["personeq_color"] = "0.3,0.3,0.3";
+	tmpSettings["nautical_alt_color"] = "0.8,0.8,0";
+	tmpSettings["nautical_ra_color"] = "0.3,0.3,0.3";
+	tmpSettings["object_coordinates_color"] = "0.8,0.8,0";
+	tmpSettings["mouse_coordinates_color"] = "0.8,0.8,0";
+	tmpSettings["angular_distance_color"] = "0.8,0.8,0";
+	tmpSettings["loxodromy_color"] = "0.9,0.4,0.4";
+	tmpSettings["orthodromy_color"] = "0.4,0.4,0.9";
+	tmpSettings["polar_color"] = "0.5,0.3,0";
+	tmpSettings["text_usr_color"] = "0.8,0.8,0.8";
+	tmpSettings["vernal_points_color"] = "0.8,0.8,0.8";
+	tmpSettings["vertical_color"] = "0.0,0.8,1.0";
+	tmpSettings["zenith_color"] = "0.0,1.0,0.0";
+	tmpSettings["zodiac_color"] = "1.0,0,1.0";
 
-	for (std::map<std::string,std::string>::iterator it=colorSettings.begin(); it!=colorSettings.end(); ++it) {
-		if (!user_conf.findEntry("color:"+it->first))
-			user_conf.setStr("color:"+it->first, it->second);
-	}
+	sectionSettings.push_back("color");
+	insertKeyFromTmpSettings("color");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkViewingSettings()
 {
-	sectionSettings.push_back("viewing");
-	viewingSettings["nebula_picto_size"] = "6";
-	viewingSettings["atmosphere_fade_duration"] = "2";
-	viewingSettings["flag_constellation_drawing"] = "false";
-	viewingSettings["flag_constellation_name"] = "false";
-	viewingSettings["flag_constellation_boundaries"] = "false";
-	viewingSettings["flag_constellation_art"] = "false";
-	viewingSettings["flag_constellation_pick"] = "true";
-	viewingSettings["constellation_art_intensity"] = "0.5";
-	viewingSettings["constellation_art_fade_duration"] = "2";
-	viewingSettings["flag_azimutal_grid"] = "false";
-	viewingSettings["flag_equatorial_grid"] = "false";
-	viewingSettings["flag_ecliptic_grid"] = "false";
-	viewingSettings["flag_galactic_grid"] = "false";
-	viewingSettings["flag_equator_line"] = "false";
-	viewingSettings["flag_galactic_line"] = "false";
-	viewingSettings["flag_ecliptic_line"] = "false";
-	viewingSettings["flag_precession_circle"] = "false";
-	viewingSettings["flag_circumpolar_circle"] = "false";
-	viewingSettings["flag_tropic_lines"] = "false";
-	viewingSettings["flag_meridian_line"] = "false";
-	viewingSettings["flag_zenith_line"] = "false";
-	viewingSettings["flag_polar_circle"] = "false";
-	viewingSettings["flag_polar_point"] = "false";
-	viewingSettings["flag_ecliptic_center"] = "false";
-	viewingSettings["flag_galactic_pole"] = "false";
-	viewingSettings["flag_galactic_center"] = "false";
-	viewingSettings["flag_vernal_points"] = "false";
-	viewingSettings["flag_analemma_line"] = "false";
-	viewingSettings["flag_analemma"] = "false";
-	viewingSettings["flag_aries_line"] = "false";
-	viewingSettings["flag_zodiac"] = "false";
-	viewingSettings["flag_cardinal_points"] = "false";
-	viewingSettings["flag_vertical_line"] = "false";
-	viewingSettings["flag_greenwich_line"] = "false";
-	viewingSettings["flag_personal"] = "false";
-	viewingSettings["flag_personeq"] = "false";
-	viewingSettings["flag_nautical_ra"] = "false";
-	viewingSettings["flag_nautical_alt"] = "false";
-	viewingSettings["flag_object_coordinates"] = "false";
-	viewingSettings["flag_mouse_coordinates"] = "false";
-	viewingSettings["flag_angular_distance"] = "false";
-	viewingSettings["flag_loxodromy"] = "false";
-	viewingSettings["flag_orthodromy"] = "false";
-	viewingSettings["flag_oort"] = "true";
-	viewingSettings["flag_moon_scaled"] = "true";
-	viewingSettings["flag_sun_scaled"] = "false";
-	viewingSettings["flag_atmospheric_refraction"] = "false";
-	viewingSettings["moon_scale"] = "5";
-	viewingSettings["sun_scale"] = "5";
-	viewingSettings["light_pollution_limiting_magnitude"] = "6";
+	tmpSettings["nebula_picto_size"] = "6";
+	tmpSettings["atmosphere_fade_duration"] = "2";
+	tmpSettings["flag_constellation_drawing"] = "false";
+	tmpSettings["flag_constellation_name"] = "false";
+	tmpSettings["flag_constellation_boundaries"] = "false";
+	tmpSettings["flag_constellation_art"] = "false";
+	tmpSettings["flag_constellation_pick"] = "true";
+	tmpSettings["constellation_art_intensity"] = "0.5";
+	tmpSettings["constellation_art_fade_duration"] = "2";
+	tmpSettings["flag_azimutal_grid"] = "false";
+	tmpSettings["flag_equatorial_grid"] = "false";
+	tmpSettings["flag_ecliptic_grid"] = "false";
+	tmpSettings["flag_galactic_grid"] = "false";
+	tmpSettings["flag_equator_line"] = "false";
+	tmpSettings["flag_galactic_line"] = "false";
+	tmpSettings["flag_ecliptic_line"] = "false";
+	tmpSettings["flag_precession_circle"] = "false";
+	tmpSettings["flag_circumpolar_circle"] = "false";
+	tmpSettings["flag_tropic_lines"] = "false";
+	tmpSettings["flag_meridian_line"] = "false";
+	tmpSettings["flag_zenith_line"] = "false";
+	tmpSettings["flag_polar_circle"] = "false";
+	tmpSettings["flag_polar_point"] = "false";
+	tmpSettings["flag_ecliptic_center"] = "false";
+	tmpSettings["flag_galactic_pole"] = "false";
+	tmpSettings["flag_galactic_center"] = "false";
+	tmpSettings["flag_vernal_points"] = "false";
+	tmpSettings["flag_analemma_line"] = "false";
+	tmpSettings["flag_analemma"] = "false";
+	tmpSettings["flag_aries_line"] = "false";
+	tmpSettings["flag_zodiac"] = "false";
+	tmpSettings["flag_cardinal_points"] = "false";
+	tmpSettings["flag_vertical_line"] = "false";
+	tmpSettings["flag_greenwich_line"] = "false";
+	tmpSettings["flag_personal"] = "false";
+	tmpSettings["flag_personeq"] = "false";
+	tmpSettings["flag_nautical_ra"] = "false";
+	tmpSettings["flag_nautical_alt"] = "false";
+	tmpSettings["flag_object_coordinates"] = "false";
+	tmpSettings["flag_mouse_coordinates"] = "false";
+	tmpSettings["flag_angular_distance"] = "false";
+	tmpSettings["flag_loxodromy"] = "false";
+	tmpSettings["flag_orthodromy"] = "false";
+	tmpSettings["flag_oort"] = "true";
+	tmpSettings["flag_moon_scaled"] = "true";
+	tmpSettings["flag_sun_scaled"] = "false";
+	tmpSettings["flag_atmospheric_refraction"] = "false";
+	tmpSettings["moon_scale"] = "5";
+	tmpSettings["sun_scale"] = "5";
+	tmpSettings["light_pollution_limiting_magnitude"] = "6";
 
-	for (std::map<std::string,std::string>::iterator it=viewingSettings.begin(); it!=viewingSettings.end(); ++it) {
-		if (!user_conf.findEntry("viewving:"+it->first))
-			user_conf.setStr("viewing:"+it->first, it->second);
-	}
+	sectionSettings.push_back("viewing");
+	insertKeyFromTmpSettings("viewing");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkNavigationSettings()
 {
-	sectionSettings.push_back("navigation");
-	navigationSettings["preset_sky_time"]="2453065.333344907";
-	navigationSettings["auto_move_duration"]="5";
-	navigationSettings["day_key_mode"]="calendar";
+	tmpSettings["preset_sky_time"]="2453065.333344907";
+	tmpSettings["auto_move_duration"]="5";
+	tmpSettings["day_key_mode"]="calendar";
 	// navigationSettings["flag_enable_drag_mouse"]="true";
-	navigationSettings["flag_enable_move_keys"]="true";
-	navigationSettings["flag_enable_zoom_keys"]="true";
-	navigationSettings["flag_manual_zoom"]="false";
-	navigationSettings["heading"]="0";
-	navigationSettings["init_fov"]="180";
-	navigationSettings["init_view_pos"]="1e-04,1e-04,1";
-	navigationSettings["mouse_zoom"]="30";
-	navigationSettings["move_speed"]="0.0001";
-	navigationSettings["startup_time_mode"]="Actual";
-	navigationSettings["view_offset"]="0";
-	navigationSettings["viewing_mode"]="equator";
-	navigationSettings["zoom_speed"]="0.0001";
-	navigationSettings["stall_radius_unit"]= "5.0";
+	tmpSettings["flag_enable_move_keys"]="true";
+	tmpSettings["flag_enable_zoom_keys"]="true";
+	tmpSettings["flag_manual_zoom"]="false";
+	tmpSettings["heading"]="0";
+	tmpSettings["init_fov"]="180";
+	tmpSettings["init_view_pos"]="1e-04,1e-04,1";
+	tmpSettings["mouse_zoom"]="30";
+	tmpSettings["move_speed"]="0.0001";
+	tmpSettings["startup_time_mode"]="Actual";
+	tmpSettings["view_offset"]="0";
+	tmpSettings["viewing_mode"]="equator";
+	tmpSettings["zoom_speed"]="0.0001";
+	tmpSettings["stall_radius_unit"]= "5.0";
 
-	for (std::map<std::string,std::string>::iterator it=navigationSettings.begin(); it!=navigationSettings.end(); ++it) {
-		if (!user_conf.findEntry("navigation:"+it->first))
-			user_conf.setStr("navigation:"+it->first, it->second);
-	}
+	sectionSettings.push_back("navigation");
+	insertKeyFromTmpSettings("navigation");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkAstroSettings()
 {
 	sectionSettings.push_back("astro");
-	astroSettings["flag_stars"]="true";
-	astroSettings["flag_star_name"]="false";
-	astroSettings["flag_star_lines"]="false";
-	astroSettings["flag_planets"]="true";
-	astroSettings["flag_planets_hints"]="false";
-	astroSettings["flag_planets_orbits"]="false";
-	astroSettings["flag_nebula"]="true";
-	astroSettings["flag_milky_way"]="true";
-	astroSettings["flag_zodiacal_light"]="false";
-	astroSettings["flag_bright_nebulae"]="true";
-	astroSettings["milky_way_fader_duration"]="2";
-	astroSettings["milky_way_intensity"]="0.7";
-	astroSettings["zodiacal_intensity"]="0.7";
-	astroSettings["milky_way_texture"]="milkyway.png";
-	astroSettings["milky_way_iris_texture"]="";
-	astroSettings["zodiacal_light_texture"]="zodiacale.png";
-	astroSettings["flag_nebula_hints"]="false";
-	astroSettings["flag_nebula_names"]="false";
-	astroSettings["max_mag_nebula_name"]="99";
-	astroSettings["flag_object_trails"]="false";
-	astroSettings["flag_light_travel_time"]="true";
-	astroSettings["planet_size_marginal_limit"]="0";
-	astroSettings["star_size_limit"]="9";
-	astroSettings["meteor_rate"]="10";
+	tmpSettings["flag_stars"]="true";
+	tmpSettings["flag_star_name"]="false";
+	tmpSettings["flag_star_lines"]="false";
+	tmpSettings["flag_planets"]="true";
+	tmpSettings["flag_planets_hints"]="false";
+	tmpSettings["flag_planets_orbits"]="false";
+	tmpSettings["flag_nebula"]="true";
+	tmpSettings["flag_milky_way"]="true";
+	tmpSettings["flag_zodiacal_light"]="false";
+	tmpSettings["flag_bright_nebulae"]="true";
+	tmpSettings["milky_way_fader_duration"]="2";
+	tmpSettings["milky_way_intensity"]="0.7";
+	tmpSettings["zodiacal_intensity"]="0.7";
+	tmpSettings["milky_way_texture"]="milkyway.png";
+	tmpSettings["milky_way_iris_texture"]="";
+	tmpSettings["zodiacal_light_texture"]="zodiacale.png";
+	tmpSettings["flag_nebula_hints"]="false";
+	tmpSettings["flag_nebula_names"]="false";
+	tmpSettings["max_mag_nebula_name"]="99";
+	tmpSettings["flag_object_trails"]="false";
+	tmpSettings["flag_light_travel_time"]="true";
+	tmpSettings["planet_size_marginal_limit"]="0";
+	tmpSettings["star_size_limit"]="9";
+	tmpSettings["meteor_rate"]="10";
 
-	for (std::map<std::string,std::string>::iterator it=astroSettings.begin(); it!=astroSettings.end(); ++it) {
-		if (!user_conf.findEntry("astro:"+it->first))
-			user_conf.setStr("astro:"+it->first, it->second);
-	}
+	sectionSettings.push_back("astro");
+	insertKeyFromTmpSettings("astro");
+	tmpSettings.clear();
 }
 
 void CheckConfig::checkLocationSettings()
 {
-	sectionSettings.push_back("init_location");
-	init_locationSettings["landscape_name"]="forest";
-	init_locationSettings["name"]="guereins";
-	init_locationSettings["home_planet"]="Earth";
-	init_locationSettings["altitude"]="230";
-	init_locationSettings["latitude"]="+46d6'29.0\"";
-	init_locationSettings["longitude"]="+4d46'47.0\"";
+	tmpSettings["landscape_name"]="forest";
+	tmpSettings["name"]="guereins";
+	tmpSettings["home_planet"]="Earth";
+	tmpSettings["altitude"]="230";
+	tmpSettings["latitude"]="+46d6'29.0\"";
+	tmpSettings["longitude"]="+4d46'47.0\"";
 
-	for (std::map<std::string,std::string>::iterator it=init_locationSettings.begin(); it!=init_locationSettings.end(); ++it) {
-		if (!user_conf.findEntry("init_location:"+it->first))
-			user_conf.setStr("init_location:"+it->first, it->second);
-	}
+	sectionSettings.push_back("init_location");
+	insertKeyFromTmpSettings("init_location");
+	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION)
 {
 	user_conf.load(fullpathfile);
-
-	if (user_conf.getStr("main:version") == _VERSION) {
-		std::cout << "nothing to do" << std::endl;
-		for (auto i =0; i<user_conf.getNsec(); i++) {
-			std::cout << user_conf.getSecname(i) << std::endl;
+	// if (user_conf.getStr("main:version") == _VERSION) {
+	// 	std::cout << "nothing to do" << std::endl;
+		// for (auto i =0; i<user_conf.getNsec(); i++) {
+		// 	std::cout << user_conf.getSecname(i) << std::endl;
 	
-			std::list<std::string> tmp = user_conf.getKeyFromSection(i);
-			for (auto it=tmp.begin(); it != tmp.end(); ++it) 
-				std::cout << "|->" << *it << std::endl;
-		}
-		return; //(nothing to do, config.ini isn't outdated)
-	}
+		// 	std::list<std::string> tmp = user_conf.getKeyFromSection(i);
+		// 	for (auto it=tmp.begin(); it != tmp.end(); ++it) 
+		// 		std::cout << "|->" << *it << std::endl;
+		// }
+
+		// checkUselessSection();
+		// return; //(nothing to do, config.ini isn't outdated)
+	// }
+
+	tmpSettings.clear();
 
 	checkMainSettings();
 	checkIoSettings();
@@ -490,5 +446,17 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 	std::cout << "i did " << std::endl;
 	user_conf.setStr("main:version", _VERSION);
 	user_conf.save(fullpathfile);
+}
+
+
+
+void CheckConfig::insertKeyFromTmpSettings(std::string nameSection)
+{
+	for (auto it=tmpSettings.begin(); it!=tmpSettings.end(); ++it) {
+		//important to keep a track  name:key
+		sectionKeySettings.push_back(nameSection+":"+it->first);
+		if (!user_conf.findEntry(nameSection+":"+it->first))
+			user_conf.setStr(nameSection+":"+it->first, it->second);
+	}
 }
 
