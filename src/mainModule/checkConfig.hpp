@@ -21,8 +21,7 @@
  *
  */
 
-// Class which parses an init file
-// C++ warper for the iniparser free library from N.Devillard
+
 
 #ifndef _CHECKKEYS_HPP_
 #define _CHECKKEYS_HPP_
@@ -38,6 +37,8 @@ public:
     void checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION);
 
 private:
+	void checkUselessSection();
+	void checkUselessKey();
 	void insertKeyFromTmpSettings(std::string nameSection);
 
 	void checkMainSettings();
@@ -61,7 +62,5 @@ private:
 	std::list<std::string> sectionKeySettings;
 	std::map<std::string,std::string> tmpSettings;
 };
-
-
 
 #endif // _CHECKKEYS_HPP_

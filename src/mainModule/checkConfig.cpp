@@ -23,10 +23,12 @@
  *
  */
 
+#include <algorithm>
 #include "mainModule/checkConfig.hpp"
 
 CheckConfig::CheckConfig()
 {
+	sectionKeySettings.push_back("main:version");
 }
 
 CheckConfig::~CheckConfig()
@@ -410,10 +412,10 @@ void CheckConfig::checkLocationSettings()
 void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION)
 {
 	user_conf.load(fullpathfile);
-	// if (user_conf.getStr("main:version") == _VERSION) {
-	// 	std::cout << "nothing to do" << std::endl;
-		// for (auto i =0; i<user_conf.getNsec(); i++) {
-		// 	std::cout << user_conf.getSecname(i) << std::endl;
+	if (user_conf.getStr("main:version") == _VERSION) {
+		// 	std::cout << "nothing to do" << std::endl;
+		//  for (auto i =0; i<user_conf.getNsec(); i++) {
+		//	 	std::cout << user_conf.getSecname(i) << std::endl;
 	
 		// 	std::list<std::string> tmp = user_conf.getKeyFromSection(i);
 		// 	for (auto it=tmp.begin(); it != tmp.end(); ++it) 
@@ -421,8 +423,8 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 		// }
 
 		// checkUselessSection();
-		// return; //(nothing to do, config.ini isn't outdated)
-	// }
+		return; //(nothing to do, config.ini isn't outdated)
+	}
 
 	tmpSettings.clear();
 
@@ -432,7 +434,6 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 	checkRenderingSettings();
 	checkLocalizationSettings();
 	checkStarSettings();
-	//~ checkJoystickSettings();
 	checkGuiSettings();
 	checkFontSettings();
 	checkTuiSettings();
@@ -443,11 +444,25 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 	checkAstroSettings();
 	checkLocationSettings();
 
+	/*
+	for (auto it=sectionSettings.begin(); it != sectionSettings.end(); ++it) {
+		std::cout << (*it) << std::endl;
+	}
+	for (auto it=sectionKeySettings.begin(); it != sectionKeySettings.end(); ++it) {
+		std::cout << (*it) << std::endl;
+	}*/
+
+	checkUselessSection();
+	checkUselessKey();
+
 	std::cout << "i did " << std::endl;
 	user_conf.setStr("main:version", _VERSION);
 	user_conf.save(fullpathfile);
-}
 
+	// for (auto itKey=sectionKeySettings.begin(); itKey != sectionKeySettings.end(); ++itKey) {
+	// 	std::cout << "clef : " << *itKey << std::endl;
+	// }
+}
 
 
 void CheckConfig::insertKeyFromTmpSettings(std::string nameSection)
@@ -460,3 +475,36 @@ void CheckConfig::insertKeyFromTmpSettings(std::string nameSection)
 	}
 }
 
+
+void CheckConfig::checkUselessSection()
+{
+	for (auto i =0; i<user_conf.getNsec(); i++) {
+		std::string test = user_conf.getSecname(i);
+		auto it = std::find(sectionSettings.begin(), sectionSettings.end(), test);
+		if(it == sectionSettings.end())
+			std::cout << "section [" << test << "] doesn't exist, you can safely discard it" << std::endl;
+	}
+}
+
+
+void CheckConfig::checkUselessKey()
+{
+	for (auto i =0; i<user_conf.getNsec(); i++) {
+		std::string test = user_conf.getSecname(i);
+		// on recherche si la section existe
+		auto itSec = std::find(sectionSettings.begin(), sectionSettings.end(), test);
+		if(itSec != sectionSettings.end()) {
+			// std::cout << "section " << *itSec << std::endl;
+			std::list<std::string> listCandidateKey = user_conf.getKeyFromSection(i);
+			//std::cout << "tmp " << tmp << std::endl;
+			for (auto itKey=listCandidateKey.begin(); itKey != listCandidateKey.end(); ++itKey) {
+				// std::cout << "clef candidate " << *itKey << std::endl;
+				auto it3 = std::find(sectionKeySettings.begin(), sectionKeySettings.end(), *itKey);
+				// Si la clef n'esite pas, on le notifie
+				if(it3 == sectionKeySettings.end()) {
+					std::cout << "key " << *itKey << std::endl;/*" doesn't exist, you can safely discard it" << std::endl;*/
+				}
+			}
+		}
+	}
+}
