@@ -951,7 +951,7 @@ int AppCommandInterface::executeCommandStatus()
 	} else {
 		//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 
-		std::stringstream oss;
+		//std::stringstream oss;
 		//oss << "Could not execute: " << commandline /*<< std::endl*/ << debug_message;
 		cLog::get()->write( "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
@@ -2162,8 +2162,6 @@ int AppCommandInterface::commandAudio()
 
 	//gestion des actions
 	std::string argAction = args["action"];
-	std::string argFileName = args["filename"];
-
 	if (!argAction.empty()) {
 		if (argAction =="drop") {
 			media->audioMusicDrop();
@@ -2178,6 +2176,7 @@ int AppCommandInterface::commandAudio()
 			media->audioMusicResume();
 			return executeCommandStatus();
 		} else if (argAction=="play"){
+			std::string argFileName = args["filename"];
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
 					media->audioMusicLoad(myFile);
