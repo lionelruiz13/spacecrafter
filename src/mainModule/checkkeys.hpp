@@ -28,9 +28,51 @@
 #define _CHECKKEYS_HPP_
 
 #include <string>
+#include <map>
 #include "tools/init_parser.hpp"
 
+class CheckConfig {
+public:
+    CheckConfig();
+    ~CheckConfig();
+    void checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION);
 
-void checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION);
+private:
+	void checkMainSettings();
+	void checkIoSettings();
+	void checkVideoSettings();
+	void checkRenderingSettings();
+	void checkLocalizationSettings();
+	void checkStarSettings();
+	void checkGuiSettings();
+	void checkFontSettings();
+	void checkTuiSettings();
+	void checkLandscapeSettings();
+	void checkColorSettings();
+	void checkViewingSettings();
+	void checkNavigationSettings();
+	void checkAstroSettings();
+	void checkLocationSettings();
+
+    InitParser user_conf;
+    std::list<std::string> sectionSettings;
+	std::map<std::string,std::string> astroSettings;
+    std::map<std::string,std::string> navigationSettings;
+    std::map<std::string,std::string> init_locationSettings;
+    std::map<std::string,std::string> viewingSettings;
+	std::map<std::string,std::string> colorSettings;
+    std::map<std::string,std::string> landscapeSettings;
+	std::map<std::string,std::string> tuiSettings;
+	std::map<std::string,std::string> fontSettings;
+	std::map<std::string,std::string> guiSettings;
+	std::map<std::string,std::string> starsSettings;
+	std::map<std::string,std::string> localizationSettings;
+	std::map<std::string,std::string> renderingSettings;
+	std::map<std::string,std::string> videoSettings;
+	std::map<std::string,std::string> ioSettings;
+	std::map<std::string,std::string> mainSettings;
+};
+
+
 
 #endif // _CHECKKEYS_HPP_

@@ -227,7 +227,9 @@ int main(int argc, char **argv)
 
 
 	//test if config.ini is not to old.
-	checkConfigIni(CDIR+"config.ini", std::string(VERSION));
+	CheckConfig* configUptodate =  new CheckConfig();
+	configUptodate->checkConfigIni(CDIR+"config.ini", std::string(VERSION));
+	delete configUptodate;
 
 	AppSettings::Init(CDIR, DATA_ROOT, LOCALEDIR);
 	InitParser conf;

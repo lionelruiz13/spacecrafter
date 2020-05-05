@@ -23,12 +23,38 @@
  *
  */
 
-#include <map>
 #include "mainModule/checkkeys.hpp"
 
-static void checkMainSettings(InitParser &user_conf)
+CheckConfig::CheckConfig()
 {
-	std::map<std::string,std::string> mainSettings;
+
+
+}
+
+CheckConfig::~CheckConfig()
+{
+	sectionSettings.clear();
+	astroSettings.clear();
+	navigationSettings.clear();
+	init_locationSettings.clear();
+	viewingSettings.clear();
+	colorSettings.clear();
+	landscapeSettings.clear();
+	tuiSettings.clear();
+	fontSettings.clear();
+	guiSettings.clear();
+	starsSettings.clear();
+	localizationSettings.clear();
+	renderingSettings.clear();
+	videoSettings.clear();
+	ioSettings.clear();
+	mainSettings.clear();
+}
+
+void CheckConfig::checkMainSettings()
+{
+	sectionSettings.push_back("main");
+
 	mainSettings["debug"]="false";
 	// mainSettings["debug_opengl"]="false";
 	mainSettings["flag_masterput"]="false";
@@ -42,13 +68,13 @@ static void checkMainSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("main:"+it->first))
 			user_conf.setStr("main:"+it->first, it->second);
 	}
-	mainSettings.clear();
 }
 
 
-static void checkIoSettings(InitParser &user_conf)
+void CheckConfig::checkIoSettings()
 {
-	std::map<std::string,std::string> ioSettings;
+	sectionSettings.push_back("io");
+
 	ioSettings["enable_mkfifo"]="false";
 	ioSettings["enable_tcp"]="true";
 	// ioSettings["enable_mplayer"]="false";
@@ -63,14 +89,12 @@ static void checkIoSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("io:"+it->first))
 			user_conf.setStr("io:"+it->first, it->second);
 	}
-
-	ioSettings.clear();
 }
 
 
-static void checkVideoSettings(InitParser &user_conf)
+void CheckConfig::checkVideoSettings()
 {
-	std::map<std::string,std::string> videoSettings;
+	sectionSettings.push_back("video");
 	videoSettings["autoscreen"]="false";
 	videoSettings["fullscreen"]="false";
 	videoSettings["screen_w"]="1024";
@@ -88,13 +112,12 @@ static void checkVideoSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("video:"+it->first))
 			user_conf.setStr("video:"+it->first, it->second);
 	}
-	videoSettings.clear();
 }
 
 
-static void checkRenderingSettings(InitParser &user_conf)
+void CheckConfig::checkRenderingSettings()
 {
-	std::map<std::string,std::string> renderingSettings;
+	sectionSettings.push_back("rendering");
 	renderingSettings["flag_antialias_lines"]="true";
 	renderingSettings["antialiasing"]="8";
 	renderingSettings["line_width"]="1.5";
@@ -114,14 +137,12 @@ static void checkRenderingSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("rendering:"+it->first))
 			user_conf.setStr("rendering:"+it->first, it->second);
 	}
-
-	renderingSettings.clear();
 }
 
 
-static void checkLocalizationSettings(InitParser &user_conf)
+void CheckConfig::checkLocalizationSettings()
 {
-	std::map<std::string,std::string> localizationSettings;
+	sectionSettings.push_back("localization");
 	localizationSettings["sky_culture"]="western-color";
 	localizationSettings["sky_locale"]="fr";
 	localizationSettings["time_display_format"]="24h";
@@ -133,14 +154,12 @@ static void checkLocalizationSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("localization:"+it->first))
 			user_conf.setStr("localization:"+it->first, it->second);
 	}
-
-	localizationSettings.clear();
 }
 
 
-static void checkStarSettings(InitParser &user_conf)
+void CheckConfig::checkStarSettings()
 {
-	std::map<std::string,std::string> starsSettings;
+	sectionSettings.push_back("stars");
 	starsSettings["star_scale"]="1.0";
 	starsSettings["star_mag_scale"]="1.0";
 	starsSettings["star_twinkle_amount"]="0.4";
@@ -157,29 +176,11 @@ static void checkStarSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("stars:"+it->first))
 			user_conf.setStr("stars:"+it->first, it->second);
 	}
-
-	starsSettings.clear();
 }
 
-
-//~ static void checkJoystickSettings(InitParser &user_conf)
-//~ {
-	//~ std::map<std::string,std::string> joystickSettings;
-	//~ joystickSettings["sensitivity"]="500";
-	//~ joystickSettings["intensity"]="8000";
-
-	//~ for (std::map<std::string,std::string>::iterator it=joystickSettings.begin(); it!=joystickSettings.end(); ++it) {
-		//~ if (!user_conf.findEntry("joystick:"+it->first))
-			//~ user_conf.setStr("joystick:"+it->first, it->second);
-	//~ }
-
-	//~ joystickSettings.clear();
-//~ }
-
-
-static void checkGuiSettings(InitParser &user_conf)
+void CheckConfig::checkGuiSettings()
 {
-	std::map<std::string,std::string> guiSettings;
+	sectionSettings.push_back("gui");
 	guiSettings["flag_show_fps"]="false";
 	guiSettings["flag_show_fov"]="false";
 	guiSettings["flag_show_latlon"]="false";
@@ -195,14 +196,12 @@ static void checkGuiSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("gui:"+it->first))
 			user_conf.setStr("gui:"+it->first, it->second);
 	}
-
-	guiSettings.clear();
 }
 
 
-static void checkFontSettings(InitParser &user_conf)
+void CheckConfig::checkFontSettings()
 {
-	std::map<std::string,std::string> fontSettings;
+	sectionSettings.push_back("font");
 	fontSettings["font_general_name"]="DejaVuSansMono.ttf";
 	fontSettings["font_general_size"]="12";
 	fontSettings["font_menu_name"]="DejaVuSans.ttf";
@@ -220,14 +219,12 @@ static void checkFontSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("font:"+it->first))
 			user_conf.setStr("font:"+it->first, it->second);
 	}
-
-	fontSettings.clear();
 }
 
 
-static void checkTuiSettings(InitParser &user_conf)
+void CheckConfig::checkTuiSettings()
 {
-	std::map<std::string,std::string> tuiSettings;
+	sectionSettings.push_back("tui");
 	tuiSettings["flag_enable_tui_menu"]="true";
 	tuiSettings["flag_show_gravity_ui"]="true";
 	tuiSettings["flag_show_tui_datetime"]="false";
@@ -239,14 +236,12 @@ static void checkTuiSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("tui:"+it->first))
 			user_conf.setStr("tui:"+it->first, it->second);
 	}
-
-	tuiSettings.clear();
 }
 
 
-static void checkLandscapeSettings(InitParser &user_conf)
+void CheckConfig::checkLandscapeSettings()
 {
-	std::map<std::string,std::string> landscapeSettings;
+	sectionSettings.push_back("landscape");
 	landscapeSettings["flag_landscape"]="true";
 	landscapeSettings["flag_fog"]="false";
 	landscapeSettings["flag_atmosphere"]="true";
@@ -255,16 +250,13 @@ static void checkLandscapeSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("landscape:"+it->first))
 			user_conf.setStr("landscape:"+it->first, it->second);
 	}
-
-	landscapeSettings.clear();
 }
 
 
 
-static void checkColorSettings(InitParser &user_conf)
+void CheckConfig::checkColorSettings()
 {
-	std::map<std::string,std::string> colorSettings;
-
+	sectionSettings.push_back("color");
 	colorSettings["azimuthal_color"] = "0,0.4,0.6";
 	colorSettings["equatorial_color"] = "0.5,1,0.5";
 	colorSettings["ecliptic_color"] = "1,0.2,0.2";
@@ -306,8 +298,8 @@ static void checkColorSettings(InitParser &user_conf)
 	colorSettings["object_coordinates_color"] = "0.8,0.8,0";
 	colorSettings["mouse_coordinates_color"] = "0.8,0.8,0";
 	colorSettings["angular_distance_color"] = "0.8,0.8,0";
-	colorSettings["loxodromy_color"] = "0.9,0.4,0.4";	// Set color
-	colorSettings["orthodromy_color"] = "0.4,0.4,0.9";	// Set color
+	colorSettings["loxodromy_color"] = "0.9,0.4,0.4";
+	colorSettings["orthodromy_color"] = "0.4,0.4,0.9";
 	colorSettings["polar_color"] = "0.5,0.3,0";
 	colorSettings["text_usr_color"] = "0.8,0.8,0.8";
 	colorSettings["vernal_points_color"] = "0.8,0.8,0.8";
@@ -319,13 +311,12 @@ static void checkColorSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("color:"+it->first))
 			user_conf.setStr("color:"+it->first, it->second);
 	}
-	colorSettings.clear();
 }
 
 
-static void checkViewingSettings(InitParser &user_conf)
+void CheckConfig::checkViewingSettings()
 {
-	std::map<std::string,std::string> viewingSettings;
+	sectionSettings.push_back("viewing");
 	viewingSettings["nebula_picto_size"] = "6";
 	viewingSettings["atmosphere_fade_duration"] = "2";
 	viewingSettings["flag_constellation_drawing"] = "false";
@@ -377,19 +368,16 @@ static void checkViewingSettings(InitParser &user_conf)
 	viewingSettings["sun_scale"] = "5";
 	viewingSettings["light_pollution_limiting_magnitude"] = "6";
 
-
 	for (std::map<std::string,std::string>::iterator it=viewingSettings.begin(); it!=viewingSettings.end(); ++it) {
 		if (!user_conf.findEntry("viewving:"+it->first))
 			user_conf.setStr("viewing:"+it->first, it->second);
 	}
-
-	viewingSettings.clear();
 }
 
 
-static void checkNavigationSettings(InitParser &user_conf)
+void CheckConfig::checkNavigationSettings()
 {
-	std::map<std::string,std::string> navigationSettings;
+	sectionSettings.push_back("navigation");
 	navigationSettings["preset_sky_time"]="2453065.333344907";
 	navigationSettings["auto_move_duration"]="5";
 	navigationSettings["day_key_mode"]="calendar";
@@ -412,15 +400,12 @@ static void checkNavigationSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("navigation:"+it->first))
 			user_conf.setStr("navigation:"+it->first, it->second);
 	}
-
-	navigationSettings.clear();
-
 }
 
 
-static void checkAstroSettings(InitParser &user_conf)
+void CheckConfig::checkAstroSettings()
 {
-	std::map<std::string,std::string> astroSettings;
+	sectionSettings.push_back("astro");
 	astroSettings["flag_stars"]="true";
 	astroSettings["flag_star_name"]="false";
 	astroSettings["flag_star_lines"]="false";
@@ -450,13 +435,11 @@ static void checkAstroSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("astro:"+it->first))
 			user_conf.setStr("astro:"+it->first, it->second);
 	}
-
-	astroSettings.clear();
 }
 
-static void checkLocationSettings(InitParser &user_conf)
+void CheckConfig::checkLocationSettings()
 {
-	std::map<std::string,std::string> init_locationSettings;
+	sectionSettings.push_back("init_location");
 	init_locationSettings["landscape_name"]="forest";
 	init_locationSettings["name"]="guereins";
 	init_locationSettings["home_planet"]="Earth";
@@ -468,59 +451,41 @@ static void checkLocationSettings(InitParser &user_conf)
 		if (!user_conf.findEntry("init_location:"+it->first))
 			user_conf.setStr("init_location:"+it->first, it->second);
 	}
-
-	init_locationSettings.clear();
 }
 
 
-void checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION)
+void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION)
 {
-	InitParser user_conf;
 	user_conf.load(fullpathfile);
 
 	if (user_conf.getStr("main:version") == _VERSION) {
-		// std::cout << "nothing to do" << std::endl;
-		// for (auto i =0; i<user_conf.getNsec(); i++) {
-		// 	std::cout << user_conf.getSecname(i) << std::endl;
+		std::cout << "nothing to do" << std::endl;
+		for (auto i =0; i<user_conf.getNsec(); i++) {
+			std::cout << user_conf.getSecname(i) << std::endl;
 	
-		// 	std::list<std::string> tmp = user_conf.getKeyFromSection(i);
-		// 	for (auto it=tmp.begin(); it != tmp.end(); ++it) 
-		// 		std::cout << "|->" << *it << std::endl;
-		// }
+			std::list<std::string> tmp = user_conf.getKeyFromSection(i);
+			for (auto it=tmp.begin(); it != tmp.end(); ++it) 
+				std::cout << "|->" << *it << std::endl;
+		}
 		return; //(nothing to do, config.ini isn't outdated)
 	}
 
-	checkMainSettings(user_conf);
-
-	checkIoSettings(user_conf);
-
-	checkVideoSettings(user_conf);
-
-	checkRenderingSettings(user_conf);
-
-	checkLocalizationSettings(user_conf);
-
-	checkStarSettings(user_conf);
-
-	//~ checkJoystickSettings(user_conf);
-
-	checkGuiSettings(user_conf);
-
-	checkFontSettings(user_conf);
-
-	checkTuiSettings(user_conf);
-
-	checkLandscapeSettings(user_conf);
-
-	checkColorSettings(user_conf);
-
-	checkViewingSettings(user_conf);
-
-	checkNavigationSettings(user_conf);
-
-	checkAstroSettings(user_conf);
-
-	checkLocationSettings(user_conf);
+	checkMainSettings();
+	checkIoSettings();
+	checkVideoSettings();
+	checkRenderingSettings();
+	checkLocalizationSettings();
+	checkStarSettings();
+	//~ checkJoystickSettings();
+	checkGuiSettings();
+	checkFontSettings();
+	checkTuiSettings();
+	checkLandscapeSettings();
+	checkColorSettings();
+	checkViewingSettings();
+	checkNavigationSettings();
+	checkAstroSettings();
+	checkLocationSettings();
 
 	std::cout << "i did " << std::endl;
 	user_conf.setStr("main:version", _VERSION);
