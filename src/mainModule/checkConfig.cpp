@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include "mainModule/checkConfig.hpp"
+#include "tools/log.hpp"
 
 CheckConfig::CheckConfig()
 {
@@ -421,7 +422,7 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 		// 	for (auto it=tmp.begin(); it != tmp.end(); ++it) 
 		// 		std::cout << "|->" << *it << std::endl;
 		// }
-
+		cLog::get()->write("config.ini is up to date");
 		// checkUselessSection();
 		return; //(nothing to do, config.ini isn't outdated)
 	}
@@ -482,7 +483,8 @@ void CheckConfig::checkUselessSection()
 		std::string test = user_conf.getSecname(i);
 		auto it = std::find(sectionSettings.begin(), sectionSettings.end(), test);
 		if(it == sectionSettings.end())
-			std::cout << "section [" << test << "] doesn't exist, you can safely discard it" << std::endl;
+			// std::cout << "section [" << test << "] doesn't exist, you can safely discard it" << std::endl;
+			cLog::get()->write("section [" + test + "] doesn't exist, you can safely discard it", LOG_TYPE::L_WARNING);
 	}
 }
 
@@ -502,7 +504,8 @@ void CheckConfig::checkUselessKey()
 				auto it3 = std::find(sectionKeySettings.begin(), sectionKeySettings.end(), *itKey);
 				// Si la clef n'esite pas, on le notifie
 				if(it3 == sectionKeySettings.end()) {
-					std::cout << "key " << *itKey << std::endl;/*" doesn't exist, you can safely discard it" << std::endl;*/
+					//std::cout << "key " << *itKey << std::endl;/*" doesn't exist, you can safely discard it" << std::endl;*/
+					cLog::get()->write("key" + *itKey + " doesn't exist, you can safely discard it", LOG_TYPE::L_WARNING);
 				}
 			}
 		}
