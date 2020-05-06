@@ -235,6 +235,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_EXTERNASC_VIEWER :	return commandExternalViewer(); break;
 		case SC_COMMAND::SC_FLAG :	return commandFlag(); break;
 		case SC_COMMAND::SC_GET :	return commandGet(); break;
+		case SC_COMMAND::SC_HEADING :	return commandHeading(); break;
 		case SC_COMMAND::SC_ILLUMINATE :	return commandIlluminate(); break;
 		case SC_COMMAND::SC_IMAGE :	return commandImage();  break;
 		case SC_COMMAND::SC_LANDSCAPE :	return commandLandscape(); break;
