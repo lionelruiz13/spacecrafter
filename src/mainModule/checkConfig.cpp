@@ -99,9 +99,9 @@ void CheckConfig::checkRenderingSettings()
 	tmpSettings["landscape_stacks"]="20";
 	tmpSettings["min_tes_level"]="1";
 	tmpSettings["max_tes_level"]="1";
-	tmpSettings["planet_altimetry_factor"]="1";
-	tmpSettings["earth_altimetry_factor"]="1";
-	tmpSettings["moon_altimetry_factor"]="1";
+	tmpSettings["planet_altimetry_level"]="1";
+	tmpSettings["earth_altimetry_level"]="1";
+	tmpSettings["moon_altimetry_level"]="1";
 	//~ renderingSettings["milkyway_slices"]="80";
 	//~ renderingSettings["milkyway_stacks"]="20";
 	//~ renderingSettings["sphere_low"]="10";
@@ -173,7 +173,7 @@ void CheckConfig::checkGuiSettings()
 
 void CheckConfig::checkFontSettings()
 {
-	tmpSettings["font_resolution_size"]= 1024;
+	tmpSettings["font_resolution_size"]= "1024";
 	tmpSettings["font_general_name"]="DejaVuSansMono.ttf";
 	tmpSettings["font_general_size"]="12";
 	tmpSettings["font_menu_name"]="DejaVuSans.ttf";
