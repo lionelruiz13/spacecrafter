@@ -240,9 +240,9 @@ void Core::init(const InitParser& conf)
 
 		ssystem->iniTess( conf.getInt("rendering","min_tes_level"),
 							conf.getInt("rendering","max_tes_level"),
-							conf.getInt("rendering","planet_altimetry_factor"),
-							conf.getInt("rendering","moon_altimetry_factor"),
-							conf.getInt("rendering","earth_altimetry_factor"));
+							conf.getInt("rendering","planet_altimetry_level"),
+							conf.getInt("rendering","moon_altimetry_level"),
+							conf.getInt("rendering","earth_altimetry_level"));
 
 		ssystem->modelRingInit(conf.getInt("rendering:rings_low"),
 		                         conf.getInt("rendering:rings_medium"),
