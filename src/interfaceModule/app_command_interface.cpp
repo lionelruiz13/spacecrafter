@@ -3425,26 +3425,6 @@ int AppCommandInterface::commandStruct()
 			swapIfCommand = false;
 			return executeCommandStatus();
 		}
-		if (args["inf"]!="")
-			if (evalDouble(argIf) < evalDouble(args["inf"])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args["sup"]!="")
-			if (evalDouble(argIf) > evalDouble(args["sup"])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args["inf_equal"]!="")
-			if (evalDouble(argIf) <= evalDouble(args["inf_equal"])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args["sup_equal"]!="")
-			if (evalDouble(argIf) >= evalDouble(args["sup_equal"])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
 		if (args["equal"]!="")
 			if (evalDouble(argIf) == evalDouble(args["equal"])) {
 				swapIfCommand = true;
@@ -3455,7 +3435,27 @@ int AppCommandInterface::commandStruct()
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-
+		if (args["inf"]!="")
+			if (evalDouble(argIf) < evalDouble(args["inf"])) {
+				swapIfCommand = true;
+				return executeCommandStatus();
+			}
+		if (args["inf_equal"]!="")
+			if (evalDouble(argIf) <= evalDouble(args["inf_equal"])) {
+				swapIfCommand = true;
+				return executeCommandStatus();
+			}
+		if (args["sup"]!="")
+			if (evalDouble(argIf) > evalDouble(args["sup"])) {
+				swapIfCommand = true;
+				return executeCommandStatus();
+			}
+		if (args["sup_equal"]!="")
+			if (evalDouble(argIf) >= evalDouble(args["sup_equal"])) {
+				swapIfCommand = true;
+				return executeCommandStatus();
+			}
+		//retro-compatibilité
 		if (evalDouble(argIf) == 0)
 			swapIfCommand = true;
 		return executeCommandStatus();
