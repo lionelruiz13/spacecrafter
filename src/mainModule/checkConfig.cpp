@@ -173,6 +173,7 @@ void CheckConfig::checkGuiSettings()
 
 void CheckConfig::checkFontSettings()
 {
+	tmpSettings["font_resolution_size"]= 1024;
 	tmpSettings["font_general_name"]="DejaVuSansMono.ttf";
 	tmpSettings["font_general_size"]="12";
 	tmpSettings["font_menu_name"]="DejaVuSans.ttf";
@@ -185,7 +186,6 @@ void CheckConfig::checkFontSettings()
 	tmpSettings["font_text_name"]="DejaVuSans.ttf";
 	tmpSettings["font_text_size"]="16";
 	tmpSettings["font_menugui_size"]="12.5";
-
 	sectionSettings.push_back("font");
 	insertKeyFromTmpSettings("font");
 	tmpSettings.clear();
