@@ -83,11 +83,6 @@ void CheckConfig::checkVideoSettings()
 	tmpSettings["bbp_mode"]="24";
 	tmpSettings["maximum_fps"]="60";
 	tmpSettings["rec_video_fps"]="30";
-	tmpSettings["min_tes_level"]="1";
-	tmpSettings["max_tes_level"]="1";
-	tmpSettings["planet_altimetry_level"]="1";
-	tmpSettings["earth_altimetry_level"]="1";
-	tmpSettings["moon_altimetry_level"]="1";
 
 	sectionSettings.push_back("video");
 	insertKeyFromTmpSettings("video");
@@ -102,6 +97,11 @@ void CheckConfig::checkRenderingSettings()
 	tmpSettings["line_width"]="1.5";
 	tmpSettings["landscape_slices"]="80";
 	tmpSettings["landscape_stacks"]="20";
+	tmpSettings["min_tes_level"]="1";
+	tmpSettings["max_tes_level"]="1";
+	tmpSettings["planet_altimetry_factor"]="1";
+	tmpSettings["earth_altimetry_factor"]="1";
+	tmpSettings["moon_altimetry_factor"]="1";
 	//~ renderingSettings["milkyway_slices"]="80";
 	//~ renderingSettings["milkyway_stacks"]="20";
 	//~ renderingSettings["sphere_low"]="10";

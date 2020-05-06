@@ -238,11 +238,11 @@ void Core::init(const InitParser& conf)
 							conf.getStr("color","planet_orbits_color"),
 							conf.getStr("color","object_trails_color"));
 
-		ssystem->iniTess( conf.getInt("video","min_tes_level"),
-							conf.getInt("video","min_max_level"),
-							conf.getInt("video","planet_altimetry_factor"),
-							conf.getInt("video","moon_altimetry_factor"),
-							conf.getInt("video","earth_altimetry_factor"));
+		ssystem->iniTess( conf.getInt("rendering","min_tes_level"),
+							conf.getInt("rendering","max_tes_level"),
+							conf.getInt("rendering","planet_altimetry_factor"),
+							conf.getInt("rendering","moon_altimetry_factor"),
+							conf.getInt("rendering","earth_altimetry_factor"));
 
 		ssystem->modelRingInit(conf.getInt("rendering:rings_low"),
 		                         conf.getInt("rendering:rings_medium"),
