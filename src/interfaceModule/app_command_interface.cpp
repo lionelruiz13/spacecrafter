@@ -1944,6 +1944,62 @@ int AppCommandInterface::commandClear()
 	return executeCommandStatus();
 }
 
+
+int AppCommandInterface::commandHeading()
+{
+	std::string argHeading=args["azimuth"];	
+	if (!argHeading.empty() ) {
+		if (argHeading=="default") {
+			coreLink->setDefaultHeading();
+			return executeCommandStatus();
+		}
+	
+		double heading = evalDouble(argHeading);
+		float fdelay = evalDouble(args["duration"]);
+		coreLink->setHeading(heading, (int)(fdelay*1000));
+		return executeCommandStatus();
+	}
+	std::string argDeltaHeading=args["delta_azimuth"];	
+	if (!argDeltaHeading.empty() ) {
+		float fdelay = evalDouble(args["duration"]);		
+		double heading = evalDouble(argDeltaHeading) + coreLink->getHeading();
+		if (heading > 180) heading -= 360;
+		if (heading < -180) heading += 360;
+
+		std::stringstream oss;
+		oss << "heading from : " << coreLink->getHeading() << " to: " << heading;
+		cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+		coreLink->setHeading(heading, (int)(fdelay*1000));
+		return executeCommandStatus();
+	}
+	// if (args["heading"]=="default") {
+	// 	coreLink->setDefaultHeading();
+	// }
+	// else {
+	// 	float fdelay = evalDouble(args["duration"]);
+	// 	double heading = evalDouble(args["heading"]);
+	// 	if (fdelay <= 0) fdelay = 0;
+	// 	if (args["heading"][0] == '+') {
+	// 		heading += coreLink->getHeading();
+	// 		if (heading > 180) heading -= 360;
+	// 		std::stringstream oss;
+	// 		oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
+	// 		cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+	// 	}
+	// 	if (args["heading"][0] == '-') {
+	// 		heading += coreLink->getHeading();
+	// 		if (heading < -180) heading += 360;
+	// 		std::stringstream oss;
+	// 		oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
+	// 		cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+	// 	}
+	// 	coreLink->setHeading(heading, (int)(fdelay*1000));
+	// }
+	debug_message = "command 'heading' : unknown argument";
+	return executeCommandStatus();
+}
+
+
 int AppCommandInterface::commandMeteors()
 {
 	std::string argZhr=args["zhr"];

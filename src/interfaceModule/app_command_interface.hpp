@@ -87,6 +87,7 @@ protected:
 	int commandExternalViewer();
 	int commandFlag();
 	int commandGet();
+	int commandHeading();
 	int commandIlluminate();
 	int commandImage();
 	int commandLandscape();
