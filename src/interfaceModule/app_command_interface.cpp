@@ -1516,6 +1516,15 @@ int AppCommandInterface::commandSet()
 		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"])); break;
 		case SCD_NAMES::APP_MOON_SCALE: coreLink->setMoonScale(evalDouble(args["moon_scale"])); break;
 		case SCD_NAMES::APP_SUN_SCALE: coreLink->setSunScale(evalDouble(args["sun_scale"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"])); break;
+		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
+						if (args["milky_way_intensity"]=="default")
+								coreLink->milkyWayRestoreIntensity();
+							else
+								coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
+							// safety feature to be able to turn back on
+							if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
+						break;
 		case SCD_NAMES::APP_MILKY_WAY_TEXTURE: 
 						if(args["milky_way_texture"]=="default") coreLink->milkyWayRestoreDefault();
 							else {
@@ -1561,15 +1570,6 @@ int AppCommandInterface::commandSet()
 							}
 						break;	
 		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"])); break;
-		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"])); break;
-		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
-						if (args["milky_way_intensity"]=="default")
-								coreLink->milkyWayRestoreIntensity();
-							else
-								coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
-							// safety feature to be able to turn back on
-							if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
-						break;
 		case SCD_NAMES::APP_ZOOM_OFFSET: stcore->setViewOffset(evalDouble(args["zoom_offset"])); break;
 		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(args["startup_time_mode"]); break;
 		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(args["date_display_format"]); break;
