@@ -3171,6 +3171,25 @@ int AppCommandInterface::commandBody()
 }
 
 
+int AppCommandInterface::commandFont()
+{
+	if (!args["filename"].empty()) {
+		FilePath myFile  = FilePath(args["filename"], FilePath::TFP::FONTS);
+			if (myFile) {
+				int size = 10;
+				if (args["size"] != "") size = evalInt(args["size"]);
+				stcore->loadFont(size, myFile.toString());
+				return executeCommandStatus();
+			} else {
+				debug_message= "command 'font' : filename can't be found";
+				cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+				return executeCommandStatus();
+			}
+	}
+	debug_message = _("Command 'font': unknown argument");
+	return executeCommandStatus();
+}
+
 int AppCommandInterface::commandCamera(unsigned long int &wait)
 {
 	//gestion des actions

@@ -85,6 +85,7 @@ protected:
 	int commandDso();
 	//int commandExternalMplayer();
 	int commandExternalViewer();
+	int commandFont();
 	int commandFlag();
 	int commandGet();
 	int commandHeading();
