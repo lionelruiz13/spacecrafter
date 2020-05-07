@@ -31,6 +31,8 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands["dso"] = SC_COMMAND::SC_DSO;
 	//m_commands["external_mplayer"] = SC_COMMAND::SC_EXERNASC_MPLAYER;
 	m_commands["external_viewer"] = SC_COMMAND::SC_EXTERNASC_VIEWER;
+	m_commands["font"] = SC_COMMAND::SC_FONT;
+	m_commands["heading"] = SC_COMMAND::SC_HEADING;
 
 	m_commands["flag"] = SC_COMMAND::SC_FLAG;
 	m_commands["get"] = SC_COMMAND::SC_GET;
