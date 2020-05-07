@@ -1470,30 +1470,13 @@ int AppCommandInterface::commandSet()
 		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"])); break;
 		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:	stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"])); break;
 		case SCD_NAMES::APP_HEADING: 
-					if (args["heading"]=="default") {
-							coreLink->setDefaultHeading();
-						}
-						else {
-							float fdelay = evalDouble(args["duration"]);
-							double heading = evalDouble(args["heading"]);
-							if (fdelay <= 0) fdelay = 0;
-							if (args["heading"][0] == '+') {
-								heading += coreLink->getHeading();
-								if (heading > 180) heading -= 360;
-								std::stringstream oss;
-								oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
-								cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
+						if (args["heading"]=="default")
+								coreLink->setDefaultHeading();
+							else {
+								double heading = evalDouble(args["heading"]);
+								coreLink->setHeading(heading);
 							}
-							if (args["heading"][0] == '-') {
-								heading += coreLink->getHeading();
-								if (heading < -180) heading += 360;
-								std::stringstream oss;
-								oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
-								cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
-							}
-							coreLink->setHeading(heading, (int)(fdelay*1000));
-						}
-					break;
+						break;
 		case SCD_NAMES::APP_HOME_PLANET: if (args["home_planet"]=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(args["home_planet"]); break;
 		case SCD_NAMES::APP_LANDSCAPE_NAME: 
 						if ( args["landscape_name"]=="default")
