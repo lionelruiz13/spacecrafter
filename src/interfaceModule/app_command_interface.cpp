@@ -1499,23 +1499,22 @@ int AppCommandInterface::commandSet()
 							if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
 						break;
 		case SCD_NAMES::APP_MILKY_WAY_TEXTURE: 
-						if(args["milky_way_texture"]=="default") coreLink->milkyWayRestoreDefault();
-							else {
-								if (args["milky_way_intensity"]!="")
-									coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], evalDouble(args["milky_way_intensity"]) );
-								else
-									coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
-							}
+						if(args["milky_way_texture"]=="default")
+							coreLink->milkyWayRestoreDefault();
+						else
+							coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
 						break;
 		case SCD_NAMES::APP_SKY_CULTURE: 
-						if (args["sky_culture"]=="default") stcore->setInitialSkyCulture();
-							else
-								stcore->setSkyCultureDir(args["sky_culture"]);
+						if (args["sky_culture"]=="default")
+							stcore->setInitialSkyCulture();
+						else
+							stcore->setSkyCultureDir(args["sky_culture"]);
 						break;
 		case SCD_NAMES::APP_SKY_LOCALE: 
-						if ( args["sky_locale"]=="default") stcore->setInitialSkyLocale();
-							else
-								stcore->setSkyLanguage(args["sky_locale"]);
+						if ( args["sky_locale"]=="default")
+							stcore->setInitialSkyLocale();
+						else
+							stcore->setSkyLanguage(args["sky_locale"]);
 						break;
 		case SCD_NAMES::APP_UI_LOCALE: stapp->setAppLanguage(args["ui_locale"]); break;
 		case SCD_NAMES::APP_STAR_MAG_SCALE: coreLink->starSetMagScale(evalDouble(args["star_mag_scale"])); break;
