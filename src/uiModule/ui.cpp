@@ -396,7 +396,7 @@ void UI::lowerHeight(double x)
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
 	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
-	this->executeCommand("add r 1");
+	this->executeCommand("add z -1");
 }
 
 void UI::raiseHeight(double x)
@@ -404,7 +404,7 @@ void UI::raiseHeight(double x)
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
 	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
-	this->executeCommand("add r -1");
+	this->executeCommand("add z 1");
 }
 
 void UI::handleJoyAddStick()
@@ -1190,8 +1190,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					if ( scriptInterface->isScriptPlaying() ) {
 						this->executeCommand("script action end");
 						// coreLink->timeResetMultiplier();
-					} else
+					} else {
+						event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
+						EventManager::getInstance()->queue(event);
 						this->executeCommand("timerate rate 0");
+					}	
 					break;
 				case SUPER:
 					event = new CommandEvent("flag galactic_center toggle");
@@ -2101,11 +2104,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					// 	// coreLink->timeResetMultiplier();
 					// } else
 					// 	this->executeCommand("timerate action pause");
-					event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
-					EventManager::getInstance()->queue(event);
-					current_landscape = coreLink->observatoryGetLandscapeName();
-					key_Modifier= NONE;
 					this->pauseScriptOrTimeRate();
+					key_Modifier= NONE;
 					break;
 				case SUPER:
 					key_Modifier= NONE;
@@ -2115,7 +2115,6 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case CTRL :
 					event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = coreLink->observatoryGetLandscapeName();
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2319,6 +2318,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL:
 					this->executeCommand("add r -1");
+					this->executeCommand("add j 1");
 					break;
 				case ALT:
 					coreLink->cameraMoveRelativeXYZ(0.,-1.0,0.0);
@@ -2378,7 +2378,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL:
-					this->executeCommand("add s +1");
+					this->executeCommand("add s 1");
+					this->executeCommand("add z -1");
 					break;
 				case ALT:
 					coreLink->cameraMoveRelativeXYZ(-1.,0.0,0.0);
@@ -2438,6 +2439,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL:
 					this->executeCommand("add s -1");
+					this->executeCommand("add z 1");
 					break;
 				case ALT:
 					coreLink->cameraMoveRelativeXYZ(1.,0.0,0.0);
@@ -2495,6 +2497,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL :
 					this->executeCommand("add r 1");
+					this->executeCommand("add j -1");
 					break;
 				case ALT:
 					coreLink->cameraMoveRelativeXYZ(0.,1.0,0.0);
