@@ -3553,7 +3553,7 @@ int AppCommandInterface::commandRandom()
 	}
 	std::string argMax = args["max"];
 	if (!argMax.empty()) {
-		appEval->commandRandomMax(argMin);
+		appEval->commandRandomMax(argMax);
 		status = true;
 	}
 	if (status == false)
