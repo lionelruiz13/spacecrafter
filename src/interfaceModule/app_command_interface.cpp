@@ -1468,18 +1468,6 @@ int AppCommandInterface::commandSet()
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(args["auto_move_duration"])); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"])); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"])); break;
-		case SCD_NAMES::APP_FONT : 
-						{
-							FilePath myFile  = FilePath(args["font"], FilePath::TFP::FONTS);
-							if (myFile) {
-								int size = 10;
-								if (args["size"] != "") size = evalInt(args["size"]);
-								stcore->loadFont(size, myFile.toString());
-							} else {
-								debug_message= "command_set_font font not found";
-								cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-							}
-						} break;
 		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:	stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"])); break;
 		case SCD_NAMES::APP_HEADING: 
 					if (args["heading"]=="default") {

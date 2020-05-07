@@ -248,7 +248,6 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_appcommand["constellation_art_fade_duration"] = SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION;
 	m_appcommand["constellation_art_intensity"] = SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY;
 	m_appcommand["light_pollution_limiting_magnitude"] = SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE;
-	m_appcommand["font"] = SCD_NAMES::APP_FONT;
 
 	m_appcommand["heading"] = SCD_NAMES::APP_HEADING;
 	m_appcommand["home_planet"] = SCD_NAMES::APP_HOME_PLANET;
