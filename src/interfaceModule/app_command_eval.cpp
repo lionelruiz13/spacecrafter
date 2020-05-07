@@ -41,13 +41,16 @@ int AppCommandEval::evalInt (const std::string &var)
 
 void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 {
-	//std::cout << "Command define : " <<  mArg.c_str() << " => " << mValue.c_str() << std::endl;
+	//std::cout << "C_define : " <<  mArg.c_str() << " => " << mValue.c_str() << std::endl;
 	if (mValue == "random") {
+		//std::cout << "C_define random: min " <<  min_random << " max " << max_random << std::endl;
 		float value = (float)rand()/RAND_MAX* (max_random-min_random)+ min_random;
+		//std::cout << "C_define random: value " <<  value  << std::endl;
 		variables[mArg] = Utility::floatToStr(value);
 	} else {
 		//~ printf("mValue = %s\n", mValue.c_str());
-		//std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
+		// std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
+		//std::cout << "C_define : " <<  mArg.c_str() << " => " << evalDouble(mValue) << std::endl;
 		variables[mArg] = Utility::doubleToString( evalDouble(mValue) );
 	//	this->printVar();
 	}
