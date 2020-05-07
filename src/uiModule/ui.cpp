@@ -389,6 +389,7 @@ void UI::moveLat(double x)
 void UI::moveLon(double x)
 {
 	coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+	if (x>0) this->executeCommand("add z 1"); else this->executeCommand("add z -1");
 }
 
 void UI::lowerHeight(double x)
@@ -396,7 +397,7 @@ void UI::lowerHeight(double x)
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
 	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
-	this->executeCommand("add z -1");
+	this->executeCommand("define a 0");
 }
 
 void UI::raiseHeight(double x)
@@ -404,7 +405,7 @@ void UI::raiseHeight(double x)
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
 	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
-	this->executeCommand("add z 1");
+	this->executeCommand("define a 1");
 }
 
 void UI::handleJoyAddStick()
