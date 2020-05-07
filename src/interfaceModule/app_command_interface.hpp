@@ -149,7 +149,8 @@ private:
 
 	std::string debug_message;  //!< for 'executeCommand' error details
 	int parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments);
-	SCD_NAMES parseCommandSet();
+	int evalCommandSet(const std::string& setName, const std::string& setValue);
+	SCD_NAMES parseCommandSet(const std::string& setName);
 	int executeCommandStatus();
 
 	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);

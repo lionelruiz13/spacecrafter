@@ -949,6 +949,7 @@ int AppCommandInterface::executeCommandStatus()
 		// if recording commands, do that now
 		if (recordable) scriptInterface->recordCommand(commandline);
 		//    cout << commandline << endl;
+		//cLog::get()->write( "have execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return true;
 	} else {
 		//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
@@ -1437,17 +1438,6 @@ int AppCommandInterface::commandPrint()
 }
 
 
-SCD_NAMES AppCommandInterface::parseCommandSet() 
-{
-	for(auto it = m_appcommand.begin(); it != m_appcommand.end(); it++) {
-		// if (!args[it->first].empty())
-		// 	return it->second;
-		if (args.find(it->first) != args.end())
-			return it->second;
-	}
-	return SCD_NAMES::APP_FLAG_NONE;
-}
-
 int AppCommandInterface::commandSet()
 {
 	// cas ou l'on tappe juste set
@@ -1456,106 +1446,109 @@ int AppCommandInterface::commandSet()
 		//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return executeCommandStatus();
 	}
-
+	bool returnValue =true;
 	//debug 
-	//for (const auto&i : args )
-	//	std::cout << i.first << "->" << i.second << std::endl;
+	for (const auto&i : args ) {
+		// std::cout << i.first << "->" << i.second;
+		// std::cout << std::endl;
+		returnValue *= evalCommandSet(i.first , i.second);
+	}
+	return returnValue;
+}
 
-	SCD_NAMES parserSet = parseCommandSet();
 
-	switch(parserSet) { 
-		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : coreLink->atmosphereSetFadeDuration(evalDouble(args["atmosphere_fade_duration"])); break;
-		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(args["auto_move_duration"])); break;
-		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(args["constellation_art_fade_duration"])); break;
-		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(args["constellation_art_intensity"])); break;
-		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:	stcore->setLightPollutionLimitingMagnitude(evalDouble(args["light_pollution_limiting_magnitude"])); break;
+SCD_NAMES AppCommandInterface::parseCommandSet(const std::string& setName) 
+{
+//	std::cout << "size "<< m_appcommand.size() << " m_appcommand" << std::endl;
+	for(auto it = m_appcommand.begin(); it != m_appcommand.end(); it++) {
+		// if (!args[it->first].empty())
+		// 	return it->second;
+		if (it->first == setName) {
+			//std::cout << setName << " found" << std::endl;
+			return it->second;
+		}
+	}
+	//std::cout << setName << " not found" << std::endl;
+	return SCD_NAMES::APP_FLAG_NONE;
+}
+
+
+int AppCommandInterface::evalCommandSet(const std::string& setName, const std::string& setValue)
+{
+	/*
+	 *	the set command format is : set SET_NAME SET_VALUE
+	*/
+	//std::cout << setName << " : " << setValue << std::endl;
+	// parse the SET_NAME
+	SCD_NAMES parserSet = SCD_NAMES::APP_FLAG_NONE;
+	//std::cout << "parserSet-> " << static_cast<std::underlying_type<SCD_NAMES>::type>(parserSet) << std::endl;
+	parserSet = parseCommandSet(setName);
+	// eval SET_NAME
+	//std::cout << "avant switch" << std::endl;
+	//std::cout << "parserSet " << static_cast<std::underlying_type<SCD_NAMES>::type>(parserSet) << std::endl;
+
+	switch(parserSet) {
+		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : coreLink->atmosphereSetFadeDuration(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:	stcore->setLightPollutionLimitingMagnitude(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_HEADING: 
-						if (args["heading"]=="default")
-								coreLink->setDefaultHeading();
-							else {
-								double heading = evalDouble(args["heading"]);
-								coreLink->setHeading(heading);
-							}
-						break;
-		case SCD_NAMES::APP_HOME_PLANET: if (args["home_planet"]=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(args["home_planet"]); break;
+						if (setValue=="default") coreLink->setDefaultHeading(); else coreLink->setHeading(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_HOME_PLANET:
+						if (setValue=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(setValue); break;
 		case SCD_NAMES::APP_LANDSCAPE_NAME: 
-						if ( args["landscape_name"]=="default")
-								stcore->setInitialLandscapeName();
-							else
-								stcore->setLandscape(args["landscape_name"]);
-						break;
-		case SCD_NAMES::APP_LINE_WIDTH:	stapp->setLineWidth(evalDouble(args["line_width"])); break;
-		case SCD_NAMES::APP_MAX_MAG_NEBULA_NAME: coreLink->nebulaSetMaxMagHints(evalDouble(args["max_mag_nebula_name"])); break;
-		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(args["max_mag_star_name"])); break;
-		case SCD_NAMES::APP_MOON_SCALE: coreLink->setMoonScale(evalDouble(args["moon_scale"])); break;
-		case SCD_NAMES::APP_SUN_SCALE: coreLink->setSunScale(evalDouble(args["sun_scale"])); break;
-		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(args["milky_way_fader_duration"])); break;
+						if (setValue=="default") stcore->setInitialLandscapeName(); else stcore->setLandscape(setValue); break;
+		case SCD_NAMES::APP_LINE_WIDTH:	stapp->setLineWidth(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_MAX_MAG_NEBULA_NAME: coreLink->nebulaSetMaxMagHints(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_MOON_SCALE: coreLink->setMoonScale(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_SUN_SCALE: coreLink->setSunScale(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
-						if (args["milky_way_intensity"]=="default")
-								coreLink->milkyWayRestoreIntensity();
-							else
-								coreLink->milkyWaySetIntensity(evalDouble(args["milky_way_intensity"]));
-							// safety feature to be able to turn back on
-							if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
+						if (setValue=="default") coreLink->milkyWayRestoreIntensity(); else coreLink->milkyWaySetIntensity(evalDouble(setValue));
+						if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
 						break;
 		case SCD_NAMES::APP_MILKY_WAY_TEXTURE: 
-						if(args["milky_way_texture"]=="default")
-							coreLink->milkyWayRestoreDefault();
-						else
-							coreLink->milkyWayChange(scriptInterface->getScriptPath() + args["milky_way_texture"], 1.f );
+						if(setValue=="default") coreLink->milkyWayRestoreDefault();	else
+							coreLink->milkyWayChange(scriptInterface->getScriptPath() + setValue, 1.f );
 						break;
-		case SCD_NAMES::APP_SKY_CULTURE: 
-						if (args["sky_culture"]=="default")
-							stcore->setInitialSkyCulture();
-						else
-							stcore->setSkyCultureDir(args["sky_culture"]);
-						break;
-		case SCD_NAMES::APP_SKY_LOCALE: 
-						if ( args["sky_locale"]=="default")
-							stcore->setInitialSkyLocale();
-						else
-							stcore->setSkyLanguage(args["sky_locale"]);
-						break;
-		case SCD_NAMES::APP_UI_LOCALE: stapp->setAppLanguage(args["ui_locale"]); break;
-		case SCD_NAMES::APP_STAR_MAG_SCALE: coreLink->starSetMagScale(evalDouble(args["star_mag_scale"])); break;
-		case SCD_NAMES::APP_STAR_SIZE_LIMIT: coreLink->starSetSizeLimit(evalDouble(args["star_size_limit"])); break;
-		case SCD_NAMES::APP_PLANET_SIZE_LIMIT: stcore->setPlanetsSizeLimit(evalDouble(args["planet_size_limit"])); break;
+		case SCD_NAMES::APP_SKY_CULTURE: if (setValue=="default") stcore->setInitialSkyCulture(); else stcore->setSkyCultureDir(setValue); break;
+		case SCD_NAMES::APP_SKY_LOCALE:  if ( setValue=="default") stcore->setInitialSkyLocale(); else stcore->setSkyLanguage(setValue); break;
+		case SCD_NAMES::APP_UI_LOCALE: stapp->setAppLanguage(setValue); break;
+		case SCD_NAMES::APP_STAR_MAG_SCALE: coreLink->starSetMagScale(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_STAR_SIZE_LIMIT: coreLink->starSetSizeLimit(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_PLANET_SIZE_LIMIT: stcore->setPlanetsSizeLimit(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_STAR_SCALE: 
-						{
-							float scale = evalDouble(args["star_scale"]);
-							coreLink->starSetScale(scale);
-							coreLink->planetsSetScale(scale);
-						} break;
-		case SCD_NAMES::APP_STAR_TWINKLE_AMOUNT: coreLink->starSetTwinkleAmount(evalDouble(args["star_twinkle_amount"])); break;
-		case SCD_NAMES::APP_STAR_FADER_DURATION: coreLink->starSetDuration(evalDouble(args["star_fader_duration"])); break;
-		case SCD_NAMES::APP_STAR_LIMITING_MAG: coreLink->starSetLimitingMag(evalDouble(args["star_limiting_mag"])); break;
-		case SCD_NAMES::APP_TIME_ZONE: spaceDate->setCustomTimezone(args["time_zone"]); break;
+							coreLink->starSetScale(evalDouble(setValue));
+							coreLink->planetsSetScale(evalDouble(setValue));
+						break;
+		case SCD_NAMES::APP_STAR_TWINKLE_AMOUNT: coreLink->starSetTwinkleAmount(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_STAR_FADER_DURATION: coreLink->starSetDuration(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_STAR_LIMITING_MAG: coreLink->starSetLimitingMag(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_TIME_ZONE: spaceDate->setCustomTimezone(setValue); break;
 		case SCD_NAMES::APP_AMBIENT_LIGHT: 
-						if (args["ambient_light"]=="increment") {
-								coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
-							}
-							else if (args["ambient_light"]=="decrement"){
-								coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
-							}
-							else{
-								coreLink->uboSetAmbientLight(evalDouble(args["ambient_light"]));
-							}
+						if (setValue=="increment")
+							coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
+						else if (setValue=="decrement")
+							coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
+						else
+							coreLink->uboSetAmbientLight(evalDouble(setValue));
 						break;	
-		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToInt(args["text_fading_duration"])); break;
-		case SCD_NAMES::APP_ZOOM_OFFSET: stcore->setViewOffset(evalDouble(args["zoom_offset"])); break;
-		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(args["startup_time_mode"]); break;
-		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(args["date_display_format"]); break;
-		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(args["time_display_format"]); break;
-		case SCD_NAMES::APP_MODE: stcore->switchMode(args["mode"]); break;
+		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToInt(setValue)); break;
+		case SCD_NAMES::APP_ZOOM_OFFSET: stcore->setViewOffset(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(setValue); break;
+		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(setValue); break;
+		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(setValue); break;
+		case SCD_NAMES::APP_MODE: stcore->switchMode(setValue); break;
 		case SCD_NAMES::APP_SCREEN_FADER: 
-						{
-							Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
+						{	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(setValue));
 							EventManager::getInstance()->queue(event);
-						}break;
-		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(args["stall_radius_unit"])); break;
-		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(args["tully_color_mode"]); break;
-		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(args["datetime_display_position"])); break;
-		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(args["datetime_display_number"])); break;
+						} break;
+		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(setValue); break;
+		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
+		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(setValue)); break;
 		default:
 			debug_message = "command_'set': unknown argument";
 			//for (const auto&i : args )
@@ -1565,7 +1558,8 @@ int AppCommandInterface::commandSet()
 			return executeCommandStatus();
 		break;
 	}
-
+	//std::cout << setName << " fin analyse" << std::endl;
+//	std::cout << "apres switch" << std::endl;
 	return executeCommandStatus();
 }
 
