@@ -3,10 +3,33 @@
 #include "tools/log.hpp"
 
 AppCommandInit::AppCommandInit()
-{}
+{
+	setObsoleteToken();
+}
 
 AppCommandInit::~AppCommandInit()
 {}
+
+
+void AppCommandInit::setObsoleteToken()
+{
+	obsoletList.push_back("constellation_isolate_selected");
+	obsoletList.push_back("point_star");
+	obsoletList.push_back("landscape_sets_location");
+	obsoletList.push_back("external_mplayer");
+}
+
+bool AppCommandInit::isObsoleteToken(const std::string &source)
+{
+	for(auto it = obsoletList.begin(); it!=obsoletList.end(); it++ ) {
+		if (*it== source) {
+			cLog::get()->write(source + " is no longer used in software",LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands)
 {
@@ -333,6 +356,9 @@ void AppCommandInit::searchNeighbour(const std::string &source, const std::list<
 	int distance = 0;
 	int minDistance = 99999;
 	std::string solution;
+
+	if (isObsoleteToken(source))
+		return;
 
 	for(const auto &i : target) {
 		distance = LevensteinDistance(source,i);

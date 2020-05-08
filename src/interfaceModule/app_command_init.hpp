@@ -30,12 +30,15 @@ public:
 
     //template<typename T> void searchNeighbour(const std::string &source, const std::map<std::string , T> &target);
 private:
+    void setObsoleteToken();
+    bool isObsoleteToken(const std::string &name);
     void searchNeighbour(const std::string &source, const std::list<std::string> &target);
     //for conivence
     std::list<std::string> commandList;
     std::list<std::string> flagList;
     std::list<std::string> colorList;
     std::list<std::string> setList;
+    std::list<std::string> obsoletList;
 };
 
 #endif
