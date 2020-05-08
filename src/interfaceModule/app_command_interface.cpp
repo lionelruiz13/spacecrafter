@@ -1542,7 +1542,13 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(setValue); break;
 		case SCD_NAMES::APP_MODE: stcore->switchMode(setValue); break;
 		case SCD_NAMES::APP_SCREEN_FADER: 
-						{	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(setValue));
+						{
+							Event* event;
+							if (!args["duration"].empty()) {
+							    event = new ScreenFaderEvent(ScreenFaderEvent::CHANGE, evalDouble(setValue), evalDouble(args["duration"]));
+							} else {
+							    event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
+							}
 							EventManager::getInstance()->queue(event);
 						} break;
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;

@@ -381,6 +381,7 @@ void App::update(int delta_time)
 	if (!scriptMgr->isPaused()) media->imageUpdate(delta_time);
 
 	media->playerUpdate();
+	screenFader->update(delta_time);
 	media->faderUpdate(delta_time);
 
 	core->updateMode();

@@ -32,11 +32,16 @@
 
 class ScreenFaderEvent : public Event {
 public:
-    enum ScreenFaderTypeEvent : char {UP, DOWN, FIX};
+    enum ScreenFaderTypeEvent : char {UP, DOWN, FIX, CHANGE};
 
     ScreenFaderEvent(ScreenFaderTypeEvent _strategy, float _value) : Event(E_SCREEN_FADER) {
         strategy = _strategy;
         value = _value;
+    }
+    ScreenFaderEvent(ScreenFaderTypeEvent _strategy, float _value, float _duration) : Event(E_SCREEN_FADER) {
+        strategy = _strategy;
+        value = _value;
+	duration = _duration;
     }
     ~ScreenFaderEvent(){};
 
@@ -48,6 +53,10 @@ public:
         return value;
     }
 
+    float getTime() const {
+        return duration;
+    }
+
     virtual std::string toString() const{
         std::ostringstream os;
         os << Event::toString() << " Strategy : " << strategy << " value " << value << std::endl;
@@ -57,6 +66,7 @@ public:
 private:
     ScreenFaderTypeEvent strategy;
     float value;
+    float duration;
 };
 
 

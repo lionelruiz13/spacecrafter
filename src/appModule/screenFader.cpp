@@ -28,6 +28,10 @@ ScreenFader::ScreenFader()
 {
 	//~ initShader();
 	intensity = 0.0;
+	move_to_mult = 0;
+	start_value = 0;
+	end_value = 0;
+	move_to_mult = 0;
 }
 
 ScreenFader::~ScreenFader()
@@ -75,6 +79,18 @@ void ScreenFader::initShaderParams()
 	glEnableVertexAttribArray(0);
 }
 
+void ScreenFader::update(int delta_time)
+{
+	if (flag_change_intensity) {
+		move_to_mult += move_to_coef*delta_time;
+
+		if ( move_to_mult >= 1) {
+			move_to_mult = 1;
+			flag_change_intensity = 0;
+		}
+		intensity = start_value - move_to_mult*(start_value-end_value);
+	}
+}
 void ScreenFader::draw()
 {
 	if (intensity==0)
