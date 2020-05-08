@@ -1031,8 +1031,13 @@ public:
 	///////////////////////////////////////////////////////////
 
 	//! Change Milkyway texture
-	void milkyWayChange(std::string mdir, float _intensity) {
+	void milkyWayChangeState(const std::string& mdir, float _intensity) {
 		core->milky_way->changeMilkywayState(mdir, _intensity);
+	}
+
+	//! Change Milkyway texture without intensity
+	void milkyWayChangeStateWithoutIntensity(const std::string& mdir) {
+		core->milky_way->changeMilkywayStateWithoutIntensity(mdir);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
