@@ -478,7 +478,7 @@ void App::masterput()
 	}
 }
 
-void App::start_main_loop()
+void App::startMainLoop()
 {
 	flagVisible = true;		// At The Beginning, Our App Is Visible
 	flagAlive = true; 		// au debut, on veut que l'application ne s'arrete pas :)

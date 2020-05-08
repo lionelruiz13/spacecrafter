@@ -86,9 +86,10 @@ public:
 	void draw(int delta_time);
 
 	//! Start the main loop until the end of the execution
-	void startMainLoop() {
-		start_main_loop();
-	}
+	void startMainLoop();
+	//  {
+	// 	start_main_loop();
+	// }
 
 	//! @brief Set the application language
 	//! This applies to GUI, console messages etc..
@@ -144,11 +145,11 @@ public:
 
 private:
 	//! Run the main program loop
-	void start_main_loop();
+	// void start_main_loop();
 	//! run any incoming command from shared memory interface
 	void updateFromSharedData();
 	//! mise à jour de l'accélération du temps
-	void updateDeltaSpeed();
+	//void updateDeltaSpeed();
 	//! Use by masterput, poor but he does his job
 	void masterput();
 
