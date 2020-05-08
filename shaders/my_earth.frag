@@ -59,8 +59,9 @@ void main(void)
 	float NdotL = dot(fs_in.Normal, fs_in.Light);
 	float diffuse = max(0.0, NdotL);
 	vec3 daycolor = (diffuse + specular) * daytime;
-	float nightBrightness = 1.0 * night.x + 1.0 * night.y+ 1.0 *night.z; 
-	vec3 nightcolor = step( 0.0, nightBrightness ) * night;
+//	float nightBrightness = 1.0 * night.x + 1.0 * night.y+ 1.0 *night.z; 
+//	vec3 nightcolor = step( 0.0, nightBrightness ) * night;
+	vec3 nightcolor = night;
 	vec4 cloudColor = vec4(0.0, 0.0, 0.0, 0.0);
 	float cloudDiffuse = 0.0;
 	if(Clouds != 0) {
