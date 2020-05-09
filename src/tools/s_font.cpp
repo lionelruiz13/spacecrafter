@@ -314,7 +314,8 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	if(!surface)  {
 		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
 		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
-		if(text) SDL_FreeSurface(text);
+		//if(text) 
+		SDL_FreeSurface(text);
 		return nothing;
 	}
 
@@ -383,13 +384,13 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	if(!border)  {
 		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
 		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
-		if(text) SDL_FreeSurface(text);
+		//if(text) 
+		SDL_FreeSurface(text);
 		return rendering;
 	}
 
-	SDL_Rect tmp;
-	int shiftx = 0;
-	int shifty = 0;
+	//SDL_Rect tmp;
+	int shiftx, shifty;
 	for(int pass=0; pass < 4 ; pass++) {
 		if(pass<2) shiftx = -1;
 			else shiftx = 1;
@@ -418,11 +419,14 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
     //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
 	rendering.haveBorder =true;
-	if (border) SDL_FreeSurface(border);
+	//if (border)
+	SDL_FreeSurface(border);
 	}
 
-	if(surface) SDL_FreeSurface(surface);
-	if(text) SDL_FreeSurface(text);
+	//if(surface)
+	SDL_FreeSurface(surface);
+	//if(text)
+	SDL_FreeSurface(text);
 	return rendering;
 }
 
@@ -485,13 +489,13 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	//cout << steps << endl;
 	if(steps < 10) steps = 10;
 
-	float angle, p, q;
+
 
 	std::vector<Vec2f> meshPoints;  // screen x,y
 
 	// Pre-calculate points (more efficient)
 	for (int i=0; i<=steps; i++) {
-
+		float angle, p, q;
 		angle = theta - i*psi/steps;
 		p = sin(angle);
 		q = cos(angle);
