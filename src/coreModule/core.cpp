@@ -218,7 +218,7 @@ Core::~Core()
 //! Load core data and initialize with default values
 void Core::init(const InitParser& conf)
 {
-	flagNav= conf.getBoolean("main", "flag_navigation");
+	flagNav= conf.getBoolean("navigation", "flag_navigation");
 	setFlagNav(flagNav);
 	//inimBackup();
 	FlagAtmosphericRefraction = conf.getBoolean("viewing:flag_atmospheric_refraction");

@@ -43,7 +43,6 @@ void CheckConfig::checkMainSettings()
 {
 	tmpSettings["debug"]="false";
 	// mainSettings["debug_opengl"]="false";
-	tmpSettings["flag_navigation"]="false";
 	tmpSettings["flag_optoma"]="false";
 	// mainSettings["script_debug"]="false";
 	tmpSettings["cpu_info"]="false";
@@ -338,6 +337,7 @@ void CheckConfig::checkViewingSettings()
 
 void CheckConfig::checkNavigationSettings()
 {
+	tmpSettings["flag_navigation"]="false";
 	tmpSettings["preset_sky_time"]="2453065.333344907";
 	tmpSettings["auto_move_duration"]="5";
 	tmpSettings["day_key_mode"]="calendar";
@@ -469,6 +469,7 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 void CheckConfig::checkMigration2020()
 {
 	user_conf.setBoolean("io:flag_masterput", user_conf.getBoolean("main:flag_masterput"));
+	user_conf.setBoolean("navigation:flag_navigation", user_conf.getBoolean("main:flag_navigation"));		
 }
 
 
