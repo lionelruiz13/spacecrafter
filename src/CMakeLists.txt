@@ -55,5 +55,5 @@ set (CMAKE_CXX_STANDARD 17)
 
 # création de spacecrafter
 add_executable(spacecrafter ${all_SRCS})
-target_link_libraries(spacecrafter iniparser planetsephems ${OPENGL_LIBRARY} ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_NET_LIBRARY} ${GLEW_LIBRARY} ${FFMPEG_LIBRARIES} )
+target_link_libraries(spacecrafter iniparser planetsephems ${OPENGL_LIBRARY} ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_NET_LIBRARY} ${GLEW_LIBRARIES} ${FFMPEG_LIBRARIES} )
 INSTALL(TARGETS spacecrafter DESTINATION bin)

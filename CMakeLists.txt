@@ -81,6 +81,7 @@ INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR})
 
 # set include path
 include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories($(GLEW_INCLUDE_DIRS))
 
 ###########  Activate translation with gettext ########### 
 SET(ENABLE_NLS 1)
@@ -134,4 +135,6 @@ message("System: " ${CMAKE_SYSTEM_NAME} )
 message("")
 message("C flags: " ${CMAKE_C_FLAGS} )
 message("C++ flags: " ${CMAKE_CXX_FLAGS} )
+message("Glew version : " ${GLEW_VERSION})
+message("Glew library : " ${GLEW_LIBRARY} ${GLEW_LIBRARIES})
 message("---------------------------------------------")
