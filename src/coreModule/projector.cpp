@@ -396,8 +396,9 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 	d = sqrt(dx*dx + dy*dy);
 
 	// If the text is too far away to be visible in the screen return
-	if (d>myMax(vec_viewport[3], vec_viewport[2])*2) return;
-
+	// if (d>myMax(vec_viewport[3], vec_viewport[2])*2) return;
+	if (d>viewport_radius + font->getStrLen(str))
+		return;
 
 	theta = C_PI + atan2f(dx, dy - 1);
 	// psi = atan2f((float)font->getStrLen(str)/str.length(),d + 1) * 180./C_PI;
