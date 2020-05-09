@@ -477,8 +477,8 @@ public:
 	// void imageDraw();
 	void textDraw();
 
-	void onAltitudeChange() {
-		std::cout << "Modification altitude reçue" << std::endl;
+	void onAltitudeChange(double value) {
+		std::cout << "Modification altitude reçue "<< value << std::endl;
 	}
 
 private:

@@ -123,12 +123,7 @@ public:
 	double getLongitude(void) const;
 
 	//! fixe l'altitude de l'observer sur la planète
-	void setAltitude(double a) {
-		altitude=a;
-		flag_move_to = 0;
-		// on definit l'event : on change d'altitude
-		// Nicolas écrit du code magique.
-	}
+	void setAltitude(double a);
 	
 	void setSpacecraft(bool a) {
 		spacecraft = a;

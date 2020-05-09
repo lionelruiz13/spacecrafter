@@ -39,6 +39,8 @@
 #include "tools/translator.hpp"
 #include "tools/log.hpp"
 #include "tools/fmath.hpp"
+#include "eventModule/event_manager.hpp"
+#include "eventModule/AltitudeEvent.hpp"
 
 
 Observer::Observer(const SolarSystem &ssystem)
@@ -54,6 +56,16 @@ Observer::Observer(const SolarSystem &ssystem)
 
 
 Observer::~Observer(){ }
+
+void Observer::setAltitude(double a) {
+	altitude=a;
+	flag_move_to = 0;
+	// on definit l'event : on change d'altitude
+	// Nicolas écrit du code magique.
+	Event* event = new AltitudeEvent(a);
+	EventManager::getInstance()->queue(event);
+}
+
 
 Vec3d Observer::getHeliocentricPosition(double JD)const{
 	
@@ -276,6 +288,11 @@ void Observer::setConf(InitParser & conf, const std::string& section)
 void Observer::moveTo(double lat, double lon, double alt, int duration, /*const std::string& _name,*/ bool calculate_duration)
 {
 	// name = _name;
+
+	if (alt!=altitude) {
+		Event* event = new AltitudeEvent(alt);
+		EventManager::getInstance()->queue(event);
+	}
 
 	// If calculate_duration is true, scale the duration based on the amount of change
 	// Note: Doesn't look at altitude change
