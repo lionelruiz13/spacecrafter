@@ -242,7 +242,7 @@ public:
 		return v;
 	}
 
-	void printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color, /*bool speed_optimize = 1,*/ float xshift = 0, float yshift = 0) const;
+	void printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color, /*bool speed_optimize = 1,*/ float xshift, float yshift) const;
 
 	//! Un-project the entire viewport depending on mapping, maskType,
 	//! viewport_fov_diameter, viewport_center, and viewport dimensions.
