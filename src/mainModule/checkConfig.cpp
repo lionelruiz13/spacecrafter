@@ -379,7 +379,7 @@ void CheckConfig::checkAstroSettings()
 	tmpSettings["milky_way_intensity"]="0.7";
 	tmpSettings["zodiacal_intensity"]="0.7";
 	tmpSettings["milky_way_texture"]="milkyway.png";
-	tmpSettings["milky_way_iris_texture"]="";
+	tmpSettings["milky_way_iris_texture"]="milkyway_iris.png";
 	tmpSettings["zodiacal_light_texture"]="zodiacale.png";
 	tmpSettings["flag_nebula_hints"]="false";
 	tmpSettings["flag_nebula_names"]="false";
