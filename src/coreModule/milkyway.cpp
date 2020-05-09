@@ -158,7 +158,7 @@ void MilkyWay::defineInitialMilkywayState(const std::string& path_file,const std
 
 void MilkyWay::changeMilkywayStateWithoutIntensity(const std::string& full_tex_file)
 {
-	this->changeMilkywayState(full_tex_file,intensityMilky);
+	this->changeMilkywayState(full_tex_file,intensityMilky.final());
 }
 
 
