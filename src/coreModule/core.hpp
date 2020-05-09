@@ -477,6 +477,10 @@ public:
 	// void imageDraw();
 	void textDraw();
 
+	void onAltitudeChange() {
+		std::cout << "Modification altitude reçue" << std::endl;
+	}
+
 private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement

@@ -126,6 +126,8 @@ public:
 	void setAltitude(double a) {
 		altitude=a;
 		flag_move_to = 0;
+		// on definit l'event : on change d'altitude
+		// Nicolas écrit du code magique.
 	}
 	
 	void setSpacecraft(bool a) {
