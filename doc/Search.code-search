@@ -1,0 +1,914 @@
+# Query: new 
+# Flags: CaseSensitive WordMatch RegExp IgnoreExcludeSettings
+# Including: src/
+# Excluding: utils/
+
+src/main.cpp:
+  230: 	CheckConfig* configUptodate =  new CheckConfig();
+  250: 		cpuInfo = new CPUInfo();
+  257: 	SDLFacade* sdl = new SDLFacade();
+  283: 	App* app = new App( sdl );
+
+src/appModule/app.cpp:
+   77: 	media = new Media( /*width, height*/ );
+   78: 	saveScreenInterface = new SaveScreenInterface(width, height);
+   82: 	screenFader =  new ScreenFader();
+   84: 	core = new Core(width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
+   85: 	coreLink = new CoreLink(core);
+   86: 	coreBackup = new CoreBackup(core);
+   90: 	ui = new UI(core, coreLink, this, mSdl, media);
+   91: 	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
+   92: 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
+   93: 	scriptInterface = new ScriptInterface(scriptMgr);
+   94: 	internalFPS = new Fps();
+   95: 	spaceDate = new SpaceDate();
+  106: 	eventHandler = new EventHandler(eventManager);
+  107: 	eventHandler-> add(new EventScriptHandler(scriptMgr), Event::E_SCRIPT);
+  108: 	eventHandler-> add(new EventCommandHandler(commander), Event::E_COMMAND);
+  109: 	eventHandler-> add(new EventFlagHandler(commander), Event::E_FLAG);
+  110: 	eventHandler-> add(new EventScreenFaderHandler(screenFader), Event::E_SCREEN_FADER);
+  111: 	eventHandler-> add(new EventScreenFaderInterludeHandler(screenFader), Event::E_SCREEN_FADER_INTERLUDE);
+  112: 	eventHandler-> add(new EventSaveScreenHandler(saveScreenInterface), Event::E_SAVESCREEN);
+  113: 	eventHandler-> add(new EventFpsHandler(internalFPS), Event::E_FPS);
+  116: 	mkfifo= new Mkfifo();
+  124: 	appDraw = new AppDraw();
+  307: 			tcp = new ServerSocket(port, 16, buffer_in_size, IO_DEBUG_INFO, IO_DEBUG_ALL);
+
+src/appModule/appDraw.cpp:
+   62: 	s_texture* tex_splash = new s_texture(AppSettings::Instance()->getUserDir()+"textures/splash/spacecrafter.png" , TEX_LOAD_TYPE_PNG_ALPHA);
+   64: 	shaderSplash = new shaderProgram();
+  105: 	shaderViewportShape= new shaderProgram();
+  112: 	shaderColorInverse = new shaderProgram();
+
+src/appModule/save_screen_interface.cpp:
+  21: 	saveScreen = new SaveScreen(minWH);
+  33: 	Event* event = new FpsEvent(FPS_ORDER::LOW_FPS);
+  40: 	Event* event = new FpsEvent(FPS_ORDER::HIGH_FPS);
+
+src/appModule/save_screen.cpp:
+  20: 	buffer = new unsigned char*[nb_cores];
+  27: 	tab = new bool[nb_cores];
+  36: 		buffer[i] = new unsigned char[3 * size_screen * size_screen];
+  47: 	threadpool = new std::thread[nb_cores];
+
+src/appModule/screenFader.cpp:
+  41: 	shaderScreen= new shaderProgram();
+
+src/atmosphereModule/atmosphere.cpp:
+   50: 	tab_sky = new Vec3f*[SKY_RESOLUTION+1];
+   52: 		tab_sky[k] = new Vec3f[SKY_RESOLUTION+1];
+  103: 	shaderAtmosphere= new shaderProgram();
+
+src/bodyModule/axis.cpp:
+  112: 	shaderAxis = new shaderProgram();
+
+src/bodyModule/body_artificial.cpp:
+  66: 	obj3D = new Ojm(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius);
+  69: 	orbitPlot = new Orbit2D(this);
+
+src/bodyModule/body_bigbody.cpp:
+  72: 		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+  73: 		tex_specular = new s_texture(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT);
+  78: 		tex_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_ALPHA, true);
+  84: 			tex_norm_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud_normal,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
+  88: 	trail = new Trail(this,1460);
+  89: 	orbitPlot = new Orbit2D(this);
+
+src/bodyModule/body_moon.cpp:
+  72: 		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+  76: 	orbitPlot = new Orbit3D(this);
+
+src/bodyModule/body_smallbody.cpp:
+  68: 		trail = new Trail(this,2920);
+  69: 		orbitPlot = new Orbit2D(this, 4800);
+  72: 		trail = new Trail(this, 60);
+  73: 		orbitPlot = new Orbit2D(this);
+
+src/bodyModule/body_sun.cpp:
+   98: 	tex_big_halo = new s_texture( path + halotexfile, TEX_LOAD_TYPE_PNG_SOLID);
+  103: 	shaderBigHalo = new shaderProgram();
+  156: 	shaderSun = new shaderProgram();
+
+src/bodyModule/body_trace.cpp:
+  79: 	shaderTrace = new shaderProgram();
+
+src/bodyModule/body.cpp:
+  111: 		tex_map = new s_texture(FilePath(_bodyTexture->tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+  115: 		tex_skin = new s_texture(FilePath(_bodyTexture->tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+  119: 		tex_norm = new s_texture(FilePath(_bodyTexture->tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID);
+  123: 		tex_heightmap = new s_texture(FilePath(_bodyTexture->tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+  140: 	hints = new Hints(this);
+  141: 	axis = new Axis(this);
+  142: 	halo = new Halo(this);
+  184: 	tex_skin = new s_texture(FilePath( texName,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+  922: 	double * v = new double[3];
+
+src/bodyModule/body.hpp:
+  352: 		tex_eclipse_map = new s_texture(texMap, TEX_LOAD_TYPE_PNG_SOLID);
+  360: 		defaultTexMap = new s_texture(texMap, TEX_LOAD_TYPE_PNG_SOLID_REPEAT,1);
+
+src/bodyModule/bodyShader.cpp:
+   47: 	shaderNight = new shaderProgram();
+   78: 	shaderMoonNight = new shaderProgram();
+  103: 	myEarth= new shaderProgram();
+  136: 	shaderBump = new shaderProgram();
+  164: 	shaderRinged = new shaderProgram();
+  195: 	shaderNormal = new shaderProgram();
+  223: 	shaderNormalTes = new shaderProgram();
+  256: 	shaderArtificial = new shaderProgram();
+  279: 	shaderMoonBump = new shaderProgram();
+  302: 	myMoon = new shaderProgram();
+  326: 	shaderMoonNormal = new shaderProgram();
+
+src/bodyModule/halo.cpp:
+  151: 	shaderHalo = new shaderProgram();
+  167: 	tex_halo = new s_texture(texMap, TEX_LOAD_TYPE_PNG_SOLID_REPEAT,1);
+
+src/bodyModule/hints.cpp:
+  34: 	shaderHints = new shaderProgram();
+
+src/bodyModule/orbit_creator_cor.cpp:
+   89: 	return new EllipticalOrbit(
+  220: 	return new CometOrbit(
+  235: 	SpecialOrbit *sorb = new SpecialOrbit(params["coord_func"]);
+  285: 	return new BarycenterOrbit(bodyA, bodyB, stod(params["a"]), stod(params["b"]));
+
+src/bodyModule/orbit_plot.cpp:
+   34: 	orbitPoint = new Vec3d[ORBIT_POINTS];
+   51: 	shaderOrbit2d = new shaderProgram();
+   61: 	shaderOrbit3d = new shaderProgram();
+
+src/bodyModule/orbit.cpp:
+  561: 	return new EllipticalOrbit((a * (1 - e))/AU, e, i, Om, om, M, T, t,
+
+src/bodyModule/ring.cpp:
+  43: 	tex = new s_texture(texname,TEX_LOAD_TYPE_PNG_ALPHA,1);
+  45: 	lowUP = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, true);
+  46: 	lowDOWN = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, false);
+  48: 	mediumUP = new Ring2D((float) radius_min, (float) radius_max, init[1], 8, true);
+  49: 	mediumDOWN = new Ring2D((float) radius_min, (float) radius_max, init[1], 8, false);
+  51: 	highUP = new Ring2D((float) radius_min, (float) radius_max, init[2], 16, true);
+  52: 	highDOWN = new Ring2D((float) radius_min, (float) radius_max, init[2], 16, false);
+  58: 	shaderRing = new shaderProgram();
+
+src/bodyModule/solarsystem.cpp:
+   72: 	objLMgr = new ObjLMgr();
+   89: 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
+   90: 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
+   91: 	OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
+   92: 	orbitCreator = new OrbitCreatorBary(elip, this);
+  102: 	planet_name_font = new s_font(font_size, font_name);
+  238: 	cLog::get()->write("Loading new Solar System object... " + englishName, LOG_TYPE::L_INFO);
+  294: 		SpecialOrbit *sorb = new SpecialOrbit("emb_special");
+  303: 		orb = new BinaryOrbit(sorb, 0.0121505677733761);
+  308: 		SpecialOrbit *sorb = new SpecialOrbit("lunar_special");
+  316: 		orb = new MixedOrbit(sorb,
+  325: 		orb = new stillOrbit(Utility::strToDouble(param["orbit_x"]),
+  347: 	bodyColor = new BodyColor(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
+  363: 	BodyTexture* bodyTexture = new BodyTexture();
+  383: 			p_sun = new Sun(parent,
+  414: 			p_artificial = new Artificial(parent,
+  433: 			p_moon = new Moon(parent,
+  466: 			p_big = new BigBody(parent,
+  484: 				Ring *r = new Ring(r_min,r_max,param["tex_ring"],ringsInit);
+  501: 			p_small = new SmallBody(parent,
+  579: 	BodyContainer  * container = new BodyContainer();
+
+
+src/bodyModule/trail.cpp:
+  180: 	shaderTrail = new shaderProgram();
+
+src/coreModule/callbacks.hpp:
+  58: 	callback(FUNCTOR functor) : mFunctor(new typename details::GenerateFunctor<FUNCTOR, RETURN_TYPE, ARG1, ARG2>::RET(functor)) {}
+  65: 		mFunctor = new typename details::GenerateFunctor<MethodFunctor, RETURN_TYPE, ARG1, ARG2>::RET(functor);
+
+src/coreModule/cardinals.cpp:
+  67: 	font = new s_font(font_size, font_name);
+
+src/coreModule/constellation_mgr.cpp:
+   64: 	shaderArt = new shaderProgram();
+   70: 	shaderBoundary = new shaderProgram();
+   75: 	shaderLines = new shaderProgram();
+  190: 	asterFont = new s_font(font_size, ttfFileName);
+  226: 		cons = new Constellation;
+  304: 					cons->art_tex = new s_texture(texfile, TEX_LOAD_TYPE_PNG_SOLID, true);  // use mipmaps
+  308: 					cons->art_tex = new s_texture(/*true,*/ localFile, TEX_LOAD_TYPE_PNG_SOLID, true);  // use mipmaps
+  832: 		points = new std::vector<Vec3f>;
+
+src/coreModule/constellation.cpp:
+  79: 	asterism = new ObjectBaseP[nb_segments*2];
+
+src/coreModule/core_executor.cpp:
+   81: 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
+  174: 	Event* event = new ScreenFaderInterludeEvent(
+  191: 		Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
+  230: 		Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
+  237: 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
+  245: 	Event* event = new ScreenFaderInterludeEvent(
+
+src/coreModule/core.cpp:
+    59: 	coreFont = new CoreFont(this, std::min(width,height));
+    60: 	projection = new Projector( width,height, 60 );
+    70: 	ubo_cam = new UBOCam("cam_block");
+    71: 	tone_converter = new ToneReproductor();
+    72: 	atmosphere = new Atmosphere();
+    73: 	ssystem = new SolarSystem();
+    74: 	timeMgr = new TimeMgr();
+    75: 	observatory = new Observer(*ssystem);
+    76: 	navigation = new Navigator();
+    77: 	nebulas = new NebulaMgr();
+    78: 	illuminates= new IlluminateMgr();
+    79: 	milky_way = new MilkyWay();
+    80: 	starNav = new StarNavigator();
+    81: 	starLines = new StarLines();
+    82: 	ojmMgr = new OjmMgr();
+    83: 	anchorManager = new AnchorManager(observatory,navigation, ssystem, timeMgr, ssystem->getOrbitCreator());
+    84: 	bodyDecor = new BodyDecor(milky_way, atmosphere);
+    86: 	skyGridMgr = new SkyGridMgr();
+    92: 	skyLineMgr = new SkyLineMgr();
+   116: 	skyDisplayMgr = new SkyDisplayMgr();
+   127: 	cardinals_points = new Cardinals();
+   128: 	meteors = new MeteorMgr(10, 60);
+   129: 	landscape = new Landscape();
+   130: 	inactiveLandscape = new Landscape();
+   131: 	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
+   132: 	hip_stars = new HipStarMgr(width,height);
+   133: 	asterisms = new ConstellationMgr(hip_stars);
+   134: 	text_usr = new TextMgr();
+   135: 	mCity = new mCity_Mgr();
+   136: 	oort =  new Oort();
+   137: 	dso3d = new Dso3d();
+   138: 	tully = new Tully();
+   139: 	bodytrace= new BodyTrace();
+   142: 	executorInSolarSystem = new CoreExecutorInSolarSystem(this, observatory);
+   143: 	executorInGalaxy = new CoreExecutorInGalaxy(this,observatory);
+   144: 	executorInUniverse = new CoreExecutorInUniverse(this,observatory);
+   379: 	geodesic_grid = new GeodesicGrid(grid_level);
+
+src/coreModule/dso3d.cpp:
+   52: 	shaderDso3d = new shaderProgram();
+  151: 	texNebulae =  new s_texture(/*1,*/tex_file,true);
+
+src/coreModule/grid.cpp:
+  537: 	Points = new Vec3f[NbPoints];
+  542: 	result = new int[NbPoints];
+
+src/coreModule/illuminate_mgr.cpp:
+  41: 	illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
+  44: 		Illuminate::illuminateTex = new s_texture("star_illuminate.png");
+  77: 	e = new Illuminate;
+
+src/coreModule/illuminate.cpp:
+  51: 	shaderIllum = new shaderProgram();
+  90: 		illuminateSpecialTex = new s_texture(/*true,*/ filename.c_str() ,0);
+
+src/coreModule/landscape.cpp:
+   52: 	shaderFog = new shaderProgram();
+  103: 		ldscp = new LandscapeSpherical();
+  105: 		ldscp = new LandscapeFisheye();
+  109: 		ldscp = new Landscape();
+  134: 		LandscapeFisheye* ldscp = new LandscapeFisheye();
+  139: 		LandscapeSpherical* ldscp = new LandscapeSpherical();
+  144: 		Landscape* ldscp = new Landscape();
+  305: 	shaderLandscape= new shaderProgram();
+  365: 	map_tex = new s_texture(/*_fullpath,*/_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+  366: 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
+  369: 		map_tex_night = new s_texture(/*_fullpath,*/_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+  383: 	GLfloat *datatex = new float[nbVertex*2];
+  384: 	GLfloat *datapos = new float[nbVertex*3];
+  557: 	shaderLandscape= new shaderProgram();
+  618: 	map_tex = new s_texture(/*_fullpath,*/_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+  620: 		map_tex_night = new s_texture(/*_fullpath,*/_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+  623: 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
+  637: 	GLfloat *datatex = new float[nbVertex*2];
+  638: 	GLfloat *datapos = new float[nbVertex*3];
+
+src/coreModule/mCity_mgr.cpp:
+  47: 	mCity *city = new mCity(_name, _state, _country, _longitude, _latitude, _zone, _showatzoom, _altitude);
+
+src/coreModule/meteor_mgr.cpp:
+   97: 	  Meteor *m = new Meteor(projection, navigation, max_velocity);
+  118: 			Meteor *m = new Meteor(proj, nav, eye, max_velocity);
+  128: 	shaderMeteor = new shaderProgram();
+
+src/coreModule/milkyway.cpp:
+   46: 	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"MilkyWay.ojm");
+   62: 	shaderMilkyway= new shaderProgram();
+  111: 		zodiacal.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
+  127: 		defaultMilky.tex = new s_texture(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
+  134: 		currentMilky.tex = new s_texture(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
+  145: 			irisMilky.tex = new s_texture(path_file + iris_tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
+  171: 	nextMilky.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);	
+  182: 	nextMilky.tex = new s_texture(defaultMilky.name, TEX_LOAD_TYPE_PNG_BLEND1, true);	
+
+src/coreModule/nebula_mgr.cpp:
+   43: 	nebZones = new std::vector<Nebula*>[nebGrid.getNbPoints()];
+   73: 	Nebula::shaderNebulaTex = new shaderProgram();
+  113: 	shaderNebulaHint = new shaderProgram();
+  135: 		Nebula::tex_NEBULA = new s_texture("tex_nebulaes.png");
+  155: 	Nebula::nebulaFont = new s_font(font_size, font_name); // load Font
+  463: 	e = new Nebula(_englishName, _DSOType, _constellation, _ra, _de, _mag, _size, _classe, _distance, tex_name, path,
+
+src/coreModule/nebula.cpp:
+  106: 	neb_tex = new s_texture(tex_name, TEX_LOAD_TYPE_PNG_ALPHA, true);  // use mipmaps
+
+src/coreModule/oort.cpp:
+  59: 	shaderOort = new shaderProgram();
+
+src/coreModule/skydisplay_mgr.cpp:
+   37: 	shaderSkyDisplay = new shaderProgram();
+   86: 	skyDisplayFont = new s_font(font_size, font_name);
+  200: 			tmp= new SkyPerson(SkyDisplay::AL);
+  207: 			tmp= new SkyPerson(SkyDisplay::EQ);
+  214: 			tmp= new SkyNautic(SkyDisplay::AL);
+  220: 			tmp= new SkyNautic(SkyDisplay::EQ);
+  226: 			tmp= new SkyCoords();
+  232: 			tmp= new SkyMouse();
+  238: 			tmp= new SkyAngDist();
+  244: 			tmp= new SkyLoxodromy();
+  250: 			tmp= new SkyOrthodromy();
+
+src/coreModule/skygrid_mgr.cpp:
+  179: 			tmp=new GridEquatorial();
+  186: 			tmp=new GridAltAzimutal();
+  193: 			tmp=new GridEcliptic();
+  200: 			tmp=new GridGalactic();
+
+src/coreModule/skygrid.cpp:
+   44: 	alt_points = new Vec3f*[nb_meridian];
+   46: 		alt_points[nm] = new Vec3f[nb_alt_segment+1];
+   54: 	azi_points = new Vec3f*[nb_parallel];
+   56: 		azi_points[np] = new Vec3f[nb_azi_segment+1];
+   88: 	shaderSkyGrid = new shaderProgram();
+  120: 	font = new s_font(font_size, font_name);
+
+src/coreModule/skyline_mgr.cpp:
+  276: 			tmp=new SkyLine_Pole(SkyLine_Pole::POLE,66.5,72);
+  283: 			tmp=new SkyLine_Pole(SkyLine_Pole::POLE,89,72);
+  290: 			tmp=new SkyLine_Pole(SkyLine_Pole::ECLIPTIC_POLE,89,72);
+  297: 			tmp=new SkyLine_Pole(SkyLine_Pole::GALACTIC_POLE,89,72);
+  304: 			tmp=new SkyLine_Analemme(SkyLine_Analemme::ANALEMMA,1,72);
+  311: 			tmp=new SkyLine_Analemme(SkyLine_Analemme::ANALEMMALINE,1,72);
+  318: 			tmp=new SkyLine_CircumPolar(1.0,144);
+  325: 			tmp=new SkyLine_Galactic_Center(1,72);
+  332: 			tmp=new SkyLine_Vernal(1,72);
+  339: 			tmp=new SkyLine_Greenwich(1,72);
+  346: 			tmp=new SkyLine_Aries(1,72);
+  353: 			tmp=new SkyLine_Equator(SkyLine_Equator::EQUATOR,1,192);
+  360: 			tmp=new SkyLine_Equator(SkyLine_Equator::GALACTIC_EQUATOR,1,72);
+  367: 			tmp=new SkyLine_Meridian(1, 360);
+  374: 			tmp=new SkyLine_Tropic(1.0,96);
+  381: 			tmp=new SkyLine_Precession(1.0,72);
+  388: 			tmp=new SkyLine_Vertical(1,180); //always multiples of 18
+  395: 			tmp=new SkyLine_Zenith(1.0,72);
+  402: 			tmp=new SkyLine_Zodiac(1.0,72);
+  409: 			tmp=new SkyLine_Ecliptic(1.0,72);
+
+src/coreModule/skyline.cpp:
+    61: 	font = new s_font(font_size, font_name);
+    89: 	shaderSkylineDraw = new shaderProgram();
+    95: 	shaderTropicDrawTick = new shaderProgram();
+   102: 	shaderSkylineMVPDraw = new shaderProgram();
+   427: 	punts  = new Vec3f[3*nb_segment+3];
+   428: 	points = new Vec3f[3*nb_segment+3];
+  1008: 	points = new Vec3f[3*nb_segment+3];
+  1243: 	points = new Vec3f[3*nb_segment+3];
+  1466: 	points = new Vec3f[3*nb_segment+3];
+  2051: 	circlep = new Vec3f[nb_segment+1];
+
+src/coreModule/starLines.cpp:
+  33: 	shaderStarLines = new shaderProgram();
+
+src/coreModule/starManager.cpp:
+  161: 		tmp = new Cube(cub_centerX, cub_centerY, cub_centerZ); //Création d'un cube
+  258: 			HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
+  272: 				Cube *cube = new Cube(cubeX,cubeY,cubeZ);
+  287: 					starInfo *si = new starInfo();
+  365: 		HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
+  388: 			Cube *cube = new Cube(cubeX,cubeY,cubeZ);
+  420: 				starInfo *si = new starInfo();
+  597: 		tmp = new HyperCube(hc_centerX, hc_centerY, hc_centerZ);
+  609: //    Hipparcos, the new Reduction of the Raw data van Leeuwen F.
+  622: 	starInfo *sun = new starInfo;
+  629: 	HyperCube *hyper_Initial = new HyperCube(0,0,0);
+  630: 	Cube *cube_Initial = new Cube(0,0,0);
+  707: 	si = new starInfo;
+
+src/coreModule/starNavigator.cpp:
+   57: 	starMgr = new StarManager();
+   60: 	shaderStarNav = new shaderProgram();
+   63: 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
+   66: 	pool= new ThreadPool(std::thread::hardware_concurrency());
+  316: 	ToneReproductor *eye = new ToneReproductor();
+
+src/coreModule/tully.cpp:
+   70: 	shaderPoints = new shaderProgram();
+  105: 	shaderSquare = new shaderProgram();
+  218: 	texGalaxy =  new s_texture(/*1,*/tex_file,true);
+
+src/eventModule/event_manager.hpp:
+  47:         return instance == nullptr ? new EventManager() : instance;
+  53: 		instance = new EventManager();
+
+src/interfaceModule/app_command_interface.cpp:
+    67: 	appEval = new AppCommandEval();
+    68: 	appInit = new AppCommandInit();
+  1545: 						{	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(setValue));
+
+src/interfaceModule/script_mgr.cpp:
+   55: 	script= new Script();
+  101: 			token = new Token(line, getScriptPath());
+
+src/interfaceModule/script.cpp:
+   99: 	input_file = new std::ifstream(script_file.c_str());
+  114: 			token=new Token(line, script_path);
+
+src/mainModule/signals.cpp:
+  50: 		return new Win32Signals(); 	// Limited signal support, not posix compliant
+  52: 		return new PosixSignals();
+
+src/mediaModule/image_mgr.cpp:
+  56: 	// if name already exists, replace with new image
+  59: 	s_texture* imgVideo = new s_texture(name, imgTex);
+
+src/mediaModule/image.cpp:
+   52: 	this->image_tex = new s_texture(n->image_tex);
+  107: 	image_tex = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
+  186: 	shaderImageViewport = new shaderProgram();
+  230: 	shaderUnified = new shaderProgram();
+
+src/mediaModule/media.cpp:
+   32: 	audio = new Audio();
+   33: 	imageMgr = new ImageMgr();
+   34: 	player = new VideoPlayer();
+  207: 	vr360 = new VR360();
+  220: 	viewPort = new ViewPort();
+
+src/mediaModule/text_mgr.cpp:
+   74: 	token = new Text(name, text, altitude, azimuth, size, color, timeout);
+  164: 		textFont[i] = new s_font(font_size+2*(i-3), font_name);
+
+src/mediaModule/viewport.cpp:
+  36: 	shaderViewPort= new shaderProgram();
+
+src/mediaModule/vr360.cpp:
+  32: 	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Sphere.ojm");
+  33: 	cube = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Cube.ojm");
+  69: 	shaderVR360= new shaderProgram();
+  88: 		event = new ScriptEvent( AppSettings::Instance()->getScriptDir()+"internal/initialVR360.sts");
+  93: 		event = new ScriptEvent( AppSettings::Instance()->getScriptDir()+"internal/clearVR360.sts");
+
+src/navModule/anchor_creator_cor.cpp:
+   48: 	return new AnchorPoint(
+   73: 	return new AnchorPointObservatory(
+  100: 		return new AnchorPointBody(body);
+  147: 		return new AnchorPointOrbit(orbit, timeMgr, nullptr,
+  156: 			return new AnchorPointOrbit(orbit, timeMgr, body);
+
+src/navModule/anchor_creator_cor.hpp:
+  22:  * If the chain link can handle the creation of the anchor it returns a new anchor
+
+src/navModule/anchor_manager.cpp:
+  158: 	AnchorCreator * observatory = new AnchorObservatoryCreator(nullptr);	
+  159: 	AnchorCreator * orbit = new AnchorPointOrbitCreator(observatory,_ssystem,mgr, orbitCreator);
+  160: 	AnchorCreator * body = new AnchorPointBodyCreator(orbit, _ssystem);
+  161: 	anchorCreator = new AnchorPointCreator(body);
+  263: 	return addAnchor(name, new AnchorPointBody(b));
+  479: 		AnchorPoint * target = new AnchorPoint();
+
+src/navModule/anchor_point_orbit.cpp:
+  42: 	double * v = new double[3];
+
+src/ojmModule/objl_mgr.cpp:
+  83: 		tmp = new ObjL();
+
+src/ojmModule/objl.cpp:
+  45: 		this->low = new OjmL(nameL);
+  46: 		this->medium = new OjmL(nameM);
+  47: 		this->high = new OjmL(nameH);
+
+src/ojmModule/ojm_mgr.cpp:
+   66: 	tmp = new OjmContainer;
+   70: 	tmp->Obj3D = new Ojm(fileName, pathFile, multiplier);
+  189: 	shaderOJM= new shaderProgram();
+
+src/ojmModule/ojm.cpp:
+  285: 									shapes[shapeIter].map_Ka = new s_texture(pathFile+map_ka_filename, true);
+  294: 									shapes[shapeIter].map_Kd = new s_texture(pathFile+map_kd_filename, true);
+  303: 									shapes[shapeIter].map_Ks = new s_texture(pathFile+map_ks_filename, true);
+
+src/starModule/geodesic_grid.cpp:
+   91: 		triangles = new Triangle*[max_level+1];
+   94: 			triangles[i] = new Triangle[nr_of_triangles];
+  107: 	cacheSearchResult = new GeodesicSearchResult(*this);
+  296: 	int *halfs_used = new int[convex.size()];
+  305: 	for(int ci=0; ci < 12; ci++) corner_inside[ci]= new bool[convex.size()];
+  340: 	int *halfs_used = new int[half_spaces_used];
+  371: 			bool *edge0_inside = new bool[convex.size()];
+  372: 			bool *edge1_inside = new bool[convex.size()];
+  373: 			bool *edge2_inside = new bool[convex.size()];
+  443: 	 zones(new int*[grid.getMaxLevel()+1]),
+  444: 	 inside(new int*[grid.getMaxLevel()+1]),
+  445: 	 border(new int*[grid.getMaxLevel()+1])
+  448: 		zones[i] = new int[GeodesicGrid::nrOfZones(i)];
+
+src/starModule/hip_star_mgr.cpp:
+   173: 	hip_index(new BigStarCatalog::HipIndexStruct[NR_OF_HIP+1]),
+   174: 	mag_converter(new MagConverter(*this)),
+   188: 	shaderStars= new shaderProgram();
+   192: 	shaderFBO= new shaderProgram();
+   340: 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
+  1052: 	starFont = new s_font(font_size, font_name);
+
+src/starModule/hip_star_wrapper.cpp:
+  247: 	return ObjectBaseP(new StarWrapper1(a,z,this));
+  252: 	return ObjectBaseP(new StarWrapper2(a,z,this));
+  257: 	return ObjectBaseP(new StarWrapper3(a,z,this));
+
+src/starModule/string_array.cpp:
+  47: 		array = new std::string[size];
+
+src/starModule/zone_array.cpp:
+  167: 				rval = new ZoneArray1(f,byte_swap,use_mmap,hip_star_mgr,level, mag_min,mag_range,mag_steps);
+  180: 				rval = new SpecialZoneArray<Star2>(f,byte_swap,use_mmap,hip_star_mgr, level, mag_min,mag_range,mag_steps);
+  193: 				rval = new SpecialZoneArray<Star3>(f,byte_swap,use_mmap,hip_star_mgr, level, mag_min,mag_range,mag_steps);
+  376: 		zones = new SpecialZoneData<Star>[nr_of_zones];
+  382: 			unsigned int *zone_size = new unsigned int[nr_of_zones];
+  474: 				stars = new Star[nr_of_stars];
+
+src/tools/app_settings.cpp:
+  60: 	m_instance = new AppSettings( configDir, dataRoot, lDir );
+  66: 		return new AppSettings( "", "", "" );
+
+src/tools/io.cpp:
+  193: 	clientSocketTab = new TCPsocket[maxClients]; //Allocation du tableau de sockets clients
+  199: 	clientBroadcastTab = new bool[maxClients];
+  211: 	buffer = new char[bufferSize];
+
+src/tools/log.hpp:
+  70:           singleton = new cLog();
+
+src/tools/object_base.cpp:
+   67: 	shaderPointer = new shaderProgram();
+   85: 	shaderStarPointer = new shaderProgram();
+  224: 	pointer_star = new s_texture("pointer_star.png");
+  225: 	pointer_planet = new s_texture("pointer_planet.png");
+  226: 	pointer_nebula = new s_texture("pointer_nebula.png");
+
+src/tools/s_font.cpp:
+   70: 	shaderHorizontal = new shaderProgram();
+   75: 	shaderPrint = new shaderProgram();
+
+
+src/tools/s_texture.cpp:
+  114: 	texRecap * tmp = new texRecap;
+  258: 			texRecap * tmp = new texRecap;
+
+src/tools/shader.cpp:
+  208: 		char * name = new char[nameBufSize];
+  237: 		char * name = new char[nameBufSize];
+  264: 		char * blockName = new char[blockInfo[1]+1];
+  273: 		GLint * unifIndexes = new GLint[numUnis];
+  282: 			char * name = new char[nameBufSize];
+  409: 		writeToLog("Error: couldn't create a new shader program handle");		
+
+src/tools/special_array.hpp:
+  35: 		array = new T[size];    //Constructeur
+
+src/uiModule/joypad_controller.cpp:
+  53: 	axisValues = new double[nbrAxis];
+  54: 	axisActions = new joy_axis_action[nbrAxis];
+  55: 	axisSensitivity = new double[nbrAxis];
+  56: 	axisDeadZone = new double[nbrAxis];
+  57: 	axisIsStick = new bool[nbrAxis];
+  68: 	buttonActions = new joy_button_action[nbrButtons];
+  77: 	hatActions = new joy_button_action[nbrHats*4];
+
+src/uiModule/ui_tui.cpp:
+  668: 	y = new IntegerItem(SpaceDate::getMinSimulationJD(),
+  670: 	m = new IntegerItem(0, 13, 1);
+  671: 	d = new IntegerItem(0, 32, 1);
+  672: 	h = new IntegerItem(-1, 24, 0);
+  673: 	mn = new IntegerItem(-1, 60, 0);
+  674: 	s = new IntegerItem(-1, 60, 0);
+  985: 	a = new DecimalItem(0, 1, 0, "", 0.05);
+  986: 	b = new DecimalItem(0, 1, 0, "", 0.05);
+  987: 	c = new DecimalItem(0, 1, 0, "", 0.05);
+
+src/uiModule/ui_tuiconf.cpp:
+  138: 	tuiFont = new s_font(FontSizeMenuTui, FontNameMenu);
+  144: 	tui_root = new s_tui::Branch();
+  147: 	tui_menu_location = new s_tui::MenuBranch(std::string("1. ") );
+  148: 	tui_menu_time = new s_tui::MenuBranch(std::string("2. ") );
+  149: 	tui_menu_general = new s_tui::MenuBranch(std::string("3. ") );
+  150: 	tui_menu_stars = new s_tui::MenuBranch(std::string("4. ") );
+  151: 	tui_menu_colors = new s_tui::MenuBranch(std::string("5. ") );
+  152: 	tui_menu_effects = new s_tui::MenuBranch(std::string("6. ") );
+  153: 	tui_menu_scripts = new s_tui::MenuBranch(std::string("7. ") );
+  154: 	tui_menu_administration = new s_tui::MenuBranch(std::string("8. ") );
+  166: 	tui_location_latitude = new s_tui::DecimalItem(-90., 90., 0.,std::string("1.1 ") );
+  168: 	tui_location_longitude = new s_tui::DecimalItem(-720., 720., 0.,std::string("1.2 "), 1, true);
+  170: 	tui_location_altitude = new s_tui::IntegerItemLogstep(-500, 100000000, 0,std::string("1.3 ") );
+  175: 	tui_location_planet = new s_tui::MultiSet2Item<std::string>(std::string("1.4 ") );
+  185: 	tui_location_heading = new s_tui::DecimalItem(-180, 180, 0,std::string("7.8 "), 1, true);
+  191: 	tui_time_skytime = new s_tui::TimeItem(std::string("2.1 ") );
+  193: 	tui_time_settmz = new s_tui::TimeZoneitem(AppSettings::Instance()->getDataDir() + "zone.tab",std::string("2.2 ") );
+  196: 	tui_time_day_key = new s_tui::MultiSet2Item<std::string>(std::string("2.2 ") );
+  199: 	tui_time_presetskytime = new s_tui::TimeItem(std::string("2.3 ") );
+  201: 	tui_time_startuptime = new s_tui::MultiSet2Item<std::string>(std::string("2.4 ") );
+  203: 	tui_time_displayformat = new s_tui::MultiSetItem<std::string>(std::string("2.5 ") );
+  208: 	tui_time_dateformat = new s_tui::MultiSetItem<std::string>(std::string("2.6 ") );
+  224: 	tui_general_landscape = new s_tui::MultiSetItem<std::string>(std::string("3.1 ") );
+  232: 	tui_general_sky_culture = new s_tui::MultiSet2Item<std::string>(std::string("3.1 ") );
+  236: 	tui_general_sky_locale = new s_tui::MultiSetItem<std::string>(std::string("3.2 ") );
+  244: 	tui_stars_show = new s_tui::BooleanItem(false,std::string("4.1 ") );
+  246: 	tui_star_magscale = new s_tui::DecimalItem(0,30, 1,std::string("4.2 "), 0.1 );
+  248: 	tui_star_labelmaxmag = new s_tui::DecimalItem(-1.5, 10., 2,std::string("4.3 ") );
+  250: 	tui_stars_twinkle = new s_tui::DecimalItem(0., 1., 0.3,std::string("4.4 "), 0.1);
+  252: 	tui_star_limitingmag = new s_tui::DecimalItem(0., 7., 6.5,std::string("4.5 "), 0.1);
+  262: 	tui_colors_const_line_color = new s_tui::VectorItem(std::string("5.1 "));
+  266: 	tui_colors_const_label_color = new s_tui::VectorItem(std::string("5.2 "));
+  270: 	tui_colors_const_art_intensity = new s_tui::DecimalItem(0,1,1,std::string("5.3 "),0.05);
+  274: 	tui_colors_const_art_color = new s_tui::VectorItem(std::string("5.2 "));
+  278: 	tui_colors_const_boundary_color = new s_tui::VectorItem(std::string("5.4 "));
+  282: 	tui_colors_cardinal_color = new s_tui::VectorItem(std::string("5.5 "));
+  286: 	tui_colors_planet_names_color = new s_tui::VectorItem(std::string("5.6 "));
+  290: 	tui_colors_planet_orbits_color = new s_tui::VectorItem(std::string("5.7 "));
+  294: 	tui_colors_object_trails_color = new s_tui::VectorItem(std::string("5.9 "));
+  298: 	tui_colors_meridian_color = new s_tui::VectorItem(std::string("5.10 "));
+  302: 	tui_colors_azimuthal_color = new s_tui::VectorItem(std::string("5.11 "));
+  306: 	tui_colors_equatorial_color = new s_tui::VectorItem(std::string("5.12 "));
+  310: 	tui_colors_equator_color = new s_tui::VectorItem(std::string("5.13 "));
+  314: 	tui_colors_ecliptic_color = new s_tui::VectorItem(std::string("5.14 "));
+  318: 	tui_colors_nebula_label_color = new s_tui::VectorItem(std::string("5.15 "));
+  322: 	tui_colors_nebula_circle_color = new s_tui::VectorItem(std::string("5.16 "));
+  326: 	tui_colors_precession_circle_color = new s_tui::VectorItem(std::string("5.17 "));
+  330: 	tui_colors_circumpolar_circle_color = new s_tui::VectorItem(std::string("5.18 "));
+  335: 	tui_effect_light_pollution = new s_tui::DecimalItem(0.5, 7, 6.5,std::string("5.9 "), 0.5 );
+  339: 	tui_effect_manual_zoom = new s_tui::BooleanItem(false,std::string("5.2 ") );
+  343: 	tui_effect_pointobj = new s_tui::BooleanItem(false,std::string("5.3 ") );
+  347: 	tui_effect_object_scale = new s_tui::DecimalItem(0, 25, 1,std::string("5.4 "), 0.05);  // changed to .05 delta
+  351: 	tui_effect_star_size_limit = new s_tui::DecimalItem(0.25, 25, 5,std::string("5.4 "), 0.25);
+  355: 	tui_effect_planet_size_limit = new s_tui::DecimalItem(-10, 10, 4,std::string("5.4 "), 0.25);
+  361: 	tui_effect_milkyway_intensity = new s_tui::DecimalItem(0, 100, 1,std::string("5.5 "), .1);  // cvs
+  365: 	tui_effect_nebulae_label_magnitude = new s_tui::DecimalItem(0, 100, 1,std::string("5.6 "), .5);
+  369: 	tui_effect_view_offset = new s_tui::DecimalItem(-0.5, 0.5, 0,std::string("7.7 "), 0.05 );
+  374: 	tui_effect_zoom_duration = new s_tui::DecimalItem(1, 10, 2,std::string("5.7 ") );
+  378: 	tui_effect_cursor_timeout = new s_tui::DecimalItem(0, 60, 1,std::string("5.8 ") );
+  382: 	tui_effect_light_travel = new s_tui::BooleanItem(false,std::string("6.10 ") );
+  386: 	tui_effect_antialias = new s_tui::BooleanItem(false,std::string("6.11 ") );
+  390: 	tui_effect_line_width = new s_tui::DecimalItem(0.125, 5, 1,std::string("6.12 "), 0.125 );
+  395: 	tui_scripts_shows = new s_tui::ListItem<std::string>(std::string("7.1 ") );
+  400: 	tui_scripts_basis = new s_tui::ListItem<std::string>(std::string("7.2 ") );
+  405: 	tui_scripts_planets = new s_tui::ListItem<std::string>(std::string("7.3 ") );
+  410: 	tui_scripts_deepsky = new s_tui::ListItem<std::string>(std::string("7.4 ") );
+  415: 	tui_scripts_navigation = new s_tui::ListItem<std::string>(std::string("7.5 ") );
+  420: 	tui_scripts_custom = new s_tui::ListItem<std::string>(std::string("7.6 ") );
+  426: 	tui_admin_loaddefault = new s_tui::ActionConfirmItem(std::string("8.1 ") );
+  428: 	tui_admin_savedefault = new s_tui::ActionConfirmItem(std::string("8.2 ") );
+  430: 	tui_admin_shutdown = new s_tui::ActionConfirmItem(std::string("8.3 ") );
+  438: 	tui_admin_info = new s_tui::Display(std::string("Label: "),std::string(systemInfo));
+  440: 	tui_admin_resolution = new s_tui::Display(std::string("Label: "),m_sdl->getStrResolution());
+  444: 	tui_admin_user = new s_tui::Display(std::string("Label: "),std::string(userInfo));
+  447: 	tui_admin_setlocale = new s_tui::MultiSetItem<std::string>("8.5 ");
+  463: 	tuiFont = new s_font(FontSizeMenuTui, FontNameMenu);
+
+src/uiModule/ui.cpp:
+   413: 	joypadController = new JoypadController(this);
+   549: 	Event* event = new CommandEvent(command);
+   576: 			Event* event = new FpsEvent(FPS_ORDER::AFTER_ONE_SECOND);
+   776: 			event = new ScriptEvent( scriptInterface->getSelectedScriptDirectory()+scriptInterface->getSelectedScript());
+   881: 					event = new ScriptEvent( IDIR+"internal/clear_mess.sts");
+   885: 					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_NAMES , FLAG_VALUES::FV_TOGGLE,"flag nebula_names toggle");
+   918: 					event = new CommandEvent("external_viewer filename "+ADIR+"02.mp3 action play");
+   922: 					event = new CommandEvent("external_viewer filename "+ADIR+"06.mp3 action play");
+   927: 					event = new CommandEvent("external_viewer filename "+ADIR+"14.mp3 action play");
+   931: 					event = new CommandEvent("external_viewer filename "+ADIR+"18.mp3 action play");
+   935: 					event = new CommandEvent("external_viewer filename "+ADIR+"10.mp3 action play");
+   946: 					event = new CommandEvent("external_viewer filename "+ADIR+"03.mp3 action play");
+   950: 					event = new CommandEvent("external_viewer filename "+ADIR+"07.mp3 action play");
+   955: 					event = new CommandEvent("external_viewer filename "+ADIR+"15.mp3 action play");
+   959: 					event = new CommandEvent("external_viewer filename "+ADIR+"19.mp3 action play");
+   963: 					event = new CommandEvent("external_viewer filename "+ADIR+"11.mp3 action play");
+   974: 					event = new CommandEvent("external_viewer filename "+ADIR+"04.mp3 action play");
+   978: 					event = new CommandEvent("external_viewer filename "+ADIR+"08.mp3 action play");
+   983: 					event = new CommandEvent("external_viewer filename "+ADIR+"16.mp3 action play");
+   987: 					event = new CommandEvent("external_viewer filename "+ADIR+"20.mp3 action play");
+   991: 					event = new CommandEvent("external_viewer filename "+ADIR+"12.mp3 action play");
+  1003: 					event = new FlagEvent( FLAG_NAMES::FN_CARDINAL_POINTS , FLAG_VALUES::FV_TOGGLE,"flag cardinal_points toggle");
+  1008: 						event = new ScriptEvent( IDIR+"internal/windrose.sts");
+  1031: 								event = new ScriptEvent( SDIR+"fscripts/windrose/0"+s+".sts");
+  1068: 					event = new FlagEvent( FLAG_NAMES::FN_EQUATORIAL_GRID , FLAG_VALUES::FV_TOGGLE,"flag equatorial_grid toggle");
+  1073: 					event = new FlagEvent( FLAG_NAMES::FN_CIRCUMPOLAR_CIRCLE , FLAG_VALUES::FV_TOGGLE,"flag circumpolar_circle toggle");
+  1078: 					event = new FlagEvent( FLAG_NAMES::FN_ARIES_LINE , FLAG_VALUES::FV_TOGGLE,"flag aries_line toggle");
+  1083: 					event = new FlagEvent( FLAG_NAMES::FN_GREENWICH_LINE , FLAG_VALUES::FV_TOGGLE,"flag greenwich_line toggle");
+  1087: 					event = new FlagEvent( FLAG_NAMES::FN_VERNAL_POINTS , FLAG_VALUES::FV_TOGGLE,"flag vernal_points toggle");
+  1098: 					event = new FlagEvent( FLAG_NAMES::FN_EQUATOR_LINE , FLAG_VALUES::FV_TOGGLE,"flag equator_line toggle");
+  1102: 					event = new FlagEvent( FLAG_NAMES::FN_TROPIC_LINES , FLAG_VALUES::FV_TOGGLE,"flag tropic_lines toggle");
+  1107: 					event = new ScriptEvent( IDIR+"internal/dm_record.sts");
+  1108: 					//event = new CommandEvent("domemasters action record");
+  1110: 					//event = new SaveScreenEvent(SAVESCREEN_ORDER::TOGGLE_VIDEO);
+  1115: 					event = new FlagEvent( FLAG_NAMES::FN_SATELLITES_ORBITS , FLAG_VALUES::FV_TOGGLE,"flag satellites_orbits toggle");
+  1119: 					event = new ScriptEvent( IDIR+"internal/equator_poles.sts");
+  1130: 					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_ART , FLAG_VALUES::FV_TOGGLE,"flag constellation_art toggle");
+  1138: 					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_PICK , FLAG_VALUES::FV_TOGGLE,"flag constellation_pick toggle");
+  1144: 					event = new ScriptEvent( IDIR+"internal/sky_culture3.sts");
+  1156: 					event = new FlagEvent( FLAG_NAMES::FN_MOON_SCALED , FLAG_VALUES::FV_TOGGLE,"flag moon_scaled toggle");
+  1160: 					event = new FlagEvent( FLAG_NAMES::FN_SUN_SCALED , FLAG_VALUES::FV_TOGGLE,"flag sun_scaled toggle");
+  1162: 					event = new ScriptEvent( IDIR+"internal/big_planets.sts");
+  1167: 					event = new ScriptEvent( IDIR+"internal/bodies-asteroids-501ex.sts");
+  1172: 					event = new ScriptEvent( IDIR+"internal/bodies-kuiper.sts");
+  1177: 					event = new FlagEvent( FLAG_NAMES::FN_OORT , FLAG_VALUES::FV_TOGGLE,"flag oort toggle");
+  1179: 					event = new ScriptEvent( IDIR+"internal/comet.sts");
+  1195: 						event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
+  1201: 					event = new CommandEvent("flag galactic_center toggle");
+  1206: 					event = new CommandEvent("flag galactic_line toggle");
+  1210: 					event = new CommandEvent("flag galactic_pole toggle");
+  1214: 					event = new CommandEvent("flag galactic_grid toggle");
+  1237: 					  event = new CommandEvent("flag nautical_ra toggle");
+  1243: 					  event = new CommandEvent("flag nautical_alt toggle");
+  1248: 					event = new ScriptEvent( IDIR+"internal/personal.sts");
+  1264: 					  event = new FlagEvent( FLAG_NAMES::FN_ORTHODROMY , FLAG_VALUES::FV_TOGGLE,"flag orthodromy toggle");
+  1272: 					event = new ScreenFaderEvent(ScreenFaderEvent::DOWN, 0.05);
+  1289: 						event = new CommandEvent("timerate action decrement");
+  1294: 					event = new ScriptEvent( IDIR+"internal/proper_demotion.sts");
+  1299: 					event = new CommandEvent("date sun rise");
+  1301: 					event = new ScriptEvent( IDIR+"internal/date_shift_minus.sts");
+  1319: 						event = new CommandEvent("script action resume");
+  1323: 						event = new CommandEvent("timerate rate 1");
+  1328: 					event = new CommandEvent("timerate rate 1");
+  1333: 					event = new CommandEvent("date sun midnight");
+  1339: 					event = new CommandEvent("date sun meridian");
+  1353: 						event = new CommandEvent("timerate action increment");
+  1358: 					event = new ScriptEvent( IDIR+"internal/proper_motion.sts");
+  1366: 					event = new CommandEvent("date sun set");
+  1368: 					event = new ScriptEvent( IDIR+"internal/date_shift_plus.sts");
+  1382: 					event = new CommandEvent("external_viewer filename "+ADIR+"01.mp3 action play");
+  1386: 					event = new CommandEvent("external_viewer filename "+ADIR+"05.mp3 action play");
+  1391: 					event = new CommandEvent("external_viewer filename "+ADIR+"13.mp3 action play");
+  1395: 					event = new CommandEvent("external_viewer filename "+ADIR+"17.mp3 action play");
+  1399: 					event = new CommandEvent("external_viewer filename "+ADIR+"09.mp3 action play");
+  1419: 					event = new ScriptEvent( IDIR+"internal/chut.sts");
+  1424: 					event = new ScriptEvent( IDIR+"internal/navigation.sts");
+  1439: 					event = new CommandEvent("date sidereal 1");
+  1443: 					event = new CommandEvent("flag angular_distance toggle");
+  1448: 					event = new ScreenFaderEvent(ScreenFaderEvent::UP, 0.05);
+  1455: 					event = new CommandEvent("date relative 1");
+  1490: 					//event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_DRAWING , FLAG_VALUES::FV_TOGGLE,"flag constellation_drawing toggle");
+  1499: 					//event = new FlagEvent( FLAG_NAMES::FN_STAR_LINES , FLAG_VALUES::FV_TOGGLE,"flag star_lines toggle");
+  1507: 					event = new ScriptEvent(IDIR+"internal/sky_culture1.sts");
+  1519: 					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES , FLAG_VALUES::FV_TOGGLE,"flag constellation_boundaries toggle");
+  1523: 					event = new FlagEvent( FLAG_NAMES::FN_ZODIAC , FLAG_VALUES::FV_TOGGLE,"flag zodiac toggle");
+  1528: 					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION , FLAG_VALUES::FV_TOGGLE,"flag atmospheric_refraction toggle");
+  1540: 					event = new ScriptEvent( IDIR+"internal/sky_culture4.sts");
+  1551: 					event = new FlagEvent( FLAG_NAMES::FN_ECLIPTIC_LINE , FLAG_VALUES::FV_TOGGLE,"flag ecliptic_line toggle");
+  1555: 					event = new FlagEvent( FLAG_NAMES::FN_PRECESSION_CIRCLE , FLAG_VALUES::FV_TOGGLE,"flag precession_circle toggle");
+  1560: 					event = new SaveScreenEvent(SAVESCREEN_ORDER::TAKE_SCREENSHOT);
+  1565: 					event = new FlagEvent( FLAG_NAMES::FN_PLANET_ORBITS , FLAG_VALUES::FV_TOGGLE,"flag planets_orbits toggle");
+  1569: 					event = new ScriptEvent( IDIR+"internal/ecliptic_poles.sts");
+  1580: 					event = new FlagEvent( FLAG_NAMES::FN_OBJECT_TRAILS , FLAG_VALUES::FV_TOGGLE,"flag object_trails toggle");
+  1584: 					event = new FlagEvent( FLAG_NAMES::FN_BODY_TRACE , FLAG_VALUES::FV_TOGGLE,"flag body_trace toggle");
+  1596: 					event = new ScriptEvent( IDIR+"internal/trace.sts");
+  1614: 					  event = new FlagEvent( FLAG_NAMES::FN_LOXODROMY , FLAG_VALUES::FV_TOGGLE,"flag loxodromy toggle");
+  1634: 					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_DATETIME , FLAG_VALUES::FV_TOGGLE,"flag show_tui_datetime toggle");
+  1638: 					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_SHORT_OBJ_INFO , FLAG_VALUES::FV_TOGGLE,"flag show_tui_short_obj_info toggle");
+  1643: 					event = new FlagEvent( FLAG_NAMES::FN_SHOW_LATLON , FLAG_VALUES::FV_TOGGLE,"flag show_latlon toggle");
+  1647: 					event = new CommandEvent("flag object_coordinates toggle");
+  1659: 					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_NAMES , FLAG_VALUES::FV_TOGGLE,"flag constellation_names toggle");
+  1663: 					event = new FlagEvent( FLAG_NAMES::FN_ZENITH_LINE , FLAG_VALUES::FV_TOGGLE,"flag zenith_line toggle");
+  1668: 					event = new FlagEvent( FLAG_NAMES::FN_ZODIAC_LIGHT , FLAG_VALUES::FV_TOGGLE,"flag zodiacal_light toggle");
+  1672: 					event = new ScriptEvent( IDIR+"internal/sky_culture2.sts");
+  1683: 					event = new FlagEvent( FLAG_NAMES::FN_MERIDIAN_LINE , FLAG_VALUES::FV_TOGGLE,"flag meridian_line toggle");
+  1687: 					event = new FlagEvent( FLAG_NAMES::FN_AZIMUTHAL_GRID , FLAG_VALUES::FV_TOGGLE,"flag azimuthal_grid toggle");
+  1693: 						event = new FlagEvent( FLAG_NAMES::FN_VERTICAL_LINE , FLAG_VALUES::FV_TOGGLE,"flag vertical_line toggle");
+  1699: 					event = new FlagEvent( FLAG_NAMES::FN_PLANETS_AXIS , FLAG_VALUES::FV_TOGGLE,"flag planets_axis toggle");
+  1703: 					event = new ScriptEvent( IDIR+"internal/mire.sts");
+  1715: 					event = new FlagEvent( FLAG_NAMES::FN_ANALEMMA_LINE , FLAG_VALUES::FV_TOGGLE,"flag analemma_line toggle");
+  1719: 					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_CENTER , FLAG_VALUES::FV_TOGGLE,"flag galactic_center toggle");
+  1724: 					event = new FlagEvent( FLAG_NAMES::FN_ANALEMMA , FLAG_VALUES::FV_TOGGLE,"flag analemma toggle");
+  1732: 					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_ON,"flag track_object toggle");
+  1743: 					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERE , FLAG_VALUES::FV_TOGGLE,"flag atmosphere toggle");
+  1747: 					event = new FlagEvent( FLAG_NAMES::FN_LANDSCAPE , FLAG_VALUES::FV_TOGGLE,"flag landscape toggle");
+  1752: 					event = new ScriptEvent( SDIR+"fscripts/panorama2.sts");
+  1760: 					event = new FlagEvent( FLAG_NAMES::FN_CLOUDS , FLAG_VALUES::FV_TOGGLE,"flag clouds toggle");
+  1762: 					event = new ScriptEvent( SDIR+"fscripts/panorama4.sts");
+  1782: 					event = new ScriptEvent( SDIR+"fscripts/K0.sts");
+  1796: 					event = new FlagEvent( FLAG_NAMES::FN_STAR_NAMES , FLAG_VALUES::FV_TOGGLE,"flag star_names toggle");
+  1800: 					event = new ScriptEvent( IDIR+"internal/white_room.sts");
+  1805: 					event = new ScriptEvent( SDIR+"fscripts/W13.sts");
+  1810: 					event = new ScriptEvent( SDIR+"fscripts/13.sts");
+  1814: 					event = new ScriptEvent( SDIR+"fscripts/K1.sts");
+  1827: 					event = new FlagEvent( FLAG_NAMES::FN_PLANET_NAMES , FLAG_VALUES::FV_TOGGLE,"flag planet_names toggle");
+  1831: 					event = new FlagEvent( FLAG_NAMES::FN_PLANET_ORBITS , FLAG_VALUES::FV_TOGGLE,"flag planet_orbits toggle");
+  1836: 					event = new ScriptEvent( SDIR+"fscripts/W14.sts");
+  1841: 					event = new ScriptEvent( SDIR+"fscripts/14.sts");
+  1845: 					event = new ScriptEvent( SDIR+"fscripts/K2.sts");
+  1857: 					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_HINTS , FLAG_VALUES::FV_TOGGLE,"flag nebula_hints toggle");
+  1861: 					event = new ScriptEvent( IDIR+"internal/deepsky_drawings.sts");
+  1866: 					event = new ScriptEvent( SDIR+"fscripts/W15.sts");
+  1871: 					event = new ScriptEvent( SDIR+"fscripts/15.sts");
+  1875: 					event = new ScriptEvent( SDIR+"fscripts/K3.sts");
+  1886: 					event = new FlagEvent( FLAG_NAMES::FN_FOG , FLAG_VALUES::FV_TOGGLE,"flag fog toggle");
+  1890: 					event = new ScriptEvent( IDIR+"internal/orange_fog.sts");
+  1895: 					event = new ScriptEvent( SDIR+"fscripts/W16.sts");
+  1900: 					event = new ScriptEvent( SDIR+"fscripts/16.sts");
+  1904: 					event = new ScriptEvent( SDIR+"fscripts/K4.sts");
+  1915: 					event = new FlagEvent( FLAG_NAMES::FN_PLANETS , FLAG_VALUES::FV_TOGGLE,"flag planets toggle");
+  1923: 					event = new ScriptEvent( SDIR+"fscripts/W17.sts");
+  1928: 					event = new ScriptEvent( SDIR+"fscripts/17.sts");
+  1932: 					event = new ScriptEvent( SDIR+"fscripts/K5.sts");
+  1943: 					event = new FlagEvent( FLAG_NAMES::FN_STARS , FLAG_VALUES::FV_TOGGLE,"flag stars toggle");
+  1951: 					event = new ScriptEvent( SDIR+"fscripts/W18.sts");
+  1956: 					event = new ScriptEvent( SDIR+"fscripts/18.sts");
+  1960: 					event = new ScriptEvent( SDIR+"fscripts/K6.sts");
+  1971: 					event = new FlagEvent( FLAG_NAMES::FN_MILKY_WAY , FLAG_VALUES::FV_TOGGLE,"flag milky_way toggle");
+  1975: 					event = new ScriptEvent( IDIR+"internal/milkyway.sts");
+  1980: 					event = new FlagEvent( FLAG_NAMES::FN_COLOR_INVERSE , FLAG_VALUES::FV_TOGGLE,"flag color_inverse toggle");
+  1985: 					event = new FlagEvent( FLAG_NAMES::FN_STARS_TRACE , FLAG_VALUES::FV_TOGGLE,"flag stars_trace toggle");
+  1989: 					event = new ScriptEvent( SDIR+"fscripts/K7.sts");
+  2000: 					event = new FlagEvent( FLAG_NAMES::FN_NEBULAE , FLAG_VALUES::FV_TOGGLE,"flag nebulae toggle");
+  2008: 					event = new FlagEvent( FLAG_NAMES::FN_DSO_PICTOGRAMS , FLAG_VALUES::FV_TOGGLE,"flag dso_pictograms toggle");
+  2013: 					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_NAMES , FLAG_VALUES::FV_TOGGLE,"flag nebula_names toggle");
+  2017: 					event = new ScriptEvent( SDIR+"fscripts/K8.sts");
+  2035: 					event = new ScriptEvent( IDIR+"internal/takeoff.sts");
+  2040: 					event = new ScriptEvent( SDIR+"fscripts/K9.sts");
+  2058: 					event = new ScriptEvent( IDIR+"internal/zoom.sts");
+  2117: 					event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
+  2129: 					event = new FlagEvent( FLAG_NAMES::FN_LANDSCAPE , FLAG_VALUES::FV_TOGGLE,"flag landscape toggle");
+  2133: 					event = new ScriptEvent( SDIR+"fscripts/panorama1.sts");
+  2141: 					event = new ScriptEvent( SDIR+"fscripts/panorama3.sts");
+  2146: 					event = new ScriptEvent( SDIR+"fscripts/panorama5.sts");
+  2159: 					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE,"flag track_object toggle");
+  2163: 					event = new ScriptEvent( IDIR+"internal/takeoff.sts");
+  2168: 					event = new ScriptEvent( IDIR+"internal/fly_to_selected.sts");
+  2189: 					event = new ScriptEvent( IDIR+"internal/initial.sts");
+  2217: 					event = new ScriptEvent( IDIR+"internal/clear_mess.sts");
+  2222: 					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE,"flag track_object toggle");
+  2245: 			event = new ScriptEvent( IDIR+"internal/initial.sts");
+  2251: 					event = new ScriptEvent( IDIR+"internal/initial_night.sts");
+  2257: 					event = new ScriptEvent( IDIR+"internal/initial_dawn.sts");
+  2277: 					event = new ScriptEvent( SDIR+"fscripts/M01.sts");
+  2281: 					event = new ScriptEvent( SDIR+"fscripts/M11.sts");
+  2289: 					event = new ScriptEvent( SDIR+"fscripts/S01.sts");
+  2304: 					event = new ScriptEvent( SDIR+"fscripts/M02.sts");
+  2308: 					event = new ScriptEvent( SDIR+"fscripts/M12.sts");
+  2313: 					event = new ScriptEvent( SDIR+"fscripts/S02.sts");
+  2335: 					event = new ScriptEvent( SDIR+"fscripts/M03.sts");
+  2339: 					event = new ScriptEvent( SDIR+"fscripts/M13.sts");
+  2347: 					event = new ScriptEvent( SDIR+"fscripts/S03.sts");
+  2365: 					event = new ScriptEvent( SDIR+"fscripts/M04.sts");
+  2369: 					event = new ScriptEvent( SDIR+"fscripts/M14.sts");
+  2377: 					event = new ScriptEvent( SDIR+"fscripts/S04.sts");
+  2396: 					event = new ScriptEvent( SDIR+"fscripts/M05.sts");
+  2400: 					event = new ScriptEvent( SDIR+"fscripts/M15.sts");
+  2405: 					event = new ScriptEvent( SDIR+"fscripts/S05.sts");
+  2424: 					event = new ScriptEvent( SDIR+"fscripts/M06.sts");
+  2428: 					event = new ScriptEvent( SDIR+"fscripts/M16.sts");
+  2437: 					event = new ScriptEvent( SDIR+"fscripts/S06.sts");
+  2456: 					event = new ScriptEvent( SDIR+"fscripts/M07.sts");
+  2460: 					event = new ScriptEvent( SDIR+"fscripts/M17.sts");
+  2468: 					event = new ScriptEvent( SDIR+"fscripts/S07.sts");
+  2483: 					event = new ScriptEvent( SDIR+"fscripts/M08.sts");
+  2487: 					event = new ScriptEvent( SDIR+"fscripts/M18.sts");
+  2495: 					event = new ScriptEvent( SDIR+"fscripts/S08.sts");
+  2514: 					event = new ScriptEvent( SDIR+"fscripts/M09.sts");
+  2518: 					event = new ScriptEvent( SDIR+"fscripts/M19.sts");
+  2526: 					event = new ScriptEvent( SDIR+"fscripts/S09.sts");
+  2531: 					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_GRID , FLAG_VALUES::FV_TOGGLE,"flag galactic_grid toggle");
+  2545: 					event = new ScriptEvent( SDIR+"fscripts/M00.sts");
+  2549: 					event = new ScriptEvent( SDIR+"fscripts/M10.sts");
+  2554: 					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE,"flag track_object toggle");
+  2558: 					event = new ScriptEvent( SDIR+"fscripts/S10.sts");
+  2585: 					event = new ScriptEvent( SDIR+"fscripts/M20.sts");
+  2589: 					event = new ScriptEvent( SDIR+"fscripts/M21.sts");
+  2603: 					//	event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_ON,"flag track_object on");
+  2609: 					event = new ScriptEvent( SDIR+"fscripts/S11.sts");
+  2630: 						event = new ScriptEvent( IDIR+"internal/antipodes.sts");
+  2639: 					event = new ScriptEvent( SDIR+"fscripts/S12.sts");
+  2663: 					event = new ScriptEvent( SDIR+"fscripts/S13.sts");
+  2685: 					event = new ScriptEvent( SDIR+"fscripts/S14.sts");
+  2711: 					event = new ScriptEvent( SDIR+"fscripts/S15.sts");
+  2741: 					event = new ScriptEvent( SDIR+"fscripts/01.sts");
+  2745: 					event = new ScriptEvent( SDIR+"fscripts/W01.sts");
+  2768: 					event = new ScriptEvent( SDIR+"fscripts/02.sts");
+  2772: 					event = new ScriptEvent( SDIR+"fscripts/W02.sts");
+  2794: 					event = new ScriptEvent( SDIR+"fscripts/03.sts");
+  2798: 					event = new ScriptEvent( SDIR+"fscripts/W03.sts");
+  2820: 					event = new ScriptEvent( SDIR+"fscripts/04.sts");
+  2824: 					event = new ScriptEvent( SDIR+"fscripts/W04.sts");
+  2846: 					event = new ScriptEvent( SDIR+"fscripts/05.sts");
+  2850: 					event = new ScriptEvent( SDIR+"fscripts/W05.sts");
+  2872: 					event = new ScriptEvent( SDIR+"fscripts/06.sts");
+  2876: 					event = new ScriptEvent( SDIR+"fscripts/W06.sts");
+  2898: 					event = new ScriptEvent( SDIR+"fscripts/07.sts");
+  2902: 					event = new ScriptEvent( SDIR+"fscripts/W07.sts");
+  2924: 					event = new ScriptEvent( SDIR+"fscripts/08.sts");
+  2928: 					event = new ScriptEvent( SDIR+"fscripts/W08.sts");
+  2950: 					event = new ScriptEvent( SDIR+"fscripts/09.sts");
+  2954: 					event = new ScriptEvent( SDIR+"fscripts/W09.sts");
+  2976: 					event = new ScriptEvent( SDIR+"fscripts/10.sts");
+  2980: 					event = new ScriptEvent( SDIR+"fscripts/W10.sts");
+  2999: 					event = new ScriptEvent( SDIR+"fscripts/11.sts");
+  3006: 					event = new ScriptEvent( SDIR+"fscripts/W11.sts");
+  3028: 					event = new ScriptEvent( SDIR+"fscripts/12.sts");
+  3032: 					event = new ScriptEvent( SDIR+"fscripts/W12.sts");
