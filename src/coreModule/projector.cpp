@@ -388,7 +388,7 @@ Vec3d Projector::sVertex3v(double x, double y, double z, const Mat4d& mat) const
 
 void Projector::printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color,/* bool speed_optimize,*/ float xshift, float yshift) const
 {
-	static float dx, dy, d, theta, psi;
+	static float dx, dy, d, theta; //, psi;
 
 	// ASSUME disk viewport
 	dx = x - viewport_center[0];
@@ -400,9 +400,9 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 
 
 	theta = C_PI + atan2f(dx, dy - 1);
-	psi = atan2f((float)font->getStrLen(str)/str.length(),d + 1) * 180./C_PI;
+	// psi = atan2f((float)font->getStrLen(str)/str.length(),d + 1) * 180./C_PI;
 
-	if (psi>5) psi = 5;
+	// if (psi>5) psi = 5;
 
 	Mat4f MVP = getMatProjectionOrtho2D();
 	Mat4f TRANSFO = Mat4f::translation( Vec3f(x,y,0) );
