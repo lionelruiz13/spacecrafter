@@ -108,12 +108,8 @@ public:
 	//! prépare le logiciel à un changement de Milkyway
 	//! \param tex_file détermine le nom de la nouvelle texture 
 	//! \param _intensity détermine l'intensité de base associée à la nouvelle texture
-	void changeMilkywayState(const std::string& full_tex_file, float _intensity);
-
-	//! prépare le logiciel à un changement de Milkyway sans toucher à son intensité
-	//! \param tex_file détermine le nom de la nouvelle texture 
-	void changeMilkywayStateWithoutIntensity(const std::string& full_tex_file);
-
+	//! \param withIntensity indique si on doit utiliser la nouvelle intensité ou pas
+	void changeMilkywayState(const std::string& full_tex_file, float _intensity, bool withIntensity);
 
 	//! récupère l'état du fader de l'affichage de la Milkyway
 	bool getFlagShow(void) const {

@@ -1511,7 +1511,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 						break;
 		case SCD_NAMES::APP_MILKY_WAY_TEXTURE: 
 						if(setValue=="default") coreLink->milkyWayRestoreDefault();	else
-							coreLink->milkyWayChangeStateWithoutIntensity(scriptInterface->getScriptPath() + setValue);
+							coreLink->milkyWayChangeState(scriptInterface->getScriptPath() + setValue, 0.f, false);
 						break;
 		case SCD_NAMES::APP_SKY_CULTURE: if (setValue=="default") stcore->setInitialSkyCulture(); else stcore->setSkyCultureDir(setValue); break;
 		case SCD_NAMES::APP_SKY_LOCALE:  if ( setValue=="default") stcore->setInitialSkyLocale(); else stcore->setSkyLanguage(setValue); break;
