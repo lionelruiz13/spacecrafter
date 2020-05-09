@@ -41,7 +41,8 @@ public :
         E_SCREEN_FADER_INTERLUDE  = 4,
         E_FLAG = 5,
         E_SAVESCREEN = 6,
-        E_FPS
+        E_FPS = 7 ,
+        E_CHANGE_ALTITUDE = 8
         //....
     };
     

@@ -36,4 +36,10 @@ std::map<Event::Event_Type, std::string> Event::eventTypeToString = {
     {E_COMMAND, "event command to launch"},
     {E_SCREEN_FADER, "event screenFader to launch"},
     {E_SCREEN_FADER_INTERLUDE, "event screenFaderInterlude to launch"},
+    {E_FLAG, "event flag has been scheduled"},
+    {E_SAVESCREEN, "a screenshot has been scheduled"},
+    {E_FPS, "event fps has been scheduled"},
+    {E_CHANGE_ALTITUDE, "event altitude has been scheduled"},
 };
+
+
