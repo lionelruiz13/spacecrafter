@@ -513,7 +513,7 @@ void CheckConfig::checkUselessKey()
 				// Si la clef n'esite pas, on le notifie
 				if(it3 == sectionKeySettings.end()) {
 					//std::cout << "key " << *itKey << std::endl;/*" doesn't exist, you can safely discard it" << std::endl;*/
-					cLog::get()->write("key" + *itKey + " doesn't exist, you can safely discard it", LOG_TYPE::L_WARNING);
+					cLog::get()->write("key " + *itKey + " doesn't exist, you can safely discard it", LOG_TYPE::L_WARNING);
 				}
 			}
 		}
