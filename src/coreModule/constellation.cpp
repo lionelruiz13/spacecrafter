@@ -157,7 +157,7 @@ void Constellation::drawName(s_font *constfont, const Projector* prj) const
 {
 	if (!name_fader.getInterstate()) return;
 	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], name_fader.getInterstate());
-	prj->printGravity180(constfont, XYname[0], XYname[1], nameI18, Color, 1, -constfont->getStrLen(nameI18)/2);
+	prj->printGravity180(constfont, XYname[0], XYname[1], nameI18, Color, -constfont->getStrLen(nameI18)/2, 0);
 }
 
 //! Draw the art texture, optimized function to be called thru a constellation manager only
