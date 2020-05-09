@@ -156,14 +156,19 @@ void MilkyWay::defineInitialMilkywayState(const std::string& path_file,const std
 	}
 }
 
-void MilkyWay::changeMilkywayState(const std::string& tex_file, float _intensity, bool withIntensity)
+void MilkyWay::changeMilkywayStateWithoutIntensity(const std::string& full_tex_file)
+{
+	this->changeMilkywayState(full_tex_file,intensityMilky);
+}
+
+
+void MilkyWay::changeMilkywayState(const std::string& tex_file, float _intensity)
 {
 	if (nextMilky.tex!=nullptr) {
 		delete nextMilky.tex;
 	}
 	nextMilky.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);	
-	if (withIntensity)
-		nextMilky.intensity = _intensity;
+	nextMilky.intensity = _intensity;
 	nextMilky.name = tex_file;
 	onTextureTransition = true;
 	switchTexFader = true;
