@@ -62,7 +62,7 @@ void TimeMgr::changeTimeSpeed(double _time_speed, double duration)
 double TimeMgr::dateSunRise (double jd, double longitude, double latitude)
 {
 	//~ double jd = timeMgr->getJDay();
-	std::ostringstream os;
+//	std::ostringstream os;
 	//Sol mig
 	double sidereal;
 	double T;
@@ -157,7 +157,7 @@ double TimeMgr::dateSunRise (double jd, double longitude, double latitude)
 double TimeMgr::dateSunSet (double jd, double longitude, double latitude)
 {
 	//~ double jd = timeMgr->getJDay();
-	std::ostringstream os;
+	//std::ostringstream os;
 	//Sol mig
 	double sidereal;
 	double T;
@@ -247,7 +247,7 @@ double TimeMgr::dateSunSet (double jd, double longitude, double latitude)
 double TimeMgr::dateSunMeridian (double jd, double longitude, double latitude)
 {
 	//~ double jd = timeMgr->getJDay();
-	std::ostringstream os;
+	//std::ostringstream os;
 	//Sol mig
 	double sidereal;
 	double T;
