@@ -43,7 +43,6 @@ void CheckConfig::checkMainSettings()
 {
 	tmpSettings["debug"]="false";
 	// mainSettings["debug_opengl"]="false";
-	tmpSettings["flag_masterput"]="false";
 	tmpSettings["flag_navigation"]="false";
 	tmpSettings["flag_optoma"]="false";
 	// mainSettings["script_debug"]="false";
@@ -65,6 +64,7 @@ void CheckConfig::checkIoSettings()
 	tmpSettings["tcp_buffer_in_size"]="1024";
 	tmpSettings["mkfifo_file_in"]="/tmp/spacecrafter.fifo";
 	tmpSettings["mkfifo_buffer_in_size"]="256";
+	tmpSettings["flag_masterput"]="false";
 	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
 	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
 
@@ -453,6 +453,7 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 		std::cout << (*it) << std::endl;
 	}*/
 
+	checkMigration2020();
 	checkUselessSection();
 	checkUselessKey();
 
@@ -463,6 +464,11 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 	// for (auto itKey=sectionKeySettings.begin(); itKey != sectionKeySettings.end(); ++itKey) {
 	// 	std::cout << "clef : " << *itKey << std::endl;
 	// }
+}
+
+void CheckConfig::checkMigration2020()
+{
+	user_conf.setBoolean("io:flag_masterput", user_conf.getBoolean("main:flag_masterput"));
 }
 
 

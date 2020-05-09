@@ -56,6 +56,8 @@ private:
 	void checkAstroSettings();
 	void checkLocationSettings();
 
+	void checkMigration2020();
+	
     InitParser user_conf;
     std::list<std::string> sectionSettings;
 	std::list<std::string> sectionKeySettings;

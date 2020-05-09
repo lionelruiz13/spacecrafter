@@ -292,7 +292,7 @@ void App::init()
 		media->createVR360();
 		media->createImageShader();
 
-		flagMasterput=conf.getBoolean("main:flag_masterput");
+		flagMasterput=conf.getBoolean("io:flag_masterput");
 		enable_tcp=conf.getBoolean("io","enable_tcp");
 		enable_mkfifo=conf.getBoolean("io","enable_mkfifo");
 		flagAlwaysVisible = conf.getBoolean("main:flag_always_visible");
