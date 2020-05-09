@@ -457,7 +457,7 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 	checkUselessSection();
 	checkUselessKey();
 
-	std::cout << "i did " << std::endl;
+//	std::cout << "i did " << std::endl;
 	user_conf.setStr("main:version", _VERSION);
 	user_conf.save(fullpathfile);
 
