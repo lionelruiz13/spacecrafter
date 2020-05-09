@@ -43,6 +43,7 @@ void CheckConfig::checkMainSettings()
 {
 	tmpSettings["debug"]="false";
 	// mainSettings["debug_opengl"]="false";
+	tmpSettings["milkyway_iris"] = "false";
 	tmpSettings["flag_optoma"]="false";
 	// mainSettings["script_debug"]="false";
 	tmpSettings["cpu_info"]="false";

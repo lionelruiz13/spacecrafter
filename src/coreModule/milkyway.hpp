@@ -155,6 +155,10 @@ public:
 		}
 	}
 
+	void needToUseIris(bool value) {
+		useIrisMilky = value;
+	}
+
 private:
 	struct MilkyData{
 		std::string name; // le nom exact de la texture

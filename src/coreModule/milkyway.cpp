@@ -140,8 +140,7 @@ void MilkyWay::defineInitialMilkywayState(const std::string& path_file,const std
 		currentMilky.name = path_file +tex_file;
 		intensityMilky.set(currentMilky.intensity);
 
-		if (!iris_tex_file.empty()) {
-			useIrisMilky = true;
+		if (useIrisMilky && !iris_tex_file.empty()) {
 			irisMilky.tex = new s_texture(path_file + iris_tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
 			#ifndef WIN32
 				irisMilky.intensity =  std::max(std::min(_intensity, 1.f), 1.f);
