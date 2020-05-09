@@ -72,6 +72,9 @@ public:
 	bool getFlagShow(SKYGRID_TYPE typeObj);
 	void flipFlagShow(SKYGRID_TYPE typeObj);
 
+	// fonctions de sauvegarde de l'état des grilles 
+	void saveState(SkyGridSave &obj);
+	void loadState(SkyGridSave &obj);
 private:
 	std::string typeToString(SKYGRID_TYPE typeObj);
 	SKYGRID_TYPE stringToType(const std::string& typeObj);

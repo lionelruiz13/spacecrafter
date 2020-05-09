@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"flag track_object on");
     //~ strcpy(sendBuff,"planet_scale name Saturn scale 20");
     //~ strcpy(sendBuff,"flag planets_axis on");
-    //~ strcpy(sendBuff,"clear state natural");
+    strcpy(sendBuff,"clear state natural");
     //~ strcpy(sendBuff,"audio volume 100");
     //~ strcpy(sendBuff,"audio action drop\n");
     //~ strcpy(sendBuff,"media action play type VIEWPORT videoname /home/olivier/.spacecrafter/videos/monde_perdu_HD.mp4 audioname /home/olivier/.spacecrafter/videos/monde_perdu.ogg\n");
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"color property constellation_lines value x00ff80\n");
     //~ strcpy(sendBuff,"constellation name UMA type line_color color x00ffff\n");
     //~ strcpy(sendBuff,"constellation name UMA type label_color r 1.0 b 0.0 g 0.0\n");
-    strcpy(sendBuff,"constellation name UMA intensity 1.0\n");
+    //~ strcpy(sendBuff,"constellation name UMA intensity 1.0\n");
     //~ strcpy(sendBuff,"set constellation_art_intensity 0.2\n");
     //~ strcpy(sendBuff,"text action load name test string \"!! Vive Spacecrafter !!\" azimuth 10 altitude 30 size X_LARGE r 0.2 g 0.4 b 0.4 display on");
     //~ strcpy(sendBuff,"text action update name test string Coucou");

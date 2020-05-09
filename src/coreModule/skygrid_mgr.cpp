@@ -207,3 +207,22 @@ void SkyGridMgr::Create(SKYGRID_TYPE type_obj)
 			break;
 	}
 }
+
+
+void SkyGridMgr::saveState(SkyGridSave &obj)
+{
+	obj.altazimutal= getFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
+	obj.galactic= getFlagShow(SKYGRID_TYPE::GRID_GALACTIC);
+	obj.ecliptic = getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC);
+	obj.equatorial = getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL);
+}
+
+
+void SkyGridMgr::loadState(SkyGridSave &obj)
+{
+	setFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL, obj.altazimutal);
+	setFlagShow(SKYGRID_TYPE::GRID_GALACTIC, obj.galactic);
+	setFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC, obj.ecliptic);
+	setFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL, obj.equatorial);
+}
+

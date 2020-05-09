@@ -58,3 +58,13 @@ void CoreBackup::saveBackup()
 	mBackup.fov = core->projection->getFov(); //getFov();
 	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
 }
+
+void CoreBackup::saveGridState()
+{
+	core->skyGridMgr->saveState(skyGridSave);
+}
+
+void CoreBackup::loadGridState()
+{
+	core->skyGridMgr->loadState(skyGridSave);
+}

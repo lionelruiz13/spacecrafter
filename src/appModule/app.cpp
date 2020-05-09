@@ -327,6 +327,8 @@ void App::init()
 	}
 	// play startup script
 	scriptMgr->playStartupScript();
+	// on sauvegarde ici l'état des composants du logiciel.
+	coreBackup->saveGridState();
 	initialized = true;
 }
 

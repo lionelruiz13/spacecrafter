@@ -33,6 +33,14 @@ enum class SKYGRID_TYPE : char {
 	GRID_UNKNOWN
 };
 
+//structure qui stocke les grilles à un instant t
+struct SkyGridSave {
+	bool equatorial;
+	bool ecliptic;
+	bool galactic;
+	bool altazimutal;
+};
+
 enum class SKYDISPLAY_TYPE : char{
 	SKY_PERSON,
 	SKY_NAUTIC,

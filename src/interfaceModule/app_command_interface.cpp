@@ -1849,8 +1849,9 @@ int AppCommandInterface::commandClear()
 		executeCommand("flag landscape off");
 	}
 
+	coreBackup->loadGridState();
 	// turn off all labels
-	executeCommand("flag azimuthal_grid off");
+	//executeCommand("flag azimuthal_grid off");
 	executeCommand("flag meridian_line off");
 	executeCommand("flag zenith_line off");
 	executeCommand("flag polar_circle off");
@@ -1879,7 +1880,7 @@ int AppCommandInterface::commandClear()
 	executeCommand("flag constellation_names off");
 	executeCommand("flag constellation_boundaries off");
 	executeCommand("flag ecliptic_line off");
-	executeCommand("flag equatorial_grid off");
+	//executeCommand("flag equatorial_grid off");
 	executeCommand("flag equator_line off");
 	executeCommand("flag galactic_line off");
 	executeCommand("flag tropic_lines off");

@@ -30,6 +30,7 @@
 #define _BACKUP_MGR_H_
 
 #include <string>
+#include "coreModule/core_common.hpp"
 
 struct InitialValue {
 	std::string initial_skyCulture;
@@ -57,8 +58,12 @@ public:
 	void loadBackup();
 	void saveBackup();
 
+	//gestion des états des grilles
+	void saveGridState();
+	void loadGridState();
 private:
 	BackupWorkspace mBackup;
+	SkyGridSave	skyGridSave;
 	Core* core= nullptr;
 };
 
