@@ -11,11 +11,11 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 
-# Install for mageia4
+# Install for mageia7
 
 echo  ---------------------------------
 echo  ---                           ---
-echo  ---      Stellarium 360       ---
+echo  ---       SpaceCrafter        ---
 echo  ---  Installing dependancies  ---
 echo  ---                           ---
 echo  ---------------------------------
@@ -27,18 +27,22 @@ urpmi --auto lib64SDL_gfx-devel
 urpmi --auto lib64sdl2_mixer-devel
 urpmi --auto lib64sdl2_ttf-devel
 urpmi --auto lib64sdl2_image-devel
+urpmi --auto lib64sdl2_net-devel
 
-urpmi --auto libfreetype6-devel
+
+#urpmi --auto libfreetype6-devel
 urpmi --auto automake
 urpmi --auto gettext
 urpmi --auto make
 urpmi --auto gcc-c++
 urpmi --auto libtool
 urpmi --auto graphicsmagick
+urpmi --auto libglew-devel
 
 urpmi --auto graphicsmagick-devel
 
-urpmi --auto mplayer
-urpmi --auto libglew-devel
+#urpmi --auto mplayer
+urpmi --auto lib64ffmpeg-devel
+
 
 echo Install completed.
