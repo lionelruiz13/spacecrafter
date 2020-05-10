@@ -70,7 +70,7 @@ bool IlluminateMgr::loadIlluminate(const std::string& filename, double ra, doubl
 	if (angular_size<1.0)
 		angular_size=defaultSize;
 
-	Illuminate *e = searchIlluminate(name);
+	Illuminate *e = search(name);
 	if(e)
 		removeIlluminate(name);
 
@@ -178,7 +178,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 }
 
 // search by name
-Illuminate *IlluminateMgr::searchIlluminate(const std::string& name)
+Illuminate *IlluminateMgr::search(const std::string& name)
 {
 	std::string uname = name;
 	transform(uname.begin(), uname.end(), uname.begin(), ::toupper);

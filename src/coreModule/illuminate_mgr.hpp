@@ -44,7 +44,7 @@ public:
 	IlluminateMgr& operator = (IlluminateMgr const &) = delete;
 
 	//! search by name and return an Illuminate object
-	Illuminate *searchIlluminate(const std::string& name);
+	Illuminate *search(const std::string& name);
 
 	void setDefaultSize(double v) {
 		defaultSize =v;
