@@ -179,10 +179,10 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	}
 
 	int nbrIllumToTrace = illumPos.size()/12;
-	std::cout << "Illuminate à tracer: il y a " << nbrIllumToTrace << std::endl;
-	std::cout << "illumPos   size : " << illumPos.size() << std::endl;
-	std::cout << "illumTex   size : " << illumTex.size() << std::endl;
-	std::cout << "illumColor size : " << illumColor.size() << std::endl;
+	// std::cout << "Illuminate à tracer: il y a " << nbrIllumToTrace << std::endl;
+	// std::cout << "illumPos   size : " << illumPos.size() << std::endl;
+	// std::cout << "illumTex   size : " << illumTex.size() << std::endl;
+	// std::cout << "illumColor size : " << illumColor.size() << std::endl;
 	shaderIllum->use();
 
 	// if (specialTex)
