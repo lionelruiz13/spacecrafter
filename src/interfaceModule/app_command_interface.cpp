@@ -3457,6 +3457,7 @@ int AppCommandInterface::commandMultiply()
 
 int AppCommandInterface::commandStruct()
 {
+	const double error = 0.0001;
 	// if case
 	std::string argIf = args["if"];
 	if (!argIf.empty()) {
@@ -3468,13 +3469,13 @@ int AppCommandInterface::commandStruct()
 			swapIfCommand = false;
 			return executeCommandStatus();
 		}
-		if (args["equal"]!="")
-			if (evalDouble(argIf) != evalDouble(args["equal"])) {
+		if (args["equal"]!="")  // ! A==B => |A-B| > e
+			if (fabs(evalDouble(argIf) - evalDouble(args["equal"]))>error) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args["diff"]!="")
-			if (evalDouble(argIf) == evalDouble(args["diff"])) {
+		if (args["diff"]!="")  // ! A!=B => |A-B| < e
+			if (fabs(evalDouble(argIf) - evalDouble(args["diff"]))<error) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
