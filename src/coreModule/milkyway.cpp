@@ -93,9 +93,9 @@ MilkyWay::~MilkyWay()
 }
 
 
-void MilkyWay::deleteShader() {
+void MilkyWay::deleteShader()
+{
 	if (shaderMilkyway) delete shaderMilkyway;
-
 }
 
 void MilkyWay::deleteMapTex()
@@ -109,11 +109,7 @@ void MilkyWay::defineZodiacalState(const std::string& tex_file, float _intensity
 {
 	if (zodiacal.tex==nullptr) { //fist time to read this texture
 		zodiacal.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		#ifndef WIN32
-			zodiacal.intensity = std::max(std::min(_intensity, 1.f), 1.f);
-		#else
-			zodiacal.intensity = std::clamp(_intensity, 0.f, 1.f);
-		#endif
+		zodiacal.intensity = std::clamp(_intensity, 0.f, 1.f);
 		zodiacal.name = tex_file;
 	} else {
 		cLog::get()->write("Milkyway: zodicalState already exist, function aborded" , LOG_TYPE::L_WARNING);
@@ -125,28 +121,16 @@ void MilkyWay::defineInitialMilkywayState(const std::string& path_file,const std
 {
 	if (defaultMilky.tex==nullptr) {
 		defaultMilky.tex = new s_texture(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		#ifndef WIN32
-			defaultMilky.intensity = std::max(std::min(_intensity, 1.f), 1.f);
-		#else
-			defaultMilky.intensity = std::clamp(_intensity, 0.f, 1.f);
-		#endif
+		defaultMilky.intensity = std::clamp(_intensity, 0.f, 1.f);
 		defaultMilky.name = path_file +tex_file;
 		currentMilky.tex = new s_texture(path_file + tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-		#ifndef WIN32
-			currentMilky.intensity =  std::max(std::min(_intensity, 1.f), 1.f);
-		#else
-			currentMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
-		#endif
+		currentMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
 		currentMilky.name = path_file +tex_file;
 		intensityMilky.set(currentMilky.intensity);
 
 		if (useIrisMilky && !iris_tex_file.empty()) {
 			irisMilky.tex = new s_texture(path_file + iris_tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
-			#ifndef WIN32
-				irisMilky.intensity =  std::max(std::min(_intensity, 1.f), 1.f);
-			#else
-				irisMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
-			#endif
+			irisMilky.intensity =  std::clamp(_intensity, 0.f, 1.f);
 			irisMilky.name = path_file + iris_tex_file;
 			cLog::get()->write("Milkyway: define irisMilky, name "+ iris_tex_file, LOG_TYPE::L_DEBUG);
 		} else
