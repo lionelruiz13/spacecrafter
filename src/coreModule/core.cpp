@@ -406,6 +406,8 @@ void Core::init(const InitParser& conf)
 	navigation->setHeading(heading);
 	navigation->setDefaultHeading(heading);
 
+	meteors->setZHR(conf.getInt("astro","meteor_rate"));
+
 	InitViewPos = Utility::strToVec3f(conf.getStr("navigation:init_view_pos").c_str());
 
 	double viewOffset = conf.getDouble ("navigation","view_offset");
