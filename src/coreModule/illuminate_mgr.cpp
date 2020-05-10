@@ -76,7 +76,7 @@ bool IlluminateMgr::loadIlluminate(const std::string& filename, double ra, doubl
 
 	e = new Illuminate;
 
-	if(!e->createIlluminate(filename, ra, de, angular_size, name, r, b, g, tex_rotation)) {
+	if(!e->createIlluminate(/*filename,*/ ra, de, angular_size, name, r, b, g, tex_rotation)) {
 		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->Name, LOG_TYPE::L_ERROR);
 		delete e;
 		return false;
@@ -191,3 +191,4 @@ Illuminate *IlluminateMgr::searchIlluminate(const std::string& name)
 	}
 	return nullptr;
 }
+

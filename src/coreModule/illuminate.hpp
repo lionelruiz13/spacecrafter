@@ -48,7 +48,7 @@ public:
 	// bool createIlluminate(const std::string&);
 
 	//! Create Illuminate from passed data and then read in texture
-	bool createIlluminate(const std::string& filename, double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
+	bool createIlluminate(/*const std::string& filename,*/ double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
 
 private:
 	void drawTex(const Projector* prj, const Navigator * nav);
@@ -58,12 +58,12 @@ private:
 	//Vec3d XY;						//!< Store temporary 2D position
 
 	static s_texture * illuminateTex;		//!< Common texture
-	s_texture * illuminateSpecialTex;		//!< extra texture
+	// s_texture * illuminateSpecialTex;		//!< extra texture
 	Vec3f texQuadVertex[4];					//!< 4 vertex used to draw the Illuminate texture
 
 //	float myRA, myDe; 						//!< RA et De in radians
 	Vec3f texColor;							//!< texture color
-	bool specialTex;						//!<  indique si la texture finale est utilisée ou pas
+	// bool specialTex;						//!<  indique si la texture finale est utilisée ou pas
 
 protected :
 

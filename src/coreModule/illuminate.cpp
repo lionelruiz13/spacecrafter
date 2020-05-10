@@ -41,8 +41,8 @@ s_texture * Illuminate::illuminateTex= nullptr;
 Illuminate::Illuminate()
 {
 	Name = "";
-	illuminateSpecialTex = nullptr;
-	specialTex = false;
+	// illuminateSpecialTex = nullptr;
+	// specialTex = false;
 }
 
 void Illuminate::createShader()
@@ -80,17 +80,17 @@ Illuminate::~Illuminate()
 
 
 // Read Illuminate data passed in and compute x,y and z;
-bool Illuminate::createIlluminate(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
+bool Illuminate::createIlluminate(/*const std::string& filename,*/ double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
 {
 	Name = name;
 	texColor.set(r,g,b);
 
 	//std::cout << "createIlluminate "<< name << " f: " << filename << " " << ra << " " << de << " " << angular_size << " " << r << " " << g << " " << b << " rot: " << tex_rotation << std::endl;
-	if (filename!="") {
-		illuminateSpecialTex = new s_texture(/*true,*/ filename.c_str() ,0);
-		if (illuminateSpecialTex != nullptr)
-			specialTex = true;
-	}
+	// if (filename!="") {
+	// 	illuminateSpecialTex = new s_texture(/*true,*/ filename.c_str() ,0);
+	// 	if (illuminateSpecialTex != nullptr)
+	// 		specialTex = true;
+	// }
 
 	// Calc the RA and DE from the datas - keep base info for drawing (in radians)
 	float myRA = ra*C_PI/180.;
@@ -169,9 +169,9 @@ void Illuminate::drawTex(const Projector* prj, const Navigator* nav)
 
 	shaderIllum->use();
 
-	if (specialTex)
-		glBindTexture(GL_TEXTURE_2D, illuminateSpecialTex->getID());
-	else
+	// if (specialTex)
+	// 	glBindTexture(GL_TEXTURE_2D, illuminateSpecialTex->getID());
+	// else
 		glBindTexture(GL_TEXTURE_2D, illuminateTex->getID());
 
 	shaderIllum->setUniform("Color", texColor);
