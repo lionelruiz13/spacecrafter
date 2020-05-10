@@ -1389,7 +1389,7 @@ int AppCommandInterface::commandIlluminate()
 
 		if (args["rotation"]!="")
 			rotation = evalDouble(args["rotation"]);
-
+		/*
 		std::string argFileName = args["filename"];
 		if (!argFileName.empty()) {
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::IMAGE);
@@ -1398,8 +1398,8 @@ int AppCommandInterface::commandIlluminate()
 				return executeCommandStatus();
 			}
 			coreLink->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
-		} else
-			coreLink->illuminateLoad("", ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
+		} else*/
+			coreLink->illuminateLoad(ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
 		return executeCommandStatus();
 	}
 

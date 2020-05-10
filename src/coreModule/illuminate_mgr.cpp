@@ -65,7 +65,7 @@ IlluminateMgr::~IlluminateMgr()
 }
 
 // Load individual Illuminate for script
-bool IlluminateMgr::loadIlluminate(const std::string& filename, double ra, double de,  double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
+bool IlluminateMgr::loadIlluminate(/*const std::string& filename,*/ double ra, double de,  double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
 {
 	if (angular_size<1.0)
 		angular_size=defaultSize;

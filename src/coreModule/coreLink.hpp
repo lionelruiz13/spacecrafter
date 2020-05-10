@@ -274,9 +274,9 @@ public:
 		core->illuminates->setDefaultSize(value);
 	}
 
-	void illuminateLoad(const std::string& filename, double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float rotation)
+	void illuminateLoad(/*const std::string& filename,*/ double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float rotation)
 	{
-		core->illuminates->loadIlluminate(filename, ra, de, angular_size, name, r,g,b, rotation);
+		core->illuminates->loadIlluminate(/*filename,*/ ra, de, angular_size, name, r,g,b, rotation);
 	}
 	
 	void illuminateRemove(const std::string& name)
