@@ -93,8 +93,8 @@ bool Illuminate::createIlluminate(const std::string& filename, double ra, double
 	}
 
 	// Calc the RA and DE from the datas - keep base info for drawing (in radians)
-	myRA = ra*C_PI/180.;
-	myDe = de*C_PI/180.;
+	float myRA = ra*C_PI/180.;
+	float myDe = de*C_PI/180.;
 
 	// Calc the Cartesian coord with RA and DE
 	Utility::spheToRect(myRA,myDe,XYZ);

@@ -61,7 +61,7 @@ private:
 	s_texture * illuminateSpecialTex;		//!< extra texture
 	Vec3f texQuadVertex[4];					//!< 4 vertex used to draw the Illuminate texture
 
-	float myRA, myDe; 						//!< RA et De in radians
+//	float myRA, myDe; 						//!< RA et De in radians
 	Vec3f texColor;							//!< texture color
 	bool specialTex;						//!<  indique si la texture finale est utilisée ou pas
 
