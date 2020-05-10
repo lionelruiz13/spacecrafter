@@ -117,20 +117,20 @@ bool Illuminate::createIlluminate(const std::string& filename, double ra, double
 
 
 // Read Illuminate data from string and compute x,y and z returns false if can't parse record
-bool Illuminate::createIlluminate(const std::string& record)
-{
-	std::string name, filename;
-	float ra;
-	float de;
-	float tex_angular_size, rotation;
-	double r, g, b;
+// bool Illuminate::createIlluminate(const std::string& record)
+// {
+// 	std::string name, filename;
+// 	float ra;
+// 	float de;
+// 	float tex_angular_size, rotation;
+// 	double r, g, b;
 
-	std::istringstream istr(record);
+// 	std::istringstream istr(record);
 
-	if (!(istr >> filename >> ra >> de >> tex_angular_size >> name >> r >> g >> b >> rotation)) return false;
+// 	if (!(istr >> filename >> ra >> de >> tex_angular_size >> name >> r >> g >> b >> rotation)) return false;
 
-	return createIlluminate(filename, ra, de, tex_angular_size, name, r,g,b, rotation);
-}
+// 	return createIlluminate(filename, ra, de, tex_angular_size, name, r,g,b, rotation);
+// }
 
 void Illuminate::drawTex(const Projector* prj, const Navigator* nav)
 {

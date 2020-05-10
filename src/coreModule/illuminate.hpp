@@ -45,7 +45,7 @@ public:
 	}
 
 	//! Read the Illuminate data from a string
-	bool createIlluminate(const std::string&);
+	// bool createIlluminate(const std::string&);
 
 	//! Create Illuminate from passed data and then read in texture
 	bool createIlluminate(const std::string& filename, double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
