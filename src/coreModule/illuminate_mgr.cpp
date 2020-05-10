@@ -40,13 +40,11 @@ IlluminateMgr::IlluminateMgr()
 {
 	illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
 
-	if (!Illuminate::illuminateTex)
-		Illuminate::illuminateTex = new s_texture("star_illuminate.png");
-	if (!Illuminate::illuminateTex)
+	illuminateTex = new s_texture("star_illuminate.png");
+	if (!illuminateTex)
 		cLog::get()->write("Error loading texture illuminateTex", LOG_TYPE::L_ERROR);
 
-	//meme souci que pour skylineMgr
-	Illuminate::createShader();
+	createShader();
 }
 
 IlluminateMgr::~IlluminateMgr()
@@ -56,12 +54,12 @@ IlluminateMgr::~IlluminateMgr()
 		delete (*iter);
 	}
 
-	if (Illuminate::illuminateTex) delete Illuminate::illuminateTex;
-	Illuminate::illuminateTex = nullptr;
+	if (illuminateTex) delete illuminateTex;
+	illuminateTex = nullptr;
 
 	delete[] illuminateZones;
 
-	Illuminate::deleteShader();
+	deleteShader();
 }
 
 // Load individual Illuminate for script
@@ -152,8 +150,12 @@ void IlluminateMgr::removeAllIlluminate()
 void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 {
 	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	Vec3f pXYZ;
+
+	illumPos.clear();
+	illumTex.clear();
+	illumColor.clear();
 
 	// Find the star zones which are in the screen
 	int nbZones=0;
@@ -172,9 +174,40 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 		for (iter = illuminateZones[zoneList[i]].begin(); iter!=end; ++iter) {
 			n = *iter;
 			//prj->projectJ2000(n->XYZ,n->XY);
-			n->drawTex(prj, nav);
+			n->draw(prj, illumPos, illumTex, illumColor );
 		}
 	}
+
+	int nbrIllumToTrace = illumPos.size()/12;
+	std::cout << "Illuminate à tracer: il y a " << nbrIllumToTrace << std::endl;
+	std::cout << "illumPos   size : " << illumPos.size() << std::endl;
+	std::cout << "illumTex   size : " << illumTex.size() << std::endl;
+	std::cout << "illumColor size : " << illumColor.size() << std::endl;
+	shaderIllum->use();
+
+	// if (specialTex)
+	// 	glBindTexture(GL_TEXTURE_2D, illuminateSpecialTex->getID());
+	// else
+		glBindTexture(GL_TEXTURE_2D, illuminateTex->getID());
+
+	//shaderIllum->setUniform("Color", texColor);
+
+	glBindVertexArray(Illum.vao);
+	glBindBuffer(GL_ARRAY_BUFFER,Illum.pos);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumPos.size(), illumPos.data(),GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER,Illum.tex);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumTex.size(), illumTex.data(),GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER,Illum.color);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumColor.size(), illumColor.data() ,GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+	for(int i=0;i<nbrIllumToTrace; i++)
+		glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
+	shaderIllum->unuse();
 }
 
 // search by name
@@ -192,3 +225,32 @@ Illuminate *IlluminateMgr::search(const std::string& name)
 	return nullptr;
 }
 
+void IlluminateMgr::createShader()
+{
+	//======raw========
+	shaderIllum = new shaderProgram();
+	shaderIllum->init( "illuminate.vert", "illuminate.frag");
+	shaderIllum->setUniformLocation("Color");
+
+	glGenVertexArrays(1,&Illum.vao);
+	glBindVertexArray(Illum.vao);
+
+	glGenBuffers(1,&Illum.pos);
+	glGenBuffers(1,&Illum.tex);
+	glGenBuffers(1,&Illum.color);
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+}
+
+
+void IlluminateMgr::deleteShader()
+{
+	if (shaderIllum) delete shaderIllum;
+
+	glDeleteBuffers(1,&Illum.pos);
+	glDeleteBuffers(1,&Illum.tex);
+	glDeleteBuffers(1,&Illum.color);
+	glDeleteVertexArrays(1,&Illum.vao);
+}

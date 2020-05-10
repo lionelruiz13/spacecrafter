@@ -31,11 +31,11 @@
 #include "tools/fmath.hpp"
 
 
-shaderProgram* Illuminate::shaderIllum=nullptr;
+// shaderProgram* Illuminate::shaderIllum=nullptr;
 
-DataGL Illuminate::Illum;
+// DataGL Illuminate::Illum;
 
-s_texture * Illuminate::illuminateTex= nullptr;
+// s_texture * Illuminate::illuminateTex= nullptr;
 
 
 Illuminate::Illuminate()
@@ -45,32 +45,32 @@ Illuminate::Illuminate()
 	// specialTex = false;
 }
 
-void Illuminate::createShader()
-{
-	//======raw========
-	shaderIllum = new shaderProgram();
-	shaderIllum->init( "illuminate.vert", "illuminate.frag");
-	shaderIllum->setUniformLocation("Color");
+// void Illuminate::createShader()
+// {
+// 	//======raw========
+// 	shaderIllum = new shaderProgram();
+// 	shaderIllum->init( "illuminate.vert", "illuminate.frag");
+// 	shaderIllum->setUniformLocation("Color");
 
-	glGenVertexArrays(1,&Illum.vao);
-	glBindVertexArray(Illum.vao);
+// 	glGenVertexArrays(1,&Illum.vao);
+// 	glBindVertexArray(Illum.vao);
 
-	glGenBuffers(1,&Illum.pos);
-	glGenBuffers(1,&Illum.tex);
+// 	glGenBuffers(1,&Illum.pos);
+// 	glGenBuffers(1,&Illum.tex);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-}
+// 	glEnableVertexAttribArray(0);
+// 	glEnableVertexAttribArray(1);
+// }
 
 
-void Illuminate::deleteShader()
-{
-	if (shaderIllum) delete shaderIllum;
+// void Illuminate::deleteShader()
+// {
+// 	if (shaderIllum) delete shaderIllum;
 
-	glDeleteBuffers(1,&Illum.pos);
-	glDeleteBuffers(1,&Illum.tex);
-	glDeleteVertexArrays(1,&Illum.vao);
-}
+// 	glDeleteBuffers(1,&Illum.pos);
+// 	glDeleteBuffers(1,&Illum.tex);
+// 	glDeleteVertexArrays(1,&Illum.vao);
+// }
 
 
 Illuminate::~Illuminate()
@@ -132,41 +132,64 @@ bool Illuminate::createIlluminate(/*const std::string& filename,*/ double ra, do
 // 	return createIlluminate(filename, ra, de, tex_angular_size, name, r,g,b, rotation);
 // }
 
-void Illuminate::drawTex(const Projector* prj, const Navigator* nav)
+void Illuminate::draw(Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color )
 {
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Vec3d v;
-	float position[12];
+	Vec3f pos;
+
+	//color
+	for(int i=0; i<4; i++)
+		for(int j=0; j<3; j++)
+			color.push_back(texColor[j]);
+
+	//texture
 	float texPosition[8] = {	1.0,0.0,1.0,1.0,
 	                            0.0,0.0,0.0,1.0
 	                       };
+	for(int j=0; j<8; j++)
+		texture.push_back(texPosition[j]);
 
+	//position
 	//~ glTexCoord2i(1,0);              // Bottom Right
 	prj->projectJ2000(texQuadVertex[0],v);
-	position[0]=v[0];
-	position[1]=v[1];
-	position[2]=v[2];
+	pos = v;
+	// pos[0]=v[0];
+	// pos[1]=v[1];
+	// pos[2]=v[2];
+	for(int i=0; i<3; i++)
+		position.push_back(pos[i]);
 
 	//~ glTexCoord2i(1,1);              // Top Right
 	prj->projectJ2000(texQuadVertex[2],v);
-	position[3]=v[0];
-	position[4]=v[1];
-	position[5]=v[2];
+	pos = v;
+	// pos[0]=v[0];
+	// pos[1]=v[1];
+	// pos[2]=v[2];
+	for(int i=0; i<3; i++)
+		position.push_back(pos[i]);
 
 	//~ glTexCoord2i(0,0);              // Bottom Left
 	prj->projectJ2000(texQuadVertex[1],v);
-	position[6]=v[0];
-	position[7]=v[1];
-	position[8]=v[2];
+	pos = v;
+	// pos[0]=v[0];
+	// pos[1]=v[1];
+	// pos[2]=v[2];
+	for(int i=0; i<3; i++)
+		position.push_back(pos[i]);
 
 	//~ glTexCoord2i(0,1);              // Top Left
 	prj->projectJ2000(texQuadVertex[3],v);
-	position[9]=v[0];
-	position[10]=v[1];
-	position[11]=v[2];
+	pos = v;
+	// pos[0]=v[0];
+	// pos[1]=v[1];
+	// pos[2]=v[2];
+	for(int i=0; i<3; i++)
+		position.push_back(pos[i]);
 
+/*
 	shaderIllum->use();
 
 	// if (specialTex)
@@ -187,4 +210,6 @@ void Illuminate::drawTex(const Projector* prj, const Navigator* nav)
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	shaderIllum->unuse();
+*/
 }
+

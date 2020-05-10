@@ -7,19 +7,19 @@
 
 
 layout (binding=0) uniform sampler2D mapTexture;
-uniform vec3 Color;
 
 smooth in vec2 TexCoord;
- 
+smooth in vec3 TexColor;
+
 out vec4 FragColor;
 
 void main(void)
 {
 	vec4 textureColor = texture(mapTexture,TexCoord).rgba;
-	textureColor.r *= Color.r;
-	textureColor.g *= Color.b;
-	textureColor.b *= Color.g;
-	FragColor = vec4(textureColor);
+	textureColor.r *= TexColor.r;
+	textureColor.g *= TexColor.b;
+	textureColor.b *= TexColor.g;
+	FragColor = textureColor;
 	
 	//~ FragColor = vec4(1.0,0.0,0.0,1.0);
 }

@@ -67,6 +67,16 @@ private:
 	std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
 	littleGrid illuminateGrid;					//!< Grid for opimisation
 	double defaultSize;
+
+	shaderProgram* shaderIllum;
+	DataGL Illum;
+	std::vector<float> illumPos;
+	std::vector<float> illumTex;
+	std::vector<float> illumColor;
+
+	s_texture * illuminateTex;		//!< Common texture
+	void createShader();
+	void deleteShader();
 };
 
 #endif // _ILLUMINATE_MGR_H_

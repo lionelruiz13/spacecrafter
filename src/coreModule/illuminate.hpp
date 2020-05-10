@@ -51,13 +51,13 @@ public:
 	bool createIlluminate(/*const std::string& filename,*/ double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
 
 private:
-	void drawTex(const Projector* prj, const Navigator * nav);
+	void draw(Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
 
 	std::string Name;					//!< name
 	Vec3f XYZ;						//!< Cartesian equatorial position
 	//Vec3d XY;						//!< Store temporary 2D position
 
-	static s_texture * illuminateTex;		//!< Common texture
+	// static s_texture * illuminateTex;		//!< Common texture
 	// s_texture * illuminateSpecialTex;		//!< extra texture
 	Vec3f texQuadVertex[4];					//!< 4 vertex used to draw the Illuminate texture
 
@@ -67,13 +67,13 @@ private:
 
 protected :
 
-	static void createShader();
-	static void deleteShader();
+	// static void createShader();
+	// static void deleteShader();
 
-	//Opengl
-	static shaderProgram* shaderIllum;
-	static DataGL Illum;
-	std::vector<float> vecIllumPos;
+	// //Opengl
+	// static shaderProgram* shaderIllum;
+	// static DataGL Illum;
+	// std::vector<float> vecIllumPos;
 };
 
 #endif // _ILLUMINATE_H_
