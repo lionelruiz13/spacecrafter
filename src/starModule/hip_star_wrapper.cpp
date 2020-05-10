@@ -154,14 +154,14 @@ std::string StarWrapper1::getInfoString(const Navigator *nav) const
 
 
 
-void StarWrapper1::getRaDeValue(const Navigator *nav, double *ra, double *de) const
-{
-	const Vec3d j2000_pos = getObsJ2000Pos(nav);
-	double dec_j2000, ra_j2000;
-	Utility::rectToSphe(&ra_j2000,&dec_j2000,j2000_pos);
-	*ra= ra_j2000*180/3.1415927;
-	*de= dec_j2000*180/3.1415927;
-}
+// void StarWrapper1::getRaDeValue(const Navigator *nav, double *ra, double *de) const
+// {
+// 	const Vec3d j2000_pos = getObsJ2000Pos(nav);
+// 	double dec_j2000, ra_j2000;
+// 	Utility::rectToSphe(&ra_j2000,&dec_j2000,j2000_pos);
+// 	*ra= ra_j2000*180/3.1415927;
+// 	*de= dec_j2000*180/3.1415927;
+// }
 
 std::string StarWrapper1::getShortInfoString(const Navigator *nav) const
 {

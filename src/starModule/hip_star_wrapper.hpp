@@ -117,7 +117,7 @@ class StarWrapper1 : public StarWrapper<Star1> {
 public:
 	StarWrapper1(const SpecialZoneArray<Star1> *a, const SpecialZoneData<Star1> *z, const Star1 *s) : StarWrapper<Star1>(a,z,s) {}
 	std::string getInfoString(const Navigator *nav) const;
-	void getRaDeValue(const Navigator *nav, double *ra, double *de) const;
+	//void getRaDeValue(const Navigator *nav, double *ra, double *de) const;
 	std::string getShortInfoString(const Navigator *nav) const;
 	std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const;
 	std::string getEnglishName(void) const;
