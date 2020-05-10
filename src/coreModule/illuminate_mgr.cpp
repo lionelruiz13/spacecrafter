@@ -171,7 +171,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 		end = illuminateZones[zoneList[i]].end();
 		for (iter = illuminateZones[zoneList[i]].begin(); iter!=end; ++iter) {
 			n = *iter;
-			prj->projectJ2000(n->XYZ,n->XY);
+			//prj->projectJ2000(n->XYZ,n->XY);
 			n->drawTex(prj, nav);
 		}
 	}

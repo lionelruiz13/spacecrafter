@@ -55,7 +55,7 @@ private:
 
 	std::string Name;					//!< name
 	Vec3f XYZ;						//!< Cartesian equatorial position
-	Vec3d XY;						//!< Store temporary 2D position
+	//Vec3d XY;						//!< Store temporary 2D position
 
 	static s_texture * illuminateTex;		//!< Common texture
 	s_texture * illuminateSpecialTex;		//!< extra texture
