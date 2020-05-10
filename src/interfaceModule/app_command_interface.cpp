@@ -296,6 +296,7 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, s
 		debug_message = _("Unrecognized or malformed flag argument");
 		return false;
 	}
+	// @TODO reconstruct commandline to avoid passing std::string _commandline
 	commandline = _commandline;
 	return true;
 }
