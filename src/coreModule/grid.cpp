@@ -550,8 +550,9 @@ littleGrid::~littleGrid()
 	result=nullptr;
 }
 
-int littleGrid::GetNearest(Vec3f& v)
+int littleGrid::GetNearest(const Vec3f& _v)
 {
+	Vec3f v=_v;
 	int bestI = -1;
 	float bestDot = -2.f;
 
@@ -567,8 +568,9 @@ int littleGrid::GetNearest(Vec3f& v)
 
 
 //! Return an array with the number of the zones in the field of view
-int littleGrid::Intersect(Vec3f pos, float fieldAngle)
+int littleGrid::Intersect(const Vec3f& _pos, float fieldAngle)
 {
+	Vec3f pos = _pos;
 	pos.normalize();
 	float max = cosf(fieldAngle/2.f + Angle);
 

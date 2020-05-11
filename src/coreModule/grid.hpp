@@ -32,8 +32,8 @@ class littleGrid {
 public:
 	littleGrid();
 	virtual ~littleGrid();
-	int GetNearest(Vec3f&);
-	int Intersect(Vec3f pos, float fieldAngle); //! Return an array with the number of the zones in the field of view
+	int GetNearest(const Vec3f&);
+	int Intersect(const Vec3f& _pos, float fieldAngle); //! Return an array with the number of the zones in the field of view
 	int * getResult(void) const {
 		return result;
 	}
