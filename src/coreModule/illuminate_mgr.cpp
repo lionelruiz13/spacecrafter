@@ -66,7 +66,36 @@ IlluminateMgr::~IlluminateMgr()
 }
 
 // Load individual Illuminate for script
-bool IlluminateMgr::loadIlluminate(double ra, double de,  double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
+bool IlluminateMgr::loadIlluminate(int num)
+{
+	Object selected_object = hip_stars->searchHP(num).get();
+	Vec3f color = selected_object.getRGB();
+	double ra, de;
+	selected_object.getRaDeValue(navigator,&ra,&de);
+	float mag = selected_object.getMag(navigator);
+
+	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
+	std::cout <<num << " only" <<std::endl;
+	return loadIlluminate(num, ra, de, defaultSize, color[0], color[1], color[2], 0);	
+}
+
+
+bool IlluminateMgr::loadIlluminate(int num, const Vec3f& _color)
+{
+	Object selected_object = hip_stars->searchHP(num).get();
+	//Vec3f color = selected_object.getRGB();
+	double ra, de;
+	selected_object.getRaDeValue(navigator,&ra,&de);
+	float mag = selected_object.getMag(navigator);
+
+	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
+	std::cout << num << " with color" << std::endl;
+	return loadIlluminate(num, ra, de, defaultSize, _color[0], _color[1], _color[2], 0 );
+}
+
+
+// Load individual Illuminate for script
+bool IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  double angular_size, double r, double g, double b, float tex_rotation)
 {
 	if (angular_size<1.0)
 		angular_size=defaultSize;
@@ -77,29 +106,26 @@ bool IlluminateMgr::loadIlluminate(double ra, double de,  double angular_size, c
 
 	e = new Illuminate;
 
-	if(!e->createIlluminate(ra, de, angular_size, name, r, b, g, tex_rotation)) {
-		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->getName(), LOG_TYPE::L_ERROR);
-		delete e;
-		return false;
-	} else {
+	if(e->createIlluminate(name, ra, de, angular_size, r, b, g, tex_rotation)) {
 		illuminateArray.push_back(e);
 		illuminateZones[illuminateGrid.GetNearest(e->getXYZ())].push_back(e);
 		return true;
-	}
+	} else {
+		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->getName(), LOG_TYPE::L_ERROR);
+		delete e;
+		return false;
+	}		
 }
 
 // Clear user added Illuminate
-void IlluminateMgr::removeIlluminate(const std::string& name)
+void IlluminateMgr::removeIlluminate(unsigned int name)
 {
-	std::string uname = name;
-	transform(uname.begin(), uname.end(), uname.begin(), ::toupper);
 	std::vector <Illuminate*>::iterator iter;
 	std::vector <Illuminate*>::iterator iter2;
 
 	for (iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
-		std::string testName = (*iter)->getName();
 
-		if (testName==uname) {
+		if ((*iter)->getName() == name) {
 			// erase from locator grid
 			int zone = illuminateGrid.GetNearest((*iter)->getXYZ());
 
@@ -116,7 +142,7 @@ void IlluminateMgr::removeIlluminate(const std::string& name)
 			return;
 		}
 	}
-	cLog::get()->write("Requested Illuminate to delete not found by name " + uname, LOG_TYPE::L_INFO);
+	cLog::get()->write("Requested Illuminate to delete not found by name " + name, LOG_TYPE::L_INFO);
 }
 
 // remove all user added Illuminate
@@ -206,16 +232,11 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 }
 
 // search by name
-Illuminate *IlluminateMgr::search(const std::string& name)
+Illuminate *IlluminateMgr::search(unsigned int name)
 {
-	std::string uname = name;
-	transform(uname.begin(), uname.end(), uname.begin(), ::toupper);
-	std::vector <Illuminate*>::const_iterator iter;
-
-	for (iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
-		std::string testName = (*iter)->getName();
-		transform(testName.begin(), testName.end(), testName.begin(), ::toupper);
-		if (testName==uname  ) return *iter;
+	for (auto iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
+		if ((*iter)->getName()== name)
+			return *iter;
 	}
 	return nullptr;
 }

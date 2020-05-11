@@ -1368,28 +1368,43 @@ int AppCommandInterface::commandIlluminate()
 	std::string argDisplay = args["display"];
 
 	if (!argHP.empty() && isTrue(argDisplay)) {
-		std::string select_type, identifier;
-		select_type = "hp";
-		identifier = argHP;
-		stcore->selectObject(select_type, identifier);
-		double ra, de;
-		stcore->getDeRa(&ra,&de);
-		stcore->unSelect();
 
-		std::string ang_size=args["size"];
-		if (ang_size=="") ang_size="0.0";
+		//	coreLink->illuminateLoad(evalInt(argHP));
+		
+		//gestion de la couleur
+		Vec3f Vcolor;
+		std::string argValue = args["color_value"];
+		std::string argR= args["r"];
+		std::string argG= args["g"];
+		std::string argB= args["b"];
+		AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
+		if (!testColor)
+			coreLink->illuminateLoad(evalInt(argHP));
+		else 		// here we have color
+			coreLink->illuminateLoad(evalInt(argHP), Vcolor);
+		
+		// std::string select_type, identifier;
+		// select_type = "hp";
+		// identifier = argHP;
+		// stcore->selectObject(select_type, identifier);
+		// double ra, de;
+		// stcore->getDeRa(&ra,&de);
+		// stcore->unSelect();
 
-		double r=1.0, g=1.0, b=1.0, rotation=0.0;
+		// std::string ang_size=args["size"];
+		// if (ang_size=="") ang_size="0.0";
 
-		if (args["r"]!="")
-			r=evalDouble(args["r"]);
-		if (args["g"]!="")
-			g=evalDouble(args["g"]);
-		if (args["b"]!="")
-			b=evalDouble(args["b"]);
+		// double r=1.0, g=1.0, b=1.0, rotation=0.0;
 
-		if (args["rotation"]!="")
-			rotation = evalDouble(args["rotation"]);
+		// if (args["r"]!="")
+		// 	r=evalDouble(args["r"]);
+		// if (args["g"]!="")
+		// 	g=evalDouble(args["g"]);
+		// if (args["b"]!="")
+		// 	b=evalDouble(args["b"]);
+
+		// if (args["rotation"]!="")
+		// 	rotation = evalDouble(args["rotation"]);
 		/*
 		std::string argFileName = args["filename"];
 		if (!argFileName.empty()) {
@@ -1400,14 +1415,12 @@ int AppCommandInterface::commandIlluminate()
 			}
 			coreLink->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
 		} else*/
-			coreLink->illuminateLoad(ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
+			// coreLink->illuminateLoad(ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
 		return executeCommandStatus();
 	}
 
 	if (!argHP.empty() && isFalse(argDisplay)) {
-		std::string identifier;
-		identifier = "I-"+argHP;
-		coreLink->illuminateRemove( identifier);
+		coreLink->illuminateRemove( evalInt(argHP));
 		return executeCommandStatus();
 	}
 

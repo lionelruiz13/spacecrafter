@@ -274,13 +274,19 @@ public:
 		core->illuminates->setDefaultSize(value);
 	}
 
-	void illuminateLoad(/*const std::string& filename,*/ double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float rotation)
-	{
-		core->illuminates->loadIlluminate(/*filename,*/ ra, de, angular_size, name, r,g,b, rotation);
+	void illuminateLoad(int number) {
+		core->illuminates->loadIlluminate(number);
 	}
-	
-	void illuminateRemove(const std::string& name)
-	{
+
+	void illuminateLoad(int number, const Vec3f& _color) {
+		core->illuminates->loadIlluminate(number, _color);
+	}
+
+	void illuminateLoad(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float rotation) {
+		core->illuminates->loadIlluminate(name, ra, de, angular_size, r,g,b, rotation);
+	}
+		
+	void illuminateRemove(unsigned int name) 	{
 		core->illuminates->removeIlluminate(name);
 	}
 	
@@ -296,6 +302,10 @@ public:
 	void illuminateRemoveTex()	{
 		core->illuminates->removeTex();
 	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// stars
+	////////////////////////////////////////////////////////////////////////////////
 
 	void starSetFlagTwinkle(bool b) {
 		core->hip_stars->setFlagTwinkle(b);

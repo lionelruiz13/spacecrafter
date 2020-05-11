@@ -45,17 +45,20 @@ public:
 	IlluminateMgr& operator = (IlluminateMgr const &) = delete;
 
 	//! search by name and return an Illuminate object
-	Illuminate *search(const std::string& name);
+	Illuminate *search(unsigned int name);
 
 	void setDefaultSize(double v) {
 		defaultSize =v;
 	}
 
+	bool loadIlluminate(int num);
+	bool loadIlluminate(int num, const Vec3f& _color);
+
 	//! Load an individual Illuminate from a script
-	bool loadIlluminate(double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation);
+	bool loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
 
 	//! remove user added Illuminate and optionally unhide the original of the same name
-	void removeIlluminate(const std::string& name);
+	void removeIlluminate(unsigned int name);
 
 	//! remove all user added Illuminate
 	void removeAllIlluminate();
