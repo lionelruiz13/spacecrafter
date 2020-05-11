@@ -293,6 +293,10 @@ public:
 		core->illuminates->changeTex(_fileName);
 	}
 
+	void illuminateRemoveTex()	{
+		core->illuminates->removeTex();
+	}
+
 	void starSetFlagTwinkle(bool b) {
 		core->hip_stars->setFlagTwinkle(b);
 	}

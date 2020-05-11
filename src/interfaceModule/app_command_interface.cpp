@@ -1412,7 +1412,13 @@ int AppCommandInterface::commandIlluminate()
 	}
 
 	if (args["action"]=="clear") {
+		coreLink->illuminateRemoveTex();
 		coreLink->illuminateRemoveAll();
+		return executeCommandStatus();
+	}
+
+	if (args["action"]=="clear_texture") {
+		coreLink->illuminateRemoveTex();
 		return executeCommandStatus();
 	}
 
