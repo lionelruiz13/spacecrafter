@@ -40,10 +40,11 @@ IlluminateMgr::IlluminateMgr()
 {
 	illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
 
-	illuminateTex = new s_texture("star_illuminate.png");
-	if (!illuminateTex)
+	defaultTex = new s_texture("star_illuminate.png");
+	if (defaultTex ==nullptr)
 		cLog::get()->write("Error loading texture illuminateTex", LOG_TYPE::L_ERROR);
 
+	currentTex = defaultTex;
 	createShader();
 }
 
@@ -54,8 +55,8 @@ IlluminateMgr::~IlluminateMgr()
 		delete (*iter);
 	}
 
-	if (illuminateTex) delete illuminateTex;
-	illuminateTex = nullptr;
+	if (defaultTex) delete defaultTex;
+	defaultTex = nullptr;
 
 	delete[] illuminateZones;
 
@@ -180,7 +181,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	// if (specialTex)
 	// 	glBindTexture(GL_TEXTURE_2D, illuminateSpecialTex->getID());
 	// else
-		glBindTexture(GL_TEXTURE_2D, illuminateTex->getID());
+	glBindTexture(GL_TEXTURE_2D, currentTex->getID());
 
 	//shaderIllum->setUniform("Color", texColor);
 
@@ -245,4 +246,27 @@ void IlluminateMgr::deleteShader()
 	glDeleteBuffers(1,&Illum.tex);
 	glDeleteBuffers(1,&Illum.color);
 	glDeleteVertexArrays(1,&Illum.vao);
+}
+
+
+
+void IlluminateMgr::changeTex(const std::string& fileName)
+{
+	this->removeTex();
+	userTex = new s_texture(fileName);
+	if (userTex==nullptr) {
+		cLog::get()->write("illuminate: error when loading user texture "+ fileName, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
+	}
+	currentTex = userTex;
+}
+
+		
+void IlluminateMgr::removeTex()
+{
+	if (currentTex == defaultTex) //nothing to do
+		return;
+	// here, userTex is used
+	currentTex = defaultTex;
+	delete userTex;
+	userTex = nullptr;
 }

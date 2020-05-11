@@ -1415,6 +1415,19 @@ int AppCommandInterface::commandIlluminate()
 		coreLink->illuminateRemoveAll();
 		return executeCommandStatus();
 	}
+
+	std::string argFileName = args["filename"];
+	if (!argFileName.empty()) {
+		FilePath myFile  = FilePath(argFileName, FilePath::TFP::IMAGE);
+		if (!myFile.exist()) {
+			debug_message = _("command 'illuminate': filename not found");
+			return executeCommandStatus();
+		}
+		coreLink->illuminateChangeTex(myFile.toString());
+		return executeCommandStatus();
+	}
+
+	debug_message = _("command 'illuminate': argument unknown");
 	return executeCommandStatus();
 }
 

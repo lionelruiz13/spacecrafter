@@ -289,6 +289,10 @@ public:
 		core->illuminates->removeAllIlluminate();
 	}
 
+	void illuminateChangeTex(const std::string& _fileName)	{
+		core->illuminates->changeTex(_fileName);
+	}
+
 	void starSetFlagTwinkle(bool b) {
 		core->hip_stars->setFlagTwinkle(b);
 	}

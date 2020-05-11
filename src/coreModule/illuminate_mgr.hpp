@@ -62,6 +62,11 @@ public:
 	//! Draw all the Illuminate
 	void draw(Projector *prj, const Navigator *nav);
 
+	//! change la texture des illuminate par le fichier proposé en paramètre
+	void changeTex(const std::string& fileName);
+	//!	supprime la texture définie par l'utilisateur
+	void removeTex();
+
 private:
 	std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate list
 	std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
@@ -74,7 +79,10 @@ private:
 	std::vector<float> illumTex;
 	std::vector<float> illumColor;
 
-	s_texture * illuminateTex;		//!< Common texture
+	s_texture * currentTex = nullptr;			//!< Pointer of texture used to draw
+	s_texture * defaultTex = nullptr;		//!< Common texture if no other texture defined
+	s_texture * userTex = nullptr;				//!< Texture define by user 
+
 	void createShader();
 	void deleteShader();
 };
