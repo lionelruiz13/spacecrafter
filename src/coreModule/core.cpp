@@ -75,7 +75,6 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	observatory = new Observer(*ssystem);
 	navigation = new Navigator();
 	nebulas = new NebulaMgr();
-	illuminates= new IlluminateMgr();
 	milky_way = new MilkyWay();
 	starNav = new StarNavigator();
 	starLines = new StarLines();
@@ -130,6 +129,7 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	inactiveLandscape = new Landscape();
 	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height);
+	illuminates= new IlluminateMgr(hip_stars, navigation);	
 	asterisms = new ConstellationMgr(hip_stars);
 	text_usr = new TextMgr();
 	mCity = new mCity_Mgr();

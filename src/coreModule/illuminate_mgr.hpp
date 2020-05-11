@@ -31,14 +31,15 @@
 #include "coreModule/grid.hpp"
 #include "illuminate.hpp"
 
-
+class HipStarMgr;
+class Navigator;
 
 /*! \class IlluminateMgr
   * \brief IlluminateMgr handles all illumiante stars for better stars visualisation.
   */
 class IlluminateMgr {
 public:
-	IlluminateMgr();
+	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator);
 	virtual ~IlluminateMgr();
 	IlluminateMgr(IlluminateMgr const &) = delete;
 	IlluminateMgr& operator = (IlluminateMgr const &) = delete;
@@ -74,6 +75,9 @@ private:
 	double defaultSize;
 
 	shaderProgram* shaderIllum;
+	HipStarMgr* hip_stars = nullptr;
+	Navigator* navigator = nullptr;
+
 	DataGL Illum;
 	std::vector<float> illumPos;
 	std::vector<float> illumTex;

@@ -34,10 +34,12 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
+#include "starModule/hip_star_mgr.hpp"
 
-
-IlluminateMgr::IlluminateMgr()
+IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator)
 {
+	hip_stars = _hip_stars;
+	navigator = _navigator;
 	illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
 
 	defaultTex = new s_texture("star_illuminate.png");
