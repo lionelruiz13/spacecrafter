@@ -63,7 +63,7 @@ IlluminateMgr::~IlluminateMgr()
 }
 
 // Load individual Illuminate for script
-bool IlluminateMgr::loadIlluminate(/*const std::string& filename,*/ double ra, double de,  double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
+bool IlluminateMgr::loadIlluminate(double ra, double de,  double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
 {
 	if (angular_size<1.0)
 		angular_size=defaultSize;
@@ -74,7 +74,7 @@ bool IlluminateMgr::loadIlluminate(/*const std::string& filename,*/ double ra, d
 
 	e = new Illuminate;
 
-	if(!e->createIlluminate(/*filename,*/ ra, de, angular_size, name, r, b, g, tex_rotation)) {
+	if(!e->createIlluminate(ra, de, angular_size, name, r, b, g, tex_rotation)) {
 		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->Name, LOG_TYPE::L_ERROR);
 		delete e;
 		return false;
@@ -93,11 +93,6 @@ void IlluminateMgr::removeIlluminate(const std::string& name)
 	std::vector <Illuminate*>::iterator iter;
 	std::vector <Illuminate*>::iterator iter2;
 
-	// iter = std::find_if(illuminateArray.begin(),illuminateArray.end(), [&uname](auto &ptr) { return ptr->getName() == uname; });
-	// if (iter == illuminateArray.end())	{
-	// 	cLog::get()->write("Requested Illuminate to delete not found by name " + uname, LOG_TYPE::L_INFO);
-	// 	return;
-	// }
 	for (iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
 		std::string testName = (*iter)->getName();
 
@@ -119,7 +114,6 @@ void IlluminateMgr::removeIlluminate(const std::string& name)
 		}
 	}
 	cLog::get()->write("Requested Illuminate to delete not found by name " + uname, LOG_TYPE::L_INFO);
-	// return "Requested Illuminate to delete not found by name.";
 }
 
 // remove all user added Illuminate
@@ -128,7 +122,7 @@ void IlluminateMgr::removeAllIlluminate()
 	std::vector<Illuminate *>::iterator iter;
 	std::vector<Illuminate *>::iterator iter2;
 
-	for (iter=illuminateArray.begin(); iter!=illuminateArray.end(); /*iter++*/) {
+	for (iter=illuminateArray.begin(); iter!=illuminateArray.end();) {
 		// erase from locator grid
 		int zone = illuminateGrid.GetNearest((*iter)->XYZ);
 
@@ -141,9 +135,7 @@ void IlluminateMgr::removeAllIlluminate()
 		// Delete Illuminate
 		delete *iter;
 		iter = illuminateArray.erase(iter);
-		//iter--;
 	}
-	// return "";
 }
 
 // Draw all the Illuminate

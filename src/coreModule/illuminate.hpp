@@ -36,44 +36,25 @@ class Illuminate {
 	friend class IlluminateMgr;
 public:
 
-	Illuminate();
-	~Illuminate();
+	Illuminate(){};
+	~Illuminate(){};
 
 	//! return the name of the illuminate
 	std::string getName(void) const {
 		return Name;
 	}
 
-	//! Read the Illuminate data from a string
-	// bool createIlluminate(const std::string&);
-
 	//! Create Illuminate from passed data and then read in texture
-	bool createIlluminate(/*const std::string& filename,*/ double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
+	bool createIlluminate(double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
+	void draw(Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
 
 private:
-	void draw(Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
 
 	std::string Name;					//!< name
 	Vec3f XYZ;						//!< Cartesian equatorial position
-	//Vec3d XY;						//!< Store temporary 2D position
-
-	// static s_texture * illuminateTex;		//!< Common texture
-	// s_texture * illuminateSpecialTex;		//!< extra texture
 	Vec3f texQuadVertex[4];					//!< 4 vertex used to draw the Illuminate texture
-
-//	float myRA, myDe; 						//!< RA et De in radians
+	//	float myRA, myDe; 						//!< RA et De in radians
 	Vec3f texColor;							//!< texture color
-	// bool specialTex;						//!<  indique si la texture finale est utilisée ou pas
-
-protected :
-
-	// static void createShader();
-	// static void deleteShader();
-
-	// //Opengl
-	// static shaderProgram* shaderIllum;
-	// static DataGL Illum;
-	// std::vector<float> vecIllumPos;
 };
 
 #endif // _ILLUMINATE_H_

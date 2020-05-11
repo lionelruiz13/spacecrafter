@@ -31,66 +31,11 @@
 #include "tools/fmath.hpp"
 
 
-// shaderProgram* Illuminate::shaderIllum=nullptr;
-
-// DataGL Illuminate::Illum;
-
-// s_texture * Illuminate::illuminateTex= nullptr;
-
-
-Illuminate::Illuminate()
-{
-	Name = "";
-	// illuminateSpecialTex = nullptr;
-	// specialTex = false;
-}
-
-// void Illuminate::createShader()
-// {
-// 	//======raw========
-// 	shaderIllum = new shaderProgram();
-// 	shaderIllum->init( "illuminate.vert", "illuminate.frag");
-// 	shaderIllum->setUniformLocation("Color");
-
-// 	glGenVertexArrays(1,&Illum.vao);
-// 	glBindVertexArray(Illum.vao);
-
-// 	glGenBuffers(1,&Illum.pos);
-// 	glGenBuffers(1,&Illum.tex);
-
-// 	glEnableVertexAttribArray(0);
-// 	glEnableVertexAttribArray(1);
-// }
-
-
-// void Illuminate::deleteShader()
-// {
-// 	if (shaderIllum) delete shaderIllum;
-
-// 	glDeleteBuffers(1,&Illum.pos);
-// 	glDeleteBuffers(1,&Illum.tex);
-// 	glDeleteVertexArrays(1,&Illum.vao);
-// }
-
-
-Illuminate::~Illuminate()
-{
-	//deleteShader();
-}
-
-
 // Read Illuminate data passed in and compute x,y and z;
-bool Illuminate::createIlluminate(/*const std::string& filename,*/ double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
+bool Illuminate::createIlluminate( double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
 {
 	Name = name;
 	texColor.set(r,g,b);
-
-	//std::cout << "createIlluminate "<< name << " f: " << filename << " " << ra << " " << de << " " << angular_size << " " << r << " " << g << " " << b << " rot: " << tex_rotation << std::endl;
-	// if (filename!="") {
-	// 	illuminateSpecialTex = new s_texture(/*true,*/ filename.c_str() ,0);
-	// 	if (illuminateSpecialTex != nullptr)
-	// 		specialTex = true;
-	// }
 
 	// Calc the RA and DE from the datas - keep base info for drawing (in radians)
 	float myRA = ra*C_PI/180.;
@@ -116,27 +61,8 @@ bool Illuminate::createIlluminate(/*const std::string& filename,*/ double ra, do
 }
 
 
-// Read Illuminate data from string and compute x,y and z returns false if can't parse record
-// bool Illuminate::createIlluminate(const std::string& record)
-// {
-// 	std::string name, filename;
-// 	float ra;
-// 	float de;
-// 	float tex_angular_size, rotation;
-// 	double r, g, b;
-
-// 	std::istringstream istr(record);
-
-// 	if (!(istr >> filename >> ra >> de >> tex_angular_size >> name >> r >> g >> b >> rotation)) return false;
-
-// 	return createIlluminate(filename, ra, de, tex_angular_size, name, r,g,b, rotation);
-// }
-
 void Illuminate::draw(Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color )
 {
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	Vec3d v;
 	Vec3f pos;
 
@@ -156,60 +82,26 @@ void Illuminate::draw(Projector* prj, std::vector<float> &position, std::vector<
 	//~ glTexCoord2i(1,0);              // Bottom Right
 	prj->projectJ2000(texQuadVertex[0],v);
 	pos = v;
-	// pos[0]=v[0];
-	// pos[1]=v[1];
-	// pos[2]=v[2];
 	for(int i=0; i<3; i++)
 		position.push_back(pos[i]);
 
 	//~ glTexCoord2i(1,1);              // Top Right
 	prj->projectJ2000(texQuadVertex[2],v);
 	pos = v;
-	// pos[0]=v[0];
-	// pos[1]=v[1];
-	// pos[2]=v[2];
 	for(int i=0; i<3; i++)
 		position.push_back(pos[i]);
 
 	//~ glTexCoord2i(0,0);              // Bottom Left
 	prj->projectJ2000(texQuadVertex[1],v);
 	pos = v;
-	// pos[0]=v[0];
-	// pos[1]=v[1];
-	// pos[2]=v[2];
 	for(int i=0; i<3; i++)
 		position.push_back(pos[i]);
 
 	//~ glTexCoord2i(0,1);              // Top Left
 	prj->projectJ2000(texQuadVertex[3],v);
 	pos = v;
-	// pos[0]=v[0];
-	// pos[1]=v[1];
-	// pos[2]=v[2];
 	for(int i=0; i<3; i++)
 		position.push_back(pos[i]);
 
-/*
-	shaderIllum->use();
-
-	// if (specialTex)
-	// 	glBindTexture(GL_TEXTURE_2D, illuminateSpecialTex->getID());
-	// else
-		glBindTexture(GL_TEXTURE_2D, illuminateTex->getID());
-
-	shaderIllum->setUniform("Color", texColor);
-
-	glBindVertexArray(Illum.vao);
-	glBindBuffer(GL_ARRAY_BUFFER,Illum.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*12, &position[0],GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glBindBuffer(GL_ARRAY_BUFFER,Illum.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, &texPosition[0],GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	shaderIllum->unuse();
-*/
 }
 
