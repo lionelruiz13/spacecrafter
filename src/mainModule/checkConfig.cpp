@@ -41,16 +41,16 @@ CheckConfig::~CheckConfig()
 
 void CheckConfig::checkMainSettings()
 {
-	tmpSettings["debug"]="false";
+	tmpSettings[SCK_DEBUG]="false";
 	// mainSettings["debug_opengl"]="false";
-	tmpSettings["milkyway_iris"] = "false";
-	tmpSettings["flag_optoma"]="false";
+	tmpSettings[SCK_MILKYWAY_IRIS] = "false";
+	tmpSettings[SCK_FLAG_OPTOMA]="false";
 	// mainSettings["script_debug"]="false";
-	tmpSettings["cpu_info"]="false";
-	tmpSettings["flag_always_visible"]="true";
+	tmpSettings[SCK_CPU_INFO]="false";
+	tmpSettings[SCK_FLAG_ALWAYS_VISIBLE]="true";
 
-	sectionSettings.push_back("main");
-	insertKeyFromTmpSettings("main");
+	sectionSettings.push_back(SCS_MAIN);
+	insertKeyFromTmpSettings(SCS_MAIN);
 	tmpSettings.clear();
 }
 

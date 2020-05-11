@@ -242,11 +242,11 @@ int main(int argc, char **argv)
 
 	ini->loadAppSettings( &conf );
 
-	Log->setDebug(conf.getBoolean("main:debug"));
+	Log->setDebug(conf.getBoolean(SCS_MAIN, SCK_DEBUG));
 
 
 	#ifdef LINUX
-	if (conf.getBoolean("main:CPU_info")) {
+	if (conf.getBoolean(SCS_MAIN,SCK_CPU_INFO)) {
 		cpuInfo = new CPUInfo();
 		cpuInfo -> init(ini->getLogDir()+"CPUlog.csv",ini->getLogDir()+"GPUlog.csv");
 		cpuInfo -> start();

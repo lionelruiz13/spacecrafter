@@ -65,6 +65,7 @@
 #include "starModule/geodesic_grid.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/init_parser.hpp"
+#include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
 #include "tools/shader.hpp"
 #include "tools/sky_localizer.hpp"

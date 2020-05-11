@@ -332,7 +332,7 @@ void Core::init(const InitParser& conf)
 	coreFont->setFont();
 
 	if (firstTime) {
-		milky_way->needToUseIris(conf.getBoolean("main:milkyway_iris"));
+		milky_way->needToUseIris(conf.getBoolean(SCS_MAIN, SCK_MILKYWAY_IRIS));
 		milky_way->defineInitialMilkywayState(AppSettings::Instance()->getTextureDir() , conf.getStr("astro:milky_way_texture"), 
 				conf.getStr("astro:milky_way_iris_texture"), conf.getDouble("astro","milky_way_intensity"));
 		milky_way->defineZodiacalState(AppSettings::Instance()->getTextureDir() + conf.getStr("astro:zodiacal_light_texture"), conf.getDouble("astro","zodiacal_intensity"));
@@ -484,7 +484,7 @@ void Core::init(const InitParser& conf)
 
 	setLightPollutionLimitingMagnitude(conf.getDouble("viewing","light_pollution_limiting_magnitude"));
 
-	atmosphere->setFlagOptoma(conf.getBoolean("main:flag_optoma"));
+	atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 

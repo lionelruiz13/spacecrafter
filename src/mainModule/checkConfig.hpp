@@ -29,6 +29,8 @@
 #include <map>
 #include "tools/init_parser.hpp"
 
+#include "mainModule/define_key.hpp"
+
 class CheckConfig {
 public:
     CheckConfig();

@@ -298,7 +298,7 @@ void App::init()
 		flagMasterput=conf.getBoolean("io:flag_masterput");
 		enable_tcp=conf.getBoolean("io","enable_tcp");
 		enable_mkfifo=conf.getBoolean("io","enable_mkfifo");
-		flagAlwaysVisible = conf.getBoolean("main:flag_always_visible");
+		flagAlwaysVisible = conf.getBoolean(SCS_MAIN,SCK_FLAG_ALWAYS_VISIBLE);
 
 		// std::stringstream oss;
 		// cLog::get()->write(oss.str(), LOG_TYPE::L_INFO);
