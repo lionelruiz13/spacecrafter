@@ -40,8 +40,8 @@ public:
 	~Illuminate(){};
 
 	//! return the name of the illuminate
-	const std::string& getName() const {
-		return Name;
+	unsigned int getName() const {
+		return name;
 	}
 
 	//! return cartesian equatorial position
@@ -50,17 +50,17 @@ public:
 	}
 
 	//! Create Illuminate from passed data and then read in texture
-	bool createIlluminate(double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
+	bool createIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
 	//! rempli les buffers pour un tracé en groupe des illuminates
 	void draw(const Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
 
 private:
 
-	std::string Name;					//!< name
+	unsigned int name;				//!< name
 	Vec3f XYZ;						//!< Cartesian equatorial position
-	Vec3f texQuadVertex[4];					//!< 4 vertex used to draw the Illuminate texture
-	//	float myRA, myDe; 						//!< RA et De in radians
-	Vec3f texColor;							//!< texture color
+	Vec3f texQuadVertex[4];			//!< 4 vertex used to draw the Illuminate texture
+	//	float myRA, myDe; 			//!< RA et De in radians
+	Vec3f texColor;					//!< texture color
 };
 
 #endif // _ILLUMINATE_H_

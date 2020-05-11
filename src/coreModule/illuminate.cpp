@@ -32,9 +32,9 @@
 
 
 // Read Illuminate data passed in and compute x,y and z;
-bool Illuminate::createIlluminate( double ra, double de, double angular_size, const std::string& name, double r, double g, double b, float tex_rotation)
+bool Illuminate::createIlluminate(unsigned int _name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation)
 {
-	Name = name;
+	name = _name;
 	texColor.set(r,g,b);
 
 	// Calc the RA and DE from the datas - keep base info for drawing (in radians)
