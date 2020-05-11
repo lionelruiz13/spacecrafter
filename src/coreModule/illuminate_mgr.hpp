@@ -65,7 +65,7 @@ public:
 private:
 	std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate list
 	std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
-	littleGrid illuminateGrid;					//!< Grid for opimisation
+	LittleGrid illuminateGrid;					//!< Grid for opimisation
 	double defaultSize;
 
 	shaderProgram* shaderIllum;

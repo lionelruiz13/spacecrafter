@@ -33,7 +33,7 @@
 // 	p[c].normalize();
 // }
 
-littleGrid::littleGrid() : result(nullptr)
+LittleGrid::LittleGrid() : result(nullptr)
 {
 
 	NbPoints = 492;
@@ -542,7 +542,7 @@ littleGrid::littleGrid() : result(nullptr)
 	result = new int[NbPoints];
 }
 
-littleGrid::~littleGrid()
+LittleGrid::~LittleGrid()
 {
 	delete [] Points;
 	Points = nullptr;
@@ -550,7 +550,7 @@ littleGrid::~littleGrid()
 	result=nullptr;
 }
 
-int littleGrid::GetNearest(const Vec3f& _v)
+int LittleGrid::GetNearest(const Vec3f& _v)
 {
 	Vec3f v=_v;
 	int bestI = -1;
@@ -568,7 +568,7 @@ int littleGrid::GetNearest(const Vec3f& _v)
 
 
 //! Return an array with the number of the zones in the field of view
-int littleGrid::Intersect(const Vec3f& _pos, float fieldAngle)
+int LittleGrid::Intersect(const Vec3f& _pos, float fieldAngle)
 {
 	Vec3f pos = _pos;
 	pos.normalize();

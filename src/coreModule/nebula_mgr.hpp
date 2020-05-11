@@ -236,7 +236,7 @@ private:
 	LinearFader textFader;			//!< Display names smoothly
 
 	std::vector<Nebula*>* nebZones;		//!< array of nebula vector with the grid id as array rank
-	littleGrid nebGrid;				//! Grid for opimisation
+	LittleGrid nebGrid;				//! Grid for opimisation
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed
 
