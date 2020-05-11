@@ -40,17 +40,19 @@ public:
 	~Illuminate(){};
 
 	//! return the name of the illuminate
-	std::string getName(void) const {
+	const std::string& getName() const {
 		return Name;
 	}
 
+	//! return cartesian equatorial position
 	const Vec3f& getXYZ() const {
 		return XYZ;
 	}
 
 	//! Create Illuminate from passed data and then read in texture
 	bool createIlluminate(double ra, double de, double angular_size,const std::string& name, double r, double g, double b, float tex_rotation);
-	void draw(Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
+	//! rempli les buffers pour un tracé en groupe des illuminates
+	void draw(const Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
 
 private:
 

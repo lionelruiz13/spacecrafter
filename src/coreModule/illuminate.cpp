@@ -61,7 +61,7 @@ bool Illuminate::createIlluminate( double ra, double de, double angular_size, co
 }
 
 
-void Illuminate::draw(Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color )
+void Illuminate::draw(const Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color )
 {
 	Vec3d v;
 	Vec3f pos;
