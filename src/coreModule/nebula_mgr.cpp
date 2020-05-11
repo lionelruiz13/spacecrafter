@@ -169,11 +169,12 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 
 	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
 		std::string testName = (*iter)->getEnglishName();
+		//std::cout << testName << std::endl;
 		transform(testName.begin(), testName.end(), testName.begin(), ::toupper);
 
 		// if(testName != "" ) cout << ">" << testName << "< " << endl;
 		if (testName==uname) {
-
+			//std::cout << testName << "=" << uname << std::endl;
 			if(!(*iter)->isDeletable()) {
 				if(showOriginal) (*iter)->show(); // make sure original is now visible
 				return;
@@ -181,10 +182,10 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 
 			// erase from locator grid
 			int zone = nebGrid.GetNearest((*iter)->XYZ);
-
 			for (iter2 = nebZones[zone].begin(); iter2!=nebZones[zone].end(); ++iter2) {
 				if(*iter2 == *iter) {
 //					cerr << "Deleting nebula from zone " << zone << " with name " << (*iter2)->englishName << endl;
+					//std::cout << testName << " delete from iter2" << std::endl;
 					nebZones[zone].erase(iter2);
 					break;
 				}
@@ -192,9 +193,10 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 
 			// Delete nebula
 			delete *iter;
+//			std::cout << testName << " delete" << std::endl;
 			neb_array.erase(iter);
-//			cerr << "Erased nebula " << uname << endl;
-
+			return;
+			//cerr << "Erased nebula " << uname << endl;
 			//return "";
 		}
 	}
