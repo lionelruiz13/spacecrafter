@@ -13,7 +13,7 @@ public:
     void initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands);
     void initialiseFlagsName(std::map<const std::string, FLAG_NAMES> &m_flags);
     void initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color);
-    void initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_appcommand);
+    void initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_set);
 
     void searchSimilarCommand(const std::string& source) {
         this->searchNeighbour(source,commandList);

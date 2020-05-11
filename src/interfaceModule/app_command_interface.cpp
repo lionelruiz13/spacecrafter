@@ -69,7 +69,7 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	appInit->initialiseCommandsName(m_commands);
 	appInit->initialiseFlagsName(m_flags);
 	appInit->initialiseColorCommand(m_color);
-	appInit->initialiseSetCommand(m_appcommand);
+	appInit->initialiseSetCommand(m_set);
 }
 
 void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {
@@ -89,7 +89,7 @@ AppCommandInterface::~AppCommandInterface()
 	m_commands.clear();
 	m_flags.clear();
 	m_color.clear();
-	m_appcommand.clear();
+	m_set.clear();
 }
 
 bool AppCommandInterface::isBoolean(const std::string &a)
@@ -1480,7 +1480,7 @@ int AppCommandInterface::commandSet()
 SCD_NAMES AppCommandInterface::parseCommandSet(const std::string& setName) 
 {
 //	std::cout << "size "<< m_appcommand.size() << " m_appcommand" << std::endl;
-	for(auto it = m_appcommand.begin(); it != m_appcommand.end(); it++) {
+	for(auto it = m_set.begin(); it != m_set.end(); it++) {
 		// if (!args[it->first].empty())
 		// 	return it->second;
 		if (it->first == setName) {

@@ -169,8 +169,8 @@ private:
 	std::map<const std::string, FLAG_NAMES> m_flags;
 	//map assurant la transcription entre le texte et la couleur associée
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
-	//map assurant la transcription entre le texte et la commande interface associé
-	std::map<const std::string, SCD_NAMES> m_appcommand;
+	//map assurant la transcription entre le texte et la commande set associée
+	std::map<const std::string, SCD_NAMES> m_set;
 };
 
 #endif // _APP_COMMAND_INTERFACE_H
