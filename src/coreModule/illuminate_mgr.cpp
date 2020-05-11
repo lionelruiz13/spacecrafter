@@ -75,12 +75,12 @@ bool IlluminateMgr::loadIlluminate(double ra, double de,  double angular_size, c
 	e = new Illuminate;
 
 	if(!e->createIlluminate(ra, de, angular_size, name, r, b, g, tex_rotation)) {
-		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->Name, LOG_TYPE::L_ERROR);
+		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->getName(), LOG_TYPE::L_ERROR);
 		delete e;
 		return false;
 	} else {
 		illuminateArray.push_back(e);
-		illuminateZones[illuminateGrid.GetNearest(e->XYZ)].push_back(e);
+		illuminateZones[illuminateGrid.GetNearest(e->getXYZ())].push_back(e);
 		return true;
 	}
 }
@@ -98,7 +98,7 @@ void IlluminateMgr::removeIlluminate(const std::string& name)
 
 		if (testName==uname) {
 			// erase from locator grid
-			int zone = illuminateGrid.GetNearest((*iter)->XYZ);
+			int zone = illuminateGrid.GetNearest((*iter)->getXYZ());
 
 			for (iter2 = illuminateZones[zone].begin(); iter2!=illuminateZones[zone].end(); ++iter2) {
 				if(*iter2 == *iter) {
@@ -124,7 +124,7 @@ void IlluminateMgr::removeAllIlluminate()
 
 	for (iter=illuminateArray.begin(); iter!=illuminateArray.end();) {
 		// erase from locator grid
-		int zone = illuminateGrid.GetNearest((*iter)->XYZ);
+		int zone = illuminateGrid.GetNearest((*iter)->getXYZ());
 
 		for (iter2 = illuminateZones[zone].begin(); iter2!=illuminateZones[zone].end(); ++iter2) {
 			if(*iter2 == *iter) {

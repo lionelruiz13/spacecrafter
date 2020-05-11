@@ -33,7 +33,7 @@ class Projector;
 class s_texture;
 
 class Illuminate {
-	friend class IlluminateMgr;
+
 public:
 
 	Illuminate(){};
@@ -42,6 +42,10 @@ public:
 	//! return the name of the illuminate
 	std::string getName(void) const {
 		return Name;
+	}
+
+	const Vec3f& getXYZ() const {
+		return XYZ;
 	}
 
 	//! Create Illuminate from passed data and then read in texture
