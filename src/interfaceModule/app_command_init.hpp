@@ -10,10 +10,11 @@ public:
     AppCommandInit();
     ~AppCommandInit();
 
-    void initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands);
-    void initialiseFlagsName(std::map<const std::string, FLAG_NAMES> &m_flags);
-    void initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color);
-    void initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_set);
+    void initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands, std::map<SC_COMMAND, const std::string> &m_commandsToString);
+    void initialiseFlagsName(std::map<const std::string, FLAG_NAMES> &m_flags, std::map<FLAG_NAMES,const std::string> &m_flagsToString);
+    void initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color, std::map<COLORCOMMAND_NAMES, const std::string> &m_colorToString);
+    void initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_set, std::map<SCD_NAMES, const std::string> &m_setToString);
+
 
     void searchSimilarCommand(const std::string& source) {
         this->searchNeighbour(source,commandList);

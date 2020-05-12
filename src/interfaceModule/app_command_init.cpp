@@ -31,7 +31,7 @@ bool AppCommandInit::isObsoleteToken(const std::string &source)
 }
 
 
-void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands)
+void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMAND> &m_commands, std::map<SC_COMMAND, const std::string> &m_commandsToString)
 {
 	m_commands["add"] = SC_COMMAND::SC_ADD;
 	m_commands["audio"] = SC_COMMAND::SC_AUDIO;
@@ -94,13 +94,18 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands["wait"] = SC_COMMAND::SC_WAIT;
 	m_commands["zoom"] = SC_COMMAND::SC_ZOOMR;
 
+	for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {
+        m_commandsToString.insert( std::pair<SC_COMMAND, const std::string>(it->second, it->first) );
+    }
+
 	//make a copy to futur exploitation
 	for (const auto& i : m_commands) {
 		commandList.push_back(i.first);
 	}
+
 }
 
-void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES> &m_flags)
+void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES> &m_flags, std::map<FLAG_NAMES,const std::string> &m_flagsToString)
 {
 	m_flags["antialias_lines"] = FLAG_NAMES::FN_ANTIALIAS_LINES;
 	m_flags["constellation_drawing"] = FLAG_NAMES::FN_CONSTELLATION_DRAWING;
@@ -201,13 +206,17 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags["tully"] = FLAG_NAMES::FN_TULLY;
 	m_flags["satellites"] = FLAG_NAMES::FN_SATELLITES;
 
+	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {
+        m_flagsToString.insert( std::pair<FLAG_NAMES, const std::string>(it->second, it->first) );
+    }
+
 	//make a copy to futur exploitation
 	for (const auto& i : m_flags) {
 		flagList.push_back(i.first);
 	}
 }
 
-void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color)
+void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOMMAND_NAMES> &m_color, std::map<COLORCOMMAND_NAMES, const std::string> &m_colorToString)
 {
 	m_color["constellation_lines"] = COLORCOMMAND_NAMES::CC_CONSTELLATION_LINES;
 	m_color["constellation_names"] = COLORCOMMAND_NAMES::CC_CONSTELLATION_NAMES;
@@ -260,13 +269,17 @@ void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOM
 
 	m_color["star_table"] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
 
+	for (auto it = m_color.begin(); it != m_color.end(); ++it) {
+        m_colorToString.insert( std::pair<COLORCOMMAND_NAMES, const std::string>(it->second, it->first) );
+    }
+
 	//make a copy to futur exploitation
 	for (const auto& i : m_color) {
 		colorList.push_back(i.first);
 	}
 }
 
-void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_set)
+void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES> &m_set, std::map<SCD_NAMES, const std::string> &m_setToString)
 {
 	m_set["atmosphere_fade_duration"] = SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION;
 	m_set["auto_move_duration"] = SCD_NAMES::APP_AUTO_MOVE_DURATION;
@@ -313,6 +326,10 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_set["tully_color_mode"] = SCD_NAMES::APP_TULLY_COLOR_MODE;
 	m_set["datetime_display_position"] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
 	m_set["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
+
+	for (auto it = m_appcommand.begin(); it != m_appcommand.end(); ++it) {
+        m_appcommandToString.insert( std::pair<SCD_NAMES, const std::string>(it->second, it->first) );
+    }
 
 	//make a copy to futur exploitation
 	for (const auto& i : m_set) {
