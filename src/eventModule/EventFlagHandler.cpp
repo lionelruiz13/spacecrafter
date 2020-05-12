@@ -31,6 +31,6 @@
 void EventFlagHandler::handle(const Event* e)
 {
 	FlagEvent * event = (FlagEvent *)e;
-	commander->setFlag(event->getFlagName(), event->getFlagValue(), event->getTranslation() );
+	commander->setFlag(event->getFlagName(), event->getFlagValue());
 }
 

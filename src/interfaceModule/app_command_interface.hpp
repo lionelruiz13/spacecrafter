@@ -63,7 +63,7 @@ public:
 	void initSpaceDateInterface(SpaceDate* _spaceDate);
 	void initSaveScreenInterface(SaveScreenInterface* _saveScreenInterface);
 
-	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, std::string _commandline);
+	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value);
 	void setTcp(ServerSocket* _tcp);
 
 protected:

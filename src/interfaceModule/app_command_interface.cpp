@@ -289,15 +289,20 @@ bool AppCommandInterface::setFlag(const std::string &name, const std::string &va
 	return this->setFlag(m_flag_it->second, flag_value, newval);
 }
 
-bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, std::string _commandline)
+bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 {
 	bool val;
 	if (setFlag( flagName, flag_value, val) == false) {
 		debug_message = _("Unrecognized or malformed flag argument");
 		return false;
 	}
+
 	// @TODO reconstruct commandline to avoid passing std::string _commandline
-	commandline = _commandline;
+	auto m_flags_ToString_it = m_flags_ToString.find(flagName);
+	if (m_flags_ToString_it != m_flags_ToString.end()) {
+		commandline = "set " + m_flags_ToString_it->second + " " + std::to_string(val);
+	}
+
 	return true;
 }
 
