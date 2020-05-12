@@ -882,7 +882,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_NAMES , FLAG_VALUES::FV_TOGGLE,"flag nebula_names toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_NAMES , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
@@ -1000,7 +1000,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case  SDL_SCANCODE_A:
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_CARDINAL_POINTS , FLAG_VALUES::FV_TOGGLE,"flag cardinal_points toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_CARDINAL_POINTS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -1065,26 +1065,26 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case  SDL_SCANCODE_C:
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_EQUATORIAL_GRID , FLAG_VALUES::FV_TOGGLE,"flag equatorial_grid toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_EQUATORIAL_GRID , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_CIRCUMPOLAR_CIRCLE , FLAG_VALUES::FV_TOGGLE,"flag circumpolar_circle toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_CIRCUMPOLAR_CIRCLE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case KWIN:
-					event = new FlagEvent( FLAG_NAMES::FN_ARIES_LINE , FLAG_VALUES::FV_TOGGLE,"flag aries_line toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ARIES_LINE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_GREENWICH_LINE , FLAG_VALUES::FV_TOGGLE,"flag greenwich_line toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_GREENWICH_LINE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
-					event = new FlagEvent( FLAG_NAMES::FN_VERNAL_POINTS , FLAG_VALUES::FV_TOGGLE,"flag vernal_points toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_VERNAL_POINTS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				default:
@@ -1095,11 +1095,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case  SDL_SCANCODE_D:
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_EQUATOR_LINE , FLAG_VALUES::FV_TOGGLE,"flag equator_line toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_EQUATOR_LINE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);					
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_TROPIC_LINES , FLAG_VALUES::FV_TOGGLE,"flag tropic_lines toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_TROPIC_LINES , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
@@ -1112,7 +1112,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					//key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_SATELLITES_ORBITS , FLAG_VALUES::FV_TOGGLE,"flag satellites_orbits toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_SATELLITES_ORBITS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
@@ -1127,7 +1127,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case  SDL_SCANCODE_E:
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_ART , FLAG_VALUES::FV_TOGGLE,"flag constellation_art toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_ART , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -1135,7 +1135,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_PICK , FLAG_VALUES::FV_TOGGLE,"flag constellation_pick toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_PICK , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case KWIN:
@@ -1153,11 +1153,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F  :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_MOON_SCALED , FLAG_VALUES::FV_TOGGLE,"flag moon_scaled toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_MOON_SCALED , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_SUN_SCALED , FLAG_VALUES::FV_TOGGLE,"flag sun_scaled toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_SUN_SCALED , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					event = new ScriptEvent( IDIR+"internal/big_planets.sts");
 					EventManager::getInstance()->queue(event);
@@ -1174,7 +1174,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL :
-					event = new FlagEvent( FLAG_NAMES::FN_OORT , FLAG_VALUES::FV_TOGGLE,"flag oort toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_OORT , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					event = new ScriptEvent( IDIR+"internal/comet.sts");
 					EventManager::getInstance()->queue(event);
@@ -1261,7 +1261,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SUPER:
    					if (core->getFlagNav()) {
 					  key_Modifier= NONE;
-					  event = new FlagEvent( FLAG_NAMES::FN_ORTHODROMY , FLAG_VALUES::FV_TOGGLE,"flag orthodromy toggle");
+					  event = new FlagEvent( FLAG_NAMES::FN_ORTHODROMY , FLAG_VALUES::FV_TOGGLE);
 					  EventManager::getInstance()->queue(event);
 					}
 					  break;
@@ -1516,16 +1516,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_R:
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES , FLAG_VALUES::FV_TOGGLE,"flag constellation_boundaries toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_ZODIAC , FLAG_VALUES::FV_TOGGLE,"flag zodiac toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ZODIAC , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION , FLAG_VALUES::FV_TOGGLE,"flag atmospheric_refraction toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);					
 					break;
 				case KWIN:
@@ -1548,11 +1548,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_S:
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_ECLIPTIC_LINE , FLAG_VALUES::FV_TOGGLE,"flag ecliptic_line toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ECLIPTIC_LINE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_PRECESSION_CIRCLE , FLAG_VALUES::FV_TOGGLE,"flag precession_circle toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_PRECESSION_CIRCLE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
@@ -1562,7 +1562,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_PLANET_ORBITS , FLAG_VALUES::FV_TOGGLE,"flag planets_orbits toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_PLANET_ORBITS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
@@ -1577,11 +1577,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_T :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_OBJECT_TRAILS , FLAG_VALUES::FV_TOGGLE,"flag object_trails toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_OBJECT_TRAILS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_BODY_TRACE , FLAG_VALUES::FV_TOGGLE,"flag body_trace toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_BODY_TRACE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
@@ -1611,7 +1611,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SUPER:
    					if (core->getFlagNav()) {
 					  key_Modifier= NONE;
-					  event = new FlagEvent( FLAG_NAMES::FN_LOXODROMY , FLAG_VALUES::FV_TOGGLE,"flag loxodromy toggle");
+					  event = new FlagEvent( FLAG_NAMES::FN_LOXODROMY , FLAG_VALUES::FV_TOGGLE);
 					  EventManager::getInstance()->queue(event);
 					}
 					break;
@@ -1631,16 +1631,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_V :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_DATETIME , FLAG_VALUES::FV_TOGGLE,"flag show_tui_datetime toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_DATETIME , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);					
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_SHORT_OBJ_INFO , FLAG_VALUES::FV_TOGGLE,"flag show_tui_short_obj_info toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_SHORT_OBJ_INFO , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
-					event = new FlagEvent( FLAG_NAMES::FN_SHOW_LATLON , FLAG_VALUES::FV_TOGGLE,"flag show_latlon toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_SHOW_LATLON , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case KWIN:
@@ -1656,16 +1656,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_W :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_NAMES , FLAG_VALUES::FV_TOGGLE,"flag constellation_names toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_CONSTELLATION_NAMES , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_ZENITH_LINE , FLAG_VALUES::FV_TOGGLE,"flag zenith_line toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ZENITH_LINE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case KWIN:
-					event = new FlagEvent( FLAG_NAMES::FN_ZODIAC_LIGHT , FLAG_VALUES::FV_TOGGLE,"flag zodiacal_light toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ZODIAC_LIGHT , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
@@ -1680,23 +1680,23 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_X :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_MERIDIAN_LINE , FLAG_VALUES::FV_TOGGLE,"flag meridian_line toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_MERIDIAN_LINE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_AZIMUTHAL_GRID , FLAG_VALUES::FV_TOGGLE,"flag azimuthal_grid toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_AZIMUTHAL_GRID , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case KWIN:
 					if (core->getFlagNav()) {
-						event = new FlagEvent( FLAG_NAMES::FN_VERTICAL_LINE , FLAG_VALUES::FV_TOGGLE,"flag vertical_line toggle");
+						event = new FlagEvent( FLAG_NAMES::FN_VERTICAL_LINE , FLAG_VALUES::FV_TOGGLE);
 						EventManager::getInstance()->queue(event);
 					}
 					key_Modifier= NONE;
 					break;
 				case SHIFT :
-					event = new FlagEvent( FLAG_NAMES::FN_PLANETS_AXIS , FLAG_VALUES::FV_TOGGLE,"flag planets_axis toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_PLANETS_AXIS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case CTRL :
@@ -1712,16 +1712,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_Y :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_ANALEMMA_LINE , FLAG_VALUES::FV_TOGGLE,"flag analemma_line toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ANALEMMA_LINE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);					
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_CENTER , FLAG_VALUES::FV_TOGGLE,"flag galactic_center toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_CENTER , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_ANALEMMA , FLAG_VALUES::FV_TOGGLE,"flag analemma toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ANALEMMA , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case KWIN:
@@ -1729,7 +1729,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL :
 					this->executeCommand("select planet home_planet pointer off");
-					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_ON,"flag track_object toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_ON);
 					EventManager::getInstance()->queue(event);					
 					break;
 				default:
@@ -1740,11 +1740,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_Z :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERE , FLAG_VALUES::FV_TOGGLE,"flag atmosphere toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_LANDSCAPE , FLAG_VALUES::FV_TOGGLE,"flag landscape toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_LANDSCAPE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);					
 					key_Modifier= NONE;
 					break;
@@ -1757,7 +1757,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand(std::string("body name selected skin_use toggle"));				
 					break;
 				case CTRL :
-					event = new FlagEvent( FLAG_NAMES::FN_CLOUDS , FLAG_VALUES::FV_TOGGLE,"flag clouds toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_CLOUDS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					event = new ScriptEvent( SDIR+"fscripts/panorama4.sts");
 					EventManager::getInstance()->queue(event);
@@ -1793,7 +1793,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_1 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_STAR_NAMES , FLAG_VALUES::FV_TOGGLE,"flag star_names toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_STAR_NAMES , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -1824,11 +1824,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_2 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_PLANET_NAMES , FLAG_VALUES::FV_TOGGLE,"flag planet_names toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_PLANET_NAMES , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new FlagEvent( FLAG_NAMES::FN_PLANET_ORBITS , FLAG_VALUES::FV_TOGGLE,"flag planet_orbits toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_PLANET_ORBITS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
@@ -1854,7 +1854,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_3 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_HINTS , FLAG_VALUES::FV_TOGGLE,"flag nebula_hints toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_HINTS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -1883,7 +1883,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_4 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_FOG , FLAG_VALUES::FV_TOGGLE,"flag fog toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_FOG , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -1912,7 +1912,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_5 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_PLANETS , FLAG_VALUES::FV_TOGGLE,"flag planets toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_PLANETS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -1940,7 +1940,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_6 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_STARS , FLAG_VALUES::FV_TOGGLE,"flag stars toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_STARS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -1968,7 +1968,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_7 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_MILKY_WAY , FLAG_VALUES::FV_TOGGLE,"flag milky_way toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_MILKY_WAY , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);					
 					break;
 				case SUPER:
@@ -1977,12 +1977,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
-					event = new FlagEvent( FLAG_NAMES::FN_COLOR_INVERSE , FLAG_VALUES::FV_TOGGLE,"flag color_inverse toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_COLOR_INVERSE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL:
-					event = new FlagEvent( FLAG_NAMES::FN_STARS_TRACE , FLAG_VALUES::FV_TOGGLE,"flag stars_trace toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_STARS_TRACE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SHIFT :
@@ -1997,7 +1997,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_8 :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_NEBULAE , FLAG_VALUES::FV_TOGGLE,"flag nebulae toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_NEBULAE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -2005,12 +2005,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
-					event = new FlagEvent( FLAG_NAMES::FN_DSO_PICTOGRAMS , FLAG_VALUES::FV_TOGGLE,"flag dso_pictograms toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_DSO_PICTOGRAMS , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL:
-					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_NAMES , FLAG_VALUES::FV_TOGGLE,"flag nebula_names toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_NEBULA_NAMES , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SHIFT:
@@ -2126,7 +2126,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_NONUSBACKSLASH :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_LANDSCAPE , FLAG_VALUES::FV_TOGGLE,"flag landscape toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_LANDSCAPE , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -2156,7 +2156,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_LEFTBRACKET :
 			switch(key_Modifier) {
 				case NONE:
-					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE,"flag track_object toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case SUPER:
@@ -2219,7 +2219,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
-					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE,"flag track_object toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
@@ -2528,7 +2528,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL :
-					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_GRID , FLAG_VALUES::FV_TOGGLE,"flag galactic_grid toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_GRID , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);					
 					break;
 				case ALT:
@@ -2551,7 +2551,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE,"flag track_object toggle");
+					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_TOGGLE);
 					EventManager::getInstance()->queue(event);
 					break;
 				case KWIN:

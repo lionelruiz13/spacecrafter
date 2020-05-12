@@ -33,10 +33,10 @@
 
 class FlagEvent : public Event {
 public:
-    FlagEvent(FLAG_NAMES _flagName, FLAG_VALUES _flagValue, const std::string _commandline) : Event(E_FLAG) {
+    FlagEvent(FLAG_NAMES _flagName, FLAG_VALUES _flagValue/*, const std::string _commandline*/) : Event(E_FLAG) {
         flagName = _flagName;
         flagValue = _flagValue;
-        commandLine = _commandline;
+        // commandLine = _commandline;
     }
     ~FlagEvent(){};
 
@@ -48,20 +48,20 @@ public:
         return flagValue;
     }
 
-    std::string getTranslation() const {
-        return commandLine;
-    }
+    // std::string getTranslation() const {
+    //     return commandLine;
+    // }
 
     virtual std::string toString() const {
         std::ostringstream os;
-        os << Event::toString() << " FlagEvent " << commandLine << std::endl;
+        os << Event::toString() << " FlagEvent " << std::endl;
         return os.str();
 }
     
 private:
     FLAG_NAMES flagName;
     FLAG_VALUES flagValue;
-    std::string commandLine;
+    // std::string commandLine;
 };
 
 #endif //FLAG_EVENT
