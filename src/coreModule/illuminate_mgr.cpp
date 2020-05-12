@@ -36,6 +36,9 @@
 
 #include "starModule/hip_star_mgr.hpp"
 
+//a copy of zone_array.hpp
+#define NR_OF_HIP 120416
+
 IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator)
 {
 	hip_stars = _hip_stars;
@@ -68,6 +71,8 @@ IlluminateMgr::~IlluminateMgr()
 // Load individual Illuminate for script
 bool IlluminateMgr::load(int num)
 {
+	if (num>NR_OF_HIP)
+		return;
 	Object selected_object = hip_stars->searchHP(num).get();
 	Vec3f color = selected_object.getRGB();
 	double ra, de;
@@ -82,6 +87,8 @@ bool IlluminateMgr::load(int num)
 
 bool IlluminateMgr::load(int num, const Vec3f& _color)
 {
+	if (num>NR_OF_HIP)
+		return;
 	Object selected_object = hip_stars->searchHP(num).get();
 	//Vec3f color = selected_object.getRGB();
 	double ra, de;
