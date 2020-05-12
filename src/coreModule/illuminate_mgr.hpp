@@ -33,13 +33,14 @@
 
 class HipStarMgr;
 class Navigator;
+class ConstellationMgr;
 
 /*! \class IlluminateMgr
   * \brief IlluminateMgr handles all illumiante stars for better stars visualisation.
   */
 class IlluminateMgr {
 public:
-	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator);
+	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism);
 	virtual ~IlluminateMgr();
 	IlluminateMgr(IlluminateMgr const &) = delete;
 	IlluminateMgr& operator = (IlluminateMgr const &) = delete;
@@ -68,6 +69,12 @@ public:
 	//!	supprime la texture définie par l'utilisateur
 	void removeTex();
 
+	//! charge toutes les étoiles de l'asterism d'une constellation
+	void loadConstellation(const std::string& abbreviation);
+
+	//! supprime toutes les étoiles de l'asterism d'une constellation
+	void removeConstellation(const std::string& abbreviation);
+
 private:
 	//! Load an individual Illuminate with all data
 	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
@@ -80,6 +87,7 @@ private:
 	shaderProgram* shaderIllum;
 	HipStarMgr* hip_stars = nullptr;
 	Navigator* navigator = nullptr;
+	ConstellationMgr* asterism= nullptr;
 
 	DataGL Illum;
 	std::vector<float> illumPos;

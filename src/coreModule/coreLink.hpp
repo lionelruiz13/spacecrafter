@@ -274,6 +274,10 @@ public:
 		core->illuminates->setDefaultSize(value);
 	}
 
+	void illuminateLoadConstellation(const std::string& abbreviation) {
+		core->illuminates->loadConstellation(abbreviation);
+	}
+
 	void illuminateLoad(int number, double size, double rotation) {
 		core->illuminates->load(number, size, rotation);
 	}
@@ -289,7 +293,11 @@ public:
 	void illuminateRemove(unsigned int name) 	{
 		core->illuminates->remove(name);
 	}
-	
+
+	void illuminateRemoveConstellation(const std::string abbreviation) 	{
+		core->illuminates->removeConstellation(abbreviation);
+	}
+
 	void illuminateRemoveAll()
 	{
 		core->illuminates->removeAll();

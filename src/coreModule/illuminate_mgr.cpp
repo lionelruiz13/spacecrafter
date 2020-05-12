@@ -33,16 +33,18 @@
 #include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-
+#include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
 
-IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator)
+IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator, ConstellationMgr* _asterism)
 {
 	hip_stars = _hip_stars;
 	navigator = _navigator;
+	asterism = _asterism;
+
 	illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
 
 	defaultTex = new s_texture("star_illuminate.png", TEX_LOAD_TYPE_PNG_BLEND3 );
@@ -78,6 +80,22 @@ void IlluminateMgr::load(int num, double size, double rotation)
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
 	//std::cout <<num << " only" <<std::endl;
 	load(num, color, size, rotation);	
+}
+
+void IlluminateMgr::loadConstellation(const std::string& abbreviation)
+{
+	std::vector<unsigned int> HPStars;
+	asterism->getHPStarsFromAbbreviation(abbreviation, HPStars);
+	for (auto i: HPStars)
+		this->load(i,0,0);
+}
+
+void IlluminateMgr::removeConstellation(const std::string& abbreviation)
+{
+	std::vector<unsigned int> HPStars;
+	asterism->getHPStarsFromAbbreviation(abbreviation, HPStars);
+	for (auto i: HPStars)
+		this->remove(i);
 }
 
 
