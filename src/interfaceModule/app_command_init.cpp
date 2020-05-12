@@ -95,7 +95,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands["zoom"] = SC_COMMAND::SC_ZOOMR;
 
 	for (auto it = m_commands.begin(); it != m_commands.end(); ++it) {
-        m_commandsToString.insert( std::pair<SC_COMMAND, const std::string>(it->second, it->first) );
+        m_commandsToString.emplace(it->second, it->first);
     }
 
 	//make a copy to futur exploitation
@@ -207,7 +207,7 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags["satellites"] = FLAG_NAMES::FN_SATELLITES;
 
 	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {
-        m_flagsToString.insert( std::pair<FLAG_NAMES, const std::string>(it->second, it->first) );
+        m_flagsToString.emplace(it->second, it->first);
     }
 
 	//make a copy to futur exploitation
@@ -270,7 +270,7 @@ void AppCommandInit::initialiseColorCommand(std::map<const std::string, COLORCOM
 	m_color["star_table"] = COLORCOMMAND_NAMES::CC_STAR_TABLE;
 
 	for (auto it = m_color.begin(); it != m_color.end(); ++it) {
-        m_colorToString.insert( std::pair<COLORCOMMAND_NAMES, const std::string>(it->second, it->first) );
+        m_colorToString.emplace(it->second, it->first);
     }
 
 	//make a copy to futur exploitation
@@ -328,7 +328,7 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_set["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
 
 	for (auto it = m_appcommand.begin(); it != m_appcommand.end(); ++it) {
-        m_appcommandToString.insert( std::pair<SCD_NAMES, const std::string>(it->second, it->first) );
+        m_appcommandToString.emplace(it->second, it->first);
     }
 
 	//make a copy to futur exploitation
