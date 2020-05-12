@@ -1371,19 +1371,34 @@ int AppCommandInterface::commandIlluminate()
 {
 	std::string argHP = args["hp"];
 	std::string argDisplay = args["display"];
+	std::string argConstellation = args["constellation"];
+
+	double ang_size = evalDouble(args["size"]);
+	float rotation = evalDouble(args["rotation"]);
+
+	//gestion de la couleur
+	Vec3f Vcolor;
+	std::string argValue = args["color_value"];
+	std::string argR= args["r"];
+	std::string argG= args["g"];
+	std::string argB= args["b"];
+	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
+
+	if (!argConstellation.empty() && isTrue(argDisplay)) {
+		if (!testColor)
+			coreLink->illuminateLoadConstellation(argConstellation, ang_size, rotation);
+		else
+			coreLink->illuminateLoadConstellation(argConstellation, Vcolor, ang_size, rotation);
+		return executeCommandStatus();
+	}
+
+	if (!argConstellation.empty() && isFalse(argDisplay)) {
+		coreLink->illuminateRemoveConstellation(argConstellation);
+		return executeCommandStatus();
+	}
 
 	if (!argHP.empty() && isTrue(argDisplay)) {
 
-		double ang_size = evalDouble(args["size"]);
-		float rotation = evalDouble(args["rotation"]);
-
-		//gestion de la couleur
-		Vec3f Vcolor;
-		std::string argValue = args["color_value"];
-		std::string argR= args["r"];
-		std::string argG= args["g"];
-		std::string argB= args["b"];
-		AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 		if (!testColor)
 			coreLink->illuminateLoad(evalInt(argHP), ang_size, rotation);
 		else 		// here we have color
