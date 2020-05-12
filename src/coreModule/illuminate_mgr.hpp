@@ -51,8 +51,8 @@ public:
 		defaultSize =v;
 	}
 
-	bool load(int num);
-	bool load(int num, const Vec3f& _color);
+	void load(int num, double size, double rotation);
+	void load(int num, const Vec3f& _color, double size, double rotation);
 
 	//! remove user added Illuminate and optionally unhide the original of the same name
 	void remove(unsigned int name);
@@ -70,7 +70,7 @@ public:
 
 private:
 	//! Load an individual Illuminate with all data
-	bool loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
+	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
 
 	std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate list
 	std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank

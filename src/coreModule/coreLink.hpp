@@ -274,12 +274,12 @@ public:
 		core->illuminates->setDefaultSize(value);
 	}
 
-	void illuminateLoad(int number) {
-		core->illuminates->load(number);
+	void illuminateLoad(int number, double size, double rotation) {
+		core->illuminates->load(number, size, rotation);
 	}
 
-	void illuminateLoad(int number, const Vec3f& _color) {
-		core->illuminates->load(number, _color);
+	void illuminateLoad(int number, const Vec3f& _color, double size, double rotation) {
+		core->illuminates->load(number, _color, size, rotation);
 	}
 
 	// void illuminateLoad(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float rotation) {

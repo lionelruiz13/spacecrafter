@@ -69,7 +69,7 @@ IlluminateMgr::~IlluminateMgr()
 }
 
 // Load individual Illuminate for script
-bool IlluminateMgr::load(int num)
+void IlluminateMgr::load(int num, double size, double rotation)
 {
 	if (num>NR_OF_HIP)
 		return;
@@ -80,12 +80,12 @@ bool IlluminateMgr::load(int num)
 	float mag = selected_object.getMag(navigator);
 
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
-	std::cout <<num << " only" <<std::endl;
-	return loadIlluminate(num, ra, de, defaultSize, color[0], color[1], color[2], 0);	
+	//std::cout <<num << " only" <<std::endl;
+	loadIlluminate(num, ra, de, size, color[0], color[1], color[2], rotation);	
 }
 
 
-bool IlluminateMgr::load(int num, const Vec3f& _color)
+void IlluminateMgr::load(int num, const Vec3f& _color, double size, double rotation)
 {
 	if (num>NR_OF_HIP)
 		return;
@@ -96,13 +96,13 @@ bool IlluminateMgr::load(int num, const Vec3f& _color)
 	float mag = selected_object.getMag(navigator);
 
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
-	std::cout << num << " with color" << std::endl;
-	return loadIlluminate(num, ra, de, defaultSize, _color[0], _color[1], _color[2], 0 );
+	//std::cout << num << " with color" << std::endl;
+	loadIlluminate(num, ra, de, size, _color[0], _color[1], _color[2], rotation );
 }
 
 
-// Load individual Illuminate for script
-bool IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  double angular_size, double r, double g, double b, float tex_rotation)
+// Load individual Illuminate 
+void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  double angular_size, double r, double g, double b, double tex_rotation)
 {
 	if (angular_size<1.0)
 		angular_size=defaultSize;
@@ -116,11 +116,9 @@ bool IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  dou
 	if(e->createIlluminate(name, ra, de, angular_size, r, b, g, tex_rotation)) {
 		illuminateArray.push_back(e);
 		illuminateZones[illuminateGrid.GetNearest(e->getXYZ())].push_back(e);
-		return true;
 	} else {
 		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->getName(), LOG_TYPE::L_ERROR);
 		delete e;
-		return false;
 	}		
 }
 

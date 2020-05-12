@@ -1369,13 +1369,8 @@ int AppCommandInterface::commandIlluminate()
 
 	if (!argHP.empty() && isTrue(argDisplay)) {
 
-		//	coreLink->illuminateLoad(evalInt(argHP));
-		
-		// std::string ang_size=args["size"];
-		// if (ang_size=="") ang_size="0.0";
-
-		// if (args["rotation"]!="")
-		// 	rotation = evalDouble(args["rotation"]);
+		double ang_size = evalDouble(args["size"]);
+		float rotation = evalDouble(args["rotation"]);
 
 		//gestion de la couleur
 		Vec3f Vcolor;
@@ -1385,9 +1380,9 @@ int AppCommandInterface::commandIlluminate()
 		std::string argB= args["b"];
 		AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 		if (!testColor)
-			coreLink->illuminateLoad(evalInt(argHP));
+			coreLink->illuminateLoad(evalInt(argHP), ang_size, rotation);
 		else 		// here we have color
-			coreLink->illuminateLoad(evalInt(argHP), Vcolor);
+			coreLink->illuminateLoad(evalInt(argHP), Vcolor, ang_size, rotation);
 
 		return executeCommandStatus();
 	}
