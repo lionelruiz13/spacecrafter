@@ -57,356 +57,356 @@ void CheckConfig::checkMainSettings()
 
 void CheckConfig::checkIoSettings()
 {
-	tmpSettings["enable_mkfifo"]="false";
-	tmpSettings["enable_tcp"]="true";
+	tmpSettings[SCK_ENABLE_MKFIFO]="false";
+	tmpSettings[SCK_ENABLE_TCP]="true";
 	// ioSettings["enable_mplayer"]="false";
-	tmpSettings["tcp_port_in"]="7805";
-	tmpSettings["tcp_buffer_in_size"]="1024";
-	tmpSettings["mkfifo_file_in"]="/tmp/spacecrafter.fifo";
-	tmpSettings["mkfifo_buffer_in_size"]="256";
-	tmpSettings["flag_masterput"]="false";
+	tmpSettings[SCK_TCP_PORT_IN]="7805";
+	tmpSettings[SCK_TCP_BUFFER_IN_SIZE]="1024";
+	tmpSettings[SCK_MKFIFO_FILE_IN]="/tmp/spacecrafter.fifo";
+	tmpSettings[SCK_MKFIFO_BUFFER_IN_SIZE]="256";
+	tmpSettings[SCK_FLAG_MASTERPUT]="false";
 	// ioSettings["mplayer_name"]="/usr/bin/mplayer";
 	// ioSettings["mplayer_mkfifo_name"]="/tmp/mplayer_mkfifo_name.fifo";
 
-	sectionSettings.push_back("io");
-	insertKeyFromTmpSettings("io");
+	sectionSettings.push_back(SCS_IO);
+	insertKeyFromTmpSettings(SCS_IO);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkVideoSettings()
 {
-	tmpSettings["autoscreen"]="false";
-	tmpSettings["fullscreen"]="false";
-	tmpSettings["screen_w"]="1024";
-	tmpSettings["screen_h"]="768";
-	tmpSettings["bbp_mode"]="24";
-	tmpSettings["maximum_fps"]="60";
-	tmpSettings["rec_video_fps"]="30";
+	tmpSettings[SCK_AUTOSCREEN]="false";
+	tmpSettings[SCK_FULLSCREEN]="false";
+	tmpSettings[SCK_SCREEN_W]="1024";
+	tmpSettings[SCK_SCREEN_H]="768";
+	tmpSettings[SCK_BBP_MODE]="24";
+	tmpSettings[SCK_MAXIMUM_FPS]="60";
+	tmpSettings[SCK_REC_VIDEO_FPS]="30";
 
-	sectionSettings.push_back("video");
-	insertKeyFromTmpSettings("video");
+	sectionSettings.push_back(SCS_VIDEO);
+	insertKeyFromTmpSettings(SCS_VIDEO);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkRenderingSettings()
 {
-	tmpSettings["flag_antialias_lines"]="true";
-	tmpSettings["antialiasing"]="8";
-	tmpSettings["line_width"]="1.5";
-	tmpSettings["landscape_slices"]="80";
-	tmpSettings["landscape_stacks"]="20";
-	tmpSettings["min_tes_level"]="1";
-	tmpSettings["max_tes_level"]="1";
-	tmpSettings["planet_altimetry_level"]="1";
-	tmpSettings["earth_altimetry_level"]="1";
-	tmpSettings["moon_altimetry_level"]="1";
+	tmpSettings[SCK_FLAG_ANTIALIAS_LINES]="true";
+	tmpSettings[SCK_ANTIALIASING]="8";
+	tmpSettings[SCK_LINE_WIDTH]="1.5";
+	tmpSettings[SCK_LANDSCAPE_SLICES]="80";
+	tmpSettings[SCK_LANDSCAPE_STACKS]="20";
+	tmpSettings[SCK_MIN_TES_LEVEL]="1";
+	tmpSettings[SCK_MAX_TES_LEVEL]="1";
+	tmpSettings[SCK_PLANET_ALTIMETRY_LEVEL]="1";
+	tmpSettings[SCK_EARTH_ALTIMETRY_LEVEL]="1";
+	tmpSettings[SCK_MOON_ALTIMETRY_LEVEL]="1";
 	//~ renderingSettings["milkyway_slices"]="80";
 	//~ renderingSettings["milkyway_stacks"]="20";
 	//~ renderingSettings["sphere_low"]="10";
 	//~ renderingSettings["sphere_medium"]="60";
 	//~ renderingSettings["sphere_high"]="80";
-	tmpSettings["rings_low"]="64";
-	tmpSettings["rings_medium"]="256";
-	tmpSettings["rings_high"]="512";
-	tmpSettings["oort_elements"]="10000";
+	tmpSettings[SCK_RINGS_LOW]="64";
+	tmpSettings[SCK_RINGS_MEDIUM]="256";
+	tmpSettings[SCK_RINGS_HIGH]="512";
+	tmpSettings[SCK_OORT_ELEMENTS]="10000";
 
-	sectionSettings.push_back("rendering");
-	insertKeyFromTmpSettings("rendering");
+	sectionSettings.push_back(SCS_RENDERING);
+	insertKeyFromTmpSettings(SCS_RENDERING);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkLocalizationSettings()
 {
-	tmpSettings["sky_culture"]="western-color";
-	tmpSettings["sky_locale"]="fr";
-	tmpSettings["time_display_format"]="24h";
-	tmpSettings["date_display_format"]="ddmmyyyy";
-	tmpSettings["app_locale"]="fr";
-	tmpSettings["time_zone"]="Europe/Paris";
+	tmpSettings[SCK_SKY_CULTURE]="western-color";
+	tmpSettings[SCK_SKY_LOCALE]="fr";
+	tmpSettings[SCK_TIME_DISPLAY_FORMAT]="24h";
+	tmpSettings[SCK_DATE_DISPLAY_FORMAT]="ddmmyyyy";
+	tmpSettings[SCK_APP_LOCALE]="fr";
+	tmpSettings[SCK_TIME_ZONE]="Europe/Paris";
 
-	sectionSettings.push_back("localization");
-	insertKeyFromTmpSettings("localization");
+	sectionSettings.push_back(SCS_LOCALIZATION);
+	insertKeyFromTmpSettings(SCS_LOCALIZATION);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkStarSettings()
 {
-	tmpSettings["star_scale"]="1.0";
-	tmpSettings["star_mag_scale"]="1.0";
-	tmpSettings["star_twinkle_amount"]="0.4";
-	tmpSettings["max_mag_star_name"]="1.5";
-	tmpSettings["flag_star_twinkle"]="true";
-	tmpSettings["star_limiting_mag"]="6.5";
-	tmpSettings["mag_converter_min_fov"]="0.1";
-	tmpSettings["mag_converter_max_fov"]="60";
-	tmpSettings["mag_converter_mag_shift"]="0.0";
-	tmpSettings["mag_converter_max_mag"]="30";
-	tmpSettings["illuminate_size"]="60";
+	tmpSettings[SCK_STAR_SCALE]="1.0";
+	tmpSettings[SCK_STAR_MAG_SCALE]="1.0";
+	tmpSettings[SCK_STAR_TWINKLE_AMOUNT]="0.4";
+	tmpSettings[SCK_MAX_MAG_STAR_NAME]="1.5";
+	tmpSettings[SCK_FLAG_STAR_TWINKLE]="true";
+	tmpSettings[SCK_STAR_LIMITING_MAG]="6.5";
+	tmpSettings[SCK_MAG_CONVERTER_MIN_FOV]="0.1";
+	tmpSettings[SCK_MAG_CONVERTER_MAX_FOV]="60";
+	tmpSettings[SCK_MAG_CONVERTER_MAG_SHIFT]="0.0";
+	tmpSettings[SCK_MAG_CONVERTER_MAX_MAG]="30";
+	tmpSettings[SCK_ILLUMINATE_SIZE]="60";
 
-	sectionSettings.push_back("stars");
-	insertKeyFromTmpSettings("stars");
+	sectionSettings.push_back(SCS_STARS);
+	insertKeyFromTmpSettings(SCS_STARS);
 	tmpSettings.clear();
 }
 
 void CheckConfig::checkGuiSettings()
 {
-	tmpSettings["flag_show_fps"]="false";
-	tmpSettings["flag_show_fov"]="false";
-	tmpSettings["flag_show_latlon"]="false";
-	tmpSettings["flag_number_print"]="1";
-	tmpSettings["datetime_display_position"]="105";
-	tmpSettings["object_info_display_position"]="300";
-	tmpSettings["flag_show_planetname"]="true";
-	tmpSettings["mouse_cursor_timeout"]="1";
-	tmpSettings["menu_display_position"]="-150";
-	tmpSettings["flag_mouse_usable_in_script"]="true";
+	tmpSettings[SCK_FLAG_SHOW_FPS]="false";
+	tmpSettings[SCK_FLAG_SHOW_FOV]="false";
+	tmpSettings[SCK_FLAG_SHOW_LATLON]="false";
+	tmpSettings[SCK_FLAG_NUMBER_PRINT]="1";
+	tmpSettings[SCK_DATETIME_DISPLAY_POSITION]="105";
+	tmpSettings[SCK_OBJECT_INFO_DISPLAY_POSITION]="300";
+	tmpSettings[SCK_FLAG_SHOW_PLANETNAME]="true";
+	tmpSettings[SCK_MOUSE_CURSOR_TIMEOUT]="1";
+	tmpSettings[SCK_MENU_DISPLAY_POSITION]="-150";
+	tmpSettings[SCK_FLAG_MOUSE_USABLE_IN_SCRIPT]="true";
 
-	sectionSettings.push_back("gui");
-	insertKeyFromTmpSettings("gui");
+	sectionSettings.push_back(SCS_GUI);
+	insertKeyFromTmpSettings(SCS_GUI);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkFontSettings()
 {
-	tmpSettings["font_resolution_size"]= "1024";
-	tmpSettings["font_general_name"]="DejaVuSansMono.ttf";
-	tmpSettings["font_general_size"]="12";
-	tmpSettings["font_menu_name"]="DejaVuSans.ttf";
-	tmpSettings["font_menutui_size"]="18";
-	tmpSettings["font_planet_name"]="DejaVuSans.ttf";
-	tmpSettings["font_planet_size"]="20";
-	tmpSettings["font_constellation_name"]="DejaVuSans.ttf";
-	tmpSettings["font_constellation_size"]="22";
-	tmpSettings["font_cardinalpoints_size"]="30";
-	tmpSettings["font_text_name"]="DejaVuSans.ttf";
-	tmpSettings["font_text_size"]="16";
-	tmpSettings["font_menugui_size"]="12.5";
-	sectionSettings.push_back("font");
-	insertKeyFromTmpSettings("font");
+	tmpSettings[SCK_FONT_RESOLUTION_SIZE]= "1024";
+	tmpSettings[SCK_FONT_GENERAL_NAME]="DejaVuSansMono.ttf";
+	tmpSettings[SCK_FONT_GENERAL_SIZE]="12";
+	tmpSettings[SCK_FONT_MENU_NAME]="DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_MENUTUI_SIZE]="18";
+	tmpSettings[SCK_FONT_PLANET_NAME]="DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_PLANET_SIZE]="20";
+	tmpSettings[SCK_FONT_CONSTELLATION_NAME]="DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_CONSTELLATION_SIZE]="22";
+	tmpSettings[SCK_FONT_CARDINALPOINTS_SIZE]="30";
+	tmpSettings[SCK_FONT_TEXT_NAME]="DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_TEXT_SIZE]="16";
+	tmpSettings[SCK_FONT_MENUGUI_SIZE]="12.5";
+	sectionSettings.push_back(SCS_FONT);
+	insertKeyFromTmpSettings(SCS_FONT);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkTuiSettings()
 {
-	tmpSettings["flag_enable_tui_menu"]="true";
-	tmpSettings["flag_show_gravity_ui"]="true";
-	tmpSettings["flag_show_tui_datetime"]="false";
-	tmpSettings["flag_show_tui_short_obj_info"]="false";
-	tmpSettings["text_ui"] = "0.5,1.0,0.5";
-	tmpSettings["text_tui_root"] = "0.5,0.7,1.0";
+	tmpSettings[SCK_FLAG_ENABLE_TUI_MENU]="true";
+	tmpSettings[SCK_FLAG_SHOW_GRAVITY_UI]="true";
+	tmpSettings[SCK_FLAG_SHOW_TUI_DATETIME]="false";
+	tmpSettings[SCK_FLAG_SHOW_TUI_SHORT_OBJ_INFO]="false";
+	tmpSettings[SCK_TEXT_UI] = "0.5,1.0,0.5";
+	tmpSettings[SCK_TEXT_TUI_ROOT] = "0.5,0.7,1.0";
 
-	sectionSettings.push_back("tui");
-	insertKeyFromTmpSettings("tui");
+	sectionSettings.push_back(SCS_TUI);
+	insertKeyFromTmpSettings(SCS_TUI);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkLandscapeSettings()
 {
-	tmpSettings["flag_landscape"]="true";
-	tmpSettings["flag_fog"]="false";
-	tmpSettings["flag_atmosphere"]="true";
+	tmpSettings[SCK_FLAG_LANDSCAPE]="true";
+	tmpSettings[SCK_FLAG_FOG]="false";
+	tmpSettings[SCK_FLAG_ATMOSPHERE]="true";
 
-	sectionSettings.push_back("landscape");
-	insertKeyFromTmpSettings("landscape");
+	sectionSettings.push_back(SCS_LANDSCAPE);
+	insertKeyFromTmpSettings(SCS_LANDSCAPE);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkColorSettings()
 {
-	tmpSettings["azimuthal_color"] = "0,0.4,0.6";
-	tmpSettings["equatorial_color"] = "0.5,1,0.5";
-	tmpSettings["ecliptic_color"] = "1,0.2,0.2";
-	tmpSettings["galactic_color"] = "0.8,0.8,0.8";
-	tmpSettings["ecliptic_color"] = "1,0.2,0.2";
-	tmpSettings["ecliptic_center_color"] = "0.8,0.8,0.8";
-	tmpSettings["galactic_center_color"] = "0.8,0.8,0.8";
-	tmpSettings["galactic_pole_color"] = "0.8,0.8,0.8";
-	tmpSettings["nebula_label_color"] = "0.5,0.5,0.5";
-	tmpSettings["nebula_circle_color"] = "0.15,0.15,0.15";
-	tmpSettings["precession_circle_color"] = "0.6,0.4,0";
-	tmpSettings["circumpolar_circle_color"] = "0.8,0.8,0.8";
-	tmpSettings["oort_color"] = "0.0,0.5,1.0";
-	tmpSettings["galactic_color"] = "0.8,0.8,0.8";
-	tmpSettings["vernal_points_color"] = "0.8,0.8,0.8";
-	tmpSettings["planet_halo_color"] = "1.0,1.0,1.0";
-	tmpSettings["planet_names_color"] = "0.3,0.7,1";
-	tmpSettings["planet_orbits_color"] = "0.2,0.2,0.2";
-	tmpSettings["object_trails_color"] = "1,0.5,0";
-	tmpSettings["equator_color"] = "0.5,1,0.5";
-	tmpSettings["const_lines_color"] = "0.05,0.05,0.3";
-	tmpSettings["const_lines3D_color"] = "0.5,0.2,0.2";
-	tmpSettings["const_boundary_color"] = "0.4,0.3,0";
-	tmpSettings["const_names_color"] = "0.6,0.7,0";
-	tmpSettings["const_art_color"] = "1,1,1";
-	tmpSettings["analemma_line_color"] = "1,0.5,0";
-	tmpSettings["analemma_color"] = "1,1,0.5";
-	tmpSettings["aries_color"] = "0.8,0.8,0.8";
-	tmpSettings["cardinal_color"] = "1,1,0.6";
-	tmpSettings["ecliptic_center_color"] = "0.8,0.8,0.8";
-	tmpSettings["galactic_pole_color"] = "0.8,0.8,0.8";
-	tmpSettings["galactic_center_color"] = "0.8,0.8,0.8";
-	tmpSettings["greenwich_color"] = "1,0,0";
-	tmpSettings["meridian_color"] = "0,0.8,1";
-	tmpSettings["personal_color"] = "0.8,0.8,0";
-	tmpSettings["personeq_color"] = "0.3,0.3,0.3";
-	tmpSettings["nautical_alt_color"] = "0.8,0.8,0";
-	tmpSettings["nautical_ra_color"] = "0.3,0.3,0.3";
-	tmpSettings["object_coordinates_color"] = "0.8,0.8,0";
-	tmpSettings["mouse_coordinates_color"] = "0.8,0.8,0";
-	tmpSettings["angular_distance_color"] = "0.8,0.8,0";
-	tmpSettings["loxodromy_color"] = "0.9,0.4,0.4";
-	tmpSettings["orthodromy_color"] = "0.4,0.4,0.9";
-	tmpSettings["polar_color"] = "0.5,0.3,0";
-	tmpSettings["text_usr_color"] = "0.8,0.8,0.8";
-	tmpSettings["vernal_points_color"] = "0.8,0.8,0.8";
-	tmpSettings["vertical_color"] = "0.0,0.8,1.0";
-	tmpSettings["zenith_color"] = "0.0,1.0,0.0";
-	tmpSettings["zodiac_color"] = "1.0,0,1.0";
+	tmpSettings[SCK_AZIMUTHAL_COLOR] = "0,0.4,0.6";
+	tmpSettings[SCK_EQUATORIAL_COLOR] = "0.5,1,0.5";
+	tmpSettings[SCK_ECLIPTIC_COLOR] = "1,0.2,0.2";
+	tmpSettings[SCK_GALACTIC_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_ECLIPTIC_COLOR] = "1,0.2,0.2";
+	tmpSettings[SCK_ECLIPTIC_CENTER_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_GALACTIC_CENTER_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_GALACTIC_POLE_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_NEBULA_LABEL_COLOR] = "0.5,0.5,0.5";
+	tmpSettings[SCK_NEBULA_CIRCLE_COLOR] = "0.15,0.15,0.15";
+	tmpSettings[SCK_PRECESSION_CIRCLE_COLOR] = "0.6,0.4,0";
+	tmpSettings[SCK_CIRCUMPOLAR_CIRCLE_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_OORT_COLOR] = "0.0,0.5,1.0";
+	tmpSettings[SCK_GALACTIC_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_VERNAL_POINTS_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_PLANET_HALO_COLOR] = "1.0,1.0,1.0";
+	tmpSettings[SCK_PLANET_NAMES_COLOR] = "0.3,0.7,1";
+	tmpSettings[SCK_PLANET_ORBITS_COLOR] = "0.2,0.2,0.2";
+	tmpSettings[SCK_OBJECT_TRAILS_COLOR] = "1,0.5,0";
+	tmpSettings[SCK_EQUATOR_COLOR] = "0.5,1,0.5";
+	tmpSettings[SCK_CONST_LINES_COLOR] = "0.05,0.05,0.3";
+	tmpSettings[SCK_CONST_LINES3D_COLOR] = "0.5,0.2,0.2";
+	tmpSettings[SCK_CONST_BOUNDARY_COLOR] = "0.4,0.3,0";
+	tmpSettings[SCK_CONST_NAMES_COLOR] = "0.6,0.7,0";
+	tmpSettings[SCK_CONST_ART_COLOR] = "1,1,1";
+	tmpSettings[SCK_ANALEMMA_LINE_COLOR] = "1,0.5,0";
+	tmpSettings[SCK_ANALEMMA_COLOR] = "1,1,0.5";
+	tmpSettings[SCK_ARIES_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_CARDINAL_COLOR] = "1,1,0.6";
+	tmpSettings[SCK_ECLIPTIC_CENTER_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_GALACTIC_POLE_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_GALACTIC_CENTER_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_GREENWICH_COLOR] = "1,0,0";
+	tmpSettings[SCK_MERIDIAN_COLOR] = "0,0.8,1";
+	tmpSettings[SCK_PERSONAL_COLOR] = "0.8,0.8,0";
+	tmpSettings[SCK_PERSONEQ_COLOR] = "0.3,0.3,0.3";
+	tmpSettings[SCK_NAUTICAL_ALT_COLOR] = "0.8,0.8,0";
+	tmpSettings[SCK_NAUTICAL_RA_COLOR] = "0.3,0.3,0.3";
+	tmpSettings[SCK_OBJECT_COORDINATES_COLOR] = "0.8,0.8,0";
+	tmpSettings[SCK_MOUSE_COORDINATES_COLOR] = "0.8,0.8,0";
+	tmpSettings[SCK_ANGULAR_DISTANCE_COLOR] = "0.8,0.8,0";
+	tmpSettings[SCK_LOXODROMY_COLOR] = "0.9,0.4,0.4";
+	tmpSettings[SCK_ORTHODROMY_COLOR] = "0.4,0.4,0.9";
+	tmpSettings[SCK_POLAR_COLOR] = "0.5,0.3,0";
+	tmpSettings[SCK_TEXT_USR_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_VERNAL_POINTS_COLOR] = "0.8,0.8,0.8";
+	tmpSettings[SCK_VERTICAL_COLOR] = "0.0,0.8,1.0";
+	tmpSettings[SCK_ZENITH_COLOR] = "0.0,1.0,0.0";
+	tmpSettings[SCK_ZODIAC_COLOR] = "1.0,0,1.0";
 
-	sectionSettings.push_back("color");
-	insertKeyFromTmpSettings("color");
+	sectionSettings.push_back(SCS_COLOR);
+	insertKeyFromTmpSettings(SCS_COLOR);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkViewingSettings()
 {
-	tmpSettings["nebula_picto_size"] = "6";
-	tmpSettings["atmosphere_fade_duration"] = "2";
-	tmpSettings["flag_constellation_drawing"] = "false";
-	tmpSettings["flag_constellation_name"] = "false";
-	tmpSettings["flag_constellation_boundaries"] = "false";
-	tmpSettings["flag_constellation_art"] = "false";
-	tmpSettings["flag_constellation_pick"] = "true";
-	tmpSettings["constellation_art_intensity"] = "0.5";
-	tmpSettings["constellation_art_fade_duration"] = "2";
-	tmpSettings["flag_azimutal_grid"] = "false";
-	tmpSettings["flag_equatorial_grid"] = "false";
-	tmpSettings["flag_ecliptic_grid"] = "false";
-	tmpSettings["flag_galactic_grid"] = "false";
-	tmpSettings["flag_equator_line"] = "false";
-	tmpSettings["flag_galactic_line"] = "false";
-	tmpSettings["flag_ecliptic_line"] = "false";
-	tmpSettings["flag_precession_circle"] = "false";
-	tmpSettings["flag_circumpolar_circle"] = "false";
-	tmpSettings["flag_tropic_lines"] = "false";
-	tmpSettings["flag_meridian_line"] = "false";
-	tmpSettings["flag_zenith_line"] = "false";
-	tmpSettings["flag_polar_circle"] = "false";
-	tmpSettings["flag_polar_point"] = "false";
-	tmpSettings["flag_ecliptic_center"] = "false";
-	tmpSettings["flag_galactic_pole"] = "false";
-	tmpSettings["flag_galactic_center"] = "false";
-	tmpSettings["flag_vernal_points"] = "false";
-	tmpSettings["flag_analemma_line"] = "false";
-	tmpSettings["flag_analemma"] = "false";
-	tmpSettings["flag_aries_line"] = "false";
-	tmpSettings["flag_zodiac"] = "false";
-	tmpSettings["flag_cardinal_points"] = "false";
-	tmpSettings["flag_vertical_line"] = "false";
-	tmpSettings["flag_greenwich_line"] = "false";
-	tmpSettings["flag_personal"] = "false";
-	tmpSettings["flag_personeq"] = "false";
-	tmpSettings["flag_nautical_ra"] = "false";
-	tmpSettings["flag_nautical_alt"] = "false";
-	tmpSettings["flag_object_coordinates"] = "false";
-	tmpSettings["flag_mouse_coordinates"] = "false";
-	tmpSettings["flag_angular_distance"] = "false";
-	tmpSettings["flag_loxodromy"] = "false";
-	tmpSettings["flag_orthodromy"] = "false";
-	tmpSettings["flag_oort"] = "true";
-	tmpSettings["flag_moon_scaled"] = "true";
-	tmpSettings["flag_sun_scaled"] = "false";
-	tmpSettings["flag_atmospheric_refraction"] = "false";
-	tmpSettings["moon_scale"] = "5";
-	tmpSettings["sun_scale"] = "5";
-	tmpSettings["light_pollution_limiting_magnitude"] = "6";
+	tmpSettings[SCK_NEBULA_PICTO_SIZE] = "6";
+	tmpSettings[SCK_ATMOSPHERE_FADE_DURATION] = "2";
+	tmpSettings[SCK_FLAG_CONSTELLATION_DRAWING] = "false";
+	tmpSettings[SCK_FLAG_CONSTELLATION_NAME] = "false";
+	tmpSettings[SCK_FLAG_CONSTELLATION_BOUNDARIES] = "false";
+	tmpSettings[SCK_FLAG_CONSTELLATION_ART] = "false";
+	tmpSettings[SCK_FLAG_CONSTELLATION_PICK] = "true";
+	tmpSettings[SCK_CONSTELLATION_ART_INTENSITY] = "0.5";
+	tmpSettings[SCK_CONSTELLATION_ART_FADE_DURATION] = "2";
+	tmpSettings[SCK_FLAG_AZIMUTAL_GRID] = "false";
+	tmpSettings[SCK_FLAG_EQUATORIAL_GRID] = "false";
+	tmpSettings[SCK_FLAG_ECLIPTIC_GRID] = "false";
+	tmpSettings[SCK_FLAG_GALACTIC_GRID] = "false";
+	tmpSettings[SCK_FLAG_EQUATOR_LINE] = "false";
+	tmpSettings[SCK_FLAG_GALACTIC_LINE] = "false";
+	tmpSettings[SCK_FLAG_ECLIPTIC_LINE] = "false";
+	tmpSettings[SCK_FLAG_PRECESSION_CIRCLE] = "false";
+	tmpSettings[SCK_FLAG_CIRCUMPOLAR_CIRCLE] = "false";
+	tmpSettings[SCK_FLAG_TROPIC_LINES] = "false";
+	tmpSettings[SCK_FLAG_MERIDIAN_LINE] = "false";
+	tmpSettings[SCK_FLAG_ZENITH_LINE] = "false";
+	tmpSettings[SCK_FLAG_POLAR_CIRCLE] = "false";
+	tmpSettings[SCK_FLAG_POLAR_POINT] = "false";
+	tmpSettings[SCK_FLAG_ECLIPTIC_CENTER] = "false";
+	tmpSettings[SCK_FLAG_GALACTIC_POLE] = "false";
+	tmpSettings[SCK_FLAG_GALACTIC_CENTER] = "false";
+	tmpSettings[SCK_FLAG_VERNAL_POINTS] = "false";
+	tmpSettings[SCK_FLAG_ANALEMMA_LINE] = "false";
+	tmpSettings[SCK_FLAG_ANALEMMA] = "false";
+	tmpSettings[SCK_FLAG_ARIES_LINE] = "false";
+	tmpSettings[SCK_FLAG_ZODIAC] = "false";
+	tmpSettings[SCK_FLAG_CARDINAL_POINTS] = "false";
+	tmpSettings[SCK_FLAG_VERTICAL_LINE] = "false";
+	tmpSettings[SCK_FLAG_GREENWICH_LINE] = "false";
+	tmpSettings[SCK_FLAG_PERSONAL] = "false";
+	tmpSettings[SCK_FLAG_PERSONEQ] = "false";
+	tmpSettings[SCK_FLAG_NAUTICAL_RA] = "false";
+	tmpSettings[SCK_FLAG_NAUTICAL_ALT] = "false";
+	tmpSettings[SCK_FLAG_OBJECT_COORDINATES] = "false";
+	tmpSettings[SCK_FLAG_MOUSE_COORDINATES] = "false";
+	tmpSettings[SCK_FLAG_ANGULAR_DISTANCE] = "false";
+	tmpSettings[SCK_FLAG_LOXODROMY] = "false";
+	tmpSettings[SCK_FLAG_ORTHODROMY] = "false";
+	tmpSettings[SCK_FLAG_OORT] = "true";
+	tmpSettings[SCK_FLAG_MOON_SCALED] = "true";
+	tmpSettings[SCK_FLAG_SUN_SCALED] = "false";
+	tmpSettings[SCK_FLAG_ATMOSPHERIC_REFRACTION] = "false";
+	tmpSettings[SCK_MOON_SCALE] = "5";
+	tmpSettings[SCK_SUN_SCALE] = "5";
+	tmpSettings[SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE] = "6";
 
-	sectionSettings.push_back("viewing");
-	insertKeyFromTmpSettings("viewing");
+	sectionSettings.push_back(SCS_VIEWING);
+	insertKeyFromTmpSettings(SCS_VIEWING);
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkNavigationSettings()
 {
-	tmpSettings["flag_navigation"]="false";
-	tmpSettings["preset_sky_time"]="2453065.333344907";
-	tmpSettings["auto_move_duration"]="5";
-	tmpSettings["day_key_mode"]="calendar";
+	tmpSettings[SCK_FLAG_NAVIGATION]="false";
+	tmpSettings[SCK_PRESET_SKY_TIME]="2453065.333344907";
+	tmpSettings[SCK_AUTO_MOVE_DURATION]="5";
+	tmpSettings[SCK_DAY_KEY_MODE]="calendar";
 	// navigationSettings["flag_enable_drag_mouse"]="true";
-	tmpSettings["flag_enable_move_keys"]="true";
-	tmpSettings["flag_enable_zoom_keys"]="true";
-	tmpSettings["flag_manual_zoom"]="false";
-	tmpSettings["heading"]="0";
-	tmpSettings["init_fov"]="180";
-	tmpSettings["init_view_pos"]="1e-04,1e-04,1";
-	tmpSettings["mouse_zoom"]="30";
-	tmpSettings["move_speed"]="0.0001";
-	tmpSettings["startup_time_mode"]="Actual";
-	tmpSettings["view_offset"]="0";
-	tmpSettings["viewing_mode"]="equator";
-	tmpSettings["zoom_speed"]="0.0001";
-	tmpSettings["stall_radius_unit"]= "5.0";
+	tmpSettings[SCK_FLAG_ENABLE_MOVE_KEYS]="true";
+	tmpSettings[SCK_FLAG_ENABLE_ZOOM_KEYS]="true";
+	tmpSettings[SCK_FLAG_MANUAL_ZOOM]="false";
+	tmpSettings[SCK_HEADING]="0";
+	tmpSettings[SCK_INIT_FOV]="180";
+	tmpSettings[SCK_INIT_VIEW_POS]="1e-04,1e-04,1";
+	tmpSettings[SCK_MOUSE_ZOOM]="30";
+	tmpSettings[SCK_MOVE_SPEED]="0.0001";
+	tmpSettings[SCK_STARTUP_TIME_MODE]="Actual";
+	tmpSettings[SCK_VIEW_OFFSET]="0";
+	tmpSettings[SCK_VIEWING_MODE]="equator";
+	tmpSettings[SCK_ZOOM_SPEED]="0.0001";
+	tmpSettings[SCK_STALL_RADIUS_UNIT]= "5.0";
 
-	sectionSettings.push_back("navigation");
-	insertKeyFromTmpSettings("navigation");
+	sectionSettings.push_back(SCS_NAVIGATION );
+	insertKeyFromTmpSettings(SCS_NAVIGATION );
 	tmpSettings.clear();
 }
 
 
 void CheckConfig::checkAstroSettings()
 {
-	sectionSettings.push_back("astro");
-	tmpSettings["flag_stars"]="true";
-	tmpSettings["flag_star_name"]="false";
-	tmpSettings["flag_star_lines"]="false";
-	tmpSettings["flag_planets"]="true";
-	tmpSettings["flag_planets_hints"]="false";
-	tmpSettings["flag_planets_orbits"]="false";
-	tmpSettings["flag_nebula"]="true";
-	tmpSettings["flag_milky_way"]="true";
-	tmpSettings["flag_zodiacal_light"]="false";
-	tmpSettings["flag_bright_nebulae"]="true";
-	tmpSettings["milky_way_fader_duration"]="2";
-	tmpSettings["milky_way_intensity"]="0.7";
-	tmpSettings["zodiacal_intensity"]="0.7";
-	tmpSettings["milky_way_texture"]="milkyway.png";
-	tmpSettings["milky_way_iris_texture"]="milkyway_iris.png";
-	tmpSettings["zodiacal_light_texture"]="zodiacale.png";
-	tmpSettings["flag_nebula_hints"]="false";
-	tmpSettings["flag_nebula_names"]="false";
-	tmpSettings["max_mag_nebula_name"]="99";
-	tmpSettings["flag_object_trails"]="false";
-	tmpSettings["flag_light_travel_time"]="true";
-	tmpSettings["planet_size_marginal_limit"]="0";
-	tmpSettings["star_size_limit"]="9";
-	tmpSettings["meteor_rate"]="10";
+	sectionSettings.push_back(SCS_ASTRO);
+	tmpSettings[SCK_FLAG_STARS]="true";
+	tmpSettings[SCK_FLAG_STAR_NAME]="false";
+	tmpSettings[SCK_FLAG_STAR_LINES]="false";
+	tmpSettings[SCK_FLAG_PLANETS]="true";
+	tmpSettings[SCK_FLAG_PLANETS_HINTS]="false";
+	tmpSettings[SCK_FLAG_PLANETS_ORBITS]="false";
+	tmpSettings[SCK_FLAG_NEBULA]="true";
+	tmpSettings[SCK_FLAG_MILKY_WAY]="true";
+	tmpSettings[SCK_FLAG_ZODIACAL_LIGHT]="false";
+	tmpSettings[SCK_FLAG_BRIGHT_NEBULAE]="true";
+	tmpSettings[SCK_MILKY_WAY_FADER_DURATION]="2";
+	tmpSettings[SCK_MILKY_WAY_INTENSITY]="0.7";
+	tmpSettings[SCK_ZODIACAL_INTENSITY]="0.7";
+	tmpSettings[SCK_MILKY_WAY_TEXTURE]="milkyway.png";
+	tmpSettings[SCK_MILKY_WAY_IRIS_TEXTURE]="milkyway_iris.png";
+	tmpSettings[SCK_ZODIACAL_LIGHT_TEXTURE]="zodiacale.png";
+	tmpSettings[SCK_FLAG_NEBULA_HINTS]="false";
+	tmpSettings[SCK_FLAG_NEBULA_NAMES]="false";
+	tmpSettings[SCK_MAX_MAG_NEBULA_NAME]="99";
+	tmpSettings[SCK_FLAG_OBJECT_TRAILS]="false";
+	tmpSettings[SCK_FLAG_LIGHT_TRAVEL_TIME]="true";
+	tmpSettings[SCK_PLANET_SIZE_MARGINAL_LIMIT]="0";
+	tmpSettings[SCK_STAR_SIZE_LIMIT]="9";
+	tmpSettings[SCK_METEOR_RATE]="10";
 
-	sectionSettings.push_back("astro");
-	insertKeyFromTmpSettings("astro");
+	sectionSettings.push_back(SCS_ASTRO);
+	insertKeyFromTmpSettings(SCS_ASTRO);
 	tmpSettings.clear();
 }
 
 void CheckConfig::checkLocationSettings()
 {
-	tmpSettings["landscape_name"]="forest";
-	tmpSettings["name"]="guereins";
-	tmpSettings["home_planet"]="Earth";
-	tmpSettings["altitude"]="230";
-	tmpSettings["latitude"]="+46d6'29.0\"";
-	tmpSettings["longitude"]="+4d46'47.0\"";
+	tmpSettings[SCK_LANDSCAPE_NAME]="forest";
+	tmpSettings[SCK_NAME]="guereins";
+	tmpSettings[SCK_HOME_PLANET]="Earth";
+	tmpSettings[SCK_ALTITUDE]="230";
+	tmpSettings[SCK_LATITUDE]="+46d6'29.0\"";
+	tmpSettings[SCK_LONGITUDE]="+4d46'47.0\"";
 
-	sectionSettings.push_back("init_location");
-	insertKeyFromTmpSettings("init_location");
+	sectionSettings.push_back(SCS_INIT_LOCATION);
+	insertKeyFromTmpSettings(SCS_INIT_LOCATION);
 	tmpSettings.clear();
 }
 
