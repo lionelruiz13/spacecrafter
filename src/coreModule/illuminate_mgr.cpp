@@ -66,7 +66,7 @@ IlluminateMgr::~IlluminateMgr()
 }
 
 // Load individual Illuminate for script
-bool IlluminateMgr::loadIlluminate(int num)
+bool IlluminateMgr::load(int num)
 {
 	Object selected_object = hip_stars->searchHP(num).get();
 	Vec3f color = selected_object.getRGB();
@@ -80,7 +80,7 @@ bool IlluminateMgr::loadIlluminate(int num)
 }
 
 
-bool IlluminateMgr::loadIlluminate(int num, const Vec3f& _color)
+bool IlluminateMgr::load(int num, const Vec3f& _color)
 {
 	Object selected_object = hip_stars->searchHP(num).get();
 	//Vec3f color = selected_object.getRGB();
@@ -102,7 +102,7 @@ bool IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  dou
 
 	Illuminate *e = search(name);
 	if(e)
-		removeIlluminate(name);
+		remove(name);
 
 	e = new Illuminate;
 
@@ -118,7 +118,7 @@ bool IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  dou
 }
 
 // Clear user added Illuminate
-void IlluminateMgr::removeIlluminate(unsigned int name)
+void IlluminateMgr::remove(unsigned int name)
 {
 	std::vector <Illuminate*>::iterator iter;
 	std::vector <Illuminate*>::iterator iter2;
@@ -146,7 +146,7 @@ void IlluminateMgr::removeIlluminate(unsigned int name)
 }
 
 // remove all user added Illuminate
-void IlluminateMgr::removeAllIlluminate()
+void IlluminateMgr::removeAll()
 {
 	std::vector<Illuminate *>::iterator iter;
 	std::vector<Illuminate *>::iterator iter2;

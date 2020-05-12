@@ -51,17 +51,14 @@ public:
 		defaultSize =v;
 	}
 
-	bool loadIlluminate(int num);
-	bool loadIlluminate(int num, const Vec3f& _color);
-
-	//! Load an individual Illuminate from a script
-	bool loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
+	bool load(int num);
+	bool load(int num, const Vec3f& _color);
 
 	//! remove user added Illuminate and optionally unhide the original of the same name
-	void removeIlluminate(unsigned int name);
+	void remove(unsigned int name);
 
 	//! remove all user added Illuminate
-	void removeAllIlluminate();
+	void removeAll();
 
 	//! Draw all the Illuminate
 	void draw(Projector *prj, const Navigator *nav);
@@ -72,6 +69,9 @@ public:
 	void removeTex();
 
 private:
+	//! Load an individual Illuminate with all data
+	bool loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
+
 	std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate list
 	std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
 	LittleGrid illuminateGrid;					//!< Grid for opimisation
