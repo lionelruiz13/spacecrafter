@@ -75,13 +75,9 @@ void IlluminateMgr::load(int num, double size, double rotation)
 		return;
 	Object selected_object = hip_stars->searchHP(num).get();
 	Vec3f color = selected_object.getRGB();
-	double ra, de;
-	selected_object.getRaDeValue(navigator,&ra,&de);
-	float mag = selected_object.getMag(navigator);
-
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
 	//std::cout <<num << " only" <<std::endl;
-	loadIlluminate(num, ra, de, size, color[0], color[1], color[2], rotation);	
+	load(num, color, size, rotation);	
 }
 
 
