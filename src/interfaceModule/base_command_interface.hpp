@@ -68,4 +68,16 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30, APP_AUTO_MOVE_DUR
                             APP_STALL_RADIUS_UNIT,APP_TULLY_COLOR_MODE,APP_DATETIME_DISPLAY_POSITION,APP_DATETIME_DISPLAY_NUMBER,APP_FLAG_NONE
                             };
 
+
+// nom des arguments des commandes
+#define W_FILENAME   "filename"
+#define W_SIZE       "size"
+#define W_ACTION     "action"
+#define W_SNAPSHOT   "snapshot"
+#define W_RECORD     "record"
+#define W_VOLUME     "volume"
+#define W_INCREMENT  "increment"
+#define W_DECREMENT  "decrement"
+#define W_NOPAUSE    "nopause"
+#define W_NAME       "name"
 #endif //_BASE_COMMAND_INTERFACE_HPP_

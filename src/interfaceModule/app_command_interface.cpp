@@ -1025,7 +1025,7 @@ int AppCommandInterface::commandGet()
 
 int AppCommandInterface::commandSearch()
 {
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 	std::string argMaxObject = args["maxobject"];
 	if (!argName.empty()) {
 		std::string toSend;
@@ -1046,7 +1046,7 @@ int AppCommandInterface::commandSearch()
 
 int AppCommandInterface::commandPlanetScale()
 {
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 	std::string argScale = args["scale"];
 	if (!argName.empty() && !argScale.empty()) {
 		coreLink->planetSetSizeScale(argName, evalDouble(argScale));
@@ -1069,10 +1069,10 @@ int AppCommandInterface::commandWait(unsigned long int &wait)
 
 int AppCommandInterface::commandPersonal()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
 		if (argAction=="load") {
-			std::string fileName=args["filename"];
+			std::string fileName=args[W_FILENAME];
 			if (!fileName.empty())
 				fileName = "personal.txt";
 			if ( !Utility::isAbsolute(fileName))
@@ -1098,9 +1098,9 @@ int AppCommandInterface::commandPersonal()
 
 int AppCommandInterface::commandDso()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	std::string argPath = args["path"];
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 
 	if (!argAction.empty()) {
 		if (argAction=="load") {
@@ -1112,7 +1112,7 @@ int AppCommandInterface::commandDso()
 
 			bool status = stcore->loadNebula(evalDouble(args["ra"]), evalDouble(args["de"]), evalDouble(args["magnitude"]),
 			                                evalDouble(args["angular_size"]), evalDouble(args["rotation"]), argName,
-			                                path + args["filename"], args["credit"], evalDouble(args["texture_luminance_adjust"]),
+			                                path + args[W_FILENAME], args["credit"], evalDouble(args["texture_luminance_adjust"]),
 			                                evalDouble(args["distance"]),args["constellation"], args["type"]);
 			if (status==false)
 				debug_message = "Error loading nebula.";
@@ -1175,10 +1175,10 @@ int AppCommandInterface::commandDso()
 
 int AppCommandInterface::commandPersoneq()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if ( !argAction.empty()) {
 		if (argAction=="load") {
-			std::string fileName=args["filename"];
+			std::string fileName=args[W_FILENAME];
 			if (fileName.empty())
 				fileName = "personeq.txt";
 			if ( !Utility::isAbsolute(fileName))
@@ -1203,7 +1203,7 @@ int AppCommandInterface::commandPersoneq()
 
 int AppCommandInterface::commandMovetocity()
 {
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 	std::string argCountry = args["country"];
 	if (!argName.empty() || !argCountry.empty()) {
 		double lon=0.0, lat=0.0;
@@ -1248,7 +1248,7 @@ int AppCommandInterface::commandBodyTrace()
 			}
 		}
 	}
-	if (args["action"]=="clear") {
+	if (args[W_ACTION]=="clear") {
 		coreLink->bodyTraceClear();
 		return executeCommandStatus();
 	}
@@ -1280,7 +1280,7 @@ int AppCommandInterface::commandSuntrace()
 			return executeCommandStatus();
 		}
 	}
-	if (args["action"]=="clear") {
+	if (args[W_ACTION]=="clear") {
 		coreLink->bodyTraceBodyChange("Sun");
 		coreLink->bodyTraceClear();
 	}
@@ -1397,18 +1397,18 @@ int AppCommandInterface::commandIlluminate()
 		return executeCommandStatus();
 	}
 
-	if (args["action"]=="clear") {
+	if (args[W_ACTION]=="clear") {
 		coreLink->illuminateRemoveTex();
 		coreLink->illuminateRemoveAll();
 		return executeCommandStatus();
 	}
 
-	if (args["action"]=="clear_texture") {
+	if (args[W_ACTION]=="clear_texture") {
 		coreLink->illuminateRemoveTex();
 		return executeCommandStatus();
 	}
 
-	std::string argFileName = args["filename"];
+	std::string argFileName = args[W_FILENAME];
 	if (!argFileName.empty()) {
 		FilePath myFile  = FilePath(argFileName, FilePath::TFP::IMAGE);
 		if (!myFile.exist()) {
@@ -1425,7 +1425,7 @@ int AppCommandInterface::commandIlluminate()
 
 int AppCommandInterface::commandPrint()
 {
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 	std::string argValue = args["value"];
 	if (!argValue.empty()) {
 		std::stringstream oss;
@@ -1571,7 +1571,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 
 int AppCommandInterface::commandShutdown()
 {
-	if (args["action"] =="now")	{
+	if (args[W_ACTION] =="now")	{
 		stapp->flag(APP_FLAG::ALIVE, false);
 	} else
 		debug_message = "Bad shutdown request.";
@@ -1581,7 +1581,7 @@ int AppCommandInterface::commandShutdown()
 
 int AppCommandInterface::commandConfiguration()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
 		if(argAction=="load") {
 			stapp->init();
@@ -1603,7 +1603,7 @@ int AppCommandInterface::commandConfiguration()
 				return executeCommandStatus();
 			}
 
-			std::string argName = args["name"];
+			std::string argName = args[W_NAME];
 			if (argName.empty()){
 				debug_message = "command 'star_lines' missing name parameter";
 				return executeCommandStatus();
@@ -1626,7 +1626,7 @@ int AppCommandInterface::commandConfiguration()
 				return executeCommandStatus();
 			}
 
-			std::string argName = args["name"];
+			std::string argName = args[W_NAME];
 			if (argName.empty()){
 				debug_message = "command 'configuration', star_navigator missing name argument";
 				return executeCommandStatus();
@@ -1671,7 +1671,7 @@ int AppCommandInterface::commandConfiguration()
 
 int AppCommandInterface::commandConstellation()
 {
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 	transform(argName.begin(),argName.end(),argName.begin(), ::toupper);
 	if (argName.empty()) {
 		debug_message = "command 'constellation': missing name";
@@ -1715,13 +1715,13 @@ int AppCommandInterface::commandConstellation()
 
 // int AppCommandInterface::commandExternalMplayer()
 // {
-	// std::string argAction = args["action"];
+	// std::string argAction = args[W_ACTION];
 	// if (!argAction.empty()) {
-		// if (argAction=="play" && args["filename"]!="") {
-			// if (Utility::isAbsolute(args["filename"]))
-				// media->externalPlay(args["filename"]);
+		// if (argAction=="play" && args[W_FILENAME]!="") {
+			// if (Utility::isAbsolute(args[W_FILENAME]))
+				// media->externalPlay(args[W_FILENAME]);
 			// else
-				// media->externalPlay(scriptInterface->getScriptPath()+args["filename"]);
+				// media->externalPlay(scriptInterface->getScriptPath()+args[W_FILENAME]);
 			// return executeCommandStatus();
 		// }
 		// if (argAction=="stop") {
@@ -1754,8 +1754,8 @@ int AppCommandInterface::commandConstellation()
 		// media->externalSpeed(evalDouble(args["speed"]));
 		// return executeCommandStatus();
 	// }
-	// if (args["volume"]!="") {
-		// media->externalVolume(evalDouble(args["volume"]));
+	// if (args[W_VOLUME]!="") {
+		// media->externalVolume(evalDouble(args[W_VOLUME]));
 		// return executeCommandStatus();
 	// }
 	// if (args["execute"]!="") {
@@ -1768,8 +1768,8 @@ int AppCommandInterface::commandConstellation()
 
 int AppCommandInterface::commandExternalViewer()
 {
-	std::string argAction = args["action"];
-	std::string argFileName = args["filename"];
+	std::string argAction = args[W_ACTION];
+	std::string argFileName = args[W_FILENAME];
 
 	if (argAction=="play" && !argFileName.empty()) {
 		if (argFileName.size()<5) {
@@ -1985,7 +1985,7 @@ int AppCommandInterface::commandMeteors()
 
 int AppCommandInterface::commandLandscape()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
 		if (argAction == "load") {
 			// textures are relative to script
@@ -2005,14 +2005,14 @@ int AppCommandInterface::commandLandscape()
 
 int AppCommandInterface::commandText()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 
 	if (argAction=="clear") {
 		coreLink->textClear();
 		return executeCommandStatus();
 	}
 
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 	if (argName.empty()) {
 		debug_message = _("Command 'text': argument 'name' needed");
 		return executeCommandStatus();
@@ -2090,7 +2090,7 @@ int AppCommandInterface::commandText()
 int AppCommandInterface::commandSkyCulture()
 {
 	std::string argPath = args["path"];
-	if (!argPath.empty() && args["action"]=="load") {
+	if (!argPath.empty() && args[W_ACTION]=="load") {
 		if (!stcore->loadSkyCulture(argPath))
 			debug_message = "Error loading sky culture from path specified.";
 	} else
@@ -2100,8 +2100,8 @@ int AppCommandInterface::commandSkyCulture()
 
 int AppCommandInterface::commandScript(unsigned long int &wait)
 {
-	std::string argAction = args["action"];
-	std::string filen = args["filename"];
+	std::string argAction = args[W_ACTION];
+	std::string filen = args[W_FILENAME];
 	if (!argAction.empty()) {
 		if (argAction=="end") {
 			scriptInterface->cancelScript();
@@ -2171,11 +2171,11 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 int AppCommandInterface::commandAudio()
 {
 	//gestion du volume
-	std::string argVolume = args["volume"];
+	std::string argVolume = args[W_VOLUME];
 	if (!argVolume.empty()) {
-		if (argVolume == "increment") {
+		if (argVolume == W_INCREMENT) {
 			media->audioVolumeIncrement();
-		} else if (argVolume == "decrement") {
+		} else if (argVolume == W_DECREMENT) {
 			media->audioVolumeDecrement();
 		} else
 			media->audioSetVolume(evalInt(argVolume));
@@ -2183,14 +2183,14 @@ int AppCommandInterface::commandAudio()
 	}
 
 	//gestion de la pause des audio dans les scripts
-	std::string argMusicPause= args["nopause"];
+	std::string argMusicPause= args[W_NOPAUSE];
 	if (!argMusicPause.empty()) {
-		media->audioSetMusicToPause(isTrue(args["nopause"]));
+		media->audioSetMusicToPause(isTrue(args[W_NOPAUSE]));
 		return executeCommandStatus();
 	}
 
 	//gestion des actions
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
 		if (argAction =="drop") {
 			media->audioMusicDrop();
@@ -2205,7 +2205,7 @@ int AppCommandInterface::commandAudio()
 			media->audioMusicResume();
 			return executeCommandStatus();
 		} else if (argAction=="play"){
-			std::string argFileName = args["filename"];
+			std::string argFileName = args[W_FILENAME];
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
 					media->audioMusicLoad(myFile);
@@ -2231,21 +2231,21 @@ int AppCommandInterface::commandAudio()
 
 int AppCommandInterface::commandImage()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (argAction=="purge") {
 		media->imageDropAll();
 		return executeCommandStatus();
 	}
 
-	std::string argName = args["name"];
+	std::string argName = args[W_NAME];
 	if (argName.empty()) {
 		debug_message = _("Image argument name required.");
 		return executeCommandStatus();
 	}
 
-	std::string argFileName = args["filename"];
+	std::string argFileName = args[W_FILENAME];
 	if (argAction=="drop") {
-		media->imageDrop(evalString(args["name"]));
+		media->imageDrop(evalString(args[W_NAME]));
 		return executeCommandStatus();
 	}
 
@@ -2486,7 +2486,7 @@ int AppCommandInterface::commandLook()
 
 int AppCommandInterface::commandStarLines()
 {
-	if (args["action"]=="drop") {
+	if (args[W_ACTION]=="drop") {
 		coreLink->starLinesDrop();
 		return executeCommandStatus();
 	}
@@ -2505,7 +2505,7 @@ int AppCommandInterface::commandStarLines()
 
 int AppCommandInterface::commandPosition()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (argAction == "save") {
 		coreBackup->saveBackup();
 		return executeCommandStatus();
@@ -2556,7 +2556,7 @@ int AppCommandInterface::commandZoom(unsigned long int &wait)
 int AppCommandInterface::commandTimerate()
 {
 	std::string argRate = args["rate"];
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	std::string argStep = args["step"];
 	std::string argDuration = args["duration"];
 
@@ -2731,7 +2731,7 @@ int AppCommandInterface::commandMoveto()
 
 int AppCommandInterface::commandMedia()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (!argAction.empty() ) {
 
 		if (argAction == "play") {
@@ -2742,7 +2742,7 @@ int AppCommandInterface::commandMedia()
 			}
 			std::string videoName = args["videoname"];
 			std::string audioName = args["audioname"];
-			std::string argName =  args["name"];
+			std::string argName =  args[W_NAME];
 			std::string argPosition = args["position"];
 
 			FilePath::TFP localRepertory;
@@ -2855,13 +2855,13 @@ int AppCommandInterface::commandMedia()
 
 int AppCommandInterface::commandDomemasters()
 {
-	std::string argAction = args["action"];
+	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
-		if (argAction == "snapshot") {
+		if (argAction == W_SNAPSHOT) {
 			saveScreenInterface->takeScreenShot();
 			return executeCommandStatus();
 		}
-		if (argAction == "record") {
+		if (argAction == W_RECORD) {
 			saveScreenInterface->takeVideoShot();
 			return executeCommandStatus();
 		} else
@@ -3021,15 +3021,15 @@ int AppCommandInterface::commandDate()
 int AppCommandInterface::commandBody()
 {
 	//gestion des actions
-	std::string argAction = args["action"];
-	std::string argName = args["name"];
+	std::string argAction = args[W_ACTION];
+	std::string argName = args[W_NAME];
     if (argName == "home_planet") argName = coreLink->getObserverHomePlanetEnglishName();
 	std::string argMode = args["mode"];
 
 	// traitement des OJM
 	if ((argMode=="in_universe" || argMode=="in_galaxy") && !argAction.empty()) {
 		if (argAction =="load") {
-			std::string argFileName = args["filename"];
+			std::string argFileName = args[W_FILENAME];
 			argFileName = argFileName +"/"+argFileName +".ojm";
 			Vec3f Position( evalDouble(args["pos_x"]), evalDouble(args["pos_y"]), evalDouble(args["pos_z"] ));
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::MODEL3D);
@@ -3091,11 +3091,11 @@ int AppCommandInterface::commandBody()
 		std::string argHidden = args["hidden"];
 		if (!argHidden.empty()) {
 			if (isTrue(argHidden)) {
-				coreLink->setPlanetHidden(args["name"], true);
+				coreLink->setPlanetHidden(args[W_NAME], true);
 			} else if (isFalse(argHidden)) {
-				coreLink->setPlanetHidden(args["name"], false);
+				coreLink->setPlanetHidden(args[W_NAME], false);
 			} else if (argHidden == "toggle") {
-				coreLink->setPlanetHidden(args["name"], !coreLink->getPlanetHidden(args["name"]));
+				coreLink->setPlanetHidden(args[W_NAME], !coreLink->getPlanetHidden(args[W_NAME]));
 			} else
 				debug_message = _("Command 'body': unknown hidden value");
 			return executeCommandStatus();
@@ -3105,9 +3105,9 @@ int AppCommandInterface::commandBody()
 		std::string argOrbit = args["orbit"];
 		if (!argOrbit.empty()) {
 			if (isTrue(argOrbit)) {
-				coreLink->planetsSetFlagOrbits(args["name"], true);
+				coreLink->planetsSetFlagOrbits(args[W_NAME], true);
 			} else if (isFalse(argOrbit)) {
-				coreLink->planetsSetFlagOrbits(args["name"], false);
+				coreLink->planetsSetFlagOrbits(args[W_NAME], false);
 			} else
 				debug_message = _("Command 'body': unknown orbit value");
 			return executeCommandStatus();
@@ -3145,11 +3145,12 @@ int AppCommandInterface::commandBody()
 
 int AppCommandInterface::commandFont()
 {
-	if (!args["filename"].empty()) {
-		FilePath myFile  = FilePath(args["filename"], FilePath::TFP::FONTS);
+	if (!args[W_FILENAME].empty()) {
+		FilePath myFile  = FilePath(args[W_FILENAME], FilePath::TFP::FONTS);
 			if (myFile) {
 				int size = 10;
-				if (args["size"] != "") size = evalInt(args["size"]);
+				if (!args[W_SIZE].empty())
+					size = evalInt(args[W_SIZE]);
 				stcore->loadFont(size, myFile.toString());
 				return executeCommandStatus();
 			} else {
@@ -3165,8 +3166,8 @@ int AppCommandInterface::commandFont()
 int AppCommandInterface::commandCamera(unsigned long int &wait)
 {
 	//gestion des actions
-	std::string argAction = args["action"];
-	std::string argName = args["name"];
+	std::string argAction = args[W_ACTION];
+	std::string argName = args[W_NAME];
 
 	if (argAction.empty()) {
 		debug_message = "command 'camera' : action argument";
@@ -3215,7 +3216,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		}
 
 		if(argTarget == "body"){
-			argName = args["name"];
+			argName = args[W_NAME];
 
 			if (argName.empty()) {
 				debug_message = "command 'transition_to' : missing target name";
@@ -3300,7 +3301,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 	if(argAction == "save"){
 		bool result;
 
-		std::string argFileName = args["filename"];
+		std::string argFileName = args[W_FILENAME];
 
 		if (argFileName.empty())
 			result = coreLink->cameraSave();
@@ -3313,7 +3314,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 	}
 
 	if(argAction == "load"){
-		std::string argFileName = args["filename"];
+		std::string argFileName = args[W_FILENAME];
 
 		if(argFileName.empty()){
 			debug_message = "command 'camera load' : missing file name";
