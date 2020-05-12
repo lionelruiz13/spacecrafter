@@ -1371,6 +1371,12 @@ int AppCommandInterface::commandIlluminate()
 
 		//	coreLink->illuminateLoad(evalInt(argHP));
 		
+		// std::string ang_size=args["size"];
+		// if (ang_size=="") ang_size="0.0";
+
+		// if (args["rotation"]!="")
+		// 	rotation = evalDouble(args["rotation"]);
+
 		//gestion de la couleur
 		Vec3f Vcolor;
 		std::string argValue = args["color_value"];
@@ -1382,40 +1388,7 @@ int AppCommandInterface::commandIlluminate()
 			coreLink->illuminateLoad(evalInt(argHP));
 		else 		// here we have color
 			coreLink->illuminateLoad(evalInt(argHP), Vcolor);
-		
-		// std::string select_type, identifier;
-		// select_type = "hp";
-		// identifier = argHP;
-		// stcore->selectObject(select_type, identifier);
-		// double ra, de;
-		// stcore->getDeRa(&ra,&de);
-		// stcore->unSelect();
 
-		// std::string ang_size=args["size"];
-		// if (ang_size=="") ang_size="0.0";
-
-		// double r=1.0, g=1.0, b=1.0, rotation=0.0;
-
-		// if (args["r"]!="")
-		// 	r=evalDouble(args["r"]);
-		// if (args["g"]!="")
-		// 	g=evalDouble(args["g"]);
-		// if (args["b"]!="")
-		// 	b=evalDouble(args["b"]);
-
-		// if (args["rotation"]!="")
-		// 	rotation = evalDouble(args["rotation"]);
-		/*
-		std::string argFileName = args["filename"];
-		if (!argFileName.empty()) {
-			FilePath myFile  = FilePath(argFileName, FilePath::TFP::IMAGE);
-			if (!myFile.exist()) {
-				debug_message = _("command 'illuminate': filename not found");
-				return executeCommandStatus();
-			}
-			coreLink->illuminateLoad(myFile.toString(), ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b,rotation);
-		} else*/
-			// coreLink->illuminateLoad(ra, de, evalDouble(ang_size), "I-"+identifier, r, g, b, rotation);
 		return executeCommandStatus();
 	}
 
