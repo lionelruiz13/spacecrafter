@@ -45,7 +45,7 @@ IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator)
 	navigator = _navigator;
 	illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
 
-	defaultTex = new s_texture("star_illuminate.png");
+	defaultTex = new s_texture("star_illuminate.png", TEX_LOAD_TYPE_PNG_BLEND3 );
 	if (defaultTex ==nullptr)
 		cLog::get()->write("Error loading texture illuminateTex", LOG_TYPE::L_ERROR);
 
@@ -283,7 +283,7 @@ void IlluminateMgr::deleteShader()
 void IlluminateMgr::changeTex(const std::string& fileName)
 {
 	this->removeTex();
-	userTex = new s_texture(fileName);
+	userTex = new s_texture(fileName, TEX_LOAD_TYPE_PNG_BLEND3 );
 	if (userTex==nullptr) {
 		cLog::get()->write("illuminate: error when loading user texture "+ fileName, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
 	}
