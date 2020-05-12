@@ -165,12 +165,17 @@ private:
 
 	//map assurant la transcription entre le texte et la commande associée
 	std::map<const std::string, SC_COMMAND> m_commands;
+	std::map<SC_COMMAND, const std::string> m_commands_ToString;
 	//map assurant la transcription entre le texte et le flag associé
 	std::map<const std::string, FLAG_NAMES> m_flags;
+	std::map<FLAG_NAMES, const std::string> m_flags_ToString;
 	//map assurant la transcription entre le texte et la couleur associée
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
-	//map assurant la transcription entre le texte et la commande set associée
+	std::map<COLORCOMMAND_NAMES, const std::string> m_color_ToString;
+	//map assurant la transcription entre le texte et la commande interface associé
 	std::map<const std::string, SCD_NAMES> m_set;
+	std::map<SCD_NAMES, const std::string> m_set_ToString;
+	//map assurant la transcription entre le texte et la commande set associée
 };
 
 #endif // _APP_COMMAND_INTERFACE_H
