@@ -258,7 +258,7 @@ int main(int argc, char **argv)
 	sdl->initSDL();
 
 	// détermination de la résolution initiale
-	bool autoscreen = conf.getBoolean("video:autoscreen");
+	bool autoscreen = conf.getBoolean("video", SCK_AUTOSCREEN);
 	Uint16 curW, curH;
 	bool fullscreen;
 	int antialiasing;
@@ -273,9 +273,9 @@ int main(int argc, char **argv)
 		curH = dm.h;
 		fullscreen = true;
 	} else {
-		curW = conf.getInt("video:screen_w");
-		curH = conf.getInt("video:screen_h");
-		fullscreen = conf.getBoolean("video:fullscreen");
+		curW = conf.getInt("video", SCK_SCREEN_W);
+		curH = conf.getInt("video",SCK_SCREEN_H);
+		fullscreen = conf.getBoolean("video", SCK_FULLSCREEN);
 	}
 
 	antialiasing = conf.getInt("rendering:antialiasing");
