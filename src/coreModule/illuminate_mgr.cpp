@@ -82,12 +82,20 @@ void IlluminateMgr::load(int num, double size, double rotation)
 	load(num, color, size, rotation);	
 }
 
-void IlluminateMgr::loadConstellation(const std::string& abbreviation)
+void IlluminateMgr::loadConstellation(const std::string& abbreviation, double size, double rotation)
 {
 	std::vector<unsigned int> HPStars;
 	asterism->getHPStarsFromAbbreviation(abbreviation, HPStars);
 	for (auto i: HPStars)
-		this->load(i,0,0);
+		this->load(i,size,rotation);
+}
+
+void IlluminateMgr::loadConstellation(const std::string& abbreviation, const Vec3f& color, double size, double rotation)
+{
+	std::vector<unsigned int> HPStars;
+	asterism->getHPStarsFromAbbreviation(abbreviation, HPStars);
+	for (auto i: HPStars)
+		this->load(i, color, size, rotation);
 }
 
 void IlluminateMgr::removeConstellation(const std::string& abbreviation)

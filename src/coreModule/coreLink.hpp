@@ -274,8 +274,11 @@ public:
 		core->illuminates->setDefaultSize(value);
 	}
 
-	void illuminateLoadConstellation(const std::string& abbreviation) {
-		core->illuminates->loadConstellation(abbreviation);
+	void illuminateLoadConstellation(const std::string& abbreviation, double size, double rotation) {
+		core->illuminates->loadConstellation(abbreviation, size, rotation);
+	}
+	void illuminateLoadConstellation(const std::string& abbreviation,const Vec3f& color, double size, double rotation) {
+		core->illuminates->loadConstellation(abbreviation, color, size, rotation);
 	}
 
 	void illuminateLoad(int number, double size, double rotation) {
