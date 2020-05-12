@@ -327,8 +327,8 @@ void AppCommandInit::initialiseSetCommand(std::map<const std::string, SCD_NAMES>
 	m_set["datetime_display_position"] = SCD_NAMES::APP_DATETIME_DISPLAY_POSITION;
 	m_set["datetime_display_number"] = SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER;
 
-	for (auto it = m_appcommand.begin(); it != m_appcommand.end(); ++it) {
-        m_appcommandToString.emplace(it->second, it->first);
+	for (auto it = m_set.begin(); it != m_set.end(); ++it) {
+        m_setToString.emplace(it->second, it->first);
     }
 
 	//make a copy to futur exploitation
