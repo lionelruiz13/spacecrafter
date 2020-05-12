@@ -198,6 +198,8 @@ public:
 	//! Met à jour les flags et les couleurs des nouvelles constellations
 	void setCurrentStates();
 
+	void getHPStarsFromAbbreviation(const std::string& abbreviation, std::vector<unsigned int>& HpStarsFromAsterim) const;
+
 private:
 	bool loadBoundaries(const std::string& conCatFile);
 	void drawLines(const Projector * prj);

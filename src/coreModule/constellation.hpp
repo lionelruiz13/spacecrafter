@@ -135,6 +135,8 @@ public:
 		labelColor = c;
 	}
 
+	void getHPStarsFromAsterim(std::vector<unsigned int>& HpStarsFromAsterim) const;
+
 private:
 	//! Translated name in UTF8 format (translated using gettext)
 	std::string nameI18;
@@ -154,6 +156,8 @@ private:
 
 	/** List of stars forming the segments */
 	ObjectBaseP* asterism;
+	/** List of HPstars forming the segments */
+	std::vector<unsigned int> HpStars;
 
 	s_texture* art_tex;
 	Vec3d art_vertex[9];

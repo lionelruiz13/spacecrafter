@@ -947,3 +947,12 @@ std::vector<std::string> ConstellationMgr::listMatchingObjectsI18n(const std::st
 	}
 	return result;
 }
+
+
+void ConstellationMgr::getHPStarsFromAbbreviation(const std::string& abbreviation, std::vector<unsigned int>& HpStarsFromAsterim) const
+{
+	Constellation* target = findFromAbbreviation(abbreviation);
+	if (target ==nullptr)
+		return;
+	target->getHPStarsFromAsterim(HpStarsFromAsterim);
+}

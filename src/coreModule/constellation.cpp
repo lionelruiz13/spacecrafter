@@ -43,6 +43,8 @@ Constellation::Constellation() : asterism(nullptr), art_tex(nullptr)
 
 Constellation::~Constellation()
 {
+	HpStars.clear();
+
 	if (asterism) delete[] asterism;
 	asterism = nullptr;
 
@@ -94,7 +96,7 @@ bool Constellation::read(const std::string& record, HipStarMgr * _VouteCeleste)
 			asterism = nullptr;
 			return false;
 		}
-
+		HpStars.push_back(HP);
 	}
 
 	for (unsigned int ii=0; ii<nb_segments*2; ++ii) {
@@ -355,4 +357,11 @@ ObjectBaseP Constellation::getBrightestStarInConstellation(void) const
 		}
 	}
 	return brightest;
+}
+
+void Constellation::getHPStarsFromAsterim(std::vector<unsigned int>& starsFromAsterim) const
+{
+	for(auto i : HpStars) {
+		starsFromAsterim.push_back(i);
+	}
 }
