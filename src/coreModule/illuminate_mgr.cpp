@@ -81,7 +81,7 @@ void IlluminateMgr::load(int num, double size, double rotation)
 }
 
 
-void IlluminateMgr::load(int num, const Vec3f& _color, double size, double rotation)
+void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rotation)
 {
 	if (num>NR_OF_HIP)
 		return;
@@ -89,8 +89,12 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double size, double rotat
 	//Vec3f color = selected_object.getRGB();
 	double ra, de;
 	selected_object.getRaDeValue(navigator,&ra,&de);
-	float mag = selected_object.getMag(navigator);
-
+	double size = _size;
+	//setup size
+	if (size<1.0) {
+		float mag = selected_object.getMag(navigator);
+		size = defaultSize + 5.0 * (6.5-mag);
+	}
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
 	//std::cout << num << " with color" << std::endl;
 	loadIlluminate(num, ra, de, size, _color[0], _color[1], _color[2], rotation );

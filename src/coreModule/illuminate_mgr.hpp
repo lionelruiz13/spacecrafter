@@ -52,7 +52,7 @@ public:
 	}
 
 	void load(int num, double size, double rotation);
-	void load(int num, const Vec3f& _color, double size, double rotation);
+	void load(int num, const Vec3f& _color, double _size, double rotation);
 
 	//! remove user added Illuminate and optionally unhide the original of the same name
 	void remove(unsigned int name);
