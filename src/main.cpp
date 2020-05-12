@@ -258,7 +258,7 @@ int main(int argc, char **argv)
 	sdl->initSDL();
 
 	// détermination de la résolution initiale
-	bool autoscreen = conf.getBoolean("video", SCK_AUTOSCREEN);
+	bool autoscreen = conf.getBoolean(SCS_VIDEO, SCK_AUTOSCREEN);
 	Uint16 curW, curH;
 	bool fullscreen;
 	int antialiasing;
@@ -273,13 +273,13 @@ int main(int argc, char **argv)
 		curH = dm.h;
 		fullscreen = true;
 	} else {
-		curW = conf.getInt("video", SCK_SCREEN_W);
-		curH = conf.getInt("video",SCK_SCREEN_H);
-		fullscreen = conf.getBoolean("video", SCK_FULLSCREEN);
+		curW = conf.getInt(SCS_VIDEO, SCK_SCREEN_W);
+		curH = conf.getInt(SCS_VIDEO, SCK_SCREEN_H);
+		fullscreen = conf.getBoolean(SCS_VIDEO, SCK_FULLSCREEN);
 	}
 
 	antialiasing = conf.getInt("rendering:antialiasing");
-	sdl->createWindow(curW, curH, conf.getInt("video:bbp_mode"), antialiasing, fullscreen, DATA_ROOT + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
+	sdl->createWindow(curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, DATA_ROOT + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
 	App* app = new App( sdl );
 
 	// Register custom suspend and term signal handers
