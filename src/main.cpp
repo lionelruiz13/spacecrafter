@@ -278,7 +278,7 @@ int main(int argc, char **argv)
 		fullscreen = conf.getBoolean(SCS_VIDEO, SCK_FULLSCREEN);
 	}
 
-	antialiasing = conf.getInt("rendering:antialiasing");
+	antialiasing = conf.getInt(SCS_RENDERING, SCK_ANTIALIASING);
 	sdl->createWindow(curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, DATA_ROOT + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
 	App* app = new App( sdl );
 

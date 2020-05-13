@@ -49,19 +49,19 @@ void CoreFont::setFont()
 
 void CoreFont::init(const InitParser& conf)
 {
-	FontFileNameGeneral = AppSettings::Instance()->getUserFontDir()+conf.getStr("font", "font_general_name");
-	FontFileNamePlanet = AppSettings::Instance()->getUserFontDir()+conf.getStr("font", "font_planet_name");
-	FontFileNameConstellation = AppSettings::Instance()->getUserFontDir()+conf.getStr("font", "font_constellation_name");
-	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr("font", "font_text_name");
+	FontFileNameGeneral = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
+	FontFileNamePlanet = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME);
+	FontFileNameConstellation = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_NAME);
+	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
 
-	double FontResolution = conf.getDouble("font", "font_resolution_size");
+	double FontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
     if (FontResolution <1.0)
         FontResolution = 1024.0;
-    FontSizeText =  conf.getDouble("font", "font_text_size");
-	FontSizeGeneral = conf.getDouble ("font","font_general_size");
-	FontSizeConstellation = conf.getDouble("font","font_constellation_size");
-	FontSizePlanet = conf.getDouble("font","font_planet_size");
-	FontSizeCardinalPoints = conf.getDouble("font","font_cardinalpoints_size");
+    FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
+	FontSizeGeneral = conf.getDouble (SCS_FONT,SCK_FONT_GENERAL_SIZE);
+	FontSizeConstellation = conf.getDouble(SCS_FONT,SCK_FONT_CONSTELLATION_SIZE);
+	FontSizePlanet = conf.getDouble(SCS_FONT,SCK_FONT_PLANET_SIZE);
+	FontSizeCardinalPoints = conf.getDouble(SCS_FONT,SCK_FONT_CARDINALPOINTS_SIZE);
 
     // mise à l'échelle des FontSize
     FontSizeText = round(FontSizeText * resolution / FontResolution) ;

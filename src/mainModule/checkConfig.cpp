@@ -414,7 +414,7 @@ void CheckConfig::checkLocationSettings()
 void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::string &_VERSION)
 {
 	user_conf.load(fullpathfile);
-	if (user_conf.getStr("main:version") == _VERSION) {
+	if (user_conf.getStr(SCS_MAIN, SCK_VERSION) == _VERSION) {
 		// 	std::cout << "nothing to do" << std::endl;
 		//  for (auto i =0; i<user_conf.getNsec(); i++) {
 		//	 	std::cout << user_conf.getSecname(i) << std::endl;
@@ -469,8 +469,8 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 
 void CheckConfig::checkMigration2020()
 {
-	user_conf.setBoolean("io:flag_masterput", user_conf.getBoolean("main:flag_masterput"));
-	user_conf.setBoolean("navigation:flag_navigation", user_conf.getBoolean("main:flag_navigation"));		
+	user_conf.setBoolean("io:flag_masterput", user_conf.getBoolean(SCS_MAIN, SCK_FLAG_MASTERPUT));
+	user_conf.setBoolean("navigation:flag_navigation", user_conf.getBoolean(SCS_MAIN, SCK_FLAG_NAVIGATION));		
 }
 
 

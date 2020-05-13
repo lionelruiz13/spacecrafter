@@ -57,6 +57,7 @@
 #define SCK_TCP_BUFFER_IN_SIZE              "tcp_buffer_in_size"
 #define SCK_MKFIFO_FILE_IN                  "mkfifo_file_in"
 #define SCK_MKFIFO_BUFFER_IN_SIZE           "mkfifo_buffer_in_size"
+#define SCK_MPLAYER_MKFIFO_NAME             "mplayer_mkfifo_name"
 #define SCK_FLAG_MASTERPUT                  "flag_masterput"
 
 #define SCK_AUTOSCREEN                      "autoscreen"
@@ -145,7 +146,6 @@
 #define SCK_PRECESSION_CIRCLE_COLOR         "precession_circle_color"
 #define SCK_CIRCUMPOLAR_CIRCLE_COLOR        "circumpolar_circle_color"
 #define SCK_OORT_COLOR                      "oort_color"
-#define SCK_GALACTIC_COLOR                  "galactic_color"
 #define SCK_VERNAL_POINTS_COLOR             "vernal_points_color"
 #define SCK_PLANET_HALO_COLOR               "planet_halo_color"
 #define SCK_PLANET_NAMES_COLOR              "planet_names_color"

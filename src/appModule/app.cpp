@@ -230,19 +230,19 @@ void App::init()
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
 
-	appDraw->setLineWidth(conf.getDouble("rendering", "line_width"));
-	appDraw->setFlagAntialiasLines(conf.getBoolean("rendering", "flag_antialias_lines"));
+	appDraw->setLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
+	appDraw->setFlagAntialiasLines(conf.getBoolean(SCS_RENDERING, SCK_FLAG_ANTIALIAS_LINES));
 
-	internalFPS->setMaxFps(conf.getDouble ("video","maximum_fps"));
-	internalFPS->setVideoFps(conf.getDouble("video","rec_video_fps"));
+	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));
+	internalFPS->setVideoFps(conf.getDouble(SCS_VIDEO,SCK_REC_VIDEO_FPS));
 
-	std::string appLocaleName = conf.getStr("localization", "app_locale"); //, "system");
-	spaceDate->setTimeFormat(spaceDate->stringToSTimeFormat(conf.getStr("localization:time_display_format")));
-	spaceDate->setDateFormat(spaceDate->stringToSDateFormat(conf.getStr("localization:date_display_format")));
+	std::string appLocaleName = conf.getStr(SCS_LOCALIZATION, SCK_APP_LOCALE); //, "system");
+	spaceDate->setTimeFormat(spaceDate->stringToSTimeFormat(conf.getStr(SCS_LOCALIZATION, SCK_TIME_DISPLAY_FORMAT)));
+	spaceDate->setDateFormat(spaceDate->stringToSDateFormat(conf.getStr(SCS_LOCALIZATION, SCK_DATE_DISPLAY_FORMAT)));
 	setAppLanguage(appLocaleName);
 
 	// time_zone used to be in init_location section of config, so use that as fallback when reading config - Rob
-	std::string tzstr = conf.getStr("localization", "time_zone");
+	std::string tzstr = conf.getStr(SCS_LOCALIZATION, SCK_TIME_ZONE);
 	#if LINUX
 	if (tzstr == "system_default") {
 		spaceDate->setTimeZoneMode(SpaceDate::S_TZ_FORMAT::S_TZ_SYSTEM_DEFAULT);
@@ -264,9 +264,9 @@ void App::init()
 	core->init(conf);
 
 	// Navigation section
-	PresetSkyTime 		= conf.getDouble ("navigation","preset_sky_time"); //,2451545.);
-	StartupTimeMode 	= conf.getStr("navigation:startup_time_mode");	// Can be "now" or "preset"
-	DayKeyMode 			= conf.getStr("navigation","day_key_mode"); //,"calendar");  // calendar or sidereal
+	PresetSkyTime 		= conf.getDouble (SCS_NAVIGATION, SCK_PRESET_SKY_TIME); //,2451545.);
+	StartupTimeMode 	= conf.getStr(SCS_NAVIGATION, SCK_STARTUP_TIME_MODE);	// Can be "now" or "preset"
+	DayKeyMode 			= conf.getStr(SCS_NAVIGATION, SCK_DAY_KEY_MODE); //,"calendar");  // calendar or sidereal
 	cLog::get()->write("Read daykeymode as <" + DayKeyMode + ">", LOG_TYPE::L_INFO);
 
 	if (StartupTimeMode=="preset" || StartupTimeMode=="Preset")
@@ -281,7 +281,7 @@ void App::init()
 	else
 		ui->localizeTui();  // update translations/fonts as needed
 	//set all color
-	core->setColorScheme(settings->getConfigFile(), "color");
+	core->setColorScheme(settings->getConfigFile(), SCS_COLOR);
 	core->setFontScheme();
 
 	if (! initialized) {
@@ -295,17 +295,17 @@ void App::init()
 		media->createVR360();
 		media->createImageShader();
 
-		flagMasterput=conf.getBoolean("io:flag_masterput");
-		enable_tcp=conf.getBoolean("io","enable_tcp");
-		enable_mkfifo=conf.getBoolean("io","enable_mkfifo");
+		flagMasterput=conf.getBoolean(SCS_IO, SCK_FLAG_MASTERPUT);
+		enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
+		enable_mkfifo=conf.getBoolean(SCS_IO, SCK_ENABLE_MKFIFO);
 		flagAlwaysVisible = conf.getBoolean(SCS_MAIN,SCK_FLAG_ALWAYS_VISIBLE);
 
 		// std::stringstream oss;
 		// cLog::get()->write(oss.str(), LOG_TYPE::L_INFO);
 
 		if (enable_tcp) {
-			int port = conf.getInt("io:tcp_port_in");
-			int buffer_in_size=conf.getInt("io:tcp_buffer_in_size");
+			int port = conf.getInt(SCS_IO, SCK_TCP_PORT_IN);
+			int buffer_in_size=conf.getInt(SCS_IO, SCK_TCP_BUFFER_IN_SIZE);
 			cLog::get()->write("buffer TCP taille " + Utility::intToString(buffer_in_size));
 			tcp = new ServerSocket(port, 16, buffer_in_size, IO_DEBUG_INFO, IO_DEBUG_ALL);
 			tcp->open();
@@ -314,9 +314,9 @@ void App::init()
 		}
 		#if LINUX // special mkfifo
 		if (enable_mkfifo) {
-			std::string mplayerMkfifoName = conf.getStr("io:mplayer_mkfifo_name");
-			std::string mkfifo_file_in = conf.getStr("io:mkfifo_file_in");
-			int buffer_in_size=conf.getInt("io:mkfifo_buffer_in_size");
+			std::string mplayerMkfifoName = conf.getStr(SCS_IO, SCK_MPLAYER_MKFIFO_NAME);
+			std::string mkfifo_file_in = conf.getStr(SCS_IO, SCK_MKFIFO_FILE_IN);
+			int buffer_in_size=conf.getInt(SCS_IO, SCK_MKFIFO_BUFFER_IN_SIZE);
 			cLog::get()->write("buffer MKFIFO taille "+ Utility::intToString(buffer_in_size));
 			mkfifo->init(mkfifo_file_in, buffer_in_size);
 		}
@@ -461,7 +461,7 @@ void App::saveCurrentConfig(const std::string& confFile)
 	core->saveCurrentConfig(conf);
 
 	// Get landscape and other observatory info
-	coreLink->observerSetConf(conf, "init_location");
+	coreLink->observerSetConf(conf, SCS_INIT_LOCATION);
 	conf.save(confFile);
 }
 

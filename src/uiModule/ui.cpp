@@ -92,31 +92,31 @@ UI::~UI()
 void UI::init(const InitParser& conf)
 {
 	// Ui section
-	FlagShowFps			= conf.getBoolean("gui:flag_show_fps");
-	FlagShowLatLon      = conf.getBoolean("gui:flag_show_latlon");
-	FlagShowFov			= conf.getBoolean("gui:flag_show_fov");
-	FlagNumberPrint		= conf.getInt("gui:flag_number_print");
+	FlagShowFps			= conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_FPS);
+	FlagShowLatLon      = conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_LATLON);
+	FlagShowFov			= conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_FOV);
+	FlagNumberPrint		= conf.getInt(SCS_GUI, SCK_FLAG_NUMBER_PRINT);
 
-	FontSizeGeneral		= conf.getDouble ("font","font_general_size");
-	FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr("font", "font_general_name");
-	MouseCursorTimeout  = conf.getDouble("gui","mouse_cursor_timeout");
-	PosDateTime			= conf.getInt("gui","datetime_display_position");
-	PosObjectInfo		= conf.getInt("gui","object_info_display_position");	
-	PosMenuM			= conf.getInt("gui","menu_display_position");
-	FlagShowPlanetname	= conf.getBoolean("gui:flag_show_planetname");
-	MouseZoom			= conf.getInt("navigation","mouse_zoom");
+	FontSizeGeneral		= conf.getDouble (SCS_FONT, SCK_FONT_GENERAL_SIZE);
+	FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
+	MouseCursorTimeout  = conf.getDouble(SCS_GUI, SCK_MOUSE_CURSOR_TIMEOUT);
+	PosDateTime			= conf.getInt(SCS_GUI, SCK_DATETIME_DISPLAY_POSITION);
+	PosObjectInfo		= conf.getInt(SCS_GUI, SCK_OBJECT_INFO_DISPLAY_POSITION);	
+	PosMenuM			= conf.getInt(SCS_GUI, SCK_MENU_DISPLAY_POSITION);
+	FlagShowPlanetname	= conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_PLANETNAME);
+	MouseZoom			= conf.getInt(SCS_NAVIGATION, SCK_MOUSE_ZOOM);
 
 	// Text ui section
-	FontSizeMenuTui   = conf.getDouble ("font","font_menutui_size");
-	FlagEnableTuiMenu = conf.getBoolean("tui:flag_enable_tui_menu");
-	FlagShowGravityUi = conf.getBoolean("tui:flag_show_gravity_ui");
-	FlagShowTuiDateTime = conf.getBoolean("tui:flag_show_tui_datetime");
-	FlagShowTuiShortObjInfo = conf.getBoolean("tui:flag_show_tui_short_obj_info");
-	FlagMouseUsableInScript = conf.getBoolean("gui","flag_mouse_usable_in_script");
-	FontNameMenu = AppSettings::Instance()->getUserFontDir()+conf.getStr("font", "font_menu_name");
+	FontSizeMenuTui   = conf.getDouble (SCS_FONT, SCK_FONT_MENUTUI_SIZE);
+	FlagEnableTuiMenu = conf.getBoolean(SCS_TUI, SCK_FLAG_ENABLE_TUI_MENU);
+	FlagShowGravityUi = conf.getBoolean(SCS_TUI, SCK_FLAG_SHOW_GRAVITY_UI);
+	FlagShowTuiDateTime = conf.getBoolean(SCS_TUI, SCK_FLAG_SHOW_TUI_DATETIME);
+	FlagShowTuiShortObjInfo = conf.getBoolean(SCS_TUI, SCK_FLAG_SHOW_TUI_SHORT_OBJ_INFO);
+	FlagMouseUsableInScript = conf.getBoolean(SCS_GUI, SCK_FLAG_MOUSE_USABLE_IN_SCRIPT);
+	FontNameMenu = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_MENU_NAME);
 
-	text_ui = Utility::strToVec3f(conf.getStr("tui","text_ui"));
-	text_tui_root = Utility::strToVec3f(conf.getStr("tui","text_tui_root"));
+	text_ui = Utility::strToVec3f(conf.getStr(SCS_TUI, SCK_TEXT_UI));
+	text_tui_root = Utility::strToVec3f(conf.getStr(SCS_TUI, SCK_TEXT_TUI_ROOT));
 
 
 	// set up mouse cursor timeout

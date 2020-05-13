@@ -41,7 +41,7 @@
 #include "tools/fmath.hpp"
 #include "eventModule/event_manager.hpp"
 #include "eventModule/AltitudeEvent.hpp"
-
+#include "mainModule/define_key.hpp"
 
 Observer::Observer(const SolarSystem &ssystem)
 	:ssystem(ssystem), planet(0),
@@ -223,7 +223,7 @@ void Observer::load(const InitParser& conf, const std::string& section)
 	// 	if (name[i]=='_') name[i]=' ';
 	// }
 
-	m_defaultHome = conf.getStr(section, "home_planet");
+	m_defaultHome = conf.getStr(section, SCK_HOME_PLANET );
 
 
 	if (!setHomePlanet(m_defaultHome)) {
@@ -232,14 +232,14 @@ void Observer::load(const InitParser& conf, const std::string& section)
 
 	cLog::get()->write("Loading location: on " + planet->getEnglishName(), LOG_TYPE::L_INFO);
 
-	defaultLatitude = setLatitude( Utility::getDecAngle(conf.getStr(section, "latitude")) );
-	longitude = defaultLongitude = Utility::getDecAngle(conf.getStr(section, "longitude"));
-	altitude = defaultAltitude = conf.getDouble(section, "altitude");
+	defaultLatitude = setLatitude( Utility::getDecAngle(conf.getStr(section, SCK_LATITUDE)) );
+	longitude = defaultLongitude = Utility::getDecAngle(conf.getStr(section, SCK_LONGITUDE));
+	altitude = defaultAltitude = conf.getDouble(section, SCK_ALTITUDE);
 
 	// stop moving and stay put
 	flag_move_to = 0;
 
-	setLandscapeName(conf.getStr(section, "landscape_name"));
+	setLandscapeName(conf.getStr(section, SCK_LANDSCAPE_NAME));
 
 	cLog::get()->write("Landscape is: "+ landscape_name);
 }
@@ -269,12 +269,12 @@ void Observer::setConf(InitParser & conf, const std::string& section)
 
 	// conf.setStr(section + ":name", std::string(name));
 	// conf.setStr(section + ":name", "AutoSavedLocation");
-	conf.setStr(section + ":home_planet", planet->getEnglishName());
-	conf.setStr(section + ":latitude", Utility::printAngleDMS(latitude*C_PI/180.0, true, true));
-	conf.setStr(section + ":longitude", Utility::printAngleDMS(longitude*C_PI/180.0,true, true));
+	conf.setStr(section + ":" + SCK_HOME_PLANET, planet->getEnglishName());
+	conf.setStr(section + ":" + SCK_LATITUDE, Utility::printAngleDMS(latitude*C_PI/180.0, true, true));
+	conf.setStr(section + ":" + SCK_LONGITUDE, Utility::printAngleDMS(longitude*C_PI/180.0,true, true));
 
-	conf.setDouble(section + ":altitude", altitude);
-	conf.setStr(section + ":landscape_name", landscape_name);
+	conf.setDouble(section + ":" + SCK_ALTITUDE, altitude);
+	conf.setStr(section + ":" + SCK_LANDSCAPE_NAME, landscape_name);
 
 	// saving values so new defaults to track
 	defaultLatitude = latitude;
