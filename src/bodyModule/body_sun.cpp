@@ -119,7 +119,7 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 {
 	Vec2f screenPosF ((float) screenPos[0], (float)screenPos[1]);
 
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	
 	float screen_r = getOnScreenSize(prj, nav);
 	float rmag = big_halo_size/2/sqrt(nav->getObserverHelioPos().length());
 	float cmag = rmag/screen_r;
@@ -132,9 +132,13 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 
 	if (rmag<32) rmag = 32;
 
-	shaderBigHalo->use();
-	glBindTexture(GL_TEXTURE_2D, tex_big_halo->getID());
 	StateGL::enable(GL_BLEND);
+	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	
+	shaderBigHalo->use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex_big_halo->getID());
+
 	shaderBigHalo->setUniform("color", myColor->getHalo());
 	shaderBigHalo->setUniform("cmag", cmag);
 	shaderBigHalo->setUniform("Rmag", rmag);
