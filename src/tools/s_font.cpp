@@ -473,15 +473,6 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		if(myMax(prj->getViewportWidth(), prj->getViewportHeight() ) > d) return;
 	}
 
-	StateGL::enable(GL_BLEND);
-
-	shaderHorizontal->use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	float theta = C_PI + atan2f(dx, dy - 1);
 	float psi = (float)getStrLen(str)/(d + 1);  // total angle of rotation
 
@@ -509,11 +500,17 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 
 	Vec3f Color (texColor[0], texColor[1], texColor[2]);
 
+	StateGL::enable(GL_BLEND);
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	shaderHorizontal->use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
+	
+
 	shaderHorizontal->setUniform("Color", Color);
-
-	glBindVertexArray(sFont.vao);
-
-
 	// for (int pass=0; pass<0*4+1; pass++) {
 		// if(1) {
 			/*if(pass < 4 ) {
@@ -544,6 +541,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		}
 
 
+		glBindVertexArray(sFont.vao);
 		glBindBuffer(GL_ARRAY_BUFFER,sFont.pos);
 		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
