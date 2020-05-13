@@ -72,9 +72,11 @@ public:
 	//! charge toutes les étoiles de l'asterism d'une constellation
 	void loadConstellation(const std::string& abbreviation, double size, double rotation);
 	void loadConstellation(const std::string& abbreviation, const Vec3f& color, double size, double rotation);
+	void loadAllConstellation(double size, double rotation);
 
 	//! supprime toutes les étoiles de l'asterism d'une constellation
 	void removeConstellation(const std::string& abbreviation);
+	void removeAllConstellation();
 
 private:
 	//! Load an individual Illuminate with all data

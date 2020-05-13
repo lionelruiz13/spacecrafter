@@ -280,6 +280,9 @@ public:
 	void illuminateLoadConstellation(const std::string& abbreviation,const Vec3f& color, double size, double rotation) {
 		core->illuminates->loadConstellation(abbreviation, color, size, rotation);
 	}
+	void illuminateLoadAllConstellation(double size, double rotation) {
+		core->illuminates->loadAllConstellation(size, rotation);
+	}
 
 	void illuminateLoad(int number, double size, double rotation) {
 		core->illuminates->load(number, size, rotation);
@@ -299,6 +302,10 @@ public:
 
 	void illuminateRemoveConstellation(const std::string abbreviation) 	{
 		core->illuminates->removeConstellation(abbreviation);
+	}
+
+	void illuminateRemoveAllConstellation() 	{
+		core->illuminates->removeAllConstellation();
 	}
 
 	void illuminateRemoveAll()
