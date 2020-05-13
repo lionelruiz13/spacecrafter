@@ -1296,7 +1296,7 @@ int AppCommandInterface::commandColor()
 {
 	//gestion de la couleur
 	Vec3f Vcolor;
-	std::string argValue = args["value"];
+	std::string argValue = args[W_VALUE];
 	std::string argR= args["r"];
 	std::string argG= args["g"];
 	std::string argB= args["b"];
@@ -1370,10 +1370,10 @@ int AppCommandInterface::commandColor()
 int AppCommandInterface::commandIlluminate()
 {
 	std::string argHP = args["hp"];
-	std::string argDisplay = args["display"];
+	std::string argDisplay = args[W_DISPLAY];
 	std::string argConstellation = args["constellation"];
 
-	double ang_size = evalDouble(args["size"]);
+	double ang_size = evalDouble(args[W_SIZE]);
 	float rotation = evalDouble(args["rotation"]);
 
 	if (argDisplay=="all_constellation_on") {
@@ -1448,7 +1448,7 @@ int AppCommandInterface::commandIlluminate()
 int AppCommandInterface::commandPrint()
 {
 	std::string argName = args[W_NAME];
-	std::string argValue = args["value"];
+	std::string argValue = args[W_VALUE];
 	if (!argValue.empty()) {
 		std::stringstream oss;
 
@@ -1713,7 +1713,7 @@ int AppCommandInterface::commandConstellation()
 	}
 
 	Vec3f Vcolor;
-	std::string argColor =  args["color"];
+	std::string argColor =  args["color_value"];
 	std::string argR= args["r"];
 	std::string argG= args["g"];
 	std::string argB= args["b"];
@@ -2045,7 +2045,7 @@ int AppCommandInterface::commandText()
 		return executeCommandStatus();
 	}
 
-	std::string argDisplay = args["display"];
+	std::string argDisplay = args[W_DISPLAY];
 	std::string argString = args["string"];
 
 	if (!argAction.empty()) {
@@ -2065,7 +2065,7 @@ int AppCommandInterface::commandText()
 				float altitude = evalDouble(argAltitude);
 				int durationText = 1000*evalDouble(args["duration"]);
 				printf("Durée d'apparition du texte : %i\n", durationText);
-				std::string argSize = args["size"];
+				std::string argSize = args[W_SIZE];
 
 				//gestion de la couleur
 				Vec3f Vcolor;
@@ -2864,7 +2864,7 @@ int AppCommandInterface::commandMedia()
 			media->playerPause();
 			return executeCommandStatus();
 		} else if (argAction == "jump") {
-			media->playerJump(evalDouble(args["value"]));
+			media->playerJump(evalDouble(args[W_VALUE]));
 			return executeCommandStatus();
 		}
 	}
@@ -3156,7 +3156,7 @@ int AppCommandInterface::commandBody()
 	}
 
 	if (!args["tesselation"].empty()) {
-		coreLink->planetTesselation(args["tesselation"], evalInt(args["value"]));
+		coreLink->planetTesselation(args["tesselation"], evalInt(args[W_VALUE]));
 		return executeCommandStatus();
 	}
 
@@ -3403,7 +3403,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 	}
 
 	if(argAction == "follow_rotation"){
-		std::string valueStr = args["value"];
+		std::string valueStr = args[W_VALUE];
 
 		bool value = valueStr == "true";
 

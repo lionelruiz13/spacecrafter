@@ -80,4 +80,8 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30, APP_AUTO_MOVE_DUR
 #define W_DECREMENT  "decrement"
 #define W_NOPAUSE    "nopause"
 #define W_NAME       "name"
+#define W_VALUE      "value"
+#define W_DISPLAY    "display"
+#define W_SIZE       "size"
+
 #endif //_BASE_COMMAND_INTERFACE_HPP_
