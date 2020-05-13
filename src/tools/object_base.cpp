@@ -176,6 +176,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 	}
 
 	if (getType()==OBJECT_NEBULA || getType()==OBJECT_BODY) {
+		glActiveTexture(GL_TEXTURE0);
 		if (getType()==OBJECT_BODY)
 			glBindTexture(GL_TEXTURE_2D, pointer_planet->getID());
 		if (getType()==OBJECT_NEBULA)
