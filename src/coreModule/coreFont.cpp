@@ -21,13 +21,29 @@
  */
 
 #include "coreModule/coreFont.hpp"
-#include "coreModule/core.hpp"
+//#include "coreModule/core.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/app_settings.hpp"
 
-CoreFont::CoreFont(Core* _core, int _resolution)
+#include "coreModule/constellation_mgr.hpp"
+#include "bodyModule/solarsystem.hpp"
+#include "coreModule/backup_mgr.hpp"
+#include "coreModule/cardinals.hpp"
+#include "coreModule/nebula_mgr.hpp"
+#include "coreModule/skygrid_mgr.hpp"
+#include "coreModule/skygrid.hpp"
+#include "coreModule/skyline_mgr.hpp"
+#include "coreModule/skyline.hpp"
+#include "coreModule/skydisplay_mgr.hpp"
+#include "coreModule/skyDisplay.hpp"
+#include "mediaModule/text_mgr.hpp"
+#include "mainModule/define_key.hpp"
+#include "starModule/hip_star_mgr.hpp"
+
+
+CoreFont::CoreFont(/*Core* core,*/ int _resolution)
 {
-    core= _core;
+    //core= _core;
     resolution = _resolution;
 }
 
@@ -36,15 +52,15 @@ CoreFont::~CoreFont()
 
 void CoreFont::setFont()
 {
-    core->hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
-	core->nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
-	core->ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
-	core->skyGridMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
-	core->skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
-	core->skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);
-	core->cardinals_points->setFont(FontSizeCardinalPoints, FontFileNameGeneral);
-	core->asterisms->setFont(FontSizeConstellation, FontFileNameConstellation);
-	core->text_usr->setFont(FontSizeText, FontFileNameText);
+    hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
+	nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
+	ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
+	skyGridMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
+	skyLineMgr->setFont(FontSizeGeneral, FontFileNameGeneral);
+	skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);
+	cardinals_points->setFont(FontSizeCardinalPoints, FontFileNameGeneral);
+	asterisms->setFont(FontSizeConstellation, FontFileNameConstellation);
+	text_usr->setFont(FontSizeText, FontFileNameText);
 }
 
 void CoreFont::init(const InitParser& conf)

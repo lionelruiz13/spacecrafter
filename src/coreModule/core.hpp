@@ -98,7 +98,6 @@ public:
 	friend class CoreExecutorInUniverse;
 
 	friend class CoreLink;
-	friend class CoreFont;
 	friend class CoreBackup;
 
 	//! Possible mount modes
@@ -541,6 +540,8 @@ private:
 	// Increment/decrement smoothly the vision field and position
 	void updateMove(int delta_time);
 
+	// initialize CoreFont class
+	void initCoreFont() const;
 
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
@@ -558,7 +559,7 @@ private:
 	Projector * projection;				// Manage the projection mode and matrix
 	Object selected_object;			// The selected object
 	Object old_selected_object;		// The old selected object
-	class HipStarMgr * hip_stars;		// Manage the hipparcos stars
+	HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
 	NebulaMgr * nebulas;				// Manage the nebulas
 	IlluminateMgr * illuminates;		// Manage the illuminations

@@ -56,7 +56,7 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
 	media = _media;
-	coreFont = new CoreFont(this, std::min(width,height));
+	coreFont = new CoreFont(/*this,*/ std::min(width,height));
 	projection = new Projector( width,height, 60 );
 	glFrontFace(GL_CCW);
 
@@ -151,6 +151,19 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	currentExecutor = executorInSolarSystem;
 }
 
+void Core::initCoreFont() const
+{
+	coreFont->hip_stars = hip_stars;
+	coreFont->nebulas = nebulas;
+	coreFont->ssystem = ssystem;
+	coreFont->skyGridMgr = skyGridMgr;
+	coreFont->skyLineMgr = skyLineMgr;
+	coreFont->skyDisplayMgr = skyDisplayMgr;
+	coreFont->cardinals_points = cardinals_points;
+	coreFont->asterisms = asterisms;
+	coreFont->text_usr = text_usr;
+}
+
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
 {
@@ -218,6 +231,10 @@ Core::~Core()
 //! Load core data and initialize with default values
 void Core::init(const InitParser& conf)
 {
+	if (firstTime) {
+		this->initCoreFont();
+	}
+
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagNav(flagNav);
 	//inimBackup();

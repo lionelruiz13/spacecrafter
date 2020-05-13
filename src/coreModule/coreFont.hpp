@@ -25,19 +25,41 @@
 
 #include <string>
 
-class Core;
+//class Core;
 class InitParser;
+
+class HipStarMgr;
+class NebulaMgr;
+class SolarSystem;
+class SkyGridMgr;
+class SkyLineMgr;
+class SkyDisplayMgr;
+class Cardinals;
+class ConstellationMgr;
+class TextMgr;
 
 class CoreFont {
 
 public:
-    CoreFont(Core* _core, int _resolution);
+	friend class Core;
+
+    CoreFont(/*Core* _core,*/ int _resolution);
     ~CoreFont();
     void init(const InitParser& conf);
     void setFont();
 
 private:
-    Core* core;
+    //Core* core;
+	HipStarMgr * hip_stars;		// Manage the hipparcos stars
+	NebulaMgr * nebulas;				// Manage the nebulas
+	SolarSystem* ssystem;				// Manage the solar system
+	SkyGridMgr * skyGridMgr;			//! gestionnaire des grilles
+	SkyLineMgr* skyLineMgr;				//! gestionnaire de lignes
+	SkyDisplayMgr* skyDisplayMgr; 		//! gestionnaire de skyDisplay
+	Cardinals * cardinals_points;		// Cardinals points
+	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
+	TextMgr * text_usr;				// manage all user text in dome
+
 
 	std::string FontFileNameGeneral;			//! The font file used by default during initialization
 	std::string FontFileNamePlanet;				//! The font for the planet system
