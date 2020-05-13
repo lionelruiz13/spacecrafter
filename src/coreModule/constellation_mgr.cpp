@@ -956,3 +956,10 @@ void ConstellationMgr::getHPStarsFromAbbreviation(const std::string& abbreviatio
 		return;
 	target->getHPStarsFromAsterim(HpStarsFromAsterim);
 }
+
+void ConstellationMgr::getHPStarsFromAll(std::vector<unsigned int>& HpStarsFromAsterim)
+{
+	for (auto iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
+		(*iter)->getHPStarsFromAsterim(HpStarsFromAsterim);
+	}
+}

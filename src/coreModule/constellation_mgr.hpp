@@ -199,6 +199,7 @@ public:
 	void setCurrentStates();
 
 	void getHPStarsFromAbbreviation(const std::string& abbreviation, std::vector<unsigned int>& HpStarsFromAsterim) const;
+	void getHPStarsFromAll(std::vector<unsigned int>& HpStarsFromAsterim);
 
 private:
 	bool loadBoundaries(const std::string& conCatFile);
