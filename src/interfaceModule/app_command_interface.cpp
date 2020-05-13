@@ -1376,6 +1376,13 @@ int AppCommandInterface::commandIlluminate()
 	double ang_size = evalDouble(args["size"]);
 	float rotation = evalDouble(args["rotation"]);
 
+	if (argDisplay=="all_constellation_on") {
+		coreLink->illuminateLoadAllConstellation(ang_size,rotation);
+	}
+	if (argDisplay=="all_constellation_off") {
+		coreLink->illuminateRemoveAllConstellation();
+	}
+
 	//gestion de la couleur
 	Vec3f Vcolor;
 	std::string argValue = args["color_value"];
