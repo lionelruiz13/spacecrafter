@@ -437,7 +437,7 @@ void App::saveCurrentConfig(const std::string& confFile)
 	conf.load(confFile);
 
 	// Main section
-	conf.setStr	("main:version", std::string(VERSION));
+	conf.setStr	("main","version", std::string(VERSION));
 	// localization section
 	conf.setStr("localization:app_locale", getAppLanguage());
 	conf.setStr("localization:time_display_format", spaceDate->getTimeFormatStr());
