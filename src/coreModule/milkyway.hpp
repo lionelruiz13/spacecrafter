@@ -132,6 +132,7 @@ public:
 
 	//! fixe la durée de transition entre deux états du fader de l'affichage
 	void setFaderDuration(float f) {
+		f *=1000;
 		showFader.setDuration(f);
 		switchTexFader.setDuration(f);
 		zodiacalFader.setDuration(f);
