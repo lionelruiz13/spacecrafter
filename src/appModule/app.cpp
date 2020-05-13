@@ -439,23 +439,23 @@ void App::saveCurrentConfig(const std::string& confFile)
 	// Main section
 	conf.setStr	(SCS_MAIN,SCK_VERSION, VERSION);
 	// localization section
-	conf.setStr("localization:app_locale", getAppLanguage());
-	conf.setStr("localization:time_display_format", spaceDate->getTimeFormatStr());
-	conf.setStr("localization:date_display_format", spaceDate->getDateFormatStr());
+	conf.setStr(SCS_LOCALIZATION, SCK_APP_LOCALE, getAppLanguage());
+	conf.setStr(SCS_LOCALIZATION, SCK_TIME_DISPLAY_FORMAT, spaceDate->getTimeFormatStr());
+	conf.setStr(SCS_LOCALIZATION, SCK_DATE_DISPLAY_FORMAT, spaceDate->getDateFormatStr());
 	if (spaceDate->getTzFormat() == SpaceDate::S_TZ_FORMAT::S_TZ_CUSTOM) {
-		conf.setStr("localization:time_zone", spaceDate->getCustomTzName());
+		conf.setStr(SCS_LOCALIZATION, SCK_TIME_ZONE, spaceDate->getCustomTzName());
 	}
 	if (spaceDate->getTzFormat() == SpaceDate::S_TZ_FORMAT::S_TZ_SYSTEM_DEFAULT) {
-		conf.setStr("localization:time_zone", "system_default");
+		conf.setStr(SCS_LOCALIZATION, SCK_TIME_ZONE, "system_default");
 	}
 	if (spaceDate->getTzFormat() == SpaceDate::S_TZ_FORMAT::S_TZ_GMT_SHIFT) {
-		conf.setStr("localization:time_zone", "gmt+x");
+		conf.setStr(SCS_LOCALIZATION, SCK_TIME_ZONE, "gmt+x");
 	}
-	conf.setDouble ("navigation:preset_sky_time", PresetSkyTime);
-	conf.setStr	("navigation:startup_time_mode", StartupTimeMode);
-	conf.setStr	("navigation:day_key_mode", DayKeyMode);
-	conf.setDouble("rendering:line_width", appDraw->getLineWidth());
-	conf.setBoolean("rendering:flag_antialias_lines", appDraw->getFlagAntialiasLines());
+	conf.setDouble (SCS_NAVIGATION, SCK_PRESET_SKY_TIME, PresetSkyTime);
+	conf.setStr	(SCS_NAVIGATION, SCK_STARTUP_TIME_MODE, StartupTimeMode);
+	conf.setStr	(SCS_NAVIGATION, SCK_DAY_KEY_MODE, DayKeyMode);
+	conf.setDouble(SCS_RENDERING, SCK_LINE_WIDTH, appDraw->getLineWidth());
+	conf.setBoolean(SCS_RENDERING, SCK_FLAG_ANTIALIAS_LINES, appDraw->getFlagAntialiasLines());
 
 	ui->saveCurrentConfig(conf);
 	core->saveCurrentConfig(conf);

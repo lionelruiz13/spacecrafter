@@ -106,7 +106,7 @@
 #define SCK_FLAG_NUMBER_PRINT               "flag_number_print"
 #define SCK_DATETIME_DISPLAY_POSITION       "datetime_display_position"
 #define SCK_OBJECT_INFO_DISPLAY_POSITION    "object_info_display_position"
-#define SCK_FLAG_SHOW_PLANETNAME             "flag_show_planetname"
+#define SCK_FLAG_SHOW_PLANETNAME            "flag_show_planetname"
 #define SCK_MOUSE_CURSOR_TIMEOUT            "mouse_cursor_timeout"
 #define SCK_MENU_DISPLAY_POSITION           "menu_display_position"
 #define SCK_FLAG_MOUSE_USABLE_IN_SCRIPT     "flag_mouse_usable_in_script"
@@ -280,5 +280,15 @@
 #define SCK_ALTITUDE                        "altitude"
 #define SCK_LATITUDE                        "latitude"
 #define SCK_LONGITUDE                       "longitude"
+
+#define SCK_FLAG_STAR_PICK                  "flag_star_pick"
+#define SCK_NAUTICAL_ALT                    "nautical_alt"
+#define SCK_NAUTICAL_RA                     "nautical_ra"
+#define SCK_OBJECT_COORDINATES              "object_coordinates"
+#define SCK_MOUSE_COORDINATES               "mouse_coordinates"
+#define SCK_ANGULAR_DISTANCE                "angular_distance"
+#define SCK_LOXODROMY                       "loxodromy"
+#define SCK_ORTHODROMY                      "orthodromy"
+#define SCK_VERTICAL_LINE                   "vertical_line"
 
 #endif
