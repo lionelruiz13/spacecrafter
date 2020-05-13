@@ -41,6 +41,7 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 		return;
 
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex_halo->getID());
 
 	StateGL::enable(GL_BLEND);

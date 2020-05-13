@@ -286,6 +286,7 @@ void Constellation::drawArt(const Projector* prj, const Navigator* nav, shaderPr
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, art_tex->getID());
 
 	shaderArt->setUniform("Intensity", intensity);

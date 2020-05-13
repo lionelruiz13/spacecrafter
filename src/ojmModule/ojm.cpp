@@ -91,6 +91,7 @@ void Ojm::draw(shaderProgram * shader)
 			shader->setUniform("T", shapes[i].T);
 
 		if (shapes[i].map_Ka != nullptr) {
+            //glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, shapes[i].map_Ka->getID());
 			shader->setUniform("useTexture", true);
 			//~ cout << "avec texture" << endl;

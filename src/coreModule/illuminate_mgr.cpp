@@ -257,6 +257,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	// if (specialTex)
 	// 	glBindTexture(GL_TEXTURE_2D, illuminateSpecialTex->getID());
 	// else
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, currentTex->getID());
 
 	//shaderIllum->setUniform("Color", texColor);

@@ -250,7 +250,7 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	if (zodiacal.tex != nullptr && zodiacalFader.getInterstate()) {
 		
 		cmag = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
-		
+		//glActiveTexture(GL_TEXTURE0); ???
 		glBindTexture(GL_TEXTURE_2D, zodiacal.tex->getID());
 		shaderMilkyway->setUniform("cmag", cmag);
 	
