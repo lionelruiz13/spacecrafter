@@ -107,7 +107,7 @@ void SmallBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4
 	StateGL::enable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
 
-	glBindTexture(GL_TEXTURE_2D, tex_current->getID());
+	//glBindTexture(GL_TEXTURE_2D, tex_current->getID());
 
 	myShaderProg->use();
 
