@@ -264,9 +264,9 @@ void HipStarMgr::createShaderParams(int width,int height)
 	GLuint status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
 
 	if(status==GL_FRAMEBUFFER_COMPLETE) {
-		std::cout << "FBO setup succeeded." << std::endl;
+		cLog::get()->write("FBO setup succeeded");
 	} else {
-		std::cout << "Error in FBO setup." << std::endl;
+		cLog::get()->write("Error in FBO setup.", LOG_TYPE::L_ERROR);
 	}
 
 	//unbind the texture and FBO
