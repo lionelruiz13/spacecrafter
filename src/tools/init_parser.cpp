@@ -281,21 +281,21 @@ std::list<std::string> InitParser::getKeyFromSection(int i) const  //get all key
 
 int InitParser::setStr(const std::string& section, const std::string& key, const std::string& val)
 {
-	this->setStr(section+":"+key, val);
+	return this->setStr(section+":"+key, val);
 }
 
 int InitParser::setInt(const std::string& section, const std::string& key, int val)
 {
-	this->setInt(section+":"+key, val);
+	return this->setInt(section+":"+key, val);
 }
 
 int InitParser::setDouble(const std::string& section, const std::string& key, double val)
 {
-	this->setDouble(section+":"+key, val);
+	return this->setDouble(section+":"+key, val);
 }
 
 int InitParser::setBoolean(const std::string& section, const std::string& key, bool val)
 {
-	this->setBoolean(section+":"+key, val);
+	return this->setBoolean(section+":"+key, val);
 }
 
