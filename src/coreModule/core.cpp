@@ -252,7 +252,7 @@ void Core::init(const InitParser& conf)
 
 		ssystem->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
 		
-		anchorManager->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, "stall_radius_unit"));
+		anchorManager->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
 
 		anchorManager->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
 		anchorManager->initFirstAnchor(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
