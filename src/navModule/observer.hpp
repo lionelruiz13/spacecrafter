@@ -97,7 +97,7 @@ public:
 	void load(const InitParser& conf, const std::string& section);
 
 	//! retourne le nom de l'endroit ou l'on se situe
-	std::string getName(void) const;
+	// std::string getName(void) const;
 
 	//! fixe la latitude de l'observer sur la planète
 	double setLatitude(double l) {

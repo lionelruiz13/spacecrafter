@@ -382,13 +382,13 @@ bool Observer::isSun() const {
 	return getHomePlanetEnglishName() == "Sun";
 }
 
-std::string Observer::getName(void) const
-{
-	// return name;
-	std::ostringstream oss;
-	oss << latitude <<"-"<<longitude<<"-"<< altitude;
-	return oss.str();
-}
+// std::string Observer::getName(void) const
+// {
+// 	// return name;
+// 	std::ostringstream oss;
+// 	oss << latitude <<"-"<<longitude<<"-"<< altitude;
+// 	return oss.str();
+// }
 
 
 // for moving observer position gradually

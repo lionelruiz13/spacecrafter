@@ -1274,9 +1274,9 @@ public:
 	// 	core->observatory->fixBodyToSun();
 	// }
 	///////////////////////////////////////////////////////////
-	std::string getObserverName(){
-		return core->observatory->getName(); 
-	}
+	// std::string getObserverName(){
+	// 	return core->observatory->getName(); 
+	// }
 
 	std::string getObserverHomePlanetEnglishName() {
 		return core->observatory->getHomePlanetEnglishName();
