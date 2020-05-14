@@ -46,7 +46,8 @@
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
-
+#include "eventModule/ObserverEvent.hpp"
+#include "eventModule/event_manager.hpp"
 
 Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, AppSettings::Instance()->getLocaleDir(), ""),
@@ -629,6 +630,12 @@ void Core::updateInSolarSystem(int delta_time)
 	/*
 	*
 	* mode incompréhensible et mis en défaut 
+	*
+	*
+	*	Elitit : i found the place how we must change observatory i continue after
+	*
+	*
+	*
 	*/
 	// if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
 		// if ((landscape->getName()!=tempLandscape) && (defaultLandscape!=tempLandscape))
@@ -649,6 +656,10 @@ void Core::updateInSolarSystem(int delta_time)
 		//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << landscape->getName() << " T " << tempLandscape << std::endl;
 	//}
 	/*
+	*
+	*   it's time ti change landscape ?
+	*
+	*	
 	*	retour (temporaire) sur le code du 19.04.08
 	*/
 	if (!observatory->isOnBody())
@@ -1804,6 +1815,8 @@ bool Core::setHomePlanet(const std::string &planet)
 {
 	// reset planet trails due to changed perspective
 	ssystem->startTrails( ssystem->getFlag(BODY_FLAG::F_TRAIL));
+	Event* event= new ObserverEvent(planet);
+	EventManager::getInstance()->queue(event);
 	if (planet=="selected")
 		return anchorManager->switchToAnchor(selected_object.getEnglishName()); 
 	else 

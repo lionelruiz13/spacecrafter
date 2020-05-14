@@ -481,6 +481,10 @@ public:
 		std::cout << "Modification altitude reçue "<< value << std::endl;
 	}
 
+	void onObserverChange(std::string str) {
+		std::cout << "Modification observer to " << str << std::endl;
+	}
+
 private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement

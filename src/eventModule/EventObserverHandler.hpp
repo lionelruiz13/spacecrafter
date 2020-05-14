@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 Elitith-40
+ * Copyright (C) 2020 Elitith-40
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,24 +23,27 @@
  */
 
 
+#ifndef EVENT_OBSERVER_HANDLER_HPP
+#define EVENT_OBSERVER_HANDLER_HPP
+
+
+#include "subEventHandler.hpp"
 #include "event.hpp"
-#include <sstream>
 
-/**
- * For display 
- **/ 
+class Core;
 
-std::map<Event::Event_Type, std::string> Event::eventTypeToString = {
-    {E_NOT_SET, "unknown event" },
-    {E_SCRIPT, "event fileName script" },
-    {E_COMMAND, "event command to launch"},
-    {E_SCREEN_FADER, "event screenFader to launch"},
-    {E_SCREEN_FADER_INTERLUDE, "event screenFaderInterlude to launch"},
-    {E_FLAG, "event flag has been scheduled"},
-    {E_SAVESCREEN, "a screenshot has been scheduled"},
-    {E_FPS, "event fps has been scheduled"},
-    {E_CHANGE_ALTITUDE, "event altitude has been scheduled"},
-    {E_CHANGE_OBSERVER, "event observer has been scheduled"},
+
+class EventObserverHandler : public SubEventHandler {
+public:
+	EventObserverHandler(Core *_core) {
+		core = _core;
+	}
+	~EventObserverHandler() {
+	}
+    void handle(const Event* e) override;
+
+protected :
+	Core* core = nullptr;
 };
 
-
+#endif

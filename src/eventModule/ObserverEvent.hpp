@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 Elitith-40
+ * Copyright (C) 2020 Elitith-40
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,58 +23,32 @@
  */
 
 
-#ifndef EVENT_HPP
-#define EVENT_HPP
+#ifndef OBSERVER_EVENT_HPP
+#define OBSERVER_EVENT_HPP
 
 #include <string>
-#include <map>
-#include <iostream>
+#include <sstream>
+#include "eventModule/event.hpp"
 
-class Event{
-
-public :
-    enum Event_Type : char { 
-        E_NOT_SET = 0,
-        E_SCRIPT = 1,
-        E_COMMAND = 2,
-        E_SCREEN_FADER = 3,
-        E_SCREEN_FADER_INTERLUDE  = 4,
-        E_FLAG = 5,
-        E_SAVESCREEN = 6,
-        E_FPS = 7 ,
-        E_CHANGE_ALTITUDE = 8,
-        E_CHANGE_OBSERVER = 9
-        //....
-    };
-    
-    Event(){ 
-        type = E_NOT_SET;
+class ObserverEvent : public Event {
+public:
+    ObserverEvent(std::string _newObserver) : Event(E_CHANGE_OBSERVER) {
+        newObserver = _newObserver;
     }
+    ~ObserverEvent(){};
 
-    virtual ~Event(){};
-    
-    Event(Event_Type _type){
-		type=_type;
-	}
-
-    Event_Type getEventType() const {
-        return type;
-    }
-
-    static std::map<Event_Type, std::string> eventTypeToString;
-
-    friend std::ostream& operator<< (std::ostream & os, const Event& e){
-        os << e.toString() << std::endl;
-        return os;
+    std::string getNewObserver() {
+        return newObserver;
     }
 
     virtual std::string toString() const {
-        return Event::eventTypeToString[type];
-    }
-   
-protected :
-    Event_Type type;
-};
+        std::ostringstream os;
+        os << Event::toString() << " observer changed to : " << newObserver << std::endl;
+        return os.str();
+}
 
+private:
+    std::string newObserver;
+};
 
 #endif
