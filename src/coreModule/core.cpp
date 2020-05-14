@@ -284,6 +284,7 @@ void Core::init(const InitParser& conf)
 
 		landscape->setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
+		setLandscape(initialvalue.initial_landscapeName);
 
 		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
 		starLines->loadHipBinCatalogue(AppSettings::Instance()->getUserDir() + "asterism.dat");
@@ -376,7 +377,8 @@ void Core::init(const InitParser& conf)
 		s_font::createShader();
 	}
 
-	setLandscape(observatory->getLandscapeName());
+	//setLandscape(landscape->getName());
+	setLandscape(landscape->getName());
 
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
 
@@ -508,8 +510,8 @@ void Core::init(const InitParser& conf)
 	mCity->loadCities(AppSettings::Instance()-> getDataDir() + "mcities.fab");
 	ssystem->initialSolarSystemBodies();
 
-	defaultLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
-	tempLandscape = observatory->getLandscapeName(); //observatoryGetLandscapeName();
+	defaultLandscape = landscape->getName(); //->getLandscapeName(); //observatoryGetLandscapeName();
+	tempLandscape = landscape->getName(); //landscape->getName(); //observatoryGetLandscapeName();
 
 	firstTime = 0;
 }
@@ -625,21 +627,21 @@ void Core::updateInSolarSystem(int delta_time)
 	inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
 	// - if above troposphere equivalent on Earth in altitude
 	if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
-		if ((observatory->getLandscapeName()!=tempLandscape) && (defaultLandscape!=tempLandscape)/* && !observatory->getSpacecraft()*/) tempLandscape=observatory->getLandscapeName(); //setLandscape(defaultLandscape);
-		if ((observatory->getLandscapeName()!=defaultLandscape)/* && !observatory->getSpacecraft()*/) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
+		if ((landscape->getName()!=tempLandscape) && (defaultLandscape!=tempLandscape)/* && !observatory->getSpacecraft()*/) tempLandscape=landscape->getName(); //setLandscape(defaultLandscape);
+		if ((landscape->getName()!=defaultLandscape)/* && !observatory->getSpacecraft()*/) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
 		bodyDecor->anchorAssign(/*observatory->getSpacecraft()*/);
-		//std::cout << "O " << observatory->getLandscapeName() << " T " << tempLandscape << std::endl;
+		//std::cout << "O " << landscape->getName() << " T " << tempLandscape << std::endl;
 	} else { 
-		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun") /*&& !observatory->getSpacecraft()*/) {
+		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun") /*&& !observatory->getSpacecraft()*/) {
 			setLandscape(observatory->getHomeBody()->getEnglishName());
 			atmosphere->setFlagShow(true);
 			bodyDecor->setAtmosphereState(true);
 		}	
 		if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
-		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun")/* && !observatory->getSpacecraft()*/) setLandscape("moon");
-		if ((observatory->getLandscapeName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth") /*&& !observatory->getSpacecraft()*/) setLandscape(tempLandscape);
+		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun")/* && !observatory->getSpacecraft()*/) setLandscape("moon");
+		if ((landscape->getName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth") /*&& !observatory->getSpacecraft()*/) setLandscape(tempLandscape);
 		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()/*, observatory->getSpacecraft()*/);
-		//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << observatory->getLandscapeName() << " T " << tempLandscape << std::endl;
+		//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << landscape->getName() << " T " << tempLandscape << std::endl;
     }
 	uboCamUpdate();
 }
@@ -907,7 +909,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 		landscape->ignoreNextTick();
 		inactiveLandscape->ignoreNextTick();
 	}
-	observatory->setLandscapeName(new_landscape_name);
+	//observatory->setLandscapeName(new_landscape_name);
 	//observatory->setSpacecraft(false);
 	return 1;
 }
@@ -928,7 +930,7 @@ bool Core::loadLandscape(stringHash_t& param)
 		delete landscape;
 		landscape = newLandscape;
 	}
-	observatory->setLandscapeName(param["name"]);
+	//observatory->setLandscapeName(param["name"]);
 	// probably not particularly useful, as not in landscape.ini file
 //	observatory->setSpacecraft(param["spacecraft"]=="on");
 	return 1;
@@ -1591,6 +1593,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity()); //milkyWayGetIntensity());
 	conf.setDouble(SCS_ASTRO, SCK_STAR_SIZE_LIMIT, starGetSizeLimit());
 	conf.setDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT, getPlanetsSizeLimit());
+
+	conf.setStr(SCS_INIT_LOCATION , SCK_LANDSCAPE_NAME, landscape->getName() );
 }
 
 

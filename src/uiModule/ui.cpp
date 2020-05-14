@@ -122,8 +122,8 @@ void UI::init(const InitParser& conf)
 	// set up mouse cursor timeout
 	MouseTimeLeft = MouseCursorTimeout*1000;
 
-	default_landscape = coreLink->observatoryGetLandscapeName();
-	current_landscape = coreLink->observatoryGetLandscapeName();
+	default_landscape = coreLink->landscapeGetName();
+	current_landscape = coreLink->landscapeGetName();
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
 }
 
@@ -1752,7 +1752,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama2.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = coreLink->observatoryGetLandscapeName();
+					current_landscape = coreLink->landscapeGetName();
 					break;
 				case KWIN:
 					this->executeCommand(std::string("body name selected skin_use toggle"));				
@@ -2133,7 +2133,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/panorama1.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = coreLink->observatoryGetLandscapeName();
+					current_landscape = coreLink->landscapeGetName();
 					key_Modifier= NONE;
 					break;
 				case KWIN:
@@ -2141,12 +2141,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama3.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = coreLink->observatoryGetLandscapeName();
+					current_landscape = coreLink->landscapeGetName();
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/panorama5.sts");
 					EventManager::getInstance()->queue(event);
-					current_landscape = coreLink->observatoryGetLandscapeName();
+					current_landscape = coreLink->landscapeGetName();
 					break;
 				default:
 					break;

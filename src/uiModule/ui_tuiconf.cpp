@@ -642,7 +642,7 @@ void UI::tuiUpdateWidgets()
 	tui_time_day_key->setCurrent(std::string(app->getDayKeyMode()));
 
 	// 3. general
-	tui_general_landscape->setValue(std::string(coreLink->observatoryGetLandscapeName()));
+	tui_general_landscape->setValue(std::string(coreLink->landscapeGetName()));
 	tui_general_sky_culture->setValue(std::string(core->getSkyCultureDir()));
 	tui_general_sky_locale->setValue(std::string(core->getSkyLanguage()));
 

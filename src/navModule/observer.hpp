@@ -139,12 +139,12 @@ public:
 	}
 
 	//! change le nom du landscape de l'observer
-	void setLandscapeName(const std::string s);
+	// void setLandscapeName(const std::string s);
 
 	//! renvoie le nom du landscape de l'observer
-	std::string getLandscapeName(void) const {
-		return landscape_name;
-	}
+	// std::string getLandscapeName(void) const {
+	// 	return landscape_name;
+	// }
 
 	// sert à retrouver la position initiale de l'observer après qu'il se soit déplacé afin d'y revenir
 	//! renvoie la latitude initiale de l'observer à son chargement
@@ -201,7 +201,7 @@ private:
 	double defaultLatitude;
 	double defaultAltitude;
 	std::string m_defaultHome;
-	std::string landscape_name;
+	// std::string landscape_name;
 
 	// for changing position
 	bool flag_move_to;

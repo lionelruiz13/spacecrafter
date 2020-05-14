@@ -239,19 +239,19 @@ void Observer::load(const InitParser& conf, const std::string& section)
 	// stop moving and stay put
 	flag_move_to = 0;
 
-	setLandscapeName(conf.getStr(section, SCK_LANDSCAPE_NAME));
+	// setLandscapeName(conf.getStr(section, SCK_LANDSCAPE_NAME));
 
-	cLog::get()->write("Landscape is: "+ landscape_name);
+	// cLog::get()->write("Landscape is: "+ landscape_name);
 }
 
 
-void Observer::setLandscapeName(const std::string s)
-{
-	// need to lower case name because config file parser lowercases section names
-	std::string x = s;
-	transform(x.begin(), x.end(), x.begin(), ::tolower);
-	landscape_name = x;
-}
+// void Observer::setLandscapeName(const std::string s)
+// {
+// 	// need to lower case name because config file parser lowercases section names
+// 	std::string x = s;
+// 	transform(x.begin(), x.end(), x.begin(), ::tolower);
+// 	landscape_name = x;
+// }
 
 //~ void Observer::save(const std::string& file, const std::string& section)
 //~ {
@@ -274,7 +274,7 @@ void Observer::setConf(InitParser & conf, const std::string& section)
 	conf.setStr(section + ":" + SCK_LONGITUDE, Utility::printAngleDMS(longitude*C_PI/180.0,true, true));
 
 	conf.setDouble(section + ":" + SCK_ALTITUDE, altitude);
-	conf.setStr(section + ":" + SCK_LANDSCAPE_NAME, landscape_name);
+	// conf.setStr(section + ":" + SCK_LANDSCAPE_NAME, landscape_name);
 
 	// saving values so new defaults to track
 	defaultLatitude = latitude;

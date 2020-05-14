@@ -1213,8 +1213,8 @@ public:
 	// Observatory---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	std::string observatoryGetLandscapeName() {
-		return core->observatory->getLandscapeName();
+	std::string landscapeGetName() {
+	 	return core->landscape->getName();
 	}
 
 	double observatoryGetLatitude() {
