@@ -11,27 +11,27 @@ BodyDecor::BodyDecor(MilkyWay* _milky, Atmosphere* _atmosphere)
 
 
 
-void BodyDecor::anchorAssign(bool Spacecraft)
+void BodyDecor::anchorAssign(/*bool Spacecraft*/)
 {
-	if (Spacecraft) {
-		drawLandscape = true;
-	}
-	else {
+	// if (Spacecraft) {
+	// 	drawLandscape = true;
+	// }
+	// else {
 		drawLandscape = false;
-	}
+	// }
 	drawMeteor = false;
 	// on est dans l'espace
 	drawBody = true;
 	milky->useIrisTexture(true);
 }
 
-void BodyDecor::bodyAssign(double altitude, const AtmosphereParams* atmParam, bool Spacecraft)
+void BodyDecor::bodyAssign(double altitude, const AtmosphereParams* atmParam/*, bool Spacecraft*/)
 {
 
 	// gestion du landscape et du body
-	if ((altitude<atmParam->limLandscape) or Spacecraft) {
+	if ((altitude<atmParam->limLandscape) /*or Spacecraft*/) {
 		drawLandscape = true;
-		drawBody = Spacecraft;
+		drawBody = false; //Spacecraft;
 	}
 	else {
 		drawLandscape = false;

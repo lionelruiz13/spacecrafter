@@ -625,20 +625,20 @@ void Core::updateInSolarSystem(int delta_time)
 	inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
 	// - if above troposphere equivalent on Earth in altitude
 	if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
-		if ((observatory->getLandscapeName()!=tempLandscape) && (defaultLandscape!=tempLandscape) && !observatory->getSpacecraft()) tempLandscape=observatory->getLandscapeName(); //setLandscape(defaultLandscape);
-		if ((observatory->getLandscapeName()!=defaultLandscape) && !observatory->getSpacecraft()) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
-		bodyDecor->anchorAssign(observatory->getSpacecraft());
+		if ((observatory->getLandscapeName()!=tempLandscape) && (defaultLandscape!=tempLandscape)/* && !observatory->getSpacecraft()*/) tempLandscape=observatory->getLandscapeName(); //setLandscape(defaultLandscape);
+		if ((observatory->getLandscapeName()!=defaultLandscape)/* && !observatory->getSpacecraft()*/) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
+		bodyDecor->anchorAssign(/*observatory->getSpacecraft()*/);
 		//std::cout << "O " << observatory->getLandscapeName() << " T " << tempLandscape << std::endl;
 	} else { 
-		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun") && !observatory->getSpacecraft()) {
+		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun") /*&& !observatory->getSpacecraft()*/) {
 			setLandscape(observatory->getHomeBody()->getEnglishName());
 			atmosphere->setFlagShow(true);
 			bodyDecor->setAtmosphereState(true);
 		}	
 		if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
-		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun") && !observatory->getSpacecraft()) setLandscape("moon");
-		if ((observatory->getLandscapeName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth") && !observatory->getSpacecraft()) setLandscape(tempLandscape);
-		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams(), observatory->getSpacecraft());
+		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((observatory->getLandscapeName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun")/* && !observatory->getSpacecraft()*/) setLandscape("moon");
+		if ((observatory->getLandscapeName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth") /*&& !observatory->getSpacecraft()*/) setLandscape(tempLandscape);
+		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()/*, observatory->getSpacecraft()*/);
 		//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << observatory->getLandscapeName() << " T " << tempLandscape << std::endl;
     }
 	uboCamUpdate();

@@ -48,10 +48,10 @@ public:
 	}
 
 	// fonction calculant les différents flags lorsqu'on est dans l'espace
-	void anchorAssign(bool Spacecraft);
+	void anchorAssign(/*bool Spacecraft*/);
 
 	// fonction calculant les différents flags lorsqu'on est sur un body
-	void bodyAssign(double altitude, const AtmosphereParams* atmParam, bool Spacecraft);
+	void bodyAssign(double altitude, const AtmosphereParams* atmParam/*, bool Spacecraft*/);
 
 	bool getAtmosphereState() {
 		return atmState;
