@@ -125,13 +125,13 @@ public:
 	//! fixe l'altitude de l'observer sur la planète
 	void setAltitude(double a);
 	
-	void setSpacecraft(bool a) {
-		spacecraft = a;
-	}
+	// void setSpacecraft(bool a) {
+	// 	spacecraft = a;
+	// }
 
-	bool getSpacecraft() {
-		return spacecraft;
-	}
+	// bool getSpacecraft() {
+	// 	return spacecraft;
+	// }
 
 	//! renvoie l'altitude de l'observer sur la planète
 	double getAltitude(void) const {
@@ -195,7 +195,7 @@ private:
 	double latitude;		//!< Latitude in degree
 	double altitude;			//!< Altitude in meter
 	
-	bool spacecraft;
+	// bool spacecraft;
 
 	double defaultLongitude;
 	double defaultLatitude;

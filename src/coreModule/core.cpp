@@ -908,7 +908,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 		inactiveLandscape->ignoreNextTick();
 	}
 	observatory->setLandscapeName(new_landscape_name);
-	observatory->setSpacecraft(false);
+	//observatory->setSpacecraft(false);
 	return 1;
 }
 
@@ -930,7 +930,7 @@ bool Core::loadLandscape(stringHash_t& param)
 	}
 	observatory->setLandscapeName(param["name"]);
 	// probably not particularly useful, as not in landscape.ini file
-	observatory->setSpacecraft(param["spacecraft"]=="on");
+//	observatory->setSpacecraft(param["spacecraft"]=="on");
 	return 1;
 }
 
