@@ -84,7 +84,7 @@ App::App( SDLFacade* const sdl ) :
 
 	core = new Core(width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
 	coreLink = new CoreLink(core);
-	coreBackup = new CoreBackup();
+	coreBackup = new CoreBackup(core);
 
 	screenFader->initShader();
 

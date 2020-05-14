@@ -98,6 +98,7 @@ public:
 	friend class CoreExecutorInUniverse;
 
 	friend class CoreLink;
+	friend class CoreBackup;
 
 	//! Possible mount modes
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
@@ -539,9 +540,8 @@ private:
 	// Increment/decrement smoothly the vision field and position
 	void updateMove(int delta_time);
 
-	// initialize Core class
+	// initialize CoreFont class
 	void initCoreFont() const;
-	void initCoreBackup() const;
 
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
@@ -551,8 +551,7 @@ private:
 	CoreExecutor* executorInGalaxy = nullptr;
 	CoreExecutor* executorInUniverse = nullptr;
 
-	CoreFont* coreFont = nullptr;					// gestion complète des fontes du logiciel
-	CoreBackup* coreBackup = nullptr;
+	CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	TimeMgr* timeMgr;				// Manage date and time

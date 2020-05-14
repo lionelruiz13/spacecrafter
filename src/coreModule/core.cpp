@@ -57,7 +57,6 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	recordActionCallback = recordCallback;
 	media = _media;
 	coreFont = new CoreFont(/*this,*/ std::min(width,height));
-	coreBackup = new CoreBackup();
 	projection = new Projector( width,height, 60 );
 	glFrontFace(GL_CCW);
 
@@ -165,12 +164,6 @@ void Core::initCoreFont() const
 	coreFont->text_usr = text_usr;
 }
 
-void Core::initCoreBackup() const {
-	coreBackup->timeMgr = timeMgr;
-	coreBackup->observatory = observatory;
-	coreBackup->projection = projection;
-	coreBackup->skyGridMgr = skyGridMgr;
-}
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
 {
@@ -240,7 +233,6 @@ void Core::init(const InitParser& conf)
 {
 	if (firstTime) {
 		this->initCoreFont();
-		this->initCoreBackup();
 	}
 
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);

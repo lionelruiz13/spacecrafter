@@ -48,19 +48,12 @@ struct BackupWorkspace {
 	std::string pos_name;
 };
 
-//class Core;
-
-class TimeMgr;
-class Observer;
-class Projector;
-class SkyGridMgr;
+class Core;
 
 class CoreBackup {
 
 public:
-	friend class Core;
-
-	CoreBackup(/* Core* _core */);
+	CoreBackup(Core* _core);
 	~CoreBackup();
 	void loadBackup();
 	void saveBackup();
@@ -71,12 +64,7 @@ public:
 private:
 	BackupWorkspace mBackup;
 	SkyGridSave	skyGridSave;
-	//Core* core= nullptr;
-
-	TimeMgr* timeMgr;				// Manage date and time
-	Observer* observatory;			// Manage observer position
-	Projector* projection;			// Manage the projection mode and matrix
-	SkyGridMgr* skyGridMgr;			//! gestionnaire des grilles
+	Core* core= nullptr;
 };
 
 #endif // _BACKUP_MGR_H_

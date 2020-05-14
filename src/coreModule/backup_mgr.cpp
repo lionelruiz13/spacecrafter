@@ -27,16 +27,12 @@
 //! This file describe all backup option
 
 #include "coreModule/backup_mgr.hpp"
-#include "coreModule/skygrid_mgr.hpp"
-#include "coreModule/projector.hpp"
-#include "coreModule/time_mgr.hpp"
-#include "navModule/observer.hpp"
 
-//#include "coreModule/core.hpp"
+#include "coreModule/core.hpp"
 
-CoreBackup::CoreBackup(/* Core* _core */)
+CoreBackup::CoreBackup(Core* _core)
 {
-	//core = _core;
+	core = _core;
 }
 	
 CoreBackup::~CoreBackup()
@@ -45,31 +41,30 @@ CoreBackup::~CoreBackup()
 void CoreBackup::loadBackup()
 {
 	if (mBackup.jday !=0) {
-		timeMgr->setJDay(mBackup.jday);
-		projection->setFov(mBackup.fov); //setFov(mBackup.fov);
-		observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
+		core->timeMgr->setJDay(mBackup.jday);
+		core->projection->setFov(mBackup.fov); //setFov(mBackup.fov);
+		core->observatory->moveTo(mBackup.latitude, mBackup.longitude, mBackup.altitude, 1/*, mBackup.pos_name*/);
 	}
-	//setHomePlanet(mBackup.home_planet_name);
-	//TODO : rétablir la commande si-dessus, avec les events
+	core->setHomePlanet(mBackup.home_planet_name);
 }
 
 void CoreBackup::saveBackup()
 {
-	mBackup.jday = timeMgr->getJDay();
-	mBackup.latitude = observatory->getLatitude();
-	mBackup.longitude = observatory->getLongitude();
-	mBackup.altitude = observatory->getAltitude();
-	mBackup.pos_name = observatory->getName();
-	mBackup.fov = projection->getFov(); //getFov();
-	mBackup.home_planet_name = observatory->getHomePlanetEnglishName();
+	mBackup.jday=core->timeMgr->getJDay();
+	mBackup.latitude=core->observatory->getLatitude();
+	mBackup.longitude=core->observatory->getLongitude();
+	mBackup.altitude=core->observatory->getAltitude();
+	mBackup.pos_name=core->observatory->getName();
+	mBackup.fov = core->projection->getFov(); //getFov();
+	mBackup.home_planet_name=core->observatory->getHomePlanetEnglishName();
 }
 
 void CoreBackup::saveGridState()
 {
-	skyGridMgr->saveState(skyGridSave);
+	core->skyGridMgr->saveState(skyGridSave);
 }
 
 void CoreBackup::loadGridState()
 {
-	skyGridMgr->loadState(skyGridSave);
+	core->skyGridMgr->loadState(skyGridSave);
 }
