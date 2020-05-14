@@ -126,7 +126,7 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	cardinals_points = new Cardinals();
 	meteors = new MeteorMgr(10, 60);
 	landscape = new Landscape();
-	inactiveLandscape = new Landscape();
+//	inactiveLandscape = new Landscape();
 	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height);
 	asterisms = new ConstellationMgr(hip_stars);
@@ -193,7 +193,7 @@ Core::~Core()
 	delete skyLineMgr;
 	delete skyDisplayMgr;
 	delete landscape;
-	delete inactiveLandscape;
+//	delete inactiveLandscape;
 	delete cardinals_points;
 	landscape = nullptr;
 	delete observatory;
@@ -510,8 +510,8 @@ void Core::init(const InitParser& conf)
 	mCity->loadCities(AppSettings::Instance()-> getDataDir() + "mcities.fab");
 	ssystem->initialSolarSystemBodies();
 
-	defaultLandscape = landscape->getName(); //->getLandscapeName(); //observatoryGetLandscapeName();
-	tempLandscape = landscape->getName(); //landscape->getName(); //observatoryGetLandscapeName();
+	// defaultLandscape = landscape->getName(); //->getLandscapeName(); //observatoryGetLandscapeName();
+	// tempLandscape = landscape->getName(); //landscape->getName(); //observatoryGetLandscapeName();
 
 	firstTime = 0;
 }
@@ -567,7 +567,7 @@ void Core::updateInSolarSystem(int delta_time)
 	asterisms->update(delta_time);
 	atmosphere->update(delta_time);
 	landscape->update(delta_time);
-	inactiveLandscape->update(delta_time);
+//	inactiveLandscape->update(delta_time);
 	hip_stars->update(delta_time);
 	nebulas->update(delta_time);
 	cardinals_points->update(delta_time);
@@ -624,25 +624,39 @@ void Core::updateInSolarSystem(int delta_time)
 	}
 	// TODO: should calculate dimming with solar eclipse even without atmosphere on
 	landscape->setSkyBrightness(sky_brightness+0.05);
-	inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
-	// - if above troposphere equivalent on Earth in altitude
-	if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
-		if ((landscape->getName()!=tempLandscape) && (defaultLandscape!=tempLandscape)/* && !observatory->getSpacecraft()*/) tempLandscape=landscape->getName(); //setLandscape(defaultLandscape);
-		if ((landscape->getName()!=defaultLandscape)/* && !observatory->getSpacecraft()*/) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
-		bodyDecor->anchorAssign(/*observatory->getSpacecraft()*/);
+	//inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
+
+	/*
+	*
+	* mode incompréhensible et mis en défaut 
+	*/
+	// if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
+		// if ((landscape->getName()!=tempLandscape) && (defaultLandscape!=tempLandscape))
+			// tempLandscape=landscape->getName(); //setLandscape(defaultLandscape);
+		// if ((landscape->getName()!=defaultLandscape) ) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
+		// bodyDecor->anchorAssign();
 		//std::cout << "O " << landscape->getName() << " T " << tempLandscape << std::endl;
-	} else { 
-		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun") /*&& !observatory->getSpacecraft()*/) {
-			setLandscape(observatory->getHomeBody()->getEnglishName());
-			atmosphere->setFlagShow(true);
-			bodyDecor->setAtmosphereState(true);
-		}	
-		if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
-		if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun")/* && !observatory->getSpacecraft()*/) setLandscape("moon");
-		if ((landscape->getName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth") /*&& !observatory->getSpacecraft()*/) setLandscape(tempLandscape);
-		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()/*, observatory->getSpacecraft()*/);
+	// } else { 
+		// if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun")) {
+			// setLandscape(observatory->getHomeBody()->getEnglishName());
+			// atmosphere->setFlagShow(true);
+			// bodyDecor->setAtmosphereState(true);
+		// }	
+		// if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
+		// if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun") ) setLandscape("moon");
+		// if ((landscape->getName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth")) setLandscape(tempLandscape);
+		// bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());//, observatory->getSpacecraft());
 		//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << landscape->getName() << " T " << tempLandscape << std::endl;
-    }
+	//}
+	/*
+	*	retour (temporaire) sur le code du 19.04.08
+	*/
+	if (!observatory->isOnBody())
+		bodyDecor->anchorAssign();
+	else
+		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
+
+
 	uboCamUpdate();
 }
 
@@ -702,7 +716,7 @@ void Core::updateInGalaxy(int delta_time)
 	text_usr->update(delta_time);
 	dso3d->update(delta_time);
 	landscape->update(delta_time);
-	inactiveLandscape->update(delta_time);
+	//inactiveLandscape->update(delta_time);
 	
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -827,10 +841,10 @@ void Core::drawInSolarSystem(int delta_time)
 		atmosphere->draw(projection, observatory->getHomePlanetEnglishName());
 
 	// Draw the landscape
-	if (bodyDecor->canDrawLandscape()) { //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
+	if (bodyDecor->canDrawLandscape()) //{ //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
 		landscape->draw(tone_converter, projection, navigation);
-		inactiveLandscape->draw(tone_converter, projection, navigation);
-	}
+		//inactiveLandscape->draw(tone_converter, projection, navigation);
+//	}
 
 	cardinals_points->draw(projection, observatory->getLatitude());
 }
@@ -857,7 +871,7 @@ void Core::drawInGalaxy(int delta_time)
 
 	if (bodyDecor->canDrawLandscape()) { //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
 		landscape->draw(tone_converter, projection, navigation);
-		inactiveLandscape->draw(tone_converter, projection, navigation);
+		//inactiveLandscape->draw(tone_converter, projection, navigation);
 	}
 }
 
@@ -885,29 +899,35 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	if (!newLandscape) return 0;
 
 	if (landscape) {
-		bool previousLandscapeFlag = landscape->getFlagShow(); //landscapeGetFlag();
-
-		//Switch between the inactive and active background
-		Landscape* tempLandscape = landscape;
+		// Copy parameters from previous landscape to new one
+		newLandscape->setFlagShow(landscape->getFlagShow());
+		newLandscape->setFlagShowFog(landscape->getFlagShowFog());
+		delete landscape;
 		landscape = newLandscape;
-		inactiveLandscape = tempLandscape;
 
-		//Fade off the old landscape
-		inactiveLandscape->setFlagShow(false);
-		//Fade in the new landscape (only if the landscape was activated)
-		if (previousLandscapeFlag) {
-			landscape->setFlagShow(false); //landscapeSetFlag(false);
-			landscape->setFlagShow(true); //landscapeSetFlag(true);
-		}
+		// bool previousLandscapeFlag = landscape->getFlagShow(); //landscapeGetFlag();
 
-		/* We ignore the next update tick for the landscapes because when the landscape is very big
-		 * it takes a long time to load, then the fader receives a bigger time delta than its duration
-		 * and it doesn't fade in. To avoid that and always fade in the next update tick is ignored.
-		 *
-		 * TODO: this is quite ugly and should be replaced with a more elegant solution
-		 */
-		landscape->ignoreNextTick();
-		inactiveLandscape->ignoreNextTick();
+		// //Switch between the inactive and active background
+		// Landscape* tempLandscape = landscape;
+		// landscape = newLandscape;
+		// inactiveLandscape = tempLandscape;
+
+		// //Fade off the old landscape
+		// inactiveLandscape->setFlagShow(false);
+		// //Fade in the new landscape (only if the landscape was activated)
+		// if (previousLandscapeFlag) {
+		// 	landscape->setFlagShow(false); //landscapeSetFlag(false);
+		// 	landscape->setFlagShow(true); //landscapeSetFlag(true);
+		// }
+
+		// /* We ignore the next update tick for the landscapes because when the landscape is very big
+		//  * it takes a long time to load, then the fader receives a bigger time delta than its duration
+		//  * and it doesn't fade in. To avoid that and always fade in the next update tick is ignored.
+		//  *
+		//  * TODO: this is quite ugly and should be replaced with a more elegant solution
+		//  */
+		// landscape->ignoreNextTick();
+		// inactiveLandscape->ignoreNextTick();
 	}
 	//observatory->setLandscapeName(new_landscape_name);
 	//observatory->setSpacecraft(false);
