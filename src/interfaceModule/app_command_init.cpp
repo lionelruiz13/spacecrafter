@@ -15,6 +15,7 @@ void AppCommandInit::setObsoleteToken()
 {
 	obsoletList.push_back("constellation_isolate_selected");
 	obsoletList.push_back("point_star");
+	obsoletList.push_back("movetocity");
 	obsoletList.push_back("landscape_sets_location");
 	obsoletList.push_back("external_mplayer");
 }
@@ -48,7 +49,6 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_DESELECT] = SC_COMMAND::SC_DESELECT;
 	m_commands[ACP_CN_DOMEMASTERS] = SC_COMMAND::SC_DOMEMASTERS;
 	m_commands[ACP_CN_DSO] = SC_COMMAND::SC_DSO;
-	//m_commands[ACP_CN_EXTERNAL_MPLAYER] = SC_COMMAND::SC_EXERNASC_MPLAYER;
 	m_commands[ACP_CN_EXTERNAL_VIEWER] = SC_COMMAND::SC_EXTERNASC_VIEWER;
 	m_commands[ACP_CN_FONT] = SC_COMMAND::SC_FONT;
 	m_commands[ACP_CN_HEADING] = SC_COMMAND::SC_HEADING;
@@ -61,7 +61,6 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_MEDIA] = SC_COMMAND::SC_MEDIA;
 	m_commands[ACP_CN_METEORS] = SC_COMMAND::SC_METEORS;
 	m_commands[ACP_CN_MOVETO] = SC_COMMAND::SC_MOVETO;
-	m_commands[ACP_CN_MOVETOCITY] = SC_COMMAND::SC_MOVETOCITY;
 	m_commands[ACP_CN_MULTIPLY] = SC_COMMAND::SC_MULTIPLY;
 	m_commands[ACP_CN_PERSONAL] = SC_COMMAND::SC_PERSONAL;
 	m_commands[ACP_CN_PERSONEQ] = SC_COMMAND::SC_PERSONEQ;

@@ -40,7 +40,6 @@
 #include "coreModule/dso3d.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/landscape.hpp"
-#include "coreModule/mCity_mgr.hpp"
 #include "coreModule/meteor_mgr.hpp"
 #include "coreModule/milkyway.hpp"
 #include "coreModule/nebula_mgr.hpp"
@@ -593,7 +592,6 @@ private:
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	StarLines* starLines;				// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D 
-	mCity_Mgr	*mCity;					//!for using this class MUST BE PRIVATE
 	UBOCam* ubo_cam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;

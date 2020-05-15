@@ -244,7 +244,6 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_MEDIA :	return commandMedia(); break;
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
-		case SC_COMMAND::SC_MOVETOCITY :	return commandMovetocity(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
@@ -1201,24 +1200,24 @@ int AppCommandInterface::commandPersoneq()
 	return executeCommandStatus();
 }
 
-int AppCommandInterface::commandMovetocity()
-{
-	std::string argName = args[W_NAME];
-	std::string argCountry = args["country"];
-	if (!argName.empty() || !argCountry.empty()) {
-		double lon=0.0, lat=0.0;
-		int alt=0.0;
-		coreLink->getCoordonateemCityCore(argName,argCountry, lon, lat, alt);
-		//cout << lon << ":" << lat << ":" << alt << endl;
-		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
-			int delay = (int)(1000.*evalDouble(args["duration"]));
-			coreLink->observerMoveTo(lat,lon,alt,delay );
+// int AppCommandInterface::commandMovetocity()
+// {
+// 	std::string argName = args[W_NAME];
+// 	std::string argCountry = args["country"];
+// 	if (!argName.empty() || !argCountry.empty()) {
+// 		double lon=0.0, lat=0.0;
+// 		int alt=0.0;
+// 		coreLink->getCoordonateemCityCore(argName,argCountry, lon, lat, alt);
+// 		//cout << lon << ":" << lat << ":" << alt << endl;
+// 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
+// 			int delay = (int)(1000.*evalDouble(args["duration"]));
+// 			coreLink->observerMoveTo(lat,lon,alt,delay );
 
-		}
-	} else
-		debug_message = "command_'movetocity' : unknown argument";
-	return executeCommandStatus();
-}
+// 		}
+// 	} else
+// 		debug_message = "command_'movetocity' : unknown argument";
+// 	return executeCommandStatus();
+// }
 
 int AppCommandInterface::commandBodyTrace()
 {

@@ -1307,13 +1307,6 @@ public:
 		core->observatory->setConf(conf,section);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-	// city ---------------------------
-	////////////////////////////////////////////////////////////////////////////////
-
-	void getCoordonateemCityCore(const std::string name, const std::string country, double &longitude, double &latitude, int &altitude) {
-		core->mCity->getCoordonnatemCity(name,country, longitude, latitude, altitude);
-	}
 
 	//! change the Heading value
 	void moveHeadingRelative(float f) {

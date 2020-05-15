@@ -96,7 +96,6 @@ protected:
 	int commandMedia();
 	int commandMeteors();
 	int commandMoveto();
-	int commandMovetocity();
 	int commandMultiply();
 	int commandPersonal();
 	int commandPersoneq();

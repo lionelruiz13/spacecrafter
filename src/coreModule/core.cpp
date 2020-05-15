@@ -133,7 +133,6 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	asterisms = new ConstellationMgr(hip_stars);
 	illuminates= new IlluminateMgr(hip_stars, navigation, asterisms);
 	text_usr = new TextMgr();
-	mCity = new mCity_Mgr();
 	oort =  new Oort();
 	dso3d = new Dso3d();
 	tully = new Tully();
@@ -213,7 +212,6 @@ Core::~Core()
 	Object::deleteTextures(); // Unload the pointer textures
 	Object::deleteShaders();
 	delete text_usr;
-	delete mCity;
 	delete bodytrace;
 	delete ubo_cam;
 	delete oort;
@@ -508,7 +506,6 @@ void Core::init(const InitParser& conf)
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-	mCity->loadCities(AppSettings::Instance()-> getDataDir() + "mcities.fab");
 	ssystem->initialSolarSystemBodies();
 
 	// defaultLandscape = landscape->getName(); //->getLandscapeName(); //observatoryGetLandscapeName();
