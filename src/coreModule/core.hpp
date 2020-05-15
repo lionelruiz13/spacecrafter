@@ -483,6 +483,7 @@ public:
 
 	void onObserverChange(std::string str) {
 		std::cout << "Modification observer to " << str << std::endl;
+		setLandscapeToBody();
 	}
 
 private:
@@ -546,6 +547,10 @@ private:
 
 	// initialize CoreFont class
 	void initCoreFont() const;
+
+	// adpate le landscape automatiquement au body sélectionné
+	void setLandscapeToBody();
+
 
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming

@@ -899,6 +899,57 @@ void Core::drawInUniverse(int delta_time)
 	skyDisplayMgr->drawPerson(projection, navigation);
 }
 
+
+void Core::setLandscapeToBody ()
+{
+	// if (!observatory->isOnBody())
+	// { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
+	// 	if ((landscape->getName() != tempLandscape) && (defaultLandscape != tempLandscape))
+	// 		tempLandscape = landscape->getName(); //setLandscape(defaultLandscape);
+	// 	if ((landscape->getName() != defaultLandscape))
+	// 		setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
+	// 	bodyDecor->anchorAssign();
+	// 	std::cout << "O " << landscape->getName() << " T " << tempLandscape << std::endl;
+	// } else { 
+		// if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun")) {
+			// setLandscape(observatory->getHomeBody()->getEnglishName());
+			// atmosphere->setFlagShow(true);
+			// bodyDecor->setAtmosphereState(true);
+		// }	
+		// if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
+		// if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun") ) setLandscape("moon");
+		// if ((landscape->getName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth")) setLandscape(tempLandscape);
+		// bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());//, observatory->getSpacecraft());
+		//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << landscape->getName() << " T " << tempLandscape << std::endl;
+	//}
+
+	// cas du soleil
+	if (observatory->isSun()) {
+		this->setLandscape("sun");
+	}
+
+	//cas des planetes sauf la Terre, d'ailleurs pourquoi la terre est à part ?
+	// if ((observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun"))
+	if ((observatory->getHomeBody()->getEnglishName() != "Earth") && (!observatory->getHomeBody()->isSatellite())){
+		setLandscape(observatory->getHomeBody()->getEnglishName());
+		atmosphere->setFlagShow(true);
+		bodyDecor->setAtmosphereState(true);
+	}
+
+	//cas des satellites des planetes
+	if (observatory->getHomeBody()->isSatellite())
+		setLandscape("moon");
+	
+	//cas spécial Earth
+	if ((observatory->getHomeBody()->getEnglishName() == "Earth"))
+		setLandscape("forest");
+
+	bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()); //, observatory->getSpacecraft());
+	//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << landscape->getName() << " T " << tempLandscape << std::endl;
+	std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << landscape->getName() << " T " << std::endl;
+	// }
+}
+
 bool Core::setLandscape(const std::string& new_landscape_name)
 {
 	if (new_landscape_name.empty()) return 0;
