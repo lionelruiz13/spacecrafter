@@ -134,14 +134,14 @@ Audio::~Audio()
 void Audio::musicLoad(const std::string& filename)
 {
 	if (track!=nullptr) {
-		// cLog::get()->write("Another music was played ...  " +music_name, LOG_TYPE::L_DEBUG);
+		cLog::get()->write("Another music was played ...  " +music_name, LOG_TYPE::L_DEBUG);
 		this->musicDrop();
 	}
 	track = Mix_LoadMUS(filename.c_str());
-	// cLog::get()->write("Audio::musicLoad try to load "+ filename, LOG_TYPE::L_DEBUG );
+	cLog::get()->write("Audio::musicLoad try to load "+ filename, LOG_TYPE::L_DEBUG );
 	if (track == nullptr) {
 		music_isPlaying = false;
-		// cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
+		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
 	} else  {
 		music_isPlaying = true;
 		music_name = filename;
@@ -153,7 +153,7 @@ void Audio::musicLoad(const std::string& filename)
 void Audio::musicPlay(bool loop)
 {
 	if (track != nullptr) {
-		// cLog::get()->write("Audio::musicPlay try to play "+ music_name, LOG_TYPE::L_DEBUG );
+		cLog::get()->write("Audio::musicPlay try to play "+ music_name, LOG_TYPE::L_DEBUG );
 		music_isPlaying = true;
 		elapsed_seconds = 0.0;
 		if (loop) {
@@ -163,9 +163,9 @@ void Audio::musicPlay(bool loop)
 			if (Mix_PlayMusic(track, 0) < 0)
 				cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
 		}
-	}/* else {
+	} else {
 		cLog::get()->write("Audio::musicPlay want to play audio but no track enable.", LOG_TYPE::L_DEBUG);
-	}*/
+	}
 }
 
 
@@ -175,7 +175,7 @@ void Audio::update(int delta_time)
 	if (track!=nullptr) {
 		if (Mix_PlayingMusic()!=1) {
 			if (Mix_PausedMusic()!=1) {
-				// cLog::get()->write("Audio::update seen track ended...", LOG_TYPE::L_DEBUG);
+				cLog::get()->write("Audio::update seen track ended...", LOG_TYPE::L_DEBUG);
 				this->musicDrop();
 			}
 		}
@@ -187,7 +187,7 @@ void Audio::update(int delta_time)
 void Audio::musicSync()
 {
 	if (track==nullptr) return;
-	// cLog::get()->write("Audio::musicSync "+ music_name, LOG_TYPE::L_DEBUG );
+	cLog::get()->write("Audio::musicSync "+ music_name, LOG_TYPE::L_DEBUG );
 	if (music_isPlaying)
 		Mix_PauseMusic();
 
@@ -202,7 +202,7 @@ void Audio::musicSync()
 void Audio::musicJump(float secondJump)
 {
 	if (track==nullptr) return;
-	// cLog::get()->write("Audio::musicJump "+ music_name, LOG_TYPE::L_DEBUG );
+	cLog::get()->write("Audio::musicJump "+ music_name, LOG_TYPE::L_DEBUG );
 	if (music_isPlaying)
 		Mix_SetMusicPosition(secondJump);
 }
@@ -211,18 +211,18 @@ void Audio::musicJump(float secondJump)
 void Audio::musicRewind()
 {
 	Mix_RewindMusic();
-	// cLog::get()->write("Audio::musicRewind "+ music_name, LOG_TYPE::L_DEBUG );
+	cLog::get()->write("Audio::musicRewind "+ music_name, LOG_TYPE::L_DEBUG );
 }
 
 void Audio::musicPause()
 {
 	if (track !=nullptr) {
 		if (music_isPlaying==true) {
-			// cLog::get()->write("Audio::musicPause get pause "+ music_name, LOG_TYPE::L_DEBUG );
+			cLog::get()->write("Audio::musicPause get pause "+ music_name, LOG_TYPE::L_DEBUG );
 			Mix_PauseMusic();
 			music_isPlaying=false;
 		} else {
-			// cLog::get()->write("Audio::musicPause end pause "+ music_name, LOG_TYPE::L_DEBUG );
+			cLog::get()->write("Audio::musicPause end pause "+ music_name, LOG_TYPE::L_DEBUG );
 			Mix_ResumeMusic();
 			music_isPlaying=true;
 		}
@@ -232,7 +232,7 @@ void Audio::musicPause()
 void Audio::musicResume()
 {
 	if (track !=nullptr) {
-		// cLog::get()->write("Audio::musicResume "+ music_name, LOG_TYPE::L_DEBUG );
+		cLog::get()->write("Audio::musicResume "+ music_name, LOG_TYPE::L_DEBUG );
 		Mix_ResumeMusic();
 		music_isPlaying=1;
 	}
@@ -240,7 +240,7 @@ void Audio::musicResume()
 
 void Audio::musicHalt()
 {
-	// cLog::get()->write("Audio::musicHalt "+ music_name, LOG_TYPE::L_DEBUG );
+	cLog::get()->write("Audio::musicHalt "+ music_name, LOG_TYPE::L_DEBUG );
 	Mix_HaltMusic();
 	music_isPlaying=0;
 	elapsed_seconds=0.0;
@@ -249,7 +249,7 @@ void Audio::musicHalt()
 void Audio::musicDrop()
 {
 	if (track !=nullptr) {
-		// cLog::get()->write("Audio::musicDrop "+ music_name, LOG_TYPE::L_DEBUG );
+		cLog::get()->write("Audio::musicDrop "+ music_name, LOG_TYPE::L_DEBUG );
 		Mix_HaltMusic();
 		Mix_FreeMusic(track);
 	}
