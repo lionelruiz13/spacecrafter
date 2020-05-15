@@ -108,16 +108,16 @@ public:
 		return description;
 	}
 
-	void ignoreNextTick() {
-		ignoreTick = true;
-	}
+	// void ignoreNextTick() {
+	// 	ignoreTick = true;
+	// }
 
 	void update(int delta_time) {
-		if (!ignoreTick) {
-			land_fader.update(delta_time);
-			fog_fader.update(delta_time);
-		}
-		ignoreTick = false;
+		// if (!ignoreTick) {
+		land_fader.update(delta_time);
+		fog_fader.update(delta_time);
+		// }
+		// ignoreTick = false;
 	}
 
 	virtual void setRotation(float rotation);
