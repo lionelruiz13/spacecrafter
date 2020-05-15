@@ -73,7 +73,7 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	atmosphere = new Atmosphere();
 	ssystem = new SolarSystem();
 	timeMgr = new TimeMgr();
-	observatory = new Observer(*ssystem);
+	observatory = new Observer(/**ssystem*/);
 	navigation = new Navigator();
 	nebulas = new NebulaMgr();
 	milky_way = new MilkyWay();

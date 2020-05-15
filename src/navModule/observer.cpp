@@ -43,8 +43,8 @@
 #include "eventModule/AltitudeEvent.hpp"
 #include "mainModule/define_key.hpp"
 
-Observer::Observer(const SolarSystem &ssystem)
-	:ssystem(ssystem), planet(0),
+Observer::Observer(/*const SolarSystem &ssystem*/)
+	:/*ssystem(ssystem),*/ planet(0),
 	 longitude(0.), latitude(1e-9), altitude(0),
 	 defaultLongitude(0), defaultLatitude(1e-9), defaultAltitude(0)
 {

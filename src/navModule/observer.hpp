@@ -42,7 +42,7 @@ class AnchorPoint;
 class Observer {
 public:
 	//! Create a new Observer instance which is at a fixed Location
-	Observer(const class SolarSystem &ssystem);
+	Observer(/*const class SolarSystem &ssystem*/);
 	~Observer();
 	Observer(Observer const &) = delete;
 	Observer& operator = (Observer const &) = delete;
@@ -185,7 +185,7 @@ public:
 	bool isOnBodyNamed(const std::string& bodyName); 
 
 private:
-	const class SolarSystem &ssystem;
+	//const class SolarSystem &ssystem;
 	// std::string name;			//!< Position name
 
 	Body *planet;			//!< la planete ou se trouve l'observer
