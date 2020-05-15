@@ -52,9 +52,9 @@ public:
 	}
 
 	//! fixe la planète de l'observer
-	bool setHomePlanet(const std::string &english_name);
+	// bool setHomePlanet(const std::string &english_name);
 	//! fixe la planète de l'observer
-	void setHomePlanet(Body *p);
+	// void setHomePlanet(Body *p);
 
 	bool isOnBody() const;
 	

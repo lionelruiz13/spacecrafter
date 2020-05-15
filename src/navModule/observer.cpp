@@ -157,34 +157,34 @@ Mat4d Observer::getRotEquatorialToVsop87(void) const
 //~ }
 
 
-bool Observer::setHomePlanet(const std::string &english_name)
-{
-	Body *p = nullptr;
+// bool Observer::setHomePlanet(const std::string &english_name)
+// {
+// 	Body *p = nullptr;
 
-	// if (english_name == "default")
-	// 	p = ssystem.searchByEnglishName(m_defaultHome);
-	// else
-		p = ssystem.searchByEnglishName(english_name);
+// 	// //if (english_name == "default")
+// 	// 	//p = ssystem.searchByEnglishName(m_defaultHome);
+// 	// //else
+// 		p = ssystem.searchByEnglishName(english_name);
 
-	if (p==nullptr) {
-		std::cerr << "Can't set home planet to " + english_name + " because it is unknown\n";
-		return false;
-	}
-	setHomePlanet(p);
-	return true;
-}
+// 	if (p==nullptr) {
+// 		std::cerr << "Can't set home planet to " + english_name + " because it is unknown\n";
+// 		return false;
+// 	}
+// 	setHomePlanet(p);
+// 	return true;
+// }
 
 
-void Observer::setHomePlanet(Body *p)
-{
-	assert(p); // Assertion enables to track bad calls.
-	if (planet != p) {
-		planet = p;
-		std::string label =  p->getNameI18n();
-		if( label.empty() )
-			label = p->getEnglishName();
-	}
-}
+// void Observer::setHomePlanet(Body *p)
+// {
+// 	assert(p); // Assertion enables to track bad calls.
+// 	if (planet != p) {
+// 		planet = p;
+// 		std::string label =  p->getNameI18n();
+// 		if( label.empty() )
+// 			label = p->getEnglishName();
+// 	}
+// }
 
 bool Observer::isOnBody() const{
 	return anchor->isOnBody();
@@ -436,5 +436,5 @@ void Observer::loadBodyInSolarSystem()
 
 void Observer::fixBodyToSun()
 {
-	setHomePlanet("Solar_System");
+	//setHomePlanet("Solar_System");
 }
