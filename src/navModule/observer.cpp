@@ -161,9 +161,9 @@ bool Observer::setHomePlanet(const std::string &english_name)
 {
 	Body *p = nullptr;
 
-	if (english_name == "default")
-		p = ssystem.searchByEnglishName(m_defaultHome);
-	else
+	// if (english_name == "default")
+	// 	p = ssystem.searchByEnglishName(m_defaultHome);
+	// else
 		p = ssystem.searchByEnglishName(english_name);
 
 	if (p==nullptr) {
@@ -223,14 +223,14 @@ void Observer::load(const InitParser& conf, const std::string& section)
 	// 	if (name[i]=='_') name[i]=' ';
 	// }
 
-	m_defaultHome = conf.getStr(section, SCK_HOME_PLANET );
+	// m_defaultHome = conf.getStr(section, SCK_HOME_PLANET );
 
 
-	if (!setHomePlanet(m_defaultHome)) {
-		planet = ssystem.getEarth();
-	}
+	// if (!setHomePlanet(m_defaultHome)) {
+	// 	planet = ssystem.getEarth();
+	// }
 
-	cLog::get()->write("Loading location: on " + planet->getEnglishName(), LOG_TYPE::L_INFO);
+	// cLog::get()->write("Loading location: on " + planet->getEnglishName(), LOG_TYPE::L_INFO);
 
 	defaultLatitude = setLatitude( Utility::getDecAngle(conf.getStr(section, SCK_LATITUDE)) );
 	longitude = defaultLongitude = Utility::getDecAngle(conf.getStr(section, SCK_LONGITUDE));
@@ -269,7 +269,7 @@ void Observer::setConf(InitParser & conf, const std::string& section)
 
 	// conf.setStr(section + ":name", std::string(name));
 	// conf.setStr(section + ":name", "AutoSavedLocation");
-	conf.setStr(section + ":" + SCK_HOME_PLANET, planet->getEnglishName());
+	// conf.setStr(section + ":" + SCK_HOME_PLANET, planet->getEnglishName());
 	conf.setStr(section + ":" + SCK_LATITUDE, Utility::printAngleDMS(latitude*C_PI/180.0, true, true));
 	conf.setStr(section + ":" + SCK_LONGITUDE, Utility::printAngleDMS(longitude*C_PI/180.0,true, true));
 
@@ -280,7 +280,7 @@ void Observer::setConf(InitParser & conf, const std::string& section)
 	defaultLatitude = latitude;
 	defaultLongitude = longitude;
 	defaultAltitude = altitude;
-	m_defaultHome = planet->getEnglishName();
+	// m_defaultHome = planet->getEnglishName();
 }
 
 

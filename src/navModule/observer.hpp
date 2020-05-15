@@ -200,7 +200,7 @@ private:
 	double defaultLongitude;
 	double defaultLatitude;
 	double defaultAltitude;
-	std::string m_defaultHome;
+	// std::string m_defaultHome;
 	// std::string landscape_name;
 
 	// for changing position
