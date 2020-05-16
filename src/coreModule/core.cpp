@@ -843,6 +843,8 @@ void Core::drawInUniverse(int delta_time)
 
 void Core::setLandscapeToBody()
 {
+	if (!autoLandscapeMode)
+		return;
 
 	if (!observatory->isOnBody())
 		return;
@@ -914,9 +916,42 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	}
 	//observatory->setLandscapeName(new_landscape_name);
 	//observatory->setSpacecraft(false);
+	testLandscapeCompatibleWithAutoMode();
 	return 1;
 }
 
+void Core::testLandscapeCompatibleWithAutoMode()
+{
+	if (landscape->getName().empty())	return;
+	if (!observatory->isOnBody())		return;
+
+	// par défaut on ne fait pas confiance à l'utilisateur
+	autoLandscapeMode = false;
+
+	// un satellite doit avoir Moon comme landscape de base
+	if (observatory->getHomeBody()->isSatellite() && landscape->getName() == "Moon") {
+		autoLandscapeMode = true;
+		return;
+	}
+
+	// cas du soleil
+	if (observatory->isSun() &&  landscape->getName() == "sun") {
+		autoLandscapeMode = true;
+		return;
+	}
+
+	//cas des planetes sauf la Terre
+	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && landscape->getName() == observatory->getHomeBody()->getEnglishName()) {
+		autoLandscapeMode = true;
+		return;
+	}
+
+	//cas spécial Earth
+	if (observatory->isEarth() && landscape->getName() == initialvalue.initial_landscapeName) {
+		autoLandscapeMode = true;
+		return;
+	}
+}
 
 //! Load a landscape based on a hash of parameters mirroring the landscape.ini file
 //! and make it the current landscape
@@ -933,6 +968,7 @@ bool Core::loadLandscape(stringHash_t& param)
 		delete landscape;
 		landscape = newLandscape;
 	}
+	autoLandscapeMode = false;
 	return 1;
 }
 

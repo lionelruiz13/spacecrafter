@@ -554,6 +554,9 @@ private:
 	//valide les décisions d'affichage des décors du body
 	void setBodyDecor();
 
+	// vérifie si le landsacpe est compatible avec le mode auto
+	void testLandscapeCompatibleWithAutoMode();
+
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
@@ -601,7 +604,7 @@ private:
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn
-
+	bool autoLandscapeMode=true;		// Define if we use customised landscape or none
 	bool FlagEnableZoomKeys;
 	bool FlagEnableMoveKeys;
 	bool FlagAtmosphericRefraction = false;
