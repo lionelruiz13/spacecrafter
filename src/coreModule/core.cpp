@@ -127,7 +127,6 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	cardinals_points = new Cardinals();
 	meteors = new MeteorMgr(10, 60);
 	landscape = new Landscape();
-//	inactiveLandscape = new Landscape();
 	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height);
 	asterisms = new ConstellationMgr(hip_stars);
@@ -193,7 +192,6 @@ Core::~Core()
 	delete skyLineMgr;
 	delete skyDisplayMgr;
 	delete landscape;
-//	delete inactiveLandscape;
 	delete cardinals_points;
 	landscape = nullptr;
 	delete observatory;
@@ -236,7 +234,6 @@ void Core::init(const InitParser& conf)
 
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagNav(flagNav);
-	//inimBackup();
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
 	coreFont->init(conf);
 
@@ -376,9 +373,6 @@ void Core::init(const InitParser& conf)
 		s_font::createShader();
 	}
 
-	//setLandscape(landscape->getName());
-	//setLandscape(landscape->getName());
-
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
 
 	// Compute planets data and init viewing position position of sun and all the satellites (ie planets)
@@ -508,9 +502,6 @@ void Core::init(const InitParser& conf)
 
 	ssystem->initialSolarSystemBodies();
 
-	// defaultLandscape = landscape->getName(); //->getLandscapeName(); //observatoryGetLandscapeName();
-	// tempLandscape = landscape->getName(); //landscape->getName(); //observatoryGetLandscapeName();
-
 	firstTime = 0;
 }
 
@@ -565,7 +556,6 @@ void Core::updateInSolarSystem(int delta_time)
 	asterisms->update(delta_time);
 	atmosphere->update(delta_time);
 	landscape->update(delta_time);
-//	inactiveLandscape->update(delta_time);
 	hip_stars->update(delta_time);
 	nebulas->update(delta_time);
 	cardinals_points->update(delta_time);
@@ -624,46 +614,10 @@ void Core::updateInSolarSystem(int delta_time)
 	landscape->setSkyBrightness(sky_brightness+0.05);
 	//inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
 
-	/*
-	*
-	* mode incompréhensible et mis en défaut 
-	*
-	*
-	*	Elitit : i found the place how we must change observatory i continue after
-	*
-	*
-	*
-	*/
-	// if (!observatory->isOnBody()) { // && (observatory->getHomeBody()->getEnglishName() == "Earth")
-		// if ((landscape->getName()!=tempLandscape) && (defaultLandscape!=tempLandscape))
-			// tempLandscape=landscape->getName(); //setLandscape(defaultLandscape);
-		// if ((landscape->getName()!=defaultLandscape) ) setLandscape(defaultLandscape); //setInitialLandscapeName(); //setLandscape(defaultLandscape);
-		// bodyDecor->anchorAssign();
-		//std::cout << "O " << landscape->getName() << " T " << tempLandscape << std::endl;
-	// } else { 
-		// if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getEnglishName() != "Earth") && (observatory->getHomeBody()->getParent()->getEnglishName() == "Sun")) {
-			// setLandscape(observatory->getHomeBody()->getEnglishName());
-			// atmosphere->setFlagShow(true);
-			// bodyDecor->setAtmosphereState(true);
-		// }	
-		// if (observatory->getHomeBody()->getEnglishName() == "Sun") setLandscape("sun");
-		// if (observatory->getHomeBody()->getEnglishName() != "Sun") if ((landscape->getName()==defaultLandscape) && (observatory->getHomeBody()->getParent()->getEnglishName() != "Sun") ) setLandscape("moon");
-		// if ((landscape->getName()==defaultLandscape) && (defaultLandscape!=tempLandscape) && (observatory->getHomeBody()->getEnglishName() == "Earth")) setLandscape(tempLandscape);
-		// bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());//, observatory->getSpacecraft());
-		//std::cout << "O " << observatory->getHomeBody()->getEnglishName() << " L " << landscape->getName() << " T " << tempLandscape << std::endl;
-	//}
-	/*
-	*
-	*   it's time ti change landscape ?
-	*
-	*	
-	*	retour (temporaire) sur le code du 19.04.08
-	*/
 	if (!observatory->isOnBody())
 		bodyDecor->anchorAssign();
 	else
 		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
-
 
 	uboCamUpdate();
 }
@@ -724,7 +678,6 @@ void Core::updateInGalaxy(int delta_time)
 	text_usr->update(delta_time);
 	dso3d->update(delta_time);
 	landscape->update(delta_time);
-	//inactiveLandscape->update(delta_time);
 	
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -849,10 +802,8 @@ void Core::drawInSolarSystem(int delta_time)
 		atmosphere->draw(projection, observatory->getHomePlanetEnglishName());
 
 	// Draw the landscape
-	if (bodyDecor->canDrawLandscape()) //{ //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
+	if (bodyDecor->canDrawLandscape())
 		landscape->draw(tone_converter, projection, navigation);
-		//inactiveLandscape->draw(tone_converter, projection, navigation);
-//	}
 
 	cardinals_points->draw(projection, observatory->getLatitude());
 }
@@ -877,10 +828,8 @@ void Core::drawInGalaxy(int delta_time)
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
 	starNav->draw(navigation, projection);
 
-	if (bodyDecor->canDrawLandscape()) { //!aboveHomePlanet) // TODO decide if useful or too confusing to leave alone
+	if (bodyDecor->canDrawLandscape())
 		landscape->draw(tone_converter, projection, navigation);
-		//inactiveLandscape->draw(tone_converter, projection, navigation);
-	}
 }
 
 //! Execute all the drawing functions
@@ -985,9 +934,6 @@ bool Core::loadLandscape(stringHash_t& param)
 		delete landscape;
 		landscape = newLandscape;
 	}
-	//observatory->setLandscapeName(param["name"]);
-	// probably not particularly useful, as not in landscape.ini file
-//	observatory->setSpacecraft(param["spacecraft"]=="on");
 	return 1;
 }
 
@@ -1008,15 +954,8 @@ void Core::removeSolarSystemBody(const std::string& name)
 	if (p!= nullptr && p->getEnglishName() == name) {
 		cLog::get()->write("Can not delete current home planet " + name);
 		return;
-		// return (std::string("Can not delete current home planet ") + name);
 	}
 	ssystem->removeBody(name);
-	// if(ssystem->removeBody(name)){
-	// 	return "";
-	// }
-	// else{
-	// 	return "could not delete given body see logs for more informations";
-	// }
 }
 
 void Core::removeSupplementalSolarSystemBodies()
@@ -1027,12 +966,6 @@ void Core::removeSupplementalSolarSystemBodies()
 		unSelect();
 	}
 	ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
-	// if(ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName())){
-	// 	return "";
-	// }
-	// else{
-	// 	return "could not delete given body see logs for more informations";
-	// }
 }
 
 
@@ -1210,7 +1143,6 @@ Object Core::cleverFind(const Vec3d& v) const
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
 		if (is_default_object && temp.begin() != temp.end()) {
-			//cout << "was default object\n";
 			std::vector<Object>::iterator iter = temp.end();
 			iter--;
 			default_object = (*iter);
@@ -1379,7 +1311,6 @@ bool Core::setSkyCulture(const std::string& cultureName)
 //! Set the current sky culture from the passed directory
 bool Core::setSkyCultureDir(const std::string& cultureDir)
 {
-	//	cout << "Set sky culture to: " << cultureDir << "(skyCultureDir: " << skyCultureDir << endl;
 	if (skyCultureDir == cultureDir) return 1;
 	// make sure culture definition exists before attempting or will die
 	// Do not comment this out! Rob
