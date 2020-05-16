@@ -1330,6 +1330,7 @@ public:
 	//! Set flag for displaying Atmosphere
 	void atmosphereSetFlag(bool b) {
 		core->bodyDecor->setAtmosphereState(b);
+		core->setBodyDecor();
 	}
 	//! Get flag for displaying Atmosphere
 	bool atmosphereGetFlag(void) const {
