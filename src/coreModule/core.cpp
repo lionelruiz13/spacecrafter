@@ -312,8 +312,8 @@ void Core::init(const InitParser& conf)
 	ssystem->setFlagHints(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS));
 	ssystem->setFlagPlanetsOrbits(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS));
 	ssystem->setFlagLightTravelTime(conf.getBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME));
-	ssystem->setFlagTrails(conf.getBoolean(SCS_ASTRO, SCK_STAR_SIZE_LIMIT));
-	ssystem->startTrails(conf.getBoolean(SCS_ASTRO, SCK_STAR_SIZE_LIMIT)); //startPlanetsTrails(conf.getBoolean(SCS_ASTRO, SCK_STAR_SIZE_LIMIT));
+	ssystem->setFlagTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
+	ssystem->startTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
 	nebulas->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA));
 	nebulas->setFlagHints(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_HINTS));
 	nebulas->setNebulaNames(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_NAMES));
