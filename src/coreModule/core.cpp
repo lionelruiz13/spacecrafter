@@ -501,7 +501,7 @@ void Core::init(const InitParser& conf)
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
 	ssystem->initialSolarSystemBodies();
-
+	setBodyDecor();
 	firstTime = 0;
 }
 
@@ -612,12 +612,7 @@ void Core::updateInSolarSystem(int delta_time)
 	}
 	// TODO: should calculate dimming with solar eclipse even without atmosphere on
 	landscape->setSkyBrightness(sky_brightness+0.05);
-	//inactiveLandscape->setSkyBrightness(sky_brightness+0.05);
 
-	if (!observatory->isOnBody())
-		bodyDecor->anchorAssign();
-	else
-		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
 
 	uboCamUpdate();
 }
@@ -1072,6 +1067,14 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	}
 
 	return 0;
+}
+
+void Core::setBodyDecor()
+{
+	if (!observatory->isOnBody())
+		bodyDecor->anchorAssign();
+	else
+		bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams());
 }
 
 void Core::selectZodiac()

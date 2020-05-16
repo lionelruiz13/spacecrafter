@@ -478,6 +478,7 @@ public:
 
 	void onAltitudeChange(double value) {
 		std::cout << "Modification altitude reçue "<< value << std::endl;
+		setBodyDecor();
 	}
 
 	void onObserverChange(std::string str) {
@@ -550,6 +551,8 @@ private:
 	// adpate le landscape automatiquement au body sélectionné
 	void setLandscapeToBody();
 
+	//valide les décisions d'affichage des décors du body
+	void setBodyDecor();
 
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
