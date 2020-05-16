@@ -843,6 +843,10 @@ void Core::drawInUniverse(int delta_time)
 
 void Core::setLandscapeToBody()
 {
+
+	if (!observatory->isOnBody())
+		return;
+
 	// cas du soleil
 	if (observatory->isSun()) {
 		this->setLandscape("sun");
