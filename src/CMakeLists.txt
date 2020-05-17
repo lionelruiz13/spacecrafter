@@ -50,9 +50,6 @@ file(GLOB all_SRCS
         "${PROJECT_SOURCE_DIR}/src/tools/*.cpp"      
         )
 
-set (CMAKE_CXX_STANDARD 17)
-
-
 # création de spacecrafter
 add_executable(spacecrafter ${all_SRCS})
 target_link_libraries(spacecrafter iniparser planetsephems ${OPENGL_LIBRARY} ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2_TTF_LIBRARY} ${SDL2_NET_LIBRARY} ${GLEW_LIBRARY} ${GLEW_LIBRARIES} ${FFMPEG_LIBRARIES} )

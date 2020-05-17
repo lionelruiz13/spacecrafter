@@ -26,6 +26,7 @@ CONFIGURE_FILE (
   "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h"
   )
 
+set (CMAKE_CXX_STANDARD 17)
 
 ################# Flags configuration ############################
 
@@ -133,9 +134,11 @@ message("C compiler: ${CMAKE_C_COMPILER}")
 message("C++ compiler: ${CMAKE_CXX_COMPILER}")
 message("System: " ${CMAKE_SYSTEM_NAME} )
 message("")
+message("C++ version " ${CMAKE_CXX_STANDARD})
 message("C flags: " ${CMAKE_C_FLAGS} )
 message("C++ flags: " ${CMAKE_CXX_FLAGS} )
+message("")
 message("Glew version : " ${GLEW_VERSION})
-message("Glew library <20.04 : " ${GLEW_LIBRARY})
-message("Glew library =20.04 : " ${GLEW_LIBRARIES})
+message("Glew library before 20.04 : " ${GLEW_LIBRARY})
+message("Glew library after  20.04 : " ${GLEW_LIBRARIES})
 message("---------------------------------------------")
