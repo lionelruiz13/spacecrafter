@@ -843,8 +843,11 @@ void Core::drawInUniverse(int delta_time)
 
 void Core::setLandscapeToBody()
 {
+	//std::cout << "Core::setLandscapeToBody()" << std::endl;
 	if (!autoLandscapeMode)
 		return;
+
+	//std::cout << "Core::setLandscapeToBody() with automode" << std::endl;
 
 	if (!observatory->isOnBody())
 		return;
@@ -916,14 +919,21 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	}
 	//observatory->setLandscapeName(new_landscape_name);
 	//observatory->setSpacecraft(false);
+	//std::cout << "Core::setLandscape(const std::string& new_landscape_name)"<< new_landscape_name << std::endl;
 	testLandscapeCompatibleWithAutoMode();
 	return 1;
 }
 
 void Core::testLandscapeCompatibleWithAutoMode()
 {
+	//std::cout << "testLandscape :" << std::endl;
+
 	if (landscape->getName().empty())	return;
 	if (!observatory->isOnBody())		return;
+
+	//std::cout << ": Landscape name: " << landscape->getName() << std::endl;
+	//std::cout << ": Body name: " << observatory->getHomePlanetEnglishName() << std::endl;
+
 
 	// par défaut on ne fait pas confiance à l'utilisateur
 	autoLandscapeMode = false;
@@ -931,23 +941,27 @@ void Core::testLandscapeCompatibleWithAutoMode()
 	// un satellite doit avoir Moon comme landscape de base
 	if (observatory->getHomeBody()->isSatellite() && landscape->getName() == "Moon") {
 		autoLandscapeMode = true;
+		//std::cout << ": automode moon" << std::endl;
 		return;
 	}
 
 	// cas du soleil
 	if (observatory->isSun() &&  landscape->getName() == "sun") {
 		autoLandscapeMode = true;
+		//std::cout << ": automode sun" << std::endl;
 		return;
 	}
 
 	//cas des planetes sauf la Terre
 	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && landscape->getName() == observatory->getHomeBody()->getEnglishName()) {
 		autoLandscapeMode = true;
+		//std::cout << ": automode planet" << std::endl;
 		return;
 	}
 
 	//cas spécial Earth
 	if (observatory->isEarth() && landscape->getName() == initialvalue.initial_landscapeName) {
+		//std::cout << ": automode earth" << std::endl;
 		autoLandscapeMode = true;
 		return;
 	}
@@ -968,6 +982,7 @@ bool Core::loadLandscape(stringHash_t& param)
 		delete landscape;
 		landscape = newLandscape;
 	}
+	//std::cout << "Core::loadLandscape(stringHash_t& param)" << std::endl;
 	autoLandscapeMode = false;
 	return 1;
 }
