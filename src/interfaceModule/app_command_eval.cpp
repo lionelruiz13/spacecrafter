@@ -1,11 +1,25 @@
 #include "interfaceModule/app_command_eval.hpp"
-
+#include "coreModule/coreLink.hpp"
 #include "tools/utility.hpp"
 
-AppCommandEval::AppCommandEval()
+AppCommandEval::AppCommandEval(CoreLink *_coreLink)
 {
 	min_random = 0.0;
 	max_random = 1.0;
+	this->initReservedVariable();
+	coreLink = _coreLink;
+}
+
+void AppCommandEval::initReservedVariable()
+{
+	// owr reserved variables
+	m_reservedVar[ACI_RW_ALTITUDE]=SC_RESERVED_VAR::ALTITUDE;
+	m_reservedVar[ACI_RW_LONGITUDE]=SC_RESERVED_VAR::LONGITUDE;
+	m_reservedVar[ACI_RW_LATITUDE]=SC_RESERVED_VAR::LATITUDE;
+
+	// for conivence, the map inverse
+	for (const auto& [key, val] : m_reservedVar)
+		m_reservedVarInv.emplace(val, key);
 }
 
 AppCommandEval::~AppCommandEval()
@@ -13,7 +27,7 @@ AppCommandEval::~AppCommandEval()
 	this->deleteVar();
 }
 
-std::string AppCommandEval::evalString (const std::string &var)
+std::string AppCommandEval::evalString(const std::string &var)
 {
 	auto var_it = variables.find(var);
 	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
@@ -22,8 +36,13 @@ std::string AppCommandEval::evalString (const std::string &var)
 		return var_it->second;
 }
 
-double AppCommandEval::evalDouble (const std::string &var)
+double AppCommandEval::evalDouble(const std::string &var)
 {
+	// capture context with reservedVariables Elitit-40
+	auto reservedVar = m_reservedVar.find(var);
+	if (reservedVar != m_reservedVar.end())
+		return evalReservedVariable(var);
+
 	auto var_it = variables.find(var);
 	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
 		return Utility::strToDouble(var);
@@ -32,12 +51,11 @@ double AppCommandEval::evalDouble (const std::string &var)
 }
 
 
-int AppCommandEval::evalInt (const std::string &var)
+int AppCommandEval::evalInt(const std::string &var)
 {
 	double tmp=this->evalDouble(var);
 	return (int) tmp;
 }
-
 
 void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 {
@@ -58,25 +76,39 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 
 void AppCommandEval::commandAdd(const std::string& mArg, const std::string& mValue)
 {
-	auto var_it = variables.find(mArg);
+	// capture context with reservedVariables Elitit-40
+	auto reservedVar = m_reservedVar.find(mArg);
+	if (reservedVar != m_reservedVar.end()) {
+		double tmp = evalReservedVariable(mArg)+ this->evalDouble(mValue);
+		setReservedVariable(mArg,tmp);
+	}
 
+	auto var_it = variables.find(mArg);
 	if (var_it == variables.end()) { //pas trouvé donc on renvoie la valeur de la chaine
 		std::cout << "not possible to operate with undefined variable so define to 0" << std::endl;
 		variables[mArg] = Utility::strToDouble (mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		double tmp = Utility::strToDouble( variables[mArg] ) + this->evalDouble (mValue);
+		double tmp = Utility::strToDouble( variables[mArg] ) + this->evalDouble(mValue);
 		variables[mArg] = Utility::floatToStr(tmp);
 	}
 }
 
+//@TODO : this fonction is a copy/paste from commandAdd and should be refactorized
 void AppCommandEval::commandMul(const std::string& mArg, const std::string& mValue)
 {
+	// capture context with reservedVariables Elitit-40
+	auto reservedVar = m_reservedVar.find(mArg);
+	if (reservedVar != m_reservedVar.end()) {
+		double tmp = evalReservedVariable(mArg) * this->evalDouble(mValue);
+		setReservedVariable(mArg,tmp);
+	}
+
 	auto var_it = variables.find(mArg);
 	if (var_it == variables.end()) {
 		std::cout << "not possible to operate with undefined variable so define to 1" << std::endl;
-		variables[mArg] = Utility::strToDouble (mValue);
+		variables[mArg] = Utility::strToDouble(mValue);
 	} else {
-		double tmp = Utility::strToDouble( variables[mArg] ) * Utility::strToDouble (mValue);
+		double tmp = Utility::strToDouble( variables[mArg] ) * Utility::strToDouble(mValue);
 		variables[mArg] = Utility::floatToStr(tmp);
 	}
 }
@@ -109,4 +141,33 @@ void AppCommandEval::printVar()
 void AppCommandEval::deleteVar()
 {
 	variables.clear();
+}
+
+double AppCommandEval::evalReservedVariable(const std::string &var)
+{
+	switch (m_reservedVar[var]) {
+		case  SC_RESERVED_VAR::LONGITUDE :  
+			return coreLink->observatoryGetLongitude(); break;
+		case  SC_RESERVED_VAR::LATITUDE :  
+			return coreLink->observatoryGetLatitude(); break;
+		case  SC_RESERVED_VAR::ALTITUDE :  
+			return coreLink->observatoryGetAltitude(); break;
+		default:
+			std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
+			return 0.0;
+	}
+}
+
+void AppCommandEval::setReservedVariable(const std::string &var, double value)
+{
+	switch (m_reservedVar[var]) {
+		case  SC_RESERVED_VAR::LONGITUDE :  
+			coreLink->observatorySetLongitude(value); break;
+		case  SC_RESERVED_VAR::LATITUDE :  
+			coreLink->observatorySetLatitude(value); break;
+		case  SC_RESERVED_VAR::ALTITUDE :  
+			coreLink->observatorySetAltitude(value); break;
+		default:
+			std::cout << "Unknown reserved variable " << var << ". Nothing to do." << std::endl;
+	}
 }

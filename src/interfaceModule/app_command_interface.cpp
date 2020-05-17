@@ -64,7 +64,7 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	ui = _ui;
 	swapCommand = false;
 	swapIfCommand = false;
-	appEval = new AppCommandEval();
+	appEval = new AppCommandEval(coreLink);
 	appInit = new AppCommandInit();
 	appInit->initialiseCommandsName(m_commands, m_commands_ToString);
 	appInit->initialiseFlagsName(m_flags, m_flags_ToString);

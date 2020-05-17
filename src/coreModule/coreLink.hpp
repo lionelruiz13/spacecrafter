@@ -1241,22 +1241,20 @@ public:
 		return core->observatory->getDefaultAltitude();
 	}
 
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// void observatorySetLatitude(double l) {
-	// 	core->observatory->setLatitude(l);
-	// }
-	///////////////////////////////////////////////////////////
+	void observatorySetLatitude(double l) {
+		core->observatory->setLatitude(l);
+	}
 
 	void observatorySetLongitude(double l) {
 		core->observatory->setLongitude(l);
 	}
 
+	///////////////////////////////////////////////////////////
 	// Fonctions non utilisée ?
 	// -------------------------------
-	// void observatorySetAltitude(double l) {
-	//  	core->observatory->setAltitude(l);
-	// }
+	void observatorySetAltitude(double l) {
+	 	core->observatory->setAltitude(l);
+	}
 	
 	// void observatorySetSpacecraft(double l) {
 	// 	core->observatory->setSpacecraft(bool(l));
