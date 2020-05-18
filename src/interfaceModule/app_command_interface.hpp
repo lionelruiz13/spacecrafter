@@ -111,6 +111,7 @@ protected:
 	int commandSkyCulture();
 	int commandStarLines();
 	int commandStruct();
+	int commandSub();
 	int commandSuntrace();
 	int commandText();
 	int commandTimerate();

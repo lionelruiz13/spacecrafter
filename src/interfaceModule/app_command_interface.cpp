@@ -258,6 +258,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_SHUTDOWN :	return commandShutdown(); break;
 		case SC_COMMAND::SC_SKY_CULTURE :	return commandSkyCulture(); break;
 		case SC_COMMAND::SC_STAR_LINES :	return commandStarLines(); break;
+		case SC_COMMAND::SC_SUB : 	return commandSub(); break;
 		case SC_COMMAND::SC_SUNTRACE :	return commandSuntrace(); break;
 		case SC_COMMAND::SC_TEXT :	return commandText(); break;
 		case SC_COMMAND::SC_TIMERATE :	return commandTimerate(); break;
@@ -3468,6 +3469,20 @@ int AppCommandInterface::commandAdd()
 	}
 	return executeCommandStatus();
 }
+
+int AppCommandInterface::commandSub()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandSub(mArg,mValue);
+	} else { //est ce que ce cas peut vraiment se produire ?
+		debug_message = "unexpected error in command_substract";
+	}
+	return executeCommandStatus();
+}
+
 
 int AppCommandInterface::commandMultiply()
 {
