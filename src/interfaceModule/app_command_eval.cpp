@@ -3,6 +3,7 @@
 #include "tools/utility.hpp"
 
 std::function<double(double,double)> f_add = [](double x, double y){return x+y;};
+std::function<double(double,double)> f_sub = [](double x, double y){return x-y;};
 std::function<double(double,double)> f_mul = [](double x, double y){return x*y;};
 
 AppCommandEval::AppCommandEval(CoreLink *_coreLink)
@@ -80,6 +81,10 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 void AppCommandEval::commandAdd(const std::string& mArg, const std::string& mValue)
 {
 	this->evalOps(mArg,mValue, f_add);
+}
+void AppCommandEval::commandSub(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_sub);
 }
 void AppCommandEval::commandMul(const std::string& mArg, const std::string& mValue)
 {

@@ -21,6 +21,7 @@ public:
 
 	void define(const std::string& mArg, const std::string& mValue);
 	void commandAdd(const std::string& mArg, const std::string& mValue);
+	void commandSub(const std::string& mArg, const std::string& mValue);
 	void commandMul(const std::string& mArg, const std::string& mValue);
 	void commandRandomMin(const std::string& mValue);
 	void commandRandomMax(const std::string& mValue);
@@ -31,7 +32,7 @@ private:
 	void initReservedVariable();
 	double evalReservedVariable(const std::string &var);
 	void setReservedVariable(const std::string &var, double value);
-	
+
 	void evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f);
 	
 	//variables utilisées dans le moteur de scripts
