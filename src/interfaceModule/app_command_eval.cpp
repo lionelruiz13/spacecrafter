@@ -2,6 +2,9 @@
 #include "coreModule/coreLink.hpp"
 #include "tools/utility.hpp"
 
+std::function<double(double,double)> f_add = [](double x, double y){return x+y;};
+std::function<double(double,double)> f_mul = [](double x, double y){return x*y;};
+
 AppCommandEval::AppCommandEval(CoreLink *_coreLink)
 {
 	min_random = 0.0;
@@ -76,10 +79,19 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 
 void AppCommandEval::commandAdd(const std::string& mArg, const std::string& mValue)
 {
+	this->evalOps(mArg,mValue, f_add);
+}
+void AppCommandEval::commandMul(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_mul);
+}
+
+void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f)
+{
 	// capture context with reservedVariables Elitit-40
 	auto reservedVar = m_reservedVar.find(mArg);
 	if (reservedVar != m_reservedVar.end()) {
-		double tmp = evalReservedVariable(mArg)+ this->evalDouble(mValue);
+		double tmp = f( evalReservedVariable(mArg), this->evalDouble(mValue));
 		setReservedVariable(mArg,tmp);
 	}
 
@@ -88,11 +100,12 @@ void AppCommandEval::commandAdd(const std::string& mArg, const std::string& mVal
 		std::cout << "not possible to operate with undefined variable so define to 0" << std::endl;
 		variables[mArg] = Utility::strToDouble (mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		double tmp = Utility::strToDouble( variables[mArg] ) + this->evalDouble(mValue);
+		double tmp = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
 		variables[mArg] = Utility::floatToStr(tmp);
 	}
 }
 
+/*
 //@TODO : this fonction is a copy/paste from commandAdd and should be refactorized
 void AppCommandEval::commandMul(const std::string& mArg, const std::string& mValue)
 {
@@ -111,7 +124,7 @@ void AppCommandEval::commandMul(const std::string& mArg, const std::string& mVal
 		double tmp = Utility::strToDouble( variables[mArg] ) * Utility::strToDouble(mValue);
 		variables[mArg] = Utility::floatToStr(tmp);
 	}
-}
+}*/
 
 void AppCommandEval::commandRandomMin(const std::string& mValue)
 {

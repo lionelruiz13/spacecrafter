@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <functional>
 #include "interfaceModule/base_command_interface.hpp"
 
 class CoreLink;
@@ -30,6 +31,8 @@ private:
 	void initReservedVariable();
 	double evalReservedVariable(const std::string &var);
 	void setReservedVariable(const std::string &var, double value);
+	
+	void evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f);
 	
 	//variables utilisées dans le moteur de scripts
 	std::map<const std::string, std::string> variables;
