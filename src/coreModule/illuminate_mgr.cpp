@@ -260,7 +260,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, currentTex->getID());
 
-	//shaderIllum->setUniform("Color", texColor);
+	shaderIllum->setUniform("ModelViewMatrix", prj->getMatJ2000ToEye());
 
 	glBindVertexArray(Illum.vao);
 	glBindBuffer(GL_ARRAY_BUFFER,Illum.pos);
@@ -295,7 +295,7 @@ void IlluminateMgr::createShader()
 	//======raw========
 	shaderIllum = new shaderProgram();
 	shaderIllum->init( "illuminate.vert", "illuminate.frag");
-	shaderIllum->setUniformLocation("Color");
+	shaderIllum->setUniformLocation("ModelViewMatrix");
 
 	glGenVertexArrays(1,&Illum.vao);
 	glBindVertexArray(Illum.vao);
