@@ -136,7 +136,8 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 	//setup size
 	if (size<1.0) {
 		float mag = selected_object.getMag(navigator);
-		size = defaultSize + 5.0 * (6.5-mag);
+		if (mag<0) mag=10;
+		size = defaultSize + 4.0 * (10-mag);
 	}
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
 	//std::cout << num << " with color" << std::endl;
