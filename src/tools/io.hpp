@@ -64,19 +64,20 @@ Mise à jour le 17/05/2016
 */
 
 /* Niveau de debug */
-#define IO_DEBUG_ALL 100 //Niveau de debug maximum (valable aussi pour le scope)
-#define IO_DEBUG_TRACE 6 //Trace au début et à la fin de chaque fonction
-#define IO_DEBUG_DEBUG 5 //Debug avant et parfois après les appels de fonctions importantes
-#define IO_DEBUG_INFO 4 //Infos comme les infos du serveur, la connexion d'un client
-#define IO_DEBUG_WARN 3 //Warnings comme une tentative de connexion d'un client sur un serveur plein ou une configuration douteuse
-#define IO_DEBUG_ERROR 2 //Erreur comme échec de l'ouverture de socket serveur
-#define IO_DEBUG_FATAL 1 //Erreur fatale comme l'échec du chargement de la librairie SDL_net ou d'allocation
-#define IO_DEBUG_NONE 0 //Debug désactivé
+#define MAX_DEBUG 100 //Niveau de debug maximum (valable aussi pour le scope)
+#define TRACE_FCT 6 //Trace au début et à la fin de chaque fonction
+#define DEBUG_FCT 5 //Debug avant et parfois après les appels de fonctions importantes
+#define INFO_CONNEXION 4 //Infos comme les infos du serveur, la connexion d'un client
+#define WARN_CLIENT 3 //Warnings comme une tentative de connexion d'un client sur un serveur plein ou une configuration douteuse
+#define ERROR_SOCKET 2 //Erreur comme échec de l'ouverture de socket serveur
+#define ERREUR_FATAL 1 //Erreur fatale comme l'échec du chargement de la librairie SDL_net ou d'allocation
+//PAS UTILISEE
+#define DEBUG_OFF 0 //Debug désactivé
 
 /* Niveau de scope de debug */
-#define IO_DEBUG_STREAM 3 //Evènements liés aux flux de données (réception, émission) 
-#define IO_DEBUG_CLIENT 2 //Evènements en relation avec les client (connexion, déconexion, serveur plein, nombre de clients connectés)
-#define IO_DEBUG_SERVER 1 //Evènements serveur (démarrage, ouverture de son socket, arrêt)
+#define FLUX_EVENT 3 //Evènements liés aux flux de données (réception, émission) 
+#define CLIENT_EVENT 2 //Evènements en relation avec les client (connexion, déconexion, serveur plein, nombre de clients connectés)
+#define SERVEUR_EVENT 1 //Evènements serveur (démarrage, ouverture de son socket, arrêt)
 
 /* Code d'erreur */
 #define IO_NO_ERROR 0 //Par d'erreur

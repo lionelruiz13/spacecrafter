@@ -67,7 +67,7 @@ Mise à jour le 17/07/2017
 
 ServerSocket::ServerSocket(unsigned int port, int logLevel)
 {
-	initErrorCode = init(port, MAX_CLIENTS, BUFFER_SIZE, logLevel, IO_DEBUG_ALL);
+	initErrorCode = init(port, MAX_CLIENTS, BUFFER_SIZE, logLevel, MAX_DEBUG);
 	if(initErrorCode != IO_NO_ERROR) throw initErrorCode;
 }
 
@@ -87,54 +87,54 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	this->logScope = logScope;
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("IO_DEBUG_TRACE_IN_LOOP"); //Debug
 	#endif
 
 	#ifdef IO_DEBUG_DEBUG_IN_LOOP
-	if(debug(IO_DEBUG_DEBUG, IO_DEBUG_SERVER))
+	if(debug(DEBUG_FCT, SERVEUR_EVENT))
 		debugOut("IO_DEBUG_DEBUG_IN_LOOP"); //Debug
 	#endif
 
 	#ifdef IO_DEBUG_INFO_IN_LOOP
-	if(debug(IO_DEBUG_INFO, IO_DEBUG_SERVER))
+	if(debug(INFO_CONNEXION, SERVEUR_EVENT))
 		debugOut("IO_DEBUG_INFO_IN_LOOP"); //Debug
 	#endif
 
 	#ifdef DEBUG_PERIODIC_STATS_ENABLED
-	if(debug(IO_DEBUG_INFO, IO_DEBUG_SERVER))
+	if(debug(INFO_CONNEXION, SERVEUR_EVENT))
 		debugOut("DEBUG_PERIODIC_STATS_ENABLED"); //Debug
 	#endif
 
 	#ifdef IO_DEBUG_WARN_IN_LOOP
-	if(debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	if(debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("IO_DEBUG_WARN_IN_LOOP"); //Debug
 	#endif
 
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("INIT_START"); //Debug
 
 
-	if(debug(IO_DEBUG_INFO, IO_DEBUG_SERVER))
+	if(debug(INFO_CONNEXION, SERVEUR_EVENT))
 		debugOut("Port " + toString(port) + DEBUG_SEPARATOR3 + "Slots " + toString(maxClients) + DEBUG_SEPARATOR3 + "Buffer " + toString(bufferSize) + " B" + DEBUG_SEPARATOR3 + "Log " + toString(logLevel) + "(" + toString(logScope) + ")"); //Debug
 
 
 	/* Avertissements de configuration */
-	if(port == 0 && debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	if(port == 0 && debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("NULL_PORT"); //Debug
-	else if(port < 1024 && debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	else if(port < 1024 && debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("ADMIN_PORT "+ toString(port)); //Debug
 
-	if(maxClients == 0 && debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	if(maxClients == 0 && debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("NULL_MAXCLIENTS"); //Debug
-	else if(maxClients > LOT_OF_CLIENTS && debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	else if(maxClients > LOT_OF_CLIENTS && debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("LOT_OF_MAXCLIENTS "+ toString(maxClients)); //Debug
 
-	if(bufferSize == 0 && debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	if(bufferSize == 0 && debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("NULL_BUFFER"); //Debug
-	else if(bufferSize < SMALL_BUFFER_SIZE && debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	else if(bufferSize < SMALL_BUFFER_SIZE && debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("SMALL_BUFFER "+ toString(bufferSize)); //Debug
-	else if(bufferSize > BIG_BUFFER_SIZE && debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+	else if(bufferSize > BIG_BUFFER_SIZE && debug(WARN_CLIENT, SERVEUR_EVENT))
 		debugOut("BIG_BUFFER "+ toString(bufferSize)); //Debug
 
 	/*Initialisations */
@@ -161,14 +161,14 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 
 	/* Initialisation de SDL_net */
 	if (SDLNet_Init() < 0) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_NET_INIT_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		return SDL_NET_INIT_ERROR_CODE;
 	}
 
 	/* Préparation de la connexion du serveur */
 	if(SDLNet_ResolveHost(&serverIP, NULL, this->port) < 0) {
-		if(debug(IO_DEBUG_ERROR, IO_DEBUG_SERVER))
+		if(debug(ERROR_SOCKET, SERVEUR_EVENT))
 			debugOut("SDL_RESOLEVHOST_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		return SDL_RESOLEVHOST_ERROR_CODE;
 	}
@@ -176,7 +176,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	/* Création d'un SocketSet pour surveiller les sockets */
 	socketSet = SDLNet_AllocSocketSet(maxClients + 1);
 	if (socketSet == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_ALLOCSOCKETSET_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		return SDL_ALLOCSOCKETSET_ERROR_CODE;
 	}
@@ -184,7 +184,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	/* Création du mutex pour protéger l'exécution du thread */
 	running = SDL_CreateMutex();
 	if (running == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_CREATEMUTEX_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		return SDL_CREATEMUTEX_ERROR_CODE;
 	}
@@ -192,13 +192,13 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	/* Initialisation du tableau de sockets clients */
 	clientSocketTab = new TCPsocket[maxClients]; //Allocation du tableau de sockets clients
 	if(clientSocketTab == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("NEW_TCPSOCKET_TAB_ERROR"); //Debug
 		return NEW_TCPSOCKET_TAB_ERROR_CODE;
 	}
 	clientBroadcastTab = new bool[maxClients];
 	if(clientBroadcastTab == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("NEW_BOOL_TAB_ERROR"); //Debug
 		return NEW_BOOL_TAB_ERROR_CODE;
 	}
@@ -210,7 +210,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	/* Initialisation du buffer */
 	buffer = new char[bufferSize];
 	if(buffer == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("NEW_BUFFER_ERROR"); //Debug
 		return NEW_BUFFER_ERROR_CODE;
 	}
@@ -218,7 +218,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	/* Création du mutex pour protéger la file d'entrée des clients */
 	outputting = SDL_CreateMutex();
 	if (outputting == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_CREATEMUTEX_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		return SDL_CREATEMUTEX_ERROR_CODE;
 	}
@@ -226,12 +226,12 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	/* Création du mutex pour protéger la file de sortie des clients */
 	inputting = SDL_CreateMutex();
 	if (inputting == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_CREATEMUTEX_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		return SDL_CREATEMUTEX_ERROR_CODE;
 	}
 
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("INIT_END"); //Debug
 
 	return IO_NO_ERROR; //Pas d'erreur
@@ -239,15 +239,15 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 
 int ServerSocket::open()
 {
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("START_OPEN"); //Debug
-	if(debug(IO_DEBUG_INFO, IO_DEBUG_SERVER))
+	if(debug(INFO_CONNEXION, SERVEUR_EVENT))
 		debugOut("SERVER_START "+ toString(port)); //Debug
 
 	/* Ouverture du socket serveur */
 	serverSocket = SDLNet_TCP_Open(&serverIP);
 	if (!serverSocket) {
-		if(debug(IO_DEBUG_ERROR, IO_DEBUG_SERVER))
+		if(debug(ERROR_SOCKET, SERVEUR_EVENT))
 			debugOut("SDL_OPEN_SERVER_SOCKET_ERROR "+ (std::string)SDLNet_GetError() + " (port "  + toString(this->port) + ")"); //Debug
 		return SERVER_SOCKET_OPEN_ERROR_CODE;
 	}
@@ -257,7 +257,7 @@ int ServerSocket::open()
 
 	/* Ajout du socket serveur au socketSet pour le surveiller */
 	if(SDLNet_TCP_AddSocket(socketSet, serverSocket) <= 0) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_ADDSOCKET_SERVER_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		SDLNet_TCP_Close(serverSocket); //Fermeture du socket serveur
 		return SDL_ADDSOCKET_SERVER_ERROR_CODE;
@@ -266,12 +266,12 @@ int ServerSocket::open()
 	/* Lancement du thread de traitement */
 	thread = SDL_CreateThread(threadWrapper, "Loop thread", this);
 	if (thread == NULL) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_CREATETHREAD_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 		return SDL_CREATETHREAD_ERROR_CODE;
 	}
 
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("END_OPEN"); //Debug
 
 	return IO_NO_ERROR; //Pas d'erreur
@@ -279,16 +279,16 @@ int ServerSocket::open()
 
 int ServerSocket::close()
 {
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("START_CLOSE"); //Debug
 
 	if(!serverOpen) {
-		if(debug(IO_DEBUG_WARN, IO_DEBUG_SERVER))
+		if(debug(WARN_CLIENT, SERVEUR_EVENT))
 			debugOut("SERVER_NOT_OPEN"); //Debug
 		return SERVER_NOT_OPEN_CODE;
 	}
 
-	if(debug(IO_DEBUG_INFO, IO_DEBUG_SERVER))
+	if(debug(INFO_CONNEXION, SERVEUR_EVENT))
 		debugOut("SERVER_STOP"); //Debug
 
 	killThread();
@@ -309,13 +309,13 @@ int ServerSocket::close()
 
 	return IO_NO_ERROR;
 
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("END_CLOSE"); //Debug
 }
 
 ServerSocket::~ServerSocket()
 {
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("START_DELETE"); //Debug
 
 	if(serverOpen) close(); //Fermeture du serveur
@@ -331,49 +331,49 @@ ServerSocket::~ServerSocket()
 	while(!inputQueue.empty()) inputQueue.pop(); //Vidage de la file d'entrée
 	while(!outputQueue.empty()) outputQueue.pop(); //Vidage de la file de sortie
 
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("END_DELETE"); //Debug
 }
 
 void ServerSocket::stats()
 {
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("START_STATS"); //Debug
 
 	if(connection) {
-		if(debug(IO_DEBUG_DEBUG, IO_DEBUG_SERVER)) {
+		if(debug(DEBUG_FCT, SERVEUR_EVENT)) {
 			debugOut("CONNECTION "+ toString(connection) + " (" + toString(maxSimultaneousClient) + " max)");
 			debugOut("REQUEST_RECIEVED "+ toString(requestRecieved) + " requests (" + toString(dataRecieved) + " bytes)");
 			debugOut("REQUEST_SEND "+ toString(requestSend) + " requests (" + toString(dataSend) + " bytes)");
 		}
-		if(debug(IO_DEBUG_INFO, IO_DEBUG_SERVER)) {
+		if(debug(INFO_CONNEXION, SERVEUR_EVENT)) {
 			debugOut("CONNECTION "+ humanReadable(connection) + " (" + humanReadable(maxSimultaneousClient) + " max)");
 			debugOut("REQUEST_RECIEVED "+ humanReadable(requestRecieved) + " (" + humanReadable(dataRecieved) + "B)");
 			debugOut("REQUEST_SEND "+ humanReadable(requestSend) + " (" + humanReadable(dataSend) + "B)");
 		}
 	}
 
-	if(debug(IO_DEBUG_DEBUG, IO_DEBUG_CLIENT))
+	if(debug(DEBUG_FCT, CLIENT_EVENT))
 		debugOut("DEBUG_FULL_COUNT "+ toString(refusedConnectionServerFull));
-	if(refusedConnectionServerFull && debug(IO_DEBUG_WARN, IO_DEBUG_CLIENT))
+	if(refusedConnectionServerFull && debug(WARN_CLIENT, CLIENT_EVENT))
 		debugOut("DEBUG_FULL_COUNT "+ humanReadable(refusedConnectionServerFull));
 
-	if(debug(IO_DEBUG_DEBUG, IO_DEBUG_CLIENT))
+	if(debug(DEBUG_FCT, CLIENT_EVENT))
 		debugOut("DEBUG_CANNOTACCEPT_COUNT "+ toString(cannotAcceptClient));
-	if(cannotAcceptClient && debug(IO_DEBUG_WARN, IO_DEBUG_CLIENT))
+	if(cannotAcceptClient && debug(WARN_CLIENT, CLIENT_EVENT))
 		debugOut("DEBUG_CANNOTACCEPT_COUNT "+ humanReadable(cannotAcceptClient));
 
-	if(debug(IO_DEBUG_DEBUG, IO_DEBUG_STREAM))
+	if(debug(DEBUG_FCT, FLUX_EVENT))
 		debugOut("DEBUG_OVERFLOW_COUNT "+ toString(possibleBufferOverflow));
-	if(possibleBufferOverflow && debug(IO_DEBUG_WARN, IO_DEBUG_STREAM))
+	if(possibleBufferOverflow && debug(WARN_CLIENT, FLUX_EVENT))
 		debugOut("DEBUG_OVERFLOW_COUNT "+ humanReadable(possibleBufferOverflow));
 
-	if(debug(IO_DEBUG_DEBUG, IO_DEBUG_STREAM))
+	if(debug(DEBUG_FCT, FLUX_EVENT))
 		debugOut("DEBUG_SENDFAILED_COUNT "+ toString(requestSendFailed));
-	if(requestSendFailed && debug(IO_DEBUG_WARN, IO_DEBUG_STREAM))
+	if(requestSendFailed && debug(WARN_CLIENT, FLUX_EVENT))
 		debugOut("DEBUG_SENDFAILED_COUNT "+ humanReadable(requestSendFailed));
 
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("END_STATS"); //Debug
 }
 
@@ -430,22 +430,22 @@ bool ServerSocket::debug(int level, int scope)
 {
 	if(logLevel >= level && logScope >= scope) {
 		switch(level) {
-			case IO_DEBUG_FATAL :
+			case ERREUR_FATAL :
 				logType = LOG_TYPE::L_ERROR;
 				break;
-			case IO_DEBUG_ERROR :
+			case ERROR_SOCKET :
 				logType = LOG_TYPE::L_ERROR;
 				break;
-			case IO_DEBUG_WARN :
+			case WARN_CLIENT :
 				logType = LOG_TYPE::L_WARNING;
 				break;
-			case IO_DEBUG_INFO :
+			case INFO_CONNEXION :
 				logType = LOG_TYPE::L_INFO;
 				break;
-			case IO_DEBUG_DEBUG :
+			case DEBUG_FCT :
 				logType = LOG_TYPE::L_DEBUG;
 				break;
-			case IO_DEBUG_TRACE :
+			case TRACE_FCT :
 				logType = LOG_TYPE::L_DEBUG;
 				break;
 			default :
@@ -471,7 +471,7 @@ int ServerSocket::threadWrapper(void *Data)
 int ServerSocket::run()
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER)) debugOut("RUN_START"); //Debug
+	if(debug(TRACE_FCT, SERVEUR_EVENT)) debugOut("RUN_START"); //Debug
 	#endif
 
 	while(true) {
@@ -487,13 +487,13 @@ int ServerSocket::run()
 		if(lock(running) == IO_NO_ERROR) { //Thread actif
 			if(activeSocketsCount > 0) { //S'il y a des sockets actifs
 				#ifdef IO_DEBUG_DEBUG_IN_LOOP
-				if(debug(IO_DEBUG_DEBUG, IO_DEBUG_SERVER))
+				if(debug(DEBUG_FCT, SERVEUR_EVENT))
 					debugOut("SDL_CHECKSOCKETS_ACTIVITY " + toString(activeSocketsCount)); //Debug
 				#endif
 				checkNewClient(); //Regarde s'il y a des nouveaux clients et les traite
 				if(activeSocketsCount) checkNewData(); //Regarde s'il y a des nouvelles données et les traites
 			} else if(activeSocketsCount < 0) { //S'il y a eu une erreur lors de la récupération du nombre de sockets actifs
-				if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+				if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 					debugOut("SDL_CHECKSOCKETS_ERROR " + (std::string)SDLNet_GetError()); //Debug
 				close(); //Ferme de le serveur
 				return SDL_CHECKSOCKETS_ERROR_CODE;
@@ -512,7 +512,7 @@ int ServerSocket::run()
 	}
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER)) debugOut("RUN_END"); //Debug
+	if(debug(TRACE_FCT, SERVEUR_EVENT)) debugOut("RUN_END"); //Debug
 	#endif
 
 	return IO_NO_ERROR;
@@ -521,7 +521,7 @@ int ServerSocket::run()
 void ServerSocket::checkNewClient()
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_CLIENT)) debugOut("CHECKNEWCLIENT_START"); //Debug
+	if(debug(TRACE_FCT, CLIENT_EVENT)) debugOut("CHECKNEWCLIENT_START"); //Debug
 	#endif
 
 	if (SDLNet_SocketReady(serverSocket) != 0) { //S'il y a des nouveaux clients
@@ -537,17 +537,17 @@ void ServerSocket::checkNewClient()
 			clientSocketTab[freeSpot] = SDLNet_TCP_Accept(serverSocket); //Accept le client et le met dans le tableau de sockets
 
 			#ifdef IO_DEBUG_INFO_IN_LOOP
-			if(debug(IO_DEBUG_INFO, IO_DEBUG_CLIENT))
+			if(debug(INFO_CONNEXION, CLIENT_EVENT))
 				debugOut("New client " + clientIp(freeSpot)); //Debug
 			#endif
 
 			if(clientSocketTab[freeSpot] == NULL) { //Erreu lors de l'acceptation du client
 				cannotAcceptClient++; //Incrément le nombre total d'erreurs lors de l'acceptation du client
-				if(debug(IO_DEBUG_WARN, IO_DEBUG_CLIENT))
+				if(debug(WARN_CLIENT, CLIENT_EVENT))
 					debugOut("SDL_ACCEPT_CLIENT_ERROR"); //Debug
 			} else {
 				if(SDLNet_TCP_AddSocket(socketSet, clientSocketTab[freeSpot]) <= 0) { //Ajoute le socket client au SocketSet
-					if(debug(IO_DEBUG_ERROR, IO_DEBUG_SERVER))
+					if(debug(ERROR_SOCKET, SERVEUR_EVENT))
 						debugOut("SDL_ADDSOCKET_CLIENT_ERROR "+ (std::string)SDLNet_GetError()); //Debug
 					close(freeSpot); //Ferme le socket temporaire
 				} else {
@@ -560,7 +560,7 @@ void ServerSocket::checkNewClient()
 					//send(clientSocketTab[freeSpot]); //Envoi du message au client //Supprimé pour rester plus sobre et mieux supporter les clients http ou autre
 
 					#ifdef IO_DEBUG_INFO_IN_LOOP
-					if(debug(IO_DEBUG_INFO, IO_DEBUG_CLIENT))
+					if(debug(INFO_CONNEXION, CLIENT_EVENT))
 						debugOut("CLIENT_COUNT " + toString(clientCount) + "/" + toString(maxClients)); //Debug
 					#endif
 				}
@@ -570,7 +570,7 @@ void ServerSocket::checkNewClient()
 
 			refusedConnectionServerFull++; //Incrémente le nombre de connexion refusées pour cause de serveur plein
 			#ifdef IO_DEBUG_WARN_IN_LOOP
-			if(debug(IO_DEBUG_WARN, IO_DEBUG_CLIENT))
+			if(debug(WARN_CLIENT, CLIENT_EVENT))
 				debugOut("server full"); //Debug
 			#endif
 
@@ -579,7 +579,7 @@ void ServerSocket::checkNewClient()
 			if(tempSock == NULL) { //Erreur lors de l'acceptation du client
 				cannotAcceptClient++;
 				#ifdef IO_DEBUG_WARN_IN_LOOP
-				if(debug(IO_DEBUG_WARN, IO_DEBUG_CLIENT))
+				if(debug(WARN_CLIENT, CLIENT_EVENT))
 					debugOut("SDL_ACCEPT_CLIENT_ERROR"); //Debug
 				#endif
 			}
@@ -593,7 +593,7 @@ void ServerSocket::checkNewClient()
 	}
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_CLIENT))
+	if(debug(TRACE_FCT, CLIENT_EVENT))
 		debugOut("CHECKNEWCLIENT_END"); //Debug
 	#endif
 }
@@ -601,7 +601,7 @@ void ServerSocket::checkNewClient()
 void ServerSocket::checkNewData()
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_CLIENT)) debugOut("CHECKNEWDATA_START"); //Debug
+	if(debug(TRACE_FCT, CLIENT_EVENT)) debugOut("CHECKNEWDATA_START"); //Debug
 	#endif
 
 	int clientSocketActivity;
@@ -615,7 +615,7 @@ void ServerSocket::checkNewData()
 				int receivedByteCount = SDLNet_TCP_Recv(clientSocketTab[client], buffer, bufferSize); //Réception des données du client
 				if (receivedByteCount <= 0) { //Déconnexion du client
 					#ifdef IO_DEBUG_INFO_IN_LOOP
-					if (receivedByteCount < 0 && debug(IO_DEBUG_INFO, IO_DEBUG_CLIENT))
+					if (receivedByteCount < 0 && debug(INFO_CONNEXION, CLIENT_EVENT))
 						debugOut("RESETED_BY_PEER "+ clientIp(client)); //Debug
 					#endif
 					close(client); //Opérations de fermeture du socket du client
@@ -624,7 +624,7 @@ void ServerSocket::checkNewData()
 					strcpy(buffer, "SERVER_OVERFLOW"); //Prépare le message
 					send(clientSocketTab[client]); //Envoi du message
 					#ifdef IO_DEBUG_WARN_IN_LOOP
-					if(debug(IO_DEBUG_WARN, IO_DEBUG_STREAM))
+					if(debug(WARN_CLIENT, FLUX_EVENT))
 						debugOut("BUFFER_OVERFLOW too many data "+ clientIp(client)); //Debug
 					#endif
 					close(client); //Fermeture du socket client
@@ -634,7 +634,7 @@ void ServerSocket::checkNewData()
 					dataRecieved += receivedByteCount; //Incrémente le nombre total de données réçues
 
 					#ifdef IO_DEBUG_INFO_IN_LOOP
-					if(debug(IO_DEBUG_INFO, IO_DEBUG_STREAM))
+					if(debug(INFO_CONNEXION, FLUX_EVENT))
 						debugOut("CLIENT_DATA_QUANTITY " + clientIp(client) + " " + toString(receivedByteCount)); //Debug
 					#endif
 
@@ -649,20 +649,20 @@ void ServerSocket::checkNewData()
 	}
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER)) debugOut("CHECKNEWDATA_END"); //Debug
+	if(debug(TRACE_FCT, SERVEUR_EVENT)) debugOut("CHECKNEWDATA_END"); //Debug
 	#endif
 }
 
 void ServerSocket::computeNewData(unsigned int client)
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_STREAM)) debugOut("COMPUTENEWDATA_START"); //Debug
+	if(debug(TRACE_FCT, FLUX_EVENT)) debugOut("COMPUTENEWDATA_START"); //Debug
 	#endif
 
 	std::string data = buffer; //Transforme les données du buffer en string
 
 	#ifdef IO_DEBUG_DEBUG_IN_LOOP
-	if(debug(IO_DEBUG_DEBUG, IO_DEBUG_STREAM)) debugOut("DATA_AS_STRING "+ data); //Debug
+	if(debug(DEBUG_FCT, FLUX_EVENT)) debugOut("DATA_AS_STRING "+ data); //Debug
 	#endif
 
 	unsigned int begin = 0; //Début de la chaine
@@ -676,21 +676,21 @@ void ServerSocket::computeNewData(unsigned int client)
 	} while(end != (unsigned int)std::string::npos && continues); //Tant qu'il y a des \n dans la chaine
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_STREAM)) debugOut("COMPUTENEWDATA_END"); //Debug
+	if(debug(TRACE_FCT, FLUX_EVENT)) debugOut("COMPUTENEWDATA_END"); //Debug
 	#endif
 }
 
 bool ServerSocket::computeString(unsigned int client, std::string string)
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_STREAM))
+	if(debug(TRACE_FCT, FLUX_EVENT))
 		debugOut("COMPUTENEWDATA_START"); //Debug
 	#endif
 
 	if(computeHttp(client, string)) {
 
 		#ifdef IO_DEBUG_TRACE_IN_LOOP
-		if(debug(IO_DEBUG_TRACE, IO_DEBUG_STREAM))
+		if(debug(TRACE_FCT, FLUX_EVENT))
 			debugOut("COMPUTENEWDATA_END"); //Debug
 		#endif
 
@@ -700,7 +700,7 @@ bool ServerSocket::computeString(unsigned int client, std::string string)
 		computeNormalString(client, string);
 
 		#ifdef IO_DEBUG_TRACE_IN_LOOP
-		if(debug(IO_DEBUG_TRACE, IO_DEBUG_STREAM))
+		if(debug(TRACE_FCT, FLUX_EVENT))
 			debugOut("COMPUTENEWDATA_END"); //Debug
 		#endif
 
@@ -818,7 +818,7 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 void ServerSocket::checkDataToSend()
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER)) debugOut("CHECKDATATOSEND_START"); //Debug
+	if(debug(TRACE_FCT, SERVEUR_EVENT)) debugOut("CHECKDATATOSEND_START"); //Debug
 	#endif
 
 	if(lock(outputting) == IO_NO_ERROR) {
@@ -830,19 +830,19 @@ void ServerSocket::checkDataToSend()
 	}
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER)) debugOut("CHECKDATATOSEND_END"); //Debug
+	if(debug(TRACE_FCT, SERVEUR_EVENT)) debugOut("CHECKDATATOSEND_END"); //Debug
 	#endif
 }
 
 int ServerSocket::broadcast(std::string data)
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("BROADCAST_START"); //Debug
 	#endif
 
 	#ifdef IO_DEBUG_DEBUG_IN_LOOP
-	if(debug(IO_DEBUG_DEBUG, IO_DEBUG_STREAM))
+	if(debug(DEBUG_FCT, FLUX_EVENT))
 		debugOut("BROADCAST_DATA "+ data); //Debug
 	#endif
 
@@ -858,7 +858,7 @@ int ServerSocket::broadcast(std::string data)
 	return sent;
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("BROADCAST_END"); //Debug
 	#endif
 }
@@ -866,7 +866,7 @@ int ServerSocket::broadcast(std::string data)
 int ServerSocket::send(TCPsocket client)
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("SEND_START"); //Debug
 	#endif
 
@@ -875,7 +875,7 @@ int ServerSocket::send(TCPsocket client)
 	if(sendCount < size) { //Problème lors de l'envoi
 		requestSendFailed++; //Incrémente le nombre total de d'erreurs d'envoi de requête
 		#ifdef IO_DEBUG_WARN_IN_LOOP
-		if(debug(IO_DEBUG_WARN, IO_DEBUG_STREAM))
+		if(debug(WARN_CLIENT, FLUX_EVENT))
 			debugOut("SDL_SEND_ERROR"); //Debug
 		#endif
 		return SDL_SEND_ERROR_CODE;
@@ -884,7 +884,7 @@ int ServerSocket::send(TCPsocket client)
 	dataSend += sendCount; //Incrément le total de données envoyées
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("SEND_END"); //Debug
 	#endif
 
@@ -894,18 +894,18 @@ int ServerSocket::send(TCPsocket client)
 int ServerSocket::close(unsigned int client)
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_CLIENT))
+	if(debug(TRACE_FCT, CLIENT_EVENT))
 		debugOut("CLIENT_CLOSE_START"); //Debug
 	#endif
 
 	#ifdef IO_DEBUG_INFO_IN_LOOP
-	if(debug(IO_DEBUG_INFO, IO_DEBUG_CLIENT))
+	if(debug(INFO_CONNEXION, CLIENT_EVENT))
 		debugOut("CLIENT_DISCONECTED "+ clientIp(client)); //Debug
 	#endif
 
 	int socketCount = SDLNet_TCP_DelSocket(socketSet, clientSocketTab[client]); //Suppression du socket client du SocketSet
 	if(socketCount < 0) {
-		if(debug(IO_DEBUG_ERROR, IO_DEBUG_STREAM)) debugOut("SDL_DELSOCKET_CLIENT_ERROR"); //Debug
+		if(debug(ERROR_SOCKET, FLUX_EVENT)) debugOut("SDL_DELSOCKET_CLIENT_ERROR"); //Debug
 		return SDL_DELSOCKET_CLIENT_ERROR_CODE;
 	}
 	SDLNet_TCP_Close(clientSocketTab[client]); //Fermeture du socket client
@@ -914,12 +914,12 @@ int ServerSocket::close(unsigned int client)
 	clientCount--; //Décrémentation du nombre de clients connectés
 
 	#ifdef IO_DEBUG_INFO_IN_LOOP
-	if(debug(IO_DEBUG_INFO, IO_DEBUG_CLIENT))
+	if(debug(INFO_CONNEXION, CLIENT_EVENT))
 		debugOut("CLIENT_COUNT " + toString(clientCount) + "/" + toString(maxClients)); //Debug
 	#endif
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("CLIENT_CLOSE_END"); //Debug
 	#endif
 
@@ -929,7 +929,7 @@ int ServerSocket::close(unsigned int client)
 int ServerSocket::killThread()
 {
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("KILLTHREAD_START"); //Debug
 	#endif
 
@@ -937,7 +937,7 @@ int ServerSocket::killThread()
 	SDL_WaitThread(thread, &threadReturnValue); //Attente du thread
 
 	#ifdef IO_DEBUG_TRACE_IN_LOOP
-	if(debug(IO_DEBUG_TRACE, IO_DEBUG_SERVER))
+	if(debug(TRACE_FCT, SERVEUR_EVENT))
 		debugOut("KILLTHREAD_END"); //Debug
 	#endif
 
@@ -947,7 +947,7 @@ int ServerSocket::killThread()
 int ServerSocket::lock(SDL_mutex *mutex)
 {
 	if (SDL_LockMutex(mutex)) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_LOCKMUTEX_ERROR " + (std::string)SDLNet_GetError()); //Debug
 		return SDL_LOCKMUTEX_ERROR_CODE;
 	}
@@ -958,7 +958,7 @@ int ServerSocket::lock(SDL_mutex *mutex)
 int ServerSocket::unlock(SDL_mutex *mutex)
 {
 	if (SDL_UnlockMutex(mutex)) {
-		if(debug(IO_DEBUG_FATAL, IO_DEBUG_SERVER))
+		if(debug(ERREUR_FATAL, SERVEUR_EVENT))
 			debugOut("SDL_UNLOCKMUTEX_ERROR " + (std::string)SDLNet_GetError()); //Debug
 		return SDL_UNLOCKMUTEX_ERROR_CODE;
 	}
