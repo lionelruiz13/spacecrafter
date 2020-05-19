@@ -426,35 +426,35 @@ void ServerSocket::setOutput(std::string data)
 	}
 }
 
-bool ServerSocket::debug(int level, int scope)
-{
-	if(logLevel >= level && logScope >= scope) {
-		switch(level) {
-			case ERREUR_FATAL :
-				logType = LOG_TYPE::L_ERROR;
-				break;
-			case ERROR_SOCKET :
-				logType = LOG_TYPE::L_ERROR;
-				break;
-			case WARN_CLIENT :
-				logType = LOG_TYPE::L_WARNING;
-				break;
-			case INFO_CONNEXION :
-				logType = LOG_TYPE::L_INFO;
-				break;
-			case DEBUG_FCT :
-				logType = LOG_TYPE::L_DEBUG;
-				break;
-			case TRACE_FCT :
-				logType = LOG_TYPE::L_DEBUG;
-				break;
-			default :
-				logType = LOG_TYPE::L_INFO;
-		}
-		return true;
-	}
-	return false;
-}
+// bool ServerSocket::debug(int level, int scope)
+// {
+// 	if(logLevel >= level && logScope >= scope) {
+// 		switch(level) {
+// 			case ERREUR_FATAL :
+// 				logType = LOG_TYPE::L_ERROR;
+// 				break;
+// 			case ERROR_SOCKET :
+// 				logType = LOG_TYPE::L_ERROR;
+// 				break;
+// 			case WARN_CLIENT :
+// 				logType = LOG_TYPE::L_WARNING;
+// 				break;
+// 			case INFO_CONNEXION :
+// 				logType = LOG_TYPE::L_INFO;
+// 				break;
+// 			case DEBUG_FCT :
+// 				logType = LOG_TYPE::L_DEBUG;
+// 				break;
+// 			case TRACE_FCT :
+// 				logType = LOG_TYPE::L_DEBUG;
+// 				break;
+// 			default :
+// 				logType = LOG_TYPE::L_INFO;
+// 		}
+// 		return true;
+// 	}
+// 	return false;
+// }
 
 void ServerSocket::debugOut(std::string msg)
 {

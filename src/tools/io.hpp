@@ -119,7 +119,7 @@ private:
 	unsigned int port; //Port d'écoute du serveur
 	unsigned int maxClients; //Nombre maxium de clients (comme le serveur prends une place dans le set de sockets, ce nombre est égal à la taille du set -1)
 	unsigned int bufferSize; //Taille du buffer de réception
-	int logLevel; //Niveau de debug
+	int logLevel; //Niveau de debug  @TODO : à supprimer
 	int logScope; //Scope du debug
 	LOG_TYPE logType; //Type de log (spécifique à l'application)
 
@@ -195,8 +195,8 @@ private:
 	std::string clientIp(unsigned int client); //Fonction qui renvoi l'adresse IP du client sous forme de chaîne
 
 	/* Fonctions de debug */
-	bool debug(int level, int scope);//Debug
-	void debugOut(std::string msg);//Debug
+	//bool debug(int level, int scope);//Debug
+	void debugOut(std::string msg, LOG_TYPE log);//Debug
 
 
 	std::string replace(std::string base, const std::string from, const std::string to) {
