@@ -76,6 +76,9 @@ public:
 	App( SDLFacade* const );
 	~App();
 
+	//! First initialization of the application
+	void firstInit();
+
 	//! Initialize application and core
 	void init();
 
@@ -159,7 +162,7 @@ private:
 	bool flagColorInverse;			//!< indique si les couleurs de l'écran sont inversées
 	bool flagAlwaysVisible;			//!< say if SC should always remain visible
 
-	bool initialized;				//! has the init method been called yet?
+	//bool initialized;				//! has the init method been called yet?
 	double PresetSkyTime;
 	std::string StartupTimeMode;	//! Can be "now" or "preset"
 	std::string DayKeyMode;			//! calendar or sidereal

@@ -290,7 +290,7 @@ int main(int argc, char **argv)
 	signalObj->Register( SIGQUIT, ISignals::NSSigTERM );
 
 	// app->initSplash();
-	app->init();
+	app->firstInit();
 	app->startMainLoop();
 
 	#ifdef LINUX

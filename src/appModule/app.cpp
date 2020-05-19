@@ -67,8 +67,7 @@
 
 EventManager* EventManager::instance = nullptr;
 
-App::App( SDLFacade* const sdl ) :
-	initialized(false)
+App::App( SDLFacade* const sdl )
 {
 	mSdl = sdl;
 	flagMasterput =false;
@@ -223,12 +222,6 @@ void App::init()
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	if (!initialized) {
-		appDraw->initSplash();
-		mSdl->glSwapWindow();	// And swap the buffers
-		Translator::initSystemLanguage();
-	}
-
 	// Initialize video device and other sdl parameters
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
@@ -279,64 +272,72 @@ void App::init()
 	// initialisation of the User Interface
 	ui->init(conf);
 	ui->localizeTui();
-	if (!initialized) 
-		ui->initTui(); // don't reinit tui since probably called from there
-	else
-		ui->localizeTui();  // update translations/fonts as needed
+
 	//set all color
 	core->setColorScheme(settings->getConfigFile(), SCS_COLOR);
 	core->setFontScheme();
 
-	if (! initialized) {
-
-		appDraw->createShader();
-		// bool mplayerEnable =conf.getBoolean("io:enable_mplayer");
-		// std::string mplayerFileName =conf.getStr("io:mplayer_name");
-		// std::string mplayerMkfifoName = conf.getStr("io:mplayer_mkfifo_name");
-		//media->externalInit(mplayerFileName, mplayerMkfifoName,mplayerEnable);
-		media->createViewPort();
-		media->createVR360();
-		media->createImageShader();
-
-		flagMasterput=conf.getBoolean(SCS_IO, SCK_FLAG_MASTERPUT);
-		enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
-		enable_mkfifo=conf.getBoolean(SCS_IO, SCK_ENABLE_MKFIFO);
-		flagAlwaysVisible = conf.getBoolean(SCS_MAIN,SCK_FLAG_ALWAYS_VISIBLE);
-
-		// std::stringstream oss;
-		// cLog::get()->write(oss.str(), LOG_TYPE::L_INFO);
-
-		if (enable_tcp) {
-			int port = conf.getInt(SCS_IO, SCK_TCP_PORT_IN);
-			int buffer_in_size=conf.getInt(SCS_IO, SCK_TCP_BUFFER_IN_SIZE);
-			cLog::get()->write("buffer TCP taille " + Utility::intToString(buffer_in_size));
-			tcp = new ServerSocket(port, 16, buffer_in_size, INFO_CONNEXION, MAX_DEBUG);
-			tcp->open();
-			// core->tcpConfigure(tcp);
-			commander->setTcp(tcp);
-		}
-		#if LINUX // special mkfifo
-		if (enable_mkfifo) {
-			std::string mplayerMkfifoName = conf.getStr(SCS_IO, SCK_MPLAYER_MKFIFO_NAME);
-			std::string mkfifo_file_in = conf.getStr(SCS_IO, SCK_MKFIFO_FILE_IN);
-			int buffer_in_size=conf.getInt(SCS_IO, SCK_MKFIFO_BUFFER_IN_SIZE);
-			cLog::get()->write("buffer MKFIFO taille "+ Utility::intToString(buffer_in_size));
-			mkfifo->init(mkfifo_file_in, buffer_in_size);
-		}
-		#endif
-
-		cLog::get()->write(CallSystem::getRamInfo());
-		cLog::get()->mark();
-		cLog::get()->write("End of loading SC");
-		cLog::get()->write("End of loading SC",LOG_TYPE::L_INFO,LOG_FILE::SCRIPT);
-		cLog::get()->mark();
-	}
 	// play startup script
 	scriptMgr->playStartupScript();
 	// on sauvegarde ici l'état des composants du logiciel.
 	coreBackup->saveGridState();
-	initialized = true;
 }
+
+//! Load configuration from disk
+void App::firstInit()
+{
+	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	appDraw->initSplash();
+	mSdl->glSwapWindow();	// And swap the buffers
+	Translator::initSystemLanguage();
+
+	InitParser conf;
+	AppSettings::Instance()->loadAppSettings( &conf );
+
+	core->init(conf);
+	ui->init(conf);
+	ui->localizeTui();
+	ui->initTui();
+
+	appDraw->createShader();
+	media->createViewPort();
+	media->createVR360();
+	media->createImageShader();
+
+	enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
+	enable_mkfifo=conf.getBoolean(SCS_IO, SCK_ENABLE_MKFIFO);
+	flagAlwaysVisible = conf.getBoolean(SCS_MAIN,SCK_FLAG_ALWAYS_VISIBLE);
+
+	if (enable_tcp) {
+		int port = conf.getInt(SCS_IO, SCK_TCP_PORT_IN);
+		int buffer_in_size=conf.getInt(SCS_IO, SCK_TCP_BUFFER_IN_SIZE);
+		cLog::get()->write("buffer TCP taille " + Utility::intToString(buffer_in_size));
+		tcp = new ServerSocket(port, 16, buffer_in_size, INFO_CONNEXION, MAX_DEBUG);
+		tcp->open();
+		commander->setTcp(tcp);
+	}
+
+	#if LINUX // special mkfifo
+	if (enable_mkfifo) {
+		std::string mplayerMkfifoName = conf.getStr(SCS_IO, SCK_MPLAYER_MKFIFO_NAME);
+		std::string mkfifo_file_in = conf.getStr(SCS_IO, SCK_MKFIFO_FILE_IN);
+		int buffer_in_size=conf.getInt(SCS_IO, SCK_MKFIFO_BUFFER_IN_SIZE);
+		cLog::get()->write("buffer MKFIFO taille "+ Utility::intToString(buffer_in_size));
+		mkfifo->init(mkfifo_file_in, buffer_in_size);
+	}
+	#endif
+
+	cLog::get()->write(CallSystem::getRamInfo());
+	cLog::get()->mark();
+	cLog::get()->write("End of loading SC");
+	cLog::get()->write("End of loading SC",LOG_TYPE::L_INFO,LOG_FILE::SCRIPT);
+	cLog::get()->mark();
+
+	this->init();
+}
+
 
 void App::updateFromSharedData()
 {
@@ -427,8 +428,7 @@ void App::setAppLanguage(const std::string& newAppLocaleName)
 	// Update the translator with new locale name
 	Translator::globalTranslator = Translator(PACKAGE, settings->getLocaleDir(), newAppLocaleName);
 	cLog::get()->write("Application locale is " + Translator::globalTranslator.getLocaleName(), LOG_TYPE::L_INFO);
-	if (initialized)
-		ui->localizeTui();
+	ui->localizeTui();
 }
 
 //! For use by TUI - saves all current settings
