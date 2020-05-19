@@ -504,12 +504,10 @@ int ServerSocket::run()
 
 			checkDataToSend(); //Vérifie s'il y a des données à envoyer aux clients
 
-			#ifdef DEBUG_PERIODIC_STATS_ENABLED
-			if(SDL_GetTicks() >= timeout) {
-				timeout = SDL_GetTicks() + statsPeriod;
-				stats();
-			}
-			#endif
+			// if(SDL_GetTicks() >= timeout) {
+		 	// 	timeout = SDL_GetTicks() + statsPeriod;
+			// 	stats();
+			// }
 		unlock(running); //Thread inactif
 		}
 	}
