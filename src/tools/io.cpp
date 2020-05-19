@@ -416,6 +416,7 @@ void ServerSocket::setstatsPeriod(unsigned int statsPeriod)
 
 void ServerSocket::setOutput(std::string data)
 {
+	debugOut("Data info : " + data, LOG_TYPE::L_INFO);
 	if(lock(outputting) == IO_NO_ERROR) {
 		unsigned sz = data.size();
 		if (sz>MAX_BUFFER) {
