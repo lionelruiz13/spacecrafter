@@ -377,6 +377,9 @@ public:
 	
 	void computePreDraw(const Projector * prj, const Navigator * nav);
 
+	// return the Sun altitude 
+	double getSunAltitude(const Navigator * nav) const;
+
 private:
 	struct depthBucket {
 		double znear;

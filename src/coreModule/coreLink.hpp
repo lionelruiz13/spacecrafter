@@ -960,6 +960,11 @@ public:
 		core->ssystem->setScale(f);
 	}
 
+	//return the Sun altitude
+	double getSunAltitude() const {
+		return core->ssystem->getSunAltitude(core->navigation);
+	}
+
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// //! Get base planets display scaling factor

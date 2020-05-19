@@ -1481,3 +1481,11 @@ void SolarSystem::planetTesselation(std::string name, int value) {
 		return;
 	}
 }
+
+
+double SolarSystem::getSunAltitude(const Navigator * nav) const
+{
+	double alt, az;
+	sun->getAltAz(nav, &alt, &az);
+	return alt;
+}
