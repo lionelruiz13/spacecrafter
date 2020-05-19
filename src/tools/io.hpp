@@ -64,15 +64,17 @@ Mise à jour le 17/05/2016
 */
 
 /* Niveau de debug */
-#define MAX_DEBUG 100 //Niveau de debug maximum (valable aussi pour le scope)
+//groupe dev
 #define TRACE_FCT 6 //Trace au début et à la fin de chaque fonction
 #define DEBUG_FCT 5 //Debug avant et parfois après les appels de fonctions importantes
 #define INFO_CONNEXION 4 //Infos comme les infos du serveur, la connexion d'un client
 #define WARN_CLIENT 3 //Warnings comme une tentative de connexion d'un client sur un serveur plein ou une configuration douteuse
+//groupe haut niveau (soft)
+#define MAX_DEBUG 100 //Niveau de debug maximum (valable aussi pour le scope)
+#define DEBUG_OFF 0 //Debug désactivé
+//groupe users
 #define ERROR_SOCKET 2 //Erreur comme échec de l'ouverture de socket serveur
 #define ERREUR_FATAL 1 //Erreur fatale comme l'échec du chargement de la librairie SDL_net ou d'allocation
-//PAS UTILISEE
-#define DEBUG_OFF 0 //Debug désactivé
 
 /* Niveau de scope de debug */
 #define FLUX_EVENT 3 //Evènements liés aux flux de données (réception, émission) 
