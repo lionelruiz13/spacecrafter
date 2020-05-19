@@ -1487,5 +1487,5 @@ double SolarSystem::getSunAltitude(const Navigator * nav) const
 {
 	double alt, az;
 	sun->getAltAz(nav, &alt, &az);
-	return alt;
+	return alt*180.0/C_PI;
 }
