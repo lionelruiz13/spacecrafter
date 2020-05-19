@@ -90,9 +90,6 @@ public:
 
 	//! Start the main loop until the end of the execution
 	void startMainLoop();
-	//  {
-	// 	start_main_loop();
-	// }
 
 	//! @brief Set the application language
 	//! This applies to GUI, console messages etc..
@@ -112,9 +109,6 @@ public:
 	int getFpsClock() const {
 		return internalFPS->getFps();
 	}
-
-	// todo deprecated 
-	// void executeCommand(const std::string& _command);
 
 	void setPresetSkyTime(double _value) {
 		PresetSkyTime = _value;
@@ -147,12 +141,8 @@ public:
 	void toggle(APP_FLAG layerValue);
 
 private:
-	//! Run the main program loop
-	// void start_main_loop();
 	//! run any incoming command from shared memory interface
 	void updateFromSharedData();
-	//! mise à jour de l'accélération du temps
-	//void updateDeltaSpeed();
 	//! Use by masterput, poor but he does his job
 	void masterput();
 
@@ -162,7 +152,6 @@ private:
 	bool flagColorInverse;			//!< indique si les couleurs de l'écran sont inversées
 	bool flagAlwaysVisible;			//!< say if SC should always remain visible
 
-	//bool initialized;				//! has the init method been called yet?
 	double PresetSkyTime;
 	std::string StartupTimeMode;	//! Can be "now" or "preset"
 	std::string DayKeyMode;			//! calendar or sidereal

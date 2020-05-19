@@ -75,7 +75,7 @@ App::App( SDLFacade* const sdl )
 
 	settings = AppSettings::Instance();
 
-	media = new Media( /*width, height*/ );
+	media = new Media();
 	saveScreenInterface = new SaveScreenInterface(width, height);
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
@@ -207,9 +207,6 @@ void App::toggle(APP_FLAG layerValue)
 	}
 }
 
-// void App::warpMouseInWindow(float x, float y) {
-// 	mSdl->warpMouseInWindow( x , y);
-// }
 
 std::string App::getAppLanguage() {
 	return Translator::globalTranslator.getLocaleName();
@@ -365,14 +362,8 @@ void App::updateFromSharedData()
 }
 
 
-// todo deprecated 
-// void App::executeCommand(const std::string& _command) {
-// 	commander->executeCommand(_command);
-// }
-
 void App::update(int delta_time)
 {
-	// std::cout << "delta_time " << delta_time << std::endl;
 	internalFPS->addFrame();
 	internalFPS->addCalculatedTime(delta_time);
 
@@ -403,7 +394,6 @@ void App::draw(int delta_time)
 	appDraw->drawFirstLayer();
 
 	core->draw(delta_time);
-	// core->imageDraw();
 
 	// Draw the Graphical ui and the Text ui
 	ui->draw();
