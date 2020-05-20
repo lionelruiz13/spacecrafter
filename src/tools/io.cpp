@@ -96,7 +96,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	
 	debugOut("IO_DEBUG_WARN_IN_LOOP", LOG_TYPE::L_WARNING); //Debug
 	
-	debugOut("INIT_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- INIT --", LOG_TYPE::L_DEBUG); //Debug
 
 	debugOut("Port " + toString(port) + DEBUG_SEPARATOR3 + "Slots " + toString(maxClients) + DEBUG_SEPARATOR3 + "Buffer " + 
 			toString(bufferSize) + " B" + DEBUG_SEPARATOR3 + "Log " + toString(logLevel) + "(" + toString(logScope) + ")", LOG_TYPE::L_INFO); //Debug
@@ -205,14 +205,14 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 		return SDL_CREATEMUTEX_ERROR_CODE;
 	}
 
-	debugOut("INIT_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("INIT_END", LOG_TYPE::L_DEBUG); //Debug
 
 	return IO_NO_ERROR; //Pas d'erreur
 }
 
 int ServerSocket::open()
 {
-	debugOut("START_OPEN", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- OPEN --", LOG_TYPE::L_DEBUG); //Debug
 	debugOut("SERVER_START "+ toString(port), LOG_TYPE::L_INFO); //Debug
 
 	/* Ouverture du socket serveur */
@@ -239,14 +239,14 @@ int ServerSocket::open()
 		return SDL_CREATETHREAD_ERROR_CODE;
 	}
 
-	debugOut("END_OPEN", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("END_OPEN", LOG_TYPE::L_DEBUG); //Debug
 
 	return IO_NO_ERROR; //Pas d'erreur
 }
 
 int ServerSocket::close()
 {
-	debugOut("START_CLOSE", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- CLOSE --", LOG_TYPE::L_DEBUG); //Debug
 
 	if(!serverOpen) {
 		debugOut("SERVER_NOT_OPEN", LOG_TYPE::L_WARNING); //Debug
@@ -273,12 +273,12 @@ int ServerSocket::close()
 
 	return IO_NO_ERROR;
 
-	debugOut("END_CLOSE", LOG_TYPE::L_DEBUG); //Debug
+	// debugOut("END_CLOSE", LOG_TYPE::L_DEBUG); //Debug
 }
 
 ServerSocket::~ServerSocket()
 {
-	debugOut("START_DELETE", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- DELETE --", LOG_TYPE::L_DEBUG); //Debug
 
 	if(serverOpen) close(); //Fermeture du serveur
 
@@ -293,12 +293,12 @@ ServerSocket::~ServerSocket()
 	while(!inputQueue.empty()) inputQueue.pop(); //Vidage de la file d'entrée
 	while(!outputQueue.empty()) outputQueue.pop(); //Vidage de la file de sortie
 
-	debugOut("END_DELETE", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("END_DELETE", LOG_TYPE::L_DEBUG); //Debug
 }
 
 void ServerSocket::stats()
 {
-	debugOut("START_STATS", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- STATS --", LOG_TYPE::L_DEBUG); //Debug
 
 	if(connection) {
 		debugOut("CONNECTION "+ toString(connection) + " (" + toString(maxSimultaneousClient) + " max)", LOG_TYPE::L_DEBUG);
@@ -328,7 +328,7 @@ void ServerSocket::stats()
 	
 	debugOut("DEBUG_SENDFAILED_COUNT "+ humanReadable(requestSendFailed), LOG_TYPE::L_WARNING);
 
-	debugOut("END_STATS", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("END_STATS", LOG_TYPE::L_DEBUG); //Debug
 }
 
 std::string ServerSocket::humanReadable(unsigned int data)
@@ -369,7 +369,7 @@ void ServerSocket::setstatsPeriod(unsigned int statsPeriod)
 
 void ServerSocket::setOutput(std::string data)
 {
-	debugOut("Data info : " + data, LOG_TYPE::L_INFO);
+	debugOut("Data info OUT : " + data, LOG_TYPE::L_INFO);
 	if(lock(outputting) == IO_NO_ERROR) {
 		unsigned sz = data.size();
 		if (sz>MAX_BUFFER) {
@@ -395,7 +395,7 @@ int ServerSocket::threadWrapper(void *Data)
 
 int ServerSocket::run()
 {
-	debugOut("RUN_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- RUN --", LOG_TYPE::L_DEBUG); //Debug
 
 	while(true) {
 
@@ -431,14 +431,14 @@ int ServerSocket::run()
 		}
 	}
 
-	debugOut("RUN_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("RUN_END", LOG_TYPE::L_DEBUG); //Debug
 	
 	return IO_NO_ERROR;
 }
 
 void ServerSocket::checkNewClient()
 {
-	debugOut("CHECKNEWCLIENT_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- CHECK NEW CLIENT --", LOG_TYPE::L_DEBUG); //Debug
 	
 	if (SDLNet_SocketReady(serverSocket) != 0) { //S'il y a des nouveaux clients
 		if (clientCount < maxClients) { //S'il y a de la place pour le client
@@ -499,14 +499,14 @@ void ServerSocket::checkNewClient()
 		activeSocketsCount--; //Décrémente le nombre de sockets actifs
 	}
 
-	debugOut("CHECKNEWCLIENT_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("CHECKNEWCLIENT_END", LOG_TYPE::L_DEBUG); //Debug
 	
 }
 
 void ServerSocket::checkNewData()
 {
 	
-	debugOut("CHECKNEWDATA_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- CHECK NEW DATA --", LOG_TYPE::L_DEBUG); //Debug
 	
 	int clientSocketActivity;
 	for (unsigned int client = 0; client < maxClients; client++) { //Parcours de tous les clients connectés
@@ -547,14 +547,14 @@ void ServerSocket::checkNewData()
 		if(activeSocketsCount <= 0) break; //S'arrête si on a traité le nombre de sockets actifs
 	}
 
-	debugOut("CHECKNEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("CHECKNEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
 	
 }
 
 void ServerSocket::computeNewData(unsigned int client)
 {
 
-	debugOut("COMPUTENEWDATA_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- COMPUTE NEW DATA --", LOG_TYPE::L_DEBUG); //Debug
 
 	std::string data = buffer; //Transforme les données du buffer en string
 
@@ -572,22 +572,22 @@ void ServerSocket::computeNewData(unsigned int client)
 	} while(end != (unsigned int)std::string::npos && continues); //Tant qu'il y a des \n dans la chaine
 
 	
-	debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
 
 }
 
 bool ServerSocket::computeString(unsigned int client, std::string string)
 {
-	debugOut("COMPUTENEWDATA_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- COMPUTE STRING --", LOG_TYPE::L_DEBUG); //Debug
 
 	if(computeHttp(client, string)) {
 
-		debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
+		//debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
 
 		return false; //Client HTTP
 	} else {
 		computeNormalString(client, string);
-		debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
+		//debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
 		return true;
 	}
 }
@@ -701,7 +701,7 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 
 void ServerSocket::checkDataToSend()
 {
-	debugOut("CHECKDATATOSEND_START", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("CHECKDATATOSEND_START", LOG_TYPE::L_DEBUG); //Debug
 
 	if(lock(outputting) == IO_NO_ERROR) {
 		while(!outputQueue.empty()) { //File non-vide
@@ -711,13 +711,13 @@ void ServerSocket::checkDataToSend()
 		unlock(outputting);
 	}
 
-	debugOut("CHECKDATATOSEND_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("CHECKDATATOSEND_END", LOG_TYPE::L_DEBUG); //Debug
 
 }
 
 int ServerSocket::broadcast(std::string data)
 {
-	debugOut("BROADCAST_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- BROADCAST --", LOG_TYPE::L_DEBUG); //Debug
 	
 	debugOut("BROADCAST_DATA "+ data, LOG_TYPE::L_DEBUG); //Debug
 
@@ -730,16 +730,14 @@ int ServerSocket::broadcast(std::string data)
 			sent++; //Incrémente le nombre total de requêtes envoyées
 		}
 	}
+	//debugOut("BROADCAST_END", LOG_TYPE::L_DEBUG); //Debug
 
 	return sent;
-
-	debugOut("BROADCAST_END", LOG_TYPE::L_DEBUG); //Debug
-
 }
 
 int ServerSocket::send(TCPsocket client)
 {
-	debugOut("SEND_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- SEND --", LOG_TYPE::L_DEBUG); //Debug
 
 
 	unsigned int size = strlen(buffer) + 1; //Taille de la chaine
@@ -752,15 +750,14 @@ int ServerSocket::send(TCPsocket client)
 
 	dataSend += sendCount; //Incrément le total de données envoyées
 
-	debugOut("SEND_END", LOG_TYPE::L_DEBUG); //Debug
-
+	//debugOut("SEND_END", LOG_TYPE::L_DEBUG); //Debug
 
 	return IO_NO_ERROR;
 }
 
 int ServerSocket::close(unsigned int client)
 {
-	debugOut("CLIENT_CLOSE_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- CLIENT CLOSE --", LOG_TYPE::L_DEBUG); //Debug
 
 	debugOut("CLIENT_DISCONECTED "+ clientIp(client), LOG_TYPE::L_INFO); //Debug
 
@@ -778,19 +775,19 @@ int ServerSocket::close(unsigned int client)
 
 	debugOut("CLIENT_COUNT " + toString(clientCount) + "/" + toString(maxClients), LOG_TYPE::L_INFO); //Debug
 
-	debugOut("CLIENT_CLOSE_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("CLIENT_CLOSE_END", LOG_TYPE::L_DEBUG); //Debug
 
 	return IO_NO_ERROR;
 }
 
 int ServerSocket::killThread()
 {
-	debugOut("KILLTHREAD_START", LOG_TYPE::L_DEBUG); //Debug
+	debugOut("-- KILL THREAD --", LOG_TYPE::L_DEBUG); //Debug
 
 	stopThread = true; //Demande d'arrêt du thread
 	SDL_WaitThread(thread, &threadReturnValue); //Attente du thread
 
-	debugOut("KILLTHREAD_END", LOG_TYPE::L_DEBUG); //Debug
+	//debugOut("KILLTHREAD_END", LOG_TYPE::L_DEBUG); //Debug
 
 	return threadReturnValue;
 }
