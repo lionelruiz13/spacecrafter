@@ -102,7 +102,7 @@ bool AppCommandInterface::isBoolean(const std::string &a)
 
 bool AppCommandInterface::isTrue(const std::string &a)
 {
-	if (a=="true" || a =="1" || a=="on" )
+	if (a=="true" || a =="1" || a==W_ON )
 		return true;
 	else
 		return false;
@@ -110,7 +110,7 @@ bool AppCommandInterface::isTrue(const std::string &a)
 
 bool AppCommandInterface::isFalse(const std::string &a)
 {
-	if (a=="false" || a =="0" || a=="off" )
+	if (a=="false" || a =="0" || a==W_OFF )
 		return true;
 	else
 		return false;
@@ -193,7 +193,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 	//                                                 //
 	// application specific logic to run each command  //
 	//                                                 //
-	if (command =="comment")
+	if (command ==W_COMMENT  )
 		return commandComment();
 
 	if (command =="uncomment")
@@ -942,7 +942,7 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 FLAG_VALUES AppCommandInterface::convertStrToFlagValues(const std::string &value)
 {
-	if (value == "toggle") return FLAG_VALUES::FV_TOGGLE;
+	if (value == W_TOGGLE) return FLAG_VALUES::FV_TOGGLE;
 	else if (isTrue(value)) return FLAG_VALUES::FV_ON;
 	else
 		return FLAG_VALUES::FV_OFF;
@@ -978,8 +978,8 @@ int AppCommandInterface::commandFlag()
 		if (setFlag( args.begin()->first, args.begin()->second, val) == false)
 			debug_message = _("Unrecognized or malformed flag argument");
 
-		// rewrite command for recording so that actual state is known (rather than "toggle")
-		if (args.begin()->second == "toggle") {
+		// rewrite command for recording so that actual state is known (rather than W_TOGGLE)
+		if (args.begin()->second == W_TOGGLE) {
 			std::ostringstream oss;
 			oss << command << " " << args.begin()->first << " " << val;
 			commandline = oss.str();
@@ -993,23 +993,23 @@ int AppCommandInterface::commandFlag()
 
 int AppCommandInterface::commandGet()
 {
-	std::string argStatus = args["status"];
+	std::string argStatus = args[W_STATUS];
 	if (!tcp) {
 		cLog::get()->write("No tcp : i can't send ", LOG_TYPE::L_WARNING);
 		return executeCommandStatus();
 	}
 
 	if (!argStatus.empty()) {
-		if (argStatus=="position") {
+		if (argStatus == W_POSITION) {
 			tcp->setOutput(coreLink->tcpGetPosition());
-		} else if (argStatus=="planets_position") {
+		} else if (argStatus == W_PLANET_P) {
 			std::string tmp = coreLink->getPlanetsPosition();
 			if (tmp.empty())
 				tmp = "NPF";	
 			tcp->setOutput(tmp);
-		} else if (argStatus=="constellation") {
+		} else if (argStatus == W_CONSTELLATION) {
 			tcp->setOutput(coreLink->getConstellationSelectedShortName());
-		} else if (argStatus=="object") {
+		} else if (argStatus == W_OBJECT) {
 			std::string tmp = stcore->getSelectedObjectInfo();
 			if (tmp.empty())
 				tmp = "EOL";
@@ -1026,7 +1026,7 @@ int AppCommandInterface::commandGet()
 int AppCommandInterface::commandSearch()
 {
 	std::string argName = args[W_NAME];
-	std::string argMaxObject = args["maxobject"];
+	std::string argMaxObject = args[W_MAX_OBJECT];
 	if (!argName.empty()) {
 		std::string toSend;
 		if (!argMaxObject.empty()) {
@@ -1047,7 +1047,7 @@ int AppCommandInterface::commandSearch()
 int AppCommandInterface::commandPlanetScale()
 {
 	std::string argName = args[W_NAME];
-	std::string argScale = args["scale"];
+	std::string argScale = args[W_SCALE];
 	if (!argName.empty() && !argScale.empty()) {
 		coreLink->planetSetSizeScale(argName, evalDouble(argScale));
 	} else
@@ -1058,8 +1058,8 @@ int AppCommandInterface::commandPlanetScale()
 
 int AppCommandInterface::commandWait(unsigned long int &wait)
 {
-	if ( args["duration"]!="") {
-		float fdelay = evalDouble(args["duration"]);
+	if ( args[W_DURATION]!="") {
+		float fdelay = evalDouble(args[W_DURATION]);
 		if (fdelay > 0) wait = (int)(fdelay*1000);
 	} else {
 		debug_message = _("command_'wait' : unrecognized or malformed argument name.");
@@ -1071,7 +1071,7 @@ int AppCommandInterface::commandPersonal()
 {
 	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
-		if (argAction=="load") {
+		if (argAction == W_LOAD) {
 			std::string fileName=args[W_FILENAME];
 			if (!fileName.empty())
 				fileName = "personal.txt";
@@ -1080,15 +1080,15 @@ int AppCommandInterface::commandPersonal()
 			coreLink->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONAL, fileName);
 			return executeCommandStatus();
 		}
-		if (argAction=="clear") {
+		if (argAction ==  ACP_CN_CLEAR) {
 			coreLink->skyDisplayMgrClear(SKYDISPLAY_NAME::SKY_PERSONAL);
 			return executeCommandStatus();
 		}
 		debug_message = "command_personal: Unknown 'action' value";
 		return executeCommandStatus();
 	}
-	if (!args["xy"].empty()) {
-		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONAL, args["xy"]);
+	if (!args[W_XY].empty()) {
+		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONAL, args[W_XY]);
 		return executeCommandStatus();
 	}
 	debug_message = "command_'personal' : unrecognized or malformed argument";
@@ -1099,33 +1099,33 @@ int AppCommandInterface::commandPersonal()
 int AppCommandInterface::commandDso()
 {
 	std::string argAction = args[W_ACTION];
-	std::string argPath = args["path"];
+	std::string argPath = args[W_PATH];
 	std::string argName = args[W_NAME];
 
 	if (!argAction.empty()) {
-		if (argAction=="load") {
+		if (argAction== W_LOAD) {
 			std::string path;
 			if (!argPath.empty())
 				path = argPath;
 			else
 				path = scriptInterface->getScriptPath() + argPath;
 
-			bool status = stcore->loadNebula(evalDouble(args["ra"]), evalDouble(args["de"]), evalDouble(args["magnitude"]),
-			                                evalDouble(args["angular_size"]), evalDouble(args["rotation"]), argName,
-			                                path + args[W_FILENAME], args["credit"], evalDouble(args["texture_luminance_adjust"]),
-			                                evalDouble(args["distance"]),args["constellation"], args["type"]);
+			bool status = stcore->loadNebula(evalDouble(args[W_RA]), evalDouble(args[W_DE]), evalDouble(args[W_MAGNITUDE]),
+			                                evalDouble(args[W_ANGULAR_S]), evalDouble(args[W_ROTATION]), argName,
+			                                path + args[W_FILENAME], args[W_CREDIT], evalDouble(args[W_TEXTURE]),
+			                                evalDouble(args[W_DISTANCE]),args[W_CONSTELLATION], args[W_TYPE]);
 			if (status==false)
 				debug_message = "Error loading nebula.";
 			return executeCommandStatus();
 		}
 
-		if (argAction == "drop" && !argName.empty() ) {
+		if (argAction == W_DROP && !argName.empty() ) {
 			// Delete an existing nebulae, but only if was added by a script!
 			stcore->removeNebula(argName);
 			return executeCommandStatus();
 		}
 
-		if (argAction == "clear") {
+		if (argAction ==   ACP_CN_CLEAR) {
 			// drop all nebulae that are not in the original config file
 			stcore->removeSupplementalNebulae();
 			return executeCommandStatus();
@@ -1135,11 +1135,11 @@ int AppCommandInterface::commandDso()
 		return executeCommandStatus();
 	}
 
-	std::string argHidden = args["hidden"];
+	std::string argHidden = args[W_HIDDEN];
 	if ( !argHidden.empty() ) {
-		std::string argType = args["type"];
+		std::string argType = args[W_TYPE];
 		if (!argType.empty() ) {
-			if (argType=="all")
+			if (argType == W_ALL)
 				if (isTrue(argHidden)) coreLink->dsoHideAll();
 				else
 					coreLink->dsoShowAll();
@@ -1149,9 +1149,9 @@ int AppCommandInterface::commandDso()
 			return executeCommandStatus();
 		}
 
-		std::string argConstellation = args["constellation"];
+		std::string argConstellation = args[W_CONSTELLATION];
 		if (!argConstellation.empty()) {
-			if (argConstellation=="all")
+			if (argConstellation == W_ALL)
 				if (isTrue(argHidden)) coreLink->dsoHideAll();
 				else
 					coreLink->dsoShowAll();
@@ -1177,7 +1177,7 @@ int AppCommandInterface::commandPersoneq()
 {
 	std::string argAction = args[W_ACTION];
 	if ( !argAction.empty()) {
-		if (argAction=="load") {
+		if (argAction== W_LOAD) {
 			std::string fileName=args[W_FILENAME];
 			if (fileName.empty())
 				fileName = "personeq.txt";
@@ -1186,15 +1186,15 @@ int AppCommandInterface::commandPersoneq()
 			coreLink->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONEQ, fileName);
 			return executeCommandStatus();
 		}
-		if (argAction=="clear") {
+		if (argAction==  ACP_CN_CLEAR) {
 			coreLink->skyDisplayMgrClear(SKYDISPLAY_NAME::SKY_PERSONEQ);
 			return executeCommandStatus();
 		}
 		debug_message = "command_personeq: Unknown 'action' value";
 		return executeCommandStatus();
 	}
-	if (!args["xy"].empty()) {
-		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONEQ, args["xy"]);
+	if (!args[ W_XY].empty()) {
+		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONEQ, args[ W_XY]);
 		return executeCommandStatus();
 	}
 	debug_message = "command_'personeq' : unrecognized or malformed argument";
@@ -1211,7 +1211,7 @@ int AppCommandInterface::commandPersoneq()
 // 		coreLink->getCoordonateemCityCore(argName,argCountry, lon, lat, alt);
 // 		//cout << lon << ":" << lat << ":" << alt << endl;
 // 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
-// 			int delay = (int)(1000.*evalDouble(args["duration"]));
+// 			int delay = (int)(1000.*evalDouble(args[W_DURATION]));
 // 			coreLink->observerMoveTo(lat,lon,alt,delay );
 
 // 		}
@@ -1222,10 +1222,10 @@ int AppCommandInterface::commandPersoneq()
 
 int AppCommandInterface::commandBodyTrace()
 {
-	std::string argPen = args["pen"];
+	std::string argPen = args[W_PEN];
 	if (!argPen.empty()) {
-		if (args["target"]!="") {
-			coreLink->bodyTraceBodyChange(args["target"]);
+		if (args[W_TARGET]!="") {
+			coreLink->bodyTraceBodyChange(args[W_TARGET]);
 		}
 
 		if (isTrue(argPen)) {
@@ -1237,7 +1237,7 @@ int AppCommandInterface::commandBodyTrace()
 				coreLink->bodyPenUp();
 				return executeCommandStatus();	
 			} else {
-				if (argPen =="toggle") {
+				if (argPen == W_TOGGLE) {
 					coreLink->bodyPenToggle();
 					return executeCommandStatus();
 				}
@@ -1248,16 +1248,16 @@ int AppCommandInterface::commandBodyTrace()
 			}
 		}
 	}
-	if (args[W_ACTION]=="clear") {
+	if (args[W_ACTION] == ACP_CN_CLEAR) {
 		coreLink->bodyTraceClear();
 		return executeCommandStatus();
 	}
-	if (args["target"]!="") {
-		coreLink->bodyTraceBodyChange(args["target"]);
+	if (args[W_TARGET]!="") {
+		coreLink->bodyTraceBodyChange(args[W_TARGET]);
 		return executeCommandStatus();
 	}
-	if (args["hide"]!="") {
-		coreLink->bodyTraceHide(args["hide"]);
+	if (args[W_HIDE]!="") {
+		coreLink->bodyTraceHide(args[W_HIDE]);
 		return executeCommandStatus();
 	}
 	debug_message = _("command 'body_trace' : unknown argument");
@@ -1266,27 +1266,27 @@ int AppCommandInterface::commandBodyTrace()
 
 int AppCommandInterface::commandSuntrace()
 {
-	std::string argPen = args["pen"];
+	std::string argPen = args[W_PEN];
 	if (!argPen.empty()) {
-		coreLink->bodyTraceBodyChange(args["Sun"]);
+		coreLink->bodyTraceBodyChange(args[W_SUN]);
 		if (isTrue(argPen)) {
 			coreLink->bodyPenDown();
 			return executeCommandStatus();
 		} else if (isFalse(argPen)) {
 			coreLink->bodyPenUp();
 			return executeCommandStatus();
-		} else if (argPen =="toggle") {
+		} else if (argPen ==W_TOGGLE) {
 			coreLink->bodyPenToggle();
 			return executeCommandStatus();
 		}
 	}
-	if (args[W_ACTION]=="clear") {
-		coreLink->bodyTraceBodyChange("Sun");
+	if (args[W_ACTION]==  ACP_CN_CLEAR) {
+		coreLink->bodyTraceBodyChange(W_SUN);
 		coreLink->bodyTraceClear();
 	}
-	if (args["hide"]!="") {
-		coreLink->bodyTraceBodyChange("Sun");
-		coreLink->bodyTraceHide(args["hide"]);
+	if (args[W_HIDE]!="") {
+		coreLink->bodyTraceBodyChange(W_SUN);
+		coreLink->bodyTraceHide(args[W_HIDE]);
 	}
 	return executeCommandStatus();
 }
@@ -1304,7 +1304,7 @@ int AppCommandInterface::commandColor()
 	if (!testColor)
 		return executeCommandStatus();
 
-	std::string argProperty = args["property"];
+	std::string argProperty = args[W_PROPERTY];
 	if (argProperty.empty()) {
 		debug_message = _("Command 'color': unknown expected argument 'property'");
 		return executeCommandStatus();
@@ -1323,9 +1323,9 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_ART: 		coreLink->constellationSetColorArt( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CONSTELLATION_BOUNDARIES:	coreLink->constellationSetColorBoundaries( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_CARDINAL_POINTS:		coreLink->cardinalsPointsSetColor( Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_PLANET_ORBITS:			coreLink->planetSetDefaultColor("orbit", Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_PLANET_NAMES:			coreLink->planetSetDefaultColor("label", Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_PLANET_TRAILS:			coreLink->planetSetDefaultColor("trail", Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_PLANET_ORBITS:			coreLink->planetSetDefaultColor(W_ORBIT, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_PLANET_NAMES:			coreLink->planetSetDefaultColor(W_LABEL, Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_PLANET_TRAILS:			coreLink->planetSetDefaultColor(W_TRAIL, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_AZIMUTHAL_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_EQUATOR_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_ECLIPTIC_GRID:			coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_ECLIPTIC, Vcolor ); break;
@@ -1360,7 +1360,7 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_NEBULA_CIRCLE: 			coreLink->nebulaSetColorCircle( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE: 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		coreLink->textSetDefaultColor( Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args["index"]), Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args[W_INDEX]), Vcolor ); break;
 		default: 
 		break;
 	}
@@ -1369,12 +1369,12 @@ int AppCommandInterface::commandColor()
 
 int AppCommandInterface::commandIlluminate()
 {
-	std::string argHP = args["hp"];
+	std::string argHP = args[W_HP];
 	std::string argDisplay = args[W_DISPLAY];
-	std::string argConstellation = args["constellation"];
+	std::string argConstellation = args[W_CONSTELLATION];
 
 	double ang_size = evalDouble(args[W_SIZE]);
-	float rotation = evalDouble(args["rotation"]);
+	float rotation = evalDouble(args[W_ROTATION]);
 
 	if (argDisplay=="all_constellation_on") {
 		coreLink->illuminateLoadAllConstellation(ang_size,rotation);
@@ -1385,7 +1385,7 @@ int AppCommandInterface::commandIlluminate()
 
 	//gestion de la couleur
 	Vec3f Vcolor;
-	std::string argValue = args["color_value"];
+	std::string argValue = args[W_COLOR_VALUE];
 	std::string argR= args["r"];
 	std::string argG= args["g"];
 	std::string argB= args["b"];
@@ -1419,7 +1419,7 @@ int AppCommandInterface::commandIlluminate()
 		return executeCommandStatus();
 	}
 
-	if (args[W_ACTION]=="clear") {
+	if (args[W_ACTION]==  ACP_CN_CLEAR) {
 		coreLink->illuminateRemoveTex();
 		coreLink->illuminateRemoveAll();
 		return executeCommandStatus();
@@ -1453,7 +1453,7 @@ int AppCommandInterface::commandPrint()
 		std::stringstream oss;
 
 		if (argName.empty())
-			argName = "NONE";
+			argName = W_NONE;
 
 		oss << "[" << argName <<"] " << argValue;
 		//std::cout << oss.str() << std::endl;
@@ -1522,11 +1522,11 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE:	stcore->setLightPollutionLimitingMagnitude(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_HEADING: 
-						if (setValue=="default") coreLink->setDefaultHeading(); else coreLink->setHeading(evalDouble(setValue)); break;
+						if (setValue==W_DEFAULT) coreLink->setDefaultHeading(); else coreLink->setHeading(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_HOME_PLANET:
-						if (setValue=="default") stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(setValue); break;
+						if (setValue==W_DEFAULT) stcore->setHomePlanet("Earth"); else stcore->setHomePlanet(setValue); break;
 		case SCD_NAMES::APP_LANDSCAPE_NAME: 
-						if (setValue=="default") stcore->setInitialLandscapeName(); else stcore->setLandscape(setValue); break;
+						if (setValue==W_DEFAULT) stcore->setInitialLandscapeName(); else stcore->setLandscape(setValue); break;
 		case SCD_NAMES::APP_LINE_WIDTH:	stapp->setLineWidth(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MAX_MAG_NEBULA_NAME: coreLink->nebulaSetMaxMagHints(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(setValue)); break;
@@ -1534,15 +1534,15 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_SUN_SCALE: coreLink->setSunScale(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
-						if (setValue=="default") coreLink->milkyWayRestoreIntensity(); else coreLink->milkyWaySetIntensity(evalDouble(setValue));
+						if (setValue==W_DEFAULT) coreLink->milkyWayRestoreIntensity(); else coreLink->milkyWaySetIntensity(evalDouble(setValue));
 						if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
 						break;
 		case SCD_NAMES::APP_MILKY_WAY_TEXTURE: 
-						if(setValue=="default") coreLink->milkyWayRestoreDefault();	else
+						if(setValue==W_DEFAULT) coreLink->milkyWayRestoreDefault();	else
 							coreLink->milkyWayChangeStateWithoutIntensity(scriptInterface->getScriptPath() + setValue);
 						break;
-		case SCD_NAMES::APP_SKY_CULTURE: if (setValue=="default") stcore->setInitialSkyCulture(); else stcore->setSkyCultureDir(setValue); break;
-		case SCD_NAMES::APP_SKY_LOCALE:  if ( setValue=="default") stcore->setInitialSkyLocale(); else stcore->setSkyLanguage(setValue); break;
+		case SCD_NAMES::APP_SKY_CULTURE: if (setValue==W_DEFAULT) stcore->setInitialSkyCulture(); else stcore->setSkyCultureDir(setValue); break;
+		case SCD_NAMES::APP_SKY_LOCALE:  if ( setValue==W_DEFAULT) stcore->setInitialSkyLocale(); else stcore->setSkyLanguage(setValue); break;
 		case SCD_NAMES::APP_UI_LOCALE: stapp->setAppLanguage(setValue); break;
 		case SCD_NAMES::APP_STAR_MAG_SCALE: coreLink->starSetMagScale(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_STAR_SIZE_LIMIT: coreLink->starSetSizeLimit(evalDouble(setValue)); break;
@@ -1556,9 +1556,9 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_STAR_LIMITING_MAG: coreLink->starSetLimitingMag(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_TIME_ZONE: spaceDate->setCustomTimezone(setValue); break;
 		case SCD_NAMES::APP_AMBIENT_LIGHT: 
-						if (setValue=="increment")
+						if (setValue==W_INCREMENT)
 							coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()+0.01);
-						else if (setValue=="decrement")
+						else if (setValue==W_DECREMENT)
 							coreLink->uboSetAmbientLight(coreLink->uboGetAmbientLight()-0.01);
 						else
 							coreLink->uboSetAmbientLight(evalDouble(setValue));
@@ -1605,22 +1605,22 @@ int AppCommandInterface::commandConfiguration()
 {
 	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
-		if(argAction=="load") {
+		if(argAction== W_LOAD) {
 			stapp->init();
 			return executeCommandStatus();
-		} else if(argAction=="save") {
+		} else if(argAction==W_SAVE) {
 			stapp->saveCurrentConfig(AppSettings::Instance()->getConfigFile());
 			return executeCommandStatus();
 		} else
 			debug_message = "command 'configuration': unknown action value";
 	}
 
-	std::string argModule = args["module"];
+	std::string argModule = args[W_MODULE];
 
 	if (!argModule.empty()){
-		if (argModule=="star_lines"){
+		if (argModule == ACP_CN_STAR_LINES){
 
-			if (argAction == "clear") {
+			if (argAction ==   ACP_CN_CLEAR) {
 				coreLink->starLinesClear();
 				return executeCommandStatus();
 			}
@@ -1630,9 +1630,9 @@ int AppCommandInterface::commandConfiguration()
 				debug_message = "command 'star_lines' missing name parameter";
 				return executeCommandStatus();
 			}
-			bool binaryMode = Utility::strToBool(args["binary_mode"],false);
+			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
-			if (argAction == "load") {
+			if (argAction ==  W_LOAD) {
 				if (binaryMode)
 					coreLink->starLinesLoadBinCat(argName);
 				else
@@ -1643,7 +1643,7 @@ int AppCommandInterface::commandConfiguration()
 		} else
 		if (argModule=="star_navigator"){
 
-			if (argAction == "clear") {
+			if (argAction ==   ACP_CN_CLEAR) {
 				coreLink->starNavigatorClear();
 				return executeCommandStatus();
 			}
@@ -1654,10 +1654,10 @@ int AppCommandInterface::commandConfiguration()
 				return executeCommandStatus();
 			}
 
-			bool binaryMode = Utility::strToBool(args["binary_mode"],false);
+			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
-			if (argAction == "load") {
-				std::string argMode = args["mode"];
+			if (argAction ==  W_LOAD) {
+				std::string argMode = args[ACP_SC_MODE];
 
 				if (argMode.empty()){
 					debug_message = "command 'configuration', star_navigator missing mode argument";
@@ -1680,7 +1680,7 @@ int AppCommandInterface::commandConfiguration()
 					}
 				}
 			} else
-			if (argAction == "save") {
+			if (argAction == W_SAVE) {
 				coreLink->starNavigatorSave(argName, binaryMode);
 			} else
 				debug_message = "command 'configuration': unknown starNavigator action argument";
@@ -1700,20 +1700,20 @@ int AppCommandInterface::commandConstellation()
 		return executeCommandStatus();
 	}
 
-	std::string argIntensity = args["intensity"];
+	std::string argIntensity = args[W_INTENSITY];
 	if (!argIntensity.empty()) {
 		coreLink->constellationSetArtIntensity(argName, evalDouble(argIntensity));
 		return executeCommandStatus();
 	}
 
-	std::string type = args["type"];
+	std::string type = args[W_TYPE];
 	if (type.empty()) {
 		debug_message = "command 'constellation': missing type";
 		return executeCommandStatus();
 	}
 
 	Vec3f Vcolor;
-	std::string argColor =  args["color_value"];
+	std::string argColor =  args[W_COLOR_VALUE];
 	std::string argR= args["r"];
 	std::string argG= args["g"];
 	std::string argB= args["b"];
@@ -1726,7 +1726,7 @@ int AppCommandInterface::commandConstellation()
 	if (type=="line") {
 		coreLink->constellationSetLineColor(argName, Vcolor);
 		return executeCommandStatus();
-	} else if (type=="label") {
+	} else if (type==W_LABEL) {
 		coreLink->constellationSetColorNames(argName, Vcolor);
 		return executeCommandStatus();
 	} else {
@@ -1739,7 +1739,7 @@ int AppCommandInterface::commandConstellation()
 // {
 	// std::string argAction = args[W_ACTION];
 	// if (!argAction.empty()) {
-		// if (argAction=="play" && args[W_FILENAME]!="") {
+		// if (argAction==W_PLAY && args[W_FILENAME]!="") {
 			// if (Utility::isAbsolute(args[W_FILENAME]))
 				// media->externalPlay(args[W_FILENAME]);
 			// else
@@ -1750,7 +1750,7 @@ int AppCommandInterface::commandConstellation()
 			// media->externalStop();
 			// return executeCommandStatus();
 		// }
-		// if (argAction=="pause") {
+		// if (argAction==W_PAUSE) {
 			// media->externalPause();
 			// return executeCommandStatus();
 		// }
@@ -1772,8 +1772,8 @@ int AppCommandInterface::commandConstellation()
 		// media->externalJumpAbsolute(evalDouble(args["jump_absolute"]));
 		// return executeCommandStatus();
 	// }
-	// if (args["speed"]!="") {
-		// media->externalSpeed(evalDouble(args["speed"]));
+	// if (args[W_SPEED]!="") {
+		// media->externalSpeed(evalDouble(args[W_SPEED]));
 		// return executeCommandStatus();
 	// }
 	// if (args[W_VOLUME]!="") {
@@ -1793,13 +1793,13 @@ int AppCommandInterface::commandExternalViewer()
 	std::string argAction = args[W_ACTION];
 	std::string argFileName = args[W_FILENAME];
 
-	if (argAction=="play" && !argFileName.empty()) {
+	if (argAction==W_PLAY && !argFileName.empty()) {
 		if (argFileName.size()<5) {
 			debug_message = _("command 'externalviewer' : fileName too short");
 			return executeCommandStatus();
 		}
 
-		std::string action1="NONE";;
+		std::string action1=W_NONE;;
 		std::string extention=argFileName.substr(argFileName.length()-3,3);
 
 		if (extention=="avi" || extention=="mov" || extention=="mpg" || extention=="mp4") {
@@ -1835,7 +1835,7 @@ int AppCommandInterface::commandExternalViewer()
 				debug_message= "command_externalViewer png fileName not found";
 		}
 
-		if (action1 != "NONE") {
+		if (action1 != W_NONE) {
 			if (!CallSystem::useSystemCommand(action1))
 				debug_message = "command 'externalviewer': system error";
 			return executeCommandStatus();
@@ -1844,7 +1844,7 @@ int AppCommandInterface::commandExternalViewer()
 	}
 
 	if (argAction=="stop") {
-		std::string action1="NONE";;
+		std::string action1=W_NONE;;
 		action1="killall mplayer";
 		CallSystem::useSystemCommand(action1);
 		action1="killall vlc";
@@ -1858,9 +1858,9 @@ int AppCommandInterface::commandExternalViewer()
 
 int AppCommandInterface::commandClear()
 {
-	std::string argState = args["state"];
+	std::string argState = args[W_STATE];
 
-	if (argState == "variable") {
+	if (argState == W_VARIABLE) {
 		appEval->deleteVar();
 		return executeCommandStatus();
 	}
@@ -1869,72 +1869,72 @@ int AppCommandInterface::commandClear()
 	// set sky to known, standard states (used by scripts for simplicity)
 	executeCommand("set home_planet Earth");
 
-	if (argState == "natural") {
-		executeCommand("flag atmosphere on");
-		executeCommand("flag landscape on");
+	if (argState == W_NATURAL) {
+		executeCommand(FLAG_ATMOSPHERE_ON);
+		executeCommand(FLAG_LANDSCAPE_ON);
 	} else {
-		executeCommand("flag atmosphere off");
-		executeCommand("flag landscape off");
+		executeCommand(FLAG_ATMOSPHERE_OFF);
+		executeCommand(FLAG_LANDSCAPE_OFF);
 	}
 
 	coreBackup->loadGridState();
 	// turn off all labels
 	//executeCommand("flag azimuthal_grid off");
-	executeCommand("flag meridian_line off");
-	executeCommand("flag zenith_line off");
-	executeCommand("flag polar_circle off");
-	executeCommand("flag polar_point off");
-	executeCommand("flag ecliptic_center off");
-	executeCommand("flag galactic_pole off");
-	executeCommand("flag galactic_center off");
-	executeCommand("flag vernal_points off");
-	executeCommand("flag analemma off");
-	executeCommand("flag analemma_line off");
-	executeCommand("flag aries_line off");
-	executeCommand("flag zodiac off");
-	executeCommand("flag personal off");
-	executeCommand("flag personeq off");
-	executeCommand("flag nautical_alt off");
-	executeCommand("flag nautical_ra off");
-	executeCommand("flag object_coordinates off");
-	executeCommand("flag angular_distance off");
-	executeCommand("flag loxodromy off");
-	executeCommand("flag orthodromy off");
-	executeCommand("flag greenwich_line off");
-	executeCommand("flag vertical_line off");
-	executeCommand("flag cardinal_points off");
-	executeCommand("flag constellation_art off");
-	executeCommand("flag constellation_drawing off");
-	executeCommand("flag constellation_names off");
-	executeCommand("flag constellation_boundaries off");
-	executeCommand("flag ecliptic_line off");
-	//executeCommand("flag equatorial_grid off");
-	executeCommand("flag equator_line off");
-	executeCommand("flag galactic_line off");
-	executeCommand("flag tropic_lines off");
-	executeCommand("flag circumpolar_circle off");
-	executeCommand("flag precession_circle off");
-	executeCommand("flag fog off");
-	executeCommand("flag nebula_hints off");
-	executeCommand("flag nebula_names off");
-	executeCommand("flag object_trails off");
-	executeCommand("flag planet_names off");
-	executeCommand("flag planet_orbits off");
-	executeCommand("flag planets_orbits off");
-	executeCommand("flag satellites_orbits off");
-	executeCommand("flag show_tui_datetime off");
-	executeCommand("flag star_names off");
-	executeCommand("flag show_tui_short_obj_info off");
+	executeCommand(FLAG_MERIDIAN_LINE_OFF);
+	executeCommand(FLAG_ZENITH_LINE_OFF);
+	executeCommand(FLAG_POLAR_CIRCLE_OFF);
+	executeCommand(FLAG_POLAR_POINT_OFF);
+	executeCommand(FLAG_ECLIPTIC_CENTER_OFF);
+	executeCommand(FLAG_GALACTIC_POLE_OFF);
+	executeCommand(FLAG_GALACTIC_CENTER_OFF);
+	executeCommand(FLAG_VERNAL_POINTS_OFF);
+	executeCommand(FLAG_ANALEMMA_OFF);
+	executeCommand(FLAG_ANALEMMA_LINE_OFF);
+	executeCommand(FLAG_ARIES_LINE_OFF);
+	executeCommand(FLAG_ZODIAC_OFF);
+	executeCommand(FLAG_PERSONAL_OFF);
+	executeCommand(FLAG_PERSONEQ_OFF);
+	executeCommand(FLAG_NAUTICAL_ALT_OFF);
+	executeCommand(FLAG_NAUTICAL_RA_OFF);
+	executeCommand(FLAG_OBJECT_COORDINATES_OFF);
+	executeCommand(FLAG_ANGULAR_DISTANCE_OFF);
+	executeCommand(FLAG_LOXODROMY_OFF);
+	executeCommand(FLAG_ORTHODROMY_OFF);
+	executeCommand(FLAG_GREENWICH_LINE_OFF);
+	executeCommand(FLAG_VERTICAL_LINE_OFF);
+	executeCommand(FLAG_CARDINAL_POINTS_OFF);
+	executeCommand(FLAG_CONSTELLATION_ART_OFF);
+	executeCommand(FLAG_CONSTELLATION_DRAWING_OFF);
+	executeCommand(FLAG_CONSTELLATION_NAMES_OFF);
+	executeCommand(FLAG_CONSTELLATION_BOUNDARIES_OFF);
+	executeCommand(FLAG_ECLIPTIC_LINE_OFF);
+	//executeCommand(FLAG_EQUATORIAL_GRID_OFF);
+	executeCommand(FLAG_EQUATOR_LINE_OFF);
+	executeCommand(FLAG_GALACTIC_LINE_OFF);
+	executeCommand(FLAG_TROPIC_LINES_OFF);
+	executeCommand(FLAG_CIRCUMPOLAR_CIRCLE_OFF);
+	executeCommand(FLAG_PRECESSION_CIRCLE_OFF);
+	executeCommand(FLAG_FOG_OFF);
+	executeCommand(FLAG_NEBULA_HINTS_OFF);
+	executeCommand(FLAG_NEBULA_NAMES_OFF);
+	executeCommand(FLAG_OBJECT_TRAILS_OFF);
+	executeCommand(FLAG_PLANET_NAMES_OFF);
+	executeCommand(FLAG_PLANET_ORBITS_OFF);
+	executeCommand(FLAG_PLANETS_ORBITS_OFF);
+	executeCommand(FLAG_SATELLITES_ORBITS_OFF);
+	executeCommand(FLAG_SHOW_TUI_DATETIME_OFF);
+	executeCommand(FLAG_STAR_NAMES_OFF);
+	executeCommand(FLAG_SHOW_TUI_SHORT_OBJ_INFO_OFF);
 
 	// make sure planets, stars, etc. are turned on!
-	executeCommand("flag stars on");
-	executeCommand("flag planets on");
-	executeCommand("flag nebulae on");
+	executeCommand(FLAG_STARS_ON);
+	executeCommand(FLAG_PLANETS_ON);
+	executeCommand(FLAG_NEBULAE_ON);
 
 	// also deselect everything, set to default fov and real time rate
-	executeCommand("deselect");
-	executeCommand("timerate rate 1");
-	executeCommand("zoom auto initial");
+	executeCommand(DESELECT);
+	executeCommand(TIMERATE_RATE_1);
+	executeCommand(ZOOM_AUTO_INITIAL);
 
 	return executeCommandStatus();
 }
@@ -1942,21 +1942,21 @@ int AppCommandInterface::commandClear()
 
 int AppCommandInterface::commandHeading()
 {
-	std::string argHeading=args["azimuth"];	
+	std::string argHeading=args[W_AZIMUTH];	
 	if (!argHeading.empty() ) {
-		if (argHeading=="default") {
+		if (argHeading==W_DEFAULT) {
 			coreLink->setDefaultHeading();
 			return executeCommandStatus();
 		}
 	
 		double heading = evalDouble(argHeading);
-		float fdelay = evalDouble(args["duration"]);
+		float fdelay = evalDouble(args[W_DURATION]);
 		coreLink->setHeading(heading, (int)(fdelay*1000));
 		return executeCommandStatus();
 	}
-	std::string argDeltaHeading=args["delta_azimuth"];	
+	std::string argDeltaHeading=args[W_DELTA_AZIMUTH];	
 	if (!argDeltaHeading.empty() ) {
-		float fdelay = evalDouble(args["duration"]);		
+		float fdelay = evalDouble(args[W_DURATION]);		
 		double heading = evalDouble(argDeltaHeading) + coreLink->getHeading();
 		if (heading > 180) heading -= 360;
 		if (heading < -180) heading += 360;
@@ -1967,11 +1967,11 @@ int AppCommandInterface::commandHeading()
 		coreLink->setHeading(heading, (int)(fdelay*1000));
 		return executeCommandStatus();
 	}
-	// if (args["heading"]=="default") {
+	// if (args["heading"]==W_DEFAULT) {
 	// 	coreLink->setDefaultHeading();
 	// }
 	// else {
-	// 	float fdelay = evalDouble(args["duration"]);
+	// 	float fdelay = evalDouble(args[W_DURATION]);
 	// 	double heading = evalDouble(args["heading"]);
 	// 	if (fdelay <= 0) fdelay = 0;
 	// 	if (args["heading"][0] == '+') {
@@ -1997,9 +1997,9 @@ int AppCommandInterface::commandHeading()
 
 int AppCommandInterface::commandMeteors()
 {
-	std::string argZhr=args["zhr"];
+	std::string argZhr=args[W_ZHR];
 	if (! argZhr.empty()) {
-		coreLink->setMeteorsRate(evalInt(args["zhr"]));
+		coreLink->setMeteorsRate(evalInt(args[W_ZHR]));
 	} else
 		debug_message = "command 'meteors' : no zhr argument";
 	return executeCommandStatus();
@@ -2009,13 +2009,13 @@ int AppCommandInterface::commandLandscape()
 {
 	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
-		if (argAction == "load") {
+		if (argAction ==  W_LOAD) {
 			// textures are relative to script
-			args["path"] = scriptInterface->getScriptPath();
+			args[W_PATH] = scriptInterface->getScriptPath();
 			stcore->loadLandscape(args); //TODO retour d'erreurs
-		} else if (argAction == "rotate") {
-			if (!args["rotation"].empty()) {
-				coreLink->rotateLandscape((C_PI/180.0)*evalDouble(args["rotation"]));
+		} else if (argAction == W_ROTATE) {
+			if (!args[W_ROTATION].empty()) {
+				coreLink->rotateLandscape((C_PI/180.0)*evalDouble(args[W_ROTATION]));
 			}
 		} else {
 			debug_message = "command 'landscape' : invalid action parameter";
@@ -2029,7 +2029,7 @@ int AppCommandInterface::commandText()
 {
 	std::string argAction = args[W_ACTION];
 
-	if (argAction=="clear") {
+	if (argAction==  ACP_CN_CLEAR) {
 		coreLink->textClear();
 		return executeCommandStatus();
 	}
@@ -2040,7 +2040,7 @@ int AppCommandInterface::commandText()
 		return executeCommandStatus();
 	}
 
-	if (argAction=="drop") {
+	if (argAction==W_DROP) {
 		coreLink->textDel(argName);
 		return executeCommandStatus();
 	}
@@ -2057,19 +2057,19 @@ int AppCommandInterface::commandText()
 		if (argAction=="update") {
 			coreLink->textNameUpdate(argName, argString);
 			return executeCommandStatus();
-		} else if (argAction=="load") {
-			std::string argAzimuth = args["azimuth"];
-			std::string argAltitude = args["altitude"];
+		} else if (argAction== W_LOAD) {
+			std::string argAzimuth = args[W_AZIMUTH];
+			std::string argAltitude = args[W_ALTITUDE  ];
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
 				float azimuth = evalDouble(argAzimuth);
 				float altitude = evalDouble(argAltitude);
-				int durationText = 1000*evalDouble(args["duration"]);
+				int durationText = 1000*evalDouble(args[W_DURATION]);
 				printf("Durée d'apparition du texte : %i\n", durationText);
 				std::string argSize = args[W_SIZE];
 
 				//gestion de la couleur
 				Vec3f Vcolor;
-				std::string argValue = args["color_value"];
+				std::string argValue = args[W_COLOR_VALUE];
 				std::string argR= args["r"];
 				std::string argG= args["g"];
 				std::string argB= args["b"];
@@ -2111,8 +2111,8 @@ int AppCommandInterface::commandText()
 
 int AppCommandInterface::commandSkyCulture()
 {
-	std::string argPath = args["path"];
-	if (!argPath.empty() && args[W_ACTION]=="load") {
+	std::string argPath = args[W_PATH];
+	if (!argPath.empty() && args[W_ACTION]== W_LOAD) {
 		if (!stcore->loadSkyCulture(argPath))
 			debug_message = "Error loading sky culture from path specified.";
 	} else
@@ -2125,13 +2125,13 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 	std::string argAction = args[W_ACTION];
 	std::string filen = args[W_FILENAME];
 	if (!argAction.empty()) {
-		if (argAction=="end") {
+		if (argAction==W_END) {
 			scriptInterface->cancelScript();
 			coreLink->textClear();
 			media->audioMusicHalt();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
-		} else if (argAction=="play" && !filen.empty()) {
+		} else if (argAction==W_PLAY && !filen.empty()) {
 			int le=-1;
 
 			std::string file_with_path = FilePath(filen, FilePath::TFP::SCRIPT);
@@ -2152,35 +2152,35 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 			} else {
 				scriptInterface->setScriptPath(new_script_path);
 			}
-		} else if (argAction=="record") {
+		} else if (argAction==W_RECORD) {
 			scriptInterface->recordScript(filen);
 			recordable = 0;  // don't record this command!
-		} else if (argAction=="cancelrecord") {
+		} else if (argAction==W_CANCEL) {
 			scriptInterface->cancelRecordScript();
 			recordable = 0;  // don't record this command!
-		} else if (argAction=="pause" && !scriptInterface->isScriptPaused()) {
+		} else if (argAction==W_PAUSE && !scriptInterface->isScriptPaused()) {
 			wait = 1;
 			scriptInterface->pauseScript();
-		} else if (argAction=="pause" || argAction=="resume") {
+		} else if (argAction==W_PAUSE || argAction==W_RESUME) {
 			scriptInterface->resumeScript();
-		} else if (argAction=="faster") {
+		} else if (argAction==W_FASTER) {
 			scriptInterface->fasterSpeed();
-		} else if (argAction=="slower") {
+		} else if (argAction==W_SLOWER) {
 			scriptInterface->slowerSpeed();
-		} else if (argAction=="default") {
+		} else if (argAction==W_DEFAULT) {
 			scriptInterface->defaultSpeed();
 		} else
 			debug_message = "command_script : unknown parameter from 'action' argument";
 		return executeCommandStatus();
 	}
 
-	std::string argSpeed = args["speed"];
+	std::string argSpeed = args[W_SPEED];
 	if (!argSpeed.empty()) {
-		if (argAction=="faster") {
+		if (argAction==W_FASTER) {
 			scriptInterface->fasterSpeed();
-		} else if (argAction=="slower") {
+		} else if (argAction==W_SLOWER) {
 			scriptInterface->slowerSpeed();
-		} else if (argAction=="default") {
+		} else if (argAction==W_DEFAULT) {
 			scriptInterface->defaultSpeed();
 		} else
 			debug_message = "command_script : unknown parameter from 'speed' argument";		
@@ -2214,24 +2214,24 @@ int AppCommandInterface::commandAudio()
 	//gestion des actions
 	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
-		if (argAction =="drop") {
+		if (argAction ==W_DROP) {
 			media->audioMusicDrop();
 			return executeCommandStatus();
-		} else if (argAction=="sync") {
+		} else if (argAction==W_SYNC) {
 			media->audioMusicSync();
 			return executeCommandStatus();
-		} else if (argAction=="pause") {
+		} else if (argAction==W_PAUSE) {
 			media->audioMusicPause();
 			return executeCommandStatus();
-		} else if (argAction=="resume") {
+		} else if (argAction==W_RESUME) {
 			media->audioMusicResume();
 			return executeCommandStatus();
-		} else if (argAction=="play"){
+		} else if (argAction==W_PLAY){
 			std::string argFileName = args[W_FILENAME];
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
 					media->audioMusicLoad(myFile);
-					media->audioMusicPlay(isTrue(args["loop"]));
+					media->audioMusicPlay(isTrue(args[W_LOOP]));
 					return executeCommandStatus();
 				} else {
 					debug_message = _("command 'audio': filename not found");
@@ -2254,7 +2254,7 @@ int AppCommandInterface::commandAudio()
 int AppCommandInterface::commandImage()
 {
 	std::string argAction = args[W_ACTION];
-	if (argAction=="purge") {
+	if (argAction==W_PURGE) {
 		media->imageDropAll();
 		return executeCommandStatus();
 	}
@@ -2266,7 +2266,7 @@ int AppCommandInterface::commandImage()
 	}
 
 	std::string argFileName = args[W_FILENAME];
-	if (argAction=="drop") {
+	if (argAction==W_DROP) {
 		media->imageDrop(evalString(args[W_NAME]));
 		return executeCommandStatus();
 	}
@@ -2280,18 +2280,18 @@ int AppCommandInterface::commandImage()
 		return executeCommandStatus();
 	}
 
-	if (argAction=="load" && !argFileName.empty()) {
+	if (argAction== W_LOAD && !argFileName.empty()) {
 		FilePath myFile  = FilePath(evalString(argFileName), FilePath::TFP::IMAGE);
 		if (!myFile.exist()) {
 			debug_message = _("command 'image': filename not found");
 			return executeCommandStatus();
 		}
 		std::string argCoordinate = args["coordinate_system"];
-		if (!args["hp"].empty()) {
+		if (!args[W_HP].empty()) {
 			argCoordinate = "equatorial";
 		}
 		bool mipmap = 0; // Default off for historical reasons
-		if (isTrue(args["mipmap"]))
+		if (isTrue(args[W_MIPMAP]))
 			mipmap = 1;
 
 		//TODO récupérer une erreur compréhensible plutot qu'un int ?
@@ -2308,21 +2308,21 @@ int AppCommandInterface::commandImage()
 	}
 
 	//initialisation de toutes les variables
-	std::string argDuration = args["duration"];
-	std::string argAlpha = args["alpha"];
-	std::string argScale = args["scale"];
-	std::string argRotation = args["rotation"];
-	std::string argRatio = args["ratio"];
-	std::string argXpos = args["xpos"];
-	std::string argYpos = args["ypos"];
-	std::string argAltitude = args["altitude"];
-	std::string argAzimuth = args["azimuth"];
-	std::string argPersistent = args["persistent"];
-	std::string argAccelerate_x = args["accelerate_alt"];
-	std::string argAccelerate_y = args["accelerate_az"];
-	std::string argDecelerate_x = args["decelerate_alt"];
-	std::string argDecelerate_y = args["decelerate_az"];
-	std::string argHP = args["hp"];
+	std::string argDuration = args[W_DURATION];
+	std::string argAlpha = args[W_ALPHA];
+	std::string argScale = args[W_SCALE];
+	std::string argRotation = args[W_ROTATION];
+	std::string argRatio = args[W_RATIO];
+	std::string argXpos = args[W_XPOS];
+	std::string argYpos = args[W_YPOS];
+	std::string argAltitude = args[W_ALTITUDE];
+	std::string argAzimuth = args[W_AZIMUTH];
+	std::string argPersistent = args[W_PERSISTENT];
+	std::string argAccelerate_x = args[W_ACCELERATE_ALT];
+	std::string argAccelerate_y = args[W_ACCELERATE_AZ];
+	std::string argDecelerate_x = args[W_DECELERATE_ALT];
+	std::string argDecelerate_y = args[W_DECELERATE_AZ];
+	std::string argHP = args[W_HP];
 
 	if (!argAlpha.empty())
 		media->imageSetAlpha(evalDouble(argAlpha), evalDouble(argDuration));
@@ -2344,8 +2344,8 @@ int AppCommandInterface::commandImage()
 			media->imageSetLocation(alt*rad2deg, true,
 					az*rad2deg, true,
 					evalDouble(argDuration),
-					(argAccelerate_x=="on"), (argDecelerate_x=="on"),
-					(argAccelerate_y=="on"), (argDecelerate_y=="on"));
+					(argAccelerate_x==W_ON), (argDecelerate_x==W_ON),
+					(argAccelerate_y==W_ON), (argDecelerate_y==W_ON));
 		} else {
 			debug_message = _("command 'image': HP number ") + argHP + _(" is not a valid star");
 			return executeCommandStatus();
@@ -2356,16 +2356,16 @@ int AppCommandInterface::commandImage()
 		media->imageSetLocation(evalDouble(argXpos), !argXpos.empty(),
 		                        evalDouble(argYpos), !argYpos.empty(),
 		                        evalDouble(argDuration),
-		                        (argAccelerate_x=="on"), (argDecelerate_x=="on"),
-		                        (argAccelerate_y=="on"), (argDecelerate_y=="on"));
+		                        (argAccelerate_x==W_ON), (argDecelerate_x==W_ON),
+		                        (argAccelerate_y==W_ON), (argDecelerate_y==W_ON));
 
 	// for more human readable scripts, as long as someone doesn't do both...
 	if (!argAltitude.empty() || !argAzimuth.empty() )
 		media->imageSetLocation(evalDouble(argAltitude), !argAltitude.empty(),
 		                        evalDouble(argAzimuth), !argAzimuth.empty(),
 		                        evalDouble(argDuration),
-		                        (argAccelerate_x=="on"), (argDecelerate_x=="on"),
-		                        (argAccelerate_y=="on"), (argDecelerate_y=="on"));
+		                        (argAccelerate_x==W_ON), (argDecelerate_x==W_ON),
+		                        (argAccelerate_y==W_ON), (argDecelerate_y==W_ON));
 
 	if (!argPersistent.empty()) {
 		if (isTrue(argPersistent))
@@ -2375,7 +2375,7 @@ int AppCommandInterface::commandImage()
 	}
 
 
-	std::string argKeyColor = args["keycolor"];
+	std::string argKeyColor = args[W_KEYCOLOR];
 	if (!argKeyColor.empty()) {
 		if (isTrue(argKeyColor))
 			media->imageSetKeyColor(true);
@@ -2384,13 +2384,13 @@ int AppCommandInterface::commandImage()
 	}
 
 	Vec3f Vcolor;
-	std::string argValue = args["color_value"];
+	std::string argValue = args[W_COLOR_VALUE];
 	std::string argR= args["r"];
 	std::string argG= args["g"];
 	std::string argB= args["b"];
 	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG,argB);
 	if (testColor) {
-		std::string argIntensity = args["intensity"];
+		std::string argIntensity = args[W_INTENSITY];
 		if (!argIntensity.empty())
 			media->imageSetKeyColor(Vcolor,Utility::strToDouble(argIntensity)) ;
 		else
@@ -2408,31 +2408,31 @@ int AppCommandInterface::commandSelect()
 
 	std::string select_type, identifier;
 
-	if (args["constellation"]=="zodiac") {
+	if (args[W_CONSTELLATION]=="zodiac") {
 		stcore->selectZodiac();
 		return executeCommandStatus();
 	}
 
-	if (args["hp"]!="") {
-		select_type = "hp";
-		identifier = args["hp"];
-	} else if (args["star"]!="") {
-		select_type = "star";
-		identifier = args["star"];
-	} else if (args["planet"]!="") {
-		select_type = "planet";
-		identifier = args["planet"];
-		if (args["planet"] == "home_planet")
+	if (args[W_HP]!="") {
+		select_type = W_HP;
+		identifier = args[W_HP];
+	} else if (args[W_STAR]!="") {
+		select_type = W_STAR;
+		identifier = args[W_STAR];
+	} else if (args[W_PLANET]!="") {
+		select_type = W_PLANET;
+		identifier = args[W_PLANET];
+		if (args[W_PLANET] == ACP_SC_HOME_PLANET  )
 			identifier = coreLink->getObserverHomePlanetEnglishName();
-	} else if (args["nebula"]!="") {
-		select_type = "nebula";
-		identifier = args["nebula"];
-	} else if (args["constellation"]!="") {
-		select_type = "constellation";
-		identifier = args["constellation"];
-	} else if (args["constellation_star"]!="") {
-		select_type = "constellation_star";
-		identifier = args["constellation_star"];
+	} else if (args[W_NEBULA  ]!="") {
+		select_type = W_NEBULA  ;
+		identifier = args[W_NEBULA  ];
+	} else if (args[W_CONSTELLATION]!="") {
+		select_type = W_CONSTELLATION;
+		identifier = args[W_CONSTELLATION];
+	} else if (args[W_CONSTELLATION_STAR  ]!="") {
+		select_type = W_CONSTELLATION_STAR  ;
+		identifier = args[W_CONSTELLATION_STAR  ];
 	} else {
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
@@ -2441,7 +2441,7 @@ int AppCommandInterface::commandSelect()
 	stcore->selectObject(select_type, identifier);
 
 	// determine if selected object pointer should be displayed
-	if (isFalse(args["pointer"]))
+	if (isFalse(args[W_POINTER]))
 		stcore->setFlagSelectedObjectPointer(false);
 	else
 		stcore->setFlagSelectedObjectPointer(true);
@@ -2451,7 +2451,7 @@ int AppCommandInterface::commandSelect()
 
 int AppCommandInterface::commandDeselect()
 {
-	std::string argConstellation = args["constellation"];
+	std::string argConstellation = args[W_CONSTELLATION];
 	if ( !argConstellation.empty())
 		stcore->unsetSelectedConstellation(argConstellation);
 	else
@@ -2476,12 +2476,12 @@ int AppCommandInterface::commandUncomment()
 
 int AppCommandInterface::commandLook()
 {
-	std::string argAz  = args["azimuth"];
-	std::string argAlt = args["altitude"];
+	std::string argAz  = args[W_AZIMUTH];
+	std::string argAlt = args[W_ALTITUDE];
 
 	if(!argAz.empty() && !argAlt.empty()){
 
-		std::string argTime = args["duration"];
+		std::string argTime = args[W_DURATION];
 
 		if(argTime.empty()){
 			coreLink->lookAt(stod(argAz), stod(argAlt));
@@ -2494,11 +2494,11 @@ int AppCommandInterface::commandLook()
 	}
 
 	//change direction of view
-	std::string argD_az  = args["delta_azimuth"];
-	std::string argD_alt = args["delta_altitude"];
+	std::string argD_az  = args[W_DELTA_AZIMUTH];
+	std::string argD_alt = args[W_DELTA_ALTITUDE];
 	if (!argD_az.empty() || !argD_alt.empty()) {
 		// immediately change viewing direction
-		stcore->panView(evalDouble(argD_az), evalDouble(argD_alt), evalDouble(args["duration"]));
+		stcore->panView(evalDouble(argD_az), evalDouble(argD_alt), evalDouble(args[W_DURATION]));
 	} else {
 		debug_message = _("Command 'look_at': wrong argument");
 	}
@@ -2508,16 +2508,16 @@ int AppCommandInterface::commandLook()
 
 int AppCommandInterface::commandStarLines()
 {
-	if (args[W_ACTION]=="drop") {
+	if (args[W_ACTION]==W_DROP) {
 		coreLink->starLinesDrop();
 		return executeCommandStatus();
 	}
-	if (args["load"]!="") {
-		coreLink->starLinesLoadData(scriptInterface->getScriptPath() + args["load"]);
+	if (args[ W_LOAD]!="") {
+		coreLink->starLinesLoadData(scriptInterface->getScriptPath() + args[ W_LOAD]);
 		return executeCommandStatus();
 	}
-	if (args["asterism"]!="") {
-		coreLink->starLinesLoadAsterism(args["asterism"]);
+	if (args[W_ASTERISM  ]!="") {
+		coreLink->starLinesLoadAsterism(args[W_ASTERISM  ]);
 		return executeCommandStatus();
 	}
 	debug_message = _("Command 'star_lines': wrong argument");
@@ -2528,11 +2528,11 @@ int AppCommandInterface::commandStarLines()
 int AppCommandInterface::commandPosition()
 {
 	std::string argAction = args[W_ACTION];
-	if (argAction == "save") {
+	if (argAction == W_SAVE) {
 		coreBackup->saveBackup();
 		return executeCommandStatus();
 	}
-	if (argAction == "load") {
+	if (argAction ==  W_LOAD) {
 		coreBackup->loadBackup();
 		return executeCommandStatus();
 	}
@@ -2542,31 +2542,31 @@ int AppCommandInterface::commandPosition()
 
 int AppCommandInterface::commandZoom(unsigned long int &wait)
 {
-	double duration = Utility::strToPosDouble(args["duration"]);
-	std::string argAuto = args["auto"];
-	std::string argManual = args["manual"];
+	double duration = Utility::strToPosDouble(args[W_DURATION]);
+	std::string argAuto = args[W_AUTO  ];
+	std::string argManual = args[W_MANUAL];
 
 	if (!argAuto.empty()) {
 		// auto zoom using specified or default duration
-		if (args["duration"]=="") duration = stcore->getAutoMoveDuration();
+		if (args[W_DURATION]=="") duration = stcore->getAutoMoveDuration();
 
-		if (argAuto=="out") {
+		if (argAuto==W_OUT) {
 			if (isTrue(argManual)) stcore->autoZoomOut(duration, 0, 1);
 			else stcore->autoZoomOut(duration, 0, 0);
-		} else if (argAuto=="initial") stcore->autoZoomOut(duration, 1, 0);
+		} else if (argAuto==W_INITIAL  ) stcore->autoZoomOut(duration, 1, 0);
 		else if (isTrue(argManual)) {
 			stcore->autoZoomIn(duration, 1);  // have to explicity allow possible manual zoom
 		} else stcore->autoZoomIn(duration, 0);
 
-	} else if (args["fov"]!="") {
+	} else if (args[W_FOV  ]!="") {
 		// zoom to specific field of view
-		coreLink->zoomTo( evalDouble(args["fov"]), evalDouble(args["duration"]));
+		coreLink->zoomTo( evalDouble(args[W_FOV  ]), evalDouble(args[W_DURATION]));
 
-	} else if (args["delta_fov"]!="") coreLink->setFov(coreLink->getFov() + evalDouble(args["delta_fov"]));
+	} else if (args[W_DELTA_FOV  ]!="") coreLink->setFov(coreLink->getFov() + evalDouble(args[W_DELTA_FOV  ]));
 	// should we record absolute fov instead of delta? isn't usually smooth playback
-	else if (args["center"]=="on") {
+	else if (args[W_CENTER]==W_ON) {
 		float cdelay=5;
-		if ( args["duration"]!="") cdelay = evalDouble(args["duration"]);
+		if ( args[W_DURATION]!="") cdelay = evalDouble(args[W_DURATION]);
 		stcore->gotoSelectedObject();  // center view to selected objet
 		if (cdelay > 0) wait = (int)(cdelay*1000);
 	} else {
@@ -2577,10 +2577,10 @@ int AppCommandInterface::commandZoom(unsigned long int &wait)
 
 int AppCommandInterface::commandTimerate()
 {
-	std::string argRate = args["rate"];
+	std::string argRate = args[W_RATE];
 	std::string argAction = args[W_ACTION];
-	std::string argStep = args["step"];
-	std::string argDuration = args["duration"];
+	std::string argStep = args[W_STEP];
+	std::string argDuration = args[W_DURATION];
 
 	// NOTE: accuracy issue related to frame rate
 	if (!argRate.empty()) {
@@ -2592,7 +2592,7 @@ int AppCommandInterface::commandTimerate()
 			//std::cout << "Changing timerate to " << argRate << " duration: " << argDuration << std::endl;
 			coreLink->timeChangeSpeed(evalDouble(argRate)*JD_SECOND, stod(argDuration));
 		}
-	} else if (argAction=="pause") {
+	} else if (argAction==W_PAUSE) {
 		//std::cout << "Changing timerate to pause" << std::endl;
 		coreLink->timeSetFlagPause(!coreLink->timeGetFlagPause());
 		if (coreLink->timeGetFlagPause()) {
@@ -2602,11 +2602,11 @@ int AppCommandInterface::commandTimerate()
 		} else {
 			coreLink->timeLoadSpeed();
 		}
-	} else if (argAction=="resume") {
+	} else if (argAction==W_RESUME) {
 		//std::cout << "Changing timerate to resume" << std::endl;
 		coreLink->timeSetFlagPause(false);
 		coreLink->timeLoadSpeed();
-	} else if (argAction=="increment") {
+	} else if (argAction==W_INCREMENT) {
 		// speed up time rate
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
@@ -2642,7 +2642,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
-	} else if (argAction=="decrement") {
+	} else if (argAction==W_DECREMENT) {
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 
@@ -2683,18 +2683,18 @@ int AppCommandInterface::commandTimerate()
 
 int AppCommandInterface::commandMoveto()
 {
-	std::string argLat = args["lat"];
-	std::string argLon = args["lon"];
-	std::string argAlt = args["alt"];
+	std::string argLat = args[W_LAT];
+	std::string argLon = args[W_LON];
+	std::string argAlt = args[W_ALT];
 
-	std::string argDeltaLat = args["delta_lat"];
-	std::string argDeltaLon = args["delta_lon"];
-	std::string argDeltaAlt = args["delta_alt"];
-	std::string argMultAlt = args["multiply_alt"];
+	std::string argDeltaLat = args[W_DELTA_LAT];
+	std::string argDeltaLon = args[W_DELTA_LON];
+	std::string argDeltaAlt = args[W_DELTA_ALT];
+	std::string argMultAlt = args[W_MULTIPLY_ALT];
 
-	if(argLat.empty()) argLat = args["latitude"];
-	if(argLon.empty()) argLon = args["longitude"];
-	if(argAlt.empty()) argAlt = args["altitude"];
+	if(argLat.empty()) argLat = args[W_LATITUDE  ];
+	if(argLon.empty()) argLon = args[W_LONGITUDE ];
+	if(argAlt.empty()) argAlt = args[W_ALTITUDE  ];
 
 
 	if (argLat.empty() && argLon.empty() && argAlt.empty() && argDeltaLat.empty() && argDeltaLon.empty() && argDeltaAlt.empty() && argMultAlt.empty()) {
@@ -2707,21 +2707,21 @@ int AppCommandInterface::commandMoveto()
 
 	int delay;
 	if (!argLat.empty()) {
-		if (argLat=="default")
+		if (argLat==W_DEFAULT)
 			lat = coreLink->observatoryGetDefaultLatitude();
 		else if (argLat=="inverse")
 			lat = -lat;
 		else lat = evalDouble(argLat);
 	}
 	if (!argLon.empty()) {
-		if (argLon=="default")
+		if (argLon==W_DEFAULT)
 			lon = coreLink->observatoryGetDefaultLongitude();
 		else if (argLon=="inverse")
 			lon = lon+180.0;
 		else lon = evalDouble(argLon);
 	}
 	if (!argAlt.empty()) {
-		if (argAlt=="default") alt = coreLink->observatoryGetDefaultAltitude();
+		if (argAlt==W_DEFAULT) alt = coreLink->observatoryGetDefaultAltitude();
 		else {
 			if (argAlt[0] == '+' || argAlt[0] == '-')
 				alt += evalDouble(argAlt);
@@ -2743,7 +2743,7 @@ int AppCommandInterface::commandMoveto()
 		alt *= evalDouble(argMultAlt);
 	}
 
-	delay = (int)(1000.*evalDouble(args["duration"]));
+	delay = (int)(1000.*evalDouble(args[W_DURATION]));
 
 	coreLink->observerMoveTo(lat,lon,alt,delay);
 
@@ -2756,16 +2756,16 @@ int AppCommandInterface::commandMedia()
 	std::string argAction = args[W_ACTION];
 	if (!argAction.empty() ) {
 
-		if (argAction == "play") {
-			std::string type = args["type"];
+		if (argAction == W_PLAY) {
+			std::string type = args[W_TYPE];
 			if (type.empty()) {
 				debug_message = "Command 'media' argument action need argument 'type'";
 				return executeCommandStatus();
 			}
-			std::string videoName = args["videoname"];
-			std::string audioName = args["audioname"];
+			std::string videoName = args[W_VIDEONAME];
+			std::string audioName = args[W_AUDIONAME];
 			std::string argName =  args[W_NAME];
-			std::string argPosition = args["position"];
+			std::string argPosition = args[W_POSITION];
 
 			FilePath::TFP localRepertory;
 			if (type == "VR360" || type == "VRCUBE")
@@ -2780,7 +2780,7 @@ int AppCommandInterface::commandMedia()
 			}
 
 			if (!audioName.empty()) {
-				if ( audioName =="auto" ) {
+				if ( audioName ==W_AUTO   ) {
 					// On teste si un fichier de langue existe on prend videoName et on rajoute -fr par exemple à la place de son extention et on rajoute apres ogg
 					audioName = videoName;
 					if (audioName.size()>5) {
@@ -2823,20 +2823,20 @@ int AppCommandInterface::commandMedia()
 				}
 
 			Vec3f Vcolor;
-			std::string argValue = args["color_value"];
+			std::string argValue = args[W_COLOR_VALUE];
 			std::string argR= args["r"];
 			std::string argG= args["g"];
 			std::string argB= args["b"];
 			AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG,argB);
 			if (testColor) {
 				// VRAI
-				//std::string argIntensity = args["intensity"];
+				//std::string argIntensity = args[W_INTENSITY];
 				// PATCH
 				std::string argIntensity;
 				if (!args["instensity"].empty())
 					argIntensity = args["instensity"];
 				else
-					argIntensity = args["intensity"];
+					argIntensity = args[W_INTENSITY];
 				// fin du PATCH			
 				
 				if (!argIntensity.empty())
@@ -2846,7 +2846,7 @@ int AppCommandInterface::commandMedia()
 			} else
 				debug_message.clear();
 		
-			std::string argKeyColor = args["keycolor"];
+			std::string argKeyColor = args[W_KEYCOLOR];
 			if (!argKeyColor.empty()) {
 				if (isTrue(argKeyColor)) {
 					media->setKeyColor(true);
@@ -2860,7 +2860,7 @@ int AppCommandInterface::commandMedia()
 		} else if (argAction == "stop") {
 			media->playerStop();
 			return executeCommandStatus();
-		} else if (argAction == "pause") {
+		} else if (argAction == W_PAUSE) {
 			media->playerPause();
 			return executeCommandStatus();
 		} else if (argAction == "jump") {
@@ -2897,7 +2897,7 @@ int AppCommandInterface::commandDomemasters()
 int AppCommandInterface::commandDate()
 {
 	//cas du jday
-	std::string argJday = args["jday"];
+	std::string argJday = args[W_JDAY];
 	if (!argJday.empty() ) {
 		//TODO stcore doit renvoyer un code rectour erreur
 		coreLink->setJDay( evalDouble(argJday) );
@@ -2905,7 +2905,7 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas du local
-	std::string argLocal = args["local"];
+	std::string argLocal = args[W_LOCAL];
 	if (!argLocal.empty() ) {
 		// ISO 8601-like format [[+/-]YYYY-MM-DD]Thh:mm:ss (no timzone offset, T is literal)
 		double jd;
@@ -2938,7 +2938,7 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas du relative
-	std::string argRelative = args["relative"];
+	std::string argRelative = args[W_RELATIVE];
 	if (!argRelative.empty()) { // value is a float number of days
 		double days = evalDouble(argRelative);
 		const Body* home = coreLink->getObserverHomeBody();
@@ -2953,7 +2953,7 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas du relative_year
-	std::string argRelativeYear = args["relative_year"];
+	std::string argRelativeYear = args[W_RELATIVE_YEAR];
 	if (!argRelativeYear.empty()) {
 		int years = evalInt(argRelativeYear);
 		stcore->setJDayRelative(years,0);
@@ -2961,7 +2961,7 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas du relative_month
-	std::string argRelativeMonth = args["relative_month"];
+	std::string argRelativeMonth = args[W_RELATIVE_MONTH];
 	if (!argRelativeMonth.empty()) {
 		int months = evalInt(argRelativeMonth);
 		stcore->setJDayRelative(0, months);
@@ -2969,7 +2969,7 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas du sidereal
-	std::string argSidereal = args["sidereal"];
+	std::string argSidereal = args[W_SIDEREAL];
 	if (!argSidereal.empty()) { // value is a float number of sidereal days
 		double days = evalDouble(argSidereal);
 		const Body* home = coreLink->getObserverHomeBody();
@@ -2985,9 +2985,9 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas du load
-	std::string argLoad = args["load"];
+	std::string argLoad = args[ W_LOAD];
 	if (!argLoad.empty()) {
-		if (argLoad=="current") {
+		if (argLoad=="current") { //IIICCCCIIII
 			// set date to current date
 			coreLink->setJDay(SpaceDate::JulianFromSys());
 		} else if (argLoad=="preset") {
@@ -3045,24 +3045,24 @@ int AppCommandInterface::commandBody()
 	//gestion des actions
 	std::string argAction = args[W_ACTION];
 	std::string argName = args[W_NAME];
-    if (argName == "home_planet") argName = coreLink->getObserverHomePlanetEnglishName();
-	std::string argMode = args["mode"];
+    if (argName == ACP_SC_HOME_PLANET  ) argName = coreLink->getObserverHomePlanetEnglishName();
+	std::string argMode = args[ACP_SC_MODE];
 
 	// traitement des OJM
 	if ((argMode=="in_universe" || argMode=="in_galaxy") && !argAction.empty()) {
-		if (argAction =="load") {
+		if (argAction == W_LOAD) {
 			std::string argFileName = args[W_FILENAME];
 			argFileName = argFileName +"/"+argFileName +".ojm";
 			Vec3f Position( evalDouble(args["pos_x"]), evalDouble(args["pos_y"]), evalDouble(args["pos_z"] ));
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::MODEL3D);
-			coreLink->BodyOJMLoad(argMode, argName, myFile.toString(), myFile.getPath() , Position, evalDouble(args["scale"]));
+			coreLink->BodyOJMLoad(argMode, argName, myFile.toString(), myFile.getPath() , Position, evalDouble(args[W_SCALE]));
 			return executeCommandStatus();
 		}
 		if (argAction =="remove") {
 			coreLink->BodyOJMRemove(argMode, argName);
 			return executeCommandStatus();
 		}
-		if (argAction =="clear") {
+		if (argAction ==  ACP_CN_CLEAR) {
 			coreLink->BodyOJMRemoveAll(argMode);
 			return executeCommandStatus();
 		}
@@ -3071,7 +3071,7 @@ int AppCommandInterface::commandBody()
 	std::string argSkinUse = args["skin_use"];
 	if (!argSkinUse.empty()) {
 		//std::cout << "lancement de la commande skin_use" << std::endl;
-		if (argSkinUse=="toggle") {
+		if (argSkinUse==W_TOGGLE) {
 			coreLink->planetSwitchTexMap(argName, !coreLink->planetGetSwitchTexMap(argName));
 		} else
 			coreLink->planetSwitchTexMap(argName, isTrue(argSkinUse));
@@ -3087,18 +3087,18 @@ int AppCommandInterface::commandBody()
 	}
 
 	if (!argAction.empty()) {
-		if (argAction == "load" ) {
+		if (argAction ==  W_LOAD ) {
 			// textures relative to script
-			args["path"] = scriptInterface->getScriptPath();
+			args[W_PATH] = scriptInterface->getScriptPath();
 			// Load a new solar system object
 			stcore->addSolarSystemBody(args);
-		} else if (argAction == "drop" && argName != "") {
+		} else if (argAction == W_DROP && argName != "") {
 			// Delete an existing object, but only if was added by a script!
 			stcore->removeSolarSystemBody( argName );
-		} else if (argAction == "clear") {
+		} else if (argAction ==   ACP_CN_CLEAR) {
 			// drop all bodies that are not in the original config file
 			stcore->removeSupplementalSolarSystemBodies();
-		} else if (argAction == "initial") {
+		} else if (argAction == W_INITIAL  ) {
 			coreLink->initialSolarSystemBodies();
 		} else {
 			debug_message = "command 'body' : unknown action argument";
@@ -3110,13 +3110,13 @@ int AppCommandInterface::commandBody()
 	if (!argName.empty() ) {
 
 		//sous cas hidden
-		std::string argHidden = args["hidden"];
+		std::string argHidden = args[W_HIDDEN];
 		if (!argHidden.empty()) {
 			if (isTrue(argHidden)) {
 				coreLink->setPlanetHidden(args[W_NAME], true);
 			} else if (isFalse(argHidden)) {
 				coreLink->setPlanetHidden(args[W_NAME], false);
-			} else if (argHidden == "toggle") {
+			} else if (argHidden == W_TOGGLE) {
 				coreLink->setPlanetHidden(args[W_NAME], !coreLink->getPlanetHidden(args[W_NAME]));
 			} else
 				debug_message = _("Command 'body': unknown hidden value");
@@ -3124,7 +3124,7 @@ int AppCommandInterface::commandBody()
 		}
 
 		//sous cas orbit
-		std::string argOrbit = args["orbit"];
+		std::string argOrbit = args[W_ORBIT];
 		if (!argOrbit.empty()) {
 			if (isTrue(argOrbit)) {
 				coreLink->planetsSetFlagOrbits(args[W_NAME], true);
@@ -3143,7 +3143,7 @@ int AppCommandInterface::commandBody()
 			std::string argR= args["r"];
 			std::string argG= args["g"];
 			std::string argB= args["b"];
-			std::string colorValue = args["color_value"];
+			std::string colorValue = args[W_COLOR_VALUE];
 			AppCommandColor testColor(Vcolor, debug_message, colorValue, argR,argG, argB);
 			if (!testColor)
 				return executeCommandStatus();
@@ -3198,14 +3198,14 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if(argAction == "align_with"){
 
-		std::string argBody = args["body"];
+		std::string argBody = args[W_BODY  ];
 
 		if (argBody.empty()) {
 			debug_message = "command 'align_with' : missing body";
 			return executeCommandStatus();
 		}
 
-		std::string argDuration = args["duration"];
+		std::string argDuration = args[W_DURATION];
 		double duration =0;
 
 		if ( ! argDuration.empty()) {
@@ -3222,14 +3222,14 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 
 	if(argAction == "transition_to"){
-		std::string argTarget = args["target"];
+		std::string argTarget = args[W_TARGET];
 
 		if (argTarget.empty()) {
 			debug_message = "command 'transition_to' : missing target";
 			return executeCommandStatus();
 		}
 
-		if(argTarget == "point"){
+		if(argTarget == W_POINT  ){
 			bool result = coreLink->cameraTransitionToPoint("temp_point");
 
 			if (!result)
@@ -3237,7 +3237,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			return executeCommandStatus();
 		}
 
-		if(argTarget == "body"){
+		if(argTarget == W_BODY  ){
 			argName = args[W_NAME];
 
 			if (argName.empty()) {
@@ -3258,18 +3258,18 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if(argAction == "move_to"){
 
-		std::string argTarget = args["target"];
+		std::string argTarget = args[W_TARGET];
 
 		if (argTarget.empty()) {
 			debug_message = "command 'move_to' : missing target";
 			return executeCommandStatus();
 		}
 
-		if(argTarget == "point"){
+		if(argTarget == W_POINT  ){
 			std::string argX = args["x"];
 			std::string argY = args["y"];
 			std::string argZ = args["z"];
-			std::string argTime = args["duration"];
+			std::string argTime = args[W_DURATION];
 
 			if(argX.empty() || argY.empty() || argZ.empty()){
 				debug_message = "command 'move_to point' : missing a coordinate";
@@ -3290,16 +3290,16 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			return executeCommandStatus();
 		}
 
-		if(argTarget == "body"){
+		if(argTarget == W_BODY  ){
 			std::string argBodyName = args["body_name"];
-			std::string argTime = args["duration"];
+			std::string argTime = args[W_DURATION];
 
 			if(argBodyName.empty() || argTime.empty()){
 				debug_message = "command 'move_to body' : missing a body_name or time";
 				return executeCommandStatus();
 			}
 
-			std::string argAltitude = args["altitude"];
+			std::string argAltitude = args[W_ALTITUDE  ];
 
 			bool result;
 
@@ -3320,7 +3320,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if(argAction == "save"){
+	if(argAction == W_SAVE){
 		bool result;
 
 		std::string argFileName = args[W_FILENAME];
@@ -3335,7 +3335,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if(argAction == "load"){
+	if(argAction ==  W_LOAD){
 		std::string argFileName = args[W_FILENAME];
 
 		if(argFileName.empty()){
@@ -3352,8 +3352,8 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if(argAction == "lift_off"){
 
-		std::string altStr = args["altitude"];
-		std::string durationStr = args["duration"];
+		std::string altStr = args[W_ALTITUDE  ];
+		std::string durationStr = args[W_DURATION];
 
 		if(altStr.empty()){
 			debug_message = "command 'camera lift_off' : missing altitude";
@@ -3378,7 +3378,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if (argAction == "create" ) {
+	if (argAction == W_CREATE ) {
 		// load an anchor via script
 		bool result = coreLink->cameraAddAnchor(args);
 		if (!result)
@@ -3386,7 +3386,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if (argAction == "drop") {
+	if (argAction == W_DROP) {
 		// Delete an existing anchor
 		bool result = coreLink->cameraRemoveAnchor(argName);
 		if (!result)
@@ -3394,7 +3394,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if (argAction == "switch") {
+	if (argAction == W_SWITCH) {
 		// change the anchor
 		bool result = coreLink->cameraSwitchToAnchor(argName);
 		if (!result)
@@ -3507,37 +3507,37 @@ int AppCommandInterface::commandStruct()
 			swapIfCommand = ! swapIfCommand;
 			return executeCommandStatus();
 		}
-		if (argIf=="end") {
+		if (argIf==W_END) {
 			swapIfCommand = false;
 			return executeCommandStatus();
 		}
-		if (args["equal"]!="")  // ! A==B => |A-B| > e
-			if (fabs(evalDouble(argIf) - evalDouble(args["equal"]))>error) {
+		if (args[W_EQUAL  ]!="")  // ! A==B => |A-B| > e
+			if (fabs(evalDouble(argIf) - evalDouble(args[W_EQUAL  ]))>error) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args["diff"]!="")  // ! A!=B => |A-B| < e
-			if (fabs(evalDouble(argIf) - evalDouble(args["diff"]))<error) {
+		if (args[W_DIFF  ]!="")  // ! A!=B => |A-B| < e
+			if (fabs(evalDouble(argIf) - evalDouble(args[W_DIFF  ]))<error) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args["inf"]!="")
-			if (evalDouble(argIf) >= evalDouble(args["inf"])) {
+		if (args[W_INF  ]!="")
+			if (evalDouble(argIf) >= evalDouble(args[W_INF  ])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args["inf_equal"]!="")
-			if (evalDouble(argIf) > evalDouble(args["inf_equal"])) {
+		if (args[W_INF_ZQUAL  ]!="")
+			if (evalDouble(argIf) > evalDouble(args[W_INF_ZQUAL  ])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args["sup"]!="")
-			if (evalDouble(argIf) <= evalDouble(args["sup"])) {
+		if (args[W_SUP  ]!="")
+			if (evalDouble(argIf) <= evalDouble(args[W_SUP  ])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args["sup_equal"]!="")
-			if (evalDouble(argIf) < evalDouble(args["sup_equal"])) {
+		if (args[W_SUP_EQUAL  ]!="")
+			if (evalDouble(argIf) < evalDouble(args[W_SUP_EQUAL  ])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
@@ -3548,7 +3548,7 @@ int AppCommandInterface::commandStruct()
 	}
 
 	//comment case
-	std::string argComment = args["comment"];
+	std::string argComment = args[W_COMMENT];
 	if (!argComment.empty()) {
 		if (isTrue(argComment)) {
 			swapCommand = true;
@@ -3560,9 +3560,9 @@ int AppCommandInterface::commandStruct()
 	}
 
 	//loop case
-	std::string argLoop = args["loop"];
+	std::string argLoop = args[W_LOOP];
 	if (!argLoop.empty()) {
-		if (argLoop =="end") {
+		if (argLoop ==W_END) {
 			swapCommand = false; //cas ou nbrLoop était inférieur à 1
 			scriptInterface->setScriptLoop(false);
 			scriptInterface->initScriptIterator();
@@ -3591,12 +3591,12 @@ int AppCommandInterface::commandStruct()
 int AppCommandInterface::commandRandom()
 {
 	bool status = false;
-	std::string argMin = args["min"];
+	std::string argMin = args[W_MIN];
 	if (!argMin.empty()) {
 		appEval->commandRandomMin(argMin);
 		status = true;
 	}
-	std::string argMax = args["max"];
+	std::string argMax = args[W_MAX];
 	if (!argMax.empty()) {
 		appEval->commandRandomMax(argMax);
 		status = true;
