@@ -68,7 +68,7 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30, APP_AUTO_MOVE_DUR
                             APP_STALL_RADIUS_UNIT,APP_TULLY_COLOR_MODE,APP_DATETIME_DISPLAY_POSITION,APP_DATETIME_DISPLAY_NUMBER,APP_FLAG_NONE
                             };
 
-enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE};
+enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, HEADING};
 
 
 // nom des arguments des commandes
@@ -493,5 +493,6 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE}
 #define ACI_RW_LATITUDE             "latitude"
 #define ACI_RW_ALTITUDE             "altitude"
 #define ACI_RW_SUN_ALTITUDE         "sun_altitude"
+#define ACI_RW_HEADING              "heading"
 
 #endif //_BASE_COMMAND_INTERFACE_HPP_

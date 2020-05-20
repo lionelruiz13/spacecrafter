@@ -21,6 +21,7 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_LONGITUDE]=SC_RESERVED_VAR::LONGITUDE;
 	m_reservedVar[ACI_RW_LATITUDE]=SC_RESERVED_VAR::LATITUDE;
 	m_reservedVar[ACI_RW_SUN_ALTITUDE]=SC_RESERVED_VAR::SUN_ALTITUDE;
+	m_reservedVar[ACI_RW_HEADING]=SC_RESERVED_VAR::HEADING;
 
 	// for conivence, the map inverse
 	for (const auto& [key, val] : m_reservedVar)
@@ -171,6 +172,8 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->observatoryGetLatitude(); break;
 		case  SC_RESERVED_VAR::ALTITUDE :  
 			return coreLink->observatoryGetAltitude(); break;
+		case  SC_RESERVED_VAR::HEADING :  
+			return coreLink->getHeading(); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE:
 			return coreLink->getSunAltitude(); break;
 		default:
@@ -188,6 +191,8 @@ void AppCommandEval::setReservedVariable(const std::string &var, double value)
 			coreLink->observatorySetLatitude(value); break;
 		case  SC_RESERVED_VAR::ALTITUDE :  
 			coreLink->observatorySetAltitude(value); break;
+		case  SC_RESERVED_VAR::HEADING :  
+			coreLink->setHeading(value); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE :
 			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		default:
