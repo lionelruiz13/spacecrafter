@@ -1447,21 +1447,17 @@ int AppCommandInterface::commandIlluminate()
 
 int AppCommandInterface::commandPrint()
 {
-	std::string argName = args[W_NAME];
-	std::string argValue = args[W_VALUE];
-	if (!argValue.empty()) {
+	if (args.begin() == args.end()) {
+		debug_message = "command_'print': malformed command";
+		return executeCommandStatus();
+	}
+	for(const auto& i : args) {
 		std::stringstream oss;
-
-		if (argName.empty())
-			argName = W_NONE;
-
-		oss << "[" << argName <<"] " << argValue;
+		oss << "[" << i.first <<"] " << i.second;
 		//std::cout << oss.str() << std::endl;
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING);
-	} else
-		debug_message = "command 'print': missing value";
-
+	}
 	return executeCommandStatus();
 }
 
