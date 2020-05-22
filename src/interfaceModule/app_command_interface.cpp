@@ -2764,7 +2764,7 @@ int AppCommandInterface::commandMedia()
 			std::string argPosition = args[W_POSITION];
 
 			FilePath::TFP localRepertory;
-			if (type == "VR360" || type == "VRCUBE")
+			if (type == "vr360" || type == "vrcube")
 				localRepertory = FilePath::TFP::VR360;
 			else
 				localRepertory = FilePath::TFP::MEDIA;
