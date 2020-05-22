@@ -93,6 +93,24 @@ Mise à jour le 17/05/2016
 
 
 class ServerSocket {
+public:
+	/* Constructeurs et destructeur */
+	ServerSocket(unsigned int port); //Contructeur simple 
+	ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Constructeur avancé 
+	~ServerSocket(); //Destructeur
+
+	/* Fonctions d'action sur le serveur */
+	int open(); //Fonction d'ouverture du socket serveur
+	int close(); //Fonction de fermeture du socket serveur
+
+	/* Fonction d'affichage des statistiques non-nulles */
+	void stats();
+
+	// transfert des données entrantes du TCP/IP à l'intérieur du programme
+	std::string getInput();
+	// transfert des données internes à l'extérieur du programme
+	void setOutput(std::string data);
+
 private:
 	/* Variables configurables */
 	unsigned int port; //Port d'écoute du serveur
@@ -169,33 +187,13 @@ private:
 	std::string clientIp(unsigned int client); //Fonction qui renvoi l'adresse IP du client sous forme de chaîne
 
 	/* Fonctions de debug */
-	//bool debug(int level, int scope);//Debug
 	void debugOut(std::string msg, LOG_TYPE log);//Debug
-
 
 	std::string replace(std::string base, const std::string from, const std::string to) {
 		std::string SecureCopy = base;
 		for (size_t start_pos = SecureCopy.find(from); start_pos != std::string::npos; start_pos = SecureCopy.find(from,start_pos)) SecureCopy.replace(start_pos, from.length(), to);
 		return SecureCopy;
 	}
-
-
-public:
-	/* Constructeurs et destructeur */
-	ServerSocket(unsigned int port); //Contructeur simple 
-	ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Constructeur avancé 
-	~ServerSocket(); //Destructeur
-
-	/* Fonctions d'action sur le serveur */
-	int open(); //Fonction d'ouverture du socket serveur
-	int close(); //Fonction de fermeture du socket serveur
-
-	/* Fonction d'affichage des statistiques non-nulles */
-	void stats();
-
-	//Ses fonctions sont utilisée dans app_command_interface 
-	std::string getInput(); // @TODO
-	void setOutput(std::string data); // @TODO
 };
 
 
