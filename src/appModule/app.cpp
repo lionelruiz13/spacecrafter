@@ -312,7 +312,7 @@ void App::firstInit()
 		int port = conf.getInt(SCS_IO, SCK_TCP_PORT_IN);
 		int buffer_in_size=conf.getInt(SCS_IO, SCK_TCP_BUFFER_IN_SIZE);
 		cLog::get()->write("buffer TCP taille " + Utility::intToString(buffer_in_size));
-		tcp = new ServerSocket(port, 16, buffer_in_size, INFO_CONNEXION, MAX_DEBUG);
+		tcp = new ServerSocket(port, 16, buffer_in_size);
 		tcp->open();
 		commander->setTcp(tcp);
 	}

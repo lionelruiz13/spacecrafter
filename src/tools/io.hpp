@@ -144,7 +144,7 @@ private:
 	SDL_mutex *outputting; //Mutex de la file de sortie
 
 	/* Fonction et code d'initialisation */
-	int init(unsigned int port, unsigned int maxClients, unsigned int bufferSize, int logLevel, int logScope); //Fonction d'initialisation appellée par les constructeurs
+	int init(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Fonction d'initialisation appellée par les constructeurs
 	int initErrorCode; //Code d'erreur de l'initialisation
 
 	/* Fonctions de traitement */
@@ -182,8 +182,8 @@ private:
 
 public:
 	/* Constructeurs et destructeur */
-	ServerSocket(unsigned int port, int logLevel); //Contructeur simple // @TODO : arguments à modifier
-	ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize, int logLevel, int logScope); //Constructeur avancé // @TODO : arguments à modifier
+	ServerSocket(unsigned int port); //Contructeur simple 
+	ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Constructeur avancé 
 	~ServerSocket(); //Destructeur
 
 	/* Fonctions d'action sur le serveur */

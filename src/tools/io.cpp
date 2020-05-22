@@ -65,42 +65,33 @@ Mise à jour le 17/07/2017
 #define BIG_BUFFER_SIZE 1048576 //Taille de buffer considérée comme inutilement grande
 
 
-ServerSocket::ServerSocket(unsigned int port, int logLevel)
+ServerSocket::ServerSocket(unsigned int port)
 {
-	initErrorCode = init(port, MAX_CLIENTS, BUFFER_SIZE, logLevel, MAX_DEBUG);
+	initErrorCode = init(port, MAX_CLIENTS, BUFFER_SIZE);
 	if(initErrorCode != IO_NO_ERROR) throw initErrorCode;
 }
 
-ServerSocket::ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize, int logLevel, int logScope)
+ServerSocket::ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize)
 {
-	initErrorCode = init(port, maxClients, bufferSize, logLevel, logScope);
+	initErrorCode = init(port, maxClients, bufferSize);
 	if(initErrorCode != IO_NO_ERROR) throw initErrorCode;
 }
 
-int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int bufferSize, int logLevel, int logScope)
+int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int bufferSize)
 {
 	/* Constructeur */
 	this->port = port;
 	this->maxClients = maxClients;
 	this->bufferSize = bufferSize;
-	this->logLevel = logLevel;
-	this->logScope = logScope;
 
 	debugOut("IO_DEBUG_TRACE_IN_LOOP", LOG_TYPE::L_DEBUG); //Debug
-	
 	debugOut("IO_DEBUG_DEBUG_IN_LOOP", LOG_TYPE::L_DEBUG); //Debug
-	
 	debugOut("IO_DEBUG_INFO_IN_LOOP", LOG_TYPE::L_INFO); //Debug
-	
 	debugOut("DEBUG_PERIODIC_STATS_ENABLED", LOG_TYPE::L_INFO); //Debug
-	
 	debugOut("IO_DEBUG_WARN_IN_LOOP", LOG_TYPE::L_WARNING); //Debug
-	
 	debugOut("-- INIT --", LOG_TYPE::L_DEBUG); //Debug
-
 	debugOut("Port " + toString(port) + DEBUG_SEPARATOR3 + "Slots " + toString(maxClients) + DEBUG_SEPARATOR3 + "Buffer " + 
-			toString(bufferSize) + " B" + DEBUG_SEPARATOR3 + "Log " + toString(logLevel) + "(" + toString(logScope) + ")", LOG_TYPE::L_INFO); //Debug
-
+			toString(bufferSize) + " B" + DEBUG_SEPARATOR3 + ")", LOG_TYPE::L_INFO); //Debug
 
 	/* Avertissements de configuration */
 	if(port == 0)
@@ -139,8 +130,6 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	requestSend = 0;
 	dataSend = 0;
 	requestSendFailed = 0;
-	statsPeriod = STATS_PERIOD;
-	timeout = SDL_GetTicks();
 
 	/* Initialisation de SDL_net */
 	if (SDLNet_Init() < 0) {
@@ -250,7 +239,6 @@ int ServerSocket::close()
 	}
 
 	debugOut("SERVER_STOP", LOG_TYPE::L_INFO); //Debug
-
 	killThread();
 
 	//Fermerture de tous les clients ouverts
@@ -264,7 +252,6 @@ int ServerSocket::close()
 	}
 
 	SDLNet_TCP_Close(serverSocket);	//Fermeture du socket serveur
-
 	serverOpen = false; //Changement du flag d'état du serveur
 
 	return IO_NO_ERROR;
@@ -308,16 +295,10 @@ void ServerSocket::stats()
 		debugOut("DEBUG_FULL_COUNT "+ humanReadable(refusedConnectionServerFull), LOG_TYPE::L_WARNING);
 
 	debugOut("DEBUG_CANNOTACCEPT_COUNT "+ toString(cannotAcceptClient), LOG_TYPE::L_DEBUG);
-	
 	debugOut("DEBUG_CANNOTACCEPT_COUNT "+ humanReadable(cannotAcceptClient), LOG_TYPE::L_WARNING);
-
-	
 	debugOut("DEBUG_OVERFLOW_COUNT "+ toString(possibleBufferOverflow), LOG_TYPE::L_DEBUG);
-	
 	debugOut("DEBUG_OVERFLOW_COUNT "+ humanReadable(possibleBufferOverflow), LOG_TYPE::L_WARNING);
-	
 	debugOut("DEBUG_SENDFAILED_COUNT "+ toString(requestSendFailed), LOG_TYPE::L_DEBUG);
-	
 	debugOut("DEBUG_SENDFAILED_COUNT "+ humanReadable(requestSendFailed), LOG_TYPE::L_WARNING);
 }
 
@@ -380,12 +361,10 @@ int ServerSocket::run()
 	debugOut("-- RUN --", LOG_TYPE::L_DEBUG); //Debug
 
 	while(true) {
-
 		if(stopThread) {
 			stopThread = false;
 			return IO_NO_ERROR;
 		}
-
 		activeSocketsCount = SDLNet_CheckSockets(socketSet, 1); //Attente d'activité sur le SocketSet (timeout de 1ms)
 		if(lock(running) == IO_NO_ERROR) { //Thread actif
 			if(activeSocketsCount > 0) { //S'il y a des sockets actifs
@@ -422,10 +401,7 @@ void ServerSocket::checkNewClient()
 			}
 
 			clientSocketTab[freeSpot] = SDLNet_TCP_Accept(serverSocket); //Accept le client et le met dans le tableau de sockets
-
 			debugOut("New client " + clientIp(freeSpot), LOG_TYPE::L_INFO); //Debug
-			
-
 			if(clientSocketTab[freeSpot] == NULL) { //Erreu lors de l'acceptation du client
 				cannotAcceptClient++; //Incrément le nombre total d'erreurs lors de l'acceptation du client
 				debugOut("SDL_ACCEPT_CLIENT_ERROR", LOG_TYPE::L_WARNING); //Debug
@@ -443,23 +419,16 @@ void ServerSocket::checkNewClient()
 					//send(clientSocketTab[freeSpot]); //Envoi du message au client //Supprimé pour rester plus sobre et mieux supporter les clients http ou autre
 
 					debugOut("CLIENT_COUNT " + toString(clientCount) + "/" + toString(maxClients), LOG_TYPE::L_INFO); //Debug
-					
 				}
-
 			}
 		} else { //S'il n'y a pas de place pour le client
-
 			refusedConnectionServerFull++; //Incrémente le nombre de connexion refusées pour cause de serveur plein
-			
 			debugOut("server full", LOG_TYPE::L_WARNING); //Debug
-
 			TCPsocket tempSock = SDLNet_TCP_Accept(serverSocket); //Accepte le client dans un socket
-
 			if(tempSock == NULL) { //Erreur lors de l'acceptation du client
 				cannotAcceptClient++;
 				
-				debugOut("SDL_ACCEPT_CLIENT_ERROR", LOG_TYPE::L_WARNING); //Debug
-				
+			debugOut("SDL_ACCEPT_CLIENT_ERROR", LOG_TYPE::L_WARNING); //Debug
 			}
 
 			strcpy(buffer, "SERVER_FULL"); //Prépare le message
@@ -473,7 +442,6 @@ void ServerSocket::checkNewClient()
 
 void ServerSocket::checkNewData()
 {
-	
 	debugOut("-- CHECK NEW DATA --", LOG_TYPE::L_DEBUG); //Debug
 	
 	int clientSocketActivity;
@@ -583,7 +551,6 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 		}
 
 		/* Envoi du fichier */
-
 		struct stat filestat;
 		if(!stat(filename.c_str(), &filestat)) { //Récupère les statistiques du fichier
 			FILE* file = fopen(filename.c_str(), "r"); //Ouvre le fichier en lecture
@@ -698,10 +665,7 @@ int ServerSocket::send(TCPsocket client)
 int ServerSocket::close(unsigned int client)
 {
 	debugOut("-- CLIENT CLOSE --", LOG_TYPE::L_DEBUG); //Debug
-
 	debugOut("CLIENT_DISCONECTED "+ clientIp(client), LOG_TYPE::L_INFO); //Debug
-
-
 	int socketCount = SDLNet_TCP_DelSocket(socketSet, clientSocketTab[client]); //Suppression du socket client du SocketSet
 	if(socketCount < 0) {
 		debugOut("SDL_DELSOCKET_CLIENT_ERROR", LOG_TYPE::L_ERROR); //Debug
