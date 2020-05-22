@@ -278,24 +278,3 @@ std::list<std::string> InitParser::getKeyFromSection(int i) const  //get all key
 	}
 	return keyList;
 }
-
-int InitParser::setStr(const std::string& section, const std::string& key, const std::string& val)
-{
-	return this->setStr(section+":"+key, val);
-}
-
-int InitParser::setInt(const std::string& section, const std::string& key, int val)
-{
-	return this->setInt(section+":"+key, val);
-}
-
-int InitParser::setDouble(const std::string& section, const std::string& key, double val)
-{
-	return this->setDouble(section+":"+key, val);
-}
-
-int InitParser::setBoolean(const std::string& section, const std::string& key, bool val)
-{
-	return this->setBoolean(section+":"+key, val);
-}
-

@@ -72,10 +72,21 @@ public:
 	int setDouble(const std::string& key, double val);
 	int setBoolean(const std::string& key, bool val);
 
-	int setStr(const std::string& section, const std::string& key, const std::string& val);
-	int setInt(const std::string& section, const std::string& key, int val);
-	int setDouble(const std::string& section, const std::string& key, double val);
-	int setBoolean(const std::string& section, const std::string& key, bool val);
+	int setStr(const std::string& section, const std::string& key, const std::string& val){
+		return this->setStr(section+":"+key, val);
+	}
+
+	int setInt(const std::string& section, const std::string& key, int val){
+		return this->setInt(section+":"+key, val);
+	}
+
+	int setDouble(const std::string& section, const std::string& key, double val){
+		return this->setDouble(section+":"+key, val);
+	}
+
+	int setBoolean(const std::string& section, const std::string& key, bool val){
+		return this->setBoolean(section+":"+key, val);
+	}
 
 	int getNsec() const;					// Get number of sections.
 	std::string getSecname(int n) const;			// Get name for section n.
