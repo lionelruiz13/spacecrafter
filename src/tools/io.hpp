@@ -63,24 +63,6 @@ Auteur : Aurélien Schwab <aurelien.schwab+dev@gmail.com> pour association-siriu
 Mise à jour le 17/05/2016
 */
 
-/* Niveau de debug */
-//groupe dev
-#define TRACE_FCT 6 //Trace au début et à la fin de chaque fonction // @TODO : à supprimer
-#define DEBUG_FCT 5 //Debug avant et parfois après les appels de fonctions importantes// @TODO : à supprimer
-#define INFO_CONNEXION 4 //Infos comme les infos du serveur, la connexion d'un client// @TODO : à supprimer
-#define WARN_CLIENT 3 //Warnings comme une tentative de connexion d'un client sur un serveur plein ou une configuration douteuse // @TODO : à supprimer
-//groupe haut niveau (soft)
-#define MAX_DEBUG 100 //Niveau de debug maximum (valable aussi pour le scope) // @TODO : à supprimer
-#define DEBUG_OFF 0 //Debug désactivé // @TODO : à supprimer
-//groupe users
-#define ERROR_SOCKET 2 //Erreur comme échec de l'ouverture de socket serveur // @TODO : à supprimer
-#define ERREUR_FATAL 1 //Erreur fatale comme l'échec du chargement de la librairie SDL_net ou d'allocation // @TODO : à supprimer
-
-/* Niveau de scope de debug */
-#define FLUX_EVENT 3 //Evènements liés aux flux de données (réception, émission)  // @TODO : à supprimer
-#define CLIENT_EVENT 2 //Evènements en relation avec les client (connexion, déconexion, serveur plein, nombre de clients connectés) // @TODO : à supprimer
-#define SERVEUR_EVENT 1 //Evènements serveur (démarrage, ouverture de son socket, arrêt) // @TODO : à supprimer
-
 /* Code d'erreur */
 #define IO_NO_ERROR 0 //Par d'erreur
 
@@ -116,8 +98,6 @@ private:
 	unsigned int port; //Port d'écoute du serveur
 	unsigned int maxClients; //Nombre maxium de clients (comme le serveur prends une place dans le set de sockets, ce nombre est égal à la taille du set -1)
 	unsigned int bufferSize; //Taille du buffer de réception
-	int logLevel; //Niveau de debug  @TODO : à supprimer
-	int logScope; //Scope du debug @TODO : à supprimer
 	LOG_TYPE logType; //Type de log (spécifique à l'application)
 
 	/* Variables d'état */
@@ -139,9 +119,6 @@ private:
 	unsigned int requestSend; //Nombre total de requêtes envoyées
 	unsigned int dataSend; //Total de données envoyées
 	unsigned int requestSendFailed; //Nombre total d'erreurs lors de l'envoi de la requête
-
-	unsigned int statsPeriod;  // @TODO : à supprimer
-	Uint32 timeout; // @TODO : à supprimer
 
 	/* Variables du serveur */
 	IPaddress serverIP; //IP du serveur (0.0.0.0 pour écouter sur toutes les IPs du serveur)
