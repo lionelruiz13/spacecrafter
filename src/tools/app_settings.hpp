@@ -31,7 +31,6 @@
  * and configuration directories. The singleton is initialized in main.cpp and
  * is henceforth available from anywhere via the Instance method.
  *
- * @warning know bug: create appsettings but never delete object and end
  *
  */
 

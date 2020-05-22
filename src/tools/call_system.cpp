@@ -51,14 +51,14 @@ void CallSystem::splitFilename (const std::string& str, std::string &path,std::s
 }
 
 
-bool CallSystem::isReadable( const std::string & file )
+bool CallSystem::isReadable(const std::string & file)
 {
 	std::ifstream fichier( file.c_str() );
 	return !fichier.fail();
 }
 
 
-bool CallSystem::fileExist ( const std::string& file)
+bool CallSystem::fileExist(const std::string& file)
 {
 	FILE * fp = nullptr;
 	fp = fopen(file.c_str() , "r");
@@ -70,7 +70,7 @@ bool CallSystem::fileExist ( const std::string& file)
 	}
 }
 
-bool CallSystem::dirExist ( const std::string& rep)
+bool CallSystem::dirExist(const std::string& rep)
 {
 	DIR *dir = nullptr;
 	if ( (dir = opendir(rep.c_str() )) != nullptr) {

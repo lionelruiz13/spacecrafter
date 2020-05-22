@@ -3,7 +3,7 @@
 //! Copyright (C) 2003 Fabien Chereau
 //! Copyright (C) 2009 Digitalis Education Solutions, Inc.
 //! Copyright (C) 2015 Olivier Nivoix
-//! Copyright (C) 2016 J�r�me Lartillot
+//! Copyright (C) 2016 Jérôme Lartillot
 //!
 //! This program is free software; you can redistribute it and/or
 //! modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@
 //!
 //!
 //! @file vecmath.hpp vector2.hpp vector3.hpp vector4.hpp matrix4.hpp
-//! @author J�r�me Lartillot
+//! @author Jérôme Lartillot
 //! @date 04/05/2016
 //!
 //! @section description Description
@@ -35,7 +35,7 @@
 //!
 //! @section modifications Last modifications:
 //!
-//! J�r�me Lartillot: added rotation functions, vector constructors and basic functions.
+//! Jérôme Lartillot: added rotation functions, vector constructors and basic functions.
 //! also added toPlane functions and some other related stuff..
 //!
 
