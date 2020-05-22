@@ -50,7 +50,7 @@ public:
 	virtual void retain() {}
 	virtual void release() {}
 
-	virtual void update() {}
+	// virtual void update() {}
 
 	//! dessine le pointeur de l'objet sélectionné en fonction de son type.
 	void drawPointer(int delta_time, const Projector* prj, const Navigator *nav);

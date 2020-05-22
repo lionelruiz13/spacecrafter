@@ -548,7 +548,7 @@ void Core::updateInSolarSystem(int delta_time)
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update info about selected object
-	selected_object.update();
+	// selected_object.update();
 	// Update faders
 	skyGridMgr->update(delta_time);
 	skyLineMgr->update(delta_time);

@@ -48,7 +48,7 @@ public:
 	operator bool() const;
 	bool operator==(const Object &o) const;
 
-	void update();
+	// void update();
 	void drawPointer(int delta_time,
 	                  const Projector *prj,
 	                  const Navigator *nav);

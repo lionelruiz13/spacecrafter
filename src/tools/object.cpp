@@ -134,10 +134,10 @@ bool Object::operator==(const Object &o) const
 	return (rep == o.rep);
 }
 
-void Object::update()
-{
-	rep->update();
-}
+// void Object::update()
+// {
+// 	rep->update();
+// }
 
 void Object::drawPointer(int delta_time,
                           const Projector *prj,
