@@ -205,8 +205,6 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 		return SDL_CREATEMUTEX_ERROR_CODE;
 	}
 
-	//debugOut("INIT_END", LOG_TYPE::L_DEBUG); //Debug
-
 	return IO_NO_ERROR; //Pas d'erreur
 }
 
@@ -239,8 +237,6 @@ int ServerSocket::open()
 		return SDL_CREATETHREAD_ERROR_CODE;
 	}
 
-	//debugOut("END_OPEN", LOG_TYPE::L_DEBUG); //Debug
-
 	return IO_NO_ERROR; //Pas d'erreur
 }
 
@@ -272,8 +268,6 @@ int ServerSocket::close()
 	serverOpen = false; //Changement du flag d'état du serveur
 
 	return IO_NO_ERROR;
-
-	// debugOut("END_CLOSE", LOG_TYPE::L_DEBUG); //Debug
 }
 
 ServerSocket::~ServerSocket()
@@ -292,8 +286,6 @@ ServerSocket::~ServerSocket()
 
 	while(!inputQueue.empty()) inputQueue.pop(); //Vidage de la file d'entrée
 	while(!outputQueue.empty()) outputQueue.pop(); //Vidage de la file de sortie
-
-	//debugOut("END_DELETE", LOG_TYPE::L_DEBUG); //Debug
 }
 
 void ServerSocket::stats()
@@ -327,8 +319,6 @@ void ServerSocket::stats()
 	debugOut("DEBUG_SENDFAILED_COUNT "+ toString(requestSendFailed), LOG_TYPE::L_DEBUG);
 	
 	debugOut("DEBUG_SENDFAILED_COUNT "+ humanReadable(requestSendFailed), LOG_TYPE::L_WARNING);
-
-	//debugOut("END_STATS", LOG_TYPE::L_DEBUG); //Debug
 }
 
 std::string ServerSocket::humanReadable(unsigned int data)
@@ -399,8 +389,6 @@ int ServerSocket::run()
 
 	while(true) {
 
-		// unlock(running); //Thread inactif
-
 		if(stopThread) {
 			stopThread = false;
 			return IO_NO_ERROR;
@@ -421,18 +409,9 @@ int ServerSocket::run()
 
 			checkDataToSend(); //Vérifie s'il y a des données à envoyer aux clients
 
-			
-			// if(SDL_GetTicks() >= timeout) {
-		 	// 	timeout = SDL_GetTicks() + statsPeriod;
-			// 	stats();
-			// }
-			
 		unlock(running); //Thread inactif
 		}
 	}
-
-	//debugOut("RUN_END", LOG_TYPE::L_DEBUG); //Debug
-	
 	return IO_NO_ERROR;
 }
 
@@ -498,9 +477,6 @@ void ServerSocket::checkNewClient()
 		}
 		activeSocketsCount--; //Décrémente le nombre de sockets actifs
 	}
-
-	//debugOut("CHECKNEWCLIENT_END", LOG_TYPE::L_DEBUG); //Debug
-	
 }
 
 void ServerSocket::checkNewData()
@@ -546,21 +522,13 @@ void ServerSocket::checkNewData()
 		}
 		if(activeSocketsCount <= 0) break; //S'arrête si on a traité le nombre de sockets actifs
 	}
-
-	//debugOut("CHECKNEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
-	
 }
 
 void ServerSocket::computeNewData(unsigned int client)
 {
-
 	debugOut("-- COMPUTE NEW DATA --", LOG_TYPE::L_DEBUG); //Debug
-
 	std::string data = buffer; //Transforme les données du buffer en string
-
 	debugOut("DATA_AS_STRING "+ data, LOG_TYPE::L_DEBUG); //Debug
-	
-
 	unsigned int begin = 0; //Début de la chaine
 	unsigned int end; //Fin de la chaine
 	bool continues;
@@ -570,10 +538,6 @@ void ServerSocket::computeNewData(unsigned int client)
 			continues = computeString(client, data.substr(begin, end - begin)); //Avant \n
 		begin = end + 1; //Après \n
 	} while(end != (unsigned int)std::string::npos && continues); //Tant qu'il y a des \n dans la chaine
-
-	
-	//debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
-
 }
 
 bool ServerSocket::computeString(unsigned int client, std::string string)
@@ -581,13 +545,9 @@ bool ServerSocket::computeString(unsigned int client, std::string string)
 	debugOut("-- COMPUTE STRING --", LOG_TYPE::L_DEBUG); //Debug
 
 	if(computeHttp(client, string)) {
-
-		//debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
-
 		return false; //Client HTTP
 	} else {
 		computeNormalString(client, string);
-		//debugOut("COMPUTENEWDATA_END", LOG_TYPE::L_DEBUG); //Debug
 		return true;
 	}
 }
@@ -701,8 +661,6 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 
 void ServerSocket::checkDataToSend()
 {
-	//debugOut("CHECKDATATOSEND_START", LOG_TYPE::L_DEBUG); //Debug
-
 	if(lock(outputting) == IO_NO_ERROR) {
 		while(!outputQueue.empty()) { //File non-vide
 			broadcast(outputQueue.front() + '\n'); //Envoi à tous les clients de la tête de la file
@@ -710,17 +668,12 @@ void ServerSocket::checkDataToSend()
 		}
 		unlock(outputting);
 	}
-
-	//debugOut("CHECKDATATOSEND_END", LOG_TYPE::L_DEBUG); //Debug
-
 }
 
 int ServerSocket::broadcast(std::string data)
 {
 	debugOut("-- BROADCAST --", LOG_TYPE::L_DEBUG); //Debug
-	
 	debugOut("BROADCAST_DATA "+ data, LOG_TYPE::L_DEBUG); //Debug
-
 
 	strcpy(buffer, data.c_str()); //Prépare le message
 	unsigned int sent = 0; //Nombre de clients auquels est envoyé la données
@@ -730,15 +683,12 @@ int ServerSocket::broadcast(std::string data)
 			sent++; //Incrémente le nombre total de requêtes envoyées
 		}
 	}
-	//debugOut("BROADCAST_END", LOG_TYPE::L_DEBUG); //Debug
-
 	return sent;
 }
 
 int ServerSocket::send(TCPsocket client)
 {
 	debugOut("-- SEND --", LOG_TYPE::L_DEBUG); //Debug
-
 
 	unsigned int size = strlen(buffer) + 1; //Taille de la chaine
 	unsigned int sendCount = SDLNet_TCP_Send(client, (void *)buffer, size); //Envoi le contenu du buffer au client
@@ -749,8 +699,6 @@ int ServerSocket::send(TCPsocket client)
 	} else	requestSend++; //Incrémente le nombre total de requêtes envoyées
 
 	dataSend += sendCount; //Incrément le total de données envoyées
-
-	//debugOut("SEND_END", LOG_TYPE::L_DEBUG); //Debug
 
 	return IO_NO_ERROR;
 }
@@ -764,8 +712,7 @@ int ServerSocket::close(unsigned int client)
 
 	int socketCount = SDLNet_TCP_DelSocket(socketSet, clientSocketTab[client]); //Suppression du socket client du SocketSet
 	if(socketCount < 0) {
-		//if(debug(ERROR_SOCKET, FLUX_EVENT))
-			debugOut("SDL_DELSOCKET_CLIENT_ERROR", LOG_TYPE::L_ERROR); //Debug
+		debugOut("SDL_DELSOCKET_CLIENT_ERROR", LOG_TYPE::L_ERROR); //Debug
 		return SDL_DELSOCKET_CLIENT_ERROR_CODE;
 	}
 	SDLNet_TCP_Close(clientSocketTab[client]); //Fermeture du socket client
@@ -774,8 +721,6 @@ int ServerSocket::close(unsigned int client)
 	clientCount--; //Décrémentation du nombre de clients connectés
 
 	debugOut("CLIENT_COUNT " + toString(clientCount) + "/" + toString(maxClients), LOG_TYPE::L_INFO); //Debug
-
-	//debugOut("CLIENT_CLOSE_END", LOG_TYPE::L_DEBUG); //Debug
 
 	return IO_NO_ERROR;
 }
@@ -787,8 +732,6 @@ int ServerSocket::killThread()
 	stopThread = true; //Demande d'arrêt du thread
 	SDL_WaitThread(thread, &threadReturnValue); //Attente du thread
 
-	//debugOut("KILLTHREAD_END", LOG_TYPE::L_DEBUG); //Debug
-
 	return threadReturnValue;
 }
 
@@ -798,7 +741,6 @@ int ServerSocket::lock(SDL_mutex *mutex)
 		debugOut("SDL_LOCKMUTEX_ERROR " + (std::string)SDLNet_GetError(), LOG_TYPE::L_ERROR); //Debug
 		return SDL_LOCKMUTEX_ERROR_CODE;
 	}
-
 	return IO_NO_ERROR;
 }
 
