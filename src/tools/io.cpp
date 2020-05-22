@@ -349,14 +349,6 @@ std::string ServerSocket::getInput()
 	} else return "";
 }
 
-
-void ServerSocket::setstatsPeriod(unsigned int statsPeriod)
-{
-	this->statsPeriod = statsPeriod;
-	timeout = SDL_GetTicks() + this->statsPeriod;
-}
-
-
 void ServerSocket::setOutput(std::string data)
 {
 	debugOut("Data info OUT : " + data, LOG_TYPE::L_INFO);

@@ -193,22 +193,9 @@ public:
 	/* Fonction d'affichage des statistiques non-nulles */
 	void stats();
 
-	std::string getInput(); // @TODO : a quoi sert cette fonction ?
-
-	unsigned int getstatsPeriod() { // @TODO : à supprimer
-		return statsPeriod;
-	}
-
-	/* Setters */
-	void setLogLevel(int logLevel) {  //@TODO : à supprimer
-		this->logLevel = logLevel;
-	}
-	void setLogScope(int logScope) { //@TODO : à supprimer
-		this->logScope = logScope;
-	}
-	void setOutput(std::string data); // @TODO : a quoi sert cette fonction ?
-
-	void setstatsPeriod(unsigned int statsPeriod); // @TODO : à supprimer
+	//Ses fonctions sont utilisée dans app_command_interface 
+	std::string getInput(); // @TODO
+	void setOutput(std::string data); // @TODO
 };
 
 
