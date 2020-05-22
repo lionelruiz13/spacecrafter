@@ -102,7 +102,7 @@ bool AppCommandInterface::isBoolean(const std::string &a)
 
 bool AppCommandInterface::isTrue(const std::string &a)
 {
-	if (a=="true" || a =="1" || a==W_ON )
+	if (a==W_TRUE || a =="1" || a==W_ON )
 		return true;
 	else
 		return false;
@@ -110,7 +110,7 @@ bool AppCommandInterface::isTrue(const std::string &a)
 
 bool AppCommandInterface::isFalse(const std::string &a)
 {
-	if (a=="false" || a =="0" || a==W_OFF )
+	if (a==W_FALSE || a =="0" || a==W_OFF )
 		return true;
 	else
 		return false;
@@ -193,7 +193,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 	//                                                 //
 	// application specific logic to run each command  //
 	//                                                 //
-	if (command ==W_COMMENT  )
+	if (command =="comment"  )
 		return commandComment();
 
 	if (command =="uncomment")
@@ -3132,7 +3132,7 @@ int AppCommandInterface::commandBody()
 		}
 
 
-		std::string argColor = args["color"];
+		std::string argColor = args[W_COLOR_VALUE];
 		if (!argColor.empty()) {
 			//gestion de la couleur
 			Vec3f Vcolor;
@@ -3192,7 +3192,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if(argAction == "align_with"){
+	if(argAction == W_ALIGN_WITH){
 
 		std::string argBody = args[W_BODY  ];
 
@@ -3217,7 +3217,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 	}
 
 
-	if(argAction == "transition_to"){
+	if(argAction == W_TRANSITION_TO){
 		std::string argTarget = args[W_TARGET];
 
 		if (argTarget.empty()) {
@@ -3252,7 +3252,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if(argAction == "move_to"){
+	if(argAction == W_MOVE_TO){
 
 		std::string argTarget = args[W_TARGET];
 
@@ -3346,7 +3346,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if(argAction == "lift_off"){
+	if(argAction == W_LIFT_OFF){
 
 		std::string altStr = args[W_ALTITUDE  ];
 		std::string durationStr = args[W_DURATION];
@@ -3398,10 +3398,10 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if(argAction == "follow_rotation"){
+	if(argAction == W_FOLLOW_ROTATION){
 		std::string valueStr = args[W_VALUE];
 
-		bool value = valueStr == "true";
+		bool value = valueStr == W_TRUE;
 
 		bool result = coreLink->cameraSetFollowRotation(argName, value);
 		if (!result)
@@ -3497,9 +3497,9 @@ int AppCommandInterface::commandStruct()
 {
 	const double error = 0.0001;
 	// if case
-	std::string argIf = args["if"];
+	std::string argIf = args[W_IF];
 	if (!argIf.empty()) {
-		if (argIf=="else") {
+		if (argIf==W_ELSE) {
 			swapIfCommand = ! swapIfCommand;
 			return executeCommandStatus();
 		}
@@ -3576,7 +3576,7 @@ int AppCommandInterface::commandStruct()
 		}
 	}
 
-	if (args["print"] =="var") {
+	if (args[W_PRINT] ==W_VAR) {
 		appEval->printVar();
 	}
 
