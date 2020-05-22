@@ -28,6 +28,11 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 
+#define LOG_EE "(EE): "
+#define LOG_WW "(WW): "
+#define LOG_II "(II): "
+#define LOG_DD "(DD): "
+
 // thanks to internet for color !!
 // http://stackoverflow.com/questions/1961209/making-some-text-in-printf-appear-in-green-and-red
 #define LOG_RESET   "\033[0m"

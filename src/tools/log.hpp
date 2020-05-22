@@ -31,10 +31,6 @@
 #include <mutex>
 #include <sstream>
 
-#define LOG_EE "(EE): "
-#define LOG_WW "(WW): "
-#define LOG_II "(II): "
-#define LOG_DD "(DD): "
 
 /**
  * \enum LOG_TYPE
