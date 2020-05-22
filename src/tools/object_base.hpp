@@ -64,9 +64,9 @@ public:
 	//! The returned nav string
 	virtual std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const = 0;
 
-	virtual float getStarDistance( void ) {
-		return 0;
-	};
+	// virtual float getStarDistance( void ) {
+	// 	return 0;
+	// };
 
 	//! Return object's type
 	virtual OBJECT_TYPE getType() const = 0;

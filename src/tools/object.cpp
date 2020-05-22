@@ -248,7 +248,7 @@ float Object::getOnScreenSize(const Projector *prj, const Navigator *nav, bool o
 	return rep->getOnScreenSize(prj, nav, orb_only);
 }
 
-float Object::getStarDistance( void )
-{
-	return rep->getStarDistance();
-}
+// float Object::getStarDistance( void )
+// {
+// 	return rep->getStarDistance();
+// }

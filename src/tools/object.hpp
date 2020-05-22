@@ -72,7 +72,7 @@ public:
 	std::string getEnglishName() const;
 	std::string getNameI18n() const;
 
-	float getStarDistance( void );
+	// float getStarDistance( void );
 
 	//! Get position in earth equatorial frame
 	Vec3d getEarthEquPos(const Navigator *nav) const;
