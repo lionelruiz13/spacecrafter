@@ -1297,9 +1297,9 @@ int AppCommandInterface::commandColor()
 	//gestion de la couleur
 	Vec3f Vcolor;
 	std::string argValue = args[W_VALUE];
-	std::string argR= args["r"];
-	std::string argG= args["g"];
-	std::string argB= args["b"];
+	std::string argR= args[W_R];
+	std::string argG= args[W_G];
+	std::string argB= args[W_B];
 	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 	if (!testColor)
 		return executeCommandStatus();
@@ -1386,9 +1386,9 @@ int AppCommandInterface::commandIlluminate()
 	//gestion de la couleur
 	Vec3f Vcolor;
 	std::string argValue = args[W_COLOR_VALUE];
-	std::string argR= args["r"];
-	std::string argG= args["g"];
-	std::string argB= args["b"];
+	std::string argR= args[W_R];
+	std::string argG= args[W_G];
+	std::string argB= args[W_B];
 	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 
 	if (!argConstellation.empty() && isTrue(argDisplay)) {
@@ -1589,7 +1589,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 
 int AppCommandInterface::commandShutdown()
 {
-	if (args[W_ACTION] =="now")	{
+	if (args[W_ACTION] == W_NOW)	{
 		stapp->flag(APP_FLAG::ALIVE, false);
 	} else
 		debug_message = "Bad shutdown request.";
@@ -1659,15 +1659,15 @@ int AppCommandInterface::commandConfiguration()
 					debug_message = "command 'configuration', star_navigator missing mode argument";
 					return executeCommandStatus();
 				} else {
-					if (argMode == "raw") {
+					if (argMode == W_RAW) {
 						coreLink->starNavigatorLoadRaw(argName);
 						return executeCommandStatus();
 					} else 
-					if (argMode == "sc") {
+					if (argMode == W_SC) {
 						coreLink->starNavigatorLoad(argName, binaryMode);
 						return executeCommandStatus();
 					} else 
-					if (argMode == "other") {
+					if (argMode == W_OTHER) {
 						coreLink->starNavigatorLoadOther(argName);
 						return executeCommandStatus();
 					} else {
@@ -1710,19 +1710,19 @@ int AppCommandInterface::commandConstellation()
 
 	Vec3f Vcolor;
 	std::string argColor =  args[W_COLOR_VALUE];
-	std::string argR= args["r"];
-	std::string argG= args["g"];
-	std::string argB= args["b"];
+	std::string argR= args[W_R];
+	std::string argG= args[W_G];
+	std::string argB= args[W_B];
 	AppCommandColor testColor(Vcolor, debug_message, argColor, argR,argG, argB);
 	if (!testColor) {
 		return executeCommandStatus();
 	} else
 		debug_message.clear();
 
-	if (type=="line") {
+	if (type == W_LINE) {
 		coreLink->constellationSetLineColor(argName, Vcolor);
 		return executeCommandStatus();
-	} else if (type==W_LABEL) {
+	} else if (type == W_LABEL) {
 		coreLink->constellationSetColorNames(argName, Vcolor);
 		return executeCommandStatus();
 	} else {
@@ -1742,7 +1742,7 @@ int AppCommandInterface::commandConstellation()
 				// media->externalPlay(scriptInterface->getScriptPath()+args[W_FILENAME]);
 			// return executeCommandStatus();
 		// }
-		// if (argAction=="stop") {
+		// if (argAction==W_STOP) {
 			// media->externalStop();
 			// return executeCommandStatus();
 		// }
@@ -1798,32 +1798,32 @@ int AppCommandInterface::commandExternalViewer()
 		std::string action1=W_NONE;;
 		std::string extention=argFileName.substr(argFileName.length()-3,3);
 
-		if (extention=="avi" || extention=="mov" || extention=="mpg" || extention=="mp4") {
+		if (extention == W_AVI || extention == W_MOV || extention == W_MPG || extention == W_MP4) {
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::VIDEO);
 			if (myFile)
 				action1="mplayer -fs -osdlevel 0 "+ myFile.toString() + " &";
 			else
 				debug_message= "command_externalViewer media fileName not found";
-		} else if (extention=="mp3" || extention=="ogg") {
+		} else if (extention == W_MP3 || extention == W_OGG) {
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO);
 			if (myFile)
 				action1="cvlc "+ myFile.toString() + " &";
 			else
 				debug_message= "command_externalViewer audio fileName not found";
-		} else if (extention==".sh") {
+		} else if (extention == W_SH) {
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::DATA);
 			if (myFile)
 				action1="sh "+ myFile.toString() + " &";
 			else
 				debug_message= "command_externalViewer shell script fileName not found";
 
-		} else if (extention=="swf") {
+		} else if (extention == W_SWF) {
 			FilePath myFile  = FilePath(argFileName);
 			if (myFile)
 				action1="gnash "+ myFile.toString() + " &";
 			else
 				debug_message= "command_externalViewer swf fileName not found";
-		} else if (extention=="png") {
+		} else if (extention == W_PNG) {
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::IMAGE);
 			if (myFile)
 				action1="qiv "+ myFile.toString() + " &";
@@ -1839,7 +1839,7 @@ int AppCommandInterface::commandExternalViewer()
 		return executeCommandStatus();
 	}
 
-	if (argAction=="stop") {
+	if (argAction == W_STOP) {
 		std::string action1=W_NONE;;
 		action1="killall mplayer";
 		CallSystem::useSystemCommand(action1);
@@ -2042,7 +2042,7 @@ int AppCommandInterface::commandText()
 	}
 
 	std::string argDisplay = args[W_DISPLAY];
-	std::string argString = args["string"];
+	std::string argString = args[W_STRING];
 
 	if (!argAction.empty()) {
 		if (argString.empty()) {
@@ -2050,7 +2050,7 @@ int AppCommandInterface::commandText()
 			return executeCommandStatus();
 		}
 
-		if (argAction=="update") {
+		if (argAction==W_UPDATE) {
 			coreLink->textNameUpdate(argName, argString);
 			return executeCommandStatus();
 		} else if (argAction== W_LOAD) {
@@ -2066,9 +2066,9 @@ int AppCommandInterface::commandText()
 				//gestion de la couleur
 				Vec3f Vcolor;
 				std::string argValue = args[W_COLOR_VALUE];
-				std::string argR= args["r"];
-				std::string argG= args["g"];
-				std::string argB= args["b"];
+				std::string argR= args[W_R];
+				std::string argG= args[W_G];
+				std::string argB= args[W_B];
 				AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 				if (testColor)
 					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, Vcolor, durationText);
@@ -2381,9 +2381,9 @@ int AppCommandInterface::commandImage()
 
 	Vec3f Vcolor;
 	std::string argValue = args[W_COLOR_VALUE];
-	std::string argR= args["r"];
-	std::string argG= args["g"];
-	std::string argB= args["b"];
+	std::string argR= args[W_R];
+	std::string argG= args[W_G];
+	std::string argB= args[W_B];
 	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG,argB);
 	if (testColor) {
 		std::string argIntensity = args[W_INTENSITY];
@@ -2404,7 +2404,7 @@ int AppCommandInterface::commandSelect()
 
 	std::string select_type, identifier;
 
-	if (args[W_CONSTELLATION]=="zodiac") {
+	if (args[W_CONSTELLATION] == W_ZODIAC) {
 		stcore->selectZodiac();
 		return executeCommandStatus();
 	}
@@ -2621,7 +2621,7 @@ int AppCommandInterface::commandTimerate()
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
 
-	} else if (argAction=="sincrement") {
+	} else if (argAction == W_SINCREMENT) {
 		// speed up time rate
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
@@ -2655,7 +2655,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
-	} else if (argAction=="sdecrement") {
+	} else if (argAction == W_SDECREMENT) {
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
@@ -2705,14 +2705,14 @@ int AppCommandInterface::commandMoveto()
 	if (!argLat.empty()) {
 		if (argLat==W_DEFAULT)
 			lat = coreLink->observatoryGetDefaultLatitude();
-		else if (argLat=="inverse")
+		else if (argLat == W_INVERSE)
 			lat = -lat;
 		else lat = evalDouble(argLat);
 	}
 	if (!argLon.empty()) {
 		if (argLon==W_DEFAULT)
 			lon = coreLink->observatoryGetDefaultLongitude();
-		else if (argLon=="inverse")
+		else if (argLon == W_INVERSE)
 			lon = lon+180.0;
 		else lon = evalDouble(argLon);
 	}
@@ -2764,7 +2764,7 @@ int AppCommandInterface::commandMedia()
 			std::string argPosition = args[W_POSITION];
 
 			FilePath::TFP localRepertory;
-			if (type == "vr360" || type == "vrcube")
+			if (type == W_VR360 || type == W_VRCUBE)
 				localRepertory = FilePath::TFP::VR360;
 			else
 				localRepertory = FilePath::TFP::MEDIA;
@@ -2784,7 +2784,7 @@ int AppCommandInterface::commandMedia()
 						audioName[audioName.size()-2]=stcore->getSkyLanguage()[1];
 						audioName[audioName.size()-3]=stcore->getSkyLanguage()[0];
 						audioName[audioName.size()-4]='_';
-						audioName = audioName+"ogg";
+						audioName = audioName + W_OGG;
 		
 						FilePath fileAudio = FilePath(audioName, FilePath::TFP::MEDIA);
 						if (fileAudio.exist()) {
@@ -2795,7 +2795,7 @@ int AppCommandInterface::commandMedia()
 							cLog::get()->write("command 'media':: locale audio not found "+audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 							media->playerPlay(type, fileVideo.toString(), argName, argPosition );
 						}
-						}
+					}
 				} else {
 					// si l'audio existe sous forme -fr.ogg alors on le modifie en appliquant la langue de la sky_culture
 					if (audioName.size()>8 && audioName[audioName.size()-7]=='-') { // internationalisation possible
@@ -2820,17 +2820,17 @@ int AppCommandInterface::commandMedia()
 
 			Vec3f Vcolor;
 			std::string argValue = args[W_COLOR_VALUE];
-			std::string argR= args["r"];
-			std::string argG= args["g"];
-			std::string argB= args["b"];
+			std::string argR= args[W_R];
+			std::string argG= args[W_G];
+			std::string argB= args[W_B];
 			AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG,argB);
 			if (testColor) {
 				// VRAI
 				//std::string argIntensity = args[W_INTENSITY];
 				// PATCH
 				std::string argIntensity;
-				if (!args["instensity"].empty())
-					argIntensity = args["instensity"];
+				if (!args[W_INTENSITY].empty())
+					argIntensity = args[W_INTENSITY];
 				else
 					argIntensity = args[W_INTENSITY];
 				// fin du PATCH			
@@ -2853,13 +2853,13 @@ int AppCommandInterface::commandMedia()
 			}
 			return executeCommandStatus();
 
-		} else if (argAction == "stop") {
+		} else if (argAction == W_STOP) {
 			media->playerStop();
 			return executeCommandStatus();
 		} else if (argAction == W_PAUSE) {
 			media->playerPause();
 			return executeCommandStatus();
-		} else if (argAction == "jump") {
+		} else if (argAction == W_JUMP) {
 			media->playerJump(evalDouble(args[W_VALUE]));
 			return executeCommandStatus();
 		}
@@ -2922,7 +2922,7 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas de l'utc
-	std::string argUtc = args["utc"];
+	std::string argUtc = args[W_UTC];
 	if (!argUtc.empty()) {
 		double jd;
 		if (SpaceDate::StringToJday(argUtc, jd ) ) {
@@ -2983,16 +2983,16 @@ int AppCommandInterface::commandDate()
 	//cas du load
 	std::string argLoad = args[ W_LOAD];
 	if (!argLoad.empty()) {
-		if (argLoad=="current") { //IIICCCCIIII
+		if (argLoad == W_CURRENT) { //IIICCCCIIII
 			// set date to current date
 			coreLink->setJDay(SpaceDate::JulianFromSys());
-		} else if (argLoad=="preset") {
+		} else if (argLoad == W_PRESET) {
 			// set date to preset (or current) date, based on user setup
 			// TODO: should this record as the actual date used?
-			if (stapp->getStartupTimeMode()=="preset" || stapp->getStartupTimeMode()=="Preset")
+			if (stapp->getStartupTimeMode() == W_PRESET || stapp->getStartupTimeMode() == W_PRESET)
 				coreLink->setJDay(stapp->getPresetSkyTime() -spaceDate->getGMTShift(stapp->getPresetSkyTime()) * JD_HOUR);
 			else coreLink->setJDay(SpaceDate::JulianFromSys());
-		} else if (argLoad=="keep_time") {
+		} else if (argLoad == W_KEEPTIME) {
 					double jd = coreLink->getJDay();
 					ln_date current_date,temps;
 					SpaceDate::JulianToDate(jd,&current_date);
@@ -3010,21 +3010,21 @@ int AppCommandInterface::commandDate()
 	}
 
 	//cas du Sun
-	std::string argSun = args["sun"];
+	std::string argSun = args[W_SUN];
 	if (!argSun.empty()) {
-		if (argSun=="set") {
+		if (argSun == W_SET) {
 			double tmp=coreLink->dateSunSet(coreLink->getJDay(), coreLink->observatoryGetLongitude(), coreLink->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
-		} else if (argSun=="rise") {
+		} else if (argSun == W_RISE) {
 			double tmp=coreLink->dateSunRise(coreLink->getJDay(), coreLink->observatoryGetLongitude(), coreLink->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
-		} else if (argSun=="meridian") {
+		} else if (argSun == W_MERIDIAN) {
 			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), coreLink->observatoryGetLongitude(), coreLink->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
-		} else if (argSun=="midnight") {
+		} else if (argSun == W_MIDNIGHT) {
 			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), coreLink->observatoryGetLongitude()+180, -coreLink->observatoryGetLatitude());
 			if (tmp != 0.0) //TODO et si ==?
 				coreLink->setJDay(tmp);
@@ -3049,12 +3049,12 @@ int AppCommandInterface::commandBody()
 		if (argAction == W_LOAD) {
 			std::string argFileName = args[W_FILENAME];
 			argFileName = argFileName +"/"+argFileName +".ojm";
-			Vec3f Position( evalDouble(args["pos_x"]), evalDouble(args["pos_y"]), evalDouble(args["pos_z"] ));
+			Vec3f Position( evalDouble(args[W_POSX]), evalDouble(args[W_POSY]), evalDouble(args[W_POSZ] ));
 			FilePath myFile  = FilePath(argFileName, FilePath::TFP::MODEL3D);
 			coreLink->BodyOJMLoad(argMode, argName, myFile.toString(), myFile.getPath() , Position, evalDouble(args[W_SCALE]));
 			return executeCommandStatus();
 		}
-		if (argAction =="remove") {
+		if (argAction == W_REMOVE) {
 			coreLink->BodyOJMRemove(argMode, argName);
 			return executeCommandStatus();
 		}
@@ -3064,7 +3064,7 @@ int AppCommandInterface::commandBody()
 		}
 	}
 
-	std::string argSkinUse = args["skin_use"];
+	std::string argSkinUse = args[W_SKINUSE];
 	if (!argSkinUse.empty()) {
 		//std::cout << "lancement de la commande skin_use" << std::endl;
 		if (argSkinUse==W_TOGGLE) {
@@ -3075,7 +3075,7 @@ int AppCommandInterface::commandBody()
 		return executeCommandStatus();
 	}
 
-	std::string argSkinTex = args["skin_tex"];
+	std::string argSkinTex = args[W_SKINTEX];
 	if (!argSkinTex.empty()) {
 		//std::cout << "lancement de la commande skin_tex" << std::endl;
 		coreLink->planetCreateTexSkin(argName, argSkinTex);
@@ -3136,9 +3136,9 @@ int AppCommandInterface::commandBody()
 		if (!argColor.empty()) {
 			//gestion de la couleur
 			Vec3f Vcolor;
-			std::string argR= args["r"];
-			std::string argG= args["g"];
-			std::string argB= args["b"];
+			std::string argR= args[W_R];
+			std::string argG= args[W_G];
+			std::string argB= args[W_B];
 			std::string colorValue = args[W_COLOR_VALUE];
 			AppCommandColor testColor(Vcolor, debug_message, colorValue, argR,argG, argB);
 			if (!testColor)
@@ -3151,8 +3151,8 @@ int AppCommandInterface::commandBody()
 		return executeCommandStatus();
 	}
 
-	if (!args["tesselation"].empty()) {
-		coreLink->planetTesselation(args["tesselation"], evalInt(args[W_VALUE]));
+	if (!args[W_TESSELATION].empty()) {
+		coreLink->planetTesselation(args[W_TESSELATION], evalInt(args[W_VALUE]));
 		return executeCommandStatus();
 	}
 
@@ -3262,9 +3262,9 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		}
 
 		if(argTarget == W_POINT  ){
-			std::string argX = args["x"];
-			std::string argY = args["y"];
-			std::string argZ = args["z"];
+			std::string argX = args[W_X];
+			std::string argY = args[W_Y];
+			std::string argZ = args[W_Z];
 			std::string argTime = args[W_DURATION];
 
 			if(argX.empty() || argY.empty() || argZ.empty()){
@@ -3287,7 +3287,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		}
 
 		if(argTarget == W_BODY  ){
-			std::string argBodyName = args["body_name"];
+			std::string argBodyName = args[W_BODYNAME];
 			std::string argTime = args[W_DURATION];
 
 			if(argBodyName.empty() || argTime.empty()){
@@ -3348,7 +3348,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if(argAction == W_LIFT_OFF){
 
-		std::string altStr = args[W_ALTITUDE  ];
+		std::string altStr = args[W_ALTITUDE];
 		std::string durationStr = args[W_DURATION];
 
 		if(altStr.empty()){
