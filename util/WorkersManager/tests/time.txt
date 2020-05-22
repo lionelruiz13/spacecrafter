@@ -1,9 +1,0 @@
-./int
-real	0m0.009s
-user	0m0.008s
-sys	0m0.000s
-
-./std-atomic-int
-real	0m0.030s
-user	0m0.028s
-sys	0m0.000s
