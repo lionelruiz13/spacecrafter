@@ -45,24 +45,26 @@ Auteur : Aurélien Schwab <aurelien.schwab+dev@gmail.com> pour association-siriu
 Mise à jour le 17/07/2017
 */
 
-///* Configuration du niveau de débug dans la boucle de traitement */
-// #define IO_DEBUG_TRACE_IN_LOOP "Niveau de debug TRACE activé dans la boucle"//Commenter pour annuler
-// #define IO_DEBUG_DEBUG_IN_LOOP "Niveau de debug DEBUG totalement activé dans la boucle"//Commenter pour annuler
-#define IO_DEBUG_INFO_IN_LOOP "Niveau de debug INFO totalement activé dans la boucle"//Commenter pour annuler
-#define IO_DEBUG_WARN_IN_LOOP "Niveau de debug WARN totalement activé dans la boucle"//Commenter pour annuler
-#define DEBUG_PERIODIC_STATS_ENABLED "Statistiques périodiques activées dans la boucle"//Commenter pour annuler
+template<class T>
+std::string toString(const T& t) //ServerSocket
+{
+	std::ostringstream stream;
+	stream << t;
+	return stream.str();
+}
+
 
 /* Valeurs par défaut */
-#define DEFAULT_PORT 1234 //Port par défaut
-#define MAX_CLIENTS 16 //Limite de clients simulatannés par defaut
-#define BUFFER_SIZE 65536 //Taille du buffer par defaut (en octets)
-#define STATS_PERIOD 5000 //Durée minimum entre deux récapitulatifs dans la boucle (en millisecondes)
-#define MAX_BUFFER 1024 //la taille d'un buffer à envoyer comme réponse via le TCP
+#define DEFAULT_PORT		1234 //Port par défaut
+#define MAX_CLIENTS			16 //Limite de clients simulatannés par defaut
+#define BUFFER_SIZE 		65536 //Taille du buffer par defaut (en octets)
+#define STATS_PERIOD 		5000 //Durée minimum entre deux récapitulatifs dans la boucle (en millisecondes)
+#define MAX_BUFFER 			1024 //la taille d'un buffer à envoyer comme réponse via le TCP
 
 /* Valeurs d'avertissement */
-#define LOT_OF_CLIENTS 32 //Limite de clients simulatannés considérée comme grande et non testée
-#define SMALL_BUFFER_SIZE 512 //Taille de buffer considérée comme dangeureseument petite (doit être plus grande que les messages succeptibles d'être envoyés par le serveur)
-#define BIG_BUFFER_SIZE 1048576 //Taille de buffer considérée comme inutilement grande
+#define LOT_OF_CLIENTS 		32 //Limite de clients simulatannés considérée comme grande et non testée
+#define SMALL_BUFFER_SIZE 	512 //Taille de buffer considérée comme dangeureseument petite (doit être plus grande que les messages succeptibles d'être envoyés par le serveur)
+#define BIG_BUFFER_SIZE 	1048576 //Taille de buffer considérée comme inutilement grande
 
 
 ServerSocket::ServerSocket(unsigned int port)
@@ -84,11 +86,6 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	this->maxClients = maxClients;
 	this->bufferSize = bufferSize;
 
-	debugOut("IO_DEBUG_TRACE_IN_LOOP", LOG_TYPE::L_DEBUG); //Debug
-	debugOut("IO_DEBUG_DEBUG_IN_LOOP", LOG_TYPE::L_DEBUG); //Debug
-	debugOut("IO_DEBUG_INFO_IN_LOOP", LOG_TYPE::L_INFO); //Debug
-	debugOut("DEBUG_PERIODIC_STATS_ENABLED", LOG_TYPE::L_INFO); //Debug
-	debugOut("IO_DEBUG_WARN_IN_LOOP", LOG_TYPE::L_WARNING); //Debug
 	debugOut("-- INIT --", LOG_TYPE::L_DEBUG); //Debug
 	debugOut("Port " + toString(port) + DEBUG_SEPARATOR3 + "Slots " + toString(maxClients) + DEBUG_SEPARATOR3 + "Buffer " + 
 			toString(bufferSize) + " B" + DEBUG_SEPARATOR3 + ")", LOG_TYPE::L_INFO); //Debug
@@ -197,6 +194,15 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	return IO_NO_ERROR; //Pas d'erreur
 }
 
+	
+std::string ServerSocket::replace(std::string base, const std::string from, const std::string to)
+{
+	std::string SecureCopy = base;
+	for (size_t start_pos = SecureCopy.find(from); start_pos != std::string::npos; start_pos = SecureCopy.find(from,start_pos)) SecureCopy.replace(start_pos, from.length(), to);
+	return SecureCopy;
+}
+
+
 int ServerSocket::open()
 {
 	debugOut("-- OPEN --", LOG_TYPE::L_DEBUG); //Debug
@@ -232,7 +238,6 @@ int ServerSocket::open()
 int ServerSocket::close()
 {
 	debugOut("-- CLOSE --", LOG_TYPE::L_DEBUG); //Debug
-
 	if(!serverOpen) {
 		debugOut("SERVER_NOT_OPEN", LOG_TYPE::L_WARNING); //Debug
 		return SERVER_NOT_OPEN_CODE;
@@ -320,7 +325,8 @@ std::string ServerSocket::getInput()
 {
 	if(lock(inputting) == IO_NO_ERROR) {
 		std::string data;
-		if(inputQueue.empty()) data = "";
+		if(inputQueue.empty()) 
+			data = "";
 		else {
 			data = inputQueue.front();
 			inputQueue.pop();

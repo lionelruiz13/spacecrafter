@@ -44,17 +44,6 @@
 #endif
 
 
-template<class T>
-std::string toString(const T& t) //ServerSocket
-{
-	std::ostringstream stream;
-	stream << t;
-	return stream.str();
-}
-
-
-
-
 /*
 Serveur de contrôle de l'application
 Utilité : ce programme permet de dialoguer avec l'application par le réseau
@@ -189,11 +178,7 @@ private:
 	/* Fonctions de debug */
 	void debugOut(std::string msg, LOG_TYPE log);//Debug
 
-	std::string replace(std::string base, const std::string from, const std::string to) {
-		std::string SecureCopy = base;
-		for (size_t start_pos = SecureCopy.find(from); start_pos != std::string::npos; start_pos = SecureCopy.find(from,start_pos)) SecureCopy.replace(start_pos, from.length(), to);
-		return SecureCopy;
-	}
+	std::string replace(std::string base, const std::string from, const std::string to);
 };
 
 
