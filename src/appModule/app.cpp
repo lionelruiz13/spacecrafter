@@ -306,6 +306,7 @@ void App::firstInit()
 	enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
 	enable_mkfifo=conf.getBoolean(SCS_IO, SCK_ENABLE_MKFIFO);
 	flagAlwaysVisible = conf.getBoolean(SCS_MAIN,SCK_FLAG_ALWAYS_VISIBLE);
+	flagMasterput=conf.getBoolean(SCS_IO, SCK_FLAG_MASTERPUT);
 
 	if (enable_tcp) {
 		int port = conf.getInt(SCS_IO, SCK_TCP_PORT_IN);
