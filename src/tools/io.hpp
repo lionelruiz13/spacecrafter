@@ -85,32 +85,29 @@ Mise à jour le 17/05/2016
 #define IO_NO_ERROR 0 //Par d'erreur
 
 /* Codes d'erreur dans l'initialisation */
-#define SDL_NET_INIT_ERROR_CODE 1 //Erreur lors de l'initialisation de SDL
-#define SDL_RESOLEVHOST_ERROR_CODE 2 //Erreur lors de la préparation de la structure pour le serveur
-#define SDL_ALLOCSOCKETSET_ERROR_CODE 3 //Erreur lors de l'allocation du SocketSet
-#define SDL_CREATEMUTEX_ERROR_CODE 4 //Erreur lors de la création du mutex de verouillage d'activité du thread
-#define NEW_TCPSOCKET_TAB_ERROR_CODE 5 //Erreur lors de l'allocation du tableau de sockets clients
-#define NEW_BOOL_TAB_ERROR_CODE 6 //Erreur lors de l'allocation du tableau de sockets clients
-#define NEW_BUFFER_ERROR_CODE 7 //Erreur lors de l'allocation du buffer
-
+#define SDL_NET_INIT_ERROR_CODE			1 //Erreur lors de l'initialisation de SDL
+#define SDL_RESOLEVHOST_ERROR_CODE 		2 //Erreur lors de la préparation de la structure pour le serveur
+#define SDL_ALLOCSOCKETSET_ERROR_CODE 	3 //Erreur lors de l'allocation du SocketSet
+#define SDL_CREATEMUTEX_ERROR_CODE 		4 //Erreur lors de la création du mutex de verouillage d'activité du thread
+#define NEW_TCPSOCKET_TAB_ERROR_CODE 	5 //Erreur lors de l'allocation du tableau de sockets clients
+#define NEW_BOOL_TAB_ERROR_CODE 		6 //Erreur lors de l'allocation du tableau de sockets clients
+#define NEW_BUFFER_ERROR_CODE 			7 //Erreur lors de l'allocation du buffer
 /* Codes d'erreur dans l'ouverture */
-#define SERVER_SOCKET_OPEN_ERROR_CODE 101 //Erreur lors de l'ouverture du socket serveur
-#define SDL_ADDSOCKET_SERVER_ERROR_CODE 102 //Erreur lors de l'ajout du socket serveur au SocketSet
-#define SDL_CREATETHREAD_ERROR_CODE 103
-
+#define SERVER_SOCKET_OPEN_ERROR_CODE 	101 //Erreur lors de l'ouverture du socket serveur
+#define SDL_ADDSOCKET_SERVER_ERROR_CODE	102 //Erreur lors de l'ajout du socket serveur au SocketSet
+#define SDL_CREATETHREAD_ERROR_CODE 	103
 /* Codes d'erreur dans le traitement */
-#define SDL_LOCKMUTEX_ERROR_CODE 201
-#define SDL_UNLOCKMUTEX_ERROR_CODE 202
-#define SDL_CHECKSOCKETS_ERROR_CODE 203 //Erreur lors de la vérification du SocketSet
-#define SDL_SEND_ERROR_CODE 204
+#define SDL_LOCKMUTEX_ERROR_CODE 		201
+#define SDL_UNLOCKMUTEX_ERROR_CODE 		202
+#define SDL_CHECKSOCKETS_ERROR_CODE 	203 //Erreur lors de la vérification du SocketSet
+#define SDL_SEND_ERROR_CODE 			204
 #define SDL_DELSOCKET_CLIENT_ERROR_CODE 205
-
 /* Codes d'erreur dans la fermeture */
-#define SERVER_NOT_OPEN_CODE 301
+#define SERVER_NOT_OPEN_CODE 			301
 
-#define CLIENT_SEPARATOR1 "|"
-#define CLIENT_SEPARATOR2 "/"
-#define DEBUG_SEPARATOR3 " | " //Troisième déparateur dans le debug
+#define CLIENT_SEPARATOR1 				"|"
+#define CLIENT_SEPARATOR2 				"/"
+#define DEBUG_SEPARATOR3 				" | " //Troisième déparateur dans le debug
 
 
 class ServerSocket {
