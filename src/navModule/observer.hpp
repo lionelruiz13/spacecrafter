@@ -35,10 +35,12 @@ class Body;
 class AnchorPoint;
 
 //! @class Observer
-//! @brief Classe qui décrit ou se trouve l'observer
-//! L'observer se trouve lié à une planète du système solaire
-//! L'observer se déplace sur la planète suivant la latitude, la longitude  et l'altitude
+//! @brief Indique où se trouve l'observer
+//! L'observer se trouve lié à une ancre
+//! L'observer se déplace sur l'ancre suivant la latitude, la longitude  et l'altitude
+//! Ce sont ces paramètres qui sont gérés par la classe.
 //!
+
 class Observer {
 public:
 	//! Create a new Observer instance which is at a fixed Location
