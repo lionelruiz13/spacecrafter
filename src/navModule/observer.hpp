@@ -42,7 +42,7 @@ class AnchorPoint;
 class Observer {
 public:
 	//! Create a new Observer instance which is at a fixed Location
-	Observer(/*const class SolarSystem &ssystem*/);
+	Observer();
 	~Observer();
 	Observer(Observer const &) = delete;
 	Observer& operator = (Observer const &) = delete;
@@ -50,11 +50,6 @@ public:
 	void setAnchorPoint(const AnchorPoint * _anchor){
 		anchor = _anchor;
 	}
-
-	//! fixe la planète de l'observer
-	// bool setHomePlanet(const std::string &english_name);
-	//! fixe la planète de l'observer
-	// void setHomePlanet(Body *p);
 
 	bool isOnBody() const;
 	
@@ -96,16 +91,12 @@ public:
 	//! charge la position de l'observer d'un fichier de configuration
 	void load(const InitParser& conf, const std::string& section);
 
-	//! retourne le nom de l'endroit ou l'on se situe
-	// std::string getName(void) const;
-
 	//! fixe la latitude de l'observer sur la planète
-	double setLatitude(double l) {
+	void setLatitude(double l) {
 		latitude=l;
 		if ( latitude==0.0 ) {
 			latitude=1e-6;
 		}
-		return latitude;
 	}
 
 	//! renvoie la latitude de l'observer sur la planète
@@ -114,9 +105,8 @@ public:
 	}
 
 	//! fixe la longitude de l'observer sur la planète
-	double setLongitude(double l) {
+	void setLongitude(double l) {
 		longitude=l;
-		return(l);
 	}
 
 	//! renvoie la longitude de l'observer sur la planète
@@ -125,26 +115,10 @@ public:
 	//! fixe l'altitude de l'observer sur la planète
 	void setAltitude(double a);
 	
-	// void setSpacecraft(bool a) {
-	// 	spacecraft = a;
-	// }
-
-	// bool getSpacecraft() {
-	// 	return spacecraft;
-	// }
-
 	//! renvoie l'altitude de l'observer sur la planète
 	double getAltitude(void) const {
 		return altitude;
 	}
-
-	//! change le nom du landscape de l'observer
-	// void setLandscapeName(const std::string s);
-
-	//! renvoie le nom du landscape de l'observer
-	// std::string getLandscapeName(void) const {
-	// 	return landscape_name;
-	// }
 
 	// sert à retrouver la position initiale de l'observer après qu'il se soit déplacé afin d'y revenir
 	//! renvoie la latitude initiale de l'observer à son chargement
@@ -185,23 +159,17 @@ public:
 	bool isOnBodyNamed(const std::string& bodyName); 
 
 private:
-	//const class SolarSystem &ssystem;
-	// std::string name;			//!< Position name
 
-	Body *planet;			//!< la planete ou se trouve l'observer
-	Body *planetInSolarSystem; //!< la planete du systeme solaire où l'on se trouvait
+	Body *planet;				//!< la planete ou se trouve l'observer
+	Body *planetInSolarSystem; 	//!< la planete du systeme solaire où l'on se trouvait
 
-	double longitude;		//!< Longitude in degree
-	double latitude;		//!< Latitude in degree
+	double longitude;			//!< Longitude in degree
+	double latitude;			//!< Latitude in degree
 	double altitude;			//!< Altitude in meter
-	
-	// bool spacecraft;
 
 	double defaultLongitude;
 	double defaultLatitude;
 	double defaultAltitude;
-	// std::string m_defaultHome;
-	// std::string landscape_name;
 
 	// for changing position
 	bool flag_move_to;
