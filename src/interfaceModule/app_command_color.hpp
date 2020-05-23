@@ -28,6 +28,7 @@
 
 #include <string>
 #include "tools/vecmath.hpp"
+#include "tools/no_copy.hpp"
 
 /**
 * \file app_command_color.hpp
@@ -57,8 +58,7 @@
 * 
 */
 
-class AppCommandColor {
-
+class AppCommandColor : public NoCopy {
 public:
 	/** Convert string to color
 	* @param color modified variable which takes the extracted color
@@ -69,9 +69,6 @@ public:
 	AppCommandColor(Vec3f &color, std::string &debug_message,
 	                const std::string &_value,
 	                const std::string &_r, const std::string &_g, const std::string &_b);
-	~AppCommandColor(){};
-	AppCommandColor(AppCommandColor const &) = delete;
-	AppCommandColor& operator = (AppCommandColor const &) = delete;
 
 	/// indicates the success of the conversion
 	/// @return True if a color has been deduced from the constructor otherwise false
