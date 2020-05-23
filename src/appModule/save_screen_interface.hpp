@@ -30,7 +30,7 @@
 #include <thread>
 #include <mutex>
 #include <string>
-#include "appModule/appModule.hpp"
+#include "tools/no_copy.hpp"
 
 /** @class SaveScreenInterface
 
@@ -46,7 +46,7 @@
 
 class SaveScreen;
 
-class SaveScreenInterface : public AppModule {
+class SaveScreenInterface : public NoCopy {
 public:
 	SaveScreenInterface(unsigned int _width, unsigned int _height);
 	~SaveScreenInterface();

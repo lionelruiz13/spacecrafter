@@ -29,7 +29,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
-#include "appModule/appModule.hpp"
+#include "tools/no_copy.hpp"
 
 /*! @class Fps
 * @brief classe s'occupant du framerate et des FPS
@@ -40,7 +40,7 @@
 * - la fonction afterOneSecond : elle s'occupe de de la durée des frames sur une période d'une seconde afin de déterminer le FPS
 * - afterOneSecond est lancée via un trigger SDL dans App.hpp toutes les 1000 ms.
 */
-class Fps  : public AppModule {
+class Fps  : public NoCopy {
 public:
 	Fps(){};
 	~Fps(){};

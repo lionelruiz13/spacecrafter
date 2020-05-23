@@ -28,7 +28,7 @@
 #include <SDL2/SDL_thread.h>
 #include <queue> //ServerSocket
 #include "spacecrafter.hpp"
-#include "appModule/appModule.hpp"
+#include "tools/no_copy.hpp"
 #include "tools/app_settings.hpp"
 #include <string>
 #include <SDL2/SDL_net.h> //ServerSocket
@@ -44,7 +44,7 @@
 
 #if LINUX // special mkfifo
 
-class Mkfifo : public AppModule {
+class Mkfifo : public NoCopy {
 public:
 	/*!
 	 * \brief Initialise la communication MKFIFO

@@ -30,7 +30,7 @@
 #include <SDL2/SDL_thread.h>
 #include <queue>
 
-#include "appModule/appModule.hpp"
+#include "tools/no_copy.hpp"
 #include "appModule/fps.hpp"
 #include "appModule/space_date.hpp"
 #include "spacecrafter.hpp"
@@ -70,7 +70,7 @@ enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, ON_VIDEO, COLOR_INV
 /**
 @author initial Fabien Chereau
 */
-class App : public AppModule {
+class App : public NoCopy {
 
 public:
 	App( SDLFacade* const );

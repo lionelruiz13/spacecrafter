@@ -34,14 +34,14 @@
 #include "tools/app_settings.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
-#include "appModule/appModule.hpp"
+#include "tools/no_copy.hpp"
 
 
 /**
 @author AssociationSirius
 */
 
-class AppDraw : public AppModule{
+class AppDraw : public NoCopy{
 
 public:
 	AppDraw();

@@ -25,11 +25,11 @@
 #ifndef SCREENFADER_HPP
 #define SCREENFADER_HPP
 
-#include "appModule/appModule.hpp"
+#include "tools/no_copy.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
-class ScreenFader : public AppModule {
+class ScreenFader : public NoCopy {
 public:
 	ScreenFader();
 	~ScreenFader();
