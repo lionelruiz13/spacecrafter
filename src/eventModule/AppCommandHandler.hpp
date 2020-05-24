@@ -23,6 +23,12 @@
  *
  */
 
+/**
+* \file AppCommandHandler.hpp
+* \brief Send Event to Core
+* \author Elitit
+* \version 1
+*/
 
 #ifndef APP_COMMAND_HANDLER_HPP
 #define APP_COMMAND_HANDLER_HPP
@@ -33,7 +39,11 @@
 
 class AppCommandInterface;
 
-
+/*
+* \class EventCommandHandler
+*
+* \brief Interface for generic command event to AppCommandInterface 
+*/
 class EventCommandHandler : public EventHandlerCanvas {
 public:
 	EventCommandHandler(AppCommandInterface *_commander) {
@@ -48,7 +58,11 @@ protected :
 };
 
 
-
+/*
+* \class EventFlagHandler
+*
+* \brief Interface for flag event to AppCommandInterface 
+*/
 class EventFlagHandler : public EventHandlerCanvas {
 public:
 	EventFlagHandler(AppCommandInterface *_commander) {

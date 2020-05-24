@@ -22,6 +22,12 @@
  *
  */
 
+/**
+* \file CoreEvent.hpp
+* \brief Send Event to Core
+* \author Elitit
+* \version 1
+*/
 
 #ifndef CORE_EVENT_HPP
 #define CORE_EVENT_HPP
@@ -30,6 +36,11 @@
 #include <sstream>
 #include "eventModule/event.hpp"
 
+/*
+* \class AltitudeEvent
+*
+* \brief Indicates that the altitude has changed
+*/
 class AltitudeEvent : public Event {
 public:
     AltitudeEvent(double _altitude) : Event(E_CHANGE_ALTITUDE) {
@@ -50,7 +61,11 @@ private:
     double altitude;
 };
 
-
+/*
+* \class ObserverEvent
+*
+* \brief Indicates that the observation location has changed
+*/
 class ObserverEvent : public Event {
 public:
     ObserverEvent(std::string _newObserver) : Event(E_CHANGE_OBSERVER) {

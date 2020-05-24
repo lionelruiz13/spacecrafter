@@ -23,7 +23,6 @@
  *
  */
 
-
 #include "eventModule/AppCommandHandler.hpp"
 #include "interfaceModule/app_command_interface.hpp"
 #include "eventModule/AppCommandEvent.hpp"

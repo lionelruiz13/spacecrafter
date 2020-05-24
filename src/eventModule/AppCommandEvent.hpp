@@ -23,6 +23,12 @@
  *
  */
 
+/**
+* \file AppCommandEvent.hpp
+* \brief Send Event to AppCommandInterface
+* \author Elitit
+* \version 1
+*/
 
 #ifndef APP_COMMAND_EVENT_HPP
 #define APP_COMMAND_EVENT_HPP
@@ -32,7 +38,11 @@
 #include "eventModule/event.hpp"
 #include "interfaceModule/base_command_interface.hpp"
 
-
+/*
+* \class CommandEvent
+*
+* \brief Create a new generic command for AppCommandInterface
+*/
 class CommandEvent : public Event {
 public:
     CommandEvent(const std::string& _commandLine) : Event(E_COMMAND) {
@@ -54,14 +64,16 @@ private:
     std::string commandLine;
 };
 
-
-
+/*
+* \class FlagEvent
+*
+* \brief Create a new flag command, already parsed, for AppCommandInterface
+*/
 class FlagEvent : public Event {
 public:
     FlagEvent(FLAG_NAMES _flagName, FLAG_VALUES _flagValue) : Event(E_FLAG) {
         flagName = _flagName;
         flagValue = _flagValue;
-        // commandLine = _commandline;
     }
     ~FlagEvent(){};
 
