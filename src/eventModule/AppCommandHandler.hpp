@@ -25,7 +25,7 @@
 
 /**
 * \file AppCommandHandler.hpp
-* \brief Send Event to Core
+* \brief Send Event to AppCommandInterface
 * \author Elitit
 * \version 1
 */
@@ -39,7 +39,7 @@
 
 class AppCommandInterface;
 
-/*
+/**
 * \class EventCommandHandler
 *
 * \brief Interface for generic command event to AppCommandInterface 
@@ -58,7 +58,7 @@ protected :
 };
 
 
-/*
+/**
 * \class EventFlagHandler
 *
 * \brief Interface for flag event to AppCommandInterface 

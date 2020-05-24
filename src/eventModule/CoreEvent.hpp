@@ -24,7 +24,7 @@
 
 /**
 * \file CoreEvent.hpp
-* \brief Send Event to Core
+* \brief Create Event to Core
 * \author Elitit
 * \version 1
 */
@@ -36,22 +36,24 @@
 #include <sstream>
 #include "eventModule/event.hpp"
 
-/*
+/**
 * \class AltitudeEvent
 *
 * \brief Indicates that the altitude has changed
 */
 class AltitudeEvent : public Event {
 public:
+    //! constructor who takes the new altitude as parameter
     AltitudeEvent(double _altitude) : Event(E_CHANGE_ALTITUDE) {
         altitude = _altitude;
     }
     ~AltitudeEvent(){};
-
+    //! returns the altitude value
     double getAltitude() {
         return altitude;
     }
 
+   // returns the type of Event and the information conveyed by the event
     virtual std::string toString() const {
         std::ostringstream os;
         os << Event::toString() << " altitude changed to : " << altitude << std::endl;
@@ -61,22 +63,24 @@ private:
     double altitude;
 };
 
-/*
+/**
 * \class ObserverEvent
 *
 * \brief Indicates that the observation location has changed
 */
 class ObserverEvent : public Event {
 public:
+    //! constructor who takes the new Observer localisation  as parameter
     ObserverEvent(std::string _newObserver) : Event(E_CHANGE_OBSERVER) {
         newObserver = _newObserver;
     }
     ~ObserverEvent(){};
-
+    //! returns the character string representing the Observer localisation who the Observer is
     const std::string& getNewObserver() {
         return newObserver;
     }
 
+   // returns the type of Event and the information conveyed by the event
     virtual std::string toString() const {
         std::ostringstream os;
         os << Event::toString() << " observer changed to : " << newObserver << std::endl;

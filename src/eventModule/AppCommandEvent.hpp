@@ -25,7 +25,7 @@
 
 /**
 * \file AppCommandEvent.hpp
-* \brief Send Event to AppCommandInterface
+* \brief Create Event to AppCommandInterface
 * \author Elitit
 * \version 1
 */
@@ -38,22 +38,25 @@
 #include "eventModule/event.hpp"
 #include "interfaceModule/base_command_interface.hpp"
 
-/*
+/**
 * \class CommandEvent
 *
 * \brief Create a new generic command for AppCommandInterface
 */
 class CommandEvent : public Event {
 public:
+    //! constructor who takes the command as parameter
     CommandEvent(const std::string& _commandLine) : Event(E_COMMAND) {
         commandLine = _commandLine;
     }
     ~CommandEvent(){};
 
+    //! returns the character string representing the order to analyze
     std::string getCommandLine() {
         return commandLine;
     }
 
+    //! returns the type of Event and the information conveyed by the event
     virtual std::string toString() const {
         std::ostringstream os;
         os << Event::toString() << " CommandName : " << commandLine << std::endl;
@@ -64,7 +67,7 @@ private:
     std::string commandLine;
 };
 
-/*
+/**
 * \class FlagEvent
 *
 * \brief Create a new flag command, already parsed, for AppCommandInterface

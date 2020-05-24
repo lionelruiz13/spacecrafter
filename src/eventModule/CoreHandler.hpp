@@ -32,7 +32,18 @@
 
 class Core;
 
+/**
+* \file CoreHandler.hpp
+* \brief Send Event to Core
+* \author Elitit
+* \version 1
+*/
 
+/*
+* \class EventAltitudeHandler
+*
+* \brief Interface for Altitude event to Core 
+*/
 class EventAltitudeHandler : public EventHandlerCanvas {
 public:
 	EventAltitudeHandler(Core *_core) {
@@ -47,6 +58,11 @@ protected :
 };
 
 
+/*
+* \class EventObserverHandler
+*
+* \brief Interface for Observer position event to Core 
+*/
 class EventObserverHandler : public EventHandlerCanvas {
 public:
 	EventObserverHandler(Core *_core) {

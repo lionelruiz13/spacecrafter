@@ -23,12 +23,25 @@
  *
  */
 
+/**
+* \file EventHandlerCanvas
+* \brief Virtual class to design specialized Event
+* \author Elitit
+* \version 1
+*/
 
-#ifndef SUB_EVENT_HANDLER_HPP
-#define SUB_EVENT_HANDLER_HPP
+#ifndef _EVENT_HANDLER_CANVAS_HPP
+#define _EVENT_HANDLER_CANVAS_HPP
 
 class Event;
 
+/**
+* \class EventHandlerCanvas
+*
+* \brief Virtual class design for support all specialised Event Class.
+*
+* This class exists only to give a common framework to the elements which derive from it.
+*/
 class EventHandlerCanvas {
 public:	
 	EventHandlerCanvas(){};
@@ -36,6 +49,7 @@ public:
 	EventHandlerCanvas(EventHandlerCanvas const &) = delete;
 	EventHandlerCanvas& operator = (EventHandlerCanvas const &) = delete;
 
+	// the function : performs the processing of a particular Event
 	virtual void handle(const Event* e) = 0;
 };
 
