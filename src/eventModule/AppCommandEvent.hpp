@@ -23,12 +23,14 @@
  */
 
 
-#ifndef COMMAND_EVENT_HPP
-#define COMMAND_EVENT_HPP
+#ifndef APP_COMMAND_EVENT_HPP
+#define APP_COMMAND_EVENT_HPP
 
 #include <string>
 #include <sstream>
 #include "eventModule/event.hpp"
+#include "interfaceModule/base_command_interface.hpp"
+
 
 class CommandEvent : public Event {
 public:
@@ -45,11 +47,40 @@ public:
         std::ostringstream os;
         os << Event::toString() << " CommandName : " << commandLine << std::endl;
         return os.str();
-}
-
-    
+    }
+  
 private:
     std::string commandLine;
+};
+
+
+
+class FlagEvent : public Event {
+public:
+    FlagEvent(FLAG_NAMES _flagName, FLAG_VALUES _flagValue) : Event(E_FLAG) {
+        flagName = _flagName;
+        flagValue = _flagValue;
+        // commandLine = _commandline;
+    }
+    ~FlagEvent(){};
+
+    FLAG_NAMES getFlagName() const {
+        return flagName;
+    }
+
+    FLAG_VALUES getFlagValue() const {
+        return flagValue;
+    }
+
+    virtual std::string toString() const {
+        std::ostringstream os;
+        os << Event::toString() << " FlagEvent " << std::endl;
+        return os.str();
+}
+    
+private:
+    FLAG_NAMES flagName;
+    FLAG_VALUES flagValue;
 };
 
 #endif

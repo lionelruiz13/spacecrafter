@@ -23,13 +23,42 @@
  */
 
 
-#include "EventCommandHandler.hpp"
-#include "interfaceModule/app_command_interface.hpp"
-#include "eventModule/EventCommand.hpp"
+#ifndef APP_COMMAND_HANDLER_HPP
+#define APP_COMMAND_HANDLER_HPP
 
-void EventCommandHandler::handle(const Event* e)
-{
-	CommandEvent * event = (CommandEvent *)e;
-	commander->executeCommand(event->getCommandLine());
-}
 
+#include "event_handler_canvas.hpp"
+#include "event.hpp"
+
+class AppCommandInterface;
+
+
+class EventCommandHandler : public EventHandlerCanvas {
+public:
+	EventCommandHandler(AppCommandInterface *_commander) {
+		commander = _commander;
+	}
+	~EventCommandHandler() {
+	}
+    void handle(const Event* e) override;
+
+protected :
+	AppCommandInterface* commander = nullptr;
+};
+
+
+
+class EventFlagHandler : public EventHandlerCanvas {
+public:
+	EventFlagHandler(AppCommandInterface *_commander) {
+		commander = _commander;
+	}
+	~EventFlagHandler() {
+	}
+    void handle(const Event* e) override;
+
+protected :
+	AppCommandInterface* commander = nullptr;
+};
+
+#endif

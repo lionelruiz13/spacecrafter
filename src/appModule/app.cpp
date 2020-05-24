@@ -57,8 +57,7 @@
 #include "uiModule/ui.hpp"
 
 #include "eventModule/EventScriptHandler.hpp"
-#include "eventModule/EventCommandHandler.hpp"
-#include "eventModule/EventFlagHandler.hpp"
+#include "eventModule/AppCommandHandler.hpp"
 #include "eventModule/EventScreenFaderHandler.hpp"
 #include "eventModule/EventSaveScreenHandler.hpp"
 #include "eventModule/EventFpsHandler.hpp"
