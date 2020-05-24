@@ -27,13 +27,13 @@
 #define EVENT_COMMAND_HANDLER_HPP
 
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class AppCommandInterface;
 
 
-class EventCommandHandler : public SubEventHandler {
+class EventCommandHandler : public EventHandlerCanvas {
 public:
 	EventCommandHandler(AppCommandInterface *_commander) {
 		commander = _commander;

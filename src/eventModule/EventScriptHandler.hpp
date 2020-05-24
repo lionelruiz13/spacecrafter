@@ -27,12 +27,12 @@
 #define EVENT_SCRIPT_HANDLER_HPP
 
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class ScriptMgr;
 
-class EventScriptHandler : public SubEventHandler {
+class EventScriptHandler : public EventHandlerCanvas {
 public:
 	EventScriptHandler(ScriptMgr *_scriptMgr) {
 		scriptMgr= _scriptMgr;

@@ -27,13 +27,13 @@
 #define EVENT_FLAG_HANDLER_HPP
 
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class AppCommandInterface;
 
 
-class EventFlagHandler : public SubEventHandler {
+class EventFlagHandler : public EventHandlerCanvas {
 public:
 	EventFlagHandler(AppCommandInterface *_commander) {
 		commander = _commander;

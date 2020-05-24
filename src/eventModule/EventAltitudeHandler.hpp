@@ -27,13 +27,13 @@
 #define EVENT_ALTITUDE_HANDLER_HPP
 
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class Core;
 
 
-class EventAltitudeHandler : public SubEventHandler {
+class EventAltitudeHandler : public EventHandlerCanvas {
 public:
 	EventAltitudeHandler(Core *_core) {
 		core = _core;

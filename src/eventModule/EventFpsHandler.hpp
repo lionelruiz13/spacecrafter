@@ -27,12 +27,12 @@
 #define EVENT_CLOCK_HANDLER_HPP
 
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class Fps;
 
-class EventFpsHandler : public SubEventHandler {
+class EventFpsHandler : public EventHandlerCanvas {
 public:
 	EventFpsHandler(Fps *_clock) {
 		clock = _clock;

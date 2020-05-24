@@ -27,13 +27,13 @@
 #define EVENT_OBSERVER_HANDLER_HPP
 
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class Core;
 
 
-class EventObserverHandler : public SubEventHandler {
+class EventObserverHandler : public EventHandlerCanvas {
 public:
 	EventObserverHandler(Core *_core) {
 		core = _core;

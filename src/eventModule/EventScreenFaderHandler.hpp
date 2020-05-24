@@ -26,12 +26,12 @@
 #ifndef EVENT_SCREEN_FADER_HANDLER_HPP
 #define EVENT_SCREEN_FADER_HANDLER_HPP
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class ScreenFader;
 
-class EventScreenFaderHandler : public SubEventHandler {
+class EventScreenFaderHandler : public EventHandlerCanvas {
 public:
 	EventScreenFaderHandler(ScreenFader *_screenFader) {
 		screenFader = _screenFader;
@@ -45,7 +45,7 @@ protected :
 };
 
 
-class EventScreenFaderInterludeHandler : public SubEventHandler {
+class EventScreenFaderInterludeHandler : public EventHandlerCanvas {
 public:
 	EventScreenFaderInterludeHandler(ScreenFader *_screenFader) {
 		screenFader = _screenFader;

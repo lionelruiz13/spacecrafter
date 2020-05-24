@@ -28,12 +28,12 @@
 
 class Event;
 
-class SubEventHandler {
+class EventHandlerCanvas {
 public:	
-	SubEventHandler(){};
-	virtual ~SubEventHandler(){};
-	SubEventHandler(SubEventHandler const &) = delete;
-	SubEventHandler& operator = (SubEventHandler const &) = delete;
+	EventHandlerCanvas(){};
+	virtual ~EventHandlerCanvas(){};
+	EventHandlerCanvas(EventHandlerCanvas const &) = delete;
+	EventHandlerCanvas& operator = (EventHandlerCanvas const &) = delete;
 
 	virtual void handle(const Event* e) = 0;
 };

@@ -32,7 +32,7 @@
 #include "event.hpp"
 
 class EventManager;
-class SubEventHandler;
+class EventHandlerCanvas;
 class Event;
 
 class EventHandler{
@@ -46,12 +46,12 @@ public:
 
 	void handleEvents();
     void handle(const Event* e);
-	void add(SubEventHandler *sE, Event::Event_Type et);
+	void add(EventHandlerCanvas *sE, Event::Event_Type et);
 	void remove(Event::Event_Type et);
 
 protected :
 	EventManager* eventManager = nullptr;
-	std::map<Event::Event_Type, SubEventHandler *> handlerMap;
+	std::map<Event::Event_Type, EventHandlerCanvas *> handlerMap;
 };
 
 #endif

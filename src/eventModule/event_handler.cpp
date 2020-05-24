@@ -23,7 +23,7 @@
 
 #include "eventModule/event_handler.hpp"
 #include "eventModule/event.hpp"
-#include "eventModule/subEventHandler.hpp"
+#include "eventModule/event_handler_canvas.hpp"
 #include "eventModule/event_manager.hpp"
 
 /*
@@ -56,7 +56,7 @@ void EventHandler::handle(const Event* e) {
 	it->second->handle(e);
 }
 
-void EventHandler::add(SubEventHandler *sE, Event::Event_Type et){
+void EventHandler::add(EventHandlerCanvas *sE, Event::Event_Type et){
 	handlerMap.insert(std::make_pair(et,sE));
 }
 

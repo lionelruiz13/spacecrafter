@@ -27,13 +27,13 @@
 #define EVENT_SAVESCREEN_HANDLER_HPP
 
 
-#include "subEventHandler.hpp"
+#include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class SaveScreenInterface;
 
 
-class EventSaveScreenHandler : public SubEventHandler {
+class EventSaveScreenHandler : public EventHandlerCanvas {
 public:
 	EventSaveScreenHandler(SaveScreenInterface *_saveScreenInterface) {
 		saveScreenInterface = _saveScreenInterface;
