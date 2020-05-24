@@ -23,12 +23,33 @@
  */
 
 
-#ifndef OBSERVER_EVENT_HPP
-#define OBSERVER_EVENT_HPP
+#ifndef CORE_EVENT_HPP
+#define CORE_EVENT_HPP
 
 #include <string>
 #include <sstream>
 #include "eventModule/event.hpp"
+
+class AltitudeEvent : public Event {
+public:
+    AltitudeEvent(double _altitude) : Event(E_CHANGE_ALTITUDE) {
+        altitude = _altitude;
+    }
+    ~AltitudeEvent(){};
+
+    double getAltitude() {
+        return altitude;
+    }
+
+    virtual std::string toString() const {
+        std::ostringstream os;
+        os << Event::toString() << " altitude changed to : " << altitude << std::endl;
+        return os.str();
+}
+private:
+    double altitude;
+};
+
 
 class ObserverEvent : public Event {
 public:
@@ -46,7 +67,6 @@ public:
         os << Event::toString() << " observer changed to : " << newObserver << std::endl;
         return os.str();
 }
-
 private:
     std::string newObserver;
 };

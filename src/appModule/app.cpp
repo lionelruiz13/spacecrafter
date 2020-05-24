@@ -61,8 +61,8 @@
 #include "eventModule/EventScreenFaderHandler.hpp"
 #include "eventModule/EventSaveScreenHandler.hpp"
 #include "eventModule/EventFpsHandler.hpp"
-#include "eventModule/EventAltitudeHandler.hpp"
-#include "eventModule/EventObserverHandler.hpp"
+#include "eventModule/CoreHandler.hpp"
+
 
 EventManager* EventManager::instance = nullptr;
 
@@ -111,7 +111,7 @@ App::App( SDLFacade* const sdl )
 	eventHandler-> add(new EventScreenFaderInterludeHandler(screenFader), Event::E_SCREEN_FADER_INTERLUDE);
 	eventHandler-> add(new EventSaveScreenHandler(saveScreenInterface), Event::E_SAVESCREEN);
 	eventHandler-> add(new EventFpsHandler(internalFPS), Event::E_FPS);
-	eventHandler-> add(new EventAltitudeHandler(core), Event::E_CHANGE_ALTITUDE);
+	eventHandler-> add(new EventCoreHandler(core), Event::E_CHANGE_ALTITUDE);
 	eventHandler-> add(new EventObserverHandler(core), Event::E_CHANGE_OBSERVER);
 
 	#if LINUX

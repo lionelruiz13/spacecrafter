@@ -23,27 +23,19 @@
  */
 
 
-#ifndef EVENT_ALTITUDE_HANDLER_HPP
-#define EVENT_ALTITUDE_HANDLER_HPP
+#include "CoreHandler.hpp"
+#include "coreModule/core.hpp"
+#include "eventModule/CoreEvent.hpp"
 
+void EventCoreHandler::handle(const Event* e)
+{
+	AltitudeEvent * event = (AltitudeEvent *)e;
+	core->onAltitudeChange(event->getAltitude());
+}
 
-#include "event_handler_canvas.hpp"
-#include "event.hpp"
+void EventObserverHandler::handle(const Event* e)
+{
+	ObserverEvent * event = (ObserverEvent *)e;
+	core->onObserverChange(event->getNewObserver());
+}
 
-class Core;
-
-
-class EventAltitudeHandler : public EventHandlerCanvas {
-public:
-	EventAltitudeHandler(Core *_core) {
-		core = _core;
-	}
-	~EventAltitudeHandler() {
-	}
-    void handle(const Event* e) override;
-
-protected :
-	Core* core = nullptr;
-};
-
-#endif

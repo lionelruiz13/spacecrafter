@@ -23,14 +23,28 @@
  */
 
 
-#ifndef EVENT_OBSERVER_HANDLER_HPP
-#define EVENT_OBSERVER_HANDLER_HPP
+#ifndef EVENT_CORE_HANDLER_HPP
+#define EVENT_CORE_HANDLER_HPP
 
 
 #include "event_handler_canvas.hpp"
 #include "event.hpp"
 
 class Core;
+
+
+class EventCoreHandler : public EventHandlerCanvas {
+public:
+	EventCoreHandler(Core *_core) {
+		core = _core;
+	}
+	~EventCoreHandler() {
+	}
+    void handle(const Event* e) override;
+
+protected :
+	Core* core = nullptr;
+};
 
 
 class EventObserverHandler : public EventHandlerCanvas {
