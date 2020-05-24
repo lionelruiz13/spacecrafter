@@ -2,6 +2,7 @@
  * Spacecrafter astronomy simulation and visualization
  *
  * Copyright (C) 2018 Elitit-40
+ * Copyright (C) 2020 Elitit-40
  * Copyright (C) 2020 Association Sirius
  *
  * This program is free software; you can redistribute it and/or

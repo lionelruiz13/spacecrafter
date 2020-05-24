@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2020 Elitith-40
+ * Copyright (C) 2020 Elitit-40
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ public:
     }
     ~ObserverEvent(){};
 
-    std::string getNewObserver() {
+    const std::string& getNewObserver() {
         return newObserver;
     }
 

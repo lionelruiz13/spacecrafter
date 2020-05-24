@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2020 Elitith-40
+ * Copyright (C) 2020 Elitit-40
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,12 +33,12 @@
 class Core;
 
 
-class EventCoreHandler : public EventHandlerCanvas {
+class EventAltitudeHandler : public EventHandlerCanvas {
 public:
-	EventCoreHandler(Core *_core) {
+	EventAltitudeHandler(Core *_core) {
 		core = _core;
 	}
-	~EventCoreHandler() {
+	~EventAltitudeHandler() {
 	}
     void handle(const Event* e) override;
 

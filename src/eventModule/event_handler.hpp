@@ -1,7 +1,8 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 Elitith-40
+ * Copyright (C) 2018 Elitit-40
+ * Copyright (C) 2020 Elitit-40
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
