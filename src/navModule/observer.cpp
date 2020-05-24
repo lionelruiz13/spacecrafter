@@ -40,7 +40,7 @@
 #include "tools/log.hpp"
 #include "tools/fmath.hpp"
 #include "eventModule/event_manager.hpp"
-#include "eventModule/AltitudeEvent.hpp"
+#include "eventModule/EventAltitude.hpp"
 #include "mainModule/define_key.hpp"
 
 Observer::Observer()

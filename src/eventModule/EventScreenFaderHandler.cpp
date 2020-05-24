@@ -23,7 +23,7 @@
  */
 
 
-#include "ScreenFaderEvent.hpp"
+#include "EventScreenFader.hpp"
 #include "appModule/screenFader.hpp"
 #include "eventModule/EventScreenFaderHandler.hpp"
 

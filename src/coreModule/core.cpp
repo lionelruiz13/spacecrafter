@@ -46,7 +46,7 @@
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
-#include "eventModule/ObserverEvent.hpp"
+#include "eventModule/EventObserver.hpp"
 #include "eventModule/event_manager.hpp"
 
 Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :

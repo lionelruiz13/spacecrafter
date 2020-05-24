@@ -25,7 +25,7 @@
 
 #include "EventFlagHandler.hpp"
 #include "interfaceModule/app_command_interface.hpp"
-#include "eventModule/FlagEvent.hpp"
+#include "eventModule/EventFlag.hpp"
 
 
 void EventFlagHandler::handle(const Event* e)

@@ -25,7 +25,7 @@
 
 #include "EventAltitudeHandler.hpp"
 #include "coreModule/core.hpp"
-#include "eventModule/AltitudeEvent.hpp"
+#include "eventModule/EventAltitude.hpp"
 
 void EventAltitudeHandler::handle(const Event* e)
 {

@@ -24,7 +24,7 @@
 #include "coreModule/core_executor.hpp"
 #include "navModule/observer.hpp"
 #include "eventModule/event_manager.hpp"
-#include "eventModule/ScreenFaderEvent.hpp"
+#include "eventModule/EventScreenFader.hpp"
 /*
  *
  * Classe virtuelle CoreExecutor

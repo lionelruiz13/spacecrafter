@@ -10,7 +10,7 @@
 #include "tools/log.hpp"
 
 #include "appModule/save_screen_interface.hpp"
-#include "eventModule/FpsEvent.hpp"
+#include "eventModule/EventFps.hpp"
 #include "eventModule/event_manager.hpp"
 
 SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _height)

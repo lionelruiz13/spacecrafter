@@ -15,7 +15,7 @@
 
 #include "coreModule/projector.hpp"
 #include "eventModule/event_manager.hpp"
-#include "eventModule/ScriptEvent.hpp"
+#include "eventModule/EventScript.hpp"
 #include "mediaModule/vr360.hpp"
 #include "navModule/navigator.hpp"
 #include "ojmModule/ojml.hpp"

@@ -25,7 +25,7 @@
 
 #include "EventCommandHandler.hpp"
 #include "interfaceModule/app_command_interface.hpp"
-#include "eventModule/CommandEvent.hpp"
+#include "eventModule/EventCommand.hpp"
 
 void EventCommandHandler::handle(const Event* e)
 {

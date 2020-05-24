@@ -25,7 +25,7 @@
 
 #include "EventFpsHandler.hpp"
 #include "appModule/fps.hpp"
-#include "eventModule/FpsEvent.hpp"
+#include "eventModule/EventFps.hpp"
 
 
 void EventFpsHandler::handle(const Event* e)

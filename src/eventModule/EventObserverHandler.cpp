@@ -25,7 +25,7 @@
 
 #include "EventObserverHandler.hpp"
 #include "coreModule/core.hpp"
-#include "eventModule/ObserverEvent.hpp"
+#include "eventModule/EventObserver.hpp"
 
 void EventObserverHandler::handle(const Event* e)
 {

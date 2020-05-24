@@ -25,7 +25,7 @@
 
 #include "EventSaveScreenHandler.hpp"
 #include "appModule/save_screen_interface.hpp"
-#include "eventModule/SaveScreenEvent.hpp"
+#include "eventModule/EventSaveScreen.hpp"
 
 
 void EventSaveScreenHandler::handle(const Event* e)

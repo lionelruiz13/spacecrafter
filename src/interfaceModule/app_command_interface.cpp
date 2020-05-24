@@ -38,7 +38,7 @@
 #include "coreModule/coreLink.hpp"
 #include "coreModule/backup_mgr.hpp"
 #include "eventModule/event_manager.hpp"
-#include "eventModule/ScreenFaderEvent.hpp"
+#include "eventModule/EventScreenFader.hpp"
 #include "interfaceModule/app_command_interface.hpp"
 #include "interfaceModule/app_command_init.hpp"
 #include "interfaceModule/app_command_eval.hpp"
