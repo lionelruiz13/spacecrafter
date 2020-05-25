@@ -102,8 +102,8 @@ App::App( SDLFacade* const sdl )
 	commander->initSaveScreenInterface(saveScreenInterface);
 
 	EventRecorder::Init();
-	eventManager = EventRecorder::getInstance();
-	eventHandler = new EventHandler(eventManager);
+	eventRecorder = EventRecorder::getInstance();
+	eventHandler = new EventHandler(eventRecorder);
 	eventHandler-> add(new EventScriptHandler(scriptMgr), Event::E_SCRIPT);
 	eventHandler-> add(new EventCommandHandler(commander), Event::E_COMMAND);
 	eventHandler-> add(new EventFlagHandler(commander), Event::E_FLAG);

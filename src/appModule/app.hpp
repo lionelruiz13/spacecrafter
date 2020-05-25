@@ -185,7 +185,7 @@ private:
 	#endif
 
 	SpaceDate * spaceDate = nullptr;			// Handles dates and conversions
-	EventRecorder *eventManager = nullptr;
+	EventRecorder *eventRecorder = nullptr;
 	EventHandler *eventHandler = nullptr;
 
 	Uint16 width, height;  						//! Contient la résolution w et h de la fenetre SDL
