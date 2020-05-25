@@ -67,6 +67,10 @@ public:
 	bool getFlagShow(SKYDISPLAY_NAME nameObj);
 	void flipFlagShow(SKYDISPLAY_NAME nameObj);
 
+	// fonctions de sauvegarde de l'état des grilles 
+	void saveState(SkyDisplaySave &obj);
+	void loadState(SkyDisplaySave &obj);
+
 private:
 	std::string getSkyName(SKYDISPLAY_NAME nameObj);
 	std::map<SKYDISPLAY_NAME,SkyDisplay*> m_map;

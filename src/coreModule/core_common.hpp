@@ -62,4 +62,17 @@ enum class SKYDISPLAY_NAME : char{
 	SKY_ANGDIST
 };
 
+//structure qui stocke SkyDisplay à un instant t
+struct SkyDisplaySave {
+	bool personal;
+	bool personeq;
+	bool nautical;
+	bool nauticeq;
+	bool orthodromy;
+	bool loxodromy;
+	bool objcoords;
+	bool mousecoords;
+	bool angdist;
+};
+
 #endif

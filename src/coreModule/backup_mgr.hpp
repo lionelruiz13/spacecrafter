@@ -61,9 +61,15 @@ public:
 	//gestion des états des grilles
 	void saveGridState();
 	void loadGridState();
+
+	//gestion des états de SkyDkisplay
+	void saveDisplayState();
+	void loadDisplayState();
+
 private:
 	BackupWorkspace mBackup;
 	SkyGridSave	skyGridSave;
+	SkyDisplaySave skyDisplaySave;
 	Core* core= nullptr;
 };
 

@@ -1874,6 +1874,8 @@ int AppCommandInterface::commandClear()
 	}
 
 	coreBackup->loadGridState();
+	coreBackup->loadDisplayState();
+	
 	// turn off all labels
 	//executeCommand("flag azimuthal_grid off");
 	executeCommand(FLAG_MERIDIAN_LINE_OFF);

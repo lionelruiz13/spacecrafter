@@ -277,6 +277,7 @@ void App::init()
 	scriptMgr->playStartupScript();
 	// on sauvegarde ici l'état des composants du logiciel.
 	coreBackup->saveGridState();
+	coreBackup->saveDisplayState();
 }
 
 //! Load configuration from disk

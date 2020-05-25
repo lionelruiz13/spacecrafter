@@ -292,3 +292,29 @@ std::string SkyDisplayMgr::getSkyName(SKYDISPLAY_NAME nameObj)
 			break;
 	}
 }
+
+void SkyDisplayMgr::saveState(SkyDisplaySave &obj)
+{
+	obj.personal= getFlagShow(SKYDISPLAY_NAME::SKY_PERSONAL);
+	obj.personeq= getFlagShow(SKYDISPLAY_NAME::SKY_PERSONEQ);
+	obj.nautical = getFlagShow(SKYDISPLAY_NAME::SKY_NAUTICAL);
+	obj.nauticeq = getFlagShow(SKYDISPLAY_NAME::SKY_NAUTICEQ);
+	obj.orthodromy = getFlagShow(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+	obj.loxodromy = getFlagShow(SKYDISPLAY_NAME::SKY_LOXODROMY);
+	obj.objcoords = getFlagShow(SKYDISPLAY_NAME::SKY_OBJCOORDS);
+	obj.mousecoords = getFlagShow(SKYDISPLAY_NAME::SKY_MOUSECOORDS);
+	obj.angdist = getFlagShow(SKYDISPLAY_NAME::SKY_ANGDIST);
+}
+
+void SkyDisplayMgr::loadState(SkyDisplaySave &obj)
+{
+	setFlagShow(SKYDISPLAY_NAME::SKY_PERSONAL, obj.personal);
+	setFlagShow(SKYDISPLAY_NAME::SKY_PERSONEQ, obj.personeq);
+	setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICAL, obj.nautical);
+	setFlagShow(SKYDISPLAY_NAME::SKY_NAUTICEQ, obj.nauticeq);
+	setFlagShow(SKYDISPLAY_NAME::SKY_ORTHODROMY, obj.orthodromy);
+	setFlagShow(SKYDISPLAY_NAME::SKY_LOXODROMY, obj.loxodromy);
+	setFlagShow(SKYDISPLAY_NAME::SKY_OBJCOORDS, obj.objcoords);
+	setFlagShow(SKYDISPLAY_NAME::SKY_MOUSECOORDS, obj.mousecoords);
+	setFlagShow(SKYDISPLAY_NAME::SKY_ANGDIST, obj.angdist);
+}
