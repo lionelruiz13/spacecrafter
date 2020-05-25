@@ -14,7 +14,7 @@
 */
 
 #include "coreModule/projector.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScript.hpp"
 #include "mediaModule/vr360.hpp"
 #include "navModule/navigator.hpp"
@@ -86,12 +86,12 @@ void VR360::display(bool alive)
 	Event* event;
 	if (alive) {
 		event = new ScriptEvent( AppSettings::Instance()->getScriptDir()+"internal/initialVR360.sts");
-		EventManager::getInstance()->queue(event);
+		EventRecorder::getInstance()->queue(event);
 		showFader = true;
 	}
 	else {
 		event = new ScriptEvent( AppSettings::Instance()->getScriptDir()+"internal/clearVR360.sts");
-		EventManager::getInstance()->queue(event);
+		EventRecorder::getInstance()->queue(event);
 		showFader = false;
 		showFader.update(VR360_FADER_DURATION);
 	}

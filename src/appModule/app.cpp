@@ -44,7 +44,7 @@
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
 #include "eventModule/event_handler.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 #include "interfaceModule/app_command_interface.hpp"
 #include "interfaceModule/script_interface.hpp"
 #include "interfaceModule/script_mgr.hpp"
@@ -64,7 +64,7 @@
 #include "eventModule/CoreHandler.hpp"
 
 
-EventManager* EventManager::instance = nullptr;
+EventRecorder* EventRecorder::instance = nullptr;
 
 App::App( SDLFacade* const sdl )
 {
@@ -101,8 +101,8 @@ App::App( SDLFacade* const sdl )
 	commander->initSpaceDateInterface(spaceDate);
 	commander->initSaveScreenInterface(saveScreenInterface);
 
-	EventManager::Init();
-	eventManager = EventManager::getInstance();
+	EventRecorder::Init();
+	eventManager = EventRecorder::getInstance();
 	eventHandler = new EventHandler(eventManager);
 	eventHandler-> add(new EventScriptHandler(scriptMgr), Event::E_SCRIPT);
 	eventHandler-> add(new EventCommandHandler(commander), Event::E_COMMAND);
@@ -139,7 +139,7 @@ App::~App()
 	eventHandler->remove(Event::E_COMMAND);
 	eventHandler->remove(Event::E_SCRIPT);
 
-	EventManager::End();
+	EventRecorder::End();
 
 	delete appDraw;
 	if (enable_tcp)

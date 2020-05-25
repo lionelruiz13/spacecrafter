@@ -23,6 +23,12 @@
  *
  */
 
+/**
+* \file event_handler.hpp
+* \brief Register of event types and execute events
+* \author Elitit
+* \version 1
+*/
 
 #ifndef EVENT_HANDLER_HPP
 #define EVENT_HANDLER_HPP
@@ -32,13 +38,13 @@
 #include <map>
 #include "event.hpp"
 
-class EventManager;
+class EventRecorder;
 class EventHandlerCanvas;
 class Event;
 
 class EventHandler{
 public:
-	EventHandler( EventManager* _eventManager);
+	EventHandler( EventRecorder* _eventManager);
 	EventHandler(EventHandler const &) = delete;
 	EventHandler& operator = (EventHandler const &) = delete;
 
@@ -51,7 +57,7 @@ public:
 	void remove(Event::Event_Type et);
 
 protected :
-	EventManager* eventManager = nullptr;
+	EventRecorder* eventManager = nullptr;
 	std::map<Event::Event_Type, EventHandlerCanvas *> handlerMap;
 };
 

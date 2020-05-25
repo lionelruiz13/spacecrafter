@@ -24,18 +24,18 @@
  */
 
 
-#ifndef EVENT_MANAGER_HPP
-#define EVENT_MANAGER_HPP
+#ifndef EVENT_RECORDER_HPP
+#define EVENT_RECORDER_HPP
 
 
 #include "event.hpp"
 #include <list>
 #include <algorithm>
 
-class EventManager{
+class EventRecorder{
 public:
-	EventManager(EventManager const &) = delete;
-	EventManager& operator = (EventManager const &) = delete;
+	EventRecorder(EventRecorder const &) = delete;
+	EventRecorder& operator = (EventRecorder const &) = delete;
 	
 	static void End() {
 		if (instance != nullptr) {
@@ -44,14 +44,14 @@ public:
 		instance = nullptr;
 	}
 	
-    static EventManager * getInstance(){
-        return instance == nullptr ? new EventManager() : instance;
+    static EventRecorder * getInstance(){
+        return instance == nullptr ? new EventRecorder() : instance;
     }
 
 	static void Init(){
 		if (instance != nullptr)
 			delete instance;
-		instance = new EventManager();
+		instance = new EventRecorder();
 	}
 
     void queue(const Event* event){
@@ -70,15 +70,15 @@ public:
 	}
 
 private:
-    EventManager(){
+    EventRecorder(){
     }
 
-	~EventManager() {
+	~EventRecorder() {
 		std::for_each(envents.begin(), envents.end(), [](const Event* e) { delete e; });
 		envents.clear();
 	}
     //singleton pour ne pas changer toutes les classes du logiciel
-    static EventManager * instance;
+    static EventRecorder * instance;
     // la liste des évènements
     std::list<const Event*> envents;
 };

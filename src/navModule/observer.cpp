@@ -39,7 +39,7 @@
 #include "tools/translator.hpp"
 #include "tools/log.hpp"
 #include "tools/fmath.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "mainModule/define_key.hpp"
 
@@ -58,7 +58,7 @@ void Observer::setAltitude(double a) {
 	altitude=a;
 	flag_move_to = 0;
 	Event* event = new AltitudeEvent(a);
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 }
 
 
@@ -161,7 +161,7 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, bool cal
 {
 	if (alt!=altitude) {
 		Event* event = new AltitudeEvent(alt);
-		EventManager::getInstance()->queue(event);
+		EventRecorder::getInstance()->queue(event);
 	}
 
 	// If calculate_duration is true, scale the duration based on the amount of change

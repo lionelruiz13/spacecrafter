@@ -47,7 +47,7 @@
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "eventModule/CoreEvent.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 
 Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, AppSettings::Instance()->getLocaleDir(), ""),
@@ -1830,7 +1830,7 @@ bool Core::setHomePlanet(const std::string &planet)
 	// reset planet trails due to changed perspective
 	ssystem->startTrails( ssystem->getFlag(BODY_FLAG::F_TRAIL));
 	Event* event= new ObserverEvent(planet);
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 	if (planet=="selected")
 		return anchorManager->switchToAnchor(selected_object.getEnglishName()); 
 	else 

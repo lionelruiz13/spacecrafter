@@ -60,7 +60,7 @@ class AppDraw;
 class SaveScreenInterface;
 class ServerSocket;
 class ScreenFader;
-class EventManager;
+class EventRecorder;
 class EventHandler;
 
 
@@ -185,7 +185,7 @@ private:
 	#endif
 
 	SpaceDate * spaceDate = nullptr;			// Handles dates and conversions
-	EventManager *eventManager = nullptr;
+	EventRecorder *eventManager = nullptr;
 	EventHandler *eventHandler = nullptr;
 
 	Uint16 width, height;  						//! Contient la résolution w et h de la fenetre SDL

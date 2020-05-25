@@ -24,13 +24,13 @@
 #include "eventModule/event_handler.hpp"
 #include "eventModule/event.hpp"
 #include "eventModule/event_handler_canvas.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 
 /*
  * EventHandler ------------------------------------------------------------------------
 */
 
-EventHandler::EventHandler(EventManager* _eventManager)
+EventHandler::EventHandler(EventRecorder* _eventManager)
 {
 	eventManager = _eventManager;
 }

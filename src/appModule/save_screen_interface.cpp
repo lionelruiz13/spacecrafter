@@ -11,7 +11,7 @@
 
 #include "appModule/save_screen_interface.hpp"
 #include "eventModule/EventFps.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 
 SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _height)
 {
@@ -31,14 +31,14 @@ void SaveScreenInterface::startVideo()
 {
 	readScreen=ReadScreen::VIDEO;
 	Event* event = new FpsEvent(FPS_ORDER::LOW_FPS);
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 }
 
 void SaveScreenInterface::stopVideo()
 {
 	readScreen=ReadScreen::NONE;
 	Event* event = new FpsEvent(FPS_ORDER::HIGH_FPS);
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 }
 
 void SaveScreenInterface::takeVideoShot()

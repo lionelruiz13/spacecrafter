@@ -37,7 +37,7 @@
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
 #include "coreModule/backup_mgr.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
 #include "interfaceModule/app_command_interface.hpp"
 #include "interfaceModule/app_command_init.hpp"
@@ -1567,7 +1567,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_MODE: stcore->switchMode(setValue); break;
 		case SCD_NAMES::APP_SCREEN_FADER: 
 						{	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(setValue));
-							EventManager::getInstance()->queue(event);
+							EventRecorder::getInstance()->queue(event);
 						} break;
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(setValue); break;

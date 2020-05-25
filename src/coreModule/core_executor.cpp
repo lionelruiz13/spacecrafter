@@ -23,7 +23,7 @@
 #include "coreModule/core.hpp"
 #include "coreModule/core_executor.hpp"
 #include "navModule/observer.hpp"
-#include "eventModule/event_manager.hpp"
+#include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
 /*
  *
@@ -79,7 +79,7 @@ void CoreExecutorInSolarSystem::onEnter()
 	nextMode = nullptr;
 	observer->loadBodyInSolarSystem();
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 	//réglage de l'altitude dans CoreExecutorInSolarSystem la première fois 
 	if (observer->getAltitude() < maxAltToGoUp)
 		observer->setAltitude(observer->getAltitude() *1.E6);
@@ -173,7 +173,7 @@ void CoreExecutorInGalaxy::update(int delta_time)
 	core->updateInGalaxy(delta_time);
 	Event* event = new ScreenFaderInterludeEvent(
 		ScreenFaderInterludeEvent::UP, maxAltToGoUp/10.0,maxAltToGoUp, observer->getAltitude());
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 }
 
 void CoreExecutorInGalaxy::draw(int delta_time)
@@ -189,7 +189,7 @@ bool CoreExecutorInGalaxy::testValidAltitude(double altitude)
 	if (altitude>maxAltToGoUp) {
 		nextMode = upMode;
 		Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
-		EventManager::getInstance()->queue(event);
+		EventRecorder::getInstance()->queue(event);
 		return true;
 	}
 	if (altitude<minAltToGoDown) {
@@ -228,14 +228,14 @@ void CoreExecutorInUniverse::onEnter()
 		printf("je change la valeur de l'altitude dans InUniverse\n");
 		observer->setAltitude(minAltToGoDown);
 		Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
-		EventManager::getInstance()->queue(event);
+		EventRecorder::getInstance()->queue(event);
 }
 
 
 void CoreExecutorInUniverse::onExit()
 {
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 	std::cout << "Je quitte InUniverse" << std::endl;
 }
 
@@ -244,7 +244,7 @@ void CoreExecutorInUniverse::update(int delta_time)
 	core->updateInUniverse(delta_time);
 	Event* event = new ScreenFaderInterludeEvent(
 		ScreenFaderInterludeEvent::DOWN, minAltToGoDown,1.1*minAltToGoDown, observer->getAltitude());
-	EventManager::getInstance()->queue(event);
+	EventRecorder::getInstance()->queue(event);
 }
 
 void CoreExecutorInUniverse::draw(int delta_time)
