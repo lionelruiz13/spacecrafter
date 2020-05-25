@@ -78,3 +78,13 @@ void CoreBackup::loadDisplayState()
 {
 	core->skyDisplayMgr->loadState(skyDisplaySave);
 }
+
+void CoreBackup::saveLineState()
+{
+	core->skyLineMgr->saveState(skyLineSave);
+}
+
+void CoreBackup::loadLineState()
+{
+	core->skyLineMgr->loadState(skyLineSave);
+}

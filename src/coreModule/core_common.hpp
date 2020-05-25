@@ -25,6 +25,30 @@ enum class SKYLINE_TYPE : char {
 		LINE_UNKNOWN
 	};
 
+//structure qui stocke les grilles à un instant t
+struct SkyLineSave {
+	bool circle_polar;
+	bool point_polar;
+	bool ecliptic_pole;
+	bool galactic_pole;
+	bool analemma;
+	bool analemmaline;
+	bool circumpolar;
+	bool galactic_center;
+	bool vernal;
+	bool greenwich;
+	bool aries;
+	bool equator;
+	bool galactic_equator;
+	bool meridian;
+	bool tropic;
+	bool ecliptic;
+	bool precession;
+	bool vertical;
+	bool zodiac;
+	bool zenith;
+};
+
 enum class SKYGRID_TYPE : char {
 	GRID_EQUATORIAL,
 	GRID_ECLIPTIC,

@@ -278,6 +278,7 @@ void App::init()
 	// on sauvegarde ici l'état des composants du logiciel.
 	coreBackup->saveGridState();
 	coreBackup->saveDisplayState();
+	coreBackup->saveLineState();
 }
 
 //! Load configuration from disk

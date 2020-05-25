@@ -416,3 +416,51 @@ void SkyLineMgr::Create(SKYLINE_TYPE type_obj)
 			break;
 	}
 }
+
+void SkyLineMgr::saveState(SkyLineSave &obj)
+{
+	obj.circle_polar= getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
+	obj.point_polar= getFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR);
+	obj.ecliptic_pole = getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
+	obj.galactic_pole = getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE);
+	obj.analemma = getFlagShow(SKYLINE_TYPE::LINE_ANALEMMA);
+	obj.analemmaline = getFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE);
+	obj.circumpolar = getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR);
+	obj.galactic_center = getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER);
+	obj.vernal = getFlagShow(SKYLINE_TYPE::LINE_VERNAL);
+	obj.greenwich= getFlagShow(SKYLINE_TYPE::LINE_GREENWICH);
+	obj.aries= getFlagShow(SKYLINE_TYPE::LINE_ARIES);
+	obj.equator = getFlagShow(SKYLINE_TYPE::LINE_EQUATOR);
+	obj.galactic_equator = getFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR);
+	obj.meridian = getFlagShow(SKYLINE_TYPE::LINE_MERIDIAN);
+	obj.tropic = getFlagShow(SKYLINE_TYPE::LINE_TROPIC);
+	obj.ecliptic = getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC);
+	obj.precession = getFlagShow(SKYLINE_TYPE::LINE_PRECESSION);
+	obj.vertical = getFlagShow(SKYLINE_TYPE::LINE_VERTICAL);
+	obj.zodiac = getFlagShow(SKYLINE_TYPE::LINE_ZODIAC);
+	obj.zenith = getFlagShow(SKYLINE_TYPE::LINE_ZENITH);
+}
+
+void SkyLineMgr::loadState(SkyLineSave &obj)
+{
+	setFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, obj.circle_polar);
+	setFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, obj.point_polar);
+	setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC_POLE, obj.ecliptic_pole);
+	setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_POLE, obj.galactic_pole);
+	setFlagShow(SKYLINE_TYPE::LINE_ANALEMMA, obj.analemma);
+	setFlagShow(SKYLINE_TYPE::LINE_ANALEMMALINE, obj.analemmaline);
+	setFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR, obj.circumpolar);
+	setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_CENTER, obj.galactic_center);
+	setFlagShow(SKYLINE_TYPE::LINE_VERNAL, obj.vernal);
+	setFlagShow(SKYLINE_TYPE::LINE_GREENWICH, obj.greenwich);
+	setFlagShow(SKYLINE_TYPE::LINE_ARIES, obj.aries);
+	setFlagShow(SKYLINE_TYPE::LINE_EQUATOR, obj.equator);
+	setFlagShow(SKYLINE_TYPE::LINE_GALACTIC_EQUATOR, obj.galactic_equator);
+	setFlagShow(SKYLINE_TYPE::LINE_MERIDIAN, obj.meridian);
+	setFlagShow(SKYLINE_TYPE::LINE_TROPIC, obj.tropic);
+	setFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC, obj.ecliptic);
+	setFlagShow(SKYLINE_TYPE::LINE_PRECESSION, obj.precession);
+	setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, obj.vertical);
+	setFlagShow(SKYLINE_TYPE::LINE_ZODIAC, obj.zodiac);
+	setFlagShow(SKYLINE_TYPE::LINE_ZENITH, obj.zenith);
+}

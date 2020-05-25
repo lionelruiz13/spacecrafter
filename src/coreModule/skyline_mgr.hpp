@@ -66,6 +66,10 @@ public:
 	bool getFlagShow(SKYLINE_TYPE typeObj);
 	void flipFlagShow(SKYLINE_TYPE typeObj);
 
+	// fonctions de sauvegarde de l'état des Lines
+	void saveState(SkyLineSave &obj);
+	void loadState(SkyLineSave &obj);
+
 	void translateLabels(Translator& trans);
 	bool isExist(SKYLINE_TYPE typeObj);
 

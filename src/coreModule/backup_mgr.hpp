@@ -66,10 +66,15 @@ public:
 	void saveDisplayState();
 	void loadDisplayState();
 
+	//gestion des états de SkyLine
+	void saveLineState();
+	void loadLineState();
+
 private:
 	BackupWorkspace mBackup;
 	SkyGridSave	skyGridSave;
 	SkyDisplaySave skyDisplaySave;
+	SkyLineSave skyLineSave;
 	Core* core= nullptr;
 };
 
