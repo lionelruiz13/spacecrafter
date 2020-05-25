@@ -36,13 +36,12 @@
 #include "tools/fader.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/core_common.hpp"
+#include "tools/no_copy.hpp"
 
-class SkyLineMgr {
+class SkyLineMgr: public NoCopy  {
 public:
 	SkyLineMgr();
 	~SkyLineMgr();
-	SkyLineMgr(SkyLineMgr const &) = delete;
-	SkyLineMgr& operator = (SkyLineMgr const &) = delete;
 
 	int size() {
 		return m_map.size();

@@ -28,11 +28,12 @@
 #include <vector>
 #include "ojmModule/ojm.hpp"
 #include "tools/shader.hpp"
+#include "tools/no_copy.hpp"
 
 class Projector;
 class Navigator;
 
-class OjmMgr {
+class OjmMgr: public NoCopy {
 public:
 	enum STATE_POSITION {
 		IN_UNIVERSE,
@@ -42,8 +43,6 @@ public:
 
 	OjmMgr();
 	virtual ~OjmMgr();
-	OjmMgr(OjmMgr const &) = delete;
-	OjmMgr& operator = (OjmMgr const &) = delete;
 
 	bool load(const std::string &mode, const std::string &name, const std::string &fileName, const std::string &pathFile, Vec3f Position, float multiplier = 1.0f);
 

@@ -33,17 +33,16 @@
 #include "meteor.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/no_copy.hpp"
 
 class Projector;
 class Navigator;
 
-class MeteorMgr {
+class MeteorMgr: public NoCopy {
 
 public:
 	MeteorMgr(int zhr, int maxv );  // base_zhr is zenith hourly rate sans meteor shower
 	virtual ~MeteorMgr();
-	MeteorMgr(MeteorMgr const &) = delete;
-	MeteorMgr& operator = (MeteorMgr const &) = delete;
 
 	void setZHR(int zhr);   // set zenith hourly rate
 	int getZHR(void);

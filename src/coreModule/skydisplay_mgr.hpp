@@ -34,16 +34,15 @@
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
+#include "tools/no_copy.hpp"
 
 class shaderProgram;
 class s_font;
 
-class SkyDisplayMgr {
+class SkyDisplayMgr: public NoCopy  {
 public:
 	SkyDisplayMgr();
 	~SkyDisplayMgr();
-	SkyDisplayMgr(SkyDisplayMgr const &) = delete;
-	SkyDisplayMgr& operator = (SkyDisplayMgr const &) = delete;
 
 	int size() {
 		return m_map.size();

@@ -35,18 +35,17 @@
 #include <fstream>
 #include <list>
 #include <vector>
+#include "tools/no_copy.hpp"
 
 class AppCommandInterface;
 class Media;
 class Script;
 
-class ScriptMgr {
+class ScriptMgr: public NoCopy {
 
 public:
 	ScriptMgr(AppCommandInterface * command_interface, const std::string &_data_dir, Media * _media);
 	~ScriptMgr();
-	ScriptMgr(ScriptMgr const &) = delete;
-	ScriptMgr& operator = (ScriptMgr const &) = delete;
 
 	//! lance un script 
 	bool playScript(const std::string &fullFileName);

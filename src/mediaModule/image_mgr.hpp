@@ -32,6 +32,7 @@
 #include <map>
 #include <GL/glew.h>
 #include "mediaModule/image.hpp"
+#include "tools/no_copy.hpp"
 
 /**
  * @class ImageMgr
@@ -48,12 +49,10 @@
  */
 
 
-class ImageMgr {
+class ImageMgr: public NoCopy {
 public:
 	ImageMgr();
 	virtual ~ImageMgr();
-	ImageMgr(ImageMgr const &) = delete;
-	ImageMgr& operator = (ImageMgr const &) = delete;
 
 	//! tube pour la création des shaders pour le draw des images
 	void createImageShader();

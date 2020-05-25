@@ -32,13 +32,12 @@
 #define JD_DAY    1.
 
 #include "tools/utility.hpp"
+#include "tools/no_copy.hpp"
 
-class TimeMgr {
+class TimeMgr : public NoCopy {
 public:
 	TimeMgr();
 	~TimeMgr();
-	TimeMgr(TimeMgr const &) = delete;
-	TimeMgr& operator = (TimeMgr const &) = delete;
 
 	// Time controls
 	void setJDay(double JD) {

@@ -22,7 +22,7 @@
 #include "tools/fader.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
-
+#include "tools/no_copy.hpp"
 
 using HIPpos = std::pair<int, Vec3f>;
 
@@ -35,12 +35,10 @@ class Projector;
   *  \details Cette classe dessine un astérisme customisé à partir d'un catalogue
   *  d'étoiles HIP chargé en amont.
   */
-class StarLines {
+class StarLines: public NoCopy  {
 public:
 	StarLines();
 	~StarLines();
-	StarLines(StarLines const &) = delete;
-	StarLines& operator = (StarLines const &) = delete;
 
 	//! update les faders de la classe
 	void update(int delta_time) {

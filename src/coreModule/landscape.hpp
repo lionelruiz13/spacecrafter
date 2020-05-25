@@ -33,6 +33,7 @@
 #include "tools/utility.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/no_copy.hpp"
 
 class s_texture;
 class ToneReproductor;
@@ -40,7 +41,7 @@ class Navigator;
 class Projector;
 
 // Class which manages the displaying of the Landscape
-class Landscape {
+class Landscape: public NoCopy {
 
 public:
 	enum LANDSCAPE_TYPE {
@@ -51,8 +52,6 @@ public:
 
 	Landscape(float _radius = 2.);
 	virtual ~Landscape();
-	Landscape(Landscape const &) = delete;
-	Landscape& operator = (Landscape const &) = delete;
 
 	virtual void load(const std::string& file_name, const std::string& section_name);
 

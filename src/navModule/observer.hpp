@@ -30,6 +30,7 @@
 #include <string>
 #include "tools/init_parser.hpp"
 #include "tools/vecmath.hpp"
+#include "tools/no_copy.hpp"
 
 class Body;
 class AnchorPoint;
@@ -41,13 +42,11 @@ class AnchorPoint;
 //! Ce sont ces paramètres qui sont gérés par la classe.
 //!
 
-class Observer {
+class Observer: public NoCopy {
 public:
 	//! Create a new Observer instance which is at a fixed Location
 	Observer();
 	~Observer();
-	Observer(Observer const &) = delete;
-	Observer& operator = (Observer const &) = delete;
 
 	void setAnchorPoint(const AnchorPoint * _anchor){
 		anchor = _anchor;

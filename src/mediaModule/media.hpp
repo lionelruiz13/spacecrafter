@@ -33,17 +33,16 @@
 #include "mediaModule/vr360.hpp"
 #include "mediaModule/viewport.hpp"
 #include "tools/app_settings.hpp"
+#include "tools/no_copy.hpp"
 
 class Projector;
 class Navigator;
 
-class Media {
+class Media : public NoCopy{
 
 public:
 	Media(/*unsigned int _width, unsigned int _height*/);
 	~Media();
-	Media(Media const &) = delete;
-	Media& operator = (Media const &) = delete;
 
 	////////////////////////////////////////////////////////////////////////////
 	//

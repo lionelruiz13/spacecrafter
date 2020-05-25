@@ -30,6 +30,7 @@
 #include "tools/fader.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/no_copy.hpp"
 #include <vector>
 
 class Projector;
@@ -39,7 +40,7 @@ class Translator;
 class s_font;
 
 //! Class which manages a personal line to display around the sky
-class SkyDisplay {
+class SkyDisplay: public NoCopy  {
 public:
 	enum PROJECTION_TYPE {
 		AL,
@@ -47,8 +48,6 @@ public:
 	};
 	SkyDisplay(PROJECTION_TYPE ptype);
 	virtual ~SkyDisplay();
-	SkyDisplay(SkyDisplay const &) = delete;
-	SkyDisplay& operator = (SkyDisplay const &) = delete;
 
 	//!	void draw(const Projector* prj) const; 20060825 patch
 	virtual void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) = 0;

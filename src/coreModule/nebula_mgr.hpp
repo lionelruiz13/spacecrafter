@@ -32,19 +32,17 @@
 #include "tools/fader.hpp"
 #include "coreModule/grid.hpp"
 #include "coreModule/nebula.hpp"
-
+#include "tools/no_copy.hpp"
 
 
 
 /*! \class NebulaMgr
   * \brief NebulaMgr handles all deepsky_objects DSO.
   */
-class NebulaMgr {
+class NebulaMgr : public NoCopy {
 public:
 	NebulaMgr();
 	virtual ~NebulaMgr();
-	NebulaMgr(NebulaMgr const &) = delete;
-	NebulaMgr& operator = (NebulaMgr const &) = delete;
 
 	//! Read the Nebulas data from a unique file cat
 	bool loadDeepskyObject(const std::string& cat);

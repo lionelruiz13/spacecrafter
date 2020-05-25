@@ -32,6 +32,7 @@
 #include <vector>
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
+#include "tools/no_copy.hpp"
 
 /**
  * @class TextMgr
@@ -45,12 +46,10 @@
  * Le conteneur textUsr contient tous les text qui sont indépendants
  *
  */
-class TextMgr {
+class TextMgr: public NoCopy {
 public:
 	TextMgr();
 	~TextMgr();
-	TextMgr(TextMgr const &) = delete;
-	TextMgr& operator = (TextMgr const &) = delete;
 
 	//! transmet les variations de temps aux différents textes
 	void update(int delta_time);

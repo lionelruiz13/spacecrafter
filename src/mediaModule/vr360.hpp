@@ -20,6 +20,7 @@
 #include "tools/shader.hpp"
 #include "tools/fader.hpp"
 #include "yuv_wrapper.hpp"
+#include "tools/no_copy.hpp"
 
 #define VR360_FADER_DURATION 3000
 
@@ -27,12 +28,10 @@ class Projector;
 class Navigator;
 class OjmL;
 
-class VR360 {
+class VR360: public NoCopy {
 public:
 	VR360();
 	virtual ~VR360();
-	VR360(VR360 const &) = delete;
-	VR360& operator = (VR360 const &) = delete;
 
 	void setTexture(YUV_WRAPPER _tex) {
 		videoTex[0] = _tex.TexY;

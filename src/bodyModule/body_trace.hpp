@@ -32,6 +32,7 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
+#include "tools/no_copy.hpp"
 
 #define NB_MAX_LIST 7
 #define MAX_POINTS 16384
@@ -40,7 +41,7 @@ class Navigator;
 class Projector;
 
 //! Class which manages a line to display an object position around the sky
-class BodyTrace {
+class BodyTrace: public NoCopy {
 public:
 	struct BodyList {
 		Vec3f color;
@@ -52,8 +53,6 @@ public:
 
 	BodyTrace();
 	virtual ~BodyTrace();
-	BodyTrace(BodyTrace const &) = delete;
-	BodyTrace& operator = (BodyTrace const &) = delete;
 
 	void draw(const Projector *prj,const Navigator *nav);
 

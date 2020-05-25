@@ -32,18 +32,16 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
-
+#include "tools/no_copy.hpp"
 
 #define MAX_CHANNELS 8
 
 
-class Audio {
+class Audio: public NoCopy {
 
 public:
 	Audio();
 	~Audio();
-	Audio(Audio const &) = delete;
-	Audio& operator = (Audio const &) = delete;
 
 	void setVolume(int _value);
 	void incrementVolume(int value=5);

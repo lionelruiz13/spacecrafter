@@ -37,6 +37,7 @@
 #include <iostream>
 #include <map>
 #include "event.hpp"
+#include "tools/no_copy.hpp"
 
 class EventRecorder;
 class EventHandlerCanvas;
@@ -54,13 +55,12 @@ class Event;
 *
 * 
 */
-class EventHandler{
+class EventHandler: public NoCopy {
 public:
 	//! Constructor: work together with EventRecorder
 	EventHandler( EventRecorder* _eventRecorder);
-	EventHandler(EventHandler const &) = delete;
-	EventHandler& operator = (EventHandler const &) = delete;
 	~EventHandler() {};
+
 	//! Execute all Events stored by EventRecorder
 	void handleEvents();
 	//! Add an EventType to execution task

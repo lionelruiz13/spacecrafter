@@ -35,6 +35,7 @@
 #include "navModule/navigator.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
+#include "tools/no_copy.hpp"
 
 // enum class GRID_TYPE : char {
 // 	GRID_EQUATORIAL,
@@ -45,12 +46,10 @@
 // };
 
 
-class SkyGridMgr {
+class SkyGridMgr: public NoCopy  {
 public:
 	SkyGridMgr();
 	~SkyGridMgr();
-	SkyGridMgr(SkyGridMgr const &) = delete;
-	SkyGridMgr& operator = (SkyGridMgr const &) = delete;
 
 	int size() {
 		return m_map.size();

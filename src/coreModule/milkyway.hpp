@@ -36,7 +36,7 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/scalable.hpp"
-
+#include "tools/no_copy.hpp"
 
 /*!
  * \file milkyway.hpp
@@ -60,15 +60,12 @@ class Navigator;
 class ToneReproductor;
 class s_texture;
 
-class MilkyWay {
+class MilkyWay: public NoCopy {
 
 public:
 	MilkyWay();
 	virtual ~MilkyWay();
-	MilkyWay(MilkyWay const &) = delete;
-	MilkyWay& operator = (MilkyWay const &) = delete;
-
-
+	
 	//! dessine la sphère et la texture associée à la Milkyway.
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay);
 

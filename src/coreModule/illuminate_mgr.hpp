@@ -31,6 +31,7 @@
 #include "tools/fader.hpp"
 #include "coreModule/grid.hpp"
 #include "illuminate.hpp"
+#include "tools/no_copy.hpp"
 
 class HipStarMgr;
 class Navigator;
@@ -48,12 +49,10 @@ class ConstellationMgr;
   * Les étoiles sont issues du catalogue Hipparcos.
   * 
   */
-class IlluminateMgr {
+class IlluminateMgr: public NoCopy {
 public:
 	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism);
 	virtual ~IlluminateMgr();
-	IlluminateMgr(IlluminateMgr const &) = delete;
-	IlluminateMgr& operator = (IlluminateMgr const &) = delete;
 
 	// indique la taille d'affichage des illuminates par défaut 
 	void setDefaultSize(double v) {

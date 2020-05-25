@@ -25,6 +25,7 @@
 #include "tools/shader.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/ThreadPool.hpp"
+#include "tools/no_copy.hpp"
 
 /*! \class StarNavigator
   * \brief classe permettant la balade dans les étoiles
@@ -37,12 +38,10 @@ class Projector;
 class Navigator;
 class ToneReproductor;
 
-class StarNavigator {
+class StarNavigator: public NoCopy  {
 public:
 	StarNavigator();
 	~StarNavigator();
-	StarNavigator(StarNavigator const &) = delete;
-	StarNavigator& operator = (StarNavigator const &) = delete;
 
 	/*! /fn
 	 * \brief Charge en mémoire le catalogue d'étoiles

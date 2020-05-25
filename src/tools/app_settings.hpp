@@ -38,6 +38,7 @@
 #include "tools/init_parser.hpp"
 #include <time.h>
 #include "spacecrafter.hpp"
+#include "tools/no_copy.hpp"
 
 #pragma once
 
@@ -53,7 +54,7 @@ int GetTimeZoneInformation( TIME_ZONE_INFORMATION* );
 #endif
 
 
-class AppSettings {
+class AppSettings: public NoCopy {
 
 public:
 	static AppSettings* Instance();
@@ -146,8 +147,7 @@ private:
 	AppSettings();
 	~AppSettings(){};
 	AppSettings( const std::string &, const std::string &, const std::string &);
-	AppSettings(AppSettings const &) = delete;
-	AppSettings& operator = (AppSettings const &) = delete;
+
 
 	static AppSettings* m_instance;
 	const std::string m_configDir;

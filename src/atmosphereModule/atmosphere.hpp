@@ -37,17 +37,16 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
+#include "tools/no_copy.hpp"
 
 class Projector;
 class Navigator;
 class ToneReproductor;
 
-class Atmosphere {
+class Atmosphere: public NoCopy  {
 public:
 	Atmosphere();
 	virtual ~Atmosphere();
-	Atmosphere(Atmosphere const &) = delete;
-	Atmosphere& operator = (Atmosphere const &) = delete;
 
 	void computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase, const ToneReproductor * eye, const Projector* prj, const std::string &planetName,
 	                   float latitude = 45.f, float altitude = 200.f,

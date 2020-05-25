@@ -44,18 +44,15 @@
 #include "navModule/observer.hpp"
 #include "ojmModule/objl_mgr.hpp"
 #include "navModule/anchor_manager.hpp"
-
+#include "tools/no_copy.hpp"
 #include "bodyModule/body_color.hpp"
 
 class OrbitCreator;
 
-class SolarSystem {
+class SolarSystem: public NoCopy {
 public:
 	SolarSystem();
 	virtual ~SolarSystem();
-	SolarSystem(SolarSystem const &) = delete;
-	SolarSystem& operator = (SolarSystem const &) = delete;
-
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 

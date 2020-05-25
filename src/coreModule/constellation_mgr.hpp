@@ -31,6 +31,7 @@
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
 #include "tools/shader.hpp"
+#include "tools/no_copy.hpp"
 
 class HipStarMgr;
 class Constellation;
@@ -39,12 +40,10 @@ class Navigator;
 class s_font;
 class Translator;
 
-class ConstellationMgr {
+class ConstellationMgr: public NoCopy {
 public:
 	ConstellationMgr(HipStarMgr *_hip_stars);
 	~ConstellationMgr();
-	ConstellationMgr(ConstellationMgr const &) = delete;
-	ConstellationMgr& operator = (ConstellationMgr const &) = delete;
 
 	//! Draw constellation lines, art, names and boundaries if activated
 	void draw(const Projector* prj, const Navigator* nav);

@@ -32,18 +32,17 @@
 #include <fstream>
 #include "tools/fader.hpp"
 #include "tools/vecmath.hpp"
+#include "tools/no_copy.hpp"
 
 class Projector;
 class s_font;
 class Translator;
 
 //! Class which manages the cardinal points displaying
-class Cardinals {
+class Cardinals: public NoCopy {
 public:
 	Cardinals(float _radius = 1.);
 	virtual ~Cardinals();
-	Cardinals(Cardinals const &) = delete;
-	Cardinals& operator = (Cardinals const &) = delete;
 
 	void draw(const Projector* prj, double latitude, bool gravityON = false) const;
 	void setColor(const Vec3f& c) {

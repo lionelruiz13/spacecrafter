@@ -32,15 +32,14 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <string>
+#include "tools/no_copy.hpp"
 
-class SDLFacade {
+class SDLFacade : public NoCopy{
 
 public:
 	static SDL_Cursor *create_cursor(const char *image[]);
 	SDLFacade();
 	virtual ~SDLFacade();
-	SDLFacade(SDLFacade const &) = delete;
-	SDLFacade& operator = (SDLFacade const &) = delete;
 
 	// Must be called prior to any other SDL methods
 	void initSDL( void );

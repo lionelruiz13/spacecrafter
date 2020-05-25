@@ -29,7 +29,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
-
+#include "tools/no_copy.hpp"
 /** @class SaveScreen
 
  * @section EN BREF
@@ -50,12 +50,10 @@
  *
 */
 
-class SaveScreen {
+class SaveScreen: public NoCopy  {
 public:
 	SaveScreen(unsigned int _size);
 	~SaveScreen();
-	SaveScreen(SaveScreen const &) = delete;
-	SaveScreen& operator = (SaveScreen const &) = delete;
 
 	//!fonction qui ordonne la sauvegarde d'un buffer connaissant son nom.
 	void saveScreenBuffer(const std::string &fileName);

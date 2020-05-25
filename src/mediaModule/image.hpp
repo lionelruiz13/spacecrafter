@@ -33,12 +33,13 @@
 #include <vector>
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/no_copy.hpp"
 
 class s_texture;
 class Navigator;
 class Projector;
 
-class Image {
+class Image : public NoCopy{
 
 public:
 	// is the image flat on the viewport or positioned with alt-azimuthal or earth equatorial coordinates?
@@ -51,7 +52,6 @@ public:
 	};
 
 	Image(Image const *n, int i);
-	Image& operator = (Image const &) = delete;
 
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, bool mipmap);

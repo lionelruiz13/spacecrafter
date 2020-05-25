@@ -30,18 +30,16 @@
 #include "tools/vecmath.hpp"
 #include "starModule/sphere_geometry.hpp"
 #include "tools/fmath.hpp"
-
+#include "tools/no_copy.hpp"
 
 class s_font;
 
 // Class which handle projection modes and projection matrix
 // Overide some function usually handled by glu
-class Projector {
+class Projector: public NoCopy  {
 public:
 	Projector(const int width, const int height, double _fov = 60.);
 	~Projector();
-	Projector(Projector const &) = delete;
-	Projector& operator = (Projector const &) = delete;
 
 	//! Get and set to define and get viewport size
 	Vec3d getViewportCenter(void) const {

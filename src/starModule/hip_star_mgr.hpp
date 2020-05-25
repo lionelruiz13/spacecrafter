@@ -34,6 +34,7 @@
 #include "tools/object.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/no_copy.hpp"
 
 class Translator;
 class InitParser;
@@ -128,12 +129,10 @@ private:
 //! which points from the observer (at the centre of the geodesic sphere)
 //! to the position of the star as observed on the celestial sphere.
 
-class HipStarMgr {
+class HipStarMgr: public NoCopy {
 public:
 	HipStarMgr(int width,int height);
 	virtual ~HipStarMgr(void);
-	HipStarMgr(HipStarMgr const &) = delete;
-	HipStarMgr& operator = (HipStarMgr const &) = delete;
 
 	//!/////////////////////////////////////////////////////////////////////////
 	//! Methods defined in the StelModule class

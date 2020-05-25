@@ -34,6 +34,7 @@
 
 #include "tools/utility.hpp"
 #include "base_command_interface.hpp"
+#include "tools/no_copy.hpp"
 
 class Core;
 class CoreLink;
@@ -48,13 +49,11 @@ class Media;
 class SaveScreenInterface;
 class ServerSocket;
 
-class AppCommandInterface {
+class AppCommandInterface: public NoCopy {
 
 public:
 	AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media);
 	~AppCommandInterface();
-	AppCommandInterface(AppCommandInterface const &) = delete;
-	AppCommandInterface& operator = (AppCommandInterface const &) = delete;
 
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, unsigned long int &wait);

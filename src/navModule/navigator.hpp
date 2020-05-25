@@ -28,6 +28,7 @@
 #define _NAVIGATOR_H_
 
 #include "tools/vecmath.hpp"
+#include "tools/no_copy.hpp"
 
 extern const Mat4d mat_j2000_to_vsop87;
 extern const Mat4d mat_vsop87_to_j2000;
@@ -39,7 +40,7 @@ class Projector;
 //! @class Class which manages a navigation context
 //! @brief  viewing direction/fov and coordinate changes
 
-class Navigator {
+class Navigator: public NoCopy {
 public:
 
 	enum VIEWING_MODE_TYPE {
@@ -49,8 +50,6 @@ public:
 	//! Create and initialise to default a navigation context
 	Navigator(/*Observer* obs*/);
 	virtual ~Navigator();
-	Navigator(Navigator const &) = delete;
-	Navigator& operator = (Navigator const &) = delete;
 
 	void updateTransformMatrices(Observer* position, double _JDay);
 	void updateVisionVector(int delta_time,const Object &selected);

@@ -71,6 +71,7 @@
 #include "tools/stateGL.hpp"
 #include "tools/tone_reproductor.hpp"
 #include "tools/utility.hpp"
+#include "tools/no_copy.hpp"
 
 class StarNavigator;
 class CoreExecutor;
@@ -89,7 +90,7 @@ class CoreFont;
 //!
 //! Manage all the objects to be used in the program.
 //! This class is the main API of the program. It must be documented using doxygen.
-class Core {
+class Core: public NoCopy {
 public:
 	friend class CoreExecutor;
 	friend class CoreExecutorInSolarSystem;
@@ -105,8 +106,6 @@ public:
 	//! Inputs are the locale directory and root directory and callback function for recording actions
 	Core(int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
 	virtual ~Core();
-	Core(Core const &) = delete;
-	Core& operator = (Core const &) = delete;
 
 	//! Init and load all main core components from the passed config file.
 	void init(const InitParser& conf);

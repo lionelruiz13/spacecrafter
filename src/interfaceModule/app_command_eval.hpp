@@ -5,15 +5,14 @@
 #include <string>
 #include <functional>
 #include "interfaceModule/base_command_interface.hpp"
+#include "tools/no_copy.hpp"
 
 class CoreLink;
 
-class AppCommandEval {
+class AppCommandEval : public NoCopy{
 public: 
     AppCommandEval(CoreLink *_coreLink);
     ~AppCommandEval();
-	AppCommandEval(AppCommandEval const &) = delete;
-	AppCommandEval& operator = (AppCommandEval const &) = delete;
 
 	std::string evalString (const std::string &var);
 	double evalDouble (const std::string &var);
