@@ -30,15 +30,15 @@
  * EventHandler ------------------------------------------------------------------------
 */
 
-EventHandler::EventHandler(EventRecorder* _eventManager)
+EventHandler::EventHandler(EventRecorder* _eventRecorder)
 {
-	eventManager = _eventManager;
+	eventRecorder = _eventRecorder;
 }
 
 void EventHandler::handleEvents() {
-	while (eventManager->haveEvents()) {
+	while (eventRecorder->haveEvents()) {
 		// assume e != nullptr
-		const Event* e = eventManager->getEvent();
+		const Event* e = eventRecorder->getEvent();
 		this->handle(e);
 		delete e;
 	}

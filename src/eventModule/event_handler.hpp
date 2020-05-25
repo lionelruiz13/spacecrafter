@@ -42,22 +42,34 @@ class EventRecorder;
 class EventHandlerCanvas;
 class Event;
 
+
+/**
+* \class EventHandler
+*
+* \brief Register event types and execute events
+*
+* First, before utilisation, register Event you want to execute with add/remove methods
+*
+* Second in work situation, analyze and execute all the events obtained by EventRecorder with handleEvents method
+*
+* 
+*/
 class EventHandler{
 public:
-	EventHandler( EventRecorder* _eventManager);
+	//! Constructor: work together with EventRecorder
+	EventHandler( EventRecorder* _eventRecorder);
 	EventHandler(EventHandler const &) = delete;
 	EventHandler& operator = (EventHandler const &) = delete;
-
-	~EventHandler() {
-	}
-
+	~EventHandler() {};
+	//! Execute all Events stored by EventRecorder
 	void handleEvents();
-    void handle(const Event* e);
+	//! Add an EventType to execution task
 	void add(EventHandlerCanvas *sE, Event::Event_Type et);
+	//! Remove an EventType from the execution task
 	void remove(Event::Event_Type et);
-
 protected :
-	EventRecorder* eventManager = nullptr;
+    void handle(const Event* e);
+	EventRecorder* eventRecorder = nullptr;
 	std::map<Event::Event_Type, EventHandlerCanvas *> handlerMap;
 };
 
