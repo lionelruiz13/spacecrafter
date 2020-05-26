@@ -27,8 +27,6 @@
  */
 
 
-#define __main__
-
 #include <string>
 #include <iostream>
 #include <cstdlib>
@@ -57,15 +55,15 @@
 #endif
 
 
-
-static void drawIntro(void)
+//! write in log file general information about spacecrafter
+static void writeGeneralInfo(void)
 {
 	cLog::get()->mark();
 	cLog::get()->write("Welcome to spacecrafter",  LOG_TYPE::L_INFO);
 	std::string strMsg="Version : " + std::string(APP_NAME) + " - " + std::string(EDITION) + " Edition";
 	cLog::get()->write(strMsg, LOG_TYPE::L_INFO);
 	strMsg.clear();
-	strMsg +=" Copyright (c) 2015 Association Sirius, LSS team et al.\n";
+	strMsg +=" Copyright (c) 2014-2020 Association Sirius, LSS team et al.\n";
 	strMsg +=" Copyright (c) 2012-2014 LSS team et al.\n";
 	strMsg +=" Copyright (c) 2003-2011 Digitalis Education Solutions, Inc. et al.\n";
 	strMsg +=" Copyright (c) 2000-2008 Fabien Chereau et al.\n";
@@ -74,6 +72,7 @@ static void drawIntro(void)
 	cLog::get()->mark();
 }
 
+//! write to log file information about his linux OS
 static void getUnameInfo()
 {
 	#ifdef LINUX
@@ -104,7 +103,7 @@ static void getUnameInfo()
 static void usage(char **argv)
 {
 	std::cout << APP_NAME << std::endl;
-	std::cout << _("Usage: %s [OPTION] ...\n -v, --version          Output version information and exit.\n -h, --help             Display this help and exit.\n");
+	std::cout << _("Usage: %s [OPTION] ...\n -v, --version \tOutput version information and exit.\n -h, --help \tDisplay this help and exit.\n");
 }
 
 // Check command line arguments
@@ -120,16 +119,16 @@ static void check_command_line(int argc, char **argv)
 			exit(0);
 		}
 	}
-
 	if (argc > 1) {
 		std::cout << APP_NAME << std::endl;
-		std::cout << _("%s: Bad command line argument(s)\n")<< std::endl;
-		std::cout << _("Try `%s --help' for more information.\n");
-		exit(1);
+		std::cout << argv[0] << " don't use command line argument(s)"<< std::endl;
+		std::cout << "Try `"<< argv[0] << " --help' for more information."<< std::endl;
+		//exit(1);
 	}
 }
 
 #ifdef LINUX
+//! create a lock file to avoid lanching more instance of spacecrafter
 static void create_lock_file(std::string lock_file)
 {
 	std::ofstream file(lock_file.c_str(), std::ios::out);
@@ -137,6 +136,7 @@ static void create_lock_file(std::string lock_file)
 	file.close();
 }
 
+//! check if a lock file already exist
 static bool is_lock_file(std::string lock_file)
 {
 	std::ifstream file(lock_file.c_str(), std::ios::in);
@@ -160,14 +160,15 @@ static bool is_lock_file(std::string lock_file)
 // Main procedure
 int main(int argc, char **argv)
 {
+	// fix all repertory
 	#if LINUX
 	std::string homeDir = getenv("HOME");
-	std::string CDIR = homeDir + "/." + APP_LOWER_NAME+"/";
-	std::string DATA_ROOT = std::string(CONFIG_DATA_DIR);
+	std::string appDir = homeDir + "/." + APP_LOWER_NAME+"/";
+	std::string dataRoot = std::string(CONFIG_DATA_DIR);
 	#else //win32
 	std::string homeDir = "";
-	std::string CDIR = "";
-	std::string DATA_ROOT="";
+	std::string appDir = "";
+	std::string dataRoot="";
 	std::string CONFIG_DATA_DIR="";
 	std::string LOCALEDIR="";
 	#endif
@@ -176,25 +177,25 @@ int main(int argc, char **argv)
 	check_command_line(argc, argv);
 
 	//check if home Directory exist and if not try to create it.
-	CallSystem::checkUserDirectory(CDIR, dirResult);
-	CallSystem::checkUserSubDirectory(CDIR, dirResult);
+	CallSystem::checkUserDirectory(appDir, dirResult);
+	CallSystem::checkUserSubDirectory(appDir, dirResult);
 
+	//-------------------------------------------
+	//create log system
+	//-------------------------------------------
 	cLog* Log = cLog::get();
 	//Open log files
 	#ifdef LINUX
 	std::string logpath(getenv("HOME") + std::string("/.") + APP_LOWER_NAME +"/log/");
-	Log->open(logpath + "spacecrafter.log");
-	Log->openScript(logpath + "script.log");
-	Log->openTcp(logpath + "tcp.log");
 	#else // on windows
 	std::string logpath("log\\");
+	#endif
 	Log->open(logpath + "spacecrafter.log");
 	Log->openScript(logpath + "script.log");
 	Log->openTcp(logpath + "tcp.log");
-	#endif
 
 	// Write the console logo & Uname Information...
-	drawIntro();
+	writeGeneralInfo();
 	getUnameInfo();
 	//Information about memory capacity
 	Log->write(CallSystem::getRamInfo());
@@ -203,8 +204,12 @@ int main(int argc, char **argv)
 	// write in logfile the result of repertory checking
 	Log->write(dirResult, LOG_TYPE::L_INFO);
 	dirResult.clear();
-	CallSystem::checkIniFiles(CDIR, DATA_ROOT);
-
+	CallSystem::checkIniFiles(appDir, dataRoot);
+	//-------------------------------------------
+	// end 
+	//-------------------------------------------
+	
+	// if lock_file is created, check if it's valid and avoid launch SC twice.
 	#ifdef LINUX
 	std::string lock_file = PATH_FILE_LOCK;
 	Log->write("Lock file is "+ lock_file,LOG_TYPE::L_INFO);
@@ -221,31 +226,25 @@ int main(int argc, char **argv)
 	setlocale(LC_TIME, "");
 
 	//save the environnement variable
-	Log->write("CONFIG DIR: " + std::string(CDIR), LOG_TYPE::L_INFO);
-	Log->write("ROOT   DIR: " + std::string(DATA_ROOT), LOG_TYPE::L_INFO);
+	Log->write("CONFIG DIR: " + std::string(appDir), LOG_TYPE::L_INFO);
+	Log->write("ROOT   DIR: " + std::string(dataRoot), LOG_TYPE::L_INFO);
 	Log->write("LOCALE DIR: " + std::string(LOCALEDIR), LOG_TYPE::L_INFO);
-
 
 	//test if config.ini is not to old.
 	CheckConfig* configUptodate =  new CheckConfig();
-	configUptodate->checkConfigIni(CDIR+"config.ini", std::string(VERSION));
+	configUptodate->checkConfigIni(appDir+"config.ini", std::string(VERSION));
 	delete configUptodate;
 
-	AppSettings::Init(CDIR, DATA_ROOT, LOCALEDIR);
+	//create AppSettings and InitParser
+	AppSettings::Init(appDir, dataRoot, LOCALEDIR);
 	InitParser conf;
 	AppSettings* ini = AppSettings::Instance();
-
-
-	#ifdef LINUX
-	CPUInfo *cpuInfo =  nullptr;
-    #endif // LINUX
-
 	ini->loadAppSettings( &conf );
 
 	Log->setDebug(conf.getBoolean(SCS_MAIN, SCK_DEBUG));
 
-
 	#ifdef LINUX
+	CPUInfo *cpuInfo =  nullptr;
 	if (conf.getBoolean(SCS_MAIN,SCK_CPU_INFO)) {
 		cpuInfo = new CPUInfo();
 		cpuInfo -> init(ini->getLogDir()+"CPUlog.csv",ini->getLogDir()+"GPUlog.csv");
@@ -254,6 +253,9 @@ int main(int argc, char **argv)
 	}
 	#endif
 
+	//-------------------------------------------
+	// create the SDL windows for display
+	//-------------------------------------------
 	SDLFacade* sdl = new SDLFacade();
 	sdl->initSDL();
 
@@ -277,9 +279,12 @@ int main(int argc, char **argv)
 		curH = conf.getInt(SCS_VIDEO, SCK_SCREEN_H);
 		fullscreen = conf.getBoolean(SCS_VIDEO, SCK_FULLSCREEN);
 	}
-
 	antialiasing = conf.getInt(SCS_RENDERING, SCK_ANTIALIASING);
-	sdl->createWindow(curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, DATA_ROOT + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
+	sdl->createWindow(curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, dataRoot + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
+	
+	//-------------------------------------------
+	// create the main class for SC logical software
+	//-------------------------------------------
 	App* app = new App( sdl );
 
 	// Register custom suspend and term signal handers
@@ -289,15 +294,24 @@ int main(int argc, char **argv)
 	signalObj->Register( SIGINT, ISignals::NSSigTERM );
 	signalObj->Register( SIGQUIT, ISignals::NSSigTERM );
 
-	// app->initSplash();
+	// SC logical software start here
 	app->firstInit();
 	app->startMainLoop();
+	//SC logical software end here
 
+	// Close all 
 	#ifdef LINUX
+	// remove correctly the lock file
 	if( unlink(lock_file.c_str()) != 0 )
 		Log->write("Error deleting file.lock",  LOG_TYPE::L_ERROR);
 	else
 		Log->write("File file.lock successfully deleted",  LOG_TYPE::L_INFO);
+	#endif
+	// close cpu information
+	#ifdef LINUX
+	if (cpuInfo != nullptr) {
+		cpuInfo->stop();
+	}
 	#endif
 
 	delete app;
@@ -306,13 +320,7 @@ int main(int argc, char **argv)
 
 	Log->write("EOF", LOG_TYPE::L_INFO);
 	Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-
-	#ifdef LINUX
-	if (cpuInfo != nullptr) {
-		cpuInfo->stop();
-	}
-	#endif
-
+	Log->close();
 	AppSettings::close();
 
 	return 0;
