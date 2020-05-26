@@ -222,7 +222,7 @@ public:
 		navigation->updateMove(projection, delta_az, delta_alt, projection->getFov(), duration);
 	}
 
-
+	//! set zoom/center offset (percent of fov radius)
 	void setViewOffset(double offset);
 
 	// double getViewOffset() {
