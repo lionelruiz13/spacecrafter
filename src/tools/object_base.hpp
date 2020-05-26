@@ -29,7 +29,7 @@
 #include "tools/vecmath.hpp"
 #include <iostream>
 #include "tools/object_type.hpp"
-#include "tools/matrix4.hpp"
+#include "tools/vecmath.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include <vector>

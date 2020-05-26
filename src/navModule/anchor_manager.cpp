@@ -28,6 +28,7 @@
 #include "navModule/anchor_point_observatory.hpp"
 #include "navModule/observer.hpp"
 #include "navModule/navigator.hpp"
+#include "tools/fmath.hpp"
 #include "tools/log.hpp"
 
 
