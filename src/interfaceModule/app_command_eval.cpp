@@ -60,6 +60,11 @@ int AppCommandEval::evalInt(const std::string &var)
 
 void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 {
+	auto reservedVar = m_reservedVar.find(mArg);
+	if (reservedVar != m_reservedVar.end()) {
+		std::cout << mArg << " is a reservedVar so you can't define it" << std::endl;
+		return;
+	}
 	//std::cout << "C_define : " <<  mArg.c_str() << " => " << mValue.c_str() << std::endl;
 	if (mValue == "random") {
 		//std::cout << "C_define random: min " <<  min_random << " max " << max_random << std::endl;
@@ -102,7 +107,7 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 
 	auto var_it = variables.find(mArg);
 	if (var_it == variables.end()) { //pas trouvé donc on renvoie la valeur de la chaine
-		std::cout << "not possible to operate with undefined variable so define to 0" << std::endl;
+		std::cout << "not possible to operate with undefined variable so define to null from ops" << std::endl;
 		variables[mArg] = Utility::strToDouble (mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
 		double tmp = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
