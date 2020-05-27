@@ -12,7 +12,9 @@ class CoreLink;
 class AppCommandEval : public NoCopy{
 public: 
     AppCommandEval(CoreLink *_coreLink);
-    ~AppCommandEval();
+    ~AppCommandEval(){
+		this->deleteVar();
+	}
 
 	std::string evalString (const std::string &var);
 	double evalDouble (const std::string &var);
@@ -22,9 +24,19 @@ public:
 	void commandAdd(const std::string& mArg, const std::string& mValue);
 	void commandSub(const std::string& mArg, const std::string& mValue);
 	void commandMul(const std::string& mArg, const std::string& mValue);
-	void commandRandomMin(const std::string& mValue);
-	void commandRandomMax(const std::string& mValue);
-	void deleteVar();
+	
+	void commandRandomMin(const std::string& mValue){
+		min_random = evalDouble(mValue);
+	}
+
+	void commandRandomMax(const std::string& mValue){
+		max_random = evalDouble(mValue);
+	}
+
+	void deleteVar(){
+		variables.clear();
+	}
+
 	void printVar();
 
 private:

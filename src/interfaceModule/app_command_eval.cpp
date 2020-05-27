@@ -28,10 +28,6 @@ void AppCommandEval::initReservedVariable()
 		m_reservedVarInv.emplace(val, key);
 }
 
-AppCommandEval::~AppCommandEval()
-{
-	this->deleteVar();
-}
 
 std::string AppCommandEval::evalString(const std::string &var)
 {
@@ -133,16 +129,6 @@ void AppCommandEval::commandMul(const std::string& mArg, const std::string& mVal
 	}
 }*/
 
-void AppCommandEval::commandRandomMin(const std::string& mValue)
-{
-	min_random = evalDouble(mValue);
-}
-
-void AppCommandEval::commandRandomMax(const std::string& mValue)
-{
-	max_random = evalDouble(mValue);
-}
-
 
 void AppCommandEval::printVar()
 {
@@ -158,10 +144,6 @@ void AppCommandEval::printVar()
 	std::cout << "-----------------" << std::endl;
 }
 
-void AppCommandEval::deleteVar()
-{
-	variables.clear();
-}
 
 double AppCommandEval::evalReservedVariable(const std::string &var)
 {
