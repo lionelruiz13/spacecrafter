@@ -17,7 +17,9 @@ public:
 	}
 
 	std::string evalString (const std::string &var);
+
 	double evalDouble (const std::string &var);
+
 	int evalInt (const std::string &var);
 
 	void define(const std::string& mArg, const std::string& mValue);
@@ -27,19 +29,19 @@ public:
 	void commandSub(const std::string& mArg, const std::string& mValue);
 
 	void commandMul(const std::string& mArg, const std::string& mValue);
-	
+	//! fix the minimum random value
 	void commandRandomMin(const std::string& mValue){
 		min_random = evalDouble(mValue);
 	}
-
+	//! fix the maximum random value
 	void commandRandomMax(const std::string& mValue){
 		max_random = evalDouble(mValue);
 	}
-
+	//! delete all variables defined with function define
 	void deleteVar(){
 		variables.clear();
 	}
-
+	//! print all defined variables on console
 	void printVar();
 
 private:
