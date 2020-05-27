@@ -9,6 +9,33 @@
 
 class CoreLink;
 
+
+/**
+* \file app_command_eval.hpp
+* \brief Processes script engine variables
+* \author Elitit-40
+* \version 1
+*
+* \class AppCommandEval
+*
+* \brief Processes script engine variables.
+*
+* Variables from the scripting engine are treated in this class. 
+* 
+* @section Description
+*
+* A variable is simply defined by a character string associated in a map with its value represented by a character string.
+*
+* The script engine only processes strings.
+*
+* All character strings are analyzed: if the character string represents a variable saved in the map, its saved value is returned.
+* Otherwise, it is a numeric value. 
+*
+* All the variables declared by the user are managed in the map.
+* However there are pre-declared variables which bypass the map.
+* These variables are directly related to CoreLink.
+* 
+*/
 class AppCommandEval : public NoCopy{
 public: 
 	// constructor
