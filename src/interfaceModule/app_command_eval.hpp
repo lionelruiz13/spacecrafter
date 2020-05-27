@@ -18,11 +18,14 @@ public:
 
 	std::string evalString (const std::string &var);
 	double evalDouble (const std::string &var);
-	int evalInt (const std::string &Int);
+	int evalInt (const std::string &var);
 
 	void define(const std::string& mArg, const std::string& mValue);
+
 	void commandAdd(const std::string& mArg, const std::string& mValue);
+
 	void commandSub(const std::string& mArg, const std::string& mValue);
+
 	void commandMul(const std::string& mArg, const std::string& mValue);
 	
 	void commandRandomMin(const std::string& mValue){

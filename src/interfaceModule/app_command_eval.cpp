@@ -52,7 +52,6 @@ double AppCommandEval::evalDouble(const std::string &var)
 		return Utility::strToDouble(var_it->second);
 }
 
-
 int AppCommandEval::evalInt(const std::string &var)
 {
 	double tmp=this->evalDouble(var);
@@ -80,14 +79,17 @@ void AppCommandEval::commandAdd(const std::string& mArg, const std::string& mVal
 {
 	this->evalOps(mArg,mValue, f_add);
 }
+
 void AppCommandEval::commandSub(const std::string& mArg, const std::string& mValue)
 {
 	this->evalOps(mArg,mValue, f_sub);
 }
+
 void AppCommandEval::commandMul(const std::string& mArg, const std::string& mValue)
 {
 	this->evalOps(mArg,mValue, f_mul);
 }
+
 
 void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f)
 {
@@ -107,6 +109,7 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 		variables[mArg] = Utility::floatToStr(tmp);
 	}
 }
+
 
 /*
 //@TODO : this fonction is a copy/paste from commandAdd and should be refactorized
@@ -163,6 +166,7 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return 0.0;
 	}
 }
+
 
 void AppCommandEval::setReservedVariable(const std::string &var, double value)
 {
