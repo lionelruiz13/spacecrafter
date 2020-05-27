@@ -11,25 +11,29 @@ class CoreLink;
 
 class AppCommandEval : public NoCopy{
 public: 
+	// constructor
     AppCommandEval(CoreLink *_coreLink);
-    ~AppCommandEval();
+    // destructor ?
+	~AppCommandEval();
 
-	std::string evalString (const std::string &var);
+	//! transform as possible the parameter to a string
+	std::string evalString(const std::string &var);
+	//! transform as possible the parameter to double
+	double evalDouble(const std::string &var);
+	//! transform as possible the parameter to int
+	int evalInt(const std::string &var);
 
-	double evalDouble (const std::string &var);
-
-	int evalInt (const std::string &var);
-
+	//! create a string variable with value 
 	void define(const std::string& mArg, const std::string& mValue);
-
+	//! first becomes first added by the second
 	void commandAdd(const std::string& mArg, const std::string& mValue);
-
+	//! first becomes first substracted by the second
 	void commandSub(const std::string& mArg, const std::string& mValue);
-
+	//! first becomes first multiplied by the second
 	void commandMul(const std::string& mArg, const std::string& mValue);
-	//! fix the minimum random value
+	//! fix the minimum random value for the internal random generator 
 	void commandRandomMin(const std::string& mValue);
-	//! fix the maximum random value
+	//! fix the maximum random value for the internal random generator
 	void commandRandomMax(const std::string& mValue);
 	//! delete all variables defined with function define
 	void deleteVar();
