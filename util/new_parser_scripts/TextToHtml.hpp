@@ -12,6 +12,7 @@ public:
     TextToHtml(std::vector<std::string> _text);
 	~TextToHtml();
 
+    //On lit le vecteur d'entrée
     void lecture();
 
 private:
@@ -19,6 +20,7 @@ private:
     void transformation(std::string line);
 
     std::vector<std::string> inText;
+    std::vector<std::string> tempText;
     std::vector<std::string> outText;
 };
 
