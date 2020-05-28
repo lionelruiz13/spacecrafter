@@ -3,23 +3,30 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <string>
 
 class FileReader {
 public:
     FileReader();
 	~FileReader();
     
-    char* init(char* source, char* destination);    //Ouvre les fichiers et alloue le buffer de la ligne courante
-    void end(int code);                             //Termine le programme en fermant les fichiers
+    //Ouvre les fichiers et alloue le buffer de la ligne courante
+    std::string init(std::string source, std::string destination);    
+    //Termine le programme en fermant les fichiers
+    void end(int code);                            
 
-    char* nextline();                               //Place le poineur à la ligne suivante du fichier
-    char* noblank(char* line);                      //Ignore tous les espaces et tabulations
-    char* noblanknorline(char* line);               //Ignore tous les espaces et les tabulations ainsi que les lignes qui ne contiennent que ça
+    //Place le poineur à la ligne suivante du fichier
+    std::string nextline();                               
+    //Ignore tous les espaces et tabulations
+    std::string noblank(std::string line);                      
+    //Ignore tous les espaces et les tabulations ainsi que les lignes qui ne contiennent que ça
+    std::string noblanknorline(std::string line);               
 
 private:
     FILE* rstream;      //Flux de lecture
     FILE* wstream;      //Flux d'écriture
-    char* realline;     //Constante contenant la position initiale du pointeur du buffer
+    std::string realline;     //Constante contenant la position initiale du pointeur du buffer
 };
 
 #endif

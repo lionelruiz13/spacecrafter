@@ -10,7 +10,7 @@ TextToHtml::TextToHtml() {
 
 TextToHtml::~TextToHtml() {}
 
-int TextToHtml::checktag(char* line) {
+int TextToHtml::checktag(std::string line) {
 	if(line[0] == 'N' && line[1] == 'A' && line[2] == 'M' && line[3] == 'E') return NAME;
 	else if(line[0] == 'A' && line[1] == 'R' && line[2] == 'G' && line[3] == 'U' && line[4] == 'M' && line[5] == 'E' && line[6] == 'N' && line[7] == 'T') return ARGUMENT;
 	else if(line[0] == 'E' && line[1] == 'X' && line[2] == 'E' && line[3] == 'M' && line[4] == 'P' && line[5] == 'L' && line[6] == 'E') return EXEMPLE;
@@ -19,7 +19,7 @@ int TextToHtml::checktag(char* line) {
 	else return 0;
 }
 
-char* TextToHtml::name(char* line, char** nametab, int  namenum){
+std::string TextToHtml::name(std::string line, std::string* nametab, int  namenum){
 	line = Reader->noblanknorline(line);
 	int  i=0;
 	int  lastchar = 0;
@@ -35,7 +35,7 @@ char* TextToHtml::name(char* line, char** nametab, int  namenum){
 		Writer->writenchar(line, size);
 		Writer->writetext(AFTER_NAME);
 		//nametab[namenum] = malloc(sizeof(*nametab[namenum]) * size+1);
-		if(nametab[namenum] == NULL) {
+		if(nametab[namenum] == "") {
 			perror("Erreur d'allocation du nom de la commande dans le tableau ");
 			Reader->end(MALLOC_ERROR);
 		}
@@ -54,25 +54,25 @@ char* TextToHtml::name(char* line, char** nametab, int  namenum){
 	return line;
 }
 
-char* TextToHtml::descpart(char* line){
+std::string TextToHtml::descpart(std::string line){
 	if(line[0] == SEPARATOR_1) {
-		line = Writer->writetexthtml(BEFORE_DESC, line+1, AFTER_DESC);
-		if(line[0] == SEPARATOR_1) line = Writer->writetexthtml(BEFORE_PART, line+1, AFTER_PART);
+		line = Writer->writetexthtml(BEFORE_DESC, line, AFTER_DESC);
+		if(line[0] == SEPARATOR_1) line = Writer->writetexthtml(BEFORE_PART, line, AFTER_PART);
 	}
 	return line;
 }
 
-char* TextToHtml::argument(char* line){
-	line = Writer->writetexthtml(BEFORE_VARIABLE, line+1, AFTER_VARIABLE);
+std::string TextToHtml::argument(std::string line){
+	line = Writer->writetexthtml(BEFORE_VARIABLE, line, AFTER_VARIABLE);
 	if(line[0] == SEPARATOR_1) {
-		line = Writer->writetexthtml(BEFORE_TYPE, line+1, AFTER_TYPE);
+		line = Writer->writetexthtml(BEFORE_TYPE, line, AFTER_TYPE);
 		line = descpart(line);
 	}
 	else Writer->writetext(AFTER_ARGUMENT_WITHOUT_TYPE);
 	if(line[0] == SEPARATOR_2) {
 		Writer->writetext(BEFORE_VALEUR_LIST);
 		do {
-			line = Writer->writetexthtml(BEFORE_VALEUR, line+1, AFTER_VALEUR);
+			line = Writer->writetexthtml(BEFORE_VALEUR, line, AFTER_VALEUR);
 			line = descpart(line);
 			Writer->writetext(AFTER_VALEUR_ELEMENT);
 		} while(line[0] == SEPARATOR_2);
@@ -81,7 +81,7 @@ char* TextToHtml::argument(char* line){
 	return line;
 }
 
-char* TextToHtml::example(char* line){
+std::string TextToHtml::example(std::string line){
 	line = Reader->noblanknorline(line);
 	int  i=0;
 	int  lastchar=0;
@@ -92,7 +92,7 @@ char* TextToHtml::example(char* line){
 			line = Reader->nextline();
 			if(line[0] == SEPARATOR_1 && line[1] == SEPARATOR_1) {
 				Writer->writetext(AFTER_EXEMPLE);
-				return 	line = line+2;
+				return 	line;
 			}
 			Writer->writetext("\n");
 			i=0;
@@ -104,10 +104,10 @@ char* TextToHtml::example(char* line){
 	}
 	Writer->writenchar(line, lastchar+1);
 	Writer->writetext(AFTER_EXEMPLE);
-	return 	line = line+i+3;
+	return 	line;
 }
 
-char* TextToHtml::img(char* line) {
+std::string TextToHtml::img(std::string line) {
 	line = Reader->noblanknorline(line);
 	int  i=0;
 	int  lastchar=0;

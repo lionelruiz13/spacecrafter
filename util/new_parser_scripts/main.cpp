@@ -1,35 +1,39 @@
+#include <string>
+#include <iostream>
+
 #include "TextToHtml.hpp"
 #include "FileReader.hpp"
 #include "FileWriter.hpp"
 #include "DefineFile.hpp"
 
 int main() {
-    
+
     FileReader* Reader = new FileReader();
     FileWriter* Writer = new FileWriter();
     TextToHtml* Text = new TextToHtml();
 
-    char* line;
+    std::string line;
 
-    char* source;
-    char* sourceCSS;
-    char* destination;
+    std::string source = "input_fr.txt";
+    std::string sourceCSS = "style.css";
+    std::string destination = "resultat.html";
 
     line = Reader->init(source, destination);
     //Fichier de style
-    FILE* rstylestream = fopen(sourceCSS, "r");
+    FILE* rstylestream = fopen(sourceCSS.c_str(), "r");
     if(rstylestream == NULL) {
         perror("Erreur d'ouverture du fichier style en lecture ");
         exit(FOPEN_STYLE_ERROR);	
     }
     Writer->writetext(BEFORE_STYLE);
     Writer->writetext("<style>\n");
-    while(fgets(line, BUFFER_SIZE, rstylestream) != NULL) Writer->writetext(line);
+	char *cstr = new char[line.length() + 1];
+    while(fgets(strcpy(cstr, line.c_str()), BUFFER_SIZE, rstylestream) != NULL) Writer->writetext(line);
     Writer->writetext("\n</style>\n");
     fclose(rstylestream);
 			
 
-	char** nametab;//Pointeur sur le tableau de noms de commandes
+	std::string* nametab;//Pointeur sur le tableau de noms de commandes
 	Writer->writetext(AFTER_STYLE);
 	line = Reader->nextline();//Passe à la première ligne
 	int  blockopen = 0;//Témoin de block ouvert
@@ -41,12 +45,12 @@ int main() {
 				if(blockopen) Writer->writetext(AFTER_BLOCK);
 				else {
 					//nametab = malloc(sizeof(*nametab) * NAME_TAB_SIZE);
-					if(line == NULL) {
+					if(line == "") {
 						perror("Erreur d'allocation du tableau de noms : ");
 						Reader->end(MALLOC_ERROR);
 					 }
 				}
-				line = Text->name(line+SIZE_NAME, nametab, blockopen);
+				line = Text->name(line, nametab, blockopen);
 				blockopen++;
 				break;
 				
@@ -55,16 +59,16 @@ int main() {
 					Writer->writetext(BEFORE_ARGUMENT_LIST);
 					argopen++;
 				}
-				line = Text->argument(line+SIZE_ARGUMENT);
+				line = Text->argument(line);
 				break;
 				
 			case EXEMPLE :
 				argopen =  Writer->argclose(argopen);
-				line = Text->example(line+SIZE_EXEMPLE);
+				line = Text->example(line);
 				break;
 				
 			case IMG :
-				line = Text->img(line+SIZE_IMG);
+				line = Text->img(line);
 				break;
 				
 			case END :

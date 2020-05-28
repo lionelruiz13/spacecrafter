@@ -4,16 +4,16 @@
 FileReader::FileReader() {}
 FileReader::~FileReader() {}
 
-char* FileReader::init(char* source, char* destination) {
+std::string FileReader::init(std::string source, std::string destination) {
 	//Fichier source
-	rstream = fopen(source, "r");
+	rstream = fopen(source.c_str(), "r");
 	if(rstream == NULL) {
 		perror("Erreur d'ouverture du fichier source en lecture ");
 		exit(FOPEN_SOURCE_ERROR);	
 	}
 	
 	//Fichier html de destination
-	wstream = fopen(destination, "w");
+	wstream = fopen(destination.c_str(), "w");
 	if(rstream == NULL) {
 		fclose(rstream);
 		perror("Erreur d'ouverture du fichier html de destination en écriture ");
@@ -21,9 +21,9 @@ char* FileReader::init(char* source, char* destination) {
 	}
 	
 	//Buffer contenant la ligne courante
-	char* line;
+	std::string line;
 	//line = malloc(sizeof(*line) * BUFFER_SIZE);
-	if(line == NULL) {
+	if(line == "") {
 		perror("Erreur d'allocation du buffer ");
 		end(MALLOC_ERROR);
 	 }
@@ -37,9 +37,11 @@ void FileReader::end(int code) {
 	exit(code);
 }
 
-char* FileReader::nextline() {
-	char* line = realline;
-	if(fgets(line, BUFFER_SIZE, rstream) == NULL) {
+std::string FileReader::nextline() {
+	std::string line = realline;
+	char *cstr = new char[line.length() + 1];
+	
+	if(fgets(strcpy(cstr, line.c_str()), BUFFER_SIZE, rstream) == NULL) {
 		perror("Erreur ou fin du fichier ");
 		end(FGETS_ERROR);
 	}
@@ -47,12 +49,12 @@ char* FileReader::nextline() {
 	return line;
 }
 
-char* FileReader::noblank(char* line) {
-	while(line[0] == SPACE || line[0] == TAB) line++;
+std::string FileReader::noblank(std::string line) {
+	while(line[0] == SPACE || line[0] == TAB) line;
 	return line;
 }
 
-char* FileReader::noblanknorline(char* line) {
+std::string FileReader::noblanknorline(std::string line) {
 	line = noblank(line);
 	while (line[0] == NEWLINE) {
 		line = nextline();

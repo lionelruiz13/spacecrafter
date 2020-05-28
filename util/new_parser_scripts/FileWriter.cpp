@@ -10,15 +10,15 @@ FileWriter::FileWriter() {
 
 FileWriter::~FileWriter() {}
 
-void FileWriter::writetext(char* text) {
-	if(fputs(text, wstream) == EOF) {
+void FileWriter::writetext(std::string text) {
+	if(fputs(text.c_str(), wstream) == EOF) {
 		perror("Erreur d'écriture ");
 		Reader->end(FPUTS_ERROR);
 	}
 }
 
-void FileWriter::writenchar(char* line, int  n) {
-	if(!fwrite(line, n, 1, wstream)) {
+void FileWriter::writenchar(std::string line, int  n) {
+	if(!fwrite(line.c_str(), n, 1, wstream)) {
 		perror("Erreur d'écriture ");
 		Reader->end(FWRITE_ERROR);
 	}
@@ -28,13 +28,13 @@ void FileWriter::writenewline() {
 	writetext(HTML_NEWLINE);
 }
 
-void FileWriter::writetextnchar(char* begin, char* line, int  n, char* end) {
+void FileWriter::writetextnchar(std::string begin, std::string line, int  n, std::string end) {
 	writetext(begin);
 	writenchar(line, n);
 	writetext(end);
 }
 
-char* FileWriter::writehtml(char* line) {
+std::string FileWriter::writehtml(std::string line) {
 	line = Reader->noblanknorline(line);
 	int  i=0;
 	int  lastchar = 0;
@@ -52,17 +52,17 @@ char* FileWriter::writehtml(char* line) {
 		i++;
 	}
 	if (lastchar) writenchar(line, lastchar+1);
-	return line+i;
+	return line;
 }
 
-char* FileWriter::writetexthtml(char* begin, char* line, char* end) {
+std::string FileWriter::writetexthtml(std::string begin, std::string line, std::string end) {
 	writetext(begin);
 	line = writehtml(line);
 	writetext(end);
 	return line;
 }
 
-char* FileWriter::writetextdescpart(char* begin, char* line, char* end) {
+std::string FileWriter::writetextdescpart(std::string begin, std::string line, std::string end) {
 	writetext(begin);
 	line = text->descpart(line);
 	writetext(end);
