@@ -98,13 +98,13 @@ public:
     Grid();
     ~Grid();
 	//! insert un élément dans la grille
-    void insert(eTest* _test, Vec3f pos);
+    // void insert(eTest* _test, Vec3f pos);
 	//! supprime un élément de la grille
-    void remove(eTest* _test);
-    eTest* begin() const;
-    eTest* end() const;
-    eTest* next() const;
-    void setFov(Vec3f pos, float fov);
+    // void remove(eTest* _test);
+    // eTest* begin() const;
+    // eTest* end() const;
+    // eTest* next() const;
+    // void setFov(Vec3f pos, float fov);
 private:
 	//! Return an array with the number of the zones in the field of view
 	void intersect(const Vec3f& _pos, float fieldAngle);
@@ -118,6 +118,7 @@ private:
 	unsigned int nbCenters;
 	//! angle que font 2 centres adjacents entre eux
 	float angle;
+	std::vector<std::list<eTest*>> dataCenter;
 };
 
 Grid::Grid()
@@ -125,7 +126,9 @@ Grid::Grid()
 	// just take the icosahedron_corners
 	for(int i=0; i<12; i++) {
 		centers.push_back(icosahedron_corners[i]);
+		dataCenter.push_back(std::list<eTest*>{});
 	}
+
 };
 
 int Grid::getNearest(const Vec3f& _v)
