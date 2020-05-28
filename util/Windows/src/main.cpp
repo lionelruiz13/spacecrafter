@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "config.h"
+
 int main(int argc, char* argv[])
 {
     SDL_Window    *window = nullptr;
@@ -16,6 +18,14 @@ int main(int argc, char* argv[])
 
     SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
 	bool isAlive = true;
+
+	// test config.ini
+	std::cout << "package      " << PACKAGE  << std::endl;
+	std::cout << "version      " << VERSION << std::endl;
+	std::cout << "app_name     " << APP_NAME << std::endl;
+	std::cout << "app_lname    " << APP_LOWER_NAME << std::endl;
+	std::cout << "user_name    " << USER_NAME << std::endl;
+	std::cout << "user_edition " << USER_EDITION << std::endl;
 
     // Create an application window with the following settings:
     window = SDL_CreateWindow("An SDL2 window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, IMAGE_WIDTH*2, IMAGE_HEIGHT*2, 0);
@@ -28,7 +38,7 @@ int main(int argc, char* argv[])
 	if (renderer == nullptr) {
 		fprintf(stderr, "SDL_CreateRenderer Error\n");
 		return 2;
-	  }
+	}
 
 	while (isAlive) {
 	    SDL_Event e;
