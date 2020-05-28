@@ -5,16 +5,21 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 class TextToHtml {
 public:
-    TextToHtml();
+    TextToHtml(std::vector<std::string> _text);
 	~TextToHtml();
-    
-                                 
+
+    void lecture();
 
 private:
-    std::vector<std::string> text;
+
+    void transformation(std::string line);
+
+    std::vector<std::string> inText;
+    std::vector<std::string> outText;
 };
 
 #endif
