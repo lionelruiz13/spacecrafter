@@ -177,6 +177,18 @@ void Grid::intersect(const Vec3f& _pos, float fieldAngle)
 
 int main(int argc, char **argv)
 {
-	
+for(auto i=0; i<12; i++ ) {
+	Vec3f test0 = icosahedron_corners[icosahedron_triangles[i].corners[0]];
+	Vec3f test1 = icosahedron_corners[icosahedron_triangles[i].corners[1]];
+	Vec3f test2 = icosahedron_corners[icosahedron_triangles[i].corners[2]];
+
+	std::cout << test0.dot(test0) << " " ;
+	std::cout << test1.dot(test1) << " " ;
+	std::cout << test2.dot(test2) << std::endl;
+	std::cout << test0.dot(test1) << " " ;
+	std::cout << test0.dot(test2) << " " ;
+	std::cout << test1.dot(test2) << std::endl;
+}
+	std::list<eTest*> test ={};
 	return 0;
 }
