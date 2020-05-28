@@ -31,10 +31,17 @@ class CoreLink;
 * All character strings are analyzed: if the character string represents a variable saved in the map, its saved value is returned.
 * Otherwise, it is a numeric value. 
 *
-* All the variables declared by the user are managed in the map.
-* However there are pre-declared variables which bypass the map.
-* These variables are directly related to CoreLink.
+* All the variables declared by the user are managed in the map variables.
+* However there are pre-declared variables which bypass the map variables.
+* These variables are directly related to CoreLink, stocked in map m_reservedVar.
 * 
+* @section Working
+*
+* In order, analyze:
+* - Is this a reserved variable?
+* - Is this a predefined variable?
+* - Otherwise, it is a number. 
+*
 */
 class AppCommandEval : public NoCopy{
 public: 
@@ -68,10 +75,13 @@ public:
 	void printVar();
 
 private:
+	//! At initialiastion, define all reserved variable usable by the software
 	void initReservedVariable();
+	//! specific reserved variable evaluator
 	double evalReservedVariable(const std::string &var);
+	//! specific function to set new value to reserved variable if possible.
 	void setReservedVariable(const std::string &var, double value);
-
+	//! fonction operator to avoid code duplication
 	void evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f);
 	
 	//variables utilisées dans le moteur de scripts
