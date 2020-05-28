@@ -7,12 +7,6 @@
 #include "DefineFile.hpp"
 
 int main() {
-	
-    // FileReader Reader;
-    // TextToHtml Text;
-    // FileWriter Writer;
-
-    std::string line;
 
     std::string source = "input_fr.txt";
     std::string sourceCSS = "style.css";
@@ -20,10 +14,12 @@ int main() {
 
 	FileReader* reader = new FileReader(source, sourceCSS);
 
-
 	reader->readFileText();
-
 	reader->readVector();
+
+    TextToHtml* parser = new TextToHtml(reader->getText());
+
+
 
     return 0;
 }
