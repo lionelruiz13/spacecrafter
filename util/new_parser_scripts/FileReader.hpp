@@ -16,6 +16,7 @@ public:
     std::string readFileCss();
 
     void readVector();
+    std::vector<std::string> getText();
 
 private:
 
@@ -23,7 +24,6 @@ private:
 
     std::string Text_File;
     std::string Css_File;
-    TextToHtml html;
     std::vector<std::string> text;
 };
 

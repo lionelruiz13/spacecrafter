@@ -8,6 +8,10 @@ FileReader::FileReader(std::string tf, std::string cf) {
 }
 FileReader::~FileReader() {}
 
+std::vector<std::string> FileReader::getText() {
+	return text;
+}
+
 void FileReader::loadFile(const std::string& fileName) {
     std::ifstream fichier(fileName); 
 
