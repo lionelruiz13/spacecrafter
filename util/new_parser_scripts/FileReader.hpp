@@ -1,32 +1,30 @@
 #ifndef FILE_READER_HPP
 #define FILE_READER_HPP
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <iostream>
 #include <string>
+#include <fstream>
+#include <vector>
+#include "TextToHtml.hpp"
 
 class FileReader {
 public:
-    FileReader();
+    FileReader(std::string tf, std::string cf);
 	~FileReader();
     
-    //Ouvre les fichiers et alloue le buffer de la ligne courante
-    std::string init(std::string source, std::string destination);    
-    //Termine le programme en fermant les fichiers
-    void end(int code);                            
+    void readFileText();
+    std::string readFileCss();
 
-    //Place le poineur à la ligne suivante du fichier
-    std::string nextline();                               
-    //Ignore tous les espaces et tabulations
-    std::string noblank(std::string line);                      
-    //Ignore tous les espaces et les tabulations ainsi que les lignes qui ne contiennent que ça
-    std::string noblanknorline(std::string line);               
+    void readVector();
 
 private:
-    FILE* rstream;      //Flux de lecture
-    FILE* wstream;      //Flux d'écriture
-    std::string realline;     //Constante contenant la position initiale du pointeur du buffer
+
+    void loadFile(const std::string& fileName);
+
+    std::string Text_File;
+    std::string Css_File;
+    TextToHtml html;
+    std::vector<std::string> text;
 };
 
 #endif
