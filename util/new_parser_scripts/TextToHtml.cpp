@@ -13,7 +13,7 @@ void TextToHtml::lecture() {
 	std::string delimiter = "\n"; 	//Délimiteur de ligne
 	std::string bloc;				//le string courrant
 
-	for(auto i = 0; i < inText.size(); i++) {
+	for(auto i = 0; i < inText.size(); i++) {		
 		bloc = inText[i]; //On charge le string courrant
 
 		//On veux lire, ligne par ligne, pour le traitement des données. 
@@ -27,8 +27,11 @@ void TextToHtml::lecture() {
 	}
 }
 
-void TextToHtml::transformation(std::string line){
-	std::string _textToHtml;
+void TextToHtml::transformation(std::vector<std::string> lines){
+	std::string _textToHtml = "";
 
+	_textToHtml =+ "<article id=" + lines[0].substr(5, lines[0].length()) + ">";
+
+	
 
 }
