@@ -83,4 +83,7 @@ const std::string REP_MODEL3D = "model3D";
 const std::string REP_LANDSCAPE = "landscapes";
 const std::string REP_SKY_CULTURE = "sky_cultures";
 
+const std::string REP_DATA = "data";
+const std::string REP_SHADER = "shaders";
+
 #endif /*_SPACECRAFTER_HPP_*/

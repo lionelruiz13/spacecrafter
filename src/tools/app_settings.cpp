@@ -129,12 +129,12 @@ const std::string AppSettings::getDataRoot() const
 
 const std::string AppSettings::getDataDir() const
 {
-	return m_dataRoot+"data/";
+	return m_dataRoot + REP_DATA + "/";
 }
 
 const std::string AppSettings::getShaderDir() const
 {
-	return m_dataRoot+"shaders/";
+	return m_dataRoot+ REP_SHADER + "/";
 }
 
 const std::string AppSettings::getModel3DDir() const
@@ -144,12 +144,12 @@ const std::string AppSettings::getModel3DDir() const
 
 const std::string AppSettings::getPictureDir() const
 {
-	return getUserDir()+"pictures/";
+	return getUserDir()+REP_PICTURE + "/";
 }
 
 const std::string AppSettings::getTextureDir() const
 {
-	return getUserDir()+"textures/";
+	return getUserDir()+ REP_TEXTURE + "/";
 }
 
 const std::string AppSettings::getUserFontDir() const
@@ -221,8 +221,8 @@ const std::string AppSettings::getUserDir() const
 {
 	#ifdef LINUX
 	std::string homeDir = getenv("HOME");
-	std::string CDIR = homeDir + "/." + APP_LOWER_NAME + "/";
-	return CDIR;
+	std::string cDir = homeDir + "/." + APP_LOWER_NAME + "/";
+	return cDir;
 	#else
 	return m_configDir;
 	#endif

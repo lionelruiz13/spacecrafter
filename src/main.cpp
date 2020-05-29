@@ -172,11 +172,11 @@ int main(int argc, char **argv)
 	std::string CONFIG_DATA_DIR="";
 	std::string LOCALEDIR="";
 	#endif
-	std::string dirResult;
 	// Check the command line
 	check_command_line(argc, argv);
 
 	//check if home Directory exist and if not try to create it.
+	std::string dirResult;
 	CallSystem::checkUserDirectory(appDir, dirResult);
 	CallSystem::checkUserSubDirectory(appDir, dirResult);
 
