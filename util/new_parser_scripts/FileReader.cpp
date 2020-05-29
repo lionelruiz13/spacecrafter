@@ -35,7 +35,7 @@ void FileReader::readFileText() {
         {
             if(ligne.substr(0,4) == "NAME" && result != "") {
 				text.push_back(result);
-				result = ligne;
+				result = ligne + "\n";
 			}
 			else {
 				result += ligne + "\n";
