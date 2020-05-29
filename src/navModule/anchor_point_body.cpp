@@ -17,7 +17,7 @@
 #include <sstream>
 #include "bodyModule/body.hpp"
 #include "navModule/anchor_point_body.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 
 AnchorPointBody::AnchorPointBody(const Body * _body) noexcept
 {

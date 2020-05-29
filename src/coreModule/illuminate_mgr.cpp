@@ -30,7 +30,7 @@
 #include "coreModule/illuminate.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/log.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "coreModule/constellation_mgr.hpp"

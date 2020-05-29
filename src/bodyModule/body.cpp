@@ -34,7 +34,8 @@
 #include "tools/s_font.hpp"
 #include "planetsephems/sideral_time.h"
 #include "tools/log.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
 #include <chrono>
 #include "bodyModule/ring.hpp"
 #include "tools/stateGL.hpp"

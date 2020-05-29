@@ -36,7 +36,8 @@
 #include "tools/utility.hpp"
 #include <fstream>
 #include "tools/log.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
 #include "tools/app_settings.hpp"
 #include "bodyModule/ring.hpp"
 

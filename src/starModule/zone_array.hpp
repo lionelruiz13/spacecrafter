@@ -32,7 +32,7 @@
 #include "navModule/navigator.hpp"
 #include "starModule/hip_star.hpp"
 #include "starModule/hip_star_mgr.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 
 #if LINUX
 #include <sys/mman.h>

@@ -18,7 +18,7 @@
  */
 
 #include "starModule/sphere_geometry.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 
 
 //! Special constructor for 3 halfspaces convex

@@ -24,7 +24,7 @@
 #include "starModule/hip_star_mgr.hpp"
 #include "starModule/hip_star.hpp"
 #include "tools/vecmath.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "tools/object_base.hpp"
 
 namespace BigStarCatalog {

@@ -37,7 +37,7 @@
 #include "tools/utility.hpp"
 #include "tools/s_font.hpp"
 #include "tools/log.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/translator.hpp"
 

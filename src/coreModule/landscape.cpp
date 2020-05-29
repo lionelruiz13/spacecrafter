@@ -26,7 +26,7 @@
 #include "coreModule/landscape.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/log.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/tone_reproductor.hpp"

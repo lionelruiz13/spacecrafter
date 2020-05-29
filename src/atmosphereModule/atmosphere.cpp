@@ -32,7 +32,8 @@
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
 #include "tools/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 

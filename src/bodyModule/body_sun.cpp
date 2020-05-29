@@ -32,6 +32,7 @@
 #include "navModule/navigator.hpp"
 #include "bodyModule/body_color.hpp"
 #include "navModule/observer.hpp"
+#include "tools/sc_const.hpp"
 
 Sun::Sun(Body *parent,
          const std::string& englishName,

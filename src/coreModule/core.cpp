@@ -28,7 +28,7 @@
 #include "tools/utility.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/log.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "coreModule/core_executor.hpp"
 #include "coreModule/core_common.hpp"

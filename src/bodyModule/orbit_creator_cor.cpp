@@ -19,8 +19,8 @@
 #include "tools/log.hpp"
 #include <iostream>
 #include "navModule/navigator.hpp"
-#include "tools/fmath.hpp"
-
+//#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
 
 OrbitCreatorEliptic::OrbitCreatorEliptic(const OrbitCreator * _next, const SolarSystem * _ssystem) :
 	OrbitCreator(_next)

@@ -24,7 +24,8 @@
 #include <cstdio>
 #include <cmath>
 #include "atmosphereModule/skybright.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
 
 Skybright::Skybright() : SN(1.f)
 {

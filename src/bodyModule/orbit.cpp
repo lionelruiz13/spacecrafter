@@ -20,7 +20,8 @@
 // temp
 #include <iostream>
 #include <sstream>
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
 #include "bodyModule/body.hpp"
 #include "tools/vecmath.hpp"
 

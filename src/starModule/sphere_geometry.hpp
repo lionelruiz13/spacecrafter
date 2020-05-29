@@ -25,7 +25,7 @@
 #include <functional>
 
 #include "tools/vecmath.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 
 //! In this namespace we define different geometrical shapes :
 //! <ul>

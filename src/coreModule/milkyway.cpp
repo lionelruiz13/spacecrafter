@@ -29,7 +29,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include <string>
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "ojmModule/ojml.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"

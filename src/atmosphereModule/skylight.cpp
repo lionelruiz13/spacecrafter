@@ -31,7 +31,8 @@
 #include <cstdlib>
 
 #include "atmosphereModule/skylight.hpp"
-#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
+//#include "tools/fmath.hpp"
 
 Skylight::Skylight() : thetas(0.f), T(0.f)
 {

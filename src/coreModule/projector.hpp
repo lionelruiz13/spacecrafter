@@ -29,7 +29,7 @@
 #include <GL/glew.h>
 #include "tools/vecmath.hpp"
 #include "starModule/sphere_geometry.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "tools/no_copy.hpp"
 
 class s_font;

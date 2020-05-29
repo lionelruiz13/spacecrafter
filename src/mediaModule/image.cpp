@@ -30,7 +30,7 @@
 #include "coreModule/projector.hpp"
 #include "mediaModule/image.hpp"
 #include "navModule/navigator.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/s_texture.hpp"
 

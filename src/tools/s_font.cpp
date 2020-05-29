@@ -25,7 +25,7 @@
 #include "tools/s_font.hpp"
 #include "tools/utility.hpp"
 #include "tools/stateGL.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
 
 shaderProgram* s_font::shaderHorizontal=nullptr;

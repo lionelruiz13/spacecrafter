@@ -28,7 +28,8 @@
 #include "starModule/zone_array.hpp"
 #include "tools/utility.hpp"
 #include "tools/translator.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
+#include "tools/sc_const.hpp"
 
 
 namespace BigStarCatalog {

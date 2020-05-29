@@ -28,7 +28,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/log.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 
 
 // Read Illuminate data passed in and compute x,y and z;

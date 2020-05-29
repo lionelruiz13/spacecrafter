@@ -36,7 +36,7 @@ which are generally not at the apex of the Earth's way, such as the Perseids sho
 
 #include <cstdlib>
 #include "coreModule/meteor.hpp"
-#include "tools/fmath.hpp"
+//#include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/tone_reproductor.hpp"
