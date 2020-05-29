@@ -95,10 +95,14 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 	}
 	texID=0;
 	bool succes;
+	#ifndef WIN32
 	if (Utility::isAbsolute(textureName))
 		succes = load(textureName, mipmap);
 	else
 		succes = load(texDir + textureName, mipmap);
+	#else
+		succes = load(textureName, mipmap);
+	#endif
 
 	if (!succes)
 		createEmptyTex();
@@ -186,7 +190,7 @@ void s_texture::createEmptyTex()
 
 bool s_texture::load(const std::string& fullName, bool mipmap)
 {
-	//~ std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
+	std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
 	//vérifions dans le cache si l'image n'est pas déjà utilisée ailleurs
 	it = texCache.find(fullName);
 
