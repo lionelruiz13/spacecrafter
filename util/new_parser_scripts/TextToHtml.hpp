@@ -17,10 +17,12 @@ public:
 
 private:
 
-    void transformation(std::vector<std::string> lines);
+    void transformation(std::string lines);
+    std::string findBloc(std::string& lines, std::string arg);
+
+    // std::string tempText = "";
 
     std::vector<std::string> inText;
-    std::vector<std::string> tempText;
     std::vector<std::string> outText;
 };
 

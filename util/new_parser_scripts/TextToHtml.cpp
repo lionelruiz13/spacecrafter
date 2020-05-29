@@ -13,25 +13,59 @@ void TextToHtml::lecture() {
 	std::string delimiter = "\n"; 	//Délimiteur de ligne
 	std::string bloc;				//le string courrant
 
-	for(auto i = 0; i < inText.size(); i++) {		
-		bloc = inText[i]; //On charge le string courrant
-
-		//On veux lire, ligne par ligne, pour le traitement des données. 
-		while(!bloc.empty()) { //Tant que la chaine de caractère n'est pas vide, on continue
-			tempText.push_back(bloc.substr(0, bloc.find(delimiter))); //On place la ligne dans un vecteur
-			bloc.erase(0, bloc.find(delimiter) + delimiter.length()); //on supprime la ligne trouv"
-		}
-		transformation(tempText); //On transmet le vecteur, pour la transformation
-
-		tempText.clear(); //On supprime le vecteur, et on recommence avec un nouveau bloc
+	for(auto i = 0; i < 1; i++) {		
+		transformation(inText[2]); //On transmet le string courant, pour la transformation
 	}
 }
 
-void TextToHtml::transformation(std::vector<std::string> lines){
+void TextToHtml::transformation(std::string lines){
 	std::string _textToHtml = "";
+	std::string delimiter1 = "\n"; 	//Délimiteur de ligne
+	std::string delimiter2 = " "; 	//Délimiteur de mot
+	std::string tempText = "";			
+	std::string argument = "NAME";	//Garde en mémoire l'argument, par defaut, c'est NAME est premier.
+	std::string nextargument = "";
 
-	_textToHtml =+ "<article id=" + lines[0].substr(5, lines[0].length()) + ">";
+	_textToHtml += "<article id=" + lines.substr(5, lines.length()) + ">"; // on récupère la première information, qui défini le nom du bloc
+
+	while(argument != "END"){
+
+		nextargument = findBloc(lines, argument);
+
+		tempText = lines.substr(0, lines.find(nextargument));
+		
+		lines.erase(0, lines.find(nextargument));
+
+		std::cout << "------" + argument + "------\n" << tempText << std::endl;
+
+		argument = nextargument ;
+
+	}
 
 	
 
+	//std::cout << lines << std::endl;
+}
+
+std::string TextToHtml::findBloc(std::string& lines, std::string arg){
+	
+	if(arg == "NAME") { // BLOC NAMES
+		//On cherche le prochain argument
+		if(lines.find("ARGUMENT")!=std::string::npos) return "ARGUMENT";
+		if(lines.find("PARAMETER")!=std::string::npos) return "PARAMETER";
+		if(lines.find("EXEMPLE")!=std::string::npos) return "EXEMPLE";
+	}
+
+	if(arg == "ARGUMENT") { // BLOC ARGUMENT
+		//On cherche le prochain argument
+		if(lines.find("PARAMETER")!=std::string::npos) return "PARAMETER";
+		if(lines.find("EXEMPLE")!=std::string::npos) return "EXEMPLE";
+	}
+
+	if(arg == "PARAMETER") { // BLOC PARAMETER
+		//On cherche le prochain argument
+		if(lines.find("EXEMPLE")!=std::string::npos) return "EXEMPLE";
+	}
+
+	return "END";
 }
