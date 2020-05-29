@@ -35,6 +35,25 @@
 
 // thanks to internet for color !!
 // http://stackoverflow.com/questions/1961209/making-some-text-in-printf-appear-in-green-and-red
+#ifdef WIN32
+#define LOG_RESET   ""
+#define LOG_BLACK   ""      /* Black */
+#define LOG_RED     ""      /* Red */
+#define LOG_GREEN   ""      /* Green */
+#define LOG_YELLOW  ""      /* Yellow */
+#define LOG_BLUE    ""      /* Blue */
+#define LOG_MAGENTA ""      /* Magenta */
+#define LOG_CYAN    ""      /* Cyan */
+#define LOG_WHITE   ""      /* White */
+#define LOG_BOLDBLACK   ""      /* Bold Black */
+#define LOG_BOLDRED     ""      /* Bold Red */
+#define LOG_BOLDGREEN   ""      /* Bold Green */
+#define LOG_BOLDYELLOW  ""      /* Bold Yellow */
+#define LOG_BOLDBLUE    ""      /* Bold Blue */
+#define LOG_BOLDMAGENTA ""      /* Bold Magenta */
+#define LOG_BOLDCYAN    ""      /* Bold Cyan */
+#define LOG_BOLDWHITE   ""      /* Bold White */
+#else
 #define LOG_RESET   "\033[0m"
 #define LOG_BLACK   "\033[30m"      /* Black */
 #define LOG_RED     "\033[31m"      /* Red */
@@ -52,7 +71,7 @@
 #define LOG_BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
 #define LOG_BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
 #define LOG_BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
-
+#endif
 
 cLog* cLog::singleton = nullptr;
 
