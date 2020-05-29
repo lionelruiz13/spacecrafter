@@ -838,8 +838,8 @@ bool ConstellationMgr::loadBoundaries(const std::string& boundaryFile)
 		for (j=0; j<num; j++) {
 			dataFile >> RA >> DE;
 
-			RA*=C_PI/12.;     // Convert from hours to rad
-			DE*=C_PI/180.;    // Convert from deg to rad
+			RA*=M_PI/12.;     // Convert from hours to rad
+			DE*=M_PI/180.;    // Convert from deg to rad
 
 			// Calc the Cartesian coord with RA and DE
 			Utility::spheToRect(RA,DE,XYZ);

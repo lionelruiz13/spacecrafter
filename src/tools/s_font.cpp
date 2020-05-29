@@ -442,7 +442,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	renderedString_struct rendering;
 
 	Vec3d startV, screen;
-	Utility::spheToRect(-azimuth*C_PI/180., altitude*C_PI/180., startV);
+	Utility::spheToRect(-azimuth*M_PI/180., altitude*M_PI/180., startV);
 	prj->projectDomeFixed(startV, screen);
 	float x = screen[0];
 	float y = screen[1];
@@ -473,7 +473,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		if(myMax(prj->getViewportWidth(), prj->getViewportHeight() ) > d) return;
 	}
 
-	float theta = C_PI + atan2f(dx, dy - 1);
+	float theta = M_PI + atan2f(dx, dy - 1);
 	float psi = (float)getStrLen(str)/(d + 1);  // total angle of rotation
 
 	int steps = int(psi*15);//TODO trouver le bon compromis pour la taille

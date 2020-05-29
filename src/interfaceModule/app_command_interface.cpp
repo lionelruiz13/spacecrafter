@@ -2014,7 +2014,7 @@ int AppCommandInterface::commandLandscape()
 			stcore->loadLandscape(args); //TODO retour d'erreurs
 		} else if (argAction == W_ROTATE) {
 			if (!args[W_ROTATION].empty()) {
-				coreLink->rotateLandscape((C_PI/180.0)*evalDouble(args[W_ROTATION]));
+				coreLink->rotateLandscape((M_PI/180.0)*evalDouble(args[W_ROTATION]));
 			}
 		} else {
 			debug_message = "command 'landscape' : invalid action parameter";
@@ -2336,7 +2336,7 @@ int AppCommandInterface::commandImage()
 		media->imageSetRatio(evalDouble(argRatio), evalDouble(argDuration));
 
 	if (!argHP.empty()) {
-		const float rad2deg = 180.0f/C_PI;
+		const float rad2deg = 180.0f/M_PI;
 		double az, alt;
 		bool isStar = stcore->getStarEarthEquPosition(evalInt(argHP), az, alt);
 		if (isStar) {

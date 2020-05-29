@@ -91,8 +91,8 @@ double TimeMgr::dateSunRise (double jd, double longitude, double latitude)
 
 
 	//Sol posta sortida
-	double d2r = C_PI/180.0;
-	double r2d = 180.0/C_PI;
+	double d2r = M_PI/180.0;
+	double r2d = 180.0/M_PI;
 
 	//~ double latitude = getObservatory()->getLatitude();
 	//~ cout << "LATITUDE: " << latitude << endl;
@@ -184,8 +184,8 @@ double TimeMgr::dateSunSet (double jd, double longitude, double latitude)
 	while (lct<0) lct+=360;
 
 	//Sol posta sortida
-	double d2r = C_PI/180.0;
-	double r2d = 180.0/C_PI;
+	double d2r = M_PI/180.0;
+	double r2d = 180.0/M_PI;
 
 	//~ double latitude = getObservatory()->getLatitude();
 	//~ cout << "LATITUDE: " << latitude << endl;
@@ -274,8 +274,8 @@ double TimeMgr::dateSunMeridian (double jd, double longitude, double latitude)
 	while (lct<0) lct+=360;
 
 	//Sol posta sortida
-	double d2r = C_PI/180.0;
-	double r2d = 180.0/C_PI;
+	double d2r = M_PI/180.0;
+	double r2d = 180.0/M_PI;
 
 	//~ double latitude = getObservatory()->getLatitude();
 	//~ cout << "LATITUDE: " << latitude << endl;

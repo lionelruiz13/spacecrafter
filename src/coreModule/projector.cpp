@@ -89,7 +89,7 @@ void Projector::setFov(double f)
 	if (f<min_fov) f = min_fov;
 
 	fov = f;
-	fisheye_scale_factor = 1.0/fov*180./C_PI*2;
+	fisheye_scale_factor = 1.0/fov*180./M_PI*2;
 }
 
 
@@ -112,7 +112,7 @@ StelGeom::ConvexS Projector::unprojectViewport(void) const
 			unprojectJ2000(viewport_center[0],viewport_center[1],e0);
 			StelGeom::ConvexS rval(1);
 			rval[0].n = e0;
-			rval[0].d = (fov<360.0) ? cos(fov*(C_PI/360.0)) : -1.0;
+			rval[0].d = (fov<360.0) ? cos(fov*(M_PI/360.0)) : -1.0;
 			return rval;
 		}
 		ok  = unprojectJ2000(viewport_center[0] - 0.5*viewport_fov_diameter, viewport_center[1] - 0.5*viewport_fov_diameter,e0);
@@ -210,7 +210,7 @@ bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 
 	const double oneoverh = 1.0/sqrt(rq1);
 
-	const double a = C_PI_2 + atan(win[2]*oneoverh);
+	const double a = M_PI_2 + atan(win[2]*oneoverh);
 
 	double f = a * fisheye_scale_factor;
 	f *= viewport_radius * oneoverh;
@@ -219,7 +219,7 @@ bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 	win[1] = viewport_center[1] + win[1] * f;
 
 	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
-	return (a<0.9*C_PI) ? true : false;
+	return (a<0.9*M_PI) ? true : false;
 
 }
 
@@ -245,10 +245,10 @@ bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &ma
 
 	const double oneoverh = 1.0/sqrt(rq1);
 
-	const double a = C_PI_2 + atan(win[2]*oneoverh);
+	const double a = M_PI_2 + atan(win[2]*oneoverh);
 
 	// TODO this is not exact, should use init fov
-	double f = a / C_PI_2;
+	double f = a / M_PI_2;
 
 	f *= viewport_radius * oneoverh;
 
@@ -256,7 +256,7 @@ bool Projector::projectCustomFixedFov(const Vec3d &v,Vec3d &win, const Mat4d &ma
 	win[1] = viewport_center[1] + win[1] * f;
 
 	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
-	return (a<0.9*C_PI) ? true : false;
+	return (a<0.9*M_PI) ? true : false;
 
 }
 
@@ -274,7 +274,7 @@ void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 
 	//  printf("viewport radius = %f, length = %f \n", d, length);
 
-	double angle_center = length * fov/2*C_PI/180;
+	double angle_center = length * fov/2*M_PI/180;
 	double r = sin(angle_center);
 
 	if (length!=0) {
@@ -285,7 +285,7 @@ void Projector::unproject(double x, double y, const Mat4d& m, Vec3d& v) const
 		v.set(0.,0.,1.);
 	}
 
-	if (angle_center>C_PI_2) v[2] = -v[2];
+	if (angle_center>M_PI_2) v[2] = -v[2];
 
 	v.transfo4d(m);
 }
@@ -400,8 +400,8 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 	if (d>viewport_radius + font->getStrLen(str))
 		return;
 
-	theta = C_PI + atan2f(dx, dy - 1);
-	// psi = atan2f((float)font->getStrLen(str)/str.length(),d + 1) * 180./C_PI;
+	theta = M_PI + atan2f(dx, dy - 1);
+	// psi = atan2f((float)font->getStrLen(str)/str.length(),d + 1) * 180./M_PI;
 
 	// if (psi>5) psi = 5;
 

@@ -100,9 +100,9 @@ void Axis::computeAxisAngle(const Projector* prj, const Mat4d& mat) {
 	//Fix angle in opposite direction
 	if (axis[1] < 0) {
 		if (axisAngle < 0) {
-			axisAngle -= C_PI;
+			axisAngle -= M_PI;
 		} else {
-			axisAngle += C_PI;
+			axisAngle += M_PI;
 		}
 	}
 }

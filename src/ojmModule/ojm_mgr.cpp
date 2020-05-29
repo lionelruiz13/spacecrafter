@@ -144,7 +144,7 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 	}
 
 	view = nav->getHelioToEyeMat().convert();
-	//~ view = view * Mat4f::xrotation(-C_PI_2-23.4392803055555555556*C_PI/180);
+	//~ view = view * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 	proj = prj->getMatProjection().convert();
 
 	shaderOJM->use();

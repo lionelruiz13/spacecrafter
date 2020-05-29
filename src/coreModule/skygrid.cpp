@@ -45,7 +45,7 @@ SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
 		alt_points[nm] = new Vec3f[nb_alt_segment+1];
 		for (unsigned int i=0; i<nb_alt_segment+1; ++i) {
-			Utility::spheToRect((float)nm/(nb_meridian)*2.f*C_PI,(float)i/nb_alt_segment*C_PI-C_PI_2, alt_points[nm][i]);
+			Utility::spheToRect((float)nm/(nb_meridian)*2.f*M_PI,(float)i/nb_alt_segment*M_PI-M_PI_2, alt_points[nm][i]);
 			alt_points[nm][i] *= radius;
 		}
 	}
@@ -55,7 +55,7 @@ SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
 	for (unsigned int np=0; np<nb_parallel; ++np) {
 		azi_points[np] = new Vec3f[nb_azi_segment+1];
 		for (unsigned int i=0; i<nb_azi_segment+1; ++i) {
-			Utility::spheToRect((float)i/(nb_azi_segment)*2.f*C_PI, (float)(np+1)/(nb_parallel+1)*C_PI-C_PI_2, azi_points[np][i]);
+			Utility::spheToRect((float)i/(nb_azi_segment)*2.f*M_PI, (float)(np+1)/(nb_parallel+1)*M_PI-M_PI_2, azi_points[np][i]);
 			azi_points[np][i] *= radius;
 		}
 	}
@@ -208,10 +208,10 @@ void SkyGrid::draw(const Projector* prj) const
 			shaderSkyGrid->setUniform("Mat", prj->getMatEarthEquToEye() );
 			break;
 		case ECLIPTIC :
-			shaderSkyGrid->setUniform("Mat", prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(C_PI/180)) );
+			shaderSkyGrid->setUniform("Mat", prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180)) );
 			break;
 		case GALACTIC :
-			shaderSkyGrid->setUniform("Mat", prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(C_PI/180))*Mat4f::yrotation(-61.8717*(C_PI/180))*Mat4f::zrotation(55.5*(C_PI/180)) );
+			shaderSkyGrid->setUniform("Mat", prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180)) );
 			break;
 		case ALTAZIMUTAL :
 			shaderSkyGrid->setUniform("Mat", prj->getMatLocalToEye() );
@@ -262,7 +262,7 @@ void SkyGrid::draw(const Projector* prj) const
 					}
 
 					Mat4f TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -C_PI_2-angle );
+					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -M_PI_2-angle );
 
 					if ( gtype == EQUATORIAL ) {
 						font->print(2,-2,str, Color, MVP*TRANSFO ,1);
@@ -282,7 +282,7 @@ void SkyGrid::draw(const Projector* prj) const
 					sprintf( str, "%d°", (i-8)*10);
 
 					if ( gtype == GALACTIC || gtype == ALTAZIMUTAL || (gtype == EQUATORIAL && i > 8)) {
-						angle += C_PI;
+						angle += M_PI;
 					}
 
 					Mat4f TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );

@@ -37,7 +37,7 @@ LittleGrid::LittleGrid() : result(nullptr)
 {
 
 	NbPoints = 492;
-	Angle = C_PI/34.;
+	Angle = M_PI/34.;
 
 	float tempTab[492][3] = {
 		{0.0000,0.0000,1.0000   },

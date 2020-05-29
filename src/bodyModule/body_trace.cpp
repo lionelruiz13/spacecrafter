@@ -148,7 +148,7 @@ void BodyTrace::addData(const Navigator *nav, double alt, double az)
 	if (bodyData[currentUsedList].size==0) {
 		bodyData[currentUsedList].old_punt[0]=alt;
 		bodyData[currentUsedList].old_punt[1]=az;
-		Utility::spheToRect(-(az+C_PI),alt,bodyData[currentUsedList].punts[0]);
+		Utility::spheToRect(-(az+M_PI),alt,bodyData[currentUsedList].punts[0]);
 		bodyData[currentUsedList].size=1;
 	}
 	else {
@@ -157,6 +157,6 @@ void BodyTrace::addData(const Navigator *nav, double alt, double az)
 		bodyData[currentUsedList].old_punt[0]=alt;
 		bodyData[currentUsedList].old_punt[1]=az;
 		bodyData[currentUsedList].size+=1;
-		Utility::spheToRect(-(az+C_PI),alt,bodyData[currentUsedList].punts[bodyData[currentUsedList].size]);
+		Utility::spheToRect(-(az+M_PI),alt,bodyData[currentUsedList].punts[bodyData[currentUsedList].size]);
 	}
 }

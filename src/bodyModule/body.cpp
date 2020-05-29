@@ -314,8 +314,8 @@ std::string Body::getInfoString(const Navigator * nav) const
 	// calculate alt az position
 	Vec3d localPos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA,&tempDE,localPos);
-	tempRA = 3*C_PI - tempRA;  // N is zero, E is 90 degrees
-	if (tempRA > C_PI*2) tempRA -= C_PI*2;
+	tempRA = 3*M_PI - tempRA;  // N is zero, E is 90 degrees
+	if (tempRA > M_PI*2) tempRA -= M_PI*2;
 
 	oss << _("Alt/Az: ") << Utility::printAngleDMS(tempDE) << " / " << Utility::printAngleDMS(tempRA) << std::endl;
 
@@ -354,8 +354,8 @@ void Body::getAltAz(const Navigator * nav, double *alt, double *az) const
 	Vec3d equPos = getEarthEquPos(nav);
 	Vec3d local_pos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&_az,&_alt,local_pos);
-	_az = 3*C_PI - _az;
-	if (_az > C_PI*2) _az -= C_PI*2;
+	_az = 3*M_PI - _az;
+	if (_az > M_PI*2) _az -= M_PI*2;
 	*az=_az;
 	*alt= _alt;
 }
@@ -367,7 +367,7 @@ std::string Body::getShortInfoNavString(const Navigator * nav, const TimeMgr * t
 	Vec3d equPos = getEarthEquPos(nav);
 	Utility::rectToSphe(&tempRA,&tempDE,equPos);
 	double latitude = observatory->getLatitude();
-	double daytime = tan(tempDE)*tan(latitude*C_PI/180); // partial calculation to determinate if midnight sun or not
+	double daytime = tan(tempDE)*tan(latitude*M_PI/180); // partial calculation to determinate if midnight sun or not
 	oss << _("RA/DE: ") << Utility::printAngleHMS(tempRA) << "/" << Utility::printAngleDMS(tempDE);
 
 	double jd=timeMgr->getJulian();
@@ -382,32 +382,32 @@ std::string Body::getShortInfoNavString(const Navigator * nav, const TimeMgr * t
 	Le = observatory->getLongitude();
 	/* calc mean angle */
 	sidereal = 280.46061837 + (360.98564736629 * (jd - 2451545.0)) + (0.000387933 * T * T) - (T * T * T / 38710000.0);
-	HA=sidereal+Le-tempRA*180.0/C_PI;
-	GHA=sidereal-tempRA*180.0/C_PI;
+	HA=sidereal+Le-tempRA*180.0/M_PI;
+	GHA=sidereal-tempRA*180.0/M_PI;
 	while (HA>=360) HA-=360;
 	while (HA<0)    HA+=360;
 	if (HA<180) PA=HA;
 	else PA=360-HA;
 	while (GHA>=360) GHA-=360;
 	while (GHA<0)    GHA+=360;
-	while (tempRA>=2*C_PI) tempRA-=2*C_PI;
-	while (tempRA<0)    tempRA+=2*C_PI;
+	while (tempRA>=2*M_PI) tempRA-=2*M_PI;
+	while (tempRA<0)    tempRA+=2*M_PI;
 
-	oss << _("SA ") << Utility::printAngleDMS(2*C_PI-tempRA)
-	    << _(" GHA ") << Utility::printAngleDMS(GHA*C_PI/180.0)
-	    << _(" LHA ") << Utility::printAngleDMS(HA*C_PI/180.0);
+	oss << _("SA ") << Utility::printAngleDMS(2*M_PI-tempRA)
+	    << _(" GHA ") << Utility::printAngleDMS(GHA*M_PI/180.0)
+	    << _(" LHA ") << Utility::printAngleDMS(HA*M_PI/180.0);
 	// calculate alt az
 	Vec3d local_pos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA,&tempDE,local_pos);
-	tempRA = 3*C_PI - tempRA;  // N is zero, E is 90 degrees
-	if (tempRA > C_PI*2) tempRA -= C_PI*2;
-	oss << "@" << _(" Az/Alt/coA: ") << Utility::printAngleDMS(tempRA) << "/" << Utility::printAngleDMS(tempDE) << "/" << Utility::printAngleDMS(((C_PI/180.f)*90.)-tempDE) << " LPA " << Utility::printAngleDMS(PA*C_PI/180.0);
+	tempRA = 3*M_PI - tempRA;  // N is zero, E is 90 degrees
+	if (tempRA > M_PI*2) tempRA -= M_PI*2;
+	oss << "@" << _(" Az/Alt/coA: ") << Utility::printAngleDMS(tempRA) << "/" << Utility::printAngleDMS(tempDE) << "/" << Utility::printAngleDMS(((M_PI/180.f)*90.)-tempDE) << " LPA " << Utility::printAngleDMS(PA*M_PI/180.0);
 	if (englishName == "Sun") {
 		oss << _(" Day length: ") ;
 		if (daytime<-1) oss << "00h00m00s";
 		else if (daytime>1) oss << "24h00m00s";
 		else {
-			daytime=2*(C_PI-acos(daytime));
+			daytime=2*(M_PI-acos(daytime));
 			oss << Utility::printAngleHMS(daytime);
 		}
 	}
@@ -416,7 +416,7 @@ std::string Body::getShortInfoNavString(const Navigator * nav, const TimeMgr * t
 
 double Body::getCloseFov(const Navigator* nav) const
 {
-	return atanf(radius*2.f/getEarthEquPos(nav).length())*180./C_PI * 4;
+	return atanf(radius*2.f/getEarthEquPos(nav).length())*180./M_PI * 4;
 }
 
 double Body::getSatellitesFov(const Navigator * nav) const
@@ -424,7 +424,7 @@ double Body::getSatellitesFov(const Navigator * nav) const
 
 	if ( !satellites.empty() && englishName != "Sun") {
 		double rad = getBoundingRadius();
-		if ( rad > 0 ) return atanf(rad/getEarthEquPos(nav).length()) *180./C_PI * 4;
+		if ( rad > 0 ) return atanf(rad/getEarthEquPos(nav).length()) *180./M_PI * 4;
 	}
 
 	return -1.;
@@ -630,7 +630,7 @@ double Body::get_phase(Vec3d obs_pos) const
 	const double Rq = heliopos.lengthSquared();
 	const double pq = (obs_pos - heliopos).lengthSquared();
 	const double cos_chi = (pq + Rq - sq)/(2.0*sqrt(pq*Rq));
-	return (1.0 - acos(cos_chi)/C_PI) * cos_chi + sqrt(1.0 - cos_chi*cos_chi) / C_PI;
+	return (1.0 - acos(cos_chi)/M_PI) * cos_chi + sqrt(1.0 - cos_chi*cos_chi) / M_PI;
 }
 
 float Body::computeMagnitude(Vec3d obs_pos) const
@@ -641,8 +641,8 @@ float Body::computeMagnitude(Vec3d obs_pos) const
 	const double Rq = heliopos.lengthSquared();
 	const double pq = (obs_pos - heliopos).lengthSquared();
 	const double cos_chi = (pq + Rq - sq)/(2.0*sqrt(pq*Rq));
-	const double phase = (1.0 - acos(cos_chi)/C_PI) * cos_chi
-	                     + sqrt(1.0 - cos_chi*cos_chi) / C_PI;
+	const double phase = (1.0 - acos(cos_chi)/M_PI) * cos_chi
+	                     + sqrt(1.0 - cos_chi*cos_chi) / M_PI;
 	const float F = 2.0 * albedo * radius * radius * phase / (3.0*pq*Rq);
 	rval = -26.73f - 2.5f * log10f(F);
 	return rval;
@@ -658,14 +658,14 @@ float Body::computeMagnitude(const Navigator * nav) const
 float Body::getOnScreenSize(const Projector* prj, const Navigator * nav, bool orb_only)
 {
 	double rad = radius;
-	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./C_PI/prj->getFov()*prj->getViewportHeight();
+	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }
 
 // Return the angle (degrees) of the Body orb
 float Body::get_angular_size(const Projector* prj, const Navigator * nav)
 {
 
-	return atanf(radius*2.f/getEarthEquPos(nav).length())*180./C_PI;
+	return atanf(radius*2.f/getEarthEquPos(nav).length())*180./M_PI;
 }
 
 
@@ -674,7 +674,7 @@ float Body::get_on_screen_bounding_size(const Projector* prj, const Navigator * 
 {
 	double rad = getBoundingRadius();
 
-	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./C_PI/prj->getFov()*prj->getViewportHeight();
+	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }
 
 // Start/stop accumulating new trail data (clear old data)

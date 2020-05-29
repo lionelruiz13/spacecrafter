@@ -68,8 +68,8 @@ static void InitPar(double q,double n,double dt,double &a1,double &a2)
 static void InitEll(double q,double n,double e,double dt,double &a1,double &a2)
 {
 	const double a = q/(1.0-e);
-	double M = fmod(n*dt,2*C_PI);
-	if (M < 0.0) M += 2.0*C_PI;
+	double M = fmod(n*dt,2*M_PI);
+	if (M < 0.0) M += 2.0*M_PI;
 	double H = M;
 	for (;;) { // Newton
 		const double Hp = H;
@@ -381,7 +381,7 @@ double EllipticalOrbit::eccentricAnomaly(double M) const
 Vec3d EllipticalOrbit::positionAtTime(double t) const
 {
 	t = t - epoch;
-	double meanMotion = 2.0 * C_PI / period;
+	double meanMotion = 2.0 * M_PI / period;
 	double meanAnomaly = meanAnomalyAtEpoch + t * meanMotion;
 	double E = eccentricAnomaly(meanAnomaly);
 
@@ -409,15 +409,15 @@ std::string EllipticalOrbit::saveOrbit() const
 	os << "orbit_period = " << period << std::endl;
 	os << "orbit_epoch = " << epoch << std::endl;
 	os << "orbit_eccentricity = " << eccentricity << std::endl;
-	os << "orbit_inclination = " << inclination / C_PI*180. << std::endl;
-	os << "orbit_ascendingnode = " << ascendingNode / C_PI*180. << std::endl;
+	os << "orbit_inclination = " << inclination / M_PI*180. << std::endl;
+	os << "orbit_ascendingnode = " << ascendingNode / M_PI*180. << std::endl;
 
 	double semi_major_axis = pericenterDistance / (1.0 - eccentricity) * AU;
 	double mean_longitude = meanAnomalyAtEpoch + argOfPeriapsis + ascendingNode;
 	double long_of_pericenter = argOfPeriapsis + ascendingNode;
 
-	os << "orbit_longofpericenter = " << long_of_pericenter / C_PI*180. << std::endl;
-	os << "orbit_meanlongitude = " << mean_longitude/ C_PI * 180 << std::endl;
+	os << "orbit_longofpericenter = " << long_of_pericenter / M_PI*180. << std::endl;
+	os << "orbit_meanlongitude = " << mean_longitude/ M_PI * 180 << std::endl;
 	os << "orbit_semimajoraxis = " << semi_major_axis * AU << std::endl;
 
 	os << "parent_rot_obliquity = " << parent_rot_obliquity << std::endl;
@@ -513,7 +513,7 @@ static EllipticalOrbit* StateVectorToOrbit(const Vec3d& position,  // km
 
 	// Compute the semimajor axis given period
 	double T = period;
-	double a = pow(GM * pow(86400*T/2.0/C_PI, 2), 1.0/3.0);
+	double a = pow(GM * pow(86400*T/2.0/M_PI, 2), 1.0/3.0);
 
 	Vec3d V = v;
 
@@ -938,8 +938,8 @@ void BarycenterOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, 
 	Vec3d posBary = (posB - posA) * b/(a+b);
 
 	Mat4d J2000toVsop87(
-	    Mat4d::xrotation(-23.4392803055555555556*(C_PI/180)) *
-	    Mat4d::zrotation(0.0000275*(C_PI/180)));
+	    Mat4d::xrotation(-23.4392803055555555556*(M_PI/180)) *
+	    Mat4d::zrotation(0.0000275*(M_PI/180)));
 
 	posBary = J2000toVsop87 * posBary;
 

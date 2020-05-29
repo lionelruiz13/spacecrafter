@@ -92,7 +92,7 @@ void Artificial::drawBody(const Projector* prj, const Navigator * nav, const Mat
 	//paramétrage des matrices pour opengl4
 	Mat4f proj = prj->getMatProjection().convert();
 	Mat4f matrix=mat.convert();
-	//matrix = matrix * Mat4f::zrotation(C_PI/180*(axis_rotation + 90));
+	//matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
 
 	Mat4f inv_matrix = matrix.inverse();
 	myShaderProg->setUniform("MVP",proj*matrix);

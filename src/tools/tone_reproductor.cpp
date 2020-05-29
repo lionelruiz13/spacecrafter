@@ -56,7 +56,7 @@ void ToneReproductor::setDisplayAdaptationLuminance(float _Lda)
 
 	// Update terms
 	alpha_wa_over_alpha_da = alpha_wa/alpha_da;
-	term2 = pow10((beta_wa-beta_da)/alpha_da) / (C_PI*0.0001f);
+	term2 = pow10((beta_wa-beta_da)/alpha_da) / (M_PI*0.0001f);
 }
 
 // Set the eye adaptation luminance for the world and precompute what can be
@@ -71,7 +71,7 @@ void ToneReproductor::setWorldAdaptationLuminance(float _Lwa)
 
 	// Update terms
 	alpha_wa_over_alpha_da = alpha_wa/alpha_da;
-	term2 = pow10((beta_wa-beta_da)/alpha_da) / (C_PI*0.0001f);
+	term2 = pow10((beta_wa-beta_da)/alpha_da) / (M_PI*0.0001f);
 
 }
 

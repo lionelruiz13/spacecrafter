@@ -56,36 +56,36 @@ Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 	double equ_rotation; // rotation needed to align with path of earth
 	Vec3d sun_dir = nav->helioToEarthEqu( Vec3d(0,0,0) );
 
-	Mat4d tmat = Mat4d::xrotation(-23.45f*C_PI/180.f);  // ecliptical tilt
+	Mat4d tmat = Mat4d::xrotation(-23.45f*M_PI/180.f);  // ecliptical tilt
 	sun_dir.transfo4d(tmat);  // convert to ecliptical coordinates
 	sun_dir.normalize();
 	equ_rotation = acos( sun_dir.dot( Vec3d(1,0,0) ) );
-	if ( sun_dir[1] < 0 ) equ_rotation = 2*C_PI - equ_rotation;
+	if ( sun_dir[1] < 0 ) equ_rotation = 2*M_PI - equ_rotation;
 
-	equ_rotation -= C_PI_2;
+	equ_rotation -= M_PI_2;
 
 	// ecliptic
-	mmat = Mat4d::xrotation(23.45f*C_PI/180.f) * Mat4d::zrotation(equ_rotation) * Mat4d::yrotation(C_PI_2);
+	mmat = Mat4d::xrotation(23.45f*M_PI/180.f) * Mat4d::zrotation(equ_rotation) * Mat4d::yrotation(M_PI_2);
 	// perseids
-	if (abs(equ_rotation-C_PI_2*6.5f/12.0f)<0.1f)
-		mmat = Mat4d::zrotation(3.0f*C_PI/12.0f) * Mat4d::yrotation(C_PI_2-58.0f*C_PI/180.f);
+	if (abs(equ_rotation-M_PI_2*6.5f/12.0f)<0.1f)
+		mmat = Mat4d::zrotation(3.0f*M_PI/12.0f) * Mat4d::yrotation(M_PI_2-58.0f*M_PI/180.f);
 	// geminids
-	if (abs(equ_rotation-C_PI_2*22.8f/12.0f)<0.04f)
-		mmat = Mat4d::zrotation(7.5f*C_PI/12.0f) * Mat4d::yrotation(C_PI_2-31.9f*C_PI/180.f);
+	if (abs(equ_rotation-M_PI_2*22.8f/12.0f)<0.04f)
+		mmat = Mat4d::zrotation(7.5f*M_PI/12.0f) * Mat4d::yrotation(M_PI_2-31.9f*M_PI/180.f);
 	// quadrantids
-	if (abs(equ_rotation-C_PI_2*26.0f/12.0f)<0.03f)
-		mmat = Mat4d::zrotation(14.4f*C_PI/12.0f) * Mat4d::yrotation(C_PI_2-52.0f*C_PI/180.f);
+	if (abs(equ_rotation-M_PI_2*26.0f/12.0f)<0.03f)
+		mmat = Mat4d::zrotation(14.4f*M_PI/12.0f) * Mat4d::yrotation(M_PI_2-52.0f*M_PI/180.f);
 	// orionids
-	if (abs(equ_rotation-C_PI_2*15.8f/12.0f)<0.05f)
-		mmat = Mat4d::zrotation(5.9f*C_PI/12.0f) * Mat4d::yrotation(C_PI_2-20.3f*C_PI/180.f);
+	if (abs(equ_rotation-M_PI_2*15.8f/12.0f)<0.05f)
+		mmat = Mat4d::zrotation(5.9f*M_PI/12.0f) * Mat4d::yrotation(M_PI_2-20.3f*M_PI/180.f);
 	// lyrids
-	if (abs(equ_rotation+C_PI_2*7.9f/12.0f)<0.04f)
-		mmat = Mat4d::zrotation(18.4f*C_PI/12.0f) * Mat4d::yrotation(C_PI_2-39.5f*C_PI/180.f);
+	if (abs(equ_rotation+M_PI_2*7.9f/12.0f)<0.04f)
+		mmat = Mat4d::zrotation(18.4f*M_PI/12.0f) * Mat4d::yrotation(M_PI_2-39.5f*M_PI/180.f);
 
 
 	// select random trajectory using polar coordinates in XY plane, centered on observer
 	xydistance = (double)rand()/((double)RAND_MAX+1)*(VISIBLE_RADIUS);
-	double angle = (double)rand()/((double)RAND_MAX+1)*2*C_PI;
+	double angle = (double)rand()/((double)RAND_MAX+1)*2*M_PI;
 
 	// find observer position in meteor coordinate system
 	obs = nav->localToEarthEqu(Vec3d(0,0,EARTH_RADIUS));

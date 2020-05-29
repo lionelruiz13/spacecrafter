@@ -90,7 +90,7 @@ void Hints::computeHints()
 	float angle;
 
 	for (int i = 0; i < nbrFacets; i++) {
-		angle = 2.0f*C_PI*i/nbrFacets;
+		angle = 2.0f*M_PI*i/nbrFacets;
 		vecHintsPos.push_back( pos[0] + hintCircleRadius * sin(angle) );
 		vecHintsPos.push_back( pos[1] + hintCircleRadius * cos(angle) );
 	}

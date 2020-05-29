@@ -252,7 +252,7 @@ void StarLines::draw(const Navigator * nav) noexcept
 
 	//paramétrage des matrices pour opengl4
 	Mat4f matrix=nav->getHelioToEyeMat().convert();
-	matrix=matrix*Mat4f::xrotation(-C_PI_2-23.4392803055555555556*C_PI/180);
+	matrix=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 
 	this->draw(matrix);
 }
@@ -267,7 +267,7 @@ void StarLines::draw(const Projector* prj) noexcept
 	if (!showFader.getInterstate() ) return;
 
 	//paramétrage des matrices pour opengl4
-	Mat4f matrix= prj-> getMatJ2000ToEye()*Mat4f::xrotation(-C_PI_2);
+	Mat4f matrix= prj-> getMatJ2000ToEye()*Mat4f::xrotation(-M_PI_2);
 
 	this->draw(matrix);
 }

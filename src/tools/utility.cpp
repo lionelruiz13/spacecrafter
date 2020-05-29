@@ -73,13 +73,13 @@ std::string Utility::intToString(int i)
 
 double Utility::hmsToRad( unsigned int h, unsigned int m, double s )
 {
-	return (double)C_PI/24.*h*2.+(double)C_PI/12.*m/60.+s*C_PI/43200.;
+	return (double)M_PI/24.*h*2.+(double)M_PI/12.*m/60.+s*M_PI/43200.;
 }
 
 
 double Utility::dmsToRad(int d, int m, double s)
 {
-	return (double)C_PI/180.*d+(double)C_PI/10800.*m+s*C_PI/648000.;
+	return (double)M_PI/180.*d+(double)M_PI/10800.*m+s*M_PI/648000.;
 }
 
 
@@ -266,7 +266,7 @@ std::string Utility::printAngleDMS(double angle, bool decimals, bool useD)
 	//char degsign = '\u00B0';
 	if (useD) degsign = "d";
 
-	angle *= 180./C_PI;
+	angle *= 180./M_PI;
 
 	if (angle<0) {
 		angle *= -1;
@@ -324,9 +324,9 @@ std::string Utility::printAngleHMS(double angle, bool decimals)
 
 	std::ostringstream oss;
 
-	angle = fmod(angle,2.0*C_PI);
-	if (angle < 0.0) angle += 2.0*C_PI; // range: [0..2.0*C_PI)
-	angle *= 12./C_PI; // range: [0..24)
+	angle = fmod(angle,2.0*M_PI);
+	if (angle < 0.0) angle += 2.0*M_PI; // range: [0..2.0*M_PI)
+	angle *= 12./M_PI; // range: [0..24)
 	if (decimals) {
 		angle = 0.5+angle*(60*60*100); // range:[0.5,24*60*60*100+0.5)
 		if (angle >= (24*60*60*100)) angle -= (24*60*60*100);
@@ -367,9 +367,9 @@ std::string Utility::printAngleHMS(double angle, bool decimals)
 
 // ln_date Utility::setAngleHMS(ln_date current_date,double angle, bool decimals)
 // {
-// 	angle = fmod(angle,2.0*C_PI);
-// 	if (angle < 0.0) angle += 2.0*C_PI; // range: [0..2.0*C_PI)
-// 	angle *= 12./C_PI; // range: [0..24)
+// 	angle = fmod(angle,2.0*M_PI);
+// 	if (angle < 0.0) angle += 2.0*M_PI; // range: [0..2.0*M_PI)
+// 	angle *= 12./M_PI; // range: [0..24)
 // 	if (decimals) {
 // 		angle = 0.5+angle*(60*60*100); // range:[0.5,24*60*60*100+0.5)
 // 		if (angle >= (24*60*60*100)) angle -= (24*60*60*100);

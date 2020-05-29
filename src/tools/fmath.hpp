@@ -33,9 +33,9 @@
 //~ # define M_LOG10E	0.43429448190325182765	/* log_10 e */
 //~ # define M_LN2		0.69314718055994530942	/* log_e 2 */
 //~ # define M_LN10		2.30258509299404568402	/* log_e 10 */
-const double  C_PI	=	3.14159265358979323846;	/* pi */
-const double C_PI_2	=	1.57079632679489661923;	/* pi/2 */
-const double C_PI_4	=	0.78539816339744830962;	/* pi/4 */
+// const double  M_PI	=	3.14159265358979323846;	/* pi */
+// const double M_PI_2	=	1.57079632679489661923;	/* pi/2 */
+// const double M_PI_4	=	0.78539816339744830962;	/* pi/4 */
 //~ # define M_1_PI		0.31830988618379067154	/* 1/pi */
 //~ # define M_2_PI		0.63661977236758134308	/* 2/pi */
 //~ # define M_2_SQRTPI	1.12837916709551257390	/* 2/sqrt(pi) */
@@ -46,6 +46,9 @@ const double AU    =    149597870.691; //Kilometers
 const double SPEED_OF_LIGHT = 299792.458;
 
 
-#define pow10(x) pow(10,(x))
+// #define pow10(x) pow(10,(x))
 
+inline double pow10( double x) {
+    return pow(10,x);
+}
 #endif // _F_MATH_HPP_

@@ -145,10 +145,10 @@ bool Navigator::lookAt(double az, double alt, double time){
 	Vec3d vision(-1,0,0);
 	Vec3d rot(0,-1,0);
 	
-	vision = Mat4d::zrotation(- az * C_PI / 180.) * vision;
-	rot = Mat4d::zrotation(az * C_PI / 180.) * rot;
+	vision = Mat4d::zrotation(- az * M_PI / 180.) * vision;
+	rot = Mat4d::zrotation(az * M_PI / 180.) * rot;
 	
-	vision = Mat4d::rotation(rot, alt * C_PI / 180.) * vision;
+	vision = Mat4d::rotation(rot, alt * M_PI / 180.) * vision;
 		
 	moveTo(vision, time, true,0);
 		
@@ -158,7 +158,7 @@ bool Navigator::lookAt(double az, double alt, double time){
 void Navigator::setLocalVision(const Vec3d& _pos)
 {
 	// Transition vision vector by view offset as needed
-	local_vision = Mat4d::yrotation(-view_offset * C_PI_2 * view_offset_transition) * _pos;
+	local_vision = Mat4d::yrotation(-view_offset * M_PI_2 * view_offset_transition) * _pos;
 
 	equ_vision=localToEarthEqu(local_vision);
 	prec_equ_vision = mat_earth_equ_to_j2000*equ_vision;
@@ -179,9 +179,9 @@ void Navigator::updateMove(Projector *projector, double deltaAz, double deltaAlt
 	if (deltaAz)
 		azVision-=deltaAz;
 	if (deltaAlt) {
-		if (altVision+deltaAlt <= C_PI_2 && altVision+deltaAlt >= -C_PI_2) altVision+=deltaAlt;
-		if (altVision+deltaAlt > C_PI_2) altVision = C_PI_2 - 0.000001;		// Prevent bug
-		if (altVision+deltaAlt < -C_PI_2) altVision = -C_PI_2 + 0.000001;	// Prevent bug
+		if (altVision+deltaAlt <= M_PI_2 && altVision+deltaAlt >= -M_PI_2) altVision+=deltaAlt;
+		if (altVision+deltaAlt > M_PI_2) altVision = M_PI_2 - 0.000001;		// Prevent bug
+		if (altVision+deltaAlt < -M_PI_2) altVision = -M_PI_2 + 0.000001;	// Prevent bug
 	}
 
 	// recalc all the position variables
@@ -202,8 +202,8 @@ void Navigator::updateMove(Projector *projector, double deltaAz, double deltaAlt
 }
 
 const Mat4d mat_j2000_to_vsop87(
-    Mat4d::xrotation(-23.4392803055555555556*(C_PI/180)) *
-    Mat4d::zrotation(0.0000275*(C_PI/180)));
+    Mat4d::xrotation(-23.4392803055555555556*(M_PI/180)) *
+    Mat4d::zrotation(0.0000275*(M_PI/180)));
 
 const Mat4d mat_vsop87_to_j2000(mat_j2000_to_vsop87.transpose());
 
@@ -245,7 +245,7 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 	                   0, 0, -1, 0,
 	                   0, 0, 0, 1);
 
-	mat_dome = Mat4d::zrotation(heading*C_PI/180.f) * mat_dome_fixed;
+	mat_dome = Mat4d::zrotation(heading*M_PI/180.f) * mat_dome_fixed;
 }
 
 
@@ -298,14 +298,14 @@ void Navigator::updateViewMat(Projector *projector, double fov)
 	 **/
 
 	// redo view offset
-	mat_local_to_eye =  Mat4d::xrotation(view_offset *fov/2.f*C_PI/180.f * view_offset_transition) * mat_local_to_eye;
+	mat_local_to_eye =  Mat4d::xrotation(view_offset *fov/2.f*M_PI/180.f * view_offset_transition) * mat_local_to_eye;
 
-	// cout << "offset : " << view_offset *fov/2.f*C_PI/180.f * view_offset_transition << endl;
+	// cout << "offset : " << view_offset *fov/2.f*M_PI/180.f * view_offset_transition << endl;
 
 	// heading
-	mat_local_to_eye =  Mat4d::zrotation(heading*C_PI/180.f + 0.0001) * mat_local_to_eye;
+	mat_local_to_eye =  Mat4d::zrotation(heading*M_PI/180.f + 0.0001) * mat_local_to_eye;
 
-	// cout << "heading : " << heading*C_PI/180.f + 0.0001 << endl;
+	// cout << "heading : " << heading*M_PI/180.f + 0.0001 << endl;
 
 	heading_vector = Vec3d(0,1,0);
 
@@ -452,7 +452,7 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 		angle = -angle;
 	}
 
-	std::cout << angle * 180/C_PI << std::endl;
+	std::cout << angle * 180/M_PI << std::endl;
 
-	changeHeading(angle * 180/C_PI, (int)(duration*1000));
+	changeHeading(angle * 180/M_PI, (int)(duration*1000));
 }

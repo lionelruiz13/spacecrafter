@@ -83,10 +83,10 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 	}
 
 	// - keep base info for drawing (in radians)
-	myRA = _ra*C_PI/180.;
-	myDe = _de*C_PI/180.;
-	texAngularSize = tex_angular_size/60*C_PI/180;
-	myRotation = tex_rotation*C_PI/180;
+	myRA = _ra*M_PI/180.;
+	myDe = _de*M_PI/180.;
+	texAngularSize = tex_angular_size/60*M_PI/180;
+	myRotation = tex_rotation*M_PI/180;
 
 	// Calc the Cartesian coord with RA and DE
 	Utility::spheToRect(myRA,myDe,XYZ);
@@ -101,7 +101,7 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 		tex_angular_size = 150.0;
 
 	// Calc the angular size in radian
-	m_angular_size = tex_angular_size/2/60*C_PI/180;
+	m_angular_size = tex_angular_size/2/60*M_PI/180;
 
 	neb_tex = new s_texture(tex_name, TEX_LOAD_TYPE_PNG_ALPHA, true);  // use mipmaps
 
@@ -110,8 +110,8 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 	// this is a huge performance drag if called every frame, so cache here
 	tex_avg_luminance = neb_tex->getAverageLuminance();
 
-	Vec3d imagev = Mat4d::zrotation(myRA-C_PI_2) * Mat4d::xrotation(myDe) * Vec3d(0,1,0);
-	Vec3d ortho1 = Mat4d::zrotation(myRA-C_PI_2) * Vec3d(1,0,0);
+	Vec3d imagev = Mat4d::zrotation(myRA-M_PI_2) * Mat4d::xrotation(myDe) * Vec3d(0,1,0);
+	Vec3d ortho1 = Mat4d::zrotation(myRA-M_PI_2) * Vec3d(1,0,0);
 	Vec3d ortho2 = imagev^ortho1;
 
 	Vec3d grdpt;
@@ -119,7 +119,7 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 
 	for(int i=0; i<2; i++)
 		for(int j=0; j<2; j++) {
-			grdpt = Mat4d::rotation( imagev, myRotation+C_PI) *
+			grdpt = Mat4d::rotation( imagev, myRotation+M_PI) *
 				Mat4d::rotation( ortho1, texAngularSize*(i+-1./2.)) *
 				Mat4d::rotation( ortho2, texAngularSize*(j+-1./2.)) * imagev;
 
@@ -250,12 +250,12 @@ std::string Nebula::getInfoString(const Navigator* nav) const
 	// calculate alt az
 	Vec3d localPos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA,&tempDE,localPos);
-	tempRA = 3*C_PI - tempRA;  // N is zero, E is 90 degrees
-	if (tempRA > C_PI*2) tempRA -= C_PI*2;
+	tempRA = 3*M_PI - tempRA;  // N is zero, E is 90 degrees
+	if (tempRA > M_PI*2) tempRA -= M_PI*2;
 
 	oss << _("Alt/Az: ") << Utility::printAngleDMS(tempDE) << " / " << Utility::printAngleDMS(tempRA) << std::endl;
 	oss << _("Type: ") << getTypeToString() << std::endl;
-	oss << _("Size: ") << Utility::printAngleDMS(m_angular_size*C_PI/180.) << std::endl;
+	oss << _("Size: ") << Utility::printAngleDMS(m_angular_size*M_PI/180.) << std::endl;
 	return oss.str();
 }
 
@@ -299,7 +299,7 @@ std::string Nebula::getShortInfoNavString(const Navigator*, const TimeMgr * time
 
 double Nebula::getCloseFov(const Navigator*) const
 {
-	return m_angular_size * 180./C_PI * 4;
+	return m_angular_size * 180./M_PI * 4;
 }
 
 void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness)

@@ -46,8 +46,8 @@ void AnchorPointOrbit::update() noexcept
 	delete[] v;
 
 	Mat4d rotVsop87toJ2000 = (
-	                             Mat4d::xrotation(-23.4392803055555555556*(C_PI/180)) *
-	                             Mat4d::zrotation(0.0000275*(C_PI/180))
+	                             Mat4d::xrotation(-23.4392803055555555556*(M_PI/180)) *
+	                             Mat4d::zrotation(0.0000275*(M_PI/180))
 	                         ).transpose();
 
 	pos = rotVsop87toJ2000 * pos;

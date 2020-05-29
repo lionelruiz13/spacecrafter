@@ -379,7 +379,7 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 	if (listGlobalStarVisible.size()<1)
 		return;
 
-	pos=Mat4f::xrotation(C_PI_2+23.4392803055555555556*C_PI/180)*posI;
+	pos=Mat4f::xrotation(M_PI_2+23.4392803055555555556*M_PI/180)*posI;
 
 	if (needComputeRCMagTable) {
 		this->computeRCMagTable();
@@ -487,7 +487,7 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	glBindTexture(GL_TEXTURE_2D, starTexture->getID());
 
 	Mat4f matrix=nav->getHelioToEyeMat().convert();
-	matrix=matrix*Mat4f::xrotation(-C_PI_2-23.4392803055555555556*C_PI/180);
+	matrix=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 	shaderStarNav->use();
 
 	shaderStarNav->setUniform("Mat",matrix);

@@ -540,10 +540,10 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	Mat4f MVP = prj->getMatProjectionOrtho2D();
 
 	Mat4f TRANSFO= Mat4f::translation( Vec3f(cx, cy, 0) );
-	//TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 1 * nav->getHeading()*C_PI/180. );
-	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 *C_PI/180. );
+	//TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 1 * nav->getHeading()*M_PI/180. );
+	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 *M_PI/180. );
 	TRANSFO = TRANSFO*Mat4f::translation( Vec3f(image_xpos*vieww/2, image_ypos*viewh/2, 0) );
-	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), (-image_rotation-90) *C_PI/180. );
+	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), (-image_rotation-90) *M_PI/180. );
 
 	// l'image video est inversée
 	if (needFlip) {
@@ -604,8 +604,8 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	//~ Mat4f proj = prj->getMatProjection().convert();
 
 	//~ // altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
-	//~ imagev = Mat4d::zrotation(-1*(image_ypos-90)*C_PI/180.) * Mat4d::xrotation(image_xpos*C_PI/180.) * Vec3d(0,1,0);
-	//~ ortho1 = Mat4d::zrotation(-1*(image_ypos-90)*C_PI/180.) * Vec3d(1,0,0);
+	//~ imagev = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
+	//~ ortho1 = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Vec3d(1,0,0);
 	//~ ortho2 = imagev^ortho1;
 
 	//~ grid_size = int(image_scale/5.);  // divisions per row, column
@@ -618,15 +618,15 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 			//~ for (int k=0; k<=1; k++) {
 				//~ if (image_ratio<1) {
 					//~ // image height is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         //~ imagev;
 				//~ } else {
 					//~ // image width is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         //~ imagev;
 				//~ }
 				//~ vecImgTex.push_back((i+k)/(float)grid_size);
@@ -676,8 +676,8 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	//~ Mat4f proj = prj->getMatProjection().convert();
 
 	//~ // altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
-	//~ imagev = Mat4d::zrotation(-1*(image_ypos-90)*C_PI/180.) * Mat4d::xrotation(image_xpos*C_PI/180.) * Vec3d(0,1,0);
-	//~ ortho1 = Mat4d::zrotation(-1*(image_ypos-90)*C_PI/180.) * Vec3d(1,0,0);
+	//~ imagev = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
+	//~ ortho1 = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Vec3d(1,0,0);
 	//~ ortho2 = imagev^ortho1;
 
 	//~ grid_size = int(image_scale/5.);  // divisions per row, column
@@ -690,15 +690,15 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 				//~ // TODO: separate x, y scales?
 				//~ if (image_ratio<1) {
 					//~ // image height is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         //~ imagev;
 				//~ } else {
 					//~ // image width is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         //~ imagev;
 				//~ }
 
@@ -749,8 +749,8 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	//~ // equatorial is in current equatorial coordinates
 	//~ // j2000 is in J2000 epoch equatorial coordinates (precessed)
 	//~ // ypos is right ascension, xpos is declination
-	//~ imagev = Mat4d::zrotation((image_ypos-90)*C_PI/180.) * Mat4d::xrotation((image_xpos)*C_PI/180.) * Vec3d(0,1,0);
-	//~ ortho1 = Mat4d::zrotation(((image_ypos-90))*C_PI/180.) * Vec3d(1,0,0);
+	//~ imagev = Mat4d::zrotation((image_ypos-90)*M_PI/180.) * Mat4d::xrotation((image_xpos)*M_PI/180.) * Vec3d(0,1,0);
+	//~ ortho1 = Mat4d::zrotation(((image_ypos-90))*M_PI/180.) * Vec3d(1,0,0);
 	//~ ortho2 = imagev^ortho1;
 
 	//~ grid_size = int(image_scale/5.);  // divisions per row, column
@@ -770,15 +770,15 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 
 				//~ if (image_ratio<1) {
 					//~ // image height is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale/image_ratio*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho2, image_scale/image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         //~ imagev;
 				//~ } else {
 					//~ // image width is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         //~ imagev;
 				//~ }
 
@@ -827,8 +827,8 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 		plotDirection = -1.0;
 
 	// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
-	imagev = Mat4d::zrotation(plotDirection*(image_ypos-90)*C_PI/180.) * Mat4d::xrotation(image_xpos*C_PI/180.) * Vec3d(0,1,0);
-	ortho1 = Mat4d::zrotation(plotDirection*(image_ypos-90)*C_PI/180.) * Vec3d(1,0,0);
+	imagev = Mat4d::zrotation(plotDirection*(image_ypos-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
+	ortho1 = Mat4d::zrotation(plotDirection*(image_ypos-90)*M_PI/180.) * Vec3d(1,0,0);
 	ortho2 = imagev^ortho1;
 
 	grid_size = int(image_scale/5.);  // divisions per row, column
@@ -841,15 +841,15 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 			for (int k=0; k<=1; k++) {
 				if (image_ratio<1) {
 					// image height is maximum angular dimension
-					gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         imagev;
 				} else {
 					// image width is maximum angular dimension
-					gridpt = Mat4d::rotation( imagev, (image_rotation+180)*C_PI/180.) *
-					         Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*C_PI/180.) *
-					         Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*C_PI/180.) *
+					gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+					         Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+					         Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 					         imagev;
 				}
 				vecImgTex.push_back((i+k)/(float)grid_size);

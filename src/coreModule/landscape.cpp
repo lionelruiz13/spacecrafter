@@ -58,7 +58,7 @@ void Landscape::initShaderFog()
 	std::vector<float> dataTex;
 	std::vector<float> dataPos;
 
-	getFogDraw(0.95, radius*sinf(fog_alt_angle*C_PI/180.) , 128,1, &dataTex, &dataPos);
+	getFogDraw(0.95, radius*sinf(fog_alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
 
 	glGenBuffers(1,&fog.tex);
 	glBindBuffer(GL_ARRAY_BUFFER,fog.tex);
@@ -226,7 +226,7 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	shaderFog->setUniform("sky_brightness", sky_brightness);
 
 	Mat4f proj=prj->getMatProjection().convert();
-	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(fog_angle_shift*C_PI/180.)))).convert();
+	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(fog_angle_shift*M_PI/180.)))).convert();
 
 	shaderFog->setUniform("viewport",prj->getViewport());
 	shaderFog->setUniform("clipping_fov",prj->getClippingFov());
@@ -370,8 +370,8 @@ void LandscapeFisheye::create(const std::string _name, bool _fullpath, const std
 		haveNightTex = true;
 	}
 
-	tex_fov = _texturefov*C_PI/180.;
-	rotate_z = _rotate_z*C_PI/180.;
+	tex_fov = _texturefov*M_PI/180.;
+	rotate_z = _rotate_z*M_PI/180.;
 
 	initShader();
 	initShaderFog();
@@ -475,7 +475,7 @@ void LandscapeFisheye::getLandscapeFisheye(double radius, int slices, int stacks
 	int i, j;
 
 	int nbr=0;
-	const double drho = C_PI / stacks;
+	const double drho = M_PI / stacks;
 	double cos_sin_rho[2*(stacks+1)];
 	double *cos_sin_rho_p = cos_sin_rho;
 	for (i = 0; i <= stacks; i++) {
@@ -484,7 +484,7 @@ void LandscapeFisheye::getLandscapeFisheye(double radius, int slices, int stacks
 		*cos_sin_rho_p++ = sin(rho);
 	}
 
-	const double dtheta = 2.0 * C_PI / slices;
+	const double dtheta = 2.0 * M_PI / slices;
 	double cos_sin_theta[2*(slices+1)];
 	double *cos_sin_theta_p = cos_sin_theta;
 	for (i = 0; i <= slices; i++) {
@@ -527,9 +527,9 @@ void LandscapeFisheye::getLandscapeFisheye(double radius, int slices, int stacks
 				nbr++;
 				z=z-0.01; //TODO magic number to export
 
-				datatex[indice1] = FisheyeTexCoordFastS(rho/C_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
+				datatex[indice1] = FisheyeTexCoordFastS(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
 				indice1++;
-				datatex[indice1] = FisheyeTexCoordFastT(rho/C_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
+				datatex[indice1] = FisheyeTexCoordFastT(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
 				indice1++;
 
 				datapos[indice3]= x*radius;
@@ -624,7 +624,7 @@ void LandscapeSpherical::create(const std::string _name, bool _fullpath, const s
 
 	base_altitude = ((_base_altitude >= -90 && _base_altitude <= 90) ? _base_altitude : -90);
 	top_altitude = ((_top_altitude >= -90 && _top_altitude <= 90) ? _top_altitude : 90);
-	rotate_z = _rotate_z*C_PI/180.;
+	rotate_z = _rotate_z*M_PI/180.;
 
 	initShader();
 	initShaderFog();
@@ -716,8 +716,8 @@ void LandscapeSpherical::getLandscapeSpherical(double radius, double one_minus_o
 	unsigned int indiceTex=0;
 	unsigned int indicePos=0;
 
-	double bottom = C_PI / 180. * bottom_altitude;
-	double angular_height = C_PI / 180. * top_altitude - bottom;
+	double bottom = M_PI / 180. * bottom_altitude;
+	double angular_height = M_PI / 180. * top_altitude - bottom;
 
 	float x, y, z;
 	float s, t;
@@ -728,12 +728,12 @@ void LandscapeSpherical::getLandscapeSpherical(double radius, double one_minus_o
 	double cos_sin_rho[2*(stacks+1)];
 	double *cos_sin_rho_p = cos_sin_rho;
 	for (i = 0; i <= stacks; i++) {
-		double rho = C_PI_2 + bottom + i * drho;
+		double rho = M_PI_2 + bottom + i * drho;
 		*cos_sin_rho_p++ = cos(rho);
 		*cos_sin_rho_p++ = sin(rho);
 	}
 
-	const float dtheta = 2.0 * C_PI / (float) slices;
+	const float dtheta = 2.0 * M_PI / (float) slices;
 	double cos_sin_theta[2*(slices+1)];
 	double *cos_sin_theta_p = cos_sin_theta;
 	for (i = 0; i <= slices; i++) {
@@ -785,7 +785,7 @@ void Landscape::getFogDraw(GLdouble radius, GLdouble height, GLint slices, GLint
 	GLfloat z ;
 	GLint i; //, j;
 
-	da = 2.0 * C_PI / slices;
+	da = 2.0 * M_PI / slices;
 	dz = height / stacks;
 
 	GLfloat ds = 1.0 / slices;

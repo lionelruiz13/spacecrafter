@@ -106,13 +106,13 @@ bool Dso3d::loadCatalog(const std::string &cat) noexcept
 			posDso3d.push_back(r);
 		} else {
 		//x y z calculation
-			x=r*cos(alpha*C_PI/180.0)*sin((90.0-delta)*C_PI/180.0);
-			y=r*sin(alpha*C_PI/180.0)*sin((90.0-delta)*C_PI/180.0);
-			z=r*cos((90.0-delta)*C_PI/180.0);
+			x=r*cos(alpha*M_PI/180.0)*sin((90.0-delta)*M_PI/180.0);
+			y=r*sin(alpha*M_PI/180.0)*sin((90.0-delta)*M_PI/180.0);
+			z=r*cos((90.0-delta)*M_PI/180.0);
 		// ecliptic coordinates change
 			xr=x;
-			yr=y*cos(-23.43928*C_PI/180.0)-z*sin(-23.43928*C_PI/180.0);
-			zr=y*sin(-23.43928*C_PI/180.0)+z*cos(-23.43928*C_PI/180.0);
+			yr=y*cos(-23.43928*M_PI/180.0)-z*sin(-23.43928*M_PI/180.0);
+			zr=y*sin(-23.43928*M_PI/180.0)+z*cos(-23.43928*M_PI/180.0);
 
 			posDso3d.push_back(xr/2.0);
 			posDso3d.push_back(yr/2.0);

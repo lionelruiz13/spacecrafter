@@ -289,7 +289,7 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 	Vec3d xy;
 	const Star *const end = z->getStars() + z->size;
 	const double d2000 = 2451545.0;
-	const double movement_factor = (C_PI/180)*(0.0001/3600)
+	const double movement_factor = (M_PI/180)*(0.0001/3600)
 	                               * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
 	                               / star_position_scale;
 	for (const Star *s=z->getStars(); s<end; s++) {
@@ -301,8 +301,8 @@ void SpecialZoneArray<Star>::draw(int index,bool is_inside, const float *rcmag_t
 		if (atmosphere) {
 		    Utility::rectToSphe(&az,&alt,local_pos);
 		    //float press_temp_corr = (1013.f)/1010.f * 283.f/(273.f+10.f) / 60.f; //temperature and pressure correction based on Stellarium's code
-		    const float rad2deg = 180.0f/C_PI;
-		    const float deg2rad = C_PI/180.0f;
+		    const float rad2deg = 180.0f/M_PI;
+		    const float deg2rad = M_PI/180.0f;
 		    float ha = rad2deg*alt;
 		    float r;
 		    if (ha>-5.0) r = 1.02f/tan((ha+10.3f/(ha+5.11f))*deg2rad)/60.0; else r=0.0f;
@@ -352,7 +352,7 @@ template<class Star>
 void SpecialZoneArray<Star>::searchAround(int index,const Vec3d &v, double cos_lim_fov, std::vector<ObjectBaseP > &result)
 {
 	const double d2000 = 2451545.0;
-	const double movement_factor = (C_PI/180)*(0.0001/3600)
+	const double movement_factor = (M_PI/180)*(0.0001/3600)
 	                               * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
 	                               / star_position_scale;
 	const SpecialZoneData<Star> *const z = getZones()+index;

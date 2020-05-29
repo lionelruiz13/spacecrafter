@@ -91,11 +91,11 @@ double StelGeom::ConvexPolygon::getArea() const
 	// Sum the angles at each corner of the polygon
 	// (the non cartesian angle is found from the plan normals)
 	for (int i=0; i<size-1; ++i) {
-		angleSum += C_PI-cvx[i].n.angle(cvx[i+1].n);
+		angleSum += M_PI-cvx[i].n.angle(cvx[i+1].n);
 	}
 	// Last angle
-	angleSum += C_PI-cvx[size-1].n.angle(cvx[0].n);
-	return angleSum - C_PI*(size-2);
+	angleSum += M_PI-cvx[size-1].n.angle(cvx[0].n);
+	return angleSum - M_PI*(size-2);
 }
 
 //! Return the convex polygon barycenter
@@ -125,19 +125,19 @@ void ConvexPolygon::getBoundingLonLat(double result[4]) const
 
 	result[2] = myMin(myMin(vertex[0].latitude(), vertex[1].latitude()), myMin(vertex[2].latitude(), vertex[3].latitude()));
 	result[3] = myMax(myMax(vertex[0].latitude(), vertex[1].latitude()), myMax(vertex[2].latitude(), vertex[3].latitude()));
-	if (result[2]<-C_PI/2)
-		result[2] = -C_PI/2;
-	if (result[3]>C_PI/2)
-		result[3] = C_PI/2;
+	if (result[2]<-M_PI/2)
+		result[2] = -M_PI/2;
+	if (result[3]>M_PI/2)
+		result[3] = M_PI/2;
 
-	if (insideUp) result[3] = C_PI/2;
-	if (insideDown) result[2] = -C_PI/2;
+	if (insideUp) result[3] = M_PI/2;
+	if (insideDown) result[2] = -M_PI/2;
 
 	// Look for long bounds
 	if (insideUp || insideDown)
 	{
 		result[0] = 0.;
-		result[1] = 2.*C_PI;
+		result[1] = 2.*M_PI;
 	}
 	else
 	{

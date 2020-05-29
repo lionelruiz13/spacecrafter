@@ -141,7 +141,7 @@ public:
 protected:
 	//! Return the radius of a circle containing the object on screen
 	float getOnScreenSize(const Projector* prj, const Navigator * nav = nullptr, bool orb_only = false) {
-		return m_angular_size * (180./C_PI) * (prj->getViewportHeight()/prj->getFov());
+		return m_angular_size * (180./M_PI) * (prj->getViewportHeight()/prj->getFov());
 	}
 
 	//! hide a deepskyObject

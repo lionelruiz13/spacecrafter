@@ -534,12 +534,12 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 
 
 	// Use J2000 N pole data if available
-	double rot_obliquity = Utility::strToDouble(param["rot_obliquity"],0.)*C_PI/180.;
-	double rot_asc_node  = Utility::strToDouble(param["rot_equator_ascending_node"],0.)*C_PI/180.;
+	double rot_obliquity = Utility::strToDouble(param["rot_obliquity"],0.)*M_PI/180.;
+	double rot_asc_node  = Utility::strToDouble(param["rot_equator_ascending_node"],0.)*M_PI/180.;
 
 	// In J2000 coordinates
-	double J2000_npole_ra = Utility::strToDouble(param["rot_pole_ra"],0.)*C_PI/180.;
-	double J2000_npole_de = Utility::strToDouble(param["rot_pole_de"],0.)*C_PI/180.;
+	double J2000_npole_ra = Utility::strToDouble(param["rot_pole_ra"],0.)*M_PI/180.;
+	double J2000_npole_de = Utility::strToDouble(param["rot_pole_de"],0.)*M_PI/180.;
 
 	// NB: north pole needs to be defined by right hand rotation rule
 	if (param["rot_pole_ra"] != "" || param["rot_pole_de"] != "") {
@@ -552,10 +552,10 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 		double ra, de;
 		Utility::rectToSphe(&ra, &de, vsop87_pole);
 
-		rot_obliquity = (C_PI_2 - de);
-		rot_asc_node = (ra + C_PI_2);
-		//cout << "\tCalculated rotational obliquity: " << rot_obliquity*180./C_PI << endl;
-		//cout << "\tCalculated rotational ascending node: " << rot_asc_node*180./C_PI << endl;
+		rot_obliquity = (M_PI_2 - de);
+		rot_asc_node = (ra + M_PI_2);
+		//cout << "\tCalculated rotational obliquity: " << rot_obliquity*180./M_PI << endl;
+		//cout << "\tCalculated rotational ascending node: " << rot_asc_node*180./M_PI << endl;
 	}
 
 	p->set_rotation_elements(
@@ -564,7 +564,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	    Utility::strToDouble(param["rot_epoch"], J2000),
 	    rot_obliquity,
 	    rot_asc_node,
-	    Utility::strToDouble(param["rot_precession_rate"],0.)*C_PI/(180*36525),
+	    Utility::strToDouble(param["rot_precession_rate"],0.)*M_PI/(180*36525),
 	    Utility::strToDouble(param["orbit_visualization_period"],0.),
 	    Utility::strToDouble(param["axial_tilt"],0.) );
 
@@ -1069,7 +1069,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 {
 	std::vector<Object> result;
 	v.normalize();
-	double cos_lim_fov = cos(lim_fov * C_PI/180.);
+	double cos_lim_fov = cos(lim_fov * M_PI/180.);
 	static Vec3d equPos;
 	const Body *home_Body = observatory->getHomeBody();
 
@@ -1086,7 +1086,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 		if (it->second->body != home_Body || aboveHomeBody) {
 			// Don't want home Body too easy to select unless can see it
 
-			double angle = acos(v*equPos) * 180.f / C_PI;
+			double angle = acos(v*equPos) * 180.f / M_PI;
 			  //~ cout << "Big testing " << (*iter)->getEnglishName()
 			  //~ << " angle: " << angle << " screen_angle: "
 			  //~ << (*iter)->get_angular_size(prj, nav)/2.f
@@ -1487,5 +1487,5 @@ double SolarSystem::getSunAltitude(const Navigator * nav) const
 {
 	double alt, az;
 	sun->getAltAz(nav, &alt, &az);
-	return alt*180.0/C_PI;
+	return alt*180.0/M_PI;
 }

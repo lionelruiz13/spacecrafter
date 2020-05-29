@@ -75,13 +75,13 @@ void MilkyWay::createShader()
 void MilkyWay::initModelMatrix()
 {
 	modelMilkyway = Mat4d::scaling(1.1) *
-	                Mat4d::xrotation(C_PI)*
-	                Mat4d::yrotation(C_PI)*
-	                Mat4d::zrotation(C_PI/180*270);
+	                Mat4d::xrotation(M_PI)*
+	                Mat4d::yrotation(M_PI)*
+	                Mat4d::zrotation(M_PI/180*270);
 
 	modelZodiacal = Mat4d::scaling(1.0) *
-		            Mat4d::xrotation(C_PI*23.5/180.0)*
-		            Mat4d::yrotation(C_PI);
+		            Mat4d::xrotation(M_PI*23.5/180.0)*
+		            Mat4d::yrotation(M_PI);
 }
 
 
@@ -234,9 +234,9 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getJ2000ToEyeMat() * modelMilkyway ).convert();
 					//~ Mat4d::scaling(1.1) *
-	                //~ Mat4d::xrotation(C_PI)*
-	                //~ Mat4d::yrotation(C_PI)*
-	                //~ Mat4d::zrotation(C_PI/180*270)).convert();
+	                //~ Mat4d::xrotation(M_PI)*
+	                //~ Mat4d::yrotation(M_PI)*
+	                //~ Mat4d::zrotation(M_PI/180*270)).convert();
 
 	shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
 	shaderMilkyway->setUniform("ModelViewProjectionMatrix", proj*matrix);
@@ -260,9 +260,9 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 		//	27.5 c'est le shift de la texture ça n'a aucun sens
 		matrix = (nav->getJ2000ToEyeMat() * modelZodiacal *
 						//~ Mat4d::scaling(1.0) *
-		                //~ Mat4d::xrotation(C_PI*23.5/180.0)*
-		                //~ Mat4d::yrotation(C_PI)*
-		                Mat4d::zrotation(2*C_PI*(-julianDay+27.5)/365.2422)).convert();
+		                //~ Mat4d::xrotation(M_PI*23.5/180.0)*
+		                //~ Mat4d::yrotation(M_PI)*
+		                Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
 	
 		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
 		shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());

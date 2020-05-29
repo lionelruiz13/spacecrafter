@@ -213,7 +213,7 @@ void Ring2D::computeRing(GLint slices, GLint stacks, bool h)
 	int j;
 
 	const double dr = (r_max-r_min) / stacks;
-	const double dtheta = 2.0 * C_PI / slices*(1-2*h);
+	const double dtheta = 2.0 * M_PI / slices*(1-2*h);
 
 	//~ if (slices < 0) slices = -slices;
 	double cos_sin_theta[2*(slices+1)];

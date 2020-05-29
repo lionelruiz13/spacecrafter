@@ -38,19 +38,19 @@ bool Illuminate::createIlluminate(unsigned int _name, double ra, double de, doub
 	texColor.set(r,g,b);
 
 	// Calc the RA and DE from the datas - keep base info for drawing (in radians)
-	float myRA = ra*C_PI/180.;
-	float myDe = de*C_PI/180.;
+	float myRA = ra*M_PI/180.;
+	float myDe = de*M_PI/180.;
 
 	// Calc the Cartesian coord with RA and DE
 	Utility::spheToRect(myRA,myDe,XYZ);
 
-	float tex_size = sin(angular_size/2/60*C_PI/180);
+	float tex_size = sin(angular_size/2/60*M_PI/180);
 
 	// Precomputation of the rotation/translation matrix
 	Mat4f mat_precomp = Mat4f::translation(XYZ) *
 	                    Mat4f::zrotation(myRA) *
 	                    Mat4f::yrotation(-myDe) *
-	                    Mat4f::xrotation(tex_rotation*C_PI/180.);
+	                    Mat4f::xrotation(tex_rotation*M_PI/180.);
 
 	texQuadVertex[0] = mat_precomp * Vec3f(0.,-tex_size,-tex_size);
 	texQuadVertex[1] = mat_precomp * Vec3f(0., tex_size,-tex_size);

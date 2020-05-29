@@ -815,7 +815,7 @@ std::vector<ObjectBaseP > HipStarMgr::searchAround(const Vec3d& vv, double lim_f
 	// now we have h0*v=h1*v=h0*h1=0.
 	// construct a region with 4 corners e0,e1,e2,e3 inside which
 	// all desired stars must be:
-	double f = 1.4142136 * tan(lim_fov * C_PI/180.0);
+	double f = 1.4142136 * tan(lim_fov * M_PI/180.0);
 	h0 *= f;
 	h1 *= f;
 	Vec3d e0 = v + h0;
@@ -830,7 +830,7 @@ std::vector<ObjectBaseP > HipStarMgr::searchAround(const Vec3d& vv, double lim_f
 	// search the triangles
 	const GeodesicSearchResult* geodesic_search_result = grid->search(e0,e1,e2,e3,last_max_search_level);
 	// iterate over the stars inside the triangles:
-	f = cos(lim_fov * C_PI/180.);
+	f = cos(lim_fov * M_PI/180.);
 	for (ZoneArrayMap::const_iterator it(zone_arrays.begin()); it!=zone_arrays.end(); it++) {
 		int zone;
 		for (GeodesicSearchInsideIterator it1(*geodesic_search_result,it->first); (zone = it1.next()) >= 0;) {

@@ -533,7 +533,7 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 	observer->setAnchorPoint(targetBody);
 	targetBody->update();
 
-	double angle = targetBody->getBody()->getAxisAngle()*(180.0f/C_PI);
+	double angle = targetBody->getBody()->getAxisAngle()*(180.0f/M_PI);
 
 	observer->setAltitude(alt);
 	observer->setLatitude(0);

@@ -168,7 +168,7 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int i=0; i<51; ++i) {
-		Utility::spheToRect((float)i/(50)*2.f*C_PI,radius*C_PI/180.f, circlep[i]);
+		Utility::spheToRect((float)i/(50)*2.f*M_PI,radius*M_PI/180.f, circlep[i]);
 	}
 	for (int i=0; i < 50; i++) {
 		if ((prj->*proj_func)(circlep[i], pt1) && (prj->*proj_func)(circlep[i+1], pt2) ) {
@@ -184,7 +184,7 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 		}
 	}
 	for (unsigned int i=0; i<51; ++i) {
-		Utility::spheToRect((float)i/(50)*2.f*C_PI, -radius*C_PI/180.f,circlep[i]);
+		Utility::spheToRect((float)i/(50)*2.f*M_PI, -radius*M_PI/180.f,circlep[i]);
 	}
 	for (int i=0; i < 50; i++) {
 		if ((prj->*proj_func)(circlep[i], pt1) && (prj->*proj_func)(circlep[i+1], pt2) ) {
@@ -259,15 +259,15 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
-	inclination=66.5*C_PI/180.;
-	derivation = 0;  //(nav->getJDay()-2451545.0)/(365.2422*71.67)*C_PI/180.0;
+	inclination=66.5*M_PI/180.;
+	derivation = 0;  //(nav->getJDay()-2451545.0)/(365.2422*71.67)*M_PI/180.0;
 
 	// VERTICAL
 	for (/*unsigned*/ int i=0; i<12; i++) {
 		for (int j=-4; j<=4; j++) {
-			alpha=i*30*C_PI/180.-derivation;
-			delta=j*4*C_PI/180.;
-			Utility::spheToRect(atan2(sin(alpha), sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+C_PI/2.0, asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)), punts[j+4]);
+			alpha=i*30*M_PI/180.-derivation;
+			delta=j*4*M_PI/180.;
+			Utility::spheToRect(atan2(sin(alpha), sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+M_PI/2.0, asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)), punts[j+4]);
 		}
 		for (int j=0; j<8; j++) {
 			if ((prj->*proj_func)(punts[j], pt1) && (prj->*proj_func)(punts[j+1], pt2) ) {
@@ -299,9 +299,9 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 	//HAUT
 	for (/*unsigned*/ int i=0; i<=48; i++) {
 
-		alpha=i*7.5*C_PI/180.-derivation;
-		delta=16*C_PI/180.;
-		Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+C_PI/2.0,asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
+		alpha=i*7.5*M_PI/180.-derivation;
+		delta=16*M_PI/180.;
+		Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+M_PI/2.0,asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 	}
 	for (int i=0; i < 48; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
@@ -333,11 +333,11 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 				//~ glPushMatrix();
 
 				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(-90+angle*180./C_PI,0,0,-1);
+				//~ glRotatef(-90+angle*180./M_PI,0,0,-1);
 
 				Mat4f MVP = prj->getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI_2-angle );
+				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI_2-angle );
 
 				//~ glEnable(GL_TEXTURE_2D);
 
@@ -363,9 +363,9 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	//BAS
 	for (/*unsigned*/ int i=0; i<=48; i++) {
-		alpha=i*7.5*C_PI/180.-derivation;
-		delta=-16*C_PI/180.;
-		Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+C_PI/2.0,asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
+		alpha=i*7.5*M_PI/180.-derivation;
+		delta=-16*M_PI/180.;
+		Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+M_PI/2.0,asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 	}
 	for (int i=0; i < 48; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
@@ -421,14 +421,14 @@ SkyLine_CircumPolar::SkyLine_CircumPolar(double _radius = 1., unsigned int _nb_s
 {
 	inclination =0;
 	proj_func = &Projector::projectEarthEqu;
-	Mat4f rotation = Mat4f::xrotation(inclination*C_PI/180.f);
+	Mat4f rotation = Mat4f::xrotation(inclination*M_PI/180.f);
 
 	// Points to draw along the circle
 	punts  = new Vec3f[3*nb_segment+3];
 	points = new Vec3f[3*nb_segment+3];
 
 	for (unsigned int i=0; i<nb_segment+1; ++i) {
-		Utility::spheToRect((float)i/(nb_segment)*2.f*C_PI, 0.f, points[i]);
+		Utility::spheToRect((float)i/(nb_segment)*2.f*M_PI, 0.f, points[i]);
 		points[i] *= radius;
 		points[i].transfo4d(rotation);
 	}
@@ -459,17 +459,17 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 
 		//~ prj->set_orthographic_projection();	// set 2D coordinate
 
-		inclination=(90.0-abs(observatory->getLatitude()))*C_PI/180.;
+		inclination=(90.0-abs(observatory->getLatitude()))*M_PI/180.;
 		//Vec3f punts[3*nb_segment+3];
 		inclination *= sign;
 
 		for (unsigned int i=0; i<nb_segment; i += 2) {
 			for (unsigned int j=0; j<nb_segment+1; ++j) {
-				Utility::spheToRect((float)j/(nb_segment)*2.f*C_PI, inclination, points[j+nb_segment+1]);
+				Utility::spheToRect((float)j/(nb_segment)*2.f*M_PI, inclination, points[j+nb_segment+1]);
 				points[j+nb_segment+1] *= radius;
 			}
 			//for (unsigned int j=0; j<nb_segment+1; ++j) {
-			//    Utility::spheToRect(2.f*C_PI,inclination+(sign*(90.*C_PI/180.f)-inclination)*(j/nb_segment), punts[j+nb_segment+1]);
+			//    Utility::spheToRect(2.f*M_PI,inclination+(sign*(90.*M_PI/180.f)-inclination)*(j/nb_segment), punts[j+nb_segment+1]);
 			//    punts[j+nb_segment+1] *= radius;
 			//}
 
@@ -499,12 +499,12 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 
 				//~ glPushMatrix();
 				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 				//~ glPopMatrix();
 
 				//~ Mat4f MVP = prj->getMatProjectionOrtho2D();
 				//~ TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				//~ TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 180+angle*180./C_PI );
+				//~ TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 180+angle*180./M_PI );
 				//~ shaderSkylineDraw->setUniform("MVP",MVP*TRANSFO);
 				//~ }
 			}
@@ -623,7 +623,7 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 	}
 	//~ printf("\n");
 	for (int i=0; i < 93; i++) {
-		Utility::spheToRect((ana_ad[i]-90+T-longitude)*C_PI/180,(90-lati+ana_de[i])*C_PI/180,analemma[i]);
+		Utility::spheToRect((ana_ad[i]-90+T-longitude)*M_PI/180,(90-lati+ana_de[i])*M_PI/180,analemma[i]);
 		//~ tmp=analemma[i];
 		//~ printf("ANALEMA: \t%f %f %f\n",tmp[0],tmp[1],tmp[2]);
 	}
@@ -674,8 +674,8 @@ SkyLine_Galactic_Center::SkyLine_Galactic_Center( double _radius = 1., unsigned 
 	SkyLine(_radius, _nb_segment)
 {
 	proj_func = &Projector::projectJ2000Galactic;
-	inclination=0*C_PI/180.;
-	derivation = 90*C_PI/180.;
+	inclination=0*M_PI/180.;
+	derivation = 90*M_PI/180.;
 }
 
 SkyLine_Galactic_Center::~SkyLine_Galactic_Center()
@@ -701,9 +701,9 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 	for (unsigned int j=0; j<=1; j++) {
 		for (unsigned int i=0; i<=48; i++) {
 
-			alpha=i*7.5*C_PI/180.-derivation;
-			delta=268.5*C_PI/180.;
-			Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+(j*C_PI),asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
+			alpha=i*7.5*M_PI/180.-derivation;
+			delta=268.5*M_PI/180.;
+			Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+(j*M_PI),asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 		}
 		for (int i=0; i < 48; i++) {
 			if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
@@ -744,8 +744,8 @@ SkyLine_Vernal::SkyLine_Vernal( double _radius = 1., unsigned int _nb_segment = 
 	SkyLine(_radius, _nb_segment)
 {
 	proj_func = &Projector::projectEarthEqu;
-	inclination=0*C_PI/180.;
-	derivation = 90*C_PI/180.;
+	inclination=0*M_PI/180.;
+	derivation = 90*M_PI/180.;
 }
 
 SkyLine_Vernal::~SkyLine_Vernal()
@@ -767,9 +767,9 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 	for (unsigned int j=0; j<=1; j++) {
 		for (unsigned int i=0; i<=48; i++) {
 
-			alpha=i*7.5*C_PI/180.-derivation;
-			delta=268.5*C_PI/180.;
-			Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+(j*C_PI),asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
+			alpha=i*7.5*M_PI/180.-derivation;
+			delta=268.5*M_PI/180.;
+			Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+(j*M_PI),asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 		}
 		for (int i=0; i < 48; i++) {
 			if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
@@ -833,10 +833,10 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
-	latitude=(observatory->getLatitude()*C_PI/180)+C_PI/2;
-	double longitude=(observatory->getLongitude()*C_PI/180);
+	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
+	double longitude=(observatory->getLongitude()*M_PI/180);
 	for (unsigned int i=0; i<60; i++) {
-		Utility::spheToRect(-2*longitude,(float)i/59*(2*C_PI),punts[i]);
+		Utility::spheToRect(-2*longitude,(float)i/59*(2*M_PI),punts[i]);
 	}
 	for (int i=0; i < 59; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
@@ -852,8 +852,8 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 		}
 	}
 
-	Utility::spheToRect(-2*longitude,(((45.0/59.f)*2*C_PI)+(1*latitude)) ,punt[0]);
-	Utility::spheToRect(-2*longitude,(((46.0/59.f)*2*C_PI)+(1*latitude)) ,punt[1]);
+	Utility::spheToRect(-2*longitude,(((45.0/59.f)*2*M_PI)+(1*latitude)) ,punt[0]);
+	Utility::spheToRect(-2*longitude,(((46.0/59.f)*2*M_PI)+(1*latitude)) ,punt[1]);
 
 	//TODO all this for a single text ?????
 	if ((prj->*proj_func)(punt[1],pt1) && (prj->*proj_func)(punt[0],pt2) ) {
@@ -868,7 +868,7 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 		}
 		//~ glPushMatrix();
 		//~ glTranslatef(pt1[0],pt1[1],0);
-		//~ glRotatef(angle*180./C_PI,0,0,-1);
+		//~ glRotatef(angle*180./M_PI,0,0,-1);
 
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
@@ -927,9 +927,9 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
-	latitude=(observatory->getLatitude()*C_PI/180)+C_PI/2;
+	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
 	for (unsigned int i=0; i<60; i++) {
-		Utility::spheToRect(0,(float)i/59*(2*C_PI),punts[i]);
+		Utility::spheToRect(0,(float)i/59*(2*M_PI),punts[i]);
 	}
 	for (int i=0; i < 59; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
@@ -944,8 +944,8 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 			vecDrawPos.push_back( pt2[1] );
 		}
 	}
-	Utility::spheToRect(0,(((45.0/59.f)*2*C_PI)+(1*latitude)) ,punt[0]);
-	Utility::spheToRect(0,(((46.0/59.f)*2*C_PI)+(1*latitude)) ,punt[1]);
+	Utility::spheToRect(0,(((45.0/59.f)*2*M_PI)+(1*latitude)) ,punt[0]);
+	Utility::spheToRect(0,(((46.0/59.f)*2*M_PI)+(1*latitude)) ,punt[1]);
 
 	if ((prj->*proj_func)(punt[1],pt1) &&(prj->*proj_func)(punt[0],pt2) ) {
 		const double dx = pt2[0]-pt1[0];
@@ -960,7 +960,7 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 		//~ glPushMatrix();
 
 		//~ glTranslatef(pt1[0],pt1[1],0);
-		//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+		//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
@@ -1002,12 +1002,12 @@ SkyLine_Meridian::SkyLine_Meridian(double _radius = 1., unsigned int _nb_segment
 	proj_func = &Projector::projectLocal;
 	inclination = 90;
 
-	Mat4f rotation = Mat4f::xrotation(inclination*C_PI/180.f);
+	Mat4f rotation = Mat4f::xrotation(inclination*M_PI/180.f);
 
 	// Points to draw along the circle
 	points = new Vec3f[3*nb_segment+3];
 	for (unsigned int i=0; i<nb_segment+1; ++i) {
-		Utility::spheToRect((float)i/(nb_segment)*2.f*C_PI, 0.f, points[i]);
+		Utility::spheToRect((float)i/(nb_segment)*2.f*M_PI, 0.f, points[i]);
 		points[i] *= radius;
 		points[i].transfo4d(rotation);
 	}
@@ -1032,15 +1032,15 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
-	inclination=70*C_PI/180.;
+	inclination=70*M_PI/180.;
 	for (unsigned int j=0; j<nb_segment+1; ++j) {
-		Utility::spheToRect((float)j/(nb_segment)*2.f*C_PI, inclination, points[j+nb_segment+1]);
+		Utility::spheToRect((float)j/(nb_segment)*2.f*M_PI, inclination, points[j+nb_segment+1]);
 		points[j+nb_segment+1] *= radius;
 	}
 
 	for (unsigned int i=0; i<nb_segment; ++i) {
 		if (internalNav) {
-			inclination=70*C_PI/180.;
+			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
 				//~ glBegin (GL_LINES);
@@ -1085,14 +1085,14 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
 					//~ glPushMatrix();
 					//~ glTranslatef(pt2[0],pt2[1],0);
-					//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+					//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
 					//~ glBegin (GL_LINES);
 					//~ glVertex2f(-tickl,0);
@@ -1153,7 +1153,7 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 			else {
 				valdeg = 180-((i+1)*10/(nb_segment/36));
 				if (valdeg<-90) valdeg=-180-valdeg;
-				else angle += C_PI;
+				else angle += M_PI;
 			}
 
 			if ((i+1)%(nb_segment/36)==0) {
@@ -1166,16 +1166,16 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 			}
 
 			if ( valdeg==90 ) {
-				angle += C_PI;
+				angle += M_PI;
 			}
 
 			//~ glPushMatrix();
 			//~ glTranslatef(pt2[0],pt2[1],0);
-			//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+			//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 			Mat4f MVP = prj->getMatProjectionOrtho2D();
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
 
 			//~ glBegin (GL_LINES);
@@ -1237,12 +1237,12 @@ SkyLine_Equator::SkyLine_Equator(SKY_LINE_EQUATOR_LINE _line_equator_type, doubl
 	}
 
 	inclination=0.;
-	Mat4f rotation = Mat4f::xrotation(inclination*C_PI/180.f);
+	Mat4f rotation = Mat4f::xrotation(inclination*M_PI/180.f);
 
 	// Points to draw along the circle
 	points = new Vec3f[3*nb_segment+3];
 	for (unsigned int i=0; i<nb_segment+1; ++i) {
-		Utility::spheToRect((float)i/(nb_segment)*2.f*C_PI, 0.f, points[i]);
+		Utility::spheToRect((float)i/(nb_segment)*2.f*M_PI, 0.f, points[i]);
 		points[i] *= radius;
 		points[i].transfo4d(rotation);
 	}
@@ -1268,15 +1268,15 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	if (line_equator_type == EQUATOR) {
-		inclination=70*C_PI/180.;
+		inclination=70*M_PI/180.;
 		for (unsigned int j=0; j<nb_segment+1; ++j) {
-			Utility::spheToRect((float)j/(nb_segment)*2.f*C_PI, inclination, points[j+nb_segment+1]);
+			Utility::spheToRect((float)j/(nb_segment)*2.f*M_PI, inclination, points[j+nb_segment+1]);
 			points[j+nb_segment+1] *= radius;
 		}
 	}
 	for (unsigned int i=0; i<nb_segment; ++i) {
 		if (internalNav) {
-			inclination=70*C_PI/180.;
+			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
 				//~ glBegin (GL_LINES);
@@ -1314,11 +1314,11 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 
 					//~ glPushMatrix();
 					//~ glTranslatef(pt2[0],pt2[1],0);
-					//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+					//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
 					//~ glBegin (GL_LINES);
 					//~ glVertex2f(-tickl,0);
@@ -1393,12 +1393,12 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				}
 				//~ glPushMatrix();
 				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 				//~ glPopMatrix();
 
 				Mat4f MVP = prj->getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
 				if ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) {
 					if ((i+1) % (2*4) == 0) {
@@ -1465,9 +1465,9 @@ SkyLine_Tropic::SkyLine_Tropic(double _radius = 1., unsigned int _nb_segment = 4
 	proj_func = &Projector::projectEarthEqu;
 	points = new Vec3f[3*nb_segment+3];
 	inclination=0;
-	Mat4f rotation = Mat4f::xrotation(inclination*C_PI/180.f);
+	Mat4f rotation = Mat4f::xrotation(inclination*M_PI/180.f);
 	for (unsigned int i=0; i<nb_segment+1; ++i) {
-		Utility::spheToRect((float)i/(nb_segment)*2.f*C_PI, 0.f, points[i]);
+		Utility::spheToRect((float)i/(nb_segment)*2.f*M_PI, 0.f, points[i]);
 		points[i] *= radius;
 		points[i].transfo4d(rotation);
 	}
@@ -1496,7 +1496,7 @@ SkyLine_Tropic::~SkyLine_Tropic()
 
 //~ glPushMatrix();
 //~ glTranslatef(pt2[0],pt2[1],0);
-//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 //~ glBegin (GL_LINES);
 //~ glVertex2f(-3,0);
@@ -1528,12 +1528,12 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 	for (unsigned int i=0; i<nb_segment; ++i) {
-		inclination=observatory->getHomeBody()->getAxialTilt()*C_PI/180.;
-		//~ inclination=observatory->getHomePlanet()->getAxialTilt()*C_PI/180.;
+		inclination=observatory->getHomeBody()->getAxialTilt()*M_PI/180.;
+		//~ inclination=observatory->getHomePlanet()->getAxialTilt()*M_PI/180.;
 		for (unsigned int j=0; j<nb_segment+1; ++j) {
-			Utility::spheToRect((float)j/(nb_segment)*2.f*C_PI, inclination, points[j+nb_segment+1]);
+			Utility::spheToRect((float)j/(nb_segment)*2.f*M_PI, inclination, points[j+nb_segment+1]);
 			points[j+nb_segment+1] *= radius;
-			Utility::spheToRect((float)j/(nb_segment)*2.f*C_PI, -inclination, points[j+2*nb_segment+2]);
+			Utility::spheToRect((float)j/(nb_segment)*2.f*M_PI, -inclination, points[j+2*nb_segment+2]);
 			points[j+2*nb_segment+2] *= radius;
 		}
 
@@ -1563,10 +1563,10 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 				//~ glPushMatrix();
 				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
 				vecDrawPos.push_back( tmp[0] );
 				vecDrawPos.push_back( tmp[1] );
@@ -1607,9 +1607,9 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 				//~ glPushMatrix();
 				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
 				vecDrawPos.push_back( tmp[0] );
 				vecDrawPos.push_back( tmp[1] );
@@ -1652,9 +1652,9 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 				//~ glPushMatrix();
 				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
 				vecDrawPos.push_back( tmp[0] );
 				vecDrawPos.push_back( tmp[1] );
@@ -1729,14 +1729,14 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 	//~ bool draw_labels = (observatory->getHomePlanet()->getEnglishName()=="Earth" && font);
 
 	// start labeling from the vernal equinox
-	//	  const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 3*C_PI/6) : 0.0;
-	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*C_PI/6) : 0.0;
+	//	  const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 3*M_PI/6) : 0.0;
+	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*M_PI/6) : 0.0;
 	Vec3d point(radius*cos(corr),radius*sin(corr),0.0);
 	point.transfo4d(m);
 	bool prev_on_screen = prj->projectEarthEqu(point,pt1);
 
 	for (unsigned int i=1; i<365+1; ++i) {
-		const double phi = corr+2*i*C_PI/365;
+		const double phi = corr+2*i*M_PI/365;
 		Vec3d point(radius*cos(phi),radius*sin(phi),0.0);
 		point.transfo4d(m);
 		const bool on_screen = prj->projectEarthEqu(point,pt2);
@@ -1766,11 +1766,11 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 
 			//~ glPushMatrix();
 			//~ glTranslatef(pt2[0],pt2[1],0);
-			//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+			//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 			//~ glBegin (GL_LINES);
 
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
 			if (draw_labels) {
 				//                31 	     28 	31 	   30 	       31 	  30 	     31 	31 	   30 	      31         30
@@ -1847,11 +1847,11 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 
 				//~ glPushMatrix();
 				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(-90+angle*180./C_PI,0,0,-1);
+				//~ glRotatef(-90+angle*180./M_PI,0,0,-1);
 
 				Mat4f MVP = prj->getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI_2-angle );
+				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI_2-angle );
 
 				//~ glEnable(GL_TEXTURE_2D);
 
@@ -1923,7 +1923,7 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
 	draw_labels = (font != nullptr);
 
-	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*C_PI/6) : 0.0;
+	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*M_PI/6) : 0.0;
 	//double corr = 0.0;
 
 	bool prev_on_screen;
@@ -1935,7 +1935,7 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 		prev_on_screen = prj->projectEarthEqu(point,pt1);
 
 		for (unsigned int i=0; i<104+1; ++i) {
-			const double phi = corr+2*(i-0.5)*C_PI/104;
+			const double phi = corr+2*(i-0.5)*M_PI/104;
 			Vec3d point(radius*cos(phi),radius*sin(phi),pole*radius*2.3213f);
 			point.transfo4d(m);
 			const bool on_screen = prj->projectEarthEqu(point,pt2);
@@ -1989,11 +1989,11 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 
 					//~ glPushMatrix();
 					//~ glTranslatef(pt2[0],pt2[1],0);
-					//~ glRotatef(180+angle*180./C_PI,0,0,-1);
+					//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-					if (pole==1) TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI-angle );
+					if (pole==1) TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 					if (pole==-1) TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
 					//~ glEnable(GL_TEXTURE_2D);
@@ -2072,7 +2072,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int i=0; i<nb_segment+1; ++i) {
-		Utility::spheToRect(C_PI_2, ((float)i/nb_segment*C_PI),circlep[i]);
+		Utility::spheToRect(M_PI_2, ((float)i/nb_segment*M_PI),circlep[i]);
 	}
 
 	for (unsigned int i=0; i < nb_segment; i++) {
@@ -2102,7 +2102,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 			if ((i+1)<=8*(nb_segment/18)) val =  (i+1)*10/(nb_segment/18);
 			else if ((i+1) > 8*(nb_segment/18)) {
 				val = 180-((i+1)*10/(nb_segment/18));
-				angle += C_PI;
+				angle += M_PI;
 			} else val=0; //uninitialised var
 			if ((i+1)%(nb_segment/18)==0) {
 				oss << val << "°";
@@ -2116,11 +2116,11 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 
 			//~ glPushMatrix();
 			//~ glTranslatef(pt2[0],pt2[1],0);
-			//~ glRotatef(angle*180./C_PI,0,0,-1);
+			//~ glRotatef(angle*180./M_PI,0,0,-1);
 
 			Mat4f MVP = prj->getMatProjectionOrtho2D();
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), C_PI+angle );
+			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI+angle );
 
 			tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
 			vecDrawPos.push_back( tmp[0] );
@@ -2186,10 +2186,10 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int i=0; i<51; ++i) {
-		Utility::spheToRect((float)i/(50)*2.f*C_PI, (0.993f*C_PI-C_PI_2),circlep[i]);
+		Utility::spheToRect((float)i/(50)*2.f*M_PI, (0.993f*M_PI-M_PI_2),circlep[i]);
 	}
 	for (unsigned int i=0; i<51; ++i) {
-		Utility::spheToRect((float)i/(50)*2.f*C_PI, -(0.993f*C_PI-C_PI_2),circlen[i]);
+		Utility::spheToRect((float)i/(50)*2.f*M_PI, -(0.993f*M_PI-M_PI_2),circlen[i]);
 	}
 
 	for (int i=0; i < 50; i++) {
@@ -2216,9 +2216,9 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 	}
 
-	Utility::spheToRect((float)12.5/(50)*2.f*C_PI, 0.993f*C_PI-C_PI_2,punts[0]);
-	Utility::spheToRect((float)37.5/(50)*2.f*C_PI, 0.993f*C_PI-C_PI_2,punts[1]);
-	Utility::spheToRect(0,0.992f*C_PI-C_PI_2,punts[2]);
+	Utility::spheToRect((float)12.5/(50)*2.f*M_PI, 0.993f*M_PI-M_PI_2,punts[0]);
+	Utility::spheToRect((float)37.5/(50)*2.f*M_PI, 0.993f*M_PI-M_PI_2,punts[1]);
+	Utility::spheToRect(0,0.992f*M_PI-M_PI_2,punts[2]);
 
 	if ((prj->*proj_func)(punts[0],pt1) && (prj->*proj_func)(punts[1],pt2) ) {
 		//~ glBegin (GL_LINES);
@@ -2241,8 +2241,8 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		vecDrawPos.push_back( pt2[1] );
 	}
 
-	Utility::spheToRect(0.98*C_PI, C_PI_2,punts[0]);
-	Utility::spheToRect(C_PI, C_PI_2,punts[1]);
+	Utility::spheToRect(0.98*M_PI, M_PI_2,punts[0]);
+	Utility::spheToRect(M_PI, M_PI_2,punts[1]);
 
 	if ((prj->*proj_func)(punts[0],pt1) && (prj->*proj_func)(punts[1],pt2) ) {
 		const double dx = pt2[0]-pt1[0];
@@ -2272,9 +2272,9 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		//~ glPopMatrix();
 	}
 
-	Utility::spheToRect((float)12.5/(50)*2.f*C_PI, -(0.993f*C_PI-C_PI_2),punts[0]);
-	Utility::spheToRect((float)37.5/(50)*2.f*C_PI, -(0.993f*C_PI-C_PI_2),punts[1]);
-	Utility::spheToRect(0, -(0.992f*C_PI-C_PI_2),punts[2]);
+	Utility::spheToRect((float)12.5/(50)*2.f*M_PI, -(0.993f*M_PI-M_PI_2),punts[0]);
+	Utility::spheToRect((float)37.5/(50)*2.f*M_PI, -(0.993f*M_PI-M_PI_2),punts[1]);
+	Utility::spheToRect(0, -(0.992f*M_PI-M_PI_2),punts[2]);
 
 	if ((prj->*proj_func)(punts[0],pt1) && (prj->*proj_func)(punts[1],pt2) ) {
 		//~ glBegin (GL_LINES);
@@ -2297,8 +2297,8 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		vecDrawPos.push_back( pt2[1] );
 	}
 
-	Utility::spheToRect(0.98*C_PI, -C_PI_2,punts[0]);
-	Utility::spheToRect(C_PI, -C_PI_2,punts[1]);
+	Utility::spheToRect(0.98*M_PI, -M_PI_2,punts[0]);
+	Utility::spheToRect(M_PI, -M_PI_2,punts[1]);
 
 	if ((prj->*proj_func)(punts[0],pt1) && (prj->*proj_func)(punts[1],pt2) ) {
 		const double dx = pt2[0]-pt1[0];

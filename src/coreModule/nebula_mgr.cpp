@@ -262,7 +262,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	// FOV is currently measured vertically, so need to adjust for wide screens
 	// TODO: projector should probably use largest measurement itself
 	float max_fov = myMax( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
-	nbZones = nebGrid.Intersect(nav->getPrecEquVision(), max_fov*C_PI/180.f*1.2f);
+	nbZones = nebGrid.Intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
 	static int * zoneList = nebGrid.getResult();
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
@@ -273,7 +273,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	Nebula* n;
 
 	// speed up the computation of n->getOnScreenSize(prj, nav)>5:
-	const float size_limit = 5.0 * (C_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
+	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
 
 	for (int i=0; i<nbZones; ++i) {
 		end = nebZones[zoneList[i]].end();
@@ -430,7 +430,7 @@ std::vector<Object> NebulaMgr::searchAround(Vec3d v, double lim_fov) const
 {
 	std::vector<Object> result;
 	v.normalize();
-	double cos_lim_fov = cos(lim_fov * C_PI/180.);
+	double cos_lim_fov = cos(lim_fov * M_PI/180.);
 	static Vec3d equPos;
 
 	std::vector<Nebula*>::const_iterator iter = neb_array.begin();

@@ -77,10 +77,10 @@ Orbit * OrbitCreatorEliptic::handle(stringHash_t params) const
 	double epoch = Utility::strToDouble(params["orbit_epoch"],J2000);
 	double semi_major_axis = Utility::strToDouble(params["orbit_semimajoraxis"])/AU;
 	double eccentricity = Utility::strToDouble(params["orbit_eccentricity"]);
-	double inclination = Utility::strToDouble(params["orbit_inclination"])*C_PI/180.;
-	double ascending_node = Utility::strToDouble(params["orbit_ascendingnode"])*C_PI/180.;
-	double long_of_pericenter = Utility::strToDouble(params["orbit_longofpericenter"])*C_PI/180.;
-	double mean_longitude = Utility::strToDouble(params["orbit_meanlongitude"])*C_PI/180.;
+	double inclination = Utility::strToDouble(params["orbit_inclination"])*M_PI/180.;
+	double ascending_node = Utility::strToDouble(params["orbit_ascendingnode"])*M_PI/180.;
+	double long_of_pericenter = Utility::strToDouble(params["orbit_longofpericenter"])*M_PI/180.;
+	double mean_longitude = Utility::strToDouble(params["orbit_meanlongitude"])*M_PI/180.;
 
 	double arg_of_pericenter = long_of_pericenter - ascending_node;
 	double anomaly_at_epoch = mean_longitude - (arg_of_pericenter + ascending_node);
@@ -192,11 +192,11 @@ Orbit * OrbitCreatorComet::handle(stringHash_t params) const
 			              : 0.01720209895 / (-semi_major_axis*sqrt(-semi_major_axis));
 		}
 		else {
-			mean_motion = 2.0*C_PI/period;
+			mean_motion = 2.0*M_PI/period;
 		}
 	}
 	else {
-		mean_motion *= (C_PI/180.0);
+		mean_motion *= (M_PI/180.0);
 	}
 
 	double time_at_pericenter = Utility::strToDouble(params["orbit_timeatpericenter"],-1e100);
@@ -209,14 +209,14 @@ Orbit * OrbitCreatorComet::handle(stringHash_t params) const
 			return nullptr;
 		}
 		else {
-			mean_anomaly *= (C_PI/180.0);
+			mean_anomaly *= (M_PI/180.0);
 			time_at_pericenter = epoch - mean_anomaly / mean_motion;
 		}
 	}
 
-	const double inclination = Utility::strToDouble(params["orbit_inclination"])*(C_PI/180.0);
-	const double ascending_node = Utility::strToDouble(params["orbit_ascendingnode"])*(C_PI/180.0);
-	const double arg_of_pericenter = Utility::strToDouble(params["orbit_argofpericenter"])*(C_PI/180.0);
+	const double inclination = Utility::strToDouble(params["orbit_inclination"])*(M_PI/180.0);
+	const double ascending_node = Utility::strToDouble(params["orbit_ascendingnode"])*(M_PI/180.0);
+	const double arg_of_pericenter = Utility::strToDouble(params["orbit_argofpericenter"])*(M_PI/180.0);
 
 	return new CometOrbit(
 	           pericenter_distance, eccentricity,

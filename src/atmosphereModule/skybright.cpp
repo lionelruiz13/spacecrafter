@@ -29,7 +29,7 @@
 Skybright::Skybright() : SN(1.f)
 {
 	setDate(2003, 8, 0);
-	setLoc(C_PI_4, 1000., 25.f, 40.f);
+	setLoc(M_PI_4, 1000., 25.f, 40.f);
 	setSunMoon(0.5, 0.5,0);
 }
 
@@ -80,7 +80,7 @@ void Skybright::setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith
 
 	C3 = pow10(-0.4f*K*air_mass_moon);	// Term for moon brightness computation
 
-	b_twilight_term = -6.724f + 22.918312f * (C_PI_2-acosf(cos_dist_sun_zenith));
+	b_twilight_term = -6.724f + 22.918312f * (M_PI_2-acosf(cos_dist_sun_zenith));
 
 	C4 = pow10(-0.4f*K*air_mass_sun);	// Term for sky brightness computation
 }
@@ -141,9 +141,9 @@ float Skybright::getLuminance(float cos_dist_moon, float cos_dist_sun, float cos
 	// Total sky brightness
 	b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon : b_total = b_night + b_daylight + b_moon;
 
-	return (b_total<0.f) ? 0.f : b_total/1.11E-15 * 1E-5/C_PI; // cd/m^2
+	return (b_total<0.f) ? 0.f : b_total/1.11E-15 * 1E-5/M_PI; // cd/m^2
 
-	//	return (b_total<0.f) ? 0.f : b_total * 900900.9f * C_PI * 1e-4 * 3239389*2;
+	//	return (b_total<0.f) ? 0.f : b_total * 900900.9f * M_PI * 1e-4 * 3239389*2;
 	//// In cd/m^2 : the 32393895 is empirical term because the
 	// lambert -> cd/m^2 formula seems to be wrong...
 }

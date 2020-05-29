@@ -98,7 +98,7 @@ void Oort::populate(unsigned int nbr) noexcept
 		if (radius<2570) phi = phi*(radius-0)/2570;
 		if (radius>4000) radius = radius*(1+(radius-4000)/4000);
 
-		Utility::spheToRect(theta*C_PI/180,phi*C_PI/180, tmp);
+		Utility::spheToRect(theta*M_PI/180,phi*M_PI/180, tmp);
 
 		dataOort.push_back((float) tmp[0]*radius);
 		dataOort.push_back((float) tmp[1]*radius);

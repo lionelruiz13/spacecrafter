@@ -77,7 +77,7 @@ struct HalfSpace {
 	}
 	//! Get the area of the halfspace in steradian
 	double getArea() const {
-		return 2.*C_PI*(1.-d);
+		return 2.*M_PI*(1.-d);
 	}
 	//! The direction unit vector
 	Vec3d n;

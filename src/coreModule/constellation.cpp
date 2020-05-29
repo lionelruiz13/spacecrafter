@@ -122,8 +122,8 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 		Utility::rectToSphe(&ra1,&de1,asterism[2*i]->getObsJ2000Pos(0));
 		Utility::rectToSphe(&ra2,&de2,asterism[2*i+1]->getObsJ2000Pos(0));
 		if ((abs(ra2-ra1)>0.000001) && (abs(de2-de1)>0.000001)) {
-		  if ((ra2-ra1)>C_PI) ra1+=2*C_PI; 
-		  if ((ra1-ra2)>C_PI) ra2+=2*C_PI; 
+		  if ((ra2-ra1)>M_PI) ra1+=2*M_PI; 
+		  if ((ra1-ra2)>M_PI) ra2+=2*M_PI; 
 		  Utility::spheToRect(ra1,de1, gettemp1);
 		  int npoints=11;
 		  float delta=(ra1-ra2)/(npoints-1);

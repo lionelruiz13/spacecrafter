@@ -230,7 +230,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	// Find the star zones which are in the screen
 	int nbZones=0;
 	float max_fov = myMax( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
-	nbZones = illuminateGrid.Intersect(nav->getPrecEquVision(), max_fov*C_PI/180.f*1.2f);
+	nbZones = illuminateGrid.Intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
 
 	static int * zoneList = illuminateGrid.getResult();
 

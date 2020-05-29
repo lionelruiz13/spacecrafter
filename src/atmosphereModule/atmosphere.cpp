@@ -186,7 +186,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 
 	sky.setParamsv(sun_pos, 5.f, planetName);
 
-	skyb.setLoc(latitude * C_PI/180., altitude, temperature, relative_humidity);
+	skyb.setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
 	skyb.setSunMoon(moon_pos[2], sun_pos[2], cor_optoma);
 
 	// Calculate the date from the julian day.

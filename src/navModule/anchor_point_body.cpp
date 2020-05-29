@@ -47,8 +47,8 @@ Mat4d AnchorPointBody::getRotLocalToEquatorial(double jd, double lat, double lon
 	// 		lastSideralTime = body->getSiderealTime(jd);
 	// 	}
 
-	// 	return Mat4d::zrotation((lastOffset + lon)*(C_PI/180.))
-	// 	       * Mat4d::yrotation((90.-lat)*(C_PI/180.));
+	// 	return Mat4d::zrotation((lastOffset + lon)*(M_PI/180.))
+	// 	       * Mat4d::yrotation((90.-lat)*(M_PI/180.));
 	// }
 	// else {
 	// 	//~ cout << "Accrochage : Altitude : " << alt << " limite pour la rotation " << body->getRadius() * rotationMultiplierCondition * AU *1000.0 << endl;
@@ -59,8 +59,8 @@ Mat4d AnchorPointBody::getRotLocalToEquatorial(double jd, double lat, double lon
 	// 		elapsedSideralTime -= ((int)elapsedSideralTime/360) * 360;
 	// 	}
 
-	return Mat4d::zrotation((body->getSiderealTime(jd)+lon)*(C_PI/180.))
-			* Mat4d::yrotation((90.-lat)*(C_PI/180.));
+	return Mat4d::zrotation((body->getSiderealTime(jd)+lon)*(M_PI/180.))
+			* Mat4d::yrotation((90.-lat)*(M_PI/180.));
 	// }
 }
 

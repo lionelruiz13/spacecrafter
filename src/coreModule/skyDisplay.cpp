@@ -304,10 +304,10 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		// calculate alt az position
 		Vec3d localPos = nav->earthEquToLocal(equPos);
 		Utility::rectToSphe(&tempRA, &tempDE, localPos);
-		tempRA = 3 * C_PI - tempRA; // N is zero, E is 90 degrees
-		if (tempRA > C_PI * 2)
-			tempRA -= C_PI * 2;
-		direction = (C_PI - tempRA) * rad2deg;
+		tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+		if (tempRA > M_PI * 2)
+			tempRA -= M_PI * 2;
+		direction = (M_PI - tempRA) * rad2deg;
 	}
 	for (int j = -9; j < 9; j++) {
 		Utility::spheToRect(direction * deg2rad, j * grad2rad, punts);
@@ -387,12 +387,12 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	// calculate alt az position
 	Vec3d localPos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
-	tempRA = 3 * C_PI - tempRA; // N is zero, E is 90 degrees
-	if (tempRA > C_PI * 2)
-		tempRA -= C_PI * 2;
+	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+	if (tempRA > M_PI * 2)
+		tempRA -= M_PI * 2;
 	az = (tempRA)*rad2deg;
 	alt = tempDE * rad2deg;
-	aza = (C_PI - tempRA - (0.1 * fov)) * rad2deg;
+	aza = (M_PI - tempRA - (0.1 * fov)) * rad2deg;
 	// ALT
 	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
@@ -560,12 +560,12 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	// calculate alt az position
 	Vec3d localPos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
-	tempRA = 3 * C_PI - tempRA; // N is zero, E is 90 degrees
-	if (tempRA > C_PI * 2)
-		tempRA -= C_PI * 2;
+	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+	if (tempRA > M_PI * 2)
+		tempRA -= M_PI * 2;
 	az = (tempRA)*rad2deg;
 	alt = tempDE * rad2deg;
-	aza = (C_PI - tempRA - (0.1 * fov)) * rad2deg;
+	aza = (M_PI - tempRA - (0.1 * fov)) * rad2deg;
 	// ALT
 	alta = (tempDE - (0.05 * fov * 2)) * rad2deg;
 	Utility::spheToRect(aza * deg2rad, alta * deg2rad, pt3);
@@ -719,27 +719,27 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	// calculate alt az position
 	Vec3d localPos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
-	tempRA = 3 * C_PI - tempRA; // N is zero, E is 90 degrees
-	if (tempRA > C_PI * 2)
-		tempRA -= C_PI * 2;
+	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+	if (tempRA > M_PI * 2)
+		tempRA -= M_PI * 2;
 	alt1 = tempDE;
-	az1 = C_PI - tempRA;
+	az1 = M_PI - tempRA;
 	// end of calculate alt az position
 
 	// for Old position
 	// calculate alt az position
 	localPos = nav->earthEquToLocal(oldEquPos);
 	Utility::rectToSphe(&tempRA, &tempDE, localPos);
-	tempRA = 3 * C_PI - tempRA; // N is zero, E is 90 degrees
-	if (tempRA > C_PI * 2)
-		tempRA -= C_PI * 2;
+	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+	if (tempRA > M_PI * 2)
+		tempRA -= M_PI * 2;
 	alt2 = tempDE;
-	az2 = C_PI - tempRA;
+	az2 = M_PI - tempRA;
 	// end of calculate alt az position
-	if ((az2 - az1) > C_PI)
-		az1 += 2 * C_PI;
-	if ((az1 - az2) > C_PI)
-		az2 += 2 * C_PI;
+	if ((az2 - az1) > M_PI)
+		az1 += 2 * M_PI;
+	if ((az1 - az2) > M_PI)
+		az2 += 2 * M_PI;
 
 	// Draw orthodromy
 	clear();
@@ -817,10 +817,10 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	Utility::rectToSphe(&ra1, &de1, oldEquPos);
 	// for Selected position
 	Utility::rectToSphe(&ra2, &de2, equPos);
-	if ((ra2 - ra1) > C_PI)
-		ra1 += 2 * C_PI;
-	if ((ra1 - ra2) > C_PI)
-		ra2 += 2 * C_PI;
+	if ((ra2 - ra1) > M_PI)
+		ra1 += 2 * M_PI;
+	if ((ra1 - ra2) > M_PI)
+		ra2 += 2 * M_PI;
 	float distM, Rv;
 	ram = (ra1 + ra2) / 2;
 	dem = (de1 + de2) / 2;
@@ -887,10 +887,10 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	double ra1, de1, ra2, de2, rat, det, ang, alt1, az1, alt2, az2;
 	Utility::rectToSphe(&ra1, &de1, oldEquPos);
 	Utility::rectToSphe(&ra2, &de2, equPos);
-	if ((ra2 - ra1) > C_PI)
-		ra1 += 2 * C_PI;
-	if ((ra1 - ra2) > C_PI)
-		ra2 += 2 * C_PI;
+	if ((ra2 - ra1) > M_PI)
+		ra1 += 2 * M_PI;
+	if ((ra1 - ra2) > M_PI)
+		ra2 += 2 * M_PI;
 	ang = acos(sin(de1) * sin(de2) + cos(de1) * cos(de2) * cos(ra2 - ra1)) * rad2deg;
 	clear();
 	// Draw orthodromy
@@ -927,21 +927,21 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	// Text
 	Vec3d localPos = nav->earthEquToLocal(oldEquPos);
 	Utility::rectToSphe(&rat, &det, localPos);
-	rat = 3 * C_PI - rat; // N is zero, E is 90 degrees
-	if (rat > C_PI * 2)
-		rat -= C_PI * 2;
+	rat = 3 * M_PI - rat; // N is zero, E is 90 degrees
+	if (rat > M_PI * 2)
+		rat -= M_PI * 2;
 	alt1 = det;
-	az1 = C_PI - rat;
+	az1 = M_PI - rat;
 	Utility::spheToRect(az1, alt1, pt3);
 	(prj->*proj_func)(pt3, pt1);
 
 	localPos = nav->earthEquToLocal(equPos);
 	Utility::rectToSphe(&rat, &det, localPos);
-	rat = 3 * C_PI - rat; // N is zero, E is 90 degrees
-	if (rat > C_PI * 2)
-		rat -= C_PI * 2;
+	rat = 3 * M_PI - rat; // N is zero, E is 90 degrees
+	if (rat > M_PI * 2)
+		rat -= M_PI * 2;
 	alt2 = det;
-	az2 = C_PI - rat;
+	az2 = M_PI - rat;
 	Utility::spheToRect(az2, alt2, pt4);
 	(prj->*proj_func)(pt4, pt2);
 
@@ -957,7 +957,7 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	localPos = nav->earthEquToLocal(pt5);
 	(prj->*proj_func)(localPos, pt0);
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
-	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), C_PI - pi_div_2 + angle);
+	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), M_PI - pi_div_2 + angle);
 	std::ostringstream oss;
 	oss << truncf(ang * 60) << " nmi"; // for km *1.85185
 	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);

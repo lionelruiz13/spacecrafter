@@ -34,8 +34,8 @@ Mat4d AnchorPointObservatory::getRotLocalToEquatorial(double jd, double lat, dou
 	if ( lat > 89.5 )  lat = 89.5;
 	if ( lat < -89.5 ) lat = -89.5;
 
-	return Mat4d::zrotation(lon*(C_PI/180.))
-			* Mat4d::yrotation((90.-lat)*(C_PI/180.));
+	return Mat4d::zrotation(lon*(M_PI/180.))
+			* Mat4d::yrotation((90.-lat)*(M_PI/180.));
 
 }
 

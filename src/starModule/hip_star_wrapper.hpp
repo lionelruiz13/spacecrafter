@@ -80,7 +80,7 @@ protected:
 	Vec3d getObsJ2000Pos(const Navigator*) const {
 		const double d2000 = 2451545.0;
 		return s->getJ2000Pos(z,
-		                      (C_PI/180)*(0.0001/3600)
+		                      (M_PI/180)*(0.0001/3600)
 		                      * ((HipStarMgr::getCurrentJDay()-d2000)/365.25)
 		                      / a->star_position_scale
 		                     );

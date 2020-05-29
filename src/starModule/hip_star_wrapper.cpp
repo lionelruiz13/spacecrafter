@@ -51,8 +51,8 @@ std::string StarWrapperBase::getInfoString(const Navigator *nav) const
 	// calculate alt az
 	double az,alt;
 	Utility::rectToSphe(&az,&alt,nav->earthEquToLocal(equatorial_pos));
-	az = 3*C_PI - az;  // N is zero, E is 90 degrees
-	if(az > C_PI*2) az -= C_PI*2;
+	az = 3*M_PI - az;  // N is zero, E is 90 degrees
+	if(az > M_PI*2) az -= M_PI*2;
 	oss << "Alt/Az: " << Utility::printAngleDMS(alt) << " / " << Utility::printAngleDMS(az) << std::endl;
 
 	return oss.str();
@@ -84,7 +84,7 @@ std::string StarWrapperBase::getShortInfoNavString(const Navigator *nav, const T
 float StarWrapper1::getStarDistance( void )
 {
 	if (s->getPlx())
-		return (AU/(SPEED_OF_LIGHT*86400*365.25)) / (s->getPlx()*((0.00001/3600)*(C_PI/180)));
+		return (AU/(SPEED_OF_LIGHT*86400*365.25)) / (s->getPlx()*((0.00001/3600)*(M_PI/180)));
 	else
 		return 0;
 }
@@ -134,16 +134,16 @@ std::string StarWrapper1::getInfoString(const Navigator *nav) const
 	// calculate alt az
 	double az,alt;
 	Utility::rectToSphe(&az,&alt,nav->earthEquToLocal(equatorial_pos));
-	az = 3*C_PI - az;  // N is zero, E is 90 degrees
-	if (az > C_PI*2)
-		az -= C_PI*2;
+	az = 3*M_PI - az;  // N is zero, E is 90 degrees
+	if (az > M_PI*2)
+		az -= M_PI*2;
 	oss << _("Alt/Az: ") << Utility::printAngleDMS(alt) << " / " << Utility::printAngleDMS(az) << std::endl;
 
 	if (s->getPlx()) {
 		oss.precision(5);
 		oss << _("Parallax: ") << (0.00001*s->getPlx()) << std::endl;
 		oss.precision(2);
-		oss << _("Distance: ") << (AU/(SPEED_OF_LIGHT*86400*365.25)) / (s->getPlx()*((0.00001/3600)*(C_PI/180))) << " " << _("ly") << std::endl;
+		oss << _("Distance: ") << (AU/(SPEED_OF_LIGHT*86400*365.25)) / (s->getPlx()*((0.00001/3600)*(M_PI/180))) << " " << _("ly") << std::endl;
 	}
 
 	if (s->getSpInt()) {
@@ -188,7 +188,7 @@ std::string StarWrapper1::getShortInfoString(const Navigator *nav) const
 	oss << _("Magnitude: ") << getMag(nav) << "  ";
 
 	if (s->getPlx()) {
-		oss << _("Distance: ") << (AU/(SPEED_OF_LIGHT*86400*365.25)) / (s->getPlx()*((0.00001/3600)*(C_PI/180))) << " " << _("ly") << "  ";
+		oss << _("Distance: ") << (AU/(SPEED_OF_LIGHT*86400*365.25)) / (s->getPlx()*((0.00001/3600)*(M_PI/180))) << " " << _("ly") << "  ";
 	}
 
 	if (s->getSpInt()) {
@@ -218,26 +218,26 @@ std::string StarWrapper1::getShortInfoNavString(const Navigator *nav, const Time
 	Le = observatory->getLongitude();
 	/* calc mean angle */
 	sidereal = 280.46061837 + (360.98564736629 * (jd - 2451545.0)) + (0.000387933 * T * T) - (T * T * T / 38710000.0);
-	HA=sidereal+Le-tempRA*180.0/C_PI;
-	GHA=sidereal-tempRA*180.0/C_PI;
+	HA=sidereal+Le-tempRA*180.0/M_PI;
+	GHA=sidereal-tempRA*180.0/M_PI;
 	while (HA>=360) HA-=360;
 	while (HA<0)    HA+=360;
 	if (HA<180) PA=HA;
 	else PA=360-HA;
 	while (GHA>=360) GHA-=360;
 	while (GHA<0)    GHA+=360;
-	while (tempRA>=2*C_PI) tempRA-=2*C_PI;
-	while (tempRA<0)    tempRA+=2*C_PI;
+	while (tempRA>=2*M_PI) tempRA-=2*M_PI;
+	while (tempRA<0)    tempRA+=2*M_PI;
 
-	oss << _("SA ") << Utility::printAngleDMS(2*C_PI-tempRA) << " LHA " << Utility::printAngleDMS(HA*C_PI/180.0) << " GHA " << Utility::printAngleDMS(GHA*C_PI/180.0);
+	oss << _("SA ") << Utility::printAngleDMS(2*M_PI-tempRA) << " LHA " << Utility::printAngleDMS(HA*M_PI/180.0) << " GHA " << Utility::printAngleDMS(GHA*M_PI/180.0);
 
 	// calculate alt az
 	Vec3d local_pos = nav->earthEquToLocal(equatorial_pos);
 	Utility::rectToSphe(&tempRA,&tempDE,local_pos);
-	tempRA = 3*C_PI - tempRA;  // N is zero, E is 90 degrees
-	if (tempRA > C_PI*2) tempRA -= C_PI*2;
+	tempRA = 3*M_PI - tempRA;  // N is zero, E is 90 degrees
+	if (tempRA > M_PI*2) tempRA -= M_PI*2;
 
-	oss << "@" << _(" Az/Alt: ") << Utility::printAngleDMS(tempRA) << "/" << Utility::printAngleDMS(tempDE) << " LPA " << Utility::printAngleDMS(PA*C_PI/180.0);
+	oss << "@" << _(" Az/Alt: ") << Utility::printAngleDMS(tempRA) << "/" << Utility::printAngleDMS(tempDE) << " LPA " << Utility::printAngleDMS(PA*M_PI/180.0);
 	return oss.str();
 }
 

@@ -88,7 +88,7 @@ public:
 
 	//! Return adapted luminance from world to display
 	float adaptLuminance(float world_luminance) const {
-		return powf(world_luminance*C_PI*0.0001f,alpha_wa_over_alpha_da) * term2;
+		return powf(world_luminance*M_PI*0.0001f,alpha_wa_over_alpha_da) * term2;
 	}
 
 	//! Convert from xyY color system to RGB

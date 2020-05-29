@@ -74,7 +74,7 @@ void Skylight::setParamsv(const float * _sun_pos, float _turbidity, std::string 
 	sun_pos[2] = _sun_pos[2];
 
 	// Set the two main variables
-	thetas = C_PI_2 - asinf(sun_pos[2]);
+	thetas = M_PI_2 - asinf(sun_pos[2]);
 	T = _turbidity;
 
 	// Precomputation of the distribution coefficients and zenith luminances/color
@@ -98,7 +98,7 @@ void Skylight::setParamsv(const float * _sun_pos, float _turbidity, std::string 
 // Compute CIE luminance for zenith in cd/m^2
 inline void Skylight::computeZenithLuminance(void)
 {
-	zenith_luminance = 1000.f * ((4.0453f*T - 4.9710f) * tanf( (0.4444f - T/120.f) * (C_PI-2.f*thetas) ) -
+	zenith_luminance = 1000.f * ((4.0453f*T - 4.9710f) * tanf( (0.4444f - T/120.f) * (M_PI-2.f*thetas) ) -
 	                             0.2155f*T + 2.4192f);
 	if (zenith_luminance<=0.f) zenith_luminance=0.00000000001;
 }
@@ -215,7 +215,7 @@ void Skylight::get_xyY_Valuev(skylight_struct2& p) const
 	float dist_sun;
 	if (cos_dist_sun <= -1.f ) {
 		cos_dist_sun = -1.f;
-		dist_sun = C_PI;
+		dist_sun = M_PI;
 	} else if (cos_dist_sun >= 1.f ) {
 		cos_dist_sun = 1.f;
 		dist_sun = 0.f;

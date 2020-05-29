@@ -104,7 +104,7 @@ Mat4d Observer::getRotLocalToEquatorialFixed(double jd) const
 	double lat = latitude;
 	if ( lat > 89.5 )  lat = 89.5;
 	if ( lat < -89.5 ) lat = -89.5;
-	return Mat4d::zrotation((-longitude)*(C_PI/180.)) * Mat4d::yrotation((90.-lat)*(C_PI/180.));
+	return Mat4d::zrotation((-longitude)*(M_PI/180.)) * Mat4d::yrotation((90.-lat)*(M_PI/180.));
 }
 
 Mat4d Observer::getRotEquatorialToVsop87(void) const
@@ -145,8 +145,8 @@ void Observer::load(const InitParser& conf, const std::string& section)
 // change settings but don't write to files
 void Observer::setConf(InitParser & conf, const std::string& section)
 {
-	conf.setStr(section + ":" + SCK_LATITUDE, Utility::printAngleDMS(latitude*C_PI/180.0, true, true));
-	conf.setStr(section + ":" + SCK_LONGITUDE, Utility::printAngleDMS(longitude*C_PI/180.0,true, true));
+	conf.setStr(section + ":" + SCK_LATITUDE, Utility::printAngleDMS(latitude*M_PI/180.0, true, true));
+	conf.setStr(section + ":" + SCK_LONGITUDE, Utility::printAngleDMS(longitude*M_PI/180.0,true, true));
 	conf.setDouble(section + ":" + SCK_ALTITUDE, altitude);
 
 	// saving values so new defaults to track

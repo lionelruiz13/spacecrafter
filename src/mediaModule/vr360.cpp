@@ -121,9 +121,9 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 
 	Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getJ2000ToEyeMat() *
-	                Mat4d::xrotation(C_PI)*
-	                Mat4d::yrotation(C_PI)*
-	                Mat4d::zrotation(C_PI/180*270)).convert();
+	                Mat4d::xrotation(M_PI)*
+	                Mat4d::yrotation(M_PI)*
+	                Mat4d::zrotation(M_PI/180*270)).convert();
 
 	shaderVR360->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
 	shaderVR360->setUniform("ModelViewProjectionMatrix", proj*matrix);
