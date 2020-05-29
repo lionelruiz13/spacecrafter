@@ -129,163 +129,92 @@ const std::string AppSettings::getDataRoot() const
 
 const std::string AppSettings::getDataDir() const
 {
-	#ifdef LINUX
 	return m_dataRoot+"data/";
-	#else
-	return m_dataRoot+"data\\";
-	#endif
 }
 
 const std::string AppSettings::getShaderDir() const
 {
-	#ifdef LINUX
 	return m_dataRoot+"shaders/";
-	#else
-	return m_dataRoot+"shaders\\";
-	#endif
 }
 
 const std::string AppSettings::getModel3DDir() const
 {
-	#ifdef LINUX
 	return getUserDir()+REP_MODEL3D+"/";
-	#else
-	return getUserDir()+REP_MODEL3D+"\\";
-	#endif
 }
 
 const std::string AppSettings::getPictureDir() const
 {
-	#ifdef LINUX
 	return getUserDir()+"pictures/";
-	#else
-	return getUserDir()+"pictures\\";
-	#endif
 }
 
 const std::string AppSettings::getTextureDir() const
 {
-	#ifdef LINUX
 	return getUserDir()+"textures/";
-	#else
-	return getUserDir()+"textures\\";
-	#endif
 }
 
 const std::string AppSettings::getUserFontDir() const
 {
-	#ifdef LINUX
 	return getUserDir()  + REP_FONT+"/";
-	#else
-	return getUserDir()  + REP_FONT+"\\";
-	#endif
 }
 
 const std::string AppSettings::getSkyCultureDir() const
 {
-	#ifdef LINUX
 	return getUserDir()  + REP_SKY_CULTURE+"/";
-	#else
-	return getUserDir()  + REP_SKY_CULTURE+"\\";
-	#endif
 }
 
 const std::string AppSettings::getScreenshotDirectory() const
 {
-	#ifdef LINUX
 	return getUserDir()  +REP_SCREENSHOT+"/";
-	#else
-	return getUserDir()  +REP_SCREENSHOT+"\\";
-	#endif
 }
 
 const std::string AppSettings::getVframeDirectory() const
 {
-	#ifdef LINUX
 	return getUserDir()  + REP_VFRAME + "/";
-	#else
-	return getUserDir()  + REP_VFRAME + "\\";
-	#endif
 }
 
 const std::string AppSettings::getScriptDir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_SCRIPT + "/";
-	#else
-	return getUserDir()  + REP_SCRIPT + "\\";
-	#endif
-
 }
 
 const std::string AppSettings::getAudioDir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_AUDIO + "/";
-	#else
-	return getUserDir()  + REP_AUDIO + "\\";
-	#endif
 }
 
 const std::string AppSettings::getVideoDir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_VIDEO + "/";
-	#else
-	return getUserDir()  + REP_VIDEO + "\\";
-	#endif
 }
 
 const std::string AppSettings::getMediaDir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_MEDIA + "/";
-	#else
-	return getUserDir()  + REP_MEDIA + "\\";
-	#endif
 }
 
 const std::string AppSettings::getVR360Dir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_VR360 + "/";
-	#else
-	return getUserDir()  + REP_VR360 + "\\";
-	#endif
 }
 
 const std::string AppSettings::getFtpDir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_FTP + "/";
-	#else
-	return getUserDir()  + REP_FTP + "\\";
-	#endif
 }
 
 const std::string AppSettings::getLogDir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_LOG + "/";
-	#else
-	return getUserDir()  + REP_LOG + "\\";
-	#endif
-
 }
 
 const std::string AppSettings::getWebDir() const
 {
-	return getUserDir() + REP_WEB;
+	return getUserDir() + REP_WEB + "/";
 }
 
 const std::string AppSettings::getLandscapeDir() const
 {
-	#ifdef LINUX
 	return getUserDir() + REP_LANDSCAPE + "/";
-	#else
-	return getUserDir()  + REP_LANDSCAPE + "\\";
-	#endif
-
 }
 
 const std::string AppSettings::getUserDir() const
