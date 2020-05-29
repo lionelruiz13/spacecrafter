@@ -43,7 +43,8 @@
 #if defined( WIN32 ) || defined ( __MWERKS__ ) || defined( _MSC_VER ) || defined( MINGW32 )
 #undef WIN32
 #define WIN32 1
-#define EDITION "Windows"
+#undef USER_EDITION
+#define USER_EDITION "Windows"
 #include <windows.h>
 #define ENABLE_NLS 0
 #endif /*WIN32*/
@@ -52,7 +53,6 @@
 #ifndef WIN32
 #define LINUX 1
 #define ENABLE_NLS 1
-#define EDITION "Linux"
 #define PATH_FILE_LOCK "/tmp/spacecrafter.lock"
 #define CONFIG_DATA_DIR "/usr/local/share/spacecrafter/"
 #define LOCALEDIR "/usr/local/share/locale/"

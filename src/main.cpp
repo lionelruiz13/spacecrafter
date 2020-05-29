@@ -60,7 +60,7 @@ static void writeGeneralInfo(void)
 {
 	cLog::get()->mark();
 	cLog::get()->write("Welcome to spacecrafter",  LOG_TYPE::L_INFO);
-	std::string strMsg="Version : " + std::string(APP_NAME) + " - " + std::string(EDITION) + " Edition";
+	std::string strMsg="Version : " + std::string(APP_NAME) + " - " + USER_EDITION;
 	cLog::get()->write(strMsg, LOG_TYPE::L_INFO);
 	strMsg.clear();
 	strMsg +=" Copyright (c) 2014-2020 Association Sirius, LSS team et al.\n";

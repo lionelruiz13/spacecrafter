@@ -10,6 +10,6 @@
 #define APP_NAME "spacecrafter 20.05.08"
 #define APP_LOWER_NAME "spacecrafter"
 #define USER_NAME "LSS Open Project"
-#define USER_EDITION "Planetarium Edition"
+#define USER_EDITION "Linux Edition"
 
 #endif
