@@ -190,7 +190,7 @@ void s_texture::createEmptyTex()
 
 bool s_texture::load(const std::string& fullName, bool mipmap)
 {
-	std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
+	// std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
 	//vérifions dans le cache si l'image n'est pas déjà utilisée ailleurs
 	it = texCache.find(fullName);
 
