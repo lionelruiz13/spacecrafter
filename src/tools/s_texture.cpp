@@ -95,14 +95,11 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 	}
 	texID=0;
 	bool succes;
-	#ifndef WIN32
-	if (Utility::isAbsolute(textureName))
+
+	if (Utility::isAbsolute(textureName) || Utility::testFileExistence(textureName))
 		succes = load(textureName, mipmap);
 	else
-		succes = load(texDir + textureName, mipmap);
-	#else
-		succes = load(textureName, mipmap);
-	#endif
+		succes = load(texDir + textureName);
 
 	if (!succes)
 		createEmptyTex();
