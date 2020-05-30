@@ -55,6 +55,16 @@ bool Utility::isAbsolute(const std::string path)
 }
 
 
+bool Utility::testFileExistence(const std::string& fileName)
+{
+    if (FILE *file = fopen(fileName.c_str(), "r")) {
+        fclose(file);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 std::string Utility::doubleToString(double d)
 {
 	std::ostringstream oss;

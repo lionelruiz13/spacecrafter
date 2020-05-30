@@ -130,6 +130,8 @@ public:
 
 	//! returns true if the given path is absolute
     static bool isAbsolute(const std::string path);
+	//! indicates if file exist on system 
+	static bool testFileExistence(const std::string& fileName);
 
 	static void spheToRect(double lng, double lat, Vec3d& v);
 	static void spheToRect(double lng, double lat, double r, Vec3d& v);
