@@ -107,7 +107,6 @@ public:
 
 private:
 	bool isFileExist = false; 		//!< indique l'existance du fichier sur le système
-	void testFileExistance();		//!< fonction qui teste l'existance présumée du fichier
 	std::string fullFileName;		//!< nom complet du fichier à analyser
 
 	static std::string scriptPath;	//!< nom du répertoire du script

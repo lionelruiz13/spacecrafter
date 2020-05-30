@@ -53,37 +53,37 @@ FilePath::FilePath(const std::string& fileName, const std::string& localisation)
 	if ( !Utility::isAbsolute(fileName)) {
 		fullFileName = scriptPath+fileNameAdapted;
 		// localisation dans scriptPath
-		testFileExistance();
+		isFileExist = Utility::testFileExistence(fullFileName);
 		if (isFileExist)
 			return;
 
 		fullFileName = AppSettings::Instance()->getMediaDir() + fileNameAdapted;
 		// localisation dans media
-		testFileExistance();
+		isFileExist = Utility::testFileExistence(fullFileName);
 		if (isFileExist)
 			return;
 
 		//localisation non existante
 		fullFileName = scriptPath+fileName;
 		// localisation dans scriptPath
-		testFileExistance();
+		isFileExist = Utility::testFileExistence(fullFileName);
 		if (isFileExist)
 			return;
 
 		fullFileName = AppSettings::Instance()->getMediaDir() + fileName;
 		// localisation dans media, dernier test
-		testFileExistance();
+		isFileExist = Utility::testFileExistence(fullFileName);
 	}
 	else {
 		//test version de localisation
 		fullFileName = fileNameAdapted;
-		testFileExistance();
+		isFileExist = Utility::testFileExistence(fullFileName);
 		if (isFileExist)
 			return;
 
 		//test fichier de base
 		fullFileName = fileName;
-		testFileExistance();
+		isFileExist = Utility::testFileExistence(fullFileName);
 	}
 }
 
@@ -102,6 +102,7 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 	if (fileName.empty())
 		return;
 
+	fullFileName = fileName;
 	//~ printf("FilePath solicité\n");
 
 	if (!Utility::isAbsolute(fileName)) {
@@ -111,13 +112,13 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 		//~ else
 		if ( ! scriptPath.empty() ) {
 			fullFileName = scriptPath+fileName;
-			testFileExistance();
 		}
 
 		//~ std::cout << "recherche existance fichier  " << fullFileName << std::endl;
 		//~ printf("FilePath calculée script : %s\n", fullFileName.c_str());
 		// Si le fichier n'existe pas, alors on regarde dans le dossier spécifié
-		if (!isFileExist) {
+
+		if (!Utility::testFileExistence(fullFileName)) {
 			switch(type) {
 				case TFP::AUDIO : fullFileName = AppSettings::Instance()->getAudioDir() + fileName; break;
 				case TFP::VIDEO : fullFileName = AppSettings::Instance()->getVideoDir() + fileName; break;
@@ -132,24 +133,16 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 				default: fullFileName = fileName; break;
 				};
 		//~ printf("FilePath calculée audio : %s\n", fullFileName.c_str());
-		testFileExistance();
-		}
+		isFileExist = Utility::testFileExistence(fullFileName);
+		} else
+			isFileExist = true;
 	}
 	else {
 		fullFileName = fileName;
 		//~ printf("FilePath non calculé : %s\n", fullFileName.c_str());
-		testFileExistance();
+		isFileExist = Utility::testFileExistence(fullFileName);
 	}
 	//~ printf("au final : %s\n",fullFileName.c_str());
 }
 
 
-void FilePath::testFileExistance()
-{
-    if (FILE *file = fopen(fullFileName.c_str(), "r")) {
-        fclose(file);
-        isFileExist = true;
-    } else {
-        isFileExist = false;
-    }
-}
