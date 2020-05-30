@@ -102,47 +102,40 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 	if (fileName.empty())
 		return;
 
-	fullFileName = fileName;
-	//~ printf("FilePath solicité\n");
-
-	if (!Utility::isAbsolute(fileName)) {
-		// On recherche d'abord dans le dossier des scripts si le dossier existe
-		//~ if (scriptPath.empty())
-			//~ fullFileName = fileName; //on doit etre dans un cas particulier
-		//~ else
-		if ( ! scriptPath.empty() ) {
-			fullFileName = scriptPath+fileName;
-		}
-
-		//~ std::cout << "recherche existance fichier  " << fullFileName << std::endl;
-		//~ printf("FilePath calculée script : %s\n", fullFileName.c_str());
-		// Si le fichier n'existe pas, alors on regarde dans le dossier spécifié
-
-		if (!Utility::testFileExistence(fullFileName)) {
-			switch(type) {
-				case TFP::AUDIO : fullFileName = AppSettings::Instance()->getAudioDir() + fileName; break;
-				case TFP::VIDEO : fullFileName = AppSettings::Instance()->getVideoDir() + fileName; break;
-				case TFP::MEDIA : fullFileName = AppSettings::Instance()->getMediaDir() + fileName; break;
-				case TFP::VR360 : fullFileName = AppSettings::Instance()->getVR360Dir() + fileName; break;
-				case TFP::SCRIPT: fullFileName = AppSettings::Instance()->getScriptDir() + fileName; break;
-				case TFP::IMAGE : fullFileName = AppSettings::Instance()->getPictureDir() + fileName; break;
-				case TFP::TEXTURE : fullFileName = AppSettings::Instance()->getTextureDir() + fileName; break;
-				case TFP::DATA  : fullFileName = AppSettings::Instance()->getUserDir() + fileName; break;
-				case TFP::FONTS  : fullFileName = AppSettings::Instance()->getUserFontDir() + fileName; break;
-				case TFP::MODEL3D : fullFileName = AppSettings::Instance()->getModel3DDir() + fileName; break;
-				default: fullFileName = fileName; break;
-				};
-		//~ printf("FilePath calculée audio : %s\n", fullFileName.c_str());
-		isFileExist = Utility::testFileExistence(fullFileName);
-		} else
-			isFileExist = true;
-	}
-	else {
+	// on teste si le fichier a un nom absolu, on teste simplement son existance
+	if (Utility::isAbsolute(fileName)) {
 		fullFileName = fileName;
-		//~ printf("FilePath non calculé : %s\n", fullFileName.c_str());
 		isFileExist = Utility::testFileExistence(fullFileName);
+		return;
 	}
-	//~ printf("au final : %s\n",fullFileName.c_str());
+
+	// On recherche d'abord dans le dossier des scripts si le dossier existe
+	if ( ! scriptPath.empty() ) {
+		fullFileName = scriptPath+fileName;
+		isFileExist = Utility::testFileExistence(fullFileName);
+		// si le ficheir existe, plus rien à faire.
+		if (isFileExist)
+			return;
+	}
+
+	fullFileName = fileName;
+	//~ std::cout << "recherche (hors script) existance fichier  " << fullFileName << std::endl;
+	// Si le fichier n'existe pas, alors on regarde dans le dossier spécifié
+	isFileExist = Utility::testFileExistence(fullFileName);
+	if (!isFileExist) {
+		switch(type) {
+			case TFP::AUDIO : fullFileName = AppSettings::Instance()->getAudioDir() + fileName; break;
+			case TFP::VIDEO : fullFileName = AppSettings::Instance()->getVideoDir() + fileName; break;
+			case TFP::MEDIA : fullFileName = AppSettings::Instance()->getMediaDir() + fileName; break;
+			case TFP::VR360 : fullFileName = AppSettings::Instance()->getVR360Dir() + fileName; break;
+			case TFP::SCRIPT: fullFileName = AppSettings::Instance()->getScriptDir() + fileName; break;
+			case TFP::IMAGE : fullFileName = AppSettings::Instance()->getPictureDir() + fileName; break;
+			case TFP::TEXTURE : fullFileName = AppSettings::Instance()->getTextureDir() + fileName; break;
+			case TFP::DATA  : fullFileName = AppSettings::Instance()->getUserDir() + fileName; break;
+			case TFP::FONTS  : fullFileName = AppSettings::Instance()->getUserFontDir() + fileName; break;
+			case TFP::MODEL3D : fullFileName = AppSettings::Instance()->getModel3DDir() + fileName; break;
+			default: fullFileName = fileName; break;
+		};
+	isFileExist = Utility::testFileExistence(fullFileName);
+	}
 }
-
-
