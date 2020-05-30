@@ -37,19 +37,24 @@
 std::string s_texture::texDir = "./";
 std::map<std::string, s_texture::texRecap*> s_texture::texCache;
 
-s_texture::s_texture(const std::string& _textureName) : textureName(_textureName), texID(0),
-	loadType(PNG_BLEND1), loadWrapping(GL_CLAMP)
-{
-	//~ s_texture(_textureName, TEX_LOAD_TYPE_PNG_BLEND1, GL_CLAMP);
-	bool succes;
-	if (Utility::isAbsolute(textureName))
-		succes = load(textureName);
-	else
-		succes = load(texDir + textureName);
+// s_texture::s_texture(const std::string& _textureName) : textureName(_textureName), texID(0),
+// 	loadType(PNG_BLEND1), loadWrapping(GL_CLAMP)
+// {
+// 	//~ s_texture(_textureName, TEX_LOAD_TYPE_PNG_BLEND1, GL_CLAMP);
+// 	bool succes;
+// 	if (Utility::isAbsolute(textureName))
+// 		succes = load(textureName);
+// 	else {
+// 		std::cout << "texture ayant besoin de texDir " << textureName << std::endl;
+// 		succes = load(texDir + textureName);
+// 	}
 
-	if (!succes)
-		createEmptyTex();
-}
+// 	if (!succes)
+// 		createEmptyTex();
+// }
+
+s_texture::s_texture(const std::string& _textureName) : s_texture(_textureName, PNG_BLEND1,GL_CLAMP )
+{}
 
 s_texture::s_texture(const s_texture *t)
 {
