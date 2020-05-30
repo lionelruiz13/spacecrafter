@@ -30,6 +30,7 @@
 #include "tools/s_font.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/utility.hpp"
+#include "tools/file_path.hpp"
 #include "tools/log.hpp"
 //#include "tools/fmath.hpp"
 
@@ -103,7 +104,7 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 	// Calc the angular size in radian
 	m_angular_size = tex_angular_size/2/60*M_PI/180;
 
-	neb_tex = new s_texture(tex_name, TEX_LOAD_TYPE_PNG_ALPHA, true);  // use mipmaps
+	neb_tex = new s_texture(FilePath(tex_name,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_ALPHA, true);  // use mipmaps
 
 	luminance = magToLuminance(mag, tex_angular_size*tex_angular_size*3600);
 
