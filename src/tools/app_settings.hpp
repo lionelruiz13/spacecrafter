@@ -40,7 +40,9 @@
 #include "spacecrafter.hpp"
 #include "tools/no_copy.hpp"
 
-#pragma once
+// #pragma once
+#ifndef _APPSETTINGS_HPP_
+#define _APPSETTINGS_HPP_
 
 // Stub implementations of functions that don't exist on windows
 #ifdef WIN32
@@ -155,3 +157,4 @@ private:
 	const std::string m_LocaleDir;
 };
 
+#endif // APP_SETTINGS__
