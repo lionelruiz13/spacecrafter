@@ -155,7 +155,7 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 	#ifdef PARSE_DEBUG
 	cLog::get()->write("Command: " + command + "Argument hash:", LOG_TYPE::L_DEBUG);
 	for ( stringHashIter_t iter = arguments.begin(); iter != arguments.end(); ++iter ) {
-		cLog::get()->write("\t" + iter->first + " : " + iter->second,, LOG_TYPE::L_DEBUG);
+		cLog::get()->write("\t" + iter->first + " : " + iter->second, LOG_TYPE::L_DEBUG);
 	}
 	#endif
 	return 1;  // no error checking yet
@@ -2028,7 +2028,7 @@ int AppCommandInterface::commandText()
 {
 	std::string argAction = args[W_ACTION];
 
-	if (argAction==  ACP_CN_CLEAR) {
+	if (argAction== W_CLEAR) {
 		coreLink->textClear();
 		return executeCommandStatus();
 	}
@@ -2058,7 +2058,7 @@ int AppCommandInterface::commandText()
 			return executeCommandStatus();
 		} else if (argAction== W_LOAD) {
 			std::string argAzimuth = args[W_AZIMUTH];
-			std::string argAltitude = args[W_ALTITUDE  ];
+			std::string argAltitude = args[W_ALTITUDE];
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
 				float azimuth = evalDouble(argAzimuth);
 				float altitude = evalDouble(argAltitude);

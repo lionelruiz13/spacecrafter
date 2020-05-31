@@ -83,6 +83,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_DECREMENT                 "decrement"
 #define W_NOPAUSE                   "nopause"
 #define W_NAME                      "name"
+#define W_CLEAR                     "clear"
 #define W_VALUE                     "value"
 #define W_DISPLAY                   "display"
 #define W_SIZE                      "size"
