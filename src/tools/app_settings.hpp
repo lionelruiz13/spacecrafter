@@ -45,15 +45,15 @@
 #define _APPSETTINGS_HPP_
 
 // Stub implementations of functions that don't exist on windows
-#ifdef WIN32
-time_t timegm(struct tm*);
-#else
-struct TIME_ZONE_INFORMATION {
-	long Bias;
-	long DaylightBias;
-};
-int GetTimeZoneInformation( TIME_ZONE_INFORMATION* );
-#endif
+// #ifdef WIN32
+// time_t timegm(struct tm*);
+// #else
+// struct TIME_ZONE_INFORMATION {
+// 	long Bias;
+// 	long DaylightBias;
+// };
+// int GetTimeZoneInformation( TIME_ZONE_INFORMATION* );
+// #endif
 
 
 class AppSettings: public NoCopy {

@@ -31,19 +31,19 @@
 
 
 // Stub implementations of functions that don't exist on windows and visa versa
-#ifdef WIN32
-time_t timegm(struct tm*)
-{
-	time_t t;
-	memset( &t, 0, sizeof(t) );
-	return t;
-}
-#else
-int GetTimeZoneInformation( TIME_ZONE_INFORMATION* info )
-{
-	return 0;
-}
-#endif
+// #ifdef WIN32
+// time_t timegm(struct tm*)
+// {
+// 	time_t t;
+// 	memset( &t, 0, sizeof(t) );
+// 	return t;
+// }
+// #else
+// int GetTimeZoneInformation( TIME_ZONE_INFORMATION* info )
+// {
+// 	return 0;
+// }
+// #endif
 
 AppSettings* AppSettings::m_instance = nullptr;
 

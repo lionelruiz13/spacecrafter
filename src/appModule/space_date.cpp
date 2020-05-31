@@ -18,7 +18,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
-
+#include "spacecrafter.hpp"
 
 
 
@@ -89,7 +89,8 @@ std::string SpaceDate::TimeZoneNameFromSystem(double JD)
 // Win32 API GetTimeZoneInformation.
 float SpaceDate::GMTShiftFromSystem(double JD, bool _local)
 {
-	if( !AppSettings::Instance()->Windows() ) {
+	#ifdef LINUX
+	// if( !AppSettings::Instance()->Windows() ) {
 		struct tm * timeinfo;
 
 		if (!_local) {
@@ -113,12 +114,14 @@ float SpaceDate::GMTShiftFromSystem(double JD, bool _local)
 		float min = 1.f/60.f * atoi(&heure[3]);
 		heure[3] = '\0';
 		return min + atoi(heure);
-	} else {
+	// } else {
+	#else
 		// Win32 specific. Stub function and structs exist for compilation on other platforms
 		TIME_ZONE_INFORMATION info;
 		GetTimeZoneInformation(&info);
 		return -(info.Bias + info.DaylightBias) / 60;
-	}
+	// }
+	#endif
 }
 
 /* Calculate the day of the week.
@@ -376,7 +379,8 @@ size_t SpaceDate::myStrftime(char *s, size_t max, const char *fmt, const struct 
 	if( !tm || !fmt || !s )
 		return 0;
 
-	if( AppSettings::Instance()->Windows() ) {
+	#ifdef WIN32
+	// if( AppSettings::Instance()->Windows() ) {
 		std::string sfmt(fmt);
 		int size;
 		size_t pos = sfmt.find("%Y");
@@ -406,8 +410,10 @@ size_t SpaceDate::myStrftime(char *s, size_t max, const char *fmt, const struct 
 			size = strftime(s, max, fmt, tm);
 
 		return size;
-	} else // Non-windows OS
+	// } else // Non-windows OS
+	#else
 		return strftime(s, max, fmt, tm);
+	#endif
 }
 
 

@@ -45,11 +45,12 @@ int sigaction(int, const struct sigaction*, struct sigaction* )
 ISignals* ISignals::Create( App* const app )
 {
 	m_app = app;
-
-	if( AppSettings::Instance()->Windows() )
+	//if( AppSettings::Instance()->Windows() )
+	#ifdef WIN32
 		return new Win32Signals(); 	// Limited signal support, not posix compliant
-	else
+	#else
 		return new PosixSignals();
+	#endif
 }
 
 ISignals::~ISignals()
