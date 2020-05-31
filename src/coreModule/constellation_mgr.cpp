@@ -78,8 +78,8 @@ void ConstellationMgr::createShader()
 	glGenVertexArrays(1,&constellation.vao);
 	glBindVertexArray(constellation.vao);
 
-	glGenBuffers(1,&constellation.tex);
 	glGenBuffers(1,&constellation.pos);
+	glGenBuffers(1,&constellation.tex);
 	glGenBuffers(1,&constellation.color);
 	glGenBuffers(1,&constellation.mag);
 
@@ -98,6 +98,7 @@ void ConstellationMgr::deleteShader()
 	if(shaderLines) delete shaderLines;
 		shaderLines=nullptr;
 
+	glDeleteBuffers(1,&constellation.mag);
 	glDeleteBuffers(1,&constellation.tex);
 	glDeleteBuffers(1,&constellation.color);
 	glDeleteBuffers(1,&constellation.pos);
