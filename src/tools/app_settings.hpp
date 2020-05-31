@@ -139,9 +139,9 @@ public:
 
 
 	//! Platform query functions. These should be preferred over sprinkling preprocessor statements throughout the code.
-	bool OSX() const;
-	bool Unix() const;
-	bool Windows() const;
+	// bool OSX() const;
+	// bool Unix() const;
+	// bool Windows() const;
 
 	void display_all() const;
 

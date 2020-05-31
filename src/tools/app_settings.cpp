@@ -75,32 +75,32 @@ void AppSettings::close() {
 	m_instance = nullptr;
 }
 
-bool AppSettings::OSX() const
-{
-	#if defined(MACOSX)
-	return true;
-	#else
-	return false;
-	#endif
-}
+// bool AppSettings::OSX() const
+// {
+// 	#if defined(MACOSX)
+// 	return true;
+// 	#else
+// 	return false;
+// 	#endif
+// }
 
-bool AppSettings::Windows() const
-{
-	#ifdef WIN32
-	return true;
-	#else
-	return false;
-	#endif
-}
+// bool AppSettings::Windows() const
+// {
+// 	#ifdef WIN32
+// 	return true;
+// 	#else
+// 	return false;
+// 	#endif
+// }
 
-bool AppSettings::Unix() const
-{
-	#ifdef LINUX
-	return true;
-	#else
-	return false;
-	#endif
-}
+// bool AppSettings::Unix() const
+// {
+// 	#ifdef LINUX
+// 	return true;
+// 	#else
+// 	return false;
+// 	#endif
+// }
 
 void AppSettings::loadAppSettings( InitParser* const conf ) const
 {
