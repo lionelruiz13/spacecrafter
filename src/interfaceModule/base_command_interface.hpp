@@ -148,6 +148,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_RESUME                    "resume"
 #define W_LOOP                      "loop"
 #define W_PURGE                     "purge"
+#define W_BREAK                     "break"
 #define W_MIPMAP                    "mipmap"
 #define W_ALPHA                     "alpha"
 #define W_RATIO                     "ratio"

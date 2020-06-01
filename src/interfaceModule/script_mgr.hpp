@@ -126,14 +126,18 @@ public:
 	//! initialisation du systeme de boucle
 	void initIterator() {
 		indiceInLoop= 0;
-		repeatLoop = true;
-		loopVector.pop_back(); //on enlève le struct loop end de trop
+		if (loopVector.size()) {
+			repeatLoop = true;
+			loopVector.pop_back(); //on enlève le struct loop end de trop
+		}
 	}
 
 	//! fixe le nombre de tour de boucle à faire
 	void setNbrLoop( int a) {
 		nbrLoop=a;
 	}
+
+	void resetScriptLoop();
 
 	int getMuliplierRate() {
 		return multiplierRate;

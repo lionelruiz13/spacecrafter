@@ -3586,6 +3586,12 @@ int AppCommandInterface::commandStruct()
 			return executeCommandStatus();
 		}
 
+		if (argLoop ==W_BREAK) {
+			swapCommand = false; 
+			scriptInterface->resetScriptLoop();
+			return executeCommandStatus();
+		}
+
 		int nbrLoop = evalInt(argLoop);
 		if (nbrLoop < 1) {
 			swapCommand = true;

@@ -59,6 +59,7 @@ public:
 	void setScriptNbrLoop(int a);
 
 	void setScriptLoop(bool _value);
+	void resetScriptLoop();
 
 	void setScriptPath(const std::string& _path);
 

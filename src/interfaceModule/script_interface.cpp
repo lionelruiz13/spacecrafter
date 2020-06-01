@@ -69,6 +69,9 @@ void ScriptInterface::pauseScript() {
 // void ScriptInterface::resetScriptTimer() {
 //     scriptMgr->resetTimer();
 // }
+void ScriptInterface::resetScriptLoop() {
+    scriptMgr->resetScriptLoop();
+}
 
 void ScriptInterface::cancelScript() {
     scriptMgr->cancelScript();

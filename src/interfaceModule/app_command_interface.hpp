@@ -136,8 +136,8 @@ private:
 	FLAG_VALUES convertStrToFlagValues(const std::string &value);
 
 	int recordable;
-	bool swapCommand;     // boolean qui indique si l'instruction doit etre exécutée ou pas
-	bool swapIfCommand;     // boolean qui indique si dans un if l'instruction doit etre exécutée ou pas
+	bool swapCommand;		// boolean qui indique si l'instruction doit etre exécutée ou pas
+	bool swapIfCommand;		// boolean qui indique si dans un if l'instruction doit etre exécutée ou pas
 
 	//! vérifie que la chaine a représente bien un boolean
 	bool isBoolean(const std::string &a);

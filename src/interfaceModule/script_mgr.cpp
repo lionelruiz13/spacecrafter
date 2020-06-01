@@ -255,6 +255,15 @@ void ScriptMgr::cancelRecordScript()
 // 	elapsed_time = 0;
 // }
 
+void ScriptMgr::resetScriptLoop()
+{
+	nbrLoop = 0;
+	indiceInLoop = 0;
+	loopVector.clear();
+	isInLoop = false;
+	repeatLoop = false;
+}
+
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
 {
@@ -284,7 +293,7 @@ void ScriptMgr::update(int delta_time)
 				} else { //fin de tour de boucle on recommence sauf si nbrLoop==0
 					nbrLoop=nbrLoop-1;
 
-					if (nbrLoop == 0) {
+					if (nbrLoop <= 0) {
 						repeatLoop = false;
 						indiceInLoop = 0;
 						loopVector.clear();
