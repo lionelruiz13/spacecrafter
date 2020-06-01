@@ -2056,6 +2056,7 @@ int AppCommandInterface::commandText()
 		debug_message = _("Command 'text': argument 'name' needed");
 		return executeCommandStatus();
 	}
+	argName = evalString(argName);
 
 	if (argAction==W_DROP) {
 		coreLink->textDel(argName);
