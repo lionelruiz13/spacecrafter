@@ -124,8 +124,15 @@ void AppCommandInterface::setTcp(ServerSocket* _tcp)
 
 int AppCommandInterface::parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments)
 {
-	// transformation des chaines utilisateurs de la forme " text" en "text"
   	std::string str = command_line;
+
+	// transformation des débuts de chaines de caratères en supprimant espaces et tabulations en début de chaine
+	while (str[0]==' ' || str[0]=='\t') {
+        str.erase(0,1); 
+		//std::cout << str << std::endl;
+	}
+
+	// transformation des chaines utilisateurs de la forme " text" en "text"
   	std::size_t found = str.find(" \" ");
   	while(found!=std::string::npos) {
 		//std::cout << "Modify: " << str << '\n';
