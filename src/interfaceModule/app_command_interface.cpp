@@ -2148,6 +2148,7 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 			media->audioMusicHalt();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
+			swapIfCommand = false;
 		} else if (argAction==W_PLAY && !filen.empty()) {
 			int le=-1;
 
