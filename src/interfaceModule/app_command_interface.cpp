@@ -196,7 +196,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 	command.clear(); // = ""; //vide l'ancienne valeur de args
 	args.clear(); //vide les anciennes valeurs de args //TODO A VERIFIER
 
-	// on réécrit toute la ligne proprement sans majuscule minuscule
+	// on découpe toute la ligne en CMD {ARG1,VALUE1} {ARG2,VALUE2} ...
 	parseCommand(commandline, command, args);
 
 	FilePath::fixScriptPath(scriptInterface->getScriptPath());
