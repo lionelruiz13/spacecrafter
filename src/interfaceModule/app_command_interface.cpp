@@ -3523,7 +3523,7 @@ int AppCommandInterface::commandStruct()
 	const double error = 0.0001;
 	// if case
 	std::string argIf = args[W_IF];
-	if (!argIf.empty()) {
+	if (!argIf.empty() && swapCommand != true) {
 		if (argIf==W_ELSE) {
 			swapIfCommand = ! swapIfCommand;
 			return executeCommandStatus();
@@ -3580,7 +3580,7 @@ int AppCommandInterface::commandStruct()
 
 	//loop case
 	std::string argLoop = args[W_LOOP];
-	if (!argLoop.empty()) {
+	if (!argLoop.empty() && swapIfCommand != true) {
 		if (argLoop ==W_END) {
 			swapCommand = false; //cas ou nbrLoop était inférieur à 1
 			scriptInterface->setScriptLoop(false);
