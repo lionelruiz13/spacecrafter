@@ -1406,7 +1406,8 @@ int AppCommandInterface::commandIlluminate()
 	std::string argR= args[W_R];
 	std::string argG= args[W_G];
 	std::string argB= args[W_B];
-	AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
+	std::string errorColor;
+	AppCommandColor testColor(Vcolor, errorColor, argValue, argR,argG, argB);
 
 	if (!argConstellation.empty() && isTrue(argDisplay)) {
 		if (!testColor)
