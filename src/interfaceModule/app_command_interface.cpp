@@ -2066,6 +2066,8 @@ int AppCommandInterface::commandText()
 	std::string argDisplay = args[W_DISPLAY];
 	std::string argString = args[W_STRING];
 
+	argString = evalString(argString);
+
 	if (!argAction.empty()) {
 		if (argString.empty()) {
 			debug_message = _("Command 'text': argument 'string' needed");
