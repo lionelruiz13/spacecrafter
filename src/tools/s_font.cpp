@@ -288,8 +288,10 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	// opengl texture dimensions must be powers of 2
 	//~ rendering.textureW = getNextPowerOf2((int)rendering.stringW);
 	//~ rendering.textureH = getNextPowerOf2((int)rendering.stringH);
-	rendering.textureW = text->w+2;
-	rendering.textureH = text->h+2;
+	const unsigned short decalageX = 2;
+	const unsigned short decalageY = 1;
+	rendering.textureW = text->w+2*decalageX;
+	rendering.textureH = text->h+2*decalageY;
 
 	Uint32 rmask, gmask, bmask, amask;
 
@@ -319,12 +321,13 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		return nothing;
 	}
 
+	//why (decalageX;decalageY) ? la texture initiale commence en (decalageX;decalageY)
 	SDL_Rect tmp;
-	tmp.x=1;
-	tmp.y=1;
+	tmp.x=decalageX;
+	tmp.y=decalageY;
 	tmp.w=text->w;
 	tmp.h=text->h;
-	SDL_BlitSurface(text, &tmp, surface, NULL);
+	SDL_BlitSurface(text, NULL, surface, &tmp);
 
     // disable mipmapping on the new texture
     //~ glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -397,12 +400,12 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		if(pass%2) shifty = -1;
 			else shifty = 1;
 
-		//why (1;1) ? le texture initiale commence en (1;1)
-		tmp.x=1+shiftx;
-		tmp.y=1+shifty;
+		//why (decalageX;decalageY) ? la texture initiale commence en (decalageX;decalageY)
+		tmp.x=decalageX+shiftx;
+		tmp.y=decalageY+shifty;
 		tmp.w=text->w;
 		tmp.h=text->h;
-		SDL_BlitSurface(text, &tmp, border, NULL);
+		SDL_BlitSurface(text, NULL, border,  &tmp);
 	}
 
 	if (border->format->Rmask == 0x000000ff)
