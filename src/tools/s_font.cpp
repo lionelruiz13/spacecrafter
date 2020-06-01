@@ -459,8 +459,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		rendering = renderCache[str];
 	}
 
-	float textureExtentH = rendering.stringH/rendering.textureH;
-	float textureExtentW = rendering.stringW/rendering.textureW;
+	//float textureExtentH = 1.0; //rendering.stringH/rendering.textureH;
+	//float textureExtentW = 1.0; //rendering.stringW/rendering.textureW;
 
 	Vec3d center = prj->getViewportCenter();
 	float radius = center[2];
@@ -494,7 +494,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		p = sin(angle);
 		q = cos(angle);
 
-		meshPoints.push_back(Vec2f(center[0]+p*(d-rendering.stringH), center[1]+q*(d-rendering.stringH)));
+		meshPoints.push_back(Vec2f(center[0]+p*(d-rendering.textureH), center[1]+q*(d-rendering.textureH)));
 		meshPoints.push_back(Vec2f(center[0]+p*d,center[1]+q*d));
 	}
 
@@ -537,10 +537,10 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 			vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
 			vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
 
-			vecTex.push_back((float)i/steps*textureExtentW);
+			vecTex.push_back((float)i/steps); // *textureExtentW);
 			vecTex.push_back(0.0);
-			vecTex.push_back((float)i/steps*textureExtentW);
-			vecTex.push_back(textureExtentH);
+			vecTex.push_back((float)i/steps); // *textureExtentW);
+			vecTex.push_back(1.0); // 1.0 <- textureExtentH
 		}
 
 
