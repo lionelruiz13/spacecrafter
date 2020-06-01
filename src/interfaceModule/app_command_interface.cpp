@@ -3570,11 +3570,9 @@ int AppCommandInterface::commandStruct()
 	std::string argComment = args[W_COMMENT];
 	if (!argComment.empty()) {
 		if (isTrue(argComment)) {
-			swapCommand = true;
-			return executeCommandStatus();
+			return commandComment();
 		} else {
-			swapCommand = false;
-			return executeCommandStatus();
+			return commandUncomment();
 		}
 	}
 
