@@ -479,9 +479,9 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	float theta = M_PI + atan2f(dx, dy - 1);
 	float psi = (float)getStrLen(str)/(d + 1);  // total angle of rotation
 
-	int steps = int(psi*15);//TODO trouver le bon compromis pour la taille
-	//cout << steps << endl;
-	if(steps < 10) steps = 10;
+	int steps = 2+int(psi*15);//TODO trouver le bon compromis pour la taille
+	//std::cout << str << " " << steps << std::endl;
+	//if(steps < 10) steps = 10;
 
 
 
