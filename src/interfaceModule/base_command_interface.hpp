@@ -122,7 +122,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_INDEX                     "index"
 #define W_HP                        "hp"
 #define W_COLOR_VALUE               "color_value"
-#define W_NONE                      "NONE"
+#define W_NONE                      "NONE" //??
 #define W_DEFAULT                   "default"
 #define W_DECREMENT                 "decrement"
 #define W_INCREMENT                 "increment"
@@ -492,7 +492,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_SC_DATETIME_DISPLAY_POSITION            "datetime_display_position"
 #define ACP_SC_DATETIME_DISPLAY_NUMBER              "datetime_display_number"
 
-//flagCommand
+// lsite de flagCommand à faire disparaitre !!!!!!!!!!!!
 #define FLAG_ATMOSPHERE_ON                  "flag atmosphere on"
 #define FLAG_LANDSCAPE_ON                   "flag landscape on"
 #define FLAG_ATMOSPHERE_OFF                 "flag atmosphere off"
