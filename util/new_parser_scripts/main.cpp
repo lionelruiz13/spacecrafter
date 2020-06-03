@@ -13,16 +13,19 @@ int main() {
     std::string sourceCSS = "style.css";
     std::string destination = "resultat.html";
 
-    //Lecture des fichier
+    //Lecture des fichier d'entrèe
 	FileReader* reader = new FileReader(source, sourceCSS);
 	reader->readFileText();
+
+    //Lecture du fichier de sortie
+    FileWriter* writer = new FileWriter(destination);
 
     //Transformation de fichier txt en html
     TextToHtml* parser = new TextToHtml(reader->getText(), reader->readFileCss());
 
     //TODO
     //Ecriture du fichier de sortie
-    //FileWriter* writer = new FileWriter();
+    //
 
     return 0;
 }
