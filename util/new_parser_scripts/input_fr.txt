@@ -533,16 +533,19 @@ ARGUMENT lat
 	@ double
 	@ spécifie la latitude du lieu
 	@ le signe indique le déplacement : N pour + et S pour -
-	$ default @ permet de revenir à la longitude du lieu d'origine
+	$ default 
+	@ permet de revenir à la longitude du lieu d'origine
 ARGUMENT lon
 	@ double
 	@ spécifie la longitude du lieu
 	@ le signe indique le déplacement : E pour + et W pour -
-	$ default @ permet de revenir à la latitude du lieu d'origine
+	$ default 
+	@ permet de revenir à la latitude du lieu d'origine
 ARGUMENT alt
 	@ double
-	@spécifie l'altitude du lieu par rapport au niveau de la mer
-	$ default @ permet de revenir à l'altitude du lieu d'origine
+	@ spécifie l'altitude du lieu par rapport au niveau de la mer
+	$ default 
+	@ permet de revenir à l'altitude du lieu d'origine
 PARAMETER name
 	@ string
 	@ indique le nom de l'endroit où l'on se trouve

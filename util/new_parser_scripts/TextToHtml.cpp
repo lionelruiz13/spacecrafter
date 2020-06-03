@@ -11,8 +11,8 @@ TextToHtml::TextToHtml(std::vector<std::string> _text, std::string _css) {
 TextToHtml::~TextToHtml() {}
 
 void TextToHtml::lecture() {
-	for(auto i = 0; i < 1; i++) {		
-		transformation(inText[1]); //On transmet le string courant, pour la transformation
+	for(auto i = 0; i < inText.size(); i++) {		
+		transformation(inText[i]); //On transmet le string courant, pour la transformation
 	}
 }
 
@@ -47,16 +47,10 @@ void TextToHtml::transformation(std::string lines){
 
 	}
 
-	std::cout << "S_Name" << std::endl;
 	if(S_Name != "") NameInHtml(S_Name);
-	std::cout << "S_Argument" << std::endl;
 	if(S_Argument != "") ArgumentInHtml(S_Argument);
-	std::cout << "S_Parametre" << std::endl;
 	if(S_Parametre != "") ParameterInHtml(S_Parametre);
-	std::cout << "S_Exemple" << std::endl;
 	if(S_Exemple != "") ExempleInHtml(S_Exemple);
-
-	std::cout << OutHtml << std::endl;
 }
 
 std::string TextToHtml::findBloc(std::string lines, std::string arg) {
@@ -172,6 +166,12 @@ void TextToHtml::ParameterInHtml(std::string lines) {
 			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
 			nbParam = 1;
 		}
+		else if(lines.substr(0, lines.find(" ")) == "	$"){
+			OutHtml += "<li>\n";
+			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot $
+			OutHtml += "<code class=\"valeur\">" + lines.substr(0, lines.find(delimiter)) + "</code>\n</li>\n"; //On récupère l'argument
+			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
+		}
 		else if(lines.substr(0, lines.find(" ")) == "	@"){
 			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot @
 			if(nbParam == 1){
@@ -191,7 +191,6 @@ void TextToHtml::ParameterInHtml(std::string lines) {
 void TextToHtml::ExempleInHtml(std::string lines) {
 	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
 	lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la premiere ligne + la tabulation
-	lines = lines.erase(lines.find("@@"), lines.length()); //On supprime la partie inutile
 	OutHtml += "<section class=\"exemple\">\n<h2>Exemple</h2>\n<pre>";
 	while(lines != ""){
 		OutHtml += lines.substr(1, lines.find(delimiter));
