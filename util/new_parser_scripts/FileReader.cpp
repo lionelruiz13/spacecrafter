@@ -43,7 +43,7 @@ void FileReader::readFileText() {
         }
     }
     else {
-        std::cout << "ERREUR: Impossible d'ouvrir le fichier .css en lecture." << std::endl;
+        std::cout << "ERREUR: Impossible d'ouvrir le fichier .txt en lecture." << std::endl;
     }
 }
 

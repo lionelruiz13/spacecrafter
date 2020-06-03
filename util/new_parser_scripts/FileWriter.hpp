@@ -13,9 +13,14 @@ public:
 	~FileWriter();
     
     /**
-     * Charge les fichiers
+     * Charge le fichier
      */
     void loadFile(const std::string& fileName);
+
+    /**
+     * Ecrit dans le fichier
+     */
+    void writeInFile(const std::string inHtml);
 
 private:
     FILE* wstream;      //Flux d'écriture
