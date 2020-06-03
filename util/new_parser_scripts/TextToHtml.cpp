@@ -77,3 +77,19 @@ std::string TextToHtml::findBloc(std::string lines, std::string arg) {
 
 	return "END";
 }
+
+std::string TextToHtml::NameInHtml(std::string lines) {
+	
+}
+
+std::string TextToHtml::ArgumentInHtml(std::string lines) {
+	
+}
+
+std::string TextToHtml::ParameterInHtml(std::string lines) {
+	
+}
+
+std::string TextToHtml::ExempleInHtml(std::string lines) {
+	
+}
