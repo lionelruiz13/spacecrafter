@@ -15,6 +15,9 @@ public:
     //On lit le vecteur d'entrée (inText)
     void lecture();
 
+    //On renvoie le résultat pour une écriture dans un fichier
+    std::string getHtml();
+
 private:
     /**
      * Cette fonction reçois chaque itération du vecteur d'entrée, et traite tout le string.

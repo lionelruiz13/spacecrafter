@@ -10,6 +10,10 @@ TextToHtml::TextToHtml(std::vector<std::string> _text, std::string _css) {
 
 TextToHtml::~TextToHtml() {}
 
+std::string TextToHtml::getHtml() {
+	return OutHtml;
+}
+
 void TextToHtml::lecture() {
 
 	OutHtml += "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Documentation</title>\n<style>";
