@@ -77,7 +77,7 @@ std::string TextToHtml::findBloc(std::string lines, std::string arg) {
 	return "END";
 }
 
-std::string TextToHtml::NameInHtml(std::string lines) {
+void TextToHtml::NameInHtml(std::string lines) {
 	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
 	std::string arg = lines.substr(5, lines.find(delimiter)-5); //On récupère le premier argument après NAME
 	int i = 1;
@@ -101,7 +101,7 @@ std::string TextToHtml::NameInHtml(std::string lines) {
 	ToHtml += "</header>";
 }
 
-std::string TextToHtml::ArgumentInHtml(std::string lines) {
+void TextToHtml::ArgumentInHtml(std::string lines) {
 	int nbArg = 1; //Compteur de nombre de ARGUMENT, pour la bonne mise en forme
 	int nbParam = 1; //Compteur de nombre de paramètre @, pour la bonne mise en forme
 	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
@@ -149,10 +149,10 @@ std::string TextToHtml::ArgumentInHtml(std::string lines) {
 	ToHtml += "</li>\n</ul>\n</section>\n</ol>\n</section>";
 }
 
-std::string TextToHtml::ParameterInHtml(std::string lines) {
+void TextToHtml::ParameterInHtml(std::string lines) {
 	
 }
 
-std::string TextToHtml::ExempleInHtml(std::string lines) {
+void TextToHtml::ExempleInHtml(std::string lines) {
 	
 }
