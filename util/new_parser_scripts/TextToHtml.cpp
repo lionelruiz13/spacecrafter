@@ -45,13 +45,12 @@ void TextToHtml::transformation(std::string lines){
 	}
 
 	//NameInHtml(S_Name);
-	ArgumentInHtml(S_Argument);
-	//std::cout << "--------NAME--------" << std::endl << S_Name << std::endl;
-	//std::cout << "------ARGUMENT------" << std::endl << S_Argument << std::endl;
-	//std::cout << "------PARAMETER-----" << std::endl << S_Parametre << std::endl;
+	//ArgumentInHtml(S_Argument);
+	ParameterInHtml(S_Parametre);
+
 	//std::cout << "------EXEMPLE-------" << std::endl << S_Exemple << std::endl;
 
-	//std::cout << lines << std::endl;
+	std::cout << ToHtml << std::endl;
 }
 
 std::string TextToHtml::findBloc(std::string lines, std::string arg) {
@@ -150,7 +149,37 @@ void TextToHtml::ArgumentInHtml(std::string lines) {
 }
 
 void TextToHtml::ParameterInHtml(std::string lines) {
+	int nbPrm = 1; //Compteur de nombre de PARAMETER, pour la bonne mise en forme
+	int nbParam = 1; //Compteur de nombre de paramètre @, pour la bonne mise en forme
+	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
 	
+	ToHtml += "<section class=\"listeparameters\">\n<h3>Paramètre</h3>\n<ul>\n";
+
+	while(lines != ""){
+		if(lines.substr(0, lines.find(" ")) == "PARAMETER") { //On verifie la nature du premier mot.
+			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot PARAMETER
+			ToHtml += "<li>\n<h4>\n";
+			ToHtml += "<code class=\"parameter\">" + lines.substr(0, lines.find(" ")) + "</code> : "; //On récupère l'argument avant @
+			lines = lines.erase(0, lines.find("@")+2); //On supprime le premier paramètre + @
+			ToHtml += "<code class=\"parametertype\">" + lines.substr(0, lines.find(delimiter)) + "</code>\n"; //On récupère l'argument après @
+			ToHtml += "</h4>\n";
+			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
+			nbParam = 1;
+		}
+		else if(lines.substr(0, lines.find(" ")) == "	@"){
+			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot @
+			if(nbParam == 1){
+				ToHtml += "<p class=\"description\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
+				nbParam++;
+			} else {
+				ToHtml += "<p class=\"particularite\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
+			}
+			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
+		}
+	}
+
+	ToHtml += "</ol>\n</section>";
+
 }
 
 void TextToHtml::ExempleInHtml(std::string lines) {
