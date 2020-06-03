@@ -98,7 +98,8 @@ NAME clear
 	@ place le simulateur à l'état initial
 	@ commande deprecated
 PARAMETER state @ fixé 
-	$ natural @ active l'atmosphère et le panorama.
+	$ natural
+	@ active l'atmosphère et le panorama.
 	@ par defaut, l'atmosphère et le panorama sont désactivés.
 @@
 
