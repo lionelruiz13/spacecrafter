@@ -619,7 +619,8 @@ PARAMETER scale @ int
 @@
 
 
-NAME position @ permet de sauvegarder/charger la position sur laquelle on se trouve actuellement
+NAME position
+	@ permet de sauvegarder/charger la position sur laquelle on se trouve actuellement
 ARGUMENT action @ fixé
 	$ load 
 	@ charge la dernière position sauvegardée
