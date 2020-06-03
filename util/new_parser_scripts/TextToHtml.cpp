@@ -14,19 +14,19 @@ void TextToHtml::lecture() {
 	std::string bloc;				//le string courrant
 
 	for(auto i = 0; i < 1; i++) {		
-		transformation(inText[2]); //On transmet le string courant, pour la transformation
+		transformation(inText[i]); //On transmet le string courant, pour la transformation
 	}
 }
 
 void TextToHtml::transformation(std::string lines){
-	std::string _textToHtml = "";
-	std::string delimiter1 = "\n"; 	//Délimiteur de ligne
-	std::string delimiter2 = " "; 	//Délimiteur de mot
 	std::string tempText = "";			
 	std::string argument = "NAME";	//Garde en mémoire l'argument, par defaut, c'est NAME est premier.
 	std::string nextargument = "";
 
-	_textToHtml += "<article id=" + lines.substr(5, lines.length()) + ">"; // on récupère la première information, qui défini le nom du bloc
+	std::string S_Name = "";
+	std::string S_Argument = "";
+	std::string S_Parametre = "";
+	std::string S_Exemple = "";
 
 	while(argument != "END"){
 
@@ -36,18 +36,26 @@ void TextToHtml::transformation(std::string lines){
 		
 		lines.erase(0, lines.find(nextargument));
 
-		std::cout << "------" + argument + "------\n" << tempText << std::endl;
+		//std::cout << "------" + argument + "------\n" << tempText << std::endl;
+
+		if(argument == "NAME") S_Name += tempText;
+		if(argument == "ARGUMENT") S_Argument += tempText;
+		if(argument == "PARAMETER") S_Parametre += tempText;
+		if(argument == "EXEMPLE") S_Exemple += tempText;
 
 		argument = nextargument ;
 
 	}
 
-	
+	std::cout << "--------NAME--------" << std::endl << S_Name << std::endl;
+	std::cout << "------ARGUMENT------" << std::endl << S_Argument << std::endl;
+	std::cout << "------PARAMETER-----" << std::endl << S_Parametre << std::endl;
+	std::cout << "------EXEMPLE-------" << std::endl << S_Exemple << std::endl;
 
 	//std::cout << lines << std::endl;
 }
 
-std::string TextToHtml::findBloc(std::string& lines, std::string arg){
+std::string TextToHtml::findBloc(std::string lines, std::string arg) {
 	
 	if(arg == "NAME") { // BLOC NAMES
 		//On cherche le prochain argument

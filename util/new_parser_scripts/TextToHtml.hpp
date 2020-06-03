@@ -18,7 +18,7 @@ public:
 private:
 
     void transformation(std::string lines);
-    std::string findBloc(std::string& lines, std::string arg);
+    std::string findBloc(std::string lines, std::string arg);
 
     // std::string tempText = "";
 
