@@ -397,7 +397,6 @@ void UI::lowerHeight(double x)
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = -latimem*(CoeffMultAltitude*x);
 	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
-	this->executeCommand("define a 0");
 }
 
 void UI::raiseHeight(double x)
@@ -405,7 +404,6 @@ void UI::raiseHeight(double x)
 	double latimem = coreLink->observatoryGetAltitude();
 	latimem = latimem*(CoeffMultAltitude*x);
 	coreLink->observerMoveRelAlt(latimem, DURATION_COMMAND);
-	this->executeCommand("define a 1");
 }
 
 void UI::handleJoyAddStick()
