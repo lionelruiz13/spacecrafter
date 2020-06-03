@@ -9,7 +9,7 @@
 
 class TextToHtml {
 public:
-    TextToHtml(std::vector<std::string> _text);
+    TextToHtml(std::vector<std::string> _text, std::string _css);
 	~TextToHtml();
 
     //On lit le vecteur d'entrée (inText)
@@ -24,10 +24,12 @@ private:
     void ParameterInHtml(std::string lines);
     void ExempleInHtml(std::string lines);
 
-    std::string ToHtml;
+    //Fichier de Sortie
+    std::string OutHtml;
 
+    //Fichier d'éntrée
     std::vector<std::string> inText;
-    std::vector<std::string> outText;
+    std::string inCss;
 };
 
 #endif
