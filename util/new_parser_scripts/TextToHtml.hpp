@@ -34,6 +34,10 @@ private:
     void ParameterInHtml(std::string lines);
     void ExempleInHtml(std::string lines);
 
+    //Variable traitement
+    std::string index; //Permet de créer l'index
+    std::string title;   //Permet de garder en mémoire le titre du bloc
+
     //Fichier de Sortie pour FileWriter
     std::string OutHtml;
 

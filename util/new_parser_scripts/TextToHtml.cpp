@@ -12,13 +12,20 @@ TextToHtml::~TextToHtml() {}
 
 void TextToHtml::lecture() {
 
-	//TODO : Début du fichier HTML (placer le ficher CSS ici)
+	OutHtml += "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Documentation</title>\n<style>";
+	OutHtml += inCss; //On place le style CSS
+	OutHtml += "</style>\n</head>\n<body>\n<header>\n<h1>Documentation des comamndes script du logiciel</h1>\n</header>\n";
+	OutHtml += "<img src=\"img/logo.png\" alt=\"Logo\" class=\"logo\">";
+	OutHtml += "<section class=\"commande\">";
 
 	for(auto i = 0; i < inText.size(); i++) {		
 		transformation(inText[i]); //On transmet le string courant, pour la transformation
 	}
 
-	//TODO : Fin du fichier HTML
+	OutHtml += "</section>\n<aside id=\"Menu\" class=\"menu\">\n";
+	OutHtml += "<h3>Index</h3>\n<ol>\n";
+	OutHtml += index; //On place l'index
+	OutHtml += "</ol>\n</aside>\n</body>\n</html>";
 }
 
 void TextToHtml::transformation(std::string lines){
@@ -55,6 +62,11 @@ void TextToHtml::transformation(std::string lines){
 	if(S_Argument != "") ArgumentInHtml(S_Argument);
 	if(S_Parametre != "") ParameterInHtml(S_Parametre);
 	if(S_Exemple != "") ExempleInHtml(S_Exemple);
+
+	index += "<li><a href=\"#" + title + "\"><code>" + title +"</code></a></li>\n"; //instanciation de l'Index
+
+	OutHtml += "</article>\n";
+	OutHtml += "<a href=\"#Menu\" class=\"retour\">Retour à l'index</a>\n";
 }
 
 std::string TextToHtml::findBloc(std::string lines, std::string arg) {
@@ -82,12 +94,12 @@ std::string TextToHtml::findBloc(std::string lines, std::string arg) {
 
 void TextToHtml::NameInHtml(std::string lines) {
 	std::string delimiter = "\n"; //Défini le délimiteur de fin de ligne
-	std::string arg = lines.substr(5, lines.find(delimiter)-5); //On récupère le premier argument après NAME
+	title = lines.substr(5, lines.find(delimiter)-5); //On récupère le premier argument après NAME, qui définit le titre du bloc
 	int i = 1; //Entier permettant de savoir s'il y a 2 ligne a traitée ou pas, car les 2 ligne de texte sont défini différement dans le fichier HTML
 
-	OutHtml += "<article id=\"" + arg + "\">\n";
+	OutHtml += "<article id=\"" + title + "\">\n";
 	OutHtml += "<header>\n";
-	OutHtml += "<h2><code>" + arg + "</code></h2>\n";
+	OutHtml += "<h2><code>" + title + "</code></h2>\n";
 
 	lines = lines.erase(0, lines.find(delimiter)+4); //On supprime la première ligne + la tabulation et le preier repère de la seconde ligne
 
@@ -155,7 +167,6 @@ void TextToHtml::ArgumentInHtml(std::string lines) {
 
 void TextToHtml::ParameterInHtml(std::string lines) {
 	//Paramètre entier pour savoir si on est en début ou en fin de bloc (ex bloc: <li> ... </li>)
-	int nbPrm = 1; //Compteur de nombre de PARAMETER, pour la bonne mise en forme
 	int nbParam = 1; //Compteur de nombre de paramètre @, pour la bonne mise en forme
 	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
 	
