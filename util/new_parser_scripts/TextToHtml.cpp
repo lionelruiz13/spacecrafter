@@ -3,16 +3,13 @@
 
 TextToHtml::TextToHtml(std::vector<std::string> _text) {
 	inText = _text;
+	ToHtml = "";
 	lecture();
 }
 
 TextToHtml::~TextToHtml() {}
 
 void TextToHtml::lecture() {
-	//sert a chercher les lignes dans le string courrant
-	std::string delimiter = "\n"; 	//Délimiteur de ligne
-	std::string bloc;				//le string courrant
-
 	for(auto i = 0; i < 1; i++) {		
 		transformation(inText[i]); //On transmet le string courant, pour la transformation
 	}
@@ -47,10 +44,11 @@ void TextToHtml::transformation(std::string lines){
 
 	}
 
-	std::cout << "--------NAME--------" << std::endl << S_Name << std::endl;
-	std::cout << "------ARGUMENT------" << std::endl << S_Argument << std::endl;
-	std::cout << "------PARAMETER-----" << std::endl << S_Parametre << std::endl;
-	std::cout << "------EXEMPLE-------" << std::endl << S_Exemple << std::endl;
+	NameInHtml(S_Name);
+	//std::cout << "--------NAME--------" << std::endl << S_Name << std::endl;
+	//std::cout << "------ARGUMENT------" << std::endl << S_Argument << std::endl;
+	//std::cout << "------PARAMETER-----" << std::endl << S_Parametre << std::endl;
+	//std::cout << "------EXEMPLE-------" << std::endl << S_Exemple << std::endl;
 
 	//std::cout << lines << std::endl;
 }
@@ -79,7 +77,27 @@ std::string TextToHtml::findBloc(std::string lines, std::string arg) {
 }
 
 std::string TextToHtml::NameInHtml(std::string lines) {
-	
+	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
+	std::string arg = lines.substr(5, lines.find(delimiter)-5); //On récupère le premier argument après NAME
+	int i = 1;
+
+	ToHtml += "<article id=\"" + arg + "\">\n";
+	ToHtml += "<header>\n";
+	ToHtml += "<h2><code>" + arg + "</code></h2>\n";
+
+	lines = lines.erase(0, lines.find(delimiter)+4); //On supprime la première ligne + la tabulation et le preier repère de la seconde ligne
+
+	while(lines != ""){
+		if(i == 1){
+			ToHtml += "<p class =\"description\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
+			lines = lines.erase(0, lines.find(delimiter)+4); //On supprime la ligne + la tabulation  et le premier repère de la seconde ligne
+			i++;
+		} else {
+			ToHtml += "<p class =\"particularite\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
+			lines = lines.erase(0, lines.length()); //On vide le string
+		}
+	}
+	ToHtml += "</header>";
 }
 
 std::string TextToHtml::ArgumentInHtml(std::string lines) {
