@@ -17,7 +17,7 @@ int main() {
 	reader->readFileText();
 	//reader->readVector();
 
-    TextToHtml* parser = new TextToHtml(reader->getText());
+    TextToHtml* parser = new TextToHtml(reader->getText(), reader->readFileCss());
 
 
 

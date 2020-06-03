@@ -15,7 +15,6 @@ public:
     void readFileText();
     std::string readFileCss();
 
-    void readVector();
     std::vector<std::string> getText();
 
 private:

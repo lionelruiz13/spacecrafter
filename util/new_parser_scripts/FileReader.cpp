@@ -65,13 +65,3 @@ std::string FileReader::readFileCss() {
 
 	return result;
 }
-
-void FileReader::readVector() {
-	
-	// for(auto i = 0; i < text.size(); i++) {
-	// 	std::cout << text[i] << std::endl ;
-	// }
-
-	std::cout << text[0] << std::endl ;
-
-}
