@@ -23,9 +23,9 @@ int main() {
     //Transformation de fichier txt en html
     TextToHtml* parser = new TextToHtml(reader->getText(), reader->readFileCss());
 
-    //TODO
-    //Ecriture du fichier de sortie
-    //
+    writer->writeInFile(parser->getHtml());
+
+    std::cout << "DONE" << std::endl;
 
     return 0;
 }

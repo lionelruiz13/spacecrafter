@@ -1,0 +1,2766 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Documentation</title>
+<style>/* Page */body {	background-image: url(img/fond2.jpg);	background-repeat:repeat;	width: 70%;	margin-left: auto;	margin-right: auto;}/* Blocs de la page */body>header, article, img, aside {	border-radius : 10px;	border : 1px solid black;	margin : 1%;}.logo {	border: none;}/* Entête de la page */body>header {	background-image: url(img/fond.jpg);	color : white;	text-align : center;	margin-bottom : 0;	border-style: double;	border-width: medium;	border-color : white;}/* Menu contenant tous les liens vers les commandes */.menu {	padding-right : 15px; 	overflow : auto;	background-color : #E0E0E0;	color : #0035C8;	border-style: solid;	border-width: medium;	border-color: #374097;	page-break-before : always;}/* Titre du menu contenant tous les liens vers les commandes */.menu>h3 {	text-align : center;	color :#374097;}/* Lien dans le menu */.menu a:link {	color : black;}/* Lien survolé ou focussé dans le menu */.menu a:hover, a:focus {	font-weight : bold;}/* Lien visité dans le menu */.menu a:visited {	color : black;}/* Section contenant les commandes */.commande {	width : 80%;	float: right;	margin-top : 1%;}/* Image dans la section contenant les commandes */.commande img {	height : 150px;}/* Titre de la liste des commandes */.commande>h2 {	padding-left : 5%;	color : #7a7a7a;}/* Article contenant une commande dans la section contenant les commandes */.commande>article {	background-color: white;	overflow : auto;	padding : 1%;	padding-left : 3%;	margin-top : 5%;	margin-bottom : 5%;	page-break-before : always;}/* Entête de la commande */.commande>article>header {	margin-bottom : 3%;}/* Titre de la commande */.commande>article>header>h2 {	color: black;	font-weight: bold;}/* Arguments et son type ou valeur possibles pour chauque argument dans la section contenant les commandes */.commande h4 {	margin-top : 2%;	margin-bottom : 1%;}/* Description et particularite dans la section contenant les commandes */.commande p {	 margin : 0;}/* Paragraphe contenant une description (d'une commande, d'un argument ou d'une valeur) */.description {	color: black;}/* Paragraphe contenant une particularité (d'une commande, d'un argument ou d'une valeur) */.particularite {	color: #7a7a7a;	font-style: italic;}/* Section d'un article (de la section commandes) contentant les arguments d'une commande */.listearguments {}/* Uniquement la section d'un article (de la section commandes) contentant les arguments d'une commande */.listearguments>section {	margin : 3%;}/* Titre contenant le champ "Nom : Type" d'un argument */.listearguments>h3 {	color : #374097;}/* Nom d'un arguemnt */.argument {	color: purple;}/* Type d'un argument */.argumenttype {	color: red;}/* Section d'un article (de la section commandes) contentant les parametres d'une commande */.listeparameters {	}/* Uniquement la section d'un article (de la section commandes) contentant les parametres d'une commande */.listeparameters>section {	margin : 3%;}/* Titre contenant le champ "Nom : Type" d'un argument */.listeparameters>h3 {	color : #374097;}/* Nom d'un parameter */.parameter {	color: purple;}/* Type d'un parameter */.parametertype {	color: red;}/* Section contenant la liste des valeurs possibles pour un argument */.listevaleurs {}/* Valeur possible d'un argument */.valeur {	font-weight : bold;	color : #374097;}/* Section d'un article (de la section commandes) contenant un exemple */.exemple {	color: black;}/* Titre "Exemple" */.exemple>h2 {	margin-bottom : 1%;}/* Champs contenant l'exemple */.exemple>pre {	margin-top : 1%;}/* Lien de retour au menu */.retour {	padding-left : 5%;}/* Lien de retour au menu visité ou non */.retour a:link, a:visited, a:active {	color : #374097;	padding-left : 5%;}/* Lien de retour au menu survolé ou focussé */.retour a:hover, a:focus {	font-weight : bold;}/* Gestion de l'impression */@media print {	body, header, section, article, aside {		background : none;	}	.commande {		width : 100%;		float : none;	}		.retour {		display: none !important;	}}</style>
+</head>
+<body>
+<header>
+<h1>Documentation des comamndes script du logiciel</h1>
+</header>
+<img src="img/logo.png" alt="Logo" class="logo"><section class="commande"><article id="audio">
+<header>
+<h2><code>audio</code></h2>
+<p class ="description">commande gérant les sons longs du logiciel</p>
+<p class ="particularite">sont compatible les fichiers audio avec l'extention wav, ogg et mp3.</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">drop </code>
+<p class="description">arrete la source audio et la décharge de la mémoire</p>
+</li>
+<li>
+<code class="valeur">sync</code>
+<p class="description">synchronise la source audio</p>
+</li>
+<li>
+<code class="valeur">pause</code>
+<p class="description">met la source audio en pause</p>
+</li>
+<li>
+<code class="valeur">play</code>
+<p class="description">débute la lecture d'une source audio</p>
+<p class="particularite">nécessite filename , optionel loop</p>
+</li>
+<li>
+<code class="valeur">resume </code>
+<p class="description">reprend la diffusion d'une source audio</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">volume</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">increment</code>
+</li>
+<li>
+<code class="valeur">decrement </code>
+</li>
+<li>
+<code class="valeur">valeur </code>
+<p class="description">valeur représente un nombre compris entre 0 (sourdine) et 128 (maximum)</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">filename</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">nom du fichier audio</p>
+<li>
+<h4>
+<code class="parameter">loop</code> : <code class="parametertype">boolean </code>
+</h4>
+<p class="description">indique si la source audio doit se répéter ou (non)</p>
+<p class="particularite">par défaut, la répétition n'est pas active</p>
+</ol>
+</section><section class="exemple">
+<h2>Exemple</h2>
+<pre>audio action play filename test.ogg
+audio action drop 
+supprime la piste de lecture de la pile.
+</pre>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="body">
+<header>
+<h2><code>body</code></h2>
+<p class ="description">permet d'insérer un astre personnalisé dans le systeme solaire</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load</code>
+<p class="description">charge en mémoire le nouvel astre représenté par une série de commandes saisies</p>
+<p class="particularite">nécessite name</p>
+</li>
+<li>
+<code class="valeur">clear</code>
+<p class="description">supprime tous les astres insérés par des scripts dans le systeme solaire</p>
+</li>
+<li>
+<code class="valeur">drop </code>
+<p class="description">supprime définitivement l'objet</p>
+<p class="particularite">nécessite name</p>
+</li>
+<li>
+<code class="valeur">initial</code>
+<p class="description">remet le simulateur à son état initial</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">color</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">orbit</code>
+<p class="description">change la couleur utilisée pour afficher l'orbite de l'astre</p>
+<p class="particularite">nécessite name, color_value  ou r g b</p>
+</li>
+<li>
+<code class="valeur">name</code>
+<p class="description">change la couleur utilisée pour afficher le nom de l'astre</p>
+<p class="particularite">nécessite name, color_value  ou r g b</p>
+</li>
+<li>
+<code class="valeur">trail</code>
+<p class="description">change la couleur utilisée pour afficher la trajectoire de l'astre</p>
+<p class="particularite">nécessite name, color_value  ou r g b</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">hidden</code> : <code class="argumenttype">boolean</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">affiche ou masque l'astre</p>
+<p class="particularite">nécessite name</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">path</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">indique le chemin des datas si non disponible dans le répertoire texture/bodies</p>
+<li>
+<h4>
+<code class="parameter">name
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">représente le nom interne de l'astre</p>
+<li>
+<h4>
+<code class="parameter">color_value</code> : <code class="parametertype">xRRGGBB</code>
+</h4>
+<p class="description">fixe la couleur à la définition du web: paramètre en hexadécimal, 2 caractères obigatoires</p>
+<li>
+<h4>
+<code class="parameter">r</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante rouge de la couleur</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">g</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante verte de la couleur</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">b</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante bleu de la couleur</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="body_trace">
+<header>
+<h2><code>body_trace</code></h2>
+<p class ="description">trace en direct la trajectroire d'un astre sur le dôme à la manière d'un stylo. on peut tracer différentes trajectoires, les afficher et les masquer.</p>
+<p class ="particularite">le soleil est l'astre sélectionné par défaut. Chaque fois que l'on change la valeur du crayon, on dessine un nouveau tracé, indépendant des autres tracés.</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">clear</code>
+<p class="description">supprime toutes les trajectoires affichées</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">hidde</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">cache le tracé d'un astre</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">pen</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">true</code>
+<p class="description">baisse le crayon et trace la trajectoire de l'astre sélectionné</p>
+</li>
+<li>
+<code class="valeur">false</code>
+<p class="description">lève le crayon la trajectoire tracé reste apparente</p>
+</li>
+<li>
+<code class="valeur">toggle</code>
+<p class="description">inverse le comportement du stylo</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">target</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">indique le nom de l'astre à sélectionner pour le crayon</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="clear ">
+<header>
+<h2><code>clear </code></h2>
+<p class ="description">place le simulateur à l'état initial</p>
+<p class ="particularite">commande deprecated</p>
+</header><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">state</code> : <code class="parametertype">fixé </code>
+</h4>
+<li>
+<code class="valeur">natural</code>
+</li>
+<p class="description">active l'atmosphère et le panorama.</p>
+<p class="particularite">par defaut, l'atmosphère et le panorama sont désactivés.</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="color">
+<header>
+<h2><code>color</code></h2>
+<p class ="description">permet d'agit sur les propriétés des couleurs des objets du logiciel</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">property</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">constellation_lines @ constellation_lines</code>
+</li>
+<li>
+<code class="valeur">constellation_names @ constellation_names</code>
+</li>
+<li>
+<code class="valeur">constellation_art @ constellation_art</code>
+</li>
+<li>
+<code class="valeur">constellation_boundaries @ constellation_boundaries</code>
+</li>
+<li>
+<code class="valeur">cardinal_points @ cardinal_points</code>
+</li>
+<li>
+<code class="valeur">planet_orbits @ planet_orbits</code>
+</li>
+<li>
+<code class="valeur">planet_names @ planet_names</code>
+</li>
+<li>
+<code class="valeur">planet_trails @ planet_trails</code>
+</li>
+<li>
+<code class="valeur">azimutal_grid @ azimutal_grid</code>
+</li>
+<li>
+<code class="valeur">equator_grid @ equator_grid</code>
+</li>
+<li>
+<code class="valeur">ecliptic_grid @ ecliptic_grid</code>
+</li>
+<li>
+<code class="valeur">galactic_grid @ galactic_grid</code>
+</li>
+<li>
+<code class="valeur">equator_line @ equator_line</code>
+</li>
+<li>
+<code class="valeur">galactic_line @ galactic_line</code>
+</li>
+<li>
+<code class="valeur">ecliptic_line @ ecliptic_line</code>
+</li>
+<li>
+<code class="valeur">meridian_line @ meridian_line</code>
+</li>
+<li>
+<code class="valeur">zenith_line @ zenith_line</code>
+</li>
+<li>
+<code class="valeur">polar_circle @ polar_circle</code>
+</li>
+<li>
+<code class="valeur">ecliptic_center @ ecliptic_center</code>
+</li>
+<li>
+<code class="valeur">galactic_pole @ galactic_pole</code>
+</li>
+<li>
+<code class="valeur">galactic_center @ galactic_center</code>
+</li>
+<li>
+<code class="valeur">vernal_points @ vernal_points</code>
+</li>
+<li>
+<code class="valeur">analemma @ analemma</code>
+</li>
+<li>
+<code class="valeur">analemma_line @ analemma_line</code>
+</li>
+<li>
+<code class="valeur">greenwich_line @ greenwich_line</code>
+</li>
+<li>
+<code class="valeur">aries_line @ aries_line</code>
+</li>
+<li>
+<code class="valeur">zodiac @ zodiac</code>
+</li>
+<li>
+<code class="valeur">personal @ personal</code>
+</li>
+<li>
+<code class="valeur">personeq @ personeq</code>
+</li>
+<li>
+<code class="valeur">vertical_line @ vertical_line</code>
+</li>
+<li>
+<code class="valeur">nebula_names @ nebula_names</code>
+</li>
+<li>
+<code class="valeur">nebula_circle @ nebula_circle</code>
+</li>
+<li>
+<code class="valeur">precession_circle @ precession_circle</code>
+</li>
+<li>
+<code class="valeur">star_table@ star color</code>
+<p class="description">need index</p>
+</li>
+<li>
+<code class="valeur">text_usr_color @ text_usr_color</code>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">index
+	@</code> : <code class="parametertype">int</code>
+</h4>
+<p class="description">permet de choisir un index de star_table pour modifier la couleur</p>
+<li>
+<h4>
+<code class="parameter">r</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante rouge de la couleur attribuée à l'étoile</p>
+<p class="particularite">comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)</p>
+<li>
+<h4>
+<code class="parameter">g</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante verte de la couleur attribuée à l'étoile</p>
+<p class="particularite">comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)</p>
+<li>
+<h4>
+<code class="parameter">b</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante bleu de la couleur attribuée à l'étoile</p>
+<p class="particularite">comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)</p>
+<li>
+<h4>
+<code class="parameter">value</code> : <code class="parametertype">xRRGGBB</code>
+</h4>
+<p class="description">fixe la couleur à la définition du web: paramètre en hexadécimal, 2 caractères obigatoires</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="configuration ">
+<header>
+<h2><code>configuration </code></h2>
+<p class ="description">gestion de app->init() via le menu M</p>
+<p class ="particularite">fonction deprecated</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load </code>
+<p class="description">recharge le menu M</p>
+</li>
+<li>
+<code class="valeur">save</code>
+<p class="description">sauvegarde le menu M</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="date">
+<header>
+<h2><code>date</code></h2>
+<p class ="description">this command manage all time and date modification ....</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">jday</code> : <code class="argumenttype">tring</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">date time in julian calendar</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">local</code> : <code class="argumenttype">tring</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">date time in local </p>
+<p class="particularite">if string begin with T, only time will be modified.</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">relative</code> : <code class="argumenttype">nteger</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">add date time with relative time</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">relativeYear</code> : <code class="argumenttype">umber</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">add date time with relativeYear time</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">relativeMonth</code> : <code class="argumenttype">umber</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">add date time with relativeMonth time</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">utc@string
+	@</code> : <code class="argumenttype">tring</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">date time in utc time</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">sideral@string
+	@</code> : <code class="argumenttype">tring</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">date time in sideral time</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">load@string
+	$</code> : <code class="argumenttype">tring</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">current @ load saved date</code>
+</li>
+<li>
+<code class="valeur">preset @ save date and time to be use with current</code>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">sun@</code> : <code class="argumenttype">fixed</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">set @ compute time to </code>
+</li>
+<li>
+<code class="valeur">ride @ compute time to</code>
+</li>
+<li>
+<code class="valeur">meridian @ compute time to ...</code>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="exemple">
+<h2>Exemple</h2>
+<pre>date utc 1918:05:08T12:00:00
+date sun set
+date sun meridian
+</pre>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="deselect ">
+<header>
+<h2><code>deselect </code></h2>
+<p class ="description">désélectionne les objets auparavent sélectionnés</p>
+</header><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter"></code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">désélectionne la constellation concernée</p>
+<p class="particularite">sans l'argument, la commande deselect désélectionne tout objet sélectionné</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="domemasters">
+<header>
+<h2><code>domemasters</code></h2>
+<p class ="description">permet de faire des captures d'images</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">snapshot</code>
+<p class="description">réalise une capture d'écran</p>
+</li>
+<li>
+<code class="valeur">record</code>
+<p class="description">permet de lancer une capture d'écran frame par frame</p>
+<p class="particularite">relancer la commande stoppe la capture d'écran</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="dso">
+<header>
+<h2><code>dso</code></h2>
+<p class ="description">permet d'insérer un objet personnalisé du ciel profond </p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load</code>
+<p class="description">charge en mémoire l'objet du ciel profond représenté par name</p>
+<p class="particularite">nécessite name, ra, de, path, magnitude, angular_size, rotation, credit, filename, texture_luminance_adjust, distance, constellation, type</p>
+</li>
+<li>
+<code class="valeur">clear</code>
+<p class="description">supprime tous les objets insérés dans le logiciel</p>
+</li>
+<li>
+<code class="valeur">drop </code>
+<p class="description">supprime définitivement l'objet représenté par name</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">hidden</code> : <code class="argumenttype">boolean</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">all @ sélectionne tous les objets</code>
+<p class="description">optional type ou constellation</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">name
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">nom interne pour la gestion du logiciel</p>
+<li>
+<h4>
+<code class="parameter">path
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">ra
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">coordonnées ra</p>
+<li>
+<h4>
+<code class="parameter">de
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">coordonnées de</p>
+<li>
+<h4>
+<code class="parameter">magnitude
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">magnitude apparente de l'objet</p>
+<li>
+<h4>
+<code class="parameter">angular_size
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">taille angulaire en ?</p>
+<li>
+<h4>
+<code class="parameter">rotation
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">indication sur une rotation de l'image</p>
+<li>
+<h4>
+<code class="parameter">credit
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">filename
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">nom du fichier image représenant l'objet</p>
+<li>
+<h4>
+<code class="parameter">texture_luminance_adjust
+	@</code> : <code class="parametertype">double </code>
+</h4>
+<p class="description">ajustement de la luminance de l'image</p>
+<li>
+<h4>
+<code class="parameter">distance
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">distance en al</p>
+<li>
+<h4>
+<code class="parameter">constellation
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">constellation dans laquelle elle appartient</p>
+<li>
+<h4>
+<code class="parameter">type
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">indique le type d'objet représenté</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="external_viewer ">
+<header>
+<h2><code>external_viewer </code></h2>
+<p class ="description">permet de lancer une opération externe en fonction de l'extention du fichier utilisé.</p>
+<p class ="particularite">les extentions supportées sont AVI, MP4, MOV, MPG, MP3, OGG, SH, PNG, SWF, </p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixed</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">play </code>
+<p class="description">lance l'action liée au fichier </p>
+<p class="particularite">nécessite filename</p>
+</li>
+<li>
+<code class="valeur">stop </code>
+<p class="description">arrête la lecture de la vidéo et/ou de l'audio lancée par externalviewer</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">filename</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">nom du fichier à exploiter</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="flag">
+<header>
+<h2><code>flag</code></h2>
+<p class ="description">permet de modifier un état du simulateur</p>
+<p class ="particularite">les valeurs possibles sont on, true 1, off, false, 0 ou toggle (inverse l'état)</p>
+</header><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">antialias_lines</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">constellation_drawing</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">constellation_names</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">constellation_art</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">constellation_boundaries</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">constellation_pick</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">star_twinkle</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">navigation</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">show_tui_datetime</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">show_tui_short_obj_info</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">manual_zoom</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">light_travel_time</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">fog</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">atmosphere</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">azimuthal_grid</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">equatorial_grid</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">ecliptic_grid</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">galactic_grid</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">equator_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">galactic_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">ecliptic_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">precession_circle</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">circumpolar_circle</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">tropic_lines</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">meridian_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">zenith_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">polar_circle</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">ecliptic_center</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">galactic_pole</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">galactic_center</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">vernal_points</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">analemma_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">analemma</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">aries_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">zodiac</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">personal</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">personeq</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">greenwich_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">vertical_line</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">cardinal_points</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">clouds</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">moon_scaled</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">sun_scaled</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">landscape</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">stars</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">star_names</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">planets</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">planet_names</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">planet_orbits</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">orbits</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">planets_orbits</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">planets_axis</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">satellites_orbits</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">nebulae</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">nebula_names</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">nebula_hints</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">milky_way</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">bright_nebulae</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">object_trails</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">track_object</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">script_gui_debug</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">lock_sky_position</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">body_trace</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">show_latlon</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">color_inverse</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">oort</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">stars_trace</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">star_lines</code> : <code class="parametertype">boolean</code>
+</h4>
+<li>
+<h4>
+<code class="parameter">sky_draw</code> : <code class="parametertype">boolean</code>
+</h4>
+<p class="description">active le tracé de points sur le dôme</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="external_mplayer">
+<header>
+<h2><code>external_mplayer</code></h2>
+<p class ="description">permet de commander au doigt et à l'oeil mplayer pour la lecture de vidéos externes</p>
+<p class ="particularite">ne fonctionne que sous linux</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixed</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">play </code>
+<p class="description">lance la lecture du fichier</p>
+<p class="particularite">nécessite filename</p>
+</li>
+<li>
+<code class="valeur">stop</code>
+<p class="description">arrête la lecture de la vidéo</p>
+</li>
+<li>
+<code class="valeur">pause</code>
+<p class="description">met la lecture de la vidéo en pause</p>
+</li>
+<li>
+<code class="valeur">reset</code>
+<p class="description">reprend la lecture de la vidéo au début</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">jump_relative</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">réalise un saut relatif dans la vidéo de X s</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">jump_absolute</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">se place à la position X (en s) de la vidéo</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">speed</code> : <code class="argumenttype">int</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">modifie la vitesse de lecture de la vidéo</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">volume</code> : <code class="argumenttype">int</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">modifie le volume sonore interne de mplayer</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">execute</code> : <code class="argumenttype">string </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">indique au pipe de mplayer l'action à réaliser </p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">filename</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">nom de la vidéo à lire</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="illuminate ">
+<header>
+<h2><code>illuminate </code></h2>
+<p class ="description">permet de modifier la représentation d'une étoile en la grossissant artificiellement afin de mieux la distinguer parmi les autres étoiles. On peut aussi modifier la couleur en présisant les paramètres r g et b</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">clear</code>
+<p class="description">supprime définitivement tous les illuminate affichés</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">display</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">on @ active illuminate pour l'étoile donnée avec l'argument hp</code>
+</li>
+<li>
+<code class="valeur">off @ désactive illuminate pour l'étoile donnée avec l'argument hp</code>
+<p class="description">nécessite hp</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">r</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante rouge de la couleur attribuée à l'étoile</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">g</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante verte de la couleur attribuée à l'étoile</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">b</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante bleu de la couleur attribuée à l'étoile</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">hp</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">représente le nom de l'étoile ciblée par illuminate</p>
+</ol>
+</section><section class="exemple">
+<h2>Exemple</h2>
+<pre>illuminate display on hp HP541
+</pre>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="image">
+<header>
+<h2><code>image</code></h2>
+<p class ="description">gestion de l'affichage des images dans les scripts</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load </code>
+<p class="description">charge une image en mémoire dans les scripts</p>
+<p class="particularite">nécessite filename, name et coordinate_system. </p>
+</li>
+<li>
+<code class="valeur">drop</code>
+<p class="description">supprime l'image</p>
+<p class="particularite">nécessite name</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">coordinate_system</code> : <code class="parametertype">fixé</code>
+</h4>
+<li>
+<code class="valeur">horizontal</code>
+</li>
+<li>
+<code class="valeur">equatorial</code>
+</li>
+<li>
+<code class="valeur">j2000</code>
+</li>
+<li>
+<code class="valeur">dome</code>
+</li>
+<li>
+<h4>
+<code class="parameter">mipmap</code> : <code class="parametertype">boolean</code>
+</h4>
+<p class="description">indique si l'on doit activer les miniatures pour de meilleurs résultats visuels</p>
+<li>
+<h4>
+<code class="parameter">name</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">nom interne à l'image qui permet de l'identifier</p>
+<li>
+<h4>
+<code class="parameter">filename</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">chemin du fichier pour accéder à l'image</p>
+<li>
+<h4>
+<code class="parameter">altitude</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">position de l'image</p>
+<li>
+<h4>
+<code class="parameter">azimuth</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">position de l'image</p>
+<li>
+<h4>
+<code class="parameter">xpos</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">position de l'image</p>
+<li>
+<h4>
+<code class="parameter">ypos</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">position de l'image</p>
+<li>
+<h4>
+<code class="parameter">duration</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">?</p>
+<li>
+<h4>
+<code class="parameter">alpha</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">Indique le niveau de transparence d'une image</p>
+<li>
+<h4>
+<code class="parameter">scale</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">Indique la taille de l'image</p>
+<li>
+<h4>
+<code class="parameter">rotation</code> : <code class="parametertype">décimal</code>
+</h4>
+<p class="description">Effectue une rotation de l'image</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="landscape">
+<header>
+<h2><code>landscape</code></h2>
+<p class ="description">permet de modifier le landscape actuel</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load @ charge le nom du fichier landscape</code>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">path</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">chemin du fichier pour le landscape </p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="look">
+<header>
+<h2><code>look</code></h2>
+<p class ="description">modifie l'angle de vue de la caméra</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">delta_az
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">variation de l'angle de vue par rapport à l'azimuth</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">delta_alt
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">variation de l'angle de vue sur par rapport à l'altitude</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="media">
+<header>
+<h2><code>media</code></h2>
+<p class ="description">permet la lecture de vidéos internes au logiciel</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">play</code>
+<p class="description">initialise le lancement d'une vidéo</p>
+<p class="particularite">nécessite videoname et type</p>
+</li>
+<li>
+<code class="valeur">pause</code>
+<p class="description">met la vidéo et le son  (si fonctionnel) en pause</p>
+</li>
+<li>
+<code class="valeur">stop</code>
+<p class="description">arrête la lecture de la vidéo et du son (si fonctionnel)</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">keycolor</code> : <code class="argumenttype">boolean</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">active la transparence de la vidéo VIEWPORT sur une couleur déterminée</p>
+<p class="particularite">nécessite intensity et ( color_value ou  r g b )</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">intensity</code> : <code class="parametertype">number</code>
+</h4>
+<p class="description">représente le pourcentage de dispersion autour de la couleur </p>
+<li>
+<h4>
+<code class="parameter">color_value</code> : <code class="parametertype">xRRGGBB</code>
+</h4>
+<p class="description">fixe la couleur à la définition du web: paramètre en hexadécimal, 2 caractères obigatoires</p>
+<li>
+<h4>
+<code class="parameter">r</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante rouge de la couleur</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">g</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante verte de la couleur</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">b</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante bleu de la couleur</p>
+<p class="particularite">décimale comprise entre 0 et 1 ou entier entre 0 et 255</p>
+<li>
+<h4>
+<code class="parameter">type</code> : <code class="parametertype">fixé</code>
+</h4>
+<li>
+<code class="valeur">VR360</code>
+</li>
+<p class="description">lance une vidéo à 360°</p>
+<li>
+<code class="valeur">VIEWPORT</code>
+</li>
+<p class="particularite">lance une vidéo en premier plan</p>
+<li>
+<h4>
+<code class="parameter">videoname
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">indique quel fichier video lire</p>
+<li>
+<h4>
+<code class="parameter">audioname
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">indique quel fichier audio lire</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="meteors ">
+<header>
+<h2><code>meteors </code></h2>
+<p class ="description">active l'apparition de météors dans le ciel </p>
+<p class ="particularite">attention il faut être au bon endroit pour les voir !</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">zhr</code> : <code class="argumenttype">integer </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">indique la fréquence d'apparition des météors</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="moveto">
+<header>
+<h2><code>moveto</code></h2>
+<p class ="description">indique au simulateur les coordonnées ou l'on désire se rendre</p>
+<p class ="particularite">lon, lat et alt sont les diminutifs de longitude, latitude, altitude. On peut utliser les diminutifs ou les noms exacts dans les arguments qui suivent</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">lat
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">spécifie la latitude du lieu</p>
+<p class="particularite">le signe indique le déplacement : N pour + et S pour -</p>
+<li>
+<code class="valeur">default </code>
+<p class="description">permet de revenir à la longitude du lieu d'origine</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">lon
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">spécifie la longitude du lieu</p>
+<p class="particularite">le signe indique le déplacement : E pour + et W pour -</p>
+<li>
+<code class="valeur">default </code>
+<p class="description">permet de revenir à la latitude du lieu d'origine</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">alt
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">spécifie l'altitude du lieu par rapport au niveau de la mer</p>
+<li>
+<code class="valeur">default </code>
+<p class="description">permet de revenir à l'altitude du lieu d'origine</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">name
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">indique le nom de l'endroit où l'on se trouve</p>
+<li>
+<h4>
+<code class="parameter">duration
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">indique la durée du changement</p>
+<p class="particularite">sans durée spécifiée, le simulateur se place instantanément aux nouvelles coordonnées</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="move_to_city">
+<header>
+<h2><code>move_to_city</code></h2>
+<p class ="description">déplace le point d'observation à une grande ville du monde.</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">name</code> : <code class="argumenttype">string </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nom de la ville</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">country</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nom du pays </p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="multiplier">
+<header>
+<h2><code>multiplier</code></h2>
+<p class ="description">modifie l'écoulement du temps dans le logiciel</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">rate</code> : <code class="argumenttype">nombre </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">indique le nombre de secondes qui s'écoulent dans le logiciel en une seconde dans la réalité</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">increment</code>
+<p class="description">augmente le nombre de secondes qui s'écoulent dans le logiciel de step secondes</p>
+<p class="particularite">utilise step si défini</p>
+</li>
+<li>
+<code class="valeur">decrement</code>
+<p class="description">réduit le nombre de secondes qui s'écoulent dans le logiciel de step secondes</p>
+<p class="particularite">minimum une seconde par seconde, utilise step si défini</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">step</code> : <code class="parametertype">nombre</code>
+</h4>
+<p class="description">indique la valeur </p>
+<p class="particularite">optionel, vaut 10 par défaut</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="personal">
+<header>
+<h2><code>personal</code></h2>
+<p class ="description">représente un tracé personnalisé dans le ciel en mode al</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load</code>
+<p class="description">charge un fichier de tracé </p>
+<p class="particularite">nécessite filename</p>
+</li>
+<li>
+<code class="valeur">clear</code>
+<p class="description">supprime tous les tracés</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">filename</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">charge en mémoire un fichier de tracé existant</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="personeq">
+<header>
+<h2><code>personeq</code></h2>
+<p class ="description">représente un tracé personnalisé dans le ciel en mode équatorial</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load</code>
+<p class="description">charge un fichier de tracé </p>
+<p class="particularite">nécessite filename</p>
+</li>
+<li>
+<code class="valeur">clear @ supprime tous les tracés</code>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">filename</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">charge en mémoire un fichier de tracé existant</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="planet_scale ">
+<header>
+<h2><code>planet_scale </code></h2>
+<p class ="description">Modifie le rayon d'un astre</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">name</code> : <code class="argumenttype">string </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nom de l'astre</p>
+<p class="particularite">nécessite scale</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">scale</code> : <code class="parametertype">int </code>
+</h4>
+<p class="description">valeur multiplicative appliquée au rayon</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="position">
+<header>
+<h2><code>position</code></h2>
+<p class ="description">permet de sauvegarder/charger la position sur laquelle on se trouve actuellement</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load </code>
+<p class="description">charge la dernière position sauvegardée</p>
+</li>
+<li>
+<code class="valeur">save </code>
+<p class="description">sauvegarde la position actuelle</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="print">
+<header>
+<h2><code>print</code></h2>
+<p class ="description">affiche un commentaire dans les fichiers de logs</p>
+<p class ="particularite">commande système</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">value</code> : <code class="argumenttype">string </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">le contenu du message</p>
+<p class="particularite">obligatoire</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">name</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">le nom du message, son tag</p>
+<p class="particularite">facultatif</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="script">
+<header>
+<h2><code>script</code></h2>
+<p class ="description">centralise la gestion des scripts dans le logiciel</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">load </code>
+<p class="description">charge un script et l'exécute</p>
+<p class="particularite">nécessite filename</p>
+</li>
+<li>
+<code class="valeur">end </code>
+<p class="description">arrête tout script en cours</p>
+</li>
+<li>
+<code class="valeur">record</code>
+<p class="description">enregistre toutes les commandes exécutées par l'utilisateur</p>
+</li>
+<li>
+<code class="valeur">cancelrecord</code>
+<p class="description">arrête l'enregistrement des commandes exécutées par l'utilisateur</p>
+</li>
+<li>
+<code class="valeur">pause</code>
+<p class="description">met en pause le script en cours</p>
+<p class="particularite">si le script est déjà en pause, ce dernier reprend</p>
+</li>
+<li>
+<code class="valeur">resume </code>
+<p class="description">reprend l'exécution d'un script mis en pause</p>
+</li>
+<li>
+<code class="valeur">faster</code>
+<p class="description">accélère l'exécution du script en cours</p>
+</li>
+<li>
+<code class="valeur">slower</code>
+<p class="description">ralenti l'exécution du scipt en cours</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">filename</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">nom du fichier script</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="select ">
+<header>
+<h2><code>select </code></h2>
+<p class ="description">permet de sélectionner un objet du ciel</p>
+<p class ="particularite">un paramète doit être renseigné</p>
+</header><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">hp</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">sélectionne une étoile du catalogue Hipparcos</p>
+<li>
+<h4>
+<code class="parameter">star</code> : <code class="parametertype"> string </code>
+</h4>
+<p class="description">sélectionne une étoile du catalogue Tycho</p>
+<li>
+<h4>
+<code class="parameter">planet</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">sélectionne l'astre conserné</p>
+<li>
+<h4>
+<code class="parameter">nebula</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">sélection l'objet du ciel profond  conserné</p>
+<li>
+<h4>
+<code class="parameter">constellation</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">sélectionne la constellation consernée</p>
+<li>
+<h4>
+<code class="parameter">constellation</code> : <code class="parametertype">string ZODIAC </code>
+</h4>
+<p class="description">sélectionne les constellations du Zodiac</p>
+<li>
+<h4>
+<code class="parameter">constellation_star</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">sélectionne l'étoile la plus brillante de la constellation consernée</p>
+<li>
+<h4>
+<code class="parameter">pointeur</code> : <code class="parametertype">boolean</code>
+</h4>
+<p class="description">indique si le pointeur apparait autour de l'objet ou non</p>
+<p class="particularite">sans précision, le pointeur est activé par défaut</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="set">
+<header>
+<h2><code>set</code></h2>
+<p class ="description">fixe une valeur à un argument</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">atmosphere_fade_duration
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">auto_move_duration
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">constellation_art_fade_duration
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">constellation_art_intensity
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">light_pollution_limiting_magnitude
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">flight_duration
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">heading
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">duration
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">home_planet
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">landscape_name</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">line_width
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">max_mag_nebula_name
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">max_mag_star_name
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">moon_scale
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">sun_scale
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">milky_way_texture
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">sky_culture
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">sky_locale
+	@</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">ui_locale
+	@</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">star_mag_scale
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">star_size_limit
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">planet_size_limit
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">star_scale
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">star_twinkle_amount
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">star_fader_duration
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">star_limiting_mag
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">time_zone
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">text_fading_duration
+	@</code> : <code class="argumenttype">int</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">milky_way_fader_duration
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">milky_way_intensity
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">zoom_offset
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">nouvelle valeur</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="sky_culture">
+<header>
+<h2><code>sky_culture</code></h2>
+<p class ="description">permet de changer la représentation des constellations du ciel</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé $ load @ charge la sky_culture liée au répertoire</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">necessite path</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">path</code> : <code class="parametertype">string @ indique le chemin d'accès au répertoire</code>
+</h4>
+<p class="description">obligatoire</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="sky_draw">
+<header>
+<h2><code>sky_draw</code></h2>
+<p class ="description">affiche une série de points sur le dôme</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">clear</code>
+<p class="description">supprime tous les points affichés sur le dôme</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">points
+	@</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">affiche une série de points sous la forme XXXYYY ou (XXX,YYY) représentent une position sur le dôme exprimée en pourcentage</p>
+<p class="particularite">il est nécessaire de représenter les positions de points par une série de 3 chiffres. On peut cumuler plusieurs points par arguments</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="star_lines">
+<header>
+<h2><code>star_lines</code></h2>
+<p class ="description">affiche des asterismes personnalisés</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">drop</code>
+<p class="description">supprime tous les asterismes affichés</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">load
+	@</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">affiche les asterismes contenus dans le fichier</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">asterism
+	@</code> : <code class="argumenttype">string</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">affiche un asterism en une ligne de commande</p>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="sun_trace ">
+<header>
+<h2><code>sun_trace </code></h2>
+<p class ="description">permet de représenter la course du soleil en direct sous le dôme.</p>
+<p class ="particularite">cette commande est un alias de la commande body_trace avec le soleil comme astre sélectionné</p>
+</header></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="shutdown ">
+<header>
+<h2><code>shutdown </code></h2>
+<p class ="description">permet d'éteindre le logiciel spacecrafter</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé </code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">now @ ordre d'extinction immédiate</code>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="text">
+<header>
+<h2><code>text</code></h2>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">clear</code>
+<p class="description">supprime tous les text affiché dans la mémoire</p>
+</li>
+<li>
+<code class="valeur">update</code>
+<p class="description">met à jour le contenu du texte repéré par son nom interne</p>
+</li>
+<li>
+<code class="valeur">drop</code>
+<p class="description">supprime un text repéré par son nom interne</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">display
+	@</code> : <code class="argumenttype">boolean</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">indique si le texte doit être affiché sous le dôme ou pas</p>
+<p class="particularite">par défaut, le texte n'est pas affiché</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">name
+	@</code> : <code class="parametertype">string </code>
+</h4>
+<p class="description">donne un nom interne au logiciel à un text donné</p>
+<p class="particularite">le nom interne est obligatoire</p>
+<li>
+<h4>
+<code class="parameter">string
+	@</code> : <code class="parametertype">string</code>
+</h4>
+<p class="description">représente le contenu du text choisi</p>
+<li>
+<h4>
+<code class="parameter">size
+	@</code> : <code class="parametertype">fixé</code>
+</h4>
+<li>
+<code class="valeur">x_small</code>
+</li>
+<li>
+<code class="valeur">small</code>
+</li>
+<li>
+<code class="valeur">medium </code>
+</li>
+<p class="description">paramètre par défaut</p>
+<li>
+<code class="valeur">large</code>
+</li>
+<li>
+<code class="valeur">x_large</code>
+</li>
+<li>
+<h4>
+<code class="parameter">azimuth
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">indique l'azimuth à partir duquel le texte sera affiché</p>
+<li>
+<h4>
+<code class="parameter">latitude
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">indique la lattitude à partir de la quelle le texte sera affiché</p>
+<li>
+<h4>
+<code class="parameter">r</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante rouge de la couleur</p>
+<p class="particularite">comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)</p>
+<li>
+<h4>
+<code class="parameter">g</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante verte de la couleur</p>
+<p class="particularite">comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)</p>
+<li>
+<h4>
+<code class="parameter">b
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie la composante bleu de la couleur</p>
+<p class="particularite">comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)</p>
+<li>
+<h4>
+<code class="parameter">color_value</code> : <code class="parametertype">xRRGGBB</code>
+</h4>
+<p class="description">fixe la couleur à la définition du web: paramètre en hexadécimal, 2 caractères obigatoires</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="timerate">
+<header>
+<h2><code>timerate</code></h2>
+<p class ="description">modifie la vitesse d'écoulement du temps</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">rate
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">fixe directement par combien le temps sera multiplié</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">action
+	@</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">pause @ stoppe le temps</code>
+</li>
+<li>
+<code class="valeur">resume @ le temps recommence à compter</code>
+</li>
+<li>
+<code class="valeur">incrément @ multiplie la vitesse du temps par step</code>
+</li>
+<li>
+<code class="valeur">décrément @ divise la vitesse du temps par step</code>
+</li>
+<li>
+<code class="valeur">sincrement @ augmente la vitesse du temps</code>
+</li>
+<li>
+<code class="valeur">sdecrement @ diminue la vitesse du temps</code>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">step
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">modifie le facteur multiplicatif pour accélération du temps</p>
+<p class="particularite">par défaut, step est fixé à 2.</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="wait ">
+<header>
+<h2><code>wait </code></h2>
+<p class ="description">crée une attente entre deux commandes scripts. wait est souvent utilisé pour permettre à une commande de se finir avant qu'une autre ne se lance. </p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">duration</code> : <code class="argumenttype">float</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">durée de l'attente </p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">action</code> : <code class="argumenttype">fixé $ reset_timer @ reset le script</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+</li>
+</ul>
+</section>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+<article id="zoom">
+<header>
+<h2><code>zoom</code></h2>
+<p class ="description">Modifie le champ de vision comme le ferait un grossissement d'une lunette</p>
+</header><section class="listearguments">
+<h3>Argument</h3>
+<ol>
+<li>
+<h4>
+<code class="argument">auto
+	@</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">out @ revient à ?</code>
+</li>
+<li>
+<code class="valeur">initial @ revient à sa valeur d'origine</code>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">manual
+	@</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">1 @  ?</code>
+</li>
+<li>
+<code class="valeur">initial @ ?</code>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">fov
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">indique jusqu'à quel champ de vision que le zoom doit atteindre</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">delta_fov
+	@</code> : <code class="argumenttype">double</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<p class="particularite">?</p>
+</li>
+</ul>
+</section>
+<li>
+<h4>
+<code class="argument">center
+	@</code> : <code class="argumenttype">fixé</code>
+</h4>
+<section class="listevaleurs">
+<ul>
+<li>
+<code class="valeur">on</code>
+<p class="description">fixe le centre du point de vue sur l'objet sélectionné</p>
+</li>
+</ul>
+</section>
+</ol>
+</section><section class="listeparameters">
+<h3>Paramètre</h3>
+<ul>
+<li>
+<h4>
+<code class="parameter">duration
+	@</code> : <code class="parametertype">double</code>
+</h4>
+<p class="description">indique la durée en seconde du changement de zoom</p>
+</ol>
+</section></article>
+<a href="#Menu" class="retour">Retour à l'index</a>
+</section>
+<aside id="Menu" class="menu">
+<h3>Index</h3>
+<ol>
+<li><a href="#audio"><code>audio</code></a></li>
+<li><a href="#body"><code>body</code></a></li>
+<li><a href="#body_trace"><code>body_trace</code></a></li>
+<li><a href="#clear "><code>clear </code></a></li>
+<li><a href="#color"><code>color</code></a></li>
+<li><a href="#configuration "><code>configuration </code></a></li>
+<li><a href="#date"><code>date</code></a></li>
+<li><a href="#deselect "><code>deselect </code></a></li>
+<li><a href="#domemasters"><code>domemasters</code></a></li>
+<li><a href="#dso"><code>dso</code></a></li>
+<li><a href="#external_viewer "><code>external_viewer </code></a></li>
+<li><a href="#flag"><code>flag</code></a></li>
+<li><a href="#external_mplayer"><code>external_mplayer</code></a></li>
+<li><a href="#illuminate "><code>illuminate </code></a></li>
+<li><a href="#image"><code>image</code></a></li>
+<li><a href="#landscape"><code>landscape</code></a></li>
+<li><a href="#look"><code>look</code></a></li>
+<li><a href="#media"><code>media</code></a></li>
+<li><a href="#meteors "><code>meteors </code></a></li>
+<li><a href="#moveto"><code>moveto</code></a></li>
+<li><a href="#move_to_city"><code>move_to_city</code></a></li>
+<li><a href="#multiplier"><code>multiplier</code></a></li>
+<li><a href="#personal"><code>personal</code></a></li>
+<li><a href="#personeq"><code>personeq</code></a></li>
+<li><a href="#planet_scale "><code>planet_scale </code></a></li>
+<li><a href="#position"><code>position</code></a></li>
+<li><a href="#print"><code>print</code></a></li>
+<li><a href="#script"><code>script</code></a></li>
+<li><a href="#select "><code>select </code></a></li>
+<li><a href="#set"><code>set</code></a></li>
+<li><a href="#sky_culture"><code>sky_culture</code></a></li>
+<li><a href="#sky_draw"><code>sky_draw</code></a></li>
+<li><a href="#star_lines"><code>star_lines</code></a></li>
+<li><a href="#sun_trace "><code>sun_trace </code></a></li>
+<li><a href="#shutdown "><code>shutdown </code></a></li>
+<li><a href="#text"><code>text</code></a></li>
+<li><a href="#timerate"><code>timerate</code></a></li>
+<li><a href="#wait "><code>wait </code></a></li>
+<li><a href="#zoom"><code>zoom</code></a></li>
+</ol>
+</aside>
+</body>
+</html>
