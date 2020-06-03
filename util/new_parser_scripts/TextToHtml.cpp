@@ -11,7 +11,7 @@ TextToHtml::~TextToHtml() {}
 
 void TextToHtml::lecture() {
 	for(auto i = 0; i < 1; i++) {		
-		transformation(inText[i]); //On transmet le string courant, pour la transformation
+		transformation(inText[1]); //On transmet le string courant, pour la transformation
 	}
 }
 
@@ -24,6 +24,8 @@ void TextToHtml::transformation(std::string lines){
 	std::string S_Argument = "";
 	std::string S_Parametre = "";
 	std::string S_Exemple = "";
+
+	lines = lines.erase(lines.find("@@"), lines.length()); //On supprime la partie inutile
 
 	while(argument != "END"){
 
@@ -44,10 +46,14 @@ void TextToHtml::transformation(std::string lines){
 
 	}
 
-	NameInHtml(S_Name);
-	ArgumentInHtml(S_Argument);
-	ParameterInHtml(S_Parametre);
-	ExempleInHtml(S_Exemple);
+	std::cout << "S_Name" << std::endl;
+	if(S_Name != "") NameInHtml(S_Name);
+	std::cout << "S_Argument" << std::endl;
+	if(S_Argument != "") ArgumentInHtml(S_Argument);
+	std::cout << "S_Parametre" << std::endl;
+	if(S_Parametre != "") ParameterInHtml(S_Parametre);
+	std::cout << "S_Exemple" << std::endl;
+	if(S_Exemple != "") ExempleInHtml(S_Exemple);
 
 	std::cout << ToHtml << std::endl;
 }
@@ -183,7 +189,6 @@ void TextToHtml::ParameterInHtml(std::string lines) {
 
 void TextToHtml::ExempleInHtml(std::string lines) {
 	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
-
 	lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la premiere ligne + la tabulation
 	lines = lines.erase(lines.find("@@"), lines.length()); //On supprime la partie inutile
 	ToHtml += "<section class=\"exemple\">\n<h2>Exemple</h2>\n<pre>";
