@@ -13,9 +13,9 @@ std::vector<std::string> FileReader::getText() {
 }
 
 void FileReader::loadFile(const std::string& fileName) {
-    std::ifstream fichier(fileName); 
+    std::ifstream fichier(fileName); //On ouvre le fichier
 
-    if( !fichier.fail() )
+    if( !fichier.fail() ) //On vérifier si l'ouverture s'est bien déroulé
     {  
         std::cout << "Fichier " + fileName + " existant et charger.\n" << std::endl;  
     }  
@@ -31,9 +31,9 @@ void FileReader::readFileText() {
 	std::string result = "";
 
     if(monFlux) { // si le fichier est bien ouvert, on commence le traitement
-        while(getline(monFlux, ligne))
+        while(getline(monFlux, ligne)) //On découpe le fichier dans un vecteur
         {
-            if(ligne.substr(0,4) == "NAME" && result != "") {
+            if(ligne.substr(0,4) == "NAME" && result != "") { //On veux récupérer un bloc, donc de NAME à @@
 				text.push_back(result);
 				result = ligne + "\n";
 			}
