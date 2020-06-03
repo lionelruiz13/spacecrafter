@@ -25,7 +25,8 @@ PARAMETER loop @ boolean
 	@ par défaut, la répétition n'est pas active
 EXEMPLE
 	audio action play filename test.ogg
-	audio action drop @ supprime la piste de lecture de la pile.
+	audio action drop 
+	supprime la piste de lecture de la pile.
 @@
 
 
