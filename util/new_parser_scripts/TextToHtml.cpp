@@ -44,7 +44,8 @@ void TextToHtml::transformation(std::string lines){
 
 	}
 
-	NameInHtml(S_Name);
+	//NameInHtml(S_Name);
+	ArgumentInHtml(S_Argument);
 	//std::cout << "--------NAME--------" << std::endl << S_Name << std::endl;
 	//std::cout << "------ARGUMENT------" << std::endl << S_Argument << std::endl;
 	//std::cout << "------PARAMETER-----" << std::endl << S_Parametre << std::endl;
@@ -101,7 +102,51 @@ std::string TextToHtml::NameInHtml(std::string lines) {
 }
 
 std::string TextToHtml::ArgumentInHtml(std::string lines) {
+	int nbArg = 1; //Compteur de nombre de ARGUMENT, pour la bonne mise en forme
+	int nbParam = 1; //Compteur de nombre de paramètre @, pour la bonne mise en forme
+	std::string delimiter = "\n"; //Défini le délimiter de fin de ligne
 	
+	ToHtml += "<section class=\"listearguments\">\n<h3>Argument</h3>\n<ol>\n";
+
+	while(lines != ""){
+		if(lines.substr(0, lines.find(" ")) == "ARGUMENT") { //On verifie la nature du premier mot.
+			if(nbArg != 1){ //On vérifie si c'est la premoière liste d'argument, on non.
+				ToHtml += "</li>\n</ul>\n</section>\n";
+				nbParam =1; //On remet le compteur a 1, par sécurité
+			}
+			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot ARGUMENT
+			ToHtml += "<li>\n<h4>\n";
+			ToHtml += "<code class=\"argument\">" + lines.substr(0, lines.find(" ")) + "</code> : "; //On récupère l'argument avant @
+			lines = lines.erase(0, lines.find("@")+2); //On supprime le premier paramètre + @
+			ToHtml += "<code class=\"argumenttype\">" + lines.substr(0, lines.find(delimiter)) + "</code>\n"; //On récupère l'argument après @
+			ToHtml += "</h4>\n<section class=\"listevaleurs\">\n<ul>\n";
+			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
+			nbArg++;
+		}
+		else if(lines.substr(0, lines.find(" ")) == "	$"){
+			if(nbParam != 1){
+				ToHtml += "</li>\n";
+				nbParam = 1; //On remet le compteur a 1
+			}
+			ToHtml += "<li>\n";
+			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot $
+			ToHtml += "<code class=\"valeur\">" + lines.substr(0, lines.find(delimiter)) + "</code>\n"; //On récupère l'argument
+			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
+			nbParam++;
+		}
+		else if(lines.substr(0, lines.find(" ")) == "	@"){
+			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot @
+			if(nbParam == 2){
+				ToHtml += "<p class=\"description\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
+				nbParam++;
+			} else {
+				ToHtml += "<p class=\"particularite\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
+			}
+			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
+		}
+	}
+
+	ToHtml += "</li>\n</ul>\n</section>\n</ol>\n</section>";
 }
 
 std::string TextToHtml::ParameterInHtml(std::string lines) {
