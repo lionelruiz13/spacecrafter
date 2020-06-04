@@ -217,6 +217,12 @@ const std::string AppSettings::getLandscapeDir() const
 	return getUserDir() + REP_LANDSCAPE + "/";
 }
 
+
+const std::string AppSettings::getLanguageDir() const
+{
+	return getUserDir() + REP_LANGUAGE + "/";
+}
+
 const std::string AppSettings::getUserDir() const
 {
 	#ifdef LINUX

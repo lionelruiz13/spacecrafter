@@ -131,6 +131,9 @@ public:
 	//! Get the fullname of the directory containing the Texture user
 	const std::string getTextureDir() const;
 
+	//! Get the fullname of the directory containing all translation text
+	const std::string getLanguageDir() const;
+
 	//! Determine where screenshot files should go on different platforms
 	const std::string getScreenshotDirectory() const;
 

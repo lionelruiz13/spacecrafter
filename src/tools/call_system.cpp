@@ -182,6 +182,7 @@ void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dir
 	listSubDirectory[REP_WEB]=false;
 	listSubDirectory[REP_SKY_CULTURE]=true;
 	listSubDirectory[REP_MODEL3D]=true;
+	listSubDirectory[REP_LANGUAGE]=false;
 
 	std::string DATADIR=std::string(CONFIG_DATA_DIR)+"data/";
 
