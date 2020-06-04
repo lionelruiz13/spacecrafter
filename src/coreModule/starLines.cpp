@@ -293,6 +293,6 @@ void StarLines::draw(Mat4f & matrix)  noexcept
 	}
 
 	glDrawArrays(GL_LINES,0,linePos.size()/3);
-
+	glBindVertexArray(0);
 	shaderStarLines->unuse();
 }

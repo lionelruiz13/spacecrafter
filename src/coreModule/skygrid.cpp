@@ -96,9 +96,6 @@ void SkyGrid::createShader()
 	glGenBuffers(1,&sData.pos);
 	glGenBuffers(1,&sData.color); //en fait c'est plutôt l'intensité de la couleur du point
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-
 	createBuffer();
 }
 
@@ -179,13 +176,16 @@ void SkyGrid::createBuffer()
 	//on charge les points dans un vbo
 	glBindVertexArray(sData.vao);
 
+	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,sData.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataSky.size(),dataSky.data(),GL_STATIC_DRAW);
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
+	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER,sData.color);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_STATIC_DRAW);
 	glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+	glBindVertexArray(0);
 }
 
 
@@ -222,6 +222,7 @@ void SkyGrid::draw(const Projector* prj) const
 
 	glBindVertexArray(sData.vao);
 	glDrawArrays(GL_LINES, 0, dataSky.size()/3 ); //un point est représenté par 3 points
+	glBindVertexArray(0);
 	shaderSkyGrid->unuse();
 
 	// tracé de texte.

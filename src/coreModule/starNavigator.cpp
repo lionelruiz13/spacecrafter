@@ -506,6 +506,6 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
 
 	glDrawArrays(GL_POINTS,0,starPos.size()/3);
-
+	glBindVertexArray(0);
 	shaderStarNav->unuse();
 }
