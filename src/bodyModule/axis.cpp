@@ -52,7 +52,7 @@ void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
 	glDrawArrays(GL_LINE_STRIP, 0,2);
-
+	glBindVertexArray(0);
 	shaderAxis->unuse();
 
 	vecAxisPos.clear();

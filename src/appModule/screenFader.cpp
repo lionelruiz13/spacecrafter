@@ -88,5 +88,6 @@ void ScreenFader::draw()
 
 	glBindVertexArray(screen.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glBindVertexArray(0);
 	shaderScreen->unuse();
 }

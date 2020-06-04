@@ -275,5 +275,6 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 	for (int y=0; y<SKY_RESOLUTION; y++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
 	}
+	glBindVertexArray(0);
 	shaderAtmosphere->unuse();
 }

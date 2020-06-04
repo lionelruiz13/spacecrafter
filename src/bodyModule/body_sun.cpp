@@ -151,7 +151,7 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	glDrawArrays(GL_POINTS,0,1);
-
+	glBindVertexArray(0);
 	shaderBigHalo->unuse();
 }
 

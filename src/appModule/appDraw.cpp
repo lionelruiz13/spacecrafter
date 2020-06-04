@@ -90,6 +90,7 @@ void AppDraw::initSplash()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex_splash->getID());
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glBindVertexArray(0);
 	shaderSplash->unuse();
 
 	if (shaderSplash) delete shaderSplash;
@@ -172,6 +173,7 @@ void AppDraw::drawViewportShape()
 
 	glBindVertexArray(dataGL.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glBindVertexArray(0);
 	shaderViewportShape->unuse();
 }
 
@@ -183,5 +185,6 @@ void AppDraw::drawColorInverse()
 
 	glBindVertexArray(dataGL.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glBindVertexArray(0);
 	shaderColorInverse->unuse();
 }

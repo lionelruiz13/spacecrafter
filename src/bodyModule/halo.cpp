@@ -61,6 +61,7 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glBindVertexArray(0);
 
 	shaderHalo->unuse();
 
