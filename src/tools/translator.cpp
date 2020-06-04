@@ -98,7 +98,7 @@ void Translator::reload()
 	}
 	#endif
 	
-	printf("Setting locale: %s\n", envstr);
+	//printf("Setting locale: %s\n", envstr);
 	
 	//load all string in m_translator
 	m_translator.clear();
@@ -106,7 +106,7 @@ void Translator::reload()
 	//read translation file
 	std::ifstream infile;
 	infile.open(moDirectory+langName+".txt", std::ifstream::in);
-	std::cout << "translation file : " << moDirectory << langName <<".txt"<<std::endl;
+	//std::cout << "translation file : " << moDirectory << langName <<".txt"<<std::endl;
 	if (infile.is_open()) {
 		std::string line;
 		std::string key;
@@ -149,7 +149,7 @@ std::string Translator::getAvailableLanguagesCodes(const std::string& localeDir)
 	DIR *dp;
 	std::vector<std::string> result;
 
-	std::cout << "Reading translations in directory: " << localeDir << std::endl;
+	//std::cout << "Reading translations in directory: " << localeDir << std::endl;
 	if ((dp = opendir(localeDir.c_str())) == NULL) {
 		std::cerr << "Unable to find locale directory containing translations:" << localeDir << std::endl;
 		return "";
