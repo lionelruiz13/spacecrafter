@@ -84,10 +84,10 @@ void BodyTrace::createShader()
 	glGenVertexArrays(1,&trace.vao);
 	glBindVertexArray(trace.vao);
 
-	glGenBuffers(1,&trace.color);
+//	glGenBuffers(1,&trace.color);
 	glGenBuffers(1,&trace.pos);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
 }
 
 void BodyTrace::deleteShader()
@@ -96,7 +96,7 @@ void BodyTrace::deleteShader()
 		delete shaderTrace;
 	shaderTrace = nullptr;
 
-	glDeleteBuffers(1,&trace.color);
+	//glDeleteBuffers(1,&trace.color);
 	glDeleteBuffers(1,&trace.pos);
 	glDeleteVertexArrays(1,&trace.vao);
 }
@@ -127,11 +127,13 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 				shaderTrace->setUniform("Mat", prj->getMatLocalToEye() );
 
 				glBindVertexArray(trace.vao);
+		
+				glEnableVertexAttribArray(0);
 				glBindBuffer(GL_ARRAY_BUFFER,trace.pos);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecVertex.size(), vecVertex.data(), GL_DYNAMIC_DRAW);
 				glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
 				glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
+				glBindVertexArray(0);
 			}
 			//suppression du contenu des data
 			vecVertex.clear();
