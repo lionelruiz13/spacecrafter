@@ -36,7 +36,7 @@ void Orbit2D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
 	glDrawArrays(GL_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
-
+	glBindVertexArray(0);
 	shaderOrbit2d->unuse();
 
 	vecOrbit2dVertex.clear();

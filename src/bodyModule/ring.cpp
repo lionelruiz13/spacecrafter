@@ -203,6 +203,7 @@ void Ring2D::draw()
 {
 	glBindVertexArray(cModel.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
+	glBindVertexArray(0);
 }
 
 

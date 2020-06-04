@@ -104,7 +104,8 @@ void Trail::drawTrail(const Navigator * nav, const Projector* prj)
 		glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
 
 		glDrawArrays(GL_LINE_STRIP, 0, nbPos);
-
+		glBindVertexArray(0);
+		
 		shaderTrail->unuse();
 		StateGL::enable(GL_BLEND);
 	}
