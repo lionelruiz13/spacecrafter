@@ -85,5 +85,6 @@ const std::string REP_SKY_CULTURE = "sky_cultures";
 
 const std::string REP_DATA = "data";
 const std::string REP_SHADER = "shaders";
+const std::string REP_LANGUAGE = "language"; 
 
 #endif /*_SPACECRAFTER_HPP_*/
