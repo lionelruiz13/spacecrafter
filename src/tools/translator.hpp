@@ -29,11 +29,13 @@
 #include <string>
 #include <iostream>
 #include <cerrno>
+#include <map>
+#include <cassert>
 
 // These macro are used as global function replacing standard gettext operation
-#include "tools/gettext.hpp"
-#define _(String) Translator::globalTranslator.translateUTF8( gettextNoop(String) ).c_str()
-#define N_(String) gettextNoop(String)
+//#include "tools/gettext.hpp"
+#define _(String) Translator::globalTranslator.translateUTF8(String).c_str()
+//#define N_(String) gettextNoop(String)
 
 
 
@@ -58,10 +60,11 @@ public:
 	//! @brief Translate input message.
 	//! @param s input string in english.
 	//! @return The translated string in UTF-8 characters.
-	std::string translateUTF8(const std::string& s) {
-		reload();
-		return gettext(s.c_str());
-	}
+	std::string translateUTF8(const std::string& s);
+	//  {
+	// 	reload();
+	// 	return gettext(s.c_str());
+	// }
 
 	//! @brief Get translator locale name. This name can be used to create a translator.
 	//! Could be artificial "system" value for config file
@@ -97,6 +100,9 @@ private:
 
 	//! Store the system default language name as taken from LANGUAGE environement variable
 	static std::string systemLangName;
+
+	//! map to store the translation 
+	static std::map<std::string, std::string> m_translator;
 };
 
 #endif

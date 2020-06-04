@@ -418,7 +418,7 @@ void App::draw(int delta_time)
 void App::setAppLanguage(const std::string& newAppLocaleName)
 {
 	// Update the translator with new locale name
-	Translator::globalTranslator = Translator(PACKAGE, settings->getLocaleDir(), newAppLocaleName);
+	Translator::globalTranslator = Translator(PACKAGE, settings->getLanguageDir(), newAppLocaleName);
 	cLog::get()->write("Application locale is " + Translator::globalTranslator.getLocaleName(), LOG_TYPE::L_INFO);
 	ui->localizeTui();
 }

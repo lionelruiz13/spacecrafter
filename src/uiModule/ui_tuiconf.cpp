@@ -234,7 +234,7 @@ void UI::initTui()
 	tui_menu_general->addComponent(tui_general_sky_culture);
 
 	tui_general_sky_locale = new s_tui::MultiSetItem<std::string>(std::string("3.2 ") );
-	tui_general_sky_locale->addItemList(std::string(Translator::getAvailableLanguagesCodes(AppSettings::Instance()->getLocaleDir())));
+	tui_general_sky_locale->addItemList(std::string(Translator::getAvailableLanguagesCodes(AppSettings::Instance()->getLanguageDir())));
 
 	tui_general_sky_locale->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbTuiGeneralChangeSkyLocale));
 	tui_menu_general->addComponent(tui_general_sky_locale);
@@ -445,7 +445,7 @@ void UI::initTui()
 	tui_menu_administration->addComponent(tui_admin_user);
 
 	tui_admin_setlocale = new s_tui::MultiSetItem<std::string>("8.5 ");
-	tui_admin_setlocale->addItemList(std::string(Translator::getAvailableLanguagesCodes(AppSettings::Instance()->getLocaleDir())));
+	tui_admin_setlocale->addItemList(std::string(Translator::getAvailableLanguagesCodes(AppSettings::Instance()->getLanguageDir())));
 	tui_admin_setlocale->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbAdminSetLocale));
 	tui_menu_administration->addComponent(tui_admin_setlocale);
 
