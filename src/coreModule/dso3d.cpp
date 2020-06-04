@@ -62,9 +62,9 @@ void Dso3d::createShader()
 	glGenBuffers(1,&sData.tex);
 	glGenBuffers(1,&sData.scale);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
 
 }
 
@@ -124,20 +124,24 @@ bool Dso3d::loadCatalog(const std::string &cat) noexcept
 	}
 	file.close();
 
-	//on charge les points dans un vbo
+	//on charge les points dans un vbo cela n'a rien à faire içi.
 	glBindVertexArray(sData.vao);
 
+	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER,sData.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posDso3d.size(),posDso3d.data(),GL_STATIC_DRAW);
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
+	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER,sData.tex);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texDso3d.size(),texDso3d.data(),GL_STATIC_DRAW);
 	glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
-
+	
+	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER,sData.scale);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*scaleDso3d.size(),scaleDso3d.data(),GL_STATIC_DRAW);
 	glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
+	glBindVertexArray(0);
 
 	return true;
 }
@@ -183,8 +187,8 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderDso3d->setUniform("nbTextures", nbTextures);
 
 	glBindVertexArray(sData.vao);
-
 	glDrawArrays(GL_POINTS, 0, nbNebulae);
+	glBindVertexArray(0);
 	//~ StateGL::disable(GL_DEPTH_TEST);
 	shaderDso3d->unuse();
 }

@@ -278,6 +278,8 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 
 	for(int i=0;i<nbrIllumToTrace; i++)
 		glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
+
+	glBindVertexArray(0);	
 	shaderIllum->unuse();
 }
 

@@ -237,6 +237,7 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 
 	glBindVertexArray(fog.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,nbFogVertex);
+	glBindVertexArray(0);
 	glCullFace(GL_BACK);
 	StateGL::disable(GL_CULL_FACE);
 	glActiveTexture(GL_TEXTURE0);
@@ -388,18 +389,17 @@ void LandscapeFisheye::initShader()
 	glGenVertexArrays(1,&landscape.vao);
 	glBindVertexArray(landscape.vao);
 
+	glEnableVertexAttribArray(1);
 	glGenBuffers(1,&landscape.tex);
 	glBindBuffer(GL_ARRAY_BUFFER,landscape.tex);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*2,datatex,GL_STATIC_DRAW);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
+	glEnableVertexAttribArray(0);
 	glGenBuffers(1,&landscape.pos);
 	glBindBuffer(GL_ARRAY_BUFFER,landscape.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*3,datapos,GL_STATIC_DRAW);
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
 
 	if (datatex) delete datatex;
 	if (datapos) delete datapos;
@@ -443,6 +443,7 @@ void LandscapeFisheye::draw(ToneReproductor * eye, const Projector* prj, const N
 
 	glBindVertexArray(landscape.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
+	glBindVertexArray(0);
 	StateGL::disable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
 
@@ -649,14 +650,12 @@ void LandscapeSpherical::initShader()
 
 	glGenVertexArrays(1,&landscape.vao);
 	glBindVertexArray(landscape.vao);
-
+	glEnableVertexAttribArray(0);
 	glBindBuffer (GL_ARRAY_BUFFER, landscape.pos);
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	glEnableVertexAttribArray(1);
 	glBindBuffer (GL_ARRAY_BUFFER, landscape.tex);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
 
 	if (datatex) delete[] datatex;
 	if (datapos) delete[] datapos;
@@ -698,6 +697,7 @@ void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const
 
 	glBindVertexArray(landscape.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
+	glBindVertexArray(0);
 
 	StateGL::disable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);

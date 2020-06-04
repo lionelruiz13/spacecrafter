@@ -173,7 +173,8 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 
 	for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
 		glDrawArrays(GL_LINE_STRIP, 3*i, 3);
-
+	
+	glBindVertexArray(0);
 	shaderMeteor->unuse();
 
 	vecPos.clear();

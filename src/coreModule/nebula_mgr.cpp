@@ -336,6 +336,7 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 		vecHintColor.clear();
 
 	}
+	glBindVertexArray(0);
 	shaderNebulaHint->unuse();
 }
 

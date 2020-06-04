@@ -77,6 +77,7 @@ void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	glDrawArrays(GL_LINE_LOOP,0,nbrFacets);
+	glBindVertexArray(0);
 
 	shaderHints->unuse();
 

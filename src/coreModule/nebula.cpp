@@ -353,7 +353,7 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	glEnableVertexAttribArray(1); //layout 1
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+	glBindVertexArray(0);
 	shaderNebulaTex->unuse();
 }
 
