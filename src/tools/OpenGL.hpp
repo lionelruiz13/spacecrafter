@@ -26,9 +26,10 @@ bool GLCheckError();
 
 
 
-enum class BufferType : char { POSITION = 0 , TEXTURE, NORMAL, COLOR, MAG, SCALE };
+enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, MAG, SCALE };
 
-unsigned int convert(BufferType& bt);
+//unsigned int convert(BufferType& bt);
+
 
 class Buffer {
 public:
@@ -76,9 +77,11 @@ public:
     VertexArray();
     ~VertexArray();
 
-    void setVertexBuffer(const BufferType& bt, unsigned int elementSize);
-    void setVertexBuffer(const BufferType& bt, unsigned int elementSize,const void* data, unsigned int size);
+    void setVertexBuffer(const BufferType& bt);
+    void setVertexBuffer(const BufferType& bt, const void* data, unsigned int size);
+
     void updateBuffer(const BufferType& bt, const void* data, unsigned int size);
+
     void setIndexBuffer(const unsigned int* indices, unsigned int count);
     void updateIndexBuffer(const unsigned int* indices, unsigned int count);
 

@@ -62,8 +62,8 @@ void AppDraw::initSplash()
 	float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
 
 	VertexArray* splash = new VertexArray();
-	splash->setVertexBuffer(BufferType::POSITION, 2, dataPos, 8);
-	splash->setVertexBuffer(BufferType::TEXTURE, 2, dataTex, 8);
+	splash->setVertexBuffer(BufferType::POS2D, dataPos, 8);
+	splash->setVertexBuffer(BufferType::TEXTURE, dataTex, 8);
 
 	int tmp=std::min(width, height);
 	glViewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);

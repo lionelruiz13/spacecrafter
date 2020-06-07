@@ -42,10 +42,11 @@ bool GLCheckError()
     return true;
 }
 
-static unsigned int convert(const BufferType& bt)
+static unsigned int getLayout(const BufferType& bt)
 {
     switch (bt) {
-        case BufferType::POSITION : return 0; break;
+        case BufferType::POS2D    : return 0; break;
+        case BufferType::POS3D    : return 0; break;
         case BufferType::TEXTURE  : return 1; break;
         case BufferType::NORMAL   : return 2; break;
         case BufferType::COLOR    : return 3; break;
@@ -55,6 +56,19 @@ static unsigned int convert(const BufferType& bt)
     }
 }
 
+static unsigned int getDataSize(const BufferType& bt)
+{
+    switch (bt) {
+        case BufferType::POS2D    : return 2; break;
+        case BufferType::POS3D    : return 3; break;
+        case BufferType::TEXTURE  : return 2; break;
+        case BufferType::NORMAL   : return 3; break;
+        case BufferType::COLOR    : return 3; break;
+        case BufferType::MAG      : return 1; break;
+        case BufferType::SCALE    : return 1; break;
+        default: assert(false); return 0;
+    }
+}
 
 //----------------------------------------------------------------------------
 // Buffer
@@ -173,7 +187,7 @@ void VertexArray::unBind() const
 }
 
 
-void VertexArray::setVertexBuffer(const BufferType& bt, unsigned int elementSize)
+void VertexArray::setVertexBuffer(const BufferType& bt)
 {
     auto it= m_buffer.find(bt);
     if( it != m_buffer.end() ){
@@ -182,14 +196,14 @@ void VertexArray::setVertexBuffer(const BufferType& bt, unsigned int elementSize
     }
     this->bind();
     VertexBuffer* vb = new VertexBuffer();
-    GLCall( glEnableVertexAttribArray( convert(bt)) );
-    GLCall( glVertexAttribPointer(convert(bt), elementSize, GL_FLOAT,GL_FALSE,0,NULL) );
+    GLCall( glEnableVertexAttribArray( getLayout(bt)) );
+    GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
     m_buffer[bt] = vb;
     //this->unBind();
 }
 
 
-void VertexArray::setVertexBuffer(const BufferType& bt, unsigned int elementSize,const void* data, unsigned int size)
+void VertexArray::setVertexBuffer(const BufferType& bt, const void* data, unsigned int size)
 {
     auto it= m_buffer.find(bt);
     if( it != m_buffer.end() ){
@@ -198,10 +212,10 @@ void VertexArray::setVertexBuffer(const BufferType& bt, unsigned int elementSize
     }
     this->bind();
     VertexBuffer* vb = new VertexBuffer(data,size);
-    GLCall( glEnableVertexAttribArray( convert(bt)) );
-    std::cout << "Attrib " << convert(bt) << std::endl;
+    GLCall( glEnableVertexAttribArray( getLayout(bt)) );
+    std::cout << "Attrib " << getLayout(bt) << std::endl;
     GLCall( glBufferData(GL_ARRAY_BUFFER,sizeof(float)*size, data, GL_STATIC_DRAW) );
-    GLCall( glVertexAttribPointer(convert(bt), elementSize, GL_FLOAT,GL_FALSE,0,NULL) );
+    GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
 
     m_buffer[bt] = vb;
     this->unBind();
@@ -220,6 +234,7 @@ void VertexArray::updateBuffer(const BufferType& bt, const void* data, unsigned 
     vb->bind();
     assert(vb->isStatic()==false);
     GLCall( glBufferData(GL_ARRAY_BUFFER,sizeof(float)*size, data, GL_DYNAMIC_DRAW) );
+    GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
     this->unBind();
 }
 
