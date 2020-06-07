@@ -105,6 +105,10 @@ void Atmosphere::createShader()
 	shaderAtmosphere->init("atmosphere.vert", "", "", "","atmosphere.frag");
 
 	glGenBuffers(1,&atmosphere.color);
+	glBindBuffer (GL_ARRAY_BUFFER, atmosphere.color);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*0,NULL,GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,0,NULL);
+
 	glGenBuffers(1,&atmosphere.pos);
 
 	glGenVertexArrays(1,&atmosphere.vao);
@@ -113,7 +117,7 @@ void Atmosphere::createShader()
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(3);
 }
 
 void Atmosphere::deleteShader()
@@ -254,6 +258,10 @@ void Atmosphere::fillOutDataColor()
 			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+(y+1)*stepY));
 		}
 	}
+	glBindVertexArray(atmosphere.vao);
+	glBindBuffer (GL_ARRAY_BUFFER, atmosphere.color);
+	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,0,NULL);
 }
 
 void Atmosphere::draw(const Projector* prj, const std::string &planetName)
@@ -265,13 +273,10 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 
 	fillOutDataColor();
 
-	glBindVertexArray(atmosphere.vao);
-	glBindBuffer (GL_ARRAY_BUFFER, atmosphere.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
 	StateGL::enable(GL_BLEND);
 
 	shaderAtmosphere->use();
+	glBindVertexArray(atmosphere.vao);
 	for (int y=0; y<SKY_RESOLUTION; y++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
 	}

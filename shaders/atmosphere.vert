@@ -7,7 +7,7 @@
 
 //layout
 layout (location=0)in vec2 position;
-layout (location=1)in vec3 color;
+layout (location=3)in vec3 color;
 
 //out
 smooth out vec3 Color;
