@@ -91,7 +91,7 @@ private:
 	//! suppression des shaders
 	void deleteShader();
 
-	DataGL layer;
+	//DataGL layer;
 	shaderProgram* shaderViewportShape = nullptr;
 	shaderProgram* shaderColorInverse = nullptr;
 	DataGL dataGL;

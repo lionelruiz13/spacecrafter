@@ -147,8 +147,8 @@ void AppDraw::deleteShader()
 	if (shaderColorInverse)
 		delete shaderColorInverse;
 
-	glDeleteBuffers(1, &layer.pos);
-	glDeleteVertexArrays(1, &layer.vao);
+	// glDeleteBuffers(1, &layer.pos);
+	// glDeleteVertexArrays(1, &layer.vao);
 
 	glDeleteBuffers(1, &dataGL.pos);
 	glDeleteVertexArrays(1, &dataGL.vao);
