@@ -213,7 +213,6 @@ void VertexArray::setVertexBuffer(const BufferType& bt, const void* data, unsign
     this->bind();
     VertexBuffer* vb = new VertexBuffer(data,size);
     GLCall( glEnableVertexAttribArray( getLayout(bt)) );
-    std::cout << "Attrib " << getLayout(bt) << std::endl;
     GLCall( glBufferData(GL_ARRAY_BUFFER,sizeof(float)*size, data, GL_STATIC_DRAW) );
     GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
 
@@ -233,6 +232,7 @@ void VertexArray::updateBuffer(const BufferType& bt, const void* data, unsigned 
     VertexBuffer* vb= (VertexBuffer *)m_buffer[bt];
     vb->bind();
     assert(vb->isStatic()==false);
+    GLCall( glEnableVertexAttribArray( getLayout(bt)) );
     GLCall( glBufferData(GL_ARRAY_BUFFER,sizeof(float)*size, data, GL_DYNAMIC_DRAW) );
     GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
     this->unBind();
