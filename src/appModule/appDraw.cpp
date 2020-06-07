@@ -35,6 +35,7 @@
 #include "tools/utility.hpp"
 #include "tools/app_settings.hpp"
 
+#include "tools/OpenGL.hpp"
 
 AppDraw::AppDraw()
 {}
@@ -54,49 +55,36 @@ void AppDraw::init(unsigned int _width, unsigned int _height)
 void AppDraw::initSplash()
 {
 	shaderProgram *shaderSplash;
-	DataGL Splash;
+	shaderSplash = new shaderProgram();
+	shaderSplash->init( "splash.vert", "splash.frag");
+
+	float dataPos[]= {-1.0,-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
+	float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
+
+	VertexArray* splash = new VertexArray();
+	splash->setVertexBuffer(BufferType::POSITION, 2, dataPos, 8);
+	splash->setVertexBuffer(BufferType::TEXTURE, 2, dataTex, 8);
 
 	int tmp=std::min(width, height);
 	glViewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
 
 	s_texture* tex_splash = new s_texture(AppSettings::Instance()->getUserDir()+"textures/splash/spacecrafter.png" , TEX_LOAD_TYPE_PNG_ALPHA);
 
-	shaderSplash = new shaderProgram();
-	shaderSplash->init( "splash.vert", "splash.frag");
-
-	glGenVertexArrays(1,&Splash.vao);
-	glBindVertexArray(Splash.vao);
-
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(0);
-
-	float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
-	glGenBuffers(1,&Splash.tex);
-	glBindBuffer(GL_ARRAY_BUFFER,Splash.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataTex, GL_STATIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	float dataPos[]= {-1.0,-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
-	glGenBuffers(1,&Splash.pos);
-	glBindBuffer(GL_ARRAY_BUFFER,Splash.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataPos, GL_STATIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
 	StateGL::disable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 
-	shaderSplash->use();
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex_splash->getID());
+
+	shaderSplash->use();
+	splash->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	glBindVertexArray(0);
+	splash->unBind();
 	shaderSplash->unuse();
 
 	if (shaderSplash) delete shaderSplash;
+	if (splash) delete splash;
 	if (tex_splash) delete tex_splash;
-
-	// mSdl->glSwapWindow();	// And swap the buffers
 }
 
 
