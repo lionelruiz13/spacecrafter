@@ -38,6 +38,7 @@
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/OpenGL.hpp"
 
 class Projector;
 class Navigator;
@@ -147,7 +148,8 @@ private:
 	shaderProgram* shaderAtmosphere=nullptr;
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;
-	DataGL atmosphere;
+	//DataGL atmosphere;
+	VertexArray* atmosphere;
 
 	//variables sur la position de la grille
 	float stepX; //!< taille des pas sur l'axe des x
