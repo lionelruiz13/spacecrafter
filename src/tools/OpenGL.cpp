@@ -70,9 +70,25 @@ static unsigned int getDataSize(const BufferType& bt)
     }
 }
 
+
+static GLenum getBufferAccess(const BufferAccess& ba)
+{
+    switch (ba){
+        case BufferAccess::STREAM : return GL_STREAM_DRAW; break;
+        case BufferAccess::STATIC : return GL_STATIC_DRAW; break;
+        case BufferAccess::DYNAMIC: return GL_DYNAMIC_DRAW; break;
+    default: assert(false); return GL_STATIC_DRAW;
+    }
+}
+
 //----------------------------------------------------------------------------
 // Buffer
 //----------------------------------------------------------------------------
+
+Buffer::Buffer(const BufferAccess& ba)
+{
+    m_bufferAcces = getBufferAccess(ba);    
+}
 
 void Buffer::bind() const
 {
@@ -89,29 +105,27 @@ void Buffer::unBind() const
 //----------------------------------------------------------------------------
 
 
-VertexBuffer::VertexBuffer()
+VertexBuffer::VertexBuffer(const BufferAccess& ba):Buffer(ba)
 {
     GLCall( glGenBuffers(1, &m_RendererID) );
     //GLCall( glBindBuffer(GL_ARRAY_BUFFER, m_RendererID) );
     //GLCall( glBufferData(GL_ARRAY_BUFFER, 0, NULL, GL_DYNAMIC_DRAW) );
-    m_isStatic = false;
 }
 
-VertexBuffer::VertexBuffer(const void* data, unsigned int size)
-{
-    GLCall( glGenBuffers(1, &m_RendererID) );
-    GLCall( glBindBuffer(GL_ARRAY_BUFFER, m_RendererID) );
-    GLCall( glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW) );
-}
+// VertexBuffer::VertexBuffer(const void* data, unsigned int size)
+// {
+//     GLCall( glGenBuffers(1, &m_RendererID) );
+//     GLCall( glBindBuffer(GL_ARRAY_BUFFER, m_RendererID) );
+//     GLCall( glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW) );
+// }
 
 
-void VertexBuffer::update(const void* data, unsigned int size)
+void VertexBuffer::fill(unsigned int size, const void* data)
 {
-    assert(m_isStatic==false);
-    this->bind();
+    //this->bind();
     GLCall( glBindBuffer(GL_ARRAY_BUFFER, m_RendererID) );
-    GLCall( glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW) );
-    this->unBind();
+    GLCall( glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned int) * size, data, this->m_bufferAcces) );
+    // this->unBind();
 }
 
 
@@ -124,7 +138,7 @@ VertexBuffer::~VertexBuffer()
 // IndexBuffer
 //----------------------------------------------------------------------------
 
-IndexBuffer::IndexBuffer()
+IndexBuffer::IndexBuffer(const BufferAccess& ba) : Buffer(ba)
 {
     ASSERT(sizeof(unsigned int) == sizeof(GLuint));
     m_Count = 0;
@@ -132,17 +146,14 @@ IndexBuffer::IndexBuffer()
 }
 
 
-void IndexBuffer::set(const unsigned int* indices, unsigned int count, bool isStatic)
+void IndexBuffer::fill(unsigned int count, const unsigned int* indices)
 {
-    this->bind();
+    //this->bind();
     ASSERT(sizeof(unsigned int) == sizeof(GLuint));
     m_Count= count;
     GLCall( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID) );
-    if (isStatic)
-        GLCall( glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, GL_STATIC_DRAW) );
-    else
-        GLCall( glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, GL_DYNAMIC_DRAW) );
-    this->unBind();
+    GLCall( glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, m_bufferAcces) );
+    //this->unBind();
 }
 
 
@@ -187,54 +198,50 @@ void VertexArray::unBind() const
 }
 
 
-void VertexArray::setVertexBuffer(const BufferType& bt)
+void VertexArray::registerVertexBuffer(const BufferType& bt, const BufferAccess& ba)
 {
     auto it= m_buffer.find(bt);
     if( it != m_buffer.end() ){
-        std::cout << "Buffer already exist." << std::endl;
+        std::cout << "Buffer already exist" << std::endl;
         assert(false);
     }
     this->bind();
-    VertexBuffer* vb = new VertexBuffer();
-    GLCall( glEnableVertexAttribArray( getLayout(bt)) );
-    GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
-    m_buffer[bt] = vb;
-    //this->unBind();
-}
-
-
-void VertexArray::setVertexBuffer(const BufferType& bt, const void* data, unsigned int size)
-{
-    auto it= m_buffer.find(bt);
-    if( it != m_buffer.end() ){
-        std::cout << "Buffer already exist." << std::endl;
-        assert(false);
-    }
-    this->bind();
-    VertexBuffer* vb = new VertexBuffer(data,size);
-    GLCall( glEnableVertexAttribArray( getLayout(bt)) );
-    GLCall( glBufferData(GL_ARRAY_BUFFER,sizeof(float)*size, data, GL_STATIC_DRAW) );
-    GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
-
+    VertexBuffer* vb = new VertexBuffer(ba);
     m_buffer[bt] = vb;
     this->unBind();
 }
 
 
-void VertexArray::updateBuffer(const BufferType& bt, const void* data, unsigned int size)
+void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size , const void* data)
 {
     auto it= m_buffer.find(bt);
     if( it == m_buffer.end() ){
-        std::cout << "Buffer doen't exist." << std::endl;
+        std::cout << "Buffer does not exist" << std::endl;
         assert(false);
     }
     this->bind();
     VertexBuffer* vb= (VertexBuffer *)m_buffer[bt];
-    vb->bind();
-    assert(vb->isStatic()==false);
+    //vb->bind();
     GLCall( glEnableVertexAttribArray( getLayout(bt)) );
-    GLCall( glBufferData(GL_ARRAY_BUFFER,sizeof(float)*size, data, GL_DYNAMIC_DRAW) );
+    vb->fill(size, data);
     GLCall( glVertexAttribPointer(getLayout(bt), getDataSize(bt), GL_FLOAT,GL_FALSE,0,NULL) );
     this->unBind();
 }
 
+
+void VertexArray::registerIndexBuffer(const BufferAccess& ba)
+{
+    ASSERT(m_indexBuffer==nullptr);
+    m_indexBuffer =  new IndexBuffer(ba);
+}
+
+
+void VertexArray::fillIndexBuffer(unsigned int count , const unsigned int* indices)
+{
+    ASSERT(m_indexBuffer!=nullptr);
+    this->bind();
+    //m_indexBuffer->bind();
+    m_indexBuffer->fill(count, indices);
+    m_indexBuffer->unBind();
+    this->unBind();
+}
