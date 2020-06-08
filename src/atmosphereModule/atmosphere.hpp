@@ -70,7 +70,9 @@ public:
 	}
 
 	//! Define whether to display atmosphere
-	void setFlagShow(bool b);
+	void setFlagShow(bool b) {
+		fader = b;
+	}
 
 	//! Get whether atmosphere is displayed
 	bool getFlagShow() const {
@@ -148,7 +150,6 @@ private:
 	shaderProgram* shaderAtmosphere=nullptr;
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;
-	//DataGL atmosphere;
 	VertexArray* atmosphere;
 
 	//variables sur la position de la grille

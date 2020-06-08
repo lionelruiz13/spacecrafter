@@ -32,7 +32,6 @@
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-//#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 #include "tools/tone_reproductor.hpp"
 #include "tools/utility.hpp"
@@ -43,8 +42,7 @@
 #define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
 
 
-
-Atmosphere::Atmosphere() : /*tab_sky(NULL),*/ world_adaptation_luminance(0.f), atm_intensity(0),
+Atmosphere::Atmosphere() : world_adaptation_luminance(0.f), atm_intensity(0),
 	lightPollutionLuminance(0), cor_optoma(0)
 {
 	// Create the vector array used to store the sky color on the full field of view
@@ -67,11 +65,6 @@ Atmosphere::~Atmosphere()
 	deleteShader();
 }
 
-
-//! Define whether to display atmosphere
-void Atmosphere::setFlagShow(bool b) {
-	fader = b;
-}
 
 void Atmosphere::initGridViewport(const Projector *prj)
 {
@@ -100,7 +93,7 @@ void Atmosphere::initGridPos()
 void Atmosphere::createShader()
 {
 	shaderAtmosphere= new shaderProgram();
-	shaderAtmosphere->init("atmosphere.vert", "", "", "","atmosphere.frag");
+	shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");
 
 	atmosphere = new VertexArray();
 	atmosphere->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
@@ -244,11 +237,6 @@ void Atmosphere::fillOutDataColor()
 		}
 	}
 	atmosphere->fillVertexBuffer(BufferType::COLOR, dataColor.size(), dataColor.data());
-
-	// glBindVertexArray(atmosphere.vao);
-	// glBindBuffer (GL_ARRAY_BUFFER, atmosphere.color);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,0,NULL);
 }
 
 void Atmosphere::draw(const Projector* prj, const std::string &planetName)
@@ -263,12 +251,10 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 	StateGL::enable(GL_BLEND);
 
 	shaderAtmosphere->use();
-	//glBindVertexArray(atmosphere.vao);
 	atmosphere->bind();
 	for (int y=0; y<SKY_RESOLUTION; y++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
 	}
 	atmosphere->unBind();
-	//glBindVertexArray(0);
 	shaderAtmosphere->unuse();
 }
