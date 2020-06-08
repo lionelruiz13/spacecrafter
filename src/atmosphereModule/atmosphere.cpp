@@ -93,10 +93,7 @@ void Atmosphere::initGridPos()
 		}
 	}
 
-	// glBindBuffer(GL_ARRAY_BUFFER,atmosphere.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataPos.size(), dataPos.data(),GL_STATIC_DRAW);
-	atmosphere->setVertexBuffer(BufferType::POS2D,dataPos.data(),dataPos.size() );
-
+	atmosphere->fillVertexBuffer(BufferType::POS2D, dataPos.size(), dataPos.data());
 	dataPos.clear();
 }
 
@@ -105,22 +102,9 @@ void Atmosphere::createShader()
 	shaderAtmosphere= new shaderProgram();
 	shaderAtmosphere->init("atmosphere.vert", "", "", "","atmosphere.frag");
 
-	// glGenBuffers(1,&atmosphere.color);
-	// glBindBuffer (GL_ARRAY_BUFFER, atmosphere.color);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*0,NULL,GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(3,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glGenBuffers(1,&atmosphere.pos);
-// 
-	// glGenVertexArrays(1,&atmosphere.vao);
-	// glBindVertexArray(atmosphere.vao);
-	// glBindBuffer (GL_ARRAY_BUFFER, atmosphere.pos);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-// 
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(3);
 	atmosphere = new VertexArray();
-	atmosphere->setVertexBuffer(BufferType::COLOR);
+	atmosphere->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
+	atmosphere->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 }
 
 void Atmosphere::deleteShader()
@@ -130,10 +114,6 @@ void Atmosphere::deleteShader()
 	shaderAtmosphere=nullptr;
 	if (atmosphere)
 		delete atmosphere;
-
-	// glDeleteBuffers(1,&atmosphere.pos);
-	// glDeleteBuffers(1,&atmosphere.color);
-	// glDeleteVertexArrays(1,&atmosphere.vao);
 }
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
@@ -263,7 +243,7 @@ void Atmosphere::fillOutDataColor()
 			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+(y+1)*stepY));
 		}
 	}
-	atmosphere->updateBuffer(BufferType::COLOR,dataColor.data(), dataColor.size());
+	atmosphere->fillVertexBuffer(BufferType::COLOR, dataColor.size(), dataColor.data());
 
 	// glBindVertexArray(atmosphere.vao);
 	// glBindBuffer (GL_ARRAY_BUFFER, atmosphere.color);
