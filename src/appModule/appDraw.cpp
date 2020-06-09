@@ -102,34 +102,15 @@ void AppDraw::createShader()
 	shaderColorInverse = new shaderProgram();
 	shaderColorInverse->init( "colorInverse.vert", "colorInverse.frag");
 
-	float viewportShapePoints[8];
-
-	viewportShapePoints[0]= -1.0; // point en haut a gauche
-	viewportShapePoints[1]= 1.0;
-
-	viewportShapePoints[2]= 1.0;  // point en haut a droite
-	viewportShapePoints[3]= 1.0;
-
-	viewportShapePoints[4]= -1.0; // point en bas à gauche
-	viewportShapePoints[5]= -1.0;
-
-	viewportShapePoints[6]= 1.0;  // point en bas à droite
-	viewportShapePoints[7]= -1.0;
+	// point en haut a gauche
+	// point en haut a droite
+	// point en bas à gauche
+	// point en bas à droite
+	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
 
 	m_viewportGL = std::make_unique<VertexArray>();
 	m_viewportGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	m_viewportGL->fillVertexBuffer(BufferType::POS2D, 8, viewportShapePoints);
-	// glGenBuffers(1,&dataGL.pos);
-	// glBindBuffer(GL_ARRAY_BUFFER,dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, viewportShapePoints,GL_STATIC_DRAW);
-
-	// glGenVertexArrays(1,&dataGL.vao);
-	// glBindVertexArray(dataGL.vao);
-
-	// glBindBuffer (GL_ARRAY_BUFFER, dataGL.pos);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glEnableVertexAttribArray(0);
+	m_viewportGL->fillVertexBuffer(BufferType::POS2D, 8, points);
 }
 
 void AppDraw::deleteShader()
@@ -138,11 +119,6 @@ void AppDraw::deleteShader()
 		delete shaderViewportShape;
 	if (shaderColorInverse)
 		delete shaderColorInverse;
-
-	// glDeleteBuffers(1, &layer.pos);
-	// glDeleteVertexArrays(1, &layer.vao);
-	// glDeleteBuffers(1, &dataGL.pos);
-	// glDeleteVertexArrays(1, &dataGL.vao);
 }
 
 //! dessine la première couche du tracé opengl sur le logiciel
@@ -162,12 +138,9 @@ void AppDraw::drawViewportShape()
 	shaderViewportShape->setUniform("decalage_x" , (width -std::min(width, height))/2);
 	shaderViewportShape->setUniform("decalage_y" , (height -std::min(width, height))/2);
 
-
-	//glBindVertexArray(dataGL.vao);
 	m_viewportGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	m_viewportGL->unBind();
-	//glBindVertexArray(0);
 	shaderViewportShape->unuse();
 }
 
