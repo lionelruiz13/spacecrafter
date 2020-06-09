@@ -204,22 +204,27 @@ void HipStarMgr::createShaderParams(int width,int height)
 	dataPos.reserve(NBR_MAX_STARS*2);
 
 	// shader pour FBO
-	glGenVertexArrays(1,&drawFBO.vao);
-	glBindVertexArray(drawFBO.vao);
+	// glGenVertexArrays(1,&drawFBO.vao);
+	// glBindVertexArray(drawFBO.vao);
 
 	float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
-	glGenBuffers(1,&drawFBO.tex);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER,drawFBO.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataTex, GL_STATIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glGenBuffers(1,&drawFBO.tex);
+	// glEnableVertexAttribArray(0);
+	// glBindBuffer(GL_ARRAY_BUFFER,drawFBO.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataTex, GL_STATIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	float dataPos[]= {-1.0,-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
-	glGenBuffers(1,&drawFBO.pos);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER,drawFBO.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataPos, GL_STATIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glGenBuffers(1,&drawFBO.pos);
+	// glEnableVertexAttribArray(1);
+	// glBindBuffer(GL_ARRAY_BUFFER,drawFBO.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataPos, GL_STATIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	drawFBO = new VertexArray();
+	drawFBO->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	drawFBO->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	drawFBO->fillVertexBuffer(BufferType::POS2D,8, dataPos);
+	drawFBO->fillVertexBuffer(BufferType::TEXTURE,8, dataTex);
 
 	// shader pour les étoiles
 	m_starsGL = new VertexArray();
@@ -302,13 +307,16 @@ void HipStarMgr::deleteShader()
 	if (m_starsGL)
 		delete m_starsGL;
 
+	if (drawFBO)
+		delete drawFBO;
+
 	if (shaderFBO)
 		delete shaderFBO;
 	shaderFBO = nullptr;
 
-	glDeleteBuffers(1,&drawFBO.tex);
-	glDeleteBuffers(1,&drawFBO.pos);
-	glDeleteVertexArrays(1,&drawFBO.vao);
+	// glDeleteBuffers(1,&drawFBO.tex);
+	// glDeleteBuffers(1,&drawFBO.pos);
+	// glDeleteVertexArrays(1,&drawFBO.vao);
 }
 
 std::string HipStarMgr::getCommonName(int hip)
@@ -727,9 +735,10 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	prj-> applyViewport();
 
 	shaderFBO->use();
-	glBindVertexArray(drawFBO.vao);
+//	glBindVertexArray(drawFBO.vao);
+	drawFBO->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
+	drawFBO->unBind();
 	shaderFBO->unuse();
 
 	this->drawStarName(prj);
