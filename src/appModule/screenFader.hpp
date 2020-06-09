@@ -103,12 +103,10 @@ public:
 			intensity = 0.0;
 	}
 
-	void initShader();
+	void createGL_context();
 private:
 	//détermine l'intensité du voile sur l'écran
 	float intensity =0.0;
-	// paramètres openGL
-	void initShaderParams();
 	std::unique_ptr<VertexArray> m_screenGL;
 	std::unique_ptr<shaderProgram> shaderScreen;
 };

@@ -85,7 +85,7 @@ App::App( SDLFacade* const sdl )
 	coreLink = new CoreLink(core);
 	coreBackup = new CoreBackup(core);
 
-	screenFader->initShader();
+	screenFader->createGL_context();
 
 	ui = new UI(core, coreLink, this, mSdl, media);
 	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);

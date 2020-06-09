@@ -36,16 +36,12 @@ ScreenFader::~ScreenFader()
 {
 }
 
-void ScreenFader::initShader()
+void ScreenFader::createGL_context()
 {
 	shaderScreen = std::make_unique<shaderProgram>();
 	shaderScreen->init( "screenFader.vert","screenFader.frag");
 	shaderScreen->setUniformLocation("intensity");
-	initShaderParams();
-}
 
-void ScreenFader::initShaderParams()
-{
 	// point en haut a gauche
 	// point en haut a droite
 	// point en bas à gauche
