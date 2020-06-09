@@ -26,10 +26,9 @@
 #define SCREENFADER_HPP
 
 #include "tools/no_copy.hpp"
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
 
 class VertexArray;
+class shaderProgram;
 
 class ScreenFader : public NoCopy {
 public:

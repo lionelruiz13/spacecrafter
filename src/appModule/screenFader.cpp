@@ -24,6 +24,8 @@
 
 #include "appModule/screenFader.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/stateGL.hpp"
+#include "tools/shader.hpp"
 
 ScreenFader::ScreenFader()
 {
