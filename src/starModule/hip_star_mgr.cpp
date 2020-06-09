@@ -227,17 +227,6 @@ void HipStarMgr::createShaderParams(int width,int height)
 	m_starsGL->registerVertexBuffer(BufferType::COLOR,BufferAccess::DYNAMIC);
 	m_starsGL->registerVertexBuffer(BufferType::MAG,BufferAccess::DYNAMIC);
 	
-	// glGenVertexArrays(1,&stars.vao);
-	// glBindVertexArray(stars.vao);
-
-	// glGenBuffers(1,&stars.color);
-	// glGenBuffers(1,&stars.mag);
-	// glGenBuffers(1,&stars.pos);
-
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
-	// glEnableVertexAttribArray(2);
-	
 	//generate and bind fbo ID
 	glGenFramebuffers(1, &fboID);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
@@ -312,10 +301,6 @@ void HipStarMgr::deleteShader()
 
 	if (m_starsGL)
 		delete m_starsGL;
-	// glDeleteBuffers(1, &stars.color);
-	// glDeleteBuffers(1, &stars.mag);
-	// glDeleteBuffers(1, &stars.pos);
-	// glDeleteVertexArrays(1, &stars.vao);
 
 	if (shaderFBO)
 		delete shaderFBO;
@@ -713,20 +698,6 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	m_starsGL->fillVertexBuffer(BufferType::COLOR, dataColor.size(),dataColor.data());
 	m_starsGL->fillVertexBuffer(BufferType::MAG, dataMag.size(),dataMag.data());
 
-	// glBindVertexArray(stars.vao);
-
-	// glBindBuffer (GL_ARRAY_BUFFER, stars.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataPos.size(),dataPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer (GL_ARRAY_BUFFER, stars.mag);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataMag.size(),dataMag.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer (GL_ARRAY_BUFFER, stars.color);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
-
 	StateGL::enable(GL_BLEND);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, starTexture->getID());
@@ -736,7 +707,6 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 
 	glViewport(0,0 , sizeTexFbo, sizeTexFbo);
 
-	// glBindVertexArray(stars.vao);
 	m_starsGL->bind();
 	glDrawArrays(GL_POINTS,0,nbStarsToDraw);
 	m_starsGL->unBind();
