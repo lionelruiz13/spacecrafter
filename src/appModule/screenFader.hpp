@@ -29,6 +29,8 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
+class VertexArray;
+
 class ScreenFader : public NoCopy {
 public:
 	ScreenFader();
@@ -92,7 +94,8 @@ private:
 	float intensity =0.0;
 	// paramètres openGL
 	void initShaderParams();
-	DataGL screen;
+	//DataGL screen;
+	VertexArray* m_screenGL;
 	shaderProgram* shaderScreen;
 };
 

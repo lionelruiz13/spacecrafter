@@ -23,6 +23,7 @@
  */
 
 #include "appModule/screenFader.hpp"
+#include "tools/OpenGL.hpp"
 
 ScreenFader::ScreenFader()
 {
@@ -46,33 +47,26 @@ void ScreenFader::initShader()
 
 void ScreenFader::initShaderParams()
 {
-	float points[8];
+	// point en haut a gauche
+	// point en haut a droite
+	// point en bas à gauche
+	// point en bas à droite
+	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
 
-	points[0]= -1.0; // point en haut a gauche
-	points[1]= 1.0;
+	m_screenGL = new VertexArray();
+	m_screenGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	m_screenGL->fillVertexBuffer(BufferType::POS2D, 8, points);
+	// glGenBuffers(1,&screen.pos);
+	// glBindBuffer(GL_ARRAY_BUFFER,screen.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, points,GL_STATIC_DRAW);
 
-	points[2]= 1.0;  // point en haut a droite
-	points[3]= 1.0;
+	// glGenVertexArrays(1,&screen.vao);
+	// glBindVertexArray(screen.vao);
 
-	points[4]= -1.0; // point en bas à gauche
-	points[5]= -1.0;
+	// glBindBuffer (GL_ARRAY_BUFFER, screen.pos);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	points[6]= 1.0;  // point en bas à droite
-	points[7]= -1.0;
-
-	//~ float points[]={-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f };
-
-	glGenBuffers(1,&screen.pos);
-	glBindBuffer(GL_ARRAY_BUFFER,screen.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, points,GL_STATIC_DRAW);
-
-	glGenVertexArrays(1,&screen.vao);
-	glBindVertexArray(screen.vao);
-
-	glBindBuffer (GL_ARRAY_BUFFER, screen.pos);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(0);
 }
 
 void ScreenFader::draw()
@@ -86,8 +80,10 @@ void ScreenFader::draw()
 	shaderScreen->use();
 	shaderScreen->setUniform("intensity" , intensity);
 
-	glBindVertexArray(screen.vao);
+	// glBindVertexArray(screen.vao);
+	m_screenGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	glBindVertexArray(0);
+	m_screenGL->unBind();
+	// glBindVertexArray(0);
 	shaderScreen->unuse();
 }
