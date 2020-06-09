@@ -35,8 +35,6 @@ ScreenFader::ScreenFader()
 
 ScreenFader::~ScreenFader()
 {
-	if (m_screenGL)
-		delete m_screenGL;
 }
 
 void ScreenFader::initShader()
@@ -56,7 +54,7 @@ void ScreenFader::initShaderParams()
 	// point en bas à droite
 	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
 
-	m_screenGL = new VertexArray();
+	m_screenGL = std::make_unique<VertexArray>();
 	m_screenGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	m_screenGL->fillVertexBuffer(BufferType::POS2D, 8, points);
 	// glGenBuffers(1,&screen.pos);

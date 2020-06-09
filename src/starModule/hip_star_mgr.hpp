@@ -29,6 +29,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <tuple>
+#include <memory>
+
 #include "tools/fader.hpp"
 #include "tools/object_type.hpp"
 #include "tools/object.hpp"
@@ -524,7 +526,7 @@ private:
 	mutable std::vector<float> dataPos;
 	mutable std::vector<float> dataMag;
 	mutable std::vector<float> dataColor;
-	VertexArray *m_starsGL, *m_drawFBO_GL;
+	std::unique_ptr<VertexArray> m_starsGL, m_drawFBO_GL;
 	int sizeTexFbo;
 	bool starTrace = false;
 	

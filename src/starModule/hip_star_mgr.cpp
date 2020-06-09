@@ -220,14 +220,14 @@ void HipStarMgr::createShaderParams(int width,int height)
 	// glBindBuffer(GL_ARRAY_BUFFER,drawFBO.pos);
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataPos, GL_STATIC_DRAW);
 	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	m_drawFBO_GL = new VertexArray();
+	m_drawFBO_GL = std::make_unique<VertexArray>();
 	m_drawFBO_GL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	m_drawFBO_GL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 	m_drawFBO_GL->fillVertexBuffer(BufferType::POS2D,8, dataPos);
 	m_drawFBO_GL->fillVertexBuffer(BufferType::TEXTURE,8, dataTex);
 
 	// shader pour les étoiles
-	m_starsGL = new VertexArray();
+	m_starsGL = std::make_unique<VertexArray>();
 	m_starsGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
 	m_starsGL->registerVertexBuffer(BufferType::COLOR,BufferAccess::DYNAMIC);
 	m_starsGL->registerVertexBuffer(BufferType::MAG,BufferAccess::DYNAMIC);
@@ -303,12 +303,6 @@ void HipStarMgr::deleteShader()
 	if (shaderStars)
 		delete shaderStars;
 	shaderStars =  nullptr;
-
-	if (m_starsGL)
-		delete m_starsGL;
-
-	if (m_drawFBO_GL)
-		delete m_drawFBO_GL;
 
 	if (shaderFBO)
 		delete shaderFBO;

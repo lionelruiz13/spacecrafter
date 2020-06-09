@@ -26,6 +26,7 @@
 #define APP_DRAW_HPP
 
 #include <SDL2/SDL_thread.h>
+#include <memory>
 #include <queue>
 
 #include "spacecrafter.hpp"
@@ -95,7 +96,7 @@ private:
 	shaderProgram* shaderViewportShape = nullptr;
 	shaderProgram* shaderColorInverse = nullptr;
 	//DataGL dataGL;
-	VertexArray *m_viewportGL;
+	std::unique_ptr<VertexArray> m_viewportGL;
 
 	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
 	bool antialiasLines;						//!< using GL_LINE_SMOOTH

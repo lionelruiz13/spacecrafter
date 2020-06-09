@@ -31,6 +31,7 @@
 #define _ATMOSTPHERE_H_
 
 #include <vector>
+#include <memory>
 #include "atmosphereModule/skybright.hpp"
 #include "atmosphereModule/skylight.hpp"
 #include "tools/fader.hpp"
@@ -150,7 +151,7 @@ private:
 	shaderProgram* shaderAtmosphere=nullptr;
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;
-	VertexArray* m_atmGL;
+	std::unique_ptr<VertexArray> m_atmGL;
 
 	//variables sur la position de la grille
 	float stepX; //!< taille des pas sur l'axe des x

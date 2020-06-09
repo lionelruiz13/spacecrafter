@@ -25,6 +25,7 @@
 #ifndef SCREENFADER_HPP
 #define SCREENFADER_HPP
 
+#include <memory>
 #include "tools/no_copy.hpp"
 
 class VertexArray;
@@ -94,7 +95,7 @@ private:
 	// paramètres openGL
 	void initShaderParams();
 	//DataGL screen;
-	VertexArray* m_screenGL;
+	std::unique_ptr<VertexArray> m_screenGL;
 	shaderProgram* shaderScreen;
 };
 

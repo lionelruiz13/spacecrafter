@@ -95,7 +95,7 @@ void Atmosphere::createShader()
 	shaderAtmosphere= new shaderProgram();
 	shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");
 
-	m_atmGL = new VertexArray();
+	m_atmGL = std::make_unique<VertexArray>();
 	m_atmGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
 	m_atmGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 }
@@ -105,8 +105,6 @@ void Atmosphere::deleteShader()
 	if (shaderAtmosphere)
 		delete shaderAtmosphere;
 	shaderAtmosphere=nullptr;
-	if (m_atmGL)
-		delete m_atmGL;
 }
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,

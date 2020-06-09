@@ -116,7 +116,7 @@ void AppDraw::createShader()
 	viewportShapePoints[6]= 1.0;  // point en bas à droite
 	viewportShapePoints[7]= -1.0;
 
-	m_viewportGL = new VertexArray();
+	m_viewportGL = std::make_unique<VertexArray>();
 	m_viewportGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	m_viewportGL->fillVertexBuffer(BufferType::POS2D, 8, viewportShapePoints);
 	// glGenBuffers(1,&dataGL.pos);
@@ -141,8 +141,6 @@ void AppDraw::deleteShader()
 
 	// glDeleteBuffers(1, &layer.pos);
 	// glDeleteVertexArrays(1, &layer.vao);
-	if (m_viewportGL)
-		delete m_viewportGL;
 	// glDeleteBuffers(1, &dataGL.pos);
 	// glDeleteVertexArrays(1, &dataGL.vao);
 }
