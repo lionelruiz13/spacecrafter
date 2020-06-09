@@ -31,6 +31,21 @@
 class VertexArray;
 class shaderProgram;
 
+/**
+* \file screenFader.hpp
+* \brief Allows the screen to go black and vice versa
+* \author Olivier NIVOIX
+* \version 1
+*
+* \class ScreenFader
+*
+* \brief Allows the screen to go black and vice versa
+*
+* intensity indicates the quantity of black to display on the screen
+*
+* 
+*/
+
 class ScreenFader : public NoCopy {
 public:
 	ScreenFader();

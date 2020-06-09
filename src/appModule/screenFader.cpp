@@ -29,7 +29,6 @@
 
 ScreenFader::ScreenFader()
 {
-	//~ initShader();
 	intensity = 0.0;
 }
 
@@ -56,17 +55,6 @@ void ScreenFader::initShaderParams()
 	m_screenGL = std::make_unique<VertexArray>();
 	m_screenGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	m_screenGL->fillVertexBuffer(BufferType::POS2D, 8, points);
-	// glGenBuffers(1,&screen.pos);
-	// glBindBuffer(GL_ARRAY_BUFFER,screen.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, points,GL_STATIC_DRAW);
-
-	// glGenVertexArrays(1,&screen.vao);
-	// glBindVertexArray(screen.vao);
-
-	// glBindBuffer (GL_ARRAY_BUFFER, screen.pos);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glEnableVertexAttribArray(0);
 }
 
 void ScreenFader::draw()
@@ -80,10 +68,8 @@ void ScreenFader::draw()
 	shaderScreen->use();
 	shaderScreen->setUniform("intensity" , intensity);
 
-	// glBindVertexArray(screen.vao);
 	m_screenGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	m_screenGL->unBind();
-	// glBindVertexArray(0);
 	shaderScreen->unuse();
 }
