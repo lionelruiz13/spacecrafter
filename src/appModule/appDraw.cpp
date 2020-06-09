@@ -53,14 +53,13 @@ void AppDraw::init(unsigned int _width, unsigned int _height)
 
 void AppDraw::initSplash()
 {
-	shaderProgram *shaderSplash;
-	shaderSplash = new shaderProgram();
+	std::unique_ptr<shaderProgram> shaderSplash = std::make_unique<shaderProgram>();
 	shaderSplash->init( "splash.vert", "splash.frag");
 
 	float dataPos[]= {-1.0,-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
 	float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
 
-	VertexArray* splash = new VertexArray();
+	std::unique_ptr<VertexArray> splash = std::make_unique<VertexArray>();
 	splash->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	splash->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 	splash->fillVertexBuffer(BufferType::POS2D, 8, dataPos);
@@ -69,7 +68,8 @@ void AppDraw::initSplash()
 	int tmp=std::min(width, height);
 	glViewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
 
-	s_texture* tex_splash = new s_texture(AppSettings::Instance()->getUserDir()+"textures/splash/spacecrafter.png" , TEX_LOAD_TYPE_PNG_ALPHA);
+	std::unique_ptr<s_texture> tex_splash = 
+			std::make_unique<s_texture>(AppSettings::Instance()->getUserDir()+"textures/splash/spacecrafter.png" , TEX_LOAD_TYPE_PNG_ALPHA);
 
 	StateGL::disable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
@@ -82,10 +82,6 @@ void AppDraw::initSplash()
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	splash->unBind();
 	shaderSplash->unuse();
-
-	if (shaderSplash) delete shaderSplash;
-	if (splash) delete splash;
-	if (tex_splash) delete tex_splash;
 }
 
 
