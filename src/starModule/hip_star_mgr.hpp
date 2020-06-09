@@ -524,9 +524,7 @@ private:
 	mutable std::vector<float> dataPos;
 	mutable std::vector<float> dataMag;
 	mutable std::vector<float> dataColor;
-	//DataGL stars, drawFBO;
-	// DataGL drawFBO;
-	VertexArray *m_starsGL, *drawFBO;
+	VertexArray *m_starsGL, *m_drawFBO_GL;
 	int sizeTexFbo;
 	bool starTrace = false;
 	

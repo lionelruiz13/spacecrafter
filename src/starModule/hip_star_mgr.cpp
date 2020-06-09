@@ -220,11 +220,11 @@ void HipStarMgr::createShaderParams(int width,int height)
 	// glBindBuffer(GL_ARRAY_BUFFER,drawFBO.pos);
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataPos, GL_STATIC_DRAW);
 	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	drawFBO = new VertexArray();
-	drawFBO->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	drawFBO->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	drawFBO->fillVertexBuffer(BufferType::POS2D,8, dataPos);
-	drawFBO->fillVertexBuffer(BufferType::TEXTURE,8, dataTex);
+	m_drawFBO_GL = new VertexArray();
+	m_drawFBO_GL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	m_drawFBO_GL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	m_drawFBO_GL->fillVertexBuffer(BufferType::POS2D,8, dataPos);
+	m_drawFBO_GL->fillVertexBuffer(BufferType::TEXTURE,8, dataTex);
 
 	// shader pour les étoiles
 	m_starsGL = new VertexArray();
@@ -307,8 +307,8 @@ void HipStarMgr::deleteShader()
 	if (m_starsGL)
 		delete m_starsGL;
 
-	if (drawFBO)
-		delete drawFBO;
+	if (m_drawFBO_GL)
+		delete m_drawFBO_GL;
 
 	if (shaderFBO)
 		delete shaderFBO;
@@ -736,9 +736,9 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 
 	shaderFBO->use();
 //	glBindVertexArray(drawFBO.vao);
-	drawFBO->bind();
+	m_drawFBO_GL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	drawFBO->unBind();
+	m_drawFBO_GL->unBind();
 	shaderFBO->unuse();
 
 	this->drawStarName(prj);
