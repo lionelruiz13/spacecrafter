@@ -48,6 +48,7 @@
 #include "tools/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
+#include "tools/OpenGL.hpp"
 
 
 static BigStarCatalog::StringArray spectral_array;
@@ -221,18 +222,23 @@ void HipStarMgr::createShaderParams(int width,int height)
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	// shader pour les étoiles
-	glGenVertexArrays(1,&stars.vao);
-	glBindVertexArray(stars.vao);
-
-	glGenBuffers(1,&stars.color);
-	glGenBuffers(1,&stars.mag);
-	glGenBuffers(1,&stars.pos);
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	stars = new VertexArray();
+	stars->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
+	stars->registerVertexBuffer(BufferType::COLOR,BufferAccess::DYNAMIC);
+	stars->registerVertexBuffer(BufferType::MAG,BufferAccess::DYNAMIC);
 	
-		//generate and bind fbo ID
+	// glGenVertexArrays(1,&stars.vao);
+	// glBindVertexArray(stars.vao);
+
+	// glGenBuffers(1,&stars.color);
+	// glGenBuffers(1,&stars.mag);
+	// glGenBuffers(1,&stars.pos);
+
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
+	
+	//generate and bind fbo ID
 	glGenFramebuffers(1, &fboID);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
 
@@ -304,10 +310,12 @@ void HipStarMgr::deleteShader()
 		delete shaderStars;
 	shaderStars =  nullptr;
 
-	glDeleteBuffers(1, &stars.color);
-	glDeleteBuffers(1, &stars.mag);
-	glDeleteBuffers(1, &stars.pos);
-	glDeleteVertexArrays(1, &stars.vao);
+	if (stars)
+		delete stars;
+	// glDeleteBuffers(1, &stars.color);
+	// glDeleteBuffers(1, &stars.mag);
+	// glDeleteBuffers(1, &stars.pos);
+	// glDeleteVertexArrays(1, &stars.vao);
 
 	if (shaderFBO)
 		delete shaderFBO;
@@ -701,32 +709,37 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	//dessin des etoiles
 	shaderStars->use();
 
-	glBindVertexArray(stars.vao);
+	stars->fillVertexBuffer(BufferType::POS2D, dataPos.size(),dataPos.data());
+	stars->fillVertexBuffer(BufferType::COLOR, dataColor.size(),dataColor.data());
+	stars->fillVertexBuffer(BufferType::MAG, dataMag.size(),dataMag.data());
 
-	glBindBuffer (GL_ARRAY_BUFFER, stars.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataPos.size(),dataPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(stars.vao);
 
-	glBindBuffer (GL_ARRAY_BUFFER, stars.mag);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataMag.size(),dataMag.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, stars.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataPos.size(),dataPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer (GL_ARRAY_BUFFER, stars.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, stars.mag);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataMag.size(),dataMag.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+
+	// glBindBuffer (GL_ARRAY_BUFFER, stars.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
 
 	StateGL::enable(GL_BLEND);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, starTexture->getID());
 
-	// A modifier par Lionel
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 	glBlendEquation(GL_MAX);
 
 	glViewport(0,0 , sizeTexFbo, sizeTexFbo);
 
-	glBindVertexArray(stars.vao);
+	// glBindVertexArray(stars.vao);
+	stars->bind();
 	glDrawArrays(GL_POINTS,0,nbStarsToDraw);
+	stars->unBind();
 	shaderStars->unuse();
 
 	//unbind the FBO

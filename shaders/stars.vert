@@ -6,8 +6,8 @@
 #pragma optimize(off)
 
 layout (location = 0) in vec2 Position;
-layout (location = 1) in float Mag;
-layout (location = 2) in vec3 Color;
+layout (location = 4) in float Mag;
+layout (location = 3) in vec3 Color;
 
 out vertexData
 {

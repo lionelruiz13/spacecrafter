@@ -47,6 +47,7 @@ class TimeMgr;
 class s_font;
 class HipStarMgr;
 class GeodesicGrid;
+class VertexArray;
 
 typedef std::tuple<double, double, const std::string , const Vec4f > starDBtoDraw;
 
@@ -523,7 +524,9 @@ private:
 	mutable std::vector<float> dataPos;
 	mutable std::vector<float> dataMag;
 	mutable std::vector<float> dataColor;
-	DataGL stars, drawFBO;
+	//DataGL stars, drawFBO;
+	DataGL drawFBO;
+	VertexArray* stars;
 	int sizeTexFbo;
 	bool starTrace = false;
 	
