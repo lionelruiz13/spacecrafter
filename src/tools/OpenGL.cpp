@@ -87,7 +87,13 @@ static GLenum getBufferAccess(const BufferAccess& ba)
 
 Buffer::Buffer(const BufferAccess& ba)
 {
-    m_bufferAcces = getBufferAccess(ba);    
+    GLCall( glGenBuffers(1, &m_RendererID) );
+    m_bufferAcces = getBufferAccess(ba);
+}
+
+Buffer::~Buffer()
+{
+    GLCall( glDeleteBuffers(1, &m_RendererID) );
 }
 
 void Buffer::bind() const
@@ -107,9 +113,13 @@ void Buffer::unBind() const
 
 VertexBuffer::VertexBuffer(const BufferAccess& ba):Buffer(ba)
 {
-    GLCall( glGenBuffers(1, &m_RendererID) );
     //GLCall( glBindBuffer(GL_ARRAY_BUFFER, m_RendererID) );
     //GLCall( glBufferData(GL_ARRAY_BUFFER, 0, NULL, GL_DYNAMIC_DRAW) );
+}
+
+VertexBuffer::~VertexBuffer()
+{
+
 }
 
 // VertexBuffer::VertexBuffer(const void* data, unsigned int size)
@@ -129,10 +139,6 @@ void VertexBuffer::fill(unsigned int size, const void* data)
 }
 
 
-VertexBuffer::~VertexBuffer()
-{
-    GLCall( glDeleteBuffers(1, &m_RendererID) );
-}
 
 //----------------------------------------------------------------------------
 // IndexBuffer
@@ -142,7 +148,7 @@ IndexBuffer::IndexBuffer(const BufferAccess& ba) : Buffer(ba)
 {
     ASSERT(sizeof(unsigned int) == sizeof(GLuint));
     m_Count = 0;
-    GLCall( glGenBuffers(1, &m_RendererID) );
+    //GLCall( glGenBuffers(1, &m_RendererID) );
 }
 
 
@@ -159,7 +165,7 @@ void IndexBuffer::fill(unsigned int count, const unsigned int* indices)
 
 IndexBuffer::~IndexBuffer()
 {
-    GLCall( glDeleteBuffers(1, &m_RendererID) );
+  //  GLCall( glDeleteBuffers(1, &m_RendererID) );
 }
 
 void IndexBuffer::bind() const

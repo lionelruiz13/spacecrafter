@@ -56,7 +56,7 @@ enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM};
 class Buffer {
 public:
     Buffer(const BufferAccess& ba);
-    ~Buffer(){};
+    ~Buffer();
     virtual void bind() const;
     virtual void unBind() const;
     bool isDefine() const {return m_isDefine;}
