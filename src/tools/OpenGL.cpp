@@ -190,6 +190,7 @@ VertexArray::VertexArray()
 
 VertexArray::~VertexArray()
 {
+    m_buffer.clear();
     GLCall( glDeleteVertexArrays(1, &m_RendererID) );
 }
 
@@ -212,8 +213,9 @@ void VertexArray::registerVertexBuffer(const BufferType& bt, const BufferAccess&
         assert(false);
     }
     this->bind();
-    VertexBuffer* vb = new VertexBuffer(ba);
-    m_buffer[bt] = vb;
+    //VertexBuffer* vb = new VertexBuffer(ba);
+    //m_buffer[bt] = vb;
+    m_buffer[bt] = std::make_unique<VertexBuffer>(ba);
     this->unBind();
 }
 
@@ -226,7 +228,7 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size , con
         assert(false);
     }
     this->bind();
-    VertexBuffer* vb= (VertexBuffer *)m_buffer[bt];
+    VertexBuffer* vb= (VertexBuffer *) m_buffer[bt].get();
     //vb->bind();
     GLCall( glEnableVertexAttribArray( getLayout(bt)) );
     vb->fill(size, data);

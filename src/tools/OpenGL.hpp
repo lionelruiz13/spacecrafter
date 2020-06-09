@@ -25,6 +25,7 @@
 #define OPENGL_HPP
 
 #include <map>
+#include <memory>
 #include <GL/glew.h>
 
 #include <assert.h>
@@ -56,7 +57,7 @@ enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM};
 class Buffer {
 public:
     Buffer(const BufferAccess& ba);
-    ~Buffer();
+    virtual ~Buffer();
     virtual void bind() const;
     virtual void unBind() const;
     bool isDefine() const {return m_isDefine;}
@@ -117,7 +118,7 @@ public:
 private:
     unsigned int m_RendererID;
     IndexBuffer* m_indexBuffer = nullptr;
-    std::map<const BufferType, Buffer*> m_buffer;
+    std::map<const BufferType, std::unique_ptr<Buffer>> m_buffer;
 };
 
 
