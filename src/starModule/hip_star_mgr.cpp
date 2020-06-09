@@ -222,10 +222,10 @@ void HipStarMgr::createShaderParams(int width,int height)
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	// shader pour les étoiles
-	stars = new VertexArray();
-	stars->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
-	stars->registerVertexBuffer(BufferType::COLOR,BufferAccess::DYNAMIC);
-	stars->registerVertexBuffer(BufferType::MAG,BufferAccess::DYNAMIC);
+	m_starsGL = new VertexArray();
+	m_starsGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
+	m_starsGL->registerVertexBuffer(BufferType::COLOR,BufferAccess::DYNAMIC);
+	m_starsGL->registerVertexBuffer(BufferType::MAG,BufferAccess::DYNAMIC);
 	
 	// glGenVertexArrays(1,&stars.vao);
 	// glBindVertexArray(stars.vao);
@@ -310,8 +310,8 @@ void HipStarMgr::deleteShader()
 		delete shaderStars;
 	shaderStars =  nullptr;
 
-	if (stars)
-		delete stars;
+	if (m_starsGL)
+		delete m_starsGL;
 	// glDeleteBuffers(1, &stars.color);
 	// glDeleteBuffers(1, &stars.mag);
 	// glDeleteBuffers(1, &stars.pos);
@@ -709,9 +709,9 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	//dessin des etoiles
 	shaderStars->use();
 
-	stars->fillVertexBuffer(BufferType::POS2D, dataPos.size(),dataPos.data());
-	stars->fillVertexBuffer(BufferType::COLOR, dataColor.size(),dataColor.data());
-	stars->fillVertexBuffer(BufferType::MAG, dataMag.size(),dataMag.data());
+	m_starsGL->fillVertexBuffer(BufferType::POS2D, dataPos.size(),dataPos.data());
+	m_starsGL->fillVertexBuffer(BufferType::COLOR, dataColor.size(),dataColor.data());
+	m_starsGL->fillVertexBuffer(BufferType::MAG, dataMag.size(),dataMag.data());
 
 	// glBindVertexArray(stars.vao);
 
@@ -737,9 +737,9 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	glViewport(0,0 , sizeTexFbo, sizeTexFbo);
 
 	// glBindVertexArray(stars.vao);
-	stars->bind();
+	m_starsGL->bind();
 	glDrawArrays(GL_POINTS,0,nbStarsToDraw);
-	stars->unBind();
+	m_starsGL->unBind();
 	shaderStars->unuse();
 
 	//unbind the FBO
