@@ -35,7 +35,7 @@
 #include "tools/sc_const.hpp"
 #include "tools/tone_reproductor.hpp"
 #include "tools/utility.hpp"
-
+#include "tools/OpenGL.hpp"
 
 #define SKY_RESOLUTION 48
 
@@ -86,7 +86,7 @@ void Atmosphere::initGridPos()
 		}
 	}
 
-	atmosphere->fillVertexBuffer(BufferType::POS2D, dataPos.size(), dataPos.data());
+	m_atmGL->fillVertexBuffer(BufferType::POS2D, dataPos.size(), dataPos.data());
 	dataPos.clear();
 }
 
@@ -95,9 +95,9 @@ void Atmosphere::createShader()
 	shaderAtmosphere= new shaderProgram();
 	shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");
 
-	atmosphere = new VertexArray();
-	atmosphere->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
-	atmosphere->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	m_atmGL = new VertexArray();
+	m_atmGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
+	m_atmGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 }
 
 void Atmosphere::deleteShader()
@@ -105,8 +105,8 @@ void Atmosphere::deleteShader()
 	if (shaderAtmosphere)
 		delete shaderAtmosphere;
 	shaderAtmosphere=nullptr;
-	if (atmosphere)
-		delete atmosphere;
+	if (m_atmGL)
+		delete m_atmGL;
 }
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
@@ -236,7 +236,7 @@ void Atmosphere::fillOutDataColor()
 			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+(y+1)*stepY));
 		}
 	}
-	atmosphere->fillVertexBuffer(BufferType::COLOR, dataColor.size(), dataColor.data());
+	m_atmGL->fillVertexBuffer(BufferType::COLOR, dataColor.size(), dataColor.data());
 }
 
 void Atmosphere::draw(const Projector* prj, const std::string &planetName)
@@ -244,17 +244,16 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 	if (!fader.getInterstate())
 		return;
 
-	StateGL::BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-
 	fillOutDataColor();
 
+	StateGL::BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
 	StateGL::enable(GL_BLEND);
 
 	shaderAtmosphere->use();
-	atmosphere->bind();
+	m_atmGL->bind();
 	for (int y=0; y<SKY_RESOLUTION; y++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
 	}
-	atmosphere->unBind();
+	m_atmGL->unBind();
 	shaderAtmosphere->unuse();
 }
