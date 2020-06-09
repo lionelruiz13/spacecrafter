@@ -299,7 +299,7 @@ void App::firstInit()
 	ui->localizeTui();
 	ui->initTui();
 
-	appDraw->createShader();
+	appDraw->createGL_context();
 	media->createViewPort();
 	media->createVR360();
 	media->createImageShader();

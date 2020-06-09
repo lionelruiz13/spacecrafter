@@ -85,7 +85,7 @@ void AppDraw::initSplash()
 }
 
 
-void AppDraw::createShader()
+void AppDraw::createGL_context()
 {
 	shaderViewportShape =  nullptr;
 	shaderViewportShape= new shaderProgram();
