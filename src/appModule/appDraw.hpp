@@ -97,8 +97,8 @@ private:
 
 	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
 	bool antialiasLines;						//!< using GL_LINE_SMOOTH
-
-    Uint16 width, height;  						//! Contient la résolution w et h de la fenetre SDL
+    Uint16 width, height;  						//!< Contient la résolution w et h de la fenetre SDL
+	Uint16 m_radius, m_decalage_x, m_decalage_y;	//!< pour optimisation des calculs  
 };
 
 #endif

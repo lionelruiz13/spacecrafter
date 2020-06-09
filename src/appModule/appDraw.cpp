@@ -49,6 +49,9 @@ void AppDraw::init(unsigned int _width, unsigned int _height)
 {
     width=_width;
     height=_height;
+	m_radius = std::min(width, height)/2;
+	m_decalage_x = (width  - std::min(width, height))/2;
+	m_decalage_y = (height - std::min(width, height))/2;
 }
 
 void AppDraw::initSplash()
@@ -96,10 +99,7 @@ void AppDraw::createGL_context()
 	shaderColorInverse = std::make_unique<shaderProgram>();
 	shaderColorInverse->init( "colorInverse.vert", "colorInverse.frag");
 
-	// point en haut a gauche
-	// point en haut a droite
-	// point en bas à gauche
-	// point en bas à droite
+	// point en haut a gauche , en haut a droite, en bas à gauche, en bas à droite
 	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
 
 	m_viewportGL = std::make_unique<VertexArray>();
@@ -124,9 +124,9 @@ void AppDraw::drawViewportShape()
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 
 	shaderViewportShape->use();
-	shaderViewportShape->setUniform("radius" , std::min(width, height)/2);
-	shaderViewportShape->setUniform("decalage_x" , (width -std::min(width, height))/2);
-	shaderViewportShape->setUniform("decalage_y" , (height -std::min(width, height))/2);
+	shaderViewportShape->setUniform("radius" , m_radius);
+	shaderViewportShape->setUniform("decalage_x" , m_decalage_x);
+	shaderViewportShape->setUniform("decalage_y" , m_decalage_y);
 
 	m_viewportGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
