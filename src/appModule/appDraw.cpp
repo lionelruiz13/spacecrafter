@@ -87,15 +87,13 @@ void AppDraw::initSplash()
 
 void AppDraw::createGL_context()
 {
-	shaderViewportShape =  nullptr;
-	shaderViewportShape= new shaderProgram();
+	shaderViewportShape= std::make_unique<shaderProgram>();
 	shaderViewportShape->init( "viewportShape.vert", "viewportShape.frag");
 	shaderViewportShape->setUniformLocation("radius");
 	shaderViewportShape->setUniformLocation("decalage_x");
 	shaderViewportShape->setUniformLocation("decalage_y");
 
-	shaderColorInverse =  nullptr;
-	shaderColorInverse = new shaderProgram();
+	shaderColorInverse = std::make_unique<shaderProgram>();
 	shaderColorInverse->init( "colorInverse.vert", "colorInverse.frag");
 
 	// point en haut a gauche
@@ -111,10 +109,6 @@ void AppDraw::createGL_context()
 
 void AppDraw::deleteShader()
 {
-	if (shaderViewportShape) 
-		delete shaderViewportShape;
-	if (shaderColorInverse)
-		delete shaderColorInverse;
 }
 
 //! dessine la première couche du tracé opengl sur le logiciel

@@ -92,10 +92,7 @@ private:
 	//! suppression des shaders
 	void deleteShader();
 
-	//DataGL layer;
-	shaderProgram* shaderViewportShape = nullptr;
-	shaderProgram* shaderColorInverse = nullptr;
-	//DataGL dataGL;
+	std::unique_ptr<shaderProgram> shaderViewportShape, shaderColorInverse;
 	std::unique_ptr<VertexArray> m_viewportGL;
 
 	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
