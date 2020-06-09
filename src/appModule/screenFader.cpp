@@ -35,7 +35,8 @@ ScreenFader::ScreenFader()
 
 ScreenFader::~ScreenFader()
 {
-	
+	if (m_screenGL)
+		delete m_screenGL;
 }
 
 void ScreenFader::initShader()
