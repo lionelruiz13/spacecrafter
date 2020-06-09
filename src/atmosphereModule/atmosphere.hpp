@@ -132,7 +132,7 @@ public:
 
 private:
 	//! initialise les paramètres du shader
-	void createShader();
+	void createGL_context();
 	//! remplir les couleurs du conteneur
 	void fillOutDataColor(); 
 	void deleteShader();
