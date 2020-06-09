@@ -36,7 +36,7 @@
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
-
+class VertexArray;
 /**
 @author AssociationSirius
 */
@@ -94,7 +94,8 @@ private:
 	//DataGL layer;
 	shaderProgram* shaderViewportShape = nullptr;
 	shaderProgram* shaderColorInverse = nullptr;
-	DataGL dataGL;
+	//DataGL dataGL;
+	VertexArray *m_viewportGL;
 
 	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
 	bool antialiasLines;						//!< using GL_LINE_SMOOTH

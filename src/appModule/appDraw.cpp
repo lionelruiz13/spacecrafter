@@ -34,7 +34,6 @@
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include "tools/app_settings.hpp"
-
 #include "tools/OpenGL.hpp"
 
 AppDraw::AppDraw()
@@ -117,17 +116,20 @@ void AppDraw::createShader()
 	viewportShapePoints[6]= 1.0;  // point en bas à droite
 	viewportShapePoints[7]= -1.0;
 
-	glGenBuffers(1,&dataGL.pos);
-	glBindBuffer(GL_ARRAY_BUFFER,dataGL.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, viewportShapePoints,GL_STATIC_DRAW);
+	m_viewportGL = new VertexArray();
+	m_viewportGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	m_viewportGL->fillVertexBuffer(BufferType::POS2D, 8, viewportShapePoints);
+	// glGenBuffers(1,&dataGL.pos);
+	// glBindBuffer(GL_ARRAY_BUFFER,dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, viewportShapePoints,GL_STATIC_DRAW);
 
-	glGenVertexArrays(1,&dataGL.vao);
-	glBindVertexArray(dataGL.vao);
+	// glGenVertexArrays(1,&dataGL.vao);
+	// glBindVertexArray(dataGL.vao);
 
-	glBindBuffer (GL_ARRAY_BUFFER, dataGL.pos);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, dataGL.pos);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(0);
 }
 
 void AppDraw::deleteShader()
@@ -139,9 +141,10 @@ void AppDraw::deleteShader()
 
 	// glDeleteBuffers(1, &layer.pos);
 	// glDeleteVertexArrays(1, &layer.vao);
-
-	glDeleteBuffers(1, &dataGL.pos);
-	glDeleteVertexArrays(1, &dataGL.vao);
+	if (m_viewportGL)
+		delete m_viewportGL;
+	// glDeleteBuffers(1, &dataGL.pos);
+	// glDeleteVertexArrays(1, &dataGL.vao);
 }
 
 //! dessine la première couche du tracé opengl sur le logiciel
@@ -161,9 +164,12 @@ void AppDraw::drawViewportShape()
 	shaderViewportShape->setUniform("decalage_x" , (width -std::min(width, height))/2);
 	shaderViewportShape->setUniform("decalage_y" , (height -std::min(width, height))/2);
 
-	glBindVertexArray(dataGL.vao);
+
+	//glBindVertexArray(dataGL.vao);
+	m_viewportGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	glBindVertexArray(0);
+	m_viewportGL->unBind();
+	//glBindVertexArray(0);
 	shaderViewportShape->unuse();
 }
 
@@ -173,8 +179,8 @@ void AppDraw::drawColorInverse()
 	StateGL::BlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 	shaderColorInverse->use();
 
-	glBindVertexArray(dataGL.vao);
+	m_viewportGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	glBindVertexArray(0);
+	m_viewportGL->unBind();
 	shaderColorInverse->unuse();
 }
