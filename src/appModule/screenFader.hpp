@@ -94,9 +94,8 @@ private:
 	float intensity =0.0;
 	// paramètres openGL
 	void initShaderParams();
-	//DataGL screen;
 	std::unique_ptr<VertexArray> m_screenGL;
-	shaderProgram* shaderScreen;
+	std::unique_ptr<shaderProgram> shaderScreen;
 };
 
 

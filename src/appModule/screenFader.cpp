@@ -39,8 +39,7 @@ ScreenFader::~ScreenFader()
 
 void ScreenFader::initShader()
 {
-	shaderScreen =  nullptr;
-	shaderScreen= new shaderProgram();
+	shaderScreen = std::make_unique<shaderProgram>();
 	shaderScreen->init( "screenFader.vert","screenFader.frag");
 	shaderScreen->setUniformLocation("intensity");
 	initShaderParams();
