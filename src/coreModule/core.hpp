@@ -568,7 +568,10 @@ private:
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	TimeMgr* timeMgr;				// Manage date and time
-	Observer * observatory;			// Manage observer position
+	Observer *observatory;			// Manage observer position it's a pointer to the 3 other Observer
+	Observer *obsSolarSystem;		// it's the historical Observer: so nothing to do with it now.
+	Observer *obsInGalaxy;			//observer that should be used in InGalaxy mode
+	Observer *ObsInUnivers;			//observer that should be used in InUnivers mode
 	Projector * projection;				// Manage the projection mode and matrix
 	Object selected_object;			// The selected object
 	Object old_selected_object;		// The old selected object
