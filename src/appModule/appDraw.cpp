@@ -92,9 +92,7 @@ void AppDraw::createGL_context()
 {
 	shaderViewportShape= std::make_unique<shaderProgram>();
 	shaderViewportShape->init( "viewportShape.vert", "viewportShape.frag");
-	shaderViewportShape->setUniformLocation("radius");
-	shaderViewportShape->setUniformLocation("decalage_x");
-	shaderViewportShape->setUniformLocation("decalage_y");
+	shaderViewportShape->setUniformLocation({"radius","decalage_x","decalage_y"});
 
 	shaderColorInverse = std::make_unique<shaderProgram>();
 	shaderColorInverse->init( "colorInverse.vert", "colorInverse.frag");

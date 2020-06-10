@@ -64,8 +64,7 @@ void ConstellationMgr::createGL_context()
 	//ART
 	m_shaderArt = std::make_unique<shaderProgram>();
 	m_shaderArt->init("constellationArt.vert", "constellationArt.geom","constellationArt.frag");
-	m_shaderArt->setUniformLocation("Intensity");
-	m_shaderArt->setUniformLocation("Color");
+	m_shaderArt->setUniformLocation({"Intensity", "Color"});
 
 	//BOUNDARY
 	m_shaderBoundary = std::make_unique<shaderProgram>();
