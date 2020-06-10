@@ -27,6 +27,8 @@
 #define _ILLUMINATE_MGR_H_
 
 #include <vector>
+#include <memory>
+
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/grid.hpp"
@@ -36,6 +38,8 @@
 class HipStarMgr;
 class Navigator;
 class ConstellationMgr;
+class VertexArray;
+
 
 /*! \class IlluminateMgr
   * \brief handles all illuminate stars from Hipparcos catalog for better stars visualisation.
@@ -107,7 +111,7 @@ private:
 	Navigator* navigator = nullptr;				//!< provide acces point to Navigator
 	ConstellationMgr* asterism= nullptr;		//!< provide acces point to ConstellationMgr
 
-	DataGL Illum;
+	std::unique_ptr<VertexArray> m_illumGL;
 	std::vector<float> illumPos;
 	std::vector<float> illumTex;
 	std::vector<float> illumColor;

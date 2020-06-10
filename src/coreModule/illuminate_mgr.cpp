@@ -30,11 +30,11 @@
 #include "coreModule/illuminate.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/log.hpp"
-//#include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
+#include "tools/OpenGL.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
@@ -263,23 +263,28 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 
 	shaderIllum->setUniform("ModelViewMatrix", prj->getMatJ2000ToEye());
 
-	glBindVertexArray(Illum.vao);
-	glBindBuffer(GL_ARRAY_BUFFER,Illum.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumPos.size(), illumPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	m_illumGL->fillVertexBuffer(BufferType::POS3D, illumPos.size(), illumPos.data() );
+	m_illumGL->fillVertexBuffer(BufferType::TEXTURE, illumTex.size(), illumTex.data());
+	m_illumGL->fillVertexBuffer(BufferType::COLOR, illumColor.size(), illumColor.data());
 
-	glBindBuffer(GL_ARRAY_BUFFER,Illum.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumTex.size(), illumTex.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(Illum.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER,Illum.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumPos.size(), illumPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,Illum.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumColor.size(), illumColor.data() ,GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,Illum.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumTex.size(), illumTex.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
+	// glBindBuffer(GL_ARRAY_BUFFER,Illum.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*illumColor.size(), illumColor.data() ,GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_illumGL->bind();
 	for(int i=0;i<nbrIllumToTrace; i++)
 		glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
-
-	glBindVertexArray(0);	
+	m_illumGL->unBind();
+	//glBindVertexArray(0);	
 	shaderIllum->unuse();
 }
 
@@ -300,16 +305,21 @@ void IlluminateMgr::createShader()
 	shaderIllum->init( "illuminate.vert", "illuminate.frag");
 	shaderIllum->setUniformLocation("ModelViewMatrix");
 
-	glGenVertexArrays(1,&Illum.vao);
-	glBindVertexArray(Illum.vao);
+	m_illumGL = std::make_unique<VertexArray>();
+	m_illumGL->registerVertexBuffer(BufferType::POS3D , BufferAccess::DYNAMIC);
+	m_illumGL->registerVertexBuffer(BufferType::TEXTURE , BufferAccess::DYNAMIC);
+	m_illumGL->registerVertexBuffer(BufferType::COLOR , BufferAccess::DYNAMIC);
 
-	glGenBuffers(1,&Illum.pos);
-	glGenBuffers(1,&Illum.tex);
-	glGenBuffers(1,&Illum.color);
+	// glGenVertexArrays(1,&Illum.vao);
+	// glBindVertexArray(Illum.vao);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	// glGenBuffers(1,&Illum.pos);
+	// glGenBuffers(1,&Illum.tex);
+	// glGenBuffers(1,&Illum.color);
+
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
 }
 
 
@@ -317,10 +327,10 @@ void IlluminateMgr::deleteShader()
 {
 	if (shaderIllum) delete shaderIllum;
 
-	glDeleteBuffers(1,&Illum.pos);
-	glDeleteBuffers(1,&Illum.tex);
-	glDeleteBuffers(1,&Illum.color);
-	glDeleteVertexArrays(1,&Illum.vao);
+	// glDeleteBuffers(1,&Illum.pos);
+	// glDeleteBuffers(1,&Illum.tex);
+	// glDeleteBuffers(1,&Illum.color);
+	// glDeleteVertexArrays(1,&Illum.vao);
 }
 
 
