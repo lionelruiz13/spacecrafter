@@ -32,13 +32,14 @@
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/grid.hpp"
-#include "illuminate.hpp"
+#include "coreModule/illuminate.hpp"
 #include "tools/no_copy.hpp"
 
 class HipStarMgr;
 class Navigator;
 class ConstellationMgr;
 class VertexArray;
+class shaderProgram;
 
 
 /*! \class IlluminateMgr
@@ -106,11 +107,12 @@ private:
 	LittleGrid illuminateGrid;					//!< Grid for display opimisation
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 
-	shaderProgram* shaderIllum;					//!< shader how draw all illuminate
+
 	HipStarMgr* hip_stars = nullptr;			//!< provide acces point to HipStarMgr
 	Navigator* navigator = nullptr;				//!< provide acces point to Navigator
 	ConstellationMgr* asterism= nullptr;		//!< provide acces point to ConstellationMgr
 
+	std::unique_ptr<shaderProgram> m_shaderIllum;	//!< shader how draw all illuminate
 	std::unique_ptr<VertexArray> m_illumGL;
 	std::vector<float> illumPos;
 	std::vector<float> illumTex;
@@ -121,7 +123,6 @@ private:
 	s_texture * userTex = nullptr;				//!< Texture define by user 
 
 	void createShader();
-	void deleteShader();
 };
 
 #endif // _ILLUMINATE_MGR_H_

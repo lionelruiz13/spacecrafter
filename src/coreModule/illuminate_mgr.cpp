@@ -35,6 +35,7 @@
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
@@ -66,8 +67,6 @@ IlluminateMgr::~IlluminateMgr()
 	defaultTex = nullptr;
 
 	delete[] illuminateZones;
-
-	deleteShader();
 }
 
 // Load individual Illuminate for script
@@ -253,7 +252,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	// std::cout << "illumPos   size : " << illumPos.size() << std::endl;
 	// std::cout << "illumTex   size : " << illumTex.size() << std::endl;
 	// std::cout << "illumColor size : " << illumColor.size() << std::endl;
-	shaderIllum->use();
+	m_shaderIllum->use();
 
 	// if (specialTex)
 	// 	glBindTexture(GL_TEXTURE_2D, illuminateSpecialTex->getID());
@@ -261,7 +260,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, currentTex->getID());
 
-	shaderIllum->setUniform("ModelViewMatrix", prj->getMatJ2000ToEye());
+	m_shaderIllum->setUniform("ModelViewMatrix", prj->getMatJ2000ToEye());
 
 	m_illumGL->fillVertexBuffer(BufferType::POS3D, illumPos.size(), illumPos.data() );
 	m_illumGL->fillVertexBuffer(BufferType::TEXTURE, illumTex.size(), illumTex.data());
@@ -271,7 +270,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	for(int i=0;i<nbrIllumToTrace; i++)
 		glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
 	m_illumGL->unBind();
-	shaderIllum->unuse();
+	m_shaderIllum->unuse();
 }
 
 // search by name
@@ -286,22 +285,15 @@ Illuminate *IlluminateMgr::search(unsigned int name)
 
 void IlluminateMgr::createShader()
 {
-	shaderIllum = new shaderProgram();
-	shaderIllum->init( "illuminate.vert", "illuminate.frag");
-	shaderIllum->setUniformLocation("ModelViewMatrix");
+	m_shaderIllum = std::make_unique<shaderProgram>();
+	m_shaderIllum->init( "illuminate.vert", "illuminate.frag");
+	m_shaderIllum->setUniformLocation("ModelViewMatrix");
 
 	m_illumGL = std::make_unique<VertexArray>();
 	m_illumGL->registerVertexBuffer(BufferType::POS3D , BufferAccess::DYNAMIC);
 	m_illumGL->registerVertexBuffer(BufferType::TEXTURE , BufferAccess::DYNAMIC);
 	m_illumGL->registerVertexBuffer(BufferType::COLOR , BufferAccess::DYNAMIC);
 }
-
-
-void IlluminateMgr::deleteShader()
-{
-	if (shaderIllum) delete shaderIllum;
-}
-
 
 
 void IlluminateMgr::changeTex(const std::string& fileName)
