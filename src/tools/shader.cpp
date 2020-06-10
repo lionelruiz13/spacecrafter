@@ -1,12 +1,14 @@
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
 #include <iostream>
 #include <string.h>
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <assert.h>
+#include <initializer_list>
 
+#include "tools/shader.hpp"
+#include "tools/stateGL.hpp"
 
 std::string shaderProgram::shaderDir = "./";
 std::string shaderProgram::logFile = "./";
@@ -435,6 +437,12 @@ void shaderProgram::unuse()
 }
 
 
+void shaderProgram::setUniformLocation(std::initializer_list<const std::string> list)
+{
+    for(const auto elem : list )
+    	this->setUniformLocation(elem);
+}
+
 void shaderProgram::setUniformLocation(const std::string&  name )
 {
 	std::map<std::string, GLuint>::iterator pos;
@@ -556,7 +564,8 @@ void shaderProgram::setSubroutineLocation(GLenum ShaderType, const std::string& 
 	} else {
 		std::ostringstream out;
 		out << program << " : subroutineLocations name " << name << " already found ";
-		writeToLog(out.str() );	
+		writeToLog(out.str() );
+		assert(false);
 		// printf("%i : subroutineLocations name %s already found !!!\n", program, name);
 		//~ std::cout << " I have " << subroutineLocations.size() <<" element in map.\n";
 	}
@@ -570,7 +579,8 @@ void shaderProgram::setSubroutine(GLenum ShaderType, const std::string& name)
 	if( pos == subroutineLocations.end() ) {
 		std::ostringstream out;
 		out << program << " : error with " << name << " atribution SubroutineLocations";
-		writeToLog(out.str() );	
+		writeToLog(out.str() );
+		assert(false);
 		// printf("%i : erreur avec %s atribution SubroutineLocations\n", program, name);
 		//~ uniformLocations[name] = glGetUniformLocation(program, name);
 		return ;

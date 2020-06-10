@@ -110,6 +110,7 @@ public:
 	*/
 	void unuse();
 
+	void setUniformLocation(std::initializer_list<const std::string> list);
 	void setUniformLocation(const std::string& name );
 
 	void setSubroutineLocation(GLenum ShaderType, const std::string& name);
