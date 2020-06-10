@@ -55,12 +55,13 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"set sky_culture western");
     //~ strcpy(sendBuff,"set milky_way_texture default");
     //~ strcpy(sendBuff,"set milky_way_intensity 0.9");
-    //~ strcpy(sendBuff,"illuminate display on HP 4906");
+    strcpy(sendBuff,"illuminate display on HP 4906");
+    strcpy(sendBuff,"illuminate display on constellation UMa");
     //~ strcpy(sendBuff,"dso hidden false  name M27");
     //~ strcpy(sendBuff,"flag track_object on");
     //~ strcpy(sendBuff,"planet_scale name Saturn scale 20");
     //~ strcpy(sendBuff,"flag planets_axis on");
-    strcpy(sendBuff,"clear state natural");
+    //~ strcpy(sendBuff,"clear state natural");
     //~ strcpy(sendBuff,"audio volume 100");
     //~ strcpy(sendBuff,"audio action drop\n");
     //~ strcpy(sendBuff,"media action play type VIEWPORT videoname /home/olivier/.spacecrafter/videos/monde_perdu_HD.mp4 audioname /home/olivier/.spacecrafter/videos/monde_perdu.ogg\n");
