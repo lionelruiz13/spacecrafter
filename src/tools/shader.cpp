@@ -145,7 +145,7 @@ void shaderProgram::debugProgram()
 }
 
 
-const char * shaderProgram::getTypeString( GLenum type )
+std::string shaderProgram::getTypeString( GLenum type )
 {
 	// There are many more types than are covered here, but
 	// these are the most common in these examples.
@@ -295,7 +295,7 @@ void shaderProgram::printActiveUniformBlocks()
 }
 
 
-std::string shaderProgram::loadFileToString(const char * fname)
+std::string shaderProgram::loadFileToString(const std::string& fname)
 {
 	std::ifstream ifile(fname);
 	std::string filetext;
@@ -435,13 +435,13 @@ void shaderProgram::unuse()
 }
 
 
-void shaderProgram::setUniformLocation(const char * name )
+void shaderProgram::setUniformLocation(const std::string&  name )
 {
 	std::map<std::string, GLuint>::iterator pos;
 	pos = uniformLocations.find(name);
 
 	if( pos == uniformLocations.end() ) {
-		uniformLocations[name] = glGetUniformLocation(program, name);
+		uniformLocations[name] = glGetUniformLocation(program, name.c_str());
 	} else {
 		std::ostringstream out;
 		out << program << " :  setUniformLocation name " << name << " already found.";
@@ -451,7 +451,7 @@ void shaderProgram::setUniformLocation(const char * name )
 }
 
 
-int shaderProgram::getUniformLocation(const char * name )
+int shaderProgram::getUniformLocation(const std::string&  name )
 {
 	std::map<std::string, GLuint>::iterator pos;
 	pos = uniformLocations.find(name);
@@ -466,57 +466,57 @@ int shaderProgram::getUniformLocation(const char * name )
 	return uniformLocations[name];
 }
 
-void shaderProgram::setUniform( const char *name, const Vec3f & v)
+void shaderProgram::setUniform( const std::string& name, const Vec3f & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform3fv(loc,1,v);
 }
 
-void shaderProgram::setUniform( const char *name, const Vec4f & v)
+void shaderProgram::setUniform( const std::string& name, const Vec4f & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform4fv(loc,1, v);
 }
 
-void shaderProgram::setUniform( const char *name, const Vec2f & v)
+void shaderProgram::setUniform( const std::string& name, const Vec2f & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform2fv(loc,1, v);
 }
 
-void shaderProgram::setUniform( const char *name, const Vec3i & v)
+void shaderProgram::setUniform( const std::string& name, const Vec3i & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform3iv(loc,1,v);
 }
 
-void shaderProgram::setUniform( const char *name, const Vec4i & v)
+void shaderProgram::setUniform( const std::string& name, const Vec4i & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform4iv(loc,1, v);
 }
 
-void shaderProgram::setUniform( const char *name, const Vec2i & v)
+void shaderProgram::setUniform( const std::string& name, const Vec2i & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform2iv(loc,1, v);
 }
 
-void shaderProgram::setUniform( const char *name, const Mat4f & m)
+void shaderProgram::setUniform( const std::string& name, const Mat4f & m)
 {
 	GLint loc = getUniformLocation(name);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, m);
 }
 
 
-void shaderProgram::setUniform( const char *name, float val )
+void shaderProgram::setUniform( const std::string& name, float val )
 {
 	GLint loc = getUniformLocation(name);
 	glUniform1f(loc, val);
 }
 
 
-void shaderProgram::setUniform( const char *name, double val )
+void shaderProgram::setUniform( const std::string& name, double val )
 {
 	float _val = val;
 	GLint loc = getUniformLocation(name);
@@ -524,34 +524,34 @@ void shaderProgram::setUniform( const char *name, double val )
 }
 
 
-void shaderProgram::setUniform( const char *name, int val )
+void shaderProgram::setUniform( const std::string& name, int val )
 {
 	GLint loc = getUniformLocation(name);
 	glUniform1i(loc, val);
 }
 
 
-void shaderProgram::setUniform( const char *name, GLuint val )
+void shaderProgram::setUniform( const std::string& name, GLuint val )
 {
 	GLint loc = getUniformLocation(name);
 	glUniform1ui(loc, val);
 }
 
 
-void shaderProgram::setUniform( const char *name, bool val )
+void shaderProgram::setUniform( const std::string& name, bool val )
 {
 	int loc = getUniformLocation(name);
 	glUniform1i(loc, val);
 }
 
 
-void shaderProgram::setSubroutineLocation(GLenum ShaderType, const char* name)
+void shaderProgram::setSubroutineLocation(GLenum ShaderType, const std::string& name)
 {
 	std::map<std::string, GLuint>::iterator pos;
 	pos = subroutineLocations.find(name);
 
 	if( pos == subroutineLocations.end() ) {
-		subroutineLocations[name] = glGetSubroutineIndex(program, ShaderType, name);
+		subroutineLocations[name] = glGetSubroutineIndex(program, ShaderType, name.c_str());
 		//~ printf("%i : insert subroutineLocations name %s\n", program, name);
 	} else {
 		std::ostringstream out;
@@ -562,7 +562,7 @@ void shaderProgram::setSubroutineLocation(GLenum ShaderType, const char* name)
 	}
 }
 
-void shaderProgram::setSubroutine(GLenum ShaderType, const char * name )
+void shaderProgram::setSubroutine(GLenum ShaderType, const std::string& name)
 {
 	std::map<std::string, GLuint>::iterator pos;
 	pos = subroutineLocations.find(name);

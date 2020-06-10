@@ -110,23 +110,23 @@ public:
 	*/
 	void unuse();
 
-	void setUniformLocation(const char * name );
+	void setUniformLocation(const std::string& name );
 
-	void setSubroutineLocation(GLenum ShaderType, const char* name);
-	void setSubroutine(GLenum ShaderType, const char * name );
+	void setSubroutineLocation(GLenum ShaderType, const std::string& name);
+	void setSubroutine(GLenum ShaderType, const std::string& name );
 
-	void setUniform( const char *name, const Vec2f & v);
-	void setUniform( const char *name, const Vec3f & v);
-	void setUniform( const char *name, const Vec2i & v);
-	void setUniform( const char *name, const Vec3i & v);
-	void setUniform( const char *name, const Vec4f & v);
-	void setUniform( const char *name, const Vec4i & v);
-	void setUniform( const char *name, const Mat4f & m);
-	void setUniform( const char *name, float val);
-	void setUniform( const char *name, double val);
-	void setUniform( const char *name, int val );
-	void setUniform( const char *name, bool val );
-	void setUniform( const char *name, GLuint val );
+	void setUniform( const std::string& name, const Vec2f & v);
+	void setUniform( const std::string& name, const Vec3f & v);
+	void setUniform( const std::string& name, const Vec2i & v);
+	void setUniform( const std::string& name, const Vec3i & v);
+	void setUniform( const std::string& name, const Vec4f & v);
+	void setUniform( const std::string& name, const Vec4i & v);
+	void setUniform( const std::string& name, const Mat4f & m);
+	void setUniform( const std::string& name, float val);
+	void setUniform( const std::string& name, double val);
+	void setUniform( const std::string& name, int val );
+	void setUniform( const std::string& name, bool val );
+	void setUniform( const std::string& name, GLuint val );
 
 private:
 
@@ -136,13 +136,13 @@ private:
 
 	void writeToLog(const std::string &cmd);
 
-	GLint getUniformLocation(const char * name);
+	GLint getUniformLocation(const std::string& name);
 
 	void init(GLuint vs,GLuint tcs=NOSHADER,GLuint tes=NOSHADER,GLuint gs=NOSHADER,GLuint fs=NOSHADER);
 
-	std::string loadFileToString(const char * fname);
+	std::string loadFileToString(const std::string& fname);
 
-	const char * getTypeString( GLenum type );
+	std::string getTypeString( GLenum type );
 
 	/**
 	*   \fn debugShader
