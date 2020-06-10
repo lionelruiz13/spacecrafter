@@ -653,16 +653,12 @@ void Core::updateInGalaxy(int delta_time)
 	timeMgr->update(delta_time);
 	navigation->update(delta_time);
 
-	// Position of sun and all the satellites (ie planets)
-	ssystem->computePositions(timeMgr->getJDay(), observatory);
 	// Transform matrices between coordinates systems
 	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
 	// Direction of vision
 	navigation->updateVisionVector(delta_time, selected_object);
 	// Field of view
 	projection->updateAutoZoom(delta_time, FlagManualZoom);
-	// update faders and Planet trails (call after nav is updated)
-	ssystem->update(delta_time, navigation, timeMgr);
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update faders
