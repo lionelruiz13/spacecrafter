@@ -56,10 +56,10 @@ ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars) :
 	assert(hipStarMgr);
 	isolateSelected = false;
 
-	createShader();
+	createGL_context();
 }
 
-void ConstellationMgr::createShader()
+void ConstellationMgr::createGL_context()
 {
 	//ART
 	m_shaderArt = std::make_unique<shaderProgram>();
