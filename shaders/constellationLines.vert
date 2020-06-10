@@ -8,7 +8,7 @@
 
 //layout
 layout (location=0)in vec2 position;
-layout (location=2)in vec4 color;
+layout (location=3)in vec4 color;
 
 //externe
 //~ uniform mat4 MVP;

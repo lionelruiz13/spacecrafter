@@ -8,7 +8,7 @@
 
 //layout
 layout (location=0) in vec2 position;
-layout (location=3) in float intensity;
+layout (location=4) in float intensity;
 
 //externe
 //~ uniform mat4 MVP;
