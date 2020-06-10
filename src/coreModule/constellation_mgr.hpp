@@ -28,6 +28,7 @@
 #define _CONSTELLATION_MGR_H_
 
 #include <vector>
+#include <memory>
 
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
@@ -40,6 +41,7 @@ class Projector;
 class Navigator;
 class s_font;
 class Translator;
+class VertexArray;
 
 class ConstellationMgr: public NoCopy {
 public:
@@ -236,7 +238,8 @@ private:
 	shaderProgram *shaderArt=nullptr;
 	shaderProgram *shaderBoundary=nullptr;
 	shaderProgram *shaderLines=nullptr;
-	DataGL constellation;
+	//DataGL constellation;
+	std::unique_ptr<VertexArray> m_constellationGL;
 };
 
 #endif // _CONSTELLATION_MGR_H_

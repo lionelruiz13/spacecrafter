@@ -41,6 +41,7 @@
 //#include "tools/fmath.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/translator.hpp"
+#include "tools/OpenGL.hpp"
 
 
 
@@ -61,7 +62,7 @@ ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars) :
 
 void ConstellationMgr::createShader()
 {
-//ART
+	//ART
 	shaderArt = new shaderProgram();
 	shaderArt->init("constellationArt.vert", "constellationArt.geom","constellationArt.frag");
 	shaderArt->setUniformLocation("Intensity");
@@ -76,13 +77,19 @@ void ConstellationMgr::createShader()
 	shaderLines = new shaderProgram();
 	shaderLines->init("constellationLines.vert", "constellationLines.frag");
 
-	glGenVertexArrays(1,&constellation.vao);
-	glBindVertexArray(constellation.vao);
+	m_constellationGL = std::make_unique<VertexArray>();
+	m_constellationGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	m_constellationGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
+	m_constellationGL->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
+	m_constellationGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
 
-	glGenBuffers(1,&constellation.pos);
-	glGenBuffers(1,&constellation.tex);
-	glGenBuffers(1,&constellation.color);
-	glGenBuffers(1,&constellation.mag);
+	// glGenVertexArrays(1,&constellation.vao);
+	// glBindVertexArray(constellation.vao);
+
+	// glGenBuffers(1,&constellation.pos);
+	// glGenBuffers(1,&constellation.tex);
+	// glGenBuffers(1,&constellation.color);
+	// glGenBuffers(1,&constellation.mag);
 
 	// glEnableVertexAttribArray(0);
 	// glEnableVertexAttribArray(1);
@@ -99,11 +106,11 @@ void ConstellationMgr::deleteShader()
 	if(shaderLines) delete shaderLines;
 		shaderLines=nullptr;
 
-	glDeleteBuffers(1,&constellation.mag);
-	glDeleteBuffers(1,&constellation.tex);
-	glDeleteBuffers(1,&constellation.color);
-	glDeleteBuffers(1,&constellation.pos);
-	glDeleteVertexArrays(1,&constellation.vao);
+	// glDeleteBuffers(1,&constellation.mag);
+	// glDeleteBuffers(1,&constellation.tex);
+	// glDeleteBuffers(1,&constellation.color);
+	// glDeleteBuffers(1,&constellation.pos);
+	// glDeleteVertexArrays(1,&constellation.vao);
 
 }
 
@@ -389,7 +396,7 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 	shaderArt->use();
 
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
-		(*iter)->drawArt(prj, nav, shaderArt, constellation);
+		(*iter)->drawArt(prj, nav, shaderArt, m_constellationGL.get());
 	}
 
 	shaderArt->unuse();
@@ -416,20 +423,24 @@ void ConstellationMgr::drawLines(const Projector * prj)
 
 	shaderLines->use();
 
-	glBindVertexArray(constellation.vao);
+	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vLinesPos.size(),vLinesPos.data());
+	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vLinesColor.size(),vLinesColor.data());
 
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER,constellation.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vLinesPos.size(),vLinesPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(constellation.vao);
 
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER,constellation.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vLinesColor.size(),vLinesColor.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(2,4,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(0);
+	// glBindBuffer(GL_ARRAY_BUFFER,constellation.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vLinesPos.size(),vLinesPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
+	// glEnableVertexAttribArray(1);
+	// glBindBuffer(GL_ARRAY_BUFFER,constellation.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vLinesColor.size(),vLinesColor.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(2,4,GL_FLOAT,GL_FALSE,0,NULL);
+	m_constellationGL->bind();
 	glDrawArrays(GL_LINES, 0, vLinesPos.size()/2);
-	glBindVertexArray(0);
+	m_constellationGL->unBind();
+	// glBindVertexArray(0);
 	shaderLines->unuse();
 }
 
@@ -899,20 +910,26 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 	shaderBoundary->use();
 
 	shaderBoundary->setUniform("Color", boundaryColor);
-	glBindVertexArray(constellation.vao);
 
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER,constellation.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vBoundariesPos.size(),vBoundariesPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vBoundariesPos.size(),vBoundariesPos.data());
+	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vBoundariesIntensity.size(),vBoundariesIntensity.data());
 
-	glEnableVertexAttribArray(3);
-	glBindBuffer(GL_ARRAY_BUFFER,constellation.mag);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vBoundariesIntensity.size(),vBoundariesIntensity.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(constellation.vao);
 
+	// glEnableVertexAttribArray(0);
+	// glBindBuffer(GL_ARRAY_BUFFER,constellation.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vBoundariesPos.size(),vBoundariesPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+
+	// glEnableVertexAttribArray(3);
+	// glBindBuffer(GL_ARRAY_BUFFER,constellation.mag);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vBoundariesIntensity.size(),vBoundariesIntensity.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_constellationGL->bind();
 	glDrawArrays(GL_LINES, 0, vBoundariesPos.size()/2);
-	glBindVertexArray(0);
+	m_constellationGL->unBind();
+	// glBindVertexArray(0);
 	shaderBoundary->unuse();
 }
 

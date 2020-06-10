@@ -32,6 +32,7 @@
 #include "tools/object.hpp"
 #include "tools/utility.hpp"
 #include "tools/fader.hpp"
+#include "tools/OpenGL.hpp"
 #include <vector>
 
 class HipStarMgr;
@@ -99,7 +100,7 @@ public:
 	void drawName(s_font * constfont,const  Projector* prj) const;
 	void drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity);
 	void drawLines(const Projector* prj, std::vector<float> &vLinesPos, std::vector<float> &vLinesColor);
-	void drawArt(const Projector* prj, const Navigator* nav, shaderProgram* &shaderArt, const DataGL &constellation);
+	void drawArt(const Projector* prj, const Navigator* nav, shaderProgram* &shaderArt, VertexArray *constellationGL);
 
 	void update(int delta_time);
 
@@ -173,9 +174,6 @@ private:
 	Vec3f labelColor;
 	static Vec3f artColor;
 	static bool singleSelected;
-
-	std::vector<float> vecPos;
-	std::vector<float> vecTex;
 };
 
 #endif // _CONSTELLATION_H_
