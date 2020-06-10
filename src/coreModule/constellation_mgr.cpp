@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2002 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
+ * Copyright (C) 2014-2020 LSS team & AssociationSirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

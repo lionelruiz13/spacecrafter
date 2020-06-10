@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2002 Fabien Cheeau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
+ * Copyright (C) 2014-2020 LSS team & AssociationSirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * Spacecrafter is a free open project of of LSS team
+ * Spacecrafter is a free open project of the LSS team
  * See the TRADEMARKS file for free open project usage requirements.
  *
  */
