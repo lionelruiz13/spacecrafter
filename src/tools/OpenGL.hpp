@@ -48,7 +48,7 @@ bool GLCheckError();
 
 
 
-enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, MAG, SCALE };
+enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, COLOR4, MAG, SCALE };
 enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM};
 
 //unsigned int convert(BufferType& bt);

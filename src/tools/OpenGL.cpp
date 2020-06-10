@@ -50,6 +50,7 @@ static unsigned int getLayout(const BufferType& bt)
         case BufferType::TEXTURE  : return 1; break;
         case BufferType::NORMAL   : return 2; break;
         case BufferType::COLOR    : return 3; break;
+        case BufferType::COLOR4   : return 3; break;
         case BufferType::MAG      : return 4; break;
         case BufferType::SCALE    : return 5; break;
         default: assert(false); return 0;
@@ -64,6 +65,7 @@ static unsigned int getDataSize(const BufferType& bt)
         case BufferType::TEXTURE  : return 2; break;
         case BufferType::NORMAL   : return 3; break;
         case BufferType::COLOR    : return 3; break;
+        case BufferType::COLOR4   : return 4; break;
         case BufferType::MAG      : return 1; break;
         case BufferType::SCALE    : return 1; break;
         default: assert(false); return 0;
