@@ -149,20 +149,20 @@ public:
 	//! for moving observer position gradually
 	void update(int delta_time);
 
-	//! sauvegarde la planete lorsque l'on quitte le mode IN_SOLARSYSTEM
-	void saveBodyInSolarSystem();
-	//! charge la planete lorsque l'on revient dans le mode IN_SOLARSYSTEM
-	void loadBodyInSolarSystem();
-	//! fixe l'observer sur la position du soleil (mode IN_GALAXY)
-	void fixBodyToSun();
+	// //! sauvegarde la planete lorsque l'on quitte le mode IN_SOLARSYSTEM
+	// void saveBodyInSolarSystem();
+	// //! charge la planete lorsque l'on revient dans le mode IN_SOLARSYSTEM
+	// void loadBodyInSolarSystem();
+	// //! fixe l'observer sur la position du soleil (mode IN_GALAXY)
+	// void fixBodyToSun();
 	
 	//! returns true if we are on the named body
 	bool isOnBodyNamed(const std::string& bodyName); 
 
 private:
 
-	Body *planet;				//!< la planete ou se trouve l'observer
-	Body *planetInSolarSystem; 	//!< la planete du systeme solaire où l'on se trouvait
+	// Body *planet;				//!< la planete ou se trouve l'observer
+	// Body *planetInSolarSystem; 	//!< la planete du systeme solaire où l'on se trouvait
 
 	double longitude;			//!< Longitude in degree
 	double latitude;			//!< Latitude in degree

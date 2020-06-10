@@ -77,7 +77,7 @@ void CoreExecutorInSolarSystem::onEnter()
 {
 	std::cout << "J'arrive dans InSolarSystem" << std::endl;
 	nextMode = nullptr;
-	observer->loadBodyInSolarSystem();
+	//observer->loadBodyInSolarSystem();
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);
 	//réglage de l'altitude dans CoreExecutorInSolarSystem la première fois 
@@ -88,8 +88,8 @@ void CoreExecutorInSolarSystem::onEnter()
 
 void CoreExecutorInSolarSystem::onExit()
 {
-	observer->saveBodyInSolarSystem();
-	observer->fixBodyToSun();
+	// observer->saveBodyInSolarSystem();
+	// observer->fixBodyToSun();
 	std::cout << "Je quitte InSolarSystem" << std::endl;
 }
 

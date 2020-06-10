@@ -45,11 +45,11 @@
 #include "mainModule/define_key.hpp"
 
 Observer::Observer()
-	: planet(0), longitude(0.), latitude(1e-9), altitude(0),
+	: /*planet(0),*/ longitude(0.), latitude(1e-9), altitude(0),
 	 defaultLongitude(0), defaultLatitude(1e-9), defaultAltitude(0)
 {
 	flag_move_to = false;
-	planetInSolarSystem = nullptr;
+	// planetInSolarSystem = nullptr;
 }
 
 
@@ -284,16 +284,16 @@ double Observer::getLongitude(void) const
 }
 
 
-void Observer::saveBodyInSolarSystem()
-{
-	planetInSolarSystem = planet;
-}
+// void Observer::saveBodyInSolarSystem()
+// {
+// 	planetInSolarSystem = planet;
+// }
 
-void Observer::loadBodyInSolarSystem()
-{
-	if (planetInSolarSystem != nullptr)
-		planet=planetInSolarSystem;
-}
+// void Observer::loadBodyInSolarSystem()
+// {
+// 	if (planetInSolarSystem != nullptr)
+// 		planet=planetInSolarSystem;
+// }
 
-void Observer::fixBodyToSun()
-{}
+// void Observer::fixBodyToSun()
+// {}
