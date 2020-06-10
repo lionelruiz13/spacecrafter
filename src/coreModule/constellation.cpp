@@ -50,14 +50,6 @@ Constellation::~Constellation()
 
 	if (art_tex) delete art_tex;
 	art_tex = nullptr;
-
-	// while(!vecPos.empty()) {
-	// 	vecPos.pop_back();
-	// }
-
-	// while(!vecTex.empty()) {
-	// 	vecTex.pop_back();
-	// }
 }
 
 //! Read Constellation data record and grab cartesian positions of stars
@@ -281,18 +273,6 @@ void Constellation::drawArt(const Projector* prj, const Navigator* nav, shaderPr
 
 	shaderArt->setUniform("Intensity", intensity);
 	shaderArt->setUniform("Color", artColor);
-
-	// glBindVertexArray(constellation.vao);
-
-	// glEnableVertexAttribArray(0);
-	// glBindBuffer(GL_ARRAY_BUFFER,constellation.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glEnableVertexAttribArray(1);
-	// glBindBuffer(GL_ARRAY_BUFFER,constellation.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	constellationGL->fillVertexBuffer(BufferType::POS2D, vecPos.size(), vecPos.data());
 	constellationGL->fillVertexBuffer(BufferType::TEXTURE, vecTex.size(), vecTex.data());

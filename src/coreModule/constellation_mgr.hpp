@@ -238,7 +238,6 @@ private:
 	shaderProgram *shaderArt=nullptr;
 	shaderProgram *shaderBoundary=nullptr;
 	shaderProgram *shaderLines=nullptr;
-	//DataGL constellation;
 	std::unique_ptr<VertexArray> m_constellationGL;
 };
 
