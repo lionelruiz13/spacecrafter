@@ -156,12 +156,9 @@ void Constellation::drawName(s_font *constfont, const Projector* prj) const
 
 
 //! Draw the art texture, optimized function to be called thru a constellation manager only
-void Constellation::drawArt(const Projector* prj, const Navigator* nav, shaderProgram* &shaderArt, VertexArray *constellationGL)
+void Constellation::drawArt(const Projector* prj, const Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecTex)
 {
 	float intensity = art_fader.getInterstate();
-
-	std::vector<float> vecPos;
-	std::vector<float> vecTex;
 
 	if (art_tex && intensity) {
 		int tailleTab = 9;
@@ -264,26 +261,6 @@ void Constellation::drawArt(const Projector* prj, const Navigator* nav, shaderPr
 			}
 		}
 	}
-
-	if (vecPos.size()==0)
-		return;
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, art_tex->getID());
-
-	shaderArt->setUniform("Intensity", intensity);
-	shaderArt->setUniform("Color", artColor);
-
-	constellationGL->fillVertexBuffer(BufferType::POS2D, vecPos.size(), vecPos.data());
-	constellationGL->fillVertexBuffer(BufferType::TEXTURE, vecTex.size(), vecTex.data());
-
-	constellationGL->bind();
-	glDrawArrays(GL_LINES_ADJACENCY, 0, vecPos.size()/2);
-	constellationGL->unBind();
-	glBindVertexArray(0);
-
-	vecPos.clear();
-	vecTex.clear();
 }
 
 const Constellation* Constellation::isStarIn(const Object &s) const

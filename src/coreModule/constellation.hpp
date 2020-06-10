@@ -100,7 +100,7 @@ public:
 	void drawName(s_font * constfont,const  Projector* prj) const;
 	void drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity);
 	void drawLines(const Projector* prj, std::vector<float> &vLinesPos, std::vector<float> &vLinesColor);
-	void drawArt(const Projector* prj, const Navigator* nav, shaderProgram* &shaderArt, VertexArray *constellationGL);
+	void drawArt(const Projector* prj, const Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecTex);
 
 	void update(int delta_time);
 
@@ -138,6 +138,14 @@ public:
 	}
 
 	void getHPStarsFromAsterim(std::vector<unsigned int>& HpStarsFromAsterim) const;
+
+	float getArtIntensity() const {
+		return art_fader.getInterstate();
+	}
+
+	s_texture* getTexture() const {
+		return art_tex;
+	}
 
 private:
 	//! Translated name in UTF8 format (translated using gettext)

@@ -233,11 +233,8 @@ private:
 	float artMaxIntensity;
 
 	void createShader();
-	void deleteShader();
 
-	shaderProgram *shaderArt=nullptr;
-	shaderProgram *shaderBoundary=nullptr;
-	shaderProgram *shaderLines=nullptr;
+	std::unique_ptr<shaderProgram> m_shaderArt, m_shaderBoundary, m_shaderLines;
 	std::unique_ptr<VertexArray> m_constellationGL;
 };
 
