@@ -37,8 +37,11 @@
 
 
 
-shaderProgram* Image::shaderImageViewport=nullptr;
-shaderProgram* Image::shaderUnified=nullptr;
+// shaderProgram* Image::shaderImageViewport=nullptr;
+// shaderProgram* Image::shaderUnified=nullptr;
+
+std::unique_ptr<shaderProgram> Image::shaderImageViewport;
+std::unique_ptr<shaderProgram> Image::shaderUnified;
 
 // DataGL Image::sImage;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
@@ -179,10 +182,9 @@ Image::~Image()
 void Image::createShaderImageViewport()
 {
 	//VIEWPORT
-	shaderImageViewport = new shaderProgram();
+	shaderImageViewport = std::make_unique<shaderProgram>();
 	shaderImageViewport->init("imageViewport.vert","imageViewport.frag");
-	shaderImageViewport->setUniformLocation("fader");
-	shaderImageViewport->setUniformLocation("MVP");
+	shaderImageViewport->setUniformLocation({"fader", "MVP"});
 
 	// glGenVertexArrays(1,&sImage.vao);
 	// glBindVertexArray(sImage.vao);
@@ -195,12 +197,9 @@ void Image::createShaderImageViewport()
 
 void Image::createShaderUnified()
 {
-	shaderUnified = new shaderProgram();
+	shaderUnified = std::make_unique<shaderProgram>();
 	shaderUnified->init("imageUnified.vert","imageUnified.frag");
-	shaderUnified->setUniformLocation("fader");
-	shaderUnified->setUniformLocation("MVP");
-	shaderUnified->setUniformLocation("transparency");
-	shaderUnified->setUniformLocation("noColor");
+	shaderUnified->setUniformLocation({"fader","MVP","transparency","noColor"});
 
 	shaderUnified->setUniformLocation("ModelViewProjectionMatrix");
 	shaderUnified->setUniformLocation("inverseModelViewProjectionMatrix");
@@ -221,21 +220,21 @@ void Image::createGL_context()
 	m_imageViewportGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
 }
 
-void Image::deleteShaderUnified()
-{
-	if (shaderUnified) delete shaderUnified;
-	shaderUnified = nullptr;
-}
+// void Image::deleteShaderUnified()
+// {
+// 	if (shaderUnified) delete shaderUnified;
+// 	shaderUnified = nullptr;
+// }
 
-void Image::deleteShaderImageViewport()
-{
-	if (shaderImageViewport) delete shaderImageViewport;
-	shaderImageViewport = nullptr;
+// void Image::deleteShaderImageViewport()
+// {
+// 	if (shaderImageViewport) delete shaderImageViewport;
+// 	shaderImageViewport = nullptr;
 	
 	// glDeleteBuffers(1,&sImage.tex);
 	// glDeleteBuffers(1,&sImage.pos);
 	// glDeleteVertexArrays(1,&sImage.vao);
-}
+// }
 
 void Image::setAlpha(float alpha, float duration)
 {

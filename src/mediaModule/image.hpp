@@ -102,8 +102,11 @@ public:
 	static void deleteShaderUnified();
 	static void deleteShaderImageViewport();
 	
-	static shaderProgram *shaderImageViewport;
-	static shaderProgram *shaderUnified;
+	// static shaderProgram *shaderImageViewport;
+	// static shaderProgram *shaderUnified;
+
+	static std::unique_ptr<shaderProgram> shaderImageViewport;
+	static std::unique_ptr<shaderProgram> shaderUnified;
 
 private:
 	void drawViewport(const Navigator * nav, Projector * prj);

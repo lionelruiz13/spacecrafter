@@ -48,8 +48,8 @@ ImageMgr::~ImageMgr()
 {
 	currentImg = nullptr;
 	dropAllImages();
-	Image::deleteShaderUnified();
-	Image::deleteShaderImageViewport();
+	// Image::deleteShaderUnified();
+	// Image::deleteShaderImageViewport();
 }
 
 int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::string& coordinate)
