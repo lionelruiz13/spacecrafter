@@ -31,6 +31,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
@@ -38,6 +39,7 @@
 class s_texture;
 class Navigator;
 class Projector;
+class VertexArray;
 
 class Image : public NoCopy{
 
@@ -96,6 +98,7 @@ public:
 
 	static void createShaderUnified();
 	static void createShaderImageViewport();
+	static void createGL_context();
 	static void deleteShaderUnified();
 	static void deleteShaderImageViewport();
 	
@@ -131,7 +134,9 @@ private:
 
 	//OpenGL vars
 	std::vector<float> vecImgTex, vecImgPos;
-	static DataGL sImage;
+	//static DataGL sImage;
+	static std::unique_ptr<VertexArray> m_imageViewportGL;
+	static std::unique_ptr<VertexArray> m_imageUnifiedGL;
 
 	//active la transparence
 	bool transparency;

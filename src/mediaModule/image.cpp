@@ -30,20 +30,19 @@
 #include "coreModule/projector.hpp"
 #include "mediaModule/image.hpp"
 #include "navModule/navigator.hpp"
-//#include "tools/fmath.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/OpenGL.hpp"
 
 
 
 
 shaderProgram* Image::shaderImageViewport=nullptr;
-//~ shaderProgram* Image::shaderImageHorizontal=nullptr;
-//~ shaderProgram* Image::shaderImageDome=nullptr;
-//~ shaderProgram* Image::shaderImageEquatorial=nullptr;
 shaderProgram* Image::shaderUnified=nullptr;
 
-DataGL Image::sImage;
+// DataGL Image::sImage;
+std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
+std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 
 Image::Image(const Image* n, int i) {
 		//cas n=n;
@@ -174,9 +173,6 @@ Image::~Image()
 
 	vecImgPos.clear();
 	vecImgTex.clear();
-
-	// deleteShaderImageViewport();
-	// deleteShaderUnified();
 }
 
 
@@ -188,41 +184,13 @@ void Image::createShaderImageViewport()
 	shaderImageViewport->setUniformLocation("fader");
 	shaderImageViewport->setUniformLocation("MVP");
 
-	glGenVertexArrays(1,&sImage.vao);
-	glBindVertexArray(sImage.vao);
+	// glGenVertexArrays(1,&sImage.vao);
+	// glBindVertexArray(sImage.vao);
 
-	glGenBuffers(1,&sImage.pos);
-	glGenBuffers(1,&sImage.tex);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	
-	//~ //HORIZONTAL
-	//~ shaderImageHorizontal = new shaderProgram();
-	//~ shaderImageHorizontal->init("imageHorizontal.vert", "imageHorizontal.frag");
-	//~ shaderImageHorizontal->setUniformLocation("fader");
-	//~ shaderImageHorizontal->setUniformLocation("MVP");
-
-	//~ shaderImageHorizontal->setUniformLocation("ModelViewProjectionMatrix");
-	//~ shaderImageHorizontal->setUniformLocation("inverseModelViewProjectionMatrix");
-	//~ shaderImageHorizontal->setUniformLocation("ModelViewMatrix");
-
-	//~ //DOME
-	//~ shaderImageDome = new shaderProgram();
-	//~ shaderImageDome->init("imageDome.vert", "imageDome.frag");
-	//~ shaderImageDome->setUniformLocation("fader");
-	//~ shaderImageDome->setUniformLocation("MVP");
-
-	//~ shaderImageDome->setUniformLocation("ModelViewProjectionMatrix");
-	//~ shaderImageDome->setUniformLocation("inverseModelViewProjectionMatrix");
-	//~ shaderImageDome->setUniformLocation("ModelViewMatrix");
-
-	//~ //EQUATORIAL
-	//~ shaderImageEquatorial = new shaderProgram();
-	//~ shaderImageEquatorial->init("imageEquatorial.vert", "imageEquatorial.frag");
-	//~ shaderImageEquatorial->setUniformLocation("fader");
-	//~ shaderImageEquatorial->setUniformLocation("MVP");
-
-	//UNIFIED
+	// glGenBuffers(1,&sImage.pos);
+	// glGenBuffers(1,&sImage.tex);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
 }
 
 void Image::createShaderUnified()
@@ -242,6 +210,17 @@ void Image::createShaderUnified()
 	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project_fixed_fov");
 }
 
+void Image::createGL_context()
+{
+	m_imageUnifiedGL = std::make_unique<VertexArray>();
+	m_imageUnifiedGL->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
+	m_imageUnifiedGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
+
+	m_imageViewportGL = std::make_unique<VertexArray>();
+	m_imageViewportGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
+	m_imageViewportGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
+}
+
 void Image::deleteShaderUnified()
 {
 	if (shaderUnified) delete shaderUnified;
@@ -253,9 +232,9 @@ void Image::deleteShaderImageViewport()
 	if (shaderImageViewport) delete shaderImageViewport;
 	shaderImageViewport = nullptr;
 	
-	glDeleteBuffers(1,&sImage.tex);
-	glDeleteBuffers(1,&sImage.pos);
-	glDeleteVertexArrays(1,&sImage.vao);
+	// glDeleteBuffers(1,&sImage.tex);
+	// glDeleteBuffers(1,&sImage.pos);
+	// glDeleteVertexArrays(1,&sImage.vao);
 }
 
 void Image::setAlpha(float alpha, float duration)
@@ -575,244 +554,27 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	vecImgPos.push_back(-w);
 	vecImgPos.push_back(h);
 
-	glBindVertexArray(sImage.vao);
+	// glBindVertexArray(sImage.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	//UTILISATION DU SHADER
+	m_imageViewportGL->fillVertexBuffer(BufferType::POS2D,vecImgPos);
+	m_imageViewportGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+
 	shaderImageViewport->use();
-
-	//SET UNIFORM
 	shaderImageViewport->setUniform("fader", image_alpha);
 	shaderImageViewport->setUniform("MVP", MVP*TRANSFO);
-
+	m_imageViewportGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+	m_imageViewportGL->unBind();
 	shaderImageViewport->unuse();
 }
-
-//~ void Image::draw_horizontal(const Navigator * nav, Projector * prj)
-//~ {
-	//~ mat = nav->getLocalToEyeMat();
-	//~ Mat4f matrix=mat.convert();
-	//~ Mat4f proj = prj->getMatProjection().convert();
-
-	//~ // altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
-	//~ imagev = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
-	//~ ortho1 = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Vec3d(1,0,0);
-	//~ ortho2 = imagev^ortho1;
-
-	//~ grid_size = int(image_scale/5.);  // divisions per row, column
-	//~ if (grid_size < 5) grid_size = 5;
-
-	//~ for (int i=0; i<grid_size; i++) {
-
-		//~ for (int j=0; j<=grid_size; j++) {
-
-			//~ for (int k=0; k<=1; k++) {
-				//~ if (image_ratio<1) {
-					//~ // image height is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ imagev;
-				//~ } else {
-					//~ // image width is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ imagev;
-				//~ }
-				//~ vecImgTex.push_back((i+k)/(float)grid_size);
-				
-				//~ // l'image video est inversée
-				//~ if (needFlip)
-					//~ vecImgTex.push_back((grid_size-j)/(float)grid_size);
-				//~ else
-					//~ vecImgTex.push_back(j/(float)grid_size);
-
-				//~ vecImgPos.push_back(gridpt[0]);
-				//~ vecImgPos.push_back(gridpt[1]);
-				//~ vecImgPos.push_back(gridpt[2]);
-			//~ }
-		//~ }
-	//~ }
-
-	//~ glBindVertexArray(sImage.vao);
-
-	//~ shaderImageHorizontal->use();
-
-	//~ shaderImageHorizontal->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	//~ shaderImageHorizontal->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	//~ shaderImageHorizontal->setUniform("ModelViewMatrix",matrix);
-	//~ shaderImageHorizontal->setUniform("fader", image_alpha);
-	//~ shaderImageHorizontal->setUniform("MVP", proj*matrix);
-
-	//~ glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
-	//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
-	//~ glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	//~ glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
-	//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
-	//~ glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	//~ for(int i=0; i< grid_size; i++)
-		//~ glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
-
-	//~ vecImgPos.clear();
-	//~ vecImgTex.clear();
-//~ }
-
-//~ void Image::draw_dome(const Navigator * nav, Projector * prj)
-//~ {
-	//~ mat = nav->geTdomeMat();
-	//~ Mat4f matrix=mat.convert();
-	//~ Mat4f proj = prj->getMatProjection().convert();
-
-	//~ // altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
-	//~ imagev = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
-	//~ ortho1 = Mat4d::zrotation(-1*(image_ypos-90)*M_PI/180.) * Vec3d(1,0,0);
-	//~ ortho2 = imagev^ortho1;
-
-	//~ grid_size = int(image_scale/5.);  // divisions per row, column
-	//~ if (grid_size < 5) grid_size = 5;
-
-	//~ for (int i=0; i<grid_size; i++) {
-
-		//~ for (int j=0; j<=grid_size; j++) {
-			//~ for (int k=0; k<=1; k++) {
-				//~ // TODO: separate x, y scales?
-				//~ if (image_ratio<1) {
-					//~ // image height is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ imagev;
-				//~ } else {
-					//~ // image width is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ imagev;
-				//~ }
-
-				//~ vecImgTex.push_back((i+k)/(float)grid_size);
-				//~ // l'image video est inversée
-				//~ if (needFlip)
-					//~ vecImgTex.push_back((grid_size-j)/(float)grid_size);
-				//~ else
-					//~ vecImgTex.push_back(j/(float)grid_size);
-
-				//~ vecImgPos.push_back(gridpt[0]);
-				//~ vecImgPos.push_back(gridpt[1]);
-				//~ vecImgPos.push_back(gridpt[2]);
-			//~ }
-		//~ }
-	//~ }
-
-	//~ //UTILISATION DU SHADER
-	//~ shaderImageDome->use();
-
-	//~ //SET UNIFORM
-	//~ shaderImageDome->setUniform("fader", image_alpha);
-	//~ glBindVertexArray(sImage.vao);
-
-	//~ shaderImageDome->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	//~ shaderImageDome->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	//~ shaderImageDome->setUniform("ModelViewMatrix",matrix);
-	//~ shaderImageDome->setUniform("fader", image_alpha);
-	//~ shaderImageDome->setUniform("MVP", proj*matrix);
-
-		//~ glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
-		//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
-		//~ glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-		//~ glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
-		//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
-		//~ glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	//~ for(int i=0; i< grid_size; i++)
-		//~ glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
-
-	//~ vecImgPos.clear();
-	//~ vecImgTex.clear();
-//~ }
-
-//~ void Image::draw_equatorial_J2000(const Navigator * nav, Projector * prj)
-//~ {
-	//~ // equatorial is in current equatorial coordinates
-	//~ // j2000 is in J2000 epoch equatorial coordinates (precessed)
-	//~ // ypos is right ascension, xpos is declination
-	//~ imagev = Mat4d::zrotation((image_ypos-90)*M_PI/180.) * Mat4d::xrotation((image_xpos)*M_PI/180.) * Vec3d(0,1,0);
-	//~ ortho1 = Mat4d::zrotation(((image_ypos-90))*M_PI/180.) * Vec3d(1,0,0);
-	//~ ortho2 = imagev^ortho1;
-
-	//~ grid_size = int(image_scale/5.);  // divisions per row, column
-	//~ if (grid_size < 5) grid_size = 5;
-
-	//~ //UTILISATION DU SHADER
-	//~ shaderImageEquatorial->use();
-
-	//~ //SET UNIFORM
-	//~ shaderImageEquatorial->setUniform("fader", image_alpha);
-
-	//~ glBindVertexArray(sImage.vao);
-
-	//~ for (int i=0; i<grid_size; i++) {
-		//~ for (int j=0; j<=grid_size; j++) {
-			//~ for (int k=0; k<=1; k++) {
-
-				//~ if (image_ratio<1) {
-					//~ // image height is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale/image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ imagev;
-				//~ } else {
-					//~ // image width is maximum angular dimension
-					//~ gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         //~ imagev;
-				//~ }
-
-				//~ if ((image_pos_type == IMAGE_POSITIONING::POS_J2000 && prj->projectJ2000(gridpt, onscreen)) ||
-				        //~ (image_pos_type == IMAGE_POSITIONING::POS_EQUATORIAL && prj->projectEarthEqu(gridpt, onscreen))) {
-
-					//~ vecImgTex.push_back((i+k)/(float)grid_size);
-					//~ // l'image video est inversée
-					//~ if (needFlip)
-						//~ vecImgTex.push_back((grid_size-j)/(float)grid_size);
-					//~ else
-						//~ vecImgTex.push_back(j/(float)grid_size);
-					//~ //vecImgTex.push_back(j/(float)grid_size);
-
-					//~ vecImgPos.push_back(onscreen[0]);
-					//~ vecImgPos.push_back(onscreen[1]);
-				//~ }
-			//~ }
-		//~ }
-
-		//~ glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
-		//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
-		//~ glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-		//~ glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
-		//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
-		//~ glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-		//~ glDrawArrays(GL_TRIANGLE_STRIP, 0, vecImgPos.size()/2 );
-
-		//~ vecImgPos.clear();
-		//~ vecImgTex.clear();
-	//~ }
-//~ }
 
 
 void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
@@ -867,7 +629,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 		}
 	}
 
-	glBindVertexArray(sImage.vao);
+	// glBindVertexArray(sImage.vao);
 
 	shaderUnified->use();
 
@@ -884,17 +646,21 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	else
 		shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project");
 
-	glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
+	m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
+	// glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_imageUnifiedGL->bind();
 	for(int i=0; i< grid_size; i++)
 		glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
-
+	m_imageUnifiedGL->unBind();
 	shaderUnified->unuse();
 
 	vecImgPos.clear();

@@ -40,7 +40,8 @@ ImageMgr::ImageMgr()
 void ImageMgr::createImageShader()
 {
 	Image::createShaderUnified();
-	Image::createShaderImageViewport();	
+	Image::createShaderImageViewport();
+	Image::createGL_context();
 }
 
 ImageMgr::~ImageMgr()
