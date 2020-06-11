@@ -63,7 +63,7 @@ NebulaMgr::~NebulaMgr()
 	if (Nebula::nebulaFont) delete Nebula::nebulaFont;
 	Nebula::nebulaFont = nullptr;
 
-	deleteShaderHint();
+	//deleteShaderHint();
 	deleteShaderTex();
 
 	delete[] nebZones;
@@ -98,21 +98,21 @@ void NebulaMgr::deleteShaderTex()
 	glDeleteVertexArrays(1,&Nebula::nebulaTex.vao);
 }
 
-void NebulaMgr::deleteShaderHint()
-{
-	if (shaderNebulaHint)
-		delete shaderNebulaHint;
-	shaderNebulaHint = nullptr;
+// void NebulaMgr::deleteShaderHint()
+// {
+// 	if (shaderNebulaHint)
+// 		delete shaderNebulaHint;
+// 	shaderNebulaHint = nullptr;
 
 	// glDeleteBuffers(1,&nebulaHint.pos);
 	// glDeleteBuffers(1,&nebulaHint.tex);
 	// glDeleteBuffers(1,&nebulaHint.color);
 	// glDeleteVertexArrays(1,&nebulaHint.vao);
-}
+// }
 
 void NebulaMgr::createShaderHint()
 {
-	shaderNebulaHint = new shaderProgram();
+	shaderNebulaHint = std::make_unique<shaderProgram>();
 	shaderNebulaHint->init("nebulaHint.vert","nebulaHint.frag");
 	shaderNebulaHint->setUniformLocation("fader");
 }
@@ -320,8 +320,8 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 
 	shaderNebulaHint->use();
 	shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
-	std::cout << "fader " << hintsFader.getInterstate() << std::endl;
-	std::cout << "size " << vecHintPos.size() << std::endl;
+	//std::cout << "fader " << hintsFader.getInterstate() << std::endl;
+	//std::cout << "size " << vecHintPos.size() << std::endl;
 
 	glBindTexture (GL_TEXTURE_2D, Nebula::tex_NEBULA->getID());
 

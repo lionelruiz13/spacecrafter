@@ -40,6 +40,7 @@ class VertexArray;
 /*! \class NebulaMgr
   * \brief NebulaMgr handles all deepsky_objects DSO.
   */
+
 class NebulaMgr : public NoCopy {
 public:
 	NebulaMgr();
@@ -223,7 +224,7 @@ protected:
 	void createShaderHint();
 	void createShaderTex();
 	void deleteShaderTex();
-	void deleteShaderHint();
+	//void deleteShaderHint();
 	void createGL_context();
 	void drawAllHint(const Projector* prj);
 
@@ -240,7 +241,8 @@ private:
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed
 
-	shaderProgram *shaderNebulaHint;
+	//shaderProgram *shaderNebulaHint;
+	std::unique_ptr<shaderProgram> shaderNebulaHint;
 	//DataGL nebulaHint;
 	std::unique_ptr<VertexArray> m_hintGL;
 
