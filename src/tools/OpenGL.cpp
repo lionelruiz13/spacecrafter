@@ -221,8 +221,13 @@ void VertexArray::registerVertexBuffer(const BufferType& bt, const BufferAccess&
     this->unBind();
 }
 
+void VertexArray::fillVertexBuffer(const BufferType& bt, const std::vector<float> data)
+{
+    this->fillVertexBuffer(bt,data.size(), data.data());
+}
 
-void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size , const void* data)
+
+void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size , const float* data)
 {
     auto it= m_buffer.find(bt);
     if( it == m_buffer.end() ){

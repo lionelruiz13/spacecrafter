@@ -25,6 +25,7 @@
 #define OPENGL_HPP
 
 #include <map>
+#include <vector>
 #include <memory>
 #include <GL/glew.h>
 
@@ -102,7 +103,8 @@ public:
 
     void registerVertexBuffer(const BufferType& bt, const BufferAccess& ba);
 
-    void fillVertexBuffer(const BufferType& bt, unsigned int size , const void* data);
+    void fillVertexBuffer(const BufferType& bt, unsigned int size , const float* data);
+    void fillVertexBuffer(const BufferType& bt, const std::vector<float> data);
 
     void registerIndexBuffer(const BufferAccess& ba);
 
