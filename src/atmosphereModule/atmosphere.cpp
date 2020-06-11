@@ -86,7 +86,7 @@ void Atmosphere::initGridPos()
 		}
 	}
 
-	m_atmGL->fillVertexBuffer(BufferType::POS2D, dataPos.size(), dataPos.data());
+	m_atmGL->fillVertexBuffer(BufferType::POS2D, dataPos);
 	dataPos.clear();
 }
 
@@ -234,7 +234,7 @@ void Atmosphere::fillOutDataColor()
 			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+(y+1)*stepY));
 		}
 	}
-	m_atmGL->fillVertexBuffer(BufferType::COLOR, dataColor.size(), dataColor.data());
+	m_atmGL->fillVertexBuffer(BufferType::COLOR, dataColor);
 }
 
 void Atmosphere::draw(const Projector* prj, const std::string &planetName)

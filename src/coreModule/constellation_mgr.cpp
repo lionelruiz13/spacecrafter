@@ -373,8 +373,8 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 		m_shaderArt->setUniform("Intensity", (*iter)->getArtIntensity());
 		m_shaderArt->setUniform("Color", getArtColor());
 
-		m_constellationGL->fillVertexBuffer(BufferType::POS2D, vecPos.size(), vecPos.data());
-		m_constellationGL->fillVertexBuffer(BufferType::TEXTURE, vecTex.size(), vecTex.data());
+		m_constellationGL->fillVertexBuffer(BufferType::POS2D, vecPos);
+		m_constellationGL->fillVertexBuffer(BufferType::TEXTURE, vecTex);
 
 		m_constellationGL->bind();
 		glDrawArrays(GL_LINES_ADJACENCY, 0, vecPos.size()/2);
@@ -408,8 +408,8 @@ void ConstellationMgr::drawLines(const Projector * prj)
 
 	m_shaderLines->use();
 
-	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vLinesPos.size(),vLinesPos.data());
-	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vLinesColor.size(),vLinesColor.data());
+	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vLinesPos);
+	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vLinesColor);
 
 	m_constellationGL->bind();
 	glDrawArrays(GL_LINES, 0, vLinesPos.size()/2);
@@ -440,8 +440,8 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 
 	m_shaderBoundary->setUniform("Color", boundaryColor);
 
-	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vBoundariesPos.size(),vBoundariesPos.data());
-	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vBoundariesIntensity.size(),vBoundariesIntensity.data());
+	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vBoundariesPos);
+	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vBoundariesIntensity);
 
 	m_constellationGL->bind();
 	glDrawArrays(GL_LINES, 0, vBoundariesPos.size()/2);

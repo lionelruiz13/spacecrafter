@@ -696,9 +696,9 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	//dessin des etoiles
 	shaderStars->use();
 
-	m_starsGL->fillVertexBuffer(BufferType::POS2D, dataPos.size(),dataPos.data());
-	m_starsGL->fillVertexBuffer(BufferType::COLOR, dataColor.size(),dataColor.data());
-	m_starsGL->fillVertexBuffer(BufferType::MAG, dataMag.size(),dataMag.data());
+	m_starsGL->fillVertexBuffer(BufferType::POS2D, dataPos);
+	m_starsGL->fillVertexBuffer(BufferType::COLOR, dataColor);
+	m_starsGL->fillVertexBuffer(BufferType::MAG, dataMag);
 
 	StateGL::enable(GL_BLEND);
 	glActiveTexture(GL_TEXTURE0);

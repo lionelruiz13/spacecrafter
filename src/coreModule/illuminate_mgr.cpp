@@ -262,9 +262,9 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 
 	m_shaderIllum->setUniform("ModelViewMatrix", prj->getMatJ2000ToEye());
 
-	m_illumGL->fillVertexBuffer(BufferType::POS3D, illumPos.size(), illumPos.data() );
-	m_illumGL->fillVertexBuffer(BufferType::TEXTURE, illumTex.size(), illumTex.data());
-	m_illumGL->fillVertexBuffer(BufferType::COLOR, illumColor.size(), illumColor.data());
+	m_illumGL->fillVertexBuffer(BufferType::POS3D, illumPos);
+	m_illumGL->fillVertexBuffer(BufferType::TEXTURE, illumTex);
+	m_illumGL->fillVertexBuffer(BufferType::COLOR, illumColor);
 
 	m_illumGL->bind();
 	for(int i=0;i<nbrIllumToTrace; i++)
