@@ -8,7 +8,7 @@
 
 layout (binding=0) uniform sampler2D mapTexture;
 uniform float fader;
-smooth in vec4 Color;
+smooth in vec3 Color;
 
 smooth in vec2 TexCoord;
  
@@ -22,7 +22,7 @@ void main(void)
 	tex_color.r = tex_color.r * Color.r;
 	tex_color.g = tex_color.g * Color.g;
 	tex_color.b = tex_color.b * Color.b;
-	tex_color.a *= fader;
+	tex_color.a = fader;
 
 	FragColor = tex_color;
 }

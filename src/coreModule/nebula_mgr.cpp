@@ -33,6 +33,7 @@
 #include "navModule/navigator.hpp"
 #include "tools/translator.hpp"
 #include "tools/log.hpp"
+#include "tools/OpenGL.hpp"
 //#include "tools/fmath.hpp"
 
 
@@ -46,6 +47,7 @@ NebulaMgr::NebulaMgr(void)
 
 	createShaderHint();
 	createShaderTex();
+	createGL_context();
 }
 
 NebulaMgr::~NebulaMgr()
@@ -102,10 +104,10 @@ void NebulaMgr::deleteShaderHint()
 		delete shaderNebulaHint;
 	shaderNebulaHint = nullptr;
 
-	glDeleteBuffers(1,&nebulaHint.pos);
-	glDeleteBuffers(1,&nebulaHint.tex);
-	glDeleteBuffers(1,&nebulaHint.color);
-	glDeleteVertexArrays(1,&nebulaHint.vao);
+	// glDeleteBuffers(1,&nebulaHint.pos);
+	// glDeleteBuffers(1,&nebulaHint.tex);
+	// glDeleteBuffers(1,&nebulaHint.color);
+	// glDeleteVertexArrays(1,&nebulaHint.vao);
 }
 
 void NebulaMgr::createShaderHint()
@@ -113,17 +115,25 @@ void NebulaMgr::createShaderHint()
 	shaderNebulaHint = new shaderProgram();
 	shaderNebulaHint->init("nebulaHint.vert","nebulaHint.frag");
 	shaderNebulaHint->setUniformLocation("fader");
+}
 
-	glGenVertexArrays(1,&nebulaHint.vao);
-	glBindVertexArray(nebulaHint.vao);
+void NebulaMgr::createGL_context()
+{
+	m_hintGL = std::make_unique<VertexArray>();
+	m_hintGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	m_hintGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
+	m_hintGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
 
-	glGenBuffers(1,&nebulaHint.tex);
-	glGenBuffers(1,&nebulaHint.color);
-	glGenBuffers(1,&nebulaHint.pos);
+	// glGenVertexArrays(1,&nebulaHint.vao);
+	// glBindVertexArray(nebulaHint.vao);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	// glGenBuffers(1,&nebulaHint.tex);
+	// glGenBuffers(1,&nebulaHint.color);
+	// glGenBuffers(1,&nebulaHint.pos);
+
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
 }
 
 
@@ -310,33 +320,41 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 
 	shaderNebulaHint->use();
 	shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
+	std::cout << "fader " << hintsFader.getInterstate() << std::endl;
+	std::cout << "size " << vecHintPos.size() << std::endl;
 
 	glBindTexture (GL_TEXTURE_2D, Nebula::tex_NEBULA->getID());
 
-	glBindVertexArray(nebulaHint.vao);
+	// glBindVertexArray(nebulaHint.vao);
 
 	if(vecHintPos.size()>0) {
-		glBindBuffer(GL_ARRAY_BUFFER,nebulaHint.pos);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintPos.size(),vecHintPos.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ARRAY_BUFFER,nebulaHint.tex);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintTex.size(),vecHintTex.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ARRAY_BUFFER,nebulaHint.pos);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintPos.size(),vecHintPos.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ARRAY_BUFFER,nebulaHint.color);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintColor.size(),vecHintColor.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ARRAY_BUFFER,nebulaHint.tex);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintTex.size(),vecHintTex.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
+		// glBindBuffer(GL_ARRAY_BUFFER,nebulaHint.color);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintColor.size(),vecHintColor.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+		m_hintGL->fillVertexBuffer(BufferType::POS2D, vecHintPos);
+		m_hintGL->fillVertexBuffer(BufferType::TEXTURE, vecHintTex);
+		m_hintGL->fillVertexBuffer(BufferType::COLOR, vecHintColor);
+
+		m_hintGL->bind();
 		for(unsigned int i=0; i < (vecHintPos.size()/8) ; i++)
 			glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
+		m_hintGL->unBind();
 
 		vecHintPos.clear();
 		vecHintTex.clear();
 		vecHintColor.clear();
-
 	}
-	glBindVertexArray(0);
+	// glBindVertexArray(0);
 	shaderNebulaHint->unuse();
 }
 

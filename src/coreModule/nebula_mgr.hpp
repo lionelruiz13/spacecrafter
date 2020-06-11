@@ -28,13 +28,14 @@
 #define _NEBULA_MGR_H_
 
 #include <vector>
+#include <memory>
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/grid.hpp"
 #include "coreModule/nebula.hpp"
 #include "tools/no_copy.hpp"
 
-
+class VertexArray;
 
 /*! \class NebulaMgr
   * \brief NebulaMgr handles all deepsky_objects DSO.
@@ -223,6 +224,7 @@ protected:
 	void createShaderTex();
 	void deleteShaderTex();
 	void deleteShaderHint();
+	void createGL_context();
 	void drawAllHint(const Projector* prj);
 
 private:
@@ -239,7 +241,8 @@ private:
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed
 
 	shaderProgram *shaderNebulaHint;
-	DataGL nebulaHint;
+	//DataGL nebulaHint;
+	std::unique_ptr<VertexArray> m_hintGL;
 
 	std::vector<float> vecHintPos;		//!< array of coordinates of the nebula's position
 	std::vector<float> vecHintTex;		//!< array of coordinates of the nebula's texture

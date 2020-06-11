@@ -9,7 +9,7 @@
 //layout
 layout (location=0)in vec2 position;
 layout (location=1)in vec2 texCoord;
-layout (location=2)in vec4 color;
+layout (location=3)in vec3 color;
 
 //externe
 //~ uniform mat4 ModelViewProjectionMatrix;
@@ -27,7 +27,7 @@ layout (std140) uniform cam_block
 
 //out
 smooth out vec2 TexCoord;
-smooth out vec4 Color;
+smooth out vec3 Color;
 
 
 void main()
