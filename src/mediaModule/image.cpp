@@ -35,15 +35,8 @@
 #include "tools/OpenGL.hpp"
 
 
-
-
-// shaderProgram* Image::shaderImageViewport=nullptr;
-// shaderProgram* Image::shaderUnified=nullptr;
-
 std::unique_ptr<shaderProgram> Image::shaderImageViewport;
 std::unique_ptr<shaderProgram> Image::shaderUnified;
-
-// DataGL Image::sImage;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 
@@ -170,6 +163,7 @@ void Image::initCache(Projector * prj)
 	initialised = true;
 }
 
+
 Image::~Image()
 {
 	if (image_tex) delete image_tex;
@@ -185,15 +179,8 @@ void Image::createShaderImageViewport()
 	shaderImageViewport = std::make_unique<shaderProgram>();
 	shaderImageViewport->init("imageViewport.vert","imageViewport.frag");
 	shaderImageViewport->setUniformLocation({"fader", "MVP"});
-
-	// glGenVertexArrays(1,&sImage.vao);
-	// glBindVertexArray(sImage.vao);
-
-	// glGenBuffers(1,&sImage.pos);
-	// glGenBuffers(1,&sImage.tex);
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
 }
+
 
 void Image::createShaderUnified()
 {
@@ -209,6 +196,7 @@ void Image::createShaderUnified()
 	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project_fixed_fov");
 }
 
+
 void Image::createGL_context()
 {
 	m_imageUnifiedGL = std::make_unique<VertexArray>();
@@ -220,21 +208,6 @@ void Image::createGL_context()
 	m_imageViewportGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
 }
 
-// void Image::deleteShaderUnified()
-// {
-// 	if (shaderUnified) delete shaderUnified;
-// 	shaderUnified = nullptr;
-// }
-
-// void Image::deleteShaderImageViewport()
-// {
-// 	if (shaderImageViewport) delete shaderImageViewport;
-// 	shaderImageViewport = nullptr;
-	
-	// glDeleteBuffers(1,&sImage.tex);
-	// glDeleteBuffers(1,&sImage.pos);
-	// glDeleteVertexArrays(1,&sImage.vao);
-// }
 
 void Image::setAlpha(float alpha, float duration)
 {
@@ -345,6 +318,7 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 	y_move = y_move / (1000.f*duration);
 }
 
+
 void Image::setRatio(float ratio, float duration)
 {
 	if (duration <= 0) {
@@ -359,6 +333,7 @@ void Image::setRatio(float ratio, float duration)
 	coef_ratio = (ratio-start_ratio)/end_time_ratio;
 	my_timer_ratio = 0;
 }
+
 
 bool Image::update(int delta_time)
 {
@@ -450,6 +425,7 @@ bool Image::update(int delta_time)
 	return 1;
 }
 
+
 void Image::draw(const Navigator * nav, Projector * prj)
 {
 	if (image_ratio < 0 || image_alpha == 0) return;
@@ -469,25 +445,21 @@ void Image::draw(const Navigator * nav, Projector * prj)
 
 		case IMAGE_POSITIONING::POS_HORIZONTAL:
 			mat = nav->getLocalToEyeMat();
-			//~ draw_horizontal(nav, prj);
 			drawUnified(false, nav, prj);
 			break;
 
 		case IMAGE_POSITIONING::POS_DOME:
 			mat = nav->getDomeFixedMat();
-			//~ draw_dome(nav, prj);
 			drawUnified(false, nav, prj);
 			break;
 
 		case IMAGE_POSITIONING::POS_J2000:
 			mat = nav->getJ2000ToEyeMat();
-			//~ draw_equatorial_J2000(nav, prj);
 			drawUnified(true, nav, prj);
 			break;
 
 		case IMAGE_POSITIONING::POS_EQUATORIAL:
 			mat = nav->getEarthEquToEyeMat();
-			//~ draw_equatorial_J2000(nav, prj);
 			drawUnified(true, nav, prj);
 			break;
 
@@ -499,7 +471,6 @@ void Image::draw(const Navigator * nav, Projector * prj)
 	vecImgPos.clear();
 	vecImgTex.clear();
 
-	//~ glUseProgram(0);
 	StateGL::disable(GL_BLEND);
 }
 
@@ -552,16 +523,6 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	vecImgPos.push_back(h);
 	vecImgPos.push_back(-w);
 	vecImgPos.push_back(h);
-
-	// glBindVertexArray(sImage.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	m_imageViewportGL->fillVertexBuffer(BufferType::POS2D,vecImgPos);
 	m_imageViewportGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
@@ -628,8 +589,6 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 		}
 	}
 
-	// glBindVertexArray(sImage.vao);
-
 	shaderUnified->use();
 
 	shaderUnified->setUniform("ModelViewProjectionMatrix",proj*matrix);
@@ -648,14 +607,6 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
 	m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
 
-	// glBindBuffer(GL_ARRAY_BUFFER,sImage.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgPos.size(),vecImgPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,sImage.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecImgTex.size(),vecImgTex.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
 	m_imageUnifiedGL->bind();
 	for(int i=0; i< grid_size; i++)
 		glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
@@ -665,4 +616,3 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	vecImgPos.clear();
 	vecImgTex.clear();
 }
-
