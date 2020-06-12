@@ -28,7 +28,6 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/log.hpp"
-//#include "tools/fmath.hpp"
 #include "tools/OpenGL.hpp"
 
 
@@ -68,44 +67,26 @@ void Illuminate::draw(const Projector* prj, std::vector<float> &position, std::v
 	Vec3f pos;
 
 	//color
-	// for(int i=0; i<4; i++)
-		// for(int j=0; j<3; j++)
-			// color.push_back(texColor[j]);
 	insert_vec3(color, texColor,4);
 
 	//texture
-	// float texPosition[8] = {1.0,0.0, 1.0,1.0, 0.0,0.0, 0.0,1.0 };
-	// for(int j=0; j<8; j++)
-	// 	texture.push_back(texPosition[j]);
 	insert_all(texture, 1.0,0.0, 1.0,1.0, 0.0,0.0, 0.0,1.0 );
 
 	//position
 	//~ glTexCoord2i(1,0);              // Bottom Right
 	// prj->projectJ2000(texQuadVertex[0],v);
-	// pos = v;
-	// for(int i=0; i<3; i++)
-	// 	position.push_back(texQuadVertex[0][i]);
 	insert_vec3(position, texQuadVertex[0]);
 
 	//~ glTexCoord2i(1,1);              // Top Right
 	// prj->projectJ2000(texQuadVertex[2],v);
-	// pos = v;
-	// for(int i=0; i<3; i++)
-		// position.push_back(texQuadVertex[2][i]);
 	insert_vec3(position, texQuadVertex[2]);
 
 	//~ glTexCoord2i(0,0);              // Bottom Left
 	// prj->projectJ2000(texQuadVertex[1],v);
-	// pos = v;
-	// for(int i=0; i<3; i++)
-	// 	position.push_back(texQuadVertex[1][i]);
 	insert_vec3(position, texQuadVertex[1]);
 	
 	//~ glTexCoord2i(0,1);              // Top Left
 	// prj->projectJ2000(texQuadVertex[3],v);
-	// pos = v;
-	// for(int i=0; i<3; i++)
-	// 	position.push_back(texQuadVertex[3][i]);
 	insert_vec3(position, texQuadVertex[3]);
 }
 
