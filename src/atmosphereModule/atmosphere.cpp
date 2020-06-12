@@ -222,14 +222,16 @@ void Atmosphere::fillOutDataColor()
 	dataColor.clear();
 	for (int y=0; y<SKY_RESOLUTION; y++) {
 		for (int x=0; x<SKY_RESOLUTION+1; x++) {
-			dataColor.push_back(tab_sky[x][y][0]);
-			dataColor.push_back(tab_sky[x][y][1]);
-			dataColor.push_back(tab_sky[x][y][2]);
+			// dataColor.push_back(tab_sky[x][y][0]);
+			// dataColor.push_back(tab_sky[x][y][1]);
+			// dataColor.push_back(tab_sky[x][y][2]);
+			insert_vec3(dataColor,tab_sky[x][y]);
 			//~ glColor3fv(tab_sky[x][y]);
 			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+y*stepY));
-			dataColor.push_back(tab_sky[x][y+1][0]);
-			dataColor.push_back(tab_sky[x][y+1][1]);
-			dataColor.push_back(tab_sky[x][y+1][2]);
+			// dataColor.push_back(tab_sky[x][y+1][0]);
+			// dataColor.push_back(tab_sky[x][y+1][1]);
+			// dataColor.push_back(tab_sky[x][y+1][2]);
+			insert_vec3(dataColor,tab_sky[x][y+1]);
 			//~ glColor3fv(tab_sky[x][y+1]);
 			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+(y+1)*stepY));
 		}

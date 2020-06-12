@@ -496,33 +496,36 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 
 	// l'image video est inversée
 	if (needFlip) {
-		vecImgTex.push_back(0);
-		vecImgTex.push_back(1);
-		vecImgTex.push_back(0);
-		vecImgTex.push_back(0);
-		vecImgTex.push_back(1);
-		vecImgTex.push_back(1);
-		vecImgTex.push_back(1);
-		vecImgTex.push_back(0);
+		// vecImgTex.push_back(0);
+		// vecImgTex.push_back(1);
+		// vecImgTex.push_back(0);
+		// vecImgTex.push_back(0);
+		// vecImgTex.push_back(1);
+		// vecImgTex.push_back(1);
+		// vecImgTex.push_back(1);
+		// vecImgTex.push_back(0);
+		insert_all(vecImgTex,0,1,0,0,1,1,1,0);
 	} else {
-		vecImgTex.push_back(0);
-		vecImgTex.push_back(0);
-		vecImgTex.push_back(0);
-		vecImgTex.push_back(1);
-		vecImgTex.push_back(1);
-		vecImgTex.push_back(0);
-		vecImgTex.push_back(1);
-		vecImgTex.push_back(1);
+		// vecImgTex.push_back(0);
+		// vecImgTex.push_back(0);
+		// vecImgTex.push_back(0);
+		// vecImgTex.push_back(1);
+		// vecImgTex.push_back(1);
+		// vecImgTex.push_back(0);
+		// vecImgTex.push_back(1);
+		// vecImgTex.push_back(1);
+		insert_all(vecImgTex,0,0,0,1,1,0,1,1);
 	}
 
-	vecImgPos.push_back(w);
-	vecImgPos.push_back(-h);
-	vecImgPos.push_back(-w);
-	vecImgPos.push_back(-h);
-	vecImgPos.push_back(w);
-	vecImgPos.push_back(h);
-	vecImgPos.push_back(-w);
-	vecImgPos.push_back(h);
+	// vecImgPos.push_back(w);
+	// vecImgPos.push_back(-h);
+	// vecImgPos.push_back(-w);
+	// vecImgPos.push_back(-h);
+	// vecImgPos.push_back(w);
+	// vecImgPos.push_back(h);
+	// vecImgPos.push_back(-w);
+	// vecImgPos.push_back(h);
+	insert_all(vecImgPos, w, -h, -w, -h, w, h, -w, h); 
 
 	m_imageViewportGL->fillVertexBuffer(BufferType::POS2D,vecImgPos);
 	m_imageViewportGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
@@ -582,9 +585,10 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 				else
 					vecImgTex.push_back(j/(float)grid_size);
 
-				vecImgPos.push_back(gridpt[0]);
-				vecImgPos.push_back(gridpt[1]);
-				vecImgPos.push_back(gridpt[2]);
+				// vecImgPos.push_back(gridpt[0]);
+				// vecImgPos.push_back(gridpt[1]);
+				// vecImgPos.push_back(gridpt[2]);
+				insert_vec3(vecImgPos, gridpt);
 			}
 		}
 	}
