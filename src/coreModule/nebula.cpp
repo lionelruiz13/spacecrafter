@@ -363,22 +363,23 @@ void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<f
 
 	if (displaySpecificHint) {
 		//~ printf("color specific: %f %f %f\n", neb_color[0] , neb_color[1] , neb_color[2]);
-		vecHintColor.push_back( neb_color[0] );
-		vecHintColor.push_back(  neb_color[1] );
-		vecHintColor.push_back( neb_color[2] );
+		// vecHintColor.push_back( neb_color[0] );
+		// vecHintColor.push_back(  neb_color[1] );
+		// vecHintColor.push_back( neb_color[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
-		vecHintColor.push_back( neb_color[0] );
-		vecHintColor.push_back(  neb_color[1] );
-		vecHintColor.push_back( neb_color[2] );
+		// vecHintColor.push_back( neb_color[0] );
+		// vecHintColor.push_back(  neb_color[1] );
+		// vecHintColor.push_back( neb_color[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
-		vecHintColor.push_back( neb_color[0] );
-		vecHintColor.push_back(  neb_color[1] );
-		vecHintColor.push_back( neb_color[2] );
+		// vecHintColor.push_back( neb_color[0] );
+		// vecHintColor.push_back(  neb_color[1] );
+		// vecHintColor.push_back( neb_color[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
-		vecHintColor.push_back( neb_color[0] );
-		vecHintColor.push_back(  neb_color[1] );
-		vecHintColor.push_back( neb_color[2] );
+		// vecHintColor.push_back( neb_color[0] );
+		// vecHintColor.push_back(  neb_color[1] );
+		// vecHintColor.push_back( neb_color[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
+		insert_vec3(vecHintColor, neb_color, 4);
 
 		// vecHintTex.push_back( posTex[0] );
 		// vecHintTex.push_back( posTex[1] );
@@ -392,23 +393,23 @@ void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<f
 
 	} else {
 		//~ printf("color circle: %f %f %f\n",circleColor[0], circleColor[1], circleColor[2]);
-		vecHintColor.push_back( circleColor[0] );
-		vecHintColor.push_back(  circleColor[1] );
-		vecHintColor.push_back( circleColor[2] );
+		// vecHintColor.push_back( circleColor[0] );
+		// vecHintColor.push_back(  circleColor[1] );
+		// vecHintColor.push_back( circleColor[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
-		vecHintColor.push_back( circleColor[0] );
-		vecHintColor.push_back(  circleColor[1] );
-		vecHintColor.push_back( circleColor[2] );
+		// vecHintColor.push_back( circleColor[0] );
+		// vecHintColor.push_back(  circleColor[1] );
+		// vecHintColor.push_back( circleColor[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
-		vecHintColor.push_back( circleColor[0] );
-		vecHintColor.push_back(  circleColor[1] );
-		vecHintColor.push_back( circleColor[2] );
+		// vecHintColor.push_back( circleColor[0] );
+		// vecHintColor.push_back(  circleColor[1] );
+		// vecHintColor.push_back( circleColor[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
-		vecHintColor.push_back( circleColor[0] );
-		vecHintColor.push_back(  circleColor[1] );
-		vecHintColor.push_back( circleColor[2] );
+		// vecHintColor.push_back( circleColor[0] );
+		// vecHintColor.push_back(  circleColor[1] );
+		// vecHintColor.push_back( circleColor[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
-
+		insert_vec3(vecHintColor, circleColor, 4);
 		// vecHintTex.push_back(0.75);
 		// vecHintTex.push_back(0.);
 		// vecHintTex.push_back(1.0);

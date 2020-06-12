@@ -46,6 +46,7 @@
 #include <cstring>
 #include <cstdio>
 #include <iostream>
+#include <vector>
 
 template<class T> class Vector2;
 template<class T> class Vector3;
@@ -316,13 +317,29 @@ public:
 
 // ------------------------------------------------------------------
 //
-// Somme constantes
+// Somme constantes and usefull functions
 //
 // ------------------------------------------------------------------
 
 
 const Vec3f v3fNull = Vec3f(0.0f, 0.0f, 0.0f);
-const Vec3f v3dNull = Vec3d(0.0f, 0.0f, 0.0f);
+const Vec3f v3dNull = Vec3d(0.0, 0.0, 0.0);
+
+template <typename T, typename U>
+void insert_vec3(std::vector<T>& vecDest, const Vector3<U>& vecSrc, unsigned short howMush = 1)
+{
+	for(auto j=0; j< howMush;j++)
+		for (int i=0;i<3;i++)
+			vecDest.push_back(vecSrc[i]);
+}
+
+template <typename T, typename U>
+void insert_vec4(std::vector<T>& vecDest, const Vector4<U>& vecSrc, unsigned short howMush = 1)
+{
+	for(auto j=0; j< howMush;j++)
+		for (int i=0;i<4;i++)
+			vecDest.push_back(vecSrc[i]);
+}
 
 // -------------------------------------------------------------------
 //
