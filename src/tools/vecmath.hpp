@@ -103,7 +103,7 @@ public:
 	inline Vector2 operator-() const;
 	inline Vector2 operator+() const;
 
-	inline Vector2 operator^(T) const;
+	inline Vector2 operator^(const Vector2<T>&) const;
 	inline Vector2 operator*(T) const;
 	inline Vector2 operator/(T) const;
 
@@ -130,6 +130,7 @@ public:
 	inline Vector3();
 	inline Vector3(const Vector3&);
 	inline Vector3(const Vector4<T>&);
+	inline Vector3(const Vector2<T>&,const T&z=0);
 	template <class T2> inline Vector3(const Vector3<T2>&);
 	inline Vector3(T, T, T);
 
@@ -514,10 +515,9 @@ template<class T> Vector2<T> Vector2<T>::operator-(const Vector2<T>& b) const
 //! cross product
 //! @param b the other vector to calaculate the cross product.
 //!
-template<class T> Vector2<T> Vector2<T>::operator^(T b) const
+template<class T> Vector2<T> Vector2<T>::operator^(const Vector2<T>& b) const
 {
-	Vector2<T>r(v[0]*b.v[1]-v[1]*b.v[0]);
-	return r;
+	return Vector2<T>(v[0]*b.v[1]-v[1]*b.v[0]);
 }
 //!  * operator
 //! @param b the other vector to multiply
@@ -608,8 +608,6 @@ template<class T> Vector3<float> Vector3<T>::convert() const
 }
 
 
-
-
 //! default constructor. Set all to 0.
 template<class T> Vector3<T>::Vector3()
 {
@@ -654,6 +652,13 @@ template<class T> Vector3<T>::Vector3(T x, T y, T z)
 	v[0]=x;
 	v[1]=y;
 	v[2]=z;
+}
+
+template<class T> Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
+{
+    v[0]=vec2.v[0];
+    v[1]=vec2.v[1];
+    v[2]=z;
 }
 
 //! = operator.
