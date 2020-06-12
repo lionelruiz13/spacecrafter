@@ -222,9 +222,6 @@ protected:
 	//! \return return true if all texture pictograms are correctly loaded false  owerwise
 	bool initTexPicto();
 	void createShaderHint();
-	// void createShaderTex();
-	// void deleteShaderTex();
-	//void deleteShaderHint();
 	void createGL_context();
 	void drawAllHint(const Projector* prj);
 
@@ -241,14 +238,12 @@ private:
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed
 
-	//shaderProgram *shaderNebulaHint;
 	std::unique_ptr<shaderProgram> shaderNebulaHint;
-	//DataGL nebulaHint;
 	std::unique_ptr<VertexArray> m_hintGL;
 
 	std::vector<float> vecHintPos;		//!< array of coordinates of the nebula's position
 	std::vector<float> vecHintTex;		//!< array of coordinates of the nebula's texture
-	std::vector<float> vecHintColor;		//!< array of the nebula's color
+	std::vector<float> vecHintColor;	//!< array of the nebula's color
 };
 
 #endif // _NEBULA_MGR_H_

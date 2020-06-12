@@ -192,7 +192,6 @@ private:
 	nebula_type DSOType;			// say what type of nebula it is
 
 	s_texture * neb_tex = nullptr;	// Texture
-	//float sDataTex[8];				// The 8 indices for the 4 vertex
 	std::vector<float> sDataPos;	//all coordonates points for the 4 vertex
 	float luminance;				// Object luminance to use (value computed to compensate the texture avergae luminosity)
 	float tex_avg_luminance;        // avg luminance of the texture (saved here for performance)
@@ -214,9 +213,7 @@ private:
 
 	static s_texture * tex_NEBULA;
 
-	//static shaderProgram * shaderNebulaTex;
 	static std::unique_ptr<shaderProgram> shaderNebulaTex;
-	//static DataGL nebulaTex;
 	static std::unique_ptr<VertexArray> m_texGL;
 
 	static s_font* nebulaFont;			// Font used for names printing
