@@ -48,6 +48,11 @@ bool GLCheckError();
 #endif
 
 
+template <typename T, typename ... Ts>
+void insert_all(std::vector<T> &vec, Ts ... ts)
+{
+    (vec.push_back(ts), ...);
+}
 
 enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, COLOR4, MAG, SCALE };
 enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM};

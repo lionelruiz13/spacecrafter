@@ -380,14 +380,16 @@ void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<f
 		vecHintColor.push_back( neb_color[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
 
-		vecHintTex.push_back( posTex[0] );
-		vecHintTex.push_back( posTex[1] );
-		vecHintTex.push_back( posTex[0]+.25 );
-		vecHintTex.push_back( posTex[1] );
-		vecHintTex.push_back( posTex[0] );
-		vecHintTex.push_back( posTex[1]+.25 );
-		vecHintTex.push_back( posTex[0]+.25 );
-		vecHintTex.push_back( posTex[1]+.25 );
+		// vecHintTex.push_back( posTex[0] );
+		// vecHintTex.push_back( posTex[1] );
+		// vecHintTex.push_back( posTex[0]+.25 );
+		// vecHintTex.push_back( posTex[1] );
+		// vecHintTex.push_back( posTex[0] );
+		// vecHintTex.push_back( posTex[1]+.25 );
+		// vecHintTex.push_back( posTex[0]+.25 );
+		// vecHintTex.push_back( posTex[1]+.25 );
+		insert_all(vecHintTex, posTex[0],posTex[1],posTex[0]+.25,posTex[1], posTex[0], posTex[1]+.25, posTex[0]+.25, posTex[1]+.25);
+
 	} else {
 		//~ printf("color circle: %f %f %f\n",circleColor[0], circleColor[1], circleColor[2]);
 		vecHintColor.push_back( circleColor[0] );
@@ -407,24 +409,27 @@ void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<f
 		vecHintColor.push_back( circleColor[2] );
 		//~ vecHintColor.push_back( hintsBrightness );
 
-		vecHintTex.push_back(0.75);
-		vecHintTex.push_back(0.);
-		vecHintTex.push_back(1.0);
-		vecHintTex.push_back(0.);
-		vecHintTex.push_back(0.75);
-		vecHintTex.push_back(0.25);
-		vecHintTex.push_back(1.0);
-		vecHintTex.push_back(0.25);
+		// vecHintTex.push_back(0.75);
+		// vecHintTex.push_back(0.);
+		// vecHintTex.push_back(1.0);
+		// vecHintTex.push_back(0.);
+		// vecHintTex.push_back(0.75);
+		// vecHintTex.push_back(0.25);
+		// vecHintTex.push_back(1.0);
+		// vecHintTex.push_back(0.25);
+		insert_all(vecHintTex, 0.75f, 0.f, 1.f, 0.f, 0.75f, 0.25f, 1.f, 0.25f);
 	}
 
-	vecHintPos.push_back( (float) (XY[0] + r) );
-	vecHintPos.push_back( (float) (XY[1] - r) );
-	vecHintPos.push_back( (float) (XY[0] - r) );
-	vecHintPos.push_back( (float) (XY[1] - r) );
-	vecHintPos.push_back( (float) (XY[0] + r) );
-	vecHintPos.push_back( (float) (XY[1] + r) );
-	vecHintPos.push_back( (float) (XY[0] - r) );
-	vecHintPos.push_back( (float) (XY[1] + r) );
+	// vecHintPos.push_back( (float) (XY[0] + r) );
+	// vecHintPos.push_back( (float) (XY[1] - r) );
+	// vecHintPos.push_back( (float) (XY[0] - r) );
+	// vecHintPos.push_back( (float) (XY[1] - r) );
+	// vecHintPos.push_back( (float) (XY[0] + r) );
+	// vecHintPos.push_back( (float) (XY[1] + r) );
+	// vecHintPos.push_back( (float) (XY[0] - r) );
+	// vecHintPos.push_back( (float) (XY[1] + r) );
+
+	insert_all(vecHintPos, XY[0] + r, XY[1] - r, XY[0] - r, XY[1] - r, XY[0] + r, XY[1] + r, XY[0] - r, XY[1] + r);
 }
 
 void Nebula::drawName(const Projector* prj)
