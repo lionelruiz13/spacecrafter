@@ -29,7 +29,8 @@
 #include "navModule/navigator.hpp"
 #include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
-
+#include "tools/shader.hpp"
+#include "tools/OpenGL.hpp"
 
 #define DEG_TO_RAD 3.14159265359/180.0
 
@@ -55,66 +56,75 @@ s_texture * ObjectBase::pointer_nebula = nullptr;
 
 int ObjectBase::local_time = 0;
 
-shaderProgram* ObjectBase::shaderPointer = nullptr;
-shaderProgram* ObjectBase::shaderStarPointer = nullptr;
+// shaderProgram* ObjectBase::shaderPointer = nullptr;
+// shaderProgram* ObjectBase::shaderStarPointer = nullptr;
+// DataGL ObjectBase::Pointer;
+// DataGL ObjectBase::StarPointer;
 
-DataGL ObjectBase::Pointer;
-DataGL ObjectBase::StarPointer;
+std::unique_ptr<VertexArray> ObjectBase::Pointer; //= std::make_unique<VertexArray>();
+std::unique_ptr<VertexArray> ObjectBase::StarPointer; //= std::make_unique<VertexArray>();
+
+std::unique_ptr<shaderProgram> ObjectBase::shaderPointer;// = std::make_unique<shaderProgram>();
+std::unique_ptr<shaderProgram> ObjectBase::shaderStarPointer;// = std::make_unique<shaderProgram>();
+
 
 void ObjectBase::createShaderPointeur()
 {
 	//INIT OF SHADER POINTER
-	shaderPointer = new shaderProgram();
+	shaderPointer = std::make_unique<shaderProgram>();
 	shaderPointer->init("object_base_pointer.vert","object_base_pointer.geom","object_base_pointer.frag");
 	shaderPointer->setUniformLocation("color");
 
 	//INIT OF VAO/VBO
-	glGenVertexArrays(1,&Pointer.vao);
-	glBindVertexArray(Pointer.vao);
+	Pointer = std::make_unique<VertexArray>();
+	Pointer->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	Pointer->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
+	// glGenVertexArrays(1,&Pointer.vao);
+	// glBindVertexArray(Pointer.vao);
 
-	glGenBuffers(1,&Pointer.pos);
-	glGenBuffers(1,&Pointer.mag);
+	// glGenBuffers(1,&Pointer.pos);
+	// glGenBuffers(1,&Pointer.mag);
 	
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);	
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);	
 }
 
 void ObjectBase::createShaderStarPointeur()
 {
 	//INIT OF SHADER STARPOINTER
-	shaderStarPointer = new shaderProgram();
+	shaderStarPointer = std::make_unique<shaderProgram>();
 	shaderStarPointer->init("star_pointer.vert","star_pointer.geom","star_pointer.frag");
-	shaderStarPointer->setUniformLocation("radius");
-	shaderStarPointer->setUniformLocation("color");
-	shaderStarPointer->setUniformLocation("matRotation");
+	shaderStarPointer->setUniformLocation({"radius","color", "matRotation"});
 
 	//INIT OF VAO/VBO
-	glGenVertexArrays(1,&StarPointer.vao);
-	glBindVertexArray(StarPointer.vao);
+	StarPointer = std::make_unique<VertexArray>();
+	StarPointer->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	// glGenVertexArrays(1,&StarPointer.vao);
+	// glBindVertexArray(StarPointer.vao);
 
-	glGenBuffers(1,&StarPointer.pos);
+	// glGenBuffers(1,&StarPointer.pos);
 	
-	glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(0);
 }
 
-void ObjectBase::deleteShaderPointeur()
-{
-	if(shaderPointer) delete shaderPointer;
-	shaderPointer =  nullptr;
+// void ObjectBase::deleteShaderPointeur()
+// {
+// 	if(shaderPointer) delete shaderPointer;
+// 	shaderPointer =  nullptr;
 	
-	glDeleteBuffers(1,&Pointer.mag);
-	glDeleteBuffers(1,&Pointer.pos);
-	glDeleteVertexArrays(1,&Pointer.vao);
-}
+// 	glDeleteBuffers(1,&Pointer.mag);
+// 	glDeleteBuffers(1,&Pointer.pos);
+// 	glDeleteVertexArrays(1,&Pointer.vao);
+// }
 
-void ObjectBase::deleteShaderStarPointeur()
-{
-	if(shaderStarPointer) delete shaderStarPointer;
-	shaderStarPointer = nullptr;
+// void ObjectBase::deleteShaderStarPointeur()
+// {
+// 	if(shaderStarPointer) delete shaderStarPointer;
+// 	shaderStarPointer = nullptr;
 
-	glDeleteBuffers(1,&StarPointer.pos);
-	glDeleteVertexArrays(1,&StarPointer.vao);
-}
+// 	glDeleteBuffers(1,&StarPointer.pos);
+// 	glDeleteVertexArrays(1,&StarPointer.vao);
+// }
 
 // Draw a nice animated pointer around the object
 void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigator * nav)
@@ -153,12 +163,13 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 
 		Vec3f color = getRGB();
 		float radius=13.f;
+		// glBindVertexArray(StarPointer.vao);
 
-		glBindVertexArray(StarPointer.vao);
+		// glBindBuffer (GL_ARRAY_BUFFER, StarPointer.pos);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3,(Vec3f) screenPos,GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer (GL_ARRAY_BUFFER, StarPointer.pos);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3,(Vec3f) screenPos,GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+		StarPointer->fillVertexBuffer(BufferType::POS3D, 3, (Vec3f) screenPos);
 
 		shaderStarPointer->use();
 
@@ -169,9 +180,9 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		shaderStarPointer->setUniform("radius", radius);
 		shaderStarPointer->setUniform("matRotation", matRotation);
 		shaderStarPointer->setUniform("color", color);
-
+		StarPointer->bind();
 		glDrawArrays(GL_POINTS,0,1);
-
+		StarPointer->unBind();
 		shaderStarPointer->unuse();
 	}
 
@@ -182,41 +193,46 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		if (getType()==OBJECT_NEBULA)
 			glBindTexture(GL_TEXTURE_2D, pointer_nebula->getID());
 
-		posTex.push_back(screenpos[0] -size/2);
-		posTex.push_back(screenpos[1] +size/2);
-		posIndice.push_back(1.0);
+		m_pos.push_back(screenpos[0] -size/2);
+		m_pos.push_back(screenpos[1] +size/2);
+		m_indice.push_back(1.0);
 
-		posTex.push_back(screenpos[0] +size/2);
-		posTex.push_back(screenpos[1] +size/2);
-		posIndice.push_back(2.0);
+		m_pos.push_back(screenpos[0] +size/2);
+		m_pos.push_back(screenpos[1] +size/2);
+		m_indice.push_back(2.0);
 
-		posTex.push_back(screenpos[0] +size/2);
-		posTex.push_back(screenpos[1] -size/2);
-		posIndice.push_back(3.0);
+		m_pos.push_back(screenpos[0] +size/2);
+		m_pos.push_back(screenpos[1] -size/2);
+		m_indice.push_back(3.0);
 
-		posTex.push_back(screenpos[0] -size/2);
-		posTex.push_back(screenpos[1] -size/2);
-		posIndice.push_back(4.0);
+		m_pos.push_back(screenpos[0] -size/2);
+		m_pos.push_back(screenpos[1] -size/2);
+		m_indice.push_back(4.0);
 
-		glBindVertexArray(Pointer.vao);
+		// glBindVertexArray(Pointer.vao);
 
-		glBindBuffer (GL_ARRAY_BUFFER, Pointer.pos);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTex.size(),posTex.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer (GL_ARRAY_BUFFER, Pointer.pos);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*m_pos.size(),m_pos.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer (GL_ARRAY_BUFFER, Pointer.mag);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posIndice.size(),posIndice.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer (GL_ARRAY_BUFFER, Pointer.mag);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*m_indice.size(),m_indice.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
 
-		shaderPointer->use();
+		Pointer->fillVertexBuffer(BufferType::POS2D, m_pos);
+		Pointer->fillVertexBuffer(BufferType::MAG, m_indice);
 
 		StateGL::enable(GL_BLEND);
+
+		shaderPointer->use();
 		shaderPointer->setUniform("color", color);
+		Pointer->bind();		
 		glDrawArrays(GL_POINTS,0,4);
+		Pointer->unBind();
 		shaderPointer->unuse();
 
-		posTex.clear();
-		posIndice.clear();
+		m_pos.clear();
+		m_indice.clear();
 	}
 }
 

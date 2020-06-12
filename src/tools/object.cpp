@@ -237,11 +237,11 @@ void Object::deleteTextures()
 	ObjectBase::deleteTextures();
 }
 
-void Object::deleteShaders()
-{
-	ObjectBase::deleteShaderStarPointeur();
-	ObjectBase::deleteShaderPointeur();
-}
+// void Object::deleteShaders()
+// {
+// 	ObjectBase::deleteShaderStarPointeur();
+// 	ObjectBase::deleteShaderPointeur();
+// }
 
 float Object::getOnScreenSize(const Projector *prj, const Navigator *nav, bool orb_only)
 {

@@ -6,7 +6,7 @@
 #pragma optimize(off)
 
 layout (location=0) in vec2 position;
-layout (location=1) in float _pos;
+layout (location=4) in float _pos;
 
 out int posC;
 

@@ -26,19 +26,24 @@
 #ifndef _OBJECT_BASE_H_
 #define _OBJECT_BASE_H_
 
-#include "tools/vecmath.hpp"
+
+#include <vector>
+#include <memory>
 #include <iostream>
+
 #include "tools/object_type.hpp"
 #include "tools/vecmath.hpp"
-#include "tools/shader.hpp"
+//#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
-#include <vector>
+
 
 class Navigator;
 class TimeMgr;
 class Observer;
 class Projector;
 class s_texture;
+class shaderProgram;
+class VertexArray;
 
 class ObjectBase;
 void intrusivePtrAddRef(ObjectBase* p);
@@ -110,8 +115,8 @@ public:
 	//! fonction qui initialise les shaders permettant le dessin des pointeurs
 	static void initTextures();
 	//! fonctions qui supprime les shaders de la mémoire de l'ordinateur
-	static void deleteShaderPointeur();
-	static void deleteShaderStarPointeur();
+	// static void deleteShaderPointeur();
+	// static void deleteShaderStarPointeur();
 	//! fonction qui libère la mémoire des textures des pointeurs
 	static void deleteTextures();
 
@@ -127,17 +132,20 @@ protected:
 	static s_texture * pointer_star;
 	static s_texture * pointer_planet;
 	static s_texture * pointer_nebula;
-	std::vector<float> posTex;
-	std::vector<float> posIndice;
+	std::vector<float> m_pos;
+	std::vector<float> m_indice;
 	Vec3f color;
 
 //	static GLuint vaoPointer, vboPointerVertex, vboColor, vboIndice, vaoStarPointer, vboStarPointerVertex;
-	static DataGL Pointer;
-	static DataGL StarPointer;
+	// static DataGL Pointer;
+	// static DataGL StarPointer;
+	static std::unique_ptr<VertexArray> Pointer, StarPointer;
+
 
 	//shader for the pointer
-	static shaderProgram* shaderPointer;
-	static shaderProgram* shaderStarPointer;
+	// static shaderProgram* shaderPointer;
+	// static shaderProgram* shaderStarPointer;
+	static std::unique_ptr<shaderProgram> shaderPointer, shaderStarPointer;
 };
 
 #endif

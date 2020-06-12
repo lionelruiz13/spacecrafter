@@ -208,7 +208,7 @@ Core::~Core()
 	delete skyloc;
 	skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
-	Object::deleteShaders();
+	// Object::deleteShaders();
 	delete text_usr;
 	delete bodytrace;
 	delete ubo_cam;
