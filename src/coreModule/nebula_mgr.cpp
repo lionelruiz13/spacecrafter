@@ -46,8 +46,9 @@ NebulaMgr::NebulaMgr(void)
 		cLog::get()->write("DSO: error while loading pictogram texture", LOG_TYPE::L_ERROR);
 
 	createShaderHint();
-	createShaderTex();
+	//createShaderTex();
 	createGL_context();
+	Nebula::createGL_context();
 }
 
 NebulaMgr::~NebulaMgr()
@@ -64,39 +65,39 @@ NebulaMgr::~NebulaMgr()
 	Nebula::nebulaFont = nullptr;
 
 	//deleteShaderHint();
-	deleteShaderTex();
+	//deleteShaderTex();
 
 	delete[] nebZones;
 }
 
 
-void NebulaMgr::createShaderTex()
-{
-	Nebula::shaderNebulaTex = new shaderProgram();
-	Nebula::shaderNebulaTex->init("nebulaTex.vert","nebulaTex.geom","nebulaTex.frag");
-	Nebula::shaderNebulaTex->setUniformLocation("Mat");
-	Nebula::shaderNebulaTex->setUniformLocation("fader");
+// void NebulaMgr::createShaderTex()
+// {
+// 	Nebula::shaderNebulaTex = new shaderProgram();
+// 	Nebula::shaderNebulaTex->init("nebulaTex.vert","nebulaTex.geom","nebulaTex.frag");
+// 	Nebula::shaderNebulaTex->setUniformLocation("Mat");
+// 	Nebula::shaderNebulaTex->setUniformLocation("fader");
 
-	glGenVertexArrays(1,&Nebula::nebulaTex.vao);
-	glBindVertexArray(Nebula::nebulaTex.vao);
+// 	glGenVertexArrays(1,&Nebula::nebulaTex.vao);
+// 	glBindVertexArray(Nebula::nebulaTex.vao);
 
-	glGenBuffers(1,&Nebula::nebulaTex.tex);
-	glGenBuffers(1,&Nebula::nebulaTex.pos);
+// 	glGenBuffers(1,&Nebula::nebulaTex.tex);
+// 	glGenBuffers(1,&Nebula::nebulaTex.pos);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-}
+// 	glEnableVertexAttribArray(0);
+// 	glEnableVertexAttribArray(1);
+// }
 
-void NebulaMgr::deleteShaderTex()
-{
-	if (Nebula::shaderNebulaTex)
-		delete Nebula::shaderNebulaTex;
-	Nebula::shaderNebulaTex = nullptr;
+// void NebulaMgr::deleteShaderTex()
+// {
+// 	if (Nebula::shaderNebulaTex)
+// 		delete Nebula::shaderNebulaTex;
+// 	Nebula::shaderNebulaTex = nullptr;
 
-	glDeleteBuffers(1,&Nebula::nebulaTex.pos);
-	glDeleteBuffers(1,&Nebula::nebulaTex.tex);
-	glDeleteVertexArrays(1,&Nebula::nebulaTex.vao);
-}
+// 	glDeleteBuffers(1,&Nebula::nebulaTex.pos);
+// 	glDeleteBuffers(1,&Nebula::nebulaTex.tex);
+// 	glDeleteVertexArrays(1,&Nebula::nebulaTex.vao);
+// }
 
 // void NebulaMgr::deleteShaderHint()
 // {

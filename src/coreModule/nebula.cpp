@@ -32,13 +32,13 @@
 #include "tools/utility.hpp"
 #include "tools/file_path.hpp"
 #include "tools/log.hpp"
-//#include "tools/fmath.hpp"
-
-
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 s_texture * Nebula::tex_NEBULA = nullptr;
-shaderProgram * Nebula::shaderNebulaTex = nullptr;
+// shaderProgram * Nebula::shaderNebulaTex = nullptr;
 s_font* Nebula::nebulaFont = nullptr;
+
 float Nebula::circleScale = 1.f;
 float Nebula::hintsBrightness = 0;
 float Nebula::textBrightness = 0;
@@ -49,8 +49,10 @@ bool Nebula::flagBright = false;
 bool Nebula::displaySpecificHint = false;
 float Nebula::dsoRadius = 1.f;
 int Nebula::dsoPictoSize = 6;
-DataGL Nebula::nebulaTex;
 
+// DataGL Nebula::nebulaTex;
+std::unique_ptr<VertexArray> Nebula::m_texGL;
+std::unique_ptr<shaderProgram> Nebula::shaderNebulaTex;
 
 // Provide the luminance in cd/m^2 from the magnitude and the surface in arcmin^2
 static float magToLuminance(float mag, float surface)
@@ -129,14 +131,14 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 				sDataPos.push_back(grdptf[k]);
 	}
 
-	sDataTex[0]=0.f;
-	sDataTex[1]=0.f;
-	sDataTex[2]=1.f;
-	sDataTex[3]=0.f;
-	sDataTex[4]=0.f;
-	sDataTex[5]=1.f;
-	sDataTex[6]=1.f;
-	sDataTex[7]=1.f;
+	// sDataTex[0]=0.f;
+	// sDataTex[1]=0.f;
+	// sDataTex[2]=1.f;
+	// sDataTex[3]=0.f;
+	// sDataTex[4]=0.f;
+	// sDataTex[5]=1.f;
+	// sDataTex[6]=1.f;
+	// sDataTex[7]=1.f;
 
 	//what sort of circle should we draw ?
 	DSOType = getDsoType(_mtype);
@@ -303,6 +305,28 @@ double Nebula::getCloseFov(const Navigator*) const
 	return m_angular_size * 180./M_PI * 4;
 }
 
+
+void Nebula::createGL_context()
+{
+	Nebula::shaderNebulaTex = std::make_unique<shaderProgram>();
+	Nebula::shaderNebulaTex->init("nebulaTex.vert","nebulaTex.geom","nebulaTex.frag");
+	Nebula::shaderNebulaTex->setUniformLocation({"Mat","fader"});
+
+	Nebula::m_texGL = std::make_unique<VertexArray>();
+	Nebula::m_texGL ->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
+	Nebula::m_texGL ->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::STATIC);
+	// glGenVertexArrays(1,&Nebula::nebulaTex.vao);
+	// glBindVertexArray(Nebula::nebulaTex.vao);
+	
+	float sDataTex[8]={0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f};
+	m_texGL->fillVertexBuffer(BufferType::TEXTURE, 8,sDataTex );
+	// glGenBuffers(1,&Nebula::nebulaTex.tex);
+	// glGenBuffers(1,&Nebula::nebulaTex.pos);
+
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+}
+
 void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness)
 {
 	StateGL::enable(GL_BLEND);
@@ -340,20 +364,24 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	shaderNebulaTex->setUniform("fader", color);
 
 	glBindTexture (GL_TEXTURE_2D, neb_tex->getID());
-	glBindVertexArray(nebulaTex.vao);
+	// glBindVertexArray(nebulaTex.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,nebulaTex.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*sDataPos.size(),sDataPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,nebulaTex.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*sDataPos.size(),sDataPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(0); //layout 0
 
-	glBindBuffer(GL_ARRAY_BUFFER,nebulaTex.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8,sDataTex,GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-	glEnableVertexAttribArray(1); //layout 1
+	// glBindBuffer(GL_ARRAY_BUFFER,nebulaTex.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8,sDataTex,GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(1); //layout 1
+	m_texGL->fillVertexBuffer(BufferType::POS3D,sDataPos);
+	//m_texGL->fillVertexBuffer(BufferType::TEXTURE, 8,sDataTex );
 
+	m_texGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	glBindVertexArray(0);
+	m_texGL->unBind();
+	// glBindVertexArray(0);
 	shaderNebulaTex->unuse();
 }
 

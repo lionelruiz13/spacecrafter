@@ -222,8 +222,8 @@ protected:
 	//! \return return true if all texture pictograms are correctly loaded false  owerwise
 	bool initTexPicto();
 	void createShaderHint();
-	void createShaderTex();
-	void deleteShaderTex();
+	// void createShaderTex();
+	// void deleteShaderTex();
 	//void deleteShaderHint();
 	void createGL_context();
 	void drawAllHint(const Projector* prj);

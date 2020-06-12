@@ -27,6 +27,9 @@
 #ifndef _NEBULA_H_
 #define _NEBULA_H_
 
+#include <vector>
+#include <memory>
+
 #include "tools/object_base.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
@@ -34,7 +37,9 @@
 #include "tools/s_font.hpp"
 #include "tools/tone_reproductor.hpp"
 #include "tools/translator.hpp"
-#include <vector>
+
+class VertexArray;
+class shaderProgram;
 
 /**
  * \brief     Type of deepSkyObject
@@ -138,7 +143,8 @@ public:
 		return DSOstringType;
 	}
 
-protected:
+	static void createGL_context();
+
 	//! Return the radius of a circle containing the object on screen
 	float getOnScreenSize(const Projector* prj, const Navigator * nav = nullptr, bool orb_only = false) {
 		return m_angular_size * (180./M_PI) * (prj->getViewportHeight()/prj->getFov());
@@ -186,7 +192,7 @@ private:
 	nebula_type DSOType;			// say what type of nebula it is
 
 	s_texture * neb_tex = nullptr;	// Texture
-	float sDataTex[8];				// The 8 indices for the 4 vertex
+	//float sDataTex[8];				// The 8 indices for the 4 vertex
 	std::vector<float> sDataPos;	//all coordonates points for the 4 vertex
 	float luminance;				// Object luminance to use (value computed to compensate the texture avergae luminosity)
 	float tex_avg_luminance;        // avg luminance of the texture (saved here for performance)
@@ -208,8 +214,10 @@ private:
 
 	static s_texture * tex_NEBULA;
 
-	static shaderProgram * shaderNebulaTex;
-	static DataGL nebulaTex;
+	//static shaderProgram * shaderNebulaTex;
+	static std::unique_ptr<shaderProgram> shaderNebulaTex;
+	//static DataGL nebulaTex;
+	static std::unique_ptr<VertexArray> m_texGL;
 
 	static s_font* nebulaFont;			// Font used for names printing
 	static float hintsBrightness;
