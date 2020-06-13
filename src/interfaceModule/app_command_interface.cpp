@@ -3158,14 +3158,16 @@ int AppCommandInterface::commandBody()
 
 
 		std::string argColor = args[W_COLOR_VALUE];
+		if (argColor.empty())
+			argColor = args["color"];
+
 		if (!argColor.empty()) {
 			//gestion de la couleur
 			Vec3f Vcolor;
 			std::string argR= args[W_R];
 			std::string argG= args[W_G];
 			std::string argB= args[W_B];
-			std::string colorValue = args[W_COLOR_VALUE];
-			AppCommandColor testColor(Vcolor, debug_message, colorValue, argR,argG, argB);
+			AppCommandColor testColor(Vcolor, debug_message, argColor, argR,argG, argB);
 			if (!testColor)
 				return executeCommandStatus();
 
