@@ -441,7 +441,7 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 	m_shaderBoundary->setUniform("Color", boundaryColor);
 
 	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vBoundariesPos);
-	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vBoundariesIntensity);
+	m_constellationGL->fillVertexBuffer(BufferType::MAG, vBoundariesIntensity);
 
 	m_constellationGL->bind();
 	glDrawArrays(GL_LINES, 0, vBoundariesPos.size()/2);
