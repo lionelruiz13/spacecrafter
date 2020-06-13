@@ -33,6 +33,7 @@ SkyLineMgr::SkyLineMgr()
 {
 	baseColor=Vec3f(0.f, 0.f, 0.f);
 	SkyLine::createShader();
+	SkyLine::createGL_context();
 }
 
 void SkyLineMgr::draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
@@ -50,7 +51,7 @@ SkyLineMgr::~SkyLineMgr()
 		delete it->second;
 	}
 
-	SkyLine::deleteShader();
+	// SkyLine::deleteShader();
 }
 
 void SkyLineMgr::update(int delta_time)

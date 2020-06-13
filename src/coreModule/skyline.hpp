@@ -30,6 +30,8 @@
 
 #include <string>
 #include <fstream>
+#include <memory>
+
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
@@ -37,6 +39,9 @@
 #include "tools/fader.hpp"
 #include "tools/translator.hpp"
 #include "coreModule/time_mgr.hpp"
+
+class VertexArray;
+class shaderProgram;
 
 //! Class which manages a line to display around the sky like the ecliptic line
 class SkyLine {
@@ -79,10 +84,13 @@ public:
 		fader = ! fader;
 	}
 
+	static void createShader();
+	static void createGL_context();
+	// static void deleteShader();
 
 protected:
-	static void createShader();
-	static void deleteShader();
+
+	void drawSkylineGL(const Vec4f& Color);
 
 	double radius;
 	unsigned int nb_segment;
@@ -100,11 +108,13 @@ protected:
 	Mat4f TRANSFO; //a renommer
 
 	//Opengl
-	static shaderProgram* shaderSkylineDraw;
-	static shaderProgram* shaderTropicDrawTick;
-	static shaderProgram* shaderSkylineMVPDraw;
+	// static shaderProgram* shaderSkylineDraw;
+	// static shaderProgram* shaderTropicDrawTick;
+	// static shaderProgram* shaderSkylineMVPDraw;
+	static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;
 
-	static DataGL skylineDraw;
+	// static DataGL skylineDraw;
+	static std::unique_ptr<VertexArray> skylineDraw;
 
 	std::vector<float> vecDrawPos;
 	std::vector<float> vecDrawMVPPos;

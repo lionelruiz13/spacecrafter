@@ -31,14 +31,22 @@
 #include "tools/utility.hpp"
 #include <string>
 #include "navModule/observer.hpp"
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
+
 //#include "tools/fmath.hpp"
 
 
-shaderProgram* SkyLine::shaderSkylineDraw=nullptr;
-shaderProgram* SkyLine::shaderTropicDrawTick=nullptr;
-shaderProgram* SkyLine::shaderSkylineMVPDraw=nullptr;
+// shaderProgram* SkyLine::shaderSkylineDraw=nullptr;
+// shaderProgram* SkyLine::shaderTropicDrawTick=nullptr;
+// shaderProgram* SkyLine::shaderSkylineMVPDraw=nullptr;
 
-DataGL SkyLine::skylineDraw;
+// DataGL SkyLine::skylineDraw;
+
+std::unique_ptr<shaderProgram> SkyLine::shaderSkylineDraw;
+// std::unique_ptr<shaderProgram> SkyLine::shaderTropicDrawTick;
+// std::unique_ptr<shaderProgram> SkyLine::shaderSkylineMVPDraw;
+std::unique_ptr<VertexArray> SkyLine::skylineDraw;
 
 SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
 	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f), font(nullptr)
@@ -50,6 +58,31 @@ SkyLine::~SkyLine()
 {
 	if (font) delete font;
 	font = nullptr;
+}
+
+void SkyLine::createGL_context()
+{
+	skylineDraw = std::make_unique<VertexArray>();
+	skylineDraw->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	// glGenVertexArrays(1,&skylineDraw.vao);
+	// glBindVertexArray(skylineDraw.vao);
+
+	// glGenBuffers(1,&skylineDraw.pos);
+
+	// glEnableVertexAttribArray(0); //layout 0
+}
+
+void SkyLine::drawSkylineGL(const Vec4f& Color)
+{
+	skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
+	
+	shaderSkylineDraw->use();
+	shaderSkylineDraw->setUniform("Color",Color);
+	skylineDraw->bind();
+	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	skylineDraw->unBind();
+
+	shaderSkylineDraw->unuse();
 }
 
 void SkyLine::setFont(float font_size, const std::string& font_name)
@@ -86,44 +119,42 @@ void SkyLine::createShader()
 {
 //====================
 //======draw========
-	shaderSkylineDraw = new shaderProgram();
+	shaderSkylineDraw = std::make_unique<shaderProgram>();
 	shaderSkylineDraw->init( "skylineDraw.vert", "skylineDraw.frag");
 	shaderSkylineDraw->setUniformLocation("Color");
 
 //====================
 //======Tropic_Tick========
-	shaderTropicDrawTick = new shaderProgram();
-	shaderTropicDrawTick->init( "skylineTropicDrawTick.vert","skylineTropicDrawTick.frag");
-	shaderTropicDrawTick->setUniformLocation("Color");
-	shaderTropicDrawTick->setUniformLocation("TRANSFO");
+	// shaderTropicDrawTick = std::make_unique<shaderProgram>();
+	// shaderTropicDrawTick->init( "skylineTropicDrawTick.vert","skylineTropicDrawTick.frag");
+	// shaderTropicDrawTick->setUniformLocation({"Color","TRANSFO"});
 
 //====================
 //======draw_with_MVP========
-	shaderSkylineMVPDraw = new shaderProgram();
-	shaderSkylineMVPDraw->init( "skylineMVPDraw.vert","skylineMVPDraw.frag");
-	shaderSkylineMVPDraw->setUniformLocation("Color");
-	shaderSkylineMVPDraw->setUniformLocation("MVP");
+	// shaderSkylineMVPDraw = std::make_unique<shaderProgram>();
+	// shaderSkylineMVPDraw->init( "skylineMVPDraw.vert","skylineMVPDraw.frag");
+	// shaderSkylineMVPDraw->setUniformLocation({"Color","MVP"});
 
 
 //======VAO
-	glGenVertexArrays(1,&skylineDraw.vao);
-	glBindVertexArray(skylineDraw.vao);
+	// glGenVertexArrays(1,&skylineDraw.vao);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glGenBuffers(1,&skylineDraw.pos);
+	// glGenBuffers(1,&skylineDraw.pos);
 
-	glEnableVertexAttribArray(0); //layout 0
+	// glEnableVertexAttribArray(0); //layout 0
 }
 
 
-void SkyLine::deleteShader()
-{
-	if (shaderSkylineDraw) delete shaderSkylineDraw;
-	if (shaderTropicDrawTick) delete shaderTropicDrawTick;
-	if (shaderSkylineMVPDraw) delete shaderSkylineMVPDraw;
+// void SkyLine::deleteShader()
+// {
+// 	if (shaderSkylineDraw) delete shaderSkylineDraw;
+// 	if (shaderTropicDrawTick) delete shaderTropicDrawTick;
+// 	if (shaderSkylineMVPDraw) delete shaderSkylineMVPDraw;
 
-	glDeleteBuffers(1,&skylineDraw.pos);
-	glDeleteVertexArrays(1,&skylineDraw.vao);
-}
+// 	glDeleteBuffers(1,&skylineDraw.pos);
+// 	glDeleteVertexArrays(1,&skylineDraw.vao);
+// }
 
 
 // -------------------- SKYLINE_POLE ---------------------------------------------
@@ -158,8 +189,8 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
 	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
@@ -200,19 +231,24 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 		}
 	}
 
-	glBindVertexArray(skylineDraw.vao);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 	//~ glEnableVertexAttribArray(0); //layout 0
 
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	glUseProgram(0);
-
+	drawSkylineGL(Color);
+	// skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
+	
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	// skylineDraw->bind();
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// skylineDraw->unBind();
+	// // glUseProgram(0);
+	// shaderSkylineDraw->unuse();
 	vecDrawPos.clear();
-
 	//~ prj->reset_perspective_projection();
 }
 
@@ -382,17 +418,24 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 	}
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
-	glBindVertexArray(skylineDraw.vao);
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(skylineDraw.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 	//~ glEnableVertexAttribArray(0); //layout 0
 
 	//~ glDrawArrays(GL_LINES, 0 ,2);
-	glDrawArrays(GL_LINES,0,vecDrawPos.size()/2);
+	// skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
+	// skylineDraw->bind();
+	// glDrawArrays(GL_LINES,0,vecDrawPos.size()/2);
+	// skylineDraw->unBind();
+	// shaderSkylineDraw->unuse();
+
+	drawSkylineGL(Color);
+
 	vecDrawPos.clear();
 
 
@@ -408,7 +451,7 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	//~ vecDrawPos.clear();
 
-	glUseProgram(0);
+	// glUseProgram(0);
 
 	//~ prj->reset_perspective_projection();
 }
@@ -525,19 +568,27 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 		//~ prj->reset_perspective_projection();
 	}
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
-	glBindVertexArray(skylineDraw.vao);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 	//~ glEnableVertexAttribArray(0); //layout 0
 
 	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	// skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
+	// skylineDraw->bind();
+	// glDrawArrays(GL_LINES,0,vecDrawPos.size()/2);
+	// skylineDraw->unBind();
+	// shaderSkylineDraw->unuse();
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 
@@ -602,8 +653,8 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
 	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
@@ -651,18 +702,23 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 	//~ printf("\n\n");
 	//~ prj->reset_perspective_projection();
 
-	glBindVertexArray(skylineDraw.vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+// 
+	// glBindVertexArray(skylineDraw.vao);
+// 
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 	//~ glEnableVertexAttribArray(0); //layout 0
 
 	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
 	//~ glDrawArrays(GL_LINES, i*2 ,2);
-	glDrawArrays(GL_LINES, 0 , vecDrawPos.size()/2);
+	// glDrawArrays(GL_LINES, 0 , vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -689,8 +745,8 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
 	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
@@ -721,18 +777,23 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 	}
 	//~ prj->reset_perspective_projection();
 
-	glBindVertexArray(skylineDraw.vao);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(skylineDraw.vao);
+
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 	//~ glEnableVertexAttribArray(0); //layout 0
 
 	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
 	//~ glDrawArrays(GL_LINES, i*2 ,2);
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -786,19 +847,21 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 	}
 	//~ prj->reset_perspective_projection();
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
-	glBindVertexArray(skylineDraw.vao);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -880,19 +943,21 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 		//~ glPopMatrix();
 	}
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
-	glBindVertexArray(skylineDraw.vao);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 
@@ -974,19 +1039,21 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 		//~ glPopMatrix();
 	}
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
-	glBindVertexArray(skylineDraw.vao);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 
@@ -1199,19 +1266,21 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 	}
 	//~ prj->reset_perspective_projection();
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+// 
+	// glBindVertexArray(skylineDraw.vao);
+// 
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
+// 
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+// 
+	// glUseProgram(0);
 
-	glBindVertexArray(skylineDraw.vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	glUseProgram(0);
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -1439,19 +1508,21 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 	//~ prj->reset_perspective_projection();
 
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
-	glBindVertexArray(skylineDraw.vao);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -1672,19 +1743,21 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 	}
 	//~ prj->reset_perspective_projection();
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
 
-	glBindVertexArray(skylineDraw.vao);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -1866,19 +1939,21 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 	//~ prj->reset_perspective_projection();
 
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
-	glBindVertexArray(skylineDraw.vao);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -2023,19 +2098,21 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 	//~ prj->reset_perspective_projection();
 
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
-	glBindVertexArray(skylineDraw.vao);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -2141,19 +2218,20 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 	}
 	//~ prj->reset_perspective_projection();
 
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
-	glBindVertexArray(skylineDraw.vao);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
@@ -2328,19 +2406,21 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	}
 
 	//~ prj->reset_perspective_projection();
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
-	glBindVertexArray(skylineDraw.vao);
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	// glBindVertexArray(skylineDraw.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
+	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// //~ glEnableVertexAttribArray(0); //layout 0
 
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
 
-	glUseProgram(0);
+	// glUseProgram(0);
+
+	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
 }
