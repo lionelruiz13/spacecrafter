@@ -219,6 +219,7 @@ void Media::createViewPort()
 {
 	viewPort = new ViewPort();
 	viewPort-> createShader();
+	viewPort-> createGL_context();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

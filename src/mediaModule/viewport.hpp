@@ -17,13 +17,17 @@
 #ifndef __VP_HPP__
 #define __VP_HPP__
 
+#include <memory>
 #include "tools/vecmath.hpp"
-#include "tools/shader.hpp"
+//#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/fader.hpp"
 #include "yuv_wrapper.hpp"
 
 #define VP_FADER_DURATION 3000
+
+class VertexArray;
+class shaderProgram;
 
 class ViewPort {
 public:
@@ -89,13 +93,18 @@ public:
 		noColor = Vec4f(color[0], color[1], color[2],intensity);
 	}
 
+	void createGL_context();
+
 private:
 	//initialisation shader
 	void initParam();
-	shaderProgram* shaderViewPort; //!< shader
+	//shaderProgram* shaderViewPort; //!< shader
+	std::unique_ptr<shaderProgram> shaderViewPort; //!< shader
 	// Données openGL
-	DataGL viewport;	//! affichage fullScreen
-	DataGL dual;		//! affichage 2fois une moitiée
+	// DataGL viewport;	//! affichage fullScreen
+	// DataGL dual;		//! affichage 2fois une moitiée
+	std::unique_ptr<VertexArray> dual, viewport;
+
 	GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
 	bool isAlive;		//!< active la classe
 	bool fullScreen; 	//!< indique la façon d'afficher l'image
