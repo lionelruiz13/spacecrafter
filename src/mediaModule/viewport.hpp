@@ -35,10 +35,10 @@ public:
 	~ViewPort();
 	//! créer le shader
 	void createShader();
-	//! détruit le shader
-	// void deleteShader();
+
 	//! trace une texture sur le viewport
 	void draw();
+
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
 	//! \param _tex, YUV_WRAPPER YUV dans la CG
 	void setTexture(YUV_WRAPPER _tex) {
