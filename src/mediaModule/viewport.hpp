@@ -40,7 +40,7 @@ public:
 	//! trace une texture sur le viewport
 	void draw();
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
-	//! \param tex, YUV_WRAPPER YUV dans la CG
+	//! \param _tex, YUV_WRAPPER YUV dans la CG
 	void setTexture(YUV_WRAPPER _tex) {
 		videoTex[0] = _tex.TexY;
 		videoTex[1] = _tex.TexU;
@@ -103,7 +103,7 @@ private:
 	// Données openGL
 	// DataGL viewport;	//! affichage fullScreen
 	// DataGL dual;		//! affichage 2fois une moitiée
-	std::unique_ptr<VertexArray> dual, viewport;
+	std::unique_ptr<VertexArray> m_dualGL, m_fullGL;
 
 	GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
 	bool isAlive;		//!< active la classe
