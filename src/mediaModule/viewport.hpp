@@ -36,7 +36,7 @@ public:
 	//! créer le shader
 	void createShader();
 	//! détruit le shader
-	void deleteShader();
+	// void deleteShader();
 	//! trace une texture sur le viewport
 	void draw();
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage

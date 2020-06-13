@@ -28,8 +28,7 @@ ViewPort::ViewPort()
 
 ViewPort::~ViewPort()
 {
-	deleteShader();
-
+	// deleteShader();
 }
 
 void ViewPort::createShader()
@@ -73,10 +72,10 @@ void ViewPort::createGL_context()
 	m_dualGL->fillVertexBuffer(BufferType::TEXTURE, 16, halfTex);
 }
 
-void ViewPort::deleteShader()
-{
-	if(shaderViewPort) shaderViewPort=nullptr;
-}
+// void ViewPort::deleteShader()
+// {
+// 	if(shaderViewPort) shaderViewPort=nullptr;
+// }
 
 void ViewPort::draw()
 {
