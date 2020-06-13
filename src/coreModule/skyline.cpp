@@ -208,10 +208,11 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
 	for (unsigned int i=0; i<51; ++i) {
@@ -224,10 +225,11 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
 
@@ -311,10 +313,11 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 				//~ glVertex2f(pt1[0],pt1[1]);
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 		}
 	}
@@ -346,10 +349,11 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			const double dx = pt2[0]-pt1[0];
 			const double dy = pt2[1]-pt1[1];
@@ -410,10 +414,11 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			//~ vecDrawPos.clear();
 		}
 	}
@@ -522,10 +527,11 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
 
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 				//~ if((i+1) % 2 == 0) {
 				//~ const double dx = pt1[0]-pt2[0];
@@ -557,10 +563,11 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
 
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			}
 
@@ -693,10 +700,11 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
 	//~ printf("\n\n");
@@ -768,10 +776,11 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
 
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 		}
 	}
@@ -838,10 +847,11 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 				//~ glVertex2f(pt1[0],pt1[1]);
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 		}
 	}
@@ -908,10 +918,11 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
 
@@ -1003,10 +1014,11 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
 	Utility::spheToRect(0,(((45.0/59.f)*2*M_PI)+(1*latitude)) ,punt[0]);
@@ -1115,10 +1127,11 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
 
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 				// Draw hour ticks
 				if ((i+1) % ((nb_segment/36 )*2) == 0) {
@@ -1168,11 +1181,14 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 					//~ glPopMatrix();
 
 					tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 					tmp = TRANSFO * Vec4f(tickl,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 
 					//~ glEnable(GL_TEXTURE_2D);
 
@@ -1198,10 +1214,11 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			// Draw text labels and ticks on meridian
 			const double d = sqrt(dq);
@@ -1252,11 +1269,13 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 			//~ glPopMatrix();
 
 			tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-			vecDrawPos.push_back( tmp[0] );
-			vecDrawPos.push_back( tmp[1] );
+			// vecDrawPos.push_back( tmp[0] );
+			// vecDrawPos.push_back( tmp[1] );
+			insert_all(vecDrawPos, tmp[0], tmp[1]);
 			tmp = TRANSFO * Vec4f(tickl,0.0,0.0,1.0);
-			vecDrawPos.push_back( tmp[0] );
-			vecDrawPos.push_back( tmp[1] );
+			// vecDrawPos.push_back( tmp[0] );
+			// vecDrawPos.push_back( tmp[1] );
+			insert_all(vecDrawPos, tmp[0], tmp[1]);
 
 
 			//~ glEnable(GL_TEXTURE_2D);
@@ -1352,10 +1371,11 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				//~ glVertex2f(pt1[0],pt1[1]);
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 				// Draw hour ticks
 				if ((i+1) % ((nb_segment/48)*2) == 0) {
@@ -1394,11 +1414,13 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					//~ glVertex2f(tickl,0);
 					//~ glEnd();
 					tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 					tmp = TRANSFO * Vec4f( tickl,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 
 					//~ glEnable(GL_TEXTURE_2D);
 
@@ -1423,10 +1445,11 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			// Draw text labels and ticks on equator
 			if ((i+1) % ((nb_segment/48)*2) == 0) {
@@ -1476,11 +1499,13 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 						//~ glVertex2f(tickl,0);
 						//~ glEnd();
 						tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-						vecDrawPos.push_back( tmp[0] );
-						vecDrawPos.push_back( tmp[1] );
+						// vecDrawPos.push_back( tmp[0] );
+						// vecDrawPos.push_back( tmp[1] );
+						insert_all(vecDrawPos, tmp[0], tmp[1]);
 						tmp = TRANSFO * Vec4f( tickl,0.0,0.0,1.0);
-						vecDrawPos.push_back( tmp[0] );
-						vecDrawPos.push_back( tmp[1] );
+						// vecDrawPos.push_back( tmp[0] );
+						// vecDrawPos.push_back( tmp[1] );
+						insert_all(vecDrawPos, tmp[0], tmp[1]);
 					}
 				} else {
 					//~ glBegin (GL_LINES);
@@ -1488,11 +1513,13 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					//~ glVertex2f(tickl,0);
 					//~ glEnd();
 					tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 					tmp = TRANSFO * Vec4f( tickl,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				}
 				//~ glEnable(GL_TEXTURE_2D);
 
@@ -1615,10 +1642,11 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			if((i+1) % 4 == 0) {
 				const double dx = pt1[0]-pt2[0];
@@ -1639,11 +1667,13 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-				vecDrawPos.push_back( tmp[0] );
-				vecDrawPos.push_back( tmp[1] );
+				// vecDrawPos.push_back( tmp[0] );
+				// vecDrawPos.push_back( tmp[1] );
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
 				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
-				vecDrawPos.push_back( tmp[0] );
-				vecDrawPos.push_back( tmp[1] );
+				// vecDrawPos.push_back( tmp[0] );
+				// vecDrawPos.push_back( tmp[1] );
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
 				//~ glBegin (GL_LINES);
 				//~ glVertex2f(-3,0);
 				//~ glVertex2f(3,0);
@@ -1659,10 +1689,11 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			if((i+1) % 4 == 0) {
 				const double dx = pt1[0]-pt2[0];
@@ -1682,12 +1713,13 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-				vecDrawPos.push_back( tmp[0] );
-				vecDrawPos.push_back( tmp[1] );
+				// vecDrawPos.push_back( tmp[0] );
+				// vecDrawPos.push_back( tmp[1] );
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
 				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
-				vecDrawPos.push_back( tmp[0] );
-				vecDrawPos.push_back( tmp[1] );
-
+				// vecDrawPos.push_back( tmp[0] );
+				// vecDrawPos.push_back( tmp[1] );
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
 				//~ glBegin (GL_LINES);
 				//~ glVertex2f(-3,0);
 				//~ glVertex2f(3,0);
@@ -1700,10 +1732,11 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 				//~ glVertex2f(pt1[0],pt1[1]);
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glEnd();
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 
 			// Draw hour ticks
@@ -1727,11 +1760,13 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-				vecDrawPos.push_back( tmp[0] );
-				vecDrawPos.push_back( tmp[1] );
+				// vecDrawPos.push_back( tmp[0] );
+				// vecDrawPos.push_back( tmp[1] );
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
 				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
-				vecDrawPos.push_back( tmp[0] );
-				vecDrawPos.push_back( tmp[1] );
+				// vecDrawPos.push_back( tmp[0] );
+				// vecDrawPos.push_back( tmp[1] );
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
 				//~ glBegin (GL_LINES);
 				//~ glVertex2f(-3,0);
 				//~ glVertex2f(3,0);
@@ -1823,10 +1858,11 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glEnd();
 
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			//if(i % 4 == 0) {
 			const double d = sqrt(dq);
@@ -1873,21 +1909,25 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 					//~ glVertex2f(6,0);
 					//~ printf("6\n");
 					tmp = TRANSFO * Vec4f(-6.0,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 					tmp = TRANSFO * Vec4f(6.0,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				} else {
 					//~ glVertex2f(-3,0);
 					//~ glVertex2f(3,0);
 					//~ printf("3\n");
 					tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 					tmp = TRANSFO * Vec4f(3.0,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				}
 			} // End draw ticks - To do: graduate in ° from vernal point
 			//~ glEnd();
@@ -2023,11 +2063,11 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 				//~ glVertex2f(pt2[0],pt2[1]);
 				//~ glVertex2f(pt1[0],pt1[1]);
 				//~ glEnd();
-				vecDrawPos.push_back( pt1[0] );
-				vecDrawPos.push_back( pt1[1] );
-				vecDrawPos.push_back( pt2[0] );
-				vecDrawPos.push_back( pt2[1] );
-
+				// vecDrawPos.push_back( pt1[0] );
+				// vecDrawPos.push_back( pt1[1] );
+				// vecDrawPos.push_back( pt2[0] );
+				// vecDrawPos.push_back( pt2[1] );
+				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 				if((i+2) % 4 == 0) {
 					const double d = sqrt(dq);
@@ -2080,11 +2120,13 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 					//~ glVertex2f(3,0);
 					//~ glEnd();
 					tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 					tmp = TRANSFO * Vec4f(3.0,0.0,0.0,1.0);
-					vecDrawPos.push_back( tmp[0] );
-					vecDrawPos.push_back( tmp[1] );
+					// vecDrawPos.push_back( tmp[0] );
+					// vecDrawPos.push_back( tmp[1] );
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 					//~ glPopMatrix();
 
 					//~ glDisable(GL_TEXTURE_2D);
@@ -2158,10 +2200,11 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			const double dx = pt2[0]-pt1[0];
 			const double dy = pt2[1]-pt1[1];
@@ -2200,11 +2243,13 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI+angle );
 
 			tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-			vecDrawPos.push_back( tmp[0] );
-			vecDrawPos.push_back( tmp[1] );
+			// vecDrawPos.push_back( tmp[0] );
+			// vecDrawPos.push_back( tmp[1] );
+			insert_all(vecDrawPos, tmp[0], tmp[1]);
 			tmp = TRANSFO * Vec4f(tickl,0.0,0.0,1.0);
-			vecDrawPos.push_back( tmp[0] );
-			vecDrawPos.push_back( tmp[1] );
+			// vecDrawPos.push_back( tmp[0] );
+			// vecDrawPos.push_back( tmp[1] );
+			insert_all(vecDrawPos, tmp[0], tmp[1]);
 			//~ glBegin (GL_LINES);
 			//~ glVertex2f(-tickl,0);
 			//~ glVertex2f(tickl,0);
@@ -2276,10 +2321,11 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 		}
 		if ((prj->*proj_func)(circlen[i], pt1) && (prj->*proj_func)(circlen[i+1], pt2) ) {
@@ -2287,10 +2333,11 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 			//~ glVertex2f(pt1[0],pt1[1]);
 			//~ glVertex2f(pt2[0],pt2[1]);
 			//~ glEnd();
-			vecDrawPos.push_back( pt1[0] );
-			vecDrawPos.push_back( pt1[1] );
-			vecDrawPos.push_back( pt2[0] );
-			vecDrawPos.push_back( pt2[1] );
+			// vecDrawPos.push_back( pt1[0] );
+			// vecDrawPos.push_back( pt1[1] );
+			// vecDrawPos.push_back( pt2[0] );
+			// vecDrawPos.push_back( pt2[1] );
+			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
 
@@ -2303,20 +2350,22 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		//~ glVertex2f(pt1[0],pt1[1]);
 		//~ glVertex2f(pt2[0],pt2[1]);
 		//~ glEnd();
-		vecDrawPos.push_back( pt1[0] );
-		vecDrawPos.push_back( pt1[1] );
-		vecDrawPos.push_back( pt2[0] );
-		vecDrawPos.push_back( pt2[1] );
+		// vecDrawPos.push_back( pt1[0] );
+		// vecDrawPos.push_back( pt1[1] );
+		// vecDrawPos.push_back( pt2[0] );
+		// vecDrawPos.push_back( pt2[1] );
+		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 	if ((prj->*proj_func)(circlep[25],pt1) && (prj->*proj_func)(circlep[0],pt2) ) {
 		//~ glBegin (GL_LINES);
 		//~ glVertex2f(pt1[0],pt1[1]);
 		//~ glVertex2f(pt2[0],pt2[1]);
 		//~ glEnd();
-		vecDrawPos.push_back( pt1[0] );
-		vecDrawPos.push_back( pt1[1] );
-		vecDrawPos.push_back( pt2[0] );
-		vecDrawPos.push_back( pt2[1] );
+		// vecDrawPos.push_back( pt1[0] );
+		// vecDrawPos.push_back( pt1[1] );
+		// vecDrawPos.push_back( pt2[0] );
+		// vecDrawPos.push_back( pt2[1] );
+		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 
 	Utility::spheToRect(0.98*M_PI, M_PI_2,punts[0]);
@@ -2359,20 +2408,22 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		//~ glVertex2f(pt1[0],pt1[1]);
 		//~ glVertex2f(pt2[0],pt2[1]);
 		//~ glEnd();
-		vecDrawPos.push_back( pt1[0] );
-		vecDrawPos.push_back( pt1[1] );
-		vecDrawPos.push_back( pt2[0] );
-		vecDrawPos.push_back( pt2[1] );
+		// vecDrawPos.push_back( pt1[0] );
+		// vecDrawPos.push_back( pt1[1] );
+		// vecDrawPos.push_back( pt2[0] );
+		// vecDrawPos.push_back( pt2[1] );
+		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 	if ((prj->*proj_func)(circlen[25],pt1) && (prj->*proj_func)(circlen[0],pt2) ) {
 		//~ glBegin (GL_LINES);
 		//~ glVertex2f(pt1[0],pt1[1]);
 		//~ glVertex2f(pt2[0],pt2[1]);
 		//~ glEnd();
-		vecDrawPos.push_back( pt1[0] );
-		vecDrawPos.push_back( pt1[1] );
-		vecDrawPos.push_back( pt2[0] );
-		vecDrawPos.push_back( pt2[1] );
+		// vecDrawPos.push_back( pt1[0] );
+		// vecDrawPos.push_back( pt1[1] );
+		// vecDrawPos.push_back( pt2[0] );
+		// vecDrawPos.push_back( pt2[1] );
+		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 
 	Utility::spheToRect(0.98*M_PI, -M_PI_2,punts[0]);
