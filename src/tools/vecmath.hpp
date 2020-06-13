@@ -327,6 +327,14 @@ const Vec3f v3fNull = Vec3f(0.0f, 0.0f, 0.0f);
 const Vec3f v3dNull = Vec3d(0.0, 0.0, 0.0);
 
 template <typename T, typename U>
+void insert_vec2(std::vector<T>& vecDest, const Vector2<U>& vecSrc, unsigned short howMush = 1)
+{
+	for(auto j=0; j< howMush;j++)
+		for (int i=0;i<2;i++)
+			vecDest.push_back(vecSrc[i]);
+}
+
+template <typename T, typename U>
 void insert_vec3(std::vector<T>& vecDest, const Vector3<U>& vecSrc, unsigned short howMush = 1)
 {
 	for(auto j=0; j< howMush;j++)
