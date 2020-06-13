@@ -55,8 +55,8 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"set sky_culture western");
     //~ strcpy(sendBuff,"set milky_way_texture default");
     //~ strcpy(sendBuff,"set milky_way_intensity 0.9");
-    strcpy(sendBuff,"illuminate display on HP 4906");
-    strcpy(sendBuff,"illuminate display on constellation UMa");
+    //~ strcpy(sendBuff,"illuminate display on HP 4906");
+    //~ strcpy(sendBuff,"illuminate display on constellation UMa");
     //~ strcpy(sendBuff,"dso hidden false  name M27");
     //~ strcpy(sendBuff,"flag track_object on");
     //~ strcpy(sendBuff,"planet_scale name Saturn scale 20");
@@ -120,7 +120,8 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"set date_display_number 1");
     //~ strcpy(sendBuff,"body tesselation moon_altimetry_factor value 5");
     //~ strcpy(sendBuff,"body tesselation max_tes_level value 4");
-    //~ strcpy(sendBuff,"timerate action decrement"); 
+    //~ strcpy(sendBuff,"timerate action decrement");
+    strcpy(sendBuff,"constellation name UMi type line color_value x803030");
     
 	
 	unsigned int nb_write;
