@@ -98,11 +98,7 @@ public:
 private:
 	//initialisation shader
 	void initParam();
-	//shaderProgram* shaderViewPort; //!< shader
-	std::unique_ptr<shaderProgram> shaderViewPort; //!< shader
-	// Données openGL
-	// DataGL viewport;	//! affichage fullScreen
-	// DataGL dual;		//! affichage 2fois une moitiée
+	std::unique_ptr<shaderProgram> shaderViewPort;
 	std::unique_ptr<VertexArray> m_dualGL, m_fullGL;
 
 	GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
@@ -111,7 +107,6 @@ private:
 	bool skipping = false;		//!< initialise la variable définissant si on saute le fading ou non
 	bool transparency = false;	//!< active la transparence
 	// indique quelle couleur est à effacer de l'image
-	// nocolor[3] indique le delta de couleur
 	Vec4f noColor=Vec4f::null();
 	ParabolicFader fader;
 };
