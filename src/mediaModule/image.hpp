@@ -101,9 +101,6 @@ public:
 	static void createGL_context();
 	static void deleteShaderUnified();
 	static void deleteShaderImageViewport();
-	
-	// static shaderProgram *shaderImageViewport;
-	// static shaderProgram *shaderUnified;
 
 	static std::unique_ptr<shaderProgram> shaderImageViewport;
 	static std::unique_ptr<shaderProgram> shaderUnified;
@@ -137,7 +134,6 @@ private:
 
 	//OpenGL vars
 	std::vector<float> vecImgTex, vecImgPos;
-	//static DataGL sImage;
 	static std::unique_ptr<VertexArray> m_imageViewportGL;
 	static std::unique_ptr<VertexArray> m_imageUnifiedGL;
 

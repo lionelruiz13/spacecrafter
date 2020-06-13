@@ -175,7 +175,6 @@ Image::~Image()
 
 void Image::createShaderImageViewport()
 {
-	//VIEWPORT
 	shaderImageViewport = std::make_unique<shaderProgram>();
 	shaderImageViewport->init("imageViewport.vert","imageViewport.frag");
 	shaderImageViewport->setUniformLocation({"fader", "MVP"});
@@ -561,9 +560,6 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 				else
 					vecImgTex.push_back(j/(float)grid_size);
 
-				// vecImgPos.push_back(gridpt[0]);
-				// vecImgPos.push_back(gridpt[1]);
-				// vecImgPos.push_back(gridpt[2]);
 				insert_vec3(vecImgPos, gridpt);
 			}
 		}
