@@ -55,8 +55,6 @@ public:
 	virtual void retain() {}
 	virtual void release() {}
 
-	// virtual void update() {}
-
 	//! dessine le pointeur de l'objet sélectionné en fonction de son type.
 	void drawPointer(int delta_time, const Projector* prj, const Navigator *nav);
 
@@ -68,10 +66,6 @@ public:
 
 	//! The returned nav string
 	virtual std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const = 0;
-
-	// virtual float getStarDistance( void ) {
-	// 	return 0;
-	// };
 
 	//! Return object's type
 	virtual OBJECT_TYPE getType() const = 0;
@@ -114,9 +108,7 @@ public:
 
 	//! fonction qui initialise les shaders permettant le dessin des pointeurs
 	static void initTextures();
-	//! fonctions qui supprime les shaders de la mémoire de l'ordinateur
-	// static void deleteShaderPointeur();
-	// static void deleteShaderStarPointeur();
+
 	//! fonction qui libère la mémoire des textures des pointeurs
 	static void deleteTextures();
 
@@ -136,16 +128,10 @@ protected:
 	std::vector<float> m_indice;
 	Vec3f color;
 
-//	static GLuint vaoPointer, vboPointerVertex, vboColor, vboIndice, vaoStarPointer, vboStarPointerVertex;
-	// static DataGL Pointer;
-	// static DataGL StarPointer;
-	static std::unique_ptr<VertexArray> Pointer, StarPointer;
-
-
+	// GL
+	static std::unique_ptr<VertexArray> m_pointerGL, m_starPointerGL;
 	//shader for the pointer
-	// static shaderProgram* shaderPointer;
-	// static shaderProgram* shaderStarPointer;
-	static std::unique_ptr<shaderProgram> shaderPointer, shaderStarPointer;
+	static std::unique_ptr<shaderProgram> m_shaderPointer, m_shaderStarPointer;
 };
 
 #endif
