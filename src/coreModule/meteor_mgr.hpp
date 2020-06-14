@@ -52,12 +52,15 @@ public:
 		ZHR = zhr;
 	}
 
-	int getZHR() {
+	int getZHR() const {
 		return ZHR;
 	}
   
   	// set maximum meteoroid velocity km/s
-	void setMaxVelocity(int maxv);
+	void setMaxVelocity(int maxv){
+		max_velocity = maxv;
+	};
+
 	//! update positions
 	void update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time);          
 	// Draw the meteors

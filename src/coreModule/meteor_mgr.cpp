@@ -40,10 +40,8 @@ MeteorMgr::MeteorMgr(int zhr, int maxv )
 	// calculate factor for meteor creation rate per second since visible area ZHR is for
 	// estimated visible radius of 458km
 	// (calculated for average meteor magnitude of +2.5 and limiting magnitude of 5)
-
 	zhr_to_wsr = 1.6667f/3600.f;
 	// this is a correction factor to adjust for the model as programmed to match observed rates
-
 	createGL_context();
 }
 
@@ -52,10 +50,10 @@ MeteorMgr::~MeteorMgr()
 
 
 
-void MeteorMgr::setMaxVelocity(int maxv)
-{
-	max_velocity = maxv;
-}
+// void MeteorMgr::setMaxVelocity(int maxv)
+// {
+// 	max_velocity = maxv;
+// }
 
 void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time)
 {
