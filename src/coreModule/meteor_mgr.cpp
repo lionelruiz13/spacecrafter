@@ -27,6 +27,9 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
+
 
 MeteorMgr::MeteorMgr(int zhr, int maxv )
 {
@@ -45,7 +48,7 @@ MeteorMgr::MeteorMgr(int zhr, int maxv )
 
 MeteorMgr::~MeteorMgr() 
 {
-	deleteShader();
+	// deleteShader();
 }
 
 void MeteorMgr::setZHR(int zhr)
@@ -125,28 +128,31 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 
 void MeteorMgr::createShader()
 {
-	shaderMeteor = new shaderProgram();
+	shaderMeteor = std::make_unique<shaderProgram>();
 	shaderMeteor->init("meteor.vert","meteor.frag");
 
+	// glGenVertexArrays(1,&meteor.vao);
+	// glBindVertexArray(meteor.vao);
 
-	glGenVertexArrays(1,&meteor.vao);
-	glBindVertexArray(meteor.vao);
+	// glGenBuffers(1,&meteor.color);
+	// glGenBuffers(1,&meteor.pos);
 
-	glGenBuffers(1,&meteor.color);
-	glGenBuffers(1,&meteor.pos);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+ 	meteor = std::make_unique<VertexArray>();
+	meteor->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	meteor->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
 }
 
-void MeteorMgr::deleteShader()
-{
-	if(shaderMeteor) shaderMeteor=nullptr;
+// void MeteorMgr::deleteShader()
+// {
+// 	if(shaderMeteor) shaderMeteor=nullptr;
 
-	glDeleteBuffers(1,&meteor.pos);
-	glDeleteBuffers(1,&meteor.color);
-	glDeleteVertexArrays(1,&meteor.vao);
-}
+// 	glDeleteBuffers(1,&meteor.pos);
+// 	glDeleteBuffers(1,&meteor.color);
+// 	glDeleteVertexArrays(1,&meteor.vao);
+// }
 
 void MeteorMgr::draw(Projector *proj, Navigator* nav)
 {
@@ -159,22 +165,26 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	if (vecPos.size()==0)
 		return;
 
-	glBindVertexArray(meteor.vao);
+	// glBindVertexArray(meteor.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,meteor.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecColor.size(),vecColor.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,meteor.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecColor.size(),vecColor.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,meteor.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,meteor.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+
+	meteor->fillVertexBuffer(BufferType::POS2D, vecPos);
+	meteor->fillVertexBuffer(BufferType::COLOR4, vecColor);
 
 	shaderMeteor->use();
-
+	meteor->bind();
 	for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
 		glDrawArrays(GL_LINE_STRIP, 3*i, 3);
 	
-	glBindVertexArray(0);
+	meteor->unBind();
+	// glBindVertexArray(0);
 	shaderMeteor->unuse();
 
 	vecPos.clear();

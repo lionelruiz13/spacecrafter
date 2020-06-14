@@ -28,15 +28,18 @@
 
 #include <vector>
 #include <functional>
+#include <memory>
 
 #include "coreModule/time_mgr.hpp"
 #include "meteor.hpp"
-#include "tools/shader.hpp"
+// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
 class Projector;
 class Navigator;
+class VertexArray;
+class shaderProgram;
 
 class MeteorMgr: public NoCopy {
 
@@ -54,7 +57,7 @@ public:
 private:
 
 	void createShader();
-	void deleteShader();
+	// void deleteShader();
 
 	std::vector<Meteor*> active;		// Vector containing all active meteors
 	int ZHR;
@@ -66,8 +69,11 @@ private:
 	std::vector<float> vecColor;
 
 	//shader for meteor's displaying
-	shaderProgram *shaderMeteor;
-	DataGL meteor;
+	// shaderProgram *shaderMeteor;
+	// DataGL meteor;
+	
+	std::unique_ptr<VertexArray> meteor;
+	std::unique_ptr<shaderProgram> shaderMeteor;
 };
 
 
