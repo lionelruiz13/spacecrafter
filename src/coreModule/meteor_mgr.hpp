@@ -68,7 +68,7 @@ public:
 
 private:
 	void createGL_context();
-	std::list<std::unique_ptr<Meteor>> active;		// list containing all active meteors
+	std::list<std::unique_ptr<Meteor>> m_activeMeteor;		// list containing all active meteors
 
 	int ZHR;
 	int max_velocity;

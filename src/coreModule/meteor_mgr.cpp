@@ -73,10 +73,10 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 	// }
 
 	// step through and update all active meteors and delete all inactive meteors too
-	for (auto iter = active.begin(); iter != active.end(); ++iter) {
+	for (auto iter = m_activeMeteor.begin(); iter != m_activeMeteor.end(); ++iter) {
 		if ( !( (*iter)->update(delta_time) ) ) {
 			//printf("Meteor \tdied\n");
-			iter=active.erase(iter);
+			iter=m_activeMeteor.erase(iter);
 		}
 	}
 
@@ -113,7 +113,7 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 		double prob = (double)rand()/((double)RAND_MAX+1);
 		if ( ZHR > 0 && prob < ((double)ZHR*zhr_to_wsr*(double)delta_time/1000.0f/(double)mpf) ) {
 			auto m = std::make_unique<Meteor>(proj, nav, eye, max_velocity);
-			active.push_back(std::move(m));
+			m_activeMeteor.push_back(std::move(m));
 			mlaunch++;
 		}
 	}
@@ -132,12 +132,7 @@ void MeteorMgr::createGL_context()
 
 void MeteorMgr::draw(Projector *proj, Navigator* nav)
 {
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	StateGL::enable(GL_BLEND);
-
-	// for (std::list<Meteor*>::iterator iter = active.begin(); iter != active.end(); iter++)
-	//  	(*iter)->draw(proj, nav, vecPos, vecColor);
-	for (auto& iter : active) {
+	for (auto& iter : m_activeMeteor) {
     	iter->draw(proj, nav, vecPos, vecColor);
 	}
 
@@ -146,6 +141,9 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 
 	m_meteorGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 	m_meteorGL->fillVertexBuffer(BufferType::COLOR4, vecColor);
+
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	StateGL::enable(GL_BLEND);
 
 	m_shaderMeteor->use();
 	m_meteorGL->bind();
