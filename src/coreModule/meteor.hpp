@@ -33,11 +33,11 @@ class Projector;
 class Navigator;
 class ToneReproductor;
 
-// all in km - altitudes make up meteor range
-#define EARTH_RADIUS 6369.f
-#define HIGH_ALTITUDE 115.f
-#define LOW_ALTITUDE 70.f
-#define VISIBLE_RADIUS 457.8f
+// // all in km - altitudes make up meteor range
+// #define EARTH_RADIUS 6369.f
+// #define HIGH_ALTITUDE 115.f
+// #define LOW_ALTITUDE 70.f
+// #define VISIBLE_RADIUS 457.8f
 
 class Meteor {
 

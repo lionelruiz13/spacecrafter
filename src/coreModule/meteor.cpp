@@ -32,7 +32,13 @@ In reality, individual meteor streams have varying velocity vectors and therefor
 which are generally not at the apex of the Earth's way, such as the Perseids shower.
 */
 
-// Improved realism and efficiency 2004-12
+
+// all in km - altitudes make up meteor range
+#define EARTH_RADIUS 6369.f
+#define HIGH_ALTITUDE 115.f
+#define LOW_ALTITUDE 70.f
+#define VISIBLE_RADIUS 457.8f
+
 
 #include <cstdlib>
 #include "coreModule/meteor.hpp"
@@ -178,14 +184,13 @@ Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 }
 
 Meteor::~Meteor()
-{
-}
+{}
 
 // returns true if alive
 bool Meteor::update(int delta_time)
 {
 
-	if (!alive) return(0);
+	if (!alive) return(false);
 
 	if ( position[2] < end_h ) {
 		// burning has stopped so magnitude fades out
@@ -205,7 +210,6 @@ bool Meteor::update(int delta_time)
 	} else {
 		pos_train[2] -= velocity*(double)delta_time/1000.0f;
 	}
-
 	//printf("meteor position: %f delta_t %d\n", position[2], delta_time);
 
 	// determine visual magnitude based on distance to observer
@@ -222,7 +226,6 @@ bool Meteor::update(int delta_time)
 // returns true if visible
 bool Meteor::draw(Projector *proj, Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecColor)//ce prototype va changer
 {
-
 	if (!alive) return(false);
 
 	Vec3d start, end;
