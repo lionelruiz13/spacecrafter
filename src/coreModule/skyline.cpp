@@ -33,25 +33,16 @@
 #include "navModule/observer.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
-
-//#include "tools/fmath.hpp"
-
-
-// shaderProgram* SkyLine::shaderSkylineDraw=nullptr;
-// shaderProgram* SkyLine::shaderTropicDrawTick=nullptr;
-// shaderProgram* SkyLine::shaderSkylineMVPDraw=nullptr;
-
-// DataGL SkyLine::skylineDraw;
+//2346 lignes avant 
+//2479 lignes apres
+//1560 lignes au final
 
 std::unique_ptr<shaderProgram> SkyLine::shaderSkylineDraw;
-// std::unique_ptr<shaderProgram> SkyLine::shaderTropicDrawTick;
-// std::unique_ptr<shaderProgram> SkyLine::shaderSkylineMVPDraw;
 std::unique_ptr<VertexArray> SkyLine::skylineDraw;
 
 SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
 	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f), font(nullptr)
 {
-	//~ float inclination = 0.f;
 }
 
 SkyLine::~SkyLine()
@@ -64,12 +55,6 @@ void SkyLine::createGL_context()
 {
 	skylineDraw = std::make_unique<VertexArray>();
 	skylineDraw->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	// glGenVertexArrays(1,&skylineDraw.vao);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glGenBuffers(1,&skylineDraw.pos);
-
-	// glEnableVertexAttribArray(0); //layout 0
 }
 
 void SkyLine::drawSkylineGL(const Vec4f& Color)
@@ -117,45 +102,10 @@ void SkyLine::translateLabels(Translator& trans)
 
 void SkyLine::createShader()
 {
-//====================
-//======draw========
 	shaderSkylineDraw = std::make_unique<shaderProgram>();
 	shaderSkylineDraw->init( "skylineDraw.vert", "skylineDraw.frag");
 	shaderSkylineDraw->setUniformLocation("Color");
-
-//====================
-//======Tropic_Tick========
-	// shaderTropicDrawTick = std::make_unique<shaderProgram>();
-	// shaderTropicDrawTick->init( "skylineTropicDrawTick.vert","skylineTropicDrawTick.frag");
-	// shaderTropicDrawTick->setUniformLocation({"Color","TRANSFO"});
-
-//====================
-//======draw_with_MVP========
-	// shaderSkylineMVPDraw = std::make_unique<shaderProgram>();
-	// shaderSkylineMVPDraw->init( "skylineMVPDraw.vert","skylineMVPDraw.frag");
-	// shaderSkylineMVPDraw->setUniformLocation({"Color","MVP"});
-
-
-//======VAO
-	// glGenVertexArrays(1,&skylineDraw.vao);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glGenBuffers(1,&skylineDraw.pos);
-
-	// glEnableVertexAttribArray(0); //layout 0
 }
-
-
-// void SkyLine::deleteShader()
-// {
-// 	if (shaderSkylineDraw) delete shaderSkylineDraw;
-// 	if (shaderTropicDrawTick) delete shaderTropicDrawTick;
-// 	if (shaderSkylineMVPDraw) delete shaderSkylineMVPDraw;
-
-// 	glDeleteBuffers(1,&skylineDraw.pos);
-// 	glDeleteVertexArrays(1,&skylineDraw.vao);
-// }
-
 
 // -------------------- SKYLINE_POLE ---------------------------------------------
 
@@ -185,33 +135,16 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 {
 	if (!fader.getInterstate()) return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int i=0; i<51; ++i) {
 		Utility::spheToRect((float)i/(50)*2.f*M_PI,radius*M_PI/180.f, circlep[i]);
 	}
 	for (int i=0; i < 50; i++) {
 		if ((prj->*proj_func)(circlep[i], pt1) && (prj->*proj_func)(circlep[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
@@ -220,38 +153,13 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 	}
 	for (int i=0; i < 50; i++) {
 		if ((prj->*proj_func)(circlep[i], pt1) && (prj->*proj_func)(circlep[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
 
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
 	drawSkylineGL(Color);
-	// skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
-	
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	// skylineDraw->bind();
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-	// skylineDraw->unBind();
-	// // glUseProgram(0);
-	// shaderSkylineDraw->unuse();
+
 	vecDrawPos.clear();
-	//~ prj->reset_perspective_projection();
 }
 
 
@@ -285,23 +193,17 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 	if (!fader.getInterstate()) return;
 	// TODO changer cette condition
 	if (!(observatory->isEarth())) return;
-	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
-
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	inclination=66.5*M_PI/180.;
 	derivation = 0;  //(nav->getJDay()-2451545.0)/(365.2422*71.67)*M_PI/180.0;
 
 	// VERTICAL
-	for (/*unsigned*/ int i=0; i<12; i++) {
+	for (int i=0; i<12; i++) {
 		for (int j=-4; j<=4; j++) {
 			alpha=i*30*M_PI/180.-derivation;
 			delta=j*4*M_PI/180.;
@@ -309,34 +211,14 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 		for (int j=0; j<8; j++) {
 			if ((prj->*proj_func)(punts[j], pt1) && (prj->*proj_func)(punts[j+1], pt2) ) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
+
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 		}
 	}
-	//~ shaderSkylineDraw->use();
-	//~ shaderSkylineDraw->setUniform("Color",Color);
-
-	//~ glBindVertexArray(skylineDraw.vao);
-
-	//~ glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	//~ glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	//~ glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	//~ vecDrawPos.clear();
 
 	//HAUT
-	for (/*unsigned*/ int i=0; i<=48; i++) {
+	for (int i=0; i<=48; i++) {
 
 		alpha=i*7.5*M_PI/180.-derivation;
 		delta=16*M_PI/180.;
@@ -344,15 +226,7 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 	}
 	for (int i=0; i < 48; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
 
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			const double dx = pt2[0]-pt1[0];
@@ -370,95 +244,31 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 				// TODO: center labels
 				oss << zod[((i-2)/4)+1] << "°";
 
-				//~ glPushMatrix();
-
-				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(-90+angle*180./M_PI,0,0,-1);
-
 				Mat4f MVP = prj->getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI_2-angle );
 
-				//~ glEnable(GL_TEXTURE_2D);
-
 				font->print(0,-5,oss.str(), Color, MVP*TRANSFO ,1);
-				//~ glPopMatrix();
-				//~ glDisable(GL_TEXTURE_2D);
 			}
 		}
 	}
 
-	//~ shaderSkylineDraw->use();
-	//~ shaderSkylineDraw->setUniform("Color",Color);
-
-	//~ glBindVertexArray(skylineDraw.vao);
-
-	//~ glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	//~ glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	//~ glDrawArrays(GL_LINES,0,vecDrawPos.size()/2);
-	//~ vecDrawPos.clear();
-
 	//BAS
-	for (/*unsigned*/ int i=0; i<=48; i++) {
+	for (int i=0; i<=48; i++) {
 		alpha=i*7.5*M_PI/180.-derivation;
 		delta=-16*M_PI/180.;
 		Utility::spheToRect(atan2(sin(alpha),sin(inclination)*cos(alpha)-cos(inclination)*tan(delta)+1.0E-20)+M_PI/2.0,asin(sin(delta)*sin(inclination)+cos(delta)*cos(inclination)*cos(alpha)),punts[i]);
 	}
 	for (int i=0; i < 48; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
 
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
-			//~ vecDrawPos.clear();
 		}
 	}
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	// glBindVertexArray(skylineDraw.vao);
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	//~ glDrawArrays(GL_LINES, 0 ,2);
-	// skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
-	// skylineDraw->bind();
-	// glDrawArrays(GL_LINES,0,vecDrawPos.size()/2);
-	// skylineDraw->unBind();
-	// shaderSkylineDraw->unuse();
 
 	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
-
-
-	//~ glBindVertexArray(skylineDraw.vao);
-
-	//~ glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	//~ glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	//~ glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	//~ glDrawArrays(GL_LINES, i*2 ,2);
-
-	//~ vecDrawPos.clear();
-
-	// glUseProgram(0);
-
-	//~ prj->reset_perspective_projection();
 }
 
 
@@ -496,16 +306,10 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
 	for (double sign=-1; sign<2; sign=sign+2) {
-		//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 
-		//~ glDisable(GL_TEXTURE_2D);
 		StateGL::enable(GL_BLEND);
-		//~ glEnable(GL_LINE_STIPPLE);
-		//~ glLineStipple(1,0x00FF);
 
 		StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-		//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 		inclination=(90.0-abs(observatory->getLatitude()))*M_PI/180.;
 		//Vec3f punts[3*nb_segment+3];
@@ -516,90 +320,22 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 				Utility::spheToRect((float)j/(nb_segment)*2.f*M_PI, inclination, points[j+nb_segment+1]);
 				points[j+nb_segment+1] *= radius;
 			}
-			//for (unsigned int j=0; j<nb_segment+1; ++j) {
-			//    Utility::spheToRect(2.f*M_PI,inclination+(sign*(90.*M_PI/180.f)-inclination)*(j/nb_segment), punts[j+nb_segment+1]);
-			//    punts[j+nb_segment+1] *= radius;
-			//}
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
 
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
-
-				//~ if((i+1) % 2 == 0) {
-				//~ const double dx = pt1[0]-pt2[0];
-				//~ const double dy = pt1[1]-pt2[1];
-				//~ const double dq = dx*dx+dy*dy;
-
-				//~ const double d = sqrt(dq);
-				//~ angle = acos((pt1[1]-pt2[1])/d);
-				//~ if( pt1[0] < pt2[0] ) {
-				//~ angle *= -1;
-				//~ }
-				//A quoi sert ceci ?
-				//avec ou sans il n'y a aucune différence
-
-				//~ glPushMatrix();
-				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-				//~ glPopMatrix();
-
-				//~ Mat4f MVP = prj->getMatProjectionOrtho2D();
-				//~ TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
-				//~ TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 180+angle*180./M_PI );
-				//~ shaderSkylineDraw->setUniform("MVP",MVP*TRANSFO);
-				//~ }
 			}
 			if((prj->*proj_func)(punts[nb_segment+1+i], pt1) && (prj->*proj_func)(punts[nb_segment+1+i+1], pt2)) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
 
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
-
 			}
 
 		}
-		//~ prj->reset_perspective_projection();
 	}
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
-
-	// skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
-	// skylineDraw->bind();
-	// glDrawArrays(GL_LINES,0,vecDrawPos.size()/2);
-	// skylineDraw->unBind();
-	// shaderSkylineDraw->unuse();
 
 	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
-
-	//~ glDisable(GL_LINE_STIPPLE);
 }
 
 
@@ -651,23 +387,15 @@ SkyLine_Analemme::~SkyLine_Analemme()
 void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
-	// TODO changer cette condition
 	if (!(observatory->isEarth()))return;
-	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
 	Vec3f tmp;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 	double longitude;
 	if(line_analemme_type==ANALEMMALINE) {
 		jd = timeMgr->getJDay();
@@ -679,52 +407,18 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 		lati=90;
 		T=0;
 	}
-	//~ printf("\n");
+
 	for (int i=0; i < 93; i++) {
 		Utility::spheToRect((ana_ad[i]-90+T-longitude)*M_PI/180,(90-lati+ana_de[i])*M_PI/180,analemma[i]);
-		//~ tmp=analemma[i];
-		//~ printf("ANALEMA: \t%f %f %f\n",tmp[0],tmp[1],tmp[2]);
 	}
 
 
 	for (int i=0; i < 92; i++) {
 		if ((prj->*proj_func)(analemma[i], pt1) && (prj->*proj_func)(analemma[i+1], pt2) ) {
-			//~ tmp=pt1;
-			//~ printf("ANALEMA pt1: \t%f %f %f\n",tmp[0],tmp[1],tmp[2]);
-			//~ tmp=pt2;
-			//~ printf("ANALEMA pt2: \t%f %f %f\n",tmp[0],tmp[1],tmp[2]);
 
-
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
-	//~ printf("\n\n");
-	//~ prj->reset_perspective_projection();
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-// 
-	// glBindVertexArray(skylineDraw.vao);
-// 
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	//~ glDrawArrays(GL_LINES, i*2 ,2);
-	// glDrawArrays(GL_LINES, 0 , vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
@@ -750,17 +444,10 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 {
 	if (!fader.getInterstate()) return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int j=0; j<=1; j++) {
 		for (unsigned int i=0; i<=48; i++) {
@@ -771,36 +458,11 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 		}
 		for (int i=0; i < 48; i++) {
 			if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
 
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 		}
 	}
-	//~ prj->reset_perspective_projection();
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	//~ glEnableVertexAttribArray(0); //layout 0
-
-	//~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	//~ glDrawArrays(GL_LINES, i*2 ,2);
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
@@ -826,13 +488,10 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 {
 	if (!fader.getInterstate()) return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
-	//~ glDisable(GL_TEXTURE_2D);
+
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int j=0; j<=1; j++) {
 		for (unsigned int i=0; i<=48; i++) {
@@ -843,34 +502,11 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 		for (int i=0; i < 48; i++) {
 			if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
+
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 		}
 	}
-	//~ prj->reset_perspective_projection();
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
-
 	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
@@ -894,18 +530,13 @@ SkyLine_Greenwich::~SkyLine_Greenwich()
 void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
-	//TODO Changer cette condition !
 	if (!(observatory->isEarth())) return;
-	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
-//	glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
 	double longitude=(observatory->getLongitude()*M_PI/180);
 	for (unsigned int i=0; i<60; i++) {
@@ -913,15 +544,7 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 	}
 	for (int i=0; i < 59; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
 
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
@@ -940,39 +563,17 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 		if ( pt1[0] < pt2[0] ) {
 			angle *= -1;
 		}
-		//~ glPushMatrix();
-		//~ glTranslatef(pt1[0],pt1[1],0);
-		//~ glRotatef(angle*180./M_PI,0,0,-1);
 
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
-		//~ glEnable(GL_TEXTURE_2D);
 		if (font) font->print(2,-2,"GM", Color, MVP*TRANSFO ,1);
-		//~ glDisable(GL_TEXTURE_2D);
-		//~ glPopMatrix();
 	}
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
-
-	//~ prj->reset_perspective_projection();
 }
 
 
@@ -991,33 +592,20 @@ SkyLine_Aries::~SkyLine_Aries()
 void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
-	//TODO Changer cette condition !
 	if (!(observatory->isEarth())) return;
-	//~ if (observatory->getHomePlanet()->getEnglishName() !="Earth") return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
 	for (unsigned int i=0; i<60; i++) {
 		Utility::spheToRect(0,(float)i/59*(2*M_PI),punts[i]);
 	}
 	for (int i=0; i < 59; i++) {
 		if ((prj->*proj_func)(punts[i], pt1) && (prj->*proj_func)(punts[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
 
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
@@ -1034,42 +622,17 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 		if ( pt1[0] < pt2[0] ) {
 			angle *= -1;
 		}
-		//~ glPushMatrix();
-
-		//~ glTranslatef(pt1[0],pt1[1],0);
-		//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
-		//~ glEnable(GL_TEXTURE_2D);
-
-
 		if (font) font->print(2,-2,"Aries", Color, MVP*TRANSFO ,1);
-		//~ glDisable(GL_TEXTURE_2D);
-		//~ glPopMatrix();
 	}
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
-
-	//~ prj->reset_perspective_projection();
 }
 
 
@@ -1102,14 +665,10 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 {
 	if (!fader.getInterstate()) return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	inclination=70*M_PI/180.;
 	for (unsigned int j=0; j<nb_segment+1; ++j) {
@@ -1122,21 +681,11 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
 
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 				// Draw hour ticks
 				if ((i+1) % ((nb_segment/36 )*2) == 0) {
-					//if((i)%((nb_segment/36)*2) == 0) {
-					//if ((i+1) % 2 == 0) {
 					//TODO: Center labels
 					const double dx = pt2[0]-pt1[0];
 					const double dy = pt2[1]-pt1[1];
@@ -1167,35 +716,16 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
-					//~ glPushMatrix();
-					//~ glTranslatef(pt2[0],pt2[1],0);
-					//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
-					//~ glBegin (GL_LINES);
-					//~ glVertex2f(-tickl,0);
-					//~ glVertex2f(tickl,0);
-					//~ glEnd();
-					//~ glPopMatrix();
-
 					tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 
 					tmp = TRANSFO * Vec4f(tickl,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 
-					//~ glEnable(GL_TEXTURE_2D);
-
-
 					if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
-					//~ glPopMatrix();
-					//~ glDisable(GL_TEXTURE_2D);
 				}
 			}
 		}
@@ -1207,17 +737,6 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 
 			double angle;
 
-			// TODO: allow for other numbers of meridians and parallels without
-			// screwing up labels?
-
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			// Draw text labels and ticks on meridian
@@ -1253,52 +772,19 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 				angle += M_PI;
 			}
 
-			//~ glPushMatrix();
-			//~ glTranslatef(pt2[0],pt2[1],0);
-			//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-
 			Mat4f MVP = prj->getMatProjectionOrtho2D();
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
-
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(-tickl,0);
-			//~ glVertex2f(tickl,0);
-			//~ glEnd();
-			//~ glPopMatrix();
-
 			tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-			// vecDrawPos.push_back( tmp[0] );
-			// vecDrawPos.push_back( tmp[1] );
 			insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 			tmp = TRANSFO * Vec4f(tickl,0.0,0.0,1.0);
-			// vecDrawPos.push_back( tmp[0] );
-			// vecDrawPos.push_back( tmp[1] );
 			insert_all(vecDrawPos, tmp[0], tmp[1]);
 
-
-			//~ glEnable(GL_TEXTURE_2D);
 			if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
-			//~ glDisable(GL_TEXTURE_2D);
 		}
 	}
-	//~ prj->reset_perspective_projection();
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-// 
-	// glBindVertexArray(skylineDraw.vao);
-// 
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-// 
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-// 
-	// glUseProgram(0);
-
 	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
@@ -1346,14 +832,10 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 {
 	if (!fader.getInterstate()) return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	if (line_equator_type == EQUATOR) {
 		inclination=70*M_PI/180.;
@@ -1367,20 +849,12 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 			inclination=70*M_PI/180.;
 
 			if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
+
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 				// Draw hour ticks
 				if ((i+1) % ((nb_segment/48)*2) == 0) {
-					//if((i)%((nb_segment/36)*2) == 0) {
-					//if ((i+1) % 2 == 0) {
+
 					//TODO: Center labels
 					const double dx = pt2[0]-pt1[0];
 					const double dy = pt2[1]-pt1[1];
@@ -1401,32 +875,17 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					else
 						oss << " " << ((i)/(nb_segment/24)+1)%24 << "h   " << (24-((i)/(nb_segment/24)+1)%24)*15 << "°";
 
-					//~ glPushMatrix();
-					//~ glTranslatef(pt2[0],pt2[1],0);
-					//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
-					//~ glBegin (GL_LINES);
-					//~ glVertex2f(-tickl,0);
-					//~ glVertex2f(tickl,0);
-					//~ glEnd();
 					tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
-					insert_all(vecDrawPos, tmp[0], tmp[1]);
-					tmp = TRANSFO * Vec4f( tickl,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 
-					//~ glEnable(GL_TEXTURE_2D);
+					tmp = TRANSFO * Vec4f( tickl,0.0,0.0,1.0);
+					insert_all(vecDrawPos, tmp[0], tmp[1]);
 
 					if (font) font->print(-24,-2,oss.str(), Color, MVP*TRANSFO ,1);
-					//~ glPopMatrix();
-					//~ glDisable(GL_TEXTURE_2D);
 				}
 			}
 		}
@@ -1441,14 +900,6 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 			// TODO: allow for other numbers of meridians and parallels without
 			// screwing up labels?
 
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			// Draw text labels and ticks on equator
@@ -1463,7 +914,7 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 				int tickl = 3;
 
 				if ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) {
-					//~ int divs = (15.f/(360.f/(nb_segment/2)*15));
+
 					double num = 360.0f/(nb_segment/2.f)*(nb_segment/2.f-(i+1)/2.f);
 					if (fmod(num,15) == 0) {
 						tickl = 8;
@@ -1483,10 +934,6 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 					else if ((i+1)/2 == 24*4) oss << "0h";
 					else oss << (i+1)/(2*4) << "h";
 				}
-				//~ glPushMatrix();
-				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-				//~ glPopMatrix();
 
 				Mat4f MVP = prj->getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
@@ -1494,60 +941,29 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 
 				if ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)) {
 					if ((i+1) % (2*4) == 0) {
-						//~ glBegin (GL_LINES);
-						//~ glVertex2f(-tickl,0);
-						//~ glVertex2f(tickl,0);
-						//~ glEnd();
+
 						tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-						// vecDrawPos.push_back( tmp[0] );
-						// vecDrawPos.push_back( tmp[1] );
 						insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 						tmp = TRANSFO * Vec4f( tickl,0.0,0.0,1.0);
-						// vecDrawPos.push_back( tmp[0] );
-						// vecDrawPos.push_back( tmp[1] );
 						insert_all(vecDrawPos, tmp[0], tmp[1]);
 					}
 				} else {
-					//~ glBegin (GL_LINES);
-					//~ glVertex2f(-tickl,0);
-					//~ glVertex2f(tickl,0);
-					//~ glEnd();
+
 					tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 					tmp = TRANSFO * Vec4f( tickl,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				}
-				//~ glEnable(GL_TEXTURE_2D);
 
 				if (((i+1)%2==0) && font && ((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
 					font->print(-26,-2,oss.str(), Color, MVP*TRANSFO ,1);
 				if (((i+1)%2==0) && font && !((internalNav) && (line_equator_type != GALACTIC_EQUATOR)))
 					font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
-
-				//~ glDisable(GL_TEXTURE_2D);
 			}
 		}
 	}
-	//~ prj->reset_perspective_projection();
-
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
@@ -1577,34 +993,6 @@ SkyLine_Tropic::~SkyLine_Tropic()
 	points = nullptr;
 }
 
-//~ void SkyLine_Tropic::drawTick(Vec3d &pt1, Vec3d &pt2)
-//~ {
-//~ const double dx = pt1[0]-pt2[0];
-//~ const double dy = pt1[1]-pt2[1];
-//~ const double dq = dx*dx+dy*dy;
-
-//~ double angle;
-
-//~ const double d = sqrt(dq);
-
-//~ angle = acos((pt1[1]-pt2[1])/d);
-//~ if ( pt1[0] < pt2[0] ) {
-//~ angle *= -1;
-//~ }
-
-//~ glPushMatrix();
-//~ glTranslatef(pt2[0],pt2[1],0);
-//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-
-//~ glBegin (GL_LINES);
-//~ glVertex2f(-3,0);
-//~ glVertex2f(3,0);
-//~ glEnd();
-
-//~ glPopMatrix();
-//~ }
-
-
 void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
@@ -1615,19 +1003,15 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	// Not valid on non-planets
 	if ( (observatory->getHomeBody()->isSatellite()) || observatory->isSun()) return;
-	//~ if ( (observatory->getHomePlanet()->isSatellite()) || observatory->getHomePlanet()->getEnglishName() == "Sun") return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 	for (unsigned int i=0; i<nb_segment; ++i) {
 		inclination=observatory->getHomeBody()->getAxialTilt()*M_PI/180.;
-		//~ inclination=observatory->getHomePlanet()->getAxialTilt()*M_PI/180.;
+
 		for (unsigned int j=0; j<nb_segment+1; ++j) {
 			Utility::spheToRect((float)j/(nb_segment)*2.f*M_PI, inclination, points[j+nb_segment+1]);
 			points[j+nb_segment+1] *= radius;
@@ -1635,17 +1019,9 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 			points[j+2*nb_segment+2] *= radius;
 		}
 
-
 		// Draw equator
 		if ((prj->*proj_func)(points[i], pt1) && (prj->*proj_func)(points[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
+
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			if((i+1) % 4 == 0) {
@@ -1660,39 +1036,19 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 					angle *= -1;
 				}
 
-				//~ glPushMatrix();
-				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
-				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-				// vecDrawPos.push_back( tmp[0] );
-				// vecDrawPos.push_back( tmp[1] );
-				insert_all(vecDrawPos, tmp[0], tmp[1]);
-				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
-				// vecDrawPos.push_back( tmp[0] );
-				// vecDrawPos.push_back( tmp[1] );
-				insert_all(vecDrawPos, tmp[0], tmp[1]);
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(-3,0);
-				//~ glVertex2f(3,0);
-				//~ glEnd();
 
-				//~ glPopMatrix();
+				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
+
+				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
+				insert_all(vecDrawPos, tmp[0], tmp[1]);
 			}
 		}
 
 		if((prj->*proj_func)(points[nb_segment+1+i], pt1) && (prj->*proj_func)(points[nb_segment+1+i+1], pt2)) {
 
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			if((i+1) % 4 == 0) {
@@ -1707,40 +1063,23 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 					angle *= -1;
 				}
 
-				//~ glPushMatrix();
-				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
+
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-				// vecDrawPos.push_back( tmp[0] );
-				// vecDrawPos.push_back( tmp[1] );
 				insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
-				// vecDrawPos.push_back( tmp[0] );
-				// vecDrawPos.push_back( tmp[1] );
 				insert_all(vecDrawPos, tmp[0], tmp[1]);
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(-3,0);
-				//~ glVertex2f(3,0);
-				//~ glEnd();
-				//~ glPopMatrix();
 			}
 
 			if( (prj->*proj_func)(points[2*nb_segment+2+i], pt1) && (prj->*proj_func)(points[2*nb_segment+2+i+1], pt2)) {
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glEnd();
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
+
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 			}
 
 			// Draw hour ticks
-			if ((i+1) % 4 == 0) { //drawTick( pt1, pt2);
+			if ((i+1) % 4 == 0) {
 				const double dx = pt1[0]-pt2[0];
 				const double dy = pt1[1]-pt2[1];
 				const double dq = dx*dx+dy*dy;
@@ -1754,43 +1093,17 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 					angle *= -1;
 				}
 
-				//~ glPushMatrix();
-				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(180+angle*180./M_PI,0,0,-1);
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
+				
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-				// vecDrawPos.push_back( tmp[0] );
-				// vecDrawPos.push_back( tmp[1] );
 				insert_all(vecDrawPos, tmp[0], tmp[1]);
+				
 				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
-				// vecDrawPos.push_back( tmp[0] );
-				// vecDrawPos.push_back( tmp[1] );
 				insert_all(vecDrawPos, tmp[0], tmp[1]);
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(-3,0);
-				//~ glVertex2f(3,0);
-				//~ glEnd();
-
-				//~ glPopMatrix();
 			}
 		}
 	}
-	//~ prj->reset_perspective_projection();
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
@@ -1816,28 +1129,18 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 {
 	if (!fader.getInterstate()) return;
 
-	//aucun sens si on n'est pas sur terre.
 	if (!observatory->isOnBody())
 		return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
-
-	// special drawing of the ecliptic line
-	//~ Mat4d m = observatory->getHomePlanet()->getRotEquatorialToVsop87().transpose();
 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
-	//TODO Changer cette condition !
+
 	bool draw_labels = (observatory->isEarth() && font);
-	//~ bool draw_labels = (observatory->getHomePlanet()->getEnglishName()=="Earth" && font);
 
 	// start labeling from the vernal equinox
-	//	  const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 3*M_PI/6) : 0.0;
 	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*M_PI/6) : 0.0;
 	Vec3d point(radius*cos(corr),radius*sin(corr),0.0);
 	point.transfo4d(m);
@@ -1853,18 +1156,8 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 			const double dy = pt2[1]-pt1[1];
 			const double dq = dx*dx+dy*dy;
 
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glEnd();
-
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
-			//if(i % 4 == 0) {
 			const double d = sqrt(dq);
 			double angle;
 
@@ -1873,11 +1166,6 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 				angle *= -1;
 			}
 
-			//~ glPushMatrix();
-			//~ glTranslatef(pt2[0],pt2[1],0);
-			//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-			//~ glBegin (GL_LINES);
-
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 
@@ -1885,11 +1173,10 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 				//                31 	     28 	31 	   30 	       31 	  30 	     31 	31 	   30 	      31         30
 				if ((i==1) || (i==32) || (i==60) || (i==91) || (i==121) || (i==152) || (i==182) || (i==213) || (i==244) || (i==274) || (i==305) || (i==335)) {
 					//~ printf("9\n");
-					//~ glVertex2f(-9,0);
 					tmp = TRANSFO * Vec4f(-9.0,0.0,0.0,1.0);
 					vecDrawPos.push_back( tmp[0] );
 					vecDrawPos.push_back( tmp[1] );
-					//~ glVertex2f(9,0);
+
 					tmp = TRANSFO * Vec4f(9.0,0.0,0.0,1.0);
 					vecDrawPos.push_back( tmp[0] );
 					vecDrawPos.push_back( tmp[1] );
@@ -1905,34 +1192,22 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 				           || (i==279) || (i==284) || (i==289) || (i==294) || (i==299)
 				           || (i==310) || (i==315) || (i==320) || (i==325) || (i==330)
 				           || (i==340) || (i==345) || (i==350) || (i==355) || (i==360)) {
-					//~ glVertex2f(-6,0);
-					//~ glVertex2f(6,0);
+
 					//~ printf("6\n");
 					tmp = TRANSFO * Vec4f(-6.0,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 					tmp = TRANSFO * Vec4f(6.0,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				} else {
-					//~ glVertex2f(-3,0);
-					//~ glVertex2f(3,0);
 					//~ printf("3\n");
 					tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 					tmp = TRANSFO * Vec4f(3.0,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
 				}
 			} // End draw ticks - To do: graduate in ° from vernal point
-			//~ glEnd();
-			//~ glPopMatrix();
-			//}
 
 			if (draw_labels && (i+15) % 30 == 3) {
 
@@ -1947,8 +1222,6 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 
 				// TODO: center labels
 
-				// TODO cahnger cette condition
-				//~ if (observatory->getHomePlanet()->getEnglishName()=="Earth") {
 				if (observatory->isEarth()) {
 					float degree = i-84.5;
 					if (degree < 0) degree += 360;
@@ -1958,40 +1231,16 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 						oss << month[ (i+15)/30 ];
 				}
 
-				//~ glPushMatrix();
-				//~ glTranslatef(pt2[0],pt2[1],0);
-				//~ glRotatef(-90+angle*180./M_PI,0,0,-1);
-
 				Mat4f MVP = prj->getMatProjectionOrtho2D();
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI_2-angle );
 
-				//~ glEnable(GL_TEXTURE_2D);
-
 				font->print(0,-10,oss.str(), Color, MVP*TRANSFO ,1);
-				//~ glPopMatrix();
-				//~ glDisable(GL_TEXTURE_2D);
 			}
 		}
 		prev_on_screen = on_screen;
 		pt1 = pt2;
 	}
-	//~ prj->reset_perspective_projection();
-
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
@@ -2007,7 +1256,6 @@ SkyLine_Precession::SkyLine_Precession(double _radius = 1., unsigned int _nb_seg
 	SkyLine(_radius, _nb_segment)
 {
 	proj_func = &Projector::projectJ2000;
-	//inclination = 23.4392803055555555556; inutile ?
 }
 
 SkyLine_Precession::~SkyLine_Precession()
@@ -2020,26 +1268,17 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 	if (!observatory->isOnBody())
 		return;
 	
-	// TODO : changer cette condition
 	if(!(observatory->isEarth())) return;
-	//~ if(observatory->getHomePlanet()->getEnglishName()!="Earth") return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
-
-	// special drawing of the precession lines (both poles)
-	//~ Mat4d m = observatory->getHomePlanet()->getRotEquatorialToVsop87().transpose();
 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
 	draw_labels = (font != nullptr);
 
 	const double corr = draw_labels ? (atan2(m.r[4],m.r[0]) - 2.68*M_PI/6) : 0.0;
-	//double corr = 0.0;
 
 	bool prev_on_screen;
 
@@ -2059,14 +1298,6 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 				const double dy = pt2[1]-pt1[1];
 				const double dq = dx*dx+dy*dy;
 
-				//~ glBegin (GL_LINES);
-				//~ glVertex2f(pt2[0],pt2[1]);
-				//~ glVertex2f(pt1[0],pt1[1]);
-				//~ glEnd();
-				// vecDrawPos.push_back( pt1[0] );
-				// vecDrawPos.push_back( pt1[1] );
-				// vecDrawPos.push_back( pt2[0] );
-				// vecDrawPos.push_back( pt2[1] );
 				insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 				if((i+2) % 4 == 0) {
@@ -2082,7 +1313,6 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 					std::ostringstream oss;
 
 					// TODO: center labels
-
 					if (pole==1) {
 						if ((i>52) && (i<100)) {
 							oss << "-" << ((i-48) / 4)*1000;
@@ -2102,57 +1332,24 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 						}
 					}
 
-					//~ glPushMatrix();
-					//~ glTranslatef(pt2[0],pt2[1],0);
-					//~ glRotatef(180+angle*180./M_PI,0,0,-1);
-
 					Mat4f MVP = prj->getMatProjectionOrtho2D();
 					TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 					if (pole==1) TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
 					if (pole==-1) TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), -angle );
 
-					//~ glEnable(GL_TEXTURE_2D);
-
 					font->print(0,-2,oss.str(), Color, MVP*TRANSFO ,1);
 
-					//~ glBegin (GL_LINES);
-					//~ glVertex2f(-3,0);
-					//~ glVertex2f(3,0);
-					//~ glEnd();
 					tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
+
 					tmp = TRANSFO * Vec4f(3.0,0.0,0.0,1.0);
-					// vecDrawPos.push_back( tmp[0] );
-					// vecDrawPos.push_back( tmp[1] );
 					insert_all(vecDrawPos, tmp[0], tmp[1]);
-					//~ glPopMatrix();
-
-					//~ glDisable(GL_TEXTURE_2D);
-
 				}
 			}
 			prev_on_screen = on_screen;
 			pt1 = pt2;
 		}
 	}
-	//~ prj->reset_perspective_projection();
-
-
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
@@ -2181,14 +1378,10 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 {
 	if (!fader.getInterstate()) return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int i=0; i<nb_segment+1; ++i) {
 		Utility::spheToRect(M_PI_2, ((float)i/nb_segment*M_PI),circlep[i]);
@@ -2196,14 +1389,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 
 	for (unsigned int i=0; i < nb_segment; i++) {
 		if ((prj->*proj_func)(circlep[i], pt1) && (prj->*proj_func)(circlep[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
+
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 			const double dx = pt2[0]-pt1[0];
@@ -2234,48 +1420,20 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 			}
 			angle *= -1;
 
-			//~ glPushMatrix();
-			//~ glTranslatef(pt2[0],pt2[1],0);
-			//~ glRotatef(angle*180./M_PI,0,0,-1);
-
 			Mat4f MVP = prj->getMatProjectionOrtho2D();
 			TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 			TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI+angle );
 
 			tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
-			// vecDrawPos.push_back( tmp[0] );
-			// vecDrawPos.push_back( tmp[1] );
 			insert_all(vecDrawPos, tmp[0], tmp[1]);
+	
 			tmp = TRANSFO * Vec4f(tickl,0.0,0.0,1.0);
-			// vecDrawPos.push_back( tmp[0] );
-			// vecDrawPos.push_back( tmp[1] );
 			insert_all(vecDrawPos, tmp[0], tmp[1]);
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(-tickl,0);
-			//~ glVertex2f(tickl,0);
-			//~ glEnd();
 
-			//~ glEnable(GL_TEXTURE_2D);
 			if (font) font->print(2,-2,oss.str(), Color, MVP*TRANSFO ,1);
-			//~ glDisable(GL_TEXTURE_2D);
-			//~ glPopMatrix();
 		}
 	}
-	//~ prj->reset_perspective_projection();
 
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 	drawSkylineGL(Color);
 
 	vecDrawPos.clear();
@@ -2299,14 +1457,10 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 {
 	if (!fader.getInterstate()) return;
 
-	//~ glColor4f(color[0], color[1], color[2], fader.getInterstate());
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	//~ glDisable(GL_TEXTURE_2D);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	for (unsigned int i=0; i<51; ++i) {
 		Utility::spheToRect((float)i/(50)*2.f*M_PI, (0.993f*M_PI-M_PI_2),circlep[i]);
@@ -2317,26 +1471,12 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	for (int i=0; i < 50; i++) {
 		if ((prj->*proj_func)(circlep[i], pt1) && (prj->*proj_func)(circlep[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
+
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 
 		}
 		if ((prj->*proj_func)(circlen[i], pt1) && (prj->*proj_func)(circlen[i+1], pt2) ) {
-			//~ glBegin (GL_LINES);
-			//~ glVertex2f(pt1[0],pt1[1]);
-			//~ glVertex2f(pt2[0],pt2[1]);
-			//~ glEnd();
-			// vecDrawPos.push_back( pt1[0] );
-			// vecDrawPos.push_back( pt1[1] );
-			// vecDrawPos.push_back( pt2[0] );
-			// vecDrawPos.push_back( pt2[1] );
+
 			insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 		}
 	}
@@ -2346,25 +1486,11 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	Utility::spheToRect(0,0.992f*M_PI-M_PI_2,punts[2]);
 
 	if ((prj->*proj_func)(punts[0],pt1) && (prj->*proj_func)(punts[1],pt2) ) {
-		//~ glBegin (GL_LINES);
-		//~ glVertex2f(pt1[0],pt1[1]);
-		//~ glVertex2f(pt2[0],pt2[1]);
-		//~ glEnd();
-		// vecDrawPos.push_back( pt1[0] );
-		// vecDrawPos.push_back( pt1[1] );
-		// vecDrawPos.push_back( pt2[0] );
-		// vecDrawPos.push_back( pt2[1] );
+
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 	if ((prj->*proj_func)(circlep[25],pt1) && (prj->*proj_func)(circlep[0],pt2) ) {
-		//~ glBegin (GL_LINES);
-		//~ glVertex2f(pt1[0],pt1[1]);
-		//~ glVertex2f(pt2[0],pt2[1]);
-		//~ glEnd();
-		// vecDrawPos.push_back( pt1[0] );
-		// vecDrawPos.push_back( pt1[1] );
-		// vecDrawPos.push_back( pt2[0] );
-		// vecDrawPos.push_back( pt2[1] );
+
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 
@@ -2383,20 +1509,12 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 		std::ostringstream oss;
 		oss << "Z";
-		//~ glPushMatrix();
-
-		//~ glTranslatef(pt1[0],pt1[1],0);
-		//~ glRotatef(0,0,0,-1);
 
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 );
 
-		//~ glEnable(GL_TEXTURE_2D);
-
 		if (font) font->print(10,-10,oss.str(), Color, MVP*TRANSFO ,1);
-		//~ glDisable(GL_TEXTURE_2D);
-		//~ glPopMatrix();
 	}
 
 	Utility::spheToRect((float)12.5/(50)*2.f*M_PI, -(0.993f*M_PI-M_PI_2),punts[0]);
@@ -2404,25 +1522,11 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 	Utility::spheToRect(0, -(0.992f*M_PI-M_PI_2),punts[2]);
 
 	if ((prj->*proj_func)(punts[0],pt1) && (prj->*proj_func)(punts[1],pt2) ) {
-		//~ glBegin (GL_LINES);
-		//~ glVertex2f(pt1[0],pt1[1]);
-		//~ glVertex2f(pt2[0],pt2[1]);
-		//~ glEnd();
-		// vecDrawPos.push_back( pt1[0] );
-		// vecDrawPos.push_back( pt1[1] );
-		// vecDrawPos.push_back( pt2[0] );
-		// vecDrawPos.push_back( pt2[1] );
+
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 	if ((prj->*proj_func)(circlen[25],pt1) && (prj->*proj_func)(circlen[0],pt2) ) {
-		//~ glBegin (GL_LINES);
-		//~ glVertex2f(pt1[0],pt1[1]);
-		//~ glVertex2f(pt2[0],pt2[1]);
-		//~ glEnd();
-		// vecDrawPos.push_back( pt1[0] );
-		// vecDrawPos.push_back( pt1[1] );
-		// vecDrawPos.push_back( pt2[0] );
-		// vecDrawPos.push_back( pt2[1] );
+
 		insert_all(vecDrawPos, pt1[0], pt1[1], pt2[0], pt2[1]);
 	}
 
@@ -2441,35 +1545,13 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 		}
 		std::ostringstream oss;
 		oss << "N";
-		//~ glPushMatrix();
-
-		//~ glTranslatef(pt1[0],pt1[1],0);
-		//~ glRotatef(0,0,0,-1);
 
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
 		TRANSFO= Mat4f::translation( Vec3f(pt1[0],pt1[1],0) );
 		TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), 0 );
 
-		//~ glEnable(GL_TEXTURE_2D);
 		if (font) font->print(10,-10,oss.str(), Color, MVP*TRANSFO ,1);
-		//~ glDisable(GL_TEXTURE_2D);
-		//~ glPopMatrix();
 	}
-
-	//~ prj->reset_perspective_projection();
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	// glBindVertexArray(skylineDraw.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,skylineDraw.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecDrawPos.size(),vecDrawPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// //~ glEnableVertexAttribArray(0); //layout 0
-
-	// //~ for (unsigned int i = 0; i < vecDrawPos.size()/2 ; i++)
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-
-	// glUseProgram(0);
 
 	drawSkylineGL(Color);
 
