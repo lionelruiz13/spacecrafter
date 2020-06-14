@@ -57,19 +57,26 @@ MeteorMgr::~MeteorMgr()
 
 void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time)
 {
-
 	// step through and update all active meteors
 	// int n =0;
 
-	for (std::vector<Meteor*>::iterator iter = active.begin(); iter != active.end(); ++iter) {
-		// n++;
-		//printf("Meteor %d update\n", ++n);
+	// for (std::list<Meteor*>::iterator iter = active.begin(); iter != active.end(); ++iter) {
+	// 	// n++;
+	// 	//printf("Meteor %d update\n", ++n);
+	// 	if ( !( (*iter)->update(delta_time) ) ) {
+	// 		// remove dead meteor
+	// 		      printf("Meteor \tdied\n");
+	// 		delete *iter;
+	// 		active.erase(iter);
+	// 		iter--;  // important!
+	// 	}
+	// }
+
+	// step through and update all active meteors and delete all inactive meteors too
+	for (auto iter = active.begin(); iter != active.end(); ++iter) {
 		if ( !( (*iter)->update(delta_time) ) ) {
-			// remove dead meteor
-			//      printf("Meteor \tdied\n");
-			delete *iter;
-			active.erase(iter);
-			iter--;  // important!
+			//printf("Meteor \tdied\n");
+			iter=active.erase(iter);
 		}
 	}
 
@@ -105,8 +112,8 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 		// start new meteor based on ZHR time probability
 		double prob = (double)rand()/((double)RAND_MAX+1);
 		if ( ZHR > 0 && prob < ((double)ZHR*zhr_to_wsr*(double)delta_time/1000.0f/(double)mpf) ) {
-			Meteor *m = new Meteor(proj, nav, eye, max_velocity);
-			active.push_back(m);
+			auto m = std::make_unique<Meteor>(proj, nav, eye, max_velocity);
+			active.push_back(std::move(m));
 			mlaunch++;
 		}
 	}
@@ -128,8 +135,11 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	StateGL::enable(GL_BLEND);
 
-	for (std::vector<Meteor*>::iterator iter = active.begin(); iter != active.end(); ++iter)
-		(*iter)->draw(proj, nav, vecPos, vecColor);
+	// for (std::list<Meteor*>::iterator iter = active.begin(); iter != active.end(); iter++)
+	//  	(*iter)->draw(proj, nav, vecPos, vecColor);
+	for (auto& iter : active) {
+    	iter->draw(proj, nav, vecPos, vecColor);
+	}
 
 	if (vecPos.size()==0)
 		return;

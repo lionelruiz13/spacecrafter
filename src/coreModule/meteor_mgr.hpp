@@ -27,6 +27,7 @@
 #define _METEOR__MGR_H_
 
 #include <vector>
+#include <list>
 #include <functional>
 #include <memory>
 
@@ -51,11 +52,10 @@ public:
 	void setZHR(int zhr){   
 		ZHR = zhr;
 	}
-
+	// get zenith hourly rate
 	int getZHR() const {
 		return ZHR;
 	}
-  
   	// set maximum meteoroid velocity km/s
 	void setMaxVelocity(int maxv){
 		max_velocity = maxv;
@@ -66,10 +66,9 @@ public:
 	// Draw the meteors
 	void draw(Projector *proj, Navigator* nav);		
 
-
 private:
 	void createGL_context();
-	std::vector<Meteor*> active;		// Vector containing all active meteors
+	std::list<std::unique_ptr<Meteor>> active;		// list containing all active meteors
 
 	int ZHR;
 	int max_velocity;
