@@ -32,7 +32,6 @@
 
 #include "coreModule/time_mgr.hpp"
 #include "meteor.hpp"
-// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
@@ -44,22 +43,31 @@ class shaderProgram;
 class MeteorMgr: public NoCopy {
 
 public:
-	MeteorMgr(int zhr, int maxv );  // base_zhr is zenith hourly rate sans meteor shower
+	// base_zhr is zenith hourly rate sans meteor shower
+	MeteorMgr(int zhr, int maxv );  
 	virtual ~MeteorMgr();
 
-	void setZHR(int zhr);   // set zenith hourly rate
-	int getZHR(void);
-	void setMaxVelocity(int maxv);   // set maximum meteoroid velocity km/s
-	void update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time);          // update positions
-	void draw(Projector *proj, Navigator* nav);		// Draw the meteors
+	// set zenith hourly rate
+	void setZHR(int zhr){   
+		ZHR = zhr;
+	}
+
+	int getZHR() {
+		return ZHR;
+	}
+  
+  	// set maximum meteoroid velocity km/s
+	void setMaxVelocity(int maxv);
+	//! update positions
+	void update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time);          
+	// Draw the meteors
+	void draw(Projector *proj, Navigator* nav);		
 
 
 private:
-
-	void createShader();
-	// void deleteShader();
-
+	void createGL_context();
 	std::vector<Meteor*> active;		// Vector containing all active meteors
+
 	int ZHR;
 	int max_velocity;
 	double zhr_to_wsr;  // factor to convert from zhr to whole earth per second rate
@@ -68,13 +76,7 @@ private:
 	std::vector<float> vecPos;
 	std::vector<float> vecColor;
 
-	//shader for meteor's displaying
-	// shaderProgram *shaderMeteor;
-	// DataGL meteor;
-	
-	std::unique_ptr<VertexArray> meteor;
-	std::unique_ptr<shaderProgram> shaderMeteor;
+	std::unique_ptr<VertexArray> m_meteorGL;
+	std::unique_ptr<shaderProgram> m_shaderMeteor;
 };
-
-
 #endif // _METEOR_MGR_H

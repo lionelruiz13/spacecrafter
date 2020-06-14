@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2004 Robert Spearman
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
+ * Copyright (C) 2018-2020 AssociationSirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,23 +44,13 @@ MeteorMgr::MeteorMgr(int zhr, int maxv )
 	zhr_to_wsr = 1.6667f/3600.f;
 	// this is a correction factor to adjust for the model as programmed to match observed rates
 
-	createShader();
+	createGL_context();
 }
 
 MeteorMgr::~MeteorMgr() 
-{
-	// deleteShader();
-}
+{}
 
-void MeteorMgr::setZHR(int zhr)
-{
-	ZHR = zhr;
-}
 
-int MeteorMgr::getZHR()
-{
-	return ZHR;
-}
 
 void MeteorMgr::setMaxVelocity(int maxv)
 {
@@ -70,12 +61,10 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 {
 
 	// step through and update all active meteors
-	int n =0;
-	//if (active.empty())
-	//	return;
+	// int n =0;
 
 	for (std::vector<Meteor*>::iterator iter = active.begin(); iter != active.end(); ++iter) {
-		n++;
+		// n++;
 		//printf("Meteor %d update\n", ++n);
 		if ( !( (*iter)->update(delta_time) ) ) {
 			// remove dead meteor
@@ -126,33 +115,15 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 	//  printf("mpf: %d\tm launched: %d\t(mps: %f)\t%d\n", mpf, mlaunch, ZHR*zhr_to_wsr, delta_time);
 }
 
-void MeteorMgr::createShader()
+void MeteorMgr::createGL_context()
 {
-	shaderMeteor = std::make_unique<shaderProgram>();
-	shaderMeteor->init("meteor.vert","meteor.frag");
+	m_shaderMeteor = std::make_unique<shaderProgram>();
+	m_shaderMeteor->init("meteor.vert","meteor.frag");
 
-	// glGenVertexArrays(1,&meteor.vao);
-	// glBindVertexArray(meteor.vao);
-
-	// glGenBuffers(1,&meteor.color);
-	// glGenBuffers(1,&meteor.pos);
-
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
-
- 	meteor = std::make_unique<VertexArray>();
-	meteor->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	meteor->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
+ 	m_meteorGL = std::make_unique<VertexArray>();
+	m_meteorGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	m_meteorGL->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
 }
-
-// void MeteorMgr::deleteShader()
-// {
-// 	if(shaderMeteor) shaderMeteor=nullptr;
-
-// 	glDeleteBuffers(1,&meteor.pos);
-// 	glDeleteBuffers(1,&meteor.color);
-// 	glDeleteVertexArrays(1,&meteor.vao);
-// }
 
 void MeteorMgr::draw(Projector *proj, Navigator* nav)
 {
@@ -165,27 +136,16 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	if (vecPos.size()==0)
 		return;
 
-	// glBindVertexArray(meteor.vao);
+	m_meteorGL->fillVertexBuffer(BufferType::POS2D, vecPos);
+	m_meteorGL->fillVertexBuffer(BufferType::COLOR4, vecColor);
 
-	// glBindBuffer(GL_ARRAY_BUFFER,meteor.color);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecColor.size(),vecColor.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,meteor.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	meteor->fillVertexBuffer(BufferType::POS2D, vecPos);
-	meteor->fillVertexBuffer(BufferType::COLOR4, vecColor);
-
-	shaderMeteor->use();
-	meteor->bind();
+	m_shaderMeteor->use();
+	m_meteorGL->bind();
 	for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
 		glDrawArrays(GL_LINE_STRIP, 3*i, 3);
 	
-	meteor->unBind();
-	// glBindVertexArray(0);
-	shaderMeteor->unuse();
+	m_meteorGL->unBind();
+	m_shaderMeteor->unuse();
 
 	vecPos.clear();
 	vecColor.clear();
