@@ -223,7 +223,7 @@ bool Meteor::update(int delta_time)
 bool Meteor::draw(Projector *proj, Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecColor)//ce prototype va changer
 {
 
-	if (!alive) return(0);
+	if (!alive) return(false);
 
 	Vec3d start, end;
 
@@ -244,12 +244,10 @@ bool Meteor::draw(Projector *proj, Navigator* nav, std::vector<float> &vecPos, s
 	int t2 = proj->projectLocalCheck(epos/1216, end);
 
 	// don't draw if not visible (but may come into view)
-	if ( t1 + t2 == 0 ) return 1;
-
+	if ( t1 + t2 == 0 ) return true;
 	//  printf("[%f %f %f] (%d, %d) (%d, %d)\n", position[0], position[1], position[2], (int)start[0], (int)start[1], (int)end[0], (int)end[1]);
 
 	// connect this point with last drawn point
-
 	double tmag = mag*dist_multiplier;
 
 	// compute an intermediate point so can curve slightly along projection distortions
@@ -285,7 +283,7 @@ bool Meteor::draw(Projector *proj, Navigator* nav, std::vector<float> &vecPos, s
 	vecPos.push_back(start[0]);
 	vecPos.push_back(start[1]);
 
-	return(1);
+	return(true);
 }
 
 bool Meteor::isAlive(void)
