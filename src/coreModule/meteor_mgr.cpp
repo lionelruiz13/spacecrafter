@@ -37,8 +37,7 @@ MeteorMgr::MeteorMgr(int zhr, int maxv )
 	ZHR = zhr;
 	max_velocity = maxv;
 
-	// calculate factor for meteor creation rate per second since visible area ZHR is for
-	// estimated visible radius of 458km
+	// calculate factor for meteor creation rate per second since visible area ZHR is for estimated visible radius of 458km
 	// (calculated for average meteor magnitude of +2.5 and limiting magnitude of 5)
 	zhr_to_wsr = 1.6667f/3600.f;
 	// this is a correction factor to adjust for the model as programmed to match observed rates
@@ -49,29 +48,8 @@ MeteorMgr::~MeteorMgr()
 {}
 
 
-
-// void MeteorMgr::setMaxVelocity(int maxv)
-// {
-// 	max_velocity = maxv;
-// }
-
 void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time)
 {
-	// step through and update all active meteors
-	// int n =0;
-
-	// for (std::list<Meteor*>::iterator iter = active.begin(); iter != active.end(); ++iter) {
-	// 	// n++;
-	// 	//printf("Meteor %d update\n", ++n);
-	// 	if ( !( (*iter)->update(delta_time) ) ) {
-	// 		// remove dead meteor
-	// 		      printf("Meteor \tdied\n");
-	// 		delete *iter;
-	// 		active.erase(iter);
-	// 		iter--;  // important!
-	// 	}
-	// }
-
 	// step through and update all active meteors and delete all inactive meteors too
 	for (auto iter = m_activeMeteor.begin(); iter != m_activeMeteor.end(); ++iter) {
 		if ( !( (*iter)->update(delta_time) ) ) {
@@ -88,16 +66,7 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 		return;
 	}
 
-	/*
-	// debug - one at a time
-	if(active.begin() == active.end() ) {
-	  Meteor *m = new Meteor(projection, navigation, max_velocity);
-	  active.push_back(m);
-	    }
-	*/
-
-	// if application has been suspended, don't create huge number of meteors to
-	// make up for lost time!
+	// if application has been suspended, don't create huge number of meteors to make up for lost time!
 	if ( delta_time > 500 ) {
 		delta_time = 500;
 	}
