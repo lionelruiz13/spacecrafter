@@ -287,7 +287,6 @@ public:
 	static Matrix4<T> yawPitchRoll(T const& ,T const& ,T const& );
 	static Matrix4<T> translation(const Vector3<T>&);
 
-	//    static Matrix4<T> rotation(const Vector3<T>&)
 	static const Matrix4<T> rotation(const Vector3<T>&a,const Vector3<T>&b);
 	static const Matrix4<T> rotation(const Vector3<T>&, T);
 	static const Matrix4<T> rotation(const T c,const T s,const Vector4<T>&axis);
