@@ -49,10 +49,9 @@ class SkyLine {
 
 
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions 
 	SkyLine( double _radius = 1., unsigned int _nb_segment = 48);
 	virtual ~SkyLine();
-	//!	void draw(const Projector* prj) const; 20060825 patch
 	virtual void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory) = 0;
 	void setColor(const Vec3f& c) {
 		color = c;
@@ -86,7 +85,6 @@ public:
 
 	static void createShader();
 	static void createGL_context();
-	// static void deleteShader();
 
 protected:
 
@@ -108,12 +106,7 @@ protected:
 	Mat4f TRANSFO; //a renommer
 
 	//Opengl
-	// static shaderProgram* shaderSkylineDraw;
-	// static shaderProgram* shaderTropicDrawTick;
-	// static shaderProgram* shaderSkylineMVPDraw;
 	static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;
-
-	// static DataGL skylineDraw;
 	static std::unique_ptr<VertexArray> m_skylineGL;
 
 	std::vector<float> vecDrawPos;
@@ -129,7 +122,7 @@ public:
 		ECLIPTIC_POLE,
 		GALACTIC_POLE
 	};
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Pole(SKY_LINE_POLE_TYPE _line_pole_type, double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Pole();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -143,7 +136,7 @@ private:
 
 class SkyLine_Zodiac : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Zodiac(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Zodiac();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -161,7 +154,7 @@ private:
 
 class SkyLine_CircumPolar : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_CircumPolar(double _radius, unsigned int _nb_segment);
 	virtual ~SkyLine_CircumPolar();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -181,7 +174,7 @@ public:
 		ANALEMMA,
 		ANALEMMALINE
 	};
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Analemme(SKY_LINE_ANALEMME_TYPE _line_analemme_type, double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Analemme();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -200,7 +193,7 @@ private:
 
 class SkyLine_Galactic_Center : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Galactic_Center( double _radius , unsigned int _nb_segment);
 	virtual ~SkyLine_Galactic_Center();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -216,7 +209,7 @@ private:
 
 class SkyLine_Vernal : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Vernal(double _radius , unsigned int _nb_segment);
 	virtual ~SkyLine_Vernal();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -232,7 +225,7 @@ private:
 
 class SkyLine_Greenwich : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Greenwich(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Greenwich();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -248,7 +241,7 @@ private:
 
 class SkyLine_Aries : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Aries(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Aries();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -268,7 +261,7 @@ public:
 		EQUATOR,
 		GALACTIC_EQUATOR
 	};
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Equator(SKY_LINE_EQUATOR_LINE _line_equator_type, double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Equator();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -283,7 +276,7 @@ private:
 
 class SkyLine_Meridian : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Meridian(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Meridian();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -296,7 +289,7 @@ private:
 
 class SkyLine_Tropic : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Tropic(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Tropic();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -311,7 +304,7 @@ private:
 
 class SkyLine_Ecliptic : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Ecliptic(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Ecliptic();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -327,7 +320,7 @@ private:
 
 class SkyLine_Precession : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Precession(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Precession();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -343,7 +336,7 @@ private:
 
 class SkyLine_Vertical : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Vertical(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Vertical();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
@@ -358,7 +351,7 @@ private:
 
 class SkyLine_Zenith : public SkyLine {
 public:
-	//! Create and precompute positions of a SkyGrid
+	//! Create and precompute positions of a SkyLine
 	SkyLine_Zenith(double _radius , unsigned int _nb_segment );
 	virtual ~SkyLine_Zenith();
 	void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
