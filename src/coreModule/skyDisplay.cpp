@@ -38,6 +38,9 @@
 #include "navModule/navigator.hpp"
 #include "tools/tone_reproductor.hpp"
 #include "tools/translator.hpp"
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
+
 
 #define NB_MAX_POINTS 4194304
 const float deg2rad = 3.1415926 / 180.; // Convert deg to radian
@@ -48,7 +51,9 @@ const float pi_div_2 = 1.5707963;		// pi/2
 // -------------------- SKYLINE_PERSONAL  ---------------------------------------------
 
 s_font* SkyDisplay::skydisplay_font = nullptr;
-shaderProgram* SkyDisplay::shaderSkyDisplay = nullptr;
+
+// shaderProgram* SkyDisplay::shaderSkyDisplay = nullptr;
+std::unique_ptr<shaderProgram> SkyDisplay::shaderSkyDisplay;
 
 SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
 {
@@ -73,7 +78,14 @@ SkyDisplay::~SkyDisplay()
 	dataSky.clear();
 	// if (font)
 	// 	delete font;
-	deleteVao();
+	// deleteVao();
+}
+
+void SkyDisplay::createShader()
+{
+	shaderSkyDisplay = std::make_unique<shaderProgram>();
+	shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
+	shaderSkyDisplay->setUniformLocation({"color", "fader", "Mat"});
 }
 
 void SkyDisplay::createVao()
@@ -84,20 +96,22 @@ void SkyDisplay::createVao()
 	// shaderSkyDisplay->setUniformLocation("fader");
 	// shaderSkyDisplay->setUniformLocation("Mat");
 
-	glGenVertexArrays(1, &sData.vao);
-	glBindVertexArray(sData.vao);
-	glGenBuffers(1, &sData.pos);
+	// glGenVertexArrays(1, &m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
+	// glGenBuffers(1, &m_dataGL.pos);
 
-	glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(0);
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 }
 
-void SkyDisplay::deleteVao()
-{
+// void SkyDisplay::deleteVao()
+// {
 	// if (shaderSkyDisplay != nullptr)
 	// 	shaderSkyDisplay = nullptr;
-	glDeleteBuffers(1, &sData.pos);
-	glDeleteVertexArrays(1, &sData.vao);
-}
+// 	glDeleteBuffers(1, &m_dataGL.pos);
+// 	glDeleteVertexArrays(1, &m_dataGL.vao);
+// }
 
 void SkyDisplay::clear()
 {
@@ -139,6 +153,34 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 		}
 }
 
+
+void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+{
+	if (!fader.getInterstate())
+		return;
+
+	StateGL::enable(GL_BLEND);
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+
+	shaderSkyDisplay->use();
+	shaderSkyDisplay->setUniform("color", color);
+	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+
+	if (ptype == AL)
+		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
+	else
+		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+
+//	glBindVertexArray(m_dataGL.vao);
+
+	m_dataGL->bind();
+	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	m_dataGL->unBind();
+
+	shaderSkyDisplay->unuse();
+}
+
+
 ///////////////////////////////////////////////////////////////////////
 //
 //      Classes dérivées
@@ -147,8 +189,7 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 ////////////////////////////////////////////////////////////////////////
 
 SkyPerson::SkyPerson(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
-{
-}
+{}
 
 void SkyPerson::loadData(const std::string& filename)
 {
@@ -184,11 +225,12 @@ void SkyPerson::loadData(const std::string& filename)
 	}
 
 	//on charge les points dans un vbo
-	glBindVertexArray(sData.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 	//~ glEnableVertexAttribArray(0);
 }
 
@@ -247,38 +289,39 @@ void SkyPerson::loadString(const std::string& message)
 	}
 
 	//on charge les points dans un vbo
-	glBindVertexArray(sData.vao);
-	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	// glBindVertexArray(m_dataGL.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);	
 }
 
 
-void SkyPerson::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
-{
-	if (!fader.getInterstate())
-		return;
+// void SkyPerson::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
+// {
+// 	if (!fader.getInterstate())
+// 		return;
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+// 	StateGL::enable(GL_BLEND);
+// 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+// 	shaderSkyDisplay->use();
+// 	shaderSkyDisplay->setUniform("color", color);
+// 	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
 
-	if (ptype == AL)
-		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-	else
-		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+// 	if (ptype == AL)
+// 		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
+// 	else
+// 		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
 
-	glBindVertexArray(sData.vao);
+// 	glBindVertexArray(m_dataGL.vao);
 
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+// 	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
 
-	shaderSkyDisplay->unuse();
+// 	shaderSkyDisplay->unuse();
 
-	//draw_text(prj, nav);
-}
+// 	//draw_text(prj, nav);
+// }
 
 SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 {
@@ -337,30 +380,32 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	}
 	aperson = (direction + tick) * deg2rad;
 	//on charge les points dans un vbo
-	glBindVertexArray(sData.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	//~ glEnableVertexAttribArray(0);
+	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	// //~ glEnableVertexAttribArray(0);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+	// shaderSkyDisplay->use();
+	// shaderSkyDisplay->setUniform("color", color);
+	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
 
-	if (ptype == AL)
-		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-	else
-		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+	// if (ptype == AL)
+	// 	shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
+	// else
+	// 	shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
 
-	glBindVertexArray(sData.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
 
-	shaderSkyDisplay->unuse();
+	// shaderSkyDisplay->unuse();
+	SkyDisplay::draw(prj,nav);
 
 	draw_text(prj, nav);
 }
@@ -759,19 +804,25 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 		dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
 		dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
 	}
-	glBindVertexArray(sData.vao);
-	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-	glBindVertexArray(sData.vao);
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	shaderSkyDisplay->unuse();
+
+	// glBindVertexArray(m_dataGL.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// shaderSkyDisplay->use();
+	// shaderSkyDisplay->setUniform("color", color);
+	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+	// shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
+	
+	// glBindVertexArray(m_dataGL.vao);
+	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	// shaderSkyDisplay->unuse();
+
+	SkyDisplay::draw(prj,nav);
 
 	// Text
 	float ang, mn;
@@ -851,20 +902,25 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 		dataSky.push_back(pt2[1]); // punts[1] represent y coordinate
 		dataSky.push_back(pt2[2]); // punts[2] represent z coordinate
 	}
-	glBindVertexArray(sData.vao);
-	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	// glBindVertexArray(m_dataGL.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-	glBindVertexArray(sData.vao);
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	shaderSkyDisplay->unuse();
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// shaderSkyDisplay->use();
+	// shaderSkyDisplay->setUniform("color", color);
+	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+	// shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+
+	// glBindVertexArray(m_dataGL.vao);
+	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	// shaderSkyDisplay->unuse();
+	
+	SkyDisplay::draw(prj,nav);
+
 	//draw_text(prj, nav);
 	std::ostringstream oss;
 	Mat4f MVP = prj->getMatProjectionOrtho2D();
@@ -910,19 +966,24 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 		dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
 		dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
 	}
-	glBindVertexArray(sData.vao);
-	glBindBuffer(GL_ARRAY_BUFFER, sData.pos);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-	glBindVertexArray(sData.vao);
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	shaderSkyDisplay->unuse();
+	// glBindVertexArray(m_dataGL.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	
+	// shaderSkyDisplay->use();
+	// shaderSkyDisplay->setUniform("color", color);
+	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+	// shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+	
+	// glBindVertexArray(m_dataGL.vao);
+	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	// shaderSkyDisplay->unuse();
+	SkyDisplay::draw(prj,nav);
 
 	// Text
 	Vec3d localPos = nav->earthEquToLocal(oldEquPos);

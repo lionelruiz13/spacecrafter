@@ -34,13 +34,14 @@
 SkyDisplayMgr::SkyDisplayMgr()
 {
 	//baseColor=Vec3f(0.f, 0.f, 0.f);
-	shaderSkyDisplay = new shaderProgram();
-	shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
-	shaderSkyDisplay->setUniformLocation("color");
-	shaderSkyDisplay->setUniformLocation("fader");
-	shaderSkyDisplay->setUniformLocation("Mat");
+	// shaderSkyDisplay = new shaderProgram();
+	// shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
+	// shaderSkyDisplay->setUniformLocation("color");
+	// shaderSkyDisplay->setUniformLocation("fader");
+	// shaderSkyDisplay->setUniformLocation("Mat");
 
-	SkyDisplay::setShader(shaderSkyDisplay);
+	// SkyDisplay::setShader(shaderSkyDisplay);
+	SkyDisplay::createShader();
 }
 
 void SkyDisplayMgr::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
@@ -64,8 +65,8 @@ SkyDisplayMgr::~SkyDisplayMgr()
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
-	if (shaderSkyDisplay != nullptr)
-		delete shaderSkyDisplay;
+	// if (shaderSkyDisplay != nullptr)
+	// 	delete shaderSkyDisplay;
 	if (skyDisplayFont != nullptr)
 		delete skyDisplayFont;
 }

@@ -27,17 +27,23 @@
 
 #include <string>
 #include <fstream>
+#include <memory>
+#include <vector>
+
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
+// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
-#include <vector>
+#include "tools/vecmath.hpp"
+
 
 class Projector;
 class Navigator;
 class ToneReproductor;
 class Translator;
 class s_font;
+class VertexArray;
+class shaderProgram;
 
 //! Class which manages a personal line to display around the sky
 class SkyDisplay: public NoCopy  {
@@ -50,7 +56,7 @@ public:
 	virtual ~SkyDisplay();
 
 	//!	void draw(const Projector* prj) const; 20060825 patch
-	virtual void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) = 0;
+	virtual void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
 	void setColor(const Vec3f& c) {
 		color = c;
@@ -89,12 +95,13 @@ public:
 		skydisplay_font = _font;
 	}
 
-	static void setShader(shaderProgram *_shaderSkyDisplay) {
-		shaderSkyDisplay = _shaderSkyDisplay;
-	}
+	// static void setShader(shaderProgram *_shaderSkyDisplay) {
+	// 	shaderSkyDisplay = _shaderSkyDisplay;
+	// }
 
+	static void createShader();
 	void createVao();
-	void deleteVao();
+	// void deleteVao();
 
 protected:
 	Vec3f color;
@@ -107,8 +114,9 @@ protected:
 
 	std::vector<float> dataSky;
 	PROJECTION_TYPE ptype;
-	DataGL sData;
-	static shaderProgram *shaderSkyDisplay;
+	std::unique_ptr<VertexArray> m_dataGL;
+	// static shaderProgram *shaderSkyDisplay;
+	static std::unique_ptr<shaderProgram> shaderSkyDisplay;
 	double aperson;
 private:
 	// const float deg2rad = 3.1415926/180.;   // Convert deg to radian
@@ -123,7 +131,7 @@ public:
 	SkyPerson(PROJECTION_TYPE ptype);
 	~SkyPerson() {};
 
-	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) override;
+	//void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0)) override;
 	void loadData(const std::string& filename) override;
 	void loadString(const std::string& message) override;
 

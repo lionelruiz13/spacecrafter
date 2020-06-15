@@ -35,6 +35,7 @@
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/vecmath.hpp"
 
 class shaderProgram;
 class s_font;
@@ -77,6 +78,6 @@ private:
 	SkyDisplay* personEQ = nullptr;
 	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
 	s_font* skyDisplayFont = nullptr;
-	shaderProgram *shaderSkyDisplay=nullptr;
+	// shaderProgram *shaderSkyDisplay=nullptr;
 };
 #endif //SKYDISPLAY_MGR_HPP
