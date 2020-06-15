@@ -87,21 +87,14 @@ public:
 	void populate(unsigned int nbr) noexcept;
 
 private:
-	//vide le tampon
-	// void clear();
 	// initialise le shader et les vao-vbo
 	void createGL_context();
-	// supprime le shader et les vao-vbo
-	// void deleteShader();
-
 	// couleur uniforme du nuage
 	Vec3f color;
 	// fader pour affichage
 	LinearFader fader;
 	// coefficient sur l'intensité lumineuse
 	float intensity;
-	//tableau de float pour tampon openGL
-	// std::vector<float> dataOort;
 	unsigned int nbAsteroids;
 	// données openGL
 	std::unique_ptr<VertexArray> m_dataGL;

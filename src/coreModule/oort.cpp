@@ -47,10 +47,7 @@ Oort::Oort()
 }
 
 Oort::~Oort()
-{
-	// clear();
-	// deleteShader();
-}
+{}
 
 void Oort::createGL_context()
 {
@@ -58,31 +55,13 @@ void Oort::createGL_context()
 	shaderOort->init("oort.vert","oort.frag");
 	shaderOort->setUniformLocation({"Mat","color","intensity"});
 
-	// glGenVertexArrays(1,&m_dataGL.vao);
-	// glBindVertexArray(m_dataGL.vao);
-	// glGenBuffers(1,&m_dataGL.pos);
-	// glEnableVertexAttribArray(0);
-	
 	m_dataGL = std::make_unique<VertexArray>();
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 }
 
-// void Oort::deleteShader()
-// {
-// 	if(shaderOort) shaderOort=nullptr;
-
-// 	glDeleteBuffers(1,&sData.pos);
-// 	glDeleteVertexArrays(1,&sData.vao);
-// }
-
-// void Oort::clear()
-// {
-// 	dataOort.clear();
-// }
 
 void Oort::populate(unsigned int nbr) noexcept
 {
-	// this->clear();
 	float radius, theta, phi, r_theta, r_phi;
 	Vec3f tmp;
 	Vec3d tmp_local;
@@ -99,20 +78,12 @@ void Oort::populate(unsigned int nbr) noexcept
 
 		Utility::spheToRect(theta*M_PI/180,phi*M_PI/180, tmp);
 		tmp = tmp * radius;
-		// dataOort.push_back((float) tmp[0]);
-		// dataOort.push_back((float) tmp[1]);
-		// dataOort.push_back((float) tmp[2]);
 		insert_vec3(dataOort, tmp);
 		//~ printf("%5.3f %5.3f %5.3f \n", tmp_local[0], tmp_local[1], tmp_local[2]);
 	}
 
-	//on charge les points dans un vbo
-	// glBindVertexArray(m_dataGL.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataOort.size(),dataOort.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 	nbAsteroids = dataOort.size()/3 ;
+	//on charge les points dans un vbo
 	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataOort);
 }
 
@@ -139,7 +110,6 @@ void Oort::draw(double distance, const Projector *prj,const Navigator *nav) noex
 	shaderOort->setUniform("color", color);
 	shaderOort->setUniform("intensity", intensity*fader.getInterstate());
 
-	// glBindVertexArray(m_dataGL.vao);
 	m_dataGL->bind();
 	glDrawArrays(GL_POINTS, 0, nbAsteroids );
 	m_dataGL->unBind();
