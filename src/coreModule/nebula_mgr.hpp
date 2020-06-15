@@ -228,11 +228,11 @@ protected:
 private:
 	bool loadDeepskyObjectFromCat(const std::string& cat); //!< load DSO with reading file cat
 
-	std::vector<Nebula*> neb_array;		//!< The nebulas list
 	LinearFader hintsFader;			//!< Hint about position and number of dso
 	LinearFader showFader;			//!< For display all DSO fonctionnalities
 	LinearFader textFader;			//!< Display names smoothly
 
+	std::vector<Nebula*> neb_array;		//!< The nebulas list
 	std::vector<Nebula*>* nebZones;		//!< array of nebula vector with the grid id as array rank
 	LittleGrid nebGrid;				//! Grid for opimisation
 
