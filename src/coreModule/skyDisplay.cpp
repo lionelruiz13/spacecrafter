@@ -208,17 +208,18 @@ void SkyPerson::loadData(const std::string& filename)
 			fichier >> alpha >> delta;
 			Utility::spheToRect(alpha, delta, punts);
 			// On Earth or AL
-			x = punts[0];
-			y = punts[1];
-			z = punts[2];
+			// x = punts[0];
+			// y = punts[1];
+			// z = punts[2];
 			// Elsewhere
 			//x=punts[0];
 			//y=punts[1]*cos(-23.43928*3.1415926/180.0)-punts[2]*sin(-23.43928*3.1415926/180.0);
 			//z=punts[1]*sin(-23.43928*3.1415926/180.0)+punts[2]*cos(-23.43928*3.1415926/180.0);
 			// End of test
-			dataSky.push_back(x);
-			dataSky.push_back(y);
-			dataSky.push_back(z);
+			// dataSky.push_back(x);
+			// dataSky.push_back(y);
+			// dataSky.push_back(z);
+			insert_vec3(dataSky, punts);
 		}
 		aperson = alpha;
 		fichier.close();
@@ -284,8 +285,9 @@ void SkyPerson::loadString(const std::string& message)
 	for (auto it =dataTmp.begin(); it!=dataTmp.end(); it++) {
 			Utility::spheToRect(*it, *++it, punts);
 			// std::cout << punts[0] << "|"<< punts[1] << "|"<< punts[2] << std::endl;
-			for(int i=0; i<3; i++)
-				dataSky.push_back(punts[i]);
+			// for(int i=0; i<3; i++)
+			// 	dataSky.push_back(punts[i]);
+			insert_vec3(dataSky,punts );
 	}
 
 	//on charge les points dans un vbo
@@ -354,13 +356,17 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	}
 	for (int j = -9; j < 9; j++) {
 		Utility::spheToRect(direction * deg2rad, j * grad2rad, punts);
-		dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-		dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-		dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,punts );
+
 		Utility::spheToRect(direction * deg2rad, (j + 1) * grad2rad, punts);
-		dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-		dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-		dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,punts );
+		
 		for (int i = 0; i < 10; i++) {
 			if (i == 1)
 				tick = 0.6 * 90 / (90 - (j * 10 + i));
@@ -369,13 +375,16 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			else
 				tick = 0.2 * 90 / (90 - (j * 10 + i));
 			Utility::spheToRect((direction - tick) * deg2rad, (j * 10 + i) * deg2rad, punts);
-			dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-			dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-			dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+			// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
+			// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
+			// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+			insert_vec3(dataSky,punts );
+
 			Utility::spheToRect((direction + tick) * deg2rad, (j * 10 + i) * deg2rad, punts);
-			dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-			dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-			dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+			// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
+			// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
+			// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
+			insert_vec3(dataSky,punts );
 		}
 	}
 	aperson = (direction + tick) * deg2rad;
@@ -792,17 +801,20 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	int npoints = 21;
 	float delta = (az1 - az2) / (npoints - 1);
 	for (int i = 0; i < npoints; i++) {
-		dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,pt1 );
+
 		azt = az1 - delta * i;
 		altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1 + 0.00001)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1 + 0.00001));
 		Utility::spheToRect(azt, altt, pt1);
 		if (i == 12)
 			pt5 = pt1;
-		dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,pt1 );
 	}
 
 	// glBindVertexArray(m_dataGL.vao);
@@ -894,14 +906,18 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	clear();
 	for (int j = 0; (pi_div_2 - fabs(de1 * (10 - j) / 10 + de2 * j / 10)) > 0.001; j++) {
 		Utility::spheToRect((ra1 * (10 - j) / 10 + ra2 * j / 10), (de1 * (10 - j) / 10 + de2 * j / 10), pt1);
-		dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,pt1 );
+
 		Utility::spheToRect((ra1 * (9 - j) / 10 + ra2 * (j + 1) / 10), (de1 * (9 - j) / 10 + de2 * (j + 1) / 10), pt2);
-		dataSky.push_back(pt2[0]); // punts[0] represent x coordinate
-		dataSky.push_back(pt2[1]); // punts[1] represent y coordinate
-		dataSky.push_back(pt2[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(pt2[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(pt2[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(pt2[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,pt2 );
 	}
+
 	// glBindVertexArray(m_dataGL.vao);
 	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
 	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
@@ -954,17 +970,20 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	int npoints = 11;
 	float delta = (ra1 - ra2) / (npoints - 1);
 	for (int i = 0; i < npoints; i++) {
-		dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,pt1 );
+
 		rat = ra1 - delta * i;
 		det = atan(((tan(de2) * sin(rat - ra1)) / sin(ra2 - ra1 + 0.00001)) + (tan(de1) * sin(ra2 - rat)) / sin(ra2 - ra1 + 0.00001));
 		Utility::spheToRect(rat, det, pt1);
 		if (i == 5)
 			pt5 = pt1;
-		dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
+		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
+		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
+		insert_vec3(dataSky,pt1 );
 	}
 	// glBindVertexArray(m_dataGL.vao);
 	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
