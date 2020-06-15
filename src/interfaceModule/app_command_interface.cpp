@@ -4,7 +4,7 @@
  * Copyright (C) 2005-2006 Robert Spearman
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
  * Copyright (C) 2013 of the LSS team
- * Copyright (C) 2014-2017 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1142,7 +1142,7 @@ int AppCommandInterface::commandDso()
 			return executeCommandStatus();
 		}
 
-		if (argAction ==   ACP_CN_CLEAR) {
+		if (argAction == ACP_CN_CLEAR) {
 			// drop all nebulae that are not in the original config file
 			stcore->removeSupplementalNebulae();
 			return executeCommandStatus();
@@ -1203,15 +1203,15 @@ int AppCommandInterface::commandPersoneq()
 			coreLink->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONEQ, fileName);
 			return executeCommandStatus();
 		}
-		if (argAction==  ACP_CN_CLEAR) {
+		if (argAction== ACP_CN_CLEAR) {
 			coreLink->skyDisplayMgrClear(SKYDISPLAY_NAME::SKY_PERSONEQ);
 			return executeCommandStatus();
 		}
 		debug_message = "command_personeq: Unknown 'action' value";
 		return executeCommandStatus();
 	}
-	if (!args[ W_XY].empty()) {
-		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONEQ, args[ W_XY]);
+	if (!args[W_XY].empty()) {
+		coreLink->skyDisplayMgrLoadString(SKYDISPLAY_NAME::SKY_PERSONEQ, args[W_XY]);
 		return executeCommandStatus();
 	}
 	debug_message = "command_'personeq' : unrecognized or malformed argument";
@@ -1297,7 +1297,7 @@ int AppCommandInterface::commandSuntrace()
 			return executeCommandStatus();
 		}
 	}
-	if (args[W_ACTION]==  ACP_CN_CLEAR) {
+	if (args[W_ACTION]== ACP_CN_CLEAR) {
 		coreLink->bodyTraceBodyChange(W_SUN);
 		coreLink->bodyTraceClear();
 	}
@@ -1634,7 +1634,7 @@ int AppCommandInterface::commandConfiguration()
 	if (!argModule.empty()){
 		if (argModule == ACP_CN_STAR_LINES){
 
-			if (argAction ==   ACP_CN_CLEAR) {
+			if (argAction == ACP_CN_CLEAR) {
 				coreLink->starLinesClear();
 				return executeCommandStatus();
 			}
@@ -1646,7 +1646,7 @@ int AppCommandInterface::commandConfiguration()
 			}
 			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
-			if (argAction ==  W_LOAD) {
+			if (argAction == W_LOAD) {
 				if (binaryMode)
 					coreLink->starLinesLoadBinCat(argName);
 				else
@@ -1657,7 +1657,7 @@ int AppCommandInterface::commandConfiguration()
 		} else
 		if (argModule=="star_navigator"){
 
-			if (argAction ==   ACP_CN_CLEAR) {
+			if (argAction == ACP_CN_CLEAR) {
 				coreLink->starNavigatorClear();
 				return executeCommandStatus();
 			}
@@ -1884,11 +1884,11 @@ int AppCommandInterface::commandClear()
 	executeCommand("set home_planet Earth");
 
 	if (argState == W_NATURAL) {
-		executeCommand(FLAG_ATMOSPHERE_ON);
-		executeCommand(FLAG_LANDSCAPE_ON);
+		executeCommand("flag atmosphere on");
+		executeCommand("flag landscape on");
 	} else {
-		executeCommand(FLAG_ATMOSPHERE_OFF);
-		executeCommand(FLAG_LANDSCAPE_OFF);
+		executeCommand("flag atmosphere off");
+		executeCommand("flag landscape off");
 	}
 
 	coreBackup->loadGridState();
@@ -1897,18 +1897,18 @@ int AppCommandInterface::commandClear()
 
 	// turn off all labels
 	//executeCommand("flag azimuthal_grid off");
-	executeCommand(FLAG_MERIDIAN_LINE_OFF);
-	executeCommand(FLAG_ZENITH_LINE_OFF);
-	executeCommand(FLAG_POLAR_CIRCLE_OFF);
-	executeCommand(FLAG_POLAR_POINT_OFF);
-	executeCommand(FLAG_ECLIPTIC_CENTER_OFF);
-	executeCommand(FLAG_GALACTIC_POLE_OFF);
-	executeCommand(FLAG_GALACTIC_CENTER_OFF);
-	executeCommand(FLAG_VERNAL_POINTS_OFF);
-	executeCommand(FLAG_ANALEMMA_OFF);
-	executeCommand(FLAG_ANALEMMA_LINE_OFF);
-	executeCommand(FLAG_ARIES_LINE_OFF);
-	executeCommand(FLAG_ZODIAC_OFF);
+	// executeCommand(FLAG_MERIDIAN_LINE_OFF);
+	// executeCommand(FLAG_ZENITH_LINE_OFF);
+	// executeCommand(FLAG_POLAR_CIRCLE_OFF);
+	// executeCommand(FLAG_POLAR_POINT_OFF);
+	// executeCommand(FLAG_ECLIPTIC_CENTER_OFF);
+	// executeCommand(FLAG_GALACTIC_POLE_OFF);
+	// executeCommand(FLAG_GALACTIC_CENTER_OFF);
+	// executeCommand(FLAG_VERNAL_POINTS_OFF);
+	// executeCommand(FLAG_ANALEMMA_OFF);
+	// executeCommand(FLAG_ANALEMMA_LINE_OFF);
+	// executeCommand(FLAG_ARIES_LINE_OFF);
+	// executeCommand(FLAG_ZODIAC_OFF);
 	executeCommand(FLAG_PERSONAL_OFF);
 	executeCommand(FLAG_PERSONEQ_OFF);
 	executeCommand(FLAG_NAUTICAL_ALT_OFF);
@@ -1917,20 +1917,20 @@ int AppCommandInterface::commandClear()
 	executeCommand(FLAG_ANGULAR_DISTANCE_OFF);
 	executeCommand(FLAG_LOXODROMY_OFF);
 	executeCommand(FLAG_ORTHODROMY_OFF);
-	executeCommand(FLAG_GREENWICH_LINE_OFF);
-	executeCommand(FLAG_VERTICAL_LINE_OFF);
+	// executeCommand(FLAG_GREENWICH_LINE_OFF);
+	// executeCommand(FLAG_VERTICAL_LINE_OFF);
 	executeCommand(FLAG_CARDINAL_POINTS_OFF);
 	executeCommand(FLAG_CONSTELLATION_ART_OFF);
 	executeCommand(FLAG_CONSTELLATION_DRAWING_OFF);
 	executeCommand(FLAG_CONSTELLATION_NAMES_OFF);
 	executeCommand(FLAG_CONSTELLATION_BOUNDARIES_OFF);
-	executeCommand(FLAG_ECLIPTIC_LINE_OFF);
-	//executeCommand(FLAG_EQUATORIAL_GRID_OFF);
-	executeCommand(FLAG_EQUATOR_LINE_OFF);
-	executeCommand(FLAG_GALACTIC_LINE_OFF);
-	executeCommand(FLAG_TROPIC_LINES_OFF);
-	executeCommand(FLAG_CIRCUMPOLAR_CIRCLE_OFF);
-	executeCommand(FLAG_PRECESSION_CIRCLE_OFF);
+	// executeCommand(FLAG_ECLIPTIC_LINE_OFF);
+	// //executeCommand(FLAG_EQUATORIAL_GRID_OFF);
+	// executeCommand(FLAG_EQUATOR_LINE_OFF);
+	// executeCommand(FLAG_GALACTIC_LINE_OFF);
+	// executeCommand(FLAG_TROPIC_LINES_OFF);
+	// executeCommand(FLAG_CIRCUMPOLAR_CIRCLE_OFF);
+	// executeCommand(FLAG_PRECESSION_CIRCLE_OFF);
 	executeCommand(FLAG_FOG_OFF);
 	executeCommand(FLAG_NEBULA_HINTS_OFF);
 	executeCommand(FLAG_NEBULA_NAMES_OFF);
@@ -2292,11 +2292,11 @@ int AppCommandInterface::commandImage()
 		return executeCommandStatus();
 	}
 
-	if (argAction=="twice") {
+	if (argAction==W_TWICE) {
 		media->imageClone(argName,2);
 		return executeCommandStatus();
 	}
-	if (argAction=="thrice") {
+	if (argAction==W_THRICE) {
 		media->imageClone(argName,3);
 		return executeCommandStatus();
 	}
@@ -2443,15 +2443,15 @@ int AppCommandInterface::commandSelect()
 	} else if (args[W_PLANET]!="") {
 		select_type = W_PLANET;
 		identifier = args[W_PLANET];
-		if (args[W_PLANET] == ACP_SC_HOME_PLANET  )
+		if (args[W_PLANET] == ACP_SC_HOME_PLANET)
 			identifier = coreLink->getObserverHomePlanetEnglishName();
-	} else if (args[W_NEBULA  ]!="") {
+	} else if (args[W_NEBULA]!="") {
 		select_type = W_NEBULA  ;
-		identifier = args[W_NEBULA  ];
+		identifier = args[W_NEBULA];
 	} else if (args[W_CONSTELLATION]!="") {
 		select_type = W_CONSTELLATION;
 		identifier = args[W_CONSTELLATION];
-	} else if (args[W_CONSTELLATION_STAR  ]!="") {
+	} else if (args[W_CONSTELLATION_STAR]!="") {
 		select_type = W_CONSTELLATION_STAR  ;
 		identifier = args[W_CONSTELLATION_STAR  ];
 	} else {
@@ -2533,11 +2533,11 @@ int AppCommandInterface::commandStarLines()
 		coreLink->starLinesDrop();
 		return executeCommandStatus();
 	}
-	if (args[ W_LOAD]!="") {
+	if (args[W_LOAD]!="") {
 		coreLink->starLinesLoadData(scriptInterface->getScriptPath() + args[ W_LOAD]);
 		return executeCommandStatus();
 	}
-	if (args[W_ASTERISM  ]!="") {
+	if (args[W_ASTERISM]!="") {
 		coreLink->starLinesLoadAsterism(args[W_ASTERISM  ]);
 		return executeCommandStatus();
 	}
@@ -2579,11 +2579,11 @@ int AppCommandInterface::commandZoom(unsigned long int &wait)
 			stcore->autoZoomIn(duration, 1);  // have to explicity allow possible manual zoom
 		} else stcore->autoZoomIn(duration, 0);
 
-	} else if (args[W_FOV  ]!="") {
+	} else if (args[W_FOV]!="") {
 		// zoom to specific field of view
 		coreLink->zoomTo( evalDouble(args[W_FOV  ]), evalDouble(args[W_DURATION]));
 
-	} else if (args[W_DELTA_FOV  ]!="") coreLink->setFov(coreLink->getFov() + evalDouble(args[W_DELTA_FOV  ]));
+	} else if (args[W_DELTA_FOV]!="") coreLink->setFov(coreLink->getFov() + evalDouble(args[W_DELTA_FOV  ]));
 	// should we record absolute fov instead of delta? isn't usually smooth playback
 	else if (args[W_CENTER]==W_ON) {
 		float cdelay=5;
@@ -2713,9 +2713,9 @@ int AppCommandInterface::commandMoveto()
 	std::string argDeltaAlt = args[W_DELTA_ALT];
 	std::string argMultAlt = args[W_MULTIPLY_ALT];
 
-	if(argLat.empty()) argLat = args[W_LATITUDE  ];
-	if(argLon.empty()) argLon = args[W_LONGITUDE ];
-	if(argAlt.empty()) argAlt = args[W_ALTITUDE  ];
+	if(argLat.empty()) argLat = args[W_LATITUDE];
+	if(argLon.empty()) argLon = args[W_LONGITUDE];
+	if(argAlt.empty()) argAlt = args[W_ALTITUDE];
 
 
 	if (argLat.empty() && argLon.empty() && argAlt.empty() && argDeltaLat.empty() && argDeltaLon.empty() && argDeltaAlt.empty() && argMultAlt.empty()) {
@@ -2801,7 +2801,7 @@ int AppCommandInterface::commandMedia()
 			}
 
 			if (!audioName.empty()) {
-				if ( audioName ==W_AUTO   ) {
+				if ( audioName ==W_AUTO) {
 					// On teste si un fichier de langue existe on prend videoName et on rajoute -fr par exemple à la place de son extention et on rajoute apres ogg
 					audioName = videoName;
 					if (audioName.size()>5) {
@@ -3221,8 +3221,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 
 	if(argAction == W_ALIGN_WITH){
 
-		std::string argBody = args[W_BODY  ];
-
+		std::string argBody = args[W_BODY];
 		if (argBody.empty()) {
 			debug_message = "command 'align_with' : missing body";
 			return executeCommandStatus();
@@ -3252,7 +3251,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			return executeCommandStatus();
 		}
 
-		if(argTarget == W_POINT  ){
+		if(argTarget == W_POINT){
 			bool result = coreLink->cameraTransitionToPoint("temp_point");
 
 			if (!result)
@@ -3260,7 +3259,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			return executeCommandStatus();
 		}
 
-		if(argTarget == W_BODY  ){
+		if(argTarget == W_BODY){
 			argName = args[W_NAME];
 
 			if (argName.empty()) {
@@ -3288,7 +3287,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			return executeCommandStatus();
 		}
 
-		if(argTarget == W_POINT  ){
+		if(argTarget == W_POINT){
 			std::string argX = args[W_X];
 			std::string argY = args[W_Y];
 			std::string argZ = args[W_Z];
@@ -3313,7 +3312,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 			return executeCommandStatus();
 		}
 
-		if(argTarget == W_BODY  ){
+		if(argTarget == W_BODY){
 			std::string argBodyName = args[W_BODYNAME];
 			std::string argTime = args[W_DURATION];
 
@@ -3401,7 +3400,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		return executeCommandStatus();
 	}
 
-	if (argAction == W_CREATE ) {
+	if (argAction == W_CREATE) {
 		// load an anchor via script
 		bool result = coreLink->cameraAddAnchor(args);
 		if (!result)
@@ -3443,13 +3442,13 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 //
 // variable management
 //
-
 std::string AppCommandInterface::evalString (const std::string &var)
 {
 	if (var.empty())
 		return "";
 	return appEval->evalString(var);
 }
+
 
 double AppCommandInterface::evalDouble (const std::string &var)
 {
