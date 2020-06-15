@@ -106,12 +106,12 @@ protected:
 	};
 	SKY_GRID_TYPE gtype;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
-	std::vector<float> dataSky;
-	std::vector<float> dataColor;
+	// std::vector<float> dataSky;
+	// std::vector<float> dataColor;
 
 	// static DataGL sData;
 	// static shaderProgram *shaderSkyGrid;
-
+	static unsigned int nbPointsToDraw;
 	static std::unique_ptr<VertexArray> sData;
 	static std::unique_ptr<shaderProgram> shaderSkyGrid;
 

@@ -37,7 +37,7 @@
 //#include "tools/fmath.hpp"
 std::unique_ptr<VertexArray> SkyGrid::sData;
 std::unique_ptr<shaderProgram> SkyGrid::shaderSkyGrid;
-
+unsigned int SkyGrid::nbPointsToDraw;
 
 
 SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
@@ -82,8 +82,8 @@ SkyGrid::~SkyGrid()
 	if (font) delete font;
 	font = nullptr;
 
-	dataSky.clear();
-	dataColor.clear();
+	// dataSky.clear();
+	// dataColor.clear();
 	// deleteShader();
 }
 
@@ -125,8 +125,8 @@ void SkyGrid::setFont(float font_size, const std::string& font_name)
 
 void SkyGrid::createBuffer()
 {
-	dataSky.clear();
-	dataColor.clear();
+	std::vector<float> dataSky;
+	std::vector<float> dataColor;
 
 	// Draw meridians
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
@@ -191,6 +191,7 @@ void SkyGrid::createBuffer()
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_STATIC_DRAW);
 	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
 	// glBindVertexArray(0);
+	nbPointsToDraw = dataSky.size()/3;
 	sData->fillVertexBuffer(BufferType::POS3D, dataSky);
 	sData->fillVertexBuffer(BufferType::MAG, dataColor);
 }
@@ -230,7 +231,7 @@ void SkyGrid::draw(const Projector* prj) const
 
 	// glBindVertexArray(sData.vao);
 	sData->bind();
-	glDrawArrays(GL_LINES, 0, dataSky.size()/3 ); //un point est représenté par 3 points
+	glDrawArrays(GL_LINES, 0, nbPointsToDraw); //un point est représenté par 3 points
 	// glBindVertexArray(0);
 	sData->unBind();
 	shaderSkyGrid->unuse();
