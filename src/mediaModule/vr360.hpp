@@ -64,8 +64,6 @@ private:
 
 	//! création des shaders
 	void createShader();
-	//! supression des shaders
-	// void deleteShader();
 
 	OjmL* sphere = nullptr;
 	OjmL* cube = nullptr;
@@ -73,10 +71,8 @@ private:
 	bool isAlive = false;
 	bool canDraw = false;
 
-	// shaderProgram* shaderVR360 = nullptr;
 	std::unique_ptr<shaderProgram> shaderVR360;
 
-	// DataGL VR360GL;
 	TYPE typeVR360 = TYPE::V_NONE;
 
 	LinearFader showFader;
