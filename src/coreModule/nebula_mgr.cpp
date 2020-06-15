@@ -34,6 +34,7 @@
 #include "tools/translator.hpp"
 #include "tools/log.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
 
