@@ -17,10 +17,11 @@
 #define STARLINES_HPP
 
 #include <vector>
+#include <memory>
 #include "tools/vecmath.hpp"
 #include <GL/glew.h>
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
+// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
@@ -28,6 +29,8 @@ using HIPpos = std::pair<int, Vec3f>;
 
 class Navigator;
 class Projector;
+class VertexArray;
+class shaderProgram;
 
 /*! \class StarLines
   * \brief classe représentant un astérisme customisé par l'utilisateur
@@ -105,13 +108,13 @@ public:
 
 protected:
 	// shader d'affichage
-	shaderProgram *shaderStarLines;
+	std::unique_ptr<shaderProgram> shaderStarLines;
 	// données VAO-VBO
-	DataGL starLines;
+	std::unique_ptr<VertexArray> m_dataGL;
 	// initialise le shader
-	void createShader();
+	void createGL_context();
 	// supprime le shader
-	void deleteShader();
+	// void deleteShader();
 	// tampon d'affichage
 	std::vector<float> linePos;
 	// conteneur des étoiles servant à créer les sommets des lignes
@@ -124,7 +127,7 @@ protected:
 	// état global de la classe
 	bool isAlive;
 	// indique si l'on doit recharger les tampons dans la CG
-	bool isModified = true;
+	//bool isModified = true;
 	// couleur du tracé des lines
 	Vec3f lineColor;
 	// fonction de tracé effectif des asterismes suviant le mode choisi

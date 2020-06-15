@@ -25,14 +25,12 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/ia.hpp"
-
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 StarLines::StarLines()
 {
-	shaderStarLines = nullptr;
-	shaderStarLines = new shaderProgram();
-	shaderStarLines -> init("starLines.vert","starLines.geom", "starLines.frag");
-	createShader();
+	createGL_context();
 	lineColor =  Vec3f(1.0,1.0,0.0);
 	isAlive = false;
 }
@@ -41,35 +39,37 @@ StarLines::StarLines()
 StarLines::~StarLines()
 {
 	linePos.clear();
-	deleteShader();
+	// deleteShader();
 }
 
 
-void StarLines::createShader()
+void StarLines::createGL_context()
 {
-	shaderStarLines->setUniformLocation("Mat");
-	shaderStarLines->setUniformLocation("Color");
-	shaderStarLines->setUniformLocation("Fader");
+	shaderStarLines = std::make_unique<shaderProgram>();
+	shaderStarLines -> init("starLines.vert","starLines.geom", "starLines.frag");
+	shaderStarLines->setUniformLocation({"Mat", "Color", "Fader"});
 
 	//~ shaderStarLines
-	glGenVertexArrays(1,&starLines.vao);
-	glBindVertexArray(starLines.vao);
-
-	glGenBuffers(1,&starLines.pos);
-
-	glBindBuffer (GL_ARRAY_BUFFER, starLines.pos);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	glEnableVertexAttribArray(0);
+	// glGenVertexArrays(1,&m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
+// 
+	// glGenBuffers(1,&m_dataGL.pos);
+// 
+	// glBindBuffer (GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(0);
+	
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 }
 
-void StarLines::deleteShader()
-{
-	if(shaderStarLines) shaderStarLines=nullptr;
+// void StarLines::deleteShader()
+// {
+// 	if(shaderStarLines) shaderStarLines=nullptr;
 
-	glDeleteBuffers(1,&starLines.pos);
-	glDeleteVertexArrays(1,&starLines.vao);
-}
+// 	glDeleteBuffers(1,&m_dataGL.pos);
+// 	glDeleteVertexArrays(1,&m_dataGL.vao);
+// }
 
 bool StarLines::loadHipCatalogue(std::string fileName) noexcept
 {
@@ -220,9 +220,10 @@ void StarLines::loadStringData(std::string record) noexcept
 				linePos.push_back(tmp1[1]*(nblines-(j+1))/nblines+tmp2[1]*(j+1)/nblines);
 				linePos.push_back(tmp1[2]*(nblines-(j+1))/nblines+tmp2[2]*(j+1)/nblines);
 			}
-			isModified= true;
+			// isModified= true;
 		}
 	}
+	m_dataGL->fillVertexBuffer(BufferType::POS3D, linePos);
 }
 
 
@@ -284,15 +285,19 @@ void StarLines::draw(Mat4f & matrix)  noexcept
 	shaderStarLines->setUniform("Color",lineColor);
 	shaderStarLines->setUniform("Fader", showFader.getInterstate() );
 
-	glBindVertexArray(starLines.vao);
-	if (isModified) {
-		glBindBuffer(GL_ARRAY_BUFFER,starLines.pos);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*linePos.size(),linePos.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(m_dataGL.vao);
+	/*if (isModified) {
+		// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*linePos.size(),linePos.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+		m_dataGL->fillVertexBuffer(BufferType::POS3D, linePos);
 		isModified = false;
-	}
+	}*/
 
+	m_dataGL->bind();
 	glDrawArrays(GL_LINES,0,linePos.size()/3);
-	glBindVertexArray(0);
+	m_dataGL->unBind();
+	// glBindVertexArray(0);
+
 	shaderStarLines->unuse();
 }
