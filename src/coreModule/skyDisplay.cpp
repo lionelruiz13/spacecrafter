@@ -193,7 +193,7 @@ SkyPerson::SkyPerson(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 
 void SkyPerson::loadData(const std::string& filename)
 {
-	double alpha, delta, x, y, z;
+	double alpha, delta; //, x, y, z;
 	int nblines;
 	Vec3f punts;
 	clear();
@@ -991,18 +991,18 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	StateGL::enable(GL_BLEND);
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 	
-	// shaderSkyDisplay->use();
-	// shaderSkyDisplay->setUniform("color", color);
-	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	// shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+	shaderSkyDisplay->use();
+	shaderSkyDisplay->setUniform("color", color);
+	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+	shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
 	
-	// glBindVertexArray(m_dataGL.vao);
-	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	// shaderSkyDisplay->unuse();
-	SkyDisplay::draw(prj,nav);
+	m_dataGL->bind();
+	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	m_dataGL->unBind();
+	shaderSkyDisplay->unuse();
 
 	// Text
 	Vec3d localPos = nav->earthEquToLocal(oldEquPos);
