@@ -255,7 +255,7 @@ void StarLines::draw(const Navigator * nav) noexcept
 	Mat4f matrix=nav->getHelioToEyeMat().convert();
 	matrix=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 
-	this->draw(matrix);
+	this->drawGL(matrix);
 }
 
 //version 2D, in SOLAR_SYSTEM MODE
@@ -270,12 +270,12 @@ void StarLines::draw(const Projector* prj) noexcept
 	//paramétrage des matrices pour opengl4
 	Mat4f matrix= prj-> getMatJ2000ToEye()*Mat4f::xrotation(-M_PI_2);
 
-	this->draw(matrix);
+	this->drawGL(matrix);
 }
 
 
 //version 3D
-void StarLines::draw(Mat4f & matrix)  noexcept
+void StarLines::drawGL(Mat4f & matrix)  noexcept
 {
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode

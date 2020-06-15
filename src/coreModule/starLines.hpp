@@ -131,6 +131,6 @@ protected:
 	// couleur du tracé des lines
 	Vec3f lineColor;
 	// fonction de tracé effectif des asterismes suviant le mode choisi
-	void draw(Mat4f& matrix) noexcept;
+	void drawGL(Mat4f& matrix) noexcept;
 };
 #endif
