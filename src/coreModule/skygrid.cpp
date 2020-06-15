@@ -130,50 +130,58 @@ void SkyGrid::createBuffer()
 
 	// Draw meridians
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
-		dataSky.push_back(alt_points[nm][0][0]);
-		dataSky.push_back(alt_points[nm][0][1]);
-		dataSky.push_back(alt_points[nm][0][2]);
+		// dataSky.push_back(alt_points[nm][0][0]);
+		// dataSky.push_back(alt_points[nm][0][1]);
+		// dataSky.push_back(alt_points[nm][0][2]);
+		insert_vec3(dataSky,alt_points[nm][0]);
 		dataColor.push_back(0.f);
 
-		dataSky.push_back(alt_points[nm][1][0]);
-		dataSky.push_back(alt_points[nm][1][1]);
-		dataSky.push_back(alt_points[nm][1][2]);
+		// dataSky.push_back(alt_points[nm][1][0]);
+		// dataSky.push_back(alt_points[nm][1][1]);
+		// dataSky.push_back(alt_points[nm][1][2]);
+		insert_vec3(dataSky,alt_points[nm][1]);		
 		dataColor.push_back(1.f);
 
 		for (unsigned int i=1; i<nb_alt_segment-1; ++i) {
-			dataSky.push_back(alt_points[nm][i][0]);
-			dataSky.push_back(alt_points[nm][i][1]);
-			dataSky.push_back(alt_points[nm][i][2]);
+			// dataSky.push_back(alt_points[nm][i][0]);
+			// dataSky.push_back(alt_points[nm][i][1]);
+			// dataSky.push_back(alt_points[nm][i][2]);
+			insert_vec3(dataSky,alt_points[nm][i]);
 			dataColor.push_back(1.f);
 
-			dataSky.push_back(alt_points[nm][i+1][0]);
-			dataSky.push_back(alt_points[nm][i+1][1]);
-			dataSky.push_back(alt_points[nm][i+1][2]);
+			// dataSky.push_back(alt_points[nm][i+1][0]);
+			// dataSky.push_back(alt_points[nm][i+1][1]);
+			// dataSky.push_back(alt_points[nm][i+1][2]);
+			insert_vec3(dataSky,alt_points[nm][i+1]);
 			dataColor.push_back(1.f);
 		}
 
-		dataSky.push_back(alt_points[nm][nb_alt_segment-1][0]);
-		dataSky.push_back(alt_points[nm][nb_alt_segment-1][1]);
-		dataSky.push_back(alt_points[nm][nb_alt_segment-1][2]);
+		// dataSky.push_back(alt_points[nm][nb_alt_segment-1][0]);
+		// dataSky.push_back(alt_points[nm][nb_alt_segment-1][1]);
+		// dataSky.push_back(alt_points[nm][nb_alt_segment-1][2]);
+		insert_vec3(dataSky,alt_points[nm][nb_alt_segment-1]);
 		dataColor.push_back(1.f);
 
-		dataSky.push_back(alt_points[nm][nb_alt_segment][0]);
-		dataSky.push_back(alt_points[nm][nb_alt_segment][1]);
-		dataSky.push_back(alt_points[nm][nb_alt_segment][2]);
+		// dataSky.push_back(alt_points[nm][nb_alt_segment][0]);
+		// dataSky.push_back(alt_points[nm][nb_alt_segment][1]);
+		// dataSky.push_back(alt_points[nm][nb_alt_segment][2]);
+		insert_vec3(dataSky,alt_points[nm][nb_alt_segment]);
 		dataColor.push_back(0.f);
 	}
 
 	// Draw parallels
 	for (unsigned int np=0; np<nb_parallel; ++np) {
 		for (unsigned int i=0; i<nb_azi_segment; ++i) {
-			dataSky.push_back(azi_points[np][i][0]);
-			dataSky.push_back(azi_points[np][i][1]);
-			dataSky.push_back(azi_points[np][i][2]);
+			// dataSky.push_back(azi_points[np][i][0]);
+			// dataSky.push_back(azi_points[np][i][1]);
+			// dataSky.push_back(azi_points[np][i][2]);
+			insert_vec3(dataSky,azi_points[np][i]);
 			dataColor.push_back(1.f);
 
-			dataSky.push_back(azi_points[np][i+1][0]);
-			dataSky.push_back(azi_points[np][i+1][1]);
-			dataSky.push_back(azi_points[np][i+1][2]);
+			// dataSky.push_back(azi_points[np][i+1][0]);
+			// dataSky.push_back(azi_points[np][i+1][1]);
+			// dataSky.push_back(azi_points[np][i+1][2]);
+			insert_vec3(dataSky,azi_points[np][i+1]);
 			dataColor.push_back(1.f);
 		}
 	}
