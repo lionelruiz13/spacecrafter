@@ -22,7 +22,9 @@
 #include "tools/app_settings.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/log.hpp"
+#include "tools/shader.hpp"
 
+#define VR360_FADER_DURATION 3000
 
 VR360::VR360()
 {
@@ -61,12 +63,13 @@ VR360::~VR360()
 {
 	if (sphere) delete sphere;
 	if (cube) delete cube;
-	deleteShader();
+	// deleteShader();
 }
 
 void VR360::createShader()
 {
-	shaderVR360= new shaderProgram();
+	// shaderVR360= new shaderProgram();
+	shaderVR360 = std::make_unique<shaderProgram>();
 	shaderVR360->init( "VR360.vert","VR360.frag");
 	shaderVR360->setUniformLocation("intensity");
 	shaderVR360->setUniformLocation("ModelViewProjectionMatrix");
@@ -74,10 +77,10 @@ void VR360::createShader()
 	shaderVR360->setUniformLocation("inverseModelViewProjectionMatrix");
 }
 
-void VR360::deleteShader()
-{
-	if(shaderVR360) shaderVR360=nullptr;
-}
+// void VR360::deleteShader()
+// {
+// 	if(shaderVR360) shaderVR360=nullptr;
+// }
 
 void VR360::display(bool alive)
 {

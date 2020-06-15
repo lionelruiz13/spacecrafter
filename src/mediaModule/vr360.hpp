@@ -17,16 +17,18 @@
 #ifndef __VR360_HPP__
 #define __VR360_HPP__
 
-#include "tools/shader.hpp"
+#include <memory>
+//#include "tools/shader.hpp"
 #include "tools/fader.hpp"
 #include "yuv_wrapper.hpp"
 #include "tools/no_copy.hpp"
 
-#define VR360_FADER_DURATION 3000
+// #define VR360_FADER_DURATION 3000
 
 class Projector;
 class Navigator;
 class OjmL;
+class shaderProgram;
 
 class VR360: public NoCopy {
 public:
@@ -63,7 +65,7 @@ private:
 	//! création des shaders
 	void createShader();
 	//! supression des shaders
-	void deleteShader();
+	// void deleteShader();
 
 	OjmL* sphere = nullptr;
 	OjmL* cube = nullptr;
@@ -71,8 +73,10 @@ private:
 	bool isAlive = false;
 	bool canDraw = false;
 
-	shaderProgram* shaderVR360 = nullptr;
-	DataGL VR360GL;
+	// shaderProgram* shaderVR360 = nullptr;
+	std::unique_ptr<shaderProgram> shaderVR360;
+
+	// DataGL VR360GL;
 	TYPE typeVR360 = TYPE::V_NONE;
 
 	LinearFader showFader;
