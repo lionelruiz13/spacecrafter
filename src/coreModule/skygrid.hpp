@@ -31,15 +31,19 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <memory>
 
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
+//#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
 
 //! Class which manages a grid to display in the sky
+
+class VertexArray;
+class shaderProgram;
 
 //TODO: intégrer qu'une version de font car la font est commune à toutes les grilles
 //TODO: intégrer qu'une version du flag InternaNav qui est commun à toutes les grilles
@@ -84,8 +88,8 @@ public:
 		internalNav=a;
 	}
 
-	void createShader();
-	void deleteShader();
+	static void createShader();
+	// void deleteShader();
 
 protected:
 	// Create and precompute positions of a SkyGrid
@@ -102,10 +106,14 @@ protected:
 	};
 	SKY_GRID_TYPE gtype;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
-	DataGL sData;
 	std::vector<float> dataSky;
 	std::vector<float> dataColor;
-	shaderProgram *shaderSkyGrid;
+
+	// static DataGL sData;
+	// static shaderProgram *shaderSkyGrid;
+
+	static std::unique_ptr<VertexArray> sData;
+	static std::unique_ptr<shaderProgram> shaderSkyGrid;
 
 private:
 	unsigned int nb_meridian;
@@ -119,7 +127,6 @@ private:
 	s_font* font=nullptr;
 	bool internalNav;
 	LinearFader fader;
-
 };
 
 

@@ -25,14 +25,18 @@
  *
  */
 
+#include <string>
+
 #include "bodyModule/body.hpp"
 #include "coreModule/skygrid.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
-#include <string>
-
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 //#include "tools/fmath.hpp"
+std::unique_ptr<VertexArray> SkyGrid::sData;
+std::unique_ptr<shaderProgram> SkyGrid::shaderSkyGrid;
 
 
 
@@ -59,8 +63,8 @@ SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
 			azi_points[np][i] *= radius;
 		}
 	}
-
-	createShader();
+	// createShader();
+	createBuffer();
 }
 
 SkyGrid::~SkyGrid()
@@ -80,33 +84,34 @@ SkyGrid::~SkyGrid()
 
 	dataSky.clear();
 	dataColor.clear();
-	deleteShader();
+	// deleteShader();
 }
 
 void SkyGrid::createShader()
 {
-	shaderSkyGrid = new shaderProgram();
+	shaderSkyGrid = std::make_unique<shaderProgram>();
 	shaderSkyGrid->init("skygrid.vert","skygrid.geom","skygrid.frag");
-	shaderSkyGrid->setUniformLocation("color");
-	shaderSkyGrid->setUniformLocation("fader");
-	shaderSkyGrid->setUniformLocation("Mat");
+	shaderSkyGrid->setUniformLocation({"color","fader","Mat"});
 
-	glGenVertexArrays(1,&sData.vao);
-	glBindVertexArray(sData.vao);
-	glGenBuffers(1,&sData.pos);
-	glGenBuffers(1,&sData.color); //en fait c'est plutôt l'intensité de la couleur du point
+	sData = std::make_unique<VertexArray>();
+	sData->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	sData->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
+	// glGenVertexArrays(1,&sData.vao);
+	// glBindVertexArray(sData.vao);
+	// glGenBuffers(1,&sData.pos);
+	// glGenBuffers(1,&sData.color); //en fait c'est plutôt l'intensité de la couleur du point
 
-	createBuffer();
+	//createBuffer();
 }
 
-void SkyGrid::deleteShader()
-{
-	if(shaderSkyGrid) shaderSkyGrid=nullptr;
+// void SkyGrid::deleteShader()
+// {
+// 	if(shaderSkyGrid) shaderSkyGrid=nullptr;
 
-	glDeleteBuffers(1,&sData.color);
-	glDeleteBuffers(1,&sData.pos);
-	glDeleteVertexArrays(1,&sData.vao);
-}
+// 	glDeleteBuffers(1,&sData.color);
+// 	glDeleteBuffers(1,&sData.pos);
+// 	glDeleteVertexArrays(1,&sData.vao);
+// }
 
 void SkyGrid::setFont(float font_size, const std::string& font_name)
 {
@@ -174,19 +179,22 @@ void SkyGrid::createBuffer()
 	}
 
 	//on charge les points dans un vbo
-	glBindVertexArray(sData.vao);
+	// glBindVertexArray(sData.vao);
 
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER,sData.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataSky.size(),dataSky.data(),GL_STATIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(0);
+	// glBindBuffer(GL_ARRAY_BUFFER,sData.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataSky.size(),dataSky.data(),GL_STATIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER,sData.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_STATIC_DRAW);
-	glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
-	glBindVertexArray(0);
+	// glEnableVertexAttribArray(1);
+	// glBindBuffer(GL_ARRAY_BUFFER,sData.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataColor.size(),dataColor.data(),GL_STATIC_DRAW);
+	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(0);
+	sData->fillVertexBuffer(BufferType::POS3D, dataSky);
+	sData->fillVertexBuffer(BufferType::MAG, dataColor);
 }
+
 
 
 void SkyGrid::draw(const Projector* prj) const
@@ -220,9 +228,11 @@ void SkyGrid::draw(const Projector* prj) const
 			return; //pour GCC
 	}
 
-	glBindVertexArray(sData.vao);
+	// glBindVertexArray(sData.vao);
+	sData->bind();
 	glDrawArrays(GL_LINES, 0, dataSky.size()/3 ); //un point est représenté par 3 points
-	glBindVertexArray(0);
+	// glBindVertexArray(0);
+	sData->unBind();
 	shaderSkyGrid->unuse();
 
 	// tracé de texte.

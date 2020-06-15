@@ -31,6 +31,7 @@
 SkyGridMgr::SkyGridMgr()
 {
 	baseColor=Vec3f(0.f, 0.f, 0.f);
+	SkyGrid::createShader();
 }
 
 void SkyGridMgr::draw(const Projector* prj)
