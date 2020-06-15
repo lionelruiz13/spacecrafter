@@ -35,7 +35,7 @@
 #include "tools/shader.hpp"
 
 //#include "tools/fmath.hpp"
-std::unique_ptr<VertexArray> SkyGrid::sData;
+std::unique_ptr<VertexArray> SkyGrid::m_dataGL;
 std::unique_ptr<shaderProgram> SkyGrid::shaderSkyGrid;
 unsigned int SkyGrid::nbPointsToDraw;
 
@@ -93,9 +93,9 @@ void SkyGrid::createShader()
 	shaderSkyGrid->init("skygrid.vert","skygrid.geom","skygrid.frag");
 	shaderSkyGrid->setUniformLocation({"color","fader","Mat"});
 
-	sData = std::make_unique<VertexArray>();
-	sData->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	sData->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
 	// glGenVertexArrays(1,&sData.vao);
 	// glBindVertexArray(sData.vao);
 	// glGenBuffers(1,&sData.pos);
@@ -200,8 +200,8 @@ void SkyGrid::createBuffer()
 	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
 	// glBindVertexArray(0);
 	nbPointsToDraw = dataSky.size()/3;
-	sData->fillVertexBuffer(BufferType::POS3D, dataSky);
-	sData->fillVertexBuffer(BufferType::MAG, dataColor);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataSky);
+	m_dataGL->fillVertexBuffer(BufferType::MAG, dataColor);
 }
 
 
@@ -238,10 +238,10 @@ void SkyGrid::draw(const Projector* prj) const
 	}
 
 	// glBindVertexArray(sData.vao);
-	sData->bind();
+	m_dataGL->bind();
 	glDrawArrays(GL_LINES, 0, nbPointsToDraw); //un point est représenté par 3 points
 	// glBindVertexArray(0);
-	sData->unBind();
+	m_dataGL->unBind();
 	shaderSkyGrid->unuse();
 
 	// tracé de texte.

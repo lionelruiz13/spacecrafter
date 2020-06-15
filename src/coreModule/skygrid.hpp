@@ -112,7 +112,7 @@ protected:
 	// static DataGL sData;
 	// static shaderProgram *shaderSkyGrid;
 	static unsigned int nbPointsToDraw;
-	static std::unique_ptr<VertexArray> sData;
+	static std::unique_ptr<VertexArray> m_dataGL;
 	static std::unique_ptr<shaderProgram> shaderSkyGrid;
 
 private:
