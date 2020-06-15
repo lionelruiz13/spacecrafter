@@ -118,44 +118,48 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	if(!upsidedown) {
 		y -= currentRender.stringH;  // adjust for base of text in texture
 
-		vecPos.push_back(x);
-		vecPos.push_back(y);
-		vecPos.push_back(x);
-		vecPos.push_back(y+h);
-		vecPos.push_back(x+w);
-		vecPos.push_back(y);
-		vecPos.push_back(x+w);
-		vecPos.push_back(y+h);
+		// vecPos.push_back(x);
+		// vecPos.push_back(y);
+		// vecPos.push_back(x);
+		// vecPos.push_back(y+h);
+		// vecPos.push_back(x+w);
+		// vecPos.push_back(y);
+		// vecPos.push_back(x+w);
+		// vecPos.push_back(y+h);
+		insert_all(vecPos, x, y, x, y+h, x+w, y, x+w, y+h);
 
-		vecTex.push_back(0);
-		vecTex.push_back(0);
-		vecTex.push_back(0);
-		vecTex.push_back(1);
-		vecTex.push_back(1);
-		vecTex.push_back(0);
-		vecTex.push_back(1);
-		vecTex.push_back(1);
+		// vecTex.push_back(0);
+		// vecTex.push_back(0);
+		// vecTex.push_back(0);
+		// vecTex.push_back(1);
+		// vecTex.push_back(1);
+		// vecTex.push_back(0);
+		// vecTex.push_back(1);
+		// vecTex.push_back(1);
+		insert_all(vecTex, 0, 0, 0, 1, 1, 0, 1, 1);
 
 	} else {
 		y -= currentRender.stringH;  // adjust for base of text in texture
 
-		vecPos.push_back(x+w);
-		vecPos.push_back(y+h);
-		vecPos.push_back(x);
-		vecPos.push_back(y+h);
-		vecPos.push_back(x+w);
-		vecPos.push_back(y);
-		vecPos.push_back(x);
-		vecPos.push_back(y);
+		// vecPos.push_back(x+w);
+		// vecPos.push_back(y+h);
+		// vecPos.push_back(x);
+		// vecPos.push_back(y+h);
+		// vecPos.push_back(x+w);
+		// vecPos.push_back(y);
+		// vecPos.push_back(x);
+		// vecPos.push_back(y);
+		insert_all(vecPos, x+w, y+h, x, y+h, x+w, y, x, y);
 
-		vecTex.push_back(1);
-		vecTex.push_back(0);
-		vecTex.push_back(0);
-		vecTex.push_back(0);
-		vecTex.push_back(1);
-		vecTex.push_back(1);
-		vecTex.push_back(0);
-		vecTex.push_back(1);
+		// vecTex.push_back(1);
+		// vecTex.push_back(0);
+		// vecTex.push_back(0);
+		// vecTex.push_back(0);
+		// vecTex.push_back(1);
+		// vecTex.push_back(1);
+		// vecTex.push_back(0);
+		// vecTex.push_back(1);
+		insert_all(vecTex, 1, 0, 0, 0, 1, 1, 0, 1);
 	}
 
 	glActiveTexture(GL_TEXTURE0);
@@ -502,16 +506,18 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		// }
 
 	for (int i=0; i<=steps; i++) {
+		// vecPos.push_back(meshPoints[i*2][0]/*+shiftx*/);
+		// vecPos.push_back(meshPoints[i*2][1]/*+shifty*/);
+		// vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
+		// vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
+		insert_vec2(vecPos,meshPoints[i*2]);
+		insert_vec2(vecPos,meshPoints[i*2+1]);
 
-		vecPos.push_back(meshPoints[i*2][0]/*+shiftx*/);
-		vecPos.push_back(meshPoints[i*2][1]/*+shifty*/);
-		vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
-		vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
-
-		vecTex.push_back((float)i/steps); // *textureExtentW);
-		vecTex.push_back(0.0);
-		vecTex.push_back((float)i/steps); // *textureExtentW);
-		vecTex.push_back(1.0); // 1.0 <- textureExtentH
+		// vecTex.push_back((float)i/steps); // *textureExtentW);
+		// vecTex.push_back(0.0);
+		// vecTex.push_back((float)i/steps); // *textureExtentW);
+		// vecTex.push_back(1.0); // 1.0 <- textureExtentH
+		insert_all(vecTex, (float)i/steps, 0.f , (float)i/steps, 1.f);
 	}
 
 	shaderHorizontal->use();
