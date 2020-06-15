@@ -31,7 +31,6 @@
 #include "tools/utility.hpp"
 #include <string>
 #include "tools/log.hpp"
-//#include "tools/app_settings.hpp"
 
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
@@ -51,8 +50,6 @@ const float pi_div_2 = 1.5707963;		// pi/2
 // -------------------- SKYLINE_PERSONAL  ---------------------------------------------
 
 s_font* SkyDisplay::skydisplay_font = nullptr;
-
-// shaderProgram* SkyDisplay::shaderSkyDisplay = nullptr;
 std::unique_ptr<shaderProgram> SkyDisplay::shaderSkyDisplay;
 
 SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
@@ -70,15 +67,11 @@ SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
 			proj_func = &Projector::projectLocal;
 			break;
 	}
-	//font = new s_font(12, AppSettings::Instance()->getUserDir() + "fonts/DejaVuSans.ttf");
 }
 
 SkyDisplay::~SkyDisplay()
 {
 	dataSky.clear();
-	// if (font)
-	// 	delete font;
-	// deleteVao();
 }
 
 void SkyDisplay::createShader()
@@ -90,28 +83,9 @@ void SkyDisplay::createShader()
 
 void SkyDisplay::createVao()
 {
-	// shaderSkyDisplay = new shaderProgram();
-	// shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
-	// shaderSkyDisplay->setUniformLocation("color");
-	// shaderSkyDisplay->setUniformLocation("fader");
-	// shaderSkyDisplay->setUniformLocation("Mat");
-
-	// glGenVertexArrays(1, &m_dataGL.vao);
-	// glBindVertexArray(m_dataGL.vao);
-	// glGenBuffers(1, &m_dataGL.pos);
-
-	// glEnableVertexAttribArray(0);
 	m_dataGL = std::make_unique<VertexArray>();
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 }
-
-// void SkyDisplay::deleteVao()
-// {
-	// if (shaderSkyDisplay != nullptr)
-	// 	shaderSkyDisplay = nullptr;
-// 	glDeleteBuffers(1, &m_dataGL.pos);
-// 	glDeleteVertexArrays(1, &m_dataGL.vao);
-// }
 
 void SkyDisplay::clear()
 {
@@ -121,36 +95,33 @@ void SkyDisplay::clear()
 //a optimiser
 void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 {
-	//if (((dataSky.size() / 3) == 198) || ((dataSky.size() / 3) == 396))
-		//double alpha = 0.f; // Il me faut la premiere valeur en alpha de personal.txt ou personeq.txt selon
-
-		for (int i = -9; i < 10; i++) {
-			std::ostringstream oss;
-			//création des positions de points dans pt3,pt4
-			Utility::spheToRect(aperson - 0.31415926, (i - 0.0001) * grad2rad, pt3);
-			Utility::spheToRect(aperson - 0.31415926 + 0.01, (i - 0.0001) * grad2rad, pt4);
-			//test si pt3,pt4 est affichable et transmet à pt1,pt2 sa position
-			if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
-				double angle;
-				const double dx = pt1[0] - pt2[0];
-				const double dy = pt1[1] - pt2[1];
-				const double dq = dx * dx + dy * dy;
-				const double d = sqrt(dq);
-				angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
-				if (pt1[0] < pt2[0])
-					angle *= -1;
-				if (i == -9)
-					angle += 3.1415926;
-				Mat4f MVP = prj->getMatProjectionOrtho2D();
-				//suite de transformations de position à partir des coordonnées de pt1
-				Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
-				TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
-				//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
-				oss << i * 10 << "°";
-				skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
-				oss.clear();
-			}
+	for (int i = -9; i < 10; i++) {
+		std::ostringstream oss;
+		//création des positions de points dans pt3,pt4
+		Utility::spheToRect(aperson - 0.31415926, (i - 0.0001) * grad2rad, pt3);
+		Utility::spheToRect(aperson - 0.31415926 + 0.01, (i - 0.0001) * grad2rad, pt4);
+		//test si pt3,pt4 est affichable et transmet à pt1,pt2 sa position
+		if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
+			double angle;
+			const double dx = pt1[0] - pt2[0];
+			const double dy = pt1[1] - pt2[1];
+			const double dq = dx * dx + dy * dy;
+			const double d = sqrt(dq);
+			angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
+			if (pt1[0] < pt2[0])
+				angle *= -1;
+			if (i == -9)
+				angle += 3.1415926;
+			Mat4f MVP = prj->getMatProjectionOrtho2D();
+			//suite de transformations de position à partir des coordonnées de pt1
+			Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
+			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
+			//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
+			oss << i * 10 << "°";
+			skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+			oss.clear();
 		}
+	}
 }
 
 
@@ -170,8 +141,6 @@ void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
 	else
 		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-
-//	glBindVertexArray(m_dataGL.vao);
 
 	m_dataGL->bind();
 	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
@@ -193,7 +162,7 @@ SkyPerson::SkyPerson(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 
 void SkyPerson::loadData(const std::string& filename)
 {
-	double alpha, delta; //, x, y, z;
+	double alpha, delta;
 	int nblines;
 	Vec3f punts;
 	clear();
@@ -207,18 +176,6 @@ void SkyPerson::loadData(const std::string& filename)
 		for (int i = 0; i < nblines; i++) {
 			fichier >> alpha >> delta;
 			Utility::spheToRect(alpha, delta, punts);
-			// On Earth or AL
-			// x = punts[0];
-			// y = punts[1];
-			// z = punts[2];
-			// Elsewhere
-			//x=punts[0];
-			//y=punts[1]*cos(-23.43928*3.1415926/180.0)-punts[2]*sin(-23.43928*3.1415926/180.0);
-			//z=punts[1]*sin(-23.43928*3.1415926/180.0)+punts[2]*cos(-23.43928*3.1415926/180.0);
-			// End of test
-			// dataSky.push_back(x);
-			// dataSky.push_back(y);
-			// dataSky.push_back(z);
 			insert_vec3(dataSky, punts);
 		}
 		aperson = alpha;
@@ -226,13 +183,7 @@ void SkyPerson::loadData(const std::string& filename)
 	}
 
 	//on charge les points dans un vbo
-	// glBindVertexArray(m_dataGL.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-	//~ glEnableVertexAttribArray(0);
 }
 
 
@@ -285,16 +236,10 @@ void SkyPerson::loadString(const std::string& message)
 	for (auto it =dataTmp.begin(); it!=dataTmp.end(); it++) {
 			Utility::spheToRect(*it, *++it, punts);
 			// std::cout << punts[0] << "|"<< punts[1] << "|"<< punts[2] << std::endl;
-			// for(int i=0; i<3; i++)
-			// 	dataSky.push_back(punts[i]);
 			insert_vec3(dataSky,punts );
 	}
 
 	//on charge les points dans un vbo
-	// glBindVertexArray(m_dataGL.vao);
-	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);	
 }
 
@@ -326,8 +271,7 @@ void SkyPerson::loadString(const std::string& message)
 // }
 
 SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
-{
-}
+{}
 
 void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
@@ -356,15 +300,9 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	}
 	for (int j = -9; j < 9; j++) {
 		Utility::spheToRect(direction * deg2rad, j * grad2rad, punts);
-		// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,punts );
 
 		Utility::spheToRect(direction * deg2rad, (j + 1) * grad2rad, punts);
-		// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,punts );
 		
 		for (int i = 0; i < 10; i++) {
@@ -375,45 +313,17 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			else
 				tick = 0.2 * 90 / (90 - (j * 10 + i));
 			Utility::spheToRect((direction - tick) * deg2rad, (j * 10 + i) * deg2rad, punts);
-			// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-			// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-			// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
 			insert_vec3(dataSky,punts );
 
 			Utility::spheToRect((direction + tick) * deg2rad, (j * 10 + i) * deg2rad, punts);
-			// dataSky.push_back(punts[0]); // punts[0] represent x coordinate
-			// dataSky.push_back(punts[1]); // punts[1] represent y coordinate
-			// dataSky.push_back(punts[2]); // punts[2] represent z coordinate
 			insert_vec3(dataSky,punts );
 		}
 	}
 	aperson = (direction + tick) * deg2rad;
-	//on charge les points dans un vbo
-	// glBindVertexArray(m_dataGL.vao);
 
-	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	// //~ glEnableVertexAttribArray(0);
+	//on charge les points dans un vbo
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	// shaderSkyDisplay->use();
-	// shaderSkyDisplay->setUniform("color", color);
-	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-
-	// if (ptype == AL)
-	// 	shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-	// else
-	// 	shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-
-	// glBindVertexArray(m_dataGL.vao);
-
-	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-
-	// shaderSkyDisplay->unuse();
 	SkyDisplay::draw(prj,nav);
 
 	draw_text(prj, nav);
@@ -588,8 +498,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 
 
 SkyMouse::SkyMouse() : SkyDisplay(PROJECTION_TYPE::AL)
-{
-}
+{}
 
 void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)
 {
@@ -761,8 +670,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 
 
 SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
-{
-}
+{}
 
 void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
@@ -801,9 +709,6 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	int npoints = 21;
 	float delta = (az1 - az2) / (npoints - 1);
 	for (int i = 0; i < npoints; i++) {
-		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,pt1 );
 
 		azt = az1 - delta * i;
@@ -811,28 +716,10 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 		Utility::spheToRect(azt, altt, pt1);
 		if (i == 12)
 			pt5 = pt1;
-		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,pt1 );
 	}
 
-	// glBindVertexArray(m_dataGL.vao);
-	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	// shaderSkyDisplay->use();
-	// shaderSkyDisplay->setUniform("color", color);
-	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	// shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-	
-	// glBindVertexArray(m_dataGL.vao);
-	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	// shaderSkyDisplay->unuse();
 
 	SkyDisplay::draw(prj,nav);
 
@@ -841,7 +728,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	ang = acos(sin(alt1) * sin(alt2) + cos(alt1) * cos(alt2) * cos(az2 - az1)) * rad2deg;
 	Utility::spheToRect(az1, alt1, pt3);
 	Utility::spheToRect(az2, alt2, pt4);
-	//Utility::spheToRect(az, alt, pt5);
+
 	(prj->*proj_func)(pt3, pt1);
 	(prj->*proj_func)(pt4, pt2);
 	double angle;
@@ -868,8 +755,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 }
 
 SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
-{
-}
+{}
 
 void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
@@ -906,35 +792,14 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	clear();
 	for (int j = 0; (pi_div_2 - fabs(de1 * (10 - j) / 10 + de2 * j / 10)) > 0.001; j++) {
 		Utility::spheToRect((ra1 * (10 - j) / 10 + ra2 * j / 10), (de1 * (10 - j) / 10 + de2 * j / 10), pt1);
-		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,pt1 );
 
 		Utility::spheToRect((ra1 * (9 - j) / 10 + ra2 * (j + 1) / 10), (de1 * (9 - j) / 10 + de2 * (j + 1) / 10), pt2);
-		// dataSky.push_back(pt2[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(pt2[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(pt2[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,pt2 );
 	}
 
-	// glBindVertexArray(m_dataGL.vao);
-	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	// shaderSkyDisplay->use();
-	// shaderSkyDisplay->setUniform("color", color);
-	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	// shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-
-	// glBindVertexArray(m_dataGL.vao);
-	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	// shaderSkyDisplay->unuse();
-	
 	SkyDisplay::draw(prj,nav);
 
 	//draw_text(prj, nav);
@@ -948,8 +813,7 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 }
 
 SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
-{
-}
+{}
 
 void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
@@ -970,9 +834,6 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	int npoints = 11;
 	float delta = (ra1 - ra2) / (npoints - 1);
 	for (int i = 0; i < npoints; i++) {
-		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,pt1 );
 
 		rat = ra1 - delta * i;
@@ -980,15 +841,9 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 		Utility::spheToRect(rat, det, pt1);
 		if (i == 5)
 			pt5 = pt1;
-		// dataSky.push_back(pt1[0]); // punts[0] represent x coordinate
-		// dataSky.push_back(pt1[1]); // punts[1] represent y coordinate
-		// dataSky.push_back(pt1[2]); // punts[2] represent z coordinate
 		insert_vec3(dataSky,pt1 );
 	}
-	// glBindVertexArray(m_dataGL.vao);
-	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * dataSky.size(), dataSky.data(), GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
 	StateGL::enable(GL_BLEND);

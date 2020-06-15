@@ -55,7 +55,6 @@ public:
 	SkyDisplay(PROJECTION_TYPE ptype);
 	virtual ~SkyDisplay();
 
-	//!	void draw(const Projector* prj) const; 20060825 patch
 	virtual void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
 	void setColor(const Vec3f& c) {
@@ -95,16 +94,12 @@ public:
 		skydisplay_font = _font;
 	}
 
-	// static void setShader(shaderProgram *_shaderSkyDisplay) {
-	// 	shaderSkyDisplay = _shaderSkyDisplay;
-	// }
-
 	static void createShader();
 	void createVao();
-	// void deleteVao();
 
 protected:
 	Vec3f color;
+	double aperson;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 	void draw_text(const Projector *prj,const Navigator *nav);
 	LinearFader fader;
@@ -115,15 +110,9 @@ protected:
 	std::vector<float> dataSky;
 	PROJECTION_TYPE ptype;
 	std::unique_ptr<VertexArray> m_dataGL;
-	// static shaderProgram *shaderSkyDisplay;
 	static std::unique_ptr<shaderProgram> shaderSkyDisplay;
-	double aperson;
-private:
-	// const float deg2rad = 3.1415926/180.;   // Convert deg to radian
-	// const float rad2deg = 180./3.1415926;	// Converd radian to deg
-	// const float grad2rad = 3.1415926/18.;   // Convert grind pas to radian
-	// const float pi_div_2 = 1.5707963;		// pi/2
 
+private:
 };
 
 class SkyPerson : public SkyDisplay {

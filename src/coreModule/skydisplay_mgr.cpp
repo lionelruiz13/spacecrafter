@@ -33,14 +33,6 @@
 
 SkyDisplayMgr::SkyDisplayMgr()
 {
-	//baseColor=Vec3f(0.f, 0.f, 0.f);
-	// shaderSkyDisplay = new shaderProgram();
-	// shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
-	// shaderSkyDisplay->setUniformLocation("color");
-	// shaderSkyDisplay->setUniformLocation("fader");
-	// shaderSkyDisplay->setUniformLocation("Mat");
-
-	// SkyDisplay::setShader(shaderSkyDisplay);
 	SkyDisplay::createShader();
 }
 
@@ -65,8 +57,6 @@ SkyDisplayMgr::~SkyDisplayMgr()
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
-	// if (shaderSkyDisplay != nullptr)
-	// 	delete shaderSkyDisplay;
 	if (skyDisplayFont != nullptr)
 		delete skyDisplayFont;
 }
@@ -90,9 +80,6 @@ void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
 		assert(skyDisplayFont);
 	}	
 	SkyDisplay::setFont(skyDisplayFont);
-	// for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-	// 	it->second->setFont(font_size, font_name);
-	// }
 }
 
 
@@ -195,7 +182,6 @@ void SkyDisplayMgr::Create(SKYDISPLAY_NAME nameObj)
 	}
 	cLog::get()->write("SkyDisplayMgr creating "+ getSkyName(nameObj), LOG_TYPE::L_INFO);
 
-	//switch (nameObj) {
 	switch (nameObj) {
 		case SKYDISPLAY_NAME::SKY_PERSONAL :
 			tmp= new SkyPerson(SkyDisplay::AL);
