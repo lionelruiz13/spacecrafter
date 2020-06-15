@@ -114,7 +114,7 @@ protected:
 	static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;
 
 	// static DataGL skylineDraw;
-	static std::unique_ptr<VertexArray> skylineDraw;
+	static std::unique_ptr<VertexArray> m_skylineGL;
 
 	std::vector<float> vecDrawPos;
 	std::vector<float> vecDrawMVPPos;

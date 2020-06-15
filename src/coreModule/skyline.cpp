@@ -38,7 +38,7 @@
 //1560 lignes au final
 
 std::unique_ptr<shaderProgram> SkyLine::shaderSkylineDraw;
-std::unique_ptr<VertexArray> SkyLine::skylineDraw;
+std::unique_ptr<VertexArray> SkyLine::m_skylineGL;
 
 SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
 	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f), font(nullptr)
@@ -53,19 +53,19 @@ SkyLine::~SkyLine()
 
 void SkyLine::createGL_context()
 {
-	skylineDraw = std::make_unique<VertexArray>();
-	skylineDraw->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	m_skylineGL = std::make_unique<VertexArray>();
+	m_skylineGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 }
 
 void SkyLine::drawSkylineGL(const Vec4f& Color)
 {
-	skylineDraw->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
+	m_skylineGL->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
 	
 	shaderSkylineDraw->use();
 	shaderSkylineDraw->setUniform("Color",Color);
-	skylineDraw->bind();
+	m_skylineGL->bind();
 	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-	skylineDraw->unBind();
+	m_skylineGL->unBind();
 
 	shaderSkylineDraw->unuse();
 }
