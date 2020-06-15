@@ -32,15 +32,17 @@
 #include <fstream>
 
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/vecmath.hpp"
 #include <vector>
-
+#include <memory>
 
 //! Class which manages the Oort Cloud
-
 class Projector;
 class Navigator;
+class VertexArray;
+class shaderProgram;
+
 
 class Oort {
 public:
@@ -86,11 +88,11 @@ public:
 
 private:
 	//vide le tampon
-	void clear();
+	// void clear();
 	// initialise le shader et les vao-vbo
-	void createShader();
+	void createGL_context();
 	// supprime le shader et les vao-vbo
-	void deleteShader();
+	// void deleteShader();
 
 	// couleur uniforme du nuage
 	Vec3f color;
@@ -99,140 +101,12 @@ private:
 	// coefficient sur l'intensité lumineuse
 	float intensity;
 	//tableau de float pour tampon openGL
-	std::vector<float> dataOort;
+	// std::vector<float> dataOort;
+	unsigned int nbAsteroids;
 	// données openGL
-	DataGL sData;
+	std::unique_ptr<VertexArray> m_dataGL;
 	// shader responsable de l'affichage du nuage
-	shaderProgram *shaderOort;
+	std::unique_ptr<shaderProgram> shaderOort;
 };
 
 #endif // ___OORT_HPP___
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//~ SettingsState state;
-//~ if( line_type == EQUATOR ) {
-//~ state.m_state.equator_line[0] = c[0];
-//~ state.m_state.equator_line[1] = c[1];
-//~ state.m_state.equator_line[2] = c[2];
-//~ }
-//~ if( line_type == GALACTIC_EQUATOR ) {
-//~ state.m_state.galactic_line[0] = c[0];
-//~ state.m_state.galactic_line[1] = c[1];
-//~ state.m_state.galactic_line[2] = c[2];
-//~ }
-//~
-//~ else if( line_type == ECLIPTIC ) {
-//~ state.m_state.ecliptic_line[0] = c[0];
-//~ state.m_state.ecliptic_line[1] = c[1];
-//~ state.m_state.ecliptic_line[2] = c[2];
-//~ }
-//~ else if( line_type == MERIDIAN ) {
-//~ state.m_state.meridian_line[0] = c[0];
-//~ state.m_state.meridian_line[1] = c[1];
-//~ state.m_state.meridian_line[2] = c[2];
-//~ }
-//~ else if( line_type == PRECESSION ) {
-//~ state.m_state.precession_circle[0] = c[0];
-//~ state.m_state.precession_circle[1] = c[1];
-//~ state.m_state.precession_circle[2] = c[2];
-//~ }
-//~ else if( line_type == CIRCUMPOLAR ) {
-//~ state.m_state.circumpolar_circle[0] = c[0];
-//~ state.m_state.circumpolar_circle[1] = c[1];
-//~ state.m_state.circumpolar_circle[2] = c[2];
-//~ }
-//~ else if( line_type == ZENITH ) {
-//~ state.m_state.zenith_line[0] = c[0];
-//~ state.m_state.zenith_line[1] = c[1];
-//~ state.m_state.zenith_line[2] = c[2];
-//~ }
-//~ else if( line_type == POLE ) {
-//~ state.m_state.polar_circle[0] = c[0];
-//~ state.m_state.polar_circle[1] = c[1];
-//~ state.m_state.polar_circle[2] = c[2];
-//~ }
-//~ else if( line_type == VERNAL_POINTS ) {
-//~ state.m_state.vernal_points[0] = c[0];
-//~ state.m_state.vernal_points[1] = c[1];
-//~ state.m_state.vernal_points[2] = c[2];
-//~ }
-//~
-//~ else if( line_type == ECLIPTIC_POLE) {
-//~ state.m_state.ecliptic_center[0] = c[0];
-//~ state.m_state.ecliptic_center[1] = c[1];
-//~ state.m_state.ecliptic_center[2] = c[2];
-//~ }
-//~ else if( line_type == GALACTIC_POLE) {
-//~ state.m_state.galactic_pole[0] = c[0];
-//~ state.m_state.galactic_pole[1] = c[1];
-//~ state.m_state.galactic_pole[2] = c[2];
-//~ }
-//~
-//~ else if( line_type == GALACTIC_CENTER) {
-//~ state.m_state.galactic_center[0] = c[0];
-//~ state.m_state.galactic_center[1] = c[1];
-//~ state.m_state.galactic_center[2] = c[2];
-//~ }
-//~
-//~ else if( line_type == ANALEMMALINE ) {
-//~ state.m_state.analemma_line[0] = c[0];
-//~ state.m_state.analemma_line[1] = c[1];
-//~ state.m_state.analemma_line[2] = c[2];
-//~ }
-//~ else if( line_type == ANALEMMA ) {
-//~ state.m_state.analemma[0] = c[0];
-//~ state.m_state.analemma[1] = c[1];
-//~ state.m_state.analemma[2] = c[2];
-//~ }
-//~ SharedData::Instance()->Settings(state);
-
-//~ ReferenceState state;
-//~ if( line_type == MERIDIAN )
-//~ state.meridian_line = b;
-//~ else if( line_type == TROPIC )
-//~ state.tropic_lines = b;
-//~ else if( line_type == ECLIPTIC )
-//~ state.ecliptic_line = b;
-//~ else if( line_type == EQUATOR )
-//~ state.equator_line = b;
-//~ else if( line_type == GALACTIC_EQUATOR )
-//~ state.galactic_line = b;
-//~ else if( line_type == PRECESSION )
-//~ state.precession_circle = b;
-//~ else if( line_type == CIRCUMPOLAR )
-//~ state.circumpolar_circle = b;
-//~ else if( line_type == ZENITH )
-//~ state.zenith_line = b;
-//~ else if( line_type == POLE )
-//~ state.polar_circle = b;
-//~ else if( line_type == VERNAL_POINTS )
-//~ state.vernal_points = b;
-//~ else if( line_type == ECLIPTIC_POLE )
-//~ state.ecliptic_center = b;
-//~ else if( line_type == GALACTIC_POLE )
-//~ state.galactic_pole = b;
-//~ else if( line_type == GALACTIC_CENTER )
-//~ state.galactic_center = b;
-//~ else if( line_type == ANALEMMALINE )
-//~ state.analemma_line = b;
-//~ else if( line_type == ANALEMMA )
-//~ state.analemma = b;
-//~ SharedData::Instance()->References( state );
-

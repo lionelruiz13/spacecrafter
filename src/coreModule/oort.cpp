@@ -32,62 +32,61 @@
 #include "tools/app_settings.hpp"
 #include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
-#include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
 #define NB_POINTS 200000
-
 
 Oort::Oort()
 {
 	color = Vec3f(1.0,1.0,0.0);
 	fader = false;
-	createShader();
+	createGL_context();
 }
-
-
 
 Oort::~Oort()
 {
-	clear();
-	deleteShader();
+	// clear();
+	// deleteShader();
 }
 
-void Oort::createShader()
+void Oort::createGL_context()
 {
-	shaderOort = new shaderProgram();
+	shaderOort = std::make_unique<shaderProgram>();
 	shaderOort->init("oort.vert","oort.frag");
-	shaderOort->setUniformLocation("Mat");
-	shaderOort->setUniformLocation("color");
-	shaderOort->setUniformLocation("intensity");
+	shaderOort->setUniformLocation({"Mat","color","intensity"});
 
-	glGenVertexArrays(1,&sData.vao);
-	glBindVertexArray(sData.vao);
-	glGenBuffers(1,&sData.pos);
-	glEnableVertexAttribArray(0);
+	// glGenVertexArrays(1,&m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
+	// glGenBuffers(1,&m_dataGL.pos);
+	// glEnableVertexAttribArray(0);
+	
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 }
 
-void Oort::deleteShader()
-{
-	if(shaderOort) shaderOort=nullptr;
+// void Oort::deleteShader()
+// {
+// 	if(shaderOort) shaderOort=nullptr;
 
-	glDeleteBuffers(1,&sData.pos);
-	glDeleteVertexArrays(1,&sData.vao);
-}
+// 	glDeleteBuffers(1,&sData.pos);
+// 	glDeleteVertexArrays(1,&sData.vao);
+// }
 
-void Oort::clear()
-{
-	dataOort.clear();
-}
+// void Oort::clear()
+// {
+// 	dataOort.clear();
+// }
 
 void Oort::populate(unsigned int nbr) noexcept
 {
-	this->clear();
+	// this->clear();
 	float radius, theta, phi, r_theta, r_phi;
 	Vec3f tmp;
 	Vec3d tmp_local;
-
+	std::vector<float> dataOort;
 	for(unsigned int i=0; i<nbr ; i++) {
 		r_theta = (float) (rand()%3600);
 		r_phi = (float) (rand()%1400);
@@ -99,19 +98,22 @@ void Oort::populate(unsigned int nbr) noexcept
 		if (radius>4000) radius = radius*(1+(radius-4000)/4000);
 
 		Utility::spheToRect(theta*M_PI/180,phi*M_PI/180, tmp);
-
-		dataOort.push_back((float) tmp[0]*radius);
-		dataOort.push_back((float) tmp[1]*radius);
-		dataOort.push_back((float) tmp[2]*radius);
+		tmp = tmp * radius;
+		// dataOort.push_back((float) tmp[0]);
+		// dataOort.push_back((float) tmp[1]);
+		// dataOort.push_back((float) tmp[2]);
+		insert_vec3(dataOort, tmp);
 		//~ printf("%5.3f %5.3f %5.3f \n", tmp_local[0], tmp_local[1], tmp_local[2]);
 	}
 
 	//on charge les points dans un vbo
-	glBindVertexArray(sData.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sData.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataOort.size(),dataOort.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataOort.size(),dataOort.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	nbAsteroids = dataOort.size()/3 ;
+	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataOort);
 }
 
 void Oort::draw(double distance, const Projector *prj,const Navigator *nav) noexcept
@@ -137,9 +139,9 @@ void Oort::draw(double distance, const Projector *prj,const Navigator *nav) noex
 	shaderOort->setUniform("color", color);
 	shaderOort->setUniform("intensity", intensity*fader.getInterstate());
 
-	glBindVertexArray(sData.vao);
-
-	glDrawArrays(GL_POINTS, 0, dataOort.size()/3 );
-
+	// glBindVertexArray(m_dataGL.vao);
+	m_dataGL->bind();
+	glDrawArrays(GL_POINTS, 0, nbAsteroids );
+	m_dataGL->unBind();
 	shaderOort->unuse();
 }
