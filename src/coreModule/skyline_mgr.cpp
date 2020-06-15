@@ -50,8 +50,6 @@ SkyLineMgr::~SkyLineMgr()
 		cLog::get()->write("SkyLineMgr : delete " + typeToString(it->first) , LOG_TYPE::L_INFO);
 		delete it->second;
 	}
-
-	// SkyLine::deleteShader();
 }
 
 void SkyLineMgr::update(int delta_time)
@@ -154,7 +152,6 @@ const Vec3f& SkyLineMgr::getColor(SKYLINE_TYPE typeObj)
 	}
 	//~ std::cout << "error SkyGridMgr::getColor : " << typeObj << " not found" << std::endl;
 	cLog::get()->write("SkyLineMgr error : getColor not found " + typeToString(typeObj) , LOG_TYPE::L_WARNING);
-	//~ Vec3f tmp(0.f, 0.f, 0.f);
 	return baseColor;
 }
 
@@ -268,9 +265,6 @@ void SkyLineMgr::Create(SKYLINE_TYPE type_obj)
 		return;
 	}
 
-	//SKYLINE_TYPE typeObj = stringToType(type_obj);
-
-	//switch (typeObj) {
 	switch (type_obj) {
 		case SKYLINE_TYPE::LINE_CIRCLE_POLAR :
 			cLog::get()->write("SkyLineMgr creating LINE_CIRCLE_POLAR" , LOG_TYPE::L_INFO);

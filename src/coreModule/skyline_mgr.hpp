@@ -46,14 +46,12 @@ public:
 	int size() {
 		return m_map.size();
 	};
-	//Celle qui va créer les objets
-	//void Create(std::string type_obj);
+
 	void Create(SKYLINE_TYPE a);
 	void draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
 	void update(int delta_time);
 
 	void setFont(float font_size, const std::string& font_name);
-	//void setFont(float font_size, SKYLINE_TYPE font_name);
 
 	void setInternalNav(bool a);
 
@@ -73,30 +71,6 @@ public:
 	bool isExist(SKYLINE_TYPE typeObj);
 
 private:
-	// enum LINE_TYPE {
-	// 	LINE_CIRCLE_POLAR,
-	// 	LINE_POINT_POLAR,
-	// 	LINE_ECLIPTIC_POLE,
-	// 	LINE_GALACTIC_POLE,
-	// 	LINE_ANALEMMA,
-	// 	LINE_ANALEMMALINE,
-	// 	LINE_CIRCUMPOLAR,
-	// 	LINE_GALACTIC_CENTER,
-	// 	LINE_VERNAL,
-	// 	LINE_GREENWICH,
-	// 	LINE_ARIES,
-	// 	LINE_EQUATOR,
-	// 	LINE_GALACTIC_EQUATOR,
-	// 	LINE_MERIDIAN,
-	// 	LINE_TROPIC,
-	// 	LINE_ECLIPTIC,
-	// 	LINE_PRECESSION,
-	// 	LINE_VERTICAL,
-	// 	LINE_ZODIAC,
-	// 	LINE_ZENITH,
-	// 	LINE_UNKNOWN
-	// };
-
 	std::string typeToString(SKYLINE_TYPE typeObj);
 	SKYLINE_TYPE stringToType(const std::string& typeObj);
 	std::map<SKYLINE_TYPE ,SkyLine*> m_map;

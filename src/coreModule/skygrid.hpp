@@ -36,7 +36,6 @@
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/fader.hpp"
-//#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
 
@@ -89,7 +88,6 @@ public:
 	}
 
 	static void createShader();
-	// void deleteShader();
 
 protected:
 	// Create and precompute positions of a SkyGrid
@@ -106,11 +104,7 @@ protected:
 	};
 	SKY_GRID_TYPE gtype;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
-	// std::vector<float> dataSky;
-	// std::vector<float> dataColor;
 
-	// static DataGL sData;
-	// static shaderProgram *shaderSkyGrid;
 	static unsigned int nbPointsToDraw;
 	static std::unique_ptr<VertexArray> m_dataGL;
 	static std::unique_ptr<shaderProgram> shaderSkyGrid;
