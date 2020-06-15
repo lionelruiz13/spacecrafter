@@ -31,7 +31,7 @@
 shaderProgram* s_font::shaderHorizontal=nullptr;
 shaderProgram* s_font::shaderPrint=nullptr;
 
-DataGL s_font::sFont;
+DataGL s_font::m_fontGL;
 
 s_font::s_font(float size_i, const std::string& ttfFileName) //: lineHeightEstimate(0)
 {
@@ -54,17 +54,18 @@ s_font::~s_font()
 	clearCache();
 	TTF_CloseFont(myFont);
 
-	while(!vecPos.empty()) {
-		vecPos.pop_back();
-	}
+	// LOL !!!!!!!!!!!!!!!!!!!!!!
+	// while(!vecPos.empty()) {
+	// 	vecPos.pop_back();
+	// }
 
-	while(!vecTex.empty()) {
-		vecTex.pop_back();
-	}
+	// while(!vecTex.empty()) {
+	// 	vecTex.pop_back();
+	// }
 }
 
 
-void s_font::createShader()
+void s_font::createGL_context()
 {
 	//HORIZONTAL
 	shaderHorizontal = new shaderProgram();
@@ -77,11 +78,11 @@ void s_font::createShader()
 	shaderPrint->setUniformLocation("MVP");
 	shaderPrint->setUniformLocation("Color");
 
-	glGenVertexArrays(1,&sFont.vao);
-	glBindVertexArray(sFont.vao);
+	glGenVertexArrays(1,&m_fontGL.vao);
+	glBindVertexArray(m_fontGL.vao);
 
-	glGenBuffers(1,&sFont.tex);
-	glGenBuffers(1,&sFont.pos);
+	glGenBuffers(1,&m_fontGL.tex);
+	glGenBuffers(1,&m_fontGL.pos);
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -94,9 +95,9 @@ void s_font::deleteShader()
 	if(shaderPrint) delete shaderPrint;
 	shaderPrint = nullptr;
 
-	glDeleteBuffers(1,&sFont.tex);
-	glDeleteBuffers(1,&sFont.pos);
-	glDeleteVertexArrays(1, &sFont.vao);
+	glDeleteBuffers(1,&m_fontGL.tex);
+	glDeleteBuffers(1,&m_fontGL.pos);
+	glDeleteVertexArrays(1, &m_fontGL.vao);
 }
 
 //! print out a string
@@ -123,8 +124,11 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	//if(cache==-1) return; // do not draw, just wanted to cache
 
 	StateGL::enable(GL_BLEND);
-
+	
 	// Draw
+	std::vector<float> vecPos;
+	std::vector<float> vecTex;
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
 	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
@@ -141,7 +145,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	shaderPrint->setUniform("MVP", MVP);
 	shaderPrint->setUniform("Color", Color);
 
-	glBindVertexArray(sFont.vao);
+	glBindVertexArray(m_fontGL.vao);
 
 	float h = currentRender.textureH;
 	float w = currentRender.textureW;
@@ -189,11 +193,11 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 		vecTex.push_back(1);
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER,sFont.pos);
+	glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sFont.tex);
+	glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
@@ -486,6 +490,8 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 
 
 	std::vector<Vec2f> meshPoints;  // screen x,y
+	std::vector<float> vecPos;
+	std::vector<float> vecTex;
 
 	// Pre-calculate points (more efficient)
 	for (int i=0; i<=steps; i++) {
@@ -544,12 +550,12 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		}
 
 
-		glBindVertexArray(sFont.vao);
-		glBindBuffer(GL_ARRAY_BUFFER,sFont.pos);
+		glBindVertexArray(m_fontGL.vao);
+		glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
 		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ARRAY_BUFFER,sFont.tex);
+		glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
 		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 

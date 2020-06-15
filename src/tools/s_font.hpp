@@ -66,7 +66,7 @@ public:
 
 	float getStrLen(const std::string& s/*, bool cache = 0*/);
 
-	static void createShader();
+	static void createGL_context();
 	static void deleteShader();
 
 protected:
@@ -80,12 +80,10 @@ protected:
 	TTF_Font *myFont;
 	float fontSize;
 
-	std::vector<float> vecPos;
-	std::vector<float> vecTex;
-
 	static shaderProgram *shaderHorizontal;
 	static shaderProgram *shaderPrint;
-	static DataGL sFont;
+	static DataGL m_fontGL;
+
 };
 
 
