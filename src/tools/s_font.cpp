@@ -30,10 +30,6 @@
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
 
-// shaderProgram* s_font::shaderHorizontal=nullptr;
-// shaderProgram* s_font::shaderPrint=nullptr;
-// DataGL s_font::m_fontGL;
-
 std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
 std::unique_ptr<shaderProgram> s_font::shaderPrint;
 std::unique_ptr<VertexArray> s_font::m_fontGL;
@@ -86,31 +82,10 @@ void s_font::createGL_context()
 	m_fontGL = std::make_unique<VertexArray>();
 	m_fontGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_fontGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
-	// glGenVertexArrays(1,&m_fontGL.vao);
-	// glBindVertexArray(m_fontGL.vao);
-
-	// glGenBuffers(1,&m_fontGL.tex);
-	// glGenBuffers(1,&m_fontGL.pos);
-
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
 }
 
-// void s_font::deleteShader()
-// {
-// 	if(shaderHorizontal) delete shaderHorizontal;
-// 	shaderHorizontal = nullptr;
-// 	if(shaderPrint) delete shaderPrint;
-// 	shaderPrint = nullptr;
-
-// 	glDeleteBuffers(1,&m_fontGL.tex);
-// 	glDeleteBuffers(1,&m_fontGL.pos);
-// 	glDeleteVertexArrays(1, &m_fontGL.vao);
-// }
 
 //! print out a string
-//! cache == 0 means do not cache rendered string texture
-//! cache == -1 means do not actually draw, just cache
 void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown/*, int cache*/)
 {
 	//bool cache = true;
@@ -136,8 +111,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	// Draw
 	std::vector<float> vecPos;
 	std::vector<float> vecTex;
-
-	// glBindVertexArray(m_fontGL.vao);
 
 	float h = currentRender.textureH;
 	float w = currentRender.textureW;
@@ -195,14 +168,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
@@ -497,8 +462,6 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	//std::cout << str << " " << steps << std::endl;
 	//if(steps < 10) steps = 10;
 
-
-
 	std::vector<Vec2f> meshPoints;  // screen x,y
 	std::vector<float> vecPos;
 	std::vector<float> vecTex;
@@ -538,18 +501,18 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 			//}
 		// }
 
-		for (int i=0; i<=steps; i++) {
+	for (int i=0; i<=steps; i++) {
 
-			vecPos.push_back(meshPoints[i*2][0]/*+shiftx*/);
-			vecPos.push_back(meshPoints[i*2][1]/*+shifty*/);
-			vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
-			vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
+		vecPos.push_back(meshPoints[i*2][0]/*+shiftx*/);
+		vecPos.push_back(meshPoints[i*2][1]/*+shifty*/);
+		vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
+		vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
 
-			vecTex.push_back((float)i/steps); // *textureExtentW);
-			vecTex.push_back(0.0);
-			vecTex.push_back((float)i/steps); // *textureExtentW);
-			vecTex.push_back(1.0); // 1.0 <- textureExtentH
-		}
+		vecTex.push_back((float)i/steps); // *textureExtentW);
+		vecTex.push_back(0.0);
+		vecTex.push_back((float)i/steps); // *textureExtentW);
+		vecTex.push_back(1.0); // 1.0 <- textureExtentH
+	}
 
 	shaderHorizontal->use();
 	glActiveTexture(GL_TEXTURE0);
@@ -559,15 +522,6 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	
 	shaderHorizontal->setUniform("Color", Color);
 
-		// glBindVertexArray(m_fontGL.vao);
-		// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
-		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
-		// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-		// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
-		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
-		// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
 	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
 
@@ -576,12 +530,9 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	m_fontGL->unBind();
 	shaderHorizontal->unuse();
 
+	vecPos.clear();
+	vecTex.clear();
 
-		vecPos.clear();
-		vecTex.clear();
-	// }
-
-	//shaderHorizontal->unuse();
 	if (!cache) {
 		glDeleteTextures( 1, &rendering.stringTexture);
 		glDeleteTextures( 1, &rendering.borderTexture);

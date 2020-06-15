@@ -35,7 +35,7 @@
 
 #include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
-//#include "tools/shader.hpp"
+
 
 class VertexArray;
 class shaderProgram;
@@ -69,29 +69,19 @@ public:
 	float getStrLen(const std::string& s/*, bool cache = 0*/);
 
 	static void createGL_context();
-	// static void deleteShader();
 
 protected:
 
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
-
-
 	renderedStringHash_t renderCache;
 
 	std::string fontName;
 	TTF_Font *myFont;
 	float fontSize;
 
-	// static shaderProgram *shaderHorizontal;
-	// static shaderProgram *shaderPrint;
-	// static DataGL m_fontGL;
-
 	static std::unique_ptr<shaderProgram> shaderHorizontal;
 	static std::unique_ptr<shaderProgram> shaderPrint;
 	static std::unique_ptr<VertexArray> m_fontGL;
 };
-
-
-
 
 #endif  //_S_FONT_H
