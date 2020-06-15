@@ -30,13 +30,15 @@
 
 #include <map>
 #include <vector>
+#include <memory>
 #include <SDL2/SDL_ttf.h>
 
 #include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
-#include "tools/shader.hpp"
+//#include "tools/shader.hpp"
 
-
+class VertexArray;
+class shaderProgram;
 class Projector;
 
 typedef struct {
@@ -67,7 +69,7 @@ public:
 	float getStrLen(const std::string& s/*, bool cache = 0*/);
 
 	static void createGL_context();
-	static void deleteShader();
+	// static void deleteShader();
 
 protected:
 
@@ -80,10 +82,13 @@ protected:
 	TTF_Font *myFont;
 	float fontSize;
 
-	static shaderProgram *shaderHorizontal;
-	static shaderProgram *shaderPrint;
-	static DataGL m_fontGL;
+	// static shaderProgram *shaderHorizontal;
+	// static shaderProgram *shaderPrint;
+	// static DataGL m_fontGL;
 
+	static std::unique_ptr<shaderProgram> shaderHorizontal;
+	static std::unique_ptr<shaderProgram> shaderPrint;
+	static std::unique_ptr<VertexArray> m_fontGL;
 };
 
 

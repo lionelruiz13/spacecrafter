@@ -27,11 +27,17 @@
 #include "tools/stateGL.hpp"
 //#include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
-shaderProgram* s_font::shaderHorizontal=nullptr;
-shaderProgram* s_font::shaderPrint=nullptr;
+// shaderProgram* s_font::shaderHorizontal=nullptr;
+// shaderProgram* s_font::shaderPrint=nullptr;
+// DataGL s_font::m_fontGL;
 
-DataGL s_font::m_fontGL;
+std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
+std::unique_ptr<shaderProgram> s_font::shaderPrint;
+std::unique_ptr<VertexArray> s_font::m_fontGL;
+
 
 s_font::s_font(float size_i, const std::string& ttfFileName) //: lineHeightEstimate(0)
 {
@@ -68,37 +74,39 @@ s_font::~s_font()
 void s_font::createGL_context()
 {
 	//HORIZONTAL
-	shaderHorizontal = new shaderProgram();
+	shaderHorizontal = std::make_unique<shaderProgram>();
 	shaderHorizontal->init("sfontHorizontal.vert","sfontHorizontal.frag");
 	shaderHorizontal->setUniformLocation("Color");
 
 	//PRINT
-	shaderPrint = new shaderProgram();
+	shaderPrint = std::make_unique<shaderProgram>();
 	shaderPrint->init("sfontPrint.vert","sfontPrint.frag");
-	shaderPrint->setUniformLocation("MVP");
-	shaderPrint->setUniformLocation("Color");
+	shaderPrint->setUniformLocation({"MVP","Color"});
 
-	glGenVertexArrays(1,&m_fontGL.vao);
-	glBindVertexArray(m_fontGL.vao);
+	m_fontGL = std::make_unique<VertexArray>();
+	m_fontGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	m_fontGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
+	// glGenVertexArrays(1,&m_fontGL.vao);
+	// glBindVertexArray(m_fontGL.vao);
 
-	glGenBuffers(1,&m_fontGL.tex);
-	glGenBuffers(1,&m_fontGL.pos);
+	// glGenBuffers(1,&m_fontGL.tex);
+	// glGenBuffers(1,&m_fontGL.pos);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
 }
 
-void s_font::deleteShader()
-{
-	if(shaderHorizontal) delete shaderHorizontal;
-	shaderHorizontal = nullptr;
-	if(shaderPrint) delete shaderPrint;
-	shaderPrint = nullptr;
+// void s_font::deleteShader()
+// {
+// 	if(shaderHorizontal) delete shaderHorizontal;
+// 	shaderHorizontal = nullptr;
+// 	if(shaderPrint) delete shaderPrint;
+// 	shaderPrint = nullptr;
 
-	glDeleteBuffers(1,&m_fontGL.tex);
-	glDeleteBuffers(1,&m_fontGL.pos);
-	glDeleteVertexArrays(1, &m_fontGL.vao);
-}
+// 	glDeleteBuffers(1,&m_fontGL.tex);
+// 	glDeleteBuffers(1,&m_fontGL.pos);
+// 	glDeleteVertexArrays(1, &m_fontGL.vao);
+// }
 
 //! print out a string
 //! cache == 0 means do not cache rendered string texture
@@ -129,23 +137,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	std::vector<float> vecPos;
 	std::vector<float> vecTex;
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
-	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-	// Avoid edge visibility
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	shaderPrint->use();
-
-	shaderPrint->setUniform("MVP", MVP);
-	shaderPrint->setUniform("Color", Color);
-
-	glBindVertexArray(m_fontGL.vao);
+	// glBindVertexArray(m_fontGL.vao);
 
 	float h = currentRender.textureH;
 	float w = currentRender.textureW;
@@ -193,21 +185,39 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 		vecTex.push_back(1);
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
+	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// Avoid edge visibility
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+
+	// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
+	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
+
+	shaderPrint->use();
+	shaderPrint->setUniform("MVP", MVP);
+	shaderPrint->setUniform("Color", Color);
+
+	m_fontGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP, 0,4);
+	m_fontGL->unBind();
+	shaderPrint->unuse();
 
 	vecPos.clear();
 	vecTex.clear();
-
-	shaderPrint->unuse();
-
 	//if(!cache) glDeleteTextures( 1, &currentRender.stringTexture);
 }
 
@@ -512,14 +522,6 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	shaderHorizontal->use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
-	
-
-	shaderHorizontal->setUniform("Color", Color);
 	// for (int pass=0; pass<0*4+1; pass++) {
 		// if(1) {
 			/*if(pass < 4 ) {
@@ -549,23 +551,37 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 			vecTex.push_back(1.0); // 1.0 <- textureExtentH
 		}
 
+	shaderHorizontal->use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
+	
+	shaderHorizontal->setUniform("Color", Color);
 
-		glBindVertexArray(m_fontGL.vao);
-		glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindVertexArray(m_fontGL.vao);
+		// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.pos);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecPos.size(),vecPos.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ARRAY_BUFFER,m_fontGL.tex);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecTex.size(),vecTex.data(),GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, vecPos.size()/2);
+	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
+	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
+
+	m_fontGL->bind();
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, vecPos.size()/2);
+	m_fontGL->unBind();
+	shaderHorizontal->unuse();
+
 
 		vecPos.clear();
 		vecTex.clear();
 	// }
 
-	shaderHorizontal->unuse();
+	//shaderHorizontal->unuse();
 	if (!cache) {
 		glDeleteTextures( 1, &rendering.stringTexture);
 		glDeleteTextures( 1, &rendering.borderTexture);

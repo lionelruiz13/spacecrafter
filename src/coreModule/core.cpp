@@ -203,7 +203,7 @@ Core::~Core()
 	meteors = nullptr;
 	delete atmosphere;
 	delete tone_converter;
-	s_font::deleteShader();
+	// s_font::deleteShader();
 	delete ssystem;
 	delete skyloc;
 	skyloc = nullptr;
