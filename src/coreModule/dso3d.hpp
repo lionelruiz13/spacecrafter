@@ -19,10 +19,11 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <memory>
 
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/vecmath.hpp"
 
 
 //! Class which manages the DSO Catalog for in_galaxy
@@ -30,6 +31,8 @@
 class Projector;
 class Navigator;
 class s_texture;
+class VertexArray;
+class shaderProgram;
 
 class Dso3d {
 public:
@@ -67,9 +70,9 @@ public:
 
 private:
 	// initialise le shader
-	void createShader();
+	void createGL_context();
 	//détruit le shader
-	void deleteShader();
+	// void deleteShader();
 	// renseigne le nombre de textures dans texNebulae
 	int nbTextures;
 	// position camera
@@ -84,9 +87,9 @@ private:
 	//renvoie le nombre de nebulae lues du/des catalogues
 	unsigned int nbNebulae;
 	// données openGL
-	DataGL sData;
+	std::unique_ptr<VertexArray> sData;
 	// shader responsable de l'affichage du nuage
-	shaderProgram *shaderDso3d;
+	std::unique_ptr<shaderProgram> shaderDso3d;
 };
 
 #endif // ___DSO3D_HPP___
