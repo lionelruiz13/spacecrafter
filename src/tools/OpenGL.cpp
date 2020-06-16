@@ -156,12 +156,12 @@ IndexBuffer::IndexBuffer(const BufferAccess& ba) : Buffer(ba)
 
 void IndexBuffer::fill(unsigned int count, const unsigned int* indices)
 {
-    this->bind();
+    //this->bind();
     ASSERT(sizeof(unsigned int) == sizeof(GLuint));
     m_Count= count;
     GLCall( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID) );
-    GLCall( glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, m_bufferAcces) );
-    this->unBind();
+    GLCall( glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, this->m_bufferAcces) );
+    //this->unBind();
 }
 
 
@@ -246,8 +246,9 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size , con
 
 void VertexArray::registerIndexBuffer(const BufferAccess& ba)
 {
-    ASSERT(m_indexBuffer==nullptr);
-    m_indexBuffer =  new IndexBuffer(ba);
+    this->bind();
+    m_indexBuffer = std::make_unique<IndexBuffer>(ba);
+    this->unBind();
 }
 
 void VertexArray::fillIndexBuffer(const std::vector<unsigned int> data)
@@ -260,13 +261,10 @@ void VertexArray::fillIndexBuffer(unsigned int count , const unsigned int* indic
     ASSERT(m_indexBuffer!=nullptr);
     
     this->bind();
-    m_indexBuffer->bind();
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dGL->elementBuffer);
-	// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
     GLCall( glEnableVertexAttribArray(3) );
     m_indexBuffer->fill(count, indices);
-    GLCall( glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE,0,NULL) );
-    m_indexBuffer->unBind();
+//    GLCall( glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE,0,NULL) );
+//    m_indexBuffer->unBind();
     this->unBind();
 }
 

@@ -122,7 +122,7 @@ public:
 
 private:
     unsigned int m_RendererID;
-    IndexBuffer* m_indexBuffer = nullptr;
+    std::unique_ptr<IndexBuffer> m_indexBuffer;
     std::map<const BufferType, std::unique_ptr<Buffer>> m_buffer;
 };
 
