@@ -165,8 +165,8 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		nbGalaxy++;
 
 		xr=200.f*x;
-		yr=200.f*y*cos(90*M_PI/180.0)-z*sin(90*M_PI/180.0);
-		zr=200.f*y*sin(90*M_PI/180.0)+z*cos(90*M_PI/180.0);
+		yr=200.f*(y*cos(90*M_PI/180.0)-z*sin(90*M_PI/180.0));
+		zr=200.f*(y*sin(90*M_PI/180.0)+z*cos(90*M_PI/180.0));
 		// posTully.push_back(200*xr);
 		// posTully.push_back(200*yr);
 		// posTully.push_back(200*zr);
