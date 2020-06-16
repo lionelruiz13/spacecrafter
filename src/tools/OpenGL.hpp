@@ -113,14 +113,12 @@ public:
 
     void registerIndexBuffer(const BufferAccess& ba);
 
+    void fillIndexBuffer(const std::vector<unsigned int> data);
     void fillIndexBuffer(unsigned int count , const unsigned int* indices);
 
     void bind() const;
     void unBind() const;
-
-    IndexBuffer* getIndexBuffer() const {
-        return m_indexBuffer;
-    }
+    unsigned int getIndiceCount() const;
 
 private:
     unsigned int m_RendererID;

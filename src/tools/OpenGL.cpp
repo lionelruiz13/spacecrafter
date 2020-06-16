@@ -250,6 +250,10 @@ void VertexArray::registerIndexBuffer(const BufferAccess& ba)
     m_indexBuffer =  new IndexBuffer(ba);
 }
 
+void VertexArray::fillIndexBuffer(const std::vector<unsigned int> data)
+{
+    this->fillIndexBuffer(data.size(), data.data());
+}
 
 void VertexArray::fillIndexBuffer(unsigned int count , const unsigned int* indices)
 {
@@ -259,4 +263,10 @@ void VertexArray::fillIndexBuffer(unsigned int count , const unsigned int* indic
     m_indexBuffer->fill(count, indices);
     m_indexBuffer->unBind();
     this->unBind();
+}
+
+unsigned int VertexArray::getIndiceCount() const
+{
+    ASSERT(m_indexBuffer!=nullptr);
+    return m_indexBuffer->GetCount();
 }
