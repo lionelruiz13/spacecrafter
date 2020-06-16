@@ -27,12 +27,13 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
+#include <list>
+#include <memory>
 
 #include "tools/fader.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
-#include <vector>
-#include <list>
 
 
 //! Class which manages the Tully Galaxies catalog
@@ -40,6 +41,8 @@
 class Projector;
 class Navigator;
 class s_texture;
+class VertexArray;
+class shaderProgram;
 
 class Tully {
 public:
@@ -88,8 +91,8 @@ private:
 	void createShaderPoints();
 	void createShaderSquare();
 	//supprime les Shaders ShadersSquare et ShadersPoints ainsi que les vao-vbo
-	void deleteShaderSquare();
-	void deleteShaderPoints();
+	// void deleteShaderSquare();
+	// void deleteShaderPoints();
 
 	void computeSquareGalaxies(Vec3f camPosition);
 
@@ -127,8 +130,8 @@ private:
 	// renvoie le nombre des différentes textures dans la texture
 	int nbTextures;
 	// données openGL
-	DataGL sDataPoints;
-	DataGL sDataSquare;
+	std::unique_ptr<VertexArray> m_pointsGL;
+	std::unique_ptr<VertexArray> m_squareGL;
 	// shader responsable de l'affichage du nuage
 	shaderProgram *shaderPoints;
 	shaderProgram *shaderSquare;

@@ -24,7 +24,6 @@
 
 #include "coreModule/tully.hpp"
 #include "tools/utility.hpp"
-#include <string>
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
 #include "navModule/observer.hpp"
@@ -35,6 +34,7 @@
 #include <math.h>
 //#include "tools/fmath.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/OpenGL.hpp"
 
 
 Tully::Tully()
@@ -61,44 +61,46 @@ Tully::~Tully()
 	texTmpTully.clear();
 	radiusTmpTully.clear();
 
-	deleteShaderSquare();
-	deleteShaderPoints();
+	// deleteShaderSquare();
+	// deleteShaderPoints();
 }
 
 void Tully::createShaderPoints()
 {
 	shaderPoints = new shaderProgram();
 	shaderPoints->init("tully.vert","tully.geom","tully.frag");
-	shaderPoints->setUniformLocation("Mat");
-	shaderPoints->setUniformLocation("fader");
-	shaderPoints->setUniformLocation("camPos");
-	shaderPoints->setUniformLocation("nbTextures");
+	shaderPoints->setUniformLocation({"Mat", "fader", "camPos", "nbTextures"});
 
 	shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useCustomColor");
 	shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useWhiteColor");
 	
-	glGenVertexArrays(1,&sDataPoints.vao);
-	glBindVertexArray(sDataPoints.vao);
-	glGenBuffers(1,&sDataPoints.pos);
-	glGenBuffers(1,&sDataPoints.color);
-	glGenBuffers(1,&sDataPoints.tex);
-	glGenBuffers(1,&sDataPoints.scale);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
+	m_pointsGL = std::make_unique<VertexArray>();
+	m_pointsGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	m_pointsGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	m_pointsGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
+	m_pointsGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
+	// glGenVertexArrays(1,&m_pointsGL.vao);
+	// glBindVertexArray(m_pointsGL.vao);
+	// glGenBuffers(1,&m_pointsGL.pos);
+	// glGenBuffers(1,&m_pointsGL.color);
+	// glGenBuffers(1,&m_pointsGL.tex);
+	// glGenBuffers(1,&m_pointsGL.scale);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
+	// glEnableVertexAttribArray(3);
 }
 
-void Tully::deleteShaderPoints()
-{
-	if(shaderPoints) shaderPoints=nullptr;
+// void Tully::deleteShaderPoints()
+// {
+// 	if(shaderPoints) shaderPoints=nullptr;
 
-	glDeleteBuffers(1,&sDataPoints.scale);
-	glDeleteBuffers(1,&sDataPoints.tex);
-	glDeleteBuffers(1,&sDataPoints.color);
-	glDeleteBuffers(1,&sDataPoints.pos);
-	glDeleteVertexArrays(1,&sDataPoints.vao);
-}
+// 	glDeleteBuffers(1,&m_pointsGL.scale);
+// 	glDeleteBuffers(1,&m_pointsGL.tex);
+// 	glDeleteBuffers(1,&m_pointsGL.color);
+// 	glDeleteBuffers(1,&m_pointsGL.pos);
+// 	glDeleteVertexArrays(1,&m_pointsGL.vao);
+// }
 
 void Tully::createShaderSquare()
 {
@@ -108,25 +110,30 @@ void Tully::createShaderSquare()
 	shaderSquare->setUniformLocation("fader");
 	shaderSquare->setUniformLocation("nbTextures");
 
-	glGenVertexArrays(1,&sDataSquare.vao);
-	glBindVertexArray(sDataSquare.vao);
-	glGenBuffers(1,&sDataSquare.pos);
-	glGenBuffers(1,&sDataSquare.scale);
-	glGenBuffers(1,&sDataSquare.tex);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	m_squareGL =  std::make_unique<VertexArray>();
+	m_squareGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	m_squareGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
+	m_squareGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::DYNAMIC);
+
+	// glGenVertexArrays(1,&m_squareGL.vao);
+	// glBindVertexArray(m_squareGL.vao);
+	// glGenBuffers(1,&m_squareGL.pos);
+	// glGenBuffers(1,&m_squareGL.scale);
+	// glGenBuffers(1,&m_squareGL.tex);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
 }
 
-void Tully::deleteShaderSquare()
-{
-	if(shaderSquare) shaderSquare=nullptr;
+// void Tully::deleteShaderSquare()
+// {
+// 	if(shaderSquare) shaderSquare=nullptr;
 
-	glDeleteBuffers(1,&sDataSquare.tex);
-	glDeleteBuffers(1,&sDataSquare.scale);
-	glDeleteBuffers(1,&sDataSquare.pos);
-	glDeleteVertexArrays(1,&sDataSquare.vao);
-}
+// 	glDeleteBuffers(1,&m_squareGL.tex);
+// 	glDeleteBuffers(1,&m_squareGL.scale);
+// 	glDeleteBuffers(1,&m_squareGL.pos);
+// 	glDeleteVertexArrays(1,&m_squareGL.vao);
+// }
 
 bool Tully::loadCatalog(const std::string &cat) noexcept
 {
@@ -184,23 +191,28 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 
 	file.close();
 
-	glBindVertexArray(sDataPoints.vao);
+	// glBindVertexArray(m_pointsGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sDataPoints.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTully.size(),posTully.data(),GL_STATIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTully.size(),posTully.data(),GL_STATIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sDataPoints.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*colorTully.size(),colorTully.data(),GL_STATIC_DRAW);
-	glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*colorTully.size(),colorTully.data(),GL_STATIC_DRAW);
+	// glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sDataPoints.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTully.size(),texTully.data(),GL_STATIC_DRAW);
-	glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTully.size(),texTully.data(),GL_STATIC_DRAW);
+	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sDataPoints.scale);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*scaleTully.size(),scaleTully.data(),GL_STATIC_DRAW);
-	glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.scale);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*scaleTully.size(),scaleTully.data(),GL_STATIC_DRAW);
+	// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_pointsGL->fillVertexBuffer(BufferType::POS3D,posTully );
+	m_pointsGL->fillVertexBuffer(BufferType::COLOR,colorTully );
+	m_pointsGL->fillVertexBuffer(BufferType::TEXTURE,texTully );
+	m_pointsGL->fillVertexBuffer(BufferType::SCALE,scaleTully );
 
 	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + Utility::intToString(nbGalaxy) );
 
@@ -276,6 +288,22 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	}
 	
 	lTmpTully.clear();	//données devenues inutiles
+
+	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTmpTully.size(),posTmpTully.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.scale);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*radiusTmpTully.size(),radiusTmpTully.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+
+	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTmpTully.size(),texTmpTully.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_squareGL->fillVertexBuffer(BufferType::POS3D,posTmpTully );
+	m_squareGL->fillVertexBuffer(BufferType::TEXTURE,texTmpTully );
+	m_squareGL->fillVertexBuffer(BufferType::SCALE,radiusTmpTully );
 }
 
 
@@ -283,11 +311,6 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 {
 	if (!fader.getInterstate()) return;
 	if (!isAlive) return;
-
-	StateGL::disable(GL_DEPTH_TEST);
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
 
 	Mat4f matrix= nav->getHelioToEyeMat().convert();
 	camPos = nav->getObserverHelioPos();
@@ -298,6 +321,10 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	glBindTexture(GL_TEXTURE_2D, texGalaxy->getID());
 
 	//tracé des galaxies de taille <1 px
+	StateGL::disable(GL_DEPTH_TEST);
+	StateGL::enable(GL_BLEND);
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+
 	shaderPoints->use();
 	shaderPoints->setUniform("Mat",matrix);
 	shaderPoints->setUniform("fader", fader.getInterstate());
@@ -309,11 +336,13 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	else
 		shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
 
-	glBindVertexArray(sDataPoints.vao);
+	// glBindVertexArray(m_pointsGL.vao);
+	m_pointsGL->bind();
 	glDrawArrays(GL_POINTS, 0, nbGalaxy);
+	m_pointsGL->unBind();
 	shaderPoints->unuse();
 
-	//~ //tracé des galaxies de taille >1 px;
+	//tracé des galaxies de taille >1 px;
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 	glBlendEquation(GL_MAX);
@@ -323,21 +352,23 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderSquare->setUniform("fader", fader.getInterstate());
 	shaderSquare->setUniform("nbTextures", nbTextures);
 
-	glBindVertexArray(sDataSquare.vao);
+	// glBindVertexArray(m_squareGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sDataSquare.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTmpTully.size(),posTmpTully.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTmpTully.size(),posTmpTully.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sDataSquare.scale);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*radiusTmpTully.size(),radiusTmpTully.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.scale);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*radiusTmpTully.size(),radiusTmpTully.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,sDataSquare.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTmpTully.size(),texTmpTully.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTmpTully.size(),texTmpTully.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
 
+	m_squareGL->bind();
 	glDrawArrays(GL_POINTS, 0, radiusTmpTully.size());
+	m_squareGL->unBind();
 	shaderSquare->unuse();
 
 	glBlendEquation(GL_FUNC_ADD);

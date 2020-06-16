@@ -5,8 +5,8 @@
 #pragma optimize(off)
 
 layout (location = 0) in vec3 inPosition;
-layout (location = 1) in float inRadius;
-layout (location = 2) in float inTexture;
+layout (location = 5) in float inRadius;
+layout (location = 1) in float inTexture;
 
 uniform mat4 Mat;
 
