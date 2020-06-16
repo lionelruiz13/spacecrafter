@@ -19,10 +19,10 @@
 #include <vector>
 #include <mutex>
 #include <GL/glew.h>
+#include <memory>
 
 #include "tools/vecmath.hpp"
 #include "coreModule/starManager.hpp"
-#include "tools/shader.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/ThreadPool.hpp"
 #include "tools/no_copy.hpp"
@@ -37,6 +37,8 @@
 class Projector;
 class Navigator;
 class ToneReproductor;
+class VertexArray;
+class shaderProgram;
 
 class StarNavigator: public NoCopy  {
 public:
@@ -106,7 +108,7 @@ public:
 private:
 	//tampons pour l'affichage des shaders
 	std::vector<float> starPos;
-	std::vector<float> starColorIntensity;
+	std::vector<float> starColor;
 	std::vector<float> starRadius;
 
 	bool starsFader = true;
@@ -119,13 +121,13 @@ private:
 	//le gestionnaire de l'ensemble des étoiles
 	StarManager *starMgr;
 	// shader utilisé pour affichage
-	shaderProgram *shaderStarNav;
+	std::unique_ptr<shaderProgram> shaderStarNav;
 	// structure de gestion des VAO-VBO
-	DataGL starNav;
+	std::unique_ptr<VertexArray>  m_dataGL;
 	//initialisation du shader et des VAO-VBO
-	void createShader();
+	void createGL_context();
 	//supression du shader et des VAO-VBO
-	void deleteShader();
+	// void deleteShader();
 
 	//précalcul de la table des couleurs
 	void computeRCMagTable();

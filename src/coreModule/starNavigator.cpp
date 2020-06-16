@@ -18,20 +18,18 @@
 #include <fstream>
 #include <cmath>
 #include <thread>
+#include <unistd.h>
 
 #include "coreModule/starNavigator.hpp"
 #include "coreModule/starManager.hpp"
-#include <unistd.h>
 #include "tools/utility.hpp"
-
 #include "tools/stateGL.hpp"
-
 #include "tools/ThreadPool.hpp"
-
 #include "tools/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-
+#include "tools/shader.hpp"
+#include "tools/OpenGL.hpp"
 
 static float magnitude_max = 6.5;
 
@@ -56,10 +54,7 @@ StarNavigator::StarNavigator()
 	starMgr = nullptr;
 	starMgr = new StarManager();
 
-	shaderStarNav = nullptr;
-	shaderStarNav = new shaderProgram();
-	shaderStarNav -> init("starNav.vert","starNav.geom","starNav.frag");
-	createShader();
+	createGL_context();
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
 	old_pos = v3fNull;
 	
@@ -68,39 +63,45 @@ StarNavigator::StarNavigator()
 	computeRCMagTable();
 }
 
-void StarNavigator::createShader()
+void StarNavigator::createGL_context()
 {
+	shaderStarNav = std::make_unique<shaderProgram>();
+	shaderStarNav -> init("starNav.vert","starNav.geom","starNav.frag");
 	shaderStarNav->setUniformLocation("Mat");
 
-	glGenBuffers(1,&starNav.pos);
-	glGenBuffers(1,&starNav.color);
-	glGenBuffers(1,&starNav.mag);
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	m_dataGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
+	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
+	// glGenBuffers(1,&m_dataGL.pos);
+	// glGenBuffers(1,&m_dataGL.color);
+	// glGenBuffers(1,&m_dataGL.mag);
 
-	glGenVertexArrays(1,&starNav.vao);
-	glBindVertexArray(starNav.vao);
+	// glGenVertexArrays(1,&m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
-	glBindBuffer (GL_ARRAY_BUFFER, starNav.pos);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	glBindBuffer (GL_ARRAY_BUFFER, starNav.color);
-	glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
-	glBindBuffer (GL_ARRAY_BUFFER, starNav.mag);
-	glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_dataGL.color);
+	// glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_dataGL.mag);
+	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
 }
 
-void StarNavigator::deleteShader()
-{
-	if(shaderStarNav) shaderStarNav=nullptr;
+// void StarNavigator::deleteShader()
+// {
+// 	if(shaderStarNav) shaderStarNav=nullptr;
 
 
-	glDeleteBuffers(1,&starNav.mag);
-	glDeleteBuffers(1,&starNav.color);
-	glDeleteBuffers(1,&starNav.pos);
-	glDeleteVertexArrays(1,&starNav.vao);
-}
+// 	glDeleteBuffers(1,&m_dataGL.mag);
+// 	glDeleteBuffers(1,&m_dataGL.color);
+// 	glDeleteBuffers(1,&m_dataGL.pos);
+// 	glDeleteVertexArrays(1,&m_dataGL.vao);
+// }
 
 void StarNavigator::loadRawData(const std::string &fileName) noexcept
 {
@@ -129,19 +130,20 @@ void StarNavigator::saveData(const std::string &fileName, bool binaryData) noexc
 {
 	std::cout << "Not implémented yet" << std::endl;
 }
+
 StarNavigator::~StarNavigator()
 {
 	delete pool;
 	if (starMgr != nullptr)
 		delete starMgr;
 
-	deleteShader();
+	// deleteShader();
 }
 
 void StarNavigator::clearBuffer()
 {
 	starPos.clear();
-	starColorIntensity.clear();
+	starColor.clear();
 	starRadius.clear();
 }
 
@@ -174,7 +176,6 @@ void StarNavigator::setListGlobalStarVisible()
 	}
 	maxStars = listGlobalStarVisible.size();
 }
-
 
 
 
@@ -399,6 +400,23 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 	for(auto && result: results)
 		result.get();
 	results.clear();
+
+	// glBindVertexArray(m_dataGL.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starPos.size(),starPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starColorIntensity.size(),starColorIntensity.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.mag);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starRadius.size(),starRadius.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_dataGL->fillVertexBuffer(BufferType::POS3D, starPos);
+	m_dataGL->fillVertexBuffer(BufferType::COLOR, starColor);
+	m_dataGL->fillVertexBuffer(BufferType::MAG, starRadius);
 }
 
 bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
@@ -454,13 +472,15 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 			//no simult acces to data
 			accesTab.lock();
 
-			starPos.push_back(x);
-			starPos.push_back(y);
-			starPos.push_back(z);
+			// starPos.push_back(x);
+			// starPos.push_back(y);
+			// starPos.push_back(z);
+			insert_all(starPos, x, y, z);
 
-			starColorIntensity.push_back( tcolor[0] );
-			starColorIntensity.push_back( tcolor[1] );
-			starColorIntensity.push_back( tcolor[2] );
+			// starColor.push_back( tcolor[0] );
+			// starColor.push_back( tcolor[1] );
+			// starColor.push_back( tcolor[2] );
+			insert_vec3(starColor, tcolor);
 
 			starRadius.push_back(magC/2);
 
@@ -488,24 +508,26 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 
 	Mat4f matrix=nav->getHelioToEyeMat().convert();
 	matrix=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+	
 	shaderStarNav->use();
-
 	shaderStarNav->setUniform("Mat",matrix);
 
-	glBindVertexArray(starNav.vao);
-	glBindBuffer(GL_ARRAY_BUFFER,starNav.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starPos.size(),starPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindVertexArray(m_dataGL.vao);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starPos.size(),starPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,starNav.color);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starColorIntensity.size(),starColorIntensity.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.color);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starColorIntensity.size(),starColorIntensity.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,starNav.mag);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starRadius.size(),starRadius.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.mag);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*starRadius.size(),starRadius.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
 
+	m_dataGL->bind();
 	glDrawArrays(GL_POINTS,0,starPos.size()/3);
-	glBindVertexArray(0);
+	m_dataGL->unBind();
+	//glBindVertexArray(0);
 	shaderStarNav->unuse();
 }
