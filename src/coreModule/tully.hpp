@@ -32,8 +32,9 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
+// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/vecmath.hpp"
 
 
 //! Class which manages the Tully Galaxies catalog
@@ -88,8 +89,8 @@ public:
 
 private:
 	// initialise les shaders ShaderPoints et ShaderSquare ainsi que les vao-vbo
-	void createShaderPoints();
-	void createShaderSquare();
+	void createGL_context();
+	// void createShaderSquare();
 	//supprime les Shaders ShadersSquare et ShadersPoints ainsi que les vao-vbo
 	// void deleteShaderSquare();
 	// void deleteShaderPoints();
@@ -133,8 +134,8 @@ private:
 	std::unique_ptr<VertexArray> m_pointsGL;
 	std::unique_ptr<VertexArray> m_squareGL;
 	// shader responsable de l'affichage du nuage
-	shaderProgram *shaderPoints;
-	shaderProgram *shaderSquare;
+	std::unique_ptr<shaderProgram> shaderPoints;
+	std::unique_ptr<shaderProgram> shaderSquare;
 };
 
 #endif // ___TULLY_HPP___

@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2017 of the LSS Team & Association Sirius
+ * Copyright (C) 2017-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,14 +35,15 @@
 //#include "tools/fmath.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
 Tully::Tully()
 {
 	texGalaxy = nullptr;
 	fader = true;
-	createShaderPoints();
-	createShaderSquare();
+	createGL_context();
+	// createShaderSquare();
 	nbGalaxy=0;
 	nbTextures = 0;
 }
@@ -65,9 +66,9 @@ Tully::~Tully()
 	// deleteShaderPoints();
 }
 
-void Tully::createShaderPoints()
+void Tully::createGL_context()
 {
-	shaderPoints = new shaderProgram();
+	shaderPoints = std::make_unique<shaderProgram>();
 	shaderPoints->init("tully.vert","tully.geom","tully.frag");
 	shaderPoints->setUniformLocation({"Mat", "fader", "camPos", "nbTextures"});
 
@@ -89,7 +90,7 @@ void Tully::createShaderPoints()
 	// glEnableVertexAttribArray(1);
 	// glEnableVertexAttribArray(2);
 	// glEnableVertexAttribArray(3);
-}
+// }
 
 // void Tully::deleteShaderPoints()
 // {
@@ -102,13 +103,11 @@ void Tully::createShaderPoints()
 // 	glDeleteVertexArrays(1,&m_pointsGL.vao);
 // }
 
-void Tully::createShaderSquare()
-{
-	shaderSquare = new shaderProgram();
+// void Tully::createShaderSquare()
+// {
+	shaderSquare = std::make_unique<shaderProgram>();
 	shaderSquare->init("tullyH.vert","tullyH.geom","tullyH.frag");
-	shaderSquare->setUniformLocation("Mat");
-	shaderSquare->setUniformLocation("fader");
-	shaderSquare->setUniformLocation("nbTextures");
+	shaderSquare->setUniformLocation({"Mat", "fader", "nbTextures"});
 
 	m_squareGL =  std::make_unique<VertexArray>();
 	m_squareGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
@@ -165,16 +164,18 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		aGalaxie >> index >> r >> g >> b >> x >> y >> z >> typeGalaxy;
 		nbGalaxy++;
 
-		xr=x;
-		yr=y*cos(90*M_PI/180.0)-z*sin(90*M_PI/180.0);
-		zr=y*sin(90*M_PI/180.0)+z*cos(90*M_PI/180.0);
-		posTully.push_back(200*xr);
-		posTully.push_back(200*yr);
-		posTully.push_back(200*zr);
+		xr=200.f*x;
+		yr=200.f*y*cos(90*M_PI/180.0)-z*sin(90*M_PI/180.0);
+		zr=200.f*y*sin(90*M_PI/180.0)+z*cos(90*M_PI/180.0);
+		// posTully.push_back(200*xr);
+		// posTully.push_back(200*yr);
+		// posTully.push_back(200*zr);
+		insert_all(posTully, xr, yr, zr);
 
-		colorTully.push_back(r);
-		colorTully.push_back(g);
-		colorTully.push_back(b);
+		// colorTully.push_back(r);
+		// colorTully.push_back(g);
+		// colorTully.push_back(b);
+		insert_all(colorTully, r, g, b);
 
 		texTully.push_back(typeGalaxy);
 
@@ -280,9 +281,10 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	texTmpTully.clear();
 
 	for (std::list<tmpTully>::iterator it=lTmpTully.begin(); it!=lTmpTully.end(); ++it) {
-		posTmpTully.push_back((*it).position[0]);
-		posTmpTully.push_back((*it).position[1]);
-		posTmpTully.push_back((*it).position[2]);
+		// posTmpTully.push_back((*it).position[0]);
+		// posTmpTully.push_back((*it).position[1]);
+		// posTmpTully.push_back((*it).position[2]);
+		insert_vec3(posTmpTully, (*it).position);
 		radiusTmpTully.push_back((*it).radius);
 		texTmpTully.push_back((*it).texture);
 	}
