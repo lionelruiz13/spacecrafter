@@ -9,7 +9,7 @@
 *
 * This source code mustn't be copied or redistributed
 * without the authorization of Immersive Adventure
-* (c) 2017 - all rights reserved
+* (c) 2017 - 2020 all rights reserved
 *
 */
 
@@ -126,8 +126,6 @@ private:
 	std::unique_ptr<VertexArray>  m_dataGL;
 	//initialisation du shader et des VAO-VBO
 	void createGL_context();
-	//supression du shader et des VAO-VBO
-	// void deleteShader();
 
 	//précalcul de la table des couleurs
 	void computeRCMagTable();

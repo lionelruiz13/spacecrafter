@@ -22,6 +22,9 @@
  *
  */
 
+#include <iomanip>
+#include <math.h>
+
 #include "coreModule/tully.hpp"
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
@@ -30,9 +33,6 @@
 #include "coreModule/projector.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include <iomanip>
-#include <math.h>
-//#include "tools/fmath.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
@@ -43,7 +43,6 @@ Tully::Tully()
 	texGalaxy = nullptr;
 	fader = true;
 	createGL_context();
-	// createShaderSquare();
 	nbGalaxy=0;
 	nbTextures = 0;
 }
@@ -61,9 +60,6 @@ Tully::~Tully()
 	posTmpTully.clear();
 	texTmpTully.clear();
 	radiusTmpTully.clear();
-
-	// deleteShaderSquare();
-	// deleteShaderPoints();
 }
 
 void Tully::createGL_context()
@@ -80,31 +76,7 @@ void Tully::createGL_context()
 	m_pointsGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
-	// glGenVertexArrays(1,&m_pointsGL.vao);
-	// glBindVertexArray(m_pointsGL.vao);
-	// glGenBuffers(1,&m_pointsGL.pos);
-	// glGenBuffers(1,&m_pointsGL.color);
-	// glGenBuffers(1,&m_pointsGL.tex);
-	// glGenBuffers(1,&m_pointsGL.scale);
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
-	// glEnableVertexAttribArray(2);
-	// glEnableVertexAttribArray(3);
-// }
 
-// void Tully::deleteShaderPoints()
-// {
-// 	if(shaderPoints) shaderPoints=nullptr;
-
-// 	glDeleteBuffers(1,&m_pointsGL.scale);
-// 	glDeleteBuffers(1,&m_pointsGL.tex);
-// 	glDeleteBuffers(1,&m_pointsGL.color);
-// 	glDeleteBuffers(1,&m_pointsGL.pos);
-// 	glDeleteVertexArrays(1,&m_pointsGL.vao);
-// }
-
-// void Tully::createShaderSquare()
-// {
 	shaderSquare = std::make_unique<shaderProgram>();
 	shaderSquare->init("tullyH.vert","tullyH.geom","tullyH.frag");
 	shaderSquare->setUniformLocation({"Mat", "fader", "nbTextures"});
@@ -113,26 +85,8 @@ void Tully::createGL_context()
 	m_squareGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 	m_squareGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
 	m_squareGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::DYNAMIC);
-
-	// glGenVertexArrays(1,&m_squareGL.vao);
-	// glBindVertexArray(m_squareGL.vao);
-	// glGenBuffers(1,&m_squareGL.pos);
-	// glGenBuffers(1,&m_squareGL.scale);
-	// glGenBuffers(1,&m_squareGL.tex);
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
-	// glEnableVertexAttribArray(2);
 }
 
-// void Tully::deleteShaderSquare()
-// {
-// 	if(shaderSquare) shaderSquare=nullptr;
-
-// 	glDeleteBuffers(1,&m_squareGL.tex);
-// 	glDeleteBuffers(1,&m_squareGL.scale);
-// 	glDeleteBuffers(1,&m_squareGL.pos);
-// 	glDeleteVertexArrays(1,&m_squareGL.vao);
-// }
 
 bool Tully::loadCatalog(const std::string &cat) noexcept
 {
@@ -167,14 +121,8 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		xr=200.f*x;
 		yr=200.f*(y*cos(90*M_PI/180.0)-z*sin(90*M_PI/180.0));
 		zr=200.f*(y*sin(90*M_PI/180.0)+z*cos(90*M_PI/180.0));
-		// posTully.push_back(200*xr);
-		// posTully.push_back(200*yr);
-		// posTully.push_back(200*zr);
-		insert_all(posTully, xr, yr, zr);
 
-		// colorTully.push_back(r);
-		// colorTully.push_back(g);
-		// colorTully.push_back(b);
+		insert_all(posTully, xr, yr, zr);
 		insert_all(colorTully, r, g, b);
 
 		texTully.push_back(typeGalaxy);
@@ -191,24 +139,6 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	}
 
 	file.close();
-
-	// glBindVertexArray(m_pointsGL.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTully.size(),posTully.data(),GL_STATIC_DRAW);
-	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.color);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*colorTully.size(),colorTully.data(),GL_STATIC_DRAW);
-	// glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTully.size(),texTully.data(),GL_STATIC_DRAW);
-	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_pointsGL.scale);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*scaleTully.size(),scaleTully.data(),GL_STATIC_DRAW);
-	// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
 
 	m_pointsGL->fillVertexBuffer(BufferType::POS3D,posTully );
 	m_pointsGL->fillVertexBuffer(BufferType::COLOR,colorTully );
@@ -228,7 +158,7 @@ void Tully::setTexture(const std::string& tex_file)
 		delete texGalaxy;
 		texGalaxy = nullptr;
 	}
-	texGalaxy =  new s_texture(/*1,*/tex_file,true);
+	texGalaxy =  new s_texture(tex_file,true);
 
 	int width, height;
 	texGalaxy->getDimensions(width, height);
@@ -265,7 +195,6 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 			continue;
 
 		/* OPTIMISATION : radius < 2 signifie que d²< (3/2scale)² */
-
 		tmpTully tmp;
 		tmp.position = Vec3f(x,y,z);
 		tmp.distance = distance;
@@ -281,27 +210,12 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	texTmpTully.clear();
 
 	for (std::list<tmpTully>::iterator it=lTmpTully.begin(); it!=lTmpTully.end(); ++it) {
-		// posTmpTully.push_back((*it).position[0]);
-		// posTmpTully.push_back((*it).position[1]);
-		// posTmpTully.push_back((*it).position[2]);
 		insert_vec3(posTmpTully, (*it).position);
 		radiusTmpTully.push_back((*it).radius);
 		texTmpTully.push_back((*it).texture);
 	}
 	
 	lTmpTully.clear();	//données devenues inutiles
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTmpTully.size(),posTmpTully.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.scale);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*radiusTmpTully.size(),radiusTmpTully.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTmpTully.size(),texTmpTully.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
 
 	m_squareGL->fillVertexBuffer(BufferType::POS3D,posTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::TEXTURE,texTmpTully );
@@ -338,7 +252,6 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	else
 		shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
 
-	// glBindVertexArray(m_pointsGL.vao);
 	m_pointsGL->bind();
 	glDrawArrays(GL_POINTS, 0, nbGalaxy);
 	m_pointsGL->unBind();
@@ -353,20 +266,6 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderSquare->setUniform("Mat",matrix);
 	shaderSquare->setUniform("fader", fader.getInterstate());
 	shaderSquare->setUniform("nbTextures", nbTextures);
-
-	// glBindVertexArray(m_squareGL.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posTmpTully.size(),posTmpTully.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.scale);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*radiusTmpTully.size(),radiusTmpTully.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_squareGL.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texTmpTully.size(),texTmpTully.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
 
 	m_squareGL->bind();
 	glDrawArrays(GL_POINTS, 0, radiusTmpTully.size());

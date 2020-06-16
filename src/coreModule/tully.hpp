@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2017 of the LSS Team & Association Sirius
+ * Copyright (C) 2017-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,7 +32,6 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
 
@@ -90,15 +89,10 @@ public:
 private:
 	// initialise les shaders ShaderPoints et ShaderSquare ainsi que les vao-vbo
 	void createGL_context();
-	// void createShaderSquare();
-	//supprime les Shaders ShadersSquare et ShadersPoints ainsi que les vao-vbo
-	// void deleteShaderSquare();
-	// void deleteShaderPoints();
 
 	void computeSquareGalaxies(Vec3f camPosition);
 
 	s_texture* texGalaxy;
-
 	LinearFader fader;
 
 	//position camera
