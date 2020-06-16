@@ -161,7 +161,7 @@ protected:
 	unsigned int nbFogVertex;			//nombre de vertex pour le fog
 	static int slices;
 	static int stacks;
-	shaderProgram* shaderLandscape, *shaderFog;
+	std::unique_ptr<shaderProgram> shaderLandscape, shaderFog;
 	std::unique_ptr<VertexArray> m_landscapeGL, m_fogGL;
 	
 private:

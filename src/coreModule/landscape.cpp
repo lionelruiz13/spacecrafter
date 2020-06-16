@@ -50,7 +50,7 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	cLog::get()->write( "Landscape generic created" , LOG_TYPE::L_INFO);
 	haveNightTex = false;
 
-	shaderFog = new shaderProgram();
+	shaderFog = std::make_unique<shaderProgram>();
 	shaderFog-> init( "fog.vert","fog.frag");
 
 	m_fogGL = std::make_unique<VertexArray>();
@@ -315,7 +315,7 @@ LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius), rotate_z
 {
 	if (fog_tex) delete fog_tex;
 	shaderLandscape =  nullptr;
-	shaderLandscape= new shaderProgram();
+	shaderLandscape = std::make_unique<shaderProgram>();
 	shaderLandscape->init( "landscape2T.vert", "landscape2T.geom","landscape2T.frag");
 	initShaderParams();
 }
@@ -325,11 +325,11 @@ LandscapeFisheye::~LandscapeFisheye()
 {
 	deleteMapTex();
 	// deleteVboVoa();
-	if (shaderLandscape) delete shaderLandscape;
-	if (shaderFog) {
-		delete shaderFog;
-		shaderFog= nullptr;
-	}
+	// if (shaderLandscape) delete shaderLandscape;
+	// if (shaderFog) {
+	// 	delete shaderFog;
+	// 	shaderFog= nullptr;
+	// }
 }
 
 void LandscapeFisheye::load(const std::string& landscape_file, const std::string& section_name)
@@ -577,7 +577,7 @@ LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  bas
 {
 	if (fog_tex) delete fog_tex;
 	shaderLandscape =  nullptr;
-	shaderLandscape= new shaderProgram();
+	shaderLandscape= std::make_unique<shaderProgram>();
 	shaderLandscape->init( "landscape2T.vert", "landscape2T.geom","landscape2T.frag");
 	initShaderParams();
 }
@@ -586,11 +586,11 @@ LandscapeSpherical::~LandscapeSpherical()
 {
 	deleteMapTex();
 	// deleteVboVoa();
-	if (shaderLandscape) delete shaderLandscape;
-	if (shaderFog) {
-		delete shaderFog;
-		shaderFog= nullptr;
-	}
+	// if (shaderLandscape) delete shaderLandscape;
+	// if (shaderFog) {
+	// 	delete shaderFog;
+	// 	shaderFog= nullptr;
+	// }
 }
 
 void LandscapeSpherical::load(const std::string& landscape_file, const std::string& section_name)
