@@ -6,13 +6,16 @@
 #include "tools/shader.hpp"
 #include <vector>
 #include <string>
+#include <memory>
+
+class VertexArray;
 
 struct Shape {
     std::string name;
 
-	std::vector<Vec3f> vertices;
-	std::vector<Vec2f> uvs;
-	std::vector<Vec3f> normals;
+	std::vector<float> vertices;
+	std::vector<float> uvs;
+	std::vector<float> normals;
 	std::vector<unsigned int> indices;
 
 	Vec3f Ka;
@@ -25,7 +28,7 @@ struct Shape {
 	s_texture *map_Kd=nullptr;
 	s_texture *map_Ks=nullptr;
 
-	DataGL dGL;
+	std::unique_ptr<VertexArray> dGL;
 };
 
 class Ojm {

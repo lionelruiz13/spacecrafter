@@ -1,10 +1,11 @@
-#include "ojmModule/ojml.hpp"
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <cmath>
 
-
+#include "ojmModule/ojml.hpp"
+#include "tools/OpenGL.hpp"
 
 // *****************************************************************************
 // 
@@ -25,11 +26,11 @@ OjmL::~OjmL()
 	normals.clear();
 	indices.clear();
 
-	glDeleteBuffers(1,&dGL.pos);
-	glDeleteBuffers(1,&dGL.tex);
-	glDeleteBuffers(1,&dGL.norm);
-	glDeleteBuffers(1,&dGL.elementBuffer);
-    glDeleteVertexArrays(1,&dGL.vao);
+	// glDeleteBuffers(1,&dGL->pos);
+	// glDeleteBuffers(1,&dGL->tex);
+	// glDeleteBuffers(1,&dGL->norm);
+	// glDeleteBuffers(1,&dGL->elementBuffer);
+    // glDeleteVertexArrays(1,&dGL->vao);
 }
 
 bool OjmL::init(const std::string & _fileName)
@@ -44,44 +45,55 @@ bool OjmL::init(const std::string & _fileName)
 void OjmL::draw(GLenum mode)
 {
 	if (is_ok) {
-		glBindVertexArray(dGL.vao);
-		glDrawElements(mode, indices.size(), GL_UNSIGNED_INT, (void*)0 );
+		// glBindVertexArray(dGL->vao);
+        dGL->bind();
+		GLCall( glDrawElements(mode, dGL->getIndiceCount(), GL_UNSIGNED_INT, (void*)0 ) );
+        dGL->unBind();
 	}
 }
 
 void OjmL::initGLparam()
 {
-	glGenVertexArrays(1,&dGL.vao);
-	glBindVertexArray(dGL.vao);
+    dGL = std::make_unique<VertexArray>();
+    dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+    dGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+    dGL->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
+    dGL->registerIndexBuffer(BufferAccess::STATIC);
+	// glGenVertexArrays(1,&dGL->vao);
+	// glBindVertexArray(dGL->vao);
 
-	glGenBuffers(1,&dGL.pos);
-	glGenBuffers(1,&dGL.tex);
-	glGenBuffers(1,&dGL.norm);
-	glGenBuffers(1,&dGL.elementBuffer);
+	// glGenBuffers(1,&dGL->pos);
+	// glGenBuffers(1,&dGL->tex);
+	// glGenBuffers(1,&dGL->norm);
+	// glGenBuffers(1,&dGL->elementBuffer);
 
-	glBindBuffer(GL_ARRAY_BUFFER,dGL.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*vertices.size(), vertices.data(),GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER,dGL.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2*uvs.size(), uvs.data(),GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER,dGL.norm);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*normals.size(), normals.data(),GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,dGL.elementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(unsigned int)*indices.size(), indices.data(),GL_STATIC_DRAW);
+    dGL->fillVertexBuffer(BufferType::POS3D,vertices);
+    dGL->fillVertexBuffer(BufferType::TEXTURE,uvs);
+    dGL->fillVertexBuffer(BufferType::NORMAL,normals);
+    dGL->fillIndexBuffer(indices);
+	// glBindBuffer(GL_ARRAY_BUFFER,dGL->pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*vertices.size(), vertices.data(),GL_STATIC_DRAW);
+	// glBindBuffer(GL_ARRAY_BUFFER,dGL->tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2*uvs.size(), uvs.data(),GL_STATIC_DRAW);
+	// glBindBuffer(GL_ARRAY_BUFFER,dGL->norm);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*normals.size(), normals.data(),GL_STATIC_DRAW);
+	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,dGL->elementBuffer);
+	// glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(unsigned int)*indices.size(), indices.data(),GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, dGL.pos);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, dGL.tex);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, dGL.norm);
-	glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER, dGL->pos);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER, dGL->tex);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER, dGL->norm);
+	// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dGL.elementBuffer);
-	glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dGL->elementBuffer);
+	// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(2);
+	// glEnableVertexAttribArray(3);
 }
 
 bool OjmL::readOJML(const std::string & _fileName)
@@ -105,7 +117,7 @@ bool OjmL::readOJML(const std::string & _fileName)
                         ss>>vertex.v[0];
                         ss>>vertex.v[1];
                         ss>>vertex.v[2];
-                        vertices.push_back(vertex);
+                        insert_vec3(vertices, vertex);
                     }
                 break;
                 case 'u':
@@ -114,7 +126,7 @@ bool OjmL::readOJML(const std::string & _fileName)
                         std::stringstream ss(std::string(line+2));
                         ss>>uv.v[0];
                         ss>>uv.v[1];
-                        uvs.push_back(uv);
+                        insert_vec2(uvs, uv);
                     }
                 break;
 
@@ -125,7 +137,7 @@ bool OjmL::readOJML(const std::string & _fileName)
                         ss>>normal.v[0];
                         ss>>normal.v[1];
                         ss>>normal.v[2];
-                        normals.push_back(normal);
+                        insert_vec3(normals, normal);
                     }
                 break;
 

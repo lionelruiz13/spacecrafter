@@ -1,9 +1,11 @@
-#include "ojmModule/ojm.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <cmath>
 
+#include "ojmModule/ojm.hpp"
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 // *****************************************************************************
 // 
@@ -22,11 +24,11 @@ Ojm::Ojm( const std::string & _fileName, const std::string & _pathFile, float mu
 Ojm::~Ojm()
 {
     for(unsigned int i=0;i<shapes.size();i++){
-		glDeleteBuffers(1,&shapes[i].dGL.pos);
-		glDeleteBuffers(1,&shapes[i].dGL.tex);
-		glDeleteBuffers(1,&shapes[i].dGL.norm);
-		glDeleteBuffers(1,&shapes[i].dGL.elementBuffer);
-		glDeleteVertexArrays(1,&shapes[i].dGL.vao);
+		// glDeleteBuffers(1,&shapes[i].dGL.pos);
+		// glDeleteBuffers(1,&shapes[i].dGL.tex);
+		// glDeleteBuffers(1,&shapes[i].dGL.norm);
+		// glDeleteBuffers(1,&shapes[i].dGL.elementBuffer);
+		// glDeleteVertexArrays(1,&shapes[i].dGL.vao);
 
     	if (shapes[i].map_Ka!=nullptr) {
             delete shapes[i].map_Ka;
@@ -69,7 +71,7 @@ bool Ojm::testIndices()
 		if (shapes[i].uvs.size()==0) {
 			Vec2f data{0.0,0.0};
 			for(unsigned int k=0; k< shapes[i].vertices.size(); k++)
-				shapes[i].uvs.push_back(data);
+				insert_vec2(shapes[i].uvs, data);
 		}
 		if (shapes[i].vertices.size() != shapes[i].uvs.size()) {
 			std::cout << "vertices.size != uvs.size : abord"<<std::endl;
@@ -100,8 +102,10 @@ void Ojm::draw(shaderProgram * shader)
 			//~ cout << "sans texture" << endl;
 		}
 
-		glBindVertexArray(shapes[i].dGL.vao);
+		// glBindVertexArray(shapes[i].dGL.vao);
+        shapes[i].dGL->bind();
 		glDrawElements(GL_TRIANGLES, shapes[i].indices.size(), GL_UNSIGNED_INT, (void*)0 );
+        shapes[i].dGL->unBind();
 	} 
 }
 
@@ -109,38 +113,47 @@ void Ojm::initGLparam()
 {
 	for(unsigned int i=0;i<shapes.size();i++){
 
+        shapes[i].dGL = std::make_unique<VertexArray>();
+		// glGenVertexArrays(1,&shapes[i].dGL.vao);
+		// glBindVertexArray(shapes[i].dGL.vao);
+        shapes[i].dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+        shapes[i].dGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+        shapes[i].dGL->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
+        shapes[i].dGL->registerIndexBuffer(BufferAccess::STATIC);
+		
+        // glGenBuffers(1,&shapes[i].dGL.pos);
+		// glGenBuffers(1,&shapes[i].dGL.tex);
+		// glGenBuffers(1,&shapes[i].dGL.norm);
+		// glGenBuffers(1,&shapes[i].dGL.elementBuffer);
 
-		glGenVertexArrays(1,&shapes[i].dGL.vao);
-		glBindVertexArray(shapes[i].dGL.vao);
+		// glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.pos);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*shapes[i].vertices.size(), shapes[i].vertices.data(),GL_STATIC_DRAW);
+		// glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.tex);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2*shapes[i].uvs.size(), shapes[i].uvs.data(),GL_STATIC_DRAW);
+		// glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.norm);
+		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*shapes[i].normals.size(), shapes[i].normals.data(),GL_STATIC_DRAW);
+		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shapes[i].dGL.elementBuffer);
+		// glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(unsigned int)*shapes[i].indices.size(), shapes[i].indices.data(),GL_STATIC_DRAW);
 
-		glGenBuffers(1,&shapes[i].dGL.pos);
-		glGenBuffers(1,&shapes[i].dGL.tex);
-		glGenBuffers(1,&shapes[i].dGL.norm);
-		glGenBuffers(1,&shapes[i].dGL.elementBuffer);
+        shapes[i].dGL->fillVertexBuffer(BufferType::POS3D,   shapes[i].vertices);
+        shapes[i].dGL->fillVertexBuffer(BufferType::TEXTURE, shapes[i].uvs);
+        shapes[i].dGL->fillVertexBuffer(BufferType::NORMAL,  shapes[i].normals);
+        shapes[i].dGL->fillIndexBuffer(shapes[i].indices);
 
-		glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.pos);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*shapes[i].vertices.size(), shapes[i].vertices.data(),GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.tex);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2*shapes[i].uvs.size(), shapes[i].uvs.data(),GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.norm);
-		glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*shapes[i].normals.size(), shapes[i].normals.data(),GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shapes[i].dGL.elementBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(unsigned int)*shapes[i].indices.size(), shapes[i].indices.data(),GL_STATIC_DRAW);
+		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.pos);
+		// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.tex);
+		// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.norm);
+		// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.pos);
-		glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-		glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.tex);
-		glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-		glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.norm);
-		glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shapes[i].dGL.elementBuffer);
+		// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shapes[i].dGL.elementBuffer);
-		glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
-
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
+		// glEnableVertexAttribArray(0);
+		// glEnableVertexAttribArray(1);
+		// glEnableVertexAttribArray(2);
+		// glEnableVertexAttribArray(3);
 	} 
 }
 
@@ -177,7 +190,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                         ss>>vertex.v[0];
                         ss>>vertex.v[1];
                         ss>>vertex.v[2];
-                        shapes[shapeIter].vertices.push_back(vertex * multiplier);
+                        insert_vec3(shapes[shapeIter].vertices, vertex * multiplier);
                     }
                 break;
 
@@ -187,7 +200,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                         std::stringstream ss(std::string(line+2));
                         ss>>uv.v[0];
                         ss>>uv.v[1];
-                        shapes[shapeIter].uvs.push_back(uv);
+                        insert_vec2(shapes[shapeIter].uvs, uv);
                     }
                 break;
 
@@ -198,7 +211,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                         ss>>normal.v[0];
                         ss>>normal.v[1];
                         ss>>normal.v[2];
-                        shapes[shapeIter].normals.push_back(normal);
+                        insert_vec3(shapes[shapeIter].normals, normal);
                     }
                 break;
 

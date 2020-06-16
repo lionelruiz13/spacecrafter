@@ -3,9 +3,13 @@
 
 #include "tools/vecmath.hpp"
 #include "tools/s_texture.hpp"
-#include "tools/shader.hpp"
+//#include "tools/shader.hpp"
+
 #include <vector>
 #include <string>
+#include <memory>
+
+class VertexArray;
 
 class OjmL {
 public:
@@ -35,11 +39,11 @@ private:
 	//! supprime les paramètres GL de l'ojm
 	void delGLparam();
 
-	std::vector<Vec3f> vertices;
-	std::vector<Vec2f> uvs;
-	std::vector<Vec3f> normals;
+	std::vector<float> vertices;
+	std::vector<float> uvs;
+	std::vector<float> normals;
 	std::vector<unsigned int> indices;
-	DataGL dGL;
+	std::unique_ptr<VertexArray> dGL;
 };
 
 
