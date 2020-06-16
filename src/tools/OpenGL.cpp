@@ -246,6 +246,7 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size , con
 
 void VertexArray::registerIndexBuffer(const BufferAccess& ba)
 {
+    ASSERT(!m_indexBuffer);
     this->bind();
     m_indexBuffer = std::make_unique<IndexBuffer>(ba);
     this->unBind();
@@ -258,7 +259,7 @@ void VertexArray::fillIndexBuffer(const std::vector<unsigned int> data)
 
 void VertexArray::fillIndexBuffer(unsigned int count , const unsigned int* indices)
 {
-    ASSERT(m_indexBuffer!=nullptr);
+    ASSERT(m_indexBuffer);
     
     this->bind();
     GLCall( glEnableVertexAttribArray(3) );
@@ -270,6 +271,6 @@ void VertexArray::fillIndexBuffer(unsigned int count , const unsigned int* indic
 
 unsigned int VertexArray::getIndiceCount() const
 {
-    ASSERT(m_indexBuffer!=nullptr);
+    ASSERT(m_indexBuffer);
     return m_indexBuffer->GetCount();
 }
