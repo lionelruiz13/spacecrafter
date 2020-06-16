@@ -9,7 +9,7 @@
 *
 * This source code mustn't be copied or redistributed
 * without the authorization of Immersive Adventure
-* (c) 2017 - all rights reserved
+* (c) 2017 - 2020 all rights reserved
 *
 */
 
@@ -24,7 +24,6 @@
 #include "navModule/navigator.hpp"
 #include <iomanip>
 #include <math.h>
-//#include "tools/fmath.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
@@ -46,7 +45,6 @@ Dso3d::~Dso3d()
 	posDso3d.clear();
 	scaleDso3d.clear();
 	texDso3d.clear();
-	// deleteShader();
 }
 
 void Dso3d::createGL_context()
@@ -59,26 +57,8 @@ void Dso3d::createGL_context()
 	sData->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	sData->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
 	sData->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
-	
-	// glGenVertexArrays(1,&sData.vao);
-	// glBindVertexArray(sData.vao);
-	// glGenBuffers(1,&sData.pos);
-	// glGenBuffers(1,&sData.tex);
-	// glGenBuffers(1,&sData.scale);
-
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
-	// glEnableVertexAttribArray(2);
 }
 
-// void Dso3d::deleteShader()
-// {
-// 	if(shaderDso3d) delete shaderDso3d;
-	// glDeleteBuffers(1,&sData.scale);
-	// glDeleteBuffers(1,&sData.tex);
-	// glDeleteBuffers(1,&sData.pos);
-	// glDeleteVertexArrays(1,&sData.vao);
-// }
 
 bool Dso3d::loadCatalog(const std::string &cat) noexcept
 {
@@ -126,25 +106,6 @@ bool Dso3d::loadCatalog(const std::string &cat) noexcept
 	}
 	file.close();
 
-	//on charge les points dans un vbo cela n'a rien à faire içi.
-	// glBindVertexArray(sData.vao);
-// 
-	// glEnableVertexAttribArray(0);
-	// glBindBuffer(GL_ARRAY_BUFFER,sData.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*posDso3d.size(),posDso3d.data(),GL_STATIC_DRAW);
-	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-// 
-	// glEnableVertexAttribArray(1);
-	// glBindBuffer(GL_ARRAY_BUFFER,sData.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*texDso3d.size(),texDso3d.data(),GL_STATIC_DRAW);
-	// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
-	// 
-	// glEnableVertexAttribArray(2);
-	// glBindBuffer(GL_ARRAY_BUFFER,sData.scale);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*scaleDso3d.size(),scaleDso3d.data(),GL_STATIC_DRAW);
-	// glVertexAttribPointer(2,1,GL_FLOAT,GL_FALSE,0,NULL);
-	// glBindVertexArray(0);
-
 	sData->fillVertexBuffer(BufferType::POS3D, posDso3d);
 	sData->fillVertexBuffer(BufferType::SCALE, scaleDso3d);
 	sData->fillVertexBuffer(BufferType::MAG, texDso3d);
@@ -174,9 +135,7 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	if (!fader.getInterstate()) return;
 	if (nbNebulae==0) return;
 
-	//~ StateGL::enable(GL_DEPTH_TEST);
 	StateGL::enable(GL_BLEND);
-	//~ StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 
 	Mat4f matrix= nav->getHelioToEyeMat().convert();
@@ -192,11 +151,8 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderDso3d->setUniform("camPos", camPos);
 	shaderDso3d->setUniform("nbTextures", nbTextures);
 
-	// glBindVertexArray(sData.vao);
 	sData->bind();
 	glDrawArrays(GL_POINTS, 0, nbNebulae);
 	sData->unBind();
-	// glBindVertexArray(0);
-	//~ StateGL::disable(GL_DEPTH_TEST);
 	shaderDso3d->unuse();
 }

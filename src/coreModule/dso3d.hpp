@@ -9,7 +9,7 @@
 *
 * This source code mustn't be copied or redistributed
 * without the authorization of Immersive Adventure
-* (c) 2017 - all rights reserved
+* (c) 2017 - 2020 all rights reserved
 *
 */
 
@@ -71,8 +71,6 @@ public:
 private:
 	// initialise le shader
 	void createGL_context();
-	//détruit le shader
-	// void deleteShader();
 	// renseigne le nombre de textures dans texNebulae
 	int nbTextures;
 	// position camera
