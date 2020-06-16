@@ -33,6 +33,8 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
 int Landscape::slices = 20;
@@ -48,9 +50,12 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	cLog::get()->write( "Landscape generic created" , LOG_TYPE::L_INFO);
 	haveNightTex = false;
 
-	shaderFog = nullptr;
 	shaderFog = new shaderProgram();
 	shaderFog-> init( "fog.vert","fog.frag");
+
+	m_fogGL = std::make_unique<VertexArray>();
+	m_fogGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);	
+	m_fogGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 }
 
 void Landscape::initShaderFog()
@@ -60,24 +65,27 @@ void Landscape::initShaderFog()
 
 	getFogDraw(0.95, radius*sinf(fog_alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
 
-	glGenBuffers(1,&fog.tex);
-	glBindBuffer(GL_ARRAY_BUFFER,fog.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataTex.size(), dataTex.data(),GL_STATIC_DRAW);
+	// glGenBuffers(1,&m_fogGL.tex);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_fogGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataTex.size(), dataTex.data(),GL_STATIC_DRAW);
 
-	glGenBuffers(1,&fog.pos);
-	glBindBuffer(GL_ARRAY_BUFFER,fog.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataPos.size(),dataPos.data(),GL_STATIC_DRAW);
+	// glGenBuffers(1,&m_fogGL.pos);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_fogGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataPos.size(),dataPos.data(),GL_STATIC_DRAW);
 
-	glGenVertexArrays(1,&fog.vao);
-	glBindVertexArray(fog.vao);
+	// glGenVertexArrays(1,&m_fogGL.vao);
+	// glBindVertexArray(m_fogGL.vao);
 
-	glBindBuffer (GL_ARRAY_BUFFER, fog.pos);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	glBindBuffer (GL_ARRAY_BUFFER, fog.tex);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_fogGL.pos);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_fogGL.tex);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
+
+	m_fogGL->fillVertexBuffer(BufferType::POS3D, dataPos);
+	m_fogGL->fillVertexBuffer(BufferType::TEXTURE, dataTex);
 
 	dataTex.clear();
 	dataPos.clear();
@@ -86,10 +94,10 @@ void Landscape::initShaderFog()
 Landscape::~Landscape()
 {
 	if (fog_tex) delete fog_tex;
-	if (shaderFog) {
-		delete shaderFog;
-		shaderFog= nullptr;
-	}
+	// if (shaderFog) {
+	// 	delete shaderFog;
+	// 	shaderFog= nullptr;
+	// }
 }
 
 Landscape* Landscape::createFromFile(const std::string& landscape_file, const std::string& section_name)
@@ -235,13 +243,17 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	shaderFog->setUniform("ModelViewProjectionMatrix", proj*matrix);
 	shaderFog->setUniform("ModelViewMatrix",matrix);
 
-	glBindVertexArray(fog.vao);
+	// glBindVertexArray(m_fogGL.vao);
+	m_fogGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,nbFogVertex);
-	glBindVertexArray(0);
+	m_fogGL->unBind();
+	// glBindVertexArray(0);
+	shaderFog->unuse();
+
 	glCullFace(GL_BACK);
 	StateGL::disable(GL_CULL_FACE);
 	glActiveTexture(GL_TEXTURE0);
-	shaderFog->unuse();
+
 }
 
 
@@ -274,16 +286,16 @@ void Landscape::initShaderParams()
 	shaderFog->setUniformLocation("viewport_center");
 }
 
-void Landscape::deleteVboVoa()
-{
-	glDeleteBuffers(1, &landscape.tex);
-	glDeleteBuffers(1, &landscape.pos);
-	glDeleteVertexArrays(1, &landscape.vao);
+// void Landscape::deleteVboVoa()
+// {
+// 	glDeleteBuffers(1, &m_landscapeGL.tex);
+// 	glDeleteBuffers(1, &m_landscapeGL.pos);
+// 	glDeleteVertexArrays(1, &m_landscapeGL.vao);
 
-	glDeleteBuffers(1, &fog.tex);
-	glDeleteBuffers(1, &fog.pos);
-	glDeleteVertexArrays(1, &fog.vao);
-}
+// 	glDeleteBuffers(1, &m_fogGL.tex);
+// 	glDeleteBuffers(1, &m_fogGL.pos);
+// 	glDeleteVertexArrays(1, &m_fogGL.vao);
+// }
 
 void Landscape::deleteMapTex()
 {
@@ -312,7 +324,7 @@ LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius), rotate_z
 LandscapeFisheye::~LandscapeFisheye()
 {
 	deleteMapTex();
-	deleteVboVoa();
+	// deleteVboVoa();
 	if (shaderLandscape) delete shaderLandscape;
 	if (shaderFog) {
 		delete shaderFog;
@@ -386,20 +398,27 @@ void LandscapeFisheye::initShader()
 
 	getLandscapeFisheye(radius,slices,stacks, tex_fov, datatex, datapos);
 
-	glGenVertexArrays(1,&landscape.vao);
-	glBindVertexArray(landscape.vao);
+	m_landscapeGL = std::make_unique<VertexArray>();
+	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	m_landscapeGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	
+	// glGenVertexArrays(1,&m_landscapeGL.vao);
+	// glBindVertexArray(m_landscapeGL.vao);
 
-	glEnableVertexAttribArray(1);
-	glGenBuffers(1,&landscape.tex);
-	glBindBuffer(GL_ARRAY_BUFFER,landscape.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*2,datatex,GL_STATIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(1);
+	// glGenBuffers(1,&m_landscapeGL.tex);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_landscapeGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*2,datatex,GL_STATIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glEnableVertexAttribArray(0);
-	glGenBuffers(1,&landscape.pos);
-	glBindBuffer(GL_ARRAY_BUFFER,landscape.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*3,datapos,GL_STATIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(0);
+	// glGenBuffers(1,&m_landscapeGL.pos);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_landscapeGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*3,datapos,GL_STATIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+
+	m_landscapeGL->fillVertexBuffer(BufferType::POS3D, nbVertex*3, datapos);
+	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
 
 	if (datatex) delete datatex;
 	if (datapos) delete datapos;
@@ -441,15 +460,18 @@ void LandscapeFisheye::draw(ToneReproductor * eye, const Projector* prj, const N
 	shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 
-	glBindVertexArray(landscape.vao);
+	// glBindVertexArray(m_landscapeGL.vao);
+	m_landscapeGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
-	glBindVertexArray(0);
+	m_landscapeGL->unBind();
+	shaderLandscape->unuse();
+
+	// glBindVertexArray(0);
 	StateGL::disable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
 
 	//TODO a supprimer si tout en opengl4
 	glActiveTexture(GL_TEXTURE0);
-	shaderLandscape->unuse();
 
 	drawFog(eye,prj,nav);
 }
@@ -563,7 +585,7 @@ LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  bas
 LandscapeSpherical::~LandscapeSpherical()
 {
 	deleteMapTex();
-	deleteVboVoa();
+	// deleteVboVoa();
 	if (shaderLandscape) delete shaderLandscape;
 	if (shaderFog) {
 		delete shaderFog;
@@ -640,22 +662,28 @@ void LandscapeSpherical::initShader()
 
 	getLandscapeSpherical(radius, 1.0, slices,stacks, base_altitude, top_altitude, datatex, datapos);
 
-	glGenBuffers(1,&landscape.tex);
-	glBindBuffer(GL_ARRAY_BUFFER,landscape.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*2,datatex,GL_STATIC_DRAW);
+	m_landscapeGL = std::make_unique<VertexArray>();
+	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	m_landscapeGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 
-	glGenBuffers(1,&landscape.pos);
-	glBindBuffer(GL_ARRAY_BUFFER,landscape.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*3,datapos,GL_STATIC_DRAW);
+	m_landscapeGL->fillVertexBuffer(BufferType::POS3D, nbVertex*3, datapos);
+	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
+	// glGenBuffers(1,&m_landscapeGL.tex);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_landscapeGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*2,datatex,GL_STATIC_DRAW);
 
-	glGenVertexArrays(1,&landscape.vao);
-	glBindVertexArray(landscape.vao);
-	glEnableVertexAttribArray(0);
-	glBindBuffer (GL_ARRAY_BUFFER, landscape.pos);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	glEnableVertexAttribArray(1);
-	glBindBuffer (GL_ARRAY_BUFFER, landscape.tex);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glGenBuffers(1,&m_landscapeGL.pos);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_landscapeGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*nbVertex*3,datapos,GL_STATIC_DRAW);
+
+	// glGenVertexArrays(1,&m_landscapeGL.vao);
+	// glBindVertexArray(m_landscapeGL.vao);
+	// glEnableVertexAttribArray(0);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_landscapeGL.pos);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(1);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_landscapeGL.tex);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	if (datatex) delete[] datatex;
 	if (datapos) delete[] datapos;
@@ -695,16 +723,19 @@ void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const
 	shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 
-	glBindVertexArray(landscape.vao);
+	// glBindVertexArray(m_landscapeGL.vao);
+	
+	m_landscapeGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
-	glBindVertexArray(0);
+	m_landscapeGL->unBind();
+	// glBindVertexArray(0);
+	shaderLandscape->unuse();
 
 	StateGL::disable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
 
 	//TODO a supprimer si tout en opengl4
 	glActiveTexture(GL_TEXTURE0);
-	shaderLandscape->unuse();
 
 	drawFog(eye, prj, nav);
 }

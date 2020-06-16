@@ -28,10 +28,12 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+
 #include "tools/vecmath.hpp"
 #include "tools/fader.hpp"
 #include "tools/utility.hpp"
-#include "tools/shader.hpp"
+// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
@@ -39,6 +41,8 @@ class s_texture;
 class ToneReproductor;
 class Navigator;
 class Projector;
+class VertexArray;
+class shaderProgram;
 
 // Class which manages the displaying of the Landscape
 class Landscape: public NoCopy {
@@ -135,7 +139,7 @@ protected:
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
 	void initShaderParams();
-	void deleteVboVoa();
+	// void deleteVboVoa();
 	void deleteMapTex();
 	float radius;
 	std::string name;
@@ -157,10 +161,9 @@ protected:
 	unsigned int nbFogVertex;			//nombre de vertex pour le fog
 	static int slices;
 	static int stacks;
-	shaderProgram* shaderLandscape;
-	shaderProgram* shaderFog;
-	DataGL landscape;
-	DataGL fog;
+	shaderProgram* shaderLandscape, *shaderFog;
+	std::unique_ptr<VertexArray> m_landscapeGL, m_fogGL;
+	
 private:
 	float rotate_z;
 };
