@@ -4,7 +4,6 @@
 #include "tools/vecmath.hpp"
 #include <map>
 #include "tools/shader.hpp"
-#include "tools/stateGL.hpp" //for DataGL
 
 
 class ObjL;
