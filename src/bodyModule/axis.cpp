@@ -71,16 +71,16 @@ void Axis::computeAxis(const Projector* prj, const Mat4d& mat)
 {
 
 	Vec3d posAxis = prj->sVertex3v(0, 0,  1.4 * body->radius, mat);
-
-	vecAxisPos.push_back( posAxis[0] );
-	vecAxisPos.push_back( posAxis[1] );
-	vecAxisPos.push_back( posAxis[2] );
+	// vecAxisPos.push_back( posAxis[0] );
+	// vecAxisPos.push_back( posAxis[1] );
+	// vecAxisPos.push_back( posAxis[2] );
+	insert_vec3(vecAxisPos,posAxis);
 
 	posAxis = prj->sVertex3v(0, 0,  -1.4 * body->radius, mat);
-	vecAxisPos.push_back( posAxis[0] );
-	vecAxisPos.push_back( posAxis[1] );
-	vecAxisPos.push_back( posAxis[2] );
-
+	// vecAxisPos.push_back( posAxis[0] );
+	// vecAxisPos.push_back( posAxis[1] );
+	// vecAxisPos.push_back( posAxis[2] );
+	insert_vec3(vecAxisPos,posAxis);
 }
 
 // Calculate the angle of the axis on the screen

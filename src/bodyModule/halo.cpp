@@ -134,23 +134,26 @@ void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneRep
 
 	Vec2f screenPosF ((float) body->screenPos[0], (float)body->screenPos[1]);
 
-	vecHaloPos.push_back( screenPosF[0]-rmag );
-	vecHaloPos.push_back( screenPosF[1]-rmag );
-	vecHaloPos.push_back( screenPosF[0]-rmag );
-	vecHaloPos.push_back( screenPosF[1]+rmag );
-	vecHaloPos.push_back( screenPosF[0]+rmag );
-	vecHaloPos.push_back( screenPosF[1]-rmag );
-	vecHaloPos.push_back( screenPosF[0]+rmag );
-	vecHaloPos.push_back( screenPosF[1]+rmag );
+	// vecHaloPos.push_back( screenPosF[0]-rmag );
+	// vecHaloPos.push_back( screenPosF[1]-rmag );
+	// vecHaloPos.push_back( screenPosF[0]-rmag );
+	// vecHaloPos.push_back( screenPosF[1]+rmag );
+	// vecHaloPos.push_back( screenPosF[0]+rmag );
+	// vecHaloPos.push_back( screenPosF[1]-rmag );
+	// vecHaloPos.push_back( screenPosF[0]+rmag );
+	// vecHaloPos.push_back( screenPosF[1]+rmag );
+	insert_all(vecHaloPos, screenPosF[0]-rmag, screenPosF[1]-rmag, screenPosF[0]-rmag, screenPosF[1]+rmag);
+	insert_all(vecHaloPos, screenPosF[0]+rmag, screenPosF[1]-rmag, screenPosF[0]+rmag, screenPosF[1]+rmag);
 
-	vecHaloTex.push_back( 0 );
-	vecHaloTex.push_back( 0 );
-	vecHaloTex.push_back( 0 );
-	vecHaloTex.push_back( 1 );
-	vecHaloTex.push_back( 1 );
-	vecHaloTex.push_back( 0 );
-	vecHaloTex.push_back( 1 );
-	vecHaloTex.push_back( 1 );
+	// vecHaloTex.push_back( 0 );
+	// vecHaloTex.push_back( 0 );
+	// vecHaloTex.push_back( 0 );
+	// vecHaloTex.push_back( 1 );
+	// vecHaloTex.push_back( 1 );
+	// vecHaloTex.push_back( 0 );
+	// vecHaloTex.push_back( 1 );
+	// vecHaloTex.push_back( 1 );
+	insert_all(vecHaloTex, 0, 0, 0, 1, 1, 0, 1, 1);
 }
 
 void Halo::createShader()

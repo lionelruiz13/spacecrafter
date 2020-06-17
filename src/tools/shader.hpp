@@ -125,9 +125,9 @@ public:
 	void setUniform( const std::string& name, const Mat4f & m);
 	void setUniform( const std::string& name, float val);
 	void setUniform( const std::string& name, double val);
-	void setUniform( const std::string& name, int val );
-	void setUniform( const std::string& name, bool val );
-	void setUniform( const std::string& name, GLuint val );
+	void setUniform( const std::string& name, int val);
+	void setUniform( const std::string& name, bool val);
+	void setUniform( const std::string& name, GLuint val);
 
 private:
 
