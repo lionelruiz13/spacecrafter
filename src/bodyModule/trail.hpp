@@ -9,7 +9,7 @@
 *
 * This source code mustn't be copied or redistributed
 * without the authorization of Immersive Adventure
-* (c) 2017 - all rights reserved
+* (c) 2017 - 2020 all rights reserved
 *
 */
 //! \file trail.hpp
@@ -20,19 +20,22 @@
 #ifndef _TRAIL_HPP_
 #define _TRAIL_HPP_
 
-#include "tools/fader.hpp"
+
 #include <list>
 #include <string>
+#include <vector>
+#include <memory>
+
+#include "tools/fader.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
-#include <vector>
-#include <list>
-
 
 class Body;
 class Navigator;
 class Projector;
 class TimeMgr;
+class VertexArray;
+class shaderProgram;
 
 typedef struct TrailPoint {
 	Vec3d point;
@@ -64,7 +67,7 @@ public:
 	void drawTrail(const Navigator * nav, const Projector* prj);
 	void updateTrail(const Navigator* nav, const TimeMgr* timeMgr);
 	void startTrail(bool b);
-	void updateShader(int delta_time);
+	void updateFader(int delta_time);
 
 	static void createShader();
 	static void deleteShader();
@@ -74,7 +77,7 @@ private:
 	Body * body = nullptr;
 
 	static shaderProgram* shaderTrail;
-	static DataGL TrailData;
+	static DataGL m_dataGL;
 	LinearFader trail_fader;
 
 	std::vector<float> vecTrailPos;

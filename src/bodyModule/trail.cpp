@@ -23,7 +23,7 @@
 
 
 shaderProgram* Trail::shaderTrail=nullptr;
-DataGL Trail::TrailData;
+DataGL Trail::m_dataGL;
 
 Trail::Trail(Body * _body,
              int _MaxTrail,
@@ -93,13 +93,13 @@ void Trail::drawTrail(const Navigator * nav, const Projector* prj)
 		shaderTrail->setUniform("fader", fade);
 		shaderTrail->setUniform("nbPoints", nbPos);
 
-		glBindVertexArray(TrailData.vao);
+		glBindVertexArray(m_dataGL.vao);
 
-		glBindBuffer(GL_ARRAY_BUFFER,TrailData.pos);
+		glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecTrailPos.size(), vecTrailPos.data(), GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ARRAY_BUFFER,TrailData.color);
+		glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.color);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecTrailColor.size(), vecTrailColor.data(), GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
 
@@ -169,7 +169,7 @@ void Trail::startTrail(bool b)
 	}
 }
 
-void Trail::updateShader(int delta_time)
+void Trail::updateFader(int delta_time)
 {
 	trail_fader.update(delta_time);
 }
@@ -185,11 +185,11 @@ void Trail::createShader()
 	shaderTrail->setUniformLocation("fader");
 	shaderTrail->setUniformLocation("nbPoints");
 
-	glGenVertexArrays(1,&TrailData.vao);
-	glBindVertexArray(TrailData.vao);
+	glGenVertexArrays(1,&m_dataGL.vao);
+	glBindVertexArray(m_dataGL.vao);
 
-	glGenBuffers(1,&TrailData.pos);
-	glGenBuffers(1,&TrailData.color);
+	glGenBuffers(1,&m_dataGL.pos);
+	glGenBuffers(1,&m_dataGL.color);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
@@ -199,7 +199,7 @@ void Trail::deleteShader()
 {
 	if(shaderTrail) shaderTrail=nullptr;
 
-	glDeleteBuffers(1,&TrailData.color);
-	glDeleteBuffers(1,&TrailData.pos);
-	glDeleteVertexArrays(1,&TrailData.vao);
+	glDeleteBuffers(1,&m_dataGL.color);
+	glDeleteBuffers(1,&m_dataGL.pos);
+	glDeleteVertexArrays(1,&m_dataGL.vao);
 }

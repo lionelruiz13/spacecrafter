@@ -702,7 +702,7 @@ void Body::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 	hints->updateShader(delta_time);
 
 	if(trail!= nullptr) {
-		trail->updateShader(delta_time);
+		trail->updateFader(delta_time);
 		trail->updateTrail(nav, timeMgr);
 	}
 }
