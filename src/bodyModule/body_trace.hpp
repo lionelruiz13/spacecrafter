@@ -125,14 +125,14 @@ private:
 	Vec3d pt1;
 	Vec3d pt2;
 
-	void createShader();
-	void deleteShader();
+	void createGL_context();
+	// void deleteShader();
 
 	std::vector<float> vecVertex;
 
 	//shader for meteor's displaying
 	shaderProgram *shaderTrace = nullptr;
-	DataGL trace;
+	DataGL m_dataGL;
 };
 
 

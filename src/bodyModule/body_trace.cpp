@@ -54,12 +54,12 @@ BodyTrace::BodyTrace()
 	bodyData[7].color= Vec3f(0.4f, 1.0f, 0.6f);
 	is_tracing=true;
 	currentUsedList=0;
-	createShader();
+	createGL_context();
 }
 
 BodyTrace::~BodyTrace()
 {
-	deleteShader();
+	// deleteShader();
 }
 
 void BodyTrace::hide(int numberList)
@@ -74,32 +74,32 @@ void BodyTrace::hide(int numberList)
 		bodyData[numberList].hide= !bodyData[numberList].hide;
 }
 
-void BodyTrace::createShader()
+void BodyTrace::createGL_context()
 {
 	shaderTrace = new shaderProgram();
 	shaderTrace->init("body_trace.vert","body_trace.geom","body_trace.frag");
 	shaderTrace->setUniformLocation("Color");
 	shaderTrace->setUniformLocation("Mat");
 
-	glGenVertexArrays(1,&trace.vao);
-	glBindVertexArray(trace.vao);
+	glGenVertexArrays(1,&m_dataGL.vao);
+	glBindVertexArray(m_dataGL.vao);
 
 //	glGenBuffers(1,&trace.color);
-	glGenBuffers(1,&trace.pos);
+	glGenBuffers(1,&m_dataGL.pos);
 	// glEnableVertexAttribArray(0);
 	// glEnableVertexAttribArray(1);
 }
 
-void BodyTrace::deleteShader()
-{
-	if (shaderTrace)
-		delete shaderTrace;
-	shaderTrace = nullptr;
+// void BodyTrace::deleteShader()
+// {
+// 	if (shaderTrace)
+// 		delete shaderTrace;
+// 	shaderTrace = nullptr;
 
-	//glDeleteBuffers(1,&trace.color);
-	glDeleteBuffers(1,&trace.pos);
-	glDeleteVertexArrays(1,&trace.vao);
-}
+// 	//glDeleteBuffers(1,&trace.color);
+// 	glDeleteBuffers(1,&m_dataGL.pos);
+// 	glDeleteVertexArrays(1,&m_dataGL.vao);
+// }
 
 
 void BodyTrace::draw(const Projector *prj,const Navigator *nav)
@@ -126,10 +126,10 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 				shaderTrace->setUniform("Color", bodyData[l].color );
 				shaderTrace->setUniform("Mat", prj->getMatLocalToEye() );
 
-				glBindVertexArray(trace.vao);
+				glBindVertexArray(m_dataGL.vao);
 		
 				glEnableVertexAttribArray(0);
-				glBindBuffer(GL_ARRAY_BUFFER,trace.pos);
+				glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecVertex.size(), vecVertex.data(), GL_DYNAMIC_DRAW);
 				glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 				glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
