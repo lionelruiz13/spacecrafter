@@ -52,9 +52,9 @@
  *
  */
 
-struct DataGL {
-	GLuint vao = 0, pos = 0, tex = 0, norm = 0, color = 0, mag = 0, scale=0, elementBuffer=0;
-};
+// struct DataGL {
+// 	GLuint vao = 0, pos = 0, tex = 0, norm = 0, color = 0, mag = 0, scale=0, elementBuffer=0;
+// };
 
 
 /**
