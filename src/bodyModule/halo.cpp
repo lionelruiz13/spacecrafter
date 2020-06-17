@@ -22,10 +22,11 @@
 #include "tools/tone_reproductor.hpp"
 #include "tools/s_texture.hpp"
 #include <iostream>
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
-
-DataGL Halo::HaloData;
+DataGL Halo::m_haloGL;
 shaderProgram* Halo::shaderHalo = nullptr;
 s_texture * Halo::tex_halo = nullptr;
 
@@ -50,13 +51,13 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	shaderHalo->setUniform("Color", body->myColor->getHalo());
 	shaderHalo->setUniform("cmag", cmag);
 
-	glBindVertexArray(HaloData.vao);
+	glBindVertexArray(m_haloGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,HaloData.pos);
+	glBindBuffer(GL_ARRAY_BUFFER,m_haloGL.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHaloPos.size(),vecHaloPos.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
-	glBindBuffer(GL_ARRAY_BUFFER,HaloData.tex);
+	glBindBuffer(GL_ARRAY_BUFFER,m_haloGL.tex);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHaloTex.size(),vecHaloTex.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 
@@ -155,10 +156,10 @@ void Halo::createShader()
 	shaderHalo->setUniformLocation("Color");
 	shaderHalo->setUniformLocation("cmag");
 
-	glGenVertexArrays(1,&HaloData.vao);
-	glBindVertexArray(HaloData.vao);
-	glGenBuffers(1,&HaloData.tex);
-	glGenBuffers(1,&HaloData.pos);
+	glGenVertexArrays(1,&m_haloGL.vao);
+	glBindVertexArray(m_haloGL.vao);
+	glGenBuffers(1,&m_haloGL.tex);
+	glGenBuffers(1,&m_haloGL.pos);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
@@ -183,8 +184,8 @@ void Halo::deleteDefaultTexMap()
 
 void Halo::deleteShader()
 {
-	glDeleteBuffers(1, &HaloData.tex);
-	glDeleteBuffers(1, &HaloData.pos);
-	glDeleteVertexArrays(1, &HaloData.vao);
+	glDeleteBuffers(1, &m_haloGL.tex);
+	glDeleteBuffers(1, &m_haloGL.pos);
+	glDeleteVertexArrays(1, &m_haloGL.vao);
 
 }

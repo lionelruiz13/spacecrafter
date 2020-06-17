@@ -17,10 +17,11 @@
 #include "bodyModule/body.hpp"
 #include "coreModule/projector.hpp"
 #include "bodyModule/body_color.hpp"
-
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 shaderProgram* Hints::shaderHints=nullptr;
-DataGL Hints::HintsData;
+DataGL Hints::m_HintsGL;
 const int Hints::nbrFacets = 24;
 const int Hints::hintCircleRadius = 8;
 
@@ -36,16 +37,16 @@ void Hints::createShader()
 	shaderHints->setUniformLocation("Color");
 	shaderHints->setUniformLocation("fader");
 
-	glGenVertexArrays(1,&HintsData.vao);
-	glBindVertexArray(HintsData.vao);
-	glGenBuffers(1,&HintsData.pos);
+	glGenVertexArrays(1,&m_HintsGL.vao);
+	glBindVertexArray(m_HintsGL.vao);
+	glGenBuffers(1,&m_HintsGL.pos);
 	glEnableVertexAttribArray(0);
 }
 
 void Hints::deleteShader()
 {
-	glDeleteBuffers(1,&HintsData.pos);
-	glDeleteVertexArrays(1,&HintsData.vao);
+	glDeleteBuffers(1,&m_HintsGL.pos);
+	glDeleteVertexArrays(1,&m_HintsGL.vao);
 }
 
 void Hints::drawHints(const Navigator* nav, const Projector* prj)
@@ -70,9 +71,9 @@ void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 	shaderHints->setUniform("Color", body->myColor->getLabel());
 	shaderHints->setUniform("fader", hint_fader.getInterstate() );
 
-	glBindVertexArray(HintsData.vao);
+	glBindVertexArray(m_HintsGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,HintsData.pos);
+	glBindBuffer(GL_ARRAY_BUFFER,m_HintsGL.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintsPos.size(),vecHintsPos.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 

@@ -24,9 +24,12 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include <vector>
+#include <memory>
 
 class Body;
 class Projector;
+class VertexArray;
+class shaderProgram;
 
 class Axis {
 public:
@@ -57,7 +60,7 @@ private :
 	Body * body;
 
 	static shaderProgram* shaderAxis;
-	static DataGL AxisData;
+	static DataGL m_AxisGL;
 
 	double axisAngle;
 	std::vector<float> vecAxisPos;

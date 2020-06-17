@@ -26,11 +26,13 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include <vector>
-
+#include <memory>
 
 class Body;
 class Navigator;
 class Projector;
+class VertexArray;
+class shaderProgram;
 
 
 class Hints {
@@ -62,7 +64,7 @@ private :
 	Body * body;
 
 	static shaderProgram* shaderHints;
-	static DataGL HintsData;
+	static DataGL m_HintsGL;
 	LinearFader hint_fader;
 
 	std::vector<float> vecHintsPos;

@@ -24,12 +24,15 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include <vector>
+#include <memory>
 
 class Body;
 class Navigator;
 class Projector;
 class ToneReproductor;
 class s_texture;
+class VertexArray;
+class shaderProgram;
 
 class Halo {
 public:
@@ -54,7 +57,7 @@ private:
 
 	Body * body;
 
-	static DataGL HaloData;
+	static DataGL m_haloGL;
 	static shaderProgram* shaderHalo;
 	std::vector<float> vecHaloPos;
 	std::vector<float> vecHaloTex;
