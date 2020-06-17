@@ -27,8 +27,9 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
+//#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/vecmath.hpp"
 
 class Body;
 class Navigator;
@@ -45,7 +46,6 @@ typedef struct TrailPoint {
 class Trail {
 
 public:
-
 	Trail() = delete;
 	Trail(const Trail&) = delete;
 
@@ -69,19 +69,17 @@ public:
 	void startTrail(bool b);
 	void updateFader(int delta_time);
 
-	static void createShader();
-	static void deleteShader();
+	static void createGL_context();
+	// static void deleteShader();
 
 private:
-
 	Body * body = nullptr;
-
-	static shaderProgram* shaderTrail;
-	static DataGL m_dataGL;
+	static std::unique_ptr<shaderProgram> shaderTrail;
+	static std::unique_ptr<VertexArray> m_dataGL;
 	LinearFader trail_fader;
 
 	std::vector<float> vecTrailPos;
-	std::vector<float> vecTrailColor;
+	std::vector<float> vecTrailIntensity;
 	std::list<TrailPoint>trail;
 
 	int MaxTrail;

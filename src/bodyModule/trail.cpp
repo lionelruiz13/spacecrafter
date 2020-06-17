@@ -19,11 +19,12 @@
 #include "coreModule/time_mgr.hpp"
 #include "bodyModule/body.hpp"
 #include "bodyModule/body_color.hpp"
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
-
-shaderProgram* Trail::shaderTrail=nullptr;
-DataGL Trail::m_dataGL;
+std::unique_ptr<shaderProgram> Trail::shaderTrail;
+std::unique_ptr<VertexArray> Trail::m_dataGL;
 
 Trail::Trail(Body * _body,
              int _MaxTrail,
@@ -37,16 +38,14 @@ Trail::Trail(Body * _body,
 	trail_on(_trail_on),
 	first_point(_first_point)
 {
-
 	body = _body;
-
 }
 
 
 Trail::~Trail()
 {
 	vecTrailPos.clear();
-	vecTrailColor.clear();
+	vecTrailIntensity.clear();
 	trail.clear();
 }
 
@@ -65,20 +64,20 @@ void Trail::drawTrail(const Navigator * nav, const Projector* prj)
 
 	// draw final segment to finish at current Body position
 	if ( !first_point) {
-		vecTrailPos.push_back( body->getEarthEquPos(nav)[0] );
-		vecTrailPos.push_back( body->getEarthEquPos(nav)[1] );
-		vecTrailPos.push_back( body->getEarthEquPos(nav)[2] );
-
-		vecTrailColor.push_back(1.0);
+		// vecTrailPos.push_back( body->getEarthEquPos(nav)[0] );
+		// vecTrailPos.push_back( body->getEarthEquPos(nav)[1] );
+		// vecTrailPos.push_back( body->getEarthEquPos(nav)[2] );
+		insert_vec3(vecTrailPos, body->getEarthEquPos(nav));
+		vecTrailIntensity.push_back(1.0);
 	}
 
 	for (iter=begin; iter != trail.end(); iter++) {
 		segment++;
-		vecTrailPos.push_back( (*iter).point[0] );
-		vecTrailPos.push_back( (*iter).point[1] );
-		vecTrailPos.push_back( (*iter).point[2] );
-
-		vecTrailColor.push_back( segment);
+		// vecTrailPos.push_back( (*iter).point[0] );
+		// vecTrailPos.push_back( (*iter).point[1] );
+		// vecTrailPos.push_back( (*iter).point[2] );
+		insert_vec3(vecTrailPos, (*iter).point);
+		vecTrailIntensity.push_back( segment);
 	}
 
 	int nbPos = vecTrailPos.size()/3 ;
@@ -93,25 +92,29 @@ void Trail::drawTrail(const Navigator * nav, const Projector* prj)
 		shaderTrail->setUniform("fader", fade);
 		shaderTrail->setUniform("nbPoints", nbPos);
 
-		glBindVertexArray(m_dataGL.vao);
+		// glBindVertexArray(m_dataGL.vao);
 
-		glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecTrailPos.size(), vecTrailPos.data(), GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecTrailPos.size(), vecTrailPos.data(), GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 
-		glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.color);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecTrailColor.size(), vecTrailColor.data(), GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+		// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.color);
+		// glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecTrailIntensity.size(), vecTrailIntensity.data(), GL_DYNAMIC_DRAW);
+		// glVertexAttribPointer(1,1,GL_FLOAT,GL_FALSE,0,NULL);
+		m_dataGL->fillVertexBuffer(BufferType::POS3D, vecTrailPos);
+		m_dataGL->fillVertexBuffer(BufferType::MAG, vecTrailIntensity);
 
+		m_dataGL->bind();
 		glDrawArrays(GL_LINE_STRIP, 0, nbPos);
-		glBindVertexArray(0);
+		m_dataGL->unBind();
+		//glBindVertexArray(0);
 		
 		shaderTrail->unuse();
 		StateGL::enable(GL_BLEND);
 	}
 
 	vecTrailPos.clear();
-	vecTrailColor.clear();
+	vecTrailIntensity.clear();
 }
 
 // update trail points as needed
@@ -175,31 +178,30 @@ void Trail::updateFader(int delta_time)
 }
 
 
-void Trail::createShader()
+void Trail::createGL_context()
 {
-
-	shaderTrail = new shaderProgram();
+	shaderTrail = std::make_unique<shaderProgram>();
 	shaderTrail->init( "body_trail.vert","body_trail.geom","body_trail.frag");
-	shaderTrail->setUniformLocation("Mat");
-	shaderTrail->setUniformLocation("Color");
-	shaderTrail->setUniformLocation("fader");
-	shaderTrail->setUniformLocation("nbPoints");
+	shaderTrail->setUniformLocation({"Mat", "Color", "fader", "nbPoints"});
 
-	glGenVertexArrays(1,&m_dataGL.vao);
-	glBindVertexArray(m_dataGL.vao);
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
 
-	glGenBuffers(1,&m_dataGL.pos);
-	glGenBuffers(1,&m_dataGL.color);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	// glGenVertexArrays(1,&m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
+	// glGenBuffers(1,&m_dataGL.pos);
+	// glGenBuffers(1,&m_dataGL.color);
+	// glEnableVertexAttribArray(0);
+	// glEnableVertexAttribArray(1);
 }
 
-void Trail::deleteShader()
-{
-	if(shaderTrail) shaderTrail=nullptr;
+// void Trail::deleteShader()
+// {
+// 	if(shaderTrail) shaderTrail=nullptr;
 
-	glDeleteBuffers(1,&m_dataGL.color);
-	glDeleteBuffers(1,&m_dataGL.pos);
-	glDeleteVertexArrays(1,&m_dataGL.vao);
-}
+// 	glDeleteBuffers(1,&m_dataGL.color);
+// 	glDeleteBuffers(1,&m_dataGL.pos);
+// 	glDeleteVertexArrays(1,&m_dataGL.vao);
+// }

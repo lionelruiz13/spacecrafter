@@ -9,7 +9,7 @@
 //layout
 //~ layout (location=1)in vec3 color;
 layout (location=0) in vec3 position;
-layout (location=1) in float segment;
+layout (location=4) in float segment;
 
 uniform int nbPoints;
 uniform float fader;
