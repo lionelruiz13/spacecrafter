@@ -28,8 +28,10 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <memory>
+
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
+// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
@@ -39,6 +41,9 @@
 
 class Navigator;
 class Projector;
+class VertexArray;
+class shaderProgram;
+
 
 //! Class which manages a line to display an object position around the sky
 class BodyTrace: public NoCopy {
@@ -131,8 +136,8 @@ private:
 	std::vector<float> vecVertex;
 
 	//shader for meteor's displaying
-	shaderProgram *shaderTrace = nullptr;
-	DataGL m_dataGL;
+	std::unique_ptr<shaderProgram> shaderTrace;
+	std::unique_ptr<VertexArray> m_dataGL;
 };
 
 

@@ -25,11 +25,15 @@
  *
  */
 
+#include <string>
+
 #include "bodyModule/body_trace.hpp"
 #include "tools/utility.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include <string>
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
+
 
 //#include "tools/fmath.hpp"
 
@@ -76,18 +80,19 @@ void BodyTrace::hide(int numberList)
 
 void BodyTrace::createGL_context()
 {
-	shaderTrace = new shaderProgram();
+	shaderTrace = std::make_unique<shaderProgram>();
 	shaderTrace->init("body_trace.vert","body_trace.geom","body_trace.frag");
-	shaderTrace->setUniformLocation("Color");
-	shaderTrace->setUniformLocation("Mat");
+	shaderTrace->setUniformLocation({"Color", "Mat"});
 
-	glGenVertexArrays(1,&m_dataGL.vao);
-	glBindVertexArray(m_dataGL.vao);
+	// glGenVertexArrays(1,&m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
 //	glGenBuffers(1,&trace.color);
-	glGenBuffers(1,&m_dataGL.pos);
+	// glGenBuffers(1,&m_dataGL.pos);
 	// glEnableVertexAttribArray(0);
 	// glEnableVertexAttribArray(1);
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 }
 
 // void BodyTrace::deleteShader()
@@ -115,9 +120,10 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 
 		if (bodyData[l].size>2 && !bodyData[l].hide) {
 			for (int i=0; i < bodyData[l].size; i=i+1) {
-				vecVertex.push_back( bodyData[l].punts[i][0] );
-				vecVertex.push_back( bodyData[l].punts[i][1] );
-				vecVertex.push_back( bodyData[l].punts[i][2] );
+				// vecVertex.push_back( bodyData[l].punts[i][0] );
+				// vecVertex.push_back( bodyData[l].punts[i][1] );
+				// vecVertex.push_back( bodyData[l].punts[i][2] );
+				insert_vec3(vecVertex, bodyData[l].punts[i]);
 			}
 
 			//tracé en direct de la courbe de ci dessus
@@ -126,14 +132,18 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 				shaderTrace->setUniform("Color", bodyData[l].color );
 				shaderTrace->setUniform("Mat", prj->getMatLocalToEye() );
 
-				glBindVertexArray(m_dataGL.vao);
+				// glBindVertexArray(m_dataGL.vao);
 		
-				glEnableVertexAttribArray(0);
-				glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecVertex.size(), vecVertex.data(), GL_DYNAMIC_DRAW);
-				glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+				// glEnableVertexAttribArray(0);
+				// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
+				// glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecVertex.size(), vecVertex.data(), GL_DYNAMIC_DRAW);
+				// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+				m_dataGL->fillVertexBuffer(BufferType::POS3D,vecVertex);
+
+				m_dataGL->bind();
 				glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
-				glBindVertexArray(0);
+				m_dataGL->unBind();
+				// glBindVertexArray(0);
 			}
 			//suppression du contenu des data
 			vecVertex.clear();
