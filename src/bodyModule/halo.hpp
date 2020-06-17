@@ -21,8 +21,8 @@
 #define HALO_HPP
 
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
 
@@ -51,14 +51,14 @@ public:
 	static void deleteDefaultTexMap();
 
 	static void createShader();
-	static void deleteShader();
+	// static void deleteShader();
 
 private:
 
 	Body * body;
 
-	static DataGL m_haloGL;
-	static shaderProgram* shaderHalo;
+	static std::unique_ptr<VertexArray> m_haloGL;
+	static std::unique_ptr<shaderProgram> shaderHalo;
 	std::vector<float> vecHaloPos;
 	std::vector<float> vecHaloTex;
 	static s_texture * tex_halo;			// Little halo texture

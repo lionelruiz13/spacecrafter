@@ -21,8 +21,8 @@
 #define _AXIS_HPP_
 
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
 
@@ -53,14 +53,14 @@ public:
 	void computeAxisAngle(const Projector* prj, const Mat4d& mat);
 
 	static void createShader();
-	static void deleteShader();
+	// static void deleteShader();
 
 private :
 
 	Body * body;
 
-	static shaderProgram* shaderAxis;
-	static DataGL m_AxisGL;
+	static std::unique_ptr<shaderProgram> shaderAxis;
+	static std::unique_ptr<VertexArray> m_AxisGL;
 
 	double axisAngle;
 	std::vector<float> vecAxisPos;

@@ -288,9 +288,9 @@ void Body::deleteShader()
 {
 	// OrbitPlot::deleteShader();
 	// Trail::deleteShader();
-	Halo::deleteShader();
-	Hints::deleteShader();
-	Axis::deleteShader();
+	// Halo::deleteShader();
+	// Hints::deleteShader();
+	// Axis::deleteShader();
 }
 
 // Return the information std::string "ready to print" :)

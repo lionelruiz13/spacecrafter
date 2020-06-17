@@ -19,8 +19,8 @@
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
 
-shaderProgram* Axis::shaderAxis;
-DataGL Axis::m_AxisGL;
+std::unique_ptr<shaderProgram> Axis::shaderAxis;
+std::unique_ptr<VertexArray> Axis::m_AxisGL;
 
 Axis::Axis(Body * _body)
 {
@@ -47,14 +47,18 @@ void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 
 	computeAxis(prj, mat);
 
-	glBindVertexArray(m_AxisGL.vao);
+	// glBindVertexArray(m_AxisGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,m_AxisGL.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecAxisPos.size(),vecAxisPos.data(),GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_AxisGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecAxisPos.size(),vecAxisPos.data(),GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
+	m_AxisGL->fillVertexBuffer(BufferType::POS2D, vecAxisPos);
 
+	m_AxisGL->bind();
 	glDrawArrays(GL_LINE_STRIP, 0,2);
-	glBindVertexArray(0);
+	m_AxisGL->unBind();
+
+	// glBindVertexArray(0);
 	shaderAxis->unuse();
 
 	vecAxisPos.clear();
@@ -111,22 +115,24 @@ void Axis::computeAxisAngle(const Projector* prj, const Mat4d& mat) {
 
 void Axis::createShader()
 {
-	shaderAxis = new shaderProgram();
+	shaderAxis = std::make_unique<shaderProgram>();
 	shaderAxis->init( "body_Axis.vert", "body_Axis.frag");
-	shaderAxis->setUniformLocation("MVP");
-	shaderAxis->setUniformLocation("Color");
-	glGenVertexArrays(1,&m_AxisGL.vao);
-	glBindVertexArray(m_AxisGL.vao);
-	glGenBuffers(1,&m_AxisGL.pos);
-	glEnableVertexAttribArray(0);
+	shaderAxis->setUniformLocation({"MVP", "Color"});
+
+	m_AxisGL = std::make_unique<VertexArray>();
+	m_AxisGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	// glGenVertexArrays(1,&m_AxisGL.vao);
+	// glBindVertexArray(m_AxisGL.vao);
+	// glGenBuffers(1,&m_AxisGL.pos);
+	// glEnableVertexAttribArray(0);
 }
 
-void Axis::deleteShader()
-{
-	if (shaderAxis != nullptr)
-		delete shaderAxis;
-	shaderAxis=nullptr;
+// void Axis::deleteShader()
+// {
+// 	if (shaderAxis != nullptr)
+// 		delete shaderAxis;
+// 	shaderAxis=nullptr;
 
-	glDeleteBuffers(1,&m_AxisGL.pos);
-	glDeleteVertexArrays(1,&m_AxisGL.vao);
-}
+// 	glDeleteBuffers(1,&m_AxisGL.pos);
+// 	glDeleteVertexArrays(1,&m_AxisGL.vao);
+// }

@@ -23,8 +23,8 @@
 //! \date april 2018
 
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
 
@@ -55,7 +55,7 @@ public :
 	void computeHints();
 
 	static void createShader();
-	static void deleteShader();
+	// static void deleteShader();
 
 private :
 	static const int nbrFacets;
@@ -63,8 +63,8 @@ private :
 
 	Body * body;
 
-	static shaderProgram* shaderHints;
-	static DataGL m_HintsGL;
+	static std::unique_ptr<shaderProgram> shaderHints;
+	static std::unique_ptr<VertexArray> m_HintsGL;
 	LinearFader hint_fader;
 
 	std::vector<float> vecHintsPos;
