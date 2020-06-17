@@ -9,7 +9,7 @@
 *
 * This source code mustn't be copied or redistributed
 * without the authorization of Immersive Adventure
-* (c) 2017 - all rights reserved
+* (c) 2017 - 2020 all rights reserved
 *
 */
 //! \file orbit_plot.hpp
@@ -20,10 +20,13 @@
 #ifndef ORBIT_PLOT_HPP
 #define ORBIT_PLOT_HPP
 
+#include <vector>
+#include <memory>
+
 #include "tools/fader.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
-#include <vector>
+
 
 class Body;
 class Projector;
@@ -45,8 +48,8 @@ public:
 
 	virtual void drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d &mat) = 0;
 
-	static void createShader();
-	static void deleteShader();
+	static void createGL_context();
+	// static void deleteShader();
 
 	void updateShader(double delta_time);
 	LinearFader getOrbitFader() {
@@ -71,10 +74,10 @@ protected:
 	LinearFader orbit_fader;
 
 	static shaderProgram* shaderOrbit2d;
-	static DataGL Orbit2dData;
+	static DataGL m_Orbit2dGL;
 
 	static shaderProgram* shaderOrbit3d;
-	static DataGL Orbit3dData;
+	static DataGL m_Orbit3dGL;
 };
 
 #endif

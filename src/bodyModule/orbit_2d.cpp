@@ -1,3 +1,17 @@
+/*
+* This source is the property of Immersive Adventure
+* http://immersiveadventure.net/
+*
+* It has been developped by part of the LSS Team.
+* For further informations, contact:
+*
+* albertpla@immersiveadventure.net
+*
+* This source code mustn't be copied or redistributed
+* without the authorization of Immersive Adventure
+* (c) 2017 - 2020 all rights reserved
+*
+*/
 
 #include "bodyModule/orbit_2d.hpp"
 #include "bodyModule/body.hpp"
@@ -30,8 +44,8 @@ void Orbit2D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d
 	shaderOrbit2d->setUniform("Mat", mat.convert());
 	shaderOrbit2d->setUniform("Color", Color);
 
-	glBindVertexArray(Orbit2dData.vao);
-	glBindBuffer(GL_ARRAY_BUFFER,Orbit2dData.pos);
+	glBindVertexArray(m_Orbit2dGL.vao);
+	glBindBuffer(GL_ARRAY_BUFFER,m_Orbit2dGL.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecOrbit2dVertex.size(),vecOrbit2dVertex.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 

@@ -9,22 +9,25 @@
 *
 * This source code mustn't be copied or redistributed
 * without the authorization of Immersive Adventure
-* (c) 2017 - all rights reserved
+* (c) 2017 - 2020 all rights reserved
 *
 */
+
+#include <iostream>
 
 
 #include "bodyModule/orbit_plot.hpp"
 #include "bodyModule/body.hpp"
 #include "bodyModule/orbit.hpp"
-#include <iostream>
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
 shaderProgram* OrbitPlot::shaderOrbit2d = nullptr;
-DataGL OrbitPlot::Orbit2dData;
+DataGL OrbitPlot::m_Orbit2dGL;
 
 shaderProgram* OrbitPlot::shaderOrbit3d = nullptr;
-DataGL OrbitPlot::Orbit3dData;
+DataGL OrbitPlot::m_Orbit3dGL;
 
 
 OrbitPlot::OrbitPlot(Body* _body, int segments)
@@ -45,7 +48,7 @@ void OrbitPlot::init()
 	delta_orbitJD = body->re.sidereal_period/ORBIT_POINTS;
 }
 
-void OrbitPlot::createShader()
+void OrbitPlot::createGL_context()
 {
 
 	shaderOrbit2d = new shaderProgram();
@@ -53,9 +56,9 @@ void OrbitPlot::createShader()
 	shaderOrbit2d->setUniformLocation("Mat");
 	shaderOrbit2d->setUniformLocation("Color");
 
-	glGenVertexArrays(1,&Orbit2dData.vao);
-	glBindVertexArray(Orbit2dData.vao);
-	glGenBuffers(1,&Orbit2dData.pos);
+	glGenVertexArrays(1,&m_Orbit2dGL.vao);
+	glBindVertexArray(m_Orbit2dGL.vao);
+	glGenBuffers(1,&m_Orbit2dGL.pos);
 	glEnableVertexAttribArray(0);
 
 	shaderOrbit3d = new shaderProgram();
@@ -66,10 +69,10 @@ void OrbitPlot::createShader()
 	shaderOrbit3d->setUniformLocation("ModelViewMatrix");
 	shaderOrbit3d->setUniformLocation("clipping_fov");
 
-	glGenVertexArrays(1,&Orbit3dData.vao);
-	glBindVertexArray(Orbit3dData.vao);
+	glGenVertexArrays(1,&m_Orbit3dGL.vao);
+	glBindVertexArray(m_Orbit3dGL.vao);
 
-	glGenBuffers(1,&Orbit3dData.pos);
+	glGenBuffers(1,&m_Orbit3dGL.pos);
 	glEnableVertexAttribArray(0);
 }
 
@@ -78,16 +81,16 @@ void OrbitPlot::updateShader(double delta_time)
 	orbit_fader.update(delta_time);
 }
 
-void OrbitPlot::deleteShader()
-{
-	if(shaderOrbit2d) shaderOrbit2d=nullptr;
-	if(shaderOrbit3d) shaderOrbit3d=nullptr;
+// void OrbitPlot::deleteShader()
+// {
+// 	if(shaderOrbit2d) shaderOrbit2d=nullptr;
+// 	if(shaderOrbit3d) shaderOrbit3d=nullptr;
 
-	glDeleteBuffers(1,&Orbit3dData.pos);
-	glDeleteBuffers(1,&Orbit3dData.vao);
-	glDeleteBuffers(1,&Orbit2dData.pos);
-	glDeleteVertexArrays(1,&Orbit2dData.vao);
-}
+// 	glDeleteBuffers(1,&m_Orbit3dGL.pos);
+// 	glDeleteBuffers(1,&m_Orbit3dGL.vao);
+// 	glDeleteBuffers(1,&m_Orbit2dGL.pos);
+// 	glDeleteVertexArrays(1,&m_Orbit2dGL.vao);
+// }
 
 void OrbitPlot::computeOrbit(double date)
 {

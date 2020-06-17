@@ -9,7 +9,7 @@
 *
 * This source code mustn't be copied or redistributed
 * without the authorization of Immersive Adventure
-* (c) 2017 - all rights reserved
+* (c) 2017 - 2020 all rights reserved
 *
 */
 
@@ -54,8 +54,8 @@ void Orbit3D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d
 	setPrjMat(prj,mat);
 	computeShader();
 
-	glBindVertexArray(Orbit3dData.vao);
-	glBindBuffer(GL_ARRAY_BUFFER,Orbit3dData.pos);
+	glBindVertexArray(m_Orbit3dGL.vao);
+	glBindBuffer(GL_ARRAY_BUFFER,m_Orbit3dGL.pos);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*orbitSegments.size(),orbitSegments.data(),GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 	glDrawArrays(GL_LINE_STRIP,0,orbitSegments.size()/3);

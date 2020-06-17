@@ -276,7 +276,7 @@ void Body::deleteDefaultTexMap()
 
 void Body::createShader()
 {
-	OrbitPlot::createShader();
+	OrbitPlot::createGL_context();
 	Trail::createGL_context();
 	Halo::createShader();
 	Hints::createShader();
@@ -286,7 +286,7 @@ void Body::createShader()
 
 void Body::deleteShader()
 {
-	OrbitPlot::deleteShader();
+	// OrbitPlot::deleteShader();
 	// Trail::deleteShader();
 	Halo::deleteShader();
 	Hints::deleteShader();
