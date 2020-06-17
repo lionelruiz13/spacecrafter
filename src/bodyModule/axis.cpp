@@ -52,7 +52,7 @@ void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 	// glBindBuffer(GL_ARRAY_BUFFER,m_AxisGL.pos);
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecAxisPos.size(),vecAxisPos.data(),GL_DYNAMIC_DRAW);
 	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	m_AxisGL->fillVertexBuffer(BufferType::POS2D, vecAxisPos);
+	m_AxisGL->fillVertexBuffer(BufferType::POS3D, vecAxisPos);
 
 	m_AxisGL->bind();
 	glDrawArrays(GL_LINE_STRIP, 0,2);
