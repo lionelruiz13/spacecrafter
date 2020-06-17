@@ -31,6 +31,8 @@
 class Body;
 class Projector;
 class Navigator;
+class VertexArray;
+class shaderProgram;
 
 class OrbitPlot {
 public:
@@ -73,11 +75,11 @@ protected:
 
 	LinearFader orbit_fader;
 
-	static shaderProgram* shaderOrbit2d;
-	static DataGL m_Orbit2dGL;
+	static std::unique_ptr<shaderProgram> shaderOrbit2d;
+	static std::unique_ptr<VertexArray> m_Orbit2dGL;
 
-	static shaderProgram* shaderOrbit3d;
-	static DataGL m_Orbit3dGL;
+	static std::unique_ptr<shaderProgram> shaderOrbit3d;
+	static std::unique_ptr<VertexArray> m_Orbit3dGL;
 };
 
 #endif

@@ -23,12 +23,11 @@
 #include "tools/shader.hpp"
 
 
-shaderProgram* OrbitPlot::shaderOrbit2d = nullptr;
-DataGL OrbitPlot::m_Orbit2dGL;
+std::unique_ptr<shaderProgram> OrbitPlot::shaderOrbit2d;
+std::unique_ptr<VertexArray> OrbitPlot::m_Orbit2dGL;
 
-shaderProgram* OrbitPlot::shaderOrbit3d = nullptr;
-DataGL OrbitPlot::m_Orbit3dGL;
-
+std::unique_ptr<shaderProgram> OrbitPlot::shaderOrbit3d;
+std::unique_ptr<VertexArray> OrbitPlot::m_Orbit3dGL;
 
 OrbitPlot::OrbitPlot(Body* _body, int segments)
 {
@@ -51,17 +50,18 @@ void OrbitPlot::init()
 void OrbitPlot::createGL_context()
 {
 
-	shaderOrbit2d = new shaderProgram();
+	shaderOrbit2d = std::make_unique<shaderProgram>();
 	shaderOrbit2d->init( "body_orbit2d.vert", "body_orbit2d.geom","body_orbit2d.frag");
-	shaderOrbit2d->setUniformLocation("Mat");
-	shaderOrbit2d->setUniformLocation("Color");
+	shaderOrbit2d->setUniformLocation({"Mat", "Color"});
 
-	glGenVertexArrays(1,&m_Orbit2dGL.vao);
-	glBindVertexArray(m_Orbit2dGL.vao);
-	glGenBuffers(1,&m_Orbit2dGL.pos);
-	glEnableVertexAttribArray(0);
+	// glGenVertexArrays(1,&m_Orbit2dGL.vao);
+	// glBindVertexArray(m_Orbit2dGL.vao);
+	// glGenBuffers(1,&m_Orbit2dGL.pos);
+	// glEnableVertexAttribArray(0);
+	m_Orbit2dGL = std::make_unique<VertexArray>();
+	m_Orbit2dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 
-	shaderOrbit3d = new shaderProgram();
+	shaderOrbit3d = std::make_unique<shaderProgram>();
 	shaderOrbit3d->init( "body_orbit3d.vert", "body_orbit3d.geom","body_orbit3d.frag");
 	shaderOrbit3d->setUniformLocation("Color");
 	shaderOrbit3d->setUniformLocation("ModelViewProjectionMatrix");
@@ -69,11 +69,13 @@ void OrbitPlot::createGL_context()
 	shaderOrbit3d->setUniformLocation("ModelViewMatrix");
 	shaderOrbit3d->setUniformLocation("clipping_fov");
 
-	glGenVertexArrays(1,&m_Orbit3dGL.vao);
-	glBindVertexArray(m_Orbit3dGL.vao);
+	// glGenVertexArrays(1,&m_Orbit3dGL.vao);
+	// glBindVertexArray(m_Orbit3dGL.vao);
 
-	glGenBuffers(1,&m_Orbit3dGL.pos);
-	glEnableVertexAttribArray(0);
+	// glGenBuffers(1,&m_Orbit3dGL.pos);
+	// glEnableVertexAttribArray(0);
+	m_Orbit3dGL = std::make_unique<VertexArray>();
+	m_Orbit3dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 }
 
 void OrbitPlot::updateShader(double delta_time)
