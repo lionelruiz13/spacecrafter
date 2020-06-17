@@ -25,6 +25,7 @@
 #include "bodyModule/body_sun.hpp"
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/OpenGL.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/hints.hpp"
@@ -74,15 +75,15 @@ Sun::~Sun()
 {
 	if (tex_big_halo) delete tex_big_halo;
 	tex_big_halo = nullptr;
-	deleteHaloShader();
+	// deleteHaloShader();
 }
 
-void Sun::deleteHaloShader()
-{
-	glDeleteBuffers(1, &BigHalo.tex);
-	glDeleteBuffers(1, &BigHalo.pos);
-	glDeleteVertexArrays(1, &BigHalo.vao);
-}
+// void Sun::deleteHaloShader()
+// {
+// 	glDeleteBuffers(1, &m_bigHaloGL.tex);
+// 	glDeleteBuffers(1, &m_bigHaloGL.pos);
+// 	glDeleteVertexArrays(1, &m_bigHaloGL.vao);
+// }
 
 
 
@@ -109,10 +110,13 @@ void Sun::createHaloShader()
 	shaderBigHalo->setUniformLocation("radius");
 	shaderBigHalo->setUniformLocation("color");
 
-	glGenVertexArrays(1,&BigHalo.vao);
-	glBindVertexArray(BigHalo.vao);
-	glGenBuffers(1,&BigHalo.pos);
-	glEnableVertexAttribArray(0);
+	m_bigHaloGL = std::make_unique<VertexArray>();
+	m_bigHaloGL ->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+
+	// glGenVertexArrays(1,&m_bigHaloGL.vao);
+	// glBindVertexArray(m_bigHaloGL.vao);
+	// glGenBuffers(1,&m_bigHaloGL.pos);
+	// glEnableVertexAttribArray(0);
 }
 
 
@@ -144,14 +148,18 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 	shaderBigHalo->setUniform("cmag", cmag);
 	shaderBigHalo->setUniform("Rmag", rmag);
 	shaderBigHalo->setUniform("radius", getOnScreenSize(prj, nav));
-	glBindVertexArray(BigHalo.vao);
+	// glBindVertexArray(m_bigHaloGL.vao);
 
-	glBindBuffer (GL_ARRAY_BUFFER, BigHalo.pos);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2,screenPosF,GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glBindBuffer (GL_ARRAY_BUFFER, m_bigHaloGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2,screenPosF,GL_DYNAMIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
+	m_bigHaloGL->fillVertexBuffer(BufferType::POS2D, 2, screenPosF );
+
+	m_bigHaloGL->bind();
 	glDrawArrays(GL_POINTS,0,1);
-	glBindVertexArray(0);
+	m_bigHaloGL->unBind();
+	// glBindVertexArray(0);
 	shaderBigHalo->unuse();
 }
 

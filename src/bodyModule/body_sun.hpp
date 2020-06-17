@@ -22,8 +22,10 @@
  *
  */
 
+#include <memory>
 #include "bodyModule/body.hpp"
 
+class VertexArray;
 
 class Sun : public Body {
 
@@ -79,7 +81,7 @@ protected:
 	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
 	void createHaloShader();
-	void deleteHaloShader();
+	// void deleteHaloShader();
 	void createSunShader();
 
 	void selectShader() {};
@@ -89,5 +91,5 @@ protected:
 	SHADER_USE myShader;  			// the name of the shader used for his display
 	shaderProgram *myShaderProg;	// Shader moderne
 	shaderProgram* shaderBigHalo;
-	DataGL BigHalo;
+	std::unique_ptr<VertexArray> m_bigHaloGL;
 };
