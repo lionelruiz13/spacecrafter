@@ -37,7 +37,6 @@
 #include "coreModule/callbacks.hpp"
 #include "tools/fader.hpp"
 #include "bodyModule/orbit.hpp"
-#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
 class VertexArray;
@@ -53,7 +52,7 @@ public:
 private:
 	void computeRing(GLint slices, GLint stacks, bool h);
 	std::vector<GLfloat> dataTexture, dataVertex;
-	DataGL m_dataGL; //currentModel
+	std::unique_ptr<VertexArray> m_dataGL; //currentModel
 	float r_min;
 	float r_max;
 };
@@ -89,8 +88,8 @@ private:
 	const double radius_max;
 	const s_texture *tex;
 
-	shaderProgram *shaderRing;	// Shader moderne
-	void createShader();
+	std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
+	void createGL_context();
 	// void deleteShader();
 
 	Ring2D* lowUP;

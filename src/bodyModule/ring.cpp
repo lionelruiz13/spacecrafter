@@ -33,7 +33,8 @@
 #include "tools/s_font.hpp"
 #include "planetsephems/sideral_time.h"
 #include "tools/log.hpp"
-
+#include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
 
 
 Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init )
@@ -41,7 +42,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 {
 	init = _init;
 	tex = new s_texture(texname,TEX_LOAD_TYPE_PNG_ALPHA,1);
-	createShader();
+	createGL_context();
 	lowUP = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, true);
 	lowDOWN = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, false);
 
@@ -53,9 +54,9 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 }
 
 
-void Ring::createShader()
+void Ring::createGL_context()
 {
-	shaderRing = new shaderProgram();
+	shaderRing = std::make_unique<shaderProgram>();
 	shaderRing->init( "ring_planet.vert","ring_planet.frag");
 
 	shaderRing->setUniformLocation("Texture");
@@ -171,29 +172,34 @@ Ring2D::Ring2D(float _r_min, float _r_max, GLint _slices, GLint _stacks, bool h)
 
 	computeRing(_slices, _stacks, h);
 
-	glGenBuffers(1, &m_dataGL.pos);
-	glGenBuffers(1,&m_dataGL.tex);
+	// glGenBuffers(1, &m_dataGL.pos);
+	// glGenBuffers(1,&m_dataGL.tex);
 
-	glGenVertexArrays(1,&m_dataGL.vao);
-	glBindVertexArray(m_dataGL.vao);
+	// glGenVertexArrays(1,&m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.tex);
-	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataTexture.size(),dataTexture.data(),GL_STATIC_DRAW);
-	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-	glEnableVertexAttribArray(1);
+	// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.tex);
+	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataTexture.size(),dataTexture.data(),GL_STATIC_DRAW);
+	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
+	// glEnableVertexAttribArray(1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*dataVertex.size(), dataVertex.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL); //pourquoi 2 et pas 3 ? car z = 0;
-	glEnableVertexAttribArray(0);
+	// glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float)*dataVertex.size(), dataVertex.data(), GL_STATIC_DRAW);
+	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL); //pourquoi 2 et pas 3 ? car z = 0;
+	// glEnableVertexAttribArray(0);
+	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	m_dataGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	m_dataGL->fillVertexBuffer(BufferType::POS2D, dataVertex);
+	m_dataGL->fillVertexBuffer(BufferType::TEXTURE, dataTexture);
 }
 
 Ring2D::~Ring2D()
 {
-	glDeleteBuffers(1,&m_dataGL.tex);
-	glDeleteBuffers(1,&m_dataGL.pos);
-	glDeleteBuffers(1,&m_dataGL.pos);
-	glDeleteVertexArrays(1,&m_dataGL.vao);
+	// glDeleteBuffers(1,&m_dataGL.tex);
+	// glDeleteBuffers(1,&m_dataGL.pos);
+	// glDeleteBuffers(1,&m_dataGL.pos);
+	// glDeleteVertexArrays(1,&m_dataGL.vao);
 
 	dataTexture.clear();
 	dataVertex.clear();
@@ -201,9 +207,11 @@ Ring2D::~Ring2D()
 
 void Ring2D::draw()
 {
-	glBindVertexArray(m_dataGL.vao);
+	// glBindVertexArray(m_dataGL.vao);
+	m_dataGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
-	glBindVertexArray(0);
+	m_dataGL->unBind();
+	// glBindVertexArray(0);
 }
 
 
