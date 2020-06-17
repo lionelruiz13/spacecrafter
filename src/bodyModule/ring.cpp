@@ -74,10 +74,10 @@ void Ring::createShader()
 }
 
 
-void Ring::deleteShader()
-{
-	if(shaderRing) shaderRing=nullptr;
-}
+// void Ring::deleteShader()
+// {
+// 	if(shaderRing) shaderRing=nullptr;
+// }
 
 
 Ring::~Ring(void)
@@ -90,7 +90,7 @@ Ring::~Ring(void)
 	delete mediumDOWN;
 	delete highUP;
 	delete highDOWN;
-	deleteShader();
+	// deleteShader();
 }
 
 void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
@@ -171,18 +171,18 @@ Ring2D::Ring2D(float _r_min, float _r_max, GLint _slices, GLint _stacks, bool h)
 
 	computeRing(_slices, _stacks, h);
 
-	glGenBuffers(1, &cModel.pos);
-	glGenBuffers(1,&cModel.tex);
+	glGenBuffers(1, &m_dataGL.pos);
+	glGenBuffers(1,&m_dataGL.tex);
 
-	glGenVertexArrays(1,&cModel.vao);
-	glBindVertexArray(cModel.vao);
+	glGenVertexArrays(1,&m_dataGL.vao);
+	glBindVertexArray(m_dataGL.vao);
 
-	glBindBuffer(GL_ARRAY_BUFFER,cModel.tex);
+	glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.tex);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(float)*dataTexture.size(),dataTexture.data(),GL_STATIC_DRAW);
 	glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
 	glEnableVertexAttribArray(1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, cModel.pos);
+	glBindBuffer(GL_ARRAY_BUFFER, m_dataGL.pos);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*dataVertex.size(), dataVertex.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL); //pourquoi 2 et pas 3 ? car z = 0;
 	glEnableVertexAttribArray(0);
@@ -190,10 +190,10 @@ Ring2D::Ring2D(float _r_min, float _r_max, GLint _slices, GLint _stacks, bool h)
 
 Ring2D::~Ring2D()
 {
-	glDeleteBuffers(1,&cModel.tex);
-	glDeleteBuffers(1,&cModel.pos);
-	glDeleteBuffers(1,&cModel.pos);
-	glDeleteVertexArrays(1,&cModel.vao);
+	glDeleteBuffers(1,&m_dataGL.tex);
+	glDeleteBuffers(1,&m_dataGL.pos);
+	glDeleteBuffers(1,&m_dataGL.pos);
+	glDeleteVertexArrays(1,&m_dataGL.vao);
 
 	dataTexture.clear();
 	dataVertex.clear();
@@ -201,7 +201,7 @@ Ring2D::~Ring2D()
 
 void Ring2D::draw()
 {
-	glBindVertexArray(cModel.vao);
+	glBindVertexArray(m_dataGL.vao);
 	glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
 	glBindVertexArray(0);
 }

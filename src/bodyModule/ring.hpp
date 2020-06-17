@@ -27,6 +27,8 @@
 #ifndef _RING_H_
 #define _RING_H_
 
+#include <memory>
+
 #include "tools/object_base.hpp"
 #include "tools/utility.hpp"
 #include "tools/s_font.hpp"
@@ -38,6 +40,9 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 
+class VertexArray;
+class shaderProgram;
+
 
 class Ring2D {
 public:
@@ -48,7 +53,7 @@ public:
 private:
 	void computeRing(GLint slices, GLint stacks, bool h);
 	std::vector<GLfloat> dataTexture, dataVertex;
-	DataGL cModel; //currentModel
+	DataGL m_dataGL; //currentModel
 	float r_min;
 	float r_max;
 };
@@ -86,7 +91,7 @@ private:
 
 	shaderProgram *shaderRing;	// Shader moderne
 	void createShader();
-	void deleteShader();
+	// void deleteShader();
 
 	Ring2D* lowUP;
 	Ring2D* lowDOWN;
