@@ -50,8 +50,7 @@ public:
 
 	static void deleteDefaultTexMap();
 
-	static void createShader();
-	// static void deleteShader();
+	static void createGL_context();
 
 private:
 

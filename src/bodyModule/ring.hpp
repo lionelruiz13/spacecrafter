@@ -62,7 +62,7 @@ private:
 class Ring {
 
 public:
-	Ring(double radius_min,double radius_max,const std::string &texname, /*const std::string &path,*/ const Vec3i &init);
+	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init);
 	~Ring(void);
 
 	void draw(const Projector* prj,const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
@@ -90,7 +90,6 @@ private:
 
 	std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
 	void createGL_context();
-	// void deleteShader();
 
 	Ring2D* lowUP;
 	Ring2D* lowDOWN;

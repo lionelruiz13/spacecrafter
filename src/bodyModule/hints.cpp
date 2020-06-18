@@ -30,7 +30,7 @@ Hints::Hints(Body * _body)
 	body = _body;
 }
 
-void Hints::createShader()
+void Hints::createGL_context()
 {
 	shaderHints = std::make_unique<shaderProgram>();
 	shaderHints->init( "bodyHints.vert", "bodyHints.frag");
@@ -38,17 +38,8 @@ void Hints::createShader()
 
 	m_HintsGL = std::make_unique<VertexArray>();
 	m_HintsGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	// glGenVertexArrays(1,&m_HintsGL.vao);
-	// glBindVertexArray(m_HintsGL.vao);
-	// glGenBuffers(1,&m_HintsGL.pos);
-	// glEnableVertexAttribArray(0);
 }
 
-// void Hints::deleteShader()
-// {
-// 	glDeleteBuffers(1,&m_HintsGL.pos);
-// 	glDeleteVertexArrays(1,&m_HintsGL.vao);
-// }
 
 void Hints::drawHints(const Navigator* nav, const Projector* prj)
 {
@@ -72,18 +63,10 @@ void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 	shaderHints->setUniform("Color", body->myColor->getLabel());
 	shaderHints->setUniform("fader", hint_fader.getInterstate() );
 
-	// glBindVertexArray(m_HintsGL.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_HintsGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHintsPos.size(),vecHintsPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
 	m_HintsGL->fillVertexBuffer(BufferType::POS2D, vecHintsPos);
 	m_HintsGL->bind();
 	glDrawArrays(GL_LINE_LOOP,0,nbrFacets);
 	m_HintsGL->unBind();
-	// glBindVertexArray(0);
-
 	shaderHints->unuse();
 
 	vecHintsPos.clear();

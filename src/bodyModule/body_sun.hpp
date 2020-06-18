@@ -81,7 +81,6 @@ protected:
 	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
 	void createHaloShader();
-	// void deleteHaloShader();
 	void createSunShader();
 
 	void selectShader() {};

@@ -278,19 +278,9 @@ void Body::createShader()
 {
 	OrbitPlot::createGL_context();
 	Trail::createGL_context();
-	Halo::createShader();
-	Hints::createShader();
-	Axis::createShader();
-}
-
-
-void Body::deleteShader()
-{
-	// OrbitPlot::deleteShader();
-	// Trail::deleteShader();
-	// Halo::deleteShader();
-	// Hints::deleteShader();
-	// Axis::deleteShader();
+	Halo::createGL_context();
+	Hints::createGL_context();
+	Axis::createGL_context();
 }
 
 // Return the information std::string "ready to print" :)

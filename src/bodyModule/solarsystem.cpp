@@ -125,7 +125,7 @@ SolarSystem::~SolarSystem()
 	BodyShader::deleteShader();
 	Body::deleteDefaultTexMap();
 	Body::deleteDefaultatmosphereParams();
-	Body::deleteShader();
+
 	if (bodyTesselation)
 		delete bodyTesselation;
 	bodyTesselation = nullptr;

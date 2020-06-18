@@ -54,8 +54,7 @@ public :
 
 	void computeHints();
 
-	static void createShader();
-	// static void deleteShader();
+	static void createGL_context();
 
 private :
 	static const int nbrFacets;

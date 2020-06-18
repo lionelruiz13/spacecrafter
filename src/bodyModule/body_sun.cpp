@@ -2,6 +2,7 @@
  * Spacecrafter astronomy simulation and visualization
  *
  * Copyright (C) 2017 Immersive Adventure
+ * Copyright (C) 2017-2020 AssociationSirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -75,16 +76,7 @@ Sun::~Sun()
 {
 	if (tex_big_halo) delete tex_big_halo;
 	tex_big_halo = nullptr;
-	// deleteHaloShader();
 }
-
-// void Sun::deleteHaloShader()
-// {
-// 	glDeleteBuffers(1, &m_bigHaloGL.tex);
-// 	glDeleteBuffers(1, &m_bigHaloGL.pos);
-// 	glDeleteVertexArrays(1, &m_bigHaloGL.vao);
-// }
-
 
 
 float Sun::computeMagnitude(Vec3d obs_pos) const
@@ -112,11 +104,6 @@ void Sun::createHaloShader()
 
 	m_bigHaloGL = std::make_unique<VertexArray>();
 	m_bigHaloGL ->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-
-	// glGenVertexArrays(1,&m_bigHaloGL.vao);
-	// glBindVertexArray(m_bigHaloGL.vao);
-	// glGenBuffers(1,&m_bigHaloGL.pos);
-	// glEnableVertexAttribArray(0);
 }
 
 
@@ -148,18 +135,12 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 	shaderBigHalo->setUniform("cmag", cmag);
 	shaderBigHalo->setUniform("Rmag", rmag);
 	shaderBigHalo->setUniform("radius", getOnScreenSize(prj, nav));
-	// glBindVertexArray(m_bigHaloGL.vao);
-
-	// glBindBuffer (GL_ARRAY_BUFFER, m_bigHaloGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2,screenPosF,GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
 
 	m_bigHaloGL->fillVertexBuffer(BufferType::POS2D, 2, screenPosF );
 
 	m_bigHaloGL->bind();
 	glDrawArrays(GL_POINTS,0,1);
 	m_bigHaloGL->unBind();
-	// glBindVertexArray(0);
 	shaderBigHalo->unuse();
 }
 
@@ -243,8 +224,6 @@ void Sun::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat
 	StateGL::enable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
 
-//	glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
 	myShaderProg->use();
 
 	glActiveTexture(GL_TEXTURE0);
@@ -254,7 +233,6 @@ void Sun::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat
 	Mat4f proj = prj->getMatProjection().convert();
 	Mat4f matrix=mat.convert();
 	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
-
 
 	myShaderProg->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	myShaderProg->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());

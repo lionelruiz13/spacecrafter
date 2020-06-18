@@ -52,13 +52,10 @@ public:
 
 	void computeAxisAngle(const Projector* prj, const Mat4d& mat);
 
-	static void createShader();
-	// static void deleteShader();
-
+	static void createGL_context();
 private :
 
 	Body * body;
-
 	static std::unique_ptr<shaderProgram> shaderAxis;
 	static std::unique_ptr<VertexArray> m_AxisGL;
 

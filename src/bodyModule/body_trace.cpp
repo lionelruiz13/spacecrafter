@@ -4,7 +4,7 @@
  * Copyright (C) 2002 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
  * Copyright (C) 2013 of the LSS team
- * Copyright (C) 2014 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,11 +35,6 @@
 #include "tools/shader.hpp"
 
 
-//#include "tools/fmath.hpp"
-
-
-
-
 BodyTrace::BodyTrace()
 {
 	for(int i= 0; i<NB_MAX_LIST; i++) {
@@ -62,9 +57,7 @@ BodyTrace::BodyTrace()
 }
 
 BodyTrace::~BodyTrace()
-{
-	// deleteShader();
-}
+{}
 
 void BodyTrace::hide(int numberList)
 {
@@ -84,27 +77,9 @@ void BodyTrace::createGL_context()
 	shaderTrace->init("body_trace.vert","body_trace.geom","body_trace.frag");
 	shaderTrace->setUniformLocation({"Color", "Mat"});
 
-	// glGenVertexArrays(1,&m_dataGL.vao);
-	// glBindVertexArray(m_dataGL.vao);
-
-//	glGenBuffers(1,&trace.color);
-	// glGenBuffers(1,&m_dataGL.pos);
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
 	m_dataGL = std::make_unique<VertexArray>();
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 }
-
-// void BodyTrace::deleteShader()
-// {
-// 	if (shaderTrace)
-// 		delete shaderTrace;
-// 	shaderTrace = nullptr;
-
-// 	//glDeleteBuffers(1,&trace.color);
-// 	glDeleteBuffers(1,&m_dataGL.pos);
-// 	glDeleteVertexArrays(1,&m_dataGL.vao);
-// }
 
 
 void BodyTrace::draw(const Projector *prj,const Navigator *nav)
@@ -120,9 +95,6 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 
 		if (bodyData[l].size>2 && !bodyData[l].hide) {
 			for (int i=0; i < bodyData[l].size; i=i+1) {
-				// vecVertex.push_back( bodyData[l].punts[i][0] );
-				// vecVertex.push_back( bodyData[l].punts[i][1] );
-				// vecVertex.push_back( bodyData[l].punts[i][2] );
 				insert_vec3(vecVertex, bodyData[l].punts[i]);
 			}
 
@@ -132,18 +104,11 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 				shaderTrace->setUniform("Color", bodyData[l].color );
 				shaderTrace->setUniform("Mat", prj->getMatLocalToEye() );
 
-				// glBindVertexArray(m_dataGL.vao);
-		
-				// glEnableVertexAttribArray(0);
-				// glBindBuffer(GL_ARRAY_BUFFER,m_dataGL.pos);
-				// glBufferData(GL_ARRAY_BUFFER, sizeof(float)*vecVertex.size(), vecVertex.data(), GL_DYNAMIC_DRAW);
-				// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 				m_dataGL->fillVertexBuffer(BufferType::POS3D,vecVertex);
 
 				m_dataGL->bind();
 				glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
 				m_dataGL->unBind();
-				// glBindVertexArray(0);
 			}
 			//suppression du contenu des data
 			vecVertex.clear();

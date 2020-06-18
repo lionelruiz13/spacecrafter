@@ -51,24 +51,12 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	shaderHalo->setUniform("Color", body->myColor->getHalo());
 	shaderHalo->setUniform("cmag", cmag);
 
-	// glBindVertexArray(m_haloGL.vao);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_haloGL.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHaloPos.size(),vecHaloPos.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ARRAY_BUFFER,m_haloGL.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecHaloTex.size(),vecHaloTex.data(),GL_DYNAMIC_DRAW);
-	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
 	m_haloGL->fillVertexBuffer(BufferType::POS2D, vecHaloPos);
 	m_haloGL->fillVertexBuffer(BufferType::TEXTURE, vecHaloTex);
 
 	m_haloGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	m_haloGL->unBind();
-	// glBindVertexArray(0);
-
 	shaderHalo->unuse();
 
 	vecHaloPos.clear();
@@ -134,29 +122,12 @@ void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneRep
 
 	Vec2f screenPosF ((float) body->screenPos[0], (float)body->screenPos[1]);
 
-	// vecHaloPos.push_back( screenPosF[0]-rmag );
-	// vecHaloPos.push_back( screenPosF[1]-rmag );
-	// vecHaloPos.push_back( screenPosF[0]-rmag );
-	// vecHaloPos.push_back( screenPosF[1]+rmag );
-	// vecHaloPos.push_back( screenPosF[0]+rmag );
-	// vecHaloPos.push_back( screenPosF[1]-rmag );
-	// vecHaloPos.push_back( screenPosF[0]+rmag );
-	// vecHaloPos.push_back( screenPosF[1]+rmag );
 	insert_all(vecHaloPos, screenPosF[0]-rmag, screenPosF[1]-rmag, screenPosF[0]-rmag, screenPosF[1]+rmag);
 	insert_all(vecHaloPos, screenPosF[0]+rmag, screenPosF[1]-rmag, screenPosF[0]+rmag, screenPosF[1]+rmag);
-
-	// vecHaloTex.push_back( 0 );
-	// vecHaloTex.push_back( 0 );
-	// vecHaloTex.push_back( 0 );
-	// vecHaloTex.push_back( 1 );
-	// vecHaloTex.push_back( 1 );
-	// vecHaloTex.push_back( 0 );
-	// vecHaloTex.push_back( 1 );
-	// vecHaloTex.push_back( 1 );
 	insert_all(vecHaloTex, 0, 0, 0, 1, 1, 0, 1, 1);
 }
 
-void Halo::createShader()
+void Halo::createGL_context()
 {
 	shaderHalo = std::make_unique<shaderProgram>();
 	shaderHalo->init( "body_halo.vert", "body_halo.frag");
@@ -165,12 +136,6 @@ void Halo::createShader()
 	m_haloGL = std::make_unique<VertexArray>();
 	m_haloGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_haloGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
-	// glGenVertexArrays(1,&m_haloGL.vao);
-	// glBindVertexArray(m_haloGL.vao);
-	// glGenBuffers(1,&m_haloGL.tex);
-	// glGenBuffers(1,&m_haloGL.pos);
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
 }
 
 bool Halo::setTexHaloMap(const std::string &texMap)
@@ -189,11 +154,3 @@ void Halo::deleteDefaultTexMap()
 		tex_halo = nullptr;
 	}
 }
-
-// void Halo::deleteShader()
-// {
-// 	glDeleteBuffers(1, &m_haloGL.tex);
-// 	glDeleteBuffers(1, &m_haloGL.pos);
-// 	glDeleteVertexArrays(1, &m_haloGL.vao);
-
-// }

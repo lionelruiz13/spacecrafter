@@ -27,7 +27,6 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-//#include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
 
@@ -68,9 +67,7 @@ public:
 	void updateTrail(const Navigator* nav, const TimeMgr* timeMgr);
 	void startTrail(bool b);
 	void updateFader(int delta_time);
-
 	static void createGL_context();
-	// static void deleteShader();
 
 private:
 	Body * body = nullptr;

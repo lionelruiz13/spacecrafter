@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2015 of the LSS Team & Association Sirius
+ * Copyright (C) 2015-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,7 +31,6 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-// #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
@@ -131,11 +130,7 @@ private:
 	Vec3d pt2;
 
 	void createGL_context();
-	// void deleteShader();
-
 	std::vector<float> vecVertex;
-
-	//shader for meteor's displaying
 	std::unique_ptr<shaderProgram> shaderTrace;
 	std::unique_ptr<VertexArray> m_dataGL;
 };
