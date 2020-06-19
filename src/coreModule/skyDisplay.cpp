@@ -338,6 +338,8 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	if (!fader.getInterstate())
 		return;
 
+	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
+
 	double tempDE, tempRA;
 	float alt, az, aza, alta, ra, dec, mn;
 	double fov = prj->getFov() / 360.f;
@@ -389,7 +391,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// AZ
@@ -426,7 +428,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// RA
@@ -455,7 +457,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "m";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// DEC
@@ -491,7 +493,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 }
@@ -505,6 +507,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	if (!fader.getInterstate())
 		return;
 
+	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
 	int x,y;
 	SDL_GetMouseState(&x,&y);
 	Vec3d equPos = prj->getCursorPosEqu(x, y);
@@ -561,7 +564,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// AZ
@@ -598,7 +601,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// RA
@@ -627,7 +630,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "m";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 	// DEC
@@ -663,7 +666,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 		oss.clear();
 	}
 }
@@ -676,6 +679,8 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 {
 	if (!fader.getInterstate())
 		return;
+
+	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
 	// for Selected position
 	// calculate alt az position
@@ -750,7 +755,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	if (mn < 10)
 		oss << "0";
 	oss << mn << "'";
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 	oss.clear();
 }
 
@@ -761,6 +766,7 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 {
 	if (!fader.getInterstate() or (equPos == oldEquPos))
 		return;
+	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
 	double de1, ra1, de2, ra2, dem, ram;
 	// for Old position
 	Utility::rectToSphe(&ra1, &de1, oldEquPos);
@@ -808,7 +814,7 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), 3 * pi_div_2 - angle);
 	oss << truncf(distM) << " nmi"; // for km *1.85185
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 	oss.clear();
 }
 
@@ -821,6 +827,7 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 		return;
 	// for Selected position
 	double ra1, de1, ra2, de2, rat, det, ang, alt1, az1, alt2, az2;
+	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
 	Utility::rectToSphe(&ra1, &de1, oldEquPos);
 	Utility::rectToSphe(&ra2, &de2, equPos);
 	if ((ra2 - ra1) > M_PI)
@@ -895,6 +902,6 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), M_PI - pi_div_2 + angle);
 	std::ostringstream oss;
 	oss << truncf(ang * 60) << " nmi"; // for km *1.85185
-	skydisplay_font->print(2, -2, oss.str(), color, MVP * TRANSFO, 1);
+	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 	oss.clear();
 }
