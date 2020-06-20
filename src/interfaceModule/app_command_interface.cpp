@@ -2887,6 +2887,9 @@ int AppCommandInterface::commandMedia()
 		} else if (argAction == W_JUMP) {
 			media->playerJump(evalDouble(args[W_VALUE]));
 			return executeCommandStatus();
+		} else if (argAction == W_RESTART) {
+			media->playerRestart();
+			return executeCommandStatus();
 		}
 	}
 
