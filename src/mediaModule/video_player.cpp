@@ -389,11 +389,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		return true;
 	}
 	if(nbFrames < nbTotalFrame) { // on verifie qu'on ne saute pas hors vidéo
-		int64_t seek_target = nbFrames * frameRateDuration *1000;
-        int64_t seek_min    = frameToSkeep > 0 ? seek_target - frameToSkeep* frameRateDuration *1000 + 2: INT64_MIN;
-        int64_t seek_max    = frameToSkeep < 0 ? seek_target - frameToSkeep* frameRateDuration *1000 - 2: INT64_MAX;
-		if(avformat_seek_file(pFormatCtx, -1, seek_min, seek_target , seek_max, AVSEEK_FLAG_ANY) < 0) {
-		//if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, nbFrames * frameRateDuration *1000 , INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+		if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, nbFrames * frameRateDuration *1000 , INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
 			printf("av_seek_frame forward failed. \n");
 			return false;
 		}
