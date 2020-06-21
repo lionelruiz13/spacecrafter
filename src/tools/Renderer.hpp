@@ -35,6 +35,7 @@ class Renderer {
 public:
     static void drawArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int first, unsigned int count);
     static void clearColor();
+    static void clearDepthBuffer();
 private:
 
 };

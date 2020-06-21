@@ -29,6 +29,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/Renderer.hpp"
 
 OjmMgr::OjmMgr()
 {
@@ -178,7 +179,9 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 		StateGL::disable(GL_BLEND);
 		StateGL::disable(GL_DEPTH_TEST);
 		StateGL::BlendFunc(GL_ONE, GL_ZERO);
-		glClear(GL_DEPTH_BUFFER_BIT);
+		// glClear(GL_DEPTH_BUFFER_BIT);
+		Renderer::clearDepthBuffer();
+		
 	}
 	glDisable(GL_CULL_FACE);
 }

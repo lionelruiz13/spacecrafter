@@ -9,6 +9,12 @@ void Renderer::clearColor()
 }
 
 
+void Renderer::clearDepthBuffer()
+{
+    glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+
 void Renderer::drawArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int first, unsigned int count )
 {
     shader->use();
