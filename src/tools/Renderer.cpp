@@ -9,11 +9,11 @@ void Renderer::clearColor()
 }
 
 
-void Renderer::drawArrays(shaderProgram* shader, VertexArray* va, unsigned int first, unsigned int count )
+void Renderer::drawArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int first, unsigned int count )
 {
     shader->use();
 	va->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP, first, count);
+	glDrawArrays(mode, first, count);
 	va->unBind();
 	shader->unuse();
 }

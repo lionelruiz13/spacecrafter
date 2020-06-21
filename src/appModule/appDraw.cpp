@@ -35,6 +35,7 @@
 #include "tools/utility.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 AppDraw::AppDraw()
 {}
@@ -127,20 +128,22 @@ void AppDraw::drawViewportShape()
 	shaderViewportShape->setUniform("decalage_x" , m_decalage_x);
 	shaderViewportShape->setUniform("decalage_y" , m_decalage_y);
 
-	m_viewportGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_viewportGL->unBind();
-	shaderViewportShape->unuse();
+	// m_viewportGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// m_viewportGL->unBind();
+	// shaderViewportShape->unuse();
+	Renderer::drawArrays(shaderViewportShape.get(), m_viewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void AppDraw::drawColorInverse()
 {
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	shaderColorInverse->use();
 
-	m_viewportGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_viewportGL->unBind();
-	shaderColorInverse->unuse();
+	// shaderColorInverse->use();
+	// m_viewportGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// m_viewportGL->unBind();
+	// shaderColorInverse->unuse();
+	Renderer::drawArrays(shaderColorInverse.get(), m_viewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
