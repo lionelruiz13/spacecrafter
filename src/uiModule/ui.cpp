@@ -800,7 +800,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		VDIR = VDIR + "navigation/";
 	}
 
-	if (key == SDL_SCANCODE_A && (mod & COMPATIBLE_KMOD_CTRL)) {
+	if (key == SDL_SCANCODE_A && (mod & KMOD_CTRL)) {
 		app->flag(APP_FLAG::ALIVE, false);
 	}
 
