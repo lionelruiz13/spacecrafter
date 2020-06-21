@@ -100,7 +100,7 @@ void Axis::computeAxisAngle(const Projector* prj, const Mat4d& mat) {
 	}
 }
 
-void Axis::createGL_context()
+void Axis::createSC_context()
 {
 	shaderAxis = std::make_unique<shaderProgram>();
 	shaderAxis->init( "body_Axis.vert", "body_Axis.frag");

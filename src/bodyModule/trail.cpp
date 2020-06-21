@@ -162,7 +162,7 @@ void Trail::updateFader(int delta_time)
 }
 
 
-void Trail::createGL_context()
+void Trail::createSC_context()
 {
 	shaderTrail = std::make_unique<shaderProgram>();
 	shaderTrail->init( "body_trail.vert","body_trail.geom","body_trail.frag");

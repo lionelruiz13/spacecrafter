@@ -129,7 +129,7 @@ private:
 	Vec3d pt1;
 	Vec3d pt2;
 
-	void createGL_context();
+	void createSC_context();
 	std::vector<float> vecVertex;
 	std::unique_ptr<shaderProgram> shaderTrace;
 	std::unique_ptr<VertexArray> m_dataGL;

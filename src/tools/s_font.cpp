@@ -67,7 +67,7 @@ s_font::~s_font()
 }
 
 
-void s_font::createGL_context()
+void s_font::createSC_context()
 {
 	//HORIZONTAL
 	shaderHorizontal = std::make_unique<shaderProgram>();

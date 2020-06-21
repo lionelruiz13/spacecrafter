@@ -295,7 +295,7 @@ double Nebula::getCloseFov(const Navigator*) const
 }
 
 
-void Nebula::createGL_context()
+void Nebula::createSC_context()
 {
 	Nebula::shaderNebulaTex = std::make_unique<shaderProgram>();
 	Nebula::shaderNebulaTex->init("nebulaTex.vert","nebulaTex.geom","nebulaTex.frag");

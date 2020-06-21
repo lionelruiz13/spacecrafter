@@ -196,7 +196,7 @@ void Image::createShaderUnified()
 }
 
 
-void Image::createGL_context()
+void Image::createSC_context()
 {
 	m_imageUnifiedGL = std::make_unique<VertexArray>();
 	m_imageUnifiedGL->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);

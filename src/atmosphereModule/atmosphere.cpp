@@ -51,7 +51,7 @@ Atmosphere::Atmosphere() : world_adaptation_luminance(0.f), atm_intensity(0),
 		tab_sky[k] = new Vec3f[SKY_RESOLUTION+1];
 	}
 	setFaderDuration(0.f);
-	createGL_context();
+	createSC_context();
 }
 
 Atmosphere::~Atmosphere()
@@ -90,7 +90,7 @@ void Atmosphere::initGridPos()
 	dataPos.clear();
 }
 
-void Atmosphere::createGL_context()
+void Atmosphere::createSC_context()
 {
 	shaderAtmosphere= new shaderProgram();
 	shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");

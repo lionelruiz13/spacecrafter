@@ -30,7 +30,7 @@
 
 StarLines::StarLines()
 {
-	createGL_context();
+	createSC_context();
 	lineColor =  Vec3f(1.0,1.0,0.0);
 	isAlive = false;
 }
@@ -40,7 +40,7 @@ StarLines::~StarLines()
 	linePos.clear();
 }
 
-void StarLines::createGL_context()
+void StarLines::createSC_context()
 {
 	shaderStarLines = std::make_unique<shaderProgram>();
 	shaderStarLines -> init("starLines.vert","starLines.geom", "starLines.frag");

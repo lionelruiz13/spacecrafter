@@ -88,7 +88,7 @@ public:
 
 private:
 	// initialise le shader et les vao-vbo
-	void createGL_context();
+	void createSC_context();
 	// couleur uniforme du nuage
 	Vec3f color;
 	// fader pour affichage

@@ -103,7 +103,7 @@ public:
 			intensity = 0.0;
 	}
 
-	void createGL_context();
+	void createSC_context();
 private:
 	//détermine l'intensité du voile sur l'écran
 	float intensity =0.0;

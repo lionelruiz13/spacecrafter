@@ -54,7 +54,7 @@ public :
 
 	void computeHints();
 
-	static void createGL_context();
+	static void createSC_context();
 
 private :
 	static const int nbrFacets;

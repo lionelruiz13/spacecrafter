@@ -88,7 +88,7 @@ void AppDraw::initSplash()
 }
 
 
-void AppDraw::createGL_context()
+void AppDraw::createSC_context()
 {
 	shaderViewportShape= std::make_unique<shaderProgram>();
 	shaderViewportShape->init( "viewportShape.vert", "viewportShape.frag");

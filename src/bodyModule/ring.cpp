@@ -42,7 +42,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 {
 	init = _init;
 	tex = new s_texture(texname,TEX_LOAD_TYPE_PNG_ALPHA,1);
-	createGL_context();
+	createSC_context();
 	lowUP = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, true);
 	lowDOWN = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, false);
 
@@ -54,7 +54,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 }
 
 
-void Ring::createGL_context()
+void Ring::createSC_context()
 {
 	shaderRing = std::make_unique<shaderProgram>();
 	shaderRing->init( "ring_planet.vert","ring_planet.frag");

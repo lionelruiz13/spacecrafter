@@ -68,7 +68,7 @@ public:
 
 	float getStrLen(const std::string& s/*, bool cache = 0*/);
 
-	static void createGL_context();
+	static void createSC_context();
 
 protected:
 

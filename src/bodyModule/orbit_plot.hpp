@@ -50,7 +50,7 @@ public:
 
 	virtual void drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d &mat) = 0;
 
-	static void createGL_context();
+	static void createSC_context();
 	// static void deleteShader();
 
 	void updateShader(double delta_time);

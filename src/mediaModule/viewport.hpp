@@ -93,7 +93,7 @@ public:
 		noColor = Vec4f(color[0], color[1], color[2],intensity);
 	}
 
-	void createGL_context();
+	void createSC_context();
 
 private:
 	//initialisation shader

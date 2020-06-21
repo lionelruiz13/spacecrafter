@@ -89,7 +89,7 @@ private:
 	const s_texture *tex;
 
 	std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
-	void createGL_context();
+	void createSC_context();
 
 	Ring2D* lowUP;
 	Ring2D* lowDOWN;

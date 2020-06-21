@@ -43,13 +43,13 @@ Oort::Oort()
 {
 	color = Vec3f(1.0,1.0,0.0);
 	fader = false;
-	createGL_context();
+	createSC_context();
 }
 
 Oort::~Oort()
 {}
 
-void Oort::createGL_context()
+void Oort::createSC_context()
 {
 	shaderOort = std::make_unique<shaderProgram>();
 	shaderOort->init("oort.vert","oort.frag");

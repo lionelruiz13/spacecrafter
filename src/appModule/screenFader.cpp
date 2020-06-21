@@ -36,7 +36,7 @@ ScreenFader::~ScreenFader()
 {
 }
 
-void ScreenFader::createGL_context()
+void ScreenFader::createSC_context()
 {
 	shaderScreen = std::make_unique<shaderProgram>();
 	shaderScreen->init( "screenFader.vert","screenFader.frag");

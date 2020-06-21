@@ -45,8 +45,8 @@ NebulaMgr::NebulaMgr(void)
 		cLog::get()->write("DSO: error while loading pictogram texture", LOG_TYPE::L_ERROR);
 
 	createShaderHint();
-	createGL_context();
-	Nebula::createGL_context();
+	createSC_context();
+	Nebula::createSC_context();
 }
 
 NebulaMgr::~NebulaMgr()
@@ -74,7 +74,7 @@ void NebulaMgr::createShaderHint()
 }
 
 
-void NebulaMgr::createGL_context()
+void NebulaMgr::createSC_context()
 {
 	m_hintGL = std::make_unique<VertexArray>();
 	m_hintGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);

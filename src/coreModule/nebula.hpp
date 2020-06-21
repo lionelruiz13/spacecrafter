@@ -143,7 +143,7 @@ public:
 		return DSOstringType;
 	}
 
-	static void createGL_context();
+	static void createSC_context();
 
 	//! Return the radius of a circle containing the object on screen
 	float getOnScreenSize(const Projector* prj, const Navigator * nav = nullptr, bool orb_only = false) {

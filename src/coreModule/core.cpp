@@ -370,7 +370,7 @@ void Core::init(const InitParser& conf)
 		ObjectBase::createShaderStarPointeur();
 		ObjectBase::createShaderPointeur();
 		//Init of the text's shaders
-		s_font::createGL_context();
+		s_font::createSC_context();
 	}
 
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);

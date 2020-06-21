@@ -42,7 +42,7 @@ Tully::Tully()
 {
 	texGalaxy = nullptr;
 	fader = true;
-	createGL_context();
+	createSC_context();
 	nbGalaxy=0;
 	nbTextures = 0;
 }
@@ -62,7 +62,7 @@ Tully::~Tully()
 	radiusTmpTully.clear();
 }
 
-void Tully::createGL_context()
+void Tully::createSC_context()
 {
 	shaderPoints = std::make_unique<shaderProgram>();
 	shaderPoints->init("tully.vert","tully.geom","tully.frag");

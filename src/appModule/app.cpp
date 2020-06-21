@@ -85,7 +85,7 @@ App::App( SDLFacade* const sdl )
 	coreLink = new CoreLink(core);
 	coreBackup = new CoreBackup(core);
 
-	screenFader->createGL_context();
+	screenFader->createSC_context();
 
 	ui = new UI(core, coreLink, this, mSdl, media);
 	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
@@ -299,7 +299,7 @@ void App::firstInit()
 	ui->localizeTui();
 	ui->initTui();
 
-	appDraw->createGL_context();
+	appDraw->createSC_context();
 	media->createViewPort();
 	media->createVR360();
 	media->createImageShader();

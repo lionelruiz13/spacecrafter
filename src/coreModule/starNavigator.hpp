@@ -125,7 +125,7 @@ private:
 	// structure de gestion des VAO-VBO
 	std::unique_ptr<VertexArray>  m_dataGL;
 	//initialisation du shader et des VAO-VBO
-	void createGL_context();
+	void createSC_context();
 
 	//précalcul de la table des couleurs
 	void computeRCMagTable();

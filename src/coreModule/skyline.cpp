@@ -51,7 +51,7 @@ SkyLine::~SkyLine()
 	font = nullptr;
 }
 
-void SkyLine::createGL_context()
+void SkyLine::createSC_context()
 {
 	m_skylineGL = std::make_unique<VertexArray>();
 	m_skylineGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);

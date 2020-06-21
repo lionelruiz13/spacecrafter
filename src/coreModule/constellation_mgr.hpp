@@ -232,7 +232,7 @@ private:
 	float artFadeDuration;
 	float artMaxIntensity;
 
-	void createGL_context();
+	void createSC_context();
 
 	std::unique_ptr<shaderProgram> m_shaderArt, m_shaderBoundary, m_shaderLines;
 	std::unique_ptr<VertexArray> m_constellationGL;

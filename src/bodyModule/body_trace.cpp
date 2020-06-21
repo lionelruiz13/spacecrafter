@@ -53,7 +53,7 @@ BodyTrace::BodyTrace()
 	bodyData[7].color= Vec3f(0.4f, 1.0f, 0.6f);
 	is_tracing=true;
 	currentUsedList=0;
-	createGL_context();
+	createSC_context();
 }
 
 BodyTrace::~BodyTrace()
@@ -71,7 +71,7 @@ void BodyTrace::hide(int numberList)
 		bodyData[numberList].hide= !bodyData[numberList].hide;
 }
 
-void BodyTrace::createGL_context()
+void BodyTrace::createSC_context()
 {
 	shaderTrace = std::make_unique<shaderProgram>();
 	shaderTrace->init("body_trace.vert","body_trace.geom","body_trace.frag");

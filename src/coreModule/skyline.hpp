@@ -84,7 +84,7 @@ public:
 	}
 
 	static void createShader();
-	static void createGL_context();
+	static void createSC_context();
 
 protected:
 

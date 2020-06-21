@@ -54,7 +54,7 @@ StarNavigator::StarNavigator()
 	starMgr = nullptr;
 	starMgr = new StarManager();
 
-	createGL_context();
+	createSC_context();
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
 	old_pos = v3fNull;
 	
@@ -63,7 +63,7 @@ StarNavigator::StarNavigator()
 	computeRCMagTable();
 }
 
-void StarNavigator::createGL_context()
+void StarNavigator::createSC_context()
 {
 	shaderStarNav = std::make_unique<shaderProgram>();
 	shaderStarNav -> init("starNav.vert","starNav.geom","starNav.frag");

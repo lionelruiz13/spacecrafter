@@ -87,7 +87,7 @@ public:
 	}
 
 	//! création des shaders
-	void createGL_context();
+	void createSC_context();
 private:
 	//! suppression des shaders
 	void deleteShader();

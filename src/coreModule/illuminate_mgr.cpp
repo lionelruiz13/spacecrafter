@@ -53,7 +53,7 @@ IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator, Con
 		cLog::get()->write("Error loading texture illuminateTex", LOG_TYPE::L_ERROR);
 
 	currentTex = defaultTex;
-	createGL_context();
+	createSC_context();
 }
 
 IlluminateMgr::~IlluminateMgr()
@@ -283,7 +283,7 @@ Illuminate *IlluminateMgr::search(unsigned int name)
 	return nullptr;
 }
 
-void IlluminateMgr::createGL_context()
+void IlluminateMgr::createSC_context()
 {
 	m_shaderIllum = std::make_unique<shaderProgram>();
 	m_shaderIllum->init( "illuminate.vert", "illuminate.frag");

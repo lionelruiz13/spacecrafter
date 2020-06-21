@@ -30,7 +30,7 @@ Hints::Hints(Body * _body)
 	body = _body;
 }
 
-void Hints::createGL_context()
+void Hints::createSC_context()
 {
 	shaderHints = std::make_unique<shaderProgram>();
 	shaderHints->init( "bodyHints.vert", "bodyHints.frag");

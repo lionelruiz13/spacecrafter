@@ -38,7 +38,7 @@ void ViewPort::createShader()
 	shaderViewPort->setUniformLocation("fader");
 }
 
-void ViewPort::createGL_context()
+void ViewPort::createSC_context()
 {
 	// FullScreen mode
 	float viewportPoints[8] = {-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};

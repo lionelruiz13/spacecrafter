@@ -33,7 +33,7 @@ Dso3d::Dso3d()
 {
 	texNebulae = nullptr;
 	fader = true;
-	createGL_context();
+	createSC_context();
 	nbNebulae=0;
 }
 
@@ -47,7 +47,7 @@ Dso3d::~Dso3d()
 	texDso3d.clear();
 }
 
-void Dso3d::createGL_context()
+void Dso3d::createSC_context()
 {
 	shaderDso3d = std::make_unique<shaderProgram>();
 	shaderDso3d->init("dso3d.vert", "dso3d.geom","dso3d.frag");

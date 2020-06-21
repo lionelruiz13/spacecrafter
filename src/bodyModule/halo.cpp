@@ -127,7 +127,7 @@ void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneRep
 	insert_all(vecHaloTex, 0, 0, 0, 1, 1, 0, 1, 1);
 }
 
-void Halo::createGL_context()
+void Halo::createSC_context()
 {
 	shaderHalo = std::make_unique<shaderProgram>();
 	shaderHalo->init( "body_halo.vert", "body_halo.frag");

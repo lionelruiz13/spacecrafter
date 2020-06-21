@@ -122,7 +122,7 @@ private:
 	s_texture * defaultTex = nullptr;		//!< Common texture if no other texture defined
 	s_texture * userTex = nullptr;				//!< Texture define by user 
 
-	void createGL_context();
+	void createSC_context();
 };
 
 #endif // _ILLUMINATE_MGR_H_
