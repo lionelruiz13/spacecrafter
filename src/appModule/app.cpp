@@ -55,6 +55,7 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
+#include "tools/Renderer.hpp"
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"
@@ -216,7 +217,8 @@ std::string App::getAppLanguage() {
 void App::init()
 {
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	Renderer::clearColor();
 
 	// Initialize video device and other sdl parameters
 	InitParser conf;
@@ -285,7 +287,8 @@ void App::init()
 void App::firstInit()
 {
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	Renderer::clearColor();
 
 	appDraw->initSplash();
 	mSdl->glSwapWindow();	// And swap the buffers
@@ -393,7 +396,8 @@ void App::update(int delta_time)
 //! Main drawinf function called at each frame
 void App::draw(int delta_time)
 {
-	appDraw->drawFirstLayer();
+	// appDraw->drawFirstLayer();
+	Renderer::clearColor();
 
 	core->draw(delta_time);
 

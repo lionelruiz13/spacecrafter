@@ -110,10 +110,11 @@ void AppDraw::deleteShader()
 }
 
 //! dessine la première couche du tracé opengl sur le logiciel
-void AppDraw::drawFirstLayer()
-{
-	glClear(GL_COLOR_BUFFER_BIT);
-}
+// void AppDraw::drawFirstLayer()
+// {
+	//glClear(GL_COLOR_BUFFER_BIT);
+// 	Renderer::clearColor();
+// }
 
 //! Fill with black around the circle
 void AppDraw::drawViewportShape()

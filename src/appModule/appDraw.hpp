@@ -55,7 +55,7 @@ public:
     void initSplash();
 
     //! clean screen with black color
-	void drawFirstLayer();
+	// void drawFirstLayer();
 	//! rempli en noir l'extérieur du dôme
 	void drawViewportShape();
 	//! dessine le rendu final du logiciel en inversant les couleurs

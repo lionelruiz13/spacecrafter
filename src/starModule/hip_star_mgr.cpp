@@ -49,7 +49,7 @@
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
 #include "tools/OpenGL.hpp"
-
+#include "tools/Renderer.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;
@@ -691,7 +691,8 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	//clear the colour and depth buffers
 	if (!starTrace)
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT);
+		Renderer::clearColor();
 
 	//dessin des etoiles
 	shaderStars->use();
