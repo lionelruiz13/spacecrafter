@@ -28,3 +28,17 @@ void Renderer::viewport(int x, int y, int w, int h)
 {
 	glViewport(x,y,w,h);
 }
+
+
+
+void Renderer::drawMultiArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int boucle, unsigned int count )
+{
+    shader->use();
+	va->bind();
+	// glDrawArrays(mode, boucle, count);
+	for (unsigned int y=0; y<boucle; y++) {
+		glDrawArrays(GL_TRIANGLE_STRIP,y*count , count);
+	}
+	va->unBind();
+	shader->unuse();
+}

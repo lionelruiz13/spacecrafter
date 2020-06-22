@@ -36,6 +36,7 @@
 #include "tools/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 #define SKY_RESOLUTION 48
 
@@ -249,11 +250,13 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 	StateGL::BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
 	StateGL::enable(GL_BLEND);
 
-	shaderAtmosphere->use();
-	m_atmGL->bind();
-	for (int y=0; y<SKY_RESOLUTION; y++) {
-		glDrawArrays(GL_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
-	}
-	m_atmGL->unBind();
-	shaderAtmosphere->unuse();
+	// shaderAtmosphere->use();
+	// m_atmGL->bind();
+	// for (int y=0; y<SKY_RESOLUTION; y++) {
+	// 	glDrawArrays(GL_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
+	// }
+	// m_atmGL->unBind();
+	// shaderAtmosphere->unuse();
+
+	Renderer::drawMultiArrays(shaderAtmosphere.get(), m_atmGL.get(), GL_TRIANGLE_STRIP, SKY_RESOLUTION, (SKY_RESOLUTION+1)*2 );
 }
