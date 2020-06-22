@@ -146,7 +146,7 @@ bool Navigator::lookAt(double az, double alt, double time){
 	Vec3d rot(0,-1,0);
 	
 	vision = Mat4d::zrotation(- az * M_PI / 180.) * vision;
-	rot = Mat4d::zrotation(az * M_PI / 180.) * rot;
+	rot = Mat4d::zrotation(- az * M_PI / 180.) * rot;
 	
 	vision = Mat4d::rotation(rot, alt * M_PI / 180.) * vision;
 		
