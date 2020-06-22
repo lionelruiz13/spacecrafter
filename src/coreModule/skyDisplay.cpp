@@ -818,7 +818,7 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	oss.clear();
 }
 
-SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
+SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
 {}
 
 void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
@@ -853,18 +853,19 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 	
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+	// shaderSkyDisplay->use();
+	// shaderSkyDisplay->setUniform("color", color);
+	// shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+	// shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
 	
-	m_dataGL->bind();
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	m_dataGL->unBind();
-	shaderSkyDisplay->unuse();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	// m_dataGL->unBind();
+	// shaderSkyDisplay->unuse();
+	SkyDisplay::draw(prj,nav);
 
 	// Text
 	Vec3d localPos = nav->earthEquToLocal(oldEquPos);
