@@ -90,7 +90,7 @@ public:
 	void createSC_context();
 private:
 	//! suppression des shaders
-	void deleteShader();
+	// void deleteShader();
 
 	std::unique_ptr<shaderProgram> shaderViewportShape, shaderColorInverse;
 	std::unique_ptr<VertexArray> m_viewportGL;

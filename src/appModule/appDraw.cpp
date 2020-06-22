@@ -43,7 +43,7 @@ AppDraw::AppDraw()
 
 AppDraw::~AppDraw()
 {
-	this->deleteShader();
+	// this->deleteShader();
 }
 
 void AppDraw::init(unsigned int _width, unsigned int _height)
@@ -100,9 +100,9 @@ void AppDraw::createSC_context()
 	m_viewportGL->fillVertexBuffer(BufferType::POS2D, 8, points);
 }
 
-void AppDraw::deleteShader()
-{
-}
+// void AppDraw::deleteShader()
+// {
+// }
 
 //! dessine la première couche du tracé opengl sur le logiciel
 // void AppDraw::drawFirstLayer()
