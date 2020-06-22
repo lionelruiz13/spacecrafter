@@ -23,3 +23,8 @@ void Renderer::drawArrays(shaderProgram* shader, VertexArray* va, GLenum mode, u
 	va->unBind();
 	shader->unuse();
 }
+
+void Renderer::viewport(int x, int y, int w, int h)
+{
+	glViewport(x,y,w,h);
+}

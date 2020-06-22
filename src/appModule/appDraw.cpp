@@ -70,7 +70,8 @@ void AppDraw::initSplash()
 	splash->fillVertexBuffer(BufferType::TEXTURE, 8, dataTex);
 
 	int tmp=std::min(width, height);
-	glViewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
+	//glViewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
+	Renderer::viewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
 
 	std::unique_ptr<s_texture> tex_splash = 
 			std::make_unique<s_texture>(AppSettings::Instance()->getUserDir()+"textures/splash/spacecrafter.png" , TEX_LOAD_TYPE_PNG_ALPHA);
@@ -81,11 +82,12 @@ void AppDraw::initSplash()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex_splash->getID());
 
-	shaderSplash->use();
-	splash->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	splash->unBind();
-	shaderSplash->unuse();
+	Renderer::drawArrays(shaderSplash.get(), splash.get(), GL_TRIANGLE_STRIP,0,4);
+	// shaderSplash->use();
+	// splash->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// splash->unBind();
+	// shaderSplash->unuse();
 }
 
 

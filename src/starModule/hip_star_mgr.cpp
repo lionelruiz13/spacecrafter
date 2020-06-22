@@ -708,7 +708,8 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 	glBlendEquation(GL_MAX);
 
-	glViewport(0,0 , sizeTexFbo, sizeTexFbo);
+	// glViewport(0,0 , sizeTexFbo, sizeTexFbo);
+	Renderer::viewport(0,0 , sizeTexFbo, sizeTexFbo);
 
 	m_starsGL->bind();
 	glDrawArrays(GL_POINTS,0,nbStarsToDraw);
