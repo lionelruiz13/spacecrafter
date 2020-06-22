@@ -261,31 +261,31 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 
 void NebulaMgr::drawAllHint(const Projector* prj)
 {
-
-	
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	shaderNebulaHint->use();
-	shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
 
 	glBindTexture (GL_TEXTURE_2D, Nebula::tex_NEBULA->getID());
 
-	if(vecHintPos.size()>0) {
-		m_hintGL->fillVertexBuffer(BufferType::POS2D, vecHintPos);
-		m_hintGL->fillVertexBuffer(BufferType::TEXTURE, vecHintTex);
-		m_hintGL->fillVertexBuffer(BufferType::COLOR, vecHintColor);
+	if(vecHintPos.size()==0)
+		return;
+	
+	shaderNebulaHint->use();
+	shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
 
-		m_hintGL->bind();
-		for(unsigned int i=0; i < (vecHintPos.size()/8) ; i++)
-			glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
-		m_hintGL->unBind();
+	m_hintGL->fillVertexBuffer(BufferType::POS2D, vecHintPos);
+	m_hintGL->fillVertexBuffer(BufferType::TEXTURE, vecHintTex);
+	m_hintGL->fillVertexBuffer(BufferType::COLOR, vecHintColor);
 
-		vecHintPos.clear();
-		vecHintTex.clear();
-		vecHintColor.clear();
-	}
+	m_hintGL->bind();
+	for(unsigned int i=0; i < (vecHintPos.size()/8) ; i++)
+		glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
+	m_hintGL->unBind();
 	shaderNebulaHint->unuse();
+
+	vecHintPos.clear();
+	vecHintTex.clear();
+	vecHintColor.clear();
 }
 
 // search by name
