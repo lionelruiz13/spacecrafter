@@ -79,8 +79,9 @@ void AppDraw::initSplash()
 	StateGL::disable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex_splash->getID());
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, tex_splash->getID());
+	StateGL::bindTexture2D(0,tex_splash->getID());
 
 	Renderer::drawArrays(shaderSplash.get(), splash.get(), GL_TRIANGLE_STRIP,0,4);
 	// shaderSplash->use();

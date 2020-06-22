@@ -18,6 +18,8 @@ public:
 
 	static void BlendFunc(GLenum gl_enum1, GLenum gl_enum2);
 
+	static void bindTexture2D(unsigned int texNumber,GLuint texRef);
+
 private:
 
 	static void EnableDisable(GLenum gl_enum, bool value);
