@@ -46,7 +46,7 @@ OjmMgr::~OjmMgr()
 		}
 	OjmVector.clear();
 
-	deleteShader();
+	// deleteShader();
 }
 
 OjmMgr::STATE_POSITION OjmMgr::convert(const std::string & value)
@@ -207,7 +207,7 @@ void OjmMgr::createShader()
 	//~ shaderOJM->printInformations();
 }
 
-void OjmMgr::deleteShader()
-{
-	if(shaderOJM) shaderOJM=nullptr;
-}
+// void OjmMgr::deleteShader()
+// {
+// 	if(shaderOJM) shaderOJM=nullptr;
+// }

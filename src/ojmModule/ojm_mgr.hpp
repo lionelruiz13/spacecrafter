@@ -64,7 +64,7 @@ private:
 	OjmMgr::STATE_POSITION convert(const std::string & value);
 
 	void createShader();
-	void deleteShader();
+	// void deleteShader();
 
 	bool remove(STATE_POSITION state, const std::string& name);
 
