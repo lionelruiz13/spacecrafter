@@ -26,6 +26,7 @@
 #include "tools/OpenGL.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 ScreenFader::ScreenFader()
 {
@@ -64,8 +65,9 @@ void ScreenFader::draw()
 	shaderScreen->use();
 	shaderScreen->setUniform("intensity" , intensity);
 
-	m_screenGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_screenGL->unBind();
-	shaderScreen->unuse();
+	// m_screenGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// m_screenGL->unBind();
+	// shaderScreen->unuse();
+	Renderer::drawArrays(shaderScreen.get(), m_screenGL.get(),GL_TRIANGLE_STRIP,0,4);
 }
