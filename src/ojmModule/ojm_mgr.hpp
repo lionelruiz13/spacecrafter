@@ -26,6 +26,7 @@
 #define OJM_MGR_HPP
 
 #include <vector>
+#include <memory>
 #include "ojmModule/ojm.hpp"
 #include "tools/shader.hpp"
 #include "tools/no_copy.hpp"
@@ -78,7 +79,7 @@ private:
 	};
 	Mat4f view, normal, proj;
 	std::vector<OjmContainer*> OjmVector;
-	shaderProgram* shaderOJM;
+	std::unique_ptr<shaderProgram> shaderOJM;
 };
 
 #endif

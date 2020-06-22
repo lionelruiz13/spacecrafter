@@ -165,7 +165,7 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 		shaderOJM->setUniform("Light.Position", Vec4f(0.0, 0.0, 0.0, 1.0));
 		shaderOJM->setUniform("Light.Intensity", Vec3f(1.0, 1.0, 1.0));
 
-		OjmVector[i]->Obj3D->draw(shaderOJM);
+		OjmVector[i]->Obj3D->draw(shaderOJM.get());
 	}
 
 	shaderOJM->unuse();
@@ -189,7 +189,7 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 
 void OjmMgr::createShader()
 {
-	shaderOJM= new shaderProgram();
+	shaderOJM= std::make_unique<shaderProgram>();
 	shaderOJM->init("shaderOJM_noSUN.vert", "", "", "","shaderOJM_noSUN.frag");
 	shaderOJM->setUniformLocation("ModelViewMatrix");
 	shaderOJM->setUniformLocation("NormalMatrix");

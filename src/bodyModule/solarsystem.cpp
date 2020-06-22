@@ -123,7 +123,7 @@ SolarSystem::~SolarSystem()
 	systemBodies.clear();		
 	renderedBodies.clear();
 	
-	BodyShader::deleteShader();
+	// BodyShader::deleteShader();
 	Body::deleteDefaultTexMap();
 	Body::deleteDefaultatmosphereParams();
 

@@ -68,7 +68,6 @@ VR360::~VR360()
 
 void VR360::createShader()
 {
-	// shaderVR360= new shaderProgram();
 	shaderVR360 = std::make_unique<shaderProgram>();
 	shaderVR360->init( "VR360.vert","VR360.frag");
 	shaderVR360->setUniformLocation("intensity");

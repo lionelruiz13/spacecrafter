@@ -86,9 +86,9 @@ protected:
 	void selectShader() {};
 
 	//variables
-	shaderProgram *shaderSun;
+	// shaderProgram *shaderSun;
 	SHADER_USE myShader;  			// the name of the shader used for his display
-	shaderProgram *myShaderProg;	// Shader moderne
-	shaderProgram* shaderBigHalo;
+	//shaderProgram *myShaderProg;	// Shader moderne
+	std::unique_ptr<shaderProgram> shaderSun, shaderBigHalo;
 	std::unique_ptr<VertexArray> m_bigHaloGL;
 };

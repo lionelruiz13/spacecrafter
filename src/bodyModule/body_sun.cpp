@@ -94,7 +94,7 @@ void Sun::setBigHalo(const std::string& halotexfile, const std::string &path)
 
 void Sun::createHaloShader()
 {
-	shaderBigHalo = new shaderProgram();
+	shaderBigHalo = std::make_unique<shaderProgram>();
 	shaderBigHalo->init("sun_big_halo.vert","sun_big_halo.geom","sun_big_halo.frag");
 	shaderBigHalo->setUniformLocation("Rmag");
 	shaderBigHalo->setUniformLocation("cmag");
@@ -147,7 +147,7 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 void Sun::createSunShader()
 {
 	myShader = SHADER_SUN;
-	shaderSun = new shaderProgram();
+	shaderSun = std::make_unique<shaderProgram>();
 	shaderSun->init( "body_sun.vert", "body_sun.frag");
 	shaderSun->setUniformLocation("ModelViewProjectionMatrix");
 
@@ -156,7 +156,7 @@ void Sun::createSunShader()
 	shaderSun->setUniformLocation("ModelViewMatrix");
 	shaderSun->setUniformLocation("planetScaledRadius");
 
-	myShaderProg = shaderSun;
+//	myShaderProg = shaderSun;
 }
 
 // Draw the Sun and all the related infos : name, circle etc..
@@ -224,7 +224,7 @@ void Sun::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat
 	StateGL::enable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
 
-	myShaderProg->use();
+	shaderSun->use();
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex_current->getID());
@@ -234,14 +234,14 @@ void Sun::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat
 	Mat4f matrix=mat.convert();
 	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
 
-	myShaderProg->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	myShaderProg->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("planetScaledRadius",radius);
+	shaderSun->setUniform("ModelViewProjectionMatrix",proj*matrix);
+	shaderSun->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
+	shaderSun->setUniform("ModelViewMatrix",matrix);
+	shaderSun->setUniform("planetScaledRadius",radius);
 
 	currentObj->draw(screen_sz);
 
-	myShaderProg->unuse();
+	shaderSun->unuse();
 	glActiveTexture(GL_TEXTURE0);
 	StateGL::disable(GL_CULL_FACE);
 }

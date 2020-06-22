@@ -59,7 +59,7 @@ MilkyWay::MilkyWay()
 
 void MilkyWay::createShader()
 {
-	shaderMilkyway= new shaderProgram();
+	shaderMilkyway= std::make_unique<shaderProgram>();
 	shaderMilkyway->init("milkyway.vert","milkyway.frag");
 	
 	shaderMilkyway->setUniformLocation("cmag");
@@ -89,14 +89,14 @@ MilkyWay::~MilkyWay()
 {
 	if (sphere) delete sphere;
 	deleteMapTex();
-	deleteShader();
+	// deleteShader();
 }
 
 
-void MilkyWay::deleteShader()
-{
-	if (shaderMilkyway) delete shaderMilkyway;
-}
+// void MilkyWay::deleteShader()
+// {
+// 	if (shaderMilkyway) delete shaderMilkyway;
+// }
 
 void MilkyWay::deleteMapTex()
 {

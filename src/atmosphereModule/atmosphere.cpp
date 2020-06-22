@@ -62,7 +62,7 @@ Atmosphere::~Atmosphere()
 	if (tab_sky) delete [] tab_sky;
 	dataColor.clear();
 	dataPos.clear();
-	deleteShader();
+	// deleteShader();
 }
 
 
@@ -92,7 +92,7 @@ void Atmosphere::initGridPos()
 
 void Atmosphere::createSC_context()
 {
-	shaderAtmosphere= new shaderProgram();
+	shaderAtmosphere= std::make_unique<shaderProgram>();
 	shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");
 
 	m_atmGL = std::make_unique<VertexArray>();
@@ -100,12 +100,12 @@ void Atmosphere::createSC_context()
 	m_atmGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 }
 
-void Atmosphere::deleteShader()
-{
-	if (shaderAtmosphere)
-		delete shaderAtmosphere;
-	shaderAtmosphere=nullptr;
-}
+// void Atmosphere::deleteShader()
+// {
+// 	if (shaderAtmosphere)
+// 		delete shaderAtmosphere;
+// 	shaderAtmosphere=nullptr;
+// }
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
                                const ToneReproductor * eye, const Projector* prj,  const std::string &planetName,

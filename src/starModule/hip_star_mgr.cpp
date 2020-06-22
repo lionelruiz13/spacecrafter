@@ -185,13 +185,11 @@ HipStarMgr::HipStarMgr(int width,int height) :
 	max_geodesic_grid_level = -1;
 	last_max_search_level = -1;
 
-	shaderStars =  nullptr;
-	shaderStars= new shaderProgram();
-	shaderStars->init("stars.vert","stars.geom", "stars.frag");
+	shaderStars = std::make_unique<shaderProgram>();
+	shaderStars-> init("stars.vert","stars.geom", "stars.frag");
 
-	shaderFBO = nullptr;
-	shaderFBO= new shaderProgram();
-	shaderFBO->init("fbo.vert","fbo.frag");
+	shaderFBO = std::make_unique<shaderProgram>();
+	shaderFBO-> init("fbo.vert","fbo.frag");
 
 	createShaderParams( width, height);
 }
@@ -295,23 +293,23 @@ HipStarMgr::~HipStarMgr(void)
 	dataMag.clear();
 	dataPos.clear();
 
-	deleteShader();
+	// deleteShader();
 }
 
-void HipStarMgr::deleteShader()
-{
-	if (shaderStars)
-		delete shaderStars;
-	shaderStars =  nullptr;
+// void HipStarMgr::deleteShader()
+// {
+// 	if (shaderStars)
+// 		delete shaderStars;
+// 	shaderStars =  nullptr;
 
-	if (shaderFBO)
-		delete shaderFBO;
-	shaderFBO = nullptr;
+// 	if (shaderFBO)
+// 		delete shaderFBO;
+// 	shaderFBO = nullptr;
 
 	// glDeleteBuffers(1,&drawFBO.tex);
 	// glDeleteBuffers(1,&drawFBO.pos);
 	// glDeleteVertexArrays(1,&drawFBO.vao);
-}
+// }
 
 std::string HipStarMgr::getCommonName(int hip)
 {
