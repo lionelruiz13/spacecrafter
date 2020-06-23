@@ -50,10 +50,6 @@ void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 
 	m_AxisGL->fillVertexBuffer(BufferType::POS3D, vecAxisPos);
 
-	// m_AxisGL->bind();
-	// glDrawArrays(GL_LINE_STRIP, 0,2);
-	// m_AxisGL->unBind();
-	// shaderAxis->unuse();
 	Renderer::drawArrays(shaderAxis.get(), m_AxisGL.get(), GL_LINE_STRIP, 0,2);
 
 	vecAxisPos.clear();

@@ -351,10 +351,6 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 
 	m_texGL->fillVertexBuffer(BufferType::POS3D,sDataPos);
 
-	// m_texGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	// m_texGL->unBind();
-	// shaderNebulaTex->unuse();
 	Renderer::drawArrays(shaderNebulaTex.get(), m_texGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 

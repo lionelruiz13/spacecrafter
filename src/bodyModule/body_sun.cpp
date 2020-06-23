@@ -138,10 +138,6 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 
 	m_bigHaloGL->fillVertexBuffer(BufferType::POS2D, 2, screenPosF );
 
-	// m_bigHaloGL->bind();
-	// glDrawArrays(GL_POINTS,0,1);
-	// m_bigHaloGL->unBind();
-	// shaderBigHalo->unuse();
 	Renderer::drawArrays(shaderBigHalo.get(), m_bigHaloGL.get(), GL_POINTS, 0, 1);
 }
 
@@ -156,8 +152,6 @@ void Sun::createSunShader()
 	shaderSun->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderSun->setUniformLocation("ModelViewMatrix");
 	shaderSun->setUniformLocation("planetScaledRadius");
-
-//	myShaderProg = shaderSun;
 }
 
 // Draw the Sun and all the related infos : name, circle etc..

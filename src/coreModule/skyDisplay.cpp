@@ -244,32 +244,6 @@ void SkyPerson::loadString(const std::string& message)
 }
 
 
-// void SkyPerson::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
-// {
-// 	if (!fader.getInterstate())
-// 		return;
-
-// 	StateGL::enable(GL_BLEND);
-// 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-// 	shaderSkyDisplay->use();
-// 	shaderSkyDisplay->setUniform("color", color);
-// 	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-
-// 	if (ptype == AL)
-// 		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-// 	else
-// 		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-
-// 	glBindVertexArray(m_dataGL.vao);
-
-// 	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-
-// 	shaderSkyDisplay->unuse();
-
-// 	//draw_text(prj, nav);
-// }
-
 SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 {}
 

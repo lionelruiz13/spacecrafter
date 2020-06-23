@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 of Association Sirius
+ * Copyright (C) 2018-2020 of Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -65,9 +65,5 @@ void ScreenFader::draw()
 	shaderScreen->use();
 	shaderScreen->setUniform("intensity" , intensity);
 
-	// m_screenGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	// m_screenGL->unBind();
-	// shaderScreen->unuse();
 	Renderer::drawArrays(shaderScreen.get(), m_screenGL.get(),GL_TRIANGLE_STRIP,0,4);
 }
