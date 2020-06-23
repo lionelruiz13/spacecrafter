@@ -217,11 +217,14 @@ public:
 		return core->tully->getFlagShow();
 	}
 
-	void tullySetColor(bool value)
+	void tullySetWhiteColor(bool value)
 	{
 		core->tully->setWhiteColor(value);
 	}
 
+	bool tullyGetWhiteColor() {
+		return core->tully->getWhiteColor();
+	}
 	////////////////////////////////////////////////////////////////////////////////
 	// Stars---------------------------
 	////////////////////////////////////////////////////////////////////////////////

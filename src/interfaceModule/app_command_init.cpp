@@ -178,6 +178,7 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags[ACP_FN_DSO_PICTOGRAMS] = FLAG_NAMES::FN_DSO_PICTOGRAMS;
 	m_flags[ACP_FN_ZODIACAL_LIGHT] = FLAG_NAMES::FN_ZODIAC_LIGHT;
 	m_flags[ACP_FN_TULLY] = FLAG_NAMES::FN_TULLY;
+	m_flags[ACP_FN_TULLY_COLOR_MODE] = FLAG_NAMES::FN_TULLY_COLOR_MODE;
 	m_flags[ACP_FN_SATELLITES] = FLAG_NAMES::FN_SATELLITES;
 
 	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {

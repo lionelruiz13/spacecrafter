@@ -902,6 +902,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			coreLink->tullySetFlagShow(newval);
 			break;
 
+		case FLAG_NAMES::FN_TULLY_COLOR_MODE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->tullyGetWhiteColor();
+
+			coreLink->tullySetWhiteColor(newval);
+			break;
+
 		case FLAG_NAMES::FN_BODY_TRACE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->bodyTraceGetFlag();
