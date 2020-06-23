@@ -31,6 +31,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/shader.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 
 void intrusivePtrAddRef(ObjectBase* p)
@@ -132,10 +133,11 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		m_shaderStarPointer->setUniform("radius", radius);
 		m_shaderStarPointer->setUniform("matRotation", matRotation);
 		m_shaderStarPointer->setUniform("color", color);
-		m_starPointerGL->bind();
-		glDrawArrays(GL_POINTS,0,1);
-		m_starPointerGL->unBind();
-		m_shaderStarPointer->unuse();
+		// m_starPointerGL->bind();
+		// glDrawArrays(GL_POINTS,0,1);
+		// m_starPointerGL->unBind();
+		// m_shaderStarPointer->unuse();
+		Renderer::drawArrays(m_shaderStarPointer.get(), m_starPointerGL.get(), GL_POINTS,0,1);
 	}
 
 	if (getType()==OBJECT_NEBULA || getType()==OBJECT_BODY) {
@@ -168,10 +170,11 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 
 		m_shaderPointer->use();
 		m_shaderPointer->setUniform("color", color);
-		m_pointerGL->bind();		
-		glDrawArrays(GL_POINTS,0,4);
-		m_pointerGL->unBind();
-		m_shaderPointer->unuse();
+		// m_pointerGL->bind();		
+		// glDrawArrays(GL_POINTS,0,4);
+		// m_pointerGL->unBind();
+		// m_shaderPointer->unuse();
+		Renderer::drawArrays(m_shaderPointer.get(), m_pointerGL.get(), GL_POINTS,0,4);
 
 		m_pos.clear();
 		m_indice.clear();

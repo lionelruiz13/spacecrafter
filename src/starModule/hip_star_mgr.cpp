@@ -709,10 +709,11 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	// glViewport(0,0 , sizeTexFbo, sizeTexFbo);
 	Renderer::viewport(0,0 , sizeTexFbo, sizeTexFbo);
 
-	m_starsGL->bind();
-	glDrawArrays(GL_POINTS,0,nbStarsToDraw);
-	m_starsGL->unBind();
-	shaderStars->unuse();
+	// m_starsGL->bind();
+	// glDrawArrays(GL_POINTS,0,nbStarsToDraw);
+	// m_starsGL->unBind();
+	// shaderStars->unuse();
+	Renderer::drawArrays(shaderStars.get(), m_starsGL.get(), GL_POINTS,0,nbStarsToDraw);
 
 	//unbind the FBO
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -730,10 +731,11 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 
 	shaderFBO->use();
 //	glBindVertexArray(drawFBO.vao);
-	m_drawFBO_GL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_drawFBO_GL->unBind();
-	shaderFBO->unuse();
+	// m_drawFBO_GL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// m_drawFBO_GL->unBind();
+	// shaderFBO->unuse();
+	Renderer::drawArrays(shaderFBO.get(), m_drawFBO_GL.get(), GL_TRIANGLE_STRIP,0,4);
 
 	this->drawStarName(prj);
 
