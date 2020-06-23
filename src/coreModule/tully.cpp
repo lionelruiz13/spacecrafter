@@ -74,7 +74,7 @@ void Tully::createSC_context()
 	
 	m_pointsGL = std::make_unique<VertexArray>();
 	m_pointsGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_pointsGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	m_pointsGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
 
@@ -84,7 +84,7 @@ void Tully::createSC_context()
 
 	m_squareGL =  std::make_unique<VertexArray>();
 	m_squareGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	m_squareGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
+	m_squareGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
 	m_squareGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::DYNAMIC);
 }
 
@@ -143,7 +143,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 
 	m_pointsGL->fillVertexBuffer(BufferType::POS3D,posTully );
 	m_pointsGL->fillVertexBuffer(BufferType::COLOR,colorTully );
-	m_pointsGL->fillVertexBuffer(BufferType::TEXTURE,texTully );
+	m_pointsGL->fillVertexBuffer(BufferType::MAG,texTully );
 	m_pointsGL->fillVertexBuffer(BufferType::SCALE,scaleTully );
 
 	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + Utility::intToString(nbGalaxy) );
@@ -219,7 +219,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	lTmpTully.clear();	//données devenues inutiles
 
 	m_squareGL->fillVertexBuffer(BufferType::POS3D,posTmpTully );
-	m_squareGL->fillVertexBuffer(BufferType::TEXTURE,texTmpTully );
+	m_squareGL->fillVertexBuffer(BufferType::MAG,texTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::SCALE,radiusTmpTully );
 }
 
