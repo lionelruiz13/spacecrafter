@@ -35,6 +35,7 @@
 #include "tools/log.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 
 Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init )
@@ -136,22 +137,22 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 	}
 
 	if (screen_sz < 30.f) {
-		if (h>0.0) lowUP->draw();
-		else lowDOWN->draw();
+		if (h>0.0) lowUP->draw(shaderRing.get());
+		else lowDOWN->draw(shaderRing.get());
 	}
 	else {
 		if (screen_sz >300.f) {
-			if (h>0.0) highUP->draw();
-			else highDOWN->draw();
+			if (h>0.0) highUP->draw(shaderRing.get());
+			else highDOWN->draw(shaderRing.get());
 		}
 		else {
-			if (h>0.0) mediumUP->draw();
-			else mediumDOWN->draw();
+			if (h>0.0) mediumUP->draw(shaderRing.get());
+			else mediumDOWN->draw(shaderRing.get());
 		}
 	}
 
 
-	shaderRing->unuse();
+	//shaderRing->unuse();
 	glActiveTexture(GL_TEXTURE0);
 
 	StateGL::disable(GL_CULL_FACE);
@@ -179,8 +180,13 @@ Ring2D::~Ring2D()
 	dataVertex.clear();
 }
 
-void Ring2D::draw()
+void Ring2D::draw(shaderProgram* shader)
 {
+	// shader->use();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
+	// m_dataGL->unBind();
+	// shader->unuse();
 	m_dataGL->bind();
 	glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
 	m_dataGL->unBind();

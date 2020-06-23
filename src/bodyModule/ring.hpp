@@ -47,7 +47,7 @@ class Ring2D {
 public:
 	Ring2D(float _r_min, float _r_max, GLint slices, GLint stacks, bool h);
 	~Ring2D();
-	void draw();
+	void draw(shaderProgram* shader);
 
 private:
 	void computeRing(GLint slices, GLint stacks, bool h);
