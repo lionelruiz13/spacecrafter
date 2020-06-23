@@ -170,6 +170,7 @@ private:
 
 
 	static const unsigned int NOSHADER = ~0;
+	static GLuint currentProgram;
 
 	GLuint program;
 	GLuint vshader; // vertex shader

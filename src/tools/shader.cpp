@@ -12,7 +12,7 @@
 
 std::string shaderProgram::shaderDir = "./";
 std::string shaderProgram::logFile = "./";
-
+GLuint shaderProgram::currentProgram= 0;
 
 static std::string fixProgramName(const std::string &vs) 
 {
@@ -428,12 +428,16 @@ void shaderProgram::init(GLuint vs,GLuint tcs,GLuint tes,GLuint gs,GLuint fs)
 
 void shaderProgram::use()
 {
-	glUseProgram(program);
+	if (program!=currentProgram) {
+		glUseProgram(program);
+		currentProgram = program;
+	}
 }
 
 void shaderProgram::unuse()
 {
 	glUseProgram(0);
+	currentProgram = 0;
 }
 
 
