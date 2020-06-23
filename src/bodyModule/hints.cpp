@@ -19,6 +19,7 @@
 #include "bodyModule/body_color.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> Hints::shaderHints;
 std::unique_ptr<VertexArray> Hints::m_HintsGL;
@@ -64,10 +65,12 @@ void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 	shaderHints->setUniform("fader", hint_fader.getInterstate() );
 
 	m_HintsGL->fillVertexBuffer(BufferType::POS2D, vecHintsPos);
-	m_HintsGL->bind();
-	glDrawArrays(GL_LINE_LOOP,0,nbrFacets);
-	m_HintsGL->unBind();
-	shaderHints->unuse();
+	
+	// m_HintsGL->bind();
+	// glDrawArrays(GL_LINE_LOOP,0,nbrFacets);
+	// m_HintsGL->unBind();
+	// shaderHints->unuse();
+	Renderer::drawArrays(shaderHints.get(), m_HintsGL.get(), GL_LINE_LOOP,0,nbrFacets);
 
 	vecHintsPos.clear();
 }

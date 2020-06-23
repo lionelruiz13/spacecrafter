@@ -187,9 +187,7 @@ void Ring2D::draw(shaderProgram* shader)
 	// glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
 	// m_dataGL->unBind();
 	// shader->unuse();
-	m_dataGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
-	m_dataGL->unBind();
+	Renderer::drawArrays(shader, m_dataGL.get(), GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
 }
 
 

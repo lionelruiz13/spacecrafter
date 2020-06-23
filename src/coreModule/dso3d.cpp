@@ -27,7 +27,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
-
+#include "tools/Renderer.hpp"
 
 Dso3d::Dso3d()
 {
@@ -151,8 +151,9 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderDso3d->setUniform("camPos", camPos);
 	shaderDso3d->setUniform("nbTextures", nbTextures);
 
-	sData->bind();
-	glDrawArrays(GL_POINTS, 0, nbNebulae);
-	sData->unBind();
-	shaderDso3d->unuse();
+	// sData->bind();
+	// glDrawArrays(GL_POINTS, 0, nbNebulae);
+	// sData->unBind();
+	// shaderDso3d->unuse();
+	Renderer::drawArrays(shaderDso3d.get(), sData.get(), GL_POINTS, 0, nbNebulae);
 }
