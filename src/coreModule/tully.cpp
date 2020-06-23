@@ -253,11 +253,11 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	else
 		shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
 
-	m_pointsGL->bind();
-	glDrawArrays(GL_POINTS, 0, nbGalaxy);
-	m_pointsGL->unBind();
-	shaderPoints->unuse();
-	// Renderer::drawArrays(shaderPoints.get(), m_pointsGL.get(), GL_POINTS, 0, nbGalaxy);
+	// m_pointsGL->bind();
+	// glDrawArrays(GL_POINTS, 0, nbGalaxy);
+	// m_pointsGL->unBind();
+	// shaderPoints->unuse();
+	Renderer::drawArrays(shaderPoints.get(), m_pointsGL.get(), GL_POINTS, 0, nbGalaxy);
 
 	//tracé des galaxies de taille >1 px;
 	StateGL::enable(GL_BLEND);
