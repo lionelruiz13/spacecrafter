@@ -30,6 +30,7 @@
 #include "navModule/navigator.hpp"
 #include "tools/shader.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 static float magnitude_max = 6.5;
 
@@ -456,8 +457,9 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	shaderStarNav->use();
 	shaderStarNav->setUniform("Mat",matrix);
 
-	m_dataGL->bind();
-	glDrawArrays(GL_POINTS,0,starPos.size()/3);
-	m_dataGL->unBind();
-	shaderStarNav->unuse();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_POINTS,0,starPos.size()/3);
+	// m_dataGL->unBind();
+	// shaderStarNav->unuse();
+	Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), GL_POINTS,0,starPos.size()/3);
 }

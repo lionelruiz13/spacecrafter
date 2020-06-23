@@ -36,6 +36,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 
 Tully::Tully()
@@ -252,10 +253,11 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	else
 		shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
 
-	m_pointsGL->bind();
-	glDrawArrays(GL_POINTS, 0, nbGalaxy);
-	m_pointsGL->unBind();
-	shaderPoints->unuse();
+	// m_pointsGL->bind();
+	// glDrawArrays(GL_POINTS, 0, nbGalaxy);
+	// m_pointsGL->unBind();
+	// shaderPoints->unuse();
+	Renderer::drawArrays(shaderPoints.get(), m_pointsGL.get(), GL_POINTS, 0, nbGalaxy);
 
 	//tracé des galaxies de taille >1 px;
 	StateGL::enable(GL_BLEND);
@@ -267,10 +269,11 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderSquare->setUniform("fader", fader.getInterstate());
 	shaderSquare->setUniform("nbTextures", nbTextures);
 
-	m_squareGL->bind();
-	glDrawArrays(GL_POINTS, 0, radiusTmpTully.size());
-	m_squareGL->unBind();
-	shaderSquare->unuse();
+	// m_squareGL->bind();
+	// glDrawArrays(GL_POINTS, 0, radiusTmpTully.size());
+	// m_squareGL->unBind();
+	// shaderSquare->unuse();
+	Renderer::drawArrays(shaderSquare.get(), m_squareGL.get(), GL_POINTS, 0, radiusTmpTully.size());
 
 	glBlendEquation(GL_FUNC_ADD);
 	StateGL::disable(GL_BLEND);

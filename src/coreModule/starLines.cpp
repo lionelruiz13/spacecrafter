@@ -27,6 +27,7 @@
 #include "tools/ia.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 StarLines::StarLines()
 {
@@ -263,9 +264,9 @@ void StarLines::drawGL(Mat4f & matrix)  noexcept
 	shaderStarLines->setUniform("Color",lineColor);
 	shaderStarLines->setUniform("Fader", showFader.getInterstate() );
 
-	m_dataGL->bind();
-	glDrawArrays(GL_LINES,0,linePos.size()/3);
-	m_dataGL->unBind();
-
-	shaderStarLines->unuse();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_LINES,0,linePos.size()/3);
+	// m_dataGL->unBind();
+	// shaderStarLines->unuse();
+	Renderer::drawArrays(shaderStarLines.get(), m_dataGL.get(), GL_LINES,0,linePos.size()/3);
 }

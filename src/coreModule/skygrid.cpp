@@ -180,10 +180,12 @@ void SkyGrid::draw(const Projector* prj) const
 			return; //pour GCC
 	}
 
-	m_dataGL->bind();
-	glDrawArrays(GL_LINES, 0, nbPointsToDraw); //un point est représenté par 3 points
-	m_dataGL->unBind();
-	shaderSkyGrid->unuse();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_LINES, 0, nbPointsToDraw); //un point est représenté par 3 points
+	// m_dataGL->unBind();
+	// shaderSkyGrid->unuse();
+	Renderer::drawArrays(shaderSkyGrid.get(), m_dataGL.get(), GL_LINES, 0, nbPointsToDraw); //un point est représenté par 3 points
+
 
 	// tracé de texte.
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {

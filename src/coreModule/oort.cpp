@@ -35,7 +35,7 @@
 #include "navModule/navigator.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
-
+#include "tools/Renderer.hpp"
 
 #define NB_POINTS 200000
 
@@ -110,8 +110,9 @@ void Oort::draw(double distance, const Projector *prj,const Navigator *nav) noex
 	shaderOort->setUniform("color", color);
 	shaderOort->setUniform("intensity", intensity*fader.getInterstate());
 
-	m_dataGL->bind();
-	glDrawArrays(GL_POINTS, 0, nbAsteroids );
-	m_dataGL->unBind();
-	shaderOort->unuse();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_POINTS, 0, nbAsteroids );
+	// m_dataGL->unBind();
+	// shaderOort->unuse();
+	Renderer::drawArrays(shaderOort.get(), m_dataGL.get(), GL_POINTS, 0, nbAsteroids );
 }

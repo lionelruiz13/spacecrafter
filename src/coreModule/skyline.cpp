@@ -33,6 +33,8 @@
 #include "navModule/observer.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
+
 //2346 lignes avant 
 //2479 lignes apres
 //1560 lignes au final
@@ -63,11 +65,12 @@ void SkyLine::drawSkylineGL(const Vec4f& Color)
 	
 	shaderSkylineDraw->use();
 	shaderSkylineDraw->setUniform("Color",Color);
-	m_skylineGL->bind();
-	glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
-	m_skylineGL->unBind();
 
-	shaderSkylineDraw->unuse();
+	// m_skylineGL->bind();
+	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// m_skylineGL->unBind();
+	// shaderSkylineDraw->unuse();
+	Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), GL_LINES, 0 ,vecDrawPos.size()/2);
 }
 
 void SkyLine::setFont(float font_size, const std::string& font_name)
