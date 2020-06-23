@@ -64,7 +64,7 @@ bool Ojm::init(float multiplier)
 bool Ojm::testIndices()
 {
 	for(unsigned int i=0;i<shapes.size();i++){
-		if (shapes[i].vertices.size() != shapes[i].normals.size()) {
+		if ((shapes[i].vertices.size()/3) != (shapes[i].normals.size()/3)) {
 			std::cout << "vertices.size != normals.size : abord"<<std::endl;
 			return false;
 		}
@@ -73,7 +73,7 @@ bool Ojm::testIndices()
 			for(unsigned int k=0; k< shapes[i].vertices.size(); k++)
 				insert_vec2(shapes[i].uvs, data);
 		}
-		if (shapes[i].vertices.size() != shapes[i].uvs.size()) {
+		if ((shapes[i].vertices.size()/3) != (shapes[i].uvs.size()/2)) {
 			std::cout << "vertices.size != uvs.size : abord"<<std::endl;
 			return false;
 		}
