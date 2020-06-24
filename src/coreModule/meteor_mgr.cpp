@@ -30,6 +30,7 @@
 
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 
 MeteorMgr::MeteorMgr(int zhr, int maxv )
@@ -114,13 +115,13 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	StateGL::enable(GL_BLEND);
 
-	m_shaderMeteor->use();
-	m_meteorGL->bind();
-	for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
-		glDrawArrays(GL_LINE_STRIP, 3*i, 3);
-	
-	m_meteorGL->unBind();
-	m_shaderMeteor->unuse();
+	// m_shaderMeteor->use();
+	// m_meteorGL->bind();
+	// for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
+	// 	glDrawArrays(GL_LINE_STRIP, 3*i, 3);
+	// m_meteorGL->unBind();
+	// m_shaderMeteor->unuse();
+	Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), GL_LINE_STRIP, vecPos.size()/3 , 3);
 
 	vecPos.clear();
 	vecColor.clear();
