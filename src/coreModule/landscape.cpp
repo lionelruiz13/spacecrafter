@@ -34,6 +34,7 @@
 
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 
 int Landscape::slices = 20;
@@ -219,10 +220,11 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	shaderFog->setUniform("ModelViewProjectionMatrix", proj*matrix);
 	shaderFog->setUniform("ModelViewMatrix",matrix);
 
-	m_fogGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,nbFogVertex);
-	m_fogGL->unBind();
-	shaderFog->unuse();
+	// m_fogGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,nbFogVertex);
+	// m_fogGL->unBind();
+	// shaderFog->unuse();
+	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), GL_TRIANGLE_STRIP,0,nbFogVertex);
 
 	glCullFace(GL_BACK);
 	StateGL::disable(GL_CULL_FACE);
@@ -402,10 +404,11 @@ void LandscapeFisheye::draw(ToneReproductor * eye, const Projector* prj, const N
 	shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 
-	m_landscapeGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
-	m_landscapeGL->unBind();
-	shaderLandscape->unuse();
+	// m_landscapeGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
+	// m_landscapeGL->unBind();
+	// shaderLandscape->unuse();
+	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
 
 	StateGL::disable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
@@ -640,10 +643,11 @@ void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const
 	shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 	
-	m_landscapeGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
-	m_landscapeGL->unBind();
-	shaderLandscape->unuse();
+	// m_landscapeGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
+	// m_landscapeGL->unBind();
+	// shaderLandscape->unuse();
+	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
 
 	StateGL::disable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
