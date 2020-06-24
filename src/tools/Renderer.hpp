@@ -36,6 +36,7 @@ public:
     static void clearColor();
     static void clearDepthBuffer();
     static void drawArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int first, unsigned int count);
+    static void drawArraysWithoutShader(VertexArray* va, GLenum mode, unsigned int first, unsigned int count);    
     static void drawMultiArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int boucle, unsigned int count );
     static void viewport(int x, int y, int w, int h);
 private:

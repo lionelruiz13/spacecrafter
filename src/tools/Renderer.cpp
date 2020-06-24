@@ -24,6 +24,13 @@ void Renderer::drawArrays(shaderProgram* shader, VertexArray* va, GLenum mode, u
 	shader->unuse();
 }
 
+void Renderer::drawArraysWithoutShader(VertexArray* va, GLenum mode, unsigned int first, unsigned int count )
+{
+	va->bind();
+	glDrawArrays(mode, first, count);
+	va->unBind();
+}
+
 void Renderer::viewport(int x, int y, int w, int h)
 {
 	glViewport(x,y,w,h);
