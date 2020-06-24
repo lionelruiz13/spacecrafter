@@ -106,9 +106,10 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 
 				m_dataGL->fillVertexBuffer(BufferType::POS3D,vecVertex);
 
-				m_dataGL->bind();
-				glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
-				m_dataGL->unBind();
+				// m_dataGL->bind();
+				// glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
+				// m_dataGL->unBind();
+				Renderer::drawArraysWithoutShader(m_dataGL.get(), GL_LINE_STRIP, 0, vecVertex.size()/3);
 			}
 			//suppression du contenu des data
 			vecVertex.clear();
