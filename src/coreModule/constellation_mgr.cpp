@@ -41,6 +41,7 @@
 #include "tools/stateGL.hpp"
 #include "tools/translator.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 
 
@@ -406,15 +407,16 @@ void ConstellationMgr::drawLines(const Projector * prj)
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	m_shaderLines->use();
+	// m_shaderLines->use();
 
 	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vLinesPos);
 	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vLinesColor);
 
-	m_constellationGL->bind();
-	glDrawArrays(GL_LINES, 0, vLinesPos.size()/2);
-	m_constellationGL->unBind();
-	m_shaderLines->unuse();
+	// m_constellationGL->bind();
+	// glDrawArrays(GL_LINES, 0, vLinesPos.size()/2);
+	// m_constellationGL->unBind();
+	// m_shaderLines->unuse();
+	Renderer::drawArrays(m_shaderLines.get(), m_constellationGL.get(), GL_LINES, 0, vLinesPos.size()/2);
 }
 
 
@@ -443,10 +445,11 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 	m_constellationGL->fillVertexBuffer(BufferType::POS2D, vBoundariesPos);
 	m_constellationGL->fillVertexBuffer(BufferType::MAG, vBoundariesIntensity);
 
-	m_constellationGL->bind();
-	glDrawArrays(GL_LINES, 0, vBoundariesPos.size()/2);
-	m_constellationGL->unBind();
-	m_shaderBoundary->unuse();
+	// m_constellationGL->bind();
+	// glDrawArrays(GL_LINES, 0, vBoundariesPos.size()/2);
+	// m_constellationGL->unBind();
+	// m_shaderBoundary->unuse();
+	Renderer::drawArrays(m_shaderBoundary.get(), m_constellationGL.get(), GL_LINES, 0, vBoundariesPos.size()/2);
 }
 
 //! Draw the names of all the constellations
