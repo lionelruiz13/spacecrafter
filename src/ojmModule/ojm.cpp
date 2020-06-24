@@ -93,7 +93,7 @@ void Ojm::draw(shaderProgram * shader)
 			shader->setUniform("T", shapes[i].T);
 
 		if (shapes[i].map_Ka != nullptr) {
-            //glActiveTexture(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, shapes[i].map_Ka->getID());
 			shader->setUniform("useTexture", true);
 			//~ cout << "avec texture" << endl;
@@ -326,6 +326,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
             }
         }while(!stream.eof());
         std::cout<<"OJM: reached end of file"<<std::endl;
+        print();
         return true;
     }
     std::cout<<"OJM: error reading file"<<std::endl;
@@ -342,21 +343,21 @@ void Ojm::print()
 		std::cout<< "Nombre d'uvs        " << shapes[i].uvs.size() << std::endl;
 		std::cout<< "Nombre de normales  " << shapes[i].normals.size() << std::endl;
 		std::cout<< "Nombre d'indices  " << shapes[i].indices.size() << std::endl;
-		std::cout << "v ";
-		for(unsigned int j=0; j< shapes[i].vertices.size() ; j++)
-			std::cout << " " << shapes[i].vertices[j];
-		std::cout << std::endl;
-		std::cout << "uv ";
-		for(unsigned int j=0; j< shapes[i].uvs.size() ; j++)
-			std::cout << " " << shapes[i].uvs[j];
-		std::cout << std::endl;
-		std::cout << "n ";
-		for(unsigned int j=0; j< shapes[i].normals.size() ; j++)
-			std::cout << " " << shapes[i].normals[j];
-		std::cout << std::endl;
-		std::cout << "i ";
-		for(unsigned int j=0; j< shapes[i].indices.size() ; j++)
-			std::cout << " " << shapes[i].indices[j];
-		std::cout << std::endl;
+		// std::cout << "v ";
+		// for(unsigned int j=0; j< shapes[i].vertices.size() ; j++)
+		// 	std::cout << " " << shapes[i].vertices[j];
+		// std::cout << std::endl;
+		// std::cout << "uv ";
+		// for(unsigned int j=0; j< shapes[i].uvs.size() ; j++)
+		// 	std::cout << " " << shapes[i].uvs[j];
+		// std::cout << std::endl;
+		// std::cout << "n ";
+		// for(unsigned int j=0; j< shapes[i].normals.size() ; j++)
+		// 	std::cout << " " << shapes[i].normals[j];
+		// std::cout << std::endl;
+		// std::cout << "i ";
+		// for(unsigned int j=0; j< shapes[i].indices.size() ; j++)
+		// 	std::cout << " " << shapes[i].indices[j];
+		// std::cout << std::endl;
 	}
 }
