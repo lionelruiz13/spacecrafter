@@ -37,7 +37,6 @@ void Renderer::viewport(int x, int y, int w, int h)
 }
 
 
-
 void Renderer::drawMultiArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int boucle, unsigned int count )
 {
     shader->use();
@@ -48,4 +47,12 @@ void Renderer::drawMultiArrays(shaderProgram* shader, VertexArray* va, GLenum mo
 	}
 	va->unBind();
 	shader->unuse();
+}
+
+
+void Renderer::drawElementsWithoutShader(VertexArray* va, GLenum mode)
+{
+	va->bind();
+	glDrawElements(mode, va->getIndiceCount(), GL_UNSIGNED_INT, (void*)0 );
+    va->unBind();
 }
