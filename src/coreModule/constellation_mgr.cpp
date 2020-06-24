@@ -377,9 +377,10 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 		m_constellationGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 		m_constellationGL->fillVertexBuffer(BufferType::TEXTURE, vecTex);
 
-		m_constellationGL->bind();
-		glDrawArrays(GL_LINES_ADJACENCY, 0, vecPos.size()/2);
-		m_constellationGL->unBind();
+		// m_constellationGL->bind();
+		// glDrawArrays(GL_LINES_ADJACENCY, 0, vecPos.size()/2);
+		// m_constellationGL->unBind();
+		Renderer::drawArraysWithoutShader(m_constellationGL.get(), GL_LINES_ADJACENCY, 0, vecPos.size()/2);
 		
 		vecPos.clear();
 		vecTex.clear();
