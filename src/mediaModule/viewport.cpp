@@ -17,6 +17,7 @@
 #include "mediaModule/viewport.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 ViewPort::ViewPort()
 {
@@ -33,9 +34,7 @@ void ViewPort::createShader()
 {
 	shaderViewPort= std::make_unique<shaderProgram>();
 	shaderViewPort->init("videoplayer.vert","videoplayer.frag");
-	shaderViewPort->setUniformLocation("transparency");
-	shaderViewPort->setUniformLocation("noColor");
-	shaderViewPort->setUniformLocation("fader");
+	shaderViewPort->setUniformLocation({"transparency", "noColor", "fader"});
 }
 
 void ViewPort::createSC_context()
@@ -89,15 +88,17 @@ void ViewPort::draw()
 	shaderViewPort->setUniform("fader", fader.getInterstate() );
 
 	if (fullScreen) {
-		m_fullGL->bind();
-		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-		m_fullGL->unBind();
+		// m_fullGL->bind();
+		// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		// m_fullGL->unBind();
+		Renderer::drawArrays(shaderViewPort.get(), m_fullGL.get(), GL_TRIANGLE_STRIP,0,4);
 	} else {
-		m_dualGL->bind();
-		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-		glDrawArrays(GL_TRIANGLE_STRIP,4,4);
-		m_dualGL->unBind();
+		// m_dualGL->bind();
+		// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		// glDrawArrays(GL_TRIANGLE_STRIP,4,4);
+		// m_dualGL->unBind();
+		Renderer::drawMultiArrays(shaderViewPort.get(), m_fullGL.get(), GL_TRIANGLE_STRIP,2,4);
 	}
-	shaderViewPort->unuse();
+	// shaderViewPort->unuse();
 	StateGL::disable(GL_BLEND);
 }
