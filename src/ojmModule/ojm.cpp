@@ -6,6 +6,7 @@
 #include "ojmModule/ojm.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 // *****************************************************************************
 // 
@@ -103,9 +104,10 @@ void Ojm::draw(shaderProgram * shader)
 		}
 
 		// glBindVertexArray(shapes[i].dGL.vao);
-        shapes[i].dGL->bind();
-		glDrawElements(GL_TRIANGLES, shapes[i].indices.size(), GL_UNSIGNED_INT, (void*)0 );
-        shapes[i].dGL->unBind();
+        // shapes[i].dGL->bind();
+		// glDrawElements(GL_TRIANGLES, shapes[i].indices.size(), GL_UNSIGNED_INT, (void*)0 );
+        // shapes[i].dGL->unBind();
+        Renderer::drawElementsWithoutShader(shapes[i].dGL.get(), GL_TRIANGLES);
 	} 
 }
 
