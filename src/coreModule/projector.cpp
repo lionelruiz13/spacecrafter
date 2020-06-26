@@ -75,7 +75,8 @@ void Projector::setViewportDisk( int w, int h)
 	viewport_center.set(w/2, h/2,0);
 	viewport_radius = viewport_fov_diameter/2;
 
-	glViewport(vec_viewport[0], vec_viewport[1], vec_viewport[2], vec_viewport[3]);
+	//glViewport(vec_viewport[0], vec_viewport[1], vec_viewport[2], vec_viewport[3]);
+	this->applyViewport();
 
 	// std::cout << "CALLED DISK set viewport\n\n";
 	// std::cout << "viewport " << vec_viewport[0] << " " << vec_viewport[1] << " " << vec_viewport[2] << " " << vec_viewport[3] << std::endl;

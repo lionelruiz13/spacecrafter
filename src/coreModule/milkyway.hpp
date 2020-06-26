@@ -30,6 +30,7 @@
 
 #include <string>
 #include <fstream>
+#include <memory>
 #include <GL/glew.h>
 
 #include "tools/fader.hpp"
@@ -164,7 +165,8 @@ private:
 		float intensity;
 	};
 
-	shaderProgram* shaderMilkyway=nullptr;
+	//shaderProgram* shaderMilkyway=nullptr;
+	std::unique_ptr<shaderProgram> shaderMilkyway;
 	LinearFader showFader;
 	ParabolicFader switchTexFader;
 	LinearFader zodiacalFader;
@@ -189,7 +191,7 @@ private:
 
 
 	void createShader();
-	void deleteShader();
+	// void deleteShader();
 	void initModelMatrix();			//! création des matrices Model pour MilkyWay et Zodiacal
 	void deleteMapTex();
 };

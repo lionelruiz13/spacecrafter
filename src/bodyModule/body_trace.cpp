@@ -53,7 +53,7 @@ BodyTrace::BodyTrace()
 	bodyData[7].color= Vec3f(0.4f, 1.0f, 0.6f);
 	is_tracing=true;
 	currentUsedList=0;
-	createGL_context();
+	createSC_context();
 }
 
 BodyTrace::~BodyTrace()
@@ -71,7 +71,7 @@ void BodyTrace::hide(int numberList)
 		bodyData[numberList].hide= !bodyData[numberList].hide;
 }
 
-void BodyTrace::createGL_context()
+void BodyTrace::createSC_context()
 {
 	shaderTrace = std::make_unique<shaderProgram>();
 	shaderTrace->init("body_trace.vert","body_trace.geom","body_trace.frag");
@@ -106,9 +106,10 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 
 				m_dataGL->fillVertexBuffer(BufferType::POS3D,vecVertex);
 
-				m_dataGL->bind();
-				glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
-				m_dataGL->unBind();
+				// m_dataGL->bind();
+				// glDrawArrays(GL_LINE_STRIP, 0, vecVertex.size()/3);
+				// m_dataGL->unBind();
+				Renderer::drawArraysWithoutShader(m_dataGL.get(), GL_LINE_STRIP, 0, vecVertex.size()/3);
 			}
 			//suppression du contenu des data
 			vecVertex.clear();

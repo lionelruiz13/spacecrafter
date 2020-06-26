@@ -24,6 +24,7 @@
 #include <iostream>
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 
 std::unique_ptr<VertexArray> Halo::m_haloGL;
@@ -54,10 +55,11 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	m_haloGL->fillVertexBuffer(BufferType::POS2D, vecHaloPos);
 	m_haloGL->fillVertexBuffer(BufferType::TEXTURE, vecHaloTex);
 
-	m_haloGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_haloGL->unBind();
-	shaderHalo->unuse();
+	// m_haloGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// m_haloGL->unBind();
+	// shaderHalo->unuse();
+	Renderer::drawArrays(shaderHalo.get(), m_haloGL.get(), GL_TRIANGLE_STRIP,0,4);
 
 	vecHaloPos.clear();
 	vecHaloTex.clear();
@@ -127,7 +129,7 @@ void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneRep
 	insert_all(vecHaloTex, 0, 0, 0, 1, 1, 0, 1, 1);
 }
 
-void Halo::createGL_context()
+void Halo::createSC_context()
 {
 	shaderHalo = std::make_unique<shaderProgram>();
 	shaderHalo->init( "body_halo.vert", "body_halo.frag");

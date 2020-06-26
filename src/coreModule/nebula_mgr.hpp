@@ -222,7 +222,7 @@ protected:
 	//! \return return true if all texture pictograms are correctly loaded false  owerwise
 	bool initTexPicto();
 	void createShaderHint();
-	void createGL_context();
+	void createSC_context();
 	void drawAllHint(const Projector* prj);
 
 private:

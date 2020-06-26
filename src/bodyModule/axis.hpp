@@ -52,7 +52,7 @@ public:
 
 	void computeAxisAngle(const Projector* prj, const Mat4d& mat);
 
-	static void createGL_context();
+	static void createSC_context();
 private :
 
 	Body * body;

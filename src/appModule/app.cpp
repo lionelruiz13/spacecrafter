@@ -55,6 +55,7 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
+#include "tools/Renderer.hpp"
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"
@@ -85,7 +86,7 @@ App::App( SDLFacade* const sdl )
 	coreLink = new CoreLink(core);
 	coreBackup = new CoreBackup(core);
 
-	screenFader->createGL_context();
+	screenFader->createSC_context();
 
 	ui = new UI(core, coreLink, this, mSdl, media);
 	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
@@ -216,7 +217,8 @@ std::string App::getAppLanguage() {
 void App::init()
 {
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	Renderer::clearColor();
 
 	// Initialize video device and other sdl parameters
 	InitParser conf;
@@ -285,7 +287,8 @@ void App::init()
 void App::firstInit()
 {
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	Renderer::clearColor();
 
 	appDraw->initSplash();
 	mSdl->glSwapWindow();	// And swap the buffers
@@ -299,7 +302,7 @@ void App::firstInit()
 	ui->localizeTui();
 	ui->initTui();
 
-	appDraw->createGL_context();
+	appDraw->createSC_context();
 	media->createViewPort();
 	media->createVR360();
 	media->createImageShader();
@@ -394,7 +397,8 @@ void App::update(int delta_time)
 //! Main drawinf function called at each frame
 void App::draw(int delta_time)
 {
-	appDraw->drawFirstLayer();
+	// appDraw->drawFirstLayer();
+	Renderer::clearColor();
 
 	core->draw(delta_time);
 

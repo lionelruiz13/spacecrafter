@@ -19,6 +19,7 @@
 #include "coreModule/projector.hpp"
 #include "bodyModule/body_color.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 
 Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments) { }
@@ -61,9 +62,10 @@ void Orbit3D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d
 	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 	m_Orbit3dGL->fillVertexBuffer(BufferType::POS3D, orbitSegments);
 
-	m_Orbit3dGL->bind();
-	glDrawArrays(GL_LINE_STRIP,0,orbitSegments.size()/3);
-	m_Orbit3dGL->unBind();
+	// m_Orbit3dGL->bind();
+	// glDrawArrays(GL_LINE_STRIP,0,orbitSegments.size()/3);
+	// m_Orbit3dGL->unBind();
+	Renderer::drawArrays(shaderOrbit3d.get(), m_Orbit3dGL.get(), GL_LINE_STRIP,0,orbitSegments.size()/3);
 
 	// glBindVertexArray(0);
 	orbitSegments.clear();

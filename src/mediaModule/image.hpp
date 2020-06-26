@@ -98,9 +98,9 @@ public:
 
 	static void createShaderUnified();
 	static void createShaderImageViewport();
-	static void createGL_context();
-	static void deleteShaderUnified();
-	static void deleteShaderImageViewport();
+	static void createSC_context();
+	// static void deleteShaderUnified();
+	// static void deleteShaderImageViewport();
 
 	static std::unique_ptr<shaderProgram> shaderImageViewport;
 	static std::unique_ptr<shaderProgram> shaderUnified;

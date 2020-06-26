@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2005 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
+ * Copyright (C) 2020 Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -83,20 +84,20 @@ void Translator::reload()
 	if (Translator::lastUsed == this) return;
 	// This needs to be static as it is used a each gettext call... It tooks me quite a while before I got that :(
 	static char envstr[25];
-	#ifndef MACOSX
+	// #ifndef MACOSX
 	if (langName=="system" || langName=="system_default") {
 		snprintf(envstr, 25, "LANGUAGE=%s", Translator::systemLangName.c_str());
 		// cout << "ENV=" << envstr << " " << Translator::systemLangName << endl;
 	} else {
 		snprintf(envstr, 25, "LANGUAGE=%s", langName.c_str());
 	}
-	#else
-	if (langName=="system" || langName=="system_default") {
-		snprintf(envstr, 25, "LANG=%s", Translator::systemLangName.c_str());
-	} else {
-		snprintf(envstr, 25, "LANG=%s", langName.c_str());
-	}
-	#endif
+	// #else
+	// if (langName=="system" || langName=="system_default") {
+	// 	snprintf(envstr, 25, "LANG=%s", Translator::systemLangName.c_str());
+	// } else {
+	// 	snprintf(envstr, 25, "LANG=%s", langName.c_str());
+	// }
+	// #endif
 	
 	//printf("Setting locale: %s\n", envstr);
 	

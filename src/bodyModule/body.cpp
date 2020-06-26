@@ -276,11 +276,11 @@ void Body::deleteDefaultTexMap()
 
 void Body::createShader()
 {
-	OrbitPlot::createGL_context();
-	Trail::createGL_context();
-	Halo::createGL_context();
-	Hints::createGL_context();
-	Axis::createGL_context();
+	OrbitPlot::createSC_context();
+	Trail::createSC_context();
+	Halo::createSC_context();
+	Hints::createSC_context();
+	Axis::createSC_context();
 }
 
 // Return the information std::string "ready to print" :)

@@ -33,7 +33,7 @@
 #include "tools/stateGL.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
-
+#include "tools/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> Image::shaderImageViewport;
 std::unique_ptr<shaderProgram> Image::shaderUnified;
@@ -196,7 +196,7 @@ void Image::createShaderUnified()
 }
 
 
-void Image::createGL_context()
+void Image::createSC_context()
 {
 	m_imageUnifiedGL = std::make_unique<VertexArray>();
 	m_imageUnifiedGL->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
@@ -508,10 +508,12 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	shaderImageViewport->use();
 	shaderImageViewport->setUniform("fader", image_alpha);
 	shaderImageViewport->setUniform("MVP", MVP*TRANSFO);
-	m_imageViewportGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	m_imageViewportGL->unBind();
-	shaderImageViewport->unuse();
+
+	// m_imageViewportGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	// m_imageViewportGL->unBind();
+	// shaderImageViewport->unuse();
+	Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 
 
@@ -583,11 +585,12 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
 	m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
 
-	m_imageUnifiedGL->bind();
-	for(int i=0; i< grid_size; i++)
-		glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
-	m_imageUnifiedGL->unBind();
-	shaderUnified->unuse();
+	// m_imageUnifiedGL->bind();
+	// for(int i=0; i< grid_size; i++)
+	// 	glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
+	// m_imageUnifiedGL->unBind();
+	// shaderUnified->unuse();
+	Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), GL_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
 
 	vecImgPos.clear();
 	vecImgTex.clear();

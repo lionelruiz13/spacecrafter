@@ -44,6 +44,7 @@
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
+#include "tools/Renderer.hpp"
 
 #define SOLAR_MASS 1.989e30
 #define EARTH_MASS 5.976e24
@@ -122,7 +123,7 @@ SolarSystem::~SolarSystem()
 	systemBodies.clear();		
 	renderedBodies.clear();
 	
-	BodyShader::deleteShader();
+	// BodyShader::deleteShader();
 	Body::deleteDefaultTexMap();
 	Body::deleteDefaultatmosphereParams();
 
@@ -952,7 +953,8 @@ void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* o
 
 	// clear depth buffer
 	prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	Renderer::clearDepthBuffer();
 
 	//float depthRange = 1.0f/nBuckets;
 	float currentBucket = nBuckets - 1;
@@ -982,7 +984,8 @@ void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* o
 				// TODO: evaluate performance tradeoff???
 				// glDepthRange(currentBucket*depthRange, (currentBucket+1)*depthRange);
 				if (needClearDepthBuffer) {
-					glClear(GL_DEPTH_BUFFER_BIT);
+					// glClear(GL_DEPTH_BUFFER_BIT);
+					Renderer::clearDepthBuffer();
 					needClearDepthBuffer = false;
 				}
 

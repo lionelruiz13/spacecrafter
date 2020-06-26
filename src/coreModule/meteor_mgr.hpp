@@ -67,7 +67,7 @@ public:
 	void draw(Projector *proj, Navigator* nav);		
 
 private:
-	void createGL_context();
+	void createSC_context();
 	std::list<std::unique_ptr<Meteor>> m_activeMeteor;		// list containing all active meteors
 
 	int ZHR;

@@ -132,10 +132,10 @@ public:
 
 private:
 	//! initialise les paramètres du shader
-	void createGL_context();
+	void createSC_context();
 	//! remplir les couleurs du conteneur
 	void fillOutDataColor(); 
-	void deleteShader();
+	// void deleteShader();
 
 	Skylight sky;
 	Skybright skyb;
@@ -148,7 +148,7 @@ private:
 	float lightPollutionLuminance; 	//! light pollution simulation, add to svn 20070220
 	int cor_optoma; //! flag for correction vp optoma
 
-	shaderProgram* shaderAtmosphere=nullptr;
+	std::unique_ptr<shaderProgram> shaderAtmosphere;
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;
 	std::unique_ptr<VertexArray> m_atmGL;

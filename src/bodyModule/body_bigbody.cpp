@@ -195,7 +195,7 @@ double BigBody::calculateBoundingRadius()
 
 void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	StateGL::enable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);
 

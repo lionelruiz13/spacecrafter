@@ -67,7 +67,7 @@ public:
 	void updateTrail(const Navigator* nav, const TimeMgr* timeMgr);
 	void startTrail(bool b);
 	void updateFader(int delta_time);
-	static void createGL_context();
+	static void createSC_context();
 
 private:
 	Body * body = nullptr;

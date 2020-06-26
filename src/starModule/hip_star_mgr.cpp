@@ -49,7 +49,7 @@
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
 #include "tools/OpenGL.hpp"
-
+#include "tools/Renderer.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;
@@ -185,13 +185,11 @@ HipStarMgr::HipStarMgr(int width,int height) :
 	max_geodesic_grid_level = -1;
 	last_max_search_level = -1;
 
-	shaderStars =  nullptr;
-	shaderStars= new shaderProgram();
-	shaderStars->init("stars.vert","stars.geom", "stars.frag");
+	shaderStars = std::make_unique<shaderProgram>();
+	shaderStars-> init("stars.vert","stars.geom", "stars.frag");
 
-	shaderFBO = nullptr;
-	shaderFBO= new shaderProgram();
-	shaderFBO->init("fbo.vert","fbo.frag");
+	shaderFBO = std::make_unique<shaderProgram>();
+	shaderFBO-> init("fbo.vert","fbo.frag");
 
 	createShaderParams( width, height);
 }
@@ -295,23 +293,23 @@ HipStarMgr::~HipStarMgr(void)
 	dataMag.clear();
 	dataPos.clear();
 
-	deleteShader();
+	// deleteShader();
 }
 
-void HipStarMgr::deleteShader()
-{
-	if (shaderStars)
-		delete shaderStars;
-	shaderStars =  nullptr;
+// void HipStarMgr::deleteShader()
+// {
+// 	if (shaderStars)
+// 		delete shaderStars;
+// 	shaderStars =  nullptr;
 
-	if (shaderFBO)
-		delete shaderFBO;
-	shaderFBO = nullptr;
+// 	if (shaderFBO)
+// 		delete shaderFBO;
+// 	shaderFBO = nullptr;
 
 	// glDeleteBuffers(1,&drawFBO.tex);
 	// glDeleteBuffers(1,&drawFBO.pos);
 	// glDeleteVertexArrays(1,&drawFBO.vao);
-}
+// }
 
 std::string HipStarMgr::getCommonName(int hip)
 {
@@ -691,7 +689,8 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	//clear the colour and depth buffers
 	if (!starTrace)
-		glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT);
+		Renderer::clearColor();
 
 	//dessin des etoiles
 	shaderStars->use();
@@ -707,12 +706,14 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 	glBlendEquation(GL_MAX);
 
-	glViewport(0,0 , sizeTexFbo, sizeTexFbo);
+	// glViewport(0,0 , sizeTexFbo, sizeTexFbo);
+	Renderer::viewport(0,0 , sizeTexFbo, sizeTexFbo);
 
-	m_starsGL->bind();
-	glDrawArrays(GL_POINTS,0,nbStarsToDraw);
-	m_starsGL->unBind();
-	shaderStars->unuse();
+	// m_starsGL->bind();
+	// glDrawArrays(GL_POINTS,0,nbStarsToDraw);
+	// m_starsGL->unBind();
+	// shaderStars->unuse();
+	Renderer::drawArrays(shaderStars.get(), m_starsGL.get(), GL_POINTS,0,nbStarsToDraw);
 
 	//unbind the FBO
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -730,10 +731,11 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 
 	shaderFBO->use();
 //	glBindVertexArray(drawFBO.vao);
-	m_drawFBO_GL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_drawFBO_GL->unBind();
-	shaderFBO->unuse();
+	// m_drawFBO_GL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// m_drawFBO_GL->unBind();
+	// shaderFBO->unuse();
+	Renderer::drawArrays(shaderFBO.get(), m_drawFBO_GL.get(), GL_TRIANGLE_STRIP,0,4);
 
 	this->drawStarName(prj);
 

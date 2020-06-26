@@ -29,6 +29,7 @@
 #include "coreModule/projector.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
 std::unique_ptr<shaderProgram> s_font::shaderPrint;
@@ -67,7 +68,7 @@ s_font::~s_font()
 }
 
 
-void s_font::createGL_context()
+void s_font::createSC_context()
 {
 	//HORIZONTAL
 	shaderHorizontal = std::make_unique<shaderProgram>();
@@ -180,10 +181,11 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	shaderPrint->setUniform("MVP", MVP);
 	shaderPrint->setUniform("Color", Color);
 
-	m_fontGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP, 0,4);
-	m_fontGL->unBind();
-	shaderPrint->unuse();
+	// m_fontGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP, 0,4);
+	// m_fontGL->unBind();
+	// shaderPrint->unuse();
+	Renderer::drawArrays(shaderPrint.get(), m_fontGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 
 	vecPos.clear();
 	vecTex.clear();
@@ -531,10 +533,11 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
 
-	m_fontGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, vecPos.size()/2);
-	m_fontGL->unBind();
-	shaderHorizontal->unuse();
+	// m_fontGL->bind();
+	// glDrawArrays(GL_TRIANGLE_STRIP, 0, vecPos.size()/2);
+	// m_fontGL->unBind();
+	// shaderHorizontal->unuse();
+	Renderer::drawArrays(shaderHorizontal.get(), m_fontGL.get(), GL_TRIANGLE_STRIP,0,vecPos.size()/2);
 
 	vecPos.clear();
 	vecTex.clear();

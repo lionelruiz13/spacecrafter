@@ -33,7 +33,7 @@ SkyLineMgr::SkyLineMgr()
 {
 	baseColor=Vec3f(0.f, 0.f, 0.f);
 	SkyLine::createShader();
-	SkyLine::createGL_context();
+	SkyLine::createSC_context();
 }
 
 void SkyLineMgr::draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)

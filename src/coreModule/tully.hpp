@@ -88,7 +88,7 @@ public:
 
 private:
 	// initialise les shaders ShaderPoints et ShaderSquare ainsi que les vao-vbo
-	void createGL_context();
+	void createSC_context();
 
 	void computeSquareGalaxies(Vec3f camPosition);
 

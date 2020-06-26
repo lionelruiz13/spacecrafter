@@ -520,9 +520,8 @@ private:
 
 	mutable int nbStarsToDraw;
 	void createShaderParams(int width,int height);
-	void deleteShader();
-	shaderProgram* shaderStars;
-	shaderProgram* shaderFBO;
+	// void deleteShader();
+	std::unique_ptr<shaderProgram> shaderStars, shaderFBO;
 	mutable std::vector<float> dataPos;
 	mutable std::vector<float> dataMag;
 	mutable std::vector<float> dataColor;

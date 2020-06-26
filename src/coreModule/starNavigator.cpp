@@ -30,6 +30,7 @@
 #include "navModule/navigator.hpp"
 #include "tools/shader.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 static float magnitude_max = 6.5;
 
@@ -54,7 +55,7 @@ StarNavigator::StarNavigator()
 	starMgr = nullptr;
 	starMgr = new StarManager();
 
-	createGL_context();
+	createSC_context();
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
 	old_pos = v3fNull;
 	
@@ -63,7 +64,7 @@ StarNavigator::StarNavigator()
 	computeRCMagTable();
 }
 
-void StarNavigator::createGL_context()
+void StarNavigator::createSC_context()
 {
 	shaderStarNav = std::make_unique<shaderProgram>();
 	shaderStarNav -> init("starNav.vert","starNav.geom","starNav.frag");
@@ -456,8 +457,9 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	shaderStarNav->use();
 	shaderStarNav->setUniform("Mat",matrix);
 
-	m_dataGL->bind();
-	glDrawArrays(GL_POINTS,0,starPos.size()/3);
-	m_dataGL->unBind();
-	shaderStarNav->unuse();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_POINTS,0,starPos.size()/3);
+	// m_dataGL->unBind();
+	// shaderStarNav->unuse();
+	Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), GL_POINTS,0,starPos.size()/3);
 }

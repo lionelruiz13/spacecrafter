@@ -48,6 +48,7 @@
 #include "bodyModule/body_trace.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
+#include "tools/Renderer.hpp"
 
 Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(PACKAGE, AppSettings::Instance()->getLanguageDir(), ""),
@@ -363,14 +364,14 @@ void Core::init(const InitParser& conf)
 
 		ojmMgr->init();
 		// 3D object integration test
-		ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01f);
+		ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
 
 		// Load the pointer textures
 		Object::initTextures();
 		ObjectBase::createShaderStarPointeur();
 		ObjectBase::createShaderPointeur();
 		//Init of the text's shaders
-		s_font::createGL_context();
+		s_font::createSC_context();
 	}
 
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
@@ -808,7 +809,8 @@ void Core::drawInGalaxy(int delta_time)
 	media->drawVR360(projection, navigation);
 
 	milky_way->draw(tone_converter, projection, navigation, timeMgr->getJulian());
-	glClear(GL_DEPTH_BUFFER_BIT);
+	// glClear(GL_DEPTH_BUFFER_BIT);
+	Renderer::clearDepthBuffer();
 
 	//tracé des lignes sans activation du tampon de profondeur.
 	skyDisplayMgr->drawPerson(projection, navigation);
@@ -827,7 +829,8 @@ void Core::drawInGalaxy(int delta_time)
 void Core::drawInUniverse(int delta_time)
 {
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	// glClear(GL_DEPTH_BUFFER_BIT);
+	Renderer::clearDepthBuffer();
 
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);

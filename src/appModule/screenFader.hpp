@@ -106,6 +106,8 @@ public:
 
 	void createGL_context();
 
+	void createSC_context();
+
 	// change gradually to a new intensity
 	void changeIntensity(float _intensity, double duration)
 	{

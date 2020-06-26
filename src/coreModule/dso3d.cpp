@@ -27,13 +27,13 @@
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
-
+#include "tools/Renderer.hpp"
 
 Dso3d::Dso3d()
 {
 	texNebulae = nullptr;
 	fader = true;
-	createGL_context();
+	createSC_context();
 	nbNebulae=0;
 }
 
@@ -47,7 +47,7 @@ Dso3d::~Dso3d()
 	texDso3d.clear();
 }
 
-void Dso3d::createGL_context()
+void Dso3d::createSC_context()
 {
 	shaderDso3d = std::make_unique<shaderProgram>();
 	shaderDso3d->init("dso3d.vert", "dso3d.geom","dso3d.frag");
@@ -151,8 +151,9 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderDso3d->setUniform("camPos", camPos);
 	shaderDso3d->setUniform("nbTextures", nbTextures);
 
-	sData->bind();
-	glDrawArrays(GL_POINTS, 0, nbNebulae);
-	sData->unBind();
-	shaderDso3d->unuse();
+	// sData->bind();
+	// glDrawArrays(GL_POINTS, 0, nbNebulae);
+	// sData->unBind();
+	// shaderDso3d->unuse();
+	Renderer::drawArrays(shaderDso3d.get(), sData.get(), GL_POINTS, 0, nbNebulae);
 }

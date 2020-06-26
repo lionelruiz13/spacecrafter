@@ -21,7 +21,7 @@
 #include "bodyModule/body_color.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
-
+#include "tools/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> Trail::shaderTrail;
 std::unique_ptr<VertexArray> Trail::m_dataGL;
@@ -89,10 +89,11 @@ void Trail::drawTrail(const Navigator * nav, const Projector* prj)
 		m_dataGL->fillVertexBuffer(BufferType::POS3D, vecTrailPos);
 		m_dataGL->fillVertexBuffer(BufferType::MAG, vecTrailIntensity);
 
-		m_dataGL->bind();
-		glDrawArrays(GL_LINE_STRIP, 0, nbPos);
-		m_dataGL->unBind();
-		shaderTrail->unuse();
+		// m_dataGL->bind();
+		// glDrawArrays(GL_LINE_STRIP, 0, nbPos);
+		// m_dataGL->unBind();
+		// shaderTrail->unuse();
+		Renderer::drawArrays(shaderTrail.get(), m_dataGL.get(), GL_LINE_STRIP, 0, nbPos);
 
 		StateGL::enable(GL_BLEND);
 	}
@@ -162,7 +163,7 @@ void Trail::updateFader(int delta_time)
 }
 
 
-void Trail::createGL_context()
+void Trail::createSC_context()
 {
 	shaderTrail = std::make_unique<shaderProgram>();
 	shaderTrail->init( "body_trail.vert","body_trail.geom","body_trail.frag");

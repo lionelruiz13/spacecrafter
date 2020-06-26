@@ -29,6 +29,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/stateGL.hpp"
+#include "tools/Renderer.hpp"
 
 OjmMgr::OjmMgr()
 {
@@ -45,7 +46,7 @@ OjmMgr::~OjmMgr()
 		}
 	OjmVector.clear();
 
-	deleteShader();
+	// deleteShader();
 }
 
 OjmMgr::STATE_POSITION OjmMgr::convert(const std::string & value)
@@ -164,7 +165,7 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 		shaderOJM->setUniform("Light.Position", Vec4f(0.0, 0.0, 0.0, 1.0));
 		shaderOJM->setUniform("Light.Intensity", Vec3f(1.0, 1.0, 1.0));
 
-		OjmVector[i]->Obj3D->draw(shaderOJM);
+		OjmVector[i]->Obj3D->draw(shaderOJM.get());
 	}
 
 	shaderOJM->unuse();
@@ -178,7 +179,9 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 		StateGL::disable(GL_BLEND);
 		StateGL::disable(GL_DEPTH_TEST);
 		StateGL::BlendFunc(GL_ONE, GL_ZERO);
-		glClear(GL_DEPTH_BUFFER_BIT);
+		// glClear(GL_DEPTH_BUFFER_BIT);
+		Renderer::clearDepthBuffer();
+		
 	}
 	glDisable(GL_CULL_FACE);
 }
@@ -186,7 +189,7 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 
 void OjmMgr::createShader()
 {
-	shaderOJM= new shaderProgram();
+	shaderOJM= std::make_unique<shaderProgram>();
 	shaderOJM->init("shaderOJM_noSUN.vert", "", "", "","shaderOJM_noSUN.frag");
 	shaderOJM->setUniformLocation("ModelViewMatrix");
 	shaderOJM->setUniformLocation("NormalMatrix");
@@ -204,7 +207,7 @@ void OjmMgr::createShader()
 	//~ shaderOJM->printInformations();
 }
 
-void OjmMgr::deleteShader()
-{
-	if(shaderOJM) shaderOJM=nullptr;
-}
+// void OjmMgr::deleteShader()
+// {
+// 	if(shaderOJM) shaderOJM=nullptr;
+// }

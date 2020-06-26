@@ -36,6 +36,7 @@
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
@@ -53,7 +54,7 @@ IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator, Con
 		cLog::get()->write("Error loading texture illuminateTex", LOG_TYPE::L_ERROR);
 
 	currentTex = defaultTex;
-	createGL_context();
+	createSC_context();
 }
 
 IlluminateMgr::~IlluminateMgr()
@@ -266,11 +267,12 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	m_illumGL->fillVertexBuffer(BufferType::TEXTURE, illumTex);
 	m_illumGL->fillVertexBuffer(BufferType::COLOR, illumColor);
 
-	m_illumGL->bind();
-	for(int i=0;i<nbrIllumToTrace; i++)
-		glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
-	m_illumGL->unBind();
-	m_shaderIllum->unuse();
+	// m_illumGL->bind();
+	// for(int i=0;i<nbrIllumToTrace; i++)
+	// 	glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
+	// m_illumGL->unBind();
+	// m_shaderIllum->unuse();
+	Renderer::drawMultiArrays(m_shaderIllum.get(), m_illumGL.get(), GL_TRIANGLE_STRIP, nbrIllumToTrace, 4);
 }
 
 // search by name
@@ -283,7 +285,7 @@ Illuminate *IlluminateMgr::search(unsigned int name)
 	return nullptr;
 }
 
-void IlluminateMgr::createGL_context()
+void IlluminateMgr::createSC_context()
 {
 	m_shaderIllum = std::make_unique<shaderProgram>();
 	m_shaderIllum->init( "illuminate.vert", "illuminate.frag");

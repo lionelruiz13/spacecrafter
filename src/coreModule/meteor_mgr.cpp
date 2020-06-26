@@ -30,6 +30,7 @@
 
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 
 MeteorMgr::MeteorMgr(int zhr, int maxv )
@@ -41,7 +42,7 @@ MeteorMgr::MeteorMgr(int zhr, int maxv )
 	// (calculated for average meteor magnitude of +2.5 and limiting magnitude of 5)
 	zhr_to_wsr = 1.6667f/3600.f;
 	// this is a correction factor to adjust for the model as programmed to match observed rates
-	createGL_context();
+	createSC_context();
 }
 
 MeteorMgr::~MeteorMgr() 
@@ -89,7 +90,7 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 	//  printf("mpf: %d\tm launched: %d\t(mps: %f)\t%d\n", mpf, mlaunch, ZHR*zhr_to_wsr, delta_time);
 }
 
-void MeteorMgr::createGL_context()
+void MeteorMgr::createSC_context()
 {
 	m_shaderMeteor = std::make_unique<shaderProgram>();
 	m_shaderMeteor->init("meteor.vert","meteor.frag");
@@ -114,13 +115,13 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	StateGL::enable(GL_BLEND);
 
-	m_shaderMeteor->use();
-	m_meteorGL->bind();
-	for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
-		glDrawArrays(GL_LINE_STRIP, 3*i, 3);
-	
-	m_meteorGL->unBind();
-	m_shaderMeteor->unuse();
+	// m_shaderMeteor->use();
+	// m_meteorGL->bind();
+	// for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
+	// 	glDrawArrays(GL_LINE_STRIP, 3*i, 3);
+	// m_meteorGL->unBind();
+	// m_shaderMeteor->unuse();
+	Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), GL_LINE_STRIP, vecPos.size()/3 , 3);
 
 	vecPos.clear();
 	vecColor.clear();

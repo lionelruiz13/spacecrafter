@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 of Association Sirius
+ * Copyright (C) 2018-2020 of Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,15 +35,14 @@
 #include "tools/utility.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 AppDraw::AppDraw()
 {}
 
 
 AppDraw::~AppDraw()
-{
-	this->deleteShader();
-}
+{}
 
 void AppDraw::init(unsigned int _width, unsigned int _height)
 {
@@ -69,26 +68,20 @@ void AppDraw::initSplash()
 	splash->fillVertexBuffer(BufferType::TEXTURE, 8, dataTex);
 
 	int tmp=std::min(width, height);
-	glViewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
+	Renderer::viewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
 
 	std::unique_ptr<s_texture> tex_splash = 
 			std::make_unique<s_texture>(AppSettings::Instance()->getUserDir()+"textures/splash/spacecrafter.png" , TEX_LOAD_TYPE_PNG_ALPHA);
 
 	StateGL::disable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	StateGL::bindTexture2D(0,tex_splash->getID());
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex_splash->getID());
-
-	shaderSplash->use();
-	splash->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	splash->unBind();
-	shaderSplash->unuse();
+	Renderer::drawArrays(shaderSplash.get(), splash.get(), GL_TRIANGLE_STRIP,0,4);
 }
 
 
-void AppDraw::createGL_context()
+void AppDraw::createSC_context()
 {
 	shaderViewportShape= std::make_unique<shaderProgram>();
 	shaderViewportShape->init( "viewportShape.vert", "viewportShape.frag");
@@ -105,16 +98,6 @@ void AppDraw::createGL_context()
 	m_viewportGL->fillVertexBuffer(BufferType::POS2D, 8, points);
 }
 
-void AppDraw::deleteShader()
-{
-}
-
-//! dessine la première couche du tracé opengl sur le logiciel
-void AppDraw::drawFirstLayer()
-{
-	glClear(GL_COLOR_BUFFER_BIT);
-}
-
 //! Fill with black around the circle
 void AppDraw::drawViewportShape()
 {
@@ -126,20 +109,13 @@ void AppDraw::drawViewportShape()
 	shaderViewportShape->setUniform("decalage_x" , m_decalage_x);
 	shaderViewportShape->setUniform("decalage_y" , m_decalage_y);
 
-	m_viewportGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_viewportGL->unBind();
-	shaderViewportShape->unuse();
+	Renderer::drawArrays(shaderViewportShape.get(), m_viewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void AppDraw::drawColorInverse()
 {
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	shaderColorInverse->use();
 
-	m_viewportGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	m_viewportGL->unBind();
-	shaderColorInverse->unuse();
+	Renderer::drawArrays(shaderColorInverse.get(), m_viewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }

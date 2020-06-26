@@ -18,6 +18,7 @@
 #include "coreModule/projector.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> Axis::shaderAxis;
 std::unique_ptr<VertexArray> Axis::m_AxisGL;
@@ -49,10 +50,7 @@ void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 
 	m_AxisGL->fillVertexBuffer(BufferType::POS3D, vecAxisPos);
 
-	m_AxisGL->bind();
-	glDrawArrays(GL_LINE_STRIP, 0,2);
-	m_AxisGL->unBind();
-	shaderAxis->unuse();
+	Renderer::drawArrays(shaderAxis.get(), m_AxisGL.get(), GL_LINE_STRIP, 0,2);
 
 	vecAxisPos.clear();
 
@@ -100,7 +98,7 @@ void Axis::computeAxisAngle(const Projector* prj, const Mat4d& mat) {
 	}
 }
 
-void Axis::createGL_context()
+void Axis::createSC_context()
 {
 	shaderAxis = std::make_unique<shaderProgram>();
 	shaderAxis->init( "body_Axis.vert", "body_Axis.frag");

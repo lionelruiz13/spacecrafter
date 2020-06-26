@@ -55,7 +55,7 @@ public:
     void initSplash();
 
     //! clean screen with black color
-	void drawFirstLayer();
+	// void drawFirstLayer();
 	//! rempli en noir l'extérieur du dôme
 	void drawViewportShape();
 	//! dessine le rendu final du logiciel en inversant les couleurs
@@ -87,10 +87,10 @@ public:
 	}
 
 	//! création des shaders
-	void createGL_context();
+	void createSC_context();
 private:
 	//! suppression des shaders
-	void deleteShader();
+	// void deleteShader();
 
 	std::unique_ptr<shaderProgram> shaderViewportShape, shaderColorInverse;
 	std::unique_ptr<VertexArray> m_viewportGL;

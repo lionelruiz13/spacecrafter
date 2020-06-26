@@ -34,6 +34,8 @@
 #include "tools/log.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
+
 
 s_texture * Nebula::tex_NEBULA = nullptr;
 s_font* Nebula::nebulaFont = nullptr;
@@ -295,7 +297,7 @@ double Nebula::getCloseFov(const Navigator*) const
 }
 
 
-void Nebula::createGL_context()
+void Nebula::createSC_context()
 {
 	Nebula::shaderNebulaTex = std::make_unique<shaderProgram>();
 	Nebula::shaderNebulaTex->init("nebulaTex.vert","nebulaTex.geom","nebulaTex.frag");
@@ -349,10 +351,7 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 
 	m_texGL->fillVertexBuffer(BufferType::POS3D,sDataPos);
 
-	m_texGL->bind();
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	m_texGL->unBind();
-	shaderNebulaTex->unuse();
+	Renderer::drawArrays(shaderNebulaTex.get(), m_texGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor)

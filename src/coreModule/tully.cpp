@@ -36,13 +36,14 @@
 #include "tools/s_texture.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
 
 
 Tully::Tully()
 {
 	texGalaxy = nullptr;
 	fader = true;
-	createGL_context();
+	createSC_context();
 	nbGalaxy=0;
 	nbTextures = 0;
 }
@@ -62,7 +63,7 @@ Tully::~Tully()
 	radiusTmpTully.clear();
 }
 
-void Tully::createGL_context()
+void Tully::createSC_context()
 {
 	shaderPoints = std::make_unique<shaderProgram>();
 	shaderPoints->init("tully.vert","tully.geom","tully.frag");
@@ -73,7 +74,7 @@ void Tully::createGL_context()
 	
 	m_pointsGL = std::make_unique<VertexArray>();
 	m_pointsGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_pointsGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	m_pointsGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
 
@@ -83,7 +84,7 @@ void Tully::createGL_context()
 
 	m_squareGL =  std::make_unique<VertexArray>();
 	m_squareGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	m_squareGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
+	m_squareGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
 	m_squareGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::DYNAMIC);
 }
 
@@ -142,7 +143,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 
 	m_pointsGL->fillVertexBuffer(BufferType::POS3D,posTully );
 	m_pointsGL->fillVertexBuffer(BufferType::COLOR,colorTully );
-	m_pointsGL->fillVertexBuffer(BufferType::TEXTURE,texTully );
+	m_pointsGL->fillVertexBuffer(BufferType::MAG,texTully );
 	m_pointsGL->fillVertexBuffer(BufferType::SCALE,scaleTully );
 
 	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + Utility::intToString(nbGalaxy) );
@@ -218,7 +219,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	lTmpTully.clear();	//données devenues inutiles
 
 	m_squareGL->fillVertexBuffer(BufferType::POS3D,posTmpTully );
-	m_squareGL->fillVertexBuffer(BufferType::TEXTURE,texTmpTully );
+	m_squareGL->fillVertexBuffer(BufferType::MAG,texTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::SCALE,radiusTmpTully );
 }
 
@@ -252,10 +253,11 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	else
 		shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
 
-	m_pointsGL->bind();
-	glDrawArrays(GL_POINTS, 0, nbGalaxy);
-	m_pointsGL->unBind();
-	shaderPoints->unuse();
+	// m_pointsGL->bind();
+	// glDrawArrays(GL_POINTS, 0, nbGalaxy);
+	// m_pointsGL->unBind();
+	// shaderPoints->unuse();
+	Renderer::drawArrays(shaderPoints.get(), m_pointsGL.get(), GL_POINTS, 0, nbGalaxy);
 
 	//tracé des galaxies de taille >1 px;
 	StateGL::enable(GL_BLEND);
@@ -267,10 +269,11 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderSquare->setUniform("fader", fader.getInterstate());
 	shaderSquare->setUniform("nbTextures", nbTextures);
 
-	m_squareGL->bind();
-	glDrawArrays(GL_POINTS, 0, radiusTmpTully.size());
-	m_squareGL->unBind();
-	shaderSquare->unuse();
+	// m_squareGL->bind();
+	// glDrawArrays(GL_POINTS, 0, radiusTmpTully.size());
+	// m_squareGL->unBind();
+	// shaderSquare->unuse();
+	Renderer::drawArrays(shaderSquare.get(), m_squareGL.get(), GL_POINTS, 0, radiusTmpTully.size());
 
 	glBlendEquation(GL_FUNC_ADD);
 	StateGL::disable(GL_BLEND);

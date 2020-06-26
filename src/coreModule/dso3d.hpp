@@ -70,7 +70,7 @@ public:
 
 private:
 	// initialise le shader
-	void createGL_context();
+	void createSC_context();
 	// renseigne le nombre de textures dans texNebulae
 	int nbTextures;
 	// position camera

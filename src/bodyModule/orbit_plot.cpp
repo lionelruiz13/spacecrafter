@@ -47,7 +47,7 @@ void OrbitPlot::init()
 	delta_orbitJD = body->re.sidereal_period/ORBIT_POINTS;
 }
 
-void OrbitPlot::createGL_context()
+void OrbitPlot::createSC_context()
 {
 
 	shaderOrbit2d = std::make_unique<shaderProgram>();

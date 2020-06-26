@@ -112,7 +112,7 @@ protected:
 	// données VAO-VBO
 	std::unique_ptr<VertexArray> m_dataGL;
 	// initialise le shader
-	void createGL_context();
+	void createSC_context();
 	// supprime le shader
 	// void deleteShader();
 	// tampon d'affichage

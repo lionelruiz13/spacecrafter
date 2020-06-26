@@ -142,11 +142,11 @@ void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	else
 		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
 
-	m_dataGL->bind();
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	m_dataGL->unBind();
-
-	shaderSkyDisplay->unuse();
+	// m_dataGL->bind();
+	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	// m_dataGL->unBind();
+	// shaderSkyDisplay->unuse();
+	Renderer::drawArrays(shaderSkyDisplay.get(), m_dataGL.get(), GL_LINES, 0, dataSky.size() / 3); 
 }
 
 
@@ -243,32 +243,6 @@ void SkyPerson::loadString(const std::string& message)
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);	
 }
 
-
-// void SkyPerson::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
-// {
-// 	if (!fader.getInterstate())
-// 		return;
-
-// 	StateGL::enable(GL_BLEND);
-// 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-// 	shaderSkyDisplay->use();
-// 	shaderSkyDisplay->setUniform("color", color);
-// 	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-
-// 	if (ptype == AL)
-// 		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-// 	else
-// 		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-
-// 	glBindVertexArray(m_dataGL.vao);
-
-// 	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-
-// 	shaderSkyDisplay->unuse();
-
-// 	//draw_text(prj, nav);
-// }
 
 SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 {}
@@ -825,83 +799,79 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 {
 	if (!fader.getInterstate())
 		return;
-	// for Selected position
-	double ra1, de1, ra2, de2, rat, det, ang, alt1, az1, alt2, az2;
+
 	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
-	Utility::rectToSphe(&ra1, &de1, oldEquPos);
-	Utility::rectToSphe(&ra2, &de2, equPos);
-	if ((ra2 - ra1) > M_PI)
-		ra1 += 2 * M_PI;
-	if ((ra1 - ra2) > M_PI)
-		ra2 += 2 * M_PI;
-	ang = acos(sin(de1) * sin(de2) + cos(de1) * cos(de2) * cos(ra2 - ra1)) * rad2deg;
-	clear();
+	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
+	// for Selected position
+	// calculate alt az position
+	Vec3d localPos = nav->earthEquToLocal(equPos);
+	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+	if (tempRA > M_PI * 2)
+		tempRA -= M_PI * 2;
+	alt1 = tempDE;
+	az1 = M_PI - tempRA;
+	// end of calculate alt az position
+
+	// for Old position
+	// calculate alt az position
+	localPos = nav->earthEquToLocal(oldEquPos);
+	Utility::rectToSphe(&tempRA, &tempDE, localPos);
+	tempRA = 3 * M_PI - tempRA; // N is zero, E is 90 degrees
+	if (tempRA > M_PI * 2)
+		tempRA -= M_PI * 2;
+	alt2 = tempDE;
+	az2 = M_PI - tempRA;
+	// end of calculate alt az position
+	if ((az2 - az1) > M_PI)
+		az1 += 2 * M_PI;
+	if ((az1 - az2) > M_PI)
+		az2 += 2 * M_PI;
+
 	// Draw orthodromy
-	Utility::spheToRect(ra1, de1, pt1);
-	int npoints = 11;
-	float delta = (ra1 - ra2) / (npoints - 1);
+	clear();
+	Utility::spheToRect(az1, alt1, pt1);
+	int npoints = 21;
+	float delta = (az1 - az2) / (npoints - 1);
 	for (int i = 0; i < npoints; i++) {
 		insert_vec3(dataSky,pt1 );
 
-		rat = ra1 - delta * i;
-		det = atan(((tan(de2) * sin(rat - ra1)) / sin(ra2 - ra1 + 0.00001)) + (tan(de1) * sin(ra2 - rat)) / sin(ra2 - ra1 + 0.00001));
-		Utility::spheToRect(rat, det, pt1);
-		if (i == 5)
+		azt = az1 - delta * i;
+		altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1 + 0.00001)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1 + 0.00001));
+		Utility::spheToRect(azt, altt, pt1);
+		if (i == 12)
 			pt5 = pt1;
 		insert_vec3(dataSky,pt1 );
 	}
 
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
-	
-	m_dataGL->bind();
-	glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	m_dataGL->unBind();
-	shaderSkyDisplay->unuse();
+	SkyDisplay::draw(prj,nav);
 
 	// Text
-	Vec3d localPos = nav->earthEquToLocal(oldEquPos);
-	Utility::rectToSphe(&rat, &det, localPos);
-	rat = 3 * M_PI - rat; // N is zero, E is 90 degrees
-	if (rat > M_PI * 2)
-		rat -= M_PI * 2;
-	alt1 = det;
-	az1 = M_PI - rat;
+	float ang;
+	ang = acos(sin(alt1) * sin(alt2) + cos(alt1) * cos(alt2) * cos(az2 - az1)) * rad2deg;
 	Utility::spheToRect(az1, alt1, pt3);
-	(prj->*proj_func)(pt3, pt1);
-
-	localPos = nav->earthEquToLocal(equPos);
-	Utility::rectToSphe(&rat, &det, localPos);
-	rat = 3 * M_PI - rat; // N is zero, E is 90 degrees
-	if (rat > M_PI * 2)
-		rat -= M_PI * 2;
-	alt2 = det;
-	az2 = M_PI - rat;
 	Utility::spheToRect(az2, alt2, pt4);
-	(prj->*proj_func)(pt4, pt2);
 
+	(prj->*proj_func)(pt3, pt1);
+	(prj->*proj_func)(pt4, pt2);
 	double angle;
 	const double dx = pt1[0] - pt2[0];
 	const double dy = pt1[1] - pt2[1];
 	const double dq = dx * dx + dy * dy;
 	const double d = sqrt(dq);
 	angle = acos((pt1[1] - pt2[1]) / (d + 0.000001));
-	if (pt1[0] > pt2[0])
+	if (pt1[0] < pt2[0])
 		angle *= -1;
-	Mat4f MVP = prj->getMatProjectionOrtho2D();
-	localPos = nav->earthEquToLocal(pt5);
-	(prj->*proj_func)(localPos, pt0);
-	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
-	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), M_PI - pi_div_2 + angle);
 	std::ostringstream oss;
+	Mat4f MVP = prj->getMatProjectionOrtho2D();
+	//localPos = nav->earthEquToLocal(pt5);
+	(prj->*proj_func)(pt5, pt0);
+	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
+	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 	oss << truncf(ang * 60) << " nmi"; // for km *1.85185
 	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 	oss.clear();
+
 }

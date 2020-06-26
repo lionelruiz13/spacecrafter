@@ -217,14 +217,14 @@ public:
 		return core->tully->getFlagShow();
 	}
 
-	void tullySetColor(const std::string &colorMode)
+	void tullySetWhiteColor(bool value)
 	{
-		if (colorMode=="white")
-			core->tully->setWhiteColor(true);
-		if (colorMode=="custom")
-			core->tully->setWhiteColor(false);
+		core->tully->setWhiteColor(value);
 	}
 
+	bool tullyGetWhiteColor() {
+		return core->tully->getWhiteColor();
+	}
 	////////////////////////////////////////////////////////////////////////////////
 	// Stars---------------------------
 	////////////////////////////////////////////////////////////////////////////////

@@ -50,7 +50,7 @@ public:
 
 	static void deleteDefaultTexMap();
 
-	static void createGL_context();
+	static void createSC_context();
 
 private:
 

@@ -57,3 +57,9 @@ void StateGL::BlendFunc(GLenum gl_enum1, GLenum gl_enum2)
 		glBlendFunc(gl_enum1, gl_enum2);
 	}
 }
+
+void StateGL::bindTexture2D(unsigned int texNumber,GLuint texRef)
+{
+	glActiveTexture(GL_TEXTURE0+texNumber);
+	glBindTexture(GL_TEXTURE_2D, texRef);
+}

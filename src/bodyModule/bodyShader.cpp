@@ -29,22 +29,23 @@
 #include "bodyModule/bodyShader.hpp"
 
 
-shaderProgram* BodyShader::shaderBump=nullptr;
-shaderProgram* BodyShader::shaderNight=nullptr;
-shaderProgram* BodyShader::myEarth=nullptr;
-shaderProgram* BodyShader::shaderRinged=nullptr;
-shaderProgram* BodyShader::shaderNormal=nullptr;
-shaderProgram* BodyShader::shaderNormalTes=nullptr;
-shaderProgram* BodyShader::shaderMoonNight=nullptr;
-shaderProgram* BodyShader::shaderMoonNormal=nullptr;
-shaderProgram* BodyShader::shaderMoonBump=nullptr;
-shaderProgram* BodyShader::myMoon=nullptr;
-shaderProgram* BodyShader::shaderArtificial=nullptr;
+std::unique_ptr<shaderProgram> BodyShader::shaderBump;
+std::unique_ptr<shaderProgram> BodyShader::shaderNight;
+std::unique_ptr<shaderProgram> BodyShader::myEarth;
+std::unique_ptr<shaderProgram> BodyShader::shaderRinged;
+std::unique_ptr<shaderProgram> BodyShader::shaderNormal;
+std::unique_ptr<shaderProgram> BodyShader::shaderNormalTes;
+std::unique_ptr<shaderProgram> BodyShader::shaderMoonNight;
+std::unique_ptr<shaderProgram> BodyShader::shaderMoonNormal;
+std::unique_ptr<shaderProgram> BodyShader::shaderMoonBump;
+std::unique_ptr<shaderProgram> BodyShader::myMoon;
+
+std::unique_ptr<shaderProgram> BodyShader::shaderArtificial;
 
 
 void BodyShader::createShader()
 {
-	shaderNight = new shaderProgram();
+	shaderNight = std::make_unique<shaderProgram>();
 	shaderNight->init( "body_night.vert", "body_night.frag");
 	shaderNight->setUniformLocation("Clouds");
 	shaderNight->setUniformLocation("CloudNormalTexture");
@@ -75,7 +76,7 @@ void BodyShader::createShader()
 	shaderNight->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderNight->setUniformLocation("clipping_fov");	
 
-	shaderMoonNight = new shaderProgram();
+	shaderMoonNight = std::make_unique<shaderProgram>();
 	shaderMoonNight->init( "body_moon_night.vert", "body_moon_night.frag");
 	shaderMoonNight->setUniformLocation("Clouds");
 	shaderMoonNight->setUniformLocation("CloudNormalTexture");
@@ -100,7 +101,7 @@ void BodyShader::createShader()
 	shaderMoonNight->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderMoonNight->setUniformLocation("clipping_fov");	
 
-	myEarth= new shaderProgram();
+	myEarth= std::make_unique<shaderProgram>();
 	myEarth->init( "my_earth.vert", "my_earth.tesc","my_earth.tese", "my_earth.geom", "my_earth.frag");
 	myEarth->setUniformLocation("Clouds");
 	myEarth->setUniformLocation("CloudNormalTexture");
@@ -133,7 +134,7 @@ void BodyShader::createShader()
 	myEarth->setUniformLocation("inverseModelViewProjectionMatrix");
 	myEarth->setUniformLocation("clipping_fov");
 
-	shaderBump = new shaderProgram();
+	shaderBump = std::make_unique<shaderProgram>();
 	shaderBump->init( "body_bump.vert","", "","", "body_bump.frag");
 	//shaderBump->setUniformLocation("UmbraColor");
 
@@ -161,7 +162,7 @@ void BodyShader::createShader()
 	shaderBump->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderBump->setUniformLocation("clipping_fov");
 
-	shaderRinged = new shaderProgram();
+	shaderRinged = std::make_unique<shaderProgram>();
 	shaderRinged->init( "body_ringed.vert", "body_ringed.frag");
 	shaderRinged->setUniformLocation("RingInnerRadius");
 	shaderRinged->setUniformLocation("RingOuterRadius");
@@ -192,7 +193,7 @@ void BodyShader::createShader()
 	shaderRinged->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderRinged->setUniformLocation("clipping_fov");
 
-	shaderNormal = new shaderProgram();
+	shaderNormal = std::make_unique<shaderProgram>();
 	shaderNormal->init( "body_normal.vert", "body_normal.frag");
 	//shaderNormal->setUniformLocation("UmbraColor");
 
@@ -220,7 +221,7 @@ void BodyShader::createShader()
 	shaderNormal->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderNormal->setUniformLocation("clipping_fov");
 
-	shaderNormalTes = new shaderProgram();
+	shaderNormalTes = std::make_unique<shaderProgram>();
 	shaderNormalTes->init( "body_normal_tes.vert", "body_normal_tes.tesc", "body_normal_tes.tese", "body_normal_tes.geom", "body_normal_tes.frag");
 	//shaderNormalTes->setUniformLocation("UmbraColor");
 	shaderNormalTes->setUniformLocation("TesParam");
@@ -253,7 +254,7 @@ void BodyShader::createShader()
 
 
 
-	shaderArtificial = new shaderProgram();
+	shaderArtificial = std::make_unique<shaderProgram>();
 	shaderArtificial->init( "body_artificial.vert", "body_artificial.geom", "body_artificial.frag");
 
 	//commum
@@ -276,7 +277,7 @@ void BodyShader::createShader()
 	shaderArtificial->setUniformLocation("clipping_fov");
 
 
-	shaderMoonBump = new shaderProgram();
+	shaderMoonBump = std::make_unique<shaderProgram>();
 	shaderMoonBump->init( "moon_bump.vert","", "","", "moon_bump.frag");
 	shaderMoonBump->setUniformLocation("UmbraColor");
 	//commum
@@ -299,7 +300,7 @@ void BodyShader::createShader()
 
 
 
-	myMoon = new shaderProgram();
+	myMoon = std::make_unique<shaderProgram>();
 	myMoon->init( "my_moon.vert","my_moon.tesc", "my_moon.tese","my_moon.geom", "my_moon.frag");
 	myMoon->setUniformLocation("UmbraColor");
 	myMoon->setUniformLocation("TesParam");
@@ -323,7 +324,7 @@ void BodyShader::createShader()
 	myMoon->setUniformLocation("clipping_fov");
 
 
-	shaderMoonNormal = new shaderProgram();
+	shaderMoonNormal = std::make_unique<shaderProgram>();
 	shaderMoonNormal->init( "moon_normal.vert", "moon_normal.frag");
 	//shaderMoonNormal->setUniformLocation("UmbraColor");
 
@@ -347,17 +348,17 @@ void BodyShader::createShader()
 }
 
 
-void BodyShader::deleteShader()
-{
-	if (shaderNight) delete shaderNight;
-	if (shaderMoonNight) delete shaderMoonNight;
-	if (myEarth) delete myEarth;
-	if (shaderBump) delete shaderBump;
-	if (shaderRinged) delete shaderRinged;
-	if (shaderNormal) delete shaderNormal;
+// void BodyShader::deleteShader()
+// {
+// 	if (shaderNight) delete shaderNight;
+// 	if (shaderMoonNight) delete shaderMoonNight;
+// 	if (myEarth) delete myEarth;
+// 	if (shaderBump) delete shaderBump;
+// 	if (shaderRinged) delete shaderRinged;
+// 	if (shaderNormal) delete shaderNormal;
 
-	if (shaderArtificial) delete shaderArtificial;
-	if (shaderMoonBump) delete shaderMoonBump;
-	if (myMoon) delete myMoon;
-	if (shaderMoonNormal) delete shaderMoonNormal;
-}
+// 	if (shaderArtificial) delete shaderArtificial;
+// 	if (shaderMoonBump) delete shaderMoonBump;
+// 	if (myMoon) delete myMoon;
+// 	if (shaderMoonNormal) delete shaderMoonNormal;
+// }

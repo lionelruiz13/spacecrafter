@@ -33,6 +33,8 @@
 
 #include <list>
 #include <string>
+#include <memory>
+
 #include "tools/shader.hpp"
 
 
@@ -53,64 +55,59 @@ public:
 	~BodyShader() {};
 
 	static void createShader();
-	static void deleteShader();
+	// static void deleteShader();
 
 	static shaderProgram * getShaderBump() {
-		return shaderBump;
+		return shaderBump.get();
 	};
 
 	static shaderProgram * getShaderNight() {
-		return shaderNight;
+		return shaderNight.get();
 	};
 
 	static shaderProgram * getShaderNightTes() {
-		return myEarth;
+		return myEarth.get();
 	};
 
 	static shaderProgram * getShaderRinged() {
-		return shaderRinged;
+		return shaderRinged.get();
 	};
 
 	static shaderProgram * getShaderNormal() {
-		return shaderNormal;
+		return shaderNormal.get();
 	};
 
 	static shaderProgram * getShaderNormalTes() {
-		return shaderNormalTes;
+		return shaderNormalTes.get();
 	};
 
 	static shaderProgram * getShaderMoonNormal() {
-		return shaderMoonNormal;
+		return shaderMoonNormal.get();
 	};
 
 	static shaderProgram * getShaderMoonNight() {
-		return shaderMoonNight;
+		return shaderMoonNight.get();
 	};
 
 	static shaderProgram * getShaderMoonBump() {
-		return shaderMoonBump;
+		return shaderMoonBump.get();
 	};
 
 	static shaderProgram * getShaderMoonNormalTes() {
-		return myMoon;
+		return myMoon.get();
 	};
 
 	static shaderProgram * getShaderArtificial() {
-		return shaderArtificial;
+		return shaderArtificial.get();
 	};
 
 protected:
-	static shaderProgram *shaderBump;
-	static shaderProgram *shaderNight;
-	static shaderProgram *shaderMoonNight;
-	static shaderProgram *myEarth;
-	static shaderProgram *shaderRinged;
-	static shaderProgram *shaderNormal;
-	static shaderProgram *shaderNormalTes;
-	static shaderProgram *shaderMoonNormal;
-	static shaderProgram *shaderMoonBump;
-	static shaderProgram *myMoon;
-	static shaderProgram *shaderArtificial;
+	static std::unique_ptr<shaderProgram> shaderBump;
+	static std::unique_ptr<shaderProgram> shaderNight, shaderMoonNight;
+	static std::unique_ptr<shaderProgram> myEarth, shaderNormal, shaderNormalTes;
+	static std::unique_ptr<shaderProgram> shaderRinged;
+	static std::unique_ptr<shaderProgram> myMoon, shaderMoonBump, shaderMoonNormal;
+	static std::unique_ptr<shaderProgram> shaderArtificial;
 };
 
 #endif // _BODY_SHADER_HPP_

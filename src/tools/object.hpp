@@ -100,7 +100,7 @@ public:
 
 	static void initTextures();
 	static void deleteTextures();
-	static void deleteShaders();
+	// static void deleteShaders();
 private:
 	ObjectBase *rep;
 };

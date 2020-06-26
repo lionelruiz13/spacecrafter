@@ -6,6 +6,7 @@
 
 #include "ojmModule/ojml.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/Renderer.hpp"
 
 // *****************************************************************************
 // 
@@ -46,9 +47,10 @@ void OjmL::draw(GLenum mode)
 {
 	if (is_ok) {
 		// glBindVertexArray(dGL->vao);
-        dGL->bind();
-		GLCall( glDrawElements(mode, dGL->getIndiceCount(), GL_UNSIGNED_INT, (void*)0 ) );
-        dGL->unBind();
+        // dGL->bind();
+		// GLCall( glDrawElements(mode, dGL->getIndiceCount(), GL_UNSIGNED_INT, (void*)0 ) );
+        // dGL->unBind();
+        Renderer::drawElementsWithoutShader(dGL.get(), mode);
 	}
 }
 

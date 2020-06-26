@@ -903,6 +903,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			coreLink->tullySetFlagShow(newval);
 			break;
 
+		case FLAG_NAMES::FN_TULLY_COLOR_MODE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->tullyGetWhiteColor();
+
+			coreLink->tullySetWhiteColor(newval);
+			break;
+
 		case FLAG_NAMES::FN_BODY_TRACE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->bodyTraceGetFlag();
@@ -1589,7 +1596,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 							EventRecorder::getInstance()->queue(event);
 						} break;
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
-		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(setValue); break;
+//		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(setValue); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(setValue)); break;
 		default:
