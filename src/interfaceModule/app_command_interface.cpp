@@ -258,6 +258,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_IMAGE :	return commandImage();  break;
 		case SC_COMMAND::SC_LANDSCAPE :	return commandLandscape(); break;
 		case SC_COMMAND::SC_LOOK :	return commandLook(); break;
+		case SC_COMMAND::SC_SCREEN_FADER :	return commandScreenFader(); break;
 		case SC_COMMAND::SC_MEDIA :	return commandMedia(); break;
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
@@ -2039,6 +2040,22 @@ int AppCommandInterface::commandLandscape()
 		}
 	} else
 		debug_message = "command 'landscape' : unknown argument";
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandScreenFader()
+{
+	Event* event;
+	if (!args["alpha"].empty()) {
+		if (!args["duration"].empty()) {
+			event = new ScreenFaderEvent(ScreenFaderEvent::CHANGE, evalDouble(args["alpha"]), evalDouble(args["duration"]));
+		} else {
+			event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["alpha"]));
+		}
+		EventRecorder::getInstance()->queue(event);
+	} else {
+		debug_message = "command 'screen_fader' : invalid alpha parameter";
+	}
 	return executeCommandStatus();
 }
 

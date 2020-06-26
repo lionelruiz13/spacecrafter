@@ -51,6 +51,7 @@ public:
 	ScreenFader();
 	~ScreenFader();
 	void draw();
+	void update(int delta_time);
 
 
 	//! fixe l'intensité à a.
@@ -104,11 +105,31 @@ public:
 	}
 
 	void createGL_context();
+
+	// change gradually to a new intensity
+	void changeIntensity(float _intensity, double duration)
+	{
+		flag_change_intensity = 1;
+
+		start_value = intensity;
+		end_value = _intensity;
+
+		move_to_coef = 1.0f/(int)(duration*1000);
+		move_to_mult = 0;
+	}
+
+	void initShader();
 private:
 	//détermine l'intensité du voile sur l'écran
 	float intensity =0.0;
+	bool flag_change_intensity = 0;
+	double start_value, end_value;
+	float move_to_coef, move_to_mult;
 	std::unique_ptr<VertexArray> m_screenGL;
 	std::unique_ptr<shaderProgram> shaderScreen;
+
+	// paramètres openGL
+	void initShaderParams();
 };
 
 
