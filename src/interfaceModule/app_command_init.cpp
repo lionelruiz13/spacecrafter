@@ -62,6 +62,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands["illuminate"] = SC_COMMAND::SC_ILLUMINATE;
 	m_commands["image"] = SC_COMMAND::SC_IMAGE;
 	m_commands["landscape"] = SC_COMMAND::SC_LANDSCAPE;
+	m_commands["screen_fader"] = SC_COMMAND::SC_SCREEN_FADER;
 
 	m_commands["look_at"] = SC_COMMAND::SC_LOOK;
 	m_commands["media"] = SC_COMMAND::SC_MEDIA;

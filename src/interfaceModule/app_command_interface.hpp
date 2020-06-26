@@ -92,6 +92,7 @@ protected:
 	int commandIlluminate();
 	int commandImage();
 	int commandLandscape();
+	int commandScreenFader();
 	int commandLook();
 	int commandMedia();
 	int commandMeteors();

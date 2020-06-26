@@ -241,6 +241,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_IMAGE :	return commandImage();  break;
 		case SC_COMMAND::SC_LANDSCAPE :	return commandLandscape(); break;
 		case SC_COMMAND::SC_LOOK :	return commandLook(); break;
+		case SC_COMMAND::SC_SCREEN_FADER :	return commandScreenFader(); break;
 		case SC_COMMAND::SC_MEDIA :	return commandMedia(); break;
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
@@ -1541,16 +1542,6 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(setValue); break;
 		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(setValue); break;
 		case SCD_NAMES::APP_MODE: stcore->switchMode(setValue); break;
-		case SCD_NAMES::APP_SCREEN_FADER: 
-						{
-							Event* event;
-							if (!args["duration"].empty()) {
-							    event = new ScreenFaderEvent(ScreenFaderEvent::CHANGE, evalDouble(setValue), evalDouble(args["duration"]));
-							} else {
-							    event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["screen_fader"]));
-							}
-							EventManager::getInstance()->queue(event);
-						} break;
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(setValue); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
@@ -1999,6 +1990,22 @@ int AppCommandInterface::commandLandscape()
 		}
 	} else
 		debug_message = "command 'landscape' : unknown argument";
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandScreenFader()
+{
+	Event* event;
+	if (!args["alpha"].empty()) {
+		if (!args["duration"].empty()) {
+			event = new ScreenFaderEvent(ScreenFaderEvent::CHANGE, evalDouble(args["alpha"]), evalDouble(args["duration"]));
+		} else {
+			event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["alpha"]));
+		}
+		EventManager::getInstance()->queue(event);
+	} else {
+		debug_message = "command 'screen_fader' : invalid alpha parameter";
+	}
 	return executeCommandStatus();
 }
 
