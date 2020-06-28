@@ -47,8 +47,8 @@ class shaderProgram;
 class Landscape: public NoCopy {
 
 public:
-	enum LANDSCAPE_TYPE {
-		LANDSCAPE,
+	enum class LANDSCAPE_TYPE : char {
+		//LANDSCAPE,
 		FISHEYE,
 		SPHERICAL
 	};
