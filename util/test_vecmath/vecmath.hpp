@@ -408,7 +408,7 @@ template<class T> Vector2<T>& Vector2<T>::operator=(const T* a)
 {
 	// v[0]=a[0];
 	// v[1]=a[1];
-	memcpy(v,a.v,sizeof(v));
+	memcpy(v,a,sizeof(v));
 	return *this;
 }
 
@@ -653,10 +653,9 @@ template<class T> Vector3<T>::Vector3(const Vector4<T>&a)
 //! @param a the vector to copy.
 template<class T> template<class T2> Vector3<T>::Vector3(const Vector3<T2>& a)
 {
-	// v[0]=a.v[0];
-	// v[1]=a.v[1];
-	// v[2]=a.v[2];
-	memcpy(v,a.v,sizeof(v));
+	v[0]=a.v[0];
+	v[1]=a.v[1];
+	v[2]=a.v[2];
 }
 
 //! constructor from 3 values.
@@ -695,10 +694,9 @@ template<class T> Vector3<T>& Vector3<T>::operator=(const Vector3& a)
 //! @return *this
 template<class T> template <class T2> Vector3<T>& Vector3<T>::operator=(const Vector3<T2>& a)
 {
-	// v[0]=a.v[0];
-	// v[1]=a.v[1];
-	// v[2]=a.v[2];
-	memcpy(v,a.v,sizeof(a.v));
+	v[0]=a.v[0];
+	v[1]=a.v[1];
+	v[2]=a.v[2];
 	return *this;
 }
 
@@ -1095,7 +1093,7 @@ template<class T> Vector4<T>& Vector4<T>::operator=(const T* a)
 	// v[1]=a[1];
 	// v[2]=a[2];
 	// v[3]=a[3];
-	memcpy(v,a.v,sizeof(v));
+	memcpy(v,a,sizeof(v));
 	return *this;
 }
 //! whole vector setter.
