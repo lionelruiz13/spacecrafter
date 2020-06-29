@@ -358,16 +358,18 @@ void insert_vec4(std::vector<T>& vecDest, const Vector4<U>& vecSrc, unsigned sho
 //! default constructor. Set all to 0.
 template<class T> Vector2<T>::Vector2()
 {
-	v[0]=0;
-	v[1]=0;
+	// v[0]=0;
+	// v[1]=0;
+	memset(v, 0, sizeof(v));
 }
 
 //! Constructor from an array. Data are copied.
 //! @param a the array to copy data from.
 template<class T> Vector2<T>::Vector2(const Vector2<T>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	memcpy(v,a.v,sizeof(a.v));
 }
 
 //! constructor from 2 values.
@@ -383,8 +385,9 @@ template<class T> Vector2<T>::Vector2(T x, T y)
 //! @param a the array to copy data from.
 template<class T> Vector2<T>::Vector2(const T*a)
 {
-	v[0]=a[0];
-	v[1]=a[1];
+	// v[0]=a[0];
+	// v[1]=a[1];
+	memcpy(v,a.v,sizeof(v));
 }
 
 //! = operator.
@@ -392,8 +395,9 @@ template<class T> Vector2<T>::Vector2(const T*a)
 //! @return *this
 template<class T> Vector2<T>& Vector2<T>::operator=(const Vector2<T>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	memcpy(v,a.v,sizeof(a.v));
 	return *this;
 }
 
@@ -402,8 +406,9 @@ template<class T> Vector2<T>& Vector2<T>::operator=(const Vector2<T>& a)
 //! @return *this
 template<class T> Vector2<T>& Vector2<T>::operator=(const T* a)
 {
-	v[0]=a[0];
-	v[1]=a[1];
+	// v[0]=a[0];
+	// v[1]=a[1];
+	memcpy(v,a.v,sizeof(v));
 	return *this;
 }
 
@@ -618,36 +623,40 @@ template<class T> Vector3<float> Vector3<T>::convert() const
 //! default constructor. Set all to 0.
 template<class T> Vector3<T>::Vector3()
 {
-	v[0]=0;
-	v[1]=0;
-	v[2]=0;
+	// v[0]=0;
+	// v[1]=0;
+	// v[2]=0;
+	memset(v, 0, sizeof(v));
 }
 
 //! Constructor from an array. Data are copied.
 //! @param a the array to copy data from.
 template<class T> Vector3<T>::Vector3(const Vector3& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(v));
 }
 
 //! Copy constructor.
 //! @param a the vector to copy.
 template<class T> Vector3<T>::Vector3(const Vector4<T>&a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(v));
 }
 
 //! Copy constructor.
 //! @param a the vector to copy.
 template<class T> template<class T2> Vector3<T>::Vector3(const Vector3<T2>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(v));
 }
 
 //! constructor from 3 values.
@@ -663,8 +672,9 @@ template<class T> Vector3<T>::Vector3(T x, T y, T z)
 
 template<class T> Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
 {
-    v[0]=vec2.v[0];
-    v[1]=vec2.v[1];
+    // v[0]=vec2.v[0];
+    // v[1]=vec2.v[1];
+	memcpy(v,vec2,sizeof(vec2));
     v[2]=z;
 }
 
@@ -673,9 +683,10 @@ template<class T> Vector3<T>::Vector3(const Vector2<T>&vec2,const T&z)
 //! @return *this
 template<class T> Vector3<T>& Vector3<T>::operator=(const Vector3& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(a.v));
 	return *this;
 }
 
@@ -684,9 +695,10 @@ template<class T> Vector3<T>& Vector3<T>::operator=(const Vector3& a)
 //! @return *this
 template<class T> template <class T2> Vector3<T>& Vector3<T>::operator=(const Vector3<T2>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(a.v));
 	return *this;
 }
 
@@ -695,9 +707,10 @@ template<class T> template <class T2> Vector3<T>& Vector3<T>::operator=(const Ve
 //! @return *this
 template<class T> Vector3<T>& Vector3<T>::operator=(const T* a)
 {
-	v[0]=a[0];
-	v[1]=a[1];
-	v[2]=a[2];
+	// v[0]=a[0];
+	// v[1]=a[1];
+	// v[2]=a[2];
+	memcpy(v,a.v,sizeof(v));
 	return *this;
 }
 
@@ -972,10 +985,11 @@ template<class T> Vector4<float> Vector4<T>::convert() const
 //! default constructor. Set all to 0.
 template<class T> Vector4<T>::Vector4()
 {
-	v[0]=0;
-	v[1]=0;
-	v[2]=0;
-	v[3]=0;
+	// v[0]=0;
+	// v[1]=0;
+	// v[2]=0;
+	// v[3]=0;
+	memset(v, 0, sizeof(v));
 }
 
 //! Constructor from an array. Data are copied.
@@ -989,19 +1003,21 @@ template<class T> Vector4<T>::Vector4(const T*a)
 //! @param a the vector to copy.
 template<class T> Vector4<T>::Vector4(const Vector4<T>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	v[3]=a.v[3];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	// v[3]=a.v[3];
+	memcpy(v,a.v,sizeof(v));
 }
 
 //! constructor from vector3. Automatically set w to 1.0.
 //! @param a the vector to copy.
 template<class T> Vector4<T>::Vector4(const Vector3<T>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(a.v));
 	v[3]=1.0;
 }
 
@@ -1010,9 +1026,10 @@ template<class T> Vector4<T>::Vector4(const Vector3<T>& a)
 //! @param a value for w[3]
 template<class T> Vector4<T>::Vector4(const Vector3<T>& a, T b)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(a.v));
 	v[3]=b;
 }
 
@@ -1047,10 +1064,11 @@ template<class T> Vector4<T>::Vector4(T x, T y, T z)
 //! @return *this
 template<class T> Vector4<T>& Vector4<T>::operator=(const Vector4<T>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
-	v[3]=a.v[3];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	// v[3]=a.v[3];
+	memcpy(v,a.v,sizeof(v));
 	return *this;
 }
 
@@ -1060,9 +1078,10 @@ template<class T> Vector4<T>& Vector4<T>::operator=(const Vector4<T>& a)
 //! @return *this
 template<class T> Vector4<T>& Vector4<T>::operator=(const Vector3<T>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	// v[0]=a.v[0];
+	// v[1]=a.v[1];
+	// v[2]=a.v[2];
+	memcpy(v,a.v,sizeof(a.v));
 	v[3]=1;
 	return *this;
 }
@@ -1072,10 +1091,11 @@ template<class T> Vector4<T>& Vector4<T>::operator=(const Vector3<T>& a)
 //! @return *this
 template<class T> Vector4<T>& Vector4<T>::operator=(const T* a)
 {
-	v[0]=a[0];
-	v[1]=a[1];
-	v[2]=a[2];
-	v[3]=a[3];
+	// v[0]=a[0];
+	// v[1]=a[1];
+	// v[2]=a[2];
+	// v[3]=a[3];
+	memcpy(v,a.v,sizeof(v));
 	return *this;
 }
 //! whole vector setter.
@@ -1351,22 +1371,23 @@ Vector4<T> operator*(T s,const Vector4<T>&v)
 //! Basic constructor, set all to 0.
 template<class T> Matrix4<T>::Matrix4()
 {
-	r[0]=0;
-	r[1]=0;
-	r[2]=0;
-	r[3]=0;
-	r[4]=0;
-	r[5]=0;
-	r[6]=0;
-	r[7]=0;
-	r[8]=0;
-	r[9]=0;
-	r[10]=0;
-	r[11]=0;
-	r[12]=0;
-	r[13]=0;
-	r[14]=0;
-	r[15]=0;
+	memset(r, 0, sizeof(r));
+	// r[0]=0;
+	// r[1]=0;
+	// r[2]=0;
+	// r[3]=0;
+	// r[4]=0;
+	// r[5]=0;
+	// r[6]=0;
+	// r[7]=0;
+	// r[8]=0;
+	// r[9]=0;
+	// r[10]=0;
+	// r[11]=0;
+	// r[12]=0;
+	// r[13]=0;
+	// r[14]=0;
+	// r[15]=0;
 }
 
 //! Copy constructor.
