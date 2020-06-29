@@ -1067,11 +1067,13 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		istr >> hpnum;
 		selected_object = hip_stars->searchHP(hpnum).get();
 		asterisms->setSelected(selected_object);
+		hip_stars->setSelected(selected_object);
 		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="star") {
 		selected_object = hip_stars->search(id).get();
 		asterisms->setSelected(selected_object);
+		hip_stars->setSelected(selected_object);
 		ssystem->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
