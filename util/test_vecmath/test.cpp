@@ -49,7 +49,10 @@ bool compareVec4(Vec4f vmTest, glm::vec4 glmTest)
 
 bool compareMat(Mat4f vmM, glm::mat4 glmM)
 {
-    return true;
+    bool test = true;
+    for(int i=0; i< 4; i++)
+        test = test && compareVec4(vmM[i],glmM[i]);
+    return test;
 }
 
 int main()
@@ -168,4 +171,31 @@ int main()
     Mat4f tm;
     assert(compareMat(tm, glm::mat4(0)));
 
+    // compare ortho
+    for (int i=0; i< nbSubTests; i++) {
+        a1= randf(10.f);
+        a2= a1+ fabs(randf(10.f));
+        b1= randf(10.f);
+        b2= b1+ fabs(randf(10.f));
+        c1= randf(1.f);
+        c2= c1+ fabs(randf(10.f));
+        Mat4f vmPerspective = Mat4f::ortho(a1, a2, b1, b2, c1, c2);
+        glm::mat4 glmPerspective = glm::ortho(a1, a2, b1, b2, c1, c2);
+        assert(compareMat(vmPerspective, glmPerspective));
+    }
+
+    // compare ortho2D
+    for (int i=0; i< nbSubTests; i++) {
+        a1= randf(10.f);
+        a2= a1+ fabs(randf(10.f));
+        b1= randf(10.f);
+        b2= b1+ fabs(randf(10.f));
+        c1= randf(1.f);
+        c2= c1+ fabs(randf(10.f));
+        Mat4f vmPerspective = Mat4f::ortho2D(a1, a2, b1, b2);
+        glm::mat4 glmPerspective = glm::ortho(a1, a2, b1, b2);
+        assert(compareMat(vmPerspective, glmPerspective));
+    }
+
+    
 }
