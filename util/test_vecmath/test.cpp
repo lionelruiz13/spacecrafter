@@ -47,6 +47,10 @@ bool compareVec4(Vec4f vmTest, glm::vec4 glmTest)
     }
 }
 
+bool compareMat(Mat4f vmM, glm::mat4 glmM)
+{
+    return true;
+}
 
 int main()
 {
@@ -65,6 +69,9 @@ int main()
         //std::cout << a2 << " " << b2 << " " << c2 << std::endl;
 
         //initialisation
+        Vec3f vmT;
+        assert(compareVec3(vmT, glm::vec3(0,0,0) ));
+
         Vec3f vm1{a1, b1, c1};
         glm::vec3 glmv1{a1, b1, c1};
         // égalité
@@ -106,7 +113,7 @@ int main()
 
     float d1, d2;
 
-    // tests sur vec4
+    // tests sur vec4f
      for (int i=0; i< nbSubTests; i++) {
         a1 = randf(10.f);
         b1 = randf(10.f);
@@ -156,5 +163,9 @@ int main()
         assert(compareVec4(vm1, glmv1));
     }
 
-    
+
+    // tests sur mat4f
+    Mat4f tm;
+    assert(compareMat(tm, glm::mat4(0)));
+
 }
