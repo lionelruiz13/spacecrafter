@@ -1677,7 +1677,7 @@ template<class T> Matrix4<T> Matrix4<T>::frustum(T left, T right, T bottom, T to
 //! Gives a orthogonal projection matrix.
 //! @see gluPerspective
 //! @param fovyInDegrees the field of view width.
-//! @param aspectRation the ration y/x of the screen size.
+//! @param aspectRatio the ration y/x of the screen size.
 //! @param znear Nearest draw distance. Try to have the farthest as possible.
 //! @param zfar Farthest draw distance. Try to have the nearest as possible.
 template<class T> Matrix4<T> Matrix4<T>::perspective(T fovyInDegrees, T aspectRatio, T znear, T zfar)
@@ -1685,6 +1685,7 @@ template<class T> Matrix4<T> Matrix4<T>::perspective(T fovyInDegrees, T aspectRa
 	T ymax, xmax;
 	ymax = znear * tanf(fovyInDegrees * M_PI / 360.0);
 	xmax = ymax * aspectRatio;
+	//std::cout << -xmax << " " << xmax<< " " << -ymax<< " " << ymax<< " " << znear<< " " << zfar  << std::endl;
 	return frustum(-xmax, xmax, -ymax, ymax, znear, zfar);
 }
 

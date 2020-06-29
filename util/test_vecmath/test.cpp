@@ -2,7 +2,7 @@
 #define GLM_ENABLE_EXPERIMENTAL 
 #include <glm/glm.hpp>
 #include <glm/gtx/vector_angle.hpp>
-
+#include <glm/gtx/euler_angles.hpp> 
 #include <assert.h>
 
 const double EPSILON = 0.001f;
@@ -25,7 +25,7 @@ bool compareFloat(float vmTest, float glmTest)
 
 bool compareVec3(Vec3f vmTest, glm::vec3 glmTest)
 {
-    float t = abs(vmTest[0]-glmTest.x) + abs(vmTest[1]-glmTest.y) +abs(vmTest[2]-glmTest.z);
+    float t = abs(vmTest[0]-glmTest.x) + abs(vmTest[1]-glmTest.y) + abs(vmTest[2]-glmTest.z);
     if (t< EPSILON)
         return true;
     else {
@@ -37,7 +37,7 @@ bool compareVec3(Vec3f vmTest, glm::vec3 glmTest)
 
 bool compareVec4(Vec4f vmTest, glm::vec4 glmTest)
 {
-    float t = abs(vmTest[0]-glmTest.x) + abs(vmTest[1]-glmTest.y) +abs(vmTest[2]-glmTest.z) +abs(vmTest[3]-glmTest.w);
+    float t = abs(vmTest[0]-glmTest.x) + abs(vmTest[1]-glmTest.y) + abs(vmTest[2]-glmTest.z) + abs(vmTest[3]-glmTest.w);
     if (t< EPSILON)
         return true;
     else {
@@ -60,6 +60,7 @@ int main()
     // grands tests des vec3
     float a1,b1,c1;
     float a2,b2,c2;
+    float a3,b3,c3;
     
     for (int i=0; i< nbSubTests; i++) {
         a1 = randf(10.f);
@@ -179,9 +180,9 @@ int main()
         b2= b1+ fabs(randf(10.f));
         c1= randf(1.f);
         c2= c1+ fabs(randf(10.f));
-        Mat4f vmPerspective = Mat4f::ortho(a1, a2, b1, b2, c1, c2);
-        glm::mat4 glmPerspective = glm::ortho(a1, a2, b1, b2, c1, c2);
-        assert(compareMat(vmPerspective, glmPerspective));
+        Mat4f vmTest = Mat4f::ortho(a1, a2, b1, b2, c1, c2);
+        glm::mat4 glmTest = glm::ortho(a1, a2, b1, b2, c1, c2);
+        assert(compareMat(vmTest, glmTest));
     }
 
     // compare ortho2D
@@ -190,12 +191,60 @@ int main()
         a2= a1+ fabs(randf(10.f));
         b1= randf(10.f);
         b2= b1+ fabs(randf(10.f));
-        c1= randf(1.f);
-        c2= c1+ fabs(randf(10.f));
-        Mat4f vmPerspective = Mat4f::ortho2D(a1, a2, b1, b2);
-        glm::mat4 glmPerspective = glm::ortho(a1, a2, b1, b2);
-        assert(compareMat(vmPerspective, glmPerspective));
+        Mat4f vmTest = Mat4f::ortho2D(a1, a2, b1, b2);
+        glm::mat4 glmTest = glm::ortho(a1, a2, b1, b2);
+        assert(compareMat(vmTest, glmTest));
     }
 
-    
+    // compare frustum
+    for (int i=0; i< nbSubTests; i++) {
+        a1= randf(10.f);
+        a2= a1+ fabs(randf(10.f));
+        b1= randf(10.f);
+        b2= b1+ fabs(randf(10.f));
+        c1= randf(1.f);
+        c2= c1+ fabs(randf(10.f));
+        Mat4f vmTest = Mat4f::frustum(a1, a2, b1, b2, c1, c2);
+        glm::mat4 glmTest = glm::frustum(a1, a2, b1, b2, c1, c2);
+        assert(compareMat(vmTest, glmTest));
+    }
+
+    // compare perspective
+    /*
+    for (int i=0; i< nbSubTests; i++) {
+        a1= 0.1f + fabs(randf(359.9f));
+        a2= 1.f + fabs(randf(1.f));
+        c1= 0.01f+fabs(randf(1.f));
+        c2= c1+ fabs(randf(10.f));
+        Mat4f vmTest = Mat4f::perspective(a1, a2, c1, c2);
+        glm::mat4 glmTest = glm::perspective(float(a1/180*M_PI), a2, c1, c2);
+        assert(compareMat(vmTest, glmTest));
+    }
+    */
+
+    // compare lookAt
+    for (int i=0; i< nbSubTests; i++) {
+        a1= randf(10.f);
+        a2= randf(10.f);
+        a3= randf(10.f);
+        b1= randf(10.f);
+        b2= randf(10.f);
+        b3= randf(10.f);
+        c1= randf(10.f);
+        c2= randf(10.f);
+        c3= randf(10.f);
+        Mat4f vmTest = Mat4f::lookAt(a1, a2, a3, b1, b2, b3, c1, c2, c3);
+        glm::mat4 glmTest = glm::lookAt(glm::vec3(a1, a2, a3), glm::vec3(b1, b2, b3), glm::vec3(c1, c2, c3) );
+        assert(compareMat(vmTest, glmTest));
+    }
+
+    // compare yawPitchRoll
+    for (int i=0; i< nbSubTests; i++) {
+        a1= randf(90.f);
+        b1= randf(90.f);
+        c1= randf(90.f);
+        Mat4f vmTest = Mat4f::yawPitchRoll(a1, b1, c1);
+        glm::mat4 glmTest = glm::yawPitchRoll(float(a1/180*M_PI), float(b1/180*M_PI), float(c1/180*M_PI));
+        assert(compareMat(vmTest, glmTest));
+    }
 }
