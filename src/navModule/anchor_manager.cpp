@@ -31,6 +31,8 @@
 //#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 #include "tools/log.hpp"
+#include "eventModule/CoreEvent.hpp"
+#include "eventModule/event_recorder.hpp"
 
 
 /*
@@ -532,6 +534,8 @@ bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
 
 	currentAnchor = targetBody;
 	observer->setAnchorPoint(targetBody);
+	Event* event= new ObserverEvent(targetBody->getBody()->getEnglishName());
+	EventRecorder::getInstance()->queue(event);
 	targetBody->update();
 
 	double angle = targetBody->getBody()->getAxisAngle()*(180.0f/M_PI);
