@@ -121,7 +121,7 @@ void TextToHtml::NameInHtml(std::string lines)
 		}
 		else {
 			OutHtml += "<p class =\"particularite\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n"; //On récupère la ligne, donc du premier caractère, au saut de ligne.
-			lines = lines.erase(0, lines.length()); //On vide le string NAME en cours
+			lines = lines.erase(0, lines.find(delimiter)+4); //On vide le string NAME en cours
 		}
 	}
 	OutHtml += "</header>";
