@@ -56,7 +56,7 @@ std::string FileReader::readFileCss() {
     if(monFlux) { // si le fichier est bien ouvert, on commence la lecture
         while(getline(monFlux, ligne))
         {
-            result += ligne;
+            result += ligne + "\n";
         }
     }
     else {
