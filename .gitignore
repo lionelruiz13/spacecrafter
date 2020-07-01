@@ -62,3 +62,4 @@ po/*
 *.exe
 *.out
 *.app
+util/new_parser_scripts/main
