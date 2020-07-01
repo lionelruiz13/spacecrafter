@@ -21,7 +21,7 @@ void TextToHtml::lecture()
 	OutHtml += "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Documentation</title>\n<style>";
 	OutHtml += inCss; //On place le style CSS
 	OutHtml += "</style>\n</head>\n<body>\n<header>\n<h1>Documentation des commandes script du logiciel</h1>\n</header>\n";
-	OutHtml += "<img src=\"img/logo.png\" alt=\"Logo\" class=\"logo\">";
+	//OutHtml += "<img src=\"logo.png\" alt=\"Logo\" class=\"logo\">";
 	OutHtml += "<section class=\"commande\">";
 
 	for(auto i = 0; i < inText.size(); i++) {
@@ -64,8 +64,6 @@ void TextToHtml::transformation(std::string lines)
 
 		argument = nextargument; //On passe au Prochain argument  NAME / ARGUMENT / PARAMETER / EXEMPLE
 	}
-
-	std::cout << "nb fois" <<std::endl;
 
 	//On envoie en traitement toutes les sections, si elles sont présente.
 	if(S_Name != "") NameInHtml(S_Name);
