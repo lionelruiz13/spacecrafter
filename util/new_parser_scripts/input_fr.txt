@@ -14,7 +14,7 @@ ARGUMENT action @ valeur fixée
 	@ nécessite filename, le paramètre loop est optionel
 	$ resume
 	@ reprend la diffusion d'une source audio
-ARGUMENT nopause @ boolean
+ARGUMENT nopause @ vrai/faux
 	$ true, false
 	@ indique si la piste audio s'arrête lors de la lecture des scripts
 ARGUMENT volume @ fixé
@@ -24,9 +24,9 @@ ARGUMENT volume @ fixé
 	@ diminue le volume de 5
 	$ valeur
 	@ valeur représente un nombre compris entre 0 (sourdine) et 128 (maximum)
-PARAMETER filename @ string
+PARAMETER filename @ chaine de caractère
 	@ nom du fichier audio
-PARAMETER loop @ boolean
+PARAMETER loop @ vrai/faux
 	@ indique si la source audio doit se répéter ou (non)
 	@ par défaut, la répétition n'est pas active
 EXEMPLE
@@ -65,7 +65,7 @@ ARGUMENT hidden @ vrai/faux
 	@ affiche ou masque l'astre temporairement
 ARGUMENT skin_use @ vrai/faux/inverse
 	@ indique au logiciel de prendre en compte les textures alternatives
-ARGUMENT skin_tex @ string
+ARGUMENT skin_tex @ chaine de caractère
 	@ modifie temporairement la texture de l'astre par une texture alternative
 	@ nécessite le paramètre name
 ARGUMENT tesselation @ fixé
@@ -84,7 +84,7 @@ ARGUMENT tesselation @ fixé
 	$ moon_altimetry_factor
 	@ modificateur d'altimétrie pour la Lune 
 	@ nécessite value
-PARAMETER name @ string
+PARAMETER name @ chaine de caractère
 	@ représente le nom interne de l'astre
 PARAMETER value @ entier
 	@ indique une valeur utilse pour la tesselation
@@ -115,7 +115,7 @@ NAME body_trace
 ARGUMENT action @ fixé
 	$ clear
 	@ supprime toutes les trajectoires affichées
-ARGUMENT hidde @ string
+ARGUMENT hidde @ chaine de caractère
 	@ cache le tracé d'un astre
 ARGUMENT pen @ vrai/faux/inverse
 	$ true
@@ -124,7 +124,7 @@ ARGUMENT pen @ vrai/faux/inverse
 	@ lève le crayon la trajectoire tracé reste apparente
 	$ toggle
 	@ inverse le comportement du stylo
-ARGUMENT target @ string
+ARGUMENT target @ chaine de caractère
 	@ indique le nom de l'astre à sélectionner pour le crayon
 @@
 
@@ -207,9 +207,9 @@ ARGUMENT action @ fixé
 
 NAME date
 	@ this command manage all time and date modification ....
-ARGUMENT jday @string
+ARGUMENT jday @ chaine de caractère
 	@ date time in julian calendar
-ARGUMENT local @string
+ARGUMENT local @ chaine de caractère
 	@ date time in local
 	@ if string begin with T, only time will be modified.
 ARGUMENT relative @entier
@@ -218,11 +218,11 @@ ARGUMENT relativeYear @nombre
 	@ add date time with relativeYear time
 ARGUMENT relativeMonth @nombre
 	@ add date time with relativeMonth time
-ARGUMENT utc@string
+ARGUMENT utc@ chaine de caractère
 	@ date time in utc time
-ARGUMENT sideral@string
+ARGUMENT sideral@ chaine de caractère
 	@ date time in sideral time
-ARGUMENT load@string
+ARGUMENT load@ chaine de caractère
 	$ current @ load saved date
 	$ preset @ save date and time to be use with current
 ARGUMENT sun@ fixed
@@ -238,7 +238,7 @@ EXEMPLE
 
 NAME deselect
 	@ désélectionne les objets sélectionnés
-PARAMETER  constellation @ string
+PARAMETER  constellation @ chaine de caractère
 	@ désélectionne uniquement la constellation concernée
 	@ sans l'argument, la commande deselect désélectionne tout objet sélectionné
 @@
@@ -268,14 +268,12 @@ ARGUMENT action @ fixé
 	$ drop
 	@ supprime définitivement l'objet représenté par name
 ARGUMENT hidden
-	$ true, false @ boolean
+	$ true, false @ vrai/faux
 	$ all @ sélectionne tous les objets
 	@ optional type ou constellation
-PARAMETER name
-	@ string
+PARAMETER name @ chaine de caractère
 	@ nom interne pour la gestion du logiciel
-PARAMETER path
-	@ string
+PARAMETER path @ chaine de caractère
 PARAMETER ra
 	@ décimal 
 	@ coordonnées ra
@@ -292,9 +290,9 @@ PARAMETER rotation
 	@ décimal 
 	@ indication sur une rotation de l'image
 PARAMETER credit
-	@ string
+	@ chaine de caractère
 PARAMETER filename
-	@ string
+	@ chaine de caractère
 	@ nom du fichier image représenant l'objet
 PARAMETER texture_luminance_adjust
 	@ décimal 
@@ -303,10 +301,10 @@ PARAMETER distance
 	@ décimal 
 	@ distance en al
 PARAMETER constellation
-	@ string
+	@ chaine de caractère
 	@ constellation dans laquelle elle appartient
 PARAMETER type
-	@ string
+	@ chaine de caractère
 	@ indique le type d'objet représenté
 @@
 
@@ -320,7 +318,7 @@ ARGUMENT action @ fixed
 	@ nécessite filename
 	$ stop
 	@ arrête la lecture de la vidéo et/ou de l'audio lancée par externalviewer
-PARAMETER filename @ string
+PARAMETER filename @ chaine de caractère
 	@ nom du fichier à exploiter
 @@
 
@@ -328,115 +326,90 @@ PARAMETER filename @ string
 NAME flag
 	@ permet de modifier un état du simulateur
 	@ les valeurs possibles sont on, true 1, off, false, 0 ou toggle (inverse l'état)
-PARAMETER antialias_lines @ boolean
-PARAMETER constellation_drawing @ boolean
-PARAMETER constellation_names @ boolean
-PARAMETER constellation_art @ boolean
-PARAMETER constellation_boundaries @ boolean
-PARAMETER constellation_pick @ boolean
-PARAMETER star_twinkle @ boolean
-PARAMETER navigation @ boolean
-PARAMETER show_tui_datetime @ boolean
-PARAMETER show_tui_short_obj_info @ boolean
-PARAMETER manual_zoom @ boolean
-PARAMETER light_travel_time @ boolean
-PARAMETER fog @ boolean
-PARAMETER atmosphere @ boolean
-PARAMETER azimuthal_grid @ boolean
-PARAMETER equatorial_grid @ boolean
-PARAMETER ecliptic_grid @ boolean
-PARAMETER galactic_grid @ boolean
-PARAMETER equator_line @ boolean
-PARAMETER galactic_line @ boolean
-PARAMETER ecliptic_line @ boolean
-PARAMETER precession_circle @ boolean
-PARAMETER circumpolar_circle @ boolean
-PARAMETER tropic_lines @ boolean
-PARAMETER meridian_line @ boolean
-PARAMETER zenith_line @ boolean
-PARAMETER polar_circle @ boolean
-PARAMETER ecliptic_center @ boolean
-PARAMETER galactic_pole @ boolean
-PARAMETER galactic_center @ boolean
-PARAMETER vernal_points @ boolean
-PARAMETER analemma_line @ boolean
-PARAMETER analemma @ boolean
-PARAMETER aries_line @ boolean
-PARAMETER zodiac @ boolean
-PARAMETER personal @ boolean
-PARAMETER personeq @ boolean
-PARAMETER greenwich_line @ boolean
-PARAMETER vertical_line @ boolean
-PARAMETER cardinal_points @ boolean
-PARAMETER clouds @ boolean
-PARAMETER moon_scaled @ boolean
-PARAMETER sun_scaled @ boolean
-PARAMETER landscape @ boolean
-PARAMETER stars @ boolean
-PARAMETER star_names @ boolean
-PARAMETER planets @ boolean
-PARAMETER planet_names @ boolean
-PARAMETER planet_orbits @ boolean
-PARAMETER orbits @ boolean
-PARAMETER planets_orbits @ boolean
-PARAMETER planets_axis @ boolean
-PARAMETER satellites_orbits @ boolean
-PARAMETER nebulae @ boolean
-PARAMETER nebula_names @ boolean
-PARAMETER nebula_hints @ boolean
-PARAMETER milky_way @ boolean
-PARAMETER bright_nebulae @ boolean
-PARAMETER object_trails @ boolean
-PARAMETER track_object @ boolean
-PARAMETER script_gui_debug @ boolean
-PARAMETER lock_sky_position @ boolean
-PARAMETER body_trace @ boolean
-PARAMETER show_latlon @ boolean
-PARAMETER color_inverse @ boolean
-PARAMETER oort @ boolean
-PARAMETER stars_trace @ boolean
-PARAMETER star_lines @ boolean
-PARAMETER sky_draw @ boolean
+PARAMETER antialias_lines @ vrai/faux
+PARAMETER constellation_drawing @ vrai/faux
+PARAMETER constellation_names @ vrai/faux
+PARAMETER constellation_art @ vrai/faux
+PARAMETER constellation_boundaries @ vrai/faux
+PARAMETER constellation_pick @ vrai/faux
+PARAMETER star_twinkle @ vrai/faux
+PARAMETER navigation @ vrai/faux
+PARAMETER show_tui_datetime @ vrai/faux
+PARAMETER show_tui_short_obj_info @ vrai/faux
+PARAMETER manual_zoom @ vrai/faux
+PARAMETER light_travel_time @ vrai/faux
+PARAMETER fog @ vrai/faux
+PARAMETER atmosphere @ vrai/faux
+PARAMETER azimuthal_grid @ vrai/faux
+PARAMETER equatorial_grid @ vrai/faux
+PARAMETER ecliptic_grid @ vrai/faux
+PARAMETER galactic_grid @ vrai/faux
+PARAMETER equator_line @ vrai/faux
+PARAMETER galactic_line @ vrai/faux
+PARAMETER ecliptic_line @ vrai/faux
+PARAMETER precession_circle @ vrai/faux
+PARAMETER circumpolar_circle @ vrai/faux
+PARAMETER tropic_lines @ vrai/faux
+PARAMETER meridian_line @ vrai/faux
+PARAMETER zenith_line @ vrai/faux
+PARAMETER polar_circle @ vrai/faux
+PARAMETER ecliptic_center @ vrai/faux
+PARAMETER galactic_pole @ vrai/faux
+PARAMETER galactic_center @ vrai/faux
+PARAMETER vernal_points @ vrai/faux
+PARAMETER analemma_line @ vrai/faux
+PARAMETER analemma @ vrai/faux
+PARAMETER aries_line @ vrai/faux
+PARAMETER zodiac @ vrai/faux
+PARAMETER personal @ vrai/faux
+PARAMETER personeq @ vrai/faux
+PARAMETER greenwich_line @ vrai/faux
+PARAMETER vertical_line @ vrai/faux
+PARAMETER cardinal_points @ vrai/faux
+PARAMETER clouds @ vrai/faux
+PARAMETER moon_scaled @ vrai/faux
+PARAMETER sun_scaled @ vrai/faux
+PARAMETER landscape @ vrai/faux
+PARAMETER stars @ vrai/faux
+PARAMETER star_names @ vrai/faux
+PARAMETER planets @ vrai/faux
+PARAMETER planet_names @ vrai/faux
+PARAMETER planet_orbits @ vrai/faux
+PARAMETER orbits @ vrai/faux
+PARAMETER planets_orbits @ vrai/faux
+PARAMETER planets_axis @ vrai/faux
+PARAMETER satellites_orbits @ vrai/faux
+PARAMETER nebulae @ vrai/faux
+PARAMETER nebula_names @ vrai/faux
+PARAMETER nebula_hints @ vrai/faux
+PARAMETER milky_way @ vrai/faux
+PARAMETER bright_nebulae @ vrai/faux
+PARAMETER object_trails @ vrai/faux
+PARAMETER track_object @ vrai/faux
+PARAMETER script_gui_debug @ vrai/faux
+PARAMETER lock_sky_position @ vrai/faux
+PARAMETER body_trace @ vrai/faux
+PARAMETER show_latlon @ vrai/faux
+PARAMETER color_inverse @ vrai/faux
+PARAMETER oort @ vrai/faux
+PARAMETER stars_trace @ vrai/faux
+PARAMETER star_lines @ vrai/faux
+PARAMETER sky_draw @ vrai/faux
 	@ active le tracé de points sur le dôme
 @@
 
 
-NAME external_mplayer
-	@ permet de commander au doigt et à l'oeil mplayer pour la lecture de vidéos externes
-	@ ne fonctionne que sous linux
-ARGUMENT action @ fixed
-	$ play
-	@ lance la lecture du fichier
-	@ nécessite filename
-	$ stop
-	@ arrête la lecture de la vidéo
-	$ pause
-	@ met la lecture de la vidéo en pause
-	$ reset
-	@ reprend la lecture de la vidéo au début
-ARGUMENT jump_relative @ décimal 
-	@ réalise un saut relatif dans la vidéo de X s
-ARGUMENT jump_absolute @ décimal 
-	@ se place à la position X (en s) de la vidéo
-ARGUMENT speed @ int
-	@ modifie la vitesse de lecture de la vidéo
-ARGUMENT volume @ int
-	@ modifie le volume sonore interne de mplayer
-ARGUMENT execute @ string
-	@ indique au pipe de mplayer l'action à réaliser 
-PARAMETER filename @ string
-	@ nom de la vidéo à lire
-@@
-
-
 NAME illuminate
-	@ permet de modifier la représentation d'une étoile en la grossissant artificiellement afin de mieux la distinguer parmi les autres étoiles. On peut aussi modifier la couleur en présisant les paramètres r g et b
+	@ permet de modifier la représentation d'une étoile en la grossissant artificiellement afin de mieux la distinguer.
 ARGUMENT action @ fixé
 	$ clear
 	@ supprime définitivement tous les illuminate affichés
 ARGUMENT display @ fixé
-	$ on @ active illuminate pour l'étoile donnée avec l'argument hp
-	$ off @ désactive illuminate pour l'étoile donnée avec l'argument hp
+	$ on
+	@ active illuminate pour l'étoile donnée avec l'argument hp
+	@ nécessite hp
+	$ off 
+	@ désactive illuminate pour l'étoile donnée avec l'argument hp
 	@ nécessite hp
 PARAMETER r @ décimal 
 	@ modifie la composante rouge de la couleur attribuée à l'étoile
@@ -447,7 +420,12 @@ PARAMETER g @ décimal
 PARAMETER b @ décimal 
 	@ modifie la composante bleu de la couleur attribuée à l'étoile
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER hp @ string
+PARAMETER color_value @ xRRGGBB
+	@ fixe la couleur à la définition du web: paramètre en hexadécimal, 2 caractères obigatoires
+PARAMETER color_value @ rXXXgYYYbZZZ
+	@ fixe la couleur au format rgb informatique
+	@ XXX, YYY et ZZZ appartiennent à l'intervalle [0;255]
+PARAMETER hp @ chaine de caractère
 	@ représente le nom de l'étoile ciblée par illuminate
 EXEMPLE
 	illuminate display on hp HP541
@@ -468,11 +446,11 @@ PARAMETER coordinate_system @ fixé
 	$ equatorial
 	$ j2000
 	$ dome
-PARAMETER mipmap @ boolean
+PARAMETER mipmap @ vrai/faux
 	@ indique si l'on doit activer les miniatures pour de meilleurs résultats visuels
-PARAMETER name @ string
+PARAMETER name @ chaine de caractère
 	@ nom interne à l'image qui permet de l'identifier
-PARAMETER filename @ string
+PARAMETER filename @ chaine de caractère
 	@ chemin du fichier pour accéder à l'image
 PARAMETER altitude @ décimal
 	@ position de l'image
@@ -497,7 +475,7 @@ NAME landscape
 	@ permet de modifier le landscape actuel
 ARGUMENT action @ fixé
 	$ load @ charge le nom du fichier landscape
-PARAMETER path @ string
+PARAMETER path @ chaine de caractère
 	@ chemin du fichier pour le landscape
 @@
 
@@ -523,7 +501,7 @@ ARGUMENT action @ fixé
 	@ met la vidéo et le son  (si fonctionnel) en pause
 	$ stop
 	@ arrête la lecture de la vidéo et du son (si fonctionnel)
-ARGUMENT keycolor @ boolean
+ARGUMENT keycolor @ vrai/faux
 	@ active la transparence de la vidéo VIEWPORT sur une couleur déterminée
 	@ nécessite intensity et ( color_value ou  r g b )
 PARAMETER intensity @ nombre
@@ -545,10 +523,10 @@ PARAMETER type @ fixé
 	$ VIEWPORT
 	@ lance une vidéo en premier plan
 PARAMETER videoname
-	@ string
+	@ chaine de caractère
 	@ indique quel fichier video lire
 PARAMETER audioname
-	@ string
+	@ chaine de caractère
 	@ indique quel fichier audio lire
 @@
 
@@ -582,7 +560,7 @@ ARGUMENT alt
 	$ default
 	@ permet de revenir à l'altitude du lieu d'origine
 PARAMETER name
-	@ string
+	@ chaine de caractère
 	@ indique le nom de l'endroit où l'on se trouve
 PARAMETER duration
 	@ décimal 
@@ -593,9 +571,9 @@ PARAMETER duration
 
 NAME move_to_city
 	@ déplace le point d'observation à une grande ville du monde.
-ARGUMENT name @ string
+ARGUMENT name @ chaine de caractère
 	@ nom de la ville
-ARGUMENT country @ string
+ARGUMENT country @ chaine de caractère
 	@ nom du pays
 @@
 
@@ -626,7 +604,7 @@ ARGUMENT action @ fixé
 	$ clear
 	@ supprime tous les tracés
 PARAMETER filename
-	@ string
+	@ chaine de caractère
 	@ charge en mémoire un fichier de tracé existant
 @@
 
@@ -639,14 +617,14 @@ ARGUMENT action @ fixé
 	@ nécessite filename
 	$ clear @ supprime tous les tracés
 PARAMETER filename
-	@ string
+	@ chaine de caractère
 	@ charge en mémoire un fichier de tracé existant
 @@
 
 
 NAME planet_scale
 	@ Modifie le rayon d'un astre
-ARGUMENT name @ string
+ARGUMENT name @ chaine de caractère
 	@ nom de l'astre
 	@ nécessite scale
 PARAMETER scale @ int
@@ -667,10 +645,10 @@ ARGUMENT action @ fixé
 NAME print
 	@ affiche un commentaire dans les fichiers de logs
 	@ commande système
-ARGUMENT value @ string
+ARGUMENT value @ chaine de caractère
 	@ le contenu du message
 	@ obligatoire
-PARAMETER name  @ string
+PARAMETER name  @ chaine de caractère
 	@ le nom du message, son tag
 	@ facultatif
 @@
@@ -697,7 +675,7 @@ ARGUMENT action @ fixé
 	@ accélère l'exécution du script en cours
 	$ slower
 	@ ralenti l'exécution du scipt en cours
-PARAMETER filename @ string
+PARAMETER filename @ chaine de caractère
 	@ nom du fichier script
 @@
 
@@ -705,21 +683,21 @@ PARAMETER filename @ string
 NAME select
 	@ permet de sélectionner un objet du ciel
 	@ un paramète doit être renseigné
-PARAMETER hp @ string
+PARAMETER hp @ chaine de caractère
 	@ sélectionne une étoile du catalogue Hipparcos
 PARAMETER star @  string
 	@ sélectionne une étoile du catalogue Tycho
-PARAMETER planet @ string
+PARAMETER planet @ chaine de caractère
 	@ sélectionne l'astre conserné
-PARAMETER nebula @ string
+PARAMETER nebula @ chaine de caractère
 	@ sélection l'objet du ciel profond  conserné
-PARAMETER constellation @ string
+PARAMETER constellation @ chaine de caractère
 	@ sélectionne la constellation consernée
-PARAMETER constellation @ string ZODIAC
+PARAMETER constellation @ chaine de caractère ZODIAC
 	@ sélectionne les constellations du Zodiac
-PARAMETER constellation_star @ string
+PARAMETER constellation_star @ chaine de caractère
 	@ sélectionne l'étoile la plus brillante de la constellation consernée
-PARAMETER pointeur @ boolean
+PARAMETER pointeur @ vrai/faux
 	@ indique si le pointeur apparait autour de l'objet ou non
 	@ sans précision, le pointeur est activé par défaut
 @@
@@ -779,10 +757,10 @@ ARGUMENT sky_culture
 	@ décimal 
 	@ nouvelle valeur
 ARGUMENT sky_locale
-	@ string
+	@ chaine de caractère
 	@ nouvelle valeur
 ARGUMENT ui_locale
-	@ string
+	@ chaine de caractère
 	@ nouvelle valeur
 ARGUMENT star_mag_scale
 	@ décimal 
@@ -829,7 +807,7 @@ ARGUMENT action
 	@ fixé $ load @ charge la sky_culture liée au répertoire
 	@ necessite path
 PARAMETER path
-	@ string @ indique le chemin d'accès au répertoire
+	@ chaine de caractère @ indique le chemin d'accès au répertoire
 	@ obligatoire
 @@
 
@@ -840,7 +818,7 @@ ARGUMENT action @ fixé
 	$ clear
 	@ supprime tous les points affichés sur le dôme
 ARGUMENT points
-	@ string
+	@ chaine de caractère
 	@ affiche une série de points sous la forme XXXYYY ou (XXX,YYY) représentent une position sur le dôme exprimée en pourcentage
 	@ il est nécessaire de représenter les positions de points par une série de 3 chiffres. On peut cumuler plusieurs points par arguments
 @@
@@ -852,10 +830,10 @@ ARGUMENT action @ fixé
 	$ drop
 	@ supprime tous les asterismes affichés
 ARGUMENT load
-	@ string
+	@ chaine de caractère
 	@ affiche les asterismes contenus dans le fichier
 ARGUMENT asterism
-	@ string
+	@ chaine de caractère
 	@ affiche un asterism en une ligne de commande
 @@
 
@@ -882,15 +860,15 @@ ARGUMENT action @ fixé
 	$ drop
 	@ supprime un text repéré par son nom interne
 ARGUMENT display
-	@ boolean
+	@ vrai/faux
 	@ indique si le texte doit être affiché sous le dôme ou pas
 	@ par défaut, le texte n'est pas affiché
 PARAMETER name
-	@ string
+	@ chaine de caractère
 	@ donne un nom interne au logiciel à un text donné
 	@ le nom interne est obligatoire
 PARAMETER string
-	@ string
+	@ chaine de caractère
 	@ représente le contenu du text choisi
 PARAMETER size
 	@ fixé
