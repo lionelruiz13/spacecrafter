@@ -139,7 +139,7 @@ void TextToHtml::ArgumentInHtml(std::string lines)
 	while(lines != "") {
 		if(lines.substr(0, lines.find(" ")) == "ARGUMENT") { //On verifie la nature du premier mot.
 			if(nbArg != 1) { //On vérifie si c'est la premoière liste d'argument, on non.
-				OutHtml += "</li>\n</ul>\n</section>\n";
+				OutHtml += "</ul>\n</section>\n";
 				nbParam =1; //On remet le compteur a 1, par sécurité
 			}
 			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot ARGUMENT
@@ -153,7 +153,7 @@ void TextToHtml::ArgumentInHtml(std::string lines)
 		}
 		else if(lines.substr(0, lines.find(" ")) == "	$") {
 			if(nbParam != 1) {
-				OutHtml += "</li>\n";
+				//OutHtml += "</li>\n";
 				nbParam = 1; //On remet le compteur a 1
 			}
 			OutHtml += "<li>\n";
@@ -175,8 +175,7 @@ void TextToHtml::ArgumentInHtml(std::string lines)
 			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
 		}
 	}
-
-	OutHtml += "</li>\n</ul>\n</section>\n</ol>\n</section>";
+	OutHtml += "</ul>\n</section>\n</ol>\n</section>";
 }
 
 void TextToHtml::ParameterInHtml(std::string lines)
