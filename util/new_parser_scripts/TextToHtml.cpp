@@ -160,16 +160,17 @@ void TextToHtml::ArgumentInHtml(std::string lines)
 			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot $
 			OutHtml += "<code class=\"valeur\">" + lines.substr(0, lines.find(delimiter)) + "</code>\n"; //On récupère l'argument
 			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
-			nbParam++;
+			//nbParam++;
 		}
 		else if(lines.substr(0, lines.find(" ")) == "	@") {
 			lines = lines.erase(0, lines.find(" ")+1); //On enlève le mot @
-			if(nbParam == 2) {
+			if(nbParam == 1) {
 				OutHtml += "<p class=\"description\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
 				nbParam++;
 			}
 			else {
 				OutHtml += "<p class=\"particularite\">" + lines.substr(0, lines.find(delimiter)) + "</p>\n";
+				nbParam++;
 			}
 			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
 		}
