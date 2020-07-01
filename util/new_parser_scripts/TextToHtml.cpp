@@ -18,7 +18,7 @@ void TextToHtml::lecture() {
 
 	OutHtml += "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Documentation</title>\n<style>";
 	OutHtml += inCss; //On place le style CSS
-	OutHtml += "</style>\n</head>\n<body>\n<header>\n<h1>Documentation des comamndes script du logiciel</h1>\n</header>\n";
+	OutHtml += "</style>\n</head>\n<body>\n<header>\n<h1>Documentation des commandes script du logiciel</h1>\n</header>\n";
 	OutHtml += "<img src=\"img/logo.png\" alt=\"Logo\" class=\"logo\">";
 	OutHtml += "<section class=\"commande\">";
 
@@ -26,7 +26,8 @@ void TextToHtml::lecture() {
 		transformation(inText[i]); //On transmet le string courant, pour la transformation
 	}
 
-	OutHtml += "</section>\n<aside id=\"Menu\" class=\"menu\">\n";
+	OutHtml += "</section>\n";
+	OutHtml += "<aside id=\"Menu\" class=\"menu\">\n";
 	OutHtml += "<h3>Index</h3>\n<ol>\n";
 	OutHtml += index; //On place l'index
 	OutHtml += "</ol>\n</aside>\n</body>\n</html>";
@@ -60,6 +61,8 @@ void TextToHtml::transformation(std::string lines){
 
 		argument = nextargument; //On passe au Prochain argument  NAME / ARGUMENT / PARAMETER / EXEMPLE
 	}
+
+	std::cout << "nb fois" <<std::endl;
 
 	//On envoie en traitement toutes les sections, si elles sont présente.
 	if(S_Name != "") NameInHtml(S_Name);
@@ -183,7 +186,7 @@ void TextToHtml::ParameterInHtml(std::string lines) {
 			OutHtml += "<code class=\"parameter\">" + lines.substr(0, lines.find(" ")) + "</code> : "; //On récupère l'argument avant @
 			lines = lines.erase(0, lines.find("@")+2); //On supprime le premier paramètre + @
 			OutHtml += "<code class=\"parametertype\">" + lines.substr(0, lines.find(delimiter)) + "</code>\n"; //On récupère l'argument après @
-			OutHtml += "</h4>\n";
+			OutHtml += "</h4>\n</li>\n";
 			lines = lines.erase(0, lines.find(delimiter)+1); //On supprime la ligne
 			nbParam = 1;
 		}
@@ -205,7 +208,7 @@ void TextToHtml::ParameterInHtml(std::string lines) {
 		}
 	}
 
-	OutHtml += "</ol>\n</section>";
+	OutHtml += "</ul>\n</section>";
 
 }
 
