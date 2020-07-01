@@ -3,7 +3,7 @@ NAME audio
 	@ les fichiers audio compatible ont pour extention wav, ogg et mp3.
 	@ le volume est compris entre 0 et 128, il est fixé à 85
 ARGUMENT action @ valeur fixée
-	$ drop 
+	$ drop
 	@ arrête la piste audio et la décharge de la mémoire
 	$ sync
 	@ synchronise la source audio avec le temps réel
@@ -17,18 +17,18 @@ ARGUMENT action @ valeur fixée
 ARGUMENT volume @ fixé
 	$ increment
 	@ augmente le volume de 5
-	$ decrement 
+	$ decrement
 	@ diminue le volume de 5
-	$ valeur 
+	$ valeur
 	@ valeur représente un nombre compris entre 0 (sourdine) et 128 (maximum)
 PARAMETER filename @ string
 	@ nom du fichier audio
-PARAMETER loop @ boolean 
+PARAMETER loop @ boolean
 	@ indique si la source audio doit se répéter ou (non)
 	@ par défaut, la répétition n'est pas active
 EXEMPLE
 	audio action play filename test.ogg
-	audio action drop 
+	audio action drop
 @@
 
 
@@ -40,7 +40,7 @@ ARGUMENT action @ fixé
 	@ nécessite name
 	$ clear
 	@ supprime tous les astres insérés par des scripts dans le systeme solaire
-	$ drop 
+	$ drop
 	@ supprime définitivement l'objet
 	@ nécessite name
 	$ initial
@@ -97,10 +97,10 @@ ARGUMENT target @ string
 @@
 
 
-NAME clear 
+NAME clear
 	@ place le simulateur à l'état initial
 	@ commande deprecated
-PARAMETER state @ fixé 
+PARAMETER state @ fixé
 	$ natural
 	@ active l'atmosphère et le panorama.
 	@ par defaut, l'atmosphère et le panorama sont désactivés.
@@ -163,11 +163,11 @@ PARAMETER value @ xRRGGBB
 @@
 
 
-NAME configuration 
+NAME configuration
 	@ gestion de app->init() via le menu M
 	@ fonction deprecated
-ARGUMENT action @ fixé 
-	$ load 
+ARGUMENT action @ fixé
+	$ load
 	@ recharge le menu M
 	$ save
 	@ sauvegarde le menu M
@@ -179,7 +179,7 @@ NAME date
 ARGUMENT jday @string
 	@ date time in julian calendar
 ARGUMENT local @string
-	@ date time in local 
+	@ date time in local
 	@ if string begin with T, only time will be modified.
 ARGUMENT relative @integer
 	@ add date time with relative time
@@ -195,7 +195,7 @@ ARGUMENT load@string
 	$ current @ load saved date
 	$ preset @ save date and time to be use with current
 ARGUMENT sun@ fixed
-	$ set @ compute time to 
+	$ set @ compute time to
 	$ ride @ compute time to
 	$ meridian @ compute time to ...
 EXEMPLE
@@ -205,9 +205,9 @@ EXEMPLE
 @@
 
 
-NAME deselect 
+NAME deselect
 	@ désélectionne les objets auparavent sélectionnés
-PARAMETER  constellation @ string 
+PARAMETER  constellation @ string
 	@ désélectionne la constellation concernée
 	@ sans l'argument, la commande deselect désélectionne tout objet sélectionné
 @@
@@ -232,9 +232,9 @@ ARGUMENT action @ fixé
 	@ nécessite name, ra, de, path, magnitude, angular_size, rotation, credit, filename, texture_luminance_adjust, distance, constellation, type
 	$ clear
 	@ supprime tous les objets insérés dans le logiciel
-	$ drop 
+	$ drop
 	@ supprime définitivement l'objet représenté par name
-ARGUMENT hidden 
+ARGUMENT hidden
 	$ true, false @ boolean
 	$ all @ sélectionne tous les objets
 	@ optional type ou constellation
@@ -264,7 +264,7 @@ PARAMETER filename
 	@ string
 	@ nom du fichier image représenant l'objet
 PARAMETER texture_luminance_adjust
-	@ double 
+	@ double
 	@ ajustement de la luminance de l'image
 PARAMETER distance
 	@ double
@@ -278,16 +278,16 @@ PARAMETER type
 @@
 
 
-NAME external_viewer 
+NAME external_viewer
 	@ permet de lancer une opération externe en fonction de l'extention du fichier utilisé.
 	@ les extentions supportées sont AVI, MP4, MOV, MPG, MP3, OGG, SH, PNG, SWF, 
 ARGUMENT action @ fixed
-	$ play 
-	@ lance l'action liée au fichier 
+	$ play
+	@ lance l'action liée au fichier
 	@ nécessite filename
-	$ stop 
+	$ stop
 	@ arrête la lecture de la vidéo et/ou de l'audio lancée par externalviewer
-PARAMETER filename @ string 
+PARAMETER filename @ string
 	@ nom du fichier à exploiter
 @@
 
@@ -372,7 +372,7 @@ NAME external_mplayer
 	@ permet de commander au doigt et à l'oeil mplayer pour la lecture de vidéos externes
 	@ ne fonctionne que sous linux
 ARGUMENT action @ fixed
-	$ play 
+	$ play
 	@ lance la lecture du fichier
 	@ nécessite filename
 	$ stop
@@ -389,16 +389,16 @@ ARGUMENT speed @ int
 	@ modifie la vitesse de lecture de la vidéo
 ARGUMENT volume @ int
 	@ modifie le volume sonore interne de mplayer
-ARGUMENT execute @ string 
+ARGUMENT execute @ string
 	@ indique au pipe de mplayer l'action à réaliser 
-PARAMETER filename @ string 
+PARAMETER filename @ string
 	@ nom de la vidéo à lire
 @@
 
 
-NAME illuminate 
+NAME illuminate
 	@ permet de modifier la représentation d'une étoile en la grossissant artificiellement afin de mieux la distinguer parmi les autres étoiles. On peut aussi modifier la couleur en présisant les paramètres r g et b
-ARGUMENT action @ fixé 
+ARGUMENT action @ fixé
 	$ clear
 	@ supprime définitivement tous les illuminate affichés
 ARGUMENT display @ fixé
@@ -414,7 +414,7 @@ PARAMETER g @ double
 PARAMETER b @ double
 	@ modifie la composante bleu de la couleur attribuée à l'étoile
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER hp @ string 
+PARAMETER hp @ string
 	@ représente le nom de l'étoile ciblée par illuminate
 EXEMPLE
 	illuminate display on hp HP541
@@ -424,9 +424,9 @@ EXEMPLE
 NAME image
 	@ gestion de l'affichage des images dans les scripts
 ARGUMENT action @ fixé
-	$ load 
+	$ load
 	@ charge une image en mémoire dans les scripts
-	@ nécessite filename, name et coordinate_system. 
+	@ nécessite filename, name et coordinate_system.
 	$ drop
 	@ supprime l'image
 	@ nécessite name
@@ -437,9 +437,9 @@ PARAMETER coordinate_system @ fixé
 	$ dome
 PARAMETER mipmap @ boolean
 	@ indique si l'on doit activer les miniatures pour de meilleurs résultats visuels
-PARAMETER name @ string 
+PARAMETER name @ string
 	@ nom interne à l'image qui permet de l'identifier
-PARAMETER filename @ string 
+PARAMETER filename @ string
 	@ chemin du fichier pour accéder à l'image
 PARAMETER altitude @ décimal
 	@ position de l'image
@@ -462,10 +462,10 @@ PARAMETER rotation @ décimal
 
 NAME landscape
 	@ permet de modifier le landscape actuel
-ARGUMENT action @ fixé 
+ARGUMENT action @ fixé
 	$ load @ charge le nom du fichier landscape
-PARAMETER path @ string 
-	@ chemin du fichier pour le landscape 
+PARAMETER path @ string
+	@ chemin du fichier pour le landscape
 @@
 
 
@@ -520,10 +520,10 @@ PARAMETER audioname
 @@
 
 
-NAME meteors 
-	@ active l'apparition de météors dans le ciel 
+NAME meteors
+	@ active l'apparition de météors dans le ciel
 	@ attention il faut être au bon endroit pour les voir !
-ARGUMENT zhr @ integer 
+ARGUMENT zhr @ integer
 	@ indique la fréquence d'apparition des météors
 @@
 
@@ -535,18 +535,18 @@ ARGUMENT lat
 	@ double
 	@ spécifie la latitude du lieu
 	@ le signe indique le déplacement : N pour + et S pour -
-	$ default 
+	$ default
 	@ permet de revenir à la longitude du lieu d'origine
 ARGUMENT lon
 	@ double
 	@ spécifie la longitude du lieu
 	@ le signe indique le déplacement : E pour + et W pour -
-	$ default 
+	$ default
 	@ permet de revenir à la latitude du lieu d'origine
 ARGUMENT alt
 	@ double
 	@ spécifie l'altitude du lieu par rapport au niveau de la mer
-	$ default 
+	$ default
 	@ permet de revenir à l'altitude du lieu d'origine
 PARAMETER name
 	@ string
@@ -560,16 +560,16 @@ PARAMETER duration
 
 NAME move_to_city
 	@ déplace le point d'observation à une grande ville du monde.
-ARGUMENT name @ string 
+ARGUMENT name @ string
 	@ nom de la ville
 ARGUMENT country @ string
-	@ nom du pays 
+	@ nom du pays
 @@
 
 
 NAME multiplier
 	@ modifie l'écoulement du temps dans le logiciel
-ARGUMENT rate @ nombre 
+ARGUMENT rate @ nombre
 	@ indique le nombre de secondes qui s'écoulent dans le logiciel en une seconde dans la réalité
 ARGUMENT action @ fixé
 	$ increment
@@ -579,7 +579,7 @@ ARGUMENT action @ fixé
 	@ réduit le nombre de secondes qui s'écoulent dans le logiciel de step secondes
 	@ minimum une seconde par seconde, utilise step si défini
 PARAMETER step @ nombre
-	@ indique la valeur 
+	@ indique la valeur
 	@ optionel, vaut 10 par défaut
 @@
 
@@ -588,12 +588,12 @@ NAME personal
 	@ représente un tracé personnalisé dans le ciel en mode al
 ARGUMENT action @ fixé
 	$ load
-	@ charge un fichier de tracé 
+	@ charge un fichier de tracé
 	@ nécessite filename
 	$ clear
 	@ supprime tous les tracés
-PARAMETER filename 
-	@ string 
+PARAMETER filename
+	@ string
 	@ charge en mémoire un fichier de tracé existant
 @@
 
@@ -602,21 +602,21 @@ NAME personeq
 	@ représente un tracé personnalisé dans le ciel en mode équatorial
 ARGUMENT action @ fixé
 	$ load
-	@ charge un fichier de tracé 
+	@ charge un fichier de tracé
 	@ nécessite filename
 	$ clear @ supprime tous les tracés
-PARAMETER filename 
-	@ string 
+PARAMETER filename
+	@ string
 	@ charge en mémoire un fichier de tracé existant
 @@
 
 
-NAME planet_scale 
+NAME planet_scale
 	@ Modifie le rayon d'un astre
-ARGUMENT name @ string 
+ARGUMENT name @ string
 	@ nom de l'astre
 	@ nécessite scale
-PARAMETER scale @ int 
+PARAMETER scale @ int
 	@ valeur multiplicative appliquée au rayon
 @@
 
@@ -624,9 +624,9 @@ PARAMETER scale @ int
 NAME position
 	@ permet de sauvegarder/charger la position sur laquelle on se trouve actuellement
 ARGUMENT action @ fixé
-	$ load 
+	$ load
 	@ charge la dernière position sauvegardée
-	$ save 
+	$ save
 	@ sauvegarde la position actuelle
 @@
 
@@ -634,10 +634,10 @@ ARGUMENT action @ fixé
 NAME print
 	@ affiche un commentaire dans les fichiers de logs
 	@ commande système
-ARGUMENT value @ string 
+ARGUMENT value @ string
 	@ le contenu du message
 	@ obligatoire
-PARAMETER name  @ string 
+PARAMETER name  @ string
 	@ le nom du message, son tag
 	@ facultatif
 @@
@@ -646,10 +646,10 @@ PARAMETER name  @ string
 NAME script
 	@ centralise la gestion des scripts dans le logiciel
 ARGUMENT action @ fixé
-	$ load 
+	$ load
 	@ charge un script et l'exécute
 	@ nécessite filename
-	$ end 
+	$ end
 	@ arrête tout script en cours
 	$ record
 	@ enregistre toutes les commandes exécutées par l'utilisateur
@@ -658,7 +658,7 @@ ARGUMENT action @ fixé
 	$ pause
 	@ met en pause le script en cours
 	@ si le script est déjà en pause, ce dernier reprend
-	$ resume 
+	$ resume
 	@ reprend l'exécution d'un script mis en pause
 	$ faster
 	@ accélère l'exécution du script en cours
@@ -669,22 +669,22 @@ PARAMETER filename @ string
 @@
 
 
-NAME select 
+NAME select
 	@ permet de sélectionner un objet du ciel
 	@ un paramète doit être renseigné
-PARAMETER hp @ string 
+PARAMETER hp @ string
 	@ sélectionne une étoile du catalogue Hipparcos
-PARAMETER star @  string 
+PARAMETER star @  string
 	@ sélectionne une étoile du catalogue Tycho
-PARAMETER planet @ string 
+PARAMETER planet @ string
 	@ sélectionne l'astre conserné
-PARAMETER nebula @ string 
+PARAMETER nebula @ string
 	@ sélection l'objet du ciel profond  conserné
-PARAMETER constellation @ string 
+PARAMETER constellation @ string
 	@ sélectionne la constellation consernée
-PARAMETER constellation @ string ZODIAC 
+PARAMETER constellation @ string ZODIAC
 	@ sélectionne les constellations du Zodiac
-PARAMETER constellation_star @ string 
+PARAMETER constellation_star @ string
 	@ sélectionne l'étoile la plus brillante de la constellation consernée
 PARAMETER pointeur @ boolean
 	@ indique si le pointeur apparait autour de l'objet ou non
@@ -721,7 +721,7 @@ ARGUMENT duration
 ARGUMENT home_planet
 	@ double
 	@ nouvelle valeur
-ARGUMENT landscape_name 
+ARGUMENT landscape_name
 	@ double
 	@ nouvelle valeur
 ARGUMENT line_width
@@ -792,10 +792,10 @@ ARGUMENT zoom_offset
 
 NAME sky_culture
 	@ permet de changer la représentation des constellations du ciel
-ARGUMENT action 
+ARGUMENT action
 	@ fixé $ load @ charge la sky_culture liée au répertoire
 	@ necessite path
-PARAMETER path 
+PARAMETER path
 	@ string @ indique le chemin d'accès au répertoire
 	@ obligatoire
 @@
@@ -827,15 +827,15 @@ ARGUMENT asterism
 @@
 
 
-NAME sun_trace 
+NAME sun_trace
 	@ permet de représenter la course du soleil en direct sous le dôme.
 	@ cette commande est un alias de la commande body_trace avec le soleil comme astre sélectionné
 @@
 
 
-NAME shutdown 
+NAME shutdown
 	@ permet d'éteindre le logiciel spacecrafter
-ARGUMENT action @ fixé 
+ARGUMENT action @ fixé
 	$ now @ ordre d'extinction immédiate
 @@
 
@@ -853,7 +853,7 @@ ARGUMENT display
 	@ indique si le texte doit être affiché sous le dôme ou pas
 	@ par défaut, le texte n'est pas affiché
 PARAMETER name
-	@ string 
+	@ string
 	@ donne un nom interne au logiciel à un text donné
 	@ le nom interne est obligatoire
 PARAMETER string
@@ -863,7 +863,7 @@ PARAMETER size
 	@ fixé
 	$ x_small
 	$ small
-	$ medium 
+	$ medium
 	@ paramètre par défaut
 	$ large
 	$ x_large
@@ -873,11 +873,11 @@ PARAMETER azimuth
 PARAMETER latitude
 	@ double
 	@ indique la lattitude à partir de la quelle le texte sera affiché
-PARAMETER r 
+PARAMETER r
 	@ double
 	@ modifie la composante rouge de la couleur
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
-PARAMETER g 
+PARAMETER g
 	@ double
 	@ modifie la composante verte de la couleur
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
@@ -911,7 +911,7 @@ PARAMETER step
 @@
 
 
-NAME wait 
+NAME wait
 	@ crée une attente entre deux commandes scripts. wait est souvent utilisé pour permettre à une commande de se finir avant qu'une autre ne se lance. 
 ARGUMENT duration @ float
 	@ durée de l'attente 
