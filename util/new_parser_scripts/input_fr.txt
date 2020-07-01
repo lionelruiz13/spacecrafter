@@ -1,21 +1,24 @@
 NAME audio
-	@ commande gérant les sons longs du logiciel
-	@ sont compatible les fichiers audio avec l'extention wav, ogg et mp3.
-ARGUMENT action @ fixé
+	@ commande gérant la piste audio du logiciel
+	@ les fichiers audio compatible ont pour extention wav, ogg et mp3.
+	@ le volume est compris entre 0 et 128, il est fixé à 85
+ARGUMENT action @ valeur fixée
 	$ drop 
-	@ arrete la source audio et la décharge de la mémoire
+	@ arrête la piste audio et la décharge de la mémoire
 	$ sync
-	@ synchronise la source audio
+	@ synchronise la source audio avec le temps réel
 	$ pause
-	@ met la source audio en pause
+	@ met la piste audio en pause
 	$ play
-	@ débute la lecture d'une source audio
-	@ nécessite filename , optionel loop
-	$ resume 
+	@ débute la lecture d'une piste audio
+	@ nécessite filename, optionel loop
+	$ resume
 	@ reprend la diffusion d'une source audio
 ARGUMENT volume @ fixé
 	$ increment
+	@ augmente le volume de 5
 	$ decrement 
+	@ diminue le volume de 5
 	$ valeur 
 	@ valeur représente un nombre compris entre 0 (sourdine) et 128 (maximum)
 PARAMETER filename @ string
@@ -26,7 +29,6 @@ PARAMETER loop @ boolean
 EXEMPLE
 	audio action play filename test.ogg
 	audio action drop 
-	supprime la piste de lecture de la pile.
 @@
 
 
@@ -54,8 +56,8 @@ ARGUMENT color @ fixé
 	@ change la couleur utilisée pour afficher la trajectoire de l'astre
 	@ nécessite name, color_value  ou r g b
 ARGUMENT hidden @ boolean
+	$ name
 	@ affiche ou masque l'astre
-	@ nécessite name
 PARAMETER path (optionel) @ string
 	@ indique le chemin des datas si non disponible dans le répertoire texture/bodies
 PARAMETER name
