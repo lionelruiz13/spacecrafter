@@ -1,5 +1,5 @@
 #include "FileWriter.hpp"
-#include "DefineFile.hpp"
+//#include "DefineFile.hpp"
 
 FileWriter::FileWriter(std::string _outFile)
 {
@@ -13,10 +13,7 @@ void FileWriter::loadFile(const std::string& fileName)
 {
 	std::ofstream fichier(fileName); //On ouvre le fichier
 
-	if(fichier) { //On teste si tout est OK
-		std::cout << "Fichier " + fileName + " existant et charger.\n" << std::endl;
-	}
-	else {
+	if(!fichier) { //On teste si tout est OK
 		std::cout << "ERREUR: Impossible d'ouvrir le fichier .html en écriture." << std::endl;
 	}
 }
@@ -29,6 +26,6 @@ void FileWriter::writeInFile(const std::string inHtml)
 		fichier << inHtml << std::endl;
 	}
 	else {
-		std::cout << "ERREUR: Impossible d'ouvrir le fichier." << std::endl;
+		std::cout << "ERREUR: Impossible d'écrire dans le fichier." << std::endl;
 	}
 }

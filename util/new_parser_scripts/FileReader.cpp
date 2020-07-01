@@ -18,11 +18,9 @@ void FileReader::loadFile(const std::string& fileName)
 {
 	std::ifstream fichier(fileName); //On ouvre le fichier
 
-	if( !fichier.fail() ) { //On vérifier si l'ouverture s'est bien déroulé
-		std::cout << "Fichier " + fileName + " existant et charger.\n" << std::endl;
-	}
-	else {
+	if( fichier.fail() ) { //On vérifier si l'ouverture s'est bien déroulé
 		std::cout << "Fichier " + fileName + " inexistant ou non lisible.\n" << std::endl;
+		exit(-1);
 	}
 }
 
@@ -45,6 +43,7 @@ void FileReader::readFileText()
 	}
 	else {
 		std::cout << "ERREUR: Impossible d'ouvrir le fichier .txt en lecture." << std::endl;
+		exit(-3);
 	}
 }
 
@@ -62,6 +61,7 @@ std::string FileReader::readFileCss()
 	}
 	else {
 		std::cout << "ERREUR: Impossible d'ouvrir le fichier .css en lecture." << std::endl;
+		exit(-2);
 	}
 
 	return result;

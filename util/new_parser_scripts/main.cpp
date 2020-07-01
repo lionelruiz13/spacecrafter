@@ -4,7 +4,7 @@
 #include "TextToHtml.hpp"
 #include "FileReader.hpp"
 #include "FileWriter.hpp"
-#include "DefineFile.hpp"
+//#include "DefineFile.hpp"
 
 int main()
 {
@@ -26,7 +26,7 @@ int main()
 
 	writer->writeInFile(parser->getHtml());
 
-	std::cout << "DONE" << std::endl;
+	//std::cout << "DONE" << std::endl;
 
 	return 0;
 }
