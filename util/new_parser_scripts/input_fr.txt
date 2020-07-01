@@ -1,7 +1,7 @@
 NAME audio
 	@ commande gérant la piste audio du logiciel
-	@ les fichiers audio compatible ont pour extention wav, ogg et mp3.
-	@ le volume est compris entre 0 et 128, il est fixé à 85
+	@ les extentions wav, ogg et mp3 sont compatibles avec la commande
+	@ le volume est compris entre 0 et 128, par défaut, il est fixé à 85
 ARGUMENT action @ valeur fixée
 	$ drop
 	@ arrête la piste audio et la décharge de la mémoire
@@ -11,9 +11,12 @@ ARGUMENT action @ valeur fixée
 	@ met la piste audio en pause
 	$ play
 	@ débute la lecture d'une piste audio
-	@ nécessite filename, optionel loop
+	@ nécessite filename, le paramètre loop est optionel
 	$ resume
 	@ reprend la diffusion d'une source audio
+ARGUMENT nopause @ boolean
+	$ true, false
+	@ indique si la piste audio s'arrête lors de la lecture des scripts
 ARGUMENT volume @ fixé
 	$ increment
 	@ augmente le volume de 5
@@ -29,6 +32,8 @@ PARAMETER loop @ boolean
 EXEMPLE
 	audio action play filename test.ogg
 	audio action drop
+	audio volume increment
+	audio filename superscript/clac.ogg action play
 @@
 
 
@@ -55,37 +60,64 @@ ARGUMENT color @ fixé
 	$ trail
 	@ change la couleur utilisée pour afficher la trajectoire de l'astre
 	@ nécessite name, color_value  ou r g b
-ARGUMENT hidden @ boolean
+ARGUMENT hidden @ vrai/faux
 	$ name
-	@ affiche ou masque l'astre
-PARAMETER path (optionel) @ string
-	@ indique le chemin des datas si non disponible dans le répertoire texture/bodies
-PARAMETER name
-	@ string
+	@ affiche ou masque l'astre temporairement
+ARGUMENT skin_use @ vrai/faux/inverse
+	@ indique au logiciel de prendre en compte les textures alternatives
+ARGUMENT skin_tex @ string
+	@ modifie temporairement la texture de l'astre par une texture alternative
+	@ nécessite le paramètre name
+ARGUMENT tesselation @ fixé
+	$ min_tes_level
+	@ représente la valeur minimale au loin 
+	@ nécessite value
+	$ max_tes_level
+	@ représente la valeur maximale de prêt 
+	@ nécessite value
+	$ planet_altimetry_factor
+	@ modificateur d'altimétrie pour des astres standard 
+	@ nécessite value
+	$ earth_altimetry_factor
+	@ modificateur d'altimétrie pour la Terre 
+	@ nécessite value
+	$ moon_altimetry_factor
+	@ modificateur d'altimétrie pour la Lune 
+	@ nécessite value
+PARAMETER name @ string
 	@ représente le nom interne de l'astre
+PARAMETER value @ entier
+	@ indique une valeur utilse pour la tesselation
+	@ plus la valeur est importante et plus votre machine sera sollicitée
 PARAMETER color_value @ xRRGGBB
 	@ fixe la couleur à la définition du web: paramètre en hexadécimal, 2 caractères obigatoires
-PARAMETER r @ double
+PARAMETER color_value @ rXXXgYYYbZZZ
+	@ fixe la couleur au format rgb informatique
+	@ XXX, YYY et ZZZ appartiennent à l'intervalle [0;255]
+PARAMETER r @ décimal 
 	@ modifie la composante rouge de la couleur
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER g @ double
+PARAMETER g @ décimal 
 	@ modifie la composante verte de la couleur
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER b @ double
+PARAMETER b @ décimal 
 	@ modifie la composante bleu de la couleur
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
+EXEMPLE
+	@ body name Earth skin_tex courants_marins.png
+	@ body name Uranus color label color_value r12g215b215
 @@
 
 
 NAME body_trace
-	@ trace en direct la trajectroire d'un astre sur le dôme à la manière d'un stylo. on peut tracer différentes trajectoires, les afficher et les masquer.
+	@ trace la trajectoire d'un astre sur le dôme à la manière d'un stylo. On peut tracer différentes trajectoires, les afficher et les masquer.
 	@ le soleil est l'astre sélectionné par défaut. Chaque fois que l'on change la valeur du crayon, on dessine un nouveau tracé, indépendant des autres tracés.
 ARGUMENT action @ fixé
 	$ clear
 	@ supprime toutes les trajectoires affichées
 ARGUMENT hidde @ string
 	@ cache le tracé d'un astre
-ARGUMENT pen @ fixé
+ARGUMENT pen @ vrai/faux/inverse
 	$ true
 	@ baisse le crayon et trace la trajectoire de l'astre sélectionné
 	$ false
@@ -99,7 +131,6 @@ ARGUMENT target @ string
 
 NAME clear
 	@ place le simulateur à l'état initial
-	@ commande deprecated
 PARAMETER state @ fixé
 	$ natural
 	@ active l'atmosphère et le panorama.
@@ -149,13 +180,13 @@ ARGUMENT property @ fixé
 PARAMETER index
 	@ int
 	@ permet de choisir un index de star_table pour modifier la couleur
-PARAMETER r @ double
+PARAMETER r @ décimal 
 	@ modifie la composante rouge de la couleur attribuée à l'étoile
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
-PARAMETER g @ double
+PARAMETER g @ décimal 
 	@ modifie la composante verte de la couleur attribuée à l'étoile
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
-PARAMETER b @ double
+PARAMETER b @ décimal 
 	@ modifie la composante bleu de la couleur attribuée à l'étoile
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
 PARAMETER value @ xRRGGBB
@@ -164,8 +195,8 @@ PARAMETER value @ xRRGGBB
 
 
 NAME configuration
-	@ gestion de app->init() via le menu M
-	@ fonction deprecated
+	@ sauvegarde restaure les paramètres du menu M
+	@ fonction en cours d'amélioration
 ARGUMENT action @ fixé
 	$ load
 	@ recharge le menu M
@@ -181,11 +212,11 @@ ARGUMENT jday @string
 ARGUMENT local @string
 	@ date time in local
 	@ if string begin with T, only time will be modified.
-ARGUMENT relative @integer
+ARGUMENT relative @entier
 	@ add date time with relative time
-ARGUMENT relativeYear @number
+ARGUMENT relativeYear @nombre
 	@ add date time with relativeYear time
-ARGUMENT relativeMonth @number
+ARGUMENT relativeMonth @nombre
 	@ add date time with relativeMonth time
 ARGUMENT utc@string
 	@ date time in utc time
@@ -206,9 +237,9 @@ EXEMPLE
 
 
 NAME deselect
-	@ désélectionne les objets auparavent sélectionnés
+	@ désélectionne les objets sélectionnés
 PARAMETER  constellation @ string
-	@ désélectionne la constellation concernée
+	@ désélectionne uniquement la constellation concernée
 	@ sans l'argument, la commande deselect désélectionne tout objet sélectionné
 @@
 
@@ -218,8 +249,10 @@ NAME domemasters
 ARGUMENT action @ fixé
 	$ snapshot
 	@ réalise une capture d'écran
+	@ la capture se trouve dans le répertoire snapshot/
 	$ record
 	@ permet de lancer une capture d'écran frame par frame
+	@ les frames se trouvent  dans le repertoire vframes/
 	@ relancer la commande stoppe la capture d'écran
 @@
 
@@ -244,19 +277,19 @@ PARAMETER name
 PARAMETER path
 	@ string
 PARAMETER ra
-	@ double
+	@ décimal 
 	@ coordonnées ra
 PARAMETER de
-	@ double
+	@ décimal 
 	@ coordonnées de
 PARAMETER magnitude
-	@ double
+	@ décimal 
 	@ magnitude apparente de l'objet
 PARAMETER angular_size
-	@ double
+	@ décimal 
 	@ taille angulaire en ?
 PARAMETER rotation
-	@ double
+	@ décimal 
 	@ indication sur une rotation de l'image
 PARAMETER credit
 	@ string
@@ -264,10 +297,10 @@ PARAMETER filename
 	@ string
 	@ nom du fichier image représenant l'objet
 PARAMETER texture_luminance_adjust
-	@ double
+	@ décimal 
 	@ ajustement de la luminance de l'image
 PARAMETER distance
-	@ double
+	@ décimal 
 	@ distance en al
 PARAMETER constellation
 	@ string
@@ -381,9 +414,9 @@ ARGUMENT action @ fixed
 	@ met la lecture de la vidéo en pause
 	$ reset
 	@ reprend la lecture de la vidéo au début
-ARGUMENT jump_relative @ double
+ARGUMENT jump_relative @ décimal 
 	@ réalise un saut relatif dans la vidéo de X s
-ARGUMENT jump_absolute @ double
+ARGUMENT jump_absolute @ décimal 
 	@ se place à la position X (en s) de la vidéo
 ARGUMENT speed @ int
 	@ modifie la vitesse de lecture de la vidéo
@@ -405,13 +438,13 @@ ARGUMENT display @ fixé
 	$ on @ active illuminate pour l'étoile donnée avec l'argument hp
 	$ off @ désactive illuminate pour l'étoile donnée avec l'argument hp
 	@ nécessite hp
-PARAMETER r @ double
+PARAMETER r @ décimal 
 	@ modifie la composante rouge de la couleur attribuée à l'étoile
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER g @ double
+PARAMETER g @ décimal 
 	@ modifie la composante verte de la couleur attribuée à l'étoile
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER b @ double
+PARAMETER b @ décimal 
 	@ modifie la composante bleu de la couleur attribuée à l'étoile
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
 PARAMETER hp @ string
@@ -472,10 +505,10 @@ PARAMETER path @ string
 NAME look
 	@ modifie l'angle de vue de la caméra
 ARGUMENT delta_az
-	@ double
+	@ décimal 
 	@ variation de l'angle de vue par rapport à l'azimuth
 ARGUMENT delta_alt
-	@ double
+	@ décimal 
 	@ variation de l'angle de vue sur par rapport à l'altitude
 @@
 
@@ -493,17 +526,17 @@ ARGUMENT action @ fixé
 ARGUMENT keycolor @ boolean
 	@ active la transparence de la vidéo VIEWPORT sur une couleur déterminée
 	@ nécessite intensity et ( color_value ou  r g b )
-PARAMETER intensity @ number
+PARAMETER intensity @ nombre
 	@ représente le pourcentage de dispersion autour de la couleur 
 PARAMETER color_value @ xRRGGBB
 	@ fixe la couleur à la définition du web: paramètre en hexadécimal, 2 caractères obigatoires
-PARAMETER r @ double
+PARAMETER r @ décimal 
 	@ modifie la composante rouge de la couleur
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER g @ double
+PARAMETER g @ décimal 
 	@ modifie la composante verte de la couleur
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
-PARAMETER b @ double
+PARAMETER b @ décimal 
 	@ modifie la composante bleu de la couleur
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
 PARAMETER type @ fixé
@@ -523,7 +556,7 @@ PARAMETER audioname
 NAME meteors
 	@ active l'apparition de météors dans le ciel
 	@ attention il faut être au bon endroit pour les voir !
-ARGUMENT zhr @ integer
+ARGUMENT zhr @ entier
 	@ indique la fréquence d'apparition des météors
 @@
 
@@ -532,19 +565,19 @@ NAME moveto
 	@ indique au simulateur les coordonnées ou l'on désire se rendre
 	@ lon, lat et alt sont les diminutifs de longitude, latitude, altitude. On peut utliser les diminutifs ou les noms exacts dans les arguments qui suivent
 ARGUMENT lat
-	@ double
+	@ décimal 
 	@ spécifie la latitude du lieu
 	@ le signe indique le déplacement : N pour + et S pour -
 	$ default
 	@ permet de revenir à la longitude du lieu d'origine
 ARGUMENT lon
-	@ double
+	@ décimal 
 	@ spécifie la longitude du lieu
 	@ le signe indique le déplacement : E pour + et W pour -
 	$ default
 	@ permet de revenir à la latitude du lieu d'origine
 ARGUMENT alt
-	@ double
+	@ décimal 
 	@ spécifie l'altitude du lieu par rapport au niveau de la mer
 	$ default
 	@ permet de revenir à l'altitude du lieu d'origine
@@ -552,7 +585,7 @@ PARAMETER name
 	@ string
 	@ indique le nom de l'endroit où l'on se trouve
 PARAMETER duration
-	@ double
+	@ décimal 
 	@ indique la durée du changement
 	@ sans durée spécifiée, le simulateur se place instantanément aux nouvelles coordonnées
 @@
@@ -695,55 +728,55 @@ PARAMETER pointeur @ boolean
 NAME set
 	@ fixe une valeur à un argument
 ARGUMENT atmosphere_fade_duration
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT auto_move_duration
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT constellation_art_fade_duration
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT constellation_art_intensity
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT light_pollution_limiting_magnitude
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT flight_duration
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT heading
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT duration
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT home_planet
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT landscape_name
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT line_width
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT max_mag_nebula_name
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT max_mag_star_name
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT moon_scale
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT sun_scale
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT milky_way_texture
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT sky_culture
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT sky_locale
 	@ string
@@ -752,40 +785,40 @@ ARGUMENT ui_locale
 	@ string
 	@ nouvelle valeur
 ARGUMENT star_mag_scale
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT star_size_limit
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT planet_size_limit
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT star_scale
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT star_twinkle_amount
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT star_fader_duration
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT star_limiting_mag
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT time_zone
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT text_fading_duration
 	@ int
 	@ nouvelle valeur
 ARGUMENT milky_way_fader_duration
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT milky_way_intensity
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 ARGUMENT zoom_offset
-	@ double
+	@ décimal 
 	@ nouvelle valeur
 @@
 
@@ -868,21 +901,21 @@ PARAMETER size
 	$ large
 	$ x_large
 PARAMETER azimuth
-	@ double
+	@ décimal 
 	@ indique l'azimuth à partir duquel le texte sera affiché
 PARAMETER latitude
-	@ double
+	@ décimal 
 	@ indique la lattitude à partir de la quelle le texte sera affiché
 PARAMETER r
-	@ double
+	@ décimal 
 	@ modifie la composante rouge de la couleur
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
 PARAMETER g
-	@ double
+	@ décimal 
 	@ modifie la composante verte de la couleur
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
 PARAMETER b
-	@ double
+	@ décimal 
 	@ modifie la composante bleu de la couleur
 	@ comprise entre 0 et 1 (décimal) ou entre 0 et 255 (entier)
 PARAMETER color_value @ xRRGGBB
@@ -894,7 +927,7 @@ PARAMETER color_value @ xRRGGBB
 NAME timerate
 	@ modifie la vitesse d'écoulement du temps
 ARGUMENT rate
-	@ double
+	@ décimal 
 	@ fixe directement par combien le temps sera multiplié
 ARGUMENT action
 	@ fixé
@@ -905,7 +938,7 @@ ARGUMENT action
 	$ sincrement @ augmente la vitesse du temps
 	$ sdecrement @ diminue la vitesse du temps
 PARAMETER step
-	@ double
+	@ décimal 
 	@ modifie le facteur multiplicatif pour accélération du temps
 	@ par défaut, step est fixé à 2.
 @@
@@ -930,17 +963,17 @@ ARGUMENT manual
 	$ 1 @  ?
 	$ initial @ ?
 ARGUMENT fov
-	@ double
+	@ décimal 
 	@ indique jusqu'à quel champ de vision que le zoom doit atteindre
 ARGUMENT delta_fov
-	@ double
+	@ décimal 
 	@ ?
 ARGUMENT center
 	@ fixé
 	$ on
 	@ fixe le centre du point de vue sur l'objet sélectionné
 PARAMETER duration
-	@ double
+	@ décimal 
 	@ indique la durée en seconde du changement de zoom
 @@
 
