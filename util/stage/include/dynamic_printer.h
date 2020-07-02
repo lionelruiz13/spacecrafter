@@ -40,7 +40,7 @@ static inline void relative_move(short x, short y)
     while (++x < 0)
         write(1, "\b", 1);
     while (y-- > 0)
-        write(1, "\v", 1);
+        write(1, "\f", 1);
     while (++y < 0)
         write(1, "\e[A", 3);
 }
@@ -81,6 +81,8 @@ static inline void draw_cadre(short x, short y)
         write(1, str, 3);
     str[2] = 152;
     write(1, str, 3);
+    write(1, "\n ", 2);
+    relative_move(0, 1 - y);
 }
 
 #endif /* DYNAMIC_PRINTER_H_ */
