@@ -401,16 +401,36 @@ PARAMETER sky_draw @ vrai/faux
 
 NAME illuminate
 	@ permet de modifier la représentation d'une étoile en la grossissant artificiellement afin de mieux la distinguer.
+	@ on peut définir une texture alternative qui affecte le rendu de toutes les étoiles
 ARGUMENT action @ fixé
 	$ clear
 	@ supprime définitivement tous les illuminate affichés
+	$ clear_texture
+	@ supprime la texture temporaire 
 ARGUMENT display @ fixé
 	$ on
 	@ active illuminate pour l'étoile donnée avec l'argument hp
-	@ nécessite hp
+	@ nécessite hp ou constellation
 	$ off 
 	@ désactive illuminate pour l'étoile donnée avec l'argument hp
-	@ nécessite hp
+	@ nécessite hp ou constellation
+	$ all_constellation_on
+	@ illumine toutes les étoiles de tous les astérismes
+	$ all_constellation_on
+	@ désactive toutes les étoiles de tous les astérismes
+ARGUMENT filename @ chaine de caractère
+	@ défini une texture alternative 
+PARAMETER hp @ entier
+	@ représente le nom de l'étoile ciblée par illuminate
+	@ le paramètre fait référence aux étoiles du catalogue hipparcos
+PARAMETER constellation @ chaine de caractère
+	@ sélectionne toutes les étoiles de l'astérisme issue de la constellation
+PARAMETER size @ décimal
+	@ modifie le rayon de l'étoile
+	@ exprimé en minute d'angle, compatible avec hp ou constellation
+PARAMETER rotation @ décimal
+	@ permet de faire pivoter la texture utilisée pour afficher les étoiles
+	@ ce paramètre est commun à toutes les étoiles
 PARAMETER r @ décimal 
 	@ modifie la composante rouge de la couleur attribuée à l'étoile
 	@ décimale comprise entre 0 et 1 ou entier entre 0 et 255
@@ -425,8 +445,6 @@ PARAMETER color_value @ xRRGGBB
 PARAMETER color_value @ rXXXgYYYbZZZ
 	@ fixe la couleur au format rgb informatique
 	@ XXX, YYY et ZZZ appartiennent à l'intervalle [0;255]
-PARAMETER hp @ chaine de caractère
-	@ représente le nom de l'étoile ciblée par illuminate
 EXEMPLE
 	illuminate display on hp HP541
 @@
@@ -474,9 +492,13 @@ PARAMETER rotation @ décimal
 NAME landscape
 	@ permet de modifier le landscape actuel
 ARGUMENT action @ fixé
-	$ load @ charge le nom du fichier landscape
-PARAMETER path @ chaine de caractère
-	@ chemin du fichier pour le landscape
+	$ load 
+	@ charge le nom du fichier landscape
+	$ rotate
+	@ pivote le landscape
+	@ nécessite rotation
+PARAMETER rotation @ décimale
+	@ indique de combien de degré le landscape doit être déplacé
 @@
 
 
