@@ -2041,6 +2041,10 @@ int AppCommandInterface::commandLandscape()
 		} else if (argAction == W_ROTATE) {
 			if (!args[W_ROTATION].empty()) {
 				coreLink->rotateLandscape((M_PI/180.0)*evalDouble(args[W_ROTATION]));
+				return executeCommandStatus();
+			} else {
+				debug_message = "command 'landscape' : missing rotation parameter";
+				return executeCommandStatus();
 			}
 		} else {
 			debug_message = "command 'landscape' : invalid action parameter";
