@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 
     //suppression des éléments impairs
     for(auto it = myVector.begin(); it !=myVector.end(); ) { // plus de it++ on l'incrémente nous à la suite de la boucle
-    if ((*it)->getNbr()%2) {
+    if ((*it)->getNbr() & 1) {
         it= myVector.erase(it);	// je détruis it. erase renvoie l'adresse de l'élément suivant:
     } else
         ++it;
@@ -52,14 +52,17 @@ int main(int argc, char **argv)
 
     // recherche d'un élément particulier i=4
     for(auto it = myVector.begin(); it !=myVector.end(); it++) {
-        if ((*it)->getNbr()==3) {
+        if ((*it)->getNbr()==4) {
             tmp = (*it);
             break;
         }
     }
+
     // plus tard ... modification de l'élément tmp
     if (tmp != nullptr) {
         tmp->setNbr(3);
+    } else {
+        std::cout << "ERR\n";
     }
 
     // affichage du vector
@@ -75,7 +78,7 @@ int main(int argc, char **argv)
     printVector(myVector);
 
     //pour le fun, inutile certes.
-    myVector.clear();
+    //myVector.clear();
 
     return 0;
 }
