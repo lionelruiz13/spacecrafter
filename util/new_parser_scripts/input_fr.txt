@@ -569,15 +569,6 @@ PARAMETER duration
 @@
 
 
-NAME move_to_city
-	@ déplace le point d'observation à une grande ville du monde.
-ARGUMENT name @ chaine de caractère
-	@ nom de la ville
-ARGUMENT country @ chaine de caractère
-	@ nom du pays
-@@
-
-
 NAME multiplier
 	@ modifie l'écoulement du temps dans le logiciel
 ARGUMENT rate @ nombre
