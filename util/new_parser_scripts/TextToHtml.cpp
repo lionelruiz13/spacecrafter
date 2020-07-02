@@ -24,7 +24,7 @@ void TextToHtml::lecture()
 	//OutHtml += "<img src=\"logo.png\" alt=\"Logo\" class=\"logo\">";
 	OutHtml += "<section class=\"commande\">";
 
-	for(auto i = 0; i < inText.size(); i++) {
+	for(size_t i = 0; i < inText.size(); i++) {
 		transformation(inText[i]); //On transmet le string courant, pour la transformation
 	}
 
