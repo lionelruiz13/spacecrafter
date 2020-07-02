@@ -1,11 +1,11 @@
-#include <NbrList.hpp>
-#include <algorithm>
-#include <iostream>
+#include <NbrVector.hpp>
+#include <dynamic_printer.h>
 
 using namespace std;
 
 #define NB_MAX 100
 
+/*
 short *just_find_result(void)
 {
     // Create array, element in position -1 is the array size.
@@ -34,20 +34,26 @@ short *just_find_result(void)
     array[0] = i; // Write array size
     return (array + 1); // Move array so that it begin at 0, and -1 is array size.
 }
+*/
 
 int main()
 {
-    NbrList<short> nblist;
+    NbrVector<short> nbvec();
 
-    nblist.Fill(100); // fill with numbers from 1 to 100 both included
+    nbvec.Fill(100); // fill with numbers from 0 to 99 both included
 
-    nblist.DisplayMultiple11(); // display multiple of 11
+    std::cout << "\ec";
+    draw_cadre(80, 2);
+    my_move(1, 1);
+    std::cout << "Multiples of 11\n ";
 
-    nblist.remove_if([](short value) { // remove multiple of 5
-        return (value % 5 == 0);
-    });
+    nbvec.DisplayMultiple(11); // display multiple of 11
 
-    nblist.DisplayNumbersBetweenRemovingMultipleAndNext(50, 70, 12); // Operation compacted to try optimizing them
+    nbvec.RemoveMultiple(5);
+
+    nbvec.RemoveMultipleAndNext(12);
+
+    nbvec.DisplayNumbersBetweenExclusive(50, 70);
 
     return 0;
 }

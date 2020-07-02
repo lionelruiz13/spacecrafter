@@ -1,5 +1,4 @@
-FILES = NbrList.cpp \
-	main.cpp
+FILES = main.cpp
 INCLUDES = -I include
 FLAGS =
 BINARY = a.out
