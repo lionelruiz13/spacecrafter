@@ -21,10 +21,13 @@ BitCluster::~BitCluster()
 
 unsigned int BitCluster::read()
 {
-    char nbBits = (*((short *) readPos) >> subReadPos) & bitMask;
+    const int data = (*((int *) readPos) >> subReadPos);
+    const char nbBits = data & bitMask;
 
-    subReadPos += bitMaskSize;
-
+    subReadPos += nbBits + bitMaskSize;
+    readPos += subReadPos >> 8; // 1 octect -> 8 bits
+    subReadPos &= 255; // 1111 1111 in binary
+    return ((data >> bitMaskSize) & ((1 << nbBits) - 1));
 }
 
 void BitCluster::write(unsigned int nb)
