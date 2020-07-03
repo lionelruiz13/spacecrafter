@@ -8,7 +8,8 @@
 #ifndef DYNAMIC_PRINTER_TOOLS_H_
 #define DYNAMIC_PRINTER_TOOLS_H_
 
-#include "unistd.h"
+#include <unistd.h>
+#include <stdlib.h>
 
 enum {
     BLACK,
