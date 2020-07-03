@@ -1,4 +1,4 @@
-FILES = Converter.cpp PImage.cpp
+FILES = main.cpp PImage.cpp P5Image.cpp P8Image.cpp BitCluster.cpp
 BINARY = convert.out
 
 INCLUDES =

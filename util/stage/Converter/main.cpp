@@ -1,8 +1,4 @@
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <memory>
-#include <assert.h>
 #include "../include/dynamic_printer.h"
 #include "include/PImage.hpp"
 

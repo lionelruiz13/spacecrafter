@@ -1,9 +1,9 @@
 #include "../include/dynamic_printer.h"
 #include "include/PImage.hpp"
+#include "include/P5Image.hpp"
+#include "include/P8Image.hpp"
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <vector>
 #include <algorithm>
 #include <assert.h>
 
@@ -18,9 +18,9 @@ PImage *PImage::loadFromFile(std::string filename)
 
         switch (buffer[1]) {
             case '5':
-                return (new P5Image(std::move(file)));
+                return (new P5Image(file));
             case '8':
-                return (new P8Image(std::move(file)));
+                return (new P8Image(file));
             default:
                 my_set_color(FOREGROUND_DARK + RED);
                 std::cout << "Error : Invalid input file." << std::endl;
@@ -31,7 +31,7 @@ PImage *PImage::loadFromFile(std::string filename)
     }
 }
 
-void PImage::readProperties(std::ifstream file)
+void PImage::readProperties(std::ifstream &file)
 {
     char buffer[64];
 
@@ -47,17 +47,4 @@ void PImage::readProperties(std::ifstream file)
         file.getline(buffer, 64);
     } while (buffer[0] == '#');
     nbColor = std::stoi(buffer);
-}
-
-P5Image::P5Image(std::ifstream file) : format(5)
-{}
-
-P8Image::P8Image(std::ifstream file) : format(8)
-{}
-
-void P8Image::compressRawImage()
-{
-    std::array<char, 256> nbOccurency;
-
-    nbOccurency.fill(0);
 }
