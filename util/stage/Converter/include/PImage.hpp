@@ -17,7 +17,6 @@ protected:
     bool format;
     u_int width;
     u_int heigh;
-    u_int length;
     u_short nbColor;
     DataCompress datas;
 };

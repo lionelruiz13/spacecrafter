@@ -15,14 +15,22 @@ void PImage::loadFromFile(std::string filename)
         assert(buffer[0] == 'P' && buffer[2] == '\n');
         readProperties(file);
 
+        std::vector<u_char> tmp;
+        { // to optimize
+            char buff[4096];
+            int tmpsize = 0;
+            while ((tmpsize = (buff, 4096)) == 4096)
+                tmp.insert(tmp.end(), buff, buff + 4096);
+            tmp.insert(tmp.end(), buff, buff + tmpsize);
+        }
         switch (buffer[1]) {
             case '5':
                 format = 5;
-                //
+                datas.set(tmp);
                 break;
             case '8':
                 format = 8;
-                //
+                datas.setCompressed(tmp, width * heigh);
                 break;
             default:
                 my_set_color(FOREGROUND_DARK + RED);
@@ -80,5 +88,5 @@ void PImage::readProperties(std::ifstream &file)
 
 void PImage::writeProperties(std::ofstream &file, char format)
 {
-
+    file << "P" << format << std::endl << width << " " << heigh << std::endl << nbColor << std::endl;
 }

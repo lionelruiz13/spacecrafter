@@ -70,4 +70,5 @@ void BitCluster::assign(std::vector<u_char>::iterator begin, std::vector<u_char>
     cluster.assign(begin, end);
     readPos = cluster.data();
     writePos = cluster.data();
+    subReadPos = subWritePos = 0;
 }

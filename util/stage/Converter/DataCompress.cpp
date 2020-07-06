@@ -63,7 +63,7 @@ std::unique_ptr<std::vector<u_char>> DataCompress::getCompressed()
     datas->insert(datas->end(), dict.begin(), dict.end());
 
     auto tmp = cluster->getBuffer();
-    datas->insert(datas->end(), tmp->begin(), tmp->end());
+    datas->insert(datas->end(), tmp->begin(), tmp->begin() + cluster->getSize());
 
     return (std::move(datas));
 }
