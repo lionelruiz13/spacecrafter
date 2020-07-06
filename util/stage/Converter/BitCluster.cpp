@@ -8,7 +8,7 @@ BitCluster::BitCluster(unsigned int max_size, u_char maxWriteSize)
     readPos = writePos;
 
     // define write tier limit
-    for (maxWriteSize--; maxWriteSize > 0; maxWriteSize >> 1)
+    for (maxWriteSize--; maxWriteSize > 0; maxWriteSize = maxWriteSize >> 1)
         // Count number of bits needed
         bitMaskSize++;
     bitMask = (1 << bitMaskSize) - 1;
@@ -34,7 +34,7 @@ void BitCluster::write(unsigned int nb)
 {
     u_char nbBits = 0;
 
-    for (int n = nb; n > 0; n >> 1)
+    for (int n = nb; n > 0; n = n >> 1)
         // Count number of bits needed
         nbBits++;
     *((int *) writePos) |= (nbBits | (nb << bitMaskSize)) << subWritePos; // insert data into cluster

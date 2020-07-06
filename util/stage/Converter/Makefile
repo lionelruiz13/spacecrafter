@@ -18,7 +18,7 @@ re:	fclean	all
 
 debug:
 	echo -en "\ec"
-	g++ -o $(BINARY) $(FLAGS) $(FILES) $(INCLUDES)
+	g++ -o $(BINARY) $(FLAGS) $(DEBUG_FLAGS) $(FILES) $(INCLUDES)
 
 c:
 	echo -en "\ec"

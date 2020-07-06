@@ -9,7 +9,7 @@ int main(int argc, char const *argv[])
 
     switch (argc) {
         case 3:
-            OutputFile = argv[2];
+            OutputFile = argv[2]; __attribute__ ((fallthrough));
         case 2:
             InputFile = argv[1];
             std::cout << "Write converted file as '" << OutputFile << "'." << std::endl;
@@ -22,5 +22,8 @@ int main(int argc, char const *argv[])
             return 1;
     }
 
+    PImage image;
+    image.loadFromFile(InputFile);
+    image.saveToFile(OutputFile, image.getFormat() == 5 ? 8 : 5);
     return 0;
 }

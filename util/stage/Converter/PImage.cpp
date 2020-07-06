@@ -19,7 +19,7 @@ void PImage::loadFromFile(std::string filename)
         { // to optimize
             char buff[4096];
             int tmpsize = 0;
-            while ((tmpsize = (buff, 4096)) == 4096)
+            while ((tmpsize = file.readsome(buff, 4096)) == 4096)
                 tmp.insert(tmp.end(), buff, buff + 4096);
             tmp.insert(tmp.end(), buff, buff + tmpsize);
         }
@@ -33,10 +33,10 @@ void PImage::loadFromFile(std::string filename)
                 datas.setCompressed(tmp, width * heigh);
                 break;
             default:
+                format = -1;
                 my_set_color(FOREGROUND_DARK + RED);
                 std::cout << "Error : Invalid input file." << std::endl;
                 my_set_effect(CLEAR);
-                file.close();
         }
         file.close();
     }
@@ -44,6 +44,13 @@ void PImage::loadFromFile(std::string filename)
 
 void PImage::saveToFile(std::string filename, char format)
 {
+    if (this->format == -1) {
+        my_set_color(FOREGROUND_DARK + RED);
+        std::cout << "Error : Can't save empty image." << std::endl;
+        my_set_effect(CLEAR);
+        return;
+    }
+
     std::ofstream file (filename, std::ofstream::binary);
 
     if (file) {
@@ -76,7 +83,7 @@ void PImage::readProperties(std::ifstream &file)
         file.getline(buffer, 64);
     } while (buffer[0] == '#');
     width = std::stoi(buffer);
-    char pos = -1;
+    short pos = -1;
     while (buffer[++pos] != ' ');
     heigh = std::stoi(buffer + pos);
 
@@ -88,5 +95,5 @@ void PImage::readProperties(std::ifstream &file)
 
 void PImage::writeProperties(std::ofstream &file, char format)
 {
-    file << "P" << format << std::endl << width << " " << heigh << std::endl << nbColor << std::endl;
+    file << "P" << (int) format << std::endl << width << " " << heigh << std::endl << nbColor << std::endl;
 }

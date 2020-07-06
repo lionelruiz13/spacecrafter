@@ -85,12 +85,13 @@ static inline void draw_cadre(short x, short y)
     relative_move(0, 1 - y);
 }
 
+/*
 static inline void draw_column_separation(u_short x, u_short y)
 {
     u_char str[3] = {226, 148, 140};
 
     write(1, "\e[A", 3);
     move_in_line(x);
-}
+}//*/
 
 #endif /* DYNAMIC_PRINTER_H_ */
