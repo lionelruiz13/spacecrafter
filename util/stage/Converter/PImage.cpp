@@ -1,33 +1,62 @@
 #include "../include/dynamic_printer.h"
 #include "include/PImage.hpp"
-#include "include/P5Image.hpp"
-#include "include/P8Image.hpp"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <assert.h>
 
-PImage *PImage::loadFromFile(std::string filename)
+void PImage::loadFromFile(std::string filename)
 {
     std::ifstream file (filename, std::ifstream::binary);
 
     if (file) {
-        char buffer[3] = "ER";
+        char buffer[3] = "__";
         file.read(buffer, 3);
         assert(buffer[0] == 'P' && buffer[2] == '\n');
+        readProperties(file);
 
         switch (buffer[1]) {
             case '5':
-                return (new P5Image(file));
+                format = 5;
+                //
+                break;
             case '8':
-                return (new P8Image(file));
+                format = 8;
+                //
+                break;
             default:
                 my_set_color(FOREGROUND_DARK + RED);
                 std::cout << "Error : Invalid input file." << std::endl;
                 my_set_effect(CLEAR);
                 file.close();
-                return NULL;
         }
+        file.close();
+    }
+}
+
+void PImage::saveToFile(std::string filename, char format)
+{
+    std::ofstream file (filename, std::ofstream::binary);
+
+    if (file) {
+        writeProperties(file, format);
+        std::unique_ptr<std::vector<u_char>> tmp;
+        switch (format) {
+            case 5:
+                tmp = datas.get();
+                break;
+            case 8:
+                tmp = datas.getCompressed();
+                break;
+            default:
+                my_set_color(FOREGROUND_DARK + RED);
+                std::cout << "Error : Invalid format." << std::endl;
+                my_set_effect(CLEAR);
+                file.close();
+                return;
+        }
+        file.write((char *) tmp->data(), tmp->size()); // because (unsigned char *) can be used as (char *) safely.
+        file.close();
     }
 }
 
@@ -47,4 +76,9 @@ void PImage::readProperties(std::ifstream &file)
         file.getline(buffer, 64);
     } while (buffer[0] == '#');
     nbColor = std::stoi(buffer);
+}
+
+void PImage::writeProperties(std::ofstream &file, char format)
+{
+
 }
