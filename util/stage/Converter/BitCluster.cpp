@@ -58,8 +58,16 @@ std::unique_ptr<std::vector<u_char>> BitCluster::getBuffer()
     return (std::make_unique<std::vector<u_char>>(cluster));
 }
 
+/*
 void BitCluster::setBuffer(std::vector<u_char> &buffer)
 {
-    cluster.clear();
-    cluster = buffer;
+    cluster.assign(buffer.begin(), buffer.end());
+}
+//*/
+
+void BitCluster::assign(std::vector<u_char>::iterator begin, std::vector<u_char>::iterator end)
+{
+    cluster.assign(begin, end);
+    readPos = cluster.data();
+    writePos = cluster.data();
 }
