@@ -63,7 +63,13 @@ class Event;
 class SpaceDate;
 class SDLFacade;
 
-enum MODIFIER { NONE, CTRL, KWIN, SUPER, SHIFT, ALT };
+/**
+ *  Modification du comportement des touches
+ * 	CTRL et SHIFT représentent les touches du même nom
+ *  SUPER représente la touche ² (à gauche de &1)
+ *  KWIN représente la touche Windows (entre CTRL et ALT)
+ */
+enum MODIFIER { NONE, CTRL, KWIN, SUPER, SHIFT, ALT};
 
 enum class UI_FLAG : char {SHOW_FPS, SHOW_LATLON, SHOW_FOV,
 						 SHOW_PLANETNAME, SHOW_TUISHORTOBJ_INFO,

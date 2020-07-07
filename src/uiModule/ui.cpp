@@ -839,10 +839,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			core->zoomOut(1);
 			break;
 
-		case SDL_SCANCODE_RALT :
-			key_Modifier=ALT;
-			KeyTimeLeft = 120*1000;
-			break;
+		// case SDL_SCANCODE_RALT :
+		// 	key_Modifier=ALT;
+		// 	KeyTimeLeft = 120*1000;
+		// 	break;
 
 		case SDL_SCANCODE_GRAVE :
 			if (key_Modifier != SUPER) {
@@ -851,6 +851,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			} else key_Modifier=NONE;
 			break;
 
+		case SDL_SCANCODE_RALT :
 		case SDL_SCANCODE_RGUI :
 		case SDL_SCANCODE_LGUI :
 			if (key_Modifier != KWIN) {
@@ -3071,10 +3072,10 @@ int UI::handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::
 			core->zoomOut(0);
 			break;
 
-		case SDL_SCANCODE_RALT:
-			KeyTimeLeft=0;
-			key_Modifier = NONE;
-			break;
+		// case SDL_SCANCODE_RALT:
+		// 	KeyTimeLeft=0;
+		// 	key_Modifier = NONE;
+		// 	break;
 
 		case SDL_SCANCODE_RCTRL :
 		case SDL_SCANCODE_LCTRL :
@@ -3088,6 +3089,7 @@ int UI::handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::
 			key_Modifier=NONE;
 			break;
 
+		case SDL_SCANCODE_RALT:
 		case SDL_SCANCODE_RGUI :
 		case SDL_SCANCODE_LGUI :
 			KeyTimeLeft=0;
@@ -3150,10 +3152,10 @@ int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VA
 				core->zoomOut(0);
 				break;
 
-		case SDL_SCANCODE_RALT:
-			KeyTimeLeft=0;
-			key_Modifier = NONE;
-			break;
+		// case SDL_SCANCODE_RALT:
+		// 	KeyTimeLeft=0;
+		// 	key_Modifier = NONE;
+		// 	break;
 
 			case SDL_SCANCODE_RCTRL :
 			case SDL_SCANCODE_LCTRL :
@@ -3167,6 +3169,7 @@ int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VA
 				key_Modifier=NONE;
 				break;
 
+			case SDL_SCANCODE_RALT:
 			case SDL_SCANCODE_RGUI :
 			case SDL_SCANCODE_LGUI :
 				KeyTimeLeft=0;
