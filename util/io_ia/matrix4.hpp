@@ -1,7 +1,7 @@
 #ifndef MATRIX4_HPP_INCLUDED
 #define MATRIX4_HPP_INCLUDED
 
-#include "tools/fmath.hpp"
+#include "fmath.hpp"
 
 // Column-major matrix compatible with openGL.
 template<class T> class Matrix4 {

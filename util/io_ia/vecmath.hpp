@@ -76,7 +76,7 @@ typedef Matrix4<double>	Mat4d;
 
 #include "vector4.hpp"
 
-#include "tools/matrix4.hpp"
+#include "matrix4.hpp"
 
 const Vec3f v3fNull = Vec3f(0.0f, 0.0f, 0.0f);
 const Vec3f v3dNull = Vec3d(0.0f, 0.0f, 0.0f);

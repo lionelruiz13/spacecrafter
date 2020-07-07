@@ -22,7 +22,7 @@
  */
 #include <iostream>
 #include <fstream>
-#include "tools/vecmath.hpp"
+#include "vecmath.hpp"
 
 
 
@@ -305,7 +305,7 @@ void WriteBinary::writeString(const std::string &s)
 	this->write(sLength);
 	file.write(s.c_str(), s.length());
 	if (!file) {
-		error = "can write data";
+		error = "can write string data";
 		canUse = false;
 	}
 }
@@ -445,7 +445,6 @@ if (1) {
 	std::cout << "Erreur ? : "<< myFile.getError() << std::endl;
 	myFile.end();
 }
-
 
 	return 0;
 }
