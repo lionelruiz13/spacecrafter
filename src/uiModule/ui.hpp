@@ -69,7 +69,7 @@ class SDLFacade;
  *  SUPER représente la touche ² (à gauche de &1)
  *  KWIN représente la touche Windows (entre CTRL et ALT)
  */
-enum MODIFIER { NONE, CTRL, KWIN, SUPER, SHIFT, ALT};
+enum MODIFIER { NONE, CTRL, KWIN, SUPER, SHIFT};
 
 enum class UI_FLAG : char {SHOW_FPS, SHOW_LATLON, SHOW_FOV,
 						 SHOW_PLANETNAME, SHOW_TUISHORTOBJ_INFO,

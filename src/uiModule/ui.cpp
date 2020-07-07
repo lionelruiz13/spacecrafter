@@ -2322,9 +2322,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add r -1");
 					this->executeCommand("add j 1");
 					break;
-				case ALT:
-					coreLink->cameraMoveRelativeXYZ(0.,-1.0,0.0);
-					break;
+				// case ALT:
+				// 	coreLink->cameraMoveRelativeXYZ(0.,-1.0,0.0);
+				// 	break;
 				default:
 					break;
 			}
@@ -2351,9 +2351,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL:
 					break;
-				case ALT:
-					coreLink->cameraMoveRelativeXYZ(0.,0.0,-1.0);
-					break;
+				// case ALT:
+				// 	coreLink->cameraMoveRelativeXYZ(0.,0.0,-1.0);
+				// 	break;
 
 				default:
 					break;
@@ -2383,9 +2383,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add s 1");
 					this->executeCommand("add z -1");
 					break;
-				case ALT:
-					coreLink->cameraMoveRelativeXYZ(-1.,0.0,0.0);
-					break;
+				// case ALT:
+				// 	coreLink->cameraMoveRelativeXYZ(-1.,0.0,0.0);
+				// 	break;
 				default:
 					break;
 			}
@@ -2443,9 +2443,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add s -1");
 					this->executeCommand("add z 1");
 					break;
-				case ALT:
-					coreLink->cameraMoveRelativeXYZ(1.,0.0,0.0);
-					break;
+				// case ALT:
+				// 	coreLink->cameraMoveRelativeXYZ(1.,0.0,0.0);
+				// 	break;
 				default:
 					break;
 			}
@@ -2501,9 +2501,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("add r 1");
 					this->executeCommand("add j -1");
 					break;
-				case ALT:
-					coreLink->cameraMoveRelativeXYZ(0.,1.0,0.0);
-					break;
+				// case ALT:
+				// 	coreLink->cameraMoveRelativeXYZ(0.,1.0,0.0);
+				// 	break;
 				default:
 					break;
 			}
@@ -2532,9 +2532,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_GRID , FLAG_VALUES::FV_TOGGLE);
 					EventRecorder::getInstance()->queue(event);					
 					break;
-				case ALT:
-					coreLink->cameraMoveRelativeXYZ(0.,0.0,1.0);
-					break;
+				// case ALT:
+				// 	coreLink->cameraMoveRelativeXYZ(0.,0.0,1.0);
+				// 	break;
 				default:
 					break;
 			}
