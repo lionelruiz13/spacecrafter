@@ -459,7 +459,7 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 
 	long unsigned  int nbrH=0, nbrC=0, nbrS=0;
 
-	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); ++hc) {
+	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); hc++) {
 
 		//~ file << "H" << " " << (*hc)->getCx() << " " << (*hc)->getCy() << " " << (*hc)->getCz() << " " << (*hc)->getNbrCubes() << std::endl;
 		x = (*hc)->getCx();
@@ -534,7 +534,7 @@ bool StarManager::saveStarCatalog(const std::string &fileName)
 		return false;
 	}
 
-	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); ++hc) {
+	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); hc++) {
 
 		file << "H" << " " << (*hc)->getCx() << " " << (*hc)->getCy() << " " << (*hc)->getCz() << " " << (*hc)->getNbrCubes() << std::endl;
 

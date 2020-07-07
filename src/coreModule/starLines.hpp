@@ -93,6 +93,10 @@ public:
 	//! \return true si tout est oki, false sinon
 	bool loadHipBinCatalogue(std::string fileName) noexcept;
 
+	//! sauvegarde le catalogue des étoiles les plus lumineuses
+	//! \return true si tout est oki, false sinon
+	bool saveHipCatalogue(std::string fileName) noexcept;
+
 	//! dessine les asterismes issus de loadData IN_SOLARSYSTEM
 	void draw(const Projector* prj) noexcept;
 	//! dessine les asterismes issus de loadData dans IN_GALAXY
