@@ -9,8 +9,8 @@ class PImage
 public:
     u_int getHeigh() {return heigh;};
     u_int getWidth() {return width;};
-    void saveToFile(std::string filename, char format);
-    void loadFromFile(std::string filename);
+    bool saveToFile(std::string filename, char format); // return true on success
+    bool loadFromFile(std::string filename); // return true on success
     char getFormat() {return format;};
 protected:
     void readProperties(std::ifstream &file);

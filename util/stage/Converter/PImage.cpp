@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <assert.h>
 
-void PImage::loadFromFile(std::string filename)
+bool PImage::loadFromFile(std::string filename)
 {
     std::ifstream file (filename, std::ifstream::binary);
 
@@ -37,18 +37,22 @@ void PImage::loadFromFile(std::string filename)
                 my_set_color(FOREGROUND_DARK + RED);
                 std::cout << "Error : Invalid input file." << std::endl;
                 my_set_effect(CLEAR);
+                file.close();
+                return false;
         }
         file.close();
+        return true;
     }
+    return false;
 }
 
-void PImage::saveToFile(std::string filename, char format)
+bool PImage::saveToFile(std::string filename, char format)
 {
     if (this->format == -1) {
         my_set_color(FOREGROUND_DARK + RED);
         std::cout << "Error : Can't save empty image." << std::endl;
         my_set_effect(CLEAR);
-        return;
+        return false;
     }
 
     std::ofstream file (filename, std::ofstream::binary);
@@ -68,11 +72,13 @@ void PImage::saveToFile(std::string filename, char format)
                 std::cout << "Error : Invalid format." << std::endl;
                 my_set_effect(CLEAR);
                 file.close();
-                return;
+                return false;
         }
         file.write((char *) tmp->data(), tmp->size()); // because (unsigned char *) can be used as (char *) safely.
         file.close();
+        return true;
     }
+    return false;
 }
 
 void PImage::readProperties(std::ifstream &file)
