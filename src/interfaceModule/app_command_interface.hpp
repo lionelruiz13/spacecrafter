@@ -62,7 +62,7 @@ public:
 	void initSpaceDateInterface(SpaceDate* _spaceDate);
 	void initSaveScreenInterface(SaveScreenInterface* _saveScreenInterface);
 
-	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value);
+	void setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value);
 	void setTcp(ServerSocket* _tcp);
 
 protected:
