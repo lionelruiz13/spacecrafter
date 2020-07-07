@@ -57,7 +57,7 @@ bool StarLines::loadHipCatalogue(std::string fileName) noexcept
 
 	if (!fileIn.is_open()) {
 		cLog::get()->write("StarLines error opening "+fileName, LOG_TYPE::L_ERROR);
-		printf("StarLines error opening %s\n", fileName.c_str());
+		//printf("StarLines error opening %s\n", fileName.c_str());
 		return -1;
 	}
 
@@ -74,7 +74,7 @@ bool StarLines::loadHipCatalogue(std::string fileName) noexcept
 		std::istringstream istr(record);
 		if (!(istr >> hip >> x >> y >> z)) {
 			cLog::get()->write("StarLines error parsing HIP_data "+record, LOG_TYPE::L_ERROR);
-			printf("StarLines error parsing HIP_data %s \n", record.c_str());
+			//printf("StarLines error parsing HIP_data %s \n", record.c_str());
 			return false;
 		}
 		tmp.first = hip;
@@ -137,7 +137,7 @@ bool StarLines::loadHipBinCatalogue(std::string fileName) noexcept
 
 	if (!fileIn.is_open()) {
 		cLog::get()->write("StarLines error opening binary "+fileName, LOG_TYPE::L_ERROR);
-		printf("StarLines error opening binary %s\n", fileName.c_str());
+		//printf("StarLines error opening binary %s\n", fileName.c_str());
 		return -1;
 	}
 
@@ -206,7 +206,7 @@ void StarLines::loadStringData(std::string record) noexcept
 	std::istringstream istr(record);
 	if (!(istr >> abbreviation >> nb_segments)) {
 		cLog::get()->write("StarLines error parsing line "+record, LOG_TYPE::L_ERROR);
-		printf("StarLines error parsing\n");
+		//printf("StarLines error parsing\n");
 		return;
 	}
 
@@ -217,7 +217,7 @@ void StarLines::loadStringData(std::string record) noexcept
 
 		if (HIP1==0 || HIP2==0) {
 			cLog::get()->write("StarLines error parsing line ", LOG_TYPE::L_ERROR);
-			printf("StarLines error parsing line\n");
+			//printf("StarLines error parsing line\n");
 			continue;
 		}
 
@@ -225,11 +225,11 @@ void StarLines::loadStringData(std::string record) noexcept
 		Vec3f tmp2 = searchInHip(HIP2);
 		if (tmp1==VNull || tmp2 ==VNull) {
 			if (tmp1==VNull) {
-				printf("StarLines error parsing HIP %i not found\n", HIP1);
+				//printf("StarLines error parsing HIP %i not found\n", HIP1);
 				cLog::get()->write("StarLines error parsing not found HIP " + Utility::intToString(HIP1), LOG_TYPE::L_ERROR);
 			}
 			if (tmp2==VNull) {
-				printf("StarLines error parsing HIP %i not found\n", HIP2);
+				//printf("StarLines error parsing HIP %i not found\n", HIP2);
 				cLog::get()->write("StarLines error parsing not found HIP " + Utility::intToString(HIP2), LOG_TYPE::L_ERROR);
 			}
 			continue;
