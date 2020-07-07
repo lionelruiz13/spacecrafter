@@ -102,7 +102,10 @@ void StarNavigator::loadData(const std::string &fileName, bool binaryData) noexc
 
 void StarNavigator::saveData(const std::string &fileName, bool binaryData) noexcept
 {
-	std::cout << "Not implémented yet" << std::endl;
+	if (binaryData)
+		starMgr->saveStarBinCatalog(fileName);
+	else
+		starMgr->saveStarCatalog(fileName);
 }
 
 StarNavigator::~StarNavigator()
