@@ -85,6 +85,9 @@ public:
 	//! \param fileName représente le nom complet du fichier des datas
 	void loadStringData(std::string record) noexcept;
 
+	//! \brief charge une étoile pour le catalogue
+	void loadHipStar(int name, Vec3f position ) noexcept;
+
 	//! \brief lit le catalogue des étoiles les plus lumineuses
 	//! \return true si tout est oki, false sinon
 	bool loadHipCatalogue(std::string fileName) noexcept;

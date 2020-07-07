@@ -87,6 +87,15 @@ bool StarLines::loadHipCatalogue(std::string fileName) noexcept
 	return true;
 }
 
+
+void StarLines::loadHipStar(int name, Vec3f position ) noexcept
+{
+	HIPpos tmp;
+	tmp.first = name;
+	tmp.second = position;
+	HIP_data.push_back(tmp);
+}
+
 bool StarLines::saveHipCatalogue(std::string fileName) noexcept
 {
 	std::ofstream fileOut(fileName.c_str());
