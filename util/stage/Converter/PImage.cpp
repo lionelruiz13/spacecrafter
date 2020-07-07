@@ -19,7 +19,7 @@ bool PImage::loadFromFile(std::string filename)
         { // to optimize
             char buff[4096];
             file.read(buff, 4096);
-            while (file) {
+            while (file.gcount() == 4096) {
                 tmp.insert(tmp.end(), buff, buff + 4096);
                 file.read(buff, 4096);
             }

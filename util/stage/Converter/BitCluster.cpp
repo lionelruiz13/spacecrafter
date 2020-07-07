@@ -3,16 +3,15 @@
 #include <iostream>
 BitCluster::BitCluster(unsigned int max_size, u_char maxWriteSize)
 {
-    cluster.resize(max_size + 3);
-    std::fill(cluster.begin(), cluster.end(), 0);
-    writePos = cluster.data();
-    readPos = writePos;
-
     // define write tier limit
     for (maxWriteSize--; maxWriteSize > 0; maxWriteSize = maxWriteSize >> 1)
         // Count number of bits needed
         bitMaskSize++;
     bitMask = (1 << bitMaskSize) - 1;
+    cluster.resize((max_size * (8 + bitMaskSize)) / 8 + 4);
+    std::fill(cluster.begin(), cluster.end(), 0);
+    writePos = cluster.data();
+    readPos = writePos;
 }
 
 BitCluster::~BitCluster()
@@ -29,9 +28,7 @@ unsigned int BitCluster::read()
     readPos += subReadPos >> 3; // similar to subReadPos / 8
     subReadPos &= 7; // similar to subWritePos % 8
 
-    char out = (data >> bitMaskSize) & ((1 << nbBits) - 1);
-    std::cout << (char) ('0' + out);
-    return (out);
+    return ((data >> bitMaskSize) & ((1 << nbBits) - 1));
 }
 
 void BitCluster::write(unsigned int nb)
@@ -46,7 +43,6 @@ void BitCluster::write(unsigned int nb)
     subWritePos += bitMaskSize + nbBits;
     writePos += subWritePos >> 3; // similar to subReadPos / 8
     subWritePos &= 7; // similar to subWritePos % 8
-
 }
 
 void BitCluster::resize(unsigned int max_size)

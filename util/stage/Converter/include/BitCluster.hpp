@@ -17,7 +17,7 @@ public:
     //void setBuffer(std::vector<u_char> &buffer);
     void assign(std::vector<u_char>::iterator begin, std::vector<u_char>::iterator end);
     unsigned int getSize() {return (writePos + (subWritePos > 0) - cluster.data());};
-    unsigned int getMaxSize() {return cluster.size();}
+    unsigned int getMaxSize() {return cluster.size();};
     void resize(unsigned int max_size);
 private:
     u_char *readPos; // cluster reading point
