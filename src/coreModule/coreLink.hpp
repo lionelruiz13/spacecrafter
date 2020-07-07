@@ -57,6 +57,10 @@ public:
 		core->starLines->loadHipBinCatalogue(fileName);
 	}
 
+	void starLinesLoadHipStar(int name, Vec3f position) {
+		core->starLines->loadHipStar(name, position);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Skyline et Skygrid---------------------------
 	////////////////////////////////////////////////////////////////////////////////

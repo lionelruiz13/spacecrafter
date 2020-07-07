@@ -1661,7 +1661,14 @@ int AppCommandInterface::commandConfiguration()
 					coreLink->starLinesLoadCat(argName);
 				return executeCommandStatus();
 			} else
-				debug_message = "command 'configuration': unknown starNavigator action argument";
+			if (argAction =="load_star") {
+				if (!args["star_name"].empty() && !args["star_pos"].empty()) {
+					coreLink->starLinesLoadHipStar(evalInt(args["star_name"]), Utility::strToVec3f(args["star_pos"]));
+				return executeCommandStatus();
+				} else
+				debug_message = "command 'configuration': missing star_lines action load_star argument";
+			} else 
+				debug_message = "command 'configuration': unknown star_lines action argument";
 		} else
 		if (argModule=="star_navigator"){
 
