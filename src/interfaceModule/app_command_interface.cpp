@@ -1642,7 +1642,7 @@ int AppCommandInterface::commandConfiguration()
 	if (!argModule.empty()){
 		if (argModule == ACP_CN_STAR_LINES){
 
-			if (argAction == ACP_CN_CLEAR) {
+			if (argAction == W_CLEAR) {
 				coreLink->starLinesClear();
 				return executeCommandStatus();
 			}
@@ -1661,18 +1661,20 @@ int AppCommandInterface::commandConfiguration()
 					coreLink->starLinesLoadCat(argName);
 				return executeCommandStatus();
 			} else
-			if (argAction =="load_star") {
-				if (!args["star_name"].empty() && !args["star_pos"].empty()) {
-					coreLink->starLinesLoadHipStar(evalInt(args["star_name"]), Utility::strToVec3f(args["star_pos"]));
+			if (argAction == W_LOAD_STAR) {
+				std::string starName = args[W_STAR_NAME];
+				std::string starPos = args[W_STAR_POS];
+				if (!starName.empty() && !starPos.empty()) {
+					coreLink->starLinesLoadHipStar(evalInt(starName), Utility::strToVec3f(starPos));
 				return executeCommandStatus();
 				} else
 				debug_message = "command 'configuration': missing star_lines action load_star argument";
 			} else 
 				debug_message = "command 'configuration': unknown star_lines action argument";
 		} else
-		if (argModule=="star_navigator"){
+		if (argModule==W_STAR_NAVIGATOR){
 
-			if (argAction == ACP_CN_CLEAR) {
+			if (argAction == W_CLEAR) {
 				coreLink->starNavigatorClear();
 				return executeCommandStatus();
 			}

@@ -96,6 +96,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_SCALE                     "scale"
 #define W_DURATION                  "duration"
 #define W_LOAD                      "load"
+#define W_LOAD_STAR                 "load_star"
 #define W_XY                        "xy"
 #define W_PATH                      "path"
 #define W_RA                        "ra"
@@ -270,6 +271,9 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_BODYNAME                  "body_name"
 #define W_TWICE                     "twice"
 #define W_THRICE                    "thrice"
+#define W_STAR_NAVIGATOR            "star_navigator"
+#define W_STAR_NAME                 "star_name"
+#define W_STAR_POS                  "star_pos"
 
 // nom des arguments maps appCommandInit
 //CommandsNames
