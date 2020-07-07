@@ -15,13 +15,15 @@ bool PImage::loadFromFile(std::string filename)
         assert(buffer[0] == 'P' && buffer[2] == '\n');
         readProperties(file);
 
-        std::vector<u_char> tmp;
+        std::vector<u_char> tmp(0);
         { // to optimize
             char buff[4096];
-            int tmpsize = 0;
-            while ((tmpsize = file.readsome(buff, 4096)) == 4096)
+            file.read(buff, 4096);
+            while (file) {
                 tmp.insert(tmp.end(), buff, buff + 4096);
-            tmp.insert(tmp.end(), buff, buff + tmpsize);
+                file.read(buff, 4096);
+            }
+            tmp.insert(tmp.end(), buff, buff + file.gcount());
         }
         switch (buffer[1]) {
             case '5':

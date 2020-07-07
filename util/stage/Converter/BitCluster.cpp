@@ -1,8 +1,9 @@
 #include "include/BitCluster.hpp"
 
+#include <iostream>
 BitCluster::BitCluster(unsigned int max_size, u_char maxWriteSize)
 {
-    cluster.resize(max_size);
+    cluster.resize(max_size + 3);
     std::fill(cluster.begin(), cluster.end(), 0);
     writePos = cluster.data();
     readPos = writePos;
@@ -25,9 +26,12 @@ unsigned int BitCluster::read()
     const u_char nbBits = data & bitMask;
 
     subReadPos += nbBits + bitMaskSize;
-    readPos += subReadPos >> 8; // 1 octect -> 8 bits
-    subReadPos &= 255; // 1111 1111 in binary
-    return ((data >> bitMaskSize) & ((1 << nbBits) - 1));
+    readPos += subReadPos >> 3; // similar to subReadPos / 8
+    subReadPos &= 7; // similar to subWritePos % 8
+
+    char out = (data >> bitMaskSize) & ((1 << nbBits) - 1);
+    std::cout << (char) ('0' + out);
+    return (out);
 }
 
 void BitCluster::write(unsigned int nb)
@@ -38,9 +42,11 @@ void BitCluster::write(unsigned int nb)
         // Count number of bits needed
         nbBits++;
     *((int *) writePos) |= (nbBits | (nb << bitMaskSize)) << subWritePos; // insert data into cluster
+    //std::cout << (char) (nb + '0');
     subWritePos += bitMaskSize + nbBits;
-    writePos += subWritePos >> 8; // 1 octect -> 8 bits
-    subWritePos &= 255; // 1111 1111 in binary
+    writePos += subWritePos >> 3; // similar to subReadPos / 8
+    subWritePos &= 7; // similar to subWritePos % 8
+
 }
 
 void BitCluster::resize(unsigned int max_size)
@@ -48,7 +54,7 @@ void BitCluster::resize(unsigned int max_size)
     int read_size = readPos - cluster.data();
     int write_size = writePos - cluster.data();
 
-    cluster.resize(max_size);
+    cluster.resize(max_size + 3);
     readPos = cluster.data() + read_size;
     writePos = cluster.data() + write_size;
 }
@@ -68,6 +74,7 @@ void BitCluster::setBuffer(std::vector<u_char> &buffer)
 void BitCluster::assign(std::vector<u_char>::iterator begin, std::vector<u_char>::iterator end)
 {
     cluster.assign(begin, end);
+    cluster.resize(cluster.size() + 3); // we must have at least 3 more bytes to ensure we can read as integer
     readPos = cluster.data();
     writePos = cluster.data();
     subReadPos = subWritePos = 0;
