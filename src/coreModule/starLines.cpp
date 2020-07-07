@@ -104,14 +104,32 @@ bool StarLines::saveHipCatalogue(std::string fileName) noexcept
 	return 0;
 }
 
-	// float x,y,z, pmRA, pmDE, mag, pc;
-	// int nbr, B_V;
+bool StarLines::saveHipBinCatalogue(std::string fileName) noexcept
+{
+	std::ofstream fileOut(fileName.c_str());
 
-	// 	file.write((char *)&x, sizeof(x));
-	// 	file.write((char *)&y, sizeof(y));
-	// 	file.write((char *)&z, sizeof(z));
-	// 	file.write((char *)&nbr, sizeof(nbr));
+	if (!fileOut.is_open()) {
+		cLog::get()->write("StarLines error opening "+fileName, LOG_TYPE::L_ERROR);
+		//printf("StarLines error opening %s\n", fileName.c_str());
+		return -1;
+	}
 
+	float x,y,z;
+	int nbr;
+
+	for( auto it = HIP_data.begin(); it!= HIP_data.end(); it++) {
+		nbr = (*it).first;
+		x= (*it).second[0];
+		y= (*it).second[1];
+		z= (*it).second[2];
+	 	fileOut.write((char *)&nbr, sizeof(nbr));
+	 	fileOut.write((char *)&x, sizeof(x));
+	 	fileOut.write((char *)&y, sizeof(y));
+	 	fileOut.write((char *)&z, sizeof(z));
+	}
+	fileOut.close();
+	return 0;
+}
 
 bool StarLines::loadHipBinCatalogue(std::string fileName) noexcept
 {
