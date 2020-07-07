@@ -3635,7 +3635,7 @@ int AppCommandInterface::commandStruct()
 			return executeCommandStatus();
 		}
 
-		int nbrLoop = evalInt(argLoop);
+		int nbrLoop = Utility::strToInt(evalString(argLoop));
 		if (nbrLoop < 1) {
 			swapCommand = true;
 			return executeCommandStatus();
