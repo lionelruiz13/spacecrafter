@@ -184,15 +184,6 @@ int main(int argc, char **argv)
 	//create log system
 	//-------------------------------------------
 	cLog* Log = cLog::get();
-	//Open log files
-	#ifdef LINUX
-	std::string logpath(getenv("HOME") + std::string("/.") + APP_LOWER_NAME +"/log/");
-	#else // on windows
-	std::string logpath("log\\");
-	#endif
-	Log->open(logpath + "spacecrafter.log");
-	Log->openScript(logpath + "script.log");
-	Log->openTcp(logpath + "tcp.log");
 
 	// Write the console logo & Uname Information...
 	writeGeneralInfo();
@@ -206,9 +197,9 @@ int main(int argc, char **argv)
 	dirResult.clear();
 	CallSystem::checkIniFiles(appDir, dataRoot);
 	//-------------------------------------------
-	// end 
+	// end
 	//-------------------------------------------
-	
+
 	// if lock_file is created, check if it's valid and avoid launch SC twice.
 	#ifdef LINUX
 	std::string lock_file = PATH_FILE_LOCK;
@@ -281,7 +272,7 @@ int main(int argc, char **argv)
 	}
 	antialiasing = conf.getInt(SCS_RENDERING, SCK_ANTIALIASING);
 	sdl->createWindow(curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, dataRoot + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
-	
+
 	//-------------------------------------------
 	// create the main class for SC logical software
 	//-------------------------------------------
@@ -299,7 +290,7 @@ int main(int argc, char **argv)
 	app->startMainLoop();
 	//SC logical software end here
 
-	// Close all 
+	// Close all
 	#ifdef LINUX
 	// remove correctly the lock file
 	if( unlink(lock_file.c_str()) != 0 )
@@ -320,9 +311,8 @@ int main(int argc, char **argv)
 
 	Log->write("EOF", LOG_TYPE::L_INFO);
 	Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-	Log->close();
+	//Log->close(); // implicit
 	AppSettings::close();
 
 	return 0;
 }
-

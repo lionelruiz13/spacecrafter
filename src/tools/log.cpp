@@ -36,87 +36,75 @@
 // thanks to internet for color !!
 // http://stackoverflow.com/questions/1961209/making-some-text-in-printf-appear-in-green-and-red
 #ifdef WIN32
-#define LOG_RESET   ""
-#define LOG_BLACK   ""      /* Black */
-#define LOG_RED     ""      /* Red */
-#define LOG_GREEN   ""      /* Green */
-#define LOG_YELLOW  ""      /* Yellow */
-#define LOG_BLUE    ""      /* Blue */
-#define LOG_MAGENTA ""      /* Magenta */
-#define LOG_CYAN    ""      /* Cyan */
-#define LOG_WHITE   ""      /* White */
-#define LOG_BOLDBLACK   ""      /* Bold Black */
-#define LOG_BOLDRED     ""      /* Bold Red */
-#define LOG_BOLDGREEN   ""      /* Bold Green */
-#define LOG_BOLDYELLOW  ""      /* Bold Yellow */
-#define LOG_BOLDBLUE    ""      /* Bold Blue */
-#define LOG_BOLDMAGENTA ""      /* Bold Magenta */
-#define LOG_BOLDCYAN    ""      /* Bold Cyan */
-#define LOG_BOLDWHITE   ""      /* Bold White */
+	#define LOG_RESET   ""
+	#define LOG_BLACK   ""      /* Black */
+	#define LOG_RED     ""      /* Red */
+	#define LOG_GREEN   ""      /* Green */
+	#define LOG_YELLOW  ""      /* Yellow */
+	#define LOG_BLUE    ""      /* Blue */
+	#define LOG_MAGENTA ""      /* Magenta */
+	#define LOG_CYAN    ""      /* Cyan */
+	#define LOG_WHITE   ""      /* White */
+	#define LOG_BOLDBLACK   ""      /* Bold Black */
+	#define LOG_BOLDRED     ""      /* Bold Red */
+	#define LOG_BOLDGREEN   ""      /* Bold Green */
+	#define LOG_BOLDYELLOW  ""      /* Bold Yellow */
+	#define LOG_BOLDBLUE    ""      /* Bold Blue */
+	#define LOG_BOLDMAGENTA ""      /* Bold Magenta */
+	#define LOG_BOLDCYAN    ""      /* Bold Cyan */
+	#define LOG_BOLDWHITE   ""      /* Bold White */
 #else
-#define LOG_RESET   "\033[0m"
-#define LOG_BLACK   "\033[30m"      /* Black */
-#define LOG_RED     "\033[31m"      /* Red */
-#define LOG_GREEN   "\033[32m"      /* Green */
-#define LOG_YELLOW  "\033[33m"      /* Yellow */
-#define LOG_BLUE    "\033[34m"      /* Blue */
-#define LOG_MAGENTA "\033[35m"      /* Magenta */
-#define LOG_CYAN    "\033[36m"      /* Cyan */
-#define LOG_WHITE   "\033[37m"      /* White */
-#define LOG_BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
-#define LOG_BOLDRED     "\033[1m\033[31m"      /* Bold Red */
-#define LOG_BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
-#define LOG_BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
-#define LOG_BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
-#define LOG_BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
-#define LOG_BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
-#define LOG_BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+	#define LOG_RESET   "\033[0m"
+	#define LOG_BLACK   "\033[30m"      /* Black */
+	#define LOG_RED     "\033[31m"      /* Red */
+	#define LOG_GREEN   "\033[32m"      /* Green */
+	#define LOG_YELLOW  "\033[33m"      /* Yellow */
+	#define LOG_BLUE    "\033[34m"      /* Blue */
+	#define LOG_MAGENTA "\033[35m"      /* Magenta */
+	#define LOG_CYAN    "\033[36m"      /* Cyan */
+	#define LOG_WHITE   "\033[37m"      /* White */
+	#define LOG_BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+	#define LOG_BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+	#define LOG_BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+	#define LOG_BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+	#define LOG_BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+	#define LOG_BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+	#define LOG_BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+	#define LOG_BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+#endif
+
+const std::string LOG_EXTENSION=".log";
+#ifdef LINUX
+	std::string LOGPATH(getenv("HOME") + std::string("/.") + APP_LOWER_NAME +"/log/");
+#else // on windows
+	std::string LOGPATH("log\\");
 #endif
 
 cLog* cLog::singleton = nullptr;
 
 cLog::cLog()
-{}
+{
+	for (short i = 0; i < (char) LOG_FILE::NB_LOG_FILES; i++)
+		open(LOG_FILE_NAME[i]);
+}
 
 void cLog::open(const std::string& LogfilePath)
 {
-	Logfile.open(LogfilePath, std::ofstream::out | std::ofstream::trunc);
+	std::ofstream file;
 
-	if (!Logfile.is_open()) {
+	if (LogfilePath[0] == KEEP_LOG_HISTORY_TAG)
+		file.open(LOGPATH + LogfilePath.substr(1, std::string::npos) + "-" + getDate() + LOG_EXTENSION, std::ofstream::out | std::ofstream::app);
+	else
+		file.open(LOGPATH + LogfilePath + LOG_EXTENSION, std::ofstream::out | std::ofstream::trunc);
+
+	if (!file.is_open()) {
 		std::cerr << "(EE): Couldn't open file log!\n Please check file/directory permissions" << std::endl;
 		throw;
 	}
-}
-
-void cLog::openScript(const std::string& scriptLogfilePath)
-{
-	ScriptLogfile.open(
-	    scriptLogfilePath.substr(0, scriptLogfilePath.find_last_of("."))
-	    + std::string ("-")
-	    + getDate()
-	    + scriptLogfilePath.substr(scriptLogfilePath.find_last_of("."), std::string::npos)
-	    , std::ofstream::out | std::ofstream::app);
-
-	if (!ScriptLogfile.is_open()) {
-		std::cerr << "(EE): Couldn't open file log!\n Please check file/directory permissions" << std::endl;
-		throw;
-	}
-}
-
-void cLog::openTcp(const std::string& tcpLogfilePath)
-{
-	TcpLogfile.open(tcpLogfilePath, std::ofstream::out | std::ofstream::trunc);
-
-	if (!TcpLogfile.is_open()) {
-		std::cerr << "(EE): Couldn't open file log!\n Please check file/directory permissions" << std::endl;
-		throw;
-	}
+	logFile.push_back(std::move(file));
 }
 
 void cLog::close() {
-    if (Logfile.is_open()) {
-	    Logfile.close();
-    }
 	if (singleton != nullptr) {
 		delete singleton;
 	}
@@ -125,9 +113,8 @@ void cLog::close() {
 
 cLog::~cLog()
 {
-	Logfile.close();
-	ScriptLogfile.close();
-	TcpLogfile.close();
+	for (auto &file: logFile)
+		file.close();
 }
 
 
@@ -138,7 +125,7 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 
 	if (isDebug) {
 		writeConsole(texte, type);
-		char value[15]; 
+		char value[15];
 		sprintf(value, "%012d: ", SDL_GetTicks());
 		ligne.append(std::string(value));
 	}
@@ -162,24 +149,9 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 	ligne.append(texte);
 	ligne.append("\r\n");
 
-	switch(fichier) {
-		case LOG_FILE::INTERNAL :
-			Logfile << ligne;
-			Logfile.flush();
-			break;
-		case LOG_FILE::SCRIPT :
-			ScriptLogfile << ligne;
-			ScriptLogfile.flush();
-			break;
-		case LOG_FILE::TCP :
-			TcpLogfile << ligne;
-			TcpLogfile.flush();
-			break;
-		default : {
-			Logfile << ligne;
-			Logfile.flush();
-		}
-	}
+	logFile[(char) fichier] << ligne;
+	logFile[(char) fichier].flush();
+
 	writeMutex.unlock();
 }
 

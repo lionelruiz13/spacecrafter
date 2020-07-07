@@ -30,6 +30,7 @@
 #include <fstream>
 #include <mutex>
 #include <sstream>
+#include <vector>
 
 
 /**
@@ -51,7 +52,18 @@ enum class LOG_TYPE : char {
 enum class LOG_FILE : char {
 	INTERNAL,
 	SCRIPT,
-	TCP
+	TCP,
+	NB_LOG_FILES // nombre de fichiers de log
+};
+
+// tag à mettre en début de nom pour informer que l'on souhaite conserver l'historique
+#define KEEP_LOG_HISTORY_TAG '$'
+
+// noms des fichiers de log
+const std::string LOG_FILE_NAME[(char) LOG_FILE::NB_LOG_FILES] = {
+	"spacecrafter",
+	"$script",
+	"tcp"
 };
 
 class cLog {
@@ -64,7 +76,7 @@ public:
     static cLog *get()    {
 		if (!singleton)
           singleton = new cLog();
-       
+
        return singleton;
     }
 
@@ -113,20 +125,16 @@ public:
 	*  \param openglLogfilePath : chemin du fichier de log OpenGL
 	*  \param tcpLogfilePath : chemin du fichier de log TCP
 	*/
-	void open(const std::string& LogfilePath);
-	void openScript(const std::string& scriptLogfilePath);
-	void openTcp(const std::string& tcpLogfilePath);
 
 	void close();
 
 private:
+	void open(const std::string& LogfilePath);
     static cLog *singleton;
 	cLog();
 
 	std::mutex writeMutex;
-	std::ofstream Logfile;
-	std::ofstream ScriptLogfile;
-	std::ofstream TcpLogfile;
+	std::vector<std::ofstream> logFile;
 
 	void writeConsole(const std::string&, const LOG_TYPE&);
 	std::string getDate();
