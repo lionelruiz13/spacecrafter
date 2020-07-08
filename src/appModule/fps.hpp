@@ -57,21 +57,12 @@ public:
 		return numberFrames;
 	}
 
-	//! ajoute la durée théorique d'une frame écoulée
-	// void addCalculatedTime(int delta_time) {
-	//  	calculatedTime += delta_time;
-	// }
-
 	//! ajoute une frame
 	void addFrame();
 
 	//! renvoie la durée d'un tour de boucle 
 	unsigned int getDeltaTime() const;
 
-	//! renvoie la durée théorique d'un tour de boucle lors d'une vidéo
-	// unsigned int getVideoDeltaTime() {
-	// 	return frameVideoDuration;
-	// }
 
 	//! indique à quel FPS le logiciel doit tourner en mode capture vidéo
 	void setVideoFps(float fps) {
@@ -99,11 +90,6 @@ public:
 		lastCount = tickCount;
 	}
 
-	//! Indique la durée d'une frame en int
-	// unsigned int getFrameDuration() const {
-	// 	return frameDuration;
-	// }
-
 	//! indique le FPS actuel
 	int getFps() const {
 		return fps;
@@ -121,14 +107,12 @@ private:
 	uint64_t numberFrames=0;
 	int frame = 0;
 	int fps = 0;
-	// uint64_t calculatedTime = 0;
 	float videoFPS=1.f;
 	float maxFPS=1.f;
 	uint64_t lastCount = 0;
 	uint64_t initCount = 0;
 	uint64_t tickCount = 0;
 	uint16_t frameDuration=0;
-	//uint16_t frameVideoDuration=0;
 	bool recVideoMode = false;
 
 	const float SECONDEDURATION=1000.0;
