@@ -121,7 +121,8 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"body tesselation moon_altimetry_factor value 5");
     //~ strcpy(sendBuff,"body tesselation max_tes_level value 4");
     //~ strcpy(sendBuff,"timerate action decrement");
-    strcpy(sendBuff,"constellation name UMi type line color_value x803030");
+    //~ strcpy(sendBuff,"constellation name UMi type line color_value x803030");
+    strcpy(sendBuff,"camera action create name big_dipper type observatory x -14.825 y 7.860 z 22.487");
     
 	
 	unsigned int nb_write;
