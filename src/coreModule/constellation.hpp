@@ -50,9 +50,6 @@ public:
 		return getNameI18n() + "(" + getShortName() + ")";
 	}
 
-	void getRaDeValue(const Navigator *nav,double *ra, double *de) const {
-	}
-
 	//! The returned string can typically be used for object labeling in the sky
 	std::string getShortInfoString(const Navigator * nav) const {
 		return getNameI18n();

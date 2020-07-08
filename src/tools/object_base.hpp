@@ -75,7 +75,7 @@ public:
 	virtual std::string getNameI18n() const = 0;
 
 	//! return Ra and Dec for a star
-	virtual void getRaDeValue(const Navigator *nav,double *ra, double *de) const = 0;
+	virtual void getRaDeValue(const Navigator *nav,double *ra, double *de) const {};
 
 	//! Get position in earth equatorial frame
 	virtual Vec3d getEarthEquPos(const Navigator *nav) const = 0;

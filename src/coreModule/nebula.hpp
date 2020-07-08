@@ -71,10 +71,6 @@ public:
 	//! display pretty information from the deepskyObject
 	std::string getInfoString(const Navigator * nav) const;
 
-	//! return the position ra, de from the deepskyObject
-	void getRaDeValue(const Navigator *nav ,double *ra, double *de) const {
-	}
-
 	std::string getShortInfoString(const Navigator * nav = nullptr) const;
 
 	std::string getShortInfoNavString(const Navigator * nav, const TimeMgr * timeMgr, const Observer* observatory) const;
