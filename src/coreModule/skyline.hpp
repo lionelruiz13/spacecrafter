@@ -45,11 +45,9 @@ class shaderProgram;
 
 //! Class which manages a line to display around the sky like the ecliptic line
 class SkyLine {
-	friend class SkyLineMgr;
-
 
 public:
-	//! Create and precompute positions 
+	//! Create and precompute positions
 	SkyLine( double _radius = 1., unsigned int _nb_segment = 48);
 	virtual ~SkyLine();
 	virtual void draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory) = 0;
