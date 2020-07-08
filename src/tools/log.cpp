@@ -85,12 +85,12 @@ cLog* cLog::singleton = nullptr;
 cLog::cLog()
 {}
 
-void cLog::openLog(const LOG_FILE& fichier, const std::string& LogfilePath)
+void cLog::openLog(const LOG_FILE& fichier, const std::string& LogfilePath, const bool keepHistory)
 {
 	std::ofstream file;
 
-	if (LogfilePath[0] == KEEP_LOG_HISTORY_TAG)
-		file.open(LOGPATH + LogfilePath.substr(1, std::string::npos) + "-" + getDate() + LOG_EXTENSION, std::ofstream::out | std::ofstream::app);
+	if (keepHistory)
+		file.open(LOGPATH + LogfilePath + "-" + getDate() + LOG_EXTENSION, std::ofstream::out | std::ofstream::app);
 	else
 		file.open(LOGPATH + LogfilePath + LOG_EXTENSION, std::ofstream::out | std::ofstream::trunc);
 

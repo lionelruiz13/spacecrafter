@@ -55,12 +55,6 @@ enum class LOG_FILE : char {
 	TCP
 };
 
-// tag à mettre en début de nom pour informer que l'on souhaite conserver l'historique
-#define KEEP_LOG_HISTORY_TAG '$'
-// ^
-// |
-// très bonne idée !!!
-
 class cLog {
 public:
 	cLog(cLog const&) = delete;
@@ -123,7 +117,7 @@ public:
 
 	void close();
 
-	void openLog(const LOG_FILE& fichier, const std::string& LogfilePath);
+	void openLog(const LOG_FILE& fichier, const std::string& LogfilePath, const bool keepHistory = false);
 private:
     static cLog *singleton;
 	cLog();
