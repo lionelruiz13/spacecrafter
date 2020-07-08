@@ -42,6 +42,25 @@ void Fps::afterOneSecond()
 	frame = 0;
 }
 
+unsigned int Fps::getDeltaTime() const {
+	if (recVideoMode)
+		return frameDuration; //on ne veut pas que le soft prenne du retard lors de résolution élevée
+	else
+		return tickCount - lastCount;
+}
+
+//! bascule en mode enregistrement de vidéo
+void Fps::selectVideoFps() {
+	recVideoMode = true;
+	frameDuration= (unsigned int) (SECONDEDURATION/videoFPS);
+}
+
+//! bascule en mode normal 
+void Fps::selectMaxFps() {
+	recVideoMode = false;
+	frameDuration= (unsigned int) (SECONDEDURATION/maxFPS);
+}
+
 void Fps::wait()
 {
 	// std::cout << "Dt: " << tickCount - lastCount << " Fd: " << frameDuration;

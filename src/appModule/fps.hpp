@@ -66,12 +66,7 @@ public:
 	void addFrame();
 
 	//! renvoie la durée d'un tour de boucle 
-	unsigned int getDeltaTime() const {
-		if (recVideoMode)
-			return frameVideoDuration;
-		else
-			return tickCount - lastCount;
-	}
+	unsigned int getDeltaTime() const;
 
 	//! renvoie la durée théorique d'un tour de boucle lors d'une vidéo
 	unsigned int getVideoDeltaTime() {
@@ -89,16 +84,10 @@ public:
 	}
 
 	//! bascule en mode enregistrement de vidéo
-	void selectVideoFps() {
-		recVideoMode = true;
-		frameVideoDuration= (unsigned int) (SECONDEDURATION/videoFPS);
-	}
+	void selectVideoFps();
 
 	//! bascule en mode normal 
-	void selectMaxFps() {
-		recVideoMode = false;
-		frameDuration= (unsigned int) (SECONDEDURATION/maxFPS);
-	}
+	void selectMaxFps();
 
 	//! Prend une mesure de temps
 	void setTickCount() {
