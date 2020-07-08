@@ -185,6 +185,12 @@ int main(int argc, char **argv)
 	//-------------------------------------------
 	cLog* Log = cLog::get();
 
+	#ifdef LINUX
+		Log->setDirectory(getenv("HOME") + std::string("/.") + APP_LOWER_NAME +"/log/");
+	#else // on windows
+		Log->setDirectory("log\\");
+	#endif
+
 	// Open log files
 	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
 	Log->openLog(LOG_FILE::SCRIPT, "script", true);

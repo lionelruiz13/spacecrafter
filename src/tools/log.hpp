@@ -62,7 +62,7 @@ public:
 	~cLog();
 
     //! pour obtenir le singleton
-    static cLog *get()    {
+    static cLog *get() {
 		if (!singleton)
           singleton = new cLog();
 
@@ -118,12 +118,17 @@ public:
 	void close();
 
 	void openLog(const LOG_FILE& fichier, const std::string& LogfilePath, const bool keepHistory = false);
+
+	void setDirectory(const std::string &directory) {
+		logDirectory = directory;
+	}
 private:
     static cLog *singleton;
 	cLog();
 
 	std::mutex writeMutex;
 	std::map<const LOG_FILE, std::ofstream> logFile;
+	std::string logDirectory = "";
 
 	void writeConsole(const std::string&, const LOG_TYPE&);
 	std::string getDate();

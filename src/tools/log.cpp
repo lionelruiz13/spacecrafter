@@ -74,25 +74,21 @@
 #endif
 
 const std::string LOG_EXTENSION=".log";
-#ifdef LINUX
-	std::string LOGPATH(getenv("HOME") + std::string("/.") + APP_LOWER_NAME +"/log/");
-#else // on windows
-	std::string LOGPATH("log\\");
-#endif
 
 cLog* cLog::singleton = nullptr;
 
 cLog::cLog()
-{}
+{
+}
 
 void cLog::openLog(const LOG_FILE& fichier, const std::string& LogfilePath, const bool keepHistory)
 {
 	std::ofstream file;
 
 	if (keepHistory)
-		file.open(LOGPATH + LogfilePath + "-" + getDate() + LOG_EXTENSION, std::ofstream::out | std::ofstream::app);
+		file.open(logDirectory + LogfilePath + "-" + getDate() + LOG_EXTENSION, std::ofstream::out | std::ofstream::app);
 	else
-		file.open(LOGPATH + LogfilePath + LOG_EXTENSION, std::ofstream::out | std::ofstream::trunc);
+		file.open(logDirectory + LogfilePath + LOG_EXTENSION, std::ofstream::out | std::ofstream::trunc);
 
 	if (!file.is_open()) {
 		std::cerr << "(EE): Couldn't open file log!\n Please check file/directory permissions" << std::endl;
@@ -103,6 +99,8 @@ void cLog::openLog(const LOG_FILE& fichier, const std::string& LogfilePath, cons
 
 void cLog::close() {
 	if (singleton != nullptr) {
+		for (auto &file: singleton->logFile)
+			file.second.close();
 		delete singleton;
 	}
 	singleton = nullptr;
@@ -110,8 +108,6 @@ void cLog::close() {
 
 cLog::~cLog()
 {
-	for (auto &file: logFile)
-		file.second.close();
 }
 
 
@@ -144,8 +140,8 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 			;
 	}
 
-	logFile[fichier] << ligne << texte << std::endl;
-	logFile[fichier].flush();
+	logFile.at(fichier) << ligne << texte << std::endl;
+	logFile.at(fichier).flush();
 
 	writeMutex.unlock();
 }
