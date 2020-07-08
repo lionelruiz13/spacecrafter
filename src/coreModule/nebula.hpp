@@ -154,8 +154,8 @@ public:
 		return m_angular_size;
 	}
 
-	void setXY(const Vec3d &_XY) {
-		XY = _XY;
+	void setXY(const Projector *prj) {
+		prj->projectJ2000(XYZ, XY);
 	}
 
 	static void setHintsBrightness(float _hintsBrightness) {

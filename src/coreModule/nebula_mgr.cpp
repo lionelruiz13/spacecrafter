@@ -233,6 +233,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 
 	// speed up the computation of n->getOnScreenSize(prj, nav)>5:
 	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
+	Vec3d win;
 
 	for (int i=0; i<nbZones; ++i) {
 		end = nebZones[zoneList[i]].end();
@@ -242,11 +243,9 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 
 			// improve performance by skipping if too small to see
 			if ( n->getAngularSize()>size_limit|| (hintsFader.getInterstate()>0.0001 && n->getMag() <= getMaxMagHints())) {
-				{ // Refactor this by refactoring projectJ2000 and his dependencies
-					Vec3d win;
-					prj->projectJ2000(n->XYZ_, win);
-					n->setXY(win);
-				}
+				// Refactor this by refactoring projectJ2000 and his dependencies
+				//prj->projectJ2000(n->XYZ_, win);
+				n->setXY(prj);
 
 				if (n->getAngularSize()>size_limit) {
 					n->drawTex(prj, nav, eye, sky_brightness, flagBright);
