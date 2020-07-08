@@ -100,7 +100,7 @@ void cLog::openLog(const LOG_FILE& fichier, const std::string& LogfilePath, cons
 void cLog::close() {
 	if (singleton != nullptr) {
 		for (auto &file: singleton->logFile) {
-			file.second << "EOF" << std::endl;
+			file.second << LOG_II << "EOF" << std::endl;
 			file.second.close();
 		}
 		delete singleton;

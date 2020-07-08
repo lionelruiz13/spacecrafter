@@ -320,8 +320,8 @@ int main(int argc, char **argv)
 	delete sdl;
 	delete signalObj;
 
-	Log->write("EOF", LOG_TYPE::L_INFO);
-	Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+	// Log->write("EOF", LOG_TYPE::L_INFO);
+	// Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	Log->close();
 	AppSettings::close();
 
