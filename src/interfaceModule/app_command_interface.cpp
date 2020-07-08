@@ -1481,8 +1481,8 @@ int AppCommandInterface::commandPrint()
 	}
 	for(const auto& i : args) {
 		std::stringstream oss;
-		oss << "[" << i.first <<"] " << i.second;
-		//std::cout << oss.str() << std::endl;
+		oss << "[" << i.first <<"] " << evalString(i.second);
+		std::cout << oss.str() << std::endl;
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING);
 	}
