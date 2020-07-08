@@ -83,12 +83,9 @@ const std::string LOG_EXTENSION=".log";
 cLog* cLog::singleton = nullptr;
 
 cLog::cLog()
-{
-	for (short i = 0; i < (char) LOG_FILE::NB_LOG_FILES; i++)
-		open(LOG_FILE_NAME[i]);
-}
+{}
 
-void cLog::open(const std::string& LogfilePath)
+void cLog::openLog(const LOG_FILE& fichier, const std::string& LogfilePath)
 {
 	std::ofstream file;
 
@@ -101,7 +98,7 @@ void cLog::open(const std::string& LogfilePath)
 		std::cerr << "(EE): Couldn't open file log!\n Please check file/directory permissions" << std::endl;
 		throw;
 	}
-	logFile.push_back(std::move(file));
+	logFile.insert(std::pair<const LOG_FILE, std::ofstream>(fichier, std::move(file)));
 }
 
 void cLog::close() {
@@ -114,7 +111,7 @@ void cLog::close() {
 cLog::~cLog()
 {
 	for (auto &file: logFile)
-		file.close();
+		file.second.close();
 }
 
 
@@ -146,11 +143,9 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 		default :
 			;
 	}
-	ligne.append(texte);
-	ligne.append("\r\n");
 
-	logFile[(char) fichier] << ligne;
-	logFile[(char) fichier].flush();
+	logFile[fichier] << ligne << texte << std::endl;
+	logFile[fichier].flush();
 
 	writeMutex.unlock();
 }

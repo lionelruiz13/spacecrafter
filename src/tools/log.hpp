@@ -30,7 +30,7 @@
 #include <fstream>
 #include <mutex>
 #include <sstream>
-#include <vector>
+#include <map>
 
 
 /**
@@ -52,22 +52,14 @@ enum class LOG_TYPE : char {
 enum class LOG_FILE : char {
 	INTERNAL,
 	SCRIPT,
-	TCP,
-	NB_LOG_FILES // nombre de fichiers de log <------- erreur de conception. On ne peut pas mélanger LOG_FILE avec NB_LOG_FILES
+	TCP
 };
 
 // tag à mettre en début de nom pour informer que l'on souhaite conserver l'historique
 #define KEEP_LOG_HISTORY_TAG '$'
-// ^ 
+// ^
 // |
 // très bonne idée !!!
-
-// noms des fichiers de log
-const std::string LOG_FILE_NAME[(char) LOG_FILE::NB_LOG_FILES] = {   // < ----- ceci est à bannir! et si je veux rajouter un fichier ?
-	"spacecrafter",
-	"$script",
-	"tcp"
-};
 
 class cLog {
 public:
@@ -131,13 +123,13 @@ public:
 
 	void close();
 
+	void openLog(const LOG_FILE& fichier, const std::string& LogfilePath);
 private:
-	void open(const std::string& LogfilePath);
     static cLog *singleton;
 	cLog();
 
 	std::mutex writeMutex;
-	std::vector<std::ofstream> logFile;
+	std::map<const LOG_FILE, std::ofstream> logFile;
 
 	void writeConsole(const std::string&, const LOG_TYPE&);
 	std::string getDate();

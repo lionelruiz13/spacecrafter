@@ -185,6 +185,11 @@ int main(int argc, char **argv)
 	//-------------------------------------------
 	cLog* Log = cLog::get();
 
+	// Open log files
+	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
+	Log->openLog(LOG_FILE::SCRIPT, "$script");
+	Log->openLog(LOG_FILE::TCP, "tcp");
+
 	// Write the console logo & Uname Information...
 	writeGeneralInfo();
 	getUnameInfo();
