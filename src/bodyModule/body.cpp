@@ -467,13 +467,13 @@ Vec3d Body::getObsJ2000Pos(const Navigator *nav) const
 
 // Compute the position in the parent Body coordinate system
 // Actually call the provided function to compute the ecliptical position
-void Body::computePositionWithoutOrbits(const double date)
-{
-	if (fabs(lastJD-date)>deltaJD) {
-		if(orbit) orbit->positionAtTimevInVSOP87Coordinates(date, ecliptic_pos);
-		lastJD = date;
-	}
-}
+// void Body::computePositionWithoutOrbits(const double date)
+// {
+// 	if (fabs(lastJD-date)>deltaJD) {
+// 		if(orbit) orbit->positionAtTimevInVSOP87Coordinates(date, ecliptic_pos);
+// 		lastJD = date;
+// 	}
+// }
 
 
 void Body::compute_position(const double date)

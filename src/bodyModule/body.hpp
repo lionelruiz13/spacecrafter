@@ -151,7 +151,7 @@ public:
 	void setRotEquatorialToVsop87(const Mat4d &m);
 
 	// Compute the position in the parent Body coordinate system
-	void computePositionWithoutOrbits(double date);
+	//void computePositionWithoutOrbits(double date);
 	void compute_position(double date);
 
 	// Compute the transformation matrix from the local Body coordinate to the parent Body coordinate
