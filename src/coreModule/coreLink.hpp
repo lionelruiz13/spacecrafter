@@ -49,6 +49,14 @@ public:
 		core->starLines->clear();
 	}
 
+	void starLinesSaveCat(const std::string &fileName){
+		core->starLines->saveHipCatalogue(fileName);
+	}
+
+	void starLinesSaveBinCat(const std::string &fileName){
+		core->starLines->saveHipBinCatalogue(fileName);
+	}
+
 	void starLinesLoadCat(const std::string &fileName){
 		core->starLines->loadHipCatalogue(fileName);
 	}

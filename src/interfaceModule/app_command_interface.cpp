@@ -1663,6 +1663,13 @@ int AppCommandInterface::commandConfiguration()
 					coreLink->starLinesLoadCat(argName);
 				return executeCommandStatus();
 			} else
+			if (argAction == W_SAVE) {
+				if (binaryMode)
+					coreLink->starLinesSaveBinCat(argName);
+				else
+					coreLink->starLinesSaveCat(argName);
+				return executeCommandStatus();
+			} else
 			if (argAction == W_LOAD_STAR) {
 				std::string starName = args[W_STAR_NAME];
 				std::string starPos = args[W_STAR_POS];
