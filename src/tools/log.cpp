@@ -142,8 +142,13 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 			;
 	}
 
-	logFile.at(fichier) << ligne << texte << std::endl;
-	logFile.at(fichier).flush();
+	if (logFile.count(fichier)) {
+		logFile.at(fichier) << ligne << texte << std::endl;
+		logFile.at(fichier).flush();
+	} else {
+		logFile.at(LOG_FILE::INTERNAL) << ligne << texte << std::endl;
+		logFile.at(LOG_FILE::INTERNAL).flush();
+	}
 
 	writeMutex.unlock();
 }
