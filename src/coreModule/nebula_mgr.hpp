@@ -83,12 +83,12 @@ public:
 
 	//! Define the scale of the Nebula circle
 	void setNebulaCircleScale(float scale) {
-		Nebula::circleScale = scale;
+		circleScale = scale;
 	}
 
 	//! get the scale of the Nebula circle
 	float getNebulaCircleScale(void) const {
-		return Nebula::circleScale;
+		return circleScale;
 	}
 
 	//!set the fade duration from Hints DSO
@@ -117,37 +117,41 @@ public:
 
 	//! Define the default Label Color for DSO font
 	void setLabelColor(const Vec3f& c) {
-		Nebula::labelColor = c;
+		labelColor = c;
 	}
 
 	//! get the actual Label Color for DSO font
 	const Vec3f &getLabelColor(void) const {
-		return Nebula::labelColor;
+		return labelColor;
 	}
 
 	//! set flag for display specific or generic Hint
 	void setDisplaySpecificHint(const bool& b ) {
-		Nebula::displaySpecificHint = b;
+		displaySpecificHint = b;
 	}
 
 	//! get flag for display specific or generic Hint
 	const bool &getDisplaySpecificHint(void) const {
-		return Nebula::displaySpecificHint;
+		return displaySpecificHint;
 	}
 
 	//! set commun DSO circle color
 	void setCircleColor(const Vec3f& c) {
-		Nebula::circleColor = c;
+		circleColor = c;
 	}
 
 	//! get commun DSO circle color
 	const Vec3f &getCircleColor(void) const {
-		return Nebula::circleColor;
+		return circleColor;
+	}
+
+	int getPictoSize() const {
+		return dsoPictoSize;
 	}
 
 	//! Defined half-size pictogram representing DSO
-	void setPictoSize(int radius) const {
-		Nebula::dsoPictoSize = radius;
+	void setPictoSize(int radius) {
+		dsoPictoSize = radius;
 	}
 
 	//! Return a stl vector containing the nebulas located inside the lim_fov circle around position v
@@ -159,12 +163,12 @@ public:
 
 	//! Set flag for displaying Nebulae as bright
 	void setFlagBright(bool b) {
-		Nebula::flagBright = b;
+		flagBright = b;
 	}
 
 	//! Get flag for displaying Nebulae as bright
 	bool getFlagBright(void) const {
-		return Nebula::flagBright;
+		return flagBright;
 	}
 
 	//! Set maximum magnitude at which nebulae hints are displayed
@@ -244,6 +248,16 @@ private:
 	std::vector<float> vecHintPos;		//!< array of coordinates of the nebula's position
 	std::vector<float> vecHintTex;		//!< array of coordinates of the nebula's texture
 	std::vector<float> vecHintColor;	//!< array of the nebula's color
+
+	s_texture * tex_NEBULA;
+	s_font* nebulaFont;			// Font used for names printing
+
+	float circleScale;			// Define the sclaing of the hints circle
+	Vec3f circleColor;
+	Vec3f labelColor;
+	bool flagBright;			// Define if nebulae must be drawn in bright mode
+	bool displaySpecificHint;	// Define if specific or generic Hints are to be displayed
+	int dsoPictoSize;			// Define the size/2 from picto tex
 };
 
 #endif // _NEBULA_MGR_H_

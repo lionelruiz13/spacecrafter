@@ -37,22 +37,14 @@
 #include "tools/Renderer.hpp"
 
 
-s_texture * Nebula::tex_NEBULA = nullptr;
-s_font* Nebula::nebulaFont = nullptr;
+std::unique_ptr<VertexArray> Nebula::m_texGL = nullptr;
+std::unique_ptr<shaderProgram> Nebula::shaderNebulaTex = nullptr;
 
-float Nebula::circleScale = 1.f;
 float Nebula::hintsBrightness = 0;
 float Nebula::textBrightness = 0;
 float Nebula::nebulaBrightness = 1;
-Vec3f Nebula::labelColor = v3fNull;
-Vec3f Nebula::circleColor = Vec3f(0.2,0.2,1.0);
-bool Nebula::flagBright = false;
-bool Nebula::displaySpecificHint = false;
-float Nebula::dsoRadius = 1.f;
-int Nebula::dsoPictoSize = 6;
 
-std::unique_ptr<VertexArray> Nebula::m_texGL;
-std::unique_ptr<shaderProgram> Nebula::shaderNebulaTex;
+const float Nebula::dsoRadius = 1.f;
 
 // Provide the luminance in cd/m^2 from the magnitude and the surface in arcmin^2
 static float magToLuminance(float mag, float surface)
@@ -63,7 +55,7 @@ static float magToLuminance(float mag, float surface)
 //todo path est inutile
 Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _constellation, float _ra, float _de, float _mag, float _size, std::string _classe,
                float _distance, std::string tex_name, bool path, float tex_angular_size, float tex_rotation, std::string tex_credit, float _luminance, bool _deletable, bool _hidden) :
-	neb_tex(nullptr)
+	XYZ_(XYZ), neb_tex(nullptr)
 {
 	neb_color=Vec3f(0.2,0.2,1.);
 	tex_circle = nullptr;
@@ -180,7 +172,7 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 			posTex = Vec2f(.25, .25);
 			break;
 		default: //case GENRC
-			neb_color = getCircleColor();
+			neb_color = Vec3f(0.2,0.2,1.0); // circleColor in nebulaMgr
 			posTex = Vec2f(.75, .0);
 			break;
 	}
@@ -306,12 +298,12 @@ void Nebula::createSC_context()
 	Nebula::m_texGL = std::make_unique<VertexArray>();
 	Nebula::m_texGL ->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
 	Nebula::m_texGL ->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::STATIC);
-	
+
 	float sDataTex[8]={0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f};
 	m_texGL->fillVertexBuffer(BufferType::TEXTURE, 8,sDataTex );
 }
 
-void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness)
+void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness, bool flagBright)
 {
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -325,7 +317,6 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	float nebulaScreenSize = getOnScreenSize(prj,nav);
 	float minZoom = prj->getViewportHeight()/75.;
 	float maxZoom = prj->getViewportHeight()/60.;
-
 
 	if (flagBright && sky_brightness < 0.011 && ( nebulaScreenSize < maxZoom) && (nebulaScreenSize > minZoom)) {
 	       // fade the nebula while zooming
@@ -354,11 +345,10 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	Renderer::drawArrays(shaderNebulaTex.get(), m_texGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 
-void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor)
+void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor, bool displaySpecificHint, const Vec3f &circleColor, float r)
 {
 	if (m_hidden || !m_selected) return;
 	if (2.f/getOnScreenSize(prj, nav)<0.1) return;
-	float r = dsoPictoSize;
 
 	if (displaySpecificHint) {
 		insert_vec3(vecHintColor, neb_color, 4);
@@ -370,7 +360,7 @@ void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<f
 	insert_all(vecHintPos, XY[0] + r, XY[1] - r, XY[0] - r, XY[1] - r, XY[0] + r, XY[1] + r, XY[0] - r, XY[1] + r);
 }
 
-void Nebula::drawName(const Projector* prj)
+void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont)
 {
 	if (m_hidden || !m_selected) return;
 
@@ -435,4 +425,3 @@ void Nebula::translateName(Translator& trans)
 {
 	nameI18 = trans.translateUTF8(englishName);
 }
-

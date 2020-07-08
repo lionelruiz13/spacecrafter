@@ -38,7 +38,10 @@
 
 
 
-NebulaMgr::NebulaMgr(void)
+NebulaMgr::NebulaMgr(void) : tex_NEBULA(nullptr), nebulaFont(nullptr),
+circleScale(1.f), circleColor(Vec3f(0.2,0.2,1.0)), labelColor(v3fNull),
+flagBright(false), displaySpecificHint(false),
+dsoPictoSize(6)
 {
 	nebZones = new std::vector<Nebula*>[nebGrid.getNbPoints()];
 	if (! initTexPicto())
@@ -56,11 +59,11 @@ NebulaMgr::~NebulaMgr()
 		delete (*iter);
 	}
 
-	if (Nebula::tex_NEBULA) delete Nebula::tex_NEBULA;
-	Nebula::tex_NEBULA = nullptr;
+	if (tex_NEBULA) delete tex_NEBULA;
+	tex_NEBULA = nullptr;
 
-	if (Nebula::nebulaFont) delete Nebula::nebulaFont;
-	Nebula::nebulaFont = nullptr;
+	if (nebulaFont) delete nebulaFont;
+	nebulaFont = nullptr;
 
 	delete[] nebZones;
 }
@@ -87,9 +90,9 @@ bool NebulaMgr::initTexPicto()
 {
 	bool succes = true;
 
-	if (!Nebula::tex_NEBULA)
-		Nebula::tex_NEBULA = new s_texture("tex_nebulaes.png");
-	if (Nebula::tex_NEBULA == nullptr)	succes=false;
+	if (!tex_NEBULA)
+		tex_NEBULA = new s_texture("tex_nebulaes.png");
+	if (tex_NEBULA == nullptr)	succes=false;
 
 	return succes;
 }
@@ -103,15 +106,15 @@ bool NebulaMgr::loadDeepskyObject(const std::string& cat)
 // read from stream
 void NebulaMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (Nebula::nebulaFont) {
-		delete Nebula::nebulaFont;
-		Nebula::nebulaFont= nullptr;
+	if (nebulaFont) {
+		delete nebulaFont;
+		nebulaFont= nullptr;
 	}
-	
-	Nebula::nebulaFont = new s_font(font_size, font_name); // load Font
-	if (!Nebula::nebulaFont) {
+
+	nebulaFont = new s_font(font_size, font_name); // load Font
+	if (!nebulaFont) {
 		cLog::get()->write("Nebula: Can't create nebulaFont\n", LOG_TYPE::L_ERROR);
-		assert(Nebula::nebulaFont);
+		assert(nebulaFont);
 	}
 }
 
@@ -137,7 +140,7 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 			}
 
 			// erase from locator grid
-			int zone = nebGrid.GetNearest((*iter)->XYZ);
+			int zone = nebGrid.GetNearest((*iter)->XYZ_);
 			for (iter2 = nebZones[zone].begin(); iter2!=nebZones[zone].end(); ++iter2) {
 				if(*iter2 == *iter) {
 //					cerr << "Deleting nebula from zone " << zone << " with name " << (*iter2)->englishName << endl;
@@ -176,7 +179,7 @@ void NebulaMgr::removeSupplementalNebulae()
 		} else {
 
 			// erase from locator grid
-			int zone = nebGrid.GetNearest((*iter)->XYZ);
+			int zone = nebGrid.GetNearest((*iter)->XYZ_);
 
 			for (iter2 = nebZones[zone].begin(); iter2!=nebZones[zone].end(); ++iter2) {
 				if(*iter2 == *iter) {
@@ -202,9 +205,9 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 {
 	if(!showFader) return;
 
-	Nebula::hintsBrightness = hintsFader.getInterstate();
-	Nebula::nebulaBrightness = showFader.getInterstate();
-	Nebula::textBrightness = textFader.getInterstate();
+	Nebula::setHintsBrightness(hintsFader.getInterstate());
+	Nebula::setNebulaBrightness(showFader.getInterstate());
+	Nebula::setTextBrightness(textFader.getInterstate());
 
 	//cout << "Draw Nebulaes" << endl;
 
@@ -238,21 +241,24 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 			n = *iter;
 
 			// improve performance by skipping if too small to see
-			if ( n->m_angular_size>size_limit|| (hintsFader.getInterstate()>0.0001 && n->mag <= getMaxMagHints())) {
+			if ( n->getAngularSize()>size_limit|| (hintsFader.getInterstate()>0.0001 && n->getMag() <= getMaxMagHints())) {
+				{ // Refactor this by refactoring projectJ2000 and his dependencies
+					Vec3d win;
+					prj->projectJ2000(n->XYZ_, win);
+					n->setXY(win);
+				}
 
-				prj->projectJ2000(n->XYZ,n->XY);
-
-				if (n->m_angular_size>size_limit) {
-					n->drawTex(prj, nav, eye, sky_brightness);
+				if (n->getAngularSize()>size_limit) {
+					n->drawTex(prj, nav, eye, sky_brightness, flagBright);
 				}
 
 				if (textFader) {
-					n->drawName(prj);
+					n->drawName(prj, labelColor, nebulaFont);
 				}
 
 				//~ cout << "drawhint " << n->getEnglishName() << endl;
-				if ( n->m_angular_size<size_limit)
-					n->drawHint(prj, nav, vecHintPos, vecHintTex, vecHintColor);
+				if ( n->getAngularSize()<size_limit)
+					n->drawHint(prj, nav, vecHintPos, vecHintTex, vecHintColor, displaySpecificHint, circleColor, getPictoSize());
 			}
 		}
 	}
@@ -265,11 +271,11 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 
-	glBindTexture (GL_TEXTURE_2D, Nebula::tex_NEBULA->getID());
+	glBindTexture (GL_TEXTURE_2D, tex_NEBULA->getID());
 
 	if(vecHintPos.size()==0)
 		return;
-	
+
 	shaderNebulaHint->use();
 	shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
 
@@ -308,7 +314,7 @@ Nebula *NebulaMgr::searchNebula(const std::string& name, bool search_hidden=fals
 		std::string testName = (*iter)->getEnglishName();
 		transform(testName.begin(), testName.end(), testName.begin(), ::toupper);
 		//		if(testName != "" ) cout << ">" << testName << "< " << endl;
-		if (testName==uname  && ((*iter)->m_hidden==false || search_hidden)) return *iter;
+		if (testName==uname  && ((*iter)->isHidden()==false || search_hidden)) return *iter;
 	}
 	return nullptr;
 }
@@ -364,9 +370,9 @@ Object NebulaMgr::search(Vec3f Pos)
 	Nebula * plusProche=nullptr;
 	float anglePlusProche=0.;
 	for (iter=neb_array.begin(); iter!=neb_array.end(); iter++) {
-		if((*iter)->m_hidden==true) continue;
-		if ((*iter)->XYZ[0]*Pos[0]+(*iter)->XYZ[1]*Pos[1]+(*iter)->XYZ[2]*Pos[2]>anglePlusProche) {
-			anglePlusProche=(*iter)->XYZ[0]*Pos[0]+(*iter)->XYZ[1]*Pos[1]+(*iter)->XYZ[2]*Pos[2];
+		if((*iter)->isHidden()==true) continue;
+		if ((*iter)->XYZ_[0]*Pos[0]+(*iter)->XYZ_[1]*Pos[1]+(*iter)->XYZ_[2]*Pos[2]>anglePlusProche) {
+			anglePlusProche=(*iter)->XYZ_[0]*Pos[0]+(*iter)->XYZ_[1]*Pos[1]+(*iter)->XYZ_[2]*Pos[2];
 			plusProche=(*iter);
 		}
 	}
@@ -385,13 +391,13 @@ std::vector<Object> NebulaMgr::searchAround(Vec3d v, double lim_fov) const
 
 	std::vector<Nebula*>::const_iterator iter = neb_array.begin();
 	while (iter != neb_array.end()) {
-		equPos = (*iter)->XYZ;
+		equPos = (*iter)->XYZ_;
 		equPos.normalize();
 		if (equPos[0]*v[0] + equPos[1]*v[1] + equPos[2]*v[2]>=cos_lim_fov) {
 
 			// NOTE: non-labeled nebulas are not returned!
 			// Otherwise cursor select gets invisible nebulas - Rob
-			if ((*iter)->getNameI18n() != "" && (*iter)->m_hidden==false) result.push_back(*iter);
+			if ((*iter)->getNameI18n() != "" && (*iter)->isHidden()==false) result.push_back(*iter);
 		}
 		iter++;
 	}
@@ -417,7 +423,7 @@ bool NebulaMgr::loadDeepskyObject(std::string _englishName, std::string _DSOType
 
 	if (e != nullptr) {
 		neb_array.push_back(e);
-		nebZones[nebGrid.GetNearest(e->XYZ)].push_back(e);
+		nebZones[nebGrid.GetNearest(e->XYZ_)].push_back(e);
 		return true;
 	} else
 		return false;
@@ -473,7 +479,7 @@ void NebulaMgr::translateNames(Translator& trans)
 	for ( iter = neb_array.begin(); iter < neb_array.end(); iter++ ) {
 		(*iter)->translateName(trans);
 	}
-	if(Nebula::nebulaFont) Nebula::nebulaFont->clearCache();
+	if(nebulaFont) nebulaFont->clearCache();
 }
 
 
@@ -486,8 +492,8 @@ Object NebulaMgr::searchByNameI18n(const std::string& nameI18n) const
 
 	// Search by common names
 	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
-		if((*iter)->m_hidden==true) continue;
-		std::string objwcap = (*iter)->nameI18;
+		if((*iter)->isHidden()==true) continue;
+		std::string objwcap = (*iter)->getNameI18n();
 		transform(objwcap.begin(), objwcap.end(), objwcap.begin(), ::toupper);
 		if (objwcap==objw) return *iter;
 	}
@@ -508,11 +514,11 @@ std::vector<std::string> NebulaMgr::listMatchingObjectsI18n(const std::string& o
 
 	// Search by common names
 	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
-		if((*iter)->m_hidden==true) continue;
-		std::string constw = (*iter)->nameI18.substr(0, objw.size());
+		if((*iter)->isHidden()==true) continue;
+		std::string constw = (*iter)->getNameI18n().substr(0, objw.size());
 		transform(constw.begin(), constw.end(), constw.begin(), ::toupper);
 		if (constw==objw) {
-			result.push_back((*iter)->nameI18);
+			result.push_back((*iter)->getNameI18n());
 		}
 	}
 

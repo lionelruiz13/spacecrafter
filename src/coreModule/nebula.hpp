@@ -62,7 +62,7 @@ typedef enum nebula_type {
 } nebula_type;
 
 class Nebula : public ObjectBase {
-	friend class NebulaMgr;
+
 public:
 	Nebula(std::string _englishName, std::string _DSOType, std::string _constellation, float _ra, float _de, float _mag, float _size, std::string _classe,
 	       float _distance, std::string tex_name, bool path, float tex_angular_size, float _rotation, std::string _credit, float _luminance, bool _deleteable, bool _hidden);
@@ -88,7 +88,7 @@ public:
 	}
 
 	//! return the observer centered J2000 coordinates
-	Vec3d getObsJ2000Pos(const Navigator *nav) const {
+	Vec3d getObsJ2000Pos(const Navigator *nav = nullptr) const {
 		return XYZ;
 	}
 	double getCloseFov(const Navigator * nav = nullptr) const;
@@ -98,18 +98,18 @@ public:
 		return mag;
 	}
 
-	void setLabelColor(const Vec3f& v) const {
-		labelColor = v;
-	}
-
-	//! Set the commun picto color for DSO
-	void setCircleColor(const Vec3f& v) const {
-		circleColor = v;
-	}
-	//! Return commun picto color for DSO
-	const Vec3f &getCircleColor() const {
-		return Nebula::circleColor;
-	}
+	// void setLabelColor(const Vec3f& v) const {
+	// 	labelColor = v;
+	// }
+	//
+	// //! Set the commun picto color for DSO
+	// void setCircleColor(const Vec3f& v) const {
+	// 	circleColor = v;
+	// }
+	// //! Return commun picto color for DSO
+	// const Vec3f &getCircleColor() const {
+	// 	return circleColor;
+	// }
 
 	//! return the translated name of DSO
 	std::string getNameI18n(void) const {
@@ -150,6 +150,30 @@ public:
 		return m_angular_size * (180./M_PI) * (prj->getViewportHeight()/prj->getFov());
 	}
 
+	float getAngularSize() const {
+		return m_angular_size;
+	}
+
+	void setXY(const Vec3d &_XY) {
+		XY = _XY;
+	}
+
+	static void setHintsBrightness(float _hintsBrightness) {
+		hintsBrightness = _hintsBrightness;
+	}
+
+	static void setTextBrightness(float _textBrightness) {
+		textBrightness = _textBrightness;
+	}
+
+	static void setNebulaBrightness(float _nebulaBrightness) {
+		nebulaBrightness = _nebulaBrightness;
+	}
+
+	bool isHidden() const {
+		return m_hidden;
+	}
+
 	//! hide a deepskyObject
 	void hide() {
 		m_hidden = true;
@@ -170,10 +194,14 @@ public:
 		m_selected = false;
 	}
 
+	const Vec3f &XYZ_; // for read-only access
+
+	static const float dsoRadius;	// Define commun scale radius for DSO
+
+	void drawTex(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness, bool flagBright);
+	void drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont);
+	void drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor, bool displaySpecificHint, const Vec3f &circleColor, float r);
 private:
-	void drawTex(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness);
-	void drawName(const Projector* prj);
-	void drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor);
 	nebula_type getDsoType( std::string type);
 
 	std::string englishName;		// English name
@@ -211,22 +239,13 @@ private:
 
 	s_texture * tex_circle;			// The symbolic circle texture
 
-	static s_texture * tex_NEBULA;
 
 	static std::unique_ptr<shaderProgram> shaderNebulaTex;
 	static std::unique_ptr<VertexArray> m_texGL;
 
-	static s_font* nebulaFont;			// Font used for names printing
 	static float hintsBrightness;
-	static float nebulaBrightness;
 	static float textBrightness;
-	static Vec3f labelColor;
-	static Vec3f circleColor;
-	static float circleScale;			// Define the sclaing of the hints circle
-	static bool flagBright;				// Define if nebulae must be drawn in bright mode
-	static bool displaySpecificHint;	// Define if specific or generic Hints are to be displayed
-	static float dsoRadius;				// Define commun scale radius for DSO
-	static int dsoPictoSize;			// Define the size/2 from picto tex
+	static float nebulaBrightness;
 };
 
 #endif // _NEBULA_H_
