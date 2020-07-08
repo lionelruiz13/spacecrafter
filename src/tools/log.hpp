@@ -53,14 +53,17 @@ enum class LOG_FILE : char {
 	INTERNAL,
 	SCRIPT,
 	TCP,
-	NB_LOG_FILES // nombre de fichiers de log
+	NB_LOG_FILES // nombre de fichiers de log <------- erreur de conception. On ne peut pas mélanger LOG_FILE avec NB_LOG_FILES
 };
 
 // tag à mettre en début de nom pour informer que l'on souhaite conserver l'historique
 #define KEEP_LOG_HISTORY_TAG '$'
+// ^ 
+// |
+// très bonne idée !!!
 
 // noms des fichiers de log
-const std::string LOG_FILE_NAME[(char) LOG_FILE::NB_LOG_FILES] = {
+const std::string LOG_FILE_NAME[(char) LOG_FILE::NB_LOG_FILES] = {   // < ----- ceci est à bannir! et si je veux rajouter un fichier ?
 	"spacecrafter",
 	"$script",
 	"tcp"
