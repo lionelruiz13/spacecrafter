@@ -370,7 +370,7 @@ void App::updateFromSharedData()
 void App::update(int delta_time)
 {
 	internalFPS->addFrame();
-	internalFPS->addCalculatedTime(delta_time);
+	//internalFPS->addCalculatedTime(delta_time);
 
 	// change time rate if needed to fast forward scripts
 	delta_time *= scriptMgr->getMuliplierRate();

@@ -58,9 +58,9 @@ public:
 	}
 
 	//! ajoute la durée théorique d'une frame écoulée
-	void addCalculatedTime(int delta_time) {
-		calculatedTime += delta_time;
-	}
+	// void addCalculatedTime(int delta_time) {
+	//  	calculatedTime += delta_time;
+	// }
 
 	//! ajoute une frame
 	void addFrame();
@@ -132,9 +132,7 @@ private:
 	uint64_t numberFrames=0;
 	int frame = 0;
 	int fps = 0;
-	uint64_t calculatedTime = 0;
-	float videoFPS=0.f;
-	float maxFPS=0.f;
+	// uint64_t calculatedTime = 0;
 	uint64_t lastCount = 0;
 	uint64_t initCount = 0;
 	uint64_t tickCount = 0;
