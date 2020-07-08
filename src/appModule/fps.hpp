@@ -122,6 +122,8 @@ private:
 	int frame = 0;
 	int fps = 0;
 	// uint64_t calculatedTime = 0;
+	float videoFPS=1.f;
+	float maxFPS=1.f;
 	uint64_t lastCount = 0;
 	uint64_t initCount = 0;
 	uint64_t tickCount = 0;
