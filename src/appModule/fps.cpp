@@ -2,6 +2,7 @@
  * Spacecrafter astronomy simulation and visualization
  *
  * Copyright (C) 2017  Association Sirius
+ * Copyright (C) 2018-2020  Association Sirius & LSS Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
