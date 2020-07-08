@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 
 	Log->write("EOF", LOG_TYPE::L_INFO);
 	Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-	//Log->close(); // implicit
+	Log->close();
 	AppSettings::close();
 
 	return 0;
