@@ -69,9 +69,9 @@ public:
 	unsigned int getDeltaTime() const;
 
 	//! renvoie la durée théorique d'un tour de boucle lors d'une vidéo
-	unsigned int getVideoDeltaTime() {
-		return frameVideoDuration;
-	}
+	// unsigned int getVideoDeltaTime() {
+	// 	return frameVideoDuration;
+	// }
 
 	//! indique à quel FPS le logiciel doit tourner en mode capture vidéo
 	void setVideoFps(float fps) {
@@ -126,7 +126,7 @@ private:
 	uint64_t initCount = 0;
 	uint64_t tickCount = 0;
 	uint16_t frameDuration=0;
-	uint16_t frameVideoDuration=0;
+	//uint16_t frameVideoDuration=0;
 	bool recVideoMode = false;
 
 	const float SECONDEDURATION=1000.0;
