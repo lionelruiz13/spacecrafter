@@ -321,9 +321,8 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 		if (m_flags_ToString_it != m_flags_ToString.end()) {
 			commandline = "set " + m_flags_ToString_it->second + " " + std::to_string(val);
 		}
-		executeCommandStatus();
 	}
-
+	executeCommandStatus();
 	// return true;
 }
 
