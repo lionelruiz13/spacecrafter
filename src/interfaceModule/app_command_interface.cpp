@@ -2499,7 +2499,7 @@ int AppCommandInterface::commandSelect()
 		identifier = args[W_CONSTELLATION];
 	} else if (args[W_CONSTELLATION_STAR]!="") {
 		select_type = W_CONSTELLATION_STAR  ;
-		identifier = args[W_CONSTELLATION_STAR  ];
+		identifier = args[W_CONSTELLATION_STAR];
 	} else {
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
@@ -2584,7 +2584,7 @@ int AppCommandInterface::commandStarLines()
 		return executeCommandStatus();
 	}
 	if (args[W_ASTERISM]!="") {
-		coreLink->starLinesLoadAsterism(args[W_ASTERISM  ]);
+		coreLink->starLinesLoadAsterism(args[W_ASTERISM]);
 		return executeCommandStatus();
 	}
 	debug_message = _("Command 'star_lines': wrong argument");
@@ -2610,7 +2610,7 @@ int AppCommandInterface::commandPosition()
 int AppCommandInterface::commandZoom(unsigned long int &wait)
 {
 	double duration = Utility::strToPosDouble(args[W_DURATION]);
-	std::string argAuto = args[W_AUTO  ];
+	std::string argAuto = args[W_AUTO];
 	std::string argManual = args[W_MANUAL];
 
 	if (!argAuto.empty()) {
@@ -2627,9 +2627,9 @@ int AppCommandInterface::commandZoom(unsigned long int &wait)
 
 	} else if (args[W_FOV]!="") {
 		// zoom to specific field of view
-		coreLink->zoomTo( evalDouble(args[W_FOV  ]), evalDouble(args[W_DURATION]));
+		coreLink->zoomTo( evalDouble(args[W_FOV]), evalDouble(args[W_DURATION]));
 
-	} else if (args[W_DELTA_FOV]!="") coreLink->setFov(coreLink->getFov() + evalDouble(args[W_DELTA_FOV  ]));
+	} else if (args[W_DELTA_FOV]!="") coreLink->setFov(coreLink->getFov() + evalDouble(args[W_DELTA_FOV]));
 	// should we record absolute fov instead of delta? isn't usually smooth playback
 	else if (args[W_CENTER]==W_ON) {
 		float cdelay=5;
@@ -3370,7 +3370,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 				return executeCommandStatus();
 			}
 
-			std::string argAltitude = args[W_ALTITUDE  ];
+			std::string argAltitude = args[W_ALTITUDE];
 
 			bool result;
 
@@ -3582,33 +3582,32 @@ int AppCommandInterface::commandStruct()
 			swapIfCommand = false;
 			return executeCommandStatus();
 		}
-		if (args[W_EQUAL  ]!="")  // ! A==B => |A-B| > e
-			if (fabs(evalDouble(argIf) - evalDouble(args[W_EQUAL  ]))>error) {
+		if (args[W_EQUAL]!="")  // ! A==B => |A-B| > e
+			if (fabs(evalDouble(argIf) - evalDouble(args[W_EQUAL]))>error) {
+				swapIfCommand = true;
+				return executeCommandStatus();
+		if (args[W_DIFF]!="")  // ! A!=B => |A-B| < e
+			if (fabs(evalDouble(argIf) - evalDouble(args[W_DIFF]))<error) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args[W_DIFF  ]!="")  // ! A!=B => |A-B| < e
-			if (fabs(evalDouble(argIf) - evalDouble(args[W_DIFF  ]))<error) {
+		if (args[W_INF]!="")
+			if (evalDouble(argIf) >= evalDouble(args[W_INF])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args[W_INF  ]!="")
-			if (evalDouble(argIf) >= evalDouble(args[W_INF  ])) {
+		if (args[W_INF_ZQUAL]!="")
+			if (evalDouble(argIf) > evalDouble(args[W_INF_ZQUAL])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args[W_INF_ZQUAL  ]!="")
-			if (evalDouble(argIf) > evalDouble(args[W_INF_ZQUAL  ])) {
+		if (args[W_SUP]!="")
+			if (evalDouble(argIf) <= evalDouble(args[W_SUP])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
-		if (args[W_SUP  ]!="")
-			if (evalDouble(argIf) <= evalDouble(args[W_SUP  ])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args[W_SUP_EQUAL  ]!="")
-			if (evalDouble(argIf) < evalDouble(args[W_SUP_EQUAL  ])) {
+		if (args[W_SUP_EQUAL]!="")
+			if (evalDouble(argIf) < evalDouble(args[W_SUP_EQUAL])) {
 				swapIfCommand = true;
 				return executeCommandStatus();
 			}
