@@ -1,6 +1,6 @@
 CC=g++
-CPPFLAGS= -Wall -g -Wextra 
-DEPS = 
+CPPFLAGS= -Wall -g -Wextra
+DEPS =
 
 LIBS= -lm
 

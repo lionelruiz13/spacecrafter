@@ -1,42 +1,43 @@
 /*
  * Grid
- * 
+ *
  * Copyright 2020 AssociationSirius
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
- * 
- * 
+ *
+ *
  */
 
 #include "../../src/tools/vecmath.hpp"
 #include <vector>
 #include <list>
+#include <memory>
 
 
 #define DEBUG 1
 
 
 struct TopTriangle {
-	int corners[3];   // index der Ecken
+	const u_char corners[3];   // index der Ecken
 };
 
 
-const float icosahedron_G = 0.5*(1.0+sqrt(5.0));
-const float icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
-const float icosahedron_a = icosahedron_b*icosahedron_G;
+constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
+constexpr float icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
+constexpr float icosahedron_a = icosahedron_b*icosahedron_G;
 
 const Vec3f icosahedron_corners[12] = {
 	Vec3f( icosahedron_a, -icosahedron_b,            0.0),
@@ -53,7 +54,7 @@ const Vec3f icosahedron_corners[12] = {
 	Vec3f(-icosahedron_b,            0.0, -icosahedron_a)
 };
 
-const TopTriangle icosahedron_triangles[20]= {
+constexpr TopTriangle icosahedron_triangles[20]= {
     {{ 1, 0,10}}, //  1
     {{ 0, 1, 9}}, //  0
     {{ 0, 9, 6}}, // 12
@@ -91,47 +92,86 @@ private:
     Vec3f pos;
 };
 
-
-
+template <typename T>
 class Grid {
 public:
     Grid();
-    ~Grid();
+    ~Grid() {};
 	//! insert un élément dans la grille
-    // void insert(eTest* _test, Vec3f pos);
+    void insert(std::shared_ptr<T> _element, Vec3f pos);
 	//! supprime un élément de la grille
     // void remove(eTest* _test);
-    // eTest* begin() const;
-    // eTest* end() const;
+    auto begin() {
+		return Grid::iterator(allDataCenter.begin(), allDataCenter.end(), allDataCenter.begin()->first);
+	};
+    auto end() {
+		return Grid::iterator(allDataCenter.end());
+	};
     // eTest* next() const;
     // void setFov(Vec3f pos, float fov);
-private:
-	//! Return an array with the number of the zones in the field of view
-	void intersect(const Vec3f& _pos, float fieldAngle);
 	//! Renvoie quel centre est le plus proche de -v
 	int getNearest(const Vec3f& _v);
+	//! Return an array with the number of the zones in the field of view
+	void intersect(const Vec3f& _pos, float fieldAngle);
+private:
+	typedef std::list<std::shared_ptr<T>> dataType_t;
+	typedef std::vector<std::pair<dataType_t, bool>> dataCenterType_t;
+
+	class iterator;
 	//! les centres de la grille
 	std::vector<Vec3f> centers;
 	//! en cache les centres à afficher de la grille
-	std::vector<int> centerToDisplay;
-	//! nombre total de centres 
-	unsigned int nbCenters;
+	//std::vector<int> centerToDisplay;
+	//! nombre total de centres
+	unsigned int nbCenters=0;
 	//! angle que font 2 centres adjacents entre eux
 	float angle;
-	std::vector<std::list<eTest*>> dataCenter;
+	//! Optimized container for access
+	dataCenterType_t allDataCenter;
+	//! Optimized container for search
+	std::vector<std::pair<dataType_t, bool>*> dataCenter;
 };
 
-Grid::Grid()
+template<typename T>
+class Grid<T>::iterator {
+public:
+   iterator(auto _zoneBegin, auto _zoneEnd, auto &_element) :
+	   iterZone(_zoneBegin), iterLastZone(_zoneEnd), iterElement(_element.begin()), iterLastElement(_element.end()) {}
+   iterator(const auto &_iterZone) : iterZone(_iterZone) {}
+   bool operator!=(iterator compare) const {
+	   return iterZone != compare.iterZone;
+   }
+   void operator++() {
+	   if (++iterElement == iterLastElement) {
+		   while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
+			   iterElement = iterZone->first.begin();
+			   iterLastElement = iterZone->first.end();
+		   }
+	   }
+   }
+   std::shared_ptr<T> &operator*() const {
+	   return *iterElement;
+   }
+private:
+   typename dataCenterType_t::iterator iterZone;
+   typename dataCenterType_t::const_iterator iterLastZone;
+   typename dataType_t::iterator iterElement;
+   typename dataType_t::const_iterator iterLastElement;
+};
+
+template<typename T>
+Grid<T>::Grid()
 {
 	// just take the icosahedron_corners
 	for(int i=0; i<12; i++) {
+		nbCenters++;
 		centers.push_back(icosahedron_corners[i]);
-		dataCenter.push_back(std::list<eTest*>{});
+		allDataCenter.push_back(std::pair<dataType_t, bool>{{}, true});
 	}
-
 };
 
-int Grid::getNearest(const Vec3f& _v)
+template<typename T>
+int Grid<T>::getNearest(const Vec3f& _v)
 {
 	Vec3f v=_v;
 	int bestI = -1;
@@ -150,24 +190,28 @@ int Grid::getNearest(const Vec3f& _v)
 	return bestI;
 }
 
+template<typename T>
+void Grid<T>::insert(std::shared_ptr<T> _element, Vec3f pos)
+{
+	allDataCenter[getNearest(pos)].first.push_back(_element);
+};
 
 //! Return an array with the number of the zones in the field of view
-void Grid::intersect(const Vec3f& _pos, float fieldAngle)
+template<typename T>
+void Grid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
 	Vec3f pos = _pos;
 	pos.normalize();
-	float max = cosf(fieldAngle/2.f + angle);
+	const float max = cosf(fieldAngle/2.f + angle);
 
-	centerToDisplay.clear();
 	for (unsigned int i=0; i<nbCenters; i++) {
-		if (pos.dot(centers[i]) > max) {
-			centerToDisplay.push_back(i);
-		}
+		allDataCenter[i].second = pos.dot(centers[i]) > max;
 	}
 	#ifdef DEBUG
 		std::cout << "Grid::intersect display "<< std::endl;
-		for(auto i : centerToDisplay)
-			std::cout << i << " ";
+		for(auto &i: allDataCenter) {
+			std::cout << i.second << " ";
+		}
 		std::cout << std::endl;
 	#endif
 }
@@ -177,18 +221,28 @@ void Grid::intersect(const Vec3f& _pos, float fieldAngle)
 
 int main(int argc, char **argv)
 {
-for(auto i=0; i<12; i++ ) {
-	Vec3f test0 = icosahedron_corners[icosahedron_triangles[i].corners[0]];
-	Vec3f test1 = icosahedron_corners[icosahedron_triangles[i].corners[1]];
-	Vec3f test2 = icosahedron_corners[icosahedron_triangles[i].corners[2]];
+	(void) argc;
+	(void) argv;
+	Grid<eTest> myGrid;
+	for(auto i=0; i<12; i++ ) {
+		Vec3f test0 = icosahedron_corners[icosahedron_triangles[i].corners[0]];
+		Vec3f test1 = icosahedron_corners[icosahedron_triangles[i].corners[1]];
+		Vec3f test2 = icosahedron_corners[icosahedron_triangles[i].corners[2]];
 
-	std::cout << test0.dot(test0) << " " ;
-	std::cout << test1.dot(test1) << " " ;
-	std::cout << test2.dot(test2) << std::endl;
-	std::cout << test0.dot(test1) << " " ;
-	std::cout << test0.dot(test2) << " " ;
-	std::cout << test1.dot(test2) << std::endl;
-}
-	std::list<eTest*> test ={};
+		myGrid.insert(std::make_shared<eTest>(test0), test0);
+		myGrid.insert(std::make_shared<eTest>(test1), test1);
+		myGrid.insert(std::make_shared<eTest>(test2), test2);
+		std::cout << test0.dot(test0) << " " ;
+		std::cout << test1.dot(test1) << " " ;
+		std::cout << test2.dot(test2) << std::endl;
+		std::cout << test0.dot(test1) << " " ;
+		std::cout << test0.dot(test2) << " " ;
+		std::cout << test1.dot(test2) << std::endl;
+	}
+	myGrid.intersect(Vec3f(1, 1, 1), 180);
+	for (auto &val: myGrid) {
+		std::cout << "Object <" << val.get() << "> at " << val->getPos() << " nearest to ";
+		myGrid.getNearest(val->getPos());
+	}
 	return 0;
 }
