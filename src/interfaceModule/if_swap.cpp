@@ -38,7 +38,11 @@ IfSwap::~IfSwap()
 
 void IfSwap::pop()
 {
-    assert(!m_ifSwapCommand.empty());
+    //assert(!m_ifSwapCommand.empty());
+    // end without if
+    if (m_ifSwapCommand.empty()) //nothing to do
+        return;
+
     m_ifSwapCommand.pop_back();
     if (m_ifSwapCommand.empty())
         commandSwap = false;
@@ -63,8 +67,10 @@ void IfSwap::reset()
 
 void IfSwap::revert()
 {
-    assert(!m_ifSwapCommand.empty());
-    //m_ifSwapCommand.back() = ! m_ifSwapCommand.back();
+//   assert(!m_ifSwapCommand.empty());
+    // else without if
+    if (m_ifSwapCommand.empty()) //nothing to do
+        return;
     m_ifSwapCommand[m_ifSwapCommand.size()-1] = ! m_ifSwapCommand[m_ifSwapCommand.size()-1];
     defineCommandSwap();
 }
@@ -78,7 +84,7 @@ bool IfSwap::get() const
 
 void IfSwap::defineCommandSwap()
 {
-    assert(!m_ifSwapCommand.empty());
+    //assert(!m_ifSwapCommand.empty());
     for(auto it : m_ifSwapCommand ) {
         if (it==true) {
             commandSwap = true;
