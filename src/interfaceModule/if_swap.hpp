@@ -42,9 +42,10 @@ public:
     void reset();
     //! permutte la valeur du dernier if 
     void revert();
-    //! renvoie si globalement ou pas on doit executer les commandes qui suivent
+    //! renvoie la valeur indiquant l'execution de la commande qui suit
     bool get() const ;
 private:
+    //! fonction qui indique si l'on doit executer les commandes qui sont définies dans un script
     void defineCommandSwap();
     std::vector<bool> m_ifSwapCommand;
     bool commandSwap = false;

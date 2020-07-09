@@ -44,16 +44,15 @@ void IfSwap::pop()
         commandSwap = false;
     else
         defineCommandSwap();
-        //commandSwap = m_ifSwapCommand[m_ifSwapCommand.size()-1];
 }
-    //! décale pour construire un nouveau if dans l'état v
+
 
 void IfSwap::push(bool v)
 {
     m_ifSwapCommand.push_back(v);
-    //commandSwap = v; // dernière valeur engagée
     defineCommandSwap();
 }
+
 
 void IfSwap::reset()
 {
@@ -61,29 +60,21 @@ void IfSwap::reset()
     commandSwap = false;
 }
 
+
 void IfSwap::revert()
 {
     assert(!m_ifSwapCommand.empty());
     //m_ifSwapCommand.back() = ! m_ifSwapCommand.back();
     m_ifSwapCommand[m_ifSwapCommand.size()-1] = ! m_ifSwapCommand[m_ifSwapCommand.size()-1];
-    // commandSwap = m_ifSwapCommand[m_ifSwapCommand.size()-1];
     defineCommandSwap();
 }
+
 
 bool IfSwap::get() const 
 {
     return commandSwap;
 }
-//     if (m_ifSwapCommand.empty())
-//         return false;
-    
-//     for(auto it : m_ifSwapCommand ) {
-//         if (it==false)
-//             return false;
-//     }
-//     //for g++
-//     return false;
-// }
+
 
 void IfSwap::defineCommandSwap()
 {
