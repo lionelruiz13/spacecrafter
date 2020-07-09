@@ -121,8 +121,6 @@ public:
 	std::string getTypePlanet(const BODY_TYPE str) const;
 
 	//is still use ?
-	void getRaDeValue(const Navigator *nav,double *ra, double *de) const override {
-	}
 	void getAltAz(const Navigator * nav, double *alt, double *az) const;
 
 	std::string getShortInfoString(const Navigator * nav) const;
@@ -254,7 +252,7 @@ public:
 		return object_size_limit;
 	}
 
-	
+
 
 	// fixe une couleur
 	void setColor(const std::string& colorName,  const Vec3f& oc);
@@ -470,7 +468,7 @@ protected:
 	AtmosphereParams* atmosphereParams=nullptr;
 
 	static AtmosphereParams *defaultAtmosphereParams;
-	static BodyTesselation *bodyTesselation; 	// all global parameters with shader tesselaiton 
+	static BodyTesselation *bodyTesselation; 	// all global parameters with shader tesselaiton
 	float sol_local_day;			//time of a sideral day in this planet
 	float albedo;					// Body albedo
 	Mat4d rot_local_to_parent;
@@ -478,7 +476,7 @@ protected:
 	Mat4d mat_local_to_parent;		// Transfo matrix from local ecliptique to parent ecliptic
 	float axis_rotation;			// Rotation angle of the Body on it's axis
 	s_texture * tex_map=nullptr;			// Body map texture
-	s_texture * tex_skin=nullptr;			// Body skin texture 
+	s_texture * tex_skin=nullptr;			// Body skin texture
 	s_texture * tex_norm=nullptr;			// Body normal map
 	s_texture * tex_heightmap=nullptr;		// Body height map for Tessellation
 	s_texture * tex_current=nullptr;		// current body texture to display
