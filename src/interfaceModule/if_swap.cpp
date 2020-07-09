@@ -24,6 +24,7 @@
 
 #include <assert.h>
 #include "interfaceModule/if_swap.hpp"
+#include "tools/log.hpp"
 
 IfSwap::IfSwap()
 {
@@ -40,8 +41,10 @@ void IfSwap::pop()
 {
     //assert(!m_ifSwapCommand.empty());
     // end without if
-    if (m_ifSwapCommand.empty()) //nothing to do
+    if (m_ifSwapCommand.empty()){ //nothing to do
+        cLog::get()->write("end without if",LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
         return;
+    }
 
     m_ifSwapCommand.pop_back();
     if (m_ifSwapCommand.empty())
@@ -69,8 +72,10 @@ void IfSwap::revert()
 {
 //   assert(!m_ifSwapCommand.empty());
     // else without if
-    if (m_ifSwapCommand.empty()) //nothing to do
+    if (m_ifSwapCommand.empty()){
+        cLog::get()->write("else without if",LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
         return;
+    }
     m_ifSwapCommand[m_ifSwapCommand.size()-1] = ! m_ifSwapCommand[m_ifSwapCommand.size()-1];
     defineCommandSwap();
 }
