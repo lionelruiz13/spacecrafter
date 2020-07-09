@@ -52,7 +52,9 @@ ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars) :
 	flagNames(0),
 	flagLines(0),
 	flagArt(0),
-	flagBoundaries(0)
+	flagBoundaries(0),
+	artColor(Vec3f(1.0,1.0,1.0)),
+	singleSelected(false)
 {
 	assert(hipStarMgr);
 	isolateSelected = false;
@@ -148,12 +150,12 @@ void ConstellationMgr::setLabelColor(const std::string _name, const Vec3f& c)
 
 void ConstellationMgr::setArtColor(const Vec3f& c)
 {
-	Constellation::artColor = c;
+	artColor = c;
 }
 
 Vec3f ConstellationMgr::getArtColor() const
 {
-	return Constellation::artColor;
+	return artColor;
 }
 
 void ConstellationMgr::setFont(float font_size, const std::string& ttfFileName)
@@ -276,15 +278,15 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 				FILE *ftest = fopen(localFile.c_str(), "r");
 				if (!ftest) {
 					// Load from application texture directory
-					cons->art_tex = new s_texture(texfile, TEX_LOAD_TYPE_PNG_SOLID, true);  // use mipmaps
+					cons->setArtTex(new s_texture(texfile, TEX_LOAD_TYPE_PNG_SOLID, true));  // use mipmaps
 				} else {
 					// Load from local directory
 					fclose(ftest);
-					cons->art_tex = new s_texture(/*true,*/ localFile, TEX_LOAD_TYPE_PNG_SOLID, true);  // use mipmaps
+					cons->setArtTex(new s_texture(/*true,*/ localFile, TEX_LOAD_TYPE_PNG_SOLID, true));  // use mipmaps
 				}
 
-				if(cons->art_tex->getID() == 0) continue;  // otherwise no texture
-				cons->art_tex->getDimensions(texW, texH);
+				if(cons->getArtTex()->getID() == 0) continue;  // otherwise no texture
+				cons->getArtTex()->getDimensions(texW, texH);
 
 				// support absolute and proportional image coordinates
 				(fx1>1) ? x1=(unsigned int)fx1 : x1=(unsigned int)(texW*fx1);
@@ -309,15 +311,15 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 				Mat4f A(x1, texH - y1, 0.f, 1.f, x2, texH - y2, 0.f, 1.f, x3, texH - y3, 0.f, 1.f, x1, texH - y1, texW, 1.f);
 				Mat4f X = B * A.inverse();
 
-				cons->art_vertex[0] = Vec3f(X * v3fNull);
-				cons->art_vertex[1] = Vec3f(X * Vec3f(texW / 2, 0, 0));
-				cons->art_vertex[2] = Vec3f(X * Vec3f(texW / 2, texH / 2, 0));
-				cons->art_vertex[3] = Vec3f(X * Vec3f(0, texH / 2, 0));
-				cons->art_vertex[4] = Vec3f(X * Vec3f(texW, 0, 0));
-				cons->art_vertex[5] = Vec3f(X * Vec3f(texW, texH / 2, 0));
-				cons->art_vertex[6] = Vec3f(X * Vec3f(texW, texH, 0));
-				cons->art_vertex[7] = Vec3f(X * Vec3f(texW / 2 + 0, texH, 0));
-				cons->art_vertex[8] = Vec3f(X * Vec3f(0, texH, 0));
+				cons->setArtVertex(0, Vec3f(X * v3fNull));
+				cons->setArtVertex(1, Vec3f(X * Vec3f(texW / 2, 0, 0)));
+				cons->setArtVertex(2, Vec3f(X * Vec3f(texW / 2, texH / 2, 0)));
+				cons->setArtVertex(3, Vec3f(X * Vec3f(0, texH / 2, 0)));
+				cons->setArtVertex(4, Vec3f(X * Vec3f(texW, 0, 0)));
+				cons->setArtVertex(5, Vec3f(X * Vec3f(texW, texH / 2, 0)));
+				cons->setArtVertex(6, Vec3f(X * Vec3f(texW, texH, 0)));
+				cons->setArtVertex(7, Vec3f(X * Vec3f(texW / 2 + 0, texH, 0)));
+				cons->setArtVertex(8, Vec3f(X * Vec3f(0, texH, 0)));
 
 			}
 		}
@@ -364,7 +366,7 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 	m_shaderArt->use();
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
 		(*iter)->drawArt(prj, nav, vecPos, vecTex);
-		
+
 		if (vecPos.size()==0)
 			continue;
 
@@ -381,7 +383,7 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 		// glDrawArrays(GL_LINES_ADJACENCY, 0, vecPos.size()/2);
 		// m_constellationGL->unBind();
 		Renderer::drawArraysWithoutShader(m_constellationGL.get(), GL_LINES_ADJACENCY, 0, vecPos.size()/2);
-		
+
 		vecPos.clear();
 		vecTex.clear();
 	}
@@ -429,7 +431,7 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
-		(*iter)->drawBoundary(prj, vBoundariesPos,vBoundariesIntensity);
+		(*iter)->drawBoundary(prj, vBoundariesPos,vBoundariesIntensity, singleSelected);
 	}
 
 	if (vBoundariesPos.size()==0)
@@ -462,7 +464,7 @@ void ConstellationMgr::drawNames(const Projector * prj)
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++) {
 		// Check if in the field of view
-		if (prj->projectJ2000Check((*iter)->XYZname, (*iter)->XYname))
+		if (prj->projectJ2000Check((*iter)->getObsJ2000Pos(), const_cast<Vec3d&>((*iter)->getXYname())))
 			(*iter)->drawName(asterFont, prj);
 	}
 }
@@ -486,7 +488,7 @@ Constellation *ConstellationMgr::findFromAbbreviation(const std::string & abbrev
 
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
-		if ((*iter)->abbreviation == tname)
+		if ((*iter)->getShortName() == tname)
 			return (*iter);
 	}
 	return nullptr;
@@ -502,9 +504,10 @@ void ConstellationMgr::loadNames(const std::string& namesFile)
 	// Constellation not loaded yet
 	if (asterisms.empty()) return;
 
+	/*
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
-		(*iter)->englishName.clear();
+		(*iter)->englishName.clear(); //*/
 
 	// read in translated common names from file
 	std::ifstream commonNameFile(namesFile.c_str());
@@ -555,7 +558,7 @@ void ConstellationMgr::loadNames(const std::string& namesFile)
 						ename += " " + tmp;
 					}
 				}
-				aster->englishName = ename;
+				aster->setEnglishName(ename);
 			}
 		}
 	}
@@ -570,7 +573,7 @@ void ConstellationMgr::translateNames(Translator& trans)
 	std::vector < Constellation * >::const_iterator iter;
 
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
-		(*iter)->nameI18 = trans.translateUTF8((*iter)->englishName.c_str());
+		(*iter)->setNameI18n(trans.translateUTF8((*iter)->getEnglishName().c_str()));
 
 	if(asterFont) asterFont->clearCache();  // remove cached strings
 }
@@ -590,7 +593,7 @@ void ConstellationMgr::setArtIntensity(float _max)
 	artMaxIntensity = _max;
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
-		(*iter)->art_fader.setMaxValue(_max);
+		(*iter)->setArtFaderMaxValue(_max);
 }
 
 void ConstellationMgr::setArtIntensity(const std::string &_name, float _max)
@@ -598,7 +601,7 @@ void ConstellationMgr::setArtIntensity(const std::string &_name, float _max)
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
 		if ((*iter)->getShortName()==_name) {
-			(*iter)->art_fader.setMaxValue(_max);
+			(*iter)->setArtFaderMaxValue(_max);
 			return;
 		}
 	cLog::get()->write("No constellation ArtIntensity with shortName "+_name,LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT );
@@ -610,7 +613,7 @@ void ConstellationMgr::setArtFadeDuration(float duration)
 	artFadeDuration = duration;
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
-		(*iter)->art_fader.setDuration((int) (duration * 1000.f));
+		(*iter)->setArtFaderDuration((int) (duration * 1000.f));
 }
 
 
@@ -770,7 +773,7 @@ void ConstellationMgr::setSelectedConst(Constellation * c)
 				(*iter)->setFlagBoundaries(false);
 			}
 		}
-		Constellation::singleSelected = true;  // For boundaries
+		singleSelected = true;  // For boundaries
 
 	} else {
 		if (isolateSelected) {
@@ -883,11 +886,11 @@ bool ConstellationMgr::loadBoundaries(const std::string& boundaryFile)
 
 			cons = findFromAbbreviation(consname);
 			if (cons) {
-				cons->isolatedBoundarySegments.push_back(points);
+				cons->appendToIsolatedBoundarySegments(points);
 			}
 		}
 
-		if (cons) cons->sharedBoundarySegments.push_back(points);
+		if (cons) cons->appendToSharedBoundarySegments(points);
 		i++;
 
 	}
@@ -907,7 +910,7 @@ Object ConstellationMgr::searchByNameI18n(const std::string& nameI18n) const
 
 	std::vector <Constellation*>::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
-		std::string objwcap = (*iter)->nameI18;
+		std::string objwcap = (*iter)->getNameI18n();
 		transform(objwcap.begin(), objwcap.end(), objwcap.begin(), ::toupper);
 		if (objwcap==objw) return *iter;
 	}

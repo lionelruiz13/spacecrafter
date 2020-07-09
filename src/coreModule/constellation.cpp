@@ -34,9 +34,6 @@
 #include "tools/s_font.hpp"
 #include "tools/log.hpp"
 
-Vec3f Constellation::artColor = Vec3f(1.0,1.0,1.0);
-bool Constellation::singleSelected = false;
-
 
 Constellation::Constellation() : asterism(nullptr), art_tex(nullptr)
 {}
@@ -114,8 +111,8 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 		Utility::rectToSphe(&ra1,&de1,asterism[2*i]->getObsJ2000Pos(0));
 		Utility::rectToSphe(&ra2,&de2,asterism[2*i+1]->getObsJ2000Pos(0));
 		if ((abs(ra2-ra1)>0.000001) && (abs(de2-de1)>0.000001)) {
-		  if ((ra2-ra1)>M_PI) ra1+=2*M_PI; 
-		  if ((ra1-ra2)>M_PI) ra2+=2*M_PI; 
+		  if ((ra2-ra1)>M_PI) ra1+=2*M_PI;
+		  if ((ra1-ra2)>M_PI) ra2+=2*M_PI;
 		  Utility::spheToRect(ra1,de1, gettemp1);
 		  int npoints=11;
 		  float delta=(ra1-ra2)/(npoints-1);
@@ -124,7 +121,7 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 			det=atan(((tan(de2)*sin(rat-ra1))/sin(ra2-ra1+0.00001))+(tan(de1)*sin(ra2-rat))/sin(ra2-ra1+0.00001));
 			Utility::spheToRect(rat,det, gettemp2);
 			if (prj->projectJ2000LineCheck( gettemp1,startemp1, gettemp2,startemp2)) {
-			
+
 				vLinesPos.push_back(startemp1[0]);
 				vLinesPos.push_back(startemp1[1]);
 				vLinesColor.push_back(lineColor[0]);
@@ -284,7 +281,7 @@ void Constellation::update(int delta_time)
 }
 
 //! Draw the Constellation lines
-void Constellation::drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity)
+void Constellation::drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity, bool singleSelected)
 {
 	if (!boundary_fader.getInterstate()) return;
 

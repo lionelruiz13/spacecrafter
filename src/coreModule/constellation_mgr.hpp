@@ -236,6 +236,9 @@ private:
 
 	std::unique_ptr<shaderProgram> m_shaderArt, m_shaderBoundary, m_shaderLines;
 	std::unique_ptr<VertexArray> m_constellationGL;
+
+	Vec3f artColor;
+	bool singleSelected;
 };
 
 #endif // _CONSTELLATION_MGR_H_

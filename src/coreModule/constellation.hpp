@@ -39,7 +39,6 @@ class HipStarMgr;
 class s_font;
 
 class Constellation : public ObjectBase {
-	friend class ConstellationMgr;
 
 public:
 	Constellation();
@@ -72,7 +71,7 @@ public:
 		return XYZname;
 	}
 	//! observer centered J2000 coordinates
-	Vec3d getObsJ2000Pos(const Navigator *nav) const {
+	Vec3d getObsJ2000Pos(const Navigator *nav = nullptr) const {
 		return XYZname;
 	}
 	//! Return object's magnitude
@@ -91,18 +90,33 @@ public:
 		return nameI18;
 	}
 	std::string getEnglishName(void) const {
-		return abbreviation;
+		return englishName;
 	}
 	std::string getShortName(void) const {
 		return abbreviation;
 	}
+	void setEnglishName(std::string name) {
+		englishName = name;
+	}
 
 	void drawName(s_font * constfont,const  Projector* prj) const;
-	void drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity);
+	void drawBoundary(const Projector* prj, std::vector<float> &vBoundariesPos, std::vector<float> &vBoundariesIntensity, bool singleSelected);
 	void drawLines(const Projector* prj, std::vector<float> &vLinesPos, std::vector<float> &vLinesColor);
 	void drawArt(const Projector* prj, const Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecTex);
 
 	void update(int delta_time);
+
+	void setNameI18n(std::string name) {
+		nameI18 = name;
+	}
+
+	void setArtVertex(u_char index, const Vec3f &value) {
+		art_vertex[index] = value;
+	}
+
+	void setArtTex(s_texture *texture) {
+		art_tex = texture;
+	}
 
 	void setFlagLines(bool b) {
 		line_fader=b;
@@ -137,6 +151,14 @@ public:
 		labelColor = c;
 	}
 
+	void setArtFaderMaxValue(float max) {
+		art_fader.setMaxValue(max);
+	}
+
+	void setArtFaderDuration(float duration) {
+		art_fader.setDuration(duration);
+	}
+
 	void getHPStarsFromAsterim(std::vector<unsigned int>& HpStarsFromAsterim) const;
 
 	float getArtIntensity() const {
@@ -145,6 +167,22 @@ public:
 
 	s_texture* getTexture() const {
 		return art_tex;
+	}
+
+	const s_texture *getArtTex() const {
+		return art_tex;
+	}
+
+	const Vec3d &getXYname() const {
+		return XYname;
+	}
+
+	void appendToIsolatedBoundarySegments(std::vector<Vec3f> *points) {
+		isolatedBoundarySegments.push_back(points);
+	}
+
+	void appendToSharedBoundarySegments(std::vector<Vec3f> *points) {
+		sharedBoundarySegments.push_back(points);
 	}
 
 private:
@@ -180,8 +218,6 @@ private:
 
 	Vec3f lineColor;
 	Vec3f labelColor;
-	static Vec3f artColor;
-	static bool singleSelected;
 };
 
 #endif // _CONSTELLATION_H_
