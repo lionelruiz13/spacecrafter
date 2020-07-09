@@ -32,6 +32,7 @@
 #ifndef _APP_COMMAND_INTERFACE_H_
 #define _APP_COMMAND_INTERFACE_H_
 
+#include <memory>
 #include "tools/utility.hpp"
 #include "base_command_interface.hpp"
 #include "tools/no_copy.hpp"
@@ -42,6 +43,7 @@ class CoreBackup;
 class App;
 class AppCommandInit;
 class AppCommandEval;
+class IfSwap;
 class UI;
 class ScriptInterface;
 class SpaceDate;
@@ -138,7 +140,8 @@ private:
 
 	int recordable;
 	bool swapCommand;		// boolean qui indique si l'instruction doit etre exécutée ou pas
-	bool swapIfCommand;		// boolean qui indique si dans un if l'instruction doit etre exécutée ou pas
+	//bool swapIfCommand;		// boolean qui indique si dans un if l'instruction doit etre exécutée ou pas
+	std::unique_ptr<IfSwap> ifSwap; 		// gestionnnaire des if multiples
 
 	//! vérifie que la chaine a représente bien un boolean
 	bool isBoolean(const std::string &a);

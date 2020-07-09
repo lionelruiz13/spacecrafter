@@ -43,6 +43,7 @@
 #include "interfaceModule/app_command_init.hpp"
 #include "interfaceModule/app_command_eval.hpp"
 #include "interfaceModule/script_interface.hpp"
+#include "interfaceModule/if_swap.hpp"
 #include "mediaModule/media.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/call_system.hpp"
@@ -63,7 +64,9 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	media = _media;
 	ui = _ui;
 	swapCommand = false;
-	swapIfCommand = false;
+	//swapIfCommand = false;
+	ifSwap = std::make_unique<IfSwap>();
+	ifSwap->reset();
 	appEval = new AppCommandEval(coreLink);
 	appInit = new AppCommandInit();
 	appInit->initialiseCommandsName(m_commands, m_commands_ToString);
@@ -219,7 +222,8 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 	if (command =="struct")
 		return commandStruct();
 
-	if (swapCommand== true || swapIfCommand==true) {	 // on n'execute pas les commandes qui suivent
+	// if (swapCommand== true || swapIfCommand == true)
+	if (swapCommand== true || ifSwap->get()==true) {	 // on n'execute pas les commandes qui suivent
 		cLog::get()->write("cette commande n'a pas été exécutée " + commandline, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);  //A traduire
 		return 1;
 	}
@@ -2197,7 +2201,8 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 			media->audioMusicHalt();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
-			swapIfCommand = false;
+			//swapIfCommand = false;
+			ifSwap->reset();
 		} else if (argAction==W_PLAY && !filen.empty()) {
 			int le=-1;
 
@@ -3575,45 +3580,66 @@ int AppCommandInterface::commandStruct()
 	std::string argIf = args[W_IF];
 	if (!argIf.empty() && swapCommand != true) {
 		if (argIf==W_ELSE) {
-			swapIfCommand = ! swapIfCommand;
+			ifSwap->revert();
 			return executeCommandStatus();
 		}
 		if (argIf==W_END) {
-			swapIfCommand = false;
+			ifSwap->pop();
 			return executeCommandStatus();
 		}
-		if (args[W_EQUAL]!="")  // ! A==B => |A-B| > e
-			if (fabs(evalDouble(argIf) - evalDouble(args[W_EQUAL]))>error) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-		if (args[W_DIFF]!="")  // ! A!=B => |A-B| < e
-			if (fabs(evalDouble(argIf) - evalDouble(args[W_DIFF]))<error) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args[W_INF]!="")
-			if (evalDouble(argIf) >= evalDouble(args[W_INF])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args[W_INF_ZQUAL]!="")
-			if (evalDouble(argIf) > evalDouble(args[W_INF_ZQUAL])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args[W_SUP]!="")
-			if (evalDouble(argIf) <= evalDouble(args[W_SUP])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
-		if (args[W_SUP_EQUAL]!="")
-			if (evalDouble(argIf) < evalDouble(args[W_SUP_EQUAL])) {
-				swapIfCommand = true;
-				return executeCommandStatus();
-			}
+		if (args[W_EQUAL]!=""){  // ! A==B => |A-B| > e
+			if (fabs(evalDouble(argIf) - evalDouble(args[W_EQUAL]))>error)
+				//swapIfCommand = true;
+				ifSwap->push(true);
+			else
+				ifSwap->push(false);
+			return executeCommandStatus();
+		}
+		if (args[W_DIFF]!=""){  // ! A!=B => |A-B| < e
+			if (fabs(evalDouble(argIf) - evalDouble(args[W_DIFF]))<error)
+				//swapIfCommand = true;
+				ifSwap->push(true);
+			else
+				ifSwap->push(false);
+			return executeCommandStatus();
+		}
+		if (args[W_INF]!="") {
+			if (evalDouble(argIf) >= evalDouble(args[W_INF]))
+				//swapIfCommand = true;
+				ifSwap->push(true);
+			else
+				ifSwap->push(false);
+			return executeCommandStatus();
+		}
+		if (args[W_INF_ZQUAL]!="") {
+			if (evalDouble(argIf) > evalDouble(args[W_INF_ZQUAL]))
+				//swapIfCommand = true;
+				ifSwap->push(true);
+			else
+				ifSwap->push(false);
+			return executeCommandStatus();
+		}
+		if (args[W_SUP]!="") {
+			if (evalDouble(argIf) <= evalDouble(args[W_SUP]))
+				//swapIfCommand = true;
+				ifSwap->push(true);
+			else
+				ifSwap->push(false);
+			return executeCommandStatus();
+		}
+		if (args[W_SUP_EQUAL]!="") {
+			if (evalDouble(argIf) < evalDouble(args[W_SUP_EQUAL]))
+				//swapIfCommand = true;
+				ifSwap->push(true);
+			else
+				ifSwap->push(false);
+			return executeCommandStatus();
+		}
 		//retro-compatibilité
 		if (evalDouble(argIf) == 0)
-			swapIfCommand = true;
+			ifSwap->push(true);
+		else
+			ifSwap->push(false);
 		return executeCommandStatus();
 	}
 
@@ -3629,7 +3655,8 @@ int AppCommandInterface::commandStruct()
 
 	//loop case
 	std::string argLoop = args[W_LOOP];
-	if (!argLoop.empty() && swapIfCommand != true) {
+	//if (!argLoop.empty() && swapIfCommand != true) {
+	if (!argLoop.empty() && ifSwap->get() != true) {
 		if (argLoop ==W_END) {
 			swapCommand = false; //cas ou nbrLoop était inférieur à 1
 			scriptInterface->setScriptLoop(false);
