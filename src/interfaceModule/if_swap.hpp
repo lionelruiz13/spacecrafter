@@ -30,6 +30,27 @@
 #include <vector>
 #include "tools/no_copy.hpp"
 
+/**
+* \file if_swap.hpp
+* \brief Define swap for multiple if command to app_command_interface
+* \author Olivier NIVOIX
+* \version 1
+*
+* \class IfSwap
+*
+* \brief Define swap for multiple if command to app command interface
+*
+* Les conditions IF sont évaluées simplement par un boolean qui indique si l'instruction doit etre exécutée ou non.
+* Le logiciel recopie toutes les instructions en mémoire avant de les exécuter une à une.
+* L'obectif de cette classe est d'indiquer dans une hiérarchie de if imbriqués si l'instruction qui suit doit etre exécutée ou non 
+* Elle se réfère au vector m_ifSwapCommand qui contient les différents niveaux de scripts 
+* 
+* m_ifSwapCommand[i] = true indique que le if n°i est dans la partie ou il réfute les instructions qui suivent, on ne doit pas les executer
+* (et donc dans ce cas tous les m_ifSwapCommand[i+1] et suivant sont inutiles)
+*
+* m_ifSwapCommand[i] = false indique que le if n°i est dans la partie ou il accepte les instructions qui suivent, on doit les executer
+*/
+
 class IfSwap : public NoCopy {
 public:
     IfSwap();
