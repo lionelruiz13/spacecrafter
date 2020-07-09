@@ -16,13 +16,14 @@ public:
     std::unique_ptr<std::vector<u_char>> getBuffer();
     //void setBuffer(std::vector<u_char> &buffer);
     void assign(std::vector<u_char>::iterator begin, std::vector<u_char>::iterator end);
-    unsigned int getSize() {return (writePos + (subWritePos > 0) - cluster.data());};
+    unsigned int getSize() {return size;};
     unsigned int getMaxSize() {return cluster.size();};
     void resize(unsigned int max_size);
 private:
     u_char *readPos; // cluster reading point
     u_char *writePos; // cluster writing point
     std::vector<u_char> cluster;
+    unsigned int size;
     u_char subReadPos = 0;
     u_char subWritePos = 0;
     u_char bitMaskSize = 0; // 3 -> 2^3 = 8 bits max

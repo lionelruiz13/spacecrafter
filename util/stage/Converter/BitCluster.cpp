@@ -57,6 +57,7 @@ void BitCluster::resize(unsigned int max_size)
 
 std::unique_ptr<std::vector<u_char>> BitCluster::getBuffer()
 {
+    size = writePos + (subWritePos > 0) - cluster.data();
     return (std::make_unique<std::vector<u_char>>(cluster));
 }
 
