@@ -41,30 +41,31 @@ class ConstellationMgr;
 class VertexArray;
 class shaderProgram;
 
+#include "tools/CalvinGrid.hpp"
 
 /*! \class IlluminateMgr
   * \brief handles all illuminate stars from Hipparcos catalog for better stars visualisation.
   * \author Olivier NIVOIX
   * \date 13 mai 2020
-  * 
+  *
   * @section DESCRIPTION
-  * Cette classe stocke dans la structure illumianteGrid un illuminate, objet visant à recouvrir une étoile d'une texture 
+  * Cette classe stocke dans la structure illumianteGrid un illuminate, objet visant à recouvrir une étoile d'une texture
   * afin de la rendre plus visible sous le dôme.
-  * 
+  *
   * Les étoiles sont issues du catalogue Hipparcos.
-  * 
+  *
   */
 class IlluminateMgr: public NoCopy {
 public:
 	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism);
 	virtual ~IlluminateMgr();
 
-	// indique la taille d'affichage des illuminates par défaut 
+	// indique la taille d'affichage des illuminates par défaut
 	void setDefaultSize(double v) {
 		defaultSize =v;
 	}
 
-	// construit l'illuminate d'une étoile 
+	// construit l'illuminate d'une étoile
 	void load(int num, double size, double rotation);
 	// construit l'illuminate d'une étoile en indiquant la couleur utilisée
 	void load(int num, const Vec3f& _color, double _size, double rotation);
@@ -102,9 +103,11 @@ private:
 	//! Load an individual Illuminate with all data
 	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
 
-	std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate vector
-	std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
-	LittleGrid illuminateGrid;					//!< Grid for display opimisation
+	/// std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate vector
+	/// std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
+	/// LittleGrid illuminateGrid;					//!< Grid for display opimisation
+	CalvinGrid<Illuminate*> illuminateGrid;
+
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 
 
@@ -120,7 +123,7 @@ private:
 
 	s_texture * currentTex = nullptr;			//!< Pointer of texture used to draw
 	s_texture * defaultTex = nullptr;		//!< Common texture if no other texture defined
-	s_texture * userTex = nullptr;				//!< Texture define by user 
+	s_texture * userTex = nullptr;				//!< Texture define by user
 
 	void createSC_context();
 };

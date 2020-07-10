@@ -38,6 +38,8 @@
 #include "tools/shader.hpp"
 #include "tools/Renderer.hpp"
 
+//#include "tools/CalvinGrid.hpp"
+
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
 
@@ -47,7 +49,9 @@ IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator, Con
 	navigator = _navigator;
 	asterism = _asterism;
 
-	illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
+	/// illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
+	/// je veux une grille avec 3 subdivisions
+	//illuminateGrid.subdivise(3);
 
 	defaultTex = new s_texture("star_illuminate.png", TEX_LOAD_TYPE_PNG_BLEND3 );
 	if (defaultTex ==nullptr)
@@ -59,15 +63,16 @@ IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator, Con
 
 IlluminateMgr::~IlluminateMgr()
 {
-	std::vector<Illuminate *>::iterator iter;
-	for (iter=illuminateArray.begin(); iter!=illuminateArray.end(); iter++) {
-		delete (*iter);
-	}
+	/// std::vector<Illuminate *>::iterator iter;
+	/// for (iter=illuminateArray.begin(); iter!=illuminateArray.end(); iter++) {
+		/// delete (*iter);
+	/// }
+	illuminateGrid.clear();
 
 	if (defaultTex) delete defaultTex;
 	defaultTex = nullptr;
 
-	delete[] illuminateZones;
+	///delete[] illuminateZones;
 }
 
 // Load individual Illuminate for script
@@ -79,7 +84,7 @@ void IlluminateMgr::load(int num, double size, double rotation)
 	Vec3f color = selected_object.getRGB();
 	//std::cout << num << " ra/de " << ra << " " << de << " mag " << mag << " color " << color[0]<< ":"<< color[1]<< ":"<< color[2]<< std::endl;
 	//std::cout <<num << " only" <<std::endl;
-	load(num, color, size, rotation);	
+	load(num, color, size, rotation);
 }
 
 void IlluminateMgr::loadConstellation(const std::string& abbreviation, double size, double rotation)
@@ -145,75 +150,84 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 }
 
 
-// Load individual Illuminate 
+// Load individual Illuminate
 void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  double angular_size, double r, double g, double b, double tex_rotation)
 {
 	if (angular_size<1.0)
 		angular_size=defaultSize;
 
-	Illuminate *e = search(name);
-	if(e)
-		remove(name);
+	/// Illuminate *e = search(name);
+	/// if(e)
+	/// 	remove(name);
 
-	e = new Illuminate;
+	Illuminate *e = new Illuminate;
 
 	if(e->createIlluminate(name, ra, de, angular_size, r, b, g, tex_rotation)) {
-		illuminateArray.push_back(e);
-		illuminateZones[illuminateGrid.GetNearest(e->getXYZ())].push_back(e);
+		/// illuminateArray.push_back(e);
+		/// illuminateZones[illuminateGrid.GetNearest(e->getXYZ())].push_back(e);
+		illuminateGrid.insert(e, e->getXYZ());
 	} else {
 		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->getName(), LOG_TYPE::L_ERROR);
 		delete e;
-	}		
+	}
 }
 
 // Clear user added Illuminate
 void IlluminateMgr::remove(unsigned int name)
 {
-	std::vector <Illuminate*>::iterator iter;
-	std::vector <Illuminate*>::iterator iter2;
+	/// std::vector <Illuminate*>::iterator iter;
+	/// std::vector <Illuminate*>::iterator iter2;
 
-	for (iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
+	/// for (iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
 
-		if ((*iter)->getName() == name) {
-			// erase from locator grid
-			int zone = illuminateGrid.GetNearest((*iter)->getXYZ());
+	/// 	if ((*iter)->getName() == name) {
+	/// 		// erase from locator grid
+	/// 		int zone = illuminateGrid.GetNearest((*iter)->getXYZ());
 
-			for (iter2 = illuminateZones[zone].begin(); iter2!=illuminateZones[zone].end(); ++iter2) {
-				if(*iter2 == *iter) {
-					illuminateZones[zone].erase(iter2);
-					break;
-				}
-			}
-			// Delete Illuminate
-			delete *iter;
-			illuminateArray.erase(iter);
-			//cLog::get()->write("Illuminate_mgr: Erased Illuminate " + uname, LOG_TYPE::L_INFO);
-			return;
-		}
-	}
+	/// 		for (iter2 = illuminateZones[zone].begin(); iter2!=illuminateZones[zone].end(); ++iter2) {
+	/// 			if(*iter2 == *iter) {
+	/// 				illuminateZones[zone].erase(iter2);
+	/// 				break;
+	/// 			}
+	/// 		}
+	/// 		// Delete Illuminate
+	/// 		delete *iter;
+	/// 		illuminateArray.erase(iter);
+	/// 		//cLog::get()->write("Illuminate_mgr: Erased Illuminate " + uname, LOG_TYPE::L_INFO);
+	/// 		return;
+	/// 	}
+	/// }
+	illuminateGrid.remove_if([name](auto &value){return value->getName() == name;});
+	// for (auto iter = illuminateGrid.begin(); iter != illuminateGrid.end(); ++iter) {
+	//  	if ((*iter)->getName() == name) {
+	// 		illuminateGrid.erase(iter); /// on devrait faire une fonction  remove_current ou l'on supprime l'élément pointé par l'itérateur
+	// 		return;
+	// 	}
+	// }
 	cLog::get()->write("Requested Illuminate to delete not found by name " + name, LOG_TYPE::L_INFO);
 }
 
 // remove all user added Illuminate
 void IlluminateMgr::removeAll()
 {
-	std::vector<Illuminate *>::iterator iter;
-	std::vector<Illuminate *>::iterator iter2;
+	/// std::vector<Illuminate *>::iterator iter;
+	/// std::vector<Illuminate *>::iterator iter2;
 
-	for (iter=illuminateArray.begin(); iter!=illuminateArray.end();) {
-		// erase from locator grid
-		int zone = illuminateGrid.GetNearest((*iter)->getXYZ());
+	/// for (iter=illuminateArray.begin(); iter!=illuminateArray.end();) {
+	/// 	// erase from locator grid
+	/// 	int zone = illuminateGrid.GetNearest((*iter)->getXYZ());
 
-		for (iter2 = illuminateZones[zone].begin(); iter2!=illuminateZones[zone].end(); ++iter2) {
-			if(*iter2 == *iter) {
-				illuminateZones[zone].erase(iter2);
-				break;
-			}
-		}
-		// Delete Illuminate
-		delete *iter;
-		iter = illuminateArray.erase(iter);
-	}
+	/// 	for (iter2 = illuminateZones[zone].begin(); iter2!=illuminateZones[zone].end(); ++iter2) {
+	/// 		if(*iter2 == *iter) {
+	/// 			illuminateZones[zone].erase(iter2);
+	/// 			break;
+	/// 		}
+	/// 	}
+	/// 	// Delete Illuminate
+	/// 	delete *iter;
+	/// 	iter = illuminateArray.erase(iter);
+	/// }
+	illuminateGrid.clear();
 }
 
 // Draw all the Illuminate
@@ -227,25 +241,31 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	illumTex.clear();
 	illumColor.clear();
 
-	// Find the star zones which are in the screen
-	int nbZones=0;
+	/// Find the star zones which are in the screen
+	///int nbZones=0;
 	float max_fov = myMax( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
-	nbZones = illuminateGrid.Intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
+	///nbZones = illuminateGrid.Intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
 
-	static int * zoneList = illuminateGrid.getResult();
+	illuminateGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f);
+
+	///static int * zoneList = illuminateGrid.getResult();
 
 	// Print all the stars of all the selected zones
-	static std::vector<Illuminate *>::iterator end;
-	static std::vector<Illuminate *>::iterator iter;
-	Illuminate* n;
+	/// static std::vector<Illuminate *>::iterator end;
+	/// static std::vector<Illuminate *>::iterator iter;
+	///Illuminate* n;
 
-	for (int i=0; i<nbZones; ++i) {
-		end = illuminateZones[zoneList[i]].end();
-		for (iter = illuminateZones[zoneList[i]].begin(); iter!=end; ++iter) {
-			n = *iter;
-			//prj->projectJ2000(n->XYZ,n->XY);
-			n->draw(prj, illumPos, illumTex, illumColor );
-		}
+	///for (int i=0; i<nbZones; ++i) {
+	///	end = illuminateZones[zoneList[i]].end();
+	///	for (iter = illuminateZones[zoneList[i]].begin(); iter!=end; ++iter) {
+	///		n = *iter;
+	///		//~ prj->projectJ2000(n->XYZ,n->XY);
+	///		n->draw(prj, illumPos, illumTex, illumColor );
+	///	}
+	///}
+
+	for (auto it : illuminateGrid ) {
+		it->draw(prj, illumPos, illumTex, illumColor );
 	}
 
 	int nbrIllumToTrace = illumPos.size()/12;
@@ -278,9 +298,10 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 // search by name
 Illuminate *IlluminateMgr::search(unsigned int name)
 {
-	for (auto iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
-		if ((*iter)->getName()== name)
-			return *iter;
+	/// for ( iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
+	for (auto &iter : illuminateGrid ) {
+		if (iter->getName()== name)
+			return iter;
 	}
 	return nullptr;
 }
@@ -308,7 +329,7 @@ void IlluminateMgr::changeTex(const std::string& fileName)
 	currentTex = userTex;
 }
 
-		
+
 void IlluminateMgr::removeTex()
 {
 	if (currentTex == defaultTex) //nothing to do
