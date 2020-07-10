@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2002 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
- * Copyright (C) 2014 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -60,13 +60,13 @@ public:
 	s_font(float size_i, const std::string& ttfFileName);
 	virtual ~s_font();
 
-	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown /*, int cache*/ );
-	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache /*, bool outline*/);
+	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown);
+	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache);
 
 	void clearCache(const std::string& s);
 	void clearCache();
 
-	float getStrLen(const std::string& s/*, bool cache = 0*/);
+	float getStrLen(const std::string& s);
 
 	static void createSC_context();
 

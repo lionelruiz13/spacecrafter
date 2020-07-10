@@ -387,9 +387,9 @@ Vec3d Projector::sVertex3v(double x, double y, double z, const Mat4d& mat) const
 	return v;
 }
 
-void Projector::printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color,/* bool speed_optimize,*/ float xshift, float yshift) const
+void Projector::printGravity180(s_font* font, float x, float y, const std::string& str, Vec4f Color, float xshift, float yshift) const
 {
-	static float dx, dy, d, theta; //, psi;
+	static float dx, dy, d, theta;
 
 	// ASSUME disk viewport
 	dx = x - viewport_center[0];
@@ -397,14 +397,10 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 	d = sqrt(dx*dx + dy*dy);
 
 	// If the text is too far away to be visible in the screen return
-	// if (d>myMax(vec_viewport[3], vec_viewport[2])*2) return;
 	if (d>viewport_radius + font->getStrLen(str))
 		return;
 
 	theta = M_PI + atan2f(dx, dy - 1);
-	// psi = atan2f((float)font->getStrLen(str)/str.length(),d + 1) * 180./M_PI;
-
-	// if (psi>5) psi = 5;
 
 	Mat4f MVP = getMatProjectionOrtho2D();
 	Mat4f TRANSFO = Mat4f::translation( Vec3f(x,y,0) );
@@ -412,6 +408,5 @@ void Projector::printGravity180(s_font* font, float x, float y, const std::strin
 	TRANSFO = TRANSFO*Mat4f::translation( Vec3f(xshift, -yshift, 0) );
 	TRANSFO = TRANSFO*Mat4f::scaling( Vec3f(1, -1, 1) );
 
-	font->print(0, 0, str, Color, MVP*TRANSFO ,0);//, speed_optimize);  // ASSUME speed optimized strings should be cached
+	font->print(0, 0, str, Color, MVP*TRANSFO ,0);
 }
-

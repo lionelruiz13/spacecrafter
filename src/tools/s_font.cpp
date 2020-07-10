@@ -1,7 +1,7 @@
 /*
  * Spacecrafter
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
- * Copyright (C) 2014 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,7 +25,6 @@
 #include "tools/s_font.hpp"
 #include "tools/utility.hpp"
 #include "tools/stateGL.hpp"
-//#include "tools/fmath.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/shader.hpp"
@@ -36,13 +35,11 @@ std::unique_ptr<shaderProgram> s_font::shaderPrint;
 std::unique_ptr<VertexArray> s_font::m_fontGL;
 
 
-s_font::s_font(float size_i, const std::string& ttfFileName) //: lineHeightEstimate(0)
+s_font::s_font(float size_i, const std::string& ttfFileName)
 {
 	myFont=nullptr;
 	fontName = ttfFileName; // way to acces ttf file
 	fontSize = size_i; // pixel height
-	//to find error, i need to fix the way
-	//printf("TTF_OpenFont file: %s  size: %f\n", fontName.c_str() , fontSize);
 	myFont = TTF_OpenFont( fontName.c_str(), fontSize);
 	if(!myFont) {
 		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
@@ -53,18 +50,8 @@ s_font::s_font(float size_i, const std::string& ttfFileName) //: lineHeightEstim
 
 s_font::~s_font()
 {
-
 	clearCache();
 	TTF_CloseFont(myFont);
-
-	// LOL !!!!!!!!!!!!!!!!!!!!!!
-	// while(!vecPos.empty()) {
-	// 	vecPos.pop_back();
-	// }
-
-	// while(!vecTex.empty()) {
-	// 	vecTex.pop_back();
-	// }
 }
 
 
@@ -87,25 +74,20 @@ void s_font::createSC_context()
 
 
 //! print out a string
-void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown/*, int cache*/)
+void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown)
 {
-	//bool cache = true;
-	if(s == "") return;
+	if (s.empty())
+		return;
 
 	renderedString_struct currentRender;
-
 	// If not cached, create texture
-	if( /*!cache ||*/ renderCache[s].textureW == 0 ) {
+	if(renderCache[s].textureW == 0 ) {
 		currentRender = renderString(s, false);
-		//if( cache ) {
-			renderCache[s] = currentRender;
-		//}
+		renderCache[s] = currentRender;
 	} else {
 		// read from cache
 		currentRender = renderCache[s];
 	}
-
-	//if(cache==-1) return; // do not draw, just wanted to cache
 
 	StateGL::enable(GL_BLEND);
 	
@@ -118,56 +100,17 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 
 	if(!upsidedown) {
 		y -= currentRender.stringH;  // adjust for base of text in texture
-
-		// vecPos.push_back(x);
-		// vecPos.push_back(y);
-		// vecPos.push_back(x);
-		// vecPos.push_back(y+h);
-		// vecPos.push_back(x+w);
-		// vecPos.push_back(y);
-		// vecPos.push_back(x+w);
-		// vecPos.push_back(y+h);
 		insert_all(vecPos, x, y, x, y+h, x+w, y, x+w, y+h);
-
-		// vecTex.push_back(0);
-		// vecTex.push_back(0);
-		// vecTex.push_back(0);
-		// vecTex.push_back(1);
-		// vecTex.push_back(1);
-		// vecTex.push_back(0);
-		// vecTex.push_back(1);
-		// vecTex.push_back(1);
 		insert_all(vecTex, 0, 0, 0, 1, 1, 0, 1, 1);
 
 	} else {
 		y -= currentRender.stringH;  // adjust for base of text in texture
-
-		// vecPos.push_back(x+w);
-		// vecPos.push_back(y+h);
-		// vecPos.push_back(x);
-		// vecPos.push_back(y+h);
-		// vecPos.push_back(x+w);
-		// vecPos.push_back(y);
-		// vecPos.push_back(x);
-		// vecPos.push_back(y);
 		insert_all(vecPos, x+w, y+h, x, y+h, x+w, y, x, y);
-
-		// vecTex.push_back(1);
-		// vecTex.push_back(0);
-		// vecTex.push_back(0);
-		// vecTex.push_back(0);
-		// vecTex.push_back(1);
-		// vecTex.push_back(1);
-		// vecTex.push_back(0);
-		// vecTex.push_back(1);
 		insert_all(vecTex, 1, 0, 0, 0, 1, 1, 0, 1);
 	}
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
-	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
 	// Avoid edge visibility
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
@@ -180,53 +123,27 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	shaderPrint->use();
 	shaderPrint->setUniform("MVP", MVP);
 	shaderPrint->setUniform("Color", Color);
-
-	// m_fontGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP, 0,4);
-	// m_fontGL->unBind();
-	// shaderPrint->unuse();
 	Renderer::drawArrays(shaderPrint.get(), m_fontGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 
 	vecPos.clear();
 	vecTex.clear();
-	//if(!cache) glDeleteTextures( 1, &currentRender.stringTexture);
 }
 
-float s_font::getStrLen(const std::string& s/*, bool cache*/)
+float s_font::getStrLen(const std::string& s)
 {
 
-	if(s == "") return 0;
-	//if(myFont==nullptr) fprintf(stderr,"myFont == NULL\n");
+	if (s.empty())
+		return 0;
 
 	if( renderCache[s].textureW != 0 ) return renderCache[s].stringW;
 
 	int w,h;
 	if(TTF_SizeText(myFont,s.c_str(),&w,&h)) {
-	//	printf("ERROR TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i\n",w,h);
 		cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
 		return w;
 	} else {// perhaps print the current TTF_GetError(), the string can't be rendered...
-		//printf("ERROR : TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i but say ==0 \n",w,h);
 		return w;
 	}
-	/*
-	Mat4f MVP;
-
-	// otherwise calculate (and cache if desired)
-	if(cache) {
-		print(0, 0, s, Vec4f (1.0,1.0, 1.0, 1.0), MVP , 0); //, -1);
-		return renderCache[s].stringW;
-	} else {
-		int w,h;
-		if(TTF_SizeText(myFont,s.c_str(),&w,&h)) {
-			printf("ERROR TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i\n",w,h);
-			return w;
-		} else {// perhaps print the current TTF_GetError(), the string can't be rendered...
-			//printf("ERROR : TTF_SizeText(myFont,s.c_str(),&w,&h)) ==%i %i but say ==0 \n",w,h);
-			return w;
-		}
-	}
-	*/
 }
 
 
@@ -250,10 +167,8 @@ void s_font::clearCache()
 			glDeleteTextures( 1, &((*iter).second.stringTexture));
 			if ((*iter).second.haveBorder)
 				glDeleteTextures( 1, &((*iter).second.borderTexture));
-			//cout << "Cleared cache for string: " << (*iter).first << endl;
 		}
 	}
-
 	renderCache.clear();
 }
 
@@ -270,9 +185,6 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	rendering.stringH = text->h;
 	rendering.haveBorder =  false;
 
-	// opengl texture dimensions must be powers of 2
-	//~ rendering.textureW = getNextPowerOf2((int)rendering.stringW);
-	//~ rendering.textureH = getNextPowerOf2((int)rendering.stringH);
 	const unsigned short decalageX = 2;
 	const unsigned short decalageY = 1;
 	rendering.textureW = text->w+2*decalageX;
@@ -300,8 +212,6 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	nothing.stringTexture = 0;
 	if(!surface)  {
 		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
-		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
-		//if(text) 
 		SDL_FreeSurface(text);
 		return nothing;
 	}
@@ -314,18 +224,6 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	tmp.h=text->h;
 	SDL_BlitSurface(text, NULL, surface, &tmp);
 
-    // disable mipmapping on the new texture
-    //~ glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    //~ glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-	// disable mipmapping on default texture
-	//~ glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//~ glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//~ // Avoid edge visibility
-	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-	//~ glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-
 	// get the number of channels in the SDL surface
 	GLenum texture_format;
 	if (surface->format->Rmask == 0x000000ff)
@@ -333,99 +231,69 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	else
 		texture_format = GL_BGRA;
 
-	// get the number of channels in the SDL surface
-	// GLenum texture_format = GL_RGBA;
-	// GLint nOfColors = surface->format->BytesPerPixel;
-	// if (nOfColors == 4) {     // contains an alpha channel
-	// 	if (surface->format->Rmask == 0x000000ff)
-	// 		texture_format = GL_RGBA;
-	// 	else
-	// 		texture_format = GL_BGRA;
-	// } else if (nOfColors == 3) {     // no alpha channel
-	// 	if (surface->format->Rmask == 0x000000ff)  // THIS IS WRONG for someplatforms
-	// 		texture_format = GL_RGB;
-	// 	else
-	// 		texture_format = GL_BGR;
-	// } else {
-	// 	//cerr << "Error: unable to convert surface to font texture.\n";
-	// 	if(surface) SDL_FreeSurface(surface);
-	// 	return nothing;
-	// }
-
 	glGenTextures( 1, &rendering.stringTexture);
 	glBindTexture( GL_TEXTURE_2D, rendering.stringTexture);
-
     // disable mipmapping on the new texture
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 
 
 	if (withBorder) {
-	// ***********************************
-	//
-	// création de la bordure
-	//
-	// ***********************************
-	SDL_Surface *border = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
-	if(!border)  {
-		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
-		//cLog::get()->write("s_font: TTF_SizeText error: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
-		//if(text) 
-		SDL_FreeSurface(text);
-		return rendering;
+		// ***********************************
+		//
+		// création de la bordure
+		//
+		// ***********************************
+		SDL_Surface *border = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
+		if(!border)  {
+			cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
+			SDL_FreeSurface(text);
+			return rendering;
+		}
+
+		//SDL_Rect tmp;
+		int shiftx, shifty;
+		for(int pass=0; pass < 4 ; pass++) {
+			if(pass<2) shiftx = -1;
+				else shiftx = 1;
+			if(pass%2) shifty = -1;
+				else shifty = 1;
+
+			//why (decalageX;decalageY) ? la texture initiale commence en (decalageX;decalageY)
+			tmp.x=decalageX+shiftx;
+			tmp.y=decalageY+shifty;
+			tmp.w=text->w;
+			tmp.h=text->h;
+			SDL_BlitSurface(text, NULL, border,  &tmp);
+		}
+
+		if (border->format->Rmask == 0x000000ff)
+			texture_format = GL_RGBA;
+		else
+			texture_format = GL_BGRA;
+
+		glGenTextures( 1, &rendering.borderTexture);
+		glBindTexture( GL_TEXTURE_2D, rendering.borderTexture);
+
+		// disable mipmapping on the new texture
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
+		rendering.haveBorder =true;
+		SDL_FreeSurface(border);
 	}
 
-	//SDL_Rect tmp;
-	int shiftx, shifty;
-	for(int pass=0; pass < 4 ; pass++) {
-		if(pass<2) shiftx = -1;
-			else shiftx = 1;
-		if(pass%2) shifty = -1;
-			else shifty = 1;
-
-		//why (decalageX;decalageY) ? la texture initiale commence en (decalageX;decalageY)
-		tmp.x=decalageX+shiftx;
-		tmp.y=decalageY+shifty;
-		tmp.w=text->w;
-		tmp.h=text->h;
-		SDL_BlitSurface(text, NULL, border,  &tmp);
-	}
-
-	if (border->format->Rmask == 0x000000ff)
-		texture_format = GL_RGBA;
-	else
-		texture_format = GL_BGRA;
-
-	glGenTextures( 1, &rendering.borderTexture);
-	glBindTexture( GL_TEXTURE_2D, rendering.borderTexture);
-
-    // disable mipmapping on the new texture
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, text->w, text->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, text->pixels );
-	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
-	rendering.haveBorder =true;
-	//if (border)
-	SDL_FreeSurface(border);
-	}
-
-	//if(surface)
 	SDL_FreeSurface(surface);
-	//if(text)
 	SDL_FreeSurface(text);
 	return rendering;
 }
 
 
 //! Draw text with baseline more or less parallel with horizon
-//! justify: -1 left, 0 center, 1 right align (not impemented yet)
-void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache) //, bool cache, bool outline)
+void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache)
 {
-	//int outline = 1;
-
-	if(str == "") return;
+	if (str.empty()) return;
 
 	renderedString_struct rendering;
 
@@ -444,16 +312,11 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		rendering = renderCache[str];
 	}
 
-	//float textureExtentH = 1.0; //rendering.stringH/rendering.textureH;
-	//float textureExtentW = 1.0; //rendering.stringW/rendering.textureW;
-
 	Vec3d center = prj->getViewportCenter();
 	float radius = center[2];
-
 	float dx = x - center[0];
 	float dy = y - center[1];
 	float d = sqrt(dx*dx + dy*dy);
-
 	// If the text is too far away to be visible in the screen return
 	if(radius > 0) {
 		if (d > radius + rendering.stringH) return;
@@ -464,9 +327,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	float theta = M_PI + atan2f(dx, dy - 1);
 	float psi = (float)getStrLen(str)/(d + 1);  // total angle of rotation
 
-	int steps = 2+int(psi*15);//TODO trouver le bon compromis pour la taille
-	//std::cout << str << " " << steps << std::endl;
-	//if(steps < 10) steps = 10;
+	int steps = 2+int(psi*15);
 
 	std::vector<Vec2f> meshPoints;  // screen x,y
 	std::vector<float> vecPos;
@@ -483,42 +344,13 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		meshPoints.push_back(Vec2f(center[0]+p*d,center[1]+q*d));
 	}
 
-	// int shiftx = 0;
-	// int shifty = 0;
-
 	Vec3f Color (texColor[0], texColor[1], texColor[2]);
-
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	// for (int pass=0; pass<0*4+1; pass++) {
-		// if(1) {
-			/*if(pass < 4 ) {
-				Color = v3fNull;
-				shaderHorizontal->setUniform("Color", Color);
-				if(pass<2) shiftx = -1;
-				else shiftx = 1;
-				if(pass%2) shifty = -1;
-				else shifty = 1;
-			// } else {*/
-			// 	Color = Vec3f(texColor[0], texColor[1], texColor[2]);
-			// 	shaderHorizontal->setUniform("Color", Color);
-				// shiftx = shifty = 0;
-			//}
-		// }
-
 	for (int i=0; i<=steps; i++) {
-		// vecPos.push_back(meshPoints[i*2][0]/*+shiftx*/);
-		// vecPos.push_back(meshPoints[i*2][1]/*+shifty*/);
-		// vecPos.push_back(meshPoints[i*2+1][0]/*+shiftx*/);
-		// vecPos.push_back(meshPoints[i*2+1][1]/*+shifty*/);
 		insert_vec2(vecPos,meshPoints[i*2]);
 		insert_vec2(vecPos,meshPoints[i*2+1]);
-
-		// vecTex.push_back((float)i/steps); // *textureExtentW);
-		// vecTex.push_back(0.0);
-		// vecTex.push_back((float)i/steps); // *textureExtentW);
-		// vecTex.push_back(1.0); // 1.0 <- textureExtentH
 		insert_all(vecTex, (float)i/steps, 0.f , (float)i/steps, 1.f);
 	}
 
@@ -529,14 +361,9 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
 	
 	shaderHorizontal->setUniform("Color", Color);
-
 	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
 
-	// m_fontGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP, 0, vecPos.size()/2);
-	// m_fontGL->unBind();
-	// shaderHorizontal->unuse();
 	Renderer::drawArrays(shaderHorizontal.get(), m_fontGL.get(), GL_TRIANGLE_STRIP,0,vecPos.size()/2);
 
 	vecPos.clear();
