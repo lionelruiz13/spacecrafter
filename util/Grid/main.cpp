@@ -100,7 +100,7 @@ public:
 	//! insert un élément dans la grille
     void insert(std::shared_ptr<T> _element, Vec3f pos);
 	//! supprime un élément de la grille
-    // void remove(eTest* _test);
+	void remove(std::shared_ptr<T> _element, const Vec3f &pos);
     auto begin() {
 		return Grid::iterator(allDataCenter.begin(), allDataCenter.end(), allDataCenter.begin()->first);
 	};
@@ -168,6 +168,10 @@ Grid<T>::Grid()
 		centers.push_back(icosahedron_corners[i]);
 		allDataCenter.push_back(std::pair<dataType_t, bool>{{}, true});
 	}
+	angle = acos(icosahedron_corners[0].dot(icosahedron_corners[1]));
+	#ifdef DEBUG
+		std::cout << "Angle = " << angle << std::endl;
+	#endif
 };
 
 template<typename T>
@@ -194,6 +198,12 @@ template<typename T>
 void Grid<T>::insert(std::shared_ptr<T> _element, Vec3f pos)
 {
 	allDataCenter[getNearest(pos)].first.push_back(_element);
+};
+
+template<typename T>
+void Grid<T>::remove(std::shared_ptr<T> _element, const Vec3f &v)
+{
+	allDataCenter[getNearest(v)].first.remove(_element);
 };
 
 //! Return an array with the number of the zones in the field of view
@@ -228,10 +238,12 @@ int main(int argc, char **argv)
 		Vec3f test0 = icosahedron_corners[icosahedron_triangles[i].corners[0]];
 		Vec3f test1 = icosahedron_corners[icosahedron_triangles[i].corners[1]];
 		Vec3f test2 = icosahedron_corners[icosahedron_triangles[i].corners[2]];
+		std::shared_ptr<eTest> tmp = std::make_shared<eTest>(test1);
 
 		myGrid.insert(std::make_shared<eTest>(test0), test0);
-		myGrid.insert(std::make_shared<eTest>(test1), test1);
+		myGrid.insert(tmp, test1);
 		myGrid.insert(std::make_shared<eTest>(test2), test2);
+		//myGrid.remove(tmp, test1);
 		std::cout << test0.dot(test0) << " " ;
 		std::cout << test1.dot(test1) << " " ;
 		std::cout << test2.dot(test2) << std::endl;
@@ -239,7 +251,7 @@ int main(int argc, char **argv)
 		std::cout << test0.dot(test2) << " " ;
 		std::cout << test1.dot(test2) << std::endl;
 	}
-	myGrid.intersect(Vec3f(1, 1, 1), 180);
+	myGrid.intersect(icosahedron_corners[0], 3.1415926);
 	for (auto &val: myGrid) {
 		std::cout << "Object <" << val.get() << "> at " << val->getPos() << " nearest to ";
 		myGrid.getNearest(val->getPos());
