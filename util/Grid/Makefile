@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS= -Wall -g -Wextra
+CPPFLAGS= -Wall -g -Wextra -std=c++17
 DEPS =
 
 LIBS= -lm
