@@ -42,19 +42,19 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
   SET(CMAKE_C_FLAGS "-g -Wextra -Wall -Wno-unused-parameter -Wunreachable-code")
-  SET(CMAKE_CXX_FLAGS "-g -Wextra -Wall -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code")
+  SET(CMAKE_CXX_FLAGS "-g -Wextra -Wall -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code -fconcepts")
   message("Build type Debug. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode")
 endif()
 
 if( CMAKE_BUILD_TYPE STREQUAL "Release" )
 SET(CMAKE_C_FLAGS " -O3 -Wall")
-SET(CMAKE_CXX_FLAGS " -O3 -Wall")
+SET(CMAKE_CXX_FLAGS " -O3 -Wall -fconcepts")
 message("Build type Release. Use -DCMAKE_BUILD_TYPE=Debug to activate Debug mode")
 endif()
 
 if( CMAKE_BUILD_TYPE STREQUAL "Coverage" )
 SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
-SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -fconcepts")
 message("Build type Coverage. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode")
 endif()
 
