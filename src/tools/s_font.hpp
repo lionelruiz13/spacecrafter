@@ -41,6 +41,8 @@ class VertexArray;
 class shaderProgram;
 class Projector;
 
+enum class TEXT_POSITION : char {LEFT, RIGHT, CENTER};
+
 typedef struct {
 	GLuint stringTexture;  // Rendered string texture reference - remember to delete when done
 	GLuint borderTexture;  // Rendered string bordered texture -  remember to delete when done
@@ -61,7 +63,7 @@ public:
 	virtual ~s_font();
 
 	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown);
-	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache);
+	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_POSITION testPos, bool cache);
 
 	void clearCache(const std::string& s);
 	void clearCache();

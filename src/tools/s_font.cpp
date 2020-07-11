@@ -291,19 +291,12 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 
 
 //! Draw text with baseline more or less parallel with horizon
-void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, bool cache)
+void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_POSITION testPos, bool cache)
 {
 	if (str.empty()) return;
 
-	renderedString_struct rendering;
-
-	Vec3d startV, screen;
-	Utility::spheToRect(-azimuth*M_PI/180., altitude*M_PI/180., startV);
-	prj->projectDomeFixed(startV, screen);
-	float x = screen[0];
-	float y = screen[1];
-
 	// Get rendered texture
+	renderedString_struct rendering;
 	if(renderCache[str].textureW == 0) {
 		rendering = renderString(str, true);
 		if(cache)
@@ -311,6 +304,25 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	} else {
 		rendering = renderCache[str];
 	}
+
+	float angle, lCercle;
+	switch (testPos) {
+		case TEXT_POSITION::LEFT : angle = 0; break;
+		case TEXT_POSITION::RIGHT : 
+			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
+			angle = 360.f * rendering.textureW / lCercle;
+			break;
+		case TEXT_POSITION::CENTER: 
+			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
+			angle = 360.f * rendering.textureW / lCercle / 2.f; //because center
+			break;
+	}
+
+	Vec3d startV, screen;
+	Utility::spheToRect(-(azimuth-angle)*M_PI/180., altitude*M_PI/180., startV);
+	prj->projectDomeFixed(startV, screen);
+	float x = screen[0];
+	float y = screen[1];
 
 	Vec3d center = prj->getViewportCenter();
 	float radius = center[2];

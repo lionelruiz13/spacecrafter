@@ -99,7 +99,7 @@ void Text::draw(const Projector* prj, s_font *textFont[])
 		case FontSize::T_XX_LARGE: tmp = textFont[6]; break;
 		default: tmp = textFont[3]; break; // cas medium
 	}
-	tmp->printHorizontal(prj, altitude, azimuth, text,textColor, true); //, 1, true/*, true*/);
+	tmp->printHorizontal(prj, altitude, azimuth, text,textColor, TEXT_POSITION::LEFT, true); //, 1, true/*, true*/);
 }
 
 void Text::textUpdate(const std::string &_text, s_font *textFont[]){
