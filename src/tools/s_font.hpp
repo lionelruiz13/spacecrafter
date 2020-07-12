@@ -33,6 +33,7 @@
 #include <memory>
 #include <SDL2/SDL_ttf.h>
 
+#include "tools/s_font_common.hpp"
 #include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
 
@@ -41,7 +42,6 @@ class VertexArray;
 class shaderProgram;
 class Projector;
 
-enum class TEXT_POSITION : char {LEFT, RIGHT, CENTER};
 
 typedef struct {
 	GLuint stringTexture;  // Rendered string texture reference - remember to delete when done
