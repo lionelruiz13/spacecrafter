@@ -42,8 +42,7 @@ TextMgr::TextMgr()
 
 TextMgr::~TextMgr()
 {
-	std::vector<Text *>::iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); iter++)
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); iter++)
 		delete(*iter);
 
 	for(int i=0; i<7; i++) {
@@ -87,8 +86,7 @@ void TextMgr::setColor(const Vec3f& c)
 
 void TextMgr::clear()
 {
-	std::vector < Text * >::iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		delete(*iter);
 	}
 	textUsr.clear();
@@ -100,8 +98,7 @@ void TextMgr::clear()
 //TODO suppression du cache de la fonte
 bool TextMgr::del(const std::string &name)
 {
-	std::vector < Text * >::iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		if ((*iter)->getName() == name) {
 			delete(*iter);
 			textUsr.erase(iter);
@@ -113,8 +110,7 @@ bool TextMgr::del(const std::string &name)
 
 void TextMgr::nameUpdate(const std::string &name, const std::string &text)
 {
-	std::vector < Text * >::iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		if ((*iter)->getName() == name) {
 			(*iter)->textUpdate(text,textFont);
 			return;
@@ -124,8 +120,7 @@ void TextMgr::nameUpdate(const std::string &name, const std::string &text)
 
 void TextMgr::textDisplay(const std::string &name , bool displ)
 {
-	std::vector < Text * >::iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		if ((*iter)->getName() == name) {
 			(*iter)->setDisplay(displ);
 			return;
@@ -135,8 +130,7 @@ void TextMgr::textDisplay(const std::string &name , bool displ)
 
 void TextMgr::setFadingDuration(int t)
 {
-	std::vector < Text * >::iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		(*iter)->setFadingDuration(t);
 	}
 }
@@ -172,8 +166,7 @@ void TextMgr::draw(const Projector* prj)
 	if (!isUsable)
 		return;
 
-	std::vector < Text * >::iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		(*iter)->draw(prj,textFont);
 	}
 }
