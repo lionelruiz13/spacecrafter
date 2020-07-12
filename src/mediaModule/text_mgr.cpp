@@ -28,6 +28,7 @@
 #include <iostream>
 
 #include "tools/log.hpp"
+#include "tools/s_font_common.hpp"
 #include "mediaModule/text_mgr.hpp"
 #include "mediaModule/text.hpp"
 
@@ -53,8 +54,7 @@ TextMgr::~TextMgr()
 
 void TextMgr::update(int delta_time)
 {
-	std::vector < Text * >::const_iterator iter;
-	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		(*iter)->update(delta_time);
 	}
 }
@@ -63,7 +63,8 @@ void TextMgr::update(int delta_time)
 bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color)
 {
 	Text *token =nullptr;
-	token = new Text(name, text, altitude, azimuth, size, color);
+	FONT_SIZE textSize = convertToFontSize(size);
+	token = new Text(name, text, altitude, azimuth, textSize, color);
 	if (token != nullptr) {
 		textUsr.push_back(token);
 		return true;
@@ -143,9 +144,9 @@ void TextMgr::setFadingDuration(int t)
 
 void TextMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (font_size<10) {
-		font_size=10;
-		cLog::get()->write("text size to small fixed to 10", LOG_TYPE::L_WARNING);
+	if (font_size<SIZE_MIN_TO_DISPLAY) {
+		font_size=SIZE_MIN_TO_DISPLAY;
+		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING);
 	}
 
 	for(int i=0; i<7; i++) {
@@ -175,4 +176,18 @@ void TextMgr::draw(const Projector* prj)
 	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		(*iter)->draw(prj,textFont);
 	}
+}
+
+
+
+FONT_SIZE TextMgr::convertToFontSize(const std::string &size)
+{
+	if (size=="XX_SMALL")		{return FONT_SIZE::T_XX_SMALL;}
+	else if (size=="X_SMALL")	{return FONT_SIZE::T_X_SMALL;}
+	else if (size=="SMALL")		{return FONT_SIZE::T_SMALL; }
+	else if (size=="MEDIUM")	{return FONT_SIZE::T_MEDIUM;}
+	else if (size=="LARGE")		{return FONT_SIZE::T_LARGE; }
+	else if (size=="X_LARGE")	{return FONT_SIZE::T_X_LARGE; }
+	else if (size=="XX_LARGE")	{return FONT_SIZE::T_XX_LARGE; }
+	else {return FONT_SIZE::T_MEDIUM;}
 }

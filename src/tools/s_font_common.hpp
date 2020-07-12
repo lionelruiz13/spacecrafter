@@ -26,6 +26,8 @@
 #define _TEXT_FONT_COMMON_H
 
 
+#define SIZE_MIN_TO_DISPLAY 12
+
 enum class TEXT_POSITION : char {LEFT, RIGHT, CENTER};
 
 

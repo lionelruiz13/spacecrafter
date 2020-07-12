@@ -26,6 +26,7 @@
 #define _TEXT_HPP
 
 #include "tools/s_font.hpp"
+#include "tools/s_font_common.hpp"
 #include "tools/fader.hpp"
 #include "coreModule/projector.hpp"
 #include <vector>
@@ -41,7 +42,7 @@
  */
 class Text {
 public:
-	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, const std::string &size, const Vec3f &color);
+	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, const FONT_SIZE &_size, const Vec3f &color);
 	~Text();
 
 	//! occulte ou pas le text à l'affichage
@@ -74,15 +75,13 @@ public:
 	};
 
 private:
-	enum class FontSize : char {T_XX_SMALL, T_X_SMALL, T_SMALL, T_MEDIUM, T_LARGE, T_X_LARGE, T_XX_LARGE};
 	std::string name;
 	std::string text;
 	Vec3f textColor;
 	int altitude;
 	int azimuth;
 	LinearFader fader;
-	FontSize textSize= FontSize::T_MEDIUM;
-	void convertToFontSize(const std::string &size);
+	FONT_SIZE textSize= FONT_SIZE::T_MEDIUM;
 };
 
 #endif // TEXT_HPP

@@ -31,28 +31,14 @@
 #include "mediaModule/text.hpp"
 
 
-
-void Text::convertToFontSize(const std::string &size)
-{
-	if (size=="XX_SMALL")		{textSize=FontSize::T_XX_SMALL; return;}
-	else if (size=="X_SMALL")	{textSize=FontSize::T_X_SMALL; return;}
-	else if (size=="SMALL")		{textSize=FontSize::T_SMALL;  return;}
-	else if (size=="MEDIUM")	{textSize=FontSize::T_MEDIUM; return;}
-	else if (size=="LARGE")		{textSize=FontSize::T_LARGE;  return;}
-	else if (size=="X_LARGE")	{textSize=FontSize::T_X_LARGE;  return;}
-	else if (size=="XX_LARGE")	{textSize=FontSize::T_XX_LARGE;  return;}
-	else {textSize=FontSize::T_MEDIUM; return;}
-}
-
-
-Text::Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth , const std::string &size, const Vec3f &color)
+Text::Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth , const FONT_SIZE &_size, const Vec3f &color)
 {
 	name= _name;
 	text= _text;
 	altitude= _altitude;
 	azimuth= _azimuth;
 	textColor = color;
-	convertToFontSize(size);
+	textSize = _size;
 }
 
 
@@ -76,13 +62,13 @@ void Text::draw(const Projector* prj, s_font *textFont[])
 	if ( !fader.getInterstate() ) return;
 	//~ glColor4f(r,g,b,fader.getInterstate());
 	switch (textSize) {
-		case FontSize::T_XX_SMALL: tmp = textFont[0]; break;
-		case FontSize::T_X_SMALL: tmp = textFont[1]; break;
-		case FontSize::T_SMALL: tmp = textFont[2]; break;
-		case FontSize::T_MEDIUM: tmp = textFont[3]; break;
-		case FontSize::T_LARGE: tmp = textFont[4]; break;
-		case FontSize::T_X_LARGE: tmp = textFont[5]; break;
-		case FontSize::T_XX_LARGE: tmp = textFont[6]; break;
+		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0]; break;
+		case FONT_SIZE::T_X_SMALL: tmp = textFont[1]; break;
+		case FONT_SIZE::T_SMALL: tmp = textFont[2]; break;
+		case FONT_SIZE::T_MEDIUM: tmp = textFont[3]; break;
+		case FONT_SIZE::T_LARGE: tmp = textFont[4]; break;
+		case FONT_SIZE::T_X_LARGE: tmp = textFont[5]; break;
+		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6]; break;
 		default: tmp = textFont[3]; break; // cas medium
 	}
 	tmp->printHorizontal(prj, altitude, azimuth, text,textColor, TEXT_POSITION::LEFT, true); //, 1, true/*, true*/);
@@ -91,13 +77,13 @@ void Text::draw(const Projector* prj, s_font *textFont[])
 void Text::textUpdate(const std::string &_text, s_font *textFont[]){
 	s_font *tmp;
 	switch (textSize) {
-		case FontSize::T_XX_SMALL: tmp = textFont[0]; break;
-		case FontSize::T_X_SMALL: tmp = textFont[1]; break;
-		case FontSize::T_SMALL: tmp = textFont[2]; break;
-		case FontSize::T_MEDIUM: tmp = textFont[3]; break;
-		case FontSize::T_LARGE: tmp = textFont[4]; break;
-		case FontSize::T_X_LARGE: tmp = textFont[5]; break;
-		case FontSize::T_XX_LARGE: tmp = textFont[6]; break;
+		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0]; break;
+		case FONT_SIZE::T_X_SMALL: tmp = textFont[1]; break;
+		case FONT_SIZE::T_SMALL: tmp = textFont[2]; break;
+		case FONT_SIZE::T_MEDIUM: tmp = textFont[3]; break;
+		case FONT_SIZE::T_LARGE: tmp = textFont[4]; break;
+		case FONT_SIZE::T_X_LARGE: tmp = textFont[5]; break;
+		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6]; break;
 		default: tmp = textFont[3]; break; // cas medium
 	}
 	tmp->clearCache(text);

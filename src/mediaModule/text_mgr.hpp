@@ -85,6 +85,7 @@ public:
 	void setColor(const Vec3f& c);
 
 private:
+	FONT_SIZE convertToFontSize(const std::string &size);
 	std::vector<Text *> textUsr; // le conteneur de tous les textes
 	s_font *textFont[7];		// l'ensemble de fontes utilisés 
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
@@ -92,3 +93,5 @@ private:
 };
 
 #endif
+
+
