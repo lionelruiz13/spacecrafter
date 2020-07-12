@@ -25,11 +25,14 @@
 #ifndef _TEXT_MGR_H
 #define _TEXT_MGR_H
 
+
+#include <map>
+#include <memory>
+
 #include "tools/s_font.hpp"
 #include "tools/fader.hpp"
 #include "text.hpp"
 #include "coreModule/projector.hpp"
-#include <vector>
 #include "tools/stateGL.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
@@ -86,7 +89,7 @@ public:
 
 private:
 	FONT_SIZE convertToFontSize(const std::string &size);
-	std::vector<Text *> textUsr; // le conteneur de tous les textes
+	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
 	s_font *textFont[7];		// l'ensemble de fontes utilisés 
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle

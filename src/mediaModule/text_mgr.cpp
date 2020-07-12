@@ -42,8 +42,9 @@ TextMgr::TextMgr()
 
 TextMgr::~TextMgr()
 {
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); iter++)
-		delete(*iter);
+	// for (auto iter = textUsr.begin(); iter != textUsr.end(); iter++)
+	// 	delete(*iter);
+	this->clear();
 
 	for(int i=0; i<7; i++) {
 		if (textFont[i]) delete textFont[i];
@@ -54,7 +55,7 @@ TextMgr::~TextMgr()
 void TextMgr::update(int delta_time)
 {
 	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		(*iter)->update(delta_time);
+		(*iter).second->update(delta_time);
 	}
 }
 
@@ -62,16 +63,10 @@ void TextMgr::update(int delta_time)
 void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color)
 {
 	this->del(name);
-	Text *token =nullptr;
 	FONT_SIZE textSize = convertToFontSize(size);
-	token = new Text(name, text, altitude, azimuth, textSize, color);
-	if (token != nullptr) {
-		textUsr.push_back(token);
-		return true;
-	} else {
-		cLog::get()->write("TEXT: Bad text syntax", LOG_TYPE::L_ERROR);
-		return false;
-	}
+	std::unique_ptr token  = std::make_unique<Text>(name, text, altitude, azimuth, textSize, color);
+	textUsr[name]=std::move(token);
+}
 
 void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size)
 {
@@ -86,10 +81,11 @@ void TextMgr::setColor(const Vec3f& c)
 
 void TextMgr::clear()
 {
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		delete(*iter);
-	}
+	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	// 	delete(*iter);
+	// }
 	textUsr.clear();
+
 	for(int i=0; i<7; i++) {
 		textFont[i]->clearCache();
 	}
@@ -97,41 +93,53 @@ void TextMgr::clear()
 
 void TextMgr::del(const std::string &name)
 {
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		if ((*iter)->getName() == name) {
-			delete(*iter);
-			textUsr.erase(iter);
-			return true;
-		}
-	}
-	return false;
+	auto it = textUsr.find(name);
+	if (it!=textUsr.end())
+		textUsr.erase(it);
+	
+	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	// 	if ((*iter)->getName() == name) {
+	// 		delete(*iter);
+	// 		textUsr.erase(iter);
+	// 		return true;
+	// 	}
+	// }
+	// return false;
 }
 
 void TextMgr::nameUpdate(const std::string &name, const std::string &text)
 {
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		if ((*iter)->getName() == name) {
-			(*iter)->textUpdate(text,textFont);
-			return;
-		}
-	}
+	auto it = textUsr.find(name);
+	if (it!=textUsr.end())
+		(*it).second->textUpdate(text,textFont);
+
+	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	// 	if ((*iter)->getName() == name) {
+	// 		(*iter)->textUpdate(text,textFont);
+	// 		return;
+	// 	}
+	//}
 }
 
 void TextMgr::textDisplay(const std::string &name , bool displ)
 {
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		if ((*iter)->getName() == name) {
-			(*iter)->setDisplay(displ);
-			return;
-		}
-	}
+	auto it = textUsr.find(name);
+	if (it!=textUsr.end())
+		(*it).second->setDisplay(displ);
+
+	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	// 	if ((*iter)->getName() == name) {
+	// 		(*iter)->setDisplay(displ);
+	// 		return;
+	// 	}
+	// }
 }
 
 void TextMgr::setFadingDuration(int t)
 {
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		(*iter)->setFadingDuration(t);
-	}
+	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
+	// 	(*iter)->setFadingDuration(t);
+	// }
 }
 
 
@@ -166,7 +174,7 @@ void TextMgr::draw(const Projector* prj)
 		return;
 
 	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		(*iter)->draw(prj,textFont);
+		(*iter).second->draw(prj,textFont);
 	}
 }
 
