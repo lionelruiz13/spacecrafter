@@ -59,7 +59,7 @@ void TextMgr::update(int delta_time)
 }
 
 
-bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color)
+void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color)
 {
 	this->del(name);
 	Text *token =nullptr;
@@ -72,9 +72,8 @@ bool TextMgr::add(const std::string &name, const std::string &text, int altitude
 		cLog::get()->write("TEXT: Bad text syntax", LOG_TYPE::L_ERROR);
 		return false;
 	}
-}
 
-bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size)
+void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size)
 {
 	return add(name, text, altitude, azimuth, size, defaultTextColor);
 }
@@ -96,8 +95,7 @@ void TextMgr::clear()
 	}
 }
 
-//TODO suppression du cache de la fonte
-bool TextMgr::del(const std::string &name)
+void TextMgr::del(const std::string &name)
 {
 	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		if ((*iter)->getName() == name) {

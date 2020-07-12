@@ -58,13 +58,13 @@ public:
 	void draw(const Projector* prj);
 
 	//! ajoute un texte dans le conteneur textUsr
-	bool add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color);
+	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color);
 
 	//! ajoute un texte dans le conteneur textUsr
-	bool add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size);
+	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size);
 
 	//! retire un texte du conteneur textUsr
-	bool del(const std::string &name);
+	void del(const std::string &name);
 
 	//! retire tous les textes du conteneur 
 	void clear();
