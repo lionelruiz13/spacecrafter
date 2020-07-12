@@ -53,7 +53,6 @@ class TextMgr: public NoCopy {
 public:
 	TextMgr();
 	~TextMgr();
-
 	//! transmet les variations de temps aux différents textes
 	void update(int delta_time);
 
@@ -61,10 +60,10 @@ public:
 	void draw(const Projector* prj);
 
 	//! ajoute un texte dans le conteneur textUsr
-	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color);
+	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const Vec3f &color);
 
 	//! ajoute un texte dans le conteneur textUsr
-	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size);
+	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize);
 
 	//! retire un texte du conteneur textUsr
 	void del(const std::string &name);
@@ -90,8 +89,8 @@ public:
 	void setColor(const Vec3f& c);
 
 private:
-	FONT_SIZE convertToFontSize(const std::string &size);
 	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
+	std::map<std::string, FONT_SIZE> strToFontSize; // convertir txt to FONT_SIZE
 	s_font *textFont[7];		// l'ensemble de fontes utilisés 
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle

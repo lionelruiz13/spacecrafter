@@ -2127,14 +2127,16 @@ int AppCommandInterface::commandText()
 		if (argAction==W_UPDATE) {
 			coreLink->textNameUpdate(argName, argString);
 			return executeCommandStatus();
-		} else if (argAction== W_LOAD) {
+		} else 
+		if (argAction== W_LOAD) {
 			std::string argAzimuth = args[W_AZIMUTH];
 			std::string argAltitude = args[W_ALTITUDE];
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
 				float azimuth = evalDouble(argAzimuth);
 				float altitude = evalDouble(argAltitude);
 				std::string argSize = args[W_SIZE];
-
+				if (!argSize.empty())
+					std::transform(argSize.begin(), argSize.end(),argSize.begin(), ::toupper);
 				//gestion de la couleur
 				Vec3f Vcolor;
 				std::string argValue = args[W_COLOR_VALUE];

@@ -32,17 +32,24 @@
 #include "mediaModule/text_mgr.hpp"
 #include "mediaModule/text.hpp"
 
-
-
 TextMgr::TextMgr()
 {
 	for(int i=0; i<7; i++)
 		textFont[i]=nullptr;
+
+	strToFontSize["XX_SMALL"] = FONT_SIZE::T_XX_SMALL;
+	strToFontSize["X_SMALL"] = FONT_SIZE::T_X_SMALL;
+	strToFontSize["SMALL"] = FONT_SIZE::T_SMALL; 
+	strToFontSize["MEDIUM"] = FONT_SIZE::T_MEDIUM;
+	strToFontSize["LARGE"] = FONT_SIZE::T_LARGE; 
+	strToFontSize["X_LARGE"] = FONT_SIZE::T_X_LARGE; 
+	strToFontSize["XX_LARGE"] = FONT_SIZE::T_XX_LARGE;
 }
 
 TextMgr::~TextMgr()
 {
 	this->clear();
+	strToFontSize.clear();
 
 	for(int i=0; i<7; i++) {
 		if (textFont[i]) delete textFont[i];
@@ -58,10 +65,20 @@ void TextMgr::update(int delta_time)
 }
 
 
-void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color)
+void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const Vec3f &color)
 {
 	this->del(name);
-	FONT_SIZE textSize = convertToFontSize(size);
+
+	//set font size
+	FONT_SIZE textSize = FONT_SIZE::T_MEDIUM;
+	if (!fontSize.empty()) {
+		auto it = strToFontSize.find(fontSize);
+		if (it!=strToFontSize.end())
+			textSize=strToFontSize[fontSize];
+		else
+			cLog::get()->write("text size was not recognized", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+	}
+	//set font
 	s_font *tmp;
 	switch (textSize) {
 		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0]; break;
@@ -77,9 +94,9 @@ void TextMgr::add(const std::string &name, const std::string &text, int altitude
 	textUsr[name]=std::move(token);
 }
 
-void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size)
+void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize)
 {
-	return add(name, text, altitude, azimuth, size, defaultTextColor);
+	this->add(name, text, altitude, azimuth, fontSize, defaultTextColor);
 }
 
 
@@ -102,6 +119,8 @@ void TextMgr::del(const std::string &name)
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
 		textUsr.erase(it);
+	else
+		cLog::get()->write("Not found to delete text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 }
 
 void TextMgr::textUpdate(const std::string &name, const std::string &text)
@@ -109,6 +128,8 @@ void TextMgr::textUpdate(const std::string &name, const std::string &text)
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
 		(*it).second->textUpdate(text);
+	else
+		cLog::get()->write("Not found to update text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 }
 
 void TextMgr::textDisplay(const std::string &name , bool displ)
@@ -116,6 +137,9 @@ void TextMgr::textDisplay(const std::string &name , bool displ)
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
 		(*it).second->setDisplay(displ);
+	else
+		cLog::get()->write("Not found to display text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
+
 }
 
 
@@ -123,7 +147,7 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 {
 	if (font_size<SIZE_MIN_TO_DISPLAY) {
 		font_size=SIZE_MIN_TO_DISPLAY;
-		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING);
+		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
 
 	for(int i=0; i<7; i++) {
@@ -148,22 +172,7 @@ void TextMgr::draw(const Projector* prj)
 {
 	if (!isUsable)
 		return;
-
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		(*iter).second->draw(prj);
+	for (const auto& [key, value] : textUsr) {
+    	value->draw(prj);
 	}
-}
-
-
-
-FONT_SIZE TextMgr::convertToFontSize(const std::string &size)
-{
-	if (size=="XX_SMALL")		{return FONT_SIZE::T_XX_SMALL;}
-	else if (size=="X_SMALL")	{return FONT_SIZE::T_X_SMALL;}
-	else if (size=="SMALL")		{return FONT_SIZE::T_SMALL; }
-	else if (size=="MEDIUM")	{return FONT_SIZE::T_MEDIUM;}
-	else if (size=="LARGE")		{return FONT_SIZE::T_LARGE; }
-	else if (size=="X_LARGE")	{return FONT_SIZE::T_X_LARGE; }
-	else if (size=="XX_LARGE")	{return FONT_SIZE::T_XX_LARGE; }
-	else {return FONT_SIZE::T_MEDIUM;}
 }
