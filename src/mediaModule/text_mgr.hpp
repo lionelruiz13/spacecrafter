@@ -56,6 +56,17 @@
  * The name of the text serves as a key. (uniqueness)
  *
  */
+
+struct TEXT_MGR_PARAM {
+    std::string string;
+    float altitude;
+    float azimuth;
+    std::string fontSize;
+    std::string textAlign;
+    Vec3f color;
+    bool useColor;
+};
+
 class TextMgr: public NoCopy {
 public:
 	TextMgr();

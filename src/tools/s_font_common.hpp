@@ -35,14 +35,4 @@ enum class TEXT_ALIGN : char {LEFT, RIGHT, CENTER};
 
 enum class FONT_SIZE : char {T_XX_SMALL, T_X_SMALL, T_SMALL, T_MEDIUM, T_LARGE, T_X_LARGE, T_XX_LARGE};
 
-struct TEXT_MGR_PARAM {
-    std::string string;
-    float altitude;
-    float azimuth;
-    std::string fontSize;
-    std::string textAlign;
-    Vec3f color;
-    bool useColor;
-};
-
 #endif
