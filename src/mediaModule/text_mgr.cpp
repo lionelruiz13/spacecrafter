@@ -45,16 +45,16 @@ TextMgr::TextMgr()
 	strToFontSize["X_LARGE"] = FONT_SIZE::T_X_LARGE; 
 	strToFontSize["XX_LARGE"] = FONT_SIZE::T_XX_LARGE;
 
-	strToTextPosition["LEFT"] = TEXT_POSITION::LEFT;
-	strToTextPosition["RIGHT"] = TEXT_POSITION::RIGHT;
-	strToTextPosition["CENTER"] = TEXT_POSITION::CENTER;
+	strToTextAlign["LEFT"] = TEXT_ALIGN::LEFT;
+	strToTextAlign["RIGHT"] = TEXT_ALIGN::RIGHT;
+	strToTextAlign["CENTER"] = TEXT_ALIGN::CENTER;
 }
 
 TextMgr::~TextMgr()
 {
 	this->clear();
 	strToFontSize.clear();
-	strToTextPosition.clear();
+	strToTextAlign.clear();
 
 	for(int i=0; i<7; i++) {
 		if (textFont[i]) delete textFont[i];
@@ -97,11 +97,11 @@ void TextMgr::add(const std::string &name, const std::string &text, int altitude
 	}
 
 	//set align
-	TEXT_POSITION textAlign = TEXT_POSITION::LEFT;
+	TEXT_ALIGN textAlign = TEXT_ALIGN::LEFT;
 	if (!_textAlign.empty()) {
-		auto it = strToTextPosition.find(_textAlign);
-		if (it!=strToTextPosition.end())
-			textAlign=strToTextPosition[_textAlign];
+		auto it = strToTextAlign.find(_textAlign);
+		if (it!=strToTextAlign.end())
+			textAlign=strToTextAlign[_textAlign];
 		else
 			cLog::get()->write("text alignement was not recognized", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}

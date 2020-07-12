@@ -63,7 +63,7 @@ public:
 	virtual ~s_font();
 
 	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown);
-	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_POSITION testPos, bool cache);
+	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache);
 
 	void clearCache(const std::string& s);
 	void clearCache();

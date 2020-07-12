@@ -28,7 +28,7 @@
 
 #define SIZE_MIN_TO_DISPLAY 12
 
-enum class TEXT_POSITION : char {LEFT, RIGHT, CENTER};
+enum class TEXT_ALIGN : char {LEFT, RIGHT, CENTER};
 
 
 enum class FONT_SIZE : char {T_XX_SMALL, T_X_SMALL, T_SMALL, T_MEDIUM, T_LARGE, T_X_LARGE, T_XX_LARGE};

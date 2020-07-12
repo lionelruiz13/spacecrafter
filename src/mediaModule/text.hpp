@@ -42,7 +42,7 @@
  */
 class Text {
 public:
-	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, s_font *_myFont, const TEXT_POSITION &_textAlign, const Vec3f &color);
+	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color);
 	~Text();
 
 	//! occulte ou pas le text à l'affichage
@@ -77,7 +77,7 @@ private:
 	int azimuth;
 	BooleanFader fader;
 	s_font* textFont;
-	TEXT_POSITION textAlign;
+	TEXT_ALIGN textAlign;
 };
 
 #endif // TEXT_HPP

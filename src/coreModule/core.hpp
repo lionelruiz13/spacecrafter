@@ -417,7 +417,7 @@ public:
 	// Projection
 
 	//! Print the passed string so that it is oriented in the drection of the gravity
-	void printHorizontal(s_font* font, float altitude, float azimuth, const std::string& str, Vec3f textColor, TEXT_POSITION textPos = TEXT_POSITION::LEFT, bool cache = true) const {
+	void printHorizontal(s_font* font, float altitude, float azimuth, const std::string& str, Vec3f textColor, TEXT_ALIGN textPos = TEXT_ALIGN::LEFT, bool cache = true) const {
 		font->printHorizontal(projection, altitude, azimuth, str, textColor, textPos, cache);
 	}
 

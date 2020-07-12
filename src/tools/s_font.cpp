@@ -291,7 +291,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 
 
 //! Draw text with baseline more or less parallel with horizon
-void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_POSITION testPos, bool cache)
+void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache)
 {
 	if (str.empty()) return;
 
@@ -307,12 +307,12 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 
 	float angle, lCercle;
 	switch (testPos) {
-		case TEXT_POSITION::LEFT : angle = 0; break;
-		case TEXT_POSITION::RIGHT : 
+		case TEXT_ALIGN::LEFT : angle = 0; break;
+		case TEXT_ALIGN::RIGHT : 
 			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
 			angle = 360.f * rendering.textureW / lCercle;
 			break;
-		case TEXT_POSITION::CENTER: 
+		case TEXT_ALIGN::CENTER: 
 			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
 			angle = 360.f * rendering.textureW / lCercle / 2.f; //because center
 			break;

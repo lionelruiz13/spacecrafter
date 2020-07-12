@@ -93,7 +93,7 @@ public:
 private:
 	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
 	std::map<std::string, FONT_SIZE> strToFontSize; // convertir txt to FONT_SIZE
-	std::map<std::string, TEXT_POSITION> strToTextPosition; // convertir txt to TEXT_POSITION
+	std::map<std::string, TEXT_ALIGN> strToTextAlign; // convertir txt to TEXT_POSITION
 	s_font *textFont[7];		// l'ensemble de fontes utilisés 
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle
