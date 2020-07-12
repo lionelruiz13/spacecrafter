@@ -39,6 +39,7 @@ Text::Text(const std::string &_name, const std::string &_text, int _altitude, in
 	azimuth= _azimuth;
 	textColor = color;
 	textSize = _size;
+	fader = true;
 }
 
 
