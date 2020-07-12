@@ -42,8 +42,6 @@ TextMgr::TextMgr()
 
 TextMgr::~TextMgr()
 {
-	// for (auto iter = textUsr.begin(); iter != textUsr.end(); iter++)
-	// 	delete(*iter);
 	this->clear();
 
 	for(int i=0; i<7; i++) {
@@ -81,9 +79,6 @@ void TextMgr::setColor(const Vec3f& c)
 
 void TextMgr::clear()
 {
-	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-	// 	delete(*iter);
-	// }
 	textUsr.clear();
 
 	for(int i=0; i<7; i++) {
@@ -96,29 +91,14 @@ void TextMgr::del(const std::string &name)
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
 		textUsr.erase(it);
-	
-	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-	// 	if ((*iter)->getName() == name) {
-	// 		delete(*iter);
-	// 		textUsr.erase(iter);
-	// 		return true;
-	// 	}
-	// }
-	// return false;
 }
 
-void TextMgr::nameUpdate(const std::string &name, const std::string &text)
+void TextMgr::textUpdate(const std::string &name, const std::string &text)
 {
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
 		(*it).second->textUpdate(text,textFont);
 
-	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-	// 	if ((*iter)->getName() == name) {
-	// 		(*iter)->textUpdate(text,textFont);
-	// 		return;
-	// 	}
-	//}
 }
 
 void TextMgr::textDisplay(const std::string &name , bool displ)
@@ -126,13 +106,6 @@ void TextMgr::textDisplay(const std::string &name , bool displ)
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
 		(*it).second->setDisplay(displ);
-
-	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-	// 	if ((*iter)->getName() == name) {
-	// 		(*iter)->setDisplay(displ);
-	// 		return;
-	// 	}
-	// }
 }
 
 void TextMgr::setFadingDuration(int t)

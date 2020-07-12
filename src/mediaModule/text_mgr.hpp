@@ -73,7 +73,7 @@ public:
 	void clear();
 
 	//! permet de changer le texte d'un text du conteneur
-	void nameUpdate(const std::string &name, const std::string &text);
+	void textUpdate(const std::string &name, const std::string &text);
 
 	//! permet de masquer un texte du conteneur
 	void textDisplay(const std::string &name , bool displ);

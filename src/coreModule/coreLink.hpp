@@ -133,7 +133,7 @@ public:
 	}
 
 	void textNameUpdate(std::string name, std::string text) {
-		core->text_usr->nameUpdate(name, text);
+		core->text_usr->textUpdate(name, text);
 	}
 
 	void textDisplay(std::string name , bool displ) {
