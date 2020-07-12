@@ -60,10 +60,12 @@ public:
 	void draw(const Projector* prj);
 
 	//! ajoute un texte dans le conteneur textUsr
-	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const Vec3f &color);
+	void add(const std::string &name, const std::string &text, int altitude, int azimuth, 
+				const std::string &fontSize, const std::string &_textAlign, const Vec3f &color);
 
 	//! ajoute un texte dans le conteneur textUsr
-	void add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize);
+	void add(const std::string &name, const std::string &text, int altitude, int azimuth, 
+				const std::string &textAlign, const std::string &fontSize);
 
 	//! retire un texte du conteneur textUsr
 	void del(const std::string &name);
@@ -91,6 +93,7 @@ public:
 private:
 	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
 	std::map<std::string, FONT_SIZE> strToFontSize; // convertir txt to FONT_SIZE
+	std::map<std::string, TEXT_POSITION> strToTextPosition; // convertir txt to TEXT_POSITION
 	s_font *textFont[7];		// l'ensemble de fontes utilisés 
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle

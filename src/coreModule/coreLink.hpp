@@ -116,12 +116,12 @@ public:
 	// Text_usr---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	void textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, Vec3f &color) {
-		core->text_usr->add(name, text,altitude, azimuth, textSize, color);
+	void textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, std::string textAlign, Vec3f &color) {
+		core->text_usr->add(name, text,altitude, azimuth, textSize, textAlign, color);
 	}
 
-	void textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize) {
-		core->text_usr->add(name, text,altitude, azimuth, textSize);
+	void textAdd(std::string name, std::string text, int altitude, int azimuth, std::string textSize, std::string textAlign) {
+		core->text_usr->add(name, text,altitude, azimuth, textSize, textAlign);
 	}
 
 	void textDel(std::string name) {

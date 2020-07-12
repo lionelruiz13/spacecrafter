@@ -2137,6 +2137,9 @@ int AppCommandInterface::commandText()
 				std::string argSize = args[W_SIZE];
 				if (!argSize.empty())
 					std::transform(argSize.begin(), argSize.end(),argSize.begin(), ::toupper);
+				std::string align = args[W_ALIGN];
+				if (!align.empty())
+					std::transform(align.begin(), align.end(),align.begin(), ::toupper);
 				//gestion de la couleur
 				Vec3f Vcolor;
 				std::string argValue = args[W_COLOR_VALUE];
@@ -2145,10 +2148,10 @@ int AppCommandInterface::commandText()
 				std::string argB= args[W_B];
 				AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 				if (testColor)
-					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, Vcolor);
+					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align, Vcolor);
 				else {
 					debug_message.clear();
-					coreLink->textAdd(argName,argString, altitude, azimuth, argSize);
+					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align);
 				}
 				// test si l'utilisateur spécifie argDisplay
 				if (!argDisplay.empty()) {

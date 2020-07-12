@@ -73,6 +73,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 
 
 // nom des arguments des commandes
+#define W_ALIGN                     "align"
 #define W_FILENAME                  "filename"
 #define W_SIZE                      "size"
 #define W_ACTION                    "action"
