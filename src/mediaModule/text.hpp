@@ -35,10 +35,16 @@
 
 
 /**
+ * \file text.hpp
+ * \brief This class manages a single text to display.
+ * \author Olivier NIVOIX
+ * \version 2
+ *
  * @class Text
- * @brief Cette classe gère un unique texte à afficher à l'écran.
- * Un texte est représenté par sa couleur, son message et sa position et sa durée de vie.
- * On peut modifier sa couleur, sa position et son message.
+ * @brief This class manages a single text to display.
+ * 
+ * A text is represented by its color, its message and its position.
+ * His message can be modified.
  */
 class Text {
 public:
