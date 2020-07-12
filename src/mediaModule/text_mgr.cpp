@@ -61,6 +61,7 @@ void TextMgr::update(int delta_time)
 
 bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color)
 {
+	this->del(name);
 	Text *token =nullptr;
 	FONT_SIZE textSize = convertToFontSize(size);
 	token = new Text(name, text, altitude, azimuth, textSize, color);
