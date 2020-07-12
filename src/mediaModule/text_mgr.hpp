@@ -79,7 +79,9 @@ public:
 	void textDisplay(const std::string &name , bool displ);
 
 	//! permet de changer le fading d'un texte du conteneur
-	void setFadingDuration(int t);
+	void setFadingDuration(float t) {
+		fadingDuration = t;
+	}
 
 	//! initialise l'ensemble des fontes utilisées par la classe
 	void setFont(float font_size, const std::string& font_name);
@@ -93,6 +95,7 @@ private:
 	s_font *textFont[7];		// l'ensemble de fontes utilisés 
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle
+	float fadingDuration;		// durée d'une fading de text (s'il existe) en secondes
 };
 
 #endif

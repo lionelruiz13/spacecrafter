@@ -69,18 +69,13 @@ public:
 	//! met à jour l'état du fader d'affichage
 	void update(int delta_time);
 
-	//! modifie la durée d'apparition/disparition d'un text
-	void setFadingDuration(int a) {
-		fader.setDuration(a);
-	};
-
 private:
 	std::string name;
 	std::string text;
 	Vec3f textColor;
 	int altitude;
 	int azimuth;
-	LinearFader fader;
+	BooleanFader fader;
 	s_font* textFont;
 };
 

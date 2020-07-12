@@ -1591,7 +1591,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 						else
 							coreLink->uboSetAmbientLight(evalDouble(setValue));
 						break;	
-		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToInt(setValue)); break;
+		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToFloat(setValue)); break;
 		case SCD_NAMES::APP_ZOOM_OFFSET: stcore->setViewOffset(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(setValue); break;
 		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(setValue); break;

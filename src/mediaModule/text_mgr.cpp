@@ -118,13 +118,6 @@ void TextMgr::textDisplay(const std::string &name , bool displ)
 		(*it).second->setDisplay(displ);
 }
 
-void TextMgr::setFadingDuration(int t)
-{
-	// for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-	// 	(*iter)->setFadingDuration(t);
-	// }
-}
-
 
 void TextMgr::setFont(float font_size, const std::string& font_name)
 {
