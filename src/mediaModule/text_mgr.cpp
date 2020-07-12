@@ -73,8 +73,8 @@ void TextMgr::update(int delta_time)
 	}
 }
 
-
-void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const std::string &_textAlign, const Vec3f &color)
+void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
+// void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const std::string &_textAlign, const Vec3f &color)
 {
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
@@ -82,10 +82,10 @@ void TextMgr::add(const std::string &name, const std::string &text, int altitude
 
 	//set font size
 	FONT_SIZE textSize = FONT_SIZE::T_MEDIUM;
-	if (!fontSize.empty()) {
-		auto it = strToFontSize.find(fontSize);
+	if (!textParam.fontSize.empty()) {
+		auto it = strToFontSize.find(textParam.fontSize);
 		if (it!=strToFontSize.end())
-			textSize=strToFontSize[fontSize];
+			textSize=strToFontSize[textParam.fontSize];
 		else
 			cLog::get()->write("text size was not recognized", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
@@ -104,21 +104,29 @@ void TextMgr::add(const std::string &name, const std::string &text, int altitude
 
 	//set align
 	TEXT_ALIGN textAlign = TEXT_ALIGN::LEFT;
-	if (!_textAlign.empty()) {
-		auto it = strToTextAlign.find(_textAlign);
+	if (!textParam.textAlign.empty()) {
+		auto it = strToTextAlign.find(textParam.textAlign);
 		if (it!=strToTextAlign.end())
-			textAlign=strToTextAlign[_textAlign];
+			textAlign=strToTextAlign[textParam.textAlign];
 		else
 			cLog::get()->write("text alignement was not recognized", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
-	std::unique_ptr token  = std::make_unique<Text>(name, text, altitude, azimuth, tmp, textAlign, color);
+
+	//set color
+	Vec3f color;
+	if (textParam.useColor==true)
+		color = textParam.color;
+	else
+		color = defaultTextColor;
+
+	std::unique_ptr token  = std::make_unique<Text>(name, textParam.string, textParam.altitude, textParam.azimuth, tmp, textAlign, color);
 	textUsr[name]=std::move(token);
 }
 
-void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const std::string &textAlign)
-{
-	this->add(name, text, altitude, azimuth, fontSize, textAlign, defaultTextColor);
-}
+// void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const std::string &textAlign)
+// {
+// 	this->add(name, text, altitude, azimuth, fontSize, textAlign, defaultTextColor);
+// }
 
 
 void TextMgr::setColor(const Vec3f& c)

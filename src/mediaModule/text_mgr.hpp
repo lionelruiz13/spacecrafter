@@ -67,12 +67,7 @@ public:
 	void draw(const Projector* prj);
 
 	//! ajoute un texte dans le conteneur textUsr
-	void add(const std::string &name, const std::string &text, int altitude, int azimuth, 
-				const std::string &fontSize, const std::string &_textAlign, const Vec3f &color);
-
-	//! ajoute un texte dans le conteneur textUsr
-	void add(const std::string &name, const std::string &text, int altitude, int azimuth, 
-				const std::string &textAlign, const std::string &fontSize);
+	void add(const std::string& name, const TEXT_MGR_PARAM& textParam);
 
 	//! retire un texte du conteneur textUsr
 	void del(const std::string &name);

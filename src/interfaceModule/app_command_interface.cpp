@@ -2132,27 +2132,40 @@ int AppCommandInterface::commandText()
 			std::string argAzimuth = args[W_AZIMUTH];
 			std::string argAltitude = args[W_ALTITUDE];
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
-				float azimuth = evalDouble(argAzimuth);
-				float altitude = evalDouble(argAltitude);
-				std::string argSize = args[W_SIZE];
-				if (!argSize.empty())
-					std::transform(argSize.begin(), argSize.end(),argSize.begin(), ::toupper);
-				std::string align = args[W_ALIGN];
-				if (!align.empty())
-					std::transform(align.begin(), align.end(),align.begin(), ::toupper);
+				
+				//création paramètres 
+				TEXT_MGR_PARAM textParam;
+				textParam.string = argString;
+				textParam.azimuth = evalDouble(argAzimuth);
+				textParam.altitude = evalDouble(argAltitude);
+				textParam.fontSize = args[W_SIZE];
+				if (!textParam.fontSize.empty())
+					std::transform(textParam.fontSize.begin(), textParam.fontSize.end(),textParam.fontSize.begin(), ::toupper);
+				textParam.textAlign = args[W_ALIGN];
+				if (!textParam.textAlign.empty())
+					std::transform(textParam.textAlign.begin(), textParam.textAlign.end(),textParam.textAlign.begin(), ::toupper);
 				//gestion de la couleur
 				Vec3f Vcolor;
 				std::string argValue = args[W_COLOR_VALUE];
 				std::string argR= args[W_R];
 				std::string argG= args[W_G];
 				std::string argB= args[W_B];
-				AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
-				if (testColor)
-					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align, Vcolor);
-				else {
-					debug_message.clear();
-					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align);
-				}
+				std::string msg;
+				AppCommandColor testColor(Vcolor, msg, argValue, argR,argG, argB);
+
+				if (testColor) {
+					textParam.color = Vcolor;
+					textParam.useColor = true;
+				} else
+					textParam.useColor = false;
+
+				coreLink->textAdd(argName, textParam);
+				// if (testColor)
+				// 	coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align, Vcolor);
+				// else {
+				// 	debug_message.clear();
+				// 	coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align);
+				// }
 				// test si l'utilisateur spécifie argDisplay
 				if (!argDisplay.empty()) {
 					if ( isTrue(argDisplay) )

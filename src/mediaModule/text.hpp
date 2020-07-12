@@ -48,7 +48,7 @@
  */
 class Text {
 public:
-	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color);
+	Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color);
 	~Text();
 
 	//! occulte ou pas le text à l'affichage
