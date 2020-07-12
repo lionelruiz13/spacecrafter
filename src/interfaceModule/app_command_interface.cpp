@@ -2133,8 +2133,6 @@ int AppCommandInterface::commandText()
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
 				float azimuth = evalDouble(argAzimuth);
 				float altitude = evalDouble(argAltitude);
-				int durationText = 1000*evalDouble(args[W_DURATION]);
-				printf("Durée d'apparition du texte : %i\n", durationText);
 				std::string argSize = args[W_SIZE];
 
 				//gestion de la couleur
@@ -2145,10 +2143,10 @@ int AppCommandInterface::commandText()
 				std::string argB= args[W_B];
 				AppCommandColor testColor(Vcolor, debug_message, argValue, argR,argG, argB);
 				if (testColor)
-					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, Vcolor, durationText);
+					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, Vcolor);
 				else {
 					debug_message.clear();
-					coreLink->textAdd(argName,argString, altitude, azimuth, argSize, durationText);
+					coreLink->textAdd(argName,argString, altitude, azimuth, argSize);
 				}
 				// test si l'utilisateur spécifie argDisplay
 				if (!argDisplay.empty()) {

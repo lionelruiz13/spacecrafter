@@ -37,7 +37,6 @@ TextMgr::TextMgr()
 {
 	for(int i=0; i<7; i++)
 		textFont[i]=nullptr;
-	textToDestroy="";
 }
 
 TextMgr::~TextMgr()
@@ -57,21 +56,14 @@ void TextMgr::update(int delta_time)
 	std::vector < Text * >::const_iterator iter;
 	for (iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
 		(*iter)->update(delta_time);
-		if ((*iter)->isDead()) {
-			textToDestroy = (*iter)->getName();
-		}
-	}
-	if (!textToDestroy.empty() ) {
-		del(textToDestroy);
-		textToDestroy.clear();
 	}
 }
 
 
-bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color, int timeout)
+bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color)
 {
 	Text *token =nullptr;
-	token = new Text(name, text, altitude, azimuth, size, color, timeout);
+	token = new Text(name, text, altitude, azimuth, size, color);
 	if (token != nullptr) {
 		textUsr.push_back(token);
 		return true;
@@ -81,9 +73,9 @@ bool TextMgr::add(const std::string &name, const std::string &text, int altitude
 	}
 }
 
-bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, int timeout)
+bool TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size)
 {
-	return add(name, text, altitude, azimuth, size, defaultTextColor, timeout);
+	return add(name, text, altitude, azimuth, size, defaultTextColor);
 }
 
 

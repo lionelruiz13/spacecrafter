@@ -41,7 +41,7 @@
  */
 class Text {
 public:
-	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, const std::string &size, const Vec3f &color, int _timeout=0);
+	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, const std::string &size, const Vec3f &color);
 	~Text();
 
 	//! occulte ou pas le text à l'affichage
@@ -73,11 +73,6 @@ public:
 		fader.setDuration(a);
 	};
 
-	//! renvoie si le texte est encore actif ou pas
-	bool isDead() {
-		return isTextDead;
-	}
-
 private:
 	enum class FontSize : char {T_XX_SMALL, T_X_SMALL, T_SMALL, T_MEDIUM, T_LARGE, T_X_LARGE, T_XX_LARGE};
 	std::string name;
@@ -88,9 +83,6 @@ private:
 	LinearFader fader;
 	FontSize textSize= FontSize::T_MEDIUM;
 	void convertToFontSize(const std::string &size);
-	int timeout = 0; 		//!< durée d'affichage du texte
-	bool isTextDead = false;	//!< indicateur de vie du texte
-	bool isDying = false;
 };
 
 #endif // TEXT_HPP

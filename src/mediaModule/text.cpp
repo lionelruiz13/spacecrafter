@@ -45,7 +45,7 @@ void Text::convertToFontSize(const std::string &size)
 }
 
 
-Text::Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth , const std::string &size, const Vec3f &color, int _timeout)
+Text::Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth , const std::string &size, const Vec3f &color)
 {
 	name= _name;
 	text= _text;
@@ -53,9 +53,6 @@ Text::Text(const std::string &_name, const std::string &_text, int _altitude, in
 	azimuth= _azimuth;
 	textColor = color;
 	convertToFontSize(size);
-	isTextDead = false;
-	timeout = _timeout;
-	printf("Duration fixée à %i\n", timeout);
 }
 
 
@@ -67,17 +64,6 @@ Text::~Text()
 
 void Text::update(int delta_time){
 	fader.update(delta_time);
-	if (timeout>0 && fader.getInterstate()>0) {
-		timeout -= delta_time;
-		//~ printf("nd: %i\n", duration);
-		if (timeout< fader.getDuration() && !isDying) {
-			//~ printf("Le text est entrain de mourir\n");
-			fader= false;
-			isDying = true;
-		}
-		if (timeout<1) {
-			isTextDead = true;}
-	}
 }
 
 void Text::draw(const Projector* prj, s_font *textFont[])

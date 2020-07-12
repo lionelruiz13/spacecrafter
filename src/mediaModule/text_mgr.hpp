@@ -58,10 +58,10 @@ public:
 	void draw(const Projector* prj);
 
 	//! ajoute un texte dans le conteneur textUsr
-	bool add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color, int timeout);
+	bool add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, const Vec3f &color);
 
 	//! ajoute un texte dans le conteneur textUsr
-	bool add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size, int timeout);
+	bool add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &size);
 
 	//! retire un texte du conteneur textUsr
 	bool del(const std::string &name);
@@ -89,7 +89,6 @@ private:
 	s_font *textFont[7];		// l'ensemble de fontes utilisés 
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle
-	std::string textToDestroy;	// indicateur d'un texte périmé à supprimer
 };
 
 #endif
