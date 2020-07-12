@@ -32,10 +32,12 @@
 #include "mediaModule/text_mgr.hpp"
 #include "mediaModule/text.hpp"
 
+#define NB_MAX_SIZE 7
+
 TextMgr::TextMgr()
 {
-	for(int i=0; i<7; i++)
-		textFont[i]=nullptr;
+	// for(int i=0; i<7; i++)
+	// 	textFont[i]=nullptr;
 
 	strToFontSize["XX_SMALL"] = FONT_SIZE::T_XX_SMALL;
 	strToFontSize["X_SMALL"] = FONT_SIZE::T_X_SMALL;
@@ -56,10 +58,12 @@ TextMgr::~TextMgr()
 	strToFontSize.clear();
 	strToTextAlign.clear();
 
-	for(int i=0; i<7; i++) {
-		if (textFont[i]) delete textFont[i];
-		textFont[i]=nullptr;
-	}
+	// for(int i=0; i<7; i++) {
+	// 	if (textFont[i]) delete textFont[i];
+	// 	textFont[i]=nullptr;
+	// }
+	this->clearCache();
+	textFont.clear();
 }
 
 void TextMgr::update(int delta_time)
@@ -72,7 +76,9 @@ void TextMgr::update(int delta_time)
 
 void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const std::string &_textAlign, const Vec3f &color)
 {
-	this->del(name);
+	auto it = textUsr.find(name);
+	if (it!=textUsr.end())
+		textUsr.erase(it);
 
 	//set font size
 	FONT_SIZE textSize = FONT_SIZE::T_MEDIUM;
@@ -87,13 +93,13 @@ void TextMgr::add(const std::string &name, const std::string &text, int altitude
 	//set font
 	s_font *tmp;
 	switch (textSize) {
-		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0]; break;
-		case FONT_SIZE::T_X_SMALL: tmp = textFont[1]; break;
-		case FONT_SIZE::T_SMALL: tmp = textFont[2]; break;
-		case FONT_SIZE::T_MEDIUM: tmp = textFont[3]; break;
-		case FONT_SIZE::T_LARGE: tmp = textFont[4]; break;
-		case FONT_SIZE::T_X_LARGE: tmp = textFont[5]; break;
-		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6]; break;
+		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0].get(); break;
+		case FONT_SIZE::T_X_SMALL: tmp = textFont[1].get(); break;
+		case FONT_SIZE::T_SMALL: tmp = textFont[2].get(); break;
+		case FONT_SIZE::T_MEDIUM: tmp = textFont[3].get(); break;
+		case FONT_SIZE::T_LARGE: tmp = textFont[4].get(); break;
+		case FONT_SIZE::T_X_LARGE: tmp = textFont[5].get(); break;
+		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6].get(); break;
 	}
 
 	//set align
@@ -123,10 +129,15 @@ void TextMgr::setColor(const Vec3f& c)
 void TextMgr::clear()
 {
 	textUsr.clear();
+}
+	// for(int i=0; i<7; i++) {
+	// 	textFont[i]->clearCache();
+	// }
 
-	for(int i=0; i<7; i++) {
-		textFont[i]->clearCache();
-	}
+void TextMgr::clearCache()
+{
+	for (auto &it : textFont)
+		it->clearCache();
 }
 
 void TextMgr::del(const std::string &name)
@@ -165,18 +176,23 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
 
-	for(int i=0; i<7; i++) {
-		if (textFont[i]) delete textFont[i];
-		textFont[i]=nullptr;
-	}
-	for(int i=0; i<7; i++) {
-		textFont[i] = new s_font(font_size+2*(i-3), font_name);
-		if (textFont[i]==nullptr) {
+	// for(int i=0; i<7; i++) {
+	// 	if (textFont[i]) delete textFont[i];
+	// 	textFont[i]=nullptr;
+	// }
+	isUsable= true;
+	this->clearCache();
+	textFont.reserve(NB_MAX_SIZE);
+	for(int i=0; i<NB_MAX_SIZE; i++) {
+		textFont.push_back(std::make_unique<s_font>(font_size+2*(i-3), font_name));
+		if (textFont.back()==nullptr) {
 			cLog::get()->write("TEXT: can't create text usr font", LOG_TYPE::L_ERROR);
 			isUsable = false;
+			break;
 		}
 	}
-	isUsable= true;
+	// WTF ???
+	// isUsable= true;
 
 	if (!isUsable)
 		cLog::get()->write("TEXT: module disable", LOG_TYPE::L_WARNING);

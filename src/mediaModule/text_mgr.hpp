@@ -91,10 +91,11 @@ public:
 	void setColor(const Vec3f& c);
 
 private:
+	void clearCache();
 	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
 	std::map<std::string, FONT_SIZE> strToFontSize; // convertir txt to FONT_SIZE
 	std::map<std::string, TEXT_ALIGN> strToTextAlign; // convertir txt to TEXT_POSITION
-	s_font *textFont[7];		// l'ensemble de fontes utilisés 
+	std::vector<std::unique_ptr<s_font>> textFont;		// l'ensemble de fontes utilisés
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle
 	float fadingDuration;		// durée d'une fading de text (s'il existe) en secondes
