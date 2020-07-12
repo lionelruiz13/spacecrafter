@@ -38,15 +38,22 @@
 #include "tools/no_copy.hpp"
 
 /**
- * @class TextMgr
- * @brief Cette classe s'ocupe de gérer toutes les entités de text utilisées 
- * à partir de commandes scripts. La classe est opérationnelle lorsque setFont
- * réussit à charger une fonte dans 7 gammes de taille.
+ * \file text_mgr.hpp
+ * \brief This class processes all text entities used by the user. 
+ * \author Olivier NIVOIX
+ * \version 2
+ *
+ * \class TextMgr
  * 
- * isUsable est une sentinelle qui met la classe en veille lorsqu'elle n'arrive
- * pas à s'initialiser correctement.
+ * \brief This class processes all text entities used by the user.
  * 
- * Le conteneur textUsr contient tous les text qui sont indépendants
+ * The class is operational when setFont succeeds in loading a font in 7 size ranges.
+ * A sentry who puts the class on standby when it cannot initialize properly.
+ * 
+ * It provides classic access to the management of horizontal texts.
+ * 
+ * The container contains all the texts which are independent of each other.
+ * The name of the text serves as a key. (uniqueness)
  *
  */
 class TextMgr: public NoCopy {
@@ -91,7 +98,7 @@ public:
 	void setColor(const Vec3f& c);
 
 private:
-	void clearCache();
+	void clearCache();			// vide les caches des fonts
 	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
 	std::map<std::string, FONT_SIZE> strToFontSize; // convertir txt to FONT_SIZE
 	std::map<std::string, TEXT_ALIGN> strToTextAlign; // convertir txt to TEXT_POSITION
