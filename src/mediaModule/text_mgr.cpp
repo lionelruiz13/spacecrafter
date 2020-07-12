@@ -62,7 +62,18 @@ void TextMgr::add(const std::string &name, const std::string &text, int altitude
 {
 	this->del(name);
 	FONT_SIZE textSize = convertToFontSize(size);
-	std::unique_ptr token  = std::make_unique<Text>(name, text, altitude, azimuth, textSize, color);
+	s_font *tmp;
+	switch (textSize) {
+		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0]; break;
+		case FONT_SIZE::T_X_SMALL: tmp = textFont[1]; break;
+		case FONT_SIZE::T_SMALL: tmp = textFont[2]; break;
+		case FONT_SIZE::T_MEDIUM: tmp = textFont[3]; break;
+		case FONT_SIZE::T_LARGE: tmp = textFont[4]; break;
+		case FONT_SIZE::T_X_LARGE: tmp = textFont[5]; break;
+		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6]; break;
+		default: tmp = textFont[3]; break; // cas medium
+	}
+	std::unique_ptr token  = std::make_unique<Text>(name, text, altitude, azimuth, tmp, color);
 	textUsr[name]=std::move(token);
 }
 
@@ -97,8 +108,7 @@ void TextMgr::textUpdate(const std::string &name, const std::string &text)
 {
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
-		(*it).second->textUpdate(text,textFont);
-
+		(*it).second->textUpdate(text);
 }
 
 void TextMgr::textDisplay(const std::string &name , bool displ)
@@ -147,7 +157,7 @@ void TextMgr::draw(const Projector* prj)
 		return;
 
 	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		(*iter).second->draw(prj,textFont);
+		(*iter).second->draw(prj);
 	}
 }
 

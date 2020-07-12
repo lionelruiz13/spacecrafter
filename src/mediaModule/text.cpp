@@ -31,62 +31,37 @@
 #include "mediaModule/text.hpp"
 
 
-Text::Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth , const FONT_SIZE &_size, const Vec3f &color)
+Text::Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth , s_font* _myFont, const Vec3f &color)
 {
 	name= _name;
 	text= _text;
 	altitude= _altitude;
 	azimuth= _azimuth;
 	textColor = color;
-	textSize = _size;
+	textFont =_myFont;
 	fader = true;
 }
 
 
 Text::~Text()
-{
-	printf("texte %s est détruit\n", name.c_str());
-}
+{}
 
 
 void Text::update(int delta_time){
 	fader.update(delta_time);
 }
 
-void Text::draw(const Projector* prj, s_font *textFont[])
+void Text::draw(const Projector* prj)
 {
-	//~ glEnable(GL_TEXTURE_2D);
+	if ( !fader.getInterstate() ) return;
+
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	StateGL::enable(GL_BLEND);
-	s_font *tmp;
-
-	if ( !fader.getInterstate() ) return;
-	//~ glColor4f(r,g,b,fader.getInterstate());
-	switch (textSize) {
-		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0]; break;
-		case FONT_SIZE::T_X_SMALL: tmp = textFont[1]; break;
-		case FONT_SIZE::T_SMALL: tmp = textFont[2]; break;
-		case FONT_SIZE::T_MEDIUM: tmp = textFont[3]; break;
-		case FONT_SIZE::T_LARGE: tmp = textFont[4]; break;
-		case FONT_SIZE::T_X_LARGE: tmp = textFont[5]; break;
-		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6]; break;
-		default: tmp = textFont[3]; break; // cas medium
-	}
-	tmp->printHorizontal(prj, altitude, azimuth, text,textColor, TEXT_POSITION::LEFT, true); //, 1, true/*, true*/);
+	textFont->printHorizontal(prj, altitude, azimuth, text,textColor, TEXT_POSITION::LEFT, true);
 }
 
-void Text::textUpdate(const std::string &_text, s_font *textFont[]){
-	s_font *tmp;
-	switch (textSize) {
-		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0]; break;
-		case FONT_SIZE::T_X_SMALL: tmp = textFont[1]; break;
-		case FONT_SIZE::T_SMALL: tmp = textFont[2]; break;
-		case FONT_SIZE::T_MEDIUM: tmp = textFont[3]; break;
-		case FONT_SIZE::T_LARGE: tmp = textFont[4]; break;
-		case FONT_SIZE::T_X_LARGE: tmp = textFont[5]; break;
-		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6]; break;
-		default: tmp = textFont[3]; break; // cas medium
-	}
-	tmp->clearCache(text);
+void Text::textUpdate(const std::string &_text)
+{
+	textFont->clearCache(text);
 	text=_text;
 }

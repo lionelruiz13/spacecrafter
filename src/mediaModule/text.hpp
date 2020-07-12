@@ -42,7 +42,7 @@
  */
 class Text {
 public:
-	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, const FONT_SIZE &_size, const Vec3f &color);
+	Text(const std::string &_name, const std::string &_text, int _altitude, int _azimuth, s_font *_myFont, const Vec3f &color);
 	~Text();
 
 	//! occulte ou pas le text à l'affichage
@@ -51,20 +51,20 @@ public:
 	}
 
 	//! indique l'état du text vis à vis de l'affichage
-	bool getDisplay(void) const{
+	bool getDisplay() const{
 		return fader;
 	}
 
 	//! renvoie le nom du text
-	std::string getName(){
+	std::string getName() const {
 		return name;
 	}
 
 	//! modifie le message du text
-	void textUpdate(const std::string &_text, s_font *textFont[]);
+	void textUpdate(const std::string &_text);
 
 	//! affiche le texte à l'écran 
-	void draw(const Projector* prj, s_font *textFont[]);
+	void draw(const Projector* prj);
 
 	//! met à jour l'état du fader d'affichage
 	void update(int delta_time);
@@ -81,7 +81,7 @@ private:
 	int altitude;
 	int azimuth;
 	LinearFader fader;
-	FONT_SIZE textSize= FONT_SIZE::T_MEDIUM;
+	s_font* textFont;
 };
 
 #endif // TEXT_HPP
