@@ -1632,21 +1632,10 @@ int AppCommandInterface::commandShutdown()
 int AppCommandInterface::commandConfiguration()
 {
 	std::string argAction = args[W_ACTION];
-	if (!argAction.empty()) {
-		if(argAction== W_LOAD) {
-			stapp->init();
-			return executeCommandStatus();
-		} else if(argAction==W_SAVE) {
-			stapp->saveCurrentConfig(AppSettings::Instance()->getConfigFile());
-			return executeCommandStatus();
-		} else
-			debug_message = "command 'configuration': unknown action value";
-	}
-
 	std::string argModule = args[W_MODULE];
 
 	if (!argModule.empty()){
-		if (argModule == ACP_CN_STAR_LINES){
+		if (argModule == W_STAR_LINES){
 
 			if (argAction == W_CLEAR) {
 				coreLink->starLinesClear();
@@ -1655,23 +1644,22 @@ int AppCommandInterface::commandConfiguration()
 
 			std::string argName = args[W_NAME];
 			if (argName.empty()){
-				debug_message = "command 'star_lines' missing name parameter";
+				debug_message = "command 'configuration' missing name parameter";
 				return executeCommandStatus();
 			}
 			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
 			if (argAction == W_LOAD) {
-				if (binaryMode)
-					coreLink->starLinesLoadBinCat(argName);
-				else
-					coreLink->starLinesLoadCat(argName);
+				FilePath myFile  = FilePath(evalString(argName), FilePath::TFP::DATA);					
+				if (!myFile.exist()) {
+					debug_message = "command 'configuration' filename not found";
+					return executeCommandStatus();
+				}
+				coreLink->starLinesLoadCat(myFile.toString(), binaryMode);
 				return executeCommandStatus();
 			} else
 			if (argAction == W_SAVE) {
-				if (binaryMode)
-					coreLink->starLinesSaveBinCat(argName);
-				else
-					coreLink->starLinesSaveCat(argName);
+				coreLink->starLinesSaveCat(AppSettings::Instance()->getUserDir() + argName, binaryMode);
 				return executeCommandStatus();
 			} else
 			if (argAction == W_LOAD_STAR) {
@@ -1697,26 +1685,29 @@ int AppCommandInterface::commandConfiguration()
 				debug_message = "command 'configuration', star_navigator missing name argument";
 				return executeCommandStatus();
 			}
-
 			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
 			if (argAction ==  W_LOAD) {
 				std::string argMode = args[ACP_SC_MODE];
-
+				FilePath myFile  = FilePath(evalString(argName), FilePath::TFP::DATA);	
+				if (!myFile.exist()) {
+					debug_message = "command 'configuration' filename not found";
+					return executeCommandStatus();
+				}
 				if (argMode.empty()){
 					debug_message = "command 'configuration', star_navigator missing mode argument";
 					return executeCommandStatus();
 				} else {
 					if (argMode == W_RAW) {
-						coreLink->starNavigatorLoadRaw(argName);
+						coreLink->starNavigatorLoadRaw(myFile.toString());
 						return executeCommandStatus();
 					} else 
 					if (argMode == W_SC) {
-						coreLink->starNavigatorLoad(argName, binaryMode);
+						coreLink->starNavigatorLoad(myFile.toString(), binaryMode);
 						return executeCommandStatus();
 					} else 
 					if (argMode == W_OTHER) {
-						coreLink->starNavigatorLoadOther(argName);
+						coreLink->starNavigatorLoadOther(myFile.toString());
 						return executeCommandStatus();
 					} else {
 						debug_message = "command 'configuration': unknown starNavigator mode parameter";
@@ -1725,11 +1716,23 @@ int AppCommandInterface::commandConfiguration()
 				}
 			} else
 			if (argAction == W_SAVE) {
-				coreLink->starNavigatorSave(argName, binaryMode);
+				coreLink->starNavigatorSave(AppSettings::Instance()->getUserDir() + argName, binaryMode);
 			} else
 				debug_message = "command 'configuration': unknown starNavigator action argument";
 		} else
 			debug_message = "command 'configuration': unknown module argument";
+	}
+
+	// comme commande indépendante de argModule
+	if (!argAction.empty()) {
+		if(argAction== W_LOAD) {
+			stapp->init();
+			return executeCommandStatus();
+		} else if(argAction==W_SAVE) {
+			stapp->saveCurrentConfig(AppSettings::Instance()->getConfigFile());
+			return executeCommandStatus();
+		} else
+			debug_message = "command 'configuration': unknown action value";
 	}
 	debug_message = "command 'configuration': unknown argument";
 	return executeCommandStatus();

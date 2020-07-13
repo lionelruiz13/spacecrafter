@@ -49,20 +49,13 @@ public:
 		core->starLines->clear();
 	}
 
-	void starLinesSaveCat(const std::string &fileName){
-		core->starLines->saveHipCatalogue(fileName);
+	void starLinesSaveCat(const std::string &fileName, bool binaryMode){
+		core->starLines->saveCat(fileName, binaryMode);
 	}
 
-	void starLinesSaveBinCat(const std::string &fileName){
-		core->starLines->saveHipBinCatalogue(fileName);
-	}
 
-	void starLinesLoadCat(const std::string &fileName){
-		core->starLines->loadHipCatalogue(fileName);
-	}
-
-	void starLinesLoadBinCat(const std::string &fileName){
-		core->starLines->loadHipBinCatalogue(fileName);
+	void starLinesLoadCat(const std::string &fileName, bool binaryMode){
+		core->starLines->loadCat(fileName, binaryMode);
 	}
 
 	void starLinesLoadHipStar(int name, Vec3f position) {

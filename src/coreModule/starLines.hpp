@@ -77,32 +77,24 @@ public:
 		return lineColor;
 	}
 
-	//! \brief charge un fichier utilisateur d'astérismes dans les tampons
-	//! \param fileName représente le nom complet du fichier des datas
-	bool loadData(std::string fileName) noexcept;
-
-	//! \brief charge un seul asterisme dans les tampons
-	//! \param fileName représente le nom complet du fichier des datas
-	void loadStringData(std::string record) noexcept;
-
 	//! \brief charge une étoile pour le catalogue
 	void loadHipStar(int name, Vec3f position ) noexcept;
 
+	//! \brief charge un fichier utilisateur d'astérismes dans les tampons
+	//! \param fileName représente le nom complet du fichier des datas
+	bool loadData(const std::string& fileName) noexcept;
+
+	//! \brief charge un seul asterisme dans les tampons
+	//! \param fileName représente le nom complet du fichier des datas
+	void loadStringData(const std::string& record) noexcept;
+
 	//! \brief lit le catalogue des étoiles les plus lumineuses
 	//! \return true si tout est oki, false sinon
-	bool loadHipCatalogue(std::string fileName) noexcept;
+	bool loadCat(const std::string& fileName, bool useBinary) noexcept;
 
-	//! \brief lit le catalogue binaire des étoiles les plus lumineuses
+	//! \brief sauvegarde le catalogue des étoiles les plus lumineuses
 	//! \return true si tout est oki, false sinon
-	bool loadHipBinCatalogue(std::string fileName) noexcept;
-
-	//! sauvegarde le catalogue des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
-	bool saveHipCatalogue(std::string fileName) noexcept;
-
-	//! sauvegarde le catalogue en mode binaire des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
-	bool saveHipBinCatalogue(std::string fileName) noexcept;
+	bool saveCat(const std::string& fileName, bool useBinary) noexcept;
 
 	//! dessine les asterismes issus de loadData IN_SOLARSYSTEM
 	void draw(const Projector* prj) noexcept;
@@ -118,6 +110,20 @@ public:
 	}
 
 protected:
+	//! \brief lit le catalogue des étoiles les plus lumineuses
+	//! \return true si tout est oki, false sinon
+	bool loadHipCat(const std::string& fileName) noexcept;
+	//! \brief lit le catalogue binaire des étoiles les plus lumineuses
+	//! \return true si tout est oki, false sinon
+	bool loadHipBinCat(const std::string& fileName) noexcept;
+
+	//! sauvegarde le catalogue des étoiles les plus lumineuses
+	//! \return true si tout est oki, false sinon
+	bool saveHipCat(const std::string& fileName) noexcept;
+	//! sauvegarde le catalogue binaire des étoiles les plus lumineuses
+	//! \return true si tout est oki, false sinon
+	bool saveHipBinCat(const std::string& fileName) noexcept;
+
 	// shader d'affichage
 	std::unique_ptr<shaderProgram> shaderStarLines;
 	// données VAO-VBO

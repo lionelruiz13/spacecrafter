@@ -1,8 +1,7 @@
 /*
- * CalvinGrid
+ * SphereGrid
  *
- * Copyright 2020 AssociationSirius
- * Copyright 2020 Association Andromède
+ * Copyright 2020 Association Sirius & Association Andromède
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +21,8 @@
  *
  */
 
-#ifndef _CALVINGRID_HPP_
-#define _CALVINGRID_HPP_
+#ifndef _SPHERE_GRID_H_
+#define _SPHERE_GRID_H_
 
 #include <vector>
 #include <list>
@@ -81,7 +80,7 @@ const TopTriangle icosahedron_triangles[20]= {
 };
 
 template <typename T>
-class CalvinGrid {
+class SphereGrid {
 public:
 	typedef std::list<T> dataType_t;
 	typedef std::pair<dataType_t, bool> elementType_t;
@@ -95,8 +94,8 @@ public:
 
 	class iterator;
 
-	CalvinGrid();
-	~CalvinGrid() {};
+	SphereGrid();
+	~SphereGrid() {};
 	//! define and build grid subdivisions
 	void subdivise(int _nbSubdivision);
 	//! insert un élément dans la grille
@@ -106,13 +105,13 @@ public:
 	void remove(const T &_element);
 	template<typename F>
 	void remove_if(F&& func);
-	void erase(CalvinGrid::iterator &it); // standard std::list::erase
+	void erase(SphereGrid::iterator &it); // standard std::list::erase
 	auto begin() {
-		return CalvinGrid::iterator(allDataCenter.begin(), allDataCenter.end());
+		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end());
 	};
 	void clear();
 	auto end() {
-		return CalvinGrid::iterator(allDataCenter.end());
+		return SphereGrid::iterator(allDataCenter.end());
 	};
 	// eTest* next() const;
 	// void setFov(Vec3f pos, float fov);
@@ -139,15 +138,15 @@ private:
 };
 
 template<typename T>
-class CalvinGrid<T>::iterator {
+class SphereGrid<T>::iterator {
 public:
-	iterator(typename CalvinGrid::dataCenterType_t::iterator _zoneBegin, const typename CalvinGrid::dataCenterType_t::iterator &_zoneEnd) : iterLastZone(_zoneEnd) {
+	iterator(typename SphereGrid::dataCenterType_t::iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::iterator &_zoneEnd) : iterLastZone(_zoneEnd) {
 		// Move iterZone to the first non-empty container
 		for (iterZone = _zoneBegin; iterZone->first.size() == 0 && iterZone != iterLastZone; iterZone++);
 		iterElement = iterZone->first.begin();
 		iterLastElement = iterZone->first.cend();
 	}
-	iterator(const typename CalvinGrid::dataCenterType_t::iterator &_iterZone) : iterZone(_iterZone) {}
+	iterator(const typename SphereGrid::dataCenterType_t::iterator &_iterZone) : iterZone(_iterZone) {}
 	bool operator!=(iterator compare) const {
 		return iterZone != compare.iterZone;
 	}
@@ -179,7 +178,7 @@ private:
 };
 
 template<typename T>
-inline void CalvinGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl)
+inline void SphereGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl)
 {
 	subGrid_t tmp;
 	Vec3f middleSegments[3];
@@ -218,7 +217,7 @@ inline void CalvinGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisi
 }
 
 template<typename T>
-void CalvinGrid<T>::subdivise(int _nbSubdivision)
+void SphereGrid<T>::subdivise(int _nbSubdivision)
 {
 	// clear content to rebuild grid
 	allDataCenter.clear();
@@ -239,7 +238,7 @@ void CalvinGrid<T>::subdivise(int _nbSubdivision)
 }
 
 template<typename T>
-CalvinGrid<T>::CalvinGrid()
+SphereGrid<T>::SphereGrid()
 {
 	subGrid_t tmp;
 	tmp.element = nullptr;
@@ -255,7 +254,7 @@ CalvinGrid<T>::CalvinGrid()
 }
 
 template<typename T>
-auto *CalvinGrid<T>::getNearest(const Vec3f& _v)
+auto *SphereGrid<T>::getNearest(const Vec3f& _v)
 {
 	Vec3f v=_v;
 	float bestDot = -2.f;
@@ -276,19 +275,19 @@ auto *CalvinGrid<T>::getNearest(const Vec3f& _v)
 }
 
 template<typename T>
-void CalvinGrid<T>::insert(const T &_element, Vec3f pos)
+void SphereGrid<T>::insert(const T &_element, Vec3f pos)
 {
 	getNearest(pos)->first.push_back(_element);
 }
 
 template<typename T>
-void CalvinGrid<T>::remove(const T &_element, const Vec3f &v)
+void SphereGrid<T>::remove(const T &_element, const Vec3f &v)
 {
 	getNearest(v)->first.remove(_element);
 }
 
 template<typename T>
-void CalvinGrid<T>::remove(const T &_element)
+void SphereGrid<T>::remove(const T &_element)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove(_element);
@@ -296,20 +295,20 @@ void CalvinGrid<T>::remove(const T &_element)
 
 template<typename T>
 template<typename F>
-void CalvinGrid<T>::remove_if(F&& func)
+void SphereGrid<T>::remove_if(F&& func)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove_if(func);
 }
 
 template<typename T>
-void CalvinGrid<T>::erase(CalvinGrid<T>::iterator &it)
+void SphereGrid<T>::erase(SphereGrid<T>::iterator &it)
 {
 	it.erase();
 }
 
 template<typename T>
-void CalvinGrid<T>::setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible)
+void SphereGrid<T>::setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible)
 {
 	for (auto &it: data) {
 		if (subdivisionLvl < nbSubdivision) {
@@ -321,7 +320,7 @@ void CalvinGrid<T>::setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, boo
 }
 
 template<typename T>
-void CalvinGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl)
+void SphereGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl)
 {
 	const float max = cosf(fieldAngle/2.f + angleLvl[subdivisionLvl]);
 
@@ -351,7 +350,7 @@ void CalvinGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGri
 
 //! Return an array with the number of the zones in the field of view
 template<typename T>
-void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
+void SphereGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
 	if (fieldAngle >= (3.1415926 - *angleLvl.rbegin()) * 2) { // Check if all zones are visible
 		for (auto &element: allDataCenter)
@@ -365,11 +364,11 @@ void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 }
 
 template<typename T>
-void CalvinGrid<T>::clear()
+void SphereGrid<T>::clear()
 {
 	for (auto &element: allDataCenter) {
 		element.first.clear();
 	}
 }
 
-#endif /* _CALVINGRID_HPP_ */
+#endif /* _SPHERE_GRID_H_ */

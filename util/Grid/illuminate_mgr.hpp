@@ -34,7 +34,7 @@
 #include "coreModule/grid.hpp"
 #include "coreModule/illuminate.hpp"
 #include "tools/no_copy.hpp"
-#include "tools/CalvinGrid.hpp"
+#include "tools/SphereGrid.hpp"
 
 class HipStarMgr;
 class Navigator;
@@ -107,7 +107,7 @@ private:
 	/// std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate vector
 	/// std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
 	/// LittleGrid illuminateGrid;					//!< Grid for display opimisation
-	CalvinGrid<Illuminate*> illuminateGrid;
+	SphereGrid<Illuminate*> illuminateGrid;
 
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 

@@ -63,3 +63,4 @@ po/*
 *.out
 *.app
 util/new_parser_scripts/main
+util/server_standalone/sender_client

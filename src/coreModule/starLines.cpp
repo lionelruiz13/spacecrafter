@@ -51,8 +51,27 @@ void StarLines::createSC_context()
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 }
 
-bool StarLines::loadHipCatalogue(std::string fileName) noexcept
+
+bool StarLines::loadCat(const std::string& fileName, bool useBinary) noexcept
 {
+	if (useBinary)
+		return this->loadHipBinCat(fileName);
+	else
+		return this->loadHipCat(fileName);
+}
+
+bool StarLines::saveCat(const std::string& fileName, bool useBinary) noexcept
+{
+	if (useBinary)
+		return this->saveHipBinCat(fileName);
+	else
+		return this->saveHipCat(fileName);
+}
+
+
+bool StarLines::loadHipCat(const std::string& fileName) noexcept
+{
+	std::cout << "StarLines::loadHipCatalogue " << fileName << std::endl;
 	std::ifstream fileIn(fileName.c_str());
 
 	if (!fileIn.is_open()) {
@@ -96,8 +115,9 @@ void StarLines::loadHipStar(int name, Vec3f position ) noexcept
 	HIP_data.push_back(tmp);
 }
 
-bool StarLines::saveHipCatalogue(std::string fileName) noexcept
+bool StarLines::saveHipCat(const std::string& fileName) noexcept
 {
+	std::cout << "StarLines::saveHipCatalogue " << fileName << std::endl;
 	std::ofstream fileOut(fileName.c_str());
 
 	if (!fileOut.is_open()) {
@@ -107,14 +127,15 @@ bool StarLines::saveHipCatalogue(std::string fileName) noexcept
 	}
 	fileOut << "# Created by SC StarLines::saveHipCatalogue " << std::endl;
 	for( auto it = HIP_data.begin(); it!= HIP_data.end(); it++) {
-		fileOut << (*it).first << " " << (*it).second[0] << " " << (*it).second[1]  << " " << (*it).second[2] << std::endl;
+		fileOut << (*it).first << " " << -(*it).second[0] << " " << (*it).second[1]  << " " << (*it).second[2] << std::endl;
 	}
 	fileOut.close();
 	return 0;
 }
 
-bool StarLines::saveHipBinCatalogue(std::string fileName) noexcept
+bool StarLines::saveHipBinCat(const std::string& fileName) noexcept
 {
+	std::cout << "StarLines::saveHipBinCatalogue " << fileName << std::endl;
 	std::ofstream fileOut(fileName.c_str());
 
 	if (!fileOut.is_open()) {
@@ -128,7 +149,7 @@ bool StarLines::saveHipBinCatalogue(std::string fileName) noexcept
 
 	for( auto it = HIP_data.begin(); it!= HIP_data.end(); it++) {
 		nbr = (*it).first;
-		x= (*it).second[0];
+		x= -(*it).second[0];
 		y= (*it).second[1];
 		z= (*it).second[2];
 	 	fileOut.write((char *)&nbr, sizeof(nbr));
@@ -140,8 +161,9 @@ bool StarLines::saveHipBinCatalogue(std::string fileName) noexcept
 	return 0;
 }
 
-bool StarLines::loadHipBinCatalogue(std::string fileName) noexcept
+bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 {
+	std::cout << "StarLines::loadHipBinCatalogue " << fileName << std::endl;
 	std::ifstream fileIn(fileName.c_str(), std::ios::binary|std::ios::in );
 
 	if (!fileIn.is_open()) {
@@ -180,7 +202,7 @@ bool StarLines::loadHipBinCatalogue(std::string fileName) noexcept
 }
 
 
-bool StarLines::loadData(std::string fileName) noexcept
+bool StarLines::loadData(const std::string& fileName) noexcept
 {
 	std::ifstream fileIn(fileName.c_str());
 
@@ -199,12 +221,12 @@ bool StarLines::loadData(std::string fileName) noexcept
 
 		loadStringData(record);
 	}
-	cLog::get()->write("StarLines read Data successfully "+fileName, LOG_TYPE::L_ERROR);
+	cLog::get()->write("StarLines read Data "+fileName, LOG_TYPE::L_INFO);
 	return true;
 }
 
 
-void StarLines::loadStringData(std::string record) noexcept
+void StarLines::loadStringData(const std::string& record) noexcept
 {
 	unsigned int HIP1;
 	unsigned int HIP2;
