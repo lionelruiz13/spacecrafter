@@ -161,7 +161,7 @@ void Ojm::initGLparam()
 
 bool Ojm::readOJM(const std::string& filename, float multiplier)
 {
-    std::cout<<"OJM: Reading file "<<filename << std::endl;
+   // std::cout<<"OJM: Reading file "<<filename << std::endl;
     std::ifstream stream;
     char line[265];
 
@@ -327,8 +327,8 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                 default: break;
             }
         }while(!stream.eof());
-        std::cout<<"OJM: reached end of file"<<std::endl;
-        print();
+        // std::cout<<"OJM: reached end of file"<<std::endl;
+        // print();
         return true;
     }
     std::cout<<"OJM: error reading file"<<std::endl;
