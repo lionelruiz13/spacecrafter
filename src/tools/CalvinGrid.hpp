@@ -120,10 +120,12 @@ public:
 	void intersect(const Vec3f& _pos, float fieldAngle);
 	// clear
 private:
+	//! Set visibility for all zones
+	void setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible);
 	//! Build one subdivision and his content
 	void buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl);
 	//! intersect of one subdivision and his content
-	void subIntersect(const Vec3f &pos, float fieldAngle, int subdivisionLvl);
+	void subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl);
 	//! Renvoie un pointeur vers le centre le plus proche de -v
 	auto *getNearest(const Vec3f& _v);
 	//! Angle entre le centre d'un triange et l'un de ses sommets pour un niveau de division donné
@@ -298,10 +300,44 @@ void CalvinGrid<T>::erase(CalvinGrid<T>::iterator &it)
 }
 
 template<typename T>
-void CalvinGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, int subdivisionLvl)
+void CalvinGrid<T>::setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible)
+{
+	for (auto &it: data) {
+		if (subdivisionLvl < nbSubdivision) {
+			setVisibility(*it, subdivisionLvl + 1, isVisible);
+		} else {
+			it->value.element->second = isVisible;
+		}
+	}
+}
+
+template<typename T>
+void CalvinGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl)
 {
 	const float max = cosf(fieldAngle/2.f + angleLvl[subdivisionLvl]);
+
+	if (subdivisionLvl == nbSubdivision) {
+		// determine for all remaining zones if they were
+		for (auto &it: data) {
+			it->value.element->second = pos.dot(it->value.center) > max;
+		}
+		return;
+	}
+
 	const float min = cosf(fieldAngle/2.f - angleLvl[subdivisionLvl]);
+
+	for (auto &it: data) {
+		if (pos.dot(it->value.center) > max) {
+			// all subZones were visible
+			setVisibility(*it, subdivisionLvl + 1, true);
+		} else if (pos.dot(it->value.center) < min) {
+			// all subZones weren't visible
+			setVisibility(*it, subdivisionLvl + 1, false);
+		} else {
+			// we must determine this for all subZones
+			subIntersect(pos, fieldAngle, *it, subdivisionLvl + 1);
+		}
+	}
 }
 
 //! Return an array with the number of the zones in the field of view
@@ -316,7 +352,7 @@ void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 
 	Vec3f pos = _pos;
 	pos.normalize();
-	subIntersect(pos, fieldAngle, 0);
+	subIntersect(pos, fieldAngle, dataCenter, 0);
 }
 
 template<typename T>
