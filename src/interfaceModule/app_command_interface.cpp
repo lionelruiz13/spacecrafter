@@ -1650,17 +1650,11 @@ int AppCommandInterface::commandConfiguration()
 			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
 			if (argAction == W_LOAD) {
-				if (binaryMode)
-					coreLink->starLinesLoadBinCat(argName);
-				else
-					coreLink->starLinesLoadCat(argName);
+				coreLink->starLinesLoadCat(argName, binaryMode);
 				return executeCommandStatus();
 			} else
 			if (argAction == W_SAVE) {
-				if (binaryMode)
-					coreLink->starLinesSaveBinCat(AppSettings::Instance()->getUserDir() + argName);
-				else
-					coreLink->starLinesSaveCat(AppSettings::Instance()->getUserDir() + argName);
+				coreLink->starLinesSaveCat(AppSettings::Instance()->getUserDir() + argName, binaryMode);
 				return executeCommandStatus();
 			} else
 			if (argAction == W_LOAD_STAR) {

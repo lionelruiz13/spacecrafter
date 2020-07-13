@@ -286,7 +286,7 @@ void Core::init(const InitParser& conf)
 		//starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
 		//starLines->loadHipBinCatalogue(AppSettings::Instance()->getUserDir() + "asterism.dat");
 		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
-		starLines->loadHipCatalogue(AppSettings::Instance()->getUserDir() + "asterism.txt");
+		starLines->loadCat(AppSettings::Instance()->getUserDir() + "asterism.txt", false);
 	}
 
 	// Astro section
