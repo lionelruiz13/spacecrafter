@@ -339,7 +339,7 @@ void CalvinGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGri
 		if (pos.dot(it->value.center) > max) {
 			// all subZones were visible
 			setVisibility(*it, subdivisionLvl + 1, true);
-		} else if (pos.dot(it->value.center) < min) {
+		} else if (pos.dot(it->value.center) > min) {
 			// all subZones weren't visible
 			setVisibility(*it, subdivisionLvl + 1, false);
 		} else {
