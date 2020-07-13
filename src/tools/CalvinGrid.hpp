@@ -120,7 +120,7 @@ public:
 	void intersect(const Vec3f& _pos, float fieldAngle);
 	// clear
 private:
-	template <typename Type>
+	//! Build one subdivision and his content
 	void buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl);
 	//! Renvoie un pointeur vers le centre le plus proche de -v
 	auto *getNearest(const Vec3f& _v);
@@ -175,23 +175,22 @@ private:
 };
 
 template<typename T>
-template<typename Type>
 inline void CalvinGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl)
 {
 	subGrid_t tmp;
 	Vec3f middleSegments[3];
 
 	tmp.element = nullptr;
-	tmp.center = data.center;
+	tmp.center = data.value.center;
 	for (u_char j = 0; j < 3; j++) {
-		middleSegments[j] = data.second.corners[(j + 1) % 3] + data.second.corners[(j + 2) % 3];
+		middleSegments[j] = data.value.corners[(j + 1) % 3] + data.value.corners[(j + 2) % 3];
 		middleSegments[j].normalize();
 		tmp.corners[j] = middleSegments[j];
 	}
 	data.push_back(tmp);
 
 	for (u_char j = 0; j < 3; j++) {
-		tmp.corners[0] = data.second.corners[j];
+		tmp.corners[0] = data.value.corners[j];
 		tmp.corners[1] = middleSegments[(j + 1) % 3];
 		tmp.corners[2] = middleSegments[(j + 2) % 3];
 		tmp.center = tmp.corners[0] + tmp.corners[1] + tmp.corners[2];
