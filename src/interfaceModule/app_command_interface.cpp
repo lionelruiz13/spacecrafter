@@ -1632,17 +1632,6 @@ int AppCommandInterface::commandShutdown()
 int AppCommandInterface::commandConfiguration()
 {
 	std::string argAction = args[W_ACTION];
-	if (!argAction.empty()) {
-		if(argAction== W_LOAD) {
-			stapp->init();
-			return executeCommandStatus();
-		} else if(argAction==W_SAVE) {
-			stapp->saveCurrentConfig(AppSettings::Instance()->getConfigFile());
-			return executeCommandStatus();
-		} else
-			debug_message = "command 'configuration': unknown action value";
-	}
-
 	std::string argModule = args[W_MODULE];
 
 	if (!argModule.empty()){
@@ -1730,6 +1719,18 @@ int AppCommandInterface::commandConfiguration()
 				debug_message = "command 'configuration': unknown starNavigator action argument";
 		} else
 			debug_message = "command 'configuration': unknown module argument";
+	}
+
+	// comme commande indépendante de argModule
+	if (!argAction.empty()) {
+		if(argAction== W_LOAD) {
+			stapp->init();
+			return executeCommandStatus();
+		} else if(argAction==W_SAVE) {
+			stapp->saveCurrentConfig(AppSettings::Instance()->getConfigFile());
+			return executeCommandStatus();
+		} else
+			debug_message = "command 'configuration': unknown action value";
 	}
 	debug_message = "command 'configuration': unknown argument";
 	return executeCommandStatus();
