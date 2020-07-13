@@ -228,6 +228,7 @@ unsigned int StarManager::getNbrStars()
 // LECTURE DU CATALOGUE INTERNE
 bool StarManager::loadStarCatalog(const std::string &fileName)
 {
+	std::cout << "StarManager::loadStarCatalog " << fileName << std::endl;
 	std::ifstream file(fileName, std::ifstream::in);
 	std::string objectName;
 
@@ -313,6 +314,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 // LECTURE DU CATALOGUE INTERNE
 bool StarManager::loadStarBinCatalog(const std::string &fileName)
 {
+	std::cout << "StarManager::loadStarBinCatalog " << fileName << std::endl;
 	std::ifstream fileIn(fileName, std::ios::binary| std::ios::in);
 	std::string objectName;
 
@@ -447,6 +449,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 
 bool StarManager::saveStarBinCatalog(const std::string &fileName)
 {
+	std::cout << "StarManager::saveStarBinCatalog " << fileName << std::endl;	
 	std::ofstream file(fileName, std::ios::binary| std::ios::out);
 	std::cout.precision(6);
 	float x,y,z, pmRA, pmDE, mag, pc;
@@ -526,6 +529,7 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 
 bool StarManager::saveStarCatalog(const std::string &fileName)
 {
+	std::cout << "StarManager::saveStarCatalog " << fileName << std::endl;
 	std::ofstream file(fileName);
 	std::cout.precision(6);
 
@@ -612,6 +616,7 @@ void StarManager::addHcStar(starInfo* star)
 //    http://cdsarc.u-strasbg.fr/viz-bin/Cat?I/311
 bool StarManager::loadStarRaw(const std::string &catPath)
 {
+	std::cout << "StarManager::loadStarRaw " << catPath << std::endl;
 	std::ifstream file(catPath);
 	unsigned int hip;
 	float RArad, DErad, Plx, pmRA, pmDE, mag_app, BV;
@@ -855,6 +860,7 @@ bool StarManager::verificationData()
 //TODO la meme en version BINAIRE
 bool StarManager::saveAsterismStarsPosition(const std::string &fileNameIn,const std::string &fileNameOut)
 {
+	std::cout << "StarManager::saveAsterismStarsPosition " << fileNameIn << " " << fileNameOut << std::endl;
 	std::ifstream fileIn(fileNameIn, std::ifstream::in);
 	std::ofstream fileOut(fileNameOut, std::ifstream::out);
 	std::list<int> asterimStars;
@@ -906,6 +912,7 @@ starInfo* StarManager::findStar(unsigned int HIPName)
 
 bool StarManager::loadOtherStar(const std::string &fileName)
 {
+	std::cout << "StarManager::loadOtherStar " << fileName << std::endl;
 	std::ifstream fileIn(fileName, std::ifstream::in);
 
 	if (fileIn) { // Fails if can't open the file

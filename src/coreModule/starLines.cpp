@@ -53,6 +53,7 @@ void StarLines::createSC_context()
 
 bool StarLines::loadHipCatalogue(std::string fileName) noexcept
 {
+	std::cout << "StarLines::loadHipCatalogue " << fileName << std::endl;
 	std::ifstream fileIn(fileName.c_str());
 
 	if (!fileIn.is_open()) {
@@ -98,6 +99,7 @@ void StarLines::loadHipStar(int name, Vec3f position ) noexcept
 
 bool StarLines::saveHipCatalogue(std::string fileName) noexcept
 {
+	std::cout << "StarLines::saveHipCatalogue " << fileName << std::endl;
 	std::ofstream fileOut(fileName.c_str());
 
 	if (!fileOut.is_open()) {
@@ -115,6 +117,7 @@ bool StarLines::saveHipCatalogue(std::string fileName) noexcept
 
 bool StarLines::saveHipBinCatalogue(std::string fileName) noexcept
 {
+	std::cout << "StarLines::saveHipBinCatalogue " << fileName << std::endl;
 	std::ofstream fileOut(fileName.c_str());
 
 	if (!fileOut.is_open()) {
@@ -142,6 +145,7 @@ bool StarLines::saveHipBinCatalogue(std::string fileName) noexcept
 
 bool StarLines::loadHipBinCatalogue(std::string fileName) noexcept
 {
+	std::cout << "StarLines::loadHipBinCatalogue " << fileName << std::endl;
 	std::ifstream fileIn(fileName.c_str(), std::ios::binary|std::ios::in );
 
 	if (!fileIn.is_open()) {
