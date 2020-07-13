@@ -283,8 +283,10 @@ void Core::init(const InitParser& conf)
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
 
-		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
-		starLines->loadHipBinCatalogue(AppSettings::Instance()->getUserDir() + "asterism.dat");
+		//starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
+		//starLines->loadHipBinCatalogue(AppSettings::Instance()->getUserDir() + "asterism.dat");
+		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
+		starLines->loadHipCatalogue(AppSettings::Instance()->getUserDir() + "asterism.txt");
 	}
 
 	// Astro section
