@@ -80,7 +80,7 @@ bool Constellation::read(const std::string& record, HipStarMgr * _VouteCeleste)
 
 		asterism[i]=_VouteCeleste->searchHP(HP);
 		if (!asterism[i]) {
-			cLog::get()->write("Error in Constellation " + abbreviation + " asterism : can't find star HP= " + Utility::intToString(HP), LOG_TYPE::L_ERROR);
+			cLog::get()->write("Error in Constellation " + abbreviation + " asterism : can't find star HP= " + std::to_string(HP), LOG_TYPE::L_ERROR);
 			delete [] asterism;
 			asterism = nullptr;
 			return false;

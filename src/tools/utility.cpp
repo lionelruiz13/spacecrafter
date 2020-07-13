@@ -65,20 +65,6 @@ bool Utility::testFileExistence(const std::string& fileName)
     }
 }
 
-std::string Utility::doubleToString(double d)
-{
-	std::ostringstream oss;
-	oss << d;
-	return oss.str();
-}
-
-std::string Utility::intToString(int i)
-{
-	std::ostringstream oss;
-	oss << i;
-	return oss.str();
-}
-
 
 double Utility::hmsToRad( unsigned int h, unsigned int m, double s )
 {
@@ -513,26 +499,6 @@ int Utility::strToInt(const std::string& str, int default_value)
 
 	istr >> integer;
 	return integer;
-}
-
-
-std::string Utility::floatToStr(float dbl)
-{
-
-	std::ostringstream oss;
-	oss << dbl;
-	return oss.str();
-
-}
-
-
-std::string Utility::doubleToStr(double dbl)
-{
-
-	std::ostringstream oss;
-	oss << dbl;
-	return oss.str();
-
 }
 
 

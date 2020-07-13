@@ -102,7 +102,7 @@ bool StarLines::loadHipCat(const std::string& fileName) noexcept
 	}
 	fileIn.close();
 	cLog::get()->write("StarLines cat "+fileName, LOG_TYPE::L_DEBUG);
-	cLog::get()->write("StarLines stars readed "+ Utility::toString(numberRead), LOG_TYPE::L_DEBUG);
+	cLog::get()->write("StarLines stars readed "+ std::to_string(numberRead), LOG_TYPE::L_DEBUG);
 	std::cout << "StarLines stars readed " << numberRead << std::endl;
 	return true;
 }
@@ -195,7 +195,7 @@ bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 	}
 	fileIn.close();
 	cLog::get()->write("StarLines bin cat "+fileName, LOG_TYPE::L_DEBUG);
-	cLog::get()->write("StarLines stars readed : "+ Utility::toString(numberRead), LOG_TYPE::L_DEBUG);
+	cLog::get()->write("StarLines stars readed : "+ std::to_string(numberRead), LOG_TYPE::L_DEBUG);
 	std::cout << "StarLines stars readed : " << numberRead << std::endl;
 	return true;
 }
@@ -256,11 +256,11 @@ void StarLines::loadStringData(const std::string& record) noexcept
 		if (tmp1==VNull || tmp2 ==VNull) {
 			if (tmp1==VNull) {
 				//printf("StarLines error parsing HIP %i not found\n", HIP1);
-				cLog::get()->write("StarLines error parsing not found HIP " + Utility::intToString(HIP1), LOG_TYPE::L_ERROR);
+				cLog::get()->write("StarLines error parsing not found HIP " + std::to_string(HIP1), LOG_TYPE::L_ERROR);
 			}
 			if (tmp2==VNull) {
 				//printf("StarLines error parsing HIP %i not found\n", HIP2);
-				cLog::get()->write("StarLines error parsing not found HIP " + Utility::intToString(HIP2), LOG_TYPE::L_ERROR);
+				cLog::get()->write("StarLines error parsing not found HIP " + std::to_string(HIP2), LOG_TYPE::L_ERROR);
 			}
 			continue;
 		} else {

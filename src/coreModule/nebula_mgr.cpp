@@ -465,7 +465,7 @@ bool NebulaMgr::loadDeepskyObjectFromCat(const std::string& cat)
 		}
 	}
 	ngcFile.close();
-	cLog::get()->write("Nebula: "+ Utility::intToString(i) + " items loaded, " + Utility::intToString(data_drop) + " dropped", LOG_TYPE::L_INFO);
+	cLog::get()->write("Nebula: "+ std::to_string(i) + " items loaded, " + std::to_string(data_drop) + " dropped", LOG_TYPE::L_INFO);
 	return true;
 }
 

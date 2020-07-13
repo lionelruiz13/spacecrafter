@@ -1147,7 +1147,7 @@ std::string SolarSystem::getPlanetsPosition()
 		tmp[0]= round(tmp[0]*100);
 		tmp[1]= round(tmp[1]*100);
 		tmp[2]= round(tmp[2]*100);
-		msg= msg+it->second->body->getNameI18n()+":"+Utility::doubleToStr(tmp[0])+":"+Utility::doubleToStr(tmp[1])+":"+Utility::doubleToStr(tmp[2])+";";
+		msg= msg+it->second->body->getNameI18n()+":"+std::to_string(tmp[0])+":"+std::to_string(tmp[1])+":"+std::to_string(tmp[2])+";";
 	}
 	return msg;
 }

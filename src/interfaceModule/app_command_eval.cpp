@@ -74,12 +74,12 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 		//std::cout << "C_define random: min " <<  min_random << " max " << max_random << std::endl;
 		float value = (float)rand()/RAND_MAX* (max_random-min_random)+ min_random;
 		//std::cout << "C_define random: value " <<  value  << std::endl;
-		variables[mArg] = Utility::floatToStr(value);
+		variables[mArg] = std::to_string(value);
 	} else {
 		//~ printf("mValue = %s\n", mValue.c_str());
 		// std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
 		//std::cout << "C_define : " <<  mArg.c_str() << " => " << evalDouble(mValue) << std::endl;
-		variables[mArg] = Utility::doubleToString( evalDouble(mValue) );
+		variables[mArg] = std::to_string( evalDouble(mValue) );
 	//	this->printVar();
 	}
 }
@@ -115,7 +115,7 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 		variables[mArg] = Utility::strToDouble (mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
 		double tmp = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
-		variables[mArg] = Utility::floatToStr(tmp);
+		variables[mArg] = std::to_string(tmp);
 	}
 }
 
@@ -137,7 +137,7 @@ void AppCommandEval::commandMul(const std::string& mArg, const std::string& mVal
 		variables[mArg] = Utility::strToDouble(mValue);
 	} else {
 		double tmp = Utility::strToDouble( variables[mArg] ) * Utility::strToDouble(mValue);
-		variables[mArg] = Utility::floatToStr(tmp);
+		variables[mArg] = std::to_string(tmp);
 	}
 }*/
 

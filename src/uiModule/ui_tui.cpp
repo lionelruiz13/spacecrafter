@@ -277,12 +277,12 @@ std::string s_tui::BooleanItem::getString()
 
 std::string s_tui::Integer::getString()
 {
-	return (active ? startActive : "") + Utility::doubleToString(value) + (active ? stopActive : "");
+	return (active ? startActive : "") + std::to_string(value) + (active ? stopActive : "");
 }
 
 std::string s_tui::Decimal::getString()
 {
-	return (active ? startActive : "") + Utility::doubleToString(value) + (active ? stopActive : "");
+	return (active ? startActive : "") + std::to_string(value) + (active ? stopActive : "");
 }
 
 
@@ -372,7 +372,7 @@ bool s_tui::IntegerItem::onKey(SDL_Scancode k, S_TUI_VALUE v)
 			increment();
 			if (value>mmax) value = mmax;
 			if (value<mmin) value = mmin;
-			strInput = Utility::doubleToString(value);
+			strInput = std::to_string(value);
 			return true;
 		}
 		if (k==SDL_SCANCODE_DOWN) {
@@ -381,7 +381,7 @@ bool s_tui::IntegerItem::onKey(SDL_Scancode k, S_TUI_VALUE v)
 			decrement();
 			if (value>mmax) value = mmax;
 			if (value<mmin) value = mmin;
-			strInput = Utility::doubleToString(value);
+			strInput = std::to_string(value);
 			return true;
 		}
 
@@ -444,7 +444,7 @@ bool s_tui::IntegerItem::onKey(SDL_Scancode k, S_TUI_VALUE v)
 std::string s_tui::IntegerItem::getString()
 {
 	if (numInput) return label + (active ? startActive : "") + strInput + (active ? stopActive : "");
-	else return label + (active ? startActive : "") + Utility::doubleToString(value) + (active ? stopActive : "");
+	else return label + (active ? startActive : "") + std::to_string(value) + (active ? stopActive : "");
 }
 
 
@@ -574,7 +574,7 @@ bool s_tui::DecimalItem::onKey(SDL_Scancode k, S_TUI_VALUE v)
 			value+=delta;
 			if (value>mmax) value = mmax;
 			if (value<mmin) value = mmin;
-			strInput = Utility::doubleToString(value);
+			strInput = std::to_string(value);
 			return true;
 		}
 		if (k==SDL_SCANCODE_DOWN) {
@@ -583,7 +583,7 @@ bool s_tui::DecimalItem::onKey(SDL_Scancode k, S_TUI_VALUE v)
 			value-=delta;
 			if (value>mmax) value = mmax;
 			if (value<mmin) value = mmin;
-			strInput = Utility::doubleToString(value);
+			strInput = std::to_string(value);
 			return true;
 		}
 

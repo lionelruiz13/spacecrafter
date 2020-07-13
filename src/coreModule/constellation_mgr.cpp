@@ -205,7 +205,7 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 		if (cons->read(record, hipStarMgr)) {
 			asterisms.push_back(cons);
 		} else {
-			cLog::get()->write("ConstellationMgr::loadLinesAndArt on line " + Utility::intToString(line) + " of " + fileName, LOG_TYPE::L_ERROR);
+			cLog::get()->write("ConstellationMgr::loadLinesAndArt on line " + std::to_string(line) + " of " + fileName, LOG_TYPE::L_ERROR);
 			delete cons;
 		}
 	}
@@ -895,7 +895,7 @@ bool ConstellationMgr::loadBoundaries(const std::string& boundaryFile)
 
 	}
 	dataFile.close();
-	cLog::get()->write("(" + Utility::intToString(i) + " segments loaded)", LOG_TYPE::L_INFO);
+	cLog::get()->write("(" + std::to_string(i) + " segments loaded)", LOG_TYPE::L_INFO);
 	delete points;
 
 	return true;

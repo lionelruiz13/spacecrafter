@@ -35,7 +35,7 @@ std::string Star1::getNameI18n(void) const
 		if (HipStarMgr::getFlagSciNames()) {
 			const std::string sciName = HipStarMgr::getSciName(getHip());
 			if (!sciName.empty()) return sciName;
-			return "HP " + Utility::intToString(getHip());
+			return "HP " + std::to_string(getHip());
 		}
 	}
 	return "";

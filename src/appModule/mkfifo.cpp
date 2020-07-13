@@ -73,7 +73,7 @@ int Mkfifo::thread_wrapper(void *Data)
 
 int Mkfifo::thread()
 {
-	cLog::get()->write("Thread MKFIFO, buffer_in_size is "+Utility::intToString(buffer_size), LOG_TYPE::L_INFO, LOG_FILE::TCP);
+	cLog::get()->write("Thread MKFIFO, buffer_in_size is "+std::to_string(buffer_size), LOG_TYPE::L_INFO, LOG_FILE::TCP);
 	int fdtr;
 	char *in;
 	in = (char*) calloc (buffer_size,sizeof(char));
@@ -82,7 +82,7 @@ int Mkfifo::thread()
 	cLog::get()->write("Pipe named  " + filename, LOG_TYPE::L_INFO);
 	unlink(filename.c_str());
 	if (mkfifo((filename.c_str()), S_IRWXU| S_IWGRP | S_IWOTH ) == -1) { //TODO why result has no g+o=w mode ?
-		cLog::get()->write("Error creating MkFifo pipe thread in_thread "+Utility::intToString(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
+		cLog::get()->write("Error creating MkFifo pipe thread in_thread "+std::to_string(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
 		return 2;
 	} else {
 		cLog::get()->write("Creating Mkfifo pipe successfull", LOG_TYPE::L_INFO);
@@ -91,7 +91,7 @@ int Mkfifo::thread()
 		chmod(filename.c_str(),i);
 	}
 	if((fdtr = open (filename.c_str(), O_RDONLY )) == -1) {
-		cLog::get()->write("Unable to open named mkfifo pipe, error code is "+Utility::intToString(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
+		cLog::get()->write("Unable to open named mkfifo pipe, error code is "+std::to_string(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
 		return 2;
 	}
 
@@ -99,7 +99,7 @@ int Mkfifo::thread()
 		memset(in,'\0',buffer_size);
 
 		if (read(fdtr, in, buffer_size) == -1) {
-			cLog::get()->write("Mkfifo read() error "+Utility::intToString(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
+			cLog::get()->write("Mkfifo read() error "+std::to_string(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
 		}
 
 		if (in[0] !='\0') {

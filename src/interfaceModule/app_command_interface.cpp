@@ -2714,7 +2714,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetSpeed(s);
 		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
-		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
+		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 
 	} else if (argAction == W_SINCREMENT) {
 		// speed up time rate
@@ -2732,7 +2732,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetSpeed(s);
 		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
-		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
+		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 	} else if (argAction==W_DECREMENT) {
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
@@ -2749,7 +2749,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetSpeed(s);
 		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
-		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
+		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 	} else if (argAction == W_SDECREMENT) {
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
@@ -2766,7 +2766,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetSpeed(s);
 		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
-		commandline = "timerate rate " + Utility::doubleToStr(s/JD_SECOND);
+		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 	} else
 		debug_message = _("Command 'time_rate': unknown argument");
 	return executeCommandStatus();

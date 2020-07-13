@@ -215,7 +215,7 @@ int main(int argc, char **argv)
 	#ifdef LINUX
 	std::string lock_file = PATH_FILE_LOCK;
 	Log->write("Lock file is "+ lock_file,LOG_TYPE::L_INFO);
-	Log->write("My getpid() is "+ Utility::doubleToString(getpid()), LOG_TYPE::L_INFO);
+	Log->write("My getpid() is "+ std::to_string(getpid()), LOG_TYPE::L_INFO);
 
 	if (is_lock_file(lock_file)) {
 		Log->write("There already has an instance of the running program. New instance aborded", LOG_TYPE::L_WARNING);

@@ -86,7 +86,7 @@ void SDLFacade::createWindow( Uint16 w, Uint16 h, int bppMode, int antialiasing,
 
 		if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, antialiasing) == -1) {
 			fprintf(stderr, "Unable to initialise SDL_GL_MULTISAMPLESAMPLES\n");
-			cLog::get()->write("Antialiasing opérationnel, valeur "+Utility::intToString(antialiasing),LOG_TYPE::L_INFO);
+			cLog::get()->write("Antialiasing opérationnel, valeur "+std::to_string(antialiasing),LOG_TYPE::L_INFO);
 			glEnable(GL_MULTISAMPLE);
 		}
 	} else
@@ -113,7 +113,7 @@ void SDLFacade::createWindow( Uint16 w, Uint16 h, int bppMode, int antialiasing,
 	/* initialisation de GLEW */
 	code = glewInit();
 	if(code != GLEW_OK) {
-		cLog::get()->write("SDL Unable to init GLEW : error " + Utility::intToString(code), LOG_TYPE::L_ERROR);
+		cLog::get()->write("SDL Unable to init GLEW : error " + std::to_string(code), LOG_TYPE::L_ERROR);
 	}
 
 	/*get GL infos */
@@ -260,13 +260,13 @@ void SDLFacade::getLogInfos(int w, int h)
 	int i, display_mode_count;
 	SDL_DisplayMode mode;
 	Uint32 f;
-	cLog::get()->write("SDL_GetNumVideoDisplays(): "+ Utility::doubleToString(SDL_GetNumVideoDisplays()), LOG_TYPE::L_INFO);
+	cLog::get()->write("SDL_GetNumVideoDisplays(): "+ std::to_string(SDL_GetNumVideoDisplays()), LOG_TYPE::L_INFO);
 
 	display_mode_count = SDL_GetNumDisplayModes(display_in_use);
 	if (display_mode_count < 1) {
 		cLog::get()->write("SDL_GetNumDisplayModes failed: "+ std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
 	}
-	cLog::get()->write("SDL_GetNumDisplayModes:  "+ Utility::doubleToString(display_mode_count), LOG_TYPE::L_INFO);
+	cLog::get()->write("SDL_GetNumDisplayModes:  "+ std::to_string(display_mode_count), LOG_TYPE::L_INFO);
 
 	for (i = 0; i < display_mode_count; ++i) {
 		std::stringstream output;

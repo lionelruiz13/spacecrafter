@@ -146,7 +146,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	m_pointsGL->fillVertexBuffer(BufferType::MAG,texTully );
 	m_pointsGL->fillVertexBuffer(BufferType::SCALE,scaleTully );
 
-	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + Utility::intToString(nbGalaxy) );
+	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + std::to_string(nbGalaxy) );
 
 	isAlive = true;
 	return true;
