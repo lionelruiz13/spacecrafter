@@ -1,7 +1,8 @@
 /*
- * Grid
+ * CalvinGrid
  *
  * Copyright 2020 AssociationSirius
+ * Copyright 2020 Association Andromède
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,19 +22,21 @@
  *
  */
 
-#pragma once
+#ifndef _CALVINGRID_HPP_
+#define _CALVINGRID_HPP_
 
-#include "../../src/tools/vecmath.hpp"
 #include <vector>
 #include <list>
 #include <memory>
+
+#include "tools/vecmath.hpp"
+#include "tools/Tree.hpp"
 
 //#define DEBUG 1
 
 struct TopTriangle {
 	const u_char corners[3];   // index der Ecken
 };
-
 
 constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
 constexpr float icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
@@ -54,142 +57,116 @@ const Vec3f icosahedron_corners[12] = {
 	Vec3f(-icosahedron_b,            0.0, -icosahedron_a)
 };
 
-constexpr TopTriangle icosahedron_triangles[20]= {
-    {{ 1, 0,10}}, //  1
-    {{ 0, 1, 9}}, //  0
-    {{ 0, 9, 6}}, // 12
-    {{ 9, 8, 6}}, //  9
-    {{ 0, 7,10}}, // 16
-    {{ 6, 7, 0}}, //  6
-    {{ 7, 6, 3}}, //  7
-    {{ 6, 8, 3}}, // 14
-    {{11,10, 7}}, // 11
-    {{ 7, 3,11}}, // 18
-    {{ 3, 2,11}}, //  3
-    {{ 2, 3, 8}}, //  2
-    {{10,11, 4}}, // 10
-    {{ 2, 4,11}}, // 19
-    {{ 5, 4, 2}}, //  5
-    {{ 2, 8, 5}}, // 15
-    {{ 4, 1,10}}, // 17
-    {{ 4, 5, 1}}, //  4
-    {{ 5, 9, 1}}, // 13
-    {{ 8, 9, 5}}  //  8
-};
-
-constexpr char segments[30][2] = {
-	{0, 1},
-	{0, 6},
-	{0, 7},
-	{0, 9},
-	{0, 10},
-	{1, 4},
-	{1, 5},
-	{1, 9},
-	{1, 10},
-	{2, 3},
-	{2, 4},
-	{2, 5},
-	{2, 8},
-	{2, 11},
-	{3, 6},
-	{3, 7},
-	{3, 8},
-	{3, 11},
-	{4, 5},
-	{4, 10},
-	{4, 11},
-	{5, 8},
-	{5, 9},
-	{6, 7},
-	{6, 8},
-	{6, 9},
-	{7, 10},
-	{7, 11},
-	{8, 9},
-	{10, 11}
+const TopTriangle icosahedron_triangles[20]= {
+	{{ 1, 0,10}}, //  1
+	{{ 0, 1, 9}}, //  0
+	{{ 0, 9, 6}}, // 12
+	{{ 9, 8, 6}}, //  9
+	{{ 0, 7,10}}, // 16
+	{{ 6, 7, 0}}, //  6
+	{{ 7, 6, 3}}, //  7
+	{{ 6, 8, 3}}, // 14
+	{{11,10, 7}}, // 11
+	{{ 7, 3,11}}, // 18
+	{{ 3, 2,11}}, //  3
+	{{ 2, 3, 8}}, //  2
+	{{10,11, 4}}, // 10
+	{{ 2, 4,11}}, // 19
+	{{ 5, 4, 2}}, //  5
+	{{ 2, 8, 5}}, // 15
+	{{ 4, 1,10}}, // 17
+	{{ 4, 5, 1}}, //  4
+	{{ 5, 9, 1}}, // 13
+	{{ 8, 9, 5}}  //  8
 };
 
 template <typename T>
 class CalvinGrid {
-private:
+public:
 	typedef std::list<T> dataType_t;
-	typedef std::vector<std::pair<dataType_t, bool>> dataCenterType_t;
+	typedef std::pair<dataType_t, bool> elementType_t;
+	typedef std::vector<elementType_t> dataCenterType_t;
+
+	typedef struct {
+		elementType_t *element;
+		Vec3f corners[3];
+		Vec3f center;
+	} subGrid_t;
 
 	class iterator;
-public:
-    CalvinGrid();
-    ~CalvinGrid() {};
+
+	CalvinGrid();
+	~CalvinGrid() {};
+	//! define and build grid subdivisions
+	void subdivide(int _nbSubdivision);
 	//! insert un élément dans la grille
-    void insert(T _element, Vec3f pos);
+	void insert(const T &_element, Vec3f pos);
 	//! supprime un élément de la grille
-	void remove(T _element, const Vec3f &pos); // Optimized method
-	void remove(T _element);
-	void remove_if(const auto &func);
+	void remove(const T &_element, const Vec3f &pos); // Optimized method
+	void remove(const T &_element);
+	template<typename F>
+	void remove_if(F&& func);
 	void erase(CalvinGrid::iterator &it); // standard std::list::erase
-    auto begin() {
-		return CalvinGrid::iterator(allDataCenter.begin(), allDataCenter.end(), allDataCenter.begin()->first);
+	auto begin() {
+		return CalvinGrid::iterator(allDataCenter.begin(), allDataCenter.end());
 	};
 	void clear();
-    auto end() {
+	auto end() {
 		return CalvinGrid::iterator(allDataCenter.end());
 	};
-    // eTest* next() const;
-    // void setFov(Vec3f pos, float fov);
-	//! Renvoie quel centre est le plus proche de -v
-	int getNearest(const Vec3f& _v);
+	// eTest* next() const;
+	// void setFov(Vec3f pos, float fov);
 	//! Return an array with the number of the zones in the field of view
 	void intersect(const Vec3f& _pos, float fieldAngle);
 	// clear
 private:
-	//! les centres de la grille
-	std::vector<Vec3f> centers;
-	//! en cache les centres à afficher de la grille
-	//std::vector<int> centerToDisplay;
-	//! nombre total de centres
-	unsigned int nbCenters=0;
-	//! angle que font 2 centres adjacents entre eux
-	std::array<float, 4> angle;
+	template <typename Type>
+	void buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl);
+	//! Renvoie un pointeur vers le centre le plus proche de -v
+	auto *getNearest(const Vec3f& _v);
+	//! Angle entre le centre d'un triange et l'un de ses sommets pour un niveau de division donné
+	std::vector<float> angleLvl;
 	//! Optimized container for access
 	dataCenterType_t allDataCenter;
 	//! Optimized container for search
-	//! Each level contain center of triangle
-	std::array<std::pair<std::array<std::pair<std::array<std::pair<std::array<std::pair<std::pair<dataType_t, bool>*, Vec3f>, 6>, Vec3f>, 4>, Vec3f>, 4>, Vec3f>, 20> dataCenter;
+	std::array<Tree<subGrid_t>, 20> dataCenter;
+	//! Number of subdivisions
+	int nbSubdivision = 0;
 };
 
 template<typename T>
 class CalvinGrid<T>::iterator {
 public:
-	iterator(auto _zoneBegin, const auto &_zoneEnd, auto &_element) : iterLastZone(_zoneEnd) {
+	iterator(typename CalvinGrid::dataCenterType_t::iterator _zoneBegin, const typename CalvinGrid::dataCenterType_t::iterator &_zoneEnd) : iterLastZone(_zoneEnd) {
 		// Move iterZone to the first non-empty container
 		for (iterZone = _zoneBegin; iterZone->first.size() == 0 && iterZone != iterLastZone; iterZone++);
 		iterElement = iterZone->first.begin();
 		iterLastElement = iterZone->first.cend();
 	}
-	iterator(const auto &_iterZone) : iterZone(_iterZone) {}
+	iterator(const typename CalvinGrid::dataCenterType_t::iterator &_iterZone) : iterZone(_iterZone) {}
 	bool operator!=(iterator compare) const {
-	    return iterZone != compare.iterZone;
+		return iterZone != compare.iterZone;
 	}
 	void operator++() {
 		if (++iterElement == iterLastElement) {
-		    while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
-			    iterElement = iterZone->first.begin();
-			    iterLastElement = iterZone->first.end();
-		   }
-	   }
+			while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
+				iterElement = iterZone->first.begin();
+				iterLastElement = iterZone->first.end();
+			}
+		}
 	}
 	T &operator*() const {
-	    return *iterElement;
+		return *iterElement;
 	}
 	void erase() {
 		if (this->iterZone != this->iterLastZone)
 			this->iterZone->first.erase(this->iterElement);
 	}
 	typedef ptrdiff_t difference_type; //almost always ptrdiff_t
-    typedef T value_type; //almost always T
-    typedef T& reference; //almost always T& or const T&
-    typedef T* pointer; //almost always T* or const T*
-    typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
+	typedef T value_type; //almost always T
+	typedef T& reference; //almost always T& or const T&
+	typedef T* pointer; //almost always T* or const T*
+	typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
 private:
 	typename dataCenterType_t::iterator iterZone;
 	typename dataCenterType_t::const_iterator iterLastZone;
@@ -198,72 +175,113 @@ private:
 };
 
 template<typename T>
-CalvinGrid<T>::CalvinGrid()
+template<typename Type>
+inline void CalvinGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl)
 {
-	// just take the icosahedron_corners
-	for(int i=0; i<12; i++) {
-		nbCenters++;
-		centers.push_back(icosahedron_corners[i]);
-		allDataCenter.push_back(std::pair<dataType_t, bool>{{}, true});
+	subGrid_t tmp;
+	Vec3f middleSegments[3];
+
+	tmp.element = nullptr;
+	tmp.center = data.center;
+	for (u_char j = 0; j < 3; j++) {
+		middleSegments[j] = data.second.corners[(j + 1) % 3] + data.second.corners[(j + 2) % 3];
+		middleSegments[j].normalize();
+		tmp.corners[j] = middleSegments[j];
 	}
-	// allDataCenter.reserve(12*4*4*4); // Because I know this space would be used
-	// for (int i=0; i<20; i++) {
-	//
-	// }
-	angle[0] = acos(icosahedron_corners[0].dot(icosahedron_corners[1]));
-	#ifdef DEBUG
-		std::cout << "Angle = " << angle[0] << std::endl;
-	#endif
-}
+	data.push_back(tmp);
 
-template<typename T>
-int CalvinGrid<T>::getNearest(const Vec3f& _v)
-{
-	Vec3f v=_v;
-	int bestI = -1;
-	float bestDot = -2.f;
+	for (u_char j = 0; j < 3; j++) {
+		tmp.corners[0] = data.second.corners[j];
+		tmp.corners[1] = middleSegments[(j + 1) % 3];
+		tmp.corners[2] = middleSegments[(j + 2) % 3];
+		tmp.center = tmp.corners[0] + tmp.corners[1] + tmp.corners[2];
+		tmp.center.normalize();
+		data.push_back(tmp);
+	}
 
-	v.normalize();
-	for (unsigned int i=0; i<nbCenters; ++i) {
-		if (v.dot(centers[i])>bestDot) {
-			bestI = i;
-			bestDot = v.dot(centers[i]);
+	for (u_char j = 0; j < 4; j++) {
+		if (subdivisionLvl < nbSubdivision) {
+			// build next subdivision
+			buildSubdivision(data[j], subdivisionLvl + 1);
+		} else {
+			// create container
+			allDataCenter.push_back(std::pair<dataType_t, bool>({}, false));
+			// assign created container
+			data[j].value.element = &(*allDataCenter.rbegin());
+
 		}
 	}
-	#ifdef DEBUG
-		std::cout << "CalvinGrid::getNearest return " << bestI << std::endl;
-	#endif
-	return bestI;
 }
 
 template<typename T>
-void CalvinGrid<T>::insert(T _element, Vec3f pos)
+void CalvinGrid<T>::subdivide(int _nbSubdivision)
 {
-	allDataCenter[getNearest(pos)].first.push_back(_element);
+	// clear content to rebuild grid
+	allDataCenter.clear();
+	angleLvl.clear();
+	nbSubdivision = _nbSubdivision;
+	for (auto &value: dataCenter) {
+		value.clear();
+		buildSubdivision(value, 1);
+	}
 }
 
 template<typename T>
-void CalvinGrid<T>::remove(T _element, const Vec3f &v)
+CalvinGrid<T>::CalvinGrid()
 {
-	allDataCenter[getNearest(v)].first.remove(_element);
+	u_char i = 0;
+
+	for (auto &data: dataCenter) {
+		for (u_char j = 0; j < 3; j++) {
+			data.value.corners[j] = icosahedron_corners[icosahedron_triangles[i].corners[j]];
+		}
+		data.value.center = data.value.corners[0] + data.value.corners[1] + data.value.corners[2];
+		data.value.center.normalize();
+		data.value.element = nullptr;
+		i++;
+	}
 }
 
 template<typename T>
-void CalvinGrid<T>::remove(T _element)
+auto *CalvinGrid<T>::getNearest(const Vec3f& _v)
+{
+	Vec3f v=_v;
+	float bestDot = -2.f;
+	v.normalize();
+	elementType_t *best = nullptr;
+
+	return best;
+}
+
+template<typename T>
+void CalvinGrid<T>::insert(const T &_element, Vec3f pos)
+{
+	getNearest(pos)->first.push_back(_element);
+}
+
+template<typename T>
+void CalvinGrid<T>::remove(const T &_element, const Vec3f &v)
+{
+	getNearest(v)->first.remove(_element);
+}
+
+template<typename T>
+void CalvinGrid<T>::remove(const T &_element)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove(_element);
 }
 
 template<typename T>
-void CalvinGrid<T>::remove_if(const auto &func)
+template<typename F>
+void CalvinGrid<T>::remove_if(F&& func)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove_if(func);
 }
 
 template<typename T>
-void CalvinGrid<T>::erase(CalvinGrid::iterator &it)
+void CalvinGrid<T>::erase(CalvinGrid<T>::iterator &it)
 {
 	it.erase();
 }
@@ -272,7 +290,7 @@ void CalvinGrid<T>::erase(CalvinGrid::iterator &it)
 template<typename T>
 void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
-	if (fieldAngle >= (3.1415926 - angle[0]) * 2) {
+	if (fieldAngle >= (3.1415926 - angleLvl[4]) * 2) {
 		for (auto &element: allDataCenter)
 			element.second = true;
 		return;
@@ -280,17 +298,14 @@ void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 
 	Vec3f pos = _pos;
 	pos.normalize();
-	const float max = cosf(fieldAngle/2.f + angle[0]);
+	const float max = cosf(fieldAngle/2.f + angleLvl[4]);
 
-	for (unsigned int i=0; i<nbCenters; i++) {
-		allDataCenter[i].second = pos.dot(centers[i]) > max;
-	}
 	#ifdef DEBUG
-		std::cout << "CalvinGrid::intersect display "<< std::endl;
-		for(auto &i: allDataCenter) {
-			std::cout << i.second << " ";
-		}
-		std::cout << std::endl;
+	std::cout << "CalvinGrid::intersect display "<< std::endl;
+	for(auto &i: allDataCenter) {
+		std::cout << i.second << " ";
+	}
+	std::cout << std::endl;
 	#endif
 }
 
@@ -301,6 +316,8 @@ void CalvinGrid<T>::clear()
 		element.first.clear();
 	}
 }
+
+#endif /* _CALVINGRID_HPP_ */
 
 // #include <iostream>
 //
