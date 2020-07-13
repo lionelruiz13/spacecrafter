@@ -79,6 +79,10 @@ const TopTriangle icosahedron_triangles[20]= {
 	{{ 8, 9, 5}}  //  8
 };
 
+/*
+ * Container separating elements into several zones.
+ * Only elements in zones which are partially or fully visible were given by an iterator.
+ */
 template <typename T>
 class SphereGrid {
 public:
