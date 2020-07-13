@@ -33,7 +33,6 @@ StarLines::StarLines()
 {
 	createSC_context();
 	lineColor =  Vec3f(1.0,1.0,0.0);
-	isAlive = false;
 }
 
 StarLines::~StarLines()
@@ -83,6 +82,7 @@ bool StarLines::loadHipCat(const std::string& fileName) noexcept
 	int hip;
 	float x,y,z;
 	HIPpos tmp;
+	unsigned int numberRead=0;
 
 	while (!fileIn.eof() && std::getline(fileIn, record)) {
 
@@ -92,16 +92,18 @@ bool StarLines::loadHipCat(const std::string& fileName) noexcept
 		std::istringstream istr(record);
 		if (!(istr >> hip >> x >> y >> z)) {
 			cLog::get()->write("StarLines error parsing HIP_data "+record, LOG_TYPE::L_ERROR);
-			//printf("StarLines error parsing HIP_data %s \n", record.c_str());
+			std::cout << "StarLines stars readed " << numberRead << std::endl;
 			return false;
 		}
 		tmp.first = hip;
 		tmp.second = Vec3f(-x,y,z);
 		HIP_data.push_back(tmp);
+		numberRead++;
 	}
 	fileIn.close();
-	cLog::get()->write("StarLines reading successfully cat "+fileName, LOG_TYPE::L_DEBUG);
-	isAlive = true;
+	cLog::get()->write("StarLines cat "+fileName, LOG_TYPE::L_DEBUG);
+	cLog::get()->write("StarLines stars readed "+ Utility::longToString(numberRead), LOG_TYPE::L_DEBUG);
+	std::cout << "StarLines stars readed " << numberRead << std::endl;
 	return true;
 }
 
@@ -173,7 +175,7 @@ bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 	float x,y,z;
 	HIPpos tmp;
 	char Ver[3];
-
+	unsigned int numberRead = 0;
 	//lecture version
 	fileIn.read((char *)&Ver,sizeof(Ver));
 	//~ printf("%c %c %c\n", Ver[0], Ver[1], Ver[2]);
@@ -189,11 +191,12 @@ bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 		tmp.first = hip;
 		tmp.second = Vec3f(-x,y,z);
 		HIP_data.push_back(tmp);
+		numberRead++;
 	}
 	fileIn.close();
-	cLog::get()->write("StarLines bin reading successfully cat "+fileName, LOG_TYPE::L_DEBUG);
-
-	isAlive = true;
+	cLog::get()->write("StarLines bin cat "+fileName, LOG_TYPE::L_DEBUG);
+	cLog::get()->write("StarLines stars readed : "+ Utility::longToString(numberRead), LOG_TYPE::L_DEBUG);
+	std::cout << "StarLines stars readed : " << numberRead << std::endl;
 	return true;
 }
 
@@ -296,7 +299,6 @@ Vec3f StarLines::searchInHip(int HIP)
 void StarLines::draw(const Navigator * nav) noexcept
 {
 	//commun aux deux fonctions
-	if (!isAlive) return;
 	if (linePos.size()<2)
 		return;
 	if (!showFader.getInterstate() ) return;
@@ -312,7 +314,6 @@ void StarLines::draw(const Navigator * nav) noexcept
 void StarLines::draw(const Projector* prj) noexcept
 {
 	//commun aux deux fonctions
-	if (!isAlive) return;
 	if (linePos.size()<2)
 		return;
 	if (!showFader.getInterstate() ) return;

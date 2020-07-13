@@ -127,7 +127,7 @@ public:
 	//! @param i The input int value
 	//! @return The matching string
 	static std::string intToString(int i);
-
+	static std::string longToString(long i);
 	//! returns true if the given path is absolute
     static bool isAbsolute(const std::string path);
 	//! indicates if file exist on system 

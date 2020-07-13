@@ -284,7 +284,7 @@ void Core::init(const InitParser& conf)
 		setLandscape(initialvalue.initial_landscapeName);
 
 		//starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
-		//starLines->loadHipBinCatalogue(AppSettings::Instance()->getUserDir() + "asterism.dat");
+		//starLines->loadCat(AppSettings::Instance()->getUserDir() + "asterism.dat", true);
 		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
 		starLines->loadCat(AppSettings::Instance()->getUserDir() + "asterism.txt", false);
 	}

@@ -141,8 +141,6 @@ protected:
 	// fader d'affichage
 	LinearFader showFader;
 	LinearFader selectedFader;
-	// état global de la classe
-	bool isAlive;
 	// indique si l'on doit recharger les tampons dans la CG
 	//bool isModified = true;
 	// couleur du tracé des lines

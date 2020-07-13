@@ -241,6 +241,9 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	float starX, starY, starZ;
 	float pmRA, pmDE, mag, pc;
 	int B_V;
+	long unsigned int nbrH=0, nbrC=0, nbrS=0;
+
+	unsigned int numberRead = 0;
 
 	if (file) { // Fails if can't open the file
 		std::string line; // variable which will contain each line of the file
@@ -257,6 +260,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 			}
 
 			HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
+			nbrH++;
 
 			// on lit chaque cube les un après les autres
 			for(int i=0; i<cubesNumber; i++) {
@@ -271,6 +275,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 				}
 
 				Cube *cube = new Cube(cubeX,cubeY,cubeZ);
+				nbrC++;
 
 				// on lit toutes les etoiles dans le cube
 				for(int i=0; i<starsNumber; i++) {
@@ -286,23 +291,32 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 
 					Vec3f xyz(starX,starY,starZ);
 					starInfo *si = new starInfo();
-					si->HIP=HIP,
-					    si->posXYZ=xyz;
+					si->HIP=HIP;
+					si->posXYZ=xyz;
 					si->pmRA=pmRA;
 					si->pmDE=pmDE;
 					si->mag=mag;
 					si->B_V=B_V;
 					si->pc=pc;
+					nbrS++;
 
 					cube->addStar(si);
+					numberRead++;
 				}
 				hc->addCube(cube); //TODO et si le nombre de cube est dépassé ?
 			}
 			addHyperCube(hc);
 		}
-		std::cout << "Fin de lecture" << std::endl;
-
 		file.close();
+		cLog::get()->write("StarManager cat "+fileName, LOG_TYPE::L_DEBUG);
+		std::ostringstream oss;
+		oss << "HyperCubes : " << nbrH << std::endl;
+		oss << "Cubes      : " << nbrC << std::endl;
+		oss << "Stars      : " << nbrS;
+		cLog::get()->write(oss.str());
+		//cLog::get()->write("StarManager stars readed " + numberRead, LOG_TYPE::L_DEBUG);
+		std::cout << oss.str() << std::endl;
+
 		return true;
 	} else {
 		std::cout << "ERREUR: Impossible d'ouvrir le fichier " << fileName << std::endl;
@@ -439,10 +453,11 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 	fileIn.close();
 	
 	std::ostringstream oss;
-	oss << "HyperCubes intégrés : " << nbrH << std::endl;
-	oss << "Cubes intégrés      : " << nbrC << std::endl;
-	oss << "Stars intégrées     : " << nbrS << std::endl;
+	oss << "HyperCubes : " << nbrH << std::endl;
+	oss << "Cubes      : " << nbrC << std::endl;
+	oss << "Stars      : " << nbrS;
 	cLog::get()->write(oss.str());
+	std::cout << oss.str() << std::endl;
 	return true;
 }
 
@@ -888,7 +903,6 @@ bool StarManager::saveAsterismStarsPosition(const std::string &fileNameIn,const 
 		fileOut.close();
 		return true;
 	}
-	//~ printf("Unable to open %s or %s\n", fileNameIn.c_str(), fileNameOut.c_str());
 	cLog::get()->write("StarManager, AsterismCatalogue, unable to read/write files", LOG_TYPE::L_ERROR);
 	return false;
 }
@@ -941,7 +955,6 @@ bool StarManager::loadOtherStar(const std::string &fileName)
 		fileIn.close();
 		return true;
 	}
-	//~ printf("Unable to open %s or %s\n", fileNameIn.c_str(), fileNameOut.c_str());
 	cLog::get()->write("StarManager, loadOtherStar, unable to read file "+ fileName, LOG_TYPE::L_ERROR);
 
 	return false;
