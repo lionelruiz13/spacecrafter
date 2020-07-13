@@ -1669,9 +1669,9 @@ int AppCommandInterface::commandConfiguration()
 			} else
 			if (argAction == W_SAVE) {
 				if (binaryMode)
-					coreLink->starLinesSaveBinCat(argName);
+					coreLink->starLinesSaveBinCat(AppSettings::Instance()->getUserDir() + argName);
 				else
-					coreLink->starLinesSaveCat(argName);
+					coreLink->starLinesSaveCat(AppSettings::Instance()->getUserDir() + argName);
 				return executeCommandStatus();
 			} else
 			if (argAction == W_LOAD_STAR) {
@@ -1725,7 +1725,7 @@ int AppCommandInterface::commandConfiguration()
 				}
 			} else
 			if (argAction == W_SAVE) {
-				coreLink->starNavigatorSave(argName, binaryMode);
+				coreLink->starNavigatorSave(AppSettings::Instance()->getUserDir() + argName, binaryMode);
 			} else
 				debug_message = "command 'configuration': unknown starNavigator action argument";
 		} else
