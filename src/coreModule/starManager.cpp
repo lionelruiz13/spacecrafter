@@ -942,7 +942,7 @@ bool StarManager::loadOtherStar(const std::string &fileName)
 		return true;
 	}
 	//~ printf("Unable to open %s or %s\n", fileNameIn.c_str(), fileNameOut.c_str());
-	cLog::get()->write("StarManager, loadOtherStar, unable to read file"+ fileName, LOG_TYPE::L_ERROR);
+	cLog::get()->write("StarManager, loadOtherStar, unable to read file "+ fileName, LOG_TYPE::L_ERROR);
 
 	return false;
 }
