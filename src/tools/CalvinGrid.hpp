@@ -98,7 +98,7 @@ public:
 	CalvinGrid();
 	~CalvinGrid() {};
 	//! define and build grid subdivisions
-	void subdivide(int _nbSubdivision);
+	void subdivise(int _nbSubdivision);
 	//! insert un élément dans la grille
 	void insert(const T &_element, Vec3f pos);
 	//! supprime un élément de la grille
@@ -214,7 +214,7 @@ inline void CalvinGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisi
 }
 
 template<typename T>
-void CalvinGrid<T>::subdivide(int _nbSubdivision)
+void CalvinGrid<T>::subdivise(int _nbSubdivision)
 {
 	// clear content to rebuild grid
 	allDataCenter.clear();

@@ -51,7 +51,7 @@ IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator, Con
 
 	/// illuminateZones = new std::vector<Illuminate*>[illuminateGrid.getNbPoints()];
 	/// je veux une grille avec 3 subdivisions
-	//illuminateGrid.subdivise(3);
+	illuminateGrid.subdivise(3);
 
 	defaultTex = new s_texture("star_illuminate.png", TEX_LOAD_TYPE_PNG_BLEND3 );
 	if (defaultTex ==nullptr)
