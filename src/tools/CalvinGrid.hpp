@@ -202,16 +202,17 @@ inline void CalvinGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisi
 		data.push_back(tmp);
 	}
 
-	for (u_char j = 0; j < 4; j++) {
-		if (subdivisionLvl < nbSubdivision) {
+	if (subdivisionLvl < nbSubdivision) {
+		for (u_char j = 0; j < 4; j++) {
 			// build next subdivision
 			buildSubdivision(data[j], subdivisionLvl + 1);
-		} else {
+		}
+	} else {
+		for (u_char j = 0; j < 4; j++) {
 			// create container
 			allDataCenter.push_back(std::pair<dataType_t, bool>({}, false));
 			// assign created container
 			data[j].value.element = &(*allDataCenter.rbegin());
-
 		}
 	}
 }
@@ -222,6 +223,7 @@ void CalvinGrid<T>::subdivise(int _nbSubdivision)
 	// clear content to rebuild grid
 	allDataCenter.clear();
 	angleLvl.clear();
+	allDataCenter.reserve(20 * pow(4, _nbSubdivision)); // This container mustn't need to reallocate memory
 	nbSubdivision = _nbSubdivision;
 	for (auto &value: dataCenter) {
 		value->clear();
