@@ -118,6 +118,16 @@ public:
 	//! @return The corresponding string
 	static std::string printAngleHMS(double angle, bool decimals = false);
 	// static ln_date setAngleHMS(ln_date current_date, double angle, bool decimals);
+
+	//! @brief Template T function Format the double value to a string (with current locale)
+	//! @param i The input T value
+	//! @return The matching string
+	template <class T> static std::string toString(const T& i)	{
+		std::ostringstream oss;
+		oss << i;
+		return oss.str();	
+	}
+
 	//! @brief Format the double value to a string (with current locale)
 	//! @param d The input double value
 	//! @return The matching string
@@ -127,7 +137,7 @@ public:
 	//! @param i The input int value
 	//! @return The matching string
 	static std::string intToString(int i);
-	static std::string longToString(long i);
+
 	//! returns true if the given path is absolute
     static bool isAbsolute(const std::string path);
 	//! indicates if file exist on system 

@@ -72,7 +72,6 @@ std::string Utility::doubleToString(double d)
 	return oss.str();
 }
 
-
 std::string Utility::intToString(int i)
 {
 	std::ostringstream oss;
@@ -80,13 +79,6 @@ std::string Utility::intToString(int i)
 	return oss.str();
 }
 
-
-std::string Utility::longToString(long i)
-{
-	std::ostringstream oss;
-	oss << i;
-	return oss.str();
-}
 
 double Utility::hmsToRad( unsigned int h, unsigned int m, double s )
 {

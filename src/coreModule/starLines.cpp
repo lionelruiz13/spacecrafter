@@ -102,7 +102,7 @@ bool StarLines::loadHipCat(const std::string& fileName) noexcept
 	}
 	fileIn.close();
 	cLog::get()->write("StarLines cat "+fileName, LOG_TYPE::L_DEBUG);
-	cLog::get()->write("StarLines stars readed "+ Utility::longToString(numberRead), LOG_TYPE::L_DEBUG);
+	cLog::get()->write("StarLines stars readed "+ Utility::toString(numberRead), LOG_TYPE::L_DEBUG);
 	std::cout << "StarLines stars readed " << numberRead << std::endl;
 	return true;
 }
@@ -195,7 +195,7 @@ bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 	}
 	fileIn.close();
 	cLog::get()->write("StarLines bin cat "+fileName, LOG_TYPE::L_DEBUG);
-	cLog::get()->write("StarLines stars readed : "+ Utility::longToString(numberRead), LOG_TYPE::L_DEBUG);
+	cLog::get()->write("StarLines stars readed : "+ Utility::toString(numberRead), LOG_TYPE::L_DEBUG);
 	std::cout << "StarLines stars readed : " << numberRead << std::endl;
 	return true;
 }
