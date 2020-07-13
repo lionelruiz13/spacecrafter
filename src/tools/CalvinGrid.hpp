@@ -227,6 +227,13 @@ void CalvinGrid<T>::subdivise(int _nbSubdivision)
 		value->clear();
 		buildSubdivision(*value, 1);
 	}
+
+	// build angleLvl
+	Tree<subGrid_t> *actual = &dataCenter;
+	for (u_char i = 0; i <= nbSubdivision; i++) {
+		angleLvl.push_back(actual->value.center.dot(actual->value.corners[0]));
+		actual = &(*actual)[0];
+	}
 }
 
 template<typename T>
