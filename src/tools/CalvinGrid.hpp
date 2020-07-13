@@ -129,7 +129,7 @@ private:
 	//! Optimized container for access
 	dataCenterType_t allDataCenter;
 	//! Optimized container for search
-	std::array<Tree<subGrid_t>, 20> dataCenter;
+	Tree<subGrid_t> dataCenter;
 	//! Number of subdivisions
 	int nbSubdivision = 0;
 };
@@ -221,24 +221,24 @@ void CalvinGrid<T>::subdivide(int _nbSubdivision)
 	angleLvl.clear();
 	nbSubdivision = _nbSubdivision;
 	for (auto &value: dataCenter) {
-		value.clear();
-		buildSubdivision(value, 1);
+		value->clear();
+		buildSubdivision(*value, 1);
 	}
 }
 
 template<typename T>
 CalvinGrid<T>::CalvinGrid()
 {
-	u_char i = 0;
+	subGrid_t tmp;
+	tmp.element = nullptr;
 
-	for (auto &data: dataCenter) {
+	for (u_char i = 0; i < 20; i++) {
 		for (u_char j = 0; j < 3; j++) {
-			data.value.corners[j] = icosahedron_corners[icosahedron_triangles[i].corners[j]];
+			tmp.corners[j] = icosahedron_corners[icosahedron_triangles[i].corners[j]];
 		}
-		data.value.center = data.value.corners[0] + data.value.corners[1] + data.value.corners[2];
-		data.value.center.normalize();
-		data.value.element = nullptr;
-		i++;
+		tmp.center = tmp.corners[0] + tmp.corners[1] + tmp.corners[2];
+		tmp.center.normalize();
+		dataCenter.push_back(tmp);
 	}
 }
 
@@ -247,10 +247,20 @@ auto *CalvinGrid<T>::getNearest(const Vec3f& _v)
 {
 	Vec3f v=_v;
 	float bestDot = -2.f;
+	Tree<subGrid_t> *best = nullptr;
 	v.normalize();
-	elementType_t *best = nullptr;
 
-	return best;
+	Tree<subGrid_t> *actual = &dataCenter;
+	for (u_char i = 0; i <= nbSubdivision; i++) {
+		for (auto &data: *actual) {
+			if (v.dot(data->value.center) >= bestDot) {
+				bestDot = v.dot(data->value.center);
+				best = data.get();
+			}
+		}
+		actual = best;
+	}
+	return (actual->value.element);
 }
 
 template<typename T>
@@ -318,35 +328,3 @@ void CalvinGrid<T>::clear()
 }
 
 #endif /* _CALVINGRID_HPP_ */
-
-// #include <iostream>
-//
-// int main(int argc, char **argv)
-// {
-// 	(void) argc;
-// 	(void) argv;
-// 	Grid<std::shared_ptr<eTest>> myGrid;
-// 	for(auto i=0; i<12; i++ ) {
-// 		Vec3f test0 = icosahedron_corners[icosahedron_triangles[i].corners[0]];
-// 		Vec3f test1 = icosahedron_corners[icosahedron_triangles[i].corners[1]];
-// 		Vec3f test2 = icosahedron_corners[icosahedron_triangles[i].corners[2]];
-// 		std::shared_ptr<eTest> tmp = std::make_shared<eTest>(test1);
-//
-// 		myGrid.insert(std::make_shared<eTest>(test0), test0);
-// 		myGrid.insert(tmp, test1);
-// 		myGrid.insert(std::make_shared<eTest>(test2), test2);
-// 		myGrid.remove(tmp);
-// 		std::cout << test0.dot(test0) << " " ;
-// 		std::cout << test1.dot(test1) << " " ;
-// 		std::cout << test2.dot(test2) << std::endl;
-// 		std::cout << test0.dot(test1) << " " ;
-// 		std::cout << test0.dot(test2) << " " ;
-// 		std::cout << test1.dot(test2) << std::endl;
-// 	}
-// 	myGrid.intersect(icosahedron_corners[0], 3.1415926);
-// 	for (auto &val: myGrid) {
-// 		std::cout << "Object <" << val.get() << "> at " << val->getPos() << " nearest to ";
-// 		myGrid.getNearest(val->getPos());
-// 	}
-// 	return 0;
-// }
