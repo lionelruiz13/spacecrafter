@@ -230,7 +230,10 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 {
 	std::cout << "StarManager::loadStarCatalog " << fileName << std::endl;
 	std::ifstream file(fileName, std::ifstream::in);
-	std::string objectName;
+	if (!file.is_open()) {
+		std::cout << "ERREUR: Impossible d'ouvrir le fichier " << fileName << std::endl;
+		return false;
+	}
 
 	std::string obj;
 	int cubesNumber;
@@ -242,86 +245,77 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	float pmRA, pmDE, mag, pc;
 	int B_V;
 	long unsigned int nbrH=0, nbrC=0, nbrS=0;
-
 	unsigned int numberRead = 0;
 
-	if (file) { // Fails if can't open the file
-		std::string line; // variable which will contain each line of the file
-		std::cout << "Lecture du catalogue "  << fileName << std::endl;
+	std::string line; // variable which will contain each line of the file
+	std::cout << "Lecture du catalogue "  << fileName << std::endl;
+	cLog::get()->write("Starmanager, loading catalogue "+fileName);
 
-		while (getline(file, line)) {
-			//on commence par un hypercube
-			std::istringstream istrHc(line);
-			istrHc >> obj >> hcX >> hcY >> hcZ >> cubesNumber;
+	while (getline(file, line)) {
+		//on commence par un hypercube
+		std::istringstream istrHc(line);
+		istrHc >> obj >> hcX >> hcY >> hcZ >> cubesNumber;
 
-			if (obj[0] != 'H') {
-				std::cout << "error parsing:  H needed but i see "<< line << std::endl;
+		if (obj[0] != 'H') {
+			std::cout << "error parsing:  H needed but i see "<< line << std::endl;
+			return false;
+		}
+
+		HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
+		nbrH++;
+
+		// on lit chaque cube les un après les autres
+		for(int i=0; i<cubesNumber; i++) {
+			getline(file, line);
+			std::istringstream istrC(line);
+			istrC >> obj>> cubeX >> cubeY >> cubeZ >> starsNumber;
+			if (obj[0] != 'C') {
+				std::cout << "error parsing:  C needed but i see "<< line << std::endl;
 				return false;
 			}
 
-			HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
-			nbrH++;
+			Cube *cube = new Cube(cubeX,cubeY,cubeZ);
+			nbrC++;
 
-			// on lit chaque cube les un après les autres
-			for(int i=0; i<cubesNumber; i++) {
+			// on lit toutes les etoiles dans le cube
+			for(int i=0; i<starsNumber; i++) {
 				getline(file, line);
 
-				std::istringstream istrC(line);
-				istrC >> obj>> cubeX >> cubeY >> cubeZ >> starsNumber;
+				std::istringstream istrS(line);
+				istrS >> obj>> HIP >> starX >> starY >> starZ >> pmRA >> pmDE >> mag >> B_V >> pc;
 
-				if (obj[0] != 'C') {
-					std::cout << "error parsing:  C needed but i see "<< line << std::endl;
+				if (obj[0] != 'S') {
+					std::cout << "error parsing:  S needed but i see "<< line << std::endl;
 					return false;
 				}
 
-				Cube *cube = new Cube(cubeX,cubeY,cubeZ);
-				nbrC++;
+				Vec3f xyz(starX,starY,starZ);
+				starInfo *si = new starInfo();
+				si->HIP=HIP;
+				si->posXYZ=xyz;
+				si->pmRA=pmRA;
+				si->pmDE=pmDE;
+				si->mag=mag;
+				si->B_V=B_V;
+				si->pc=pc;
+				nbrS++;
 
-				// on lit toutes les etoiles dans le cube
-				for(int i=0; i<starsNumber; i++) {
-					getline(file, line);
-
-					std::istringstream istrS(line);
-					istrS >> obj>> HIP >> starX >> starY >> starZ >> pmRA >> pmDE >> mag >> B_V >> pc;
-
-					if (obj[0] != 'S') {
-						std::cout << "error parsing:  S needed but i see "<< line << std::endl;
-						return false;
-					}
-
-					Vec3f xyz(starX,starY,starZ);
-					starInfo *si = new starInfo();
-					si->HIP=HIP;
-					si->posXYZ=xyz;
-					si->pmRA=pmRA;
-					si->pmDE=pmDE;
-					si->mag=mag;
-					si->B_V=B_V;
-					si->pc=pc;
-					nbrS++;
-
-					cube->addStar(si);
-					numberRead++;
-				}
-				hc->addCube(cube); //TODO et si le nombre de cube est dépassé ?
+				cube->addStar(si);
+				numberRead++;
 			}
-			addHyperCube(hc);
+			hc->addCube(cube); //TODO et si le nombre de cube est dépassé ?
 		}
-		file.close();
-		cLog::get()->write("StarManager cat "+fileName, LOG_TYPE::L_DEBUG);
-		std::ostringstream oss;
-		oss << "HyperCubes : " << nbrH << std::endl;
-		oss << "Cubes      : " << nbrC << std::endl;
-		oss << "Stars      : " << nbrS;
-		cLog::get()->write(oss.str());
-		//cLog::get()->write("StarManager stars readed " + numberRead, LOG_TYPE::L_DEBUG);
-		std::cout << oss.str() << std::endl;
-
-		return true;
-	} else {
-		std::cout << "ERREUR: Impossible d'ouvrir le fichier " << fileName << std::endl;
-		return false;
+		addHyperCube(hc);
 	}
+	file.close();
+
+	std::ostringstream oss;
+	oss << "HyperCubes : " << nbrH << std::endl;
+	oss << "Cubes      : " << nbrC << std::endl;
+	oss << "Stars      : " << nbrS;
+	cLog::get()->write(oss.str());
+	std::cout << oss.str() << std::endl;
+	return true;
 }
 
 
@@ -330,7 +324,10 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 {
 	std::cout << "StarManager::loadStarBinCatalog " << fileName << std::endl;
 	std::ifstream fileIn(fileName, std::ios::binary| std::ios::in);
-	std::string objectName;
+	if (!fileIn.is_open()) {
+		cLog::get()->write("StarManager, error opening file "+fileName, LOG_TYPE::L_WARNING);
+		return false;
+	}
 
 	std::string obj;
 	char c;
@@ -342,18 +339,10 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 	float starX, starY, starZ;
 	float pmRA, pmDE, mag, pc;
 	int B_V;
-
-	long unsigned  int nbrH=0, nbrC=0, nbrS=0;
-
-	// Fails if can't open the file
-	if (!fileIn.is_open()) {
-		// printf("IN: Error opening file\n");
-		cLog::get()->write("StarManager, error opening file "+fileName, LOG_TYPE::L_WARNING);
-		return false;
-	}
+	long unsigned int nbrH=0, nbrC=0, nbrS=0;
 
 	std::string line; // variable which will contain each line of the file
-	//~ cout << "Lecture du catalogue "  << fileName << std::endl;
+	std::cout << "Lecture du catalogue "  << fileName << std::endl;
 	cLog::get()->write("Starmanager, loading catalogue "+fileName);
 
 	while (!fileIn.eof()) {
@@ -448,8 +437,6 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 		}
 		addHyperCube(hc);
 	}
-	//~ cout << "Fin de lecture" << std::endl;
-
 	fileIn.close();
 	
 	std::ostringstream oss;
