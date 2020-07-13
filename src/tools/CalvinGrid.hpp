@@ -116,12 +116,14 @@ public:
 	};
 	// eTest* next() const;
 	// void setFov(Vec3f pos, float fov);
-	//! Return an array with the number of the zones in the field of view
+	//! Determine the fields of view which are visible
 	void intersect(const Vec3f& _pos, float fieldAngle);
 	// clear
 private:
 	//! Build one subdivision and his content
 	void buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl);
+	//! intersect of one subdivision and his content
+	void subIntersect(const Vec3f &pos, float fieldAngle, int subdivisionLvl);
 	//! Renvoie un pointeur vers le centre le plus proche de -v
 	auto *getNearest(const Vec3f& _v);
 	//! Angle entre le centre d'un triange et l'un de ses sommets pour un niveau de division donné
@@ -295,11 +297,18 @@ void CalvinGrid<T>::erase(CalvinGrid<T>::iterator &it)
 	it.erase();
 }
 
+template<typename T>
+void CalvinGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, int subdivisionLvl)
+{
+	const float max = cosf(fieldAngle/2.f + angleLvl[subdivisionLvl]);
+	const float min = cosf(fieldAngle/2.f - angleLvl[subdivisionLvl]);
+}
+
 //! Return an array with the number of the zones in the field of view
 template<typename T>
 void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
-	if (fieldAngle >= (3.1415926 - angleLvl[4]) * 2) {
+	if (fieldAngle >= (3.1415926 - *angleLvl.rbegin()) * 2) { // Check if all zones are visible
 		for (auto &element: allDataCenter)
 			element.second = true;
 		return;
@@ -307,15 +316,7 @@ void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 
 	Vec3f pos = _pos;
 	pos.normalize();
-	const float max = cosf(fieldAngle/2.f + angleLvl[4]);
-
-	#ifdef DEBUG
-	std::cout << "CalvinGrid::intersect display "<< std::endl;
-	for(auto &i: allDataCenter) {
-		std::cout << i.second << " ";
-	}
-	std::cout << std::endl;
-	#endif
+	subIntersect(pos, fieldAngle, 0);
 }
 
 template<typename T>
