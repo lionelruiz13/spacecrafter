@@ -34,14 +34,13 @@
 #include "coreModule/grid.hpp"
 #include "coreModule/illuminate.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/SphereGrid.hpp"
 
 class HipStarMgr;
 class Navigator;
 class ConstellationMgr;
 class VertexArray;
 class shaderProgram;
-
-#include "tools/CalvinGrid.hpp"
 
 /*! \class IlluminateMgr
   * \brief handles all illuminate stars from Hipparcos catalog for better stars visualisation.
@@ -106,7 +105,7 @@ private:
 	/// std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate vector
 	/// std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
 	/// LittleGrid illuminateGrid;					//!< Grid for display opimisation
-	CalvinGrid<Illuminate*> illuminateGrid;
+	SphereGrid<Illuminate*> illuminateGrid;
 
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 

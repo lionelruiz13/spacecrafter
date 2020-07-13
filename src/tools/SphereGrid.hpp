@@ -1,7 +1,7 @@
 /*
- * Grid
+ * SphereGrid
  *
- * Copyright 2020 AssociationSirius
+ * Copyright 2020 Association Sirius & Association Andromède
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,14 @@
  *
  */
 
-#pragma once
+#ifndef _SPHERE_GRID_H_
+#define _SPHERE_GRID_H_
 
-#include "../../src/tools/vecmath.hpp"
 #include <vector>
 #include <list>
 #include <memory>
+
+#include "tools/vecmath.hpp"
 
 //#define DEBUG 1
 
@@ -111,28 +113,28 @@ constexpr char segments[30][2] = {
 };
 
 template <typename T>
-class CalvinGrid {
+class SphereGrid {
 private:
 	typedef std::list<T> dataType_t;
 	typedef std::vector<std::pair<dataType_t, bool>> dataCenterType_t;
 
 	class iterator;
 public:
-    CalvinGrid();
-    ~CalvinGrid() {};
+    SphereGrid();
+    ~SphereGrid() {};
 	//! insert un élément dans la grille
     void insert(T _element, Vec3f pos);
 	//! supprime un élément de la grille
 	void remove(T _element, const Vec3f &pos); // Optimized method
 	void remove(T _element);
 	void remove_if(const auto &func);
-	void erase(CalvinGrid::iterator &it); // standard std::list::erase
+	void erase(SphereGrid::iterator &it); // standard std::list::erase
     auto begin() {
-		return CalvinGrid::iterator(allDataCenter.begin(), allDataCenter.end(), allDataCenter.begin()->first);
+		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end(), allDataCenter.begin()->first);
 	};
 	void clear();
     auto end() {
-		return CalvinGrid::iterator(allDataCenter.end());
+		return SphereGrid::iterator(allDataCenter.end());
 	};
     // eTest* next() const;
     // void setFov(Vec3f pos, float fov);
@@ -158,7 +160,7 @@ private:
 };
 
 template<typename T>
-class CalvinGrid<T>::iterator {
+class SphereGrid<T>::iterator {
 public:
 	iterator(auto _zoneBegin, const auto &_zoneEnd, auto &_element) : iterLastZone(_zoneEnd) {
 		// Move iterZone to the first non-empty container
@@ -198,7 +200,7 @@ private:
 };
 
 template<typename T>
-CalvinGrid<T>::CalvinGrid()
+SphereGrid<T>::SphereGrid()
 {
 	// just take the icosahedron_corners
 	for(int i=0; i<12; i++) {
@@ -217,7 +219,7 @@ CalvinGrid<T>::CalvinGrid()
 }
 
 template<typename T>
-int CalvinGrid<T>::getNearest(const Vec3f& _v)
+int SphereGrid<T>::getNearest(const Vec3f& _v)
 {
 	Vec3f v=_v;
 	int bestI = -1;
@@ -231,46 +233,46 @@ int CalvinGrid<T>::getNearest(const Vec3f& _v)
 		}
 	}
 	#ifdef DEBUG
-		std::cout << "CalvinGrid::getNearest return " << bestI << std::endl;
+		std::cout << "SphereGrid::getNearest return " << bestI << std::endl;
 	#endif
 	return bestI;
 }
 
 template<typename T>
-void CalvinGrid<T>::insert(T _element, Vec3f pos)
+void SphereGrid<T>::insert(T _element, Vec3f pos)
 {
 	allDataCenter[getNearest(pos)].first.push_back(_element);
 }
 
 template<typename T>
-void CalvinGrid<T>::remove(T _element, const Vec3f &v)
+void SphereGrid<T>::remove(T _element, const Vec3f &v)
 {
 	allDataCenter[getNearest(v)].first.remove(_element);
 }
 
 template<typename T>
-void CalvinGrid<T>::remove(T _element)
+void SphereGrid<T>::remove(T _element)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove(_element);
 }
 
 template<typename T>
-void CalvinGrid<T>::remove_if(const auto &func)
+void SphereGrid<T>::remove_if(const auto &func)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove_if(func);
 }
 
 template<typename T>
-void CalvinGrid<T>::erase(CalvinGrid::iterator &it)
+void SphereGrid<T>::erase(SphereGrid::iterator &it)
 {
 	it.erase();
 }
 
 //! Return an array with the number of the zones in the field of view
 template<typename T>
-void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
+void SphereGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
 	if (fieldAngle >= (3.1415926 - angle[0]) * 2) {
 		for (auto &element: allDataCenter)
@@ -286,7 +288,7 @@ void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 		allDataCenter[i].second = pos.dot(centers[i]) > max;
 	}
 	#ifdef DEBUG
-		std::cout << "CalvinGrid::intersect display "<< std::endl;
+		std::cout << "SphereGrid::intersect display "<< std::endl;
 		for(auto &i: allDataCenter) {
 			std::cout << i.second << " ";
 		}
@@ -295,7 +297,7 @@ void CalvinGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 }
 
 template<typename T>
-void CalvinGrid<T>::clear()
+void SphereGrid<T>::clear()
 {
 	for (auto &element: allDataCenter) {
 		element.first.clear();
@@ -333,3 +335,5 @@ void CalvinGrid<T>::clear()
 // 	}
 // 	return 0;
 // }
+
+#endif // SphereGrid
