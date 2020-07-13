@@ -34,8 +34,8 @@ public:
 	Tree() {}
 	Tree(T &data) : value(data) {}
 	Tree &operator[](int index) {return *tree[index];}
-	auto &begin() {return tree.begin();}
-	auto &end() {return tree.end();}
+	auto begin() {return tree.begin();}
+	auto end() {return tree.end();}
 	int size() const {return tree.size();}
 	void push_back(T &data) {tree.push_back(std::make_unique<Tree>(data));}
 	void clear() {tree.clear();}
