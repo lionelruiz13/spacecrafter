@@ -109,7 +109,7 @@ bool StarLines::saveHipCatalogue(std::string fileName) noexcept
 	}
 	fileOut << "# Created by SC StarLines::saveHipCatalogue " << std::endl;
 	for( auto it = HIP_data.begin(); it!= HIP_data.end(); it++) {
-		fileOut << (*it).first << " " << (*it).second[0] << " " << (*it).second[1]  << " " << (*it).second[2] << std::endl;
+		fileOut << (*it).first << " " << -(*it).second[0] << " " << (*it).second[1]  << " " << (*it).second[2] << std::endl;
 	}
 	fileOut.close();
 	return 0;
@@ -131,7 +131,7 @@ bool StarLines::saveHipBinCatalogue(std::string fileName) noexcept
 
 	for( auto it = HIP_data.begin(); it!= HIP_data.end(); it++) {
 		nbr = (*it).first;
-		x= (*it).second[0];
+		x= -(*it).second[0];
 		y= (*it).second[1];
 		z= (*it).second[2];
 	 	fileOut.write((char *)&nbr, sizeof(nbr));
