@@ -203,7 +203,7 @@ bool StarLines::loadData(std::string fileName) noexcept
 
 		loadStringData(record);
 	}
-	cLog::get()->write("StarLines read Data successfully "+fileName, LOG_TYPE::L_ERROR);
+	cLog::get()->write("StarLines read Data "+fileName, LOG_TYPE::L_INFO);
 	return true;
 }
 
