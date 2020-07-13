@@ -1635,7 +1635,7 @@ int AppCommandInterface::commandConfiguration()
 	std::string argModule = args[W_MODULE];
 
 	if (!argModule.empty()){
-		if (argModule == ACP_CN_STAR_LINES){
+		if (argModule == W_STAR_LINES){
 
 			if (argAction == W_CLEAR) {
 				coreLink->starLinesClear();
@@ -1644,7 +1644,7 @@ int AppCommandInterface::commandConfiguration()
 
 			std::string argName = args[W_NAME];
 			if (argName.empty()){
-				debug_message = "command 'star_lines' missing name parameter";
+				debug_message = "command 'configuration' missing name parameter";
 				return executeCommandStatus();
 			}
 			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
@@ -1685,7 +1685,6 @@ int AppCommandInterface::commandConfiguration()
 				debug_message = "command 'configuration', star_navigator missing name argument";
 				return executeCommandStatus();
 			}
-
 			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
 			if (argAction ==  W_LOAD) {

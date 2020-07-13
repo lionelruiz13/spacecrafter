@@ -98,6 +98,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_DURATION                  "duration"
 #define W_LOAD                      "load"
 #define W_LOAD_STAR                 "load_star"
+#define W_STAR_LINES                "star_lines"
 #define W_XY                        "xy"
 #define W_PATH                      "path"
 #define W_RA                        "ra"
