@@ -1650,7 +1650,12 @@ int AppCommandInterface::commandConfiguration()
 			bool binaryMode = Utility::strToBool(args[W_BINARY],false);
 
 			if (argAction == W_LOAD) {
-				coreLink->starLinesLoadCat(argName, binaryMode);
+				FilePath myFile  = FilePath(evalString(argName), FilePath::TFP::DATA);					
+				if (!myFile.exist()) {
+					debug_message = "command 'configuration' filename not found";
+					return executeCommandStatus();
+				}
+				coreLink->starLinesLoadCat(myFile.toString(), binaryMode);
 				return executeCommandStatus();
 			} else
 			if (argAction == W_SAVE) {
@@ -1685,21 +1690,25 @@ int AppCommandInterface::commandConfiguration()
 
 			if (argAction ==  W_LOAD) {
 				std::string argMode = args[ACP_SC_MODE];
-
+				FilePath myFile  = FilePath(evalString(argName), FilePath::TFP::DATA);	
+				if (!myFile.exist()) {
+					debug_message = "command 'configuration' filename not found";
+					return executeCommandStatus();
+				}
 				if (argMode.empty()){
 					debug_message = "command 'configuration', star_navigator missing mode argument";
 					return executeCommandStatus();
 				} else {
 					if (argMode == W_RAW) {
-						coreLink->starNavigatorLoadRaw(argName);
+						coreLink->starNavigatorLoadRaw(myFile.toString());
 						return executeCommandStatus();
 					} else 
 					if (argMode == W_SC) {
-						coreLink->starNavigatorLoad(argName, binaryMode);
+						coreLink->starNavigatorLoad(myFile.toString(), binaryMode);
 						return executeCommandStatus();
 					} else 
 					if (argMode == W_OTHER) {
-						coreLink->starNavigatorLoadOther(argName);
+						coreLink->starNavigatorLoadOther(myFile.toString());
 						return executeCommandStatus();
 					} else {
 						debug_message = "command 'configuration': unknown starNavigator mode parameter";
