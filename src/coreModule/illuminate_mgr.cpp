@@ -309,7 +309,7 @@ Illuminate *IlluminateMgr::search(unsigned int name)
 void IlluminateMgr::createSC_context()
 {
 	m_shaderIllum = std::make_unique<shaderProgram>();
-	m_shaderIllum->init( "illuminate.vert", "illuminate.frag");
+	m_shaderIllum->init( "illuminate.vert", "illuminate.geom", "illuminate.frag");
 	m_shaderIllum->setUniformLocation("ModelViewMatrix");
 
 	m_illumGL = std::make_unique<VertexArray>();

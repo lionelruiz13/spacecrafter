@@ -11,7 +11,7 @@ INSTALL(FILES
 	skylineTropicDrawTick.frag skylineTropicDrawTick.vert
 	skylineMVPDraw.frag skylineMVPDraw.vert
 	skygrid.frag skygrid.geom skygrid.vert
-	illuminate.frag illuminate.vert
+	illuminate.frag illuminate.geom  illuminate.vert
 	body_artificial.frag body_artificial.geom body_artificial.vert
 	body_normal.frag body_normal.vert 
 	body_normal_tes.frag body_normal_tes.tesc body_normal_tes.tese body_normal_tes.geom body_normal_tes.vert
