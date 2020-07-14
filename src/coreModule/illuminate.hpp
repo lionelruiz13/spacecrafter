@@ -35,8 +35,8 @@ class s_texture;
 class Illuminate {
 
 public:
-
-	Illuminate(){};
+	//! Create Illuminate from passed data and then read in texture
+	Illuminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
 	~Illuminate(){};
 
 	//! return the name of the illuminate
@@ -49,8 +49,6 @@ public:
 		return XYZ;
 	}
 
-	//! Create Illuminate from passed data and then read in texture
-	bool createIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
 	//! rempli les buffers pour un tracé en groupe des illuminates
 	void draw(const Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
 

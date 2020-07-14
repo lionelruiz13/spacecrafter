@@ -156,20 +156,8 @@ void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  dou
 	if (angular_size<1.0)
 		angular_size=defaultSize;
 
-	/// Illuminate *e = search(name);
-	/// if(e)
-	/// 	remove(name);
-
-	Illuminate *e = new Illuminate;
-
-	if(e->createIlluminate(name, ra, de, angular_size, r, b, g, tex_rotation)) {
-		/// illuminateArray.push_back(e);
-		/// illuminateZones[illuminateGrid.GetNearest(e->getXYZ())].push_back(e);
-		illuminateGrid.insert(e, e->getXYZ());
-	} else {
-		cLog::get()->write("Illuminate_mgr: Error while creating Illuminate " + e->getName(), LOG_TYPE::L_ERROR);
-		delete e;
-	}
+	Illuminate *e = new Illuminate(name, ra, de, angular_size, r, b, g, tex_rotation);
+	illuminateGrid.insert(e, e->getXYZ());
 }
 
 // Clear user added Illuminate

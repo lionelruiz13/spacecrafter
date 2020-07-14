@@ -32,7 +32,7 @@
 
 
 // Read Illuminate data passed in and compute x,y and z;
-bool Illuminate::createIlluminate(unsigned int _name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation)
+Illuminate::Illuminate(unsigned int _name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation)
 {
 	name = _name;
 	texColor.set(r,g,b);
@@ -56,8 +56,6 @@ bool Illuminate::createIlluminate(unsigned int _name, double ra, double de, doub
 	texQuadVertex[1] = mat_precomp * Vec3f(0., tex_size,-tex_size);
 	texQuadVertex[2] = mat_precomp * Vec3f(0.,-tex_size, tex_size);
 	texQuadVertex[3] = mat_precomp * Vec3f(0., tex_size, tex_size);
-
-	return true;
 }
 
 
