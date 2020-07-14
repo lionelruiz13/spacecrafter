@@ -12,7 +12,6 @@
 #include "tools/log.hpp"
 
 std::string shaderProgram::shaderDir = "./";
-// std::string shaderProgram::logFile = "./";
 GLuint shaderProgram::currentProgram= 0;
 
 static std::string fixProgramName(const std::string &vs) 
@@ -25,17 +24,8 @@ static std::string fixProgramName(const std::string &vs)
 }
 
 
-// void shaderProgram::initLogFile(){
-// 	std::ofstream fileWriter(logFile.c_str(), std::ios::out | std::ios::trunc); 
-// 	if (fileWriter) {
-// 		fileWriter.close();
-// 	}	
-// }
-
-
 shaderProgram::shaderProgram()
 {
-	// writeToLog("--------------------------------------------------------------" );
 	cLog::get()->mark(LOG_FILE::SHADER);
 }
 
@@ -67,17 +57,6 @@ shaderProgram::~shaderProgram()
 	glDeleteProgram(program);
 }
 
-// void shaderProgram::writeToLog(const std::string &cmd)
-// {
-// 	std::ofstream fileWriter(logFile.c_str(), std::ios::out | std::ios::app); 
-// 	if (fileWriter) {
-// 		fileWriter << cmd << std::endl;
-// 		fileWriter.close();
-// 	}
-// 	else
-// 		std::cout << cmd << std::endl;
-// }
-
 
 void shaderProgram::debugShader( GLuint shader, const std::string &str)
 {
@@ -99,7 +78,6 @@ void shaderProgram::debugShader( GLuint shader, const std::string &str)
 		glGetShaderInfoLog(shader, logsize, &logsize, log);
 		std::ostringstream out;
 		out << "unable to compile shader : "<< shader << " " << str << std::endl << log;
-		//writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_ERROR, LOG_FILE::SHADER);
 		free(log);
 		glDeleteShader(shader);
@@ -108,7 +86,6 @@ void shaderProgram::debugShader( GLuint shader, const std::string &str)
 	else {
 		std::ostringstream out;
 		out << "shader "<< shader << " name " << str << " compiling succes";
-		// writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_INFO, LOG_FILE::SHADER);
 	}
 }
@@ -135,7 +112,6 @@ void shaderProgram::debugProgram()
 		glGetProgramInfoLog(program, maxLength, &maxLength, log);
 		std::ostringstream out;
 		out << "unable to compile program : "<< program << " " << programName << std::endl << log;
-		// writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_ERROR, LOG_FILE::SHADER);
 		free(log);
 		// The program is useless now. So delete it.
@@ -147,7 +123,6 @@ void shaderProgram::debugProgram()
 	else {
 		std::ostringstream out;
 		out << "program : "<< program << " name " << programName << " compiling succes";
-		// writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_INFO, LOG_FILE::SHADER);	
 	}
 }
@@ -206,7 +181,6 @@ void shaderProgram::printActiveAttribs()
 
 	std::ostringstream out;
 	out << programName << " - " << program << " :  Active attributes";
-	// writeToLog(out.str() );
 	cLog::get()->write(out.str(), LOG_TYPE::L_OTHER, LOG_FILE::SHADER);
 
 	for( int i = 0; i < numAttribs; ++i ) {
@@ -219,7 +193,6 @@ void shaderProgram::printActiveAttribs()
 		{
 			std::ostringstream out;
 			out << "\t" << results[2] << " - " << name << " : " << getTypeString(results[1]);
-			// writeToLog(out.str() );
 			cLog::get()->write(out.str(), LOG_TYPE::L_OTHER, LOG_FILE::SHADER);
 		}
 		delete [] name;
@@ -236,7 +209,6 @@ void shaderProgram::printActiveUniforms()
 
 	std::ostringstream out;
 	out << programName << " - " << program << " :  Active uniforms";
-	// writeToLog(out.str() );
 	cLog::get()->write(out.str(), LOG_TYPE::L_OTHER, LOG_FILE::SHADER);
 
 	for( int i = 0; i < numUniforms; ++i ) {
@@ -250,7 +222,6 @@ void shaderProgram::printActiveUniforms()
 		{
 			std::ostringstream out;
 			out << "\t" << results[2] << " - " << name << " : " << getTypeString(results[1]);
-			// writeToLog(out.str() );
 			cLog::get()->write(out.str(), LOG_TYPE::L_OTHER, LOG_FILE::SHADER);
 		}
 		delete [] name;
@@ -278,7 +249,6 @@ void shaderProgram::printActiveUniformBlocks()
 		{
 			std::ostringstream out;
 			out << program << " uniform block " << blockName;
-			// writeToLog(out.str() );
 			cLog::get()->write(out.str(), LOG_TYPE::L_OTHER, LOG_FILE::SHADER);
 		}
 		delete [] blockName;
@@ -294,11 +264,9 @@ void shaderProgram::printActiveUniformBlocks()
 			GLint nameBufSize = results[0] + 1;
 			char * name = new char[nameBufSize];
 			glGetProgramResourceName(program, GL_UNIFORM, uniIndex, nameBufSize, NULL, name);
-			// printf("    %s (%s)\n", name, getTypeString(results[1]));
 			{
 				std::ostringstream out;
 				out << "\t" << name << " (" << getTypeString(results[1]) << ")";
-				// writeToLog(out.str() );
 				cLog::get()->write(out.str(), LOG_TYPE::L_OTHER, LOG_FILE::SHADER);
 			}
 			delete [] name;
@@ -321,10 +289,8 @@ std::string shaderProgram::loadFileToString(const std::string& fname)
 			filetext.append(line + "\n");
 		}
 	} else {
-		// show message:
 		std::ostringstream out;
 		out << "Error opening file " << fname ;
-		// writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_ERROR, LOG_FILE::SHADER);
 		exit(EXIT_FAILURE);
 	}
@@ -339,10 +305,8 @@ GLuint shaderProgram::makeShader(const std::string &str, GLenum ShaderType)
 
 	GLuint shader = glCreateShader(ShaderType);
 	if(shader == 0) {
-		// fprintf(stderr, "impossible de creer le shader %s\n", fullStr.c_str());
 		std::ostringstream out;
 		out << "impossible de creer le shader " << fullStr.c_str() ;
-		// writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_ERROR, LOG_FILE::SHADER);
 		exit(EXIT_FAILURE);
 	}
@@ -422,7 +386,6 @@ void shaderProgram::init(GLuint vs,GLuint tcs,GLuint tes,GLuint gs,GLuint fs)
 
 	program=glCreateProgram();
 	if(!glIsProgram(program)) {
-		// writeToLog("Error: couldn't create a new shader program handle");
 		cLog::get()->write("Error: couldn't create a new shader program handle", LOG_TYPE::L_ERROR, LOG_FILE::SHADER);		
 		exit(EXIT_FAILURE);
 	}
@@ -472,10 +435,8 @@ void shaderProgram::setUniformLocation(const std::string&  name )
 	} else {
 		std::ostringstream out;
 		out << program << " :  setUniformLocation name " << name << " already found.";
-		//writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_WARNING, LOG_FILE::SHADER);
 	}
-	//todo retour
 }
 
 
@@ -487,8 +448,6 @@ int shaderProgram::getUniformLocation(const std::string&  name )
 	if( pos == uniformLocations.end() ) {
 		std::ostringstream out;
 		out << program << " : error with " << name << " atribution uniformLocations";
-		// writeToLog(out.str() );		
-		//~ uniformLocations[name] = glGetUniformLocation(program, name);
 		cLog::get()->write(out.str(), LOG_TYPE::L_WARNING, LOG_FILE::SHADER);
 		return 0;
 	}
@@ -581,15 +540,11 @@ void shaderProgram::setSubroutineLocation(GLenum ShaderType, const std::string& 
 
 	if( pos == subroutineLocations.end() ) {
 		subroutineLocations[name] = glGetSubroutineIndex(program, ShaderType, name.c_str());
-		//~ printf("%i : insert subroutineLocations name %s\n", program, name);
 	} else {
 		std::ostringstream out;
 		out << program << " : subroutineLocations name " << name << " already found ";
-		// writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_WARNING, LOG_FILE::SHADER);
 		assert(false);
-		// printf("%i : subroutineLocations name %s already found !!!\n", program, name);
-		//~ std::cout << " I have " << subroutineLocations.size() <<" element in map.\n";
 	}
 }
 
@@ -601,11 +556,8 @@ void shaderProgram::setSubroutine(GLenum ShaderType, const std::string& name)
 	if( pos == subroutineLocations.end() ) {
 		std::ostringstream out;
 		out << program << " : error with " << name << " atribution SubroutineLocations";
-		// writeToLog(out.str() );
 		cLog::get()->write(out.str(), LOG_TYPE::L_WARNING, LOG_FILE::SHADER);
 		assert(false);
-		// printf("%i : erreur avec %s atribution SubroutineLocations\n", program, name);
-		//~ uniformLocations[name] = glGetUniformLocation(program, name);
 		return ;
 	}
 	GLuint sub = subroutineLocations[name];
