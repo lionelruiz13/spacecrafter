@@ -42,9 +42,9 @@ public:
 	~ReadBinary();
 
 	//! initialise la lecture du fichier et active la lecture
-	bool start();
+	bool readHeader();
 	//! ferme le fichier et termine la lecture
-	void end();
+	void close();
 
 	//! lit un type et le renvoie
 	template<typename T> void read(T& value){
@@ -60,15 +60,15 @@ public:
 	//! lit une string: le 1° char indique la taille de la string
 	void readString(std::string &s);
 
-	std::string getDescription() {
+	std::string getDescription() const {
 		return description;
 	}
 
-	std::string getVersion() {
-		return version;
+	std::string getDate() const {
+		return date;
 	}
 
-	std::string getError() {
+	std::string getError() const {
 		return error;
 	}
 	
@@ -79,8 +79,8 @@ public:
 private:
 	//! vérifie que le fichier est bien un fichier de SC
 	void readSCB();
-	//! lit la version du fichier
-	void readVersion();
+	//! lit la date de création du fichier
+	void readDate();
 	//! lit la description du fichier
 	void readDescription();
 	
@@ -89,7 +89,7 @@ private:
 
 	std::ifstream file;
 	std::string fileName;
-	std::string version;
+	std::string date;
 	std::string description;
 
 	std::string error;			// sommaire gestion d'erreur
@@ -103,10 +103,10 @@ ReadBinary::ReadBinary(const std::string & _fileName)
 
 ReadBinary::~ReadBinary()
 {
-	this->end();
+	this->close();
 }
 
-bool ReadBinary::start()
+bool ReadBinary::readHeader()
 {
 	file.open(fileName, std::ios::binary);
 	
@@ -119,13 +119,12 @@ bool ReadBinary::start()
 	canUse = true;
 
 	readSCB();
-	readVersion();
+	readDate();
 	readDescription();
-
 	return canUse;
 }
 
-void ReadBinary::end()
+void ReadBinary::close()
 {
 	if (isOpened)
 		file.close();
@@ -173,13 +172,13 @@ void ReadBinary::readDescription()
 	//std::cout << "Description : " << d << std::endl;
 }
 
-void ReadBinary::readVersion()
+void ReadBinary::readDate()
 {
 	if (!canUse) return ;
 	char d[6];
 	this->read(d);
-	version = std::string(d);
-	//std::cout << "Version : " << d << std::endl;
+	date = std::string(d);
+	//std::cout << "Date : " << d << std::endl;
 }
 
 /*
@@ -195,9 +194,10 @@ public:
 	~WriteBinary();
 
 	//! initialise l'écriture du fichier et active l'écriture dans le fichier
-	bool start(const std::string &_description);
+	bool writeHeader(const std::string &_description);
+	bool writeHeader(const std::string &_description, const std::string& _date);
 	//! ferme le fichier, termine l'écriture des données
-	void end();
+	void close();
 
 	//! écrit une string. Le 1° caractère écrit indique la taille de la string
 	void writeString(const std::string &s);
@@ -213,7 +213,7 @@ public:
 		}
 	}
 
-	std::string getError() {
+	std::string getError() const {
 		return error;
 	}
 
@@ -224,8 +224,8 @@ public:
 private:
 	//! écrit le cartouche de Spacecrafter
 	void insertSCB();
-	//! écrit la version du fichier
-	void insertVersion();
+	//! écrit la date de creation du fichier
+	void insertDate(const std::string& _date);
 	//! écrit la description du fichier
 	void insertDescription(const std::string &_description);
 
@@ -247,7 +247,7 @@ WriteBinary::~WriteBinary()
 		file.close();
 }
 
-bool WriteBinary::start(const std::string &_description)
+bool WriteBinary::writeHeader(const std::string &_description, const std::string& _date)
 {
 	file.open(fileName, std::ios::binary|std::ios::trunc);
 	if (!file.is_open()) {
@@ -258,12 +258,26 @@ bool WriteBinary::start(const std::string &_description)
 	canUse = true;
 
 	insertSCB();
-	insertVersion();
+	insertDate(_date);
 	insertDescription(_description);
 	return canUse;
 }
 
-void WriteBinary::end()
+bool WriteBinary::writeHeader(const std::string &_description)
+{
+	time_t     now = time(0);
+    struct tm  tstruct;
+    char buf[6+1]; 
+	char buf2[6];
+    tstruct = *localtime(&now);
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    strftime(buf, sizeof(buf), "%y%m%d", &tstruct);
+	strncpy(buf2, buf, 6);
+	return writeHeader(_description,buf2);
+}
+
+void WriteBinary::close()
 {
 	if (canUse)
 		file.close();
@@ -271,7 +285,7 @@ void WriteBinary::end()
 
 void WriteBinary::writeString(const std::string &s)
 {
-	if (!canUse)
+	if (!canUse)	
 		return;
 	if (s.length()>255) {
 		std::cout << "too length string : " << s<< std::endl;
@@ -295,19 +309,11 @@ void WriteBinary::insertSCB()
 }
 
 
-void WriteBinary::insertVersion()
+void WriteBinary::insertDate(const std::string& _date)
 {
-	time_t     now = time(0);
-    struct tm  tstruct;
-    char buf[6+1]; 
-	char buf2[6];
-    tstruct = *localtime(&now);
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    strftime(buf, sizeof(buf), "%y%m%d", &tstruct);
-	strncpy(buf2, buf, 6);
-	//std::cout << "version " << buf << std::endl;
-	this->write(buf2);
+	char d[6]={'\0'};
+	strncpy(d,_date.c_str(),6);
+	this->write(d);	
 }
 
 void WriteBinary::insertDescription(const std::string &_description)
@@ -323,7 +329,7 @@ if (1) {
 	std::cout << "Ecriture des données :" << std::endl;
 
 	WriteBinary myFile("olivier.bin");
-	myFile.start("Test");
+	myFile.writeHeader("Test","200101");
 
 	unsigned long int ni = 5721;
 	myFile.write(ni);
@@ -365,7 +371,7 @@ if (1) {
 	myFile.write(n);
 
 	std::cout << "Erreur ? : "<< myFile.getError() << std::endl;
-	myFile.end();
+	myFile.close();
 }
 
 	std::cout << std::endl;
@@ -374,10 +380,10 @@ if (1) {
 	std::cout << "Lecture des données :" << std::endl;
 
 	ReadBinary myFile("olivier.bin");
-	myFile.start();
+	myFile.readHeader();
 
 
-	std::cout  << "Exterieur: version " << myFile.getVersion() << " description " << myFile.getDescription() << std::endl;
+	std::cout  << "Header: date " << myFile.getDate() << " description " << myFile.getDescription() << std::endl;
 
 	unsigned long int ni;
 	myFile.read(ni);
@@ -412,7 +418,7 @@ if (1) {
 	std::cout << "Vecteurs "<< n[0] << " " << n[1] << " " << n[2] << " " <<  n[3] << " " << n[4] << " " << n[5]<< std::endl;
 
 	std::cout << "Erreur ? : "<< myFile.getError() << std::endl;
-	myFile.end();
+	myFile.close();
 }
 
 	return 0;
