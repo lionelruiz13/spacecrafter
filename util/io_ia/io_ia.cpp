@@ -22,6 +22,8 @@
  */
 #include <iostream>
 #include <fstream>
+#include <array>
+
 #include "vecmath.hpp"
 
 
@@ -45,7 +47,7 @@ public:
 	void end();
 
 	//! lit un type et le renvoie
-	template<typename T> void read( T& value){
+	template<typename T> void read(T& value){
 		if (!canUse) 
 			return;
 	    file.read(reinterpret_cast<char*>(&value), sizeof(T));
@@ -75,18 +77,14 @@ public:
 	}
 
 private:
-
 	//! vérifie que le fichier est bien un fichier de SC
 	void readSCB();
 	//! lit la version du fichier
 	void readVersion();
 	//! lit la description du fichier
 	void readDescription();
-	//! lit le tag du fichier
-	virtual void verifyTAG();
 	
 	bool canUse = false;		// indicateur d'utilisation de la classe
-	bool isTaged = false;		// vérifie si le fichier dispose d'un tag
 	bool isOpened = false;		// indique si le ficheir a été ouvert par open
 
 	std::ifstream file;
@@ -123,7 +121,6 @@ bool ReadBinary::start()
 	readSCB();
 	readVersion();
 	readDescription();
-	verifyTAG();
 
 	return canUse;
 }
@@ -156,12 +153,11 @@ void ReadBinary::readString(std::string &s)
 
 void ReadBinary::readSCB()
 {
-	if (!canUse)
-		return;
-	char b[3];
+	if (!canUse) return;
+	std::array<char,3> b;
 	this->read(b);
 	if(b[0]=='S' && b[1]=='C' && b[2]=='B')
-		return ;
+		return;
 	else {
 		error = "Not a SC binary file";
 		canUse = false;
@@ -170,9 +166,8 @@ void ReadBinary::readSCB()
 
 void ReadBinary::readDescription()
 {
-	if (!canUse)
-		return ;
-	char d[10];
+	if (!canUse) return ;
+	char d[32];
 	this->read(d);
 	description = std::string(d);
 	//std::cout << "Description : " << d << std::endl;
@@ -180,25 +175,12 @@ void ReadBinary::readDescription()
 
 void ReadBinary::readVersion()
 {
-	if (!canUse)
-		return ;
+	if (!canUse) return ;
 	char d[6];
 	this->read(d);
 	version = std::string(d);
 	//std::cout << "Version : " << d << std::endl;
 }
-
-void ReadBinary::verifyTAG()
-{
-	if (!canUse || !isTaged)
-		return;
-
-	char b[32];
-	this->read(b);
-	std::cout << "TAG: " << b << std::endl;
-	return;
-}
-
 
 /*
  * 
@@ -242,8 +224,6 @@ public:
 private:
 	//! écrit le cartouche de Spacecrafter
 	void insertSCB();
-	//! écrit le tag générique pour utilisateur
-	virtual void insertTAG();
 	//! écrit la version du fichier
 	void insertVersion();
 	//! écrit la description du fichier
@@ -252,7 +232,6 @@ private:
 	std::ofstream file;
 	std::string fileName;
 	std::string error;
-	bool isTaged = false; //indique si le fichier doit être taggé ou non.
 	bool isOpened = false;
 	bool canUse = false;
 };
@@ -281,9 +260,6 @@ bool WriteBinary::start(const std::string &_description)
 	insertSCB();
 	insertVersion();
 	insertDescription(_description);
-	if (isTaged)
-		insertTAG();
-
 	return canUse;
 }
 
@@ -318,13 +294,6 @@ void WriteBinary::insertSCB()
 	this->write(b);
 }
 
-void WriteBinary::insertTAG()
-{
-	if (!canUse)
-		return;
-	char zero[32] = {0};
-	this->write(zero);
-}
 
 void WriteBinary::insertVersion()
 {
@@ -343,8 +312,8 @@ void WriteBinary::insertVersion()
 
 void WriteBinary::insertDescription(const std::string &_description)
 {
-	char d[10]={'\0'};
-	strncpy(d,_description.c_str(),10);
+	char d[32]={'\0'};
+	strncpy(d,_description.c_str(),32);
 	this->write(d);
 }
 
