@@ -29,13 +29,13 @@
 #include <memory>
 
 #include "tools/vecmath.hpp"
+#include "tools/Tree.hpp"
 
 //#define DEBUG 1
 
 struct TopTriangle {
 	const u_char corners[3];   // index der Ecken
 };
-
 
 constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
 constexpr float icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
@@ -56,142 +56,124 @@ const Vec3f icosahedron_corners[12] = {
 	Vec3f(-icosahedron_b,            0.0, -icosahedron_a)
 };
 
-constexpr TopTriangle icosahedron_triangles[20]= {
-    {{ 1, 0,10}}, //  1
-    {{ 0, 1, 9}}, //  0
-    {{ 0, 9, 6}}, // 12
-    {{ 9, 8, 6}}, //  9
-    {{ 0, 7,10}}, // 16
-    {{ 6, 7, 0}}, //  6
-    {{ 7, 6, 3}}, //  7
-    {{ 6, 8, 3}}, // 14
-    {{11,10, 7}}, // 11
-    {{ 7, 3,11}}, // 18
-    {{ 3, 2,11}}, //  3
-    {{ 2, 3, 8}}, //  2
-    {{10,11, 4}}, // 10
-    {{ 2, 4,11}}, // 19
-    {{ 5, 4, 2}}, //  5
-    {{ 2, 8, 5}}, // 15
-    {{ 4, 1,10}}, // 17
-    {{ 4, 5, 1}}, //  4
-    {{ 5, 9, 1}}, // 13
-    {{ 8, 9, 5}}  //  8
+const TopTriangle icosahedron_triangles[20]= {
+	{{ 1, 0,10}}, //  1
+	{{ 0, 1, 9}}, //  0
+	{{ 0, 9, 6}}, // 12
+	{{ 9, 8, 6}}, //  9
+	{{ 0, 7,10}}, // 16
+	{{ 6, 7, 0}}, //  6
+	{{ 7, 6, 3}}, //  7
+	{{ 6, 8, 3}}, // 14
+	{{11,10, 7}}, // 11
+	{{ 7, 3,11}}, // 18
+	{{ 3, 2,11}}, //  3
+	{{ 2, 3, 8}}, //  2
+	{{10,11, 4}}, // 10
+	{{ 2, 4,11}}, // 19
+	{{ 5, 4, 2}}, //  5
+	{{ 2, 8, 5}}, // 15
+	{{ 4, 1,10}}, // 17
+	{{ 4, 5, 1}}, //  4
+	{{ 5, 9, 1}}, // 13
+	{{ 8, 9, 5}}  //  8
 };
 
-constexpr char segments[30][2] = {
-	{0, 1},
-	{0, 6},
-	{0, 7},
-	{0, 9},
-	{0, 10},
-	{1, 4},
-	{1, 5},
-	{1, 9},
-	{1, 10},
-	{2, 3},
-	{2, 4},
-	{2, 5},
-	{2, 8},
-	{2, 11},
-	{3, 6},
-	{3, 7},
-	{3, 8},
-	{3, 11},
-	{4, 5},
-	{4, 10},
-	{4, 11},
-	{5, 8},
-	{5, 9},
-	{6, 7},
-	{6, 8},
-	{6, 9},
-	{7, 10},
-	{7, 11},
-	{8, 9},
-	{10, 11}
-};
-
+/*
+ * Container separating elements into several zones.
+ * Only elements in zones which are partially or fully visible were given by an iterator.
+ */
 template <typename T>
 class SphereGrid {
-private:
+public:
 	typedef std::list<T> dataType_t;
-	typedef std::vector<std::pair<dataType_t, bool>> dataCenterType_t;
+	typedef std::pair<dataType_t, bool> elementType_t;
+	typedef std::vector<elementType_t> dataCenterType_t;
+
+	typedef struct {
+		elementType_t *element;
+		Vec3f corners[3];
+		Vec3f center;
+	} subGrid_t;
 
 	class iterator;
-public:
-    SphereGrid();
-    ~SphereGrid() {};
+
+	SphereGrid();
+	~SphereGrid() {};
+	//! define and build grid subdivisions
+	void subdivise(int _nbSubdivision);
 	//! insert un élément dans la grille
-    void insert(T _element, Vec3f pos);
+	void insert(const T &_element, Vec3f pos);
 	//! supprime un élément de la grille
-	void remove(T _element, const Vec3f &pos); // Optimized method
-	void remove(T _element);
-	void remove_if(const auto &func);
+	void remove(const T &_element, const Vec3f &pos); // Optimized method
+	void remove(const T &_element);
+	template<typename F>
+	void remove_if(F&& func);
 	void erase(SphereGrid::iterator &it); // standard std::list::erase
-    auto begin() {
-		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end(), allDataCenter.begin()->first);
+	auto begin() {
+		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end());
 	};
 	void clear();
-    auto end() {
+	auto end() {
 		return SphereGrid::iterator(allDataCenter.end());
 	};
-    // eTest* next() const;
-    // void setFov(Vec3f pos, float fov);
-	//! Renvoie quel centre est le plus proche de -v
-	int getNearest(const Vec3f& _v);
-	//! Return an array with the number of the zones in the field of view
+	// eTest* next() const;
+	// void setFov(Vec3f pos, float fov);
+	//! Determine the fields of view which are visible
 	void intersect(const Vec3f& _pos, float fieldAngle);
 	// clear
 private:
-	//! les centres de la grille
-	std::vector<Vec3f> centers;
-	//! en cache les centres à afficher de la grille
-	//std::vector<int> centerToDisplay;
-	//! nombre total de centres
-	unsigned int nbCenters=0;
-	//! angle que font 2 centres adjacents entre eux
-	std::array<float, 4> angle;
+	//! Set visibility for all zones
+	void setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible);
+	//! Build one subdivision and his content
+	void buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl);
+	//! intersect of one subdivision and his content
+	void subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl);
+	//! Renvoie un pointeur vers le centre le plus proche de -v
+	auto *getNearest(const Vec3f& _v);
+	//! Angle entre le centre d'un triange et l'un de ses sommets pour un niveau de division donné
+	std::vector<float> angleLvl;
 	//! Optimized container for access
 	dataCenterType_t allDataCenter;
 	//! Optimized container for search
-	//! Each level contain center of triangle
-	std::array<std::pair<std::array<std::pair<std::array<std::pair<std::array<std::pair<std::pair<dataType_t, bool>*, Vec3f>, 6>, Vec3f>, 4>, Vec3f>, 4>, Vec3f>, 20> dataCenter;
+	Tree<subGrid_t> dataCenter;
+	//! Number of subdivisions
+	int nbSubdivision = 0;
 };
 
 template<typename T>
 class SphereGrid<T>::iterator {
 public:
-	iterator(auto _zoneBegin, const auto &_zoneEnd, auto &_element) : iterLastZone(_zoneEnd) {
+	iterator(typename SphereGrid::dataCenterType_t::iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::iterator &_zoneEnd) : iterLastZone(_zoneEnd) {
 		// Move iterZone to the first non-empty container
 		for (iterZone = _zoneBegin; iterZone->first.size() == 0 && iterZone != iterLastZone; iterZone++);
 		iterElement = iterZone->first.begin();
 		iterLastElement = iterZone->first.cend();
 	}
-	iterator(const auto &_iterZone) : iterZone(_iterZone) {}
+	iterator(const typename SphereGrid::dataCenterType_t::iterator &_iterZone) : iterZone(_iterZone) {}
 	bool operator!=(iterator compare) const {
-	    return iterZone != compare.iterZone;
+		return iterZone != compare.iterZone;
 	}
 	void operator++() {
 		if (++iterElement == iterLastElement) {
-		    while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
-			    iterElement = iterZone->first.begin();
-			    iterLastElement = iterZone->first.end();
-		   }
-	   }
+			while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
+				iterElement = iterZone->first.begin();
+				iterLastElement = iterZone->first.end();
+			}
+		}
 	}
 	T &operator*() const {
-	    return *iterElement;
+		return *iterElement;
 	}
 	void erase() {
 		if (this->iterZone != this->iterLastZone)
 			this->iterZone->first.erase(this->iterElement);
 	}
 	typedef ptrdiff_t difference_type; //almost always ptrdiff_t
-    typedef T value_type; //almost always T
-    typedef T& reference; //almost always T& or const T&
-    typedef T* pointer; //almost always T* or const T*
-    typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
+	typedef T value_type; //almost always T
+	typedef T& reference; //almost always T& or const T&
+	typedef T* pointer; //almost always T* or const T*
+	typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
 private:
 	typename dataCenterType_t::iterator iterZone;
 	typename dataCenterType_t::const_iterator iterLastZone;
@@ -200,81 +182,181 @@ private:
 };
 
 template<typename T>
-SphereGrid<T>::SphereGrid()
+inline void SphereGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl)
 {
-	// just take the icosahedron_corners
-	for(int i=0; i<12; i++) {
-		nbCenters++;
-		centers.push_back(icosahedron_corners[i]);
-		allDataCenter.push_back(std::pair<dataType_t, bool>{{}, true});
+	subGrid_t tmp;
+	Vec3f middleSegments[3];
+
+	tmp.element = nullptr;
+	tmp.center = data.value.center;
+	for (u_char j = 0; j < 3; j++) {
+		middleSegments[j] = data.value.corners[(j + 1) % 3] + data.value.corners[(j + 2) % 3];
+		middleSegments[j].normalize();
+		tmp.corners[j] = middleSegments[j];
 	}
-	// allDataCenter.reserve(12*4*4*4); // Because I know this space would be used
-	// for (int i=0; i<20; i++) {
-	//
-	// }
-	angle[0] = acos(icosahedron_corners[0].dot(icosahedron_corners[1]));
-	#ifdef DEBUG
-		std::cout << "Angle = " << angle[0] << std::endl;
-	#endif
-}
+	data.push_back(tmp);
 
-template<typename T>
-int SphereGrid<T>::getNearest(const Vec3f& _v)
-{
-	Vec3f v=_v;
-	int bestI = -1;
-	float bestDot = -2.f;
+	for (u_char j = 0; j < 3; j++) {
+		tmp.corners[0] = data.value.corners[j];
+		tmp.corners[1] = middleSegments[(j + 1) % 3];
+		tmp.corners[2] = middleSegments[(j + 2) % 3];
+		tmp.center = tmp.corners[0] + tmp.corners[1] + tmp.corners[2];
+		tmp.center.normalize();
+		data.push_back(tmp);
+	}
 
-	v.normalize();
-	for (unsigned int i=0; i<nbCenters; ++i) {
-		if (v.dot(centers[i])>bestDot) {
-			bestI = i;
-			bestDot = v.dot(centers[i]);
+	if (subdivisionLvl < nbSubdivision) {
+		for (u_char j = 0; j < 4; j++) {
+			// build next subdivision
+			buildSubdivision(data[j], subdivisionLvl + 1);
+		}
+	} else {
+		for (u_char j = 0; j < 4; j++) {
+			// create container
+			allDataCenter.push_back(std::pair<dataType_t, bool>({}, false));
+			// assign created container
+			data[j].value.element = &(*allDataCenter.rbegin());
 		}
 	}
-	#ifdef DEBUG
-		std::cout << "SphereGrid::getNearest return " << bestI << std::endl;
-	#endif
-	return bestI;
 }
 
 template<typename T>
-void SphereGrid<T>::insert(T _element, Vec3f pos)
+void SphereGrid<T>::subdivise(int _nbSubdivision)
 {
-	allDataCenter[getNearest(pos)].first.push_back(_element);
+	// clear content to rebuild grid
+	allDataCenter.clear();
+	angleLvl.clear();
+	allDataCenter.reserve(20 * pow(4, _nbSubdivision)); // This container mustn't need to reallocate memory
+	nbSubdivision = _nbSubdivision;
+	for (auto &value: dataCenter) {
+		value->clear();
+		buildSubdivision(*value, 1);
+	}
+
+	// build angleLvl
+	Tree<subGrid_t> *actual = &dataCenter;
+	for (u_char i = 0; i <= nbSubdivision; i++) {
+		angleLvl.push_back(actual->value.center.dot(actual->value.corners[0]));
+		actual = &(*actual)[0];
+	}
 }
 
 template<typename T>
-void SphereGrid<T>::remove(T _element, const Vec3f &v)
+SphereGrid<T>::SphereGrid()
 {
-	allDataCenter[getNearest(v)].first.remove(_element);
+	subGrid_t tmp;
+	tmp.element = nullptr;
+
+	for (u_char i = 0; i < 20; i++) {
+		for (u_char j = 0; j < 3; j++) {
+			tmp.corners[j] = icosahedron_corners[icosahedron_triangles[i].corners[j]];
+		}
+		tmp.center = tmp.corners[0] + tmp.corners[1] + tmp.corners[2];
+		tmp.center.normalize();
+		dataCenter.push_back(tmp);
+	}
 }
 
 template<typename T>
-void SphereGrid<T>::remove(T _element)
+auto *SphereGrid<T>::getNearest(const Vec3f& _v)
+{
+	Vec3f v=_v;
+	float bestDot = -2.f;
+	Tree<subGrid_t> *best = nullptr;
+	v.normalize();
+
+	Tree<subGrid_t> *actual = &dataCenter;
+	for (u_char i = 0; i <= nbSubdivision; i++) {
+		for (auto &data: *actual) {
+			if (v.dot(data->value.center) >= bestDot) {
+				bestDot = v.dot(data->value.center);
+				best = data.get();
+			}
+		}
+		actual = best;
+	}
+	return (actual->value.element);
+}
+
+template<typename T>
+void SphereGrid<T>::insert(const T &_element, Vec3f pos)
+{
+	getNearest(pos)->first.push_back(_element);
+}
+
+template<typename T>
+void SphereGrid<T>::remove(const T &_element, const Vec3f &v)
+{
+	getNearest(v)->first.remove(_element);
+}
+
+template<typename T>
+void SphereGrid<T>::remove(const T &_element)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove(_element);
 }
 
 template<typename T>
-void SphereGrid<T>::remove_if(const auto &func)
+template<typename F>
+void SphereGrid<T>::remove_if(F&& func)
 {
 	for (auto &v: allDataCenter)
 		v.first.remove_if(func);
 }
 
 template<typename T>
-void SphereGrid<T>::erase(SphereGrid::iterator &it)
+void SphereGrid<T>::erase(SphereGrid<T>::iterator &it)
 {
 	it.erase();
+}
+
+template<typename T>
+void SphereGrid<T>::setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible)
+{
+	for (auto &it: data) {
+		if (subdivisionLvl < nbSubdivision) {
+			setVisibility(*it, subdivisionLvl + 1, isVisible);
+		} else {
+			it->value.element->second = isVisible;
+		}
+	}
+}
+
+template<typename T>
+void SphereGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl)
+{
+	const float max = cosf(fieldAngle/2.f + angleLvl[subdivisionLvl]);
+
+	if (subdivisionLvl == nbSubdivision) {
+		// determine for all remaining zones if they were
+		for (auto &it: data) {
+			it->value.element->second = pos.dot(it->value.center) > max;
+		}
+		return;
+	}
+
+	const float min = cosf(fieldAngle/2.f - angleLvl[subdivisionLvl]);
+
+	for (auto &it: data) {
+		if (pos.dot(it->value.center) > max) {
+			// all subZones were visible
+			setVisibility(*it, subdivisionLvl + 1, true);
+		} else if (pos.dot(it->value.center) > min) {
+			// all subZones weren't visible
+			setVisibility(*it, subdivisionLvl + 1, false);
+		} else {
+			// we must determine this for all subZones
+			subIntersect(pos, fieldAngle, *it, subdivisionLvl + 1);
+		}
+	}
 }
 
 //! Return an array with the number of the zones in the field of view
 template<typename T>
 void SphereGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
-	if (fieldAngle >= (3.1415926 - angle[0]) * 2) {
+	if (fieldAngle >= (3.1415926 - *angleLvl.rbegin()) * 2) { // Check if all zones are visible
 		for (auto &element: allDataCenter)
 			element.second = true;
 		return;
@@ -282,18 +364,7 @@ void SphereGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 
 	Vec3f pos = _pos;
 	pos.normalize();
-	const float max = cosf(fieldAngle/2.f + angle[0]);
-
-	for (unsigned int i=0; i<nbCenters; i++) {
-		allDataCenter[i].second = pos.dot(centers[i]) > max;
-	}
-	#ifdef DEBUG
-		std::cout << "SphereGrid::intersect display "<< std::endl;
-		for(auto &i: allDataCenter) {
-			std::cout << i.second << " ";
-		}
-		std::cout << std::endl;
-	#endif
+	subIntersect(pos, fieldAngle, dataCenter, 0);
 }
 
 template<typename T>
@@ -304,36 +375,4 @@ void SphereGrid<T>::clear()
 	}
 }
 
-// #include <iostream>
-//
-// int main(int argc, char **argv)
-// {
-// 	(void) argc;
-// 	(void) argv;
-// 	Grid<std::shared_ptr<eTest>> myGrid;
-// 	for(auto i=0; i<12; i++ ) {
-// 		Vec3f test0 = icosahedron_corners[icosahedron_triangles[i].corners[0]];
-// 		Vec3f test1 = icosahedron_corners[icosahedron_triangles[i].corners[1]];
-// 		Vec3f test2 = icosahedron_corners[icosahedron_triangles[i].corners[2]];
-// 		std::shared_ptr<eTest> tmp = std::make_shared<eTest>(test1);
-//
-// 		myGrid.insert(std::make_shared<eTest>(test0), test0);
-// 		myGrid.insert(tmp, test1);
-// 		myGrid.insert(std::make_shared<eTest>(test2), test2);
-// 		myGrid.remove(tmp);
-// 		std::cout << test0.dot(test0) << " " ;
-// 		std::cout << test1.dot(test1) << " " ;
-// 		std::cout << test2.dot(test2) << std::endl;
-// 		std::cout << test0.dot(test1) << " " ;
-// 		std::cout << test0.dot(test2) << " " ;
-// 		std::cout << test1.dot(test2) << std::endl;
-// 	}
-// 	myGrid.intersect(icosahedron_corners[0], 3.1415926);
-// 	for (auto &val: myGrid) {
-// 		std::cout << "Object <" << val.get() << "> at " << val->getPos() << " nearest to ";
-// 		myGrid.getNearest(val->getPos());
-// 	}
-// 	return 0;
-// }
-
-#endif // SphereGrid
+#endif /* _SPHERE_GRID_H_ */
