@@ -283,16 +283,6 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	Renderer::drawMultiArrays(m_shaderIllum.get(), m_illumGL.get(), GL_TRIANGLE_STRIP, nbrIllumToTrace, 4);
 }
 
-// search by name
-Illuminate *IlluminateMgr::search(unsigned int name)
-{
-	/// for ( iter = illuminateArray.begin(); iter != illuminateArray.end(); ++iter) {
-	for (auto &iter : illuminateGrid ) {
-		if (iter->getName()== name)
-			return iter;
-	}
-	return nullptr;
-}
 
 void IlluminateMgr::createSC_context()
 {

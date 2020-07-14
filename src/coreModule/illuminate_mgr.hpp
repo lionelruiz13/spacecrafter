@@ -96,9 +96,6 @@ public:
 	void removeAllConstellation();
 
 private:
-	//! search by name and return an Illuminate object
-	Illuminate *search(unsigned int name);
-
 	//! Load an individual Illuminate with all data
 	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
 
