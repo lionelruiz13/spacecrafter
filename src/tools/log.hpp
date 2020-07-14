@@ -52,6 +52,7 @@ enum class LOG_TYPE : char {
 enum class LOG_FILE : char {
 	INTERNAL,
 	SCRIPT,
+	SHADER,
 	TCP
 };
 
@@ -106,14 +107,6 @@ public:
 	bool getDebug() {
 		return isDebug;
 	}
-
-	/*!
-	*  \brief Ouvre les fichiers de log
-	*  \param LogfilePath : chemin du fichier de log général
-	*  \param scriptLogfilePath : chemin du fichier de log de script
-	*  \param openglLogfilePath : chemin du fichier de log OpenGL
-	*  \param tcpLogfilePath : chemin du fichier de log TCP
-	*/
 
 	void close();
 

@@ -66,8 +66,8 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
 	//set Shaders directory and suffix
 	shaderProgram::setShaderDir(AppSettings::Instance()->getShaderDir() );
-	shaderProgram::setLogFile(AppSettings::Instance()->getLogDir()+"shader.log");
-	shaderProgram::initLogFile();
+	// shaderProgram::setLogFile(AppSettings::Instance()->getLogDir()+"shader.log");
+	// shaderProgram::initLogFile();
 
 	ubo_cam = new UBOCam("cam_block");
 	tone_converter = new ToneReproductor();

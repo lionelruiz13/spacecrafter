@@ -195,6 +195,7 @@ int main(int argc, char **argv)
 	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
 	Log->openLog(LOG_FILE::SCRIPT, "script", true);
 	Log->openLog(LOG_FILE::TCP, "tcp");
+	Log->openLog(LOG_FILE::SHADER,"shader");
 
 	// Write the console logo & Uname Information...
 	writeGeneralInfo();

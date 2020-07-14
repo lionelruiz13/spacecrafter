@@ -83,20 +83,20 @@ public:
 		shaderProgram::shaderDir = _shaderDir;
 	}
 
-	/**
-	*   \fn setLogFile
-	*   set the log file
-	*   \param _logFile: the file name
-	*/
-	static void setLogFile(const std::string& _logFile) {
-		shaderProgram::logFile = _logFile;
-	}
+	// /**
+	// *   \fn setLogFile
+	// *   set the log file
+	// *   \param _logFile: the file name
+	// */
+	// static void setLogFile(const std::string& _logFile) {
+	// 	shaderProgram::logFile = _logFile;
+	// }
 
-	/**
-	*   \fn initLogFile
-	*   set to empty the log file
-	*/
-	static void initLogFile();
+	// /**
+	// *   \fn initLogFile
+	// *   set to empty the log file
+	// */
+	// static void initLogFile();
 
 	/**
 	*   \fn use
@@ -135,7 +135,7 @@ private:
 	void printActiveUniformBlocks();
 	void printActiveAttribs();
 
-	void writeToLog(const std::string &cmd);
+	// void writeToLog(const std::string &cmd);
 
 	GLint getUniformLocation(const std::string& name);
 
@@ -178,8 +178,8 @@ private:
 	GLuint tcshader; // tesselation control
 	GLuint teshader; // tesselation evaluation shader
 	GLuint gshader; // geometry shader
-	static  std::string shaderDir;
-	static  std::string logFile;
+	static std::string shaderDir;
+	// static std::string logFile;
 	std::string programName;
 
 	std::map<std::string, GLuint> uniformLocations;
