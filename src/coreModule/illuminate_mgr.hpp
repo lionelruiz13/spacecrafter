@@ -99,9 +99,6 @@ private:
 	//! Load an individual Illuminate with all data
 	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
 
-	/// std::vector<Illuminate*> illuminateArray; 		//!< The Illuminate vector
-	/// std::vector<Illuminate*>* illuminateZones;		//!< array of Illuminate vector with the grid id as array rank
-	/// LittleGrid illuminateGrid;					//!< Grid for display opimisation
 	SphereGrid<Illuminate*> illuminateGrid;
 
 	double defaultSize;							//!< defautl Size from illuninate if not precised
