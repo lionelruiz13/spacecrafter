@@ -2524,6 +2524,10 @@ int AppCommandInterface::commandSelect()
 	} else if (args[W_CONSTELLATION_STAR]!="") {
 		select_type = W_CONSTELLATION_STAR  ;
 		identifier = args[W_CONSTELLATION_STAR];
+	} else if (args["star_galaxy"]!="") {
+		select_type = "star_galaxy" ;
+		identifier = args["star_galaxy"];
+
 	} else {
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
@@ -3141,6 +3145,11 @@ int AppCommandInterface::commandBody()
 	std::string argName = args[W_NAME];
     if (argName == ACP_SC_HOME_PLANET  ) argName = coreLink->getObserverHomePlanetEnglishName();
 	std::string argMode = args[ACP_SC_MODE];
+
+	if (argMode=="in_galaxy" && !argName.empty()) {
+		stcore->starGalaxyCreate(argName);
+		return executeCommandStatus();
+	}
 
 	// traitement des OJM
 	if ((argMode=="in_universe" || argMode=="in_galaxy") && !argAction.empty()) {
