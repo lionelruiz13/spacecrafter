@@ -146,8 +146,8 @@ void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  dou
 	if (angular_size<1.0)
 		angular_size=defaultSize;
 
-	Illuminate *e = new Illuminate(name, ra, de, angular_size, r, b, g, tex_rotation);
-	illuminateGrid.insert(e, e->getXYZ());
+	auto e = std::make_shared<Illuminate>(name, ra, de, angular_size, r, b, g, tex_rotation);
+	illuminateGrid.insert(std::move(e), e->getXYZ());
 }
 
 // Clear user added Illuminate
@@ -176,7 +176,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	float max_fov = myMax( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
 	illuminateGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f);
 
-	for (auto it : illuminateGrid ) {
+	for (const auto &it : illuminateGrid ) {
 		it->draw(prj, illumPos, illumTex, illumColor );
 	}
 

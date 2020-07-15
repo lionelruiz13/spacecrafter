@@ -103,7 +103,7 @@ public:
 	//! define and build grid subdivisions
 	void subdivise(int _nbSubdivision);
 	//! insert un élément dans la grille
-	void insert(const T &_element, Vec3f pos);
+	void insert(T _element, Vec3f pos);
 	//! supprime un élément de la grille
 	void remove(const T &_element, const Vec3f &pos); // Optimized method
 	void remove(const T &_element);
@@ -227,6 +227,7 @@ void SphereGrid<T>::subdivise(int _nbSubdivision)
 	allDataCenter.clear();
 	angleLvl.clear();
 	allDataCenter.reserve(20 * pow(4, _nbSubdivision)); // This container mustn't need to reallocate memory
+	void *ptr = allDataCenter.data(); // There must be no reallocation
 	nbSubdivision = _nbSubdivision;
 	for (auto &value: dataCenter) {
 		value->clear();
@@ -239,6 +240,7 @@ void SphereGrid<T>::subdivise(int _nbSubdivision)
 		angleLvl.push_back(actual->value.center.dot(actual->value.corners[0]));
 		actual = &(*actual)[0];
 	}
+	assert(ptr == allDataCenter.data()); // There must be no reallocation
 }
 
 template<typename T>
@@ -279,9 +281,9 @@ auto *SphereGrid<T>::getNearest(const Vec3f& _v)
 }
 
 template<typename T>
-void SphereGrid<T>::insert(const T &_element, Vec3f pos)
+void SphereGrid<T>::insert(T _element, Vec3f pos)
 {
-	getNearest(pos)->first.push_back(_element);
+	getNearest(pos)->first.push_back(std::move(_element));
 }
 
 template<typename T>
