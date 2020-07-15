@@ -213,7 +213,7 @@ inline void SphereGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisi
 	} else {
 		for (u_char j = 0; j < 4; j++) {
 			// create container
-			allDataCenter.push_back(std::pair<dataType_t, bool>({}, false));
+			allDataCenter.push_back(std::pair<dataType_t, bool>(dataType_t(), false));
 			// assign created container
 			data[j].value.element = &(*allDataCenter.rbegin());
 		}

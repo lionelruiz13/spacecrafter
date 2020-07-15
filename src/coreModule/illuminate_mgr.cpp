@@ -146,7 +146,7 @@ void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  dou
 	if (angular_size<1.0)
 		angular_size=defaultSize;
 
-	auto e = std::make_shared<Illuminate>(name, ra, de, angular_size, r, b, g, tex_rotation);
+	auto e = std::make_unique<Illuminate>(name, ra, de, angular_size, r, b, g, tex_rotation);
 	illuminateGrid.insert(std::move(e), e->getXYZ());
 }
 

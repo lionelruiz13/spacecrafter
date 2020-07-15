@@ -99,7 +99,7 @@ private:
 	//! Load an individual Illuminate with all data
 	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
 
-	SphereGrid<std::shared_ptr<Illuminate>> illuminateGrid;
+	SphereGrid<std::unique_ptr<Illuminate>> illuminateGrid;
 
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 
