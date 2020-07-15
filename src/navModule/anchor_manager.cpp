@@ -757,8 +757,8 @@ bool AnchorManager::loadCameraPosition(const std::string& fileName)
 	return true;
 }
 
-bool AnchorManager::alignCameraToBody(std::string name, double duration){
-
+bool AnchorManager::alignCameraToBody(std::string name, double duration)
+{
 	AnchorPointBody * anchor = nullptr;
 
 	auto it = anchors.find(name);

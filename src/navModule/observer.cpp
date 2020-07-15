@@ -28,7 +28,6 @@
 #include <cstdlib>
 #include <algorithm>
 
-#include "bodyModule/solarsystem.hpp"
 #include "bodyModule/body.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
@@ -36,20 +35,17 @@
 #include "navModule/observer.hpp"
 #include "tools/utility.hpp"
 #include "tools/init_parser.hpp"
-#include "tools/translator.hpp"
 #include "tools/log.hpp"
-//#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "mainModule/define_key.hpp"
 
 Observer::Observer()
-	: /*planet(0),*/ longitude(0.), latitude(1e-9), altitude(0),
-	 defaultLongitude(0), defaultLatitude(1e-9), defaultAltitude(0)
+	: longitude(0.), latitude(1e-9), altitude(0),
+	defaultLongitude(0), defaultLatitude(1e-9), defaultAltitude(0)
 {
 	flag_move_to = false;
-	// planetInSolarSystem = nullptr;
 }
 
 
@@ -282,18 +278,3 @@ double Observer::getLongitude(void) const
 	}
 	return tmp;
 }
-
-
-// void Observer::saveBodyInSolarSystem()
-// {
-// 	planetInSolarSystem = planet;
-// }
-
-// void Observer::loadBodyInSolarSystem()
-// {
-// 	if (planetInSolarSystem != nullptr)
-// 		planet=planetInSolarSystem;
-// }
-
-// void Observer::fixBodyToSun()
-// {}
