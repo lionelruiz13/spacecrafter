@@ -182,11 +182,13 @@ s_font.hpp
 shader.hpp
 sky_localizer.hpp
 special_array.hpp
+SphereGrid.hpp
 stateGL.hpp
 s_texture.hpp
 ThreadPool.hpp
 tone_reproductor.hpp
 translator.hpp
+Tree.hpp
 utility.hpp
 vecmath.hpp
 vector2.hpp

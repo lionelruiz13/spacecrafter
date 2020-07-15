@@ -79,10 +79,19 @@ const TopTriangle icosahedron_triangles[20]= {
 	{{ 8, 9, 5}}  //  8
 };
 
-/*
- * Container separating elements into several zones.
- * Only elements in zones which are partially or fully visible were given by an iterator.
- */
+/**
+* \class SphereGrid
+*
+* \brief Container separating elements into several zones.
+*
+* @section REQUIREMENT
+* Define subdivision before use it
+*
+* @section USAGE
+* Call the "intersect" method to update zones visibility.
+*
+* Only elements in zones which are partially or fully visible were accessible by an iterator.
+*/
 template <typename T>
 class SphereGrid {
 public:
@@ -100,36 +109,39 @@ public:
 
 	SphereGrid();
 	~SphereGrid() {};
-	//! define and build grid subdivisions
+	//! @brief Set the number of grid subdivisions and builds them.
+	//! A subdivision divides each zone into 4 sub-zones.
 	void subdivise(int _nbSubdivision);
-	//! insert un élément dans la grille
+	//! Insert an element in this grid
 	void insert(T _element, Vec3f pos);
-	//! supprime un élément de la grille
-	void remove(const T &_element, const Vec3f &pos); // Optimized method
+	//! Remove the corresponding element from this grid (optimized version)
+	void remove(const T &_element, const Vec3f &pos);
+	//! Remove the corresponding element from this grid
 	void remove(const T &_element);
+	//! Remove the elements for which the function passed in parameter returns true
 	template<typename F>
 	void remove_if(F&& func);
-	void erase(SphereGrid::iterator &it); // standard std::list::erase
+	//! Standard std::list::erase
+	void erase(SphereGrid::iterator &it);
 	auto begin() {
 		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end());
 	};
+	//! Remove all elements from this grid
 	void clear();
 	auto end() {
 		return SphereGrid::iterator(allDataCenter.end());
 	};
-	// eTest* next() const;
 	// void setFov(Vec3f pos, float fov);
-	//! Determine the fields of view which are visible
+	//! Determine which fields of view are visible
 	void intersect(const Vec3f& _pos, float fieldAngle);
-	// clear
 private:
-	//! Set visibility for all zones
+	//! Set visibility flag of all sub-zones
 	void setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible);
-	//! Build one subdivision and his content
+	//! Build one subdivision
 	void buildSubdivision(Tree<subGrid_t> &data, int subdivisionLvl);
-	//! intersect of one subdivision and his content
+	//! Determine if one zone is visible
 	void subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl);
-	//! Renvoie un pointeur vers le centre le plus proche de -v
+	//! Return a pointer to the nearest zone of -v
 	auto *getNearest(const Vec3f& _v);
 	//! Angle entre le centre d'un triange et l'un de ses sommets pour un niveau de division donné
 	std::vector<float> angleLvl;
@@ -167,6 +179,8 @@ public:
 	T &operator*() const {
 		return *iterElement;
 	}
+	//! Destroy element pointed by this iterator
+	//! Warning: This action invalidate this iterator.
 	void erase() {
 		if (this->iterZone != this->iterLastZone)
 			this->iterZone->first.erase(this->iterElement);
@@ -356,7 +370,6 @@ void SphereGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGri
 	}
 }
 
-//! Return an array with the number of the zones in the field of view
 template<typename T>
 void SphereGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
