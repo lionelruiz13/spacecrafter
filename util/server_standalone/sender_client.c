@@ -125,6 +125,7 @@ int main(int argc, char *argv[])
     //~ strcpy(sendBuff,"camera action create name big_dipper type observatory x -14.825 y 7.860 z 22.487");
     //strcpy(sendBuff, "configuration module star_navigator action save binary_mode false name hip2007.txt");
     //strcpy(sendBuff, "configuration module star_lines action save binary_mode false name asterism.txt");
+    strcpy(sendBuff,"camera action switch name big_dipper");
 	
 	unsigned int nb_write;
 	

@@ -782,3 +782,12 @@ bool AnchorManager::alignCameraToBody(std::string name, double duration)
 	return true;
 }
 
+
+void AnchorManager::displayAnchor() const
+{
+	std::cout << " All Anchor ------------------------------" <<std::endl;
+	for (auto it : anchors) {
+		std::cout << it.first << " - " << it.second->isOnBody() << " - " << it.second->getHeliocentricEclipticPos() << std::endl;
+	}
+	std::cout << " -----------------------------------------" <<std::endl;
+}

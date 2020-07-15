@@ -1053,8 +1053,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
+					coreLink->cameraDisplayAnchor();
+					key_Modifier= NONE;
 					break;
 				case CTRL:
+					coreLink->observerDisplayPos();
+					key_Modifier= NONE;
 					break;
 				default:
 					break;
