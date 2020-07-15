@@ -71,7 +71,7 @@ public:
 	//! display pretty information from the deepskyObject
 	std::string getInfoString(const Navigator * nav) const;
 
-	std::string getShortInfoString(const Navigator * nav = nullptr) const;
+	std::string getShortInfoString(const Navigator * nav) const;
 
 	std::string getShortInfoNavString(const Navigator * nav, const TimeMgr * timeMgr, const Observer* observatory) const;
 
