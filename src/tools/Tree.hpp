@@ -33,11 +33,15 @@ class Tree {
 public:
 	Tree() {}
 	Tree(T &data) : value(data) {}
+	//! return attached branch with this index
 	Tree &operator[](int index) {return *tree[index];}
 	auto begin() {return tree.begin();}
 	auto end() {return tree.end();}
+	//! return number of branches
 	int size() const {return tree.size();}
+	//! create a new branch which contain this data
 	void push_back(T &data) {tree.push_back(std::make_unique<Tree>(data));}
+	//! remove all descendant branches
 	void clear() {tree.clear();}
 
 	T value; // Value stored by the container
