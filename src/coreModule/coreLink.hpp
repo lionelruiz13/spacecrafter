@@ -546,6 +546,10 @@ public:
 	// Camera---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	
+	void cameraDisplayAnchor() {
+		core->anchorManager->displayAnchor();
+	}
+
 	bool cameraAddAnchor(stringHash_t& param) {
 		return core->anchorManager->addAnchor(param); 
 	}
@@ -1311,6 +1315,9 @@ public:
 		core->observatory->setConf(conf,section);
 	}
 
+	void observerDisplayPos() {
+		std::cout << core->observatory->getObserverCenterPoint() << std::endl;
+	}
 
 	//! change the Heading value
 	void moveHeadingRelative(float f) {

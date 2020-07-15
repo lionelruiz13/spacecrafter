@@ -203,6 +203,7 @@ public:
 	 */
 	bool alignCameraToBody(std::string name, double duration);
 
+	void displayAnchor() const;
 private:
 	//! returns the position the observer should be at the JD date
 	/*
