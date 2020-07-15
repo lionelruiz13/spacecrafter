@@ -146,9 +146,11 @@ class SphereGrid<T>::iterator {
 public:
 	iterator(typename SphereGrid::dataCenterType_t::iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::iterator &_zoneEnd) : iterLastZone(_zoneEnd) {
 		// Move iterZone to the first non-empty container
-		for (iterZone = _zoneBegin; iterZone->first.size() == 0 && iterZone != iterLastZone; iterZone++);
-		iterElement = iterZone->first.begin();
-		iterLastElement = iterZone->first.cend();
+		for (iterZone = _zoneBegin; iterZone != iterLastZone && iterZone->first.size() == 0; iterZone++);
+		if (iterZone != iterLastZone) {
+			iterElement = iterZone->first.begin();
+			iterLastElement = iterZone->first.cend();
+		}
 	}
 	iterator(const typename SphereGrid::dataCenterType_t::iterator &_iterZone) : iterZone(_iterZone) {}
 	bool operator!=(iterator compare) const {
