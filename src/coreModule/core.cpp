@@ -807,7 +807,6 @@ void Core::drawInSolarSystem(int delta_time)
 void Core::drawInGalaxy(int delta_time)
 {
 	starNav->computePosition(navigation->getObserverHelioPos());
-
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
 
@@ -1190,7 +1189,7 @@ void Core::starGalaxyCreate(std::string argName)
     unsigned int result = Utility::strToInt(argName);
 	std::cout << "stargalaxy: " << result << std::endl;
 	starGalaxy = new StarGalaxy(starNav->getStarInfo(result));
-	Vec3d pos = starGalaxy->getObsJ2000Pos();
+	Vec3d pos = starGalaxy->getObsJ2000Pos(navigation);
 	stringHash_t params;
 	params["name"] = argName;
 	params["type"]= "observatory";

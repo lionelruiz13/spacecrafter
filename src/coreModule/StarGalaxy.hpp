@@ -61,8 +61,8 @@ public:
 		return nav->j2000ToEarthEqu(XYZ);
 	}
 
-	//! return the observer centered J2000 coordinates
-	Vec3d getObsJ2000Pos(const Navigator *nav = nullptr) const {
+	Vec3d getObsJ2000Pos(const Navigator *nav) const {
+//  		return nav->getHelioToEyeMat() * Mat4d::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * XYZ;
 		return XYZ;
 	}
 
