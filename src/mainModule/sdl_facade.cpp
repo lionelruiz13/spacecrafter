@@ -25,7 +25,7 @@
 #include <string>
 #include <SDL2/SDL_ttf.h>
 #include <GL/glew.h>
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "mainModule/sdl_facade.hpp"
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
@@ -61,7 +61,7 @@ void SDLFacade::getCurrentRes( Uint16* const w, Uint16* const h ) const
 	}
 }
 
-void SDLFacade::createWindow( Uint16 w, Uint16 h, int bppMode, int antialiasing, bool fullScreen, std::string iconFile) // , bool _debugGL)
+void SDLFacade::createWindow(const std::string& appName, Uint16 w, Uint16 h, int bppMode, int antialiasing, bool fullScreen, std::string iconFile) // , bool _debugGL)
 {
 	(void) bppMode; // Unused parameter
 
@@ -95,11 +95,11 @@ void SDLFacade::createWindow( Uint16 w, Uint16 h, int bppMode, int antialiasing,
 
 	// Create the SDL screen surface
 	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0"); //lost screen after mplayer
-	window  = SDL_CreateWindow(APP_NAME,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,windowW,windowH,Vflags);
+	window  = SDL_CreateWindow(appName.c_str(),SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,windowW,windowH,Vflags);
 	if (window == nullptr) {
 		cLog::get()->write("SDL Could not create window: "+ std::string(SDL_GetError()) +" Retrying with stencil size 0", LOG_TYPE::L_ERROR);
 		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,0);
-		window  = SDL_CreateWindow(APP_NAME,SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,windowW,windowH,Vflags);
+		window  = SDL_CreateWindow(appName.c_str(),SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,windowW,windowH,Vflags);
 		if (window == nullptr) {
 			cLog::get()->write("SDL Could not create window even with stencil 0: " + std::string(SDL_GetError()), LOG_TYPE::L_ERROR);
 			exit(1);
