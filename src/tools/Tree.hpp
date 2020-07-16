@@ -25,7 +25,8 @@
 #ifndef _TREE_HPP_
 #define _TREE_HPP_
 
-//! Arborescent container
+//! @brief Arborescent container
+//! @author Calvin Ruiz
 template <typename T>
 class Tree {
 public:

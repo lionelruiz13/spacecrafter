@@ -91,6 +91,8 @@ const TopTriangle icosahedron_triangles[20]= {
 * Call the "intersect" method to update zones visibility.
 *
 * Only elements in zones which are partially or fully visible were accessible by an iterator.
+*
+* \author Calvin Ruiz
 */
 template <typename T>
 class SphereGrid {
