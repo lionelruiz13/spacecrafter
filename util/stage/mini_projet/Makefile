@@ -1,3 +1,3 @@
 all:
-	echo -en "\ec" && g++ main.cpp Window.cpp -lSDL2 -lOpenGL -g3 -Wall -Wextra -Werror -lGLEW
+	echo -en "\ec" && g++ *.cpp -lSDL2 -lSDL2_ttf -lSDL2_mixer -lGL -g3 -Wall -Wextra -Werror -lGLEW -I../../../src
 	echo -en "\ec" && ./a.out || gdb83 ./a.out

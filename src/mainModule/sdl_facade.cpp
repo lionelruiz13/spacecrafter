@@ -63,6 +63,7 @@ void SDLFacade::getCurrentRes( Uint16* const w, Uint16* const h ) const
 
 void SDLFacade::createWindow( Uint16 w, Uint16 h, int bppMode, int antialiasing, bool fullScreen, std::string iconFile) // , bool _debugGL)
 {
+	(void) bppMode; // Unused parameter
 
 	Uint32	Vflags;		// Our Video Flags
 	//~ window=NULL;
@@ -124,7 +125,7 @@ void SDLFacade::createWindow( Uint16 w, Uint16 h, int bppMode, int antialiasing,
 	/* test opengl version 4.3 */
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); 
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 	if ( ! glewIsSupported("GL_VERSION_4_3") ) {
 		cLog::get()->write("GLEW no openGL 4_3 support" , LOG_TYPE::L_ERROR);
