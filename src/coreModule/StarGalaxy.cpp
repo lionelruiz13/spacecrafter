@@ -39,6 +39,16 @@ StarGalaxy::StarGalaxy(starInfo* star)
 StarGalaxy::~StarGalaxy()
 {}
 
+Vec3d StarGalaxy::getEarthEquPos(const Navigator *nav) const
+{
+    return nav->getHelioToEyeMat() * Mat4d::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * XYZ;
+    //return XYZ;
+    //return nav->j2000ToEarthEqu(XYZ);
+}
+
+Vec3d StarGalaxy::getObsJ2000Pos(const Navigator *nav) const {
+	return XYZ;
+}
 
 std::string StarGalaxy::getInfoString(const Navigator * nav) const
 {

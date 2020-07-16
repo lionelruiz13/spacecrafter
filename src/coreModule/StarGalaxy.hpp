@@ -57,14 +57,9 @@ public:
 		return OBJECT_STARGALAXY;
 	}
 
-	Vec3d getEarthEquPos(const Navigator *nav) const {
-		return nav->j2000ToEarthEqu(XYZ);
-	}
+	Vec3d getEarthEquPos(const Navigator *nav) const;
 
-	Vec3d getObsJ2000Pos(const Navigator *nav) const {
-//  		return nav->getHelioToEyeMat() * Mat4d::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * XYZ;
-		return XYZ;
-	}
+	Vec3d getObsJ2000Pos(const Navigator *nav) const;
 
 	//! Return the apparent magnitude for DSO object
 	float getMag(const Navigator * nav = nullptr) const {
