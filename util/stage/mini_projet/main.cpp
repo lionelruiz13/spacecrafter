@@ -3,6 +3,9 @@
 #include "tools/log.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/OpenGL.hpp"
+#include "tools/shader.hpp"
+#include "tools/Renderer.hpp"
+#include "signal.h"
 
 /*
 #include "Window.hpp"
@@ -17,21 +20,28 @@ int main()
     return 0;
 }
 /*/
+
+bool opened = true;
+
+void sigTerm(int sig)
+{
+    (void) sig;
+    opened = false;
+}
+
 int main()
 {
     cLog *Log = cLog::get();
     SDLFacade window;
 
+    signal(SIGINT, sigTerm);
     Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
     window.initSDL();
     window.createWindow("Experiment", 800, 600, 0, 3, false, "~/.spacecrafter/data/icon.bpm");
 
-    // auto varray = std::make_unique<VertexArray>();
-    // varray->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-    // varray->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
     // varray->registerVertexBuffer(BufferType::SHAPE, BufferAccess::STATIC);
 
-    float vertices[] = {
+    auto vertices = std::vector<float>({
         0,0,0, 1,0,0, 1,1,0, 0,1,0,
         0,0,0, 0,1,0, 0,1,1, 0,0,1,
         0,0,0, 0,0,1, 1,0,1, 1,0,0,
@@ -39,29 +49,33 @@ int main()
         1,1,1, 0,1,1, 0,0,1, 1,0,1,
         1,1,1, 1,0,1, 1,0,0, 1,1,0,
         1,1,1, 1,1,0, 0,1,0, 0,1,1
-    };
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
+    });
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
-    glEnableVertexAttribArray(0);
-    // varray->fillVertexBuffer(BufferType::POS3D, cube);
-    SDL_Event event;
+    std::cout << "1\n";
+    auto shader = std::make_unique<shaderProgram>();
+    shader->init("experiment.vert", "experiment.frag");
+    shader->unuse();
 
-    bool opened = true;
+    std::cout << "2\n";
+    auto varray = std::make_unique<VertexArray>();
+    varray->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+
+    varray->fillVertexBuffer(BufferType::POS3D, vertices);
+
+    std::cout << "3\n";
+    StateGL::disable(GL_BLEND);
+	StateGL::BlendFunc(GL_ONE, GL_ONE);
+    // GLuint vbuffer;
+    // glGenBuffers(1, &vbuffer);
+    // glBindBuffer(GL_ARRAY_BUFFER, vbuffer);
+    // glBufferData(GL_ARRAY_BUFFER, 72, vertices, GL_STATIC_DRAW);
+
+    std::cout << "start\n";
     while (opened) {
-        SDL_WaitEvent(&event);
-        switch (event.window.event) {
-            case SDL_WINDOWEVENT_CLOSE:
-                opened = false;
-                break;
-            default:;
-        }
-        glClear(GL_COLOR_BUFFER_BIT);
-        glDrawArrays(GL_QUADS, 0, 72);
+        Renderer::clearColor();
+        Renderer::drawArrays(shader.get(), varray.get(), GL_QUADS, 0, 24);
         window.glSwapWindow();
     }
-    glDisableVertexAttribArray(0);
 
     Log->close();
     return 0;
