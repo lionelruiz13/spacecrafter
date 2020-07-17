@@ -10,6 +10,12 @@
 
 bool opened = true;
 
+#define width 800
+#define height 600
+
+constexpr float DEG2RAD = 3.14159265358979323 / 180.;
+constexpr float RATIO = (float) width / (float) height;
+
 void sigTerm(int sig)
 {
     (void) sig;
@@ -25,7 +31,7 @@ int main()
     signal(SIGTERM, sigTerm);
     Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
     window.initSDL();
-    window.createWindow("Experiment", 600, 600, 0, 3, false, "~/.spacecrafter/data/icon.bpm");
+    window.createWindow("Experiment", width, height, 0, 3, false, "~/.spacecrafter/data/icon.bpm");
 
     // varray->registerVertexBuffer(BufferType::SHAPE, BufferAccess::STATIC);
 
@@ -54,8 +60,13 @@ int main()
     shader->init("experiment.vert", "experiment.frag");
 
     std::cout << "2\n";
-    auto mvp = Mat4f::scaling(0.7).translation(Vec3f(-0.5, -0.5, -0.5));
-    const auto rotate = Mat4f::yawPitchRoll(0.05, 0.03, 0.04);
+    const auto proj = Mat4f::perspective(70, RATIO, 0.1, 100.);
+    auto cam = Vec3f(0, 10, 0);
+    auto target = Vec3f(0, 0, 0);
+    const auto up = Vec3f(0, 1, 0);
+
+    auto mat = Mat4f::scaling(0.7).translation(Vec3f(-0.5, -0.5, -0.5));
+    const auto rotate = Mat4f::yawPitchRoll(1, 0, 1);
 
     std::cout << "3\n";
     auto varray = std::make_unique<VertexArray>();
@@ -71,13 +82,20 @@ int main()
     StateGL::enable(GL_DEPTH_TEST);
 
     std::cout << "start\n";
+
+    SDL_Event event;
+
     while (opened) {
-        mvp = rotate * mvp;
+        cam = rotate * cam;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        /*
         std::cout << "\ec";
-        mvp.print();
+        proj.print();
+        Mat4f::lookAt(cam, target, up).print();
+        mat.print();
+        (proj * Mat4f::lookAt(cam, target, up)).print(); //*/
         shader->use();
-        shader->setUniform("Mat", mvp);
+        shader->setUniform("MVP", proj * Mat4f::lookAt(cam, target, up) * mat);
         Renderer::drawArrays(shader.get(), varray.get(), GL_QUADS, 0, 24);
         window.glSwapWindow();
     }
