@@ -73,7 +73,7 @@ int main()
     std::cout << "start\n";
     while (opened) {
         mvp = rotate * mvp;
-        Renderer::clearColor();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         std::cout << "\ec";
         mvp.print();
         shader->use();
