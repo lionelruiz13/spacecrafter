@@ -379,7 +379,7 @@ void UI::moveMouseAz(double x)
 
 void UI::moveLat(double x)
 {
-	if (x>0) this->executeCommand("add y 1"); else this->executeCommand("add y -1");
+	if (x>0) this->executeCommand("add y -1"); else this->executeCommand("add y 1");
 	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
 		coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
 	else
