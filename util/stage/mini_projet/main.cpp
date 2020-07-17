@@ -1,6 +1,8 @@
 #include <GL/glew.h>
 #include "mainModule/sdl_facade.hpp"
 #include "tools/log.hpp"
+#include "tools/stateGL.hpp"
+#include "tools/OpenGL.hpp"
 
 /*
 #include "Window.hpp"
@@ -22,17 +24,28 @@ int main()
 
     Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
     window.initSDL();
-    window.createWindow(800, 600, 0, 3, false, "~/.spacecrafter/data/icon.bpm");
+    window.createWindow("Experiment", 800, 600, 0, 3, false, "~/.spacecrafter/data/icon.bpm");
 
-    //*
-    const float vertices[] = {-0.5, -0.5, 0, 0.5, 0.5, -0.5,
-                              -0.8, -0.8, -0.3, -0.8, -0.8, -0.3}; //*/
+    // auto varray = std::make_unique<VertexArray>();
+    // varray->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+    // varray->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
+    // varray->registerVertexBuffer(BufferType::SHAPE, BufferAccess::STATIC);
+
+    float vertices[] = {
+        0,0,0, 1,0,0, 1,1,0, 0,1,0,
+        0,0,0, 0,1,0, 0,1,1, 0,0,1,
+        0,0,0, 0,0,1, 1,0,1, 1,0,0,
+
+        1,1,1, 0,1,1, 0,0,1, 1,0,1,
+        1,1,1, 1,0,1, 1,0,0, 1,1,0,
+        1,1,1, 1,1,0, 0,1,0, 0,1,1
+    };
     unsigned int VBO;
     glGenBuffers(1, &VBO);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, vertices);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertices);
     glEnableVertexAttribArray(0);
-
+    // varray->fillVertexBuffer(BufferType::POS3D, cube);
     SDL_Event event;
 
     bool opened = true;
@@ -45,7 +58,7 @@ int main()
             default:;
         }
         glClear(GL_COLOR_BUFFER_BIT);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_QUADS, 0, 72);
         window.glSwapWindow();
     }
     glDisableVertexAttribArray(0);
