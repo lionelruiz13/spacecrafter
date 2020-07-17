@@ -68,6 +68,7 @@ int main()
     std::cout << "4\n";
     StateGL::disable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
+    StateGL::enable(GL_DEPTH_TEST);
 
     std::cout << "start\n";
     while (opened) {
