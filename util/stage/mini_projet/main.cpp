@@ -22,6 +22,25 @@ void sigTerm(int sig)
     opened = false;
 }
 
+class MyObj {
+public:
+    MyObj(const std::vector<float> &_vertices, const std::vector<float> &_colors) {
+        assert(_vertices.size() == _colors.size());
+        assert(_vertices.size() % 12 == 0);
+        vertices.insert(vertices.end(), _vertices.begin(), _vertices.end());
+        colors.insert(colors.end(), _colors.begin(), _colors.end());
+        nbElements = vertices.size() / 12;
+        std::cout << "ELEMENTS : " << nbElements << std::endl;
+    };
+    static int nbElements;
+    static std::vector<float> vertices;
+    static std::vector<float> colors;
+};
+
+int MyObj::nbElements = 0;
+std::vector<float> MyObj::vertices;
+std::vector<float> MyObj::colors;
+
 int main()
 {
     cLog *Log = cLog::get();
@@ -35,7 +54,7 @@ int main()
 
     // varray->registerVertexBuffer(BufferType::SHAPE, BufferAccess::STATIC);
 
-    auto vertices = std::vector<float>({
+    MyObj cube(std::vector<float>({
         0,0,0, 1,0,0, 1,1,0, 0,1,0,
         0,0,0, 0,1,0, 0,1,1, 0,0,1,
         0,0,0, 0,0,1, 1,0,1, 1,0,0,
@@ -43,9 +62,7 @@ int main()
         1,1,1, 0,1,1, 0,0,1, 1,0,1,
         1,1,1, 1,0,1, 1,0,0, 1,1,0,
         1,1,1, 1,1,0, 0,1,0, 0,1,1
-    });
-
-    auto colors = std::vector<float>({
+    }), std::vector<float>({
         1,0,0, 1,0,0, 1,0,0, 1,0,0,
         0,1,0, 0,1,0, 0,1,0, 0,1,0,
         0,0,1, 0,0,1, 0,0,1, 0,0,1,
@@ -53,7 +70,9 @@ int main()
         0,1,1, 0,1,1, 0,1,1, 0,1,1,
         1,0,1, 1,0,1, 1,0,1, 1,0,1,
         1,1,0, 1,1,0, 1,1,0, 1,1,0,
-    });
+    }));
+
+    MyObj ground(std::vector<float>({-100,0,-100, 100,0,-100, 100,0,100, -100,0,100}), std::vector<float>({1,1,1, 1,1,1, 1,1,1, 1,1,1}));
 
     std::cout << "1\n";
     auto shader = std::make_unique<shaderProgram>();
@@ -61,12 +80,13 @@ int main()
 
     std::cout << "2\n";
     const auto proj = Mat4f::perspective(70, RATIO, 0.1, 100.);
-    auto cam = Vec3f(0, 10, 0);
+    auto cam = Vec3f(0, 4, -4);
     auto target = Vec3f(0, 0, 0);
     auto up = Vec3f(0, 1, 0);
 
-    auto mat = Mat4f::scaling(0.7).translation(Vec3f(-0.5, -0.5, -0.5));
-    const auto rotate = Mat4f::yawPitchRoll(1.2, 0.6, 1);
+    Mat4f view;
+    auto mat = Mat4f::scaling(0.7).translation(Vec3f(-0.5, 0, -0.5));
+    const auto rotate = Mat4f::yawPitchRoll(1.2, 0.6, 0);
 
     int fixer = 0;
 
@@ -75,8 +95,8 @@ int main()
     varray->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
     varray->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
 
-    varray->fillVertexBuffer(BufferType::POS3D, vertices);
-    varray->fillVertexBuffer(BufferType::COLOR, colors);
+    varray->fillVertexBuffer(BufferType::POS3D, MyObj::vertices);
+    varray->fillVertexBuffer(BufferType::COLOR, MyObj::colors);
 
     std::cout << "4\n";
     StateGL::disable(GL_BLEND);
@@ -89,17 +109,17 @@ int main()
 
     while (opened) {
         cam = rotate * cam;
-        up = rotate * up;
+        view = Mat4f::lookAt(cam, target, up);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //std::cout << "\ec";
+        //view.print();
         /*
-        std::cout << "\ec";
         proj.print();
-        Mat4f::lookAt(cam, target, up).print();
         mat.print();
         (proj * Mat4f::lookAt(cam, target, up)).print(); //*/
         shader->use();
-        shader->setUniform("MVP", proj * Mat4f::lookAt(cam, target, up) * mat);
-        Renderer::drawArrays(shader.get(), varray.get(), GL_QUADS, 0, 24);
+        shader->setUniform("MVP", proj * view * mat);
+        Renderer::drawArrays(shader.get(), varray.get(), GL_QUADS, 0, MyObj::nbElements * 4);
         window.glSwapWindow();
     }
 
