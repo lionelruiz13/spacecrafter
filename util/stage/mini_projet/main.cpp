@@ -7,20 +7,6 @@
 #include "tools/Renderer.hpp"
 #include "signal.h"
 
-/*
-#include "Window.hpp"
-
-int main()
-{
-    Window window("Experiment", 800, 600);
-
-    if (!window.isOpen)
-        return 1;
-
-    return 0;
-}
-/*/
-
 bool opened = true;
 
 void sigTerm(int sig)
@@ -65,10 +51,6 @@ int main()
     std::cout << "3\n";
     StateGL::disable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
-    // GLuint vbuffer;
-    // glGenBuffers(1, &vbuffer);
-    // glBindBuffer(GL_ARRAY_BUFFER, vbuffer);
-    // glBufferData(GL_ARRAY_BUFFER, 72, vertices, GL_STATIC_DRAW);
 
     std::cout << "start\n";
     while (opened) {
@@ -80,4 +62,3 @@ int main()
     Log->close();
     return 0;
 }
-//*/
