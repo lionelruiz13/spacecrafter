@@ -63,10 +63,12 @@ int main()
     const auto proj = Mat4f::perspective(70, RATIO, 0.1, 100.);
     auto cam = Vec3f(0, 10, 0);
     auto target = Vec3f(0, 0, 0);
-    const auto up = Vec3f(0, 1, 0);
+    auto up = Vec3f(0, 1, 0);
 
     auto mat = Mat4f::scaling(0.7).translation(Vec3f(-0.5, -0.5, -0.5));
-    const auto rotate = Mat4f::yawPitchRoll(1, 0, 1);
+    const auto rotate = Mat4f::yawPitchRoll(1.2, 0.6, 1);
+
+    int fixer = 0;
 
     std::cout << "3\n";
     auto varray = std::make_unique<VertexArray>();
@@ -87,6 +89,7 @@ int main()
 
     while (opened) {
         cam = rotate * cam;
+        up = rotate * up;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         /*
         std::cout << "\ec";
