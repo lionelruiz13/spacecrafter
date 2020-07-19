@@ -1191,7 +1191,7 @@ Object Core::cleverFind(const Vec3d& v) const
 	Vec3d winpos;
 
 	// Field of view for a 30 pixel diameter circle on screen
-	float fov_around = projection->getFov()/myMin(projection->getViewportWidth(), projection->getViewportHeight()) * 30.f;
+	float fov_around = projection->getFov()/std::min(projection->getViewportWidth(), projection->getViewportHeight()) * 30.f;
 
 	float xpos, ypos;
 	projection->projectEarthEqu(v, winpos);

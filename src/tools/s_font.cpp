@@ -333,7 +333,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	if(radius > 0) {
 		if (d > radius + rendering.stringH) return;
 	} else {
-		if(myMax(prj->getViewportWidth(), prj->getViewportHeight() ) > d) return;
+		if(std::max(prj->getViewportWidth(), prj->getViewportHeight() ) > d) return;
 	}
 
 	float theta = M_PI + atan2f(dx, dy - 1);

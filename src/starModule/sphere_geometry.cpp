@@ -123,8 +123,8 @@ void ConvexPolygon::getBoundingLonLat(double result[4]) const
 	bool insideDown = inside(Vec3d(0,0,-1));
 
 
-	result[2] = myMin(myMin(vertex[0].latitude(), vertex[1].latitude()), myMin(vertex[2].latitude(), vertex[3].latitude()));
-	result[3] = myMax(myMax(vertex[0].latitude(), vertex[1].latitude()), myMax(vertex[2].latitude(), vertex[3].latitude()));
+	result[2] = std::min(std::min(vertex[0].latitude(), vertex[1].latitude()), std::min(vertex[2].latitude(), vertex[3].latitude()));
+	result[3] = std::max(std::max(vertex[0].latitude(), vertex[1].latitude()), std::max(vertex[2].latitude(), vertex[3].latitude()));
 	if (result[2]<-M_PI/2)
 		result[2] = -M_PI/2;
 	if (result[3]>M_PI/2)
@@ -141,8 +141,8 @@ void ConvexPolygon::getBoundingLonLat(double result[4]) const
 	}
 	else
 	{
-		result[0] = myMin(myMin(vertex[0].longitude(), vertex[1].longitude()), myMin(vertex[2].longitude(), vertex[3].longitude()));
-		result[1] = myMax(myMax(vertex[0].longitude(), vertex[1].longitude()), myMax(vertex[2].longitude(), vertex[3].longitude()));
+		result[0] = std::min(std::min(vertex[0].longitude(), vertex[1].longitude()), std::min(vertex[2].longitude(), vertex[3].longitude()));
+		result[1] = std::max(std::max(vertex[0].longitude(), vertex[1].longitude()), std::max(vertex[2].longitude(), vertex[3].longitude()));
 	}
 }
 */

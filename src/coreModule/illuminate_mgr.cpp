@@ -173,7 +173,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	illumTex.clear();
 	illumColor.clear();
 
-	float max_fov = myMax( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
+	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
 	illuminateGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f);
 
 	for (const auto &it : illuminateGrid ) {
