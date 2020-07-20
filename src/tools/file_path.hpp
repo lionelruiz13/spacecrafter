@@ -29,23 +29,29 @@
 #include <string>
 #include "tools/app_settings.hpp"
 
-
-/*! \class FilePath
-* \brief classe recherchant un fichier sur le systeme
+/**
+* \file file_path.hpp
+* \brief searches for a file on the system
+* \author Olivier NIVOIX
+* \version 1
 *
-* Lors de l'exécution d'un script par exemple, un fichier de donnée utilisé peut 
-* se retrouver dans différents emplacements sur le systeme. FilePath recherche 
-* un nom de fichier sur plusieurs emplacements en fonction des indications de 
-* l'utilisateur
+*! \class FilePath
+*
+* \brief searches for a file on the system
+*
+* When executing a script for example, a data file used can
+* be found in different locations on the system. FilePath is looking for
+* a file name in several locations according to the indications of the user.
 * 
-* Si le nom du fichier est donné de manière absolu, la classe vérifie son existance
-* sinon la classe teste diverses possibilités
+* If the name of the file is given in an absolute way, the class checks its existence
+* otherwise the class tests various possibilities regarding its location on the hard disk
 * 
-* FilePath va chercher en priorité le fichier dans le répertoire ou à été lu le 
-* fichier de script sinon, il procèdera à la recherche dans un répertoire TFP 
-* 
-* Il fournira alors un résultat d'existance du fichier et retournera le nom exact
-* du fichier cherché sur le systeme
+* FilePath will first search for the file in the directory where the
+* script file otherwise, it will search in a TFP directory
+*
+* It will then provide an existence result of the file and return the exact name
+* of the file sought on the system
+*
 */
 class FilePath
 {
