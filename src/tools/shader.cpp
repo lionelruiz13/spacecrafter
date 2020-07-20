@@ -14,13 +14,13 @@
 std::string shaderProgram::shaderDir = "./";
 GLuint shaderProgram::currentProgram= 0;
 
-static std::string fixProgramName(const std::string &vs) 
+static std::string fixProgramName(const std::string &vs)
 {
 	size_t lastdot = vs.find_last_of(".");
     if (lastdot == std::string::npos)
 		return vs;
 	else
-    	return vs.substr(0, lastdot); 
+    	return vs.substr(0, lastdot);
 }
 
 
@@ -69,7 +69,7 @@ void shaderProgram::debugShader( GLuint shader, const std::string &str)
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logsize);
 
 		// on alloue un espace memoire dans lequel OpenGL ecrira le message
-		log = (char*)malloc(logsize + 1);
+		log = new char [logsize + 1];
 		if(log == nullptr) {
 			std::cout<<"impossible d'allouer de la memoire !\n"<<std::endl;
 			exit(EXIT_FAILURE);
@@ -79,7 +79,7 @@ void shaderProgram::debugShader( GLuint shader, const std::string &str)
 		std::ostringstream out;
 		out << "unable to compile shader : "<< shader << " " << str << std::endl << log;
 		cLog::get()->write(out.str(), LOG_TYPE::L_ERROR, LOG_FILE::SHADER);
-		free(log);
+		delete log;
 		glDeleteShader(shader);
 		exit(EXIT_FAILURE);
 	}
@@ -103,7 +103,7 @@ void shaderProgram::debugProgram()
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
 		// on alloue un espace memoire dans lequel OpenGL ecrira le message
-		log = (char*)malloc(maxLength + 1);
+		log = new char [maxLength + 1];
 		if(log == nullptr) {
 			std::cout<<"impossible d'allouer de la memoire !\n"<<std::endl;
 			exit(EXIT_FAILURE);
@@ -113,7 +113,7 @@ void shaderProgram::debugProgram()
 		std::ostringstream out;
 		out << "unable to compile program : "<< program << " " << programName << std::endl << log;
 		cLog::get()->write(out.str(), LOG_TYPE::L_ERROR, LOG_FILE::SHADER);
-		free(log);
+		delete log;
 		// The program is useless now. So delete it.
 		glDeleteProgram(program);
 		// Provide the infolog in whatever manner you deem best.
@@ -123,7 +123,7 @@ void shaderProgram::debugProgram()
 	else {
 		std::ostringstream out;
 		out << "program : "<< program << " name " << programName << " compiling succes";
-		cLog::get()->write(out.str(), LOG_TYPE::L_INFO, LOG_FILE::SHADER);	
+		cLog::get()->write(out.str(), LOG_TYPE::L_INFO, LOG_FILE::SHADER);
 	}
 }
 
@@ -386,7 +386,7 @@ void shaderProgram::init(GLuint vs,GLuint tcs,GLuint tes,GLuint gs,GLuint fs)
 
 	program=glCreateProgram();
 	if(!glIsProgram(program)) {
-		cLog::get()->write("Error: couldn't create a new shader program handle", LOG_TYPE::L_ERROR, LOG_FILE::SHADER);		
+		cLog::get()->write("Error: couldn't create a new shader program handle", LOG_TYPE::L_ERROR, LOG_FILE::SHADER);
 		exit(EXIT_FAILURE);
 	}
 
