@@ -237,25 +237,29 @@ const std::string AppSettings::getUserDir() const
 void AppSettings::display_all() const
 {
 	std::cout << "------------------------------------------------------" << std::endl;
-	std::cout << "getConfigDir " << getConfigDir() << std::endl;
 	std::cout << "getConfigFile " << getConfigFile() << std::endl;
-	std::cout << "getLocaleDir " << getLocaleDir() << std::endl;
-	std::cout << "getDataDir " << getDataDir() << std::endl;
+	std::cout << "getConfigDir " << getConfigDir() << std::endl;
 	std::cout << "getDataRoot " << getDataRoot() << std::endl;
-	std::cout << "getUserDir " << getUserDir() << std::endl;
-	std::cout << "getLandscapeDir " << getLandscapeDir() << std::endl;
-	std::cout << "getWebDir " << getWebDir() << std::endl;
-	std::cout << "getLogDir " << getLogDir() << std::endl;
-	std::cout << "getFtpDir " << getFtpDir() << std::endl;
-	std::cout << "getVideoDir " << getVideoDir() << std::endl;
-	std::cout << "getAudioDir " << getAudioDir() << std::endl;
-	std::cout << "getScriptDir " << getScriptDir() << std::endl;
-	std::cout << "getVframeDirectory " << getVframeDirectory() << std::endl;
-	std::cout << "getScreenshotDirectory " << getScreenshotDirectory() << std::endl;
+	std::cout << "getDataDir " << getDataDir() << std::endl;
+	std::cout << "getLocaleDir " << getLocaleDir() << std::endl;
 	std::cout << "getUserFontDir " << getUserFontDir() << std::endl;
-	std::cout << "getTextureDir " << getTextureDir() << std::endl;
-	std::cout << "getPictureDir " << getPictureDir() << std::endl;
+	std::cout << "getScriptDir " << getScriptDir() << std::endl;
+	std::cout << "getUserDir " << getUserDir() << std::endl;
+	std::cout << "getLogDir " << getLogDir() << std::endl;
+	std::cout << "getWebDir " << getWebDir() << std::endl;
+	std::cout << "getLandscapeDir " << getLandscapeDir() << std::endl;
+	std::cout << "getSkyCultureDir " << getSkyCultureDir() << std::endl;
+	std::cout << "getAudioDir " << getAudioDir() << std::endl;
+	std::cout << "getVideoDir " << getVideoDir() << std::endl;
+	std::cout << "getMediaDir " << getMediaDir() << std::endl;
+	std::cout << "getFtpDir " << getFtpDir() << std::endl;
 	std::cout << "getShaderDir " << getShaderDir() << std::endl;
 	std::cout << "getModel3DDir " << getModel3DDir() << std::endl;
+	std::cout << "getVR360Dir " << getVR360Dir() << std::endl;
+	std::cout << "getPictureDir " << getPictureDir() << std::endl;
+	std::cout << "getTextureDir " << getTextureDir() << std::endl;
+	std::cout << "getLanguageDir " << getLanguageDir() << std::endl;
+	std::cout << "getScreenshotDirectory " << getScreenshotDirectory() << std::endl;
+	std::cout << "getVframeDirectory " << getVframeDirectory() << std::endl;
 	std::cout << "------------------------------------------------------" << std::endl;
 }

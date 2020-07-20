@@ -1013,6 +1013,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
+					AppSettings::Instance()->display_all();
 					break;
 				case CTRL:
 					app->flag(APP_FLAG::ALIVE, false);
