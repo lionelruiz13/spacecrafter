@@ -110,7 +110,7 @@ int main()
     while (opened) {
         cam = rotate * cam;
         view = Mat4f::lookAt(cam, target, up);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        Renderer::clearBuffer();
         //std::cout << "\ec";
         //view.print();
         /*
