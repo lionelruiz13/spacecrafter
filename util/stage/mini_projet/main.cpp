@@ -26,10 +26,10 @@ class MyObj {
 public:
     MyObj(const std::vector<float> &_vertices, const std::vector<float> &_colors) {
         assert(_vertices.size() == _colors.size());
-        assert(_vertices.size() % 12 == 0);
+        assert(_vertices.size() % 9 == 0);
         vertices.insert(vertices.end(), _vertices.begin(), _vertices.end());
         colors.insert(colors.end(), _colors.begin(), _colors.end());
-        nbElements = vertices.size() / 12;
+        nbElements = vertices.size() / 9;
         std::cout << "ELEMENTS : " << nbElements << std::endl;
     };
     static int nbElements;
@@ -55,24 +55,24 @@ int main()
     // varray->registerVertexBuffer(BufferType::SHAPE, BufferAccess::STATIC);
 
     MyObj cube(std::vector<float>({
-        0,0,0, 1,0,0, 1,1,0, 0,1,0,
-        0,0,0, 0,1,0, 0,1,1, 0,0,1,
-        0,0,0, 0,0,1, 1,0,1, 1,0,0,
+        0,0,0, 1,0,0, 1,1,0, 1,1,0, 0,1,0, 0,0,0,
+        0,0,0, 0,1,0, 0,1,1, 0,1,1, 0,0,1, 0,0,0,
+        0,0,0, 0,0,1, 1,0,1, 1,0,1, 1,0,0, 0,0,0,
 
-        1,1,1, 0,1,1, 0,0,1, 1,0,1,
-        1,1,1, 1,0,1, 1,0,0, 1,1,0,
-        1,1,1, 1,1,0, 0,1,0, 0,1,1
+        1,1,1, 0,1,1, 0,0,1, 0,0,1, 1,0,1, 1,1,1,
+        1,1,1, 1,0,1, 1,0,0, 1,0,0, 1,1,0, 1,1,1,
+        1,1,1, 1,1,0, 0,1,0, 0,1,0, 0,1,1, 1,1,1
     }), std::vector<float>({
-        1,0,0, 1,0,0, 1,0,0, 1,0,0,
-        0,1,0, 0,1,0, 0,1,0, 0,1,0,
-        0,0,1, 0,0,1, 0,0,1, 0,0,1,
+        1,0,0, 1,0,0, 1,0,0, 1,0,0, 1,0,0, 1,0,0,
+        0,1,0, 0,1,0, 0,1,0, 0,1,0, 0,1,0, 0,1,0,
+        0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1, 0,0,1,
 
-        0,1,1, 0,1,1, 0,1,1, 0,1,1,
-        1,0,1, 1,0,1, 1,0,1, 1,0,1,
-        1,1,0, 1,1,0, 1,1,0, 1,1,0,
+        0,1,1, 0,1,1, 0,1,1, 0,1,1, 0,1,1, 0,1,1,
+        1,0,1, 1,0,1, 1,0,1, 1,0,1, 1,0,1, 1,0,1,
+        1,1,0, 1,1,0, 1,1,0, 1,1,0, 1,1,0, 1,1,0
     }));
 
-    MyObj ground(std::vector<float>({-100,0,-100, 100,0,-100, 100,0,100, -100,0,100}), std::vector<float>({1,1,1, 1,1,1, 1,1,1, 1,1,1}));
+    MyObj ground(std::vector<float>({-100,0,-100, 100,0,-100, 100,0,100, 100,0,100, -100,0,100, -100,0,-100}), std::vector<float>({1,1,1, 1,1,1, 1,1,1, 1,1,1, 1,1,1, 1,1,1}));
 
     std::cout << "1\n";
     auto shader = std::make_unique<shaderProgram>();
@@ -119,7 +119,7 @@ int main()
         (proj * Mat4f::lookAt(cam, target, up)).print(); //*/
         shader->use();
         shader->setUniform("MVP", proj * view * mat);
-        Renderer::drawArrays(shader.get(), varray.get(), GL_QUADS, 0, MyObj::nbElements * 4);
+        Renderer::drawArrays(shader.get(), varray.get(), GL_TRIANGLES, 0, MyObj::nbElements * 3);
         window.glSwapWindow();
     }
 
