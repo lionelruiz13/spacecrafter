@@ -26,11 +26,12 @@
 
 /**
  * @file app_setting.h
+ * 
  * @class AppSettings
+ * 
  * @brief Provides a single point of access to common application settings such as data
  * and configuration directories. The singleton is initialized in main.cpp and
  * is henceforth available from anywhere via the Instance method.
- *
  *
  */
 
@@ -40,21 +41,8 @@
 #include "spacecrafter.hpp"
 #include "tools/no_copy.hpp"
 
-// #pragma once
 #ifndef _APPSETTINGS_HPP_
 #define _APPSETTINGS_HPP_
-
-// Stub implementations of functions that don't exist on windows
-// #ifdef WIN32
-// time_t timegm(struct tm*);
-// #else
-// struct TIME_ZONE_INFORMATION {
-// 	long Bias;
-// 	long DaylightBias;
-// };
-// int GetTimeZoneInformation( TIME_ZONE_INFORMATION* );
-// #endif
-
 
 class AppSettings: public NoCopy {
 
@@ -65,8 +53,6 @@ public:
 
 	//! Obtains config.ini settings. Caller must allocate InitParser.
 	void loadAppSettings( InitParser* const ) const;
-
-	//! Runtime environment queries
 
 	//! renvie le fichier de configuration du logiciel
 	const std::string getConfigFile() const;
@@ -140,12 +126,7 @@ public:
 	//! Determine where vframes files should go on different platforms
 	const std::string getVframeDirectory() const;
 
-
-	//! Platform query functions. These should be preferred over sprinkling preprocessor statements throughout the code.
-	// bool OSX() const;
-	// bool Unix() const;
-	// bool Windows() const;
-
+	//! Console output of all methods of the class
 	void display_all() const;
 
 private:
