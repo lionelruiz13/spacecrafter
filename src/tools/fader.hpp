@@ -29,9 +29,15 @@
 #include <cstdio>
 #include <cfloat>
 
-/** @brief Class which manages a (usually smooth) transition between two states (typically ON/OFF) in function of a counter
-* It used for various purpose like smooth transitions between
-*/
+/**
+ * @file fader.hpp
+ * @brief contains all the fader classes that manage the transition between two states
+ * 
+ * @class Fader
+ * 
+ * @brief Class which manages a (usually smooth) transition between two states (typically ON/OFF) in function of a counter
+ * It used for various purpose like smooth transitions between
+ */
 
 class Fader {
 public:
