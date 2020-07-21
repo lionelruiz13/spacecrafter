@@ -81,6 +81,7 @@ public:
 	float getMaxValue() {
 		return max_value;
 	}
+	virtual bool isTransiting() = 0;
 protected:
 	bool state;
 	float min_value, max_value;
@@ -102,28 +103,31 @@ public:
 		;
 	}
 	//! Increments the internal counter of delta_time ticks
-	void update(int delta_ticks) {
+	void update(int delta_ticks) override {
 		;
 	}
 
-	virtual void reset(bool _state) {
+	virtual void reset(bool _state) override {
 		state = _state;
 	}
 
 	//! Gets current switch state
-	float getInterstate() const {
+	float getInterstate() const override {
 		return state ? max_value : min_value;
 	}
-	float getInterstatePercentage() const {
+	float getInterstatePercentage() const override{
 		return state ? 100.f : 0.f;
 	}
 	//! Switchors can be used just as bools
-	Fader& operator=(bool s) {
+	Fader& operator=(bool s) override {
 		state=s;
 		return *this;
 	}
-	virtual float getDuration() {
+	virtual float getDuration() override{
 		return 0.f;
+	}
+	virtual bool isTransiting() override{
+		return false;
 	}
 protected:
 };
@@ -151,7 +155,7 @@ public:
 	}
 
 	//! Increments the internal counter of delta_time ticks
-	void update(int delta_ticks) {
+	void update(int delta_ticks) override {
 		if (!is_transiting) return; // We are not in transition
 		counter+=delta_ticks;
 		if (counter>=duration) {
@@ -166,7 +170,7 @@ public:
 		//		printf("Counter %d  interstate %f\n", counter, interstate);
 	}
 
-	virtual void reset(bool _state) {
+	virtual void reset(bool _state) override {
 		is_transiting = false;
 		state = _state;
 		interstate = state ? max_value : min_value;
@@ -174,16 +178,16 @@ public:
 	}
 
 	//! Get current switch state
-	float getInterstate() const {
+	float getInterstate() const override {
 		return interstate;
 	}
 
-	float getInterstatePercentage() const {
+	float getInterstatePercentage() const override {
 		return 100.f * (interstate-min_value)/(max_value-min_value);
 	}
 
 	//! Faders can be used just as bools
-	Fader& operator=(bool s) {
+	Fader& operator=(bool s) override {
 
 		if (is_transiting) {
 			// if same end state, no changes
@@ -210,19 +214,21 @@ public:
 		return *this;
 	}
 
-	void setDuration(int _duration) {
+	void setDuration(int _duration) override {
 		if (_duration <= 0) duration=0;
 		else
 			duration = _duration;
 	}
-	virtual float getDuration() {
+	virtual float getDuration() override {
 		return duration;
 	}
-	void setMaxValue(float _max) {
+	void setMaxValue(float _max) override {
 		if (interstate >=  max_value) interstate =_max;
 		max_value = _max;
 	}
-
+	virtual bool isTransiting() override {
+		return is_transiting;
+	}
 protected:
 	bool is_transiting;
 	int duration;
@@ -255,7 +261,7 @@ public:
 	}
 
 	//! Increments the internal counter of delta_time ticks
-	void update(int delta_ticks) {
+	void update(int delta_ticks) override {
 		if (!is_transiting) return; // We are not in transition
 		counter+=delta_ticks;
 		if (counter>=duration) {
@@ -271,7 +277,7 @@ public:
 		// printf("Counter %d  interstate %f\n", counter, interstate);
 	}
 
-	virtual void reset(bool _state) {
+	virtual void reset(bool _state) override {
 		is_transiting = false;
 		state = _state;
 		interstate = state ? max_value : min_value;
@@ -279,15 +285,15 @@ public:
 	}
 
 	//! Get current switch state
-	float getInterstate() const {
+	float getInterstate() const override {
 		return interstate;
 	}
-	float getInterstatePercentage() const {
+	float getInterstatePercentage() const override {
 		return 100.f * (interstate-min_value)/(max_value-min_value);
 	}
 
 	//! Faders can be used just as bools
-	Fader& operator=(bool s) {
+	Fader& operator=(bool s) override {
 
 		if (is_transiting) {
 			// if same end state, no changes
@@ -314,13 +320,13 @@ public:
 		return *this;
 	}
 
-	void setDuration(int _duration) {
+	void setDuration(int _duration) override {
 		duration = _duration;
 	}
-	virtual float getDuration() {
+	virtual float getDuration() override {
 		return duration;
 	}
-	bool isTransiting() {
+	virtual bool isTransiting() override {
 		return is_transiting;
 	}
 protected:
