@@ -1,2 +1,2 @@
 #!/bin/sh
-make -C build -j8 && build/mini_projet.out
+cd build && make -j8 && cd .. && build/mini_projet.out
