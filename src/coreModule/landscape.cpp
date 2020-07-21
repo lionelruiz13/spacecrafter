@@ -54,7 +54,7 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	shaderFog-> init( "fog.vert","fog.frag");
 
 	m_fogGL = std::make_unique<VertexArray>();
-	m_fogGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);	
+	m_fogGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_fogGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 }
 
@@ -113,7 +113,7 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	bool mipmap; // Default on
 	if (param["mipmap"] == "on" || param["mipmap"] == "1") mipmap = true;
 	else mipmap = false;
-	
+
 	// NOTE: textures should be full filename (and path)
 	if (param["type"]=="fisheye") {
 		LandscapeFisheye* ldscp = new LandscapeFisheye();
@@ -360,7 +360,7 @@ void LandscapeFisheye::initShader()
 	m_landscapeGL = std::make_unique<VertexArray>();
 	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_landscapeGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	
+
 	m_landscapeGL->fillVertexBuffer(BufferType::POS3D, nbVertex*3, datapos);
 	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
 
@@ -393,15 +393,15 @@ void LandscapeFisheye::draw(ToneReproductor * eye, const Projector* prj, const N
 
 	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
 	shaderLandscape->setUniform("fader",land_fader.getInterstate());
-	shaderLandscape->setUniform("viewport",prj->getViewport());
+	//shaderLandscape->setUniform("viewport",prj->getViewport());
 	shaderLandscape->setUniform("clipping_fov",prj->getClippingFov());
-	shaderLandscape->setUniform("viewport_center",prj->getViewportFloatCenter());
+	//shaderLandscape->setUniform("viewport_center",prj->getViewportFloatCenter());
 
 	Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
 
-	shaderLandscape->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
+	//shaderLandscape->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
+	//shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 
 	// m_landscapeGL->bind();
@@ -642,7 +642,7 @@ void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const
 	shaderLandscape->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
 	shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
-	
+
 	// m_landscapeGL->bind();
 	// glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
 	// m_landscapeGL->unBind();

@@ -22,7 +22,7 @@ uniform sampler2D texunit0;
 uniform sampler2D texunit1;
 uniform float sky_brightness;
 uniform float fader;
-//uniform mat4 ModelViewProjectionMatrix; // unused now
+uniform mat4 ModelViewProjectionMatrix;
 
 //out
 //~ smooth out vec2 TexCoord;
@@ -42,10 +42,10 @@ out ValueTexFrag
 
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
 
-//uniform mat4 inverseModelViewProjectionMatrix; // unused now
+uniform mat4 inverseModelViewProjectionMatrix;
 uniform mat4 ModelViewMatrix;
-//uniform ivec4 viewport; // unused now
-//uniform vec3 viewport_center; // unused now
+uniform ivec4 viewport; 
+uniform vec3 viewport_center;
 uniform vec3 clipping_fov;
 
 //~ uniform float zNear;
@@ -58,7 +58,10 @@ vec4 custom_project(vec4 invec)
 	float zFar=clipping_fov[1];
 	float fov=clipping_fov[2];
 
-	float fisheye_scale_factor = 1.0/fov*180.0/M_PI*2.0; // same for all vertex
+	float fisheye_scale_factor = 1.0/fov*180.0/M_PI*2.0;
+	float viewport_center_x=viewport_center[0];
+	float viewport_center_y=viewport_center[1];
+	float viewport_radius=viewport_center[2];
 
     vec4 win = invec;
     win=ModelViewMatrix*win;
@@ -70,14 +73,14 @@ vec4 custom_project(vec4 invec)
 
 	if (rq1 <= 0.0 ) {
 		if (win.z < 0.0) {
-			win.x = 0.;
-			win.y = 0.;
+			win.x = viewport_center_x;
+			win.y = viewport_center_y;
 			win.z = 1.0;
 			win.w=0.0;
 			return win;
 		}
-		win.x = 0.;
-		win.y = 0.;
+		win.x = viewport_center_x;
+		win.y = viewport_center_y;
 		win.z = -1e30;
 		win.w = 0.0;
 		return win;
@@ -87,12 +90,12 @@ vec4 custom_project(vec4 invec)
         float a = M_PI/2.0 + atan(win.z*oneoverh);
         float f = a * fisheye_scale_factor;
 
-        f *= oneoverh;
+        f *= viewport_radius * oneoverh;
 
-        win.x = win.x * f;
-        win.y = win.y * f;
+        win.x = viewport_center_x + win.x * f;
+        win.y = viewport_center_y + win.y * f;
 
-        win.z = (abs(depth) - zNear) / (zFar-zNear); // on pourrait calculer globalement 1/(zFar-zNear)
+        win.z = (abs(depth) - zNear) / (zFar-zNear);
 
         if (a<0.9*M_PI)
 			win.w=1.0;
@@ -102,24 +105,24 @@ vec4 custom_project(vec4 invec)
 	}
 }
 
-vec4 custom_unproject(vec4 invec)
+vec4 custom_unproject(vec4 invec, vec4 viewport)
 {  
 	// gluUnproject    
 	vec4 pos = invec;
 
-	vec4 unproj_vec=vec4( pos.x,
-						  pos.y,
+	vec4 unproj_vec=vec4( (pos.x-viewport.x)/viewport.z*2.0-1.0,
+						  (pos.y-viewport.y)/viewport.w*2.0-1.0,
 						  2.0*pos.z-1.0,
 						  1.0);
 
-	//unproj_vec=inverseModelViewProjectionMatrix *unproj_vec;
+	unproj_vec=inverseModelViewProjectionMatrix *unproj_vec;
 	if(unproj_vec.z==0.0)
 		return vec4(0.0);
 		
-	//unproj_vec.w=1.0/unproj_vec.w;
-	//unproj_vec.x=unproj_vec.x*unproj_vec.w;
-	//unproj_vec.y=unproj_vec.y*unproj_vec.w;
-	//unproj_vec.z=unproj_vec.z*unproj_vec.w;
+	unproj_vec.w=1.0/unproj_vec.w;
+	unproj_vec.x=unproj_vec.x*unproj_vec.w;
+	unproj_vec.y=unproj_vec.y*unproj_vec.w;
+	unproj_vec.z=unproj_vec.z*unproj_vec.w;
 
 	return unproj_vec;
 }
@@ -141,17 +144,17 @@ void main(void)
 
 	if ( pos1.w==1.0 && pos2.w==1.0 && pos3.w==1.0) {
 
-		gl_Position = custom_unproject(pos1);
+		gl_Position = ModelViewProjectionMatrix * custom_unproject(pos1, viewport);
 		valueTexFrag.TexCoord = valueTex[0].TexCoord;
 		//~ faderColor.indice = valueFader[0].indice;
 		EmitVertex();
 
-		gl_Position = custom_unproject(pos2);
+		gl_Position = ModelViewProjectionMatrix * custom_unproject(pos2, viewport);
 		valueTexFrag.TexCoord = valueTex[1].TexCoord;
 		//~ faderColor.indice = valueFader[1].indice;
 		EmitVertex();
 
-		gl_Position = custom_unproject(pos3);
+		gl_Position = ModelViewProjectionMatrix * custom_unproject(pos3, viewport);
 		valueTexFrag.TexCoord = valueTex[2].TexCoord;
 		//~ faderColor.indice = valueFader[1].indice;
 		EmitVertex();
