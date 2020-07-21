@@ -35,10 +35,11 @@
  * 
  * @class Fader
  * 
- * @brief Class which manages a (usually smooth) transition between two states (typically ON/OFF) in function of a counter
- * It used for various purpose like smooth transitions between
+ * @brief Class canvas which manages a (usually smooth) transition between two states (typically ON/OFF) in function of a counter
+ * It used for various purpose like smooth transitions between two states
+ *
+ * virtual base class :  not usable directly
  */
-
 class Fader {
 public:
 	//! Create and initialise
@@ -85,6 +86,12 @@ protected:
 	float min_value, max_value;
 };
 
+/**
+ *  @class BooleanFader
+ * 
+ * @brief boolean transition between two states
+ * 
+ */
 class BooleanFader : public Fader {
 public:
 	//! Create and initialise
@@ -121,8 +128,14 @@ public:
 protected:
 };
 
-//! Please note that state is updated instantaneously, so if you need to draw something fading in
-//! and out, you need to check the interstate value (!=0) to know to draw when on AND during transitions
+/**
+ *  @class LinearFader
+ * 
+ * @brief Linear transition between two states
+ * 
+ * Please note that state is updated instantaneously, so if you need to draw something fading in
+ * and out, you need to check the interstate value (!=0) to know to draw when on AND during transitions
+ */
 class LinearFader : public Fader {
 public:
 	//! Create and initialise to default
@@ -219,8 +232,14 @@ protected:
 };
 
 
-//! Please note that state is updated instantaneously, so if you need to draw something fading in
-//! and out, you need to check the interstate value (!=0) to know to draw when on AND during transitions
+/**
+ *  @class ParabolicFader
+ * 
+ * @brief Parabolic transition between two states
+ * 
+ * Please note that state is updated instantaneously, so if you need to draw something fading in
+ * and out, you need to check the interstate value (!=0) to know to draw when on AND during transitions
+ */
 class ParabolicFader : public Fader {
 public:
 	//! Create and initialise to default
