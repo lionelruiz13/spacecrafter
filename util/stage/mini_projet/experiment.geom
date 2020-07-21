@@ -7,7 +7,6 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-uniform mat4 MVP;
 uniform mat4 MV;
 uniform vec3 clipping_fov;
 
@@ -63,9 +62,6 @@ vec4 custom_project(vec4 invec)
 
 vec4 custom_unproject(vec4 pos)
 {  
-	// gluUnproject    
-	//vec4 pos = invec;
-
 	vec4 unproj_vec=vec4(pos.x,
 						pos.y,
 						  2.0*pos.z-1.0,
@@ -95,22 +91,13 @@ void main()
 
         Coloring = Color[0];
 
-        //gl_Position = MVP * custom_unproject(pos1);
         gl_Position = custom_unproject(pos1);
-		//gl_Position = MVP * gl_in[0].gl_Position;
-		//gl_Position = pos1;
         EmitVertex();
 
-        //gl_Position = MVP * custom_unproject(pos2);
         gl_Position = custom_unproject(pos2);
-		//gl_Position = MVP * gl_in[1].gl_Position;
-		//gl_Position = pos2;
         EmitVertex();
 
-        //gl_Position = MVP * custom_unproject(pos3);
         gl_Position = custom_unproject(pos3);
-		//gl_Position = MVP * gl_in[2].gl_Position;
-		//gl_Position = pos3;
         EmitVertex();
 
         EndPrimitive();

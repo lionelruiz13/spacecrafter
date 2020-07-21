@@ -54,8 +54,6 @@ int main()
     window.initSDL();
     window.createWindow("Experiment", width, height, 24, 3, false, "~/.spacecrafter/data/icon.bpm");
 
-    // varray->registerVertexBuffer(BufferType::SHAPE, BufferAccess::STATIC);
-
     MyObj cube(std::vector<float>({
         0,0,0, 1,0,0, 1,1,0, 1,1,0, 0,1,0, 0,0,0,
         0,0,0, 0,1,0, 0,1,1, 0,1,1, 0,0,1, 0,0,0,
@@ -83,7 +81,6 @@ int main()
 
     auto clipping_fov = Vec3f(0.1, 100, 50);
 
-    const auto proj = Mat4f::perspective(70, RATIO, clipping_fov[0], clipping_fov[1]);
     auto cam = Vec3f(0, 4, -4);
     auto target = Vec3f(0, 1, 0);
     auto up = Vec3f(0, 1, 0);
@@ -102,23 +99,14 @@ int main()
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
     StateGL::enable(GL_DEPTH_TEST);
 
-    int scale = std::min(width, height);
-    SDL_Event event;
     Mat4f view;
 
-    shader->setUniformLocation({"MVP", "MV", "clipping_fov"});
+    shader->setUniformLocation({"MV", "clipping_fov"});
     while (opened) {
         cam = rotate * cam;
         view = Mat4f::lookAt(cam, target, up);
         Renderer::clearBuffer();
-        //std::cout << "\ec";
-        //view.print();
-        /*
-        proj.print();
-        mat.print();
-        (proj * Mat4f::lookAt(cam, target, up)).print(); //*/
         shader->use();
-        shader->setUniform("MVP", proj * view * mat);
         shader->setUniform("MV", view * mat);
         shader->setUniform("clipping_fov", clipping_fov);
         Renderer::drawArrays(shader.get(), varray.get(), GL_TRIANGLES, 0, MyObj::nbElements * 3);
