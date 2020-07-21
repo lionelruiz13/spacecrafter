@@ -40,7 +40,7 @@
 Projector::Projector(const int width, const int height, double _fov)
 	:fov(1.0), min_fov(0.0001), max_fov(100),
 	 zNear(0.1), zFar(10000),
-	 flag_auto_zoom(0) 
+	 flag_auto_zoom(0)
 {
 	viewport_radius = -1;  // unset value DIGITALIS
 	//~ flip_horz = 1.0;
@@ -66,12 +66,13 @@ Projector::~Projector()
 void Projector::setViewportDisk( int w, int h)
 {
 	int t = std::min(w, h);
+
 	vec_viewport[0] = (w-t)/2;
 	vec_viewport[1] = (h-t)/2;
-	vec_viewport[2] = h;
-	vec_viewport[3] = h;
+	vec_viewport[2] = t;
+	vec_viewport[3] = t;
 
-	viewport_fov_diameter = std::min(w,h);
+	viewport_fov_diameter = t;
 	viewport_center.set(w/2, h/2,0);
 	viewport_radius = viewport_fov_diameter/2;
 
@@ -80,7 +81,7 @@ void Projector::setViewportDisk( int w, int h)
 
 	// std::cout << "CALLED DISK set viewport\n\n";
 	// std::cout << "viewport " << vec_viewport[0] << " " << vec_viewport[1] << " " << vec_viewport[2] << " " << vec_viewport[3] << std::endl;
-	// std::cout << "set center " << viewport_center[0] << " with offset " << viewport_center[1] << std::endl;	
+	// std::cout << "set center " << viewport_center[0] << " with offset " << viewport_center[1] << std::endl;
 }
 
 
