@@ -323,9 +323,6 @@ public:
 	bool isTransiting() {
 		return is_transiting;
 	}
-	bool getState() {
-		return state;
-	}
 protected:
 	bool is_transiting;
 	int duration;

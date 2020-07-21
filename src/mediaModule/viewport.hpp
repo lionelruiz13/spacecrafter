@@ -77,7 +77,7 @@ public:
 			fader.update(VP_FADER_DURATION);
 		else
 			fader.update(delta_time);
-		if (not (fader.isTransiting() or fader.getState())) {
+		if (not (fader.isTransiting() or fader)) {
 			isAlive=false;
 			skipping=false;
 		}
