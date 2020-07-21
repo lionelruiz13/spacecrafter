@@ -1,16 +1,13 @@
-#version 430 core
+#version 420
 #pragma debug(on)
 #pragma optimize(off)
-#pragma optionNV(fastprecision off)
 
 layout(location = 0) in vec3 vertexPos;
 layout(location = 3) in vec3 color;
 
-uniform mat4 MVP;
-
-smooth out vec3 Color;
+out vec3 Color;
 
 void main() {
-    gl_Position = MVP * vec4(vertexPos, 1);
+    gl_Position = vec4(vertexPos, 1.0);
     Color = color;
 }

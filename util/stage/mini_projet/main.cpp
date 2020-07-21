@@ -10,7 +10,7 @@
 
 bool opened = true;
 
-#define width 800
+#define width 600
 #define height 600
 
 constexpr float DEG2RAD = 3.14159265358979323 / 180.;
@@ -50,7 +50,7 @@ int main()
     signal(SIGTERM, sigTerm);
     Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
     window.initSDL();
-    window.createWindow("Experiment", width, height, 0, 3, false, "~/.spacecrafter/data/icon.bpm");
+    window.createWindow("Experiment", width, height, 24, 3, false, "~/.spacecrafter/data/icon.bpm");
 
     // varray->registerVertexBuffer(BufferType::SHAPE, BufferAccess::STATIC);
 
@@ -72,25 +72,23 @@ int main()
         1,1,0, 1,1,0, 1,1,0, 1,1,0, 1,1,0, 1,1,0
     }));
 
-    MyObj ground(std::vector<float>({-100,0,-100, 100,0,-100, 100,0,100, 100,0,100, -100,0,100, -100,0,-100}), std::vector<float>({1,1,1, 1,1,1, 1,1,1, 1,1,1, 1,1,1, 1,1,1}));
+    MyObj ground(std::vector<float>({-65,0,-65, 65,0,-65, 65,0,65, 65,0,65, -65,0,65, -65,0,-65}), std::vector<float>({1,1,1, 1,1,1, 1,1,1, 1,1,1, 1,1,1, 1,1,1}));
 
-    std::cout << "1\n";
+    std::cout << "Initializing shader...\n";
     auto shader = std::make_unique<shaderProgram>();
-    shader->init("experiment.vert", "experiment.frag");
+    shader->init("experiment.vert", "experiment.geom", "experiment.frag");
+    std::cout << "Shader initialized.\n";
 
-    std::cout << "2\n";
-    const auto proj = Mat4f::perspective(70, RATIO, 0.1, 100.);
+    auto clipping_fov = Vec3f(0.1, 100, 50);
+
+    const auto proj = Mat4f::perspective(70, RATIO, clipping_fov[0], clipping_fov[1]);
     auto cam = Vec3f(0, 4, -4);
-    auto target = Vec3f(0, 0, 0);
+    auto target = Vec3f(0, 1, 0);
     auto up = Vec3f(0, 1, 0);
 
-    Mat4f view;
     auto mat = Mat4f::scaling(0.7).translation(Vec3f(-0.5, 0, -0.5));
     const auto rotate = Mat4f::yawPitchRoll(1.2, 0.6, 0);
 
-    int fixer = 0;
-
-    std::cout << "3\n";
     auto varray = std::make_unique<VertexArray>();
     varray->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
     varray->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
@@ -98,15 +96,15 @@ int main()
     varray->fillVertexBuffer(BufferType::POS3D, MyObj::vertices);
     varray->fillVertexBuffer(BufferType::COLOR, MyObj::colors);
 
-    std::cout << "4\n";
     StateGL::disable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
     StateGL::enable(GL_DEPTH_TEST);
 
-    std::cout << "start\n";
-
+    int scale = std::min(width, height);
     SDL_Event event;
+    Mat4f view;
 
+    shader->setUniformLocation({"MVP", "MV", "clipping_fov"});
     while (opened) {
         cam = rotate * cam;
         view = Mat4f::lookAt(cam, target, up);
@@ -119,6 +117,8 @@ int main()
         (proj * Mat4f::lookAt(cam, target, up)).print(); //*/
         shader->use();
         shader->setUniform("MVP", proj * view * mat);
+        shader->setUniform("MV", view * mat);
+        shader->setUniform("clipping_fov", clipping_fov);
         Renderer::drawArrays(shader.get(), varray.get(), GL_TRIANGLES, 0, MyObj::nbElements * 3);
         window.glSwapWindow();
     }
