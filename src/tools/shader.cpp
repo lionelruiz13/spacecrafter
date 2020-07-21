@@ -286,7 +286,11 @@ std::string shaderProgram::loadFileToString(const std::string& fname)
 		while( ifile.good() ) {
 			std::string line;
 			std::getline(ifile, line);
-			filetext.append(line + "\n");
+			if (std::strncmp(line.c_str(), "#include", 8) == 0) {
+				short begin = line.find_first_of("<") + 1;
+				filetext.append(loadFileToString(fname.substr(0, fname.find_last_of("/") + 1) + line.substr(begin, line.find_last_of(">") - begin)) + "\n");
+			} else
+				filetext.append(line + "\n");
 		}
 	} else {
 		std::ostringstream out;

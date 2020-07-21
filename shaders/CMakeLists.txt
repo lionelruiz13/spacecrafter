@@ -2,6 +2,8 @@
 ########### install files ###############
 
 INSTALL(FILES 
+	fisheye.head
+
 	atmosphere.vert atmosphere.frag 
 	atmosphere_ext.vert atmosphere_ext.frag 
 	fog.vert fog.frag 
