@@ -25,7 +25,7 @@
  */
 
 #include "bodyModule/solarsystem.hpp"
-#include "coreModule/projector.hpp"
+//#include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
 #include "tools/object.hpp"
@@ -141,17 +141,17 @@ void Navigator::updateVisionVector(int delta_time,const Object &selected)
 }
 
 bool Navigator::lookAt(double az, double alt, double time){
-	
+
 	Vec3d vision(-1,0,0);
 	Vec3d rot(0,-1,0);
-	
+
 	vision = Mat4d::zrotation(- az * M_PI / 180.) * vision;
 	rot = Mat4d::zrotation(- az * M_PI / 180.) * rot;
-	
+
 	vision = Mat4d::rotation(rot, alt * M_PI / 180.) * vision;
-		
+
 	moveTo(vision, time, true,0);
-		
+
 	return true;
 }
 
@@ -165,7 +165,7 @@ void Navigator::setLocalVision(const Vec3d& _pos)
 }
 
 
-void Navigator::updateMove(Projector *projector, double deltaAz, double deltaAlt, double fov, double duration)
+void Navigator::updateMove(void *projector, double deltaAz, double deltaAlt, double fov, double duration)
 {
 	double azVision, altVision;
 	//~ cout << "deltaAz " << deltaAz << endl << "deltaAlt " << deltaAlt << endl;
@@ -212,7 +212,7 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 {
 	mat_local_to_earth_equ = position->getRotLocalToEquatorial(_JDay);
 	mat_local_to_earth_equ_fixed = position->getRotLocalToEquatorialFixed(_JDay);
-	
+
 	mat_earth_equ_to_local = mat_local_to_earth_equ.transpose();
 	mat_earth_equ_to_local_fixed = mat_local_to_earth_equ_fixed.transpose();
 
@@ -251,7 +251,7 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 
 
 // Update the view matrices
-void Navigator::updateViewMat(Projector *projector, double fov)
+void Navigator::updateViewMat(void *projector, double fov)
 {
 	Vec3d f;
 
@@ -263,7 +263,7 @@ void Navigator::updateViewMat(Projector *projector, double fov)
 		f = local_vision;
 	}
 	f.normalize();
-	
+
 	Vec3d s(f[1],-f[0],0.);
 
 	if ( viewing_mode == VIEW_EQUATOR) {
@@ -287,14 +287,14 @@ void Navigator::updateViewMat(Projector *projector, double fov)
 
 	/**
 	 *  /!\ READ THIS
-	 * 
+	 *
 	 *  The matrix parameter are given column by colum so the actual matrix is :
-	 * 
+	 *
 	 * 	[ s[0], s[1], s[2], 0 ]
 	 * 	[ u[0], u[1], u[2], 0 ]
 	 * 	[-f[0],-f[1],-f[2], 0 ]
 	 * 	[   0 ,   0 ,   0 , 1 ]
-	 * 
+	 *
 	 **/
 
 	// redo view offset
@@ -403,34 +403,34 @@ void Navigator::update(int delta_time)
 }
 
 void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
-	
+
 	/**
-	 * 
+	 *
 	 * axis doit être le vecteur représentant la direction de l'axe de la planète
 	 * on ramène ce vecteur dans le repère de la caméra (eye). Dans le plan de la
 	 * caméra (x vers la droite y vers le haut z vers nous) on peut déterminer l'
 	 * angle que fait le vecteur par rapport à l'axe y. Cet de cet angle que l'on
 	 * doit tourner le heading de la caméra pour que l'axe soit aligné.
-	 * 
+	 *
 	 * A noter que quand on passe sur la planète notre heading doit être remis à
 	 * zéro
-	 * 
+	 *
 	 *     opp
 	 *    _______
-	 *    |     ^ axis      
+	 *    |     ^ axis
 	 *    |    /         y
 	 *adj |   /          ^
 	 *    |__/           |
 	 *    |A/            |
 	 *    |/            zo----->x
 	 *
-	 * 
+	 *
 	 * Je n'arrive pas à obtenir l'axe de la planète à l'heure actuelle
-	 * 
+	 *
 	 **/
 
 
-	Mat4d rotVsopToEye = 
+	Mat4d rotVsopToEye =
 		( 	mat_local_to_eye *
 			mat_earth_equ_to_local *
 			mat_equ_to_vsop87.transpose()

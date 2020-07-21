@@ -35,7 +35,7 @@ extern const Mat4d mat_vsop87_to_j2000;
 
 class Object;
 class Observer;
-class Projector;
+//class Projector;
 
 //! @class Class which manages a navigation context
 //! @brief  viewing direction/fov and coordinate changes
@@ -55,7 +55,7 @@ public:
 	void updateVisionVector(int delta_time,const Object &selected);
 
 	//! Update the view matrices
-	void updateViewMat(Projector *projector, double fov);
+	void updateViewMat(void *projector, double fov);
 
 	//! Move to the given position in equatorial or local coordinate depending on _local_pos value
 	void moveTo(const Vec3d& _aim, float move_duration = 1., bool _local_pos = false, int zooming = 0);
@@ -156,7 +156,7 @@ public:
 		return mat_dome;
 	}
 
-	void updateMove(Projector *projector, double deltaAz, double deltaAlt, double fov, double duration = 0);
+	void updateMove(void *projector, double deltaAz, double deltaAlt, double fov, double duration = 0);
 
 	//! Set type of viewing mode (align with horizon or equatorial coordinates)
 	void setViewingMode(VIEWING_MODE_TYPE view_mode);
@@ -200,7 +200,7 @@ public:
 
 	//! for moving heading position gradually
 	void update(int delta_time);
-	
+
 	bool lookAt(double az, double alt, double time);
 
 	void alignUpVectorTo(const Mat4d& rot, double duration);
@@ -250,7 +250,7 @@ private:
 
 	int flag_auto_move;				//!< Define if automove is on or off
 	int zooming_mode;				//!< 0 : undefined, 1 zooming, -1 unzooming
-	
+
 	VIEWING_MODE_TYPE viewing_mode;   //!< defines if view corrects for horizon, or uses equatorial coordinates
 
 	double view_offset;              //!< To center/zoom away from the center of the viewport
