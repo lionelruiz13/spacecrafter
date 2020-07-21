@@ -5,6 +5,7 @@ project(mini_projet.out)
 
 file(GLOB all_SRCS
     "${PROJECT_SOURCE_DIR}/*.cpp"
+    "${PROJECT_SOURCE_DIR}/*.c"
     )
 
 set(CMAKE_CXX_STANDARD 17)

@@ -24,12 +24,12 @@
  */
 
 
-#include "event.hpp"
+#include "eventModule/event.hpp"
 #include <sstream>
 
 /**
- * For display 
- **/ 
+ * For display
+ **/
 
 std::map<Event::Event_Type, std::string> Event::eventTypeToString = {
     {E_NOT_SET, "unknown event" },
@@ -43,5 +43,3 @@ std::map<Event::Event_Type, std::string> Event::eventTypeToString = {
     {E_CHANGE_ALTITUDE, "event altitude has been scheduled"},
     {E_CHANGE_OBSERVER, "event observer has been scheduled"},
 };
-
-
