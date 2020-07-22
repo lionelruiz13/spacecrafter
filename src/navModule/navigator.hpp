@@ -63,32 +63,32 @@ public:
 	void setFlagTraking(int v) {
 		flag_traking=v;
 	}
-	int getFlagTraking(void) const {
+	int getFlagTraking() const {
 		return flag_traking;
 	}
 	void setFlagLockEquPos(int v) {
 		flag_lock_equ_pos=v;
 	}
-	int getFlagLockEquPos(void) const {
+	int getFlagLockEquPos() const {
 		return flag_lock_equ_pos;
 	}
 
 	//! Get vision direction
-	const Vec3d& getEquVision(void) const { //unused
+	const Vec3d& getEquVision() const { //unused
 		return equ_vision;
 	}
 	//! Get vision direction taking in account the precession of Earth in equatorial mode
-	const Vec3d& getPrecEquVision(void) const {
+	const Vec3d& getPrecEquVision() const {
 		return prec_equ_vision;
 	}
-	const Vec3d& getLocalVision(void) const { //unused
+	const Vec3d& getLocalVision() const { //unused
 		return local_vision;
 	}
 
 	void setLocalVision(const Vec3d& _pos);
 
 	//! Return the observer heliocentric position
-	Vec3d getObserverHelioPos(void) const;
+	Vec3d getObserverHelioPos() const;
 
 	//! Transform vector from local coordinate to equatorial
 	Vec3d localToEarthEqu(const Vec3d& v) const {
@@ -131,27 +131,27 @@ public:
 	}
 
 	//! Return the view matrix for some coordinate systems
-	const Mat4d& getHelioToEyeMat(void) const {
+	const Mat4d& getHelioToEyeMat() const {
 		return mat_helio_to_eye;
 	}
-	const Mat4d& getEarthEquToEyeMat(void) const {
+	const Mat4d& getEarthEquToEyeMat() const {
 		return mat_earth_equ_to_eye;
 	}
-	const Mat4d& getEarthEquToEyeMatFixed(void) const {
+	const Mat4d& getEarthEquToEyeMatFixed() const {
 		return mat_earth_equ_to_eye_fixed;
 	}
-	const Mat4d& getLocalToEyeMat(void) const {
+	const Mat4d& getLocalToEyeMat() const {
 		return mat_local_to_eye;
 	}
-	const Mat4d& getJ2000ToEyeMat(void) const {
+	const Mat4d& getJ2000ToEyeMat() const {
 		return mat_j2000_to_eye;
 	}
 	//! Return fixed dome matrix (no heading adjustment)
-	const Mat4d& getDomeFixedMat(void) const {
+	const Mat4d& getDomeFixedMat() const {
 		return mat_dome_fixed;
 	}
 	//! Return dome matrix adjusted for current heading
-	const Mat4d& geTdomeMat(void) const {
+	const Mat4d& geTdomeMat() const {
 		return mat_dome;
 	}
 
@@ -160,7 +160,7 @@ public:
 	//! Set type of viewing mode (align with horizon or equatorial coordinates)
 	void setViewingMode(VIEWING_MODE_TYPE view_mode);
 
-	VIEWING_MODE_TYPE getViewingMode(void) const {
+	VIEWING_MODE_TYPE getViewingMode() const {
 		return viewing_mode;
 	}
 

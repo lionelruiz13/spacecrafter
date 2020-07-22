@@ -25,13 +25,10 @@
  */
 
 #include "bodyModule/solarsystem.hpp"
-//#include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
 #include "tools/object.hpp"
 #include "tools/log.hpp"
-//#include "tools/fmath.hpp"
-
 
 
 
@@ -329,7 +326,7 @@ void Navigator::updateViewMat(double fov)
 
 
 // Return the observer heliocentric position
-Vec3d Navigator::getObserverHelioPos(void) const
+Vec3d Navigator::getObserverHelioPos() const
 {
 	Vec3d v(0.,0.,0.);
 	return mat_local_to_helio*v;
