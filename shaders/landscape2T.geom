@@ -6,6 +6,8 @@
 #pragma debug(on)
 #pragma optimize(off)
 
+#include <fisheye.glsl>
+
 //layout
 //~ layout (location=0)in vec3 position;
 //~ layout (location=1)in vec2 texcoord;
@@ -35,8 +37,6 @@ out ValueTexFrag
 {
 	vec2 TexCoord;
 } valueTexFrag;
-
-#include <fisheye.glsl>
 
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
 
