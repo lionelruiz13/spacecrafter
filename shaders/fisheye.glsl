@@ -34,15 +34,13 @@ vec4 custom_project(vec4 invec)
 			win.y = 0.;
 			win.z = 1.0;
 			win.w=0.0;
-			return win;
+		} else {
+			win.x = 0.;
+			win.y = 0.;
+			win.z = -1e30;
+			win.w = 0.0;
 		}
-		win.x = 0.;
-		win.y = 0.;
-		win.z = -1e30;
-		win.w = 0.0;
-		return win;
-	}
-	else{
+	} else {
         float oneoverh = 1.0/sqrt(rq1);
         float a = M_PI/2.0 + atan(win.z*oneoverh);
         float f = a * fisheye_scale_factor;
@@ -58,33 +56,14 @@ vec4 custom_project(vec4 invec)
 			win.w=1.0;
 		else
 			win.w=0.0;
-        return win;
 	}
-}
-
-vec4 custom_unproject(vec4 invec)
-{  
-	// gluUnproject    
-	vec4 pos = invec;
-
-	vec4 unproj_vec=vec4( pos.x,
-						  pos.y,
-						  2.0*pos.z-1.0,
-						  1.0);
-
-	//unproj_vec=inverseModelViewProjectionMatrix *unproj_vec;
+	win.z = 2. * win.z - 1.;
 	if(unproj_vec.z==0.0)
 		return vec4(0.0);
-		
-	//unproj_vec.w=1.0/unproj_vec.w;
-	//unproj_vec.x=unproj_vec.x*unproj_vec.w;
-	//unproj_vec.y=unproj_vec.y*unproj_vec.w;
-	//unproj_vec.z=unproj_vec.z*unproj_vec.w;
-
-	return unproj_vec;
+    return win;
 }
 
 vec4 posToFisheye(vec3 pos)
 {
-	return custom_unproject(custom_project(pos), viewport);
+	return custom_project(vec4(pos, 1.));
 }

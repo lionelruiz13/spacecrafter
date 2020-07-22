@@ -51,17 +51,17 @@ void main(void)
 
 	if ( pos1.w==1.0 && pos2.w==1.0 && pos3.w==1.0) {
 
-		gl_Position = custom_unproject(pos1);
+		gl_Position = pos1;
 		valueTexFrag.TexCoord = valueTex[0].TexCoord;
 		//~ faderColor.indice = valueFader[0].indice;
 		EmitVertex();
 
-		gl_Position = custom_unproject(pos2);
+		gl_Position = pos2;
 		valueTexFrag.TexCoord = valueTex[1].TexCoord;
 		//~ faderColor.indice = valueFader[1].indice;
 		EmitVertex();
 
-		gl_Position = custom_unproject(pos3);
+		gl_Position = pos3;
 		valueTexFrag.TexCoord = valueTex[2].TexCoord;
 		//~ faderColor.indice = valueFader[1].indice;
 		EmitVertex();
