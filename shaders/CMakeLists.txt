@@ -2,7 +2,7 @@
 ########### install files ###############
 
 INSTALL(FILES 
-	fisheye.head
+	fisheye.glsl
 
 	atmosphere.vert atmosphere.frag 
 	atmosphere_ext.vert atmosphere_ext.frag 

@@ -36,7 +36,7 @@ out ValueTexFrag
 	vec2 TexCoord;
 } valueTexFrag;
 
-#include <fisheye.head>
+#include <fisheye.glsl>
 
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
 
