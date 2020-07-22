@@ -29,37 +29,26 @@ vec4 custom_project(vec4 invec)
     float rq1 = win.x*win.x+win.y*win.y;
 
 	if (rq1 <= 0.0 ) {
-		if (win.z < 0.0) {
-			win.x = 0.;
-			win.y = 0.;
-			win.z = 1.0;
-			win.w=0.0;
-		} else {
-			win.x = 0.;
-			win.y = 0.;
-			win.z = -1e30;
-			win.w = 0.0;
-		}
-	} else {
-        float oneoverh = 1.0/sqrt(rq1);
-        float a = M_PI/2.0 + atan(win.z*oneoverh);
-        float f = a * fisheye_scale_factor;
-
-        f *= oneoverh;
-
-        win.x = win.x * f;
-        win.y = win.y * f;
-
-        win.z = (abs(depth) - zNear) / (zFar-zNear); // on pourrait calculer globalement 1/(zFar-zNear)
-
-        if (a<0.9*M_PI)
-			win.w=1.0;
-		else
-			win.w=0.0;
+		win.x = 0.;
+		win.y = 0.;
+		win.z = (win.z < 0.) ? 0. : -1e30;
+		win.w = 0.;
+		return win;
 	}
-	win.z = 2. * win.z - 1.;
-	if(unproj_vec.z==0.0)
-		return vec4(0.0);
+
+	float oneoverh = 1.0/sqrt(rq1);
+	float a = M_PI/2.0 + atan(win.z*oneoverh);
+	float f = a * fisheye_scale_factor;
+
+	f *= oneoverh;
+
+	win.x = win.x * f;
+	win.y = win.y * f;
+
+	win.z = 2. * (abs(depth) - zNear) / (zFar-zNear) - 1.; // on pourrait calculer globalement 2/(zFar-zNear)
+
+	win.w = (a<0.9*M_PI) && (win.z != 0.0) ? 1. : 0.;
+
     return win;
 }
 
