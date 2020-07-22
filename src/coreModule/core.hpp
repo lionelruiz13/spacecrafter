@@ -219,7 +219,7 @@ public:
 	//! Move view in alt/az (or equatorial if in that mode) coordinates
 	void panView(double delta_az, double delta_alt, double duration) {
 		setFlagTracking(0);
-		navigation->updateMove(projection, delta_az, delta_alt, projection->getFov(), duration);
+		navigation->updateMove(delta_az, delta_alt, projection->getFov(), duration);
 	}
 
 	//! set zoom/center offset (percent of fov radius)

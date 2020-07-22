@@ -383,7 +383,7 @@ void Core::init(const InitParser& conf)
 
 	// Compute transform matrices between coordinates systems
 	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
-	navigation->updateViewMat(projection, projection->getFov());
+	navigation->updateViewMat(projection->getFov());
 
 	ssystem->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
 
@@ -1764,7 +1764,7 @@ void Core::dragView(int x1, int y1, int x2, int y2)
 	}
 	Utility::rectToSphe(&az1, &alt1, tempvec1);
 	Utility::rectToSphe(&az2, &alt2, tempvec2);
-	navigation->updateMove(projection, az2-az1, alt1-alt2, projection->getFov());
+	navigation->updateMove(az2-az1, alt1-alt2, projection->getFov());
 	setFlagTracking(false);
 	setFlagLockSkyPosition(false);
 }
@@ -1817,13 +1817,13 @@ void Core::updateMove(int delta_time)
 	}
 
 	if (vzm.deltaAz != 0 || vzm.deltaAlt != 0) {
-		navigation->updateMove(projection, vzm.deltaAz, vzm.deltaAlt, projection->getFov());
+		navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
 		std::ostringstream oss;
 		oss << "look delta_az " << vzm.deltaAz << " delta_alt " << vzm.deltaAlt;
 		if (!recordActionCallback.empty()) recordActionCallback(oss.str());
 	} else {
 		// must perform call anyway, but don't record!
-		navigation->updateMove(projection, vzm.deltaAz, vzm.deltaAlt, projection->getFov());
+		navigation->updateMove(vzm.deltaAz, vzm.deltaAlt, projection->getFov());
 	}
 }
 

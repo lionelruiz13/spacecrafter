@@ -165,7 +165,7 @@ void Navigator::setLocalVision(const Vec3d& _pos)
 }
 
 
-void Navigator::updateMove(void *projector, double deltaAz, double deltaAlt, double fov, double duration)
+void Navigator::updateMove(double deltaAz, double deltaAlt, double fov, double duration)
 {
 	double azVision, altVision;
 	//~ cout << "deltaAz " << deltaAz << endl << "deltaAlt " << deltaAlt << endl;
@@ -198,7 +198,7 @@ void Navigator::updateMove(void *projector, double deltaAz, double deltaAlt, dou
 	}
 
 	// Update the final view matrices
-	updateViewMat(projector, fov);
+	updateViewMat(fov);
 }
 
 const Mat4d mat_j2000_to_vsop87(
@@ -251,7 +251,7 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 
 
 // Update the view matrices
-void Navigator::updateViewMat(void *projector, double fov)
+void Navigator::updateViewMat(double fov)
 {
 	Vec3d f;
 
