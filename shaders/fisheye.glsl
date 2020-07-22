@@ -84,7 +84,7 @@ vec4 custom_unproject(vec4 invec)
 	return unproj_vec;
 }
 
-//~ vec4 posToFisheye(vec3 pos)
-//~ {
-	//~ return custom_unproject(custom_project(pos), viewport);
-//~ }
+vec4 posToFisheye(vec3 pos)
+{
+	return custom_unproject(custom_project(pos), viewport);
+}
