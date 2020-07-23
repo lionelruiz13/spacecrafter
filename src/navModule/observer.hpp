@@ -36,10 +36,8 @@ class Body;
 class AnchorPoint;
 
 //! @class Observer
-//! @brief Indique où se trouve l'observer
-//! L'observer se trouve lié à une ancre
-//! L'observer se déplace sur l'ancre suivant la latitude, la longitude  et l'altitude
-//! Ce sont ces paramètres qui sont gérés par la classe.
+//! @brief Gère la position de la caméra
+//! L'Observer est basée sur une Ancre, avec un déplacement relatif à l'ancre en latitude, longitude et altitude
 //!
 
 class Observer: public NoCopy {
@@ -53,11 +51,11 @@ public:
 	}
 
 	bool isOnBody() const;
-	
+
 	bool isOnBody(const Body * body) const;
 
 	//! Renvoie un lien vers l'astre ou est localisé l'observer
-	//! @return une instance sur l'astre ou nullptr 
+	//! @return une instance sur l'astre ou nullptr
 	//! @warning nullptr est retourné si l'observer n'est sur aucun astre
 	const Body *getHomeBody(void) const;
 
@@ -72,10 +70,10 @@ public:
 
 	//! renvois la position a laquelle l'observer est attaché
 	Vec3d getObserverCenterPoint(void) const;
-	
+
 	//! renvoie la position de l'observer dans le systeme de coordonnée du soleil
 	Vec3d getHeliocentricPosition(double JD)const;
-	
+
 	//! renvoie la distance:  centre de la planete et altitude de l'observer
 	double getDistanceFromCenter(void) const;
 
@@ -115,7 +113,7 @@ public:
 
 	//! fixe l'altitude de l'observer sur la planète
 	void setAltitude(double a);
-	
+
 	//! renvoie l'altitude de l'observer sur la planète
 	double getAltitude(void) const {
 		return altitude;
@@ -149,9 +147,9 @@ public:
 
 	//! for moving observer position gradually
 	void update(int delta_time);
-	
+
 	//! returns true if we are on the named body
-	bool isOnBodyNamed(const std::string& bodyName); 
+	bool isOnBodyNamed(const std::string& bodyName);
 
 private:
 	double longitude;			//!< Longitude in degree
