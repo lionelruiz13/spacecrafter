@@ -74,7 +74,7 @@ void BodyShader::createShader()
 	shaderNight->setUniformLocation("MoonRadius4");
 
 	shaderNight->setUniformLocation("inverseModelViewProjectionMatrix");
-	shaderNight->setUniformLocation("clipping_fov");	
+	shaderNight->setUniformLocation("clipping_fov");
 
 	shaderMoonNight = std::make_unique<shaderProgram>();
 	shaderMoonNight->init( "body_moon_night.vert", "body_moon_night.frag");
@@ -99,7 +99,7 @@ void BodyShader::createShader()
 	shaderMoonNight->setUniformLocation("MoonRadius1");
 
 	shaderMoonNight->setUniformLocation("inverseModelViewProjectionMatrix");
-	shaderMoonNight->setUniformLocation("clipping_fov");	
+	shaderMoonNight->setUniformLocation("clipping_fov");
 
 	myEarth= std::make_unique<shaderProgram>();
 	myEarth->init( "my_earth.vert", "my_earth.tesc","my_earth.tese", "my_earth.geom", "my_earth.frag");
@@ -204,7 +204,7 @@ void BodyShader::createShader()
 
 	shaderNormal->setUniformLocation("SunHalfAngle");
 	shaderNormal->setUniformLocation("LightPosition");
-	shaderNormal->setUniformLocation("ModelViewProjectionMatrix");
+	// shaderNormal->setUniformLocation("ModelViewProjectionMatrix");
 	shaderNormal->setUniformLocation("ModelViewMatrix");
 	shaderNormal->setUniformLocation("NormalMatrix");
 
@@ -218,7 +218,7 @@ void BodyShader::createShader()
 	shaderNormal->setUniformLocation("MoonRadius4");
 
 	//fisheye
-	shaderNormal->setUniformLocation("inverseModelViewProjectionMatrix");
+	// shaderNormal->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderNormal->setUniformLocation("clipping_fov");
 
 	shaderNormalTes = std::make_unique<shaderProgram>();
