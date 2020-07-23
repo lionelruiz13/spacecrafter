@@ -20,7 +20,7 @@ void TextToHtml::lecture()
 {
 	OutHtml += "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Documentation</title>\n<style>";
 	OutHtml += inCss; //On place le style CSS
-	OutHtml += "</style>\n</head>\n<body>\n<header>\n<h1>Documentation des commandes script du logiciel</h1>\n</header>\n";
+	OutHtml += "</style>\n</head>\n<body>\n<header>\n<h1>Documentation des commandes script</h1>\n</header>\n";
 	//OutHtml += "<img src=\"logo.png\" alt=\"Logo\" class=\"logo\">";
 	OutHtml += "<section class=\"commande\">";
 
@@ -74,7 +74,7 @@ void TextToHtml::transformation(std::string lines)
 	index += "<li><a href=\"#" + title + "\"><code>" + title +"</code></a></li>\n"; //instanciation de l'Index
 
 	OutHtml += "</article>\n";
-	OutHtml += "<a href=\"#Menu\" class=\"retour\">Retour à l'index</a>\n";
+	//OutHtml += "<a href=\"#Menu\" class=\"retour\">Retour à l'index</a>\n";
 }
 
 std::string TextToHtml::findBloc(std::string lines, std::string arg)
