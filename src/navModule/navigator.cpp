@@ -105,7 +105,7 @@ void Navigator::updateVisionVector(int delta_time,const Object &selected)
 		equ_vision = localToEarthEqu(local_vision);
 
 
-		if (move.coef>=1.) {
+		if (move.coef>=1.) { // End of movement
 			flag_auto_move=0;
 			if (move.local_pos) {
 				local_vision=move.aim;
@@ -118,7 +118,7 @@ void Navigator::updateVisionVector(int delta_time,const Object &selected)
 
 		// Allow full transition to occur
 		move.coef+=move.speed*delta_time;
-		if (move.coef>1) move.coef = 1;
+		if (move.coef>1) move.coef = 1; // Don't go after the destination
 	} else {
 		if (flag_traking && selected) { // Equatorial vision vector locked on selected object
 			equ_vision= selected.getEarthEquPos(this);
@@ -276,12 +276,10 @@ void Navigator::updateViewMat(double fov)
 
 	//~ viewBeforeLookAt.set(f,s,u,-mat_helio_to_local.getVector(3));
 	//~ viewBeforLookAt.r[15]=1.0;
-
 	mat_local_to_eye.set(s[0],u[0],-f[0],0.,
 	                     s[1],u[1],-f[1],0.,
 	                     s[2],u[2],-f[2],0.,
 	                     0.,0.,0.,1.);
-
 	/**
 	 *  /!\ READ THIS
 	 *
@@ -336,27 +334,21 @@ Vec3d Navigator::getObserverHelioPos() const
 // Move to the given equatorial position
 void Navigator::moveTo(const Vec3d& _aim, float move_duration, bool _local_pos, int zooming)
 {
-	Vec3d tmp = _aim;
-	tmp.normalize();
-	tmp *= 2.;
+	Vec3d tmp_aim = _aim;
+	tmp_aim.normalize();
+	tmp_aim *= 2.;
 
 	// already moving to correct position
-	if ( flag_auto_move && fabs(move.aim[0] - tmp[0]) <= .00000001f
-	        && fabs(move.aim[1] - tmp[1]) <= .00000001f
-	        && fabs(move.aim[2] - tmp[2]) <= .00000001f ) {
+	if ( flag_auto_move && fabs(move.aim[0] - tmp_aim[0]) <= .00000001f
+	        && fabs(move.aim[1] - tmp_aim[1]) <= .00000001f
+	        && fabs(move.aim[2] - tmp_aim[2]) <= .00000001f ) {
 		//    cout << "already moving here\n";
 		return;
 	}
 
 	zooming_mode = zooming;
-	move.aim=_aim;
-	move.aim.normalize();
-	move.aim*=2.;
-	if (_local_pos) {
-		move.start=local_vision;
-	} else {
-		move.start=equ_vision;
-	}
+	move.aim=tmp_aim;
+	move.start = (_local_pos) ? local_vision : equ_vision;
 	move.start.normalize();
 	move.speed=1.f/(move_duration*1000);
 	move.coef=0.;
