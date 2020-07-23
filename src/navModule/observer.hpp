@@ -84,7 +84,7 @@ public:
 	Mat4d getRotEquatorialToVsop87(void) const;
 
 	//! savegarde la position de l'observer dans un fichier
-	void save(const std::string& file, const std::string& section);
+	//void save(const std::string& file, const std::string& section);
 	//! change settings but don't write to files
 	void setConf(InitParser &conf, const std::string& section);
 	//! charge la position de l'observer d'un fichier de configuration
