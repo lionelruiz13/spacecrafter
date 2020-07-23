@@ -3,6 +3,7 @@
 
 INSTALL(FILES 
 	fisheye.glsl
+	fisheyeDouble.glsl
 
 	atmosphere.vert atmosphere.frag 
 	atmosphere_ext.vert atmosphere_ext.frag 
