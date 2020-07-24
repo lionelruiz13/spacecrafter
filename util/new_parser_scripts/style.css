@@ -1,235 +1,246 @@
 /* Page */
+        * {
+            font-family: Arial;
+        }
 
-* {
-    font-family: Arial;
-}
+        body {
+            background-color: black;
+            background-repeat: repeat;
+            width: 70%;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-body {
-    background-color: black;
-    background-repeat: repeat;
-    width: 70%;
-    margin-left: auto;
-    margin-right: auto;
-}
+        /* Blocs de la page */
+        body>header,
+        article,
+        img,
+        aside {
+            /*border-radius: 10px / 10px;*/
+            border: 2px solid white;
+            margin-bottom : 2vh;
+            /*margin: 1%;*/
+        }
 
-/* Blocs de la page */
-body > header, article, img, aside {
-    border-radius: 10px / 10px;
-    border: 2px solid white;
-    margin: 1%;
-}
+        .logo {
+            border: none;
+        }
 
-.logo {
-    border: none;
-}
+        /* Entête de la page */
+        body>header {
+            background-color: rgba(25, 25, 25, 1);
+            color: white;
+            text-align: center;
+            /*margin-bottom: 0;*/
+            border-color: white;
+        }
 
-/* Entête de la page */
-body > header {
-    background-color: rgba(25, 25, 25, 1);
-    color: white;
-    text-align: center;
-    margin-bottom: 0;
-    border-color: white;
-}
+        /* Menu contenant tous les liens vers les commandes */
+        .menu {
+            padding-right: 15px;
+            padding-top: 1vh;
+            overflow-x: auto;
+            background-color: rgba(25, 25, 25, 1);
+            color: white;
+            border-style: solid;
+            border-color: white;
+            page-break-before: always;
+            white-space: nowrap;
+            position:fixed;
+            height:80vh;
+        }
 
-/* Menu contenant tous les liens vers les commandes */
-.menu {
-    padding-right: 15px;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
-    overflow: auto;
-    background-color: rgba(25, 25, 25, 1);
-    color: white;
-    border-style: solid;
-    border-color: white;
-    page-break-before: always;
-}
+        /* Titre du menu contenant tous les liens vers les commandes */
+        .menu>h3 {
+            text-align: center;
+            color: white;
+        }
 
-/* Titre du menu contenant tous les liens vers les commandes */
-.menu > h3 {
-    text-align: center;
-    color: white;
-}
+        /* Lien dans le menu */
+        .menu a:link {
+            color: white;
+        }
 
-/* Lien dans le menu */
-.menu a:link {
-    color: white;
-}
+        /* Lien survolé ou focussé dans le menu */
+        .menu a:hover,
+        a:focus {
+            font-weight: bold;
+        }
 
-/* Lien survolé ou focussé dans le menu */
-.menu a:hover, a:focus {
-    font-weight: bold;
-}
+        /* Lien visité dans le menu */
+        .menu a:visited {
+            color: rgba(150, 150, 150, 1);
+        }
 
-/* Lien visité dans le menu */
-.menu a:visited {
-    color: rgba(150, 150, 150, 1);
-}
+        /* Section contenant les commandes */
+        .commande {
+            width: 80%;
+            float: right;
+            color: white;
+        }
 
-/* Section contenant les commandes */
-.commande {
-    width: 80%;
-    float: right;
-    color: white;
-}
+        /*Image dans la section contenant les commandes */
+        .commande img {
+            /*height: 150px;*/
+            position:absolute;
+            left:80%;
+        }
 
-/* Image dans la section contenant les commandes */
-.commande img {
-    height: 150px;
-}
+        /* Titre de la liste des commandes */
+        .commande>h2 {
+            padding-left: 5%;
+            color: rgba(75, 75, 75, 1);
+        }
 
-/* Titre de la liste des commandes */
-.commande > h2 {
-    padding-left: 5%;
-    color: rgba(75, 75, 75, 1);
-}
+        /* Article contenant une commande dans la section contenant les commandes */
+        .commande>article {
+            background-color: rgba(25, 25, 25, 1);
+            overflow: auto;
+            padding-left: 3%;
+            /*margin-top: 3.8%;*/
+            margin-bottom: 5%;
+            page-break-before: always;
+        }
 
-/* Article contenant une commande dans la section contenant les commandes */
-.commande > article {
-    background-color: rgba(25, 25, 25, 1);
-    overflow: auto;
-    padding-left: 3%;
-    margin-top: 3.8%;
-    margin-bottom: 5%;
-    page-break-before: always;
-}
+        /* Entête de la commande */
+        .commande>article>header {
+            margin-bottom: 3%;
+        }
 
-/* Entête de la commande */
-.commande > article > header {
-    margin-bottom: 3%;
-}
+        /* Titre de la commande */
+        .commande>article>header>h2 {
+            color: white;
+            font-weight: bold;
+        }
 
-/* Titre de la commande */
-.commande > article > header > h2 {
-    color: white;
-    font-weight: bold;
-}
+        /* Arguments et son type ou valeur possibles pour chauque argument dans la section contenant les commandes */
+        .commande h4 {
+            margin-top: 2%;
+            margin-bottom: 1%;
+        }
 
-/* Arguments et son type ou valeur possibles pour chauque argument dans la section contenant les commandes */
-.commande h4 {
-    margin-top: 2%;
-    margin-bottom: 1%;
-}
+        /* Description et particularite dans la section contenant les commandes */
+        .commande p {
+            margin: 0;
+        }
 
-/* Description et particularite dans la section contenant les commandes */
-.commande p {
-    margin: 0;
-}
+        /* Paragraphe contenant une description (d'une commande, d'un argument ou d'une valeur) */
+        .description {
+            color: white;
+        }
 
-/* Paragraphe contenant une description (d'une commande, d'un argument ou d'une valeur) */
-.description {
-    color: white;
-}
+        /* Paragraphe contenant une particularité (d'une commande, d'un argument ou d'une valeur) */
+        .particularite {
+            color: rgba(150, 150, 150, 1);
+            font-style: italic;
+        }
 
-/* Paragraphe contenant une particularité (d'une commande, d'un argument ou d'une valeur) */
-.particularite {
-    color: rgba(150, 150, 150, 1);
-    font-style: italic;
-}
+        /* Section d'un article (de la section commandes) contentant les arguments d'une commande */
+        .listearguments {}
 
-/* Section d'un article (de la section commandes) contentant les arguments d'une commande */
-.listearguments {
-}
+        /* Uniquement la section d'un article (de la section commandes) contentant les arguments d'une commande */
+        .listearguments>section {
+            margin: 3%;
+        }
 
-/* Uniquement la section d'un article (de la section commandes) contentant les arguments d'une commande */
-.listearguments > section {
-    margin: 3%;
-}
+        /* Titre contenant le champ "Nom : Type" d'un argument */
+        .listearguments>h3 {
+            color: #374097;
+        }
 
-/* Titre contenant le champ "Nom : Type" d'un argument */
-.listearguments > h3 {
-    color: #374097;
-}
+        /* Nom d'un arguemnt */
+        .argument {
+            color: rgba(170, 15, 250, 1);
+        }
 
-/* Nom d'un arguemnt */
-.argument {
-    color: rgba(170, 15, 250, 1);
-}
+        /* Type d'un argument */
+        .argumenttype {
+            color: rgba(200, 20, 30, 1);
+        }
 
-/* Type d'un argument */
-.argumenttype {
-    color: rgba(200, 20, 30, 1);
-}
+        /* Section d'un article (de la section commandes) contentant les parametres d'une commande */
+        .listeparameters {}
 
-/* Section d'un article (de la section commandes) contentant les parametres d'une commande */
-.listeparameters {
+        /* Uniquement la section d'un article (de la section commandes) contentant les parametres d'une commande */
+        .listeparameters>section {
+            margin: 3%;
+        }
 
-}
+        /* Titre contenant le champ "Nom : Type" d'un argument */
+        .listeparameters>h3 {
+            color: #374097;
+        }
 
-/* Uniquement la section d'un article (de la section commandes) contentant les parametres d'une commande */
-.listeparameters > section {
-    margin: 3%;
-}
+        /* Nom d'un parameter */
+        .parameter {
+            color: rgba(170, 15, 250, 1);
+        }
 
-/* Titre contenant le champ "Nom : Type" d'un argument */
-.listeparameters > h3 {
-    color: #374097;
-}
+        /* Type d'un parameter */
+        .parametertype {
+            color: rgba(200, 20, 30, 1);
+        }
 
-/* Nom d'un parameter */
-.parameter {
-    color: rgba(170, 15, 250, 1);
-}
+        /* Section contenant la liste des valeurs possibles pour un argument */
+        .listevaleurs {}
 
-/* Type d'un parameter */
-.parametertype {
-    color: rgba(200, 20, 30, 1);
-}
+        /* Valeur possible d'un argument */
+        .valeur {
+            font-weight: bold;
+            color: #374097;
+        }
 
-/* Section contenant la liste des valeurs possibles pour un argument */
-.listevaleurs {
-}
+        /* Section d'un article (de la section commandes) contenant un exemple */
+        .exemple {}
 
-/* Valeur possible d'un argument */
-.valeur {
-    font-weight: bold;
-    color: #374097;
-}
+        /* Titre "Exemple" */
+        .exemple>h2 {
+            color: #374097;
+            margin-bottom: 1%;
+            font-size: 1.2em;
+        }
 
-/* Section d'un article (de la section commandes) contenant un exemple */
-.exemple {
-}
+        /* Champs contenant l'exemple */
+        .exemple>pre {
+            margin: 3%;
+        }
 
-/* Titre "Exemple" */
-.exemple > h2 {
-    color: #374097;
-    margin-bottom: 1%;
-    font-size: 1.2em;
-}
+        /* Lien de retour au menu */
+        .retour {
+            padding-left: 5%;
+            margin-bottom : 50%;
+        }
 
-/* Champs contenant l'exemple */
-.exemple > pre {
-    margin: 3%;
-}
+        /* Lien de retour au menu visité ou non */
+        .retour a:link,
+        a:visited,
+        a:active {
+            color: #374097;
+            padding-left: 5%;
+        }
 
-/* Lien de retour au menu */
-.retour {
-    padding-left: 5%;
-}
+        /* Lien de retour au menu survolé ou focussé */
+        .retour a:hover,
+        a:focus {
+            font-weight: bold;
+        }
 
-/* Lien de retour au menu visité ou non */
-.retour a:link, a:visited, a:active {
-    color: #374097;
-    padding-left: 5%;
-}
+        /* Gestion de l'impression */
+        @media print {
+            body,
+            header,
+            section,
+            article,
+            aside {
+                background: none;
+            }
 
-/* Lien de retour au menu survolé ou focussé */
-.retour a:hover, a:focus {
-    font-weight: bold;
-}
+            .commande {
+                width: 100%;
+                float: none;
+            }
 
-/* Gestion de l'impression */
-@media print {
-    body, header, section, article, aside {
-        background: none;
-    }
-
-    .commande {
-        width: 100%;
-        float: none;
-    }
-
-    .retour {
-        display: none !important;
-    }
-}
+            .retour {
+                display: none !important;
+            }
+        }
