@@ -7,7 +7,6 @@
 #include "tools/Renderer.hpp"
 #include "signal.h"
 #include "tools/vecmath.hpp"
-#include "eventModule/event_recorder.hpp"
 
 bool opened = true;
 
@@ -22,7 +21,6 @@ void sigTerm(int sig)
     (void) sig;
     opened = false;
 }
-EventRecorder* EventRecorder::instance = nullptr;
 
 class MyObj {
 public:
