@@ -240,16 +240,11 @@ void Landscape::initShaderParams()
 {
 	shaderLandscape->setUniformLocation("sky_brightness");
 	shaderLandscape->setUniformLocation("fader");
-	shaderLandscape->setUniformLocation("haveNightTex");
 	shaderLandscape->setUniformLocation("clipping_fov");
-
-	// shaderLandscape->setUniformLocation("ModelViewProjectionMatrix");
 	shaderLandscape->setUniformLocation("ModelViewMatrix");
-	// shaderLandscape->setUniformLocation("inverseModelViewProjectionMatrix");
 
-	// shaderLandscape->setUniformLocation("viewport");
-	// shaderLandscape->setUniformLocation("viewport_center");
-
+	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
+	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
 
 	shaderFog->setUniformLocation("fader");
 	shaderFog->setUniformLocation("sky_brightness");
@@ -384,12 +379,12 @@ void LandscapeFisheye::draw(ToneReproductor * eye, const Projector* prj, const N
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, map_tex->getID());
 
-	if (haveNightTex) {
+	if (haveNightTex && sky_brightness > 0.25) {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
-	}
-
-	shaderLandscape->setUniform("haveNightTex",haveNightTex);
+		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
+	} else
+		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
 
 	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
 	shaderLandscape->setUniform("fader",land_fader.getInterstate());
@@ -624,12 +619,14 @@ void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, map_tex->getID());
 
-	if (haveNightTex) {
+	if (haveNightTex && sky_brightness > 0.25) {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
-	}
+		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
+	} else
+		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
+	//shaderLandscape->setUniform("haveNightTex",haveNightTex);
 
-	shaderLandscape->setUniform("haveNightTex",haveNightTex);
 	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
 	shaderLandscape->setUniform("fader",land_fader.getInterstate());
 	//shaderLandscape->setUniform("viewport",prj->getViewport());

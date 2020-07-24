@@ -9,15 +9,15 @@
 //layout
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
-//~ layout (location=2)in vec3 normal; // useless unitl now
 
-out ValueTex
+out V2G
 {
+	vec3 Position;
 	vec2 TexCoord;
-} valueTex;
+} v2g;
 
 void main()
 {
-	gl_Position = vec4(position,1.0);
-    valueTex.TexCoord = texcoord;
+	v2g.Position = position;
+    v2g.TexCoord = texcoord;
 }

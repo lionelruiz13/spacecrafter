@@ -2,17 +2,11 @@
 
 #define M_PI 3.14159265358979323846
 
-//uniform mat4 inverseModelViewProjectionMatrix; // unused now
+//We need to use the projection fisheye, assume to give vec3 clipping_fov
 uniform mat4 ModelViewMatrix;
-//uniform ivec4 viewport; // unused now
-//uniform vec3 viewport_center; // unused now
-uniform vec3 clipping_fov;
 
-//~ uniform float zNear;
-//~ uniform float zFar;
-//~ uniform float fov;
 
-vec4 custom_project(vec4 invec)
+vec4 custom_project(vec3 invec, vec3 clipping_fov)
 {
 	float zNear=clipping_fov[0];
 	float zFar=clipping_fov[1];
@@ -20,9 +14,9 @@ vec4 custom_project(vec4 invec)
 
 	float fisheye_scale_factor = 1.0/fov*180.0/M_PI*2.0; // same for all vertex
 
-    vec4 win = invec;
+    vec4 win = vec4(invec,1);
     win=ModelViewMatrix*win;
-    win[3]=0.0;
+    win.w=0.0;
 	
 	float depth = length(win);
 
@@ -50,9 +44,4 @@ vec4 custom_project(vec4 invec)
 	win.w = (a<0.9*M_PI) && (win.z != 0.0) ? 1. : 0.;
 
     return win;
-}
-
-vec4 posToFisheye(vec3 pos)
-{
-	return custom_project(vec4(pos, 1.));
 }
