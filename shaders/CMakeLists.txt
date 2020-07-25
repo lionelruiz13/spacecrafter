@@ -2,7 +2,7 @@
 ########### install files ###############
 
 INSTALL(FILES 
-	fisheye.glsl
+	fisheye.glsl cam_block.glsl
 	fisheyeDouble.glsl
 
 	atmosphere.vert atmosphere.frag 
