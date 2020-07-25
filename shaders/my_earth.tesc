@@ -1,5 +1,5 @@
 //
-// body night tessellation
+// my earth tessellation
 //
 
 #version 430 core
