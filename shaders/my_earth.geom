@@ -29,6 +29,7 @@ uniform float planetScaledRadius;
 uniform float planetOneMinusOblateness;
 
 //externe
+uniform vec3 clipping_fov;
 uniform mat4 NormalMatrix;
 uniform vec3 LightPosition;
 uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
@@ -57,9 +58,7 @@ out GS_OUT {
     vec3 ViewDirection;
 } gs_out;
 
-//////////////////// PROJECTION FISHEYE ////////////////////////////////
 
-uniform vec3 clipping_fov;
 
 void main()
 {
