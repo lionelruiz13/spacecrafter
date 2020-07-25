@@ -64,10 +64,7 @@ void MilkyWay::createShader()
 	
 	shaderMilkyway->setUniformLocation("cmag");
 	shaderMilkyway->setUniformLocation("texTransit");
-	shaderMilkyway->setUniformLocation("ModelViewProjectionMatrix");
 	shaderMilkyway->setUniformLocation("ModelViewMatrix");
-	shaderMilkyway->setUniformLocation("inverseModelViewProjectionMatrix");
-
 	shaderMilkyway->setSubroutineLocation(GL_FRAGMENT_SHADER, "useOneTex");
 	shaderMilkyway->setSubroutineLocation(GL_FRAGMENT_SHADER, "useTwoTex");
 }
@@ -231,15 +228,15 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	} else
 		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
 
-	Mat4f proj=prj->getMatProjection().convert();
+	// Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getJ2000ToEyeMat() * modelMilkyway ).convert();
 					//~ Mat4d::scaling(1.1) *
 	                //~ Mat4d::xrotation(M_PI)*
 	                //~ Mat4d::yrotation(M_PI)*
 	                //~ Mat4d::zrotation(M_PI/180*270)).convert();
 
-	shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
-	shaderMilkyway->setUniform("ModelViewProjectionMatrix", proj*matrix);
+	// shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
+	// shaderMilkyway->setUniform("ModelViewProjectionMatrix", proj*matrix);
 	shaderMilkyway->setUniform("ModelViewMatrix",matrix);
 
 
@@ -265,8 +262,8 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 		                Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
 	
 		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
-		shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
-		shaderMilkyway->setUniform("ModelViewProjectionMatrix", proj*matrix);
+		// shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
+		// shaderMilkyway->setUniform("ModelViewProjectionMatrix", proj*matrix);
 		shaderMilkyway->setUniform("ModelViewMatrix",matrix);
 	
 	

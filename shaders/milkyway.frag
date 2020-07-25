@@ -22,9 +22,7 @@ subroutine(useTexType)
 vec3 useOneTex()
 {
 	vec3 tex_color0 = vec3(texture(texunit0,TexCoord)).rgb;
-	tex_color0.r *= cmag;
-	tex_color0.g *= cmag;
-	tex_color0.b *= cmag;
+	tex_color0 *= cmag;
 	return tex_color0;
 	//~ return vec4(1.0,0.0,0.0,1.0);
 }
@@ -34,12 +32,9 @@ vec3 useTwoTex()
 {
 	vec3 tex_color0 = vec3(texture(texunit0,TexCoord)).rgb;
 	vec3 tex_color1 = vec3(texture(texunit1,TexCoord)).rgb;
-
 	vec3 tex_color = mix (tex_color0, tex_color1, texTransit);
 
-	tex_color.r *= cmag;
-	tex_color.g *= cmag;
-	tex_color.b *= cmag;
+	tex_color *= cmag;
 	return tex_color;
 }
 
