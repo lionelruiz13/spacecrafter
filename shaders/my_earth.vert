@@ -24,13 +24,6 @@ uniform float planetRadius;
 uniform float planetScaledRadius;
 uniform float planetOneMinusOblateness;
 
-// out gl_PerVertex
-// {
-//   vec4 gl_Position;
-//   float gl_PointSize;
-//   float gl_ClipDistance[];
-// };
-
 out VS_OUT{
 	vec4 glPosition;
     vec2 TexCoord;
@@ -44,9 +37,8 @@ void main()
 	Position.x =position.x * planetScaledRadius;
 	Position.y =position.y * planetScaledRadius;
 	Position.z =position.z * planetScaledRadius * planetOneMinusOblateness;
-	// gl_Position = vec4(Position, 1.0);
-	vs_out.glPosition = vec4(Position, 1.0);
 
+	vs_out.glPosition = vec4(Position, 1.0);
 	vs_out.TexCoord = texcoord;
 	vs_out.Normal = normal;
 }

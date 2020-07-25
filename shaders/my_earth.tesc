@@ -12,20 +12,6 @@ layout(vertices=3) out;
 uniform mat4 ViewProjection;
 uniform mat4 Model;
 uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
-// in gl_PerVertex
-// {
-//   vec4 gl_Position;
-//   float gl_PointSize;
-//   float gl_ClipDistance[];
-// } gl_in[gl_MaxPatchVertices];
-
-
-// out gl_PerVertex
-// {
-//   vec4 gl_Position;
-//   float gl_PointSize;
-//   float gl_ClipDistance[];
-// } gl_out[];
 
 
 in VS_OUT{

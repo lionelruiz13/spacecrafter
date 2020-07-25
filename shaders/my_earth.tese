@@ -15,23 +15,6 @@ layout (triangles, equal_spacing) in;
 uniform mat4 model;
 uniform mat4 vp;
 
-
-// in gl_PerVertex
-// {
-//   vec4 gl_Position;
-//   float gl_PointSize;
-//   float gl_ClipDistance[];
-// } gl_in[gl_MaxPatchVertices];
-
-
-// out gl_PerVertex {
-//   vec4 gl_Position;
-//   float gl_PointSize;
-//   float gl_ClipDistance[];
-// };
-
-
-
 in TCS_OUT{
     in vec4 glPosition;
     in vec2 TexCoord;
@@ -75,12 +58,10 @@ void main(void)
                   (gl_TessCoord.y * tes_in[1].glPosition)+
                   (gl_TessCoord.z * tes_in[2].glPosition);
                   position.w=1.0;
-
     //~ position.xyz= position.xyz/length(position.xyz);
     
     
     tes_out.glPosition =  position;
-    // gl_Position =  position;
 }
 
 

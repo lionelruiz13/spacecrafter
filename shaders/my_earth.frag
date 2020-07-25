@@ -26,8 +26,6 @@ uniform float MoonRadius3;
 uniform vec3 MoonPosition4;
 uniform float MoonRadius4;
 
-//~ smooth in vec2 TexCoord;
-
 out vec4 FragColor;
 
 in GS_OUT{
@@ -38,14 +36,6 @@ in GS_OUT{
     vec3 Light;
     vec3 ViewDirection;
 }fs_in;
-
-
-//~ in vec3 Normal;
-//~ in vec3 Position;
-//~ in vec3 TangentLight;
-//~ in vec3 Light;
-//~ in vec3 ViewDirection;
-
 
 void main(void)
 {
@@ -59,8 +49,6 @@ void main(void)
 	float NdotL = dot(fs_in.Normal, fs_in.Light);
 	float diffuse = max(0.0, NdotL);
 	vec3 daycolor = (diffuse + specular) * daytime;
-//	float nightBrightness = 1.0 * night.x + 1.0 * night.y+ 1.0 *night.z; 
-//	vec3 nightcolor = step( 0.0, nightBrightness ) * night;
 	vec3 nightcolor = night;
 	vec4 cloudColor = vec4(0.0, 0.0, 0.0, 0.0);
 	float cloudDiffuse = 0.0;
@@ -120,6 +108,4 @@ void main(void)
 		color = max(color, nightcolor); 
 	}
 	FragColor = vec4(mix(color, cloudColor.rgb*cloudDiffuse*shadowScale, cloudColor.a), 1.0); 
-	//~ FragColor = vec4(1.0, 0.0, 0.0, 1.0); 
-	
 }

@@ -32,7 +32,6 @@ uniform float planetOneMinusOblateness;
 uniform mat4 ModelViewProjectionMatrix;
 uniform mat4 NormalMatrix;
 uniform vec3 LightPosition;
-uniform mat4 ModelViewMatrix;
 uniform mat4 ViewProjection;
 uniform mat4 Model;
 
@@ -41,30 +40,8 @@ uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 
 float coeffHeightMap = 0.05 * float(TesParam[2]);
 
-// in gl_PerVertex
-// {
-//   vec4 gl_Position;
-//   float gl_PointSize;
-//   float gl_ClipDistance[];
-// } gl_in[];
-
-
-// out gl_PerVertex
-// {
-//   vec4 gl_Position;
-//   float gl_PointSize;
-//   float gl_ClipDistance[];
-// };
-
-
 //out
 smooth out vec2 TexCoord;
-
-//~ out vec3 Normal;
-//~ out vec3 Position;
-//~ out vec3 TangentLight;
-//~ out vec3 Light;
-//~ out vec3 ViewDirection;
 
 in TES_OUT
 {
@@ -74,12 +51,6 @@ in TES_OUT
     //~ in vec3 tangent;
     in vec3 tessCoord;
 }gs_in[];
-
-//~ in VS_OUT{
-    //~ //vec3 PositionL;
-    //~ vec2 TexCoord;
-    //~ vec3 Normal;
-//~ } vs_in[];
 
 out GS_OUT {
     vec3 Position;
