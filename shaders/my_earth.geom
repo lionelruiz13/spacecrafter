@@ -29,12 +29,8 @@ uniform float planetScaledRadius;
 uniform float planetOneMinusOblateness;
 
 //externe
-uniform mat4 ModelViewProjectionMatrix;
 uniform mat4 NormalMatrix;
 uniform vec3 LightPosition;
-uniform mat4 ViewProjection;
-uniform mat4 Model;
-
 uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 
 
@@ -45,7 +41,7 @@ smooth out vec2 TexCoord;
 
 in TES_OUT
 {
-    in vec4 glPosition; 	
+    in vec3 glPosition; 	
     in vec2 TexCoord;
     in vec3 Normal;
     //~ in vec3 tangent;
@@ -73,11 +69,11 @@ void main()
 
 	for(int i=0; i<3; i++) {
 
-		glPosition = vec3(gs_in[i].glPosition);
+		glPosition = gs_in[i].glPosition;
 		//~ sans normalMap
 		//~ glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius ;
 		//~ avec normalMap
-		glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius * (1.0+texture(heightmapTexture,gs_in[i].TexCoord).x * coeffHeightMap);
+		glPosition= glPosition/length(glPosition)*planetScaledRadius * (1.0+texture(heightmapTexture,gs_in[i].TexCoord).x * coeffHeightMap);
 
 		gl_Position = fisheyeProject(glPosition, clipping_fov);
 

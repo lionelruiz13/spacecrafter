@@ -16,14 +16,14 @@ uniform mat4 model;
 uniform mat4 vp;
 
 in TCS_OUT{
-    in vec4 glPosition;
+    in vec3 glPosition;
     in vec2 TexCoord;
     in vec3 Normal;
     //~ in vec3 tangent;
 }tes_in[];
 
 out TES_OUT{
-    out vec4 glPosition; 
+    out vec3 glPosition; 
     out vec2 TexCoord;
     out vec3 Normal;
     //~ out vec3 tangent;
@@ -54,10 +54,9 @@ void main(void)
                   //~ tes_in[2].tangent*gl_TessCoord.z;
 
  // first we compute the position
-    vec4 position=(gl_TessCoord.x * tes_in[0].glPosition)+
+    vec3 position=(gl_TessCoord.x * tes_in[0].glPosition)+
                   (gl_TessCoord.y * tes_in[1].glPosition)+
                   (gl_TessCoord.z * tes_in[2].glPosition);
-                  position.w=1.0;
     //~ position.xyz= position.xyz/length(position.xyz);
     
     

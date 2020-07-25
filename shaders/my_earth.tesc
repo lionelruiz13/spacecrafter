@@ -15,13 +15,13 @@ uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 
 
 in VS_OUT{
-    in vec4 glPosition;
+    in vec3 glPosition;
     in vec2 TexCoord;
     in vec3 Normal;
 }tcs_in[];
 
 out TCS_OUT{
-    out vec4 glPosition;
+    out vec3 glPosition;
     out vec2 TexCoord;
     out vec3 Normal;
     //~ out vec3 tangent;

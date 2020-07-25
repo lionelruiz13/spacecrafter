@@ -20,12 +20,11 @@ layout (std140) uniform cam_block
 	float time;
 };
 
-uniform float planetRadius;
 uniform float planetScaledRadius;
 uniform float planetOneMinusOblateness;
 
 out VS_OUT{
-	vec4 glPosition;
+	vec3 glPosition;
     vec2 TexCoord;
     vec3 Normal;
 } vs_out;
@@ -38,7 +37,7 @@ void main()
 	Position.y =position.y * planetScaledRadius;
 	Position.z =position.z * planetScaledRadius * planetOneMinusOblateness;
 
-	vs_out.glPosition = vec4(Position, 1.0);
+	vs_out.glPosition = Position;
 	vs_out.TexCoord = texcoord;
 	vs_out.Normal = normal;
 }
