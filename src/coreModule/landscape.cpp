@@ -209,15 +209,7 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	glBindTexture(GL_TEXTURE_2D, fog_tex->getID());
 	shaderFog->setUniform("fader", fog_fader.getInterstate());
 	shaderFog->setUniform("sky_brightness", sky_brightness);
-
-	Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(fog_angle_shift*M_PI/180.)))).convert();
-
-	shaderFog->setUniform("viewport",prj->getViewport());
-	shaderFog->setUniform("clipping_fov",prj->getClippingFov());
-	shaderFog->setUniform("viewport_center",prj->getViewportFloatCenter());
-	shaderFog->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
-	shaderFog->setUniform("ModelViewProjectionMatrix", proj*matrix);
 	shaderFog->setUniform("ModelViewMatrix",matrix);
 
 	// m_fogGL->bind();
@@ -247,12 +239,7 @@ void Landscape::initShaderParams()
 
 	shaderFog->setUniformLocation("fader");
 	shaderFog->setUniformLocation("sky_brightness");
-	shaderFog->setUniformLocation("ModelViewProjectionMatrix");
-	shaderFog->setUniformLocation("clipping_fov");
 	shaderFog->setUniformLocation("ModelViewMatrix");
-	shaderFog->setUniformLocation("inverseModelViewProjectionMatrix");
-	shaderFog->setUniformLocation("viewport");
-	shaderFog->setUniformLocation("viewport_center");
 }
 
 

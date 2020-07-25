@@ -16,7 +16,6 @@ out vec4 FragColor;
  
 void main(void)
 {
-	
 	vec4 tex_color = vec4(texture(texunit0,TexCoord)).rgba;
 	if (tex_color.a == 0.0)
 		discard;
