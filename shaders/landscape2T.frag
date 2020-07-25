@@ -11,7 +11,7 @@ layout (binding=1) uniform sampler2D texunit1;
 //entrée
 uniform float sky_brightness;
 uniform float fader;
-uniform bool haveNightTex;
+//uniform bool haveNightTex;
 
 //sortie
 out vec4 FragColor;
