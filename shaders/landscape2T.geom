@@ -31,25 +31,19 @@ out G2F
 
 void main(void)
 {
-	vec4 pos1, pos2, pos3;
+	vec4 pos[3];
 
-	pos1 = custom_project(v2g[0].Position, clipping_fov);
-	pos2 = custom_project(v2g[1].Position, clipping_fov);
-	pos3 = custom_project(v2g[2].Position, clipping_fov);
+	for (int i =0; i<3; i++)
+		pos[i] = fisheyeProject(v2g[i].Position, clipping_fov);
 
-	if ( pos1.w * pos2.w * pos3.w == 1.0 ) {
+	// note: pos[i].w != 1 tell us that point is behind us
+	if ( pos[0].w * pos[1].w * pos[2].w == 1.0 ) {
 
-		gl_Position = pos1;
-		g2f.TexCoord = v2g[0].TexCoord;
-		EmitVertex();
-
-		gl_Position = pos2;
-		g2f.TexCoord = v2g[1].TexCoord;
-		EmitVertex();
-
-		gl_Position = pos3;
-		g2f.TexCoord = v2g[2].TexCoord;
-		EmitVertex();
+		for (int i =0; i<3; i++) {
+			gl_Position = pos[i];
+			g2f.TexCoord = v2g[i].TexCoord;
+			EmitVertex();
+		}
 		EndPrimitive();	
 	}
 }

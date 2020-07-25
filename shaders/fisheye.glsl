@@ -6,7 +6,9 @@
 uniform mat4 ModelViewMatrix;
 
 
-vec4 custom_project(vec3 invec, vec3 clipping_fov)
+// note: win.w != 1 tell us that point is behind us
+// note: win.w == 1 tell us that point is front us
+vec4 fisheyeProject(vec3 invec, vec3 clipping_fov)
 {
 	float zNear=clipping_fov[0];
 	float zFar=clipping_fov[1];
