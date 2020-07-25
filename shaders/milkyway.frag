@@ -24,7 +24,6 @@ vec3 useOneTex()
 	vec3 tex_color0 = vec3(texture(texunit0,TexCoord)).rgb;
 	tex_color0 *= cmag;
 	return tex_color0;
-	//~ return vec4(1.0,0.0,0.0,1.0);
 }
 
 subroutine(useTexType)
@@ -37,7 +36,6 @@ vec3 useTwoTex()
 	tex_color *= cmag;
 	return tex_color;
 }
-
 
 
 void main(void)

@@ -29,7 +29,6 @@
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include <string>
-//#include "tools/fmath.hpp"
 #include "ojmModule/ojml.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
@@ -37,7 +36,6 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/tone_reproductor.hpp"
-
 
 
 
@@ -86,14 +84,8 @@ MilkyWay::~MilkyWay()
 {
 	if (sphere) delete sphere;
 	deleteMapTex();
-	// deleteShader();
 }
 
-
-// void MilkyWay::deleteShader()
-// {
-// 	if (shaderMilkyway) delete shaderMilkyway;
-// }
 
 void MilkyWay::deleteMapTex()
 {
@@ -160,7 +152,6 @@ void MilkyWay::changeMilkywayState(const std::string& tex_file, float _intensity
 void MilkyWay::restoreDefaultMilky() 
 {
 	nextMilky.tex = new s_texture(defaultMilky.name, TEX_LOAD_TYPE_PNG_BLEND1, true);	
-	// nextMilky.intensity = defaultMilky.intensity;
 	nextMilky.name = defaultMilky.name;
 	onTextureTransition = true;
 	switchTexFader = true;
@@ -221,24 +212,13 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, nextMilky.tex->getID());
 		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useTwoTex");
-		//~ std::cout << "cmag : " << cmag << std::endl;
-		//~ std::cout << "Valeur transition : " << switchTexFader.getInterstate() << std::endl;
 		shaderMilkyway->setUniform("texTransit", switchTexFader.getInterstate());
 		glActiveTexture(GL_TEXTURE0);
 	} else
 		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
 
-	// Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getJ2000ToEyeMat() * modelMilkyway ).convert();
-					//~ Mat4d::scaling(1.1) *
-	                //~ Mat4d::xrotation(M_PI)*
-	                //~ Mat4d::yrotation(M_PI)*
-	                //~ Mat4d::zrotation(M_PI/180*270)).convert();
-
-	// shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
-	// shaderMilkyway->setUniform("ModelViewProjectionMatrix", proj*matrix);
 	shaderMilkyway->setUniform("ModelViewMatrix",matrix);
-
 
 	StateGL::disable(GL_BLEND);
 	sphere->draw();
@@ -247,30 +227,21 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	if (zodiacal.tex != nullptr && zodiacalFader.getInterstate()) {
 		
 		cmag = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
-		//glActiveTexture(GL_TEXTURE0); ???
 		glBindTexture(GL_TEXTURE_2D, zodiacal.tex->getID());
 		shaderMilkyway->setUniform("cmag", cmag);
 	
-		//~ proj=prj->getMatProjection().convert();
-		//	23.5 c'est l'obliquité de l'écliptique
 		//	365.2422 c'est la période de révolution terrestre
 		//	27.5 c'est le shift de la texture ça n'a aucun sens
 		matrix = (nav->getJ2000ToEyeMat() * modelZodiacal *
-						//~ Mat4d::scaling(1.0) *
-		                //~ Mat4d::xrotation(M_PI*23.5/180.0)*
-		                //~ Mat4d::yrotation(M_PI)*
 		                Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
 	
 		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
-		// shaderMilkyway->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
-		// shaderMilkyway->setUniform("ModelViewProjectionMatrix", proj*matrix);
 		shaderMilkyway->setUniform("ModelViewMatrix",matrix);
-	
 	
 		StateGL::enable(GL_BLEND);
 		sphere->draw();
 	}
-	
+
 	//end
 	StateGL::disable(GL_CULL_FACE);
 	shaderMilkyway->unuse();
