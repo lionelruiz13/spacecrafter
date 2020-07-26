@@ -12,19 +12,8 @@ layout (location=3)in vec3 color;
 //out
 smooth out vec3 Color;
 
-//Externe
-//~ uniform mat4 ModelViewProjectionMatrix;
-
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
-
+// for MVP2D
+#include <cam_block.glsl>
 
 void main()
 {
