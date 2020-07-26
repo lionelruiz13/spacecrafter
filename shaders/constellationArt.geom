@@ -8,26 +8,14 @@
 layout (lines_adjacency) in;
 layout (triangle_strip , max_vertices = 12) out;
 
-//uniform mat4 ModelViewProjectionMatrix;
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
+// for MVP2D
+#include <cam_block.glsl>
 
-
-//~ in float TexCoord[];
 in vec2 TexCoord[];
-
 
 out Interpolators
 {
-	//~ float intensity;
 	vec2 TexCoord;
 } interData;
 
