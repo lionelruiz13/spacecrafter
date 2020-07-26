@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2005 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
+ * Copyright (C) 2020 Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,11 +33,6 @@
 #include <map>
 #include <cassert>
 
-// These macro are used as global function replacing standard gettext operation
-//#include "tools/gettext.hpp"
-//#define _(String) Translator::globalTranslator.translateUTF8(String)
-//#define N_(String) gettextNoop(String)
-
 const std::string  _(const std::string& t);
 
 //! Class used to translate strings to any language.
@@ -47,7 +43,6 @@ const std::string  _(const std::string& t);
 //! @author Fabien Chereau
 class Translator {
 public:
-
 	//! @brief Create a translator from a language name.
 	//! If the passed locale name cannot be handled by the system, default value will be used.
 	//! The passed language name is a language code string like "fr" or "fr_FR".
@@ -74,9 +69,6 @@ public:
 	//! Get available language codes from passed locales directory
 	static std::string getAvailableLanguagesCodes(const std::string& localeDir);
 
-	//! Try to determine system language from system configuration
-	//static void initSystemLanguage();
-
 private:
 	//! Reload the current locale info so that gettext use them
 	void reload();
@@ -89,10 +81,6 @@ private:
 
 	//! Keep in memory which one was the last used transator to prevent reloading it at each tranlate() call
 	static Translator* lastUsed;
-
-	//! Store the system default language name as taken from LANGUAGE environement variable
-	//static std::string systemLangName;
-
 	//! map to store the translation 
 	static std::map<std::string, std::string> m_translator;
 };

@@ -33,7 +33,6 @@
 
 #include "tools/translator.hpp"
 #include "tools/app_settings.hpp"
-//#include "spacecrafter.hpp"
 
 
 Translator* Translator::lastUsed = nullptr;
@@ -42,11 +41,6 @@ std::map<std::string, std::string> Translator::m_translator;
 
 // Use system locale language by default
 Translator Translator::globalTranslator = Translator(AppSettings::Instance()->getLocaleDir(), "system");
-
-// #ifdef WIN32
-// # include <Windows.h>
-// # include <Winnls.h>
-// #endif
 
 const std::string _(const std::string& t){
 	return Translator::globalTranslator.translateUTF8(t);
@@ -86,26 +80,8 @@ Translator::Translator(const std::string& _moDirectory, const std::string& _lang
 void Translator::reload()
 {
 	if (Translator::lastUsed == this) return;
-	// This needs to be static as it is used a each gettext call... It tooks me quite a while before I got that :(
-	static char envstr[25];
-	// #ifndef MACOSX
-	if (langName=="system" || langName=="system_default") {
-		snprintf(envstr, 25, "LANGUAGE=%s", Translator::systemLangName.c_str());
-		// cout << "ENV=" << envstr << " " << Translator::systemLangName << endl;
-	} else {
-		snprintf(envstr, 25, "LANGUAGE=%s", langName.c_str());
-	}
-	// #else
-	// if (langName=="system" || langName=="system_default") {
-	// 	snprintf(envstr, 25, "LANG=%s", Translator::systemLangName.c_str());
-	// } else {
-	// 	snprintf(envstr, 25, "LANG=%s", langName.c_str());
-	// }
-	// #endif
 	
-	//printf("Setting locale: %s\n", envstr);
-	
-	//load all string in m_translator
+	//load all string in m_translator, so clear existing
 	m_translator.clear();
 
 	//read translation file
@@ -136,14 +112,6 @@ void Translator::reload()
  	// for (auto& x: m_translator) {
     // 	std::cout << x.first << ": " << x.second << '\n';
   	// }
-	// putenv(envstr);
-	// #ifdef LINUX
-	// setlocale(LC_MESSAGES, "");
-	// #endif
-	// std::string result = bind_textdomain_codeset(domain.c_str(), "UTF-8");
-	// assert(result=="UTF-8");
-	// bindtextdomain (domain.c_str(), moDirectory.c_str());
-	// textdomain (domain.c_str());
 	Translator::lastUsed = this;
 }
 
@@ -166,13 +134,6 @@ std::string Translator::getAvailableLanguagesCodes(const std::string& localeDir)
 		if (tmp.substr(tmp.find_last_of(".") + 1) == "txt") {
 			result.push_back(tmp.substr(0,tmp.find_last_of(".")));
 		}
-
-		// std::string tmpdir = localeDir+"/"+tmp+"/LC_MESSAGES/" + APP_LOWER_NAME + ".mo";
-		// FILE* fic = fopen(tmpdir.c_str(), "r");
-		// if (fic) {
-		// 	result.push_back(tmp);
-		// 	fclose(fic);
-		// }
 	}
 	closedir(dp);
 
