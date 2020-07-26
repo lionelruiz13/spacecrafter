@@ -37,7 +37,7 @@
 
 
 Translator* Translator::lastUsed = nullptr;
-std::string Translator::systemLangName = "C";
+//std::string Translator::systemLangName = "C";
 std::map<std::string, std::string> Translator::m_translator;
 
 // Use system locale language by default
@@ -60,28 +60,28 @@ Translator::Translator(const std::string& _moDirectory, const std::string& _lang
 }
 
 //! Try to determine system language from system configuration
-void Translator::initSystemLanguage()
-{
-	char* lang = getenv("LANGUAGE");
-	if (lang) Translator::systemLangName = lang;
-	else {
-		lang = getenv("LANG");
-		if (lang) Translator::systemLangName = lang;
-		else {
-			#ifdef WIN32
-			char cc[3];
-			if (GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SISO639LANGNAME, cc, 3)) {
-				cc[2] = '\0';
-				Translator::systemLangName = cc;
-			} else {
-				Translator::systemLangName = "C";
-			}
-			#else
-			Translator::systemLangName = "C";
-			#endif
-		}
-	}
-}
+// void Translator::initSystemLanguage()
+// {
+// 	char* lang = getenv("LANGUAGE");
+// 	if (lang) Translator::systemLangName = lang;
+// 	else {
+// 		lang = getenv("LANG");
+// 		if (lang) Translator::systemLangName = lang;
+// 		else {
+// 			#ifdef WIN32
+// 			char cc[3];
+// 			if (GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SISO639LANGNAME, cc, 3)) {
+// 				cc[2] = '\0';
+// 				Translator::systemLangName = cc;
+// 			} else {
+// 				Translator::systemLangName = "C";
+// 			}
+// 			#else
+// 			Translator::systemLangName = "C";
+// 			#endif
+// 		}
+// 	}
+// }
 
 void Translator::reload()
 {

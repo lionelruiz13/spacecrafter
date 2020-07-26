@@ -292,7 +292,7 @@ void App::firstInit()
 
 	appDraw->initSplash();
 	mSdl->glSwapWindow();	// And swap the buffers
-	Translator::initSystemLanguage();
+	//Translator::initSystemLanguage();
 
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );

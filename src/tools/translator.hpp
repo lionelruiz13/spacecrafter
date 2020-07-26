@@ -75,7 +75,7 @@ public:
 	static std::string getAvailableLanguagesCodes(const std::string& localeDir);
 
 	//! Try to determine system language from system configuration
-	static void initSystemLanguage();
+	//static void initSystemLanguage();
 
 private:
 	//! Reload the current locale info so that gettext use them
@@ -91,7 +91,7 @@ private:
 	static Translator* lastUsed;
 
 	//! Store the system default language name as taken from LANGUAGE environement variable
-	static std::string systemLangName;
+	//static std::string systemLangName;
 
 	//! map to store the translation 
 	static std::map<std::string, std::string> m_translator;
