@@ -59,16 +59,12 @@ public:
 	//! @brief Translate input message.
 	//! @param s input string in english.
 	//! @return The translated string in UTF-8 characters.
-	std::string translateUTF8(const std::string& s);
-	//  {
-	// 	reload();
-	// 	return gettext(s.c_str());
-	// }
+	const std::string translateUTF8(const std::string& s);
 
 	//! @brief Get translator locale name. This name can be used to create a translator.
 	//! Could be artificial "system" value for config file
 	//! @return Locale name e.g "fr_FR"
-	std::string getLocaleName() {
+	const std::string& getLocaleName() {
 		return langName;
 	}
 

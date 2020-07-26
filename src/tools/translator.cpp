@@ -188,7 +188,7 @@ std::string Translator::getAvailableLanguagesCodes(const std::string& localeDir)
 	return output;
 }
 
-std::string Translator::translateUTF8(const std::string& s)
+const std::string Translator::translateUTF8(const std::string& s)
 {
 	auto it = m_translator.find(s);
  	if (it != m_translator.end())
