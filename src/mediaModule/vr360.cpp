@@ -69,11 +69,8 @@ VR360::~VR360()
 void VR360::createShader()
 {
 	shaderVR360 = std::make_unique<shaderProgram>();
-	shaderVR360->init( "VR360.vert","VR360.frag");
-	shaderVR360->setUniformLocation("intensity");
-	shaderVR360->setUniformLocation("ModelViewProjectionMatrix");
-	shaderVR360->setUniformLocation("ModelViewMatrix");
-	shaderVR360->setUniformLocation("inverseModelViewProjectionMatrix");
+	shaderVR360->init( "vr360.vert","vr360.frag");
+	shaderVR360->setUniformLocation({"intensity", "ModelViewMatrix"});
 }
 
 // void VR360::deleteShader()
@@ -121,14 +118,11 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 	
 	shaderVR360->setUniform("intensity", showFader.getInterstate());
 
-	Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getJ2000ToEyeMat() *
 	                Mat4d::xrotation(M_PI)*
 	                Mat4d::yrotation(M_PI)*
 	                Mat4d::zrotation(M_PI/180*270)).convert();
 
-	shaderVR360->setUniform("inverseModelViewProjectionMatrix", (proj*matrix).inverse());
-	shaderVR360->setUniform("ModelViewProjectionMatrix", proj*matrix);
 	shaderVR360->setUniform("ModelViewMatrix",matrix);
 
 	StateGL::enable(GL_CULL_FACE);
