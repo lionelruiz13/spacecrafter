@@ -9,16 +9,16 @@ layout (binding=0) uniform sampler2D mapTexture;
 uniform float Intensity;
 uniform vec3 Color;
 
-in Interpolators
+in G2F
 {
 	vec2 TexCoord;
-} interData;
+} g2f;
 
 out vec4 FragColor;
 
 void main(void)
 {
-	vec3 textureColor = vec3(texture(mapTexture,interData.TexCoord)).rgb;
+	vec3 textureColor = vec3(texture(mapTexture,g2f.TexCoord)).rgb;
 
 	textureColor.r *= Color.r;
 	textureColor.g *= Color.g;

@@ -9,10 +9,13 @@
 layout (location=0)in vec2 position;
 layout (location=1)in vec2 texCoord;
 
-out vec2 TexCoord;
+out V2G {
+	vec2 Position;
+	vec2 TexCoord;
+} v2g;
 
 void main()
 {
-	TexCoord = texCoord;
-	gl_Position = vec4(position,0.0,1.0);
+	v2g.TexCoord = texCoord;
+	v2g.Position = position;
 }
