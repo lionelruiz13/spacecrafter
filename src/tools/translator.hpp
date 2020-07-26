@@ -34,10 +34,10 @@
 
 // These macro are used as global function replacing standard gettext operation
 //#include "tools/gettext.hpp"
-#define _(String) Translator::globalTranslator.translateUTF8(String).c_str()
+//#define _(String) Translator::globalTranslator.translateUTF8(String)
 //#define N_(String) gettextNoop(String)
 
-
+const std::string  _(const std::string& t);
 
 //! Class used to translate strings to any language.
 //! Implements a nice interface to gettext which is UTF-8 compliant and is somewhat multiplateform

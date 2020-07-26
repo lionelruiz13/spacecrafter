@@ -48,6 +48,10 @@ Translator Translator::globalTranslator = Translator(PACKAGE, AppSettings::Insta
 // # include <Winnls.h>
 // #endif
 
+const std::string _(const std::string& t){
+	return Translator::globalTranslator.translateUTF8(t);
+}
+
 Translator::Translator(const std::string& _domain, const std::string& _moDirectory, const std::string& _langName) :
 	domain(_domain), moDirectory(_moDirectory), langName(_langName)
 {
