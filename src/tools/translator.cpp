@@ -33,7 +33,7 @@
 
 #include "tools/translator.hpp"
 #include "tools/app_settings.hpp"
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 
 
 Translator* Translator::lastUsed = nullptr;
