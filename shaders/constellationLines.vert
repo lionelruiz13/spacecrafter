@@ -10,19 +10,10 @@
 layout (location=0)in vec2 position;
 layout (location=3)in vec4 color;
 
-//externe
-//~ uniform mat4 MVP;
+// for MVP2D
+#include <cam_block.glsl>
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
-
+//sortie
 out vec4 Color;
 
 void main()
