@@ -52,10 +52,9 @@ public:
 	//! If the passed locale name cannot be handled by the system, default value will be used.
 	//! The passed language name is a language code string like "fr" or "fr_FR".
 	//! This class wrap gettext to simulate an object oriented multiplateform gettext UTF8 translator
-	//! @param _domain The name of the domain to use for translation
-	//! @param _moDirectory The directory where to look for the domain.mo translation files.
+	//! @param _moDirectory The directory where to look for the translation files.
 	//! @param _langName The C locale name or language name like "fr" or "fr_FR". If string is "" or "system" it will use the system locale.
-	Translator(const std::string& _domain, const std::string& _moDirectory, const std::string& _langName);
+	Translator(const std::string& _moDirectory, const std::string& _langName);
 
 	//! @brief Translate input message.
 	//! @param s input string in english.
@@ -85,9 +84,6 @@ public:
 private:
 	//! Reload the current locale info so that gettext use them
 	void reload();
-
-	//! The domain name
-	std::string domain;
 
 	//! The directory where the locale file tree stands
 	std::string moDirectory;

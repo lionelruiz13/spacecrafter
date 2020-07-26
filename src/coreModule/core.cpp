@@ -51,7 +51,7 @@
 #include "tools/Renderer.hpp"
 
 Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
-	skyTranslator(PACKAGE, AppSettings::Instance()->getLanguageDir(), ""),
+	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr)
 {
@@ -1446,7 +1446,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	std::string oldLocale = getSkyLanguage();
 
 	// Update the translator with new locale name
-	skyTranslator = Translator(PACKAGE, AppSettings::Instance()->getLanguageDir(), newSkyLocaleName);
+	skyTranslator = Translator(AppSettings::Instance()->getLanguageDir(), newSkyLocaleName);
 	cLog::get()->write("Sky locale is " + skyTranslator.getLocaleName(), LOG_TYPE::L_INFO);
 	//printf("SkyLocale : %s\n", newSkyLocaleName.c_str());
 

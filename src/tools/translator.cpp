@@ -41,7 +41,7 @@ std::string Translator::systemLangName = "C";
 std::map<std::string, std::string> Translator::m_translator;
 
 // Use system locale language by default
-Translator Translator::globalTranslator = Translator(PACKAGE, AppSettings::Instance()->getLocaleDir(), "system");
+Translator Translator::globalTranslator = Translator(AppSettings::Instance()->getLocaleDir(), "system");
 
 // #ifdef WIN32
 // # include <Windows.h>
@@ -52,8 +52,8 @@ const std::string _(const std::string& t){
 	return Translator::globalTranslator.translateUTF8(t);
 }
 
-Translator::Translator(const std::string& _domain, const std::string& _moDirectory, const std::string& _langName) :
-	domain(_domain), moDirectory(_moDirectory), langName(_langName)
+Translator::Translator(const std::string& _moDirectory, const std::string& _langName) :
+	moDirectory(_moDirectory), langName(_langName)
 {
 	Translator::lastUsed = nullptr;
 	reload();
