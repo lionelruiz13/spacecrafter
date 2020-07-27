@@ -8,17 +8,20 @@ layout (location = 0) in vec3 inPosition;
 layout (location = 4) in float inTexture; //ce n'est pas une vrai texture mais un indice de texture
 layout (location = 5) in float inScale;
 
-out V2G
+uniform mat4 Mat;
+uniform vec3 camPos;
+
+out vertexData
 {
-	vec3 Position;
 	float scale;
 	float texture;
-} v2g;
+} vertexOut;
 
 
 void main(void)
 {
-	v2g.Position = inPosition;
-	v2g.scale= inScale;
-	v2g.texture = inTexture;
+	gl_Position = vec4(inPosition,1.0);
+
+	vertexOut.scale= inScale;
+	vertexOut.texture = inTexture;
 }
