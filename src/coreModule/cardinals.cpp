@@ -37,8 +37,9 @@
 
 
 
-Cardinals::Cardinals(float _radius) : radius(_radius), font(nullptr), color(0.6,0.2,0.2)
+Cardinals::Cardinals(float _radius) : radius(_radius)
 {
+	color.set(0.6,0.2,0.2);
 	// Default labels - if sky locale specified, loaded later
 	// Improvement for gettext translation
 	sNorth = "N";
@@ -51,21 +52,6 @@ Cardinals::~Cardinals()
 {
 	if (font) delete font;
 	font = nullptr;
-}
-
-/**
- * Set the font for cardinal points
- * @param font_size size in pixel
- * @param font_name name of the font
- */
-void Cardinals::setFont(float font_size, const std::string& font_name)
-{
-	if (font) {
-		delete font;
-		font=nullptr;
-	}
-	font = new s_font(font_size, font_name);
-	assert(font);
 }
 
 //! Draw the cardinals points : N S E W

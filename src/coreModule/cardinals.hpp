@@ -33,42 +33,21 @@
 #include "tools/fader.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
+#include "coreModule/CoreModule.hpp"
 
 class Projector;
 class s_font;
 class Translator;
 
 //! Class which manages the cardinal points displaying
-class Cardinals: public NoCopy {
+class Cardinals: public NoCopy , public ModuleColor, public ModuleFont , public ModuleLinearFader {
 public:
 	Cardinals(float _radius = 1.);
 	virtual ~Cardinals();
 
 	void draw(const Projector* prj, double latitude, bool gravityON = false) const;
-	void setColor(const Vec3f& c) {
-		color = c;
-	}
-	Vec3f getColor() {
-		return color;
-	}
-	void setFont(float font_size, const std::string& font_name);
-	void translateLabels(Translator& trans);  // for i18n
-	void update(int delta_time) {
-		fader.update(delta_time);
-	}
-	void setFaderDuration(float duration) {
-		fader.setDuration((int)(duration*1000.f));
-	}
-	void setFlagShow(bool b) {
-		fader = b;
-	}
-	bool getFlagShow(void) const {
-		return fader;
-	}
 
-	void flipFlagShow() {
-		fader = !fader;
-	}
+	void translateLabels(Translator& trans);  // for i18n
 
 	void setInternalNav (bool a) {
 		internalNav=a;
@@ -76,10 +55,7 @@ public:
 
 private:
 	float radius;
-	s_font* font=nullptr;
-	Vec3f color;
 	std::string sNorth, sSouth, sEast, sWest;
-	LinearFader fader;
 	bool internalNav;
 };
 
