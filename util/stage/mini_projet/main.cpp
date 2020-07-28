@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include "Vulkan.hpp"
 #include "mainModule/sdl_facade.hpp"
 #include "tools/log.hpp"
 #include "tools/stateGL.hpp"
@@ -20,6 +21,7 @@ void sigTerm(int sig)
 {
     (void) sig;
     opened = false;
+    std::cout << "\rExit\n";
 }
 
 class MyObj {
@@ -43,6 +45,8 @@ std::vector<float> MyObj::colors;
 
 int main()
 {
+    Vulkan vulkan("mini_projet", "Vulkan.hpp");
+
     cLog *Log = cLog::get();
     SDLFacade window;
 
@@ -100,7 +104,8 @@ int main()
     Mat4f view;
 
     shader->setUniformLocation({"MV", "clipping_fov"});
-    while (opened) {
+    int nb_loops = 1000;
+    while (opened && nb_loops-- > 0) {
         cam = rotate * cam;
         view = Mat4f::lookAt(cam, target, up);
         Renderer::clearBuffer();

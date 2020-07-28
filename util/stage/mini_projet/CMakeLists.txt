@@ -21,5 +21,8 @@ SET(OpenGL_GL_PREFERENCE "GLVND")
 FIND_PACKAGE(OpenGL REQUIRED)
 FIND_PACKAGE(GLEW REQUIRED)
 
+SET(CMAKE_C_FLAGS "-g3 -Wextra -Wall -Wno-unused-parameter -Wunreachable-code")
+SET(CMAKE_CXX_FLAGS "-g3 -Wextra -Wall -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code")
+
 add_executable(mini_projet.out ${all_SRCS})
-target_link_libraries(mini_projet.out ${OPENGL_LIBRARY} ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2_TTF_LIBRARY} ${GLEW_LIBRARY} ${GLEW_LIBRARIES})
+target_link_libraries(mini_projet.out ${OPENGL_LIBRARY} ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2_TTF_LIBRARY} ${GLEW_LIBRARY} ${GLEW_LIBRARIES} vulkan glfw3 dl X11 pthread)
