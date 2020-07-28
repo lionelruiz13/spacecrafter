@@ -1363,6 +1363,7 @@ public:
 		return core->FlagAtmosphericRefraction;
 	}
 
+	void fontUpdateFont(const std::string& _moduleName, const std::string& _fontName, const std::string& _sizeValue);
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// //! set flag for vp Optoma
