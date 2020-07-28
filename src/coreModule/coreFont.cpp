@@ -24,6 +24,8 @@
 //#include "coreModule/core.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/app_settings.hpp"
+#include "tools/file_path.hpp"
+#include "tools/log.hpp"
 
 #include "coreModule/constellation_mgr.hpp"
 #include "bodyModule/solarsystem.hpp"
@@ -86,3 +88,28 @@ void CoreFont::init(const InitParser& conf)
     FontSizePlanet = round(FontSizePlanet * resolution / FontResolution) ;
     FontSizeCardinalPoints = round(FontSizeCardinalPoints * resolution / FontResolution) ;
 }
+
+void CoreFont::updateFont(const std::string& moduleName, const std::string& fontName, const std::string& sizeValue);
+{
+	FilePath myFile  = FilePath(fontName, FilePath::TFP::FONTS);
+	if (!myFile.exist()) {
+		cLog::get()->write("Unable to find "+ fontName, LOG_TYPE::L_WARNING);
+		return;
+	}
+
+}
+
+/*
+if (args[W_ALL] != "") setFont(W_ALL, &Core::loadFont);
+		FilePath myFile  = FilePath(args[W_FILENAME], FilePath::TFP::FONTS);
+	else if (args[ACP_CN_TEXT] != "") setFont(ACP_CN_TEXT, &Core::setFontText);
+			if (myFile) {
+	else if (args[W_PLANET] != "") setFont(W_PLANET, &Core::setFontPlanets);
+				int size = 10;
+	else if (args[W_CONSTELLATION] != "") setFont(W_CONSTELLATION, &Core::setFontConstellations);
+				if (!args[W_SIZE].empty())
+	else if (args[ACP_FN_CARDINAL_POINTS] != "") setFont(ACP_FN_CARDINAL_POINTS, &Core::setFontCardinalPoints);
+					size = evalInt(args[W_SIZE]);
+	else if (args[ACP_FN_STARS] != "") setFont(ACP_FN_STARS, &Core::setFontStars);
+
+	*/

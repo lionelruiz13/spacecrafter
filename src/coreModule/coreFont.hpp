@@ -48,6 +48,8 @@ public:
     void init(const InitParser& conf);
     void setFont();
 
+	void updateFont(const std::string& moduleName, const std::string& fontName, const std::string& sizeValue);
+ 
 private:
     //Core* core;
 	HipStarMgr * hip_stars;		// Manage the hipparcos stars
