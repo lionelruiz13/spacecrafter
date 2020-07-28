@@ -89,7 +89,7 @@ void CoreFont::init(const InitParser& conf)
     FontSizeCardinalPoints = round(FontSizeCardinalPoints * resolution / FontResolution) ;
 }
 
-void CoreFont::updateFont(const std::string& moduleName, const std::string& fontName, const std::string& sizeValue);
+void CoreFont::updateFont(const std::string& moduleName, const std::string& fontName, const std::string& sizeValue)
 {
 	FilePath myFile  = FilePath(fontName, FilePath::TFP::FONTS);
 	if (!myFile.exist()) {
