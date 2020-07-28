@@ -62,7 +62,8 @@ protected:
     s_font* font=nullptr;
 };
 
-class ModuleLinearFader {
+template <class faderType>
+class ModuleFader {
 public:
 	void update(int delta_time) {
 		fader.update(delta_time);
@@ -82,7 +83,7 @@ public:
 	}
 
 protected:
-    LinearFader fader;
+    faderType fader;
 };
 
 /*

@@ -40,7 +40,7 @@ class s_font;
 class Translator;
 
 //! Class which manages the cardinal points displaying
-class Cardinals: public NoCopy , public ModuleColor, public ModuleFont , public ModuleLinearFader {
+class Cardinals: public NoCopy , public ModuleColor, public ModuleFont , public ModuleFader<LinearFader> {
 public:
 	Cardinals(float _radius = 1.);
 	virtual ~Cardinals();
