@@ -91,7 +91,7 @@ public:
 	/** renvoie le nom complet d'un fichier analysé
 	* @return le nom complet du fichier 
 	*/
-	std::string toString() const {return fullFileName; }
+	const std::string& toString() const {return fullFileName; }
 
 	/** renvoie l'existance du fichier dans le système
 	* @return true si le fichier existe sur le système, false sinon
