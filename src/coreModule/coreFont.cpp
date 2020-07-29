@@ -89,14 +89,25 @@ void CoreFont::init(const InitParser& conf)
 }
 
 
-void CoreFont::updateFont(const std::string& moduleName, const std::string& fontName, const std::string& sizeValue)
+static TARGETFONT strTotarget(const std::string& target)
 {
-	// gestion de la fonte
-	FilePath myFile  = FilePath(fontName, FilePath::TFP::FONTS);
-	if (!myFile.exist()) {
-		cLog::get()->write("Unable to find "+ fontName, LOG_TYPE::L_WARNING);
-		return;
+	if (target=="text") {
+		return TARGETFONT::CF_TEXT;
 	}
+	if (target=="planets") {
+		return TARGETFONT::CF_PLANETS;
+	}
+	if (target=="constellations") {
+		return TARGETFONT::CF_CONSTELLATIONS;
+	}
+	if (target=="cardinal_points") {
+		return TARGETFONT::CF_CARDINAL;
+	}
+	if (target=="hip_stars") {
+		return TARGETFONT::CF_HIPSTARS;
+	}
+	return TARGETFONT::CF_NONE;
+}
 
 void CoreFont::updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue)
 {

@@ -38,6 +38,16 @@ class Cardinals;
 class ConstellationMgr;
 class TextMgr;
 
+enum class TARGETFONT : char {
+	CF_TEXT, 
+	CF_PLANETS,
+	CF_CONSTELLATIONS,
+	CF_CARDINAL,
+	CF_HIPSTARS,
+	CF_NONE
+};
+
+
 class CoreFont {
 
 public:
@@ -47,6 +57,7 @@ public:
     ~CoreFont();
     void init(const InitParser& conf);
     void setFont();
+	static TARGETFONT strTotarget(const std::string& target);
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
  
 private:
