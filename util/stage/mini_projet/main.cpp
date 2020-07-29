@@ -45,7 +45,14 @@ std::vector<float> MyObj::colors;
 
 int main()
 {
-    Vulkan vulkan("mini_projet", "Vulkan.hpp");
+    glfwInit();
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+    GLFWwindow *VkWindow = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
+
+    Vulkan vulkan("mini_projet", "No Engine", VkWindow);
 
     cLog *Log = cLog::get();
     SDLFacade window;
