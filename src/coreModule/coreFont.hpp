@@ -47,8 +47,7 @@ public:
     ~CoreFont();
     void init(const InitParser& conf);
     void setFont();
-
-	void updateFont(const std::string& moduleName, const std::string& fontName, const std::string& sizeValue);
+	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
  
 private:
     //Core* core;

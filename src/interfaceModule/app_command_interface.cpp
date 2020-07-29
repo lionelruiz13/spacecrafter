@@ -3263,13 +3263,18 @@ int AppCommandInterface::commandBody()
 
 int AppCommandInterface::commandFont()
 {
-	if (!args[W_FILENAME].empty()) {
-		FilePath myFile  = FilePath(args[W_FILENAME], FilePath::TFP::FONTS);
+	std::string fileName = args[W_FILENAME];
+	std::string targetName = args[W_TARGET];
+
+	if (targetName.empty()) {
+		debug_message = _("Command 'font': missing target argument");
+		return executeCommandStatus();
+	}
+
+	if (!fileName.empty()) {
+		FilePath myFile  = FilePath(fileName, FilePath::TFP::FONTS);
 			if (myFile) {
-				int size = 10;
-				if (!args[W_SIZE].empty())
-					size = evalInt(args[W_SIZE]);
-				stcore->loadFont(size, myFile.toString());
+				coreLink->fontUpdateFont(targetName,myFile.toString(), args[W_SIZE]);
 				return executeCommandStatus();
 			} else {
 				debug_message= "command 'font' : filename can't be found";
@@ -3277,7 +3282,7 @@ int AppCommandInterface::commandFont()
 				return executeCommandStatus();
 			}
 	}
-	debug_message = _("Command 'font': unknown argument");
+	debug_message = _("Command 'font': missing filename argument");
 	return executeCommandStatus();
 }
 

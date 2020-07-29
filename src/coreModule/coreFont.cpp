@@ -24,7 +24,6 @@
 //#include "coreModule/core.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/app_settings.hpp"
-#include "tools/file_path.hpp"
 #include "tools/log.hpp"
 
 #include "coreModule/constellation_mgr.hpp"
@@ -99,29 +98,31 @@ void CoreFont::updateFont(const std::string& moduleName, const std::string& font
 		return;
 	}
 
+void CoreFont::updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue)
+{
 	// gestion de la taille
 	double size = Utility::strToDouble(sizeValue);
 
 	//gestion du module
-	if (moduleName=="text") {
-		text_usr->setFont(size==0 ? FontSizeText : size, myFile.toString() );
+	if (targetName=="text") {
+		text_usr->setFont(size==0 ? FontSizeText : size, fontName );
 		return;
 	}
-	if (moduleName=="planets") {
-		ssystem->setFont(size==0 ? FontSizePlanet : size, myFile.toString() );
+	if (targetName=="planets") {
+		ssystem->setFont(size==0 ? FontSizePlanet : size, fontName );
 		return;
 	}
-	if (moduleName=="constellations") {
-		asterisms->setFont(size==0 ? FontSizeConstellation : size, myFile.toString() );
+	if (targetName=="constellations") {
+		asterisms->setFont(size==0 ? FontSizeConstellation : size, fontName );
 		return;
 	}
-	if (moduleName=="cardinal_points") {
-		cardinals_points->setFont(size==0 ? FontSizeCardinalPoints : size, myFile.toString() );
+	if (targetName=="cardinal_points") {
+		cardinals_points->setFont(size==0 ? FontSizeCardinalPoints : size, fontName );
 		return;
 	}
-	if (moduleName=="hip_stars") {
-		hip_stars->setFont(size==0 ? FontSizeGeneral : size, myFile.toString() );
+	if (targetName=="hip_stars") {
+		hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
 		return;
 	}
-	cLog::get()->write("Unknown CoreFont updateName "+moduleName, LOG_TYPE::L_WARNING);
+	cLog::get()->write("Unknown CoreFont updateName "+targetName, LOG_TYPE::L_WARNING);
 }
