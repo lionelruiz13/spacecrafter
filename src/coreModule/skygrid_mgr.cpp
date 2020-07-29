@@ -132,22 +132,22 @@ const Vec3f& SkyGridMgr::getColor(SKYGRID_TYPE typeObj)
 }
 
 
-SKYGRID_TYPE SkyGridMgr::stringToType(const std::string& typeObj)
-{
-	if (typeObj == "GRID_EQUATORIAL")
-		return SKYGRID_TYPE::GRID_EQUATORIAL;
+// SKYGRID_TYPE SkyGridMgr::stringToType(const std::string& typeObj)
+// {
+// 	if (typeObj == "GRID_EQUATORIAL")
+// 		return SKYGRID_TYPE::GRID_EQUATORIAL;
 
-	if (typeObj == "GRID_ALTAZIMUTAL")
-		return SKYGRID_TYPE::GRID_ALTAZIMUTAL;
+// 	if (typeObj == "GRID_ALTAZIMUTAL")
+// 		return SKYGRID_TYPE::GRID_ALTAZIMUTAL;
 
-	if (typeObj == "GRID_ECLIPTIC")
-		return SKYGRID_TYPE::GRID_ECLIPTIC;
+// 	if (typeObj == "GRID_ECLIPTIC")
+// 		return SKYGRID_TYPE::GRID_ECLIPTIC;
 
-	if (typeObj == "GRID_GALACTIC")
-		return SKYGRID_TYPE::GRID_GALACTIC;
+// 	if (typeObj == "GRID_GALACTIC")
+// 		return SKYGRID_TYPE::GRID_GALACTIC;
 
-	return SKYGRID_TYPE::GRID_UNKNOWN;
-}
+// 	return SKYGRID_TYPE::GRID_UNKNOWN;
+// }
 
 std::string SkyGridMgr::typeToString(SKYGRID_TYPE typeObj)
 {
