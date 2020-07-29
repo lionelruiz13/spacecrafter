@@ -12,7 +12,7 @@ class Vulkan {
 public:
     Vulkan(const char *_AppName, const char *_EngineName, GLFWwindow *window);
     ~Vulkan();
-    void initQueues(short nbQueues = 1);
+    void initQueues(uint32_t nbQueues = 1);
 private:
     const char *AppName;
     const char *EngineName;
@@ -32,7 +32,22 @@ private:
     std::vector<VkQueue> presentQueues;
     VkDevice device;
 
-    void initSwapchain();
+    void initSwapchain(int width, int height);
+    VkSwapchainKHR swapChain;
+    std::vector<VkImage> swapChainImages;
+    VkExtent2D swapChainExtent;
+    VkFormat swapChainImageFormat;
+
+    void createImageViews();
+    std::vector<VkImageView> swapChainImageViews;
+
+    void createRenderPass();
+    VkRenderPass renderPass;
+
+    void createGraphicsPipeline();
+    VkShaderModule createShaderModule(const std::vector<char> &code);
+    VkPipelineLayout pipelineLayout;
+    VkPipeline graphicsPipeline;
 
     /*
     void initCommandBuffer();
