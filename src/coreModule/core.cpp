@@ -656,6 +656,11 @@ void Core::updateInGalaxy(int delta_time)
 	timeMgr->update(delta_time);
 	navigation->update(delta_time);
 
+	// Position of sun and all the satellites (ie planets)
+	ssystem->computePositions(timeMgr->getJDay(), observatory);
+
+	anchorManager->update();
+
 	// Transform matrices between coordinates systems
 	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
 	// Direction of vision
