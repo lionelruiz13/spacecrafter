@@ -1657,6 +1657,7 @@ void Core::setFontScheme()
 }
 
 //! Get a color used to display info about the currently selected object
+// @TODO reafire que l'objet sélectionné renvoie sa propore couleur 
 Vec3f Core::getSelectedObjectInfoColor(void) const
 {
 	if (!selected_object) {
