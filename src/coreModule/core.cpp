@@ -753,14 +753,17 @@ void Core::switchMode(const std::string &mode)
 	if (mode.empty())
 		return;
 	
+	std::string modeValue = mode;
+	std::transform(modeValue.begin(), modeValue.end(),modeValue.begin(), ::tolower);
+
 	currentExecutor->onExit();
-	if (mode =="InGalaxy") {
+	if (modeValue =="ingalaxy" || modeValue =="in_galaxy" ) {
 		currentExecutor = 	executorInGalaxy;
 	} else
-	if (mode =="InUniverse") {
+	if (modeValue =="inuniverse" || modeValue =="in_universe" ) {
 		currentExecutor = 	executorInUniverse;
 	} else
-	if (mode =="InSolarSystem") {
+	if (modeValue =="insolarsystem" || modeValue =="in_solarsystem" ) {
 		currentExecutor = 	executorInSolarSystem;
 	}
 	currentExecutor->onEnter();
