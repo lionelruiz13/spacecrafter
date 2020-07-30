@@ -121,6 +121,7 @@ int main()
         shader->setUniform("clipping_fov", clipping_fov);
         Renderer::drawArrays(shader.get(), varray.get(), GL_TRIANGLES, 0, MyObj::nbElements * 3);
         window.glSwapWindow();
+        vulkan.drawFrame();
     }
 
     Log->close();

@@ -13,6 +13,7 @@ public:
     Vulkan(const char *_AppName, const char *_EngineName, GLFWwindow *window);
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
+    void drawFrame();
 private:
     const char *AppName;
     const char *EngineName;
@@ -49,6 +50,18 @@ private:
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
 
+    void createFramebuffer();
+    std::vector<VkFramebuffer> swapChainFramebuffers;
+
+    void createCommandPool();
+    std::vector<VkCommandPool> commandPool;
+
+    void createCommandBuffer();
+    std::vector<VkCommandBuffer> commandBuffers;
+
+    void createSemaphore();
+    VkSemaphore imageAvailableSemaphore;
+    VkSemaphore renderFinishedSemaphore;
     /*
     void initCommandBuffer();
     vk::UniqueCommandPool commandPool;
