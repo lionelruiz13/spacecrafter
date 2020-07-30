@@ -107,8 +107,8 @@ private:
 	double FontSizeConstellation;
 	double FontSizeCardinalPoints;
 
-    int resolution;
-	double FontResolution;
+    int m_resolution;
+	double m_fontResolution;
 	std::map< std::string, TARGETFONT> m_strToTarget;
 };
 

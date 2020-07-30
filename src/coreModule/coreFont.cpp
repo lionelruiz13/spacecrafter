@@ -80,9 +80,9 @@ void CoreFont::init(const InitParser& conf)
 	FontFileNameConstellation = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_NAME);
 	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
 
-	FontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
-    if (FontResolution <1.0)
-        FontResolution = 1024.0;
+	m_fontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
+    if (m_fontResolution <1.0)
+        m_fontResolution = 1024.0;
     FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
 	FontSizeGeneral = conf.getDouble (SCS_FONT,SCK_FONT_GENERAL_SIZE);
 	FontSizeConstellation = conf.getDouble(SCS_FONT,SCK_FONT_CONSTELLATION_SIZE);
@@ -90,18 +90,18 @@ void CoreFont::init(const InitParser& conf)
 	FontSizeCardinalPoints = conf.getDouble(SCS_FONT,SCK_FONT_CARDINALPOINTS_SIZE);
 
     // mise à l'échelle des FontSize
-    FontSizeText = round(FontSizeText * resolution / FontResolution) ;
-    FontSizeGeneral = round(FontSizeGeneral * resolution / FontResolution) ;
-    FontSizeConstellation = round(FontSizeConstellation * resolution / FontResolution) ;
-    FontSizePlanet = round(FontSizePlanet * resolution / FontResolution) ;
-    FontSizeCardinalPoints = round(FontSizeCardinalPoints * resolution / FontResolution) ;
+    FontSizeText = round(FontSizeText * m_resolution / m_fontResolution) ;
+    FontSizeGeneral = round(FontSizeGeneral * m_resolution / m_fontResolution) ;
+    FontSizeConstellation = round(FontSizeConstellation * m_resolution / m_fontResolution) ;
+    FontSizePlanet = round(FontSizePlanet * m_resolution / m_fontResolution) ;
+    FontSizeCardinalPoints = round(FontSizeCardinalPoints * m_resolution / m_fontResolution) ;
 }
 
 
 void CoreFont::updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue)
 {
 	// gestion de la taille
-	double size = Utility::strToDouble(sizeValue) * resolution / FontResolution;
+	double size = Utility::strToDouble(sizeValue) * m_resolution / m_fontResolution;
 
 	//gestion du module
 	auto const it = m_strToTarget.find(targetName);
