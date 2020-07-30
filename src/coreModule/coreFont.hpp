@@ -39,10 +39,10 @@ class ConstellationMgr;
 class TextMgr;
 
 enum class TARGETFONT : char {
-	CF_TEXT, 
+	CF_TEXTS, 
 	CF_PLANETS,
 	CF_CONSTELLATIONS,
-	CF_CARDINAL,
+	CF_CARDINALS,
 	CF_HIPSTARS,
 	CF_NONE
 };
@@ -61,6 +61,7 @@ public:
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
  
 private:
+	void setStrToTarget();
     //Core* core;
 	HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	NebulaMgr * nebulas;				// Manage the nebulas
@@ -71,7 +72,6 @@ private:
 	Cardinals * cardinals_points;		// Cardinals points
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
 	TextMgr * text_usr;				// manage all user text in dome
-
 
 	std::string FontFileNameGeneral;			//! The font file used by default during initialization
 	std::string FontFileNamePlanet;				//! The font for the planet system
@@ -86,6 +86,7 @@ private:
 
     int resolution;
 	double FontResolution;
+	std::map< std::string, TARGETFONT> m_strToTarget;
 };
 
 

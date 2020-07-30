@@ -45,7 +45,16 @@
 CoreFont::CoreFont(/*Core* core,*/ int _resolution)
 {
     //core= _core;
-    resolution = _resolution;
+	setStrToTarget();
+}
+
+void CoreFont::setStrToTarget()
+{
+    m_strToTarget["text"] = TARGETFONT::CF_TEXTS;
+	m_strToTarget["planets"] = TARGETFONT::CF_PLANETS;
+	m_strToTarget["constellations"] = TARGETFONT::CF_CONSTELLATIONS;
+	m_strToTarget["cardinal_points"] = TARGETFONT::CF_CARDINALS;
+	m_strToTarget["hip_stars"] = TARGETFONT::CF_HIPSTARS;
 }
 
 CoreFont::~CoreFont()
@@ -89,51 +98,35 @@ void CoreFont::init(const InitParser& conf)
 }
 
 
-static TARGETFONT strTotarget(const std::string& target)
-{
-	if (target=="text") {
-		return TARGETFONT::CF_TEXT;
-	}
-	if (target=="planets") {
-		return TARGETFONT::CF_PLANETS;
-	}
-	if (target=="constellations") {
-		return TARGETFONT::CF_CONSTELLATIONS;
-	}
-	if (target=="cardinal_points") {
-		return TARGETFONT::CF_CARDINAL;
-	}
-	if (target=="hip_stars") {
-		return TARGETFONT::CF_HIPSTARS;
-	}
-	return TARGETFONT::CF_NONE;
-}
-
 void CoreFont::updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue)
 {
 	// gestion de la taille
-	double size = Utility::strToDouble(sizeValue);
+	double size = Utility::strToDouble(sizeValue) * resolution / FontResolution;
 
 	//gestion du module
-	if (targetName=="text") {
-		text_usr->setFont(size==0 ? FontSizeText : size, fontName );
+	auto const it = m_strToTarget.find(targetName);
+	if (it == m_strToTarget.end()) {
+		cLog::get()->write("Unknown CoreFont target "+targetName, LOG_TYPE::L_WARNING);
 		return;
 	}
-	if (targetName=="planets") {
-		ssystem->setFont(size==0 ? FontSizePlanet : size, fontName );
-		return;
+
+	switch(it->second) {
+		case TARGETFONT::CF_TEXTS :
+			text_usr->setFont(size==0 ? FontSizeText : size, fontName );
+			break;
+		case TARGETFONT::CF_PLANETS :
+			ssystem->setFont(size==0 ? FontSizePlanet : size, fontName );
+			break;
+		case TARGETFONT::CF_CONSTELLATIONS :
+			asterisms->setFont(size==0 ? FontSizeConstellation : size, fontName );
+			break;
+		case TARGETFONT::CF_CARDINALS :
+			cardinals_points->setFont(size==0 ? FontSizeCardinalPoints : size, fontName );
+			break;
+		case TARGETFONT::CF_HIPSTARS :
+			hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
+			break;
+		case TARGETFONT::CF_NONE:
+			break;
 	}
-	if (targetName=="constellations") {
-		asterisms->setFont(size==0 ? FontSizeConstellation : size, fontName );
-		return;
-	}
-	if (targetName=="cardinal_points") {
-		cardinals_points->setFont(size==0 ? FontSizeCardinalPoints : size, fontName );
-		return;
-	}
-	if (targetName=="hip_stars") {
-		hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
-		return;
-	}
-	cLog::get()->write("Unknown CoreFont updateName "+targetName, LOG_TYPE::L_WARNING);
 }
