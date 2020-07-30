@@ -52,8 +52,6 @@ int main()
 
     GLFWwindow *VkWindow = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
 
-    Vulkan vulkan("mini_projet", "No Engine", VkWindow);
-
     cLog *Log = cLog::get();
     SDLFacade window;
 
@@ -111,19 +109,23 @@ int main()
     Mat4f view;
 
     shader->setUniformLocation({"MV", "clipping_fov"});
-    int nb_loops = 1000;
-    while (opened && nb_loops-- > 0) {
-        cam = rotate * cam;
-        view = Mat4f::lookAt(cam, target, up);
-        Renderer::clearBuffer();
-        shader->use();
-        shader->setUniform("MV", view * mat);
-        shader->setUniform("clipping_fov", clipping_fov);
-        Renderer::drawArrays(shader.get(), varray.get(), GL_TRIANGLES, 0, MyObj::nbElements * 3);
-        window.glSwapWindow();
-        vulkan.drawFrame();
+    {
+        int nb_loops = 1000;
+        Vulkan vulkan("mini_projet", "No Engine", VkWindow);
+        while (opened && nb_loops-- > 0) {
+            cam = rotate * cam;
+            view = Mat4f::lookAt(cam, target, up);
+            Renderer::clearBuffer();
+            shader->use();
+            shader->setUniform("MV", view * mat);
+            shader->setUniform("clipping_fov", clipping_fov);
+            Renderer::drawArrays(shader.get(), varray.get(), GL_TRIANGLES, 0, MyObj::nbElements * 3);
+            window.glSwapWindow();
+            vulkan.drawFrame();
+        }
     }
-
+    glfwDestroyWindow(VkWindow);
+    glfwTerminate();
     Log->close();
     return 0;
 }
