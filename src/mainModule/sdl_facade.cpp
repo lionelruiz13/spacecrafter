@@ -185,8 +185,8 @@ void SDLFacade::createWindow(const std::string& appName, Uint16 w, Uint16 h, int
 	SDL_SetWindowIcon(window,icon);
 	SDL_FreeSurface(icon);
 
-	// glClear(GL_COLOR_BUFFER_BIT);
-	// SDL_GL_SwapWindow(window);
+	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_GL_SwapWindow(window);
 	// glClear(GL_COLOR_BUFFER_BIT);
 	cLog::get()->mark();
 }
