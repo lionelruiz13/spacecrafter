@@ -451,9 +451,6 @@ public:
 	//! Load font scheme from ini file
 	void setFontScheme(void);
 
-	void loadFont(int baseSize, const std::string name);
-
-
 	// MAJ de l'UBO ubo_cam
 	void uboCamUpdate();
 

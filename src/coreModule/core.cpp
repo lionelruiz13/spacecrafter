@@ -1651,20 +1651,9 @@ void Core::saveCurrentConfig(InitParser &conf)
 }
 
 
-void Core::setFontScheme() //TODO deja fait ailleurs ?
+void Core::setFontScheme()
 {
 	coreFont->setFont();
-}
-
-void Core::loadFont(int baseSize, const std::string name) {
-	ssystem->setFont(baseSize+4, name);
-	skyGridMgr->setFont(baseSize, name);
-	skyLineMgr->setFont(baseSize, name);
-	cardinals_points->setFont(baseSize+20, name);
-	asterisms->setFont(baseSize+6, name);
-	hip_stars->setFont(baseSize, name);
-	text_usr->setFont(baseSize+8, name);
-	skyLineMgr->setFont(baseSize, name);
 }
 
 //! Get a color used to display info about the currently selected object
