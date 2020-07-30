@@ -24,10 +24,30 @@
 #define _COREFONT_HPP_
 
 #include <string>
+#include <map>
 
-//class Core;
+
+/**
+ * \file coreFont.hpp
+ * \brief Core Font Management
+ * \author Association Sirius
+ * \version 1
+ *
+ * \class CoreFont
+ *
+ * \brief Transforms alphanumeric entry to Core Font 
+ *
+ * The purpose of this class is to analyze character strings (string name and string size) 
+ * and get to all Core Font Module aprouved s_font parameters
+ *
+ * Each planetarium has its own resolution. To harmonize the size of the fonts regardless of the resolution,
+ * we use a reference font size : FontResolution. And we apply proportionality to determine the size of the 
+ * fonts to display. 
+ *
+*/
+
+
 class InitParser;
-
 class HipStarMgr;
 class NebulaMgr;
 class SolarSystem;
@@ -38,6 +58,7 @@ class Cardinals;
 class ConstellationMgr;
 class TextMgr;
 
+//! used to translate string to TARGETFONT
 enum class TARGETFONT : char {
 	CF_TEXTS, 
 	CF_PLANETS,
@@ -55,9 +76,11 @@ public:
 
     CoreFont(/*Core* _core,*/ int _resolution);
     ~CoreFont();
+	//! initialise les fontes: fichiers et tailles 
     void init(const InitParser& conf);
+	//! crée les différentes fontes 
     void setFont();
-	static TARGETFONT strTotarget(const std::string& target);
+	//! met à jour des fontes de Core
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
  
 private:
