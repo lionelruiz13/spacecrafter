@@ -417,6 +417,8 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_FN_TULLY                                "tully"
 #define ACP_FN_SATELLITES                           "satellites"
 #define ACP_FN_TULLY_COLOR_MODE                     "tully_color_mode"
+#define ACP_FN_TEXT                                 "text"
+#define ACP_FN_CONSTELLATION                        "constellation"
 
 
 //ColorCommand
