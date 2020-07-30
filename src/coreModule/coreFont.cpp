@@ -71,7 +71,7 @@ void CoreFont::init(const InitParser& conf)
 	FontFileNameConstellation = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_NAME);
 	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
 
-	double FontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
+	FontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
     if (FontResolution <1.0)
         FontResolution = 1024.0;
     FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);

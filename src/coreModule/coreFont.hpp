@@ -85,6 +85,7 @@ private:
 	double FontSizeCardinalPoints;
 
     int resolution;
+	double FontResolution;
 };
 
 
