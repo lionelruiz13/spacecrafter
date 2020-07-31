@@ -174,7 +174,7 @@ HipStarMgr::HipStarMgr(int width,int height) :
 	hip_index(new BigStarCatalog::HipIndexStruct[NR_OF_HIP+1]),
 	mag_converter(new MagConverter(*this)),
 	fontSize(13.),
-	starFont(0)
+	font(0)
 {
 	starsFader.setDuration(3000);
 	setMagConverterMaxScaled60DegMag(6.5f);
@@ -287,7 +287,7 @@ HipStarMgr::~HipStarMgr(void)
 	}
 	if (hip_index) delete[] hip_index;
 	if (starTexture) delete starTexture;
-	if (starFont) delete starFont;
+	if (font) delete font;
 
 	dataColor.clear();
 	dataMag.clear();
@@ -745,7 +745,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 void HipStarMgr::drawStarName( Projector* prj )
 {
 	for (auto const& token : starNameToDraw) {
-		prj->printGravity180(starFont, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
+		prj->printGravity180(font, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
 		//  prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
 	}
 	//cout << "Nombre de nom à afficher : " << starNameToDraw.size() << endl;
@@ -1033,13 +1033,13 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 //! Define font file name and size to use for star names display
 void HipStarMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (starFont) {
-		delete starFont;
-		starFont=nullptr;
+	if (font) {
+		delete font;
+		font=nullptr;
 	}
-	starFont = new s_font(font_size, font_name);
-	if (!starFont) {
+	font = new s_font(font_size, font_name);
+	if (!font) {
 		cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
-		assert(starFont);
+		assert(font);
 	}
 }

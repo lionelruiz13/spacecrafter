@@ -510,7 +510,7 @@ private:
 	static double current_JDay;
 
 	double fontSize;
-	s_font* starFont=nullptr;
+	s_font* font=nullptr;
 	static bool flagSciNames;
 	float twinkle_amount;
 
