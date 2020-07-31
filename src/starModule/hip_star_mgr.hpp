@@ -250,6 +250,11 @@ public:
 		names_fader=b;
 	}
 
+	//! Get display flag for Star names (labels).
+	bool getFlagNames(void) const {
+		return names_fader==true;
+	}
+
 	void setSelected(Object star);
 
 	std::vector<int> getSelected() {
@@ -259,11 +264,6 @@ public:
 	void deselect() {
 		selected_star.clear();
 		selected_stars.clear();
-	}
-
-	//! Get display flag for Star names (labels).
-	bool getFlagNames(void) const {
-		return names_fader==true;
 	}
 
 	//! Set whether selected stars must be displayed alone
