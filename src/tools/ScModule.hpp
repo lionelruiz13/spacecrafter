@@ -65,9 +65,6 @@ protected:
 template <class faderType>
 class ModuleFader {
 public:
-	void update(int delta_time) {
-		fader.update(delta_time);
-	}
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
 	}

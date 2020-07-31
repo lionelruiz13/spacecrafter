@@ -33,7 +33,7 @@
 #include "tools/fader.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
-#include "coreModule/CoreModule.hpp"
+#include "tools/ScModule.hpp"
 
 class Projector;
 class s_font;
@@ -44,6 +44,10 @@ class Cardinals: public NoCopy , public ModuleColor, public ModuleFont , public 
 public:
 	Cardinals(float _radius = 1.);
 	virtual ~Cardinals();
+
+	void update(int delta_time) {
+		fader.update(delta_time);
+	}
 
 	void draw(const Projector* prj, double latitude, bool gravityON = false) const;
 
