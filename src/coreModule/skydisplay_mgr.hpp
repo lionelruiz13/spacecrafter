@@ -36,11 +36,12 @@
 #include "coreModule/core_common.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/vecmath.hpp"
+#include "tools/ScModule.hpp"
 
 class shaderProgram;
 class s_font;
 
-class SkyDisplayMgr: public NoCopy  {
+class SkyDisplayMgr: public NoCopy , public ModuleFont {
 public:
 	SkyDisplayMgr();
 	~SkyDisplayMgr();
@@ -56,8 +57,6 @@ public:
 	void clear(SKYDISPLAY_NAME nameObj);
 	void loadData(SKYDISPLAY_NAME nameObj, const std::string& filename);
 	void loadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr);
-
-	void setFont(float font_size, const std::string& font_name);
 
 	void setColor(SKYDISPLAY_NAME nameObj, const Vec3f& c);
 	const Vec3f& getColor(SKYDISPLAY_NAME nameObj);
@@ -77,6 +76,5 @@ private:
 	SkyDisplay* personAL = nullptr;
 	SkyDisplay* personEQ = nullptr;
 	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
-	s_font* font = nullptr;
 };
 #endif //SKYDISPLAY_MGR_HPP

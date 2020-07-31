@@ -68,21 +68,6 @@ void SkyDisplayMgr::update(int delta_time)
 	}
 }
 
-void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
-{
-	if (font) {
-		delete font;
-		font = nullptr;
-	}
-	font = new s_font(font_size, font_name);
-	if (!font) {
-		cLog::get()->write("SkyDisplayMgr: Can't create font\n", LOG_TYPE::L_ERROR);
-		assert(font);
-	}	
-	SkyDisplay::setFont(font);
-}
-
-
 void SkyDisplayMgr::clear(SKYDISPLAY_NAME nameObj)
 {
 	auto it=m_map.find(nameObj);
