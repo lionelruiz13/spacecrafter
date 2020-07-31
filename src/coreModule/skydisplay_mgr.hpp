@@ -77,6 +77,6 @@ private:
 	SkyDisplay* personAL = nullptr;
 	SkyDisplay* personEQ = nullptr;
 	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
-	s_font* skyDisplayFont = nullptr;
+	s_font* font = nullptr;
 };
 #endif //SKYDISPLAY_MGR_HPP

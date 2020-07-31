@@ -57,8 +57,8 @@ SkyDisplayMgr::~SkyDisplayMgr()
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
-	if (skyDisplayFont != nullptr)
-		delete skyDisplayFont;
+	if (font != nullptr)
+		delete font;
 }
 
 void SkyDisplayMgr::update(int delta_time)
@@ -70,16 +70,16 @@ void SkyDisplayMgr::update(int delta_time)
 
 void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (skyDisplayFont) {
-		delete skyDisplayFont;
-		skyDisplayFont = nullptr;
+	if (font) {
+		delete font;
+		font = nullptr;
 	}
-	skyDisplayFont = new s_font(font_size, font_name);
-	if (!skyDisplayFont) {
+	font = new s_font(font_size, font_name);
+	if (!font) {
 		cLog::get()->write("SkyDisplayMgr: Can't create font\n", LOG_TYPE::L_ERROR);
-		assert(skyDisplayFont);
+		assert(font);
 	}	
-	SkyDisplay::setFont(skyDisplayFont);
+	SkyDisplay::setFont(font);
 }
 
 
