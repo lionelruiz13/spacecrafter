@@ -47,7 +47,6 @@
 
 //! constructor which loads all data from appropriate files
 ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars) :
-	font(nullptr),
 	hipStarMgr(_hip_stars),
 	flagNames(0),
 	flagLines(0),
@@ -158,17 +157,6 @@ Vec3f ConstellationMgr::getArtColor() const
 	return artColor;
 }
 
-void ConstellationMgr::setFont(float font_size, const std::string& ttfFileName)
-{
-	if (font) {
-		delete font;
-		font=nullptr;
-	}
-	font = new s_font(font_size, ttfFileName);
-	if (!font)
-		cLog::get()->write("ConstellationMgr: no font usable",  LOG_TYPE::L_ERROR);
-	assert(font);
-}
 
 // Load line and art data from files
 int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)

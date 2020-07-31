@@ -34,6 +34,7 @@
 #include "tools/fader.hpp"
 #include "tools/shader.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/ScModule.hpp"
 
 class HipStarMgr;
 class Constellation;
@@ -43,7 +44,7 @@ class s_font;
 class Translator;
 class VertexArray;
 
-class ConstellationMgr: public NoCopy {
+class ConstellationMgr: public NoCopy , public ModuleFont {
 public:
 	ConstellationMgr(HipStarMgr *_hip_stars);
 	~ConstellationMgr();
@@ -156,10 +157,6 @@ public:
 	//! Get art color
 	Vec3f getArtColor() const;
 
-
-	//! Define font file name and size to use for constellation names display
-	void setFont(float font_size, const std::string& font_name);
-
 	//! Define which constellation is selected from its abbreviation
 	void setSelected(const std::string& abbreviation);
 
@@ -214,7 +211,6 @@ private:
 	Constellation* isStarIn(const Object &s) const;
 	Constellation* findFromAbbreviation(const std::string& abbreviation) const;
 	std::vector<Constellation*> asterisms;
-	s_font *font;
 	HipStarMgr *hipStarMgr;
 	std::vector<Constellation*> selected;
 	bool isolateSelected;
