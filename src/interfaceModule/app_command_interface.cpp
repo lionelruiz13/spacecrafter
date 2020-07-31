@@ -3277,7 +3277,7 @@ int AppCommandInterface::commandFont()
 				coreLink->fontUpdateFont(targetName,myFile.toString(), args[W_SIZE]);
 				return executeCommandStatus();
 			} else {
-				debug_message= "command 'font' : filename can't be found";
+				debug_message= "command 'font' : filename "+ fileName + " can't be found";
 				cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 				return executeCommandStatus();
 			}
