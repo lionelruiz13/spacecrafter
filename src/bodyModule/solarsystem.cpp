@@ -64,8 +64,7 @@ static bool removeFromVector(SolarSystem::BodyContainer * bc, std::vector<SolarS
 }
 
 SolarSystem::SolarSystem()
-	:sun(nullptr),moon(nullptr),earth(nullptr),
-	 moonScale(1.), font(nullptr),
+	:sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.),
 	 flagPlanetsOrbits(false),flagSatellitesOrbits(false),
 	 flag_light_travel_time(false),flagHints(false),flagTrails(false)
 {
@@ -94,20 +93,6 @@ SolarSystem::SolarSystem()
 	orbitCreator = new OrbitCreatorBary(elip, this);
 }
 
-void SolarSystem::setFont(float font_size, const std::string& font_name)
-{
-	if (font) {
-		delete font;
-		font=nullptr;
-	}
-
-	font = new s_font(font_size, font_name);
-	if (!font) {
-		cLog::get()->write("Can't create planet_name_font", LOG_TYPE::L_ERROR);
-		assert(font);
-	}
-	Body::setFont(font);
-}
 
 SolarSystem::~SolarSystem()
 {

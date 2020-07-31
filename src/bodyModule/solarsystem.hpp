@@ -46,10 +46,11 @@
 #include "navModule/anchor_manager.hpp"
 #include "tools/no_copy.hpp"
 #include "bodyModule/body_color.hpp"
+#include "tools/ScModule.hpp"
 
 class OrbitCreator;
 
-class SolarSystem: public NoCopy {
+class SolarSystem: public NoCopy , public ModuleFont{
 public:
 	SolarSystem();
 	virtual ~SolarSystem();
@@ -84,8 +85,6 @@ public:
 	void translateNames(Translator& trans);
 
 	std::string getPlanetHashString();  // locale and ssystem.ini names, newline delimiter, for tui
-
-	void setFont(float font_size, const std::string& font_name);
 
 	void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c);
 	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const;
@@ -410,8 +409,6 @@ private:
 	float SunScale;	// Sun scale value
 
 	Vec3i ringsInit;
-
-	s_font* font=nullptr;
 
 	std::map< std::string, BodyContainer*> systemBodies; //Map containing the bodies and related information. the key is their english name
 	std::vector<BodyContainer *> renderedBodies; //Contains bodies that are not hidden
