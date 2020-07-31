@@ -236,12 +236,12 @@ public:
 	ObjectBaseP searchHP(int num) const;
 
 	//! Set display flag for Stars.
-	void setFlagStars(bool b) {
+	void setFlagShow(bool b) {
 		fader=b;
 	}
 
 	//! Get display flag for Stars XY
-	bool getFlagStars(void) const {
+	bool getFlagShow(void) const {
 		return fader==true;
 	}
 

@@ -775,7 +775,7 @@ ObjectBaseP HipStarMgr::search(Vec3d pos) const
 std::vector<ObjectBaseP > HipStarMgr::searchAround(const Vec3d& vv, double lim_fov, const GeodesicGrid* grid) const
 {
 	std::vector<ObjectBaseP > result;
-	if (!getFlagStars())
+	if (!getFlagShow())
 		return result;
 
 	Vec3d v(vv);

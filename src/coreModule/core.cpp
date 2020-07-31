@@ -290,7 +290,7 @@ void Core::init(const InitParser& conf)
 	}
 
 	// Astro section
-	hip_stars->setFlagStars(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STARS));
+	hip_stars->setFlagShow(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STARS));
 	hip_stars->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
 	hip_stars->setScale(conf.getDouble (SCS_STARS, SCK_STAR_SCALE));
 	hip_stars->setFlagTwinkle(conf.getBoolean(SCS_STARS, SCK_FLAG_STAR_TWINKLE));
@@ -1231,7 +1231,7 @@ Object Core::cleverFind(const Vec3d& v) const
 	}
 
 	// And the stars inside the range
-	if (hip_stars->getFlagStars()) {
+	if (hip_stars->getFlagShow()) {
 		std::vector<ObjectBaseP > tmp = hip_stars->searchAround(p, fov_around, geodesic_grid);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
@@ -1633,7 +1633,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	// Astro section
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, ssystem->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, nebulas->getFlagBright()); //nebulaGetFlagBright());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, hip_stars->getFlagStars()); //starGetFlag());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, hip_stars->getFlagShow()); //starGetFlag());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, hip_stars->getFlagNames()); //starGetFlagName());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected()); //starGetFlagIsolateSelected());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA, nebulas->getFlagShow()); //nebulaGetFlag());

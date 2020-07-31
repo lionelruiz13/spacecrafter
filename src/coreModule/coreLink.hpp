@@ -230,12 +230,12 @@ public:
 	// Stars---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	void starSetFlag(bool b) {
-		core->hip_stars->setFlagStars(b);
+		core->hip_stars->setFlagShow(b);
 		core->starNav->setFlagStars(b);
 	}
 
 	bool starGetFlag(void) const {
-		return core->hip_stars->getFlagStars();
+		return core->hip_stars->getFlagShow();
 	}
 
 	void starSetTraceFlag(bool b) {
