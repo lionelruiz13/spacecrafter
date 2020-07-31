@@ -72,6 +72,7 @@ public:
 
 	static void createSC_context();
 
+	static void initBaseFont(const std::string& ttfFileName);
 protected:
 
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
@@ -84,6 +85,8 @@ protected:
 	static std::unique_ptr<shaderProgram> shaderHorizontal;
 	static std::unique_ptr<shaderProgram> shaderPrint;
 	static std::unique_ptr<VertexArray> m_fontGL;
+
+	static TTF_Font *baseFont;
 };
 
 #endif  //_S_FONT_H

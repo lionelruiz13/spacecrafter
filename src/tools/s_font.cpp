@@ -34,6 +34,20 @@ std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
 std::unique_ptr<shaderProgram> s_font::shaderPrint;
 std::unique_ptr<VertexArray> s_font::m_fontGL;
 
+#define BASE_FONT_SIZE 12
+//@ TODO devrait être un shared pointer
+TTF_Font *s_font::baseFont = nullptr;
+
+
+void s_font::initBaseFont(const std::string& ttfFileName)
+{
+	baseFont = TTF_OpenFont( ttfFileName.c_str(), BASE_FONT_SIZE);
+	if(!baseFont) {
+		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
+		cLog::get()->write("s_font: BaseFont file is not usable or operational: system aborded", LOG_TYPE::L_ERROR);
+		exit(-1);
+	}
+}
 
 s_font::s_font(float size_i, const std::string& ttfFileName)
 {
@@ -43,7 +57,7 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
 	myFont = TTF_OpenFont( fontName.c_str(), fontSize);
 	if(!myFont) {
 		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
-		exit(-1);
+		myFont = baseFont;
 	}
 	//cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << endl;
 }
@@ -51,7 +65,10 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
 s_font::~s_font()
 {
 	clearCache();
-	TTF_CloseFont(myFont);
+	if (myFont != baseFont) {
+		TTF_CloseFont(myFont);
+	}
+	myFont = nullptr;
 }
 
 

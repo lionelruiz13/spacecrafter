@@ -221,7 +221,7 @@ private:
 	int PosMenuM;
 
 	// Text UI
-	s_font * tuiFont;		// The standard tui font - separate from gui so can reload on the fly
+	s_font * tuiFont=nullptr;		// The standard tui font - separate from gui so can reload on the fly
 	float FontSizeGeneral;
 	std::string FontNameGeneral;
 	std::string FontNameMenu;
