@@ -34,6 +34,7 @@
 #include "coreModule/grid.hpp"
 #include "coreModule/nebula.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/ScModule.hpp"
 
 class VertexArray;
 
@@ -41,7 +42,7 @@ class VertexArray;
   * \brief NebulaMgr handles all deepsky_objects DSO.
   */
 
-class NebulaMgr : public NoCopy {
+class NebulaMgr : public NoCopy, public ModuleFont, public ModuleFader<LinearFader> {
 public:
 	NebulaMgr();
 	virtual ~NebulaMgr();
@@ -103,16 +104,6 @@ public:
 	//!get the Flag Hints value for DSO
 	bool getFlagHints(void) const {
 		return hintsFader;
-	}
-
-	//!set the showFader value
-	void setFlagShow(bool b) {
-		fader = b;
-	}
-
-	//!get the showFader value
-	bool getFlagShow(void) const {
-		return fader;
 	}
 
 	//! Define the default Label Color for DSO font
@@ -201,10 +192,6 @@ public:
 	//! @param nameI18n The case sensistive nebula name or NGC M catalog name : format can be M31, M 31, NGC31 NGC 31
 	Object searchByNameI18n(const std::string& nameI18n) const;
 
-	//! load the commun font for all DSO
-	//! \return return true if font is correctly loaded false owerwise
-	void setFont(float font_size, const std::string& font_name);
-
 	//! Hide all DSO for display
 	void hideAll();
 
@@ -233,7 +220,6 @@ private:
 	bool loadDeepskyObjectFromCat(const std::string& cat); //!< load DSO with reading file cat
 
 	LinearFader hintsFader;			//!< Hint about position and number of dso
-	LinearFader fader;			//!< For display all DSO fonctionnalities
 	LinearFader textFader;			//!< Display names smoothly
 
 	std::vector<Nebula*> neb_array;		//!< The nebulas list
@@ -250,7 +236,6 @@ private:
 	std::vector<float> vecHintColor;	//!< array of the nebula's color
 
 	s_texture * tex_NEBULA;
-	s_font* sFont;			// Font used for names printing
 
 	float circleScale;			// Define the sclaing of the hints circle
 	Vec3f circleColor;

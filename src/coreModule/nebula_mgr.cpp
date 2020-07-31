@@ -38,7 +38,7 @@
 
 
 
-NebulaMgr::NebulaMgr(void) : tex_NEBULA(nullptr), sFont(nullptr),
+NebulaMgr::NebulaMgr(void) : tex_NEBULA(nullptr),
 circleScale(1.f), circleColor(Vec3f(0.2,0.2,1.0)), labelColor(v3fNull),
 flagBright(false), displaySpecificHint(false),
 dsoPictoSize(6)
@@ -62,8 +62,8 @@ NebulaMgr::~NebulaMgr()
 	if (tex_NEBULA) delete tex_NEBULA;
 	tex_NEBULA = nullptr;
 
-	if (sFont) delete sFont;
-	sFont = nullptr;
+	if (font) delete font;
+	font = nullptr;
 
 	delete[] nebZones;
 }
@@ -101,21 +101,6 @@ bool NebulaMgr::initTexPicto()
 bool NebulaMgr::loadDeepskyObject(const std::string& cat)
 {
 	return loadDeepskyObjectFromCat(cat);
-}
-
-// read from stream
-void NebulaMgr::setFont(float font_size, const std::string& font_name)
-{
-	if (sFont) {
-		delete sFont;
-		sFont= nullptr;
-	}
-
-	sFont = new s_font(font_size, font_name); // load Font
-	if (!sFont) {
-		cLog::get()->write("Nebula: Can't create nebulaFont\n", LOG_TYPE::L_ERROR);
-		assert(sFont);
-	}
 }
 
 // Clear user added nebula
@@ -252,7 +237,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 				}
 
 				if (textFader) {
-					n->drawName(prj, labelColor, sFont);
+					n->drawName(prj, labelColor, font);
 				}
 
 				//~ cout << "drawhint " << n->getEnglishName() << endl;
@@ -478,7 +463,7 @@ void NebulaMgr::translateNames(Translator& trans)
 	for ( iter = neb_array.begin(); iter < neb_array.end(); iter++ ) {
 		(*iter)->translateName(trans);
 	}
-	if(sFont) sFont->clearCache();
+	if(font) font->clearCache();
 }
 
 
