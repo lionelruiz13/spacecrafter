@@ -120,7 +120,7 @@ SolarSystem::~SolarSystem()
 	moon = nullptr;
 	earth = nullptr;
 
-	if (font) delete font;
+	// if (font) delete font;
 	if (objLMgr) delete objLMgr;
 }
 

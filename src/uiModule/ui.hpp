@@ -45,7 +45,7 @@ enum S_GUI_VALUE {
 };
 }
 
-
+#include <memory>
 #include "uiModule/ui_tui.hpp"
 #include "tools/app_settings.hpp"
 
@@ -221,7 +221,7 @@ private:
 	int PosMenuM;
 
 	// Text UI
-	s_font * tuiFont=nullptr;		// The standard tui font - separate from gui so can reload on the fly
+	std::shared_ptr<s_font> tuiFont=nullptr;		// The standard tui font - separate from gui so can reload on the fly
 	float FontSizeGeneral;
 	std::string FontNameGeneral;
 	std::string FontNameMenu;

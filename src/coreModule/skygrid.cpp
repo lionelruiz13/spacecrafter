@@ -77,8 +77,8 @@ SkyGrid::~SkyGrid()
 	}
 	delete [] azi_points;
 
-	if (font) delete font;
-	font = nullptr;
+	// if (font) delete font;
+	// font = nullptr;
 }
 
 void SkyGrid::createShader()

@@ -49,8 +49,8 @@ SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
 
 SkyLine::~SkyLine()
 {
-	if (font) delete font;
-	font = nullptr;
+	// if (font) delete font;
+	// font = nullptr;
 }
 
 void SkyLine::createSC_context()

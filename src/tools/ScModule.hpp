@@ -31,6 +31,7 @@ class Navigator;
 #include "tools/fader.hpp"
 #include "tools/s_font.hpp"
 #include <cassert>
+#include <memory>
 
 
 class ModuleColor {
@@ -51,17 +52,10 @@ protected:
 
 class ModuleFont {
 public:
-	void setFont(float font_size, const std::string& font_name) {
-	if (font) {
-		delete font;
-		font=nullptr;
-	}
-	font = new s_font(font_size, font_name);
-	assert(font);
-	}
+	void setFont(float font_size, const std::string& font_name);
 
 protected:
-    s_font* font=nullptr;
+    std::shared_ptr<s_font> font=nullptr;
 };
 
 template <class faderType>

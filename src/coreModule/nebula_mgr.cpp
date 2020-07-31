@@ -62,8 +62,8 @@ NebulaMgr::~NebulaMgr()
 	if (tex_NEBULA) delete tex_NEBULA;
 	tex_NEBULA = nullptr;
 
-	if (font) delete font;
-	font = nullptr;
+	// if (font) delete font;
+	// font = nullptr;
 
 	delete[] nebZones;
 }
@@ -237,7 +237,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 				}
 
 				if (textFader) {
-					n->drawName(prj, labelColor, font);
+					n->drawName(prj, labelColor, font.get());
 				}
 
 				//~ cout << "drawhint " << n->getEnglishName() << endl;

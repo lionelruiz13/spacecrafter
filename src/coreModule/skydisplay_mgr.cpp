@@ -57,8 +57,8 @@ SkyDisplayMgr::~SkyDisplayMgr()
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
-	if (font != nullptr)
-		delete font;
+	// if (font != nullptr)
+	// 	delete font;
 }
 
 void SkyDisplayMgr::update(int delta_time)

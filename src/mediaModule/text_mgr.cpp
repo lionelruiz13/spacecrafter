@@ -179,7 +179,7 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 	this->clearCache();
 	textFont.reserve(NB_MAX_SIZE);
 	for(int i=0; i<NB_MAX_SIZE; i++) {
-		textFont.push_back(std::make_unique<s_font>(font_size+2*(i-3), font_name));
+		textFont.push_back(std::make_shared<s_font>(font_size+2*(i-3), font_name));
 		if (textFont.back()==nullptr) {
 			cLog::get()->write("TEXT: can't create text usr font", LOG_TYPE::L_ERROR);
 			isUsable = false;

@@ -90,8 +90,8 @@ ConstellationMgr::~ConstellationMgr()
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++)
 		delete(*iter);
 
-	if (font) delete font;
-	font = nullptr;
+	// if (font) delete font;
+	// font = nullptr;
 
 	std::vector<std::vector<Vec3f> *>::iterator iter1;
 	for (iter1 = allBoundarySegments.begin(); iter1 != allBoundarySegments.end(); ++iter1) {
@@ -453,7 +453,7 @@ void ConstellationMgr::drawNames(const Projector * prj)
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++) {
 		// Check if in the field of view
 		if (prj->projectJ2000Check((*iter)->getObsJ2000Pos(), const_cast<Vec3d&>((*iter)->getXYname())))
-			(*iter)->drawName(font, prj);
+			(*iter)->drawName(font.get(), prj);
 	}
 }
 

@@ -81,8 +81,8 @@ UI::UI(Core * _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl,  Media
 /**********************************************************************************/
 UI::~UI()
 {
-	delete tuiFont;
-	tuiFont = nullptr;
+	// delete tuiFont;
+	// tuiFont = nullptr;
 	if (tui_root) delete tui_root;
 	tui_root=nullptr;
 }
