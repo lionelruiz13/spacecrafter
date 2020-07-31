@@ -21,8 +21,7 @@
  */
 
 #include "coreModule/coreFont.hpp"
-#include "interfaceModule/base_command_interface.hpp"
-
+//#include "coreModule/core.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
@@ -43,20 +42,19 @@
 #include "starModule/hip_star_mgr.hpp"
 
 
-CoreFont::CoreFont(int _resolution)
+CoreFont::CoreFont(/*Core* core,*/ int _resolution)
 {
     //core= _core;
-	m_resolution = _resolution;
 	setStrToTarget();
 }
 
 void CoreFont::setStrToTarget()
 {
-    m_strToTarget[ACP_FN_TEXT] = TARGETFONT::CF_TEXTS;
-	m_strToTarget[ACP_FN_PLANETS] = TARGETFONT::CF_PLANETS;
-	m_strToTarget[ACP_FN_CONSTELLATION] = TARGETFONT::CF_CONSTELLATIONS;
-	m_strToTarget[ACP_FN_CARDINAL_POINTS] = TARGETFONT::CF_CARDINALS;
-	m_strToTarget[ACP_FN_STARS] = TARGETFONT::CF_HIPSTARS;
+    m_strToTarget["text"] = TARGETFONT::CF_TEXTS;
+	m_strToTarget["planets"] = TARGETFONT::CF_PLANETS;
+	m_strToTarget["constellations"] = TARGETFONT::CF_CONSTELLATIONS;
+	m_strToTarget["cardinal_points"] = TARGETFONT::CF_CARDINALS;
+	m_strToTarget["hip_stars"] = TARGETFONT::CF_HIPSTARS;
 }
 
 CoreFont::~CoreFont()
@@ -85,7 +83,6 @@ void CoreFont::init(const InitParser& conf)
 	m_fontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
     if (m_fontResolution <1.0)
         m_fontResolution = 1024.0;
-
     FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
 	FontSizeGeneral = conf.getDouble (SCS_FONT,SCK_FONT_GENERAL_SIZE);
 	FontSizeConstellation = conf.getDouble(SCS_FONT,SCK_FONT_CONSTELLATION_SIZE);
