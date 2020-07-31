@@ -65,7 +65,7 @@ static bool removeFromVector(SolarSystem::BodyContainer * bc, std::vector<SolarS
 
 SolarSystem::SolarSystem()
 	:sun(nullptr),moon(nullptr),earth(nullptr),
-	 moonScale(1.), planet_name_font(nullptr),
+	 moonScale(1.), font(nullptr),
 	 flagPlanetsOrbits(false),flagSatellitesOrbits(false),
 	 flag_light_travel_time(false),flagHints(false),flagTrails(false)
 {
@@ -96,17 +96,17 @@ SolarSystem::SolarSystem()
 
 void SolarSystem::setFont(float font_size, const std::string& font_name)
 {
-	if (planet_name_font) {
-		delete planet_name_font;
-		planet_name_font=nullptr;
+	if (font) {
+		delete font;
+		font=nullptr;
 	}
 
-	planet_name_font = new s_font(font_size, font_name);
-	if (!planet_name_font) {
+	font = new s_font(font_size, font_name);
+	if (!font) {
 		cLog::get()->write("Can't create planet_name_font", LOG_TYPE::L_ERROR);
-		assert(planet_name_font);
+		assert(font);
 	}
-	Body::setFont(planet_name_font);
+	Body::setFont(font);
 }
 
 SolarSystem::~SolarSystem()
@@ -135,7 +135,7 @@ SolarSystem::~SolarSystem()
 	moon = nullptr;
 	earth = nullptr;
 
-	if (planet_name_font) delete planet_name_font;
+	if (font) delete font;
 	if (objLMgr) delete objLMgr;
 }
 
@@ -1122,8 +1122,8 @@ void SolarSystem::translateNames(Translator& trans)
 		it->second->body->translateName(trans);
 	}
 
-	if(planet_name_font) 
-		planet_name_font->clearCache();
+	if(font) 
+		font->clearCache();
 }
 
 std::vector<std::string> SolarSystem::getNamesI18(void)

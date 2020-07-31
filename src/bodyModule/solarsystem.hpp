@@ -411,7 +411,7 @@ private:
 
 	Vec3i ringsInit;
 
-	s_font* planet_name_font=nullptr;
+	s_font* font=nullptr;
 
 	std::map< std::string, BodyContainer*> systemBodies; //Map containing the bodies and related information. the key is their english name
 	std::vector<BodyContainer *> renderedBodies; //Contains bodies that are not hidden
