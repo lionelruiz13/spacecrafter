@@ -65,7 +65,7 @@ public:
 	//!Update Fader from DSO
 	void update(int delta_time) {
 		hintsFader.update(delta_time);
-		showFader.update(delta_time);
+		fader.update(delta_time);
 		textFader.update(delta_time);
 	}
 
@@ -107,12 +107,12 @@ public:
 
 	//!set the showFader value
 	void setFlagShow(bool b) {
-		showFader = b;
+		fader = b;
 	}
 
 	//!get the showFader value
 	bool getFlagShow(void) const {
-		return showFader;
+		return fader;
 	}
 
 	//! Define the default Label Color for DSO font
@@ -233,7 +233,7 @@ private:
 	bool loadDeepskyObjectFromCat(const std::string& cat); //!< load DSO with reading file cat
 
 	LinearFader hintsFader;			//!< Hint about position and number of dso
-	LinearFader showFader;			//!< For display all DSO fonctionnalities
+	LinearFader fader;			//!< For display all DSO fonctionnalities
 	LinearFader textFader;			//!< Display names smoothly
 
 	std::vector<Nebula*> neb_array;		//!< The nebulas list
@@ -250,7 +250,7 @@ private:
 	std::vector<float> vecHintColor;	//!< array of the nebula's color
 
 	s_texture * tex_NEBULA;
-	s_font* nebulaFont;			// Font used for names printing
+	s_font* sFont;			// Font used for names printing
 
 	float circleScale;			// Define the sclaing of the hints circle
 	Vec3f circleColor;

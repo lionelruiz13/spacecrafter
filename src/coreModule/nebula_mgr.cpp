@@ -38,7 +38,7 @@
 
 
 
-NebulaMgr::NebulaMgr(void) : tex_NEBULA(nullptr), nebulaFont(nullptr),
+NebulaMgr::NebulaMgr(void) : tex_NEBULA(nullptr), sFont(nullptr),
 circleScale(1.f), circleColor(Vec3f(0.2,0.2,1.0)), labelColor(v3fNull),
 flagBright(false), displaySpecificHint(false),
 dsoPictoSize(6)
@@ -62,8 +62,8 @@ NebulaMgr::~NebulaMgr()
 	if (tex_NEBULA) delete tex_NEBULA;
 	tex_NEBULA = nullptr;
 
-	if (nebulaFont) delete nebulaFont;
-	nebulaFont = nullptr;
+	if (sFont) delete sFont;
+	sFont = nullptr;
 
 	delete[] nebZones;
 }
@@ -106,15 +106,15 @@ bool NebulaMgr::loadDeepskyObject(const std::string& cat)
 // read from stream
 void NebulaMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (nebulaFont) {
-		delete nebulaFont;
-		nebulaFont= nullptr;
+	if (sFont) {
+		delete sFont;
+		sFont= nullptr;
 	}
 
-	nebulaFont = new s_font(font_size, font_name); // load Font
-	if (!nebulaFont) {
+	sFont = new s_font(font_size, font_name); // load Font
+	if (!sFont) {
 		cLog::get()->write("Nebula: Can't create nebulaFont\n", LOG_TYPE::L_ERROR);
-		assert(nebulaFont);
+		assert(sFont);
 	}
 }
 
@@ -203,10 +203,10 @@ void NebulaMgr::removeSupplementalNebulae()
 // Draw all the Nebulae
 void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness)
 {
-	if(!showFader) return;
+	if(!fader) return;
 
 	Nebula::setHintsBrightness(hintsFader.getInterstate());
-	Nebula::setNebulaBrightness(showFader.getInterstate());
+	Nebula::setNebulaBrightness(fader.getInterstate());
 	Nebula::setTextBrightness(textFader.getInterstate());
 
 	//cout << "Draw Nebulaes" << endl;
@@ -252,7 +252,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 				}
 
 				if (textFader) {
-					n->drawName(prj, labelColor, nebulaFont);
+					n->drawName(prj, labelColor, sFont);
 				}
 
 				//~ cout << "drawhint " << n->getEnglishName() << endl;
@@ -478,7 +478,7 @@ void NebulaMgr::translateNames(Translator& trans)
 	for ( iter = neb_array.begin(); iter < neb_array.end(); iter++ ) {
 		(*iter)->translateName(trans);
 	}
-	if(nebulaFont) nebulaFont->clearCache();
+	if(sFont) sFont->clearCache();
 }
 
 
