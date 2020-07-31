@@ -47,7 +47,7 @@
 
 //! constructor which loads all data from appropriate files
 ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars) :
-	asterFont(nullptr),
+	font(nullptr),
 	hipStarMgr(_hip_stars),
 	flagNames(0),
 	flagLines(0),
@@ -91,8 +91,8 @@ ConstellationMgr::~ConstellationMgr()
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++)
 		delete(*iter);
 
-	if (asterFont) delete asterFont;
-	asterFont = nullptr;
+	if (font) delete font;
+	font = nullptr;
 
 	std::vector<std::vector<Vec3f> *>::iterator iter1;
 	for (iter1 = allBoundarySegments.begin(); iter1 != allBoundarySegments.end(); ++iter1) {
@@ -160,14 +160,14 @@ Vec3f ConstellationMgr::getArtColor() const
 
 void ConstellationMgr::setFont(float font_size, const std::string& ttfFileName)
 {
-	if (asterFont) {
-		delete asterFont;
-		asterFont=nullptr;
+	if (font) {
+		delete font;
+		font=nullptr;
 	}
-	asterFont = new s_font(font_size, ttfFileName);
-	if (!asterFont)
+	font = new s_font(font_size, ttfFileName);
+	if (!font)
 		cLog::get()->write("ConstellationMgr: no font usable",  LOG_TYPE::L_ERROR);
-	assert(asterFont);
+	assert(font);
 }
 
 // Load line and art data from files
@@ -465,7 +465,7 @@ void ConstellationMgr::drawNames(const Projector * prj)
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++) {
 		// Check if in the field of view
 		if (prj->projectJ2000Check((*iter)->getObsJ2000Pos(), const_cast<Vec3d&>((*iter)->getXYname())))
-			(*iter)->drawName(asterFont, prj);
+			(*iter)->drawName(font, prj);
 	}
 }
 
@@ -575,7 +575,7 @@ void ConstellationMgr::translateNames(Translator& trans)
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter)
 		(*iter)->setNameI18n(trans.translateUTF8((*iter)->getEnglishName().c_str()));
 
-	if(asterFont) asterFont->clearCache();  // remove cached strings
+	if(font) font->clearCache();  // remove cached strings
 }
 
 //! update faders

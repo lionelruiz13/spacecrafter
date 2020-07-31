@@ -214,7 +214,7 @@ private:
 	Constellation* isStarIn(const Object &s) const;
 	Constellation* findFromAbbreviation(const std::string& abbreviation) const;
 	std::vector<Constellation*> asterisms;
-	s_font *asterFont;
+	s_font *font;
 	HipStarMgr *hipStarMgr;
 	std::vector<Constellation*> selected;
 	bool isolateSelected;
