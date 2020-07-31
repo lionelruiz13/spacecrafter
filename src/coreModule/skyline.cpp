@@ -43,7 +43,7 @@ std::unique_ptr<shaderProgram> SkyLine::shaderSkylineDraw;
 std::unique_ptr<VertexArray> SkyLine::m_skylineGL;
 
 SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
-	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f), font(nullptr)
+	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f)
 {
 }
 
@@ -73,19 +73,9 @@ void SkyLine::drawSkylineGL(const Vec4f& Color)
 	Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), GL_LINES, 0 ,vecDrawPos.size()/2);
 }
 
-void SkyLine::setFont(float font_size, const std::string& font_name)
-{
-	if (font) {
-		delete font;
-		font = nullptr;
-	}
-	font = new s_font(font_size, font_name);
-	assert(font);
-}
 
 void SkyLine::translateLabels(Translator& trans)
 {
-
 	month[1] = trans.translateUTF8("JAN");
 	month[2] = trans.translateUTF8("FEB");
 	month[3] = trans.translateUTF8("MAR");

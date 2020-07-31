@@ -39,12 +39,13 @@
 #include "tools/fader.hpp"
 #include "tools/translator.hpp"
 #include "coreModule/time_mgr.hpp"
+#include "tools/ScModule.hpp"
 
 class VertexArray;
 class shaderProgram;
 
 //! Class which manages a line to display around the sky like the ecliptic line
-class SkyLine {
+class SkyLine : public ModuleFont {
 
 public:
 	//! Create and precompute positions
@@ -71,7 +72,6 @@ public:
 	bool getFlagshow(void) const {
 		return fader;
 	}
-	void setFont(float font_size, const std::string& font_name);
 
 	void setInternalNav (bool a) {
 		internalNav=a;
@@ -93,7 +93,6 @@ protected:
 	Vec3f color;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 	LinearFader fader;
-	s_font * font=nullptr;
 	bool internalNav;
 	mutable Vec3d pt1;
 	mutable Vec3d pt2;
