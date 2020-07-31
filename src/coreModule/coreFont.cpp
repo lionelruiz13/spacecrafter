@@ -40,7 +40,7 @@
 #include "mediaModule/text_mgr.hpp"
 #include "mainModule/define_key.hpp"
 #include "starModule/hip_star_mgr.hpp"
-
+#include "interfaceModule/base_command_interface.hpp"
 
 CoreFont::CoreFont(/*Core* core,*/ int _resolution)
 {
@@ -50,12 +50,13 @@ CoreFont::CoreFont(/*Core* core,*/ int _resolution)
 
 void CoreFont::setStrToTarget()
 {
-    m_strToTarget["text"] = TARGETFONT::CF_TEXTS;
-	m_strToTarget["planets"] = TARGETFONT::CF_PLANETS;
-	m_strToTarget["constellations"] = TARGETFONT::CF_CONSTELLATIONS;
-	m_strToTarget["cardinal_points"] = TARGETFONT::CF_CARDINALS;
-	m_strToTarget["hip_stars"] = TARGETFONT::CF_HIPSTARS;
+    m_strToTarget[TF_TEXT] = TARGETFONT::CF_TEXTS;
+	m_strToTarget[TF_PLANETS] = TARGETFONT::CF_PLANETS;
+	m_strToTarget[TF_CONSTELLATIONS] = TARGETFONT::CF_CONSTELLATIONS;
+	m_strToTarget[TF_CARDINAL] = TARGETFONT::CF_CARDINALS;
+	m_strToTarget[TF_STARS] = TARGETFONT::CF_HIPSTARS;
 }
+
 
 CoreFont::~CoreFont()
 {}

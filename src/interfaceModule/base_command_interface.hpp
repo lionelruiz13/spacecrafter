@@ -570,4 +570,14 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACI_RW_SUN_ALTITUDE         "sun_altitude"
 #define ACI_RW_HEADING              "heading"
 
+
+// list command for text_font
+#define TF_TEXT                       "text"
+#define TF_PLANETS                    "planets"
+#define TF_CONSTELLATIONS             "constellations"
+#define TF_CARDINAL                   "cardinal_points"
+#define TF_STARS                      "stars"
+
+
+
 #endif //_BASE_COMMAND_INTERFACE_HPP_
