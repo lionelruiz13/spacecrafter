@@ -173,8 +173,7 @@ HipStarMgr::HipStarMgr(int width,int height) :
 	starTexture(),
 	hip_index(new BigStarCatalog::HipIndexStruct[NR_OF_HIP+1]),
 	mag_converter(new MagConverter(*this)),
-	fontSize(13.),
-	font(0)
+	fontSize(13.)
 {
 	fader.setDuration(3000);
 	setMagConverterMaxScaled60DegMag(6.5f);
@@ -1028,18 +1027,4 @@ std::vector<std::string> HipStarMgr::listMatchingObjectsI18n( const std::string&
 	sort(result.begin(), result.end());
 
 	return result;
-}
-
-//! Define font file name and size to use for star names display
-void HipStarMgr::setFont(float font_size, const std::string& font_name)
-{
-	if (font) {
-		delete font;
-		font=nullptr;
-	}
-	font = new s_font(font_size, font_name);
-	if (!font) {
-		cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
-		assert(font);
-	}
 }

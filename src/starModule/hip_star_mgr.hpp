@@ -37,6 +37,7 @@
 #include "tools/shader.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/ScModule.hpp"
 
 class Translator;
 class InitParser;
@@ -132,7 +133,7 @@ private:
 //! which points from the observer (at the centre of the geodesic sphere)
 //! to the position of the star as observed on the celestial sphere.
 
-class HipStarMgr: public NoCopy {
+class HipStarMgr: public NoCopy , public ModuleFont, public ModuleFader<LinearFader> {
 public:
 	HipStarMgr(int width,int height);
 	virtual ~HipStarMgr(void);
@@ -234,16 +235,6 @@ public:
 	//! @return the requested StelObjectP or an empty objecy if the requested
 	//! one was not found.
 	ObjectBaseP searchHP(int num) const;
-
-	//! Set display flag for Stars.
-	void setFlagShow(bool b) {
-		fader=b;
-	}
-
-	//! Get display flag for Stars XY
-	bool getFlagShow(void) const {
-		return fader==true;
-	}
 
 	//! Set display flag for Star names (labels).
 	void setFlagNames(bool b) {
@@ -420,9 +411,6 @@ public:
 		return mag_converter->computeRCMag(mag,eye,rc_mag);
 	}
 
-	//! - Loads the star font (for labels on named stars)
-	void setFont(float font_size, const std::string& font_name);
-
 	//! Show scientific or catalog names on stars without common names.
 	static void setFlagSciNames(bool f) {
 		flagSciNames = f;
@@ -450,11 +438,6 @@ public:
 	static std::string convertToSpectralType(int index);
 	static std::string convertToComponentIds(int index);
 
-	//! change the time duration to fader toggle
-	void setFaderDuration(float f) {
-		fader.setDuration(f);
-	}
-
 	void iniColorTable();
 	void readColorTable ();
 	void setColorStarTable(int p, Vec3f a);
@@ -467,7 +450,6 @@ private:
 	int getHPFromStarName(const std::string& name) const;
 
 	LinearFader names_fader;
-	LinearFader fader;
 
 	float starSizeLimit;
 	float objectSizeLimit;
@@ -510,7 +492,6 @@ private:
 	static double current_JDay;
 
 	double fontSize;
-	s_font* font=nullptr;
 	static bool flagSciNames;
 	float twinkle_amount;
 
