@@ -35,10 +35,12 @@ class Navigator;
 
 class ModuleColor {
 public:
+	//! Set color for Module
 	void setColor(const Vec3f& c) {
 		color = c;
 	}
-	Vec3f getColor() {
+	//! Get color for Module
+	const Vec3f& getColor() const {
 		return color;
 	}
 
@@ -65,16 +67,19 @@ protected:
 template <class faderType>
 class ModuleFader {
 public:
+	// Fix fader duration (in s) beteween states  
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
 	}
+	//! Set display flag for Module
 	void setFlagShow(bool b) {
 		fader = b;
 	}
-	bool getFlagShow(void) const {
+	//! Get display flag for Module
+	bool getFlagShow() const {
 		return fader;
 	}
-
+	//! Inverse fader
 	void flipFlagShow() {
 		fader = !fader;
 	}
