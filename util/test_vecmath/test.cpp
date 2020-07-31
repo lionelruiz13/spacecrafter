@@ -247,4 +247,23 @@ int main()
         glm::mat4 glmTest = glm::yawPitchRoll(float(a1/180*M_PI), float(b1/180*M_PI), float(c1/180*M_PI));
         assert(compareMat(vmTest, glmTest));
     }
+
+
+    //vecmath
+    std::cout << "vecmath" << std::endl;
+    std::cout << "vec3f " << sizeof(glm::vec3) << std::endl;
+    std::cout << "vec3d " << sizeof(glm::dvec3) << std::endl;
+    std::cout << "vec4f " << sizeof(glm::vec4) << std::endl;
+    std::cout << "vec4d " << sizeof(glm::dvec4) << std::endl;
+    std::cout << "mat4f " << sizeof(glm::mat4) << std::endl;
+    std::cout << "mat4d " << sizeof(glm::dmat4) << std::endl;
+
+    //glm
+    std::cout << "glm" << std::endl;
+    std::cout << "fvec3 " << sizeof(Vec3f) << std::endl;
+    std::cout << "dvec3 " << sizeof(Vec3d) << std::endl;
+    std::cout << "fvec4 " << sizeof(Vec4f) << std::endl;
+    std::cout << "dvec4 " << sizeof(Vec4d) << std::endl;
+    std::cout << "fmat4 " << sizeof(Mat4f) << std::endl;
+    std::cout << "dmat4 " << sizeof(Mat4d) << std::endl;
 }
