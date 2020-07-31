@@ -160,7 +160,7 @@ public:
 	//! Includes fading in and out stars and labels when they are turned on and off.
 	virtual void update(double deltaTime) {
 		names_fader.update(deltaTime);
-		starsFader.update(deltaTime);
+		fader.update(deltaTime);
 	}
 
 	//! Translate text.
@@ -237,12 +237,12 @@ public:
 
 	//! Set display flag for Stars.
 	void setFlagStars(bool b) {
-		starsFader=b;
+		fader=b;
 	}
 
 	//! Get display flag for Stars XY
 	bool getFlagStars(void) const {
-		return starsFader==true;
+		return fader==true;
 	}
 
 	//! Set display flag for Star names (labels).
@@ -452,7 +452,7 @@ public:
 
 	//! change the time duration to fader toggle
 	void setFaderDuration(float f) {
-		starsFader.setDuration(f);
+		fader.setDuration(f);
 	}
 
 	void iniColorTable();
@@ -467,7 +467,7 @@ private:
 	int getHPFromStarName(const std::string& name) const;
 
 	LinearFader names_fader;
-	LinearFader starsFader;
+	LinearFader fader;
 
 	float starSizeLimit;
 	float objectSizeLimit;
