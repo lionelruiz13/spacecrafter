@@ -37,7 +37,7 @@
 #include "coreModule/projector.hpp"
 #include "tools/fader.hpp"
 #include "tools/stateGL.hpp"
-
+#include "tools/ScModule.hpp"
 
 //! Class which manages a grid to display in the sky
 
@@ -46,13 +46,11 @@ class shaderProgram;
 
 //TODO: intégrer qu'une version de font car la font est commune à toutes les grilles
 //TODO: intégrer qu'une version du flag InternaNav qui est commun à toutes les grilles
-class SkyGrid {
+class SkyGrid : public ModuleFont {
 public:
 	virtual ~SkyGrid();
 
 	void draw(const Projector* prj) const;
-
-	void setFont(float font_size, const std::string& font_name);
 
 	void setColor(const Vec3f& c) {
 		color = c;
@@ -118,7 +116,6 @@ private:
 	Vec3f color;
 	Vec3f** alt_points;
 	Vec3f** azi_points;
-	s_font* font=nullptr;
 	bool internalNav;
 	LinearFader fader;
 };
