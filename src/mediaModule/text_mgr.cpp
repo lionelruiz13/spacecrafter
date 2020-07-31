@@ -22,7 +22,6 @@
  *
  */
 
-// Class which handles  Text for User script
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -34,11 +33,9 @@
 
 #define NB_MAX_SIZE 7
 
+
 TextMgr::TextMgr()
 {
-	// for(int i=0; i<7; i++)
-	// 	textFont[i]=nullptr;
-
 	strToFontSize["XX_SMALL"] = FONT_SIZE::T_XX_SMALL;
 	strToFontSize["X_SMALL"] = FONT_SIZE::T_X_SMALL;
 	strToFontSize["SMALL"] = FONT_SIZE::T_SMALL; 
@@ -52,19 +49,17 @@ TextMgr::TextMgr()
 	strToTextAlign["CENTER"] = TEXT_ALIGN::CENTER;
 }
 
+
 TextMgr::~TextMgr()
 {
 	this->clear();
 	strToFontSize.clear();
 	strToTextAlign.clear();
 
-	// for(int i=0; i<7; i++) {
-	// 	if (textFont[i]) delete textFont[i];
-	// 	textFont[i]=nullptr;
-	// }
 	this->clearCache();
 	textFont.clear();
 }
+
 
 void TextMgr::update(int delta_time)
 {
@@ -73,8 +68,8 @@ void TextMgr::update(int delta_time)
 	}
 }
 
+
 void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
-// void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const std::string &_textAlign, const Vec3f &color)
 {
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
@@ -123,30 +118,25 @@ void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 	textUsr[name]=std::move(token);
 }
 
-// void TextMgr::add(const std::string &name, const std::string &text, int altitude, int azimuth, const std::string &fontSize, const std::string &textAlign)
-// {
-// 	this->add(name, text, altitude, azimuth, fontSize, textAlign, defaultTextColor);
-// }
-
 
 void TextMgr::setColor(const Vec3f& c)
 {
 	defaultTextColor = c;
 }
 
+
 void TextMgr::clear()
 {
 	textUsr.clear();
 }
-	// for(int i=0; i<7; i++) {
-	// 	textFont[i]->clearCache();
-	// }
+
 
 void TextMgr::clearCache()
 {
 	for (auto &it : textFont)
 		it->clearCache();
 }
+
 
 void TextMgr::del(const std::string &name)
 {
@@ -157,6 +147,7 @@ void TextMgr::del(const std::string &name)
 		cLog::get()->write("Not found to delete text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 }
 
+
 void TextMgr::textUpdate(const std::string &name, const std::string &text)
 {
 	auto it = textUsr.find(name);
@@ -166,6 +157,7 @@ void TextMgr::textUpdate(const std::string &name, const std::string &text)
 		cLog::get()->write("Not found to update text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 }
 
+
 void TextMgr::textDisplay(const std::string &name , bool displ)
 {
 	auto it = textUsr.find(name);
@@ -173,7 +165,6 @@ void TextMgr::textDisplay(const std::string &name , bool displ)
 		(*it).second->setDisplay(displ);
 	else
 		cLog::get()->write("Not found to display text named "+name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-
 }
 
 
@@ -184,10 +175,6 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
 
-	// for(int i=0; i<7; i++) {
-	// 	if (textFont[i]) delete textFont[i];
-	// 	textFont[i]=nullptr;
-	// }
 	isUsable= true;
 	this->clearCache();
 	textFont.reserve(NB_MAX_SIZE);
@@ -199,9 +186,6 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 			break;
 		}
 	}
-	// WTF ???
-	// isUsable= true;
-
 	if (!isUsable)
 		cLog::get()->write("TEXT: module disable", LOG_TYPE::L_WARNING);
 }
