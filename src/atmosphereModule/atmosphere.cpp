@@ -33,7 +33,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/sc_const.hpp"
-#include "tools/tone_reproductor.hpp"
+#include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/OpenGL.hpp"
 #include "tools/Renderer.hpp"

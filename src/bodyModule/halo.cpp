@@ -19,7 +19,7 @@
 #include "navModule/navigator.hpp"
 #include "coreModule/projector.hpp"
 #include "bodyModule/body_color.hpp"
-#include "tools/tone_reproductor.hpp"
+#include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/s_texture.hpp"
 #include <iostream>
 #include "tools/OpenGL.hpp"

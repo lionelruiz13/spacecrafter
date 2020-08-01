@@ -69,7 +69,7 @@
 #include "tools/shader.hpp"
 #include "tools/sky_localizer.hpp"
 #include "tools/stateGL.hpp"
-#include "tools/tone_reproductor.hpp"
+#include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"
 

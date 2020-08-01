@@ -25,7 +25,7 @@
 #include "tools/utility.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/ThreadPool.hpp"
-#include "tools/tone_reproductor.hpp"
+#include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/shader.hpp"

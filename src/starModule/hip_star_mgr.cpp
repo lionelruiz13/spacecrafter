@@ -45,7 +45,7 @@
 #include "tools/object.hpp"
 #include "tools/s_font.hpp"
 #include "tools/s_texture.hpp"
-#include "tools/tone_reproductor.hpp"
+#include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
 #include "tools/OpenGL.hpp"
