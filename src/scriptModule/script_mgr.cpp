@@ -31,7 +31,7 @@
 #include <cstdio>
 #include <set>
 #include "interfaceModule/app_command_interface.hpp"
-#include "interfaceModule/script_mgr.hpp"
+#include "scriptModule/script_mgr.hpp"
 #include "mediaModule/media.hpp"
 #include "script.hpp"
 #include "tools/utility.hpp"

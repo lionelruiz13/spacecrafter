@@ -42,7 +42,7 @@
 #include "interfaceModule/app_command_interface.hpp"
 #include "interfaceModule/app_command_init.hpp"
 #include "interfaceModule/app_command_eval.hpp"
-#include "interfaceModule/script_interface.hpp"
+#include "scriptModule/script_interface.hpp"
 #include "interfaceModule/if_swap.hpp"
 #include "mediaModule/media.hpp"
 #include "tools/app_settings.hpp"

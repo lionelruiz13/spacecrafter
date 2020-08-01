@@ -39,7 +39,7 @@
 #include "eventModule/EventScreenFader.hpp"
 #include "eventModule/EventSaveScreen.hpp"
 #include "eventModule/EventFps.hpp"
-#include "interfaceModule/script_interface.hpp"
+#include "scriptModule/script_interface.hpp"
 #include "mainModule/sdl_facade.hpp"
 #include "mediaModule/media.hpp"
 #include "tools/call_system.hpp"

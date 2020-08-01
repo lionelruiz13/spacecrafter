@@ -25,7 +25,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstddef>
-#include "interfaceModule/script.hpp"
+#include "scriptModule/script.hpp"
 #include "tools/log.hpp"
 
 

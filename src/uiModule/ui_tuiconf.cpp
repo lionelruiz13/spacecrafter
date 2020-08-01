@@ -35,7 +35,7 @@
 
 #include "appModule/app.hpp"
 #include "mainModule/sdl_facade.hpp"
-#include "interfaceModule/script_interface.hpp"
+#include "scriptModule/script_interface.hpp"
 #include "coreModule/core.hpp"
 #include "tools/sky_localizer.hpp"
 #include "tools/app_settings.hpp"

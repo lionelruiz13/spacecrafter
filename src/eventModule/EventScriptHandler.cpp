@@ -25,7 +25,7 @@
 
 
 #include "EventScriptHandler.hpp"
-#include "interfaceModule/script_mgr.hpp"
+#include "scriptModule/script_mgr.hpp"
 #include "eventModule/EventScript.hpp"
 
 void EventScriptHandler::handle(const Event* e)
