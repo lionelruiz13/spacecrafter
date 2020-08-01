@@ -45,25 +45,25 @@
 #include <Windows.h>
 #endif
 
-bool Utility::isAbsolute(const std::string path)
-{
-#if WIN32
-    return path[1] == ':';
-#else
-    return path[0] == '/';
-#endif
-}
+// bool Utility::isAbsolute(const std::string path)
+// {
+// #if WIN32
+//     return path[1] == ':';
+// #else
+//     return path[0] == '/';
+// #endif
+// }
 
 
-bool Utility::testFileExistence(const std::string& fileName)
-{
-    if (FILE *file = fopen(fileName.c_str(), "r")) {
-        fclose(file);
-        return true;
-    } else {
-        return false;
-    }
-}
+// bool CallSystem::fileExist(const std::string& fileName)
+// {
+//     if (FILE *file = fopen(fileName.c_str(), "r")) {
+//         fclose(file);
+//         return true;
+//     } else {
+//         return false;
+//     }
+// }
 
 
 double Utility::hmsToRad( unsigned int h, unsigned int m, double s )

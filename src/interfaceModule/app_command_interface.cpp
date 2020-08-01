@@ -51,7 +51,7 @@
 #include "tools/io.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
-#include "tools/utility.hpp"
+#include "tools/call_system.hpp"
 #include "uiModule/ui.hpp"
 
 
@@ -1106,7 +1106,7 @@ int AppCommandInterface::commandPersonal()
 			std::string fileName=args[W_FILENAME];
 			if (!fileName.empty())
 				fileName = "personal.txt";
-			if ( !Utility::isAbsolute(fileName))
+			if ( !CallSystem::isAbsolute(fileName))
 				fileName = scriptInterface->getScriptPath() + fileName;
 			coreLink->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONAL, fileName);
 			return executeCommandStatus();
@@ -1212,7 +1212,7 @@ int AppCommandInterface::commandPersoneq()
 			std::string fileName=args[W_FILENAME];
 			if (fileName.empty())
 				fileName = "personeq.txt";
-			if ( !Utility::isAbsolute(fileName))
+			if ( !CallSystem::isAbsolute(fileName))
 				fileName = scriptInterface->getScriptPath() + fileName;
 			coreLink->skyDisplayMgrLoadData(SKYDISPLAY_NAME::SKY_PERSONEQ, fileName);
 			return executeCommandStatus();

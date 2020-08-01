@@ -23,7 +23,8 @@
  */
 
 #include "tools/file_path.hpp"
-#include "tools/utility.hpp"
+//#include "tools/utility.hpp"
+#include "tools/call_system.hpp"
 
 std::string FilePath::scriptPath;
 
@@ -50,40 +51,40 @@ FilePath::FilePath(const std::string& fileName, const std::string& localisation)
 	fileNameAdapted[fileNameAdapted.size()-5]=localisation[1];
 	//~ printf("FilePath internationalisation travaille sur %s\n", fileNameAdapted.c_str());
 
-	if ( !Utility::isAbsolute(fileName)) {
+	if ( !CallSystem::isAbsolute(fileName)) {
 		fullFileName = scriptPath+fileNameAdapted;
 		// localisation dans scriptPath
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
 		fullFileName = AppSettings::Instance()->getMediaDir() + fileNameAdapted;
 		// localisation dans media
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
 		//localisation non existante
 		fullFileName = scriptPath+fileName;
 		// localisation dans scriptPath
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
 		fullFileName = AppSettings::Instance()->getMediaDir() + fileName;
 		// localisation dans media, dernier test
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 	}
 	else {
 		//test version de localisation
 		fullFileName = fileNameAdapted;
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
 		//test fichier de base
 		fullFileName = fileName;
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 	}
 }
 
@@ -103,16 +104,16 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 		return;
 
 	// on teste si le fichier a un nom absolu, on teste simplement son existance
-	if (Utility::isAbsolute(fileName)) {
+	if (CallSystem::isAbsolute(fileName)) {
 		fullFileName = fileName;
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 		return;
 	}
 
 	// On recherche d'abord dans le dossier des scripts si le dossier existe
 	if ( ! scriptPath.empty() ) {
 		fullFileName = scriptPath+fileName;
-		isFileExist = Utility::testFileExistence(fullFileName);
+		isFileExist = CallSystem::fileExist(fullFileName);
 		// si le ficheir existe, plus rien à faire.
 		if (isFileExist)
 			return;
@@ -121,7 +122,7 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 	fullFileName = fileName;
 	//~ std::cout << "recherche (hors script) existance fichier  " << fullFileName << std::endl;
 	// Si le fichier n'existe pas, alors on regarde dans le dossier spécifié
-	isFileExist = Utility::testFileExistence(fullFileName);
+	isFileExist = CallSystem::fileExist(fullFileName);
 	if (!isFileExist) {
 		switch(type) {
 			case TFP::AUDIO : fullFileName = AppSettings::Instance()->getAudioDir() + fileName; break;
@@ -136,6 +137,6 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 			case TFP::MODEL3D : fullFileName = AppSettings::Instance()->getModel3DDir() + fileName; break;
 			default: fullFileName = fileName; break;
 		};
-	isFileExist = Utility::testFileExistence(fullFileName);
+	isFileExist = CallSystem::fileExist(fullFileName);
 	}
 }

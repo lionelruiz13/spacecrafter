@@ -29,7 +29,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <exception>
-#include "tools/utility.hpp"
+#include "tools/call_system.hpp"
 
 #include "tools/s_texture.hpp"
 #include "tools/log.hpp"
@@ -101,7 +101,7 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 	texID=0;
 	bool succes;
 
-	if (Utility::isAbsolute(textureName) || Utility::testFileExistence(textureName))
+	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
 		succes = load(textureName, mipmap);
 	else
 		succes = load(texDir + textureName);
