@@ -1669,6 +1669,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
+				case SHIFT :
+					event = new FlagEvent( FLAG_NAMES::FN_STAR_PICK , FLAG_VALUES::FV_TOGGLE);
+					EventRecorder::getInstance()->queue(event);
+					break;
 				case KWIN:
 					event = new FlagEvent( FLAG_NAMES::FN_ZODIAC_LIGHT , FLAG_VALUES::FV_TOGGLE);
 					EventRecorder::getInstance()->queue(event);
@@ -2238,6 +2242,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			break;
 
 		case SDL_SCANCODE_ESCAPE:
+			event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
+			EventRecorder::getInstance()->queue(event);			
 			break;
 
 		case SDL_SCANCODE_INSERT:
