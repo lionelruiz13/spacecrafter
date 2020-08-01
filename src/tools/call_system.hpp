@@ -1,7 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2015 of the LSS Team & Association Sirius
+ * Copyright (C) 2015-2020 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,6 +31,15 @@
 #include <stdlib.h>
 
 
+/**
+ * @file call_system.hpp
+ * @brief Functions linked to system calls 
+ * 
+ * @class CallSystem
+ * 
+ * @brief Static class that provides functions linked to system calls.
+ *
+ */
 class CallSystem
 {
 public:
@@ -46,17 +55,17 @@ public:
     static bool isAbsolute(const std::string path);
     //! copie le fichier src à la destination dest
     static bool fileCopy(const std::string &src, const std::string &dest) ;
-
+    //! Vérifie que les fichiers ini des utilisateurs sont présents et les reconstruit si besoin
     static void checkIniFiles(const std::string &CDIR, const std::string &DATA_ROOT);
     //! Vérifie que userDir existe et le crée. renvoie le résultat dans logResult
     static void checkUserDirectory(const std::string &userDir, std::string & logResult);
-
+    //! Vérifie que les sous répertoires utilisateurs sont présents et les reconstruit si besoin
     static void checkUserSubDirectory(const std::string &CDIR, std::string& dirResult);
-
+    //! lance une commande système 
     static bool useSystemCommand(const std::string & strCommand);
-
+    //! supprimme le programme prgm via son pid
     static bool killAllPidFrom(const std::string& prgm);
-
+    //! Donne des informations sur la quantité de RAM disponible sur la machine
     static const std::string getRamInfo();
 };
 
