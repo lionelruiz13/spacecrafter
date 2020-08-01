@@ -46,6 +46,7 @@ CoreFont::CoreFont(/*Core* core,*/ int _resolution)
 {
     //core= _core;
 	setStrToTarget();
+	m_resolution = _resolution;
 }
 
 void CoreFont::setStrToTarget()

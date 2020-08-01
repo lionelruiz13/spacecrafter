@@ -22,6 +22,7 @@
 
 #include "tools/ScModule.hpp"
 
-void ModuleFont::setFont(float font_size, const std::string& font_name) {
+void ModuleFont::setFont(float font_size, const std::string& font_name)
+{
     font = std::make_shared<s_font>(font_size, font_name);
 }
