@@ -138,7 +138,6 @@ void CallSystem::checkUserDirectory(const std::string &CDIR, std::string & dirRe
 	if (dirExist( CDIR ) ) {
 		dirResult = "Check home directory ok\n";
 	} else {
-
 		if ( mkdir(CDIR.c_str(), S_IRWXU | S_IRWXG) == 0)  {
 			dirResult = "Creating home directory succesfull\n";
 		} else {
@@ -231,46 +230,30 @@ bool CallSystem::useSystemCommand(const std::string & strCommand)
 	else
 		return false;
 	#else
-	return false;
+		return false;
 	#endif	
 }
 
-bool CallSystem::killAllPidFromVLC()
+bool CallSystem::killAllPidFrom(const std::string& prgm)
 {
 	#if LINUX
-		//recuperer le nombre de VLC lancés 
+		std::string command = "ps aux | grep " + prgm + " | wc -l";
+		//recuperer le nombre de prgm lancés 
 		const int LEN = 5;
 		char line[LEN];
-		FILE *cmd = popen("ps aux | grep vlc | wc -l", "r");
+		FILE *cmd = popen(command.c_str(), "r");
 		fgets(line, LEN, cmd);
 		pclose(cmd);
-		if (std::stoi(line)>2)
-			return useSystemCommand("killall vlc &");
-		else
+		if (std::stoi(line)>2) {
+			std::string order = "killall "+prgm+" &";
+			return useSystemCommand(order);
+		} else
 			return false;
 	#else
 		return false;
 	#endif	
 }
 
-
-bool CallSystem::killAllPidFromMPlayer()
-{
-	#if LINUX
-		//recuperer le nombre de mplayer lancés 
-		const int LEN = 5;
-		char line[LEN];
-		FILE *cmd = popen("ps aux | grep mplayer | wc -l", "r");
-		fgets(line, LEN, cmd);
-		pclose(cmd);
-		if (std::stoi(line)>2)
-			return useSystemCommand("killall mplayer &");
-		else
-			return false;
-	#else
-		return false;
-	#endif	
-}
 
 
 const std::string CallSystem::getRamInfo()

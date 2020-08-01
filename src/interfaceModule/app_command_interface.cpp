@@ -1846,7 +1846,7 @@ int AppCommandInterface::commandExternalViewer()
 			return executeCommandStatus();
 		}
 
-		std::string action1=W_NONE;;
+		std::string action1=W_NONE;
 		std::string extention=argFileName.substr(argFileName.length()-3,3);
 
 		if (extention == W_AVI || extention == W_MOV || extention == W_MPG || extention == W_MP4) {
@@ -1891,11 +1891,13 @@ int AppCommandInterface::commandExternalViewer()
 	}
 
 	if (argAction == W_STOP) {
-		std::string action1=W_NONE;;
-		action1="killall mplayer";
-		CallSystem::useSystemCommand(action1);
-		action1="killall vlc";
-		CallSystem::useSystemCommand(action1);
+		// std::string action1=W_NONE;
+		// action1="killall mplayer";
+		// CallSystem::useSystemCommand(action1);
+		// action1="killall vlc";
+		// CallSystem::useSystemCommand(action1);
+		CallSystem::killAllPidFrom("vlc");
+		CallSystem::killAllPidFrom("mplayer");
 		return executeCommandStatus();
 	}
 

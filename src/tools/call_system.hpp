@@ -55,9 +55,7 @@ public:
 
     static bool useSystemCommand(const std::string & strCommand);
 
-    static bool killAllPidFromVLC();
-
-    static bool killAllPidFromMPlayer();
+    static bool killAllPidFrom(const std::string& prgm);
 
     static const std::string getRamInfo();
 };

@@ -545,5 +545,6 @@ void App::startMainLoop()
 	}
 
 	SDL_RemoveTimer(my_timer_id);
-	CallSystem::killAllPidFromVLC();
+	CallSystem::killAllPidFrom("vlc");
+	CallSystem::killAllPidFrom("mplayer");
 }

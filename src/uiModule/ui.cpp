@@ -1410,7 +1410,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_N :
 			switch(key_Modifier) {
 				case NONE:
-					CallSystem::killAllPidFromVLC();
+					CallSystem::killAllPidFrom("vlc");
 					media->audioMusicDrop();
 					// Mix_CloseAudio();
 					// cLog::get()->write("Close Audio", LOG_TYPE::L_DEBUG );
