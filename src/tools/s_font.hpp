@@ -34,7 +34,6 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "tools/s_font_common.hpp"
-#include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
 
 
@@ -74,19 +73,17 @@ public:
 
 	static void initBaseFont(const std::string& ttfFileName);
 protected:
-
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 	renderedStringHash_t renderCache;
 
-	std::string fontName;
-	TTF_Font *myFont;
 	float fontSize;
+	std::string fontName;
+	static std::string baseFontName;
+	TTF_Font *myFont =  nullptr;
 
 	static std::unique_ptr<shaderProgram> shaderHorizontal;
 	static std::unique_ptr<shaderProgram> shaderPrint;
 	static std::unique_ptr<VertexArray> m_fontGL;
-
-	static TTF_Font *baseFont;
 };
 
 #endif  //_S_FONT_H

@@ -24,6 +24,7 @@
 #include "tools/log.hpp"
 #include "tools/s_font.hpp"
 #include "tools/utility.hpp"
+#include "tools/call_system.hpp"
 #include "tools/stateGL.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/OpenGL.hpp"
@@ -34,40 +35,40 @@ std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
 std::unique_ptr<shaderProgram> s_font::shaderPrint;
 std::unique_ptr<VertexArray> s_font::m_fontGL;
 
-#define BASE_FONT_SIZE 12
-//@ TODO devrait être un shared pointer
-TTF_Font *s_font::baseFont = nullptr;
-
+std::string s_font::baseFontName;
 
 void s_font::initBaseFont(const std::string& ttfFileName)
 {
-	baseFont = TTF_OpenFont( ttfFileName.c_str(), BASE_FONT_SIZE);
-	if(!baseFont) {
+	baseFontName = ttfFileName;
+	//on teste la fonte de base, si elle n'est pas opérationnelle, on stoppe tout.
+	TTF_Font *tmp = TTF_OpenFont( baseFontName.c_str(), 12);
+	if(!tmp) {
 		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
 		cLog::get()->write("s_font: BaseFont file is not usable or operational: system aborded", LOG_TYPE::L_ERROR);
 		exit(-1);
 	}
+	TTF_CloseFont(tmp);
 }
 
 s_font::s_font(float size_i, const std::string& ttfFileName)
 {
-	myFont=nullptr;
 	fontName = ttfFileName; // way to acces ttf file
 	fontSize = size_i; // pixel height
 	myFont = TTF_OpenFont( fontName.c_str(), fontSize);
 	if(!myFont) {
 		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
-		myFont = baseFont;
-	}
+		cLog::get()->write("s_font: replace font with baseFontName " + baseFontName, LOG_TYPE::L_WARNING);
+		fontName = baseFontName;
+		myFont = TTF_OpenFont( baseFontName.c_str(), fontSize);
+	} else
+	cLog::get()->write("s_font: loading font " + fontName, LOG_TYPE::L_INFO);
 	//cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << endl;
 }
 
 s_font::~s_font()
 {
 	clearCache();
-	if (myFont != baseFont) {
-		TTF_CloseFont(myFont);
-	}
+	TTF_CloseFont(myFont);
 	myFont = nullptr;
 }
 
@@ -148,7 +149,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 
 float s_font::getStrLen(const std::string& s)
 {
-
 	if (s.empty())
 		return 0;
 
