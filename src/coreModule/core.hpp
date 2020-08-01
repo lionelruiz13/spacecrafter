@@ -67,7 +67,7 @@
 #include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
 #include "tools/shader.hpp"
-#include "tools/sky_localizer.hpp"
+#include "coreModule/sky_localizer.hpp"
 #include "tools/stateGL.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"

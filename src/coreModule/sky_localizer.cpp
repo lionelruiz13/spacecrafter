@@ -26,7 +26,7 @@
 #include <iostream>
 #include <fstream>
 #include <dirent.h>
-#include "tools/sky_localizer.hpp"
+#include "coreModule/sky_localizer.hpp"
 #include "tools/translator.hpp"
 #include "tools/init_parser.hpp"
 #include <cassert>
