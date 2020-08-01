@@ -48,8 +48,8 @@ public:
     static bool fileCopy(const std::string &src, const std::string &dest) ;
 
     static void checkIniFiles(const std::string &CDIR, const std::string &DATA_ROOT);
-
-    static void checkUserDirectory(const std::string &CDIR, std::string & dirResult);
+    //! Vérifie que userDir existe et le crée. renvoie le résultat dans logResult
+    static void checkUserDirectory(const std::string &userDir, std::string & logResult);
 
     static void checkUserSubDirectory(const std::string &CDIR, std::string& dirResult);
 

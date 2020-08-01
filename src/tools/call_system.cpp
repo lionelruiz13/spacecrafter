@@ -132,14 +132,14 @@ void CallSystem::checkIniFiles(const std::string &CDIR, const std::string &DATA_
 
 
 
-void CallSystem::checkUserDirectory(const std::string &CDIR, std::string & dirResult)
+void CallSystem::checkUserDirectory(const std::string &userDir, std::string & logResult)
 {
 	#if LINUX
-	if (dirExist( CDIR ) ) {
-		dirResult = "Check home directory ok\n";
+	if (dirExist(userDir) ) {
+		logResult = "Check home directory ok\n";
 	} else {
-		if ( mkdir(CDIR.c_str(), S_IRWXU | S_IRWXG) == 0)  {
-			dirResult = "Creating home directory succesfull\n";
+		if ( mkdir(userDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
+			logResult = "Creating home directory succesfull\n";
 		} else {
 			fprintf(stderr, "Unable to create local home directory\nProgram stopped\n");
 			exit(2);
@@ -260,7 +260,7 @@ const std::string CallSystem::getRamInfo()
 {
 	#if LINUX
 		struct sysinfo info;
-		sysinfo( &info );
+		sysinfo(&info);
 		std::ostringstream strInfo;
 		strInfo << "Memory information" << std::endl;
 		strInfo << "Total ram " << (size_t)info.totalram * (size_t)info.mem_unit << std::endl;
