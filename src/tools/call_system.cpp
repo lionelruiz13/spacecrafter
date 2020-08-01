@@ -43,31 +43,39 @@
 
 #define BUFFER_SIZE 1024
 
-void CallSystem::splitFilename (const std::string& str, std::string &path,std::string &fileName)
+
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
+bool CallSystem::isAbsolute(const std::string path)
+{
+#if WIN32
+    return path[1] == ':';
+#else
+    return path[0] == '/';
+#endif
+}
+
+void CallSystem::splitFilename (const std::string& str, std::string &pathFile,std::string &fileName)
 {
   std::size_t found = str.find_last_of("/\\");
-  path = str.substr(0,found+1);
+  pathFile = str.substr(0,found+1);
   fileName = str.substr(found+1);
 }
 
 
-bool CallSystem::isReadable(const std::string & file)
+bool CallSystem::isReadable(const std::string & fileName)
 {
-	std::ifstream fichier( file.c_str() );
+	std::ifstream fichier(fileName);
 	return !fichier.fail();
 }
 
 
-bool CallSystem::fileExist(const std::string& file)
+bool CallSystem::fileExist(const std::string& fileName)
 {
-	FILE * fp = nullptr;
-	fp = fopen(file.c_str() , "r");
-	if (fp == nullptr)
-		return false;
-	else {
-		fclose(fp);
-		return true;
-	}
+    std::ifstream infile(fileName);
+    return infile.good();
 }
 
 bool CallSystem::dirExist(const std::string& rep)
@@ -82,37 +90,20 @@ bool CallSystem::dirExist(const std::string& rep)
 }
 
 
-int CallSystem::fileCopy( const std::string &src, const std::string &dest)
+bool CallSystem::fileCopy( const std::string &src, const std::string &dest)
 {
-	FILE* fSrc = nullptr;
-	FILE* fDest = nullptr;
-	char buffer[BUFFER_SIZE];
-	unsigned int NbLus;
+	std::ifstream source(src, std::ios::binary);
+	if (!source.good())
+		return false;
+    std::ofstream destination(dest, std::ios::binary);
+	if (!destination.good())
+		return false;
 
-	printf("src : %s\n",src.c_str());
-	printf("dest : %s\n",dest.c_str());
+    destination << source.rdbuf();
 
-	if ((fSrc = fopen(src.c_str(), "r")) == nullptr) {
-		fprintf(stderr, "fileCopy error src name %s\n",src.c_str());
-		return 1;
-	}
-
-	if ((fDest = fopen(dest.c_str(), "w")) == nullptr) {
-		fclose(fSrc);
-		fprintf(stderr, "fileCopy error dest name %s\n",src.c_str());
-		return 2;
-	}
-
-	while ((NbLus = fread(buffer, sizeof(char), BUFFER_SIZE, fSrc)) != 0)
-		if(fwrite(buffer, 1, NbLus, fDest) != NbLus) {
-			fprintf(stderr, "fileCopy error in buffer copy\n");
-			return 3;
-		}
-
-	fclose(fDest);
-	fclose(fSrc);
-
-	return 0;
+    source.close();
+    destination.close();
+	return true;
 }
 
 

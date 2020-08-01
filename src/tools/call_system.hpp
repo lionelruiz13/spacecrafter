@@ -34,12 +34,18 @@
 class CallSystem
 {
 public:
-	static void splitFilename (const std::string& str, std::string &path,std::string &fileName);
-    static bool isReadable(const std::string &file);
-    static bool fileExist ( const std::string& file);
-    static bool dirExist ( const std::string& rep);
-
-    static int fileCopy( const std::string &src, const std::string &dest) ;
+    // sépare str en path et file
+	static void splitFilename(const std::string& str, std::string &pathFile,std::string &fileName);
+    // test si le fichier existe et est accessible
+    static bool isReadable(const std::string& fileName);
+    // test si le fichier existe
+    static bool fileExist(const std::string& fileName);
+    // test si le répertoire existe 
+    static bool dirExist(const std::string& rep);
+    //! returns true if the given path is absolute
+    static bool isAbsolute(const std::string path);
+    //! copie le fichier src à la destination dest
+    static bool fileCopy(const std::string &src, const std::string &dest) ;
 
     static void checkIniFiles(const std::string &CDIR, const std::string &DATA_ROOT);
 
