@@ -52,7 +52,7 @@ protected:
 
 class ModuleFont {
 public:
-	void setFont(float font_size, const std::string& font_name);
+	virtual void setFont(float font_size, const std::string& font_name);
 
 protected:
     std::shared_ptr<s_font> font=nullptr;

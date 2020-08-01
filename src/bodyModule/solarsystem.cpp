@@ -124,6 +124,11 @@ SolarSystem::~SolarSystem()
 	if (objLMgr) delete objLMgr;
 }
 
+void SolarSystem::setFont(float font_size, const std::string& font_name)
+{
+	ModuleFont::setFont(font_size, font_name);
+	Body::setFont(font.get());
+}
 
 // Init and load the solar system data
 void SolarSystem::load(const std::string& planetfile)
