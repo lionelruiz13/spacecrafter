@@ -223,7 +223,8 @@ void SkyGrid::draw(const Projector* prj) const
 						font->print(6,-2,str, Color, MVP*TRANSFO ,1);
 					}
 
-				} else if (nm % 8 == 0 && i != 16) {
+				} 
+				if (nm % 8 == 0 && i != 16) {
 
 					const double d = sqrt(dq);
 
@@ -234,7 +235,7 @@ void SkyGrid::draw(const Projector* prj) const
 
 					sprintf( str, "%d°", (i-8)*10);
 
-					if ( gtype == GALACTIC || gtype == ALTAZIMUTAL || (gtype == EQUATORIAL && i > 8)) {
+					if ( gtype == GALACTIC || gtype == ALTAZIMUTAL || (gtype == EQUATORIAL && i >= 8)) {
 						angle += M_PI;
 					}
 
