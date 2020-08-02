@@ -470,7 +470,10 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 void CheckConfig::checkMigration2020()
 {
 	user_conf.setBoolean("io:flag_masterput", user_conf.getBoolean(SCS_MAIN, SCK_FLAG_MASTERPUT));
-	user_conf.setBoolean("navigation:flag_navigation", user_conf.getBoolean(SCS_MAIN, SCK_FLAG_NAVIGATION));		
+	user_conf.setBoolean("navigation:flag_navigation", user_conf.getBoolean(SCS_MAIN, SCK_FLAG_NAVIGATION));
+	if (double tmp = user_conf.getDouble(SCS_ASTRO, SCK_MILKY_WAY_FADER_DURATION); tmp>1000) {
+		user_conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_FADER_DURATION, tmp/1000.);
+	}
 }
 
 
