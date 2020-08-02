@@ -63,7 +63,7 @@ void VideoPlayer::init()
 
 bool VideoPlayer::RestartVideo()
 {
-	if (!alive)
+	if (!isAlive)
 		return false;
 #ifndef WIN32
 	if(av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0) {
