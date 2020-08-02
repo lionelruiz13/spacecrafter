@@ -63,6 +63,8 @@ void VideoPlayer::init()
 
 bool VideoPlayer::RestartVideo()
 {
+	if (!alive)
+		return false;
 #ifndef WIN32
 	if(av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0) {
 		printf("av_seek_frame forward failed. \n");
