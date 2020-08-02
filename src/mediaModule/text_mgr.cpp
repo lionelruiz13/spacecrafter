@@ -174,7 +174,7 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 		font_size=SIZE_MIN_TO_DISPLAY;
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
-
+	textFont.clear();
 	isUsable= true;
 	this->clearCache();
 	textFont.reserve(NB_MAX_SIZE);
