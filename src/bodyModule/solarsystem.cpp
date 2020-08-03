@@ -1389,7 +1389,9 @@ std::vector<std::string> SolarSystem::listMatchingObjectsI18n(const std::string&
 
 void SolarSystem::bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const
 {
-	bodyTrace->getAltAz(nav,alt,az);
+	if(bodyTrace != nullptr){
+		bodyTrace->getAltAz(nav,alt,az);
+	}
 }
 
 void SolarSystem::bodyTraceBodyChange(const std::string &bodyName)
