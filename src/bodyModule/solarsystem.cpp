@@ -602,7 +602,10 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 	if(bc->body->getParent() != nullptr){
 		bc->body->getParent()->removeSatellite(bc->body);
 	}
-	
+	// fix crash when delete body used from body_trace
+	if (bc->body == bodyTrace )
+		bodyTrace = sun;
+
 	//remove from containers :
 	systemBodies.erase(bc->englishName);
 	if(!bc->isHidden){
