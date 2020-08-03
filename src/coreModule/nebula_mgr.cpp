@@ -43,7 +43,7 @@ circleScale(1.f), circleColor(Vec3f(0.2,0.2,1.0)), labelColor(v3fNull),
 flagBright(false), displaySpecificHint(false),
 dsoPictoSize(6)
 {
-	nebZones = new std::vector<Nebula*>[nebGrid.getNbPoints()];
+	nebGrid.subdivise(3);
 	if (! initTexPicto())
 		cLog::get()->write("DSO: error while loading pictogram texture", LOG_TYPE::L_ERROR);
 
@@ -54,8 +54,7 @@ dsoPictoSize(6)
 
 NebulaMgr::~NebulaMgr()
 {
-	std::vector<Nebula *>::iterator iter;
-	for (iter=neb_array.begin(); iter!=neb_array.end(); iter++) {
+	for (auto iter=nebGrid.rawBegin(); iter!=nebGrid.end(); ++iter) {
 		delete (*iter);
 	}
 
@@ -64,10 +63,7 @@ NebulaMgr::~NebulaMgr()
 
 	// if (font) delete font;
 	// font = nullptr;
-
-	delete[] nebZones;
 }
-
 
 void NebulaMgr::createShaderHint()
 {
@@ -108,10 +104,8 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 {
 	std::string uname = name;
 	transform(uname.begin(), uname.end(), uname.begin(), ::toupper);
-	std::vector <Nebula*>::iterator iter;
-	std::vector <Nebula*>::iterator iter2;
 
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
+	for (auto iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
 		std::string testName = (*iter)->getEnglishName();
 		//std::cout << testName << std::endl;
 		transform(testName.begin(), testName.end(), testName.begin(), ::toupper);
@@ -123,25 +117,9 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 				if(showOriginal) (*iter)->show(); // make sure original is now visible
 				return;
 			}
-
-			// erase from locator grid
-			int zone = nebGrid.GetNearest((*iter)->XYZ_);
-			for (iter2 = nebZones[zone].begin(); iter2!=nebZones[zone].end(); ++iter2) {
-				if(*iter2 == *iter) {
-//					cerr << "Deleting nebula from zone " << zone << " with name " << (*iter2)->englishName << endl;
-					//std::cout << testName << " delete from iter2" << std::endl;
-					nebZones[zone].erase(iter2);
-					break;
-				}
-			}
-
-			// Delete nebula
 			delete *iter;
-//			std::cout << testName << " delete" << std::endl;
-			neb_array.erase(iter);
+			nebGrid.erase(iter);
 			return;
-			//cerr << "Erased nebula " << uname << endl;
-			//return "";
 		}
 	}
 	cLog::get()->write("DSO: Requested nebula to delete not found " + name, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
@@ -155,34 +133,16 @@ void NebulaMgr::removeSupplementalNebulae()
 	std::vector<Nebula *>::iterator iter;
 	std::vector<Nebula *>::iterator iter2;
 
-	for (iter=neb_array.begin(); iter!=neb_array.end(); /*iter++*/) {
-
-		if (!(*iter)->isDeletable()) {
-			(*iter)->show();
-			(*iter)->select();
-			iter++;
+	nebGrid.remove_if([](auto &n){
+		if (!n->isDeletable()) {
+			n->show();
+			n->select();
+			return false;
 		} else {
-
-			// erase from locator grid
-			int zone = nebGrid.GetNearest((*iter)->XYZ_);
-
-			for (iter2 = nebZones[zone].begin(); iter2!=nebZones[zone].end(); ++iter2) {
-				if(*iter2 == *iter) {
-//					cerr << "Deleting nebula from zone " << zone << " with name " << (*iter2)->englishName << endl;
-					nebZones[zone].erase(iter2);
-					break;
-				}
-			}
-
-			// Delete nebula
-			delete *iter;
-			iter=neb_array.erase(iter);
-			//iter--;
-			// cerr << "Erased nebula " << uname << endl;
+			delete n;
+			return true;
 		}
-	}
-
-	// return "";
+	});
 }
 
 // Draw all the Nebulae
@@ -202,48 +162,36 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	Vec3f pXYZ;
 
 	// Find the star zones which are in the screen
-	int nbZones=0;
 	// FOV is currently measured vertically, so need to adjust for wide screens
 	// TODO: projector should probably use largest measurement itself
 	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
-	nbZones = nebGrid.Intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
-	static int * zoneList = nebGrid.getResult();
+	nebGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f*1.2f);
 
 	//~ prj->set_orthographic_projection();	// set 2D coordinate
 
 	// Print all the stars of all the selected zones
-	static std::vector<Nebula *>::iterator end;
-	static std::vector<Nebula *>::iterator iter;
-	Nebula* n;
-
 	// speed up the computation of n->getOnScreenSize(prj, nav)>5:
 	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
 	Vec3d win;
 
-	for (int i=0; i<nbZones; ++i) {
-		end = nebZones[zoneList[i]].end();
-		for (iter = nebZones[zoneList[i]].begin(); iter!=end; ++iter) {
+	for (const auto &n : nebGrid) {
+		// improve performance by skipping if too small to see
+		if ( n->getAngularSize()>size_limit|| (hintsFader.getInterstate()>0.0001 && n->getMag() <= getMaxMagHints())) {
+			// Refactor this by refactoring projectJ2000 and his dependencies
+			//prj->projectJ2000(n->XYZ_, win);
+			n->setXY(prj);
 
-			n = *iter;
-
-			// improve performance by skipping if too small to see
-			if ( n->getAngularSize()>size_limit|| (hintsFader.getInterstate()>0.0001 && n->getMag() <= getMaxMagHints())) {
-				// Refactor this by refactoring projectJ2000 and his dependencies
-				//prj->projectJ2000(n->XYZ_, win);
-				n->setXY(prj);
-
-				if (n->getAngularSize()>size_limit) {
-					n->drawTex(prj, nav, eye, sky_brightness, flagBright);
-				}
-
-				if (textFader) {
-					n->drawName(prj, labelColor, font.get());
-				}
-
-				//~ cout << "drawhint " << n->getEnglishName() << endl;
-				if ( n->getAngularSize()<size_limit)
-					n->drawHint(prj, nav, vecHintPos, vecHintTex, vecHintColor, displaySpecificHint, circleColor, getPictoSize());
+			if (n->getAngularSize()>size_limit) {
+				n->drawTex(prj, nav, eye, sky_brightness, flagBright);
 			}
+
+			if (textFader) {
+				n->drawName(prj, labelColor, font.get());
+			}
+
+			//~ cout << "drawhint " << n->getEnglishName() << endl;
+			if ( n->getAngularSize()<size_limit)
+				n->drawHint(prj, nav, vecHintPos, vecHintTex, vecHintColor, displaySpecificHint, circleColor, getPictoSize());
 		}
 	}
 	drawAllHint(prj);
@@ -292,68 +240,63 @@ Nebula *NebulaMgr::searchNebula(const std::string& name, bool search_hidden=fals
 
 	std::string uname = name;
 	transform(uname.begin(), uname.end(), uname.begin(), ::toupper);
-	std::vector <Nebula*>::const_iterator iter;
 
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
-		std::string testName = (*iter)->getEnglishName();
+	auto iter = std::find_if(nebGrid.rawBegin(), nebGrid.end(), [uname, search_hidden](const auto &n){
+		std::string testName = n->getEnglishName();
 		transform(testName.begin(), testName.end(), testName.begin(), ::toupper);
-		//		if(testName != "" ) cout << ">" << testName << "< " << endl;
-		if (testName==uname  && ((*iter)->isHidden()==false || search_hidden)) return *iter;
-	}
+		return (testName==uname && (n->isHidden()==false || search_hidden));
+	});
+
+	if (iter != nebGrid.end())
+		return *iter;
 	return nullptr;
 }
 
 void NebulaMgr::showAll()
 {
-	std::vector <Nebula*>::const_iterator iter;
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
+	for (auto iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
 		(*iter)->select();
 	}
 }
 
 void NebulaMgr::hideAll()
 {
-	std::vector <Nebula*>::const_iterator iter;
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
+	for (auto iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
 		(*iter)->unselect();
 	}
 }
 
 void NebulaMgr::selectConstellation(bool hide, std::string constellationName)
 {
-	std::vector <Nebula*>::const_iterator iter;
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
-		if ((*iter)->getConstellation() == constellationName)
-			hide ? (*iter)-> unselect() : (*iter)->select();
-	}
+	std::for_each(nebGrid.rawBegin(), nebGrid.end(), [hide, constellationName](const auto &n){
+		if (n->getConstellation() == constellationName)
+			hide ? n->unselect() : n->select();
+	});
 }
 
 void NebulaMgr::selectName(bool hide, std::string Name)
 {
-	std::vector <Nebula*>::const_iterator iter;
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
-		if ((*iter)->getEnglishName() == Name)
-			hide ? (*iter)-> unselect() : (*iter)->select();
-	}
+	std::for_each(nebGrid.rawBegin(), nebGrid.end(), [hide, Name](const auto &n){
+		if (n->getEnglishName() == Name)
+			hide ? n->unselect() : n->select();
+	});
 }
 
 void NebulaMgr::selectType(bool hide, std::string dsoType)
 {
-	std::vector <Nebula*>::const_iterator iter;
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
-		if ((*iter)->getStringType() == dsoType)
-			hide ? (*iter)-> unselect() : (*iter)->select();
-	}
+	std::for_each(nebGrid.rawBegin(), nebGrid.end(), [hide, dsoType](const auto &n){
+		if (n->getStringType() == dsoType)
+			hide ? n->unselect() : n->select();
+	});
 }
 
 // Look for a nebulae by XYZ coords
 Object NebulaMgr::search(Vec3f Pos)
 {
 	Pos.normalize();
-	std::vector<Nebula *>::iterator iter;
 	Nebula * plusProche=nullptr;
 	float anglePlusProche=0.;
-	for (iter=neb_array.begin(); iter!=neb_array.end(); iter++) {
+	for (auto iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
 		if((*iter)->isHidden()==true) continue;
 		if ((*iter)->XYZ_[0]*Pos[0]+(*iter)->XYZ_[1]*Pos[1]+(*iter)->XYZ_[2]*Pos[2]>anglePlusProche) {
 			anglePlusProche=(*iter)->XYZ_[0]*Pos[0]+(*iter)->XYZ_[1]*Pos[1]+(*iter)->XYZ_[2]*Pos[2];
@@ -373,17 +316,14 @@ std::vector<Object> NebulaMgr::searchAround(Vec3d v, double lim_fov) const
 	double cos_lim_fov = cos(lim_fov * M_PI/180.);
 	static Vec3d equPos;
 
-	std::vector<Nebula*>::const_iterator iter = neb_array.begin();
-	while (iter != neb_array.end()) {
-		equPos = (*iter)->XYZ_;
+	for (const auto &n : nebGrid) { // this somewhere ?
+		equPos = n->XYZ_;
 		equPos.normalize();
 		if (equPos[0]*v[0] + equPos[1]*v[1] + equPos[2]*v[2]>=cos_lim_fov) {
-
 			// NOTE: non-labeled nebulas are not returned!
 			// Otherwise cursor select gets invisible nebulas - Rob
-			if ((*iter)->getNameI18n() != "" && (*iter)->isHidden()==false) result.push_back(*iter);
+			if (n->getNameI18n() != "" && n->isHidden()==false) result.push_back(n);
 		}
-		iter++;
 	}
 	return result;
 }
@@ -392,7 +332,7 @@ bool NebulaMgr::loadDeepskyObject(std::string _englishName, std::string _DSOType
                                   float _distance, std::string tex_name, bool path, float tex_angular_size, float _rotation, std::string _credit, float _luminance, bool deletable)
 {
 	Nebula *e = searchNebula(_englishName, false);
-	if(e) {
+	if (e) {
 		if(e->isDeletable()) {
 			//~ cout << "Warning: replacing user added nebula with name " << name << ".\n";
 			cLog::get()->write("nebula: replacing user added nebula with name " + _englishName, LOG_TYPE::L_WARNING);
@@ -406,8 +346,7 @@ bool NebulaMgr::loadDeepskyObject(std::string _englishName, std::string _DSOType
 	               tex_angular_size, _rotation, _credit, _luminance, deletable, false);
 
 	if (e != nullptr) {
-		neb_array.push_back(e);
-		nebZones[nebGrid.GetNearest(e->XYZ_)].push_back(e);
+		nebGrid.insert(e, e->XYZ_);
 		return true;
 	} else
 		return false;
@@ -459,8 +398,7 @@ bool NebulaMgr::loadDeepskyObjectFromCat(const std::string& cat)
 //! The translation is done using gettext with translated strings defined in translations.h
 void NebulaMgr::translateNames(Translator& trans)
 {
-	std::vector<Nebula*>::iterator iter;
-	for ( iter = neb_array.begin(); iter < neb_array.end(); iter++ ) {
+	for (auto iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
 		(*iter)->translateName(trans);
 	}
 	if(font) font->clearCache();
@@ -472,16 +410,17 @@ Object NebulaMgr::searchByNameI18n(const std::string& nameI18n) const
 {
 	std::string objw = nameI18n;
 	transform(objw.begin(), objw.end(), objw.begin(), ::toupper);
-	std::vector <Nebula*>::const_iterator iter;
 
 	// Search by common names
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
-		if((*iter)->isHidden()==true) continue;
-		std::string objwcap = (*iter)->getNameI18n();
+	auto iter = std::find_if(nebGrid.rawBegin(), nebGrid.end(), [objw](const auto &n){
+		if(n->isHidden()==true) return false;
+		std::string objwcap = n->getNameI18n();
 		transform(objwcap.begin(), objwcap.end(), objwcap.begin(), ::toupper);
-		if (objwcap==objw) return *iter;
-	}
-
+		if (objwcap==objw) return true;
+		return false;
+	});
+	if (iter != nebGrid.end())
+		return *iter;
 	return nullptr;
 }
 
@@ -494,10 +433,8 @@ std::vector<std::string> NebulaMgr::listMatchingObjectsI18n(const std::string& o
 	std::string objw = objPrefix;
 	transform(objw.begin(), objw.end(), objw.begin(), ::toupper);
 
-	std::vector <Nebula*>::const_iterator iter;
-
 	// Search by common names
-	for (iter = neb_array.begin(); iter != neb_array.end(); ++iter) {
+	for (nebGrid_t::iterator iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
 		if((*iter)->isHidden()==true) continue;
 		std::string constw = (*iter)->getNameI18n().substr(0, objw.size());
 		transform(constw.begin(), constw.end(), constw.begin(), ::toupper);

@@ -31,7 +31,7 @@
 #include <memory>
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
-#include "coreModule/grid.hpp"
+#include "tools/SphereGrid.hpp"
 #include "coreModule/nebula.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
@@ -222,9 +222,8 @@ private:
 	LinearFader hintsFader;			//!< Hint about position and number of dso
 	LinearFader textFader;			//!< Display names smoothly
 
-	std::vector<Nebula*> neb_array;		//!< The nebulas list
-	std::vector<Nebula*>* nebZones;		//!< array of nebula vector with the grid id as array rank
-	LittleGrid nebGrid;				//! Grid for opimisation
+	typedef SphereGrid<Nebula *> nebGrid_t;
+	nebGrid_t nebGrid;
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed
 
