@@ -108,6 +108,7 @@ public:
 	} subGrid_t;
 
 	class iterator;
+	class const_iterator;
 
 	SphereGrid();
 	~SphereGrid() {};
@@ -125,13 +126,27 @@ public:
 	void remove_if(F&& func);
 	//! Standard std::list::erase
 	void erase(SphereGrid::iterator &it);
+	//! Returns an iterator on the first visible element that iterates through all visible elements
 	auto begin() {
 		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end());
 	};
+	auto begin() const {
+		return SphereGrid::const_iterator(allDataCenter.begin(), allDataCenter.end());
+	};
+	//! Returns an iterator on the first element that iterates through all the elements
+	auto rawBegin() {
+		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end(), false);
+	}
+	auto rawBegin() const {
+		return SphereGrid::const_iterator(allDataCenter.begin(), allDataCenter.end(), false);
+	}
 	//! Remove all elements from this grid
 	void clear();
 	auto end() {
 		return SphereGrid::iterator(allDataCenter.end());
+	};
+	auto end() const {
+		return SphereGrid::const_iterator(allDataCenter.end());
 	};
 	// void setFov(Vec3f pos, float fov);
 	//! Determine which fields of view are visible
@@ -158,9 +173,9 @@ private:
 template<typename T>
 class SphereGrid<T>::iterator {
 public:
-	iterator(typename SphereGrid::dataCenterType_t::iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::iterator &_zoneEnd) : iterLastZone(_zoneEnd) {
+	iterator(typename SphereGrid::dataCenterType_t::iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::iterator &_zoneEnd, bool _skipUnvisible = true) : iterLastZone(_zoneEnd), skipUnvisible(_skipUnvisible) {
 		// Move iterZone to the first non-empty container
-		for (iterZone = _zoneBegin; iterZone != iterLastZone && iterZone->first.size() == 0; iterZone++);
+		for (iterZone = _zoneBegin; iterZone != iterLastZone && (iterZone->first.size() == 0 || (_skipUnvisible && !iterZone->second)); iterZone++);
 		if (iterZone != iterLastZone) {
 			iterElement = iterZone->first.begin();
 			iterLastElement = iterZone->first.cend();
@@ -172,9 +187,16 @@ public:
 	}
 	void operator++() {
 		if (++iterElement == iterLastElement) {
-			while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
-				iterElement = iterZone->first.begin();
-				iterLastElement = iterZone->first.end();
+			if (skipUnvisible) {
+				while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
+					iterElement = iterZone->first.begin();
+					iterLastElement = iterZone->first.end();
+				}
+			} else {
+				while (iterElement == iterLastElement && ++iterZone != iterLastZone) {
+					iterElement = iterZone->first.begin();
+					iterLastElement = iterZone->first.end();
+				}
 			}
 		}
 	}
@@ -192,11 +214,33 @@ public:
 	typedef T& reference; //almost always T& or const T&
 	typedef T* pointer; //almost always T* or const T*
 	typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
-private:
+protected:
+	iterator() {}
 	typename dataCenterType_t::iterator iterZone;
 	typename dataCenterType_t::const_iterator iterLastZone;
 	typename dataType_t::iterator iterElement;
 	typename dataType_t::const_iterator iterLastElement;
+	const bool skipUnvisible = true;
+};
+
+template<typename T>
+class SphereGrid<T>::const_iterator : public SphereGrid<T>::iterator {
+public:
+	const_iterator(typename SphereGrid::dataCenterType_t::const_iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::const_iterator &_zoneEnd, bool _skipUnvisible = true) : iterLastZone(_zoneEnd), skipUnvisible(_skipUnvisible) {
+		// Move iterZone to the first non-empty container
+		for (iterZone = _zoneBegin; iterZone != iterLastZone && (iterZone->first.size() == 0 || (_skipUnvisible && !iterZone->second)); iterZone++);
+		if (iterZone != iterLastZone) {
+			iterElement = iterZone->first.begin();
+			iterLastElement = iterZone->first.cend();
+		}
+	}
+	const_iterator(const typename SphereGrid::dataCenterType_t::const_iterator &_iterZone) : iterZone(_iterZone) {}
+private:
+	typename dataCenterType_t::const_iterator iterZone;
+	typename dataType_t::const_iterator iterElement;
+	typename dataCenterType_t::const_iterator iterLastZone;
+	typename dataType_t::const_iterator iterLastElement;
+	const bool skipUnvisible = true;
 };
 
 template<typename T>
