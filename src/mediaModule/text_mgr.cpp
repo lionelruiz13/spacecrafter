@@ -174,6 +174,10 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 		font_size=SIZE_MIN_TO_DISPLAY;
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
+	// dont's wast time to reload what is already loaded
+	if ((font_size == m_fontSize) && (font_name == m_fontName))
+		return;
+
 	this->clearCache();
 	this->clear();
 	textFont.clear();
@@ -187,6 +191,9 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 			break;
 		}
 	}
+	// remerbers param's
+	m_fontName = font_name;
+	m_fontSize = font_size; 
 	if (!isUsable)
 		cLog::get()->write("TEXT: module disable", LOG_TYPE::L_WARNING);
 }
