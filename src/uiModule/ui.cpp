@@ -2271,6 +2271,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
+					event = new ScriptEvent( IDIR+"internal/musical_sunset.sts");
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL:
 					break;
