@@ -174,9 +174,10 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 		font_size=SIZE_MIN_TO_DISPLAY;
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
+	this->clearCache();
+	this->clear();
 	textFont.clear();
 	isUsable= true;
-	this->clearCache();
 	textFont.reserve(NB_MAX_SIZE);
 	for(int i=0; i<NB_MAX_SIZE; i++) {
 		textFont.push_back(std::make_shared<s_font>(font_size+2*(i-3), font_name));
