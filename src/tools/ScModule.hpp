@@ -57,7 +57,7 @@ public:
 	virtual void setFont(float font_size, const std::string& font_name);
 
 protected:
-    std::shared_ptr<s_font> font=nullptr;
+    std::unique_ptr<s_font> font=nullptr;
 };
 
 template <class faderType>
