@@ -58,6 +58,9 @@ public:
 
 protected:
     std::unique_ptr<s_font> font=nullptr;
+private:
+	std::string m_fontName;		// remembers what fontName is used
+	float m_fontSize; 			// remembers what fontSize is used
 };
 
 template <class faderType>
