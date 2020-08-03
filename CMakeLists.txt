@@ -84,20 +84,6 @@ INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories($(GLEW_INCLUDE_DIRS))
 
-###########  Activate translation with gettext ########### 
-SET(ENABLE_NLS 1)
-
-IF(ENABLE_NLS)
-  FIND_PACKAGE(Iconv REQUIRED)
-  FIND_PATH(INTL_INCLUDE_DIR libintl.h 
-    /usr/include 
-    /usr/local/include) 
-  FIND_LIBRARY(INTL_LIBRARIES intl c
-    PATHS 
-    /usr/lib/
-    /usr/local/lib)
-ENDIF(ENABLE_NLS)
-
 ########### Packaging info for CPack ###########
 INCLUDE(InstallRequiredSystemLibraries)
 

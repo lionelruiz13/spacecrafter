@@ -28,15 +28,6 @@
 #ifndef _SPACECRAFTER_HPP_
 #define _SPACECRAFTER_HPP_
 
-#if defined AC_APPLE_UNIVERSAL_BUILD
-# if defined __BIG_ENDIAN__
-#  define WORDS_BIGENDIAN 1
-# endif
-#else
-# ifndef WORDS_BIGENDIAN
-# endif
-#endif
-
 #include "config.h"
 
 // Windows
@@ -46,13 +37,11 @@
 #undef USER_EDITION
 #define USER_EDITION "Windows"
 #include <windows.h>
-#define ENABLE_NLS 0
 #endif /*WIN32*/
 
 // Linux
 #ifndef WIN32
 #define LINUX 1
-#define ENABLE_NLS 1
 #define PATH_FILE_LOCK "/tmp/spacecrafter.lock"
 #define CONFIG_DATA_DIR "/usr/local/share/spacecrafter/"
 #define LOCALEDIR "/usr/local/share/locale/"
