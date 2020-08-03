@@ -52,6 +52,8 @@ protected:
 
 class ModuleFont {
 public:
+	ModuleFont(){};
+	virtual ~ModuleFont(){};
 	virtual void setFont(float font_size, const std::string& font_name);
 
 protected:
