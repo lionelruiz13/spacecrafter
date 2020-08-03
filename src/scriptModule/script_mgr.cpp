@@ -77,7 +77,6 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 		multiplierRate=1; 
 		playing = 1;
 		play_paused = 0;
-		// elapsed_time = 0;
 		wait_time = 0;
 		return 1;
 	} 
@@ -128,10 +127,8 @@ void ScriptMgr::cancelScript()
 
 void ScriptMgr::pauseScript()
 {
-	//std::cout << "Je suis dans pauseScript" << std::endl;
 	if(!playing)
 		return;
-	//std::cout << "Je suis dans pauseScript et je met la machine de script en pause" << std::endl;
 	play_paused = 1;
 	media->audioMusicPause();
 	commander->executeCommand("timerate action pause");
@@ -140,21 +137,17 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	//std::cout << "Je suis dans resumeScript" << std::endl;
 	if(!playing) {
-		//std::cout << "resume script ignoré car !playing == true" << std::endl;
 		return;
 	}
-	//std::cout << "Je suis dans pauseScript et je remet la machine de script en route" << std::endl;
 
 	play_paused = 0;
 	media->audioMusicResume();
 	commander->executeCommand("timerate action resume");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-	//std::cout << "ScriptMgr::script action resume" << std::endl;
 }
 
-bool ScriptMgr::isFaster()
+bool ScriptMgr::isFaster() const
 {
 	return (multiplierRate!=1); 
 }
@@ -249,12 +242,6 @@ void ScriptMgr::cancelRecordScript()
 	cLog::get()->write("ScriptMgr::Script recording stopped.", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
-// Allow timer to be reset
-// void ScriptMgr::resetTimer()
-// {
-// 	elapsed_time = 0;
-// }
-
 void ScriptMgr::resetScriptLoop()
 {
 	nbrLoop = 0;
@@ -270,16 +257,11 @@ void ScriptMgr::update(int delta_time)
 	if (recording) record_elapsed_time += delta_time;
 
 	if (playing && !play_paused) {
-		// elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
-		
-		// if (wait_time>=delta_time) {
-			wait_time -= delta_time;
-			if (wait_time<0)
-				wait_time =0;
-		// }
+		wait_time -= delta_time;
+		if (wait_time<0)
+			wait_time =0;
 
 		while (wait_time==0) {
-			//elapsed_time -= wait_time;
 			std::string comd;
 
 			unsigned long int wait=0;
@@ -318,37 +300,9 @@ void ScriptMgr::update(int delta_time)
 	}
 }
 
-///* au départ
-// runs maximum of one command per update
-// note that waits can drift by up to 1/fps seconds
-// void ScriptMgr::update(int delta_time)
-// {
-// 	if (recording) record_elapsed_time += delta_time;
-// 	if (playing && !play_paused) {
-// 		elapsed_time += delta_time;  // time elapsed since last command (should have been) executed
-// 		if (elapsed_time >= wait_time) {
-// 			// now time to run next command
-// 			elapsed_time -= wait_time;
-// 			std::string comd;
-// 			unsigned long int wait;
-// 			if (script->next_command(comd)) {
-// 				commander->execute_command(comd, wait, 0);  // untrusted commands
-// 				wait_time = wait;
-// 			} else {
-// 				// script done
-// 				commander->execute_command("script action end");
-// 			}
-// 		}
-// 	}
-// }
-/////* fin
-
-
-
 // get a list of script files from directory in alphabetical order
 std::string ScriptMgr::getScriptList(const std::string &directory)
 {
-	// TODO: This is POSIX specific
 	std::multiset<std::string> items;
 	std::multiset<std::string>::iterator iter;
 
