@@ -34,7 +34,7 @@
 //#define DEBUG 1
 
 struct TopTriangle {
-	const u_char corners[3];   // index der Ecken
+	const unsigned char corners[3];   // index der Ecken
 };
 
 constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
@@ -251,14 +251,14 @@ inline void SphereGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisi
 
 	tmp.element = nullptr;
 	tmp.center = data.value.center;
-	for (u_char j = 0; j < 3; j++) {
+	for (unsigned char j = 0; j < 3; j++) {
 		middleSegments[j] = data.value.corners[(j + 1) % 3] + data.value.corners[(j + 2) % 3];
 		middleSegments[j].normalize();
 		tmp.corners[j] = middleSegments[j];
 	}
 	data.push_back(tmp);
 
-	for (u_char j = 0; j < 3; j++) {
+	for (unsigned char j = 0; j < 3; j++) {
 		tmp.corners[0] = data.value.corners[j];
 		tmp.corners[1] = middleSegments[(j + 1) % 3];
 		tmp.corners[2] = middleSegments[(j + 2) % 3];
@@ -268,12 +268,12 @@ inline void SphereGrid<T>::buildSubdivision(Tree<subGrid_t> &data, int subdivisi
 	}
 
 	if (subdivisionLvl < nbSubdivision) {
-		for (u_char j = 0; j < 4; j++) {
+		for (unsigned char j = 0; j < 4; j++) {
 			// build next subdivision
 			buildSubdivision(data[j], subdivisionLvl + 1);
 		}
 	} else {
-		for (u_char j = 0; j < 4; j++) {
+		for (unsigned char j = 0; j < 4; j++) {
 			// create container
 			allDataCenter.push_back(std::pair<dataType_t, bool>(dataType_t(), false));
 			// assign created container
@@ -298,7 +298,7 @@ void SphereGrid<T>::subdivise(int _nbSubdivision)
 
 	// build angleLvl
 	Tree<subGrid_t> *actual = &dataCenter;
-	for (u_char i = 0; i <= nbSubdivision; i++) {
+	for (unsigned char i = 0; i <= nbSubdivision; i++) {
 		angleLvl.push_back(actual->value.center.dot(actual->value.corners[0]));
 		actual = &(*actual)[0];
 	}
@@ -311,8 +311,8 @@ SphereGrid<T>::SphereGrid()
 	subGrid_t tmp;
 	tmp.element = nullptr;
 
-	for (u_char i = 0; i < 20; i++) {
-		for (u_char j = 0; j < 3; j++) {
+	for (unsigned char i = 0; i < 20; i++) {
+		for (unsigned char j = 0; j < 3; j++) {
 			tmp.corners[j] = icosahedron_corners[icosahedron_triangles[i].corners[j]];
 		}
 		tmp.center = tmp.corners[0] + tmp.corners[1] + tmp.corners[2];
@@ -330,7 +330,7 @@ auto *SphereGrid<T>::getNearest(const Vec3f& _v)
 	v.normalize();
 
 	Tree<subGrid_t> *actual = &dataCenter;
-	for (u_char i = 0; i <= nbSubdivision; i++) {
+	for (unsigned char i = 0; i <= nbSubdivision; i++) {
 		for (auto &data: *actual) {
 			if (v.dot(data->value.center) >= bestDot) {
 				bestDot = v.dot(data->value.center);

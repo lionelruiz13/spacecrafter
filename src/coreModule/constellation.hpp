@@ -107,7 +107,7 @@ public:
 		nameI18 = name;
 	}
 
-	void setArtVertex(u_char index, const Vec3f &value) {
+	void setArtVertex(unsigned char index, const Vec3f &value) {
 		art_vertex[index] = value;
 	}
 

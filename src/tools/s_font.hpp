@@ -90,6 +90,7 @@ public:
 	static void createSC_context();
 	//! met en place la fonte de secours
 	static void initBaseFont(const std::string& ttfFileName);
+
 protected:
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 	renderedStringHash_t renderCache;
