@@ -61,6 +61,7 @@ public:
 	void setColor(SKYDISPLAY_NAME nameObj, const Vec3f& c);
 	const Vec3f& getColor(SKYDISPLAY_NAME nameObj);
 
+	virtual void setFont(float font_size, const std::string& font_name) override;
 	//! change FlagShow: inverse la valeur du flag
 	void setFlagShow(SKYDISPLAY_NAME nameObj, bool b);
 	bool getFlagShow(SKYDISPLAY_NAME nameObj);
