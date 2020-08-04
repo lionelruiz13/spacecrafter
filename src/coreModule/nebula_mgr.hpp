@@ -222,7 +222,7 @@ private:
 	LinearFader hintsFader;			//!< Hint about position and number of dso
 	LinearFader textFader;			//!< Display names smoothly
 
-	typedef SphereGrid<Nebula *> nebGrid_t;
+	typedef SphereGrid<std::unique_ptr<Nebula>> nebGrid_t;
 	nebGrid_t nebGrid;
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed

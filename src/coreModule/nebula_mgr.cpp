@@ -54,10 +54,6 @@ dsoPictoSize(6)
 
 NebulaMgr::~NebulaMgr()
 {
-	for (auto iter=nebGrid.rawBegin(); iter!=nebGrid.end(); ++iter) {
-		delete (*iter);
-	}
-
 	if (tex_NEBULA) delete tex_NEBULA;
 	tex_NEBULA = nullptr;
 
@@ -117,7 +113,6 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 				if(showOriginal) (*iter)->show(); // make sure original is now visible
 				return;
 			}
-			delete *iter;
 			nebGrid.erase(iter);
 			return;
 		}
@@ -139,7 +134,6 @@ void NebulaMgr::removeSupplementalNebulae()
 			n->select();
 			return false;
 		} else {
-			delete n;
 			return true;
 		}
 	});
@@ -210,6 +204,7 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 
 	shaderNebulaHint->use();
 	shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
+	// pipelineNebulaHint
 
 	m_hintGL->fillVertexBuffer(BufferType::POS2D, vecHintPos);
 	m_hintGL->fillVertexBuffer(BufferType::TEXTURE, vecHintTex);
@@ -248,7 +243,7 @@ Nebula *NebulaMgr::searchNebula(const std::string& name, bool search_hidden=fals
 	});
 
 	if (iter != nebGrid.end())
-		return *iter;
+		return (*iter).get();
 	return nullptr;
 }
 
@@ -300,7 +295,7 @@ Object NebulaMgr::search(Vec3f Pos)
 		if((*iter)->isHidden()==true) continue;
 		if ((*iter)->XYZ_[0]*Pos[0]+(*iter)->XYZ_[1]*Pos[1]+(*iter)->XYZ_[2]*Pos[2]>anglePlusProche) {
 			anglePlusProche=(*iter)->XYZ_[0]*Pos[0]+(*iter)->XYZ_[1]*Pos[1]+(*iter)->XYZ_[2]*Pos[2];
-			plusProche=(*iter);
+			plusProche=(*iter).get();
 		}
 	}
 	if (anglePlusProche>Nebula::dsoRadius*0.999) {
@@ -322,7 +317,7 @@ std::vector<Object> NebulaMgr::searchAround(Vec3d v, double lim_fov) const
 		if (equPos[0]*v[0] + equPos[1]*v[1] + equPos[2]*v[2]>=cos_lim_fov) {
 			// NOTE: non-labeled nebulas are not returned!
 			// Otherwise cursor select gets invisible nebulas - Rob
-			if (n->getNameI18n() != "" && n->isHidden()==false) result.push_back(n);
+			if (n->getNameI18n() != "" && n->isHidden()==false) result.push_back(n.get());
 		}
 	}
 	return result;
@@ -342,11 +337,11 @@ bool NebulaMgr::loadDeepskyObject(std::string _englishName, std::string _DSOType
 			cLog::get()->write("dso: hide nebula with name " + _englishName, LOG_TYPE::L_WARNING);
 		}
 	}
-	e = new Nebula(_englishName, _DSOType, _constellation, _ra, _de, _mag, _size, _classe, _distance, tex_name, path,
+	auto neb = std::make_unique<Nebula>(_englishName, _DSOType, _constellation, _ra, _de, _mag, _size, _classe, _distance, tex_name, path,
 	               tex_angular_size, _rotation, _credit, _luminance, deletable, false);
 
-	if (e != nullptr) {
-		nebGrid.insert(e, e->XYZ_);
+	if (neb != nullptr) {
+		nebGrid.insert(std::move(neb), neb->XYZ_);
 		return true;
 	} else
 		return false;
@@ -420,7 +415,7 @@ Object NebulaMgr::searchByNameI18n(const std::string& nameI18n) const
 		return false;
 	});
 	if (iter != nebGrid.end())
-		return *iter;
+		return (*iter).get();
 	return nullptr;
 }
 
