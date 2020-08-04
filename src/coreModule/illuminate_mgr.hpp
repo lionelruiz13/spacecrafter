@@ -31,7 +31,6 @@
 
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
-#include "coreModule/grid.hpp"
 #include "coreModule/illuminate.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/SphereGrid.hpp"
