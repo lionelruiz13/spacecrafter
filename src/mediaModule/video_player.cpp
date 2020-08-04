@@ -18,7 +18,7 @@
 
 VideoPlayer::VideoPlayer()
 {
-	isAlive = false;
+	m_isVideoPlayed = false;
 	isInPause = false;
 	isSeeking = false;
 #ifndef WIN32
@@ -49,7 +49,7 @@ void VideoPlayer::pause()
 
 void VideoPlayer::init()
 {
-	isAlive = false;
+	m_isVideoPlayed = false;
 	isInPause= false;
 	isSeeking = false;
 #ifndef WIN32
@@ -63,7 +63,7 @@ void VideoPlayer::init()
 
 bool VideoPlayer::RestartVideo()
 {
-	if (!isAlive)
+	if (!m_isVideoPlayed)
 		return false;
 #ifndef WIN32
 	if(av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0) {
@@ -81,7 +81,7 @@ bool VideoPlayer::RestartVideo()
 void VideoPlayer::getInfo()
 {
 #ifndef WIN32
-	if (isAlive) {
+	if (m_isVideoPlayed) {
 		cLog::get()->write("--------------- File Information ----------------");
 		av_dump_format(pFormatCtx,0,fileName.c_str(),0);
 		cLog::get()->write("-------------------------------------------------");
@@ -92,7 +92,7 @@ void VideoPlayer::getInfo()
 int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 {
 #ifndef WIN32
-	if (isAlive)
+	if (m_isVideoPlayed)
 		playStop();
 	std::ifstream fichier(_fileName.c_str());
 	if (!fichier.fail()) { // verifie si le fichier vidéo existe
@@ -199,7 +199,7 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 	lastCount = firstCount;
 	d_lastCount = firstCount;
 	nbFrames = 0;
-	isAlive = true;
+	m_isVideoPlayed = true;
 	elapsedTime =0.0;
 	this->getNextVideoFrame();
 	return 0;
@@ -209,7 +209,7 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 void VideoPlayer::update()
 {
 #ifndef WIN32
-	if (! isAlive)
+	if (! m_isVideoPlayed)
 		return;
 
 	if (isInPause) {
@@ -234,7 +234,7 @@ void VideoPlayer::getNextFrame()
 
 		if(av_read_frame(pFormatCtx, packet)<0) {
 			cLog::get()->write("fin de fichier");
-			isAlive= false;
+			m_isVideoPlayed= false;
 			return;
 		}
 
@@ -306,10 +306,10 @@ void VideoPlayer::getNextVideoFrame()
 void VideoPlayer::playStop()
 {
 #ifndef WIN32
-	if (isAlive==false)
+	if (m_isVideoPlayed==false)
 		return;
 	else {
-		isAlive = false;
+		m_isVideoPlayed = false;
 		sws_freeContext(img_convert_ctx);
 		av_frame_free(&pFrameOut);
 		av_frame_free(&pFrameIn);
@@ -353,7 +353,7 @@ void VideoPlayer::initTexture()
 /* lets take a leap forward the video */
 bool VideoPlayer::JumpVideo(float deltaTime, float &reallyDeltaTime)
 {
-	if (isAlive==false)
+	if (m_isVideoPlayed==false)
 		return false;
 	if (isInPause==true)
 		this->pause();
@@ -369,7 +369,7 @@ bool VideoPlayer::JumpVideo(float deltaTime, float &reallyDeltaTime)
 /* lets take a leap forward the video */
 bool VideoPlayer::Invertflow(float &reallyDeltaTime)
 {
-	if (isAlive==false)
+	if (m_isVideoPlayed==false)
 		return false;
 	if (isInPause==true)
 		this->pause();

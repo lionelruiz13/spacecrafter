@@ -261,8 +261,8 @@ public:
 	// 	return player->getFps();
 	// }
 
-	bool playerGetAlive() {
-		return player->getAlive();
+	bool playerisVideoPlayed() {
+		return player->isVideoPlayed();
 	}
 
 	////////////////////////////////////////////////////////////////////////////

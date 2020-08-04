@@ -75,8 +75,8 @@ public:
 
 	//! Renvoie l'état du player
 	//! @return true si un fichier est en cours de lecture, false sinon
-	bool getAlive() {
-		return isAlive;
+	bool isVideoPlayed() {
+		return m_isVideoPlayed;
 	}
 
 	//! Renvoie l'ID de la texture dans le GPU représentant la frame lue du fichier vidéo
@@ -104,7 +104,7 @@ private:
 	YUV_WRAPPER YUV_Texture;
 	GLuint YUVtexture[3];
 
-	bool isAlive;			//!< indique si une vidéo est en cours de lecture
+	bool m_isVideoPlayed;	//!< indique si une vidéo est en cours de lecture
 	bool isDisplayRVB;		//!< indique si le rendu doit être converti en RVG ou pas
 	std::string fileName; 	//!< nom de la vidéo à lire
 	int video_w;			

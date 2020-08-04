@@ -80,7 +80,7 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 	vr360->displayStop();
 	viewPort->displayStop();
 
-	if (playerGetAlive()) {
+	if (playerisVideoPlayed()) {
 		if (type == "VR360") {
 			vr360->setTexture(player->getYUV_VideoTexture());
 			vr360->modeSphere();

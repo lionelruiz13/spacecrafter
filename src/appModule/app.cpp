@@ -499,8 +499,8 @@ void App::startMainLoop()
 	// Start the main loop
 	while (flagAlive) {
 		//std::cout << "Frame" <<std::endl;
-		if (flagOnVideo != media->playerGetAlive()) {
-			if (media->playerGetAlive() == false) {
+		if (flagOnVideo != media->playerisVideoPlayed()) {
+			if (media->playerisVideoPlayed() == false) {
 				//std::cout << "vidéo arretée" << std::endl;
 				media->playerStop();
 				ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
