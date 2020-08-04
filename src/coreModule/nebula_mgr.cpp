@@ -124,10 +124,6 @@ void NebulaMgr::removeNebula(const std::string& name, bool showOriginal=true)
 // all standard nebulae visible become again selected
 void NebulaMgr::removeSupplementalNebulae()
 {
-
-	std::vector<Nebula *>::iterator iter;
-	std::vector<Nebula *>::iterator iter2;
-
 	nebGrid.remove_if([](auto &n){
 		if (!n->isDeletable()) {
 			n->show();
