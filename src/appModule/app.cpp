@@ -301,11 +301,10 @@ void App::firstInit()
 	ui->init(conf);
 	ui->localizeTui();
 	ui->initTui();
+	media->init();
 
 	appDraw->createSC_context();
-	media->createViewPort();
-	media->createVR360();
-	media->createImageShader();
+	media->createSC_context();
 
 	enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
 	enable_mkfifo=conf.getBoolean(SCS_IO, SCK_ENABLE_MKFIFO);

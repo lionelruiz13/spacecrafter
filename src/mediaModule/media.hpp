@@ -40,7 +40,7 @@ class Navigator;
 class Media : public NoCopy{
 
 public:
-	Media(/*unsigned int _width, unsigned int _height*/);
+	Media();
 	~Media();
 
 	////////////////////////////////////////////////////////////////////////////
@@ -48,9 +48,10 @@ public:
 	// other
 	//
 	////////////////////////////////////////////////////////////////////////////
-	void createVR360();
-	void createViewPort();
-	void createImageShader();
+
+	void init();
+
+	void createSC_context();
 
 	//! affiche une image du player video à destination du VR360
 	void drawVR360(const Projector* prj, const Navigator* nav) {

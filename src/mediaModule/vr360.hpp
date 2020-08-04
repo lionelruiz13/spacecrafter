@@ -35,6 +35,8 @@ public:
 	VR360();
 	virtual ~VR360();
 
+	void init();
+
 	void setTexture(YUV_WRAPPER _tex) {
 		videoTex[0] = _tex.TexY;
 		videoTex[1] = _tex.TexU;
@@ -59,11 +61,10 @@ public:
 		showFader.update(delta_time);
 	}
 
-private:
-	enum class TYPE : char { V_CUBE, V_SPHERE, V_NONE };
-
 	//! création des shaders
 	void createShader();
+private:
+	enum class TYPE : char { V_CUBE, V_SPHERE, V_NONE };
 
 	OjmL* sphere = nullptr;
 	OjmL* cube = nullptr;

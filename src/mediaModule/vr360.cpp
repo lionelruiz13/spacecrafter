@@ -30,7 +30,10 @@ VR360::VR360()
 {
 	showFader = false;
 	showFader.setDuration(VR360_FADER_DURATION);
+}
 
+void VR360::init()
+{
 	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Sphere.ojm");
 	cube = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Cube.ojm");
 
@@ -55,7 +58,6 @@ VR360::VR360()
 		cLog::get()->write("VR360 deactived", LOG_TYPE::L_ERROR);
 		//~ printf("VR360 cube error\n");
 	}
-
 	createShader();
 }
 

@@ -30,6 +30,8 @@ Media::Media()
 	audio = new Audio();
 	imageMgr = new ImageMgr();
 	player = new VideoPlayer();
+	viewPort = new ViewPort();
+	vr360 = new VR360();
 	mediaState = {V_TYPE::V_NO, V_STATE::V_OFF, A_TYPE::A_NO, A_STATE::A_OFF};
 }
 
@@ -191,22 +193,16 @@ void Media::playerInvertflow()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::createVR360()
+void Media::init()
 {
-	vr360 = new VR360();
+	vr360->init();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-void Media::createImageShader()
+void Media::createSC_context()
 {
+	viewPort-> createShader();
+	viewPort-> createSC_context();
+	vr360-> createShader();
 	imageMgr->createImageShader();
 }
 ////////////////////////////////////////////////////////////////////////////////
-
-void Media::createViewPort()
-{
-	viewPort = new ViewPort();
-	viewPort-> createShader();
-	viewPort-> createSC_context();
-}
