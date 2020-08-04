@@ -35,7 +35,7 @@ class s_texture;
 //! \class VideoPlayer
 //! \brief Classe qui gere toute les fonctions de la ffmpeg pour le player vidéo.
 //! Son but est de rendre un pointeur sur texture utilisable dans le reste du logiciel
-//! La classe gère d'elle même le bon fps, à condition que le fps de SC soit supérieur à celui de la vidéo.
+//! La classe gère d'elle même le bon fps
 class VideoPlayer {
 public:
 	//! \fn VideoPlayer
