@@ -25,14 +25,11 @@
 #include "mediaModule/media.hpp"
 #include "tools/log.hpp"
 
-Media::Media(/*unsigned int _width, unsigned int _height*/)
+Media::Media()
 {
-	// width = _width;
-	// height = _height;
 	audio = new Audio();
 	imageMgr = new ImageMgr();
 	player = new VideoPlayer();
-	//external = new ExternalMplayer(width, height);
 	mediaState = {V_TYPE::V_NO, V_STATE::V_OFF, A_TYPE::A_NO, A_STATE::A_OFF};
 }
 
@@ -42,7 +39,6 @@ Media::~Media()
 	if (audio)	delete audio;
 	if (imageMgr) delete imageMgr;
 	if (player) delete player;
-	//if (external) delete external;
 	if (vr360) delete vr360;
 	if (viewPort) delete viewPort;
 }
@@ -59,8 +55,6 @@ void Media::audioMusicLoad(const std::string &filename)
 
 int Media::playerPlay(const std::string &type, const std::string &filename, const std::string& _name, const std::string& _position)
 {
-	//~ printf("media->playerPlay sans son\n");
-	//~ printf("Fichier video : %s\n", filename.c_str());
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
 	int tmp;
 	
@@ -127,7 +121,6 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 
 int Media::playerPlay(const std::string &type,const  std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position)
 {
-	//~ printf("media->playerPlay avec son\n");
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
 	cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
 	int tmp = playerPlay(type, videoname, _name, _position);
@@ -142,7 +135,6 @@ int Media::playerPlay(const std::string &type,const  std::string &videoname, con
 
 void Media::playerStop()
 {
-	//~ printf("media->playerStop\n");
 	cLog::get()->write("Media::playerPlayStop", LOG_TYPE::L_INFO);
 	player->playStop();
 	mediaState.video_state=V_STATE::V_OFF;
@@ -160,7 +152,6 @@ void Media::playerStop()
 
 void Media::playerRestart()
 {
-	//~ printf("media->playerRestart\n");
 	cLog::get()->write("Media::playerRestart", LOG_TYPE::L_INFO);
 	player->RestartVideo();
 	audio->musicRewind();
@@ -170,7 +161,6 @@ void Media::playerJump(float deltaTime)
 {
 	float realDelta=0.0f;
 	player->JumpVideo(deltaTime, realDelta);
-	//~ printf("Le saut est de %f\n", realDelta);
 	if (realDelta==0.0) {
 		audio->musicRewind();
 		return;
@@ -187,7 +177,6 @@ void Media::playerInvertflow()
 {
  	float realDelta=0.0f;
  	player->Invertflow(realDelta);
- 	//~ printf("Le saut est de %f\n", realDelta);
  	if (realDelta==0.0) {
  		audio->musicRewind();
  		return;
@@ -221,22 +210,3 @@ void Media::createViewPort()
 	viewPort-> createShader();
 	viewPort-> createSC_context();
 }
-
-////////////////////////////////////////////////////////////////////////////////
-
-// void Media::externalInit(const std::string &_mplayerFilename, const std::string &_mplayerMkfifoName, bool _mplayerEnable)
-// {
-// 	mplayerFilename = _mplayerFilename;
-// 	mplayerMkfifoName = _mplayerMkfifoName;
-// 	mplayerEnable = _mplayerEnable;
-// 	external->init(mplayerFilename, mplayerMkfifoName, mplayerEnable);
-// }
-
-// void Media::externalReset()
-// {
-// 	if (external)
-// 		delete external;
-
-// 	external = new ExternalMplayer(width,height);
-// 	external->init(mplayerFilename, mplayerMkfifoName, mplayerEnable);
-// }
