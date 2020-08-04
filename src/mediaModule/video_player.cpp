@@ -36,14 +36,12 @@ void VideoPlayer::pause()
 	if (isInPause==false) {
 		isInPause = true;
 		startPause = SDL_GetTicks();
-		// std::cout << "Debut de la pause" << std::endl;
 	} else {
 		endPause = SDL_GetTicks();
 		isInPause = !isInPause;
 		firstCount = firstCount + (endPause - startPause);
 		d_lastCount = d_lastCount + (endPause - startPause);
 		lastCount = (int)d_lastCount;
-		// std::cout << "Fin de la pause" << std::endl;
 	}
 }
 
@@ -152,9 +150,7 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 
 	frameRate = frame_rate.num/(double)frame_rate.den;
 	frameRateDuration = 1000*frame_rate.den/(double)frame_rate.num;
-	// std::cout << "frameRate " << frameRate << std::endl << "frameRateDuration " << frameRateDuration << std::endl;
 	nbTotalFrame = static_cast<int>(((pFormatCtx->duration)/1000)/frameRateDuration);
-	// std::cout << "nbTotalFrame " << nbTotalFrame << std::endl;
 
 	isDisplayRVB = convertToRBG;
 	initTexture();
@@ -252,10 +248,9 @@ void VideoPlayer::getNextFrame()
 			if (isSeeking && pFrameIn->key_frame==1) {
 				isSeeking=false;
 			}
-			//if (!(ret<0)) {
-				getNextFrame = true;
-				av_packet_unref(packet);
-			//}
+
+			getNextFrame = true;
+			av_packet_unref(packet);
 		}
 	}
 #endif
@@ -270,33 +265,17 @@ void VideoPlayer::getNextVideoFrame()
 	elapsedTime += frameRateDuration;
 	if (!isSeeking) {
 		if (isDisplayRVB) {
-			//auto start = std::chrono::steady_clock::now();
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
-			//auto end = std::chrono::steady_clock::now();
-			//if (nbFrames%30==0)
-			//	std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 			glBindTexture(GL_TEXTURE_2D, RGBtexture);
-			//start = std::chrono::steady_clock::now();
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameOut->data[0]);
-			//end = std::chrono::steady_clock::now();
-			//if (nbFrames%30==0)
-			//	std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 		} else {
 			const int widths[3]  = { video_w, video_w / 2, video_w / 2 };  
 			const int heights[3] = { video_h, video_h / 2, video_h / 2 }; 
-			//auto start = std::chrono::steady_clock::now();
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
-			//auto end = std::chrono::steady_clock::now();
-			//if (nbFrames%30==0)
-			//	std::cout << "sws_scale : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
-			//start = std::chrono::steady_clock::now();
 			for (int i = 0; i < 3; ++i) {  
     			glBindTexture(GL_TEXTURE_2D, YUVtexture[i]);  
     			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 			}
-			//end = std::chrono::steady_clock::now();
-			//if (nbFrames%30==0)
-			//	std::cout << "glTexSubImage2D : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
 		}
 	}
 #endif
@@ -335,7 +314,6 @@ void VideoPlayer::initTexture()
 		YUV_Texture.TexY = YUVtexture[0];
 		YUV_Texture.TexU = YUVtexture[1];
 		YUV_Texture.TexV = YUVtexture[2];
-		//std::cout << "valeurs " << YUV_Texture.TexY << " " << YUV_Texture.TexU << " " << YUV_Texture.TexV << std::endl;
 		const int  widths[3]  = { video_w, video_w / 2, video_w / 2 };  
 		const int  heights[3] = { video_h, video_h / 2, video_h / 2 };  
 		for (int i = 0; i < 3; ++i) {  
@@ -385,7 +363,6 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 
 	//saut avant le début de la vidéo
 	if (nbFrames <= 0) {
-		// std::cout << " --> Saut avant le début " << std::endl;
 		this->RestartVideo();
 		reallyDeltaTime=0.0;
 		return true;
@@ -404,7 +381,6 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	}
 	// fin de fichier ... vidéo s'arrête
 	this->playStop();
-	// std::cout << "Saut après la fin" << std::endl;
 	reallyDeltaTime= -1.0;
 	return true;
 #else
