@@ -7,7 +7,6 @@
 #include "tools/shader.hpp"
 #include "tools/Renderer.hpp"
 #include "signal.h"
-#include "tools/vecmath.hpp"
 
 bool opened = true;
 
@@ -17,7 +16,7 @@ bool opened = true;
 constexpr float DEG2RAD = 3.14159265358979323 / 180.;
 constexpr float RATIO = (float) width / (float) height;
 
-void sigTerm(int sig)
+static void sigTerm(int sig)
 {
     (void) sig;
     opened = false;

@@ -1,6 +1,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.hpp>
+#include "tools/vecmath.hpp"
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -14,9 +15,27 @@ public:
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
     void drawFrame();
+    void updateUniformBuffer(uint32_t currentImage, float degreePerSecond);
+    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+    VkCommandPool getTransferPool() {return transferCommandPool[0];}
+    VkQueue getTransferQueue() {return transferQueues[0];}
+    VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
+    VkRenderPass &getRenderPass() {return renderPass;}
+    VkQueue assignGraphicsQueue() {static short i = 1; return graphicsAndPresentQueues[i++];}
+    auto &getGraphicsQueueIndex() {return graphicsAndPresentQueueFamilyIndex[0];}
+
+    //! getDevice();
+    const VkDevice &refDevice;
+    //! getRenderPass();
+    const VkRenderPass &refRenderPass;
+    //! getSwapChainFramebuffers();
+    const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
+    const int &refFrameIndex;
 private:
     const char *AppName;
     const char *EngineName;
+    VkPipelineViewportStateCreateInfo viewportState;
+    int frameIndex;
 
     void initDevice(const char *AppName, const char *EngineName, GLFWwindow *window, bool _hasLayer = false);
     vk::UniqueInstance instance;
@@ -28,13 +47,16 @@ private:
     std::vector<size_t> graphicsAndPresentQueueFamilyIndex;
     std::vector<size_t> graphicsQueueFamilyIndex;
     std::vector<size_t> presentQueueFamilyIndex;
+    std::vector<size_t> transferQueueFamilyIndex;
     std::vector<VkQueue> graphicsAndPresentQueues;
     std::vector<VkQueue> graphicsQueues;
     std::vector<VkQueue> presentQueues;
+    std::vector<VkQueue> transferQueues;
     VkDevice device;
 
     void initSwapchain(int width, int height);
-    VkSwapchainKHR swapChain;
+    std::vector<VkSwapchainKHR> swapChain;
+    std::vector<uint32_t> imageIndex;
     std::vector<VkImage> swapChainImages;
     VkExtent2D swapChainExtent;
     VkFormat swapChainImageFormat;
@@ -55,6 +77,12 @@ private:
 
     void createCommandPool();
     std::vector<VkCommandPool> commandPool;
+    std::vector<VkCommandPool> transferCommandPool;
+
+    VkCommandBuffer beginSingleTimeCommands();
+    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
     void createCommandBuffer();
     std::vector<VkCommandBuffer> commandBuffers;
@@ -62,11 +90,42 @@ private:
     void createSemaphore();
     VkSemaphore imageAvailableSemaphore;
     VkSemaphore renderFinishedSemaphore;
-    /*
-    void initCommandBuffer();
-    vk::UniqueCommandPool commandPool;
-    vk::UniqueCommandBuffer commandBuffer;
-    //*/
+
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
+    void createVertexBuffer();
+    VkBuffer vertexBuffer;
+    VkDeviceMemory vertexBufferMemory;
+
+    void createIndexBuffer();
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+
+    void createDescriptorSetLayout();
+    VkDescriptorSetLayout descriptorSetLayout;
+    //VkPipelineLayout pipelineLayout;
+
+    void createUniformBuffers();
+    std::vector<VkBuffer> uniformBuffers;
+    std::vector<VkDeviceMemory> uniformBuffersMemory;
+
+    void createDescriptorPool();
+    VkDescriptorPool descriptorPool;
+
+    void createDescriptorSets();
+    std::vector<VkDescriptorSet> descriptorSets;
+
+    void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+    void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+    void createTextureImage();
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    VkImage textureImage;
+    VkDeviceMemory textureImageMemory;
+
+    VkImageView createImageView(VkImage image, VkFormat format);
+    void createTextureImageView();
+    VkImageView textureImageView;
 
     void initDebug(vk::InstanceCreateInfo *instanceCreateInfo);
     void startDebug();
