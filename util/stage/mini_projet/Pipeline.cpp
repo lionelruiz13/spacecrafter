@@ -33,7 +33,7 @@ Pipeline::Pipeline(VirtualSurface *_master, PipelineLayout *layout, std::vector<
 
 void Pipeline::bindShader(Shader *shader)
 {
-    shaderStages.push_back(shader->getStageInfo());
+    shaderStages.assign(shader->getStageInfo().begin(), shader->getStageInfo().end());
 }
 
 void Pipeline::setTopology(VkPrimitiveTopology state, bool enableStripBreaks)

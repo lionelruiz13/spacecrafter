@@ -26,12 +26,15 @@ private:
 
 class Shader {
 public:
-    Shader();
-    // Note : the extension define what kind of shader it was
-    void init(std::string filename);
-    VkPipelineShaderStageCreateInfo getStageInfo() {return stageInfo;}
+    Shader(VirtualSurface *master);
+    Shader(Vulkan *master);
+    ~Shader();
+    void load(const std::string &filename, VkShaderStageFlagBits stage, const std::string entry = "main");
+    const std::vector<VkPipelineShaderStageCreateInfo> &getStageInfo() {return stageInfo;}
 private:
-    VkPipelineShaderStageCreateInfo stageInfo;
+    std::vector<VkPipelineShaderStageCreateInfo> stageInfo;
+    std::vector<std::string> pNames;
+    const VkDevice &refDevice;
 };
 
 class Uniform {
