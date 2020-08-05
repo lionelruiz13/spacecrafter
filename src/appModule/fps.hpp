@@ -32,6 +32,13 @@
 
 #include "tools/no_copy.hpp"
 
+/**
+* \file fps.hpp
+* \brief Framerate management
+* \author Olivier NIVOIX
+* \version 2
+*/
+
 /*! @class Fps
 * @brief classe s'occupant du framerate et des FPS
 *
