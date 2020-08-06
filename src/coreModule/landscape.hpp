@@ -56,8 +56,6 @@ public:
 	Landscape(float _radius = 2.);
 	virtual ~Landscape();
 
-	virtual void load(const std::string& file_name, const std::string& section_name);
-
 	void setSkyBrightness(float b) {
 		sky_brightness = b;
 	}
@@ -132,6 +130,8 @@ public:
 	static std::string getLandscapeNames(const std::string& landscape_file);
 	static std::string nameToKey(const std::string& landscape_file, const std::string & name);
 protected:
+	virtual void load(const std::string& file_name, const std::string& section_name);
+
 	void getFogDraw(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
 	void initShaderFog();
 	void drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const;
