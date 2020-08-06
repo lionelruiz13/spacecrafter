@@ -43,7 +43,6 @@ public:
 	Audio();
 	~Audio();
 
-
 	void update(int delta_time);
 
 	void setVolume(int _value);
