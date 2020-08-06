@@ -135,12 +135,11 @@ public:
 		audio->musicDrop();
 	}
 
-	void audioUpdate(int delta_time) {
-		audio->update(delta_time);
-	}
-
 	void audioMusicJump(float deltaTime) {
 		audio->musicJump(deltaTime);
+	}
+	void audioUpdate(int delta_time) {
+		audio->update(delta_time);
 	}
 
 	//! Permet de fixer le comportement 
