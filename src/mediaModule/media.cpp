@@ -100,6 +100,7 @@ void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& 
 			break;
 		case AudioFunction::AF_MUSICLOAD:
 			audio->musicLoad(audioParam.filename);
+			audio->musicPlay(audioParam.loop);
 			break;
 	}
 }
