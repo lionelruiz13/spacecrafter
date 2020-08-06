@@ -212,10 +212,6 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(fog_angle_shift*M_PI/180.)))).convert();
 	shaderFog->setUniform("ModelViewMatrix",matrix);
 
-	// m_fogGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP,0,nbFogVertex);
-	// m_fogGL->unBind();
-	// shaderFog->unuse();
 	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), GL_TRIANGLE_STRIP,0,nbFogVertex);
 
 	glCullFace(GL_BACK);
@@ -226,8 +222,6 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 
 void Landscape::load(const std::string& file_name, const std::string& section_name) {}
 
-
-// only if shaderLandscape->getProgram() is defined.
 void Landscape::initShaderParams()
 {
 	shaderLandscape->setUniformLocation("sky_brightness");
@@ -378,10 +372,6 @@ void LandscapeFisheye::draw(ToneReproductor * eye, const Projector* prj, const N
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 
-	// m_landscapeGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
-	// m_landscapeGL->unBind();
-	// shaderLandscape->unuse();
 	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
 
 	StateGL::disable(GL_CULL_FACE);
@@ -604,25 +594,14 @@ void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
 	} else
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
-	//shaderLandscape->setUniform("haveNightTex",haveNightTex);
 
 	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
 	shaderLandscape->setUniform("fader",land_fader.getInterstate());
-	//shaderLandscape->setUniform("viewport",prj->getViewport());
 	shaderLandscape->setUniform("clipping_fov",prj->getClippingFov());
-	//shaderLandscape->setUniform("viewport_center",prj->getViewportFloatCenter());
 
-	//Mat4f proj=prj->getMatProjection().convert();
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
-
-	//shaderLandscape->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	//shaderLandscape->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 
-	// m_landscapeGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP,0,nbVertex);
-	// m_landscapeGL->unBind();
-	// shaderLandscape->unuse();
 	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
 
 	StateGL::disable(GL_CULL_FACE);

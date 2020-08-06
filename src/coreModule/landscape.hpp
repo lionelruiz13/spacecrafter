@@ -48,7 +48,6 @@ class Landscape: public NoCopy {
 
 public:
 	enum class LANDSCAPE_TYPE : char {
-		//LANDSCAPE,
 		FISHEYE,
 		SPHERICAL
 	};
@@ -108,16 +107,9 @@ public:
 		return description;
 	}
 
-	// void ignoreNextTick() {
-	// 	ignoreTick = true;
-	// }
-
 	void update(int delta_time) {
-		// if (!ignoreTick) {
 		land_fader.update(delta_time);
 		fog_fader.update(delta_time);
-		// }
-		// ignoreTick = false;
 	}
 
 	virtual void setRotation(float rotation);
@@ -138,7 +130,6 @@ protected:
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
 	void initShaderParams();
-	// void deleteVboVoa();
 	void deleteMapTex();
 	float radius;
 	std::string name;
