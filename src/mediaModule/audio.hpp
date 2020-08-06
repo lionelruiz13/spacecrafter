@@ -43,6 +43,9 @@ public:
 	Audio();
 	~Audio();
 
+
+	void update(int delta_time);
+
 	void setVolume(int _value);
 	void incrementVolume(int value=5);
 	void decrementVolume(int value=5);
@@ -57,9 +60,6 @@ public:
 	void musicSync();
 	void musicDrop();
 	void musicJump(float secondJump);
-	// void musicDebug();
-
-	void update(int delta_time);
 
 	// //sound
 	// void chunkLoad(const std::string& filename);
