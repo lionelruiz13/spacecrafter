@@ -122,7 +122,7 @@ public:
 	}
 
 	void audioMusicHalt() {
-		if (mediaState.video_state != V_STATE::V_PLAY) {
+		if (m_videoState.video_state != V_STATE::V_PLAY) {
 			audio->musicHalt();
 		}
 	}
@@ -266,20 +266,16 @@ private:
 
 	std::string imageVideoName;
 
-	//etat de media, concernant video et audio
+	//etat de la lecture vidéo
 	enum class V_TYPE : char { V_NO, V_VIEWPORT, V_IMAGE, V_VR360 , V_VRCUBE};
 	enum class V_STATE: char { V_OFF, V_PAUSE, V_PLAY };
-	enum class A_TYPE : char { A_NO, A_VIDEO, A_AUDIO} ;
-	enum class A_STATE: char { A_OFF, A_PAUSE, A_PLAY};
 
-	struct MediaState {
+	struct VideoState {
 		V_TYPE video_type;
 		V_STATE video_state;
-		A_TYPE audio_type;
-		A_STATE audio_state;
 	};
 
-	MediaState mediaState;
+	VideoState m_videoState;
 };
 
 #endif //MEDIA_HPP

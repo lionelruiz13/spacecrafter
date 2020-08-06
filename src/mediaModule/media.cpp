@@ -32,7 +32,7 @@ Media::Media()
 	player = new VideoPlayer();
 	viewPort = new ViewPort();
 	vr360 = new VR360();
-	mediaState = {V_TYPE::V_NO, V_STATE::V_OFF, A_TYPE::A_NO, A_STATE::A_OFF};
+	m_videoState = {V_TYPE::V_NO, V_STATE::V_OFF};
 }
 
 
@@ -70,7 +70,7 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 		return tmp;
 	}
 
-	mediaState.video_state=V_STATE::V_PLAY;
+	m_videoState.video_state=V_STATE::V_PLAY;
 
 	audioMusicHalt();
 	vr360->displayStop();
@@ -81,40 +81,40 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 			vr360->setTexture(player->getYUV_VideoTexture());
 			vr360->modeSphere();
 			vr360->display(true);
-			mediaState.video_type=V_TYPE::V_VR360;
+			m_videoState.video_type=V_TYPE::V_VR360;
 			return 1;
 		} else if (type == "VRCUBE") {
 			vr360->setTexture(player->getYUV_VideoTexture());
 			vr360->modeCube();
 			vr360->display(true);
-			mediaState.video_type=V_TYPE::V_VRCUBE;
+			m_videoState.video_type=V_TYPE::V_VRCUBE;
 			return 1;
 		} else if (type == "VIEWPORT") {
 			viewPort->setTexture(player->getYUV_VideoTexture());
 			viewPort->displayFullScreen(true);
 			viewPort->display(true);
-			mediaState.video_type=V_TYPE::V_VIEWPORT;
+			m_videoState.video_type=V_TYPE::V_VIEWPORT;
 			return 2;
 		} else if (type == "DUAL_VIEWPORT") {
 			viewPort->setTexture(player->getYUV_VideoTexture());
 			viewPort->displayFullScreen(false);
 			viewPort->display(true);
-			mediaState.video_type=V_TYPE::V_VIEWPORT;
+			m_videoState.video_type=V_TYPE::V_VIEWPORT;
 			return 2;
 		} else if (type == "IMAGE") {
-			mediaState.video_type=V_TYPE::V_IMAGE;
+			m_videoState.video_type=V_TYPE::V_IMAGE;
 			imageVideoName = _name;
 			imageMgr->loadImage(player->getVideoTexture(),_name, _position);
 			return 3;
 		} else {//no type -> stop playing
 			playerStop();
-			mediaState.video_state=V_STATE::V_OFF;
-			mediaState.video_type=V_TYPE::V_NO;
+			m_videoState.video_state=V_STATE::V_OFF;
+			m_videoState.video_type=V_TYPE::V_NO;
 			return -1;
 		}
 	} else {
-		mediaState.video_state=V_STATE::V_OFF;
-		mediaState.video_type=V_TYPE::V_NO;
+		m_videoState.video_state=V_STATE::V_OFF;
+		m_videoState.video_type=V_TYPE::V_NO;
 		cLog::get()->write("Media::playerPlay error playerVideo with "+filename, LOG_TYPE::L_ERROR);
 		printf("playerVideo est en erreur\n");
 		return -1;
@@ -139,17 +139,17 @@ void Media::playerStop()
 {
 	cLog::get()->write("Media::playerPlayStop", LOG_TYPE::L_INFO);
 	player->playStop();
-	mediaState.video_state=V_STATE::V_OFF;
+	m_videoState.video_state=V_STATE::V_OFF;
 	audio->musicDrop();
-	if (mediaState.video_type==V_TYPE::V_VR360)
+	if (m_videoState.video_type==V_TYPE::V_VR360)
 		vr360->display(false);
-	if (mediaState.video_type==V_TYPE::V_VRCUBE)
+	if (m_videoState.video_type==V_TYPE::V_VRCUBE)
 		vr360->display(false);
-	if (mediaState.video_type==V_TYPE::V_VIEWPORT)
+	if (m_videoState.video_type==V_TYPE::V_VIEWPORT)
 		viewPort->display(false);
-	if ((mediaState.video_type==V_TYPE::V_IMAGE) && !imageVideoName.empty())
+	if ((m_videoState.video_type==V_TYPE::V_IMAGE) && !imageVideoName.empty())
 		imageMgr->drop_image(imageVideoName);
-	mediaState.video_type=V_TYPE::V_NO;
+	m_videoState.video_type=V_TYPE::V_NO;
 }
 
 void Media::playerRestart()
