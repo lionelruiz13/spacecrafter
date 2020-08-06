@@ -54,9 +54,10 @@ enum class AudioFunction : char {
 
 struct AudioParam {
 	int value;
-	const std::string& filename;
+	std::string filename;
 	bool loop;
 	float secondJump;
+	//AudioParam() {value = 0,filename = "",loop = false, secondJump = 0.f;}
 };
 
 class Media : public NoCopy{
