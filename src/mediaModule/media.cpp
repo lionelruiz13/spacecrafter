@@ -53,6 +53,58 @@ void Media::audioMusicLoad(const std::string &filename)
 	audioMusicPlay(false);
 }
 
+void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam)
+{
+	switch (audioFunction) {
+		case AudioFunction::AF_SETVOLUME:
+			audio->setVolume(audioParam.value);
+			break;
+		case AudioFunction::AF_INCREMENTVOLUME:	
+			if (audioParam.value!=0)
+				audio->incrementVolume(audioParam.value);
+			else
+				audio->incrementVolume(5);
+			break;
+		case AudioFunction::AF_DECREMENTVOLUME:	
+			if (audioParam.value!=0)
+				audio->decrementVolume(audioParam.value);
+			else
+				audio->decrementVolume(5);
+			break;
+		case AudioFunction::AF_MUSICPLAY:
+			audio->musicPlay(audioParam.loop);
+			break;
+		case AudioFunction::AF_MUSICHALT:
+			if (m_videoState.video_state != V_STATE::V_PLAY) {
+				audio->musicHalt();
+			}
+			break;
+		case AudioFunction::AF_MUSICDROP:
+			audio->musicDrop();
+			break;
+		case AudioFunction::AF_MUSICSYNC:
+			audio->musicSync();
+			break;
+		case AudioFunction::AF_MUSICREWIND:
+			audio->musicRewind();
+			break;
+		case AudioFunction::AF_MUSICRESUME:
+			audio->musicResume();
+			break;
+		case AudioFunction::AF_MUSICPAUSE:
+			if (!audioNoPause)
+				audio->musicPause();
+			break;
+		case AudioFunction::AF_MUSICJUMP:
+			audio->musicJump(audioParam.secondJump);
+			break;
+		case AudioFunction::AF_MUSICLOAD:
+			audio->musicLoad(audioParam.filename);
+			break;
+	}
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
 int Media::playerPlay(const std::string &type, const std::string &filename, const std::string& _name, const std::string& _position)

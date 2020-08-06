@@ -37,6 +37,28 @@
 class Projector;
 class Navigator;
 
+enum class AudioFunction : char {
+	AF_SETVOLUME,
+	AF_INCREMENTVOLUME,
+	AF_DECREMENTVOLUME,
+	AF_MUSICLOAD,
+	AF_MUSICPLAY,
+	AF_MUSICPAUSE,
+	AF_MUSICRESUME,
+	AF_MUSICREWIND,
+	AF_MUSICHALT,
+	AF_MUSICSYNC,
+	AF_MUSICDROP,
+	AF_MUSICJUMP
+};
+
+struct AudioParam {
+	int value;
+	const std::string& filename;
+	bool loop;
+	float secondJump;
+};
+
 class Media : public NoCopy{
 
 public:
@@ -90,6 +112,12 @@ public:
 	//interface audio
 	//
 	////////////////////////////////////////////////////////////////////////////
+
+	// cette fonction remplace :
+	void audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam);
+
+	// A partir d'içi
+	///////////////////////////////////////////////////////////////////////////////////////////////////////	
 	void audioSetVolume(int _value) {
 		audio->setVolume(_value);
 	}
@@ -138,6 +166,9 @@ public:
 	void audioMusicJump(float deltaTime) {
 		audio->musicJump(deltaTime);
 	}
+	// jusque la ...
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	void audioUpdate(int delta_time) {
 		audio->update(delta_time);
 	}
