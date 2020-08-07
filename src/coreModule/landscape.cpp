@@ -142,7 +142,7 @@ void Landscape::loadCommon(const std::string& landscape_file, const std::string&
 	fog_alt_angle = pd.getDouble(section_name, "fog_alt_angle", 30.);
 	fog_angle_shift = pd.getDouble(section_name, "fog_angle_shift", 0.);
 
-	if (name == "" ) {
+	if (name.empty()) {
 		cLog::get()->write( "No valid landscape definition found for section " + section_name +" in file " + landscape_file , LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
@@ -199,7 +199,6 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	glCullFace(GL_BACK);
 	StateGL::disable(GL_CULL_FACE);
 	glActiveTexture(GL_TEXTURE0);
-
 }
 
 void Landscape::initShaderParams()
@@ -236,7 +235,7 @@ LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius), rotate_z
 	if (fog_tex) delete fog_tex;
 	shaderLandscape =  nullptr;
 	shaderLandscape = std::make_unique<shaderProgram>();
-	shaderLandscape->init( "landscape2T.vert", "landscape2T.geom","landscape2T.frag");
+	shaderLandscape->init("landscape2T.vert", "landscape2T.geom","landscape2T.frag");
 	initShaderParams();
 }
 
@@ -260,7 +259,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 		return;
 	}
 	std::string texture = pd.getStr(section_name, "texture");
-	if (texture == "") {
+	if (texture.empty()) {
 		cLog::get()->write( "No texture for landscape " + section_name , LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
@@ -268,7 +267,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	texture = AppSettings::Instance()->getLandscapeDir() + texture;
 
 	std::string night_texture = pd.getStr(section_name, "night_texture", "");
-	if (night_texture != "")
+	if (! night_texture.empty())
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
 	create(name, texture,
@@ -291,7 +290,7 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
 
-	if (_maptex_night != "") {
+	if (! _maptex_night.empty()) {
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
 	}
@@ -486,7 +485,7 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	}
 
 	std::string texture = pd.getStr(section_name, "texture");
-	if (texture == "") {
+	if (texture.empty()) {
 		cLog::get()->write( "No texture for landscape " + section_name , LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
@@ -494,7 +493,7 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	texture = AppSettings::Instance()->getLandscapeDir() + texture;
 
 	std::string night_texture = pd.getStr(section_name, "night_texture", "");
-	if (night_texture != "")
+	if (! night_texture.empty())
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
 	create(name, texture,
@@ -507,7 +506,6 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 
 
 // create a spherical landscape from basic parameters (no ini file needed)
-//TODO bool _fullpath, est inutile
 void LandscapeSpherical::create(const std::string _name, const std::string _maptex, const float _base_altitude,
                                 const float _top_altitude, const float _rotate_z, const std::string _maptex_night, bool _mipmap)
 {
@@ -517,7 +515,7 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	cLog::get()->write( "Landscape Spherical " + _name + " created" , LOG_TYPE::L_INFO);
 	name = _name;
 	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
-	if (_maptex_night != "") {
+	if (!_maptex_night.empty()) {
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
 	}

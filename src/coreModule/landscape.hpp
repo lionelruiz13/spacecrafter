@@ -159,6 +159,7 @@ private:
 	float rotate_z;
 };
 
+
 class LandscapeFisheye : public Landscape {
 public:
 	LandscapeFisheye(float _radius = 1.);
@@ -195,13 +196,6 @@ private:
 	void initShader();
 	float base_altitude, top_altitude;  // for partial sphere coverage
 	float rotate_z; // rotation around the z axis
-};
-
-class Fog {
-public:
-
-private:
-
 };
 
 #endif // _LANDSCAPE_H_
