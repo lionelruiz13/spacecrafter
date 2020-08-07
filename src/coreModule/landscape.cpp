@@ -98,7 +98,6 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 }
 
 // create landscape from parameters passed in a hash (same keys as with ini file)
-// NOTE: maptex must be full path and filename
 Landscape* Landscape::createFromHash(stringHash_t & param)
 {
 	// night landscape textures for spherical and fisheye landscape types
@@ -117,12 +116,12 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	// NOTE: textures should be full filename (and path)
 	if (param["type"]=="fisheye") {
 		LandscapeFisheye* ldscp = new LandscapeFisheye();
-		ldscp->create(param["name"], 1, texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
+		ldscp->create(param["name"], texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
 		              Utility::strToDouble(param["rotate_z"], 0.), night_tex, mipmap);
 		return ldscp;
 	} else if (param["type"]=="spherical") {
 		LandscapeSpherical* ldscp = new LandscapeSpherical();
-		ldscp->create(param["name"], 1, texture, Utility::strToDouble(param["base_altitude"], -90),
+		ldscp->create(param["name"], texture, Utility::strToDouble(param["base_altitude"], -90),
 		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, mipmap);
 		return ldscp;
 	} else {  //wrong Landscape
@@ -281,7 +280,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	if (night_texture != "")
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
-	create(name, 1, texture,
+	create(name, texture,
 	       pd.getDouble(section_name, "fov", pd.getDouble(section_name, "texturefov", 180)),
 	       pd.getDouble(section_name, "rotate_z", 0.),
 	       night_texture,
@@ -290,8 +289,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 
 
 // create a fisheye landscape from basic parameters (no ini file needed)
-//TODO fullpath est inutile
-void LandscapeFisheye::create(const std::string _name, bool _fullpath, const std::string _maptex, double _texturefov,
+void LandscapeFisheye::create(const std::string _name, const std::string _maptex, double _texturefov,
                               const float _rotate_z, const std::string _maptex_night, bool _mipmap)
 {
 	//~ cout << _name << " P " << _fullpath << " N " << _maptex << " T " << _texturefov << " N "  << _maptex_night << "\n";
@@ -299,14 +297,13 @@ void LandscapeFisheye::create(const std::string _name, bool _fullpath, const std
 	haveNightTex = false;
 	cLog::get()->write( "Landscape Fisheye " + _name + " created" , LOG_TYPE::L_INFO);
 	name = _name;
-	map_tex = new s_texture(/*_fullpath,*/_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
 
 	if (_maptex_night != "") {
-		map_tex_night = new s_texture(/*_fullpath,*/_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
 	}
-
 	tex_fov = _texturefov*M_PI/180.;
 	rotate_z = _rotate_z*M_PI/180.;
 
@@ -509,7 +506,7 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	if (night_texture != "")
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
-	create(name, 1, texture,
+	create(name, texture,
 	       pd.getDouble(section_name, "base_altitude", -90),
 	       pd.getDouble(section_name, "top_altitude", 90),
 	       pd.getDouble(section_name, "rotate_z", 0.),
@@ -520,7 +517,7 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 
 // create a spherical landscape from basic parameters (no ini file needed)
 //TODO bool _fullpath, est inutile
-void LandscapeSpherical::create(const std::string _name, bool _fullpath, const std::string _maptex, const float _base_altitude,
+void LandscapeSpherical::create(const std::string _name, const std::string _maptex, const float _base_altitude,
                                 const float _top_altitude, const float _rotate_z, const std::string _maptex_night, bool _mipmap)
 {
 	//~ cout << _name << " P " << _fullpath << " N " << _maptex << " " << _base_altitude << " " << _top_altitude << " N " << _maptex_night << "\n";
@@ -528,9 +525,9 @@ void LandscapeSpherical::create(const std::string _name, bool _fullpath, const s
 	haveNightTex = false;
 	cLog::get()->write( "Landscape Spherical " + _name + " created" , LOG_TYPE::L_INFO);
 	name = _name;
-	map_tex = new s_texture(/*_fullpath,*/_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 	if (_maptex_night != "") {
-		map_tex_night = new s_texture(/*_fullpath,*/_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
 	}
 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
