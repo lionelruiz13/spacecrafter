@@ -20,3 +20,13 @@ void VirtualSurface::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, V
 {
     master->createBuffer(size, usage, properties, buffer, bufferMemory);
 }
+
+uint32_t VirtualSurface::getNextFrame()
+{
+    uint32_t index;
+    vkAcquireNextImageKHR(refDevice, *pSwapChain, UINT64_MAX, VK_NULL_HANDLE, fences[fenceId], &index);
+    fenceId = (fenceId + 1) % fences.size();
+    frameIndexQueue.push(index);
+    waitRequest.notify_one();
+    return index;
+}

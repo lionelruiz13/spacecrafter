@@ -3,6 +3,9 @@
 #include <vulkan/vulkan.hpp>
 #include "tools/vecmath.hpp"
 
+#ifndef VULKAN_HPP_
+#define VULKAN_HPP_
+
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
@@ -15,6 +18,7 @@ public:
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
     void drawFrame();
+    void sendFrame();
     void updateUniformBuffer(uint32_t currentImage, float degreePerSecond);
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
     VkCommandPool getTransferPool() {return transferCommandPool[0];}
@@ -79,13 +83,18 @@ private:
     std::vector<VkCommandPool> commandPool;
     std::vector<VkCommandPool> transferCommandPool;
 
-    VkCommandBuffer beginSingleTimeCommands();
-    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
-    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+    VkCommandBuffer beginSingleTimeCommands(VkCommandPool cmdPool = VK_NULL_HANDLE);
+    void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue queue = VK_NULL_HANDLE);
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkQueue queue = VK_NULL_HANDLE, auto aspectMask = VK_IMAGE_ASPECT_COLOR_BIT);
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
     void createCommandBuffer();
     std::vector<VkCommandBuffer> commandBuffers;
+
+    void createDepthResources();
+    VkImage depthImage;
+    VkDeviceMemory depthImageMemory;
+    VkImageView depthImageView;
 
     void createSemaphore();
     VkSemaphore imageAvailableSemaphore;
@@ -123,9 +132,13 @@ private:
     VkImage textureImage;
     VkDeviceMemory textureImageMemory;
 
-    VkImageView createImageView(VkImage image, VkFormat format);
     void createTextureImageView();
     VkImageView textureImageView;
+
+    void createTextureSampler();
+    VkSampler textureSampler;
+
+    VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT);
 
     void initDebug(vk::InstanceCreateInfo *instanceCreateInfo);
     void startDebug();
@@ -147,3 +160,5 @@ private:
     bool hasLayer;
     static bool isAlive;
 };
+
+#endif

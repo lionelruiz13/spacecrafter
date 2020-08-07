@@ -12,7 +12,7 @@ PipelineLayout::~PipelineLayout()
     }
 }
 
-void PipelineLayout::bindUniform(Uniform *uniform, uint32_t binding)
+void PipelineLayout::addUniform(Uniform *uniform, uint32_t binding)
 {
     VkDescriptorSetLayoutBinding uniformCollection{};
     uniformCollection.binding = binding;

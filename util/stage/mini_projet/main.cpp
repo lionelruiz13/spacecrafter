@@ -7,6 +7,7 @@
 #include "tools/shader.hpp"
 #include "tools/Renderer.hpp"
 #include "signal.h"
+#include "VirtualSurface.hpp"
 
 bool opened = true;
 

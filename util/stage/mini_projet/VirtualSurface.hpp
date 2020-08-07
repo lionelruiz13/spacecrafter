@@ -1,5 +1,10 @@
 #include "Vulkan.hpp"
+#include <condition_variable>
+#include <queue>
 
+#ifdef OPENGL_HPP
+namespace v {
+#endif
 class VirtualSurface {
 public:
     VirtualSurface(Vulkan *_master);
@@ -9,19 +14,26 @@ public:
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
     const VkPipelineViewportStateCreateInfo &getViewportState() {return master->getViewportState();}
     auto &getGraphicsQueueIndex() {return master->getGraphicsQueueIndex();}
+    uint32_t getNextFrame();
 
     const VkDevice &refDevice;
     const VkRenderPass &refRenderPass;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
-    const int &refFrameIndex;
+    const uint32_t &refFrameIndex;
 
     VkExtent2D swapChainExtent;
 private:
+    VkSwapchainKHR *pSwapChain;
     VkCommandPool transferPool;
     VkQueue transferQueue;
     VkQueue graphicsQueue;
     Vulkan *master;
     int swapchainSize;
+    uint32_t frameIndex;
+    short fenceId = 0;
+    std::vector<VkFence> fences;
+    std::queue<uint32_t> frameIndexQueue;
+    std::condition_variable waitRequest;
 };
 
 class Shader {
@@ -42,8 +54,10 @@ public:
     Uniform(VkDeviceSize _uniformSize, VkShaderStageFlags _stages);
 
     void update();
-    VkShaderStageFlags getStage() {return stages;};
+    VkShaderStageFlags getStage() {return stages;}
+    VkDescriptorSet *getDescriptorSet() {return &descriptor;}
 private:
+    VkDescriptorSet descriptor;
     VkDeviceSize uniformSize;
     VkShaderStageFlags stages;
 };
@@ -71,6 +85,7 @@ public:
     VertexBuffer(VirtualSurface *_master, int size,
         const VkVertexInputBindingDescription &_bindingDesc,
         const std::vector<VkVertexInputAttributeDescription> &_attributeDesc);
+    ~VertexBuffer();
     //! Update vertex content with data member
     VkBuffer &get() {return vertexBuffer;}
     void update();
@@ -90,13 +105,18 @@ private:
     std::vector<VkVertexInputAttributeDescription> attributeDesc;
 };
 
+class Texture {
+public:
+    Texture(VirtualSurface *_master, const std::string filename);
+};
+
 class PipelineLayout {
 public:
     PipelineLayout(VirtualSurface *_master);
     ~PipelineLayout();
-    //! @brief Bind uniform
+    //! @brief Add uniform to this PipelineLayout
     //! @param stages combination of flags describing the types of shader accessing it (vertex, fragment, etc.)
-    void bindUniform(Uniform *uniform, uint32_t binding);
+    void addUniform(Uniform *uniform, uint32_t binding);
     void pushConstant(); // set constant values
     //! Build pipelineLayout.
     void build();
@@ -153,7 +173,8 @@ public:
     void endRenderPass();
     void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, uint32_t bindingCount = 1, VkDeviceSize offset = 0);
     void bindPipeline(Pipeline *pipeline);
-    void bindDescriptorSets(PipelineLayout *pipelineLayout);
+    //! @brief update uniform value
+    void bindUniform(PipelineLayout *pipelineLayout, Uniform *uniform);
     void draw(uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0);
     //! @brief Multiple draw using buffer content as draw arguments.
     //! @param drawArgsArray content must be VkDrawIndirectCommand.
@@ -189,3 +210,6 @@ private:
     std::vector<struct frame> frames;
     const bool singleUse;
 };
+#ifdef OPENGL_HPP
+}
+#endif

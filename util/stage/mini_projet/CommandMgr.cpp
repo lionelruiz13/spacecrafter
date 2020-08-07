@@ -211,14 +211,14 @@ void CommandMgr::bindPipeline(Pipeline *pipeline)
     }
 }
 
-void CommandMgr::bindDescriptorSets(PipelineLayout *pipelineLayout)
+void CommandMgr::bindUniform(PipelineLayout *pipelineLayout, Uniform *uniform)
 {
     if (singleUse) {
-        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  /* 1, /*/ 0, /*/ &descriptorSets[i] /*/ nullptr, 0, nullptr);
+        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->getDescriptorSet(), 0, nullptr);
         return;
     }
     for (auto &frame : frames) {
-        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0, pipelineLayout->getDescriptorSets().size(), pipelineLayout->getDescriptorSets().data(), 0, nullptr);
+        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->getDescriptorSet(), 0, nullptr);
     }
 }
 
