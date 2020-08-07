@@ -62,6 +62,7 @@
 #include "eventModule/EventScreenFaderHandler.hpp"
 #include "eventModule/EventSaveScreenHandler.hpp"
 #include "eventModule/EventFpsHandler.hpp"
+#include "eventModule/EventVideoHandler.hpp"
 #include "eventModule/CoreHandler.hpp"
 
 
@@ -114,6 +115,7 @@ App::App( SDLFacade* const sdl )
 	eventHandler-> add(new EventFpsHandler(internalFPS), Event::E_FPS);
 	eventHandler-> add(new EventAltitudeHandler(core), Event::E_CHANGE_ALTITUDE);
 	eventHandler-> add(new EventObserverHandler(core), Event::E_CHANGE_OBSERVER);
+	eventHandler-> add(new EventVideoHandler(ui, scriptMgr, media), Event::E_VIDEO);
 
 	#if LINUX
 	mkfifo= new Mkfifo();
@@ -122,7 +124,7 @@ App::App( SDLFacade* const sdl )
 	enable_mkfifo= false;
 	enable_tcp= false;
 	flagColorInverse= false;
-	flagOnVideo = false;
+	// flagOnVideo = false;
 
 	appDraw = new AppDraw();
 	appDraw->init(width, height);
@@ -130,6 +132,7 @@ App::App( SDLFacade* const sdl )
 
 App::~App()
 {
+	eventHandler->remove(Event::E_VIDEO);
 	eventHandler->remove(Event::E_CHANGE_OBSERVER);
 	eventHandler->remove(Event::E_CHANGE_ALTITUDE);
 	eventHandler->remove(Event::E_FPS);
@@ -180,8 +183,8 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 				flagVisible = _value; break;
 		case APP_FLAG::ALIVE :
 				flagAlive = _value; break;
-		case APP_FLAG::ON_VIDEO :
-				flagOnVideo = _value; break;
+		// case APP_FLAG::ON_VIDEO :
+		// 		flagOnVideo = _value; break;
 		case APP_FLAG::COLOR_INVERSE : 
 				flagColorInverse = _value; break;
 		case APP_FLAG::ANTIALIAS :
@@ -197,8 +200,8 @@ void App::toggle(APP_FLAG layerValue)
 				flagVisible = !flagVisible; break;
 		case APP_FLAG::ALIVE :
 				flagAlive = !flagAlive; break;
-		case APP_FLAG::ON_VIDEO :
-				flagOnVideo = !flagOnVideo; break;
+		// case APP_FLAG::ON_VIDEO :
+		// 		flagOnVideo = !flagOnVideo; break;
 		case APP_FLAG::COLOR_INVERSE : 
 				flagColorInverse = !flagColorInverse; break;
 		case APP_FLAG::ANTIALIAS : 
@@ -498,18 +501,18 @@ void App::startMainLoop()
 	// Start the main loop
 	while (flagAlive) {
 		//std::cout << "Frame" <<std::endl;
-		if (flagOnVideo != media->playerisVideoPlayed()) {
-			if (media->playerisVideoPlayed() == false) {
-				//std::cout << "vidéo arretée" << std::endl;
-				media->playerStop();
-				ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
-			} else {
-				ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, true);
-				//std::cout << "vidéo lancée" << std::endl;
-			}
+		// if (flagOnVideo != media->playerisVideoPlayed()) {
+		// 	if (media->playerisVideoPlayed() == false) {
+		// 		//std::cout << "vidéo arretée" << std::endl;
+		// 		media->playerStop();
+		// 		ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
+		// 	} else {
+		// 		ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, true);
+		// 		//std::cout << "vidéo lancée" << std::endl;
+		// 	}
 
-			flagOnVideo = !flagOnVideo;
-		}
+		// 	flagOnVideo = !flagOnVideo;
+		// }
 
 		while (SDL_PollEvent(&E)) {	// Fetch all Event Of The Queue
 			ui->handleInputs(E);
