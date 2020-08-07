@@ -85,7 +85,7 @@ void Landscape::initShaderFog()
 	std::vector<float> dataTex;
 	std::vector<float> dataPos;
 
-	getFogDraw(0.95, radius*sinf(fog_alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
+	createFogMesh(0.95, radius*sinf(fog_alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
 
 	m_fogGL->fillVertexBuffer(BufferType::POS3D, dataPos);
 	m_fogGL->fillVertexBuffer(BufferType::TEXTURE, dataTex);
@@ -307,7 +307,7 @@ void LandscapeFisheye::initShader()
 	GLfloat *datatex = new float[nbVertex*2];
 	GLfloat *datapos = new float[nbVertex*3];
 
-	getLandscapeFisheye(radius,slices,stacks, tex_fov, datatex, datapos);
+	createFisheyeMesh(radius,slices,stacks, tex_fov, datatex, datapos);
 
 	m_landscapeGL = std::make_unique<VertexArray>();
 	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
@@ -373,7 +373,7 @@ static inline double FisheyeTexCoordFastT(double rho_div_fov, double costheta, d
 	return 0.5 + rho_div_fov * sintheta;
 }
 
-void LandscapeFisheye::getLandscapeFisheye(double radius, int slices, int stacks, double texture_fov, GLfloat * datatex, GLfloat * datapos)
+void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, GLfloat * datatex, GLfloat * datapos)
 {
 	unsigned int indice1=0;
 	unsigned int indice3=0;
@@ -530,7 +530,7 @@ void LandscapeSpherical::initShader()
 	GLfloat *datatex = new float[nbVertex*2];
 	GLfloat *datapos = new float[nbVertex*3];
 
-	getLandscapeSpherical(radius, 1.0, slices,stacks, base_altitude, top_altitude, datatex, datapos);
+	createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, datatex, datapos);
 
 	m_landscapeGL = std::make_unique<VertexArray>();
 	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
@@ -583,7 +583,7 @@ void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const
 }
 
 
-void LandscapeSpherical::getLandscapeSpherical(double radius, double one_minus_oblateness, int slices, int stacks,
+void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
         double bottom_altitude, double top_altitude , GLfloat * datatex, GLfloat * datapos)
 {
 	unsigned int indiceTex=0;
@@ -651,7 +651,7 @@ void LandscapeSpherical::getLandscapeSpherical(double radius, double one_minus_o
 	}
 }
 
-void Landscape::getFogDraw(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos)
+void Landscape::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos)
 {
 	nbFogVertex=0;
 	GLdouble da, r, dz;

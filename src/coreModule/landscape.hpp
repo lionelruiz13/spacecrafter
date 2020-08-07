@@ -128,7 +128,7 @@ public:
 protected:
 	virtual void load(const std::string& file_name, const std::string& section_name){};
 
-	void getFogDraw(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
+	void createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
 	void initShaderFog();
 	void drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const;
 	//! Load attributes common to all landscapes
@@ -169,7 +169,7 @@ public:
 	void create(const std::string _name, const std::string _maptex, double _texturefov,
 	            const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
 private:
-	void getLandscapeFisheye(double radius, int slices, int stacks, double texture_fov,  GLfloat * datatex, GLfloat * datapos);
+	void createFisheyeMesh(double radius, int slices, int stacks, double texture_fov,  GLfloat * datatex, GLfloat * datapos);
 	void initShader();
 	float tex_fov;
 };
@@ -184,7 +184,7 @@ public:
 	void create(const std::string _name, const std::string _maptex, const float _base_altitude,
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
 private:
-	void getLandscapeSpherical(double radius, double one_minus_oblateness, int slices, int stacks,
+	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
 	                           double bottom_altitude, double top_altitude , GLfloat * datatex, GLfloat * datapos);
 	void initShader();
 	float base_altitude, top_altitude;  // for partial sphere coverage
