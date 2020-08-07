@@ -40,9 +40,12 @@
 int Landscape::slices = 20;
 int Landscape::stacks = 10;
 
+std::unique_ptr<shaderProgram> Landscape::shaderLandscape;
+std::unique_ptr<shaderProgram> Landscape::shaderFog;
+s_texture* Landscape::fog_tex;
+
 Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 {
-	fog_tex = nullptr;
 	map_tex = nullptr;
 	map_tex_night = nullptr;
 
@@ -50,12 +53,31 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	cLog::get()->write( "Landscape generic created" , LOG_TYPE::L_INFO);
 	haveNightTex = false;
 
-	shaderFog = std::make_unique<shaderProgram>();
-	shaderFog-> init( "fog.vert","fog.frag");
-
 	m_fogGL = std::make_unique<VertexArray>();
 	m_fogGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_fogGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+}
+
+void Landscape::createSC_context()
+{
+	shaderFog = std::make_unique<shaderProgram>();
+	shaderFog-> init( "fog.vert","fog.frag");
+
+	shaderLandscape = std::make_unique<shaderProgram>();
+	shaderLandscape->init("landscape2T.vert", "landscape2T.geom","landscape2T.frag");
+
+	shaderLandscape->setUniformLocation("sky_brightness");
+	shaderLandscape->setUniformLocation("fader");
+	shaderLandscape->setUniformLocation("ModelViewMatrix");
+
+	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
+	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
+
+	shaderFog->setUniformLocation("fader");
+	shaderFog->setUniformLocation("sky_brightness");
+	shaderFog->setUniformLocation("ModelViewMatrix");
+
+	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
 }
 
 void Landscape::initShaderFog()
@@ -73,9 +95,7 @@ void Landscape::initShaderFog()
 }
 
 Landscape::~Landscape()
-{
-	if (fog_tex) delete fog_tex;
-}
+{}
 
 Landscape* Landscape::createFromFile(const std::string& landscape_file, const std::string& section_name)
 {
@@ -201,21 +221,6 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Landscape::initShaderParams()
-{
-	shaderLandscape->setUniformLocation("sky_brightness");
-	shaderLandscape->setUniformLocation("fader");
-	shaderLandscape->setUniformLocation("ModelViewMatrix");
-
-	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
-	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
-
-	shaderFog->setUniformLocation("fader");
-	shaderFog->setUniformLocation("sky_brightness");
-	shaderFog->setUniformLocation("ModelViewMatrix");
-}
-
-
 void Landscape::deleteMapTex()
 {
 	if (map_tex) delete map_tex;
@@ -233,11 +238,6 @@ void Landscape::deleteMapTex()
 LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius)
 {
 	rotate_z = 0;
-	if (fog_tex) delete fog_tex;
-	shaderLandscape =  nullptr;
-	shaderLandscape = std::make_unique<shaderProgram>();
-	shaderLandscape->init("landscape2T.vert", "landscape2T.geom","landscape2T.frag");
-	initShaderParams();
 }
 
 
@@ -289,7 +289,6 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 	cLog::get()->write( "Landscape Fisheye " + _name + " created" , LOG_TYPE::L_INFO);
 	name = _name;
 	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
-	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
 
 	if (! _maptex_night.empty()) {
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
@@ -460,11 +459,6 @@ void LandscapeFisheye::getLandscapeFisheye(double radius, int slices, int stacks
 LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  base_altitude(-90), top_altitude(90)
 {
 	rotate_z = 0;
-	if (fog_tex) delete fog_tex;
-	shaderLandscape =  nullptr;
-	shaderLandscape= std::make_unique<shaderProgram>();
-	shaderLandscape->init( "landscape2T.vert", "landscape2T.geom","landscape2T.frag");
-	initShaderParams();
 }
 
 LandscapeSpherical::~LandscapeSpherical()
@@ -521,8 +515,6 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
 	}
-	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
-
 	base_altitude = ((_base_altitude >= -90 && _base_altitude <= 90) ? _base_altitude : -90);
 	top_altitude = ((_top_altitude >= -90 && _top_altitude <= 90) ? _top_altitude : 90);
 	rotate_z = _rotate_z*M_PI/180.;

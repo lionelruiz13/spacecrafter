@@ -124,7 +124,7 @@ public:
 	static Landscape* createFromHash(stringHash_t & param);
 	static std::string getFileContent(const std::string& landscape_file);
 	static std::string getLandscapeNames(const std::string& landscape_file);
-
+	static void createSC_context();
 protected:
 	virtual void load(const std::string& file_name, const std::string& section_name){};
 
@@ -133,7 +133,6 @@ protected:
 	void drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const;
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
-	void initShaderParams();
 	void deleteMapTex();
 	float radius;
 	std::string name;
@@ -143,7 +142,7 @@ protected:
 	LinearFader fog_fader;
 	std::string author;
 	std::string description;
-	s_texture* fog_tex;
+	static s_texture* fog_tex;			// allways the same
 	s_texture* map_tex;
 	s_texture* map_tex_night;
 	bool haveNightTex;
@@ -155,7 +154,7 @@ protected:
 	unsigned int nbFogVertex;			//nombre de vertex pour le fog
 	static int slices;
 	static int stacks;
-	std::unique_ptr<shaderProgram> shaderLandscape, shaderFog;
+	static std::unique_ptr<shaderProgram> shaderLandscape, shaderFog;
 	std::unique_ptr<VertexArray> m_landscapeGL, m_fogGL;
 	float rotate_z; // rotation around the z axis
 };
