@@ -24,59 +24,32 @@
  */
 
 
-#ifndef EVENT_HPP
-#define EVENT_HPP
+#ifndef EVENT_VIDEO_HANDLER_HPP
+#define EVENT_VIDEO_HANDLER_HPP
 
-#include <string>
-#include <map>
-#include <iostream>
 
-class Event{
+#include "eventModule/event_handler_canvas.hpp"
+#include "eventModule/event.hpp"
 
-public :
-    enum Event_Type : char { 
-        E_NOT_SET = 0,
-        E_SCRIPT,
-        E_COMMAND,
-        E_SCREEN_FADER,
-        E_SCREEN_FADER_INTERLUDE,
-        E_FLAG,
-        E_SAVESCREEN,
-        E_FPS,
-        E_CHANGE_ALTITUDE,
-        E_CHANGE_OBSERVER,
-        E_VIDEO
-        //....
-    };
-    
-    Event(){ 
-        type = E_NOT_SET;
-    }
+class UI;
+class ScriptMgr;
+class Media;
 
-    virtual ~Event(){};
-    
-    Event(Event_Type _type){
-		type=_type;
+class EventVideoHandler : public EventHandlerCanvas {
+public:
+	EventVideoHandler(UI *_ui, ScriptMgr *_scriptMgr, Media* _media) {
+		ui = _ui;
+        scriptMgr = _scriptMgr;
+		media = _media;
 	}
+	~EventVideoHandler() {
+	}
+    void handle(const Event* e) override;
 
-    Event_Type getEventType() const {
-        return type;
-    }
-
-    static std::map<Event_Type, std::string> eventTypeToString;
-
-    friend std::ostream& operator<< (std::ostream & os, const Event& e){
-        os << e.toString() << std::endl;
-        return os;
-    }
-
-    virtual std::string toString() const {
-        return Event::eventTypeToString[type];
-    }
-   
 protected :
-    Event_Type type;
+	UI *ui = nullptr;
+    ScriptMgr *scriptMgr = nullptr;
+	Media *media = nullptr;
 };
 
-
-#endif
+#endif //EVENT_VIDEO_HANDLER_HPP
