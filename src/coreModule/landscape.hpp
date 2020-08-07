@@ -81,20 +81,19 @@ public:
 
 	//! Get whether landscape is displayed (does not concern fog)
 	bool getFlagShow() const {
-		return (bool)land_fader;
+		return land_fader;
 	}
-	//! Set whether fog is displayed
-	void setFlagShowFog(bool b) {
-		fog_fader=b;
-	}
-
 	void flipFlagShow() {
 		land_fader = !land_fader;
 	}
 
+	//! Set whether fog is displayed
+	void fogSetFlagShow(bool b) {
+		fog_fader=b;
+	}
 	//! Get whether fog is displayed
-	bool getFlagShowFog() const {
-		return (bool)fog_fader;
+	bool fogGetFlagShow() const {
+		return fog_fader;
 	}
 	//! Get landscape name
 	std::string getName() const {

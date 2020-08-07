@@ -439,7 +439,7 @@ void Core::init(const InitParser& conf)
 
 	// Landscape section
 	landscape->setFlagShow(conf.getBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE));
-	landscape->setFlagShowFog(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_FOG));
+	landscape->fogSetFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_FOG));
 
 	bodyDecor->setAtmosphereState(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
 	atmosphere->setFlagShow(conf.getBoolean(SCS_LANDSCAPE,SCK_FLAG_ATMOSPHERE));
@@ -900,7 +900,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 	if (landscape) {
 		// Copy parameters from previous landscape to new one
 		newLandscape->setFlagShow(landscape->getFlagShow());
-		newLandscape->setFlagShowFog(landscape->getFlagShowFog());
+		newLandscape->fogSetFlagShow(landscape->fogGetFlagShow());
 		delete landscape;
 		landscape = newLandscape;
 
@@ -989,7 +989,7 @@ bool Core::loadLandscape(stringHash_t& param)
 	if (landscape) {
 		// Copy parameters from previous landscape to new one
 		newLandscape->setFlagShow(landscape->getFlagShow());
-		newLandscape->setFlagShowFog(landscape->getFlagShowFog());
+		newLandscape->fogSetFlagShow(landscape->fogGetFlagShow());
 		delete landscape;
 		landscape = newLandscape;
 	}
@@ -1581,7 +1581,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	// Landscape section
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE, landscape->getFlagShow()); //landscapeGetFlag());
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_ATMOSPHERE, bodyDecor->getAtmosphereState());
-	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, landscape->getFlagShowFog()); //fogGetFlag());
+	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, landscape->fogGetFlagShow()); //fogGetFlag());
 	// Star section
 	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, hip_stars->getScale()); //starGetScale());
 	conf.setDouble (SCS_STARS , SCK_STAR_MAG_SCALE, hip_stars->getMagScale()); //starGetMagScale());

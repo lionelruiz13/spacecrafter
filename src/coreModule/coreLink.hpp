@@ -1002,11 +1002,11 @@ public:
 
 	//! Set flag for displaying Fog
 	void fogSetFlag(bool b) {
-		core->landscape->setFlagShowFog(b);
+		core->landscape->fogSetFlagShow(b);
 	}
 	//! Get flag for displaying Fog
 	bool fogGetFlag(void) const {
-		return core->landscape->getFlagShowFog();
+		return core->landscape->fogGetFlagShow();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
