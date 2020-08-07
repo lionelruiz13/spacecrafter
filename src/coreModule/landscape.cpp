@@ -230,8 +230,9 @@ void Landscape::deleteMapTex()
 //
 // *********************************************************************
 
-LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius), rotate_z(0)
+LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius)
 {
+	rotate_z = 0;
 	if (fog_tex) delete fog_tex;
 	shaderLandscape =  nullptr;
 	shaderLandscape = std::make_unique<shaderProgram>();
@@ -456,8 +457,9 @@ void LandscapeFisheye::getLandscapeFisheye(double radius, int slices, int stacks
 //
 // *********************************************************************
 
-LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  base_altitude(-90), top_altitude(90), rotate_z(0)
+LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  base_altitude(-90), top_altitude(90)
 {
+	rotate_z = 0;
 	if (fog_tex) delete fog_tex;
 	shaderLandscape =  nullptr;
 	shaderLandscape= std::make_unique<shaderProgram>();
