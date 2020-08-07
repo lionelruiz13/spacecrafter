@@ -33,7 +33,7 @@
 #include "tools/vecmath.hpp"
 #include "tools/fader.hpp"
 #include "tools/utility.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 

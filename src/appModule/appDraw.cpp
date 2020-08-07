@@ -34,8 +34,8 @@
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include "tools/app_settings.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 AppDraw::AppDraw()
 {}

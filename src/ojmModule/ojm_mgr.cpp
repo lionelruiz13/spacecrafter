@@ -28,8 +28,8 @@
 #include "tools/log.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "tools/stateGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/stateGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 OjmMgr::OjmMgr()
 {

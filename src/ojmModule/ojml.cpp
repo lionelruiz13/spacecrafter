@@ -5,8 +5,8 @@
 #include <cmath>
 
 #include "ojmModule/ojml.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 // *****************************************************************************
 // 

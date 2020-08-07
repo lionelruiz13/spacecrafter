@@ -23,14 +23,14 @@
 #include "coreModule/starNavigator.hpp"
 #include "coreModule/starManager.hpp"
 #include "tools/utility.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/ThreadPool.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "tools/shader.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 static float magnitude_max = 6.5;
 

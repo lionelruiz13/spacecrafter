@@ -3,7 +3,7 @@
 
 #include <string>
 #include "tools/vecmath.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/shader.hpp"
 
 //Shader part
 /*

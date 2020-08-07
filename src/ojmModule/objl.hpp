@@ -4,7 +4,7 @@
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <list>
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "ojmModule/ojml.hpp"
 
 class Projector;

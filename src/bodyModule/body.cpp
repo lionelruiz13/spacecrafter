@@ -38,7 +38,7 @@
 #include "tools/sc_const.hpp"
 #include <chrono>
 #include "bodyModule/ring.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/file_path.hpp"
 #include "bodyModule/trail.hpp"
 #include "bodyModule/hints.hpp"

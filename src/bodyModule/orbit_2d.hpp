@@ -22,8 +22,8 @@
 
 #include "bodyModule/orbit_plot.hpp"
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include <vector>
 
 class Body;

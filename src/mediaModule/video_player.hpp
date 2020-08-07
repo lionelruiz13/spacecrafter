@@ -16,8 +16,8 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include "yuv_wrapper.hpp"
 
 #ifndef WIN32

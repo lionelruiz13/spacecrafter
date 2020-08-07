@@ -35,8 +35,8 @@
 #include "tools/sc_const.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 #define SKY_RESOLUTION 48
 

@@ -32,7 +32,7 @@
 #include <fstream>
 
 #include "tools/fader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>

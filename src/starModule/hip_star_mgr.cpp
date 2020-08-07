@@ -48,8 +48,8 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;

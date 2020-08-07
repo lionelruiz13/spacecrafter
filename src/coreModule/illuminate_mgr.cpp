@@ -34,9 +34,9 @@
 #include "navModule/navigator.hpp"
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416

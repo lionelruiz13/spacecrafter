@@ -29,9 +29,9 @@
 #include "navModule/navigator.hpp"
 #include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
-#include "tools/shader.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 
 void intrusivePtrAddRef(ObjectBase* p)

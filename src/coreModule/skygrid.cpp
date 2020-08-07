@@ -31,8 +31,8 @@
 #include "coreModule/skygrid.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
 
 std::unique_ptr<VertexArray> SkyGrid::m_dataGL;
 std::unique_ptr<shaderProgram> SkyGrid::shaderSkyGrid;

@@ -34,9 +34,9 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/s_texture.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 
 Tully::Tully()

@@ -31,9 +31,9 @@
 #include "tools/utility.hpp"
 #include <string>
 #include "navModule/observer.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 //2346 lignes avant 
 //2479 lignes apres

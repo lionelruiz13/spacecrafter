@@ -1,6 +1,6 @@
-#include "tools/Renderer.hpp"
-#include "tools/shader.hpp"
-#include "tools/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/OpenGL.hpp"
 
 
 void Renderer::clearColor()

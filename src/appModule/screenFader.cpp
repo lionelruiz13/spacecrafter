@@ -23,10 +23,10 @@
  */
 
 #include "appModule/screenFader.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/stateGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 ScreenFader::ScreenFader()
 {

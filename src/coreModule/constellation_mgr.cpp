@@ -38,10 +38,10 @@
 #include "tools/utility.hpp"
 #include "tools/s_font.hpp"
 #include "tools/log.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/translator.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 
 

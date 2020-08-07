@@ -35,7 +35,7 @@
 #include <string>
 #include <memory>
 
-#include "tools/shader.hpp"
+#include "renderGL/shader.hpp"
 
 
 enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4, 

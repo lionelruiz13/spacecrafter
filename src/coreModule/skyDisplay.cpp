@@ -37,8 +37,8 @@
 #include "navModule/navigator.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
 
 
 #define NB_MAX_POINTS 4194304

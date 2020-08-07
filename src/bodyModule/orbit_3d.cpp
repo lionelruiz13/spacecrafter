@@ -18,8 +18,8 @@
 #include <iostream>
 #include "coreModule/projector.hpp"
 #include "bodyModule/body_color.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 
 Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments) { }

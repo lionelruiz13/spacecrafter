@@ -30,10 +30,10 @@
 #include "coreModule/projector.hpp"
 #include "mediaModule/image.hpp"
 #include "navModule/navigator.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/s_texture.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> Image::shaderImageViewport;
 std::unique_ptr<shaderProgram> Image::shaderUnified;

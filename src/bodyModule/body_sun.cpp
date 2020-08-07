@@ -24,9 +24,9 @@
  */
 
 #include "bodyModule/body_sun.hpp"
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
-#include "tools/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
+#include "renderGL/OpenGL.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/hints.hpp"

@@ -17,8 +17,8 @@
 #include "bodyModule/body.hpp"
 #include <iostream>
 #include "bodyModule/body_color.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/Renderer.hpp"
 
 Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments) { }
 

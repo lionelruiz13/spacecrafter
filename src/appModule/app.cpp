@@ -55,7 +55,7 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/Renderer.hpp"
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"

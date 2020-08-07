@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "tools/OpenGL.hpp"
+#include "renderGL/OpenGL.hpp"
 
 void GLClearError()
 {

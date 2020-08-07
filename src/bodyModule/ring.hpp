@@ -37,7 +37,7 @@
 #include "coreModule/callbacks.hpp"
 #include "tools/fader.hpp"
 #include "bodyModule/orbit.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 
 class VertexArray;
 class shaderProgram;

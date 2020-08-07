@@ -17,9 +17,9 @@
 #include "bodyModule/body.hpp"
 #include "coreModule/projector.hpp"
 #include "bodyModule/body_color.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> Hints::shaderHints;
 std::unique_ptr<VertexArray> Hints::m_HintsGL;

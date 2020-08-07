@@ -29,7 +29,7 @@
 #include "coreModule/skydisplay_mgr.hpp"
 #include "tools/log.hpp"
 #include "tools/s_font.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/shader.hpp"
 
 SkyDisplayMgr::SkyDisplayMgr()
 {

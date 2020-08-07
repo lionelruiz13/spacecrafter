@@ -44,7 +44,7 @@
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/Renderer.hpp"
 
 #define SOLAR_MASS 1.989e30
 #define EARTH_MASS 5.976e24

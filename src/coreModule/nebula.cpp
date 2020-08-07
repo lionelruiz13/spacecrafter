@@ -32,9 +32,9 @@
 #include "tools/utility.hpp"
 #include "tools/file_path.hpp"
 #include "tools/log.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 
 std::unique_ptr<VertexArray> Nebula::m_texGL = nullptr;

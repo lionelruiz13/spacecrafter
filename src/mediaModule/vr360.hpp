@@ -18,7 +18,7 @@
 #define __VR360_HPP__
 
 #include <memory>
-//#include "tools/shader.hpp"
+//#include "renderGL/shader.hpp"
 #include "tools/fader.hpp"
 #include "yuv_wrapper.hpp"
 #include "tools/no_copy.hpp"

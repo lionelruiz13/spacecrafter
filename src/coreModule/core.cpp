@@ -48,7 +48,7 @@
 #include "bodyModule/body_trace.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/Renderer.hpp"
 
 Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),

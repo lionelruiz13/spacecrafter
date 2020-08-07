@@ -1,4 +1,4 @@
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 
 bool StateGL::cull_face = false;
 bool StateGL::stencil_test = false;

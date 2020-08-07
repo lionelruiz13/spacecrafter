@@ -31,8 +31,8 @@
 #include "tools/utility.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
 
 
 BodyTrace::BodyTrace()

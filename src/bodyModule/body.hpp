@@ -38,8 +38,8 @@
 #include "bodyModule/orbit.hpp"
 #include <list>
 #include <string>
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include "ojmModule/objl.hpp"
 #include "bodyModule/orbit_plot.hpp"
 #include "body_common.hpp"

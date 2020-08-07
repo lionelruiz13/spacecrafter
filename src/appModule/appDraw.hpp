@@ -33,8 +33,8 @@
 #include "appModule/fps.hpp"
 #include "appModule/space_date.hpp"
 #include "tools/app_settings.hpp"
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
 class VertexArray;

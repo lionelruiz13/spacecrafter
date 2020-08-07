@@ -22,9 +22,9 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/s_texture.hpp"
 #include <iostream>
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 
 std::unique_ptr<VertexArray> Halo::m_haloGL;

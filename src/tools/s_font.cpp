@@ -25,11 +25,11 @@
 #include "tools/s_font.hpp"
 #include "tools/utility.hpp"
 #include "tools/call_system.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "coreModule/projector.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
 std::unique_ptr<shaderProgram> s_font::shaderPrint;

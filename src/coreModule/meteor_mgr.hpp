@@ -33,7 +33,7 @@
 
 #include "coreModule/time_mgr.hpp"
 #include "meteor.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
 class Projector;

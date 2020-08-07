@@ -32,8 +32,8 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
 class s_texture;

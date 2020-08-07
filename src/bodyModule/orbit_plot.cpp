@@ -19,8 +19,8 @@
 #include "bodyModule/orbit_plot.hpp"
 #include "bodyModule/body.hpp"
 #include "bodyModule/orbit.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
 
 
 std::unique_ptr<shaderProgram> OrbitPlot::shaderOrbit2d;

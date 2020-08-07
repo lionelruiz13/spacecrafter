@@ -30,7 +30,7 @@
 #include "tools/fader.hpp"
 #include "coreModule/projector.hpp"
 #include <vector>
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/vecmath.hpp"
 
 

@@ -21,8 +21,8 @@
 #include "tools/vecmath.hpp"
 #include <GL/glew.h>
 #include "tools/fader.hpp"
-// #include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+// #include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
 using HIPpos = std::pair<int, Vec3f>;

@@ -24,8 +24,8 @@
 
 
 #include "bodyModule/body_moon.hpp"
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/file_path.hpp"
 
 #include "bodyModule/axis.hpp"

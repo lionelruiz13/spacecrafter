@@ -20,9 +20,9 @@
 #include "navModule/navigator.hpp"
 #include "ojmModule/ojml.hpp"
 #include "tools/app_settings.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/log.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/shader.hpp"
 
 #define VR360_FADER_DURATION 3000
 

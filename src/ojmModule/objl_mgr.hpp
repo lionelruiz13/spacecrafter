@@ -3,7 +3,7 @@
 
 #include "tools/vecmath.hpp"
 #include <map>
-#include "tools/shader.hpp"
+#include "renderGL/shader.hpp"
 
 
 class ObjL;

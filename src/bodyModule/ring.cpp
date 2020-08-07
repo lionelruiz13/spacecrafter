@@ -33,9 +33,9 @@
 #include "tools/s_font.hpp"
 #include "planetsephems/sideral_time.h"
 #include "tools/log.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 
 Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init )

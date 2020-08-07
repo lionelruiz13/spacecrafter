@@ -32,7 +32,7 @@
 
 #include "tools/object.hpp"
 #include "tools/fader.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/shader.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 

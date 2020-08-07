@@ -31,7 +31,7 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 

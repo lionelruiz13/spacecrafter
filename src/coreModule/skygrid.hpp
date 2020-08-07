@@ -36,7 +36,7 @@
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/fader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/ScModule.hpp"
 
 //! Class which manages a grid to display in the sky

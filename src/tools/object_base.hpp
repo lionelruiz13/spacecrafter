@@ -33,8 +33,8 @@
 
 #include "tools/object_type.hpp"
 #include "tools/vecmath.hpp"
-//#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+//#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 
 
 class Navigator;

@@ -15,9 +15,9 @@
 
 
 #include "mediaModule/viewport.hpp"
-#include "tools/OpenGL.hpp"
-#include "tools/shader.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/OpenGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/Renderer.hpp"
 
 ViewPort::ViewPort()
 {

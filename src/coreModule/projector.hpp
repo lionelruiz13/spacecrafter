@@ -31,7 +31,7 @@
 #include "starModule/sphere_geometry.hpp"
 //#include "tools/fmath.hpp"
 #include "tools/no_copy.hpp"
-#include "tools/Renderer.hpp"
+#include "renderGL/Renderer.hpp"
 
 class s_font;
 

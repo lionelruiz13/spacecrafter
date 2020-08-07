@@ -28,7 +28,7 @@
 #include <vector>
 #include <memory>
 #include "ojmModule/ojm.hpp"
-#include "tools/shader.hpp"
+#include "renderGL/shader.hpp"
 #include "tools/no_copy.hpp"
 
 class Projector;

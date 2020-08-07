@@ -7,8 +7,8 @@
 #include <assert.h>
 #include <initializer_list>
 
-#include "tools/shader.hpp"
-#include "tools/stateGL.hpp"
+#include "renderGL/shader.hpp"
+#include "renderGL/stateGL.hpp"
 #include "tools/log.hpp"
 
 std::string shaderProgram::shaderDir = "./";
