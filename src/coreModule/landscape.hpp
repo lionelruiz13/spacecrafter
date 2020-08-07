@@ -177,15 +177,15 @@ public:
 	~Fog();
 	//! Set whether fog is displayed
 	void setFlagShow(bool b) {
-		fog_fader=b;
+		fader=b;
 	}
 	//! Get whether fog is displayed
 	bool getFlagShow() const {
-		return fog_fader;
+		return fader;
 	}
 
 	void update(int delta_time) {
-		fog_fader.update(delta_time);
+		fader.update(delta_time);
 	}
 
 	void setAltAngle(float _value) {
@@ -204,7 +204,7 @@ public:
 
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const;
 
-	void initShaderFog();
+	void initShader();
 
 private:
 
@@ -212,13 +212,13 @@ private:
 
 	static std::unique_ptr<shaderProgram> shaderFog;
 	std::unique_ptr<VertexArray> m_fogGL;
-	unsigned int nbFogVertex;			//nombre de vertex pour le fog
+	unsigned int nbVertex;			//nombre de vertex pour le fog
 	static s_texture* fog_tex;			// allways the same
 	float radius;
 	float fog_alt_angle;
 	float fog_angle_shift;
 	float sky_brightness;
-	LinearFader fog_fader;
+	LinearFader fader;
 };
 
 

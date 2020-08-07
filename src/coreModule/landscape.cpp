@@ -112,7 +112,7 @@ void Fog::createSC_context()
 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
 }
 
-void Fog::initShaderFog()
+void Fog::initShader()
 {
 	std::vector<float> dataTex;
 	std::vector<float> dataPos;
@@ -279,7 +279,7 @@ void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigato
 // Draw the horizon fog
 void Fog::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const
 {
-	if (!fog_fader.getInterstate()) return;
+	if (!fader.getInterstate()) return;
 
 	StateGL::BlendFunc(GL_ONE, GL_ONE);
 
@@ -290,12 +290,12 @@ void Fog::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav
 	shaderFog->use();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, fog_tex->getID());
-	shaderFog->setUniform("fader", fog_fader.getInterstate());
+	shaderFog->setUniform("fader", fader.getInterstate());
 	shaderFog->setUniform("sky_brightness", sky_brightness);
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(fog_angle_shift*M_PI/180.)))).convert();
 	shaderFog->setUniform("ModelViewMatrix",matrix);
 
-	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), GL_TRIANGLE_STRIP,0,nbFogVertex);
+	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
 
 	glCullFace(GL_BACK);
 	StateGL::disable(GL_CULL_FACE);
@@ -378,7 +378,7 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 	rotate_z = _rotate_z*M_PI/180.;
 
 	initShader();
-	fog->initShaderFog();
+	fog->initShader();
 }
 
 void LandscapeFisheye::initShader()
@@ -562,7 +562,7 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	rotate_z = _rotate_z*M_PI/180.;
 
 	initShader();
-	fog->initShaderFog();
+	fog->initShader();
 }
 
 void LandscapeSpherical::initShader()
@@ -656,7 +656,7 @@ void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_obl
 
 void Fog::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos)
 {
-	nbFogVertex=0;
+	nbVertex=0;
 	GLdouble da, r, dz;
 	GLfloat z ;
 	GLint i;
@@ -684,14 +684,14 @@ void Fog::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint st
 		dataPos->push_back(x*r);
 		dataPos->push_back(y*r);
 		dataPos->push_back(z);
-		nbFogVertex++;
+		nbVertex++;
 
 		dataTex->push_back(s);
 		dataTex->push_back(t+dt);
 		dataPos->push_back(x*r);
 		dataPos->push_back(y*r);
 		dataPos->push_back(z+dz);
-		nbFogVertex++;
+		nbVertex++;
 		s += ds;
 	}
 }
