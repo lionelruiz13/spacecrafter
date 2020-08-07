@@ -54,7 +54,9 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	cLog::get()->write( "Landscape generic created" , LOG_TYPE::L_INFO);
 	haveNightTex = false;
 
+	fog =nullptr;
 	fog = new Fog(0.95f);
+	assert(fog!=nullptr);
 }
 
 Fog::Fog(float _radius) : radius(_radius)
@@ -124,8 +126,13 @@ void Fog::initShaderFog()
 	dataPos.clear();
 }
 
-Landscape::~Landscape()
+Fog::~Fog()
 {}
+
+Landscape::~Landscape()
+{
+	if (fog) delete fog;
+}
 
 Landscape* Landscape::createFromFile(const std::string& landscape_file, const std::string& section_name)
 {
