@@ -43,6 +43,7 @@ int Landscape::stacks = 10;
 
 std::unique_ptr<shaderProgram> Landscape::shaderLandscape;
 
+
 Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 {
 	map_tex = nullptr;
@@ -57,19 +58,9 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	assert(fog!=nullptr);
 }
 
-void Landscape::createSC_context()
+Landscape::~Landscape()
 {
-	shaderLandscape = std::make_unique<shaderProgram>();
-	shaderLandscape->init("landscape2T.vert", "landscape2T.geom","landscape2T.frag");
-
-	shaderLandscape->setUniformLocation("sky_brightness");
-	shaderLandscape->setUniformLocation("fader");
-	shaderLandscape->setUniformLocation("ModelViewMatrix");
-
-	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
-	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
-
-	Fog::createSC_context();
+	if (fog) delete fog;
 }
 
 void Landscape::setSkyBrightness(float b) {
@@ -87,14 +78,26 @@ bool Landscape::fogGetFlagShow() const {
 }
 
 void Landscape::update(int delta_time) {
-	land_fader.update(delta_time);
+	fader.update(delta_time);
 	fog->update(delta_time);
 }
 
-Landscape::~Landscape()
+
+void Landscape::createSC_context()
 {
-	if (fog) delete fog;
+	shaderLandscape = std::make_unique<shaderProgram>();
+	shaderLandscape->init("landscape2T.vert", "landscape2T.geom","landscape2T.frag");
+
+	shaderLandscape->setUniformLocation("sky_brightness");
+	shaderLandscape->setUniformLocation("fader");
+	shaderLandscape->setUniformLocation("ModelViewMatrix");
+
+	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
+	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
+
+	Fog::createSC_context();
 }
+
 
 Landscape* Landscape::createFromFile(const std::string& landscape_file, const std::string& section_name)
 {
@@ -115,6 +118,7 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 	ldscp->load(landscape_file, section_name);
 	return ldscp;
 }
+
 
 // create landscape from parameters passed in a hash (same keys as with ini file)
 Landscape* Landscape::createFromHash(stringHash_t & param)
@@ -154,6 +158,7 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	}
 }
 
+
 // Load attributes common to all landscapes
 void Landscape::loadCommon(const std::string& landscape_file, const std::string& section_name)
 {
@@ -174,6 +179,7 @@ void Landscape::loadCommon(const std::string& landscape_file, const std::string&
 		valid_landscape = 1;
 	}
 }
+
 
 std::string Landscape::getFileContent(const std::string& landscape_file)
 {
@@ -202,7 +208,7 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav)
 {
 	if (!valid_landscape) return;
-	if (!land_fader.getInterstate()) return;
+	if (!fader.getInterstate()) return;
 
 	// Normal transparency mode
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -222,7 +228,7 @@ void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigato
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
 
 	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
-	shaderLandscape->setUniform("fader",land_fader.getInterstate());
+	shaderLandscape->setUniform("fader",fader.getInterstate());
 
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
@@ -234,7 +240,7 @@ void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigato
 
 	glActiveTexture(GL_TEXTURE0);
 
-	fog->draw(eye,prj,nav);
+	fog->draw(prj,nav);
 }
 
 
@@ -262,6 +268,7 @@ LandscapeFisheye::~LandscapeFisheye()
 {
 	deleteMapTex();
 }
+
 
 void LandscapeFisheye::load(const std::string& landscape_file, const std::string& section_name)
 {
@@ -317,6 +324,7 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 	fog->initShader();
 }
 
+
 void LandscapeFisheye::initShader()
 {
 	nbVertex = 2*slices*stacks + 2* stacks;
@@ -349,6 +357,7 @@ static inline double FisheyeTexCoordFastT(double rho_div_fov, double costheta, d
 	if (rho_div_fov>0.5) rho_div_fov=0.5;
 	return 0.5 + rho_div_fov * sintheta;
 }
+
 
 void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, GLfloat * datatex, GLfloat * datapos)
 {
@@ -438,10 +447,12 @@ LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  bas
 	rotate_z = 0;
 }
 
+
 LandscapeSpherical::~LandscapeSpherical()
 {
 	deleteMapTex();
 }
+
 
 void LandscapeSpherical::load(const std::string& landscape_file, const std::string& section_name)
 {
@@ -500,6 +511,7 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	initShader();
 	fog->initShader();
 }
+
 
 void LandscapeSpherical::initShader()
 {

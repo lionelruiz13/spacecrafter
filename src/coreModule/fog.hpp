@@ -37,7 +37,6 @@
 #include "tools/no_copy.hpp"
 
 class s_texture;
-class ToneReproductor;
 class Navigator;
 class Projector;
 class VertexArray;
@@ -61,11 +60,11 @@ public:
 	}
 
 	void setAltAngle(float _value) {
-		fog_alt_angle= _value;
+		alt_angle= _value;
 	}
 
 	void setAngleShift(float _value) {
-		fog_angle_shift = _value;
+		angle_shift = _value;
 	}
 
 	void setSkyBrightness(float b) {
@@ -74,7 +73,7 @@ public:
 
 	static void createSC_context();
 
-	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const;
+	void draw(const Projector* prj, const Navigator* nav) const;
 
 	void initShader();
 
@@ -87,8 +86,8 @@ private:
 	unsigned int nbVertex;			//nombre de vertex pour le fog
 	static s_texture* fog_tex;			// allways the same
 	float radius;
-	float fog_alt_angle;
-	float fog_angle_shift;
+	float alt_angle;
+	float angle_shift;
 	float sky_brightness;
 	LinearFader fader;
 };

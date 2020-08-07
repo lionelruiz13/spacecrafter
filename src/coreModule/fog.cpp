@@ -29,7 +29,6 @@
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/s_texture.hpp"
-#include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
@@ -71,7 +70,7 @@ void Fog::initShader()
 	std::vector<float> dataTex;
 	std::vector<float> dataPos;
 
-	createFogMesh(radius, radius*sinf(fog_alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
+	createFogMesh(radius, radius*sinf(alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
 
 	m_fogGL->fillVertexBuffer(BufferType::POS3D, dataPos);
 	m_fogGL->fillVertexBuffer(BufferType::TEXTURE, dataTex);
@@ -82,7 +81,7 @@ void Fog::initShader()
 
 
 // Draw the horizon fog
-void Fog::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const
+void Fog::draw(const Projector* prj, const Navigator* nav) const
 {
 	if (!fader.getInterstate()) return;
 
@@ -97,7 +96,7 @@ void Fog::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav
 	glBindTexture(GL_TEXTURE_2D, fog_tex->getID());
 	shaderFog->setUniform("fader", fader.getInterstate());
 	shaderFog->setUniform("sky_brightness", sky_brightness);
-	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(fog_angle_shift*M_PI/180.)))).convert();
+	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(angle_shift*M_PI/180.)))).convert();
 	shaderFog->setUniform("ModelViewMatrix",matrix);
 
 	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);

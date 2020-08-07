@@ -75,15 +75,14 @@ public:
 
 	//! Set whether landscape is displayed (does not concern fog)
 	void setFlagShow(bool b){
-		land_fader=b;
+		fader=b;
 	}
-
 	//! Get whether landscape is displayed (does not concern fog)
 	bool getFlagShow() const {
-		return land_fader;
+		return fader;
 	}
 	void flipFlagShow() {
-		land_fader = !land_fader;
+		fader = !fader;
 	}
 
 	//! Set whether fog is displayed
@@ -123,10 +122,11 @@ protected:
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
 	void deleteMapTex();
 	float radius;
-	std::string name;
 	float sky_brightness;
 	bool valid_landscape;   // was a landscape loaded properly?
-	LinearFader land_fader;
+	LinearFader fader;
+
+	std::string name;
 	std::string author;
 	std::string description;
 	s_texture* map_tex;
