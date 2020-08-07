@@ -86,7 +86,7 @@ void Landscape::update(int delta_time) {
 void Landscape::createSC_context()
 {
 	shaderLandscape = std::make_unique<shaderProgram>();
-	shaderLandscape->init("landscape2T.vert", "landscape2T.geom","landscape2T.frag");
+	shaderLandscape->init("landscape.vert", "landscape.geom","landscape.frag");
 
 	shaderLandscape->setUniformLocation("sky_brightness");
 	shaderLandscape->setUniformLocation("fader");

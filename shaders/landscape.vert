@@ -1,5 +1,5 @@
 //
-// landscape2T
+// landscape
 //
 
 #version 420
