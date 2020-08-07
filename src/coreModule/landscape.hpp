@@ -61,14 +61,14 @@ public:
 
 
 	//! Set the number of slices pour la construction des panoramas
-	void setSlices(int a) {
+	static void setSlices(int a) {
 		a=a-a%5;  //on veut un nombre multiple de 5
 		if (a>0)
 			slices = a;
 	}
 
 	//! Set the number of stacks pour la construction des panoramas
-	void setStacks(int a) {
+	static void setStacks(int a) {
 		a=a-a%5;  // on veut un nombre multiple de 5
 		if (a>0)
 			stacks = a;
