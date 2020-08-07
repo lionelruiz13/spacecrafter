@@ -162,6 +162,7 @@ std::string Landscape::getFileContent(const std::string& landscape_file)
 	return result;
 }
 
+
 std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 {
 	InitParser pd;	// The landscape data ini file parser
@@ -173,16 +174,6 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 	return result;
 }
 
-std::string Landscape::nameToKey(const std::string& landscape_file, const std::string & name)
-{
-	InitParser pd;	// The landscape data ini file parser
-	pd.load(landscape_file);
-	for (int i=0; i<pd.getNsec(); i++) {
-		if (name==pd.getStr(pd.getSecname(i), "name")) return pd.getSecname(i);
-	}
-	assert(0);
-	return "error";
-}
 
 // Draw the horizon fog
 void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const

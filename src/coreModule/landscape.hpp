@@ -121,7 +121,7 @@ public:
 	static Landscape* createFromHash(stringHash_t & param);
 	static std::string getFileContent(const std::string& landscape_file);
 	static std::string getLandscapeNames(const std::string& landscape_file);
-	static std::string nameToKey(const std::string& landscape_file, const std::string & name);
+
 protected:
 	virtual void load(const std::string& file_name, const std::string& section_name){};
 
