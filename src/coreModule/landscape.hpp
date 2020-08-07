@@ -143,7 +143,7 @@ protected:
 	s_texture* map_tex;
 	s_texture* map_tex_night;
 	bool haveNightTex;
-	bool ignoreTick;
+
 	float fog_alt_angle;
 	float fog_angle_shift;
 
@@ -194,6 +194,13 @@ private:
 	void initShader();
 	float base_altitude, top_altitude;  // for partial sphere coverage
 	float rotate_z; // rotation around the z axis
+};
+
+class Fog {
+public:
+
+private:
+
 };
 
 #endif // _LANDSCAPE_H_
