@@ -38,6 +38,15 @@
 #include "tools/Renderer.hpp"
 
 
+#define L_TYPE 			"type"
+#define L_SPHERICAL		"spherical"
+#define L_FISHEYE		"fisheye"
+#define L_PATH 			"path"
+#define L_NIGHT_TEX		"night_texture"
+#define L_NAME			"name"
+#define L_TEXTURE		"texture"
+#define L_MIPMAP		"mipmap"
+
 int Landscape::slices = 20;
 int Landscape::stacks = 10;
 
@@ -104,11 +113,11 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 	InitParser pd;	// The landscape data ini file parser
 	pd.load(landscape_file);
 	std::string s;
-	s = pd.getStr(section_name, "type");
+	s = pd.getStr(section_name, L_TYPE);
 	Landscape* ldscp = nullptr;
-	if (s=="spherical") {
+	if (s==L_SPHERICAL) {
 		ldscp = new LandscapeSpherical();
-	} else if (s=="fisheye") {
+	} else if (s==L_FISHEYE) {
 		ldscp = new LandscapeFisheye();
 	} else {
 		cLog::get()->write( "Unknown landscape type: " + s  , LOG_TYPE::L_ERROR);
@@ -125,35 +134,35 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 {
 	// night landscape textures for spherical and fisheye landscape types
 	std::string night_tex="";
-	if (param["night_texture"] != "") 
-		night_tex = param["path"] + param["night_texture"];
+	if (param[L_NIGHT_TEX] != "") 
+		night_tex = param[L_PATH] + param[L_NIGHT_TEX];
 
 	std::string texture="";
-	if (param["texture"] == "")
-		texture = param["path"] + param["maptex"];
+	if (param[L_TEXTURE] == "")
+		texture = param[L_PATH] + param["maptex"];
 	else
-		texture = param["path"] + param["texture"];
+		texture = param[L_PATH] + param[L_TEXTURE];
 
 	bool mipmap; // Default on
-	if (param["mipmap"] == "on" || param["mipmap"] == "1")
+	if (param[L_TEXTURE] == "on" || param[L_TEXTURE] == "1")
 		mipmap = true;
 	else
 		mipmap = false;
 
 	// NOTE: textures should be full filename (and path)
-	if (param["type"]=="fisheye") {
+	if (param[L_TYPE]==L_FISHEYE) {
 		LandscapeFisheye* ldscp = new LandscapeFisheye();
-		ldscp->create(param["name"], texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
+		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
 		              Utility::strToDouble(param["rotate_z"], 0.), night_tex, mipmap);
 		return ldscp;
-	} else if (param["type"]=="spherical") {
+	} else if (param[L_TYPE]==L_SPHERICAL) {
 		LandscapeSpherical* ldscp = new LandscapeSpherical();
-		ldscp->create(param["name"], texture, Utility::strToDouble(param["base_altitude"], -90),
+		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["base_altitude"], -90),
 		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, mipmap);
 		return ldscp;
 	} else {  //wrong Landscape
 		Landscape* ldscp = new Landscape();
-		cLog::get()->write( "Unknown landscape type in createFromHash: " + param["name"], LOG_TYPE::L_ERROR);
+		cLog::get()->write( "Unknown landscape type in createFromHash: " + param[L_NAME], LOG_TYPE::L_ERROR);
 		return ldscp;
 	}
 }
@@ -164,7 +173,7 @@ void Landscape::loadCommon(const std::string& landscape_file, const std::string&
 {
 	InitParser pd;	// The landscape data ini file parser
 	pd.load(landscape_file);
-	name = pd.getStr(section_name, "name");
+	name = pd.getStr(section_name, L_NAME);
 	author = pd.getStr(section_name, "author");
 	description = pd.getStr(section_name, "description");
 
@@ -199,7 +208,7 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 	pd.load(landscape_file);
 	std::string result;
 	for (int i=0; i<pd.getNsec(); i++) {
-		result += pd.getStr(pd.getSecname(i), "name") + '\n';
+		result += pd.getStr(pd.getSecname(i), L_NAME) + '\n';
 	}
 	return result;
 }
@@ -277,13 +286,13 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	InitParser pd;	// The landscape data ini file parser
 	pd.load(landscape_file);
 
-	std::string type = pd.getStr(section_name, "type");
-	if (type != "fisheye") {
+	std::string type = pd.getStr(section_name, L_TYPE);
+	if (type != L_FISHEYE) {
 		cLog::get()->write( "type mismatch for landscape " + section_name + ": expected fisheye found " + type, LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
 	}
-	std::string texture = pd.getStr(section_name, "texture");
+	std::string texture = pd.getStr(section_name, L_TEXTURE);
 	if (texture.empty()) {
 		cLog::get()->write( "No texture for landscape " + section_name , LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
@@ -291,7 +300,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	}
 	texture = AppSettings::Instance()->getLandscapeDir() + texture;
 
-	std::string night_texture = pd.getStr(section_name, "night_texture", "");
+	std::string night_texture = pd.getStr(section_name, L_NIGHT_TEX, "");
 	if (! night_texture.empty())
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
@@ -299,7 +308,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	       pd.getDouble(section_name, "fov", pd.getDouble(section_name, "texturefov", 180)),
 	       pd.getDouble(section_name, "rotate_z", 0.),
 	       night_texture,
-	       pd.getBoolean(section_name, "mipmap", true));
+	       pd.getBoolean(section_name, L_TEXTURE, true));
 }
 
 
@@ -461,14 +470,14 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	InitParser pd;	// The landscape data ini file parser
 	pd.load(landscape_file);
 
-	std::string type = pd.getStr(section_name, "type");
-	if (type != "spherical" ) {
+	std::string type = pd.getStr(section_name, L_TYPE);
+	if (type != L_SPHERICAL ) {
 		cLog::get()->write( "Type mismatch for landscape " + section_name +", expected spherical, found " + type , LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
 	}
 
-	std::string texture = pd.getStr(section_name, "texture");
+	std::string texture = pd.getStr(section_name, L_TEXTURE);
 	if (texture.empty()) {
 		cLog::get()->write( "No texture for landscape " + section_name , LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
@@ -476,7 +485,7 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	}
 	texture = AppSettings::Instance()->getLandscapeDir() + texture;
 
-	std::string night_texture = pd.getStr(section_name, "night_texture", "");
+	std::string night_texture = pd.getStr(section_name, L_NIGHT_TEX, "");
 	if (! night_texture.empty())
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
@@ -485,7 +494,7 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	       pd.getDouble(section_name, "top_altitude", 90),
 	       pd.getDouble(section_name, "rotate_z", 0.),
 	       night_texture,
-	       pd.getBoolean(section_name, "mipmap", true));
+	       pd.getBoolean(section_name, L_TEXTURE, true));
 }
 
 
