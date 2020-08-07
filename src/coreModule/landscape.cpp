@@ -60,9 +60,6 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 
 void Landscape::createSC_context()
 {
-	shaderFog = std::make_unique<shaderProgram>();
-	shaderFog-> init( "fog.vert","fog.frag");
-
 	shaderLandscape = std::make_unique<shaderProgram>();
 	shaderLandscape->init("landscape2T.vert", "landscape2T.geom","landscape2T.frag");
 
@@ -72,6 +69,9 @@ void Landscape::createSC_context()
 
 	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
 	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
+
+	shaderFog = std::make_unique<shaderProgram>();
+	shaderFog-> init( "fog.vert","fog.frag");
 
 	shaderFog->setUniformLocation("fader");
 	shaderFog->setUniformLocation("sky_brightness");
@@ -122,16 +122,20 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 {
 	// night landscape textures for spherical and fisheye landscape types
 	std::string night_tex="";
-	if (param["night_texture"] != "") night_tex = param["path"] + param["night_texture"];
+	if (param["night_texture"] != "") 
+		night_tex = param["path"] + param["night_texture"];
 
 	std::string texture="";
-	if (param["texture"] == "") texture = param["path"] + param["maptex"];
+	if (param["texture"] == "")
+		texture = param["path"] + param["maptex"];
 	else
 		texture = param["path"] + param["texture"];
 
 	bool mipmap; // Default on
-	if (param["mipmap"] == "on" || param["mipmap"] == "1") mipmap = true;
-	else mipmap = false;
+	if (param["mipmap"] == "on" || param["mipmap"] == "1")
+		mipmap = true;
+	else
+		mipmap = false;
 
 	// NOTE: textures should be full filename (and path)
 	if (param["type"]=="fisheye") {
@@ -283,7 +287,6 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 void LandscapeFisheye::create(const std::string _name, const std::string _maptex, double _texturefov,
                               const float _rotate_z, const std::string _maptex_night, bool _mipmap)
 {
-	//~ cout << _name << " P " << _fullpath << " N " << _maptex << " T " << _texturefov << " N "  << _maptex_night << "\n";
 	valid_landscape = 1;  // assume ok...
 	haveNightTex = false;
 	cLog::get()->write( "Landscape Fisheye " + _name + " created" , LOG_TYPE::L_INFO);
@@ -505,16 +508,17 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 void LandscapeSpherical::create(const std::string _name, const std::string _maptex, const float _base_altitude,
                                 const float _top_altitude, const float _rotate_z, const std::string _maptex_night, bool _mipmap)
 {
-	//~ cout << _name << " P " << _fullpath << " N " << _maptex << " " << _base_altitude << " " << _top_altitude << " N " << _maptex_night << "\n";
 	valid_landscape = 1;  // assume ok...
-	haveNightTex = false;
 	cLog::get()->write( "Landscape Spherical " + _name + " created" , LOG_TYPE::L_INFO);
 	name = _name;
 	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+
 	if (!_maptex_night.empty()) {
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
-	}
+	} else
+		haveNightTex = false;
+
 	base_altitude = ((_base_altitude >= -90 && _base_altitude <= 90) ? _base_altitude : -90);
 	top_altitude = ((_top_altitude >= -90 && _top_altitude <= 90) ? _top_altitude : 90);
 	rotate_z = _rotate_z*M_PI/180.;
@@ -656,7 +660,7 @@ void Landscape::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GL
 	nbFogVertex=0;
 	GLdouble da, r, dz;
 	GLfloat z ;
-	GLint i; //, j;
+	GLint i;
 
 	da = 2.0 * M_PI / slices;
 	dz = height / stacks;
@@ -666,7 +670,6 @@ void Landscape::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GL
 	GLfloat t = 0.0;
 	z = 0.0;
 	r = radius;
-	//~ for (j = 0; j < stacks; j++) {
 	GLfloat s = 0.0;
 	for (i = 0; i <= slices; i++) {
 		GLfloat x, y;
@@ -677,31 +680,19 @@ void Landscape::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GL
 			x = sinf(i * da);
 			y = cosf(i * da);
 		}
-		//~ glNormal3f(x , y , 0); // on n'utilise pas les normales
-		//~ glTexCoord2f(s, t);
-
 		dataTex->push_back(s);
 		dataTex->push_back(t);
-		//~ sVertex3(x * r, y * r, z, mat);
-
 		dataPos->push_back(x*r);
 		dataPos->push_back(y*r);
 		dataPos->push_back(z);
 		nbFogVertex++;
-		//glNormal3f(x , y , 0); //on n'utilise pas les normales
 
-		//~ glTexCoord2f(s, t + dt);
 		dataTex->push_back(s);
 		dataTex->push_back(t+dt);
-
-		//~ sVertex3(x * r, y * r, z + dz, mat);
 		dataPos->push_back(x*r);
 		dataPos->push_back(y*r);
 		dataPos->push_back(z+dz);
 		nbFogVertex++;
 		s += ds;
-	}			/* for slices */
-	//~ t += dt;
-	//~ z += dz;
-	//~ }				/* for stacks */
+	}
 }

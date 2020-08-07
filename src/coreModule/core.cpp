@@ -232,7 +232,6 @@ void Core::init(const InitParser& conf)
 	if (firstTime) {
 		s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
 		this->initCoreFont();
-		Landscape::createSC_context();
 	}
 
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
@@ -281,6 +280,7 @@ void Core::init(const InitParser& conf)
 		// Init nebulas
 		nebulas->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
 
+		Landscape::createSC_context();
 		landscape->setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
