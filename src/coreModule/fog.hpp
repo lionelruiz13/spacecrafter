@@ -35,6 +35,7 @@
 #include "tools/utility.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/ScModule.hpp"
 
 class s_texture;
 class Navigator;
@@ -42,18 +43,10 @@ class Projector;
 class VertexArray;
 class shaderProgram;
 
-class Fog : public NoCopy {
+class Fog : public NoCopy , public ModuleFader<LinearFader> {
 public:
 	Fog(float _radius);
 	~Fog();
-	//! Set whether fog is displayed
-	void setFlagShow(bool b) {
-		fader=b;
-	}
-	//! Get whether fog is displayed
-	bool getFlagShow() const {
-		return fader;
-	}
 
 	void update(int delta_time) {
 		fader.update(delta_time);
@@ -89,7 +82,6 @@ private:
 	float alt_angle;
 	float angle_shift;
 	float sky_brightness;
-	LinearFader fader;
 };
 
 

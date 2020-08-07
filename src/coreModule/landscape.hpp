@@ -35,6 +35,7 @@
 #include "tools/utility.hpp"
 #include "tools/stateGL.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/ScModule.hpp"
 
 class s_texture;
 class ToneReproductor;
@@ -46,7 +47,7 @@ class shaderProgram;
 class Fog;
 
 // Class which manages the displaying of the Landscape
-class Landscape: public NoCopy {
+class Landscape: public NoCopy, public ModuleFader<LinearFader> {
 
 public:
 	enum class LANDSCAPE_TYPE : char {
@@ -71,18 +72,6 @@ public:
 		a=a-a%5;  // on veut un nombre multiple de 5
 		if (a>0)
 			stacks = a;
-	}
-
-	//! Set whether landscape is displayed (does not concern fog)
-	void setFlagShow(bool b){
-		fader=b;
-	}
-	//! Get whether landscape is displayed (does not concern fog)
-	bool getFlagShow() const {
-		return fader;
-	}
-	void flipFlagShow() {
-		fader = !fader;
 	}
 
 	//! Set whether fog is displayed
@@ -124,7 +113,6 @@ protected:
 	float radius;
 	float sky_brightness;
 	bool valid_landscape;   // was a landscape loaded properly?
-	LinearFader fader;
 
 	std::string name;
 	std::string author;
