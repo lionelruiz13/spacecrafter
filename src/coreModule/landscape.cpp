@@ -59,7 +59,7 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	map_tex_night = nullptr;
 
 	valid_landscape = 0;
-	cLog::get()->write( "Landscape generic created" , LOG_TYPE::L_INFO);
+	cLog::get()->write( "Landscape generic created", LOG_TYPE::L_INFO);
 	haveNightTex = false;
 
 	fog =nullptr;
@@ -72,21 +72,25 @@ Landscape::~Landscape()
 	if (fog) delete fog;
 }
 
-void Landscape::setSkyBrightness(float b) {
+void Landscape::setSkyBrightness(float b)
+{
 	sky_brightness = b;
 	fog->setSkyBrightness(b);
 }
 
 //! Set whether fog is displayed
-void Landscape::fogSetFlagShow(bool b) {
+void Landscape::fogSetFlagShow(bool b)
+{
 	fog->setFlagShow(b);
 }
 //! Get whether fog is displayed
-bool Landscape::fogGetFlagShow() const {
+bool Landscape::fogGetFlagShow() const
+{
 	return fog->getFlagShow();
 }
 
-void Landscape::update(int delta_time) {
+void Landscape::update(int delta_time)
+{
 	fader.update(delta_time);
 	fog->update(delta_time);
 }
@@ -117,10 +121,12 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 	Landscape* ldscp = nullptr;
 	if (s==L_SPHERICAL) {
 		ldscp = new LandscapeSpherical();
-	} else if (s==L_FISHEYE) {
+	}
+	else if (s==L_FISHEYE) {
 		ldscp = new LandscapeFisheye();
-	} else {
-		cLog::get()->write( "Unknown landscape type: " + s  , LOG_TYPE::L_ERROR);
+	}
+	else {
+		cLog::get()->write( "Unknown landscape type: " + s, LOG_TYPE::L_ERROR);
 		// to avoid making this a fatal error, will load as a basic Landscape
 		ldscp = new Landscape();
 	}
@@ -134,7 +140,7 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 {
 	// night landscape textures for spherical and fisheye landscape types
 	std::string night_tex="";
-	if (param[L_NIGHT_TEX] != "") 
+	if (param[L_NIGHT_TEX] != "")
 		night_tex = param[L_PATH] + param[L_NIGHT_TEX];
 
 	std::string texture="";
@@ -155,12 +161,14 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
 		              Utility::strToDouble(param["rotate_z"], 0.), night_tex, mipmap);
 		return ldscp;
-	} else if (param[L_TYPE]==L_SPHERICAL) {
+	}
+	else if (param[L_TYPE]==L_SPHERICAL) {
 		LandscapeSpherical* ldscp = new LandscapeSpherical();
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["base_altitude"], -90),
 		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, mipmap);
 		return ldscp;
-	} else {  //wrong Landscape
+	}
+	else {    //wrong Landscape
 		Landscape* ldscp = new Landscape();
 		cLog::get()->write( "Unknown landscape type in createFromHash: " + param[L_NAME], LOG_TYPE::L_ERROR);
 		return ldscp;
@@ -181,10 +189,11 @@ void Landscape::loadCommon(const std::string& landscape_file, const std::string&
 	fog->setAngleShift(pd.getDouble(section_name, "fog_angle_shift", 0.));
 
 	if (name.empty()) {
-		cLog::get()->write( "No valid landscape definition found for section " + section_name +" in file " + landscape_file , LOG_TYPE::L_ERROR);
+		cLog::get()->write( "No valid landscape definition found for section " + section_name +" in file " + landscape_file, LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
-	} else {
+	}
+	else {
 		valid_landscape = 1;
 	}
 }
@@ -233,7 +242,8 @@ void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigato
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
-	} else
+	}
+	else
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
 
 	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
@@ -294,7 +304,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	}
 	std::string texture = pd.getStr(section_name, L_TEXTURE);
 	if (texture.empty()) {
-		cLog::get()->write( "No texture for landscape " + section_name , LOG_TYPE::L_ERROR);
+		cLog::get()->write( "No texture for landscape " + section_name, LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
 	}
@@ -318,7 +328,7 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 {
 	valid_landscape = 1;  // assume ok...
 	haveNightTex = false;
-	cLog::get()->write( "Landscape Fisheye " + _name + " created" , LOG_TYPE::L_INFO);
+	cLog::get()->write( "Landscape Fisheye " + _name + " created", LOG_TYPE::L_INFO);
 	name = _name;
 	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 
@@ -472,14 +482,14 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 
 	std::string type = pd.getStr(section_name, L_TYPE);
 	if (type != L_SPHERICAL ) {
-		cLog::get()->write( "Type mismatch for landscape " + section_name +", expected spherical, found " + type , LOG_TYPE::L_ERROR);
+		cLog::get()->write( "Type mismatch for landscape " + section_name +", expected spherical, found " + type, LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
 	}
 
 	std::string texture = pd.getStr(section_name, L_TEXTURE);
 	if (texture.empty()) {
-		cLog::get()->write( "No texture for landscape " + section_name , LOG_TYPE::L_ERROR);
+		cLog::get()->write( "No texture for landscape " + section_name, LOG_TYPE::L_ERROR);
 		valid_landscape = 0;
 		return;
 	}
@@ -503,14 +513,15 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
                                 const float _top_altitude, const float _rotate_z, const std::string _maptex_night, bool _mipmap)
 {
 	valid_landscape = 1;  // assume ok...
-	cLog::get()->write( "Landscape Spherical " + _name + " created" , LOG_TYPE::L_INFO);
+	cLog::get()->write( "Landscape Spherical " + _name + " created", LOG_TYPE::L_INFO);
 	name = _name;
 	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 
 	if (!_maptex_night.empty()) {
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
-	} else
+	}
+	else
 		haveNightTex = false;
 
 	base_altitude = ((_base_altitude >= -90 && _base_altitude <= 90) ? _base_altitude : -90);
@@ -544,7 +555,7 @@ void LandscapeSpherical::initShader()
 
 
 void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
-        double bottom_altitude, double top_altitude , GLfloat * datatex, GLfloat * datapos)
+        double bottom_altitude, double top_altitude, GLfloat * datatex, GLfloat * datapos)
 {
 	unsigned int indiceTex=0;
 	unsigned int indicePos=0;

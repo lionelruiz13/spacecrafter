@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2003 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
- * Copyright (C) 2014-2020 Association Sirius 
+ * Copyright (C) 2014-2020 Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -70,7 +70,7 @@ void Fog::initShader()
 	std::vector<float> dataTex;
 	std::vector<float> dataPos;
 
-	createFogMesh(radius, radius*sinf(alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
+	createFogMesh(radius, radius*sinf(alt_angle*M_PI/180.), 128,1, &dataTex, &dataPos);
 
 	m_fogGL->fillVertexBuffer(BufferType::POS3D, dataPos);
 	m_fogGL->fillVertexBuffer(BufferType::TEXTURE, dataTex);
@@ -128,7 +128,8 @@ void Fog::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint st
 		if (i == slices) {
 			x = sinf(0.0);
 			y = cosf(0.0);
-		} else {
+		}
+		else {
 			x = sinf(i * da);
 			y = cosf(i * da);
 		}

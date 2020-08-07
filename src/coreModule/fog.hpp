@@ -43,7 +43,7 @@ class Projector;
 class VertexArray;
 class shaderProgram;
 
-class Fog : public NoCopy , public ModuleFader<LinearFader> {
+class Fog : public NoCopy, public ModuleFader<LinearFader> {
 public:
 	Fog(float _radius);
 	~Fog();

@@ -106,7 +106,7 @@ public:
 	static void createSC_context();
 protected:
 	Fog *fog=nullptr;
-	virtual void load(const std::string& file_name, const std::string& section_name){};
+	virtual void load(const std::string& file_name, const std::string& section_name) {};
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
 	void deleteMapTex();
@@ -153,7 +153,7 @@ public:
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
-	                           double bottom_altitude, double top_altitude , GLfloat * datatex, GLfloat * datapos);
+	                         double bottom_altitude, double top_altitude, GLfloat * datatex, GLfloat * datapos);
 	void initShader();
 	float base_altitude, top_altitude;  // for partial sphere coverage
 };
