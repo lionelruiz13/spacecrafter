@@ -185,14 +185,6 @@ std::string Landscape::nameToKey(const std::string& landscape_file, const std::s
 	return "error";
 }
 
-void Landscape::setFlagShow(bool b)
-{
-	land_fader=b;
-}
-
-void Landscape::setRotation(float rotation) {}
-void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) {}
-
 // Draw the horizon fog
 void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const
 {
@@ -219,8 +211,6 @@ void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navig
 	glActiveTexture(GL_TEXTURE0);
 
 }
-
-void Landscape::load(const std::string& file_name, const std::string& section_name) {}
 
 void Landscape::initShaderParams()
 {

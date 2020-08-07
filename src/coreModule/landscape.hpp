@@ -75,7 +75,9 @@ public:
 	}
 
 	//! Set whether landscape is displayed (does not concern fog)
-	void setFlagShow(bool b);
+	void setFlagShow(bool b){
+		land_fader=b;
+	}
 
 	//! Get whether landscape is displayed (does not concern fog)
 	bool getFlagShow() const {
@@ -112,9 +114,8 @@ public:
 		fog_fader.update(delta_time);
 	}
 
-	virtual void setRotation(float rotation);
-
-	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
+	virtual void setRotation(float rotation){};
+	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav){};
 
 	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
 	static Landscape* createFromHash(stringHash_t & param);
@@ -122,7 +123,7 @@ public:
 	static std::string getLandscapeNames(const std::string& landscape_file);
 	static std::string nameToKey(const std::string& landscape_file, const std::string & name);
 protected:
-	virtual void load(const std::string& file_name, const std::string& section_name);
+	virtual void load(const std::string& file_name, const std::string& section_name){};
 
 	void getFogDraw(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
 	void initShaderFog();
