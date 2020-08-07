@@ -43,6 +43,8 @@ class Projector;
 class VertexArray;
 class shaderProgram;
 
+class Fog;
+
 // Class which manages the displaying of the Landscape
 class Landscape: public NoCopy {
 
@@ -55,10 +57,7 @@ public:
 	Landscape(float _radius = 2.);
 	virtual ~Landscape();
 
-	void setSkyBrightness(float b) {
-		sky_brightness = b;
-	}
-
+	void setSkyBrightness(float b);
 
 	//! Set the number of slices pour la construction des panoramas
 	static void setSlices(int a) {
@@ -125,6 +124,7 @@ public:
 	static std::string getLandscapeNames(const std::string& landscape_file);
 	static void createSC_context();
 protected:
+	Fog *fog=nullptr;
 	virtual void load(const std::string& file_name, const std::string& section_name){};
 
 	void createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
@@ -150,7 +150,7 @@ protected:
 	float fog_angle_shift;
 
 	unsigned int nbVertex;				// nombre de vertex des landscapes
-	unsigned int nbFogVertex;			//nombre de vertex pour le fog
+
 	static int slices;
 	static int stacks;
 	static std::unique_ptr<shaderProgram> shaderLandscape, shaderFog;
@@ -186,5 +186,57 @@ private:
 	void initShader();
 	float base_altitude, top_altitude;  // for partial sphere coverage
 };
+
+
+class Fog {
+public:
+	Fog(float _radius);
+	~Fog();
+	//! Set whether fog is displayed
+	void setFlagShow(bool b) {
+		fog_fader=b;
+	}
+	//! Get whether fog is displayed
+	bool getFlagShow() const {
+		return fog_fader;
+	}
+
+	void update(int delta_time) {
+		fog_fader.update(delta_time);
+	}
+
+	void setAltAngle(float _value) {
+		fog_alt_angle= _value;
+	}
+
+	void setAngleShift(float _value) {
+		fog_angle_shift = _value;
+	}
+
+	void setSkyBrightness(float b) {
+		sky_brightness = b;
+	}
+
+	static void createSC_context();
+
+	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const;
+
+	void initShaderFog();
+
+private:
+
+	void createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
+
+	static std::unique_ptr<shaderProgram> shaderFog;
+	std::unique_ptr<VertexArray> m_fogGL;
+	unsigned int nbFogVertex;			//nombre de vertex pour le fog
+	static s_texture* fog_tex;			// allways the same
+	float radius;
+	float fog_alt_angle;
+	float fog_angle_shift;
+	float sky_brightness;
+	LinearFader fog_fader;
+};
+
 
 #endif // _LANDSCAPE_H_

@@ -44,6 +44,9 @@ std::unique_ptr<shaderProgram> Landscape::shaderLandscape;
 std::unique_ptr<shaderProgram> Landscape::shaderFog;
 s_texture* Landscape::fog_tex;
 
+std::unique_ptr<shaderProgram> Fog::shaderFog;
+s_texture* Fog::fog_tex;
+
 Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 {
 	map_tex = nullptr;
@@ -53,6 +56,11 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	cLog::get()->write( "Landscape generic created" , LOG_TYPE::L_INFO);
 	haveNightTex = false;
 
+	fog = new Fog(0.95f);
+}
+
+Fog::Fog(float _radius) : radius(_radius)
+{
 	m_fogGL = std::make_unique<VertexArray>();
 	m_fogGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_fogGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
@@ -70,6 +78,16 @@ void Landscape::createSC_context()
 	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
 	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
 
+	Fog::createSC_context();
+}
+
+void Landscape::setSkyBrightness(float b) {
+	sky_brightness = b;
+	fog->setSkyBrightness(b);
+}
+
+void Fog::createSC_context()
+{
 	shaderFog = std::make_unique<shaderProgram>();
 	shaderFog-> init( "fog.vert","fog.frag");
 
@@ -80,12 +98,12 @@ void Landscape::createSC_context()
 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
 }
 
-void Landscape::initShaderFog()
+void Fog::initShaderFog()
 {
 	std::vector<float> dataTex;
 	std::vector<float> dataPos;
 
-	createFogMesh(0.95, radius*sinf(fog_alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
+	createFogMesh(radius, radius*sinf(fog_alt_angle*M_PI/180.) , 128,1, &dataTex, &dataPos);
 
 	m_fogGL->fillVertexBuffer(BufferType::POS3D, dataPos);
 	m_fogGL->fillVertexBuffer(BufferType::TEXTURE, dataTex);
@@ -163,8 +181,9 @@ void Landscape::loadCommon(const std::string& landscape_file, const std::string&
 	name = pd.getStr(section_name, "name");
 	author = pd.getStr(section_name, "author");
 	description = pd.getStr(section_name, "description");
-	fog_alt_angle = pd.getDouble(section_name, "fog_alt_angle", 30.);
-	fog_angle_shift = pd.getDouble(section_name, "fog_angle_shift", 0.);
+
+	fog->setAltAngle(pd.getDouble(section_name, "fog_alt_angle", 30.));
+	fog->setAngleShift(pd.getDouble(section_name, "fog_angle_shift", 0.));
 
 	if (name.empty()) {
 		cLog::get()->write( "No valid landscape definition found for section " + section_name +" in file " + landscape_file , LOG_TYPE::L_ERROR);
@@ -234,12 +253,12 @@ void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigato
 
 	glActiveTexture(GL_TEXTURE0);
 
-	drawFog(eye,prj,nav);
+	fog->draw(eye,prj,nav);
 }
 
 
 // Draw the horizon fog
-void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const
+void Fog::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const
 {
 	if (!fog_fader.getInterstate()) return;
 
@@ -340,7 +359,7 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 	rotate_z = _rotate_z*M_PI/180.;
 
 	initShader();
-	initShaderFog();
+	fog->initShaderFog();
 }
 
 void LandscapeFisheye::initShader()
@@ -524,7 +543,7 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	rotate_z = _rotate_z*M_PI/180.;
 
 	initShader();
-	initShaderFog();
+	fog->initShaderFog();
 }
 
 void LandscapeSpherical::initShader()
@@ -616,7 +635,7 @@ void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_obl
 	}
 }
 
-void Landscape::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos)
+void Fog::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos)
 {
 	nbFogVertex=0;
 	GLdouble da, r, dz;
