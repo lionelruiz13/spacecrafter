@@ -119,7 +119,6 @@ public:
 protected:
 	Fog *fog=nullptr;
 	virtual void load(const std::string& file_name, const std::string& section_name){};
-
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
 	void deleteMapTex();
@@ -133,16 +132,12 @@ protected:
 	s_texture* map_tex;
 	s_texture* map_tex_night;
 	bool haveNightTex;
-
-	float fog_alt_angle;
-	float fog_angle_shift;
-
 	unsigned int nbVertex;				// nombre de vertex des landscapes
 
 	static int slices;
 	static int stacks;
-	static std::unique_ptr<shaderProgram> shaderLandscape, shaderFog;
-	std::unique_ptr<VertexArray> m_landscapeGL, m_fogGL;
+	static std::unique_ptr<shaderProgram> shaderLandscape;
+	std::unique_ptr<VertexArray> m_landscapeGL;
 	float rotate_z; // rotation around the z axis
 };
 
