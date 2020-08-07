@@ -87,13 +87,9 @@ public:
 	}
 
 	//! Set whether fog is displayed
-	void fogSetFlagShow(bool b) {
-		fog_fader=b;
-	}
+	void fogSetFlagShow(bool b);
 	//! Get whether fog is displayed
-	bool fogGetFlagShow() const {
-		return fog_fader;
-	}
+	bool fogGetFlagShow() const;
 	//! Get landscape name
 	std::string getName() const {
 		return name;
@@ -107,10 +103,7 @@ public:
 		return description;
 	}
 
-	void update(int delta_time) {
-		land_fader.update(delta_time);
-		fog_fader.update(delta_time);
-	}
+	void update(int delta_time);
 
 	virtual void setRotation(float rotation) {
 		rotate_z = rotation;
@@ -127,9 +120,6 @@ protected:
 	Fog *fog=nullptr;
 	virtual void load(const std::string& file_name, const std::string& section_name){};
 
-	void createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
-	void initShaderFog();
-	void drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const;
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
 	void deleteMapTex();
@@ -138,10 +128,8 @@ protected:
 	float sky_brightness;
 	bool valid_landscape;   // was a landscape loaded properly?
 	LinearFader land_fader;
-	LinearFader fog_fader;
 	std::string author;
 	std::string description;
-	static s_texture* fog_tex;			// allways the same
 	s_texture* map_tex;
 	s_texture* map_tex_night;
 	bool haveNightTex;

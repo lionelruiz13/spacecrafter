@@ -41,8 +41,6 @@ int Landscape::slices = 20;
 int Landscape::stacks = 10;
 
 std::unique_ptr<shaderProgram> Landscape::shaderLandscape;
-std::unique_ptr<shaderProgram> Landscape::shaderFog;
-s_texture* Landscape::fog_tex;
 
 std::unique_ptr<shaderProgram> Fog::shaderFog;
 s_texture* Fog::fog_tex;
@@ -84,6 +82,20 @@ void Landscape::createSC_context()
 void Landscape::setSkyBrightness(float b) {
 	sky_brightness = b;
 	fog->setSkyBrightness(b);
+}
+
+//! Set whether fog is displayed
+void Landscape::fogSetFlagShow(bool b) {
+	fog->setFlagShow(b);
+}
+//! Get whether fog is displayed
+bool Landscape::fogGetFlagShow() const {
+	return fog->getFlagShow();
+}
+
+void Landscape::update(int delta_time) {
+	land_fader.update(delta_time);
+	fog->update(delta_time);
 }
 
 void Fog::createSC_context()
