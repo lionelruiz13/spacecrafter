@@ -69,7 +69,7 @@ public:
 private:
 	//!thread servant à lancer la fonction de sauvegarde
 	std::thread taskThread(const std::string &fileName, int bufferIndice) {
-		return std::thread([=, this] { saveScreenToFile( fileName, bufferIndice); });
+		return std::thread([=] { saveScreenToFile( fileName, bufferIndice); });
 	}
 
 	//!transforme un buffer en une image sur le disque
