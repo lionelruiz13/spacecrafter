@@ -117,7 +117,7 @@ public:
 		rotate_z = rotation;
 	}
 
-	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav){};
+	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
 
 	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
 	static Landscape* createFromHash(stringHash_t & param);
@@ -164,7 +164,6 @@ public:
 	LandscapeFisheye(float _radius = 1.);
 	virtual ~LandscapeFisheye();
 	virtual void load(const std::string& fileName, const std::string& section_name);
-	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
 	void create(const std::string _name, const std::string _maptex, double _texturefov,
 	            const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
 private:
@@ -179,7 +178,6 @@ public:
 	LandscapeSpherical(float _radius = 1.);
 	virtual ~LandscapeSpherical();
 	virtual void load(const std::string& fileName, const std::string& section_name);
-	virtual void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
 	void create(const std::string _name, const std::string _maptex, const float _base_altitude,
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
 private:

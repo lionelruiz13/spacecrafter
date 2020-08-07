@@ -199,6 +199,45 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 }
 
 
+void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav)
+{
+	if (!valid_landscape) return;
+	if (!land_fader.getInterstate()) return;
+
+	// Normal transparency mode
+	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	StateGL::enable(GL_CULL_FACE);
+	StateGL::enable(GL_BLEND);
+
+	shaderLandscape->use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, map_tex->getID());
+
+	if (haveNightTex && sky_brightness > 0.25) {
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
+		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
+	} else
+		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
+
+	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
+	shaderLandscape->setUniform("fader",land_fader.getInterstate());
+
+	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
+	shaderLandscape->setUniform("ModelViewMatrix",matrix);
+
+	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
+
+	StateGL::disable(GL_CULL_FACE);
+	StateGL::disable(GL_BLEND);
+
+	glActiveTexture(GL_TEXTURE0);
+
+	drawFog(eye,prj,nav);
+}
+
+
 // Draw the horizon fog
 void Landscape::drawFog(ToneReproductor * eye, const Projector* prj, const Navigator* nav) const
 {
@@ -321,45 +360,6 @@ void LandscapeFisheye::initShader()
 
 	if (datatex) delete datatex;
 	if (datapos) delete datapos;
-}
-
-
-void LandscapeFisheye::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav)
-{
-	if (!valid_landscape) return;
-	if (!land_fader.getInterstate()) return;
-
-	// Normal transparency mode
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	StateGL::enable(GL_CULL_FACE);
-	StateGL::enable(GL_BLEND);
-
-	shaderLandscape->use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, map_tex->getID());
-
-	if (haveNightTex && sky_brightness > 0.25) {
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
-		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
-	} else
-		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
-
-	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
-	shaderLandscape->setUniform("fader",land_fader.getInterstate());
-
-	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
-	shaderLandscape->setUniform("ModelViewMatrix",matrix);
-
-	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
-
-	StateGL::disable(GL_CULL_FACE);
-	StateGL::disable(GL_BLEND);
-
-	glActiveTexture(GL_TEXTURE0);
-
-	drawFog(eye,prj,nav);
 }
 
 
@@ -545,45 +545,6 @@ void LandscapeSpherical::initShader()
 
 	if (datatex) delete[] datatex;
 	if (datapos) delete[] datapos;
-}
-
-
-void LandscapeSpherical::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav)
-{
-	if (!valid_landscape) return;
-	if (!land_fader.getInterstate()) return;
-
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	StateGL::enable(GL_CULL_FACE);
-	StateGL::enable(GL_BLEND);
-
-	shaderLandscape->use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, map_tex->getID());
-
-	if (haveNightTex && sky_brightness > 0.25) {
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
-		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
-	} else
-		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
-
-	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
-	shaderLandscape->setUniform("fader",land_fader.getInterstate());
-	shaderLandscape->setUniform("clipping_fov",prj->getClippingFov());
-
-	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
-	shaderLandscape->setUniform("ModelViewMatrix",matrix);
-
-	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
-
-	StateGL::disable(GL_CULL_FACE);
-	StateGL::disable(GL_BLEND);
-
-	glActiveTexture(GL_TEXTURE0);
-
-	drawFog(eye, prj, nav);
 }
 
 
