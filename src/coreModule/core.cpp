@@ -832,9 +832,6 @@ void Core::drawInGalaxy(int delta_time)
 	dso3d->draw(observatory->getAltitude(), projection, navigation);
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
 	starNav->draw(navigation, projection);
-
-	if (bodyDecor->canDrawLandscape())
-		landscape->draw(tone_converter, projection, navigation);
 }
 
 //! Execute all the drawing functions
