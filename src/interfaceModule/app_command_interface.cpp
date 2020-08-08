@@ -1048,6 +1048,10 @@ int AppCommandInterface::commandWait(unsigned long int &wait)
 	if ( args[W_DURATION]!="") {
 		float fdelay = evalDouble(args[W_DURATION]);
 		if (fdelay > 0) wait = (int)(fdelay*1000);
+	} else 
+	if ( args[W_VIDEO]==W_TERMINATION) {
+		scriptInterface->waitOnVideoTermination();
+		wait = 5;
 	} else {
 		debug_message = _("command_'wait' : unrecognized or malformed argument name.");
 	}
