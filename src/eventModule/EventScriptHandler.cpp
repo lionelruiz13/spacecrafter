@@ -25,11 +25,11 @@
 
 
 #include "EventScriptHandler.hpp"
-#include "scriptModule/script_mgr.hpp"
+#include "scriptModule/script_interface.hpp"
 #include "eventModule/EventScript.hpp"
 
 void EventScriptHandler::handle(const Event* e)
 {
 	ScriptEvent * event = (ScriptEvent *)e;
-	scriptMgr->playScript(event->getFileName());
+	scriptInterface->playScript(event->getFileName());
 }

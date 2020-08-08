@@ -106,7 +106,7 @@ App::App( SDLFacade* const sdl )
 	EventRecorder::Init();
 	eventRecorder = EventRecorder::getInstance();
 	eventHandler = new EventHandler(eventRecorder);
-	eventHandler-> add(new EventScriptHandler(scriptMgr), Event::E_SCRIPT);
+	eventHandler-> add(new EventScriptHandler(scriptInterface), Event::E_SCRIPT);
 	eventHandler-> add(new EventCommandHandler(commander), Event::E_COMMAND);
 	eventHandler-> add(new EventFlagHandler(commander), Event::E_FLAG);
 	eventHandler-> add(new EventScreenFaderHandler(screenFader), Event::E_SCREEN_FADER);

@@ -31,18 +31,18 @@
 #include "event_handler_canvas.hpp"
 #include "event.hpp"
 
-class ScriptMgr;
+class ScriptInterface;
 
 class EventScriptHandler : public EventHandlerCanvas {
 public:
-	EventScriptHandler(ScriptMgr *_scriptMgr) {
-		scriptMgr= _scriptMgr;
+	EventScriptHandler(ScriptInterface *_scriptInterface) {
+		scriptInterface= _scriptInterface;
 	}
 	~EventScriptHandler(){
 	}
     void handle(const Event* e) override;
 protected :
-	ScriptMgr* scriptMgr = nullptr;
+	ScriptInterface* scriptInterface = nullptr;
 };
 
 #endif // EVENT_SCRIPT_HANDLER_HPP
