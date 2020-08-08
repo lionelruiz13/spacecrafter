@@ -142,6 +142,14 @@ public:
 		return multiplierRate;
 	}
 
+	void waitOnVideoTermination() {
+		waitOnVideo = !waitOnVideo;
+	}
+
+	void setIsVideoPlayed(bool b) {
+		isVideoPlayed = b;
+	} 
+
 private:
 	std::string getRecordDate();
 	Media* media = nullptr;
@@ -149,10 +157,12 @@ private:
 	Script * script = nullptr; //!< currently loaded script
 	long int wait_time;     //!< ms until next script command should be executed
 	unsigned long int record_elapsed_time;  //!< ms since last command recorded
-	bool recording;  //!< is a script being recorded?
-	bool playing;    //!< is a script playing?  (could be paused)
-	bool play_paused;//!< is script playback paused?
-	std::fstream rec_file;	//!< le pointeur sur le fichier
+	bool recording;  			//!< is a script being recorded?
+	bool playing;    			//!< is a script playing?  (could be paused)
+	bool play_paused;			//!< is script playback paused?
+	bool waitOnVideo; 			//!< if Video launch, say if script should wait on it.
+	bool isVideoPlayed;		 	//!< say if a video is played
+	std::fstream rec_file;		//!< le pointeur sur le fichier
 	std::string DataDir;
 
 	int multiplierRate=1; 
