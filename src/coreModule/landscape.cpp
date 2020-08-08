@@ -29,7 +29,6 @@
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/s_texture.hpp"
-#include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
@@ -37,7 +36,7 @@
 #include "renderGL/shader.hpp"
 #include "renderGL/Renderer.hpp"
 
-
+//define word string in a same place
 #define L_TYPE 			"type"
 #define L_SPHERICAL		"spherical"
 #define L_FISHEYE		"fisheye"
@@ -223,7 +222,7 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 }
 
 
-void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav)
+void Landscape::draw(const Projector* prj, const Navigator* nav)
 {
 	if (!valid_landscape) return;
 	if (!fader.getInterstate()) return;

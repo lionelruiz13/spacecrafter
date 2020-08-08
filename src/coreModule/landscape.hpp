@@ -38,7 +38,6 @@
 #include "tools/ScModule.hpp"
 
 class s_texture;
-class ToneReproductor;
 class Navigator;
 class Projector;
 class VertexArray;
@@ -97,7 +96,7 @@ public:
 		rotate_z = rotation;
 	}
 
-	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav);
+	void draw(const Projector* prj, const Navigator* nav);
 
 	static Landscape* createFromFile(const std::string& landscape_file, const std::string& section_name);
 	static Landscape* createFromHash(stringHash_t & param);

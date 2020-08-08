@@ -807,7 +807,7 @@ void Core::drawInSolarSystem(int delta_time)
 
 	// Draw the landscape
 	if (bodyDecor->canDrawLandscape())
-		landscape->draw(tone_converter, projection, navigation);
+		landscape->draw(projection, navigation);
 
 	cardinals_points->draw(projection, observatory->getLatitude());
 }
