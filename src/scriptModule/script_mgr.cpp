@@ -51,6 +51,7 @@ ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_
 	nbrLoop =0;
 	isInLoop = false;
 	repeatLoop = false;
+	waitOnVideo = false;
 	media = _media;
 	script= new Script();
 }
@@ -123,6 +124,7 @@ void ScriptMgr::cancelScript()
 	loopVector.clear();
 	isInLoop = false;
 	repeatLoop = false;
+	waitOnVideo = false;
 }
 
 void ScriptMgr::pauseScript()
@@ -255,8 +257,11 @@ void ScriptMgr::resetScriptLoop()
 void ScriptMgr::update(int delta_time)
 {
 	if (recording) record_elapsed_time += delta_time;
-
-	if (playing && !play_paused) {
+	
+	/**	isVideoPlayed && waitOnVideo : 
+	 * case of video is playing and scriptMgr should wait on it : 
+	 * so next if must be false*/
+	if (playing && !play_paused && (isVideoPlayed && waitOnVideo ? false : true) ) {
 		wait_time -= delta_time;
 		if (wait_time<0)
 			wait_time =0;

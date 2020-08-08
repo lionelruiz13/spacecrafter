@@ -84,6 +84,10 @@ public:
 	bool isScriptRecording() const;
 	bool isScriptPaused() const;
 
+	void waitOnVideoTermination() const;
+
+	void setIsVideoPlayed(bool b) const;
+
 private:
     ScriptMgr* scriptMgr;
    	
