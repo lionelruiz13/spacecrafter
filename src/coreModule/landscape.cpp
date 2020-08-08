@@ -214,7 +214,7 @@ void Landscape::draw(ToneReproductor * eye, const Projector* prj, const Navigato
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, map_tex->getID());
 
-	if (haveNightTex && sky_brightness > 0.25) {
+	if (haveNightTex && sky_brightness < 0.25) {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
