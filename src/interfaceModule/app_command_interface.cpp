@@ -1089,16 +1089,27 @@ int AppCommandInterface::commandPlanetScale()
 
 int AppCommandInterface::commandWait(unsigned long int &wait)
 {
-	if ( args[W_DURATION]!="") {
+	
+	if (!args[W_DURATION].empty()) {
 		float fdelay = evalDouble(args[W_DURATION]);
 		if (fdelay > 0) wait = (int)(fdelay*1000);
-	} else 
-	if ( args[W_VIDEO_TERMINATION]==W_TOGGLE) {
-		scriptInterface->waitOnVideoTermination();
+		return executeCommandStatus();	
+	} 
+	
+	std::string videoTermination = args[W_VIDEO_TERMINATION];
+	if ( !videoTermination.empty()) {
+		if (videoTermination==W_TOGGLE)
+			scriptInterface->waitOnVideoTermination();
+		else {
+			if (isTrue(videoTermination))
+				scriptInterface->setWaitOnVideoTermination(true);
+			else
+				scriptInterface->setWaitOnVideoTermination(false);
+		}
 		wait = 5;
-	} else {
-		debug_message = _("command_'wait' : unrecognized or malformed argument name.");
+		return executeCommandStatus();
 	}
+	debug_message = _("command_'wait' : unrecognized or malformed argument name.");
 	return executeCommandStatus();
 }
 

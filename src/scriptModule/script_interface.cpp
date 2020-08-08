@@ -128,3 +128,7 @@ void ScriptInterface::waitOnVideoTermination() const {
 void ScriptInterface::setIsVideoPlayed(bool b) const {
 	scriptMgr->setIsVideoPlayed(b);
 }
+
+void ScriptInterface::setWaitOnVideoTermination(bool b) const {
+    scriptMgr->setWaitOnVideoTermination(b);
+}

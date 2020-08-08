@@ -145,6 +145,9 @@ public:
 	void waitOnVideoTermination() {
 		waitOnVideo = !waitOnVideo;
 	}
+	void setWaitOnVideoTermination(bool b) {
+		waitOnVideo = b;
+	}
 
 	void setIsVideoPlayed(bool b) {
 		isVideoPlayed = b;
