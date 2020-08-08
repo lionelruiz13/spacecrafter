@@ -1049,7 +1049,7 @@ int AppCommandInterface::commandWait(unsigned long int &wait)
 		float fdelay = evalDouble(args[W_DURATION]);
 		if (fdelay > 0) wait = (int)(fdelay*1000);
 	} else 
-	if ( args[W_VIDEO]==W_TERMINATION) {
+	if ( args[W_VIDEO_TERMINATION]==W_TOGGLE) {
 		scriptInterface->waitOnVideoTermination();
 		wait = 5;
 	} else {
