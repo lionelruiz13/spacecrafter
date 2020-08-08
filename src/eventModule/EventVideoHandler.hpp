@@ -32,14 +32,14 @@
 #include "eventModule/event.hpp"
 
 class UI;
-class ScriptMgr;
+class ScriptInterface;
 class Media;
 
 class EventVideoHandler : public EventHandlerCanvas {
 public:
-	EventVideoHandler(UI *_ui, ScriptMgr *_scriptMgr, Media* _media) {
+	EventVideoHandler(UI *_ui, ScriptInterface *_scriptInterface, Media* _media) {
 		ui = _ui;
-        scriptMgr = _scriptMgr;
+        scriptInterface = _scriptInterface;
 		media = _media;
 	}
 	~EventVideoHandler() {
@@ -48,7 +48,7 @@ public:
 
 protected :
 	UI *ui = nullptr;
-    ScriptMgr *scriptMgr = nullptr;
+    ScriptInterface *scriptInterface = nullptr;
 	Media *media = nullptr;
 };
 

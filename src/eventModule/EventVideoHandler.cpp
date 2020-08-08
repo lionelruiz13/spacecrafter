@@ -27,6 +27,7 @@
 #include "eventModule/EventVideo.hpp"
 #include "eventModule/event.hpp"
 #include "uiModule/ui.hpp"
+#include "scriptModule/script_interface.hpp"
 #include "mediaModule/media.hpp"
 
 void EventVideoHandler::handle(const Event* e)
@@ -35,6 +36,7 @@ void EventVideoHandler::handle(const Event* e)
     switch(event->getOrder()) {
         case VIDEO_ORDER::PLAY :
             ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, true);
+            scriptInterface->setIsVideoPlayed(true);
             break;
 
         case VIDEO_ORDER::PAUSE :
@@ -42,6 +44,7 @@ void EventVideoHandler::handle(const Event* e)
 
         case VIDEO_ORDER::STOP :
             ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
+            scriptInterface->setIsVideoPlayed(false);
             media->playerStop();
             break;
     }
