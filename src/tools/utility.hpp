@@ -150,6 +150,9 @@ public:
 	static long int strToLong(const std::string& str);
 
 	static float clamp( float value, float min, float max ) ;
+	static bool isBoolean(const std::string &a);
+	static bool isTrue(const std::string &a);
+	static bool isFalse(const std::string &a);
 };
 
 #endif

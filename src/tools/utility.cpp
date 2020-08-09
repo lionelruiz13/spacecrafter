@@ -505,3 +505,31 @@ float Utility::clamp( float value, float min, float max )
 { 
     return ( value < min ) ? ( min ) : ( ( value>max) ? ( max) : (value) ); 
 }
+
+bool Utility::isBoolean(const std::string &a)
+{
+	if ( isTrue(a) || isFalse(a) )
+		return true;
+	else
+		return false;
+}
+
+bool Utility::isTrue(const std::string &a)
+{
+	std::string _a;
+	std::transform(a.begin(), a.end(),_a.begin(), ::tolower);
+	if (_a=="true" || _a == "1" || _a== "on" )
+		return true;
+	else
+		return false;
+}
+
+bool Utility::isFalse(const std::string &a)
+{
+	std::string _a;
+	std::transform(a.begin(), a.end(),_a.begin(), ::tolower);
+	if (_a=="false" || _a =="0" || _a=="off" )
+		return true;
+	else
+		return false;
+}
