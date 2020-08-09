@@ -213,7 +213,7 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 	if (scriptRecord.rec_file.is_open()) {
 		scriptRecord.recording = true;
 		scriptRecord.record_elapsed_time = 0;
-		scriptRecord.rec_file << "# Spacecrafter "<< std::endl;
+		scriptRecord.rec_file << "# Spacecrafter "<< AppSettings::Instance()->getVersion() << std::endl;
 		scriptRecord.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
