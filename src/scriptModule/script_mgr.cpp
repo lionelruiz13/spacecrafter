@@ -95,7 +95,12 @@ bool ScriptMgr::addScriptFirst(const std::string & script)
 	
 	//get the tokens into a vector
 	while (getline(iss, line)){
-		
+		// transformation des débuts de chaines de caratères en supprimant espaces et tabulations en début de chaine
+		while (line[0]==' ' || line[0]=='\t') {
+	        line.erase(0,1); 
+			//std::cout << str << std::endl;
+		}
+		// prise en compte des lignes 
 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
 			token = new Token(line, getScriptPath());
 			commands.push_back(token);
