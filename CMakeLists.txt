@@ -107,6 +107,9 @@ INCLUDE(CPack)
 add_subdirectory(shaders)
 add_subdirectory(src)
 add_subdirectory(data)
+ADD_SUBDIRECTORY( planetsephems ) 
+ADD_SUBDIRECTORY( iniparser ) 
+
 
 
 ########### Récapitulatif ###########

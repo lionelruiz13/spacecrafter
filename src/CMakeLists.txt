@@ -1,8 +1,4 @@
-ADD_SUBDIRECTORY( planetsephems ) 
-ADD_SUBDIRECTORY( iniparser ) 
-
-
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/src/planetsephems ${CMAKE_SOURCE_DIR}/src/iniparser )
+INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/planetsephems ${CMAKE_SOURCE_DIR}/iniparser )
 
 file(GLOB_RECURSE all_SRCS ${PROJECT_SOURCE_DIR} *.h *.hpp *.cpp )
 
