@@ -23,60 +23,27 @@
  *
  */
 
+#include "eventModule/EventVideoHandler.hpp"
+#include "eventModule/EventVideo.hpp"
+#include "eventModule/event.hpp"
+#include "uiModule/ui.hpp"
+#include "scriptModule/script_interface.hpp"
 
-#ifndef EVENT_HPP
-#define EVENT_HPP
+void EventVideoHandler::handle(const Event* e)
+{
+    VideoEvent * event = (VideoEvent *)e;
+    switch(event->getOrder()) {
+        case VIDEO_ORDER::PLAY :
+            ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, true);
+            scriptInterface->setIsVideoPlayed(true);
+            break;
 
-#include <string>
-#include <map>
-#include <iostream>
+        case VIDEO_ORDER::PAUSE :
+            break;
 
-class Event{
-
-public :
-    enum Event_Type : char { 
-        E_NOT_SET = 0,
-        E_SCRIPT,
-        E_COMMAND,
-        E_SCREEN_FADER,
-        E_SCREEN_FADER_INTERLUDE,
-        E_FLAG,
-        E_SAVESCREEN,
-        E_FPS,
-        E_CHANGE_ALTITUDE,
-        E_CHANGE_OBSERVER,
-        E_VIDEO
-        //....
-    };
-    
-    Event(){ 
-        type = E_NOT_SET;
+        case VIDEO_ORDER::STOP :
+            ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
+            scriptInterface->setIsVideoPlayed(false);
+            break;
     }
-
-    virtual ~Event(){};
-    
-    Event(Event_Type _type){
-		type=_type;
-	}
-
-    Event_Type getEventType() const {
-        return type;
-    }
-
-    static std::map<Event_Type, std::string> eventTypeToString;
-
-    friend std::ostream& operator<< (std::ostream & os, const Event& e){
-        os << e.toString() << std::endl;
-        return os;
-    }
-
-    virtual std::string toString() const {
-        return Event::eventTypeToString[type];
-    }
-   
-protected :
-    Event_Type type;
-};
-
-
-#endif
+}

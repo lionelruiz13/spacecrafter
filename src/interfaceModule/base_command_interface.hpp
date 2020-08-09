@@ -191,6 +191,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_DELTA_LON                 "delta_lon"
 #define W_DELTA_ALT                 "delta_alt"
 #define W_MULTIPLY_ALT              "multiply_alt"
+#define W_VIDEO_TERMINATION         "video_termination"
 #define W_VIDEONAME                 "videoname"
 #define W_AUDIONAME                 "audioname"
 #define W_JDAY                      "jday"

@@ -142,6 +142,17 @@ public:
 		return multiplierRate;
 	}
 
+	void waitOnVideoTermination() {
+		waitOnVideo = !waitOnVideo;
+	}
+	void setWaitOnVideoTermination(bool b) {
+		waitOnVideo = b;
+	}
+
+	void setIsVideoPlayed(bool b) {
+		isVideoPlayed = b;
+	} 
+
 private:
 	// les états du moteur de script via à vis des scripts en cours.
 	enum class ScriptState : char {PLAY, PAUSE, NONE};
@@ -159,6 +170,8 @@ private:
 	AppCommandInterface * commander = nullptr;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
 	long int wait_time;     //!< ms until next script command should be executed
+	bool waitOnVideo; 			//!< if Video launch, say if script should wait on it.
+	bool isVideoPlayed;		 	//!< say if a video is played
 	std::string DataDir;
 	int multiplierRate=1; 
 	bool isInLoop; 		//!< on est entrain de lire les instructions d'une loop

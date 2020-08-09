@@ -29,7 +29,7 @@ Media::Media()
 {
 	audio = new Audio();
 	imageMgr = new ImageMgr();
-	player = new VideoPlayer();
+	player = new VideoPlayer(this);
 	viewPort = new ViewPort();
 	vr360 = new VR360();
 	m_videoState = {V_TYPE::V_NO, V_STATE::V_OFF};

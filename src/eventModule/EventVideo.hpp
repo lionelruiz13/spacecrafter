@@ -24,59 +24,31 @@
  */
 
 
-#ifndef EVENT_HPP
-#define EVENT_HPP
+#ifndef VIDEO_EVENT_HPP
+#define VIDEO_EVENT_HPP
 
 #include <string>
-#include <map>
-#include <iostream>
+#include <sstream>
+#include "eventModule/event.hpp"
 
-class Event{
 
-public :
-    enum Event_Type : char { 
-        E_NOT_SET = 0,
-        E_SCRIPT,
-        E_COMMAND,
-        E_SCREEN_FADER,
-        E_SCREEN_FADER_INTERLUDE,
-        E_FLAG,
-        E_SAVESCREEN,
-        E_FPS,
-        E_CHANGE_ALTITUDE,
-        E_CHANGE_OBSERVER,
-        E_VIDEO
-        //....
-    };
-    
-    Event(){ 
-        type = E_NOT_SET;
+enum class VIDEO_ORDER : char {PLAY, PAUSE, STOP};
+
+class VideoEvent : public Event {
+public:
+    VideoEvent(VIDEO_ORDER _order) : Event(E_VIDEO) {
+        order = _order;
+    }
+    ~VideoEvent(){};
+
+    VIDEO_ORDER getOrder() const {
+        return order;
     }
 
-    virtual ~Event(){};
-    
-    Event(Event_Type _type){
-		type=_type;
-	}
-
-    Event_Type getEventType() const {
-        return type;
-    }
-
-    static std::map<Event_Type, std::string> eventTypeToString;
-
-    friend std::ostream& operator<< (std::ostream & os, const Event& e){
-        os << e.toString() << std::endl;
-        return os;
-    }
-
-    virtual std::string toString() const {
-        return Event::eventTypeToString[type];
-    }
-   
-protected :
-    Event_Type type;
+private:
+    VIDEO_ORDER order;
 };
+
 
 
 #endif

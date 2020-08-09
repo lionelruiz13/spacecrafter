@@ -120,3 +120,15 @@ std::string ScriptInterface::getScriptPath() const {
 std::string ScriptInterface::getScriptList(const std::string &directory) const {
     return scriptMgr->getScriptList(directory);
 }
+
+void ScriptInterface::waitOnVideoTermination() const {
+    scriptMgr->waitOnVideoTermination();
+}
+
+void ScriptInterface::setIsVideoPlayed(bool b) const {
+	scriptMgr->setIsVideoPlayed(b);
+}
+
+void ScriptInterface::setWaitOnVideoTermination(bool b) const {
+    scriptMgr->setWaitOnVideoTermination(b);
+}

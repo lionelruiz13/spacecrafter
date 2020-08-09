@@ -14,10 +14,14 @@
 #include "mediaModule/video_player.hpp"
 #include "tools/log.hpp"
 #include "tools/s_texture.hpp"
+#include "mediaModule/media.hpp"
 
+#include "eventModule/event_recorder.hpp"
+#include "eventModule/EventVideo.hpp"
 
-VideoPlayer::VideoPlayer()
+VideoPlayer::VideoPlayer(Media* _media)
 {
+	media = _media;
 	m_isVideoPlayed = false;
 	isInPause = false;
 	isSeeking = false;
@@ -43,6 +47,9 @@ void VideoPlayer::pause()
 		d_lastCount = d_lastCount + (endPause - startPause);
 		lastCount = (int)d_lastCount;
 	}
+
+	Event* event = new VideoEvent(VIDEO_ORDER::PAUSE);
+	EventRecorder::getInstance()->queue(event);
 }
 
 void VideoPlayer::init()
@@ -198,6 +205,9 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 	m_isVideoPlayed = true;
 	elapsedTime =0.0;
 	this->getNextVideoFrame();
+
+	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
+	EventRecorder::getInstance()->queue(event);
 	return 0;
 #endif
 }
@@ -287,13 +297,16 @@ void VideoPlayer::playStop()
 #ifndef WIN32
 	if (m_isVideoPlayed==false)
 		return;
-	else {
-		m_isVideoPlayed = false;
-		sws_freeContext(img_convert_ctx);
-		av_frame_free(&pFrameOut);
-		av_frame_free(&pFrameIn);
-		avcodec_close(pCodecCtx);
-	}
+
+	m_isVideoPlayed = false;
+	sws_freeContext(img_convert_ctx);
+	av_frame_free(&pFrameOut);
+	av_frame_free(&pFrameIn);
+	avcodec_close(pCodecCtx);
+
+	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
+	EventRecorder::getInstance()->queue(event);
+	media->playerStop();
 #endif
 }
 
