@@ -82,8 +82,7 @@ public:
 	virtual ~UI();		// Delete the ui
 	void init(const InitParser& conf);		// Initialize the ui.
 
-	void initScriptInterface(ScriptInterface* _scriptInterface);
-	void initSpaceDateInterface(SpaceDate* _spaceDate);
+	void initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate);
 
 	void draw();							// Display the ui
 	void updateTimeouts(int delta_time);		// Update changing values

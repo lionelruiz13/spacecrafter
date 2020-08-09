@@ -74,17 +74,13 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	appInit->initialiseSetCommand(m_set, m_set_ToString);
 }
 
-void AppCommandInterface::initScriptInterface(ScriptInterface* _scriptInterface) {
+void AppCommandInterface::initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate, SaveScreenInterface* _saveScreenInterface) 
+{
 	scriptInterface = _scriptInterface;
-}
-
-void AppCommandInterface::initSpaceDateInterface(SpaceDate* _spaceDate) {
 	spaceDate = _spaceDate;
-}
-
-void AppCommandInterface::initSaveScreenInterface(SaveScreenInterface* _saveScreenInterface) {
 	saveScreenInterface = _saveScreenInterface;
 }
+
 
 AppCommandInterface::~AppCommandInterface()
 {

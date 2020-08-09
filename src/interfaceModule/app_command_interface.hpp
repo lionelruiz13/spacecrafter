@@ -60,9 +60,7 @@ public:
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, unsigned long int &wait);
 
-	void initScriptInterface(ScriptInterface* _scriptInterface);
-	void initSpaceDateInterface(SpaceDate* _spaceDate);
-	void initSaveScreenInterface(SaveScreenInterface* _saveScreenInterface);
+	void initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate, SaveScreenInterface* _saveScreenInterface);
 
 	void setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value);
 	void setTcp(ServerSocket* _tcp);

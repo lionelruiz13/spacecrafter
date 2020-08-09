@@ -96,11 +96,8 @@ App::App( SDLFacade* const sdl )
 	spaceDate = new SpaceDate();
 
 	// fixation interface 
-	ui->initScriptInterface(scriptInterface);
-	ui->initSpaceDateInterface(spaceDate);
-	commander->initScriptInterface(scriptInterface);
-	commander->initSpaceDateInterface(spaceDate);
-	commander->initSaveScreenInterface(saveScreenInterface);
+	ui->initInterfaces(scriptInterface,spaceDate);
+	commander->initInterfaces(scriptInterface, spaceDate, saveScreenInterface);
 
 	EventRecorder::Init();
 	eventRecorder = EventRecorder::getInstance();
