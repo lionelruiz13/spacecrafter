@@ -175,7 +175,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 	//                                                 //
 	// application specific logic to run each command  //
 	//                                                 //
-	if (command =="comment"  )
+	if (command =="comment")
 		return commandComment();
 
 	if (command =="uncomment")
@@ -246,7 +246,9 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_TIMERATE :	return commandTimerate(); break;
 		case SC_COMMAND::SC_WAIT :	return commandWait(wait); break;
 		case SC_COMMAND::SC_ZOOMR :	return commandZoom(wait); break;
-		default:	break;
+		// for g++ warning
+		case SC_COMMAND::SC_STRUCT: break;
+//		default:	break;
 	}
 	return 1;
 }
