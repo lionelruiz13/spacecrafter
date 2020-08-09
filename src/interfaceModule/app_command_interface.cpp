@@ -248,7 +248,6 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_ZOOMR :	return commandZoom(wait); break;
 		// for g++ warning
 		case SC_COMMAND::SC_STRUCT: break;
-//		default:	break;
 	}
 	return 1;
 }
@@ -922,10 +921,6 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
-		
-		// default:
-		// 	cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
-		// 	break;
 	}
 	return true; // flag was found and updated
 }
@@ -1328,8 +1323,6 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE: 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		coreLink->textSetDefaultColor( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args[W_INDEX]), Vcolor ); break;
-		default: 
-		break;
 	}
 	return executeCommandStatus();
 }
@@ -1535,14 +1528,14 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(setValue)); break;
-		default:
-			debug_message = "command_'set': unknown argument";
-			//for (const auto&i : args )
-			//	std::cout << i.first << "->" << i.second << std::endl;
-			appInit->searchSimilarSet(args.begin()->first);
-			//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-			return executeCommandStatus();
-		break;
+		case SCD_NAMES::APP_FLAG_NONE: 
+						debug_message = "command_'set': unknown argument";
+						//for (const auto&i : args )
+						//	std::cout << i.first << "->" << i.second << std::endl;
+						appInit->searchSimilarSet(args.begin()->first);
+						//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
+						return executeCommandStatus();
+						break;
 	}
 	return executeCommandStatus();
 }
