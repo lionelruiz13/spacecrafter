@@ -148,7 +148,7 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 {
 	// night landscape textures for spherical and fisheye landscape types or possibility to have limitedShare
 	std::string night_tex="";
-	if (param[L_NIGHT_TEX] != "")
+	if (!param[L_NIGHT_TEX].empty())
 		night_tex = param[L_PATH] + param[L_NIGHT_TEX];
 
 	float limitedShadeValue = 0;
@@ -157,7 +157,7 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	}
 
 	std::string texture="";
-	if (param[L_TEXTURE] == "")
+	if (param[L_TEXTURE].empty())
 		texture = param[L_PATH] + param["maptex"];
 	else
 		texture = param[L_PATH] + param[L_TEXTURE];
