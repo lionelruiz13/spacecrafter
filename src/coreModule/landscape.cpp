@@ -50,8 +50,15 @@
 int Landscape::slices = 20;
 int Landscape::stacks = 10;
 
+const float minShadeValue = 0.1f;
+const float maxShadeValue = 0.9f;
+
 std::unique_ptr<shaderProgram> Landscape::shaderLandscape;
 
+static float setLimitedShade(float _value )
+{
+	return std::min(maxShadeValue, std::max(_value, minShadeValue));
+}
 
 Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 {
@@ -146,7 +153,7 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 
 	float limitedShadeValue = 0;
 	if (!param[L_LIM_SHADE].empty()) {
-		limitedShadeValue = std::min(Utility::strToFloat(param[L_LIM_SHADE]), 0.25f);
+		limitedShadeValue = setLimitedShade(Utility::strToFloat(param[L_LIM_SHADE]));
 	}
 
 	std::string texture="";
@@ -326,7 +333,7 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	float limitedShadeValue = 0;
 	std::string haveLimitedShade = pd.getStr(section_name, L_LIM_SHADE);
 	if (!haveLimitedShade.empty()) {
-		limitedShadeValue = std::min(Utility::strToFloat(haveLimitedShade), 0.25f);
+		limitedShadeValue = setLimitedShade(Utility::strToFloat(haveLimitedShade));
 	}
 
 	create(name, texture,
@@ -522,7 +529,7 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	float limitedShadeValue = 0;
 	std::string haveLimitedShade = pd.getStr(section_name, L_LIM_SHADE);
 	if (!haveLimitedShade.empty()) {
-		limitedShadeValue = std::min(Utility::strToFloat(haveLimitedShade), 0.25f);
+		limitedShadeValue = setLimitedShade(Utility::strToFloat(haveLimitedShade));
 	}
 
 	create(name, texture,
