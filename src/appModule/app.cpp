@@ -115,7 +115,7 @@ App::App( SDLFacade* const sdl )
 	eventHandler-> add(new EventFpsHandler(internalFPS), Event::E_FPS);
 	eventHandler-> add(new EventAltitudeHandler(core), Event::E_CHANGE_ALTITUDE);
 	eventHandler-> add(new EventObserverHandler(core), Event::E_CHANGE_OBSERVER);
-	eventHandler-> add(new EventVideoHandler(ui, scriptInterface, media), Event::E_VIDEO);
+	eventHandler-> add(new EventVideoHandler(ui, scriptInterface), Event::E_VIDEO);
 
 	#if LINUX
 	mkfifo= new Mkfifo();
