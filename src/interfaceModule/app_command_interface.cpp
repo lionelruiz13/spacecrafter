@@ -923,9 +923,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
 		
-		default:
-			cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
-			break;
+		// default:
+		// 	cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
+		// 	break;
 	}
 	return true; // flag was found and updated
 }
