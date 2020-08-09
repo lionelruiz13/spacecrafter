@@ -126,11 +126,9 @@ void UI::init(const InitParser& conf)
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
 }
 
-void UI::initScriptInterface(ScriptInterface* _scriptInterface) {
+void UI::initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate)
+{
 	scriptInterface = _scriptInterface;
-}
-
-void UI::initSpaceDateInterface(SpaceDate* _spaceDate) {
 	spaceDate = _spaceDate;
 }
 

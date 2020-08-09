@@ -126,6 +126,11 @@ public:
 	//! Determine where vframes files should go on different platforms
 	const std::string getVframeDirectory() const;
 
+	//! Indique de quel est la version de Spacecrafter
+	const std::string getVersion() const {
+		return VERSION;
+	}
+
 	//! Console output of all methods of the class
 	void display_all() const;
 

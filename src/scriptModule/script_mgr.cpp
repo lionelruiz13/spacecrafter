@@ -40,14 +40,14 @@
 #include "tools/call_system.hpp"
 
 
-ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_data_dir, Media* _media ) : play_paused(false)
+ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_data_dir, Media* _media )
 {
 	commander = command_interface;
 	DataDir = _data_dir;
-	recording = 0;
-	playing = 0;
-	record_elapsed_time = 0;
-	multiplierRate=1; 
+	scriptState = ScriptState::NONE;
+	sR.recording = false;
+	sR.record_elapsed_time = 0;
+	multiplierRate=1;
 	nbrLoop =0;
 	isInLoop = false;
 	repeatLoop = false;
@@ -63,7 +63,6 @@ ScriptMgr::~ScriptMgr()
 
 // path is used for loading script assets in one time
 bool ScriptMgr::playScript(const std::string &fullFileName)
-
 {
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO);
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
@@ -76,8 +75,7 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 
 	if ( script->load(fullFileName, script_path) ) {
 		multiplierRate=1; 
-		playing = 1;
-		play_paused = 0;
+		scriptState = ScriptState::PLAY;
 		wait_time = 0;
 		return 1;
 	} 
@@ -120,8 +118,7 @@ void ScriptMgr::cancelScript()
 	// delete script object...
 	script->clean();
 	// images loaded are deleted from stel_command_interface directly
-	playing = 0;
-	play_paused = 0;
+	scriptState = ScriptState::NONE;
 	multiplierRate = 1;
 	nbrLoop =0;
 	indiceInLoop=0;
@@ -134,9 +131,9 @@ void ScriptMgr::cancelScript()
 
 void ScriptMgr::pauseScript()
 {
-	if(!playing)
-		return;
-	play_paused = 1;
+	if (scriptState==ScriptState::NONE)	return;
+
+	scriptState=ScriptState::PAUSE;
 	media->audioMusicPause();
 	commander->executeCommand("timerate action pause");
 	cLog::get()->write("ScriptMgr::script action pause", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
@@ -144,11 +141,9 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	if(!playing) {
-		return;
-	}
+	if (scriptState==ScriptState::NONE)	return;
+	scriptState=ScriptState::PLAY;
 
-	play_paused = 0;
 	media->audioMusicResume();
 	commander->executeCommand("timerate action resume");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
@@ -161,7 +156,7 @@ bool ScriptMgr::isFaster() const
 
 void ScriptMgr::fasterSpeed()
 {
-	if( !playing || play_paused )
+	if(scriptState != ScriptState::PLAY)
 		return;
 
 	if (multiplierRate==1)
@@ -175,7 +170,7 @@ void ScriptMgr::fasterSpeed()
 
 void ScriptMgr::slowerSpeed()
 {
-	if( !playing || play_paused )
+	if(scriptState != ScriptState::PLAY)
 		return;
 
 	if (multiplierRate>1)
@@ -199,27 +194,29 @@ std::string ScriptMgr::getRecordDate()
 
 void ScriptMgr::recordScript(const std::string &script_filename)
 {
-	if (recording) {
+	if (sR.recording) {
 		cLog::get()->write("ScriptMgr::Already recording script", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-		rec_file.close();
-		recording = 0;
+		sR.rec_file.close();
+		sR.recording = false;
 		cLog::get()->write("ScriptMgr::Script recording stopped.", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 		return;
 	}
 
 	if (!script_filename.empty()) {
-		rec_file.open(script_filename.c_str(), std::fstream::out);
+		sR.rec_file.open(script_filename.c_str(), std::fstream::out);
 	} else {
 		std::string sdir, other_script_filename;
 		sdir = AppSettings::Instance()->getConfigDir();
 
 		other_script_filename = sdir + "record_" + this->getRecordDate() + ".sts";
-		rec_file.open(other_script_filename.c_str(), std::fstream::out);
+		sR.rec_file.open(other_script_filename.c_str(), std::fstream::out);
 	}
 
-	if (rec_file.is_open()) {
-		recording = 1;
-		record_elapsed_time = 0;
+	if (sR.rec_file.is_open()) {
+		sR.recording = true;
+		sR.record_elapsed_time = 0;
+		sR.rec_file << "# Spacecrafter "<< AppSettings::Instance()->getVersion() << std::endl;
+		sR.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
@@ -228,14 +225,18 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 
 void ScriptMgr::recordCommand(const std::string &commandline)
 {
-
-	if (recording) {
+	if (sR.recording) {
 		// write to file...
-		if (record_elapsed_time) {
-			rec_file << "wait duration " << record_elapsed_time/1000.f << std::endl;
-			record_elapsed_time = 0;
+		if (sR.record_elapsed_time) {
+			//on s'occupe de toutes les attentes mais on ne garde qu'un chiffre après la virgule
+			double timeToWait = (sR.record_elapsed_time/100)/10.f;
+			if (timeToWait>0.4)
+				sR.rec_file << "wait duration " << timeToWait << std::endl;
+			else
+				sR.rec_file << "wait duration 0.1"<< std::endl;
+			sR.record_elapsed_time = 0;
 		}
-		rec_file << commandline << std::endl;
+		sR.rec_file << commandline << std::endl;
 		// For debugging
 		cLog::get()->write("RECORD: " + commandline, LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT);
 	}
@@ -244,8 +245,8 @@ void ScriptMgr::recordCommand(const std::string &commandline)
 void ScriptMgr::cancelRecordScript()
 {
 	// close file...
-	rec_file.close();
-	recording = 0;
+	sR.rec_file.close();
+	sR.recording = false;
 	cLog::get()->write("ScriptMgr::Script recording stopped.", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
@@ -261,13 +262,14 @@ void ScriptMgr::resetScriptLoop()
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
 {
-	if (recording) record_elapsed_time += delta_time;
+	if (sR.recording) sR.record_elapsed_time += delta_time;
 	
 	/**	isVideoPlayed && waitOnVideo : 
 	 * case of video is playing and scriptMgr should wait on it : 
 	 * so next if must be false*/
-	if (playing && !play_paused && (isVideoPlayed && waitOnVideo ? false : true) ) {
-		wait_time -= delta_time;
+	if (scriptState==ScriptState::PLAY && (isVideoPlayed && waitOnVideo ? false : true) ) {
+
+    wait_time -= delta_time;
 		if (wait_time<0)
 			wait_time =0;
 
