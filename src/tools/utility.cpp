@@ -33,7 +33,6 @@
 #include <ctime>
 #include <algorithm>
 #include <limits.h>
-//#include "tools/fmath.hpp"
 
 #if defined( CYGWIN )
 #include <malloc.h>
@@ -316,7 +315,6 @@ std::string Utility::printAngleDMS(double angle, bool decimals, bool useD)
 //! @return The corresponding string
 std::string Utility::printAngleHMS(double angle, bool decimals)
 {
-
 	std::ostringstream oss;
 
 	angle = fmod(angle,2.0*M_PI);
@@ -399,7 +397,7 @@ std::string Utility::printAngleHMS(double angle, bool decimals)
 
 double Utility::strToDouble(const std::string& str)
 {
-	if (str=="") return 0.;
+	if (str.empty()) return 0.;
 	double dbl;
 	std::istringstream dstr( str );
 
@@ -410,7 +408,7 @@ double Utility::strToDouble(const std::string& str)
 
 float Utility::strToFloat(const std::string& str)
 {
-	if (str=="") return 0.;
+	if (str.empty()) return 0.;
 	float dbl;
 	std::istringstream dstr( str );
 
@@ -421,7 +419,7 @@ float Utility::strToFloat(const std::string& str)
 
 float Utility::strToFloat(const std::string& str, float default_value)
 {
-	if (str=="") return default_value;
+	if (str.empty()) return default_value;
 	float dbl;
 	std::istringstream dstr( str );
 
@@ -432,8 +430,7 @@ float Utility::strToFloat(const std::string& str, float default_value)
 
 double Utility::strToDouble(const std::string& str, double default_value)
 {
-
-	if (str=="") return default_value;
+	if (str.empty()) return default_value;
 	double dbl;
 	std::istringstream dstr( str );
 
@@ -445,8 +442,7 @@ double Utility::strToDouble(const std::string& str, double default_value)
 // always positive
 double Utility::strToPosDouble(const std::string& str)
 {
-
-	if (str=="") return 0;
+	if (str.empty()) return 0;
 	double dbl;
 	std::istringstream dstr( str );
 
@@ -458,30 +454,23 @@ double Utility::strToPosDouble(const std::string& str)
 
 bool Utility::strToBool(const std::string& str)
 {
-
 	std::string tmp = str;
 	transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
-
 	if (tmp == "true" || tmp == "1" ) return 1;
 	else return 0;
-
 }
 
 
 bool Utility::strToBool(const std::string& str, bool default_value)
 {
-
-	if (str == "" ) return default_value;
-
+	if (str.empty()) return default_value;
 	return Utility::strToBool(str);
-
 }
 
 
 int Utility::strToInt(const std::string& str)
 {
-
-	if (str=="") return 0;
+	if (str.empty()) return 0;
 	int integer;
 	std::istringstream istr( str );
 
@@ -492,8 +481,7 @@ int Utility::strToInt(const std::string& str)
 
 int Utility::strToInt(const std::string& str, int default_value)
 {
-
-	if (str=="") return default_value;
+	if (str.empty()) return default_value;
 	int integer;
 	std::istringstream istr( str );
 
@@ -504,8 +492,7 @@ int Utility::strToInt(const std::string& str, int default_value)
 
 long int Utility::strToLong(const std::string& str)
 {
-
-	if (str=="") return 0;
+	if (str.empty()) return 0;
 	long int integer;
 	std::istringstream istr( str );
 
