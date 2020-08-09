@@ -44,10 +44,10 @@ ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_
 {
 	commander = command_interface;
 	DataDir = _data_dir;
-	recording = 0;
 	scriptState = ScriptState::NONE;
-	record_elapsed_time = 0;
-	multiplierRate=1; 
+	scriptRecord.recording = false;
+	scriptRecord.record_elapsed_time = 0;
+	multiplierRate=1;
 	nbrLoop =0;
 	isInLoop = false;
 	repeatLoop = false;
@@ -62,7 +62,6 @@ ScriptMgr::~ScriptMgr()
 
 // path is used for loading script assets in one time
 bool ScriptMgr::playScript(const std::string &fullFileName)
-
 {
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO);
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
@@ -193,27 +192,27 @@ std::string ScriptMgr::getRecordDate()
 
 void ScriptMgr::recordScript(const std::string &script_filename)
 {
-	if (recording) {
+	if (scriptRecord.recording) {
 		cLog::get()->write("ScriptMgr::Already recording script", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-		rec_file.close();
-		recording = 0;
+		scriptRecord.rec_file.close();
+		scriptRecord.recording = false;
 		cLog::get()->write("ScriptMgr::Script recording stopped.", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 		return;
 	}
 
 	if (!script_filename.empty()) {
-		rec_file.open(script_filename.c_str(), std::fstream::out);
+		scriptRecord.rec_file.open(script_filename.c_str(), std::fstream::out);
 	} else {
 		std::string sdir, other_script_filename;
 		sdir = AppSettings::Instance()->getConfigDir();
 
 		other_script_filename = sdir + "record_" + this->getRecordDate() + ".sts";
-		rec_file.open(other_script_filename.c_str(), std::fstream::out);
+		scriptRecord.rec_file.open(other_script_filename.c_str(), std::fstream::out);
 	}
 
-	if (rec_file.is_open()) {
-		recording = 1;
-		record_elapsed_time = 0;
+	if (scriptRecord.rec_file.is_open()) {
+		scriptRecord.recording = true;
+		scriptRecord.record_elapsed_time = 0;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
@@ -222,14 +221,13 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 
 void ScriptMgr::recordCommand(const std::string &commandline)
 {
-
-	if (recording) {
+	if (scriptRecord.recording) {
 		// write to file...
-		if (record_elapsed_time) {
-			rec_file << "wait duration " << record_elapsed_time/1000.f << std::endl;
-			record_elapsed_time = 0;
+		if (scriptRecord.record_elapsed_time) {
+			scriptRecord.rec_file << "wait duration " << scriptRecord.record_elapsed_time/1000.f << std::endl;
+			scriptRecord.record_elapsed_time = 0;
 		}
-		rec_file << commandline << std::endl;
+		scriptRecord.rec_file << commandline << std::endl;
 		// For debugging
 		cLog::get()->write("RECORD: " + commandline, LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT);
 	}
@@ -238,8 +236,8 @@ void ScriptMgr::recordCommand(const std::string &commandline)
 void ScriptMgr::cancelRecordScript()
 {
 	// close file...
-	rec_file.close();
-	recording = 0;
+	scriptRecord.rec_file.close();
+	scriptRecord.recording = false;
 	cLog::get()->write("ScriptMgr::Script recording stopped.", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
@@ -255,7 +253,7 @@ void ScriptMgr::resetScriptLoop()
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
 {
-	if (recording) record_elapsed_time += delta_time;
+	if (scriptRecord.recording) scriptRecord.record_elapsed_time += delta_time;
 
 	if ( scriptState==ScriptState::PLAY ) {
 		wait_time -= delta_time;

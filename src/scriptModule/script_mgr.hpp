@@ -97,7 +97,7 @@ public:
 
 	//! is a script being recorded?
 	bool isRecording() const {
-		return recording;
+		return 	scriptRecord.recording;
 	};
 
 	bool isFaster() const;
@@ -143,21 +143,23 @@ public:
 	}
 
 private:
+	// les états du moteur de script via à vis des scripts en cours.
 	enum class ScriptState : char {PLAY, PAUSE, NONE};
 	ScriptState scriptState;
+	// la gestion des enregistrements
+	struct ScriptRecord {
+		std::fstream rec_file;	//!< le pointeur sur le fichier
+		bool recording;  		//!< is a script being recorded?
+		unsigned long int record_elapsed_time;  //!< ms since last command recorded
+	};
+	ScriptRecord scriptRecord;
 
 	std::string getRecordDate();
 	Media* media = nullptr;
 	AppCommandInterface * commander = nullptr;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
 	long int wait_time;     //!< ms until next script command should be executed
-	unsigned long int record_elapsed_time;  //!< ms since last command recorded
-	bool recording;  //!< is a script being recorded?
-	// bool playing;    //!< is a script playing?  (could be paused)
-	// bool play_paused;//!< is script playback paused?
-	std::fstream rec_file;	//!< le pointeur sur le fichier
 	std::string DataDir;
-
 	int multiplierRate=1; 
 	bool isInLoop; 		//!< on est entrain de lire les instructions d'une loop
 	bool repeatLoop; 	//!< on est entrain de répéter une boucle
