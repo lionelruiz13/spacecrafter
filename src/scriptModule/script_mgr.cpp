@@ -213,6 +213,8 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 	if (scriptRecord.rec_file.is_open()) {
 		scriptRecord.recording = true;
 		scriptRecord.record_elapsed_time = 0;
+		scriptRecord.rec_file << "# Spacecrafter "<< std::endl;
+		scriptRecord.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
@@ -224,7 +226,12 @@ void ScriptMgr::recordCommand(const std::string &commandline)
 	if (scriptRecord.recording) {
 		// write to file...
 		if (scriptRecord.record_elapsed_time) {
-			scriptRecord.rec_file << "wait duration " << scriptRecord.record_elapsed_time/1000.f << std::endl;
+			//on s'occupe de toutes les attentes mais on ne garde qu'un chiffre après la virgule
+			double timeToWait = (scriptRecord.record_elapsed_time/100)/10.f;
+			if (timeToWait>0.4)
+				scriptRecord.rec_file << "wait duration " << timeToWait << std::endl;
+			else
+				scriptRecord.rec_file << "wait duration 0.1"<< std::endl;
 			scriptRecord.record_elapsed_time = 0;
 		}
 		scriptRecord.rec_file << commandline << std::endl;
