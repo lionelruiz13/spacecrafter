@@ -1057,7 +1057,7 @@ int AppCommandInterface::commandWait(unsigned long int &wait)
 		if (videoTermination==W_TOGGLE)
 			scriptInterface->waitOnVideoTermination();
 		else {
-			if (isTrue(videoTermination))
+			if (Utility::isTrue(videoTermination))
 				scriptInterface->setWaitOnVideoTermination(true);
 			else
 				scriptInterface->setWaitOnVideoTermination(false);
