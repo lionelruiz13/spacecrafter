@@ -31,6 +31,7 @@ extern "C"
 #endif
 
 class s_texture;
+class Media;
 
 //! \class VideoPlayer
 //! \brief Classe qui gere toute les fonctions de la ffmpeg pour le player vidéo.
@@ -40,7 +41,7 @@ class VideoPlayer {
 public:
 	//! \fn VideoPlayer
 	//! \brief Constructeur: initialise les états de la ffmpeg
-	VideoPlayer();
+	VideoPlayer(Media* _media);
 
 	//! \fn ~VideoPlayer
 	//! \brief Destructeur, ferme les états de la ffmpeg
@@ -100,6 +101,8 @@ private:
 	//! initialise une texture à la taille de la vidéo
 	void initTexture();
 	 //! texture représentant la frame actuelle
+
+	Media* media=nullptr;
 	GLuint RGBtexture;
 	YUV_WRAPPER YUV_Texture;
 	GLuint YUVtexture[3];

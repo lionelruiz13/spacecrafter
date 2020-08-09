@@ -14,12 +14,14 @@
 #include "mediaModule/video_player.hpp"
 #include "tools/log.hpp"
 #include "tools/s_texture.hpp"
+#include "mediaModule/media.hpp"
 
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventVideo.hpp"
 
-VideoPlayer::VideoPlayer()
+VideoPlayer::VideoPlayer(Media* _media)
 {
+	media = _media;
 	m_isVideoPlayed = false;
 	isInPause = false;
 	isSeeking = false;
@@ -304,6 +306,7 @@ void VideoPlayer::playStop()
 
 	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
 	EventRecorder::getInstance()->queue(event);
+	media->playerStop();
 #endif
 }
 
