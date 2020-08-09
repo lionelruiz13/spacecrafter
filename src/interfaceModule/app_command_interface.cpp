@@ -64,7 +64,6 @@ AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreB
 	media = _media;
 	ui = _ui;
 	swapCommand = false;
-	//swapIfCommand = false;
 	ifSwap = std::make_unique<IfSwap>();
 	ifSwap->reset();
 	appEval = new AppCommandEval(coreLink);
@@ -107,9 +106,7 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 	// transformation des chaines utilisateurs de la forme " text" en "text"
   	std::size_t found = str.find(" \" ");
   	while(found!=std::string::npos) {
-		//std::cout << "Modify: " << str << '\n';
   		str.erase(found+2,1);
-  		//std::cout << "To    : " << str << '\n';
 		found = str.find(" \" ");
   	}
   
@@ -199,7 +196,6 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 
 	auto m_commands_it = m_commands.find(command);
 	if (m_commands_it == m_commands.end()) {
-		//~ cout <<"error command "<< command << endl;
 		debug_message = _("Unrecognized or malformed command name");
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		appInit->searchSimilarCommand(command);
@@ -221,7 +217,6 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_DESELECT :	return commandDeselect(); break;
 		case SC_COMMAND::SC_DOMEMASTERS :	return commandDomemasters(); break;
 		case SC_COMMAND::SC_DSO :	return commandDso(); break;
-	//	case SC_COMMAND::SC_EXERNASC_MPLAYER :	return commandExternalMplayer(); break;
 		case SC_COMMAND::SC_EXTERNASC_VIEWER :	return commandExternalViewer(); break;
 		case SC_COMMAND::SC_FLAG :	return commandFlag(); break;
 		case SC_COMMAND::SC_FONT :	return commandFont(); break;
@@ -267,7 +262,6 @@ bool AppCommandInterface::setFlag(const std::string &name, const std::string &va
 	//test name if exist and get his value
 	auto m_flag_it = m_flags.find(name);
 	if (m_flag_it == m_flags.end()) {
-		//~ cout <<"error command "<< command << endl;
 		//debug_message = _("Unrecognized or malformed flag name");
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		appInit->searchSimilarFlag(name);
@@ -285,7 +279,6 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 	bool val;
 	if (setFlag( flagName, flag_value, val) == false) {
 		debug_message = _("Unrecognized or malformed flag argument");
-		// return false;
 	}
 
 	if (recordable) {
@@ -296,7 +289,6 @@ void AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value)
 		}
 	}
 	executeCommandStatus();
-	// return true;
 }
 
 bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval)
@@ -954,17 +946,12 @@ int AppCommandInterface::executeCommandStatus()
 	if (debug_message.empty()) {
 		// if recording commands, do that now
 		if (recordable) scriptInterface->recordCommand(commandline);
-		//    cout << commandline << endl;
 		//cLog::get()->write( "have execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return true;
 	} else {
-		//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-
 		//std::stringstream oss;
-		//oss << "Could not execute: " << commandline /*<< std::endl*/ << debug_message;
 		cLog::get()->write( "Could not execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-		//std::cerr << oss.str() << std::endl;
 		return false;
 	}
 }
@@ -1201,24 +1188,6 @@ int AppCommandInterface::commandPersoneq()
 	return executeCommandStatus();
 }
 
-// int AppCommandInterface::commandMovetocity()
-// {
-// 	std::string argName = args[W_NAME];
-// 	std::string argCountry = args["country"];
-// 	if (!argName.empty() || !argCountry.empty()) {
-// 		double lon=0.0, lat=0.0;
-// 		int alt=0.0;
-// 		coreLink->getCoordonateemCityCore(argName,argCountry, lon, lat, alt);
-// 		//cout << lon << ":" << lat << ":" << alt << endl;
-// 		if (!((lon==0.0) & (lat ==0.0) & (alt ==-100.0))) {//there is nothing in (0,0,-100) it the magic number to say NO CITY
-// 			int delay = (int)(1000.*evalDouble(args[W_DURATION]));
-// 			coreLink->observerMoveTo(lat,lon,alt,delay );
-
-// 		}
-// 	} else
-// 		debug_message = "command_'movetocity' : unknown argument";
-// 	return executeCommandStatus();
-// }
 
 int AppCommandInterface::commandBodyTrace()
 {
@@ -1468,14 +1437,12 @@ int AppCommandInterface::commandSet()
 	// cas ou l'on tappe juste set
 	if (args.begin() == args.end()) {
 		debug_message = "command_'set': malformed command";
-		//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return executeCommandStatus();
 	}
 	bool returnValue =true;
 	//debug 
 	for (const auto&i : args ) {
-		// std::cout << i.first << "->" << i.second;
-		// std::cout << std::endl;
+		// std::cout << i.first << "->" << i.second << std::endl;
 		returnValue *= evalCommandSet(i.first , i.second);
 	}
 	return returnValue;
@@ -1509,9 +1476,6 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 	//std::cout << "parserSet-> " << static_cast<std::underlying_type<SCD_NAMES>::type>(parserSet) << std::endl;
 	parserSet = parseCommandSet(setName);
 	// eval SET_NAME
-	//std::cout << "avant switch" << std::endl;
-	//std::cout << "parserSet " << static_cast<std::underlying_type<SCD_NAMES>::type>(parserSet) << std::endl;
-
 	switch(parserSet) {
 		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : coreLink->atmosphereSetFadeDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(setValue)); break;
@@ -1571,7 +1535,6 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 							EventRecorder::getInstance()->queue(event);
 						} break;
 		case SCD_NAMES::APP_STALL_RADIUS_UNIT: coreLink->cameraSetRotationMultiplierCondition(evalDouble(setValue)); break;
-//		case SCD_NAMES::APP_TULLY_COLOR_MODE: coreLink->tullySetColor(setValue); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_POSITION: ui->setDateTimePosition(evalInt(setValue)); break;
 		case SCD_NAMES::APP_DATETIME_DISPLAY_NUMBER: ui->setDateDisplayNumber(evalInt(setValue)); break;
 		default:
@@ -1583,8 +1546,6 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 			return executeCommandStatus();
 		break;
 	}
-	//std::cout << setName << " fin analyse" << std::endl;
-//	std::cout << "apres switch" << std::endl;
 	return executeCommandStatus();
 }
 
@@ -1751,58 +1712,6 @@ int AppCommandInterface::commandConstellation()
 	}
 }
 
-// int AppCommandInterface::commandExternalMplayer()
-// {
-	// std::string argAction = args[W_ACTION];
-	// if (!argAction.empty()) {
-		// if (argAction==W_PLAY && args[W_FILENAME]!="") {
-			// if (Utility::isAbsolute(args[W_FILENAME]))
-				// media->externalPlay(args[W_FILENAME]);
-			// else
-				// media->externalPlay(scriptInterface->getScriptPath()+args[W_FILENAME]);
-			// return executeCommandStatus();
-		// }
-		// if (argAction==W_STOP) {
-			// media->externalStop();
-			// return executeCommandStatus();
-		// }
-		// if (argAction==W_PAUSE) {
-			// media->externalPause();
-			// return executeCommandStatus();
-		// }
-		// if (argAction=="reset") {
-			// media->externalReset();
-			// return executeCommandStatus();
-		// }
-		// debug_message = _("Command 'externalMplayer': unknown action value");
-		// return executeCommandStatus();
-	// }
-// 
-	// std::string argJumpRelative=args["jump_relative"];
-	// if (!argJumpRelative.empty()) {
-		// media->externalJumpRelative(evalDouble(argJumpRelative));
-		// return executeCommandStatus();
-	// }
-// 
-	// if (args["jump_absolute"]!="") {
-		// media->externalJumpAbsolute(evalDouble(args["jump_absolute"]));
-		// return executeCommandStatus();
-	// }
-	// if (args[W_SPEED]!="") {
-		// media->externalSpeed(evalDouble(args[W_SPEED]));
-		// return executeCommandStatus();
-	// }
-	// if (args[W_VOLUME]!="") {
-		// media->externalVolume(evalDouble(args[W_VOLUME]));
-		// return executeCommandStatus();
-	// }
-	// if (args["execute"]!="") {
-		// media->externalExecute(args["execute"]);
-		// return executeCommandStatus();
-	// }
-	// debug_message= _("command 'externalmplayer' : unknown argument");
-	// return executeCommandStatus();
-// }
 
 int AppCommandInterface::commandExternalViewer()
 {
@@ -1860,11 +1769,6 @@ int AppCommandInterface::commandExternalViewer()
 	}
 
 	if (argAction == W_STOP) {
-		// std::string action1=W_NONE;
-		// action1="killall mplayer";
-		// CallSystem::useSystemCommand(action1);
-		// action1="killall vlc";
-		// CallSystem::useSystemCommand(action1);
 		CallSystem::killAllPidFrom("vlc");
 		CallSystem::killAllPidFrom("mplayer");
 		return executeCommandStatus();
@@ -1900,19 +1804,6 @@ int AppCommandInterface::commandClear()
 	coreBackup->loadLineState();
 
 	// turn off all labels
-	//executeCommand("flag azimuthal_grid off");
-	// executeCommand(FLAG_MERIDIAN_LINE_OFF);
-	// executeCommand(FLAG_ZENITH_LINE_OFF);
-	// executeCommand(FLAG_POLAR_CIRCLE_OFF);
-	// executeCommand(FLAG_POLAR_POINT_OFF);
-	// executeCommand(FLAG_ECLIPTIC_CENTER_OFF);
-	// executeCommand(FLAG_GALACTIC_POLE_OFF);
-	// executeCommand(FLAG_GALACTIC_CENTER_OFF);
-	// executeCommand(FLAG_VERNAL_POINTS_OFF);
-	// executeCommand(FLAG_ANALEMMA_OFF);
-	// executeCommand(FLAG_ANALEMMA_LINE_OFF);
-	// executeCommand(FLAG_ARIES_LINE_OFF);
-	// executeCommand(FLAG_ZODIAC_OFF);
 	executeCommand(FLAG_PERSONAL_OFF);
 	executeCommand(FLAG_PERSONEQ_OFF);
 	executeCommand(FLAG_NAUTICAL_ALT_OFF);
@@ -1921,20 +1812,13 @@ int AppCommandInterface::commandClear()
 	executeCommand(FLAG_ANGULAR_DISTANCE_OFF);
 	executeCommand(FLAG_LOXODROMY_OFF);
 	executeCommand(FLAG_ORTHODROMY_OFF);
-	// executeCommand(FLAG_GREENWICH_LINE_OFF);
-	// executeCommand(FLAG_VERTICAL_LINE_OFF);
+
 	executeCommand(FLAG_CARDINAL_POINTS_OFF);
 	executeCommand(FLAG_CONSTELLATION_ART_OFF);
 	executeCommand(FLAG_CONSTELLATION_DRAWING_OFF);
 	executeCommand(FLAG_CONSTELLATION_NAMES_OFF);
 	executeCommand(FLAG_CONSTELLATION_BOUNDARIES_OFF);
-	// executeCommand(FLAG_ECLIPTIC_LINE_OFF);
-	// //executeCommand(FLAG_EQUATORIAL_GRID_OFF);
-	// executeCommand(FLAG_EQUATOR_LINE_OFF);
-	// executeCommand(FLAG_GALACTIC_LINE_OFF);
-	// executeCommand(FLAG_TROPIC_LINES_OFF);
-	// executeCommand(FLAG_CIRCUMPOLAR_CIRCLE_OFF);
-	// executeCommand(FLAG_PRECESSION_CIRCLE_OFF);
+
 	executeCommand(FLAG_FOG_OFF);
 	executeCommand(FLAG_NEBULA_HINTS_OFF);
 	executeCommand(FLAG_NEBULA_NAMES_OFF);
@@ -1988,29 +1872,6 @@ int AppCommandInterface::commandHeading()
 		coreLink->setHeading(heading, (int)(fdelay*1000));
 		return executeCommandStatus();
 	}
-	// if (args["heading"]==W_DEFAULT) {
-	// 	coreLink->setDefaultHeading();
-	// }
-	// else {
-	// 	float fdelay = evalDouble(args[W_DURATION]);
-	// 	double heading = evalDouble(args["heading"]);
-	// 	if (fdelay <= 0) fdelay = 0;
-	// 	if (args["heading"][0] == '+') {
-	// 		heading += coreLink->getHeading();
-	// 		if (heading > 180) heading -= 360;
-	// 		std::stringstream oss;
-	// 		oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
-	// 		cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
-	// 	}
-	// 	if (args["heading"][0] == '-') {
-	// 		heading += coreLink->getHeading();
-	// 		if (heading < -180) heading += 360;
-	// 		std::stringstream oss;
-	// 		oss << "FROM: " << coreLink->getHeading() << " TO: " << heading;
-	// 		cLog::get()->write( oss.str(),LOG_TYPE::L_INFO, LOG_FILE::SCRIPT );
-	// 	}
-	// 	coreLink->setHeading(heading, (int)(fdelay*1000));
-	// }
 	debug_message = "command 'heading' : unknown argument";
 	return executeCommandStatus();
 }
@@ -2134,12 +1995,6 @@ int AppCommandInterface::commandText()
 					textParam.useColor = false;
 
 				coreLink->textAdd(argName, textParam);
-				// if (testColor)
-				// 	coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align, Vcolor);
-				// else {
-				// 	debug_message.clear();
-				// 	coreLink->textAdd(argName,argString, altitude, azimuth, argSize, align);
-				// }
 				// test si l'utilisateur spécifie argDisplay
 				if (!argDisplay.empty()) {
 					if ( Utility::isTrue(argDisplay) )
@@ -2191,7 +2046,6 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 			media->audioMusicHalt();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;
-			//swapIfCommand = false;
 			ifSwap->reset();
 		} else if (argAction==W_PLAY && !filen.empty()) {
 			int le=-1;
@@ -3135,7 +2989,6 @@ int AppCommandInterface::commandBody()
 
 	std::string argSkinUse = args[W_SKINUSE];
 	if (!argSkinUse.empty()) {
-		//std::cout << "lancement de la commande skin_use" << std::endl;
 		if (argSkinUse==W_TOGGLE) {
 			coreLink->planetSwitchTexMap(argName, !coreLink->planetGetSwitchTexMap(argName));
 		} else
@@ -3146,7 +2999,6 @@ int AppCommandInterface::commandBody()
 
 	std::string argSkinTex = args[W_SKINTEX];
 	if (!argSkinTex.empty()) {
-		//std::cout << "lancement de la commande skin_tex" << std::endl;
 		coreLink->planetCreateTexSkin(argName, argSkinTex);
 		return executeCommandStatus();
 	}
@@ -3584,7 +3436,6 @@ int AppCommandInterface::commandStruct()
 		}
 		if (args[W_EQUAL]!=""){  // ! A==B => |A-B| > e
 			if (fabs(evalDouble(argIf) - evalDouble(args[W_EQUAL]))>error)
-				//swapIfCommand = true;
 				ifSwap->push(true);
 			else
 				ifSwap->push(false);
@@ -3592,7 +3443,6 @@ int AppCommandInterface::commandStruct()
 		}
 		if (args[W_DIFF]!=""){  // ! A!=B => |A-B| < e
 			if (fabs(evalDouble(argIf) - evalDouble(args[W_DIFF]))<error)
-				//swapIfCommand = true;
 				ifSwap->push(true);
 			else
 				ifSwap->push(false);
@@ -3600,7 +3450,6 @@ int AppCommandInterface::commandStruct()
 		}
 		if (args[W_INF]!="") {
 			if (evalDouble(argIf) >= evalDouble(args[W_INF]))
-				//swapIfCommand = true;
 				ifSwap->push(true);
 			else
 				ifSwap->push(false);
@@ -3608,7 +3457,6 @@ int AppCommandInterface::commandStruct()
 		}
 		if (args[W_INF_ZQUAL]!="") {
 			if (evalDouble(argIf) > evalDouble(args[W_INF_ZQUAL]))
-				//swapIfCommand = true;
 				ifSwap->push(true);
 			else
 				ifSwap->push(false);
@@ -3616,7 +3464,6 @@ int AppCommandInterface::commandStruct()
 		}
 		if (args[W_SUP]!="") {
 			if (evalDouble(argIf) <= evalDouble(args[W_SUP]))
-				//swapIfCommand = true;
 				ifSwap->push(true);
 			else
 				ifSwap->push(false);
@@ -3624,7 +3471,6 @@ int AppCommandInterface::commandStruct()
 		}
 		if (args[W_SUP_EQUAL]!="") {
 			if (evalDouble(argIf) < evalDouble(args[W_SUP_EQUAL]))
-				//swapIfCommand = true;
 				ifSwap->push(true);
 			else
 				ifSwap->push(false);
@@ -3650,7 +3496,6 @@ int AppCommandInterface::commandStruct()
 
 	//loop case
 	std::string argLoop = args[W_LOOP];
-	//if (!argLoop.empty() && swapIfCommand != true) {
 	if (!argLoop.empty() && ifSwap->get() != true) {
 		if (argLoop ==W_END) {
 			swapCommand = false; //cas ou nbrLoop était inférieur à 1
