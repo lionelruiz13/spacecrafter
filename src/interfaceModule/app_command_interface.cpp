@@ -95,30 +95,6 @@ AppCommandInterface::~AppCommandInterface()
 	m_set.clear();
 }
 
-bool AppCommandInterface::isBoolean(const std::string &a)
-{
-	if ( isTrue(a) || isFalse(a) )
-		return true;
-	else
-		return false;
-}
-
-bool AppCommandInterface::isTrue(const std::string &a)
-{
-	if (a==W_TRUE || a =="1" || a==W_ON )
-		return true;
-	else
-		return false;
-}
-
-bool AppCommandInterface::isFalse(const std::string &a)
-{
-	if (a==W_FALSE || a =="0" || a==W_OFF )
-		return true;
-	else
-		return false;
-}
-
 void AppCommandInterface::setTcp(ServerSocket* _tcp)
 {
 	tcp=_tcp;
@@ -974,7 +950,7 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 FLAG_VALUES AppCommandInterface::convertStrToFlagValues(const std::string &value)
 {
 	if (value == W_TOGGLE) return FLAG_VALUES::FV_TOGGLE;
-	else if (isTrue(value)) return FLAG_VALUES::FV_ON;
+	else if (Utility::isTrue(value)) return FLAG_VALUES::FV_ON;
 	else
 		return FLAG_VALUES::FV_OFF;
 }
@@ -1171,11 +1147,11 @@ int AppCommandInterface::commandDso()
 		std::string argType = args[W_TYPE];
 		if (!argType.empty() ) {
 			if (argType == W_ALL)
-				if (isTrue(argHidden)) coreLink->dsoHideAll();
+				if (Utility::isTrue(argHidden)) coreLink->dsoHideAll();
 				else
 					coreLink->dsoShowAll();
 			else
-				coreLink->dsoSelectType(isTrue(argHidden),argType);
+				coreLink->dsoSelectType(Utility::isTrue(argHidden),argType);
 
 			return executeCommandStatus();
 		}
@@ -1183,16 +1159,16 @@ int AppCommandInterface::commandDso()
 		std::string argConstellation = args[W_CONSTELLATION];
 		if (!argConstellation.empty()) {
 			if (argConstellation == W_ALL)
-				if (isTrue(argHidden)) coreLink->dsoHideAll();
+				if (Utility::isTrue(argHidden)) coreLink->dsoHideAll();
 				else
 					coreLink->dsoShowAll();
 			else
-				coreLink->dsoSelectConstellation(isTrue(argHidden),argConstellation);
+				coreLink->dsoSelectConstellation(Utility::isTrue(argHidden),argConstellation);
 			return executeCommandStatus();
 		}
 
 		if ( !argName.empty()  ) {
-			coreLink->dsoSelectName(argName, isTrue(argHidden));
+			coreLink->dsoSelectName(argName, Utility::isTrue(argHidden));
 			return executeCommandStatus();
 		}
 
@@ -1259,12 +1235,12 @@ int AppCommandInterface::commandBodyTrace()
 			coreLink->bodyTraceBodyChange(args[W_TARGET]);
 		}
 
-		if (isTrue(argPen)) {
+		if (Utility::isTrue(argPen)) {
 			coreLink->bodyPenDown();
 			return executeCommandStatus();
 		}
 		else {
-			if (isFalse(argPen)) {
+			if (Utility::isFalse(argPen)) {
 				coreLink->bodyPenUp();
 				return executeCommandStatus();	
 			} else {
@@ -1300,10 +1276,10 @@ int AppCommandInterface::commandSuntrace()
 	std::string argPen = args[W_PEN];
 	if (!argPen.empty()) {
 		coreLink->bodyTraceBodyChange(args[W_SUN]);
-		if (isTrue(argPen)) {
+		if (Utility::isTrue(argPen)) {
 			coreLink->bodyPenDown();
 			return executeCommandStatus();
-		} else if (isFalse(argPen)) {
+		} else if (Utility::isFalse(argPen)) {
 			coreLink->bodyPenUp();
 			return executeCommandStatus();
 		} else if (argPen ==W_TOGGLE) {
@@ -1423,7 +1399,7 @@ int AppCommandInterface::commandIlluminate()
 	std::string errorColor;
 	AppCommandColor testColor(Vcolor, errorColor, argValue, argR,argG, argB);
 
-	if (!argConstellation.empty() && isTrue(argDisplay)) {
+	if (!argConstellation.empty() && Utility::isTrue(argDisplay)) {
 		if (!testColor)
 			coreLink->illuminateLoadConstellation(argConstellation, ang_size, rotation);
 		else
@@ -1431,12 +1407,12 @@ int AppCommandInterface::commandIlluminate()
 		return executeCommandStatus();
 	}
 
-	if (!argConstellation.empty() && isFalse(argDisplay)) {
+	if (!argConstellation.empty() && Utility::isFalse(argDisplay)) {
 		coreLink->illuminateRemoveConstellation(argConstellation);
 		return executeCommandStatus();
 	}
 
-	if (!argHP.empty() && isTrue(argDisplay)) {
+	if (!argHP.empty() && Utility::isTrue(argDisplay)) {
 
 		if (!testColor)
 			coreLink->illuminateLoad(evalInt(argHP), ang_size, rotation);
@@ -1446,7 +1422,7 @@ int AppCommandInterface::commandIlluminate()
 		return executeCommandStatus();
 	}
 
-	if (!argHP.empty() && isFalse(argDisplay)) {
+	if (!argHP.empty() && Utility::isFalse(argDisplay)) {
 		coreLink->illuminateRemove( evalInt(argHP));
 		return executeCommandStatus();
 	}
@@ -2173,7 +2149,7 @@ int AppCommandInterface::commandText()
 				// }
 				// test si l'utilisateur spécifie argDisplay
 				if (!argDisplay.empty()) {
-					if ( isTrue(argDisplay) )
+					if ( Utility::isTrue(argDisplay) )
 						coreLink->textDisplay(argName,true);
 					else
 						coreLink->textDisplay(argName,false);
@@ -2189,7 +2165,7 @@ int AppCommandInterface::commandText()
 
 	// test argDisplay en commande indépendante
 	if (!argDisplay.empty()) {
-		if ( isTrue(argDisplay) )
+		if ( Utility::isTrue(argDisplay) )
 			coreLink->textDisplay(argName,true);
 		else
 			coreLink->textDisplay(argName,false);
@@ -2300,7 +2276,7 @@ int AppCommandInterface::commandAudio()
 	//gestion de la pause des audio dans les scripts
 	std::string argMusicPause= args[W_NOPAUSE];
 	if (!argMusicPause.empty()) {
-		media->audioSetMusicToPause(isTrue(args[W_NOPAUSE]));
+		media->audioSetMusicToPause(Utility::isTrue(args[W_NOPAUSE]));
 		return executeCommandStatus();
 	}
 
@@ -2324,7 +2300,7 @@ int AppCommandInterface::commandAudio()
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
 					media->audioMusicLoad(myFile);
-					media->audioMusicPlay(isTrue(args[W_LOOP]));
+					media->audioMusicPlay(Utility::isTrue(args[W_LOOP]));
 					return executeCommandStatus();
 				} else {
 					debug_message = _("command 'audio': filename not found");
@@ -2384,7 +2360,7 @@ int AppCommandInterface::commandImage()
 			argCoordinate = "equatorial";
 		}
 		bool mipmap = 0; // Default off for historical reasons
-		if (isTrue(args[W_MIPMAP]))
+		if (Utility::isTrue(args[W_MIPMAP]))
 			mipmap = 1;
 
 		//TODO récupérer une erreur compréhensible plutot qu'un int ?
@@ -2461,7 +2437,7 @@ int AppCommandInterface::commandImage()
 		                        (argAccelerate_y==W_ON), (argDecelerate_y==W_ON));
 
 	if (!argPersistent.empty()) {
-		if (isTrue(argPersistent))
+		if (Utility::isTrue(argPersistent))
 			media->imageSetPersistent(true);
 		else
 			media->imageSetPersistent(false);
@@ -2470,7 +2446,7 @@ int AppCommandInterface::commandImage()
 
 	std::string argKeyColor = args[W_KEYCOLOR];
 	if (!argKeyColor.empty()) {
-		if (isTrue(argKeyColor))
+		if (Utility::isTrue(argKeyColor))
 			media->imageSetKeyColor(true);
 		else
 			media->imageSetKeyColor(false);
@@ -2534,7 +2510,7 @@ int AppCommandInterface::commandSelect()
 	stcore->selectObject(select_type, identifier);
 
 	// determine if selected object pointer should be displayed
-	if (isFalse(args[W_POINTER]))
+	if (Utility::isFalse(args[W_POINTER]))
 		stcore->setFlagSelectedObjectPointer(false);
 	else
 		stcore->setFlagSelectedObjectPointer(true);
@@ -2644,10 +2620,10 @@ int AppCommandInterface::commandZoom(unsigned long int &wait)
 		if (args[W_DURATION]=="") duration = stcore->getAutoMoveDuration();
 
 		if (argAuto==W_OUT) {
-			if (isTrue(argManual)) stcore->autoZoomOut(duration, 0, 1);
+			if (Utility::isTrue(argManual)) stcore->autoZoomOut(duration, 0, 1);
 			else stcore->autoZoomOut(duration, 0, 0);
 		} else if (argAuto==W_INITIAL  ) stcore->autoZoomOut(duration, 1, 0);
-		else if (isTrue(argManual)) {
+		else if (Utility::isTrue(argManual)) {
 			stcore->autoZoomIn(duration, 1);  // have to explicity allow possible manual zoom
 		} else stcore->autoZoomIn(duration, 0);
 
@@ -2941,7 +2917,7 @@ int AppCommandInterface::commandMedia()
 		
 			std::string argKeyColor = args[W_KEYCOLOR];
 			if (!argKeyColor.empty()) {
-				if (isTrue(argKeyColor)) {
+				if (Utility::isTrue(argKeyColor)) {
 					media->setKeyColor(true);
 					media->disableFader();
 				}
@@ -3170,7 +3146,7 @@ int AppCommandInterface::commandBody()
 		if (argSkinUse==W_TOGGLE) {
 			coreLink->planetSwitchTexMap(argName, !coreLink->planetGetSwitchTexMap(argName));
 		} else
-			coreLink->planetSwitchTexMap(argName, isTrue(argSkinUse));
+			coreLink->planetSwitchTexMap(argName, Utility::isTrue(argSkinUse));
 
 		return executeCommandStatus();
 	}
@@ -3208,9 +3184,9 @@ int AppCommandInterface::commandBody()
 		//sous cas hidden
 		std::string argHidden = args[W_HIDDEN];
 		if (!argHidden.empty()) {
-			if (isTrue(argHidden)) {
+			if (Utility::isTrue(argHidden)) {
 				coreLink->setPlanetHidden(args[W_NAME], true);
-			} else if (isFalse(argHidden)) {
+			} else if (Utility::isFalse(argHidden)) {
 				coreLink->setPlanetHidden(args[W_NAME], false);
 			} else if (argHidden == W_TOGGLE) {
 				coreLink->setPlanetHidden(args[W_NAME], !coreLink->getPlanetHidden(args[W_NAME]));
@@ -3222,9 +3198,9 @@ int AppCommandInterface::commandBody()
 		//sous cas orbit
 		std::string argOrbit = args[W_ORBIT];
 		if (!argOrbit.empty()) {
-			if (isTrue(argOrbit)) {
+			if (Utility::isTrue(argOrbit)) {
 				coreLink->planetsSetFlagOrbits(args[W_NAME], true);
-			} else if (isFalse(argOrbit)) {
+			} else if (Utility::isFalse(argOrbit)) {
 				coreLink->planetsSetFlagOrbits(args[W_NAME], false);
 			} else
 				debug_message = _("Command 'body': unknown orbit value");
@@ -3672,7 +3648,7 @@ int AppCommandInterface::commandStruct()
 	//comment case
 	std::string argComment = args[W_COMMENT];
 	if (!argComment.empty()) {
-		if (isTrue(argComment)) {
+		if (Utility::isTrue(argComment)) {
 			return commandComment();
 		} else {
 			return commandUncomment();

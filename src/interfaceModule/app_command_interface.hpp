@@ -143,13 +143,6 @@ private:
 	//bool swapIfCommand;		// boolean qui indique si dans un if l'instruction doit etre exécutée ou pas
 	std::unique_ptr<IfSwap> ifSwap; 		// gestionnnaire des if multiples
 
-	//! vérifie que la chaine a représente bien un boolean
-	bool isBoolean(const std::string &a);
-	//! vérifie que la chaine a représente FAUX
-	bool isFalse(const std::string &a);
-	//! vérifie que la chaine a représente VRAI
-	bool isTrue(const std::string &a);
-
 	std::string debug_message;  //!< for 'executeCommand' error details
 	int parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments);
 	int evalCommandSet(const std::string& setName, const std::string& setValue);
