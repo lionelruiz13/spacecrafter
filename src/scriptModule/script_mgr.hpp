@@ -87,12 +87,12 @@ public:
 
 	//! is a script playing?
 	bool isPlaying() const {
-		return playing;
+		return (scriptState!=ScriptState::NONE);
 	};
 
 	//! is a script paused ?
 	bool isPaused() {
-		return play_paused;
+		return (scriptState==ScriptState::PAUSE);
 	};
 
 	//! is a script being recorded?
@@ -143,6 +143,9 @@ public:
 	}
 
 private:
+	enum class ScriptState : char {PLAY, PAUSE, NONE};
+	ScriptState scriptState;
+
 	std::string getRecordDate();
 	Media* media = nullptr;
 	AppCommandInterface * commander = nullptr;  //!< for executing script commands
@@ -150,8 +153,8 @@ private:
 	long int wait_time;     //!< ms until next script command should be executed
 	unsigned long int record_elapsed_time;  //!< ms since last command recorded
 	bool recording;  //!< is a script being recorded?
-	bool playing;    //!< is a script playing?  (could be paused)
-	bool play_paused;//!< is script playback paused?
+	// bool playing;    //!< is a script playing?  (could be paused)
+	// bool play_paused;//!< is script playback paused?
 	std::fstream rec_file;	//!< le pointeur sur le fichier
 	std::string DataDir;
 

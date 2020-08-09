@@ -40,12 +40,12 @@
 #include "tools/call_system.hpp"
 
 
-ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_data_dir, Media* _media ) : play_paused(false)
+ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_data_dir, Media* _media )
 {
 	commander = command_interface;
 	DataDir = _data_dir;
 	recording = 0;
-	playing = 0;
+	scriptState = ScriptState::NONE;
 	record_elapsed_time = 0;
 	multiplierRate=1; 
 	nbrLoop =0;
@@ -75,8 +75,7 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 
 	if ( script->load(fullFileName, script_path) ) {
 		multiplierRate=1; 
-		playing = 1;
-		play_paused = 0;
+		scriptState = ScriptState::PLAY;
 		wait_time = 0;
 		return 1;
 	} 
@@ -119,8 +118,7 @@ void ScriptMgr::cancelScript()
 	// delete script object...
 	script->clean();
 	// images loaded are deleted from stel_command_interface directly
-	playing = 0;
-	play_paused = 0;
+	scriptState = ScriptState::NONE;
 	multiplierRate = 1;
 	nbrLoop =0;
 	indiceInLoop=0;
@@ -132,9 +130,9 @@ void ScriptMgr::cancelScript()
 
 void ScriptMgr::pauseScript()
 {
-	if(!playing)
-		return;
-	play_paused = 1;
+	if (scriptState==ScriptState::NONE)	return;
+
+	scriptState=ScriptState::PAUSE;
 	media->audioMusicPause();
 	commander->executeCommand("timerate action pause");
 	cLog::get()->write("ScriptMgr::script action pause", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
@@ -142,11 +140,9 @@ void ScriptMgr::pauseScript()
 
 void ScriptMgr::resumeScript()
 {
-	if(!playing) {
-		return;
-	}
+	if (scriptState==ScriptState::NONE)	return;
+	scriptState=ScriptState::PLAY;
 
-	play_paused = 0;
 	media->audioMusicResume();
 	commander->executeCommand("timerate action resume");
 	cLog::get()->write("ScriptMgr::script action resume", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
@@ -159,7 +155,7 @@ bool ScriptMgr::isFaster() const
 
 void ScriptMgr::fasterSpeed()
 {
-	if( !playing || play_paused )
+	if(scriptState != ScriptState::PLAY)
 		return;
 
 	if (multiplierRate==1)
@@ -173,7 +169,7 @@ void ScriptMgr::fasterSpeed()
 
 void ScriptMgr::slowerSpeed()
 {
-	if( !playing || play_paused )
+	if(scriptState != ScriptState::PLAY)
 		return;
 
 	if (multiplierRate>1)
@@ -261,7 +257,7 @@ void ScriptMgr::update(int delta_time)
 {
 	if (recording) record_elapsed_time += delta_time;
 
-	if (playing && !play_paused) {
+	if ( scriptState==ScriptState::PLAY ) {
 		wait_time -= delta_time;
 		if (wait_time<0)
 			wait_time =0;
