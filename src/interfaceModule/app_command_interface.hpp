@@ -122,6 +122,18 @@ protected:
 	int commandZoom(unsigned long int &wait);
 
 private:
+	FLAG_VALUES convertStrToFlagValues(const std::string &value);
+	int parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments);
+	int evalCommandSet(const std::string& setName, const std::string& setValue);
+	SCD_NAMES parseCommandSet(const std::string& setName);
+	int executeCommandStatus();
+
+	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);
+	bool setFlag(const std::string &name, const std::string &value, bool &newval);
+	double evalDouble(const std::string &var);
+	int evalInt (const std::string &var);
+	std::string evalString (const std::string &var);
+
 	Core * stcore = nullptr;
 	CoreLink *coreLink = nullptr;
 	CoreBackup* coreBackup = nullptr;
@@ -132,46 +144,29 @@ private:
 	SpaceDate* spaceDate = nullptr;
 	SaveScreenInterface* saveScreenInterface=nullptr;
 	ServerSocket *tcp = nullptr;
-	std::string commandline;
-	std::string command;
-	stringHash_t args;
-
-	FLAG_VALUES convertStrToFlagValues(const std::string &value);
-
-	int recordable;
-	bool swapCommand;		// boolean qui indique si l'instruction doit etre exécutée ou pas
-	//bool swapIfCommand;		// boolean qui indique si dans un if l'instruction doit etre exécutée ou pas
-	std::unique_ptr<IfSwap> ifSwap; 		// gestionnnaire des if multiples
-
-	std::string debug_message;  //!< for 'executeCommand' error details
-	int parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments);
-	int evalCommandSet(const std::string& setName, const std::string& setValue);
-	SCD_NAMES parseCommandSet(const std::string& setName);
-	int executeCommandStatus();
-
-	bool setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, bool &newval);
-	bool setFlag(const std::string &name, const std::string &value, bool &newval);
-
-	double evalDouble(const std::string &var);
-	int evalInt (const std::string &var);
-	std::string evalString (const std::string &var);
-
 	AppCommandInit *appInit = nullptr;
 	AppCommandEval *appEval = nullptr;
 
-	//map assurant la transcription entre le texte et la commande associée
+	std::string commandline;
+	std::string command;
+	stringHash_t args;
+	int recordable;
+	bool swapCommand;					// boolean qui indique si l'instruction doit etre exécutée ou pas
+	std::unique_ptr<IfSwap> ifSwap; 	// gestionnnaire des if multiples
+	std::string debug_message;			//!< for 'executeCommand' error details
+
+	// transcription entre le texte et la commande associée
 	std::map<const std::string, SC_COMMAND> m_commands;
 	std::map<SC_COMMAND, const std::string> m_commands_ToString;
-	//map assurant la transcription entre le texte et le flag associé
+	// transcription entre le texte et le flag associé
 	std::map<const std::string, FLAG_NAMES> m_flags;
 	std::map<FLAG_NAMES, const std::string> m_flags_ToString;
-	//map assurant la transcription entre le texte et la couleur associée
+	// transcription entre le texte et la couleur associée
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
 	std::map<COLORCOMMAND_NAMES, const std::string> m_color_ToString;
-	//map assurant la transcription entre le texte et la commande interface associé
+	// transcription entre le texte et la commande interface associé
 	std::map<const std::string, SCD_NAMES> m_set;
 	std::map<SCD_NAMES, const std::string> m_set_ToString;
-	//map assurant la transcription entre le texte et la commande set associée
 };
 
 #endif // _APP_COMMAND_INTERFACE_H
