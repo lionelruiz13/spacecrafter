@@ -45,8 +45,8 @@ ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_
 	commander = command_interface;
 	DataDir = _data_dir;
 	scriptState = ScriptState::NONE;
-	scriptRecord.recording = false;
-	scriptRecord.record_elapsed_time = 0;
+	sR.recording = false;
+	sR.record_elapsed_time = 0;
 	multiplierRate=1;
 	nbrLoop =0;
 	isInLoop = false;
@@ -192,29 +192,29 @@ std::string ScriptMgr::getRecordDate()
 
 void ScriptMgr::recordScript(const std::string &script_filename)
 {
-	if (scriptRecord.recording) {
+	if (sR.recording) {
 		cLog::get()->write("ScriptMgr::Already recording script", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-		scriptRecord.rec_file.close();
-		scriptRecord.recording = false;
+		sR.rec_file.close();
+		sR.recording = false;
 		cLog::get()->write("ScriptMgr::Script recording stopped.", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 		return;
 	}
 
 	if (!script_filename.empty()) {
-		scriptRecord.rec_file.open(script_filename.c_str(), std::fstream::out);
+		sR.rec_file.open(script_filename.c_str(), std::fstream::out);
 	} else {
 		std::string sdir, other_script_filename;
 		sdir = AppSettings::Instance()->getConfigDir();
 
 		other_script_filename = sdir + "record_" + this->getRecordDate() + ".sts";
-		scriptRecord.rec_file.open(other_script_filename.c_str(), std::fstream::out);
+		sR.rec_file.open(other_script_filename.c_str(), std::fstream::out);
 	}
 
-	if (scriptRecord.rec_file.is_open()) {
-		scriptRecord.recording = true;
-		scriptRecord.record_elapsed_time = 0;
-		scriptRecord.rec_file << "# Spacecrafter "<< AppSettings::Instance()->getVersion() << std::endl;
-		scriptRecord.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
+	if (sR.rec_file.is_open()) {
+		sR.recording = true;
+		sR.record_elapsed_time = 0;
+		sR.rec_file << "# Spacecrafter "<< AppSettings::Instance()->getVersion() << std::endl;
+		sR.rec_file << "# Script recorded "<< this->getRecordDate() << std::endl << "#" << std::endl;
 		cLog::get()->write("ScriptMgr::Now recording actions to file: " + script_filename, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 	} else {
 		cLog::get()->write("ScriptMgr::Error opening script file for writing: " + script_filename, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
@@ -223,18 +223,18 @@ void ScriptMgr::recordScript(const std::string &script_filename)
 
 void ScriptMgr::recordCommand(const std::string &commandline)
 {
-	if (scriptRecord.recording) {
+	if (sR.recording) {
 		// write to file...
-		if (scriptRecord.record_elapsed_time) {
+		if (sR.record_elapsed_time) {
 			//on s'occupe de toutes les attentes mais on ne garde qu'un chiffre après la virgule
-			double timeToWait = (scriptRecord.record_elapsed_time/100)/10.f;
+			double timeToWait = (sR.record_elapsed_time/100)/10.f;
 			if (timeToWait>0.4)
-				scriptRecord.rec_file << "wait duration " << timeToWait << std::endl;
+				sR.rec_file << "wait duration " << timeToWait << std::endl;
 			else
-				scriptRecord.rec_file << "wait duration 0.1"<< std::endl;
-			scriptRecord.record_elapsed_time = 0;
+				sR.rec_file << "wait duration 0.1"<< std::endl;
+			sR.record_elapsed_time = 0;
 		}
-		scriptRecord.rec_file << commandline << std::endl;
+		sR.rec_file << commandline << std::endl;
 		// For debugging
 		cLog::get()->write("RECORD: " + commandline, LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT);
 	}
@@ -243,8 +243,8 @@ void ScriptMgr::recordCommand(const std::string &commandline)
 void ScriptMgr::cancelRecordScript()
 {
 	// close file...
-	scriptRecord.rec_file.close();
-	scriptRecord.recording = false;
+	sR.rec_file.close();
+	sR.recording = false;
 	cLog::get()->write("ScriptMgr::Script recording stopped.", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 }
 
@@ -260,7 +260,7 @@ void ScriptMgr::resetScriptLoop()
 // runs maximum of one command per update note that waits can drift by up to 1/fps seconds
 void ScriptMgr::update(int delta_time)
 {
-	if (scriptRecord.recording) scriptRecord.record_elapsed_time += delta_time;
+	if (sR.recording) sR.record_elapsed_time += delta_time;
 
 	if ( scriptState==ScriptState::PLAY ) {
 		wait_time -= delta_time;

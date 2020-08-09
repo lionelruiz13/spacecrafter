@@ -97,7 +97,7 @@ public:
 
 	//! is a script being recorded?
 	bool isRecording() const {
-		return 	scriptRecord.recording;
+		return 	sR.recording;
 	};
 
 	bool isFaster() const;
@@ -152,7 +152,7 @@ private:
 		bool recording;  		//!< is a script being recorded?
 		unsigned long int record_elapsed_time;  //!< ms since last command recorded
 	};
-	ScriptRecord scriptRecord;
+	ScriptRecord sR;
 
 	std::string getRecordDate();
 	Media* media = nullptr;
