@@ -33,14 +33,12 @@
 
 class UI;
 class ScriptInterface;
-class Media;
 
 class EventVideoHandler : public EventHandlerCanvas {
 public:
-	EventVideoHandler(UI *_ui, ScriptInterface *_scriptInterface, Media* _media) {
+	EventVideoHandler(UI *_ui, ScriptInterface *_scriptInterface) {
 		ui = _ui;
         scriptInterface = _scriptInterface;
-		media = _media;
 	}
 	~EventVideoHandler() {
 	}
@@ -49,7 +47,6 @@ public:
 protected :
 	UI *ui = nullptr;
     ScriptInterface *scriptInterface = nullptr;
-	Media *media = nullptr;
 };
 
 #endif //EVENT_VIDEO_HANDLER_HPP
