@@ -45,6 +45,7 @@
 #define L_NAME			"name"
 #define L_TEXTURE		"texture"
 #define L_MIPMAP		"mipmap"
+#define L_LIM_SHADE		"limited_shade"
 
 int Landscape::slices = 20;
 int Landscape::stacks = 10;
@@ -60,6 +61,7 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	valid_landscape = 0;
 	cLog::get()->write( "Landscape generic created", LOG_TYPE::L_INFO);
 	haveNightTex = false;
+	m_limitedShade = false;
 
 	fog =nullptr;
 	fog = new Fog(0.95f);
@@ -137,10 +139,15 @@ Landscape* Landscape::createFromFile(const std::string& landscape_file, const st
 // create landscape from parameters passed in a hash (same keys as with ini file)
 Landscape* Landscape::createFromHash(stringHash_t & param)
 {
-	// night landscape textures for spherical and fisheye landscape types
+	// night landscape textures for spherical and fisheye landscape types or possibility to have limitedShare
 	std::string night_tex="";
 	if (param[L_NIGHT_TEX] != "")
 		night_tex = param[L_PATH] + param[L_NIGHT_TEX];
+
+	float limitedShadeValue = 0;
+	if (!param[L_LIM_SHADE].empty()) {
+		limitedShadeValue = std::min(Utility::strToFloat(param[L_LIM_SHADE]), 0.25f);
+	}
 
 	std::string texture="";
 	if (param[L_TEXTURE] == "")
@@ -158,13 +165,13 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	if (param[L_TYPE]==L_FISHEYE) {
 		LandscapeFisheye* ldscp = new LandscapeFisheye();
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["fov"], Utility::strToDouble(param["texturefov"], 180)),
-		              Utility::strToDouble(param["rotate_z"], 0.), night_tex, mipmap);
+		              Utility::strToDouble(param["rotate_z"], 0.), night_tex, limitedShadeValue, mipmap);
 		return ldscp;
 	}
 	else if (param[L_TYPE]==L_SPHERICAL) {
 		LandscapeSpherical* ldscp = new LandscapeSpherical();
 		ldscp->create(param[L_NAME], texture, Utility::strToDouble(param["base_altitude"], -90),
-		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, mipmap);
+		              Utility::strToDouble(param["top_altitude"], 90), Utility::strToDouble(param["rotate_z"], 0.),  night_tex, limitedShadeValue, mipmap);
 		return ldscp;
 	}
 	else {    //wrong Landscape
@@ -242,8 +249,11 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
 	}
-	else
+	else {
+		if (m_limitedShade)
+			sky_brightness = std::max(sky_brightness, m_limitedShadeValue);
 		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
+	}
 
 	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
 	shaderLandscape->setUniform("fader",fader.getInterstate());
@@ -313,20 +323,25 @@ void LandscapeFisheye::load(const std::string& landscape_file, const std::string
 	if (! night_texture.empty())
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
+	float limitedShadeValue = 0;
+	std::string haveLimitedShade = pd.getStr(section_name, L_LIM_SHADE);
+	if (!haveLimitedShade.empty()) {
+		limitedShadeValue = std::min(Utility::strToFloat(haveLimitedShade), 0.25f);
+	}
+
 	create(name, texture,
 	       pd.getDouble(section_name, "fov", pd.getDouble(section_name, "texturefov", 180)),
 	       pd.getDouble(section_name, "rotate_z", 0.),
-	       night_texture,
+	       night_texture, limitedShadeValue,
 	       pd.getBoolean(section_name, L_TEXTURE, true));
 }
 
 
 // create a fisheye landscape from basic parameters (no ini file needed)
 void LandscapeFisheye::create(const std::string _name, const std::string _maptex, double _texturefov,
-                              const float _rotate_z, const std::string _maptex_night, bool _mipmap)
+                              const float _rotate_z, const std::string _maptex_night, float limitedShade, bool _mipmap)
 {
 	valid_landscape = 1;  // assume ok...
-	haveNightTex = false;
 	cLog::get()->write( "Landscape Fisheye " + _name + " created", LOG_TYPE::L_INFO);
 	name = _name;
 	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
@@ -334,6 +349,12 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 	if (! _maptex_night.empty()) {
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
+	} else {
+		haveNightTex = false;
+		if (limitedShade>0) {
+			m_limitedShade = true;
+			m_limitedShadeValue = limitedShade;
+		}
 	}
 	tex_fov = _texturefov*M_PI/180.;
 	rotate_z = _rotate_z*M_PI/180.;
@@ -498,18 +519,24 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	if (! night_texture.empty())
 		night_texture = AppSettings::Instance()->getLandscapeDir() +night_texture;
 
+	float limitedShadeValue = 0;
+	std::string haveLimitedShade = pd.getStr(section_name, L_LIM_SHADE);
+	if (!haveLimitedShade.empty()) {
+		limitedShadeValue = std::min(Utility::strToFloat(haveLimitedShade), 0.25f);
+	}
+
 	create(name, texture,
 	       pd.getDouble(section_name, "base_altitude", -90),
 	       pd.getDouble(section_name, "top_altitude", 90),
 	       pd.getDouble(section_name, "rotate_z", 0.),
-	       night_texture,
+	       night_texture, limitedShadeValue,
 	       pd.getBoolean(section_name, L_TEXTURE, true));
 }
 
 
 // create a spherical landscape from basic parameters (no ini file needed)
 void LandscapeSpherical::create(const std::string _name, const std::string _maptex, const float _base_altitude,
-                                const float _top_altitude, const float _rotate_z, const std::string _maptex_night, bool _mipmap)
+                                const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, bool _mipmap)
 {
 	valid_landscape = 1;  // assume ok...
 	cLog::get()->write( "Landscape Spherical " + _name + " created", LOG_TYPE::L_INFO);
@@ -519,9 +546,13 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	if (!_maptex_night.empty()) {
 		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
-	}
-	else
+	} else {
 		haveNightTex = false;
+		if (limitedShade>0) {
+			m_limitedShade = true;
+			m_limitedShadeValue = limitedShade;
+		}
+	}
 
 	base_altitude = ((_base_altitude >= -90 && _base_altitude <= 90) ? _base_altitude : -90);
 	top_altitude = ((_top_altitude >= -90 && _top_altitude <= 90) ? _top_altitude : 90);

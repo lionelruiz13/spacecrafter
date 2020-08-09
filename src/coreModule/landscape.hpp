@@ -119,6 +119,8 @@ protected:
 	s_texture* map_tex;
 	s_texture* map_tex_night;
 	bool haveNightTex;
+	bool m_limitedShade;				// affichage de nuit non nocturne
+	float m_limitedShadeValue;			// indique quel pourcentage de lumière on garde pour l'affichage de nuit
 	unsigned int nbVertex;				// nombre de vertex des landscapes
 
 	static int slices;
@@ -135,7 +137,7 @@ public:
 	virtual ~LandscapeFisheye();
 	virtual void load(const std::string& fileName, const std::string& section_name);
 	void create(const std::string _name, const std::string _maptex, double _texturefov,
-	            const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
+	            const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
 private:
 	void createFisheyeMesh(double radius, int slices, int stacks, double texture_fov,  GLfloat * datatex, GLfloat * datapos);
 	void initShader();
@@ -149,7 +151,7 @@ public:
 	virtual ~LandscapeSpherical();
 	virtual void load(const std::string& fileName, const std::string& section_name);
 	void create(const std::string _name, const std::string _maptex, const float _base_altitude,
-	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, const bool _mipmap);
+	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
 	                         double bottom_altitude, double top_altitude, GLfloat * datatex, GLfloat * datapos);
