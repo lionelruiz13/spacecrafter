@@ -57,7 +57,7 @@ std::unique_ptr<shaderProgram> Landscape::shaderLandscape;
 
 static float setLimitedShade(float _value )
 {
-	return std::min(maxShadeValue, std::max(_value, minShadeValue));
+	return Utility::clamp(_value, minShadeValue, maxShadeValue);
 }
 
 Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
@@ -162,11 +162,8 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	else
 		texture = param[L_PATH] + param[L_TEXTURE];
 
-	bool mipmap; // Default on
-	if (param[L_TEXTURE] == "on" || param[L_TEXTURE] == "1")
-		mipmap = true;
-	else
-		mipmap = false;
+	bool mipmap;
+	Utility::isTrue(param[L_TEXTURE]) ? mipmap = true: mipmap = false;
 
 	// NOTE: textures should be full filename (and path)
 	if (param[L_TYPE]==L_FISHEYE) {
