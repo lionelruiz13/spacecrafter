@@ -60,6 +60,13 @@ struct AudioParam {
 	//AudioParam() {value = 0,filename = "",loop = false, secondJump = 0.f;}
 };
 
+//etat de la lecture vidéo
+enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360 , V_VRCUBE};
+enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
+//etat de la lecture audio
+enum class A_TYPE : char { V_NONE, V_AUDIO, V_VIDEO};
+enum class A_STATE: char { V_NONE, V_PAUSE, V_PLAY };
+
 class Media : public NoCopy{
 
 public:
@@ -151,7 +158,7 @@ public:
 	}
 
 	void audioMusicHalt() {
-		if (m_videoState.video_state != V_STATE::V_PLAY) {
+		if (m_videoState.state != V_STATE::V_PLAY) {
 			audio->musicHalt();
 		}
 	}
@@ -297,16 +304,17 @@ private:
 
 	std::string imageVideoName;
 
-	//etat de la lecture vidéo
-	enum class V_TYPE : char { V_NO, V_VIEWPORT, V_IMAGE, V_VR360 , V_VRCUBE};
-	enum class V_STATE: char { V_OFF, V_PAUSE, V_PLAY };
-
 	struct VideoState {
-		V_TYPE video_type;
-		V_STATE video_state;
+		V_TYPE type;
+		V_STATE state;
+	};
+	struct AudioState {
+		A_TYPE type;
+		A_STATE state;
 	};
 
 	VideoState m_videoState;
+	AudioState m_audioState;
 };
 
 #endif //MEDIA_HPP
