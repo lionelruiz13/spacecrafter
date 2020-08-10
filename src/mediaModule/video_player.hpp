@@ -107,11 +107,11 @@ private:
 	YUV_WRAPPER YUV_Texture;
 	GLuint YUVtexture[3];
 
-	bool m_isVideoPlayed;	//!< indique si une vidéo est en cours de lecture
 	bool isDisplayRVB;		//!< indique si le rendu doit être converti en RVG ou pas
 	std::string fileName; 	//!< nom de la vidéo à lire
 	int video_w;			
 	int video_h;
+	bool m_isVideoPlayed;	//!< indique si une vidéo est en cours de lecture
 	bool isInPause;			//!< indique si la video est en pause
 	bool isSeeking;			//!< indique si on est entrain de sauter de frame
 
