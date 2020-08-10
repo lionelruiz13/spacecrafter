@@ -47,10 +47,10 @@ Media::~Media()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::audioMusicLoad(const std::string &filename)
+void Media::audioMusicLoad(const std::string &filename, bool )
 {
-	audio->musicLoad(filename);
-	audioMusicPlay(false);
+	audio->musicLoad(filename, false);
+	audioMusicPlay();
 }
 
 void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam)
@@ -72,7 +72,7 @@ void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& 
 				audio->decrementVolume(5);
 			break;
 		case AudioFunction::AF_MUSICPLAY:
-			audio->musicPlay(audioParam.loop);
+			audio->musicPlay();
 			break;
 		case AudioFunction::AF_MUSICHALT:
 			if (m_videoState.state != V_STATE::V_PLAY) {
@@ -99,8 +99,8 @@ void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& 
 			audio->musicJump(audioParam.secondJump);
 			break;
 		case AudioFunction::AF_MUSICLOAD:
-			audio->musicLoad(audioParam.filename);
-			audio->musicPlay(audioParam.loop);
+			audio->musicLoad(audioParam.filename, audioParam.loop);
+			audio->musicPlay();
 			break;
 	}
 }
@@ -181,8 +181,8 @@ int Media::playerPlay(const std::string &type,const  std::string &videoname, con
 	int tmp = playerPlay(type, videoname, _name, _position);
 	if (tmp >0) {
 		audioMusicHalt();
-		audioMusicLoad(audioname);
-		audioMusicPlay(0);
+		audioMusicLoad(audioname, false);
+		audioMusicPlay();
 		return 0;
 	}
 	return tmp;

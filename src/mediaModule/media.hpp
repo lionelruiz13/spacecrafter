@@ -65,7 +65,7 @@ enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360 , V_VRCUBE};
 enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
 //etat de la lecture audio
 enum class A_TYPE : char { V_NONE, V_AUDIO, V_VIDEO};
-enum class A_STATE: char { V_NONE, V_PAUSE, V_PLAY };
+
 
 class Media : public NoCopy{
 
@@ -138,10 +138,10 @@ public:
 		audio->decrementVolume(value);
 	}
 
-	void audioMusicLoad(const std::string &filename);
+	void audioMusicLoad(const std::string &filename, bool loop);
 
-	void audioMusicPlay(bool loop) {
-		audio->musicPlay(loop);
+	void audioMusicPlay() {
+		audio->musicPlay();
 	}
 
 	void audioMusicPause() {

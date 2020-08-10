@@ -2152,8 +2152,8 @@ int AppCommandInterface::commandAudio()
 			std::string argFileName = args[W_FILENAME];
 			if (!argFileName.empty() ) {
 				if (FilePath myFile  = FilePath(argFileName, FilePath::TFP::AUDIO)) {
-					media->audioMusicLoad(myFile);
-					media->audioMusicPlay(Utility::isTrue(args[W_LOOP]));
+					media->audioMusicLoad(myFile, Utility::isTrue(args[W_LOOP]));
+					media->audioMusicPlay();
 					return executeCommandStatus();
 				} else {
 					debug_message = _("command 'audio': filename not found");
