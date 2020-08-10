@@ -31,6 +31,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <functional>
 #include "mediaModule/audio.hpp"
 #include "tools/translator.hpp"
 #include "tools/log.hpp"
@@ -88,13 +89,19 @@ void Audio::musicLoad(const std::string& filename)
 		// test OGG or WAV
 		music_loaded = true;
 		music_name = filename;
-		Mix_HookMusicFinished(this->musicEnd);
+		Mix_HookMusicFinished(this->s_musicEnd);
+		//Mix_HookMusicFinished(this->f_musicEnd);
 	}
 }
 
-void Audio::musicEnd()
+void Audio::s_musicEnd()
 {
-	std::cout << "music get end"<< std::endl;
+	std::cout << "s music get end"<< std::endl;
+}
+
+void Audio::f_musicEnd()
+{
+	std::cout << "f music get end"<< std::endl;
 }
 
 void Audio::musicPlay(bool loop)
@@ -123,6 +130,7 @@ void Audio::update(int delta_time)
 		if (Mix_PlayingMusic()!=1) {
 			if (Mix_PausedMusic()!=1) {
 				cLog::get()->write("Audio::update seen track ended...", LOG_TYPE::L_DEBUG);
+				std::cout << "Fin musique " << std::endl;
 				this->musicDrop();
 			}
 		}
