@@ -89,19 +89,7 @@ void Audio::musicLoad(const std::string& filename)
 		// test OGG or WAV
 		music_loaded = true;
 		music_name = filename;
-		Mix_HookMusicFinished(this->s_musicEnd);
-		//Mix_HookMusicFinished(this->f_musicEnd);
 	}
-}
-
-void Audio::s_musicEnd()
-{
-	std::cout << "s music get end"<< std::endl;
-}
-
-void Audio::f_musicEnd()
-{
-	std::cout << "f music get end"<< std::endl;
 }
 
 void Audio::musicPlay(bool loop)

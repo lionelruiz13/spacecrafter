@@ -55,12 +55,9 @@ public:
 	void musicHalt();
 	void musicSync();
 	void musicDrop();
-
 	void musicJump(float secondJump);
 
 private:
-	static void s_musicEnd();
-	void f_musicEnd();
 	int master_volume;
 	Mix_Music *track = nullptr;
 	std::string music_name;
