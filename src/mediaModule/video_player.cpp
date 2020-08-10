@@ -240,7 +240,8 @@ void VideoPlayer::getNextFrame()
 
 		if(av_read_frame(pFormatCtx, packet)<0) {
 			cLog::get()->write("fin de fichier");
-			m_isVideoPlayed= false;
+			isSeeking = true;
+			media->playerStop();
 			return;
 		}
 
