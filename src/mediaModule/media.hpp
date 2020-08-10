@@ -38,9 +38,6 @@ class Projector;
 class Navigator;
 
 enum class AudioFunction : char {
-	AF_SETVOLUME,
-	AF_INCREMENTVOLUME,
-	AF_DECREMENTVOLUME,
 	AF_MUSICLOAD,
 	AF_MUSICPLAY,
 	AF_MUSICPAUSE,
@@ -50,6 +47,12 @@ enum class AudioFunction : char {
 	AF_MUSICSYNC,
 	AF_MUSICDROP,
 	AF_MUSICJUMP
+};
+
+enum class AudioVolume : char {
+	AV_SETVOLUME,
+	AV_INCREMENTVOLUME,
+	AV_DECREMENTVOLUME
 };
 
 struct AudioParam {
@@ -124,6 +127,7 @@ public:
 	// cette fonction remplace :
 	void audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam);
 
+	void audioVolume(const AudioVolume& volumeOrder, float _value);
 	// A partir d'içi
 	///////////////////////////////////////////////////////////////////////////////////////////////////////	
 	void audioSetVolume(int _value) {

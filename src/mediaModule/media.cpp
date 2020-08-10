@@ -25,6 +25,8 @@
 #include "mediaModule/media.hpp"
 #include "tools/log.hpp"
 
+#define STEP_VOLUME 5
+
 Media::Media()
 {
 	audio = new Audio();
@@ -56,21 +58,6 @@ void Media::audioMusicLoad(const std::string &filename, bool )
 void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam)
 {
 	switch (audioFunction) {
-		case AudioFunction::AF_SETVOLUME:
-			audio->setVolume(audioParam.value);
-			break;
-		case AudioFunction::AF_INCREMENTVOLUME:	
-			if (audioParam.value!=0)
-				audio->incrementVolume(audioParam.value);
-			else
-				audio->incrementVolume(5);
-			break;
-		case AudioFunction::AF_DECREMENTVOLUME:	
-			if (audioParam.value!=0)
-				audio->decrementVolume(audioParam.value);
-			else
-				audio->decrementVolume(5);
-			break;
 		case AudioFunction::AF_MUSICPLAY:
 			audio->musicPlay();
 			break;
@@ -105,6 +92,26 @@ void Media::audioFunction(const AudioFunction& audioFunction, const AudioParam& 
 	}
 }
 
+void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
+{
+	switch (volumeOrder) {
+		case AudioVolume::AV_SETVOLUME:
+			audio->setVolume(_value);
+			break;
+		case AudioVolume::AV_INCREMENTVOLUME:	
+			if (_value!=0)
+				audio->incrementVolume(_value);
+			else
+				audio->incrementVolume(STEP_VOLUME);
+			break;
+		case AudioVolume::AV_DECREMENTVOLUME:	
+			if (_value!=0)
+				audio->decrementVolume(_value);
+			else
+				audio->decrementVolume(STEP_VOLUME);
+			break;
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
