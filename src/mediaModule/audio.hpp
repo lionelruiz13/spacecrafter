@@ -24,7 +24,14 @@
  *
  */
 
-// manage an audio track
+/** 
+ * @file audio.hpp
+ * @brief manage audio track
+ *
+ * @author Olivier NIVOIX
+ * @version 2 
+ * 
+ */
 
 #ifndef _AUDIO_H_
 #define _AUDIO_H_
@@ -39,7 +46,7 @@
 enum class A_STATE: char { V_NONE, // fichier non chargé
 						   V_PAUSE,// lecture du fichier en pause
 						   V_PLAY, // lecture du fichier en cours
-						   V_STOP  // lecture du fichier stoppée.
+						   V_STOP  // lecture du fichier stoppée
 						};
 
 
