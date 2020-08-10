@@ -40,96 +40,228 @@
 #define CHUNKSIZE	2048
 #define CHANNELS	2
 
-Audio::Audio()
+AudioMgr::AudioMgr()
 {
 	if(Mix_OpenAudio(FREQUENCY, MIX_DEFAULT_FORMAT, CHANNELS, CHUNKSIZE ) < 0 ) {
-		cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
-		exit(-1);
-	} else
-		cLog::get()->write("SDL Sound loaded", LOG_TYPE::L_INFO);
+		cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_DEBUG );
+		cLog::get()->write("Error Mix_OpenAudio: Audio error, session with no sound", LOG_TYPE::L_WARNING );
+		isDriverReady = false;
+		return;
+	} 
 
 	int flags=MIX_INIT_OGG;
 	int initted=Mix_Init(MIX_INIT_OGG);
 	if((initted&flags) != flags) {
-		cLog::get()->write("Audio::audio Mix_Init: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
-	} else
+		cLog::get()->write("Audio::audio Mix_Init: "+ std::string(Mix_GetError()), LOG_TYPE::L_DEBUG );
+		cLog::get()->write("Error Mix_Init: OGG module error, session with no sound", LOG_TYPE::L_WARNING );
+		isDriverReady = false;
+		Mix_CloseAudio();
+		return;
+	}
 	cLog::get()->write("Audio initialization successful", LOG_TYPE::L_INFO);
-
-	track = nullptr;
-	music_loaded = false;
-	music_isPlaying = false;
-	elapsed_seconds=0.0;
+	isDriverReady = true;
 	master_volume=SDL_MIX_MAXVOLUME/3*2;
 }
 
-Audio::~Audio()
+AudioMgr::~AudioMgr()
 {
-	if (music_loaded)
-		musicDrop();
+	if (!isDriverReady) // nothing to close, nothing to do
+		return;
+	audioMusic.reset(nullptr);
 
 	Mix_CloseAudio();
-	cLog::get()->write("Audio support end", LOG_TYPE::L_INFO);
 	Mix_Quit();
+	cLog::get()->write("Audio support end", LOG_TYPE::L_INFO);
+}
+
+void AudioMgr::musicLoad(const std::string& filename, bool loop)
+{
+	if (!isDriverReady)	return;
+	audioMusic = std::make_unique<AudioMusic>(filename, loop);
+	if (audioMusic->isLoaded()) {
+		state = A_STATE::V_STOP;
+	} else {
+		audioMusic.reset(nullptr);
+		state = A_STATE::V_NONE;
+	}
+}
+
+void AudioMgr::musicPlay()
+{
+	if (!audioMusic)	return;
+	if (state == A_STATE::V_STOP) {
+		state = A_STATE::V_PLAY;
+		audioMusic->play();
+	}
+}
+
+// used solely to track elapsed seconds of play
+void AudioMgr::update(int delta_time)
+{
+	if (audioMusic)
+		if (!audioMusic->update(delta_time)) {
+			state = A_STATE::V_STOP;
+			audioMusic->halt();
+		}
+}
+
+// sychronize with elapsed time no longer starts playback if paused or disabled
+void AudioMgr::musicSync()
+{
+	if (audioMusic)
+		audioMusic->sync();
 }
 
 
-void Audio::musicLoad(const std::string& filename)
+void AudioMgr::musicJump(float secondJump)
 {
-	if (music_loaded) {
-		cLog::get()->write("Another music was already loaded. I will stop it : " +music_name, LOG_TYPE::L_DEBUG);
-		this->musicDrop();
+	if (audioMusic)
+		audioMusic->jump(secondJump);
+}
+
+void AudioMgr::musicRewind()
+{
+	if (audioMusic)
+		audioMusic->rewind();
+}
+
+void AudioMgr::musicPause()
+{
+	if (!audioMusic) return;
+	if (state == A_STATE::V_PLAY) {
+		audioMusic->pause();
+		state = A_STATE::V_PAUSE;
+		return;
 	}
+	if (state == A_STATE::V_PAUSE) {
+		audioMusic->resume();
+		state = A_STATE::V_PLAY;
+	}
+}
+
+void AudioMgr::musicResume()
+{
+	if (audioMusic && (state == A_STATE::V_PAUSE || state == A_STATE::V_STOP)) {
+		audioMusic->resume();
+		state = A_STATE::V_PLAY;
+	}
+}
+
+void AudioMgr::musicHalt()
+{
+	if (audioMusic) {
+		state = A_STATE::V_STOP;
+		audioMusic->halt();
+	}
+}
+
+void AudioMgr::musicDrop()
+{
+	if (audioMusic) {
+		audioMusic.reset(nullptr);
+		state = A_STATE::V_NONE;
+	}
+}
+
+void AudioMgr::decrementVolume(int value)
+{
+	if (master_volume == 0)
+		return;
+	master_volume -= value;
+	if (master_volume < 0) master_volume = 0;
+	//~ cout << "audio : value = " << master_volume << endl;
+	Mix_VolumeMusic(master_volume);
+}
+
+void AudioMgr::incrementVolume(int value)
+{
+	master_volume += value;
+	if (master_volume == SDL_MIX_MAXVOLUME)
+		return;
+	if (master_volume > SDL_MIX_MAXVOLUME) master_volume = SDL_MIX_MAXVOLUME;
+	//~ cout << "audio : value = " << master_volume << endl;
+	Mix_VolumeMusic(master_volume);
+}
+
+void AudioMgr::setVolume(int _value)
+{
+	if (master_volume == _value)
+		return;
+	master_volume=_value;
+	if (master_volume > SDL_MIX_MAXVOLUME) master_volume = SDL_MIX_MAXVOLUME;
+	if (master_volume < 0) master_volume = 0;
+	Mix_VolumeMusic(master_volume);
+}
+
+
+// class AudioMusic
+
+
+AudioMusic::AudioMusic(const std::string& filename, bool _loop)
+{
+	std::cout << "creation " << filename << std::endl;
+	track = nullptr;
+	music_isPlaying = false;
+	elapsed_seconds=0.0;
 
 	track = Mix_LoadMUS(filename.c_str());
 	if (track == nullptr) {
 		music_loaded = false;
 		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
 	} else  {
-		cLog::get()->write("Audio::musicLoad load "+ filename, LOG_TYPE::L_DEBUG );
-		// test OGG or WAV
 		music_loaded = true;
 		music_name = filename;
+		loop = _loop;
 	}
 }
 
-void Audio::musicPlay(bool loop)
+AudioMusic::~AudioMusic()
 {
+	std::cout << "destruction " << music_name << std::endl;
 	if (music_loaded) {
-		cLog::get()->write("Audio::musicPlay play "+ music_name, LOG_TYPE::L_DEBUG );
-		music_isPlaying = true;
-		elapsed_seconds = 0.0;
-		if (loop) {
-			if (Mix_PlayMusic(track, -1)< 0)
-				cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
-		} else {
-			if (Mix_PlayMusic(track, 0) < 0)
-				cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
-		}
-	} else {
-		cLog::get()->write("Audio::musicPlay want to play audio but no track enable.", LOG_TYPE::L_DEBUG);
+		cLog::get()->write("Audio::musicDrop "+ music_name, LOG_TYPE::L_DEBUG );
+		Mix_HaltMusic();
+		Mix_FreeMusic(track);
 	}
 }
 
-
-// used solely to track elapsed seconds of play
-void Audio::update(int delta_time)
+bool AudioMusic::update(int delta_time)
 {
-	if (music_loaded) {
-		if (Mix_PlayingMusic()!=1) {
-			if (Mix_PausedMusic()!=1) {
-				cLog::get()->write("Audio::update seen track ended...", LOG_TYPE::L_DEBUG);
-				std::cout << "Fin musique " << std::endl;
-				this->musicDrop();
-			}
-		}
+	// test si le fichier est encore en lecture
+	if (Mix_PlayingMusic()!=1 && Mix_PausedMusic()!=1) {
+		music_isPlaying =false;
+		std::cout << "fin fichier " << music_name << std::endl;
+		return false;
+	}
+	if (music_isPlaying) {
 		elapsed_seconds += delta_time/1000.f;
 	}
+	//assume all good ...
+	return true;
 }
 
-// sychronize with elapsed time no longer starts playback if paused or disabled
-void Audio::musicSync()
+void AudioMusic::play()
 {
-	if (!music_loaded) return;
+	cLog::get()->write("Audio::musicPlay play "+ music_name, LOG_TYPE::L_DEBUG );
+	music_isPlaying = true;
+	std::cout << "play " << music_name << std::endl;
+	if (loop) {
+		if (Mix_PlayMusic(track, -1)< 0) {
+			cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+			music_isPlaying = false;
+		}
+	} else {
+		if (Mix_PlayMusic(track, 0) < 0) {
+			cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
+			music_isPlaying = false;
+		}
+	}
+}
+
+void AudioMusic::sync()
+{
+	std::cout << "sync " << music_name << std::endl;
+	// if (!music_loaded) return;
 	cLog::get()->write("Audio::musicSync "+ music_name, LOG_TYPE::L_DEBUG );
 	if (music_isPlaying)
 		Mix_PauseMusic();
@@ -142,90 +274,44 @@ void Audio::musicSync()
 	Mix_ResumeMusic();
 }
 
-void Audio::musicJump(float secondJump)
+void AudioMusic::jump(double secondJump)
 {
-	if (!music_loaded) return;
+	std::cout << "jump " << music_name << std::endl;
+	// if (!music_loaded) return;
 	cLog::get()->write("Audio::musicJump "+ music_name, LOG_TYPE::L_DEBUG );
 	if (music_isPlaying)
 		Mix_SetMusicPosition(secondJump);
 }
 
-
-void Audio::musicRewind()
+void AudioMusic::rewind()
 {
+	std::cout << "rewind " << music_name << std::endl;
 	Mix_RewindMusic();
 	cLog::get()->write("Audio::musicRewind "+ music_name, LOG_TYPE::L_DEBUG );
 }
 
-void Audio::musicPause()
+void AudioMusic::pause()
 {
-	if (music_loaded) {
-		if (music_isPlaying==true) {
-			cLog::get()->write("Audio::musicPause with "+ music_name, LOG_TYPE::L_DEBUG );
-			Mix_PauseMusic();
-			music_isPlaying = false;
-		} else
-			musicResume();
-	}
+	cLog::get()->write("Audio::musicPause with "+ music_name, LOG_TYPE::L_DEBUG );
+	Mix_PauseMusic();
+	//music_isPlaying = false;
+	std::cout << "pause " << music_name << std::endl;
 }
 
-void Audio::musicResume()
+void AudioMusic::resume()
 {
-	if (music_loaded) {
-		cLog::get()->write("Audio::musicResume with "+ music_name, LOG_TYPE::L_DEBUG );
-		Mix_ResumeMusic();
-		music_isPlaying = true;
-	}
+	cLog::get()->write("Audio::musicResume with "+ music_name, LOG_TYPE::L_DEBUG );
+	Mix_ResumeMusic();
+	music_isPlaying = true;
+	std::cout << "resume " << music_name << std::endl;
 }
 
-void Audio::musicHalt()
-{
+
+void AudioMusic::halt()
+{	
+	std::cout << "halt " << music_name << std::endl;
 	cLog::get()->write("Audio::musicHalt "+ music_name, LOG_TYPE::L_DEBUG );
 	Mix_HaltMusic();
 	music_isPlaying=false;
 	elapsed_seconds=0.0;
-}
-
-void Audio::musicDrop()
-{
-	if (music_loaded) {
-		cLog::get()->write("Audio::musicDrop "+ music_name, LOG_TYPE::L_DEBUG );
-		Mix_HaltMusic();
-		Mix_FreeMusic(track);
-	}
-	music_name.clear();
-	track = nullptr;
-	music_loaded = false;
-	music_isPlaying = false;
-	elapsed_seconds = 0.0;
-}
-
-void Audio::decrementVolume(int value)
-{
-	if (master_volume == 0)
-		return;
-	master_volume -= value;
-	if (master_volume < 0) master_volume = 0;
-	//~ cout << "audio : value = " << master_volume << endl;
-	Mix_VolumeMusic(master_volume);
-}
-
-void Audio::incrementVolume(int value)
-{
-	master_volume += value;
-	if (master_volume == SDL_MIX_MAXVOLUME)
-		return;
-	if (master_volume > SDL_MIX_MAXVOLUME) master_volume = SDL_MIX_MAXVOLUME;
-	//~ cout << "audio : value = " << master_volume << endl;
-	Mix_VolumeMusic(master_volume);
-}
-
-void Audio::setVolume(int _value)
-{
-	if (master_volume == _value)
-		return;
-	master_volume=_value;
-	if (master_volume > SDL_MIX_MAXVOLUME) master_volume = SDL_MIX_MAXVOLUME;
-	if (master_volume < 0) master_volume = 0;
-	Mix_VolumeMusic(master_volume);
 }

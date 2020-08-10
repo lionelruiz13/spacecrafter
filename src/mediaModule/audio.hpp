@@ -32,38 +32,100 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <memory>
 #include "tools/no_copy.hpp"
 
+class AudioMusic;
 
-class Audio: public NoCopy {
+//! enumération des états de lecture d'un fichier audio
+enum class A_STATE: char { V_NONE, // fichier non chargé
+						   V_PAUSE,// lecture du fichier en pause
+						   V_PLAY, // lecture du fichier en cours
+						   V_STOP  // lecture du fichier stoppée.
+						};
 
+/** 
+ * @class AudioMgr
+ * @brief Initialise la lib SDL2_mixer et effectue les opérations sur un fichier musique AudioMusic
+ * 
+ * La classe sert d'intermédiaire entre Média et l'audio. 
+ * Elle effectue tous les contrôles pour pouvoir lire un fichier musique.
+ */
+class AudioMgr: public NoCopy {
 public:
-	Audio();
-	~Audio();
-
+	AudioMgr();
+	~AudioMgr();
+	//! indique combien de temps s'est écoulé depuis le dernier tour de boucle 
 	void update(int delta_time);
+	//! fixe le volume audio
 	void setVolume(int _value);
+	//! diminue le volume audio
 	void incrementVolume(int value=5);
+	//! augmente le volume audio
 	void decrementVolume(int value=5);
 
-	//music
-	void musicLoad(const std::string& filename);
-	void musicPlay(bool loop);
-	void musicPause();
-	void musicResume();
-	void musicRewind();
-	void musicHalt();
-	void musicSync();
-	void musicDrop();
+	/* ordres possibles pour la lecture d'un fichier audio*/
+	//! charge un fichier dans le gestionnaire
+	void musicLoad(const std::string& filename,bool loop);
+	//! réalise un saut à la position voulue, exprimée en seconde.
 	void musicJump(float secondJump);
+	//! entame la lecture d'un fichier audio chargé précédemment
+	void musicPlay();
+	//! met la lecture du fichier en pause. Si réapliqué, recommence la lecture du fichier
+	void musicPause();
+	//! reprend la lecture du fichier en pause.
+	void musicResume();
+	//! recommence la lecture du fichier au départ
+	void musicRewind();
+	//! stoppe la lecture du fichier
+	void musicHalt();
+	//! synchronise le fichier son avec le temps écoulé dans la théorie
+	void musicSync();
+	//! décharge le fichier du gestionnaire
+	void musicDrop();
 
 private:
-	int master_volume;
-	Mix_Music *track = nullptr;
-	std::string music_name;
-	double elapsed_seconds; //! current offset into the track
-	bool music_isPlaying;	//! indique qu'une musique est entrain d'être jouée.
-	bool music_loaded;		//! indique si une musique est chargée, prête à être jouée.
+	int master_volume;						//!< volume de sortie du gestionnaire de son 
+	std::unique_ptr<AudioMusic> audioMusic;	//!< pointeur sur un fichier musique
+	bool isDriverReady;						//!< indique si le soft peut utiliser le driver audio
+	A_STATE state = A_STATE::V_NONE;		//!< Etat du fichier musique
 };
 
+/** 
+ * @class AudioMusic
+ * @brief Représente la lecture d'un flux audio sous la dénomination SDL2_Mixere de musique
+ * 
+ */
+class AudioMusic {
+public:
+	AudioMusic(const std::string& filename, bool _loop);
+	~AudioMusic();
+	// entame la lecture
+	void play();
+	// saut dans le flux
+	void jump(double secondJump);
+	// mis à jour de la durée du tour de boucle
+	bool update(int delta_time);
+	// met en pause la lecture du flux
+	void pause();
+	// reprend la lecture du flux
+	void resume();
+	// recommence la lecture du flux au début
+	void rewind();
+	// arrête la lecture du flux
+	void halt();
+	// synchronise la lecture du flux avec le temps thérique passé.
+	void sync();
+	// indique si l'initialisation du flux s'est bien passé
+	bool isLoaded() const {
+		return music_loaded;
+	}
+private:
+	Mix_Music *track = nullptr;		//! pointeur interne vers le flux audio
+	std::string music_name;			//! nom du fichier du flux audio
+	double elapsed_seconds = 0.0;	//! current offset into the track
+	bool music_isPlaying = false;	//! indique qu'une musique est entrain d'être jouée.
+	bool music_loaded = false;		//! donne l'état du flux
+	bool loop = false;				//! indique si le flux doit être joué en continu
+};
 #endif // _AUDIO_H
