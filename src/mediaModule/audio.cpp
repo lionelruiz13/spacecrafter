@@ -80,19 +80,22 @@ void Audio::musicLoad(const std::string& filename, bool _loop)
 	if (music_loaded) {
 		cLog::get()->write("Another music was played ...  " +music_name, LOG_TYPE::L_DEBUG);
 		this->musicDrop();
+		state = A_STATE::V_NONE;
 	}
-	// réinitilisation de track pour garantir l'état de la classe
+	// réinitilisation de track pour garantir l'état futur de la classe
 	track = nullptr;
 	track = Mix_LoadMUS(filename.c_str());
 	if (track == nullptr) {
 		music_loaded = false;
 		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
+		state = A_STATE::V_NONE;
 	} else  {
 		music_loaded = true;
 		music_isPlaying = false;
 		music_name = filename;
 		elapsed_seconds=0.0;
 		loop = _loop;
+		state = A_STATE::V_NONE;
 	}
 }
 
@@ -102,15 +105,18 @@ void Audio::musicPlay()
 	if (!music_loaded)	return;
 	cLog::get()->write("Audio::musicPlay play "+ music_name, LOG_TYPE::L_DEBUG );
 	music_isPlaying = true;
+	state = A_STATE::V_PLAY;
 	if (loop) {
 		if (Mix_PlayMusic(track, -1)< 0) {
 			cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
 			music_isPlaying = false;
+			state = A_STATE::V_NONE;
 		}
 	} else {
 		if (Mix_PlayMusic(track, 0) < 0) {
 			cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
 			music_isPlaying = false;
+			state = A_STATE::V_NONE;
 		}
 	}
 }
@@ -134,8 +140,10 @@ void Audio::musicSync()
 {
 	if (!music_loaded)	return;
 	cLog::get()->write("Audio::musicSync "+ music_name, LOG_TYPE::L_DEBUG );
-	if (music_isPlaying)
+	if (music_isPlaying) {
 		Mix_PauseMusic();
+		state = A_STATE::V_PAUSE;
+	}
 
 	//special case from mp3 format music
 	if (Mix_GetMusicType(nullptr) == MUS_MP3)
@@ -143,6 +151,7 @@ void Audio::musicSync()
 
 	Mix_SetMusicPosition(elapsed_seconds);
 	Mix_ResumeMusic();
+	state = A_STATE::V_PLAY;
 }
 
 void Audio::musicJump(float secondJump)
@@ -169,6 +178,7 @@ void Audio::musicPause()
 		cLog::get()->write("Audio::musicPause get pause "+ music_name, LOG_TYPE::L_DEBUG );
 		Mix_PauseMusic();
 		music_isPlaying=false;
+		state = A_STATE::V_PAUSE;
 	} else
 		this->musicResume();
 }
@@ -179,6 +189,7 @@ void Audio::musicResume()
 	cLog::get()->write("Audio::musicResume "+ music_name, LOG_TYPE::L_DEBUG );
 	Mix_ResumeMusic();
 	music_isPlaying=true;
+	state = A_STATE::V_PLAY;
 }
 
 void Audio::musicHalt()
@@ -188,6 +199,7 @@ void Audio::musicHalt()
 	Mix_HaltMusic();
 	music_isPlaying=false;
 	elapsed_seconds=0.0;
+	state = A_STATE::V_STOP;
 }
 
 void Audio::musicDrop()
@@ -202,6 +214,7 @@ void Audio::musicDrop()
 	music_isPlaying=false;
 	music_loaded = false;
 	elapsed_seconds=0.0;
+	state = A_STATE::V_NONE;
 }
 
 void Audio::decrementVolume(int value)
