@@ -59,8 +59,8 @@ public:
 	//! met la video en pause
 	void pause();
 
-	//! affiche sur la console les informations liées au fichier vidéo
-	void getInfo();
+	// //! affiche sur la console les informations liées au fichier vidéo
+	// void getInfo();
 
 	//! \fn RestartVideo
 	//! \brief Redemarre la vidéo au début

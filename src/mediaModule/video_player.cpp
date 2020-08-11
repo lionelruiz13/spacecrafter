@@ -83,16 +83,16 @@ bool VideoPlayer::RestartVideo()
 #endif
 }
 
-void VideoPlayer::getInfo()
-{
-#ifndef WIN32
-	if (m_isVideoPlayed) {
-		cLog::get()->write("--------------- File Information ----------------");
-		av_dump_format(pFormatCtx,0,fileName.c_str(),0);
-		cLog::get()->write("-------------------------------------------------");
-	}
-#endif
-}
+// void VideoPlayer::getInfo()
+// {
+// #ifndef WIN32
+// 	if (m_isVideoPlayed) {
+// 		cLog::get()->write("--------------- File Information ----------------");
+// 		av_dump_format(pFormatCtx,0,fileName.c_str(),0);
+// 		cLog::get()->write("-------------------------------------------------");
+// 	}
+// #endif
+// }
 
 int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 {
