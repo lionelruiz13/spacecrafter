@@ -1,0 +1,1307 @@
+###
+### Superscript - SpaceCrafter Script
+###
+### Copyright 2015-2020 Lionel RUIZ - lionel.ruiz@live.fr
+###
+### License:
+###
+### For use with LSS systems
+### http://www.lss-planetariums.info
+###
+
+#################
+#AUDIO:
+
+# Change value of audio volume (0<=X<=128)
+audio volume 128
+
+# Play an audio (wav or ogg) file (possibility to fast forward it if it's an .ogg file)
+audio filename superscript/clac.ogg action play
+
+# Loop the audio file
+audio filename superscript/clac.ogg action play loop on
+
+# Continue playing any audio during a pause
+audio nopause on
+# Back to default
+audio nopause off
+
+# Pauses an audio file
+audio action pause
+
+# Resume an audio file
+audio action resume
+
+# Resync audio file if needed due to image preloading
+audio action sync
+
+# Stop and Free memory of an audio file
+audio action drop
+
+# Decrement audio volume
+audio volume decrement
+
+# Increment audio volume
+audio volume increment
+
+#################
+# BODY:
+
+# Create an artificial satellite
+body action load name "ALSAT 1" parent Earth radius 1 oblateness 0.0 albedo  0.9 lighting false color 0.8,0.9,0.8  tex_map superscript/nomap.png halo true tex_halo superscript/mini_halo.png big_halo false big_halo_size  8 rot_pole_ra 0.0 rot_pole_de 45.0 rot_periode 0.002 coord_func ell_orbit orbit_Epoch 2454804.56951084 orbit_Period 0.0683531232257665 orbit_visualization_period  0.0683531232257665 orbit_SemiMajorAxis 7056.81219499864 orbit_Eccentricity 0.0010418 orbit_Inclination   97.969 orbit_AscendingNode 214.3671 orbit_LongOfPericenter 336.8124 orbit_MeanLongitude 574.4404 orbit_color 0.8,0.9,0.8  
+
+# Create a fake planet (not rotating)
+body action load name _ parent Sun radius 1 oblateness 0.0 albedo 0.0 lighting false halo false color 1.0,1.0,1.0 rot_periode 1000000000 tex_map none.png coord_func saturn_special
+
+# Create a comet
+body action load name "Wirtanen" type Comet parent Sun radius 100 oblateness 0.0 albedo 1 halo true color 0.0,0.3,0.1 tex_map bodies/asteroid.png halo true tex_halo bodies/comet_halo.png big_halo true big_halo_size 128 coord_func comet_orbit orbit_TimeAtPericenter 2458465.4264 orbit_PericenterDistance 1.055363 orbit_Eccentricity 0.658613 orbit_ArgOfPericenter 356.3318 orbit_AscendingNode 82.1606 orbit_Inclination 11.7462 lighting false sidereal_period 1987.1 orbit_visualization_period 1987.1 orbit_color 0.5,0.8,1.0 close_orbit 1
+
+# Create an asteroid
+body action load name "Vesta" parent Sun oblateness 0.0 color 1.0,1.0,1.0 halo true lighting true coord_func ell_orbit radius 2000 tex_map asteroids/asteroid.png tex_halo asteroids/star16x16.png albedo .5 orbit_SemiMajorAxis 353258016.65208 orbit_MeanLongitude 167.26633 orbit_Inclination 7.1405 orbit_Epoch 2456600.5 orbit_Eccentricity 0.0885024 orbit_AscendingNode 103.85153 orbit_LongOfPericenter 255.05099 orbit_visualization_period 1325.39759943908 orbit_Period 1325.39759943908
+
+# Drop a created body
+body name "Ceres2" action drop
+
+# Discard planet momentaneously
+body name Jupiter hidden true
+wait duration 1
+body name Jupiter hidden false
+
+# Clear all added bodies
+body action clear
+
+# Set all objects to init parameters
+body action initial
+
+# Set specific colors to parameters
+body name Moon color label r 0.4 g 0.5 b 0.5
+body name Moon color trail r 0.4 g 0.5 b 0.5
+body name Moon color orbit r 0.4 g 0.5 b 0.5
+body name all color orbit r 0.4 g 0.5 b 0.5
+
+# Load an alternative texture and apply it
+body name Earth skin_tex courants_marins.png
+body name Earth skin_use true
+
+# Une fonction qui remplace agréablement r 0.4 g 0.5 b 0.5 (pour ceux utilisant d'autres logiciels de choix de couleur)
+body name Uranus color label color_value r12g215b215
+body name Uranus color label color_value x0F15EE
+
+# A static observer
+body action load name Solar_System2 parent Sun type Observer coord_func still_orbit orbit_x 0 orbit_y 0 orbit_z 1 rot_periode 1000000000000
+
+# A 3D Model
+body action load name milkyway parent Sun absolute_magnitude 1 type Comet model3D true hidden false model_name Milkyway tex_map milkyway/milkyway.png radius 100000000 oblateness 0.0 halo false color 1.0,1.0,1.0 tex_halo milkyway/star16x16.png coord_func comet_orbit orbit_TimeAtPericenter 2457247.5460 orbit_PericenterDistance 1E9 orbit_Eccentricity 0 orbit_ArgOfPericenter 0 orbit_AscendingNode 0 orbit_Inclination 90 lighting true albedo 1
+
+# Add a model3D into in_galaxy - SC PRO ADD-ON ONLY
+wait duration 0.05
+moveto lat 90 lon 0 duration 0
+wait duration 0.05
+moveto alt 0.9E+9 duration 0
+wait duration 0.05
+moveto alt 0.9E+10 duration 0
+wait duration 0.05
+moveto alt 1.1E+16 duration 0
+wait duration 0.05
+body action load mode in_galaxy name Universe filename Universe pos_x 0.00001 pos_y 0.00001 pos_z 0.00001 scale 10
+set home_planet Universe
+moveto lat 10 lon 121 alt 2.5E12 duration 0
+wait duration 1
+select planet home_planet pointer off
+flag track_object on
+flag nebulae off
+flag bright_nebulae off
+flag stars off
+flag milky_way off
+set ambient_light 1
+
+# Set body tesselation and altimetry
+body tesselation min_tes_level value 1
+body tesselation max_tes_level value 4
+body tesselation planet_altimetry_factor value 2
+body tesselation earth_altimetry_factor value 1
+body tesselation moon_altimetry_factor value 1
+
+body action remove mode in_galaxy name universe
+body action remove mode in_universe name multiverse
+
+body action clear
+
+#################
+# BODY_TRACE
+
+# Draw the trail of the sun (by default) or any body. 
+# Can be useful for sun apparent motion (here in the example) or analemma if used in sidereal steps.
+flag body_trace on
+body_trace pen on
+timerate rate 900
+wait duration 10
+timerate rate 1
+body_trace pen off
+flag body_trace off
+body_trace hide on
+body_trace action clear
+
+# CHANGE TARGET
+body action load name "41p Tuttle-Giacobini-Kresak" type Comet parent Sun radius 100 oblateness 0.0 halo true color 1.0,1.0,1.0 orbit_color 0.5,0.5,1.0 tex_map superscript/asteroid.png tex_halo superscript/comet_halo.png big_halo true big_halo_size 128 coord_func comet_orbit orbit_TimeAtPericenter 2457856.252042 orbit_PericenterDistance 1.045061 orbit_Eccentricity 0.661107 orbit_ArgOfPericenter 62.149665 orbit_AscendingNode 141.073026 orbit_Inclination 9.2303239 lighting true albedo 1 orbit_visualization_period 1975.96 close_orbit 1
+body_trace target "41p Tuttle-Giacobini-Kresak" pen on
+body_trace target Venus pen on
+
+#################
+# CAMERA
+
+# save a camera position into anchors/ folder
+camera action save filename my_camera.dat
+
+# load a camera position
+camera action load filename my_camera.dat
+
+# camera move to object
+camera action move_to target body body_name Saturn duration 5 altitude 30000
+
+# create a point
+camera action create name mon_point type point x 0 y 0 z 1
+
+# jump to point (see anchors.ini for availability of points)
+camera action transition_to target point
+
+#jump to body
+camera action transition_to target body name Saturn
+
+# Lift off automatically:
+camera action lift_off altitude 10000 duration 5
+# Is equivalent to:
+moveto altitude 10000 duration 5
+wait duration 5
+camera action transition_to target point
+
+camera action align_with body selected duration 3
+
+# smart card "selected" for the body selected
+camera action move_to target body body_name selected duration 3 altitude 100000
+camera action transition_to target body name selected
+
+#################
+# CLEAR
+
+# Set all back to normal sky vision parameters
+clear state natural
+
+# Set all writings to off and even landscape and atmosphere
+clear state off
+
+# Erase all the variables previously declared
+clear state variable
+
+#################
+# COLOR
+
+# Color of specified category of object (0.0<=X,Y,Z<=1.0)
+# R G B stands for Red Green and Blue composants
+
+color property azimuthal_grid r 0 g 0.4 b 0.6
+color property cardinal_points r 1 g 1 b 0.6
+color property constellation_art r 1 g 1 b 1
+color property constellation_boundaries r 0.4 g 0.3 b 0
+color property constellation_lines r 0.05 g 0.05 b 0.3
+color property constellation_names r 0.6 g 0.7 b 0
+color property ecliptic_line r 1 g 0.2 b 0.2
+color property equator_grid r 0.5 g 1 b 0.5
+color property equator_line r 0.5 g 1 b 0.5
+color property galactic_grid r 0.3 g 0.3 b 0.3
+color property meridian_line r 0 g 0.8 b 1
+color property personal r 0.3 g 0.7 b 1
+color property personeq r 0.3 g 0.7 b 1
+color property planet_names r 0.3 g 0.7 b 1
+color property planet_orbits r 0.2 g 0.2 b 0.2
+color property planet_trails r 1 g 0.5 b 0
+color property precession_circle r 0.6 g 0.4 b 0
+color property zodiac r 0.75 g 0 b 0.75
+
+#################
+# COMMENT
+
+#Comment a part of the code
+comment
+# (any script command typed here will be ignored)
+uncomment
+
+#################
+# CONFIGURATION
+
+# (re)load the default settings
+configuration action load
+
+# Save preferences
+#configuration action save
+
+# Erase stars from in_galaxy
+configuration module star_navigator action clear
+
+# Load stars for in_galaxy. mode = RAW (basic catalog format) SC (SC formatted catalog) OTHER (file with space separated fields: name_hip ra de plx pmRa pmDE mag bv)
+configuration module star_navigator binary_mode false action load mode other name newstarsrad.txt
+configuration module star_navigator action save binary_mode false name hip2020.txt
+
+configuration module starlines action load name XXXX binary_mode N
+configuration module starlines action save name XXXX binary_mode N
+
+#################
+# CONSTELLATION
+
+constellation name UMa type line color_value xff0000
+constellation name UMa type line r 1.0 g 0.0 b 0.0
+constellation name UMa type label color_value xff0000
+constellation name UMa type label r 1.0 g 0.0 b 0.0
+constellation name UMa intensity 0.3
+
+#################
+# DATE
+
+# Change date in local time 
+date local 2014:03:20T12:00:00
+
+# Change date in Universal Time format
+date utc 2014:03:19T23:50:00
+
+# Change date in Julian
+date jday 2451895.5
+
+# Jump date in days relatively to today (can be decimal)
+date relative 1.5
+
+# Jump date in sidereal days relatively to the planet you are on and the date
+date sidereal 2.0
+
+# Jump date in months relatively to today (integer)
+date relative_month 1
+
+# Jump date in years relatively to today (integer)
+date relative_year 100
+
+# Set date to current date, or date saved as preset start up date
+date load current
+
+# Set time to sun rise
+date sun rise
+
+# Set date to sunset
+date sun set
+
+# Set date to effective midday
+date sun meridian
+
+# Set date to effective midnight
+date sun midnight
+
+# Activate the multiple date drawing on screen
+flag date_display_number on/off/toggle
+
+# Repeat the number of dates displayed
+set date_display_number 3
+
+# choose the position of the 1st Date displayed
+set date_display_position 120
+
+# Set the date format and display options
+set time_display_format 12h
+set time_display_format 24h
+#set date_display_format mmddyyyy
+set time_zone Europe/Paris
+set startup_time_mode preset
+set startup_time_mode now
+
+#################
+# DOMEMASTERS
+
+# Take a screenshot
+#domemasters action snapshot
+
+# Record image per image sequence at X FPS
+#domemasters action record
+#domemasters action record
+
+#################
+# EXTERNAL_MPLAYER
+
+# Play a specified video file using mplayer with controls
+#external_mplayer filename superscript/dummy.avi action play
+#external_mplayer speed ?? execute ?? absolute ?? volume ??
+#external_mplayer jump_relative 10
+#external_mplayer jump_relative 10
+#external_mplayer jump_absolute 10
+#external_mplayer action stop
+
+#################
+# EXTERNAL_VIEWER
+
+# Play the specified video file
+external_viewer filename superscript/dummy.avi action play
+external_viewer filename superscript/sound.mp3 action play
+wait duration 1
+external_viewer filename superscript/stopmusic.sh action play
+
+# Force stopping the specified video file and go back to script
+external_viewer action stop
+
+#################
+# FLAG
+# Those are simple commands that can be "on", "off", or "toggle"
+
+# Draw smoother lines.
+flag antialias_lines on
+
+# Draw analemma relative to midday.
+flag analemma on
+
+# Draw analemma relative to the sun.
+flag analemma_line on
+
+# Draw distance between the two last selected objects.
+flag angular_distance on
+
+# Draw vernal point longitude line.
+flag aries_line on
+
+# Draw atmospheric effects.
+flag atmosphere on
+
+# Activate atmospheric refraction.
+flag atmospheric_refraction on
+
+# Draw azimuthal grid.
+flag azimuthal_grid on
+
+# Draw cardinal points.
+flag cardinal_points on
+
+# Draw circumpolar circle showing limit of sky visibility.
+flag circumpolar_circle on
+
+# Draw clouds when rendering planets such as Earth.
+flag clouds on
+
+# Draw constellation artwork.
+flag constellation_art on
+
+# Draw contellation boundaries.
+flag constellation_boundaries on
+
+# Draw constellation line drawings.
+flag constellation_drawing on
+
+# Draw constellation labels.
+flag constellation_names on
+
+# Select constellation pick mode (only draw selected constellations or all).
+flag constellation_pick on
+
+# draw pictograms instead of grey circles
+flag dso_pictograms on
+
+# Draw ecliptic poles.
+flag ecliptic_center on
+
+# Draw ecliptic line.
+flag ecliptic_line on
+
+# Draw ecliptic grid.
+flag ecliptic_grid on
+
+# Draw equator line.
+flag equator_line on
+
+# Draw equatorial grid.
+flag equatorial_grid on
+
+# Draw fog along the horizon (support depends on landscape).
+flag fog on
+
+# Draw galactic center.
+flag galactic_center on
+
+# Draw galactic grid
+flag galactic_grid on
+
+# Draw galactic plane
+flag galactic_line on
+
+# Draw galactic poles.
+flag galactic_pole on
+
+# Draw longitude line relative to Greenwich.
+flag greenwich_line on
+
+# Draw the landscape.
+flag landscape on
+
+# Whether to correct for light travel time when drawing planets and moons.
+flag light_travel_time on
+
+# Sets the ground rotating instead of the stars
+flag lock_sky_position on
+
+# Indicate alt/az ra/dec of selected object.
+flag object_coordinates on
+
+# Indicate alt/az ra/dec of the mouse position.
+flag mouse_coordinates on
+
+# Draw the meridian line.
+flag meridian_line on
+
+# Draw the Milky Way.
+flag milky_way on
+
+# Draw the Moon at the specific scale.
+flag moon_scaled on
+
+# Draw the nautical triangle of the selected object.
+flag nautical_alt on
+flag nautical_ra on
+flag meridian_line on
+
+# Draw motion trails for planets and moons.
+flag object_trails on
+
+# Draw Oort cloud (yes by default)
+flag oort on
+
+# Draw orbits for planets and moons.
+flag orbits on
+
+# Draw planets and moons.
+flag planets on
+
+# Discard moons momentaneously
+flag satellites off
+
+# Draw planet labels.
+flag planet_names on
+
+# Draw bodies orbits.
+flag planet_orbits on
+
+# Draw planets orbits.
+flag planets_orbits on
+
+# Draw satellites orbits.
+flag satellites_orbits on
+
+# Draw planets/moons axis.
+flag planets_axis on
+
+# Draw sky poles
+flag polar_point on
+
+# Draw sky poles
+flag polar_circle on
+
+# Draw Earth precession circle.
+flag precession_circle on
+
+# Draw satellites orbits.
+flag satellites_orbits on
+
+# If on, will print script errors to the screen.  Good for debugging.
+flag script_gui_debug on
+
+# Draw the latitude and longitude if the date and hour is active (and altitude if high enough).
+flag show_tui_datetime on
+flag show_latlon on
+
+# Draw the date and time.
+flag show_tui_datetime on
+set datetime_display_position 120
+set datetime_display_number 3
+
+# Draw information about the selected object.
+flag show_tui_short_obj_info on
+
+# Draw star labels.
+flag star_names on
+
+# Draw star names of only selected stars or all the stars
+flag star_pick toggle
+
+# Draw stars twinkling.
+flag star_twinkle on
+
+# Draw stars.
+flag stars on
+
+# Draw stars circling around poles if time accelerated.
+timerate rate 300
+flag stars_trace on
+wait duration 3
+timerate rate 1
+
+#Draw 3D lines between stars.
+flag star_lines on
+
+# Draw the sun movement through the sky.
+flag body_trace on
+
+# Draw the sun exagerated.
+flag sun_scaled on
+
+# Center view on currently selected object.
+flag track_object on
+
+# Draw tropic line.
+flag tropic_lines on
+
+# Draw TULLY catalog.
+flag tully on
+
+# Catalog color or white representation
+flag tully_color_mode on
+
+# Draw vernal point and opposite.
+flag vernal_points on
+
+# Draw East/West vertical line.
+flag vertical_line on
+
+# Draw zenithal point.
+flag zenith_line on
+
+# Draw zodiacal borders.
+flag zodiac on
+
+#################
+# HEADING
+
+# 0 = South | 90 = East | 180 = North | 270 = West
+# Put East at bottom of the screen in 5 seconds
+heading azimuth 90 duration 5
+
+# Rotate heading 30 clockwise in 3 seconds
+heading delta_azimuth -30 duration 3
+
+# Rotate heading 20 anticlockwise in 3 seconds
+heading delta_azimuth 20 duration 3
+
+#################
+# ILLUMINATE
+
+# Spot the selected star.
+illuminate HP 32349 display on
+wait duration 1
+illuminate HP 32349 display off
+
+illuminate hp 69673 size 150 r 1.0 g 0.0 b 0.0 display on
+
+# Brighten more a constellation
+illuminate constellation UMa display on
+
+# Impose color & size
+illuminate constellation UMa size 150 r 1.0 g 0.0 b 0.0 display on
+
+wait duration 1
+illuminate action clear
+
+#################
+# IMAGE
+
+# Images are drawn in the order they are loaded. 
+# alpha=0 is invisible / alpha=0.5 is semi-transparent / alpha=1 is opaque.
+# Images are squares with a power of 2 value for dimensions (128/256/512/...) in PNG preferably but JPEG ans some others are supported.  
+# "mipmap on" is smoothing the image to avoid pixel blinking when the image is moved/zoomed (off by default).
+
+# Fisheye image without distortion
+# A scale 1 means that it occupies all the field. A greater factor will make it zoom. A<1 factor will diminish its size on the screen.
+image name zodfisheye filename superscript/orange_fog.png coordinate_system viewport alpha 0 scale 1 mipmap off action load
+wait duration 1
+image name zodfisheye alpha 1 duration 1
+wait duration 1
+image name zodfisheye alpha 0 duration 1
+wait duration 1
+
+# This permit to keep a panorama even after a lift-off (spacecraft argument)
+image name zodfisheye filename superscript/orange_fog.png coordinate_system viewport alpha 0 scale 1 mipmap off spacecraft on action load
+
+# Drop images when no longer needed to improve performance.
+image name zodfisheye action drop
+
+# Fisheye image without distortion but with center point located at bottom center.
+image name petale1 filename superscript/black.png coordinate_system viewport alpha 1 scale 1 mipmap on xpos 0.0 ypos 1.0 rotation 0 action load
+wait duration 1
+image name petale1 xpos 0.0 ypos 0.0 duration 3
+wait duration 1
+
+#Square image positioned relatively to the dome AZ(N=0° E=90° S=180° W=270°) ALT(Zenith=90° Horizon=0° Nadir=-90°). It can go over +/-360°
+#In horizontal/dome coordinates, the scale defines the angular width of the image in degrees.
+image name voyager2 filename superscript/black.png coordinate_system dome alpha 1 scale 0 altitude 0 azimuth 180 mipmap on action load
+
+#Square image positioned relatively to the normal view (dependant of the zoom factor)
+image name voyager2 filename superscript/black.png coordinate_system horizontal alpha 1 scale 0 altitude 0 azimuth 180 mipmap on action load
+
+#Square image compressed with height divided by 2
+image name voyager2 ratio 2 duration 3
+#Square image compressed with width divided by 2
+image name voyager2 ratio 0.5 duration 3
+
+#Square image positioned relatively to the sky in right ascension (azimuth=0 to 360°) and declination (altitude=-90° to 90°) coordinates
+image name greatbear filename superscript/black.png coordinate_system j2000 alpha 0 scale 35 azimuth 190.00 altitude 55.00 mipmap on action load
+
+#Square image positioned relatively to a star (here Arcturus)
+image name cowherd filename superscript/black.png coordinate_system j2000 alpha 1 scale 35 HP 69673 mipmap on action load
+
+#Square image positioned relatively to the equatorial coordinates (sky moving through time).
+image name zodiac filename superscript/black.png coordinate_system equatorial alpha 0 scale 35 azimuth 190.00 altitude 55.00 mipmap on action load
+
+# Draw the image depending on the position of the focus point (xpos ypos)
+#For xpos, -1 is left edge of image, 0 is center and 1 is right edge.
+#For ypos, -1 is up of image, 0 is center and 1 is down.
+image name zodiac xpos 0 ypos 0
+
+# Move image with spline movement at the beginning and/or the end (linear if nothing defined)
+image name voyager2 altitude 20 accelerate_alt on duration 5
+image name voyager2 azimuth 20 accelerate_az on decelerate_az on duration 5
+
+# Drop all images
+image action purge
+
+# Duplicate the image or video at 180° if Twice and +120° and -120° if Thrice
+image name zodiac action twice
+image name zodiac action thrice
+
+# Get the possibility to have an image that stay even after a script action end
+image name zodiac persistent true
+
+#################
+# INITIALISATION
+
+clear state natural
+body action clear
+set sky_locale en
+set home_planet Earth
+flag atmosphere on
+flag landscape on
+zoom auto initial
+set time_zone Europe/Paris
+timerate rate 1
+meteors zhr 0
+set star_limiting_mag 6.5
+set star_twinkle_amount 0.3
+flag star_twinkle on
+flag stars on
+flag milky_way on
+set milky_way_intensity 0.5
+flag nebulae on
+flag bright_nebulae on
+flag planets on
+set moon_scale 5
+flag moon_scaled on
+flag cardinal_points off
+set sky_culture western-color
+
+#################
+# LANDSCAPE
+
+# Internal landscape
+set landscape_name guereins
+
+# Fisheye landscape, the image must be transparent PNG (transparency = sky)
+landscape name panorama type fisheye maptex superscript/orange_fog.png night_texture superscript/orange_fog.png texturefov 180 action load mipmap on
+
+# Draw a landscape that will resist to take-off (as a spacecraft cockpit)
+landscape name panorama type fisheye maptex superscript/orange_fog.png night_texture superscript/orange_fog.png spacecraft on action load mipmap on
+
+# Panoramic landscape
+landscape action load name panorama type spherical maptex superscript/chats_nuit.png night_texture superscript/chats_nuit.png rotate_z 90 mipmap on
+
+# Sets the altitude corresponding to the bottom/top of the image
+landscape action load name panorama type spherical maptex superscript/chats_nuit.png night_texture superscript/chats_nuit.png top_altitude 60 base_altitude -60
+
+# Sets the orientation of the landscape (0 = Top of image is north).
+landscape action load name panorama type spherical maptex superscript/chats_nuit.png night_texture superscript/chats_nuit.png rotate_z 90
+
+# Change landscape rotation
+landscape action rotate rotation 90
+
+# Limit the darkening of the panorama during the night between 0.1 and 0.9 (here to 0.5 of the brightness).
+landscape name panorama type fisheye maptex panoramas/banquise-igloo1024.png limited_shade 0.5 texturefov 180 action load
+
+################
+#LOOK_AT:
+
+# Center on a specific alt/az value
+look_at azimuth 180 altitude 30 duration 3
+
+# Change the angle of view relative to the horizon.
+look_at delta_azimuth 10 delta_altitude 30 duration 3
+
+################
+#MEDIA:
+
+media action play videoname superscript/dummy.avi type VR360
+
+media action play videoname superscript/dummy.avi type VIEWPORT
+
+media action pause
+
+media action jump value 10
+
+# Fulldome video with green as transparency
+media action play type VIEWPORT videoname superscript/show.avi audioname superscript/show.ogg keycolor off
+
+# Fulldome video with green as transparency
+media action play videoname superscript/dummy.avi audioname superscript/clac.ogg keycolor on r 0.0 g 1.0 b 0.0 intensity 0.1  type VIEWPORT
+
+# search automatically the audio file attached
+media action play videoname superscript/dummy.avi audioname auto
+
+media action stop
+
+#Play a VRcube video - SC PRO ADD-ON ONLY
+media action play keycolor off videoname ../../vr360/unexpected_guest-om_nom_stories-vrcub.mp4 type VRCUBE audioname ../../vr360/unexpected_guest-om_nom_stories-vrcub.ogg
+
+#Play a VR360 video - SC PRO ADD-ON ONLY
+media action play keycolor off videoname ../../vr360/unexpected_guest-om_nom_stories-vr360.mp4 type VR360 audioname ../../vr360/unexpected_guest-om_nom_stories-vr360.ogg
+
+#Commands associated to VR videos
+moveto lat 17 duration 5
+wait duration 5
+moveto lon 30 duration 5
+wait duration 5
+set heading 90
+wait duration 5
+zoom fov 200 duration 5
+wait duration 5
+
+#Play a rectangular video duplicated
+media action play type IMAGE name "video" videoname morphing/figures_arabes.mp4 audioname morphing/figures_arabes.ogg position horizontal
+image name "video" alpha 1 scale 100 altitude 45 rotation 0 azimuth 180
+image name "video" action twice
+
+# Play a mobile rectangular video with transparency
+media action play type IMAGE name "video" videoname fwalk/fshinobiwalk40.avi position horizontal
+image name "video" alpha 1 scale 20 altitude 10 rotation 0 azimuth 180 keycolor true r 0.0 g 0.0 b 0.0 intensity 0.1
+image name "video" azimuth 540 duration 40
+
+#Play a rectangular video attached to the sky with transparency
+media action play type IMAGE name "video" videoname morphing/morph_sco-lruiz.mp4 position j2000 keycolor on r 0.0 g 0.0 b 0.0 intensity 0.1
+image name "video" alpha 1 scale 35 altitude -30 rotation 0 azimuth 249
+
+
+################
+#METEORS:
+
+#Draw the shooting stars randomly, depending on the Zenithal Hour Rate given.
+#-need atmosphere on
+#-need timerate = 1
+#-need being after midnight were the radiant is above the horizon
+
+flag atmosphere on
+timerate rate 1
+meteors zhr 3600
+
+#################
+# MILKYWAY
+
+# Set the intensity of the background equatorial spherical texture (0.0 to 1.0)
+set milky_way_fader_duration 3000
+set milky_way_texture superscript/asteroid.png
+set milky_way_intensity 1.0
+flag milky_way on
+set milky_way_texture default
+
+# Sometimes useful to have those associated (on or off depending if they interfer or not)
+flag nebulae on
+flag bright_nebulae on
+flag stars on
+flag planets on
+flag atmosphere on
+flag landscape on
+
+# inverse le ciel pour apprendre à se repérer avec une carte céleste sans être dans le noir
+flag color_inverse on
+wait duration 1
+flag color_inverse off
+
+# filé d'étoiles (need to have milkyway off)
+flag milky_way off
+flag atmosphere off
+flag stars_trace on
+timerate rate 360
+wait duration 3
+flag stars_trace off
+
+#################
+# MOVETO
+
+# Latitude: North is positive / Longitude: East is positive / Altitude in meters
+moveto lat 43.33 lon 5.33 alt 75 duration 5
+moveto lat default lon default alt default
+moveto lat 43.33 lon 5.33 alt 75 name marseille
+
+# MOVETO relative
+moveto delta_lat +45 duration 5
+moveto delta_lon -0.5 duration 1
+moveto delta_alt 50000 duration 1
+moveto multiply_alt 2.0 duration 1
+
+# Antipodes
+moveto lat inverse lon inverse
+
+# -Latitude
+moveto lat inverse
+
+################
+#MOVETOCITY:
+
+#Change of latitude and longitude depending on positions referenced in the cities.fab table
+movetocity name Paris country France
+
+#################
+# NEBULA/DSO
+
+# Draw nebulae.
+flag nebulae on
+
+# Draw nebulae visibles with naked eyes
+flag bright_nebulae on
+
+# Draw nebula circles.
+color property nebula_circle r 0.3 g 0.3 b 0.3
+flag nebula_hints on
+
+# Draw nebula pictograms.
+flag dso_pictograms on
+
+# Draw nebula labels.
+color property nebula_names r 0.5 g 0.5 b 0.5
+flag nebula_names on
+
+# Add a nebula
+dso action load ra 323.375 de -0.817 constellation Aqr type GLOCL magnitude 6.5 distance 50000 angular_size 13 name M2bis rotation 0 filename superscript/black.png credit NASA/STScI texture_luminance_adjust 1
+
+# Force an object to be visible during daytime
+dso action load ra 90 de -66.567 constellation Aqr type GLOCL magnitude -30 distance 50000 angular_size 250 name eclnorth rotation 0 filename superscript/black.png credit ACA texture_luminance_adjust 1
+
+# Dropping nebula or all
+dso name M2bis action drop
+dso action clear
+
+# Filtering DSO by type
+dso type all hidden true
+dso type DRKNB hidden false
+dso type BRTNB hidden false
+dso type CLNEB hidden false
+dso type OPNCL hidden false
+dso type PLNNB hidden false
+dso type SNREM hidden false
+dso type GLOCL hidden false
+dso type GALXY hidden false
+dso type GALCL hidden false
+
+# Filtering DSO by constellation
+dso constellation all hidden true
+dso constellation Cyg hidden false
+
+# Replacing a DSO
+dso name M8 hidden true
+dso action load ra 271.208 de -24.402 constellation Sgr type CLNEB magnitude 5 distance 4500 angular_size 49 rotation 0 name M8_drawing filename superscript/black.png credit Nicolas_Biver texture_luminance_adjust 1
+
+#Restoring a DSO
+dso name M8_drawing action drop
+dso name M8 hidden false
+
+#################
+# PERSON AL/EQ
+
+# Draw personal grid in horizontal coordinates.
+personal action load filename superscript/grid.txt
+flag personal on
+wait duration 1
+personal action clear
+
+# Draw personal grid in equatorial coordinates.
+personeq action load filename superscript/grid.txt
+flag personeq on
+wait duration 1
+personeq action clear
+
+# Formatting of a text file (entries in radians)
+# Hashes have to be erased and the first line indicates the number of coordinates entries 
+#2                   
+#AD1 DE1
+#AD2 DE2
+# it draws a line (2 points given) from AD1 DE1 to AD2 DE2
+
+#4
+#-0.068 -1.570
+#-0.068 -1.393
+#-0.073 -1.564
+#-0.068 -1.570
+
+personal xy "-0.068;-1.570;-0.068;-1.393;-0.073;-1.564;-0.068;-1.570;"
+personeq xy "-0.068;-1.570;-0.068;-1.393;-0.073;-1.564;-0.068;-1.570;"
+
+#################
+# POSITION
+
+# Set to the recorded planet/position/altitude/date/time.
+position action load
+
+# Save the planet we are on, position, altitude date and time.
+position action save
+
+#################
+# PRINT
+
+# For tracing errors purpose, 
+# Output is the console and logs formatted "[argument] value"
+print "A=" a
+print this_is "the end"
+
+#################
+# SCALE
+
+# Draw the moon 10x scaled.
+set moon_scale 10
+flag moon_scaled on
+
+# Draw the sun 5x scaled.
+set sun_scale 5
+flag sun_scaled on
+
+# Draw a planet exagerated in size 
+# if this planet has big moons, put them hidden to avoid getting flashing dots (moons halos)
+planet_scale name Mercury scale 1000
+planet_scale name Jupiter scale 1000
+body name Io hidden true
+body name Europa hidden true
+body name Ganymede hidden true
+body name Callisto hidden true
+
+#################
+# SCRIPT
+
+# If a script calls another script, the first will continue after the called script finishes
+script filename superscript/perso.sts action play
+
+# Stops definetely the script (hash has to be removed)
+#script action end
+
+# Pausing a script and wait pressing on <SPACE> or <K> (hash has to be removed)
+#script action pause
+
+# For retro-compatibility
+#script action faster
+#script action default
+#script action slower
+
+# For better understanding
+#script speed faster
+#script speed default
+#script speed slower
+
+# Continue but not usable during a script play (hash has to be removed)
+#script action resume
+
+# Record frames, replacing "script action pause" by "wait duration" commands (hash has to be removed)
+#script action record filename my_script.sts duration 3
+#script action cancelrecord
+
+#################
+# SELECT
+
+#If no arguments are supplied, deselects current object.  (Leaves constellation selection alone.)  See deselect command.
+deselect
+
+# Deselect specified Constellation. Common possibilities are: 
+# Aql And Scl Ara Lib Cet Ari Sct Pyx Boo Cae Cha Cnc Cap Car Cas Cen Cep Com Cvn 
+# Aur Col Cir Crt CrA CrB Crv Cru Cyg Del Dor Dra Nor Eri Sge For Gem Cam CMa UMa
+# Gru Her Hor Hya Hyi Ind Lac Mon Lep Leo Lup Lyn Lyr Ant Mic Mus Oct Aps Oph Ori
+# Pav Peg Pic Per Equ CMi LMi Vul Umi Phe Psc PsA Vol Pup Ret Sgr Sco Sct Ser Sex
+# Men Tau Tel Tuc Tri Tra Aqr Vir Vel 
+# (others are to be found in constellation_names.eng.fab from the specified sky_culture)
+deselect constellation Tau
+
+#Whether to draw the highlighting pointer around the selected object.  Default is on.
+select constellation Gem pointer off
+select hp 83501 pointer on
+select star albireo pointer on
+select constellation_star albireo pointer on
+select nebula "M97" pointer on
+select planet Jupiter pointer off
+select planet home_planet pointer off 
+
+#################
+# SET
+
+# set the fading of the atmosphere
+set atmosphere_fade_duration 3
+flag atmosphere off
+wait duration 1
+flag atmosphere on
+
+# used for auto zoom
+set auto_move_duration 5
+
+# set the fading of constellation figures
+set constellation_art_fade_duration 3
+flag constellation_art on
+wait duration 1
+flag constellation_art off
+
+# what is the transparency of the constellation figures
+# semi transparent
+set constellation_art_intensity 0.5
+# full intensity
+set constellation_art_intensity 1
+
+################
+# FONT
+
+# change the default font for each category of text
+font target constellations filename Cyberbit.ttf size 12
+font target cardinal_points filename Cyberbit.ttf size 36
+font target planets filename Cyberbit.ttf size 20
+font target stars filename Cyberbit.ttf size 12
+font target text filename Cyberbit.ttf size 18
+
+# change of Landscape
+# see the landscapes.ini file
+set landscape_name guereins
+
+# Set naked eye limiting magnitude due to light pollution
+set light_pollution_limiting_magnitude 6.3
+
+# Line width settings
+flag antialias_lines on
+set line_width 1.5
+
+# only label nebulas brighter than this
+set max_mag_nebula_name 4.0
+
+# only label stars brighter than this
+set max_mag_star_name 1.5
+
+# scale of celestial bodies (1 is real size)
+set sun_scale 5
+set moon_scale 5
+
+# what azimuthal position is at the bottom of the screen (East in the example)
+set heading 90
+# set heading relative to position in °
+set heading +15
+set heading -15
+# if you need to go to a negative value (you are at 0° and want to go to -10°), you have to do a "set heading 350" after. 
+
+# set the planet you are on (if exists)
+set home_planet Mars duration 5
+
+# set a black screen to hide modifications
+screen_fader alpha 1 duration 3
+wait duration 0.01
+screen_fader alpha 0
+
+# change language for the sky names
+# names of the folders in the data/locale directory
+# Examples: it=italian fr=french en=english es=spanish de=german ...
+set sky_locale fr
+
+# limit the magnitude
+# Default is 6.5. Simply does not draw stars dimmer than this value at a full sky view. Might be removed in future releases.
+set star_limiting_mag 6.5
+
+# limit the scale of stars depending on the mangitude of the stars
+set star_mag_scale 2.0
+
+# Set the stars fade duration
+set star_fader_duration 3
+
+# Stars twinkling level
+# Set to space environment
+flag landscape off
+flag atmosphere off
+set star_twinkle_amount 0
+meteors zhr 0
+
+# Set to earth surface environment
+flag landscape on
+flag atmosphere on
+set star_twinkle_amount 0.3
+meteors zhr 10
+set time_zone "Europe/Paris"
+
+# A partir de quel rayon on décroche le vaisseau de la rotation de sa planète
+# set rotation_multiplier_condition 5.0 (ancienne version)
+set stall_radius_unit = 5.0
+
+################
+# SKY_CULTURE
+# Load a new sky culture, which can include constellation lines, constellation art, constellation boundaries, and star names.
+# The directory is relative to the script's location.  The directory should contain all the files necessary to define a sky culture.  
+# See the built in cultures in the data/sky_cultures/ directory for examples.
+sky_culture action load path superscript
+
+# change of sky culture
+# Culture directory name in the data/sky_cultures directory
+set sky_culture inca
+
+################
+#SHUTDOWN:
+
+#Quit stellarium360 properly (hash has to be removed)
+#shutdown action now
+
+#################
+# STAR_LINES - SC PRO ADD-ON ONLY
+
+star_lines load asterism_all.fab
+flag star_lines on
+flag star_lines off
+star_lines action drop
+
+# Add an asterism on the fly
+star_lines asterism "UMa 7 67301 65378 65378 62956 62956 59774 59774 54061 54061 53910 53910 58001 58001 59774"
+
+#################
+# STRUCT
+
+# do what is inside (...) if a<>0
+struct if a
+#(...)
+struct if end
+
+struct if a
+struct if else
+struct if end
+
+struct if a inf b
+struct if a sup b
+struct if a equal b
+struct if a inf_equal b
+struct if a sup_equal b
+struct if a diff b
+
+struct comment on
+struct comment off
+
+struct loop 2
+# do it two times
+# do it two times
+struct loop end
+
+#################
+# TEXT
+
+# Draw at 45° above South the text "Orion - The Hunter" for 4 seconds (first method)
+# align can be left/center/right (left by default)
+text name orion_string action drop
+text action load name orion_string string "Orion - The Hunter" altitude 45 azimuth 180 r 0.5 g 0.5 b 0.0 align center
+text name orion_string display on
+wait duration 2
+text name orion_string string "Orion - Le chasseur" action update
+wait duration 2
+text name orion_string display off
+wait duration 2
+text name orion_string action drop
+text action clear
+
+# Draw at 45° above South the text "Orion - The Hunter" for 4 seconds (second method)
+# Size must be chosen between XX_SMALL X_SMALL SMALL MEDIUM LARGE X_LARGE XX_LARGE
+text action load name orion_string string "Orion - The Hunter" size MEDIUM altitude 45 azimuth 180 r 0.5 g 0.5 b 0.0 display on timeout 4
+wait duration 2
+text name orion_string string "Orion - Le chasseur" action update
+wait duration 2
+text name orion_string display off
+wait duration 2
+text name orion_string action drop
+text action clear
+
+#################
+# TIMERATE
+
+# One hour per second
+timerate rate 3600
+
+# Set simulation time rate. How much seconds will increment in the simulator each second
+timerate rate 1
+
+# Pause the timerate
+timerate action pause
+timerate action resume
+
+# Increment and decrement by steps (for continuous action)
+timerate action increment step 2
+timerate action sincrement step 1.05
+timerate action decrement step 2
+timerate action sdecrement step 1.05
+
+# Smoothly accelerate time to the desired value
+timerate rate 900 duration 2
+
+#################
+# VARIABLES
+
+# declare a variable with a value
+define a 10
+
+# add a value a=a+1
+add a 1
+
+# multiply by a value a=a*2
+multiply a 2
+
+# create a variable with a random value
+random min 0 max 10
+define a random
+
+# Erase all the variables previously declared
+clear state variable
+
+#################
+# WAIT
+
+# Wait a certain amount of time to do the actions requested earlier (unit = seconds)
+wait duration 3
+
+# This command permit to reset the timer to resynchronize after some images loading
+# It'll wait automatically the time needed to load those images
+wait action reset_timer
+
+# Wait that the videos launched terminates to continue the script (works only within a script)
+media action play keycolor off type IMAGE name "video" videoname not_for_astronauts-haynes.mp4 audioname not_for_astronauts-haynes.ogg position dome
+image name "video" alpha 1 scale 100 altitude 45 rotation 0 azimuth 180
+image name "video" action twice
+wait video_termination on
+# stop this behavior once the video has ended
+wait video_termination off
+
+#################
+# ZOOM
+
+# Select manual zoom mode.
+flag manual_zoom on
+
+# Automatic zoom on the target
+zoom auto in duration 5
+
+# Back to horizontal view without any zooming
+set auto_move_duration 5
+zoom auto out
+
+# Change the current field of view, in degrees
+zoom fov 30 duration 5
+
+# Center the zoom on the zenith (or specific zoom position)
+zoom center on
+
+# Relative zooming in degrees
+zoom delta_fov 30
+
+# "initial" returns to configured initial fov and viewing direction 
+zoom auto initial
+
+# Change where tracked objects show up on the dome.  
+# Zoom position will be centered to Zenith
+set zoom_offset 0
+
+# Zoom position will be centered to 45° above South
+set zoom_offset -0.5
+
