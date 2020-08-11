@@ -33,10 +33,19 @@ extern "C"
 class s_texture;
 class Media;
 
-//! \class VideoPlayer
-//! \brief Classe qui gere toute les fonctions de la ffmpeg pour le player vidéo.
-//! Son but est de rendre un pointeur sur texture utilisable dans le reste du logiciel
-//! La classe gère d'elle même le bon fps
+/**
+ * \class VideoPlayer
+ * \brief Classe qui gere toute les fonctions de la ffmpeg pour le player vidéo.
+ *
+ * Son but est de rendre un pointeur sur texture(s) utilisable dans le reste du logiciel
+ * Deux possibilités s'offrent à l'utilisateur :
+ * - une texture en RBG24 classique (mais lente à obtenir à cause des conversions)
+ * - 3 textures YUV420p directement (rapide à obtenir: directement du fichier à la carte graphique)
+ * 
+ * La classe gère d'elle même le bon fps c'est à dire qu'elle regarde via des appels à SDL_GetTicks si elle doit mettre la frame à jour.
+ * Si c'est le cas, alors elle met à jour la/les texture(s). 
+ * 
+ */
 class VideoPlayer {
 public:
 	//! \fn VideoPlayer
