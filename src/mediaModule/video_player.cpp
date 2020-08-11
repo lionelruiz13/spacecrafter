@@ -1,10 +1,18 @@
 /*
- * Spacecrafter astronomy simulation and visualization
- *
- * Copyright 2017 Immersive Adventure
- *
- *
- */
+* This source is the property of Immersive Adventure
+* http://immersiveadventure.net/
+*
+* It has been developped by part of the LSS Team.
+* For further informations, contact:
+*
+* albertpla@immersiveadventure.net
+*
+* This source code mustn't be copied or redistributed
+* without the authorization of Immersive Adventure
+* (c) 2017 - 2020 all rights reserved
+*
+*/
+
 
 #include <fstream>
 #include <SDL2/SDL.h>
@@ -19,6 +27,7 @@
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventVideo.hpp"
 
+
 VideoPlayer::VideoPlayer(Media* _media)
 {
 	media = _media;
@@ -30,10 +39,12 @@ VideoPlayer::VideoPlayer(Media* _media)
 #endif
 }
 
+
 VideoPlayer::~VideoPlayer()
 {
 	stopCurrentVideo();
 }
+
 
 void VideoPlayer::pauseCurrentVideo()
 {
@@ -52,6 +63,7 @@ void VideoPlayer::pauseCurrentVideo()
 	EventRecorder::getInstance()->queue(event);
 }
 
+
 void VideoPlayer::init()
 {
 	m_isVideoPlayed = false;
@@ -66,6 +78,7 @@ void VideoPlayer::init()
 #endif
 }
 
+
 bool VideoPlayer::restartCurrentVideo()
 {
 	if (!m_isVideoPlayed)
@@ -77,22 +90,12 @@ bool VideoPlayer::restartCurrentVideo()
 	}
 
 	firstCount =  SDL_GetTicks();
-	nbFrames = 0;
+	currentFrame = 0;
 
 	return true;
 #endif
 }
 
-// void VideoPlayer::getInfo()
-// {
-// #ifndef WIN32
-// 	if (m_isVideoPlayed) {
-// 		cLog::get()->write("--------------- File Information ----------------");
-// 		av_dump_format(pFormatCtx,0,fileName.c_str(),0);
-// 		cLog::get()->write("-------------------------------------------------");
-// 	}
-// #endif
-// }
 
 int VideoPlayer::playNewVideo(const std::string& _fileName, bool convertToRBG)
 {
@@ -154,7 +157,6 @@ int VideoPlayer::playNewVideo(const std::string& _fileName, bool convertToRBG)
 	video_h = pCodecCtx->height;
 
 	AVRational frame_rate = av_guess_frame_rate(pFormatCtx, video_st, NULL);
-
 	frameRate = frame_rate.num/(double)frame_rate.den;
 	frameRateDuration = 1000*frame_rate.den/(double)frame_rate.num;
 	nbTotalFrame = static_cast<int>(((pFormatCtx->duration)/1000)/frameRateDuration);
@@ -201,9 +203,8 @@ int VideoPlayer::playNewVideo(const std::string& _fileName, bool convertToRBG)
 	firstCount = SDL_GetTicks();
 	lastCount = firstCount;
 	d_lastCount = firstCount;
-	nbFrames = 0;
+	currentFrame = 0;
 	m_isVideoPlayed = true;
-	// elapsedTime =0.0;
 	this->getNextVideoFrame();
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
@@ -225,7 +226,7 @@ void VideoPlayer::update()
 
 	if ( timePassed > (int)frameRateDuration) {
 		getNextVideoFrame();
-		d_lastCount = firstCount + (int)(frameRateDuration*nbFrames);
+		d_lastCount = firstCount + (int)(frameRateDuration*currentFrame);
 		lastCount = (int)d_lastCount;
 	}
 #endif
@@ -272,8 +273,7 @@ void VideoPlayer::getNextVideoFrame()
 {
 #ifndef WIN32
 	this->getNextFrame();
-	nbFrames ++;
-	//elapsedTime += frameRateDuration;
+	currentFrame ++;
 	if (!m_isVideoSeeking) {
 		if (isDisplayRVB) {
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
@@ -352,7 +352,6 @@ bool VideoPlayer::jumpInCurrentVideo(float deltaTime, float &reallyDeltaTime)
 
 #ifndef WIN32
 	int64_t frameToSkeep = (1000.0*deltaTime) / frameRateDuration;
-	// std::cout << "On est a la frame " << nbFrames << " et on en rajoute " << frameToSkeep << std::endl;
 	return seekVideo(frameToSkeep, reallyDeltaTime);
 #endif
 }
@@ -365,30 +364,29 @@ bool VideoPlayer::invertVideoFlow(float &reallyDeltaTime)
 	if (m_isVideoInPause==true)
 		this->pauseCurrentVideo();
 
-	return seekVideo(nbTotalFrame - 2*nbFrames, reallyDeltaTime);
+	return seekVideo(nbTotalFrame - 2*currentFrame, reallyDeltaTime);
 }
 
 
 bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 {
 #ifndef WIN32
-	nbFrames = nbFrames + frameToSkeep;
+	currentFrame = currentFrame + frameToSkeep;
 
 	//saut avant le début de la vidéo
-	if (nbFrames <= 0) {
+	if (currentFrame <= 0) {
 		this->restartCurrentVideo();
 		reallyDeltaTime=0.0;
 		return true;
 	}
-	if(nbFrames < nbTotalFrame) { // on verifie qu'on ne saute pas hors vidéo
-		if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, nbFrames * frameRateDuration *1000 , INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+	if(currentFrame < nbTotalFrame) { // on verifie qu'on ne saute pas hors vidéo
+		if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000 , INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
 			printf("av_seek_frame forward failed. \n");
 			return false;
 		}
 		firstCount = firstCount - (int)( frameToSkeep * frameRateDuration);
-		
-		// elapsedTime += nbFrames * frameRateDuration;
-		reallyDeltaTime= nbFrames * frameRateDuration/1000.0;
+	
+		reallyDeltaTime= currentFrame * frameRateDuration/1000.0;
 		m_isVideoSeeking = true;
 		return true;
 	}

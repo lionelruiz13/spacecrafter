@@ -164,7 +164,7 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 		} else if (type == "IMAGE") {
 			m_videoState.type=V_TYPE::V_IMAGE;
 			imageVideoName = _name;
-			imageMgr->loadImage(player->getVideoTexture(),_name, _position);
+			imageMgr->loadImage(player->getRBG_VideoTexture(),_name, _position);
 			return 3;
 		} else {//no type -> stop playing
 			playerStop();

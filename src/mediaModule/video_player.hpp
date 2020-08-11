@@ -1,10 +1,18 @@
 /*
- * Spacecrafter astronomy simulation and visualization
- *
- * Copyright 2017 Immersive Adventure
- *
- *
- */
+* This source is the property of Immersive Adventure
+* http://immersiveadventure.net/
+*
+* It has been developped by part of the LSS Team.
+* For further informations, contact:
+*
+* albertpla@immersiveadventure.net
+*
+* This source code mustn't be copied or redistributed
+* without the authorization of Immersive Adventure
+* (c) 2017 - 2020 all rights reserved
+*
+*/
+
 
 #ifndef _VIDEOPLAYER_HPP_
 #define _VIDEOPLAYER_HPP_
@@ -48,12 +56,10 @@ class Media;
  */
 class VideoPlayer {
 public:
-	//! \fn VideoPlayer
-	//! \brief Constructeur: initialise les états de la ffmpeg
+	//! Constructeur: initialise les états de la ffmpeg
 	VideoPlayer(Media* _media);
 
-	//! \fn ~VideoPlayer
-	//! \brief Destructeur, ferme les états de la ffmpeg
+	//! Destructeur, ferme les états de la ffmpeg
 	~VideoPlayer();
 
 	//! recherche la frame suivante
@@ -68,33 +74,28 @@ public:
 	//! met la video en pause
 	void pauseCurrentVideo();
 
-	// //! affiche sur la console les informations liées au fichier vidéo
-	// void getInfo();
-
-	//! \fn RestartVideo
-	//! \brief Redemarre la vidéo au début
+	//! Redémarre la vidéo actuelle au début
 	bool restartCurrentVideo();
 
 	bool invertVideoFlow(float &reallyDeltaTime);
 
-	//! \fn JumpVideo
+	//! Permet de faire un saut relatif dans le flux video
 	//! \param seconde temps a sauter (en secondes)
-	//! \brief Permet de faire un saut relatif dans le flux video
 	//! \param reallyDeltaTime : indique à la classe Media de combien on s'est déplacé au final.
 	bool jumpInCurrentVideo(float seconde, float &reallyDeltaTime);
 
 	//! Renvoie l'état du player
 	//! @return true si un fichier est en cours de lecture, false sinon
-	bool isVideoPlayed() {
+	bool isVideoPlayed() const {
 		return m_isVideoPlayed;
 	}
 
-	//! Renvoie l'ID de la texture dans le GPU représentant la frame lue du fichier vidéo
-	GLuint getVideoTexture() {
+	//! Renvoie l'ID de la texture RGB dans le GPU représentant la frame lue du fichier vidéo
+	GLuint getRBG_VideoTexture() const {
 		return RGBtexture;
 	}
-
-	YUV_WRAPPER getYUV_VideoTexture() {
+	//! Renvoie l'ID des textures YUV dans le GPU représentant la frame lue du fichier vidéo
+	YUV_WRAPPER getYUV_VideoTexture() const {
 		return YUV_Texture;
 	}
 
@@ -109,17 +110,15 @@ private:
 	bool seekVideo(int64_t frameToSkeep, float &reallyDeltaTime);
 	//! initialise une texture à la taille de la vidéo
 	void initTexture();
-	 //! texture représentant la frame actuelle
 
 	Media* media=nullptr;
-	YUV_WRAPPER YUV_Texture;
-	GLuint RGBtexture;
-	GLuint YUVtexture[3];
-	bool isDisplayRVB;		//!< indique si le rendu doit être converti en RVG ou pas
+	YUV_WRAPPER YUV_Texture;	//!< les indices des textures en YUV420p
+	GLuint RGBtexture;			//!< l'indice de la texture en RGB
+	GLuint YUVtexture[3];		//!< les mêmes indices que YUV_Texture par souci de simplicité (what ?????)
+	bool isDisplayRVB;			//!< indique si le rendu doit être converti en RVG ou pas
 
-	std::string fileName; 	//!< nom de la vidéo à lire
-	int video_w;			
-	int video_h;
+	std::string fileName; 	//!< nom de la vidéo
+	int video_w, video_h;	//!< taille w,h  de la vidéo
 
 	bool m_isVideoPlayed;	//!< indique si une vidéo est en cours de lecture
 	bool m_isVideoInPause;	//!< indique si la video est en pause
@@ -132,11 +131,10 @@ private:
 	double d_lastCount;
 
 	//Gestion frameRate
-	int64_t nbFrames;		 //!< compteur de frames
-	int64_t nbTotalFrame;	 //!< nombre de frames prévues par la vidéo
+	int64_t currentFrame;	//!< numéro de la frame actuelle
+	int64_t nbTotalFrame;	//!< nombre de frames prévues par la vidéo
 	double frameRate;
 	double frameRateDuration;
-	// double elapsedTime;
 
 	//gestion de la pause
 	Uint32 startPause;
@@ -148,12 +146,11 @@ private:
 	int				videoindex;
 	AVCodecContext	*pCodecCtx;
 	AVCodec			*pCodec;
-	AVFrame	*pFrameIn,*pFrameOut;
-	AVStream *video_st;
-	AVPacket *packet;
+	AVFrame			*pFrameIn,*pFrameOut;
+	AVStream		*video_st;
+	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
 #endif
 };
-
 
 #endif // VIDEOPLAYER_HPP
