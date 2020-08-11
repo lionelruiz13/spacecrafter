@@ -118,7 +118,7 @@ private:
 	bool isDisplayRVB;			//!< indique si le rendu doit être converti en RVG ou pas
 
 	std::string fileName; 	//!< nom de la vidéo
-	int video_w, video_h;	//!< taille w,h  de la vidéo
+	Resolution videoRes;	//!< int video_w, video_h;	//!< taille w,h  de la vidéo
 
 	bool m_isVideoPlayed;	//!< indique si une vidéo est en cours de lecture
 	bool m_isVideoInPause;	//!< indique si la video est en pause

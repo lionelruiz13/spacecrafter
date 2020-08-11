@@ -153,8 +153,8 @@ int VideoPlayer::playNewVideo(const std::string& _fileName, bool convertToRBG)
 		return -1;
 	}
 
-	video_w = pCodecCtx->width;
-	video_h = pCodecCtx->height;
+	videoRes.w = pCodecCtx->width;
+	videoRes.h = pCodecCtx->height;
 
 	AVRational frame_rate = av_guess_frame_rate(pFormatCtx, video_st, NULL);
 	frameRate = frame_rate.num/(double)frame_rate.den;
@@ -280,8 +280,8 @@ void VideoPlayer::getNextVideoFrame()
 			glBindTexture(GL_TEXTURE_2D, RGBtexture);
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameOut->data[0]);
 		} else {
-			const int widths[3]  = { video_w, video_w / 2, video_w / 2 };  
-			const int heights[3] = { video_h, video_h / 2, video_h / 2 }; 
+			const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
+			const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 			for (int i = 0; i < 3; ++i) {  
     			glBindTexture(GL_TEXTURE_2D, YUVtexture[i]);  
@@ -322,14 +322,14 @@ void VideoPlayer::initTexture()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, video_w, video_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoRes.w, videoRes.h , 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	} else {
 		glGenTextures(3, YUVtexture);
 		YUV_Texture.TexY = YUVtexture[0];
 		YUV_Texture.TexU = YUVtexture[1];
 		YUV_Texture.TexV = YUVtexture[2];
-		const int  widths[3]  = { video_w, video_w / 2, video_w / 2 };  
-		const int  heights[3] = { video_h, video_h / 2, video_h / 2 };  
+		const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
+		const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
 		for (int i = 0; i < 3; ++i) {  
     		glBindTexture(GL_TEXTURE_2D, YUVtexture[i]);  
     		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);  

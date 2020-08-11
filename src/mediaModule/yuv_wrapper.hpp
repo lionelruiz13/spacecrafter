@@ -25,4 +25,10 @@ struct YUV_WRAPPER {
     GLint TexV;
 };
 
+struct Resolution {
+    int array[2];
+    int &w = array[0];
+    int &h = array[1];
+};
+
 #endif  // __YUV_WRAPPER_HPP__
