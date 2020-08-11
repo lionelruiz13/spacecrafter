@@ -24,7 +24,7 @@
 #include "tools/fader.hpp"
 #include "yuv_wrapper.hpp"
 
-#define VP_FADER_DURATION 3000
+#define VP_FADER_DURATION 2000
 
 class VertexArray;
 class shaderProgram;
