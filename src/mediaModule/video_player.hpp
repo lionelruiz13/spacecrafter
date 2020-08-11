@@ -51,28 +51,28 @@ public:
 	void update();
 
 	//! initialise la ffmpeg avec le nom du fichier passé en argument
-	int play(const std::string& fileName, bool convertToRBG);
+	int playNewVideo(const std::string& fileName, bool convertToRBG);
 
 	//! termine la lecture d'une vidéo en cours
-	void playStop();
+	void stopCurrentVideo();
 
 	//! met la video en pause
-	void pause();
+	void pauseCurrentVideo();
 
 	// //! affiche sur la console les informations liées au fichier vidéo
 	// void getInfo();
 
 	//! \fn RestartVideo
 	//! \brief Redemarre la vidéo au début
-	bool RestartVideo();
+	bool restartCurrentVideo();
 
-	bool Invertflow(float &reallyDeltaTime);
+	bool invertVideoFlow(float &reallyDeltaTime);
 
 	//! \fn JumpVideo
 	//! \param seconde temps a sauter (en secondes)
 	//! \brief Permet de faire un saut relatif dans le flux video
 	//! \param reallyDeltaTime : indique à la classe Media de combien on s'est déplacé au final.
-	bool JumpVideo(float seconde, float &reallyDeltaTime);
+	bool jumpInCurrentVideo(float seconde, float &reallyDeltaTime);
 
 	//! Renvoie l'état du player
 	//! @return true si un fichier est en cours de lecture, false sinon
@@ -103,27 +103,28 @@ private:
 	 //! texture représentant la frame actuelle
 
 	Media* media=nullptr;
-	GLuint RGBtexture;
 	YUV_WRAPPER YUV_Texture;
+	GLuint RGBtexture;
 	GLuint YUVtexture[3];
-
 	bool isDisplayRVB;		//!< indique si le rendu doit être converti en RVG ou pas
+
 	std::string fileName; 	//!< nom de la vidéo à lire
 	int video_w;			
 	int video_h;
+
 	bool m_isVideoPlayed;	//!< indique si une vidéo est en cours de lecture
-	bool isInPause;			//!< indique si la video est en pause
-	bool isSeeking;			//!< indique si on est entrain de sauter de frame
+	bool m_isVideoInPause;	//!< indique si la video est en pause
+	bool m_isVideoSeeking;	//!< indique si on est entrain de sauter de frame
 
-	int64_t nbFrames;		 //!< compteur de frames
-	int64_t nbTotalFrame;	 //!< nombre de frames prévues par la vidéo
-
-	//Gestion frameRate
-	int64_t TickCount ;
+	//gestion des durées
+	int64_t TickCount;
 	int64_t firstCount;
 	int64_t lastCount;
 	double d_lastCount;
 
+	//Gestion frameRate
+	int64_t nbFrames;		 //!< compteur de frames
+	int64_t nbTotalFrame;	 //!< nombre de frames prévues par la vidéo
 	double frameRate;
 	double frameRateDuration;
 	// double elapsedTime;

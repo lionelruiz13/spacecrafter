@@ -121,9 +121,9 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 	int tmp;
 	
 	if (type == "IMAGE")
-		tmp = player->play(filename, true);
+		tmp = player->playNewVideo(filename, true);
 	else
-		tmp = player->play(filename, false);
+		tmp = player->playNewVideo(filename, false);
 	
 	if (tmp !=0) {
 		cLog::get()->write("Media::playerPlay error playing videofilename "+filename, LOG_TYPE::L_ERROR);
@@ -198,7 +198,7 @@ int Media::playerPlay(const std::string &type,const  std::string &videoname, con
 void Media::playerStop()
 {
 	cLog::get()->write("Media::playerPlayStop", LOG_TYPE::L_INFO);
-	player->playStop();
+	player->stopCurrentVideo();
 	m_videoState.state=V_STATE::V_NONE;
 	audio->musicDrop();
 	if (m_videoState.type==V_TYPE::V_VR360)
@@ -215,14 +215,14 @@ void Media::playerStop()
 void Media::playerRestart()
 {
 	cLog::get()->write("Media::playerRestart", LOG_TYPE::L_INFO);
-	player->RestartVideo();
+	player->restartCurrentVideo();
 	audio->musicRewind();
 }
 
 void Media::playerJump(float deltaTime)
 {
 	float realDelta=0.0f;
-	player->JumpVideo(deltaTime, realDelta);
+	player->jumpInCurrentVideo(deltaTime, realDelta);
 	if (realDelta==0.0) {
 		audio->musicRewind();
 		return;
@@ -238,7 +238,7 @@ void Media::playerJump(float deltaTime)
 void Media::playerInvertflow()
 {
  	float realDelta=0.0f;
- 	player->Invertflow(realDelta);
+ 	player->invertVideoFlow(realDelta);
  	if (realDelta==0.0) {
  		audio->musicRewind();
  		return;

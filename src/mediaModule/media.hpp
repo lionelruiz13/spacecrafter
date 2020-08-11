@@ -275,7 +275,7 @@ public:
 	}
 
 	void playerPause() {
-		player->pause();
+		player->pauseCurrentVideo();
 		audio->musicPause();
 	}
 

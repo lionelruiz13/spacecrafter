@@ -23,8 +23,8 @@ VideoPlayer::VideoPlayer(Media* _media)
 {
 	media = _media;
 	m_isVideoPlayed = false;
-	isInPause = false;
-	isSeeking = false;
+	m_isVideoInPause = false;
+	m_isVideoSeeking = false;
 #ifndef WIN32
 	img_convert_ctx = NULL;
 #endif
@@ -32,17 +32,17 @@ VideoPlayer::VideoPlayer(Media* _media)
 
 VideoPlayer::~VideoPlayer()
 {
-	playStop();
+	stopCurrentVideo();
 }
 
-void VideoPlayer::pause()
+void VideoPlayer::pauseCurrentVideo()
 {
-	if (isInPause==false) {
-		isInPause = true;
+	if (m_isVideoInPause==false) {
+		m_isVideoInPause = true;
 		startPause = SDL_GetTicks();
 	} else {
 		endPause = SDL_GetTicks();
-		isInPause = !isInPause;
+		m_isVideoInPause = !m_isVideoInPause;
 		firstCount = firstCount + (endPause - startPause);
 		d_lastCount = d_lastCount + (endPause - startPause);
 		lastCount = (int)d_lastCount;
@@ -55,8 +55,8 @@ void VideoPlayer::pause()
 void VideoPlayer::init()
 {
 	m_isVideoPlayed = false;
-	isInPause= false;
-	isSeeking = false;
+	m_isVideoInPause= false;
+	m_isVideoSeeking = false;
 #ifndef WIN32
 	#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
 	    av_register_all();
@@ -66,7 +66,7 @@ void VideoPlayer::init()
 #endif
 }
 
-bool VideoPlayer::RestartVideo()
+bool VideoPlayer::restartCurrentVideo()
 {
 	if (!m_isVideoPlayed)
 		return false;
@@ -94,11 +94,11 @@ bool VideoPlayer::RestartVideo()
 // #endif
 // }
 
-int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
+int VideoPlayer::playNewVideo(const std::string& _fileName, bool convertToRBG)
 {
 #ifndef WIN32
 	if (m_isVideoPlayed)
-		playStop();
+		stopCurrentVideo();
 	std::ifstream fichier(_fileName.c_str());
 	if (!fichier.fail()) { // verifie si le fichier vidéo existe
 		cLog::get()->write("Videoplayer: reading file "+ _fileName, LOG_TYPE::L_INFO);
@@ -218,7 +218,7 @@ void VideoPlayer::update()
 	if (! m_isVideoPlayed)
 		return;
 
-	if (isInPause) {
+	if (m_isVideoInPause) {
 		return;
 	}
 	int timePassed = SDL_GetTicks()- lastCount;
@@ -240,7 +240,7 @@ void VideoPlayer::getNextFrame()
 
 		if(av_read_frame(pFormatCtx, packet)<0) {
 			cLog::get()->write("fin de fichier");
-			isSeeking = true;
+			m_isVideoSeeking = true;
 			media->playerStop();
 			return;
 		}
@@ -256,8 +256,8 @@ void VideoPlayer::getNextFrame()
 				cLog::get()->write("not got frame", LOG_TYPE::L_DEBUG);
 				continue;
 			}
-			if (isSeeking && pFrameIn->key_frame==1) {
-				isSeeking=false;
+			if (m_isVideoSeeking && pFrameIn->key_frame==1) {
+				m_isVideoSeeking=false;
 			}
 
 			getNextFrame = true;
@@ -274,7 +274,7 @@ void VideoPlayer::getNextVideoFrame()
 	this->getNextFrame();
 	nbFrames ++;
 	//elapsedTime += frameRateDuration;
-	if (!isSeeking) {
+	if (!m_isVideoSeeking) {
 		if (isDisplayRVB) {
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 			glBindTexture(GL_TEXTURE_2D, RGBtexture);
@@ -293,7 +293,7 @@ void VideoPlayer::getNextVideoFrame()
 }
 
 
-void VideoPlayer::playStop()
+void VideoPlayer::stopCurrentVideo()
 {
 #ifndef WIN32
 	if (m_isVideoPlayed==false)
@@ -343,12 +343,12 @@ void VideoPlayer::initTexture()
 
 
 /* lets take a leap forward the video */
-bool VideoPlayer::JumpVideo(float deltaTime, float &reallyDeltaTime)
+bool VideoPlayer::jumpInCurrentVideo(float deltaTime, float &reallyDeltaTime)
 {
 	if (m_isVideoPlayed==false)
 		return false;
-	if (isInPause==true)
-		this->pause();
+	if (m_isVideoInPause==true)
+		this->pauseCurrentVideo();
 
 #ifndef WIN32
 	int64_t frameToSkeep = (1000.0*deltaTime) / frameRateDuration;
@@ -358,13 +358,12 @@ bool VideoPlayer::JumpVideo(float deltaTime, float &reallyDeltaTime)
 }
 
 
-/* lets take a leap forward the video */
-bool VideoPlayer::Invertflow(float &reallyDeltaTime)
+bool VideoPlayer::invertVideoFlow(float &reallyDeltaTime)
 {
 	if (m_isVideoPlayed==false)
 		return false;
-	if (isInPause==true)
-		this->pause();
+	if (m_isVideoInPause==true)
+		this->pauseCurrentVideo();
 
 	return seekVideo(nbTotalFrame - 2*nbFrames, reallyDeltaTime);
 }
@@ -377,7 +376,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 
 	//saut avant le début de la vidéo
 	if (nbFrames <= 0) {
-		this->RestartVideo();
+		this->restartCurrentVideo();
 		reallyDeltaTime=0.0;
 		return true;
 	}
@@ -390,11 +389,11 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		
 		// elapsedTime += nbFrames * frameRateDuration;
 		reallyDeltaTime= nbFrames * frameRateDuration/1000.0;
-		isSeeking = true;
+		m_isVideoSeeking = true;
 		return true;
 	}
 	// fin de fichier ... vidéo s'arrête
-	this->playStop();
+	this->stopCurrentVideo();
 	reallyDeltaTime= -1.0;
 	return true;
 #else
