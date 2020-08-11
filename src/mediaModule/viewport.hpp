@@ -68,7 +68,7 @@ public:
 	}
 
 	void disableFader() {
-		fader.setDuration(400);
+		//! fader.setDuration(400);
 	}
 
 	//! update le fader
