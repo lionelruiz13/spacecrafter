@@ -2944,7 +2944,7 @@ int AppCommandInterface::commandMedia()
 				if (!args[W_INTENSITY].empty())
 					argIntensity = args[W_INTENSITY];
 				else
-					argIntensity = args[W_INTENSITY];
+					argIntensity = args["instensity"];
 				// fin du PATCH			
 				
 				if (!argIntensity.empty())
