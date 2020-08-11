@@ -20,7 +20,7 @@
 #include <memory>
 //#include "renderGL/shader.hpp"
 #include "tools/fader.hpp"
-#include "yuv_wrapper.hpp"
+#include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"
 
 // #define VR360_FADER_DURATION 3000
@@ -37,10 +37,10 @@ public:
 
 	void init();
 
-	void setTexture(YUV_WRAPPER _tex) {
-		videoTex[0] = _tex.TexY;
-		videoTex[1] = _tex.TexU;
-		videoTex[2] = _tex.TexV;
+	void setTexture(VideoTexture _tex) {
+		videoTex[0] = _tex.y;
+		videoTex[1] = _tex.u;
+		videoTex[2] = _tex.v;
 	}
 
 	void modeCube() {

@@ -277,14 +277,14 @@ void VideoPlayer::getNextVideoFrame()
 	if (!m_isVideoSeeking) {
 		if (isDisplayRVB) {
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
-			glBindTexture(GL_TEXTURE_2D, RGBtexture);
+			glBindTexture(GL_TEXTURE_2D, videoTexture.tex[0]);
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameOut->data[0]);
 		} else {
 			const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
 			const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 			for (int i = 0; i < 3; ++i) {  
-    			glBindTexture(GL_TEXTURE_2D, YUVtexture[i]);  
+    			glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
     			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 			}
 		}
@@ -315,8 +315,12 @@ void VideoPlayer::stopCurrentVideo()
 void VideoPlayer::initTexture()
 {
 	if (isDisplayRVB) {
-		glGenTextures(1, &RGBtexture);
-		glBindTexture(GL_TEXTURE_2D, RGBtexture);
+
+		glGenTextures(1, videoTexture.tex);
+		// to avoid GPU error
+		videoTexture.tex[1] = videoTexture.tex[0];
+		videoTexture.tex[2] = videoTexture.tex[0];
+		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[0]);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -324,14 +328,11 @@ void VideoPlayer::initTexture()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoRes.w, videoRes.h , 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	} else {
-		glGenTextures(3, YUVtexture);
-		YUV_Texture.TexY = YUVtexture[0];
-		YUV_Texture.TexU = YUVtexture[1];
-		YUV_Texture.TexV = YUVtexture[2];
+		glGenTextures(3, videoTexture.tex);
 		const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
 		const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
 		for (int i = 0; i < 3; ++i) {  
-    		glBindTexture(GL_TEXTURE_2D, YUVtexture[i]);  
+    		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);  
     		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);  
     		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
     		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  

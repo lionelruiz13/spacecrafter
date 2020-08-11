@@ -22,7 +22,7 @@
 //#include "renderGL/shader.hpp"
 #include "renderGL/stateGL.hpp"
 #include "tools/fader.hpp"
-#include "yuv_wrapper.hpp"
+#include "mediaModule/media_base.hpp"
 
 #define VP_FADER_DURATION 2000
 
@@ -40,11 +40,11 @@ public:
 	void draw();
 
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
-	//! \param _tex, YUV_WRAPPER YUV dans la CG
-	void setTexture(YUV_WRAPPER _tex) {
-		videoTex[0] = _tex.TexY;
-		videoTex[1] = _tex.TexU;
-		videoTex[2] = _tex.TexV;
+	//! \param _tex, ref GLuint textures YUV dans la CG
+	void setTexture(VideoTexture _tex) {
+		videoTex[0] = _tex.y;
+		videoTex[1] = _tex.u;
+		videoTex[2] = _tex.v;
 	}
 
 	//! indique si la classe doit etre active ou pas

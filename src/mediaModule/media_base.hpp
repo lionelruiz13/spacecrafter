@@ -14,15 +14,17 @@
 */
 
 
-#ifndef __YUV_WRAPPER_HPP__
-#define __YUV_WRAPPER_HPP__
+#ifndef __MEDIA_BASE_HPP__
+#define __MEDIA_BASE_HPP__
 
 #include <GL/glew.h>
 
-struct YUV_WRAPPER {
-    GLint TexY;
-    GLint TexU;
-    GLint TexV;
+struct VideoTexture {
+    GLuint tex[3];
+    GLuint &y = tex[0];
+    GLuint &u = tex[1];
+    GLuint &v = tex[2];
+    GLuint &rgb = tex[0];
 };
 
 struct Resolution {
@@ -31,4 +33,4 @@ struct Resolution {
     int &h = array[1];
 };
 
-#endif  // __YUV_WRAPPER_HPP__
+#endif  // __MEDIA_BASE_HPP__

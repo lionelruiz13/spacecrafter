@@ -26,7 +26,7 @@
 
 #include "renderGL/shader.hpp"
 #include "renderGL/stateGL.hpp"
-#include "yuv_wrapper.hpp"
+#include "mediaModule/media_base.hpp"
 
 #ifndef WIN32
 extern "C"
@@ -92,11 +92,11 @@ public:
 
 	//! Renvoie l'ID de la texture RGB dans le GPU représentant la frame lue du fichier vidéo
 	GLuint getRBG_VideoTexture() const {
-		return RGBtexture;
+		return videoTexture.rgb;
 	}
 	//! Renvoie l'ID des textures YUV dans le GPU représentant la frame lue du fichier vidéo
-	YUV_WRAPPER getYUV_VideoTexture() const {
-		return YUV_Texture;
+	VideoTexture getYUV_VideoTexture() const {
+		return videoTexture;
 	}
 
 private:
@@ -112,9 +112,7 @@ private:
 	void initTexture();
 
 	Media* media=nullptr;
-	YUV_WRAPPER YUV_Texture;	//!< les indices des textures en YUV420p
-	GLuint RGBtexture;			//!< l'indice de la texture en RGB
-	GLuint YUVtexture[3];		//!< les mêmes indices que YUV_Texture par souci de simplicité (what ?????)
+	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
 	bool isDisplayRVB;			//!< indique si le rendu doit être converti en RVG ou pas
 
 	std::string fileName; 	//!< nom de la vidéo
