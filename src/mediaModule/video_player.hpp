@@ -126,7 +126,7 @@ private:
 
 	double frameRate;
 	double frameRateDuration;
-	double elapsedTime;
+	// double elapsedTime;
 
 	//gestion de la pause
 	Uint32 startPause;

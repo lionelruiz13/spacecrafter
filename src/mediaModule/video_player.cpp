@@ -203,7 +203,7 @@ int VideoPlayer::play(const std::string& _fileName, bool convertToRBG)
 	d_lastCount = firstCount;
 	nbFrames = 0;
 	m_isVideoPlayed = true;
-	elapsedTime =0.0;
+	// elapsedTime =0.0;
 	this->getNextVideoFrame();
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
@@ -273,7 +273,7 @@ void VideoPlayer::getNextVideoFrame()
 #ifndef WIN32
 	this->getNextFrame();
 	nbFrames ++;
-	elapsedTime += frameRateDuration;
+	//elapsedTime += frameRateDuration;
 	if (!isSeeking) {
 		if (isDisplayRVB) {
 			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
@@ -388,7 +388,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		}
 		firstCount = firstCount - (int)( frameToSkeep * frameRateDuration);
 		
-		elapsedTime += nbFrames * frameRateDuration;
+		// elapsedTime += nbFrames * frameRateDuration;
 		reallyDeltaTime= nbFrames * frameRateDuration/1000.0;
 		isSeeking = true;
 		return true;
