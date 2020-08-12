@@ -259,10 +259,8 @@ void VideoPlayer::getNextVideoFrame()
 	this->getNextFrame();
 	currentFrame ++;
 	if (!m_isVideoSeeking) {
-		const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
-		const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
 		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
-		for (int i = 0; i < 3; ++i) {  
+		for (int i = 0; i < 3; i++) {
    			glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
    			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 		}
@@ -289,12 +287,16 @@ void VideoPlayer::stopCurrentVideo()
 #endif
 }
 
-
 void VideoPlayer::initTexture()
 {
 	glGenTextures(3, videoTexture.tex);
-	const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
-	const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
+	const int _widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
+	const int _heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
+	for(int i=0; i<3;i++) {
+		widths[i] = _widths[i];
+		heights[i] = _heights[i];
+	}
+
 	for (int i = 0; i < 3; ++i) {  
    		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);  
    		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);  

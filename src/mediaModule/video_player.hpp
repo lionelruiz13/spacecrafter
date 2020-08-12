@@ -133,6 +133,10 @@ private:
 	Uint32 startPause;
 	Uint32 endPause;
 
+	// avoid recalculating each time
+	int widths[3]; 
+	int heights[3];	
+
 #ifndef WIN32
 	//parametres liés à ffmpeg
 	AVFormatContext	*pFormatCtx;
