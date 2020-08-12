@@ -56,13 +56,13 @@ ImageMgr::~ImageMgr()
 	dropAllImages();
 }
 
-int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::string& coordinate, IMG_COPIES nbCopies)
+int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project)
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
 	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
 	s_texture* imgVideo = new s_texture(name, imgTex);
-	std::unique_ptr<Image> img = std::make_unique<Image>(imgVideo, name, img_pos, nbCopies);
+	std::unique_ptr<Image> img = std::make_unique<Image>(imgVideo, name, img_pos, project);
 
 	if (!img || img->imageLoaded()) {
 		active_images.push_back(std::move(img));
@@ -81,12 +81,12 @@ IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & coordinate
 		return IMAGE_POSITIONING::POS_VIEWPORT;
 }
 
-int ImageMgr::loadImage(const std::string& filename, const std::string& name, const std::string& coordinate,  IMG_COPIES nbCopies, bool mipmap)
+int ImageMgr::loadImage(const std::string& filename, const std::string& name, const std::string& coordinate,  IMG_PROJECT project, bool mipmap)
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
 	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
-	std::unique_ptr<Image> img = std::make_unique<Image>(filename, name, img_pos, nbCopies, mipmap);
+	std::unique_ptr<Image> img = std::make_unique<Image>(filename, name, img_pos, project, mipmap);
 
 	if (!img || img->imageLoaded()) {
 		active_images.push_back(std::move(img));

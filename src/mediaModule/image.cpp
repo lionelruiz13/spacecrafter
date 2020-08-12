@@ -95,7 +95,7 @@ Image::Image(const Image* n, int i) {
 }
 
 
-Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_COPIES nbCopies, bool mipmap)
+Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap)
 {
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
@@ -103,7 +103,7 @@ Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIO
 	initialise(name, pos_type,mipmap);
 }
 
-Image::Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_COPIES nbCopies)
+Image::Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
 {
 	image_tex = _imgTex;
 	needFlip = true;

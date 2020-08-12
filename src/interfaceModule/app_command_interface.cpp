@@ -2204,13 +2204,13 @@ int AppCommandInterface::commandImage()
 			argCoordinate = "equatorial";
 		}
 
-		std::string argCopies = args["copies"];
-		IMG_COPIES tmpCopies = IMG_COPIES::ONCE;
-		if (argCopies==W_TWICE) {
-			tmpCopies = IMG_COPIES::TWICE;
+		std::string argProject = args["project"];
+		IMG_PROJECT tmpProject = IMG_PROJECT::ONCE;
+		if (argProject==W_TWICE) {
+			tmpProject = IMG_PROJECT::TWICE;
 		}
-		if (argCopies==W_THRICE) {
-			tmpCopies = IMG_COPIES::THRICE;
+		if (argProject==W_THRICE) {
+			tmpProject = IMG_PROJECT::THRICE;
 		}
 
 		bool mipmap = 0; // Default off for historical reasons
@@ -2218,7 +2218,7 @@ int AppCommandInterface::commandImage()
 			mipmap = 1;
 
 		//TODO récupérer une erreur compréhensible plutot qu'un int ?
-		int status = media->imageLoad(myFile.toString(), evalString(argName), argCoordinate, tmpCopies , mipmap);
+		int status = media->imageLoad(myFile.toString(), evalString(argName), argCoordinate, tmpProject , mipmap);
 		if (status!=1) {
 			debug_message = _("Unable to load image: ") + argName;
 			return executeCommandStatus();
@@ -2702,13 +2702,13 @@ int AppCommandInterface::commandMedia()
 				return executeCommandStatus();
 			}
 
-			std::string argCopies = args["copies"];
-			IMG_COPIES tmpCopies = IMG_COPIES::ONCE;
-			if (argCopies==W_TWICE) {
-				tmpCopies = IMG_COPIES::TWICE;
+			std::string argProject = args["project"];
+			IMG_PROJECT tmpProject = IMG_PROJECT::ONCE;
+			if (argProject==W_TWICE) {
+				tmpProject = IMG_PROJECT::TWICE;
 			}
-			if (argCopies==W_THRICE) {
-				tmpCopies = IMG_COPIES::THRICE;
+			if (argProject==W_THRICE) {
+				tmpProject = IMG_PROJECT::THRICE;
 			}
 
 			if (!audioName.empty()) {

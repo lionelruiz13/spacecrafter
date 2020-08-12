@@ -159,7 +159,7 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 		} else if (type == "IMAGE") {
 			m_videoState.type=V_TYPE::V_IMAGE;
 			imageVideoName = _name;
-			imageMgr->loadImage(player->getYUV_VideoTexture().y,_name, _position, IMG_COPIES::ONCE);
+			imageMgr->loadImage(player->getYUV_VideoTexture().y,_name, _position, IMG_PROJECT::ONCE);
 			return 3;
 		} else {//no type -> stop playing
 			playerStop();

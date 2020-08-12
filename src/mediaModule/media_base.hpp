@@ -40,7 +40,7 @@ enum class IMAGE_POSITIONING : char {
 	POS_DOME
 };
 
-enum class IMG_COPIES : char{
+enum class IMG_PROJECT : char{
     ONCE,
     TWICE,
     THRICE
