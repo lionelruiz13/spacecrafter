@@ -275,7 +275,7 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 	start_xpos = image_xpos;
 	start_ypos = image_ypos;
 
-	my_timer = 0;
+	my_timer = 0;// count time elapsed from the beginning of the command
 
 	// only move if changing value
 	if (deltax) end_xpos = xpos;
@@ -289,28 +289,28 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 	y_move = end_ypos - start_ypos;
 	flag_progressive_x = accelerate_x or decelerate_x;
 	flag_progressive_y = accelerate_y or decelerate_y;
-	end_time = int(duration * 1000.f);
+	end_time = int(duration * 1000.f); // movement duration in milliseconds
 	if (flag_progressive_x) {
 		if (accelerate_x and not decelerate_x) {
-			mid_time_x = end_time;
-			coef_xmove = x_move / float(end_time * end_time);
+			mid_time_x = end_time; // switch from acceleration to deceleration at the end of the movement
+			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time²
 		} else if (accelerate_x and decelerate_x) {
-			mid_time_x = int(duration * 500.f + 0.5f);
-			coef_xmove = x_move / float(2 * mid_time_x * mid_time_x);
-		} else {
-			mid_time_x = 0;
-			coef_xmove = x_move / float(end_time * end_time);
+			mid_time_x = int(duration * 500.f + 0.5f); // switch from acceleration to deceleration at the middle of the movement
+			coef_xmove = x_move / float(2 * mid_time_x * mid_time_x); // the movement must be the middle of the complete movement at mid_time_x²
+		} else { // (not accelerate_x and decelerate_x)
+			mid_time_x = 0; // switch from acceleration to deceleration at the beginning of the movement
+			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time²
 		}
 	} if (flag_progressive_y) {
 		if (accelerate_y and not decelerate_y) {
-			mid_time_y = end_time;
-			coef_ymove = y_move / float(end_time * end_time);
+			mid_time_y = end_time; // switch from acceleration to deceleration at the end of the movement
+			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time²
 		} else if (accelerate_y and decelerate_y) {
-			mid_time_y = int(duration * 500.f + 0.5f);
-			coef_ymove = y_move / float(2 * mid_time_y * mid_time_y);
-		} else {
-			mid_time_y = 0;
-			coef_ymove = y_move / float(end_time * end_time);
+			mid_time_y = int(duration * 500.f + 0.5f); // switch from acceleration to deceleration at the middle of the movement
+			coef_ymove = y_move / float(2 * mid_time_y * mid_time_y); // the movement must be the middle of the complete movement at mid_time_y²
+		} else { // (not accelerate_y and decelerate_y)
+			mid_time_y = 0; // switch from acceleration to deceleration at the beginning of the movement
+			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time²
 		}
 	}
 	x_move = x_move / (1000.f*duration);
@@ -330,7 +330,7 @@ void Image::setRatio(float ratio, float duration)
 	start_ratio = image_ratio;
 	end_ratio = ratio;
 	coef_ratio = (ratio-start_ratio)/end_time_ratio;
-	my_timer_ratio = 0;
+	my_timer_ratio = 0; // count time elapsed from the beginning of the command
 }
 
 
@@ -375,36 +375,36 @@ bool Image::update(int delta_time)
 		image_rotation = start_rotation + mult_rotation*(end_rotation-start_rotation);
 	}
 	if (flag_location) {
-		my_timer += delta_time;
-		if (flag_progressive_x) {
-			if (my_timer < mid_time_x) {
-				image_xpos = start_xpos + my_timer * my_timer * coef_xmove;
-			} else if (my_timer < end_time) {
-				image_xpos = end_xpos - (end_time - my_timer) * (end_time - my_timer) * coef_xmove;
-			} else {
+		my_timer += delta_time; // update local timer
+		if (flag_progressive_x) { // progressive movement in X-axis
+			if (my_timer < mid_time_x) { // acceleration phase
+				image_xpos = start_xpos + my_timer * my_timer * coef_xmove; // square function
+			} else if (my_timer < end_time) { // deceleration phase
+				image_xpos = end_xpos - (end_time - my_timer) * (end_time - my_timer) * coef_xmove; // (end - x)² function
+			} else { // movement completed
 				image_xpos = end_xpos;
 				flag_location = 0;
 			}
-		} else {
+		} else { // linear movement in X-axis
 			if (my_timer < end_time) {
-				image_xpos = start_xpos + my_timer*x_move;
+				image_xpos = start_xpos + my_timer*x_move; // linear function
 			} else {
 				image_xpos = end_xpos;
 				flag_location = 0;
 			}
 		}
-		if (flag_progressive_y) {
-			if (my_timer < mid_time_y) {
-				image_ypos = start_ypos + my_timer * my_timer * coef_ymove;
-			} else if (my_timer < end_time) {
-				image_ypos = end_ypos - (end_time - my_timer) * (end_time - my_timer) * coef_ymove;
-			} else {
+		if (flag_progressive_y) { // progressive movement in Y-axis
+			if (my_timer < mid_time_y) { // acceleration phase
+				image_ypos = start_ypos + my_timer * my_timer * coef_ymove; // square function
+			} else if (my_timer < end_time) { // deceleration phase
+				image_ypos = end_ypos - (end_time - my_timer) * (end_time - my_timer) * coef_ymove; // (end - x)² function
+			} else { // movement completed
 				image_ypos = end_ypos;
 				flag_location = 0;
 			}
-		} else {
+		} else { // linear movement in Y-axis
 			if (my_timer < end_time) {
-				image_ypos = start_ypos + my_timer*y_move;
+				image_ypos = start_ypos + my_timer*y_move; // linear function
 			} else {
 				image_ypos = end_ypos;
 				flag_location = 0;
@@ -413,9 +413,9 @@ bool Image::update(int delta_time)
 	}
 	
 	if (flag_ratio) {
-		my_timer_ratio += delta_time;
+		my_timer_ratio += delta_time; // update local timer
 		if (my_timer_ratio < end_time_ratio)
-			image_ratio = start_ratio + my_timer_ratio*coef_ratio;
+			image_ratio = start_ratio + my_timer_ratio*coef_ratio; // linear function
 		else {
 			image_ratio = end_ratio;
 			flag_ratio = 0;
