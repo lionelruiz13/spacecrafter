@@ -185,14 +185,14 @@ void Image::createShaderUnified()
 {
 	shaderUnified = std::make_unique<shaderProgram>();
 	shaderUnified->init("imageUnified.vert","imageUnified.frag");
-	shaderUnified->setUniformLocation({"fader","MVP","transparency","noColor"});
+	shaderUnified->setUniformLocation({"fader","MVP","transparency","noColor", "clipping_fov"});
 
-	shaderUnified->setUniformLocation("ModelViewProjectionMatrix");
-	shaderUnified->setUniformLocation("inverseModelViewProjectionMatrix");
-	shaderUnified->setUniformLocation("ModelViewMatrix");
+	// shaderUnified->setUniformLocation("ModelViewProjectionMatrix");
+	// shaderUnified->setUniformLocation("inverseModelViewProjectionMatrix");
+	// shaderUnified->setUniformLocation("ModelViewMatrix");
 
-	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project");
-	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project_fixed_fov");
+//	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project");
+//	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project_fixed_fov");
 }
 
 
@@ -521,7 +521,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 {
 	float plotDirection;
 	Mat4f matrix=mat.convert();
-	Mat4f proj = prj->getMatProjection().convert();
+	//Mat4f proj = prj->getMatProjection().convert();
 
 	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
@@ -564,18 +564,24 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	}
 	shaderUnified->use();
 
-	shaderUnified->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	shaderUnified->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
+	// shaderUnified->setUniform("ModelViewProjectionMatrix",proj*matrix);
+	// shaderUnified->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
 	shaderUnified->setUniform("ModelViewMatrix",matrix);
 	shaderUnified->setUniform("fader", image_alpha);
-	shaderUnified->setUniform("MVP", proj*matrix);
+	// shaderUnified->setUniform("MVP", proj*matrix);
 	shaderUnified->setUniform("transparency",transparency);
 	shaderUnified->setUniform("noColor",noColor);
 
+	Vec3f clipping_fov = prj->getClippingFov();
+	
+//	if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
+	// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project_fixed_fov");
+	// else
+	// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project");
 	if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
-		shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project_fixed_fov");
-	else
-		shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project");
+		clipping_fov[2] = 180;
+	
+	shaderUnified->setUniform("clipping_fov", clipping_fov);
 
 	m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
 	m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
