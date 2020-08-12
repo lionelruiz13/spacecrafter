@@ -5,8 +5,8 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-
 layout (binding=0) uniform sampler2D mapTexture;
+
 uniform float fader;
 uniform bool transparency;
 uniform vec4 noColor;
@@ -21,12 +21,11 @@ void main(void)
 	tex_color.a *= fader;
 
 	if (transparency) {
+		vec3 diffVec = abs(tex_color.rgb-noColor.rgb);
 		float delta = noColor.a;
-		if (noColor.r-delta < tex_color.r && tex_color.r <noColor.r+delta)
-			if (noColor.b-delta < tex_color.b && tex_color.b <noColor.b+delta)
-				if (noColor.g-delta < tex_color.g && tex_color.g <noColor.g+delta)
-					discard;
-		}
+		if ((diffVec.r<delta) && (diffVec.g<delta) && (diffVec.b<delta))
+			discard;
+	}
 
 	FragColor = tex_color;
 }
