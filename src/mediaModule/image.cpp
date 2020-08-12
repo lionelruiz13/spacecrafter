@@ -89,6 +89,8 @@ Image::Image(const Image* n, int i) {
 	this->flag_rotation = n-> flag_rotation;
 	this->flag_location = n-> flag_location;
 
+	this->ratio = n->ratio;
+
 	if (this->image_ypos>360)
 		this->image_ypos = this->image_ypos -360;
 	//~ cout << "Clone pos " << this->image_xpos << " " <<this->image_ypos << " " <<  this->image_ratio << " " << this->image_rotation << " " << this->image_alpha << " " << endl;
@@ -113,7 +115,7 @@ Image::Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_
 
 void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, bool mipmap)
 {
-	flag_alpha = flag_scale = flag_location = flag_rotation = 0;
+	flag_alpha = flag_scale = flag_location = flag_rotation = ratio.onTransition = 0;
 	image_pos_type = pos_type;
 	image_alpha = 0;  // begin not visible
 	image_rotation = 0;
@@ -318,19 +320,19 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 }
 
 
-void Image::setRatio(float ratio, float duration)
+void Image::setRatio(float new_ratio, float duration)
 {
 	if (duration <= 0) {
-		flag_ratio = 0;
-		image_ratio = ratio;
+		ratio.onTransition = 0;
+		image_ratio = new_ratio;
 		return;
 	}
-	flag_ratio = 1;
-	end_time_ratio = int(duration * 1000.f);
-	start_ratio = image_ratio;
-	end_ratio = ratio;
-	coef_ratio = (ratio-start_ratio)/end_time_ratio;
-	my_timer_ratio = 0; // count time elapsed from the beginning of the command
+	ratio.onTransition = 1;
+	ratio.duration = int(duration * 1000.f);
+	ratio.start = image_ratio;
+	ratio.end = new_ratio;
+	ratio.coef = (new_ratio-ratio.start)/ratio.duration;
+	ratio.timer = 0; // count time elapsed from the beginning of the command
 }
 
 
@@ -412,13 +414,13 @@ bool Image::update(int delta_time)
 		}
 	}
 
-	if (flag_ratio) {
-		my_timer_ratio += delta_time; // update local timer
-		if (my_timer_ratio < end_time_ratio)
-			image_ratio = start_ratio + my_timer_ratio*coef_ratio; // linear function
+	if (ratio.onTransition) {
+		ratio.timer += delta_time; // update local timer
+		if (ratio.timer < ratio.duration)
+			image_ratio = ratio.start + ratio.timer*ratio.coef; // linear function
 		else {
-			image_ratio = end_ratio;
-			flag_ratio = 0;
+			image_ratio = ratio.end;
+			ratio.onTransition = 0;
 		}
 	}
 	return 1;

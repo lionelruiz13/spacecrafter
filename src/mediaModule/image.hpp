@@ -106,11 +106,20 @@ public:
 	static std::unique_ptr<shaderProgram> shaderUnified;
 
 private:
+	typedef struct {
+		bool onTransition = false;	// Is on transition
+		int timer;		// Elapsed time from the beginning of the transition
+		int duration;	// Transition duration
+		float start;	// Initial position
+		float end;		// Final position
+		float coef;		// defined as start + coef * duration == end
+	} linearTransition;
+
 	void drawViewport(const Navigator * nav, Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);
 
 	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, bool mipmap = false);
-	void initCache(Projector * prj); 
+	void initCache(Projector * prj);
 
 	s_texture* image_tex = nullptr;
 	std::string image_name;
@@ -120,17 +129,19 @@ private:
 	float image_scale, image_alpha, image_rotation;
 	float image_ratio, image_xpos, image_ypos;
 
-	bool flag_alpha, flag_scale, flag_rotation, flag_location, flag_progressive_x=0, flag_progressive_y=0, flag_ratio=0;
-	float coef_alpha, coef_scale, coef_rotation, coef_ratio;
+	bool flag_alpha, flag_scale, flag_rotation, flag_location, flag_progressive_x=0, flag_progressive_y=0;
+	float coef_alpha, coef_scale, coef_rotation;
 	float mult_alpha, mult_scale, mult_rotation;
-	float start_alpha, start_scale, start_rotation, start_ratio;
-	float end_alpha, end_scale, end_rotation, end_ratio;
+	float start_alpha, start_scale, start_rotation;
+	float end_alpha, end_scale, end_rotation;
 
-    int mid_time_x, mid_time_y, my_timer, my_timer_ratio, end_time, end_time_ratio;
-    
+    int mid_time_x, mid_time_y, my_timer, end_time;
+
 	float coef_location, mult_location, x_move, y_move;
 	double coef_xmove, coef_ymove;
 	float start_xpos, start_ypos, end_xpos, end_ypos;
+
+	linearTransition ratio;
 
 	//OpenGL vars
 	std::vector<float> vecImgTex, vecImgPos;
