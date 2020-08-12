@@ -97,7 +97,7 @@ bool VideoPlayer::restartCurrentVideo()
 }
 
 
-int VideoPlayer::playNewVideo(const std::string& _fileName, bool convertToRBG)
+int VideoPlayer::playNewVideo(const std::string& _fileName)
 {
 #ifndef WIN32
 	if (m_isVideoPlayed)
@@ -161,42 +161,26 @@ int VideoPlayer::playNewVideo(const std::string& _fileName, bool convertToRBG)
 	frameRateDuration = 1000*frame_rate.den/(double)frame_rate.num;
 	nbTotalFrame = static_cast<int>(((pFormatCtx->duration)/1000)/frameRateDuration);
 
-	isDisplayRVB = convertToRBG;
 	initTexture();
 
 	img_convert_ctx = NULL;
 	unsigned char *out_buffer;
 
-	if (isDisplayRVB) {
-		img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
-		if(img_convert_ctx==NULL) {
-			cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
-			return -1;
-		}
-		pFrameIn = av_frame_alloc();
-		pFrameOut=av_frame_alloc();
-		//std::cout << "video de taille: " << pCodecCtx->width << " " << pCodecCtx->height << std::endl;
-		//std::cout << "taille d'une frame: "<< av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1) << std::endl;
-		out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_RGB24,  pCodecCtx->width, pCodecCtx->height,1));
-		av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
-		av_image_fill_arrays(pFrameOut->data, pFrameOut->linesize,out_buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height,1);
-	} else {
-		img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
-		if(img_convert_ctx==NULL) {
-			cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
-			return -1;
-		}
-		
-		if(pCodecCtx->pix_fmt != AV_PIX_FMT_YUV420P) {
-			cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
-			return -1;
-		}
-		pFrameIn = av_frame_alloc();
-		pFrameOut=av_frame_alloc();
-		out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
-		av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
-		av_image_fill_arrays(pFrameOut->data, pFrameOut->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
+	img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+	if(img_convert_ctx==NULL) {
+		cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
+		return -1;
 	}
+	
+	if(pCodecCtx->pix_fmt != AV_PIX_FMT_YUV420P) {
+		cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
+		return -1;
+	}
+	pFrameIn = av_frame_alloc();
+	pFrameOut=av_frame_alloc();
+	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
+	av_image_fill_arrays(pFrameIn->data, pFrameIn->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
+	av_image_fill_arrays(pFrameOut->data, pFrameOut->linesize,out_buffer, AV_PIX_FMT_YUV420P,pCodecCtx->width, pCodecCtx->height,1);
 
 	packet=(AVPacket *)av_malloc(sizeof(AVPacket));
 
@@ -275,18 +259,12 @@ void VideoPlayer::getNextVideoFrame()
 	this->getNextFrame();
 	currentFrame ++;
 	if (!m_isVideoSeeking) {
-		if (isDisplayRVB) {
-			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
-			glBindTexture(GL_TEXTURE_2D, videoTexture.tex[0]);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, pCodecCtx->width, pCodecCtx->height, GL_RGB, GL_UNSIGNED_BYTE, pFrameOut->data[0]);
-		} else {
-			const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
-			const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
-			sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
-			for (int i = 0; i < 3; ++i) {  
-    			glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
-    			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
-			}
+		const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
+		const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
+		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
+		for (int i = 0; i < 3; ++i) {  
+   			glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
+   			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 		}
 	}
 #endif
@@ -314,31 +292,16 @@ void VideoPlayer::stopCurrentVideo()
 
 void VideoPlayer::initTexture()
 {
-	if (isDisplayRVB) {
-
-		glGenTextures(1, videoTexture.tex);
-		// to avoid GPU error
-		videoTexture.tex[1] = videoTexture.tex[0];
-		videoTexture.tex[2] = videoTexture.tex[0];
-		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[0]);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, videoRes.w, videoRes.h , 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	} else {
-		glGenTextures(3, videoTexture.tex);
-		const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
-		const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
-		for (int i = 0; i < 3; ++i) {  
-    		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);  
-    		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);  
-    		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
-    		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  
-    		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  
-    		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
-		}
+	glGenTextures(3, videoTexture.tex);
+	const int widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
+	const int heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
+	for (int i = 0; i < 3; ++i) {  
+   		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);  
+   		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);  
+   		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
+   		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  
+   		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  
+   		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
 	}
 }
 

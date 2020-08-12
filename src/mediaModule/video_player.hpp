@@ -66,7 +66,7 @@ public:
 	void update();
 
 	//! initialise la ffmpeg avec le nom du fichier passé en argument
-	int playNewVideo(const std::string& fileName, bool convertToRBG);
+	int playNewVideo(const std::string& fileName);
 
 	//! termine la lecture d'une vidéo en cours
 	void stopCurrentVideo();
@@ -90,10 +90,6 @@ public:
 		return m_isVideoPlayed;
 	}
 
-	//! Renvoie l'ID de la texture RGB dans le GPU représentant la frame lue du fichier vidéo
-	GLuint getRBG_VideoTexture() const {
-		return videoTexture.rgb;
-	}
 	//! Renvoie l'ID des textures YUV dans le GPU représentant la frame lue du fichier vidéo
 	VideoTexture getYUV_VideoTexture() const {
 		return videoTexture;
@@ -113,7 +109,6 @@ private:
 
 	Media* media=nullptr;
 	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
-	bool isDisplayRVB;			//!< indique si le rendu doit être converti en RVG ou pas
 
 	std::string fileName; 	//!< nom de la vidéo
 	Resolution videoRes;	//!< int video_w, video_h;	//!< taille w,h  de la vidéo

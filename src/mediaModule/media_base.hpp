@@ -24,7 +24,6 @@ struct VideoTexture {
     GLuint &y = tex[0];
     GLuint &u = tex[1];
     GLuint &v = tex[2];
-    GLuint &rgb = tex[0];
 };
 
 struct Resolution {
