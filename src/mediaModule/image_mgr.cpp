@@ -35,6 +35,11 @@
 
 ImageMgr::ImageMgr()
 {
+	strToPos["viewport"] = IMAGE_POSITIONING::POS_VIEWPORT;
+	strToPos["horizontal"] = IMAGE_POSITIONING::POS_HORIZONTAL;
+	strToPos["equatorial"] = IMAGE_POSITIONING::POS_EQUATORIAL;
+	strToPos["j2000"] = IMAGE_POSITIONING::POS_J2000;
+	strToPos["dome"] = IMAGE_POSITIONING::POS_DOME;
 	currentImg = nullptr;
 }
 
@@ -69,13 +74,11 @@ int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::strin
 
 IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & coordinate) const
 {
-	IMAGE_POSITIONING img_pos = IMAGE_POSITIONING::POS_VIEWPORT;
-	if (coordinate == "horizontal") img_pos = IMAGE_POSITIONING::POS_HORIZONTAL;
-	else if (coordinate == "equatorial") img_pos = IMAGE_POSITIONING::POS_EQUATORIAL;
-	else if (coordinate == "j2000") img_pos = IMAGE_POSITIONING::POS_J2000;
-	else if (coordinate == "dome") img_pos = IMAGE_POSITIONING::POS_DOME;
-
-	return img_pos;
+	auto it=strToPos.find(coordinate);
+	if(it!=strToPos.end())
+		return it->second;
+	else
+		return IMAGE_POSITIONING::POS_VIEWPORT;
 }
 
 int ImageMgr::loadImage(const std::string& filename, const std::string& name, const std::string& coordinate, bool mipmap)

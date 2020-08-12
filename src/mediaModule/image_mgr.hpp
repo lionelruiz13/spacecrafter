@@ -27,9 +27,9 @@
 #define _IMAGE_MGR_H_
 
 #include <list>
+#include <map>
 #include <string>
 #include <memory>
-#include <map>
 #include <GL/glew.h>
 #include "tools/vecmath.hpp"
 #include "mediaModule/media_base.hpp"
@@ -41,8 +41,7 @@ class Projector;
 
 /**
  * @class ImageMgr
- * @brief Cette classe s'ocupe de gérer toutes les entités Image utilisées 
- * dans les scripts. 
+ * @brief Cette classe s'ocupe de gérer toutes les entités Image utilisées dans les scripts. 
  * 
  * Le conteneur active_images contient toutes les images qui sont indépendantes.
  * Cette classe sert alors gestionnaire d'images.
@@ -100,12 +99,13 @@ public:
 
 	//! clone une image afin de l'afficher en double ou en triple
 	void clone(const std::string& _name, int i);
-private:
+
 	//! convertit une chaine de caractère en enum IMAGE_POSITIONING
 	IMAGE_POSITIONING  convertStrToPosition( const std::string & coordinate) const;
-
+private:
 	Image * currentImg=nullptr;
 	std::list<std::unique_ptr<Image>> active_images;
+	std::map<std::string , IMAGE_POSITIONING> strToPos;
 };
 
 
