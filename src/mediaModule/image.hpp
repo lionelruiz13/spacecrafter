@@ -35,6 +35,7 @@
 #include "renderGL/shader.hpp"
 #include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
+#include "mediaModule/media_base.hpp"
 
 class s_texture;
 class Navigator;
@@ -45,14 +46,6 @@ class Image : public NoCopy{
 
 public:
 	// is the image flat on the viewport or positioned with alt-azimuthal or earth equatorial coordinates?
-	enum class IMAGE_POSITIONING : char {
-		POS_VIEWPORT,
-		POS_HORIZONTAL,
-		POS_EQUATORIAL,
-		POS_J2000,
-		POS_DOME
-	};
-
 	Image(Image const *n, int i);
 
 	Image() = delete;

@@ -28,6 +28,7 @@
 
 #include <iostream>
 #include "mediaModule/image_mgr.hpp"
+#include "mediaModule/image.hpp"
 #include "tools/s_texture.hpp"
 #include <algorithm>
 
@@ -54,7 +55,7 @@ int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::strin
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
-	Image::IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
+	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
 	s_texture* imgVideo = new s_texture(name, imgTex);
 	std::unique_ptr<Image> img = std::make_unique<Image>(imgVideo, name, img_pos);
 
@@ -66,13 +67,13 @@ int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::strin
 
 }
 
-Image::IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & coordinate) const
+IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & coordinate) const
 {
-	Image::IMAGE_POSITIONING img_pos = Image::IMAGE_POSITIONING::POS_VIEWPORT;
-	if (coordinate == "horizontal") img_pos = Image::IMAGE_POSITIONING::POS_HORIZONTAL;
-	else if (coordinate == "equatorial") img_pos = Image::IMAGE_POSITIONING::POS_EQUATORIAL;
-	else if (coordinate == "j2000") img_pos = Image::IMAGE_POSITIONING::POS_J2000;
-	else if (coordinate == "dome") img_pos = Image::IMAGE_POSITIONING::POS_DOME;
+	IMAGE_POSITIONING img_pos = IMAGE_POSITIONING::POS_VIEWPORT;
+	if (coordinate == "horizontal") img_pos = IMAGE_POSITIONING::POS_HORIZONTAL;
+	else if (coordinate == "equatorial") img_pos = IMAGE_POSITIONING::POS_EQUATORIAL;
+	else if (coordinate == "j2000") img_pos = IMAGE_POSITIONING::POS_J2000;
+	else if (coordinate == "dome") img_pos = IMAGE_POSITIONING::POS_DOME;
 
 	return img_pos;
 }
@@ -81,7 +82,7 @@ int ImageMgr::loadImage(const std::string& filename, const std::string& name, co
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
-	Image::IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
+	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
 	std::unique_ptr<Image> img = std::make_unique<Image>(filename, name, img_pos, mipmap);
 
 	if (!img || img->imageLoaded()) {

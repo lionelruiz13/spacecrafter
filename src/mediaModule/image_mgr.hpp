@@ -31,8 +31,13 @@
 #include <memory>
 #include <map>
 #include <GL/glew.h>
-#include "mediaModule/image.hpp"
+#include "tools/vecmath.hpp"
+#include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"
+
+class Image;
+class Navigator;
+class Projector;
 
 /**
  * @class ImageMgr
@@ -97,7 +102,7 @@ public:
 	void clone(const std::string& _name, int i);
 private:
 	//! convertit une chaine de caractère en enum IMAGE_POSITIONING
-	Image::IMAGE_POSITIONING  convertStrToPosition( const std::string & coordinate) const;
+	IMAGE_POSITIONING  convertStrToPosition( const std::string & coordinate) const;
 
 	Image * currentImg=nullptr;
 	std::list<std::unique_ptr<Image>> active_images;
