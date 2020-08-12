@@ -64,13 +64,13 @@ public:
 
 	//! indique si on active la transparence sur la KeyColor
 	void setTransparency(bool v) {
-		printf("définition de setTransparency\n");
+		// printf("définition de setTransparency\n");
 		transparency = v;
 	}
 
 	//! KeyColor a utiliser pour la transparence
 	void setKeyColor(const Vec3f&color, float intensity) {
-		printf("définition de setKeyColor\n");
+		// printf("définition de setKeyColor\n");
 		noColor = Vec4f(color[0], color[1], color[2],intensity);
 	}
 
