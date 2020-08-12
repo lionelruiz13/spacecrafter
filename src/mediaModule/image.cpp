@@ -523,10 +523,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	Mat4f matrix=mat.convert();
 	Mat4f proj = prj->getMatProjection().convert();
 
-	if (drawUp)
-		plotDirection = 1.0;
-	else
-		plotDirection = -1.0;
+	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
 	// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
 	imagev = Mat4d::zrotation(plotDirection*(image_ypos-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
@@ -537,7 +534,6 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	if (grid_size < 5) grid_size = 5;
 
 	for (int i=0; i<grid_size; i++) {
-
 		for (int j=0; j<=grid_size; j++) {
 
 			for (int k=0; k<=1; k++) {
@@ -566,7 +562,6 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 			}
 		}
 	}
-
 	shaderUnified->use();
 
 	shaderUnified->setUniform("ModelViewProjectionMatrix",proj*matrix);
