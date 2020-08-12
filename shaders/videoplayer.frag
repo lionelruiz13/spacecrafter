@@ -27,12 +27,11 @@ void main(void)
 	//vec3 tex_color = vec3(texture(texunit0,TexCoord)).rgb;
 
 	if (transparency) {
+		vec3 diffVec = abs(tex_color-noColor.rgb);
 		float delta = noColor.a;
-		if (noColor.r-delta < tex_color.r && tex_color.r <noColor.r+delta)
-			if (noColor.b-delta < tex_color.b && tex_color.b <noColor.b+delta)
-				if (noColor.g-delta < tex_color.g && tex_color.g <noColor.g+delta)
-					discard;
-		}
+		if ((diffVec.r<delta) && (diffVec.g<delta) && (diffVec.b<delta))
+			discard;
+	}
 
 	FragColor = vec4(tex_color, fader);
 }
