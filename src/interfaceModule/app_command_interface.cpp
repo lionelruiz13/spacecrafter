@@ -2193,15 +2193,6 @@ int AppCommandInterface::commandImage()
 		return executeCommandStatus();
 	}
 
-	if (argAction==W_TWICE) {
-		media->imageClone(argName,2);
-		return executeCommandStatus();
-	}
-	if (argAction==W_THRICE) {
-		media->imageClone(argName,3);
-		return executeCommandStatus();
-	}
-
 	if (argAction== W_LOAD && !argFileName.empty()) {
 		FilePath myFile  = FilePath(evalString(argFileName), FilePath::TFP::IMAGE);
 		if (!myFile.exist()) {
@@ -2212,12 +2203,22 @@ int AppCommandInterface::commandImage()
 		if (!args[W_HP].empty()) {
 			argCoordinate = "equatorial";
 		}
+
+		std::string argCopies = args["copies"];
+		IMG_COPIES tmpCopies = IMG_COPIES::ONCE;
+		if (argCopies==W_TWICE) {
+			tmpCopies = IMG_COPIES::TWICE;
+		}
+		if (argCopies==W_THRICE) {
+			tmpCopies = IMG_COPIES::THRICE;
+		}
+
 		bool mipmap = 0; // Default off for historical reasons
 		if (Utility::isTrue(args[W_MIPMAP]))
 			mipmap = 1;
 
 		//TODO récupérer une erreur compréhensible plutot qu'un int ?
-		int status = media->imageLoad(myFile.toString(), evalString(argName), argCoordinate, mipmap);
+		int status = media->imageLoad(myFile.toString(), evalString(argName), argCoordinate, tmpCopies , mipmap);
 		if (status!=1) {
 			debug_message = _("Unable to load image: ") + argName;
 			return executeCommandStatus();
@@ -2699,6 +2700,15 @@ int AppCommandInterface::commandMedia()
 			if (!fileVideo.exist()) {
 				debug_message = _("command 'media': file videoname not found");
 				return executeCommandStatus();
+			}
+
+			std::string argCopies = args["copies"];
+			IMG_COPIES tmpCopies = IMG_COPIES::ONCE;
+			if (argCopies==W_TWICE) {
+				tmpCopies = IMG_COPIES::TWICE;
+			}
+			if (argCopies==W_THRICE) {
+				tmpCopies = IMG_COPIES::THRICE;
 			}
 
 			if (!audioName.empty()) {

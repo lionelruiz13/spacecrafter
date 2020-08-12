@@ -196,8 +196,8 @@ public:
 	//interface image
 	//
 	////////////////////////////////////////////////////////////////////////////
-	int imageLoad(const std::string &filename, const  std::string &name, const std::string &coordinate, bool mipmap) {
-		return imageMgr->loadImage( filename,  name, coordinate, mipmap);
+	int imageLoad(const std::string &filename, const  std::string &name, const std::string &coordinate, IMG_COPIES nbCopies, bool mipmap) {
+		return imageMgr->loadImage( filename,  name, coordinate, nbCopies, mipmap);
 	}
 
 	void imageClone(const std::string &name, int i) {
