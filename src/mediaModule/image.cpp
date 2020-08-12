@@ -189,7 +189,7 @@ void Image::createShaderUnified()
 
 	// shaderUnified->setUniformLocation("ModelViewProjectionMatrix");
 	// shaderUnified->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderUnified->setUniformLocation("ModelViewMatrix");
+	shaderUnified->setUniformLocation("ModelViewMatrix");
 
 //	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project");
 //	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project_fixed_fov");
