@@ -40,4 +40,10 @@ enum class IMAGE_POSITIONING : char {
 	POS_DOME
 };
 
+enum class IMG_COPIES : char{
+    ONCE,
+    TWICE,
+    THRICE
+};
+
 #endif  // __MEDIA_BASE_HPP__

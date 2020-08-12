@@ -49,8 +49,8 @@ public:
 	Image(Image const *n, int i);
 
 	Image() = delete;
-	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, bool mipmap);
-	Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_type);
+	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_COPIES nbCopies, bool mipmap);
+	Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_COPIES nbCopies);
 	virtual ~Image();
 
 	void setAlpha(float alpha, float duration);
