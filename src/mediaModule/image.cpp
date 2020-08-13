@@ -44,12 +44,16 @@ Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIO
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
 	image_RGB = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
+	useRGB = true;
 	initialise(name, pos_type,project, mipmap);
 }
 
 Image::Image(s_texture *_imgY, s_texture *_imgU, s_texture *_imgV, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
 {
-	image_RGB = _imgY;
+	useRGB = false;
+	image_Y = _imgY;
+	image_U = _imgU;
+	image_V = _imgV;
 	needFlip = true;
 	isPersistent = true;
 	initialise(name, pos_type, project);
@@ -72,7 +76,10 @@ void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_
 	}
 
 	int img_w, img_h;
-	image_RGB->getDimensions(img_w, img_h);
+	if (useRGB)
+		image_RGB->getDimensions(img_w, img_h);
+	else
+		image_Y->getDimensions(img_w, img_h);
 
 	if (img_h == 0) 
 		image_ratio = -1; // no image loaded
@@ -137,6 +144,8 @@ void Image::createShaderUnified()
 	shaderUnified->init("imageUnified.vert","imageUnified.frag");
 	shaderUnified->setUniformLocation({"fader","MVP","transparency","noColor", "clipping_fov"});
 	shaderUnified->setUniformLocation("ModelViewMatrix");
+	// a cause des textures YUV
+	shaderUnified->setUniformLocation("useRGB");
 }
 
 
@@ -377,8 +386,18 @@ void Image::draw(const Navigator * nav, Projector * prj)
 
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
+
+	if (useRGB) {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
+	} else {
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture (GL_TEXTURE_2D, image_Y->getID());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture (GL_TEXTURE_2D, image_U->getID());
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture (GL_TEXTURE_2D, image_V->getID());
+	}
 
 	switch (image_pos_type) {
 		case IMAGE_POSITIONING::POS_VIEWPORT:
@@ -479,7 +498,6 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 
 	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
-	shaderUnified->use();
 	for (int i=0; i<howManyDisplay; i++) {
 		// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
 		imagev = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
@@ -518,10 +536,14 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 			}
 		}
 
+		shaderUnified->use();
+
 		shaderUnified->setUniform("ModelViewMatrix",matrix);
 		shaderUnified->setUniform("fader", image_alpha);
 		shaderUnified->setUniform("transparency",transparency);
 		shaderUnified->setUniform("noColor",noColor);
+		// à cause des textures RGB
+		shaderUnified->setUniform("useRGB", useRGB);
 
 		Vec3f clipping_fov = prj->getClippingFov();
 
@@ -538,5 +560,4 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 		vecImgPos.clear();
 		vecImgTex.clear();
 	}
-	shaderUnified->unuse();
 }

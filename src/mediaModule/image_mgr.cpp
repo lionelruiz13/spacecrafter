@@ -61,9 +61,9 @@ int ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std:
 	// if name already exists, replace with new image
 	this->drop_image(name);
 	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
-	s_texture* imgY = new s_texture(name, imgTex.y);
-	s_texture* imgU = new s_texture(name, imgTex.u);
-	s_texture* imgV = new s_texture(name, imgTex.v);
+	s_texture* imgY = new s_texture(name+"_y", imgTex.y);
+	s_texture* imgU = new s_texture(name+"_u", imgTex.u);
+	s_texture* imgV = new s_texture(name+"_v", imgTex.v);
 	std::unique_ptr<Image> img = std::make_unique<Image>(imgY, imgU, imgV, name, img_pos, project);
 
 	if (!img || img->imageLoaded()) {

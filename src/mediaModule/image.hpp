@@ -98,7 +98,15 @@ private:
 	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(Projector * prj); 
 
+	// RGB
 	s_texture* image_RGB = nullptr;
+	// ou
+	s_texture* image_Y = nullptr;
+	s_texture* image_U = nullptr;
+	s_texture* image_V = nullptr;
+	//pour distinguer quelle texture ont doit utiliser:
+	bool useRGB;
+
 	std::string image_name;
 	IMAGE_POSITIONING image_pos_type;
 	bool isPersistent= false;
