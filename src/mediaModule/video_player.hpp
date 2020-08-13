@@ -66,7 +66,7 @@ public:
 	void update();
 
 	//! initialise la ffmpeg avec le nom du fichier passé en argument
-	int playNewVideo(const std::string& fileName);
+	bool playNewVideo(const std::string& fileName);
 
 	//! termine la lecture d'une vidéo en cours
 	void stopCurrentVideo();

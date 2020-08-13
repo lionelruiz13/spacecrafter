@@ -97,7 +97,7 @@ bool VideoPlayer::restartCurrentVideo()
 }
 
 
-int VideoPlayer::playNewVideo(const std::string& _fileName)
+bool VideoPlayer::playNewVideo(const std::string& _fileName)
 {
 #ifndef WIN32
 	if (m_isVideoPlayed)
@@ -108,7 +108,7 @@ int VideoPlayer::playNewVideo(const std::string& _fileName)
 		fileName = _fileName;
 	} else {
 		cLog::get()->write("Videoplayer: error reading file "+ _fileName + " abording...", LOG_TYPE::L_ERROR);
-		return -2;
+		return false;
 	}
 
 	init();
@@ -117,12 +117,12 @@ int VideoPlayer::playNewVideo(const std::string& _fileName)
 	if(avformat_open_input(&pFormatCtx,fileName.c_str(),NULL,NULL)!=0) {
 		cLog::get()->write("Couldn't open input stream.", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
-		return -1;
+		return false;
 	}
 	if(avformat_find_stream_info(pFormatCtx,NULL)<0) {
 		cLog::get()->write("Couldn't find stream information.", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
-		return -1;
+		return false;
 	}
 	videoindex=-1;
 	for(unsigned int i=0; i<pFormatCtx->nb_streams; i++)
@@ -133,7 +133,7 @@ int VideoPlayer::playNewVideo(const std::string& _fileName)
 	if(videoindex==-1) {
 		cLog::get()->write("Didn't find a video stream.", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
-		return -1;
+		return false;
 	}
 
 	video_st = pFormatCtx->streams[videoindex];
@@ -145,12 +145,12 @@ int VideoPlayer::playNewVideo(const std::string& _fileName)
 	if(pCodec==NULL) {
 		cLog::get()->write("Unsupported pCodec for video file", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
-		return -1;
+		return false;
 	}
 	if(avcodec_open2(pCodecCtx, pCodec,NULL)<0) {
 		cLog::get()->write("Could not open codec.", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
-		return -1;
+		return false;
 	}
 
 	videoRes.w = pCodecCtx->width;
@@ -169,12 +169,12 @@ int VideoPlayer::playNewVideo(const std::string& _fileName)
 	img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
 	if(img_convert_ctx==NULL) {
 		cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
-		return -1;
+		return false;
 	}
 	
 	if(pCodecCtx->pix_fmt != AV_PIX_FMT_YUV420P) {
 		cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
-		return -1;
+		return false;
 	}
 	pFrameIn = av_frame_alloc();
 	pFrameOut=av_frame_alloc();
@@ -193,7 +193,7 @@ int VideoPlayer::playNewVideo(const std::string& _fileName)
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
-	return 0;
+	return true;
 #endif
 }
 

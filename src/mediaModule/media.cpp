@@ -129,14 +129,12 @@ void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-int Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
 {
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
-	int tmp = player->playNewVideo(filename);
-	
-	if (tmp !=0) {
+	if (player->playNewVideo(filename) ==false) {
 		cLog::get()->write("Media::playerPlay error playing videofilename "+filename, LOG_TYPE::L_ERROR);
-		return tmp;
+		return false;
 	}
 
 	m_videoState.state=V_STATE::V_PLAY;
@@ -149,7 +147,7 @@ int Media::playerPlay(const VID_TYPE &type, const std::string &filename, const s
 		m_videoState.state=V_STATE::V_NONE;
 		m_videoState.type=V_TYPE::V_NONE;
 		cLog::get()->write("Media::playerPlay error playerVideo with "+filename, LOG_TYPE::L_ERROR);
-		return -1;
+		return false;
 	}
 	switch(type) {
 		case VID_TYPE::V_VR360 :
@@ -187,19 +185,19 @@ int Media::playerPlay(const VID_TYPE &type, const std::string &filename, const s
 			m_videoState.type=V_TYPE::V_NONE;
 			break;
 	}
-	return 1;
+	return true;
 }
 
-int Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
 {
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
-	int tmp = playerPlay(type, videoname, _name, _position, tmpProject);
-	if (tmp >0 && !audioname.empty()) {
+	bool tmp = playerPlay(type, videoname, _name, _position, tmpProject);
+	if (tmp && !audioname.empty()) {
 		audioMusicHalt();
 		audioMusicLoad(audioname, false);
 		audioMusicPlay();
 		cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
-		return 0;
+		return true;
 	}
 	return tmp;
 }

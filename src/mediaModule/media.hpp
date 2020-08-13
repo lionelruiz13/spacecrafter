@@ -291,7 +291,7 @@ public:
 		audio->musicPause();
 	}
 
-	int playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
+	bool playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
 
 	void playerStop();
 
@@ -306,7 +306,7 @@ public:
 	}
 
 private:
-	int playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
+	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
 
 	Audio * audio = nullptr;
 	ImageMgr* imageMgr = nullptr;
