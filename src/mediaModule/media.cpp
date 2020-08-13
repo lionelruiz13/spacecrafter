@@ -44,7 +44,6 @@ Media::Media()
 	m_videoState = {V_TYPE::V_NONE, V_STATE::V_NONE};
 }
 
-
 Media::~Media()
 {
 	if (audio)	delete audio;
@@ -130,7 +129,7 @@ void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-int Media::playerPlay(const std::string &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+int Media::playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
 {
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
 	int tmp = player->playNewVideo(filename);
@@ -146,60 +145,60 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 	vr360->displayStop();
 	viewPort->displayStop();
 
-	if (playerisVideoPlayed()) {
-		if (type == "VR360") {
+	if (!playerisVideoPlayed()) {
+		m_videoState.state=V_STATE::V_NONE;
+		m_videoState.type=V_TYPE::V_NONE;
+		cLog::get()->write("Media::playerPlay error playerVideo with "+filename, LOG_TYPE::L_ERROR);
+		return -1;
+	}
+	switch(type) {
+		case VID_TYPE::V_VR360 :
 			vr360->setTexture(player->getYUV_VideoTexture());
 			vr360->modeSphere();
 			vr360->display(true);
 			m_videoState.type=V_TYPE::V_VR360;
-			return 1;
-		} else if (type == "VRCUBE") {
+			break;
+		case VID_TYPE::V_VRCUBE :
 			vr360->setTexture(player->getYUV_VideoTexture());
 			vr360->modeCube();
 			vr360->display(true);
 			m_videoState.type=V_TYPE::V_VRCUBE;
-			return 1;
-		} else if (type == "VIEWPORT") {
+			break;
+		case VID_TYPE::V_FULLVIEWPORT :
 			viewPort->setTexture(player->getYUV_VideoTexture());
 			viewPort->displayFullScreen(true);
 			viewPort->display(true);
 			m_videoState.type=V_TYPE::V_VIEWPORT;
-			return 2;
-		} else if (type == "DUAL_VIEWPORT") {
+			break;
+		case VID_TYPE::V_DUALVIEWPORT :
 			viewPort->setTexture(player->getYUV_VideoTexture());
 			viewPort->displayFullScreen(false);
 			viewPort->display(true);
 			m_videoState.type=V_TYPE::V_VIEWPORT;
-			return 2;
-		} else if (type == "IMAGE") {
+			break;
+		case VID_TYPE::V_IMAGE :
 			m_videoState.type=V_TYPE::V_IMAGE;
 			imageVideoName = _name;
 			imageMgr->loadImage(player->getYUV_VideoTexture(),_name, _position, tmpProject);
-			return 3;
-		} else {//no type -> stop playing
+			break;
+		case VID_TYPE::V_NONE :
 			playerStop();
 			m_videoState.state=V_STATE::V_NONE;
 			m_videoState.type=V_TYPE::V_NONE;
-			return -1;
-		}
-	} else {
-		m_videoState.state=V_STATE::V_NONE;
-		m_videoState.type=V_TYPE::V_NONE;
-		cLog::get()->write("Media::playerPlay error playerVideo with "+filename, LOG_TYPE::L_ERROR);
-		printf("playerVideo est en erreur\n");
-		return -1;
+			break;
 	}
+	return 1;
 }
 
-int Media::playerPlay(const std::string &type,const  std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
+int Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
 {
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
-	cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
 	int tmp = playerPlay(type, videoname, _name, _position, tmpProject);
-	if (tmp >0) {
+	if (tmp >0 && !audioname.empty()) {
 		audioMusicHalt();
 		audioMusicLoad(audioname, false);
 		audioMusicPlay();
+		cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
 		return 0;
 	}
 	return tmp;

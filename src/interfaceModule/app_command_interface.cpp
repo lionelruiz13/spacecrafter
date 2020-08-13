@@ -2680,8 +2680,9 @@ int AppCommandInterface::commandMedia()
 	if (!argAction.empty() ) {
 
 		if (argAction == W_PLAY) {
-			std::string type = args[W_TYPE];
-			if (type.empty()) {
+			std::string type_string = args[W_TYPE];
+			VID_TYPE type = media->strToVideoType(type_string);
+			if (type==VID_TYPE::V_NONE) {
 				debug_message = "Command 'media' argument action need argument 'type'";
 				return executeCommandStatus();
 			}
@@ -2691,7 +2692,7 @@ int AppCommandInterface::commandMedia()
 			std::string argPosition = args[W_POSITION];
 
 			FilePath::TFP localRepertory;
-			if (type == W_VR360 || type == W_VRCUBE)
+			if (type_string == W_VR360 || type_string == W_VRCUBE)
 				localRepertory = FilePath::TFP::VR360;
 			else
 				localRepertory = FilePath::TFP::MEDIA;
