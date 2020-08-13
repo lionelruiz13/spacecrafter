@@ -34,6 +34,13 @@ Media::Media()
 	player = new VideoPlayer(this);
 	viewPort = new ViewPort();
 	vr360 = new VR360();
+
+	strToVid["vr_cube"] = VID_TYPE::V_VRCUBE;
+	strToVid["vr360"] = VID_TYPE::V_VR360 ;
+	strToVid["image"] = VID_TYPE::V_IMAGE;
+	strToVid["viewport"] = VID_TYPE::V_FULLVIEWPORT;
+	strToVid["dual_viewport"] = VID_TYPE::V_DUALVIEWPORT;
+
 	m_videoState = {V_TYPE::V_NONE, V_STATE::V_NONE};
 }
 
@@ -47,6 +54,14 @@ Media::~Media()
 	if (viewPort) delete viewPort;
 }
 
+VID_TYPE Media::strToVideoType(const std::string& value)
+{
+	auto it = strToVid.find(value);
+	if (it ==strToVid.end())
+		return VID_TYPE::V_NONE;
+	else
+		return it->second;
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 void Media::audioMusicLoad(const std::string &filename, bool )

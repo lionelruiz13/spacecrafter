@@ -26,6 +26,8 @@
 #ifndef _MEDIA_HPP_
 #define _MEDIA_HPP_
 
+#include <map>
+#include <string>
 #include "mediaModule/audio.hpp"
 #include "mediaModule/image_mgr.hpp"
 #include "mediaModule/video_player.hpp"
@@ -278,6 +280,8 @@ public:
 	//interface video
 	//
 	////////////////////////////////////////////////////////////////////////////
+	VID_TYPE strToVideoType(const std::string& value);
+
 	void playerUpdate() {
 		player->update();
 	}
@@ -327,6 +331,7 @@ private:
 
 	VideoState m_videoState;
 	AudioState m_audioState;
+	std::map<std::string, VID_TYPE> strToVid;
 };
 
 #endif //MEDIA_HPP

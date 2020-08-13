@@ -46,4 +46,13 @@ enum class IMG_PROJECT : char{
     THRICE
 };
 
+enum class VID_TYPE : char {
+    V_NONE,
+    V_VRCUBE,
+    V_VR360,
+    V_FULLVIEWPORT,
+    V_DUALVIEWPORT,
+    V_IMAGE
+};
+
 #endif  // __MEDIA_BASE_HPP__
