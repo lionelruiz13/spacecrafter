@@ -27,6 +27,7 @@
 // manage an assortment of script loaded images
 
 #include <iostream>
+#include <algorithm>
 #include "mediaModule/image_mgr.hpp"
 #include "mediaModule/image.hpp"
 #include "tools/s_texture.hpp"
@@ -56,6 +57,7 @@ ImageMgr::~ImageMgr()
 	dropAllImages();
 }
 
+
 int ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project)
 {
 	// if name already exists, replace with new image
@@ -74,14 +76,18 @@ int ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std:
 
 }
 
-IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & coordinate) const
+
+IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & _coordinate) const
 {
+	std::string coordinate = _coordinate;
+	transform(coordinate.begin(), coordinate.end(), coordinate.begin(), ::tolower);
 	auto it=strToPos.find(coordinate);
 	if(it!=strToPos.end())
 		return it->second;
 	else
 		return IMAGE_POSITIONING::POS_VIEWPORT;
 }
+
 
 int ImageMgr::loadImage(const std::string& filename, const std::string& name, const std::string& coordinate,  IMG_PROJECT project, bool mipmap)
 {

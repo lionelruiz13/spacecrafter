@@ -22,6 +22,7 @@
  *
  */
 
+#include <algorithm>
 #include "mediaModule/media.hpp"
 #include "tools/log.hpp"
 
@@ -53,8 +54,10 @@ Media::~Media()
 	if (viewPort) delete viewPort;
 }
 
-VID_TYPE Media::strToVideoType(const std::string& value)
+VID_TYPE Media::strToVideoType(const std::string& _value)
 {
+	std::string value = _value;
+	transform(value.begin(), value.end(), value.begin(), ::tolower);
 	auto it = strToVid.find(value);
 	if (it ==strToVid.end())
 		return VID_TYPE::V_NONE;
