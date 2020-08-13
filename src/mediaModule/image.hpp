@@ -46,7 +46,7 @@ class Image : public NoCopy{
 
 public:
 	// is the image flat on the viewport or positioned with alt-azimuthal or earth equatorial coordinates?
-	Image(Image const *n, int i);
+	// Image(Image const *n, int i);
 
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap);

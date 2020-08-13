@@ -98,7 +98,7 @@ public:
 	void draw(const Navigator * nav, Projector * prj);
 
 	//! clone une image afin de l'afficher en double ou en triple
-	void clone(const std::string& _name, int i);
+	// void clone(const std::string& _name, int i);
 
 	//! convertit une chaine de caractère en enum IMAGE_POSITIONING
 	IMAGE_POSITIONING  convertStrToPosition( const std::string & coordinate) const;

@@ -40,60 +40,60 @@ std::unique_ptr<shaderProgram> Image::shaderUnified;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 
-Image::Image(const Image* n, int i)
-{
-		//cas n=n;
-	if (this == n)
-		return;
-	this->image_tex = new s_texture(n->image_tex);
-	this->image_name = n-> image_name;
-	this->image_pos_type = n-> image_pos_type;
-	this->isPersistent = n-> isPersistent;
+// Image::Image(const Image* n, int i)
+// {
+// 		//cas n=n;
+// 	if (this == n)
+// 		return;
+// 	this->image_tex = new s_texture(n->image_tex);
+// 	this->image_name = n-> image_name;
+// 	this->image_pos_type = n-> image_pos_type;
+// 	this->isPersistent = n-> isPersistent;
 
-	this->needFlip = n-> needFlip;
+// 	this->needFlip = n-> needFlip;
 
-	//data
-	this->image_alpha = n->image_alpha;
-	this->image_scale = n-> image_scale;
-	this->image_rotation = n-> image_rotation;
+// 	//data
+// 	this->image_alpha = n->image_alpha;
+// 	this->image_scale = n-> image_scale;
+// 	this->image_rotation = n-> image_rotation;
 
-	//flag
-	this->flag_alpha = n->flag_alpha;
-	this->flag_scale = n->flag_scale;
-	this->flag_rotation = n->flag_rotation;
-	this->flag_location = n->flag_location;
+// 	//flag
+// 	this->flag_alpha = n->flag_alpha;
+// 	this->flag_scale = n->flag_scale;
+// 	this->flag_rotation = n->flag_rotation;
+// 	this->flag_location = n->flag_location;
 
-	//coeff, mult
-	this->mult_alpha = n->mult_alpha;
-	this->mult_scale = n-> mult_scale;
-	this->mult_rotation = n-> mult_rotation;
-	this->coef_alpha = n->coef_alpha;
-	this->coef_scale = n-> coef_scale;
-	this->coef_rotation = n-> coef_rotation;
+// 	//coeff, mult
+// 	this->mult_alpha = n->mult_alpha;
+// 	this->mult_scale = n-> mult_scale;
+// 	this->mult_rotation = n-> mult_rotation;
+// 	this->coef_alpha = n->coef_alpha;
+// 	this->coef_scale = n-> coef_scale;
+// 	this->coef_rotation = n-> coef_rotation;
 
-	//start, end
-	this->start_alpha = n->start_alpha;
-	this->start_scale = n-> start_scale;
-	this->start_rotation = n-> start_rotation;
-	this->end_alpha = n->end_alpha;
-	this->end_scale = n-> end_scale;
-	this->end_rotation = n-> end_rotation;
+// 	//start, end
+// 	this->start_alpha = n->start_alpha;
+// 	this->start_scale = n-> start_scale;
+// 	this->start_rotation = n-> start_rotation;
+// 	this->end_alpha = n->end_alpha;
+// 	this->end_scale = n-> end_scale;
+// 	this->end_rotation = n-> end_rotation;
 
-	//img param
-	this->image_ratio = n-> image_ratio;
-	this->image_xpos = n-> image_xpos;
-	this->image_ypos = n-> image_ypos+i;
+// 	//img param
+// 	this->image_ratio = n-> image_ratio;
+// 	this->image_xpos = n-> image_xpos;
+// 	this->image_ypos = n-> image_ypos+i;
 
-	//bool
-	this->flag_alpha = n-> flag_alpha;
-	this->flag_scale = n->flag_scale;
-	this->flag_rotation = n-> flag_rotation;
-	this->flag_location = n-> flag_location;
+// 	//bool
+// 	this->flag_alpha = n-> flag_alpha;
+// 	this->flag_scale = n->flag_scale;
+// 	this->flag_rotation = n-> flag_rotation;
+// 	this->flag_location = n-> flag_location;
 
-	if (this->image_ypos>360)
-		this->image_ypos = this->image_ypos -360;
-	//~ cout << "Clone pos " << this->image_xpos << " " <<this->image_ypos << " " <<  this->image_ratio << " " << this->image_rotation << " " << this->image_alpha << " " << endl;
-}
+// 	if (this->image_ypos>360)
+// 		this->image_ypos = this->image_ypos -360;
+// 	//~ cout << "Clone pos " << this->image_xpos << " " <<this->image_ypos << " " <<  this->image_ratio << " " << this->image_rotation << " " << this->image_alpha << " " << endl;
+// }
 
 
 Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap)

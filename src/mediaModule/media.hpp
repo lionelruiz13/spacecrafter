@@ -200,9 +200,9 @@ public:
 		return imageMgr->loadImage( filename,  name, coordinate, project, mipmap);
 	}
 
-	void imageClone(const std::string &name, int i) {
-		imageMgr->clone(name,i);
-	}
+	// void imageClone(const std::string &name, int i) {
+	// 	imageMgr->clone(name,i);
+	// }
 
 	void imageDrop(const std::string &name) {
 		return imageMgr->drop_image(name);
