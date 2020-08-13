@@ -45,8 +45,6 @@ class VertexArray;
 class Image : public NoCopy{
 
 public:
-	// is the image flat on the viewport or positioned with alt-azimuthal or earth equatorial coordinates?
-	// Image(Image const *n, int i);
 
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap);
@@ -64,13 +62,11 @@ public:
 
 	//! indique si on active la transparence sur la KeyColor
 	void setTransparency(bool v) {
-		// printf("définition de setTransparency\n");
 		transparency = v;
 	}
 
 	//! KeyColor a utiliser pour la transparence
 	void setKeyColor(const Vec3f&color, float intensity) {
-		// printf("définition de setKeyColor\n");
 		noColor = Vec4f(color[0], color[1], color[2],intensity);
 	}
 
@@ -92,12 +88,9 @@ public:
 	static void createShaderUnified();
 	static void createShaderImageViewport();
 	static void createSC_context();
-	// static void deleteShaderUnified();
-	// static void deleteShaderImageViewport();
 
 	static std::unique_ptr<shaderProgram> shaderImageViewport;
 	static std::unique_ptr<shaderProgram> shaderUnified;
-
 private:
 	void drawViewport(const Navigator * nav, Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);

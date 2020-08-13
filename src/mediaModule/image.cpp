@@ -24,8 +24,6 @@
  *
  */
 
-// manage an image for display from scripts
-
 #include <iostream>
 #include "coreModule/projector.hpp"
 #include "mediaModule/image.hpp"
@@ -39,61 +37,6 @@ std::unique_ptr<shaderProgram> Image::shaderImageViewport;
 std::unique_ptr<shaderProgram> Image::shaderUnified;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
-
-// Image::Image(const Image* n, int i)
-// {
-// 		//cas n=n;
-// 	if (this == n)
-// 		return;
-// 	this->image_tex = new s_texture(n->image_tex);
-// 	this->image_name = n-> image_name;
-// 	this->image_pos_type = n-> image_pos_type;
-// 	this->isPersistent = n-> isPersistent;
-
-// 	this->needFlip = n-> needFlip;
-
-// 	//data
-// 	this->image_alpha = n->image_alpha;
-// 	this->image_scale = n-> image_scale;
-// 	this->image_rotation = n-> image_rotation;
-
-// 	//flag
-// 	this->flag_alpha = n->flag_alpha;
-// 	this->flag_scale = n->flag_scale;
-// 	this->flag_rotation = n->flag_rotation;
-// 	this->flag_location = n->flag_location;
-
-// 	//coeff, mult
-// 	this->mult_alpha = n->mult_alpha;
-// 	this->mult_scale = n-> mult_scale;
-// 	this->mult_rotation = n-> mult_rotation;
-// 	this->coef_alpha = n->coef_alpha;
-// 	this->coef_scale = n-> coef_scale;
-// 	this->coef_rotation = n-> coef_rotation;
-
-// 	//start, end
-// 	this->start_alpha = n->start_alpha;
-// 	this->start_scale = n-> start_scale;
-// 	this->start_rotation = n-> start_rotation;
-// 	this->end_alpha = n->end_alpha;
-// 	this->end_scale = n-> end_scale;
-// 	this->end_rotation = n-> end_rotation;
-
-// 	//img param
-// 	this->image_ratio = n-> image_ratio;
-// 	this->image_xpos = n-> image_xpos;
-// 	this->image_ypos = n-> image_ypos+i;
-
-// 	//bool
-// 	this->flag_alpha = n-> flag_alpha;
-// 	this->flag_scale = n->flag_scale;
-// 	this->flag_rotation = n-> flag_rotation;
-// 	this->flag_location = n-> flag_location;
-
-// 	if (this->image_ypos>360)
-// 		this->image_ypos = this->image_ypos -360;
-// 	//~ cout << "Clone pos " << this->image_xpos << " " <<this->image_ypos << " " <<  this->image_ratio << " " << this->image_rotation << " " << this->image_alpha << " " << endl;
-// }
 
 
 Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap)
@@ -122,8 +65,7 @@ void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_
 	image_scale = 1;
 	image_name = name;
 
-	switch (project)
-	{
+	switch (project) {
 		case IMG_PROJECT::ONCE : howManyDisplay = 1; break;
 		case IMG_PROJECT::TWICE : howManyDisplay = 2; break;
 		case IMG_PROJECT::THRICE : howManyDisplay = 3; break;
@@ -194,13 +136,7 @@ void Image::createShaderUnified()
 	shaderUnified = std::make_unique<shaderProgram>();
 	shaderUnified->init("imageUnified.vert","imageUnified.frag");
 	shaderUnified->setUniformLocation({"fader","MVP","transparency","noColor", "clipping_fov"});
-
-	// shaderUnified->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderUnified->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderUnified->setUniformLocation("ModelViewMatrix");
-
-//	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project");
-//	shaderUnified->setSubroutineLocation(GL_VERTEX_SHADER,"custom_project_fixed_fov");
 }
 
 
@@ -436,7 +372,6 @@ bool Image::update(int delta_time)
 void Image::draw(const Navigator * nav, Projector * prj)
 {
 	if (image_ratio < 0 || image_alpha == 0) return;
-	//  printf("draw image %s alpha %f\n", image_name.c_str(), image_alpha);
 
 	initCache(prj);
 
@@ -517,10 +452,6 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	shaderImageViewport->setUniform("fader", image_alpha);
 	shaderImageViewport->setUniform("MVP", MVP*TRANSFO);
 
-	// m_imageViewportGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	// m_imageViewportGL->unBind();
-	// shaderImageViewport->unuse();
 	Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 
@@ -543,10 +474,8 @@ static int decalages(int i, int howManyDisplay)
 
 void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 {
-
 	float plotDirection;
 	Mat4f matrix=mat.convert();
-	//Mat4f proj = prj->getMatProjection().convert();
 
 	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
@@ -589,20 +518,13 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 			}
 		}
 
-		// shaderUnified->setUniform("ModelViewProjectionMatrix",proj*matrix);
-		// shaderUnified->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
 		shaderUnified->setUniform("ModelViewMatrix",matrix);
 		shaderUnified->setUniform("fader", image_alpha);
-		// shaderUnified->setUniform("MVP", proj*matrix);
 		shaderUnified->setUniform("transparency",transparency);
 		shaderUnified->setUniform("noColor",noColor);
 
 		Vec3f clipping_fov = prj->getClippingFov();
 
-		//	if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
-		// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project_fixed_fov");
-		// else
-		// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project");
 		if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
 			clipping_fov[2] = 180;
 
@@ -611,11 +533,6 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 		m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
 		m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
 
-		// m_imageUnifiedGL->bind();
-		// for(int i=0; i< grid_size; i++)
-		// 	glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
-		// m_imageUnifiedGL->unBind();
-		// shaderUnified->unuse();
 		Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), GL_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
 
 		vecImgPos.clear();

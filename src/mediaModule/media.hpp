@@ -60,8 +60,9 @@ struct AudioParam {
 	std::string filename;
 	bool loop;
 	float secondJump;
-	//AudioParam() {value = 0,filename = "",loop = false, secondJump = 0.f;}
 };
+
+
 
 //etat de la lecture vidéo
 enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360 , V_VRCUBE};

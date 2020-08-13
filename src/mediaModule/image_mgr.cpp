@@ -179,25 +179,3 @@ void ImageMgr::setKeyColor(const Vec3f& _color, float _intensity) {
 	if (currentImg != nullptr)
 		currentImg -> setKeyColor(_color, _intensity);
 }
-
-// void ImageMgr::clone(const std::string &_name, int i)
-// {
-// 	if (i < 2 || i > 3)
-// 		return;
-// 	Image *tmp = nullptr;
-
-// 	auto iter = std::find_if(active_images.begin(), active_images.end(), [&_name](const std::unique_ptr<Image> &ptr) { return ptr->getName() == _name; });
-// 	if (iter != active_images.end())
-// 	{
-// 		tmp = (*iter).get();
-// 		if (i == 2)
-// 		{
-// 			active_images.push_back(std::make_unique<Image>(tmp, 180.f));
-// 		}
-// 		if (i == 3)
-// 		{
-// 			active_images.push_back(std::make_unique<Image>(tmp, 240.f));
-// 			active_images.push_back(std::make_unique<Image>(tmp, 120.f));
-// 		}
-// 	}
-// }
