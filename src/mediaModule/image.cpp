@@ -40,7 +40,8 @@ std::unique_ptr<shaderProgram> Image::shaderUnified;
 std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 
-Image::Image(const Image* n, int i) {
+Image::Image(const Image* n, int i)
+{
 		//cas n=n;
 	if (this == n)
 		return;
@@ -100,7 +101,7 @@ Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIO
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
 	image_tex = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
-	initialise(name, pos_type,mipmap);
+	initialise(name, pos_type,project, mipmap);
 }
 
 Image::Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
@@ -108,10 +109,10 @@ Image::Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_
 	image_tex = _imgTex;
 	needFlip = true;
 	isPersistent = true;
-	initialise(name, pos_type);
+	initialise(name, pos_type, project);
 }
 
-void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, bool mipmap)
+void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap)
 {
 	flag_alpha = flag_scale = flag_location = flag_rotation = 0;
 	image_pos_type = pos_type;
@@ -120,6 +121,13 @@ void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, bool
 	image_xpos = image_ypos = 0; // centered is default
 	image_scale = 1;
 	image_name = name;
+
+	switch (project)
+	{
+		case IMG_PROJECT::ONCE : howManyDisplay = 1; break;
+		case IMG_PROJECT::TWICE : howManyDisplay = 2; break;
+		case IMG_PROJECT::THRICE : howManyDisplay = 3; break;
+	}
 
 	int img_w, img_h;
 	image_tex->getDimensions(img_w, img_h);
@@ -516,9 +524,23 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 	Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
 }
 
+static int decalages(int i, int howManyDisplay)
+{
+	if (howManyDisplay==1) return 0;
+
+	if (howManyDisplay==2 && i==0) return 0;
+	if (howManyDisplay==2 && i==1) return 180;
+
+	if (howManyDisplay==3 && i==0) return 0;
+	if (howManyDisplay==3 && i==1) return 120;
+	if (howManyDisplay==3 && i==2) return 180;
+
+	return 0;
+}
 
 void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 {
+	for (int i=0; i<howManyDisplay; i++) {
 	float plotDirection;
 	Mat4f matrix=mat.convert();
 	//Mat4f proj = prj->getMatProjection().convert();
@@ -526,8 +548,8 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
 	// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
-	imagev = Mat4d::zrotation(plotDirection*(image_ypos-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
-	ortho1 = Mat4d::zrotation(plotDirection*(image_ypos-90)*M_PI/180.) * Vec3d(1,0,0);
+	imagev = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
+	ortho1 = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Vec3d(1,0,0);
 	ortho2 = imagev^ortho1;
 
 	grid_size = int(image_scale/5.);  // divisions per row, column
@@ -595,4 +617,5 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 
 	vecImgPos.clear();
 	vecImgTex.clear();
+	}
 }

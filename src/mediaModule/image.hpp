@@ -101,8 +101,7 @@ public:
 private:
 	void drawViewport(const Navigator * nav, Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);
-
-	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, bool mipmap = false);
+	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(Projector * prj); 
 
 	s_texture* image_tex = nullptr;
@@ -138,6 +137,9 @@ private:
 	//données utiles au cache
 	bool initialised = false;
 	int vieww, viewh;
+
+	//combien de fois l'image est elle affichée sur le dôme ?
+	int howManyDisplay = 1;
 
 	float cx, cy, radius, prj_ratio;
 	float xbase, ybase;
