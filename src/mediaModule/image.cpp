@@ -526,96 +526,100 @@ void Image::drawViewport(const Navigator * nav, Projector * prj)
 
 static int decalages(int i, int howManyDisplay)
 {
-	if (howManyDisplay==1) return 0;
+	// si pas de clone à afficher: direct 0
+	//if (howManyDisplay==1) return 0;
 
-	if (howManyDisplay==2 && i==0) return 0;
+	// on affiche d'abord l'original: direct 0
+	//if (howManyDisplay==2 && i==0) return 0;
 	if (howManyDisplay==2 && i==1) return 180;
 
-	if (howManyDisplay==3 && i==0) return 0;
+	// on affiche d'abord l'original: direct 0
+	//if (howManyDisplay==3 && i==0) return 0;
 	if (howManyDisplay==3 && i==1) return 120;
 	if (howManyDisplay==3 && i==2) return 180;
-
+	//dans tous les autes cas
 	return 0;
 }
 
 void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 {
-	for (int i=0; i<howManyDisplay; i++) {
+
 	float plotDirection;
 	Mat4f matrix=mat.convert();
 	//Mat4f proj = prj->getMatProjection().convert();
 
 	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
-	// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
-	imagev = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
-	ortho1 = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Vec3d(1,0,0);
-	ortho2 = imagev^ortho1;
+	shaderUnified->use();
+	for (int i=0; i<howManyDisplay; i++) {
+		// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
+		imagev = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
+		ortho1 = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Vec3d(1,0,0);
+		ortho2 = imagev^ortho1;
 
-	grid_size = int(image_scale/5.);  // divisions per row, column
-	if (grid_size < 5) grid_size = 5;
+		grid_size = int(image_scale/5.);  // divisions per row, column
+		if (grid_size < 5) grid_size = 5;
 
-	for (int i=0; i<grid_size; i++) {
-		for (int j=0; j<=grid_size; j++) {
+		for (int i=0; i<grid_size; i++) {
+			for (int j=0; j<=grid_size; j++) {
+				for (int k=0; k<=1; k++) {
+					if (image_ratio<1) {
+						// image height is maximum angular dimension
+						gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+						         Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+						         Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
+						         imagev;
+					} else {
+						// image width is maximum angular dimension
+						gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
+						         Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
+						         Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
+						         imagev;
+					}
+					vecImgTex.push_back((i+k)/(float)grid_size);
 
-			for (int k=0; k<=1; k++) {
-				if (image_ratio<1) {
-					// image height is maximum angular dimension
-					gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         imagev;
-				} else {
-					// image width is maximum angular dimension
-					gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
-					         Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
-					         imagev;
+					// l'image video est inversée
+					if (needFlip)
+						vecImgTex.push_back((grid_size-j)/(float)grid_size);
+					else
+						vecImgTex.push_back(j/(float)grid_size);
+
+					insert_vec3(vecImgPos, gridpt);
 				}
-				vecImgTex.push_back((i+k)/(float)grid_size);
-
-				// l'image video est inversée
-				if (needFlip)
-					vecImgTex.push_back((grid_size-j)/(float)grid_size);
-				else
-					vecImgTex.push_back(j/(float)grid_size);
-
-				insert_vec3(vecImgPos, gridpt);
 			}
 		}
+
+		// shaderUnified->setUniform("ModelViewProjectionMatrix",proj*matrix);
+		// shaderUnified->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
+		shaderUnified->setUniform("ModelViewMatrix",matrix);
+		shaderUnified->setUniform("fader", image_alpha);
+		// shaderUnified->setUniform("MVP", proj*matrix);
+		shaderUnified->setUniform("transparency",transparency);
+		shaderUnified->setUniform("noColor",noColor);
+
+		Vec3f clipping_fov = prj->getClippingFov();
+
+		//	if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
+		// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project_fixed_fov");
+		// else
+		// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project");
+		if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
+			clipping_fov[2] = 180;
+
+		shaderUnified->setUniform("clipping_fov", clipping_fov);
+
+		m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
+		m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+
+		// m_imageUnifiedGL->bind();
+		// for(int i=0; i< grid_size; i++)
+		// 	glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
+		// m_imageUnifiedGL->unBind();
+		// shaderUnified->unuse();
+		Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), GL_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
+
+		vecImgPos.clear();
+		vecImgTex.clear();
 	}
-	shaderUnified->use();
-
-	// shaderUnified->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	// shaderUnified->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	shaderUnified->setUniform("ModelViewMatrix",matrix);
-	shaderUnified->setUniform("fader", image_alpha);
-	// shaderUnified->setUniform("MVP", proj*matrix);
-	shaderUnified->setUniform("transparency",transparency);
-	shaderUnified->setUniform("noColor",noColor);
-
-	Vec3f clipping_fov = prj->getClippingFov();
-	
-//	if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
-	// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project_fixed_fov");
-	// else
-	// 	shaderUnified->setSubroutine(GL_VERTEX_SHADER,"custom_project");
-	if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
-		clipping_fov[2] = 180;
-	
-	shaderUnified->setUniform("clipping_fov", clipping_fov);
-
-	m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
-	m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
-
-	// m_imageUnifiedGL->bind();
-	// for(int i=0; i< grid_size; i++)
-	// 	glDrawArrays(GL_TRIANGLE_STRIP, ((grid_size+1) * 2) *i, (grid_size+1) * 2 );
-	// m_imageUnifiedGL->unBind();
-	// shaderUnified->unuse();
-	Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), GL_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
-
-	vecImgPos.clear();
-	vecImgTex.clear();
-	}
+	shaderUnified->unuse();
 }
