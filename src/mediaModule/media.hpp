@@ -62,7 +62,14 @@ struct AudioParam {
 	float secondJump;
 };
 
-
+struct VideoParam {
+	std::string  name;
+	std::string videoFileName;
+	std::string audioFileName;
+	std::string type;
+	std::string position;
+	IMG_PROJECT tmpProject;
+};
 
 //etat de la lecture vidéo
 enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360 , V_VRCUBE};

@@ -56,13 +56,15 @@ ImageMgr::~ImageMgr()
 	dropAllImages();
 }
 
-int ImageMgr::loadImage(GLuint imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project)
+int ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project)
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
 	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
-	s_texture* imgVideo = new s_texture(name, imgTex);
-	std::unique_ptr<Image> img = std::make_unique<Image>(imgVideo, name, img_pos, project);
+	s_texture* imgY = new s_texture(name, imgTex.y);
+	s_texture* imgU = new s_texture(name, imgTex.u);
+	s_texture* imgV = new s_texture(name, imgTex.v);
+	std::unique_ptr<Image> img = std::make_unique<Image>(imgY, imgU, imgV, name, img_pos, project);
 
 	if (!img || img->imageLoaded()) {
 		active_images.push_back(std::move(img));

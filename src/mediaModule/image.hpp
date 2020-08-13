@@ -48,7 +48,7 @@ public:
 
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap);
-	Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project);
+	Image(s_texture *_imgY, s_texture *_imgU, s_texture *_imgV,  const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project);
 	virtual ~Image();
 
 	void setAlpha(float alpha, float duration);
@@ -91,13 +91,14 @@ public:
 
 	static std::unique_ptr<shaderProgram> shaderImageViewport;
 	static std::unique_ptr<shaderProgram> shaderUnified;
+
 private:
 	void drawViewport(const Navigator * nav, Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);
 	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(Projector * prj); 
 
-	s_texture* image_tex = nullptr;
+	s_texture* image_RGB = nullptr;
 	std::string image_name;
 	IMAGE_POSITIONING image_pos_type;
 	bool isPersistent= false;

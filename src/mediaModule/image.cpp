@@ -43,13 +43,13 @@ Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIO
 {
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
-	image_tex = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
+	image_RGB = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
 	initialise(name, pos_type,project, mipmap);
 }
 
-Image::Image(s_texture *_imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
+Image::Image(s_texture *_imgY, s_texture *_imgU, s_texture *_imgV, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
 {
-	image_tex = _imgTex;
+	image_RGB = _imgY;
 	needFlip = true;
 	isPersistent = true;
 	initialise(name, pos_type, project);
@@ -72,7 +72,7 @@ void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_
 	}
 
 	int img_w, img_h;
-	image_tex->getDimensions(img_w, img_h);
+	image_RGB->getDimensions(img_w, img_h);
 
 	if (img_h == 0) 
 		image_ratio = -1; // no image loaded
@@ -116,7 +116,7 @@ void Image::initCache(Projector * prj)
 
 Image::~Image()
 {
-	if (image_tex) delete image_tex;
+	if (image_RGB) delete image_RGB;
 
 	vecImgPos.clear();
 	vecImgTex.clear();
@@ -378,7 +378,7 @@ void Image::draw(const Navigator * nav, Projector * prj)
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, image_tex->getID());
+	glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
 
 	switch (image_pos_type) {
 		case IMAGE_POSITIONING::POS_VIEWPORT:
