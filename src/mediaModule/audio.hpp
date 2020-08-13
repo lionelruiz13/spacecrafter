@@ -64,6 +64,7 @@ class Audio: public NoCopy {
 
 public:
 	Audio();
+	Audio(int Frequency, int channel, int chunksize);
 	~Audio();
 	//! indique combien de temps s'est écoulé depuis le dernier tour de boucle 
 	void update(int delta_time);

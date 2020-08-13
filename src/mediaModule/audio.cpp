@@ -36,10 +36,12 @@
 #define CHUNKSIZE	2048
 #define CHANNELS	2
 
+Audio::Audio() : Audio(FREQUENCY, CHANNELS, CHUNKSIZE)
+{}
 
-Audio::Audio()
+Audio::Audio(int Frequency, int channel, int chunksize)
 {
-	if(Mix_OpenAudio(FREQUENCY, MIX_DEFAULT_FORMAT, CHANNELS, CHUNKSIZE ) < 0 ) {
+	if(Mix_OpenAudio(Frequency, MIX_DEFAULT_FORMAT, channel, chunksize ) < 0 ) {
 		cLog::get()->write("Error Mix_OpenAudio: "+ std::string(Mix_GetError()), LOG_TYPE::L_DEBUG );
 		cLog::get()->write("Error Mix_OpenAudio: Audio error, session with no sound", LOG_TYPE::L_WARNING );
 		isDriverReady = false;
