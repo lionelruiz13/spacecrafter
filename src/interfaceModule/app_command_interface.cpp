@@ -2725,11 +2725,11 @@ int AppCommandInterface::commandMedia()
 						FilePath fileAudio = FilePath(audioName, FilePath::TFP::MEDIA);
 						if (fileAudio.exist()) {
 								cLog::get()->write("command 'media':: succesfull locale audio "+audioName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
-								media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition );
+								media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject );
 							}
 						else {
 							cLog::get()->write("command 'media':: locale audio not found "+audioName, LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition );
+							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject );
 						}
 					}
 				} else {
@@ -2738,20 +2738,20 @@ int AppCommandInterface::commandMedia()
 						FilePath fileAudio = FilePath(audioName, stcore->getSkyLanguage() );
 						if (!fileAudio.exist()) {
 							cLog::get()->write("command 'media':: locale audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition );
+							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject );
 						} else
-							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition );
+							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject );
 					} else { //fichier simple sans internationalisation
 						FilePath fileAudio = FilePath(audioName, localRepertory);
 						if (!fileAudio.exist()) {
 							cLog::get()->write("command 'media':: audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
-							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition);
+							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject);
 						} else
-							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition);
+							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject);
 					}
 				}
 			} else {
-					media->playerPlay(type, fileVideo.toString(), "", argName, argPosition);
+					media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject);
 				}
 
 			Vec3f Vcolor;

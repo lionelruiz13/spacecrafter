@@ -115,7 +115,7 @@ void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-int Media::playerPlay(const std::string &type, const std::string &filename, const std::string& _name, const std::string& _position)
+int Media::playerPlay(const std::string &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
 {
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+filename, LOG_TYPE::L_DEBUG);
 	int tmp = player->playNewVideo(filename);
@@ -159,7 +159,7 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 		} else if (type == "IMAGE") {
 			m_videoState.type=V_TYPE::V_IMAGE;
 			imageVideoName = _name;
-			imageMgr->loadImage(player->getYUV_VideoTexture().y,_name, _position, IMG_PROJECT::ONCE);
+			imageMgr->loadImage(player->getYUV_VideoTexture().y,_name, _position, tmpProject);
 			return 3;
 		} else {//no type -> stop playing
 			playerStop();
@@ -176,11 +176,11 @@ int Media::playerPlay(const std::string &type, const std::string &filename, cons
 	}
 }
 
-int Media::playerPlay(const std::string &type,const  std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position)
+int Media::playerPlay(const std::string &type,const  std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject)
 {
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
 	cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
-	int tmp = playerPlay(type, videoname, _name, _position);
+	int tmp = playerPlay(type, videoname, _name, _position, tmpProject);
 	if (tmp >0) {
 		audioMusicHalt();
 		audioMusicLoad(audioname, false);
