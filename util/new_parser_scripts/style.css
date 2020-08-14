@@ -225,6 +225,8 @@
             font-weight: bold;
         }
 
+        #back_docFR_index { position: fixed; left: 0; top: 0; width: 8vw; height: 8vw; }
+
         /* Gestion de l'impression */
         @media print {
             body,
