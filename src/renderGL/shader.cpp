@@ -567,3 +567,20 @@ void shaderProgram::setSubroutine(GLenum ShaderType, const std::string& name)
 	GLuint sub = subroutineLocations[name];
 	glUniformSubroutinesuiv(ShaderType, 1, &sub);
 }
+
+void shaderProgram::setSubroutines(GLenum ShaderType, std::initializer_list<const std::string> list)
+{
+	std::vector<GLuint> sub;
+    for(const auto elem : list ) {
+		auto pos = subroutineLocations.find(elem);
+		if( pos == subroutineLocations.end() ) {
+			std::ostringstream out;
+			out << program << " : error with " << elem << " atribution SubroutineLocations";
+			cLog::get()->write(out.str(), LOG_TYPE::L_WARNING, LOG_FILE::SHADER);
+			assert(false);
+			return ;
+		}
+		sub.push_back(subroutineLocations[elem]);
+	}
+	glUniformSubroutinesuiv(ShaderType, sub.size(), sub.data());
+}

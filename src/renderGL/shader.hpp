@@ -96,6 +96,7 @@ public:
 
 	void setSubroutineLocation(GLenum ShaderType, const std::string& name);
 	void setSubroutine(GLenum ShaderType, const std::string& name );
+	void setSubroutines(GLenum ShaderType, std::initializer_list<const std::string> list);
 
 	void setUniform( const std::string& name, const Vec2f & v);
 	void setUniform( const std::string& name, const Vec3f & v);
