@@ -57,6 +57,9 @@ enum class A_STATE: char { V_NONE, // fichier non chargé
  * 
  * La classe sert d'intermédiaire entre Média et l'audio. 
  * Elle effectue tous les contrôles pour pouvoir lire un fichier musique.
+ * 
+ * Par défaut, elle initialise le driver audio pour lire des musiques en 44100 Hz, stéréo, en unsigned 16 bits 
+ * 
  */
 
 
