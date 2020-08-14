@@ -62,9 +62,9 @@ public:
 	void createImageShader();
 
 	//! charge une image dans le conteneur
-	int loadImage(const std::string& filename, const std::string& name, const std::string& coordinate, IMG_PROJECT project, bool mipmap);
+	bool loadImage(const std::string& filename, const std::string& name, const std::string& coordinate, IMG_PROJECT project, bool mipmap);
 	//! charge une image venant directement de l'OpenGL
-	int loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project);
+	bool loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project);
 	//! supprime du conteneur l'image name
 	void drop_image(const std::string &name);
 	//! supprime toutes les images du conteneur non persistantes

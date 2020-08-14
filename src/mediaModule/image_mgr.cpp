@@ -58,7 +58,7 @@ ImageMgr::~ImageMgr()
 }
 
 
-int ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project)
+bool ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project)
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
@@ -67,10 +67,9 @@ int ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std:
 
 	if (!img || img->imageLoaded()) {
 		active_images.push_back(std::move(img));
-		return 1;
-	} else 
-		return 0;
-
+		return true;
+	}
+	return false;
 }
 
 
@@ -86,7 +85,7 @@ IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & _coordinat
 }
 
 
-int ImageMgr::loadImage(const std::string& filename, const std::string& name, const std::string& coordinate,  IMG_PROJECT project, bool mipmap)
+bool ImageMgr::loadImage(const std::string& filename, const std::string& name, const std::string& coordinate,  IMG_PROJECT project, bool mipmap)
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
@@ -95,10 +94,9 @@ int ImageMgr::loadImage(const std::string& filename, const std::string& name, co
 
 	if (!img || img->imageLoaded()) {
 		active_images.push_back(std::move(img));
-		return 1;
-	} else 
-		return 0;
-
+		return true;
+	}
+	return false;
 }
 
 void ImageMgr::drop_image(const std::string &name)
