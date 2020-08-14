@@ -142,14 +142,11 @@ void Image::createShaderUnified()
 {
 	shaderUnified = std::make_unique<shaderProgram>();
 	shaderUnified->init("imageUnified.vert","imageUnified.frag");
-	shaderUnified->setUniformLocation({"fader","MVP", "noColor", "clipping_fov"});
+	shaderUnified->setUniformLocation({"fader","MVP","transparency","noColor", "clipping_fov"});
 	shaderUnified->setUniformLocation("ModelViewMatrix");
 	// a cause des textures YUV
 	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useRGB");
 	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useYUV");
-	// a cause de la transparency
-	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useTransparency");
-	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useNoTransparency");
 }
 
 
@@ -545,11 +542,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 
 		shaderUnified->setUniform("ModelViewMatrix",matrix);
 		shaderUnified->setUniform("fader", image_alpha);
-		if (transparency)
-			shaderUnified->setSubroutine(GL_FRAGMENT_SHADER, "useTransparency" );
-		else
-			shaderUnified->setSubroutine(GL_FRAGMENT_SHADER, "useNoTransparency" );
-
+		shaderUnified->setUniform("transparency",transparency);
 		shaderUnified->setUniform("noColor",noColor);
 		// à cause des textures RGB
 		//shaderUnified->setUniform("useRGB", useRGB);

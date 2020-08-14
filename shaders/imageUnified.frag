@@ -38,32 +38,18 @@ void useYUV()
 	tex_color = vec4(convertToRGB(mapTexture, mapTextureU, mapTextureV, TexCoord),1);
 }
 
-
-// utilisation de fonctions spécialisées afin d'appliquer une transparence ou non
-subroutine void parametricTransparency();
-subroutine uniform parametricTransparency defineTransparency;
-
-subroutine(parametricTransparency)
-void useTransparency()
-{
-	vec3 diffVec = abs(tex_color.rgb-noColor.rgb);
-	float delta = noColor.a;
-	if ((diffVec.r<delta) && (diffVec.g<delta) && (diffVec.b<delta))
-		discard;
-}
-
-subroutine(parametricTransparency)
-void useNoTransparency()
-{}
-
 void main(void)
 {
 	// complète tex_color avec la/les bonne texture
 	defineTexture();
 	tex_color.a *= fader;
 
-	// applique la transparence au pixel
-	defineTransparency();
-
+	if (transparency) {
+		vec3 diffVec = abs(tex_color.rgb-noColor.rgb);
+		float delta = noColor.a;
+		if ((diffVec.r<delta) && (diffVec.g<delta) && (diffVec.b<delta))
+			discard;
+	}
+	
 	FragColor = tex_color;
 }
