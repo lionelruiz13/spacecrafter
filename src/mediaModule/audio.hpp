@@ -24,13 +24,13 @@
  *
  */
 
-/** 
+/**
  * @file audio.hpp
  * @brief manage audio track
  *
  * @author Olivier NIVOIX
- * @version 2 
- * 
+ * @version 2
+ *
  */
 
 #ifndef _AUDIO_H_
@@ -44,22 +44,22 @@
 
 //! enumération des états de lecture d'un fichier audio
 enum class A_STATE: char { V_NONE, // fichier non chargé
-						   V_PAUSE,// lecture du fichier en pause
-						   V_PLAY, // lecture du fichier en cours
-						   V_STOP  // lecture du fichier stoppée
-						};
+                           V_PAUSE,// lecture du fichier en pause
+                           V_PLAY, // lecture du fichier en cours
+                           V_STOP  // lecture du fichier stoppée
+                         };
 
 
 
-/** 
+/**
  * @class Audio
  * @brief Initialise la lib SDL2_mixer et effectue les opérations sur un fichier musique AudioMusic
- * 
- * La classe sert d'intermédiaire entre Média et l'audio. 
+ *
+ * La classe sert d'intermédiaire entre Média et l'audio.
  * Elle effectue tous les contrôles pour pouvoir lire un fichier musique.
- * 
- * Par défaut, elle initialise le driver audio pour lire des musiques en 44100 Hz, stéréo, en unsigned 16 bits 
- * 
+ *
+ * Par défaut, elle initialise le driver audio pour lire des musiques en 44100 Hz, stéréo, en unsigned 16 bits
+ *
  */
 
 
@@ -69,7 +69,7 @@ public:
 	Audio();
 	Audio(int Frequency, int channel, int chunksize);
 	~Audio();
-	//! indique combien de temps s'est écoulé depuis le dernier tour de boucle 
+	//! indique combien de temps s'est écoulé depuis le dernier tour de boucle
 	void update(int delta_time);
 	//! fixe le volume audio
 	void setVolume(int _value);
@@ -99,7 +99,7 @@ public:
 	void musicJump(float secondJump);
 
 private:
-	int master_volume;				//!< volume de sortie du gestionnaire de son 
+	int master_volume;				//!< volume de sortie du gestionnaire de son
 	Mix_Music *track = nullptr;		//!< pointeur interne vers le flux audio
 	std::string music_name;			//!< nom du fichier du flux audio
 	double elapsed_seconds;  		//!< current offset into the track

@@ -41,13 +41,13 @@ class Projector;
 
 /**
  * @class ImageMgr
- * @brief Cette classe s'ocupe de gérer toutes les entités Image utilisées dans les scripts. 
- * 
+ * @brief Cette classe s'ocupe de gérer toutes les entités Image utilisées dans les scripts.
+ *
  * Le conteneur active_images contient toutes les images qui sont indépendantes.
  * Cette classe sert alors gestionnaire d'images.
  *
  * Certaines images sont permanantes, aussi elles ne sont pas affectées par la suppression
- * 
+ *
  * currentImg permet de modifier les images du conteneur grace à la fonction
  * setImage. Si currentImg est défini, alors setXXXX modifie l'image concernée.
  */
@@ -102,8 +102,7 @@ public:
 private:
 	Image * currentImg=nullptr;
 	std::list<std::unique_ptr<Image>> active_images;
-	std::map<std::string , IMG_POSITION> strToPos;
+	std::map<std::string, IMG_POSITION> strToPos;
 };
-
 
 #endif // _IMAGE_MGR_H

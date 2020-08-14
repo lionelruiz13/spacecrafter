@@ -4,7 +4,7 @@
  * Copyright (C) 2005 Robert Spearman
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
  * Copyright (C) 2014-2018 LSS Team & Immersive Adventure
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -71,9 +71,15 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 	image_name = name;
 
 	switch (project) {
-		case IMG_PROJECT::ONCE : howManyDisplay = 1; break;
-		case IMG_PROJECT::TWICE : howManyDisplay = 2; break;
-		case IMG_PROJECT::THRICE : howManyDisplay = 3; break;
+		case IMG_PROJECT::ONCE :
+			howManyDisplay = 1;
+			break;
+		case IMG_PROJECT::TWICE :
+			howManyDisplay = 2;
+			break;
+		case IMG_PROJECT::THRICE :
+			howManyDisplay = 3;
+			break;
 	}
 
 	int img_w, img_h;
@@ -82,7 +88,7 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 	// 	image_RGB->getDimensions(img_w, img_h);
 	// else
 	// 	image_Y->getDimensions(img_w, img_h);
-	if (img_h == 0) 
+	if (img_h == 0)
 		image_ratio = -1; // no image loaded
 	else
 		image_ratio = (float)img_w/img_h;
@@ -114,7 +120,8 @@ void Image::initCache(const Projector * prj)
 	if (image_ratio > prj_ratio) {
 		xbase = vieww/2;
 		ybase = xbase/image_ratio;
-	} else {
+	}
+	else {
 		ybase = viewh/2;
 		xbase = ybase*image_ratio;
 	}
@@ -241,7 +248,7 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 
 	if (deltay) end_ypos = ypos;
 	else end_ypos = image_ypos;
-	
+
 	// the new script begin here
 	x_move = end_xpos - start_xpos;
 	y_move = end_ypos - start_ypos;
@@ -252,21 +259,26 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 		if (accelerate_x and not decelerate_x) {
 			mid_time_x = end_time; // switch from acceleration to deceleration at the end of the movement
 			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time²
-		} else if (accelerate_x and decelerate_x) {
+		}
+		else if (accelerate_x and decelerate_x) {
 			mid_time_x = int(duration * 500.f + 0.5f); // switch from acceleration to deceleration at the middle of the movement
 			coef_xmove = x_move / float(2 * mid_time_x * mid_time_x); // the movement must be the middle of the complete movement at mid_time_x²
-		} else { // (not accelerate_x and decelerate_x)
+		}
+		else {   // (not accelerate_x and decelerate_x)
 			mid_time_x = 0; // switch from acceleration to deceleration at the beginning of the movement
 			coef_xmove = x_move / float(end_time * end_time); // the movement must be completed at end_time²
 		}
-	} if (flag_progressive_y) {
+	}
+	if (flag_progressive_y) {
 		if (accelerate_y and not decelerate_y) {
 			mid_time_y = end_time; // switch from acceleration to deceleration at the end of the movement
 			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time²
-		} else if (accelerate_y and decelerate_y) {
+		}
+		else if (accelerate_y and decelerate_y) {
 			mid_time_y = int(duration * 500.f + 0.5f); // switch from acceleration to deceleration at the middle of the movement
 			coef_ymove = y_move / float(2 * mid_time_y * mid_time_y); // the movement must be the middle of the complete movement at mid_time_y²
-		} else { // (not accelerate_y and decelerate_y)
+		}
+		else {   // (not accelerate_y and decelerate_y)
 			mid_time_y = 0; // switch from acceleration to deceleration at the beginning of the movement
 			coef_ymove = y_move / float(end_time * end_time); // the movement must be completed at end_time²
 		}
@@ -295,7 +307,7 @@ void Image::setRatio(float ratio, float duration)
 bool Image::update(int delta_time)
 {
 	if (image_ratio <= 0) return 0;
-	
+
 	if (flag_alpha) {
 		mult_alpha += coef_alpha*delta_time;
 
@@ -306,7 +318,7 @@ bool Image::update(int delta_time)
 
 		image_alpha = start_alpha + mult_alpha*(end_alpha-start_alpha);
 	}
-	
+
 	if (flag_scale) {
 
 		mult_scale += coef_scale*delta_time;
@@ -319,9 +331,10 @@ bool Image::update(int delta_time)
 		// this transition is parabolic for better visual results
 		if (start_scale > end_scale) {
 			image_scale = start_scale + (1 - (1-mult_scale)*(1-mult_scale))*(end_scale-start_scale);
-		} else image_scale = start_scale + mult_scale*mult_scale*(end_scale-start_scale);
+		}
+		else image_scale = start_scale + mult_scale*mult_scale*(end_scale-start_scale);
 	}
-	
+
 	if (flag_rotation) {
 		mult_rotation += coef_rotation*delta_time;
 
@@ -337,16 +350,20 @@ bool Image::update(int delta_time)
 		if (flag_progressive_x) { // progressive movement in X-axis
 			if (my_timer < mid_time_x) { // acceleration phase
 				image_xpos = start_xpos + my_timer * my_timer * coef_xmove; // square function
-			} else if (my_timer < end_time) { // deceleration phase
+			}
+			else if (my_timer < end_time) {   // deceleration phase
 				image_xpos = end_xpos - (end_time - my_timer) * (end_time - my_timer) * coef_xmove; // (end - x)² function
-			} else { // movement completed
+			}
+			else {   // movement completed
 				image_xpos = end_xpos;
 				flag_location = 0;
 			}
-		} else { // linear movement in X-axis
+		}
+		else {   // linear movement in X-axis
 			if (my_timer < end_time) {
 				image_xpos = start_xpos + my_timer*x_move; // linear function
-			} else {
+			}
+			else {
 				image_xpos = end_xpos;
 				flag_location = 0;
 			}
@@ -354,22 +371,26 @@ bool Image::update(int delta_time)
 		if (flag_progressive_y) { // progressive movement in Y-axis
 			if (my_timer < mid_time_y) { // acceleration phase
 				image_ypos = start_ypos + my_timer * my_timer * coef_ymove; // square function
-			} else if (my_timer < end_time) { // deceleration phase
+			}
+			else if (my_timer < end_time) {   // deceleration phase
 				image_ypos = end_ypos - (end_time - my_timer) * (end_time - my_timer) * coef_ymove; // (end - x)² function
-			} else { // movement completed
+			}
+			else {   // movement completed
 				image_ypos = end_ypos;
 				flag_location = 0;
 			}
-		} else { // linear movement in Y-axis
+		}
+		else {   // linear movement in Y-axis
 			if (my_timer < end_time) {
 				image_ypos = start_ypos + my_timer*y_move; // linear function
-			} else {
+			}
+			else {
 				image_ypos = end_ypos;
 				flag_location = 0;
 			}
 		}
 	}
-	
+
 	if (flag_ratio) {
 		my_timer_ratio += delta_time; // update local timer
 		if (my_timer_ratio < end_time_ratio)
@@ -394,15 +415,15 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 
 	imageTexture->bindImageTexture();
 	// if (useRGB) {
-		// glActiveTexture(GL_TEXTURE0);
-		// glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
 	// } else {
-		// glActiveTexture(GL_TEXTURE0);
-		// glBindTexture (GL_TEXTURE_2D, image_Y->getID());
-		// glActiveTexture(GL_TEXTURE1);
-		// glBindTexture (GL_TEXTURE_2D, image_U->getID());
-		// glActiveTexture(GL_TEXTURE2);
-		// glBindTexture (GL_TEXTURE_2D, image_V->getID());
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture (GL_TEXTURE_2D, image_Y->getID());
+	// glActiveTexture(GL_TEXTURE1);
+	// glBindTexture (GL_TEXTURE_2D, image_U->getID());
+	// glActiveTexture(GL_TEXTURE2);
+	// glBindTexture (GL_TEXTURE_2D, image_V->getID());
 	// }
 
 	switch (image_pos_type) {
@@ -447,7 +468,8 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	float h = image_scale*ybase;
 	if (image_ratio<1) {
 		w *= image_ratio;
-	} else {
+	}
+	else {
 		h /= image_ratio;
 	}
 
@@ -464,11 +486,12 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	// l'image video est inversée
 	if (needFlip) {
 		insert_all(vecImgTex,0,1,0,0,1,1,1,0);
-	} else {
+	}
+	else {
 		insert_all(vecImgTex,0,0,0,1,1,0,1,1);
 	}
 
-	insert_all(vecImgPos, w, -h, -w, -h, w, h, -w, h); 
+	insert_all(vecImgPos, w, -h, -w, -h, w, h, -w, h);
 
 	m_imageViewportGL->fillVertexBuffer(BufferType::POS2D,vecImgPos);
 	m_imageViewportGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
@@ -522,7 +545,8 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 						         Mat4d::rotation( ortho1, image_scale*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *
 						         Mat4d::rotation( ortho2, image_scale*image_ratio*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 						         imagev;
-					} else {
+					}
+					else {
 						// image width is maximum angular dimension
 						gridpt = Mat4d::rotation( imagev, (image_rotation+180)*M_PI/180.) *
 						         Mat4d::rotation( ortho1, image_scale/image_ratio*(j-grid_size/2.)/(float)grid_size*M_PI/180.) *

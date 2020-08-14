@@ -39,32 +39,32 @@
 
 /**
  * \file text_mgr.hpp
- * \brief This class processes all text entities used by the user. 
+ * \brief This class processes all text entities used by the user.
  * \author Olivier NIVOIX
  * \version 2
  *
  * \class TextMgr
- * 
+ *
  * \brief This class processes all text entities used by the user.
- * 
+ *
  * The class is operational when setFont succeeds in loading a font in 7 size ranges.
  * A sentry who puts the class on standby when it cannot initialize properly.
- * 
+ *
  * It provides classic access to the management of horizontal texts.
- * 
+ *
  * The container contains all the texts which are independent of each other.
  * The name of the text serves as a key. (uniqueness)
  *
  */
 
 struct TEXT_MGR_PARAM {
-    std::string string;
-    float altitude;
-    float azimuth;
-    std::string fontSize;
-    std::string textAlign;
-    Vec3f color;
-    bool useColor;
+	std::string string;
+	float altitude;
+	float azimuth;
+	std::string fontSize;
+	std::string textAlign;
+	Vec3f color;
+	bool useColor;
 };
 
 class TextMgr: public NoCopy {
@@ -83,14 +83,14 @@ public:
 	//! retire un texte du conteneur textUsr
 	void del(const std::string &name);
 
-	//! retire tous les textes du conteneur 
+	//! retire tous les textes du conteneur
 	void clear();
 
 	//! permet de changer le texte d'un text du conteneur
 	void textUpdate(const std::string &name, const std::string &text);
 
 	//! permet de masquer un texte du conteneur
-	void textDisplay(const std::string &name , bool displ);
+	void textDisplay(const std::string &name, bool displ);
 
 	//! permet de changer le fading d'un texte du conteneur
 	void setFadingDuration(float t) {
@@ -100,7 +100,7 @@ public:
 	//! initialise l'ensemble des fontes utilisées par la classe
 	void setFont(float font_size, const std::string& font_name);
 
-	//! modifie la couleur par défaut des futurs nouveaux text 
+	//! modifie la couleur par défaut des futurs nouveaux text
 	void setColor(const Vec3f& c);
 
 private:

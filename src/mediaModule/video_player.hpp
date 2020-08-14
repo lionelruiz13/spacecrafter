@@ -49,10 +49,10 @@ class Media;
  * Deux possibilités s'offrent à l'utilisateur :
  * - une texture en RBG24 classique (mais lente à obtenir à cause des conversions)
  * - 3 textures YUV420p directement (rapide à obtenir: directement du fichier à la carte graphique)
- * 
+ *
  * La classe gère d'elle même le bon fps c'est à dire qu'elle regarde via des appels à SDL_GetTicks si elle doit mettre la frame à jour.
- * Si c'est le cas, alors elle met à jour la/les texture(s). 
- * 
+ * Si c'est le cas, alors elle met à jour la/les texture(s).
+ *
  */
 class VideoPlayer {
 public:
@@ -134,10 +134,10 @@ private:
 	Uint32 endPause;
 
 	// avoid recalculating each time
-	int widths[3]; 
-	int heights[3];	
+	int widths[3];
+	int heights[3];
 
-#ifndef WIN32
+	#ifndef WIN32
 	//parametres liés à ffmpeg
 	AVFormatContext	*pFormatCtx;
 	int				videoindex;
@@ -147,7 +147,7 @@ private:
 	AVStream		*video_st;
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
-#endif
+	#endif
 };
 
 #endif // VIDEOPLAYER_HPP

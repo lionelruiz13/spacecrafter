@@ -46,7 +46,7 @@ Audio::Audio(int Frequency, int channel, int chunksize)
 		cLog::get()->write("Error Mix_OpenAudio: Audio error, session with no sound", LOG_TYPE::L_WARNING );
 		isDriverReady = false;
 		return;
-	} 
+	}
 
 	int flags=MIX_INIT_OGG;
 	int initted=Mix_Init(MIX_INIT_OGG);
@@ -91,7 +91,8 @@ void Audio::musicLoad(const std::string& filename, bool _loop)
 		music_loaded = false;
 		cLog::get()->write("Could not load audio file " +filename, LOG_TYPE::L_WARNING);
 		state = A_STATE::V_NONE;
-	} else  {
+	}
+	else  {
 		music_loaded = true;
 		music_isPlaying = false;
 		music_name = filename;
@@ -114,7 +115,8 @@ void Audio::musicPlay()
 			music_isPlaying = false;
 			state = A_STATE::V_NONE;
 		}
-	} else {
+	}
+	else {
 		if (Mix_PlayMusic(track, 0) < 0) {
 			cLog::get()->write("Error Mix_PlayMusic: "+ std::string(Mix_GetError()), LOG_TYPE::L_ERROR );
 			music_isPlaying = false;
@@ -181,7 +183,8 @@ void Audio::musicPause()
 		Mix_PauseMusic();
 		music_isPlaying=false;
 		state = A_STATE::V_PAUSE;
-	} else
+	}
+	else
 		this->musicResume();
 }
 

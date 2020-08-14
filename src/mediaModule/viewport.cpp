@@ -46,25 +46,27 @@ void ViewPort::createSC_context()
 	m_fullGL = std::make_unique<VertexArray>();
 	m_fullGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	m_fullGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	
+
 	m_fullGL->fillVertexBuffer(BufferType::POS2D, 8, viewportPoints);
 	m_fullGL->fillVertexBuffer(BufferType::TEXTURE, 8, viewportTex);
 
 	// Dual Half Screen mode
 	float halfPoints[16] = {-1.0, -1.0, 1.0, -1.0,
-							-1.f, 0.f, 1.f, 0.f,
-							-1.f, 0.f, 1.f, 0.f,
-							-1.0, 1.0, 1.0, 1.0};
-	float halfTex[16] =    { 0.0,  1.0, 1.0,  1.0, 
-							0.f, 0.5f, 1.0f, 0.5f,
+	                        -1.f, 0.f, 1.f, 0.f,
+	                        -1.f, 0.f, 1.f, 0.f,
+	                        -1.0, 1.0, 1.0, 1.0
+	                       };
+	float halfTex[16] =    { 0.0,  1.0, 1.0,  1.0,
+	                         0.f, 0.5f, 1.0f, 0.5f,
 
-							1.f, 0.5f, 0.0f, 0.5f,
-							1.0, 1.0f, 0.0, 1.f};
+	                         1.f, 0.5f, 0.0f, 0.5f,
+	                         1.0, 1.0f, 0.0, 1.f
+	                       };
 
 	m_dualGL = std::make_unique<VertexArray>();
 	m_dualGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	m_dualGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	
+
 	m_dualGL->fillVertexBuffer(BufferType::POS2D, 16, halfPoints);
 	m_dualGL->fillVertexBuffer(BufferType::TEXTURE, 16, halfTex);
 }
@@ -92,7 +94,8 @@ void ViewPort::draw()
 		// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		// m_fullGL->unBind();
 		Renderer::drawArrays(shaderViewPort.get(), m_fullGL.get(), GL_TRIANGLE_STRIP,0,4);
-	} else {
+	}
+	else {
 		// m_dualGL->bind();
 		// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		// glDrawArrays(GL_TRIANGLE_STRIP,4,4);

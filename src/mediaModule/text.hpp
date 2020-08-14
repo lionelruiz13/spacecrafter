@@ -42,7 +42,7 @@
  *
  * @class Text
  * @brief This class manages a single text to display.
- * 
+ *
  * A text is represented by its color, its message and its position.
  * His message can be modified.
  */
@@ -52,12 +52,12 @@ public:
 	~Text();
 
 	//! occulte ou pas le text à l'affichage
-	void setDisplay(bool b){
+	void setDisplay(bool b) {
 		fader=b;
 	}
 
 	//! indique l'état du text vis à vis de l'affichage
-	bool getDisplay() const{
+	bool getDisplay() const {
 		return fader;
 	}
 
@@ -69,7 +69,7 @@ public:
 	//! modifie le message du text
 	void textUpdate(const std::string &_text);
 
-	//! affiche le texte à l'écran 
+	//! affiche le texte à l'écran
 	void draw(const Projector* prj);
 
 	//! met à jour l'état du fader d'affichage

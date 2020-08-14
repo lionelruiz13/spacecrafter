@@ -33,11 +33,10 @@ class s_texture;
 class Navigator;
 class Projector;
 
-class ImageTexture
-{
+class ImageTexture {
 public :
-	ImageTexture(){}
-	virtual ~ImageTexture(){}
+	ImageTexture() {}
+	virtual ~ImageTexture() {}
 	virtual void getDimensions(int &img_w, int &img_h) = 0;
 	virtual void bindImageTexture() = 0;
 	const std::string& getType() const {
@@ -68,7 +67,7 @@ public:
 private:
 	s_texture* imageY = nullptr;
 	s_texture* imageU = nullptr;
-	s_texture* imageV = nullptr;	
+	s_texture* imageV = nullptr;
 };
 
 #endif // _IMAGE_TEXTURE_HPP

@@ -38,10 +38,10 @@ TextMgr::TextMgr()
 {
 	strToFontSize["XX_SMALL"] = FONT_SIZE::T_XX_SMALL;
 	strToFontSize["X_SMALL"] = FONT_SIZE::T_X_SMALL;
-	strToFontSize["SMALL"] = FONT_SIZE::T_SMALL; 
+	strToFontSize["SMALL"] = FONT_SIZE::T_SMALL;
 	strToFontSize["MEDIUM"] = FONT_SIZE::T_MEDIUM;
-	strToFontSize["LARGE"] = FONT_SIZE::T_LARGE; 
-	strToFontSize["X_LARGE"] = FONT_SIZE::T_X_LARGE; 
+	strToFontSize["LARGE"] = FONT_SIZE::T_LARGE;
+	strToFontSize["X_LARGE"] = FONT_SIZE::T_X_LARGE;
 	strToFontSize["XX_LARGE"] = FONT_SIZE::T_XX_LARGE;
 
 	strToTextAlign["LEFT"] = TEXT_ALIGN::LEFT;
@@ -88,13 +88,27 @@ void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 	//set font
 	s_font *tmp;
 	switch (textSize) {
-		case FONT_SIZE::T_XX_SMALL: tmp = textFont[0].get(); break;
-		case FONT_SIZE::T_X_SMALL: tmp = textFont[1].get(); break;
-		case FONT_SIZE::T_SMALL: tmp = textFont[2].get(); break;
-		case FONT_SIZE::T_MEDIUM: tmp = textFont[3].get(); break;
-		case FONT_SIZE::T_LARGE: tmp = textFont[4].get(); break;
-		case FONT_SIZE::T_X_LARGE: tmp = textFont[5].get(); break;
-		case FONT_SIZE::T_XX_LARGE: tmp = textFont[6].get(); break;
+		case FONT_SIZE::T_XX_SMALL:
+			tmp = textFont[0].get();
+			break;
+		case FONT_SIZE::T_X_SMALL:
+			tmp = textFont[1].get();
+			break;
+		case FONT_SIZE::T_SMALL:
+			tmp = textFont[2].get();
+			break;
+		case FONT_SIZE::T_MEDIUM:
+			tmp = textFont[3].get();
+			break;
+		case FONT_SIZE::T_LARGE:
+			tmp = textFont[4].get();
+			break;
+		case FONT_SIZE::T_X_LARGE:
+			tmp = textFont[5].get();
+			break;
+		case FONT_SIZE::T_XX_LARGE:
+			tmp = textFont[6].get();
+			break;
 	}
 
 	//set align
@@ -158,7 +172,7 @@ void TextMgr::textUpdate(const std::string &name, const std::string &text)
 }
 
 
-void TextMgr::textDisplay(const std::string &name , bool displ)
+void TextMgr::textDisplay(const std::string &name, bool displ)
 {
 	auto it = textUsr.find(name);
 	if (it!=textUsr.end())
@@ -193,7 +207,7 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 	}
 	// remerbers param's
 	m_fontName = font_name;
-	m_fontSize = font_size; 
+	m_fontSize = font_size;
 	if (!isUsable)
 		cLog::get()->write("TEXT: module disable", LOG_TYPE::L_WARNING);
 }
@@ -204,6 +218,6 @@ void TextMgr::draw(const Projector* prj)
 	if (!isUsable)
 		return;
 	for (const auto& [key, value] : textUsr) {
-    	value->draw(prj);
+		value->draw(prj);
 	}
 }

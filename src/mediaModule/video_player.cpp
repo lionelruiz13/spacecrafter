@@ -34,9 +34,9 @@ VideoPlayer::VideoPlayer(Media* _media)
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
-#ifndef WIN32
+	#ifndef WIN32
 	img_convert_ctx = NULL;
-#endif
+	#endif
 }
 
 
@@ -51,7 +51,8 @@ void VideoPlayer::pauseCurrentVideo()
 	if (m_isVideoInPause==false) {
 		m_isVideoInPause = true;
 		startPause = SDL_GetTicks();
-	} else {
+	}
+	else {
 		endPause = SDL_GetTicks();
 		m_isVideoInPause = !m_isVideoInPause;
 		firstCount = firstCount + (endPause - startPause);
@@ -69,13 +70,13 @@ void VideoPlayer::init()
 	m_isVideoPlayed = false;
 	m_isVideoInPause= false;
 	m_isVideoSeeking = false;
-#ifndef WIN32
+	#ifndef WIN32
 	#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
-	    av_register_all();
+	av_register_all();
 	#endif
 	avformat_network_init();
 	pFormatCtx = avformat_alloc_context();
-#endif
+	#endif
 }
 
 
@@ -83,7 +84,7 @@ bool VideoPlayer::restartCurrentVideo()
 {
 	if (!m_isVideoPlayed)
 		return false;
-#ifndef WIN32
+	#ifndef WIN32
 	if(av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0) {
 		printf("av_seek_frame forward failed. \n");
 		return false;
@@ -93,20 +94,21 @@ bool VideoPlayer::restartCurrentVideo()
 	currentFrame = 0;
 
 	return true;
-#endif
+	#endif
 }
 
 
 bool VideoPlayer::playNewVideo(const std::string& _fileName)
 {
-#ifndef WIN32
+	#ifndef WIN32
 	if (m_isVideoPlayed)
 		stopCurrentVideo();
 	std::ifstream fichier(_fileName.c_str());
 	if (!fichier.fail()) { // verifie si le fichier vidéo existe
 		cLog::get()->write("Videoplayer: reading file "+ _fileName, LOG_TYPE::L_INFO);
 		fileName = _fileName;
-	} else {
+	}
+	else {
 		cLog::get()->write("Videoplayer: error reading file "+ _fileName + " abording...", LOG_TYPE::L_ERROR);
 		return false;
 	}
@@ -171,7 +173,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 		cLog::get()->write("Unable to get a context for video file", LOG_TYPE::L_ERROR);
 		return false;
 	}
-	
+
 	if(pCodecCtx->pix_fmt != AV_PIX_FMT_YUV420P) {
 		cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
 		return false;
@@ -194,12 +196,12 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
 	return true;
-#endif
+	#endif
 }
 
 void VideoPlayer::update()
 {
-#ifndef WIN32
+	#ifndef WIN32
 	if (! m_isVideoPlayed)
 		return;
 
@@ -213,12 +215,12 @@ void VideoPlayer::update()
 		d_lastCount = firstCount + (int)(frameRateDuration*currentFrame);
 		lastCount = (int)d_lastCount;
 	}
-#endif
+	#endif
 }
 
 void VideoPlayer::getNextFrame()
 {
-#ifndef WIN32
+	#ifndef WIN32
 	bool getNextFrame= false;
 
 	while(!getNextFrame) {
@@ -234,7 +236,7 @@ void VideoPlayer::getNextFrame()
 			int ret = avcodec_send_packet(pCodecCtx, packet);
 			if(ret < 0) {
 				cLog::get()->write("Decode Error", LOG_TYPE::L_ERROR);
-			continue ;
+				continue ;
 			}
 			ret = avcodec_receive_frame(pCodecCtx, pFrameIn);
 			if(ret < 0 ) {
@@ -249,29 +251,29 @@ void VideoPlayer::getNextFrame()
 			av_packet_unref(packet);
 		}
 	}
-#endif
+	#endif
 }
 
 
 void VideoPlayer::getNextVideoFrame()
 {
-#ifndef WIN32
+	#ifndef WIN32
 	this->getNextFrame();
 	currentFrame ++;
 	if (!m_isVideoSeeking) {
 		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 		for (int i = 0; i < 3; i++) {
-   			glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
-   			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
+			glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 		}
 	}
-#endif
+	#endif
 }
 
 
 void VideoPlayer::stopCurrentVideo()
 {
-#ifndef WIN32
+	#ifndef WIN32
 	if (m_isVideoPlayed==false)
 		return;
 
@@ -284,26 +286,26 @@ void VideoPlayer::stopCurrentVideo()
 	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
 	EventRecorder::getInstance()->queue(event);
 	media->playerStop();
-#endif
+	#endif
 }
 
 void VideoPlayer::initTexture()
 {
 	glGenTextures(3, videoTexture.tex);
-	const int _widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };  
+	const int _widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };
 	const int _heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
-	for(int i=0; i<3;i++) {
+	for(int i=0; i<3; i++) {
 		widths[i] = _widths[i];
 		heights[i] = _heights[i];
 	}
 
-	for (int i = 0; i < 3; ++i) {  
-   		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);  
-   		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);  
-   		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
-   		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  
-   		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  
-   		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);  
+	for (int i = 0; i < 3; ++i) {
+		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 }
 
@@ -316,10 +318,10 @@ bool VideoPlayer::jumpInCurrentVideo(float deltaTime, float &reallyDeltaTime)
 	if (m_isVideoInPause==true)
 		this->pauseCurrentVideo();
 
-#ifndef WIN32
+	#ifndef WIN32
 	int64_t frameToSkeep = (1000.0*deltaTime) / frameRateDuration;
 	return seekVideo(frameToSkeep, reallyDeltaTime);
-#endif
+	#endif
 }
 
 
@@ -336,7 +338,7 @@ bool VideoPlayer::invertVideoFlow(float &reallyDeltaTime)
 
 bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 {
-#ifndef WIN32
+	#ifndef WIN32
 	currentFrame = currentFrame + frameToSkeep;
 
 	//saut avant le début de la vidéo
@@ -346,12 +348,12 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		return true;
 	}
 	if(currentFrame < nbTotalFrame) { // on verifie qu'on ne saute pas hors vidéo
-		if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000 , INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+		if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000, INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
 			printf("av_seek_frame forward failed. \n");
 			return false;
 		}
 		firstCount = firstCount - (int)( frameToSkeep * frameRateDuration);
-	
+
 		reallyDeltaTime= currentFrame * frameRateDuration/1000.0;
 		m_isVideoSeeking = true;
 		return true;
@@ -360,7 +362,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	this->stopCurrentVideo();
 	reallyDeltaTime= -1.0;
 	return true;
-#else
+	#else
 	return false;
-#endif
+	#endif
 }

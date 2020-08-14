@@ -100,7 +100,7 @@ void VR360::display(bool alive)
 }
 
 void VR360::displayStop()
- {
+{
 	showFader = false;
 	showFader.update(VR360_FADER_DURATION);
 	isAlive = false;
@@ -117,7 +117,7 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 		glActiveTexture(GL_TEXTURE0+i);
 		glBindTexture(GL_TEXTURE_2D, videoTex[i]);
 	}
-	
+
 	shaderVR360->setUniform("intensity", showFader.getInterstate());
 
 	Mat4f matrix = (nav->getJ2000ToEyeMat() *
@@ -129,9 +129,14 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 
 	StateGL::enable(GL_CULL_FACE);
 	switch(typeVR360) {
-		case TYPE::V_CUBE: cube->draw(); break;
-		case TYPE::V_SPHERE: sphere->draw(); break;
-		default: break;
+		case TYPE::V_CUBE:
+			cube->draw();
+			break;
+		case TYPE::V_SPHERE:
+			sphere->draw();
+			break;
+		default:
+			break;
 	}
 	StateGL::disable(GL_CULL_FACE);
 	shaderVR360->unuse();

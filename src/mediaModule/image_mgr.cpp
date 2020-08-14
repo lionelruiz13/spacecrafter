@@ -102,13 +102,17 @@ bool ImageMgr::loadImage(const std::string& filename, const std::string& name, c
 void ImageMgr::drop_image(const std::string &name)
 {
 	currentImg = nullptr;
-	active_images.remove_if([& name ](const std::unique_ptr<Image> & ptr ){return ptr->getName() == name ;});
+	active_images.remove_if([& name ](const std::unique_ptr<Image> & ptr ) {
+		return ptr->getName() == name ;
+	});
 }
 
 void ImageMgr::dropAllNoPersistent()
 {
 	currentImg= nullptr;
-    active_images.remove_if([](const std::unique_ptr<Image> &  img){ return !img->imageIsPersistent();}) ;
+	active_images.remove_if([](const std::unique_ptr<Image> &  img) {
+		return !img->imageIsPersistent();
+	}) ;
 }
 
 void ImageMgr::dropAllImages()
@@ -119,9 +123,10 @@ void ImageMgr::dropAllImages()
 
 bool ImageMgr::setImage(const std::string& name)
 {
-	auto iter = std::find_if(active_images.begin(), active_images.end(), [&name](const std::unique_ptr<Image> &ptr) { return ptr->getName() == name; });
-	if (iter != active_images.end())
-	{
+	auto iter = std::find_if(active_images.begin(), active_images.end(), [&name](const std::unique_ptr<Image> &ptr) {
+		return ptr->getName() == name;
+	});
+	if (iter != active_images.end()) {
 		currentImg = (*iter).get();
 		return true;
 	}
@@ -143,42 +148,50 @@ void ImageMgr::draw(const Navigator * nav, const Projector * prj)
 	}
 }
 
-void ImageMgr::setPersistent(bool value) {
+void ImageMgr::setPersistent(bool value)
+{
 	if (currentImg != nullptr)
 		currentImg -> setPersistent(value);
 }
 
-void ImageMgr::setAlpha(float alpha, float duration) {
+void ImageMgr::setAlpha(float alpha, float duration)
+{
 	if (currentImg != nullptr)
 		currentImg -> setAlpha(alpha, duration);
 }
 
-void ImageMgr::setScale(float scale, float duration) {
+void ImageMgr::setScale(float scale, float duration)
+{
 	if (currentImg != nullptr)
 		currentImg -> setScale(scale, duration);
 }
 
-void ImageMgr::setRotation(float rotation, float duration) {
+void ImageMgr::setRotation(float rotation, float duration)
+{
 	if (currentImg != nullptr)
 		currentImg -> setRotation(rotation, duration);
 }
 
-void ImageMgr::setLocation(float xpos, bool deltax, float ypos, bool deltay, float duration, bool accelerate_x, bool decelerate_x, bool accelerate_y, bool decelerate_y) {
+void ImageMgr::setLocation(float xpos, bool deltax, float ypos, bool deltay, float duration, bool accelerate_x, bool decelerate_x, bool accelerate_y, bool decelerate_y)
+{
 	if (currentImg != nullptr)
 		currentImg -> setLocation(xpos, deltax, ypos, deltay, duration, accelerate_x, decelerate_x, accelerate_y, decelerate_y);
 }
 
-void ImageMgr::setRatio(float ratio, float duration) {
+void ImageMgr::setRatio(float ratio, float duration)
+{
 	if (currentImg != nullptr)
 		currentImg -> setRatio(ratio, duration);
 }
 
-void ImageMgr::setTransparency(bool v) {
+void ImageMgr::setTransparency(bool v)
+{
 	if (currentImg != nullptr)
 		currentImg -> setTransparency(v);
 }
 
-void ImageMgr::setKeyColor(const Vec3f& _color, float _intensity) {
+void ImageMgr::setKeyColor(const Vec3f& _color, float _intensity)
+{
 	if (currentImg != nullptr)
 		currentImg -> setKeyColor(_color, _intensity);
 }

@@ -74,13 +74,13 @@ struct VideoParam {
 };
 
 //etat de la lecture vidéo
-enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360 , V_VRCUBE};
+enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360, V_VRCUBE};
 enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
 //etat de la lecture audio
 enum class A_TYPE : char { V_NONE, V_AUDIO, V_VIDEO};
 
 
-class Media : public NoCopy{
+class Media : public NoCopy {
 
 public:
 	Media();
@@ -110,7 +110,7 @@ public:
 		vr360->update(delta_time);
 		viewPort->update(delta_time);
 	}
-	
+
 	void disableFader() {
 		viewPort->disableFader();
 	}
@@ -139,7 +139,7 @@ public:
 
 	void audioVolume(const AudioVolume& volumeOrder, float _value);
 	// A partir d'içi
-	///////////////////////////////////////////////////////////////////////////////////////////////////////	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	void audioSetVolume(int _value) {
 		audio->setVolume(_value);
 	}
@@ -195,7 +195,7 @@ public:
 		audio->update(delta_time);
 	}
 
-	//! Permet de fixer le comportement 
+	//! Permet de fixer le comportement
 	//! @param true: la musique continue à jouer si le script entre en pause
 	//! @param false: la musique s'arrète de jouer si le script entre en pause
 	void audioSetMusicToPause(bool value) {

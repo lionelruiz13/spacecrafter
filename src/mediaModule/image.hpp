@@ -43,7 +43,7 @@ class Projector;
 class VertexArray;
 class ImageTexture;
 
-class Image : public NoCopy{
+class Image : public NoCopy {
 
 public:
 
@@ -97,7 +97,7 @@ private:
 	void drawViewport(const Navigator * nav, const Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, const Projector * prj);
 	void initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap = false);
-	void initCache(const Projector * prj); 
+	void initCache(const Projector * prj);
 
 	ImageTexture* imageTexture = nullptr;
 	//RGB
@@ -122,8 +122,8 @@ private:
 	float start_alpha, start_scale, start_rotation, start_ratio;
 	float end_alpha, end_scale, end_rotation, end_ratio;
 
-    int mid_time_x, mid_time_y, my_timer, my_timer_ratio, end_time, end_time_ratio;
-    
+	int mid_time_x, mid_time_y, my_timer, my_timer_ratio, end_time, end_time_ratio;
+
 	float coef_location, mult_location, x_move, y_move;
 	double coef_xmove, coef_ymove;
 	float start_xpos, start_ypos, end_xpos, end_ypos;
@@ -150,7 +150,7 @@ private:
 
 	Mat4d mat;
 	Vec3d gridpt, onscreen;
-	Vec3d imagev, ortho1 , ortho2;
+	Vec3d imagev, ortho1, ortho2;
 	int grid_size;
 	bool needFlip = false;
 };

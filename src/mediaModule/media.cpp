@@ -115,13 +115,13 @@ void Media::audioVolume(const AudioVolume& volumeOrder, float _value)
 		case AudioVolume::AV_SETVOLUME:
 			audio->setVolume(_value);
 			break;
-		case AudioVolume::AV_INCREMENTVOLUME:	
+		case AudioVolume::AV_INCREMENTVOLUME:
 			if (_value!=0)
 				audio->incrementVolume(_value);
 			else
 				audio->incrementVolume(STEP_VOLUME);
 			break;
-		case AudioVolume::AV_DECREMENTVOLUME:	
+		case AudioVolume::AV_DECREMENTVOLUME:
 			if (_value!=0)
 				audio->decrementVolume(_value);
 			else
@@ -247,18 +247,18 @@ void Media::playerJump(float deltaTime)
 
 void Media::playerInvertflow()
 {
- 	float realDelta=0.0f;
- 	player->invertVideoFlow(realDelta);
- 	if (realDelta==0.0) {
- 		audio->musicRewind();
- 		return;
- 	}
- 	if (realDelta==-1.0)
- 		audio->musicDrop();
- 	else {
- 		audio->musicResume();
- 		audio->musicJump(realDelta);
- 	}
+	float realDelta=0.0f;
+	player->invertVideoFlow(realDelta);
+	if (realDelta==0.0) {
+		audio->musicRewind();
+		return;
+	}
+	if (realDelta==-1.0)
+		audio->musicDrop();
+	else {
+		audio->musicResume();
+		audio->musicJump(realDelta);
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

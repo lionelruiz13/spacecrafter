@@ -20,16 +20,16 @@
 #include <GL/glew.h>
 
 struct VideoTexture {
-    GLuint tex[3];
-    GLuint &y = tex[0];
-    GLuint &u = tex[1];
-    GLuint &v = tex[2];
+	GLuint tex[3];
+	GLuint &y = tex[0];
+	GLuint &u = tex[1];
+	GLuint &v = tex[2];
 };
 
 struct Resolution {
-    int array[2];
-    int &w = array[0];
-    int &h = array[1];
+	int array[2];
+	int &w = array[0];
+	int &h = array[1];
 };
 
 enum class IMG_POSITION : char {
@@ -40,19 +40,19 @@ enum class IMG_POSITION : char {
 	POS_DOME
 };
 
-enum class IMG_PROJECT : char{
-    ONCE,
-    TWICE,
-    THRICE
+enum class IMG_PROJECT : char {
+	ONCE,
+	TWICE,
+	THRICE
 };
 
 enum class VID_TYPE : char {
-    V_NONE,
-    V_VRCUBE,
-    V_VR360,
-    V_FULLVIEWPORT,
-    V_DUALVIEWPORT,
-    V_IMAGE
+	V_NONE,
+	V_VRCUBE,
+	V_VR360,
+	V_FULLVIEWPORT,
+	V_DUALVIEWPORT,
+	V_IMAGE
 };
 
 #endif  // __MEDIA_BASE_HPP__

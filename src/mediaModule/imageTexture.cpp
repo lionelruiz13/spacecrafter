@@ -2,7 +2,7 @@
  * Spacecrafter astronomy simulation and visualization
  *
  * Copyright (C) 2020   AssociationSirius
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -51,7 +51,7 @@ void RBGImageTexture::bindImageTexture()
 
 YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV )
 {
-	imageY = imgY;	
+	imageY = imgY;
 	imageU = imgU;
 	imageV = imgV;
 	type = "useYUV";
@@ -64,7 +64,7 @@ YUVImageTexture::~YUVImageTexture()
 	if (imageV != nullptr)	delete imageV;
 }
 
-void YUVImageTexture::getDimensions(int &img_w, int &img_h) 
+void YUVImageTexture::getDimensions(int &img_w, int &img_h)
 {
 	imageY->getDimensions(img_w, img_h);
 }
