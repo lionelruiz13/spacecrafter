@@ -32,7 +32,7 @@ struct Resolution {
     int &h = array[1];
 };
 
-enum class IMAGE_POSITIONING : char {
+enum class IMG_POSITION : char {
 	POS_VIEWPORT,
 	POS_HORIZONTAL,
 	POS_EQUATORIAL,

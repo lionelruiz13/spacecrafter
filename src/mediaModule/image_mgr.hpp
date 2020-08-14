@@ -98,11 +98,11 @@ public:
 	void draw(const Navigator * nav, Projector * prj);
 
 	//! convertit une chaine de caractère en enum IMAGE_POSITIONING
-	IMAGE_POSITIONING  convertStrToPosition( const std::string & coordinate) const;
+	IMG_POSITION  convertStrToPosition( const std::string & coordinate) const;
 private:
 	Image * currentImg=nullptr;
 	std::list<std::unique_ptr<Image>> active_images;
-	std::map<std::string , IMAGE_POSITIONING> strToPos;
+	std::map<std::string , IMG_POSITION> strToPos;
 };
 
 

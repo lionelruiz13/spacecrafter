@@ -48,8 +48,8 @@ class Image : public NoCopy{
 public:
 
 	Image() = delete;
-	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap);
-	Image(VideoTexture imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project);
+	Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap);
+	Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project);
 	virtual ~Image();
 
 	void setAlpha(float alpha, float duration);
@@ -96,7 +96,7 @@ public:
 private:
 	void drawViewport(const Navigator * nav, Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);
-	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap = false);
+	void initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(Projector * prj); 
 
 	ImageTexture* imageTexture = nullptr;
@@ -110,7 +110,7 @@ private:
 	// bool useRGB;
 
 	std::string image_name;
-	IMAGE_POSITIONING image_pos_type;
+	IMG_POSITION image_pos_type;
 	bool isPersistent= false;
 
 	float image_scale, image_alpha, image_rotation;

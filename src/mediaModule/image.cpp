@@ -39,7 +39,7 @@ std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
 std::unique_ptr<VertexArray> Image::m_imageViewportGL;
 
 
-Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap)
+Image::Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
@@ -48,7 +48,7 @@ Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIO
 	initialise(name, pos_type,project, mipmap);
 }
 
-Image::Image(VideoTexture imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
+Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project)
 {
 	s_texture* imageY = new s_texture(name+"_y", imgTex.y);
 	s_texture* imageU = new s_texture(name+"_u", imgTex.u);
@@ -59,7 +59,7 @@ Image::Image(VideoTexture imgTex, const std::string& name, IMAGE_POSITIONING pos
 	initialise(name, pos_type, project);
 }
 
-void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap)
+void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
 	flag_alpha = flag_scale = flag_location = flag_rotation = 0;
 	image_pos_type = pos_type;
@@ -405,26 +405,26 @@ void Image::draw(const Navigator * nav, Projector * prj)
 	// }
 
 	switch (image_pos_type) {
-		case IMAGE_POSITIONING::POS_VIEWPORT:
+		case IMG_POSITION::POS_VIEWPORT:
 			drawViewport(nav, prj);
 			break;
 
-		case IMAGE_POSITIONING::POS_HORIZONTAL:
+		case IMG_POSITION::POS_HORIZONTAL:
 			mat = nav->getLocalToEyeMat();
 			drawUnified(false, nav, prj);
 			break;
 
-		case IMAGE_POSITIONING::POS_DOME:
+		case IMG_POSITION::POS_DOME:
 			mat = nav->getDomeFixedMat();
 			drawUnified(false, nav, prj);
 			break;
 
-		case IMAGE_POSITIONING::POS_J2000:
+		case IMG_POSITION::POS_J2000:
 			mat = nav->getJ2000ToEyeMat();
 			drawUnified(true, nav, prj);
 			break;
 
-		case IMAGE_POSITIONING::POS_EQUATORIAL:
+		case IMG_POSITION::POS_EQUATORIAL:
 			mat = nav->getEarthEquToEyeMat();
 			drawUnified(true, nav, prj);
 			break;
@@ -558,7 +558,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 
 		Vec3f clipping_fov = prj->getClippingFov();
 
-		if (image_pos_type==IMAGE_POSITIONING::POS_DOME)
+		if (image_pos_type==IMG_POSITION::POS_DOME)
 			clipping_fov[2] = 180;
 
 		shaderUnified->setUniform("clipping_fov", clipping_fov);

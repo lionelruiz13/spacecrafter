@@ -31,16 +31,16 @@
 #include "mediaModule/image_mgr.hpp"
 #include "mediaModule/image.hpp"
 #include "tools/s_texture.hpp"
-#include <algorithm>
+
 
 
 ImageMgr::ImageMgr()
 {
-	strToPos["viewport"] = IMAGE_POSITIONING::POS_VIEWPORT;
-	strToPos["horizontal"] = IMAGE_POSITIONING::POS_HORIZONTAL;
-	strToPos["equatorial"] = IMAGE_POSITIONING::POS_EQUATORIAL;
-	strToPos["j2000"] = IMAGE_POSITIONING::POS_J2000;
-	strToPos["dome"] = IMAGE_POSITIONING::POS_DOME;
+	strToPos["viewport"] = IMG_POSITION::POS_VIEWPORT;
+	strToPos["horizontal"] = IMG_POSITION::POS_HORIZONTAL;
+	strToPos["equatorial"] = IMG_POSITION::POS_EQUATORIAL;
+	strToPos["j2000"] = IMG_POSITION::POS_J2000;
+	strToPos["dome"] = IMG_POSITION::POS_DOME;
 	currentImg = nullptr;
 }
 
@@ -62,7 +62,7 @@ bool ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
-	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
+	IMG_POSITION img_pos = convertStrToPosition(coordinate);
 	std::unique_ptr<Image> img = std::make_unique<Image>(imgTex, name, img_pos, project);
 
 	if (!img || img->imageLoaded()) {
@@ -73,7 +73,7 @@ bool ImageMgr::loadImage(VideoTexture imgTex, const std::string& name, const std
 }
 
 
-IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & _coordinate) const
+IMG_POSITION ImageMgr::convertStrToPosition( const std::string & _coordinate) const
 {
 	std::string coordinate = _coordinate;
 	transform(coordinate.begin(), coordinate.end(), coordinate.begin(), ::tolower);
@@ -81,7 +81,7 @@ IMAGE_POSITIONING ImageMgr::convertStrToPosition( const std::string & _coordinat
 	if(it!=strToPos.end())
 		return it->second;
 	else
-		return IMAGE_POSITIONING::POS_VIEWPORT;
+		return IMG_POSITION::POS_VIEWPORT;
 }
 
 
@@ -89,7 +89,7 @@ bool ImageMgr::loadImage(const std::string& filename, const std::string& name, c
 {
 	// if name already exists, replace with new image
 	this->drop_image(name);
-	IMAGE_POSITIONING img_pos = convertStrToPosition(coordinate);
+	IMG_POSITION img_pos = convertStrToPosition(coordinate);
 	std::unique_ptr<Image> img = std::make_unique<Image>(filename, name, img_pos, project, mipmap);
 
 	if (!img || img->imageLoaded()) {
