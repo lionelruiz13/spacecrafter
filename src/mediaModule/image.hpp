@@ -154,4 +154,40 @@ private:
 };
 
 
+class ImageTexture
+{
+public :
+	ImageTexture(){}
+	~ImageTexture(){}
+	virtual void getDimensions(int &img_w, int &img_h) = 0;
+	virtual void bindImageTexture() = 0;
+	virtual void setSubroutine(shaderProgram* shader) =0;
+};
+
+
+class RBGImageTexture: public ImageTexture {
+public:
+	RBGImageTexture(s_texture* img);
+	~RBGImageTexture();
+	virtual void getDimensions(int &img_w, int &img_h)  override;
+	virtual void bindImageTexture() override;
+	virtual void setSubroutine(shaderProgram* shader) override;
+private:
+	s_texture* image = nullptr;
+};
+
+
+class YUVImageTexture: public ImageTexture {
+public:
+	YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV );
+	~YUVImageTexture();
+	virtual void getDimensions(int &img_w, int &img_h)  override;
+	virtual void bindImageTexture() override;
+	virtual void setSubroutine(shaderProgram* shader) override;
+private:
+	s_texture* imageY = nullptr;
+	s_texture* imageU = nullptr;
+	s_texture* imageV = nullptr;	
+};
+
 #endif // _IMAGE_H

@@ -561,3 +561,66 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 		vecImgTex.clear();
 	}
 }
+
+
+RBGImageTexture::RBGImageTexture(s_texture* img)
+{
+	image = img;
+}
+
+RBGImageTexture::~RBGImageTexture()
+{
+	if (image!=nullptr) delete image;
+}
+
+void RBGImageTexture::getDimensions(int &img_w, int &img_h)
+{
+	image->getDimensions(img_w, img_h);
+}
+
+void RBGImageTexture::bindImageTexture()
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture (GL_TEXTURE_2D, image->getID());
+}
+
+void RBGImageTexture::setSubroutine(shaderProgram* shader)
+{
+	shader->setSubroutine(GL_FRAGMENT_SHADER, "useRGB" );
+}
+
+
+
+YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV )
+{
+	imageY = imgY;	
+	imageU = imgU;
+	imageV = imgV;
+}
+
+YUVImageTexture::~YUVImageTexture()
+{
+	if (imageY != nullptr)	delete imageY;
+	if (imageU != nullptr)	delete imageU;
+	if (imageV != nullptr)	delete imageV;
+}
+
+void YUVImageTexture::getDimensions(int &img_w, int &img_h) 
+{
+	imageY->getDimensions(img_w, img_h);
+}
+
+void YUVImageTexture::bindImageTexture()
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture (GL_TEXTURE_2D, imageY->getID());
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture (GL_TEXTURE_2D, imageU->getID());
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture (GL_TEXTURE_2D, imageV->getID());
+}
+
+void YUVImageTexture::setSubroutine(shaderProgram* shader)
+{
+	shader->setSubroutine(GL_FRAGMENT_SHADER, "useYUV");	
+}
