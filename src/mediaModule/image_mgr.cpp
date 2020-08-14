@@ -136,7 +136,7 @@ void ImageMgr::update(int delta_time)
 	}
 }
 
-void ImageMgr::draw(const Navigator * nav, Projector * prj)
+void ImageMgr::draw(const Navigator * nav, const Projector * prj)
 {
 	for (auto iter = active_images.begin(); iter != active_images.end(); ++iter) {
 		(*iter)->draw(nav, prj);

@@ -95,7 +95,7 @@ public:
 	//! mise à jour des fader des images
 	void update(int delta_time);
 	//! affiche toutes les images du conteneur
-	void draw(const Navigator * nav, Projector * prj);
+	void draw(const Navigator * nav, const Projector * prj);
 
 	//! convertit une chaine de caractère en enum IMAGE_POSITIONING
 	IMG_POSITION  convertStrToPosition( const std::string & coordinate) const;

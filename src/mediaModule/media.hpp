@@ -258,7 +258,7 @@ public:
 		imageMgr->update(delta_time);
 	}
 
-	void imageDraw(const Navigator * nav, Projector * prj) {
+	void imageDraw(const Navigator * nav, const Projector * prj) {
 		imageMgr->draw(nav, prj);
 	}
 

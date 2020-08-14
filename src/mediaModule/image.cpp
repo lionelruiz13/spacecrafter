@@ -87,7 +87,7 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 		image_ratio = (float)img_w/img_h;
 }
 
-void Image::initCache(Projector * prj)
+void Image::initCache(const Projector * prj)
 {
 	if (initialised)
 		return;
@@ -382,7 +382,7 @@ bool Image::update(int delta_time)
 }
 
 
-void Image::draw(const Navigator * nav, Projector * prj)
+void Image::draw(const Navigator * nav, const Projector * prj)
 {
 	if (image_ratio < 0 || image_alpha == 0) return;
 
@@ -440,7 +440,7 @@ void Image::draw(const Navigator * nav, Projector * prj)
 	StateGL::disable(GL_BLEND);
 }
 
-void Image::drawViewport(const Navigator * nav, Projector * prj)
+void Image::drawViewport(const Navigator * nav, const Projector * prj)
 {
 	float w = image_scale*xbase;
 	float h = image_scale*ybase;
@@ -496,7 +496,7 @@ static int decalages(int i, int howManyDisplay)
 	return 0;
 }
 
-void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
+void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * prj)
 {
 	float plotDirection;
 	Mat4f matrix=mat.convert();

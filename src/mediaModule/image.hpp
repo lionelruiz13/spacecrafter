@@ -72,7 +72,7 @@ public:
 	}
 
 	bool update(int delta_time);  // update properties
-	void draw(const Navigator * nav, Projector * prj);
+	void draw(const Navigator* nav, const Projector* prj);
 
 	const std::string getName() const {
 		return image_name;
@@ -94,10 +94,10 @@ public:
 	static std::unique_ptr<shaderProgram> shaderUnified;
 
 private:
-	void drawViewport(const Navigator * nav, Projector * prj);
-	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);
+	void drawViewport(const Navigator * nav, const Projector * prj);
+	void drawUnified(bool drawUp, const Navigator * nav, const Projector * prj);
 	void initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap = false);
-	void initCache(Projector * prj); 
+	void initCache(const Projector * prj); 
 
 	ImageTexture* imageTexture = nullptr;
 	//RGB
