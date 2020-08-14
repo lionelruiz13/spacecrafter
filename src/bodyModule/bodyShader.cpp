@@ -194,7 +194,7 @@ void BodyShader::createShader()
 	shaderRinged->setUniformLocation("clipping_fov");
 
 	shaderNormal = std::make_unique<shaderProgram>();
-	shaderNormal->init( "body_normal.vert", "body_normal.frag");
+	shaderNormal->init( "body_normal.vert", "body_normal.geom", "body_normal.frag");
 	//shaderNormal->setUniformLocation("UmbraColor");
 
 	//commum
