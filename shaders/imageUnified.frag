@@ -14,20 +14,29 @@ layout (binding=2) uniform sampler2D mapTextureV;
 
 uniform float fader;
 uniform bool transparency;
-uniform bool useRGB;
 uniform vec4 noColor;
 
 smooth in vec2 TexCoord;
  
 out vec4 FragColor;
 
-void main(void)
+vec4 tex_color;
+
+// utilisation de fonctions spécialisées afin d'utiliser soit une RGB texture soit 3 YUV textures
+subroutine void parametricTexture();
+subroutine uniform parametricTexture defineTexture;
+
+subroutine(parametricTexture)
+void useRGB()
 {
-	vec4 tex_color;
-	if (useRGB)
-		tex_color = texture(mapTexture,TexCoord);
-	else
-		tex_color = vec4(convertToRGB(mapTexture, mapTextureU, mapTextureV, TexCoord),1);
+	tex_color = texture(mapTexture,TexCoord);
+}
+
+subroutine(parametricTexture)
+void useYUV()
+{
+	tex_color = vec4(convertToRGB(mapTexture, mapTextureU, mapTextureV, TexCoord),1);
+}
 
 	tex_color.a *= fader;
 
@@ -38,5 +47,10 @@ void main(void)
 			discard;
 	}
 
+void main(void)
+{
+	// complète tex_color avec la/les bonne texture
+	defineTexture();
+	tex_color.a *= fader;
 	FragColor = tex_color;
 }

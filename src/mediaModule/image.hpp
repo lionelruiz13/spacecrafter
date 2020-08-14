@@ -41,6 +41,7 @@ class s_texture;
 class Navigator;
 class Projector;
 class VertexArray;
+class ImageTexture;
 
 class Image : public NoCopy{
 
@@ -98,14 +99,15 @@ private:
 	void initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap = false);
 	void initCache(Projector * prj); 
 
-	// RGB
-	s_texture* image_RGB = nullptr;
-	// ou
-	s_texture* image_Y = nullptr;
-	s_texture* image_U = nullptr;
-	s_texture* image_V = nullptr;
+	ImageTexture* imageTexture = nullptr;
+	//RGB
+	// s_texture* image_RGB = nullptr;
+	//ou
+	// s_texture* image_Y = nullptr;
+	// s_texture* image_U = nullptr;
+	// s_texture* image_V = nullptr;
 	//pour distinguer quelle texture ont doit utiliser:
-	bool useRGB;
+	// bool useRGB;
 
 	std::string image_name;
 	IMAGE_POSITIONING image_pos_type;
@@ -158,7 +160,7 @@ class ImageTexture
 {
 public :
 	ImageTexture(){}
-	~ImageTexture(){}
+	virtual ~ImageTexture(){}
 	virtual void getDimensions(int &img_w, int &img_h) = 0;
 	virtual void bindImageTexture() = 0;
 	virtual void setSubroutine(shaderProgram* shader) =0;
@@ -168,7 +170,7 @@ public :
 class RBGImageTexture: public ImageTexture {
 public:
 	RBGImageTexture(s_texture* img);
-	~RBGImageTexture();
+	virtual ~RBGImageTexture();
 	virtual void getDimensions(int &img_w, int &img_h)  override;
 	virtual void bindImageTexture() override;
 	virtual void setSubroutine(shaderProgram* shader) override;
@@ -180,7 +182,7 @@ private:
 class YUVImageTexture: public ImageTexture {
 public:
 	YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV );
-	~YUVImageTexture();
+	virtual ~YUVImageTexture();
 	virtual void getDimensions(int &img_w, int &img_h)  override;
 	virtual void bindImageTexture() override;
 	virtual void setSubroutine(shaderProgram* shader) override;

@@ -43,17 +43,17 @@ Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIO
 {
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
-	image_RGB = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
-	useRGB = true;
+	s_texture* imageRGB = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
+	imageTexture = new RBGImageTexture(imageRGB);
 	initialise(name, pos_type,project, mipmap);
 }
 
 Image::Image(VideoTexture imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
 {
-	useRGB = false;
-	image_Y = new s_texture(name+"_y", imgTex.y);
-	image_U = new s_texture(name+"_u", imgTex.u);
-	image_V = new s_texture(name+"_v", imgTex.v);
+	s_texture* imageY = new s_texture(name+"_y", imgTex.y);
+	s_texture* imageU = new s_texture(name+"_u", imgTex.u);
+	s_texture* imageV = new s_texture(name+"_v", imgTex.v);
+	imageTexture = new YUVImageTexture(imageY, imageU, imageV);
 	needFlip = true;
 	isPersistent = true;
 	initialise(name, pos_type, project);
@@ -76,11 +76,11 @@ void Image::initialise(const std::string& name, IMAGE_POSITIONING pos_type, IMG_
 	}
 
 	int img_w, img_h;
-	if (useRGB)
-		image_RGB->getDimensions(img_w, img_h);
-	else
-		image_Y->getDimensions(img_w, img_h);
-
+	imageTexture->getDimensions(img_w, img_h);
+	// if (useRGB)
+	// 	image_RGB->getDimensions(img_w, img_h);
+	// else
+	// 	image_Y->getDimensions(img_w, img_h);
 	if (img_h == 0) 
 		image_ratio = -1; // no image loaded
 	else
@@ -123,8 +123,8 @@ void Image::initCache(Projector * prj)
 
 Image::~Image()
 {
-	if (image_RGB) delete image_RGB;
-
+	// if (image_RGB) delete image_RGB;
+	delete imageTexture;
 	vecImgPos.clear();
 	vecImgTex.clear();
 }
@@ -145,7 +145,8 @@ void Image::createShaderUnified()
 	shaderUnified->setUniformLocation({"fader","MVP","transparency","noColor", "clipping_fov"});
 	shaderUnified->setUniformLocation("ModelViewMatrix");
 	// a cause des textures YUV
-	shaderUnified->setUniformLocation("useRGB");
+	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useRGB");
+	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useYUV");
 }
 
 
@@ -387,17 +388,18 @@ void Image::draw(const Navigator * nav, Projector * prj)
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if (useRGB) {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
-	} else {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture (GL_TEXTURE_2D, image_Y->getID());
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture (GL_TEXTURE_2D, image_U->getID());
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture (GL_TEXTURE_2D, image_V->getID());
-	}
+	imageTexture->bindImageTexture();
+	// if (useRGB) {
+		// glActiveTexture(GL_TEXTURE0);
+		// glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
+	// } else {
+		// glActiveTexture(GL_TEXTURE0);
+		// glBindTexture (GL_TEXTURE_2D, image_Y->getID());
+		// glActiveTexture(GL_TEXTURE1);
+		// glBindTexture (GL_TEXTURE_2D, image_U->getID());
+		// glActiveTexture(GL_TEXTURE2);
+		// glBindTexture (GL_TEXTURE_2D, image_V->getID());
+	// }
 
 	switch (image_pos_type) {
 		case IMAGE_POSITIONING::POS_VIEWPORT:
@@ -543,7 +545,8 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 		shaderUnified->setUniform("transparency",transparency);
 		shaderUnified->setUniform("noColor",noColor);
 		// à cause des textures RGB
-		shaderUnified->setUniform("useRGB", useRGB);
+		//shaderUnified->setUniform("useRGB", useRGB);
+		imageTexture->setSubroutine(shaderUnified.get());
 
 		Vec3f clipping_fov = prj->getClippingFov();
 
@@ -588,7 +591,6 @@ void RBGImageTexture::setSubroutine(shaderProgram* shader)
 {
 	shader->setSubroutine(GL_FRAGMENT_SHADER, "useRGB" );
 }
-
 
 
 YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV )
