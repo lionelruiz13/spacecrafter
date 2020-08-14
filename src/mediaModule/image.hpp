@@ -48,7 +48,7 @@ public:
 
 	Image() = delete;
 	Image(const std::string& filename, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project, bool mipmap);
-	Image(s_texture *_imgY, s_texture *_imgU, s_texture *_imgV,  const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project);
+	Image(VideoTexture imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project);
 	virtual ~Image();
 
 	void setAlpha(float alpha, float duration);

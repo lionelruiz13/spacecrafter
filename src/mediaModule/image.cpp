@@ -48,12 +48,12 @@ Image::Image(const std::string& filename, const std::string& name, IMAGE_POSITIO
 	initialise(name, pos_type,project, mipmap);
 }
 
-Image::Image(s_texture *_imgY, s_texture *_imgU, s_texture *_imgV, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
+Image::Image(VideoTexture imgTex, const std::string& name, IMAGE_POSITIONING pos_type, IMG_PROJECT project)
 {
 	useRGB = false;
-	image_Y = _imgY;
-	image_U = _imgU;
-	image_V = _imgV;
+	image_Y = new s_texture(name+"_y", imgTex.y);
+	image_U = new s_texture(name+"_u", imgTex.u);
+	image_V = new s_texture(name+"_v", imgTex.v);
 	needFlip = true;
 	isPersistent = true;
 	initialise(name, pos_type, project);
