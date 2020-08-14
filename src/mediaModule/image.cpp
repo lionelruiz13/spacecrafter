@@ -545,15 +545,16 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 
 		shaderUnified->setUniform("ModelViewMatrix",matrix);
 		shaderUnified->setUniform("fader", image_alpha);
-		if (transparency)
-			shaderUnified->setSubroutine(GL_FRAGMENT_SHADER, "useTransparency" );
-		else
-			shaderUnified->setSubroutine(GL_FRAGMENT_SHADER, "useNoTransparency" );
 
-		shaderUnified->setUniform("noColor",noColor);
 		// à cause des textures RGB
 		//shaderUnified->setUniform("useRGB", useRGB);
-		imageTexture->setSubroutine(shaderUnified.get());
+		std::string sub1 = imageTexture->getType();
+		std::string sub2;
+		transparency ? sub2 = "useTransparency" : "useNoTransparency";
+
+		shaderUnified->setSubroutines(GL_FRAGMENT_SHADER, {sub1, sub2});
+		shaderUnified->setUniform("noColor",noColor);
+
 
 		Vec3f clipping_fov = prj->getClippingFov();
 
@@ -576,6 +577,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, Projector * prj)
 RBGImageTexture::RBGImageTexture(s_texture* img)
 {
 	image = img;
+	type = "useRBG";
 }
 
 RBGImageTexture::~RBGImageTexture()
@@ -594,17 +596,12 @@ void RBGImageTexture::bindImageTexture()
 	glBindTexture (GL_TEXTURE_2D, image->getID());
 }
 
-void RBGImageTexture::setSubroutine(shaderProgram* shader)
-{
-	shader->setSubroutine(GL_FRAGMENT_SHADER, "useRGB" );
-}
-
-
 YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV )
 {
 	imageY = imgY;	
 	imageU = imgU;
 	imageV = imgV;
+	type = "useYUV";
 }
 
 YUVImageTexture::~YUVImageTexture()
@@ -627,9 +624,4 @@ void YUVImageTexture::bindImageTexture()
 	glBindTexture (GL_TEXTURE_2D, imageU->getID());
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture (GL_TEXTURE_2D, imageV->getID());
-}
-
-void YUVImageTexture::setSubroutine(shaderProgram* shader)
-{
-	shader->setSubroutine(GL_FRAGMENT_SHADER, "useYUV");	
 }

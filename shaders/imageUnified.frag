@@ -25,26 +25,22 @@ vec4 tex_color;
 // utilisation de fonctions spécialisées afin d'utiliser soit une RGB texture soit 3 YUV textures
 subroutine void parametricTexture();
 subroutine uniform parametricTexture defineTexture;
-
-subroutine(parametricTexture)
-void useRGB()
-{
-	tex_color = texture(mapTexture,TexCoord);
-}
-
-subroutine(parametricTexture)
-void useYUV()
-{
-	tex_color = vec4(convertToRGB(mapTexture, mapTextureU, mapTextureV, TexCoord),1);
-}
-
-
 // utilisation de fonctions spécialisées afin d'appliquer une transparence ou non
 subroutine void parametricTransparency();
 subroutine uniform parametricTransparency defineTransparency;
 
-subroutine(parametricTransparency)
-void useTransparency()
+
+subroutine(parametricTexture) void useRGB()
+{
+	tex_color = texture(mapTexture,TexCoord);
+}
+
+subroutine(parametricTexture) void useYUV()
+{
+	tex_color = vec4(convertToRGB(mapTexture, mapTextureU, mapTextureV, TexCoord),1);
+}
+
+subroutine(parametricTransparency) void useTransparency()
 {
 	vec3 diffVec = abs(tex_color.rgb-noColor.rgb);
 	float delta = noColor.a;
@@ -52,8 +48,7 @@ void useTransparency()
 		discard;
 }
 
-subroutine(parametricTransparency)
-void useNoTransparency()
+subroutine(parametricTransparency) void useNoTransparency()
 {}
 
 void main(void)

@@ -163,7 +163,11 @@ public :
 	virtual ~ImageTexture(){}
 	virtual void getDimensions(int &img_w, int &img_h) = 0;
 	virtual void bindImageTexture() = 0;
-	virtual void setSubroutine(shaderProgram* shader) =0;
+	const std::string& getType() const {
+		return type;
+	}
+protected:
+	std::string type;
 };
 
 
@@ -173,7 +177,6 @@ public:
 	virtual ~RBGImageTexture();
 	virtual void getDimensions(int &img_w, int &img_h)  override;
 	virtual void bindImageTexture() override;
-	virtual void setSubroutine(shaderProgram* shader) override;
 private:
 	s_texture* image = nullptr;
 };
@@ -185,7 +188,6 @@ public:
 	virtual ~YUVImageTexture();
 	virtual void getDimensions(int &img_w, int &img_h)  override;
 	virtual void bindImageTexture() override;
-	virtual void setSubroutine(shaderProgram* shader) override;
 private:
 	s_texture* imageY = nullptr;
 	s_texture* imageU = nullptr;
