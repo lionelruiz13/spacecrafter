@@ -155,43 +155,4 @@ private:
 	bool needFlip = false;
 };
 
-
-class ImageTexture
-{
-public :
-	ImageTexture(){}
-	virtual ~ImageTexture(){}
-	virtual void getDimensions(int &img_w, int &img_h) = 0;
-	virtual void bindImageTexture() = 0;
-	const std::string& getType() const {
-		return type;
-	}
-protected:
-	std::string type;
-};
-
-
-class RBGImageTexture: public ImageTexture {
-public:
-	RBGImageTexture(s_texture* img);
-	virtual ~RBGImageTexture();
-	virtual void getDimensions(int &img_w, int &img_h)  override;
-	virtual void bindImageTexture() override;
-private:
-	s_texture* image = nullptr;
-};
-
-
-class YUVImageTexture: public ImageTexture {
-public:
-	YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV );
-	virtual ~YUVImageTexture();
-	virtual void getDimensions(int &img_w, int &img_h)  override;
-	virtual void bindImageTexture() override;
-private:
-	s_texture* imageY = nullptr;
-	s_texture* imageU = nullptr;
-	s_texture* imageV = nullptr;	
-};
-
 #endif // _IMAGE_H
