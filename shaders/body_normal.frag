@@ -17,22 +17,18 @@ uniform float MoonRadius3;
 uniform vec3 MoonPosition4; 
 uniform float MoonRadius4;
 
-in colorFrag
-{
-    vec2 TexCoord;
-    vec3 Position;
-    float NdotL;
-    vec3 Light; 
-} cfIn;
-
-in float Ambient;
+smooth in vec2 TexCoord;
+in float Ambient; 
+in vec3 Position;
+in float NdotL;
+in vec3 Light; 
 out vec4 FragColor;
 
 void main(void)
 { 
-	float diffuse = max(cfIn.NdotL, 0.0);
+	float diffuse = max(NdotL, 0.0);
 
-	vec3 color = vec3(texture(mapTexture, cfIn.TexCoord)).rgb;
+	vec3 color = vec3(texture(mapTexture, TexCoord)).rgb;
 	if(diffuse != 0.0) { 
 		vec3 moon; 
 		float moonHalfAngle;
@@ -41,36 +37,36 @@ void main(void)
 		vec3 lookup;
 
 		if(MoonRadius1 != 0.0) { 
-			moon = MoonPosition1 - cfIn.Position;
+			moon = MoonPosition1 - Position;
 			moonHalfAngle = atan( MoonRadius1/ length(moon) ); 
-			distance = acos(dot(cfIn.Light, normalize(moon))); 
+			distance = acos(dot(Light, normalize(moon))); 
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
 			lookup = vec3(texture(shadowTexture, ratio)).rgb; 
 			diffuse = diffuse * lookup.r; 
 		} 
 		if(MoonRadius2 != 0.0) { 
-			moon = MoonPosition2 - cfIn.Position;
+			moon = MoonPosition2 - Position;
 			moonHalfAngle = atan( MoonRadius2/ length(moon) ); 
-			distance = acos(dot(cfIn.Light, normalize(moon))); 
+			distance = acos(dot(Light, normalize(moon))); 
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
 			lookup = vec3(texture(shadowTexture, ratio)).rgb; 
 			diffuse = diffuse * lookup.r; 
 		} 
 		if(MoonRadius3 != 0.0) { 
-			moon = MoonPosition3 - cfIn.Position;
+			moon = MoonPosition3 - Position;
 			moonHalfAngle = atan( MoonRadius3/ length(moon) ); 
-			distance = acos(dot(cfIn.Light, normalize(moon))); 
+			distance = acos(dot(Light, normalize(moon))); 
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
 			lookup = vec3(texture(shadowTexture, ratio)).rbg; 
 			diffuse = diffuse * lookup.r; 
 		} 
 		if(MoonRadius4 != 0.0) { 
-			moon = MoonPosition4 - cfIn.Position;
+			moon = MoonPosition4 - Position;
 			moonHalfAngle = atan( MoonRadius4/ length(moon) ); 
-			distance = acos(dot(cfIn.Light, normalize(moon))); 
+			distance = acos(dot(Light, normalize(moon))); 
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
 			lookup = vec3(texture(shadowTexture, ratio)).rgb; 
