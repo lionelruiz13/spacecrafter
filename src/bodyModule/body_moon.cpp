@@ -98,12 +98,12 @@ void Moon::selectShader()
 
 	if (tex_norm!=nullptr) { //bump Shader
 		myShader = SHADER_MOON_BUMP;
-		myShaderProg = BodyShader::getShaderMoonBump();
+		myShaderProg = BodyShader::getShaderBump();
 		return;
 	}
 	//if (useShaderMoonNormal) { // normal shaders
 	myShader = SHADER_MOON_NORMAL;
-	myShaderProg = BodyShader::getShaderMoonNormal();
+	myShaderProg = BodyShader::getShaderNormal();
 	//}
 }
 

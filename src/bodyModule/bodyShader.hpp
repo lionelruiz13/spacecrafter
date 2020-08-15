@@ -81,17 +81,17 @@ public:
 		return shaderNormalTes.get();
 	};
 
-	static shaderProgram * getShaderMoonNormal() {
-		return shaderMoonNormal.get();
-	};
+	// static shaderProgram * getShaderMoonNormal() {
+	// 	return shaderMoonNormal.get();
+	// };
 
 	static shaderProgram * getShaderMoonNight() {
 		return shaderMoonNight.get();
 	};
 
-	static shaderProgram * getShaderMoonBump() {
-		return shaderMoonBump.get();
-	};
+	// static shaderProgram * getShaderMoonBump() {
+	// 	return shaderMoonBump.get();
+	// };
 
 	static shaderProgram * getShaderMoonNormalTes() {
 		return myMoon.get();
@@ -106,7 +106,7 @@ protected:
 	static std::unique_ptr<shaderProgram> shaderNight, shaderMoonNight;
 	static std::unique_ptr<shaderProgram> myEarth, shaderNormal, shaderNormalTes;
 	static std::unique_ptr<shaderProgram> shaderRinged;
-	static std::unique_ptr<shaderProgram> myMoon, shaderMoonBump, shaderMoonNormal;
+	static std::unique_ptr<shaderProgram> myMoon; //, shaderMoonBump, shaderMoonNormal;
 	static std::unique_ptr<shaderProgram> shaderArtificial;
 };
 
