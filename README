@@ -2,7 +2,7 @@
                                 SPACECRAFTER
                                                          
 
-                    http://www.lss-planetariums.info
+                    http://www.spacecrafter.org
 
 Spacecrafter comes with ABSOLUTELY NO WARRANTY.  See the LICENSE file for details.
 
@@ -55,7 +55,7 @@ Please see the INSTALL file.
 3. REQUIREMENT
 --------------------------------------------------------------------------------
 Windows or linux/POSIX or CYGWIN or MACOSX environment
-A 3d openGL4 acceleration vide card (WITH CURRENT DRIVERS!) and a mid-range cpu
+An OpenGL4.3 compatible graphic card (PROPRIETARY DRIVERS) and a decent cpu
 
 --------------------------------------------------------------------------------
 4. QUICK START
@@ -67,26 +67,22 @@ Use left mouse button to select an object, right button to select no object and
 middle mouse button or SPACE to center on the selected object.
 Zooming on nebulas or planets is very interesting....
 Use J, K and L to increment/decrement time speed.
-Press the H key for more help.
 
-More help can be found on www.spacecrafter.org, and in the user guide.
+More help can be found on www.spacecrafter.org, in the command section.
 
 --------------------------------------------------------------------------------
 5. CONFIGURATION
 --------------------------------------------------------------------------------
-The most useful configuration options can be set from within the program.
+The most useful configuration options can be set from within the software.
 
-You can however change it by hand in the file located in config/config.ini on
-Windows and in $HOME/.spacecrafter/ on a Linux, OSX, or unix system.
+You can however change it by hand in the config.ini located in
+$HOME/.spacecrafter/ on a Linux, OSX, or unix system.
 
 --------------------------------------------------------------------------------
 6. TROUBLESHOOTING
 --------------------------------------------------------------------------------
-Runtime diagnostic information is output to the console while spacecrafter is
-running. The information can be useful to debug certain Stratoscript calls.
-On Windows platforms this information is output to two files, stdout.txt and 
-stderr.txt in Spacecrafter's root directory. Windows7 and Vista users must run
-Spacecrafter as administrator to enable this diagnostic output. 
+Runtime diagnostic information is output to the console while SpaceCrafter is
+running. The information can be useful to debug certain script calls.
 
 --------------------------------------------------------------------------------
 7. THANKS
