@@ -1,5 +1,5 @@
 //
-// body bump
+// moon bump
 //
 #version 420
 #pragma debug(on)
@@ -13,6 +13,17 @@ layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
+
+layout (std140) uniform cam_block
+{
+	ivec4 viewport;
+	ivec4 viewport_center;
+	vec4 main_clipping_fov;
+	mat4 MVP2D;
+	float ambient;
+	float time;
+};
+
 //externe
 uniform mat4 ModelViewProjectionMatrix;
 //~ uniform mat4 ModelViewMatrixInverse;
@@ -24,15 +35,6 @@ uniform float planetRadius;
 uniform float planetScaledRadius;
 uniform float planetOneMinusOblateness;
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
 
 //out
 smooth out vec2 TexCoord;
@@ -122,7 +124,7 @@ vec4 custom_project(vec3 invec)
 			win.x = viewport_center_x;
 			win.y = viewport_center_y;
 			win.z = 1.0;
-			win.w = 0.0;
+			win.w=0.0;
 			return win;
 		}
 		win.x = viewport_center_x;
@@ -145,15 +147,11 @@ vec4 custom_project(vec3 invec)
         win.y = viewport_center_y + win.y * f;
 
         win.z = (abs(depth) - zNear) / (zFar-zNear);
-
-        if (a<0.9*M_PI)
-			win.w=1.0;
-		else
-			win.w=0.0;
+        win.w=0.0;
         return win;
 	}
 }
-
+        
         
 vec4 custom_unproject(vec4 invec, vec4 viewport)
 {  
@@ -208,22 +206,3 @@ void main()
     TexCoord = texcoord;
     Ambient = ambient;
 }
-
-//~ uniform vec3 LightPosition;
-//~ varying vec2 TexCoord;
-//~ varying vec3 TangentLight;
-//~ varying vec3 Normal;
-//~ varying vec3 Light;
-//~ varying vec3 Position;
-
-//~ void main(void)
-//~ {
-	//~ Position = vec3(gl_ModelViewMatrix * gl_Color);
-	//~ Normal = normalize(gl_NormalMatrix * gl_Normal);
-	//~ Light = normalize(LightPosition - Position);
-	//~ vec3 binormal = vec3(0,-Normal.z,Normal.y);
-	//~ vec3 tangent = cross(Normal,binormal);
-	//~ TangentLight = vec3(dot(Light, tangent), dot(Light, binormal), dot(Light, Normal)); 
-	//~ TexCoord = gl_MultiTexCoord0.st;
-	//~ gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-//~ }

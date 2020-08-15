@@ -136,7 +136,7 @@ void BodyShader::createShader()
 
 	shaderBump = std::make_unique<shaderProgram>();
 	shaderBump->init( "body_bump.vert","", "","", "body_bump.frag");
-	//shaderBump->setUniformLocation("UmbraColor");
+	shaderBump->setUniformLocation("UmbraColor");
 
 	//commum
 	shaderBump->setUniformLocation("planetRadius");
