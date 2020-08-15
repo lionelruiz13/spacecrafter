@@ -24,15 +24,14 @@ uniform float MoonRadius3;
 uniform vec3 MoonPosition4;
 uniform float MoonRadius4;
 
-smooth in vec2 TexCoord;
-
-out vec4 FragColor;
+in vec2 TexCoord;
 in vec3 Normal;
 in vec3 Position;
 in vec3 TangentLight;
 in vec3 Light;
 in vec3 ViewDirection;
 
+out vec4 FragColor;
 
 void main(void)
 {
