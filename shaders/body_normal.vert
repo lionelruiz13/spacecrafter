@@ -13,20 +13,13 @@ layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
+#include <cam_block.glsl>
 
 //externe
 uniform mat4 NormalMatrix;
 uniform vec3 LightPosition;
 uniform vec3 clipping_fov;
+
 uniform float planetRadius;
 uniform float planetScaledRadius;
 uniform float planetOneMinusOblateness;
