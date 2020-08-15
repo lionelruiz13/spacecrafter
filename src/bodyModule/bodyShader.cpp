@@ -135,7 +135,7 @@ void BodyShader::createShader()
 	myEarth->setUniformLocation("clipping_fov");
 
 	shaderBump = std::make_unique<shaderProgram>();
-	shaderBump->init( "body_bump.vert","", "","", "body_bump.frag");
+	shaderBump->init( "body_bump.vert", "body_bump.frag");
 	shaderBump->setUniformLocation("UmbraColor");
 
 	//commum
