@@ -1231,8 +1231,8 @@ public:
 		return core->observatory->getLatitude();
 	}
 
-	double observatoryGetLongitude() {
-		return core->observatory->getLongitude();
+	double observatoryGetLongitude(bool withModulo=false) {
+		return core->observatory->getLongitude(withModulo);
 	}
 
 	double observatoryGetAltitude() {

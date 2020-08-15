@@ -30,14 +30,6 @@ std::string SpaceDate::getPrintableTimeNav(double jd, double latitude, double lo
 	double LST;
 	double c,r,l,lct,m;
 
-	while (longitude > 180) {
-		longitude -= 360;
-	}
-	while (longitude < -180 ) {
-		longitude += 360;
-	}
-
-	
 	T = (jd - 2451545.0) / 36525.0;
 	/* calc mean angle */
 	sidereal = 280.46061837 + (360.98564736629 * (jd - 2451545.0)) + (0.000387933 * T * T) - (T * T * T / 38710000.0);

@@ -267,14 +267,17 @@ void Observer::update(int delta_time)
 }
 
 
-double Observer::getLongitude(void) const
+double Observer::getLongitude(bool withModulo) const
 {
+	if (!withModulo)
+		return  longitude;
+	
 	double tmp = longitude;
-	//while (tmp > 180) {
-	//	tmp -= 360;
-	//}
-	//while (tmp < -180 ) {
-	//	tmp += 360;
-	//}
+	while (tmp > 180) {
+		tmp -= 360;
+	}
+	while (tmp < -180 ) {
+		tmp += 360;
+	}
 	return tmp;
 }
