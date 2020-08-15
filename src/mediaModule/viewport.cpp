@@ -97,7 +97,7 @@ void ViewPort::draw()
 		// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		// glDrawArrays(GL_TRIANGLE_STRIP,4,4);
 		// m_dualGL->unBind();
-		Renderer::drawMultiArrays(shaderViewPort.get(), m_fullGL.get(), GL_TRIANGLE_STRIP,2,4);
+		Renderer::drawMultiArrays(shaderViewPort.get(), m_dualGL.get(), GL_TRIANGLE_STRIP,2,4);
 	}
 	// shaderViewPort->unuse();
 	StateGL::disable(GL_BLEND);
