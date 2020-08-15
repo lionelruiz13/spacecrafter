@@ -29,6 +29,14 @@ std::string SpaceDate::getPrintableTimeNav(double jd, double latitude, double lo
 	double T;
 	double LST;
 	double c,r,l,lct,m;
+
+	while (longitude > 180) {
+		longitude -= 360;
+	}
+	while (longitude < -180 ) {
+		longitude += 360;
+	}
+
 	
 	T = (jd - 2451545.0) / 36525.0;
 	/* calc mean angle */
