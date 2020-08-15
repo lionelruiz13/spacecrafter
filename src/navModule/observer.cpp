@@ -270,11 +270,11 @@ void Observer::update(int delta_time)
 double Observer::getLongitude(void) const
 {
 	double tmp = longitude;
-	while (tmp > 180) {
-		tmp -= 360;
-	}
-	while (tmp < -180 ) {
-		tmp += 360;
-	}
+	//while (tmp > 180) {
+	//	tmp -= 360;
+	//}
+	//while (tmp < -180 ) {
+	//	tmp += 360;
+	//}
 	return tmp;
 }
