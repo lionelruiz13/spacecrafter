@@ -47,7 +47,7 @@ void main()
     	gl_Position = fisheyeProject(Position0, clipping_fov);
 
         //Light
-    	vec3 positionL = planetRadius * vertexVtG[i].position;
+    	vec3 positionL = planetRadius * vertexVtG[i].normal;
     	positionL.z = positionL.z * planetOneMinusOblateness;
     	cfOut.Position = vec3(ModelViewMatrix * vec4(positionL,1.0));  
     	cfOut.Light = normalize(LightPosition - cfOut.Position);
