@@ -35,7 +35,7 @@ std::unique_ptr<shaderProgram> BodyShader::myEarth;
 std::unique_ptr<shaderProgram> BodyShader::shaderRinged;
 std::unique_ptr<shaderProgram> BodyShader::shaderNormal;
 std::unique_ptr<shaderProgram> BodyShader::shaderNormalTes;
-std::unique_ptr<shaderProgram> BodyShader::shaderMoonNight;
+// std::unique_ptr<shaderProgram> BodyShader::shaderMoonNight;
 // std::unique_ptr<shaderProgram> BodyShader::shaderMoonNormal;
 // std::unique_ptr<shaderProgram> BodyShader::shaderMoonBump;
 std::unique_ptr<shaderProgram> BodyShader::myMoon;
@@ -76,30 +76,30 @@ void BodyShader::createShader()
 	shaderNight->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderNight->setUniformLocation("clipping_fov");
 
-	shaderMoonNight = std::make_unique<shaderProgram>();
-	shaderMoonNight->init( "body_moon_night.vert", "body_moon_night.frag");
-	// shaderMoonNight->setUniformLocation("Clouds");
-	// shaderMoonNight->setUniformLocation("CloudNormalTexture");
-	// shaderMoonNight->setUniformLocation("CloudTexture");
+	// shaderMoonNight = std::make_unique<shaderProgram>();
+	// shaderMoonNight->init( "body_moon_night.vert", "body_moon_night.frag");
+	// // shaderMoonNight->setUniformLocation("Clouds");
+	// // shaderMoonNight->setUniformLocation("CloudNormalTexture");
+	// // shaderMoonNight->setUniformLocation("CloudTexture");
 
-	//commum
-	shaderMoonNight->setUniformLocation("planetRadius");
-	shaderMoonNight->setUniformLocation("planetScaledRadius");
-	shaderMoonNight->setUniformLocation("planetOneMinusOblateness");
+	// //commum
+	// shaderMoonNight->setUniformLocation("planetRadius");
+	// shaderMoonNight->setUniformLocation("planetScaledRadius");
+	// shaderMoonNight->setUniformLocation("planetOneMinusOblateness");
 
-	shaderMoonNight->setUniformLocation("SunHalfAngle");
-	shaderMoonNight->setUniformLocation("LightPosition");
-	shaderMoonNight->setUniformLocation("ModelViewProjectionMatrix");
-	shaderMoonNight->setUniformLocation("ModelViewMatrix");
-	shaderMoonNight->setUniformLocation("NormalMatrix");
-	shaderMoonNight->setUniformLocation("ViewProjection");
-	shaderMoonNight->setUniformLocation("Model");
+	// shaderMoonNight->setUniformLocation("SunHalfAngle");
+	// shaderMoonNight->setUniformLocation("LightPosition");
+	// shaderMoonNight->setUniformLocation("ModelViewProjectionMatrix");
+	// shaderMoonNight->setUniformLocation("ModelViewMatrix");
+	// shaderMoonNight->setUniformLocation("NormalMatrix");
+	// shaderMoonNight->setUniformLocation("ViewProjection");
+	// shaderMoonNight->setUniformLocation("Model");
 
-	shaderMoonNight->setUniformLocation("MoonPosition1");
-	shaderMoonNight->setUniformLocation("MoonRadius1");
+	// shaderMoonNight->setUniformLocation("MoonPosition1");
+	// shaderMoonNight->setUniformLocation("MoonRadius1");
 
-	shaderMoonNight->setUniformLocation("inverseModelViewProjectionMatrix");
-	shaderMoonNight->setUniformLocation("clipping_fov");
+	// shaderMoonNight->setUniformLocation("inverseModelViewProjectionMatrix");
+	// shaderMoonNight->setUniformLocation("clipping_fov");
 
 	myEarth= std::make_unique<shaderProgram>();
 	myEarth->init( "my_earth.vert", "my_earth.tesc","my_earth.tese", "my_earth.geom", "my_earth.frag");

@@ -92,7 +92,7 @@ void Moon::selectShader()
 
 	if (tex_night!=nullptr) { //altimetry Shader
 		myShader = SHADER_MOON_NIGHT;
-		myShaderProg = BodyShader::getShaderMoonNight();
+		myShaderProg = BodyShader::getShaderNight();
 		return;
 	}
 
