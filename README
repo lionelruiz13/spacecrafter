@@ -55,7 +55,7 @@ Please see the INSTALL file.
 3. REQUIREMENT
 --------------------------------------------------------------------------------
 Windows or linux/POSIX or CYGWIN or MACOSX environment
-A 3d openGL4 acceleration vide card (WITH CURRENT DRIVERS!) and a good CPU.
+A 3d openGL4 acceleration vide card (WITH CURRENT DRIVERS!) and a mid-range cpu
 
 --------------------------------------------------------------------------------
 4. QUICK START
@@ -69,7 +69,7 @@ Zooming on nebulas or planets is very interesting....
 Use J, K and L to increment/decrement time speed.
 Press the H key for more help.
 
-More help can be found on www.stellarium.org, and in the user guide.
+More help can be found on www.spacecrafter.org, and in the user guide.
 
 --------------------------------------------------------------------------------
 5. CONFIGURATION
@@ -187,9 +187,13 @@ Spacecrafter as administrator to enable this diagnostic output.
     2.7 Julian <-> Calendar date conversion algorithms adapted from
         Javascript by Steve Glennie-Smith.
     2.8 stb single-file public domain (or MIT licensed) libraries for C/C++
-    2.9 a little part of Boost C++ library
+    2.9 a very little part of Boost C++ library
     2.10 Tiny-JPEG from Sergio Gonzalez
-         Single header lib for JPEG encoding. Public domain. C99. stb style. 
+         Single header lib for JPEG encoding. Public domain. C99. stb style.
+    2.11 ThreadPool from progschj
+	     A simple C++11 Thread Pool implementation.
+    2.12 FFMPEG 4.0 from Fabrice Bellard 
+	     A complete, cross-platform solution to record, convert and stream audio and video. 
 
 3. Data
 	3.1 The Hipparcos star catalog
@@ -257,6 +261,7 @@ Spacecrafter as administrator to enable this diagnostic output.
 10. LICENSE
 --------------------------------------------------------------------------------
 
+   Copyright (C) 2016-2020 Association Sirius
    Copyright (C) 2013 LSS team
    Copyright (C) 2003-2011 Digitalis Education Solutions, Inc. et al.
    Copyright (C) 2000-2008 Fabien Chereau et al.
