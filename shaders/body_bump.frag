@@ -10,7 +10,7 @@ layout (binding=1) uniform sampler2D normalTexture;
 layout (binding=2) uniform sampler2D shadowTexture;
 uniform float SunHalfAngle;
 
-//uniform vec3 UmbraColor;
+uniform vec3 UmbraColor;
 uniform vec3 MoonPosition1; 
 uniform float MoonRadius1; 
 uniform vec3 MoonPosition2; 
@@ -31,12 +31,12 @@ in vec3 Light;
 
 void main(void)
 { 
-	//vec3 umbra = vec3(0.0, 0.0, 0.0);
+	vec3 umbra = vec3(0.0, 0.0, 0.0);
 	vec4 color = texture(mapTexture, TexCoord);
 	vec3 light_b = normalize(TangentLight);
 	vec3 normal_b = 2.0 * vec3(texture(normalTexture, TexCoord)) - vec3(1.0); 
 	float diffuse = max(dot(normal_b, light_b), 0.0);
-	//float shadowScale = 1.0;
+	float shadowScale = 1.0;
 	if(diffuse != 0.0) { 
 		vec3 moon; 
 		float moonHalfAngle;
@@ -49,10 +49,9 @@ void main(void)
 			distance = acos(dot(Light, normalize(moon)));
 			ratio.y = clamp(moonHalfAngle/SunHalfAngle/51.2, 0.0, 1.0); 
 			ratio.x = distance/(moonHalfAngle + SunHalfAngle); 
-			lookup = vec3(texture(shadowTexture, ratio));
-			diffuse = diffuse * lookup.r; 
-		//	shadowScale = shadowScale * lookup.r;
-		//	umbra = UmbraColor;
+			lookup = vec3(texture(shadowTexture, ratio)); 
+			shadowScale = shadowScale * lookup.r;
+			umbra = UmbraColor;
 		}
 		if(MoonRadius2 != 0.0) { 
 			moon = MoonPosition2 - Position;
@@ -83,9 +82,10 @@ void main(void)
 		} 
 	}
 	//~ FragColor = vec4(color.rgb*diffuse*(shadowScale+umbra*max(0.0,1.0-shadowScale)), color.a);
-	FragColor = vec4(color.rgb*min(diffuse+Ambient,1.0), color.a);
+	FragColor = vec4(color.rgb*min(diffuse*(shadowScale+umbra*max(0.0,1.0-shadowScale))+Ambient,1.0), color.a);
 	//~ FragColor= vec4(1.0,1.0,0.0,1.0);
 } 
+
 
 
 
