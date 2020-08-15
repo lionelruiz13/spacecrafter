@@ -8,57 +8,48 @@
 layout (points) in;
 layout (triangle_strip , max_vertices = 4) out;
 
-//uniform mat4 ModelViewProjectionMatrix;
+#include <cam_block.glsl>
 
-layout (std140) uniform cam_block
+uniform float Rmag;
+
+in VtG
 {
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
+	vec2 position;
+} vtg[];
 
-
-in vertexData
-{
-	vec2 center;
-	float rmag;
-} vertexIn[];
-
-out Interpolators
+out GtF
 {
 	vec2 Center;
 	vec2 TexCoord;
-} interData;
+} gtf;
 
 
 //on veut représenter une texture sur un carré pour cela on construit deux triangles
 void main(void)
 {
+	vec2 center = vtg[0].position;
 	//en bas à droite
-	gl_Position   =  MVP2D * (gl_in[0].gl_Position + vec4(-vertexIn[0].rmag, - vertexIn[0].rmag,0,0));
-    interData.TexCoord= vec2(.0f, .0f);
-	interData.Center = vertexIn[0].center;
+	gl_Position   =  MVP2D * vec4(center + vec2(-Rmag, -Rmag), 0, 1);
+    gtf.TexCoord= vec2(0, 0);
+	gtf.Center = center;
     EmitVertex();
 
     // en haut à droite
-	gl_Position   =  MVP2D * (gl_in[0].gl_Position + vec4(-vertexIn[0].rmag, vertexIn[0].rmag,0,0));
-    interData.TexCoord= vec2(.0f, 1.0f);
-	interData.Center = vertexIn[0].center;
+	gl_Position   =  MVP2D * vec4(center + vec2(-Rmag, Rmag), 0, 1);
+    gtf.TexCoord= vec2(0, 1);
+	gtf.Center = center;
     EmitVertex();  
 
 	// en Bas à gauche
-	gl_Position   =  MVP2D * (gl_in[0].gl_Position + vec4(vertexIn[0].rmag, - vertexIn[0].rmag,0,0));
-    interData.TexCoord= vec2(1.0f, .0f);
-	interData.Center = vertexIn[0].center;
+	gl_Position   =  MVP2D * vec4(center + vec2(Rmag, -Rmag), 0, 1);
+    gtf.TexCoord= vec2(1, 0);
+	gtf.Center = center;
     EmitVertex();
 
     // en haut à gauche
-	gl_Position   =  MVP2D * (gl_in[0].gl_Position + vec4(vertexIn[0].rmag, vertexIn[0].rmag,0,0));
-    interData.TexCoord= vec2(1.0f, 1.0f);
-	interData.Center = vertexIn[0].center;
+	gl_Position   =  MVP2D * vec4(center + vec2(Rmag, Rmag), 0, 1);
+    gtf.TexCoord= vec2(1, 1);
+	gtf.Center = center;
     EmitVertex();
 
     EndPrimitive();
