@@ -73,17 +73,17 @@ BigBody::BigBody(Body *parent,
 		tex_specular = new s_texture(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT);
 	}
 
-	if(_bodyTexture->tex_cloud != "") {
-		// Try to use cloud texture in any event, even if can not use shader
-		tex_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_ALPHA, true);
+	// if(_bodyTexture->tex_cloud != "") {
+	// 	// Try to use cloud texture in any event, even if can not use shader
+	// 	tex_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_ALPHA, true);
 
-		if(_bodyTexture->tex_cloud_normal=="") {
-			cLog::get()->write("No cloud normal texture defined for " + englishName, LOG_TYPE::L_ERROR);
-		}
-		else {
-			tex_norm_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud_normal,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
-		}
-	}
+	// 	if(_bodyTexture->tex_cloud_normal=="") {
+	// 		cLog::get()->write("No cloud normal texture defined for " + englishName, LOG_TYPE::L_ERROR);
+	// 	}
+	// 	else {
+	// 		tex_norm_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud_normal,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
+	// 	}
+	// }
 
 	trail = new Trail(this,1460);
 	orbitPlot = new Orbit2D(this);
@@ -238,19 +238,19 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 			glActiveTexture(GL_TEXTURE3);
 			glBindTexture(GL_TEXTURE_2D, tex_specular->getID());
 
-			if(tex_cloud) {
-				glActiveTexture(GL_TEXTURE4);
-				glBindTexture(GL_TEXTURE_2D, tex_cloud->getID());
-				myShaderProg->setUniform("CloudTexture",4);
+			// if(tex_cloud) {
+			// 	glActiveTexture(GL_TEXTURE4);
+			// 	glBindTexture(GL_TEXTURE_2D, tex_cloud->getID());
+			// 	myShaderProg->setUniform("CloudTexture",4);
 
-				glActiveTexture(GL_TEXTURE5);
-				glBindTexture(GL_TEXTURE_2D, tex_norm_cloud->getID());
-				myShaderProg->setUniform("CloudNormalTexture",5);
-			}
-			if ((Body::flagClouds && tex_norm_cloud)==1)
-				myShaderProg->setUniform("Clouds",1);
-			else
-				myShaderProg->setUniform("Clouds",0);
+			// 	glActiveTexture(GL_TEXTURE5);
+			// 	glBindTexture(GL_TEXTURE_2D, tex_norm_cloud->getID());
+			// 	myShaderProg->setUniform("CloudNormalTexture",5);
+			// }
+			// if ((Body::flagClouds && tex_norm_cloud)==1)
+			// 	myShaderProg->setUniform("Clouds",1);
+			// else
+			// 	myShaderProg->setUniform("Clouds",0);
 			break;
 
 		case SHADER_RINGED :

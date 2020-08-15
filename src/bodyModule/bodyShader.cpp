@@ -47,9 +47,9 @@ void BodyShader::createShader()
 {
 	shaderNight = std::make_unique<shaderProgram>();
 	shaderNight->init( "body_night.vert", "body_night.frag");
-	shaderNight->setUniformLocation("Clouds");
-	shaderNight->setUniformLocation("CloudNormalTexture");
-	shaderNight->setUniformLocation("CloudTexture");
+	// shaderNight->setUniformLocation("Clouds");
+	// shaderNight->setUniformLocation("CloudNormalTexture");
+	// shaderNight->setUniformLocation("CloudTexture");
 
 	//commum
 	shaderNight->setUniformLocation("planetRadius");
@@ -78,9 +78,9 @@ void BodyShader::createShader()
 
 	shaderMoonNight = std::make_unique<shaderProgram>();
 	shaderMoonNight->init( "body_moon_night.vert", "body_moon_night.frag");
-	shaderMoonNight->setUniformLocation("Clouds");
-	shaderMoonNight->setUniformLocation("CloudNormalTexture");
-	shaderMoonNight->setUniformLocation("CloudTexture");
+	// shaderMoonNight->setUniformLocation("Clouds");
+	// shaderMoonNight->setUniformLocation("CloudNormalTexture");
+	// shaderMoonNight->setUniformLocation("CloudTexture");
 
 	//commum
 	shaderMoonNight->setUniformLocation("planetRadius");
@@ -103,9 +103,9 @@ void BodyShader::createShader()
 
 	myEarth= std::make_unique<shaderProgram>();
 	myEarth->init( "my_earth.vert", "my_earth.tesc","my_earth.tese", "my_earth.geom", "my_earth.frag");
-	myEarth->setUniformLocation("Clouds");
-	myEarth->setUniformLocation("CloudNormalTexture");
-	myEarth->setUniformLocation("CloudTexture");
+	// myEarth->setUniformLocation("Clouds");
+	// myEarth->setUniformLocation("CloudNormalTexture");
+	// myEarth->setUniformLocation("CloudTexture");
 	myEarth->setUniformLocation("TesParam");
 
 	//commum

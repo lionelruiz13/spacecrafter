@@ -358,8 +358,8 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	bodyTexture->tex_heightmap = param["tex_heightmap"];
 	bodyTexture->tex_night = param["tex_night"];
 	bodyTexture->tex_specular = param["tex_specular"];
-	bodyTexture->tex_cloud = param["tex_cloud"];
-	bodyTexture->tex_cloud_normal = param["tex_cloud_normal"];
+	// bodyTexture->tex_cloud = param["tex_cloud"];
+	// bodyTexture->tex_cloud_normal = param["tex_cloud_normal"];
 	bodyTexture->tex_skin =  param["tex_skin"];
 
 

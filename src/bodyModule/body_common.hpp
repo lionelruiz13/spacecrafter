@@ -10,8 +10,8 @@ struct BodyTexture {
 	std::string tex_norm;
   	std::string tex_night;
 	std::string tex_specular;
-	std::string tex_cloud;
-	std::string tex_cloud_normal;
+	// std::string tex_cloud;
+	// std::string tex_cloud_normal;
 	std::string tex_heightmap;
 	std::string tex_skin;
 };
