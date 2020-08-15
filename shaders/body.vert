@@ -1,5 +1,5 @@
 //
-// body normal
+// body.vert generic version
 //
 #version 420
 #pragma debug(on)

@@ -53,8 +53,8 @@ void main()
     	cfOut.Light = normalize(LightPosition - cfOut.Position);
 
     	//Other
-    	vec3 Normal = normalize(mat3(NormalMatrix) * vertexVtG[i].normal);
-    	cfOut.NdotL = dot(Normal, cfOut.Light);
+    	vec3 normal = normalize(mat3(NormalMatrix) * vertexVtG[i].normal);
+    	cfOut.NdotL = dot(normal, cfOut.Light);
     	cfOut.TexCoord = vertexVtG[i].texcoord;
     	EmitVertex();
     }
