@@ -52,6 +52,15 @@ void UI::drawGravityUi()
 
 	if (FlagShowTuiDateTime) {
 		double jd = coreLink->getJDay();
+		double lonmodulo = coreLink->observatoryGetLongitude();
+		
+	while (lonmodulo > 180) {
+		lonmodulo -= 360;
+	}
+	while (lonmodulo < -180 ) {
+		lonmodulo += 360;
+	}		
+		
 		std::ostringstream os;
 
 		os << spaceDate->getPrintableDateLocal(jd) << " " << spaceDate->getPrintableTimeLocal(jd);
@@ -64,7 +73,7 @@ void UI::drawGravityUi()
 		if (FlagShowFps) os << "  FPS " << app->getFpsClock();
 		if (FlagShowLatLon) {
 			os << " Lat: " << Utility::printAngleDMS(coreLink->observatoryGetLatitude()*3.1415926/180)
-			   << " Lon: " << Utility::printAngleDMS(coreLink->observatoryGetLongitude()*3.1415926/180);
+			   << " Lon: " << Utility::printAngleDMS(lonmodulo*3.1415926/180);
 			if (coreLink->observatoryGetAltitude()>1000) {
 /*			    if (true)
 					os << " Alt: " << core->observatoryGetAltitude()/2.E+10 << "al";
