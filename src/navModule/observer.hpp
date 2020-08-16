@@ -147,7 +147,8 @@ public:
 
 	//! for moving observer position gradually
 	void update(int delta_time);
-
+  
+  
 	//! returns true if we are on the named body
 	bool isOnBodyNamed(const std::string& bodyName);
 

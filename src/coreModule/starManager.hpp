@@ -273,6 +273,9 @@ public:
 	//! dans le fichier filenameOut.
 	bool saveAsterismStarsPosition(const std::string &fileNameIn,const std::string &fileNameOut);
 
+	//! \brief renvoie les caractéristiques de l'étoile identifiée par HIPName
+	starInfo* findStar(unsigned int HIPName);
+
 protected:
 	std::vector<HyperCube*> hyperCubeList;
 	int nbrCubes;
@@ -280,7 +283,6 @@ protected:
 	float MinMagnitude;
 	int statHc[NBR_PAS_STATHC];
 	unsigned int statMagStars[MAG_PAS];
-	starInfo* findStar(unsigned int HIPName);
 	starInfo* createStar(unsigned int hip, float ra, float de, float plx, float pmRa, float pmDe, float mag, float bv);
 };
 

@@ -85,6 +85,7 @@ class Media;
 class StarLines;
 class BodyTrace;
 class CoreFont;
+class StarGalaxy;
 
 //!  @brief Main class for application core processing.
 //!
@@ -482,6 +483,8 @@ public:
 		setLandscapeToBody();
 	}
 
+	void starGalaxyCreate(std::string argName);
+
 private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
@@ -600,6 +603,7 @@ private:
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
 	AnchorManager * anchorManager=nullptr;
+	StarGalaxy* starGalaxy;
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn

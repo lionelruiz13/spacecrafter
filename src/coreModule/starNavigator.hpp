@@ -105,6 +105,10 @@ public:
 		needComputeRCMagTable = true;
 	}
 
+	starInfo* getStarInfo(unsigned int HIPName) const {
+		return starMgr->findStar(HIPName);
+	}
+
 private:
 	//tampons pour l'affichage des shaders
 	std::vector<float> starPos;
