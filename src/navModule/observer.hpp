@@ -109,7 +109,8 @@ public:
 	}
 
 	//! renvoie la longitude de l'observer sur la planète
-	double getLongitude(bool withModulo = false) const;
+	double getLongitude() const;
+	double getLongitudeForDisplay() const;
 
 	//! fixe l'altitude de l'observer sur la planète
 	void setAltitude(double a);
