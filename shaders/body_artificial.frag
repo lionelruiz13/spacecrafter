@@ -5,6 +5,9 @@
 #pragma debug(on)
 #pragma optimize(off)
 
+layout (binding=0) uniform sampler2D mapTexture;
+layout( location = 0 ) out vec4 FragColor;
+
 in colorFrag
 {
     vec3 Position;
@@ -12,13 +15,6 @@ in colorFrag
     vec3 Normal;
     float Ambient;
 } cfIn;
-
-// in vec3 Position;
-// in vec2 TexCoord;
-// in vec3 Normal;
-// in float Ambient;
-
-uniform sampler2D Tex1;
 
 uniform bool useTexture;
 
@@ -28,6 +24,7 @@ struct LightInfo {
 };
 uniform LightInfo Light;
 
+
 struct MaterialInfo {
   vec3 Ka;            // Ambient reflectivity
   vec3 Kd;            // Diffuse reflectivity
@@ -36,7 +33,7 @@ struct MaterialInfo {
 };
 uniform MaterialInfo Material;
 
-layout( location = 0 ) out vec4 FragColor;
+
 
 void phongModel( vec3 pos, vec3 norm, out vec3 ambAndDiff, out vec3 spec ) {
     vec3 s = normalize(vec3(Light.Position) - pos);
@@ -60,7 +57,7 @@ float simple(vec3 pos, vec3 norm) {
 //~ subroutine( UsedTextureType )
 void useTexturedMaterial(out vec4 texColor)
 {
-	texColor = texture(Tex1, cfIn.TexCoord);
+	texColor = texture(mapTexture, cfIn.TexCoord);
 }
 
 //~ subroutine( UsedTextureType )
@@ -70,21 +67,15 @@ void useColoredMaterial(out vec4 texColor)
 }
 
 
-void main() {
-    vec4 texColor;
-    if (useTexture)
+void main()
+{
+  vec4 texColor;
+  if (useTexture)
 		useTexturedMaterial(texColor);
 	else
 		useColoredMaterial(texColor);
-    vec3 ambAndDiff, spec;
-    phongModel( cfIn.Position, cfIn.Normal, ambAndDiff, spec );
-    FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
-
-	//~ FragColor = texColor * simple(Position, Normal);
-    // FragColor = vec4(1.0,0.0,0.0,1.0);
+  
+  vec3 ambAndDiff, spec;
+  phongModel( cfIn.Position, cfIn.Normal, ambAndDiff, spec );
+  FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
 }
-
-// in vec3 Position;
-// in vec2 TexCoord;
-// in vec3 Normal;
-// in float Ambient;
