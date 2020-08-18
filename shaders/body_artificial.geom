@@ -166,7 +166,6 @@ in vertexData
 	vec3 Normal;
 	vec2 TexCoord;
 	float Ambient;
-	vec3 VertexPosition;
 } vertexIn[];
 
 
@@ -182,12 +181,12 @@ out colorFrag
 
 void main(void)
 {
-    // gl_Position = MVP * custom_unproject(custom_project(VertexPosition), viewport);
+    // gl_Position = MVP * custom_unproject(custom_project(Position), viewport);
 	vec4 pos0, pos1,pos2;
 
-    pos0 = custom_project(vertexIn[0].VertexPosition);
-    pos1 = custom_project(vertexIn[1].VertexPosition);
-    pos2 = custom_project(vertexIn[2].VertexPosition);
+    pos0 = custom_project(vertexIn[0].Position);
+    pos1 = custom_project(vertexIn[1].Position);
+    pos2 = custom_project(vertexIn[2].Position);
     
 	if ( pos0.w==1.0 && pos1.w==1.0 && pos2.w==1.0) {
             

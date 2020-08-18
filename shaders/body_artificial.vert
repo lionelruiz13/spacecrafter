@@ -23,7 +23,6 @@ out vertexData
 	vec3 Normal;
 	vec2 TexCoord;
 	float Ambient;
-	vec3 VertexPosition;
 } vertexOut;
 
 uniform bool useTexture;
@@ -49,9 +48,8 @@ void main()
 	vertexOut.TexCoord = VertexTexCoord;
 
     vertexOut.Normal = normalize( mat3(NormalMatrix) * VertexNormal);
-    vertexOut.Position = vec3( ModelViewMatrix * vec4(VertexPosition,1.0) );
+    vertexOut.Position = VertexPosition;
 
-	vertexOut.VertexPosition = VertexPosition;
     //~ gl_Position = MVP * vec4(VertexPosition,1.0);
     // gl_Position = MVP * posToFisheye(VertexPosition);
 }
