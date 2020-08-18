@@ -60,15 +60,15 @@ void Ring::createSC_context()
 	shaderRing = std::make_unique<shaderProgram>();
 	shaderRing->init( "ring_planet.vert","ring_planet.frag");
 
-	shaderRing->setUniformLocation("Texture");
+//	shaderRing->setUniformLocation("Texture");
 	shaderRing->setUniformLocation("LightDirection");
 	shaderRing->setUniformLocation("PlanetRadius");
 	shaderRing->setUniformLocation("PlanetPosition");
 	shaderRing->setUniformLocation("SunnySideUp");
 	shaderRing->setUniformLocation("RingScale");
 
-	shaderRing->setUniformLocation("ModelViewProjectionMatrix");
-	shaderRing->setUniformLocation("inverseModelViewProjectionMatrix");
+	//shaderRing->setUniformLocation("ModelViewProjectionMatrix");
+	//shaderRing->setUniformLocation("inverseModelViewProjectionMatrix");
 	shaderRing->setUniformLocation("ModelViewMatrix");
 	shaderRing->setUniformLocation("clipping_fov");
 	shaderRing->setUniformLocation("NormalMatrix");
@@ -112,18 +112,18 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex->getID());
 
-	shaderRing->setUniform("Texture",0);
+//	shaderRing->setUniform("Texture",0);
 	shaderRing->setUniform("LightDirection",lightDirection);
 	shaderRing->setUniform("PlanetPosition", planetPosition);
 	shaderRing->setUniform("PlanetRadius",planetRadius);
 	shaderRing->setUniform("RingScale",mc);
 
 
-	Mat4f proj = prj->getMatProjection().convert();
+	//Mat4f proj = prj->getMatProjection().convert();
 	Mat4f matrix=mat.convert();
 	Mat4f inv_matrix = matrix.inverse();
-	shaderRing->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	shaderRing->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
+//	ashaderRing->setUniform("ModelViewProjectionMatrix",proj*matrix);
+//	ashaderRing->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
 	shaderRing->setUniform("ModelViewMatrix",matrix);
 	shaderRing->setUniform("clipping_fov",prj->getClippingFov());
 	shaderRing->setUniform("NormalMatrix", inv_matrix.transpose());
