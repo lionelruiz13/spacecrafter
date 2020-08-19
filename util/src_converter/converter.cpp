@@ -33,7 +33,7 @@
 #include "obj3D.hpp"
 #include "obj_to_ojm.hpp"
 
-static void cout_copyright()
+static void display_copyright()
 {	
 	std::cout << std::endl;
 	std::cout << "Converter Wavefront.obj to Spacecrafter.ojm" << std::endl;
@@ -44,7 +44,7 @@ static void cout_copyright()
 	std::cout << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE" <<std::endl << std::endl;
 }
 
-static void cout_help(char *argv)
+static void display_help(char *argv)
 {	
 	std::cout << std::endl;
 	std::cout << "Usage" << std::endl << std::endl;
@@ -63,7 +63,8 @@ static void cout_help(char *argv)
 static std::string removeExtension(const std::string& filename)
 {
     size_t lastdot = filename.find_last_of(".");
-    if (lastdot == std::string::npos) return filename;
+    if (lastdot == std::string::npos)
+		return filename;
     return filename.substr(0, lastdot); 
 }
 
@@ -102,10 +103,10 @@ int main(int argc, char **argv)
 	//fin du traitement des données
 
 	if (displayCopyright)
-		cout_copyright();
+		display_copyright();
 
 	if (displayHelp)
-		cout_help(argv[0]);
+		display_help(argv[0]);
 
 	if (name.empty() && optind < argc)
 		name = removeExtension(argv[optind]);
