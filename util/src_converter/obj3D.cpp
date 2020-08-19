@@ -302,9 +302,9 @@ bool Obj3D::readOBJ()
 
 			short nbIndices=countSpace(line);
 			bool  hasUVs = !hasDoubleSlash(line);
-			bool  isFaceOk = false;
 
-			if (nbIndices ==3) { //on traite un triangle
+			switch (nbIndices)	{
+			case 3: {		//if (nbIndices ==3) { //on traite un triangle
 				int vertexIndex[3], uvIndex[3], normalIndex[3];
 				if (hasUVs)
 					sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d\n",
@@ -318,7 +318,6 @@ bool Obj3D::readOBJ()
 					       &vertexIndex[2], &normalIndex[2]);
 
 				changeSigneAvecIndice(vertexIndex, positionData.vertex.size());
-
 				tmpMesh->vertexIndices.push_back(vertexIndex[0]);
 				tmpMesh->vertexIndices.push_back(vertexIndex[1]);
 				tmpMesh->vertexIndices.push_back(vertexIndex[2]);
@@ -326,21 +325,18 @@ bool Obj3D::readOBJ()
 				if (hasUVs) {
 
 					changeSigneAvecIndice(uvIndex, positionData.uvs.size());
-
 					tmpMesh->uvIndices.push_back(uvIndex[0]);
 					tmpMesh->uvIndices.push_back(uvIndex[1]);
 					tmpMesh->uvIndices.push_back(uvIndex[2]);
 				}
 
 				changeSigneAvecIndice(normalIndex, positionData.normals.size());
-
 				tmpMesh->normalIndices.push_back(normalIndex[0]);
 				tmpMesh->normalIndices.push_back(normalIndex[1]);
 				tmpMesh->normalIndices.push_back(normalIndex[2]);
-				isFaceOk= true;
-			}
+			} break;
 
-			if (nbIndices ==4) { //on traite un quadrilatère
+			case 4 : {//if (nbIndices ==4) { //on traite un quadrilatère
 				int vertexIndex[4], uvIndex[4], normalIndex[4];
 
 				if (hasUVs)
@@ -357,7 +353,6 @@ bool Obj3D::readOBJ()
 					       &vertexIndex[3], &normalIndex[3]);
 
 				changeSigneAvecIndice(vertexIndex, positionData.vertex.size());
-
 				tmpMesh->vertexIndices.push_back(vertexIndex[0]);
 				tmpMesh->vertexIndices.push_back(vertexIndex[1]);
 				tmpMesh->vertexIndices.push_back(vertexIndex[2]);
@@ -366,9 +361,7 @@ bool Obj3D::readOBJ()
 				tmpMesh->vertexIndices.push_back(vertexIndex[0]);
 
 				if (hasUVs) {
-
 					changeSigneAvecIndice(uvIndex, positionData.uvs.size());
-
 					tmpMesh->uvIndices.push_back(uvIndex[0]);
 					tmpMesh->uvIndices.push_back(uvIndex[1]);
 					tmpMesh->uvIndices.push_back(uvIndex[2]);
@@ -378,21 +371,18 @@ bool Obj3D::readOBJ()
 				}
 
 				changeSigneAvecIndice(normalIndex, positionData.normals.size());
-
 				tmpMesh->normalIndices.push_back(normalIndex[0]);
 				tmpMesh->normalIndices.push_back(normalIndex[1]);
 				tmpMesh->normalIndices.push_back(normalIndex[2]);
 				tmpMesh->normalIndices.push_back(normalIndex[2]);
 				tmpMesh->normalIndices.push_back(normalIndex[3]);
 				tmpMesh->normalIndices.push_back(normalIndex[0]);
-				isFaceOk= true;
-			}
-
-			if (!isFaceOk) {
+			} break;
+			default:
 				std::cout << "OBJ3D : line[" <<nbReadLine << "] Unknown face definition" << std::endl;
 				return false;
+				break;
 			}
-
 			continue;
 		}
 
