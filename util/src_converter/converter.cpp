@@ -76,7 +76,6 @@ int main(int argc, char **argv)
 	bool displayCopyright = false;
 	bool displayHelp = false;
 	std::string name;
-	bool isRead = false;
 	ObjToOjm converter;
 
 	// Traitement des données
@@ -120,9 +119,7 @@ int main(int argc, char **argv)
 
 
 	Obj3D obj3D(name +".obj");
-	isRead = obj3D.init();
-
-	if (isRead==true)
+	if (obj3D.getOk()==true)
 		std::cout << argv[0] << " : File " << name << " read without errors" << std::endl;
 	else {
 		std::cout << argv[0] << " : Errors detected while reading file "<< name << "  Aborting..." << std::endl;

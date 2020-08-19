@@ -92,7 +92,9 @@ static void changeSigneAvecIndice(int *vector, int indice)
 Obj3D::Obj3D(const string _fileName)
 {
 	fileName = _fileName;
-	is_ok = false;
+	is_ok = readOBJ();
+	if (is_ok)
+		is_ok=testIndices();
 }
 
 
@@ -100,15 +102,6 @@ Obj3D::~Obj3D()
 {
 	meshes.clear();
 	materials.clear();
-}
-
-
-bool Obj3D::init()
-{
-	is_ok = readOBJ();
-	if (is_ok)
-		is_ok=testIndices();
-	return is_ok;
 }
 
 bool Obj3D::testIndices()
