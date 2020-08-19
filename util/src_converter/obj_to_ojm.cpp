@@ -227,13 +227,8 @@ bool ObjToOjm::fusionMaterials()
 bool ObjToOjm::exportOJM(const std::string &filename)
 {
 	std::cout << "ObjToOjm transform" << std::endl;
-	if (!this->transform()) {
-		std::cout << "error ObjToOjm transform" << std::endl;
-		return false;
-	}
 
 	std::ofstream stream;
-
 	stream.open(filename.c_str(),std::ios_base::out);
 	if(!stream.is_open())
 		return -1;
@@ -242,6 +237,7 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 	stream<<"# By Olivier Nivoix and Jérôme Lartillot"<< std::endl;
 	stream<<std::endl<<std::endl;
 
+	std::cout << "Début export OBJ " << shapes.size() << " shape(s)" << std::endl;
 	for(unsigned int i=0; i<shapes.size(); i++) {
 		stream<<"o "<<shapes[i].name<<std::endl;
 
@@ -300,6 +296,71 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 		std::cout << "Ratio : " << float(shapes[i].vertices.size())/float(shapes[i].indices.size()) << std::endl;
 	}
 
+	std::cout << "Fin export OBJ " << shapes.size() << " shape(s)" << std::endl;
+	return true;
+}
 
+
+
+bool ObjToOjm::exportV3D(const std::string &filename)
+{
+	std::cout << "ObjToOjm transform V3D" << std::endl;
+	std::ofstream stream;
+
+	stream.open(filename.c_str(),std::ios_base::out);
+	if(!stream.is_open())
+		return -1;
+
+	stream<<"# Vertex 3D file format"<<std::endl;
+	stream<<"# By Association Sirius && Andromede"<< std::endl;
+
+	time_t tTime = time(NULL);
+	tm * tmTime = localtime (&tTime);
+	char timestr[20];
+	strftime(timestr, 20, "%y-%m-%d_%H:%M:%S", tmTime);
+
+	stream<<"# Created at "<< std::string(timestr) <<std::endl;
+	stream<<std::endl<<std::endl;
+
+	std::cout << "Début export V3D " << shapes.size() << " shape(s)" << std::endl;
+	for(unsigned int i=0; i<shapes.size(); i++) {
+		stream<<"o "<<shapes[i].name<<std::endl;
+
+		stream<<"ka "<<shapes[i].Ka.v[0] << " " <<
+		      shapes[i].Ka.v[1] << " "<<
+		      shapes[i].Ka.v[2] << std::endl;
+
+		stream<<"kd "<<shapes[i].Kd.v[0] << " " <<
+		      shapes[i].Kd.v[1] << " "<<
+		      shapes[i].Kd.v[2] << std::endl;
+
+		stream<<"ks "<<shapes[i].Ks.v[0] << " " <<
+		      shapes[i].Ks.v[1] << " "<<
+		      shapes[i].Ks.v[2] << std::endl;
+
+		stream<<"Ns " << shapes[i].Ns << std::endl;
+		stream<<"t " << shapes[i].T << std::endl;
+
+
+		stream<<"map_ka "<<shapes[i].map_Ka<<std::endl;
+		stream<<"map_kd "<<shapes[i].map_Kd<<std::endl;
+		stream<<"map_ks "<<shapes[i].map_Ks<<std::endl;
+
+		for (long unsigned int j=0; j< shapes[i].vertices.size(); j++)
+			stream<<"v "<< shapes[i].vertices[j].v[0]<< " " << shapes[i].vertices[j].v[1]<< " " << shapes[i].vertices[j].v[2] << " "
+			<< shapes[i].uvs[j].v[0]<< " " << shapes[i].uvs[j].v[1]<< " " 
+			<< shapes[i].normals[j].v[0]<< " " << shapes[i].normals[j].v[1]<< " " << shapes[i].normals[j].v[2]
+			<<std::endl;	 
+
+		unsigned int nbrIndices = shapes[i].indices.size();
+		for(unsigned int j=0; j<nbrIndices; j=j+3) {
+			stream<<"i "<<
+			      shapes[i].indices[j+0]<<" "<< shapes[i].indices[j+1]<<" "<< shapes[i].indices[j+2]<<std::endl;
+		}
+
+		stream<<std::endl;
+	}
+
+	std::cout << "Fin export V3D " << shapes.size() << " shape(s)" << std::endl;
 	return true;
 }

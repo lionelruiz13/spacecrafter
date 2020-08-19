@@ -137,7 +137,10 @@ int main(int argc, char **argv)
 	if (toOptimize)
 		converter.fusionMaterials();
 
+	converter.transform();
+
 	converter.exportOJM(name + ".ojm");
+	converter.exportV3D(name + ".v3d");
 	std::cout << argv[0] << ":  export converter without errors" << std::endl;
 	return 0;
 }

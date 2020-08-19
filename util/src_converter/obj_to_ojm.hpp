@@ -22,11 +22,10 @@ public:
 
 	//! le sauvegarde sur disque dur
 	bool exportOJM(const std::string &filename);
-
+	bool exportV3D(const std::string &filename);
+	bool transform();
 private:
 	Obj3D* obj;
-
-	bool transform();
 
 	std::vector<Shape> shapes;
 };
