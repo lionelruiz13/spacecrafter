@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 	}
 
 	// if (toVerbose)
-	// 	obj3D.print();
+	obj3D.print();
 
 	converter.importOBJ(&obj3D);
 	std::cout << argv[0] << " :  import converter without errors" << std::endl;
