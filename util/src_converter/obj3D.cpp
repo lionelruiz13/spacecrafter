@@ -62,12 +62,13 @@ static bool hasDoubleSlash(const std::string &s)
 }
 
 
-static void removeExtraWhitespaces(const string &input, string &output)
+static std::string removeExtraWhitespaces(const string &input)
 {
-	output.clear();
+	std::string output;
 	unique_copy(input.begin(), input.end(), back_insert_iterator<string>(output), [](char a,char b) {
 		return isspace(a) && isspace(b);
 	});
+	return output;
 }
 
 
@@ -141,7 +142,7 @@ bool Obj3D::ReadMaterialLibrary(const std::string& filename)
 	fp.close();
 
 	//now parse the file
-	string line, line1;
+	string line;
 	Material* pMat = 0;
 	unsigned int nbReadLine = 0;
 	while(getline(buffer, line)) {
@@ -151,8 +152,7 @@ bool Obj3D::ReadMaterialLibrary(const std::string& filename)
 			line.erase(line.size() - 1);
 
 		line = trim(line);
-		removeExtraWhitespaces(line, line1);
-		line = line1;
+		line = removeExtraWhitespaces(line);
 
 		if(line.find_first_of("#") != string::npos) //its a comment leave it
 			continue;
@@ -237,7 +237,8 @@ bool Obj3D::ReadMaterialLibrary(const std::string& filename)
 
 bool Obj3D::readOBJ()
 {
-	ifstream fp(fileName.c_str(),ios::in);
+	//read file fileName et convert it to readable char
+	ifstream fp(fileName,ios::in);
 	if(!fp) {
 		cout << "OBJ3D : Unable to read file " << fileName << endl;
 		return false;
@@ -248,7 +249,7 @@ bool Obj3D::readOBJ()
 
 	//initialisation
 	bool hasNormals = false;
-	string line, line1;
+	string line;
 	Mesh* tmpMesh= nullptr;
 	unsigned nbReadLine = 0;
 
@@ -257,9 +258,8 @@ bool Obj3D::readOBJ()
 		if (!line.empty() && line[line.size() - 1] == '\r')
 			line.erase(line.size() - 1);
 
-		line=trim(line);
-		removeExtraWhitespaces(line, line1);
-		line = line1;
+		line = trim(line);
+		line = removeExtraWhitespaces(line);
 
 		if(line[0]=='#') //its a comment leave it
 			continue;
