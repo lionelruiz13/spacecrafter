@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 	if (displayHelp)
 		display_help(argv[0]);
 
-	if (name.empty() && optind < argc)
+	if (optind < argc)
 		name = removeExtension(argv[optind]);
 	else {
 		if (name.empty()) {
