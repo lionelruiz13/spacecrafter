@@ -75,12 +75,13 @@ int main(int argc, char **argv)
 	bool toOptimize = true;
 	bool displayCopyright = false;
 	bool displayHelp = false;
+	bool displayPrint = false;
 	std::string name;
 	ObjToOjm converter;
 
 	// Traitement des données
 	int c;
-	while ((c = getopt (argc, argv, "hcn")) != -1) {
+	while ((c = getopt (argc, argv, "hcnp")) != -1) {
 		switch (c) {
 
 			case 'c':
@@ -93,6 +94,10 @@ int main(int argc, char **argv)
 
 			case 'n':
 				toOptimize = false;
+				break;
+
+			case 'p':
+				displayPrint = true;
 				break;
 
 			default:
@@ -120,7 +125,8 @@ int main(int argc, char **argv)
 	Obj3D obj3D(name +".obj");
 
 	// affiche informations sur les datas du fichier OBJ
-	obj3D.print();
+	if (displayPrint)
+		obj3D.print();
 
 	// import du fichier dans le convertisseur
 	converter.importOBJ(&obj3D);
