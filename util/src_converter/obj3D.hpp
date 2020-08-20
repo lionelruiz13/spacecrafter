@@ -18,8 +18,8 @@ public:
 		return is_ok;
 	}
 
-	//! charge et initialise un objet OBJ pour OpenGL
-	bool init();
+	// //! charge et initialise un objet OBJ pour OpenGL
+	// bool init();
 
 	//! affiche sur console le contenu de l'OBJ
 	void print();
