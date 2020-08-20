@@ -95,6 +95,12 @@ Obj3D::Obj3D(const string _fileName)
 	is_ok = readOBJ();
 	if (is_ok)
 		is_ok=testIndices();
+	if (is_ok)
+		std::cout << "File " << fileName << " read without errors" << std::endl;
+	else {
+		std::cout << " : Errors detected while reading file "<< fileName << "  Aborting..." << std::endl;
+		exit(-1);
+	}
 }
 
 
