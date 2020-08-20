@@ -73,11 +73,11 @@ static std::string removeExtraWhitespaces(const string &input)
 
 
 // cas indices négatifs: on les remet positif
-static void changeSigneAvecIndice(int *vector, int indice)
+static void changeSigneAvecIndice(int *vector, int indiceMax)
 {
 	for (int i=0; i<3; i++) {
 		if (vector[i]<0)
-			vector[i] = indice - vector[i];
+			vector[i] = indiceMax + vector[i];
 	}
 }
 
