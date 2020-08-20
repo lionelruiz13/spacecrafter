@@ -39,8 +39,8 @@ static bool getSimilarVertexIndex(
 		    is_near( in_vertex[0], out_vertices[i][0] ) &&
 		    is_near( in_vertex[1], out_vertices[i][1] ) &&
 		    is_near( in_vertex[2], out_vertices[i][2] ) &&
-		    is_near( in_uv[0], out_uvs     [i][0] ) &&
-		    is_near( in_uv[1], out_uvs     [i][1] ) &&
+		    is_near( in_uv[0],     out_uvs     [i][0] ) &&
+		    is_near( in_uv[1],     out_uvs     [i][1] ) &&
 		    is_near( in_normal[0], out_normals [i][0] ) &&
 		    is_near( in_normal[1], out_normals [i][1] ) &&
 		    is_near( in_normal[2], out_normals [i][2] )
@@ -108,8 +108,6 @@ bool ObjToOjm::transform()
 		Mesh* mesh = obj->meshes[i];
 		Shape* pShape = new Shape();
 
-		// int pourcent, oldPourcent=0;
-
 		pShape->name = mesh->material->name;
 		pShape->map_Ka = extractFileName(mesh->material->map_Ka);
 		pShape->map_Kd = extractFileName(mesh->material->map_Kd);
@@ -131,7 +129,6 @@ bool ObjToOjm::transform()
 		for (unsigned int j=0; j< obj->meshes[i]->vertexIndices.size(); j++) {
 			// Try to find a similar vertex in out_XXXX
 			//cout << "etape " << j << "/" << obj->meshes[i]->vertexIndices.size() << " name " << mesh->material->name << endl;
-
 			unsigned int index;
 			bool hasUV;
 			mesh->uvIndices.size()!=0 ? hasUV=true: hasUV = false;
@@ -164,14 +161,6 @@ bool ObjToOjm::transform()
 				pShape->normals.push_back( obj->positionData.normals[obj->meshes[i]->normalIndices[j]-1]);
 				pShape->indices.push_back( pShape->vertices.size() - 1 );
 			}
-
-			// pourcent = std::floor(100*float(j)/obj->meshes[i]->vertexIndices.size()+0.5);
-			// if ((pourcent-oldPourcent)>9) {
-			// 	oldPourcent = pourcent;
-			// 	cout << " " << pourcent << endl;
-			// }
-			// else
-			// 	cout << "D " << pourcent-oldPourcent << endl;
 		}
 		shapes.push_back(*pShape);
 	}
@@ -188,7 +177,7 @@ bool ObjToOjm::fusionMaterials()
 			for(unsigned short j=i+1; j< obj->meshes.size(); j++) {
 				if ( obj->meshes[i]->material->name == obj->meshes[j]->material->name ) {
 
-					//~ std::cout << "etape " << i << " " << j << std::endl;
+					std::cout << "etape " << i << " " << j << std::endl;
 
 					int nbUv1 = obj->meshes[i]->uvIndices.size();
 					int nbUv2 = obj->meshes[j]->uvIndices.size();
@@ -203,7 +192,7 @@ bool ObjToOjm::fusionMaterials()
 						Mesh* tmpToDelete = obj->meshes[j];
 						obj->meshes.erase(obj->meshes.begin()+j);
 						delete tmpToDelete;
-						//~ std::cout << " fusion " << i << " " << j << std::endl;
+						std::cout << " fusion " << i << " " << j << std::endl;
 						goto fin_de_la_boucle;
 					}
 				}
@@ -220,18 +209,17 @@ bool ObjToOjm::fusionMaterials()
 
 bool ObjToOjm::exportOJM(const std::string &filename)
 {
-	std::cout << "ObjToOjm transform" << std::endl;
-
 	std::ofstream stream;
 	stream.open(filename.c_str(),std::ios_base::out);
 	if(!stream.is_open())
 		return -1;
 
+	std::cout << "Début export OBJ" << std::endl;
+
 	stream<<"# Spacecrafter personal file format"<<std::endl;
 	stream<<"# By Olivier Nivoix and Jérôme Lartillot"<< std::endl;
 	stream<<std::endl<<std::endl;
-
-	std::cout << "Début export OBJ " << shapes.size() << " shape(s)" << std::endl;
+	
 	for(unsigned int i=0; i<shapes.size(); i++) {
 		stream<<"o "<<shapes[i].name<<std::endl;
 
@@ -249,7 +237,6 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 
 		stream<<"Ns " << shapes[i].Ns << std::endl;
 		stream<<"t " << shapes[i].T << std::endl;
-
 
 		stream<<"map_ka "<<shapes[i].map_Ka<<std::endl;
 		stream<<"map_kd "<<shapes[i].map_Kd<<std::endl;
@@ -280,30 +267,20 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 		}
 
 		stream<<std::endl;
-
-		std::cout << "Shape [" << i << "]" << std::endl;
-		std::cout << "  Nombre de vertex " << shapes[i].vertices.size() << std::endl;
-		std::cout << "  Nombre d'uv " << shapes[i].uvs.size() << std::endl;
-		std::cout << "  Nombre de normal " << shapes[i].normals.size() << std::endl;
-		std::cout << "  Nombre d'indices " << shapes[i].indices.size() << std::endl << std::endl;
-
-		std::cout << "Ratio : " << float(shapes[i].vertices.size())/float(shapes[i].indices.size()) << std::endl;
 	}
 
-	std::cout << "Fin export OBJ " << shapes.size() << " shape(s)" << std::endl;
+	std::cout << "Fin export OBJ" << std::endl;
 	return true;
 }
 
-
-
 bool ObjToOjm::exportV3D(const std::string &filename)
 {
-	std::cout << "ObjToOjm transform V3D" << std::endl;
 	std::ofstream stream;
-
 	stream.open(filename.c_str(),std::ios_base::out);
 	if(!stream.is_open())
 		return -1;
+
+	std::cout << "Début export V3D" << std::endl;
 
 	stream<<"# Vertex 3D file format"<<std::endl;
 	stream<<"# By Association Sirius && Andromede"<< std::endl;
@@ -316,7 +293,6 @@ bool ObjToOjm::exportV3D(const std::string &filename)
 	stream<<"# Created at "<< std::string(timestr) <<std::endl;
 	stream<<std::endl<<std::endl;
 
-	std::cout << "Début export V3D " << shapes.size() << " shape(s)" << std::endl;
 	for(unsigned int i=0; i<shapes.size(); i++) {
 		stream<<"o "<<shapes[i].name<<std::endl;
 
@@ -334,7 +310,6 @@ bool ObjToOjm::exportV3D(const std::string &filename)
 
 		stream<<"Ns " << shapes[i].Ns << std::endl;
 		stream<<"t " << shapes[i].T << std::endl;
-
 
 		stream<<"map_ka "<<shapes[i].map_Ka<<std::endl;
 		stream<<"map_kd "<<shapes[i].map_Kd<<std::endl;
@@ -355,6 +330,6 @@ bool ObjToOjm::exportV3D(const std::string &filename)
 		stream<<std::endl;
 	}
 
-	std::cout << "Fin export V3D " << shapes.size() << " shape(s)" << std::endl;
+	std::cout << "Fin export V3D" << std::endl;
 	return true;
 }

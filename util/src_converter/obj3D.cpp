@@ -112,7 +112,6 @@ Obj3D::~Obj3D()
 
 bool Obj3D::testIndices()
 {
-	bool result = true;
 	for(unsigned int i=0; i<meshes.size(); i++) {
 		if (meshes[i]->vertexIndices.size() != meshes[i]->normalIndices.size()) {
 			cout << "OBJ3D : erreur d'indices entre vertex et normal" << endl;
@@ -125,7 +124,7 @@ bool Obj3D::testIndices()
 			}
 		}
 	}
-	return result;
+	return true;
 }
 
 //reads material libray (.MTL) file
@@ -329,7 +328,6 @@ bool Obj3D::readOBJ()
 				tmpMesh->vertexIndices.push_back(vertexIndex[2]);
 
 				if (hasUVs) {
-
 					changeSigneAvecIndice(uvIndex, positionData.uvs.size());
 					tmpMesh->uvIndices.push_back(uvIndex[0]);
 					tmpMesh->uvIndices.push_back(uvIndex[1]);

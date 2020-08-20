@@ -119,17 +119,21 @@ int main(int argc, char **argv)
 	//charge le fichier OBJ
 	Obj3D obj3D(name +".obj");
 
-	// if (toVerbose)
+	// affiche informations sur les datas du fichier OBJ
 	obj3D.print();
 
+	// import du fichier dans le convertisseur
 	converter.importOBJ(&obj3D);
 	std::cout << argv[0] << " :  import converter without errors" << std::endl;
 
+	//fusionne les matériaux identiques
 	if (toOptimize)
 		converter.fusionMaterials();
 
+	//indexe des sommets afin de réduire le nombre de points à traiter
 	converter.transform();
 
+	//exporte le résultat dans les différents formats
 	converter.exportOJM(name + ".ojm");
 	converter.exportV3D(name + ".v3d");
 	std::cout << argv[0] << ":  export converter without errors" << std::endl;
