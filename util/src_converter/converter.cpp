@@ -77,7 +77,6 @@ int main(int argc, char **argv)
 	bool displayHelp = false;
 	bool displayPrint = false;
 	std::string name;
-	ObjToOjm converter;
 
 	// Traitement des données
 	int c;
@@ -128,9 +127,12 @@ int main(int argc, char **argv)
 	if (displayPrint)
 		obj3D.print();
 
+	// création du convertisseur
+	ObjToOjm converter;
 	// import du fichier dans le convertisseur
 	converter.importOBJ(&obj3D);
-	std::cout << argv[0] << " :  import converter without errors" << std::endl;
+	if (displayPrint)	
+		std::cout << argv[0] << ":  import converter without errors" << std::endl;
 
 	//fusionne les matériaux identiques
 	if (toOptimize)
@@ -142,7 +144,9 @@ int main(int argc, char **argv)
 	//exporte le résultat dans les différents formats
 	converter.exportOJM(name + ".ojm");
 	converter.exportV3D(name + ".v3d");
-	std::cout << argv[0] << ":  export converter without errors" << std::endl;
+
+	if (displayPrint)
+		std::cout << argv[0] << ":  export converter without errors" << std::endl;
 	return 0;
 }
 

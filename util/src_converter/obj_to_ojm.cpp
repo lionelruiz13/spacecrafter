@@ -102,7 +102,7 @@ void ObjToOjm::importOBJ(Obj3D* _obj)
 
 bool ObjToOjm::createUniqueIndexFromVertices()
 {
-	cout << "Nombre total de shape "<< obj->meshes.size() << endl;
+	//cout << "Nombre total de shape "<< obj->meshes.size() << endl;
 	for(unsigned int  i=0; i < obj->meshes.size(); i++) {
 		//~ cout << "meshe "<< i << " sur "<< obj->meshes.size() << endl;
 		Mesh* mesh = obj->meshes[i];
@@ -125,7 +125,7 @@ bool ObjToOjm::createUniqueIndexFromVertices()
 		//~ cout << "test Ns = "<< pShape->Ns << endl;
 		//~ cout << "  " << endl;
 		
-		cout << "Shape ["<< i << "] nombre de vertex " << obj->meshes[i]->vertexIndices.size() << endl;
+		//cout << "Shape ["<< i << "] nombre de vertex " << obj->meshes[i]->vertexIndices.size() << endl;
 		for (unsigned int j=0; j< obj->meshes[i]->vertexIndices.size(); j++) {
 			// Try to find a similar vertex in out_XXXX
 			//cout << "etape " << j << "/" << obj->meshes[i]->vertexIndices.size() << " name " << mesh->material->name << endl;
@@ -164,20 +164,20 @@ bool ObjToOjm::createUniqueIndexFromVertices()
 		}
 		shapes.push_back(*pShape);
 	}
-	std::cout << std::endl;
+	//std::cout << std::endl;
 	return true;
 }
 
 bool ObjToOjm::fusionMaterials()
 {
-	std::cout << "ObjToOjm fusion des matériaux similaires" << std::endl;
+	//std::cout << "ObjToOjm fusion des matériaux similaires" << std::endl;
 	bool isDone = false;
 	while (!isDone) {
 		for(unsigned short i=0; i< obj->meshes.size(); i++) {
 			for(unsigned short j=i+1; j< obj->meshes.size(); j++) {
 				if ( obj->meshes[i]->material->name == obj->meshes[j]->material->name ) {
 
-					std::cout << "etape " << i << " " << j << std::endl;
+					//std::cout << "etape " << i << " " << j << std::endl;
 
 					int nbUv1 = obj->meshes[i]->uvIndices.size();
 					int nbUv2 = obj->meshes[j]->uvIndices.size();
@@ -192,7 +192,7 @@ bool ObjToOjm::fusionMaterials()
 						Mesh* tmpToDelete = obj->meshes[j];
 						obj->meshes.erase(obj->meshes.begin()+j);
 						delete tmpToDelete;
-						std::cout << " fusion " << i << " " << j << std::endl;
+						//std::cout << " fusion " << i << " " << j << std::endl;
 						goto fin_de_la_boucle;
 					}
 				}
@@ -214,7 +214,7 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 	if(!stream.is_open())
 		return -1;
 
-	std::cout << "Début export OBJ" << std::endl;
+	//std::cout << "Début export OBJ" << std::endl;
 
 	stream<<"# Spacecrafter personal file format"<<std::endl;
 	stream<<"# By Olivier Nivoix and Jérôme Lartillot"<< std::endl;
@@ -269,7 +269,7 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 		stream<<std::endl;
 	}
 
-	std::cout << "Fin export OBJ" << std::endl;
+	//std::cout << "Fin export OBJ" << std::endl;
 	return true;
 }
 
@@ -280,7 +280,7 @@ bool ObjToOjm::exportV3D(const std::string &filename)
 	if(!stream.is_open())
 		return -1;
 
-	std::cout << "Début export V3D" << std::endl;
+	//std::cout << "Début export V3D" << std::endl;
 
 	stream<<"# Vertex 3D file format"<<std::endl;
 	stream<<"# By Association Sirius && Andromede"<< std::endl;
@@ -330,6 +330,6 @@ bool ObjToOjm::exportV3D(const std::string &filename)
 		stream<<std::endl;
 	}
 
-	std::cout << "Fin export V3D" << std::endl;
+	//std::cout << "Fin export V3D" << std::endl;
 	return true;
 }
