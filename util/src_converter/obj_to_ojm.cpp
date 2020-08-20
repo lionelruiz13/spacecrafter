@@ -95,15 +95,9 @@ static std::string extractFileName(const std::string& str)
 		return "tex/"+str.substr(found+1);
 }
 
-bool ObjToOjm::importOBJ(Obj3D* _obj)
+void ObjToOjm::importOBJ(Obj3D* _obj)
 {
-	std::cout << "ObjToOjm read" << std::endl;
-	if (!_obj->getOk())
-		return false;
-
 	obj= _obj;
-
-	return true;
 }
 
 bool ObjToOjm::transform()

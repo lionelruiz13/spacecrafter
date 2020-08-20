@@ -15,7 +15,7 @@ public:
 	~ObjToOjm() {}
 
 	//! charge un objet OBJ
-	bool importOBJ(Obj3D* _obj);
+	void importOBJ(Obj3D* _obj);
 
 	//! mise en commun des shapes identiques cad ayant les mêmes paramètres
 	bool fusionMaterials();
