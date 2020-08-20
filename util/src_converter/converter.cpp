@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 		converter.fusionMaterials();
 
 	//indexe des sommets afin de réduire le nombre de points à traiter
-	converter.transform();
+	converter.createUniqueIndexFromVertices();
 
 	//exporte le résultat dans les différents formats
 	converter.exportOJM(name + ".ojm");

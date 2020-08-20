@@ -23,7 +23,7 @@ public:
 	//! le sauvegarde sur disque dur
 	bool exportOJM(const std::string &filename);
 	bool exportV3D(const std::string &filename);
-	bool transform();
+	bool createUniqueIndexFromVertices();
 private:
 	Obj3D* obj;
 

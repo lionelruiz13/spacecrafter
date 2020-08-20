@@ -100,7 +100,7 @@ void ObjToOjm::importOBJ(Obj3D* _obj)
 	obj= _obj;
 }
 
-bool ObjToOjm::transform()
+bool ObjToOjm::createUniqueIndexFromVertices()
 {
 	cout << "Nombre total de shape "<< obj->meshes.size() << endl;
 	for(unsigned int  i=0; i < obj->meshes.size(); i++) {
