@@ -645,8 +645,10 @@ uint32_t Vulkan::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags prope
     VkPhysicalDeviceMemoryProperties memProperties;
     vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
 
+    preferedProperties |= properties;
+
     for (uint32_t i = firstIndex; i < memProperties.memoryTypeCount; i++) {
-        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & (properties | preferedProperties)) == properties) {
+        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & preferedProperties) == preferedProperties) {
             if (isOptimal)
                 *isOptimal = true;
             return i;
