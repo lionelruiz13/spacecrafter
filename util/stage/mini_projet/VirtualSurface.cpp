@@ -1,32 +1,107 @@
 #include "VirtualSurface.hpp"
+#include "CommandMgr.hpp"
+#include <thread>
 
-VirtualSurface::VirtualSurface(Vulkan *_master) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), master(_master)
+VirtualSurface::VirtualSurface(Vulkan *_master, int index) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(_master->refFrameIndex), imageAvailableSemaphore(_master->refImageAvailableSemaphore), master(_master)
 {
-    transferPool = _master->getTransferPool();
-    transferQueue = _master->getTransferQueue();
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = 0; // Optionel
+    poolInfo.queueFamilyIndex = _master->getTransferQueueFamilyIndex();
+
+    if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &transferPool) != VK_SUCCESS) {
+        throw std::runtime_error("Faild to create command pool for transfer operations.");
+    }
+    poolInfo.queueFamilyIndex = _master->getGraphicsQueueIndex();
+    if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &cmdPool) != VK_SUCCESS) {
+        throw std::runtime_error("Faild to create command pool for transfer operations.");
+    }
     graphicsQueue = _master->assignGraphicsQueue();
+    pSwapChain = _master->assignSwapChain();
+    _master->assignSwapChainFramebuffers(swapChainFramebuffers, index);
+    swapChainExtent = _master->getSwapChainExtent();
 }
 
 VirtualSurface::~VirtualSurface()
 {
+    vkDestroyCommandPool(refDevice, transferPool, nullptr);
+    vkDestroyCommandPool(refDevice, cmdPool, nullptr);
 }
 
-void VirtualSurface::submitTransfert(VkCommandBuffer &command, VkSubmitInfo *submitInfo)
+void VirtualSurface::submitTransfer(VkSubmitInfo *submitInfo)
 {
-    vkQueueSubmit(transferQueue, 1, submitInfo, VK_NULL_HANDLE);
+    master->submitTransfer(submitInfo);
 }
 
-void VirtualSurface::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+bool VirtualSurface::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties)
 {
-    master->createBuffer(size, usage, properties, buffer, bufferMemory);
+    return master->createBuffer(size, usage, properties, buffer, bufferMemory, preferedProperties);
 }
 
-uint32_t VirtualSurface::getNextFrame()
+void VirtualSurface::getNextFrame()
 {
-    uint32_t index;
-    vkAcquireNextImageKHR(refDevice, *pSwapChain, UINT64_MAX, VK_NULL_HANDLE, fences[fenceId], &index);
-    fenceId = (fenceId + 1) % fences.size();
-    frameIndexQueue.push(index);
-    waitRequest.notify_one();
-    return index;
+    while (frameIndexQueue.empty())
+        std::this_thread::yield();
+}
+
+void VirtualSurface::releaseFrame()
+{
+    frameIndexQueue.pop();
+}
+
+void VirtualSurface::acquireNextFrame()
+{
+    while (frameIndexQueue.size() == MAX_FRAMES_IN_FLIGHT - 1)
+        std::this_thread::yield();
+}
+
+void VirtualSurface::submitFrame()
+{
+    while (dependencyFrameIndexQueue && dependencyFrameIndexQueue->empty())
+        std::this_thread::yield();
+    for (uint8_t i = 0; i < commandMgrList.size(); ++i) {
+        commandMgrList[i]->submit();
+    }
+    frameIndexQueue.push(frameIndex);
+}
+
+void VirtualSurface::waitEmpty()
+{
+    while (!frameIndexQueue.empty())
+        std::this_thread::yield();
+}
+
+void VirtualSurface::finalize(bool waitMaster)
+{
+    // link CommandMgr
+    for (uint8_t i = 1; i < commandMgrList.size(); i++) {
+        for (uint8_t j = 0; j < swapchainSize; j++)
+            commandMgrList[i]->setTopSemaphore(j, commandMgrList[i - 1]->getBottomSemaphore(j));
+    }
+    // synchronize with master
+    isReady = true;
+    if (waitMaster)
+        master->waitReady();
+}
+
+void VirtualSurface::waitReady()
+{
+    while (!isReady)
+        std::this_thread::yield();
+}
+
+void VirtualSurface::link(uint8_t frameIndex, VirtualSurface *dependency)
+{
+    dependencyFrameIndexQueue = &dependency->frameIndexQueue;
+    commandMgrList.front()->setTopSemaphore(frameIndex, dependency->commandMgrList.back()->getBottomSemaphore(frameIndex));
+}
+
+void VirtualSurface::setTopSemaphore(uint8_t frameIndex, const VkSemaphore &semaphore)
+{
+    commandMgrList.front()->setTopSemaphore(frameIndex, semaphore);
+}
+
+const VkSemaphore &VirtualSurface::getBottomSemaphore(uint8_t frameIndex)
+{
+    return commandMgrList.back()->getBottomSemaphore(frameIndex);
 }

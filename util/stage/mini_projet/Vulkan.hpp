@@ -1,10 +1,17 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <vulkan/vulkan.hpp>
-#include "tools/vecmath.hpp"
-
 #ifndef VULKAN_HPP_
 #define VULKAN_HPP_
+
+#include <vulkan/vulkan.hpp>
+#include "tools/vecmath.hpp"
+#include <array>
+
+class SDL_Window;
+
+namespace v {
+
+#ifndef MAX_FRAMES_IN_FLIGHT
+#define MAX_FRAMES_IN_FLIGHT 2
+#endif
 
 struct SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -12,40 +19,59 @@ struct SwapChainSupportDetails {
     std::vector<VkPresentModeKHR> presentModes;
 };
 
+class VirtualSurface;
+
 class Vulkan {
 public:
-    Vulkan(const char *_AppName, const char *_EngineName, GLFWwindow *window);
+    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces);
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
-    void drawFrame();
     void sendFrame();
-    void updateUniformBuffer(uint32_t currentImage, float degreePerSecond);
-    void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-    VkCommandPool getTransferPool() {return transferCommandPool[0];}
-    VkQueue getTransferQueue() {return transferQueues[0];}
+    bool createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties = 0);
+    size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
+    void submitTransfer(VkSubmitInfo *submitInfo);
     VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
-    VkRenderPass &getRenderPass() {return renderPass;}
-    VkQueue assignGraphicsQueue() {static short i = 1; return graphicsAndPresentQueues[i++];}
+    VkQueue assignGraphicsQueue() {static short i = 0; return graphicsAndPresentQueues[i++];}
+    VkSwapchainKHR *assignSwapChain() {return swapChain.data();}
+    void assignSwapChainFramebuffers(std::vector<VkFramebuffer> &framebuffers, int index) {framebuffers.assign(swapChainFramebuffers.begin(), swapChainFramebuffers.end());}
     auto &getGraphicsQueueIndex() {return graphicsAndPresentQueueFamilyIndex[0];}
+    VirtualSurface *getVirtualSurface() {static short i = 0; return virtualSurface[i++].get();}
+    VkExtent2D &getSwapChainExtent() {return swapChainExtent;}
+    void finalize();
+    void waitReady();
+    void acquireNextFrame();
+    const VkPhysicalDeviceFeatures &getDeviceFeatures() {return deviceFeatures;}
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, const uint32_t firstIndex = 0, VkMemoryPropertyFlags preferedProperties = 0, bool *isOptimal = nullptr);
+    VkPipelineCache &getPipelineCache() {return pipelineCache;}
 
     //! getDevice();
     const VkDevice &refDevice;
     //! getRenderPass();
-    const VkRenderPass &refRenderPass;
+    const std::array<VkRenderPass, 3> &refRenderPass;
     //! getSwapChainFramebuffers();
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
-    const int &refFrameIndex;
+    const uint32_t &refFrameIndex;
+    const VkSemaphore &refImageAvailableSemaphore;
 private:
     const char *AppName;
     const char *EngineName;
-    VkPipelineViewportStateCreateInfo viewportState;
-    int frameIndex;
+    VkPipelineViewportStateCreateInfo viewportState{};
+    VkViewport viewport{};
+    VkRect2D scissor{};
+    uint32_t frameIndex;
+    int switcher = 0; // switch between MAX_FRAME_IN_FLIGHT elements
+    VkSemaphore imageAvailableSemaphore;
+    std::array<VkSemaphore, MAX_FRAMES_IN_FLIGHT> imageAvailableSemaphores;
+    std::vector<VkSemaphore> presentSemaphores;
+    VkSwapchainCreateInfoKHR swapchainCreateInfo{};
+    VkPhysicalDeviceFeatures deviceFeatures{};
+    VkPipelineCache pipelineCache;
 
-    void initDevice(const char *AppName, const char *EngineName, GLFWwindow *window, bool _hasLayer = false);
+    void initDevice(const char *AppName, const char *EngineName, SDL_Window *window, bool _hasLayer = false);
     vk::UniqueInstance instance;
     vk::PhysicalDevice physicalDevice;
 
-    void initWindow(GLFWwindow *window);
+    void initWindow(SDL_Window *window);
     VkSurfaceKHR surface;
 
     std::vector<size_t> graphicsAndPresentQueueFamilyIndex;
@@ -58,8 +84,9 @@ private:
     std::vector<VkQueue> transferQueues;
     VkDevice device;
 
-    void initSwapchain(int width, int height);
+    void initSwapchain(int width, int height, int nbVirtualSurfaces);
     std::vector<VkSwapchainKHR> swapChain;
+    uint32_t finalImageCount;
     std::vector<uint32_t> imageIndex;
     std::vector<VkImage> swapChainImages;
     VkExtent2D swapChainExtent;
@@ -69,23 +96,25 @@ private:
     std::vector<VkImageView> swapChainImageViews;
 
     void createRenderPass();
-    VkRenderPass renderPass;
+    std::array<VkRenderPass, 3> renderPass;
+
+    void createFramebuffer();
+    std::vector<VkFramebuffer> swapChainFramebuffers;
+
+    void createVirtualSurfaces();
+    std::vector<std::unique_ptr<VirtualSurface>> virtualSurface;
 
     void createGraphicsPipeline();
     VkShaderModule createShaderModule(const std::vector<char> &code);
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
 
-    void createFramebuffer();
-    std::vector<VkFramebuffer> swapChainFramebuffers;
-
     void createCommandPool();
-    std::vector<VkCommandPool> commandPool;
-    std::vector<VkCommandPool> transferCommandPool;
+    VkCommandPool commandPool;
 
     VkCommandBuffer beginSingleTimeCommands(VkCommandPool cmdPool = VK_NULL_HANDLE);
     void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue queue = VK_NULL_HANDLE);
-    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkQueue queue = VK_NULL_HANDLE, auto aspectMask = VK_IMAGE_ASPECT_COLOR_BIT);
+    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkQueue queue = VK_NULL_HANDLE, VkImageAspectFlagBits aspectMask = VK_IMAGE_ASPECT_COLOR_BIT);
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
     void createCommandBuffer();
@@ -95,12 +124,6 @@ private:
     VkImage depthImage;
     VkDeviceMemory depthImageMemory;
     VkImageView depthImageView;
-
-    void createSemaphore();
-    VkSemaphore imageAvailableSemaphore;
-    VkSemaphore renderFinishedSemaphore;
-
-    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
     void createVertexBuffer();
     VkBuffer vertexBuffer;
@@ -126,16 +149,8 @@ private:
 
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-    void createTextureImage();
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    VkImage textureImage;
-    VkDeviceMemory textureImageMemory;
 
-    void createTextureImageView();
     VkImageView textureImageView;
-
-    void createTextureSampler();
     VkSampler textureSampler;
 
     VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT);
@@ -154,11 +169,13 @@ private:
     bool checkDeviceExtensionSupport(VkPhysicalDevice pDevice);
     bool isDeviceSuitable(VkPhysicalDevice pDevice);
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-    std::vector<const char *> instanceExtension = {"VK_KHR_surface", VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+    std::vector<const char *> instanceExtension = {"VK_KHR_surface", VK_EXT_DEBUG_UTILS_EXTENSION_NAME, VK_EXT_DEBUG_REPORT_EXTENSION_NAME};
     std::vector<const char *> deviceExtension = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     std::vector<const char *> validationLayers = {"VK_LAYER_KHRONOS_validation"};
     bool hasLayer;
     static bool isAlive;
+    bool isReady = false;
 };
 
+}
 #endif

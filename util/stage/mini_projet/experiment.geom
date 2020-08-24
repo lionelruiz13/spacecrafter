@@ -24,7 +24,7 @@ vec4 custom_project(vec4 invec)
     vec4 win = invec;
     win=MV*win;
     win[3]=0.0;
-	
+
 	float depth = length(win);
 
     float rq1 = win.x*win.x+win.y*win.y;
@@ -61,7 +61,7 @@ vec4 custom_project(vec4 invec)
 }
 
 vec4 custom_unproject(vec4 pos)
-{  
+{
 	vec4 unproj_vec=vec4(pos.x,
 						pos.y,
 						  2.0*pos.z-1.0,
@@ -70,7 +70,7 @@ vec4 custom_unproject(vec4 pos)
 	//unproj_vec = invMVP * unproj_vec;
 	//if (unproj_vec.z==0.0)
 	//	return vec4(0.0);
-		
+
 	//unproj_vec.w=1.0/unproj_vec.w;
 	//unproj_vec.x=unproj_vec.x*unproj_vec.w;
 	//unproj_vec.y=unproj_vec.y*unproj_vec.w;

@@ -77,6 +77,7 @@ public:
 
 	void getWorkGroupsCapabilities();
 
+	SDL_Window *getWindow() {return window;}
 private:
 	void getLogInfos(int w, int h);
 	SDL_Window *window = nullptr;

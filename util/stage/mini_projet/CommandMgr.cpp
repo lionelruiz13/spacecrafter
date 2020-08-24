@@ -1,7 +1,16 @@
 #include "VirtualSurface.hpp"
+#include "VertexBuffer.hpp"
+#include "Pipeline.hpp"
+#include "PipelineLayout.hpp"
+#include "CommandMgr.hpp"
+#include "UniformSet.hpp"
 
-CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool singleUseCommands) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands)
+VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+
+CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame)
 {
+    _master->registerCommandMgr(this);
+    queue = _master->getQueue();
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.flags = singleUseCommands ? VK_COMMAND_POOL_CREATE_TRANSIENT_BIT : 0;
@@ -16,16 +25,36 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool singl
     fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    frames.resize(refSwapChainFramebuffers.size());
-    for (auto &frame : frames) {
-        if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &frame.cmdPool) != VK_SUCCESS) {
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    if (!singleUse) {
+        if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &cmdPool) != VK_SUCCESS) {
             throw std::runtime_error("échec de la création d'une command pool !");
         }
-        allocInfo.commandPool = frame.cmdPool;
+        allocInfo.commandPool = cmdPool;
+    }
+    frames.resize(refSwapChainFramebuffers.size());
+    for (auto &frame : frames) {
+        if (vkCreateSemaphore(refDevice, &semaphoreInfo, nullptr, &frame.bottomSemaphore) != VK_SUCCESS) {
+            throw std::runtime_error("Faild to create semaphore for previously allocated command buffers.");
+        }
+        if (singleUse) {
+            if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &frame.cmdPool) != VK_SUCCESS) {
+                throw std::runtime_error("échec de la création d'une command pool !");
+            }
+            allocInfo.commandPool = frame.cmdPool;
+        }
         frame.commandBuffers.resize(nbCommandBuffers);
-        frame.submitInfo.resize(nbCommandBuffers);
         if (vkAllocateCommandBuffers(refDevice, &allocInfo, frame.commandBuffers.data()) != VK_SUCCESS) {
             throw std::runtime_error("échec de l'allocation de command buffers!");
+        }
+        frame.signalSemaphores.resize(nbCommandBuffers);
+        auto tmp = frame.signalSemaphores.data();
+        for (int i = 0; i < nbCommandBuffers; i++) {
+            if (vkCreateSemaphore(refDevice, &semaphoreInfo, nullptr, tmp++) != VK_SUCCESS) {
+                throw std::runtime_error("Faild to create semaphore for previously allocated command buffers.");
+            }
         }
         if (vkCreateFence(refDevice, &fenceInfo, nullptr, &frame.fence) != VK_SUCCESS) {
             throw std::runtime_error("Faild to create fence.");
@@ -36,40 +65,81 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool singl
 
 CommandMgr::~CommandMgr()
 {
+    vkDeviceWaitIdle(refDevice);
+    if (!singleUse)
+        vkDestroyCommandPool(refDevice, cmdPool, nullptr);
     for (auto &frame : frames) {
+        vkDestroySemaphore(refDevice, frame.bottomSemaphore, nullptr);
+        for (auto &sem : frame.signalSemaphores)
+            vkDestroySemaphore(refDevice, sem, nullptr);
         vkWaitForFences(refDevice, 1, &frame.fence, VK_TRUE, UINT64_MAX);
         vkDestroyFence(refDevice, frame.fence, nullptr);
-        vkDestroyCommandPool(refDevice, frame.cmdPool, nullptr);
+        if (singleUse)
+            vkDestroyCommandPool(refDevice, frame.cmdPool, nullptr);
     }
 }
 
-//! SubmitInfo/SubmitList can be optimized
-void CommandMgr::setSubmitState(int index, bool submitState)
+void CommandMgr::setSubmission(int index, bool withPrevious, VkPipelineStageFlags stage)
 {
-    const void *target = frames[0].submitInfo[index].pCommandBuffers;
-    auto tmp = std::find_if(frames[0].submitList.begin(), frames[0].submitList.end(), [target](auto &sinfo){return sinfo.pCommandBuffers == target;});
+    if (withPrevious && !frames[refFrameIndex].submitList.empty()) {
+        if (submissionPerFrame) {
+            frames[refFrameIndex].submittedCommandBuffers.back().push_back(frames[refFrameIndex].commandBuffers[index]);
+            frames[refFrameIndex].submitList.back().commandBufferCount = frames[refFrameIndex].submittedCommandBuffers.back().size();
+            frames[refFrameIndex].submitList.back().pCommandBuffers = frames[refFrameIndex].submittedCommandBuffers.back().data();
+        } else {
+            for (auto &frame : frames) {
+                frame.submittedCommandBuffers.back().push_back(frame.commandBuffers[index]);
+                frame.submitList.back().commandBufferCount = frame.submittedCommandBuffers.back().size();
+                frame.submitList.back().pCommandBuffers = frame.submittedCommandBuffers.back().data();
+            }
+        }
+        return;
+    }
 
-    if (submitState) {
-        if (tmp == frames[0].submitList.end())
-            for (auto &frame : frames)
-                frame.submitList.push_back(frame.submitInfo[index]);
+    VkSubmitInfo submitInfo;
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.pNext = nullptr;
+    submitInfo.waitSemaphoreCount = 1;
+    auto result = stages.insert(stage);
+    submitInfo.pWaitDstStageMask = &(*result.first);
+    submitInfo.commandBufferCount = 1;
+    submitInfo.signalSemaphoreCount = 1;
+
+    if (submissionPerFrame) {
+        auto &frame = frames[refFrameIndex];
+        // set dependency to previous command
+        submitInfo.pWaitSemaphores = frame.submittedSignalSemaphores.empty() ? &frame.topSemaphore : &frame.submittedSignalSemaphores.back();
+        // add dependency for next command
+        frame.submittedSignalSemaphores.push_back(frame.signalSemaphores[index]);
+        submitInfo.pSignalSemaphores = &frame.submittedSignalSemaphores.back();
+        // set command submission state
+        frame.submittedCommandBuffers.push_back({frame.commandBuffers[index]});
+        submitInfo.pCommandBuffers = frame.submittedCommandBuffers.back().data();
+        // append submission state
+        frame.submitList.push_back(submitInfo);
     } else {
-        if (tmp != frames[0].submitList.end()) {
-            auto dec = tmp - frames[0].submitList.begin();
-            for (auto &frame : frames)
-                frame.submitList.erase(frame.submitList.begin() + dec);
+        for (auto &frame : frames) {
+            // set dependency to previous command
+            submitInfo.pWaitSemaphores = frame.submittedSignalSemaphores.empty() ? &frame.topSemaphore : &frame.submittedSignalSemaphores.back();
+            // add dependency for next command
+            frame.submittedSignalSemaphores.push_back(frame.signalSemaphores[index]);
+            submitInfo.pSignalSemaphores = &frame.submittedSignalSemaphores.back();
+            // set command submission state
+            frame.submittedCommandBuffers.push_back({frame.commandBuffers[index]});
+            submitInfo.pCommandBuffers = frame.submittedCommandBuffers.back().data();
+            // append submission state
+            frame.submitList.push_back(submitInfo);
         }
     }
 }
 
-//! SubmitInfo/SubmitList can be optimized
-void CommandMgr::setSubmitInfo(int index, VkSubmitInfo &_submitInfo)
+void CommandMgr::resetSubmission()
 {
-    _submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO; // just to be shure
-    _submitInfo.commandBufferCount = 1;
     for (auto &frame : frames) {
-        _submitInfo.pCommandBuffers = &frame.commandBuffers[index];
-        frame.submitInfo[index] = _submitInfo;
+        frame.submittedCommandBuffers.clear();
+        frame.submittedSignalSemaphores.clear();
+        frame.submitList.clear();
+        needResolve = true;
     }
 }
 
@@ -77,9 +147,42 @@ void CommandMgr::submit()
 {
     vkWaitForFences(refDevice, 1, &frames[refFrameIndex].fence, VK_TRUE, UINT64_MAX);
     vkResetFences(refDevice, 1, &frames[refFrameIndex].fence);
-    if (vkQueueSubmit(queue, frames[refFrameIndex].submitList.size(), frames[refFrameIndex].submitList.data(), frames[refFrameIndex].fence) != VK_SUCCESS) {
-        std::cerr << "\e[31mError : Faild to submit commands.\e[0m" << std::endl;
+    if (needResolve) {
+        if (submissionPerFrame) {
+            resolve(refFrameIndex);
+        } else {
+            for (uint8_t frameIndex = 0; frameIndex < frames.size(); frameIndex++)
+                resolve(frameIndex);
+        }
+        needResolve = false;
     }
+    if (vkQueueSubmit(queue, frames[refFrameIndex].submitList.size(), frames[refFrameIndex].submitList.data(), frames[refFrameIndex].fence) != VK_SUCCESS) {
+        std::runtime_error("Error : Faild to submit commands.");
+    }
+    if (submissionPerFrame) {
+        frames[refFrameIndex].submittedCommandBuffers.clear();
+        frames[refFrameIndex].submittedSignalSemaphores.clear();
+        frames[refFrameIndex].submitList.clear();
+        needResolve = true;
+    }
+}
+
+void CommandMgr::resolve(uint8_t frameIndex)
+{
+    if (frames[frameIndex].submitList.empty()) {
+        // If there is no commands, link topSemaphore to bottomSemaphore
+        VkSubmitInfo submitInfo;
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.pNext = nullptr;
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitSemaphores = &frames[frameIndex].topSemaphore;
+        submitInfo.pWaitDstStageMask = &defaultStage;
+        submitInfo.signalSemaphoreCount = 1;
+        submitInfo.pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+        submitInfo.commandBufferCount = 0;
+        frames[frameIndex].submitList.push_back(submitInfo);
+    } else
+        frames[frameIndex].submitList.back().pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
 }
 
 void CommandMgr::init(int index)
@@ -166,17 +269,20 @@ void CommandMgr::indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset,
     }
 }
 
-void CommandMgr::beginRenderPass()
+void CommandMgr::beginRenderPass(renderPassType renderPassType)
 {
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = refRenderPass;
+    renderPassInfo.renderPass = refRenderPass[static_cast<uint8_t>(renderPassType)];
     renderPassInfo.renderArea.offset = {0, 0};
     renderPassInfo.renderArea.extent = master->swapChainExtent;
 
-    VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
-    renderPassInfo.clearValueCount = 1;
-    renderPassInfo.pClearValues = &clearColor;
+    std::array<VkClearValue, 2> clearValues{};
+    clearValues[0].color = {0.0f, 0.f, 0.f, 0.0f};
+    clearValues[1].depthStencil = {0.0f, 0};
+
+    renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+    renderPassInfo.pClearValues = clearValues.data();
 
     if (singleUse) {
         renderPassInfo.framebuffer = refSwapChainFramebuffers[refFrameIndex];
@@ -211,14 +317,14 @@ void CommandMgr::bindPipeline(Pipeline *pipeline)
     }
 }
 
-void CommandMgr::bindUniform(PipelineLayout *pipelineLayout, Uniform *uniform)
+void CommandMgr::bindUniformSet(PipelineLayout *pipelineLayout, UniformSet *uniform)
 {
     if (singleUse) {
-        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->getDescriptorSet(), 0, nullptr);
+        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->get(), 0, nullptr);
         return;
     }
     for (auto &frame : frames) {
-        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->getDescriptorSet(), 0, nullptr);
+        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->get(), 0, nullptr);
     }
 }
 
