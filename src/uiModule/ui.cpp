@@ -496,18 +496,18 @@ void UI::lowerHeight()
 void UI::speedDecrease()
 {
 	this->executeCommand("define x -1");
-	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerSpeed();
-	else
+	//if(scriptInterface->isScriptPlaying())
+	//	scriptInterface->slowerSpeed();
+	//else
 		deltaSpeed = DeltaSpeed::DOWN;
 }
 
 void UI::speedIncrease()
 {
 	this->executeCommand("define x 1");	
-	if(scriptInterface->isScriptPlaying())
-		scriptInterface->fasterSpeed();
-	else
+	//if(scriptInterface->isScriptPlaying())
+	//	scriptInterface->fasterSpeed();
+	//else
 		deltaSpeed = DeltaSpeed::UP;
 }
 
