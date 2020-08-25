@@ -4,8 +4,6 @@
 #include <vulkan/vulkan.h>
 #include <map>
 
-namespace v {
-
 class Vulkan;
 class TextureImage;
 
@@ -36,10 +34,5 @@ private:
     VkImageView imageView;
     std::pair<short, short> size;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: TEXTURE_MGR_HPP */

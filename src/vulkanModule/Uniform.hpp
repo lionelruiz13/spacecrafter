@@ -2,7 +2,6 @@
 #define UNIFORM_HPP
 
 #include <vulkan/vulkan.h>
-namespace v {
 
 class VirtualSurface;
 
@@ -21,10 +20,5 @@ private:
     VkShaderStageFlags stages;
     VkDescriptorBufferInfo bufferInfo{};
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: UNIFORM_HPP */

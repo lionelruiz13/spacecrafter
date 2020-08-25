@@ -4,8 +4,6 @@
 #include "Vulkan.hpp"
 #include <queue>
 
-namespace v {
-
 #define VK_HOST_MEMORY VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT
 
 class CommandMgr;
@@ -79,10 +77,5 @@ private:
     VkBuffer buffer;
     VkSubmitInfo submitInfo{};
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: VIRTUAL_SURFACE_HPP */

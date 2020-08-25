@@ -3,7 +3,6 @@
 
 #include <vulkan/vulkan.h>
 #include <vector>
-namespace v {
 
 class VirtualSurface;
 
@@ -25,10 +24,5 @@ private:
     VkBuffer buffer;
     VkSubmitInfo submitInfo{};
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: BUFFER_HPP */

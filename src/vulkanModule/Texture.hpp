@@ -4,8 +4,6 @@
 #include <vulkan/vulkan.h>
 #include <string>
 
-namespace v {
-
 class VirtualSurface;
 class TextureImage;
 class TextureMgr;
@@ -40,10 +38,5 @@ public:
     void unuse();
     void *data;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: TEXTURE_HPP */

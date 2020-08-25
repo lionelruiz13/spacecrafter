@@ -7,8 +7,6 @@
 
 class SDL_Window;
 
-namespace v {
-
 #ifndef MAX_FRAMES_IN_FLIGHT
 #define MAX_FRAMES_IN_FLIGHT 2
 #endif
@@ -177,5 +175,4 @@ private:
     bool isReady = false;
 };
 
-}
 #endif

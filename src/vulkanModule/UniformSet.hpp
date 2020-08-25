@@ -3,7 +3,6 @@
 
 #include <vulkan/vulkan.h>
 #include <vector>
-namespace v {
 
 class VirtualSurface;
 class PipelineLayout;
@@ -28,10 +27,5 @@ private:
     VirtualSurface *master;
     VkDescriptorSet set;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: UNIFORM_SET_HPP */

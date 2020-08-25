@@ -4,7 +4,6 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <list>
-namespace v {
 
 class VirtualSurface;
 class Uniform;
@@ -32,10 +31,5 @@ private:
 
     bool builded = false;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: PIPELINE_LAYOUT_HPP */

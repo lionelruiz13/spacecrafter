@@ -5,7 +5,6 @@
 #include <list>
 #include <vector>
 #include <set>
-namespace v {
 
 class VirtualSurface;
 class VertexBuffer;
@@ -95,10 +94,5 @@ private:
     short nbCommandBuffers;
     short autoIndex = 0;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: COMMAND_MGR_HPP */

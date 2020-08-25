@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <forward_list>
-namespace v {
 
 class VirtualSurface;
 class VertexBuffer;
@@ -46,10 +45,5 @@ private:
     std::vector<VkVertexInputBindingDescription> bindingDescriptions;
     std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: PIPELINE_HPP */

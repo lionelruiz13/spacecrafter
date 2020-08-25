@@ -3,7 +3,6 @@
 
 #include <vulkan/vulkan.h>
 #include <vector>
-namespace v {
 
 class VirtualSurface;
 
@@ -31,10 +30,5 @@ private:
     VkVertexInputBindingDescription bindingDesc;
     std::vector<VkVertexInputAttributeDescription> attributeDesc;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: VERTEX_BUFFER_HPP */

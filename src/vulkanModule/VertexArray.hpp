@@ -5,7 +5,6 @@
 #include <vector>
 #include <array>
 #include <vulkan/vulkan.h>
-namespace v {
 
 //! Define buffer layout
 enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, COLOR4, MAG, SCALE };
@@ -76,10 +75,5 @@ private:
     float *data;
     std::array<uint8_t, 6> &offset;
 };
-}
-
-#ifndef OPENGL_HPP
-using namespace v;
-#endif
 
 #endif /* end of include guard: VERTEX_ARRAY_HPP */
