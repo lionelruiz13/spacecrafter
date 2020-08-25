@@ -32,6 +32,7 @@ public:
     void beginRenderPass(renderPassType renderPassType);
     void endRenderPass();
     void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, uint32_t bindingCount = 1, VkDeviceSize offset = 0);
+    void bindIndex(Buffer *buffer, VkDeviceSize offset = 0, VkIndexType indexType);
     void bindPipeline(Pipeline *pipeline);
     //! @brief update uniform value
     void bindUniformSet(PipelineLayout *pipelineLayout, UniformSet *uniform);

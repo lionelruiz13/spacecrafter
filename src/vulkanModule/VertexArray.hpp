@@ -16,6 +16,7 @@ enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM};
 class VirtualSurface;
 class CommandMgr;
 class VertexBuffer;
+class Buffer;
 
 class VertexArray
 {
@@ -31,26 +32,28 @@ public:
     //! modify the VertexBuffer identified by  his BufferType and integrating all elements fron vector data
     void fillVertexBuffer(const BufferType& bt, const std::vector<float> data);
     //! register a index buffer giving its access type
-    void registerIndexBuffer(const BufferAccess& ba);
+    void registerIndexBuffer(const BufferAccess& ba, unsigned int size = 4096, size_t blockSize = sizeof(unsigned int));
     //! modify the IndexBuffer by integrating count elements from integer indices
     void fillIndexBuffer(const std::vector<unsigned int> data);
     //! modify the IndexBuffer by integrating count elements from integer indices
     void fillIndexBuffer(unsigned int count , const unsigned int* indices);
-    void submitChanges();
     //! build VertexArray
-    void build(int maxVertices);
+    void build(int maxVertices = 4096);
     //! bind this vao
     void bind() const;
     //! unbind this vao
     void unBind() const {}
     //! returns the number of elements contained in the index buffer
     unsigned int getIndiceCount() const;
-    Vertice &operator[]()
+    Vertice &operator[]();
+    //! Tell vertice value have changed with operator[]
+    void assumeVerticeChanged();
     class Vertice;
 private:
     VirtualSurface *master;
     CommandMgr *mgr;
     std::unique_ptr<VertexBuffer> vertexBuffer;
+    std::unique_ptr<Buffer> indexBuffer;
     VkVertexInputBindingDescription bindingDesc{0, 0, VK_VERTEX_INPUT_RATE_VERTEX};
     std::vector<VkVertexInputAttributeDescription> attributeDesc;
     Vertice vertice;
@@ -58,6 +61,9 @@ private:
     std::array<uint8_t, 6> offset;
     //! Size of one block
     int blockSize = 0;
+    unsigned int indexBufferSize;
+    bool vertexUpdate = false;
+    bool indexUpdate = false;
 };
 
 class VertexArray::Vertice

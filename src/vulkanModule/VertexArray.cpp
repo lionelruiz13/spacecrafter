@@ -2,6 +2,7 @@
 #include "CommandMgr.hpp"
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
+#include "Buffer.hpp"
 
 static unsigned int getLayout(const BufferType& bt)
 {
@@ -59,7 +60,18 @@ void VertexArray::build(int maxVertices)
 
 void VertexArray::bind() const
 {
+    if (vertexUpdate) {
+        vertexBuffer->update();
+        vertexUpdate = false;
+    }
     mgr->bindVertex(vertexBuffer.get());
+    if (indexBuffer) {
+        if (indexUpdate) {
+            indexBuffer->update();
+            indexUpdate = false;
+        }
+        mgr->bindIndex(indexBuffer.get(), 0, VK_INDEX_TYPE_UINT32);
+    }
 }
 
 void VertexArray::registerVertexBuffer(const BufferType& bt, const BufferAccess& ba)
@@ -87,19 +99,37 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size, cons
     size /= dataSize;
     for (unsigned int i = 0; i < size; ++i) {
         for (uint8_t j = 0; j < dataSize; ++j)
-            tmp[j] = *(data++); // *(data++); is similar to *data; data++;
+            tmp[j] = *(data++); // *(data++); is similar to *data; data++; or data[i * dataSize + j];
         tmp += size;
     }
+    vertexUpdate = true;
 }
 
-void VertexArray::submitChanges()
+void registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize)
 {
-    vertexBuffer.update();
+    indexBuffer = std::make_unique<Buffer>(master, size * blockSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+}
+
+void VertexArray::fillIndexBuffer(const BufferType& bt, const std::vector<float> data)
+{
+    fillIndexBuffer(bt, data.size(), data.data());
+}
+
+void VertexArray::fillIndexBuffer(const BufferType& bt, unsigned int size, const float* data)
+{
+    memcpy(indexBuffer->data, data, size * sizeof(float));
+    indexBuffer->update();
+    indexBufferSize = size;
+}
+
+void VertexArray::assumeVerticeChanged()
+{
+    vertexUpdate = true;
 }
 
 VertexArray::Vertice &operator[](int pos)
 {
-    vertice.setData(((float *) vertexBuffer.data) + pos * blockSize);
+    vertice.setData(((float *) vertexBuffer->data) + pos * blockSize);
     return vertice;
 }
 
