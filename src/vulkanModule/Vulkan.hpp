@@ -23,7 +23,7 @@ class VirtualSurface;
 
 class Vulkan {
 public:
-    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces);
+    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600);
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
     void sendFrame();

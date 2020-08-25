@@ -68,7 +68,7 @@ const std::vector<uint16_t> indices = {
     1, 0, 2, 2, 3, 1
 };
 
-Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces) : refDevice(device), refRenderPass(renderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName)
+Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height) : refDevice(device), refRenderPass(renderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName)
 {
     if (isAlive) {
         std::cerr << "Error: There must be only one Vulkan instance" << std::endl;
@@ -86,7 +86,7 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
 
     initDevice(_AppName, _EngineName, window, true);
     initQueues(nbVirtualSurfaces);
-    initSwapchain(600, 600, nbVirtualSurfaces);
+    initSwapchain(width, height, nbVirtualSurfaces);
     createImageViews();
     createRenderPass();
     createCommandPool();
@@ -453,7 +453,7 @@ void Vulkan::initSwapchain(int width, int height, int nbVirtualSurfaces)
     createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
     createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // Pas de transparence pour le contenu de la fenêtre
     createInfo.presentMode = presentMode;
-    createInfo.clipped = VK_TRUE; // ne pas calculer les pixels masqués par une autre fenêtre
+    createInfo.clipped = VK_FALSE; // ne pas calculer les pixels masqués par une autre fenêtre
     createInfo.oldSwapchain = VK_NULL_HANDLE;
     for (uint8_t i = 0; i < swapChain.size(); i++) {
         if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain[i]) != VK_SUCCESS) {

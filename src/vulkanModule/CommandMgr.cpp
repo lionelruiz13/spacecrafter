@@ -306,6 +306,17 @@ void CommandMgr::bindVertex(VertexBuffer *vertex, uint32_t firstBinding, uint32_
     }
 }
 
+void CommandMgr::bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset)
+{
+    if (singleUse) {
+        vkCmdBindIndexBuffer(actual, buffer->get(), offset, indexType);
+        return;
+    }
+    for (auto &frame : frames) {
+        vkCmdBindIndexBuffer(frame.actual, buffer->get(), offset, indexType);
+    }
+}
+
 void CommandMgr::bindPipeline(Pipeline *pipeline)
 {
     if (singleUse) {

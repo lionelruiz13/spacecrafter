@@ -70,7 +70,7 @@ void VertexArray::bind() const
             indexBuffer->update();
             indexUpdate = false;
         }
-        mgr->bindIndex(indexBuffer.get(), 0, VK_INDEX_TYPE_UINT32);
+        mgr->bindIndex(indexBuffer.get(), VK_INDEX_TYPE_UINT32);
     }
 }
 
