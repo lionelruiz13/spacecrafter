@@ -57,6 +57,7 @@ public:
     void waitCompletion(uint32_t frameIndex) {vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, UINT64_MAX);}
     void setTopSemaphore(int frameIndex, const VkSemaphore &topSemaphore) {frames[frameIndex].topSemaphore = topSemaphore;}
     const VkSemaphore &getBottomSemaphore(int frameIndex) {return frames[frameIndex].bottomSemaphore;}
+    int getCommandIndex();
 private:
     //! resolve semaphore dependencies for one frame
     void resolve(uint8_t frameIndex);
@@ -91,6 +92,8 @@ private:
     const bool singleUse;
     const bool submissionPerFrame;
     bool needResolve = true;
+    short nbCommandBuffers;
+    short autoIndex = 0;
 };
 }
 

@@ -7,7 +7,7 @@
 
 VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
-CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame)
+CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
 {
     _master->registerCommandMgr(this);
     queue = _master->getQueue();
@@ -348,4 +348,34 @@ void CommandMgr::endRenderPass()
     for (auto &frame : frames) {
         vkCmdEndRenderPass(frame.actual);
     }
+}
+
+int CommandMgr::getCommandIndex()
+{
+    if (autoIndex < nbCommandBuffers)
+        return autoIndex++;
+
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = (uint32_t) frames.size();
+
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    std::vector<VkCommandBuffer> tmp;
+    tmp.resize(allocInfo.commandBufferCount);
+    if (vkAllocateCommandBuffers(refDevice, &allocInfo, tmp.data()) != VK_SUCCESS) {
+        throw std::runtime_error("échec de l'allocation de command buffers!");
+    }
+    auto it = tmp.begin();
+    for (auto &frame : frames) {
+        frame.commandBuffers.push_back(*it);
+        it++;
+        frame.signalSemaphores.resize(autoIndex + 1);
+        if (vkCreateSemaphore(refDevice, &semaphoreInfo, nullptr, &frame.signalSemaphores.back()) != VK_SUCCESS) {
+            throw std::runtime_error("Faild to create semaphore for previously allocated command buffers.");
+        }
+    }
+    return autoIndex++;
 }
