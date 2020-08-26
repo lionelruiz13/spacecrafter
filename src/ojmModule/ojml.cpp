@@ -43,7 +43,7 @@ bool OjmL::init(const std::string & _fileName)
 	return is_ok;
 }
 
-void OjmL::draw(GLenum mode)
+void OjmL::draw(VkPrimitiveTopology mode)
 {
 	if (is_ok) {
 		// glBindVertexArray(dGL->vao);

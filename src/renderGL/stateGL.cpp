@@ -1,4 +1,5 @@
 #include "renderGL/stateGL.hpp"
+#include "vulkanModule/Pipeline.hpp"
 
 bool StateGL::cull_face = false;
 bool StateGL::stencil_test = false;
@@ -15,28 +16,28 @@ void StateGL::EnableDisable(GLenum gl_enum, bool value)
 			if (value == cull_face) //{ printf("op\n"); return;}
 				return;
 			cull_face = value;
-			value ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+			//value ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 			break;
 
 		case GL_STENCIL_TEST :
 			if (value == stencil_test) // { printf("op\n"); return;}
 				return;
 			stencil_test = value;
-			value ? glEnable(GL_STENCIL_TEST) : glDisable(GL_STENCIL_TEST);
+			//value ? glEnable(GL_STENCIL_TEST) : glDisable(GL_STENCIL_TEST);
 			break;
 
 		case GL_DEPTH_TEST :
 			if (value == depth_test) //{ printf("op\n"); return;}
 				return;
 			depth_test = value;
-			value ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+			//value ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 			break;
 
 		case GL_BLEND :
 			if (value == blend) //{ printf("op\n"); return;}
 				return;
 			blend = value;
-			value ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
+			//value ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
 			break;
 
 		default:
@@ -54,6 +55,14 @@ void StateGL::BlendFunc(GLenum gl_enum1, GLenum gl_enum2)
 		//~ printf("changement BlendFunc\n");
 		blendFunc1 = gl_enum1;
 		blendFunc2 = gl_enum2;
-		glBlendFunc(gl_enum1, gl_enum2);
+		//glBlendFunc(gl_enum1, gl_enum2);
+	}
+}
+
+void StateGL::setPipelineState(Pipeline *pipeline)
+{
+	if (blend) {
+	} else {
+		pipeline->setBlendMode(BLEND_NONE);
 	}
 }

@@ -184,10 +184,10 @@ void Ring2D::draw(shaderProgram* shader)
 {
 	// shader->use();
 	// m_dataGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,dataVertex.size()/2);
 	// m_dataGL->unBind();
 	// shader->unuse();
-	Renderer::drawArrays(shader, m_dataGL.get(), GL_TRIANGLE_STRIP,0,dataVertex.size()/2);
+	Renderer::drawArrays(shader, m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,dataVertex.size()/2);
 }
 
 

@@ -65,12 +65,12 @@ void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 	shaderHints->setUniform("fader", hint_fader.getInterstate() );
 
 	m_HintsGL->fillVertexBuffer(BufferType::POS2D, vecHintsPos);
-	
+
 	// m_HintsGL->bind();
 	// glDrawArrays(GL_LINE_LOOP,0,nbrFacets);
 	// m_HintsGL->unBind();
 	// shaderHints->unuse();
-	Renderer::drawArrays(shaderHints.get(), m_HintsGL.get(), GL_LINE_LOOP,0,nbrFacets);
+	Renderer::drawArrays(shaderHints.get(), m_HintsGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,0,nbrFacets);
 
 	vecHintsPos.clear();
 }

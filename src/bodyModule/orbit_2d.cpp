@@ -52,11 +52,11 @@ void Orbit2D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d
 	m_Orbit2dGL->fillVertexBuffer(BufferType::POS3D,vecOrbit2dVertex );
 
 	// m_Orbit2dGL->bind();
-	// glDrawArrays(GL_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
 	// m_Orbit2dGL->unBind();
 	// // glBindVertexArray(0);
 	// shaderOrbit2d->unuse();
-	Renderer::drawArrays(shaderOrbit2d.get(), m_Orbit2dGL.get(), GL_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
+	Renderer::drawArrays(shaderOrbit2d.get(), m_Orbit2dGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
 
 	vecOrbit2dVertex.clear();
 

@@ -26,23 +26,24 @@
 #define _RENDERER_HPP_
 
 #include <GL/glew.h>
+#include <vulkan/vulkan.h>
 
 class VertexArray;
 class shaderProgram;
-
 
 class Renderer {
 public:
     static void clearBuffer();
     static void clearColor();
     static void clearDepthBuffer();
-    static void drawArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int first, unsigned int count);
-    static void drawArraysWithoutShader(VertexArray* va, GLenum mode, unsigned int first, unsigned int count);
-    static void drawMultiArrays(shaderProgram* shader, VertexArray* va, GLenum mode, unsigned int boucle, unsigned int count );
-    static void drawElementsWithoutShader(VertexArray* va, GLenum mode);
+    static void drawArrays(shaderProgram* shader, VertexArray* va, VkPrimitiveTopology mode, unsigned int first, unsigned int count);
+    static void drawArraysWithoutShader(VertexArray* va, VkPrimitiveTopology mode, unsigned int first, unsigned int count);
+    static void drawMultiArrays(shaderProgram* shader, VertexArray* va, VkPrimitiveTopology mode, unsigned int boucle, unsigned int count );
+    static void drawElementsWithoutShader(VertexArray* va, VkPrimitiveTopology mode);
     static void viewport(int x, int y, int w, int h);
 private:
-
+    static bool needClearColor;
+    static bool needClearDepthBuffer;
 };
 
 #endif

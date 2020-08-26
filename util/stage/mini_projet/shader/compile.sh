@@ -4,3 +4,8 @@ glslc new.frag -o frag.spv
 glslc experiment.vert -o experiment_vert.spv -O
 glslc experiment.frag -o experiment_frag.spv -O
 glslc experiment.geom -o experiment_geom.spv -O
+for src in *.vert *.frag *.geom
+do
+    dst="$src.spv"
+    echo "Compile $src into $dst"
+done

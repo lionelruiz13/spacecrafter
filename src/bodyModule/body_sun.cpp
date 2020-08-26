@@ -138,7 +138,7 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 
 	m_bigHaloGL->fillVertexBuffer(BufferType::POS2D, 2, screenPosF );
 
-	Renderer::drawArrays(shaderBigHalo.get(), m_bigHaloGL.get(), GL_POINTS, 0, 1);
+	Renderer::drawArrays(shaderBigHalo.get(), m_bigHaloGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, 1);
 }
 
 void Sun::createSunShader()

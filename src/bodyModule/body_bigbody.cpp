@@ -378,7 +378,7 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	}
 
 	if ( myShader == SHADER_NIGHT_TES || myShader == SHADER_NORMAL_TES )
-		currentObj->draw(screen_sz, GL_PATCHES);
+		currentObj->draw(screen_sz, VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 	else
 		currentObj->draw(screen_sz);
 

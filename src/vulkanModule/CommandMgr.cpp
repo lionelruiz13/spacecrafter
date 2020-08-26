@@ -4,6 +4,7 @@
 #include "PipelineLayout.hpp"
 #include "CommandMgr.hpp"
 #include "UniformSet.hpp"
+#include "Buffer.hpp"
 
 VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
@@ -81,7 +82,7 @@ CommandMgr::~CommandMgr()
 
 void CommandMgr::setSubmission(int index, bool withPrevious, VkPipelineStageFlags stage)
 {
-    if (withPrevious && !frames[refFrameIndex].submitList.empty()) {
+    if (withPrevious && !frames[refFrameIndex].submitList.empty() && *frames[refFrameIndex].submitList.back().pWaitDstStageMask == stage) {
         if (submissionPerFrame) {
             frames[refFrameIndex].submittedCommandBuffers.back().push_back(frames[refFrameIndex].commandBuffers[index]);
             frames[refFrameIndex].submitList.back().commandBufferCount = frames[refFrameIndex].submittedCommandBuffers.back().size();

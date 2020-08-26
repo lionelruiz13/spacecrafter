@@ -91,16 +91,16 @@ void ViewPort::draw()
 
 	if (fullScreen) {
 		// m_fullGL->bind();
-		// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 		// m_fullGL->unBind();
-		Renderer::drawArrays(shaderViewPort.get(), m_fullGL.get(), GL_TRIANGLE_STRIP,0,4);
+		Renderer::drawArrays(shaderViewPort.get(), m_fullGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 	}
 	else {
 		// m_dualGL->bind();
-		// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-		// glDrawArrays(GL_TRIANGLE_STRIP,4,4);
+		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
+		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,4,4);
 		// m_dualGL->unBind();
-		Renderer::drawMultiArrays(shaderViewPort.get(), m_fullGL.get(), GL_TRIANGLE_STRIP,2,4);
+		Renderer::drawMultiArrays(shaderViewPort.get(), m_fullGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,2,4);
 	}
 	// shaderViewPort->unuse();
 	StateGL::disable(GL_BLEND);

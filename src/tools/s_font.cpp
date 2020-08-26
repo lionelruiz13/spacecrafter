@@ -31,6 +31,8 @@
 #include "renderGL/shader.hpp"
 #include "renderGL/Renderer.hpp"
 
+#include "vulkanModule/TextureMgr.hpp"
+
 std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
 std::unique_ptr<shaderProgram> s_font::shaderPrint;
 std::unique_ptr<VertexArray> s_font::m_fontGL;
@@ -108,7 +110,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	}
 
 	StateGL::enable(GL_BLEND);
-	
+
 	// Draw
 	std::vector<float> vecPos;
 	std::vector<float> vecTex;
@@ -141,7 +143,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	shaderPrint->use();
 	shaderPrint->setUniform("MVP", MVP);
 	shaderPrint->setUniform("Color", Color);
-	Renderer::drawArrays(shaderPrint.get(), m_fontGL.get(), GL_TRIANGLE_STRIP, 0, 4);
+	Renderer::drawArrays(shaderPrint.get(), m_fontGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
 
 	vecPos.clear();
 	vecTex.clear();
@@ -325,11 +327,11 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	float angle, lCercle;
 	switch (testPos) {
 		case TEXT_ALIGN::LEFT : angle = 0; break;
-		case TEXT_ALIGN::RIGHT : 
+		case TEXT_ALIGN::RIGHT :
 			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
 			angle = 360.f * rendering.textureW / lCercle;
 			break;
-		case TEXT_ALIGN::CENTER: 
+		case TEXT_ALIGN::CENTER:
 			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
 			angle = 360.f * rendering.textureW / lCercle / 2.f; //because center
 			break;
@@ -376,7 +378,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	Vec3f Color (texColor[0], texColor[1], texColor[2]);
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+
 	for (int i=0; i<=steps; i++) {
 		insert_vec2(vecPos,meshPoints[i*2]);
 		insert_vec2(vecPos,meshPoints[i*2+1]);
@@ -388,12 +390,12 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
-	
+
 	shaderHorizontal->setUniform("Color", Color);
 	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
 
-	Renderer::drawArrays(shaderHorizontal.get(), m_fontGL.get(), GL_TRIANGLE_STRIP,0,vecPos.size()/2);
+	Renderer::drawArrays(shaderHorizontal.get(), m_fontGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,vecPos.size()/2);
 
 	vecPos.clear();
 	vecTex.clear();

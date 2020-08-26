@@ -50,7 +50,7 @@ void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 
 	m_AxisGL->fillVertexBuffer(BufferType::POS3D, vecAxisPos);
 
-	Renderer::drawArrays(shaderAxis.get(), m_AxisGL.get(), GL_LINE_STRIP, 0,2);
+	Renderer::drawArrays(shaderAxis.get(), m_AxisGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0,2);
 
 	vecAxisPos.clear();
 

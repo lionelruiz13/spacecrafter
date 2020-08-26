@@ -58,7 +58,7 @@ public:
 	// création d'une texture par copie d'une autre
 	s_texture(const s_texture &t) = delete;
 	s_texture(const s_texture *t);
-	//interdiction d'opérateur = 
+	//interdiction d'opérateur =
 	const s_texture &operator=(const s_texture &t) = delete;
 
 	// Renvoie la référence de la texture en openGL

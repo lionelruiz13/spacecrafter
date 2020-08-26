@@ -6,6 +6,7 @@ VkSamplerCreateInfo PipelineLayout::DEFAULT_SAMPLER = {VK_STRUCTURE_TYPE_SAMPLER
 PipelineLayout::PipelineLayout(VirtualSurface *_master) : master(_master)
 {
     DEFAULT_SAMPLER.anisotropyEnable = master->getDeviceFeatures().samplerAnisotropy;
+    descriptor[1] = VK_NULL_HANDLE;
 }
 
 PipelineLayout::~PipelineLayout()
@@ -14,7 +15,7 @@ PipelineLayout::~PipelineLayout()
         vkDestroySampler(master->refDevice, tmp, nullptr);
     if (builded) {
         vkDestroyPipelineLayout(master->refDevice, pipelineLayout, nullptr);
-        vkDestroyDescriptorSetLayout(master->refDevice, descriptor, nullptr);
+        vkDestroyDescriptorSetLayout(master->refDevice, descriptor.front(), nullptr);
     }
 }
 
@@ -47,20 +48,30 @@ void PipelineLayout::setUniformLocation(VkShaderStageFlags stage, uint32_t bindi
     uniformsLayout.push_back(uniformCollection);
 }
 
-void PipelineLayout::build()
+void PipelineLayout::buildLayout()
 {
     VkDescriptorSetLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     layoutInfo.bindingCount = uniformsLayout.size();
     layoutInfo.pBindings = uniformsLayout.data();
 
-    if (vkCreateDescriptorSetLayout(master->refDevice, &layoutInfo, nullptr, &descriptor) != VK_SUCCESS) {
+    if (vkCreateDescriptorSetLayout(master->refDevice, &layoutInfo, nullptr, descriptor.data()) != VK_SUCCESS) {
         throw std::runtime_error("echec de la creation d'un set de descripteurs!");
     }
+}
+
+void PipelineLayout::setGlobalPipelineLayout(PipelineLayout *pl)
+{
+    descriptor[1] = pl->getDescriptorLayout();
+}
+
+void PipelineLayout::build()
+{
+    buildLayout();
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &descriptor;
+    pipelineLayoutInfo.setLayoutCount = descriptor.back() == VK_NULL_HANDLE ? 1 : 2;
+    pipelineLayoutInfo.pSetLayouts = descriptor.data();
     pipelineLayoutInfo.pushConstantRangeCount = 0;    // Optionnel
     pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optionnel
 

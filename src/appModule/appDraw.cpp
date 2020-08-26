@@ -70,7 +70,7 @@ void AppDraw::initSplash()
 	int tmp=std::min(width, height);
 	Renderer::viewport((width-tmp)/2, (height-tmp)/2, tmp, tmp);
 
-	std::unique_ptr<s_texture> tex_splash = 
+	std::unique_ptr<s_texture> tex_splash =
 			std::make_unique<s_texture>(AppSettings::Instance()->getUserDir()+"textures/splash/spacecrafter.png" , TEX_LOAD_TYPE_PNG_ALPHA);
 
 	StateGL::disable(GL_BLEND);
@@ -78,7 +78,7 @@ void AppDraw::initSplash()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex_splash->getID());
 
-	Renderer::drawArrays(shaderSplash.get(), splash.get(), GL_TRIANGLE_STRIP,0,4);
+	Renderer::drawArrays(shaderSplash.get(), splash.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 }
 
 
@@ -96,6 +96,7 @@ void AppDraw::createSC_context()
 
 	m_viewportGL = std::make_unique<VertexArray>();
 	m_viewportGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+    m_viewportGL->build(8);
 	m_viewportGL->fillVertexBuffer(BufferType::POS2D, 8, points);
 }
 
@@ -110,7 +111,7 @@ void AppDraw::drawViewportShape()
 	shaderViewportShape->setUniform("decalage_x" , m_decalage_x);
 	shaderViewportShape->setUniform("decalage_y" , m_decalage_y);
 
-	Renderer::drawArrays(shaderViewportShape.get(), m_viewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
+	Renderer::drawArrays(shaderViewportShape.get(), m_viewportGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
 }
 
 void AppDraw::drawColorInverse()
@@ -118,5 +119,5 @@ void AppDraw::drawColorInverse()
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 
-	Renderer::drawArrays(shaderColorInverse.get(), m_viewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
+	Renderer::drawArrays(shaderColorInverse.get(), m_viewportGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
 }

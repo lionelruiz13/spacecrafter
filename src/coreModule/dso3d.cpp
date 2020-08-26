@@ -152,8 +152,8 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	shaderDso3d->setUniform("nbTextures", nbTextures);
 
 	// sData->bind();
-	// glDrawArrays(GL_POINTS, 0, nbNebulae);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbNebulae);
 	// sData->unBind();
 	// shaderDso3d->unuse();
-	Renderer::drawArrays(shaderDso3d.get(), sData.get(), GL_POINTS, 0, nbNebulae);
+	Renderer::drawArrays(shaderDso3d.get(), sData.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbNebulae);
 }

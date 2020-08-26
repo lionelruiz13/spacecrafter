@@ -63,10 +63,11 @@ class ScreenFader;
 class EventRecorder;
 class EventHandler;
 
-
+class Vulkan;
+class VirtualSurface;
 
 enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, /*ON_VIDEO,*/ COLOR_INVERSE};
- 
+
 /**
 @author initial Fabien Chereau
 */
@@ -180,6 +181,8 @@ private:
 	ServerSocket * tcp = nullptr;
 	Fps* internalFPS = nullptr;				//! gestion fine du frameRate
 	AppDraw* appDraw = nullptr;
+    Vulkan *vulkan = nullptr;
+    VirtualSurface *surface = nullptr;
 	#if LINUX
 	Mkfifo* mkfifo = nullptr;
 	#endif

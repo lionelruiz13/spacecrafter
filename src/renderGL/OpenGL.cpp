@@ -1,5 +1,5 @@
+/*
 #include <iostream>
-
 #include "renderGL/OpenGL.hpp"
 
 void GLClearError()
@@ -237,7 +237,7 @@ void VertexArray::fillIndexBuffer(const std::vector<unsigned int> data)
 void VertexArray::fillIndexBuffer(unsigned int count , const unsigned int* indices)
 {
     ASSERT(m_indexBuffer);
-    
+
     this->bind();
     GLCall( glEnableVertexAttribArray(3) );
     m_indexBuffer->fill(count, indices);
@@ -249,3 +249,4 @@ unsigned int VertexArray::getIndiceCount() const
     ASSERT(m_indexBuffer);
     return m_indexBuffer->GetCount();
 }
+//*/

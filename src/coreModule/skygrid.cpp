@@ -171,10 +171,10 @@ void SkyGrid::draw(const Projector* prj) const
 	}
 
 	// m_dataGL->bind();
-	// glDrawArrays(GL_LINES, 0, nbPointsToDraw); //un point est représenté par 3 points
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, nbPointsToDraw); //un point est représenté par 3 points
 	// m_dataGL->unBind();
 	// shaderSkyGrid->unuse();
-	Renderer::drawArrays(shaderSkyGrid.get(), m_dataGL.get(), GL_LINES, 0, nbPointsToDraw); //un point est représenté par 3 points
+	Renderer::drawArrays(shaderSkyGrid.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, nbPointsToDraw); //un point est représenté par 3 points
 
 
 	// tracé de texte.

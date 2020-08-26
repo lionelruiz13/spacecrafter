@@ -143,10 +143,10 @@ void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
 
 	// m_dataGL->bind();
-	// glDrawArrays(GL_LINES, 0, dataSky.size() / 3); //un point est représenté par 3 points
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3); //un point est représenté par 3 points
 	// m_dataGL->unBind();
 	// shaderSkyDisplay->unuse();
-	Renderer::drawArrays(shaderSkyDisplay.get(), m_dataGL.get(), GL_LINES, 0, dataSky.size() / 3); 
+	Renderer::drawArrays(shaderSkyDisplay.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3); 
 }
 
 

@@ -20,9 +20,10 @@
  *
  */
 
+#include "vulkanModule/VertexArray.hpp"
 
-#ifndef OPENGL_HPP
 #define OPENGL_HPP
+#ifndef OPENGL_HPP
 
 #include <map>
 #include <vector>
@@ -49,7 +50,7 @@ bool GLCheckError();
 
 /**
 * \file OpenGL.hpp
-* \brief Define and use any GL buffer 
+* \brief Define and use any GL buffer
 * \author Olivier NIVOIX
 * \version 1
 */
@@ -133,18 +134,18 @@ private:
     unsigned int m_Count;
 };
 
-/** 
+/**
 * \class VertexArray
 *
 * \brief Represents a vao in software
 *
 * offers all the basic functionality to use a vao
-* 
+*
 * @section Working
-* 
+*
 * - Define a VertexArray before use it :)
-* - Register --before use it-- all buffers needed by the VAO identified by 
-* his function (represented by BufferType) 
+* - Register --before use it-- all buffers needed by the VAO identified by
+* his function (represented by BufferType)
 * his access type (represented by BufferAccess)
 * - Fill buffer as you need
 * - Bind/unbind to use.
@@ -159,7 +160,7 @@ public:
     void registerVertexBuffer(const BufferType& bt, const BufferAccess& ba);
     //! modify the VertexBuffer identified by  his BufferType and integrating size elements from data
     void fillVertexBuffer(const BufferType& bt, unsigned int size , const float* data);
-    //! modify the VertexBuffer identified by  his BufferType and integrating all elements fron vector data 
+    //! modify the VertexBuffer identified by  his BufferType and integrating all elements fron vector data
     void fillVertexBuffer(const BufferType& bt, const std::vector<float> data);
     //! register a index buffer giving its access type
     void registerIndexBuffer(const BufferAccess& ba);

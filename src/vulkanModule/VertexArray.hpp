@@ -6,6 +6,13 @@
 #include <array>
 #include <vulkan/vulkan.h>
 
+//! insert all Ts ...ts in vector<T>
+template <typename T, typename ... Ts>
+void insert_all(std::vector<T> &vec, Ts ... ts)
+{
+    (vec.push_back(ts), ...);
+}
+
 //! Define buffer layout
 enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, COLOR4, MAG, SCALE };
 
@@ -23,6 +30,17 @@ public:
     //! constructor...
     VertexArray();
     ~VertexArray();
+
+    class Vertice {
+    public:
+        Vertice(std::array<uint8_t, 6> &_offset);
+        float *operator[](const BufferType &bt);
+        void setData(float *_data) {data = _data;}
+    private:
+        float *data;
+        std::array<uint8_t, 6> &offset;
+    };
+
     void init(VirtualSurface *_master, CommandMgr *_mgr);
     //! register a new type of vertex buffer giving its function and access type
     void registerVertexBuffer(const BufferType& bt, const BufferAccess& ba);
@@ -39,15 +57,14 @@ public:
     //! build VertexArray
     void build(int maxVertices = 4096);
     //! bind this vao
-    void bind() const;
+    void bind();
     //! unbind this vao
     void unBind() const {}
     //! returns the number of elements contained in the index buffer
     unsigned int getIndiceCount() const;
-    Vertice &operator[]();
+    Vertice &operator[](int pos);
     //! Tell vertice value have changed with operator[]
     void assumeVerticeChanged();
-    class Vertice;
 private:
     VirtualSurface *master;
     CommandMgr *mgr;
@@ -63,17 +80,6 @@ private:
     unsigned int indexBufferSize;
     bool vertexUpdate = false;
     bool indexUpdate = false;
-};
-
-class VertexArray::Vertice
-{
-public:
-    Vertice(std::array<uint8_t, 6> &_offset);
-    float *operator[](const BufferType &bt);
-    void setData(float *_data) {data = _data;}
-private:
-    float *data;
-    std::array<uint8_t, 6> &offset;
 };
 
 #endif /* end of include guard: VERTEX_ARRAY_HPP */

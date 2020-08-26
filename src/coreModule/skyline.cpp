@@ -67,10 +67,10 @@ void SkyLine::drawSkylineGL(const Vec4f& Color)
 	shaderSkylineDraw->setUniform("Color",Color);
 
 	// m_skylineGL->bind();
-	// glDrawArrays(GL_LINES, 0 ,vecDrawPos.size()/2);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
 	// m_skylineGL->unBind();
 	// shaderSkylineDraw->unuse();
-	Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), GL_LINES, 0 ,vecDrawPos.size()/2);
+	Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
 }
 
 

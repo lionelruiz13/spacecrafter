@@ -100,8 +100,8 @@ const std::vector<Vertex> vertices = {
 
 bool opened = true;
 
-#define width 600
-#define height 600
+#define width 800
+#define height 400
 
 constexpr float DEG2RAD = 3.14159265358979323 / 180.;
 constexpr float RATIO = (float) width / (float) height;
@@ -294,7 +294,7 @@ int main()
 
     // Engage vulkan engine
     bool opened2 = true;
-    Vulkan *vulkan = new Vulkan("mini_projet", "No Engine", window.getWindow(), 2);
+    Vulkan *vulkan = new Vulkan("mini_projet", "No Engine", window.getWindow(), 2, width, height);
     std::thread thread(squareFunc, vulkan->getVirtualSurface(), &opened2, rotate, cam, target, up, clipping_fov);
     std::thread thread2(cubeFunc, vulkan->getVirtualSurface(), &opened2, rotate, cam, target, up, clipping_fov);
     int nb_loops = 1000;

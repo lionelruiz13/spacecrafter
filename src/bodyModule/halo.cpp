@@ -56,10 +56,10 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	m_haloGL->fillVertexBuffer(BufferType::TEXTURE, vecHaloTex);
 
 	// m_haloGL->bind();
-	// glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 	// m_haloGL->unBind();
 	// shaderHalo->unuse();
-	Renderer::drawArrays(shaderHalo.get(), m_haloGL.get(), GL_TRIANGLE_STRIP,0,4);
+	Renderer::drawArrays(shaderHalo.get(), m_haloGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 
 	vecHaloPos.clear();
 	vecHaloTex.clear();

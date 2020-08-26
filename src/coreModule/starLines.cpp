@@ -337,8 +337,8 @@ void StarLines::drawGL(Mat4f & matrix)  noexcept
 	shaderStarLines->setUniform("Fader", showFader.getInterstate() );
 
 	// m_dataGL->bind();
-	// glDrawArrays(GL_LINES,0,linePos.size()/3);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST,0,linePos.size()/3);
 	// m_dataGL->unBind();
 	// shaderStarLines->unuse();
-	Renderer::drawArrays(shaderStarLines.get(), m_dataGL.get(), GL_LINES,0,linePos.size()/3);
+	Renderer::drawArrays(shaderStarLines.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST,0,linePos.size()/3);
 }

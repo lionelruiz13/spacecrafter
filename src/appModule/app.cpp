@@ -65,6 +65,8 @@
 #include "eventModule/EventVideoHandler.hpp"
 #include "eventModule/CoreHandler.hpp"
 
+#include "vulkanModule/Vulkan.hpp"
+#include "vulkanModule/VirtualSurface.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
 
@@ -75,6 +77,9 @@ App::App( SDLFacade* const sdl )
 	mSdl->getResolution( &width, &height );
 
 	settings = AppSettings::Instance();
+
+	vulkan = new Vulkan("spacecrafter", "No Engine", mSdl->getWindow(), 1, width, height);
+	surface = vulkan->getVirtualSurface();
 
 	media = new Media();
 	saveScreenInterface = new SaveScreenInterface(width, height);
@@ -96,7 +101,7 @@ App::App( SDLFacade* const sdl )
 	internalFPS = new Fps();
 	spaceDate = new SpaceDate();
 
-	// fixation interface 
+	// fixation interface
 	ui->initInterfaces(scriptInterface,spaceDate);
 	commander->initInterfaces(scriptInterface, spaceDate, saveScreenInterface);
 
@@ -160,6 +165,7 @@ App::~App()
 	delete internalFPS;
 	delete screenFader;
 	delete spaceDate;
+	delete vulkan;
 }
 
 void App::setLineWidth(float w) const {
@@ -168,7 +174,7 @@ void App::setLineWidth(float w) const {
 
 float App::getLineWidth() const {
 	return appDraw->getLineWidth();
-} 
+}
 
 float App::getFlagAntialiasLines() const{
 	return appDraw->getFlagAntialiasLines();
@@ -176,13 +182,13 @@ float App::getFlagAntialiasLines() const{
 
 void App::flag(APP_FLAG layerValue, bool _value) {
 	switch(layerValue) {
-		case APP_FLAG::VISIBLE : 
+		case APP_FLAG::VISIBLE :
 				flagVisible = _value; break;
 		case APP_FLAG::ALIVE :
 				flagAlive = _value; break;
 		// case APP_FLAG::ON_VIDEO :
 		// 		flagOnVideo = _value; break;
-		case APP_FLAG::COLOR_INVERSE : 
+		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = _value; break;
 		case APP_FLAG::ANTIALIAS :
 				appDraw->setFlagAntialiasLines(_value); break;
@@ -193,15 +199,15 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 void App::toggle(APP_FLAG layerValue)
 {
 		switch(layerValue) {
-		case APP_FLAG::VISIBLE : 
+		case APP_FLAG::VISIBLE :
 				flagVisible = !flagVisible; break;
 		case APP_FLAG::ALIVE :
 				flagAlive = !flagAlive; break;
 		// case APP_FLAG::ON_VIDEO :
 		// 		flagOnVideo = !flagOnVideo; break;
-		case APP_FLAG::COLOR_INVERSE : 
+		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = !flagColorInverse; break;
-		case APP_FLAG::ANTIALIAS : 
+		case APP_FLAG::ANTIALIAS :
 				appDraw->flipFlagAntialiasLines(); break;
 		default: break;
 	}
@@ -289,9 +295,8 @@ void App::firstInit()
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
 	//glClear(GL_COLOR_BUFFER_BIT);
 	Renderer::clearColor();
-
 	appDraw->initSplash();
-	mSdl->glSwapWindow();	// And swap the buffers
+	//mSdl->glSwapWindow();	// And swap the buffers
 	//Translator::initSystemLanguage();
 
 	InitParser conf;
@@ -337,6 +342,8 @@ void App::firstInit()
 	cLog::get()->mark();
 
 	this->init();
+	surface->finalize(false);
+	vulkan->finalize();
 }
 
 
@@ -361,7 +368,7 @@ void App::updateFromSharedData()
 			}
 		} while (!out.empty());
 	}
-	if (flagMasterput==true) 
+	if (flagMasterput==true)
 		masterput();
 }
 

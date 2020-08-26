@@ -81,5 +81,5 @@ void ScreenFader::draw()
 	shaderScreen->use();
 	shaderScreen->setUniform("intensity" , intensity);
 
-	Renderer::drawArrays(shaderScreen.get(), m_screenGL.get(),GL_TRIANGLE_STRIP,0,4);
+	Renderer::drawArrays(shaderScreen.get(), m_screenGL.get(),VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 }

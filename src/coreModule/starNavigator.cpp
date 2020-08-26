@@ -461,8 +461,8 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	shaderStarNav->setUniform("Mat",matrix);
 
 	// m_dataGL->bind();
-	// glDrawArrays(GL_POINTS,0,starPos.size()/3);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
 	// m_dataGL->unBind();
 	// shaderStarNav->unuse();
-	Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), GL_POINTS,0,starPos.size()/3);
+	Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
 }

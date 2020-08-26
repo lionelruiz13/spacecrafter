@@ -213,7 +213,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	}
 
 	if ( myShader == SHADER_MOON_NORMAL_TES )
-		currentObj->draw(screen_sz, GL_PATCHES);
+		currentObj->draw(screen_sz, VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 	else
 		currentObj->draw(screen_sz);
 

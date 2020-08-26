@@ -99,6 +99,7 @@ void Atmosphere::createSC_context()
 	m_atmGL = std::make_unique<VertexArray>();
 	m_atmGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
 	m_atmGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	m_atmGL->build((SKY_RESOLUTION + 1) * (SKY_RESOLUTION + 1));
 }
 
 // void Atmosphere::deleteShader()
@@ -253,10 +254,10 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 	// shaderAtmosphere->use();
 	// m_atmGL->bind();
 	// for (int y=0; y<SKY_RESOLUTION; y++) {
-	// 	glDrawArrays(GL_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
+	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
 	// }
 	// m_atmGL->unBind();
 	// shaderAtmosphere->unuse();
 
-	Renderer::drawMultiArrays(shaderAtmosphere.get(), m_atmGL.get(), GL_TRIANGLE_STRIP, SKY_RESOLUTION, (SKY_RESOLUTION+1)*2 );
+	Renderer::drawMultiArrays(shaderAtmosphere.get(), m_atmGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, SKY_RESOLUTION, (SKY_RESOLUTION+1)*2 );
 }

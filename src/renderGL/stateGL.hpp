@@ -6,6 +6,8 @@
 
 #include <GL/glew.h>
 
+class Pipeline;
+
 class StateGL {
 public:
 	static void enable(GLenum gl_enum) {
@@ -17,6 +19,8 @@ public:
 	};
 
 	static void BlendFunc(GLenum gl_enum1, GLenum gl_enum2);
+	static void setPipelineState(Pipeline *pipeline);
+	static bool isDepthTestEnabled() {return depth_test;}
 private:
 	static void EnableDisable(GLenum gl_enum, bool value);
 	static bool cull_face;

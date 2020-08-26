@@ -500,7 +500,7 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	shaderImageViewport->setUniform("fader", image_alpha);
 	shaderImageViewport->setUniform("MVP", MVP*TRANSFO);
 
-	Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), GL_TRIANGLE_STRIP, 0, 4);
+	Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
 }
 
 static int decalages(int i, int howManyDisplay)
@@ -591,7 +591,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 		m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
 		m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
 
-		Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), GL_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
+		Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
 
 		vecImgPos.clear();
 		vecImgTex.clear();

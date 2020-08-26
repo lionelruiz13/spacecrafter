@@ -35,7 +35,7 @@ public:
     VkPipelineCache &getPipelineCache() {return master->getPipelineCache();}
 
     const VkDevice &refDevice;
-    const std::array<VkRenderPass, 3> &refRenderPass;
+    const std::array<VkRenderPass, 4> &refRenderPass;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
     const uint32_t &refFrameIndex;
 
@@ -58,24 +58,6 @@ private:
     std::queue<uint32_t> frameIndexQueue;
     std::queue<uint32_t> *dependencyFrameIndexQueue = nullptr;
     bool isReady = false;
-};
-
-class Buffer {
-public:
-    Buffer(VirtualSurface *_master, int size) {}
-    ~Buffer();
-    VkBuffer &get() {return buffer;}
-    void update();
-    //! Intermediate buffer, write your datas here
-    void *data;
-private:
-    VirtualSurface *master;
-    VkCommandBuffer updater;
-    VkDeviceMemory stagingBufferMemory;
-    VkBuffer stagingBuffer;
-    VkDeviceMemory bufferMemory;
-    VkBuffer buffer;
-    VkSubmitInfo submitInfo{};
 };
 
 #endif /* end of include guard: VIRTUAL_SURFACE_HPP */

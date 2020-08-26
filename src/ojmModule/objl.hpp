@@ -14,24 +14,24 @@ class Projector;
  * \brief Conteneur de fichiers OJML
  * \author Olivier NIVOIX
  * \date 21 juin 2018
- * 
+ *
  * Cette classe a pour but de regrouper trois objets OJM d'un même objet physique et d'en afficher un en fonction de sa distance supposée à l'écran
- * 
+ *
  * @section DESCRIPTION
- * 
+ *
  * Cette classe ne sert que de wrapper.
- * 
+ *
  * low représente l'objet vu de loin
  * medium le représente à une distance intermédiaire
  * high le représente à courte distance
- * 
+ *
  */
 
 class ObjL {
 public:
 	ObjL();
 	~ObjL();
-	void draw(const float screenSize, GLenum mode= GL_TRIANGLES);
+	void draw(const float screenSize, VkPrimitiveTopology mode= VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	bool init(const std::string &repertory, const std::string &name);
 
 	bool isOk() {

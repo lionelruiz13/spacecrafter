@@ -118,10 +118,10 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	// m_shaderMeteor->use();
 	// m_meteorGL->bind();
 	// for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
-	// 	glDrawArrays(GL_LINE_STRIP, 3*i, 3);
+	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 3*i, 3);
 	// m_meteorGL->unBind();
 	// m_shaderMeteor->unuse();
-	Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), GL_LINE_STRIP, vecPos.size()/3 , 3);
+	Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, vecPos.size()/3 , 3);
 
 	vecPos.clear();
 	vecColor.clear();

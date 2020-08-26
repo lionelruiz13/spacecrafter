@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include <list>
+#include <array>
 
 class VirtualSurface;
 class Uniform;
@@ -17,16 +18,20 @@ public:
     void setUniformLocation(VkShaderStageFlags stage, uint32_t binding, uint32_t arraySize = 1);
     void setTextureLocation(uint32_t binding, const VkSamplerCreateInfo *samplerInfo = nullptr);
     void pushConstant(); // set constant values
-    //! Build pipelineLayout.
+    //! Build pipelineLayout
     void build();
+    //! Build as global pipelineLayout
+    void buildLayout();
+    //! Link to global pipelineLayout in parameter
+    void setGlobalPipelineLayout(PipelineLayout *pl);
     VkPipelineLayout &getPipelineLayout() {return pipelineLayout;}
-    VkDescriptorSetLayout &getDescriptorLayout() {return descriptor;}
+    VkDescriptorSetLayout &getDescriptorLayout() {return descriptor[0];}
     static VkSamplerCreateInfo DEFAULT_SAMPLER;
 private:
     VirtualSurface *master;
     VkPipelineLayout pipelineLayout;
     std::vector<VkDescriptorSetLayoutBinding> uniformsLayout;
-    VkDescriptorSetLayout descriptor;
+    std::array<VkDescriptorSetLayout, 2> descriptor;
     std::list<VkSampler> sampler;
 
     bool builded = false;

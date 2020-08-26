@@ -111,8 +111,8 @@ void Oort::draw(double distance, const Projector *prj,const Navigator *nav) noex
 	shaderOort->setUniform("intensity", intensity*fader.getInterstate());
 
 	// m_dataGL->bind();
-	// glDrawArrays(GL_POINTS, 0, nbAsteroids );
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbAsteroids );
 	// m_dataGL->unBind();
 	// shaderOort->unuse();
-	Renderer::drawArrays(shaderOort.get(), m_dataGL.get(), GL_POINTS, 0, nbAsteroids );
+	Renderer::drawArrays(shaderOort.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbAsteroids );
 }

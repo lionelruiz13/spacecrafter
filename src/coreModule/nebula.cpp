@@ -342,7 +342,7 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 
 	m_texGL->fillVertexBuffer(BufferType::POS3D,sDataPos);
 
-	Renderer::drawArrays(shaderNebulaTex.get(), m_texGL.get(), GL_TRIANGLE_STRIP, 0, 4);
+	Renderer::drawArrays(shaderNebulaTex.get(), m_texGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
 }
 
 void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor, bool displaySpecificHint, const Vec3f &circleColor, float r)

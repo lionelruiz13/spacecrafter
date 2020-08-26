@@ -9,7 +9,7 @@
 #include "renderGL/Renderer.hpp"
 
 // *****************************************************************************
-// 
+//
 // CLASSE OJM
 //
 // *****************************************************************************
@@ -105,10 +105,10 @@ void Ojm::draw(shaderProgram * shader)
 
 		// glBindVertexArray(shapes[i].dGL.vao);
         // shapes[i].dGL->bind();
-		// glDrawElements(GL_TRIANGLES, shapes[i].indices.size(), GL_UNSIGNED_INT, (void*)0 );
+		// glDrawElements(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, shapes[i].indices.size(), GL_UNSIGNED_INT, (void*)0 );
         // shapes[i].dGL->unBind();
-        Renderer::drawElementsWithoutShader(shapes[i].dGL.get(), GL_TRIANGLES);
-	} 
+        Renderer::drawElementsWithoutShader(shapes[i].dGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	}
 }
 
 void Ojm::initGLparam()
@@ -122,7 +122,7 @@ void Ojm::initGLparam()
         shapes[i].dGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
         shapes[i].dGL->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
         shapes[i].dGL->registerIndexBuffer(BufferAccess::STATIC);
-		
+
         // glGenBuffers(1,&shapes[i].dGL.pos);
 		// glGenBuffers(1,&shapes[i].dGL.tex);
 		// glGenBuffers(1,&shapes[i].dGL.norm);
@@ -156,7 +156,7 @@ void Ojm::initGLparam()
 		// glEnableVertexAttribArray(1);
 		// glEnableVertexAttribArray(2);
 		// glEnableVertexAttribArray(3);
-	} 
+	}
 }
 
 bool Ojm::readOJM(const std::string& filename, float multiplier)
@@ -231,8 +231,8 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                     {
                         unsigned int indice[9];
                         std::stringstream ss(std::string(line+2));
-                        ss>>indice[0] >> indice[1] >> indice[2] >> indice[3] >> 
-                            indice[4] >> indice[5] >> indice[6] >> indice[7] >> 
+                        ss>>indice[0] >> indice[1] >> indice[2] >> indice[3] >>
+                            indice[4] >> indice[5] >> indice[6] >> indice[7] >>
                             indice[8];
                         for(unsigned int k=0; k<9; k++)
 							shapes[shapeIter].indices.push_back(indice[k]);

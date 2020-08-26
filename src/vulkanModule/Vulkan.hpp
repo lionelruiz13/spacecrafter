@@ -45,7 +45,7 @@ public:
     //! getDevice();
     const VkDevice &refDevice;
     //! getRenderPass();
-    const std::array<VkRenderPass, 3> &refRenderPass;
+    const std::array<VkRenderPass, 4> &refRenderPass;
     //! getSwapChainFramebuffers();
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
     const uint32_t &refFrameIndex;
@@ -94,7 +94,7 @@ private:
     std::vector<VkImageView> swapChainImageViews;
 
     void createRenderPass();
-    std::array<VkRenderPass, 3> renderPass;
+    std::array<VkRenderPass, 4> renderPass;
 
     void createFramebuffer();
     std::vector<VkFramebuffer> swapChainFramebuffers;

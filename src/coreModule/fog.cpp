@@ -99,7 +99,7 @@ void Fog::draw(const Projector* prj, const Navigator* nav) const
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(angle_shift*M_PI/180.)))).convert();
 	shaderFog->setUniform("ModelViewMatrix",matrix);
 
-	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
+	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,nbVertex);
 
 	glCullFace(GL_BACK);
 	StateGL::disable(GL_CULL_FACE);

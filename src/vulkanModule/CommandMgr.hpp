@@ -15,8 +15,9 @@ class UniformSet;
 
 enum class renderPassType : uint8_t {
     CLEAR = 0,
-    DEFAULT = 1,
-    PRESENT = 2 // Prepair frameBuffer for presentation
+    CLEAR_DEPTH_BUFFER = 1,
+    DEFAULT = 2,
+    PRESENT = 3 // Prepair frameBuffer for presentation
 };
 
 class CommandMgr {
@@ -66,7 +67,7 @@ private:
     const VkDevice &refDevice;
     VkQueue queue;
     VkCommandBuffer actual;
-    const std::array<VkRenderPass, 3> &refRenderPass;
+    const std::array<VkRenderPass, 4> &refRenderPass;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
     VkCommandPool cmdPool; // used if singleUse is set to false
     //! Content attached to frame

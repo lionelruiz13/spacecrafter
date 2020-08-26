@@ -90,10 +90,10 @@ void Trail::drawTrail(const Navigator * nav, const Projector* prj)
 		m_dataGL->fillVertexBuffer(BufferType::MAG, vecTrailIntensity);
 
 		// m_dataGL->bind();
-		// glDrawArrays(GL_LINE_STRIP, 0, nbPos);
+		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, nbPos);
 		// m_dataGL->unBind();
 		// shaderTrail->unuse();
-		Renderer::drawArrays(shaderTrail.get(), m_dataGL.get(), GL_LINE_STRIP, 0, nbPos);
+		Renderer::drawArrays(shaderTrail.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, nbPos);
 
 		StateGL::enable(GL_BLEND);
 	}

@@ -368,9 +368,9 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 		m_constellationGL->fillVertexBuffer(BufferType::TEXTURE, vecTex);
 
 		// m_constellationGL->bind();
-		// glDrawArrays(GL_LINES_ADJACENCY, 0, vecPos.size()/2);
+		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY, 0, vecPos.size()/2);
 		// m_constellationGL->unBind();
-		Renderer::drawArraysWithoutShader(m_constellationGL.get(), GL_LINES_ADJACENCY, 0, vecPos.size()/2);
+		Renderer::drawArraysWithoutShader(m_constellationGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY, 0, vecPos.size()/2);
 
 		vecPos.clear();
 		vecTex.clear();
@@ -404,10 +404,10 @@ void ConstellationMgr::drawLines(const Projector * prj)
 	m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vLinesColor);
 
 	// m_constellationGL->bind();
-	// glDrawArrays(GL_LINES, 0, vLinesPos.size()/2);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vLinesPos.size()/2);
 	// m_constellationGL->unBind();
 	// m_shaderLines->unuse();
-	Renderer::drawArrays(m_shaderLines.get(), m_constellationGL.get(), GL_LINES, 0, vLinesPos.size()/2);
+	Renderer::drawArrays(m_shaderLines.get(), m_constellationGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vLinesPos.size()/2);
 }
 
 
@@ -437,10 +437,10 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 	m_constellationGL->fillVertexBuffer(BufferType::MAG, vBoundariesIntensity);
 
 	// m_constellationGL->bind();
-	// glDrawArrays(GL_LINES, 0, vBoundariesPos.size()/2);
+	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vBoundariesPos.size()/2);
 	// m_constellationGL->unBind();
 	// m_shaderBoundary->unuse();
-	Renderer::drawArrays(m_shaderBoundary.get(), m_constellationGL.get(), GL_LINES, 0, vBoundariesPos.size()/2);
+	Renderer::drawArrays(m_shaderBoundary.get(), m_constellationGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vBoundariesPos.size()/2);
 }
 
 //! Draw the names of all the constellations

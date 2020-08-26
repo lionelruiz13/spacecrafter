@@ -208,10 +208,10 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 
 	// m_hintGL->bind();
 	// for(unsigned int i=0; i < (vecHintPos.size()/8) ; i++)
-	// 	glDrawArrays(GL_TRIANGLE_STRIP, 4*i, 4);
+	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 4*i, 4);
 	// m_hintGL->unBind();
 	// shaderNebulaHint->unuse();
-	Renderer::drawMultiArrays(shaderNebulaHint.get(), m_hintGL.get(), GL_TRIANGLE_STRIP, vecHintPos.size()/8, 4);
+	Renderer::drawMultiArrays(shaderNebulaHint.get(), m_hintGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, vecHintPos.size()/8, 4);
 
 	vecHintPos.clear();
 	vecHintTex.clear();

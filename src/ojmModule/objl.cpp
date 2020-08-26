@@ -15,7 +15,7 @@
 ObjL::ObjL() 
 {}
 
-void ObjL::draw(const float screenSize, GLenum mode)
+void ObjL::draw(const float screenSize, VkPrimitiveTopology mode)
 {
 	if (screenSize < 20) {
 		this->low->draw(mode);

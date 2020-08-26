@@ -195,7 +195,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	m_illumGL->fillVertexBuffer(BufferType::POS3D, illumPos);
 	m_illumGL->fillVertexBuffer(BufferType::TEXTURE, illumTex);
 	m_illumGL->fillVertexBuffer(BufferType::COLOR, illumColor);
-	Renderer::drawMultiArrays(m_shaderIllum.get(), m_illumGL.get(), GL_TRIANGLE_STRIP, nbrIllumToTrace, 4);
+	Renderer::drawMultiArrays(m_shaderIllum.get(), m_illumGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, nbrIllumToTrace, 4);
 }
 
 

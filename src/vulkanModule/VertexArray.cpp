@@ -45,7 +45,9 @@ static VkFormat getFormat(unsigned int size)
     }
 }
 
-VertexArray::VertexArray() : Vertice(offset)
+VertexArray::VertexArray() : vertice(offset) {}
+
+VertexArray::~VertexArray() {}
 
 void VertexArray::init(VirtualSurface *_master, CommandMgr *_mgr)
 {
@@ -58,7 +60,7 @@ void VertexArray::build(int maxVertices)
     vertexBuffer = std::make_unique<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc);
 }
 
-void VertexArray::bind() const
+void VertexArray::bind()
 {
     if (vertexUpdate) {
         vertexBuffer->update();
@@ -105,19 +107,19 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size, cons
     vertexUpdate = true;
 }
 
-void registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize)
+void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize)
 {
     indexBuffer = std::make_unique<Buffer>(master, size * blockSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 }
 
-void VertexArray::fillIndexBuffer(const BufferType& bt, const std::vector<float> data)
+void VertexArray::fillIndexBuffer(const std::vector<unsigned int> data)
 {
-    fillIndexBuffer(bt, data.size(), data.data());
+    fillIndexBuffer(data.size(), data.data());
 }
 
-void VertexArray::fillIndexBuffer(const BufferType& bt, unsigned int size, const float* data)
+void VertexArray::fillIndexBuffer(unsigned int size, const unsigned int* data)
 {
-    memcpy(indexBuffer->data, data, size * sizeof(float));
+    memcpy(indexBuffer->data, data, size * sizeof(unsigned int));
     indexBuffer->update();
     indexBufferSize = size;
 }
@@ -127,7 +129,7 @@ void VertexArray::assumeVerticeChanged()
     vertexUpdate = true;
 }
 
-VertexArray::Vertice &operator[](int pos)
+VertexArray::Vertice &VertexArray::operator[](int pos)
 {
     vertice.setData(((float *) vertexBuffer->data) + pos * blockSize);
     return vertice;

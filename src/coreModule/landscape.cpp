@@ -265,7 +265,7 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
 	shaderLandscape->setUniform("ModelViewMatrix",matrix);
 
-	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), GL_TRIANGLE_STRIP,0,nbVertex);
+	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,nbVertex);
 
 	StateGL::disable(GL_CULL_FACE);
 	StateGL::disable(GL_BLEND);

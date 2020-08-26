@@ -4,6 +4,7 @@
 #include "tools/vecmath.hpp"
 #include "tools/s_texture.hpp"
 //#include "renderGL/shader.hpp"
+#include <vulkan/vulkan.h>
 
 #include <vector>
 #include <string>
@@ -22,7 +23,7 @@ public:
 	}
 
 	//! dessine l'objet
-	void draw(GLenum mode = GL_TRIANGLES);
+	void draw(VkPrimitiveTopology mode = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 
 private:
 	bool is_ok = false;
