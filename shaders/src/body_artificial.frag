@@ -5,10 +5,10 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=0) uniform sampler2D mapTexture;
-layout( location = 0 ) out vec4 FragColor;
+uniform sampler2D mapTexture;
+layout (location=0) out vec4 FragColor;
 
-in colorFrag
+layout (location=0) in colorFrag
 {
     vec3 Position;
     vec2 TexCoord;
@@ -24,7 +24,6 @@ struct LightInfo {
 };
 uniform LightInfo Light;
 
-
 struct MaterialInfo {
   vec3 Ka;            // Ambient reflectivity
   vec3 Kd;            // Diffuse reflectivity
@@ -32,8 +31,6 @@ struct MaterialInfo {
   float Ns;   		 // Specular factor
 };
 uniform MaterialInfo Material;
-
-
 
 void phongModel( vec3 pos, vec3 norm, out vec3 ambAndDiff, out vec3 spec ) {
     vec3 s = normalize(vec3(Light.Position) - pos);
@@ -74,7 +71,7 @@ void main()
 		useTexturedMaterial(texColor);
 	else
 		useColoredMaterial(texColor);
-  
+
   vec3 ambAndDiff, spec;
   phongModel( cfIn.Position, cfIn.Normal, ambAndDiff, spec );
   FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);

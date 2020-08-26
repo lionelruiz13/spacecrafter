@@ -5,9 +5,9 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-smooth in vec3 Color;
- 
-out vec3 FragColor;
+layout (location = 0) in vec3 Color;
+
+layout (location = 0) out vec3 FragColor;
  
 void main(void)
 {

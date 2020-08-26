@@ -17,7 +17,7 @@ layout (location = 2) in vec3 VertexNormal;
 // out vec2 TexCoord;
 // out float Ambient;
 
-out vertexData
+layout (location=0) out vertexData
 {
 	vec3 Position;
 	vec3 Normal;
@@ -32,15 +32,7 @@ uniform mat4 NormalMatrix;
 uniform mat4 ProjectionMatrix;
 uniform mat4 MVP;
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
+#include <cam_block.glsl>
 
 void main()
 {

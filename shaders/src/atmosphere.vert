@@ -10,7 +10,7 @@ layout (location=0)in vec2 position;
 layout (location=3)in vec3 color;
 
 //out
-smooth out vec3 Color;
+layout (location=0) out vec3 Color;
 
 // for MVP2D
 #include <cam_block.glsl>

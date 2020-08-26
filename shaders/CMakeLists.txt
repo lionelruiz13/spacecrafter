@@ -4,12 +4,7 @@
 file(
 	GLOB
 	myShaders
-	*.vert
-	*.tesc
-	*.tese
-	*.geom
-	*.frag
-	*.glsl
+	*.spv
 	)
 
 INSTALL(FILES ${myShaders} 

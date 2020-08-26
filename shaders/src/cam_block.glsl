@@ -1,6 +1,6 @@
 // note the alignement pack for Data
 
-layout (std140) uniform cam_block
+layout (set = 1, binding = 0) uniform cam_block
 {
 	ivec4 viewport;
 	ivec4 viewport_center;

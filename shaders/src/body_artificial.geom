@@ -19,7 +19,7 @@ uniform mat4 NormalMatrix;
 uniform vec3 clipping_fov;
 
 //in-out
-in vertexData
+layout (location=0) in vertexData
 {
 	vec3 Position;
 	vec3 Normal;
@@ -27,7 +27,7 @@ in vertexData
 	float Ambient;
 } vertexIn[];
 
-out colorFrag
+layout (location=0) out colorFrag
 {
     vec3 Position;
     vec2 TexCoord;
