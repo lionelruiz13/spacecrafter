@@ -8,6 +8,7 @@
 
 class VirtualSurface;
 class VertexBuffer;
+class VertexArray;
 class PipelineLayout;
 
 const VkPipelineColorBlendAttachmentState BLEND_NONE {VK_FALSE, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
@@ -18,7 +19,9 @@ class Pipeline {
 public:
     Pipeline(VirtualSurface *master, PipelineLayout *layout, std::vector<VkDynamicState> _dynamicStates = {});
     ~Pipeline();
+    void bindShader(const std::string &filename, const std::string entry = "main");
     void bindShader(const std::string &filename, VkShaderStageFlagBits stage, const std::string entry = "main");
+    void bindVertex(VertexArray *vertex, uint32_t binding);
     void bindVertex(VertexBuffer &vertex, uint32_t binding);
     void setCullMode(bool enable) {rasterizer.cullMode = enable ? VK_CULL_MODE_BACK_BIT : 0;}
     //! Set draw topology
@@ -30,7 +33,9 @@ public:
     //! Build pipeline for use
     void build();
     VkPipeline &get() {return graphicsPipeline;}
+    static void setShaderDir(const std::string &_shaderDir) {shaderDir = _shaderDir;}
 private:
+    static std::string shaderDir;
     VirtualSurface *master;
     VkPipeline graphicsPipeline;
     VkGraphicsPipelineCreateInfo pipelineInfo{};

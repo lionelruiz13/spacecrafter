@@ -2,10 +2,15 @@
 #include "PipelineLayout.hpp"
 #include "Pipeline.hpp"
 #include "VertexBuffer.hpp"
+#include "VertexArray.hpp"
 #include <fstream>
+
+std::string Pipeline::shaderDir = "./";
 
 Pipeline::Pipeline(VirtualSurface *_master, PipelineLayout *layout, std::vector<VkDynamicState> _dynamicStates) : master(_master)
 {
+    colorBlendAttachment = BLEND_SRC_ALPHA;
+
     colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     colorBlending.logicOpEnable = VK_FALSE;
     colorBlending.logicOp = VK_LOGIC_OP_COPY; // Optionnel
@@ -29,7 +34,7 @@ Pipeline::Pipeline(VirtualSurface *_master, PipelineLayout *layout, std::vector<
     rasterizer.depthBiasSlopeFactor = 1.0f; // Optionnel
 
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+    inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
     // Possibilité d'interrompre les liaisons entre les vertices pour les modes _STRIP
     inputAssembly.primitiveRestartEnable = VK_FALSE;
 
@@ -62,12 +67,39 @@ Pipeline::~Pipeline()
     vkDestroyPipeline(master->refDevice, graphicsPipeline, nullptr);
 }
 
+void Pipeline::bindShader(const std::string &filename, const std::string entry)
+{
+    size_t first = filename.find_first_of(".") + 1;
+    size_t size = filename.find_last_of(".") - first;
+    std::string shaderType = filename.substr(first, size);
+    if (shaderType.compare("vert")) {
+        bindShader(filename, VK_SHADER_STAGE_VERTEX_BIT, entry);
+        return;
+    }
+    if (shaderType.compare("frag")) {
+        bindShader(filename, VK_SHADER_STAGE_FRAGMENT_BIT, entry);
+        return;
+    }
+    if (shaderType.compare("geom")) {
+        bindShader(filename, VK_SHADER_STAGE_GEOMETRY_BIT, entry);
+        return;
+    }
+    if (shaderType.compare("tesc")) {
+        bindShader(filename, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, entry);
+        return;
+    }
+    if (shaderType.compare("tese")) {
+        bindShader(filename, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, entry);
+        return;
+    }
+}
+
 void Pipeline::bindShader(const std::string &filename, VkShaderStageFlagBits stage, const std::string entry)
 {
     if (stage & (VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT) && master->getDeviceFeatures().tessellationShader == VK_FALSE)
         return;
 
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
+    std::ifstream file(shaderDir + filename, std::ios::ate | std::ios::binary);
 
     if (!file.is_open()) {
         throw std::runtime_error("failed to open file!");
@@ -120,6 +152,13 @@ void Pipeline::setDepthStencilMode(VkBool32 enableDepthTest, VkBool32 enableDept
     rasterizer.depthBiasEnable = enableDepthBiais;
     rasterizer.depthBiasClamp = depthBiasClamp;
     rasterizer.depthBiasSlopeFactor = depthBiasSlopeFactor;
+}
+
+void Pipeline::bindVertex(VertexArray *vertex, uint32_t binding)
+{
+    if (vertex == nullptr)
+        throw std::runtime_error("VertexArray must be build when bind to Pipeline.");
+    bindVertex(vertex->getVertexBuffer(), binding);
 }
 
 void Pipeline::bindVertex(VertexBuffer &vertex, uint32_t binding)
