@@ -325,6 +325,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
     deviceFeatures.geometryShader = supportedDeviceFeatures.geometryShader;
     deviceFeatures.tessellationShader = supportedDeviceFeatures.tessellationShader;
     deviceFeatures.samplerAnisotropy = supportedDeviceFeatures.samplerAnisotropy;
+    deviceFeatures.multiDrawIndirect = supportedDeviceFeatures.multiDrawIndirect;
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

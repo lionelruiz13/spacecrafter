@@ -45,19 +45,18 @@ static VkFormat getFormat(unsigned int size)
     }
 }
 
-VertexArray::VertexArray() : vertice(offset) {}
+VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_master), mgr(_mgr), vertexBuffer(nullptr), indexBuffer(nullptr), vertice(offset) {}
 
 VertexArray::~VertexArray() {}
-
-void VertexArray::init(VirtualSurface *_master, CommandMgr *_mgr)
-{
-    master = _master;
-    mgr = _mgr;
-}
 
 void VertexArray::build(int maxVertices)
 {
     vertexBuffer = std::make_unique<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc);
+}
+
+void VertexArray::buildInstanceBuffer(int maxInstances)
+{
+    instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2);
 }
 
 void VertexArray::bind()
@@ -67,12 +66,39 @@ void VertexArray::bind()
         vertexUpdate = false;
     }
     mgr->bindVertex(vertexBuffer.get());
+    if (instanceBuffer) {
+        if (instanceUpdate) {
+            instanceBuffer->update();
+            instanceUpdate = false;
+        }
+        mgr->bindVertex(vertexBuffer.get());
+    }
     if (indexBuffer) {
         if (indexUpdate) {
             indexBuffer->update();
             indexUpdate = false;
         }
         mgr->bindIndex(indexBuffer.get(), VK_INDEX_TYPE_UINT32);
+    }
+}
+
+void VertexArray::update()
+{
+    if (vertexUpdate) {
+        vertexBuffer->update();
+        vertexUpdate = false;
+    }
+    if (instanceBuffer) {
+        if (instanceUpdate) {
+            instanceBuffer->update();
+            instanceUpdate = false;
+        }
+    }
+    if (indexBuffer) {
+        if (indexUpdate) {
+            indexBuffer->update();
+            indexUpdate = false;
+        }
     }
 }
 
@@ -105,6 +131,23 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size, cons
         tmp += size;
     }
     vertexUpdate = true;
+}
+
+void VertexArray::registerInstanceBuffer(const BufferAccess& ba, VkFormat format, unsigned int stride)
+{
+    VkVertexInputAttributeDescription desc;
+    desc.binding = 1;
+    desc.location = attributeDesc2.size();
+    desc.format = format;
+    desc.offset = bindingDesc2.stride;
+    blockSize += stride;
+    bindingDesc2.stride = blockSize * sizeof(float);
+    attributeDesc2.push_back(desc);
+}
+
+float *VertexArray::getInstanceBufferPtr()
+{
+    return (static_cast<float *>(instanceBuffer->data));
 }
 
 void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize)
