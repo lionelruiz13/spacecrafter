@@ -3,28 +3,26 @@
 
 class Vulkan;
 class TextureMgr;
+
 class PipelineLayout;
+class UniformSet;
 
 class VirtualSurface;
 class UniformSetMgr;
-
 class CommandMgr;
 
 typedef struct GlobalContext {
     Vulkan *vulkan;
     TextureMgr *textureMgr;
     PipelineLayout *globalLayout; // for ubo_cam
+    UniformSet *globalSet;
 } GlobalContext;
 
 typedef struct ThreadContext {
     GlobalContext *global;
     VirtualSurface *surface;
     UniformSetMgr *uniformSetMgr;
-} ThreadContext;
-
-typedef struct Context {
-    ThreadContext *thread;
     CommandMgr *commandMgr;
-} Context;
+} ThreadContext;
 
 #endif /* CONTEXT_HPP */
