@@ -40,7 +40,7 @@ public:
     //! @brief Multiple draw using buffer content as draw arguments.
     //! @param drawArgsArray content must be VkDrawIndirectCommand.
     void indirectDraw(Buffer *drawArgsArray, VkDeviceSize offset, uint32_t drawCount);
-    void drawIndexed(uint32_t indexCount, uint32_t instanceCount = 0, uint32_t firstIndex = 0, int32_t vertexOffset = 0, uint32_t firstInstance = 0);
+    void drawIndexed(uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t vertexOffset = 0, uint32_t firstInstance = 0);
     void indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset, uint32_t drawCount);
     //! Finalize recording
     void compile();
