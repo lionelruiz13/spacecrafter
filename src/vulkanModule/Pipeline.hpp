@@ -21,7 +21,7 @@ public:
     ~Pipeline();
     void bindShader(const std::string &filename, const std::string entry = "main");
     void bindShader(const std::string &filename, VkShaderStageFlagBits stage, const std::string entry = "main");
-    void bindVertex(VertexArray *vertex, uint32_t binding);
+    void bindVertex(VertexArray *vertex, uint32_t binding = 0);
     void bindVertex(VertexBuffer &vertex, uint32_t binding);
     void setCullMode(bool enable) {rasterizer.cullMode = enable ? VK_CULL_MODE_BACK_BIT : 0;}
     //! Set draw topology

@@ -15,8 +15,8 @@ public:
     //! Update vertex content with data member
     VkBuffer &get() {return vertexBuffer;}
     void update();
-    const VkVertexInputBindingDescription &getBindingDesc() {return bindingDesc;};
-    const std::vector<VkVertexInputAttributeDescription> &getAttributeDesc() {return attributeDesc;};
+    const VkVertexInputBindingDescription &getBindingDesc() {return bindingDesc;}
+    const std::vector<VkVertexInputAttributeDescription> &getAttributeDesc() {return attributeDesc;}
     //! Intermediate buffer, write your vertex here
     void *data;
 private:
