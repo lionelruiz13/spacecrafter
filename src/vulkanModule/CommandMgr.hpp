@@ -11,7 +11,7 @@ class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Buffer;
-class UniformSet;
+class Set;
 
 enum class renderPassType : uint8_t {
     CLEAR = 0,
@@ -35,7 +35,7 @@ public:
     void bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset = 0);
     void bindPipeline(Pipeline *pipeline);
     //! @brief update uniform value
-    void bindUniformSet(PipelineLayout *pipelineLayout, UniformSet *uniform);
+    void bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
     void draw(uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0);
     //! @brief Multiple draw using buffer content as draw arguments.
     //! @param drawArgsArray content must be VkDrawIndirectCommand.

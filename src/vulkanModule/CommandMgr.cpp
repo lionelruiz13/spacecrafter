@@ -3,7 +3,7 @@
 #include "Pipeline.hpp"
 #include "PipelineLayout.hpp"
 #include "CommandMgr.hpp"
-#include "UniformSet.hpp"
+#include "Set.hpp"
 #include "Buffer.hpp"
 
 VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -329,14 +329,14 @@ void CommandMgr::bindPipeline(Pipeline *pipeline)
     }
 }
 
-void CommandMgr::bindUniformSet(PipelineLayout *pipelineLayout, UniformSet *uniform)
+void CommandMgr::bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding)
 {
     if (singleUse) {
-        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->get(), 0, nullptr);
+        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding,  1, uniform->get(), 0, nullptr);
         return;
     }
     for (auto &frame : frames) {
-        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), 0,  1, uniform->get(), 0, nullptr);
+        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding,  1, uniform->get(), 0, nullptr);
     }
 }
 

@@ -9,7 +9,8 @@
 #include "CommandMgr.hpp"
 #include "VertexBuffer.hpp"
 #include "Uniform.hpp"
-#include "UniformSet.hpp"
+#include "Set.hpp"
+#include "SetMgr.hpp"
 #include <thread>
 
 //*
@@ -167,9 +168,9 @@ static void cubeFunc(VirtualSurface *surface, bool *opened, Mat4f rotate, Vec3f 
     pipelineLayout.setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
     pipelineLayout.build();
 
-    UniformSetMgr setMgr(surface, 1);
+    SetMgr setMgr(surface, 1);
 
-    UniformSet set(surface, &setMgr, &pipelineLayout);
+    Set set(surface, &setMgr, &pipelineLayout);
     set.bindUniform(&ubo, 0);
 
     Pipeline pipeline(surface, &pipelineLayout);
@@ -187,7 +188,7 @@ static void cubeFunc(VirtualSurface *surface, bool *opened, Mat4f rotate, Vec3f 
     cmdMgr.beginRenderPass(renderPassType::PRESENT);
     cmdMgr.bindPipeline(&pipeline);
     cmdMgr.bindVertex(&vertex, 0);
-    cmdMgr.bindUniformSet(&pipelineLayout, &set);
+    cmdMgr.bindSet(&pipelineLayout, &set);
     cmdMgr.draw(42);
     cmdMgr.endRenderPass();
     cmdMgr.compile();
