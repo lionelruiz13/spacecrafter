@@ -49,7 +49,7 @@ VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_ma
 
 VertexArray::~VertexArray() {}
 
-VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), vertexBuffer(nullptr), instanceBuffer(nullptr), indexBuffer(nullptr), vertice(offset), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), blockSize(model.blockSize), indexBufferSize(model.indexBufferSize)
+VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), vertexBuffer(nullptr), instanceBuffer(nullptr), indexBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), indexBufferSize(model.indexBufferSize)
 {
     // VertexArray mustn't be build for copy, at least for now
     assert(!(model.vertexBuffer || model.instanceBuffer || model.indexBuffer));
