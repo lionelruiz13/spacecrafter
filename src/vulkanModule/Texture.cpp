@@ -5,10 +5,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename, bool keepOnCPU) : master(_master), mgr(_mgr)
+std::string Texture::textureDir = "./";
+
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename, bool keepOnCPU, bool multisampling) : master(_master), mgr(_mgr)
 {
     int texChannels;
-    stbi_uc* pixels = stbi_load(filename.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
 
     if (!pixels) {
@@ -37,6 +39,10 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename
     if (vkCreateFence(master->refDevice, &fenceInfo, nullptr, &fence) != VK_SUCCESS) {
         throw std::runtime_error("Faild to create fence.");
     }
+
+    imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo.sampler = VK_NULL_HANDLE;
+    imageInfo.imageView = VK_NULL_HANDLE;
 
     if (!keepOnCPU) {
         use();
@@ -154,9 +160,11 @@ void Texture::use()
     vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
     vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &commandBuffer);
     vkFreeCommandBuffers(master->refDevice, master->getCommandPool(), 1, &commandBuffer2);
+    imageInfo.imageView = image->getImageView();
 }
 
 void Texture::unuse()
 {
     image = nullptr;
+    imageInfo.imageView = VK_NULL_HANDLE;
 }
