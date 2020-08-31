@@ -35,7 +35,7 @@ public:
     VkPipelineCache &getPipelineCache() {return master->getPipelineCache();}
 
     const VkDevice &refDevice;
-    const std::array<VkRenderPass, 4> &refRenderPass;
+    const std::array<VkRenderPass, 5> &refRenderPass;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
     const uint32_t &refFrameIndex;
 

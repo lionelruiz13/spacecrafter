@@ -579,6 +579,11 @@ void Vulkan::createRenderPass()
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[3]) != VK_SUCCESS) {
         throw std::runtime_error("échec de la création de la render pass!");
     }
+    attachments[0].loadOp = attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    attachments[0].initialLayout = attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[4]) != VK_SUCCESS) {
+        throw std::runtime_error("échec de la création de la render pass!");
+    }
 }
 
 void Vulkan::createFramebuffer()
