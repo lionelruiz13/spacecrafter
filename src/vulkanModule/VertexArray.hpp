@@ -29,6 +29,7 @@ class VertexArray
 public:
     //! constructor...
     VertexArray(VirtualSurface *_master, CommandMgr *_mgr);
+    VertexArray(VertexArray &model);
     ~VertexArray();
 
     class Vertice {
@@ -78,6 +79,8 @@ public:
     //! Tell vertice value have changed with operator[]
     void assumeVerticeChanged();
     VertexBuffer &getVertexBuffer() const {return *vertexBuffer;}
+    const VkVertexInputBindingDescription &getVertexBindingDesc() {return bindingDesc;}
+    const std::vector<VkVertexInputAttributeDescription> &getVertexAttributeDesc() {return attributeDesc;}
 private:
     VirtualSurface *master;
     CommandMgr *mgr;

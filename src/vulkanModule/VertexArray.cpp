@@ -45,9 +45,18 @@ static VkFormat getFormat(unsigned int size)
     }
 }
 
-VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_master), mgr(_mgr), vertexBuffer(nullptr), indexBuffer(nullptr), vertice(offset) {}
+VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_master), mgr(_mgr), vertexBuffer(nullptr), instanceBuffer(nullptr), indexBuffer(nullptr), vertice(offset) {}
 
 VertexArray::~VertexArray() {}
+
+VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), vertexBuffer(nullptr), instanceBuffer(nullptr), indexBuffer(nullptr), vertice(offset), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), blockSize(model.blockSize), indexBufferSize(model.indexBufferSize)
+{
+    // VertexArray mustn't be build for copy, at least for now
+    assert(!(model.vertexBuffer || model.instanceBuffer || model.indexBuffer));
+    offset = model.offset;
+    attributeDesc.assign(model.attributeDesc.begin(), model.attributeDesc.end());
+    attributeDesc2.assign(model.attributeDesc2.begin(), model.attributeDesc2.end());
+}
 
 void VertexArray::build(int maxVertices)
 {
