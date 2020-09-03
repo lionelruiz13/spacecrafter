@@ -101,6 +101,7 @@ void Translator::reload()
 					key = line.substr(1, found-1);
 					value = line.substr(found+3, line.length()-(found+4) );
                     //std::cout << key << "<->" << value << std::endl;
+		    if (value == "") value = key;
                     m_translator[key] = value;
 				}
         	}
