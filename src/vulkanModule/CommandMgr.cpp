@@ -72,8 +72,6 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submi
 CommandMgr::~CommandMgr()
 {
     vkDeviceWaitIdle(refDevice);
-    if (!singleUse)
-        vkDestroyCommandPool(refDevice, cmdPool, nullptr);
     for (auto &frame : frames) {
         vkDestroySemaphore(refDevice, frame.bottomSemaphore, nullptr);
         for (auto &sem : frame.signalSemaphores)
@@ -83,6 +81,8 @@ CommandMgr::~CommandMgr()
         if (singleUse)
             vkDestroyCommandPool(refDevice, frame.cmdPool, nullptr);
     }
+    if (!singleUse)
+        vkDestroyCommandPool(refDevice, cmdPool, nullptr);
 }
 
 void CommandMgr::setSubmission(int index, bool needDepthBuffer, CommandMgr *target)
