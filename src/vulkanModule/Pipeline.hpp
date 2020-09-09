@@ -14,6 +14,7 @@ class PipelineLayout;
 const VkPipelineColorBlendAttachmentState BLEND_NONE {VK_FALSE, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
 const VkPipelineColorBlendAttachmentState BLEND_SRC_ALPHA {VK_TRUE, VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
 const VkPipelineColorBlendAttachmentState BLEND_DST_ALPHA {VK_TRUE, VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA, VK_BLEND_FACTOR_DST_ALPHA, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ZERO, VK_BLEND_FACTOR_ONE, VK_BLEND_OP_ADD, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
+const VkPipelineColorBlendAttachmentState BLEND_ADD {VK_TRUE, VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA, VK_BLEND_FACTOR_DST_ALPHA, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ZERO, VK_BLEND_FACTOR_ONE, VK_BLEND_OP_ADD, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
 
 class Pipeline {
 public:
@@ -23,13 +24,14 @@ public:
     void bindShader(const std::string &filename, VkShaderStageFlagBits stage, const std::string entry = "main");
     void bindVertex(VertexArray *vertex, uint32_t binding = 0);
     void bindVertex(VertexBuffer &vertex, uint32_t binding);
+    //! Set cull mode (default : false)
     void setCullMode(bool enable) {rasterizer.cullMode = enable ? VK_CULL_MODE_BACK_BIT : 0;}
-    //! Set draw topology
+    //! Set draw topology (default : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, no breaks)
     void setTopology(VkPrimitiveTopology state, bool enableStripBreaks = false);
-    //! Set blend mode
+    //! Set blend mode (default : blend src alpha)
     void setBlendMode(const VkPipelineColorBlendAttachmentState &blendMode);
-    //! Set depth test mode
-    void setDepthStencilMode(VkBool32 enableDepthTest, VkBool32 enableDepthWrite, VkCompareOp compare = VK_COMPARE_OP_GREATER, VkBool32 enableDepthBiais = VK_FALSE, float depthBiasClamp = 0.0f, float depthBiasSlopeFactor = 1.0f);
+    //! Set depth test mode (default : enabled)
+    void setDepthStencilMode(VkBool32 enableDepthTest = VK_FALSE, VkBool32 enableDepthWrite = VK_FALSE, VkCompareOp compare = VK_COMPARE_OP_GREATER, VkBool32 enableDepthBiais = VK_FALSE, float depthBiasClamp = 0.0f, float depthBiasSlopeFactor = 1.0f);
     //! Build pipeline for use
     void build();
     VkPipeline &get() {return graphicsPipeline;}
