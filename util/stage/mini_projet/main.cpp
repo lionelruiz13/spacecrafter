@@ -161,7 +161,7 @@ static void cubeFunc(VirtualSurface *surface, bool *opened, Mat4f rotate, Vec3f 
     }
     vertex.update();
 
-    Uniform ubo(surface, sizeof(uniformBufferObject), VK_SHADER_STAGE_GEOMETRY_BIT);
+    Uniform ubo(surface, sizeof(uniformBufferObject));
     uniformBufferObject *uboData = (uniformBufferObject *) ubo.data;
 
     PipelineLayout pipelineLayout(surface);
