@@ -156,9 +156,12 @@ void Pipeline::setDepthStencilMode(VkBool32 enableDepthTest, VkBool32 enableDept
 
 void Pipeline::bindVertex(VertexArray *vertex, uint32_t binding)
 {
-    if (vertex == nullptr)
-        throw std::runtime_error("VertexArray must be build when bind to Pipeline.");
-    bindVertex(vertex->getVertexBuffer(), binding);
+    auto tmp = vertex->getVertexBindingDesc();
+    tmp.binding = binding;
+    bindingDescriptions.push_back(tmp);
+    std::vector<VkVertexInputAttributeDescription> tmpAttributeDesc = vertex->getVertexAttributeDesc();
+    std::for_each(tmpAttributeDesc.begin(), tmpAttributeDesc.end(), [binding](auto &value){value.binding = binding;});
+    attributeDescriptions.insert(attributeDescriptions.end(), tmpAttributeDesc.begin(), tmpAttributeDesc.end());
 }
 
 void Pipeline::bindVertex(VertexBuffer &vertex, uint32_t binding)
