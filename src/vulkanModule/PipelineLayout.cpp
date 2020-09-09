@@ -77,8 +77,8 @@ void PipelineLayout::build()
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = descriptor.size();
     pipelineLayoutInfo.pSetLayouts = descriptor.data();
-    pipelineLayoutInfo.pushConstantRangeCount = 0;    // Optionnel
-    pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optionnel
+    pipelineLayoutInfo.pushConstantRangeCount = pushConstants.size();
+    pipelineLayoutInfo.pPushConstantRanges = pushConstants.data();
 
     if (vkCreatePipelineLayout(master->refDevice, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("échec de la création du pipeline layout!");
@@ -86,4 +86,7 @@ void PipelineLayout::build()
     builded = true;
 }
 
-void PipelineLayout::pushConstant() {}
+void PipelineLayout::setPushConstant(VkShaderStageFlags stage, uint32_t offset, uint32_t size)
+{
+    pushConstants.emplace_back(VkPushConstantRange{stage, offset, size});
+}

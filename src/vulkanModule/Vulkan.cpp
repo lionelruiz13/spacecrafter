@@ -9,6 +9,7 @@
 #include <mutex>
 #include "mainModule/sdl_facade.hpp"
 #include <SDL2/SDL_vulkan.h>
+#include "CommandMgr.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -129,6 +130,9 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     if (vkCreatePipelineCache(device, &cacheCreateInfo, nullptr, &pipelineCache) != VK_SUCCESS) {
         std::cerr << "Faild to create pipeline cache.";
     }
+    CommandMgr::setPFN_vkCmdPushDescriptorSetKHR((PFN_vkCmdPushDescriptorSetKHR) vkGetInstanceProcAddr(instance.get(), "vkCmdPushDescriptorSetKHR"));
+    CommandMgr::setPFN_vkCmdBeginConditionalRenderingEXT((PFN_vkCmdBeginConditionalRenderingEXT) vkGetInstanceProcAddr(instance.get(), "vkCmdBeginConditionalRenderingEXT"));
+    CommandMgr::setPFN_vkCmdEndConditionalRenderingEXT((PFN_vkCmdEndConditionalRenderingEXT) vkGetInstanceProcAddr(instance.get(), "vkCmdEndConditionalRenderingEXT"));
 }
 
 Vulkan::~Vulkan()

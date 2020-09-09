@@ -8,6 +8,9 @@
 #include "VertexArray.hpp"
 
 VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+PFN_vkCmdPushDescriptorSetKHR CommandMgr::PFN_pushSet;
+PFN_vkCmdBeginConditionalRenderingEXT CommandMgr::PFN_vkIf;
+PFN_vkCmdEndConditionalRenderingEXT CommandMgr::PFN_vkEndIf;
 
 CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
 {
@@ -346,6 +349,17 @@ void CommandMgr::bindSet(PipelineLayout *pipelineLayout, Set *uniform, int bindi
     }
 }
 
+void CommandMgr::pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding)
+{
+    if (singleUse) {
+        PFN_pushSet(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, uniform->getWrites().size(), uniform->getWrites().data());
+        return;
+    }
+    for (auto &frame : frames) {
+        PFN_pushSet(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, uniform->getWrites().size(), uniform->getWrites().data());
+    }
+}
+
 void CommandMgr::endRenderPass()
 {
     if (singleUse) {
@@ -354,6 +368,32 @@ void CommandMgr::endRenderPass()
     }
     for (auto &frame : frames) {
         vkCmdEndRenderPass(frame.actual);
+    }
+}
+
+void CommandMgr::pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, const void *data, uint32_t size)
+{
+    if (singleUse) {
+        vkCmdPushConstants(actual, pipelineLayout->getPipelineLayout(), stage, offset, size, data);
+        return;
+    }
+    for (auto &frame : frames) {
+        vkCmdPushConstants(frame.actual, pipelineLayout->getPipelineLayout(), stage, offset, size, data);
+    }
+}
+
+void CommandMgr::vkIf(Buffer *bool32, VkDeviceSize offset, bool invert)
+{
+    VkConditionalRenderingBeginInfoEXT cond {VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT, nullptr, bool32->get(), offset, invert ? VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT : 0};
+    for (auto &frame : frames) {
+        PFN_vkIf(frame.actual, &cond);
+    }
+}
+
+void CommandMgr::vkEndIf()
+{
+    for (auto &frame : frames) {
+        PFN_vkEndIf(frame.actual);
     }
 }
 

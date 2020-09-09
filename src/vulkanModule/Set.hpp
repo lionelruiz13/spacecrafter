@@ -13,14 +13,21 @@ class TextureImage;
 
 class Set {
 public:
+    //! create a Set which can be push
+    Set();
+    //! create a Set which can be bind
     Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout);
     ~Set();
-    void bindUniform(Uniform *uniform, int binding);
-    void bindTexture(Texture *texture, int binding);
-    void bindTexture(TextureImage *texture, int binding);
-    VkDescriptorSet *get() {return &set;}
+    void bindUniform(Uniform *uniform, uint32_t binding, uint32_t arraySize = 1);
+    void bindTexture(Texture *texture, uint32_t binding);
+    //void bindTexture(TextureImage *texture, int binding);
+    VkDescriptorSet *get();
+    std::vector<VkWriteDescriptorSet> &getWrites() {return writeSet;}
+    void clear() {writeSet.clear();}
 private:
+    void update();
     VirtualSurface *master;
+    std::vector<VkWriteDescriptorSet> writeSet;
     VkDescriptorSet set;
 };
 

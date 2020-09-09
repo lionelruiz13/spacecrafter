@@ -39,6 +39,15 @@ public:
     void bindPipeline(Pipeline *pipeline);
     //! @brief update uniform value
     void bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
+    //! @brief push uniform buffers and textures
+    void pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
+    //! @brief push constant values
+    void pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, const void *data, uint32_t size);
+    //! @brief begin conditionnal rendering (affect draw commands only)
+    //! @param offset must be a multiple of 4
+    void vkIf(Buffer *bool32, VkDeviceSize offset, bool invert);
+    //! @brief end conditionnal rendering (affect draw commands only)
+    void vkEndIf();
     void draw(uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0);
     //! @brief Multiple draw using buffer content as draw arguments.
     //! @param drawArgsArray content must be VkDrawIndirectCommand.
@@ -61,6 +70,9 @@ public:
     void setTopSemaphore(int frameIndex, const VkSemaphore &topSemaphore) {frames[frameIndex].topSemaphore = topSemaphore;}
     const VkSemaphore &getBottomSemaphore(int frameIndex) {return frames[frameIndex].bottomSemaphore;}
     int getCommandIndex();
+    static void setPFN_vkCmdPushDescriptorSetKHR(PFN_vkCmdPushDescriptorSetKHR pfn) {PFN_pushSet = pfn;}
+    static void setPFN_vkCmdBeginConditionalRenderingEXT(PFN_vkCmdBeginConditionalRenderingEXT pfn) {PFN_vkIf = pfn;}
+    static void setPFN_vkCmdEndConditionalRenderingEXT(PFN_vkCmdEndConditionalRenderingEXT pfn) {PFN_vkEndIf = pfn;}
 private:
     //! resolve semaphore dependencies for one frame
     void resolve(uint8_t frameIndex);
@@ -89,6 +101,9 @@ private:
         VkFence fence;
     };
     std::set<VkPipelineStageFlags> stages; // Content address is used
+    static PFN_vkCmdPushDescriptorSetKHR PFN_pushSet;
+    static PFN_vkCmdBeginConditionalRenderingEXT PFN_vkIf;
+    static PFN_vkCmdEndConditionalRenderingEXT PFN_vkEndIf;
     //! actual frame index
     const uint32_t &refFrameIndex;
     std::vector<struct frame> frames;
