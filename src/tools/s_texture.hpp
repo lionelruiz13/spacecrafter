@@ -28,8 +28,9 @@
 #define _S_TEXTURE_H_
 
 #include <string>
-#include <GL/glew.h>
+//#include <GL/glew.h>
 #include <map>
+#include "vulkanModule/Context.hpp"
 
 //TODO supprimer cela et les remplacer par un enum class
 #define PNG_ALPHA  0
@@ -43,14 +44,15 @@
 #define TEX_LOAD_TYPE_PNG_SOLID_REPEAT 4
 #define TEX_LOAD_TYPE_PNG_BLEND1 7
 
+class Texture;
 
 class s_texture {
 public:
 	// création d'une texture basique sans mipmap
-	s_texture(const std::string& _textureName);
+	s_texture(const std::string& _textureName, const bool keepOnCPU = false);
 
 	// création d'une texteure en détaillant ses paramètres
-	s_texture(const std::string& _textureName, int _loadType, const bool mipmap = false);
+	s_texture(const std::string& _textureName, int _loadType, const bool mipmap = false, const bool keepOnCPU = false);
 	// création d'une texture à partir d'un GLuint
 	s_texture(const std::string& _textureName, GLuint _imgTex);
 	// destructeur de texture
@@ -61,10 +63,7 @@ public:
 	//interdiction d'opérateur =
 	const s_texture &operator=(const s_texture &t) = delete;
 
-	// Renvoie la référence de la texture en openGL
-	unsigned int getID() const {
-		return texID;
-	}
+	Texture *getTexture() const {return texture;}
 
 	// Return the average texture luminance : 0 is black, 1 is white
 	float getAverageLuminance() const;
@@ -78,34 +77,41 @@ public:
 	}
 
 	// crée une texture rouge en cas de textures non chargée
-	void createEmptyTex();
+	void createEmptyTex(const bool keepOnCPU);
 
-	// Renvoie la taille utilisée par les textures dans la carte graphique
+	// DEPRECATED, Renvoie la taille utilisée par les textures dans la carte graphique
 	static unsigned long int getTotalGPUMem();
 
 	static long int getNumberTotalTexture(){
 		return texCache.size();
 	}
 
+	static void setContext(ThreadContext *_context) {context = _context;}
+	void use();
+	void unuse();
 private:
 	void unload();
-	bool load(const std::string& fullName);
-	bool load(const std::string& fullName, bool mipmap);
+	bool load(const std::string& fullName, bool mipmap = false, bool keepOnCPU = false);
 
 	struct texRecap {
+		int width;
+		int height;
 		unsigned long int size;
 		int nbLink;
-		GLuint texID;
+		std::unique_ptr<Texture> texture;
 		bool mipmap;
 	};
 
 	void blend( const int, unsigned char* const, const unsigned int );
 
 	std::string textureName;
-	GLuint texID;
 	int loadType;
-	GLint loadWrapping;
+	int loadWrapping;
+	int width;
+	int height;
+	Texture *texture;
 
+	static ThreadContext *context;
 	static std::string texDir;
 	static std::map<std::string, texRecap*> texCache;
 	std::map<std::string, texRecap*>::iterator it;

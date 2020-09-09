@@ -30,9 +30,12 @@
 #include <exception>
 #include "tools/call_system.hpp"
 #include <cassert>
+#include <vulkan/vulkan.h>
 
 #include "tools/s_texture.hpp"
 #include "tools/log.hpp"
+
+#include "vulkanModule/Texture.hpp"
 
 std::string s_texture::texDir = "./";
 std::map<std::string, s_texture::texRecap*> s_texture::texCache;
@@ -53,7 +56,7 @@ std::map<std::string, s_texture::texRecap*> s_texture::texCache;
 // 		createEmptyTex();
 // }
 
-s_texture::s_texture(const std::string& _textureName) : s_texture(_textureName, PNG_BLEND1,GL_CLAMP )
+s_texture::s_texture(const std::string& _textureName, const bool keepOnCPU) : s_texture(_textureName, PNG_BLEND1,/*GL_CLAMP*/ 0x2900, keepOnCPU)
 {}
 
 s_texture::s_texture(const s_texture *t)
@@ -61,7 +64,9 @@ s_texture::s_texture(const s_texture *t)
 	textureName = t->textureName;
 	loadType = t->loadType;
 	loadWrapping = t->loadWrapping;
-	texID = t->texID;
+	texture = t->texture;
+	width = t->width;
+	height = t->height;
 
 	it = texCache.find(textureName);
 
@@ -75,8 +80,8 @@ s_texture::s_texture(const s_texture *t)
 	}
 }
 
-s_texture::s_texture(const std::string& _textureName, int _loadType, const bool mipmap) : textureName(_textureName),
-	texID(0), loadType(PNG_BLEND1), loadWrapping(GL_CLAMP_TO_EDGE)
+s_texture::s_texture(const std::string& _textureName, int _loadType, const bool mipmap, const bool keepOnCPU) : textureName(_textureName),
+	loadType(PNG_BLEND1), loadWrapping(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
 {
 	switch (_loadType) {
 		case TEX_LOAD_TYPE_PNG_ALPHA :
@@ -93,7 +98,7 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 			break;
 		case TEX_LOAD_TYPE_PNG_SOLID_REPEAT:
 			loadType=PNG_SOLID;
-			loadWrapping=GL_REPEAT;
+			loadWrapping=VK_SAMPLER_ADDRESS_MODE_REPEAT;
 			break;
 		default :
 			loadType=PNG_BLEND3;
@@ -102,28 +107,28 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 	bool succes;
 
 	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
-		succes = load(textureName, mipmap);
+		succes = load(textureName, mipmap, bool keepOnCPU);
 	else
-		succes = load(texDir + textureName);
+		succes = load(texDir + textureName, false, keepOnCPU);
 
 	if (!succes)
 		createEmptyTex();
 }
 
-s_texture::s_texture(const std::string& _textureName, GLuint _imgTex)
+s_texture::s_texture(const std::string& _textureName, GLuint _imgTex) // only used in mediaModule/image.cpp for videoPlayer
 {
 	//~ std::cout << "Création de s_texture " << _textureName <<" à partir d'un _imgTex" << std::endl;
 	textureName = _textureName;
 	texID = _imgTex;
 	loadType = PNG_SOLID;
-	loadWrapping = GL_CLAMP_TO_EDGE;
+	loadWrapping = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 	texRecap * tmp = new texRecap;
 	tmp->nbLink = 1;
-	tmp->texID = texID;
+	//tmp->texID = texID;
 	int w, h;
 	int miplevel = 0;
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
+	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
+	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
 	tmp->size = w*h*4;
 	tmp->mipmap = false;
 	texCache[textureName]= tmp;
@@ -132,6 +137,16 @@ s_texture::s_texture(const std::string& _textureName, GLuint _imgTex)
 s_texture::~s_texture()
 {
 	unload();
+}
+
+s_texture::use()
+{
+	texture->use();
+}
+
+s_texture::unuse()
+{
+	texture->unuse();
 }
 
 void s_texture::blend( const int type, unsigned char* const data, const unsigned int sz )
@@ -168,29 +183,34 @@ void s_texture::blend( const int type, unsigned char* const data, const unsigned
 	}
 }
 
+/*
 bool s_texture::load(const std::string& fullName)
 {
 	// assume NO mipmap - DIGITALIS - put in svn
 	return load(fullName, false);
 }
+*/
 
-void s_texture::createEmptyTex()
+void s_texture::createEmptyTex(const bool keepOnCPU)
 {
+	unsigned char image_data[4] = {255,0,0,255};
+	/*
 	glGenTextures (1, &texID);
 	glActiveTexture (GL_TEXTURE0);
 	glBindTexture (GL_TEXTURE_2D, texID);
 
-	unsigned char image_data[4] = {255,0,0,255};
 	glTexImage2D (GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,image_data);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, loadWrapping);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, loadWrapping);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	*/
+	texture = context->global->tracer->trace(new Texture(context->surface, context->textureMgr, image_data, 1, 1, 0, keepOnCPU));
 	//~ std::cout << "texture createEmptyTex" << textureName << std::endl;
 }
 
-bool s_texture::load(const std::string& fullName, bool mipmap)
+bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 {
 	// std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
 	//vérifions dans le cache si l'image n'est pas déjà utilisée ailleurs
@@ -200,8 +220,10 @@ bool s_texture::load(const std::string& fullName, bool mipmap)
 		//~ std::cout << "texture présente " << fullName << std::endl;
 		texRecap * tmp = it->second;
 		tmp->nbLink++;
+		width = tmp->width;
+		height = tmp->height;
 		//~ std::cout << "on augmente son nbLink à " << tmp->nbLink << std::endl;
-		texID = tmp->texID;
+		texture = tmp->texture.get();
 		cLog::get()->write("s_texture: already in cache " + fullName , LOG_TYPE::L_INFO);
 		return true;
 	} else { //texture n'existe pas, on l'intègre dans la map
@@ -240,6 +262,7 @@ bool s_texture::load(const std::string& fullName, bool mipmap)
 				}
 			}
 
+			/*
 			glGenTextures (1, &texID);
 			glActiveTexture (GL_TEXTURE0);
 			glBindTexture (GL_TEXTURE_2D, texID);
@@ -260,12 +283,19 @@ bool s_texture::load(const std::string& fullName, bool mipmap)
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_aniso);
 			// set the maximum!
 			glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_aniso);
+			*/
 
+			width = x;
+			height = y;
 			texRecap * tmp = new texRecap;
-			tmp->nbLink = 1;
-			tmp->texID = texID;
+			tmp->width = x;
+			tmp->height = y;
 			tmp->size = x*y*4;
+			tmp->nbLink = 1;
+			tmp->texture = std::make_unique<Texture>(context->surface, context->textureMgr, image_data, width, height, keepOnCPU, mipmap, true, loadWrapping);
 			tmp->mipmap = mipmap;
+
+			texture = tmp->texture.get();
 
 			texCache[fullName]= tmp;
 
@@ -292,8 +322,8 @@ void s_texture::unload()
 		texRecap * tmp = it->second;
 		if (tmp->nbLink == 1) {
 			//~ std::cout << "suppression réelle de " << textureName<< std::endl;
-			glDeleteTextures(1, &texID);	// Delete The Texture
-			texID = 0;
+			//glDeleteTextures(1, &texID);	// Delete The Texture
+			//texID = 0;
 			delete tmp;
 			texCache.erase(it);
 		} else {
@@ -304,28 +334,32 @@ void s_texture::unload()
 	}
 }
 
-void s_texture::getDimensions(int &width, int &height) const
+void s_texture::getDimensions(int &_width, int &_height) const
 {
-	glBindTexture(GL_TEXTURE_2D, texID);
-
-	GLint w, h;
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
-
-	width = w;
-	height = h;
+	_width = width;
+	_height = height;
 }
 
 // Return the average texture luminance : 0 is black, 1 is white
 float s_texture::getAverageLuminance() const
 {
+	double sum;
+	uint8_t *p;
+	texture->acquireStagingMemoryPtr(&p);
+	const long size = static_cast<long>(width)*static_cast<long>(height);
+	for (long i = 0; i < size; ++i) {
+		sum += p[i * 4];
+	}
+	texture->releaseStagingMemoryPtr();
+	return (sum/size);
+	/*
 	glBindTexture(GL_TEXTURE_2D, texID);
 	GLint w, h , level=0;
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
 	//garde fou si texture trop petite
-	if (w>64 && h>64) {
+	if (width>64 && height>64) {
 		level = 3;
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &w);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_HEIGHT, &h);
@@ -341,6 +375,7 @@ float s_texture::getAverageLuminance() const
 	free(p);
 
 	return sum/(w*h);
+	*/
 }
 
 unsigned long int s_texture::getTotalGPUMem()

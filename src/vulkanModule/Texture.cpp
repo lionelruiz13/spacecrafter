@@ -1,33 +1,18 @@
 #include "VirtualSurface.hpp"
 #include "TextureMgr.hpp"
 #include "Texture.hpp"
+#include "PipelineLayout.hpp" // for DEFAULT_SAMPLER
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 std::string Texture::textureDir = "./";
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename, bool keepOnCPU, bool multisampling) : master(_master), mgr(_mgr)
+void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, VkFormat _format)
 {
-    int texChannels;
-    stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-    VkDeviceSize imageSize = texWidth * texHeight * 4;
-
-    if (!pixels) {
-        throw std::runtime_error("échec du chargement de l'image!");
-    }
-
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
-
-    void *data;
-    vkMapMemory(_master->refDevice, stagingBufferMemory, 0, imageSize, 0, &data);
-    memcpy(data, pixels, static_cast<size_t>(imageSize));
-    vkUnmapMemory(_master->refDevice, stagingBufferMemory);
-
-    stbi_image_free(pixels);
-
+    master = _master;
+    mgr = _mgr;
+    format = _format;
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
     if (vkCreateSemaphore(master->refDevice, &semaphoreInfo, nullptr, &semaphore) != VK_SUCCESS) {
@@ -43,29 +28,88 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename
     imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     imageInfo.sampler = VK_NULL_HANDLE;
     imageInfo.imageView = VK_NULL_HANDLE;
+}
+
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename, bool keepOnCPU, bool multisampling)
+{
+    init(_master, _mgr);
+    int texChannels;
+    stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    VkDeviceSize imageSize = texWidth * texHeight * 4;
+
+    if (!pixels) {
+        throw std::runtime_error("échec du chargement de l'image!");
+    }
+    _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
+
+    void *data;
+    vkMapMemory(_master->refDevice, stagingBufferMemory, 0, imageSize, 0, &data);
+    memcpy(data, pixels, static_cast<size_t>(imageSize));
+    vkUnmapMemory(_master->refDevice, stagingBufferMemory);
+
+    stbi_image_free(pixels);
 
     if (!keepOnCPU) {
         use();
-        vkDestroySemaphore(_master->refDevice, semaphore, nullptr);
-        vkDestroyFence(_master->refDevice, fence, nullptr);
-        vkDestroyBuffer(_master->refDevice, stagingBuffer, nullptr);
-        vkFreeMemory(_master->refDevice, stagingBufferMemory, nullptr);
-        stagingBuffer = VK_NULL_HANDLE;
+        destroyStagingResources();
     }
 }
 
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU, bool multisampling, VkFormat _format, bool createSampler, VkSamplerAddressMode addressMode) : texWidth(width), texHeight(height)
+{
+    init(_master, _mgr, _format);
+    VkDeviceSize imageSize = texWidth * texHeight * 4;
+    _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
+
+    void *data;
+    vkMapMemory(_master->refDevice, stagingBufferMemory, 0, imageSize, 0, &data);
+    memcpy(data, content, static_cast<size_t>(imageSize));
+    vkUnmapMemory(_master->refDevice, stagingBufferMemory);
+
+    if (createSampler) {
+        VkSamplerCreateInfo samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
+        samplerInfo.addressModeU = samplerInfo.addressModeV = samplerInfo.addressModeW = addressMode;
+        samplerInfo.maxLod = 0; // max mipmap index
+        imageInfo.sampler = _mgr->createSampler(samplerInfo);
+    }
+
+    if (!keepOnCPU) {
+        use();
+        destroyStagingResources();
+    }
+}
+
+void Texture::acquireStagingMemoryPtr(void **pPixels)
+{
+    VkDeviceSize imageSize = texWidth * texHeight * 4;
+    vkMapMemory(master->refDevice, stagingBufferMemory, 0, imageSize, 0, pPixels);
+}
+
+void Texture::releaseStagingMemoryPtr()
+{
+    vkUnmapMemory(master->refDevice, stagingBufferMemory);
+}
+
 Texture::~Texture()
+{
+    destroyStagingResources();
+}
+
+void Texture::destroyStagingResources()
 {
     if (stagingBuffer) {
         vkDestroySemaphore(master->refDevice, semaphore, nullptr);
         vkDestroyFence(master->refDevice, fence, nullptr);
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
         vkFreeMemory(master->refDevice, stagingBufferMemory, nullptr);
+        stagingBuffer = VK_NULL_HANDLE;
     }
 }
 
 void Texture::use()
 {
+    if (++useCount != 1)
+        return;
     image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight)));
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -165,6 +209,8 @@ void Texture::use()
 
 void Texture::unuse()
 {
-    image = nullptr;
-    imageInfo.imageView = VK_NULL_HANDLE;
+    if (--useCount == 0) {
+        image = nullptr;
+        imageInfo.imageView = VK_NULL_HANDLE;
+    }
 }
