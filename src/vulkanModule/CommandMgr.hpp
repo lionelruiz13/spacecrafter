@@ -50,7 +50,7 @@ public:
     void pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, const void *data, uint32_t size);
     //! @brief begin conditionnal rendering (affect draw commands only)
     //! @param offset must be a multiple of 4
-    void vkIf(Buffer *bool32, VkDeviceSize offset, bool invert);
+    void vkIf(Buffer *bool32, VkDeviceSize offset = 0, bool invert = false);
     //! @brief end conditionnal rendering (affect draw commands only)
     void vkEndIf();
     void draw(uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0);
