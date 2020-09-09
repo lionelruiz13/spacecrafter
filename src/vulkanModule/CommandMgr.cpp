@@ -12,9 +12,10 @@ PFN_vkCmdPushDescriptorSetKHR CommandMgr::PFN_pushSet;
 PFN_vkCmdBeginConditionalRenderingEXT CommandMgr::PFN_vkIf;
 PFN_vkCmdEndConditionalRenderingEXT CommandMgr::PFN_vkEndIf;
 
-CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
+CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands, bool isExternal) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
 {
-    _master->registerCommandMgr(this);
+    if (!isExternal)
+        _master->registerCommandMgr(this);
     queue = _master->getQueue();
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -84,8 +85,9 @@ CommandMgr::~CommandMgr()
     }
 }
 
-void CommandMgr::setSubmission(int index, bool withPrevious, VkPipelineStageFlags stage)
+void CommandMgr::setSubmission(int index, bool needDepthBuffer, CommandMgr *target)
 {
+    /*
     if (withPrevious && !frames[refFrameIndex].submitList.empty() && *frames[refFrameIndex].submitList.back().pWaitDstStageMask == stage) {
         if (submissionPerFrame) {
             frames[refFrameIndex].submittedCommandBuffers.back().push_back(frames[refFrameIndex].commandBuffers[index]);
@@ -100,15 +102,29 @@ void CommandMgr::setSubmission(int index, bool withPrevious, VkPipelineStageFlag
         }
         return;
     }
+    */
 
     VkSubmitInfo submitInfo;
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.pNext = nullptr;
     submitInfo.waitSemaphoreCount = 1;
-    auto result = stages.insert(stage);
-    submitInfo.pWaitDstStageMask = &(*result.first);
+    submitInfo.pWaitDstStageMask = &stages[needDepthBuffer ? 1 : 0];
     submitInfo.commandBufferCount = 1;
     submitInfo.signalSemaphoreCount = 1;
+
+    if (target != nullptr && submissionPerFrame) {
+        // set dependency to previous command
+        submitInfo.pWaitSemaphores = target->frames[refFrameIndex].submittedSignalSemaphores.empty() ? &target->frames[refFrameIndex].topSemaphore : &target->frames[refFrameIndex].submittedSignalSemaphores.back();
+        // add dependency for next command
+        target->frames[refFrameIndex].submittedSignalSemaphores.push_back(frames[refFrameIndex].signalSemaphores[index]);
+        submitInfo.pSignalSemaphores = &target->frames[refFrameIndex].submittedSignalSemaphores.back();
+        // set command submission state
+        target->frames[refFrameIndex].submittedCommandBuffers.push_back({frames[refFrameIndex].commandBuffers[index]});
+        submitInfo.pCommandBuffers = target->frames[refFrameIndex].submittedCommandBuffers.back().data();
+        // append submission state
+        target->frames[refFrameIndex].submitList.push_back(submitInfo);
+        return;
+    }
 
     if (submissionPerFrame) {
         auto &frame = frames[refFrameIndex];

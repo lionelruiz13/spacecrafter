@@ -27,7 +27,7 @@ class CommandMgr {
 public:
     //! @param nbCommandBuffers number of commandBuffers to create
     ~CommandMgr();
-    CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame = false, bool singleUseCommands = false);
+    CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame = false, bool singleUseCommands = false, bool isExternal = false);
     //! Start recording commands
     void init(int index);
     //! @brief begin render pass
@@ -57,8 +57,7 @@ public:
     //! Finalize recording
     void compile();
     //! @brief set command submission to be submitted by .submit()
-    //! @param withPrevious set to true if you don't need ordered draw between this command and the previous command(s)
-    void setSubmission(int index, bool withPrevious = false, VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+    void setSubmission(int index, bool needDepthBuffer = false, CommandMgr *target = nullptr);
     //! reset submission state for all commands
     void resetSubmission();
     //! submit all commands
@@ -100,10 +99,10 @@ private:
         VkSemaphore bottomSemaphore;
         VkFence fence;
     };
-    std::set<VkPipelineStageFlags> stages; // Content address is used
     static PFN_vkCmdPushDescriptorSetKHR PFN_pushSet;
     static PFN_vkCmdBeginConditionalRenderingEXT PFN_vkIf;
     static PFN_vkCmdEndConditionalRenderingEXT PFN_vkEndIf;
+    const VkPipelineStageFlags stages[2] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT};
     //! actual frame index
     const uint32_t &refFrameIndex;
     std::vector<struct frame> frames;
