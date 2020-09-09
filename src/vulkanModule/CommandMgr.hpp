@@ -5,8 +5,10 @@
 #include <list>
 #include <vector>
 #include <set>
+#include <array>
 
 class VirtualSurface;
+class VertexArray;
 class VertexBuffer;
 class Pipeline;
 class PipelineLayout;

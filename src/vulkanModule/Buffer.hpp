@@ -10,8 +10,8 @@ class Buffer {
 public:
     Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage);
     ~Buffer();
-    //! Update vertex content with data member
     VkBuffer &get() {return buffer;}
+    //! Update vertex content with data member
     void update();
     //! Intermediate buffer, write your vertex here
     void *data;

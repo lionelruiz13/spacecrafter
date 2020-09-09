@@ -51,7 +51,7 @@ VertexArray::~VertexArray() {}
 
 VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), indexBufferSize(model.indexBufferSize)
 {
-    // VertexArray mustn't be build for copy, at least for now
+    // instanceBuffer mustn't be build for copy, at least for now
     assert(!model.instanceBuffer);
     offset = model.offset;
     attributeDesc.assign(model.attributeDesc.begin(), model.attributeDesc.end());
