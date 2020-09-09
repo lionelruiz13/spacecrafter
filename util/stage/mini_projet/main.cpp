@@ -166,6 +166,7 @@ static void cubeFunc(VirtualSurface *surface, bool *opened, Mat4f rotate, Vec3f 
 
     PipelineLayout pipelineLayout(surface);
     pipelineLayout.setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
+    pipelineLayout.buildLayout();
     pipelineLayout.build();
 
     SetMgr setMgr(surface, 1);
