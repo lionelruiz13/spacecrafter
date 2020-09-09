@@ -227,8 +227,25 @@ void CommandMgr::init(int index)
     }
 }
 
+void CommandMgr::init(int index, Pipeline *pipeline, renderPassType renderPassType)
+{
+    init(index);
+    beginRenderPass(renderPassType);
+    bindPipeline(pipeline);
+}
+
+int CommandMgr::initNew(Pipeline *pipeline, renderPassType renderPassType)
+{
+    int index = getCommandIndex();
+
+    init(index, pipeline, renderPassType);
+    return index;
+}
+
 void CommandMgr::compile()
 {
+    if (inRenderPass)
+        endRenderPass();
     if (singleUse) {
         vkEndCommandBuffer(actual);
         actual = VK_NULL_HANDLE;
@@ -305,6 +322,7 @@ void CommandMgr::beginRenderPass(renderPassType renderPassType)
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
 
+    inRenderPass = true;
     if (singleUse) {
         renderPassInfo.framebuffer = refSwapChainFramebuffers[refFrameIndex];
         vkCmdBeginRenderPass(actual, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -389,6 +407,7 @@ void CommandMgr::pushSet(PipelineLayout *pipelineLayout, Set *uniform, int bindi
 
 void CommandMgr::endRenderPass()
 {
+    inRenderPass = false;
     if (singleUse) {
         vkCmdEndRenderPass(actual);
         return;
@@ -411,7 +430,7 @@ void CommandMgr::pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags
 
 void CommandMgr::vkIf(Buffer *bool32, VkDeviceSize offset, bool invert)
 {
-    VkConditionalRenderingBeginInfoEXT cond {VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT, nullptr, bool32->get(), offset, invert ? VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT : 0};
+    VkConditionalRenderingBeginInfoEXT cond {VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT, nullptr, bool32->get(), offset, invert ? VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT : 0u};
     for (auto &frame : frames) {
         PFN_vkIf(frame.actual, &cond);
     }

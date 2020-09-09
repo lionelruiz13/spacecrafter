@@ -31,8 +31,12 @@ public:
     //! @param nbCommandBuffers number of commandBuffers to create
     ~CommandMgr();
     CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame = false, bool singleUseCommands = false, bool isExternal = false);
-    //! Start recording commands
+    //! Start recording command
     void init(int index);
+    //! Start recording command, begin render pass and bind pipeline
+    void init(int index, Pipeline *pipeline, renderPassType renderPassType);
+    //! Start recording new command, begin render pass, bind pipeline and return command index
+    int initNew(Pipeline *pipeline, renderPassType renderPassType);
     //! @brief begin render pass
     //! @param renderPassType inform where renderPass is situated
     void beginRenderPass(renderPassType renderPassType);
@@ -117,6 +121,7 @@ private:
     bool needResolve = true;
     short nbCommandBuffers;
     short autoIndex = 0;
+    bool inRenderPass = false;
 };
 
 #endif /* end of include guard: COMMAND_MGR_HPP */
