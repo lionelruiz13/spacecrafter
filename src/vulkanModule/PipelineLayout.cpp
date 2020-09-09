@@ -6,7 +6,6 @@ VkSamplerCreateInfo PipelineLayout::DEFAULT_SAMPLER = {VK_STRUCTURE_TYPE_SAMPLER
 PipelineLayout::PipelineLayout(VirtualSurface *_master) : master(_master)
 {
     DEFAULT_SAMPLER.anisotropyEnable = master->getDeviceFeatures().samplerAnisotropy;
-    descriptor[1] = VK_NULL_HANDLE;
 }
 
 PipelineLayout::~PipelineLayout()
@@ -15,7 +14,8 @@ PipelineLayout::~PipelineLayout()
         vkDestroySampler(master->refDevice, tmp, nullptr);
     if (builded) {
         vkDestroyPipelineLayout(master->refDevice, pipelineLayout, nullptr);
-        vkDestroyDescriptorSetLayout(master->refDevice, descriptor.front(), nullptr);
+        if (descriptorPos >= 0)
+            vkDestroyDescriptorSetLayout(master->refDevice, descriptor[descriptorPos], nullptr);
     }
 }
 
@@ -48,29 +48,34 @@ void PipelineLayout::setUniformLocation(VkShaderStageFlags stage, uint32_t bindi
     uniformsLayout.push_back(uniformCollection);
 }
 
-void PipelineLayout::buildLayout()
+void PipelineLayout::buildLayout(VkDescriptorSetLayoutCreateFlags flags)
 {
     VkDescriptorSetLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     layoutInfo.bindingCount = uniformsLayout.size();
     layoutInfo.pBindings = uniformsLayout.data();
+    layoutInfo.flags = flags;
 
-    if (vkCreateDescriptorSetLayout(master->refDevice, &layoutInfo, nullptr, descriptor.data()) != VK_SUCCESS) {
+    VkDescriptorSetLayout tmp;
+    if (vkCreateDescriptorSetLayout(master->refDevice, &layoutInfo, nullptr, &tmp) != VK_SUCCESS) {
         throw std::runtime_error("echec de la creation d'un set de descripteurs!");
     }
+    descriptorPos = descriptor.size(); // Inform which descriptor is owned by this PipelineLayout
+    descriptor.push_back(tmp);
+    uniformsLayout.clear();
 }
 
 void PipelineLayout::setGlobalPipelineLayout(PipelineLayout *pl)
 {
-    descriptor[1] = pl->getDescriptorLayout();
+    descriptor.push_back(pl->getDescriptorLayout());
 }
 
 void PipelineLayout::build()
 {
-    buildLayout();
+    assert(uniformsLayout.empty());
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = descriptor.back() == VK_NULL_HANDLE ? 1 : 2;
+    pipelineLayoutInfo.setLayoutCount = descriptor.size();
     pipelineLayoutInfo.pSetLayouts = descriptor.data();
     pipelineLayoutInfo.pushConstantRangeCount = 0;    // Optionnel
     pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optionnel

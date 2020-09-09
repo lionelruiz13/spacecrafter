@@ -20,8 +20,8 @@ public:
     void pushConstant(); // set constant values
     //! Build pipelineLayout
     void build();
-    //! Build as global pipelineLayout
-    void buildLayout();
+    //! Build set emplacement
+    void buildLayout(VkDescriptorSetLayoutCreateFlags flags = 0);
     //! Link to global pipelineLayout in parameter
     void setGlobalPipelineLayout(PipelineLayout *pl);
     VkPipelineLayout &getPipelineLayout() {return pipelineLayout;}
@@ -31,8 +31,10 @@ private:
     VirtualSurface *master;
     VkPipelineLayout pipelineLayout;
     std::vector<VkDescriptorSetLayoutBinding> uniformsLayout;
-    std::array<VkDescriptorSetLayout, 2> descriptor;
+    std::vector<VkDescriptorSetLayout> descriptor;
+    std::vector<VkPushConstantRange> pushConstants;
     std::list<VkSampler> sampler;
+    int descriptorPos = -1;
 
     bool builded = false;
 };
