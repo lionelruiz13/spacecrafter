@@ -3,6 +3,7 @@
 
 class Vulkan;
 class TextureMgr;
+class ResourceTracker;
 
 class PipelineLayout;
 class Set;
@@ -14,6 +15,7 @@ class CommandMgr;
 typedef struct GlobalContext {
     Vulkan *vulkan;
     TextureMgr *textureMgr;
+    ResourceTracker *tracker;
     PipelineLayout *globalLayout; // for ubo_cam
     Set *globalSet;
 } GlobalContext;
