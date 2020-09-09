@@ -10,11 +10,13 @@ class VertexBuffer {
 public:
     VertexBuffer(VirtualSurface *_master, int size,
         const VkVertexInputBindingDescription &_bindingDesc,
-        const std::vector<VkVertexInputAttributeDescription> &_attributeDesc);
+        const std::vector<VkVertexInputAttributeDescription> &_attributeDesc,
+        bool isExternallyUpdated = false);
     ~VertexBuffer();
     //! Update vertex content with data member
     VkBuffer &get() {return vertexBuffer;}
     void update();
+    void update(VkCommandBuffer cmdBuffer);
     const VkVertexInputBindingDescription &getBindingDesc() {return bindingDesc;}
     const std::vector<VkVertexInputAttributeDescription> &getAttributeDesc() {return attributeDesc;}
     //! Intermediate buffer, write your vertex here
@@ -26,6 +28,7 @@ private:
     VkBuffer stagingBuffer;
     VkDeviceMemory vertexBufferMemory;
     VkBuffer vertexBuffer;
+    VkDeviceSize bufferSize;
     VkSubmitInfo submitInfo{};
     VkVertexInputBindingDescription bindingDesc;
     std::vector<VkVertexInputAttributeDescription> attributeDesc;

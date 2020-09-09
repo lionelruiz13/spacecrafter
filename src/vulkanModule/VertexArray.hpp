@@ -17,7 +17,7 @@ void insert_all(std::vector<T> &vec, Ts ... ts)
 enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, COLOR4, MAG, SCALE };
 
 //! Define Buffer access type
-enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM};
+enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM, STREAM_LOCAL};
 
 class VirtualSurface;
 class CommandMgr;
@@ -44,9 +44,11 @@ public:
 
     //! register a new type of vertex buffer giving its function and access type
     void registerVertexBuffer(const BufferType& bt, const BufferAccess& ba);
+    //! copy data inside the VertexBuffer (e.g : if register POS2D and TEXTURE, datas were packed {posX, posY, texX, texY})
+    void fillVertexBuffer(const std::vector<float> data);
     //! modify the VertexBuffer identified by  his BufferType and integrating size elements from data
     void fillVertexBuffer(const BufferType& bt, unsigned int size , const float* data);
-    //! modify the VertexBuffer identified by  his BufferType and integrating all elements fron vector data
+    //! modify the VertexBuffer identified by  his BufferType and integrating all elements from vector data
     void fillVertexBuffer(const BufferType& bt, const std::vector<float> data);
 
     //! register a new type of vertex buffer giving its function and access type
@@ -67,14 +69,21 @@ public:
     void build(int maxVertices = 4096);
     //! build VertexArray per instance
     void buildInstanceBuffer(int maxInstances);
+    //! assign maxVertices
+    void assign(VertexArray *vertex, int maxVertices, int maxIndex);
     //! bind this vao
-    void bind();
+    void bind(CommandMgr *cmdMgr = nullptr);
     //! update changes
     void update();
+    //! update changes
+    void update(VkCommandBuffer cmdBuffer);
     //! unbind this vao
     void unBind() const {}
     //! returns the number of elements contained in the index buffer
     unsigned int getIndiceCount() const;
+    int getIndexOffset() const;
+    int getVertexOffset() const;
+    void setVertexOffset(int offset);
     Vertice &operator[](int pos);
     //! Tell vertice value have changed with operator[]
     void assumeVerticeChanged();
@@ -84,9 +93,11 @@ public:
 private:
     VirtualSurface *master;
     CommandMgr *mgr;
-    std::unique_ptr<VertexBuffer> vertexBuffer;
+    std::shared_ptr<VertexBuffer> vertexBuffer;
+    float *pVertexData = nullptr;
     std::unique_ptr<VertexBuffer> instanceBuffer;
-    std::unique_ptr<Buffer> indexBuffer;
+    std::shared_ptr<Buffer> indexBuffer;
+    unsigned int *pIndexData = nullptr;
     VkVertexInputBindingDescription bindingDesc{0, 0, VK_VERTEX_INPUT_RATE_VERTEX};
     VkVertexInputBindingDescription bindingDesc2{0, 0, VK_VERTEX_INPUT_RATE_INSTANCE};
     std::vector<VkVertexInputAttributeDescription> attributeDesc;
@@ -97,8 +108,11 @@ private:
     //! Size of one block
     int blockSize = 0;
     unsigned int indexBufferSize;
+    //! Tell if local vertexBuffer content has changed
     bool vertexUpdate = false;
+    //! Tell if local instanceBuffer content has changed
     bool instanceUpdate = false;
+    //! Tell if local indexBuffer content has changed
     bool indexUpdate = false;
 };
 

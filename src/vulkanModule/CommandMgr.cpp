@@ -5,6 +5,7 @@
 #include "CommandMgr.hpp"
 #include "Set.hpp"
 #include "Buffer.hpp"
+#include "VertexArray.hpp"
 
 VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 
@@ -294,6 +295,11 @@ void CommandMgr::beginRenderPass(renderPassType renderPassType)
         renderPassInfo.framebuffer = refSwapChainFramebuffers[i];
         vkCmdBeginRenderPass(frames[i].actual, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
+}
+
+void CommandMgr::bindVertex(VertexArray *vertex)
+{
+    vertex->bind(this);
 }
 
 void CommandMgr::bindVertex(VertexBuffer *vertex, uint32_t firstBinding, uint32_t bindingCount, VkDeviceSize offset)
