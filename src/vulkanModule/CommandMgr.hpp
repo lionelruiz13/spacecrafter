@@ -17,10 +17,13 @@ class Set;
 
 enum class renderPassType : uint8_t {
     CLEAR = 0,
-    CLEAR_DEPTH_BUFFER = 1,
-    DEFAULT = 2,
-    PRESENT = 3, // Prepair frameBuffer for presentation
-    SINGLE_PASS = 4 // This command is the unique command of the whole
+    DEFAULT = 1,
+    CLEAR_DEPTH_BUFFER_DONT_SAVE = 2, // Clear depth buffer and use it for this render pass only
+    CLEAR_DEPTH_BUFFER = 3, // Clear depth buffer and save it for next render pass
+    USE_DEPTH_BUFFER = 4, // Load previous depth buffer and save it for next render pass
+    USE_DEPTH_BUFFER_DONT_SAVE = 5, // Load previous depth buffer without saving it for next render pass
+    PRESENT = 6, // Prepair frameBuffer for presentation
+    SINGLE_PASS = 7 // This command is the unique command of the whole
 };
 
 class CommandMgr {
@@ -81,7 +84,7 @@ private:
     const VkDevice &refDevice;
     VkQueue queue;
     VkCommandBuffer actual;
-    const std::array<VkRenderPass, 5> &refRenderPass;
+    const std::array<VkRenderPass, 8> &refRenderPass;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
     VkCommandPool cmdPool; // used if singleUse is set to false
     //! Content attached to frame

@@ -529,8 +529,8 @@ void Vulkan::createRenderPass()
     //depthAttachment.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
     depthAttachment.format = VK_FORMAT_D24_UNORM_S8_UINT;
     depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -544,7 +544,7 @@ void Vulkan::createRenderPass()
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &colorAttachmentRef;
-    subpass.pDepthStencilAttachment = &depthAttachmentRef;
+    subpass.pDepthStencilAttachment = nullptr;
 
     VkSubpassDependency dependency{};
     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -565,27 +565,42 @@ void Vulkan::createRenderPass()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[0]) != VK_SUCCESS) {
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[0]) != VK_SUCCESS) { // CLEAR
         throw std::runtime_error("échec de la création de la render pass!");
     }
     attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[1]) != VK_SUCCESS) {
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[1]) != VK_SUCCESS) { // DEFAULT
+        throw std::runtime_error("échec de la création de la render pass!");
+    }
+    attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    subpass.pDepthStencilAttachment = &depthAttachmentRef;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[2]) != VK_SUCCESS) { // CLEAR_DEPTH_BUFFER_DONT_SAVE
+        throw std::runtime_error("échec de la création de la render pass!");
+    }
+    attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[3]) != VK_SUCCESS) { // CLEAR_DEPTH_BUFFER
         throw std::runtime_error("échec de la création de la render pass!");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[2]) != VK_SUCCESS) {
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[4]) != VK_SUCCESS) { // USE_DEPTH_BUFFER
         throw std::runtime_error("échec de la création de la render pass!");
     }
-    attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[3]) != VK_SUCCESS) {
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[5]) != VK_SUCCESS) { // USE_DEPTH_BUFFER_DONT_SAVE
         throw std::runtime_error("échec de la création de la render pass!");
     }
-    attachments[0].loadOp = attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    attachments[0].initialLayout = attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[4]) != VK_SUCCESS) {
+    subpass.pDepthStencilAttachment = nullptr;
+    attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[6]) != VK_SUCCESS) { // PRESENT
+        throw std::runtime_error("échec de la création de la render pass!");
+    }
+    attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[7]) != VK_SUCCESS) { // SINGLE_PASS
         throw std::runtime_error("échec de la création de la render pass!");
     }
 }
