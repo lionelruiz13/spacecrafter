@@ -77,6 +77,7 @@ public:
     static void setPFN_vkCmdPushDescriptorSetKHR(PFN_vkCmdPushDescriptorSetKHR pfn) {PFN_pushSet = pfn;}
     static void setPFN_vkCmdBeginConditionalRenderingEXT(PFN_vkCmdBeginConditionalRenderingEXT pfn) {PFN_vkIf = pfn;}
     static void setPFN_vkCmdEndConditionalRenderingEXT(PFN_vkCmdEndConditionalRenderingEXT pfn) {PFN_vkEndIf = pfn;}
+    bool isRecording() const {return actual != VK_NULL_HANDLE;}
 private:
     //! resolve semaphore dependencies for one frame
     void resolve(uint8_t frameIndex);
