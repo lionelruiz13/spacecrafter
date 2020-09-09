@@ -42,7 +42,7 @@ public:
     void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, uint32_t bindingCount = 1, VkDeviceSize offset = 0);
     void bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset = 0);
     void bindPipeline(Pipeline *pipeline);
-    //! @brief update uniform value
+    //! @brief bind uniform buffers and textures
     void bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
     //! @brief push uniform buffers and textures
     void pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
