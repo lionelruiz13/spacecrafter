@@ -316,6 +316,17 @@ void CommandMgr::beginRenderPass(renderPassType renderPassType)
     }
 }
 
+void CommandMgr::updateVertex(VertexArray *vertex)
+{
+    if (singleUse) {
+        vertex->update(actual);
+        return;
+    }
+    for (auto &frame : frames) {
+        vertex->update(frame.actual);
+    }
+}
+
 void CommandMgr::bindVertex(VertexArray *vertex)
 {
     vertex->bind(this);
