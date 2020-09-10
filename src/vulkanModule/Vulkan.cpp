@@ -544,7 +544,7 @@ void Vulkan::createRenderPass()
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = 1;
     subpass.pColorAttachments = &colorAttachmentRef;
-    subpass.pDepthStencilAttachment = nullptr;
+    subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
     VkSubpassDependency dependency{};
     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -574,7 +574,6 @@ void Vulkan::createRenderPass()
         throw std::runtime_error("échec de la création de la render pass!");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    subpass.pDepthStencilAttachment = &depthAttachmentRef;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[2]) != VK_SUCCESS) { // CLEAR_DEPTH_BUFFER_DONT_SAVE
         throw std::runtime_error("échec de la création de la render pass!");
     }
@@ -591,7 +590,6 @@ void Vulkan::createRenderPass()
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[5]) != VK_SUCCESS) { // USE_DEPTH_BUFFER_DONT_SAVE
         throw std::runtime_error("échec de la création de la render pass!");
     }
-    subpass.pDepthStencilAttachment = nullptr;
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
