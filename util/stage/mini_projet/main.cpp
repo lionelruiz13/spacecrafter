@@ -186,11 +186,13 @@ static void cubeFunc(VirtualSurface *surface, bool *opened, Mat4f rotate, Vec3f 
 
     CommandMgr cmdMgr(surface, 1);
     cmdMgr.init(0);
-    cmdMgr.beginRenderPass(renderPassType::PRESENT);
+    cmdMgr.beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
     cmdMgr.bindPipeline(&pipeline);
     cmdMgr.bindVertex(&vertex, 0);
     cmdMgr.bindSet(&pipelineLayout, &set);
     cmdMgr.draw(42);
+    cmdMgr.endRenderPass();
+    cmdMgr.beginRenderPass(renderPassType::PRESENT);
     cmdMgr.endRenderPass();
     cmdMgr.compile();
     cmdMgr.setSubmission(0);
