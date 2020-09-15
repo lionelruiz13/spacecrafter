@@ -59,14 +59,14 @@ public:
 protected:
     std::unique_ptr<s_font> font=nullptr;
 private:
-	std::string m_fontName;		// remembers what fontName is used
-	float m_fontSize; 			// remembers what fontSize is used
+	std::string m_fontName = "";		// remembers what fontName is used
+	float m_fontSize = 0; 			// remembers what fontSize is used
 };
 
 template <class faderType>
 class ModuleFader {
 public:
-	// Fix fader duration (in s) beteween states  
+	// Fix fader duration (in s) beteween states
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
 	}
