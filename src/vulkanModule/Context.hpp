@@ -25,6 +25,11 @@ typedef struct ThreadContext {
     VirtualSurface *surface;
     SetMgr *setMgr;
     CommandMgr *commandMgr;
+    CommandMgr *commandMgrSingleUse;
+    CommandMgr *commandMgrDynamic; // for individual re-recording
 } ThreadContext;
+
+// Temporary, for test only
+ThreadContext *getContext();
 
 #endif /* CONTEXT_HPP */

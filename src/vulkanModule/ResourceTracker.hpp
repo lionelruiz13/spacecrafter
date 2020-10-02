@@ -1,12 +1,16 @@
 #ifndef RESOURCE_TRACKER_HPP
 #define RESOURCE_TRACKER_HPP
 
+#include <vector>
+#include <memory>
+
 class VertexArray;
 class Pipeline;
 class PipelineLayout;
 class Texture;
 class Uniform;
 class Buffer;
+class Set;
 
 /**
  * \class ResourceTracker
@@ -24,6 +28,7 @@ public:
     Texture *track(Texture *toTrack);
     Uniform *track(Uniform *toTrack);
     Buffer *track(Buffer *toTrack);
+    Set *track(Set *toTrack);
 private:
     std::vector<std::unique_ptr<VertexArray>> vertexArray;
     std::vector<std::unique_ptr<Pipeline>> pipeline;
@@ -31,6 +36,7 @@ private:
     std::vector<std::unique_ptr<Texture>> texture;
     std::vector<std::unique_ptr<Uniform>> uniform;
     std::vector<std::unique_ptr<Buffer>> buffer;
+    std::vector<std::unique_ptr<Set>> set;
 };
 
 #endif /* end of include guard: RESOURCE_TRACKER_HPP */

@@ -5,6 +5,7 @@
 #include "Texture.hpp"
 #include "Uniform.hpp"
 #include "Buffer.hpp"
+#include "Set.hpp"
 
 ResourceTracker::ResourceTracker() {}
 
@@ -44,4 +45,17 @@ Buffer *ResourceTracker::track(Buffer *toTrack)
 {
     buffer.emplace_back(toTrack);
     return toTrack;
+}
+
+Set *ResourceTracker::track(Set *toTrack)
+{
+    set.emplace_back(toTrack);
+    return toTrack;
+}
+
+// temporary, just for test
+#include "Context.hpp"
+ThreadContext *getContext() {
+    static ThreadContext context{};
+    return &context;
 }
