@@ -43,9 +43,9 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename
     _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
 
     void *data;
-    vkMapMemory(_master->refDevice, stagingBufferMemory, 0, imageSize, 0, &data);
+    _master->mapMemory(stagingBufferMemory, &data);
     memcpy(data, pixels, static_cast<size_t>(imageSize));
-    vkUnmapMemory(_master->refDevice, stagingBufferMemory);
+    _master->unmapMemory(stagingBufferMemory);
 
     stbi_image_free(pixels);
 
@@ -62,9 +62,9 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int w
     _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
 
     void *data;
-    vkMapMemory(_master->refDevice, stagingBufferMemory, 0, imageSize, 0, &data);
+    _master->mapMemory(stagingBufferMemory, &data);
     memcpy(data, content, static_cast<size_t>(imageSize));
-    vkUnmapMemory(_master->refDevice, stagingBufferMemory);
+    _master->unmapMemory(stagingBufferMemory);
 
     if (createSampler) {
         VkSamplerCreateInfo samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
@@ -81,13 +81,12 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int w
 
 void Texture::acquireStagingMemoryPtr(void **pPixels)
 {
-    VkDeviceSize imageSize = texWidth * texHeight * 4;
-    vkMapMemory(master->refDevice, stagingBufferMemory, 0, imageSize, 0, pPixels);
+    master->mapMemory(stagingBufferMemory, pPixels);
 }
 
 void Texture::releaseStagingMemoryPtr()
 {
-    vkUnmapMemory(master->refDevice, stagingBufferMemory);
+    master->unmapMemory(stagingBufferMemory);
 }
 
 Texture::~Texture()
@@ -101,7 +100,7 @@ void Texture::destroyStagingResources()
         vkDestroySemaphore(master->refDevice, semaphore, nullptr);
         vkDestroyFence(master->refDevice, fence, nullptr);
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
-        vkFreeMemory(master->refDevice, stagingBufferMemory, nullptr);
+        master->free(stagingBufferMemory);
         stagingBuffer = VK_NULL_HANDLE;
     }
 }

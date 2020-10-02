@@ -2,6 +2,7 @@
 #define VULKAN_HPP_
 
 #include <vulkan/vulkan.hpp>
+#include "SubMemory.hpp"
 #include "tools/vecmath.hpp"
 #include <array>
 
@@ -18,14 +19,20 @@ struct SwapChainSupportDetails {
 };
 
 class VirtualSurface;
+class MemoryManager;
 
 class Vulkan {
 public:
-    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600);
+    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600, int chunkSize = 256*1024*1024, bool enableDebugLayers = true);
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
     void sendFrame();
-    bool createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties = 0);
+    bool createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, SubMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties = 0);
+    //! for malloc
+    MemoryManager *getMemoryManager() {return memoryManager;}
+    void free(SubMemory& bufferMemory);
+    void mapMemory(SubMemory& bufferMemory, void **data);
+    void unmapMemory(SubMemory& bufferMemory);
     size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
     void submitTransfer(VkSubmitInfo *submitInfo);
     VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
@@ -41,6 +48,8 @@ public:
     const VkPhysicalDeviceFeatures &getDeviceFeatures() {return deviceFeatures;}
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, const uint32_t firstIndex = 0, VkMemoryPropertyFlags preferedProperties = 0, bool *isOptimal = nullptr);
     VkPipelineCache &getPipelineCache() {return pipelineCache;}
+    //! Only MemoryManager should use this method
+    VkPhysicalDevice getPhysicalDevice() {return physicalDevice;}
 
     //! getDevice();
     const VkDevice &refDevice;
@@ -53,6 +62,7 @@ public:
 private:
     const char *AppName;
     const char *EngineName;
+    MemoryManager *memoryManager;
     VkPipelineViewportStateCreateInfo viewportState{};
     VkViewport viewport{};
     VkRect2D scissor{};
@@ -120,7 +130,7 @@ private:
 
     void createDepthResources();
     VkImage depthImage;
-    VkDeviceMemory depthImageMemory;
+    SubMemory depthImageMemory;
     VkImageView depthImageView;
 
     void createVertexBuffer();

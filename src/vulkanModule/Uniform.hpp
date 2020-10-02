@@ -2,6 +2,7 @@
 #define UNIFORM_HPP
 
 #include <vulkan/vulkan.h>
+#include "SubMemory.hpp"
 
 class VirtualSurface;
 
@@ -18,7 +19,7 @@ public:
 private:
     VirtualSurface *master;
     VkBuffer buffer;
-    VkDeviceMemory bufferMemory;
+    SubMemory bufferMemory;
     VkDescriptorBufferInfo bufferInfo{};
 };
 

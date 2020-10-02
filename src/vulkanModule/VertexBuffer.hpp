@@ -3,6 +3,7 @@
 
 #include <vulkan/vulkan.h>
 #include <vector>
+#include "SubMemory.hpp"
 
 class VirtualSurface;
 
@@ -24,9 +25,9 @@ public:
 private:
     VirtualSurface *master;
     VkCommandBuffer updater;
-    VkDeviceMemory stagingBufferMemory;
+    SubMemory stagingBufferMemory;
     VkBuffer stagingBuffer;
-    VkDeviceMemory vertexBufferMemory;
+    SubMemory vertexBufferMemory;
     VkBuffer vertexBuffer;
     VkDeviceSize bufferSize;
     VkSubmitInfo submitInfo{};

@@ -9,7 +9,7 @@ VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
     bufferSize = _bindingDesc.stride * size;
 
     _master->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
-    vkMapMemory(_master->refDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+    _master->mapMemory(stagingBufferMemory, &data);
     _master->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
     attributeDesc.assign(_attributeDesc.begin(), _attributeDesc.end());
@@ -46,12 +46,12 @@ VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
 
 VertexBuffer::~VertexBuffer()
 {
-    vkUnmapMemory(master->refDevice, stagingBufferMemory);
+    master->unmapMemory(stagingBufferMemory);
     vkDeviceWaitIdle(master->refDevice);
     vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
-    vkFreeMemory(master->refDevice, stagingBufferMemory, nullptr);
+    master->free(stagingBufferMemory);
     vkDestroyBuffer(master->refDevice, vertexBuffer, nullptr);
-    vkFreeMemory(master->refDevice, vertexBufferMemory, nullptr);
+    master->free(vertexBufferMemory);
 }
 
 void VertexBuffer::update()

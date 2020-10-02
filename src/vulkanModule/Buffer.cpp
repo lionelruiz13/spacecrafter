@@ -4,7 +4,7 @@
 Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : master(_master)
 {
     _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
-    vkMapMemory(_master->refDevice, stagingBufferMemory, 0, size, 0, &data);
+    _master->mapMemory(stagingBufferMemory, &data);
     _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
 
     // Initialize update
@@ -37,12 +37,12 @@ Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : ma
 
 Buffer::~Buffer()
 {
-    vkUnmapMemory(master->refDevice, stagingBufferMemory);
+    master->unmapMemory(stagingBufferMemory);
     vkDeviceWaitIdle(master->refDevice);
     vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
-    vkFreeMemory(master->refDevice, stagingBufferMemory, nullptr);
+    master->free(stagingBufferMemory);
     vkDestroyBuffer(master->refDevice, buffer, nullptr);
-    vkFreeMemory(master->refDevice, bufferMemory, nullptr);
+    master->free(bufferMemory);
 }
 
 void Buffer::update()

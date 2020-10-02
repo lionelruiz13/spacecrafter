@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <string>
 #include "TextureMgr.hpp"
+#include "SubMemory.hpp"
 
 class VirtualSurface;
 
@@ -34,8 +35,8 @@ private:
     TextureMgr *mgr;
     int texWidth, texHeight;
     VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
     VkSemaphore semaphore;
+    SubMemory stagingBufferMemory;
     VkFence fence;
     std::unique_ptr<TextureImage> image = nullptr;
     int useCount = 0;

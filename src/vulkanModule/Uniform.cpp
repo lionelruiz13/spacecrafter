@@ -3,10 +3,10 @@
 
 Uniform::Uniform(VirtualSurface *_master, VkDeviceSize size) : master(_master)
 {
-    if (!_master->createBuffer(size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        std::cout << "Uniform can't be on Device and directly accessible." << std::endl;
+    if (!_master->createBuffer(UNIFORM_BLOC_SIZE, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
+        throw std::runtime_error("Faild to create buffer");
     }
-    vkMapMemory(_master->refDevice, bufferMemory, 0, size, 0, &data);
+    _master->mapMemory(bufferMemory, &data);
     bufferInfo.buffer = buffer;
     bufferInfo.offset = 0;
     bufferInfo.range = size;
@@ -14,10 +14,10 @@ Uniform::Uniform(VirtualSurface *_master, VkDeviceSize size) : master(_master)
 
 Uniform::~Uniform()
 {
-    vkUnmapMemory(master->refDevice, bufferMemory);
+    master->unmapMemory(bufferMemory);
     vkDeviceWaitIdle(master->refDevice);
     vkDestroyBuffer(master->refDevice, buffer, nullptr);
-    vkFreeMemory(master->refDevice, bufferMemory, nullptr);
+    master->free(bufferMemory);
 }
 
 void Uniform::update()

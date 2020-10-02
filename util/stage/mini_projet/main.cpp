@@ -3,6 +3,7 @@
 #include "mainModule/sdl_facade.hpp"
 #include "tools/log.hpp"
 #include "signal.h"
+#include "Vulkan.hpp"
 #include "VirtualSurface.hpp"
 #include "Pipeline.hpp"
 #include "PipelineLayout.hpp"
@@ -11,6 +12,7 @@
 #include "Uniform.hpp"
 #include "Set.hpp"
 #include "SetMgr.hpp"
+#include "MemoryManager.hpp"
 #include <thread>
 
 //*
@@ -262,6 +264,7 @@ int main()
     signal(SIGINT, sigTerm);
     signal(SIGTERM, sigTerm);
     Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
+    Log->openLog(LOG_FILE::VULKAN, "vulkan");
     window.initSDL();
     window.createWindow("Experiment", width, height, 24, 3, false, "~/.spacecrafter/data/icon.bpm");
 
