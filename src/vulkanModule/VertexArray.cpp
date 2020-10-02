@@ -94,7 +94,7 @@ void VertexArray::bind(CommandMgr *cmdMgr)
             indexBuffer->update();
             indexUpdate = false;
         }
-        cmdMgr->bindIndex(indexBuffer.get(), VK_INDEX_TYPE_UINT32);
+        cmdMgr->bindIndex(indexBuffer.get(), indexType);
     }
 }
 
@@ -123,6 +123,11 @@ void VertexArray::update(VkCommandBuffer cmdBuffer)
     vertexBuffer->update(cmdBuffer);
 }
 
+void VertexArray::updateVertex(int size)
+{
+    vertexBuffer->update(size);
+}
+
 void VertexArray::registerVertexBuffer(const BufferType& bt, const BufferAccess& ba)
 {
     VkVertexInputAttributeDescription desc;
@@ -136,12 +141,12 @@ void VertexArray::registerVertexBuffer(const BufferType& bt, const BufferAccess&
     attributeDesc.push_back(desc);
 }
 
-void VertexArray::fillVertexBuffer(const std::vector<float> data)
+void VertexArray::fillVertexBuffer(const std::vector<float> &data)
 {
     memcpy(pVertexData, data.data(), data.size() * sizeof(float));
 }
 
-void VertexArray::fillVertexBuffer(const BufferType& bt, const std::vector<float> data)
+void VertexArray::fillVertexBuffer(const BufferType& bt, const std::vector<float> &data)
 {
     if (attributeDesc.size() == 1) { // Optimize if there is only one BufferType
         fillVertexBuffer(data);
@@ -158,7 +163,7 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size, cons
     for (unsigned int i = 0; i < size; ++i) {
         for (uint8_t j = 0; j < dataSize; ++j)
             tmp[j] = *(data++); // *(data++); work like data[i * dataSize + j]; here
-        tmp += size * blockSize;
+        tmp += blockSize;
     }
     vertexUpdate = true;
 }
@@ -180,15 +185,30 @@ float *VertexArray::getInstanceBufferPtr()
     return (static_cast<float *>(instanceBuffer->data));
 }
 
-void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize)
+void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize, VkIndexType _indexType)
 {
     indexBuffer = std::make_shared<Buffer>(master, size * blockSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    indexType = _indexType;
     pIndexData = static_cast<unsigned int *>(indexBuffer->data);
 }
 
-void VertexArray::fillIndexBuffer(const std::vector<unsigned int> data)
+void VertexArray::fillIndexBuffer(const std::vector<unsigned int> &data)
 {
     fillIndexBuffer(data.size(), data.data());
+}
+
+void VertexArray::fillIndexBuffer(unsigned int size, const unsigned int* data)
+{
+    int dec = pVertexData ? getVertexOffset() : 0;
+    if (dec > 0) {
+        for (unsigned int i = 0; i < size; i++) {
+            pIndexData[i] = data[i] + dec;
+        }
+    } else {
+        memcpy(pIndexData, data, size * sizeof(unsigned int));
+    }
+    indexUpdate = true;
+    indexBufferSize = size;
 }
 
 int VertexArray::getVertexOffset() const
@@ -206,18 +226,9 @@ int VertexArray::getIndexOffset() const
     return static_cast<long>(pIndexData - static_cast<unsigned int *>(indexBuffer->data));
 }
 
-void VertexArray::fillIndexBuffer(unsigned int size, const unsigned int* data)
+unsigned int VertexArray::getIndiceCount() const
 {
-    int dec = getVertexOffset();
-    if (dec > 0) {
-        for (unsigned int i = 0; i < size; i++) {
-            pIndexData[i] = data[i] + dec;
-        }
-    } else {
-        memcpy(pIndexData, data, size * sizeof(unsigned int));
-    }
-    indexUpdate = true;
-    indexBufferSize = size;
+    return indexBufferSize;
 }
 
 void VertexArray::assumeVerticeChanged()

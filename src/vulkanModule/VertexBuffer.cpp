@@ -54,9 +54,9 @@ VertexBuffer::~VertexBuffer()
     master->free(vertexBufferMemory);
 }
 
-void VertexBuffer::update()
+void VertexBuffer::update(int size)
 {
-    if (submitInfo.commandBufferCount > 0)
+    if (submitInfo.commandBufferCount > 0 && size != 0)
         master->submitTransfer(&submitInfo);
 }
 

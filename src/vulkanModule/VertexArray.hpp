@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <vulkan/vulkan.h>
+#include <cstring>
 
 //! insert all Ts ...ts in vector<T>
 template <typename T, typename ... Ts>
@@ -28,7 +29,7 @@ class VertexArray
 {
 public:
     //! constructor...
-    VertexArray(VirtualSurface *_master, CommandMgr *_mgr);
+    VertexArray(VirtualSurface *_master, CommandMgr *_mgr = nullptr);
     VertexArray(VertexArray &model);
     ~VertexArray();
 
@@ -45,11 +46,11 @@ public:
     //! register a new type of vertex buffer giving its function and access type
     void registerVertexBuffer(const BufferType& bt, const BufferAccess& ba);
     //! copy data inside the VertexBuffer (e.g : if register POS2D and TEXTURE, datas were packed {posX, posY, texX, texY})
-    void fillVertexBuffer(const std::vector<float> data);
+    void fillVertexBuffer(const std::vector<float> &data);
     //! modify the VertexBuffer identified by  his BufferType and integrating size elements from data
     void fillVertexBuffer(const BufferType& bt, unsigned int size , const float* data);
     //! modify the VertexBuffer identified by  his BufferType and integrating all elements from vector data
-    void fillVertexBuffer(const BufferType& bt, const std::vector<float> data);
+    void fillVertexBuffer(const BufferType& bt, const std::vector<float> &data);
 
     //! register a new type of vertex buffer giving its function and access type
     void registerInstanceBuffer(const BufferAccess& ba, VkFormat format, unsigned int stride);
@@ -59,9 +60,9 @@ public:
     void assumeInstanceBufferChange() {instanceUpdate = true;}
 
     //! register a index buffer giving its access type
-    void registerIndexBuffer(const BufferAccess& ba, unsigned int size = 4096, size_t blockSize = sizeof(unsigned int));
+    void registerIndexBuffer(const BufferAccess& ba, unsigned int size = 4096, size_t blockSize = sizeof(unsigned int), VkIndexType _indexType = VK_INDEX_TYPE_UINT32);
     //! modify the IndexBuffer by integrating count elements from integer indices
-    void fillIndexBuffer(const std::vector<unsigned int> data);
+    void fillIndexBuffer(const std::vector<unsigned int> &data);
     //! modify the IndexBuffer by integrating count elements from integer indices
     void fillIndexBuffer(unsigned int count , const unsigned int* indices);
 
@@ -70,13 +71,16 @@ public:
     //! build VertexArray per instance
     void buildInstanceBuffer(int maxInstances);
     //! assign maxVertices
-    void assign(VertexArray *vertex, int maxVertices, int maxIndex);
+    void assign(VertexArray *vertex, int maxVertices, int maxIndex = 0);
     //! bind this vao
     void bind(CommandMgr *cmdMgr = nullptr);
     //! update changes
     void update();
     //! update changes
     void update(VkCommandBuffer cmdBuffer);
+    //! update vertexBuffer, even if unchanged
+    //! @param size hint on number of vertices to update
+    void updateVertex(int size = -1);
     //! unbind this vao
     void unBind() const {}
     //! returns the number of elements contained in the index buffer
@@ -108,6 +112,7 @@ private:
     //! Size of one block
     int blockSize = 0;
     unsigned int indexBufferSize;
+    VkIndexType indexType;
     //! Tell if local vertexBuffer content has changed
     bool vertexUpdate = false;
     //! Tell if local instanceBuffer content has changed

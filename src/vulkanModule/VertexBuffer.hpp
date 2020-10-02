@@ -14,9 +14,10 @@ public:
         const std::vector<VkVertexInputAttributeDescription> &_attributeDesc,
         bool isExternallyUpdated = false);
     ~VertexBuffer();
-    //! Update vertex content with data member
     VkBuffer &get() {return vertexBuffer;}
-    void update();
+    //! Update vertex content with data member
+    //! @param size hint on number of bytes to update
+    void update(int size = -1);
     void update(VkCommandBuffer cmdBuffer);
     const VkVertexInputBindingDescription &getBindingDesc() {return bindingDesc;}
     const std::vector<VkVertexInputAttributeDescription> &getAttributeDesc() {return attributeDesc;}
