@@ -11,6 +11,7 @@
 #include "mainModule/sdl_facade.hpp"
 #include <SDL2/SDL_vulkan.h>
 #include "CommandMgr.hpp"
+#include "tools/log.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -21,19 +22,16 @@ bool Vulkan::isAlive = false;
 
 Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers) : refDevice(device), refRenderPass(renderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName)
 {
-    if (isAlive) {
-        std::cerr << "Error: There must be only one Vulkan instance" << std::endl;
-        return;
-    }
+    assert(!isAlive); // There must be only one Vulkan instance
     isAlive = true;
     uint32_t sdl2ExtensionCount = 0;
     if (!SDL_Vulkan_GetInstanceExtensions(window, &sdl2ExtensionCount, nullptr))
-        std::runtime_error("Fatal : Faild to found Vulkan extension for SDL2.");
+        std::runtime_error("Fatal : Failed to found Vulkan extension for SDL2.");
 
     size_t initialSize = instanceExtension.size();
     instanceExtension.resize(initialSize + sdl2ExtensionCount);
     if (!SDL_Vulkan_GetInstanceExtensions(window, &sdl2ExtensionCount, instanceExtension.data() + initialSize))
-        std::runtime_error("Fatal : Faild to found Vulkan extension for SDL2.");
+        std::runtime_error("Fatal : Failed to found Vulkan extension for SDL2.");
 
     initQueues(nbVirtualSurfaces);
     initDevice(_AppName, _EngineName, window, enableDebugLayers);
@@ -44,7 +42,6 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     memoryManager = new MemoryManager(this, chunkSize);
     createDepthResources();
     createFramebuffer();
-    createVirtualSurfaces();
 
     // Déformation de l'image
     viewport.width = (float) std::min(swapChainExtent.width, swapChainExtent.height);
@@ -65,6 +62,8 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     viewportState.scissorCount = 1;
     viewportState.pScissors = &scissor;
 
+    createVirtualSurfaces();
+
     VkSemaphoreCreateInfo semaphoreInfo;
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
     semaphoreInfo.pNext = nullptr;
@@ -79,7 +78,7 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     cacheCreateInfo.initialDataSize = 0;
     cacheCreateInfo.pInitialData = nullptr;
     if (vkCreatePipelineCache(device, &cacheCreateInfo, nullptr, &pipelineCache) != VK_SUCCESS) {
-        std::cerr << "Faild to create pipeline cache.";
+        std::cerr << "Failed to create pipeline cache.";
     }
     CommandMgr::setPFN_vkCmdPushDescriptorSetKHR((PFN_vkCmdPushDescriptorSetKHR) vkGetInstanceProcAddr(instance.get(), "vkCmdPushDescriptorSetKHR"));
     CommandMgr::setPFN_vkCmdBeginConditionalRenderingEXT((PFN_vkCmdBeginConditionalRenderingEXT) vkGetInstanceProcAddr(instance.get(), "vkCmdBeginConditionalRenderingEXT"));
@@ -297,7 +296,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
     createInfo.enabledLayerCount = 0;
 
     if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create logical device!");
+        throw std::runtime_error("Failed to create logical device");
     }
 
     int maxQueues;
@@ -339,7 +338,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
 void Vulkan::initWindow(SDL_Window *window)
 {
     if (SDL_Vulkan_CreateSurface(window, instance.get(), &surface) != SDL_TRUE) {
-        throw std::runtime_error("failed to create window surface!");
+        throw std::runtime_error("Failed to create window surface");
     }
 }
 
@@ -641,7 +640,7 @@ void Vulkan::acquireNextFrame()
 {
     VkResult result = vkAcquireNextImageKHR(device, swapChain[0], UINT64_MAX, imageAvailableSemaphores[switcher], VK_NULL_HANDLE, &frameIndex);
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
-        std::runtime_error("Faild to acquire next frame.");
+        throw std::runtime_error("Failed to acquire next frame.");
     virtualSurface[0]->setTopSemaphore(frameIndex, imageAvailableSemaphores[switcher]);
     switcher = (switcher + 1) % MAX_FRAMES_IN_FLIGHT;
 }
@@ -654,9 +653,8 @@ bool Vulkan::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryP
     bufferInfo.usage = usage;
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
-        throw std::runtime_error("echec de la creation d'un buffer!");
-    }
+    if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+        return false;
 
     VkMemoryRequirements memRequirements;
     vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -958,8 +956,9 @@ void Vulkan::startDebug()
     std::vector<vk::LayerProperties>     layerProperties     = vk::enumerateInstanceLayerProperties();
     std::vector<vk::ExtensionProperties> extensionProperties = vk::enumerateInstanceExtensionProperties();
 
+    cLog::get()->openLog(LOG_FILE::VULKAN_LAYERS, "vulkan-layers");
     if (CreateDebugUtilsMessengerEXT(instance.get(), &debugCreateInfo, nullptr, &callback) != VK_SUCCESS) {
-        throw std::runtime_error("failed to set up debug messenger!");
+        throw std::runtime_error("Failed to set up debug messenger");
     }
 }
 
@@ -980,35 +979,37 @@ VKAPI_ATTR VkBool32 VKAPI_CALL Vulkan::debugCallback(
     if (messageSeverity == VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
         && pCallbackData->pMessageIdName == std::string("Loader Message"))
         return VK_TRUE;
-    std::cerr << vk::to_string( static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>( messageSeverity ) ) << ": "
+    std::ostringstream ss;
+    ss << vk::to_string( static_cast<vk::DebugUtilsMessageSeverityFlagBitsEXT>( messageSeverity ) ) << ": "
         << vk::to_string( static_cast<vk::DebugUtilsMessageTypeFlagsEXT>( messageTypes ) ) << ":\n";
-    std::cerr << "\t" << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
-    std::cerr << "\t" << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
-    std::cerr << "\t" << "message         = <" << pCallbackData->pMessage << ">\n";
+    ss << "\t" << "messageIDName   = <" << pCallbackData->pMessageIdName << ">\n";
+    ss << "\t" << "messageIdNumber = " << pCallbackData->messageIdNumber << "\n";
+    ss << "\t" << "message         = <" << pCallbackData->pMessage << ">\n";
     if (0 < pCallbackData->queueLabelCount) {
-        std::cerr << "\t" << "Queue Labels:\n";
+        ss << "\t" << "Queue Labels:\n";
         for (uint8_t i = 0; i < pCallbackData->queueLabelCount; i++) {
-            std::cerr << "\t\t" << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
+            ss << "\t\t" << "labelName = <" << pCallbackData->pQueueLabels[i].pLabelName << ">\n";
         }
     }
     if (0 < pCallbackData->cmdBufLabelCount) {
-        std::cerr << "\t" << "CommandBuffer Labels:\n";
+        ss << "\t" << "CommandBuffer Labels:\n";
         for (uint8_t i = 0; i < pCallbackData->cmdBufLabelCount; i++) {
-            std::cerr << "\t\t" << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
+            ss << "\t\t" << "labelName = <" << pCallbackData->pCmdBufLabels[i].pLabelName << ">\n";
         }
     }
     if (0 < pCallbackData->objectCount) {
-        std::cerr << "\t" << "Objects:\n";
+        ss << "\t" << "Objects:\n";
         for ( uint8_t i = 0; i < pCallbackData->objectCount; i++ )
         {
-            std::cerr << "\t\t" << "Object " << (int) i << "\n";
-            std::cerr << "\t\t\t" << "objectType   = "
+            ss << "\t\t" << "Object " << (int) i << "\n";
+            ss << "\t\t\t" << "objectType   = "
             << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
-            std::cerr << "\t\t\t" << "objectHandle = " << pCallbackData->pObjects[i].objectHandle << "\n";
+            ss << "\t\t\t" << "objectHandle = " << reinterpret_cast<void *>(pCallbackData->pObjects[i].objectHandle) << "\n"; // reinterpret_cast to have form 0x
             if (pCallbackData->pObjects[i].pObjectName) {
-                std::cerr << "\t\t\t" << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
+                ss << "\t\t\t" << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
             }
         }
     }
+    cLog::get()->write(ss, LOG_TYPE::L_OTHER, LOG_FILE::VULKAN_LAYERS);
     return VK_TRUE;
 }
