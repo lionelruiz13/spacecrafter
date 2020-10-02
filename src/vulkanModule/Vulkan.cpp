@@ -33,8 +33,8 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     if (!SDL_Vulkan_GetInstanceExtensions(window, &sdl2ExtensionCount, instanceExtension.data() + initialSize))
         std::runtime_error("Fatal : Failed to found Vulkan extension for SDL2.");
 
-    initQueues(nbVirtualSurfaces);
     initDevice(_AppName, _EngineName, window, enableDebugLayers);
+    initQueues(8);
     initSwapchain(width, height, nbVirtualSurfaces);
     createImageViews();
     createRenderPass();
