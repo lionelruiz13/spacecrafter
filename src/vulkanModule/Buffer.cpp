@@ -1,5 +1,6 @@
 #include "VirtualSurface.hpp"
 #include "Buffer.hpp"
+#include "BufferMgr.hpp"
 
 Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : master(_master)
 {

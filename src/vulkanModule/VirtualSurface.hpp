@@ -7,6 +7,7 @@
 #include <cassert>
 #include <memory>
 #include "SubMemory.hpp"
+#include "SubBuffer.hpp"
 
 #define VK_HOST_MEMORY VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 
@@ -17,6 +18,7 @@
 class Vulkan;
 class CommandMgr;
 class Texture;
+class BufferMgr;
 
 class VirtualSurface {
 public:
@@ -48,6 +50,9 @@ public:
     const VkPhysicalDeviceFeatures &getDeviceFeatures();
     VkPipelineCache &getPipelineCache();
     bool ownCompleteFramebuffer() {return ownFramebuffers;}
+    SubBuffer acquireBuffer(int size);
+    void *getBufferPtr(SubBuffer &buffer);
+    void releaseBuffer(SubBuffer &buffer);
 
     const VkDevice &refDevice;
     const std::vector<VkRenderPass> &refRenderPass;
@@ -68,6 +73,7 @@ private:
     VkCommandPool cmdPool;
     VkQueue graphicsQueue;
     Vulkan *master;
+    std::unique_ptr<BufferMgr> bufferMgr;
     int swapchainSize;
     uint32_t frameIndex = -1;
     std::queue<uint32_t> frameIndexQueue;

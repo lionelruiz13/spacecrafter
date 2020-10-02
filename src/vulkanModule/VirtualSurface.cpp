@@ -2,18 +2,20 @@
 #include "VirtualSurface.hpp"
 #include "CommandMgr.hpp"
 #include "Texture.hpp"
+#include "BufferMgr.hpp"
 #include <thread>
 
 VirtualSurface::VirtualSurface(Vulkan *_master, int index) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(_master->refFrameIndex), master(_master)
 {
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.flags = 0; // Optionel
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     poolInfo.queueFamilyIndex = _master->getTransferQueueFamilyIndex();
 
     if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &transferPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool for transfer operations.");
     }
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
     poolInfo.queueFamilyIndex = _master->getGraphicsQueueIndex();
     if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &cmdPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool for transfer operations.");
@@ -22,6 +24,7 @@ VirtualSurface::VirtualSurface(Vulkan *_master, int index) : refDevice(_master->
     _master->assignSwapChainFramebuffers(swapChainFramebuffers, index);
     swapChainExtent = _master->getSwapChainExtent();
     viewportState = _master->getViewportState();
+    bufferMgr = std::make_unique<BufferMgr>(this);
 }
 
 VirtualSurface::VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer, int width, int height) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), master(_master)
@@ -51,6 +54,7 @@ VirtualSurface::VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Text
     viewportState.pScissors = &scissors;
     viewportState.pViewports = &viewport;
     createFramebuffer(frames, depthBuffer);
+    bufferMgr = std::make_unique<BufferMgr>(this);
 }
 
 VirtualSurface::~VirtualSurface()
@@ -103,6 +107,10 @@ bool VirtualSurface::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, V
 void VirtualSurface::free(SubMemory& bufferMemory) {master->free(bufferMemory);}
 void VirtualSurface::mapMemory(SubMemory& bufferMemory, void **data) {master->mapMemory(bufferMemory, data);}
 void VirtualSurface::unmapMemory(SubMemory& bufferMemory) {master->unmapMemory(bufferMemory);}
+SubBuffer VirtualSurface::acquireBuffer(int size) {return bufferMgr->acquireBuffer(size);}
+void *VirtualSurface::getBufferPtr(SubBuffer &buffer) {return bufferMgr->getPtr(buffer);}
+void VirtualSurface::releaseBuffer(SubBuffer &buffer) {bufferMgr->releaseBuffer(buffer);}
+
 
 int VirtualSurface::getNextFrame()
 {
@@ -125,6 +133,7 @@ void VirtualSurface::acquireNextFrame()
 
 void VirtualSurface::submitFrame()
 {
+    bufferMgr->update();
     while (dependencyFrameIndexQueue && dependencyFrameIndexQueue->empty())
         std::this_thread::yield();
     for (uint8_t i = 0; i < commandMgrList.size(); ++i) {

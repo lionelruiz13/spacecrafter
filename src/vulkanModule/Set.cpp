@@ -72,6 +72,20 @@ void Set::bindTexture(Texture *texture, uint32_t binding)
         texture->getInfo(), nullptr, nullptr});
 }
 
+int Set::bindVirtualUniform(Uniform *uniform, uint32_t binding, uint32_t arraySize)
+{
+    dynamicOffsets.push_back(uniform->getOffset());
+    writeSet.emplace_back(VkWriteDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, set, binding, 0, arraySize,
+        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,
+        nullptr, uniform->getBufferInfo(), nullptr});
+    return dynamicOffsets.size() - 1;
+}
+
+void Set::setVirtualUniform(Uniform *uniform, int virtualUniformID)
+{
+    dynamicOffsets[virtualUniformID] = uniform->getOffset();
+}
+
 /*
 void Set::bindTexture(TextureImage *texture, int binding)
 {

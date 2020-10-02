@@ -12,6 +12,7 @@ public:
     Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage);
     ~Buffer();
     VkBuffer &get() {return buffer;}
+    int getOffset() {return 0;}
     //! Update vertex content with data member
     void update();
     //! Intermediate buffer, write your vertex here

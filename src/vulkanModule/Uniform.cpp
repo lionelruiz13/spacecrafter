@@ -1,23 +1,23 @@
 #include "VirtualSurface.hpp"
 #include "Uniform.hpp"
+#include "BufferMgr.hpp"
 
-Uniform::Uniform(VirtualSurface *_master, VkDeviceSize size) : master(_master)
+Uniform::Uniform(VirtualSurface *_master, VkDeviceSize size, bool isVirtual) : master(_master)
 {
-    if (!_master->createBuffer(UNIFORM_BLOC_SIZE, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, bufferMemory, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)) {
-        throw std::runtime_error("Faild to create buffer");
-    }
-    _master->mapMemory(bufferMemory, &data);
-    bufferInfo.buffer = buffer;
-    bufferInfo.offset = 0;
+    buffer = master->acquireBuffer(size);
+    data = master->getBufferPtr(buffer);
+    bufferInfo.buffer = buffer.buffer;
+    bufferInfo.offset = buffer.offset;
     bufferInfo.range = size;
+    if (isVirtual) {
+        offset = bufferInfo.offset;
+        bufferInfo.offset = 0;
+    }
 }
 
 Uniform::~Uniform()
 {
-    master->unmapMemory(bufferMemory);
-    vkDeviceWaitIdle(master->refDevice);
-    vkDestroyBuffer(master->refDevice, buffer, nullptr);
-    master->free(bufferMemory);
+    master->releaseBuffer(buffer);
 }
 
 void Uniform::update()

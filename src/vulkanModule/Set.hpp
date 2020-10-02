@@ -21,8 +21,14 @@ public:
     ~Set();
     void bindUniform(Uniform *uniform, uint32_t binding, uint32_t arraySize = 1);
     void bindTexture(Texture *texture, uint32_t binding);
+    //! Bind uniform location
+    //! @return virtualUniformId to bind uniform to this location
+    int bindVirtualUniform(Uniform *master, uint32_t binding, uint32_t arraySize = 1);
+    //! Attach uniform to uniform location, doesn't affect set bindings to commandMgr before this call
+    void setVirtualUniform(Uniform *uniform, int virtualUniformID);
     //void bindTexture(TextureImage *texture, int binding);
     VkDescriptorSet *get();
+    std::vector<uint32_t> &getDynamicOffsets() {return dynamicOffsets;}
     std::vector<VkWriteDescriptorSet> &getWrites() {return writeSet;}
     void clear() {writeSet.clear();}
     //! Manually update bindings
@@ -33,6 +39,7 @@ private:
     VirtualSurface *master;
     SetMgr *mgr;
     std::vector<VkWriteDescriptorSet> writeSet;
+    std::vector<uint32_t> dynamicOffsets;
     VkDescriptorSet set;
 };
 

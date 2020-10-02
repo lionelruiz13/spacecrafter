@@ -152,8 +152,14 @@ void MemoryManager::merge(SubMemory *subMemory)
         } else {
             continue;
         }
-        memory[subMemory->memoryIndex].availableSpaces.erase(it);
-        it = memory[subMemory->memoryIndex].availableSpaces.begin();
+        if (it == memory[subMemory->memoryIndex].availableSpaces.begin()) {
+            memory[subMemory->memoryIndex].availableSpaces.erase(it);
+            it = memory[subMemory->memoryIndex].availableSpaces.begin();
+        } else {
+            auto tmpIt = it;
+            --it;
+            memory[subMemory->memoryIndex].availableSpaces.erase(tmpIt);
+        }
     }
 }
 

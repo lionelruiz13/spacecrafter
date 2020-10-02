@@ -437,11 +437,11 @@ void CommandMgr::bindSet(PipelineLayout *pipelineLayout, Set *uniform, int bindi
 {
     if (!hasPipeline) return;
     if (singleUse) {
-        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding,  1, uniform->get(), 0, nullptr);
+        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, 1, uniform->get(), uniform->getDynamicOffsets().size(), uniform->getDynamicOffsets().data());
         return;
     }
     for (auto &frame : frames) {
-        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding,  1, uniform->get(), 0, nullptr);
+        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, 1, uniform->get(), uniform->getDynamicOffsets().size(), uniform->getDynamicOffsets().data());
     }
 }
 
