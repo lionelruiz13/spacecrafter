@@ -15,7 +15,7 @@ public:
     ~PipelineLayout();
     //! @brief Set uniform location to this PipelineLayout
     //! @param stages combination of flags describing the types of shader accessing it (vertex, fragment, etc.)
-    void setUniformLocation(VkShaderStageFlags stage, uint32_t binding, uint32_t arraySize = 1);
+    void setUniformLocation(VkShaderStageFlags stage, uint32_t binding, uint32_t arraySize = 1, bool isVirtual = false);
     void setTextureLocation(uint32_t binding, const VkSamplerCreateInfo *samplerInfo = nullptr);
     void setPushConstant(VkShaderStageFlags stage, uint32_t offset, uint32_t size);
     //! Build pipelineLayout
@@ -25,16 +25,19 @@ public:
     //! Link to global pipelineLayout in parameter
     void setGlobalPipelineLayout(PipelineLayout *pl);
     VkPipelineLayout &getPipelineLayout() {return pipelineLayout;}
-    VkDescriptorSetLayout &getDescriptorLayout() {return descriptor[0];}
+    VkDescriptorSetLayout &getDescriptorLayout(int index = -1) {return descriptor[(index != -1) ? index : descriptorPos.front()];}
     static VkSamplerCreateInfo DEFAULT_SAMPLER;
+
 private:
     VirtualSurface *master;
-    VkPipelineLayout pipelineLayout;
+    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+    bool isOk = true;
     std::vector<VkDescriptorSetLayoutBinding> uniformsLayout;
     std::vector<VkDescriptorSetLayout> descriptor;
     std::vector<VkPushConstantRange> pushConstants;
     std::list<VkSampler> sampler;
-    int descriptorPos = -1;
+    //! Inform which descriptor is owned by this PipelineLayout
+    std::vector<int> descriptorPos;
 
     bool builded = false;
 };

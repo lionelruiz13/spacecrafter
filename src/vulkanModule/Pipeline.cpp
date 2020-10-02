@@ -3,7 +3,9 @@
 #include "Pipeline.hpp"
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
+#include "tools/log.hpp"
 #include <fstream>
+#include <algorithm>
 
 std::string Pipeline::shaderDir = "./";
 
@@ -60,6 +62,8 @@ Pipeline::Pipeline(VirtualSurface *_master, PipelineLayout *layout, std::vector<
     depthStencil.minDepthBounds = 0.0f; // Optionnel
     depthStencil.maxDepthBounds = 1.0f; // Optionnel
     depthStencil.stencilTestEnable = VK_FALSE;
+
+    isOk = (pipelineInfo.layout != VK_NULL_HANDLE);
 }
 
 Pipeline::~Pipeline()
@@ -72,23 +76,23 @@ void Pipeline::bindShader(const std::string &filename, const std::string entry)
     size_t first = filename.find_first_of(".") + 1;
     size_t size = filename.find_last_of(".") - first;
     std::string shaderType = filename.substr(first, size);
-    if (shaderType.compare("vert")) {
+    if (shaderType.compare("vert") == 0) {
         bindShader(filename, VK_SHADER_STAGE_VERTEX_BIT, entry);
         return;
     }
-    if (shaderType.compare("frag")) {
+    if (shaderType.compare("frag") == 0) {
         bindShader(filename, VK_SHADER_STAGE_FRAGMENT_BIT, entry);
         return;
     }
-    if (shaderType.compare("geom")) {
+    if (shaderType.compare("geom") == 0) {
         bindShader(filename, VK_SHADER_STAGE_GEOMETRY_BIT, entry);
         return;
     }
-    if (shaderType.compare("tesc")) {
+    if (shaderType.compare("tesc") == 0) {
         bindShader(filename, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, entry);
         return;
     }
-    if (shaderType.compare("tese")) {
+    if (shaderType.compare("tese") == 0) {
         bindShader(filename, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, entry);
         return;
     }
@@ -102,7 +106,9 @@ void Pipeline::bindShader(const std::string &filename, VkShaderStageFlagBits sta
     std::ifstream file(shaderDir + filename, std::ios::ate | std::ios::binary);
 
     if (!file.is_open()) {
-        throw std::runtime_error("failed to open file!");
+        cLog::get()->write("Failed to open file '" + filename + "'", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        isOk = false;
+        return;
     }
 
     size_t fileSize = (size_t) file.tellg();
@@ -127,7 +133,9 @@ void Pipeline::bindShader(const std::string &filename, VkShaderStageFlagBits sta
     tmp.pName = pNames.front().c_str();
 
     if (vkCreateShaderModule(master->refDevice, &createInfo, nullptr, &tmp.module) != VK_SUCCESS) {
-        throw std::runtime_error("échec de la création d'un module shader!");
+        cLog::get()->write("Failed to create shader module from file '" + filename + "'", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        isOk = false;
+        return;
     }
     delete buffer;
     shaderStages.push_back(tmp);
@@ -154,6 +162,20 @@ void Pipeline::setDepthStencilMode(VkBool32 enableDepthTest, VkBool32 enableDept
     rasterizer.depthBiasSlopeFactor = depthBiasSlopeFactor;
 }
 
+void Pipeline::setTessellationState(uint32_t patchControlPoints)
+{
+    tessellation.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+    tessellation.pNext = nullptr;
+    tessellation.flags = 0;
+    tessellation.patchControlPoints = patchControlPoints;
+    pipelineInfo.pTessellationState = &tessellation;
+}
+
+void Pipeline::setLineWidth(float lineWidth)
+{
+    rasterizer.lineWidth = lineWidth;
+}
+
 void Pipeline::bindVertex(VertexArray *vertex, uint32_t binding)
 {
     auto tmp = vertex->getVertexBindingDesc();
@@ -176,6 +198,13 @@ void Pipeline::bindVertex(VertexBuffer &vertex, uint32_t binding)
 
 void Pipeline::build()
 {
+    if (!isOk || bindingDescriptions.empty() || shaderStages.empty()) {
+        cLog::get()->write("Can't build invalid Pipeline", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        for (auto &stage : shaderStages) {
+            vkDestroyShaderModule(master->refDevice, stage.module, nullptr);
+        }
+        return;
+    }
     VkPipelineMultisampleStateCreateInfo multisampling{}; // Pour l'anti-aliasing
     multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     multisampling.sampleShadingEnable = VK_FALSE;
@@ -196,14 +225,13 @@ void Pipeline::build()
     pipelineInfo.pStages = shaderStages.data();
     pipelineInfo.pVertexInputState = &vertexInputInfo;
     pipelineInfo.pMultisampleState = &multisampling;
-
-    // Héritage - le changement entre 2 pipes ayant le même parent est plus rapide
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optionnel
     pipelineInfo.basePipelineIndex = -1; // Optionnel
     pipelineInfo.subpass = 0;
 
     if (vkCreateGraphicsPipelines(master->refDevice, master->getPipelineCache(), 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
-        throw std::runtime_error("échec de la création de la pipeline graphique!");
+        cLog::get()->write("Faild to create Pipeline", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        graphicsPipeline = VK_NULL_HANDLE;
     }
     for (auto &stage : shaderStages) {
         vkDestroyShaderModule(master->refDevice, stage.module, nullptr);

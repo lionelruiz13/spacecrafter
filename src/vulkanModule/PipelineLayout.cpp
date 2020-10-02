@@ -1,7 +1,8 @@
 #include "VirtualSurface.hpp"
 #include "PipelineLayout.hpp"
+#include "tools/log.hpp"
 
-VkSamplerCreateInfo PipelineLayout::DEFAULT_SAMPLER = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO, nullptr, 0, VK_FILTER_LINEAR, VK_FILTER_LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR, VK_SAMPLER_ADDRESS_MODE_REPEAT, VK_SAMPLER_ADDRESS_MODE_REPEAT, VK_SAMPLER_ADDRESS_MODE_REPEAT, 0.0f, VK_TRUE, 8.0f, VK_FALSE, VK_COMPARE_OP_ALWAYS, 0.0f, 0.0f, VK_BORDER_COLOR_INT_OPAQUE_BLACK, VK_FALSE};
+VkSamplerCreateInfo PipelineLayout::DEFAULT_SAMPLER = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO, nullptr, 0, VK_FILTER_LINEAR, VK_FILTER_LINEAR, VK_SAMPLER_MIPMAP_MODE_LINEAR, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, 0.0f, VK_TRUE, 8.0f, VK_FALSE, VK_COMPARE_OP_ALWAYS, 0.0f, 0.0f, VK_BORDER_COLOR_INT_OPAQUE_BLACK, VK_FALSE};
 
 PipelineLayout::PipelineLayout(VirtualSurface *_master) : master(_master)
 {
@@ -14,8 +15,9 @@ PipelineLayout::~PipelineLayout()
         vkDestroySampler(master->refDevice, tmp, nullptr);
     if (builded) {
         vkDestroyPipelineLayout(master->refDevice, pipelineLayout, nullptr);
-        if (descriptorPos >= 0)
-            vkDestroyDescriptorSetLayout(master->refDevice, descriptor[descriptorPos], nullptr);
+    }
+    for (int index : descriptorPos) {
+        vkDestroyDescriptorSetLayout(master->refDevice, descriptor[index], nullptr);
     }
 }
 
@@ -37,11 +39,11 @@ void PipelineLayout::setTextureLocation(uint32_t binding, const VkSamplerCreateI
     uniformsLayout.push_back(samplerLayoutBinding);
 }
 
-void PipelineLayout::setUniformLocation(VkShaderStageFlags stage, uint32_t binding, uint32_t arraySize)
+void PipelineLayout::setUniformLocation(VkShaderStageFlags stage, uint32_t binding, uint32_t arraySize, bool isVirtual)
 {
     VkDescriptorSetLayoutBinding uniformCollection{};
     uniformCollection.binding = binding;
-    uniformCollection.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    uniformCollection.descriptorType = (isVirtual) ? VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC : VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     uniformCollection.descriptorCount = arraySize;
     uniformCollection.stageFlags = stage;
     //uniformCollection.pImmutableSamplers = nullptr; // Optionnel
@@ -58,21 +60,32 @@ void PipelineLayout::buildLayout(VkDescriptorSetLayoutCreateFlags flags)
 
     VkDescriptorSetLayout tmp;
     if (vkCreateDescriptorSetLayout(master->refDevice, &layoutInfo, nullptr, &tmp) != VK_SUCCESS) {
-        throw std::runtime_error("echec de la creation d'un set de descripteurs!");
+        isOk = false;
+        cLog::get()->write("Faild to create Layout", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        tmp = VK_NULL_HANDLE;
     }
-    descriptorPos = descriptor.size(); // Inform which descriptor is owned by this PipelineLayout
+    descriptorPos.push_back(descriptor.size());
     descriptor.push_back(tmp);
     uniformsLayout.clear();
 }
 
 void PipelineLayout::setGlobalPipelineLayout(PipelineLayout *pl)
 {
-    descriptor.push_back(pl->getDescriptorLayout());
+    VkDescriptorSetLayout tmp = pl->getDescriptorLayout();
+    if (tmp == VK_NULL_HANDLE) {
+        isOk = false;
+        cLog::get()->write("Use of invalid Layout", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+    }
+    descriptor.push_back(tmp);
 }
 
 void PipelineLayout::build()
 {
-    assert(uniformsLayout.empty());
+    if (!isOk) {
+        cLog::get()->write("Can't build invalid PipelineLayout", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        return;
+    }
+    assert(uniformsLayout.empty()); // there mustn't be unbuilded layout
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = descriptor.size();
@@ -81,7 +94,9 @@ void PipelineLayout::build()
     pipelineLayoutInfo.pPushConstantRanges = pushConstants.data();
 
     if (vkCreatePipelineLayout(master->refDevice, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
-        throw std::runtime_error("échec de la création du pipeline layout!");
+        cLog::get()->write("Faild to create PipelineLayout", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        pipelineLayout = VK_NULL_HANDLE;
+        return;
     }
     builded = true;
 }

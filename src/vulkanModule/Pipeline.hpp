@@ -26,12 +26,19 @@ public:
     void bindVertex(VertexBuffer &vertex, uint32_t binding);
     //! Set cull mode (default : false)
     void setCullMode(bool enable) {rasterizer.cullMode = enable ? VK_CULL_MODE_BACK_BIT : 0;}
+    //! Set front face (default : true)
+    void setFrontFace(bool clockwise = false) {rasterizer.frontFace = clockwise ? VK_FRONT_FACE_CLOCKWISE : VK_FRONT_FACE_COUNTER_CLOCKWISE;}
     //! Set draw topology (default : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, no breaks)
     void setTopology(VkPrimitiveTopology state, bool enableStripBreaks = false);
     //! Set blend mode (default : blend src alpha)
     void setBlendMode(const VkPipelineColorBlendAttachmentState &blendMode);
     //! Set depth test mode (default : enabled)
     void setDepthStencilMode(VkBool32 enableDepthTest = VK_FALSE, VkBool32 enableDepthWrite = VK_FALSE, VkCompareOp compare = VK_COMPARE_OP_GREATER, VkBool32 enableDepthBiais = VK_FALSE, float depthBiasClamp = 0.0f, float depthBiasSlopeFactor = 1.0f);
+    //! @brief Set tessellation state
+    //! @param patchControlPoints number of control points per patch
+    void setTessellationState(uint32_t patchControlPoints = 32);
+    //! Set line width (default : 1.0f)
+    void setLineWidth(float lineWidth);
     //! Build pipeline for use
     void build();
     VkPipeline &get() {return graphicsPipeline;}
@@ -39,7 +46,8 @@ public:
 private:
     static std::string shaderDir;
     VirtualSurface *master;
-    VkPipeline graphicsPipeline;
+    VkPipeline graphicsPipeline = VK_NULL_HANDLE;
+    bool isOk = true;
     VkGraphicsPipelineCreateInfo pipelineInfo{};
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
     VkPipelineRasterizationStateCreateInfo rasterizer{};
@@ -47,6 +55,7 @@ private:
     VkPipelineColorBlendStateCreateInfo colorBlending{};
     VkPipelineDynamicStateCreateInfo dynamicState{};
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
+    VkPipelineTessellationStateCreateInfo tessellation{};
 
     std::forward_list<std::string> pNames;
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
