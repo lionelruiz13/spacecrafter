@@ -2,6 +2,7 @@
 #define SET_HPP
 
 #include <vulkan/vulkan.h>
+#include <vector>
 
 class VirtualSurface;
 class SetMgr;
@@ -16,7 +17,7 @@ public:
     //! create a Set which can be push
     Set();
     //! create a Set which can be bind
-    Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout);
+    Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout, int setBinding = -1);
     ~Set();
     void bindUniform(Uniform *uniform, uint32_t binding, uint32_t arraySize = 1);
     void bindTexture(Texture *texture, uint32_t binding);
@@ -24,9 +25,13 @@ public:
     VkDescriptorSet *get();
     std::vector<VkWriteDescriptorSet> &getWrites() {return writeSet;}
     void clear() {writeSet.clear();}
-private:
+    //! Manually update bindings
     void update();
+private:
+    // create descriptorSet, return true on success
+    bool createDescriptorSet(VkDescriptorSetAllocateInfo *allocInfo);
     VirtualSurface *master;
+    SetMgr *mgr;
     std::vector<VkWriteDescriptorSet> writeSet;
     VkDescriptorSet set;
 };

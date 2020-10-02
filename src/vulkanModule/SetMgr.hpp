@@ -9,10 +9,11 @@ class SetMgr {
 public:
     SetMgr(VirtualSurface *_master, int maxSet, int maxUniformSet = -1, int maxTextureSet = -1);
     ~SetMgr();
-    VkDescriptorPool &getDescriptorPool() {return pool;}
+    void extend();
+    VkDescriptorPool &getDescriptorPool() {return pools.back();}
 private:
     VirtualSurface *master;
-    VkDescriptorPool pool;
+    std::vector<VkDescriptorPool> pools;
 };
 
 #endif /* end of include guard: SET_MGR_HPP */
