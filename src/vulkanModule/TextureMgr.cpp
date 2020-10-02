@@ -55,16 +55,15 @@ VkSampler TextureMgr::createSampler(const VkSamplerCreateInfo &samplerInfo)
     return sampler;
 }
 
-TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, VkFormat format)
+TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment)
 {
     static std::mutex mtx;
-    mtx.lock();
-    if (format == VK_FORMAT_R8G8B8A8_SRGB && !availableImages[size].empty()) {
-        TextureImage *tmp = new TextureImage(this, availableImages[size].back(), size);
-        availableImages[size].pop_back();
-        mtx.unlock();
-        return tmp;
-    }
+    std::lock_guard<std::mutex> lck(mtx);
+    // if (format == VK_FORMAT_R8G8B8A8_SRGB && usage == VK_IMAGE_USAGE_SAMPLED_BIT && !availableImages[size].empty()) {
+    //     TextureImage *tmp = new TextureImage(this, availableImages[size].back(), size);
+    //     availableImages[size].pop_back();
+    //     return tmp;
+    // }
     // create image
     VkImage image;
     VkImageCreateInfo imageInfo{};
@@ -78,7 +77,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, VkFor
     imageInfo.format = format;
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    imageInfo.usage = usage;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
@@ -93,7 +92,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, VkFor
     viewInfo.image = image;
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     viewInfo.format = format;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.aspectMask = (isDepthAttachment) ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
     viewInfo.subresourceRange.baseArrayLayer = 0;

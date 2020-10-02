@@ -1,38 +1,53 @@
 #ifndef VIRTUAL_SURFACE_HPP
 #define VIRTUAL_SURFACE_HPP
 
-#include "Vulkan.hpp"
 #include <queue>
+#include <vulkan/vulkan.h>
+#include <iostream>
+#include <cassert>
+#include <memory>
+#include "SubMemory.hpp"
 
 #define VK_HOST_MEMORY VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 
+#ifndef MAX_FRAMES_IN_FLIGHT
+#define MAX_FRAMES_IN_FLIGHT 2
+#endif
+
+class Vulkan;
 class CommandMgr;
+class Texture;
 
 class VirtualSurface {
 public:
     VirtualSurface(Vulkan *_master, int index);
+    VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer, int width = -1, int height = -1);
     ~VirtualSurface();
     VkCommandPool &getTransferPool() {return transferPool;}
     VkCommandPool &getCommandPool() {return cmdPool;}
     void submitTransfer(VkSubmitInfo *submitInfo);
-    bool createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties = 0);
-    const VkPipelineViewportStateCreateInfo &getViewportState() {return master->getViewportState();}
-    auto &getGraphicsQueueIndex() {return master->getGraphicsQueueIndex();}
+    bool createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, SubMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties = 0);
+    void free(SubMemory& bufferMemory);
+    void mapMemory(SubMemory& bufferMemory, void **data);
+    void unmapMemory(SubMemory& bufferMemory);
+    const VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
+    size_t &getGraphicsQueueIndex();
     VkQueue &getQueue() {return graphicsQueue;}
-    void getNextFrame();
+    int getNextFrame();
     void releaseFrame();
     void acquireNextFrame();
     void submitFrame();
     void waitEmpty();
-    const VkSemaphore *getImageAvailableSemaphore() {return &imageAvailableSemaphore;}
+    bool isEmpty() {return frameIndexQueue.empty();}
     void registerCommandMgr(CommandMgr *commandMgr) {commandMgrList.push_back(commandMgr);}
     void link(uint8_t frameIndex, VirtualSurface *dependent);
     void setTopSemaphore(uint8_t frameIndex, const VkSemaphore &semaphore);
     const VkSemaphore &getBottomSemaphore(uint8_t frameIndex);
     void finalize(bool waitMaster = true);
     void waitReady();
-    const VkPhysicalDeviceFeatures &getDeviceFeatures() {return master->getDeviceFeatures();}
-    VkPipelineCache &getPipelineCache() {return master->getPipelineCache();}
+    const VkPhysicalDeviceFeatures &getDeviceFeatures();
+    VkPipelineCache &getPipelineCache();
+    bool ownCompleteFramebuffer() {return ownFramebuffers;}
 
     const VkDevice &refDevice;
     const std::vector<VkRenderPass> &refRenderPass;
@@ -41,20 +56,20 @@ public:
 
     VkExtent2D swapChainExtent;
 private:
-    //! selected imageAvailableSemaphore
-    const VkSemaphore &imageAvailableSemaphore;
-    //int switcher = 0; // switch between MAX_FRAME_IN_FLIGHT elements
-    //std::array<VkSemaphore, MAX_FRAMES_IN_FLIGHT> imageAvailableSemaphores;
+    void createFramebuffer(std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer);
     std::vector<CommandMgr*> commandMgrList;
     std::vector<VkFramebuffer> swapChainFramebuffers;
+    VkViewport viewport;
+    VkRect2D scissors;
+    VkPipelineViewportStateCreateInfo viewportState;
+    bool ownFramebuffers = false;
 
-    VkSwapchainKHR *pSwapChain;
     VkCommandPool transferPool;
     VkCommandPool cmdPool;
     VkQueue graphicsQueue;
     Vulkan *master;
     int swapchainSize;
-    uint32_t frameIndex;
+    uint32_t frameIndex = -1;
     std::queue<uint32_t> frameIndexQueue;
     std::queue<uint32_t> *dependencyFrameIndexQueue = nullptr;
     bool isReady = false;
