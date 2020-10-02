@@ -23,7 +23,12 @@ enum class renderPassType : uint8_t {
     USE_DEPTH_BUFFER = 4, // Load previous depth buffer and save it for next render pass
     USE_DEPTH_BUFFER_DONT_SAVE = 5, // Load previous depth buffer without saving it for next render pass
     PRESENT = 6, // Prepair frameBuffer for presentation
-    SINGLE_PASS = 7 // This command is the unique command of the whole
+    DRAW_USE = 7, // Prepair framebuffer for use in shader as sampler2D
+    SINGLE_PASS = 8, // combine CLEAR and PRESENT
+    SINGLE_PASS_DRAW_USE = 9, // combine CLEAR and DRAW_USE
+    DEPTH_BUFFER_SINGLE_PASS_DRAW_USE = 10, // combine CLEAR, CLEAR_DEPTH_BUFFER_DONT_SAVE and DRAW_USE
+    SINGLE_PASS_DRAW_USE_ADDITIVE = 11, // combine DEFAULT and DRAW_USE
+    DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE = 12 // combine CLEAR_DEPTH_BUFFER_DONT_SAVE and DRAW_USE
 };
 
 class CommandMgr {
@@ -91,7 +96,7 @@ private:
     const VkDevice &refDevice;
     VkQueue queue;
     VkCommandBuffer actual;
-    const std::array<VkRenderPass, 8> &refRenderPass;
+    const std::vector<VkRenderPass> &refRenderPass;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
     VkCommandPool cmdPool; // used if singleUse is set to false
     //! Content attached to frame

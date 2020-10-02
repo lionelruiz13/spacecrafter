@@ -565,41 +565,65 @@ void Vulkan::createRenderPass()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
+    renderPass.resize(13);
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[0]) != VK_SUCCESS) { // CLEAR
-        throw std::runtime_error("échec de la création de la render pass!");
+        throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[1]) != VK_SUCCESS) { // DEFAULT
-        throw std::runtime_error("échec de la création de la render pass!");
+        throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[2]) != VK_SUCCESS) { // CLEAR_DEPTH_BUFFER_DONT_SAVE
-        throw std::runtime_error("échec de la création de la render pass!");
+        throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[3]) != VK_SUCCESS) { // CLEAR_DEPTH_BUFFER
-        throw std::runtime_error("échec de la création de la render pass!");
+        throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[4]) != VK_SUCCESS) { // USE_DEPTH_BUFFER
-        throw std::runtime_error("échec de la création de la render pass!");
+        throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[5]) != VK_SUCCESS) { // USE_DEPTH_BUFFER_DONT_SAVE
-        throw std::runtime_error("échec de la création de la render pass!");
+        throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[6]) != VK_SUCCESS) { // PRESENT
-        throw std::runtime_error("échec de la création de la render pass!");
+        throw std::runtime_error("Failed to create RenderPass");
+    }
+    attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[7]) != VK_SUCCESS) { // DRAW_USE
+        throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[7]) != VK_SUCCESS) { // SINGLE_PASS
-        throw std::runtime_error("échec de la création de la render pass!");
+    attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[8]) != VK_SUCCESS) { // SINGLE_PASS
+        throw std::runtime_error("Failed to create RenderPass");
+    }
+    attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[9]) != VK_SUCCESS) { // SINGLE_PASS_DRAW_USE
+        throw std::runtime_error("Failed to create RenderPass");
+    }
+    attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[10]) != VK_SUCCESS) { // DEPTH_BUFFER_SINGLE_PASS_DRAW_USE
+        throw std::runtime_error("Failed to create RenderPass");
+    }
+    attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    attachments[0].initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[11]) != VK_SUCCESS) { // SINGLE_PASS_DRAW_USE_ADDITIVE
+        throw std::runtime_error("Failed to create RenderPass");
+    }
+    attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[12]) != VK_SUCCESS) { // DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE
+        throw std::runtime_error("Failed to create RenderPass");
     }
 }
 
