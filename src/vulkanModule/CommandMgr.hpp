@@ -35,18 +35,22 @@ class CommandMgr {
 public:
     //! @param nbCommandBuffers number of commandBuffers to create
     ~CommandMgr();
-    CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame = false, bool singleUseCommands = false, bool isExternal = false);
-    //! Start recording command
-    void init(int index);
+    CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame = false, bool singleUseCommands = false, bool isExternal = false, bool enableIndividualReset = false);
+    //! @brief Start recording command
+    //! @param compileSelected if true, compile selected command
+    void init(int index, bool compileSelected = true);
     //! Start recording command, begin render pass and bind pipeline
-    void init(int index, Pipeline *pipeline, renderPassType renderPassType);
+    void init(int index, Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true);
     //! Start recording new command, begin render pass, bind pipeline and return command index
-    int initNew(Pipeline *pipeline, renderPassType renderPassType);
+    int initNew(Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true);
+    //! Change selected command, new selected command must be initialized and not compiled
+    void select(int index);
     //! @brief begin render pass
     //! @param renderPassType inform where renderPass is situated
     void beginRenderPass(renderPassType renderPassType);
     void endRenderPass();
     void updateVertex(VertexArray *vertex);
+    void updateVertex(VertexBuffer *vertex);
     void bindVertex(VertexArray *vertex);
     void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, uint32_t bindingCount = 1, VkDeviceSize offset = 0);
     void bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset = 0);
@@ -68,7 +72,7 @@ public:
     void indirectDraw(Buffer *drawArgsArray, VkDeviceSize offset = 0, uint32_t drawCount = 1);
     void drawIndexed(uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t vertexOffset = 0, uint32_t firstInstance = 0);
     void indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset = 0, uint32_t drawCount = 1);
-    //! Finalize recording
+    //! Finalize recording and deselect command
     void compile();
     //! @brief set command submission to be submitted by .submit()
     void setSubmission(int index, bool needDepthBuffer = false, CommandMgr *target = nullptr);
@@ -78,15 +82,20 @@ public:
     void submit();
     //! reset all command buffer (for single-use command buffers), but keep their submission state
     void reset();
+    //! wait all submitted command for actual frameIndex end
+    void waitCompletion() {vkWaitForFences(refDevice, 1, &frames[refFrameIndex].fence, VK_TRUE, UINT64_MAX);}
     //! wait all submitted command end
     void waitCompletion(uint32_t frameIndex) {vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, UINT64_MAX);}
-    void setTopSemaphore(int frameIndex, const VkSemaphore &topSemaphore) {frames[frameIndex].topSemaphore = topSemaphore;}
+    bool isCompleted(uint32_t frameIndex) {return (vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, 0) == VK_SUCCESS);}
+    void setTopSemaphore(int frameIndex, const VkSemaphore &topSemaphore) {isLinked=true;frames[frameIndex].topSemaphore = topSemaphore;}
     const VkSemaphore &getBottomSemaphore(int frameIndex) {return frames[frameIndex].bottomSemaphore;}
     int getCommandIndex();
     static void setPFN_vkCmdPushDescriptorSetKHR(PFN_vkCmdPushDescriptorSetKHR pfn) {PFN_pushSet = pfn;}
     static void setPFN_vkCmdBeginConditionalRenderingEXT(PFN_vkCmdBeginConditionalRenderingEXT pfn) {PFN_vkIf = pfn;}
     static void setPFN_vkCmdEndConditionalRenderingEXT(PFN_vkCmdEndConditionalRenderingEXT pfn) {PFN_vkEndIf = pfn;}
-    bool isRecording() const {return actual != VK_NULL_HANDLE;}
+    bool isRecording() const {return frames[0].actual != VK_NULL_HANDLE;}
+    //! Immediately release as many unused memory as possible, to call when out of memory
+    void releaseUnusedMemory();
 private:
     //! resolve semaphore dependencies for one frame
     void resolve(uint8_t frameIndex);
@@ -124,9 +133,11 @@ private:
     const bool singleUse;
     const bool submissionPerFrame;
     bool needResolve = true;
+    bool isLinked = false;
     short nbCommandBuffers;
     short autoIndex = 0;
     bool inRenderPass = false;
+    bool hasPipeline = false; // tell if there is a pipeline binded
 };
 
 #endif /* end of include guard: COMMAND_MGR_HPP */

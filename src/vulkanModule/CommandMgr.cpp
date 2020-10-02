@@ -12,14 +12,14 @@ PFN_vkCmdPushDescriptorSetKHR CommandMgr::PFN_pushSet;
 PFN_vkCmdBeginConditionalRenderingEXT CommandMgr::PFN_vkIf;
 PFN_vkCmdEndConditionalRenderingEXT CommandMgr::PFN_vkEndIf;
 
-CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands, bool isExternal) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
+CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands, bool isExternal, bool enableIndividualReset) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
 {
     if (!isExternal)
         _master->registerCommandMgr(this);
     queue = _master->getQueue();
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-    poolInfo.flags = singleUseCommands ? VK_COMMAND_POOL_CREATE_TRANSIENT_BIT : 0;
+    poolInfo.flags = singleUseCommands ? VK_COMMAND_POOL_CREATE_TRANSIENT_BIT : (enableIndividualReset ? VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT : 0);
     poolInfo.queueFamilyIndex = _master->getGraphicsQueueIndex();
 
     VkCommandBufferAllocateInfo allocInfo{};
@@ -43,7 +43,7 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submi
     frames.resize(refSwapChainFramebuffers.size());
     for (auto &frame : frames) {
         if (vkCreateSemaphore(refDevice, &semaphoreInfo, nullptr, &frame.bottomSemaphore) != VK_SUCCESS) {
-            throw std::runtime_error("Faild to create semaphore for previously allocated command buffers.");
+            throw std::runtime_error("Failed to create semaphore for previously allocated command buffers.");
         }
         if (singleUse) {
             if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &frame.cmdPool) != VK_SUCCESS) {
@@ -59,11 +59,11 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submi
         auto tmp = frame.signalSemaphores.data();
         for (int i = 0; i < nbCommandBuffers; i++) {
             if (vkCreateSemaphore(refDevice, &semaphoreInfo, nullptr, tmp++) != VK_SUCCESS) {
-                throw std::runtime_error("Faild to create semaphore for previously allocated command buffers.");
+                throw std::runtime_error("Failed to create semaphore for previously allocated command buffers.");
             }
         }
         if (vkCreateFence(refDevice, &fenceInfo, nullptr, &frame.fence) != VK_SUCCESS) {
-            throw std::runtime_error("Faild to create fence.");
+            throw std::runtime_error("Failed to create fence.");
         }
         frame.actual = VK_NULL_HANDLE;
     }
@@ -178,7 +178,7 @@ void CommandMgr::submit()
         needResolve = false;
     }
     if (vkQueueSubmit(queue, frames[refFrameIndex].submitList.size(), frames[refFrameIndex].submitList.data(), frames[refFrameIndex].fence) != VK_SUCCESS) {
-        std::runtime_error("Error : Faild to submit commands.");
+        std::runtime_error("Error : Failed to submit commands.");
     }
     if (submissionPerFrame) {
         frames[refFrameIndex].submittedCommandBuffers.clear();
@@ -190,24 +190,35 @@ void CommandMgr::submit()
 
 void CommandMgr::resolve(uint8_t frameIndex)
 {
-    if (frames[frameIndex].submitList.empty()) {
-        // If there is no commands, link topSemaphore to bottomSemaphore
-        VkSubmitInfo submitInfo;
-        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        submitInfo.pNext = nullptr;
-        submitInfo.waitSemaphoreCount = 1;
-        submitInfo.pWaitSemaphores = &frames[frameIndex].topSemaphore;
-        submitInfo.pWaitDstStageMask = &defaultStage;
-        submitInfo.signalSemaphoreCount = 1;
-        submitInfo.pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
-        submitInfo.commandBufferCount = 0;
-        frames[frameIndex].submitList.push_back(submitInfo);
-    } else
-        frames[frameIndex].submitList.back().pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+    if (isLinked) {
+        if (frames[frameIndex].submitList.empty()) {
+            // If there is no commands, link topSemaphore to bottomSemaphore
+            VkSubmitInfo submitInfo;
+            submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+            submitInfo.pNext = nullptr;
+            submitInfo.waitSemaphoreCount = 1;
+            submitInfo.pWaitSemaphores = &frames[frameIndex].topSemaphore;
+            submitInfo.pWaitDstStageMask = &defaultStage;
+            submitInfo.signalSemaphoreCount = 1;
+            submitInfo.pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+            submitInfo.commandBufferCount = 0;
+            frames[frameIndex].submitList.push_back(submitInfo);
+        } else {
+            frames[frameIndex].submitList.back().pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+        }
+    } else {
+        frames[frameIndex].submitList.front().waitSemaphoreCount = 0;
+        frames[frameIndex].submitList.back().signalSemaphoreCount = 0;
+    }
 }
 
-void CommandMgr::init(int index)
+void CommandMgr::init(int index, bool compileSelected)
 {
+    if (compileSelected && isRecording()) {
+        assert(false);
+        compile();
+    }
+
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     if (singleUse) {
@@ -227,19 +238,33 @@ void CommandMgr::init(int index)
     }
 }
 
-void CommandMgr::init(int index, Pipeline *pipeline, renderPassType renderPassType)
+void CommandMgr::init(int index, Pipeline *pipeline, renderPassType renderPassType, bool compileSelected)
 {
-    init(index);
+    init(index, compileSelected);
     beginRenderPass(renderPassType);
     bindPipeline(pipeline);
 }
 
-int CommandMgr::initNew(Pipeline *pipeline, renderPassType renderPassType)
+int CommandMgr::initNew(Pipeline *pipeline, renderPassType renderPassType, bool compileSelected)
 {
     int index = getCommandIndex();
 
-    init(index, pipeline, renderPassType);
+    init(index, pipeline, renderPassType, compileSelected);
     return index;
+}
+
+void CommandMgr::select(int index)
+{
+    // assume in render pass with valid pipeline bound
+    inRenderPass = true;
+    hasPipeline = true;
+    if (singleUse) {
+        actual = frames[refFrameIndex].commandBuffers[index];
+        return;
+    }
+    for (auto &frame : frames) {
+        frame.actual = frame.commandBuffers[index];
+    }
 }
 
 void CommandMgr::compile()
@@ -265,6 +290,7 @@ void CommandMgr::reset()
 
 void CommandMgr::draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
 {
+    if (!hasPipeline) return;
     if (singleUse) {
         vkCmdDraw(actual, vertexCount, instanceCount, firstVertex, firstInstance);
         return;
@@ -276,6 +302,8 @@ void CommandMgr::draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t fir
 
 void CommandMgr::indirectDraw(Buffer *drawArgsArray, VkDeviceSize offset, uint32_t drawCount)
 {
+    if (!hasPipeline) return;
+    offset += drawArgsArray->getOffset();
     if (singleUse) {
         vkCmdDrawIndirect(actual, drawArgsArray->get(), offset, drawCount, sizeof(VkDrawIndirectCommand));
         return;
@@ -287,6 +315,7 @@ void CommandMgr::indirectDraw(Buffer *drawArgsArray, VkDeviceSize offset, uint32
 
 void CommandMgr::drawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
 {
+    if (!hasPipeline) return;
     if (singleUse) {
         vkCmdDrawIndexed(actual, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
         return;
@@ -298,6 +327,8 @@ void CommandMgr::drawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32
 
 void CommandMgr::indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset, uint32_t drawCount)
 {
+    if (!hasPipeline) return;
+    offset += drawArgsArray->getOffset();
     if (singleUse) {
         vkCmdDrawIndexedIndirect(actual, drawArgsArray->get(), offset, drawCount, sizeof(VkDrawIndexedIndirectCommand));
         return;
@@ -345,6 +376,17 @@ void CommandMgr::updateVertex(VertexArray *vertex)
     }
 }
 
+void CommandMgr::updateVertex(VertexBuffer *vertex)
+{
+    if (singleUse) {
+        vertex->update(actual);
+        return;
+    }
+    for (auto &frame : frames) {
+        vertex->update(frame.actual);
+    }
+}
+
 void CommandMgr::bindVertex(VertexArray *vertex)
 {
     vertex->bind(this);
@@ -352,6 +394,7 @@ void CommandMgr::bindVertex(VertexArray *vertex)
 
 void CommandMgr::bindVertex(VertexBuffer *vertex, uint32_t firstBinding, uint32_t bindingCount, VkDeviceSize offset)
 {
+    if (!hasPipeline) return;
     if (singleUse) {
         vkCmdBindVertexBuffers(actual, firstBinding, bindingCount, &vertex->get(), &offset);
         return;
@@ -363,6 +406,8 @@ void CommandMgr::bindVertex(VertexBuffer *vertex, uint32_t firstBinding, uint32_
 
 void CommandMgr::bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset)
 {
+    if (!hasPipeline) return;
+    offset += buffer->getOffset();
     if (singleUse) {
         vkCmdBindIndexBuffer(actual, buffer->get(), offset, indexType);
         return;
@@ -374,6 +419,11 @@ void CommandMgr::bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize o
 
 void CommandMgr::bindPipeline(Pipeline *pipeline)
 {
+    if (!inRenderPass || pipeline->get() == VK_NULL_HANDLE) {
+        hasPipeline = false;
+        return;
+    }
+    hasPipeline = true;
     if (singleUse) {
         vkCmdBindPipeline(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->get());
         return;
@@ -385,6 +435,7 @@ void CommandMgr::bindPipeline(Pipeline *pipeline)
 
 void CommandMgr::bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding)
 {
+    if (!hasPipeline) return;
     if (singleUse) {
         vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding,  1, uniform->get(), 0, nullptr);
         return;
@@ -396,6 +447,7 @@ void CommandMgr::bindSet(PipelineLayout *pipelineLayout, Set *uniform, int bindi
 
 void CommandMgr::pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding)
 {
+    if (!hasPipeline) return;
     if (singleUse) {
         PFN_pushSet(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, uniform->getWrites().size(), uniform->getWrites().data());
         return;
@@ -408,6 +460,7 @@ void CommandMgr::pushSet(PipelineLayout *pipelineLayout, Set *uniform, int bindi
 void CommandMgr::endRenderPass()
 {
     inRenderPass = false;
+    hasPipeline = false;
     if (singleUse) {
         vkCmdEndRenderPass(actual);
         return;
@@ -419,6 +472,7 @@ void CommandMgr::endRenderPass()
 
 void CommandMgr::pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, const void *data, uint32_t size)
 {
+    if (!hasPipeline) return;
     if (singleUse) {
         vkCmdPushConstants(actual, pipelineLayout->getPipelineLayout(), stage, offset, size, data);
         return;
@@ -430,7 +484,8 @@ void CommandMgr::pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags
 
 void CommandMgr::vkIf(Buffer *bool32, VkDeviceSize offset, bool invert)
 {
-    VkConditionalRenderingBeginInfoEXT cond {VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT, nullptr, bool32->get(), offset, invert ? VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT : 0u};
+    VkConditionalRenderingBeginInfoEXT cond {VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT, nullptr, bool32->get(), offset, 0};
+    if (invert) cond.flags = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT;
     for (auto &frame : frames) {
         PFN_vkIf(frame.actual, &cond);
     }
@@ -452,6 +507,7 @@ int CommandMgr::getCommandIndex()
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandBufferCount = (uint32_t) frames.size();
+    allocInfo.commandPool = cmdPool;
 
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -467,8 +523,21 @@ int CommandMgr::getCommandIndex()
         it++;
         frame.signalSemaphores.resize(autoIndex + 1);
         if (vkCreateSemaphore(refDevice, &semaphoreInfo, nullptr, &frame.signalSemaphores.back()) != VK_SUCCESS) {
-            throw std::runtime_error("Faild to create semaphore for previously allocated command buffers.");
+            throw std::runtime_error("Failed to create semaphore for previously allocated command buffers.");
         }
     }
     return autoIndex++;
+}
+
+void CommandMgr::releaseUnusedMemory()
+{
+    if (singleUse) {
+        for (int i = 0; i < frames.size(); ++i) {
+            if (i == refFrameIndex) continue;
+            vkWaitForFences(refDevice, 1, &frames[i].fence, VK_TRUE, UINT64_MAX);
+            vkResetCommandPool(refDevice, frames[i].cmdPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
+        }
+        return;
+    }
+    vkTrimCommandPool(refDevice, cmdPool, 0);
 }
