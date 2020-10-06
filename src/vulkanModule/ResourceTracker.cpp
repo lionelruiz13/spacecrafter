@@ -9,7 +9,12 @@
 
 ResourceTracker::ResourceTracker() {}
 
-ResourceTracker::~ResourceTracker() {}
+ResourceTracker::~ResourceTracker()
+{
+    for (auto p : pipelineArray) {
+        delete[] p;
+    }
+}
 
 VertexArray *ResourceTracker::track(VertexArray *toTrack)
 {
@@ -50,6 +55,12 @@ Buffer *ResourceTracker::track(Buffer *toTrack)
 Set *ResourceTracker::track(Set *toTrack)
 {
     set.emplace_back(toTrack);
+    return toTrack;
+}
+
+Pipeline *ResourceTracker::trackArray(Pipeline *toTrack)
+{
+    pipelineArray.push_back(toTrack);
     return toTrack;
 }
 
