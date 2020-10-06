@@ -49,7 +49,7 @@ VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_ma
 
 VertexArray::~VertexArray() {}
 
-VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), indexBufferSize(model.indexBufferSize)
+VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), indexBufferSize(model.indexBufferSize), indexType(model.indexType)
 {
     // instanceBuffer mustn't be build for copy, at least for now
     assert(!model.instanceBuffer);
@@ -58,6 +58,7 @@ VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.m
     attributeDesc2.assign(model.attributeDesc2.begin(), model.attributeDesc2.end());
     vertexBuffer = model.vertexBuffer;
     indexBuffer = model.indexBuffer;
+
     pVertexData = model.pVertexData;
     pIndexData = model.pIndexData;
 }
@@ -242,6 +243,8 @@ void VertexArray::assign(VertexArray *vertex, int maxVertices, int maxIndex)
     indexBuffer = vertex->indexBuffer;
     pVertexData = vertex->pVertexData;
     pIndexData = vertex->pIndexData;
+    indexType = vertex->indexType;
+    indexBufferSize = maxIndex;
     vertex->pVertexData += maxVertices * blockSize;
     vertex->pIndexData += maxIndex;
 }
