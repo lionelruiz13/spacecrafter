@@ -45,7 +45,7 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
 
     // Déformation de l'image
     viewport.width = (float) std::min(swapChainExtent.width, swapChainExtent.height);
-    viewport.height = viewport.width;
+    viewport.height = -viewport.width; // invert y axis
     viewport.x = (swapChainExtent.width - viewport.width) / 2.f;
     viewport.y = (swapChainExtent.height - viewport.height) / 2.f;
     viewport.minDepth = 0.0f;
