@@ -232,9 +232,9 @@ unsigned int VertexArray::getIndiceCount() const
     return indexBufferSize;
 }
 
-void VertexArray::assumeVerticeChanged()
+void VertexArray::assumeVerticeChanged(bool needUpdate)
 {
-    vertexUpdate = true;
+    vertexUpdate = needUpdate;
 }
 
 void VertexArray::assign(VertexArray *vertex, int maxVertices, int maxIndex)

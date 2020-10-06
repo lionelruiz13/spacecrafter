@@ -89,8 +89,8 @@ public:
     int getVertexOffset() const;
     void setVertexOffset(int offset);
     Vertice &operator[](int pos);
-    //! Tell vertice value have changed with operator[]
-    void assumeVerticeChanged();
+    //! Tell vertice value has changed (implicit when using fillVertexBuffer)
+    void assumeVerticeChanged(bool needUpdate = true);
     VertexBuffer &getVertexBuffer() const {return *vertexBuffer;}
     const VkVertexInputBindingDescription &getVertexBindingDesc() {return bindingDesc;}
     const std::vector<VkVertexInputAttributeDescription> &getVertexAttributeDesc() {return attributeDesc;}
