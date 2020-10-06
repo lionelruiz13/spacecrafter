@@ -54,6 +54,13 @@ VertexBuffer::~VertexBuffer()
     master->free(vertexBufferMemory);
 }
 
+void VertexBuffer::print()
+{
+    std::cout << "\tExternal update : " << ((submitInfo.commandBufferCount) ? "false" : "true") << "\n\tblocSize : " << bindingDesc.stride << "\n\tSize : " << bufferSize << "\n\tNbBlocs : " << bufferSize / bindingDesc.stride << "\n";
+    std::cout << "\tBufferHandle : " << reinterpret_cast<void *>(vertexBuffer) << "\n\tMemoryHandle : " << reinterpret_cast<void *>(vertexBufferMemory.memory) << "\n\tMemoryOffset : " << vertexBufferMemory.offset << " (" << reinterpret_cast<void *>(vertexBufferMemory.offset) << ")\n\tMemorySize : " << vertexBufferMemory.size << " (" << reinterpret_cast<void *>(vertexBufferMemory.size) << ")\n";
+    std::cout << "\n\tstagingBufferHandle : " << reinterpret_cast<void *>(stagingBuffer) << "\n\tstagingMemoryHandle : " << reinterpret_cast<void *>(stagingBufferMemory.memory) << "\n\tstagingMemoryOffset : " << stagingBufferMemory.offset << " (" << reinterpret_cast<void *>(stagingBufferMemory.offset) << ")\n\tstagingMemorySize : " << stagingBufferMemory.size << " (" << reinterpret_cast<void *>(stagingBufferMemory.size) << ")\n";
+}
+
 void VertexBuffer::update(int size)
 {
     if (submitInfo.commandBufferCount > 0 && size != 0)

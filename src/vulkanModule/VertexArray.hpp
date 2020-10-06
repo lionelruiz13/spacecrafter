@@ -94,6 +94,8 @@ public:
     VertexBuffer &getVertexBuffer() const {return *vertexBuffer;}
     const VkVertexInputBindingDescription &getVertexBindingDesc() {return bindingDesc;}
     const std::vector<VkVertexInputAttributeDescription> &getVertexAttributeDesc() {return attributeDesc;}
+    //! Display debug informations
+    void print();
 private:
     VirtualSurface *master;
     CommandMgr *mgr;

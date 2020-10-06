@@ -249,6 +249,18 @@ void VertexArray::assign(VertexArray *vertex, int maxVertices, int maxIndex)
     vertex->pIndexData += maxIndex;
 }
 
+void VertexArray::print()
+{
+    if (pVertexData) {
+        std::cout << "VertexBuffer :\n";
+        vertexBuffer->print();
+    }
+    if (pIndexData) {
+        std::cout << "IndexBuffer :\n";
+        indexBuffer->print();
+    }
+}
+
 VertexArray::Vertice &VertexArray::operator[](int pos)
 {
     vertice.setData(pVertexData + pos * blockSize);

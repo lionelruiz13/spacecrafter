@@ -13,6 +13,8 @@ public:
     ~Buffer();
     VkBuffer &get() {return buffer;}
     int getOffset() {return 0;}
+    //! Display informations about this buffer
+    void print();
     //! Update vertex content with data member
     void update();
     //! Intermediate buffer, write your vertex here

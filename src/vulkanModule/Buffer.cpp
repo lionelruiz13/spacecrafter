@@ -46,6 +46,11 @@ Buffer::~Buffer()
     master->free(bufferMemory);
 }
 
+void Buffer::print()
+{
+    std::cout << "\thasDebugPrint : false\n";
+}
+
 void Buffer::update()
 {
     master->submitTransfer(&submitInfo);

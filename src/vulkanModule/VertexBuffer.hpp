@@ -15,6 +15,8 @@ public:
         bool isExternallyUpdated = false);
     ~VertexBuffer();
     VkBuffer &get() {return vertexBuffer;}
+    //! Display informations about this VertexBuffer
+    void print();
     //! Update vertex content with data member
     //! @param size hint on number of bytes to update
     void update(int size = -1);
