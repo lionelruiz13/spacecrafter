@@ -7,21 +7,17 @@
 
 layout (binding=0) uniform sampler2D texunit0;
 
-
-in Interpolators
-{
-	vec2 TexCoord;
-	vec3 TexColor;
-} interData;
+layout (location=0) in vec2 TexCoord;
+layout (location=1) in vec3 TexColor;
  
-out vec4 FBColor;
+layout (location=0) out vec4 FBColor;
 
 void main(void)
 {
-	vec4 textureColor = texture(texunit0, interData.TexCoord);
+	vec4 textureColor = texture(texunit0, TexCoord);
 
 	if (textureColor.a == 0.)
 		discard;
 
-	FBColor = vec4 (interData.TexColor.r * textureColor.r, interData.TexColor.g * textureColor.g, interData.TexColor.b * textureColor.b, 1.0);
+	FBColor = vec4 (TexColor.r * textureColor.r, TexColor.g * textureColor.g, TexColor.b * textureColor.b, 1.0);
 }

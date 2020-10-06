@@ -36,9 +36,16 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/shader.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Buffer.hpp"
 
+#define MAX_HINT 1024
 
-NebulaMgr::NebulaMgr(void) : tex_NEBULA(nullptr),
+NebulaMgr::NebulaMgr(ThreadContext *_context) : tex_NEBULA(nullptr),
 circleScale(1.f), circleColor(Vec3f(0.2,0.2,1.0)), labelColor(v3fNull),
 flagBright(false), displaySpecificHint(false),
 dsoPictoSize(6)
@@ -47,9 +54,10 @@ dsoPictoSize(6)
 	if (! initTexPicto())
 		cLog::get()->write("DSO: error while loading pictogram texture", LOG_TYPE::L_ERROR);
 
-	createShaderHint();
+	context = _context;
+	//createShaderHint();
 	createSC_context();
-	Nebula::createSC_context();
+	Nebula::createSC_context(context);
 }
 
 NebulaMgr::~NebulaMgr()
@@ -61,22 +69,65 @@ NebulaMgr::~NebulaMgr()
 	// font = nullptr;
 }
 
-void NebulaMgr::createShaderHint()
-{
-	shaderNebulaHint = std::make_unique<shaderProgram>();
-	shaderNebulaHint->init("nebulaHint.vert","nebulaHint.frag");
-	shaderNebulaHint->setUniformLocation("fader");
-}
-
+// void NebulaMgr::createShaderHint()
+// {
+// 	shaderNebulaHint = std::make_unique<shaderProgram>();
+// 	shaderNebulaHint->init("nebulaHint.vert","nebulaHint.frag");
+// 	shaderNebulaHint->setUniformLocation("fader");
+// }
 
 void NebulaMgr::createSC_context()
 {
-	m_hintGL = std::make_unique<VertexArray>();
+	m_hintGL = std::make_unique<VertexArray>(context->surface);
 	m_hintGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_hintGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
 	m_hintGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
-}
+	m_hintGL->build(MAX_HINT * 4);
+	m_hintGL->registerIndexBuffer(BufferAccess::STATIC, MAX_HINT * 6, 2, VK_INDEX_TYPE_UINT16);
+	{ // initialize index buffer
+		std::vector<uint16_t> tmpIndex;
+		tmpIndex.reserve(MAX_HINT * 6);
+		for (int i = 0; i < MAX_HINT * 4; i += 4) {
+			tmpIndex.push_back(i + 0);
+			tmpIndex.push_back(i + 1);
+			tmpIndex.push_back(i + 2);
 
+			tmpIndex.push_back(i + 2);
+			tmpIndex.push_back(i + 1);
+			tmpIndex.push_back(i + 3);
+		}
+		m_hintGL->fillIndexBuffer(MAX_HINT * 3, reinterpret_cast<uint32_t *>(tmpIndex.data()));
+	}
+	layoutHint = std::make_unique<PipelineLayout>(context->surface);
+	layoutHint->setTextureLocation(0);
+	layoutHint->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	layoutHint->buildLayout();
+	layoutHint->setGlobalPipelineLayout(context->global->globalLayout);
+	layoutHint->build();
+	pipelineHint = std::make_unique<Pipeline>(context->surface, layoutHint.get());
+	pipelineHint->setDepthStencilMode();
+	pipelineHint->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineHint->bindVertex(m_hintGL.get());
+	pipelineHint->bindShader("nebulaHint.vert.spv");
+	pipelineHint->bindShader("nebulaHint.frag.spv");
+	pipelineHint->build();
+	setHint = std::make_unique<Set>(context->surface, context->setMgr, layoutHint.get());
+	setHint->bindTexture(tex_NEBULA->getTexture(), 0);
+	uniformHint = std::make_unique<Uniform>(context->surface, sizeof(float));
+	pUniformHint = static_cast<float *>(uniformHint->data);
+	setHint->bindUniform(uniformHint.get(), 1);
+	drawDataHint = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	pDrawDataHint = static_cast<uint32_t *>(drawDataHint->data);
+	pDrawDataHint[1] = 1; // instanceCount
+	pDrawDataHint[2] = pDrawDataHint[3] = pDrawDataHint[4] = 0; // offsets
+	CommandMgr *cmdMgr = context->commandMgr;
+	commandIndex = cmdMgr->initNew(pipelineHint.get());
+	cmdMgr->bindVertex(m_hintGL.get());
+	cmdMgr->bindSet(layoutHint.get(), setHint.get());
+	cmdMgr->bindSet(layoutHint.get(), context->global->globalSet, 1);
+	cmdMgr->indirectDrawIndexed(drawDataHint.get());
+	cmdMgr->compile();
+}
 
 bool NebulaMgr::initTexPicto()
 {
@@ -146,8 +197,8 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 
 	//cout << "Draw Nebulaes" << endl;
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_ONE, GL_ONE);
 
 	Vec3f pXYZ;
 
@@ -164,6 +215,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
 	Vec3d win;
 
+	Nebula::beginDraw(prj);
 	for (const auto &n : nebGrid) {
 		// improve performance by skipping if too small to see
 		if ( n->getAngularSize()>size_limit|| (hintsFader.getInterstate()>0.0001 && n->getMag() <= getMaxMagHints())) {
@@ -184,34 +236,46 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 				n->drawHint(prj, nav, vecHintPos, vecHintTex, vecHintColor, displaySpecificHint, circleColor, getPictoSize());
 		}
 	}
+	Nebula::endDraw();
 	drawAllHint(prj);
 }
 
 void NebulaMgr::drawAllHint(const Projector* prj)
 {
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 
-	glBindTexture (GL_TEXTURE_2D, tex_NEBULA->getID());
+	// glBindTexture (GL_TEXTURE_2D, tex_NEBULA->getID());
 
 	if(vecHintPos.size()==0)
 		return;
 
-	shaderNebulaHint->use();
-	shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
+	// shaderNebulaHint->use();
+	//shaderNebulaHint->setUniform("fader", hintsFader.getInterstate());
+	*pUniformHint = hintsFader.getInterstate();
 	// pipelineNebulaHint
 
+	if (vecHintPos.size() > MAX_HINT * 8) {
+		std::cout << "Too many nebula hint." << std::endl;
+		vecHintPos.resize(MAX_HINT * 8);
+		vecHintTex.resize(MAX_HINT * 8);
+		vecHintColor.resize(MAX_HINT * 12);
+	}
 	m_hintGL->fillVertexBuffer(BufferType::POS2D, vecHintPos);
 	m_hintGL->fillVertexBuffer(BufferType::TEXTURE, vecHintTex);
 	m_hintGL->fillVertexBuffer(BufferType::COLOR, vecHintColor);
+	m_hintGL->update();
 
 	// m_hintGL->bind();
 	// for(unsigned int i=0; i < (vecHintPos.size()/8) ; i++)
 	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 4*i, 4);
 	// m_hintGL->unBind();
 	// shaderNebulaHint->unuse();
-	Renderer::drawMultiArrays(shaderNebulaHint.get(), m_hintGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, vecHintPos.size()/8, 4);
+	*pDrawDataHint = vecHintPos.size()/2;
+	drawDataHint->update();
+	context->commandMgr->setSubmission(commandIndex);
+	//Renderer::drawMultiArrays(shaderNebulaHint.get(), m_hintGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, vecHintPos.size()/8, 4);
 
 	vecHintPos.clear();
 	vecHintTex.clear();
@@ -425,7 +489,7 @@ std::vector<std::string> NebulaMgr::listMatchingObjectsI18n(const std::string& o
 	transform(objw.begin(), objw.end(), objw.begin(), ::toupper);
 
 	// Search by common names
-	for (nebGrid_t::iterator iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
+	for (auto iter = nebGrid.rawBegin(); iter != nebGrid.end(); ++iter) {
 		if((*iter)->isHidden()==true) continue;
 		std::string constw = (*iter)->getNameI18n().substr(0, objw.size());
 		transform(constw.begin(), constw.end(), constw.begin(), ::toupper);

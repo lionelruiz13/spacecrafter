@@ -39,20 +39,33 @@
 #include "bodyModule/orbit.hpp"
 #include "renderGL/stateGL.hpp"
 
-class VertexArray;
-class shaderProgram;
+#include "vulkanModule/Context.hpp"
 
+class VertexArray;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+class Buffer;
+class CommandMgr;
 
 class Ring2D {
 public:
-	Ring2D(float _r_min, float _r_max, GLint slices, GLint stacks, bool h);
+	Ring2D(float _r_min, float _r_max, GLint slices, GLint stacks, bool h, VertexArray &vertexBase);
 	~Ring2D();
-	void draw(shaderProgram* shader);
+	void initFrom(VertexArray &vertex);
+	void draw(void *pDrawData);
 
 private:
 	void computeRing(GLint slices, GLint stacks, bool h);
-	std::vector<GLfloat> dataTexture, dataVertex;
+	std::vector<float> datas;
 	std::unique_ptr<VertexArray> m_dataGL; //currentModel
+	struct {
+		uint32_t vertexCount;
+    	uint32_t instanceCount;
+    	uint32_t firstVertex;
+    	uint32_t firstInstance;
+	} drawData{0, 1, 0, 0};
 	float r_min;
 	float r_max;
 };
@@ -62,7 +75,7 @@ private:
 class Ring {
 
 public:
-	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init);
+	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init, ThreadContext *context);
 	~Ring(void);
 
 	void draw(const Projector* prj,const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
@@ -75,8 +88,8 @@ public:
 		return radius_min*mc;
 	}
 
-	unsigned int getTexID(void) const {
-		return tex->getID();
+	auto getTexTexture(void) const {
+		return tex->getTexture();
 	}
 
 	void multiplyRadius(float f) {
@@ -88,8 +101,28 @@ private:
 	const double radius_max;
 	const s_texture *tex;
 
-	std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
-	void createSC_context();
+	//std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
+	void createSC_context(ThreadContext *context);
+
+	bool needRecording = true;
+	CommandMgr *cmdMgr;
+	Set *globalSet;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<VertexArray> vertex;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uniform;
+	std::unique_ptr<Buffer> drawData;
+	struct {
+		Mat4f ModelViewMatrix;
+		Mat4f ModelViewMatrixInverse;
+		Vec3f PlanetPosition;
+		float PlanetRadius;
+		Vec3f LightDirection;
+		float SunnySideUp;
+		Vec3f clipping_fov;
+		float RingScale;
+	} *pUniform;
 
 	Ring2D* lowUP;
 	Ring2D* lowDOWN;

@@ -11,10 +11,10 @@ layout (location=0)in vec2 position;
 layout (location=3)in vec4 color;
 
 // for MVP2D
-#include <cam_block.glsl>
+#include <cam_block_only.glsl>
 
 //sortie
-out vec4 Color;
+layout (location=0) out vec4 Color;
 
 void main()
 {

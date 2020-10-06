@@ -53,7 +53,9 @@ enum class LOG_FILE : char {
 	INTERNAL,
 	SCRIPT,
 	SHADER,
-	TCP
+	TCP,
+	VULKAN,
+	VULKAN_LAYERS
 };
 
 class cLog {
@@ -100,6 +102,10 @@ public:
 		isDebug = debugging;
 	}
 
+	void setWriteLog(bool writelog) {
+		isWritingLog = writelog;
+	}
+
 	/*!
 	*  \brief Retourn l'état du Debug
 	*  \return true si le Debug est activé, false sinon
@@ -126,6 +132,7 @@ private:
 	void writeConsole(const std::string&, const LOG_TYPE&);
 	std::string getDate();
 	bool isDebug = false;
+	bool isWritingLog = true;
 };
 
 #endif

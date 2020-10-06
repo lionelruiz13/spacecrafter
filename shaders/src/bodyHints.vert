@@ -8,16 +8,7 @@
 #pragma optionNV(fastprecision off)
 
 layout (location=0)in vec2 position;
-
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
+#include <cam_block_only.glsl>
 
 void main()
 {

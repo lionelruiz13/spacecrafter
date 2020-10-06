@@ -42,6 +42,7 @@ CheckConfig::~CheckConfig()
 void CheckConfig::checkMainSettings()
 {
 	tmpSettings[SCK_DEBUG]="false";
+	tmpSettings[SCK_LOG]="true";
 	// mainSettings["debug_opengl"]="false";
 	tmpSettings[SCK_MILKYWAY_IRIS] = "false";
 	tmpSettings[SCK_FLAG_OPTOMA]="false";
@@ -418,9 +419,9 @@ void CheckConfig::checkConfigIni(const std::string &fullpathfile, const std::str
 		// 	std::cout << "nothing to do" << std::endl;
 		//  for (auto i =0; i<user_conf.getNsec(); i++) {
 		//	 	std::cout << user_conf.getSecname(i) << std::endl;
-	
+
 		// 	std::list<std::string> tmp = user_conf.getKeyFromSection(i);
-		// 	for (auto it=tmp.begin(); it != tmp.end(); ++it) 
+		// 	for (auto it=tmp.begin(); it != tmp.end(); ++it)
 		// 		std::cout << "|->" << *it << std::endl;
 		// }
 		cLog::get()->write("config.ini is up to date");

@@ -10,20 +10,14 @@ layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
+#include <cam_block.glsl>
+
+layout (binding=2) uniform globalVertGeom {
+	float planetScaledRadius;
+	float planetOneMinusOblateness;
 };
 
-uniform float planetScaledRadius;
-uniform float planetOneMinusOblateness;
-
-out VS_OUT{
+layout(location=0) out VS_OUT{
 	vec3 glPosition;
     vec2 TexCoord;
     vec3 Normal;
@@ -41,4 +35,3 @@ void main()
 	vs_out.TexCoord = texcoord;
 	vs_out.Normal = normal;
 }
-

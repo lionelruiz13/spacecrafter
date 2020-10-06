@@ -35,37 +35,49 @@
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 
+#include "vulkanModule/Context.hpp"
+#include "vulkan/vulkan.h"
+
 #define NB_MAX_LIST 7
 #define MAX_POINTS 16384
+
 
 class Navigator;
 class Projector;
 class VertexArray;
-class shaderProgram;
-
+class PipelineLayout;
+class Pipeline;
+class Uniform;
+class Buffer;
 
 //! Class which manages a line to display an object position around the sky
 class BodyTrace: public NoCopy {
 public:
 	struct BodyList {
-		Vec3f color;
+		Vec3f *color;
+		Mat4f *mat;
+		std::unique_ptr<Uniform> uColor;
+		std::unique_ptr<Uniform> uMat;
+		std::unique_ptr<Set> set;
+		std::unique_ptr<VertexArray> vertex;
+		Vec3f *punts;
+		VkDrawIndirectCommand *drawData;
 		int size;
-		Vec3f punts[MAX_POINTS];
 		Vec2f old_punt;
 		bool hide;
 	};
 
-	BodyTrace();
+	BodyTrace(ThreadContext *context);
 	virtual ~BodyTrace();
 
 	void draw(const Projector *prj,const Navigator *nav);
 
 	void setColor(const Vec3f& c, int numberlist) {
-		bodyData[numberlist].color = c;
+		*bodyData[numberlist].color = c;
 	}
 
 	const Vec3f& getColor( int numberlist) {
-		return bodyData[numberlist].color;
+		return *bodyData[numberlist].color;
 	}
 
 	void hide(int numberList);
@@ -129,13 +141,15 @@ private:
 	Vec3d pt1;
 	Vec3d pt2;
 
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
+	CommandMgr *cmdMgr;
+	int commandIndex;
+
 	std::vector<float> vecVertex;
-	std::unique_ptr<shaderProgram> shaderTrace;
-	std::unique_ptr<VertexArray> m_dataGL;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<Buffer> drawData;
 };
 
 
 #endif // __BODYTRACE_H__
-
-

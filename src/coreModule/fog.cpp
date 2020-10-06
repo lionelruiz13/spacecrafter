@@ -32,20 +32,38 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
+// #include "renderGL/OpenGL.hpp"
+// #include "renderGL/shader.hpp"
+// #include "renderGL/Renderer.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
 
-
-
-std::unique_ptr<shaderProgram> Fog::shaderFog;
+//std::unique_ptr<shaderProgram> Fog::shaderFog;
 s_texture* Fog::fog_tex;
+VertexArray *Fog::vertexModel;
+PipelineLayout *Fog::layout;
+Pipeline *Fog::pipeline;
+int Fog::vUniformID1;
+int Fog::vUniformID2;
+Set *Fog::set;
 
-Fog::Fog(float _radius) : radius(_radius)
+Fog::Fog(float _radius, ThreadContext *context) : radius(_radius)
 {
-	m_fogGL = std::make_unique<VertexArray>();
+	m_fogGL = std::make_unique<VertexArray>(context->surface);
 	m_fogGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_fogGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	uMV = std::make_unique<Uniform>(context->surface, sizeof(*pMV), true);
+	pMV = static_cast<typeof(pMV)>(uMV->data);
+	uFrag = std::make_unique<Uniform>(context->surface, sizeof(float) * 2, true);
+	psky_brightness = static_cast<float *>(uFrag->data);
+	pFader = psky_brightness + 1;
+	cmdMgr = context->commandMgr;
+	globalSet = context->global->globalSet;
 }
 
 
@@ -53,16 +71,45 @@ Fog::~Fog()
 {}
 
 
-void Fog::createSC_context()
+void Fog::createSC_context(ThreadContext *context)
 {
-	shaderFog = std::make_unique<shaderProgram>();
-	shaderFog-> init( "fog.vert","fog.frag");
+	//context = _context;
+	// shaderFog = std::make_unique<shaderProgram>();
+	// shaderFog-> init( "fog.vert","fog.frag");
 
-	shaderFog->setUniformLocation("fader");
-	shaderFog->setUniformLocation("sky_brightness");
-	shaderFog->setUniformLocation("ModelViewMatrix");
+	// shaderFog->setUniformLocation("sky_brightness");
+	// shaderFog->setUniformLocation("fader");
+	//
+	// shaderFog->setUniformLocation("ModelViewMatrix");
 
+	vertexModel = context->global->tracker->track(new VertexArray(context->surface));
+	vertexModel->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	vertexModel->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+
+	layout = context->global->tracker->track(new PipelineLayout(context->surface));
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setTextureLocation(0);
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 1, 1, true);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2, 1, true);
+	layout->buildLayout();
+	layout->build();
+	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline->setDepthStencilMode();
+	pipeline->setFrontFace();
+	pipeline->setCullMode(true);
+	pipeline->setBlendMode(BLEND_ADD);
+	pipeline->bindVertex(vertexModel);
+	pipeline->bindShader("fog.vert.spv");
+	pipeline->bindShader("fog.frag.spv");
+	pipeline->build();
+	set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
 	fog_tex = new s_texture("fog.png",TEX_LOAD_TYPE_PNG_SOLID_REPEAT,false);
+	set->bindTexture(fog_tex->getTexture(), 0);
+	Uniform uniformModel1(context->surface, 16, true);
+	vUniformID1 = set->bindVirtualUniform(&uniformModel1, 1);
+	Uniform uniformModel2(context->surface, 2, true);
+	vUniformID2 = set->bindVirtualUniform(&uniformModel2, 2);
+	set->update();
 }
 
 void Fog::initShader()
@@ -72,8 +119,17 @@ void Fog::initShader()
 
 	createFogMesh(radius, radius*sinf(alt_angle*M_PI/180.), 128,1, &dataTex, &dataPos);
 
+	m_fogGL->build(dataPos.size() / 3);
 	m_fogGL->fillVertexBuffer(BufferType::POS3D, dataPos);
 	m_fogGL->fillVertexBuffer(BufferType::TEXTURE, dataTex);
+	set->setVirtualUniform(uMV.get(), vUniformID1);
+	set->setVirtualUniform(uFrag.get(), vUniformID2);
+	commandIndex = cmdMgr->initNew(pipeline);
+	cmdMgr->bindSet(layout, globalSet, 0);
+	cmdMgr->bindSet(layout, set, 1);
+	cmdMgr->bindVertex(m_fogGL.get());
+	cmdMgr->draw(dataPos.size()/3);
+	cmdMgr->compile();
 
 	dataTex.clear();
 	dataPos.clear();
@@ -85,25 +141,28 @@ void Fog::draw(const Projector* prj, const Navigator* nav) const
 {
 	if (!fader.getInterstate()) return;
 
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	//StateGL::BlendFunc(GL_ONE, GL_ONE);
 
-	StateGL::enable(GL_BLEND);
-	StateGL::enable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	// StateGL::enable(GL_BLEND);
+	// StateGL::enable(GL_CULL_FACE);
+	// glCullFace(GL_FRONT);
 
-	shaderFog->use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, fog_tex->getID());
-	shaderFog->setUniform("fader", fader.getInterstate());
-	shaderFog->setUniform("sky_brightness", sky_brightness);
-	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(angle_shift*M_PI/180.)))).convert();
-	shaderFog->setUniform("ModelViewMatrix",matrix);
+	// shaderFog->use();
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, fog_tex->getID());
+	// shaderFog->setUniform("fader", fader.getInterstate());
+	// shaderFog->setUniform("sky_brightness", sky_brightness);
+	*pFader = fader.getInterstate();
+	*psky_brightness = sky_brightness;
+	*pMV = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(angle_shift*M_PI/180.)))).convert();
+	// shaderFog->setUniform("ModelViewMatrix",matrix);
 
-	Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,nbVertex);
+	cmdMgr->setSubmission(commandIndex);
+	//Renderer::drawArrays(shaderFog.get(), m_fogGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,nbVertex);
 
-	glCullFace(GL_BACK);
-	StateGL::disable(GL_CULL_FACE);
-	glActiveTexture(GL_TEXTURE0);
+	// glCullFace(GL_BACK);
+	// StateGL::disable(GL_CULL_FACE);
+	// glActiveTexture(GL_TEXTURE0);
 }
 
 

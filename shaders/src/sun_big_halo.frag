@@ -5,20 +5,16 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-
-in GtF
-{
-	vec2 Center;
-	vec2 TexCoord;
-} gtf;
+layout(location=0) in vec2 Center;
+layout(location=1) in vec2 TexCoord;
  
-uniform float cmag;
-uniform vec3 color;
-uniform float radius; //rayon apparent du soleil en px
+layout(binding=2) uniform u1 {float cmag;};
+layout(binding=4) uniform u2 {vec3 color;};
+layout(binding=3) uniform u3 {float radius;}; //rayon apparent du soleil en px
 
 layout (binding=0) uniform sampler2D texunit0;
 
-out vec3 FragColor;
+layout(location=0) out vec3 FragColor;
 
 //constantes à adapter
 float C_RADIUS=1.1; //coefficient liée au radius
@@ -28,12 +24,12 @@ float ACCENTUATION2 = 0.7; //je ne sais pas a quoi cela sert
 void main(void)
 {
 	// calcul du halo de loin
-	vec3 tex_color = vec3(texture(texunit0, gtf.TexCoord)).rgb;
+	vec3 tex_color = vec3(texture(texunit0, TexCoord)).rgb;
 	vec3 farHalo = vec3(tex_color.r * color.r, tex_color.g * color.g, tex_color.b * color.b);
 	
 	// calcul du halo au centre 
 	vec3 nearHalo;
-	vec2 pos = gl_FragCoord.xy-gtf.Center;
+	vec2 pos = gl_FragCoord.xy-Center;
 	float posPixel = sqrt(dot(pos,pos));
 	if (posPixel < C_RADIUS * radius)
 		nearHalo= vec3(color * min(1.0, max(0.0,ACCENTUATION2*(1.0-ACCENTUATION1 *posPixel/(C_RADIUS*radius)))));

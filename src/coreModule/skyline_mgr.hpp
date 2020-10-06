@@ -38,9 +38,11 @@
 #include "coreModule/core_common.hpp"
 #include "tools/no_copy.hpp"
 
+class ThreadContext;
+
 class SkyLineMgr: public NoCopy  {
 public:
-	SkyLineMgr();
+	SkyLineMgr(ThreadContext *context);
 	~SkyLineMgr();
 
 	int size() {

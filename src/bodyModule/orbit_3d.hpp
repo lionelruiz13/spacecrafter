@@ -30,6 +30,8 @@ class Body;
 class Projector;
 class Navigator;
 
+class Uniform;
+
 class Orbit3D : public OrbitPlot {
 public:
 
@@ -49,7 +51,12 @@ private:
 	const Projector * prj;
 	Mat4d mat;
 
-
+	int commandIndex;
+	std::unique_ptr<Uniform> uModelViewMatrix, uColor, uclipping_fov;
+	std::unique_ptr<Set> set;
+	Mat4f *pModelViewMatrix;
+	Vec4f *pColor;
+	Vec3f *pclipping_fov;
 };
 
 #endif

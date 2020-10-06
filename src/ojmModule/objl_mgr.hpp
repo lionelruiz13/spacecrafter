@@ -5,18 +5,19 @@
 #include <map>
 #include "renderGL/shader.hpp"
 
+#include "vulkanModule/Context.hpp"
 
 class ObjL;
 
 
 /**
  * \class ObjLMgr
- * \brief Gestionnaire d'objets 3D dans le logiciel 
+ * \brief Gestionnaire d'objets 3D dans le logiciel
  * \author Olivier NIVOIX
  * \date 21 juin 2018
- * 
+ *
  * Cette classe a pour but de regrouper la gestion de tous les objets 3D de Body
- * 
+ *
  * @section DESCRIPTION
  *
  * Tout objet affiché par Body est géré dans cette classe.
@@ -24,17 +25,17 @@ class ObjL;
  * Cette séparation permet de pouvoir afficher un même objet 3D pour différentes planètes.
  *
  * Le tracé est laissé à la charge des fichiers ObjL contenus dans la map.
- * 
+ *
  * @section FONCTIONNEMENT
- * 
+ *
  * Une map sert de conteneur pour le stockage des ObjL.
- * 
+ *
  * Les classes de Body viennent chercher l'objet qui les intéresse.
- * 
+ *
  */
 class ObjLMgr {
 public:
-	ObjLMgr();
+	ObjLMgr(ThreadContext *_context);
 
 	//! fixer le chemin relatif des objets3D
 	void setDirectoryPath(const std::string &directoryName) {
@@ -79,6 +80,7 @@ private:
 	std::map <const std::string, ObjL*> objectMap;
 	//! chemin absolu des objet3D
 	std::string defaultDirectory;
+	ThreadContext *context;
 	ObjL* defaultObject = nullptr;
 };
 

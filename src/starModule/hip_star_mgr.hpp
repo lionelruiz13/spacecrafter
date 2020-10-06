@@ -34,10 +34,12 @@
 #include "tools/fader.hpp"
 #include "tools/object_type.hpp"
 #include "tools/object.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+// #include "renderGL/shader.hpp"
+// #include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
+
+#include "vulkanModule/Context.hpp"
 
 class Translator;
 class InitParser;
@@ -51,6 +53,10 @@ class s_font;
 class HipStarMgr;
 class GeodesicGrid;
 class VertexArray;
+class Uniform;
+class Pipeline;
+class Buffer;
+class Texture;
 
 typedef std::tuple<double, double, const std::string , const Vec4f > starDBtoDraw;
 
@@ -132,10 +138,10 @@ private:
 //! This position for a star is expressed as a 3-dimensional vector
 //! which points from the observer (at the centre of the geodesic sphere)
 //! to the position of the star as observed on the celestial sphere.
-
+class HipStarMgr;
 class HipStarMgr: public NoCopy , public ModuleFont, public ModuleFader<LinearFader> {
 public:
-	HipStarMgr(int width,int height);
+	HipStarMgr(int width,int height, ThreadContext *_context);
 	virtual ~HipStarMgr(void);
 
 	//!/////////////////////////////////////////////////////////////////////////
@@ -501,19 +507,40 @@ private:
 
 	mutable int nbStarsToDraw;
 	void createShaderParams(int width,int height);
+	static void sExecuteDraw(HipStarMgr *self);
+	void executeDraw();
 	// void deleteShader();
-	std::unique_ptr<shaderProgram> shaderStars, shaderFBO;
-	mutable std::vector<float> dataPos;
-	mutable std::vector<float> dataMag;
-	mutable std::vector<float> dataColor;
+	ThreadContext *context;
+	std::vector<std::shared_ptr<Texture>> colorBuffer;
+	std::unique_ptr<Texture> depthBuffer;
+	std::unique_ptr<VirtualSurface> surface;
+	std::unique_ptr<CommandMgr> cmdMgr;
+	std::unique_ptr<SetMgr> setMgr;
+	//std::unique_ptr<shaderProgram> shaderStars, shaderFBO;
+	// mutable std::vector<float> dataPos;
+	// mutable std::vector<float> dataMag;
+	// mutable std::vector<float> dataColor;
+	mutable float *vertexData;
+	std::unique_ptr<PipelineLayout> m_layoutStars, m_layoutFBO;
+	std::unique_ptr<Pipeline> m_pipelineStars, m_pipelineFBO;
 	std::unique_ptr<VertexArray> m_starsGL, m_drawFBO_GL;
+	std::unique_ptr<Set> m_setStars;
+	std::unique_ptr<Buffer> drawData;
+	uint32_t *pVertexCount;
+	int commandIndexClear, commandIndexHold;
+	typedef struct {
+		int commandIndex;
+		std::unique_ptr<Set> set;
+	} dataFBO_t;
+	std::vector<dataFBO_t> dataFBO;
+	int frameIndex = 0;
 	int sizeTexFbo;
 	bool starTrace = false;
-	
+
 	//FBO and render buffer object ID
-	GLuint fboID, rbID;
+	//GLuint fboID, rbID;
 	//offscreen render texture ID
-	GLuint renderTextureID;
+	//GLuint renderTextureID;
 };
 
 

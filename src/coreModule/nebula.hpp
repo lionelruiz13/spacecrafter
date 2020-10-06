@@ -38,8 +38,11 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 
+#include "vulkanModule/Context.hpp"
+
 class VertexArray;
-class shaderProgram;
+//class shaderProgram;
+class Pipeline;
 
 /**
  * \brief     Type of deepSkyObject
@@ -139,7 +142,9 @@ public:
 		return DSOstringType;
 	}
 
-	static void createSC_context();
+	static void createSC_context(ThreadContext *context);
+	static void beginDraw(const Projector* prj);
+	static void endDraw();
 
 	//! Return the radius of a circle containing the object on screen
 	float getOnScreenSize(const Projector* prj, const Navigator * nav = nullptr, bool orb_only = false) {
@@ -235,9 +240,15 @@ private:
 
 	s_texture * tex_circle;			// The symbolic circle texture
 
-
-	static std::unique_ptr<shaderProgram> shaderNebulaTex;
-	static std::unique_ptr<VertexArray> m_texGL;
+	static int commandIndex;
+	static CommandMgr *cmdMgr;
+	static CommandMgr *cmdMgrTarget;
+	//static std::unique_ptr<shaderProgram> shaderNebulaTex;
+	static VertexArray *m_texGL;
+	static Pipeline *pipeline;
+	static PipelineLayout *layout;
+	static Set *globalSet;
+	static Set *set;
 
 	static float hintsBrightness;
 	static float textBrightness;

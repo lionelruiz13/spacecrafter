@@ -5,9 +5,9 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform vec3 Color;
+layout (binding=1) uniform uColor {vec3 Color;};
  
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

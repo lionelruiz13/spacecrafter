@@ -29,8 +29,12 @@ using HIPpos = std::pair<int, Vec3f>;
 
 class Navigator;
 class Projector;
+class ThreadContext;
 class VertexArray;
-class shaderProgram;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
 
 /*! \class StarLines
   * \brief classe représentant un astérisme customisé par l'utilisateur
@@ -40,7 +44,7 @@ class shaderProgram;
   */
 class StarLines: public NoCopy  {
 public:
-	StarLines();
+	StarLines(ThreadContext *_context);
 	~StarLines();
 
 	//! update les faders de la classe
@@ -125,11 +129,26 @@ protected:
 	bool saveHipBinCat(const std::string& fileName) noexcept;
 
 	// shader d'affichage
-	std::unique_ptr<shaderProgram> shaderStarLines;
+	//std::unique_ptr<shaderProgram> shaderStarLines;
+	// context
+	ThreadContext *context;
+	int commandIndex;
 	// données VAO-VBO
 	std::unique_ptr<VertexArray> m_dataGL;
+	// uniform pattern of pipeline
+	std::unique_ptr<PipelineLayout> layout;
+	// whole draw context
+	std::unique_ptr<Pipeline> pipeline;
+	// set of local uniforms
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uMat, uFrag;
+	Mat4f *pMat;
+	Vec3f *pColor;
+	float *pFader;
 	// initialise le shader
-	void createSC_context();
+	void createSC_context(ThreadContext *_context);
+	//! build VertexArray and draw command with new datas
+	void rebuild(std::vector<float> &vertexData);
 	// supprime le shader
 	// void deleteShader();
 	// tampon d'affichage

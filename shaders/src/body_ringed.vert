@@ -6,7 +6,21 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-#include <fisheye.glsl>
+layout (binding=0) uniform globalVertProj {
+	mat4 ModelViewMatrix;
+	mat4 NormalMatrix;
+	vec3 clipping_fov;
+	float planetRadius;
+	vec3 LightPosition;
+	float planetScaledRadius;
+	float planetOneMinusOblateness;
+};
+
+layout (binding=2) uniform custom {
+	mat4 ModelViewMatrixInverse;
+};
+
+#include <fisheye_noMV.glsl>
 
 //layout
 layout (location=0)in vec3 position;
@@ -15,27 +29,16 @@ layout (location=2)in vec3 normal;
 
 #include <cam_block.glsl>
 
-//externe
-uniform mat4 ModelViewMatrixInverse;
-uniform mat4 NormalMatrix;
-uniform vec3 LightPosition;
-uniform vec3 clipping_fov;
-
-uniform float planetRadius;
-uniform float planetScaledRadius;
-uniform float planetOneMinusOblateness;
-
-
 //out
-smooth out vec2 TexCoord;
-out float Ambient;
+layout (location=0) out vec2 TexCoord;
+layout (location=1) out float Ambient;
 
-out vec3 Normal;
-out vec3 Position;
-out float NdotL;
-out vec3 Light;
-out vec3 ModelLight;
-out vec3 OriginalPosition;
+//layout (location=2) out vec3 Normal;
+layout (location=2) out vec3 Position;
+layout (location=3) out float NdotL;
+layout (location=4) out vec3 Light;
+layout (location=5) out vec3 ModelLight;
+layout (location=6) out vec3 OriginalPosition;
 
 void main()
 {
@@ -54,7 +57,7 @@ void main()
 	Light = normalize(LightPosition - Position);
 
 	//Other
-	Normal = normalize(mat3(NormalMatrix) * normal);
+	vec3 Normal = normalize(mat3(NormalMatrix) * normal);
 	ModelLight = vec3(ModelViewMatrixInverse * vec4(Light,1.0)); 
 	NdotL = dot(Normal, Light);
 	TexCoord = texcoord;

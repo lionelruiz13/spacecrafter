@@ -20,42 +20,85 @@
 #include "renderGL/shader.hpp"
 #include "renderGL/Renderer.hpp"
 
-std::unique_ptr<shaderProgram> Axis::shaderAxis;
-std::unique_ptr<VertexArray> Axis::m_AxisGL;
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
+#include "vulkanModule/Buffer.hpp"
+
+Pipeline *Axis::pipeline;
+PipelineLayout *Axis::layout;
+Uniform *Axis::uColor;
+VertexArray *Axis::vertexModel;
+VirtualSurface *Axis::surface;
+SetMgr *Axis::setMgr;
+CommandMgr *Axis::cmdMgr;
+Buffer *Axis::bdrawaxis;
+int *Axis::drawaxis;
+bool Axis::actualdrawaxis = false;
 
 Axis::Axis(Body * _body)
 {
 	body = _body;
+
+	m_AxisGL = std::make_unique<VertexArray>(*vertexModel);
+	m_AxisGL->build(2);
+
+	set = std::make_unique<Set>(surface, setMgr, layout);
+	uMat = std::make_unique<Uniform>(surface, sizeof(Mat4f));
+	MVP = static_cast<Mat4f *>(uMat->data);
+	set->bindUniform(uMat.get(), 0);
+	set->bindUniform(uColor, 1);
+}
+
+void Axis::setFlagAxis(bool b)
+{
+	if (actualdrawaxis != b) {
+		*drawaxis = static_cast<int>(b);
+		bdrawaxis->update();
+		actualdrawaxis = b;
+	}
 }
 
 void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 {
-	if(!drawaxis)
+	if (commandIndex == -1) {
+		commandIndex = cmdMgr->getCommandIndex();
+		cmdMgr->init(commandIndex);
+		cmdMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
+		cmdMgr->vkIf(bdrawaxis);
+		cmdMgr->bindPipeline(pipeline);
+		cmdMgr->bindVertex(m_AxisGL.get());
+		cmdMgr->bindSet(layout, set.get());
+		cmdMgr->draw(2);
+		cmdMgr->vkEndIf();
 		return;
+	}
+	if(!actualdrawaxis) {
+		cmdMgr->setSubmission(commandIndex, false);
+		return;
+	}
 
-	glLineWidth(3.0);
-	Vec3f Color(1.0,0.0,0.0);
+	//glLineWidth(3.0);
 
-	shaderAxis->use();
-
-	StateGL::enable(GL_BLEND);
-	glEnable(GL_LINE_SMOOTH);
+	//glEnable(GL_LINE_SMOOTH);
 
 	Mat4f proj = prj->getMatProjection().convert();
 	Mat4f matrix=mat.convert();
-	shaderAxis->setUniform("MVP",proj*matrix);
-	shaderAxis->setUniform("Color", Color);
+	*MVP = proj*matrix;
 
 	computeAxis(prj, mat);
 
 	m_AxisGL->fillVertexBuffer(BufferType::POS3D, vecAxisPos);
 
-	Renderer::drawArrays(shaderAxis.get(), m_AxisGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0,2);
+	cmdMgr->setSubmission(commandIndex, false);
 
 	vecAxisPos.clear();
 
-	glLineWidth(1.0);
-	glDisable(GL_LINE_SMOOTH);
+	//glLineWidth(1.0);
+	//glDisable(GL_LINE_SMOOTH);
 }
 
 void Axis::computeAxis(const Projector* prj, const Mat4d& mat)
@@ -98,12 +141,35 @@ void Axis::computeAxisAngle(const Projector* prj, const Mat4d& mat) {
 	}
 }
 
-void Axis::createSC_context()
+void Axis::createSC_context(ThreadContext *context)
 {
-	shaderAxis = std::make_unique<shaderProgram>();
-	shaderAxis->init( "body_Axis.vert", "body_Axis.frag");
-	shaderAxis->setUniformLocation({"MVP", "Color"});
+	surface = context->surface;
+	cmdMgr = context->commandMgr;
+	setMgr = context->setMgr;
 
-	m_AxisGL = std::make_unique<VertexArray>();
-	m_AxisGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	vertexModel = context->global->tracker->track(new VertexArray(surface, cmdMgr));
+	vertexModel->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+
+	layout = context->global->tracker->track(new PipelineLayout(context->surface));
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	layout->buildLayout();
+	layout->build();
+
+	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+	pipeline->setLineWidth(3.0);
+	pipeline->bindShader("body_Axis.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	pipeline->bindShader("body_Axis.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	pipeline->bindVertex(vertexModel);
+	pipeline->build();
+
+	uColor = context->global->tracker->track(new Uniform(surface, sizeof(Vec3f)));
+	Vec3f Color(1.0,0.0,0.0);
+	*static_cast<Vec3f *>(uColor->data) = Color;
+
+	bdrawaxis = context->global->tracker->track(new Buffer(surface, 4, VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT));
+	drawaxis = static_cast<int *>(bdrawaxis->data);
+	*drawaxis = static_cast<int>(actualdrawaxis);
+	bdrawaxis->update();
 }

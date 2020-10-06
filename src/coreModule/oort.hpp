@@ -34,6 +34,7 @@
 #include "tools/fader.hpp"
 #include "renderGL/stateGL.hpp"
 #include "tools/vecmath.hpp"
+#include "vulkanModule/Context.hpp"
 #include <vector>
 #include <memory>
 
@@ -41,12 +42,16 @@
 class Projector;
 class Navigator;
 class VertexArray;
-class shaderProgram;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+//class shaderProgram;
 
 
 class Oort {
 public:
-	Oort();
+	Oort(ThreadContext *context);
 	~Oort();
 
 	//! affiche le nuage de points
@@ -85,10 +90,11 @@ public:
 	//! construit le nuage
 	//! \param nbr le nombre de points dans le nuage
 	void populate(unsigned int nbr) noexcept;
-
+	//! build draw command
+	void build();
 private:
 	// initialise le shader et les vao-vbo
-	void createSC_context();
+	void createSC_context(ThreadContext *_context);
 	// couleur uniforme du nuage
 	Vec3f color;
 	// fader pour affichage
@@ -97,9 +103,18 @@ private:
 	float intensity;
 	unsigned int nbAsteroids;
 	// données openGL
+	ThreadContext *context;
+	int commandIndex;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uMat, uFrag;
+	Mat4f *pMat;
+	Vec3f *pColor;
+	float *pIntensity;
 	std::unique_ptr<VertexArray> m_dataGL;
 	// shader responsable de l'affichage du nuage
-	std::unique_ptr<shaderProgram> shaderOort;
+	//std::unique_ptr<shaderProgram> shaderOort;
 };
 
 #endif // ___OORT_HPP___

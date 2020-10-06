@@ -35,6 +35,7 @@
 #include "renderGL/shader.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
+#include "vulkanModule/Context.hpp"
 
 class HipStarMgr;
 class Constellation;
@@ -43,10 +44,15 @@ class Navigator;
 class s_font;
 class Translator;
 class VertexArray;
+class Set;
+class Uniform;
+class Buffer;
+class Pipeline;
+class PipelineLayout;
 
 class ConstellationMgr: public NoCopy , public ModuleFont {
 public:
-	ConstellationMgr(HipStarMgr *_hip_stars);
+	ConstellationMgr(HipStarMgr *_hip_stars, ThreadContext *_context);
 	~ConstellationMgr();
 
 	//! Draw constellation lines, art, names and boundaries if activated
@@ -210,6 +216,7 @@ private:
 
 	Constellation* isStarIn(const Object &s) const;
 	Constellation* findFromAbbreviation(const std::string& abbreviation) const;
+	ThreadContext *context;
 	std::vector<Constellation*> asterisms;
 	HipStarMgr *hipStarMgr;
 	std::vector<Constellation*> selected;
@@ -228,13 +235,28 @@ private:
 	float artFadeDuration;
 	float artMaxIntensity;
 
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 
-	std::unique_ptr<shaderProgram> m_shaderArt, m_shaderBoundary, m_shaderLines;
-	std::unique_ptr<VertexArray> m_constellationGL;
+	int commandIndex;
+	int commandIndexArt;
+	std::unique_ptr<Set> m_setArt, m_set;
+	std::unique_ptr<Uniform> uColor;
+	Vec3f *pColor;
+	std::unique_ptr<PipelineLayout> m_layoutArt, m_layout;
+	//std::unique_ptr<shaderProgram> m_shaderArt, m_shaderBoundary, m_shaderLines;
+	std::unique_ptr<Pipeline> m_pipelineArt, m_pipelineBoundary, m_pipelineLines;
+	std::unique_ptr<VertexArray> m_vertexArt, m_vertexBoundary, m_vertexLines;
+	std::unique_ptr<Buffer> drawData;
+	struct {
+		uint32_t    vertexCount;
+	    uint32_t    instanceCount;
+	    uint32_t    firstVertex;
+	    uint32_t    firstInstance;
+	} *pDrawData;
 
 	Vec3f artColor;
 	bool singleSelected;
+	bool submitLinesAndBoundaries = false;
 };
 
 #endif // _CONSTELLATION_MGR_H_

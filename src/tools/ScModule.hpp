@@ -66,7 +66,7 @@ private:
 template <class faderType>
 class ModuleFader {
 public:
-	// Fix fader duration (in s) beteween states  
+	// Fix fader duration (in s) beteween states
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
 	}

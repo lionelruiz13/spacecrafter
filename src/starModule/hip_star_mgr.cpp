@@ -29,6 +29,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <iostream>
+#include <thread>
 
 #include "coreModule/projector.hpp"
 #include "coreModule/time_mgr.hpp"
@@ -48,8 +49,20 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/Renderer.hpp"
+// #include "renderGL/OpenGL.hpp"
+// #include "renderGL/Renderer.hpp"
+
+#include "vulkanModule/VirtualSurface.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/SetMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Texture.hpp"
+#include "vulkanModule/VertexBuffer.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Buffer.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;
@@ -169,12 +182,13 @@ static void InitColorTableFromConfigFile(const InitParser &conf)
 }
 
 
-HipStarMgr::HipStarMgr(int width,int height) :
+HipStarMgr::HipStarMgr(int width,int height, ThreadContext *_context) :
 	starTexture(),
 	hip_index(new BigStarCatalog::HipIndexStruct[NR_OF_HIP+1]),
 	mag_converter(new MagConverter(*this)),
 	fontSize(13.)
 {
+	context = _context;
 	fader.setDuration(3000);
 	setMagConverterMaxScaled60DegMag(6.5f);
 	if (hip_index == 0 || mag_converter == 0) {
@@ -184,11 +198,11 @@ HipStarMgr::HipStarMgr(int width,int height) :
 	max_geodesic_grid_level = -1;
 	last_max_search_level = -1;
 
-	shaderStars = std::make_unique<shaderProgram>();
-	shaderStars-> init("stars.vert","stars.geom", "stars.frag");
-
-	shaderFBO = std::make_unique<shaderProgram>();
-	shaderFBO-> init("fbo.vert","fbo.frag");
+	// shaderStars = std::make_unique<shaderProgram>();
+	// shaderStars-> init("stars.vert","stars.geom", "stars.frag");
+	//
+	// shaderFBO = std::make_unique<shaderProgram>();
+	// shaderFBO-> init("fbo.vert","fbo.frag");
 
 	createShaderParams( width, height);
 }
@@ -196,9 +210,20 @@ HipStarMgr::HipStarMgr(int width,int height) :
 //TODO fix float[NBR_MAX_STARS];
 void HipStarMgr::createShaderParams(int width,int height)
 {
-	dataColor.reserve(NBR_MAX_STARS*3);
-	dataMag.reserve(NBR_MAX_STARS);
-	dataPos.reserve(NBR_MAX_STARS*2);
+	colorBuffer.reserve(MAX_FRAMES_IN_FLIGHT);
+	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+		colorBuffer.emplace_back(new Texture(context->surface, context->global->textureMgr, false));
+	}
+	depthBuffer = std::make_unique<Texture>(context->surface, context->global->textureMgr, true);
+	surface = std::make_unique<VirtualSurface>(context->global->vulkan, colorBuffer, *depthBuffer);
+	setMgr = std::make_unique<SetMgr>(surface.get(), 1, 0, 1);
+	cmdMgr = std::make_unique<CommandMgr>(surface.get(), 2, true);
+	drawData = std::make_unique<Buffer>(surface.get(), sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	*static_cast<VkDrawIndirectCommand *>(drawData->data) = (VkDrawIndirectCommand) {0, 1, 0, 0};
+	pVertexCount = static_cast<uint32_t *>(drawData->data);
+	// dataColor.reserve(NBR_MAX_STARS*3);
+	// dataMag.reserve(NBR_MAX_STARS);
+	// dataPos.reserve(NBR_MAX_STARS*2);
 
 	// shader pour FBO
 	// glGenVertexArrays(1,&drawFBO.vao);
@@ -217,58 +242,71 @@ void HipStarMgr::createShaderParams(int width,int height)
 	// glBindBuffer(GL_ARRAY_BUFFER,drawFBO.pos);
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataPos, GL_STATIC_DRAW);
 	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	m_drawFBO_GL = std::make_unique<VertexArray>();
+	m_drawFBO_GL = std::make_unique<VertexArray>(context->surface);
 	m_drawFBO_GL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	m_drawFBO_GL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	m_drawFBO_GL->build(4);
 	m_drawFBO_GL->fillVertexBuffer(BufferType::POS2D,8, dataPos);
 	m_drawFBO_GL->fillVertexBuffer(BufferType::TEXTURE,8, dataTex);
 
 	// shader pour les étoiles
-	m_starsGL = std::make_unique<VertexArray>();
-	m_starsGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
-	m_starsGL->registerVertexBuffer(BufferType::COLOR,BufferAccess::DYNAMIC);
-	m_starsGL->registerVertexBuffer(BufferType::MAG,BufferAccess::DYNAMIC);
-	
-	//generate and bind fbo ID
-	glGenFramebuffers(1, &fboID);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
+	m_starsGL = std::make_unique<VertexArray>(surface.get());
+	m_starsGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::STREAM_LOCAL);
+	m_starsGL->registerVertexBuffer(BufferType::COLOR,BufferAccess::STREAM_LOCAL);
+	m_starsGL->registerVertexBuffer(BufferType::MAG,BufferAccess::STREAM_LOCAL);
+	m_starsGL->build(NBR_MAX_STARS);
+	vertexData = static_cast<float *>(m_starsGL->getVertexBuffer().data);
 
-	//generate and bind render buffer ID
-	glGenRenderbuffers(1, &rbID);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbID);
+	auto samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
+	samplerInfo.anisotropyEnable = VK_FALSE;
+	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
+	m_layoutStars = std::make_unique<PipelineLayout>(surface.get());
+	m_layoutStars->setTextureLocation(0, &samplerInfo);
+	m_layoutStars->buildLayout();
+	m_layoutStars->setGlobalPipelineLayout(context->global->globalLayout);
+	m_layoutStars->build();
+	m_setStars = std::make_unique<Set>(surface.get(), setMgr.get(), m_layoutStars.get());
 
-	//set the render buffer storage
-	sizeTexFbo = std::min(width, height); 
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, sizeTexFbo, sizeTexFbo);
+	m_layoutFBO = std::make_unique<PipelineLayout>(context->surface);
+	samplerInfo.magFilter = samplerInfo.minFilter = VK_FILTER_NEAREST;
+	m_layoutFBO->setTextureLocation(0, &samplerInfo);
+	m_layoutFBO->buildLayout();
+	m_layoutFBO->build();
 
-	//generate the offscreen texture
-	glGenTextures(1, &renderTextureID);
-	glBindTexture(GL_TEXTURE_2D, renderTextureID);
+	VkPipelineColorBlendAttachmentState blendMode = BLEND_ADD;
+	blendMode.colorBlendOp = blendMode.alphaBlendOp = VK_BLEND_OP_MAX;
+	m_pipelineStars = std::make_unique<Pipeline>(surface.get(), m_layoutStars.get());
+	m_pipelineStars->bindVertex(m_starsGL.get());
+	m_pipelineStars->setBlendMode(blendMode);
+	m_pipelineStars->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	m_pipelineStars->bindShader("stars.vert.spv");
+	m_pipelineStars->bindShader("stars.geom.spv");
+	m_pipelineStars->bindShader("stars.frag.spv");
+	m_pipelineStars->build();
 
-	//set texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, sizeTexFbo, sizeTexFbo, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+	m_pipelineFBO = std::make_unique<Pipeline>(context->surface, m_layoutFBO.get());
+	m_pipelineFBO->bindVertex(m_drawFBO_GL.get());
+	m_pipelineFBO->setBlendMode(BLEND_ADD);
+	m_pipelineFBO->bindShader("fbo.vert.spv");
+	m_pipelineFBO->bindShader("fbo.frag.spv");
+	m_pipelineFBO->build();
 
-	//bind the renderTextureID as colour attachment of FBO
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTextureID, 0);
-	//set the render buffer as the depth attachment of FBO
-	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, rbID);
-
-	//check for frame buffer completeness status
-	GLuint status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
-
-	if(status==GL_FRAMEBUFFER_COMPLETE) {
+	if (surface->ownCompleteFramebuffer()) {
 		cLog::get()->write("FBO setup succeeded");
 	} else {
 		cLog::get()->write("Error in FBO setup.", LOG_TYPE::L_ERROR);
 	}
 
-	//unbind the texture and FBO
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	dataFBO.resize(colorBuffer.size());
+	for (int i = 0; i < dataFBO.size(); i++) {
+		dataFBO[i].set = std::make_unique<Set>(context->surface, context->setMgr, m_layoutFBO.get());
+		dataFBO[i].set->bindTexture(colorBuffer[i].get(), 0);
+		dataFBO[i].commandIndex = context->commandMgr->initNew(m_pipelineFBO.get());
+		context->commandMgr->bindVertex(m_drawFBO_GL.get());
+		context->commandMgr->bindSet(m_layoutFBO.get(), dataFBO[i].set.get());
+		context->commandMgr->draw(4);
+		context->commandMgr->compile();
+	}
 }
 
 HipStarMgr::~HipStarMgr(void)
@@ -288,9 +326,9 @@ HipStarMgr::~HipStarMgr(void)
 	if (starTexture) delete starTexture;
 	// if (font) delete font;
 
-	dataColor.clear();
-	dataMag.clear();
-	dataPos.clear();
+	// dataColor.clear();
+	// dataMag.clear();
+	// dataPos.clear();
 
 	// deleteShader();
 }
@@ -330,11 +368,35 @@ void HipStarMgr::init(const InitParser &conf)
 	InitColorTableFromConfigFile(conf);
 	// Load star texture no mipmap:
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
+	m_setStars->bindTexture(starTexture->getTexture(), 0);
 	// starFont = new s_font(font_size, font_name);
 	// if (!starFont) {
 	// 	cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
 	// 	assert(0);
 	// }
+	commandIndexClear = cmdMgr->getCommandIndex();
+	cmdMgr->init(commandIndexClear);
+	cmdMgr->updateVertex(m_starsGL.get());
+	cmdMgr->beginRenderPass(renderPassType::DEPTH_BUFFER_SINGLE_PASS_DRAW_USE);
+	cmdMgr->bindPipeline(m_pipelineStars.get());
+	cmdMgr->bindVertex(m_starsGL.get());
+	cmdMgr->bindSet(m_layoutStars.get(), m_setStars.get());
+	cmdMgr->bindSet(m_layoutStars.get(), context->global->globalSet, 1);
+	cmdMgr->indirectDraw(drawData.get());
+	cmdMgr->compile();
+	commandIndexHold = cmdMgr->getCommandIndex();
+	cmdMgr->init(commandIndexHold);
+	cmdMgr->updateVertex(m_starsGL.get());
+	cmdMgr->beginRenderPass(renderPassType::DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE);
+	cmdMgr->bindPipeline(m_pipelineStars.get());
+	cmdMgr->bindVertex(m_starsGL.get());
+	cmdMgr->bindSet(m_layoutStars.get(), m_setStars.get());
+	cmdMgr->bindSet(m_layoutStars.get(), context->global->globalSet, 1);
+	cmdMgr->indirectDraw(drawData.get());
+	cmdMgr->compile();
+
+	// Clear first framebuffer
+	executeDraw();
 }
 
 void HipStarMgr::setGrid(GeodesicGrid* geodesic_grid)
@@ -532,12 +594,12 @@ int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_ma
 	if( mag > rolloff )
 		mag = rolloff;
 
-	dataPos.push_back(XY[0]);
-	dataPos.push_back(XY[1]);
-	dataMag.push_back(mag);
-	dataColor.push_back(color[0]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX));
-	dataColor.push_back(color[1]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX));
-	dataColor.push_back(color[2]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX));
+	*(vertexData++) = XY[0];
+	*(vertexData++) = XY[1];
+	*(vertexData++) = color[0]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX);
+	*(vertexData++) = color[1]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX);
+	*(vertexData++) = color[2]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX);
+	*(vertexData++) = mag;
 
 	nbStarsToDraw += 1;
 
@@ -625,9 +687,10 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	double twinkle_param=1.;
 	if (altitude>2000) twinkle_param=std::max(0.,1.-(altitude-2000.)/50000.);
 	nbStarsToDraw = 0;
-	dataPos.clear();
-	dataMag.clear();
-	dataColor.clear();
+	vertexData = static_cast<float *>(m_starsGL->getVertexBuffer().data);
+	// dataPos.clear();
+	// dataMag.clear();
+	// dataColor.clear();
 	current_JDay = timeMgr->getJulian();
 
 	// If stars are turned off don't waste time below projecting all stars just to draw disembodied labels
@@ -682,63 +745,87 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	if (nbStarsToDraw==0)
 		return 0.;
 
-	//enable FBO 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
+	if (!surface->isEmpty()) {
+		frameIndex = surface->getNextFrame();
+		surface->releaseFrame();
+		std::thread(HipStarMgr::sExecuteDraw, this).detach();
+		std::cout << "HipStarMgr FBO write\n";
+	}
+	std::cout << "HipStarMgr FBO draw\n";
+	context->commandMgr->setSubmission(dataFBO[frameIndex].commandIndex);
+	//enable FBO
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
 	//render to colour attachment 0
-	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	//clear the colour and depth buffers
-	if (!starTrace)
+	// if (!starTrace)
 		//glClear(GL_COLOR_BUFFER_BIT);
-		Renderer::clearColor();
+		// Renderer::clearColor();
 
 	//dessin des etoiles
-	shaderStars->use();
+	//shaderStars->use();
 
-	m_starsGL->fillVertexBuffer(BufferType::POS2D, dataPos);
-	m_starsGL->fillVertexBuffer(BufferType::COLOR, dataColor);
-	m_starsGL->fillVertexBuffer(BufferType::MAG, dataMag);
+	// m_starsGL->fillVertexBuffer(BufferType::POS2D, dataPos);
+	// m_starsGL->fillVertexBuffer(BufferType::COLOR, dataColor);
+	// m_starsGL->fillVertexBuffer(BufferType::MAG, dataMag);
 
-	StateGL::enable(GL_BLEND);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, starTexture->getID());
+	// StateGL::enable(GL_BLEND);
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, starTexture->getID());
 
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
-	glBlendEquation(GL_MAX);
+	// StateGL::BlendFunc(GL_ONE, GL_ONE);
+	// glBlendEquation(GL_MAX);
 
 	// glViewport(0,0 , sizeTexFbo, sizeTexFbo);
-	Renderer::viewport(0,0 , sizeTexFbo, sizeTexFbo);
+	//Renderer::viewport(0,0 , sizeTexFbo, sizeTexFbo);
 
 	// m_starsGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,nbStarsToDraw);
 	// m_starsGL->unBind();
 	// shaderStars->unuse();
-	Renderer::drawArrays(shaderStars.get(), m_starsGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,nbStarsToDraw);
+	//Renderer::drawArrays(shaderStars.get(), m_starsGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,nbStarsToDraw);
+
 
 	//unbind the FBO
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	//restore the default back buffer 
-	glDrawBuffer(GL_BACK_LEFT);
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//restore the default back buffer
+	//glDrawBuffer(GL_BACK_LEFT);
 
 	//ici rendre le FBO sur l'écran
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
-	glBlendEquation(GL_FUNC_ADD);
+	// StateGL::BlendFunc(GL_ONE, GL_ONE);
+	// glBlendEquation(GL_FUNC_ADD);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, renderTextureID);
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, renderTextureID);
 
-	prj-> applyViewport();
+	//prj-> applyViewport();
 
-	shaderFBO->use();
+	//shaderFBO->use();
 //	glBindVertexArray(drawFBO.vao);
 	// m_drawFBO_GL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 	// m_drawFBO_GL->unBind();
 	// shaderFBO->unuse();
-	Renderer::drawArrays(shaderFBO.get(), m_drawFBO_GL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
+	//Renderer::drawArrays(shaderFBO.get(), m_drawFBO_GL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
 
 	this->drawStarName(prj);
 
 	return 0.;
+}
+
+void HipStarMgr::sExecuteDraw(HipStarMgr *self)
+{
+	self->executeDraw();
+}
+
+void HipStarMgr::executeDraw()
+{
+	*pVertexCount = nbStarsToDraw;
+	drawData->update();
+	if (!starTrace)
+		surface->acquireNextFrame();
+	cmdMgr->setSubmission(starTrace ? commandIndexHold : commandIndexClear);
+	surface->submitFrame();
 }
 
 void HipStarMgr::drawStarName( Projector* prj )

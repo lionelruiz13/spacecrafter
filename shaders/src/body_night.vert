@@ -6,7 +6,17 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-#include <fisheye.glsl>
+layout (binding=0) uniform globalVertProj {
+	mat4 ModelViewMatrix;
+	mat4 NormalMatrix;
+	vec3 clipping_fov;
+	float planetRadius;
+	vec3 LightPosition;
+	float planetScaledRadius;
+	float planetOneMinusOblateness;
+};
+
+#include <fisheye_noMV.glsl>
 
 //layout
 layout (location=0)in vec3 position;
@@ -15,23 +25,14 @@ layout (location=2)in vec3 normal;
 
 #include <cam_block.glsl>
 
-//externe
-uniform mat4 NormalMatrix;
-uniform vec3 LightPosition;
-uniform vec3 clipping_fov;
-
-uniform float planetRadius;
-uniform float planetScaledRadius;
-uniform float planetOneMinusOblateness;
-
 //out
-smooth out vec2 TexCoord;
+layout (location=0) out vec2 TexCoord;
 
-out vec3 Normal;
-out vec3 Position;
-out vec3 TangentLight;
-out vec3 Light;
-out vec3 ViewDirection;
+layout (location=1) out vec3 Normal;
+layout (location=2) out vec3 Position;
+layout (location=3) out vec3 TangentLight;
+layout (location=4) out vec3 Light;
+layout (location=5) out vec3 ViewDirection;
 
 
 void main()

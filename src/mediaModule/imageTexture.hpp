@@ -32,18 +32,23 @@
 class s_texture;
 class Navigator;
 class Projector;
+class Set;
 
 class ImageTexture {
 public :
 	ImageTexture() {}
 	virtual ~ImageTexture() {}
 	virtual void getDimensions(int &img_w, int &img_h) = 0;
-	virtual void bindImageTexture() = 0;
+	virtual void bindImageTexture(Set *set) = 0;
 	const std::string& getType() const {
 		return type;
 	}
+	bool isYUV() const {
+		return isyuv;
+	}
 protected:
 	std::string type;
+	bool isyuv;
 };
 
 
@@ -52,7 +57,7 @@ public:
 	RBGImageTexture(s_texture* img);
 	virtual ~RBGImageTexture();
 	virtual void getDimensions(int &img_w, int &img_h)  override;
-	virtual void bindImageTexture() override;
+	virtual void bindImageTexture(Set *set) override;
 private:
 	s_texture* image = nullptr;
 };
@@ -63,7 +68,7 @@ public:
 	YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV );
 	virtual ~YUVImageTexture();
 	virtual void getDimensions(int &img_w, int &img_h)  override;
-	virtual void bindImageTexture() override;
+	virtual void bindImageTexture(Set *set) override;
 private:
 	s_texture* imageY = nullptr;
 	s_texture* imageU = nullptr;

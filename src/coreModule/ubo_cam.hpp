@@ -4,6 +4,7 @@
 #include <string>
 #include "tools/vecmath.hpp"
 #include "renderGL/shader.hpp"
+#include "vulkanModule/Context.hpp"
 
 //Shader part
 /*
@@ -18,6 +19,9 @@ layout (std140) uniform cam_block
 };
 */
 
+class Uniform;
+class Set;
+
 struct UBOData {
 	Vec4i viewport;
 	Vec4i viewport_center;
@@ -29,14 +33,13 @@ struct UBOData {
 
 class UBOCam {
 private:
-	UBOData UBOdata;
+	Uniform *uniform;
+	UBOData &UBOdata;
 	std::string  UBOName;
-	GLuint block_buffer;
-	GLuint block_index;
-	GLuint block_id;
-
+	PipelineLayout *globalLayout;
+	Set *globalSet;
 public:
-	UBOCam(const std::string &UBOName_);
+	UBOCam(ThreadContext *context, const std::string &UBOName_);
 	~UBOCam();
 	void IndexAndBinding(GLuint program);
 	void update();

@@ -23,8 +23,12 @@
  */
 
 #include "bodyModule/body.hpp"
+#include "vulkanModule/Context.hpp"
 
 class Ojm;
+class Set;
+class Uniform;
+class Buffer;
 
 class Artificial: public Body {
 
@@ -42,7 +46,8 @@ public:
 	           const std::string& model_name,
 	           bool _deleteable,
 	           double orbit_bounding_radius,
-			   BodyTexture* _bodyTexture
+			   BodyTexture* _bodyTexture,
+			   ThreadContext *context
 	          );
 
 	virtual ~Artificial();
@@ -50,6 +55,8 @@ public:
 	virtual void selectShader ();
 
 protected :
+	void createSC_context(ThreadContext *context);
+
 	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)override {
@@ -57,4 +64,11 @@ protected :
 	}
 
 	Ojm *obj3D;
+	std::unique_ptr<Set> set;
+	Set *pushSet;
+	std::unique_ptr<Uniform> uProj, uLight, uNormalMatrix;
+	Mat4f *pNormalMatrix;
+	artGeom *pProj;
+	LightInfo *pLight;
+	int commandIndex = -2;
 };

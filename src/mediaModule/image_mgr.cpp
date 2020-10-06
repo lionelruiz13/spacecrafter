@@ -44,11 +44,11 @@ ImageMgr::ImageMgr()
 	currentImg = nullptr;
 }
 
-void ImageMgr::createImageShader()
+void ImageMgr::createImageShader(ThreadContext *context)
 {
 	Image::createShaderUnified();
 	Image::createShaderImageViewport();
-	Image::createSC_context();
+	Image::createSC_context(context);
 }
 
 ImageMgr::~ImageMgr()
@@ -143,9 +143,11 @@ void ImageMgr::update(int delta_time)
 
 void ImageMgr::draw(const Navigator * nav, const Projector * prj)
 {
+	Image::beginDraw();
 	for (auto iter = active_images.begin(); iter != active_images.end(); ++iter) {
 		(*iter)->draw(nav, prj);
 	}
+	Image::endDraw();
 }
 
 void ImageMgr::setPersistent(bool value)

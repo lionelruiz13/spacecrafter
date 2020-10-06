@@ -36,15 +36,16 @@
 #include "tools/s_font_common.hpp"
 #include "tools/s_texture.hpp"
 
+#include "vulkanModule/Context.hpp"
 
 class VertexArray;
-class shaderProgram;
 class Projector;
-
+class Texture;
+class Pipeline;
 
 typedef struct {
-	GLuint stringTexture;  // Rendered string texture reference - remember to delete when done
-	GLuint borderTexture;  // Rendered string bordered texture -  remember to delete when done
+	std::shared_ptr<Texture> stringTexture;  // Rendered string texture reference - remember to delete when done
+	std::shared_ptr<Texture> borderTexture;  // Rendered string bordered texture -  remember to delete when done
 	float textureW; 	   // Width of texture in pixels
 	float textureH; 	   // Height of texture in pixels
 	float stringW; 	       // Width of string portion in pixels
@@ -62,7 +63,7 @@ typedef renderedStringHash_t::const_iterator renderedStringHashIter_t;
  * \version 2
  *
  * \class s_font
- * 
+ *
  * \brief this class, based on the SDL2_ttf library, transforms a text character string into an available texture
  * for OpenGL to display it in two ways:
  * - display parallel to the horizon
@@ -78,7 +79,7 @@ public:
 	//! affiche un texte s droit au point M(x,y) de couleur Color à la position MVP avec upsidedown indiquant s'il est à l'endroit ou à l'envers
 	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown);
 	//! afficher un texte parallège à l'horizon en altitude azimuth
-	//! cache indique si l'on doit garder le texte en mémoire  
+	//! cache indique si l'on doit garder le texte en mémoire
 	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache);
 	//! supprime du cache le texte s
 	void clearCache(const std::string& s);
@@ -87,10 +88,11 @@ public:
 	//! indique la taille en pixel du texte s
 	float getStrLen(const std::string& s);
 	//! crée tout le contexte graphique des fontes
-	static void createSC_context();
+	static void createSC_context(ThreadContext *_context);
 	//! met en place la fonte de secours
 	static void initBaseFont(const std::string& ttfFileName);
-
+	static void beginPrint();
+	static void endPrint();
 protected:
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 	renderedStringHash_t renderCache;
@@ -100,9 +102,17 @@ protected:
 	static std::string baseFontName;
 	TTF_Font *myFont =  nullptr;
 
-	static std::unique_ptr<shaderProgram> shaderHorizontal;
-	static std::unique_ptr<shaderProgram> shaderPrint;
-	static std::unique_ptr<VertexArray> m_fontGL;
+	static int commandIndexHorizontal;
+	static int commandIndexPrint;
+	static ThreadContext *context;
+	static Set *set;
+	static VertexArray *vertexHorizontal;
+	static VertexArray *vertexPrint;
+	static CommandMgr *cmdMgr;
+	static Pipeline *pipelineHorizontal;
+	static Pipeline *pipelinePrint;
+	static PipelineLayout *layoutHorizontal;
+	static PipelineLayout *layoutPrint;
 };
 
 #endif  //_S_FONT_H

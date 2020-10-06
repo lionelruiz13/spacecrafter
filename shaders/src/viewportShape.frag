@@ -5,17 +5,18 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform sampler2D texunit0;
-uniform int radius;
-uniform int decalage_x;
-uniform int decalage_y;
+layout(binding=0) uniform uRadius {int radius;};
+layout(binding=1) uniform uDecalage {
+	int decalagex;
+	int decalagey;
+};
 //~ smooth in vec2 TexCoord;
- 
-out vec4 FragColor;
- 
+
+layout(location=0) out vec4 FragColor;
+
 void main(void)
 {
-	vec2 pos = gl_FragCoord.xy-vec2(radius+decalage_x,radius+decalage_y);
+	vec2 pos = gl_FragCoord.xy-vec2(radius+decalagex,radius+decalagey);
 	float dist_squared = dot(pos, pos);
 
 	if (dist_squared > radius*radius)

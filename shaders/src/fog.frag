@@ -5,14 +5,16 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=0) uniform sampler2D texunit0;
-uniform float sky_brightness;
-uniform float fader;
+layout (binding=0, set=1) uniform sampler2D texunit0;
+layout (binding=2, set=1) uniform ubo {
+	float sky_brightness;
+	float fader;
+};
 
 vec4 tex_color;
-smooth in vec2 TexCoord;
- 
-out vec4 FragColor;
+layout (location=0) in vec2 TexCoord;
+
+layout (location=0)out vec4 FragColor;
  
 void main(void)
 {

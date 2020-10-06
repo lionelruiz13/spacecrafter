@@ -55,7 +55,7 @@ void Fps::selectVideoFps() {
 	frameDuration= (unsigned int) (SECONDEDURATION/videoFPS);
 }
 
-//! bascule en mode normal 
+//! bascule en mode normal
 void Fps::selectMaxFps() {
 	recVideoMode = false;
 	frameDuration= (unsigned int) (SECONDEDURATION/maxFPS);

@@ -31,9 +31,12 @@
 #include "tools/s_font.hpp"
 #include "renderGL/shader.hpp"
 
-SkyDisplayMgr::SkyDisplayMgr()
+#include "vulkanModule/CommandMgr.hpp"
+
+SkyDisplayMgr::SkyDisplayMgr(ThreadContext *context)
 {
-	SkyDisplay::createShader();
+	cmdMgr = context->commandMgr;
+	SkyDisplay::createSC_context(context);
 }
 
 void SkyDisplayMgr::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
@@ -41,6 +44,7 @@ void SkyDisplayMgr::draw(const Projector *prj,const Navigator *nav, Vec3d equPos
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		it->second->draw(prj, nav, equPos, oldEquPos);
 	}
+	cmdMgr->setSubmission(commandIndex);
 }
 
 void SkyDisplayMgr::drawPerson(const Projector *prj,const Navigator *nav)
@@ -48,6 +52,22 @@ void SkyDisplayMgr::drawPerson(const Projector *prj,const Navigator *nav)
 	if ((personAL!=nullptr) && (personEQ!=nullptr)) {
 		personAL->draw(prj,nav);
 		personEQ->draw(prj,nav);
+		cmdMgr->setSubmission(commandIndexPerson);
+	}
+}
+
+void SkyDisplayMgr::build()
+{
+	commandIndex = SkyDisplay::beginRecord();
+	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
+		it->second->record();
+	}
+	SkyDisplay::endRecord();
+	if ((personAL!=nullptr) && (personEQ!=nullptr)) {
+		commandIndexPerson = SkyDisplay::beginRecord();
+		personAL->record();
+		personEQ->record();
+		SkyDisplay::endRecord();
 	}
 }
 

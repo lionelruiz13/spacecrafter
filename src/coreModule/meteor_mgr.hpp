@@ -35,21 +35,24 @@
 #include "meteor.hpp"
 #include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
+#include "vulkanModule/Context.hpp"
 
 class Projector;
 class Navigator;
 class VertexArray;
-class shaderProgram;
+//class shaderProgram;
+class Pipeline;
+class Buffer;
 
 class MeteorMgr: public NoCopy {
 
 public:
 	// base_zhr is zenith hourly rate sans meteor shower
-	MeteorMgr(int zhr, int maxv );  
+	MeteorMgr(int zhr, int maxv, ThreadContext *context);
 	virtual ~MeteorMgr();
 
 	// set zenith hourly rate
-	void setZHR(int zhr){   
+	void setZHR(int zhr){
 		ZHR = zhr;
 	}
 	// get zenith hourly rate
@@ -62,12 +65,12 @@ public:
 	};
 
 	//! update positions
-	void update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time);          
+	void update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time);
 	// Draw the meteors
-	void draw(Projector *proj, Navigator* nav);		
+	void draw(Projector *proj, Navigator* nav);
 
 private:
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 	std::list<std::unique_ptr<Meteor>> m_activeMeteor;		// list containing all active meteors
 
 	int ZHR;
@@ -78,7 +81,12 @@ private:
 	std::vector<float> vecPos;
 	std::vector<float> vecColor;
 
+	CommandMgr *cmdMgr;
+	int commandIndex;
 	std::unique_ptr<VertexArray> m_meteorGL;
-	std::unique_ptr<shaderProgram> m_shaderMeteor;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<Buffer> drawData;
+	uint32_t *pNbVertex;
+	//std::unique_ptr<shaderProgram> m_shaderMeteor;
 };
 #endif // _METEOR_MGR_H

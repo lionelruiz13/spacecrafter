@@ -5,30 +5,36 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=0) uniform sampler2D mapTexture;
-layout (binding=2) uniform sampler2D shadowTexture;
-layout (binding=3) uniform sampler2D ringTexture;
-uniform float SunHalfAngle;
-uniform float RingInnerRadius;
-uniform float RingOuterRadius;
-uniform vec3 MoonPosition1; 
-uniform float MoonRadius1; 
-uniform vec3 MoonPosition2; 
-uniform float MoonRadius2; 
-uniform vec3 MoonPosition3; 
-uniform float MoonRadius3; 
-uniform vec3 MoonPosition4; 
-uniform float MoonRadius4;
+layout (binding=4) uniform sampler2D mapTexture;
+layout (binding=5) uniform sampler2D shadowTexture;
+layout (binding=6) uniform sampler2D ringTexture;
 
-smooth in vec2 TexCoord;
-in float Ambient; 
-in vec3 Position;
-in float NdotL;
-in vec3 Light; 
-in vec3 ModelLight;
-in vec3 OriginalPosition;
-out vec4 FragColor;
+layout (binding=1) uniform globalFrag {
+	vec3 MoonPosition1;
+	float MoonRadius1;
+	vec3 MoonPosition2;
+	float MoonRadius2;
+	vec3 MoonPosition3;
+	float MoonRadius3;
+	vec3 MoonPosition4;
+	float MoonRadius4;
+	float SunHalfAngle;
+};
 
+layout (binding=3) uniform ringFrag {
+	uniform float RingInnerRadius;
+	uniform float RingOuterRadius;
+};
+
+layout (location=0) in vec2 TexCoord;
+layout (location=1) in float Ambient;
+layout (location=2) in vec3 Position;
+layout (location=3) in float NdotL;
+layout (location=4) in vec3 Light; 
+layout (location=5) in vec3 ModelLight;
+layout (location=6) in vec3 OriginalPosition;
+
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 { 

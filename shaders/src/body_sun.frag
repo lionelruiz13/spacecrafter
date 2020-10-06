@@ -5,13 +5,11 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=0) uniform sampler2D mapTexture;
+layout (binding=1) uniform sampler2D mapTexture;
 
+layout(location=0) in vec2 TexCoord;
 
-vec3 tex_color;
-smooth in vec2 TexCoord;
- 
-out vec4 FragColor;
+layout(location=0) out vec4 FragColor;
  
 void main(void)
 {

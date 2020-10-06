@@ -39,6 +39,10 @@
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Buffer.hpp"
 
 Moon::Moon(Body *parent,
            const std::string& englishName,
@@ -52,7 +56,8 @@ Moon::Moon(Body *parent,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-		   BodyTexture* _bodyTexture):
+		   BodyTexture* _bodyTexture,
+           ThreadContext *context):
 	Body(parent,
 	     englishName,
 	     MOON,
@@ -66,12 +71,14 @@ Moon::Moon(Body *parent,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-		 _bodyTexture)
+		 _bodyTexture,
+         context)
 {
 	if (_bodyTexture->tex_night != "") {
 		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
 	}
 	//more adding could be placed here for the constructor of Moon
+    drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
 	selectShader();
 	orbitPlot = new Orbit3D(this);
 }
@@ -86,91 +93,157 @@ void Moon::selectShader()
 	//bool useShaderMoonNormal = true;
 	if (tex_heightmap!=nullptr) { //altimetry Shader
 		myShader = SHADER_MOON_NORMAL_TES;
-		myShaderProg = BodyShader::getShaderMoonNormalTes();
+		drawState = BodyShader::getShaderMoonNormalTes();
+
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalProj));
+        pGlobalProj = static_cast<typeof(pGlobalProj)>(uGlobalProj->data);
+        set->bindUniform(uGlobalProj.get(), 0);
+        uMoonFrag = std::make_unique<Uniform>(context->surface, sizeof(*pMoonFrag));
+        pMoonFrag = static_cast<typeof(pMoonFrag)>(uMoonFrag->data);
+        set->bindUniform(uMoonFrag.get(), 1);
+        uGlobalVertGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertGeom));
+        pGlobalVertGeom = static_cast<typeof(pGlobalVertGeom)>(uGlobalVertGeom->data);
+        set->bindUniform(uGlobalVertGeom.get(), 2);
+        uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
+        pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
+        set->bindUniform(uGlobalTescGeom.get(), 3);
+        uGlobalTesc = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTesc));
+        pGlobalTesc = static_cast<typeof(pGlobalTesc)>(uGlobalTesc->data);
+        set->bindUniform(uGlobalTesc.get(), 4);
+        set->bindTexture(tex_current->getTexture(), 5);
+        set->bindTexture(tex_norm->getTexture(), 6);
+        set->bindTexture(tex_eclipse_map->getTexture(), 7);
+        set->bindTexture(tex_heightmap->getTexture(), 8);
 		return;
 	}
 
 	if (tex_night!=nullptr) { //altimetry Shader
 		myShader = SHADER_MOON_NIGHT;
-		myShaderProg = BodyShader::getShaderNight();
+		drawState = BodyShader::getShaderNight();
+
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
+        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+        set->bindUniform(uGlobalFrag.get(), 1);
+        set->bindTexture(tex_current->getTexture(), 2);
+        set->bindTexture(tex_eclipse_map->getTexture(), 3);
 		return;
 	}
 
 	if (tex_norm!=nullptr) { //bump Shader
 		myShader = SHADER_MOON_BUMP;
-		myShaderProg = BodyShader::getShaderBump();
+		drawState = BodyShader::getShaderBump();
+
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
+        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+        set->bindUniform(uGlobalFrag.get(), 1);
+        uUmbraColor = std::make_unique<Uniform>(context->surface, sizeof(*pUmbraColor));
+        pUmbraColor = static_cast<typeof(pUmbraColor)>(uUmbraColor->data);
+        set->bindUniform(uUmbraColor.get(), 2);
+        set->bindTexture(tex_current->getTexture(), 3);
+        set->bindTexture(tex_norm->getTexture(), 4);
+        set->bindTexture(tex_eclipse_map->getTexture(), 5);
 		return;
 	}
 	//if (useShaderMoonNormal) { // normal shaders
 	myShader = SHADER_MOON_NORMAL;
-	myShaderProg = BodyShader::getShaderNormal();
+	drawState = BodyShader::getShaderNormal();
+
+    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+    uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+    pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+    set->bindUniform(uGlobalVertProj.get(), 0);
+    uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+    pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+    set->bindUniform(uGlobalFrag.get(), 1);
+    set->bindTexture(tex_current->getTexture(), 2);
+    set->bindTexture(tex_eclipse_map->getTexture(), 3);
 	//}
 }
 
 void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
-	StateGL::enable(GL_CULL_FACE);
-	StateGL::disable(GL_BLEND);
+	// StateGL::enable(GL_CULL_FACE);
+	// StateGL::disable(GL_BLEND);
 
 	//glBindTexture(GL_TEXTURE_2D, tex_current->getID());
 
-	myShaderProg->use();
+	//myShaderProg->use();
+    switch (commandIndex) {
+        case -2: // Command not builded
+            commandIndex = -1;
+            if (!context->commandMgr->isRecording()) {
+                commandIndex = context->commandMgr->getCommandIndex();
+                context->commandMgr->init(commandIndex);
+                context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
+            }
+            context->commandMgr->bindPipeline(drawState->pipeline);
+            currentObj->bind(context->commandMgr);
+            context->commandMgr->bindSet(drawState->layout, set.get());
+            context->commandMgr->bindSet(drawState->layout, context->global->globalSet, 1);
+            context->commandMgr->indirectDrawIndexed(drawData.get());
+            context->commandMgr->compile(); // There is no halo for a moon
+            return;
+        case -1: break;
+        default:
+            context->commandMgr->setSubmission(commandIndex);
+    }
 
-	//load specific values for shader
-	switch (myShader) {
-
-		case SHADER_MOON_BUMP:
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex_norm->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-			break;
-
-		case SHADER_MOON_NORMAL_TES:
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex_norm->getID());
-
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, tex_heightmap->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-	
-			break;
-
-		case SHADER_MOON_NIGHT :
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-			
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_night->getID());			
-			break;
-
-		case SHADER_MOON_NORMAL :
-		default: //shader normal
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-			break;
-	}
-	//paramétrage des matrices pour opengl4
-	Mat4f proj = prj->getMatProjection().convert();
-	Mat4f matrix=mat.convert();
+    Vec3f tmp= v3fNull;
+	Vec3f tmp2(0.4, 0.12, 0.0);
+    Mat4f matrix=mat.convert();
 	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
 
 	Mat4f inv_matrix = matrix.inverse();
+    Mat4f proj = prj->getMatProjection().convert();
+	//load specific values for shader
+	switch (myShader) {
+        case SHADER_MOON_NORMAL_TES: // myMoon
+            pGlobalProj->ModelViewMatrix = matrix;
+            pGlobalProj->NormalMatrix = inv_matrix.transpose();
+            pGlobalProj->clipping_fov = prj->getClippingFov();
+            pGlobalProj->planetRadius = initialRadius;
+            pGlobalProj->LightPosition = eye_sun;
+            pMoonFrag->MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
+            pMoonFrag->MoonRadius1 = parent->getRadius();
+            pMoonFrag->UmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
+            pMoonFrag->SunHalfAngle = sun_half_angle;
+            pMoonFrag->Ambient; // WARNING : unaffected used value
+            pGlobalVertGeom->planetScaledRadius = radius;
+            pGlobalVertGeom->planetOneMinusOblateness = one_minus_oblateness;
+            pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
+            pGlobalTesc->ViewProjection = proj*view;
+            pGlobalTesc->Model = model;
+            break;
+
+		case SHADER_MOON_BUMP:
+            *pUmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
+            [[fallthrough]];
+		case SHADER_MOON_NIGHT:
+		case SHADER_MOON_NORMAL:
+		default:
+            pGlobalVertProj->ModelViewMatrix = matrix;
+            pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
+            pGlobalVertProj->clipping_fov = prj->getClippingFov();
+            pGlobalVertProj->planetRadius = initialRadius;
+            pGlobalVertProj->LightPosition = eye_sun;
+            pGlobalVertProj->planetScaledRadius = radius;
+            pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
+            pGlobalFrag->MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
+            pGlobalFrag->MoonRadius1 = parent->getRadius();
+            pGlobalFrag->SunHalfAngle = sun_half_angle;
+			break;
+	}
+    /*
+	//paramétrage des matrices pour opengl4
 	myShaderProg->setUniform("ModelViewProjectionMatrix",proj*matrix);
 	myShaderProg->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
 	myShaderProg->setUniform("ModelViewMatrix",matrix);
@@ -187,8 +260,6 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	myShaderProg->setUniform("LightPosition",eye_sun);
 	myShaderProg->setUniform("SunHalfAngle",sun_half_angle);
 
-	Vec3f tmp= v3fNull;
-	Vec3f tmp2(0.4, 0.12, 0.0);
 
 	if (myShader == SHADER_MOON_BUMP || myShader == SHADER_MOON_NORMAL_TES) {
 		if(getEnglishName() == "Moon")
@@ -208,19 +279,17 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 
 	//tesselation
 	if ( myShader == SHADER_MOON_NORMAL_TES) {
-		myShaderProg->setUniform("TesParam", 
+		myShaderProg->setUniform("TesParam",
 				Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor() ));
 	}
+    */
 
-	if ( myShader == SHADER_MOON_NORMAL_TES )
-		currentObj->draw(screen_sz, VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
-	else
-		currentObj->draw(screen_sz);
+    currentObj->draw(screen_sz, drawData->data);
+    drawData->update();
+	//myShaderProg->unuse();
 
-	myShaderProg->unuse();
-
-	glActiveTexture(GL_TEXTURE0);
-	StateGL::disable(GL_CULL_FACE);
+	//glActiveTexture(GL_TEXTURE0);
+	//StateGL::disable(GL_CULL_FACE);
 }
 
 void Moon::handleVisibilityFader(const Observer* observatory, const Projector* prj, const Navigator * nav)

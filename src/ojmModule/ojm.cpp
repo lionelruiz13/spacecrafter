@@ -2,11 +2,17 @@
 #include <sstream>
 #include <iostream>
 #include <cmath>
+#include <array>
 
 #include "ojmModule/ojm.hpp"
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/shader.hpp"
 #include "renderGL/Renderer.hpp"
+
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Pipeline.hpp"
 
 // *****************************************************************************
 //
@@ -14,8 +20,9 @@
 //
 // *****************************************************************************
 
-Ojm::Ojm( const std::string & _fileName, const std::string & _pathFile, float multiplier)
+Ojm::Ojm( const std::string & _fileName, const std::string & _pathFile, float multiplier, VirtualSurface *_surface)
 {
+	surface = _surface;
 	fileName = _fileName;
 	is_ok = false;
 	pathFile = _pathFile;
@@ -47,9 +54,9 @@ Ojm::~Ojm()
 	shapes.clear();
 }
 
-Ojm::Ojm(const std::string& _fileName)
+Ojm::Ojm(const std::string& _fileName, VirtualSurface *surface)
 {
-	Ojm(_fileName, "", 1.0);
+	Ojm(_fileName, "", 1.0, surface);
 }
 
 bool Ojm::init(float multiplier)
@@ -82,46 +89,55 @@ bool Ojm::testIndices()
 	return true;
 }
 
-void Ojm::draw(shaderProgram * shader)
+int Ojm::record(CommandMgr *cmdMgr, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline)
 {
-	for(unsigned int i=0;i<shapes.size();i++){
-		//~ cout << "shape " << i << " name " << shapes[i].name <<  endl;
-		shader->setUniform("Material.Ka", shapes[i].Ka);
-		shader->setUniform("Material.Kd", shapes[i].Kd);
-		shader->setUniform("Material.Ks", shapes[i].Ks);
-		shader->setUniform("Material.Ns", shapes[i].Ns);
-		if (shapes[i].T < 1.0)
-			shader->setUniform("T", shapes[i].T);
+	std::array<float, 11> tmp;
 
+	for(unsigned int i=0;i<shapes.size();i++) {
 		if (shapes[i].map_Ka != nullptr) {
-            glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, shapes[i].map_Ka->getID());
-			shader->setUniform("useTexture", true);
-			//~ cout << "avec texture" << endl;
+			if (selectedPipeline != 0) {
+				cmdMgr->bindPipeline(pipelines);
+				selectedPipeline = 0;
+			}
+			set->clear();
+			set->bindTexture(shapes[i].map_Ka->getTexture(), 0);
+			cmdMgr->pushSet(layout, set, 1);
 		} else {
-			shader->setUniform("useTexture", false);
-			//~ cout << "sans texture" << endl;
+			if (selectedPipeline != 1) {
+				cmdMgr->bindPipeline(pipelines + 1);
+				selectedPipeline = 1;
+			}
+		}
+		// Put data according to offset given in shader
+		*reinterpret_cast<Vec3f *>(tmp.data()) = shapes[i].Ka;
+		*reinterpret_cast<Vec3f *>(tmp.data() + 3) = shapes[i].Kd;
+		*reinterpret_cast<Vec3f *>(tmp.data() + 6) = shapes[i].Ks;
+		tmp.data()[9] = shapes[i].Ns;
+		if (shapes[i].T < 1.0) {
+			tmp.data()[10] = shapes[i].T;
+			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, tmp.data(), 11*sizeof(float));
+		} else {
+			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, tmp.data(), 10*sizeof(float));
 		}
 
-		// glBindVertexArray(shapes[i].dGL.vao);
-        // shapes[i].dGL->bind();
-		// glDrawElements(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, shapes[i].indices.size(), GL_UNSIGNED_INT, (void*)0 );
-        // shapes[i].dGL->unBind();
-        Renderer::drawElementsWithoutShader(shapes[i].dGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+		cmdMgr->bindVertex(shapes[i].dGL.get());
+		cmdMgr->drawIndexed(shapes[i].dGL->getIndiceCount());
 	}
+	return selectedPipeline;
 }
 
 void Ojm::initGLparam()
 {
 	for(unsigned int i=0;i<shapes.size();i++){
 
-        shapes[i].dGL = std::make_unique<VertexArray>();
+        shapes[i].dGL = std::make_unique<VertexArray>(surface);
 		// glGenVertexArrays(1,&shapes[i].dGL.vao);
 		// glBindVertexArray(shapes[i].dGL.vao);
         shapes[i].dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
         shapes[i].dGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
         shapes[i].dGL->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
-        shapes[i].dGL->registerIndexBuffer(BufferAccess::STATIC);
+        shapes[i].dGL->registerIndexBuffer(BufferAccess::STATIC, shapes[i].indices.size());
+		shapes[i].dGL->build(shapes[i].vertices.size()/3);
 
         // glGenBuffers(1,&shapes[i].dGL.pos);
 		// glGenBuffers(1,&shapes[i].dGL.tex);
@@ -141,7 +157,7 @@ void Ojm::initGLparam()
         shapes[i].dGL->fillVertexBuffer(BufferType::TEXTURE, shapes[i].uvs);
         shapes[i].dGL->fillVertexBuffer(BufferType::NORMAL,  shapes[i].normals);
         shapes[i].dGL->fillIndexBuffer(shapes[i].indices);
-
+		//*/
 		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.pos);
 		// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.tex);
@@ -298,7 +314,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                                 //~ map_ka_filename = map_ka_filename.substr(0,map_ka_filename.find('\n'));
                                 //~ cout << "map_ka : |"<<map_ka_filename << "|" << endl;
                                 if ( ! map_ka_filename.empty() && map_ka_filename!="0")
-									shapes[shapeIter].map_Ka = new s_texture(pathFile+map_ka_filename, true);
+									shapes[shapeIter].map_Ka = new s_texture(pathFile+map_ka_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
                             }
                         break;
                         case 'd':
@@ -307,7 +323,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                                 //~ map_kd_filename = map_kd_filename.substr(0,map_kd_filename.find('\n'));
                                 //~ cout << "map_kd : |"<<map_kd_filename << "|" << endl;
                                 if ( ! map_kd_filename.empty() && map_kd_filename!="0")
-									shapes[shapeIter].map_Kd = new s_texture(pathFile+map_kd_filename, true);
+									shapes[shapeIter].map_Kd = new s_texture(pathFile+map_kd_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
                             }
                         break;
                         case 's':
@@ -316,7 +332,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                                 //~ map_ks_filename = map_ks_filename.substr(0,map_ks_filename.find('\n'));
                                 //~ cout << "map_ks : |"<<map_ks_filename << "|" << endl;
                                 if ( ! map_ks_filename.empty() && map_ks_filename!="0")
-									shapes[shapeIter].map_Ks = new s_texture(pathFile+map_ks_filename, true);
+									shapes[shapeIter].map_Ks = new s_texture(pathFile+map_ks_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
                             }
                         break;
 

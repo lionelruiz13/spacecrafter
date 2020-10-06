@@ -48,7 +48,7 @@
 #include "bodyModule/bodyShader.hpp"
 #include "rotation_elements.hpp"
 #include "tools/scalable.hpp"
-
+#include "vulkanModule/Context.hpp"
 
 
 class Trail;
@@ -66,8 +66,6 @@ class Observatory;
 class Observer;
 
 class BodyColor;
-
-
 
 
 typedef struct body_flags {
@@ -109,7 +107,8 @@ public:
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-	     const BodyTexture* _bodyTexture);
+	     const BodyTexture* _bodyTexture,
+	 	 ThreadContext *_context);
 	virtual ~Body();
 
 	double getRadius(void) const {
@@ -335,7 +334,7 @@ public:
 		radius= initialRadius * initialScale;
 	}
 
-	static void createShader();
+	static void createShader(ThreadContext *context);
 	//static void deleteShader();
 
 	const Mat4d get_rot_local_to_parent_unprecessed() const {
@@ -464,6 +463,7 @@ protected:
 	Vec3d screenPos;			// Used to store temporarily the 2D position on screen
 	BODY_TYPE typePlanet;			//get the type of Body in univers: real planet, moon, dwarf ...
 
+	ThreadContext *context;
 	BodyColor* myColor=nullptr;
 	AtmosphereParams* atmosphereParams=nullptr;
 
@@ -484,7 +484,7 @@ protected:
 	Vec3f eye_sun;
 	Vec3f eye_planet;
 	SHADER_USE myShader;  			// the name of the shader used for his display
-	shaderProgram *myShaderProg;	// Shader moderne
+	drawState_t *drawState;		// State for draw, include Pipeline and PipelineLayout
 
 	ObjL *currentObj = nullptr;
 

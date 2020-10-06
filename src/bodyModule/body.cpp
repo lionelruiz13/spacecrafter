@@ -52,6 +52,9 @@
 #include "bodyModule/body_color.hpp"
 #include "coreModule/time_mgr.hpp"
 
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/VertexArray.hpp"
 
 
 s_font* Body::planet_name_font = nullptr;
@@ -77,8 +80,10 @@ Body::Body(Body *parent,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-           const BodyTexture* _bodyTexture):
+           const BodyTexture* _bodyTexture,
+           ThreadContext *_context):
 	englishName(englishName), initialRadius(_radius), one_minus_oblateness(1.0-oblateness),
+    context(_context),
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
 	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(orbit), parent(parent), close_orbit(close_orbit),
@@ -274,13 +279,13 @@ void Body::deleteDefaultTexMap()
 	Halo::deleteDefaultTexMap();
 }
 
-void Body::createShader()
+void Body::createShader(ThreadContext *context)
 {
-	OrbitPlot::createSC_context();
-	Trail::createSC_context();
-	Halo::createSC_context();
-	Hints::createSC_context();
-	Axis::createSC_context();
+	OrbitPlot::createSC_context(context);
+	Trail::createSC_context(context);
+	Halo::createSC_context(context);
+	Hints::createSC_context(context);
+	Axis::createSC_context(context);
 }
 
 // Return the information std::string "ready to print" :)
@@ -811,18 +816,15 @@ double Body::getAxisAngle() const {
 
 bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected)
 {
-
 	bool drawn = false;
 
 	if(skipDrawingThisBody(observatory, drawHomePlanet)) {
-
 		if(hasRings()) {
 			drawRings(prj,mat,1000.0,lightDirection,eye_planet,initialRadius);
 		}
 
 		return drawn;
 	}
-
 
 	handleVisibilityFader(observatory, prj, nav);
 
@@ -832,28 +834,24 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	drawHints(nav, prj);
 
-	if(depthTest) {
-		StateGL::enable(GL_DEPTH_TEST);
-	}
-
 	if(isVisibleOnScreen()) {
 
 		if(hasRings()) {
-			StateGL::enable(GL_DEPTH_TEST);
-			drawAxis(prj,mat);
+            // depth test forced
+            drawAxis(prj,mat);
 			drawBody(prj, nav, mat, screen_sz);
 			drawRings(prj,mat,screen_sz,lightDirection,eye_planet,initialRadius);
-		}
-		else {
-			drawAxis(prj,mat);
-			drawBody(prj, nav, mat, screen_sz);
+		} else {
+            // depth test if drawAxis (drawAxis if depthTest and Axis::actualdrawaxis)
+            if(!depthTest)
+                cLog::get()->write("Failed to disable depth test", LOG_TYPE::L_WARNING);
+            drawAxis(prj,mat);
+            drawBody(prj, nav, mat, screen_sz);
 		}
 		drawn = true;
 	}
 
 	drawHalo(nav, prj, eye);
-
-	StateGL::disable(GL_DEPTH_TEST);
 
 	return drawn;
 }

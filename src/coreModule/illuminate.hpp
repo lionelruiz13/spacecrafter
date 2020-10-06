@@ -50,7 +50,7 @@ public:
 	}
 
 	//! rempli les buffers pour un tracé en groupe des illuminates
-	void draw(const Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color );
+	void draw(const Projector* prj, float *&data);
 
 private:
 
@@ -59,6 +59,7 @@ private:
 	Vec3f texQuadVertex[4];			//!< 4 vertex used to draw the Illuminate texture
 	//	float myRA, myDe; 			//!< RA et De in radians
 	Vec3f texColor;					//!< texture color
+	float raw[(3+2+3)*4];			//!< datas packed in {POS3D, TEXTURE, COLOR} for vertex
 };
 
 #endif // _ILLUMINATE_H_

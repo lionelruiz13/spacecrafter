@@ -35,7 +35,7 @@
 #include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/vecmath.hpp"
-
+#include "vulkanModule/Context.hpp"
 
 class Projector;
 class Navigator;
@@ -43,7 +43,12 @@ class ToneReproductor;
 class Translator;
 class s_font;
 class VertexArray;
-class shaderProgram;
+//class shaderProgram;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+class Buffer;
 
 //! Class which manages a personal line to display around the sky
 class SkyDisplay: public NoCopy  {
@@ -58,7 +63,7 @@ public:
 	virtual void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
 	void setColor(const Vec3f& c) {
-		color = c;
+		*pColor = color = c;
 	}
 
 	const Vec3f& getColor() {
@@ -94,24 +99,38 @@ public:
 		skydisplay_font = _font;
 	}
 
-	static void createShader();
-	void createVao();
-
+	static void createSC_context(ThreadContext *_context);
+	void createLocalResources();
+	static int beginRecord();
+	static void endRecord();
+	void record();
 protected:
 	Vec3f color;
+	Vec3f *pColor;
 	double aperson;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 	void draw_text(const Projector *prj,const Navigator *nav);
 	LinearFader fader;
+	float *pFader;
+	Mat4f *pMat;
 	Vec3d pt0, pt1, pt2, pt3, pt4, pt5;
 
 	static s_font* skydisplay_font;
+	std::unique_ptr<Uniform> uniformColorFader;
+	std::unique_ptr<Uniform> uniformMat;
+	std::unique_ptr<Buffer> drawData;
+	uint32_t *pNbVertex;
 
 	std::vector<float> dataSky;
 	PROJECTION_TYPE ptype;
 	std::unique_ptr<VertexArray> m_dataGL;
-	static std::unique_ptr<shaderProgram> shaderSkyDisplay;
-
+	//static std::unique_ptr<shaderProgram> shaderSkyDisplay;
+	static ThreadContext *context;
+	static PipelineLayout *layout;
+	static Pipeline *pipeline;
+	static Set *set;
+	static int virtualColorFaderID;
+	static int virtualMatID;
 private:
 };
 

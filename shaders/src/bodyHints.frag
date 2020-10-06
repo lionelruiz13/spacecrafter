@@ -5,11 +5,10 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-
-uniform vec3 Color;
-uniform float fader; 
+layout (binding=0, set=1) uniform uColor {vec3 Color;};
+layout (binding=1, set=1) uniform uFader {uniform float fader;};
  
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

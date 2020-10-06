@@ -28,12 +28,17 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
+// #include "renderGL/OpenGL.hpp"
+// #include "renderGL/shader.hpp"
+// #include "renderGL/Renderer.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Buffer.hpp"
 
+#define MAX_METEOR 4096
 
-MeteorMgr::MeteorMgr(int zhr, int maxv )
+MeteorMgr::MeteorMgr(int zhr, int maxv, ThreadContext *context)
 {
 	ZHR = zhr;
 	max_velocity = maxv;
@@ -42,10 +47,10 @@ MeteorMgr::MeteorMgr(int zhr, int maxv )
 	// (calculated for average meteor magnitude of +2.5 and limiting magnitude of 5)
 	zhr_to_wsr = 1.6667f/3600.f;
 	// this is a correction factor to adjust for the model as programmed to match observed rates
-	createSC_context();
+	createSC_context(context);
 }
 
-MeteorMgr::~MeteorMgr() 
+MeteorMgr::~MeteorMgr()
 {}
 
 
@@ -90,14 +95,44 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 	//  printf("mpf: %d\tm launched: %d\t(mps: %f)\t%d\n", mpf, mlaunch, ZHR*zhr_to_wsr, delta_time);
 }
 
-void MeteorMgr::createSC_context()
+void MeteorMgr::createSC_context(ThreadContext *context)
 {
-	m_shaderMeteor = std::make_unique<shaderProgram>();
-	m_shaderMeteor->init("meteor.vert","meteor.frag");
+	cmdMgr = context->commandMgr;
+	// m_shaderMeteor = std::make_unique<shaderProgram>();
+	// m_shaderMeteor->init("meteor.vert","meteor.frag");
 
- 	m_meteorGL = std::make_unique<VertexArray>();
+ 	m_meteorGL = std::make_unique<VertexArray>(context->surface);
 	m_meteorGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_meteorGL->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
+	m_meteorGL->build(MAX_METEOR * 3);
+	m_meteorGL->registerIndexBuffer(BufferAccess::STATIC, MAX_METEOR * 4, 2, VK_INDEX_TYPE_UINT16);
+	{ // initialize index buffer
+		std::vector<uint16_t> tmpIndex;
+		tmpIndex.reserve(MAX_METEOR * 4);
+		for (int i = 0; i < MAX_METEOR * 3; i += 3) {
+			tmpIndex.push_back(i + 0);
+			tmpIndex.push_back(i + 1);
+			tmpIndex.push_back(i + 1);
+			tmpIndex.push_back(i + 2);
+		}
+		m_meteorGL->fillIndexBuffer(MAX_METEOR * 2, reinterpret_cast<uint32_t *>(tmpIndex.data()));
+	}
+	pipeline = std::make_unique<Pipeline>(context->surface, context->global->globalLayout);
+	pipeline->setDepthStencilMode();
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+	pipeline->bindVertex(m_meteorGL.get());
+	pipeline->bindShader("meteor.vert.spv");
+	pipeline->bindShader("meteor.frag.spv");
+	pipeline->build();
+	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	pNbVertex = static_cast<typeof(pNbVertex)>(drawData->data);
+	pNbVertex[1] = 1; // instanceCount
+	pNbVertex[2] = pNbVertex[3] = pNbVertex[4] = 0; // offsets
+	commandIndex = cmdMgr->initNew(pipeline.get());
+	cmdMgr->bindVertex(m_meteorGL.get());
+	cmdMgr->bindSet(context->global->globalLayout, context->global->globalSet);
+	cmdMgr->indirectDrawIndexed(drawData.get());
+	cmdMgr->compile();
 }
 
 void MeteorMgr::draw(Projector *proj, Navigator* nav)
@@ -111,9 +146,10 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 
 	m_meteorGL->fillVertexBuffer(BufferType::POS2D, vecPos);
 	m_meteorGL->fillVertexBuffer(BufferType::COLOR4, vecColor);
+	m_meteorGL->update();
 
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// StateGL::enable(GL_BLEND);
 
 	// m_shaderMeteor->use();
 	// m_meteorGL->bind();
@@ -121,7 +157,10 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 3*i, 3);
 	// m_meteorGL->unBind();
 	// m_shaderMeteor->unuse();
-	Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, vecPos.size()/3 , 3);
+	*pNbVertex = vecPos.size() / 2;
+	drawData->update();
+	cmdMgr->setSubmission(commandIndex);
+	//Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, vecPos.size()/3 , 3);
 
 	vecPos.clear();
 	vecColor.clear();

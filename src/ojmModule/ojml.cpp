@@ -7,17 +7,19 @@
 #include "ojmModule/ojml.hpp"
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/Renderer.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Pipeline.hpp"
 
 // *****************************************************************************
-// 
+//
 // CLASSE OJML: un dérivé de OJM mais avec un seul shape
 //
 // *****************************************************************************
 
-OjmL::OjmL(const std::string & _fileName)
+OjmL::OjmL(const std::string & _fileName, ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex)
 {
 	is_ok = false;
-	is_ok = init(_fileName);
+	is_ok = init(_fileName, context, mergeVertexArray, maxVertex, maxIndex);
 }
 
 OjmL::~OjmL()
@@ -34,33 +36,45 @@ OjmL::~OjmL()
     // glDeleteVertexArrays(1,&dGL->vao);
 }
 
-bool OjmL::init(const std::string & _fileName)
+bool OjmL::init(const std::string & _fileName, ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex)
 {
 	is_ok = readOJML(_fileName);
 	if (is_ok) {
-		initGLparam();
+		initGLparam(context, mergeVertexArray, maxVertex, maxIndex);
 	}
 	return is_ok;
 }
 
-void OjmL::draw(VkPrimitiveTopology mode)
+void OjmL::bind(CommandMgr *cmdMgr)
+{
+	if (is_ok)
+		cmdMgr->bindVertex(dGL.get());
+}
+
+void OjmL::bind(Pipeline *pipeline)
+{
+	if (is_ok)
+		pipeline->bindVertex(dGL.get());
+}
+
+void OjmL::draw(void *pDrawData)
 {
 	if (is_ok) {
 		// glBindVertexArray(dGL->vao);
         // dGL->bind();
 		// GLCall( glDrawElements(mode, dGL->getIndiceCount(), GL_UNSIGNED_INT, (void*)0 ) );
         // dGL->unBind();
-        Renderer::drawElementsWithoutShader(dGL.get(), mode);
+        //Renderer::drawElementsWithoutShader(dGL.get(), mode);
+		*static_cast<typeof(&drawData)>(pDrawData) = drawData;
 	}
 }
 
-void OjmL::initGLparam()
+void OjmL::initGLparam(ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex)
 {
-    dGL = std::make_unique<VertexArray>();
+    dGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
     dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
     dGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
     dGL->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
-    dGL->registerIndexBuffer(BufferAccess::STATIC);
 	// glGenVertexArrays(1,&dGL->vao);
 	// glBindVertexArray(dGL->vao);
 
@@ -68,11 +82,23 @@ void OjmL::initGLparam()
 	// glGenBuffers(1,&dGL->tex);
 	// glGenBuffers(1,&dGL->norm);
 	// glGenBuffers(1,&dGL->elementBuffer);
+	drawData.indexCount = indices.size();
+	drawData.instanceCount = 1;
+	drawData.vertexOffset = 0;
+	drawData.firstInstance = 0;
+	if (mergeVertexArray) {
+		*maxVertex += vertices.size() / 3;
+		*maxIndex += indices.size();
+	} else {
+		drawData.firstIndex = 0;
+		dGL->registerIndexBuffer(BufferAccess::STATIC, indices.size());
+		dGL->build(vertices.size() / 3);
 
-    dGL->fillVertexBuffer(BufferType::POS3D,vertices);
-    dGL->fillVertexBuffer(BufferType::TEXTURE,uvs);
-    dGL->fillVertexBuffer(BufferType::NORMAL,normals);
-    dGL->fillIndexBuffer(indices);
+	    dGL->fillVertexBuffer(BufferType::POS3D,vertices);
+	    dGL->fillVertexBuffer(BufferType::TEXTURE,uvs);
+	    dGL->fillVertexBuffer(BufferType::NORMAL,normals);
+	    dGL->fillIndexBuffer(indices);
+	}
 	// glBindBuffer(GL_ARRAY_BUFFER,dGL->pos);
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*vertices.size(), vertices.data(),GL_STATIC_DRAW);
 	// glBindBuffer(GL_ARRAY_BUFFER,dGL->tex);
@@ -96,6 +122,19 @@ void OjmL::initGLparam()
 	// glEnableVertexAttribArray(1);
 	// glEnableVertexAttribArray(2);
 	// glEnableVertexAttribArray(3);
+}
+
+void OjmL::initFrom(VertexArray *vertex)
+{
+	if (is_ok) {
+		// assign one part of the vertex
+		dGL->assign(vertex, vertices.size() / 3, indices.size());
+		dGL->fillVertexBuffer(BufferType::POS3D,vertices);
+		dGL->fillVertexBuffer(BufferType::TEXTURE,uvs);
+		dGL->fillVertexBuffer(BufferType::NORMAL,normals);
+		dGL->fillIndexBuffer(indices);
+		drawData.firstIndex = dGL->getIndexOffset();
+	}
 }
 
 bool OjmL::readOJML(const std::string & _fileName)
@@ -147,8 +186,8 @@ bool OjmL::readOJML(const std::string & _fileName)
                     {
                         unsigned int indice[9];
                         std::stringstream ss(std::string(line+2));
-                        ss>>indice[0] >> indice[1] >> indice[2] >> indice[3] >> 
-                            indice[4] >> indice[5] >> indice[6] >> indice[7] >> 
+                        ss>>indice[0] >> indice[1] >> indice[2] >> indice[3] >>
+                            indice[4] >> indice[5] >> indice[6] >> indice[7] >>
                             indice[8];
                         for(unsigned int k=0; k<9; k++)
 							indices.push_back(indice[k]);

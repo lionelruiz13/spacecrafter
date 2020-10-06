@@ -9,9 +9,13 @@
 layout(vertices=3) out;
 
 //NEW UNIFORMS
-uniform mat4 ViewProjection;
-uniform mat4 Model;
-uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+layout (location=4) uniform globalTesc {
+	mat4 ViewProjection;
+	mat4 Model;
+};
+layout (location=3) uniform globalTescGeom {
+	ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+};
 
 in gl_PerVertex
 {

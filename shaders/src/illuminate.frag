@@ -8,13 +8,13 @@
 
 layout (binding=0) uniform sampler2D mapTexture;
 
-in DataFrag
+layout (location=0) in DataFrag
 {
 	vec2 texCoord;
 	vec3 texColor;
 } dataFrag;
 
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

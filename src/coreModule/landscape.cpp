@@ -32,9 +32,17 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
+// #include "renderGL/OpenGL.hpp"
+// #include "renderGL/shader.hpp"
+// #include "renderGL/Renderer.hpp"
+#include "vulkanModule/Context.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
 
 //define word string in a same place
 #define L_TYPE 			"type"
@@ -53,7 +61,15 @@ int Landscape::stacks = 10;
 const float minShadeValue = 0.1f;
 const float maxShadeValue = 0.9f;
 
-std::unique_ptr<shaderProgram> Landscape::shaderLandscape;
+ThreadContext *Landscape::context;
+int Landscape::commandIndex, Landscape::commandIndexNight;
+Pipeline *Landscape::pipeline;
+PipelineLayout *Landscape::layout;
+Set *Landscape::set;
+Uniform *Landscape::uModelViewMatrix, *Landscape::uFrag;
+Mat4f *Landscape::pModelViewMatrix;
+float *Landscape::psky_brightness;
+float *Landscape::pFader;
 
 static float setLimitedShade(float _value )
 {
@@ -71,7 +87,8 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	m_limitedShade = false;
 
 	fog =nullptr;
-	fog = new Fog(0.95f);
+	if (context == nullptr) context = getContext();
+	fog = new Fog(0.95f, context);
 	assert(fog!=nullptr);
 }
 
@@ -104,19 +121,52 @@ void Landscape::update(int delta_time)
 }
 
 
-void Landscape::createSC_context()
+void Landscape::createSC_context(ThreadContext *_context)
 {
-	shaderLandscape = std::make_unique<shaderProgram>();
-	shaderLandscape->init("landscape.vert", "landscape.geom","landscape.frag");
+	context = _context;
+	VertexArray vertexModel(context->surface);
+	vertexModel.registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	vertexModel.registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
+	layout = context->global->tracker->track(new PipelineLayout(context->surface));
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setTextureLocation(0);
+	layout->setTextureLocation(1);
+	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 2);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3);
+	layout->buildLayout();
+	layout->build();
+	pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layout}, {context->surface, layout}});
+	for (int i = 0; i < 2; ++i) {
+		pipeline[i].setCullMode(false);
+		pipeline[i].setDepthStencilMode();
+		pipeline[i].bindVertex(&vertexModel);
+		pipeline[i].bindShader("landscape.vert.spv");
+		pipeline[i].bindShader("landscape.geom.spv");
+		pipeline[i].bindShader((i == 0) ? "landscapeNightTexture.frag.spv" : "landscape.frag.spv");
+		pipeline[i].build();
+	}
+	set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
+	uModelViewMatrix = context->global->tracker->track(new Uniform(context->surface, sizeof(*pModelViewMatrix)));
+	pModelViewMatrix = static_cast<typeof(pModelViewMatrix)>(uModelViewMatrix->data);
+	set->bindUniform(uModelViewMatrix, 2);
+	uFrag = context->global->tracker->track(new Uniform(context->surface, sizeof(float) * 2));
+	psky_brightness = static_cast<float *>(uFrag->data);
+	pFader = psky_brightness + 1;
+	set->bindUniform(uFrag, 3);
+	commandIndex = context->commandMgrDynamic->getCommandIndex();
+	commandIndexNight = context->commandMgrDynamic->getCommandIndex();
 
-	shaderLandscape->setUniformLocation("sky_brightness");
-	shaderLandscape->setUniformLocation("fader");
-	shaderLandscape->setUniformLocation("ModelViewMatrix");
+	// shaderLandscape = std::make_unique<shaderProgram>();
+	// shaderLandscape->init("landscape.vert", "landscape.geom","landscape.frag");
+	//
+	// shaderLandscape->setUniformLocation("sky_brightness");
+	// shaderLandscape->setUniformLocation("fader");
+	// shaderLandscape->setUniformLocation("ModelViewMatrix");
+	//
+	// shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
+	// shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
 
-	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
-	shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
-
-	Fog::createSC_context();
+	Fog::createSC_context(context);
 }
 
 
@@ -239,38 +289,31 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 	if (!fader.getInterstate()) return;
 
 	// Normal transparency mode
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	StateGL::enable(GL_CULL_FACE);
-	StateGL::enable(GL_BLEND);
+	// StateGL::enable(GL_CULL_FACE);
+	// StateGL::enable(GL_BLEND);
 
-	shaderLandscape->use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, map_tex->getID());
-
+	// shaderLandscape->use();
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, map_tex->getID());
 	if (haveNightTex && sky_brightness < 0.25) {
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, map_tex_night->getID());
-		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withNightTex");
+		context->commandMgrDynamic->setSubmission(commandIndexNight, false, context->commandMgr);
 	}
 	else {
 		if (m_limitedShade)
 			sky_brightness = std::max(sky_brightness, m_limitedShadeValue);
-		shaderLandscape->setSubroutine(GL_FRAGMENT_SHADER, "withoutNightTex");
+		context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
 	}
+	*psky_brightness = fmin(sky_brightness,1.0);
+	*pFader = fader.getInterstate();
+	*pModelViewMatrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
+	//Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,nbVertex);
 
-	shaderLandscape->setUniform("sky_brightness",fmin(sky_brightness,1.0));
-	shaderLandscape->setUniform("fader",fader.getInterstate());
+	// StateGL::disable(GL_CULL_FACE);
+	// StateGL::disable(GL_BLEND);
 
-	Mat4f matrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
-	shaderLandscape->setUniform("ModelViewMatrix",matrix);
-
-	Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,nbVertex);
-
-	StateGL::disable(GL_CULL_FACE);
-	StateGL::disable(GL_BLEND);
-
-	glActiveTexture(GL_TEXTURE0);
+	// glActiveTexture(GL_TEXTURE0);
 
 	fog->draw(prj,nav);
 }
@@ -376,12 +419,33 @@ void LandscapeFisheye::initShader()
 
 	createFisheyeMesh(radius,slices,stacks, tex_fov, datatex, datapos);
 
-	m_landscapeGL = std::make_unique<VertexArray>();
+	m_landscapeGL = std::make_unique<VertexArray>(context->surface);
 	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_landscapeGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-
+	m_landscapeGL->build(nbVertex);
 	m_landscapeGL->fillVertexBuffer(BufferType::POS3D, nbVertex*3, datapos);
 	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
+
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	cmdMgr->waitCompletion(0);
+	cmdMgr->waitCompletion(1);
+	cmdMgr->waitCompletion(2);
+	set->bindTexture(map_tex->getTexture(), 0);
+	if (haveNightTex) {
+		set->bindTexture(map_tex_night->getTexture(), 1);
+		cmdMgr->init(commandIndexNight, pipeline);
+		cmdMgr->bindVertex(m_landscapeGL.get());
+		cmdMgr->bindSet(layout, context->global->globalSet, 0);
+		cmdMgr->bindSet(layout, set, 1);
+		cmdMgr->draw(nbVertex);
+		cmdMgr->compile();
+	}
+	cmdMgr->init(commandIndex, pipeline + 1);
+	cmdMgr->bindVertex(m_landscapeGL.get());
+	cmdMgr->bindSet(layout, context->global->globalSet, 0);
+	cmdMgr->bindSet(layout, set, 1);
+	cmdMgr->draw(nbVertex);
+	cmdMgr->compile();
 
 	if (datatex) delete datatex;
 	if (datapos) delete datapos;
@@ -576,12 +640,33 @@ void LandscapeSpherical::initShader()
 
 	createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, datatex, datapos);
 
-	m_landscapeGL = std::make_unique<VertexArray>();
+	m_landscapeGL = std::make_unique<VertexArray>(context->surface);
 	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_landscapeGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-
+	m_landscapeGL->build(nbVertex);
 	m_landscapeGL->fillVertexBuffer(BufferType::POS3D, nbVertex*3, datapos);
 	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
+
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	cmdMgr->waitCompletion(0);
+	cmdMgr->waitCompletion(1);
+	cmdMgr->waitCompletion(2);
+	set->bindTexture(map_tex->getTexture(), 0);
+	if (haveNightTex) {
+		set->bindTexture(map_tex_night->getTexture(), 1);
+		cmdMgr->init(commandIndexNight, pipeline);
+		cmdMgr->bindVertex(m_landscapeGL.get());
+		cmdMgr->bindSet(layout, context->global->globalSet, 0);
+		cmdMgr->bindSet(layout, set, 1);
+		cmdMgr->draw(nbVertex);
+		cmdMgr->compile();
+	}
+	cmdMgr->init(commandIndex, pipeline + 1);
+	cmdMgr->bindVertex(m_landscapeGL.get());
+	cmdMgr->bindSet(layout, context->global->globalSet, 0);
+	cmdMgr->bindSet(layout, set, 1);
+	cmdMgr->draw(nbVertex);
+	cmdMgr->compile();
 
 	if (datatex) delete[] datatex;
 	if (datapos) delete[] datapos;

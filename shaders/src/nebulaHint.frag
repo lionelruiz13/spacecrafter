@@ -7,12 +7,12 @@
 
 
 layout (binding=0) uniform sampler2D mapTexture;
-uniform float fader;
-smooth in vec3 Color;
+layout (binding=1) uniform ubo {float fader;};
 
-smooth in vec2 TexCoord;
- 
-out vec4 FragColor;
+layout (location=0) in vec3 Color;
+layout (location=1) in vec2 TexCoord;
+
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

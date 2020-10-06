@@ -20,37 +20,42 @@
 #include <memory>
 #include "tools/vecmath.hpp"
 //#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+//#include "renderGL/stateGL.hpp"
 #include "tools/fader.hpp"
 #include "mediaModule/media_base.hpp"
+#include "vulkanModule/Context.hpp"
 
 #define VP_FADER_DURATION 2000
 
 class VertexArray;
-class shaderProgram;
+// class shaderProgram;
+class CommandMgr;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
 
 class ViewPort {
 public:
 	ViewPort();
 	~ViewPort();
-	//! créer le shader
-	void createShader();
 
 	//! trace une texture sur le viewport
 	void draw();
 
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
 	//! \param _tex, ref GLuint textures YUV dans la CG
-	void setTexture(VideoTexture _tex) {
-		videoTex[0] = _tex.y;
-		videoTex[1] = _tex.u;
-		videoTex[2] = _tex.v;
-	}
+	void setTexture(VideoTexture _tex);
+
+	//! build draw commands
+	void build();
 
 	//! indique si la classe doit etre active ou pas
 	void display(bool alive) {
 		isAlive = true;
 		fader=alive;
+		if (alive)
+			build();
 	}
 
 	//! indique à la classe de se remettre en position de départ
@@ -93,12 +98,21 @@ public:
 		noColor = Vec4f(color[0], color[1], color[2],intensity);
 	}
 
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 
 private:
 	//initialisation shader
 	void initParam();
-	std::unique_ptr<shaderProgram> shaderViewPort;
+	//std::unique_ptr<shaderProgram> shaderViewPort;
+	CommandMgr *cmdMgr, *cmdMgrTarget;
+	int commandIndex;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uFrag;
+	Vec4f *pNoColor;
+	float *pFader;
+	uint32_t *pTransparency; //vkBool32
 	std::unique_ptr<VertexArray> m_dualGL, m_fullGL;
 
 	GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage

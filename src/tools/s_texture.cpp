@@ -35,10 +35,12 @@
 #include "tools/s_texture.hpp"
 #include "tools/log.hpp"
 
+#include "vulkanModule/ResourceTracker.hpp"
 #include "vulkanModule/Texture.hpp"
 
 std::string s_texture::texDir = "./";
 std::map<std::string, s_texture::texRecap*> s_texture::texCache;
+ThreadContext *s_texture::context;
 
 // s_texture::s_texture(const std::string& _textureName) : textureName(_textureName), texID(0),
 // 	loadType(PNG_BLEND1), loadWrapping(GL_CLAMP)
@@ -103,33 +105,34 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 		default :
 			loadType=PNG_BLEND3;
 	}
-	texID=0;
+	//texID=0;
 	bool succes;
 
 	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
-		succes = load(textureName, mipmap, bool keepOnCPU);
+		succes = load(textureName, mipmap, keepOnCPU);
 	else
 		succes = load(texDir + textureName, false, keepOnCPU);
 
 	if (!succes)
-		createEmptyTex();
+		createEmptyTex(keepOnCPU);
 }
 
-s_texture::s_texture(const std::string& _textureName, GLuint _imgTex) // only used in mediaModule/image.cpp for videoPlayer
+s_texture::s_texture(const std::string& _textureName, Texture *_imgTex, int width, int height, int size) // only used in mediaModule/image.cpp for videoPlayer
 {
 	//~ std::cout << "Création de s_texture " << _textureName <<" à partir d'un _imgTex" << std::endl;
 	textureName = _textureName;
-	texID = _imgTex;
+	texture = _imgTex;
 	loadType = PNG_SOLID;
 	loadWrapping = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
 	texRecap * tmp = new texRecap;
 	tmp->nbLink = 1;
 	//tmp->texID = texID;
-	int w, h;
 	int miplevel = 0;
 	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
 	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
-	tmp->size = w*h*4;
+	tmp->width = width;
+	tmp->height = height;
+	tmp->size = size;
 	tmp->mipmap = false;
 	texCache[textureName]= tmp;
 }
@@ -139,12 +142,12 @@ s_texture::~s_texture()
 	unload();
 }
 
-s_texture::use()
+void s_texture::use()
 {
 	texture->use();
 }
 
-s_texture::unuse()
+void s_texture::unuse()
 {
 	texture->unuse();
 }
@@ -206,7 +209,7 @@ void s_texture::createEmptyTex(const bool keepOnCPU)
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, loadWrapping);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	*/
-	texture = context->global->tracer->trace(new Texture(context->surface, context->textureMgr, image_data, 1, 1, 0, keepOnCPU));
+	texture = context->global->tracker->track(new Texture(context->surface, context->global->textureMgr, image_data, 1, 1, 0, keepOnCPU));
 	//~ std::cout << "texture createEmptyTex" << textureName << std::endl;
 }
 
@@ -292,7 +295,7 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 			tmp->height = y;
 			tmp->size = x*y*4;
 			tmp->nbLink = 1;
-			tmp->texture = std::make_unique<Texture>(context->surface, context->textureMgr, image_data, width, height, keepOnCPU, mipmap, true, loadWrapping);
+			tmp->texture = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_SRGB, true, static_cast<VkSamplerAddressMode>(loadWrapping));
 			tmp->mipmap = mipmap;
 
 			texture = tmp->texture.get();
@@ -345,7 +348,7 @@ float s_texture::getAverageLuminance() const
 {
 	double sum;
 	uint8_t *p;
-	texture->acquireStagingMemoryPtr(&p);
+	texture->acquireStagingMemoryPtr(reinterpret_cast<void **>(&p));
 	const long size = static_cast<long>(width)*static_cast<long>(height);
 	for (long i = 0; i < size; ++i) {
 		sum += p[i * 4];

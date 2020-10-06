@@ -54,7 +54,7 @@ void SaveScreenInterface::readScreenShot()
 	switch (readScreen) {
 		case ReadScreen::NONE : break;
 
-		case ReadScreen::SNAPSHOT : 
+		case ReadScreen::SNAPSHOT :
 			if (fileNameScreenshot.empty())
 				fileNameScreenshot = getNextScreenshotFilename();
 			writeScreenshot(fileNameScreenshot);

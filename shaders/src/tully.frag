@@ -4,33 +4,29 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform float fader;
-out vec4 FragColor;
+layout (binding=1, set=1) uniform ubo {
+	float fader;
+};
+layout (location=0) out vec4 FragColor;
 
-subroutine vec3 parametricColor();
-subroutine uniform parametricColor useColor;
-
-in Interpolators
+layout (location=0) in Interpolators
 {
 	vec3 TexColor;
 	float intensity;
 } interData;
 
-subroutine(parametricColor)
-vec3 useCustomColor()
+void mainCustomColor(void)
 {
-	return interData.TexColor;
+	vec4 textureColor = vec4(interData.TexColor, interData.intensity * fader);
+
+	if (textureColor.a<0.01)
+		discard;
+	FragColor = textureColor;
 }
 
-subroutine(parametricColor)
-vec3 useWhiteColor()
+void mainWhiteColor(void)
 {
-	return vec3(1.0,1.0,1.0);
-}
-
-void main(void)
-{
-	vec4 textureColor = vec4(useColor(), interData.intensity * fader);
+	vec4 textureColor = vec4(1.0, 1.0, 1.0, interData.intensity * fader);
 
 	if (textureColor.a<0.01)
 		discard;

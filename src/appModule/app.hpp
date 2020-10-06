@@ -36,6 +36,7 @@
 #include "spacecrafter.hpp"
 #include "tools/app_settings.hpp"
 
+#include "vulkanModule/Context.hpp"
 
 // mac seems to use KMOD_META instead of KMOD_CTRL
 // #ifdef MACOSX
@@ -62,9 +63,6 @@ class ServerSocket;
 class ScreenFader;
 class EventRecorder;
 class EventHandler;
-
-class Vulkan;
-class VirtualSurface;
 
 enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, /*ON_VIDEO,*/ COLOR_INVERSE};
 
@@ -163,6 +161,11 @@ private:
 	bool enable_mkfifo;
 	bool flagMasterput;
 
+	// Graphic context
+	GlobalContext globalContext;
+	ThreadContext context;
+	int commandIndexClear;
+
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr; 			//! base pour les constantes du logiciel
 	AppCommandInterface * commander = nullptr;	//! interface to perform all UI and scripting actions
@@ -181,8 +184,6 @@ private:
 	ServerSocket * tcp = nullptr;
 	Fps* internalFPS = nullptr;				//! gestion fine du frameRate
 	AppDraw* appDraw = nullptr;
-    Vulkan *vulkan = nullptr;
-    VirtualSurface *surface = nullptr;
 	#if LINUX
 	Mkfifo* mkfifo = nullptr;
 	#endif

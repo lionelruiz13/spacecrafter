@@ -25,11 +25,13 @@
 #include <iostream>
 #include "mediaModule/imageTexture.hpp"
 #include "tools/s_texture.hpp"
+#include "vulkanModule/Set.hpp"
 
 RBGImageTexture::RBGImageTexture(s_texture* img)
 {
 	image = img;
 	type = "useRBG";
+	isyuv = false;
 }
 
 RBGImageTexture::~RBGImageTexture()
@@ -42,10 +44,11 @@ void RBGImageTexture::getDimensions(int &img_w, int &img_h)
 	image->getDimensions(img_w, img_h);
 }
 
-void RBGImageTexture::bindImageTexture()
+void RBGImageTexture::bindImageTexture(Set *set)
 {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, image->getID());
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture (GL_TEXTURE_2D, image->getID());
+	set->bindTexture(image->getTexture(), 0);
 }
 
 
@@ -55,6 +58,7 @@ YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* im
 	imageU = imgU;
 	imageV = imgV;
 	type = "useYUV";
+	isyuv = true;
 }
 
 YUVImageTexture::~YUVImageTexture()
@@ -69,12 +73,15 @@ void YUVImageTexture::getDimensions(int &img_w, int &img_h)
 	imageY->getDimensions(img_w, img_h);
 }
 
-void YUVImageTexture::bindImageTexture()
+void YUVImageTexture::bindImageTexture(Set *set)
 {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, imageY->getID());
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture (GL_TEXTURE_2D, imageU->getID());
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture (GL_TEXTURE_2D, imageV->getID());
+	set->bindTexture(imageY->getTexture(), 0);
+	set->bindTexture(imageU->getTexture(), 1);
+	set->bindTexture(imageV->getTexture(), 2);
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture (GL_TEXTURE_2D, imageY->getID());
+	// glActiveTexture(GL_TEXTURE1);
+	// glBindTexture (GL_TEXTURE_2D, imageU->getID());
+	// glActiveTexture(GL_TEXTURE2);
+	// glBindTexture (GL_TEXTURE_2D, imageV->getID());
 }

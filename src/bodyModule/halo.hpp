@@ -25,6 +25,7 @@
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
+#include "vulkanModule/Context.hpp"
 
 class Body;
 class Navigator;
@@ -32,7 +33,10 @@ class Projector;
 class ToneReproductor;
 class s_texture;
 class VertexArray;
-class shaderProgram;
+class PipelineLayout;
+class Pipeline;
+class Uniform;
+class Texture;
 
 class Halo {
 public:
@@ -50,17 +54,33 @@ public:
 
 	static void deleteDefaultTexMap();
 
-	static void createSC_context();
+	static void createSC_context(ThreadContext *context);
 
 private:
+	void build();
 
 	Body * body;
 
-	static std::unique_ptr<VertexArray> m_haloGL;
-	static std::unique_ptr<shaderProgram> shaderHalo;
+	std::unique_ptr<VertexArray> vertex;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uniform;
+	struct {
+		Vec3f Color;
+		float cmag;
+	} *uData;
+	int commandIndex;
+	static VirtualSurface *surface;
+	static Set *globalSet;
+	static SetMgr *setMgr;
+	static CommandMgr *cmdMgr, *cmdMgrTarget;
+	static TextureMgr *texMgr;
+	static Pipeline *pipeline;
+	static PipelineLayout *layout;
+	static VertexArray *m_haloGL;
 	std::vector<float> vecHaloPos;
 	std::vector<float> vecHaloTex;
-	static s_texture * tex_halo;			// Little halo texture
+	s_texture *last_tex_halo = nullptr;
+	static s_texture *tex_halo;			// Little halo texture
 
 	float cmag;
 	float rmag;

@@ -22,18 +22,23 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/shader.hpp"
 
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
 
-std::unique_ptr<shaderProgram> OrbitPlot::shaderOrbit2d;
-std::unique_ptr<VertexArray> OrbitPlot::m_Orbit2dGL;
-
-std::unique_ptr<shaderProgram> OrbitPlot::shaderOrbit3d;
-std::unique_ptr<VertexArray> OrbitPlot::m_Orbit3dGL;
+VertexArray *OrbitPlot::m_Orbit;
+CommandMgr *OrbitPlot::cmdMgr;
+Pipeline *OrbitPlot::pipelineOrbit2d, *OrbitPlot::pipelineOrbit3d;
+PipelineLayout *OrbitPlot::layoutOrbit2d, *OrbitPlot::layoutOrbit3d;
+ThreadContext *OrbitPlot::context;
 
 OrbitPlot::OrbitPlot(Body* _body, int segments)
 {
 	body = _body;
 	ORBIT_POINTS = segments;
 	orbitPoint = new Vec3d[ORBIT_POINTS];
+	orbit = std::make_unique<VertexArray>(*m_Orbit);
+	orbit->build(segments);
 	orbit_cached = 0;
 }
 
@@ -47,35 +52,56 @@ void OrbitPlot::init()
 	delta_orbitJD = body->re.sidereal_period/ORBIT_POINTS;
 }
 
-void OrbitPlot::createSC_context()
+void OrbitPlot::createSC_context(ThreadContext *_context)
 {
+	context = _context;
+	cmdMgr = context->commandMgr;
+	m_Orbit = context->global->tracker->track(new VertexArray(context->surface, cmdMgr));
+	m_Orbit->registerVertexBuffer(BufferType::POS3D, BufferAccess::STREAM);
 
-	shaderOrbit2d = std::make_unique<shaderProgram>();
-	shaderOrbit2d->init( "body_orbit2d.vert", "body_orbit2d.geom","body_orbit2d.frag");
-	shaderOrbit2d->setUniformLocation({"Mat", "Color"});
+	// shaderOrbit2d = context->global->tracker->track(new shaderProgram());
+	// shaderOrbit2d->init( "body_orbit2d.vert", "body_orbit2d.geom","body_orbit2d.frag");
+	// shaderOrbit2d->setUniformLocation({"Mat", "Color"});
 
-	// glGenVertexArrays(1,&m_Orbit2dGL.vao);
-	// glBindVertexArray(m_Orbit2dGL.vao);
-	// glGenBuffers(1,&m_Orbit2dGL.pos);
-	// glEnableVertexAttribArray(0);
-	m_Orbit2dGL = std::make_unique<VertexArray>();
-	m_Orbit2dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	layoutOrbit2d = context->global->tracker->track(new PipelineLayout(context->surface));
+	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // Mat
+	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // Color
+	layoutOrbit2d->buildLayout();
+	layoutOrbit2d->setGlobalPipelineLayout(context->global->globalLayout);
+	layoutOrbit2d->build();
 
-	shaderOrbit3d = std::make_unique<shaderProgram>();
-	shaderOrbit3d->init( "body_orbit3d.vert", "body_orbit3d.geom","body_orbit3d.frag");
-	shaderOrbit3d->setUniformLocation("Color");
-	shaderOrbit3d->setUniformLocation("ModelViewProjectionMatrix");
-	shaderOrbit3d->setUniformLocation("inverseModelViewProjectionMatrix");
-	shaderOrbit3d->setUniformLocation("ModelViewMatrix");
-	shaderOrbit3d->setUniformLocation("clipping_fov");
+	pipelineOrbit2d = context->global->tracker->track(new Pipeline(context->surface, layoutOrbit2d));
+	pipelineOrbit2d->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+	pipelineOrbit2d->setDepthStencilMode();
+	pipelineOrbit2d->bindVertex(m_Orbit);
+	pipelineOrbit2d->bindShader("body_orbit2d.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	pipelineOrbit2d->bindShader("body_orbit2d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
+	pipelineOrbit2d->bindShader("body_orbit2d.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	pipelineOrbit2d->build();
 
-	// glGenVertexArrays(1,&m_Orbit3dGL.vao);
-	// glBindVertexArray(m_Orbit3dGL.vao);
+	// shaderOrbit3d = context->global->tracker->track(new shaderProgram());
+	// shaderOrbit3d->init( "body_orbit3d.vert", "body_orbit3d.geom","body_orbit3d.frag");
+	// shaderOrbit3d->setUniformLocation("Color");
+	// shaderOrbit3d->setUniformLocation("ModelViewProjectionMatrix");
+	// shaderOrbit3d->setUniformLocation("inverseModelViewProjectionMatrix");
+	// shaderOrbit3d->setUniformLocation("ModelViewMatrix");
+	// shaderOrbit3d->setUniformLocation("clipping_fov");
 
-	// glGenBuffers(1,&m_Orbit3dGL.pos);
-	// glEnableVertexAttribArray(0);
-	m_Orbit3dGL = std::make_unique<VertexArray>();
-	m_Orbit3dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	layoutOrbit3d = context->global->tracker->track(new PipelineLayout(context->surface));
+	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // ModelViewMatrix
+	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // Color
+	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 2); // clipping_fov
+	layoutOrbit3d->buildLayout();
+	layoutOrbit3d->build();
+
+	pipelineOrbit3d = context->global->tracker->track(new Pipeline(context->surface, layoutOrbit3d));
+	pipelineOrbit3d->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+	pipelineOrbit3d->setDepthStencilMode();
+	pipelineOrbit3d->bindVertex(m_Orbit);
+	pipelineOrbit3d->bindShader("body_orbit3d.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	pipelineOrbit3d->bindShader("body_orbit3d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
+	pipelineOrbit3d->bindShader("body_orbit3d.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	pipelineOrbit3d->build();
 }
 
 void OrbitPlot::updateShader(double delta_time)

@@ -72,6 +72,7 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"
+#include "vulkanModule/Context.hpp"
 
 class StarNavigator;
 class CoreExecutor;
@@ -105,19 +106,19 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
+	Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
 	virtual ~Core();
 
 	//! Init and load all main core components from the passed config file.
 	void init(const InitParser& conf);
 
-	//! Update all the objects in current mode 
+	//! Update all the objects in current mode
 	void update(int delta_time);
 
 	//! Update current mode
 	void updateMode();
 
-	//! Draw all the objects in current mode 
+	//! Draw all the objects in current mode
 	void draw(int delta_time);
 
 	//! Set the sky culture from I18 name
@@ -507,7 +508,7 @@ private:
 	//! @param delta_time the time increment in ms.
 	void drawInUniverse(int delta_time);
 
-	void applyClippingPlanes(float clipping_min, float clipping_max); 
+	void applyClippingPlanes(float clipping_min, float clipping_max);
 	//void postDraw();
 
 	//! Update all the objects in solarsystem mode with respect to the time.
@@ -559,6 +560,8 @@ private:
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
+	ThreadContext *context;
+
 	CoreExecutor* currentExecutor = nullptr;
 	CoreExecutor* executorInSolarSystem = nullptr;
 	CoreExecutor* executorInGalaxy = nullptr;
@@ -598,7 +601,7 @@ private:
 	BodyTrace * bodytrace;				// the pen bodytrace
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	StarLines* starLines;				// permet de tracer des lignes dans la galaxie
-	OjmMgr * ojmMgr;					// représente les obj3D 
+	OjmMgr * ojmMgr;					// représente les obj3D
 	UBOCam* ubo_cam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;

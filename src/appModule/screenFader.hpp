@@ -27,9 +27,12 @@
 
 #include <memory>
 #include "tools/no_copy.hpp"
+#include "vulkanModule/Context.hpp"
 
 class VertexArray;
-class shaderProgram;
+class PipelineLayout;
+class Pipeline;
+class Uniform;
 
 /**
 * \file screenFader.hpp
@@ -43,7 +46,7 @@ class shaderProgram;
 *
 * intensity indicates the quantity of black to display on the screen
 *
-* 
+*
 */
 
 class ScreenFader : public NoCopy {
@@ -106,7 +109,7 @@ public:
 
 	void createGL_context();
 
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 
 	// change gradually to a new intensity
 	void changeIntensity(float _intensity, double duration)
@@ -123,12 +126,19 @@ public:
 	void initShader();
 private:
 	//détermine l'intensité du voile sur l'écran
-	float intensity =0.0;
+	float intensity = 0.0;
+	float *pIntensity;
+	int commandIndex;
+	int resolveCommandIndex;
 	bool flag_change_intensity = 0;
 	double start_value, end_value;
 	float move_to_coef, move_to_mult;
+	CommandMgr *cmdMgr;
+	std::unique_ptr<Uniform> uniform;
+	std::unique_ptr<Set> set;
 	std::unique_ptr<VertexArray> m_screenGL;
-	std::unique_ptr<shaderProgram> shaderScreen;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Pipeline> pipeline;
 
 	// paramètres openGL
 	void initShaderParams();

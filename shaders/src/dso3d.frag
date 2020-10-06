@@ -4,22 +4,20 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform float fader;
-layout (binding=0) uniform sampler2D texunit0;
+layout (binding=2, set=1) uniform sampler2D texunit0;
+
+layout (binding=1, set=1) uniform ubo {
+	float fader;
+};
+layout (location=0) out vec4 FragColor;
 
 
-out vec4 FragColor;
-
-
-in Interpolators
-{
-	vec2 TexCoord;
-} interData;
+layout (location=0) in vec2 TexCoord;
 
 void main(void)
 {
 	vec4 textureColor;
-	textureColor = texture(texunit0, interData.TexCoord);
+	textureColor = texture(texunit0, TexCoord);
 	textureColor.a *= fader;
 	if (textureColor.a<0.01)
 		discard;

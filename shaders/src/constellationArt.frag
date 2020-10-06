@@ -5,20 +5,19 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=0) uniform sampler2D mapTexture;
-uniform float Intensity;
-uniform vec3 Color;
+layout (binding=0, set=1) uniform sampler2D mapTexture;
+layout (push_constant) uniform pushC {
+	vec3 Color;
+	layout (offset=12) float Intensity;
+};
 
-in G2F
-{
-	vec2 TexCoord;
-} g2f;
+layout (location=0) in vec2 TexCoord;
 
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {
-	vec3 textureColor = vec3(texture(mapTexture,g2f.TexCoord)).rgb;
+	vec3 textureColor = vec3(texture(mapTexture,TexCoord)).rgb;
 
 	textureColor.r *= Color.r;
 	textureColor.g *= Color.g;

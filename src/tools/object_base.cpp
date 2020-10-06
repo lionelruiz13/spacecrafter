@@ -33,6 +33,12 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/Renderer.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
 
 void intrusivePtrAddRef(ObjectBase* p)
 {
@@ -55,34 +61,115 @@ s_texture * ObjectBase::pointer_nebula = nullptr;
 
 int ObjectBase::local_time = 0;
 
-std::unique_ptr<VertexArray> ObjectBase::m_pointerGL;
-std::unique_ptr<VertexArray> ObjectBase::m_starPointerGL;
+CommandMgr *ObjectBase::cmdMgr;
+CommandMgr *ObjectBase::cmdMgrTarget;
+int ObjectBase::commandIndexPointer, ObjectBase::commandIndexStarPointer;
+VertexArray *ObjectBase::m_pointerGL, *ObjectBase::m_starPointerGL;
+Pipeline *ObjectBase::m_pipelinePointer, *ObjectBase::m_pipelineStarPointer;
+PipelineLayout *ObjectBase::m_layoutPointer, *ObjectBase::m_layoutStarPointer;
+Set *ObjectBase::m_setPointer, *ObjectBase::m_setStarPointer, *ObjectBase::m_globalSet;
+Uniform *ObjectBase::m_uColor, *ObjectBase::m_uGeom;
+Vec3f *ObjectBase::m_pColor = nullptr;
+ObjectBase::objBaseGeom *ObjectBase::m_pGeom;
+OBJECT_TYPE ObjectBase::lastType = OBJECT_UNINITIALIZED;
+// std::unique_ptr<shaderProgram> ObjectBase::m_shaderPointer;
+// std::unique_ptr<shaderProgram> ObjectBase::m_shaderStarPointer;
 
-std::unique_ptr<shaderProgram> ObjectBase::m_shaderPointer;
-std::unique_ptr<shaderProgram> ObjectBase::m_shaderStarPointer;
 
-
-void ObjectBase::createShaderPointeur()
+void ObjectBase::createShaderPointeur(ThreadContext *context)
 {
-	m_shaderPointer = std::make_unique<shaderProgram>();
-	m_shaderPointer->init("object_base_pointer.vert","object_base_pointer.geom","object_base_pointer.frag");
-	m_shaderPointer->setUniformLocation("color");
+	cmdMgr = context->commandMgrDynamic;
+	cmdMgrTarget = context->commandMgr;
+	// m_shaderPointer = std::make_unique<shaderProgram>();
+	// m_shaderPointer->init("object_base_pointer.vert","object_base_pointer.geom","object_base_pointer.frag");
+	// m_shaderPointer->setUniformLocation("color");
 
-	m_pointerGL = std::make_unique<VertexArray>();
+	m_pointerGL = context->global->tracker->track(new VertexArray(context->surface));
 	m_pointerGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_pointerGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
+	m_pointerGL->build(4);
+
+	m_layoutPointer = context->global->tracker->track(new PipelineLayout(context->surface));
+	m_layoutPointer->setGlobalPipelineLayout(context->global->globalLayout);
+	m_layoutPointer->setTextureLocation(0);
+	m_layoutPointer->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	m_layoutPointer->buildLayout();
+	m_layoutPointer->build();
+	m_pipelinePointer = context->global->tracker->track(new Pipeline(context->surface, m_layoutPointer));
+	m_pipelinePointer->bindVertex(m_pointerGL);
+	m_pipelinePointer->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	m_pipelinePointer->setDepthStencilMode();
+	m_pipelinePointer->bindShader("object_base_pointer.vert.spv");
+	m_pipelinePointer->bindShader("object_base_pointer.geom.spv");
+	m_pipelinePointer->bindShader("object_base_pointer.frag.spv");
+	m_pipelinePointer->build();
+	m_setPointer = context->global->tracker->track(new Set(context->surface, context->setMgr, m_layoutPointer));
+	if (m_pColor == nullptr) {
+		m_uColor = context->global->tracker->track(new Uniform(context->surface, sizeof(*m_pColor)));
+		m_pColor = static_cast<typeof(m_pColor)>(m_uColor->data);
+	}
+	m_setPointer->bindUniform(m_uColor, 1);
+	commandIndexPointer = cmdMgr->getCommandIndex();
+	m_globalSet = context->global->globalSet;
 }
 
-void ObjectBase::createShaderStarPointeur()
+void ObjectBase::build()
 {
-	m_shaderStarPointer = std::make_unique<shaderProgram>();
-	m_shaderStarPointer->init("star_pointer.vert","star_pointer.geom","star_pointer.frag");
-	m_shaderStarPointer->setUniformLocation({"radius","color", "matRotation"});
-
-	m_starPointerGL = std::make_unique<VertexArray>();
-	m_starPointerGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	// Ensure this command is not in pending state
+	cmdMgrTarget->waitCompletion(0);
+	cmdMgrTarget->waitCompletion(1);
+	cmdMgrTarget->waitCompletion(2);
+	cmdMgr->init(commandIndexPointer, m_pipelinePointer);
+	cmdMgr->bindVertex(m_pointerGL);
+	cmdMgr->bindSet(m_layoutPointer, m_globalSet);
+	cmdMgr->bindSet(m_layoutPointer, m_setPointer, 1);
+	cmdMgr->draw(4);
+	cmdMgr->compile();
 }
 
+void ObjectBase::createShaderStarPointeur(ThreadContext *context)
+{
+	cmdMgr = context->commandMgr;
+	// m_shaderStarPointer = std::make_unique<shaderProgram>();
+	// m_shaderStarPointer->init("star_pointer.vert","star_pointer.geom","star_pointer.frag");
+	// m_shaderStarPointer->setUniformLocation({"radius","color", "matRotation"});
+
+	m_starPointerGL = context->global->tracker->track(new VertexArray(context->surface));
+	m_starPointerGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	m_starPointerGL->build(1);
+
+	m_layoutStarPointer = context->global->tracker->track(new PipelineLayout(context->surface));
+	m_layoutStarPointer->setGlobalPipelineLayout(context->global->globalLayout);
+	m_layoutStarPointer->setTextureLocation(0);
+	m_layoutStarPointer->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	m_layoutStarPointer->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 2);
+	m_layoutStarPointer->buildLayout();
+	m_layoutStarPointer->build();
+	m_pipelineStarPointer = context->global->tracker->track(new Pipeline(context->surface, m_layoutStarPointer));
+	m_pipelineStarPointer->bindVertex(m_starPointerGL);
+	m_pipelineStarPointer->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	m_pipelineStarPointer->setDepthStencilMode();
+	m_pipelineStarPointer->bindShader("star_pointer.vert.spv");
+	m_pipelineStarPointer->bindShader("star_pointer.geom.spv");
+	m_pipelineStarPointer->bindShader("star_pointer.frag.spv");
+	m_pipelineStarPointer->build();
+	m_setStarPointer = context->global->tracker->track(new Set(context->surface, context->setMgr, m_layoutStarPointer));
+	if (m_pColor == nullptr) {
+		m_uColor = context->global->tracker->track(new Uniform(context->surface, sizeof(*m_pColor)));
+		m_pColor = static_cast<typeof(m_pColor)>(m_uColor->data);
+	}
+	m_setStarPointer->bindTexture(pointer_star->getTexture(), 0);
+	m_setStarPointer->bindUniform(m_uColor, 1);
+	m_uGeom = context->global->tracker->track(new Uniform(context->surface, sizeof(*m_pGeom)));
+	m_pGeom = static_cast<typeof(m_pGeom)>(m_uGeom->data);
+	m_setStarPointer->bindUniform(m_uGeom, 2);
+	commandIndexStarPointer = cmdMgr->initNew(m_pipelineStarPointer);
+	cmdMgr->bindVertex(m_starPointerGL);
+	cmdMgr->bindSet(m_layoutStarPointer, context->global->globalSet);
+	cmdMgr->bindSet(m_layoutStarPointer, m_setStarPointer, 1);
+	cmdMgr->draw(1);
+	cmdMgr->compile();
+}
 
 // Draw a nice animated pointer around the object
 void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigator * nav)
@@ -124,29 +211,36 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 
 		m_starPointerGL->fillVertexBuffer(BufferType::POS3D, 3, (Vec3f) screenPos);
 
-		m_shaderStarPointer->use();
+		//m_shaderStarPointer->use();
 
-		glBindTexture (GL_TEXTURE_2D, pointer_star->getID());
-		StateGL::enable(GL_BLEND);
+		// glBindTexture (GL_TEXTURE_2D, pointer_star->getID());
+		// StateGL::enable(GL_BLEND);
 
 		//SET UNIFORM
-		m_shaderStarPointer->setUniform("radius", radius);
-		m_shaderStarPointer->setUniform("matRotation", matRotation);
-		m_shaderStarPointer->setUniform("color", color);
+		m_pGeom->matRotation = matRotation;
+		m_pGeom->radius = radius;
+		*m_pColor = color;
+		// m_shaderStarPointer->setUniform("radius", radius);
+		// m_shaderStarPointer->setUniform("matRotation", matRotation);
+		// m_shaderStarPointer->setUniform("color", color);
 		// m_starPointerGL->bind();
 		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,1);
 		// m_starPointerGL->unBind();
 		// m_shaderStarPointer->unuse();
-		Renderer::drawArrays(m_shaderStarPointer.get(), m_starPointerGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,1);
+		//Renderer::drawArrays(m_shaderStarPointer.get(), m_starPointerGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,1);
+		cmdMgr->setSubmission(commandIndexStarPointer);
 	}
 
 	if (getType()==OBJECT_NEBULA || getType()==OBJECT_BODY) {
-		glActiveTexture(GL_TEXTURE0);
-		if (getType()==OBJECT_BODY)
-			glBindTexture(GL_TEXTURE_2D, pointer_planet->getID());
-		if (getType()==OBJECT_NEBULA)
-			glBindTexture(GL_TEXTURE_2D, pointer_nebula->getID());
-
+		//glActiveTexture(GL_TEXTURE0);
+		if (getType() != lastType) {
+			lastType = getType();
+			if (lastType==OBJECT_BODY)
+				m_setPointer->bindTexture(pointer_planet->getTexture(), 0);
+			if (lastType==OBJECT_NEBULA)
+				m_setPointer->bindTexture(pointer_nebula->getTexture(), 0);
+			build();
+		}
 		m_pos.push_back(screenpos[0] -size/2);
 		m_pos.push_back(screenpos[1] +size/2);
 		m_indice.push_back(1.0);
@@ -166,15 +260,17 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		m_pointerGL->fillVertexBuffer(BufferType::POS2D, m_pos);
 		m_pointerGL->fillVertexBuffer(BufferType::MAG, m_indice);
 
-		StateGL::enable(GL_BLEND);
+		// StateGL::enable(GL_BLEND);
 
-		m_shaderPointer->use();
-		m_shaderPointer->setUniform("color", color);
-		// m_pointerGL->bind();		
+		// m_shaderPointer->use();
+		// m_shaderPointer->setUniform("color", color);
+		*m_pColor = color;
+		// m_pointerGL->bind();
 		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,4);
 		// m_pointerGL->unBind();
 		// m_shaderPointer->unuse();
-		Renderer::drawArrays(m_shaderPointer.get(), m_pointerGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,4);
+		//Renderer::drawArrays(m_shaderPointer.get(), m_pointerGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,4);
+		cmdMgr->setSubmission(commandIndexPointer, false, cmdMgrTarget);
 
 		m_pos.clear();
 		m_indice.clear();

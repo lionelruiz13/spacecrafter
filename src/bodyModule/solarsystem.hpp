@@ -48,11 +48,13 @@
 #include "bodyModule/body_color.hpp"
 #include "tools/ScModule.hpp"
 
+class ThreadContext;
+
 class OrbitCreator;
 
 class SolarSystem: public NoCopy , public ModuleFont{
 public:
-	SolarSystem();
+	SolarSystem(ThreadContext *_context);
 	virtual ~SolarSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
@@ -356,11 +358,11 @@ public:
 	std::string getPlanetsPosition();
 
 	void iniTextures();
-	
+
 	void setAnchorManager(AnchorManager * _anchorManager){
 		anchorManager = _anchorManager;
 	}
-	
+
 	const OrbitCreator * getOrbitCreator()const{
 		return orbitCreator;
 	}
@@ -372,10 +374,10 @@ public:
 		bool isHidden = false;
 		bool initialHidden = false;
 	};
-	
+
 	void computePreDraw(const Projector * prj, const Navigator * nav);
 
-	// return the Sun altitude 
+	// return the Sun altitude
 	double getSunAltitude(const Navigator * nav) const;
 
 private:
@@ -393,6 +395,8 @@ private:
 
 	// load one object from a hash
 	void addBody(stringHash_t & param, bool deletable);
+
+	ThreadContext *context;
 
 	Sun* sun=nullptr; //return the Sun
 	Moon* moon=nullptr;	//return the Moon
@@ -419,8 +423,8 @@ private:
 	bool nearLunarEclipse(const Navigator * nav, Projector * prj);
 
 	// And sort them from the furthest to the closest to the observer
-	static bool biggerDistance (BodyContainer * i,BodyContainer * j){ 
-		return (i->body->getDistance() > j->body->getDistance()); 
+	static bool biggerDistance (BodyContainer * i,BodyContainer * j){
+		return (i->body->getDistance() > j->body->getDistance());
 	};
 
 	// Master settings
@@ -434,11 +438,11 @@ private:
 	bool flagHideSatellites = false;
 
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
-	
+
 	AnchorManager * anchorManager = nullptr;
-	
+
 	OrbitCreator * orbitCreator = nullptr;
-	
+
 };
 
 #endif // _SOLARSYSTEM_H_

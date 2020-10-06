@@ -30,6 +30,7 @@
 #include <string>
 //#include <GL/glew.h>
 #include <map>
+#include <memory>
 #include "vulkanModule/Context.hpp"
 
 //TODO supprimer cela et les remplacer par un enum class
@@ -48,13 +49,12 @@ class Texture;
 
 class s_texture {
 public:
-	// création d'une texture basique sans mipmap
-	s_texture(const std::string& _textureName, const bool keepOnCPU = false);
-
 	// création d'une texteure en détaillant ses paramètres
 	s_texture(const std::string& _textureName, int _loadType, const bool mipmap = false, const bool keepOnCPU = false);
-	// création d'une texture à partir d'un GLuint
-	s_texture(const std::string& _textureName, GLuint _imgTex);
+	// création d'une texture à partir d'une texture
+	s_texture(const std::string& _textureName, Texture *_imgTex, int width, int height, int size);
+	// création d'une texture basique sans mipmap
+	s_texture(const std::string& _textureName, const bool keepOnCPU = false);
 	// destructeur de texture
 	~s_texture();
 	// création d'une texture par copie d'une autre

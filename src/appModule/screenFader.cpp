@@ -28,6 +28,12 @@
 #include "renderGL/shader.hpp"
 #include "renderGL/Renderer.hpp"
 
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+
 ScreenFader::ScreenFader()
 {
 	intensity = 0.0;
@@ -41,21 +47,52 @@ ScreenFader::~ScreenFader()
 {
 }
 
-void ScreenFader::createSC_context()
+void ScreenFader::createSC_context(ThreadContext *context)
 {
-	shaderScreen = std::make_unique<shaderProgram>();
-	shaderScreen->init( "screenFader.vert","screenFader.frag");
-	shaderScreen->setUniformLocation("intensity");
-
 	// point en haut a gauche
 	// point en haut a droite
 	// point en bas à gauche
 	// point en bas à droite
 	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
 
-	m_screenGL = std::make_unique<VertexArray>();
+	m_screenGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
 	m_screenGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
+	m_screenGL->build(4);
 	m_screenGL->fillVertexBuffer(BufferType::POS2D, 8, points);
+
+	layout = std::make_unique<PipelineLayout>(context->surface);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0);
+	layout->buildLayout();
+	layout->build();
+
+	uniform = std::make_unique<Uniform>(context->surface, sizeof(float));
+	pIntensity = static_cast<float *>(uniform->data);
+
+	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
+	set->bindUniform(uniform.get(), 0);
+
+	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	pipeline->bindShader("screenFader.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	pipeline->bindShader("screenFader.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	pipeline->bindVertex(m_screenGL.get());
+	pipeline->build();
+
+	cmdMgr = context->commandMgr;
+
+	resolveCommandIndex = cmdMgr->getCommandIndex();
+	cmdMgr->init(resolveCommandIndex);
+	cmdMgr->beginRenderPass(renderPassType::PRESENT);
+	cmdMgr->compile();
+
+	commandIndex = cmdMgr->getCommandIndex();
+	cmdMgr->init(commandIndex);
+	cmdMgr->beginRenderPass(renderPassType::PRESENT);
+	cmdMgr->bindPipeline(pipeline.get());
+	cmdMgr->bindSet(layout.get(), set.get());
+	m_screenGL->bind();
+	cmdMgr->draw(4);
+	cmdMgr->compile();
 }
 
 void ScreenFader::update(int delta_time)
@@ -70,16 +107,13 @@ void ScreenFader::update(int delta_time)
 		intensity = start_value - move_to_mult*(start_value-end_value);
 	}
 }
+
 void ScreenFader::draw()
 {
-	if (intensity==0)
+	if (intensity==0) {
+		cmdMgr->setSubmission(resolveCommandIndex);
 		return;
-
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	shaderScreen->use();
-	shaderScreen->setUniform("intensity" , intensity);
-
-	Renderer::drawArrays(shaderScreen.get(), m_screenGL.get(),VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
+	}
+	*pIntensity = intensity;
+	cmdMgr->setSubmission(commandIndex);
 }

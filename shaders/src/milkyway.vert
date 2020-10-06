@@ -11,13 +11,14 @@ layout (location=1)in vec2 texcoord;
 //~ layout (location=2)in vec3 normal; // useless unitl now
 
 //fisheye projection inclusion
-#include <fisheye.glsl>
+layout (binding=2, set=1) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
+#include <fisheye_noMV.glsl>
 
 // for main_clipping_fov
-#include <cam_block.glsl>
+#include <cam_block_only.glsl>
 
 //out
-smooth out vec2 TexCoord;
+layout (location=0) out vec2 TexCoord;
 
 
 void main()

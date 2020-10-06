@@ -43,8 +43,15 @@ VideoPlayer::VideoPlayer(Media* _media)
 VideoPlayer::~VideoPlayer()
 {
 	stopCurrentVideo();
+	for (int i = 0; i < 3; i++)
+		delete videoTexture.tex[i];
 }
 
+void VideoPlayer::createTextures(ThreadContext *context)
+{
+	for (int i = 0; i < 3; i++)
+		videoTexture.tex[i] = new StreamTexture(context->surface, context->global->textureMgr, true);
+}
 
 void VideoPlayer::pauseCurrentVideo()
 {
@@ -263,8 +270,10 @@ void VideoPlayer::getNextVideoFrame()
 	if (!m_isVideoSeeking) {
 		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 		for (int i = 0; i < 3; i++) {
-			glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
+			memcpy(pImageBuffer[i], pFrameOut->data[i], widths[i] * heights[i]);
+			videoTexture.tex[i]->update();
+			// glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
+			// glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 		}
 	}
 	#endif
@@ -282,6 +291,10 @@ void VideoPlayer::stopCurrentVideo()
 	av_frame_free(&pFrameOut);
 	av_frame_free(&pFrameIn);
 	avcodec_close(pCodecCtx);
+	for (int i = 0; i < 3; ++i) {
+		videoTexture.tex[i]->releaseStagingMemoryPtr();
+		videoTexture.tex[i]->unuse();
+	}
 
 	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
 	EventRecorder::getInstance()->queue(event);
@@ -291,7 +304,6 @@ void VideoPlayer::stopCurrentVideo()
 
 void VideoPlayer::initTexture()
 {
-	glGenTextures(3, videoTexture.tex);
 	const int _widths[3]  = { videoRes.w, videoRes.w / 2, videoRes.w / 2 };
 	const int _heights[3] = { videoRes.h, videoRes.h / 2, videoRes.h / 2 };
 	for(int i=0; i<3; i++) {
@@ -300,12 +312,14 @@ void VideoPlayer::initTexture()
 	}
 
 	for (int i = 0; i < 3; ++i) {
-		glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		videoTexture.tex[i]->use(widths[i], heights[i]);
+		videoTexture.tex[i]->acquireStagingMemoryPtr(&pImageBuffer[i]);
+		// glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);
+		// glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		// glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		// glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 }
 

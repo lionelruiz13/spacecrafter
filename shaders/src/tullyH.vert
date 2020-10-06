@@ -8,9 +8,9 @@ layout (location = 0) in vec3 inPosition;
 layout (location = 5) in float inRadius;
 layout (location = 4) in float inTexture;
 
-uniform mat4 Mat;
+//uniform mat4 Mat;
 
-out vertexData
+layout (location=0) out vertexData
 {
 	float texture;
 	float radius;

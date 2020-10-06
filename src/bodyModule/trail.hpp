@@ -29,13 +29,19 @@
 #include "tools/fader.hpp"
 #include "renderGL/stateGL.hpp"
 #include "tools/vecmath.hpp"
+#include "vulkanModule/Context.hpp"
 
 class Body;
 class Navigator;
 class Projector;
 class TimeMgr;
 class VertexArray;
-class shaderProgram;
+class Pipeline;
+class PipelineLayout;
+class Uniform;
+class Buffer;
+class CommandMgr;
+class Set;
 
 typedef struct TrailPoint {
 	Vec3d point;
@@ -67,12 +73,26 @@ public:
 	void updateTrail(const Navigator* nav, const TimeMgr* timeMgr);
 	void startTrail(bool b);
 	void updateFader(int delta_time);
-	static void createSC_context();
+	static void createSC_context(ThreadContext *context);
 
 private:
 	Body * body = nullptr;
-	static std::unique_ptr<shaderProgram> shaderTrail;
-	static std::unique_ptr<VertexArray> m_dataGL;
+	static CommandMgr *cmdMgr;
+	static ThreadContext *context;
+	static VertexArray *m_dataGL;
+	static Pipeline *pipeline;
+	static PipelineLayout *layout;
+	int commandIndex;
+	std::unique_ptr<VertexArray> vertex;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uMat, uColor, uFader, uNbPoints;
+	std::unique_ptr<Buffer> drawData;
+	uint32_t *nbVertices;
+	Mat4f *pMat;
+	Vec3f *pColor;
+	float *pFader;
+	int *pNbPoints;
+	// static std::unique_ptr<shaderProgram> shaderTrail;
 	LinearFader trail_fader;
 
 	std::vector<float> vecTrailPos;

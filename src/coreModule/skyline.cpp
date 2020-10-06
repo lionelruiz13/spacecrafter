@@ -31,20 +31,35 @@
 #include "tools/utility.hpp"
 #include <string>
 #include "navModule/observer.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
 
-//2346 lignes avant 
+#include "vulkanModule/Context.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Buffer.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
+
+//2346 lignes avant
 //2479 lignes apres
 //1560 lignes au final
 
-std::unique_ptr<shaderProgram> SkyLine::shaderSkylineDraw;
-std::unique_ptr<VertexArray> SkyLine::m_skylineGL;
+#define NB_MAX_POINTS 4194304
+// 32 MiB
+
+ThreadContext *SkyLine::context;
+VertexArray *SkyLine::vertexModel;
+PipelineLayout *SkyLine::layout;
+Pipeline *SkyLine::pipeline;
+Set *SkyLine::set;
+int SkyLine::vUniformID = -1;
 
 SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
 	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f)
 {
+	createLocalResources();
 }
 
 SkyLine::~SkyLine()
@@ -53,26 +68,68 @@ SkyLine::~SkyLine()
 	// font = nullptr;
 }
 
-void SkyLine::createSC_context()
+void SkyLine::createSC_context(ThreadContext *_context)
 {
-	m_skylineGL = std::make_unique<VertexArray>();
-	m_skylineGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	context = _context;
+	vertexModel = context->global->tracker->track(new VertexArray(context->surface));
+	vertexModel->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	layout = context->global->tracker->track(new PipelineLayout(context->surface));
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1, true);
+	layout->buildLayout();
+	layout->build();
+	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline->setDepthStencilMode();
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+	pipeline->bindVertex(vertexModel);
+	pipeline->bindShader("skylineDraw.vert.spv");
+	pipeline->bindShader("skylineDraw.frag.spv");
+	pipeline->build();
+	set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
+}
+
+void SkyLine::createLocalResources()
+{
+	m_skylineGL = std::make_unique<VertexArray>(*vertexModel);
+	m_skylineGL->build(NB_MAX_POINTS);
+	uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor), true);
+	pColor = static_cast<typeof(pColor)>(uColor->data);
+	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	pNbVertex = static_cast<uint32_t *>(drawData->data);
+	pNbVertex[1] = 1; // instanceCount
+	pNbVertex[2] = pNbVertex[3] = 0; // offsets
+	drawData->update();
+	if (vUniformID == -1) {
+		vUniformID = set->bindVirtualUniform(uColor.get(), 0);
+	} else {
+		set->setVirtualUniform(uColor.get(), vUniformID);
+	}
+	CommandMgr *cmdMgr = context->commandMgr;
+	commandIndex = cmdMgr->initNew(pipeline);
+	cmdMgr->bindSet(layout, context->global->globalSet, 0);
+	cmdMgr->bindSet(layout, set, 1);
+	cmdMgr->bindVertex(m_skylineGL.get());
+	cmdMgr->indirectDraw(drawData.get());
+	cmdMgr->compile();
 }
 
 void SkyLine::drawSkylineGL(const Vec4f& Color)
 {
 	m_skylineGL->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
-	
-	shaderSkylineDraw->use();
-	shaderSkylineDraw->setUniform("Color",Color);
+
+	// shaderSkylineDraw->use();
+	// shaderSkylineDraw->setUniform("Color",Color);
+	*pColor = Color;
 
 	// m_skylineGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
 	// m_skylineGL->unBind();
 	// shaderSkylineDraw->unuse();
-	Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
+	//Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
+	*pNbVertex = vecDrawPos.size()/2;
+	drawData->update();
+	context->commandMgr->setSubmission(commandIndex);
 }
-
 
 void SkyLine::translateLabels(Translator& trans)
 {
@@ -93,12 +150,12 @@ void SkyLine::translateLabels(Translator& trans)
 }
 
 
-void SkyLine::createShader()
-{
-	shaderSkylineDraw = std::make_unique<shaderProgram>();
-	shaderSkylineDraw->init( "skylineDraw.vert", "skylineDraw.frag");
-	shaderSkylineDraw->setUniformLocation("Color");
-}
+// void SkyLine::createShader()
+// {
+// 	shaderSkylineDraw = std::make_unique<shaderProgram>();
+// 	shaderSkylineDraw->init( "skylineDraw.vert", "skylineDraw.frag");
+// 	shaderSkylineDraw->setUniformLocation("Color");
+// }
 
 // -------------------- SKYLINE_POLE ---------------------------------------------
 
@@ -1088,10 +1145,10 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 				TRANSFO= Mat4f::translation( Vec3f(pt2[0],pt2[1],0) );
 				TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), M_PI-angle );
-				
+
 				tmp = TRANSFO * Vec4f(-3.0,0.0,0.0,1.0);
 				insert_all(vecDrawPos, tmp[0], tmp[1]);
-				
+
 				tmp = TRANSFO * Vec4f( 3.0,0.0,0.0,1.0);
 				insert_all(vecDrawPos, tmp[0], tmp[1]);
 			}
@@ -1260,7 +1317,7 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 	if (!fader.getInterstate()) return;
 	if (!observatory->isOnBody())
 		return;
-	
+
 	if(!(observatory->isEarth())) return;
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
@@ -1419,7 +1476,7 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 
 			tmp = TRANSFO * Vec4f(-tickl,0.0,0.0,1.0);
 			insert_all(vecDrawPos, tmp[0], tmp[1]);
-	
+
 			tmp = TRANSFO * Vec4f(tickl,0.0,0.0,1.0);
 			insert_all(vecDrawPos, tmp[0], tmp[1]);
 

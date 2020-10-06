@@ -38,6 +38,7 @@
 #include "renderGL/stateGL.hpp"
 #include "tools/scalable.hpp"
 #include "tools/no_copy.hpp"
+#include "vulkanModule/Context.hpp"
 
 /*!
  * \file milkyway.hpp
@@ -49,9 +50,9 @@
  * \brief classe representant le gestion de la voie lactée
  *
  *  La classe permet d'afficher sur une sphère céleste une texture de la voie lactée
- * 
+ *
  *  Elle représente aussi la lumière zodiacale
- * 
+ *
  */
 
 class OjmL;
@@ -60,13 +61,15 @@ class Projector;
 class Navigator;
 class ToneReproductor;
 class s_texture;
+class Pipeline;
+class Uniform;
 
 class MilkyWay: public NoCopy {
 
 public:
-	MilkyWay();
+	MilkyWay(ThreadContext *context);
 	virtual ~MilkyWay();
-	
+
 	//! dessine la sphère et la texture associée à la Milkyway.
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay);
 
@@ -94,22 +97,22 @@ public:
 	}
 
 	//! définie l'état de la lumière zodiacale
-	//! \param tex_file détermine le nom de la texture 
+	//! \param tex_file détermine le nom de la texture
 	//! \param _intensity détermine l'intensité de base associée à la texture
 	void defineZodiacalState(const std::string& tex_file, float _intensity);
 
 	//! définie l'état initial de la Milkyway
-	//! \param tex_file détermine le nom de la texture la représenant 
+	//! \param tex_file détermine le nom de la texture la représenant
 	//! \param _intensity détermine l'intensité de base associée à cette texture
 	void defineInitialMilkywayState(const std::string& path_file,const std::string& tex_file, const std::string& iris_tex_file, float _intensity);
-	
+
 	//! prépare le logiciel à un changement de Milkyway
-	//! \param tex_file détermine le nom de la nouvelle texture 
+	//! \param tex_file détermine le nom de la nouvelle texture
 	//! \param _intensity détermine l'intensité de base associée à la nouvelle texture
 	void changeMilkywayState(const std::string& full_tex_file, float _intensity);
 
 	//! prépare le logiciel à un changement de Milkyway sans toucher à son intensité
-	//! \param tex_file détermine le nom de la nouvelle texture 
+	//! \param tex_file détermine le nom de la nouvelle texture
 	void changeMilkywayStateWithoutIntensity(const std::string& full_tex_file);
 
 
@@ -156,6 +159,7 @@ public:
 
 	void needToUseIris(bool value) {
 		useIrisMilky = value;
+		initIris();
 	}
 
 private:
@@ -166,7 +170,16 @@ private:
 	};
 
 	//shaderProgram* shaderMilkyway=nullptr;
-	std::unique_ptr<shaderProgram> shaderMilkyway;
+	//std::unique_ptr<shaderProgram> shaderMilkyway;
+	ThreadContext *context;
+	int commandIndexMilky, commandIndexIrisMilky, commandIndexZodiacal;
+	std::unique_ptr<PipelineLayout> layout;
+	Pipeline *pipelineMilky = nullptr;
+	std::unique_ptr<Pipeline> pipelineZodiacal;
+	std::unique_ptr<Set> setMilky, setIrisMilky, setZodiacal;
+	std::unique_ptr<Uniform> uModelViewMatrixMilky, uFragMilky, uModelViewMatrixZodiacal, uFragZodiacal;
+	Mat4f *pModelViewMatrixMilky, *pModelViewMatrixZodiacal;
+	float *pCmagMilky, *pTexTransitMilky, *pCmagZodiacal;
 	LinearFader showFader;
 	ParabolicFader switchTexFader;
 	LinearFader zodiacalFader;
@@ -175,7 +188,7 @@ private:
 	OjmL* sphere = nullptr;
 
 	bool onTextureTransition = false;		//!< indique uen transition sur la texture
-	bool displayIrisMilky = false;			//!< indique que l'on doit utiliser la texture iris 
+	bool displayIrisMilky = false;			//!< indique que l'on doit utiliser la texture iris
 	bool useIrisMilky = false;				//!< avons nous besoin d'utiliser la texture iris ?
 
 	Scalable<float> intensityMilky;
@@ -190,10 +203,13 @@ private:
 	MilkyData irisMilky;
 
 
-	void createShader();
+	void createSC_context(ThreadContext *_context);
 	// void deleteShader();
 	void initModelMatrix();			//! création des matrices Model pour MilkyWay et Zodiacal
 	void deleteMapTex();
+	void initIris();
+	void buildMilkyway();
+	void buildZodiacal();
 };
 
 #endif // __MILKYWAY_HPP__

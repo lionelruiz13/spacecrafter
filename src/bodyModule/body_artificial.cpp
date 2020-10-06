@@ -32,6 +32,9 @@
 #include "navModule/navigator.hpp"
 #include "ojmModule/ojm.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
 
 Artificial::Artificial(Body *parent,
                        const std::string& englishName,
@@ -45,7 +48,8 @@ Artificial::Artificial(Body *parent,
                        const std::string& model_name,
                        bool _deleteable,
                        double orbit_bounding_radius,
-					   BodyTexture* _bodyTexture
+					   BodyTexture* _bodyTexture,
+                       ThreadContext *context
                       ):
 	Body(parent,
 	     englishName,
@@ -60,10 +64,12 @@ Artificial::Artificial(Body *parent,
 	     close_orbit,
 	     nullptr,
 	     orbit_bounding_radius,
-	     _bodyTexture)
+	     _bodyTexture,
+         context)
 {
 	selectShader();
-	obj3D = new Ojm(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius);
+    createSC_context(context);
+	obj3D = new Ojm(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius, context->surface);
 	if (!obj3D -> getOk())
 		std::cout << "Error with " << englishName << " " << model_name << std::endl;
 	orbitPlot = new Orbit2D(this);
@@ -78,37 +84,58 @@ Artificial::~Artificial()
 void Artificial::selectShader ()
 {
 	myShader = SHADER_ARTIFICIAL;
-	myShaderProg = BodyShader::getShaderArtificial();
+	drawState = BodyShader::getShaderArtificial();
+    pushSet = BodyShader::getPushSetShaderArtificial();
 }
 
+void Artificial::createSC_context(ThreadContext *context)
+{
+    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+    uNormalMatrix = std::make_unique<Uniform>(context->surface, sizeof(*pNormalMatrix));
+    pNormalMatrix = static_cast<typeof(pNormalMatrix)>(uNormalMatrix->data);
+    set->bindUniform(uNormalMatrix.get(), 0);
+    uProj = std::make_unique<Uniform>(context->surface, sizeof(*pProj));
+    pProj = static_cast<typeof(pProj)>(uProj->data);
+    set->bindUniform(uProj.get(), 1);
+    uLight = std::make_unique<Uniform>(context->surface, sizeof(*pLight));
+    pLight = static_cast<typeof(pLight)>(uLight->data);
+    set->bindUniform(uLight.get(), 2);
+}
 
 void Artificial::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
-	StateGL::enable(GL_CULL_FACE);
-	StateGL::disable(GL_BLEND);
+	//StateGL::enable(GL_CULL_FACE);
+	//StateGL::disable(GL_BLEND);
 
-	myShaderProg->use();
+    switch (commandIndex) {
+        case -2: // Command not builded
+            commandIndex = -1;
+            if (!context->commandMgr->isRecording()) {
+                commandIndex = context->commandMgr->getCommandIndex();
+                context->commandMgr->init(commandIndex);
+                context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
+            }
+            pLight->Intensity =Vec3f(1.0, 1.0, 1.0);
+            context->commandMgr->bindSet(drawState->layout, set.get());
+            obj3D->record(context->commandMgr, drawState->pipeline, drawState->layout, pushSet);
+            context->commandMgr->compile(); // There is no halo for body_artificial
+            return;
+        case -1: break;
+        default:
+            context->commandMgr->setSubmission(commandIndex);
+    }
 
-	//paramétrage des matrices pour opengl4
-	Mat4f proj = prj->getMatProjection().convert();
-	Mat4f matrix=mat.convert();
-	//matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
-
-	Mat4f inv_matrix = matrix.inverse();
-	myShaderProg->setUniform("MVP",proj*matrix);
-	myShaderProg->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("clipping_fov",prj->getClippingFov());
-
-	myShaderProg->setUniform("Light.Position", eye_sun);
-	myShaderProg->setUniform("Light.Intensity", Vec3f(1.0, 1.0, 1.0));
-
-	obj3D->draw(myShaderProg);
+    Mat4f matrix = mat.convert();
+    *pNormalMatrix = matrix.inverse().transpose();
+    pProj->ModelViewMatrix = matrix;
+    pProj->clipping_fov = prj->getClippingFov();
+    pLight->Position = eye_sun;
 
 	//paramètres commun aux shaders
-	myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
+	//myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
 
-	myShaderProg->unuse();
+	//myShaderProg->unuse();
 
-	StateGL::disable(GL_CULL_FACE);
+	//StateGL::disable(GL_CULL_FACE);
 }

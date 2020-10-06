@@ -4,12 +4,14 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=0) uniform sampler2D texunit0;
+layout (binding=2, set=1) uniform sampler2D texunit0;
 
-uniform float fader;
-out vec4 FragColor;
+layout (binding=1, set=1) uniform ubo {
+	float fader;
+};
+layout (location=0) out vec4 FragColor;
 
-in Interpolators
+layout (location=0) in Interpolators
 {
 	vec2 TexCoord;
 	float intensity;

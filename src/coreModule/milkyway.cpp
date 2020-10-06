@@ -37,11 +37,16 @@
 #include "navModule/navigator.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
 
-
-MilkyWay::MilkyWay()
+MilkyWay::MilkyWay(ThreadContext *context)
 {
-	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"MilkyWay.ojm");
+	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"MilkyWay.ojm", context);
 	if (!sphere->getOk()) {
 		cLog::get()->write("MilkyWay : error loading sphere, no draw", LOG_TYPE::L_ERROR);
 		return;
@@ -51,20 +56,57 @@ MilkyWay::MilkyWay()
 	}
 	switchTexFader = false;
 	intensityMilky.set(0.f);
-	createShader();
+	createSC_context(context);
 	initModelMatrix();
 }
 
-void MilkyWay::createShader()
+void MilkyWay::createSC_context(ThreadContext *_context)
 {
-	shaderMilkyway= std::make_unique<shaderProgram>();
-	shaderMilkyway->init("milkyway.vert","milkyway.frag");
-	
-	shaderMilkyway->setUniformLocation("cmag");
-	shaderMilkyway->setUniformLocation("texTransit");
-	shaderMilkyway->setUniformLocation("ModelViewMatrix");
-	shaderMilkyway->setSubroutineLocation(GL_FRAGMENT_SHADER, "useOneTex");
-	shaderMilkyway->setSubroutineLocation(GL_FRAGMENT_SHADER, "useTwoTex");
+	context = _context;
+	// shaderMilkyway= std::make_unique<shaderProgram>();
+	// shaderMilkyway->init("milkyway.vert","milkyway.frag");
+	//
+	// shaderMilkyway->setUniformLocation("cmag");
+	// shaderMilkyway->setUniformLocation("texTransit");
+	// shaderMilkyway->setUniformLocation("ModelViewMatrix");
+	// shaderMilkyway->setSubroutineLocation(GL_FRAGMENT_SHADER, "useOneTex");
+	// shaderMilkyway->setSubroutineLocation(GL_FRAGMENT_SHADER, "useTwoTex");
+	layout = std::make_unique<PipelineLayout>(context->surface);
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setTextureLocation(0);
+	layout->setTextureLocation(1);
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 2);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3);
+	layout->buildLayout();
+	layout->build();
+	pipelineMilky = new Pipeline[2]{{context->surface, layout.get()}, {context->surface, layout.get()}};
+	for (int i = 0; i < 2; ++i) {
+		pipelineMilky[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+		pipelineMilky[i].setDepthStencilMode();
+		pipelineMilky[i].setCullMode(true);
+		pipelineMilky[i].setBlendMode(BLEND_NONE);
+		sphere->bind(pipelineMilky + i);
+		pipelineMilky[i].bindShader("milkyway.vert.spv");
+		pipelineMilky[i].bindShader(i == 0 ? "milkywayTwoTex.frag.spv" : "milkywayOneTex.frag.spv");
+		pipelineMilky[i].build();
+	}
+	uModelViewMatrixMilky = std::make_unique<Uniform>(context->surface, sizeof(*pModelViewMatrixMilky));
+	pModelViewMatrixMilky = static_cast<typeof(pModelViewMatrixMilky)>(uModelViewMatrixMilky->data);
+	uFragMilky = std::make_unique<Uniform>(context->surface, sizeof(float) * 2);
+	pCmagMilky = static_cast<float *>(uFragMilky->data);
+	pTexTransitMilky = pCmagMilky + 1;
+	commandIndexMilky = context->commandMgrDynamic->getCommandIndex();
+	setMilky = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
+	setMilky->bindUniform(uModelViewMatrixMilky.get(), 2);
+	setMilky->bindUniform(uFragMilky.get(), 3);
+}
+
+void MilkyWay::initIris()
+{
+	commandIndexIrisMilky = context->commandMgrDynamic->getCommandIndex();
+	setIrisMilky = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
+	setIrisMilky->bindUniform(uModelViewMatrixMilky.get(), 2);
+	setIrisMilky->bindUniform(uFragMilky.get(), 3);
 }
 
 void MilkyWay::initModelMatrix()
@@ -83,6 +125,7 @@ void MilkyWay::initModelMatrix()
 MilkyWay::~MilkyWay()
 {
 	if (sphere) delete sphere;
+	if (pipelineMilky) delete[] pipelineMilky;
 	deleteMapTex();
 }
 
@@ -100,6 +143,7 @@ void MilkyWay::defineZodiacalState(const std::string& tex_file, float _intensity
 		zodiacal.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
 		zodiacal.intensity = std::clamp(_intensity, 0.f, 1.f);
 		zodiacal.name = tex_file;
+		buildZodiacal();
 	} else {
 		cLog::get()->write("Milkyway: zodicalState already exist, function aborded" , LOG_TYPE::L_WARNING);
 	}
@@ -124,6 +168,7 @@ void MilkyWay::defineInitialMilkywayState(const std::string& path_file,const std
 			cLog::get()->write("Milkyway: define irisMilky, name "+ iris_tex_file, LOG_TYPE::L_DEBUG);
 		} else
 			cLog::get()->write("Milkyway: no irisMilky define" , LOG_TYPE::L_DEBUG);
+		buildMilkyway();
 	} else {
 		cLog::get()->write("Initial textures already define, function aborded", LOG_TYPE::L_WARNING);
 	}
@@ -140,22 +185,24 @@ void MilkyWay::changeMilkywayState(const std::string& tex_file, float _intensity
 	if (nextMilky.tex!=nullptr) {
 		delete nextMilky.tex;
 	}
-	nextMilky.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);	
+	nextMilky.tex = new s_texture(tex_file, TEX_LOAD_TYPE_PNG_BLEND1, true);
 	nextMilky.intensity = _intensity;
 	nextMilky.name = tex_file;
 	onTextureTransition = true;
 	switchTexFader = true;
 	setIntensity(nextMilky.intensity);
+	buildMilkyway();
 }
 
 
-void MilkyWay::restoreDefaultMilky() 
+void MilkyWay::restoreDefaultMilky()
 {
-	nextMilky.tex = new s_texture(defaultMilky.name, TEX_LOAD_TYPE_PNG_BLEND1, true);	
+	nextMilky.tex = new s_texture(defaultMilky.name, TEX_LOAD_TYPE_PNG_BLEND1, true);
 	nextMilky.name = defaultMilky.name;
 	onTextureTransition = true;
 	switchTexFader = true;
 	setIntensity(defaultMilky.intensity);
+	buildMilkyway();
 	// cout << "Valeur de Intensity " << intensityMilky << endl;
 }
 
@@ -170,6 +217,7 @@ void MilkyWay::endTexTransition()
 	nextMilky.tex = nullptr;
 	onTextureTransition = false;
 	switchTexFader = false;
+	buildMilkyway();
 }
 
 
@@ -189,60 +237,121 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 
 	float cmag = ad_lum  * showFader.getInterstate();
 
-	StateGL::enable(GL_CULL_FACE);
+	// StateGL::enable(GL_CULL_FACE);
 
 	cmag *= intensityMilky;
 
 	if (onTextureTransition && (switchTexFader.getInterstate()>0.99))
 		endTexTransition();
 
-	shaderMilkyway->use();
+	//shaderMilkyway->use();
 
 	//first MilkyWay
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 
 	if (displayIrisMilky && currentMilky.name == defaultMilky.name)
-		glBindTexture(GL_TEXTURE_2D, irisMilky.tex->getID());
+		//glBindTexture(GL_TEXTURE_2D, irisMilky.tex->getID());
+		context->commandMgrDynamic->setSubmission(commandIndexIrisMilky, false, context->commandMgr);
 	else
-		glBindTexture(GL_TEXTURE_2D, currentMilky.tex->getID());
+		//glBindTexture(GL_TEXTURE_2D, currentMilky.tex->getID());
+		context->commandMgrDynamic->setSubmission(commandIndexMilky, false, context->commandMgr);
 
-	shaderMilkyway->setUniform("cmag", cmag);
+	*pCmagMilky = cmag;
+	//shaderMilkyway->setUniform("cmag", cmag);
 
 	if (onTextureTransition) {
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, nextMilky.tex->getID());
-		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useTwoTex");
-		shaderMilkyway->setUniform("texTransit", switchTexFader.getInterstate());
-		glActiveTexture(GL_TEXTURE0);
-	} else
-		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
+		*pTexTransitMilky = switchTexFader.getInterstate();
+		// glActiveTexture(GL_TEXTURE1);
+		// glBindTexture(GL_TEXTURE_2D, nextMilky.tex->getID());
+		// shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useTwoTex");
+		// shaderMilkyway->setUniform("texTransit", switchTexFader.getInterstate());
+		// glActiveTexture(GL_TEXTURE0);
+	} //else
+		//shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
 
 	Mat4f matrix = (nav->getJ2000ToEyeMat() * modelMilkyway ).convert();
-	shaderMilkyway->setUniform("ModelViewMatrix",matrix);
+	*pModelViewMatrixMilky = matrix;
 
-	StateGL::disable(GL_BLEND);
-	sphere->draw();
+	// StateGL::disable(GL_BLEND);
+	// sphere->draw();
 
 	//nextZodiacalLight
 	if (zodiacal.tex != nullptr && zodiacalFader.getInterstate()) {
-		
-		cmag = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
-		glBindTexture(GL_TEXTURE_2D, zodiacal.tex->getID());
-		shaderMilkyway->setUniform("cmag", cmag);
-	
+
+		*pCmagZodiacal = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
+		// glBindTexture(GL_TEXTURE_2D, zodiacal.tex->getID());
+		// shaderMilkyway->setUniform("cmag", cmag);
+
 		//	365.2422 c'est la période de révolution terrestre
 		//	27.5 c'est le shift de la texture ça n'a aucun sens
-		matrix = (nav->getJ2000ToEyeMat() * modelZodiacal *
-		                Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
-	
-		shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
-		shaderMilkyway->setUniform("ModelViewMatrix",matrix);
-	
-		StateGL::enable(GL_BLEND);
-		sphere->draw();
+		*pModelViewMatrixZodiacal = (nav->getJ2000ToEyeMat() * modelZodiacal *
+		                             Mat4d::zrotation(2*M_PI*(-julianDay+27.5)/365.2422)).convert();
+
+		context->commandMgr->setSubmission(commandIndexZodiacal);
+		// shaderMilkyway->setSubroutine(GL_FRAGMENT_SHADER, "useOneTex");
+		// shaderMilkyway->setUniform("ModelViewMatrix",matrix);
+
+		// StateGL::enable(GL_BLEND);
+		// sphere->draw();
 	}
 
 	//end
-	StateGL::disable(GL_CULL_FACE);
-	shaderMilkyway->unuse();
+	// StateGL::disable(GL_CULL_FACE);
+	// shaderMilkyway->unuse();
+}
+
+void MilkyWay::buildMilkyway()
+{
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	setMilky->bindTexture(currentMilky.tex->getTexture(), 0);
+	if (onTextureTransition) setMilky->bindTexture(nextMilky.tex->getTexture(), 1);
+	cmdMgr->init(commandIndexMilky, onTextureTransition ? pipelineMilky : pipelineMilky + 1);
+	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
+	cmdMgr->bindSet(layout.get(), setMilky.get(), 1);
+	sphere->bind(cmdMgr);
+	cmdMgr->drawIndexed(sphere->getVertexArray()->getIndiceCount());
+	cmdMgr->compile();
+	if (useIrisMilky && currentMilky.name == defaultMilky.name) {
+		setIrisMilky->bindTexture(currentMilky.tex->getTexture(), 0);
+		if (onTextureTransition) setMilky->bindTexture(nextMilky.tex->getTexture(), 1);
+		cmdMgr->init(commandIndexIrisMilky, onTextureTransition ? pipelineMilky : pipelineMilky + 1);
+		cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
+		cmdMgr->bindSet(layout.get(), setIrisMilky.get(), 1);
+		sphere->bind(cmdMgr);
+		cmdMgr->drawIndexed(sphere->getVertexArray()->getIndiceCount());
+		cmdMgr->compile();
+	}
+}
+
+void MilkyWay::buildZodiacal()
+{
+	// init context
+	pipelineZodiacal = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipelineZodiacal->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineZodiacal->setDepthStencilMode();
+	pipelineZodiacal->setCullMode(true);
+	sphere->bind(pipelineZodiacal.get());
+	pipelineZodiacal->bindShader("milkyway.vert.spv");
+	pipelineZodiacal->bindShader("milkywayOneTex.frag.spv");
+	pipelineZodiacal->build();
+	uModelViewMatrixZodiacal = std::make_unique<Uniform>(context->surface, sizeof(*pModelViewMatrixZodiacal));
+	pModelViewMatrixZodiacal = static_cast<typeof(pModelViewMatrixZodiacal)>(uModelViewMatrixZodiacal->data);
+	uFragZodiacal = std::make_unique<Uniform>(context->surface, sizeof(float) * 2);
+	pCmagZodiacal = static_cast<float *>(uFragZodiacal->data);
+	setZodiacal = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
+	setZodiacal->bindUniform(uModelViewMatrixZodiacal.get(), 2);
+	setZodiacal->bindUniform(uFragZodiacal.get(), 3);
+
+	// build
+	CommandMgr *cmdMgr = context->commandMgr;
+	setZodiacal->bindTexture(zodiacal.tex->getTexture(), 0);
+	commandIndexZodiacal = cmdMgr->initNew(pipelineZodiacal.get());
+	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
+	cmdMgr->bindSet(layout.get(), setZodiacal.get(), 1);
+	sphere->bind(cmdMgr);
+	cmdMgr->drawIndexed(sphere->getVertexArray()->getIndiceCount());
+	cmdMgr->compile();
 }

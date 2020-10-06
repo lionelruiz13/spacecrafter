@@ -35,10 +35,11 @@
 #include <string>
 #include <memory>
 
-#include "renderGL/shader.hpp"
+//#include "renderGL/shader.hpp"
+#include "tools/vecmath.hpp"
+#include "vulkanModule/Context.hpp"
 
-
-enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4, 
+enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4,
 				SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_NORMAL_TES = 61 , SHADER_MOON_BUMP = 7, SHADER_MOON_NIGHT=32, SHADER_ARTIFICIAL = 8};
 
 /*struct bodyShaderStatus {
@@ -47,6 +48,14 @@ enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SH
 	bool norm;
 	bool ring;
 };*/
+class VertexArray;
+class PipelineLayout;
+class Pipeline;
+
+typedef struct {
+	PipelineLayout *layout;
+	Pipeline *pipeline;
+} drawState_t;
 
 class BodyShader {
 
@@ -54,31 +63,31 @@ public:
 	BodyShader() {};
 	~BodyShader() {};
 
-	static void createShader();
+	static void createShader(ThreadContext *context);
 	// static void deleteShader();
 
-	static shaderProgram * getShaderBump() {
-		return shaderBump.get();
+	static drawState_t *getShaderBump() {
+		return &shaderBump;
 	};
 
-	static shaderProgram * getShaderNight() {
-		return shaderNight.get();
+	static drawState_t *getShaderNight() {
+		return &shaderNight;
 	};
 
-	static shaderProgram * getShaderNightTes() {
-		return myEarth.get();
+	static drawState_t *getShaderNightTes() {
+		return &myEarth;
 	};
 
-	static shaderProgram * getShaderRinged() {
-		return shaderRinged.get();
+	static drawState_t *getShaderRinged() {
+		return &shaderRinged;
 	};
 
-	static shaderProgram * getShaderNormal() {
-		return shaderNormal.get();
+	static drawState_t *getShaderNormal() {
+		return &shaderNormal;
 	};
 
-	static shaderProgram * getShaderNormalTes() {
-		return shaderNormalTes.get();
+	static drawState_t *getShaderNormalTes() {
+		return &shaderNormalTes;
 	};
 
 	// static shaderProgram * getShaderMoonNormal() {
@@ -93,24 +102,98 @@ public:
 	// 	return shaderMoonBump.get();
 	// };
 
-	static shaderProgram * getShaderMoonNormalTes() {
-		return myMoon.get();
+	static drawState_t *getShaderMoonNormalTes() {
+		return &myMoon;
 	};
 
-	static shaderProgram * getShaderArtificial() {
-		return shaderArtificial.get();
+	static drawState_t *getShaderArtificial() {
+		return &shaderArtificial;
 	};
+
+	static Set *getPushSetShaderArtificial() {
+		return pushSetShaderArtificial;
+	}
 
 protected:
-	static std::unique_ptr<shaderProgram> shaderBump;
-	static std::unique_ptr<shaderProgram> shaderNight; //, shaderMoonNight;
-	static std::unique_ptr<shaderProgram> myEarth, shaderNormal, shaderNormalTes;
-	static std::unique_ptr<shaderProgram> shaderRinged;
-	static std::unique_ptr<shaderProgram> myMoon; //, shaderMoonBump, shaderMoonNormal;
-	static std::unique_ptr<shaderProgram> shaderArtificial;
+	static drawState_t shaderBump;
+	static drawState_t shaderNight; //, shaderMoonNight;
+	static drawState_t myEarth, shaderNormal, shaderNormalTes;
+	static drawState_t shaderRinged;
+	static drawState_t myMoon; //, shaderMoonBump, shaderMoonNormal;
+	static drawState_t shaderArtificial;
+	static Set *pushSetShaderArtificial;
 };
 
+typedef Mat4f mat4;
+typedef Vec3f vec3;
+typedef Vec3i ivec3;
+
+typedef struct {
+	mat4 ModelViewMatrix;
+	mat4 NormalMatrix;
+	vec3 clipping_fov;
+	float planetRadius;
+	vec3 LightPosition;
+	float planetScaledRadius;
+	float planetOneMinusOblateness;
+} globalVertProj;
+
+typedef struct {
+	mat4 ModelViewMatrix;
+	mat4 NormalMatrix;
+	vec3 clipping_fov;
+	float planetRadius;
+	vec3 LightPosition;
+} globalProj;
+
+typedef struct {
+	float planetScaledRadius;
+	float planetOneMinusOblateness;
+} globalVertGeom;
+
+typedef struct {
+	ivec3 TesParam;
+} globalTescGeom;
+
+typedef struct {
+	mat4 ViewProjection;
+	mat4 Model;
+} globalTesc;
+
+typedef struct {
+	vec3 MoonPosition1;
+	float MoonRadius1;
+	vec3 MoonPosition2;
+	float MoonRadius2;
+	vec3 MoonPosition3;
+	float MoonRadius3;
+	vec3 MoonPosition4;
+	float MoonRadius4;
+	float SunHalfAngle;
+} globalFrag;
+
+typedef struct {
+	float RingInnerRadius;
+	float RingOuterRadius;
+} ringFrag;
+
+typedef struct {
+	vec3 MoonPosition1;
+	float MoonRadius1;
+	vec3 UmbraColor;
+	float SunHalfAngle;
+	float Ambient;
+} moonFrag;
+
+typedef struct {
+	mat4 ModelViewMatrix;
+	vec3 clipping_fov;
+} artGeom;
+
+typedef struct {
+	vec3 Position;	// Light position in eye coords.
+	float fixAlignment; // fix alignment
+    vec3 Intensity;	// A,D,S intensity
+} LightInfo;
+
 #endif // _BODY_SHADER_HPP_
-
-
-

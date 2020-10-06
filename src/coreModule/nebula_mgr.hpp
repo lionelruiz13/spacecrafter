@@ -36,7 +36,14 @@
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 
+#include "vulkanModule/Context.hpp"
+
 class VertexArray;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+class Buffer;
 
 /*! \class NebulaMgr
   * \brief NebulaMgr handles all deepsky_objects DSO.
@@ -44,7 +51,7 @@ class VertexArray;
 
 class NebulaMgr : public NoCopy, public ModuleFont, public ModuleFader<LinearFader> {
 public:
-	NebulaMgr();
+	NebulaMgr(ThreadContext *_context);
 	virtual ~NebulaMgr();
 
 	//! Read the Nebulas data from a unique file cat
@@ -212,7 +219,7 @@ protected:
 	//! load all texture pictograms for all DSO
 	//! \return return true if all texture pictograms are correctly loaded false  owerwise
 	bool initTexPicto();
-	void createShaderHint();
+	//void createShaderHint();
 	void createSC_context();
 	void drawAllHint(const Projector* prj);
 
@@ -227,8 +234,17 @@ private:
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed
 
-	std::unique_ptr<shaderProgram> shaderNebulaHint;
+	ThreadContext *context;
+	int commandIndex;
+	//std::unique_ptr<shaderProgram> shaderNebulaHint;
 	std::unique_ptr<VertexArray> m_hintGL;
+	std::unique_ptr<Pipeline> pipelineHint;
+	std::unique_ptr<PipelineLayout> layoutHint;
+	std::unique_ptr<Set> setHint;
+	std::unique_ptr<Uniform> uniformHint;
+	float *pUniformHint;
+	std::unique_ptr<Buffer> drawDataHint;
+	uint32_t *pDrawDataHint;
 
 	std::vector<float> vecHintPos;		//!< array of coordinates of the nebula's position
 	std::vector<float> vecHintTex;		//!< array of coordinates of the nebula's texture

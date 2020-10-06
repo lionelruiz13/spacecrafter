@@ -4,17 +4,16 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform vec3 color;
-uniform float fader;
+layout (binding=1, set=1) uniform ubo {
+	vec3 color;
+	float fader;
+};
 
-in colorFrag
-{
-	float intensityColor;
-} cfIn;
+layout (location=0) in float intensityColor;
 
-out vec4 Color;
+layout (location=0) out vec4 Color;
 
 void main(void)
 {
-	Color = vec4 (color*cfIn.intensityColor, fader);
+	Color = vec4 (color*intensityColor, fader);
 }

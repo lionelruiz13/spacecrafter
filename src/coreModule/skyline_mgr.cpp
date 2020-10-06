@@ -27,13 +27,12 @@
 
 #include "coreModule/skyline_mgr.hpp"
 #include "tools/log.hpp"
+#include "vulkanModule/Context.hpp"
 
-
-SkyLineMgr::SkyLineMgr()
+SkyLineMgr::SkyLineMgr(ThreadContext *context)
 {
 	baseColor=Vec3f(0.f, 0.f, 0.f);
-	SkyLine::createShader();
-	SkyLine::createSC_context();
+	SkyLine::createSC_context(context);
 }
 
 void SkyLineMgr::draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)

@@ -36,6 +36,11 @@
 #include "tools/log.hpp"
 #include "bodyModule/ring.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Buffer.hpp"
+
 BigBody::BigBody(Body *parent,
                  const std::string& englishName,
                  BODY_TYPE _typePlanet,
@@ -49,8 +54,8 @@ BigBody::BigBody(Body *parent,
                  bool close_orbit,
                  ObjL* _currentObj,
                  double orbit_bounding_radius,
-				 BodyTexture* _bodyTexture
-                ) :
+				 BodyTexture* _bodyTexture,
+                 ThreadContext *context) :
 	Body(parent,
 	     englishName,
 	     _typePlanet,
@@ -64,8 +69,9 @@ BigBody::BigBody(Body *parent,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-		 _bodyTexture
-		 ),
+		 _bodyTexture,
+		 context
+        ),
 	rings(NULL), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
 {
 	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
@@ -87,6 +93,7 @@ BigBody::BigBody(Body *parent,
 
 	trail = new Trail(this,1460);
 	orbitPlot = new Orbit2D(this);
+    drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
 	selectShader();
 }
 
@@ -113,43 +120,137 @@ BigBody::~BigBody()
 void BigBody::setRings(Ring* r) {
 	rings = r;
 	myShader = SHADER_RINGED;
-	myShaderProg = BodyShader::getShaderRinged();
+	drawState = BodyShader::getShaderRinged();
 }
 
 void BigBody::selectShader ()
 {
 	if (tex_night && tex_heightmap) { //night Shader with tessellation
-		myShader = SHADER_NIGHT_TES;
-		myShaderProg = BodyShader::getShaderNightTes();
+		myShader = SHADER_NIGHT_TES; // myEarth
+		drawState = BodyShader::getShaderNightTes();
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalProj));
+        pGlobalProj = static_cast<typeof(pGlobalProj)>(uGlobalProj->data);
+        set->bindUniform(uGlobalProj.get(), 0);
+        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+        set->bindUniform(uGlobalFrag.get(), 1);
+        uGlobalVertGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertGeom));
+        pGlobalVertGeom = static_cast<typeof(pGlobalVertGeom)>(uGlobalVertGeom->data);
+        set->bindUniform(uGlobalVertGeom.get(), 2);
+        uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
+        pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
+        set->bindUniform(uGlobalTescGeom.get(), 3);
+        uGlobalTesc = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTesc));
+        pGlobalTesc = static_cast<typeof(pGlobalTesc)>(uGlobalTesc->data);
+        set->bindUniform(uGlobalTesc.get(), 4);
+        set->bindTexture(tex_current->getTexture(), 5);
+        set->bindTexture(tex_eclipse_map->getTexture(), 6);
+        set->bindTexture(tex_night->getTexture(), 7);
+        set->bindTexture(tex_specular->getTexture(), 8);
+        //set->bindTexture(tex_cloud->getTexture(), 9);
+        //set->bindTexture(tex_norm_cloud->getTexture(), 10);
+        set->bindTexture(tex_heightmap->getTexture(), 11);
+        // if ((Body::flagClouds && tex_norm_cloud)==1)
+        // 	drawState->setUniform("Clouds",1);
+        // else
+        // 	drawState->setUniform("Clouds",0);
 		return;
 	}
 
 	if (tex_night) { //night Shader
 		myShader = SHADER_NIGHT;
-		myShaderProg = BodyShader::getShaderNight();
+		drawState = BodyShader::getShaderNight();
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
+        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+        set->bindUniform(uGlobalFrag.get(), 1);
+        set->bindTexture(tex_current->getTexture(), 2);
+        set->bindTexture(tex_eclipse_map->getTexture(), 3);
+        set->bindTexture(tex_night->getTexture(), 4);
 		return;
 	}
 
 	if (tex_norm) { //bump Shader
 		myShader = SHADER_BUMP;
-		myShaderProg = BodyShader::getShaderBump();
+		drawState = BodyShader::getShaderBump();
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
+        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+        set->bindUniform(uGlobalFrag.get(), 1);
+        uUmbraColor = std::make_unique<Uniform>(context->surface, sizeof(*pUmbraColor));
+        pUmbraColor = static_cast<typeof(pUmbraColor)>(uUmbraColor->data);
+        set->bindUniform(uUmbraColor.get(), 2);
+        set->bindTexture(tex_current->getTexture(), 3);
+        set->bindTexture(tex_norm->getTexture(), 4);
+        set->bindTexture(tex_eclipse_map->getTexture(), 5);
 		return;
 	}
 
 	if (rings) { //ringed Shader
 		myShader = SHADER_RINGED;
-		myShaderProg = BodyShader::getShaderRinged();
+		drawState = BodyShader::getShaderRinged();
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
+        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+        set->bindUniform(uGlobalFrag.get(), 1);
+        uModelViewMatrixInverse = std::make_unique<Uniform>(context->surface, sizeof(*pModelViewMatrixInverse));
+        pModelViewMatrixInverse = static_cast<typeof(pModelViewMatrixInverse)>(uModelViewMatrixInverse->data);
+        set->bindUniform(uModelViewMatrixInverse.get(), 2);
+        uRingFrag = std::make_unique<Uniform>(context->surface, sizeof(*pRingFrag));
+        pRingFrag = static_cast<typeof(pRingFrag)>(uRingFrag->data);
+        set->bindUniform(uRingFrag.get(), 3);
+        set->bindTexture(tex_current->getTexture(), 4);
+        set->bindTexture(tex_eclipse_map->getTexture(), 5);
+        set->bindTexture(rings->getTexTexture(), 6);
 		return;
 	}
 
 	if (tex_heightmap) {
 		myShader = SHADER_NORMAL_TES;
-		myShaderProg = BodyShader::getShaderNormalTes();
+		drawState = BodyShader::getShaderNormalTes();
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        uGlobalProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalProj));
+        pGlobalProj = static_cast<typeof(pGlobalProj)>(uGlobalProj->data);
+        set->bindUniform(uGlobalProj.get(), 0);
+        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+        set->bindUniform(uGlobalFrag.get(), 1);
+        uGlobalVertGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertGeom));
+        pGlobalVertGeom = static_cast<typeof(pGlobalVertGeom)>(uGlobalVertGeom->data);
+        set->bindUniform(uGlobalVertGeom.get(), 2);
+        uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
+        pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
+        set->bindUniform(uGlobalTescGeom.get(), 3);
+        uGlobalTesc = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTesc));
+        pGlobalTesc = static_cast<typeof(pGlobalTesc)>(uGlobalTesc->data);
+        set->bindUniform(uGlobalTesc.get(), 4);
+        set->bindTexture(tex_heightmap->getTexture(), 5);
+        set->bindTexture(tex_current->getTexture(), 6);
+        set->bindTexture(tex_eclipse_map->getTexture(), 7);
 		return;
 	}
 
 	myShader = SHADER_NORMAL;
-	myShaderProg = BodyShader::getShaderNormal();
+	drawState = BodyShader::getShaderNormal();
+    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+    uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+    pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+    set->bindUniform(uGlobalVertProj.get(), 0);
+    uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+    pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+    set->bindUniform(uGlobalFrag.get(), 1);
+    set->bindTexture(tex_current->getTexture(), 2);
+    set->bindTexture(tex_eclipse_map->getTexture(), 3);
 }
 
 float BigBody::getOnScreenSize(const Projector* prj, const Navigator * nav, bool orb_only)
@@ -196,136 +297,76 @@ double BigBody::calculateBoundingRadius()
 void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
 	//glEnable(GL_TEXTURE_2D);
-	StateGL::enable(GL_CULL_FACE);
-	StateGL::disable(GL_BLEND);
+	// StateGL::enable(GL_CULL_FACE);
+	// StateGL::disable(GL_BLEND);
 
 //	glBindTexture(GL_TEXTURE_2D, tex_current->getID());
 
-	myShaderProg->use();
+	//drawState->use();
 
-	//load specific values for shader
-	switch (myShader) {
+    switch (commandIndex) {
+        case -2: // Command not builded
+            commandIndex = -1;
+            if (!context->commandMgr->isRecording()) {
+                commandIndex = context->commandMgr->getCommandIndex();
+                context->commandMgr->init(commandIndex);
+                context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
+            }
+            context->commandMgr->bindPipeline(drawState->pipeline);
+            currentObj->bind(context->commandMgr);
+            context->commandMgr->bindSet(drawState->layout, set.get());
+            context->commandMgr->bindSet(drawState->layout, context->global->globalSet, 1);
+            context->commandMgr->indirectDrawIndexed(drawData.get());
+            if (!hasRings())
+                context->commandMgr->compile();
+            return;
+        case -1: break;
+        default:
+            context->commandMgr->setSubmission(commandIndex);
+    }
 
-		case SHADER_BUMP:
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex_norm->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-
-			break;
-
-		case SHADER_NIGHT :
-		case SHADER_NIGHT_TES:
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_night->getID());
-
-			if (tex_heightmap) {
-				glActiveTexture(GL_TEXTURE6);
-				glBindTexture(GL_TEXTURE_2D, tex_heightmap->getID());
-			}
-
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, tex_specular->getID());
-
-			// if(tex_cloud) {
-			// 	glActiveTexture(GL_TEXTURE4);
-			// 	glBindTexture(GL_TEXTURE_2D, tex_cloud->getID());
-			// 	myShaderProg->setUniform("CloudTexture",4);
-
-			// 	glActiveTexture(GL_TEXTURE5);
-			// 	glBindTexture(GL_TEXTURE_2D, tex_norm_cloud->getID());
-			// 	myShaderProg->setUniform("CloudNormalTexture",5);
-			// }
-			// if ((Body::flagClouds && tex_norm_cloud)==1)
-			// 	myShaderProg->setUniform("Clouds",1);
-			// else
-			// 	myShaderProg->setUniform("Clouds",0);
-			break;
-
-		case SHADER_RINGED :
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, (rings->getTexID()));
-
-			myShaderProg->setUniform("RingInnerRadius",rings->getInnerRadius());
-			myShaderProg->setUniform("RingOuterRadius",rings->getOuterRadius());
-
-			break;
-
-		case SHADER_NORMAL :
-		case SHADER_NORMAL_TES:
-		default: //shader normal
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, tex_eclipse_map->getID());
-
-			if (tex_heightmap) {
-				glActiveTexture(GL_TEXTURE6);
-				glBindTexture(GL_TEXTURE_2D, tex_heightmap->getID());
-			}
-			break;
-	}
-
-	//paramétrage des matrices pour opengl4
-	Mat4f proj = prj->getMatProjection().convert();
-	Mat4f matrix=mat.convert();
+    Mat4f matrix=mat.convert();
 	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
 
 	Mat4f inv_matrix = matrix.inverse();
-	myShaderProg->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	myShaderProg->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("clipping_fov",prj->getClippingFov());
-	myShaderProg->setUniform("planetScaledRadius",radius);
-
-	if ( myShader == SHADER_RINGED )
-		myShaderProg->setUniform("ModelViewMatrixInverse", inv_matrix);
-
-	if ( myShader == SHADER_NIGHT_TES || myShader == SHADER_NORMAL_TES ) {
-		myShaderProg->setUniform("ViewProjection", proj*view);
-		myShaderProg->setUniform("Model", model);
+	//load specific values for shader
+	Mat4f proj = prj->getMatProjection().convert();
+	switch (myShader) {
+        case SHADER_NIGHT_TES:
+        case SHADER_NORMAL_TES:
+            pGlobalProj->ModelViewMatrix = matrix;
+            pGlobalProj->NormalMatrix = inv_matrix.transpose();
+            pGlobalProj->clipping_fov = prj->getClippingFov();
+            pGlobalProj->planetRadius = initialRadius;
+            pGlobalProj->LightPosition = eye_sun;
+            pGlobalVertGeom->planetScaledRadius = radius;
+            pGlobalVertGeom->planetOneMinusOblateness = one_minus_oblateness;
+            pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
+            pGlobalTesc->ViewProjection = proj*view;
+            pGlobalTesc->Model = model;
+            break;
+        case SHADER_RINGED:
+            pRingFrag->RingInnerRadius = rings->getInnerRadius();
+            pRingFrag->RingOuterRadius = rings->getOuterRadius();
+            *pModelViewMatrixInverse = inv_matrix;
+            [[fallthrough]];
+        case SHADER_BUMP:
+        case SHADER_NIGHT:
+        case SHADER_NORMAL:
+		default: //shader normal
+            pGlobalVertProj->ModelViewMatrix = matrix;
+            pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
+            pGlobalVertProj->clipping_fov = prj->getClippingFov();
+            pGlobalVertProj->planetRadius = initialRadius;
+            pGlobalVertProj->LightPosition = eye_sun;
+            pGlobalVertProj->planetScaledRadius = radius;
+            pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
+			break;
 	}
-	//tesselation
-	if ( myShader == SHADER_NIGHT_TES) {
-		myShaderProg->setUniform("TesParam", 
-				Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getPlanetAltimetryFactor() ));
-	}
-	if ( myShader == SHADER_NORMAL_TES) {
-		myShaderProg->setUniform("TesParam", 
-				Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getPlanetAltimetryFactor() ));
-	}
-
-
-
-	//paramètres commun aux shaders sauf Sun
-	myShaderProg->setUniform("planetRadius",initialRadius);
-	myShaderProg->setUniform("planetOneMinusOblateness",one_minus_oblateness);
-	//utilisable si on est pas le soleil
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
-
+    if (myShader == SHADER_BUMP) {
+        *pUmbraColor = v3fNull; // deduced from body_moon
+    }
 	int index=1;
-	myShaderProg->setUniform("LightPosition",eye_sun);
-	myShaderProg->setUniform("SunHalfAngle",sun_half_angle);
-
 	double length;
 	double moonDotLight;
 	Vec3f tmp= v3fNull;
@@ -335,6 +376,7 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	Vec3d light = -planet_helio;
 	light.normalize();
 
+    pGlobalFrag->SunHalfAngle = sun_half_angle;
 	std::list<Body*>::iterator iter;
 	for(iter=satellites.begin(); iter!=satellites.end() && index <= 4; iter++) {
 		tmp2 = (*iter)->get_heliocentric_ecliptic_pos() - planet_helio;
@@ -345,20 +387,20 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 			tmp = nav->getHelioToEyeMat() * (*iter)->get_heliocentric_ecliptic_pos();
 
 			if (index==1) {
-				myShaderProg->setUniform("MoonPosition1",tmp);
-				myShaderProg->setUniform("MoonRadius1",(*iter)->getRadius()/(*iter)->getSphereScale());
+				pGlobalFrag->MoonPosition1 = tmp;
+				pGlobalFrag->MoonRadius1 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 			else if (index==2) {
-				myShaderProg->setUniform("MoonPosition2",tmp);
-				myShaderProg->setUniform("MoonRadius2",(*iter)->getRadius()/(*iter)->getSphereScale());
+				pGlobalFrag->MoonPosition2 = tmp;
+				pGlobalFrag->MoonRadius2 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 			else if (index==3) {
-				myShaderProg->setUniform("MoonPosition3",tmp);
-				myShaderProg->setUniform("MoonRadius3",(*iter)->getRadius()/(*iter)->getSphereScale());
+				pGlobalFrag->MoonPosition3 = tmp;
+				pGlobalFrag->MoonRadius3 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 			else if (index==4) {
-				myShaderProg->setUniform("MoonPosition4",tmp);
-				myShaderProg->setUniform("MoonRadius4",(*iter)->getRadius()/(*iter)->getSphereScale());
+				pGlobalFrag->MoonPosition4 = tmp;
+				pGlobalFrag->MoonRadius4 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 
 			index++;
@@ -368,25 +410,20 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	// clear any leftover values
 	for(; index<=4; index++) {
 		if (index==1) // No moon data
-			myShaderProg->setUniform("MoonRadius1",0.0);
+			pGlobalFrag->MoonRadius1 = 0.0;
 		if (index==2)
-			myShaderProg->setUniform("MoonRadius2",0.0);
+			pGlobalFrag->MoonRadius2 = 0.0;
 		if (index==3)
-			myShaderProg->setUniform("MoonRadius3",0.0);
+			pGlobalFrag->MoonRadius3 = 0.0;
 		if (index==4)
-			myShaderProg->setUniform("MoonRadius4",0.0);
+			pGlobalFrag->MoonRadius4 = 0.0;
 	}
+	currentObj->draw(screen_sz, drawData->data);
+    drawData->update();
+	// drawState->use();
+	// glActiveTexture(GL_TEXTURE0);
 
-	if ( myShader == SHADER_NIGHT_TES || myShader == SHADER_NORMAL_TES )
-		currentObj->draw(screen_sz, VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
-	else
-		currentObj->draw(screen_sz);
-
-
-	myShaderProg->use();
-	glActiveTexture(GL_TEXTURE0);
-
-	StateGL::disable(GL_CULL_FACE);
+	// StateGL::disable(GL_CULL_FACE);
 }
 
 void BigBody::setSphereScale(float s, bool initial_scale)

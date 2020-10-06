@@ -5,9 +5,9 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform float intensity;
+layout (binding=0) uniform ubo {float intensity;};
 
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
  
 void main(void)
 {

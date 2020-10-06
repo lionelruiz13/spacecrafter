@@ -28,10 +28,10 @@
 #include "coreModule/skygrid_mgr.hpp"
 #include "tools/log.hpp"
 
-SkyGridMgr::SkyGridMgr()
+SkyGridMgr::SkyGridMgr(ThreadContext *context)
 {
 	baseColor=Vec3f(0.f, 0.f, 0.f);
-	SkyGrid::createShader();
+	SkyGrid::createShader(context);
 }
 
 void SkyGridMgr::draw(const Projector* prj)
@@ -226,4 +226,3 @@ void SkyGridMgr::loadState(SkyGridSave &obj)
 	setFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC, obj.ecliptic);
 	setFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL, obj.equatorial);
 }
-

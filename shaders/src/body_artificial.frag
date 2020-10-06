@@ -5,7 +5,7 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform sampler2D mapTexture;
+layout (set = 1, binding=0) uniform sampler2D mapTexture;
 layout (location=0) out vec4 FragColor;
 
 layout (location=0) in colorFrag
@@ -16,21 +16,19 @@ layout (location=0) in colorFrag
     float Ambient;
 } cfIn;
 
-uniform bool useTexture;
+//uniform bool useTexture;
 
-struct LightInfo {
-  vec3 Position;  // Light position in eye coords.
-  vec3 Intensity; // A,D,S intensity
-};
-uniform LightInfo Light;
+layout (binding=2) uniform LightInfo {
+    vec3 Position;	// Light position in eye coords.
+    vec3 Intensity;	// A,D,S intensity
+} Light;
 
-struct MaterialInfo {
-  vec3 Ka;            // Ambient reflectivity
-  vec3 Kd;            // Diffuse reflectivity
-  vec3 Ks;            // Specular reflectivity
-  float Ns;   		 // Specular factor
-};
-uniform MaterialInfo Material;
+layout (pushConstants) uniform MaterialInfo {
+    layout (offset=0) vec3 Ka;  	// Ambient reflectivity
+    layout (offset=12) vec3 Kd;		// Diffuse reflectivity
+    layout (offset=24) vec3 Ks;		// Specular reflectivity
+    layout (offset=36) float Ns;	// Specular factor
+} Material;
 
 void phongModel( vec3 pos, vec3 norm, out vec3 ambAndDiff, out vec3 spec ) {
     vec3 s = normalize(vec3(Light.Position) - pos);
@@ -51,6 +49,7 @@ float simple(vec3 pos, vec3 norm) {
 	return sDotN;
 }
 
+/*
 //~ subroutine( UsedTextureType )
 void useTexturedMaterial(out vec4 texColor)
 {
@@ -72,6 +71,23 @@ void main()
 	else
 		useColoredMaterial(texColor);
 
+  vec3 ambAndDiff, spec;
+  phongModel( cfIn.Position, cfIn.Normal, ambAndDiff, spec );
+  FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
+}
+*/
+
+void mainTextured()
+{
+  vec4 texColor = texture(mapTexture, cfIn.TexCoord);
+  vec3 ambAndDiff, spec;
+  phongModel( cfIn.Position, cfIn.Normal, ambAndDiff, spec );
+  FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
+}
+
+void mainTextureless()
+{
+  vec4 texColor = vec4(Material.Ka,1.0);
   vec3 ambAndDiff, spec;
   phongModel( cfIn.Position, cfIn.Normal, ambAndDiff, spec );
   FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);

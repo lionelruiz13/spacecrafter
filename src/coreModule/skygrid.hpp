@@ -38,11 +38,16 @@
 #include "tools/fader.hpp"
 #include "renderGL/stateGL.hpp"
 #include "tools/ScModule.hpp"
+#include "vulkanModule/Context.hpp"
 
 //! Class which manages a grid to display in the sky
 
 class VertexArray;
-class shaderProgram;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+//class shaderProgram;
 
 //TODO: intégrer qu'une version de font car la font est commune à toutes les grilles
 //TODO: intégrer qu'une version du flag InternaNav qui est commun à toutes les grilles
@@ -85,7 +90,7 @@ public:
 		internalNav=a;
 	}
 
-	static void createShader();
+	static void createShader(ThreadContext *_context);
 
 protected:
 	// Create and precompute positions of a SkyGrid
@@ -93,6 +98,8 @@ protected:
 	        double _radius = 1., unsigned int _nb_alt_segment = 18, unsigned int _nb_azi_segment = 50);
 
 	void createBuffer();
+	//! Record draw command
+	void recordDraw();
 
 	enum SKY_GRID_TYPE {
 		EQUATORIAL,
@@ -104,8 +111,19 @@ protected:
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 
 	static unsigned int nbPointsToDraw;
-	static std::unique_ptr<VertexArray> m_dataGL;
-	static std::unique_ptr<shaderProgram> shaderSkyGrid;
+	static ThreadContext *context;
+	static VertexArray *m_dataGL;
+	static Pipeline *pipeline;
+	static PipelineLayout *layout;
+	static Set *set;
+	static int vUniformID0;
+	static int vUniformID1;
+	int commandIndex;
+	std::unique_ptr<Uniform> uMat, uFrag;
+	Mat4f *pMat;
+	Vec3f *pColor;
+	float *pFader;
+	//static std::unique_ptr<shaderProgram> shaderSkyGrid;
 
 private:
 	unsigned int nb_meridian;

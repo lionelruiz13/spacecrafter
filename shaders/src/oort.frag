@@ -1,13 +1,16 @@
+//
 // oort
-
+//
 #version 420
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform vec3 color;
-uniform float intensity;
+layout (binding=1, set=1) uniform uFrag {
+	vec3 color;
+	float intensity;
+};
 
-out vec4 Color;
+layout (location=0) out vec4 Color;
 
 void main(void)
 {

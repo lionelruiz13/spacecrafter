@@ -27,6 +27,7 @@
 #include "renderGL/shader.hpp"
 #include "renderGL/stateGL.hpp"
 #include "mediaModule/media_base.hpp"
+#include "vulkanModule/Context.hpp"
 
 #ifndef WIN32
 extern "C"
@@ -40,6 +41,7 @@ extern "C"
 
 class s_texture;
 class Media;
+class StreamTexture;
 
 /**
  * \class VideoPlayer
@@ -61,6 +63,9 @@ public:
 
 	//! Destructeur, ferme les états de la ffmpeg
 	~VideoPlayer();
+
+	//! Create video textures
+	void createTextures(ThreadContext *context);
 
 	//! recherche la frame suivante
 	void update();
@@ -109,6 +114,7 @@ private:
 
 	Media* media=nullptr;
 	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
+	std::array<void *, 3> pImageBuffer;
 
 	std::string fileName; 	//!< nom de la vidéo
 	Resolution videoRes;	//!< int video_w, video_h;	//!< taille w,h  de la vidéo

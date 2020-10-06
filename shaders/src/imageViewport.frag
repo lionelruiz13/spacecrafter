@@ -7,11 +7,13 @@
 
 
 layout (binding=0) uniform sampler2D mapTexture;
-uniform float fader;
+layout (push_constant) uniform uFader {
+	layout (offset=64) float fader;
+};
 
-smooth in vec2 TexCoord;
- 
-out vec4 FragColor;
+layout (location=0) in vec2 TexCoord;
+
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

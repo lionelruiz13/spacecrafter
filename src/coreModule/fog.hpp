@@ -36,16 +36,22 @@
 #include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
+#include "vulkanModule/Context.hpp"
 
 class s_texture;
 class Navigator;
 class Projector;
 class VertexArray;
-class shaderProgram;
+class CommandMgr;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+//class shaderProgram;
 
 class Fog : public NoCopy, public ModuleFader<LinearFader> {
 public:
-	Fog(float _radius);
+	Fog(float _radius, ThreadContext *context);
 	~Fog();
 
 	void update(int delta_time) {
@@ -64,7 +70,7 @@ public:
 		sky_brightness = b;
 	}
 
-	static void createSC_context();
+	static void createSC_context(ThreadContext *context);
 
 	void draw(const Projector* prj, const Navigator* nav) const;
 
@@ -74,10 +80,22 @@ private:
 
 	void createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
 
-	static std::unique_ptr<shaderProgram> shaderFog;
+	//static std::unique_ptr<shaderProgram> shaderFog;
+	static VertexArray *vertexModel;
+	static PipelineLayout *layout;
+	static Pipeline *pipeline;
+	static int vUniformID1, vUniformID2;
+	static Set *set;
+	int commandIndex;
+	CommandMgr *cmdMgr;
+	Set *globalSet;
 	std::unique_ptr<VertexArray> m_fogGL;
+	std::unique_ptr<Uniform> uMV, uFrag;
+	Mat4f *pMV;
+	float *psky_brightness, *pFader;
 	unsigned int nbVertex;			//nombre de vertex pour le fog
 	static s_texture* fog_tex;			// allways the same
+
 	float radius;
 	float alt_angle;
 	float angle_shift;

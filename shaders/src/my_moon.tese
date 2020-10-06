@@ -11,12 +11,7 @@ layout (triangles, equal_spacing) in;
 //layout (isolines, equal_spacing) in;
 //layout (triangles, fractional_odd_spacing)in;
 
-
-uniform mat4 model;
-uniform mat4 vp;
-
-
-in gl_PerVertex
+layout (location=0) in gl_PerVertex
 {
   vec4 gl_Position;
   float gl_PointSize;
@@ -24,19 +19,19 @@ in gl_PerVertex
 } gl_in[gl_MaxPatchVertices];
 
 
-out gl_PerVertex {
+layout (location=0) out gl_PerVertex {
   vec4 gl_Position;
   float gl_PointSize;
   float gl_ClipDistance[];
 };
 
-in TCS_OUT{
+layout (location=1) in TCS_OUT{
     in vec2 TexCoord;
     in vec3 Normal;
     //~ in vec3 tangent;
 }tes_in[];
 
-out TES_OUT{
+layout (location=1) out TES_OUT{
     out vec2 TexCoord;
     out vec3 Normal;
     //~ out vec3 tangent;
@@ -78,44 +73,3 @@ void main(void)
 
     gl_Position =  position;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

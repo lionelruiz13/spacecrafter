@@ -34,9 +34,22 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/shader.hpp"
 
-std::unique_ptr<VertexArray> SkyGrid::m_dataGL;
-std::unique_ptr<shaderProgram> SkyGrid::shaderSkyGrid;
-unsigned int SkyGrid::nbPointsToDraw;
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+
+//std::unique_ptr<shaderProgram> SkyGrid::shaderSkyGrid;
+unsigned int SkyGrid::nbPointsToDraw = -1;
+ThreadContext *SkyGrid::context;
+VertexArray *SkyGrid::m_dataGL;
+Pipeline *SkyGrid::pipeline;
+PipelineLayout *SkyGrid::layout;
+Set *SkyGrid::set;
+int SkyGrid::vUniformID0 = -1;
+int SkyGrid::vUniformID1;
 
 
 SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
@@ -63,6 +76,7 @@ SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
 		}
 	}
 	createBuffer();
+    recordDraw();
 }
 
 SkyGrid::~SkyGrid()
@@ -81,15 +95,31 @@ SkyGrid::~SkyGrid()
 	// font = nullptr;
 }
 
-void SkyGrid::createShader()
+void SkyGrid::createShader(ThreadContext *_context)
 {
-	shaderSkyGrid = std::make_unique<shaderProgram>();
-	shaderSkyGrid->init("skygrid.vert","skygrid.geom","skygrid.frag");
-	shaderSkyGrid->setUniformLocation({"color","fader","Mat"});
+    context = _context;
+	// shaderSkyGrid = std::make_unique<shaderProgram>();
+	// shaderSkyGrid->init("skygrid.vert","skygrid.geom","skygrid.frag");
+	// shaderSkyGrid->setUniformLocation({"color","fader","Mat"});
 
-	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL = context->global->tracker->track(new VertexArray(context->surface));
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
+    layout = context->global->tracker->track(new PipelineLayout(context->surface));
+    layout->setGlobalPipelineLayout(context->global->globalLayout);
+    layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
+    layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
+    layout->buildLayout();
+    layout->build();
+    pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+    pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+    pipeline->setDepthStencilMode();
+    pipeline->bindVertex(m_dataGL);
+    pipeline->bindShader("skygrid.vert.spv");
+    pipeline->bindShader("skygrid.geom.spv");
+    pipeline->bindShader("skygrid.frag.spv");
+    pipeline->build();
+    set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
 }
 
 
@@ -103,7 +133,7 @@ void SkyGrid::createBuffer()
 		insert_vec3(dataSky,alt_points[nm][0]);
 		dataColor.push_back(0.f);
 
-		insert_vec3(dataSky,alt_points[nm][1]);		
+		insert_vec3(dataSky,alt_points[nm][1]);
 		dataColor.push_back(1.f);
 
 		for (unsigned int i=1; i<nb_alt_segment-1; ++i) {
@@ -132,39 +162,68 @@ void SkyGrid::createBuffer()
 		}
 	}
 
-	nbPointsToDraw = dataSky.size()/3;
-	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataSky);
-	m_dataGL->fillVertexBuffer(BufferType::MAG, dataColor);
+    if (nbPointsToDraw == UINT32_MAX) {
+        nbPointsToDraw = dataSky.size()/3;
+        m_dataGL->build(nbPointsToDraw);
+    	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataSky);
+    	m_dataGL->fillVertexBuffer(BufferType::MAG, dataColor);
+    }
+    assert(nbPointsToDraw == dataSky.size()/3);
+
+    // Uniform
+    uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat), true);
+    pMat = static_cast<typeof(pMat)>(uMat->data);
+    uFrag = std::make_unique<Uniform>(context->surface, sizeof(float) * 4, true);
+    pColor = static_cast<Vec3f *>(uFrag->data);
+    pFader = static_cast<float *>(uFrag->data) + 3;
 }
 
-
+void SkyGrid::recordDraw()
+{
+    if (vUniformID0 == -1) {
+        vUniformID0 = set->bindVirtualUniform(uMat.get(), 0);
+        vUniformID1 = set->bindVirtualUniform(uFrag.get(), 1);
+    } else {
+        set->setVirtualUniform(uMat.get(), vUniformID0);
+        set->setVirtualUniform(uFrag.get(), vUniformID1);
+    }
+    CommandMgr *cmdMgr = context->commandMgr;
+    commandIndex = cmdMgr->initNew(pipeline);
+    cmdMgr->bindSet(layout, context->global->globalSet, 0);
+    cmdMgr->bindSet(layout, set, 1);
+    cmdMgr->bindVertex(m_dataGL);
+    cmdMgr->draw(nbPointsToDraw);
+    cmdMgr->compile();
+}
 
 void SkyGrid::draw(const Projector* prj) const
 {
 	if (!fader.getInterstate()) return;
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	Vec3d pt1;
 	Vec3d pt2;
 
-	shaderSkyGrid->use();
-	shaderSkyGrid->setUniform("color", color);
-	shaderSkyGrid->setUniform("fader", fader.getInterstate());
+	// shaderSkyGrid->use();
+	// shaderSkyGrid->setUniform("color", color);
+	// shaderSkyGrid->setUniform("fader", fader.getInterstate());
+    *pColor = color;
+    *pFader = fader.getInterstate();
 
 	switch (gtype) {
 		case EQUATORIAL:
-			shaderSkyGrid->setUniform("Mat", prj->getMatEarthEquToEye() );
+			*pMat = prj->getMatEarthEquToEye();
 			break;
 		case ECLIPTIC :
-			shaderSkyGrid->setUniform("Mat", prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180)) );
+			*pMat = prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180));
 			break;
 		case GALACTIC :
-			shaderSkyGrid->setUniform("Mat", prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180)) );
+			*pMat = prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180));
 			break;
 		case ALTAZIMUTAL :
-			shaderSkyGrid->setUniform("Mat", prj->getMatLocalToEye() );
+			*pMat = prj->getMatLocalToEye();
 			break;
 		default:
 			return; //pour GCC
@@ -174,8 +233,8 @@ void SkyGrid::draw(const Projector* prj) const
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, nbPointsToDraw); //un point est représenté par 3 points
 	// m_dataGL->unBind();
 	// shaderSkyGrid->unuse();
-	Renderer::drawArrays(shaderSkyGrid.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, nbPointsToDraw); //un point est représenté par 3 points
-
+	//Renderer::drawArrays(shaderSkyGrid.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, nbPointsToDraw); //un point est représenté par 3 points
+    context->commandMgr->setSubmission(commandIndex);
 
 	// tracé de texte.
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
@@ -209,7 +268,7 @@ void SkyGrid::draw(const Projector* prj) const
 						else
 							sprintf( str, "%dh", nm);
 					} else if ( gtype == ALTAZIMUTAL ) {
-						sprintf( str, "%d°", nm<12 ? ((12-nm)*15) : ((36-nm)*15) );					
+						sprintf( str, "%d°", nm<12 ? ((12-nm)*15) : ((36-nm)*15) );
 					} else {
 						sprintf( str, "%d°", nm<12 ? (360-(12-nm)*15) : (360-(36-nm)*15) );
 					}
@@ -223,7 +282,7 @@ void SkyGrid::draw(const Projector* prj) const
 						font->print(6,-2,str, Color, MVP*TRANSFO ,1);
 					}
 
-				} 
+				}
 				if (nm % 8 == 0 && i != 16) {
 
 					const double d = sqrt(dq);

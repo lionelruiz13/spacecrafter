@@ -31,11 +31,24 @@
 #include "renderGL/shader.hpp"
 #include "renderGL/Renderer.hpp"
 
-#include "vulkanModule/TextureMgr.hpp"
+#include "vulkanModule/Texture.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
 
-std::unique_ptr<shaderProgram> s_font::shaderHorizontal;
-std::unique_ptr<shaderProgram> s_font::shaderPrint;
-std::unique_ptr<VertexArray> s_font::m_fontGL;
+ThreadContext *s_font::context;
+Set *s_font::set;
+VertexArray *s_font::vertexHorizontal;
+VertexArray *s_font::vertexPrint;
+CommandMgr *s_font::cmdMgr;
+Pipeline *s_font::pipelineHorizontal;
+Pipeline *s_font::pipelinePrint;
+PipelineLayout *s_font::layoutHorizontal;
+PipelineLayout *s_font::layoutPrint;
+int s_font::commandIndexHorizontal;
+int s_font::commandIndexPrint;
 
 std::string s_font::baseFontName;
 
@@ -75,23 +88,80 @@ s_font::~s_font()
 }
 
 
-void s_font::createSC_context()
+void s_font::createSC_context(ThreadContext *_context)
 {
-	//HORIZONTAL
-	shaderHorizontal = std::make_unique<shaderProgram>();
-	shaderHorizontal->init("sfontHorizontal.vert","sfontHorizontal.frag");
-	shaderHorizontal->setUniformLocation("Color");
+	context = _context;
+	cmdMgr = context->commandMgrSingleUse;
+	commandIndexHorizontal = cmdMgr->getCommandIndex();
+	commandIndexPrint = cmdMgr->getCommandIndex();
+	vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface, cmdMgr));
+	vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM_LOCAL);
+	vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM_LOCAL);
+	vertexHorizontal->build(4096);
 
-	//PRINT
-	shaderPrint = std::make_unique<shaderProgram>();
-	shaderPrint->init("sfontPrint.vert","sfontPrint.frag");
-	shaderPrint->setUniformLocation({"MVP","Color"});
+	vertexPrint = context->global->tracker->track(new VertexArray(context->surface, cmdMgr));
+	vertexPrint->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM_LOCAL);
+	vertexPrint->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM_LOCAL);
+	vertexPrint->build(4096);
 
-	m_fontGL = std::make_unique<VertexArray>();
-	m_fontGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	m_fontGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
+	layoutHorizontal = context->global->tracker->track(new PipelineLayout(context->surface));
+	layoutHorizontal->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	layoutHorizontal->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
+	layoutHorizontal->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	layoutHorizontal->setGlobalPipelineLayout(context->global->globalLayout);
+	layoutHorizontal->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec3f)); // Color
+	layoutHorizontal->build();
+
+	layoutPrint = context->global->tracker->track(new PipelineLayout(context->surface));
+	layoutPrint->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	layoutPrint->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	layoutPrint->setGlobalPipelineLayout(context->global->globalLayout);
+	layoutPrint->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec3f)); // Color
+	layoutPrint->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec3f), sizeof(Mat4f)); // MVP
+	layoutPrint->build();
+
+	pipelineHorizontal = context->global->tracker->track(new Pipeline(context->surface, layoutHorizontal));
+	pipelineHorizontal->bindVertex(vertexHorizontal);
+	pipelineHorizontal->bindShader("sfontHorizontal.vert.spv");
+	pipelineHorizontal->bindShader("sfontHorizontal.frag.spv");
+	pipelineHorizontal->build();
+
+	pipelinePrint = context->global->tracker->track(new Pipeline(context->surface, layoutPrint));
+	pipelinePrint->bindVertex(vertexPrint);
+	pipelinePrint->bindShader("sfontPrint.vert.spv");
+	pipelinePrint->bindShader("sfontPrint.frag.spv");
+	pipelinePrint->build();
+
+	set = context->global->tracker->track(new Set());
 }
 
+void s_font::beginPrint()
+{
+	vertexHorizontal->setVertexOffset(0);
+	cmdMgr->init(commandIndexHorizontal, false);
+	cmdMgr->updateVertex(vertexHorizontal);
+	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->bindPipeline(pipelineHorizontal);
+	cmdMgr->bindSet(layoutHorizontal, context->global->globalSet, 1);
+	cmdMgr->bindVertex(vertexHorizontal);
+
+	vertexPrint->setVertexOffset(0);
+	cmdMgr->init(commandIndexPrint, false);
+	cmdMgr->updateVertex(vertexPrint);
+	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->bindPipeline(pipelinePrint);
+	cmdMgr->bindVertex(vertexPrint);
+}
+
+void s_font::endPrint()
+{
+	cmdMgr->select(commandIndexHorizontal);
+	cmdMgr->compile();
+	cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
+	cmdMgr->select(commandIndexPrint);
+	cmdMgr->compile();
+	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
+}
 
 //! print out a string
 void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown)
@@ -109,7 +179,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 		currentRender = renderCache[s];
 	}
 
-	StateGL::enable(GL_BLEND);
+	//StateGL::enable(GL_BLEND);
 
 	// Draw
 	std::vector<float> vecPos;
@@ -129,21 +199,35 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 		insert_all(vecTex, 1, 0, 0, 0, 1, 1, 0, 1);
 	}
 
+	/*
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
 	// Avoid edge visibility
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+	*/
 
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
-	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
+	vertexPrint->fillVertexBuffer(BufferType::POS2D, vecPos);
+	vertexPrint->fillVertexBuffer(BufferType::TEXTURE,vecTex);
 
+	set->clear();
+	set->bindTexture(currentRender.stringTexture.get(), 0);
+	cmdMgr->select(commandIndexPrint);
+	cmdMgr->pushSet(layoutPrint, set);
+	cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
+	cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec4f), &MVP, sizeof(Mat4f));
+	int offset = vertexPrint->getVertexOffset();
+	cmdMgr->draw(4, 1, offset);
+	vertexPrint->setVertexOffset(offset + 4);
+
+	/*
 	shaderPrint->use();
 	shaderPrint->setUniform("MVP", MVP);
 	shaderPrint->setUniform("Color", Color);
 	Renderer::drawArrays(shaderPrint.get(), m_fontGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
+	*/
 
 	vecPos.clear();
 	vecTex.clear();
@@ -170,9 +254,9 @@ float s_font::getStrLen(const std::string& s)
 void s_font::clearCache(const std::string& s)
 {
 	if( renderCache[s].textureW != 0 ) {
-		glDeleteTextures( 1, &renderCache[s].stringTexture);
-		if (renderCache[s].haveBorder)
-			glDeleteTextures( 1, &renderCache[s].borderTexture);
+		// glDeleteTextures( 1, &renderCache[s].stringTexture);
+		// if (renderCache[s].haveBorder)
+		// 	glDeleteTextures( 1, &renderCache[s].borderTexture);
 		renderCache.erase(s);
 	}
 
@@ -181,6 +265,7 @@ void s_font::clearCache(const std::string& s)
 //! remove ALL cached textures
 void s_font::clearCache()
 {
+	/*
 	for ( renderedStringHashIter_t iter = renderCache.begin(); iter != renderCache.end(); ++iter ) {
 		if( (*iter).second.textureW != 0 ) {
 			glDeleteTextures( 1, &((*iter).second.stringTexture));
@@ -188,6 +273,7 @@ void s_font::clearCache()
 				glDeleteTextures( 1, &((*iter).second.borderTexture));
 		}
 	}
+	*/
 	renderCache.clear();
 }
 
@@ -244,19 +330,21 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	SDL_BlitSurface(text, NULL, surface, &tmp);
 
 	// get the number of channels in the SDL surface
-	GLenum texture_format;
+	VkFormat texture_format;
 	if (surface->format->Rmask == 0x000000ff)
-		texture_format = GL_RGBA;
+		texture_format = VK_FORMAT_R8G8B8A8_UINT;
 	else
-		texture_format = GL_BGRA;
+		texture_format = VK_FORMAT_B8G8R8A8_UINT;
 
+	/*
 	glGenTextures( 1, &rendering.stringTexture);
 	glBindTexture( GL_TEXTURE_2D, rendering.stringTexture);
     // disable mipmapping on the new texture
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
-
+	*/
+	rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, false, false, texture_format);
 
 	if (withBorder) {
 		// ***********************************
@@ -288,10 +376,11 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		}
 
 		if (border->format->Rmask == 0x000000ff)
-			texture_format = GL_RGBA;
+			texture_format = VK_FORMAT_R8G8B8A8_UINT; // GL_RGBA
 		else
-			texture_format = GL_BGRA;
+			texture_format = VK_FORMAT_B8G8R8A8_UINT; // GL_BGRA
 
+		/*
 		glGenTextures( 1, &rendering.borderTexture);
 		glBindTexture( GL_TEXTURE_2D, rendering.borderTexture);
 
@@ -299,6 +388,8 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (GLint)rendering.textureW, (GLint)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
+		*/
+		rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, false, false, texture_format);
 		rendering.haveBorder =true;
 		SDL_FreeSurface(border);
 	}
@@ -376,8 +467,10 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	}
 
 	Vec3f Color (texColor[0], texColor[1], texColor[2]);
+	/*
 	StateGL::enable(GL_BLEND);
 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	*/
 
 	for (int i=0; i<=steps; i++) {
 		insert_vec2(vecPos,meshPoints[i*2]);
@@ -385,23 +478,35 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		insert_all(vecTex, (float)i/steps, 0.f , (float)i/steps, 1.f);
 	}
 
+	/*
 	shaderHorizontal->use();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
+	*/
 
-	shaderHorizontal->setUniform("Color", Color);
-	m_fontGL->fillVertexBuffer(BufferType::POS2D, vecPos);
-	m_fontGL->fillVertexBuffer(BufferType::TEXTURE,vecTex);
+	//shaderHorizontal->setUniform("Color", Color);
+	vertexHorizontal->fillVertexBuffer(BufferType::POS2D, vecPos);
+	vertexHorizontal->fillVertexBuffer(BufferType::TEXTURE,vecTex);
 
-	Renderer::drawArrays(shaderHorizontal.get(), m_fontGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,vecPos.size()/2);
+	set->clear();
+	set->bindTexture(rendering.stringTexture.get(), 0);
+	set->bindTexture(rendering.borderTexture.get(), 1);
+	cmdMgr->select(commandIndexHorizontal);
+	cmdMgr->pushSet(layoutHorizontal, set);
+	cmdMgr->pushConstant(layoutHorizontal, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
+	int offset = vertexHorizontal->getVertexOffset();
+	cmdMgr->draw(vecPos.size()/2, 1, offset);
+	vertexHorizontal->setVertexOffset(offset + vecPos.size()/2);
+
+	//Renderer::drawArrays(shaderHorizontal.get(), m_fontGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,vecPos.size()/2);
 
 	vecPos.clear();
 	vecTex.clear();
 
 	if (!cache) {
-		glDeleteTextures( 1, &rendering.stringTexture);
-		glDeleteTextures( 1, &rendering.borderTexture);
+		//glDeleteTextures( 1, &rendering.stringTexture);
+		//glDeleteTextures( 1, &rendering.borderTexture);
 	}
 }

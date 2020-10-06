@@ -26,13 +26,14 @@
 #include "tools/fader.hpp"
 #include "renderGL/shader.hpp"
 #include "renderGL/stateGL.hpp"
-
+#include "vulkanModule/Context.hpp"
 
 class Body;
 class Projector;
 class Navigator;
 class VertexArray;
-class shaderProgram;
+class Pipeline;
+class PipelineLayout;
 
 class OrbitPlot {
 public:
@@ -50,7 +51,7 @@ public:
 
 	virtual void drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d &mat) = 0;
 
-	static void createSC_context();
+	static void createSC_context(ThreadContext *_context);
 	// static void deleteShader();
 
 	void updateShader(double delta_time);
@@ -75,11 +76,12 @@ protected:
 
 	LinearFader orbit_fader;
 
-	static std::unique_ptr<shaderProgram> shaderOrbit2d;
-	static std::unique_ptr<VertexArray> m_Orbit2dGL;
-
-	static std::unique_ptr<shaderProgram> shaderOrbit3d;
-	static std::unique_ptr<VertexArray> m_Orbit3dGL;
+	std::unique_ptr<VertexArray> orbit;
+	static CommandMgr *cmdMgr;
+	static ThreadContext *context;
+	static Pipeline *pipelineOrbit2d, *pipelineOrbit3d;
+	static PipelineLayout *layoutOrbit2d, *layoutOrbit3d;
+	static VertexArray *m_Orbit;
 };
 
 #endif

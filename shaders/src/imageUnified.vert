@@ -10,12 +10,15 @@
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texCoord;
 
-#include <cam_block.glsl>
+// #include <cam_block_only.glsl>
 
-#include <fisheye.glsl>
+layout (push_constant) uniform uVert {
+	mat4 ModelViewMatrix;
+	layout (offset=64) vec3 clipping_fov;
+};
+#include <fisheye_noMV.glsl>
 
-uniform vec3 clipping_fov;
-smooth out vec2 TexCoord;
+layout (location=0) out vec2 TexCoord;
 
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
 

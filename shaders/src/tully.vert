@@ -9,9 +9,9 @@ layout (location = 3) in vec3 inColor;
 layout (location = 4) in float inTexture;
 layout (location = 5) in float inScale;
 
-uniform mat4 Mat;
+//uniform mat4 Mat;
 
-out vertexData
+layout (location=0) out vertexData
 {
 	float scale;
 	float texture;

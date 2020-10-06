@@ -8,81 +8,74 @@
 layout (lines_adjacency) in;
 layout (triangle_strip , max_vertices = 12) out;
 
-
 // for MVP2D
-#include <cam_block.glsl>
+#include <cam_block_only.glsl>
 
-in V2G {
-	vec2 Position;
-	vec2 TexCoord;
-} v2g[];
+layout (location=0) in vec2 Position[4];
+layout (location=1) in vec2 TexCoord[4];
 
-out G2F
-{
-	vec2 TexCoord;
-} g2f;
-
+layout (location=0) out vec2 TexCoordOut;
 
 void main()
 {
-	vec4 v0 = vec4(v2g[0].Position, 0,1);
-	vec4 v1 = vec4(v2g[1].Position, 0,1);
-	vec4 v2 = vec4(v2g[2].Position, 0,1);
-	vec4 v3 = vec4(v2g[3].Position, 0,1);
+	vec4 v0 = vec4(Position[0], 0,1);
+	vec4 v1 = vec4(Position[1], 0,1);
+	vec4 v2 = vec4(Position[2], 0,1);
+	vec4 v3 = vec4(Position[3], 0,1);
 
 	//premier triangle_strip
 	//en bas gauche
 	gl_Position   = MVP2D * v0;
-    g2f.TexCoord= v2g[0].TexCoord;
+    TexCoordOut= TexCoord[0];
     EmitVertex();
 
 	gl_Position   = MVP2D * ((v0+v2)/2);
-    g2f.TexCoord= (v2g[0].TexCoord+v2g[2].TexCoord)/2;
+    TexCoordOut= (TexCoord[0]+TexCoord[2])/2;
     EmitVertex();
 
 	gl_Position   = MVP2D * ((v0+v1)/2);
-    g2f.TexCoord= (v2g[0].TexCoord+v2g[1].TexCoord)/2;
+    TexCoordOut= (TexCoord[0]+TexCoord[1])/2;
     EmitVertex();
 
 	gl_Position   = MVP2D * ((v0+v3)/2);
-    g2f.TexCoord= (v2g[0].TexCoord+v2g[3].TexCoord)/2;
+    TexCoordOut= (TexCoord[0]+TexCoord[3])/2;
     EmitVertex();
 
     // en haut gauche
 	gl_Position   =  MVP2D * v1;
-    g2f.TexCoord= v2g[1].TexCoord;
+    TexCoordOut= TexCoord[1];
     EmitVertex(); 
 
 	gl_Position   = MVP2D * ((v1+v3)/2);
-    g2f.TexCoord= (v2g[1].TexCoord+v2g[3].TexCoord)/2;
+    TexCoordOut= (TexCoord[1]+TexCoord[3])/2;
     EmitVertex();
     EndPrimitive();
 
 	//second triangle_strip
 	gl_Position   = MVP2D * ((v0+v2)/2);
-    g2f.TexCoord= (v2g[0].TexCoord+v2g[2].TexCoord)/2;
+    TexCoordOut= (TexCoord[0]+TexCoord[2])/2;
     EmitVertex();
 
 	// en bas droit
 	gl_Position   =  MVP2D * v2;
-    g2f.TexCoord= v2g[2].TexCoord;
+    TexCoordOut= TexCoord[2];
     EmitVertex();
 
 	gl_Position   = MVP2D * ((v0+v3)/2);
-    g2f.TexCoord= (v2g[0].TexCoord+v2g[3].TexCoord)/2;
+    TexCoordOut= (TexCoord[0]+TexCoord[3])/2;
     EmitVertex();
 
 	gl_Position   = MVP2D * ((v2+v3)/2);
-    g2f.TexCoord= (v2g[2].TexCoord+v2g[3].TexCoord)/2;
+    TexCoordOut= (TexCoord[2]+TexCoord[3])/2;
     EmitVertex();
 
 	gl_Position   = MVP2D * ((v1+v3)/2);
-    g2f.TexCoord= (v2g[1].TexCoord+v2g[3].TexCoord)/2;
+    TexCoordOut= (TexCoord[1]+TexCoord[3])/2;
     EmitVertex();
 
     // en haut droit
 	gl_Position   =  MVP2D * v3;
-    g2f.TexCoord= v2g[3].TexCoord;
+    TexCoordOut= TexCoord[3];
     EmitVertex();    
     EndPrimitive();
 }

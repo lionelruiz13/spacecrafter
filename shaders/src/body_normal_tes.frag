@@ -7,38 +7,40 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-layout (binding=0) uniform sampler2D mapTexture;
-layout (binding=2) uniform sampler2D shadowTexture;
+layout (binding=6) uniform sampler2D mapTexture;
+layout (binding=7) uniform sampler2D shadowTexture;
 
-uniform float SunHalfAngle; 
-uniform vec3 MoonPosition1; 
-uniform float MoonRadius1; 
-uniform vec3 MoonPosition2; 
-uniform float MoonRadius2; 
-uniform vec3 MoonPosition3; 
-uniform float MoonRadius3; 
-uniform vec3 MoonPosition4; 
-uniform float MoonRadius4;
+layout (binding=1) uniform globalFrag {
+	vec3 MoonPosition1;
+	float MoonRadius1;
+	vec3 MoonPosition2;
+	float MoonRadius2;
+	vec3 MoonPosition3;
+	float MoonRadius3;
+	vec3 MoonPosition4;
+	float MoonRadius4;
+	float SunHalfAngle;
+};
 
 // uniform vec3 MoonPosition; 
-uniform float Ambient;
+//uniform float Ambient;
 
 // smooth in vec2 TexCoord;
-// in float Ambient; 
+layout (location=2) in float Ambient; 
 // in vec3 Position;
 // in float NdotL;
 // in vec3 Light; 
 
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 //~ smooth in vec2 TexCoord;
 
-in GS_OUT {
+layout (location=0) in GS_OUT {
     vec3 Position;
     vec2 TexCoord;
     vec3 Normal;
     vec3 Light;
-	float NdotL;
+    float NdotL;
 } fs_in;
 
 void main(void)

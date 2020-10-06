@@ -25,14 +25,17 @@ layout (location=0) out vertexData
 	float Ambient;
 } vertexOut;
 
-uniform bool useTexture;
+//uniform bool useTexture;
 
-uniform mat4 ModelViewMatrix;
-uniform mat4 NormalMatrix;
-uniform mat4 ProjectionMatrix;
-uniform mat4 MVP;
+layout (binding=0) uniform custom {
+	mat4 NormalMatrix;
+};
 
-#include <cam_block.glsl>
+//uniform mat4 ModelViewMatrix;
+//uniform mat4 ProjectionMatrix;
+//uniform mat4 MVP;
+
+//#include <cam_block.glsl>
 
 void main()
 {

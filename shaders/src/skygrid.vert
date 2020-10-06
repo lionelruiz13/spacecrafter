@@ -8,13 +8,10 @@ layout (location = 0) in vec3 Position;
 layout (location = 4) in float IntensityColor;
 
 
-out ColorVertex
-{
-	float intensityColor;
-} cvOut;
+layout (location=0) out float intensityColor;
 
 void main(void)
 {
 	gl_Position = vec4(Position,1.0);
-	cvOut.intensityColor = IntensityColor;
+	intensityColor = IntensityColor;
 }

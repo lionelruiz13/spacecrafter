@@ -185,6 +185,9 @@ public:
 	bool operator!=(iterator compare) const {
 		return iterZone != compare.iterZone;
 	}
+	bool operator!=(const_iterator compare) const {
+		return iterZone != compare.iterZone;
+	}
 	void operator++() {
 		if (++iterElement == iterLastElement) {
 			if (skipUnvisible) {
@@ -224,7 +227,7 @@ protected:
 };
 
 template<typename T>
-class SphereGrid<T>::const_iterator : public SphereGrid<T>::iterator {
+class SphereGrid<T>::const_iterator {
 public:
 	const_iterator(typename SphereGrid::dataCenterType_t::const_iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::const_iterator &_zoneEnd, bool _skipUnvisible = true) : iterLastZone(_zoneEnd), skipUnvisible(_skipUnvisible) {
 		// Move iterZone to the first non-empty container
@@ -235,7 +238,37 @@ public:
 		}
 	}
 	const_iterator(const typename SphereGrid::dataCenterType_t::const_iterator &_iterZone) : iterZone(_iterZone) {}
+	bool operator!=(iterator compare) const {
+		return iterZone != compare.iterZone;
+	}
+	bool operator!=(const_iterator compare) const {
+		return iterZone != compare.iterZone;
+	}
+	void operator++() {
+		if (++iterElement == iterLastElement) {
+			if (skipUnvisible) {
+				while ((!iterZone->second || iterElement == iterLastElement) && ++iterZone != iterLastZone) {
+					iterElement = iterZone->first.begin();
+					iterLastElement = iterZone->first.end();
+				}
+			} else {
+				while (iterElement == iterLastElement && ++iterZone != iterLastZone) {
+					iterElement = iterZone->first.begin();
+					iterLastElement = iterZone->first.end();
+				}
+			}
+		}
+	}
+	const T &operator*() const {
+		return *iterElement;
+	}
+	typedef ptrdiff_t difference_type; //almost always ptrdiff_t
+	typedef T value_type; //almost always T
+	typedef T& reference; //almost always T& or const T&
+	typedef T* pointer; //almost always T* or const T*
+	typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
 private:
+	const_iterator() {}
 	typename dataCenterType_t::const_iterator iterZone;
 	typename dataType_t::const_iterator iterElement;
 	typename dataCenterType_t::const_iterator iterLastZone;

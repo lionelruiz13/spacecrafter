@@ -34,7 +34,7 @@
 #include "tools/fader.hpp"
 #include "renderGL/stateGL.hpp"
 #include "tools/vecmath.hpp"
-
+#include "vulkanModule/Context.hpp"
 
 //! Class which manages the Tully Galaxies catalog
 
@@ -42,11 +42,13 @@ class Projector;
 class Navigator;
 class s_texture;
 class VertexArray;
-class shaderProgram;
+class Pipeline;
+class Uniform;
+class Buffer;
 
 class Tully {
 public:
-	Tully();
+	Tully(ThreadContext *_context);
 	~Tully();
 
 	//! affiche le nuage de points
@@ -83,12 +85,12 @@ public:
 	//! permet de mettre à jour la texture des galaxies
 	void setTexture(const std::string& tex_file/*, const std::string& tex_file_small*/);
 
-	//! lecture des données du catalogue passé dont le nom est passé en paramètre 
+	//! lecture des données du catalogue passé dont le nom est passé en paramètre
 	bool loadCatalog(const std::string &cat) noexcept;
 
 private:
 	// initialise les shaders ShaderPoints et ShaderSquare ainsi que les vao-vbo
-	void createSC_context();
+	void createSC_context(ThreadContext *_context);
 
 	void computeSquareGalaxies(Vec3f camPosition);
 
@@ -124,12 +126,25 @@ private:
 	bool useWhiteColor = true;
 	// renvoie le nombre des différentes textures dans la texture
 	int nbTextures;
-	// données openGL
+	// données Vulkan
+	ThreadContext *context;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uGeom, uFader;
+	Mat4f *pMat;
+	Vec3f *pCamPos;
+	int *pNbTextures;
+	float *pFader;
+	std::unique_ptr<Buffer> drawDataSquare;
+	uint32_t *pNbVertexSquare;
+	int commandIndexCustomColor, commandIndexWhiteColor;
+	Pipeline *pipelinePoints;
+	std::unique_ptr<Pipeline> pipelineSquare;
 	std::unique_ptr<VertexArray> m_pointsGL;
 	std::unique_ptr<VertexArray> m_squareGL;
 	// shader responsable de l'affichage du nuage
-	std::unique_ptr<shaderProgram> shaderPoints;
-	std::unique_ptr<shaderProgram> shaderSquare;
+	// std::unique_ptr<shaderProgram> shaderPoints;
+	// std::unique_ptr<shaderProgram> shaderSquare;
 };
 
 #endif // ___TULLY_HPP___

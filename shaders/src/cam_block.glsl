@@ -1,5 +1,4 @@
 // note the alignement pack for Data
-
 layout (set = 1, binding = 0) uniform cam_block
 {
 	ivec4 viewport;

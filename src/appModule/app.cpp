@@ -67,6 +67,11 @@
 
 #include "vulkanModule/Vulkan.hpp"
 #include "vulkanModule/VirtualSurface.hpp"
+#include "vulkanModule/TextureMgr.hpp"
+#include "vulkanModule/SetMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
 
@@ -78,8 +83,21 @@ App::App( SDLFacade* const sdl )
 
 	settings = AppSettings::Instance();
 
-	vulkan = new Vulkan("spacecrafter", "No Engine", mSdl->getWindow(), 1, width, height);
-	surface = vulkan->getVirtualSurface();
+	globalContext.vulkan = new Vulkan("spacecrafter", "No Engine", mSdl->getWindow(), 1, width, height, 256*1024*1024, cLog::get()->getDebug());
+	globalContext.tracker = new ResourceTracker();
+	globalContext.textureMgr = new TextureMgr(globalContext.vulkan);
+	context.global = &globalContext;
+	context.surface = globalContext.vulkan->getVirtualSurface();
+	context.setMgr = new SetMgr(context.surface, 256);
+	context.commandMgr = new CommandMgr(context.surface, 64, true);
+	context.commandMgrSingleUse = new CommandMgr(context.surface, 8, true, true, true);
+	context.commandMgrDynamic = new CommandMgr(context.surface, 8, true, false, true, true);
+	commandIndexClear = context.commandMgr->getCommandIndex();
+	context.commandMgr->init(commandIndexClear);
+	context.commandMgr->beginRenderPass(renderPassType::CLEAR);
+	context.commandMgr->compile();
+	s_texture::setContext(&context);
+	*getContext() = context;
 
 	media = new Media();
 	saveScreenInterface = new SaveScreenInterface(width, height);
@@ -88,11 +106,11 @@ App::App( SDLFacade* const sdl )
 
 	screenFader =  new ScreenFader();
 
-	core = new Core(width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
+	core = new Core(&context, width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
 	coreLink = new CoreLink(core);
 	coreBackup = new CoreBackup(core);
 
-	screenFader->createSC_context();
+	screenFader->createSC_context(&context);
 
 	ui = new UI(core, coreLink, this, mSdl, media);
 	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
@@ -165,7 +183,13 @@ App::~App()
 	delete internalFPS;
 	delete screenFader;
 	delete spaceDate;
-	delete vulkan;
+	delete context.commandMgr;
+	delete context.commandMgrSingleUse;
+	delete context.commandMgrDynamic;
+	delete globalContext.tracker;
+	delete context.setMgr;
+	delete globalContext.textureMgr;
+	delete globalContext.vulkan;
 }
 
 void App::setLineWidth(float w) const {
@@ -294,8 +318,8 @@ void App::firstInit()
 {
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
 	//glClear(GL_COLOR_BUFFER_BIT);
-	Renderer::clearColor();
-	appDraw->initSplash();
+	//Renderer::clearColor();
+	appDraw->initSplash(&context);
 	//mSdl->glSwapWindow();	// And swap the buffers
 	//Translator::initSystemLanguage();
 
@@ -306,10 +330,10 @@ void App::firstInit()
 	ui->init(conf);
 	ui->localizeTui();
 	ui->initTui();
-	media->init();
+	media->init(&context);
 
-	appDraw->createSC_context();
-	media->createSC_context();
+	appDraw->createSC_context(&context);
+	media->createSC_context(&context);
 
 	enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
 	enable_mkfifo=conf.getBoolean(SCS_IO, SCK_ENABLE_MKFIFO);
@@ -342,8 +366,8 @@ void App::firstInit()
 	cLog::get()->mark();
 
 	this->init();
-	surface->finalize(false);
-	vulkan->finalize();
+	context.surface->finalize(false);
+	globalContext.vulkan->finalize();
 }
 
 
@@ -403,11 +427,16 @@ void App::update(int delta_time)
 //! Main drawinf function called at each frame
 void App::draw(int delta_time)
 {
+	context.surface->acquireNextFrame();
 	// appDraw->drawFirstLayer();
-	Renderer::clearColor();
+	//Renderer::clearColor();
 
+	context.commandMgr->waitCompletion();
+	context.commandMgrSingleUse->reset();
+	context.commandMgr->setSubmission(commandIndexClear);
+	s_font::beginPrint();
 	core->draw(delta_time);
-
+	// #submit batch here
 	// Draw the Graphical ui and the Text ui
 	ui->draw();
 	//inversion des couleurs pour un ciel blanc
@@ -418,11 +447,14 @@ void App::draw(int delta_time)
 	media->drawViewPort();
 	//draw text user
 	core->textDraw();
+	s_font::endPrint();
 
 	// Fill with black around the circle
 	appDraw->drawViewportShape();
 
 	screenFader->draw();
+	// #submit batch here
+	context.surface->submitFrame();
 }
 
 //! @brief Set the application locale. This apply to GUI, console messages etc..
@@ -542,11 +574,12 @@ void App::startMainLoop()
 
 			this->update(deltaTime);		// And update the motions and data
 			this->draw(deltaTime);			// Do the drawings!
-			mSdl->glSwapWindow();  			// And swap the buffers
+			saveScreenInterface->readScreenShot();
+			globalContext.vulkan->sendFrame();
+			//mSdl->glSwapWindow();  			// And swap the buffers
 
 			internalFPS->setLastCount();
 
-			saveScreenInterface->readScreenShot();
 		}
 	}
 

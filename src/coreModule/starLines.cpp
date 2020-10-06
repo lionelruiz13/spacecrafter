@@ -25,13 +25,18 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/ia.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
 
-StarLines::StarLines()
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Context.hpp"
+
+StarLines::StarLines(ThreadContext *_context)
 {
-	createSC_context();
+	createSC_context(_context);
 	lineColor =  Vec3f(1.0,1.0,0.0);
 }
 
@@ -40,14 +45,38 @@ StarLines::~StarLines()
 	linePos.clear();
 }
 
-void StarLines::createSC_context()
+void StarLines::createSC_context(ThreadContext *_context)
 {
-	shaderStarLines = std::make_unique<shaderProgram>();
-	shaderStarLines -> init("starLines.vert","starLines.geom", "starLines.frag");
-	shaderStarLines->setUniformLocation({"Mat", "Color", "Fader"});
-	
-	m_dataGL = std::make_unique<VertexArray>();
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	context = _context;
+	// shaderStarLines = std::make_unique<shaderProgram>();
+	// shaderStarLines -> init("starLines.vert","starLines.geom", "starLines.frag");
+	// shaderStarLines->setUniformLocation({"Mat", "Color", "Fader"});
+
+	m_dataGL = std::make_unique<VertexArray>(context->surface);
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	layout = std::make_unique<PipelineLayout>(context->surface);
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	layout->buildLayout();
+	layout->build();
+	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline->setDepthStencilMode();
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+	pipeline->bindVertex(m_dataGL.get());
+	pipeline->bindShader("starLines.vert.spv");
+	pipeline->bindShader("starLines.geom.spv");
+	pipeline->bindShader("starLines.frag.spv");
+	pipeline->build();
+	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
+	uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
+	pMat = static_cast<typeof(pMat)>(uMat->data);
+	set->bindUniform(uMat.get(), 0);
+	uFrag = std::make_unique<Uniform>(context->surface, sizeof(float) * 4);
+	pColor = static_cast<Vec3f *>(uFrag->data);
+	pFader = static_cast<float *>(uFrag->data) + 3;
+	set->bindUniform(uFrag.get(), 1);
+	commandIndex = context->commandMgrDynamic->getCommandIndex();
 }
 
 
@@ -276,9 +305,26 @@ void StarLines::loadStringData(const std::string& record) noexcept
 			}
 		}
 	}
-	m_dataGL->fillVertexBuffer(BufferType::POS3D, linePos);
+	rebuild(linePos);
 }
 
+void StarLines::rebuild(std::vector<float> &vertexData)
+{
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	m_dataGL = std::make_unique<VertexArray>(context->surface);
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	m_dataGL->build(linePos.size() / 3);
+	m_dataGL->fillVertexBuffer(BufferType::POS3D, linePos);
+	cmdMgr->init(commandIndex, pipeline.get());
+	cmdMgr->bindVertex(m_dataGL.get());
+	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
+	cmdMgr->bindSet(layout.get(), set.get(), 1);
+	cmdMgr->draw(linePos.size() / 3);
+	cmdMgr->compile();
+}
 
 void StarLines::drop()
 {
@@ -328,17 +374,21 @@ void StarLines::draw(const Projector* prj) noexcept
 //version 3D
 void StarLines::drawGL(Mat4f & matrix)  noexcept
 {
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	shaderStarLines->use();
-	shaderStarLines->setUniform("Mat",matrix);
-	shaderStarLines->setUniform("Color",lineColor);
-	shaderStarLines->setUniform("Fader", showFader.getInterstate() );
+	//shaderStarLines->use();
+	// shaderStarLines->setUniform("Mat",matrix);
+	// shaderStarLines->setUniform("Color",lineColor);
+	// shaderStarLines->setUniform("Fader", showFader.getInterstate() );
+	*pMat = matrix;
+	*pColor = lineColor;
+	*pFader = showFader.getInterstate();
 
+	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
 	// m_dataGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST,0,linePos.size()/3);
 	// m_dataGL->unBind();
 	// shaderStarLines->unuse();
-	Renderer::drawArrays(shaderStarLines.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST,0,linePos.size()/3);
+	//Renderer::drawArrays(shaderStarLines.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST,0,linePos.size()/3);
 }

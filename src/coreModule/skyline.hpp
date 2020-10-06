@@ -42,7 +42,12 @@
 #include "tools/ScModule.hpp"
 
 class VertexArray;
-class shaderProgram;
+class ThreadContext;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+class Buffer;
 
 //! Class which manages a line to display around the sky like the ecliptic line
 class SkyLine : public ModuleFont {
@@ -81,9 +86,9 @@ public:
 		fader = ! fader;
 	}
 
-	static void createShader();
-	static void createSC_context();
-
+	//static void createShader();
+	static void createSC_context(ThreadContext *_context);
+	void createLocalResources();
 protected:
 
 	void drawSkylineGL(const Vec4f& Color);
@@ -103,8 +108,19 @@ protected:
 	Mat4f TRANSFO; //a renommer
 
 	//Opengl
-	static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;
-	static std::unique_ptr<VertexArray> m_skylineGL;
+	//static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;
+	static ThreadContext *context;
+	static VertexArray *vertexModel;
+	static PipelineLayout *layout;
+	static Pipeline *pipeline;
+	static Set *set;
+	static int vUniformID;
+	int commandIndex;
+	std::unique_ptr<VertexArray> m_skylineGL;
+	std::unique_ptr<Uniform> uColor;
+	Vec4f *pColor;
+	std::unique_ptr<Buffer> drawData;
+	uint32_t *pNbVertex;
 
 	std::vector<float> vecDrawPos;
 	std::vector<float> vecDrawMVPPos;

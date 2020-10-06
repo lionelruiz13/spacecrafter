@@ -26,10 +26,15 @@
 #include <vector>
 #include <memory>
 
+#include "vulkanModule/Context.hpp"
+
 class Body;
 class Projector;
 class VertexArray;
-class shaderProgram;
+class PipelineLayout;
+class Pipeline;
+class Uniform;
+class Buffer;
 
 class Axis {
 public:
@@ -38,9 +43,7 @@ public:
 	Axis(const Axis&)=delete;
 	Axis(Body * body);
 
-	void setFlagAxis(bool b) {
-		drawaxis = b;
-	}
+	void setFlagAxis(bool b);
 
 	void drawAxis(const Projector* prj, const Mat4d& mat);
 
@@ -52,18 +55,28 @@ public:
 
 	void computeAxisAngle(const Projector* prj, const Mat4d& mat);
 
-	static void createSC_context();
-private :
-
+	static void createSC_context(ThreadContext *context);
+private:
+	int commandIndex = -1;
 	Body * body;
-	static std::unique_ptr<shaderProgram> shaderAxis;
-	static std::unique_ptr<VertexArray> m_AxisGL;
+	std::unique_ptr<VertexArray> m_AxisGL;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uMat;
+	Mat4f *MVP;
+	static VirtualSurface *surface;
+	static SetMgr *setMgr;
+	static CommandMgr *cmdMgr;
+
+	static Uniform *uColor;
+	static VertexArray *vertexModel;
+	static Pipeline *pipeline;
+	static PipelineLayout *layout;
 
 	double axisAngle;
 	std::vector<float> vecAxisPos;
-	bool drawaxis = false;  // display or not Body axis
-
+	static Buffer *bdrawaxis;
+	static int *drawaxis;  // display or not Body axis
+	static bool actualdrawaxis;
 };
 
 #endif // _AXIS_HPP_
-

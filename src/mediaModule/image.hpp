@@ -36,6 +36,7 @@
 #include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 #include "mediaModule/media_base.hpp"
+#include "vulkanModule/Context.hpp"
 
 class s_texture;
 class Navigator;
@@ -73,6 +74,8 @@ public:
 
 	bool update(int delta_time);  // update properties
 	void draw(const Navigator* nav, const Projector* prj);
+	static void beginDraw();
+	static void endDraw();
 
 	const std::string getName() const {
 		return image_name;
@@ -88,12 +91,14 @@ public:
 
 	static void createShaderUnified();
 	static void createShaderImageViewport();
-	static void createSC_context();
+	static void createSC_context(ThreadContext *_context);
 
-	static std::unique_ptr<shaderProgram> shaderImageViewport;
-	static std::unique_ptr<shaderProgram> shaderUnified;
+	// static std::unique_ptr<shaderProgram> shaderImageViewport;
+	// static std::unique_ptr<shaderProgram> shaderUnified;
 
 private:
+	void createLocalContext();
+	void setPipeline(Pipeline *pipeline);
 	void drawViewport(const Navigator * nav, const Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, const Projector * prj);
 	void initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap = false);
@@ -130,8 +135,18 @@ private:
 
 	//OpenGL vars
 	std::vector<float> vecImgTex, vecImgPos;
-	static std::unique_ptr<VertexArray> m_imageViewportGL;
-	static std::unique_ptr<VertexArray> m_imageUnifiedGL;
+	static ThreadContext *context;
+	static CommandMgr *cmdMgr;
+	static PipelineLayout *m_layoutViewport, *m_layoutUnifiedRGB, *m_layoutUnifiedYUV;
+	static Pipeline *m_pipelineViewport;
+	// RGB, RBG with transparency, YUV, YUV with transparency
+	static std::array<Pipeline *, 4> m_pipelineUnified;
+	static VertexArray *m_imageViewportGL, *m_imageUnifiedGL;
+	static int commandIndex;
+	static Set *m_setViewport, *m_setUnifiedRGB, *m_setUnifiedYUV;
+	static Pipeline *pipelineUsed;
+	std::unique_ptr<VertexArray> vertex;
+	int vertexSize;
 
 	//active la transparence
 	bool transparency;

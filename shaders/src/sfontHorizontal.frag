@@ -6,13 +6,15 @@
 #pragma optimize(off)
 
 
-layout (binding=0)uniform sampler2D mapTexture;
-layout (binding=1)uniform sampler2D borderTexture;
-uniform vec3 Color;
+layout (binding=0) uniform sampler2D mapTexture;
+layout (binding=1) uniform sampler2D borderTexture;
+layout(push_constant) uniform pushConstants {
+	vec4 Color;
+};
 
-smooth in vec2 TexCoord;
+layout (location=0) in vec2 TexCoord;
  
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

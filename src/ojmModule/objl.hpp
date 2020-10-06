@@ -7,7 +7,10 @@
 #include "renderGL/stateGL.hpp"
 #include "ojmModule/ojml.hpp"
 
+#include "vulkanModule/Context.hpp"
+
 class Projector;
+class Pipeline;
 
 /**
  * \class ObjL
@@ -20,6 +23,7 @@ class Projector;
  * @section DESCRIPTION
  *
  * Cette classe ne sert que de wrapper.
+ * Doit doit être utilisé avec un indirectDrawIndexed.
  *
  * low représente l'objet vu de loin
  * medium le représente à une distance intermédiaire
@@ -31,8 +35,10 @@ class ObjL {
 public:
 	ObjL();
 	~ObjL();
-	void draw(const float screenSize, VkPrimitiveTopology mode= VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-	bool init(const std::string &repertory, const std::string &name);
+	void draw(const float screenSize, void *pDrawData);
+	bool init(const std::string &repertory, const std::string &name, ThreadContext *context);
+	void bind(CommandMgr *cmdMgr);
+	void bind(Pipeline *pipeline);
 
 	bool isOk() {
 		return isUsable;

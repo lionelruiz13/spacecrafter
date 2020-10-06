@@ -7,11 +7,13 @@
 
 
 layout (binding=0) uniform sampler2D mapTexture;
-uniform vec4 Color;
+layout(push_constant) uniform pushConstants {
+	vec4 Color;
+};
 
-smooth in vec2 TexCoord;
+layout (location=0) in vec2 TexCoord;
  
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

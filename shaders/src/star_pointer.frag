@@ -5,22 +5,21 @@
 #pragma debug(on)
 #pragma optimize(off)
 
+layout (location=0) in vec2 TexCoord;
 
-in Interpolators
-{
-	vec2 TexCoord;
-} interData;
+layout (binding=0, set=1) uniform sampler2D texunit0;
+layout (binding=1, set=1) uniform uboFrag {
+	vec3 color;
+};
 
-layout (binding=0) uniform sampler2D texunit0;
-uniform vec3 color;
-
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {
-	vec4 tex_color = vec4(texture(texunit0,interData.TexCoord)).rgba;
+	vec4 tex_color = vec4(texture(texunit0,TexCoord)).rgba;
 	tex_color.r *= color.r;
 	tex_color.g *= color.g;
 	tex_color.b *= color.b;
 	FragColor = tex_color;
 }
+

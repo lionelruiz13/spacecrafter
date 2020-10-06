@@ -6,34 +6,34 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-layout (binding=0) uniform sampler2D mapTexture;   //DayTexture
-layout (binding=2) uniform sampler2D NightTexture;
-//layout (binding=3) uniform sampler2D SpecularTexture;
-layout (binding=1) uniform sampler2D shadowTexture;
+layout (binding=2) uniform sampler2D mapTexture;   //DayTexture
+layout (binding=3) uniform sampler2D shadowTexture;
+layout (binding=4) uniform sampler2D NightTexture;
+//layout (binding=5) uniform sampler2D SpecularTexture;
 //uniform int Clouds;
 //uniform sampler2D CloudTexture;
 //uniform sampler2D CloudNormalTexture;
-uniform float SunHalfAngle;
 
-uniform vec3 MoonPosition1;
-uniform float MoonRadius1;
-uniform vec3 MoonPosition2;
-uniform float MoonRadius2;
-uniform vec3 MoonPosition3;
-uniform float MoonRadius3;
-uniform vec3 MoonPosition4;
-uniform float MoonRadius4;
+layout (binding=1) uniform globalFrag {
+	vec3 MoonPosition1;
+	float MoonRadius1;
+	vec3 MoonPosition2;
+	float MoonRadius2;
+	vec3 MoonPosition3;
+	float MoonRadius3;
+	vec3 MoonPosition4;
+	float MoonRadius4;
+	float SunHalfAngle;
+};
 
+layout (location=0) out vec4 FragColor;
 
-
-out vec4 FragColor;
-
-smooth in vec2 TexCoord;
-in vec3 Normal;
-in vec3 Position;
-in vec3 TangentLight;
-in vec3 Light;
-in vec3 ViewDirection;
+layout (location=0) in vec2 TexCoord;
+layout (location=1) in vec3 Normal;
+layout (location=2) in vec3 Position;
+layout (location=3) in vec3 TangentLight;
+layout (location=4) in vec3 Light;
+layout (location=5) in vec3 ViewDirection;
 
 
 void main(void)

@@ -9,18 +9,22 @@
 layout(vertices=3) out;
 
 //NEW UNIFORMS
-uniform mat4 ViewProjection;
-uniform mat4 Model;
-uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+layout (binding=3) uniform globalTescGeom {
+	uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+};
 
+layout (binding=4) uniform globalTesc {
+	uniform mat4 ViewProjection;
+	uniform mat4 Model;
+};
 
-in VS_OUT{
+layout(location=0) in VS_OUT{
     in vec3 glPosition;
     in vec2 TexCoord;
     in vec3 Normal;
 }tcs_in[];
 
-out TCS_OUT{
+layout(location=0) out TCS_OUT{
     out vec3 glPosition;
     out vec2 TexCoord;
     out vec3 Normal;

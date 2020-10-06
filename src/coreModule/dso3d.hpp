@@ -22,9 +22,9 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-#include "renderGL/stateGL.hpp"
+//#include "renderGL/stateGL.hpp"
 #include "tools/vecmath.hpp"
-
+#include "vulkanModule/Context.hpp"
 
 //! Class which manages the DSO Catalog for in_galaxy
 
@@ -32,11 +32,16 @@ class Projector;
 class Navigator;
 class s_texture;
 class VertexArray;
-class shaderProgram;
+//class shaderProgram;
+class CommandMgr;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
 
 class Dso3d {
 public:
-	Dso3d();
+	Dso3d(ThreadContext *context);
 	~Dso3d();
 
 	//! affiche le nuage de points
@@ -68,9 +73,11 @@ public:
 	//! lecture des données du catalogue dont le nom est passé en paramètre
 	bool loadCatalog(const std::string &cat) noexcept;
 
+	//! Build draw command
+	void build();
 private:
 	// initialise le shader
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 	// renseigne le nombre de textures dans texNebulae
 	int nbTextures;
 	// position camera
@@ -85,9 +92,22 @@ private:
 	//renvoie le nombre de nebulae lues du/des catalogues
 	unsigned int nbNebulae;
 	// données openGL
+	Set *globalSet;
+	CommandMgr *cmdMgr;
+	int commandIndex = -1;
 	std::unique_ptr<VertexArray> sData;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uGeom, uFader;
+	struct pGeom_s {
+		Mat4f Mat;
+		Vec3f camPos;
+		int nbTextures;
+	} *pGeom;
+	float *pFader;
 	// shader responsable de l'affichage du nuage
-	std::unique_ptr<shaderProgram> shaderDso3d;
+	//std::unique_ptr<shaderProgram> shaderDso3d;
 };
 
 #endif // ___DSO3D_HPP___

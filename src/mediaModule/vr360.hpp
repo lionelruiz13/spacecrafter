@@ -22,26 +22,27 @@
 #include "tools/fader.hpp"
 #include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"
+#include "vulkanModule/Context.hpp"
 
 // #define VR360_FADER_DURATION 3000
 
 class Projector;
 class Navigator;
 class OjmL;
-class shaderProgram;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
+//class shaderProgram;
 
 class VR360: public NoCopy {
 public:
 	VR360();
 	virtual ~VR360();
 
-	void init();
+	void init(ThreadContext *context);
 
-	void setTexture(VideoTexture _tex) {
-		videoTex[0] = _tex.y;
-		videoTex[1] = _tex.u;
-		videoTex[2] = _tex.v;
-	}
+	void setTexture(VideoTexture _tex);
 
 	void modeCube() {
 		typeVR360=TYPE::V_CUBE;
@@ -55,6 +56,8 @@ public:
 
 	void display(bool alive);
 	void displayStop();
+	//! build draw command
+	void build();
 
 	//! update les faders de la classe
 	void update(int delta_time) {
@@ -62,7 +65,7 @@ public:
 	}
 
 	//! création des shaders
-	void createShader();
+	void createSC_context(ThreadContext *_context);
 private:
 	enum class TYPE : char { V_CUBE, V_SPHERE, V_NONE };
 
@@ -72,7 +75,14 @@ private:
 	bool isAlive = false;
 	bool canDraw = false;
 
-	std::unique_ptr<shaderProgram> shaderVR360;
+	//std::unique_ptr<shaderProgram> shaderVR360;
+	ThreadContext *context;
+	int commandIndex;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uModelViewMatrix;
+	Mat4f *pModelViewMatrix;
 
 	TYPE typeVR360 = TYPE::V_NONE;
 

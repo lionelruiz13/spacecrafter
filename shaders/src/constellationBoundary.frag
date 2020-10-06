@@ -6,11 +6,13 @@
 #pragma optimize(off)
 
 //entrée
-in float Intensity;
-uniform vec3 Color;
+layout (location=0) in float Intensity;
+layout (binding=0, set=1) uniform ubo {
+	vec3 Color;
+};
 
 //sortie
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

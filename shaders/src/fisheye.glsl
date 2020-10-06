@@ -3,7 +3,7 @@
 #define M_PI 3.14159265358979323846
 
 //We need to use the projection fisheye, assume to give vec3 clipping_fov
-layout (binding=0) uniform mat4 ModelViewMatrix;
+layout (binding=0) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
 
 
 // note: win.w != 1 tell us that point is behind us

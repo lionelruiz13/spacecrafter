@@ -6,14 +6,14 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-uniform sampler2D Texture;
-smooth in vec2 TexCoord;
-in float PlanetHalfAngle;
-in float Separation;
-in float SeparationAngle;
-in float NdotL;
+layout (binding=1) uniform sampler2D Texture;
+layout (location=0) in vec2 TexCoord;
+layout (location=1) in float PlanetHalfAngle;
+layout (location=2) in float Separation;
+layout (location=3) in float SeparationAngle;
+layout (location=4) in float NdotL;
 
-out vec4 Color;
+layout (location=0) out vec4 Color;
 
 void main(void)
 {

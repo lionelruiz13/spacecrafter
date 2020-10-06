@@ -9,7 +9,7 @@
 
 layout (location=0)in vec3 position;
 
-uniform mat4 MVP;
+layout (binding=0) uniform uMVP {mat4 MVP;};
 
 void main()
 {

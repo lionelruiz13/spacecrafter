@@ -24,8 +24,12 @@
 
 #include <memory>
 #include "bodyModule/body.hpp"
+#include "vulkanModule/Context.hpp"
 
 class VertexArray;
+class Uniform;
+class Pipeline;
+class Buffer;
 
 class Sun : public Body {
 
@@ -42,7 +46,8 @@ public:
 	    bool close_orbit,
 	    ObjL* _currentObj,
 	    double orbit_bounding_radius,
-		BodyTexture* _bodyTexture);
+		BodyTexture* _bodyTexture,
+		ThreadContext *context);
 	~Sun();
 
 	void setFlagOrbit(bool b) {
@@ -80,8 +85,8 @@ protected:
 
 	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
-	void createHaloShader();
-	void createSunShader();
+	void createHaloShader(ThreadContext *context);
+	void createSunShader(ThreadContext *context);
 
 	void selectShader() {};
 
@@ -89,6 +94,20 @@ protected:
 	// shaderProgram *shaderSun;
 	SHADER_USE myShader;  			// the name of the shader used for his display
 	//shaderProgram *myShaderProg;	// Shader moderne
-	std::unique_ptr<shaderProgram> shaderSun, shaderBigHalo;
+	CommandMgr *cmdMgr = nullptr;
+	s_texture *last_tex_current = nullptr;
+	int commandIndexBigHalo, commandIndexSun = -2;
 	std::unique_ptr<VertexArray> m_bigHaloGL;
+	std::unique_ptr<Pipeline> pipelineBigHalo, pipelineSun;
+	std::unique_ptr<PipelineLayout> layoutBigHalo, layoutSun;
+	std::unique_ptr<Set> descriptorSetBigHalo, descriptorSetSun;
+	std::unique_ptr<Uniform> uRmag, uCmag, uRadius, uColor;
+	float *pRmag, *pCmag, *pRadius;
+	Vec3f *pColor;
+	std::unique_ptr<Uniform> uModelViewMatrix, uclipping_fov, uPlanetScaledRadius;
+	Mat4f *pModelViewMatrix;
+	Vec3f *pclipping_fov;
+	float *pPlanetScaledRadius;
+	std::unique_ptr<Buffer> drawData; // for Sun
+	//std::unique_ptr<shaderProgram> shaderSun, shaderBigHalo;
 };

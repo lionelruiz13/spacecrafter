@@ -12,18 +12,9 @@ layout (location=1)in vec2 texCoord;
 
 //~ uniform mat4 MVP;
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
-};
+#include <cam_block.glsl>
 
-
-smooth out vec2 TexCoord;
+layout (location=0) out vec2 TexCoord;
 
 
 void main()

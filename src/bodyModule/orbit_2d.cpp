@@ -19,8 +19,31 @@
 #include "bodyModule/body_color.hpp"
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/Renderer.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/CommandMgr.hpp"
 
-Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments) { }
+Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments)
+{
+	set = std::make_unique<Set>(context->surface, context->setMgr, layoutOrbit2d);
+	uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
+	pMat = static_cast<typeof(pMat)>(uMat->data);
+	set->bindUniform(uMat.get(), 0);
+	uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor));
+	pColor = static_cast<typeof(pColor)>(uColor->data);
+	set->bindUniform(uColor.get(), 1);
+
+	commandIndex = cmdMgr->getCommandIndex();
+	cmdMgr->init(commandIndex);
+	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->bindSet(layoutOrbit2d, set.get());
+	cmdMgr->bindSet(layoutOrbit2d, context->global->globalSet, 1);
+	cmdMgr->bindPipeline(pipelineOrbit2d);
+	orbit->bind();
+	cmdMgr->draw(segments);
+
+	cmdMgr->compile();
+}
 
 void Orbit2D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d &mat)
 {
@@ -36,27 +59,29 @@ void Orbit2D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d
 	computeShader();
 
 	// Normal transparency mode
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	StateGL::enable(GL_BLEND);
-	Vec4f Color ( body->myColor->getOrbit(), (orbit_fader.getInterstate()*body->visibilityFader.getInterstate()) );
+	//StateGL::enable(GL_BLEND);
+	*pColor = Vec4f( body->myColor->getOrbit(), (orbit_fader.getInterstate()*body->visibilityFader.getInterstate()) );
+	*pMat = mat.convert();
 
-	shaderOrbit2d->use();
-	shaderOrbit2d->setUniform("Mat", mat.convert());
-	shaderOrbit2d->setUniform("Color", Color);
+	// shaderOrbit2d->use();
+	// shaderOrbit2d->setUniform("Mat", mat.convert());
+	// shaderOrbit2d->setUniform("Color", Color);
 
 	// glBindVertexArray(m_Orbit2dGL.vao);
 	// glBindBuffer(GL_ARRAY_BUFFER,m_Orbit2dGL.pos);
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecOrbit2dVertex.size(),vecOrbit2dVertex.data(),GL_DYNAMIC_DRAW);
 	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	m_Orbit2dGL->fillVertexBuffer(BufferType::POS3D,vecOrbit2dVertex );
+	orbit->fillVertexBuffer(BufferType::POS3D,vecOrbit2dVertex );
 
 	// m_Orbit2dGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
 	// m_Orbit2dGL->unBind();
 	// // glBindVertexArray(0);
 	// shaderOrbit2d->unuse();
-	Renderer::drawArrays(shaderOrbit2d.get(), m_Orbit2dGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
+	cmdMgr->setSubmission(commandIndex, true);
+	//Renderer::drawArrays(shaderOrbit2d.get(), orbit.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);
 
 	vecOrbit2dVertex.clear();
 

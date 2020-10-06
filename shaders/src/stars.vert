@@ -9,15 +9,12 @@ layout (location = 0) in vec2 Position;
 layout (location = 4) in float Mag;
 layout (location = 3) in vec3 Color;
 
-out vertexData
-{
-	float mag;
-	vec3 color;
-} vertexOut;
- 
+layout (location=0) out float mag;
+layout (location=1) out vec3 color;
+
 void main(void)
 {
-	vertexOut.mag = Mag;
-	vertexOut.color = Color;
+	mag = Mag;
+	color = Color;
 	gl_Position = vec4(Position, 0.0,1.0);
 }

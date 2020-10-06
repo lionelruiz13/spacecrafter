@@ -50,49 +50,54 @@
 #include "eventModule/event_recorder.hpp"
 #include "renderGL/Renderer.hpp"
 #include "coreModule/StarGalaxy.hpp"
+#include "vulkanModule/VirtualSurface.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/Texture.hpp"
 
-
-Core::Core( int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
+Core::Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
+	context = _context;
 	media = _media;
 	coreFont = new CoreFont(/*this,*/ std::min(width,height));
 	projection = new Projector( width,height, 60 );
-	glFrontFace(GL_CCW);
+	//glFrontFace(GL_CCW);
 
 	// Set textures directory and suffix
 	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
+	Texture::setTextureDir(AppSettings::Instance()->getTextureDir());
 	//set Shaders directory and suffix
-	shaderProgram::setShaderDir(AppSettings::Instance()->getShaderDir() );
+	Pipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	// shaderProgram::setLogFile(AppSettings::Instance()->getLogDir()+"shader.log");
 	// shaderProgram::initLogFile();
 
-	ubo_cam = new UBOCam("cam_block");
+	ubo_cam = new UBOCam(context, "cam_block");
 	tone_converter = new ToneReproductor();
-	atmosphere = new Atmosphere();
-	ssystem = new SolarSystem();
+	atmosphere = new Atmosphere(context);
+	ssystem = new SolarSystem(context);
 	timeMgr = new TimeMgr();
 	observatory = new Observer(/**ssystem*/);
 	navigation = new Navigator();
-	nebulas = new NebulaMgr();
-	milky_way = new MilkyWay();
-	starNav = new StarNavigator();
-	starLines = new StarLines();
-	ojmMgr = new OjmMgr();
+	nebulas = new NebulaMgr(context);
+	milky_way = new MilkyWay(context);
+	starNav = new StarNavigator(context);
+	starLines = new StarLines(context);
+	ojmMgr = new OjmMgr(context);
 	anchorManager = new AnchorManager(observatory,navigation, ssystem, timeMgr, ssystem->getOrbitCreator());
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
-	skyGridMgr = new SkyGridMgr();
+	skyGridMgr = new SkyGridMgr(context);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 
-	skyLineMgr = new SkyLineMgr();
+	skyLineMgr = new SkyLineMgr(context);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_POINT_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
@@ -116,7 +121,7 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
-	skyDisplayMgr = new SkyDisplayMgr();
+	skyDisplayMgr = new SkyDisplayMgr(context);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICAL);
@@ -126,19 +131,20 @@ Core::Core( int width, int height, Media* _media, const mBoost::callback<void, s
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ANGDIST);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_LOXODROMY);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
+	skyDisplayMgr->build(); // build rendering of all created skyDisplay
 
 	cardinals_points = new Cardinals();
-	meteors = new MeteorMgr(10, 60);
+	meteors = new MeteorMgr(10, 60, context);
 	landscape = new Landscape();
 	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
-	hip_stars = new HipStarMgr(width,height);
-	asterisms = new ConstellationMgr(hip_stars);
-	illuminates= new IlluminateMgr(hip_stars, navigation, asterisms);
+	hip_stars = new HipStarMgr(width,height, context);
+	asterisms = new ConstellationMgr(hip_stars, context);
+	illuminates= new IlluminateMgr(hip_stars, navigation, asterisms, context);
 	text_usr = new TextMgr();
-	oort =  new Oort();
-	dso3d = new Dso3d();
-	tully = new Tully();
-	bodytrace= new BodyTrace();
+	oort =  new Oort(context);
+	dso3d = new Dso3d(context);
+	tully = new Tully(context);
+	bodytrace= new BodyTrace(context);
 	object_pointer_visibility = 1;
 
 	executorInSolarSystem = new CoreExecutorInSolarSystem(this, observatory);
@@ -244,8 +250,8 @@ void Core::init(const InitParser& conf)
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
 	illuminates->setDefaultSize(conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
 
-	glDepthFunc(GL_LEQUAL);
-	glDepthRange(0,1);
+	// glDepthFunc(GL_LEQUAL);
+	// glDepthRange(0,1);
 
 	// Start splash with no fonts due to font collection delays
 	if (firstTime) {
@@ -268,7 +274,7 @@ void Core::init(const InitParser& conf)
 		ssystem->iniTextures();
 
 		ssystem->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
-		
+
 		anchorManager->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
 
 		anchorManager->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
@@ -282,7 +288,7 @@ void Core::init(const InitParser& conf)
 		// Init nebulas
 		nebulas->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
 
-		Landscape::createSC_context();
+		Landscape::createSC_context(context);
 		landscape->setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
@@ -354,7 +360,7 @@ void Core::init(const InitParser& conf)
 
 	if (firstTime) {
 		milky_way->needToUseIris(conf.getBoolean(SCS_MAIN, SCK_MILKYWAY_IRIS));
-		milky_way->defineInitialMilkywayState(AppSettings::Instance()->getTextureDir() , conf.getStr(SCS_ASTRO,SCK_MILKY_WAY_TEXTURE), 
+		milky_way->defineInitialMilkywayState(AppSettings::Instance()->getTextureDir() , conf.getStr(SCS_ASTRO,SCK_MILKY_WAY_TEXTURE),
 				conf.getStr(SCS_ASTRO,SCK_MILKY_WAY_IRIS_TEXTURE), conf.getDouble(SCS_ASTRO,SCK_MILKY_WAY_INTENSITY));
 		milky_way->defineZodiacalState(AppSettings::Instance()->getTextureDir() + conf.getStr(SCS_ASTRO,SCK_ZODIACAL_LIGHT_TEXTURE), conf.getDouble(SCS_ASTRO,SCK_ZODIACAL_INTENSITY));
 		milky_way->setFaderDuration(conf.getInt(SCS_ASTRO,SCK_MILKY_WAY_FADER_DURATION));
@@ -363,21 +369,23 @@ void Core::init(const InitParser& conf)
 		atmosphere->initGridPos();
 
 		oort->populate(conf.getInt("rendering","oort_elements"));
+		oort->build();
 		tully->setTexture("typegals.png");
 		tully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
 		dso3d->setTexture("dsocat.png");
-		dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat");
+		if (dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
+			dso3d->build();
 
-		ojmMgr->init();
+		ojmMgr->init(context);
 		// 3D object integration test
 		ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
 
 		// Load the pointer textures
 		Object::initTextures();
-		ObjectBase::createShaderStarPointeur();
-		ObjectBase::createShaderPointeur();
+		ObjectBase::createShaderStarPointeur(context);
+		ObjectBase::createShaderPointeur(context);
 		//Init of the text's shaders
-		s_font::createSC_context();
+		s_font::createSC_context(context);
 	}
 
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
@@ -505,7 +513,7 @@ void Core::init(const InitParser& conf)
 
 	atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
 
-	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
 	ssystem->initialSolarSystemBodies();
 	setBodyDecor();
@@ -551,7 +559,7 @@ void Core::updateInSolarSystem(int delta_time)
 	projection->updateAutoZoom(delta_time, FlagManualZoom);
 	// update faders and Planet trails (call after nav is updated)
 	ssystem->update(delta_time, navigation, timeMgr);
-			
+
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update info about selected object
@@ -681,7 +689,7 @@ void Core::updateInGalaxy(int delta_time)
 	text_usr->update(delta_time);
 	dso3d->update(delta_time);
 	landscape->update(delta_time);
-	
+
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
 	projection->setModelViewMatrices( navigation->getEarthEquToEyeMat(),
@@ -756,7 +764,7 @@ void Core::switchMode(const std::string &mode)
 {
 	if (mode.empty())
 		return;
-	
+
 	std::string modeValue = mode;
 	std::transform(modeValue.begin(), modeValue.end(),modeValue.begin(), ::tolower);
 
@@ -800,7 +808,7 @@ void Core::drawInSolarSystem(int delta_time)
 	meteors->update(projection, navigation, timeMgr, tone_converter, delta_time);
 
 	// retiré la condition && atmosphere->getFlagShow() de sorte à pouvoir en avoir par atmosphère ténue
-	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) { 
+	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
 	if (bodyDecor->canDrawMeteor() && (sky_brightness<0.1))
 		meteors->draw(projection, navigation);
 
@@ -828,7 +836,7 @@ void Core::drawInGalaxy(int delta_time)
 	//tracé des lignes sans activation du tampon de profondeur.
 	skyDisplayMgr->drawPerson(projection, navigation);
 	starLines->draw(navigation);
-	
+
 	// transparence.
 	dso3d->draw(observatory->getAltitude(), projection, navigation);
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
@@ -876,9 +884,9 @@ void Core::setLandscapeToBody()
 	//cas des satellites des planetes
 	if (observatory->getHomeBody()->isSatellite())
 		setLandscape("moon");
-	
+
 	//cas spécial Earth
-	if (observatory->isEarth()) 
+	if (observatory->isEarth())
 		setLandscape(initialvalue.initial_landscapeName);
 
 	bodyDecor->bodyAssign(observatory->getAltitude(), observatory->getHomeBody()->getAtmosphereParams()); //, observatory->getSpacecraft());
@@ -1520,7 +1528,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 
-	ssystem->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR), 
+	ssystem->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR),
 								conf.getStr(section,SCK_PLANET_ORBITS_COLOR), conf.getStr(section,SCK_OBJECT_TRAILS_COLOR));
 
 	// default color override
@@ -1685,7 +1693,7 @@ void Core::setFontScheme()
 }
 
 //! Get a color used to display info about the currently selected object
-// @TODO reafire que l'objet sélectionné renvoie sa propore couleur 
+// @TODO reafire que l'objet sélectionné renvoie sa propore couleur
 Vec3f Core::getSelectedObjectInfoColor(void) const
 {
 	if (!selected_object) {
@@ -1858,8 +1866,8 @@ bool Core::setHomePlanet(const std::string &planet)
 	Event* event= new ObserverEvent(planet);
 	EventRecorder::getInstance()->queue(event);
 	if (planet=="selected")
-		return anchorManager->switchToAnchor(selected_object.getEnglishName()); 
-	else 
+		return anchorManager->switchToAnchor(selected_object.getEnglishName());
+	else
 		return anchorManager->switchToAnchor(planet);
 }
 
@@ -1964,7 +1972,7 @@ std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPre
 
 	// Get matching planets
 	std::vector<std::string> matchingPlanets = ssystem->listMatchingObjectsI18n(objPrefix, maxNbItem);
-	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter) 
+	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter)
 		withType ? result.push_back(*iter+"(P)") : result.push_back(*iter);
 		// result.push_back(*iter);
 	maxNbItem-=matchingPlanets.size();

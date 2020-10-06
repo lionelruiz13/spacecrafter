@@ -29,16 +29,36 @@
 #include "mediaModule/image.hpp"
 #include "mediaModule/imageTexture.hpp"
 #include "navModule/navigator.hpp"
-#include "renderGL/stateGL.hpp"
 #include "tools/s_texture.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/Renderer.hpp"
+// #include "renderGL/stateGL.hpp"
+// #include "renderGL/OpenGL.hpp"
+// #include "renderGL/Renderer.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
 
-std::unique_ptr<shaderProgram> Image::shaderImageViewport;
-std::unique_ptr<shaderProgram> Image::shaderUnified;
-std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
-std::unique_ptr<VertexArray> Image::m_imageViewportGL;
-
+// std::unique_ptr<shaderProgram> Image::shaderImageViewport;
+// std::unique_ptr<shaderProgram> Image::shaderUnified;
+// std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
+// std::unique_ptr<VertexArray> Image::m_imageViewportGL;
+ThreadContext *Image::context;
+PipelineLayout *Image::m_layoutViewport;
+PipelineLayout *Image::m_layoutUnifiedRGB;
+PipelineLayout *Image::m_layoutUnifiedYUV;
+Pipeline *Image::m_pipelineViewport;
+std::array<Pipeline *, 4> Image::m_pipelineUnified;
+VertexArray *Image::m_imageViewportGL;
+VertexArray *Image::m_imageUnifiedGL;
+int Image::commandIndex = -1;
+Set *Image::m_setViewport;
+Set *Image::m_setUnifiedRGB;
+Set *Image::m_setUnifiedYUV;
+CommandMgr *Image::cmdMgr;
+Pipeline *Image::pipelineUsed = nullptr;
 
 Image::Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
@@ -92,6 +112,13 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 		image_ratio = -1; // no image loaded
 	else
 		image_ratio = (float)img_w/img_h;
+	if (pos_type == IMG_POSITION::POS_VIEWPORT) {
+		vertex = std::make_unique<VertexArray>(*m_imageViewportGL);
+		vertex->build(4);
+	} else {
+		vertex = std::make_unique<VertexArray>(*m_imageUnifiedGL);
+		vertex->build(25*26*2);
+	}
 }
 
 void Image::initCache(const Projector * prj)
@@ -140,38 +167,84 @@ Image::~Image()
 
 void Image::createShaderImageViewport()
 {
-	shaderImageViewport = std::make_unique<shaderProgram>();
-	shaderImageViewport->init("imageViewport.vert","imageViewport.frag");
-	shaderImageViewport->setUniformLocation({"fader", "MVP"});
+	// shaderImageViewport = std::make_unique<shaderProgram>();
+	// shaderImageViewport->init("imageViewport.vert","imageViewport.frag");
+	// shaderImageViewport->setUniformLocation({"fader", "MVP"});
 }
 
 
 void Image::createShaderUnified()
 {
-	shaderUnified = std::make_unique<shaderProgram>();
-	shaderUnified->init("imageUnified.vert","imageUnified.frag");
-	shaderUnified->setUniformLocation({"fader","MVP", "noColor", "clipping_fov"});
-	shaderUnified->setUniformLocation("ModelViewMatrix");
-	// a cause des textures YUV
-	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useRGB");
-	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useYUV");
-	// a cause de la transparency
-	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useTransparency");
-	shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useNoTransparency");
+	// shaderUnified = std::make_unique<shaderProgram>();
+	// shaderUnified->init("imageUnified.vert","imageUnified.frag");
+	// shaderUnified->setUniformLocation({"fader","ModelViewMatrix", "noColor", "clipping_fov"});
+	// shaderUnified->setUniformLocation("ModelViewMatrix");
+	// // a cause des textures YUV
+	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useRGB");
+	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useYUV");
+	// // a cause de la transparency
+	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useTransparency");
+	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useNoTransparency");
 }
 
 
-void Image::createSC_context()
+void Image::createSC_context(ThreadContext *_context)
 {
-	m_imageUnifiedGL = std::make_unique<VertexArray>();
+	context = _context;
+	// VertexArray
+	m_imageUnifiedGL = context->global->tracker->track(new VertexArray(context->surface));
 	m_imageUnifiedGL->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
 	m_imageUnifiedGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
-
-	m_imageViewportGL = std::make_unique<VertexArray>();
+	m_imageViewportGL = context->global->tracker->track(new VertexArray(context->surface));
 	m_imageViewportGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
 	m_imageViewportGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
+	// PipelineLayout
+	m_layoutViewport = context->global->tracker->track(new PipelineLayout(context->surface));
+	m_layoutViewport->setTextureLocation(0);
+	m_layoutViewport->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
+	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 4);
+	m_layoutViewport->build();
+	m_layoutUnifiedRGB = context->global->tracker->track(new PipelineLayout(context->surface));
+	m_layoutUnifiedRGB->setGlobalPipelineLayout(m_layoutViewport);
+	m_layoutUnifiedRGB->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutUnifiedRGB->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutUnifiedRGB->build();
+	m_layoutUnifiedYUV = context->global->tracker->track(new PipelineLayout(context->surface));
+	m_layoutUnifiedYUV->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	m_layoutUnifiedYUV->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
+	m_layoutUnifiedYUV->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
+	m_layoutUnifiedYUV->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
+	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
+	m_layoutUnifiedYUV->build();
+	// Pipeline
+	m_pipelineViewport = context->global->tracker->track(new Pipeline(context->surface, m_layoutViewport));
+	m_pipelineViewport->setDepthStencilMode();
+	m_pipelineViewport->bindVertex(m_imageViewportGL);
+	m_pipelineViewport->bindShader("imageViewport.vert.spv");
+	m_pipelineViewport->bindShader("imageViewport.frag.spv");
+	m_pipelineViewport->build();
+	for (int i = 0; i < 4; ++i) {
+		m_pipelineUnified[i] = context->global->tracker->track(new Pipeline(context->surface, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV));
+		m_pipelineUnified[i]->setDepthStencilMode();
+		m_pipelineUnified[i]->bindVertex(m_imageUnifiedGL);
+		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
+	}
+	m_pipelineUnified[0]->bindShader("imageUnifiedRGB.frag.spv");
+	m_pipelineUnified[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");
+	m_pipelineUnified[2]->bindShader("imageUnifiedYUV.frag.spv");
+	m_pipelineUnified[3]->bindShader("imageUnifiedYUVTransparency.frag.spv");
+	for (int i = 0; i < 4; ++i)
+		m_pipelineUnified[i]->build();
+	// Set
+	m_setViewport = context->global->tracker->track(new Set());
+	m_setUnifiedRGB = m_setViewport;
+	m_setUnifiedYUV = context->global->tracker->track(new Set());
+	// CommandBuffer
+	cmdMgr = context->commandMgrSingleUse;
+	commandIndex = cmdMgr->getCommandIndex();
 }
-
 
 void Image::setAlpha(float alpha, float duration)
 {
@@ -189,7 +262,6 @@ void Image::setAlpha(float alpha, float duration)
 	coef_alpha = 1.0f/(1000.f*duration);
 	mult_alpha = 0;
 }
-
 
 void Image::setScale(float scale, float duration)
 {
@@ -290,9 +362,14 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 
 void Image::setRatio(float ratio, float duration)
 {
+	int newVertexSize = std::min(int(ratio / 5) * (int(ratio / 5) + 1) * 2, 25 * 26 * 2);
 	if (duration <= 0) {
 		flag_ratio = 0;
 		image_ratio = ratio;
+		if (vertexSize != newVertexSize) {
+			vertexSize = newVertexSize;
+			vertex->build(vertexSize);
+		}
 		return;
 	}
 	flag_ratio = 1;
@@ -301,6 +378,10 @@ void Image::setRatio(float ratio, float duration)
 	end_ratio = ratio;
 	coef_ratio = (ratio-start_ratio)/end_time_ratio;
 	my_timer_ratio = 0; // count time elapsed from the beginning of the command
+	if (vertexSize < newVertexSize) {
+		vertexSize = newVertexSize;
+		vertex->build(vertexSize);
+	}
 }
 
 
@@ -398,6 +479,11 @@ bool Image::update(int delta_time)
 		else {
 			image_ratio = end_ratio;
 			flag_ratio = 0;
+			int newVertexSize = std::min(int(image_ratio / 5) * (int(image_ratio / 5) + 1) * 2, 25 * 26 * 2);
+			if (vertexSize != newVertexSize) {
+				vertexSize = newVertexSize;
+				vertex->build(vertexSize);
+			}
 		}
 	}
 	return 1;
@@ -410,10 +496,10 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 
 	initCache(prj);
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	imageTexture->bindImageTexture();
+	//imageTexture->bindImageTexture(set);
 	// if (useRGB) {
 	// glActiveTexture(GL_TEXTURE0);
 	// glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
@@ -459,7 +545,28 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 	vecImgPos.clear();
 	vecImgTex.clear();
 
-	StateGL::disable(GL_BLEND);
+	// StateGL::disable(GL_BLEND);
+}
+
+void Image::beginDraw()
+{
+	cmdMgr->init(commandIndex, false);
+	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	pipelineUsed = nullptr;
+}
+
+void Image::endDraw()
+{
+	cmdMgr->compile();
+	cmdMgr->setSubmission(commandIndex, false, context->commandMgr);
+}
+
+void Image::setPipeline(Pipeline *pipeline)
+{
+	if (pipelineUsed != pipeline) {
+		pipelineUsed = pipeline;
+		cmdMgr->bindPipeline(pipeline);
+	}
 }
 
 void Image::drawViewport(const Navigator * nav, const Projector * prj)
@@ -472,6 +579,10 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	else {
 		h /= image_ratio;
 	}
+	setPipeline(m_pipelineViewport);
+	m_setViewport->clear();
+	imageTexture->bindImageTexture(m_setViewport);
+	cmdMgr->pushSet(m_layoutViewport, m_setViewport);
 
 	//	  cout << "drawing image viewport " << image_name << endl;
 	// at x or y = 1, image is centered on projection edge centered in viewport at 0,0
@@ -493,14 +604,19 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 
 	insert_all(vecImgPos, w, -h, -w, -h, w, h, -w, h);
 
-	m_imageViewportGL->fillVertexBuffer(BufferType::POS2D,vecImgPos);
-	m_imageViewportGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+	vertex->fillVertexBuffer(BufferType::POS2D,vecImgPos);
+	vertex->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+	MVP = MVP * TRANSFO;
+	cmdMgr->pushConstant(m_layoutViewport, VK_SHADER_STAGE_VERTEX_BIT, 0, &MVP, 64);
+	cmdMgr->pushConstant(m_layoutViewport, VK_SHADER_STAGE_FRAGMENT_BIT, 64, &image_alpha, 4);
+	cmdMgr->bindVertex(vertex.get());
+	cmdMgr->draw(4);
 
-	shaderImageViewport->use();
-	shaderImageViewport->setUniform("fader", image_alpha);
-	shaderImageViewport->setUniform("MVP", MVP*TRANSFO);
+	// shaderImageViewport->use();
+	// shaderImageViewport->setUniform("fader", image_alpha);
+	// shaderImageViewport->setUniform("MVP", MVP*TRANSFO);
 
-	Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
+	// Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
 }
 
 static int decalages(int i, int howManyDisplay)
@@ -523,7 +639,11 @@ static int decalages(int i, int howManyDisplay)
 void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * prj)
 {
 	float plotDirection;
-	Mat4f matrix=mat.convert();
+	struct {
+		Mat4f matrix;
+		Vec3f clipping_fov;
+	} uVert;
+	uVert.matrix=mat.convert();
 
 	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
@@ -566,32 +686,57 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 			}
 		}
 
-		shaderUnified->use();
+		//shaderUnified->use();
 
-		shaderUnified->setUniform("ModelViewMatrix",matrix);
-		shaderUnified->setUniform("fader", image_alpha);
+		// shaderUnified->setUniform("ModelViewMatrix",matrix);
+		// shaderUnified->setUniform("fader", image_alpha);
 
 		// à cause des textures RGB
 		//shaderUnified->setUniform("useRGB", useRGB);
 		std::string sub1 = imageTexture->getType();
 		std::string sub2;
-		transparency ? sub2 = "useTransparency" : "useNoTransparency";
 
-		shaderUnified->setSubroutines(GL_FRAGMENT_SHADER, {sub1, sub2});
-		shaderUnified->setUniform("noColor",noColor);
-
-
-		Vec3f clipping_fov = prj->getClippingFov();
+		uVert.clipping_fov = prj->getClippingFov(); // global
 
 		if (image_pos_type==IMG_POSITION::POS_DOME)
-			clipping_fov[2] = 180;
+			uVert.clipping_fov[2] = 180;
 
-		shaderUnified->setUniform("clipping_fov", clipping_fov);
+		int index = transparency ? 1 : 0;
+		PipelineLayout *layout;
+		Set *set;
+		if (imageTexture->isYUV()) {
+			setPipeline(m_pipelineUnified[index | 2]);
+			layout = m_layoutUnifiedYUV;
+			set = m_setUnifiedYUV;
+		} else {
+			setPipeline(m_pipelineUnified[index]);
+			layout = m_layoutUnifiedRGB;
+			set = m_setUnifiedRGB;
+		}
+		set->clear();
+		imageTexture->bindImageTexture(set);
+		cmdMgr->pushSet(layout, set);
+		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_VERTEX_BIT, 0, &uVert, 76);
+		if (transparency) {
+			float tmpBuff[5];
+			tmpBuff[0] = image_alpha;
+			*reinterpret_cast<Vec4f *>(tmpBuff + 1) = noColor;
+			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, tmpBuff, 20);
+		} else
+			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, &image_alpha, 4);
+		//transparency ? sub2 = "useTransparency" : "useNoTransparency";
 
-		m_imageUnifiedGL->fillVertexBuffer(BufferType::POS3D,vecImgPos);
-		m_imageUnifiedGL->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+		// shaderUnified->setSubroutines(GL_FRAGMENT_SHADER, {sub1, sub2});
+		// shaderUnified->setUniform("noColor",noColor);
 
-		Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
+		// shaderUnified->setUniform("clipping_fov", clipping_fov);
+
+		vertex->fillVertexBuffer(BufferType::POS3D,vecImgPos);
+		vertex->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+		cmdMgr->bindVertex(vertex.get());
+		cmdMgr->draw(vecImgPos.size() / 3);
+
+		// Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
 
 		vecImgPos.clear();
 		vecImgTex.clear();

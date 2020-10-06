@@ -18,12 +18,13 @@
 #define __MEDIA_BASE_HPP__
 
 #include <GL/glew.h>
+#include "vulkanModule/Texture.hpp"
 
 struct VideoTexture {
-	GLuint tex[3];
-	GLuint &y = tex[0];
-	GLuint &u = tex[1];
-	GLuint &v = tex[2];
+	StreamTexture *tex[3];
+	StreamTexture *&y = tex[0];
+	StreamTexture *&u = tex[1];
+	StreamTexture *&v = tex[2];
 };
 
 struct Resolution {

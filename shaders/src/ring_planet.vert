@@ -6,7 +6,18 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-#include <fisheye.glsl>
+layout (binding=0) uniform ubo {
+	mat4 ModelViewMatrix;
+	mat4 ModelViewMatrixInverse;
+	vec3 clipping_fov;
+	float RingScale;
+	vec3 PlanetPosition;
+	float PlanetRadius;
+	vec3 LightDirection;
+	float SunnySideUp;
+};
+
+#include <fisheye_noMV.glsl>
 
 //layout
 layout (location=0)in vec2 position;
@@ -14,24 +25,13 @@ layout (location=1)in vec2 texCoord;
 
 #include <cam_block.glsl>
 
-//externe
-uniform mat4 NormalMatrix;
-uniform mat4 ModelViewMatrixInverse;
-uniform vec3 clipping_fov;
-
-uniform float PlanetRadius;
-uniform vec3 PlanetPosition;
-uniform vec3 LightDirection;
-uniform float SunnySideUp;
-uniform float RingScale;
-
-out float PlanetHalfAngle;
-out float Separation;
-out float SeparationAngle;
-out float NdotL;
+layout (location=1) out float PlanetHalfAngle;
+layout (location=2) out float Separation;
+layout (location=3) out float SeparationAngle;
+layout (location=4) out float NdotL;
 
 //out
-smooth out vec2 TexCoord;
+layout (location=0) out vec2 TexCoord;
 
 
 void main()

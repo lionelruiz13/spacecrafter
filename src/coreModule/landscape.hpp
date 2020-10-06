@@ -41,7 +41,11 @@ class s_texture;
 class Navigator;
 class Projector;
 class VertexArray;
-class shaderProgram;
+class ThreadContext;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
 
 class Fog;
 
@@ -102,7 +106,7 @@ public:
 	static Landscape* createFromHash(stringHash_t & param);
 	static std::string getFileContent(const std::string& landscape_file);
 	static std::string getLandscapeNames(const std::string& landscape_file);
-	static void createSC_context();
+	static void createSC_context(ThreadContext *_context);
 protected:
 	Fog *fog=nullptr;
 	virtual void load(const std::string& file_name, const std::string& section_name) {};
@@ -125,7 +129,14 @@ protected:
 
 	static int slices;
 	static int stacks;
-	static std::unique_ptr<shaderProgram> shaderLandscape;
+	static ThreadContext *context;
+	static int commandIndex, commandIndexNight;
+	static Pipeline *pipeline;
+	static PipelineLayout *layout;
+	static Set *set;
+	static Uniform *uModelViewMatrix, *uFrag;
+	static Mat4f *pModelViewMatrix;
+	static float *psky_brightness, *pFader;
 	std::unique_ptr<VertexArray> m_landscapeGL;
 	float rotate_z; // rotation around the z axis
 };

@@ -11,10 +11,10 @@
 layout (location=0) in vec3 position;
 layout (location=4) in float segment;
 
-uniform int nbPoints;
-uniform float fader;
+layout (binding=3) uniform uNbPoints{int nbPoints;};
+layout (binding=2) uniform uFader {float fader;};
 
-out ValueFader
+layout (location=0) out ValueFader
 {
 	smooth float indice;
 } valueFader;

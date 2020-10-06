@@ -26,6 +26,9 @@
 #include "bodyModule/body.hpp"
 
 class Ring;
+class Set;
+class Uniform;
+class Buffer;
 
 class BigBody : public Body {
 
@@ -44,7 +47,8 @@ public:
 	        bool close_orbit,
 	        ObjL* _currentObj,
 	        double orbit_bounding_radius,
-			BodyTexture* _bodyTexture);
+			BodyTexture* _bodyTexture,
+			ThreadContext *context);
 
 	virtual ~BigBody();
 
@@ -76,6 +80,23 @@ protected :
 	// remove from parent satellite list
 	virtual void removeSatellite(Body *planet);
 	Ring* rings=nullptr;
+	int commandIndex = -1;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal
+	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal
+	std::unique_ptr<Uniform> uUmbraColor; // bump
+	std::unique_ptr<Uniform> uGlobalProj, uGlobalVertGeom, uGlobalTescGeom, uGlobalTesc; // tes
+	std::unique_ptr<Uniform> uModelViewMatrixInverse, uRingFrag;
+	globalVertProj *pGlobalVertProj = nullptr;
+	globalFrag *pGlobalFrag = nullptr;
+	Vec3f *pUmbraColor = nullptr;
+	globalProj *pGlobalProj = nullptr;
+	globalVertGeom *pGlobalVertGeom = nullptr;
+	globalTescGeom *pGlobalTescGeom = nullptr;
+	globalTesc *pGlobalTesc = nullptr;
+	Mat4f *pModelViewMatrixInverse = nullptr;
+	ringFrag *pRingFrag = nullptr;
+	std::unique_ptr<Buffer> drawData;
 	//utile pour le shader NIGHT
 	s_texture * tex_night;
 	s_texture * tex_specular;

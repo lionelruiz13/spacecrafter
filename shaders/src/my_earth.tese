@@ -12,24 +12,23 @@ layout (triangles, equal_spacing) in;
 //layout (triangles, fractional_odd_spacing)in;
 
 
-uniform mat4 model;
-uniform mat4 vp;
+//uniform mat4 model;
+//uniform mat4 vp;
 
-in TCS_OUT{
+layout (location=0) in TCS_OUT{
     in vec3 glPosition;
     in vec2 TexCoord;
     in vec3 Normal;
     //~ in vec3 tangent;
 }tes_in[];
 
-out TES_OUT{
+layout (location=0) out TES_OUT{
     out vec3 glPosition; 
     out vec2 TexCoord;
     out vec3 Normal;
     //~ out vec3 tangent;
     out vec3 tessCoord;
 }tes_out;
-
 
 void main(void)
 {

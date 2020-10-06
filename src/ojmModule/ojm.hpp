@@ -9,6 +9,11 @@
 #include <memory>
 
 class VertexArray;
+class CommandMgr;
+class Set;
+class Pipeline;
+class PipelineLayout;
+class VirtualSurface;
 
 struct Shape {
     std::string name;
@@ -33,8 +38,8 @@ struct Shape {
 
 class Ojm {
 public:
-	Ojm(const std::string& _fileName);
-	Ojm(const std::string& _fileName, const std::string& _pathFile, float multiplier);
+	Ojm(const std::string& _fileName, VirtualSurface *surface);
+	Ojm(const std::string& _fileName, const std::string& _pathFile, float multiplier, VirtualSurface *_surface);
 	~Ojm();
 
 	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
@@ -43,15 +48,20 @@ public:
 	}
 
 	//! charge et initialise un objet OJM
-	bool init(float multiplier= 1.0);
+	bool init(float multiplier = 1.0);
 
 	//! dessine l'objet
-	void draw(shaderProgram *shader);
+	//void draw(shaderProgram *shader);
+
+    //! @brief record Ojm draw commands
+    //! @param pipelines {pipeline with texture, pipeline without texture}
+    int record(CommandMgr *cmdMgr, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline = -1);
 
 	//! pour debugger : print
 	void print();
 
 private:
+    VirtualSurface *surface;
 	bool is_ok = false; //say if the model is correctly initialised and operationnal
 	//! vérifie si les indices coincident dans l'objet
 

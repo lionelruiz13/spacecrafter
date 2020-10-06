@@ -32,6 +32,13 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/Renderer.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+
 static float magnitude_max = 6.5;
 
 #define DELTA_PARSEC 0.005
@@ -50,30 +57,52 @@ static double fov= 180.;
 //
 // ===========================================================================
 
-StarNavigator::StarNavigator()
+StarNavigator::StarNavigator(ThreadContext *context)
 {
 	starMgr = nullptr;
 	starMgr = new StarManager();
 
-	createSC_context();
+	createSC_context(context);
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
+	set->bindTexture(starTexture->getTexture(), 0);
 	old_pos = v3fNull;
-	
+
 	pool= new ThreadPool(std::thread::hardware_concurrency());
 
 	computeRCMagTable();
 }
 
-void StarNavigator::createSC_context()
+void StarNavigator::createSC_context(ThreadContext *_context)
 {
-	shaderStarNav = std::make_unique<shaderProgram>();
-	shaderStarNav -> init("starNav.vert","starNav.geom","starNav.frag");
-	shaderStarNav->setUniformLocation("Mat");
+	context = _context;
+	// shaderStarNav = std::make_unique<shaderProgram>();
+	// shaderStarNav -> init("starNav.vert","starNav.geom","starNav.frag");
+	// shaderStarNav->setUniformLocation("Mat");
 
-	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL = std::make_unique<VertexArray>(context->surface);
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_dataGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
 	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
+	layout = std::make_unique<PipelineLayout>(context->surface);
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setTextureLocation(0);
+	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1);
+	layout->buildLayout();
+	layout->build();
+	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline->setDepthStencilMode();
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	pipeline->setBlendMode(BLEND_ADD);
+	pipeline->bindVertex(m_dataGL.get());
+	pipeline->bindShader("starNav.vert.spv");
+	pipeline->bindShader("starNav.geom.spv");
+	pipeline->bindShader("starNav.frag.spv");
+	pipeline->build();
+	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
+	uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
+	pMat = static_cast<typeof(pMat)>(uMat->data);
+	set->bindUniform(uMat.get(), 1);
+	commandIndex = context->commandMgrDynamic->getCommandIndex();
 }
 
 
@@ -374,9 +403,22 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 		result.get();
 	results.clear();
 
+	m_dataGL->build(starPos.size() / 3);
 	m_dataGL->fillVertexBuffer(BufferType::POS3D, starPos);
 	m_dataGL->fillVertexBuffer(BufferType::COLOR, starColor);
 	m_dataGL->fillVertexBuffer(BufferType::MAG, starRadius);
+	build(starPos.size() / 3);
+}
+
+void StarNavigator::build(int nbVertex)
+{
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	cmdMgr->init(commandIndex, pipeline.get());
+	cmdMgr->bindSet(layout.get(), context->global->globalSet);
+	cmdMgr->bindSet(layout.get(), set.get(), 1);
+	cmdMgr->bindVertex(m_dataGL.get());
+	cmdMgr->draw(nbVertex);
+	cmdMgr->compile();
 }
 
 bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
@@ -448,21 +490,22 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 
 	if (starPos.size()<1)
 		return;
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_ONE, GL_ONE);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, starTexture->getID());
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, starTexture->getID());
 
 	Mat4f matrix=nav->getHelioToEyeMat().convert();
-	matrix=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
-	
-	shaderStarNav->use();
-	shaderStarNav->setUniform("Mat",matrix);
+	*pMat=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+
+	// shaderStarNav->use();
+	// shaderStarNav->setUniform("Mat",matrix);
 
 	// m_dataGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
 	// m_dataGL->unBind();
 	// shaderStarNav->unuse();
-	Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
+	//Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
+	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
 }

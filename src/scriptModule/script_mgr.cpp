@@ -74,16 +74,16 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 	//~ cout << "script_file: " << script_file << endl;
 
 	if ( script->load(fullFileName, script_path) ) {
-		multiplierRate=1; 
+		multiplierRate=1;
 		scriptState = ScriptState::PLAY;
 		wait_time = 0;
 		return 1;
-	} 
+	}
 	return 0;
 }
 
 /*
- * adds the given script at the begining of the current script queue 
+ * adds the given script at the begining of the current script queue
  */
 bool ScriptMgr::addScriptFirst(const std::string & script)
 {
@@ -91,15 +91,15 @@ bool ScriptMgr::addScriptFirst(const std::string & script)
 	Token *token=nullptr;
 	std::istringstream iss(script);
 	std::string line;
-	
+
 	//get the tokens into a vector
 	while (getline(iss, line)){
 		// transformation des débuts de chaines de caratères en supprimant espaces et tabulations en début de chaine
 		while (line[0]==' ' || line[0]=='\t') {
-	        line.erase(0,1); 
+	        line.erase(0,1);
 			//std::cout << str << std::endl;
 		}
-		// prise en compte des lignes 
+		// prise en compte des lignes
 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
 			token = new Token(line, getScriptPath());
 			commands.push_back(token);
@@ -151,7 +151,7 @@ void ScriptMgr::resumeScript()
 
 bool ScriptMgr::isFaster() const
 {
-	return (multiplierRate!=1); 
+	return (multiplierRate!=1);
 }
 
 void ScriptMgr::fasterSpeed()
@@ -174,7 +174,7 @@ void ScriptMgr::slowerSpeed()
 		return;
 
 	if (multiplierRate>1)
-		multiplierRate /=2;	
+		multiplierRate /=2;
 
 	if (multiplierRate == 1) {
 		media->audioMusicSync();
@@ -263,9 +263,9 @@ void ScriptMgr::resetScriptLoop()
 void ScriptMgr::update(int delta_time)
 {
 	if (sR.recording) sR.record_elapsed_time += delta_time;
-	
-	/**	isVideoPlayed && waitOnVideo : 
-	 * case of video is playing and scriptMgr should wait on it : 
+
+	/**	isVideoPlayed && waitOnVideo :
+	 * case of video is playing and scriptMgr should wait on it :
 	 * so next if must be false*/
 	if (scriptState==ScriptState::PLAY && (isVideoPlayed && waitOnVideo ? false : true) ) {
 

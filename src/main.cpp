@@ -196,6 +196,7 @@ int main(int argc, char **argv)
 	Log->openLog(LOG_FILE::SCRIPT, "script", true);
 	Log->openLog(LOG_FILE::TCP, "tcp");
 	Log->openLog(LOG_FILE::SHADER,"shader");
+	Log->openLog(LOG_FILE::VULKAN,"vulkan");
 
 	// Write the console logo & Uname Information...
 	writeGeneralInfo();
@@ -245,6 +246,7 @@ int main(int argc, char **argv)
 	ini->loadAppSettings( &conf );
 
 	Log->setDebug(conf.getBoolean(SCS_MAIN, SCK_DEBUG));
+	Log->setWriteLog(conf.getBoolean(SCS_MAIN, SCK_LOG));
 
 	#ifdef LINUX
 	CPUInfo *cpuInfo =  nullptr;

@@ -124,6 +124,10 @@ void cLog::write(const std::string& texte, const LOG_TYPE& type, const LOG_FILE&
 		sprintf(value, "%012d: ", SDL_GetTicks());
 		ligne.append(std::string(value));
 	}
+	if (!isWritingLog) {
+		writeMutex.unlock();
+		return;
+	};
 
 	switch(type) {
 		case LOG_TYPE::L_WARNING :

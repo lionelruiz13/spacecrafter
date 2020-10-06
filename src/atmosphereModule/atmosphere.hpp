@@ -40,6 +40,8 @@
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 
+#include "vulkanModule/Context.hpp"
+
 class Projector;
 class Navigator;
 class ToneReproductor;
@@ -47,7 +49,7 @@ class VertexArray;
 
 class Atmosphere: public NoCopy  {
 public:
-	Atmosphere();
+	Atmosphere(ThreadContext *context);
 	virtual ~Atmosphere();
 
 	void computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase, const ToneReproductor * eye, const Projector* prj, const std::string &planetName,
@@ -132,9 +134,9 @@ public:
 
 private:
 	//! initialise les paramètres du shader
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 	//! remplir les couleurs du conteneur
-	void fillOutDataColor(); 
+	void fillOutDataColor();
 	// void deleteShader();
 
 	Skylight sky;
@@ -151,6 +153,9 @@ private:
 	std::unique_ptr<shaderProgram> shaderAtmosphere;
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;
+	std::unique_ptr<Pipeline> pipeline;
+	int commandIndex;
+	CommandMgr *commandMgr;
 	std::unique_ptr<VertexArray> m_atmGL;
 
 	//variables sur la position de la grille

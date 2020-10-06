@@ -40,8 +40,17 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/shader.hpp"
 
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Buffer.hpp"
 
 #define NB_MAX_POINTS 4194304
+// 48 MiB in GPU per skyDisplay
+// 528 MiB in GPU for 11 skyDisplay
 const float deg2rad = 3.1415926 / 180.; // Convert deg to radian
 const float rad2deg = 180. / 3.1415926; // Converd radian to deg
 const float grad2rad = 3.1415926 / 18.; // Convert grind pas to radian
@@ -50,12 +59,18 @@ const float pi_div_2 = 1.5707963;		// pi/2
 // -------------------- SKYLINE_PERSONAL  ---------------------------------------------
 
 s_font* SkyDisplay::skydisplay_font = nullptr;
-std::unique_ptr<shaderProgram> SkyDisplay::shaderSkyDisplay;
+ThreadContext *SkyDisplay::context;
+PipelineLayout *SkyDisplay::layout;
+Pipeline *SkyDisplay::pipeline;
+Set *SkyDisplay::set;
+int SkyDisplay::virtualColorFaderID = -1;
+int SkyDisplay::virtualMatID;
+//std::unique_ptr<shaderProgram> SkyDisplay::shaderSkyDisplay;
 
 SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
 {
 	ptype = _ptype;
-	createVao();
+	createLocalResources();
 	switch (ptype) {
 		case AL:
 			proj_func = &Projector::projectLocal;
@@ -74,17 +89,74 @@ SkyDisplay::~SkyDisplay()
 	dataSky.clear();
 }
 
-void SkyDisplay::createShader()
+void SkyDisplay::createSC_context(ThreadContext *_context)
 {
-	shaderSkyDisplay = std::make_unique<shaderProgram>();
-	shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
-	shaderSkyDisplay->setUniformLocation({"color", "fader", "Mat"});
+	VertexArray vertexModel(_context->surface);
+	vertexModel.registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	context = _context;
+	// shaderSkyDisplay = std::make_unique<shaderProgram>();
+	// shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
+	// shaderSkyDisplay->setUniformLocation({"color", "fader", "Mat"});
+	layout = context->global->tracker->track(new PipelineLayout(context->surface));
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
+	layout->buildLayout();
+	layout->build();
+	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline->setDepthStencilMode();
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
+	pipeline->bindVertex(&vertexModel);
+	pipeline->bindShader("person.vert.spv");
+	pipeline->bindShader("person.geom.spv");
+	pipeline->bindShader("person.frag.spv");
+	pipeline->build();
+	set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
 }
 
-void SkyDisplay::createVao()
+void SkyDisplay::createLocalResources()
 {
-	m_dataGL = std::make_unique<VertexArray>();
+	m_dataGL = std::make_unique<VertexArray>(context->surface);
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	m_dataGL->build(NB_MAX_POINTS);
+	uniformColorFader = std::make_unique<Uniform>(context->surface, 16, true);
+	pColor = static_cast<Vec3f *>(uniformColorFader->data);
+	pFader = static_cast<float *>(uniformColorFader->data) + 3;
+	uniformMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat), true);
+	pMat = static_cast<typeof(pMat)>(uniformMat->data);
+	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	pNbVertex = static_cast<uint32_t *>(drawData->data);
+	*pNbVertex = 0;
+	pNbVertex[1] = 1; // instanceCount
+	pNbVertex[2] = pNbVertex[3] = 0; // offsets
+	drawData->update();
+}
+
+int SkyDisplay::beginRecord()
+{
+	int commandIndex = context->commandMgr->initNew(pipeline);
+	context->commandMgr->bindSet(layout, context->global->globalSet, 0);
+	return commandIndex;
+}
+
+void SkyDisplay::endRecord()
+{
+	context->commandMgr->compile();
+}
+
+void SkyDisplay::record()
+{
+	CommandMgr *cmdMgr = context->commandMgr;
+	if (virtualColorFaderID == -1) {
+		virtualColorFaderID = set->bindVirtualUniform(uniformColorFader.get(), 0);
+		virtualMatID = set->bindVirtualUniform(uniformMat.get(), 1);
+	} else {
+		set->setVirtualUniform(uniformColorFader.get(), virtualColorFaderID);
+		set->setVirtualUniform(uniformMat.get(), virtualMatID);
+	}
+	cmdMgr->bindSet(layout, set, 1);
+	cmdMgr->bindVertex(m_dataGL.get());
+	cmdMgr->indirectDraw(drawData.get());
 }
 
 void SkyDisplay::clear()
@@ -127,28 +199,29 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 
 void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate())
+	if (!fader.getInterstate()) {
+		*pNbVertex = 0;
+		drawData->update();
 		return;
+	}
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	shaderSkyDisplay->use();
-	shaderSkyDisplay->setUniform("color", color);
-	shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-
-	if (ptype == AL)
-		shaderSkyDisplay->setUniform("Mat", prj->getMatLocalToEye());
-	else
-		shaderSkyDisplay->setUniform("Mat", prj->getMatEarthEquToEye());
+	// shaderSkyDisplay->use();
+	// shaderSkyDisplay->setUniform("color", color);
+	//shaderSkyDisplay->setUniform("fader", fader.getInterstate());
+	*pFader = fader.getInterstate();
+	*pMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
 
 	// m_dataGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3); //un point est représenté par 3 points
 	// m_dataGL->unBind();
 	// shaderSkyDisplay->unuse();
-	Renderer::drawArrays(shaderSkyDisplay.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3); 
+	*pNbVertex = dataSky.size() / 3;
+	drawData->update();
+	//Renderer::drawArrays(shaderSkyDisplay.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3);
 }
-
 
 ///////////////////////////////////////////////////////////////////////
 //
@@ -229,7 +302,7 @@ void SkyPerson::loadString(const std::string& message)
 		dataTmp.pop_back();
 	 	cLog::get()->write("Skyperson loading incomplete data", LOG_TYPE::L_WARNING);
 	}
-	
+
 	// std::cout << "dataTmp a " << dataTmp.size()  << std::endl;
 
 	Vec3f punts;
@@ -240,7 +313,7 @@ void SkyPerson::loadString(const std::string& message)
 	}
 
 	//on charge les points dans un vbo
-	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);	
+	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 }
 
 
@@ -249,8 +322,11 @@ SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 
 void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate())
+	if (!fader.getInterstate()) {
+		*pNbVertex = 0;
+		drawData->update();
 		return;
+	}
 
 	Vec3f punts;
 	clear();
@@ -278,7 +354,7 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 
 		Utility::spheToRect(direction * deg2rad, (j + 1) * grad2rad, punts);
 		insert_vec3(dataSky,punts );
-		
+
 		for (int i = 0; i < 10; i++) {
 			if (i == 1)
 				tick = 0.6 * 90 / (90 - (j * 10 + i));
@@ -651,8 +727,11 @@ SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate())
+	if (!fader.getInterstate()) {
+		*pNbVertex = 0;
+		drawData->update();
 		return;
+	}
 
 	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
@@ -738,8 +817,11 @@ SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
 
 void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate() or (equPos == oldEquPos))
+	if (!fader.getInterstate() or (equPos == oldEquPos)) {
+		*pNbVertex = 0;
+		drawData->update();
 		return;
+	}
 	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
 	double de1, ra1, de2, ra2, dem, ram;
 	// for Old position
@@ -797,8 +879,11 @@ SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate())
+	if (!fader.getInterstate()) {
+		*pNbVertex = 0;
+		drawData->update();
 		return;
+	}
 
 	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;

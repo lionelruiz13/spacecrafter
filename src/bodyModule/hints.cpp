@@ -20,25 +20,72 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/shader.hpp"
 #include "renderGL/Renderer.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/ResourceTracker.hpp"
 
-std::unique_ptr<shaderProgram> Hints::shaderHints;
-std::unique_ptr<VertexArray> Hints::m_HintsGL;
+VertexArray *Hints::m_HintsGL;
+Pipeline *Hints::pipeline;
+PipelineLayout *Hints::layout;
 const int Hints::nbrFacets = 24;
 const int Hints::hintCircleRadius = 8;
+ThreadContext *Hints::context;
 
 Hints::Hints(Body * _body)
 {
 	body = _body;
+	vertex = std::make_unique<VertexArray>(*m_HintsGL);
+	vertex->build(nbrFacets);
+
+	set = std::make_unique<Set>(context->surface, context->setMgr, layout);
+	uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor));
+	pColor = static_cast<typeof(pColor)>(uColor->data);
+	uFader = std::make_unique<Uniform>(context->surface, sizeof(*pFader));
+	pFader = static_cast<typeof(pFader)>(uFader->data);
+	set->bindUniform(uColor.get(), 0);
+	set->bindUniform(uFader.get(), 1);
+
+	CommandMgr *cmdMgr = context->commandMgr;
+	commandIndex = cmdMgr->getCommandIndex();
+	cmdMgr->init(commandIndex);
+	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->bindPipeline(pipeline);
+	cmdMgr->bindVertex(vertex.get());
+	cmdMgr->bindSet(layout, context->global->globalSet);
+	cmdMgr->bindSet(layout, set.get(), 1);
+	cmdMgr->draw(nbrFacets);
+
+	cmdMgr->compile();
 }
 
-void Hints::createSC_context()
+void Hints::createSC_context(ThreadContext *_context)
 {
-	shaderHints = std::make_unique<shaderProgram>();
-	shaderHints->init( "bodyHints.vert", "bodyHints.frag");
-	shaderHints->setUniformLocation({"Color", "fader"});
+	context = _context;
+	// shaderHints = std::make_unique<shaderProgram>();
+	// shaderHints->init( "bodyHints.vert", "bodyHints.frag");
+	// shaderHints->setUniformLocation({"Color", "fader"});
 
-	m_HintsGL = std::make_unique<VertexArray>();
+	m_HintsGL = context->global->tracker->track(new VertexArray(context->surface, context->commandMgr));
 	m_HintsGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	//m_HintsGL->build(nbrFacets);
+
+	layout = context->global->tracker->track(new PipelineLayout(context->surface));
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	layout->buildLayout();
+	layout->build();
+
+	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	pipeline->bindShader("bodyHints.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	pipeline->bindShader("bodyHints.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	pipeline->bindVertex(m_HintsGL);
+	pipeline->build();
 }
 
 
@@ -60,17 +107,20 @@ void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 {
 	computeHints();
 
-	shaderHints->use();
-	shaderHints->setUniform("Color", body->myColor->getLabel());
-	shaderHints->setUniform("fader", hint_fader.getInterstate() );
+	// shaderHints->use();
+	// shaderHints->setUniform("Color", body->myColor->getLabel());
+	// shaderHints->setUniform("fader", hint_fader.getInterstate() );
+	*pColor = body->myColor->getLabel();
+	*pFader = hint_fader.getInterstate();
 
-	m_HintsGL->fillVertexBuffer(BufferType::POS2D, vecHintsPos);
+	vertex->fillVertexBuffer(BufferType::POS2D, vecHintsPos);
 
 	// m_HintsGL->bind();
 	// glDrawArrays(GL_LINE_LOOP,0,nbrFacets);
 	// m_HintsGL->unBind();
 	// shaderHints->unuse();
-	Renderer::drawArrays(shaderHints.get(), m_HintsGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,0,nbrFacets);
+	context->commandMgr->setSubmission(commandIndex);
+	//Renderer::drawArrays(shaderHints.get(), m_HintsGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,0,nbrFacets);
 
 	vecHintsPos.clear();
 }

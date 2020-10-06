@@ -33,6 +33,14 @@
 
 class Projector;
 class Navigator;
+class Pipeline;
+class PipelineLayout;
+class CommandMgr;
+class VertexArray;
+class Uniform;
+class Set;
+class VirtualSurface;
+class ThreadContext;
 
 class OjmMgr: public NoCopy {
 public:
@@ -42,7 +50,7 @@ public:
 		OTHER
 	};
 
-	OjmMgr();
+	OjmMgr(ThreadContext *context);
 	virtual ~OjmMgr();
 
 	bool load(const std::string &mode, const std::string &name, const std::string &fileName, const std::string &pathFile, Vec3f Position, float multiplier = 1.0f);
@@ -55,20 +63,23 @@ public:
 
 	void draw(Projector *prj, const Navigator *nav, STATE_POSITION state);
 
-	void init()
+	void init(ThreadContext *context)
 	{
-		createShader();
+		createShader(context);
 	}
 
 private:
 	OjmMgr::STATE_POSITION convert(const std::string & value);
 
-	void createShader();
+	void createShader(ThreadContext *context);
 	// void deleteShader();
 
 	bool remove(STATE_POSITION state, const std::string& name);
 
 	void removeAll(STATE_POSITION state);
+
+	//! rebuild command buffer
+	void rebuild();
 
 	struct OjmContainer
 	{
@@ -76,10 +87,29 @@ private:
 		std::string name;
 		Mat4f model;
 		STATE_POSITION myState;
+		std::unique_ptr<Uniform> uniform;
+		struct {
+			Mat4f ModelViewMatrix;
+			Mat4f NormalMatrix;
+		} *pUniform;
 	};
-	Mat4f view, normal, proj;
+	Mat4f view, proj;
+	VirtualSurface *surface;
+	CommandMgr *cmdMgr;
+	CommandMgr *cmdMgrMaster;
+	Set *globalSet;
+	Set *pushSet;
+	STATE_POSITION actualState = OTHER; // mustn't match any possible state
 	std::vector<OjmContainer*> OjmVector;
-	std::unique_ptr<shaderProgram> shaderOJM;
+	//std::unique_ptr<shaderProgram> shaderOJM;
+	std::unique_ptr<PipelineLayout> layout;
+	Pipeline *pipeline;
+	std::unique_ptr<VertexArray> vertex;
+	std::unique_ptr<Set> set;
+	bool needRebuild = false; // for future commandMgr threading
+	int commandIndex, commandIndexSwitch;
+	std::unique_ptr<Uniform> uniformModel;
+	int virtualUniformID;
 };
 
 #endif

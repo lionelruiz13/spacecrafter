@@ -11,31 +11,17 @@
 layout (points) in;
 layout (triangle_strip , max_vertices = 4) out;
 
-in vertexData
-{
-	float mag;
-	vec3 color;
-} vertexIn[];
+layout (location=0) in float mag[1];
+layout (location=1) in vec3 color[1];
 
-out Interpolators
-{
-	vec2 TexCoord;
-	vec3 TexColor;
-} interData;
+layout (location=0) out vec2 TexCoord;
+layout (location=1) out vec3 TexColor;
 
-
-uniform mat4 Mat;
-
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
+layout (binding=1, set=1) uniform uMat {
+	mat4 Mat;
 };
 
+#include <cam_block_only.glsl>
 
 vec4 custom_project(vec4 invec)
 {
@@ -80,7 +66,7 @@ vec4 custom_project(vec4 invec)
         win.x = viewport_center_x + win.x * f;
         win.y = viewport_center_y + win.y * f;
 
-        win.z = (abs(depth) - zNear) / (zFar-zNear);
+        win.z = -(abs(depth) - zNear) / (zFar-zNear);
         if (a<0.9*M_PI) 
 			win.w = 1.0;
         else
@@ -96,27 +82,27 @@ void main()
 	pos.z=0.0;
 	if (pos.w == 1.0) {
 		// en Bas à droite
-		gl_Position   = MVP2D * ( pos +vec4( vertexIn[0].mag, -vertexIn[0].mag, 0.0, 0.0) );
-		interData.TexCoord= vec2(1.0f, .0f);
-		interData.TexColor= vertexIn[0].color;
+		gl_Position   = MVP2D * ( pos +vec4( mag[0], -mag[0], 0.0, 0.0) );
+		TexCoord= vec2(1.0f, .0f);
+		TexColor= color[0];
 		EmitVertex();
 		
 		// en haut à droite
-		gl_Position   = MVP2D * ( pos +vec4( vertexIn[0].mag, vertexIn[0].mag, 0.0, 0.0) );
-		interData.TexCoord= vec2(1.0f, 1.0f);
-		interData.TexColor= vertexIn[0].color;
+		gl_Position   = MVP2D * ( pos +vec4( mag[0], mag[0], 0.0, 0.0) );
+		TexCoord= vec2(1.0f, 1.0f);
+		TexColor= color[0];
 		EmitVertex();    
 		
 		// en Bas à gauche
-		gl_Position   = MVP2D * ( pos +vec4( -vertexIn[0].mag, -vertexIn[0].mag, 0.0, 0.0) );
-		interData.TexCoord= vec2(0.0f, 0.0f);
-		interData.TexColor= vertexIn[0].color;
+		gl_Position   = MVP2D * ( pos +vec4( -mag[0], -mag[0], 0.0, 0.0) );
+		TexCoord= vec2(0.0f, 0.0f);
+		TexColor= color[0];
 		EmitVertex();
 		
 		// en haut à gauche
-		gl_Position   = MVP2D * ( pos +vec4( -vertexIn[0].mag, vertexIn[0].mag, 0.0, 0.0) );
-		interData.TexCoord= vec2(0.0f, 1.0f);
-		interData.TexColor= vertexIn[0].color;
+		gl_Position   = MVP2D * ( pos +vec4( -mag[0], mag[0], 0.0, 0.0) );
+		TexCoord= vec2(0.0f, 1.0f);
+		TexColor= color[0];
 		EmitVertex();
 	}
 }

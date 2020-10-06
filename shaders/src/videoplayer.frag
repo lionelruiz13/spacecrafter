@@ -5,19 +5,21 @@
 #pragma debug(on)
 #pragma optimize(off)
 
+#include <convertToRGB.glsl>
+
 layout (binding=0) uniform sampler2D s_tex_y;
 layout (binding=1) uniform sampler2D s_tex_u;
 layout (binding=2) uniform sampler2D s_tex_v;
 
-#include <convertToRGB.glsl>
+layout (location=0) in vec2 TexCoord;
 
-smooth in vec2 TexCoord;
+layout (binding=3) uniform ubo {
+	vec4 noColor;
+	float fader;
+	bool transparency;
+};
 
-uniform bool transparency;
-uniform vec4 noColor;
-uniform float fader;
-
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
 
 void main(void)
 {

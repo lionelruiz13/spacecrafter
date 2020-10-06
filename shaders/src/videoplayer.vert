@@ -13,7 +13,7 @@ layout (location=1)in vec2 texcoord;
 //~ uniform sampler2D texunit0;
 
 //out
-smooth out vec2 TexCoord;
+layout (location=0) out vec2 TexCoord;
 
 void main()
 {

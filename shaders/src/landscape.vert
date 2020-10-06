@@ -10,14 +10,11 @@
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 
-out V2G
-{
-	vec3 Position;
-	vec2 TexCoord;
-} v2g;
+layout (location=0) out vec2 TexCoord;
+layout (location=1) out vec3 Position;
 
 void main()
 {
-	v2g.Position = position;
-    v2g.TexCoord = texcoord;
+	Position = position;
+    TexCoord = texcoord;
 }

@@ -26,6 +26,9 @@
 #ifndef _ILLUMINATE_MGR_H_
 #define _ILLUMINATE_MGR_H_
 
+// max amount of illuminate simultaneously displayed
+#define MAX_ILLUMINATE 16000
+
 #include <vector>
 #include <memory>
 
@@ -35,11 +38,19 @@
 #include "tools/no_copy.hpp"
 #include "tools/SphereGrid.hpp"
 
+#include "vulkanModule/Context.hpp"
+
 class HipStarMgr;
 class Navigator;
 class ConstellationMgr;
 class VertexArray;
-class shaderProgram;
+//class shaderProgram;
+class CommandMgr;
+class PipelineLayout;
+class Pipeline;
+class Set;
+class Uniform;
+class Buffer;
 
 /*! \class IlluminateMgr
   * \brief handles all illuminate stars from Hipparcos catalog for better stars visualisation.
@@ -55,7 +66,7 @@ class shaderProgram;
   */
 class IlluminateMgr: public NoCopy {
 public:
-	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism);
+	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism, ThreadContext *context);
 	virtual ~IlluminateMgr();
 
 	// indique la taille d'affichage des illuminates par défaut
@@ -107,17 +118,28 @@ private:
 	Navigator* navigator = nullptr;				//!< provide acces point to Navigator
 	ConstellationMgr* asterism= nullptr;		//!< provide acces point to ConstellationMgr
 
-	std::unique_ptr<shaderProgram> m_shaderIllum;	//!< shader how draw all illuminate
-	std::unique_ptr<VertexArray> m_illumGL;
+	//std::unique_ptr<shaderProgram> m_shaderIllum;	//!< shader how draw all illuminate
+	CommandMgr *cmdMgr;
+	CommandMgr *cmdMgrTarget;
+	Set *globalSet;
+	int commandIndex;
 	std::vector<float> illumPos;
 	std::vector<float> illumTex;
 	std::vector<float> illumColor;
+	std::unique_ptr<PipelineLayout> m_layoutIllum;
+	std::unique_ptr<Pipeline> m_pipelineIllum;
+	std::unique_ptr<VertexArray> m_illumGL;
+	std::unique_ptr<Set> m_setIllum;
+	std::unique_ptr<Uniform> m_uniformIllum;
+	Mat4f *pModelViewMatrix;
+	std::unique_ptr<Buffer> m_drawDataIllum;
+	uint32_t *m_pDrawDataIllum;
 
 	s_texture * currentTex = nullptr;			//!< Pointer of texture used to draw
 	s_texture * defaultTex = nullptr;		//!< Common texture if no other texture defined
 	s_texture * userTex = nullptr;				//!< Texture define by user
 
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 };
 
 #endif // _ILLUMINATE_MGR_H_

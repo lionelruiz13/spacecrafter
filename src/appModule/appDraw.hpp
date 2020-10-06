@@ -37,7 +37,11 @@
 #include "renderGL/stateGL.hpp"
 #include "tools/no_copy.hpp"
 
+#include "vulkanModule/Context.hpp"
+
 class VertexArray;
+class Uniform;
+class Pipeline;
 /**
 @author AssociationSirius
 */
@@ -52,7 +56,7 @@ public:
 	void init(unsigned int _width, unsigned int _height);
 
 	//! dessine le splash au démarrage
-    void initSplash();
+    void initSplash(ThreadContext *context);
 
     //! clean screen with black color
 	// void drawFirstLayer();
@@ -87,18 +91,25 @@ public:
 	}
 
 	//! création des shaders
-	void createSC_context();
+	void createSC_context(ThreadContext *context);
 private:
 	//! suppression des shaders
 	// void deleteShader();
 
-	std::unique_ptr<shaderProgram> shaderViewportShape, shaderColorInverse;
 	std::unique_ptr<VertexArray> m_viewportGL;
+	std::unique_ptr<PipelineLayout> layoutViewportShape, layoutColorInverse;
+	std::unique_ptr<Uniform> uRadius, uDecalage;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Pipeline> pipelineViewportShape, pipelineColorInverse;
+	CommandMgr *cmdMgr;
+	int *pRadius = nullptr;
+	Vec2i *pDecalage = nullptr;
+	int commandIndexViewportShape, commandIndexColorInverse;
 
 	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
 	bool antialiasLines;						//!< using GL_LINE_SMOOTH
     Uint16 width, height;  						//!< Contient la résolution w et h de la fenetre SDL
-	Uint16 m_radius, m_decalage_x, m_decalage_y;	//!< pour optimisation des calculs  
+	Uint16 m_radius, m_decalage_x, m_decalage_y;	//!< pour optimisation des calculs
 };
 
 #endif

@@ -9,11 +9,16 @@
 layout(vertices=3) out;
 
 //NEW UNIFORMS
-uniform mat4 ViewProjection;
-uniform mat4 Model;
-uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+layout (binding=4) uniform globalTesc {
+    uniform mat4 ViewProjection;
+    uniform mat4 Model;
+};
 
-in gl_PerVertex
+layout (binding=3) uniform globalTescGeom {
+    uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+};
+
+layout (location=0) in gl_PerVertex
 {
   vec4 gl_Position;
   float gl_PointSize;
@@ -21,7 +26,7 @@ in gl_PerVertex
 } gl_in[gl_MaxPatchVertices];
 
 
-out gl_PerVertex
+layout (location=0) out gl_PerVertex
 {
   vec4 gl_Position;
   float gl_PointSize;
@@ -29,13 +34,13 @@ out gl_PerVertex
 } gl_out[];
 
 
-in VS_OUT{
+layout (location=1) in VS_OUT{
     in vec2 TexCoord;
     in vec3 Normal;
     //~ in vec3 tangent;
 }tcs_in[];
 
-out TCS_OUT{
+layout (location=1) out TCS_OUT{
     out vec2 TexCoord;
     out vec3 Normal;
     //~ out vec3 tangent;
@@ -50,23 +55,21 @@ const float MinDepth=1.0;
 
 void main(void)
 {
-    // Position in camera coordinates
-    vec4 p = ViewProjection*Model[3].xyzw;
-
-    // 0.0=close 1.0=far
-    float ratio=(abs(p.z-1.0)-MinDepth)/(MaxDepth-MinDepth);
-
-
-    float depth = clamp (ratio,0.0,1.0);
-    depth=1.0-depth;
-    depth=depth*depth*depth*depth*depth*depth*depth*depth;
-
-    depth=1.0-depth;
-
-    float tessLevel= mix(MaxTessLevel,MinTessLevel,depth);
-
     if(ID==0)
     {
+        // Position in camera coordinates
+        vec4 p = ViewProjection*Model[3].xyzw;
+
+        // 0.0=close 1.0=far
+        float ratio=(abs(p.z-1.0)-MinDepth)/(MaxDepth-MinDepth);
+
+
+        float depth = clamp (ratio,0.0,1.0);
+        depth=1.0-depth;
+        depth=depth*depth*depth*depth*depth*depth*depth*depth;
+        depth=1.0-depth;
+
+        float tessLevel= mix(MaxTessLevel,MinTessLevel,depth);
         gl_TessLevelInner[0]=float(tessLevel);
 
         gl_TessLevelOuter[0]=float(tessLevel);

@@ -8,9 +8,7 @@
 
 layout (location=0) out vec4 FragColor;	//fragment output colour
 
-
-
-smooth in vec3 Color;
+layout (location=0) in vec3 Color;
 
 //~ out vec4 FragColor;
  

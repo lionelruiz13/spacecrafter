@@ -38,12 +38,15 @@
 #include "renderGL/OpenGL.hpp"
 #include "renderGL/Renderer.hpp"
 
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/CommandMgr.hpp"
+
 #define SKY_RESOLUTION 48
 
 #define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
 
 
-Atmosphere::Atmosphere() : world_adaptation_luminance(0.f), atm_intensity(0),
+Atmosphere::Atmosphere(ThreadContext *context) : world_adaptation_luminance(0.f), atm_intensity(0),
 	lightPollutionLuminance(0), cor_optoma(0)
 {
 	// Create the vector array used to store the sky color on the full field of view
@@ -52,7 +55,7 @@ Atmosphere::Atmosphere() : world_adaptation_luminance(0.f), atm_intensity(0),
 		tab_sky[k] = new Vec3f[SKY_RESOLUTION+1];
 	}
 	setFaderDuration(0.f);
-	createSC_context();
+	createSC_context(context);
 }
 
 Atmosphere::~Atmosphere()
@@ -91,15 +94,38 @@ void Atmosphere::initGridPos()
 	dataPos.clear();
 }
 
-void Atmosphere::createSC_context()
+void Atmosphere::createSC_context(ThreadContext *context)
 {
-	shaderAtmosphere= std::make_unique<shaderProgram>();
-	shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");
+	// shaderAtmosphere= std::make_unique<shaderProgram>();
+	// shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");
 
-	m_atmGL = std::make_unique<VertexArray>();
+	m_atmGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
 	m_atmGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
 	m_atmGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	m_atmGL->build((SKY_RESOLUTION + 1) * (SKY_RESOLUTION + 1));
+	m_atmGL->build(SKY_RESOLUTION * (SKY_RESOLUTION + 1) * 2);
+
+	auto blendMode = BLEND_ADD;
+	blendMode.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+	blendMode.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+	pipeline = std::make_unique<Pipeline>(context->surface, context->global->globalLayout);
+	pipeline->bindVertex(m_atmGL.get(), 0);
+	pipeline->setBlendMode(blendMode);
+	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	pipeline->bindShader("atmosphere.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	pipeline->bindShader("atmosphere.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	pipeline->build();
+
+	commandMgr = context->commandMgr;
+	commandIndex = commandMgr->getCommandIndex();
+	commandMgr->init(commandIndex);
+	commandMgr->beginRenderPass(renderPassType::DEFAULT);
+	commandMgr->bindPipeline(pipeline.get());
+	commandMgr->bindSet(context->global->globalLayout, context->global->globalSet);
+	m_atmGL->bind();
+	for (unsigned int y=0; y<SKY_RESOLUTION; y++) {
+		commandMgr->draw((SKY_RESOLUTION+1)*2, 1, y*(SKY_RESOLUTION+1)*2);
+	}
+	commandMgr->compile();
 }
 
 // void Atmosphere::deleteShader()
@@ -239,6 +265,7 @@ void Atmosphere::fillOutDataColor()
 		}
 	}
 	m_atmGL->fillVertexBuffer(BufferType::COLOR, dataColor);
+	m_atmGL->update();
 }
 
 void Atmosphere::draw(const Projector* prj, const std::string &planetName)
@@ -248,8 +275,8 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 
 	fillOutDataColor();
 
-	StateGL::BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-	StateGL::enable(GL_BLEND);
+	//StateGL::BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
+	//StateGL::enable(GL_BLEND);
 
 	// shaderAtmosphere->use();
 	// m_atmGL->bind();
@@ -259,5 +286,6 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 	// m_atmGL->unBind();
 	// shaderAtmosphere->unuse();
 
-	Renderer::drawMultiArrays(shaderAtmosphere.get(), m_atmGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, SKY_RESOLUTION, (SKY_RESOLUTION+1)*2 );
+	//Renderer::drawMultiArrays(shaderAtmosphere.get(), m_atmGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, SKY_RESOLUTION, (SKY_RESOLUTION+1)*2 );
+	commandMgr->setSubmission(commandIndex);
 }

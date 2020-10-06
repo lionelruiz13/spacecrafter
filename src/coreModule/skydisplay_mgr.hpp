@@ -38,12 +38,13 @@
 #include "tools/vecmath.hpp"
 #include "tools/ScModule.hpp"
 
-class shaderProgram;
+#include "vulkanModule/Context.hpp"
+//class shaderProgram;
 class s_font;
 
 class SkyDisplayMgr: public NoCopy , public ModuleFont {
 public:
-	SkyDisplayMgr();
+	SkyDisplayMgr(ThreadContext *context);
 	~SkyDisplayMgr();
 
 	int size() {
@@ -51,6 +52,7 @@ public:
 	};
 	//Celle qui va créer les objets
 	void Create(SKYDISPLAY_NAME nameObj);
+	void build();
 	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
 	void drawPerson(const Projector *prj,const Navigator *nav);
 	void update(int delta_time);
@@ -77,5 +79,8 @@ private:
 	SkyDisplay* personAL = nullptr;
 	SkyDisplay* personEQ = nullptr;
 	Vec3f baseColor=Vec3f(0.f, 0.f, 0.f);
+	CommandMgr *cmdMgr;
+	int commandIndex;
+	int commandIndexPerson;
 };
 #endif //SKYDISPLAY_MGR_HPP

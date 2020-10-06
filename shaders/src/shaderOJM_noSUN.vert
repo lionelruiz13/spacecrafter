@@ -6,33 +6,40 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-#include <fisheye.glsl>
-
 layout (location = 0) in vec3 VertexPosition;
 layout (location = 1) in vec2 VertexTexCoord;
 layout (location = 2) in vec3 VertexNormal;
 
-#include <cam_block.glsl>
+#include <cam_block_only.glsl>
 
 //externe
-uniform bool useTexture;
-uniform mat4 NormalMatrix;
-uniform vec3 clipping_fov;
-uniform mat4 ProjectionMatrix;
-uniform mat4 MVP;
+//uniform bool useTexture;
+layout (binding=1, set=2) uniform custom {
+	mat4 ModelViewMatrix;
+	mat4 NormalMatrix;
+};
+
+#include <fisheye_noMV.glsl>
+
+//uniform vec3 clipping_fov;
+//uniform mat4 ProjectionMatrix;
+//uniform mat4 MVP;
 
 //out
-out vec3 Position;
-out vec3 Normal;
-out vec2 TexCoord;
+layout (location=0) out vec3 Position;
+layout (location=1) out vec2 TexCoord;
+layout (location=2) out vec3 Normal;
 
 void main()
 {
-    if (useTexture)
-		TexCoord = VertexTexCoord;
-
     Normal = normalize( mat3(NormalMatrix) * VertexNormal);
     Position = vec3( ModelViewMatrix * vec4(VertexPosition,1.0) );
 
-    gl_Position = fisheyeProject(VertexPosition, clipping_fov);
+    gl_Position = fisheyeProject(VertexPosition, main_clipping_fov);
+}
+
+void mainTextured()
+{
+    TexCoord = VertexTexCoord;
+    main();
 }

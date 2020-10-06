@@ -5,7 +5,7 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-out vec4 FragColor;
+layout (location=0) out vec4 FragColor;
  
 void main(void)
 {

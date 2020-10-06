@@ -56,14 +56,26 @@ Illuminate::Illuminate(unsigned int _name, double ra, double de, double angular_
 	texQuadVertex[1] = mat_precomp * Vec3f(0., tex_size,-tex_size);
 	texQuadVertex[2] = mat_precomp * Vec3f(0.,-tex_size, tex_size);
 	texQuadVertex[3] = mat_precomp * Vec3f(0., tex_size, tex_size);
+
+	// Push datas in pack {POS3D, TEXTURE, COLOR}
+	Vec2f tmpTex[4] = {{1.0,0.0}, {1.0,1.0},{ 0.0,0.0}, {0.0,1.0}};
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 3; j++)
+			raw[i * (3+2+3) + j] = texQuadVertex[i][j];
+		for (int j = 0; j < 2; j++)
+			raw[i * (3+2+3) + 3 + j] = tmpTex[i][j];
+		for (int j = 0; j < 3; j++)
+			raw[i * (3+2+3) + 5 + j] = texColor[j];
+	}
 }
 
 
-void Illuminate::draw(const Projector* prj, std::vector<float> &position, std::vector<float> &texture, std::vector<float> &color )
+void Illuminate::draw(const Projector* prj, float *&dataVertex)
 {
-	Vec3d v;
-	Vec3f pos;
-
+	float *pRaw = raw;
+	for (short i = 0; i < (3+2+3)*4; i++)
+		*(dataVertex++) = *(pRaw++);
+	/*
 	//color
 	insert_vec3(color, texColor,4);
 
@@ -82,9 +94,9 @@ void Illuminate::draw(const Projector* prj, std::vector<float> &position, std::v
 	//~ glTexCoord2i(0,0);              // Bottom Left
 	// prj->projectJ2000(texQuadVertex[1],v);
 	insert_vec3(position, texQuadVertex[1]);
-	
+
 	//~ glTexCoord2i(0,1);              // Top Left
 	// prj->projectJ2000(texQuadVertex[3],v);
 	insert_vec3(position, texQuadVertex[3]);
+	*/
 }
-

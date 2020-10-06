@@ -7,40 +7,34 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-#include <fisheye.glsl>
 
 layout ( triangles ) in;
 layout ( triangle_strip , max_vertices = 3) out;
 
-layout (binding=6) uniform sampler2D heightmapTexture;
+layout (binding=11) uniform sampler2D heightmapTexture;
 
-layout (std140) uniform cam_block
-{
-	ivec4 viewport;
-	ivec4 viewport_center;
-	vec4 main_clipping_fov;
-	mat4 MVP2D;
-	float ambient;
-	float time;
+layout (binding=0) uniform globalVertProj {
+	mat4 ModelViewMatrix;
+	mat4 NormalMatrix;
+	vec3 clipping_fov;
+	float planetRadius;
+	vec3 LightPosition;
 };
 
-uniform float planetRadius;
-uniform float planetScaledRadius;
-uniform float planetOneMinusOblateness;
+#include <cam_block.glsl>
+#include <fisheye_noMV.glsl>
 
-//externe
-uniform vec3 clipping_fov;
-uniform mat4 NormalMatrix;
-uniform vec3 LightPosition;
-uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+layout (binding=3) uniform globalTescGeom {
+	ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
+};
 
 
 float coeffHeightMap = 0.05 * float(TesParam[2]);
 
 //out
-smooth out vec2 TexCoord;
+//layout (location=0) out vec2 TexCoord;
 
-in TES_OUT
+layout (location=0) in TES_OUT
 {
     in vec3 glPosition; 	
     in vec2 TexCoord;
@@ -49,7 +43,7 @@ in TES_OUT
     in vec3 tessCoord;
 }gs_in[];
 
-out GS_OUT {
+layout (location=0) out GS_OUT {
     vec3 Position;
     vec2 TexCoord;
     vec3 Normal;
@@ -57,8 +51,6 @@ out GS_OUT {
     vec3 Light;
     vec3 ViewDirection;
 } gs_out;
-
-
 
 void main()
 {

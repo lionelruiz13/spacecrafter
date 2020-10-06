@@ -8,7 +8,7 @@
 layout (location=0) in vec2 position;
 layout (location=4) in float _pos;
 
-out int posC;
+layout (location=0) out int posC;
 
 
 void main()

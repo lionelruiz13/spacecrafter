@@ -15,11 +15,11 @@ layout (location=1)in vec2 texcoord;
 #include <cam_block.glsl>
 
 //externe
-uniform float planetScaledRadius;
-uniform vec3 clipping_fov;
+layout(binding=3) uniform ubo1 {float planetScaledRadius;};
+layout(binding=2) uniform ubo2 {vec3 clipping_fov;};
 
 //out
-smooth out vec2 TexCoord;
+layout(location=0) out vec2 TexCoord;
 
 void main()
 {

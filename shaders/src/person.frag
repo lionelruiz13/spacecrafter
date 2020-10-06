@@ -4,10 +4,12 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-uniform vec3 color;
-uniform float fader;
+layout (binding = 1, set = 1) uniform ubo {
+	uniform vec3 color;
+	uniform float fader;
+};
 
-out vec4 Color;
+layout (location=0) out vec4 Color;
 
 void main(void)
 {

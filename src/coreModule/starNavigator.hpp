@@ -26,6 +26,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/ThreadPool.hpp"
 #include "tools/no_copy.hpp"
+#include "vulkanModule/Context.hpp"
 
 /*! \class StarNavigator
   * \brief classe permettant la balade dans les étoiles
@@ -38,17 +39,21 @@ class Projector;
 class Navigator;
 class ToneReproductor;
 class VertexArray;
-class shaderProgram;
+//class shaderProgram;
+class Pipeline;
+class PipelineLayout;
+class Set;
+class Uniform;
 
 class StarNavigator: public NoCopy  {
 public:
-	StarNavigator();
+	StarNavigator(ThreadContext *context);
 	~StarNavigator();
 
 	/*! /fn
 	 * \brief Charge en mémoire le catalogue d'étoiles
 	 * \param fileName, le nom complet du fichier des data
-	 * \param mode, quel type de data doit lire le programme 
+	 * \param mode, quel type de data doit lire le programme
 	 * \param binaryData: lecture des données binaires ou non.
 	 */
 	void loadRawData(const std::string &fileName) noexcept;
@@ -68,6 +73,8 @@ public:
 	 * \todo que faire en cas d'erreur ?
 	 */
 	void computePosition(Vec3f posI) noexcept;
+	//! Build draw command
+	void build(int nbVertex);
 
 	void setMagConverterMagShift(float s){
 		mag_shift = s;
@@ -125,11 +132,18 @@ private:
 	//le gestionnaire de l'ensemble des étoiles
 	StarManager *starMgr;
 	// shader utilisé pour affichage
-	std::unique_ptr<shaderProgram> shaderStarNav;
+	//std::unique_ptr<shaderProgram> shaderStarNav;
 	// structure de gestion des VAO-VBO
+	ThreadContext *context;
+	int commandIndex;
 	std::unique_ptr<VertexArray>  m_dataGL;
+	std::unique_ptr<PipelineLayout> layout;
+	std::unique_ptr<Pipeline> pipeline;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<Uniform> uMat;
+	Mat4f *pMat;
 	//initialisation du shader et des VAO-VBO
-	void createSC_context();
+	void createSC_context(ThreadContext *_context);
 
 	//précalcul de la table des couleurs
 	void computeRCMagTable();

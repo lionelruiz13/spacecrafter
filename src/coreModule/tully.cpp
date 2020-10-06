@@ -34,16 +34,20 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/s_texture.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
 
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/VertexArray.hpp"
+#include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/PipelineLayout.hpp"
+#include "vulkanModule/Set.hpp"
+#include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/Buffer.hpp"
 
-Tully::Tully()
+Tully::Tully(ThreadContext *_context)
 {
 	texGalaxy = nullptr;
 	fader = true;
-	createSC_context();
+	createSC_context(_context);
 	nbGalaxy=0;
 	nbTextures = 0;
 }
@@ -52,6 +56,7 @@ Tully::~Tully()
 {
 	if (texGalaxy!=nullptr)
 		delete texGalaxy;
+	delete[] pipelinePoints;
 
 	posTully.clear();
 	colorTully.clear();
@@ -63,29 +68,71 @@ Tully::~Tully()
 	radiusTmpTully.clear();
 }
 
-void Tully::createSC_context()
+void Tully::createSC_context(ThreadContext *_context)
 {
-	shaderPoints = std::make_unique<shaderProgram>();
-	shaderPoints->init("tully.vert","tully.geom","tully.frag");
-	shaderPoints->setUniformLocation({"Mat", "fader", "camPos", "nbTextures"});
+	context = _context;
+	// shaderPoints = std::make_unique<shaderProgram>();
+	// shaderPoints->init("tully.vert","tully.geom","tully.frag");
+	// shaderPoints->setUniformLocation({"Mat", "fader", "camPos", "nbTextures"});
+	//
+	// shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useCustomColor");
+	// shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useWhiteColor");
+	layout = std::make_unique<PipelineLayout>(context->surface);
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	layout->setTextureLocation(2);
+	layout->buildLayout();
+	layout->build();
 
-	shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useCustomColor");
-	shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useWhiteColor");
-	
-	m_pointsGL = std::make_unique<VertexArray>();
+	m_pointsGL = std::make_unique<VertexArray>(context->surface);
 	m_pointsGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
 	m_pointsGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
+	pipelinePoints = new Pipeline[2]{{context->surface, layout.get()}, {context->surface, layout.get()}};
+	for (int i = 0; i < 2; i++) {
+		pipelinePoints[i].setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+		pipelinePoints[i].setDepthStencilMode();
+		pipelinePoints[i].bindVertex(m_pointsGL.get());
+		pipelinePoints[i].bindShader("tully.vert.spv");
+		pipelinePoints[i].bindShader("tully.geom.spv");
+		pipelinePoints[i].bindShader("tully.frag.spv", i == 0 ? "mainCustomColor" : "mainWhiteColor");
+		pipelinePoints[i].build();
+	}
+	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
+	uGeom = std::make_unique<Uniform>(context->surface, sizeof(*pMat) + sizeof(*pCamPos) + sizeof(*pNbTextures));
+	pMat = static_cast<typeof(pMat)>(uGeom->data);
+	pCamPos = static_cast<typeof(pCamPos)>(uGeom->data + sizeof(*pMat));
+	pNbTextures = static_cast<typeof(pNbTextures)>(uGeom->data + sizeof(*pMat) + sizeof(*pCamPos));
+	set->bindUniform(uGeom.get(), 0);
+	uFader = std::make_unique<Uniform>(context->surface, sizeof(float));
+	pFader = static_cast<float *>(uFader->data);
+	set->bindUniform(uFader.get(), 1);
 
-	shaderSquare = std::make_unique<shaderProgram>();
-	shaderSquare->init("tullyH.vert","tullyH.geom","tullyH.frag");
-	shaderSquare->setUniformLocation({"Mat", "fader", "nbTextures"});
+	// shaderSquare = std::make_unique<shaderProgram>();
+	// shaderSquare->init("tullyH.vert","tullyH.geom","tullyH.frag");
+	// shaderSquare->setUniformLocation({"Mat", "fader", "nbTextures"});
 
-	m_squareGL =  std::make_unique<VertexArray>();
+	m_squareGL =  std::make_unique<VertexArray>(context->surface);
 	m_squareGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 	m_squareGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
 	m_squareGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::DYNAMIC);
+	auto blendMode = BLEND_SRC_ALPHA;
+	blendMode.colorBlendOp = blendMode.alphaBlendOp = VK_BLEND_OP_MAX;
+	pipelineSquare = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipelineSquare->setBlendMode(blendMode);
+	pipelineSquare->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	pipelineSquare->setDepthStencilMode();
+	pipelineSquare->bindVertex(m_pointsGL.get());
+	pipelineSquare->bindShader("tullyH.vert.spv");
+	pipelineSquare->bindShader("tullyH.geom.spv");
+	pipelineSquare->bindShader("tullyH.frag.spv");
+	pipelineSquare->build();
+	drawDataSquare = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	pNbVertexSquare = static_cast<uint32_t *>(drawDataSquare->data);
+	pNbVertexSquare[1] = 1; // instanceCount
+	pNbVertexSquare[2] = pNbVertexSquare[3] = 0; // offsets
 }
 
 
@@ -135,16 +182,35 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 			case 9  : scaleTully.push_back(75.0); break; // AG
 			case 10 : scaleTully.push_back(128.0); break; // Dark NEB
 			case 12 : scaleTully.push_back(128.0); break; // Bright NEB
-			default : scaleTully.push_back(0.25); break; // GALAXY 
+			default : scaleTully.push_back(0.25); break; // GALAXY
 		}
 	}
 
 	file.close();
-
+	m_pointsGL->build(posTully.size() / 3);
+	m_squareGL->build(posTully.size() / 3);
 	m_pointsGL->fillVertexBuffer(BufferType::POS3D,posTully );
 	m_pointsGL->fillVertexBuffer(BufferType::COLOR,colorTully );
 	m_pointsGL->fillVertexBuffer(BufferType::MAG,texTully );
 	m_pointsGL->fillVertexBuffer(BufferType::SCALE,scaleTully );
+
+	CommandMgr *cmdMgr = context->commandMgr;
+	commandIndexCustomColor = cmdMgr->initNew(pipelinePoints);
+	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
+	cmdMgr->bindSet(layout.get(), set.get(), 1);
+	cmdMgr->bindVertex(m_pointsGL.get());
+	cmdMgr->draw(posTully.size() / 3);
+	cmdMgr->bindVertex(m_squareGL.get());
+	cmdMgr->indirectDraw(drawDataSquare.get());
+	cmdMgr->compile();
+	commandIndexWhiteColor = cmdMgr->initNew(pipelinePoints + 1);
+	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
+	cmdMgr->bindSet(layout.get(), set.get(), 1);
+	cmdMgr->bindVertex(m_pointsGL.get());
+	cmdMgr->draw(posTully.size() / 3);
+	cmdMgr->bindVertex(m_squareGL.get());
+	cmdMgr->indirectDraw(drawDataSquare.get());
+	cmdMgr->compile();
 
 	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + std::to_string(nbGalaxy) );
 
@@ -159,10 +225,11 @@ void Tully::setTexture(const std::string& tex_file)
 		delete texGalaxy;
 		texGalaxy = nullptr;
 	}
-	texGalaxy =  new s_texture(tex_file,true);
+	texGalaxy = new s_texture(tex_file,/*true*/ TEX_LOAD_TYPE_PNG_SOLID);
 
 	int width, height;
 	texGalaxy->getDimensions(width, height);
+	set->bindTexture(texGalaxy->getTexture(), 2);
 	if (width ==0 || height ==0)
 		nbTextures = 0;
 	else
@@ -215,12 +282,14 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		radiusTmpTully.push_back((*it).radius);
 		texTmpTully.push_back((*it).texture);
 	}
-	
+
 	lTmpTully.clear();	//données devenues inutiles
 
 	m_squareGL->fillVertexBuffer(BufferType::POS3D,posTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::MAG,texTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::SCALE,radiusTmpTully );
+	*pNbVertexSquare = posTmpTully.size() / 3;
+	drawDataSquare->update();
 }
 
 
@@ -234,48 +303,55 @@ void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noe
 
 	computeSquareGalaxies(camPos);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texGalaxy->getID());
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, texGalaxy->getID());
 
 	//tracé des galaxies de taille <1 px
-	StateGL::disable(GL_DEPTH_TEST);
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::disable(GL_DEPTH_TEST);
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
-	shaderPoints->use();
-	shaderPoints->setUniform("Mat",matrix);
-	shaderPoints->setUniform("fader", fader.getInterstate());
-	shaderPoints->setUniform("camPos", camPos);
-	shaderPoints->setUniform("nbTextures", nbTextures);
+	// shaderPoints->use();
+	// shaderPoints->setUniform("Mat",matrix);
+	// shaderPoints->setUniform("fader", fader.getInterstate());
+	// shaderPoints->setUniform("camPos", camPos);
+	// shaderPoints->setUniform("nbTextures", nbTextures);
+	*pMat = matrix;
+	*pCamPos = camPos;
+	*pFader = fader.getInterstate();
+	*pNbTextures = nbTextures;
 
 	if (useWhiteColor)
-		shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useWhiteColor");
+		//shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useWhiteColor");
+		context->commandMgr->setSubmission(commandIndexWhiteColor);
 	else
-		shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
+		//shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
+		context->commandMgr->setSubmission(commandIndexCustomColor);
 
 	// m_pointsGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbGalaxy);
 	// m_pointsGL->unBind();
 	// shaderPoints->unuse();
-	Renderer::drawArrays(shaderPoints.get(), m_pointsGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbGalaxy);
+	//Renderer::drawArrays(shaderPoints.get(), m_pointsGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbGalaxy);
 
 	//tracé des galaxies de taille >1 px;
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	glBlendEquation(GL_MAX);
-	
-	shaderSquare->use();
-	shaderSquare->setUniform("Mat",matrix);
-	shaderSquare->setUniform("fader", fader.getInterstate());
-	shaderSquare->setUniform("nbTextures", nbTextures);
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// glBlendEquation(GL_MAX);
+
+	// shaderSquare->use();
+	// shaderSquare->setUniform("Mat",matrix);
+	// shaderSquare->setUniform("fader", fader.getInterstate());
+	// shaderSquare->setUniform("nbTextures", nbTextures);
 
 	// m_squareGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, radiusTmpTully.size());
 	// m_squareGL->unBind();
 	// shaderSquare->unuse();
-	Renderer::drawArrays(shaderSquare.get(), m_squareGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, radiusTmpTully.size());
-
-	glBlendEquation(GL_FUNC_ADD);
-	StateGL::disable(GL_BLEND);
-	StateGL::BlendFunc(GL_ONE, GL_ONE); // Normal transparency mode
+	//Renderer::drawArrays(shaderSquare.get(), m_squareGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, radiusTmpTully.size());
+	*pNbVertexSquare = radiusTmpTully.size();
+	drawDataSquare->update();
+	// glBlendEquation(GL_FUNC_ADD);
+	// StateGL::disable(GL_BLEND);
+	// StateGL::BlendFunc(GL_ONE, GL_ONE); // Normal transparency mode
 }

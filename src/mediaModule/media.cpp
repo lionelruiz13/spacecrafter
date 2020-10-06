@@ -263,16 +263,16 @@ void Media::playerInvertflow()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::init()
+void Media::init(ThreadContext *context)
 {
-	vr360->init();
+	vr360->init(context);
 }
 
-void Media::createSC_context()
+void Media::createSC_context(ThreadContext *context)
 {
-	viewPort-> createShader();
-	viewPort-> createSC_context();
-	vr360-> createShader();
-	imageMgr->createImageShader();
+	viewPort-> createSC_context(context);
+	vr360-> createSC_context(context);
+	imageMgr->createImageShader(context);
+	player->createTextures(context);
 }
 ////////////////////////////////////////////////////////////////////////////////

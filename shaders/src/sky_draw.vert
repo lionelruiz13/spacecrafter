@@ -10,7 +10,7 @@
 layout (location=0)in vec2 position;
 layout (location=1)in vec3 color;
 
-smooth out vec3 Color;
+layout (location=0) out vec3 Color;
 
 void main()
 {
