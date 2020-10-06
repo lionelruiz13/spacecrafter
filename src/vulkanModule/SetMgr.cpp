@@ -45,7 +45,7 @@ void SetMgr::extend()
         cLog::get()->write("Failed to extend SetMgr", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         return;
     }
-    cLog::get()->write("Expansion of SetMgr with a new pool that can hold 32 sets totaling 32 uniform buffers and 32 textures", LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
+    cLog::get()->write("Expansion of SetMgr with a new pool that can hold 32 sets totaling 32 uniform buffers and 32 textures", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
     pools.push_back(tmpPool);
 }
 

@@ -532,7 +532,7 @@ int CommandMgr::getCommandIndex()
 void CommandMgr::releaseUnusedMemory()
 {
     if (singleUse) {
-        for (int i = 0; i < frames.size(); ++i) {
+        for (uint32_t i = 0; i < frames.size(); ++i) {
             if (i == refFrameIndex) continue;
             vkWaitForFences(refDevice, 1, &frames[i].fence, VK_TRUE, UINT64_MAX);
             vkResetCommandPool(refDevice, frames[i].cmdPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
