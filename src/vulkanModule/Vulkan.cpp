@@ -12,6 +12,7 @@
 #include <SDL2/SDL_vulkan.h>
 #include "CommandMgr.hpp"
 #include "tools/log.hpp"
+#include "BufferMgr.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -42,6 +43,10 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     memoryManager = new MemoryManager(this, chunkSize);
     createDepthResources();
     createFramebuffer();
+
+    VkPhysicalDeviceProperties physicalDeviceProperties;
+    vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+    BufferMgr::setUniformOffsetAlignment(physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
 
     // Déformation de l'image
     viewport.width = (float) std::min(swapChainExtent.width, swapChainExtent.height);
@@ -120,6 +125,8 @@ void Vulkan::submitTransfer(VkSubmitInfo *submitInfo)
     static std::mutex mtx;
     static int dispatch = 0;
     mtx.lock();
+    std::cout << "Submit command buffer " << reinterpret_cast<void *>(*submitInfo->pCommandBuffers) << std::endl;
+    vkQueueWaitIdle(transferQueues[dispatch]);
     vkQueueSubmit(transferQueues[dispatch], 1, submitInfo, VK_NULL_HANDLE);
     dispatch = (dispatch + 1) % transferQueues.size();
     mtx.unlock();
@@ -502,9 +509,9 @@ void Vulkan::createRenderPass()
     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
     dependency.dstSubpass = 0;
     dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    dependency.srcAccessMask = 0;
+    dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
 
     std::vector<VkAttachmentDescription> attachments{colorAttachment, depthAttachment};
 

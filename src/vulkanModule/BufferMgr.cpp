@@ -3,6 +3,8 @@
 #include "BufferMgr.hpp"
 #include "tools/log.hpp"
 
+int BufferMgr::uniformOffsetAlignment;
+
 BufferMgr::BufferMgr(VirtualSurface *_master, int _bufferBlocSize) : master(_master)
 {
     bufferBlocSize = _bufferBlocSize;
@@ -36,8 +38,12 @@ BufferMgr::~BufferMgr()
     master->free(stagingMemory);
 }
 
-SubBuffer BufferMgr::acquireBuffer(int size)
+SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
 {
+    // PATCH
+    if (size % uniformOffsetAlignment)
+        size = (size / uniformOffsetAlignment + 1) * uniformOffsetAlignment;
+    // END PATCH
     SubBuffer buffer;
     const auto itEnd = availableSubBuffer.end();
     for (auto it = availableSubBuffer.begin(); it != itEnd; ++it) {

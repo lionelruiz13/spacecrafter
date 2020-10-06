@@ -14,13 +14,15 @@ class VirtualSurface;
 //! Manage virtual buffering for Uniform and Buffer
 class BufferMgr {
 public:
-    BufferMgr(VirtualSurface *_master, int _bufferBlocSize = 32*1024);
+    BufferMgr(VirtualSurface *_master, int _bufferBlocSize = 256*1024);
     ~BufferMgr();
-    SubBuffer acquireBuffer(int size);
+    SubBuffer acquireBuffer(int size, bool isUniform = false);
     void releaseBuffer(SubBuffer &subBuffer);
     void *getPtr(SubBuffer &subBuffer);
     void update();
+    static void setUniformOffsetAlignment(int alignment) {uniformOffsetAlignment = alignment;}
 private:
+    static int uniformOffsetAlignment;
     void insert(SubBuffer &subBuffer);
     SubMemory bufferMemory;
     VkBuffer buffer;

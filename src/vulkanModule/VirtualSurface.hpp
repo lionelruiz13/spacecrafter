@@ -50,7 +50,7 @@ public:
     const VkPhysicalDeviceFeatures &getDeviceFeatures();
     VkPipelineCache &getPipelineCache();
     bool ownCompleteFramebuffer() {return ownFramebuffers;}
-    SubBuffer acquireBuffer(int size);
+    SubBuffer acquireBuffer(int size, bool isUniform = false);
     void *getBufferPtr(SubBuffer &buffer);
     void releaseBuffer(SubBuffer &buffer);
 

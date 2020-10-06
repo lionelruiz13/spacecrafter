@@ -4,7 +4,7 @@
 
 Uniform::Uniform(VirtualSurface *_master, VkDeviceSize size, bool isVirtual) : master(_master)
 {
-    buffer = master->acquireBuffer(size);
+    buffer = master->acquireBuffer(size, true);
     data = master->getBufferPtr(buffer);
     bufferInfo.buffer = buffer.buffer;
     bufferInfo.offset = buffer.offset;

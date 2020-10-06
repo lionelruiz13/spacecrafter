@@ -107,7 +107,7 @@ bool VirtualSurface::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, V
 void VirtualSurface::free(SubMemory& bufferMemory) {master->free(bufferMemory);}
 void VirtualSurface::mapMemory(SubMemory& bufferMemory, void **data) {master->mapMemory(bufferMemory, data);}
 void VirtualSurface::unmapMemory(SubMemory& bufferMemory) {master->unmapMemory(bufferMemory);}
-SubBuffer VirtualSurface::acquireBuffer(int size) {return bufferMgr->acquireBuffer(size);}
+SubBuffer VirtualSurface::acquireBuffer(int size, bool isUniform) {return bufferMgr->acquireBuffer(size, isUniform);}
 void *VirtualSurface::getBufferPtr(SubBuffer &buffer) {return bufferMgr->getPtr(buffer);}
 void VirtualSurface::releaseBuffer(SubBuffer &buffer) {bufferMgr->releaseBuffer(buffer);}
 
