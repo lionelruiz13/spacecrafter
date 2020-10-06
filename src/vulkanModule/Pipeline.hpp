@@ -33,7 +33,7 @@ public:
     //! Set blend mode (default : blend src alpha)
     void setBlendMode(const VkPipelineColorBlendAttachmentState &blendMode);
     //! Set depth test mode (default : enabled)
-    void setDepthStencilMode(VkBool32 enableDepthTest = VK_FALSE, VkBool32 enableDepthWrite = VK_FALSE, VkCompareOp compare = VK_COMPARE_OP_GREATER, VkBool32 enableDepthBiais = VK_FALSE, float depthBiasClamp = 0.0f, float depthBiasSlopeFactor = 1.0f);
+    void setDepthStencilMode(VkBool32 enableDepthTest = VK_FALSE, VkBool32 enableDepthWrite = VK_FALSE, VkCompareOp compare = VK_COMPARE_OP_GREATER_OR_EQUAL, VkBool32 enableDepthBiais = VK_FALSE, float depthBiasClamp = 0.0f, float depthBiasSlopeFactor = 1.0f);
     //! @brief Set tessellation state
     //! @param patchControlPoints number of control points per patch
     void setTessellationState(uint32_t patchControlPoints = 32);
