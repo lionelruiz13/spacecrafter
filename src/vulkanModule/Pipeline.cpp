@@ -135,6 +135,12 @@ void Pipeline::bindShader(const std::string &filename, VkShaderStageFlagBits sta
     pNames.push_front(entry);
     tmp.pName = pNames.front().c_str();
 
+    SpecializationInfo specInfo;
+    specInfo.info.mapEntryCount = 0;
+    specInfo.info.dataSize = 0;
+    specializationInfo.push_front(specInfo);
+    tmp.pSpecializationInfo = &specializationInfo.front().info;
+
     if (vkCreateShaderModule(master->refDevice, &createInfo, nullptr, &tmp.module) != VK_SUCCESS) {
         cLog::get()->write("Failed to create shader module from file '" + filename + "'", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         isOk = false;
@@ -142,6 +148,18 @@ void Pipeline::bindShader(const std::string &filename, VkShaderStageFlagBits sta
     }
     delete buffer;
     shaderStages.push_back(tmp);
+}
+
+void Pipeline::setSpecializedConstant(uint32_t constantID, void *data, size_t size)
+{
+    SpecializationInfo &specInfo = specializationInfo.front();
+    specInfo.entry.push_back({constantID, static_cast<uint32_t>(specInfo.data.size()), size});
+    specInfo.data.resize(specInfo.data.size() + size);
+    memcpy(specInfo.data.data() + specInfo.entry.back().offset, data, size);
+    specInfo.info.mapEntryCount = specInfo.entry.size();
+    specInfo.info.pMapEntries = specInfo.entry.data();
+    specInfo.info.dataSize = specInfo.data.size();
+    specInfo.info.pData = reinterpret_cast<void *>(specInfo.data.data());
 }
 
 void Pipeline::setTopology(VkPrimitiveTopology state, bool enableStripBreaks)

@@ -22,6 +22,8 @@ public:
     ~Pipeline();
     void bindShader(const std::string &filename, const std::string entry = "main");
     void bindShader(const std::string &filename, VkShaderStageFlagBits stage, const std::string entry = "main");
+    //! Set specialized constant value to previously binded shader
+    void setSpecializedConstant(uint32_t constantID, void *data, size_t size);
     void bindVertex(VertexArray *vertex, uint32_t binding = 0);
     void bindVertex(VertexBuffer &vertex, uint32_t binding);
     //! Set cull mode (default : false)
@@ -57,7 +59,13 @@ private:
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
     VkPipelineTessellationStateCreateInfo tessellation{};
 
+    struct SpecializationInfo {
+        VkSpecializationInfo info;
+        std::vector<VkSpecializationMapEntry> entry;
+        std::vector<char> data;
+    };
     std::forward_list<std::string> pNames;
+    std::forward_list<SpecializationInfo> specializationInfo;
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
     std::vector<VkVertexInputBindingDescription> bindingDescriptions;
     std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
