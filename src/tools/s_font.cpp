@@ -155,9 +155,11 @@ void s_font::beginPrint()
 
 void s_font::endPrint()
 {
+	vertexHorizontal->update();
 	cmdMgr->select(commandIndexHorizontal);
 	cmdMgr->compile();
 	cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
+	vertexPrint->update();
 	cmdMgr->select(commandIndexPrint);
 	cmdMgr->compile();
 	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);

@@ -257,6 +257,7 @@ void SkyPerson::loadData(const std::string& filename)
 
 	//on charge les points dans un vbo
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+	m_dataGL->update();
 }
 
 

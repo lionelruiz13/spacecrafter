@@ -116,6 +116,7 @@ void SkyLine::createLocalResources()
 void SkyLine::drawSkylineGL(const Vec4f& Color)
 {
 	m_skylineGL->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
+	m_skylineGL->update();
 
 	// shaderSkylineDraw->use();
 	// shaderSkylineDraw->setUniform("Color",Color);

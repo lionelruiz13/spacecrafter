@@ -210,6 +210,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		float radius=13.f;
 
 		m_starPointerGL->fillVertexBuffer(BufferType::POS3D, 3, (Vec3f) screenPos);
+		m_starPointerGL->update();
 
 		//m_shaderStarPointer->use();
 
@@ -259,6 +260,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 
 		m_pointerGL->fillVertexBuffer(BufferType::POS2D, m_pos);
 		m_pointerGL->fillVertexBuffer(BufferType::MAG, m_indice);
+		m_pointerGL->update();
 
 		// StateGL::enable(GL_BLEND);
 

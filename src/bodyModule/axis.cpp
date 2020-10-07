@@ -92,6 +92,7 @@ void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
 	computeAxis(prj, mat);
 
 	m_AxisGL->fillVertexBuffer(BufferType::POS3D, vecAxisPos);
+	m_AxisGL->update();
 
 	cmdMgr->setSubmission(commandIndex, false);
 

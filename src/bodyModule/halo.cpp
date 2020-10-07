@@ -91,6 +91,7 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 
 	vertex->fillVertexBuffer(BufferType::POS2D, vecHaloPos);
 	vertex->fillVertexBuffer(BufferType::TEXTURE, vecHaloTex);
+	vertex->update();
 
 	if (tex_halo != last_tex_halo) {
 		set->bindTexture(tex_halo->getTexture(), 0);

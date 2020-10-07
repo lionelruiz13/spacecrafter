@@ -126,6 +126,7 @@ void Trail::drawTrail(const Navigator * nav, const Projector* prj)
 
 		vertex->fillVertexBuffer(BufferType::POS3D, vecTrailPos);
 		vertex->fillVertexBuffer(BufferType::MAG, vecTrailIntensity);
+        vertex->update();
 
         *nbVertices = nbPos;
         drawData->update();

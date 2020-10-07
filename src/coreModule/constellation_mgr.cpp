@@ -483,6 +483,7 @@ void ConstellationMgr::drawLines(const Projector * prj)
 		return;
 	m_vertexLines->fillVertexBuffer(BufferType::POS2D, vLinesPos);
 	m_vertexLines->fillVertexBuffer(BufferType::COLOR4, vLinesColor);
+	m_vertexLines->update();
 	submitLinesAndBoundaries = true;
 	// StateGL::enable(GL_BLEND);
 	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
@@ -516,6 +517,7 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 		return;
 	m_vertexBoundary->fillVertexBuffer(BufferType::POS2D, vBoundariesPos);
 	m_vertexBoundary->fillVertexBuffer(BufferType::MAG, vBoundariesIntensity);
+	m_vertexBoundary->update();
 	submitLinesAndBoundaries = true;
 	// //~ StateGL::disable(GL_BLEND);
 	// StateGL::enable(GL_BLEND);

@@ -114,6 +114,7 @@ void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 	*pFader = hint_fader.getInterstate();
 
 	vertex->fillVertexBuffer(BufferType::POS2D, vecHintsPos);
+	vertex->update();
 
 	// m_HintsGL->bind();
 	// glDrawArrays(GL_LINE_LOOP,0,nbrFacets);

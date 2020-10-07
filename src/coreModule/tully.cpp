@@ -288,6 +288,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	m_squareGL->fillVertexBuffer(BufferType::POS3D,posTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::MAG,texTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::SCALE,radiusTmpTully );
+	m_squareGL->update();
 	*pNbVertexSquare = posTmpTully.size() / 3;
 	drawDataSquare->update();
 }

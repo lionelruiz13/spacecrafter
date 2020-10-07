@@ -72,6 +72,7 @@ void Orbit2D::drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d
 	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*vecOrbit2dVertex.size(),vecOrbit2dVertex.data(),GL_DYNAMIC_DRAW);
 	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
 	orbit->fillVertexBuffer(BufferType::POS3D,vecOrbit2dVertex );
+	orbit->update();
 
 	// m_Orbit2dGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, vecOrbit2dVertex.size()/3);

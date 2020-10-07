@@ -158,6 +158,7 @@ void Sun::createHaloShader(ThreadContext *context)
     pipelineBigHalo = std::make_unique<Pipeline>(context->surface, layoutBigHalo.get());
     pipelineBigHalo->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
     pipelineBigHalo->setDepthStencilMode(VK_FALSE, VK_FALSE);
+    pipelineBigHalo->setBlendMode(BLEND_ADD);
     pipelineBigHalo->bindVertex(m_bigHaloGL.get());
     pipelineBigHalo->bindShader("sun_big_halo.vert.spv");
     pipelineBigHalo->bindShader("sun_big_halo.geom.spv");
@@ -212,6 +213,7 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
     *pRadius = getOnScreenSize(prj, nav);
 
 	m_bigHaloGL->fillVertexBuffer(BufferType::POS2D, 2, screenPosF );
+    m_bigHaloGL->update();
 
 	//Renderer::drawArrays(shaderBigHalo.get(), m_bigHaloGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, 1);
     cmdMgr->setSubmission(commandIndexBigHalo);
