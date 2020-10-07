@@ -6,6 +6,8 @@
 #include "Set.hpp"
 #include "Buffer.hpp"
 #include "VertexArray.hpp"
+#include "tools/log.hpp"
+#include <algorithm>
 
 VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 PFN_vkCmdPushDescriptorSetKHR CommandMgr::PFN_pushSet;
@@ -215,7 +217,11 @@ void CommandMgr::resolve(uint8_t frameIndex)
 void CommandMgr::init(int index, bool compileSelected)
 {
     if (compileSelected && isRecording()) {
-        assert(false);
+        int actualIndex = std::distance(frames[refFrameIndex].commandBuffers.begin(),
+            std::find(frames[refFrameIndex].commandBuffers.begin(),
+                frames[refFrameIndex].commandBuffers.end(),
+                (singleUse) ? actual : frames[refFrameIndex].actual));
+        cLog::get()->write("Implicit compilation of commandBuffer at index " + ((actualIndex < nbCommandBuffers) ? std::to_string(actualIndex) : "<external>"), LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
         compile();
     }
 
