@@ -80,7 +80,7 @@ protected :
 	// remove from parent satellite list
 	virtual void removeSatellite(Body *planet);
 	Ring* rings=nullptr;
-	int commandIndex = -1;
+	int commandIndex = -2;
 	std::unique_ptr<Set> set;
 	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal
 	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal
