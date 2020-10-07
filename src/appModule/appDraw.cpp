@@ -144,7 +144,7 @@ void AppDraw::drawColorInverse()
 
 void AppDraw::initSplash(ThreadContext *context)
 {
-    float dataPos[]= {-1.0,-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
+    float dataPos[]= {-1.0,1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0};
     float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
 
     std::unique_ptr<VertexArray> splash = std::make_unique<VertexArray>(context->surface, context->commandMgr);
