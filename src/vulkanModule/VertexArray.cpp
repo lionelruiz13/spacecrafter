@@ -49,7 +49,7 @@ VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_ma
 
 VertexArray::~VertexArray() {}
 
-VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), indexBufferSize(model.indexBufferSize), indexType(model.indexType)
+VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), maxVertices(model.maxVertices), indexBufferSize(model.indexBufferSize), indexType(model.indexType)
 {
     // instanceBuffer mustn't be build for copy, at least for now
     assert(!model.instanceBuffer);
@@ -63,8 +63,9 @@ VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.m
     pIndexData = model.pIndexData;
 }
 
-void VertexArray::build(int maxVertices)
+void VertexArray::build(int _maxVertices)
 {
+    maxVertices = _maxVertices;
     vertexBuffer = std::make_shared<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc);
     pVertexData = static_cast<float *>(vertexBuffer->data);
 }
@@ -149,6 +150,7 @@ void VertexArray::fillVertexBuffer(const std::vector<float> &data)
 
 void VertexArray::fillVertexBuffer(const BufferType& bt, const std::vector<float> &data)
 {
+    assert(getVertexOffset() + data.size() / getDataSize(bt) <= maxVertices);
     if (attributeDesc.size() == 1) { // Optimize if there is only one BufferType
         fillVertexBuffer(data);
         return;
@@ -244,6 +246,7 @@ void VertexArray::assign(VertexArray *vertex, int maxVertices, int maxIndex)
     pVertexData = vertex->pVertexData;
     pIndexData = vertex->pIndexData;
     indexType = vertex->indexType;
+    this->maxVertices = vertex->maxVertices;
     indexBufferSize = maxIndex;
     vertex->pVertexData += maxVertices * blockSize;
     vertex->pIndexData += maxIndex;

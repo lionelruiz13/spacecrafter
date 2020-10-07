@@ -113,6 +113,7 @@ private:
     std::array<uint8_t, 6> offset;
     //! Size of one block
     int blockSize = 0;
+    unsigned int maxVertices;
     unsigned int indexBufferSize;
     VkIndexType indexType;
     //! Tell if local vertexBuffer content has changed
