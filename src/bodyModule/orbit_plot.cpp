@@ -88,9 +88,9 @@ void OrbitPlot::createSC_context(ThreadContext *_context)
 	// shaderOrbit3d->setUniformLocation("clipping_fov");
 
 	layoutOrbit3d = context->global->tracker->track(new PipelineLayout(context->surface));
-	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // ModelViewMatrix
-	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // Color
-	layoutOrbit2d->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 2); // clipping_fov
+	layoutOrbit3d->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // ModelViewMatrix
+	layoutOrbit3d->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // Color
+	layoutOrbit3d->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 2); // clipping_fov
 	layoutOrbit3d->buildLayout();
 	layoutOrbit3d->build();
 

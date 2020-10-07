@@ -198,17 +198,19 @@ void BodyShader::createShader(ThreadContext *context)
 
 	// ========== body_artificial ========== //
 	shaderArtificial.layout = context->global->tracker->track(new PipelineLayout(context->surface));
+	shaderArtificial.layout->setGlobalPipelineLayout(context->global->globalLayout);
+	shaderArtificial.layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	shaderArtificial.layout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // NormalMatrix
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2); // LightInfo
 	shaderArtificial.layout->buildLayout();
-	shaderArtificial.layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	shaderArtificial.layout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	shaderArtificial.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 40);
+	shaderArtificial.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 44);
 	shaderArtificial.layout->build();
 	pushSetShaderArtificial = context->global->tracker->track(new Set());
 
 	shaderArtificial.pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, shaderArtificial.layout}, {context->surface, shaderArtificial.layout}});
+	VkBool32 useTexture;
 	for (short i = 0; i < 2; ++i) {
 		shaderArtificial.pipeline[i].setCullMode(true);
 		shaderArtificial.pipeline[i].setBlendMode(BLEND_NONE);
@@ -216,7 +218,9 @@ void BodyShader::createShader(ThreadContext *context)
 		shaderArtificial.pipeline[i].bindVertex(&vertex);
 		shaderArtificial.pipeline[i].bindShader("body_artificial.vert.spv");
 		shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
-		shaderArtificial.pipeline[i].bindShader("body_artificial.frag.spv", (i == 0) ? "mainTextured" : "mainTextureless");
+		shaderArtificial.pipeline[i].bindShader("body_artificial.frag.spv");
+		useTexture = (i == 0);
+		shaderArtificial.pipeline[i].setSpecializedConstant(0, &useTexture, sizeof(useTexture));
 		shaderArtificial.pipeline[i].build();
 	}
 

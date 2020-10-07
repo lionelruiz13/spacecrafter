@@ -90,8 +90,7 @@ void Artificial::selectShader ()
 
 void Artificial::createSC_context(ThreadContext *context)
 {
-    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout, 2);
     uNormalMatrix = std::make_unique<Uniform>(context->surface, sizeof(*pNormalMatrix));
     pNormalMatrix = static_cast<typeof(pNormalMatrix)>(uNormalMatrix->data);
     set->bindUniform(uNormalMatrix.get(), 0);
@@ -117,7 +116,8 @@ void Artificial::drawBody(const Projector* prj, const Navigator * nav, const Mat
                 context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
             }
             pLight->Intensity =Vec3f(1.0, 1.0, 1.0);
-            context->commandMgr->bindSet(drawState->layout, set.get());
+            context->commandMgr->bindSet(drawState->layout, context->global->globalSet, 0);
+            context->commandMgr->bindSet(drawState->layout, set.get(), 2);
             obj3D->record(context->commandMgr, drawState->pipeline, drawState->layout, pushSet);
             context->commandMgr->compile(); // There is no halo for body_artificial
             return;

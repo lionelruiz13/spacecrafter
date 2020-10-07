@@ -14,7 +14,7 @@ layout (location = 2) in vec3 VertexNormal;
 
 //externe
 //uniform bool useTexture;
-layout (binding=1, set=2) uniform custom {
+layout (binding=0, set=2) uniform custom {
 	mat4 ModelViewMatrix;
 	mat4 NormalMatrix;
 };
@@ -32,14 +32,9 @@ layout (location=2) out vec3 Normal;
 
 void main()
 {
+    TexCoord = VertexTexCoord;
     Normal = normalize( mat3(NormalMatrix) * VertexNormal);
     Position = vec3( ModelViewMatrix * vec4(VertexPosition,1.0) );
 
-    gl_Position = fisheyeProject(VertexPosition, main_clipping_fov);
-}
-
-void mainTextured()
-{
-    TexCoord = VertexTexCoord;
-    main();
+    gl_Position = fisheyeProject(VertexPosition, vec3(main_clipping_fov));
 }

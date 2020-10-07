@@ -110,16 +110,11 @@ int Ojm::record(CommandMgr *cmdMgr, Pipeline *pipelines, PipelineLayout *layout,
 		}
 		// Put data according to offset given in shader
 		*reinterpret_cast<Vec3f *>(tmp.data()) = shapes[i].Ka;
-		*reinterpret_cast<Vec3f *>(tmp.data() + 3) = shapes[i].Kd;
-		*reinterpret_cast<Vec3f *>(tmp.data() + 6) = shapes[i].Ks;
-		tmp.data()[9] = shapes[i].Ns;
-		if (shapes[i].T < 1.0) {
-			tmp.data()[10] = shapes[i].T;
-			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, tmp.data(), 11*sizeof(float));
-		} else {
-			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, tmp.data(), 10*sizeof(float));
-		}
-
+		tmp[3] = shapes[i].Ns;
+		*reinterpret_cast<Vec3f *>(tmp.data() + 4) = shapes[i].Kd;
+		tmp[7] = shapes[i].T;
+		*reinterpret_cast<Vec3f *>(tmp.data() + 8) = shapes[i].Ks;
+		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, tmp.data(), 44);
 		cmdMgr->bindVertex(shapes[i].dGL.get());
 		cmdMgr->drawIndexed(shapes[i].dGL->getIndiceCount());
 	}

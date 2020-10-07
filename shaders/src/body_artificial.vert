@@ -6,7 +6,7 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-#define M_PI 3.14159265358979323846
+// #define M_PI 3.14159265358979323846
 
 layout (location = 0) in vec3 VertexPosition;
 layout (location = 1) in vec2 VertexTexCoord;
@@ -17,17 +17,14 @@ layout (location = 2) in vec3 VertexNormal;
 // out vec2 TexCoord;
 // out float Ambient;
 
-layout (location=0) out vertexData
-{
-	vec3 Position;
-	vec3 Normal;
-	vec2 TexCoord;
-	float Ambient;
-} vertexOut;
+layout (location=0) out vec3 Position;
+layout (location=1) out vec3 Normal;
+layout (location=2) out vec2 TexCoord;
+layout (location=3) out float Ambient;
 
 //uniform bool useTexture;
 
-layout (binding=0) uniform custom {
+layout (binding=0, set=2) uniform custom {
 	mat4 NormalMatrix;
 };
 
@@ -35,15 +32,14 @@ layout (binding=0) uniform custom {
 //uniform mat4 ProjectionMatrix;
 //uniform mat4 MVP;
 
-//#include <cam_block.glsl>
+#include <cam_block_only.glsl> // for ambient
 
 void main()
 {
-	vertexOut.Ambient = ambient;
-	vertexOut.TexCoord = VertexTexCoord;
-
-    vertexOut.Normal = normalize( mat3(NormalMatrix) * VertexNormal);
-    vertexOut.Position = VertexPosition;
+    Ambient = ambient;
+    TexCoord = VertexTexCoord;
+    Normal = normalize( mat3(NormalMatrix) * VertexNormal);
+    Position = VertexPosition;
 
     //~ gl_Position = MVP * vec4(VertexPosition,1.0);
     // gl_Position = MVP * posToFisheye(VertexPosition);

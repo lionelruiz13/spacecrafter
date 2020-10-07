@@ -1,13 +1,9 @@
 
 ########### install files ###############
 
-file(
-	GLOB
-	myShaders
-	*.spv
-	)
+INSTALL(CODE "execute_process(COMMAND \"./compile.sh\" WORKING_DIRECTORY ./)")
 
-INSTALL(FILES ${myShaders} 
+INSTALL(DIRECTORY compiled/
 	DESTINATION share/${PACKAGE}/shaders
 )
 

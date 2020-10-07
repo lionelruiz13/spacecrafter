@@ -34,11 +34,9 @@ Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments)
 	set->bindUniform(uColor.get(), 1);
 
 	commandIndex = cmdMgr->getCommandIndex();
-	cmdMgr->init(commandIndex);
-	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->init(commandIndex, pipelineOrbit2d);
 	cmdMgr->bindSet(layoutOrbit2d, set.get());
 	cmdMgr->bindSet(layoutOrbit2d, context->global->globalSet, 1);
-	cmdMgr->bindPipeline(pipelineOrbit2d);
 	orbit->bind();
 	cmdMgr->draw(segments);
 

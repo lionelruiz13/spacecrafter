@@ -53,3 +53,8 @@ vec4 custom_project(vec4 invec)
         return win;
 	}
 }
+
+vec4 custom_project(vec3 invec)
+{
+	return custom_project(vec4(invec, 1.));
+}

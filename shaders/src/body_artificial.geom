@@ -14,7 +14,7 @@ layout ( triangle_strip , max_vertices = 3) out;
 
 //externe
 //uniform bool useTexture;
-layout (binding=1) uniform artGeom {
+layout (binding=1, set=2) uniform artGeom {
 	mat4 ModelViewMatrix;
 	vec3 clipping_fov;
 };
@@ -22,35 +22,29 @@ layout (binding=1) uniform artGeom {
 #include <fisheye_noMV.glsl>
 
 //in-out
-layout (location=0) in vertexData
-{
-    vec3 Position;
-    vec3 Normal;
-    vec2 TexCoord;
-    float Ambient;
-} vertexIn[];
+layout (location=0) in vec3 Position[3];
+layout (location=1) in vec3 Normal[3];
+layout (location=2) in vec2 TexCoord[3];
+layout (location=3) in float Ambient[3];
 
-layout (location=0) out colorFrag
-{
-    vec3 Position;
-    vec2 TexCoord;
-    vec3 Normal;
-    float Ambient;
-} cfOut;
+layout (location=0) out vec3 cfOutPosition;
+layout (location=1) out vec2 cfOutTexCoord;
+layout (location=2) out vec3 cfOutNormal;
+layout (location=3) out float cfOutAmbient;
 
 void main(void)
 {
     vec4 pos[3];
 
     for(int i=0; i<3; i++)
-        pos[i] = fisheyeProject(vertexIn[i].Position, clipping_fov);
+        pos[i] = fisheyeProject(Position[i], clipping_fov);
     
     if ( pos[0].w==1.0 && pos[1].w==1.0 && pos[2].w==1.0) {
         for(int i=0; i<3; i++) {
-            cfOut.Position = vertexIn[i].Position;
-            cfOut.TexCoord = vertexIn[i].TexCoord;
-            cfOut.Normal = vertexIn[i].Normal;
-            cfOut.Ambient = vertexIn[i].Ambient;
+            cfOutPosition = Position[i];
+            cfOutTexCoord = TexCoord[i];
+            cfOutNormal = Normal[i];
+            cfOutAmbient = Ambient[i];
             gl_Position = pos[i];
             EmitVertex();
         }

@@ -32,16 +32,14 @@ Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments)
 	set->bindUniform(uModelViewMatrix.get(), 0);
 	uColor = std::make_unique<Uniform>(context->surface, sizeof(Vec3f));
 	pColor = static_cast<typeof(pColor)>(uColor->data);
-	set->bindUniform(uColor.get(), 0);
+	set->bindUniform(uColor.get(), 1);
 	uclipping_fov = std::make_unique<Uniform>(context->surface, sizeof(Vec3f));
 	pclipping_fov = static_cast<typeof(pclipping_fov)>(uclipping_fov->data);
-	set->bindUniform(uclipping_fov.get(), 0);
+	set->bindUniform(uclipping_fov.get(), 2);
 
 	commandIndex = cmdMgr->getCommandIndex();
-	cmdMgr->init(commandIndex);
-	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->init(commandIndex, pipelineOrbit3d);
 	cmdMgr->bindSet(layoutOrbit3d, set.get());
-	cmdMgr->bindPipeline(pipelineOrbit3d);
 	orbit->bind();
 	cmdMgr->draw(segments);
 

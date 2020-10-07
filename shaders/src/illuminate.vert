@@ -11,17 +11,13 @@ layout (location=0)in vec3 position;
 layout (location=1)in vec2 texCoord;
 layout (location=3)in vec3 texColor;
 
-layout (location=0) out Data
-{
-	vec3 position;
-    vec2 texCoord;
-    vec3 texColor;
-} data;
-
+layout (location=0) out vec3 dataposition;
+layout (location=1) out vec2 datatexCoord;
+layout (location=2) out vec3 datatexColor;
 
 void main()
 {
-	data.position = position;
-	data.texCoord = texCoord;
-	data.texColor = texColor;
+	dataposition = position;
+	datatexCoord = texCoord;
+	datatexColor = texColor;
 }

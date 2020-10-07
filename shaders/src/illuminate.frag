@@ -8,20 +8,17 @@
 
 layout (binding=0) uniform sampler2D mapTexture;
 
-layout (location=0) in DataFrag
-{
-	vec2 texCoord;
-	vec3 texColor;
-} dataFrag;
+layout (location=0) in vec2 texCoord;
+layout (location=1) in vec3 texColor;
 
 layout (location=0) out vec4 FragColor;
 
 void main(void)
 {
-	vec4 textureColor = texture(mapTexture,dataFrag.texCoord).rgba;
-	textureColor.r *= dataFrag.texColor.r;
-	textureColor.g *= dataFrag.texColor.b;
-	textureColor.b *= dataFrag.texColor.g;
+	vec4 textureColor = texture(mapTexture,texCoord).rgba;
+	textureColor.r *= texColor.r;
+	textureColor.g *= texColor.b;
+	textureColor.b *= texColor.g;
 	FragColor = textureColor;
 	
 	//~ FragColor = vec4(1.0,0.0,0.0,1.0);

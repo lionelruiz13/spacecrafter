@@ -236,7 +236,7 @@ void OjmMgr::rebuild()
 
 	cmdMgr->init(commandIndex, pipeline, renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
 	cmdMgr->bindSet(layout.get(), globalSet);
-	cmdMgr->pushConstant(layout.get(), VK_SHADER_STAGE_FRAGMENT_BIT, 44, buff, 28);
+	cmdMgr->pushConstant(layout.get(), VK_SHADER_STAGE_FRAGMENT_BIT, 48, buff, 28);
 	for(unsigned int i=0; i< OjmVector.size(); i++) {
 		if (OjmVector[i]->myState != actualState)
 			continue;
@@ -269,9 +269,9 @@ void OjmMgr::createShader(ThreadContext *context)
 	layout->setGlobalPipelineLayout(context->global->globalLayout);
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0, 1, true);
 	layout->buildLayout();
-	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 72);
+	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 76);
 	layout->build();
 
 	vertex = std::make_unique<VertexArray>(surface);
@@ -280,12 +280,15 @@ void OjmMgr::createShader(ThreadContext *context)
 	vertex->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
 
 	pipeline = new Pipeline[2]{{surface, layout.get()}, {surface, layout.get()}};
+	VkBool32 useTexture;
 	for (short i = 0; i < 2; ++i) {
 		pipeline[i].setCullMode(true);
 		pipeline[i].bindVertex(vertex.get());
 		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		pipeline[i].bindShader("shaderOJM_noSUN.vert.spv");
-		pipeline[i].bindShader("shaderOJM_noSUN.frag.spv", (i == 0) ? "mainTextured" : "mainTextureless");
+		pipeline[i].bindShader("shaderOJM_noSUN.frag.spv");
+		useTexture = (i == 0);
+		pipeline[i].setSpecializedConstant(0, &useTexture, sizeof(useTexture));
 		pipeline[i].build();
 	}
 	set = std::make_unique<Set>(surface, context->setMgr, layout.get(), 2);

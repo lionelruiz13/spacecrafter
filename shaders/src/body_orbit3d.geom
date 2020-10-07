@@ -7,7 +7,7 @@
 #pragma optionNV(fastprecision off)
 
 
-#define M_PI 3.14159265358979323846
+//#define M_PI 3.14159265358979323846
 
 //layout uniform mat4 ModelViewProjectionMatrix;
 
@@ -20,7 +20,7 @@
 //~ uniform ivec4 viewport; 
 //~ uniform vec3 viewport_center;
 
-location (binding=2) uniform vec3 clipping_fov;
+layout (binding=2) uniform ubo {vec3 clipping_fov;};
 
 //~ uniform float zNear;
 //~ uniform float zFar;

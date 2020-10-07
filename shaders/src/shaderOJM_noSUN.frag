@@ -14,56 +14,43 @@ layout (location=1) in vec2 TexCoord;
 layout (location=2) in vec3 Normal;
 
 layout (set = 1, binding=0) uniform sampler2D Tex1;
+layout(constant_id = 0) const bool useTexture = false;
 
 //uniform bool useTexture;
 
-layout (push_constant) uniform MaterialInfo {
+layout (push_constant) uniform pushConstant {
     layout (offset=0) vec3 Ka;  	// Ambient reflectivity
-    layout (offset=12) vec3 Kd;		// Diffuse reflectivity
-    layout (offset=24) vec3 Ks;		// Specular reflectivity
-    layout (offset=36) float Ns;	// Specular factor
-} Material;
+    layout (offset=12) float Ns;	// Specular factor
+    layout (offset=16) vec3 Kd;		// Diffuse reflectivity
+    layout (offset=32) vec3 Ks;		// Specular reflectivity
 
-layout (push_constant) uniform customPush {
-    layout (offset=40) float T;
+    layout (offset=28) float T;
+
+    layout (offset=48) vec4 LightPosition;  // Light position in eye coords.
+    layout (offset=64) vec3 LightIntensity; // A,D,S intensity
 };
-
-layout (push_constant) uniform LightInfo {
-    layout (offset=44) vec4 Position;  // Light position in eye coords.
-    layout (offset=60) vec3 Intensity; // A,D,S intensity
-} Light;
 
 layout( location = 0 ) out vec4 FragColor;
 
 void phongModel( vec3 pos, vec3 norm, out vec3 ambAndDiff, out vec3 spec ) {
-    vec3 s = normalize(vec3(Light.Position) - pos);
+    vec3 s = normalize(vec3(LightPosition) - pos);
     vec3 v = normalize(-pos.xyz);
     vec3 r = reflect( -s, norm );
-    vec3 ambient = Light.Intensity * Material.Ka;
+    vec3 ambient = LightIntensity * Ka;
     float sDotN = max( dot(s,norm), 0.0 );
-    vec3 diffuse = Light.Intensity * Material.Kd * sDotN;
+    vec3 diffuse = LightIntensity * Kd * sDotN;
     spec = vec3(0.0);
     if( sDotN > 0.0 )
-        spec = Light.Intensity * Material.Ks * pow( max( dot(r,v), 0.0 ), Material.Ns );
+        spec = LightIntensity * Ks * pow( max( dot(r,v), 0.0 ), Ns );
     ambAndDiff = ambient + diffuse;
 }
 
 
-void mainTextured()
+void main()
 {
-    FragColor = texture(Tex1, TexCoord);
+    FragColor = useTexture ? texture(Tex1, TexCoord) : vec4(Ka,T);
     //~ vec3 ambAndDiff, spec;
-    //~ vec4 texColor = mix(texture( Tex1, TexCoord ), vec4(Material.Ka,1.0), useTexture);
-    //~ phongModel( Position, Normal, ambAndDiff, spec );
-    //~ FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
-    //~ FragColor = vec4(0.0,0.0,1.0,1.0);
-}
-
-void mainTextureless()
-{
-    FragColor = vec4(Material.Ka,T);
-    //~ vec3 ambAndDiff, spec;
-    //~ vec4 texColor = mix(texture( Tex1, TexCoord ), vec4(Material.Ka,1.0), useTexture);
+    //~ vec4 texColor = mix(texture( Tex1, TexCoord ), vec4(Ka,1.0), useTexture);
     //~ phongModel( Position, Normal, ambAndDiff, spec );
     //~ FragColor = (vec4( ambAndDiff, 1.0 ) * texColor) + vec4(spec,1.0);
     //~ FragColor = vec4(0.0,0.0,1.0,1.0);
