@@ -241,7 +241,7 @@ void Sun::createSunShader(ThreadContext *context)
 
     pipelineSun = std::make_unique<Pipeline>(context->surface, layoutSun.get());
     pipelineSun->setBlendMode(BLEND_NONE);
-    pipelineSun->setDepthStencilMode();
+    //pipelineSun->setDepthStencilMode();
     pipelineSun->setCullMode(true);
     currentObj->bind(pipelineSun.get());
     pipelineSun->bindShader("body_sun.vert.spv");
