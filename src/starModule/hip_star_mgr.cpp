@@ -298,7 +298,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	}
 
 	dataFBO.resize(colorBuffer.size());
-	for (int i = 0; i < dataFBO.size(); i++) {
+	for (uint32_t i = 0; i < dataFBO.size(); i++) {
 		dataFBO[i].set = std::make_unique<Set>(context->surface, context->setMgr, m_layoutFBO.get());
 		dataFBO[i].set->bindTexture(colorBuffer[i].get(), 0);
 		dataFBO[i].commandIndex = context->commandMgr->initNew(m_pipelineFBO.get());
