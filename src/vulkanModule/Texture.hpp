@@ -16,7 +16,7 @@ public:
     Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachment = false, int width = -1, int height = -1);
     //! @param keepOnCPU If true, you can load/unload this texture from GPU
     Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename = "", bool keepOnCPU = true, bool multisampling = false);
-    Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool multisampling = false, VkFormat _format = VK_FORMAT_R8G8B8A8_SRGB, bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+    Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool multisampling = false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
     Texture();
     virtual ~Texture();
     //! Export texture to GPU
@@ -43,7 +43,7 @@ protected:
     std::unique_ptr<TextureImage> image;
     int useCount = 0;
 private:
-    void init(VirtualSurface *_master, TextureMgr *_mgr, VkFormat _format = VK_FORMAT_R8G8B8A8_SRGB);
+    void init(VirtualSurface *_master, TextureMgr *_mgr, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM);
     //! Destroy staging resources
     void destroyStagingResources();
     VkSemaphore semaphore;
