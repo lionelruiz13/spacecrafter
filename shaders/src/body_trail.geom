@@ -17,15 +17,8 @@ layout (binding=0) uniform uMat {mat4 Mat;};
 #include <cam_block.glsl>
 #include <custom_project.glsl>
 
-layout (location=0) in ValueFader
-{
-	smooth float indice;
-} valueFader[];
-
-layout (location=0) out FaderColor
-{
-	smooth float indice;
-} faderColor;
+layout (location=0) in float indice[2];
+layout (location=0) out float indiceOut;
 
 void main(void)
 {
@@ -38,11 +31,11 @@ void main(void)
 		pos1.z = 0.0; pos2.z==1.0;
 
 		gl_Position = MVP2D * pos1;
-		faderColor.indice = valueFader[0].indice;
+		indiceOut = indice[0];
 		EmitVertex();
 
 		gl_Position = MVP2D * pos2;
-		faderColor.indice = valueFader[1].indice;
+		indiceOut = indice[1];
 		EmitVertex();
 
 		EndPrimitive();	

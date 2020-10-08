@@ -17,7 +17,7 @@ layout (binding=4) uniform globalTesc {
 layout (binding=3) uniform globalTescGeom {
     uniform ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 };
-
+/*
 layout (location=0) in gl_PerVertex
 {
   vec4 gl_Position;
@@ -32,19 +32,15 @@ layout (location=0) out gl_PerVertex
   float gl_PointSize;
   float gl_ClipDistance[];
 } gl_out[];
+*/
 
-
-layout (location=1) in VS_OUT{
-    in vec2 TexCoord;
-    in vec3 Normal;
+layout (location=0) in vec2 TexCoordIn[];
+layout (location=1) in vec3 NormalIn[];
     //~ in vec3 tangent;
-}tcs_in[];
 
-layout (location=1) out TCS_OUT{
-    out vec2 TexCoord;
-    out vec3 Normal;
+layout (location=0) out vec2 TexCoordOut[];
+layout (location=1) out vec3 NormalOut[];
     //~ out vec3 tangent;
-}tcs_out[];
 
 #define ID gl_InvocationID
 
@@ -78,9 +74,9 @@ void main(void)
     }
 
 
-    tcs_out[ID].TexCoord      = tcs_in[ID].TexCoord;
-    tcs_out[ID].Normal  = tcs_in[ID].Normal;
-    //~ tcs_out[ID].tangent = tcs_in[ID].tangent;
+    TexCoordOut[ID] = TexCoordIn[ID];
+    NormalOut[ID] = NormalIn[ID];
+    //~ tcs_out[ID].tangentOut[ID] = tangentIn[ID];
 
     gl_out[ID].gl_Position = gl_in[ID].gl_Position;
 }

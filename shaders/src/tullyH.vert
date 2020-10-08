@@ -10,17 +10,14 @@ layout (location = 4) in float inTexture;
 
 //uniform mat4 Mat;
 
-layout (location=0) out vertexData
-{
-	float texture;
-	float radius;
-} vertexOut;
+layout (location=0) out float texture;
+layout (location=1) out float radius;
 
 
 void main(void)
 {
 	gl_Position = vec4(inPosition,1.0);
 
-	vertexOut.radius = inRadius;
-	vertexOut.texture = inTexture;
+	radius = inRadius;
+	texture = inTexture;
 }

@@ -81,6 +81,7 @@ protected :
 	virtual void removeSatellite(Body *planet);
 	Ring* rings=nullptr;
 	int commandIndex = -2;
+	int pipelineOffset = 0; // pipeline to select inside drawState
 	std::unique_ptr<Set> set;
 	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal
 	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal

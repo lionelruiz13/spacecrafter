@@ -40,6 +40,7 @@
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/Uniform.hpp"
 #include "vulkanModule/Buffer.hpp"
+#include "vulkanModule/Pipeline.hpp"
 
 BigBody::BigBody(Body *parent,
                  const std::string& englishName,
@@ -148,8 +149,11 @@ void BigBody::selectShader ()
         set->bindTexture(tex_eclipse_map->getTexture(), 6);
         set->bindTexture(tex_night->getTexture(), 7);
         set->bindTexture(tex_specular->getTexture(), 8);
-        //set->bindTexture(tex_cloud->getTexture(), 9);
-        //set->bindTexture(tex_norm_cloud->getTexture(), 10);
+        if ((Body::flagClouds && tex_norm_cloud)==1) {
+            set->bindTexture(tex_cloud->getTexture(), 9);
+            set->bindTexture(tex_norm_cloud->getTexture(), 10);
+            pipelineOffset = 1;
+        }
         set->bindTexture(tex_heightmap->getTexture(), 11);
         // if ((Body::flagClouds && tex_norm_cloud)==1)
         // 	drawState->setUniform("Clouds",1);
@@ -312,7 +316,7 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
                 context->commandMgr->init(commandIndex);
                 context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
             }
-            context->commandMgr->bindPipeline(drawState->pipeline);
+            context->commandMgr->bindPipeline(drawState->pipeline + pipelineOffset);
             currentObj->bind(context->commandMgr);
             context->commandMgr->bindSet(drawState->layout, set.get());
             context->commandMgr->bindSet(drawState->layout, context->global->globalSet, 1);

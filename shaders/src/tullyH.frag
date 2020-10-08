@@ -11,16 +11,13 @@ layout (binding=1, set=1) uniform ubo {
 };
 layout (location=0) out vec4 FragColor;
 
-layout (location=0) in Interpolators
-{
-	vec2 TexCoord;
-	float intensity;
-} interData;
+layout (location=0) in vec2 TexCoord;
+layout (location=1) in float intensity;
 
 void main(void)
 {
 	vec4 textureColor;
-		textureColor = texture(texunit0, interData.TexCoord);
+		textureColor = texture(texunit0, TexCoord);
 		textureColor.a *= fader;
 		if (textureColor.a<0.01)
 			discard;

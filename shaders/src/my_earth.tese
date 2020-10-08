@@ -15,35 +15,32 @@ layout (triangles, equal_spacing) in;
 //uniform mat4 model;
 //uniform mat4 vp;
 
-layout (location=0) in TCS_OUT{
-    in vec3 glPosition;
-    in vec2 TexCoord;
-    in vec3 Normal;
+layout (location=0) in vec3 glPositionIn[];
+layout (location=1) in vec2 TexCoordIn[];
+layout (location=2) in vec3 NormalIn[];
     //~ in vec3 tangent;
-}tes_in[];
 
-layout (location=0) out TES_OUT{
-    out vec3 glPosition; 
-    out vec2 TexCoord;
-    out vec3 Normal;
+layout (location=0) out vec3 glPositionOut; 
+layout (location=1) out vec2 TexCoordOut;
+layout (location=2) out vec3 NormalOut;
     //~ out vec3 tangent;
-    out vec3 tessCoord;
-}tes_out;
+    //out vec3 tessCoord;
 
 void main(void)
 {
+    /*
     tes_out.tessCoord = vec3(   gl_TessCoord.x,
                                 gl_TessCoord.y,
                                 gl_TessCoord.z);
+    */
+    vec2 TexCoord=TexCoordIn[0]*gl_TessCoord.x+
+                       TexCoordIn[1]*gl_TessCoord.y+
+                       TexCoordIn[2]*gl_TessCoord.z;
+    TexCoordOut=  TexCoord;
 
-    vec2 TexCoord=tes_in[0].TexCoord*gl_TessCoord.x+
-                       tes_in[1].TexCoord*gl_TessCoord.y+
-                       tes_in[2].TexCoord*gl_TessCoord.z;
-    tes_out.TexCoord=  TexCoord;
-
-    tes_out.Normal= tes_in[0].Normal*gl_TessCoord.x+
-                    tes_in[1].Normal*gl_TessCoord.y+
-                    tes_in[2].Normal*gl_TessCoord.z;
+    NormalOut= NormalIn[0]*gl_TessCoord.x+
+                    NormalIn[1]*gl_TessCoord.y+
+                    NormalIn[2]*gl_TessCoord.z;
 
     //~ vec3 normal= tes_in[0].Normal*gl_TessCoord.x+
                  //~ tes_in[1].Normal*gl_TessCoord.y+
@@ -53,52 +50,11 @@ void main(void)
                   //~ tes_in[2].tangent*gl_TessCoord.z;
 
  // first we compute the position
-    vec3 position=(gl_TessCoord.x * tes_in[0].glPosition)+
-                  (gl_TessCoord.y * tes_in[1].glPosition)+
-                  (gl_TessCoord.z * tes_in[2].glPosition);
+    vec3 position=(gl_TessCoord.x * glPositionIn[0])+
+                  (gl_TessCoord.y * glPositionIn[1])+
+                  (gl_TessCoord.z * glPositionIn[2]);
     //~ position.xyz= position.xyz/length(position.xyz);
     
     
-    tes_out.glPosition =  position;
+    glPositionOut =  position;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

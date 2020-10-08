@@ -80,7 +80,7 @@ void BodyShader::createShader(ThreadContext *context)
 	myEarth.layout = context->global->tracker->track(new PipelineLayout(context->surface));
 	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // globalProj
 	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // globalFrag
-	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 2); // globalVertGeom
+	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 2); // globalVertGeom
 	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 3); // globalTescGeom
 	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 4); // globalTesc
 	myEarth.layout->setTextureLocation(5);
@@ -89,23 +89,27 @@ void BodyShader::createShader(ThreadContext *context)
 	myEarth.layout->setTextureLocation(8);
 	myEarth.layout->setTextureLocation(9);
 	myEarth.layout->setTextureLocation(10);
-	myEarth.layout->setTextureLocation(11);
+	myEarth.layout->setTextureLocation(11, nullptr, VK_SHADER_STAGE_GEOMETRY_BIT);
 	myEarth.layout->buildLayout();
 	myEarth.layout->setGlobalPipelineLayout(context->global->globalLayout);
 	myEarth.layout->build();
 
-	myEarth.pipeline = context->global->tracker->track(new Pipeline(context->surface, myEarth.layout));
-	myEarth.pipeline->setCullMode(true);
-	myEarth.pipeline->setBlendMode(BLEND_NONE);
-	myEarth.pipeline->bindVertex(&vertex);
-	myEarth.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
-	myEarth.pipeline->setTessellationState(32);
-	myEarth.pipeline->bindShader("my_earth.vert.spv");
-	myEarth.pipeline->bindShader("my_earth.tesc.spv");
-	myEarth.pipeline->bindShader("my_earth.tese.spv");
-	myEarth.pipeline->bindShader("my_earth.geom.spv");
-	myEarth.pipeline->bindShader("my_earth.frag.spv");
-	myEarth.pipeline->build();
+	myEarth.pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, myEarth.layout}, {context->surface, myEarth.layout}});
+	for (int i = 0; i < 2; ++i) {
+		myEarth.pipeline[i].setCullMode(true);
+		myEarth.pipeline[i].setBlendMode(BLEND_NONE);
+		myEarth.pipeline[i].bindVertex(&vertex);
+		myEarth.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
+		myEarth.pipeline[i].setTessellationState(32);
+		myEarth.pipeline[i].bindShader("my_earth.vert.spv");
+		myEarth.pipeline[i].bindShader("my_earth.tesc.spv");
+		myEarth.pipeline[i].bindShader("my_earth.tese.spv");
+		myEarth.pipeline[i].bindShader("my_earth.geom.spv");
+		myEarth.pipeline[i].bindShader("my_earth.frag.spv");
+		VkBool32 Clouds = (i == 0);
+		myEarth.pipeline[i].setSpecializedConstant(1, &Clouds, sizeof(Clouds));
+		myEarth.pipeline[i].build();
+	}
 
 	// ========== body_bump ========== //
 	shaderBump.layout = context->global->tracker->track(new PipelineLayout(context->surface));
@@ -176,7 +180,7 @@ void BodyShader::createShader(ThreadContext *context)
 	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 2); // globalVertGeom
 	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 3); // globalTescGeom
 	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 4); // globalTesc
-	shaderNormalTes.layout->setTextureLocation(5); // heightmapTexture
+	shaderNormalTes.layout->setTextureLocation(5, nullptr, VK_SHADER_STAGE_GEOMETRY_BIT); // heightmapTexture
 	shaderNormalTes.layout->setTextureLocation(6); // mapTexture
 	shaderNormalTes.layout->setTextureLocation(7); // shadowTexture
 	shaderNormalTes.layout->buildLayout();
@@ -210,7 +214,6 @@ void BodyShader::createShader(ThreadContext *context)
 	pushSetShaderArtificial = context->global->tracker->track(new Set());
 
 	shaderArtificial.pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, shaderArtificial.layout}, {context->surface, shaderArtificial.layout}});
-	VkBool32 useTexture;
 	for (short i = 0; i < 2; ++i) {
 		shaderArtificial.pipeline[i].setCullMode(true);
 		shaderArtificial.pipeline[i].setBlendMode(BLEND_NONE);
@@ -219,7 +222,7 @@ void BodyShader::createShader(ThreadContext *context)
 		shaderArtificial.pipeline[i].bindShader("body_artificial.vert.spv");
 		shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
 		shaderArtificial.pipeline[i].bindShader("body_artificial.frag.spv");
-		useTexture = (i == 0);
+		VkBool32 useTexture = (i == 0);
 		shaderArtificial.pipeline[i].setSpecializedConstant(0, &useTexture, sizeof(useTexture));
 		shaderArtificial.pipeline[i].build();
 	}
@@ -234,7 +237,7 @@ void BodyShader::createShader(ThreadContext *context)
 	myMoon.layout->setTextureLocation(5); // mapTexture
 	myMoon.layout->setTextureLocation(6); // normalTexture
 	myMoon.layout->setTextureLocation(7); // shadowTexture
-	myMoon.layout->setTextureLocation(8); // heightmapTexture
+	myMoon.layout->setTextureLocation(8, nullptr, VK_SHADER_STAGE_GEOMETRY_BIT); // heightmapTexture
 	myMoon.layout->buildLayout();
 	myMoon.layout->setGlobalPipelineLayout(context->global->globalLayout);
 	myMoon.layout->build();
@@ -244,6 +247,7 @@ void BodyShader::createShader(ThreadContext *context)
 	myMoon.pipeline->setBlendMode(BLEND_NONE);
 	myMoon.pipeline->bindVertex(&vertex);
 	myMoon.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
+	myMoon.pipeline->setTessellationState(32);
 	myMoon.pipeline->bindShader("my_moon.vert.spv");
 	myMoon.pipeline->bindShader("my_moon.tesc.spv");
 	myMoon.pipeline->bindShader("my_moon.tese.spv");

@@ -17,11 +17,9 @@ layout (binding=2) uniform globalVertGeom {
 	float planetOneMinusOblateness;
 };
 
-layout(location=0) out VS_OUT{
-	vec3 glPosition;
-    vec2 TexCoord;
-    vec3 Normal;
-} vs_out;
+layout(location=0) out vec3 glPosition;
+layout(location=1) out vec2 TexCoord;
+layout(location=2) out vec3 Normal;
 
 
 void main()
@@ -31,7 +29,7 @@ void main()
 	Position.y =position.y * planetScaledRadius;
 	Position.z =position.z * planetScaledRadius * planetOneMinusOblateness;
 
-	vs_out.glPosition = Position;
-	vs_out.TexCoord = texcoord;
-	vs_out.Normal = normal;
+	glPosition = Position;
+	TexCoord = texcoord;
+	Normal = normal;
 }

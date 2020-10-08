@@ -9,19 +9,13 @@
 layout (points) in;
 layout (triangle_strip , max_vertices = 4) out;
 
-layout (location=0) in vertexData
-{
-	float texture;
-	float radius;
-} vertexIn[];
+layout (location=0) in float texture[1]; // unused ?
+layout (location=1) in float radiusIn[1];
 
-layout (location=0) out Interpolators
-{
-	vec2 TexCoord;
-	float intensity;
-} interData;
+layout (location=0) out vec2 TexCoord;
+layout (location=1) out float intensityOut;
 
-layout (binding=0, set=1) ubo {
+layout (binding=0, set=1) uniform ubo {
 	mat4 Mat;
 	vec3 camPos;
 	int nbTextures;
@@ -38,7 +32,7 @@ void main()
 	//~ float distance = length(gl_in[0].gl_Position-vec4(camPos, 1.0)); 
 	// taille apparente de la galaxie correspond à radiusTully.push_back(.3/(d*scaleTully[i]));
 	//~ float radius = 0.3 / (vertexIn[0].scale * distance);
-	float radius = vertexIn[0].radius;
+	float radius = radiusIn[0];
 
 	if ((pos.w == 1.0) && (radius>=2)) {
 		// TODO : ici intensity fixé à 0.8 car radius >1.0
@@ -46,26 +40,26 @@ void main()
 		float intensity = 1.0;
 		//~ // en bas à droite
 		gl_Position   = MVP2D * ( pos +vec4( radius, -radius, 0.0, 0.0) );
-		interData.TexCoord= vec2((vertexIn[0].texture+1)/nbTextures, .0f);
-		interData.intensity = intensity;
+		TexCoord= vec2((texture[0]+1)/nbTextures, .0f);
+		intensityOut = intensity;
 		EmitVertex();
 
 		//~ // en haut à droite
 		gl_Position   = MVP2D * ( pos +vec4( radius, radius, 0.0, 0.0) );
-		interData.TexCoord= vec2((vertexIn[0].texture+1)/nbTextures, 1.0f);
-		interData.intensity = intensity;
+		TexCoord= vec2((texture[0]+1)/nbTextures, 1.0f);
+		intensityOut = intensity;
 		EmitVertex();    
 
 		// en Bas à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -radius, -radius, 0.0, 0.0) );
-		interData.TexCoord= vec2(vertexIn[0].texture/nbTextures, 0.0f);
-		interData.intensity = intensity;
+		TexCoord= vec2(texture[0]/nbTextures, 0.0f);
+		intensityOut = intensity;
 		EmitVertex();
 
 		// en haut à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -radius, radius, 0.0, 0.0) );
-		interData.TexCoord= vec2(vertexIn[0].texture/nbTextures, 1.0f);
-		interData.intensity = intensity;
+		TexCoord= vec2(texture[0]/nbTextures, 1.0f);
+		intensityOut = intensity;
 		EmitVertex();
 		EndPrimitive();
 	}

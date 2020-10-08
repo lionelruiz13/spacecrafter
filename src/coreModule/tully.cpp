@@ -96,15 +96,17 @@ void Tully::createSC_context(ThreadContext *_context)
 		pipelinePoints[i].setDepthStencilMode();
 		pipelinePoints[i].bindVertex(m_pointsGL.get());
 		pipelinePoints[i].bindShader("tully.vert.spv");
+		VkBool32 whiteColor = (i == 1);
+		pipelinePoints[i].setSpecializedConstant(0, &whiteColor, sizeof(whiteColor));
 		pipelinePoints[i].bindShader("tully.geom.spv");
-		pipelinePoints[i].bindShader("tully.frag.spv", i == 0 ? "mainCustomColor" : "mainWhiteColor");
+		pipelinePoints[i].bindShader("tully.frag.spv");
 		pipelinePoints[i].build();
 	}
 	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
 	uGeom = std::make_unique<Uniform>(context->surface, sizeof(*pMat) + sizeof(*pCamPos) + sizeof(*pNbTextures));
 	pMat = static_cast<typeof(pMat)>(uGeom->data);
-	pCamPos = static_cast<typeof(pCamPos)>(uGeom->data + sizeof(*pMat));
-	pNbTextures = static_cast<typeof(pNbTextures)>(uGeom->data + sizeof(*pMat) + sizeof(*pCamPos));
+	pCamPos = reinterpret_cast<typeof(pCamPos)>(static_cast<char *>(uGeom->data) + sizeof(*pMat));
+	pNbTextures = reinterpret_cast<typeof(pNbTextures)>(static_cast<char *>(uGeom->data) + sizeof(*pMat) + sizeof(*pCamPos));
 	set->bindUniform(uGeom.get(), 0);
 	uFader = std::make_unique<Uniform>(context->surface, sizeof(float));
 	pFader = static_cast<float *>(uFader->data);

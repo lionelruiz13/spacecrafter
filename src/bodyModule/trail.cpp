@@ -63,13 +63,13 @@ Trail::Trail(Body * _body,
     set->bindUniform(uMat.get(), 0);
     uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor));
     pColor = static_cast<typeof(pColor)>(uColor->data);
-    set->bindUniform(uColor.get(), 0);
+    set->bindUniform(uColor.get(), 1);
     uFader = std::make_unique<Uniform>(context->surface, sizeof(*pFader));
     pFader = static_cast<typeof(pFader)>(uFader->data);
-    set->bindUniform(uFader.get(), 0);
+    set->bindUniform(uFader.get(), 2);
     uNbPoints = std::make_unique<Uniform>(context->surface, sizeof(*pNbPoints));
     pNbPoints = static_cast<typeof(pNbPoints)>(uNbPoints->data);
-    set->bindUniform(uNbPoints.get(), 0);
+    set->bindUniform(uNbPoints.get(), 3);
 
     commandIndex = cmdMgr->initNew(pipeline, renderPassType::DEFAULT);
     cmdMgr->bindSet(layout, set.get());

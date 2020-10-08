@@ -9,26 +9,15 @@ layout (binding=1, set=1) uniform ubo {
 };
 layout (location=0) out vec4 FragColor;
 
-layout (location=0) in Interpolators
-{
-	vec3 TexColor;
-	float intensity;
-} interData;
+layout (location=0) in vec3 TexColor;
+layout (location=1) in float intensity;
 
-void mainCustomColor(void)
+void main(void)
 {
-	vec4 textureColor = vec4(interData.TexColor, interData.intensity * fader);
+	vec4 textureColor = vec4(TexColor, intensity * fader);
 
 	if (textureColor.a<0.01)
 		discard;
 	FragColor = textureColor;
 }
 
-void mainWhiteColor(void)
-{
-	vec4 textureColor = vec4(1.0, 1.0, 1.0, interData.intensity * fader);
-
-	if (textureColor.a<0.01)
-		discard;
-	FragColor = textureColor;
-}

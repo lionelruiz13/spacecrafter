@@ -18,18 +18,14 @@ layout (binding=4) uniform globalTesc {
 	uniform mat4 Model;
 };
 
-layout(location=0) in VS_OUT{
-    in vec3 glPosition;
-    in vec2 TexCoord;
-    in vec3 Normal;
-}tcs_in[];
+layout(location=0) in vec3 glPositionIn[];
+layout(location=1) in vec2 TexCoordIn[];
+layout(location=2) in vec3 NormalIn[];
 
-layout(location=0) out TCS_OUT{
-    out vec3 glPosition;
-    out vec2 TexCoord;
-    out vec3 Normal;
+layout(location=0) out vec3 glPositionOut[];
+layout(location=1) out vec2 TexCoordOut[];
+layout(location=2) out vec3 NormalOut[];
     //~ out vec3 tangent;
-}tcs_out[];
 
 #define ID gl_InvocationID
 
@@ -67,9 +63,9 @@ void main(void)
     }
 
 
-    tcs_out[ID].TexCoord      = tcs_in[ID].TexCoord;
-    tcs_out[ID].Normal  = tcs_in[ID].Normal;
+    TexCoordOut[ID] = TexCoordIn[ID];
+    NormalOut[ID] = NormalIn[ID];
     //~ tcs_out[ID].tangent = tcs_in[ID].tangent;
-    tcs_out[ID].glPosition = tcs_in[ID].glPosition;
+    glPositionOut[ID] = glPositionIn[ID];
     // gl_out[ID].gl_Position = gl_in[ID].gl_Position;
 }

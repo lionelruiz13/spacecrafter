@@ -16,7 +16,7 @@ public:
     //! @brief Set uniform location to this PipelineLayout
     //! @param stages combination of flags describing the types of shader accessing it (vertex, fragment, etc.)
     void setUniformLocation(VkShaderStageFlags stage, uint32_t binding, uint32_t arraySize = 1, bool isVirtual = false);
-    void setTextureLocation(uint32_t binding, const VkSamplerCreateInfo *samplerInfo = nullptr);
+    void setTextureLocation(uint32_t binding, const VkSamplerCreateInfo *samplerInfo = nullptr, VkShaderStageFlags stage = VK_SHADER_STAGE_FRAGMENT_BIT);
     void setPushConstant(VkShaderStageFlags stage, uint32_t offset, uint32_t size);
     //! Build pipelineLayout
     void build();
