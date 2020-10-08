@@ -79,7 +79,7 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 	m_vertexArt = std::make_unique<VertexArray>(context->surface);
 	m_vertexArt->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_vertexArt->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
-	m_vertexArt->build(512);
+	m_vertexArt->build(16384);
 	m_layoutArt = std::make_unique<PipelineLayout>(context->surface);
 	m_layoutArt->setGlobalPipelineLayout(context->global->globalLayout);
 	m_layoutArt->setTextureLocation(0);
