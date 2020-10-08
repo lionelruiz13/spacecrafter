@@ -249,12 +249,12 @@ void VertexArray::assign(VertexArray *vertex, uint32_t maxVertices, uint32_t max
     indexType = vertex->indexType;
     this->maxVertices = vertex->getVertexOffset() + maxVertices;
     assert(this->maxVertices <= vertex->maxVertices);
+    vertex->pVertexData += maxVertices * blockSize;
     if (maxIndex > 0) {
         this->maxIndex = vertex->getIndexOffset() + maxIndex;
         assert(this->maxIndex <= vertex->maxIndex);
+        vertex->pIndexData += maxIndex;
     }
-    vertex->pVertexData += maxVertices * blockSize;
-    vertex->pIndexData += maxIndex;
 }
 
 void VertexArray::print()
