@@ -7,7 +7,8 @@
 #include "Buffer.hpp"
 #include "VertexArray.hpp"
 #include "tools/log.hpp"
-#include <algorithm>
+#include <algorithm> // std::find
+#include <iterator> // std::distance
 
 VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 PFN_vkCmdPushDescriptorSetKHR CommandMgr::PFN_pushSet;
