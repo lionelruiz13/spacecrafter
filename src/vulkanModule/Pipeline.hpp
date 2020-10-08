@@ -28,8 +28,8 @@ public:
     void bindVertex(VertexBuffer &vertex, uint32_t binding);
     //! Set cull mode (default : false)
     void setCullMode(bool enable) {rasterizer.cullMode = enable ? VK_CULL_MODE_BACK_BIT : 0;}
-    //! Set front face (default : true)
-    void setFrontFace(bool clockwise = false) {rasterizer.frontFace = clockwise ? VK_FRONT_FACE_CLOCKWISE : VK_FRONT_FACE_COUNTER_CLOCKWISE;}
+    //! Set front face (default : false)
+    void setFrontFace(bool clockwise = true) {rasterizer.frontFace = clockwise ? VK_FRONT_FACE_CLOCKWISE : VK_FRONT_FACE_COUNTER_CLOCKWISE;}
     //! Set draw topology (default : VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, no breaks)
     void setTopology(VkPrimitiveTopology state, bool enableStripBreaks = false);
     //! Set blend mode (default : blend src alpha)
