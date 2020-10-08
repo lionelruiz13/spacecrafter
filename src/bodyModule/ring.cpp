@@ -49,7 +49,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 {
 	init = _init;
 	tex = new s_texture(texname,TEX_LOAD_TYPE_PNG_ALPHA,1);
-	int nbVertices = (init[0] * (4 + 1) + init[1] * (8 + 1) + init[2] * (16 + 1)) * 2;
+	int nbVertices = (init[0] * (4 + 1) + init[1] * (8 + 1) + init[2] * (16 + 1)) * 2 * 2;
 	createSC_context(context);
 
 	lowUP = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, true, *vertex);
