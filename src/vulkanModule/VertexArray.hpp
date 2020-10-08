@@ -71,7 +71,7 @@ public:
     //! build VertexArray per instance
     void buildInstanceBuffer(int maxInstances);
     //! assign maxVertices
-    void assign(VertexArray *vertex, int maxVertices, int maxIndex = 0);
+    void assign(VertexArray *vertex, uint32_t maxVertices, uint32_t maxIndex = 0);
     //! bind this vao
     void bind(CommandMgr *cmdMgr = nullptr);
     //! update changes
@@ -114,7 +114,8 @@ private:
     //! Size of one block
     int blockSize = 0;
     unsigned int maxVertices;
-    unsigned int indexBufferSize;
+    unsigned int maxIndex;
+    unsigned int indexBufferSize = 0; // Last size updated with fillIndexBuffer
     VkIndexType indexType;
     //! Tell if local vertexBuffer content has changed
     bool vertexUpdate = false;

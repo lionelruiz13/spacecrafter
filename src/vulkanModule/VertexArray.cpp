@@ -49,7 +49,7 @@ VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_ma
 
 VertexArray::~VertexArray() {}
 
-VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), maxVertices(model.maxVertices), indexBufferSize(model.indexBufferSize), indexType(model.indexType)
+VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), maxVertices(model.maxVertices), maxIndex(model.maxIndex), indexBufferSize(model.indexBufferSize), indexType(model.indexType)
 {
     // instanceBuffer mustn't be build for copy, at least for now
     assert(!model.instanceBuffer);
@@ -192,6 +192,7 @@ void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size,
 {
     indexBuffer = std::make_shared<Buffer>(master, size * blockSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
     indexType = _indexType;
+    maxIndex = size;
     pIndexData = static_cast<unsigned int *>(indexBuffer->data);
 }
 
@@ -239,15 +240,19 @@ void VertexArray::assumeVerticeChanged(bool needUpdate)
     vertexUpdate = needUpdate;
 }
 
-void VertexArray::assign(VertexArray *vertex, int maxVertices, int maxIndex)
+void VertexArray::assign(VertexArray *vertex, uint32_t maxVertices, uint32_t maxIndex)
 {
     vertexBuffer = vertex->vertexBuffer;
     indexBuffer = vertex->indexBuffer;
     pVertexData = vertex->pVertexData;
     pIndexData = vertex->pIndexData;
     indexType = vertex->indexType;
-    this->maxVertices = vertex->maxVertices;
-    indexBufferSize = maxIndex;
+    this->maxVertices = vertex->getVertexOffset() + maxVertices;
+    assert(this->maxVertices <= vertex->maxVertices);
+    if (maxIndex > 0) {
+        this->maxIndex = vertex->getIndexOffset() + maxIndex;
+        assert(this->maxIndex <= vertex->maxIndex);
+    }
     vertex->pVertexData += maxVertices * blockSize;
     vertex->pIndexData += maxIndex;
 }
