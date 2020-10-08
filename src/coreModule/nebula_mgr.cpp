@@ -272,7 +272,7 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 4*i, 4);
 	// m_hintGL->unBind();
 	// shaderNebulaHint->unuse();
-	*pDrawDataHint = vecHintPos.size()/2;
+	*pDrawDataHint = vecHintPos.size()/2 * 6/4; // index per nebula / vertex per nebula
 	drawDataHint->update();
 	context->commandMgr->setSubmission(commandIndex);
 	//Renderer::drawMultiArrays(shaderNebulaHint.get(), m_hintGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, vecHintPos.size()/8, 4);

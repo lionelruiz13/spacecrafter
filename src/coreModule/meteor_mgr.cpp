@@ -157,7 +157,7 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 3*i, 3);
 	// m_meteorGL->unBind();
 	// m_shaderMeteor->unuse();
-	*pNbVertex = vecPos.size() / 2;
+	*pNbVertex = vecPos.size() / 2 * 4/3; // index per meteor / vertex per meteor
 	drawData->update();
 	cmdMgr->setSubmission(commandIndex);
 	//Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, vecPos.size()/3 , 3);
