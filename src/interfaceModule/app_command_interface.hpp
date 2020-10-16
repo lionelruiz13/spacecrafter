@@ -57,6 +57,7 @@ public:
 	AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media);
 	~AppCommandInterface();
 
+	int terminateScript();
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, unsigned long int &wait);
 
@@ -150,6 +151,7 @@ private:
 	stringHash_t args;
 	int recordable;
 	bool swapCommand;					// boolean qui indique si l'instruction doit etre exécutée ou pas
+	bool unskippable = false;			// set to true to force execution of the next command
 	std::unique_ptr<IfSwap> ifSwap; 	// gestionnnaire des if multiples
 	std::string debug_message;			//!< for 'executeCommand' error details
 

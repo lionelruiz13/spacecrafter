@@ -305,7 +305,7 @@ void ScriptMgr::update(int delta_time)
 			} else {
 				// script done
 				DataDir = "";
-				commander->executeCommand("script action end");
+				commander->terminateScript();
 				return;
 			}
 		}

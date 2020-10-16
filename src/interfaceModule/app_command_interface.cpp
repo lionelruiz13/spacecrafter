@@ -143,6 +143,11 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 	return 1;  // no error checking yet
 }
 
+int AppCommandInterface::terminateScript()
+{
+	unskippable = true;
+	return executeCommand("script action end");
+}
 
 int AppCommandInterface::executeCommand(const std::string &commandline )
 {
@@ -185,10 +190,11 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		return commandStruct();
 
 	// if (swapCommand== true || swapIfCommand == true)
-	if (swapCommand== true || ifSwap->get()==true) {	 // on n'execute pas les commandes qui suivent
+	if ((swapCommand== true || ifSwap->get()==true) && !unskippable) {	 // on n'execute pas les commandes qui suivent
 		cLog::get()->write("cette commande n'a pas été exécutée " + commandline, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);  //A traduire
 		return 1;
 	}
+	unskippable = false;
 
 	auto m_commands_it = m_commands.find(command);
 	if (m_commands_it == m_commands.end()) {
