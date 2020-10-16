@@ -14,7 +14,7 @@ class VirtualSurface;
 //! Manage virtual buffering for Uniform and Buffer
 class BufferMgr {
 public:
-    BufferMgr(VirtualSurface *_master, int _bufferBlocSize = 256*1024);
+    BufferMgr(VirtualSurface *_master, int _bufferBlocSize = 512*1024);
     ~BufferMgr();
     SubBuffer acquireBuffer(int size, bool isUniform = false);
     void releaseBuffer(SubBuffer &subBuffer);
