@@ -15,7 +15,7 @@ PFN_vkCmdPushDescriptorSetKHR CommandMgr::PFN_pushSet;
 PFN_vkCmdBeginConditionalRenderingEXT CommandMgr::PFN_vkIf;
 PFN_vkCmdEndConditionalRenderingEXT CommandMgr::PFN_vkEndIf;
 
-CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands, bool isExternal, bool enableIndividualReset) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
+CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands, bool isExternal, bool enableIndividualReset) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refResolveFramebuffers(_master->refResolveFramebuffers), refSingleSampleFramebuffers(_master->refSingleSampleFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
 {
     if (!isExternal)
         _master->registerCommandMgr(this);
@@ -245,18 +245,18 @@ void CommandMgr::init(int index, bool compileSelected)
     }
 }
 
-void CommandMgr::init(int index, Pipeline *pipeline, renderPassType renderPassType, bool compileSelected)
+void CommandMgr::init(int index, Pipeline *pipeline, renderPassType renderPassType, bool compileSelected, renderPassCompatibility compatibility)
 {
     init(index, compileSelected);
-    beginRenderPass(renderPassType);
+    beginRenderPass(renderPassType, compatibility);
     bindPipeline(pipeline);
 }
 
-int CommandMgr::initNew(Pipeline *pipeline, renderPassType renderPassType, bool compileSelected)
+int CommandMgr::initNew(Pipeline *pipeline, renderPassType renderPassType, bool compileSelected, renderPassCompatibility compatibility)
 {
     int index = getCommandIndex();
 
-    init(index, pipeline, renderPassType, compileSelected);
+    init(index, pipeline, renderPassType, compileSelected, compatibility);
     return index;
 }
 
@@ -345,7 +345,7 @@ void CommandMgr::indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset,
     }
 }
 
-void CommandMgr::beginRenderPass(renderPassType renderPassType)
+void CommandMgr::beginRenderPass(renderPassType renderPassType, renderPassCompatibility compatibility)
 {
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -356,18 +356,37 @@ void CommandMgr::beginRenderPass(renderPassType renderPassType)
     std::array<VkClearValue, 2> clearValues{};
     clearValues[0].color = {0.0f, 0.f, 0.f, 0.0f};
     clearValues[1].depthStencil = {0.0f, 0};
-
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
 
     inRenderPass = true;
     if (singleUse) {
-        renderPassInfo.framebuffer = refSwapChainFramebuffers[refFrameIndex];
+        switch (compatibility) {
+            case renderPassCompatibility::DEFAULT:
+                renderPassInfo.framebuffer = refSwapChainFramebuffers[refFrameIndex];
+                break;
+            case renderPassCompatibility::RESOLVE:
+                renderPassInfo.framebuffer = refResolveFramebuffers[refFrameIndex];
+                break;
+            case renderPassCompatibility::SINGLE_SAMPLE:
+                renderPassInfo.framebuffer = refSingleSampleFramebuffers[refFrameIndex];
+                break;
+        }
         vkCmdBeginRenderPass(actual, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
         return;
     }
     for (uint32_t i = 0; i < frames.size(); i++) {
-        renderPassInfo.framebuffer = refSwapChainFramebuffers[i];
+        switch (compatibility) {
+            case renderPassCompatibility::DEFAULT:
+                renderPassInfo.framebuffer = refSwapChainFramebuffers[i];
+                break;
+            case renderPassCompatibility::RESOLVE:
+                renderPassInfo.framebuffer = refResolveFramebuffers[i];
+                break;
+            case renderPassCompatibility::SINGLE_SAMPLE:
+                renderPassInfo.framebuffer = refSingleSampleFramebuffers[i];
+                break;
+        }
         vkCmdBeginRenderPass(frames[i].actual, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
 }

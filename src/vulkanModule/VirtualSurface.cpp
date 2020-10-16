@@ -5,7 +5,7 @@
 #include "BufferMgr.hpp"
 #include <thread>
 
-VirtualSurface::VirtualSurface(Vulkan *_master, int index) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(_master->refFrameIndex), master(_master)
+VirtualSurface::VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits _sampleCount) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refRenderPassCompatibility(_master->refRenderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(_master->refResolveFramebuffers), refSingleSampleFramebuffers(_master->refSingleSampleFramebuffers), refFrameIndex(_master->refFrameIndex), sampleCount(_sampleCount), master(_master)
 {
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -27,7 +27,7 @@ VirtualSurface::VirtualSurface(Vulkan *_master, int index) : refDevice(_master->
     bufferMgr = std::make_unique<BufferMgr>(this);
 }
 
-VirtualSurface::VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer, int width, int height) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), master(_master)
+VirtualSurface::VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer, int width, int height) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPassExternal), refRenderPassCompatibility(_master->refRenderPassExternal), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(swapChainFramebuffers), refSingleSampleFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), sampleCount(VK_SAMPLE_COUNT_1_BIT), master(_master)
 {
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;

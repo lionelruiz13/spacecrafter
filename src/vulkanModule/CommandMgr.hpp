@@ -15,6 +15,12 @@ class PipelineLayout;
 class Buffer;
 class Set;
 
+/**
+    multisampling is considered disabled if
+    RESOLVE renderPassType require RESOLVE renderPassCompatibility
+    SINGLE_SAMPLE renderPassType require SINGLE_SAMPLE renderPassCompatibility
+    all other renderPassType require DEFAULT renderPassCompatibility
+*/
 enum class renderPassType : uint8_t {
     CLEAR = 0,
     DEFAULT = 1,
@@ -22,13 +28,24 @@ enum class renderPassType : uint8_t {
     CLEAR_DEPTH_BUFFER = 3, // Clear depth buffer and save it for next render pass
     USE_DEPTH_BUFFER = 4, // Load previous depth buffer and save it for next render pass
     USE_DEPTH_BUFFER_DONT_SAVE = 5, // Load previous depth buffer without saving it for next render pass
-    PRESENT = 6, // Prepair frameBuffer for presentation
+    PRESENT = 6, // Prepair frameBuffer for presentation (only use if multisampling is disabled)
     DRAW_USE = 7, // Prepair framebuffer for use in shader as sampler2D
-    SINGLE_PASS = 8, // combine CLEAR and PRESENT
+    SINGLE_PASS = 8, // combine CLEAR and PRESENT - require SINGLE_SAMPLE renderPassCompatibility
     SINGLE_PASS_DRAW_USE = 9, // combine CLEAR and DRAW_USE
     DEPTH_BUFFER_SINGLE_PASS_DRAW_USE = 10, // combine CLEAR, CLEAR_DEPTH_BUFFER_DONT_SAVE and DRAW_USE
     SINGLE_PASS_DRAW_USE_ADDITIVE = 11, // combine DEFAULT and DRAW_USE
-    DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE = 12 // combine CLEAR_DEPTH_BUFFER_DONT_SAVE and DRAW_USE
+    DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE = 12, // combine CLEAR_DEPTH_BUFFER_DONT_SAVE and DRAW_USE
+    RESOLVE_DEFAULT = 13, // multisampling resolve with OVERWRITE pass for single sampled attachment
+    RESOLVE_PRESENT = 14, // multisampling resolve with PRESENT action for single sampled attachment
+    SINGLE_SAMPLE_CLEAR = 15, // single sampled CLEAR without depth buffer attachment
+    SINGLE_SAMPLE_DEFAULT = 16, // single sampled DEFAULT without depth buffer attachment
+    SINGLE_SAMPLE_PRESENT = 17 // single sampled PRESENT without depth buffer attachment
+};
+
+enum class renderPassCompatibility : uint8_t {
+    DEFAULT = 0,
+    RESOLVE = 1,
+    SINGLE_SAMPLE = 2
 };
 
 class CommandMgr {
@@ -40,14 +57,14 @@ public:
     //! @param compileSelected if true, compile selected command
     void init(int index, bool compileSelected = true);
     //! Start recording command, begin render pass and bind pipeline
-    void init(int index, Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true);
+    void init(int index, Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
     //! Start recording new command, begin render pass, bind pipeline and return command index
-    int initNew(Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true);
+    int initNew(Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
     //! Change selected command, new selected command must be initialized and not compiled
     void select(int index);
     //! @brief begin render pass
     //! @param renderPassType inform where renderPass is situated
-    void beginRenderPass(renderPassType renderPassType);
+    void beginRenderPass(renderPassType renderPassType, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
     void endRenderPass();
     void updateVertex(VertexArray *vertex);
     void updateVertex(VertexBuffer *vertex);
@@ -107,6 +124,8 @@ private:
     VkCommandBuffer actual;
     const std::vector<VkRenderPass> &refRenderPass;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
+    const std::vector<VkFramebuffer> &refResolveFramebuffers;
+    const std::vector<VkFramebuffer> &refSingleSampleFramebuffers;
     VkCommandPool cmdPool; // used if singleUse is set to false
     //! Content attached to frame
     struct frame {

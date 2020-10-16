@@ -10,6 +10,7 @@ class VirtualSurface;
 class VertexBuffer;
 class VertexArray;
 class PipelineLayout;
+enum class renderPassCompatibility : uint8_t;
 
 const VkPipelineColorBlendAttachmentState BLEND_NONE {VK_FALSE, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
 const VkPipelineColorBlendAttachmentState BLEND_SRC_ALPHA {VK_TRUE, VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT};
@@ -41,6 +42,8 @@ public:
     void setTessellationState(uint32_t patchControlPoints = 32);
     //! Set line width (default : value of defaultLineWidth when created)
     void setLineWidth(float lineWidth);
+    //! Set which renderPass types this pipeline will be used with
+    void setRenderPassCompatibility(renderPassCompatibility compatibility);
     //! Build pipeline for use
     void build();
     VkPipeline &get() {return graphicsPipeline;}
@@ -61,6 +64,7 @@ private:
     VkPipelineDynamicStateCreateInfo dynamicState{};
     VkPipelineDepthStencilStateCreateInfo depthStencil{};
     VkPipelineTessellationStateCreateInfo tessellation{};
+    VkPipelineMultisampleStateCreateInfo multisampling{};
 
     struct SpecializationInfo {
         VkSpecializationInfo info;

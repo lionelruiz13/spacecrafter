@@ -22,7 +22,7 @@ class BufferMgr;
 
 class VirtualSurface {
 public:
-    VirtualSurface(Vulkan *_master, int index);
+    VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits _sampleCount);
     VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer, int width = -1, int height = -1);
     ~VirtualSurface();
     VkCommandPool &getTransferPool() {return transferPool;}
@@ -57,8 +57,12 @@ public:
 
     const VkDevice &refDevice;
     const std::vector<VkRenderPass> &refRenderPass;
+    const std::vector<VkRenderPass> &refRenderPassCompatibility;
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
+    const std::vector<VkFramebuffer> &refResolveFramebuffers;
+    const std::vector<VkFramebuffer> &refSingleSampleFramebuffers;
     const uint32_t &refFrameIndex;
+    const VkSampleCountFlagBits sampleCount;
 
     VkExtent2D swapChainExtent;
 private:

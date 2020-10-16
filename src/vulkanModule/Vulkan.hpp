@@ -23,7 +23,7 @@ class MemoryManager;
 
 class Vulkan {
 public:
-    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600, int chunkSize = 256*1024*1024, bool enableDebugLayers = true);
+    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600, int chunkSize = 256*1024*1024, bool enableDebugLayers = true, VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT);
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
     void sendFrame();
@@ -56,8 +56,12 @@ public:
     const VkDevice &refDevice;
     //! getRenderPass();
     const std::vector<VkRenderPass> &refRenderPass;
+    const std::vector<VkRenderPass> &refRenderPassExternal;
+    const std::vector<VkRenderPass> &refRenderPassCompatibility;
     //! getSwapChainFramebuffers();
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
+    const std::vector<VkFramebuffer> &refResolveFramebuffers;
+    const std::vector<VkFramebuffer> &refSingleSampleFramebuffers;
     const uint32_t &refFrameIndex;
     const VkSemaphore &refImageAvailableSemaphore;
 private:
@@ -104,63 +108,34 @@ private:
     void createImageViews();
     std::vector<VkImageView> swapChainImageViews;
 
-    void createRenderPass();
+    void createMultisample(VkSampleCountFlagBits sampleCount);
+    std::vector<VkImage> multisampleImage;
+    std::vector<VkImageView> multisampleImageView;
+    std::vector<SubMemory> multisampleImageMemory;
+
+    void createRenderPass(VkSampleCountFlagBits sampleCount);
     std::vector<VkRenderPass> renderPass;
+    std::vector<VkRenderPass> renderPassExternal;
+    std::vector<VkRenderPass> renderPassCompatibility;
 
-    void createFramebuffer();
+    void createFramebuffer(VkSampleCountFlagBits sampleCount);
     std::vector<VkFramebuffer> swapChainFramebuffers;
+    std::vector<VkFramebuffer> resolveFramebuffers;
+    std::vector<VkFramebuffer> singleSampleFramebuffers;
 
-    void createVirtualSurfaces();
+    void createVirtualSurfaces(VkSampleCountFlagBits sampleCount);
     std::vector<std::unique_ptr<VirtualSurface>> virtualSurface;
-
-    void createGraphicsPipeline();
-    VkShaderModule createShaderModule(const std::vector<char> &code);
-    VkPipelineLayout pipelineLayout;
-    VkPipeline graphicsPipeline;
 
     void createCommandPool();
     VkCommandPool commandPool;
 
-    VkCommandBuffer beginSingleTimeCommands(VkCommandPool cmdPool = VK_NULL_HANDLE);
-    void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue queue = VK_NULL_HANDLE);
-    void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkQueue queue = VK_NULL_HANDLE, VkImageAspectFlagBits aspectMask = VK_IMAGE_ASPECT_COLOR_BIT);
-    void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-
-    void createCommandBuffer();
-    std::vector<VkCommandBuffer> commandBuffers;
-
-    void createDepthResources();
+    void createDepthResources(VkSampleCountFlagBits sampleCount);
     VkImage depthImage;
     SubMemory depthImageMemory;
     VkImageView depthImageView;
 
-    void createVertexBuffer();
-    VkBuffer vertexBuffer;
-    VkDeviceMemory vertexBufferMemory;
-
-    void createIndexBuffer();
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
-
-    void createDescriptorSetLayout();
-    VkDescriptorSetLayout descriptorSetLayout;
-    //VkPipelineLayout pipelineLayout;
-
-    void createUniformBuffers();
-    std::vector<VkBuffer> uniformBuffers;
-    std::vector<VkDeviceMemory> uniformBuffersMemory;
-
-    void createDescriptorPool();
-    VkDescriptorPool descriptorPool;
-
-    void createDescriptorSets();
-    std::vector<VkDescriptorSet> descriptorSets;
-
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
     void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-
-    VkImageView textureImageView;
-    VkSampler textureSampler;
 
     VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT);
 

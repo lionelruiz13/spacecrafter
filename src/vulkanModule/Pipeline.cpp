@@ -3,6 +3,7 @@
 #include "Pipeline.hpp"
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
+#include "CommandMgr.hpp"
 #include "tools/log.hpp"
 #include <fstream>
 #include <algorithm>
@@ -63,6 +64,14 @@ Pipeline::Pipeline(VirtualSurface *_master, PipelineLayout *layout, std::vector<
     depthStencil.minDepthBounds = 0.0f; // Optionnel
     depthStencil.maxDepthBounds = 1.0f; // Optionnel
     depthStencil.stencilTestEnable = VK_FALSE;
+
+    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisampling.sampleShadingEnable = master->getDeviceFeatures().sampleRateShading;
+    multisampling.rasterizationSamples = master->sampleCount;
+    multisampling.minSampleShading = .2f;
+    multisampling.pSampleMask = nullptr;
+    multisampling.alphaToCoverageEnable = VK_FALSE;
+    multisampling.alphaToOneEnable = VK_FALSE;
 
     isOk = (pipelineInfo.layout != VK_NULL_HANDLE);
 }
@@ -198,6 +207,14 @@ void Pipeline::setLineWidth(float lineWidth)
     rasterizer.lineWidth = lineWidth;
 }
 
+void Pipeline::setRenderPassCompatibility(renderPassCompatibility compatibility)
+{
+   pipelineInfo.renderPass = master->refRenderPassCompatibility[static_cast<int>(compatibility)];
+   if (compatibility == renderPassCompatibility::SINGLE_SAMPLE) {
+       multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+   }
+}
+
 void Pipeline::bindVertex(VertexArray *vertex, uint32_t binding)
 {
     auto tmp = vertex->getVertexBindingDesc();
@@ -227,14 +244,6 @@ void Pipeline::build()
         }
         return;
     }
-    VkPipelineMultisampleStateCreateInfo multisampling{}; // Pour l'anti-aliasing
-    multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-    multisampling.sampleShadingEnable = VK_FALSE;
-    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-    multisampling.minSampleShading = 1.0f; // Optionnel
-    multisampling.pSampleMask = nullptr; // Optionnel
-    multisampling.alphaToCoverageEnable = VK_FALSE; // Optionnel
-    multisampling.alphaToOneEnable = VK_FALSE; // Optionnel
 
     VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;

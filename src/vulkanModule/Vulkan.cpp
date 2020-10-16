@@ -21,7 +21,7 @@
 
 bool Vulkan::isAlive = false;
 
-Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers) : refDevice(device), refRenderPass(renderPass), refSwapChainFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName)
+Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers, VkSampleCountFlagBits sampleCount) : refDevice(device), refRenderPass(renderPass), refRenderPassExternal(renderPassExternal), refRenderPassCompatibility(renderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(resolveFramebuffers), refSingleSampleFramebuffers(singleSampleFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName)
 {
     assert(!isAlive); // There must be only one Vulkan instance
     isAlive = true;
@@ -38,11 +38,13 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     initQueues(8);
     initSwapchain(width, height, nbVirtualSurfaces);
     createImageViews();
-    createRenderPass();
+    createRenderPass(sampleCount);
     createCommandPool();
     memoryManager = new MemoryManager(this, chunkSize);
-    createDepthResources();
-    createFramebuffer();
+    createDepthResources(sampleCount);
+    if (sampleCount != VK_SAMPLE_COUNT_1_BIT)
+        createMultisample(sampleCount);
+    createFramebuffer(sampleCount);
 
     VkPhysicalDeviceProperties physicalDeviceProperties;
     vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
@@ -67,7 +69,7 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     viewportState.scissorCount = 1;
     viewportState.pScissors = &scissor;
 
-    createVirtualSurfaces();
+    createVirtualSurfaces(sampleCount);
 
     VkSemaphoreCreateInfo semaphoreInfo;
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -105,8 +107,19 @@ Vulkan::~Vulkan()
     for (auto framebuffer : swapChainFramebuffers) {
         vkDestroyFramebuffer(device, framebuffer, nullptr);
     }
-    for (auto &tmp : renderPass)
-        vkDestroyRenderPass(device, tmp, nullptr);
+    for (uint32_t i = 0; i < multisampleImage.size(); ++i) {
+        vkDestroyImageView(device, multisampleImageView[i], nullptr);
+        vkDestroyImage(device, multisampleImage[i], nullptr);
+        memoryManager->free(multisampleImageMemory[i]);
+        vkDestroyFramebuffer(device, resolveFramebuffers[i], nullptr);
+        vkDestroyFramebuffer(device, singleSampleFramebuffers[i], nullptr);
+    }
+    if (renderPass[0] != renderPassExternal[0]) {
+        for (auto tmp : renderPass)
+            vkDestroyRenderPass(device, tmp, nullptr);
+    }
+    for (uint8_t i = 0; i < static_cast<uint8_t>(renderPassType::RESOLVE_DEFAULT); ++i)
+        vkDestroyRenderPass(device, renderPassExternal[i], nullptr);
     for (auto imageView : swapChainImageViews) {
         vkDestroyImageView(device, imageView, nullptr);
     }
@@ -294,8 +307,10 @@ void Vulkan::initQueues(uint32_t nbQueues)
     deviceFeatures.geometryShader = supportedDeviceFeatures.geometryShader;
     deviceFeatures.tessellationShader = supportedDeviceFeatures.tessellationShader;
     deviceFeatures.samplerAnisotropy = supportedDeviceFeatures.samplerAnisotropy;
+    deviceFeatures.sampleRateShading = supportedDeviceFeatures.sampleRateShading;
     deviceFeatures.multiDrawIndirect = supportedDeviceFeatures.multiDrawIndirect;
     deviceFeatures.wideLines = supportedDeviceFeatures.wideLines;
+    deviceFeatures.shaderFloat64 = supportedDeviceFeatures.shaderFloat64;
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -467,19 +482,52 @@ void Vulkan::createImageViews()
     }
 }
 
-void Vulkan::createVirtualSurfaces()
+void Vulkan::createMultisample(VkSampleCountFlagBits sampleCount)
 {
-    for (uint32_t i = 0; i < swapChain.size(); i++) {
-        virtualSurface.push_back(std::make_unique<VirtualSurface>(this, i));
+    multisampleImage.resize(swapChainImages.size());
+    multisampleImageMemory.resize(multisampleImage.size());
+    multisampleImageView.resize(multisampleImage.size());
+    for (uint32_t i = 0; i < multisampleImage.size(); ++i) {
+        VkImageCreateInfo imageInfo{};
+        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.extent.width = swapChainExtent.width;
+        imageInfo.extent.height = swapChainExtent.height;
+        imageInfo.extent.depth = 1;
+        imageInfo.mipLevels = 1;
+        imageInfo.arrayLayers = 1;
+        imageInfo.format = swapChainImageFormat;
+        imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageInfo.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        imageInfo.samples = sampleCount;
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        if (vkCreateImage(device, &imageInfo, nullptr, &multisampleImage[i]) != VK_SUCCESS) {
+            throw std::runtime_error("echec de la creation d'une image");
+        }
+
+        VkMemoryRequirements memRequirements;
+        vkGetImageMemoryRequirements(device, multisampleImage[i], &memRequirements);
+        multisampleImageMemory[i] = memoryManager->malloc(memRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        vkBindImageMemory(device, multisampleImage[i], multisampleImageMemory[i].memory, multisampleImageMemory[i].offset);
+        multisampleImageView[i] = createImageView(multisampleImage[i], swapChainImageFormat);
     }
 }
 
-void Vulkan::createRenderPass()
+void Vulkan::createVirtualSurfaces(VkSampleCountFlagBits sampleCount)
+{
+    for (uint32_t i = 0; i < swapChain.size(); i++) {
+        virtualSurface.push_back(std::make_unique<VirtualSurface>(this, i, sampleCount));
+    }
+}
+
+void Vulkan::createRenderPass(VkSampleCountFlagBits sampleCount)
 {
     VkAttachmentDescription colorAttachment{};
     //colorAttachment.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
     colorAttachment.format = swapChainImageFormat;
-    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    colorAttachment.samples = sampleCount;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -494,7 +542,7 @@ void Vulkan::createRenderPass()
     VkAttachmentDescription depthAttachment{};
     //depthAttachment.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
     depthAttachment.format = VK_FORMAT_D24_UNORM_S8_UINT;
-    depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthAttachment.samples = sampleCount;
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -531,80 +579,160 @@ void Vulkan::createRenderPass()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
-    renderPass.resize(13);
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[0]) != VK_SUCCESS) { // CLEAR
+    renderPass.resize(static_cast<uint8_t>(renderPassType::SINGLE_SAMPLE_PRESENT) + 1);
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::CLEAR]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[1]) != VK_SUCCESS) { // DEFAULT
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::DEFAULT]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[2]) != VK_SUCCESS) { // CLEAR_DEPTH_BUFFER_DONT_SAVE
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[3]) != VK_SUCCESS) { // CLEAR_DEPTH_BUFFER
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::CLEAR_DEPTH_BUFFER]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[4]) != VK_SUCCESS) { // USE_DEPTH_BUFFER
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::USE_DEPTH_BUFFER]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[5]) != VK_SUCCESS) { // USE_DEPTH_BUFFER_DONT_SAVE
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::USE_DEPTH_BUFFER_DONT_SAVE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[6]) != VK_SUCCESS) { // PRESENT
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::PRESENT]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[7]) != VK_SUCCESS) { // DRAW_USE
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::DRAW_USE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[8]) != VK_SUCCESS) { // SINGLE_PASS
-        throw std::runtime_error("Failed to create RenderPass");
+    if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+        attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::SINGLE_PASS]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create RenderPass");
+        }
     }
     attachments[0].finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[9]) != VK_SUCCESS) { // SINGLE_PASS_DRAW_USE
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::SINGLE_PASS_DRAW_USE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[10]) != VK_SUCCESS) { // DEPTH_BUFFER_SINGLE_PASS_DRAW_USE
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::DEPTH_BUFFER_SINGLE_PASS_DRAW_USE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[0].initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[11]) != VK_SUCCESS) { // SINGLE_PASS_DRAW_USE_ADDITIVE
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::SINGLE_PASS_DRAW_USE_ADDITIVE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[12]) != VK_SUCCESS) { // DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
+    if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+        // There is more than 1 sample, this call build renderPass
+        // Reset state of multisample attachments
+        attachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+        attachments[0].initialLayout = attachments[0].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        attachments[0].storeOp = attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        VkAttachmentDescription singleSampleColorAttachment{};
+        //singleSampleColorAttachment.flags = VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT;
+        singleSampleColorAttachment.format = swapChainImageFormat;
+        singleSampleColorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        singleSampleColorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        singleSampleColorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        singleSampleColorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        singleSampleColorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        singleSampleColorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        singleSampleColorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        VkAttachmentReference singleSampleColorAttachmentRef{};
+        singleSampleColorAttachmentRef.attachment = 2;
+        singleSampleColorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        // RESOLVE
+        attachments.push_back(singleSampleColorAttachment);
+        renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        renderPassInfo.pAttachments = attachments.data();
+        subpass.pResolveAttachments = &singleSampleColorAttachmentRef;
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::RESOLVE_DEFAULT]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create RenderPass");
+        }
+        attachments[2].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::RESOLVE_PRESENT]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create RenderPass");
+        }
+        // SINGLE_SAMPLE
+        renderPassInfo.attachmentCount = 1;
+        renderPassInfo.pAttachments = &singleSampleColorAttachment;
+        subpass.pDepthStencilAttachment = subpass.pResolveAttachments = nullptr;
+        singleSampleColorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_CLEAR]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create RenderPass");
+        }
+        singleSampleColorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+        singleSampleColorAttachment.initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_DEFAULT]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create RenderPass");
+        }
+        singleSampleColorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_PRESENT]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create RenderPass");
+        }
+        // SINGLE_PASS
+        singleSampleColorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        singleSampleColorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        singleSampleColorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::SINGLE_PASS]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create RenderPass");
+        }
+        // build renderPassExternal
+        renderPass.swap(renderPassExternal);
+        createRenderPass(VK_SAMPLE_COUNT_1_BIT);
+        renderPass.swap(renderPassExternal);
+    } else {
+        // There is 1 sample for the renderPass builded by this call
+        renderPass[(uint8_t)renderPassType::RESOLVE_DEFAULT] = renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_CLEAR] = renderPass[(uint8_t)renderPassType::CLEAR];
+     renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_DEFAULT] = renderPass[(uint8_t)renderPassType::DEFAULT];
+        renderPass[(uint8_t)renderPassType::RESOLVE_PRESENT] = renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_PRESENT] = renderPass[(uint8_t)renderPassType::PRESENT];
+        if (renderPassExternal.empty()) {
+            // This call has build renderPass, and multisampling is disabled
+            renderPassExternal = renderPass;
+        } else {
+            // This call has build renderPassExternal
+            return;
+        }
+    }
+    // For calls which build renderPass on this call :
+    renderPassCompatibility.push_back(renderPass[(uint8_t)renderPassType::DEFAULT]);
+    renderPassCompatibility.push_back(renderPass[(uint8_t)renderPassType::RESOLVE_DEFAULT]);
+    renderPassCompatibility.push_back(renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_DEFAULT]);
 }
 
-void Vulkan::createFramebuffer()
+void Vulkan::createFramebuffer(VkSampleCountFlagBits sampleCount)
 {
     swapChainFramebuffers.resize(swapChainImageViews.size());
     for (size_t i = 0; i < swapChainImageViews.size(); i++) {
         VkImageView attachments[] = {
-            swapChainImageViews[i],
+            ((sampleCount == VK_SAMPLE_COUNT_1_BIT) ? swapChainImageViews[i] : multisampleImageView[i]),
             depthImageView
         };
 
         VkFramebufferCreateInfo framebufferInfo{};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-        framebufferInfo.renderPass = renderPass[1];
+        framebufferInfo.renderPass = renderPassCompatibility.front();
         framebufferInfo.attachmentCount = 2;
         framebufferInfo.pAttachments = attachments;
         framebufferInfo.width = swapChainExtent.width;
@@ -612,6 +740,39 @@ void Vulkan::createFramebuffer()
         framebufferInfo.layers = 1;
 
         if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+            throw std::runtime_error("échec de la création d'un framebuffer!");
+        }
+    }
+    if (sampleCount == VK_SAMPLE_COUNT_1_BIT) {
+        resolveFramebuffers = swapChainFramebuffers;
+        singleSampleFramebuffers = swapChainFramebuffers;
+        return;
+    }
+    resolveFramebuffers.resize(swapChainFramebuffers.size());
+    singleSampleFramebuffers.resize(swapChainFramebuffers.size());
+    for (size_t i = 0; i < swapChainFramebuffers.size(); i++) {
+        VkImageView attachments[] = {
+            multisampleImageView[i],
+            depthImageView,
+            swapChainImageViews[i]
+        };
+
+        VkFramebufferCreateInfo framebufferInfo{};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = renderPassCompatibility[static_cast<uint8_t>(renderPassCompatibility::RESOLVE)];
+        framebufferInfo.attachmentCount = 3;
+        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.width = swapChainExtent.width;
+        framebufferInfo.height = swapChainExtent.height;
+        framebufferInfo.layers = 1;
+
+        if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &resolveFramebuffers[i]) != VK_SUCCESS) {
+            throw std::runtime_error("échec de la création d'un framebuffer!");
+        }
+        framebufferInfo.renderPass = renderPassCompatibility[static_cast<uint8_t>(renderPassCompatibility::SINGLE_SAMPLE)];
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = &swapChainImageViews[i];
+        if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &singleSampleFramebuffers[i]) != VK_SUCCESS) {
             throw std::runtime_error("échec de la création d'un framebuffer!");
         }
     }
@@ -687,7 +848,7 @@ void Vulkan::free(SubMemory& bufferMemory) {memoryManager->free(bufferMemory);}
 void Vulkan::mapMemory(SubMemory& bufferMemory, void **data) {memoryManager->mapMemory(bufferMemory, data);}
 void Vulkan::unmapMemory(SubMemory& bufferMemory) {memoryManager->unmapMemory(bufferMemory);}
 
-void Vulkan::createDepthResources()
+void Vulkan::createDepthResources(VkSampleCountFlagBits sampleCount)
 {
     VkImageCreateInfo imageInfo{};
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -701,7 +862,7 @@ void Vulkan::createDepthResources()
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imageInfo.samples = sampleCount;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     if (vkCreateImage(device, &imageInfo, nullptr, &depthImage) != VK_SUCCESS) {
