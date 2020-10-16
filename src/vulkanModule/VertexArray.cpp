@@ -58,7 +58,9 @@ VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.m
     attributeDesc2.assign(model.attributeDesc2.begin(), model.attributeDesc2.end());
     vertexBuffer = model.vertexBuffer;
     indexBuffer = model.indexBuffer;
-
+    vertexAccess = model.vertexAccess;
+    instanceAccess = model.instanceAccess;
+    indexAccess = model.indexAccess;
     pVertexData = model.pVertexData;
     pIndexData = model.pIndexData;
 }
@@ -66,38 +68,25 @@ VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.m
 void VertexArray::build(int _maxVertices)
 {
     maxVertices = _maxVertices;
-    vertexBuffer = std::make_shared<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc);
+    vertexBuffer = std::make_shared<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc, (vertexAccess == BufferAccess::STREAM_LOCAL));
     pVertexData = static_cast<float *>(vertexBuffer->data);
 }
 
 void VertexArray::buildInstanceBuffer(int maxInstances)
 {
-    instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2);
+    instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2, (instanceAccess == BufferAccess::STREAM_LOCAL));
 }
 
 void VertexArray::bind(CommandMgr *cmdMgr)
 {
     if (cmdMgr == nullptr)
         cmdMgr = mgr;
-    if (vertexUpdate) {
-        vertexBuffer->update();
-        vertexUpdate = false;
-    }
     cmdMgr->bindVertex(vertexBuffer.get());
-    if (instanceBuffer) {
-        if (instanceUpdate) {
-            instanceBuffer->update();
-            instanceUpdate = false;
-        }
+    if (instanceBuffer)
         cmdMgr->bindVertex(vertexBuffer.get(), 1);
-    }
-    if (indexBuffer) {
-        if (indexUpdate) {
-            indexBuffer->update();
-            indexUpdate = false;
-        }
+    if (indexBuffer)
         cmdMgr->bindIndex(indexBuffer.get(), indexType);
-    }
+    update();
 }
 
 void VertexArray::update()
@@ -105,17 +94,23 @@ void VertexArray::update()
     if (vertexUpdate) {
         vertexBuffer->update();
         vertexUpdate = false;
+        if (vertexAccess == BufferAccess::STATIC)
+            vertexBuffer->detach();
     }
     if (instanceBuffer) {
         if (instanceUpdate) {
             instanceBuffer->update();
             instanceUpdate = false;
+            if (instanceAccess == BufferAccess::STATIC)
+                instanceBuffer->detach();
         }
     }
     if (indexBuffer) {
         if (indexUpdate) {
             indexBuffer->update();
             indexUpdate = false;
+            if (indexAccess == BufferAccess::STATIC)
+                indexBuffer->detach();
         }
     }
 }
@@ -141,16 +136,18 @@ void VertexArray::registerVertexBuffer(const BufferType& bt, const BufferAccess&
     blockSize += getDataSize(bt);
     bindingDesc.stride = blockSize * sizeof(float);
     attributeDesc.push_back(desc);
+    if (vertexAccess < ba) vertexAccess = ba;
 }
 
 void VertexArray::fillVertexBuffer(const std::vector<float> &data)
 {
+    assert(getVertexOffset() + data.size() / blockSize <= maxVertices);
     memcpy(pVertexData, data.data(), data.size() * sizeof(float));
+    vertexUpdate = true;
 }
 
 void VertexArray::fillVertexBuffer(const BufferType& bt, const std::vector<float> &data)
 {
-    assert(getVertexOffset() + data.size() / getDataSize(bt) <= maxVertices);
     if (attributeDesc.size() == 1) { // Optimize if there is only one BufferType
         fillVertexBuffer(data);
         return;
@@ -160,6 +157,7 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, const std::vector<float
 
 void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size, const float* data)
 {
+    assert(getVertexOffset() + size / getDataSize(bt) <= maxVertices);
     float *tmp = pVertexData + offset[getLayout(bt)];
     const uint8_t dataSize = getDataSize(bt);
     size /= dataSize;
@@ -181,6 +179,7 @@ void VertexArray::registerInstanceBuffer(const BufferAccess& ba, VkFormat format
     blockSize += stride;
     bindingDesc2.stride = blockSize * sizeof(float);
     attributeDesc2.push_back(desc);
+    if (instanceAccess < ba) instanceAccess = ba;
 }
 
 float *VertexArray::getInstanceBufferPtr()
@@ -194,6 +193,7 @@ void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size,
     indexType = _indexType;
     maxIndex = size;
     pIndexData = static_cast<unsigned int *>(indexBuffer->data);
+    indexAccess = ba;
 }
 
 void VertexArray::fillIndexBuffer(const std::vector<unsigned int> &data)

@@ -1,5 +1,6 @@
 #include "VirtualSurface.hpp"
 #include "VertexBuffer.hpp"
+#include "tools/log.hpp"
 
 VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
     const VkVertexInputBindingDescription &_bindingDesc,
@@ -46,10 +47,8 @@ VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
 
 VertexBuffer::~VertexBuffer()
 {
-    master->unmapMemory(stagingBufferMemory);
+    detach();
     vkDeviceWaitIdle(master->refDevice);
-    vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
-    master->free(stagingBufferMemory);
     vkDestroyBuffer(master->refDevice, vertexBuffer, nullptr);
     master->free(vertexBufferMemory);
 }
@@ -63,8 +62,12 @@ void VertexBuffer::print()
 
 void VertexBuffer::update(int size)
 {
-    if (submitInfo.commandBufferCount > 0 && size != 0)
-        master->submitTransfer(&submitInfo);
+    if (submitInfo.commandBufferCount > 0) {
+        if (size != 0)
+            master->submitTransfer(&submitInfo);
+    } else {
+        cLog::get()->write("Attempt to update detached VertexBuffer", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+    }
 }
 
 void VertexBuffer::update(VkCommandBuffer cmdBuffer)
@@ -72,4 +75,20 @@ void VertexBuffer::update(VkCommandBuffer cmdBuffer)
     VkBufferCopy copyRegion{};
     copyRegion.size = bufferSize;
     vkCmdCopyBuffer(cmdBuffer, stagingBuffer, vertexBuffer, 1, &copyRegion);
+}
+
+void VertexBuffer::detach()
+{
+    if (stagingBuffer != VK_NULL_HANDLE) {
+        master->unmapMemory(stagingBufferMemory);
+        master->waitTransferQueueIdle();
+        if (submitInfo.commandBufferCount > 0) {
+            vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &updater);
+            submitInfo.commandBufferCount = 0;
+        }
+        vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
+        master->free(stagingBufferMemory);
+        data = nullptr;
+        stagingBuffer = VK_NULL_HANDLE;
+    }
 }

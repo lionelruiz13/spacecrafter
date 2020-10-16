@@ -25,6 +25,8 @@ public:
     const std::vector<VkVertexInputAttributeDescription> &getAttributeDesc() {return attributeDesc;}
     //! Intermediate buffer, write your vertex here
     void *data;
+    //! Destroy staging resources and only keep GPU-side buffer
+    void detach();
 private:
     VirtualSurface *master;
     VkCommandBuffer updater;

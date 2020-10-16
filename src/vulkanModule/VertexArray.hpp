@@ -104,6 +104,9 @@ private:
     std::unique_ptr<VertexBuffer> instanceBuffer;
     std::shared_ptr<Buffer> indexBuffer;
     unsigned int *pIndexData = nullptr;
+    BufferAccess vertexAccess = BufferAccess::STATIC;
+    BufferAccess instanceAccess = BufferAccess::STATIC;
+    BufferAccess indexAccess;
     VkVertexInputBindingDescription bindingDesc{0, 0, VK_VERTEX_INPUT_RATE_VERTEX};
     VkVertexInputBindingDescription bindingDesc2{0, 0, VK_VERTEX_INPUT_RATE_INSTANCE};
     std::vector<VkVertexInputAttributeDescription> attributeDesc;

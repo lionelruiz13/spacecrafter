@@ -19,6 +19,8 @@ public:
     void update();
     //! Intermediate buffer, write your vertex here
     void *data;
+    //! Release staging resources
+    void detach();
 private:
     VirtualSurface *master;
     VkCommandBuffer updater;

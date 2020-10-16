@@ -38,10 +38,8 @@ Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : ma
 
 Buffer::~Buffer()
 {
-    master->unmapMemory(stagingBufferMemory);
+    detach();
     vkDeviceWaitIdle(master->refDevice);
-    vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
-    master->free(stagingBufferMemory);
     vkDestroyBuffer(master->refDevice, buffer, nullptr);
     master->free(bufferMemory);
 }
@@ -54,4 +52,19 @@ void Buffer::print()
 void Buffer::update()
 {
     master->submitTransfer(&submitInfo);
+}
+
+void Buffer::detach()
+{
+    if (data != nullptr) {
+        master->unmapMemory(stagingBufferMemory);
+        master->waitTransferQueueIdle();
+        if (submitInfo.commandBufferCount > 0) {
+            vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &updater);
+            submitInfo.commandBufferCount = 0;
+        }
+        vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
+        master->free(stagingBufferMemory);
+        data = nullptr;
+    }
 }
