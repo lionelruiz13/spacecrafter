@@ -749,9 +749,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 		frameIndex = surface->getNextFrame();
 		surface->releaseFrame();
 		std::thread(HipStarMgr::sExecuteDraw, this).detach();
-		std::cout << "HipStarMgr FBO write\n";
 	}
-	std::cout << "HipStarMgr FBO draw\n";
 	context->commandMgr->setSubmission(dataFBO[frameIndex].commandIndex);
 	//enable FBO
 	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
