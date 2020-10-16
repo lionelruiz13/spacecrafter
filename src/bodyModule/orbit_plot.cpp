@@ -32,13 +32,13 @@ Pipeline *OrbitPlot::pipelineOrbit2d, *OrbitPlot::pipelineOrbit3d;
 PipelineLayout *OrbitPlot::layoutOrbit2d, *OrbitPlot::layoutOrbit3d;
 ThreadContext *OrbitPlot::context;
 
-OrbitPlot::OrbitPlot(Body* _body, int segments)
+OrbitPlot::OrbitPlot(Body* _body, int segments, int nbAdditionnalPoints)
 {
 	body = _body;
 	ORBIT_POINTS = segments;
 	orbitPoint = new Vec3d[ORBIT_POINTS];
 	orbit = std::make_unique<VertexArray>(*m_Orbit);
-	orbit->build(segments);
+	orbit->build(segments + nbAdditionnalPoints);
 	orbit_cached = 0;
 }
 
@@ -57,7 +57,7 @@ void OrbitPlot::createSC_context(ThreadContext *_context)
 	context = _context;
 	cmdMgr = context->commandMgr;
 	m_Orbit = context->global->tracker->track(new VertexArray(context->surface, cmdMgr));
-	m_Orbit->registerVertexBuffer(BufferType::POS3D, BufferAccess::STREAM);
+	m_Orbit->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
 
 	// shaderOrbit2d = context->global->tracker->track(new shaderProgram());
 	// shaderOrbit2d->init( "body_orbit2d.vert", "body_orbit2d.geom","body_orbit2d.frag");

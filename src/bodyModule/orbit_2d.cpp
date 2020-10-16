@@ -23,7 +23,7 @@
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 
-Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments)
+Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments, ORBIT_ADDITIONNAL_POINTS)
 {
 	set = std::make_unique<Set>(context->surface, context->setMgr, layoutOrbit2d);
 	uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
@@ -37,9 +37,8 @@ Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments)
 	cmdMgr->init(commandIndex, pipelineOrbit2d);
 	cmdMgr->bindSet(layoutOrbit2d, set.get());
 	cmdMgr->bindSet(layoutOrbit2d, context->global->globalSet, 1);
-	orbit->bind();
-	cmdMgr->draw(segments);
-
+	cmdMgr->bindVertex(orbit.get());
+	cmdMgr->draw(segments + ORBIT_ADDITIONNAL_POINTS);
 	cmdMgr->compile();
 }
 
@@ -102,9 +101,24 @@ void Orbit2D::computeShader()
 //-------------------------------------------------------------------------
 	//ICI insertion du point passant par le centre de la planete
 	body->orbit_position= body->get_ecliptic_pos();
-	vecOrbit2dVertex.push_back( (float) (body->orbit_position[0]-body->radius/10)  );
-	vecOrbit2dVertex.push_back( (float) (body->orbit_position[1]-body->radius/10) );
-	vecOrbit2dVertex.push_back( (float) (body->orbit_position[2]-0*body->radius/10)  );
+	Vec3f center(body->orbit_position[0]-body->radius/10,
+				 body->orbit_position[1]-body->radius/10,
+			 	 body->orbit_position[2]-0*body->radius/10);
+	for (int n = 1; n<(ORBIT_ADDITIONNAL_POINTS / 2 + 1); n++) {
+		float coef = ((float) n) / (ORBIT_ADDITIONNAL_POINTS / 2. + 1.);
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][0] * (1 - coef) + center[0] * coef);
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][1] * (1 - coef) + center[1] * coef);
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][2] * (1 - coef) + center[2] * coef);
+	}
+	vecOrbit2dVertex.push_back(center[0]);
+	vecOrbit2dVertex.push_back(center[1]);
+	vecOrbit2dVertex.push_back(center[2]);
+	for (int n = 1; n<(ORBIT_ADDITIONNAL_POINTS / 2 + 1); n++) {
+		float coef = ((float) n) / (ORBIT_ADDITIONNAL_POINTS / 2. + 1.);
+		vecOrbit2dVertex.push_back(center[0] * (1 - coef) + orbitPoint[ORBIT_POINTS/2+1][0] * coef);
+		vecOrbit2dVertex.push_back(center[1] * (1 - coef) + orbitPoint[ORBIT_POINTS/2+1][1] * coef);
+		vecOrbit2dVertex.push_back(center[2] * (1 - coef) + orbitPoint[ORBIT_POINTS/2+1][2] * coef);
+	}
 //-------------------------------------------------------------------------
 	for ( int n= ORBIT_POINTS/2+1; n< ORBIT_POINTS-1; n++) {
 		vecOrbit2dVertex.push_back( (float)orbitPoint[n][0] );

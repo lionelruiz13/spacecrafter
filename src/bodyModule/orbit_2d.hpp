@@ -20,6 +20,8 @@
 #ifndef ORBIT2D_HPP
 #define ORBIT2D_HPP
 
+#define ORBIT_ADDITIONNAL_POINTS 40
+
 #include "bodyModule/orbit_plot.hpp"
 #include "tools/fader.hpp"
 #include "renderGL/shader.hpp"

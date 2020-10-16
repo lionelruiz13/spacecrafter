@@ -24,7 +24,7 @@
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 
-Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments)
+Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments, 1)
 {
 	set = std::make_unique<Set>(context->surface, context->setMgr, layoutOrbit3d);
 	uModelViewMatrix = std::make_unique<Uniform>(context->surface, sizeof(Mat4f));
@@ -40,9 +40,8 @@ Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments)
 	commandIndex = cmdMgr->getCommandIndex();
 	cmdMgr->init(commandIndex, pipelineOrbit3d);
 	cmdMgr->bindSet(layoutOrbit3d, set.get());
-	orbit->bind();
-	cmdMgr->draw(segments);
-
+	cmdMgr->bindVertex(orbit.get());
+	cmdMgr->draw(segments + 1);
 	cmdMgr->compile();
 }
 

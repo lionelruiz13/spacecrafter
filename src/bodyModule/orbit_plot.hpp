@@ -40,7 +40,7 @@ public:
 
 	OrbitPlot()=delete;
 	OrbitPlot(const OrbitPlot&) = delete;
-	OrbitPlot(Body* body, int segments);
+	OrbitPlot(Body* body, int segments, int nbAdditionnalPoints = 0);
 
 	virtual ~OrbitPlot();
 
