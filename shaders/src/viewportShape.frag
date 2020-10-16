@@ -17,10 +17,9 @@ layout(location=0) out vec4 FragColor;
 void main(void)
 {
 	vec2 pos = gl_FragCoord.xy-vec2(radius+decalagex,radius+decalagey);
-	float dist_squared = dot(pos, pos);
+	float opacity = min(0.5 + length(pos) - radius, 1.0);
 
-	if (dist_squared > radius*radius)
-		FragColor = vec4(0.0,0.0,0.0,1.0);
-	else
+	if (opacity < 0.)
 		discard;
+	FragColor = vec4(0.0,0.0,0.0,opacity);
 }
