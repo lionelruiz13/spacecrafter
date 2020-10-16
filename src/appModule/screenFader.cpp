@@ -73,6 +73,7 @@ void ScreenFader::createSC_context(ThreadContext *context)
 
 	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
 	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	pipeline->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
 	pipeline->bindShader("screenFader.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipeline->bindShader("screenFader.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipeline->bindVertex(m_screenGL.get());
@@ -82,12 +83,12 @@ void ScreenFader::createSC_context(ThreadContext *context)
 
 	resolveCommandIndex = cmdMgr->getCommandIndex();
 	cmdMgr->init(resolveCommandIndex);
-	cmdMgr->beginRenderPass(renderPassType::PRESENT);
+	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_PRESENT, renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->compile();
 
 	commandIndex = cmdMgr->getCommandIndex();
 	cmdMgr->init(commandIndex);
-	cmdMgr->beginRenderPass(renderPassType::PRESENT);
+	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_PRESENT, renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindPipeline(pipeline.get());
 	cmdMgr->bindSet(layout.get(), set.get());
 	m_screenGL->bind();

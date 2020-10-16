@@ -221,6 +221,7 @@ void Image::createSC_context(ThreadContext *_context)
 	// Pipeline
 	m_pipelineViewport = context->global->tracker->track(new Pipeline(context->surface, m_layoutViewport));
 	m_pipelineViewport->setDepthStencilMode();
+	m_pipelineViewport->setRenderPassCompatibility(renderPassCompatibility::RESOLVE);
 	m_pipelineViewport->bindVertex(m_imageViewportGL);
 	m_pipelineViewport->bindShader("imageViewport.vert.spv");
 	m_pipelineViewport->bindShader("imageViewport.frag.spv");
@@ -229,6 +230,7 @@ void Image::createSC_context(ThreadContext *_context)
 		m_pipelineUnified[i] = context->global->tracker->track(new Pipeline(context->surface, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV));
 		m_pipelineUnified[i]->setDepthStencilMode();
 		m_pipelineUnified[i]->setCullMode(true);
+		m_pipelineUnified[i]->setRenderPassCompatibility(renderPassCompatibility::RESOLVE);
 		m_pipelineUnified[i]->bindVertex(m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 	}
@@ -552,7 +554,7 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 void Image::beginDraw()
 {
 	cmdMgr->init(commandIndex, false);
-	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->beginRenderPass(renderPassType::RESOLVE_DEFAULT, renderPassCompatibility::RESOLVE);
 	pipelineUsed = nullptr;
 }
 

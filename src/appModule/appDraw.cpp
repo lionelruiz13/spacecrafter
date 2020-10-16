@@ -102,7 +102,8 @@ void AppDraw::createSC_context(ThreadContext *context)
 
     pipelineViewportShape = std::make_unique<Pipeline>(context->surface, layoutViewportShape.get());
     pipelineViewportShape->setDepthStencilMode(VK_FALSE, VK_FALSE);
-    pipelineViewportShape->setBlendMode(BLEND_NONE);
+    pipelineViewportShape->setBlendMode(BLEND_SRC_ALPHA);
+    pipelineViewportShape->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
     pipelineViewportShape->bindShader("viewportShape.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
     pipelineViewportShape->bindShader("viewportShape.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
     pipelineViewportShape->bindVertex(m_viewportGL.get());
@@ -113,19 +114,20 @@ void AppDraw::createSC_context(ThreadContext *context)
     VkPipelineColorBlendAttachmentState blend = BLEND_NONE;
     blend.blendEnable = VK_TRUE;
     blend.srcColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
-    pipelineViewportShape->setBlendMode(blend);
+    pipelineColorInverse->setBlendMode(blend);
+    pipelineColorInverse->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
 	pipelineColorInverse->bindShader("colorInverse.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipelineColorInverse->bindShader("colorInverse.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
     pipelineColorInverse->bindVertex(m_viewportGL.get());
 	pipelineColorInverse->build();
 
-    commandIndexViewportShape = cmdMgr->initNew(pipelineViewportShape.get());
+    commandIndexViewportShape = cmdMgr->initNew(pipelineViewportShape.get(), renderPassType::SINGLE_SAMPLE_DEFAULT, true, renderPassCompatibility::SINGLE_SAMPLE);
     cmdMgr->bindSet(layoutViewportShape.get(), set.get());
     m_viewportGL->bind();
     cmdMgr->draw(4);
     cmdMgr->compile();
 
-    commandIndexColorInverse = cmdMgr->initNew(pipelineColorInverse.get());
+    commandIndexColorInverse = cmdMgr->initNew(pipelineColorInverse.get(), renderPassType::SINGLE_SAMPLE_DEFAULT, true, renderPassCompatibility::SINGLE_SAMPLE);
     m_viewportGL->bind();
     cmdMgr->draw(4);
     cmdMgr->compile();
@@ -140,6 +142,14 @@ void AppDraw::drawViewportShape()
 void AppDraw::drawColorInverse()
 {
     cmdMgr->setSubmission(commandIndexColorInverse);
+}
+
+void AppDraw::setLineWidth(float w)
+{
+   if (abs(m_lineWidth-w)<0.5f) {
+       Pipeline::setDefaultLineWidth(m_lineWidth);
+   }
+   m_lineWidth = w;
 }
 
 void AppDraw::initSplash(ThreadContext *context)
@@ -169,6 +179,7 @@ void AppDraw::initSplash(ThreadContext *context)
     std::unique_ptr<Pipeline> pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
     pipeline->setBlendMode(BLEND_NONE);
     pipeline->setDepthStencilMode();
+    pipeline->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
     pipeline->bindShader("splash.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
     pipeline->bindShader("splash.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
     pipeline->bindVertex(splash.get());
@@ -213,9 +224,7 @@ void AppDraw::initSplash(ThreadContext *context)
     renderPassInfo.renderPass = master->refRenderPass[static_cast<uint8_t>(renderPassType::SINGLE_PASS)];
     renderPassInfo.renderArea.offset = {0, 0};
     renderPassInfo.renderArea.extent = master->swapChainExtent;
-    std::vector<VkFramebuffer> swapChainFramebuffers;
-    context->global->vulkan->assignSwapChainFramebuffers(swapChainFramebuffers, 0);
-    renderPassInfo.framebuffer = swapChainFramebuffers[frameIndex];
+    renderPassInfo.framebuffer = master->refSingleSampleFramebuffers[frameIndex];
 
     std::array<VkClearValue, 2> clearValues{};
     clearValues[0].color = {0.0f, 0.f, 0.f, 0.0f};

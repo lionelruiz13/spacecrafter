@@ -72,6 +72,7 @@
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/ResourceTracker.hpp"
+#include "vulkanModule/Pipeline.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
 
@@ -82,13 +83,17 @@ App::App( SDLFacade* const sdl )
 	mSdl->getResolution( &width, &height );
 
 	settings = AppSettings::Instance();
+	InitParser conf;
+	settings->loadAppSettings( &conf );
+	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 
-	globalContext.vulkan = new Vulkan("spacecrafter", "No Engine", mSdl->getWindow(), 1, width, height, 256*1024*1024, cLog::get()->getDebug());
+	int antialiasing = 1 << static_cast<int>(std::log2(conf.getInt(SCS_RENDERING, SCK_ANTIALIASING)|1));
+	globalContext.vulkan = new Vulkan("spacecrafter", nullptr, mSdl->getWindow(), 1, width, height, 256*1024*1024, cLog::get()->getDebug(), static_cast<VkSampleCountFlagBits>(antialiasing));
 	globalContext.tracker = new ResourceTracker();
 	globalContext.textureMgr = new TextureMgr(globalContext.vulkan);
 	context.global = &globalContext;
 	context.surface = globalContext.vulkan->getVirtualSurface();
-	context.setMgr = new SetMgr(context.surface, 256);
+	context.setMgr = new SetMgr(context.surface, 512);
 	context.commandMgr = new CommandMgr(context.surface, 64, true);
 	context.commandMgrSingleUse = new CommandMgr(context.surface, 8, true, true, true);
 	context.commandMgrDynamic = new CommandMgr(context.surface, 8, true, false, true, true);
@@ -254,7 +259,7 @@ void App::init()
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
 
-	appDraw->setLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
+	//appDraw->setLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 	appDraw->setFlagAntialiasLines(conf.getBoolean(SCS_RENDERING, SCK_FLAG_ANTIALIAS_LINES));
 
 	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));

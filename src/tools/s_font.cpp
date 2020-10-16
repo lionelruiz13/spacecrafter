@@ -132,12 +132,14 @@ void s_font::createSC_context(ThreadContext *_context)
 	layoutPrint->build();
 
 	pipelineHorizontal = context->global->tracker->track(new Pipeline(context->surface, layoutHorizontal));
+	pipelineHorizontal->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
 	pipelineHorizontal->bindVertex(vertexHorizontal);
 	pipelineHorizontal->bindShader("sfontHorizontal.vert.spv");
 	pipelineHorizontal->bindShader("sfontHorizontal.frag.spv");
 	pipelineHorizontal->build();
 
 	pipelinePrint = context->global->tracker->track(new Pipeline(context->surface, layoutPrint));
+	pipelinePrint->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
 	pipelinePrint->bindVertex(vertexPrint);
 	pipelinePrint->bindShader("sfontPrint.vert.spv");
 	pipelinePrint->bindShader("sfontPrint.frag.spv");

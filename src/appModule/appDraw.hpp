@@ -65,12 +65,7 @@ public:
 	//! dessine le rendu final du logiciel en inversant les couleurs
 	void drawColorInverse();
 
-	void setLineWidth(float w) {
-		if (abs(m_lineWidth-w)<0.5f) {
-			glLineWidth(m_lineWidth);
-		}
-		m_lineWidth = w;
-	}
+	void setLineWidth(float w);
 	float getLineWidth() const {
 		return m_lineWidth;
 	}
