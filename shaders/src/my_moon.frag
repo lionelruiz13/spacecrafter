@@ -16,7 +16,6 @@ layout (binding=1) uniform moonFrag {
 	float MoonRadius1;
 	vec3 UmbraColor;
 	float SunHalfAngle;
-	float Ambient;
 };
 
 // uniform vec3 MoonPosition; 
@@ -38,6 +37,7 @@ layout (location=1) in vec2 TexCoord;
 layout (location=2) in vec3 Normal;
 layout (location=3) in vec3 Light;
 layout (location=4) in vec3 TangentLight;
+layout (location=5) in float Ambient;
 
 
 void main(void)

@@ -36,36 +36,35 @@ const float MinDepth=1.0;
 
 void main(void)
 {
-    // Position in camera coordinates
-    vec4 p = ViewProjection*Model[3].xyzw;
-
-    // 0.0=close 1.0=far
-    float ratio=(abs(p.z-1.0)-MinDepth)/(MaxDepth-MinDepth);
-
-
-    float depth = clamp (ratio,0.0,1.0);
-    depth=1.0-depth;
-    depth=depth*depth*depth*depth*depth*depth*depth*depth;
-
-    depth=1.0-depth;
-
-    float tessLevel= mix(MaxTessLevel,MinTessLevel,depth);
-
     if(ID==0)
     {
-        gl_TessLevelInner[0]=1;
-        gl_TessLevelInner[1]=1;
+        // Position in camera coordinates
+        vec4 p = ViewProjection*Model[3].xyzw;
 
-        gl_TessLevelOuter[0]=1;
-        gl_TessLevelOuter[1]=1;
-        gl_TessLevelOuter[2]=1;
-        gl_TessLevelOuter[3]=1;
+        // 0.0=close 1.0=far
+        float ratio=(abs(p.z-1.0)-MinDepth)/(MaxDepth-MinDepth);
+
+
+        float depth = clamp (ratio,0.0,1.0);
+        depth=1.0-depth;
+        depth=depth*depth*depth*depth*depth*depth*depth*depth;
+
+        depth=1.0-depth;
+
+        float tessLevel= mix(MaxTessLevel,MinTessLevel,depth);
+
+        gl_TessLevelInner[0]=1; // I think it should be tessLevel
+        gl_TessLevelInner[1]=1; // Not needed
+
+        gl_TessLevelOuter[0]=1; // I think it should be MaxTessLevel
+        gl_TessLevelOuter[1]=1; // I think it should be MaxTessLevel
+        gl_TessLevelOuter[2]=1; // I think it should be MaxTessLevel
+        gl_TessLevelOuter[3]=1; // Not needed
     }
-
 
     TexCoordOut[ID] = TexCoordIn[ID];
     NormalOut[ID] = NormalIn[ID];
-    //~ tcs_out[ID].tangent = tcs_in[ID].tangent;
     glPositionOut[ID] = glPositionIn[ID];
+    //~ tcs_out[ID].tangent = tcs_in[ID].tangent;
     // gl_out[ID].gl_Position = gl_in[ID].gl_Position;
 }

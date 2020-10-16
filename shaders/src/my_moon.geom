@@ -80,6 +80,7 @@ layout (location=1) out vec2 TexCoordOut;
 layout (location=2) out vec3 NormalOut;
 layout (location=3) out vec3 LightOut;
 layout (location=4) out vec3 TangentLightOut;
+layout (location=5) out float Ambient;
 
 float coeffHeightMap = 0.05 * TesParam[2];
 
@@ -120,6 +121,7 @@ void main()
 		TangentLightOut=TangentLight;
 		//gs_out.NdotL = NdotL;
 		TexCoordOut = TexCoordIn[i];
+		Ambient = ambient;
 
 		EmitVertex();
 	}

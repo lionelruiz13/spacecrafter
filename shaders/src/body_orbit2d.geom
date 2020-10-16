@@ -23,7 +23,7 @@ void main(void)
 	pos1 = custom_project(gl_in[0].gl_Position);
 	pos2 = custom_project(gl_in[1].gl_Position);
 
-	if (pos1.w ==1.0 && pos2.w==1.0) {
+	if ((pos1.w + pos2.w)==2.0) {
 		pos1.z = 0.0; pos2.z = 0.0;
 
 		//first

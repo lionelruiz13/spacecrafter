@@ -22,21 +22,25 @@ void main(void)
 {
 	//en bas gauche
 	gl_Position   = MVP2D * (gl_in[0].gl_Position + matRotation *vec4(-radius, -radius,0,0));
+    gl_Position.z = -gl_Position.z;
     TexCoord= vec2(.0f, .0f);
     EmitVertex();
 
     // en haut gauche
 	gl_Position   =  MVP2D * (gl_in[0].gl_Position + matRotation *vec4(-radius, radius,0,0));
+    gl_Position.z = -gl_Position.z;
     TexCoord= vec2(.0f, 1.0f);
     EmitVertex();  
 
 	// en bas droite
 	gl_Position   =  MVP2D * (gl_in[0].gl_Position + matRotation *vec4(radius, -radius,0,0));
+    gl_Position.z = -gl_Position.z;
     TexCoord= vec2(1.0f, .0f);
     EmitVertex();
 
     // en haut droite
 	gl_Position   =  MVP2D * (gl_in[0].gl_Position + matRotation *vec4(radius, radius,0,0));
+    gl_Position.z = -gl_Position.z;
     TexCoord= vec2(1.0f, 1.0f);
     EmitVertex();
 

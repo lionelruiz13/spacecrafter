@@ -30,7 +30,7 @@ void main(void)
 	// calcul du halo au centre 
 	vec3 nearHalo;
 	vec2 pos = vec2(gl_FragCoord.x-Center.x, viewport_y-gl_FragCoord.y-Center.y); // because y axis is inverted
-	float posPixel = sqrt(dot(pos,pos));
+	float posPixel = length(pos);
 	nearHalo= vec3(clamp(ACCENTUATION2*(1.0-ACCENTUATION1 *posPixel/(C_RADIUS*radius)), 0.0, 1.0));
 
 	// assemblage des deux halo

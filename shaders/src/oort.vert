@@ -19,4 +19,5 @@ void main(void)
 	pos.z = 0.0;
 	pos.w = 1.0;
 	gl_Position = MVP2D * pos;
+	gl_PointSize = 1.5;
 }
