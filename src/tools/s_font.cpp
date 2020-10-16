@@ -49,6 +49,8 @@ PipelineLayout *s_font::layoutHorizontal;
 PipelineLayout *s_font::layoutPrint;
 int s_font::commandIndexHorizontal;
 int s_font::commandIndexPrint;
+std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
+int s_font::nbFontInstances = 0;
 
 std::string s_font::baseFontName;
 
@@ -77,6 +79,7 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
 		myFont = TTF_OpenFont( baseFontName.c_str(), fontSize);
 	} else
 	cLog::get()->write("s_font: loading font " + fontName, LOG_TYPE::L_INFO);
+	nbFontInstances++;
 	//cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << endl;
 }
 
@@ -85,6 +88,14 @@ s_font::~s_font()
 	clearCache();
 	TTF_CloseFont(myFont);
 	myFont = nullptr;
+	if (--nbFontInstances == 0) { // if it's the last s_font instance, clear per-frame caches
+		context->commandMgr->waitCompletion(0);
+		context->commandMgr->waitCompletion(1);
+		context->commandMgr->waitCompletion(2);
+		// There must be no command using those textures
+		tempCache.clear();
+		tempCache2.clear();
+	}
 }
 
 
@@ -109,15 +120,15 @@ void s_font::createSC_context(ThreadContext *_context)
 	layoutHorizontal->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	layoutHorizontal->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
 	layoutHorizontal->setGlobalPipelineLayout(context->global->globalLayout);
-	layoutHorizontal->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec3f)); // Color
+	layoutHorizontal->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
 	layoutHorizontal->build();
 
 	layoutPrint = context->global->tracker->track(new PipelineLayout(context->surface));
 	layoutPrint->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layoutPrint->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
 	layoutPrint->setGlobalPipelineLayout(context->global->globalLayout);
-	layoutPrint->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec3f)); // Color
-	layoutPrint->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec3f), sizeof(Mat4f)); // MVP
+	layoutPrint->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
+	layoutPrint->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 16, sizeof(Mat4f)); // MVP
 	layoutPrint->build();
 
 	pipelineHorizontal = context->global->tracker->track(new Pipeline(context->surface, layoutHorizontal));
@@ -137,6 +148,9 @@ void s_font::createSC_context(ThreadContext *_context)
 
 void s_font::beginPrint()
 {
+	tempCache.swap(tempCache2);
+	tempCache.clear();
+
 	vertexHorizontal->setVertexOffset(0);
 	cmdMgr->init(commandIndexHorizontal, false);
 	cmdMgr->updateVertex(vertexHorizontal);
@@ -180,6 +194,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 		// read from cache
 		currentRender = renderCache[s];
 	}
+	tempCache.push_back(currentRender); // to hold texture while it is used
 
 	//StateGL::enable(GL_BLEND);
 
@@ -413,6 +428,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 		rendering = renderString(str, true);
 		if(cache)
 			renderCache[str] = rendering;
+		tempCache.push_back(rendering); // to hold texture while it is used
 	} else {
 		rendering = renderCache[str];
 	}

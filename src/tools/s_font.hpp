@@ -44,8 +44,8 @@ class Texture;
 class Pipeline;
 
 typedef struct {
-	std::shared_ptr<Texture> stringTexture;  // Rendered string texture reference - remember to delete when done
-	std::shared_ptr<Texture> borderTexture;  // Rendered string bordered texture -  remember to delete when done
+	std::shared_ptr<Texture> stringTexture;  // Rendered string texture reference
+	std::shared_ptr<Texture> borderTexture;  // Rendered string bordered texture
 	float textureW; 	   // Width of texture in pixels
 	float textureH; 	   // Height of texture in pixels
 	float stringW; 	       // Width of string portion in pixels
@@ -96,6 +96,7 @@ public:
 protected:
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 	renderedStringHash_t renderCache;
+	static std::vector<renderedString_struct> tempCache, tempCache2; // to hold texture while it is used
 
 	float fontSize;
 	std::string fontName;
@@ -113,6 +114,7 @@ protected:
 	static Pipeline *pipelinePrint;
 	static PipelineLayout *layoutHorizontal;
 	static PipelineLayout *layoutPrint;
+	static int nbFontInstances;
 };
 
 #endif  //_S_FONT_H
