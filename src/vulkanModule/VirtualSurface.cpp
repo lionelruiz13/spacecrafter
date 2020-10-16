@@ -94,9 +94,14 @@ void VirtualSurface::createFramebuffer(std::vector<std::shared_ptr<Texture>> &fr
     ownFramebuffers = true;
 }
 
-void VirtualSurface::submitTransfer(VkSubmitInfo *submitInfo)
+void VirtualSurface::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
 {
-    master->submitTransfer(submitInfo);
+    master->submitTransfer(submitInfo, fence);
+}
+
+void VirtualSurface::waitTransferQueueIdle()
+{
+    master->waitTransferQueueIdle();
 }
 
 bool VirtualSurface::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, SubMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties)

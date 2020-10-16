@@ -120,16 +120,23 @@ Vulkan::~Vulkan()
         destroyDebug();
 }
 
-void Vulkan::submitTransfer(VkSubmitInfo *submitInfo)
+void Vulkan::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
 {
     static std::mutex mtx;
     static int dispatch = 0;
     mtx.lock();
-    std::cout << "Submit command buffer " << reinterpret_cast<void *>(*submitInfo->pCommandBuffers) << std::endl;
+    //std::cout << "Submit command buffer " << reinterpret_cast<void *>(*submitInfo->pCommandBuffers) << std::endl;
     vkQueueWaitIdle(transferQueues[dispatch]);
-    vkQueueSubmit(transferQueues[dispatch], 1, submitInfo, VK_NULL_HANDLE);
+    vkQueueSubmit(transferQueues[dispatch], 1, submitInfo, fence);
     dispatch = (dispatch + 1) % transferQueues.size();
     mtx.unlock();
+}
+
+void Vulkan::waitTransferQueueIdle()
+{
+    for (auto &transferQueue : transferQueues) {
+        vkQueueWaitIdle(transferQueue);
+    }
 }
 
 void Vulkan::finalize()

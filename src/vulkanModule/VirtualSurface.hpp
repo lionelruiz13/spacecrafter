@@ -27,7 +27,8 @@ public:
     ~VirtualSurface();
     VkCommandPool &getTransferPool() {return transferPool;}
     VkCommandPool &getCommandPool() {return cmdPool;}
-    void submitTransfer(VkSubmitInfo *submitInfo);
+    void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
+    void waitTransferQueueIdle();
     bool createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, SubMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties = 0);
     void free(SubMemory& bufferMemory);
     void mapMemory(SubMemory& bufferMemory, void **data);

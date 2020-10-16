@@ -34,7 +34,8 @@ public:
     void mapMemory(SubMemory& bufferMemory, void **data);
     void unmapMemory(SubMemory& bufferMemory);
     size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
-    void submitTransfer(VkSubmitInfo *submitInfo);
+    void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
+    void waitTransferQueueIdle();
     VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
     VkQueue assignGraphicsQueue() {static short i = 0; return graphicsAndPresentQueues[i++];}
     VkSwapchainKHR *assignSwapChain() {return swapChain.data();}
