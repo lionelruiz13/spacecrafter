@@ -757,7 +757,7 @@ void Core::textDraw()
 void Core::draw(int delta_time)
 {
 	currentExecutor->draw(delta_time);
-	media->imageDraw(navigation, projection);
+	media->imageDraw(navigation, projection); // resolve multisample
 }
 
 void Core::switchMode(const std::string &mode)
@@ -1204,7 +1204,12 @@ void Core::starGalaxyCreate(std::string argName)
 	std::cout << "stargalaxy: " << argName << std::endl;
     unsigned int result = Utility::strToInt(argName);
 	std::cout << "stargalaxy: " << result << std::endl;
-	starGalaxy = new StarGalaxy(starNav->getStarInfo(result));
+	starInfo *tmpStarInfo = starNav->getStarInfo(result);
+	if (tmpStarInfo == nullptr) {
+		cLog::get()->write("Invalid HIP name", LOG_TYPE::L_ERROR);
+		return;
+	}
+	starGalaxy = new StarGalaxy(tmpStarInfo);
 	Vec3d pos = starGalaxy->getObsJ2000Pos(navigation);
 	stringHash_t params;
 	params["name"] = argName;

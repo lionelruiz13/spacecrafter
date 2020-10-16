@@ -140,6 +140,7 @@ public:
 	//! Define boundary color
 	void setBoundaryColor(const Vec3f& c) {
 		boundaryColor = c;
+		*pColor = c;
 	}
 
 	//! Get current boundary color

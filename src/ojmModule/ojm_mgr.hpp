@@ -98,14 +98,13 @@ private:
 	CommandMgr *cmdMgr;
 	CommandMgr *cmdMgrMaster;
 	Set *globalSet;
-	Set *pushSet;
 	STATE_POSITION actualState = OTHER; // mustn't match any possible state
 	std::vector<OjmContainer*> OjmVector;
 	//std::unique_ptr<shaderProgram> shaderOJM;
 	std::unique_ptr<PipelineLayout> layout;
 	Pipeline *pipeline;
 	std::unique_ptr<VertexArray> vertex;
-	std::unique_ptr<Set> set;
+	std::unique_ptr<Set> set, pushSet;
 	bool needRebuild = false; // for future commandMgr threading
 	int commandIndex, commandIndexSwitch;
 	std::unique_ptr<Uniform> uniformModel;

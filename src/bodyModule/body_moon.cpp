@@ -216,7 +216,6 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
             pMoonFrag->MoonRadius1 = parent->getRadius();
             pMoonFrag->UmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
             pMoonFrag->SunHalfAngle = sun_half_angle;
-            pMoonFrag->Ambient; // WARNING : unaffected used value
             pGlobalVertGeom->planetScaledRadius = radius;
             pGlobalVertGeom->planetOneMinusOblateness = one_minus_oblateness;
             pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
@@ -229,7 +228,7 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
             [[fallthrough]];
 		case SHADER_MOON_NIGHT:
 		case SHADER_MOON_NORMAL:
-		default:
+		default: // Common uniform affectation
             pGlobalVertProj->ModelViewMatrix = matrix;
             pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
             pGlobalVertProj->clipping_fov = prj->getClippingFov();

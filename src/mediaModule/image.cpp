@@ -228,6 +228,7 @@ void Image::createSC_context(ThreadContext *_context)
 	for (int i = 0; i < 4; ++i) {
 		m_pipelineUnified[i] = context->global->tracker->track(new Pipeline(context->surface, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV));
 		m_pipelineUnified[i]->setDepthStencilMode();
+		m_pipelineUnified[i]->setCullMode(true);
 		m_pipelineUnified[i]->bindVertex(m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 	}

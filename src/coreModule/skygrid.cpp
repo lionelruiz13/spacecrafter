@@ -167,6 +167,7 @@ void SkyGrid::createBuffer()
         m_dataGL->build(nbPointsToDraw);
     	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataSky);
     	m_dataGL->fillVertexBuffer(BufferType::MAG, dataColor);
+        m_dataGL->update();
     }
     assert(nbPointsToDraw == dataSky.size()/3);
 

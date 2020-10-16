@@ -68,6 +68,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 	mediumDOWN->initFrom(*vertex);
 	lowUP->initFrom(*vertex);
 	lowDOWN->initFrom(*vertex);
+	vertex->assumeVerticeChanged();
 	vertex->update();
 }
 
@@ -139,7 +140,7 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 			return;
 		cmdMgr->bindPipeline(pipeline.get());
 		cmdMgr->bindSet(layout.get(), set.get());
-		cmdMgr->bindSet(layout.get(), globalSet);
+		cmdMgr->bindSet(layout.get(), globalSet, 1);
 		cmdMgr->bindVertex(vertex.get());
 		cmdMgr->indirectDraw(drawData.get());
 		cmdMgr->compile();

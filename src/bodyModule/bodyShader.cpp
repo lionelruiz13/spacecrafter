@@ -100,13 +100,13 @@ void BodyShader::createShader(ThreadContext *context)
 		myEarth.pipeline[i].setBlendMode(BLEND_NONE);
 		myEarth.pipeline[i].bindVertex(&vertex);
 		myEarth.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
-		myEarth.pipeline[i].setTessellationState(32);
+		myEarth.pipeline[i].setTessellationState(3);
 		myEarth.pipeline[i].bindShader("my_earth.vert.spv");
 		myEarth.pipeline[i].bindShader("my_earth.tesc.spv");
 		myEarth.pipeline[i].bindShader("my_earth.tese.spv");
 		myEarth.pipeline[i].bindShader("my_earth.geom.spv");
 		myEarth.pipeline[i].bindShader("my_earth.frag.spv");
-		VkBool32 Clouds = (i == 0);
+		VkBool32 Clouds = (i == 1);
 		myEarth.pipeline[i].setSpecializedConstant(1, &Clouds, sizeof(Clouds));
 		myEarth.pipeline[i].build();
 	}
@@ -192,7 +192,7 @@ void BodyShader::createShader(ThreadContext *context)
 	shaderNormalTes.pipeline->setBlendMode(BLEND_NONE);
 	shaderNormalTes.pipeline->bindVertex(&vertex);
 	shaderNormalTes.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
-	shaderNormalTes.pipeline->setTessellationState(32);
+	shaderNormalTes.pipeline->setTessellationState(3);
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.vert.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.tesc.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.tese.spv");
@@ -247,7 +247,7 @@ void BodyShader::createShader(ThreadContext *context)
 	myMoon.pipeline->setBlendMode(BLEND_NONE);
 	myMoon.pipeline->bindVertex(&vertex);
 	myMoon.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
-	myMoon.pipeline->setTessellationState(32);
+	myMoon.pipeline->setTessellationState(3);
 	myMoon.pipeline->bindShader("my_moon.vert.spv");
 	myMoon.pipeline->bindShader("my_moon.tesc.spv");
 	myMoon.pipeline->bindShader("my_moon.tese.spv");

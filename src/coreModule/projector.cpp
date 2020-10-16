@@ -221,7 +221,7 @@ bool Projector::projectCustom(const Vec3d &v,Vec3d &win, const Mat4d &mat) const
 	win[1] = viewport_center[1] + win[1] * f;
 
 	win[2] = (fabs(depth) - zNear) / (zFar-zNear);
-	return (a<0.9*M_PI) ? true : false;
+	return (a<0.97*M_PI) ? true : false;
 
 }
 

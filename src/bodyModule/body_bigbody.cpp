@@ -120,8 +120,14 @@ BigBody::~BigBody()
 
 void BigBody::setRings(Ring* r) {
 	rings = r;
-	myShader = SHADER_RINGED;
-	drawState = BodyShader::getShaderRinged();
+    if (myShader != SHADER_RINGED) {
+        if (commandIndex == -1) {
+            cLog::get()->write("Failed to enable rings.", LOG_TYPE::L_ERROR);
+            return;
+        }
+        commandIndex = -2;
+        selectShader();
+    }
 }
 
 void BigBody::selectShader ()

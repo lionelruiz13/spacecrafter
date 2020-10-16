@@ -242,7 +242,7 @@ void OjmMgr::rebuild()
 			continue;
 		set->setVirtualUniform(OjmVector[i]->uniform.get(), virtualUniformID);
 		cmdMgr->bindSet(layout.get(), set.get(), 2);
-		tmp = OjmVector[i]->Obj3D->record(cmdMgr, pipeline, layout.get(), pushSet, tmp);
+		tmp = OjmVector[i]->Obj3D->record(cmdMgr, pipeline, layout.get(), pushSet.get(), tmp);
 	}
 	cmdMgr->compile();
 }
@@ -294,6 +294,7 @@ void OjmMgr::createShader(ThreadContext *context)
 	set = std::make_unique<Set>(surface, context->setMgr, layout.get(), 2);
 	uniformModel = std::make_unique<Uniform>(surface, sizeof(Mat4f) * 2, true);
 	virtualUniformID = set->bindVirtualUniform(uniformModel.get(), 0);
+	pushSet = std::make_unique<Set>();
 
 	commandIndex = cmdMgr->getCommandIndex();
 	commandIndexSwitch = cmdMgr->getCommandIndex();

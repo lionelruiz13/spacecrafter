@@ -182,7 +182,6 @@ typedef struct {
 	float MoonRadius1;
 	vec3 UmbraColor;
 	float SunHalfAngle;
-	float Ambient;
 } moonFrag;
 
 typedef struct {

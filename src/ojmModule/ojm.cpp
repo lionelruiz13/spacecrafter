@@ -152,6 +152,7 @@ void Ojm::initGLparam()
         shapes[i].dGL->fillVertexBuffer(BufferType::TEXTURE, shapes[i].uvs);
         shapes[i].dGL->fillVertexBuffer(BufferType::NORMAL,  shapes[i].normals);
         shapes[i].dGL->fillIndexBuffer(shapes[i].indices);
+		shapes[i].dGL->update();
 		//*/
 		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.pos);
 		// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);

@@ -131,13 +131,13 @@ void Landscape::createSC_context(ThreadContext *_context)
 	layout->setGlobalPipelineLayout(context->global->globalLayout);
 	layout->setTextureLocation(0);
 	layout->setTextureLocation(1);
-	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 2);
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 2);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3);
 	layout->buildLayout();
 	layout->build();
 	pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layout}, {context->surface, layout}});
 	for (int i = 0; i < 2; ++i) {
-		pipeline[i].setCullMode(false);
+		pipeline[i].setCullMode(true);
 		pipeline[i].setDepthStencilMode();
 		pipeline[i].bindVertex(&vertexModel);
 		pipeline[i].bindShader("landscape.vert.spv");

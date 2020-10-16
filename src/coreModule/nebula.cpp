@@ -330,7 +330,7 @@ void Nebula::createSC_context(ThreadContext *context)
 	Nebula::layout->build();
 	Nebula::pipeline = context->global->tracker->track(new Pipeline(context->surface, Nebula::layout));
 	Nebula::pipeline->setDepthStencilMode();
-	Nebula::pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	Nebula::pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	Nebula::pipeline->bindVertex(Nebula::m_texGL);
 	Nebula::pipeline->bindShader("nebulaTex.vert.spv");
 	Nebula::pipeline->bindShader("nebulaTex.geom.spv");

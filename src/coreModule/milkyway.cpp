@@ -87,6 +87,7 @@ void MilkyWay::createSC_context(ThreadContext *_context)
 		pipelineMilky[i].setBlendMode(BLEND_NONE);
 		sphere->bind(pipelineMilky + i);
 		pipelineMilky[i].bindShader("milkyway.vert.spv");
+		pipelineMilky[i].bindShader("milkyway.geom.spv");
 		pipelineMilky[i].bindShader(i == 0 ? "milkywayTwoTex.frag.spv" : "milkywayOneTex.frag.spv");
 		pipelineMilky[i].build();
 	}
@@ -335,6 +336,7 @@ void MilkyWay::buildZodiacal()
 	pipelineZodiacal->setCullMode(true);
 	sphere->bind(pipelineZodiacal.get());
 	pipelineZodiacal->bindShader("milkyway.vert.spv");
+	pipelineZodiacal->bindShader("milkyway.geom.spv");
 	pipelineZodiacal->bindShader("milkywayOneTex.frag.spv");
 	pipelineZodiacal->build();
 	uModelViewMatrixZodiacal = std::make_unique<Uniform>(context->surface, sizeof(*pModelViewMatrixZodiacal));

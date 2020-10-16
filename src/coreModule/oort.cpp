@@ -73,6 +73,7 @@ void Oort::createSC_context(ThreadContext *_context)
 	layout->buildLayout();
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	pipeline->setDepthStencilMode();
 	pipeline->bindVertex(m_dataGL.get());
 	pipeline->bindShader("oort.vert.spv");

@@ -129,7 +129,7 @@ void ObjectBase::build()
 
 void ObjectBase::createShaderStarPointeur(ThreadContext *context)
 {
-	cmdMgr = context->commandMgr;
+	cmdMgrTarget = context->commandMgr;
 	// m_shaderStarPointer = std::make_unique<shaderProgram>();
 	// m_shaderStarPointer->init("star_pointer.vert","star_pointer.geom","star_pointer.frag");
 	// m_shaderStarPointer->setUniformLocation({"radius","color", "matRotation"});
@@ -163,12 +163,12 @@ void ObjectBase::createShaderStarPointeur(ThreadContext *context)
 	m_uGeom = context->global->tracker->track(new Uniform(context->surface, sizeof(*m_pGeom)));
 	m_pGeom = static_cast<typeof(m_pGeom)>(m_uGeom->data);
 	m_setStarPointer->bindUniform(m_uGeom, 2);
-	commandIndexStarPointer = cmdMgr->initNew(m_pipelineStarPointer);
-	cmdMgr->bindVertex(m_starPointerGL);
-	cmdMgr->bindSet(m_layoutStarPointer, context->global->globalSet);
-	cmdMgr->bindSet(m_layoutStarPointer, m_setStarPointer, 1);
-	cmdMgr->draw(1);
-	cmdMgr->compile();
+	commandIndexStarPointer = cmdMgrTarget->initNew(m_pipelineStarPointer);
+	cmdMgrTarget->bindVertex(m_starPointerGL);
+	cmdMgrTarget->bindSet(m_layoutStarPointer, context->global->globalSet);
+	cmdMgrTarget->bindSet(m_layoutStarPointer, m_setStarPointer, 1);
+	cmdMgrTarget->draw(1);
+	cmdMgrTarget->compile();
 }
 
 // Draw a nice animated pointer around the object
@@ -206,10 +206,11 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		// Compute 2D pos and return if outside screen
 		if (!prj->projectEarthEqu(pos, screenPos)) return;
 
+		Vec3f screenPosFloat(screenPos[0], screenPos[1], screenPos[2]);
 		Vec3f color = getRGB();
 		float radius=13.f;
 
-		m_starPointerGL->fillVertexBuffer(BufferType::POS3D, 3, (Vec3f) screenPos);
+		m_starPointerGL->fillVertexBuffer(BufferType::POS3D, 3, &screenPosFloat[0]);
 		m_starPointerGL->update();
 
 		//m_shaderStarPointer->use();
@@ -229,7 +230,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		// m_starPointerGL->unBind();
 		// m_shaderStarPointer->unuse();
 		//Renderer::drawArrays(m_shaderStarPointer.get(), m_starPointerGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,1);
-		cmdMgr->setSubmission(commandIndexStarPointer);
+		cmdMgrTarget->setSubmission(commandIndexStarPointer);
 	}
 
 	if (getType()==OBJECT_NEBULA || getType()==OBJECT_BODY) {

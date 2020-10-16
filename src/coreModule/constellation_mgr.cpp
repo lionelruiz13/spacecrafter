@@ -86,6 +86,7 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 	m_layoutArt->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
 	m_layoutArt->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16);
 	m_layoutArt->build();
+	m_setArt = std::make_unique<Set>();
 	m_pipelineArt = std::make_unique<Pipeline>(context->surface, m_layoutArt.get());
 	m_pipelineArt->bindVertex(m_vertexArt.get());
 	m_pipelineArt->setCullMode(true);
@@ -113,7 +114,7 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 	m_vertexBoundary = std::make_unique<VertexArray>(context->surface);
 	m_vertexBoundary->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_vertexBoundary->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
-	m_vertexBoundary->build(512);
+	m_vertexBoundary->build(16384);
 	m_pipelineBoundary = std::make_unique<Pipeline>(context->surface, m_layout.get());
 	m_pipelineBoundary->bindVertex(m_vertexBoundary.get());
 	m_pipelineBoundary->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
@@ -126,7 +127,7 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 	m_vertexLines = std::make_unique<VertexArray>(context->surface);
 	m_vertexLines->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_vertexLines->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
-	m_vertexLines->build(512);
+	m_vertexLines->build(16384);
 	m_pipelineLines = std::make_unique<Pipeline>(context->surface, m_layout.get());
 	m_pipelineLines->bindVertex(m_vertexLines.get());
 	m_pipelineLines->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
@@ -478,7 +479,7 @@ void ConstellationMgr::drawLines(const Projector * prj)
 		(*iter)->drawLines(prj, vLinesPos, vLinesColor);
 	}
 
-	pDrawData[0].vertexCount = vLinesPos.size() / 2;
+	pDrawData[1].vertexCount = vLinesPos.size() / 2;
 	if (vLinesPos.size()==0)
 		return;
 	m_vertexLines->fillVertexBuffer(BufferType::POS2D, vLinesPos);
@@ -512,7 +513,7 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 		(*iter)->drawBoundary(prj, vBoundariesPos,vBoundariesIntensity, singleSelected);
 	}
 
-	pDrawData[1].vertexCount = vBoundariesPos.size() / 2;
+	pDrawData[0].vertexCount = vBoundariesPos.size() / 2;
 	if (vBoundariesPos.size()==0)
 		return;
 	m_vertexBoundary->fillVertexBuffer(BufferType::POS2D, vBoundariesPos);
