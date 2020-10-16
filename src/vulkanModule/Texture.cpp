@@ -11,10 +11,11 @@ std::string Texture::textureDir = "./";
 
 Texture::Texture(){}
 
-void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, VkFormat _format)
+void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFormat _format)
 {
     master = _master;
     mgr = _mgr;
+    mipmap = _mipmap = false;
     format = _format;
     image = nullptr;
     VkSemaphoreCreateInfo semaphoreInfo{};
@@ -34,12 +35,14 @@ void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, VkFormat _format)
     imageInfo.imageView = VK_NULL_HANDLE;
 }
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename, bool keepOnCPU, bool multisampling)
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename, bool keepOnCPU, bool _mipmap)
 {
-    init(_master, _mgr);
+    init(_master, _mgr, _mipmap);
     int texChannels;
     stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
+    if (mipmap)
+        mipmapCount = static_cast<uint32_t>(std::log2(std::max(texWidth, texHeight))) + 1;
 
     if (!pixels) {
         cLog::get()->write("Faild to load image '" + filename + "'", LOG_TYPE::L_WARNING);
@@ -61,10 +64,13 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename
     }
 }
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU, bool multisampling, VkFormat _format, bool createSampler, VkSamplerAddressMode addressMode) : texWidth(width), texHeight(height)
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU, bool _mipmap, VkFormat _format, bool createSampler, VkSamplerAddressMode addressMode) : texWidth(width), texHeight(height)
 {
-    init(_master, _mgr, _format);
+    init(_master, _mgr, _mipmap, _format);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
+    if (mipmap)
+        mipmapCount = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
+
     _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
 
     void *data;
@@ -93,9 +99,9 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachme
     texWidth = (width == -1) ? _master->getViewportState().pViewports->width : width;
     texHeight = (height == -1) ? abs(_master->getViewportState().pViewports->height) : height;
     if (isDepthAttachment) {
-        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), VK_FORMAT_D24_UNORM_S8_UINT, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, true));
+        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_D24_UNORM_S8_UINT, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, true));
     } else {
-        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT));
+        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT));
     }
     if (image == nullptr) {
         cLog::get()->write("Faild to create external image attachment", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
@@ -138,7 +144,7 @@ void Texture::use()
 {
     if (++useCount != 1)
         return;
-    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight)));
+    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), mipmap));
     if (image == nullptr) {
         cLog::get()->write("Faild to create image support", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         useCount--;
@@ -167,7 +173,7 @@ void Texture::use()
     barrier.image = image->getImage();
     barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     barrier.subresourceRange.baseMipLevel = 0;
-    barrier.subresourceRange.levelCount = 1;
+    barrier.subresourceRange.levelCount = mipmapCount;
     barrier.subresourceRange.baseArrayLayer = 0;
     barrier.subresourceRange.layerCount = 1;
     barrier.srcAccessMask = 0;
@@ -280,7 +286,7 @@ void StreamTexture::use(int width, int height)
         return;
     texWidth = width;
     texHeight = height;
-    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), VK_FORMAT_R8_UNORM));
+    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_R8_UNORM));
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -336,11 +342,14 @@ void StreamTexture::use(int width, int height)
     submitInfo.pCommandBuffers = commandBuffer;
     submitInfo.signalSemaphoreCount = 0;
     master->submitTransfer(&submitInfo);
+    /*
     vkResetFences(master->refDevice, 1, &fence);
     if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
         throw std::runtime_error("Error : Failed to submit commands.");
     }
     vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+    */
+    master->waitTransferQueueIdle();
     vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, commandBuffer);
     // Build update
     master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
@@ -360,9 +369,11 @@ void StreamTexture::unuse()
     if (--useCount == 0) {
         image = nullptr;
         imageInfo.imageView = VK_NULL_HANDLE;
-        vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+        //vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+        master->waitTransferQueueIdle();
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
         master->free(stagingBufferMemory);
+        stagingBuffer = VK_NULL_HANDLE;
     }
 }
 

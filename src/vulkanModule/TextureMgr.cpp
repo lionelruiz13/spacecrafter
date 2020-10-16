@@ -36,8 +36,8 @@ int TextureMgr::getSamplerID(const VkSamplerCreateInfo &samplerInfo)
 {
     int samplerID = static_cast<int>(samplerInfo.addressModeU);
     samplerID |= static_cast<int>(samplerInfo.magFilter) << 2;
-    samplerID |= static_cast<int>(samplerInfo.minFilter) << 3;
-    samplerID |= static_cast<int>(samplerInfo.maxLod) << 4;
+    samplerID |= static_cast<int>(samplerInfo.minFilter) << 4;
+    samplerID |= static_cast<int>(samplerInfo.maxLod) << 6;
     return samplerID;
 }
 
@@ -55,10 +55,10 @@ VkSampler TextureMgr::createSampler(const VkSamplerCreateInfo &samplerInfo)
     return sampler;
 }
 
-TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment)
+TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool mipmap = false, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment)
 {
-    static std::mutex mtx;
-    std::lock_guard<std::mutex> lck(mtx);
+    // static std::mutex mtx;
+    // std::lock_guard<std::mutex> lck(mtx);
     // if (format == VK_FORMAT_R8G8B8A8_SRGB && usage == VK_IMAGE_USAGE_SAMPLED_BIT && !availableImages[size].empty()) {
     //     TextureImage *tmp = new TextureImage(this, availableImages[size].back(), size);
     //     availableImages[size].pop_back();
@@ -72,7 +72,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, VkFor
     imageInfo.extent.width = size.first;
     imageInfo.extent.height = size.second;
     imageInfo.extent.depth = 1;
-    imageInfo.mipLevels = 1;
+    imageInfo.mipLevels = mipmap ? static_cast<uint32_t>(std::floor(std::log2(std::max(size.first, size.second)))) + 1 : 1;
     imageInfo.arrayLayers = 1;
     imageInfo.format = format;
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
@@ -94,7 +94,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, VkFor
     viewInfo.format = format;
     viewInfo.subresourceRange.aspectMask = (isDepthAttachment) ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
     viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.levelCount = imageInfo.mipLevels;
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = 1;
 
