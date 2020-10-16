@@ -8,6 +8,7 @@
 #include <algorithm>
 
 std::string Pipeline::shaderDir = "./";
+float Pipeline::defaultLineWidth = 1.0f;
 
 Pipeline::Pipeline(VirtualSurface *_master, PipelineLayout *layout, std::vector<VkDynamicState> _dynamicStates) : master(_master)
 {
@@ -27,7 +28,7 @@ Pipeline::Pipeline(VirtualSurface *_master, PipelineLayout *layout, std::vector<
     rasterizer.depthClampEnable = VK_FALSE; // Tout élément trop loin ou trop près est ramené à la couche la plus loin ou la plus proche
     rasterizer.rasterizerDiscardEnable = VK_FALSE; // Désactiver la géométrie
     rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-    rasterizer.lineWidth = 1.0f;
+    rasterizer.lineWidth = defaultLineWidth;
     rasterizer.cullMode = 0;
     rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
     rasterizer.depthBiasEnable = VK_FALSE;

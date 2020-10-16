@@ -39,14 +39,17 @@ public:
     //! @brief Set tessellation state
     //! @param patchControlPoints number of control points per patch
     void setTessellationState(uint32_t patchControlPoints = 32);
-    //! Set line width (default : 1.0f)
+    //! Set line width (default : value of defaultLineWidth when created)
     void setLineWidth(float lineWidth);
     //! Build pipeline for use
     void build();
     VkPipeline &get() {return graphicsPipeline;}
     static void setShaderDir(const std::string &_shaderDir) {shaderDir = _shaderDir;}
+    //! Set default line width for all pipelines created after this call (default : 1.0f)
+    static void setDefaultLineWidth(float _defaultLineWidth) {defaultLineWidth = _defaultLineWidth;}
 private:
     static std::string shaderDir;
+    static float defaultLineWidth;
     VirtualSurface *master;
     VkPipeline graphicsPipeline = VK_NULL_HANDLE;
     bool isOk = true;
