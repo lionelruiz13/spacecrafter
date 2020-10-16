@@ -19,10 +19,10 @@ layout (binding=2, set=1) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
 
 //out
 layout (location=0) out vec2 TexCoord;
-
+layout (location=1) out vec4 Position;
 
 void main()
 {
-	gl_Position = fisheyeProject(position, vec3(main_clipping_fov));
+	Position = fisheyeProject(position, vec3(main_clipping_fov));
     TexCoord = texcoord;
 }

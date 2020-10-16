@@ -34,6 +34,8 @@ layout (binding=2) uniform ubo {vec3 clipping_fov;};
 layout (lines) in;
 layout (line_strip, max_vertices = 2) out;
 
+#define TOLERANCE 0.4
+
 void main(void)
 {
 	vec4 pos1, pos2; //, pos3, pos4;
@@ -43,7 +45,7 @@ void main(void)
 	//~ pos3 = gl_in[2].gl_Position;
 	//~ pos4 = gl_in[2].gl_Position;
 
-	if (pos1.w ==1.0 && pos2.w==1.0) { // && pos3.w==1.0 && pos4.w==1.0 ) {
+	if (clipping_fov[2] < 300. || length(pos1.xy - pos2.xy) < TOLERANCE) { // && pos3.w==1.0 && pos4.w==1.0 ) {
 		//~ pos1.z = 0.0; pos2.z = 0.0;
 
 		//first

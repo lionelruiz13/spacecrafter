@@ -32,6 +32,8 @@ layout (location=1) out vec2 cfOutTexCoord;
 layout (location=2) out vec3 cfOutNormal;
 layout (location=3) out float cfOutAmbient;
 
+#define TOLERANCE 0.6
+
 void main(void)
 {
     vec4 pos[3];
@@ -39,7 +41,8 @@ void main(void)
     for(int i=0; i<3; i++)
         pos[i] = fisheyeProject(Position[i], clipping_fov);
     
-    if ( pos[0].w==1.0 && pos[1].w==1.0 && pos[2].w==1.0) {
+    vec2 pos0 = pos[0].xy;
+    if (clipping_fov[2] < 300.0 || (length(pos0 - pos[1].xy) + length(pos0 - pos[2].xy)) < TOLERANCE) {
         for(int i=0; i<3; i++) {
             cfOutPosition = Position[i];
             cfOutTexCoord = TexCoord[i];
