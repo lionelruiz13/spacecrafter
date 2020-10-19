@@ -91,7 +91,7 @@ void VertexArray::bind(CommandMgr *cmdMgr)
 
 void VertexArray::update()
 {
-    if (vertexUpdate) {
+    if (vertexUpdate && vertexAccess != BufferAccess::STREAM_LOCAL) {
         vertexBuffer->update();
         vertexUpdate = false;
         if (vertexAccess == BufferAccess::STATIC)
