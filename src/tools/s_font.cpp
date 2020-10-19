@@ -156,7 +156,7 @@ void s_font::beginPrint()
 	vertexHorizontal->setVertexOffset(0);
 	cmdMgr->init(commandIndexHorizontal, false);
 	cmdMgr->updateVertex(vertexHorizontal);
-	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_DEFAULT, renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindPipeline(pipelineHorizontal);
 	cmdMgr->bindSet(layoutHorizontal, context->global->globalSet, 1);
 	cmdMgr->bindVertex(vertexHorizontal);
@@ -164,18 +164,18 @@ void s_font::beginPrint()
 	vertexPrint->setVertexOffset(0);
 	cmdMgr->init(commandIndexPrint, false);
 	cmdMgr->updateVertex(vertexPrint);
-	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
+	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_DEFAULT, renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindPipeline(pipelinePrint);
 	cmdMgr->bindVertex(vertexPrint);
 }
 
 void s_font::endPrint()
 {
-	vertexHorizontal->update();
+	//vertexHorizontal->update();
 	cmdMgr->select(commandIndexHorizontal);
 	cmdMgr->compile();
 	cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
-	vertexPrint->update();
+	//vertexPrint->update();
 	cmdMgr->select(commandIndexPrint);
 	cmdMgr->compile();
 	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
