@@ -37,6 +37,7 @@
 
 #include "vulkanModule/ResourceTracker.hpp"
 #include "vulkanModule/Texture.hpp"
+#include "vulkanModule/CommandMgr.hpp"
 
 std::string s_texture::texDir = "./";
 std::map<std::string, s_texture::texRecap*> s_texture::texCache;
@@ -139,6 +140,9 @@ s_texture::s_texture(const std::string& _textureName, Texture *_imgTex, int widt
 
 s_texture::~s_texture()
 {
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
 	unload();
 }
 
