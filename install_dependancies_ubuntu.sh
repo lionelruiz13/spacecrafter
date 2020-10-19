@@ -34,4 +34,8 @@ sudo apt-get install -y libswresample-dev
 
 sudo apt-get install -y mplayer
 
+sudo apt-get install -y vulkan-tools
+sudo apt-get install -y libvulkan-dev
+sudo apt-get install -y vulkan-validationlayers-dev
+
 echo Install completed.
