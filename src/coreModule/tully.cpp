@@ -103,7 +103,7 @@ void Tully::createSC_context(ThreadContext *_context)
 		pipelinePoints[i].build();
 	}
 	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uGeom = std::make_unique<Uniform>(context->surface, sizeof(*pMat) + sizeof(*pCamPos) + sizeof(*pNbTextures));
+	uGeom = std::make_unique<Uniform>(context->surface, sizeof(*pMat) + sizeof(float)*3 + sizeof(*pNbTextures));
 	pMat = static_cast<typeof(pMat)>(uGeom->data);
 	pCamPos = reinterpret_cast<typeof(pCamPos)>(static_cast<char *>(uGeom->data) + sizeof(*pMat));
 	pNbTextures = reinterpret_cast<typeof(pNbTextures)>(static_cast<char *>(uGeom->data) + sizeof(*pMat) + sizeof(*pCamPos));
@@ -126,7 +126,7 @@ void Tully::createSC_context(ThreadContext *_context)
 	pipelineSquare->setBlendMode(blendMode);
 	pipelineSquare->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	pipelineSquare->setDepthStencilMode();
-	pipelineSquare->bindVertex(m_pointsGL.get());
+	pipelineSquare->bindVertex(m_squareGL.get());
 	pipelineSquare->bindShader("tullyH.vert.spv");
 	pipelineSquare->bindShader("tullyH.geom.spv");
 	pipelineSquare->bindShader("tullyH.frag.spv");
@@ -202,6 +202,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	cmdMgr->bindSet(layout.get(), set.get(), 1);
 	cmdMgr->bindVertex(m_pointsGL.get());
 	cmdMgr->draw(posTully.size() / 3);
+	cmdMgr->bindPipeline(pipelineSquare.get());
 	cmdMgr->bindVertex(m_squareGL.get());
 	cmdMgr->indirectDraw(drawDataSquare.get());
 	cmdMgr->compile();
@@ -210,6 +211,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	cmdMgr->bindSet(layout.get(), set.get(), 1);
 	cmdMgr->bindVertex(m_pointsGL.get());
 	cmdMgr->draw(posTully.size() / 3);
+	cmdMgr->bindPipeline(pipelineSquare.get());
 	cmdMgr->bindVertex(m_squareGL.get());
 	cmdMgr->indirectDraw(drawDataSquare.get());
 	cmdMgr->compile();
@@ -291,8 +293,8 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	m_squareGL->fillVertexBuffer(BufferType::MAG,texTmpTully );
 	m_squareGL->fillVertexBuffer(BufferType::SCALE,radiusTmpTully );
 	m_squareGL->update();
-	*pNbVertexSquare = posTmpTully.size() / 3;
-	drawDataSquare->update();
+	//*pNbVertexSquare = posTmpTully.size() / 3;
+	//drawDataSquare->update();
 }
 
 
