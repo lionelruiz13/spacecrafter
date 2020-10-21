@@ -24,12 +24,16 @@ layout(location=2) out vec3 Normal;
 
 void main()
 {
+	/*
 	vec3 Position;
 	Position.x =position.x * planetScaledRadius;
 	Position.y =position.y * planetScaledRadius;
 	Position.z =position.z * planetScaledRadius * planetOneMinusOblateness;
 
 	glPosition = Position;
+	/*/
+	glPosition = position;
+	//*/
 	TexCoord = texcoord;
 	Normal = normal;
 }

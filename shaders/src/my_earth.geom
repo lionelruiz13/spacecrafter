@@ -64,7 +64,7 @@ void main()
 		//~ sans normalMap
 		//~ glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius ;
 		//~ avec normalMap
-		glPosition= glPosition/length(glPosition)*planetScaledRadius * (1.0+texture(heightmapTexture,TexCoordIn[i]).x * coeffHeightMap);
+		glPosition= normalize(glPosition)*planetScaledRadius * (1.0+texture(heightmapTexture,TexCoordIn[i]).x * coeffHeightMap);
 
 		gl_Position = fisheyeProject(glPosition, clipping_fov);
 
