@@ -55,7 +55,7 @@ VkSampler TextureMgr::createSampler(const VkSamplerCreateInfo &samplerInfo)
     return sampler;
 }
 
-TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool mipmap = false, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment)
+TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool mipmap, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment, bool useConcurrency)
 {
     // static std::mutex mtx;
     // std::lock_guard<std::mutex> lck(mtx);
@@ -67,6 +67,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool 
     // create image
     VkImage image;
     VkImageCreateInfo imageInfo{};
+    uint32_t indices[2];
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
     imageInfo.extent.width = size.first;
@@ -79,7 +80,14 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool 
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     imageInfo.usage = usage;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    if (useConcurrency) {
+        indices[0] = master->getGraphicsQueueIndex();
+        indices[1] = master->getTransferQueueFamilyIndex();
+        imageInfo.queueFamilyIndexCount = 2;
+        imageInfo.pQueueFamilyIndices = indices;
+        imageInfo.sharingMode = VK_SHARING_MODE_CONCURRENT;
+    } else
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     if (vkCreateImage(master->refDevice, &imageInfo, nullptr, &image) != VK_SUCCESS) {
         cLog::get()->write("Faild to create VkImage", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);

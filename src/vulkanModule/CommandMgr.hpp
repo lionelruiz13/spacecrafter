@@ -14,6 +14,7 @@ class Pipeline;
 class PipelineLayout;
 class Buffer;
 class Set;
+class Texture;
 
 /**
     multisampling is considered disabled if
@@ -89,6 +90,11 @@ public:
     void indirectDraw(Buffer *drawArgsArray, VkDeviceSize offset = 0, uint32_t drawCount = 1);
     void drawIndexed(uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t vertexOffset = 0, uint32_t firstInstance = 0);
     void indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset = 0, uint32_t drawCount = 1);
+    //! @brief Add pipeline image barrier
+    //! @param miplevel specify which mip level is concerned, or -1 for all mip levels
+    void addImageBarrier(Texture *texture, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask, uint32_t miplevel = UINT32_MAX);
+    //! Record all dependencies previously added
+    void compileBarriers(VkPipelineStageFlags srcStage, VkPipelineStageFlags dstStage, VkPipelineStageFlags dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT);
     //! Finalize recording and deselect command
     void compile();
     //! @brief set command submission to be submitted by .submit()
@@ -142,6 +148,7 @@ private:
         VkSemaphore bottomSemaphore;
         VkFence fence;
     };
+    std::vector<VkImageMemoryBarrier> imageBarrier;
     static PFN_vkCmdPushDescriptorSetKHR PFN_pushSet;
     static PFN_vkCmdBeginConditionalRenderingEXT PFN_vkIf;
     static PFN_vkCmdEndConditionalRenderingEXT PFN_vkEndIf;

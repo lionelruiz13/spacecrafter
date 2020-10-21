@@ -6,6 +6,7 @@
 #include "Set.hpp"
 #include "Buffer.hpp"
 #include "VertexArray.hpp"
+#include "Texture.hpp"
 #include "tools/log.hpp"
 #include <algorithm> // std::find
 #include <iterator> // std::distance
@@ -515,6 +516,43 @@ void CommandMgr::vkIf(Buffer *bool32, VkDeviceSize offset, bool invert)
     for (auto &frame : frames) {
         PFN_vkIf(frame.actual, &cond);
     }
+}
+
+void CommandMgr::addImageBarrier(Texture *texture, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask, uint32_t miplevel)
+{
+    VkImageMemoryBarrier barrier;
+    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier.pNext = nullptr;
+    barrier.srcAccessMask = srcAccessMask;
+    barrier.dstAccessMask = dstAccessMask;
+    barrier.oldLayout = oldLayout;
+    barrier.newLayout = newLayout;
+    barrier.srcQueueFamilyIndex = barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.image = texture->getImage();
+    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    if (miplevel == UINT32_MAX) {
+        barrier.subresourceRange.baseMipLevel = 0;
+        barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+    } else {
+        barrier.subresourceRange.baseMipLevel = miplevel;
+        barrier.subresourceRange.levelCount = 1;
+    }
+    barrier.subresourceRange.baseArrayLayer = 0;
+    barrier.subresourceRange.layerCount = 1;
+    imageBarrier.push_back(barrier);
+}
+
+void CommandMgr::compileBarriers(VkPipelineStageFlags srcStage, VkPipelineStageFlags dstStage, VkPipelineStageFlags dependencyFlags)
+{
+    if (singleUse) {
+        vkCmdPipelineBarrier(actual, srcStage, dstStage, dependencyFlags, 0, nullptr, 0, nullptr, imageBarrier.size(), imageBarrier.data());
+        imageBarrier.clear();
+        return;
+    }
+    for (auto &frame : frames) {
+        vkCmdPipelineBarrier(frame.actual, srcStage, dstStage, dependencyFlags, 0, nullptr, 0, nullptr, imageBarrier.size(), imageBarrier.data());
+    }
+    imageBarrier.clear();
 }
 
 void CommandMgr::vkEndIf()

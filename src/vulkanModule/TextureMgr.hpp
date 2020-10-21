@@ -12,7 +12,7 @@ class TextureMgr {
 public:
     TextureMgr(Vulkan *_master, uint32_t _chunkSize = 256*1024*1024);
     ~TextureMgr();
-    TextureImage *createImage(const std::pair<short, short> &size, bool mipmap, VkFormat format = VK_FORMAT_R8G8B8A8_UNORM, VkImageUsageFlags usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, bool isDepthAttachment = false);
+    TextureImage *createImage(const std::pair<short, short> &size, bool mipmap = false, VkFormat format = VK_FORMAT_R8G8B8A8_UNORM, VkImageUsageFlags usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, bool isDepthAttachment = false, bool useConcurrency = false);
     void releaseImage(const std::pair<VkImage, VkImageView> &image, const std::pair<short, short> &size);
     void destroyImage(const VkImage &image, const VkImageView &imageView, SubMemory &memory);
     VkSampler createSampler(const VkSamplerCreateInfo &samplerInfo);

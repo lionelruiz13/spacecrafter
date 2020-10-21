@@ -30,6 +30,7 @@ public:
     VkDescriptorImageInfo *getInfo() {return &imageInfo;}
     static void setTextureDir(std::string _textureDir) {textureDir = _textureDir;}
     bool isValid() {return isOk;}
+    VkImage getImage();
 protected:
     static std::string textureDir;
     VirtualSurface *master;

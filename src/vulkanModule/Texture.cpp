@@ -120,6 +120,11 @@ void Texture::releaseStagingMemoryPtr()
     master->unmapMemory(stagingBufferMemory);
 }
 
+VkImage Texture::getImage()
+{
+    return image->getImage();
+}
+
 Texture::~Texture()
 {
     if (useCount > 0) {
@@ -237,6 +242,7 @@ void Texture::use()
     submitInfo.pCommandBuffers = &commandBuffer2;
     submitInfo.signalSemaphoreCount = 0;
     vkResetFences(master->refDevice, 1, &fence);
+    master->waitTransferQueueIdle();
     if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
         throw std::runtime_error("Error : Failed to submit commands.");
     }
@@ -264,10 +270,11 @@ StreamTexture::StreamTexture(VirtualSurface *_master, TextureMgr *_mgr, bool ext
     if (vkCreateFence(master->refDevice, &fenceInfo, nullptr, &fence) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create fence.");
     }
-    imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+    imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     imageInfo.sampler = VK_NULL_HANDLE;
     imageInfo.imageView = VK_NULL_HANDLE;
     updateSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    updateSubmitInfo.pNext = nullptr;
     updateSubmitInfo.signalSemaphoreCount = updateSubmitInfo.waitSemaphoreCount = updateSubmitInfo.commandBufferCount = 0;
 }
 
@@ -282,41 +289,43 @@ StreamTexture::~StreamTexture()
 
 void StreamTexture::use(int width, int height)
 {
-    if (++useCount != 1)
+    if (++useCount != 1) {
+        assert(width == texWidth && height == texHeight);
         return;
+    }
     texWidth = width;
     texHeight = height;
-    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_R8_UNORM));
+    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_R8_UNORM, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, false, true));
+    master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
+
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     allocInfo.commandPool = master->getTransferPool();
-    allocInfo.commandBufferCount = 2;
-
-    VkCommandBuffer commandBuffer[2];
-    vkAllocateCommandBuffers(master->refDevice, &allocInfo, commandBuffer);
+    allocInfo.commandBufferCount = 1;
+    vkAllocateCommandBuffers(master->refDevice, &allocInfo, &cmdBuffer);
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    beginInfo.flags = 0;
+    vkBeginCommandBuffer(cmdBuffer, &beginInfo);
 
-    vkBeginCommandBuffer(commandBuffer[0], &beginInfo);
     VkImageMemoryBarrier barrier{};
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
     barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    barrier.newLayout = VK_IMAGE_LAYOUT_GENERAL;
+    barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     barrier.image = image->getImage();
     barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     barrier.subresourceRange.baseMipLevel = 0;
-    barrier.subresourceRange.levelCount = 1;
+    barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
     barrier.subresourceRange.baseArrayLayer = 0;
     barrier.subresourceRange.layerCount = 1;
     barrier.srcAccessMask = 0;
-    barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT | VK_ACCESS_SHADER_READ_BIT;
+    barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
     vkCmdPipelineBarrier(
-        commandBuffer[0],
+        cmdBuffer,
         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
         0,
         0, nullptr,
@@ -334,33 +343,11 @@ void StreamTexture::use(int width, int height)
     region.imageSubresource.layerCount = 1;
     region.imageOffset = {0, 0, 0};
     region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, 1};
-
-    vkEndCommandBuffer(commandBuffer[0]);
-    VkSubmitInfo submitInfo{};
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = commandBuffer;
-    submitInfo.signalSemaphoreCount = 0;
-    master->submitTransfer(&submitInfo);
-    /*
-    vkResetFences(master->refDevice, 1, &fence);
-    if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
-        throw std::runtime_error("Error : Failed to submit commands.");
-    }
-    vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
-    */
-    master->waitTransferQueueIdle();
-    vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, commandBuffer);
-    // Build update
-    master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
-    cmdBuffer = commandBuffer[1];
-    allocInfo.commandPool = master->getTransferPool();
-    beginInfo.flags = 0;
-    vkBeginCommandBuffer(cmdBuffer, &beginInfo);
-    vkCmdCopyBufferToImage(cmdBuffer, stagingBuffer, image->getImage(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+    vkCmdCopyBufferToImage(cmdBuffer, stagingBuffer, image->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
     vkEndCommandBuffer(cmdBuffer);
+
     updateSubmitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &cmdBuffer;
+    updateSubmitInfo.pCommandBuffers = &cmdBuffer;
     imageInfo.imageView = image->getImageView();
 }
 
@@ -369,8 +356,8 @@ void StreamTexture::unuse()
     if (--useCount == 0) {
         image = nullptr;
         imageInfo.imageView = VK_NULL_HANDLE;
-        //vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
         master->waitTransferQueueIdle();
+        vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &cmdBuffer);
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
         master->free(stagingBufferMemory);
         stagingBuffer = VK_NULL_HANDLE;
@@ -379,7 +366,5 @@ void StreamTexture::unuse()
 
 void StreamTexture::update()
 {
-    if (vkQueueSubmit(master->getQueue(), 1, &updateSubmitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
-        throw std::runtime_error("Error : Failed to submit commands.");
-    }
+    master->submitTransfer(&updateSubmitInfo);
 }
