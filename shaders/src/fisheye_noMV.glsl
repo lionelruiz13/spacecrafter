@@ -47,15 +47,12 @@ vec4 fisheyeProject(vec3 invec, vec3 clipping_fov)
 	float zFar=clipping_fov[1];
 	float fisheye_scale_factor = (2.0*180.0/M_PI)/clipping_fov[2];
 
-    vec4 win = ModelViewMatrix * vec4(invec,1.); // Imprécision ICI ?
+    vec4 win = ModelViewMatrix * vec4(invec,1.);
 
     float rq1 = win.x*win.x+win.y*win.y;
 
 	if (rq1 <= 0.0 ) { // then win.x = 0 and win.y = 0
-		win.x = win.y = 0.;
-		win.z = max(1. - 2. *(abs(win.z) - zNear) / (zFar-zNear), -1.);
-		win.w = 1.;
-		return win;
+		return vec4(0., 0., (abs(win.z) - zNear) / (zFar-zNear), 1.);
 	}
 
     float depth = sqrt(rq1 + win.z*win.z);
@@ -71,9 +68,5 @@ vec4 fisheyeProject(vec3 invec, vec3 clipping_fov)
 		a = M_PI/2.0 + float(my_atan(win.z*oneoverh));
 	}
 	float f = a * fisheye_scale_factor * oneoverh;
-	win.x *= f;
-	win.y *= f;
-	win.z = max(1. - 2. *(depth - zNear) / (zFar-zNear), -1.0);
-    win.w = 1.;
-    return win;
+    return vec4(win.x * f, win.y * f, (depth - zNear) / (zFar-zNear), 1.);
 }
