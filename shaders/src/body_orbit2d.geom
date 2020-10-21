@@ -18,7 +18,7 @@ layout (binding=0) uniform uMat {mat4 Mat;};
 
 void main(void)
 {
-	vec4 pos1, pos2, pos3, pos4;
+	vec4 pos1, pos2;//, pos3, pos4;
 
 	pos1 = custom_project(gl_in[0].gl_Position);
 	pos2 = custom_project(gl_in[1].gl_Position);

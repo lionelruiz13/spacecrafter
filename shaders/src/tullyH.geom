@@ -9,7 +9,7 @@
 layout (points) in;
 layout (triangle_strip , max_vertices = 4) out;
 
-layout (location=0) in float texture[1]; // unused ?
+layout (location=0) in float texture[1];
 layout (location=1) in float radiusIn[1];
 
 layout (location=0) out vec2 TexCoord;
