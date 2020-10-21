@@ -97,6 +97,7 @@ void BodyShader::createShader(ThreadContext *context)
 	myEarth.pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, myEarth.layout}, {context->surface, myEarth.layout}});
 	for (int i = 0; i < 2; ++i) {
 		myEarth.pipeline[i].setCullMode(true);
+		myEarth.pipeline[i].setFrontFace(); // Earth with tesselation don't have the same front face...
 		myEarth.pipeline[i].setBlendMode(BLEND_NONE);
 		myEarth.pipeline[i].bindVertex(&vertex);
 		myEarth.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
