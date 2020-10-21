@@ -50,6 +50,16 @@ void PipelineLayout::setUniformLocation(VkShaderStageFlags stage, uint32_t bindi
     uniformsLayout.push_back(uniformCollection);
 }
 
+void PipelineLayout::setStorageBufferLocation(VkShaderStageFlags stage, uint32_t binding, uint32_t arraySize)
+{
+    VkDescriptorSetLayoutBinding storageBuffer{};
+    storageBuffer.binding = binding;
+    storageBuffer.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    storageBuffer.descriptorCount = arraySize;
+    storageBuffer.stageFlags = stage;
+    uniformsLayout.push_back(storageBuffer);
+}
+
 void PipelineLayout::buildLayout(VkDescriptorSetLayoutCreateFlags flags)
 {
     VkDescriptorSetLayoutCreateInfo layoutInfo{};

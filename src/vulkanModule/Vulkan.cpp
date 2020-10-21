@@ -311,6 +311,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
     deviceFeatures.multiDrawIndirect = supportedDeviceFeatures.multiDrawIndirect;
     deviceFeatures.wideLines = supportedDeviceFeatures.wideLines;
     deviceFeatures.shaderFloat64 = supportedDeviceFeatures.shaderFloat64;
+    deviceFeatures.vertexPipelineStoresAndAtomics = supportedDeviceFeatures.vertexPipelineStoresAndAtomics;
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

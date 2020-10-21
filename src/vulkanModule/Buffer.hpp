@@ -17,10 +17,12 @@ public:
     void print();
     //! Update vertex content with data member
     void update();
-    //! Intermediate buffer, write your vertex here
+    //! Intermediate buffer, write here (or read)
     void *data;
     //! Release staging resources
     void detach();
+    //! Flush intermediate buffer to make storage buffer update visible
+    void invalidate();
 private:
     VirtualSurface *master;
     VkCommandBuffer updater;

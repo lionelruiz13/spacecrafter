@@ -2,17 +2,19 @@
 #include "SetMgr.hpp"
 #include "tools/log.hpp"
 
-SetMgr::SetMgr(VirtualSurface *_master, int maxSet, int maxUniformSet, int maxTextureSet) : master(_master)
+SetMgr::SetMgr(VirtualSurface *_master, int maxSet, int maxUniformSet, int maxTextureSet, int maxStorageBufferSet) : master(_master)
 {
-    std::array<VkDescriptorPoolSize, 2> poolSize;
+    std::array<VkDescriptorPoolSize, 3> poolSize;
     poolSize[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     poolSize[0].descriptorCount = maxUniformSet != -1 ? maxUniformSet : maxSet;
     poolSize[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     poolSize[1].descriptorCount = maxTextureSet != -1 ? maxTextureSet : maxSet;
+    poolSize[2].type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    poolSize[2].descriptorCount = maxStorageBufferSet;
 
     VkDescriptorPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    poolInfo.poolSizeCount = 2;
+    poolInfo.poolSizeCount = (maxStorageBufferSet > 0) ? 3 : 2;
     poolInfo.pPoolSizes = poolSize.data();
     poolInfo.maxSets = maxSet;
     if (poolSize[0].descriptorCount == 0) {

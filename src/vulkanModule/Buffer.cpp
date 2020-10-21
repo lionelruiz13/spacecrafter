@@ -4,9 +4,15 @@
 
 Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : master(_master)
 {
-    _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
-    _master->mapMemory(stagingBufferMemory, &data);
-    _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
+    if (usage & VK_BUFFER_USAGE_STORAGE_BUFFER_BIT) {
+        _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT, stagingBuffer, stagingBufferMemory);
+        _master->mapMemory(stagingBufferMemory, &data);
+        _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | usage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
+    } else {
+        _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
+        _master->mapMemory(stagingBufferMemory, &data);
+        _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT | usage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
+    }
 
     // Initialize update
     VkCommandBufferAllocateInfo allocInfo{};
@@ -25,7 +31,11 @@ Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : ma
 
     VkBufferCopy copyRegion{};
     copyRegion.size = size;
-    vkCmdCopyBuffer(updater, stagingBuffer, buffer, 1, &copyRegion);
+    if (usage & VK_BUFFER_USAGE_STORAGE_BUFFER_BIT) {
+        vkCmdCopyBuffer(updater, buffer, stagingBuffer, 1, &copyRegion);
+    } else {
+        vkCmdCopyBuffer(updater, stagingBuffer, buffer, 1, &copyRegion);
+    }
 
     vkEndCommandBuffer(updater);
 
@@ -67,4 +77,15 @@ void Buffer::detach()
         master->free(stagingBufferMemory);
         data = nullptr;
     }
+}
+
+void Buffer::invalidate()
+{
+    VkMappedMemoryRange range{};
+    range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+    range.memory = stagingBufferMemory.memory;
+    range.offset = stagingBufferMemory.offset;
+    range.size = stagingBufferMemory.size;
+    master->waitTransferQueueIdle();
+    vkInvalidateMappedMemoryRanges(master->refDevice, 1, &range);
 }

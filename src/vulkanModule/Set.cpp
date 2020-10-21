@@ -6,6 +6,7 @@
 #include "Uniform.hpp"
 #include "Texture.hpp"
 #include "TextureMgr.hpp"
+#include "Buffer.hpp"
 #include "tools/log.hpp"
 
 Set::Set() {}
@@ -58,9 +59,9 @@ bool Set::createDescriptorSet(VkDescriptorSetAllocateInfo *allocInfo)
     return false;
 }
 
-void Set::bindUniform(Uniform *uniform, uint32_t binding, uint32_t arraySize)
+void Set::bindUniform(Uniform *uniform, uint32_t binding)
 {
-    writeSet.emplace_back(VkWriteDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, set, binding, 0, arraySize,
+    writeSet.emplace_back(VkWriteDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, set, binding, 0, 1,
         VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
         nullptr, uniform->getBufferInfo(), nullptr});
 }
@@ -70,6 +71,18 @@ void Set::bindTexture(Texture *texture, uint32_t binding)
     writeSet.emplace_back(VkWriteDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, set, binding, 0, 1,
         VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
         texture->getInfo(), nullptr, nullptr});
+}
+
+void Set::bindStorageBuffer(Buffer *buffer, uint32_t binding, uint32_t range)
+{
+    VkDescriptorBufferInfo buffInfo{};
+    buffInfo.buffer = buffer->get();
+    buffInfo.offset = buffer->getOffset();
+    buffInfo.range = range;
+    storageBufferInfo.push_front(buffInfo);
+    writeSet.emplace_back(VkWriteDescriptorSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, set, binding, 0, 1,
+        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+        nullptr, &storageBufferInfo.front(), nullptr});
 }
 
 int Set::bindVirtualUniform(Uniform *uniform, uint32_t binding, uint32_t arraySize)
@@ -112,6 +125,7 @@ void Set::update()
     if (set) {
         vkUpdateDescriptorSets(master->refDevice, writeSet.size(), writeSet.data(), 0, nullptr);
         writeSet.clear();
+        storageBufferInfo.clear();
     }
 }
 
