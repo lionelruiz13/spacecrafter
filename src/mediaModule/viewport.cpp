@@ -81,6 +81,7 @@ void ViewPort::createSC_context(ThreadContext *context)
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
 	pipeline->setDepthStencilMode();
+	pipeline->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
 	pipeline->bindVertex(m_fullGL.get());
 	pipeline->bindShader("videoplayer.vert.spv");
 	pipeline->bindShader("videoplayer.frag.spv");
@@ -96,7 +97,7 @@ void ViewPort::createSC_context(ThreadContext *context)
 
 void ViewPort::build()
 {
-	cmdMgr->init(commandIndex, pipeline.get());
+	cmdMgr->init(commandIndex, pipeline.get(), renderPassType::SINGLE_SAMPLE_DEFAULT, true, renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindSet(layout.get(), set.get());
 	if (fullScreen) {
 		cmdMgr->bindVertex(m_fullGL.get());
