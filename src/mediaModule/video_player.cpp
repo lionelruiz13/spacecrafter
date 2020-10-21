@@ -26,7 +26,8 @@
 
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventVideo.hpp"
-
+#include "vulkanModule/CommandMgr.hpp"
+#include "vulkanModule/VirtualSurface.hpp"
 
 VideoPlayer::VideoPlayer(Media* _media)
 {
@@ -47,10 +48,12 @@ VideoPlayer::~VideoPlayer()
 		delete videoTexture.tex[i];
 }
 
-void VideoPlayer::createTextures(ThreadContext *context)
+void VideoPlayer::createTextures(ThreadContext *_context)
 {
+	context = _context;
 	for (int i = 0; i < 3; i++)
 		videoTexture.tex[i] = new StreamTexture(context->surface, context->global->textureMgr, true);
+	commandIndex = context->commandMgrDynamic->getCommandIndex();
 }
 
 void VideoPlayer::pauseCurrentVideo()
@@ -275,6 +278,7 @@ void VideoPlayer::getNextVideoFrame()
 			// glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
 			// glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 		}
+		context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
 	}
 	#endif
 }
@@ -291,6 +295,10 @@ void VideoPlayer::stopCurrentVideo()
 	av_frame_free(&pFrameOut);
 	av_frame_free(&pFrameIn);
 	avcodec_close(pCodecCtx);
+	context->surface->waitGraphicQueueIdle();
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
 	for (int i = 0; i < 3; ++i) {
 		videoTexture.tex[i]->releaseStagingMemoryPtr();
 		videoTexture.tex[i]->unuse();
@@ -311,9 +319,12 @@ void VideoPlayer::initTexture()
 		heights[i] = _heights[i];
 	}
 
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	cmdMgr->init(commandIndex);
 	for (int i = 0; i < 3; ++i) {
 		videoTexture.tex[i]->use(widths[i], heights[i]);
 		videoTexture.tex[i]->acquireStagingMemoryPtr(&pImageBuffer[i]);
+		cmdMgr->addImageBarrier(videoTexture.tex[i], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
 		// glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);
 		// glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);
 		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -321,6 +332,8 @@ void VideoPlayer::initTexture()
 		// glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		// glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
+	cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+	cmdMgr->compile();
 }
 
 

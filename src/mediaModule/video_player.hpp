@@ -42,6 +42,7 @@ extern "C"
 class s_texture;
 class Media;
 class StreamTexture;
+class ThreadContext;
 
 /**
  * \class VideoPlayer
@@ -114,6 +115,8 @@ private:
 
 	Media* media=nullptr;
 	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
+	ThreadContext *context;
+	int commandIndex;
 	std::array<void *, 3> pImageBuffer;
 
 	std::string fileName; 	//!< nom de la vidéo
