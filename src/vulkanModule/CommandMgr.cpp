@@ -168,10 +168,14 @@ void CommandMgr::resetSubmission()
     }
 }
 
-void CommandMgr::submit()
+void CommandMgr::submitGuard()
 {
     vkWaitForFences(refDevice, 1, &frames[refFrameIndex].fence, VK_TRUE, UINT64_MAX);
     vkResetFences(refDevice, 1, &frames[refFrameIndex].fence);
+}
+
+void CommandMgr::submitAction()
+{
     if (needResolve) {
         if (submissionPerFrame) {
             resolve(refFrameIndex);
@@ -192,6 +196,12 @@ void CommandMgr::submit()
     }
 }
 
+void CommandMgr::submit()
+{
+    submitGuard();
+    submitAction();
+}
+
 void CommandMgr::resolve(uint8_t frameIndex)
 {
     if (isLinked) {
@@ -208,7 +218,29 @@ void CommandMgr::resolve(uint8_t frameIndex)
             submitInfo.commandBufferCount = 0;
             frames[frameIndex].submitList.push_back(submitInfo);
         } else {
-            frames[frameIndex].submitList.back().pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+            // MERGE TEST
+            VkSubmitInfo submitInfo;
+            submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+            submitInfo.pNext = nullptr;
+            submitInfo.waitSemaphoreCount = 1;
+            submitInfo.pWaitSemaphores = &frames[frameIndex].topSemaphore;
+            submitInfo.pWaitDstStageMask = &defaultStage;
+            submitInfo.signalSemaphoreCount = 1;
+            submitInfo.pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+            std::vector<VkCommandBuffer> pCmdBuff;
+            pCmdBuff.reserve(frames[frameIndex].submittedCommandBuffers.size());
+            for (auto &vecCmdBuff : frames[frameIndex].submittedCommandBuffers) {
+                for (auto &cmdBuff : vecCmdBuff) {
+                    pCmdBuff.push_back(cmdBuff);
+                }
+            }
+            frames[frameIndex].submittedCommandBuffers.front().swap(pCmdBuff);
+            submitInfo.commandBufferCount = frames[frameIndex].submittedCommandBuffers.front().size();
+            submitInfo.pCommandBuffers = frames[frameIndex].submittedCommandBuffers.front().data();
+            frames[frameIndex].submitList.clear();
+            frames[frameIndex].submitList.push_back(submitInfo);
+            // MERGE TEST END
+            //frames[frameIndex].submitList.back().pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
         }
     } else {
         frames[frameIndex].submitList.front().waitSemaphoreCount = 0;

@@ -7,7 +7,6 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
-#include <mutex>
 #include "mainModule/sdl_facade.hpp"
 #include <SDL2/SDL_vulkan.h>
 #include "CommandMgr.hpp"
@@ -21,7 +20,60 @@
 
 bool Vulkan::isAlive = false;
 
-Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers, VkSampleCountFlagBits sampleCount) : refDevice(device), refRenderPass(renderPass), refRenderPassExternal(renderPassExternal), refRenderPassCompatibility(renderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(resolveFramebuffers), refSingleSampleFramebuffers(singleSampleFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName)
+static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std::mutex *mutex, bool *isAlive, uint8_t *active)
+{
+    while (!*isAlive) // Wait isAlive became true
+        std::this_thread::yield();
+
+    CommandMgr *actual;
+    while (*isAlive) {
+        while (queue->empty() && *isAlive)
+            std::this_thread::yield();
+        master->waitTransferQueueIdle();
+        mutex->lock();
+        if (queue->empty()) {
+            mutex->unlock();
+            continue;
+        }
+        (*active)++;
+        actual = queue->front();
+        queue->pop();
+        mutex->unlock();
+        if (actual == reinterpret_cast<CommandMgr *>(master)) {
+            master->submitFrame();
+        } else {
+            actual->submitAction();
+        }
+        mutex->lock();
+        (*active)--;
+        mutex->unlock();
+    }
+}
+
+static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue, VkQueue vkqueue, std::mutex *mutex, bool *isAlive, uint8_t *active)
+{
+    std::pair<VkSubmitInfo, VkFence> actual;
+    while (*isAlive) {
+        while (queue->empty() && *isAlive)
+            std::this_thread::yield();
+        mutex->lock();
+        if (queue->empty()) {
+            mutex->unlock();
+            continue;
+        }
+        (*active)++;
+        actual = queue->front();
+        queue->pop();
+        mutex->unlock();
+        vkQueueSubmit(vkqueue, 1, &actual.first, actual.second);
+        vkQueueWaitIdle(vkqueue);
+        mutex->lock();
+        (*active)--;
+        mutex->unlock();
+    }
+}
+
+Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers, VkSampleCountFlagBits sampleCount) : refDevice(device), refRenderPass(renderPass), refRenderPassExternal(renderPassExternal), refRenderPassCompatibility(renderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(resolveFramebuffers), refSingleSampleFramebuffers(singleSampleFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName), graphicThread(graphicMainloop, &graphicQueue, this, &graphicQueueMutex, &isAlive, &graphicActivity)
 {
     assert(!isAlive); // There must be only one Vulkan instance
     isAlive = true;
@@ -97,6 +149,9 @@ Vulkan::~Vulkan()
     isAlive = false;
     vkDeviceWaitIdle(device);
     std::cout << "Release resources\n";
+    graphicThread.join();
+    for (auto &thr : transferThread)
+        thr.join();
     virtualSurface.clear(); // Release all attached resources
     for (auto &sem : imageAvailableSemaphores)
         vkDestroySemaphore(device, sem, nullptr);
@@ -135,21 +190,36 @@ Vulkan::~Vulkan()
 
 void Vulkan::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
 {
-    static std::mutex mtx;
-    static int dispatch = 0;
-    mtx.lock();
+    assert(submitInfo->sType == VK_STRUCTURE_TYPE_SUBMIT_INFO);
     //std::cout << "Submit command buffer " << reinterpret_cast<void *>(*submitInfo->pCommandBuffers) << std::endl;
-    vkQueueWaitIdle(transferQueues[dispatch]);
-    vkQueueSubmit(transferQueues[dispatch], 1, submitInfo, fence);
-    dispatch = (dispatch + 1) % transferQueues.size();
-    mtx.unlock();
+    transferQueueMutex.lock();
+    transferQueue.emplace(*submitInfo, fence);
+    transferQueueMutex.unlock();
+    // vkQueueWaitIdle(transferQueues[dispatch]);
+    // vkQueueSubmit(transferQueues[dispatch], 1, submitInfo, fence);
+}
+
+void Vulkan::submit(CommandMgr *cmdMgr)
+{
+    if (cmdMgr == nullptr) {
+        cLog::get()->write("Attempt to submit CommandMgr with invalid address 0x0", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+        return;
+    }
+    graphicQueueMutex.lock();
+    graphicQueue.push(cmdMgr);
+    graphicQueueMutex.unlock();
 }
 
 void Vulkan::waitTransferQueueIdle()
 {
-    for (auto &transferQueue : transferQueues) {
-        vkQueueWaitIdle(transferQueue);
-    }
+    while (!transferQueue.empty() || transferActivity > 0)
+        std::this_thread::yield();
+}
+
+void Vulkan::waitGraphicQueueIdle()
+{
+    while (!graphicQueue.empty() || graphicActivity > 0)
+        std::this_thread::yield();
 }
 
 void Vulkan::finalize()
@@ -361,6 +431,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
             std::cout << "Create transferQueue\n";
             vkGetDeviceQueue(device, index, j, &tmpQueue);
             transferQueues.push_back(tmpQueue);
+            transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity);
         }
     }
 }
@@ -792,7 +863,14 @@ void Vulkan::createCommandPool()
 
 void Vulkan::sendFrame()
 {
-    for (uint32_t i = 0; i < swapChain.size(); i++) {
+    graphicQueueMutex.lock();
+    graphicQueue.push(reinterpret_cast<CommandMgr *>(this));
+    graphicQueueMutex.unlock();
+}
+
+void Vulkan::submitFrame()
+{
+    for (uint32_t i = 0; i < virtualSurface.size(); i++) {
         virtualSurface[i]->getNextFrame();
     }
     VkPresentInfoKHR presentInfo{};
@@ -804,10 +882,10 @@ void Vulkan::sendFrame()
     presentInfo.pImageIndices = &frameIndex;
     presentInfo.pResults = nullptr; // Optionnel
     if (vkQueuePresentKHR(graphicsAndPresentQueues[0], &presentInfo) != VK_SUCCESS) {
-        std::cerr << "Presentation FAILED\n";
+        cLog::get()->write("Presentation failed", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     }
     acquireNextFrame();
-    for (uint32_t i = 0; i < swapChain.size(); i++) {
+    for (uint32_t i = 0; i < virtualSurface.size(); i++) {
         virtualSurface[i]->releaseFrame();
     }
 }

@@ -5,6 +5,9 @@
 #include "SubMemory.hpp"
 #include "tools/vecmath.hpp"
 #include <array>
+#include <thread>
+#include <queue>
+#include <mutex>
 
 class SDL_Window;
 
@@ -20,13 +23,17 @@ struct SwapChainSupportDetails {
 
 class VirtualSurface;
 class MemoryManager;
+class CommandMgr;
 
 class Vulkan {
 public:
     Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600, int chunkSize = 256*1024*1024, bool enableDebugLayers = true, VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT);
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
+    //! send frame for submission
     void sendFrame();
+    //! submit frame (don't use directly)
+    void submitFrame();
     bool createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, SubMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties = 0);
     //! for malloc
     MemoryManager *getMemoryManager() {return memoryManager;}
@@ -36,6 +43,7 @@ public:
     size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
     void waitTransferQueueIdle();
+    void waitGraphicQueueIdle();
     VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
     VkQueue assignGraphicsQueue() {static short i = 0; return graphicsAndPresentQueues[i++];}
     VkSwapchainKHR *assignSwapChain() {return swapChain.data();}
@@ -49,6 +57,7 @@ public:
     const VkPhysicalDeviceFeatures &getDeviceFeatures() {return deviceFeatures;}
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, const uint32_t firstIndex = 0, VkMemoryPropertyFlags preferedProperties = 0, bool *isOptimal = nullptr);
     VkPipelineCache &getPipelineCache() {return pipelineCache;}
+    void submit(CommandMgr *cmdMgr);
     //! Only MemoryManager should use this method
     VkPhysicalDevice getPhysicalDevice() {return physicalDevice;}
 
@@ -138,6 +147,15 @@ private:
     void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 
     VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT);
+
+    std::vector<std::thread> transferThread;
+    std::queue<std::pair<VkSubmitInfo, VkFence>> transferQueue;
+    std::mutex transferQueueMutex;
+    uint8_t transferActivity = 0;
+    std::thread graphicThread;
+    std::queue<CommandMgr *> graphicQueue;
+    std::mutex graphicQueueMutex;
+    uint8_t graphicActivity = 0;
 
     void initDebug(vk::InstanceCreateInfo *instanceCreateInfo);
     void startDebug();

@@ -104,6 +104,11 @@ void VirtualSurface::waitTransferQueueIdle()
     master->waitTransferQueueIdle();
 }
 
+void VirtualSurface::waitGraphicQueueIdle()
+{
+    master->waitGraphicQueueIdle();
+}
+
 bool VirtualSurface::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, SubMemory& bufferMemory, VkMemoryPropertyFlags preferedProperties)
 {
     return master->createBuffer(size, usage, properties, buffer, bufferMemory, preferedProperties);
@@ -142,7 +147,9 @@ void VirtualSurface::submitFrame()
     while (dependencyFrameIndexQueue && dependencyFrameIndexQueue->empty())
         std::this_thread::yield();
     for (uint8_t i = 0; i < commandMgrList.size(); ++i) {
-        commandMgrList[i]->submit();
+        commandMgrList[i]->submitGuard();
+        master->submit(commandMgrList[i]);
+        //commandMgrList[i]->submit();
     }
     frameIndexQueue.push(frameIndex);
 }
@@ -189,5 +196,6 @@ const VkSemaphore &VirtualSurface::getBottomSemaphore(uint8_t frameIndex)
 }
 
 size_t &VirtualSurface::getGraphicsQueueIndex() {return master->getGraphicsQueueIndex();}
+size_t VirtualSurface::getTransferQueueIndex() {return master->getTransferQueueFamilyIndex();}
 const VkPhysicalDeviceFeatures &VirtualSurface::getDeviceFeatures() {return master->getDeviceFeatures();}
 VkPipelineCache &VirtualSurface::getPipelineCache() {return master->getPipelineCache();}

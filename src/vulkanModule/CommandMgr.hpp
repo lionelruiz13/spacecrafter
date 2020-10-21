@@ -101,7 +101,11 @@ public:
     void setSubmission(int index, bool needDepthBuffer = false, CommandMgr *target = nullptr);
     //! reset submission state for all commands
     void resetSubmission();
-    //! submit all commands
+    //! declare submisssion
+    void submitGuard();
+    //! execute submission
+    void submitAction();
+    //! submit all commands (combine submitGuard and submitAction)
     void submit();
     //! reset all command buffer (for single-use command buffers), but keep their submission state
     void reset();
