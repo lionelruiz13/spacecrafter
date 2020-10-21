@@ -22,7 +22,7 @@ void main(void)
 {
 	gl_Position = vec4(inPosition,1.0);
 
-	color = whiteColor ? vec3(0.0) : inColor;
+	color = whiteColor ? vec3(1.0) : inColor;
 	scale= inScale;
 	texture = inTexture;
 }
