@@ -123,5 +123,9 @@ void Orbit3D::computeShader()
 		orbitSegments.push_back( (float) orbitPoint[0][0] );
 		orbitSegments.push_back( (float) orbitPoint[0][1] );
 		orbitSegments.push_back( (float) orbitPoint[0][2] );
+	} else {
+		orbitSegments.push_back( (float) orbitPoint[ORBIT_POINTS-1][0] );
+		orbitSegments.push_back( (float) orbitPoint[ORBIT_POINTS-1][1] );
+		orbitSegments.push_back( (float) orbitPoint[ORBIT_POINTS-1][2] );
 	}
 }

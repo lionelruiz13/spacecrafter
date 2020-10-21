@@ -120,7 +120,7 @@ void Orbit2D::computeShader()
 		vecOrbit2dVertex.push_back(center[2] * (1 - coef) + orbitPoint[ORBIT_POINTS/2+1][2] * coef);
 	}
 //-------------------------------------------------------------------------
-	for ( int n= ORBIT_POINTS/2+1; n< ORBIT_POINTS-1; n++) {
+	for ( int n= ORBIT_POINTS/2+1; n< ORBIT_POINTS; n++) {
 		vecOrbit2dVertex.push_back( (float)orbitPoint[n][0] );
 		vecOrbit2dVertex.push_back( (float)orbitPoint[n][1] );
 		vecOrbit2dVertex.push_back( (float)orbitPoint[n][2] );
@@ -130,5 +130,9 @@ void Orbit2D::computeShader()
 		vecOrbit2dVertex.push_back( (float)orbitPoint[0][0] );
 		vecOrbit2dVertex.push_back( (float)orbitPoint[0][1] );
 		vecOrbit2dVertex.push_back( (float)orbitPoint[0][2] );
+	} else {
+		vecOrbit2dVertex.push_back( (float)orbitPoint[ORBIT_POINTS-1][0] );
+		vecOrbit2dVertex.push_back( (float)orbitPoint[ORBIT_POINTS-1][1] );
+		vecOrbit2dVertex.push_back( (float)orbitPoint[ORBIT_POINTS-1][2] );
 	}
 }
