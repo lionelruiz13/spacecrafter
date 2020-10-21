@@ -6,13 +6,12 @@
 #pragma optimize(off)
 
 layout (binding=1, set=1) uniform ubo {
-	vec3 Color;
-	float Fader;
+	vec4 ColorAndFader;
 };
 layout (location=0) out vec4 FragColor;
 
 void main(void)
 {
-	FragColor = vec4 (Color, Fader);
+	FragColor = ColorAndFader;
 }
 
