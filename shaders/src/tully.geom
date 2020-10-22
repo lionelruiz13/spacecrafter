@@ -10,7 +10,7 @@ layout (points) in;
 layout (points , max_vertices = 1) out;
 
 layout (location=0) in float scale[1];
-layout (location=1) in float texture[1]; // unused ?
+layout (location=1) in float texture[1];
 layout (location=2) in vec3 color[1];
 
 layout (location=0) out vec3 TexColor;
@@ -38,6 +38,7 @@ void main()
 		if (radius<2.0) {
 			float intensity = max(min(radius,0.9), 0.3);
 			gl_Position   = MVP2D * ( pos );
+			gl_Position.z = 0.;
 			TexColor= color[0];
 			intensityOut = intensity;
 			EmitVertex();
