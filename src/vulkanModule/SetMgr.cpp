@@ -34,20 +34,20 @@ void SetMgr::extend()
     VkDescriptorPool tmpPool;
     std::array<VkDescriptorPoolSize, 2> poolSize;
     poolSize[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    poolSize[0].descriptorCount = 32;
+    poolSize[0].descriptorCount = 128;
     poolSize[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    poolSize[1].descriptorCount = 32;
+    poolSize[1].descriptorCount = 128;
 
     VkDescriptorPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
     poolInfo.poolSizeCount = 2;
     poolInfo.pPoolSizes = poolSize.data();
-    poolInfo.maxSets = 32;
+    poolInfo.maxSets = 128;
     if (vkCreateDescriptorPool(master->refDevice, &poolInfo, nullptr, &tmpPool) != VK_SUCCESS) {
         cLog::get()->write("Failed to extend SetMgr", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         return;
     }
-    cLog::get()->write("Expansion of SetMgr with a new pool that can hold 32 sets totaling 32 uniform buffers and 32 textures", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+    cLog::get()->write("Expansion of SetMgr with a new pool that can hold 128 sets totaling 128 uniform buffers and 128 textures", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
     pools.push_back(tmpPool);
 }
 
