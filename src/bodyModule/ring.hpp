@@ -116,12 +116,12 @@ private:
 	struct {
 		Mat4f ModelViewMatrix;
 		Mat4f ModelViewMatrixInverse;
+		Vec3f clipping_fov;
+		float RingScale;
 		Vec3f PlanetPosition;
 		float PlanetRadius;
 		Vec3f LightDirection;
 		float SunnySideUp;
-		Vec3f clipping_fov;
-		float RingScale;
 	} *pUniform;
 
 	Ring2D* lowUP;

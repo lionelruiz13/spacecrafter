@@ -166,8 +166,9 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 	// glBindTexture(GL_TEXTURE_2D, tex->getID());
 
 //	shaderRing->setUniform("Texture",0);
+	assert(offsetof(typeof(*pUniform), SunnySideUp) == sizeof(float) * (16*2 + (3+1)*2 + 3));
 	pUniform->LightDirection = _lightDirection;
-	pUniform->PlanetPosition =  _planetPosition;
+	pUniform->PlanetPosition = _planetPosition;
 	pUniform->PlanetRadius = planetRadius;
 	pUniform->RingScale = mc;
 
@@ -225,6 +226,8 @@ Ring2D::~Ring2D()
 
 void Ring2D::initFrom(VertexArray &vertex)
 {
+	drawData.firstInstance = 0;
+	drawData.instanceCount = 1;
 	drawData.vertexCount = datas.size() / 4; // Pos2D + TEXTURE = 4
 	m_dataGL->assign(&vertex, drawData.vertexCount);
 	m_dataGL->fillVertexBuffer(datas);
