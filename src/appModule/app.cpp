@@ -170,6 +170,7 @@ App::~App()
 
 	EventRecorder::End();
 
+	globalContext.vulkan->waitIdle();
 	delete appDraw;
 	if (enable_tcp)
 		delete tcp;
