@@ -9,7 +9,7 @@
 class Vulkan;
 class VirtualSurface;
 
-#define UNIFIED_BUFFER_FLAGS VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT
+#define UNIFIED_BUFFER_FLAGS VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
 
 //! Manage virtual buffering for Uniform and Buffer
 class BufferMgr {

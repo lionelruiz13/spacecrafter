@@ -102,6 +102,9 @@ void BufferMgr::releaseBuffer(SubBuffer &subBuffer)
             availableSubBuffer.erase(tmpIt);
         }
     }
+    if (subBuffer.offset + subBuffer.size >= maxOffset && subBuffer.offset < maxOffset) {
+        maxOffset = subBuffer.offset;
+    }
     insert(subBuffer);
 }
 
