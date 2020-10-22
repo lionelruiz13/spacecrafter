@@ -58,8 +58,8 @@ public:
 
 	void setMVP2D(const Mat4f &v) {
 		UBOdata.MVP2D = v;
-		UBOdata.MVP2D[2][0] = UBOdata.MVP2D[2][1] = UBOdata.MVP2D[2][2] = 0.f;
-		UBOdata.MVP2D[2][3] = 1.f;
+		UBOdata.MVP2D[0][2] = UBOdata.MVP2D[1][2] = UBOdata.MVP2D[2][2] = 0.f;
+		UBOdata.MVP2D[3][2] = 1.f;
 	}
 
 	void setTime(float time) {
