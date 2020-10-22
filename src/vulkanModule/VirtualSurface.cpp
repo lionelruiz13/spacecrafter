@@ -24,7 +24,7 @@ VirtualSurface::VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits
     _master->assignSwapChainFramebuffers(swapChainFramebuffers, index);
     swapChainExtent = _master->getSwapChainExtent();
     viewportState = _master->getViewportState();
-    bufferMgr = std::make_unique<BufferMgr>(this);
+    bufferMgr = std::make_unique<BufferMgr>(this, 2*1024*1024);
 }
 
 VirtualSurface::VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer, int width, int height) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPassExternal), refRenderPassCompatibility(_master->refRenderPassExternal), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(swapChainFramebuffers), refSingleSampleFramebuffers(swapChainFramebuffers), refFrameIndex(frameIndex), sampleCount(VK_SAMPLE_COUNT_1_BIT), master(_master)
@@ -54,7 +54,7 @@ VirtualSurface::VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Text
     viewportState.pScissors = &scissors;
     viewportState.pViewports = &viewport;
     createFramebuffer(frames, depthBuffer);
-    bufferMgr = std::make_unique<BufferMgr>(this);
+    bufferMgr = std::make_unique<BufferMgr>(this, 32*1024);
 }
 
 VirtualSurface::~VirtualSurface()
