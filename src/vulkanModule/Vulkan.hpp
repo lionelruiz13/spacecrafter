@@ -44,6 +44,7 @@ public:
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
     void waitTransferQueueIdle();
     void waitGraphicQueueIdle();
+    void waitIdle();
     VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
     VkQueue assignGraphicsQueue() {static short i = 0; return graphicsAndPresentQueues[i++];}
     VkSwapchainKHR *assignSwapChain() {return swapChain.data();}

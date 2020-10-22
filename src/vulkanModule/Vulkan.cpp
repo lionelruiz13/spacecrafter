@@ -66,7 +66,7 @@ static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue
         queue->pop();
         mutex->unlock();
         vkQueueSubmit(vkqueue, 1, &actual.first, actual.second);
-        vkQueueWaitIdle(vkqueue);
+        vkQueueWaitIdle(vkqueue); // must be replaced by wait for fence
         mutex->lock();
         (*active)--;
         mutex->unlock();
@@ -220,6 +220,13 @@ void Vulkan::waitGraphicQueueIdle()
 {
     while (!graphicQueue.empty() || graphicActivity > 0)
         std::this_thread::yield();
+}
+
+void Vulkan::waitIdle()
+{
+    waitTransferQueueIdle();
+    waitGraphicQueueIdle();
+    vkDeviceWaitIdle(device);
 }
 
 void Vulkan::finalize()
