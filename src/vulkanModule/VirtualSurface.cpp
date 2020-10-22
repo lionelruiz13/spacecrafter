@@ -5,7 +5,7 @@
 #include "BufferMgr.hpp"
 #include <thread>
 
-VirtualSurface::VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits _sampleCount) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refRenderPassCompatibility(_master->refRenderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(_master->refResolveFramebuffers), refSingleSampleFramebuffers(_master->refSingleSampleFramebuffers), refFrameIndex(_master->refFrameIndex), sampleCount(_sampleCount), master(_master)
+VirtualSurface::VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits _sampleCount, bool _isThreaded) : refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refRenderPassCompatibility(_master->refRenderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(_master->refResolveFramebuffers), refSingleSampleFramebuffers(_master->refSingleSampleFramebuffers), refFrameIndex(_master->refFrameIndex), sampleCount(_sampleCount), master(_master), isThreaded(_isThreaded)
 {
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -147,9 +147,12 @@ void VirtualSurface::submitFrame()
     while (dependencyFrameIndexQueue && dependencyFrameIndexQueue->empty())
         std::this_thread::yield();
     for (uint8_t i = 0; i < commandMgrList.size(); ++i) {
-        commandMgrList[i]->submitGuard();
-        master->submit(commandMgrList[i]);
-        //commandMgrList[i]->submit();
+        if (isThreaded) {
+            commandMgrList[i]->submit();
+        } else {
+            commandMgrList[i]->submitGuard();
+            master->submit(commandMgrList[i]);
+        }
     }
     frameIndexQueue.push(frameIndex);
 }

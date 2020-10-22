@@ -589,8 +589,9 @@ void Vulkan::createMultisample(VkSampleCountFlagBits sampleCount)
 
 void Vulkan::createVirtualSurfaces(VkSampleCountFlagBits sampleCount)
 {
+    bool isThreaded = swapChain.size() > 1; // Assume VirtualSurface were in separate threads
     for (uint32_t i = 0; i < swapChain.size(); i++) {
-        virtualSurface.push_back(std::make_unique<VirtualSurface>(this, i, sampleCount));
+        virtualSurface.push_back(std::make_unique<VirtualSurface>(this, i, sampleCount, isThreaded));
     }
 }
 

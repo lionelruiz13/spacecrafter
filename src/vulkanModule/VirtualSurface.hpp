@@ -22,7 +22,7 @@ class BufferMgr;
 
 class VirtualSurface {
 public:
-    VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits _sampleCount);
+    VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits _sampleCount, bool _isThreaded);
     VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Texture>> &frames, Texture &depthBuffer, int width = -1, int height = -1);
     ~VirtualSurface();
     VkCommandPool &getTransferPool() {return transferPool;}
@@ -86,6 +86,7 @@ private:
     std::queue<uint32_t> frameIndexQueue;
     std::queue<uint32_t> *dependencyFrameIndexQueue = nullptr;
     bool isReady = false;
+    bool isThreaded = true; // If threaded, don't use thread helper for command submission
 };
 
 #endif /* end of include guard: VIRTUAL_SURFACE_HPP */
