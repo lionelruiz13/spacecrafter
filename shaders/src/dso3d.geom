@@ -39,26 +39,22 @@ void main()
 			// en bas à droite
 			float tex = (texture[0]+1)/nbTextures;
 			gl_Position   = MVP2D * ( pos +vec4( radius, -radius, 0.0, 0.0) );
-			gl_Position.z = 0.;
 			TexCoord= vec2(tex, .0f);
 			EmitVertex();
 	
 			// en haut à droite
 			gl_Position   = MVP2D * ( pos +vec4( radius, radius, 0.0, 0.0) );
-			gl_Position.z = 0.;
 			TexCoord= vec2(tex, 1.0f);
 			EmitVertex();    
 
 			tex = texture[0]/nbTextures;
 			// en Bas à gauche
 			gl_Position   = MVP2D * ( pos +vec4( -radius, -radius, 0.0, 0.0) );
-			gl_Position.z = 0.;
 			TexCoord= vec2(tex, 0.0f);
 			EmitVertex();
 	
 			// en haut à gauche
 			gl_Position   = MVP2D * ( pos +vec4( -radius, radius, 0.0, 0.0) );
-			gl_Position.z = 0.;
 			TexCoord= vec2(tex, 1.0f);
 			EmitVertex();
 			EndPrimitive();

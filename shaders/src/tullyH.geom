@@ -40,28 +40,24 @@ void main()
 		float intensity = 1.0;
 		//~ // en bas à droite
 		gl_Position   = MVP2D * ( pos +vec4( radius, -radius, 0.0, 0.0) );
-		gl_Position.z = 0.;
 		TexCoord= vec2((texture[0]+1)/nbTextures, .0f);
 		intensityOut = intensity;
 		EmitVertex();
 
 		//~ // en haut à droite
 		gl_Position   = MVP2D * ( pos +vec4( radius, radius, 0.0, 0.0) );
-		gl_Position.z = 0.;
 		TexCoord= vec2((texture[0]+1)/nbTextures, 1.0f);
 		intensityOut = intensity;
 		EmitVertex();    
 
 		// en Bas à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -radius, -radius, 0.0, 0.0) );
-		gl_Position.z = 0.;
 		TexCoord= vec2(texture[0]/nbTextures, 0.0f);
 		intensityOut = intensity;
 		EmitVertex();
 
 		// en haut à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -radius, radius, 0.0, 0.0) );
-		gl_Position.z = 0.;
 		TexCoord= vec2(texture[0]/nbTextures, 1.0f);
 		intensityOut = intensity;
 		EmitVertex();
