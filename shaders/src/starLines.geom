@@ -22,15 +22,12 @@ void main()
 	vec4 pos2 = custom_project( gl_in[1].gl_Position );
 	if (pos1.w + pos2.w == 2.0) {
 		gl_Position = MVP2D * pos2;
-		gl_Position.z = 0;
 		EmitVertex();
 		for(int i=1; i<4; i++){
 			gl_Position = MVP2D * custom_project( gl_in[0].gl_Position*i/4 + gl_in[1].gl_Position*(1-i/4));
-			gl_Position.z = 0;
 			EmitVertex();
 		}
 		gl_Position = MVP2D * pos1;
-		gl_Position.z = 0;
 		EmitVertex();
 	}
 	EndPrimitive();
