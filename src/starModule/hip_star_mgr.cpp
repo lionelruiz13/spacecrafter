@@ -396,7 +396,7 @@ void HipStarMgr::init(const InitParser &conf)
 	cmdMgr->compile();
 
 	// Clear first framebuffer
-	executeDraw();
+	//executeDraw();
 }
 
 void HipStarMgr::setGrid(GeodesicGrid* geodesic_grid)
@@ -745,10 +745,11 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	if (nbStarsToDraw==0)
 		return 0.;
 
+	executeDraw();
 	if (!surface->isEmpty()) {
 		frameIndex = surface->getNextFrame();
 		surface->releaseFrame();
-		std::thread(HipStarMgr::sExecuteDraw, this).detach();
+		//std::thread(HipStarMgr::sExecuteDraw, this).detach();
 	}
 	context->commandMgr->setSubmission(dataFBO[frameIndex].commandIndex);
 	//enable FBO
