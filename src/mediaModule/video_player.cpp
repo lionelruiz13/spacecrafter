@@ -301,7 +301,6 @@ void VideoPlayer::stopCurrentVideo()
 	context->commandMgr->waitCompletion(2);
 	for (int i = 0; i < 3; ++i) {
 		videoTexture.tex[i]->releaseStagingMemoryPtr();
-		videoTexture.tex[i]->unuse();
 	}
 
 	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
@@ -322,7 +321,16 @@ void VideoPlayer::initTexture()
 	CommandMgr *cmdMgr = context->commandMgrDynamic;
 	cmdMgr->init(commandIndex);
 	for (int i = 0; i < 3; ++i) {
-		videoTexture.tex[i]->use(widths[i], heights[i]);
+		if (videoTexture.tex[i]->getUseCount() > 0) {
+			int width, height;
+			videoTexture.tex[i]->getDimensions(width, height);
+			if (width != widths[i] || height != heights[i]) {
+				videoTexture.tex[i]->unuse();
+				videoTexture.tex[i]->use(widths[i], heights[i]);
+			}
+		} else {
+			videoTexture.tex[i]->use(widths[i], heights[i]);
+		}
 		videoTexture.tex[i]->acquireStagingMemoryPtr(&pImageBuffer[i]);
 		cmdMgr->addImageBarrier(videoTexture.tex[i], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
 		// glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);

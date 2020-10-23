@@ -46,13 +46,14 @@
 #define TEX_LOAD_TYPE_PNG_BLEND1 7
 
 class Texture;
+class StreamTexture;
 
 class s_texture {
 public:
 	// création d'une texteure en détaillant ses paramètres
 	s_texture(const std::string& _textureName, int _loadType, const bool mipmap = false, const bool keepOnCPU = false);
-	// création d'une texture à partir d'une texture
-	s_texture(const std::string& _textureName, Texture *_imgTex, int width, int height, int size);
+	// création d'une texture à partir d'une texture dynamique
+	s_texture(const std::string& _textureName, StreamTexture *_imgTex);
 	// création d'une texture basique sans mipmap
 	s_texture(const std::string& _textureName, const bool keepOnCPU = false);
 	// destructeur de texture
@@ -98,7 +99,8 @@ private:
 		int height;
 		unsigned long int size;
 		int nbLink;
-		std::unique_ptr<Texture> texture;
+		Texture *texture;
+		std::unique_ptr<Texture> textureHandle; // To destroy owned textures
 		bool mipmap;
 	};
 

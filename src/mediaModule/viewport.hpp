@@ -115,7 +115,7 @@ private:
 	uint32_t *pTransparency; //vkBool32
 	std::unique_ptr<VertexArray> m_dualGL, m_fullGL;
 
-	GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
+	//GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
 	bool isAlive;		//!< active la classe
 	bool fullScreen; 	//!< indique la façon d'afficher l'image
 	bool skipping = false;		//!< initialise la variable définissant si on saute le fading ou non

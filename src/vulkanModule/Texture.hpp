@@ -31,13 +31,15 @@ public:
     static void setTextureDir(std::string _textureDir) {textureDir = _textureDir;}
     bool isValid() {return isOk;}
     VkImage getImage();
+    void getDimensions(int &width, int &height) {width=texWidth;height=texHeight;}
+    int getUseCount() {return useCount;}
 protected:
     static std::string textureDir;
     VirtualSurface *master;
     TextureMgr *mgr;
     bool isOk;
     VkDescriptorImageInfo imageInfo;
-    int texWidth, texHeight;
+    int texWidth=0, texHeight=0;
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
     SubMemory stagingBufferMemory;
     VkFence fence;

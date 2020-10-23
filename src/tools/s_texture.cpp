@@ -118,7 +118,7 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 		createEmptyTex(keepOnCPU);
 }
 
-s_texture::s_texture(const std::string& _textureName, Texture *_imgTex, int width, int height, int size) // only used in mediaModule/image.cpp for videoPlayer
+s_texture::s_texture(const std::string& _textureName, StreamTexture *_imgTex)
 {
 	//~ std::cout << "Création de s_texture " << _textureName <<" à partir d'un _imgTex" << std::endl;
 	textureName = _textureName;
@@ -131,9 +131,11 @@ s_texture::s_texture(const std::string& _textureName, Texture *_imgTex, int widt
 	int miplevel = 0;
 	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
 	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
+	tmp->texture = _imgTex;
+	_imgTex->getDimensions(width, height);
 	tmp->width = width;
 	tmp->height = height;
-	tmp->size = size;
+	tmp->size = width * height;
 	tmp->mipmap = false;
 	texCache[textureName]= tmp;
 }
@@ -230,7 +232,7 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 		width = tmp->width;
 		height = tmp->height;
 		//~ std::cout << "on augmente son nbLink à " << tmp->nbLink << std::endl;
-		texture = tmp->texture.get();
+		texture = tmp->texture;
 		cLog::get()->write("s_texture: already in cache " + fullName , LOG_TYPE::L_INFO);
 		return true;
 	} else { //texture n'existe pas, on l'intègre dans la map
@@ -299,10 +301,11 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 			tmp->height = y;
 			tmp->size = x*y*4;
 			tmp->nbLink = 1;
-			tmp->texture = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_SRGB, true, static_cast<VkSamplerAddressMode>(loadWrapping));
+			tmp->textureHandle = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_SRGB, true, static_cast<VkSamplerAddressMode>(loadWrapping));
+			tmp->texture = tmp->textureHandle.get();
 			tmp->mipmap = mipmap;
 
-			texture = tmp->texture.get();
+			texture = tmp->texture;
 
 			texCache[fullName]= tmp;
 
