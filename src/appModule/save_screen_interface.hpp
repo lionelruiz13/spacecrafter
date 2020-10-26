@@ -32,23 +32,25 @@
 #include <string>
 #include "tools/no_copy.hpp"
 
+class Vulkan;
+
 /** @class SaveScreenInterface
 
  * @section EN BREF
- * Classe qui s'occupe des captures d'écran, dans le cas d'une simple capture d'écran ou 
+ * Classe qui s'occupe des captures d'écran, dans le cas d'une simple capture d'écran ou
  * pour la réalisation d'une série vidéo.
  *
  * @section DESCRIPTION
  * La fonction phare est void readScreenShot();
  * Elle réalise une capture de l'écran en fonction des paramètes enregistrés dans la classe.
- * 
+ *
 */
 
 class SaveScreen;
 
 class SaveScreenInterface : public NoCopy {
 public:
-	SaveScreenInterface(unsigned int _width, unsigned int _height);
+	SaveScreenInterface(unsigned int _width, unsigned int _height, Vulkan *_master);
 	~SaveScreenInterface();
 
     //! lit l'écran et le sauvegarde sur le disque dur
@@ -76,9 +78,10 @@ public:
     }
 
 private:
-    void writeScreenshot(const std::string& filename);
+    static void writeScreenshot(void *pSelf, void *pData, uint32_t width, uint32_t height);
     std::string getNextScreenshotFilename();
-    
+
+	Vulkan *master;
 	SaveScreen* saveScreen = nullptr;
     enum class ReadScreen : char {NONE, SNAPSHOT, VIDEO};
     ReadScreen readScreen= ReadScreen::NONE;
@@ -89,6 +92,7 @@ private:
     unsigned int width;
     unsigned int height;
     unsigned int minWH;
+	std::string fileNameNextScreenshot;
 };
 
 #endif //SAVE_SCREEN_INTERFACE_HPP

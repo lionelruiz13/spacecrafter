@@ -153,6 +153,14 @@ Vulkan::~Vulkan()
     for (auto &thr : transferThread)
         thr.join();
     virtualSurface.clear(); // Release all attached resources
+    if (interceptor != nullptr) {
+        vkDestroyBuffer(device, interceptBuffer, nullptr);
+        memoryManager->unmapMemory(interceptBufferMemory);
+        memoryManager->free(interceptBufferMemory);
+        vkDestroyCommandPool(device, interceptPool, nullptr);
+        for (auto &sem : interceptEndSemaphores)
+            vkDestroySemaphore(device, sem, nullptr);
+    }
     for (auto &sem : imageAvailableSemaphores)
         vkDestroySemaphore(device, sem, nullptr);
     vkDestroyImageView(device, depthImageView, nullptr);
@@ -190,13 +198,9 @@ Vulkan::~Vulkan()
 
 void Vulkan::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
 {
-    assert(submitInfo->sType == VK_STRUCTURE_TYPE_SUBMIT_INFO);
-    //std::cout << "Submit command buffer " << reinterpret_cast<void *>(*submitInfo->pCommandBuffers) << std::endl;
     transferQueueMutex.lock();
     transferQueue.emplace(*submitInfo, fence);
     transferQueueMutex.unlock();
-    // vkQueueWaitIdle(transferQueues[dispatch]);
-    // vkQueueSubmit(transferQueues[dispatch], 1, submitInfo, fence);
 }
 
 void Vulkan::submit(CommandMgr *cmdMgr)
@@ -242,6 +246,9 @@ void Vulkan::finalize()
     }
     acquireNextFrame();
     isReady = true;
+    for (uint32_t i = 0; i < interceptSubmitInfo.size(); ++i) {
+        interceptSubmitInfo[i].pWaitSemaphores = &presentSemaphores[i];
+    }
 }
 
 void Vulkan::waitReady()
@@ -514,7 +521,7 @@ void Vulkan::initSwapchain(int width, int height, int nbVirtualSurfaces)
     createInfo.imageArrayLayers = 1; // Pas besoin de 3D stéréoscopique
     createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
     //createInfo.imageUsage = VK_IMAGE_USAGE_TRANSFER_DST_BIT; // Transfert nécessaire pour l'affichage
-    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
     createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
     createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR; // Pas de transparence pour le contenu de la fenêtre
     createInfo.presentMode = presentMode;
@@ -884,7 +891,13 @@ void Vulkan::submitFrame()
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     presentInfo.waitSemaphoreCount = 1;
-    presentInfo.pWaitSemaphores = &presentSemaphores[frameIndex];
+    if (interceptNextFrame) {
+        submitTransfer(&interceptSubmitInfo[frameIndex]);
+        waitTransferQueueIdle();
+        presentInfo.pWaitSemaphores = &interceptEndSemaphores[frameIndex];
+    } else {
+        presentInfo.pWaitSemaphores = &presentSemaphores[frameIndex];
+    }
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChain.data();
     presentInfo.pImageIndices = &frameIndex;
@@ -892,9 +905,15 @@ void Vulkan::submitFrame()
     if (vkQueuePresentKHR(graphicsAndPresentQueues[0], &presentInfo) != VK_SUCCESS) {
         cLog::get()->write("Presentation failed", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     }
+    int oldFrameIndex = frameIndex;
     acquireNextFrame();
     for (uint32_t i = 0; i < virtualSurface.size(); i++) {
         virtualSurface[i]->releaseFrame();
+    }
+    if (interceptNextFrame) {
+        vkInvalidateMappedMemoryRanges(device, 1, &interceptMemoryRange[oldFrameIndex]);
+        interceptor(pUserData, pInterceptBufferData[oldFrameIndex], viewport.width, abs(viewport.height));
+        interceptNextFrame = false;
     }
 }
 
@@ -961,6 +980,101 @@ void Vulkan::createDepthResources(VkSampleCountFlagBits sampleCount)
     depthImageMemory = memoryManager->malloc(memRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     vkBindImageMemory(device, depthImage, depthImageMemory.memory, depthImageMemory.offset);
     depthImageView = createImageView(depthImage, VK_FORMAT_D24_UNORM_S8_UINT, VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT);
+}
+
+void Vulkan::setupInterceptor(void *_pUserData, void(*_interceptor)(void *pUserData, void *pData, uint32_t width, uint32_t height))
+{
+    pUserData=_pUserData;
+    interceptor=_interceptor;
+    createBuffer(viewport.width * abs(viewport.height) * 4 * swapChainImages.size(), VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT, interceptBuffer, interceptBufferMemory);
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = 0; // Optionel
+    poolInfo.queueFamilyIndex = transferQueueFamilyIndex[0];
+    if (vkCreateCommandPool(device, &poolInfo, nullptr, &interceptPool) != VK_SUCCESS) {
+        throw std::runtime_error("échec de la création d'une command pool !");
+    }
+
+    interceptCmdBuffer.resize(swapChainImages.size());
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = interceptCmdBuffer.size();
+    allocInfo.commandPool = interceptPool;
+    if (vkAllocateCommandBuffers(device, &allocInfo, interceptCmdBuffer.data()) != VK_SUCCESS) {
+        throw std::runtime_error("échec de l'allocation de command buffers!");
+    }
+
+    void *data;
+    memoryManager->mapMemory(interceptBufferMemory, &data);
+
+    interceptEndSemaphores.resize(interceptCmdBuffer.size());
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkMappedMemoryRange range;
+    range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+    range.pNext = nullptr;
+    range.memory = interceptBufferMemory.memory;
+    range.size = viewport.width * abs(viewport.height) * 4;
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    VkImageMemoryBarrier barrierIn{};
+    barrierIn.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrierIn.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    barrierIn.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+    barrierIn.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrierIn.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrierIn.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrierIn.subresourceRange.baseMipLevel = 0;
+    barrierIn.subresourceRange.levelCount = 1;
+    barrierIn.subresourceRange.baseArrayLayer = 0;
+    barrierIn.subresourceRange.layerCount = 1;
+    barrierIn.srcAccessMask = 0;
+    barrierIn.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+    VkImageMemoryBarrier barrierOut = barrierIn;
+    barrierOut.oldLayout = barrierIn.newLayout;
+    barrierOut.newLayout = barrierIn.oldLayout;
+    barrierOut.srcAccessMask = barrierIn.dstAccessMask;
+    barrierOut.dstAccessMask = barrierIn.srcAccessMask;
+
+    VkBufferImageCopy region{};
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {(int32_t) viewport.x, (int32_t) (viewport.height < 0 ? viewport.y + viewport.height : viewport.y), 0};
+    region.imageExtent = {(uint32_t) viewport.width, (uint32_t) abs(viewport.height), 1};
+
+    for (uint8_t i = 0; i < interceptCmdBuffer.size(); ++i) {
+        if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &interceptEndSemaphores[i]) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create semaphore for previously allocated command buffers.");
+        }
+        VkSubmitInfo submitInfo;
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.pNext = nullptr;
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitSemaphores = &presentSemaphores[i];
+        submitInfo.pWaitDstStageMask = &interceptStage;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &interceptCmdBuffer[i];
+        submitInfo.signalSemaphoreCount = 1;
+        submitInfo.pSignalSemaphores = &interceptEndSemaphores[i];
+        interceptSubmitInfo.push_back(submitInfo);
+        region.bufferOffset = range.offset = range.size * i;
+        interceptMemoryRange.push_back(range);
+        pInterceptBufferData.push_back(static_cast<char *>(data) + range.offset);
+        vkBeginCommandBuffer(interceptCmdBuffer[i], &beginInfo);
+        barrierOut.image = barrierIn.image = swapChainImages[i];
+        vkCmdPipelineBarrier(interceptCmdBuffer[i], VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrierIn);
+        vkCmdCopyImageToBuffer(interceptCmdBuffer[i], barrierIn.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, interceptBuffer, 1, &region);
+        vkCmdPipelineBarrier(interceptCmdBuffer[i], VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrierOut);
+        vkEndCommandBuffer(interceptCmdBuffer[i]);
+    }
 }
 
 // =============== DEBUG =============== //

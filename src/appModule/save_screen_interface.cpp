@@ -13,12 +13,16 @@
 #include "eventModule/EventFps.hpp"
 #include "eventModule/event_recorder.hpp"
 
-SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _height)
+#include "vulkanModule/Vulkan.hpp"
+
+SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _height, Vulkan *_master)
 {
 	width = _width;
 	height = _height;
+	master = _master;
 	minWH = std::min(width, height);
 	saveScreen = new SaveScreen(minWH);
+	master->setupInterceptor(this, writeScreenshot);
 }
 
 
@@ -57,7 +61,9 @@ void SaveScreenInterface::readScreenShot()
 		case ReadScreen::SNAPSHOT :
 			if (fileNameScreenshot.empty())
 				fileNameScreenshot = getNextScreenshotFilename();
-			writeScreenshot(fileNameScreenshot);
+			fileNameNextScreenshot.swap(fileNameScreenshot);
+			master->intercept();
+			//writeScreenshot(fileNameScreenshot);
 			fileNameScreenshot.clear();
 			readScreen=ReadScreen::NONE;
 			break;
@@ -65,7 +71,9 @@ void SaveScreenInterface::readScreenShot()
 		case ReadScreen::VIDEO : {
 			std::ostringstream ss;
 			ss << std::setw(6) << std::setfill('0') << fileNumber;
-			writeScreenshot(videoBaseName + "-" + ss.str() + ".jpg");
+			fileNameNextScreenshot = videoBaseName + "-" + ss.str() + ".jpg";
+			master->intercept();
+			//writeScreenshot();
 			fileNumber++;
 			}
 			break;
@@ -85,12 +93,24 @@ void SaveScreenInterface::takeScreenShot(const std::string& _fileName)
 		fileNameScreenshot = _fileName;
 }
 
-void SaveScreenInterface::writeScreenshot(const std::string& filename)
+void SaveScreenInterface::writeScreenshot(void *pSelf, void *pData, uint32_t width, uint32_t height)
 {
+	SaveScreenInterface *self = static_cast<SaveScreenInterface *>(pSelf);
 	//cette fonction peut être bloquante
-	saveScreen->getFreeIndex();
-	glReadPixels( (width-minWH)/2, (height-minWH)/2, minWH, minWH, GL_RGB, GL_UNSIGNED_BYTE, saveScreen->getFreeBuffer());
-	saveScreen->saveScreenBuffer(filename);
+	self->saveScreen->getFreeIndex();
+	//glReadPixels( (width-minWH)/2, (height-minWH)/2, minWH, minWH, GL_RGB, GL_UNSIGNED_BYTE, saveScreen->getFreeBuffer());
+	unsigned char *data = static_cast<unsigned char *>(pData) + 4 * width * height; // Move at the end of the image
+	unsigned char *buff = self->saveScreen->getFreeBuffer();
+	for (uint32_t i = 0; i < height; ++i) { // Format is VK_FORMAT_B8G8R8A8_UNORM
+		data -= 2 * 4 * width; // Flip Y axis
+		for (uint32_t j = 0; j < width; ++j) {
+			*(buff++) = data[2]; // R component
+			*(buff++) = data[1]; // G component
+			*(buff++) = data[0]; // B component
+			data += 4;
+		}
+	}
+	self->saveScreen->saveScreenBuffer(self->fileNameNextScreenshot);
 }
 
 //! Return the next sequential screenshot filename to use

@@ -11,7 +11,7 @@ SaveScreen::SaveScreen(unsigned int _size)
 	isAvariable = true;
 
 	size_screen = _size;
-	nb_cores= std::max(1,SDL_GetCPUCount()-1); //on veut garder un thread pour la boucle principale
+	nb_cores= std::max(1,SDL_GetCPUCount()-2); //on veut garder un thread pour la boucle principale plus un thread pour la soumission des commandes
 	freeSlot = -1;
 
 	buffer = nullptr;

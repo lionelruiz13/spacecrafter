@@ -61,6 +61,8 @@ public:
     void submit(CommandMgr *cmdMgr);
     //! Only MemoryManager should use this method
     VkPhysicalDevice getPhysicalDevice() {return physicalDevice;}
+    void setupInterceptor(void *_pUserData, void(*_interceptor)(void *pUserData, void *pData, uint32_t width, uint32_t height));
+    void intercept() {interceptNextFrame = true;}
 
     //! getDevice();
     const VkDevice &refDevice;
@@ -158,6 +160,21 @@ private:
     std::mutex graphicQueueMutex;
     uint8_t graphicActivity = 0;
 
+    // Interception
+    void *pUserData;
+    void(*interceptor)(void *pUserData, void *pData, uint32_t width, uint32_t height) = nullptr;
+    VkBuffer interceptBuffer;
+    SubMemory interceptBufferMemory;
+    VkCommandPool interceptPool;
+    std::vector<VkSubmitInfo> interceptSubmitInfo;
+    std::vector<VkCommandBuffer> interceptCmdBuffer;
+    std::vector<VkSemaphore> interceptEndSemaphores;
+    std::vector<void *> pInterceptBufferData;
+    std::vector<VkMappedMemoryRange> interceptMemoryRange;
+    bool interceptNextFrame = false;
+    const VkPipelineStageFlags interceptStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+
+    // Debug
     void initDebug(vk::InstanceCreateInfo *instanceCreateInfo);
     void startDebug();
     void destroyDebug();

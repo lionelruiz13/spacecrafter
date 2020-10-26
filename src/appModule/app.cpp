@@ -106,7 +106,7 @@ App::App( SDLFacade* const sdl )
 	*getContext() = context;
 
 	media = new Media();
-	saveScreenInterface = new SaveScreenInterface(width, height);
+	saveScreenInterface = new SaveScreenInterface(width, height, globalContext.vulkan);
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
 
