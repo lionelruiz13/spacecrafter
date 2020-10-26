@@ -91,9 +91,11 @@ void VertexArray::build(int _maxVertices)
     pVertexData = static_cast<float *>(vertexBuffer->data);
 }
 
-void VertexArray::buildInstanceBuffer(int maxInstances)
+void VertexArray::buildInstanceBuffer(int _maxInstances)
 {
+    maxInstances = _maxInstances;
     instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2, (instanceAccess == BufferAccess::STREAM_LOCAL));
+    pInstanceData = static_cast<float *>(instanceBuffer->data);
 }
 
 void VertexArray::bind(CommandMgr *cmdMgr)
@@ -102,7 +104,7 @@ void VertexArray::bind(CommandMgr *cmdMgr)
         cmdMgr = mgr;
     cmdMgr->bindVertex(vertexBuffer.get());
     if (instanceBuffer)
-        cmdMgr->bindVertex(vertexBuffer.get(), 1);
+        cmdMgr->bindVertex(instanceBuffer.get(), 1);
     if (indexBuffer)
         cmdMgr->bindIndex(indexBuffer.get(), indexType);
     update();
@@ -192,7 +194,7 @@ void VertexArray::registerInstanceBuffer(const BufferAccess& ba, VkFormat format
 {
     VkVertexInputAttributeDescription desc;
     desc.binding = 1;
-    desc.location = attributeDesc2.size();
+    desc.location = attributeDesc2.size() + 6; // in order not to overlap vertex locations
     desc.format = format;
     desc.offset = bindingDesc2.stride;
     blockSize2 += getFormatSize(format);
@@ -203,9 +205,9 @@ void VertexArray::registerInstanceBuffer(const BufferAccess& ba, VkFormat format
 
 void VertexArray::fillInstanceBuffer(const std::vector<float> &data)
 {
-    assert(data.size() / blockSize2 <= maxVertices);
-    memcpy(pVertexData, data.data(), data.size() * sizeof(float));
-    vertexUpdate = true;
+    assert(data.size() / blockSize2 <= maxInstances);
+    memcpy(pInstanceData, data.data(), data.size() * sizeof(float));
+    instanceUpdate = true;
 }
 
 float *VertexArray::getInstanceBufferPtr()

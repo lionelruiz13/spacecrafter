@@ -223,6 +223,16 @@ void Pipeline::bindVertex(VertexArray *vertex, uint32_t binding)
     std::vector<VkVertexInputAttributeDescription> tmpAttributeDesc = vertex->getVertexAttributeDesc();
     std::for_each(tmpAttributeDesc.begin(), tmpAttributeDesc.end(), [binding](auto &value){value.binding = binding;});
     attributeDescriptions.insert(attributeDescriptions.end(), tmpAttributeDesc.begin(), tmpAttributeDesc.end());
+
+    if (vertex->hasInstanceBuffer()) {
+        binding++;
+        tmp = vertex->getInstanceBindingDesc();
+        tmp.binding = binding;
+        bindingDescriptions.push_back(tmp);
+        tmpAttributeDesc = vertex->getInstanceAttributeDesc();
+        std::for_each(tmpAttributeDesc.begin(), tmpAttributeDesc.end(), [binding](auto &value){value.binding = binding;});
+        attributeDescriptions.insert(attributeDescriptions.end(), tmpAttributeDesc.begin(), tmpAttributeDesc.end());
+    }
 }
 
 void Pipeline::bindVertex(VertexBuffer &vertex, uint32_t binding)

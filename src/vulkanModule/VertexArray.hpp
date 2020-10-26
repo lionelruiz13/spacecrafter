@@ -96,6 +96,9 @@ public:
     VertexBuffer &getVertexBuffer() const {return *vertexBuffer;}
     const VkVertexInputBindingDescription &getVertexBindingDesc() {return bindingDesc;}
     const std::vector<VkVertexInputAttributeDescription> &getVertexAttributeDesc() {return attributeDesc;}
+    bool hasInstanceBuffer() {return bindingDesc2.stride > 0;}
+    const VkVertexInputBindingDescription &getInstanceBindingDesc() {return bindingDesc2;}
+    const std::vector<VkVertexInputAttributeDescription> &getInstanceAttributeDesc() {return attributeDesc2;}
     //! Display debug informations
     void print();
 private:
@@ -104,13 +107,14 @@ private:
     std::shared_ptr<VertexBuffer> vertexBuffer;
     float *pVertexData = nullptr;
     std::unique_ptr<VertexBuffer> instanceBuffer;
+    float *pInstanceData = nullptr;
     std::shared_ptr<Buffer> indexBuffer;
     unsigned int *pIndexData = nullptr;
     BufferAccess vertexAccess = BufferAccess::STATIC;
     BufferAccess instanceAccess = BufferAccess::STATIC;
     BufferAccess indexAccess;
     VkVertexInputBindingDescription bindingDesc{0, 0, VK_VERTEX_INPUT_RATE_VERTEX};
-    VkVertexInputBindingDescription bindingDesc2{0, 0, VK_VERTEX_INPUT_RATE_INSTANCE};
+    VkVertexInputBindingDescription bindingDesc2{1, 0, VK_VERTEX_INPUT_RATE_INSTANCE};
     std::vector<VkVertexInputAttributeDescription> attributeDesc;
     std::vector<VkVertexInputAttributeDescription> attributeDesc2;
     Vertice vertice;
@@ -119,8 +123,7 @@ private:
     //! Size of one block
     int blockSize = 0;
     int blockSize2 = 0;
-    unsigned int maxVertices;
-    unsigned int maxIndex;
+    unsigned int maxVertices, maxInstances, maxIndex;
     unsigned int indexBufferSize = 0; // Last size updated with fillIndexBuffer
     VkIndexType indexType;
     //! Tell if local vertexBuffer content has changed
