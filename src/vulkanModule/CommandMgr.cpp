@@ -307,6 +307,15 @@ void CommandMgr::select(int index)
     }
 }
 
+void CommandMgr::grab(VkCommandBuffer buffer)
+{
+    assert(singleUse);
+    // assume in render pass with valid pipeline bound, allow use of graphic commands
+    inRenderPass = true;
+    hasPipeline = true;
+    actual = buffer;
+}
+
 void CommandMgr::compile()
 {
     if (inRenderPass)
@@ -550,7 +559,7 @@ void CommandMgr::vkIf(Buffer *bool32, VkDeviceSize offset, bool invert)
     }
 }
 
-void CommandMgr::addImageBarrier(Texture *texture, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask, uint32_t miplevel)
+void CommandMgr::addImageBarrier(Texture *texture, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask, uint32_t miplevel, uint32_t miplevelcount)
 {
     VkImageMemoryBarrier barrier;
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -567,7 +576,7 @@ void CommandMgr::addImageBarrier(Texture *texture, VkImageLayout oldLayout, VkIm
         barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
     } else {
         barrier.subresourceRange.baseMipLevel = miplevel;
-        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.levelCount = miplevelcount;
     }
     barrier.subresourceRange.baseArrayLayer = 0;
     barrier.subresourceRange.layerCount = 1;
@@ -585,6 +594,26 @@ void CommandMgr::compileBarriers(VkPipelineStageFlags srcStage, VkPipelineStageF
         vkCmdPipelineBarrier(frame.actual, srcStage, dstStage, dependencyFlags, 0, nullptr, 0, nullptr, imageBarrier.size(), imageBarrier.data());
     }
     imageBarrier.clear();
+}
+
+void CommandMgr::blit(Texture *src, Texture *dst, uint32_t srcMipLevel, uint32_t dstMipLevel, VkFilter filter)
+{
+    int srcWidth, srcHeight, dstWidth, dstHeight;
+    src->getDimensions(srcWidth, srcHeight);
+    dst->getDimensions(dstWidth, dstHeight);
+    const VkImageBlit imageBlit = {
+        {VK_IMAGE_ASPECT_COLOR_BIT, srcMipLevel, 0, 1},
+        {{0, 0, 0}, {std::max(srcWidth >> srcMipLevel, 1), std::max(srcHeight >> srcMipLevel, 1), 1}},
+        {VK_IMAGE_ASPECT_COLOR_BIT, dstMipLevel, 0, 1},
+        {{0, 0, 0}, {std::max(dstWidth >> dstMipLevel, 1), std::max(dstHeight >> dstMipLevel, 1), 1}}
+    };
+    if (singleUse) {
+        vkCmdBlitImage(actual, src->getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dst->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageBlit, VK_FILTER_LINEAR);
+        return;
+    }
+    for (auto &frame : frames) {
+        vkCmdBlitImage(frame.actual, src->getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dst->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageBlit, VK_FILTER_LINEAR);
+    }
 }
 
 void CommandMgr::vkEndIf()

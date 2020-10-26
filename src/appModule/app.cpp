@@ -97,6 +97,7 @@ App::App( SDLFacade* const sdl )
 	context.commandMgr = new CommandMgr(context.surface, 64, true);
 	context.commandMgrSingleUse = new CommandMgr(context.surface, 8, true, true, true);
 	context.commandMgrDynamic = new CommandMgr(context.surface, 8, true, false, true, true);
+	globalContext.textureMgr->setMipmapBuilder(context.commandMgrSingleUse);
 	commandIndexClear = context.commandMgr->getCommandIndex();
 	context.commandMgr->init(commandIndexClear);
 	context.commandMgr->beginRenderPass(renderPassType::CLEAR);

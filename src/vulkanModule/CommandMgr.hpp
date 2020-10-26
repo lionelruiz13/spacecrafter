@@ -63,6 +63,9 @@ public:
     int initNew(Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
     //! Change selected command, new selected command must be initialized and not compiled
     void select(int index);
+    //! Select external command, available for CommandMgr created with singleUseCommands
+    //! @param buffer the commandBuffer to select, or VK_NULL_HANDLE to deselect
+    void grab(VkCommandBuffer buffer = VK_NULL_HANDLE);
     //! @brief begin render pass
     //! @param renderPassType inform where renderPass is situated
     void beginRenderPass(renderPassType renderPassType, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
@@ -92,9 +95,11 @@ public:
     void indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset = 0, uint32_t drawCount = 1);
     //! @brief Add pipeline image barrier
     //! @param miplevel specify which mip level is concerned, or -1 for all mip levels
-    void addImageBarrier(Texture *texture, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask, uint32_t miplevel = UINT32_MAX);
+    void addImageBarrier(Texture *texture, VkImageLayout oldLayout, VkImageLayout newLayout, VkAccessFlags srcAccessMask, VkAccessFlags dstAccessMask, uint32_t miplevel = UINT32_MAX, uint32_t miplevelcount = 1);
     //! Record all dependencies previously added
     void compileBarriers(VkPipelineStageFlags srcStage, VkPipelineStageFlags dstStage, VkPipelineStageFlags dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT);
+    //! Execute blit operation
+    void blit(Texture *src, Texture *dst, uint32_t srcMipLevel = 0, uint32_t dstMipLevel = 0, VkFilter filter = VK_FILTER_LINEAR);
     //! Finalize recording and deselect command
     void compile();
     //! @brief set command submission to be submitted by .submit()

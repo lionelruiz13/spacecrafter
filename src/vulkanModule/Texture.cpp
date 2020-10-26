@@ -2,6 +2,7 @@
 #include "TextureMgr.hpp"
 #include "Texture.hpp"
 #include "PipelineLayout.hpp" // for DEFAULT_SAMPLER
+#include "CommandMgr.hpp" // for mipmap
 #include "tools/log.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -15,7 +16,7 @@ void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFo
 {
     master = _master;
     mgr = _mgr;
-    mipmap = _mipmap = false;
+    mipmap = _mipmap;
     format = _format;
     image = nullptr;
     VkSemaphoreCreateInfo semaphoreInfo{};
@@ -81,7 +82,7 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int w
     if (createSampler) {
         VkSamplerCreateInfo samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
         samplerInfo.addressModeU = samplerInfo.addressModeV = samplerInfo.addressModeW = addressMode;
-        samplerInfo.maxLod = 0; // max mipmap index
+        samplerInfo.maxLod = mipmapCount;
         imageInfo.sampler = _mgr->createSampler(samplerInfo);
     }
 
@@ -219,20 +220,34 @@ void Texture::use()
     VkCommandBuffer commandBuffer2;
     vkAllocateCommandBuffers(master->refDevice, &allocInfo, &commandBuffer2);
     vkBeginCommandBuffer(commandBuffer2, &beginInfo);
-    barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-    barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-    barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-    barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-    vkCmdPipelineBarrier(
-        commandBuffer2,
-        VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-        0,
-        0, nullptr,
-        0, nullptr,
-        1, &barrier
-    );
+    if (mipmap) {
+        CommandMgr *cmdMgr = mgr->getMipmapBuilder();
+        cmdMgr->grab(commandBuffer2);
+        for (int i = 0; i < mipmapCount - 1; ++i) {
+            cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, i);
+            cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+            cmdMgr->blit(this, this, i, i + 1);
+        }
+        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_SHADER_READ_BIT, 0, mipmapCount - 1);
+        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, mipmapCount - 1);
+        cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+        cmdMgr->grab();
+    } else {
+        barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+        vkCmdPipelineBarrier(
+            commandBuffer2,
+            VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &barrier
+        );
+    }
     vkEndCommandBuffer(commandBuffer2);
 
     VkPipelineStageFlags stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;

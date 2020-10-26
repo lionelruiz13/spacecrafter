@@ -78,7 +78,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool 
     imageInfo.format = format;
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
     imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    imageInfo.usage = usage;
+    imageInfo.usage = mipmap ? (VK_IMAGE_USAGE_TRANSFER_SRC_BIT | usage) : usage;
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     if (useConcurrency) {
         indices[0] = master->getGraphicsQueueIndex();
