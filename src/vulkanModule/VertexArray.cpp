@@ -45,6 +45,25 @@ static VkFormat getFormat(unsigned int size)
     }
 }
 
+static int getFormatSize(VkFormat format)
+{
+    switch (format) {
+        case VK_FORMAT_R32_SFLOAT:
+        case VK_FORMAT_R32_SINT:
+        case VK_FORMAT_R32_UINT: return 1;
+        case VK_FORMAT_R32G32_SFLOAT:
+        case VK_FORMAT_R32G32_SINT:
+        case VK_FORMAT_R32G32_UINT: return 2;
+        case VK_FORMAT_R32G32B32_SFLOAT:
+        case VK_FORMAT_R32G32B32_SINT:
+        case VK_FORMAT_R32G32B32_UINT: return 3;
+        case VK_FORMAT_R32G32B32A32_SFLOAT:
+        case VK_FORMAT_R32G32B32A32_SINT:
+        case VK_FORMAT_R32G32B32A32_UINT: return 4;
+        default: assert(false); return 0;
+    }
+}
+
 VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_master), mgr(_mgr), vertexBuffer(nullptr), instanceBuffer(nullptr), indexBuffer(nullptr), vertice(offset) {}
 
 VertexArray::~VertexArray() {}
@@ -169,17 +188,24 @@ void VertexArray::fillVertexBuffer(const BufferType& bt, unsigned int size, cons
     vertexUpdate = true;
 }
 
-void VertexArray::registerInstanceBuffer(const BufferAccess& ba, VkFormat format, unsigned int stride)
+void VertexArray::registerInstanceBuffer(const BufferAccess& ba, VkFormat format)
 {
     VkVertexInputAttributeDescription desc;
     desc.binding = 1;
     desc.location = attributeDesc2.size();
     desc.format = format;
     desc.offset = bindingDesc2.stride;
-    blockSize += stride;
-    bindingDesc2.stride = blockSize * sizeof(float);
+    blockSize2 += getFormatSize(format);
+    bindingDesc2.stride = blockSize2 * sizeof(float);
     attributeDesc2.push_back(desc);
     if (instanceAccess < ba) instanceAccess = ba;
+}
+
+void VertexArray::fillInstanceBuffer(const std::vector<float> &data)
+{
+    assert(data.size() / blockSize2 <= maxVertices);
+    memcpy(pVertexData, data.data(), data.size() * sizeof(float));
+    vertexUpdate = true;
 }
 
 float *VertexArray::getInstanceBufferPtr()

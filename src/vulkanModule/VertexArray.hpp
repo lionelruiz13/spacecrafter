@@ -53,7 +53,9 @@ public:
     void fillVertexBuffer(const BufferType& bt, const std::vector<float> &data);
 
     //! register a new type of vertex buffer giving its function and access type
-    void registerInstanceBuffer(const BufferAccess& ba, VkFormat format, unsigned int stride);
+    void registerInstanceBuffer(const BufferAccess& ba, VkFormat format);
+    //! copy data inside the InstanceBuffer
+    void fillInstanceBuffer(const std::vector<float> &data);
     //! get pointer to InstanceBuffer data
     float *getInstanceBufferPtr();
     //! export data contained in pointer returned by getInstanceBufferPtr at next update call
@@ -116,6 +118,7 @@ private:
     std::array<uint8_t, 6> offset;
     //! Size of one block
     int blockSize = 0;
+    int blockSize2 = 0;
     unsigned int maxVertices;
     unsigned int maxIndex;
     unsigned int indexBufferSize = 0; // Last size updated with fillIndexBuffer
