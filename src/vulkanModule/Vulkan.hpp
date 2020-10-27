@@ -185,6 +185,8 @@ private:
         void * /*pUserData*/);
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
     VkDebugUtilsMessengerEXT callback;
+    void displayPhysicalDeviceInfo(VkPhysicalDeviceProperties &prop);
+    void displayEnabledFeaturesInfo();
 
     bool checkDeviceExtensionSupport(VkPhysicalDevice pDevice);
     bool isDeviceSuitable(VkPhysicalDevice pDevice);

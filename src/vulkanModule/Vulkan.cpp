@@ -82,6 +82,9 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
         std::runtime_error("Fatal : Failed to found Vulkan extension for SDL2.");
 
     initDevice(_AppName, _EngineName, window, enableDebugLayers);
+    VkPhysicalDeviceProperties physicalDeviceProperties;
+    vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+    displayPhysicalDeviceInfo(physicalDeviceProperties);
     initQueues(8);
     initSwapchain(width, height, nbVirtualSurfaces);
     createImageViews();
@@ -92,9 +95,6 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     if (sampleCount != VK_SAMPLE_COUNT_1_BIT)
         createMultisample(sampleCount);
     createFramebuffer(sampleCount);
-
-    VkPhysicalDeviceProperties physicalDeviceProperties;
-    vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
     BufferMgr::setUniformOffsetAlignment(physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
 
     // Déformation de l'image
@@ -391,6 +391,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
     deviceFeatures.wideLines = supportedDeviceFeatures.wideLines;
     deviceFeatures.shaderFloat64 = supportedDeviceFeatures.shaderFloat64;
     deviceFeatures.vertexPipelineStoresAndAtomics = supportedDeviceFeatures.vertexPipelineStoresAndAtomics;
+    displayEnabledFeaturesInfo();
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -1155,4 +1156,55 @@ VKAPI_ATTR VkBool32 VKAPI_CALL Vulkan::debugCallback(
     }
     cLog::get()->write(ss, LOG_TYPE::L_OTHER, LOG_FILE::VULKAN_LAYERS);
     return VK_FALSE;
+}
+
+void Vulkan::displayPhysicalDeviceInfo(VkPhysicalDeviceProperties &prop)
+{
+    cLog::get()->mark();
+    std::ostringstream ss;
+    ss << "Device info\n";
+    ss << "API Version : " << VK_VERSION_MAJOR(prop.apiVersion) << "." << VK_VERSION_MINOR(prop.apiVersion) << "." << VK_VERSION_PATCH(prop.apiVersion) << std::endl;
+    ss << "Driver Version : " << VK_VERSION_MAJOR(prop.driverVersion) << "." << VK_VERSION_MINOR(prop.driverVersion) << "." << VK_VERSION_PATCH(prop.driverVersion) << std::endl;
+    ss << "Vendor : ";
+    switch (prop.vendorID) {
+        case VK_VENDOR_ID_VIV: ss << "VIV"; break;
+        case VK_VENDOR_ID_VSI: ss << "VSI"; break;
+        case VK_VENDOR_ID_KAZAN: ss << "KAZAN"; break;
+        case VK_VENDOR_ID_CODEPLAY: ss << "CODEPLAY"; break;
+        case VK_VENDOR_ID_MESA: ss << "MESA"; break;
+        case 0x1002: ss << "AMD"; break;
+        case 0x1010: ss << "ImgTec"; break;
+        case 0x10DE: ss << "NVIDIA"; break;
+        case 0x13B5: ss << "ARM"; break;
+        case 0x5143: ss << "Qualcomm"; break;
+        case 0x8086: ss << "INTEL"; break;
+        default: ss << "UNKNOWN (id = " << reinterpret_cast<void *>(prop.vendorID) << ")";
+    }
+    ss << std::endl;
+    ss << "Device : " << prop.deviceName << " (id = " << prop.deviceID << ")" << std::endl;
+    ss << "Device type : ";
+    switch (prop.deviceType) {
+        case VK_PHYSICAL_DEVICE_TYPE_OTHER: ss << "Other"; break;
+        case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU: ss << "Integrated GPU"; break;
+        case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU: ss << "Discrete GPU"; break;
+        case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU: ss << "VIRTUAL GPU"; break;
+        case VK_PHYSICAL_DEVICE_TYPE_CPU: ss << "CPU"; break;
+        default: ss << "Unknown";
+    }
+    cLog::get()->write(ss, LOG_TYPE::L_INFO);
+}
+
+void Vulkan::displayEnabledFeaturesInfo()
+{
+    std::ostringstream ss;
+    ss << "Used device features :\n";
+    ss << "geometryShader : " << (deviceFeatures.geometryShader == VK_TRUE ? "enabled" : "disabled") << std::endl;
+    ss << "tessellationShader : " << (deviceFeatures.tessellationShader == VK_TRUE ? "enabled" : "disabled") << std::endl;
+    ss << "samplerAnisotropy : " << (deviceFeatures.samplerAnisotropy == VK_TRUE ? "enabled" : "disabled") << std::endl;
+    ss << "sampleRateShading : " << (deviceFeatures.sampleRateShading == VK_TRUE ? "enabled" : "disabled") << std::endl;
+    ss << "multiDrawIndirect : " << (deviceFeatures.multiDrawIndirect == VK_TRUE ? "enabled" : "disabled") << std::endl;
+    ss << "wideLines : " << (deviceFeatures.wideLines == VK_TRUE ? "enabled" : "disabled") << std::endl;
+    ss << "shaderFloat64 : " << (deviceFeatures.shaderFloat64 == VK_TRUE ? "enabled" : "disabled");
+    cLog::get()->write(ss, LOG_TYPE::L_INFO);
+    cLog::get()->mark();
 }
