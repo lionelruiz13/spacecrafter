@@ -32,7 +32,7 @@
 #include "tools/object.hpp"
 #include "tools/utility.hpp"
 #include "tools/fader.hpp"
-#include "renderGL/OpenGL.hpp"
+#include "vulkanModule/VertexArray.hpp"
 #include <vector>
 
 class HipStarMgr;

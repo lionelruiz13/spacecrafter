@@ -24,8 +24,8 @@
 #include <string>
 #include <SDL2/SDL.h>
 
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+
+
 #include "mediaModule/media_base.hpp"
 #include "vulkanModule/Context.hpp"
 

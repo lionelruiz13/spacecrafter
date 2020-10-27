@@ -33,8 +33,8 @@
 #include "appModule/fps.hpp"
 #include "appModule/space_date.hpp"
 #include "tools/app_settings.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+
+
 #include "tools/no_copy.hpp"
 
 #include "vulkanModule/Context.hpp"
@@ -74,8 +74,8 @@ public:
 	void setFlagAntialiasLines(bool b) {
 		antialiasLines = b;
 
-		if(b) glEnable(GL_LINE_SMOOTH);
-		else glDisable(GL_LINE_SMOOTH);
+		//if(b) glEnable(GL_LINE_SMOOTH);
+		//else glDisable(GL_LINE_SMOOTH);
 	}
 	//! Get display flag of constellation lines
 	bool getFlagAntialiasLines(void) {

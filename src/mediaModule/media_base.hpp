@@ -17,7 +17,7 @@
 #ifndef __MEDIA_BASE_HPP__
 #define __MEDIA_BASE_HPP__
 
-#include <GL/glew.h>
+
 #include "vulkanModule/Texture.hpp"
 
 struct VideoTexture {

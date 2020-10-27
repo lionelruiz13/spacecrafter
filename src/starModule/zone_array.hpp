@@ -25,7 +25,7 @@
 #define _ZONE_ARRAY_HPP_
 
 #include <SDL2/SDL_endian.h>
-#include <GL/glew.h>
+
 
 #include "spacecrafter.hpp"
 #include "starModule/zone_data.hpp"

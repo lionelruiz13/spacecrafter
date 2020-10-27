@@ -26,7 +26,7 @@
 //	Class which compute and display the daylight sky color using openGL
 //	the sky is computed with the Skylight class.
 
-#include <GL/glew.h>
+
 #include <string>
 #include "appModule/space_date.hpp"
 #include "atmosphereModule/atmosphere.hpp"
@@ -35,8 +35,8 @@
 #include "tools/sc_const.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/CommandMgr.hpp"

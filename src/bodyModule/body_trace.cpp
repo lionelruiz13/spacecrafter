@@ -31,8 +31,8 @@
 #include "tools/utility.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"

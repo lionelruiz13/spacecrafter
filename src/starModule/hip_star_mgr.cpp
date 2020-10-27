@@ -49,8 +49,8 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
-// #include "renderGL/OpenGL.hpp"
-// #include "renderGL/Renderer.hpp"
+// #include "vulkanModule/VertexArray.hpp"
+// 
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"

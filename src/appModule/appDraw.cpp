@@ -27,7 +27,7 @@
 #include <string>
 #include <unistd.h>
 #include <sstream>
-#include <GL/glew.h>
+
 #include <vulkan/vulkan.h>
 
 #include "appModule/appDraw.hpp"
@@ -35,8 +35,8 @@
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include "tools/app_settings.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/PipelineLayout.hpp"

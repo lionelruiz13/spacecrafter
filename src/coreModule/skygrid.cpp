@@ -31,8 +31,8 @@
 #include "coreModule/skygrid.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"

@@ -24,7 +24,6 @@
 
 #include <string>
 #include <SDL2/SDL_ttf.h>
-#include <GL/glew.h>
 //#include "spacecrafter.hpp"
 #include "mainModule/sdl_facade.hpp"
 #include "tools/utility.hpp"
@@ -286,6 +285,7 @@ void SDLFacade::getLogInfos(int w, int h)
 
 void SDLFacade::getGLInfos()
 {
+	/*
 	cLog::get()->mark();
 	std::stringstream oss;
 	oss << "GL info" << std::endl << "GL_VENDOR: " << glGetString(GL_VENDOR) << std::endl;
@@ -293,11 +293,13 @@ void SDLFacade::getGLInfos()
 	oss << "SHADER_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
 	//cout << oss.str() << endl;
 	cLog::get()->write(oss.str(),  LOG_TYPE::L_INFO);
+	*/
 }
 
 
 void SDLFacade::getWorkGroupsCapabilities()
 {
+	/*
 	//~ cLog::get()->mark();
 	std::stringstream oss;
 
@@ -318,4 +320,5 @@ void SDLFacade::getWorkGroupsCapabilities()
 	oss << "Nombre maximum d'invocation de workgroups: " << workgroup_invocations << std::endl;
 
 	cLog::get()->write(oss.str(),  LOG_TYPE::L_INFO);
+	*/
 }

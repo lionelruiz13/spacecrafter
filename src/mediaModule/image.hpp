@@ -32,8 +32,8 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+
+
 #include "tools/no_copy.hpp"
 #include "mediaModule/media_base.hpp"
 #include "vulkanModule/Context.hpp"
@@ -43,6 +43,7 @@ class Navigator;
 class Projector;
 class VertexArray;
 class ImageTexture;
+class Pipeline;
 
 class Image : public NoCopy {
 

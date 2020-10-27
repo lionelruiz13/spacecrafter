@@ -26,12 +26,12 @@
 #ifndef _PROJECTOR_H_
 #define _PROJECTOR_H_
 
-#include <GL/glew.h>
+
 #include "tools/vecmath.hpp"
 #include "starModule/sphere_geometry.hpp"
 //#include "tools/fmath.hpp"
 #include "tools/no_copy.hpp"
-#include "renderGL/Renderer.hpp"
+
 
 class s_font;
 
@@ -75,7 +75,7 @@ public:
 	//! Set the current openGL viewport to projector's viewport
 	void applyViewport(void) const {
 		// glViewport(vec_viewport[0], vec_viewport[1], vec_viewport[2], vec_viewport[3]);
-		Renderer::viewport(vec_viewport[0], vec_viewport[1], vec_viewport[2], vec_viewport[3]);
+		//Renderer::viewport(vec_viewport[0], vec_viewport[1], vec_viewport[2], vec_viewport[3]);
 	}
 
 	//! Set the Field of View in degree

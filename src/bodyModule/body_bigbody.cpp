@@ -468,8 +468,8 @@ void BigBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneRep
 
 	if (isVisible && flags.flag_halo && this->getOnScreenSize(prj, nav) < 10 && this->getSphereScale()<10.0) {
 		// Workaround for depth buffer precision and near planets
-		StateGL::disable(GL_DEPTH_TEST);
 		halo->drawHalo(nav, prj, eye);
+        //StateGL::disable(GL_DEPTH_TEST);
 	}
 
 }

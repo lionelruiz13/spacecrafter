@@ -38,7 +38,7 @@
 #include "tools/sc_const.hpp"
 #include <chrono>
 #include "bodyModule/ring.hpp"
-#include "renderGL/stateGL.hpp"
+
 #include "tools/file_path.hpp"
 #include "bodyModule/trail.hpp"
 #include "bodyModule/hints.hpp"
@@ -900,7 +900,7 @@ void Body::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	if (isVisible && flags.flag_halo && this->getOnScreenSize(prj, nav) < 10) {
 		//~ cout << "drawing halo from Body " << this->englishName << " class size " << this->getOnScreenSize(prj, nav) << endl;
 		// Workaround for depth buffer precision and near planets
-		StateGL::disable(GL_DEPTH_TEST);
+		//StateGL::disable(GL_DEPTH_TEST);
 		halo->drawHalo(nav, prj, eye);
 	}
 }

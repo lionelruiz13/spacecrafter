@@ -28,7 +28,7 @@
 #define _S_TEXTURE_H_
 
 #include <string>
-//#include <GL/glew.h>
+//
 #include <map>
 #include <memory>
 #include "vulkanModule/Context.hpp"

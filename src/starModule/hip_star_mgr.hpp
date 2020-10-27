@@ -34,8 +34,8 @@
 #include "tools/fader.hpp"
 #include "tools/object_type.hpp"
 #include "tools/object.hpp"
-// #include "renderGL/shader.hpp"
-// #include "renderGL/stateGL.hpp"
+// 
+// 
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 
@@ -538,9 +538,9 @@ private:
 	bool starTrace = false;
 
 	//FBO and render buffer object ID
-	//GLuint fboID, rbID;
+	//uint32_t fboID, rbID;
 	//offscreen render texture ID
-	//GLuint renderTextureID;
+	//uint32_t renderTextureID;
 };
 
 

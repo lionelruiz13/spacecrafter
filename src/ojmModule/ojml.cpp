@@ -5,8 +5,8 @@
 #include <cmath>
 
 #include "ojmModule/ojml.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
 

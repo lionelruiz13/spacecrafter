@@ -3,7 +3,7 @@
 
 #include "tools/vecmath.hpp"
 #include "tools/s_texture.hpp"
-#include "renderGL/shader.hpp"
+
 #include <vector>
 #include <string>
 #include <memory>

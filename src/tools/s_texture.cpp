@@ -142,6 +142,7 @@ s_texture::s_texture(const std::string& _textureName, StreamTexture *_imgTex)
 
 s_texture::~s_texture()
 {
+	context->commandMgr->waitGraphicQueueIdle();
 	context->commandMgr->waitCompletion(0);
 	context->commandMgr->waitCompletion(1);
 	context->commandMgr->waitCompletion(2);
@@ -288,7 +289,7 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, loadWrapping);
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			GLfloat max_aniso = 0.0f;
+			float max_aniso = 0.0f;
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_aniso);
 			// set the maximum!
 			glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_aniso);
@@ -364,7 +365,7 @@ float s_texture::getAverageLuminance() const
 	return (sum/size);
 	/*
 	glBindTexture(GL_TEXTURE_2D, texID);
-	GLint w, h , level=0;
+	int w, h , level=0;
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
@@ -374,7 +375,7 @@ float s_texture::getAverageLuminance() const
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &w);
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_HEIGHT, &h);
 	}
-	GLfloat* p = (GLfloat*)calloc(w*h, sizeof(GLfloat));
+	float* p = (float*)calloc(w*h, sizeof(float));
 	assert(p);
 
 	glGetTexImage(GL_TEXTURE_2D, level, GL_LUMINANCE, GL_FLOAT, p);

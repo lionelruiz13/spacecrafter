@@ -32,9 +32,9 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
-// #include "renderGL/OpenGL.hpp"
-// #include "renderGL/shader.hpp"
-// #include "renderGL/Renderer.hpp"
+// #include "vulkanModule/VertexArray.hpp"
+// 
+// 
 #include "vulkanModule/Context.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -414,8 +414,8 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 void LandscapeFisheye::initShader()
 {
 	nbVertex = 2*slices*stacks + 2* stacks;
-	GLfloat *datatex = new float[nbVertex*2];
-	GLfloat *datapos = new float[nbVertex*3];
+	float *datatex = new float[nbVertex*2];
+	float *datapos = new float[nbVertex*3];
 
 	createFisheyeMesh(radius,slices,stacks, tex_fov, datatex, datapos);
 
@@ -466,7 +466,7 @@ static inline double FisheyeTexCoordFastT(double rho_div_fov, double costheta, d
 }
 
 
-void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, GLfloat * datatex, GLfloat * datapos)
+void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, float * datatex, float * datapos)
 {
 	unsigned int indice1=0;
 	unsigned int indice3=0;
@@ -635,8 +635,8 @@ void LandscapeSpherical::initShader()
 {
 	nbVertex = 2*slices*stacks + 2* stacks;
 
-	GLfloat *datatex = new float[nbVertex*2];
-	GLfloat *datapos = new float[nbVertex*3];
+	float *datatex = new float[nbVertex*2];
+	float *datapos = new float[nbVertex*3];
 
 	createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, datatex, datapos);
 
@@ -674,7 +674,7 @@ void LandscapeSpherical::initShader()
 
 
 void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
-        double bottom_altitude, double top_altitude, GLfloat * datatex, GLfloat * datapos)
+        double bottom_altitude, double top_altitude, float * datatex, float * datapos)
 {
 	unsigned int indiceTex=0;
 	unsigned int indicePos=0;

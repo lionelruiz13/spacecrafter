@@ -21,8 +21,8 @@
 #include "ojmModule/ojml.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
-// #include "renderGL/stateGL.hpp"
-// #include "renderGL/shader.hpp"
+// 
+// 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/VertexArray.hpp"
 #include "vulkanModule/Pipeline.hpp"

@@ -66,9 +66,9 @@
 #include "tools/init_parser.hpp"
 #include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
-#include "renderGL/shader.hpp"
+
 #include "coreModule/sky_localizer.hpp"
-#include "renderGL/stateGL.hpp"
+
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"

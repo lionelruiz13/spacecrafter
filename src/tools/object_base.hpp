@@ -33,8 +33,8 @@
 
 #include "tools/object_type.hpp"
 #include "tools/vecmath.hpp"
-//#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+//
+
 #include "vulkanModule/Context.hpp"
 
 class Navigator;

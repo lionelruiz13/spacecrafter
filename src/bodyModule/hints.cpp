@@ -17,9 +17,9 @@
 #include "bodyModule/body.hpp"
 #include "coreModule/projector.hpp"
 #include "bodyModule/body_color.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
+
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/PipelineLayout.hpp"
 #include "vulkanModule/CommandMgr.hpp"

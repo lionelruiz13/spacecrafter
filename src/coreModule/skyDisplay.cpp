@@ -37,8 +37,8 @@
 #include "navModule/navigator.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/PipelineLayout.hpp"

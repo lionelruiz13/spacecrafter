@@ -18,7 +18,7 @@
 #define __VR360_HPP__
 
 #include <memory>
-//#include "renderGL/shader.hpp"
+//
 #include "tools/fader.hpp"
 #include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"
@@ -71,7 +71,7 @@ private:
 
 	OjmL* sphere = nullptr;
 	OjmL* cube = nullptr;
-	GLuint videoTex[3];
+	uint32_t videoTex[3];
 	bool isAlive = false;
 	bool canDraw = false;
 

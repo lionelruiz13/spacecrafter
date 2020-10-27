@@ -22,9 +22,9 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/s_texture.hpp"
 #include <iostream>
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
+
 
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/PipelineLayout.hpp"

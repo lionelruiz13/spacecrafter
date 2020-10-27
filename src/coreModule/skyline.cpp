@@ -188,8 +188,8 @@ void SkyLine_Pole::draw(const Projector *prj,const Navigator *nav, const TimeMgr
 
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	for (unsigned int i=0; i<51; ++i) {
 		Utility::spheToRect((float)i/(50)*2.f*M_PI,radius*M_PI/180.f, circlep[i]);
@@ -247,8 +247,8 @@ void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	inclination=66.5*M_PI/180.;
 	derivation = 0;  //(nav->getJDay()-2451545.0)/(365.2422*71.67)*M_PI/180.0;
@@ -358,9 +358,9 @@ void SkyLine_CircumPolar::draw(const Projector *prj,const Navigator *nav, const 
 
 	for (double sign=-1; sign<2; sign=sign+2) {
 
-		StateGL::enable(GL_BLEND);
+		// StateGL::enable(GL_BLEND);
 
-		StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+		// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 		inclination=(90.0-abs(observatory->getLatitude()))*M_PI/180.;
 		//Vec3f punts[3*nb_segment+3];
@@ -444,8 +444,8 @@ void SkyLine_Analemme::draw(const Projector *prj,const Navigator *nav, const Tim
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	double longitude;
 	if(line_analemme_type==ANALEMMALINE) {
@@ -497,8 +497,8 @@ void SkyLine_Galactic_Center::draw(const Projector *prj,const Navigator *nav, co
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	for (unsigned int j=0; j<=1; j++) {
 		for (unsigned int i=0; i<=48; i++) {
@@ -541,8 +541,8 @@ void SkyLine_Vernal::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	for (unsigned int j=0; j<=1; j++) {
 		for (unsigned int i=0; i<=48; i++) {
@@ -585,8 +585,8 @@ void SkyLine_Greenwich::draw(const Projector *prj,const Navigator *nav, const Ti
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
 	double longitude=(observatory->getLongitude()*M_PI/180);
@@ -647,8 +647,8 @@ void SkyLine_Aries::draw(const Projector *prj,const Navigator *nav, const TimeMg
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	latitude=(observatory->getLatitude()*M_PI/180)+M_PI/2;
 	for (unsigned int i=0; i<60; i++) {
@@ -718,8 +718,8 @@ void SkyLine_Meridian::draw(const Projector *prj,const Navigator *nav, const Tim
 
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	inclination=70*M_PI/180.;
 	for (unsigned int j=0; j<nb_segment+1; ++j) {
@@ -885,8 +885,8 @@ void SkyLine_Equator::draw(const Projector *prj,const Navigator *nav, const Time
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	if (line_equator_type == EQUATOR) {
 		inclination=70*M_PI/180.;
@@ -1057,8 +1057,8 @@ void SkyLine_Tropic::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	for (unsigned int i=0; i<nb_segment; ++i) {
 		inclination=observatory->getHomeBody()->getAxialTilt()*M_PI/180.;
@@ -1185,8 +1185,8 @@ void SkyLine_Ecliptic::draw(const Projector *prj,const Navigator *nav, const Tim
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
 
 	bool draw_labels = (observatory->isEarth() && font);
@@ -1323,8 +1323,8 @@ void SkyLine_Precession::draw(const Projector *prj,const Navigator *nav, const T
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	Mat4d m = observatory->getRotEquatorialToVsop87().transpose();
 	draw_labels = (font != nullptr);
@@ -1431,8 +1431,8 @@ void SkyLine_Vertical::draw(const Projector *prj,const Navigator *nav, const Tim
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	for (unsigned int i=0; i<nb_segment+1; ++i) {
 		Utility::spheToRect(M_PI_2, ((float)i/nb_segment*M_PI),circlep[i]);
@@ -1510,8 +1510,8 @@ void SkyLine_Zenith::draw(const Projector *prj,const Navigator *nav, const TimeM
 
 	Vec4f Color(color[0], color[1], color[2], fader.getInterstate());
 
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
 
 	for (unsigned int i=0; i<51; ++i) {
 		Utility::spheToRect((float)i/(50)*2.f*M_PI, (0.993f*M_PI-M_PI_2),circlep[i]);

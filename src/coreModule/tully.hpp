@@ -32,7 +32,7 @@
 #include <memory>
 
 #include "tools/fader.hpp"
-#include "renderGL/stateGL.hpp"
+
 #include "tools/vecmath.hpp"
 #include "vulkanModule/Context.hpp"
 

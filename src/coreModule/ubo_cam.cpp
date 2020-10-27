@@ -24,7 +24,7 @@ UBOCam::~UBOCam()
 	//glDeleteBuffers(1,&block_buffer);
 }
 
-void UBOCam::IndexAndBinding(GLuint program)   //TODO � tester
+void UBOCam::IndexAndBinding(uint32_t program)   //TODO � tester
 {
 	/*
 	block_index = glGetUniformBlockIndex(program, UBOName.c_str());

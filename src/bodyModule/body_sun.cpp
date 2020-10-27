@@ -24,9 +24,9 @@
  */
 
 #include "bodyModule/body_sun.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
-#include "renderGL/OpenGL.hpp"
+
+
+#include "vulkanModule/VertexArray.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/hints.hpp"

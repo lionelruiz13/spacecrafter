@@ -31,11 +31,9 @@
 #include <string>
 #include <fstream>
 #include <memory>
-#include <GL/glew.h>
 
 #include "tools/fader.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+#include "tools/vecmath.hpp"
 #include "tools/scalable.hpp"
 #include "tools/no_copy.hpp"
 #include "vulkanModule/Context.hpp"

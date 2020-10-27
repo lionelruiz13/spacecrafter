@@ -23,7 +23,7 @@
  *
  */
 
-#include <GL/glew.h>
+
 
 #include <iostream>
 #include <cstdio>
@@ -371,9 +371,9 @@ void Projector::sVertex3(double x, double y, double z, const Mat4d& mat) const
 	projectCustom(v, win, mat);
 
 	// Can be optimized by avoiding matrix inversion if it's always the same
-	gluUnProject(win[0],win[1],win[2],mat,mat_projection,vec_viewport,&v[0],&v[1],&v[2]);
+	//gluUnProject(win[0],win[1],win[2],mat,mat_projection,vec_viewport,&v[0],&v[1],&v[2]);
 	//~ cout << "out " << v[0] << " " << v[1] << " " << v[2] << endl;
-	glVertex3dv(v);
+	//glVertex3dv(v);
 }
 
 Vec3d Projector::sVertex3v(double x, double y, double z, const Mat4d& mat) const
@@ -383,7 +383,7 @@ Vec3d Projector::sVertex3v(double x, double y, double z, const Mat4d& mat) const
 	projectCustom(v, win, mat);
 
 	// Can be optimized by avoiding matrix inversion if it's always the same
-	gluUnProject(win[0],win[1],win[2],mat,mat_projection,vec_viewport,&v[0],&v[1],&v[2]);
+	//gluUnProject(win[0],win[1],win[2],mat,mat_projection,vec_viewport,&v[0],&v[1],&v[2]);
 	// cout << "out " << v[0] << " " << v[1] << " " << v[2] << endl;
 	return v;
 }

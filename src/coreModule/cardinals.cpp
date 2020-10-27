@@ -29,8 +29,8 @@
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
 #include <string>
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+
+
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/translator.hpp"

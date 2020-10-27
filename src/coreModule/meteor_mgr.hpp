@@ -33,7 +33,7 @@
 
 #include "coreModule/time_mgr.hpp"
 #include "meteor.hpp"
-#include "renderGL/stateGL.hpp"
+
 #include "tools/no_copy.hpp"
 #include "vulkanModule/Context.hpp"
 

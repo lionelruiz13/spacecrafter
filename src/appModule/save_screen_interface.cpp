@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include <GL/glew.h>
+
 #include <iomanip>
 #include <fstream>
 #include <iostream>

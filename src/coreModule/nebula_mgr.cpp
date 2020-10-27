@@ -33,8 +33,8 @@
 #include "navModule/navigator.hpp"
 #include "tools/translator.hpp"
 #include "tools/log.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Set.hpp"

@@ -47,8 +47,8 @@
 void UI::drawGravityUi()
 {
 	// Normal transparency mode
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	StateGL::enable(GL_BLEND);
+	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//StateGL::enable(GL_BLEND);
 
 	if (FlagShowTuiDateTime) {
 		double jd = coreLink->getJDay();
@@ -595,8 +595,8 @@ void UI::localizeTui()
 void UI::drawTui()
 {
 	// Normal transparency mode
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	StateGL::enable(GL_BLEND);
+	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//StateGL::enable(GL_BLEND);
 
 	if (tui_root) {
 		core->printHorizontal(tuiFont.get(), 5, PosMenuM, tui_root->getString() , text_tui_root, TEXT_ALIGN::LEFT, false);//, 1, 1);
@@ -972,7 +972,7 @@ void UI::tuiCbChangeColor()
 	coreLink->skyGridMgrSetColor(SKYGRID_TYPE::GRID_EQUATORIAL  , tui_colors_equatorial_color->getVector() );
 	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_EQUATOR, tui_colors_equator_color->getVector() );
 	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_ECLIPTIC, tui_colors_ecliptic_color->getVector() );
-	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, tui_colors_meridian_color->getVector() ); 
+	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_MERIDIAN, tui_colors_meridian_color->getVector() );
 	coreLink->nebulaSetColorLabels(tui_colors_nebula_label_color->getVector() );
 	coreLink->nebulaSetColorCircle(tui_colors_nebula_circle_color->getVector() );
 	coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, tui_colors_precession_circle_color->getVector() );

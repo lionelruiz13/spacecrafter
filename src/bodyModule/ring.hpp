@@ -37,7 +37,7 @@
 #include "coreModule/callbacks.hpp"
 #include "tools/fader.hpp"
 #include "bodyModule/orbit.hpp"
-#include "renderGL/stateGL.hpp"
+
 
 #include "vulkanModule/Context.hpp"
 
@@ -51,13 +51,13 @@ class CommandMgr;
 
 class Ring2D {
 public:
-	Ring2D(float _r_min, float _r_max, GLint slices, GLint stacks, bool h, VertexArray &vertexBase);
+	Ring2D(float _r_min, float _r_max, int slices, int stacks, bool h, VertexArray &vertexBase);
 	~Ring2D();
 	void initFrom(VertexArray &vertex);
 	void draw(void *pDrawData);
 
 private:
-	void computeRing(GLint slices, GLint stacks, bool h);
+	void computeRing(int slices, int stacks, bool h);
 	std::vector<float> datas;
 	std::unique_ptr<VertexArray> m_dataGL; //currentModel
 	struct {

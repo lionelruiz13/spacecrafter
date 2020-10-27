@@ -48,7 +48,7 @@
 #include "bodyModule/body_trace.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
-#include "renderGL/Renderer.hpp"
+
 #include "coreModule/StarGalaxy.hpp"
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -744,7 +744,7 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	projection->setClippingPlanes(clipping_min ,clipping_max);
 	// Init viewport to current projector values
 	projection->applyViewport();
-	StateGL::BlendFunc(GL_ONE, GL_ONE);
+	//StateGL::BlendFunc(GL_ONE, GL_ONE);
 }
 
 
@@ -831,7 +831,7 @@ void Core::drawInGalaxy(int delta_time)
 
 	milky_way->draw(tone_converter, projection, navigation, timeMgr->getJulian());
 	// glClear(GL_DEPTH_BUFFER_BIT);
-	Renderer::clearDepthBuffer();
+	//Renderer::clearDepthBuffer();
 
 	//tracé des lignes sans activation du tampon de profondeur.
 	skyDisplayMgr->drawPerson(projection, navigation);
@@ -846,9 +846,9 @@ void Core::drawInGalaxy(int delta_time)
 //! Execute all the drawing functions
 void Core::drawInUniverse(int delta_time)
 {
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// glClear(GL_DEPTH_BUFFER_BIT);
-	Renderer::clearDepthBuffer();
+	//Renderer::clearDepthBuffer();
 
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);

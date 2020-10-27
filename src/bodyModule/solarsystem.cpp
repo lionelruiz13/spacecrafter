@@ -44,7 +44,7 @@
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
-#include "renderGL/Renderer.hpp"
+
 
 #include "vulkanModule/Context.hpp"
 

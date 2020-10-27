@@ -55,7 +55,7 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
-#include "renderGL/Renderer.hpp"
+
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"
@@ -255,7 +255,7 @@ void App::init()
 {
 	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
 	//glClear(GL_COLOR_BUFFER_BIT);
-	Renderer::clearColor();
+	//Renderer::clearColor();
 
 	// Initialize video device and other sdl parameters
 	InitParser conf;

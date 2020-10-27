@@ -19,8 +19,8 @@
 
 #include <memory>
 #include "tools/vecmath.hpp"
-//#include "renderGL/shader.hpp"
-//#include "renderGL/stateGL.hpp"
+//
+//
 #include "tools/fader.hpp"
 #include "mediaModule/media_base.hpp"
 #include "vulkanModule/Context.hpp"
@@ -44,7 +44,7 @@ public:
 	void draw();
 
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
-	//! \param _tex, ref GLuint textures YUV dans la CG
+	//! \param _tex, ref uint32_t textures YUV dans la CG
 	void setTexture(VideoTexture _tex);
 
 	//! build draw commands
@@ -115,7 +115,7 @@ private:
 	uint32_t *pTransparency; //vkBool32
 	std::unique_ptr<VertexArray> m_dualGL, m_fullGL;
 
-	//GLuint videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
+	//uint32_t videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
 	bool isAlive;		//!< active la classe
 	bool fullScreen; 	//!< indique la façon d'afficher l'image
 	bool skipping = false;		//!< initialise la variable définissant si on saute le fading ou non

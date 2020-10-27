@@ -30,7 +30,7 @@
 #include <map>
 #include <string>
 #include <memory>
-#include <GL/glew.h>
+
 #include "tools/vecmath.hpp"
 #include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"

@@ -32,9 +32,9 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
-// #include "renderGL/OpenGL.hpp"
-// #include "renderGL/shader.hpp"
-// #include "renderGL/Renderer.hpp"
+// #include "vulkanModule/VertexArray.hpp"
+// 
+// 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/VertexArray.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -166,24 +166,24 @@ void Fog::draw(const Projector* prj, const Navigator* nav) const
 }
 
 
-void Fog::createFogMesh(GLdouble radius, GLdouble height, GLint slices, GLint stacks, std::vector<float>* dataTex, std::vector<float>* dataPos)
+void Fog::createFogMesh(double radius, double height, int slices, int stacks, std::vector<float>* dataTex, std::vector<float>* dataPos)
 {
 	nbVertex=0;
-	GLdouble da, r, dz;
-	GLfloat z ;
-	GLint i;
+	double da, r, dz;
+	float z ;
+	int i;
 
 	da = 2.0 * M_PI / slices;
 	dz = height / stacks;
 
-	GLfloat ds = 1.0 / slices;
-	GLfloat dt = 1.0 / stacks;
-	GLfloat t = 0.0;
+	float ds = 1.0 / slices;
+	float dt = 1.0 / stacks;
+	float t = 0.0;
 	z = 0.0;
 	r = radius;
-	GLfloat s = 0.0;
+	float s = 0.0;
 	for (i = 0; i <= slices; i++) {
-		GLfloat x, y;
+		float x, y;
 		if (i == slices) {
 			x = sinf(0.0);
 			y = cosf(0.0);

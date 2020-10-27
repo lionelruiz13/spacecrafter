@@ -38,10 +38,10 @@
 #include "tools/utility.hpp"
 #include "tools/s_font.hpp"
 #include "tools/log.hpp"
-#include "renderGL/stateGL.hpp"
+
 #include "tools/translator.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"

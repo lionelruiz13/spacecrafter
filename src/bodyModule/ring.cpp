@@ -33,9 +33,9 @@
 #include "tools/s_font.hpp"
 #include "planetsephems/sideral_time.h"
 #include "tools/log.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
+
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -209,7 +209,7 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 
 
 // class Ring2D
-Ring2D::Ring2D(float _r_min, float _r_max, GLint _slices, GLint _stacks, bool h, VertexArray &base)
+Ring2D::Ring2D(float _r_min, float _r_max, int _slices, int _stacks, bool h, VertexArray &base)
 {
 	r_min = _r_min;
 	r_max = _r_max;
@@ -246,7 +246,7 @@ void Ring2D::draw(void *pDrawData)
 }
 
 
-void Ring2D::computeRing(GLint slices, GLint stacks, bool h)
+void Ring2D::computeRing(int slices, int stacks, bool h)
 {
 	double theta;
 	double x,y;

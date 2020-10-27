@@ -33,7 +33,7 @@
 #include "tools/vecmath.hpp"
 #include "tools/fader.hpp"
 #include "tools/utility.hpp"
-#include "renderGL/stateGL.hpp"
+
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 
@@ -150,7 +150,7 @@ public:
 	void create(const std::string _name, const std::string _maptex, double _texturefov,
 	            const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
 private:
-	void createFisheyeMesh(double radius, int slices, int stacks, double texture_fov,  GLfloat * datatex, GLfloat * datapos);
+	void createFisheyeMesh(double radius, int slices, int stacks, double texture_fov,  float * datatex, float * datapos);
 	void initShader();
 	float tex_fov;
 };
@@ -165,7 +165,7 @@ public:
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
-	                         double bottom_altitude, double top_altitude, GLfloat * datatex, GLfloat * datapos);
+	                         double bottom_altitude, double top_altitude, float * datatex, float * datapos);
 	void initShader();
 	float base_altitude, top_altitude;  // for partial sphere coverage
 };

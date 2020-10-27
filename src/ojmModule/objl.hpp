@@ -4,7 +4,7 @@
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <list>
-#include "renderGL/stateGL.hpp"
+
 #include "ojmModule/ojml.hpp"
 
 #include "vulkanModule/Context.hpp"

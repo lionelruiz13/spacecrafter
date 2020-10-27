@@ -18,8 +18,8 @@
 #include <iostream>
 #include "coreModule/projector.hpp"
 #include "bodyModule/body_color.hpp"
-#include "renderGL/OpenGL.hpp"
-#include "renderGL/Renderer.hpp"
+#include "vulkanModule/VertexArray.hpp"
+
 #include "vulkanModule/Uniform.hpp"
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/CommandMgr.hpp"

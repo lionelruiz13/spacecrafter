@@ -18,7 +18,7 @@
 
 #include <vector>
 #include <mutex>
-#include <GL/glew.h>
+
 #include <memory>
 
 #include "tools/vecmath.hpp"

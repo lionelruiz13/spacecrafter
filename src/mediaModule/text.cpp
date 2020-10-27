@@ -57,8 +57,8 @@ void Text::draw(const Projector* prj)
 {
 	if ( !fader.getInterstate() ) return;
 
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// StateGL::enable(GL_BLEND);
 	textFont->printHorizontal(prj, altitude, azimuth, text,textColor, textAlign, true);
 }
 

@@ -35,8 +35,8 @@
 #include "atmosphereModule/skybright.hpp"
 #include "atmosphereModule/skylight.hpp"
 #include "tools/fader.hpp"
-#include "renderGL/shader.hpp"
-#include "renderGL/stateGL.hpp"
+
+
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 
@@ -46,6 +46,7 @@ class Projector;
 class Navigator;
 class ToneReproductor;
 class VertexArray;
+class Pipeline;
 
 class Atmosphere: public NoCopy  {
 public:
@@ -150,7 +151,6 @@ private:
 	float lightPollutionLuminance; 	//! light pollution simulation, add to svn 20070220
 	int cor_optoma; //! flag for correction vp optoma
 
-	std::unique_ptr<shaderProgram> shaderAtmosphere;
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;
 	std::unique_ptr<Pipeline> pipeline;

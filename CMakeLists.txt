@@ -70,19 +70,17 @@ FIND_PACKAGE(SDL2 REQUIRED)
 FIND_PACKAGE(SDL2_mixer REQUIRED)
 FIND_PACKAGE(SDL2_ttf REQUIRED)
 FIND_PACKAGE(SDL2_net REQUIRED)
-SET(OpenGL_GL_PREFERENCE "GLVND")
-FIND_PACKAGE(OpenGL REQUIRED)
-FIND_PACKAGE(GLEW REQUIRED)
+FIND_PACKAGE(Vulkan REQUIRED)
 FIND_PACKAGE(FFmpeg REQUIRED)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${GLEW_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${GL_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${Vulkan_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR})
 
 # set include path
 include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories($(GLEW_INCLUDE_DIRS))
+include_directories($(GLEW_INCLUDE_DIRS)) # Can't find initparser/initparser.h without this statement
+INCLUDE_DIRECTORIES(${Vulkan_INCLUDE_DIRS})
 
 ########### Packaging info for CPack ###########
 INCLUDE(InstallRequiredSystemLibraries)
@@ -126,8 +124,4 @@ message("")
 message("C++ version " ${CMAKE_CXX_STANDARD})
 message("C flags: " ${CMAKE_C_FLAGS} )
 message("C++ flags: " ${CMAKE_CXX_FLAGS} )
-message("")
-message("Glew version : " ${GLEW_VERSION})
-message("Glew library before 20.04 : " ${GLEW_LIBRARY})
-message("Glew library after  20.04 : " ${GLEW_LIBRARIES})
 message("---------------------------------------------")
