@@ -623,6 +623,11 @@ void CommandMgr::vkEndIf()
     }
 }
 
+void CommandMgr::waitGraphicQueueIdle()
+{
+    master->waitGraphicQueueIdle();
+}
+
 int CommandMgr::getCommandIndex()
 {
     if (autoIndex < nbCommandBuffers)

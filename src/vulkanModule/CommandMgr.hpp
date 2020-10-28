@@ -114,6 +114,8 @@ public:
     void submit();
     //! reset all command buffer (for single-use command buffers), but keep their submission state
     void reset();
+    //! wait all pending submissions complete
+    void waitGraphicQueueIdle();
     //! wait all submitted command for actual frameIndex end
     void waitCompletion() {vkWaitForFences(refDevice, 1, &frames[refFrameIndex].fence, VK_TRUE, UINT64_MAX);}
     //! wait all submitted command end
