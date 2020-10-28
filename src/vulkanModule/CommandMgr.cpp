@@ -38,7 +38,7 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submi
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-    if (!singleUse) {
+    if (!singleUse && nbCommandBuffers > 0) {
         if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &cmdPool) != VK_SUCCESS) {
             throw std::runtime_error("échec de la création d'une command pool !");
         }
@@ -48,6 +48,15 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submi
     for (auto &frame : frames) {
         if (vkCreateSemaphore(refDevice, &semaphoreInfo, nullptr, &frame.bottomSemaphore) != VK_SUCCESS) {
             throw std::runtime_error("Failed to create semaphore for previously allocated command buffers.");
+        }
+        if (vkCreateFence(refDevice, &fenceInfo, nullptr, &frame.fence) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create fence.");
+        }
+        frame.actual = VK_NULL_HANDLE;
+        if (nbCommandBuffers == 0) {
+            // This commandMgr don't manage commandBuffer internally
+            frame.cmdPool = VK_NULL_HANDLE;
+            continue;
         }
         if (singleUse) {
             if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &frame.cmdPool) != VK_SUCCESS) {
@@ -66,10 +75,6 @@ CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submi
                 throw std::runtime_error("Failed to create semaphore for previously allocated command buffers.");
             }
         }
-        if (vkCreateFence(refDevice, &fenceInfo, nullptr, &frame.fence) != VK_SUCCESS) {
-            throw std::runtime_error("Failed to create fence.");
-        }
-        frame.actual = VK_NULL_HANDLE;
     }
 }
 
@@ -82,10 +87,10 @@ CommandMgr::~CommandMgr()
             vkDestroySemaphore(refDevice, sem, nullptr);
         vkWaitForFences(refDevice, 1, &frame.fence, VK_TRUE, UINT64_MAX);
         vkDestroyFence(refDevice, frame.fence, nullptr);
-        if (singleUse)
+        if (singleUse && frame.cmdPool != VK_NULL_HANDLE)
             vkDestroyCommandPool(refDevice, frame.cmdPool, nullptr);
     }
-    if (!singleUse)
+    if (!singleUse && cmdPool != VK_NULL_HANDLE)
         vkDestroyCommandPool(refDevice, cmdPool, nullptr);
 }
 

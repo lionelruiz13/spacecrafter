@@ -52,8 +52,8 @@ enum class renderPassCompatibility : uint8_t {
 class CommandMgr {
 public:
     //! @param nbCommandBuffers number of commandBuffers to create
-    ~CommandMgr();
     CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame = false, bool singleUseCommands = false, bool isExternal = false, bool enableIndividualReset = false);
+    ~CommandMgr();
     //! @brief Start recording command
     //! @param compileSelected if true, compile selected command
     void init(int index, bool compileSelected = true);
@@ -143,7 +143,7 @@ private:
     const std::vector<VkFramebuffer> &refSwapChainFramebuffers;
     const std::vector<VkFramebuffer> &refResolveFramebuffers;
     const std::vector<VkFramebuffer> &refSingleSampleFramebuffers;
-    VkCommandPool cmdPool; // used if singleUse is set to false
+    VkCommandPool cmdPool = VK_NULL_HANDLE; // used if singleUse is set to false
     //! Content attached to frame
     struct frame {
         VkCommandPool cmdPool; // used if singleUse is set to true
