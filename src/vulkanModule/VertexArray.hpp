@@ -29,7 +29,7 @@ class VertexArray
 {
 public:
     //! constructor...
-    VertexArray(VirtualSurface *_master, CommandMgr *_mgr = nullptr);
+    VertexArray(VirtualSurface *_master, CommandMgr *_mgr = nullptr, bool updateOnBind = true);
     VertexArray(VertexArray &model);
     ~VertexArray();
 
@@ -132,6 +132,8 @@ private:
     bool instanceUpdate = false;
     //! Tell if local indexBuffer content has changed
     bool indexUpdate = false;
+    //! Tell if update must be called when bind is called
+    bool updateOnBind;
 };
 
 #endif /* end of include guard: VERTEX_ARRAY_HPP */

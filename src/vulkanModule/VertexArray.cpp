@@ -64,11 +64,11 @@ static int getFormatSize(VkFormat format)
     }
 }
 
-VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr) : master(_master), mgr(_mgr), vertexBuffer(nullptr), instanceBuffer(nullptr), indexBuffer(nullptr), vertice(offset) {}
+VertexArray::VertexArray(VirtualSurface *_master, CommandMgr *_mgr, bool updateOnBind) : master(_master), mgr(_mgr), vertexBuffer(nullptr), instanceBuffer(nullptr), indexBuffer(nullptr), vertice(offset), updateOnBind(updateOnBind) {}
 
 VertexArray::~VertexArray() {}
 
-VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), maxVertices(model.maxVertices), maxIndex(model.maxIndex), indexBufferSize(model.indexBufferSize), indexType(model.indexType)
+VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.mgr), instanceBuffer(nullptr), bindingDesc(model.bindingDesc), bindingDesc2(model.bindingDesc2), vertice(offset), blockSize(model.blockSize), maxVertices(model.maxVertices), maxIndex(model.maxIndex), indexBufferSize(model.indexBufferSize), indexType(model.indexType), updateOnBind(model.updateOnBind)
 {
     // instanceBuffer mustn't be build for copy, at least for now
     assert(!model.instanceBuffer);
@@ -107,7 +107,8 @@ void VertexArray::bind(CommandMgr *cmdMgr)
         cmdMgr->bindVertex(instanceBuffer.get(), 1);
     if (indexBuffer)
         cmdMgr->bindIndex(indexBuffer.get(), indexType);
-    update();
+    if (updateOnBind)
+        update();
 }
 
 void VertexArray::update()
