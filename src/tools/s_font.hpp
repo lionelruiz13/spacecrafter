@@ -109,7 +109,7 @@ protected:
 	static Set *set;
 	static VertexArray *vertexHorizontal;
 	static VertexArray *vertexPrint;
-	static CommandMgr *cmdMgr;
+	static ThreadedCommandBuilder *cmdMgr;
 	static Pipeline *pipelineHorizontal;
 	static Pipeline *pipelinePrint;
 	static PipelineLayout *layoutHorizontal;

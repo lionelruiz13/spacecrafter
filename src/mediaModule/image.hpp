@@ -137,7 +137,7 @@ private:
 	//OpenGL vars
 	std::vector<float> vecImgTex, vecImgPos;
 	static ThreadContext *context;
-	static CommandMgr *cmdMgr;
+	static ThreadedCommandBuilder *cmdMgr;
 	static PipelineLayout *m_layoutViewport, *m_layoutUnifiedRGB, *m_layoutUnifiedYUV;
 	static Pipeline *m_pipelineViewport;
 	// RGB, RBG with transparency, YUV, YUV with transparency

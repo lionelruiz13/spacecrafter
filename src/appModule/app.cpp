@@ -73,6 +73,7 @@
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/ResourceTracker.hpp"
 #include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/ThreadedCommandBuilder.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
 
@@ -96,8 +97,9 @@ App::App( SDLFacade* const sdl )
 	context.setMgr = new SetMgr(context.surface, 512);
 	context.commandMgr = new CommandMgr(context.surface, 64, true);
 	context.commandMgrSingleUse = new CommandMgr(context.surface, 8, true, true, true);
+	context.commandMgrSingleUseInterface = new ThreadedCommandBuilder(context.commandMgrSingleUse);
 	context.commandMgrDynamic = new CommandMgr(context.surface, 8, true, false, true, true);
-	globalContext.textureMgr->setMipmapBuilder(context.commandMgrSingleUse);
+	globalContext.textureMgr->setMipmapBuilder(new CommandMgr(context.surface, 0, true, true, true));
 	commandIndexClear = context.commandMgr->getCommandIndex();
 	context.commandMgr->init(commandIndexClear);
 	context.commandMgr->beginRenderPass(renderPassType::CLEAR);
@@ -171,6 +173,8 @@ App::~App()
 
 	EventRecorder::End();
 
+	context.commandMgrSingleUseInterface->terminate();
+	context.commandMgrSingleUseInterface->waitIdle();
 	globalContext.vulkan->waitIdle();
 	delete appDraw;
 	if (enable_tcp)
@@ -191,10 +195,12 @@ App::~App()
 	delete screenFader;
 	delete spaceDate;
 	delete context.commandMgr;
+	delete context.commandMgrSingleUseInterface;
 	delete context.commandMgrSingleUse;
 	delete context.commandMgrDynamic;
 	delete globalContext.tracker;
 	delete context.setMgr;
+	delete globalContext.textureMgr->getMipmapBuilder();
 	delete globalContext.textureMgr;
 	delete globalContext.vulkan;
 }
@@ -439,11 +445,10 @@ void App::draw(int delta_time)
 	//Renderer::clearColor();
 
 	context.commandMgr->waitCompletion();
-	context.commandMgrSingleUse->reset();
+	context.commandMgrSingleUseInterface->reset();
 	context.commandMgr->setSubmission(commandIndexClear);
 	s_font::beginPrint();
 	core->draw(delta_time);
-	// #submit batch here
 	// Draw the Graphical ui and the Text ui
 	ui->draw();
 	//inversion des couleurs pour un ciel blanc
@@ -460,7 +465,7 @@ void App::draw(int delta_time)
 	appDraw->drawViewportShape();
 
 	screenFader->draw();
-	// #submit batch here
+	context.commandMgrSingleUseInterface->waitIdle();
 	context.surface->submitFrame();
 }
 

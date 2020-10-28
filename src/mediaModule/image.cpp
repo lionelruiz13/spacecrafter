@@ -30,9 +30,9 @@
 #include "mediaModule/imageTexture.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/s_texture.hpp"
-// 
+//
 // #include "vulkanModule/VertexArray.hpp"
-// 
+//
 #include "vulkanModule/ResourceTracker.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -40,6 +40,7 @@
 #include "vulkanModule/VertexArray.hpp"
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/Uniform.hpp"
+#include "vulkanModule/ThreadedCommandBuilder.hpp"
 
 // std::unique_ptr<shaderProgram> Image::shaderImageViewport;
 // std::unique_ptr<shaderProgram> Image::shaderUnified;
@@ -57,7 +58,7 @@ int Image::commandIndex = -1;
 Set *Image::m_setViewport;
 Set *Image::m_setUnifiedRGB;
 Set *Image::m_setUnifiedYUV;
-CommandMgr *Image::cmdMgr;
+ThreadedCommandBuilder *Image::cmdMgr;
 Pipeline *Image::pipelineUsed = nullptr;
 
 Image::Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
@@ -245,7 +246,7 @@ void Image::createSC_context(ThreadContext *_context)
 	m_setUnifiedRGB = m_setViewport;
 	m_setUnifiedYUV = context->global->tracker->track(new Set());
 	// CommandBuffer
-	cmdMgr = context->commandMgrSingleUse;
+	cmdMgr = context->commandMgrSingleUseInterface;
 	commandIndex = cmdMgr->getCommandIndex();
 }
 

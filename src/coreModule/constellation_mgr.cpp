@@ -49,6 +49,7 @@
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/Uniform.hpp"
 #include "vulkanModule/Buffer.hpp"
+#include "vulkanModule/ThreadedCommandBuilder.hpp"
 
 //! constructor which loads all data from appropriate files
 ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars, ThreadContext *_context) :
@@ -424,7 +425,7 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 	//m_shaderArt->use();
 	m_vertexArt->setVertexOffset(0);
 	int offset = 0;
-	CommandMgr *cmdMgr = context->commandMgrSingleUse;
+	ThreadedCommandBuilder *cmdMgr = context->commandMgrSingleUseInterface;
 	cmdMgr->init(commandIndexArt, m_pipelineArt.get(), renderPassType::DEFAULT, false);
 	cmdMgr->bindVertex(m_vertexArt.get());
 	cmdMgr->bindSet(m_layoutArt.get(), context->global->globalSet, 0);
@@ -460,7 +461,7 @@ void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
 	cmdMgr->compile();
 	if (offset > 0) {
 		m_vertexArt->update();
-		cmdMgr->setSubmission(commandIndexArt, false, context->commandMgr);
+		context->commandMgrSingleUse->setSubmission(commandIndexArt, false, context->commandMgr);
 	}
 	//m_shaderArt->unuse();
 

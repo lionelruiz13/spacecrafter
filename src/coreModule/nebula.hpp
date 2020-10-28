@@ -242,6 +242,7 @@ private:
 
 	static int commandIndex;
 	static CommandMgr *cmdMgr;
+	static ThreadedCommandBuilder *cmdMgrInterface;
 	static CommandMgr *cmdMgrTarget;
 	//static std::unique_ptr<shaderProgram> shaderNebulaTex;
 	static VertexArray *m_texGL;

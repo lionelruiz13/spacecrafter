@@ -37,12 +37,13 @@
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/ResourceTracker.hpp"
+#include "vulkanModule/ThreadedCommandBuilder.hpp"
 
 ThreadContext *s_font::context;
 Set *s_font::set;
 VertexArray *s_font::vertexHorizontal;
 VertexArray *s_font::vertexPrint;
-CommandMgr *s_font::cmdMgr;
+ThreadedCommandBuilder *s_font::cmdMgr;
 Pipeline *s_font::pipelineHorizontal;
 Pipeline *s_font::pipelinePrint;
 PipelineLayout *s_font::layoutHorizontal;
@@ -102,15 +103,15 @@ s_font::~s_font()
 void s_font::createSC_context(ThreadContext *_context)
 {
 	context = _context;
-	cmdMgr = context->commandMgrSingleUse;
+	cmdMgr = context->commandMgrSingleUseInterface;
 	commandIndexHorizontal = cmdMgr->getCommandIndex();
 	commandIndexPrint = cmdMgr->getCommandIndex();
-	vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface, cmdMgr));
+	vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface));
 	vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM_LOCAL);
 	vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM_LOCAL);
 	vertexHorizontal->build(4096);
 
-	vertexPrint = context->global->tracker->track(new VertexArray(context->surface, cmdMgr));
+	vertexPrint = context->global->tracker->track(new VertexArray(context->surface));
 	vertexPrint->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM_LOCAL);
 	vertexPrint->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM_LOCAL);
 	vertexPrint->build(4096);
