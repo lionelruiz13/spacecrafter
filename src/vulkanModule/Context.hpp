@@ -11,6 +11,7 @@ class Set;
 class VirtualSurface;
 class SetMgr;
 class CommandMgr;
+class ThreadedCommandBuilder;
 
 typedef struct GlobalContext {
     Vulkan *vulkan;
@@ -26,6 +27,7 @@ typedef struct ThreadContext {
     SetMgr *setMgr;
     CommandMgr *commandMgr;
     CommandMgr *commandMgrSingleUse;
+    ThreadedCommandBuilder *commandMgrSingleUseInterface;
     CommandMgr *commandMgrDynamic; // for individual re-recording
 } ThreadContext;
 

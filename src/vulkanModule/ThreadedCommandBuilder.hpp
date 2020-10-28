@@ -1,40 +1,57 @@
-#ifndef THREADED_COMMAND_BUILDER
-#define THREADED_COMMAND_BUILDER
+#ifndef THREADED_COMMAND_BUILDER_HPP
+#define THREADED_COMMAND_BUILDER_HPP
 
 #include <queue>
-class CommandMgr;
+#include <thread>
+#include <mutex>
+#include "CommandMgr.hpp"
 union CmdEvent;
 
 class ThreadedCommandBuilder {
 public:
     ThreadedCommandBuilder(CommandMgr *_master);
     ~ThreadedCommandBuilder();
-    void mainloop();
     void waitCompiled(uint8_t nbCommands = 1);
-    void waitIdle();
+    void waitIdle(bool resetCompiledCount = true);
+    //! Exit ThreadedCommandBuilder's mainloop
+    void terminate();
 private:
+    void mainloop();
+    static void startMainloop(ThreadedCommandBuilder *self) {self->mainloop();}
     CommandMgr *master;
+    std::mutex mutex;
     std::queue<CmdEvent> events;
+    std::thread thread;
+    static const int BUFFER_SIZE;
+    std::vector<char> buffer;
+    uint32_t bufferOffset = 0;
+    std::vector<Set> setCache;
+    uint32_t setCacheOffset = 0;
+    uint32_t usedSetCacheCount = 0;
     uint8_t isCompiled = 0;
+    bool processing = false;
 public:
     // Virtual CommandMgr's calls
-    void init(int index);
-    void beginRenderPass(renderPassType renderPassType);
+    void reset();
+    void init(int index, bool compileSelected = true);
+    void select(int index);
+    void grab(VkCommandBuffer buffer = VK_NULL_HANDLE);
+    void beginRenderPass(renderPassType renderPassType, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
     void endRenderPass();
+    void updateVertex(VertexArray *vertex);
     void bindVertex(VertexArray *vertex);
-    void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, uint32_t bindingCount = 1, VkDeviceSize offset = 0);
-    void bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset = 0);
     void bindPipeline(Pipeline *pipeline);
     void bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
     void pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
     void pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, const void *data, uint32_t size);
     void draw(uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0);
-    void indirectDraw(Buffer *drawArgsArray, VkDeviceSize offset = 0, uint32_t drawCount = 1);
     void drawIndexed(uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t vertexOffset = 0, uint32_t firstInstance = 0);
-    void indirectDrawIndexed(Buffer *drawArgsArray, VkDeviceSize offset = 0, uint32_t drawCount = 1);
     void compile();
-    //! Exit ThreadedCommandBuilder's mainloop
-    void terminate();
+    // Combined CommandMgr's calls
+    void init(int index, Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
+    // Direct CommandMgr's calls
+    int getCommandIndex() {return master->getCommandIndex();}
+    void setSubmission(int index, bool needDepthBuffer = false, CommandMgr *target = nullptr) {master->setSubmission(index, needDepthBuffer, target);}
 };
 
-#endif /* end of include guard: THREADED_COMMAND_BUILDER */
+#endif /* end of include guard: THREADED_COMMAND_BUILDER_HPP */

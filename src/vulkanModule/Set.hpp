@@ -33,6 +33,8 @@ public:
     VkDescriptorSet *get();
     std::vector<uint32_t> &getDynamicOffsets() {return dynamicOffsets;}
     std::vector<VkWriteDescriptorSet> &getWrites() {return writeSet;}
+    //! For ThreadedCommandBuilder only
+    void swapWrites(std::vector<VkWriteDescriptorSet> &writeSetExt) {writeSet.swap(writeSetExt);}
     void clear() {writeSet.clear();}
     //! Manually update bindings
     void update();
