@@ -124,6 +124,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_TRAIL                     "trail"
 #define W_INDEX                     "index"
 #define W_HP                        "hp"
+#define W_COLOR                     "color"
 #define W_COLOR_VALUE               "color_value"
 #define W_NONE                      "NONE" //??
 #define W_DEFAULT                   "default"
