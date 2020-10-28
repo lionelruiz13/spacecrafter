@@ -4,6 +4,7 @@
 #include <queue>
 #include <thread>
 #include <mutex>
+#include <atomic>
 #include "CommandMgr.hpp"
 union CmdEvent;
 
@@ -21,15 +22,15 @@ private:
     CommandMgr *master;
     std::mutex mutex;
     std::queue<CmdEvent> events;
-    std::thread thread;
     static const int BUFFER_SIZE;
     std::vector<char> buffer;
     uint32_t bufferOffset = 0;
     std::vector<Set> setCache;
     uint32_t setCacheOffset = 0;
-    uint32_t usedSetCacheCount = 0;
+    std::atomic<uint32_t> usedSetCacheCount;
     uint8_t isCompiled = 0;
     bool processing = false;
+    std::thread thread;
 public:
     // Virtual CommandMgr's calls
     void reset();

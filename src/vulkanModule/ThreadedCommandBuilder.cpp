@@ -21,7 +21,7 @@
 #define ARG5(type1, type2, type3, type4, type5) (arg5.type1, arg4.type2, arg3.type3, arg2.type4, arg1.type5);CHECK(5)
 
 
-ThreadedCommandBuilder::ThreadedCommandBuilder(CommandMgr *_master) : master(_master), thread(startMainloop, this)
+ThreadedCommandBuilder::ThreadedCommandBuilder(CommandMgr *_master) : master(_master), usedSetCacheCount(0), thread(startMainloop, this)
 {
     setCache.resize(64);
     buffer.resize(65536);
@@ -86,7 +86,7 @@ void ThreadedCommandBuilder::mainloop()
             CALL(bindVertex, BIND_VERTEX_ARRAY, ARG1(ptrV));
             CALL(bindPipeline, BIND_PIPELINE, ARG1(ptrP));
             CALL(bindSet, BIND_SET, ARG3(ptrPL, ptrS, i));
-            CALL(pushSet, PUSH_SET, ARG3(ptrPL, ptrS, i);usedSetCacheCount--);
+            CALL(pushSet, PUSH_SET, ARG3(ptrPL, ptrS, i);--usedSetCacheCount);
             CALL(pushConstant, PUSH_CONSTANT, ARG5(ptrPL, sf, ui, ptr, ui));
             CALL(draw, DRAW, ARG4(ui, ui, ui, ui));
             CALL(drawIndexed, DRAW_INDEXED, ARG5(ui, ui, ui, ui, ui));
@@ -186,7 +186,7 @@ void ThreadedCommandBuilder::bindSet(PipelineLayout *pipelineLayout, Set *unifor
 
 void ThreadedCommandBuilder::pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding)
 {
-    while (usedSetCacheCount >= setCache.size())
+    while (usedSetCacheCount.load() >= setCache.size())
         std::this_thread::yield();
     DEF(PUSH_SET);
     ++usedSetCacheCount;
