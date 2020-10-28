@@ -1,17 +1,18 @@
 #include "Vulkan.hpp"
 #include "VirtualSurface.hpp"
 #include "MemoryManager.hpp"
-#include <iostream>
-#include <set>
-#include <algorithm>
-#include <fstream>
-#include <chrono>
-#include <thread>
 #include "mainModule/sdl_facade.hpp"
 #include <SDL2/SDL_vulkan.h>
 #include "CommandMgr.hpp"
 #include "tools/log.hpp"
 #include "BufferMgr.hpp"
+#include <iostream>
+#include <set>
+#include <algorithm>
+#include <chrono>
+#include <thread>
+#include <fstream>
+#include <sstream>
 
 bool Vulkan::isAlive = false;
 
@@ -68,9 +69,10 @@ static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue
     }
 }
 
-Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers, VkSampleCountFlagBits sampleCount) : refDevice(device), refRenderPass(renderPass), refRenderPassExternal(renderPassExternal), refRenderPassCompatibility(renderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(resolveFramebuffers), refSingleSampleFramebuffers(singleSampleFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName), graphicThread(graphicMainloop, &graphicQueue, this, &graphicQueueMutex, &isAlive, &graphicActivity)
+Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers, VkSampleCountFlagBits sampleCount, std::string _cachePath) : refDevice(device), refRenderPass(renderPass), refRenderPassExternal(renderPassExternal), refRenderPassCompatibility(renderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(resolveFramebuffers), refSingleSampleFramebuffers(singleSampleFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName), graphicThread(graphicMainloop, &graphicQueue, this, &graphicQueueMutex, &isAlive, &graphicActivity)
 {
     assert(!isAlive); // There must be only one Vulkan instance
+    cachePath = _cachePath;
     isAlive = true;
     uint32_t sdl2ExtensionCount = 0;
     if (!SDL_Vulkan_GetInstanceExtensions(window, &sdl2ExtensionCount, nullptr))
@@ -129,8 +131,19 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     cacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
     cacheCreateInfo.pNext = nullptr;
     cacheCreateInfo.flags = 0;
-    cacheCreateInfo.initialDataSize = 0;
-    cacheCreateInfo.pInitialData = nullptr;
+    std::string cacheContent;
+    if (cachePath.empty()) {
+        cacheCreateInfo.initialDataSize = 0;
+        cacheCreateInfo.pInitialData = nullptr;
+    } else {
+        std::ifstream t(cachePath + "pipelineCache.dat", std::ifstream::in | std::ifstream::binary);
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        t.close();
+        cacheContent = buffer.str();
+        cacheCreateInfo.initialDataSize = cacheContent.size();
+        cacheCreateInfo.pInitialData = cacheContent.c_str();
+    }
     if (vkCreatePipelineCache(device, &cacheCreateInfo, nullptr, &pipelineCache) != VK_SUCCESS) {
         std::cerr << "Failed to create pipeline cache.";
     }
@@ -184,6 +197,16 @@ Vulkan::~Vulkan()
     for (auto &tmp : swapChain)
         vkDestroySwapchainKHR(device, tmp, nullptr);
     vkDestroySurfaceKHR(instance.get(), surface, nullptr);
+    if (!cachePath.empty()) {
+        std::ofstream t(cachePath + "pipelineCache.dat", std::ofstream::out | std::ofstream::binary | std::ofstream::trunc);
+        std::vector<char> cacheContent;
+        size_t size;
+        vkGetPipelineCacheData(device, pipelineCache, &size, nullptr);
+        cacheContent.resize(size);
+        vkGetPipelineCacheData(device, pipelineCache, &size, cacheContent.data());
+        t.write(cacheContent.data(), size);
+        t.close();
+    }
     vkDestroyPipelineCache(device, pipelineCache, nullptr);
     delete memoryManager;
     vkDestroyDevice(device, nullptr);

@@ -8,6 +8,7 @@
 #include <thread>
 #include <queue>
 #include <mutex>
+#include <string>
 
 class SDL_Window;
 
@@ -27,7 +28,7 @@ class CommandMgr;
 
 class Vulkan {
 public:
-    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600, int chunkSize = 256*1024*1024, bool enableDebugLayers = true, VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT);
+    Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width = 600, int height = 600, int chunkSize = 256*1024*1024, bool enableDebugLayers = true, VkSampleCountFlagBits sampleCount = VK_SAMPLE_COUNT_1_BIT, std::string _cachePath = "\0");
     ~Vulkan();
     void initQueues(uint32_t nbQueues = 1);
     //! send frame for submission
@@ -79,6 +80,7 @@ public:
 private:
     const char *AppName;
     const char *EngineName;
+    std::string cachePath;
     MemoryManager *memoryManager;
     VkPipelineViewportStateCreateInfo viewportState{};
     VkViewport viewport{};
