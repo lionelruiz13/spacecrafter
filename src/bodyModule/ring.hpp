@@ -99,20 +99,22 @@ public:
 private:
 	const double radius_min;
 	const double radius_max;
-	const s_texture *tex;
+	s_texture *tex;
 
 	//std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
 	void createSC_context(ThreadContext *context);
+	void createAsteroidRing(ThreadContext *context);
 
 	bool needRecording = true;
 	CommandMgr *cmdMgr;
 	Set *globalSet;
-	std::unique_ptr<Pipeline> pipeline;
-	std::unique_ptr<PipelineLayout> layout;
-	std::unique_ptr<VertexArray> vertex;
-	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uniform;
-	std::unique_ptr<Buffer> drawData;
+	std::unique_ptr<Pipeline> pipeline, pipelineAsteroid;
+	std::unique_ptr<PipelineLayout> layout, layoutAsteroid;
+	std::unique_ptr<VertexArray> vertex, vertexAsteroid;
+	std::unique_ptr<Set> set, setAsteroid;
+	std::unique_ptr<Uniform> uniform, uniformAsteroid;
+	std::unique_ptr<Buffer> drawData, drawDataAsteroid;
+	uint32_t *pAsteroidInstanceCount;
 	struct {
 		Mat4f ModelViewMatrix;
 		Mat4f ModelViewMatrixInverse;
@@ -123,6 +125,11 @@ private:
 		Vec3f LightDirection;
 		float SunnySideUp;
 	} *pUniform;
+	struct {
+		Mat4f ModelViewMatrix;
+		Vec3f clipping_fov;
+		float RingScale;
+	} *pUniformAsteroid;
 
 	Ring2D* lowUP;
 	Ring2D* lowDOWN;

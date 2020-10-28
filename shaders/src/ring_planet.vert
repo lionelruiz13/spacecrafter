@@ -6,7 +6,7 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-layout (binding=0) uniform ubo {
+layout (binding=0, set=1) uniform ubo {
 	mat4 ModelViewMatrix;
 	mat4 ModelViewMatrixInverse;
 	vec3 clipping_fov;
@@ -20,10 +20,10 @@ layout (binding=0) uniform ubo {
 #include <fisheye_noMV.glsl>
 
 //layout
-layout (location=0)in vec2 position;
+layout (location=0)in vec3 Position; // Missing component 2 is set to 0 (see Vulkan spec)
 layout (location=1)in vec2 texCoord;
 
-#include <cam_block.glsl>
+#include <cam_block_only.glsl>
 
 layout (location=1) out float PlanetHalfAngle;
 layout (location=2) out float Separation;
@@ -36,7 +36,6 @@ layout (location=0) out vec2 TexCoord;
 
 void main()
 {
-	vec3 Position = vec3(position, 0);
 	TexCoord = texCoord;
 	PlanetHalfAngle = atan(PlanetRadius/distance(PlanetPosition, Position));
 	Separation = dot(LightDirection, normalize(PlanetPosition-Position));

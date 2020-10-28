@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <random>
 
 #include "bodyModule/ring.hpp"
 #include "navModule/navigator.hpp"
@@ -43,12 +44,16 @@
 #include "vulkanModule/Uniform.hpp"
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/Buffer.hpp"
+#include "vulkanModule/Texture.hpp"
+
+#define NB_ASTEROIDS 100000
 
 Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init, ThreadContext *context)
 	:radius_min(radius_min),radius_max(radius_max)
 {
 	init = _init;
-	tex = new s_texture(texname,TEX_LOAD_TYPE_PNG_ALPHA,1);
+	tex = new s_texture(texname, TEX_LOAD_TYPE_PNG_ALPHA, true, true);
+	tex->use();
 	int nbVertices = (init[0] * (4 + 1) + init[1] * (8 + 1) + init[2] * (16 + 1)) * 2 * 2;
 	createSC_context(context);
 
@@ -70,40 +75,35 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 	lowDOWN->initFrom(*vertex);
 	vertex->assumeVerticeChanged();
 	vertex->update();
-}
 
+	createAsteroidRing(context);
+}
 
 void Ring::createSC_context(ThreadContext *context)
 {
 	cmdMgr = context->commandMgr;
 	globalSet = context->global->globalSet;
-// 	shaderRing = std::make_unique<shaderProgram>();
-// 	shaderRing->init( "ring_planet.vert","ring_planet.frag");
-//
-// //	shaderRing->setUniformLocation("Texture");
-// 	shaderRing->setUniformLocation("LightDirection");
-// 	shaderRing->setUniformLocation("PlanetRadius");
-// 	shaderRing->setUniformLocation("PlanetPosition");
-// 	shaderRing->setUniformLocation("SunnySideUp");
-// 	shaderRing->setUniformLocation("RingScale");
-//
-// 	//shaderRing->setUniformLocation("ModelViewProjectionMatrix");
-// 	//shaderRing->setUniformLocation("inverseModelViewProjectionMatrix");
-// 	shaderRing->setUniformLocation("ModelViewMatrix");
-// 	shaderRing->setUniformLocation("clipping_fov");
-// 	shaderRing->setUniformLocation("NormalMatrix");
-// 	shaderRing->setUniformLocation("ModelViewMatrixInverse");
 
 	vertex = std::make_unique<VertexArray>(context->surface, cmdMgr);
 	vertex->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	vertex->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 
+	vertexAsteroid = std::make_unique<VertexArray>(context->surface, cmdMgr);
+	vertexAsteroid->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
+	vertexAsteroid->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
+	vertexAsteroid->registerInstanceBuffer(BufferAccess::STATIC, VK_FORMAT_R32G32B32_SFLOAT);
+
 	layout = std::make_unique<PipelineLayout>(context->surface);
+	layout->setGlobalPipelineLayout(context->global->globalLayout);
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
 	layout->setTextureLocation(1);
 	layout->buildLayout();
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
 	layout->build();
+
+	layoutAsteroid = std::make_unique<PipelineLayout>(context->surface);
+	layoutAsteroid->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
+	layoutAsteroid->buildLayout();
+	layoutAsteroid->build();
 
 	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
 	pipeline->setCullMode(true);
@@ -112,13 +112,92 @@ void Ring::createSC_context(ThreadContext *context)
 	pipeline->bindShader("ring_planet.frag.spv");
 	pipeline->build();
 
+	pipelineAsteroid = std::make_unique<Pipeline>(context->surface, layoutAsteroid.get());
+	//pipelineAsteroid->setCullMode(true);
+	pipelineAsteroid->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineAsteroid->bindVertex(vertexAsteroid.get());
+	pipelineAsteroid->bindShader("ring_test.vert.spv");
+	pipelineAsteroid->bindShader("ring_test.frag.spv");
+	pipelineAsteroid->build();
+
 	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
 	uniform = std::make_unique<Uniform>(context->surface, sizeof(*pUniform));
 	pUniform = static_cast<typeof(pUniform)>(uniform->data);
 	set->bindUniform(uniform.get(), 0);
 	set->bindTexture(tex->getTexture(), 1);
 
-	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	setAsteroid = std::make_unique<Set>(context->surface, context->setMgr, layoutAsteroid.get());
+	uniformAsteroid = std::make_unique<Uniform>(context->surface, sizeof(*pUniformAsteroid));
+	pUniformAsteroid = static_cast<typeof(pUniformAsteroid)>(uniformAsteroid->data);
+	setAsteroid->bindUniform(uniformAsteroid.get(), 0);
+
+	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	drawDataAsteroid = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+}
+
+void Ring::createAsteroidRing(ThreadContext *context)
+{
+	VkDrawIndexedIndirectCommand *pDrawDataAsteroid = static_cast<VkDrawIndexedIndirectCommand *>(drawDataAsteroid->data);
+	pAsteroidInstanceCount = &pDrawDataAsteroid->instanceCount;
+
+	const float asteroid_radius = (radius_max - radius_min) / 500.f;
+	std::vector<float> tmp;
+	insert_all(tmp,
+		asteroid_radius,0,0,  0.7,0.7,0.7,
+		-asteroid_radius,0,0, 0.3,0.3,0.3,
+		0,asteroid_radius,0,  0.5,0.5,0.5,
+		0,0,asteroid_radius,  0.5,0.5,0.5,
+		0,-asteroid_radius,0, 0.5,0.5,0.5,
+		0,0,-asteroid_radius, 0.5,0.5,0.5);
+	vertexAsteroid->build(tmp.size() / 6);
+	vertexAsteroid->fillVertexBuffer(tmp);
+	tmp.clear();
+
+	std::vector<uint16_t> tmpIndex;
+	insert_all(tmpIndex, 0,2,3, 0,3,4, 0,4,5, 0,5,2, 1,2,3, 1,3,4, 1,4,5, 1,5,2);
+	vertexAsteroid->registerIndexBuffer(BufferAccess::STATIC, tmpIndex.size(), 2, VK_INDEX_TYPE_UINT16);
+	vertexAsteroid->fillIndexBuffer(tmpIndex.size() / 2, reinterpret_cast<uint32_t *>(tmpIndex.data()));
+	pDrawDataAsteroid->indexCount = tmpIndex.size();
+
+	int width, height;
+	tex->getDimensions(width, height);
+	uint8_t *pData;
+	tex->getTexture()->acquireStagingMemoryPtr(reinterpret_cast<void **>(&pData));
+
+	std::vector<float> probability;
+	probability.reserve(width);
+	float sum_probability = 0;
+	for (int i = 0; i < width; ++i) {
+		sum_probability += std::max(*pData / 256.f - 0.15f, 0.f);
+		// In the texture, 0.15 correspond to no asteroids
+		probability.push_back(sum_probability);
+		pData += 4;
+	}
+	tex->getTexture()->releaseStagingMemoryPtr();
+
+	std::default_random_engine generator;
+	auto distance_distribution = std::uniform_real_distribution<float>(0.f, sum_probability);
+	auto z_shift_distribution = std::uniform_real_distribution<float>(-15.f*asteroid_radius, 15.f*asteroid_radius);
+	for (int i = 0; i < NB_ASTEROIDS; ++i) {
+		float distance = distance_distribution(generator);
+		for (int j = 0; j < width; ++j) {
+			if (probability[j] >= distance) {
+				distance = (j + (distance - probability[j - 1]) / (probability[j] - probability[j - 1])) / width;
+				break;
+			}
+		}
+		distance = radius_min + distance * (radius_max - radius_min);
+		float z_shift = z_shift_distribution(generator) + z_shift_distribution(generator);
+		insert_vec3(tmp, Vec3f(Mat4f::zrotation(i * 3.141592653589793238 * 2 / NB_ASTEROIDS) * Vec4f(distance, 0., z_shift, 1.)));
+	}
+	vertexAsteroid->buildInstanceBuffer(NB_ASTEROIDS);
+	pDrawDataAsteroid->instanceCount = NB_ASTEROIDS;
+	vertexAsteroid->fillInstanceBuffer(tmp);
+
+	pDrawDataAsteroid->firstIndex = 0;
+	pDrawDataAsteroid->vertexOffset = 0;
+	pDrawDataAsteroid->firstInstance = 0;
+	drawDataAsteroid->update();
 }
 
 Ring::~Ring(void)
@@ -139,10 +218,14 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 		if (!cmdMgr->isRecording())
 			return;
 		cmdMgr->bindPipeline(pipeline.get());
-		cmdMgr->bindSet(layout.get(), set.get());
-		cmdMgr->bindSet(layout.get(), globalSet, 1);
+		cmdMgr->bindSet(layout.get(), globalSet);
+		cmdMgr->bindSet(layout.get(), set.get(), 1);
 		cmdMgr->bindVertex(vertex.get());
 		cmdMgr->indirectDraw(drawData.get());
+		cmdMgr->bindPipeline(pipelineAsteroid.get());
+		cmdMgr->bindSet(layoutAsteroid.get(), setAsteroid.get());
+		cmdMgr->bindVertex(vertexAsteroid.get());
+		cmdMgr->indirectDrawIndexed(drawDataAsteroid.get());
 		cmdMgr->compile();
 		needRecording = false;
 		return;
@@ -199,7 +282,16 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 			else mediumDOWN->draw(drawData->data);
 		}
 	}
+	if (screen_sz >600.f) {
+		*static_cast<uint32_t *>(drawData->data) = 0;
+		*pAsteroidInstanceCount = NB_ASTEROIDS;
+		pUniformAsteroid->ModelViewMatrix = matrix;
+		pUniformAsteroid->clipping_fov = prj->getClippingFov();
+		pUniformAsteroid->RingScale = mc;
+	} else
+		*pAsteroidInstanceCount = 0;
 	drawData->update();
+	drawDataAsteroid->update();
 
 	//shaderRing->unuse();
 	// glActiveTexture(GL_TEXTURE0);
