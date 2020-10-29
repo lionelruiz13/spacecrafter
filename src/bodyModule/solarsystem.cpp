@@ -40,12 +40,11 @@
 #include "tools/sc_const.hpp"
 #include "tools/app_settings.hpp"
 #include "bodyModule/ring.hpp"
+#include "bodyModule/halo.hpp"
 
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
-
-
 #include "vulkanModule/Context.hpp"
 
 #define SOLAR_MASS 1.989e30
@@ -937,6 +936,7 @@ void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* o
 	if (!getFlagShow())
 		return; // 0;
 
+	Halo::beginDraw();
 	int nBuckets = listBuckets.size();
 
 	std::list<depthBucket>::iterator dbiter;
@@ -1012,6 +1012,7 @@ void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* o
 		(*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, selected == (*it)->body);
 		//needClearDepthBuffer = true;
 	}
+	Halo::endDraw();
 	prj->setClippingPlanes(z_near,z_far);  // Restore old clipping planes
 }
 

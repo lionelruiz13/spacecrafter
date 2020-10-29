@@ -55,31 +55,29 @@ public:
 	static void deleteDefaultTexMap();
 
 	static void createSC_context(ThreadContext *context);
+	static void beginDraw();
+	static void endDraw();
 
 private:
-	void build();
 
 	Body * body;
 
 	std::unique_ptr<VertexArray> vertex;
-	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uniform;
+	float *pHaloData;
 	struct {
 		Vec3f Color;
 		float cmag;
-	} *uData;
-	int commandIndex;
+	} uData;
+	static int commandIndex;
 	static VirtualSurface *surface;
-	static Set *globalSet;
-	static SetMgr *setMgr;
-	static CommandMgr *cmdMgr, *cmdMgrTarget;
+	static Set *globalSet, *set;
+	static ThreadedCommandBuilder *cmdMgr;
+	static CommandMgr *cmdMgrTarget;
 	static TextureMgr *texMgr;
 	static Pipeline *pipeline;
 	static PipelineLayout *layout;
 	static VertexArray *m_haloGL;
-	std::vector<float> vecHaloPos;
-	std::vector<float> vecHaloTex;
-	s_texture *last_tex_halo = nullptr;
+	static s_texture *last_tex_halo;
 	static s_texture *tex_halo;			// Little halo texture
 
 	float cmag;

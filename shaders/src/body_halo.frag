@@ -7,9 +7,9 @@
 
 //externe
 layout(binding=0, set=1) uniform sampler2D mapTexture;
-layout(binding=1, set=1) uniform UniformBufferObject {
+layout(push_constant) uniform UniformBufferObject {
     vec3 Color;
-    float cmag;
+    layout (offset=12) float cmag;
 } ubo;
 
 //in
