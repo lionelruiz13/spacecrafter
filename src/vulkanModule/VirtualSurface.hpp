@@ -9,7 +9,7 @@
 #include "SubMemory.hpp"
 #include "SubBuffer.hpp"
 
-#define VK_HOST_MEMORY VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+#define VK_HOST_MEMORY (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
 
 #ifndef MAX_FRAMES_IN_FLIGHT
 #define MAX_FRAMES_IN_FLIGHT 2
@@ -83,11 +83,11 @@ public:
     VkPipelineCache &getPipelineCache();
     //! Internally used, inform if this VirtualSurface own his framebuffers (by extension, if it is owned by master)
     bool ownCompleteFramebuffer() {return ownFramebuffers;}
-    //! Internally used, allocate buffer in global buffer
+    //! Acquire subBuffer from global buffer
     SubBuffer acquireBuffer(int size, bool isUniform = false);
     //! Get pointer to staging buffer memory
     void *getBufferPtr(SubBuffer &buffer);
-    //! Release pointer to staging buffer memory
+    //! Release subBuffer back to global buffer
     void releaseBuffer(SubBuffer &buffer);
 
     const VkDevice &refDevice;
