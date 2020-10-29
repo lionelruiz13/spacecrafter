@@ -217,6 +217,17 @@ void ThreadedCommandBuilder::pushConstant(PipelineLayout *pipelineLayout, VkShad
     UDEF();
 }
 
+void ThreadedCommandBuilder::pushConstantNoCopy(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, void *data, uint32_t size)
+{
+    DEF(PUSH_CONSTANT);
+    PUSH(ptrPL, pipelineLayout);
+    PUSH(sf, stage);
+    PUSH(ui, offset);
+    PUSH(ptr, data);
+    PUSH(ui, size);
+    UDEF();
+}
+
 void ThreadedCommandBuilder::draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
 {
     DEF(DRAW);
