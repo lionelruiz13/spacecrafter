@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include "SubMemory.hpp"
+#include "SubBuffer.hpp"
 
 class VirtualSurface;
 
@@ -12,9 +13,10 @@ public:
     VertexBuffer(VirtualSurface *_master, int size,
         const VkVertexInputBindingDescription &_bindingDesc,
         const std::vector<VkVertexInputAttributeDescription> &_attributeDesc,
-        bool isExternallyUpdated = false);
+        bool isExternallyUpdated = false, bool isStreamUpdate = false);
     ~VertexBuffer();
-    VkBuffer &get() {return vertexBuffer;}
+    VkBuffer &get() {return vertexBuffer ? vertexBuffer : subBuffer.buffer;}
+    int getOffset() {return offset;}
     //! Display informations about this VertexBuffer
     void print();
     //! Update vertex content with data member
@@ -31,10 +33,12 @@ private:
     VirtualSurface *master;
     VkCommandBuffer updater;
     SubMemory stagingBufferMemory;
-    VkBuffer stagingBuffer;
+    VkBuffer stagingBuffer = VK_NULL_HANDLE;
     SubMemory vertexBufferMemory;
-    VkBuffer vertexBuffer;
+    VkBuffer vertexBuffer = VK_NULL_HANDLE;
     VkDeviceSize bufferSize;
+    int offset = 0;
+    SubBuffer subBuffer;
     VkSubmitInfo submitInfo{};
     VkVertexInputBindingDescription bindingDesc;
     std::vector<VkVertexInputAttributeDescription> attributeDesc;

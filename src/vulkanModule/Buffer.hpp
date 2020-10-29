@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include "SubMemory.hpp"
+#include "SubBuffer.hpp"
 
 class VirtualSurface;
 
@@ -14,8 +15,8 @@ class Buffer {
 public:
     Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage);
     ~Buffer();
-    VkBuffer &get() {return buffer;}
-    int getOffset() {return 0;}
+    VkBuffer &get() {return buffer ? buffer : subBuffer.buffer;}
+    int getOffset() {return offset;}
     //! Display informations about this buffer
     void print();
     //! Update vertex content with data member
@@ -30,9 +31,11 @@ private:
     VirtualSurface *master;
     VkCommandBuffer updater;
     SubMemory stagingBufferMemory;
-    VkBuffer stagingBuffer;
+    VkBuffer stagingBuffer = VK_NULL_HANDLE;
     SubMemory bufferMemory;
-    VkBuffer buffer;
+    VkBuffer buffer = VK_NULL_HANDLE;
+    SubBuffer subBuffer;
+    int offset = 0;
     VkSubmitInfo submitInfo{};
 };
 

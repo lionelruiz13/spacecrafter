@@ -81,7 +81,7 @@ public:
     void updateVertex(VertexArray *vertex);
     void updateVertex(VertexBuffer *vertex);
     void bindVertex(VertexArray *vertex);
-    void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, uint32_t bindingCount = 1, VkDeviceSize offset = 0);
+    void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, VkDeviceSize offset = 0);
     void bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset = 0);
     void bindPipeline(Pipeline *pipeline);
     //! @brief bind uniform buffers and textures

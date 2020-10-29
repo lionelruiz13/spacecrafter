@@ -8,6 +8,11 @@ Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : ma
         _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT, stagingBuffer, stagingBufferMemory);
         _master->mapMemory(stagingBufferMemory, &data);
         _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | usage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory);
+    } else if ((usage & UNIFIED_BUFFER_FLAGS) == usage) {
+        subBuffer = _master->acquireBuffer(size, false);
+        data = _master->getBufferPtr(subBuffer);
+        offset = subBuffer.offset;
+        return;
     } else {
         _master->createBuffer(size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
         _master->mapMemory(stagingBufferMemory, &data);
@@ -49,24 +54,29 @@ Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : ma
 Buffer::~Buffer()
 {
     detach();
-    vkDeviceWaitIdle(master->refDevice);
-    vkDestroyBuffer(master->refDevice, buffer, nullptr);
-    master->free(bufferMemory);
+    if (buffer != VK_NULL_HANDLE) {
+        vkDeviceWaitIdle(master->refDevice);
+        vkDestroyBuffer(master->refDevice, buffer, nullptr);
+        master->free(bufferMemory);
+    } else {
+        master->releaseBuffer(subBuffer);
+    }
 }
 
 void Buffer::print()
 {
-    std::cout << "\thasDebugPrint : false\n";
+    std::cout << "\tIsSubBuffer : " << (buffer ? "false\n" : "true\n") << "\tIsDetached : " << (stagingBuffer ? "false\n" : "true\n");
 }
 
 void Buffer::update()
 {
-    master->submitTransfer(&submitInfo);
+    if (submitInfo.commandBufferCount > 0)
+        master->submitTransfer(&submitInfo);
 }
 
 void Buffer::detach()
 {
-    if (data != nullptr) {
+    if (stagingBuffer != VK_NULL_HANDLE) {
         master->unmapMemory(stagingBufferMemory);
         master->waitTransferQueueIdle();
         if (submitInfo.commandBufferCount > 0) {
@@ -76,6 +86,7 @@ void Buffer::detach()
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
         master->free(stagingBufferMemory);
         data = nullptr;
+        stagingBuffer = VK_NULL_HANDLE;
     }
 }
 

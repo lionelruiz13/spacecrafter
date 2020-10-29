@@ -17,8 +17,8 @@ void insert_all(std::vector<T> &vec, Ts ... ts)
 //! Define buffer layout
 enum class BufferType : char { POS2D = 0 , POS3D , TEXTURE, NORMAL, COLOR, COLOR4, MAG, SCALE };
 
-//! Define Buffer access type
-enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM, STREAM_LOCAL};
+//! Define Buffer access type, in increasing priority order (STATIC < DYNAMIC < STREAM_LOCAL < STREAM)
+enum class BufferAccess : char { STATIC = 0, DYNAMIC, STREAM_LOCAL, STREAM};
 
 class VirtualSurface;
 class CommandMgr;
@@ -29,6 +29,7 @@ class Buffer;
 *   \brief Handle arrays used in local scope in draws.
 *   Include vertex, index and instance arrays
 *   Must be bound to pipeline when all vertex and instance entry were registered
+*   Always prefer using STREAM access for small sizes (<= 8 vertices)
 */
 class VertexArray
 {
@@ -88,21 +89,29 @@ public:
     //! update vertexBuffer, even if unchanged
     //! @param size hint on number of vertices to update
     void updateVertex(int size = -1);
-    //! unbind this vao
-    void unBind() const {}
-    //! returns the number of elements contained in the index buffer
+    //! returns the number of elements updated by the last call of fillIndexBuffer
     unsigned int getIndiceCount() const;
+    //! Get offset (in index) of IndexBuffer for fillIndexBuffer
     int getIndexOffset() const;
+    //! Get offset (in vertice) of VertexBuffer for fillVertexBuffer
     int getVertexOffset() const;
+    //! Set offset (in vertice) of VertexBuffer for fillVertexBuffer
     void setVertexOffset(int offset);
+    //! Return corresponding vertice of VertexBuffer
     Vertice &operator[](int pos);
     //! Tell vertice value has changed (implicit when using fillVertexBuffer)
     void assumeVerticeChanged(bool needUpdate = true);
+    //! Internally used
     VertexBuffer &getVertexBuffer() const {return *vertexBuffer;}
+    //! Internally used
     const VkVertexInputBindingDescription &getVertexBindingDesc() {return bindingDesc;}
+    //! Internally used
     const std::vector<VkVertexInputAttributeDescription> &getVertexAttributeDesc() {return attributeDesc;}
+    //! Return true if at least one instanceBuffer component is registered
     bool hasInstanceBuffer() {return bindingDesc2.stride > 0;}
+    //! Internally used
     const VkVertexInputBindingDescription &getInstanceBindingDesc() {return bindingDesc2;}
+    //! Internally used
     const std::vector<VkVertexInputAttributeDescription> &getInstanceAttributeDesc() {return attributeDesc2;}
     //! Display debug informations
     void print();

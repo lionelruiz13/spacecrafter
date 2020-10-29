@@ -468,15 +468,15 @@ void CommandMgr::bindVertex(VertexArray *vertex)
     vertex->bind(this);
 }
 
-void CommandMgr::bindVertex(VertexBuffer *vertex, uint32_t firstBinding, uint32_t bindingCount, VkDeviceSize offset)
+void CommandMgr::bindVertex(VertexBuffer *vertex, uint32_t firstBinding, VkDeviceSize offset)
 {
     if (!hasPipeline) return;
     if (singleUse) {
-        vkCmdBindVertexBuffers(actual, firstBinding, bindingCount, &vertex->get(), &offset);
+        vkCmdBindVertexBuffers(actual, firstBinding, 1, &vertex->get(), &offset);
         return;
     }
     for (auto &frame : frames) {
-        vkCmdBindVertexBuffers(frame.actual, firstBinding, bindingCount, &vertex->get(), &offset);
+        vkCmdBindVertexBuffers(frame.actual, firstBinding, 1, &vertex->get(), &offset);
     }
 }
 
@@ -560,7 +560,7 @@ void CommandMgr::pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags
 
 void CommandMgr::vkIf(Buffer *bool32, VkDeviceSize offset, bool invert)
 {
-    VkConditionalRenderingBeginInfoEXT cond {VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT, nullptr, bool32->get(), offset, 0};
+    VkConditionalRenderingBeginInfoEXT cond {VK_STRUCTURE_TYPE_CONDITIONAL_RENDERING_BEGIN_INFO_EXT, nullptr, bool32->get(), bool32->getOffset() + offset, 0};
     if (invert) cond.flags = VK_CONDITIONAL_RENDERING_INVERTED_BIT_EXT;
     for (auto &frame : frames) {
         PFN_vkIf(frame.actual, &cond);

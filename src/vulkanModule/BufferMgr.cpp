@@ -40,17 +40,20 @@ BufferMgr::~BufferMgr()
 
 SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
 {
-    // PATCH
-    if (size % uniformOffsetAlignment)
-        size = (size / uniformOffsetAlignment + 1) * uniformOffsetAlignment;
-    // END PATCH
     SubBuffer buffer;
     const auto itEnd = availableSubBuffer.end();
     for (auto it = availableSubBuffer.begin(); it != itEnd; ++it) {
-        if (it->size < size)
+        if (it->size <= size || (isUniform && it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment <= size))
             continue;
         buffer = *it;
         availableSubBuffer.erase(it);
+        if (isUniform && buffer.offset % uniformOffsetAlignment > 0) {
+            SubBuffer tmp = buffer;
+            tmp.size = uniformOffsetAlignment - buffer.offset % uniformOffsetAlignment;
+            buffer.offset += tmp.size;
+            buffer.size -= tmp.size;
+            insert(tmp);
+        }
         if (buffer.size > size) {
             SubBuffer tmp = buffer;
             tmp.size -= size;

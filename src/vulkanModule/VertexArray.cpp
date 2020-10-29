@@ -87,14 +87,14 @@ VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.m
 void VertexArray::build(int _maxVertices)
 {
     maxVertices = _maxVertices;
-    vertexBuffer = std::make_shared<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc, (vertexAccess == BufferAccess::STREAM_LOCAL));
+    vertexBuffer = std::make_shared<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc, (vertexAccess == BufferAccess::STREAM_LOCAL), (vertexAccess==BufferAccess::STREAM));
     pVertexData = static_cast<float *>(vertexBuffer->data);
 }
 
 void VertexArray::buildInstanceBuffer(int _maxInstances)
 {
     maxInstances = _maxInstances;
-    instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2, (instanceAccess == BufferAccess::STREAM_LOCAL));
+    instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2, (instanceAccess == BufferAccess::STREAM_LOCAL), (vertexAccess==BufferAccess::STREAM));
     pInstanceData = static_cast<float *>(instanceBuffer->data);
 }
 
@@ -102,7 +102,7 @@ void VertexArray::bind(CommandMgr *cmdMgr)
 {
     if (cmdMgr == nullptr)
         cmdMgr = mgr;
-    cmdMgr->bindVertex(vertexBuffer.get());
+    cmdMgr->bindVertex(vertexBuffer.get(), 0, vertexBuffer->getOffset());
     if (instanceBuffer)
         cmdMgr->bindVertex(instanceBuffer.get(), 1);
     if (indexBuffer)
@@ -113,11 +113,18 @@ void VertexArray::bind(CommandMgr *cmdMgr)
 
 void VertexArray::update()
 {
-    if (vertexUpdate && vertexAccess != BufferAccess::STREAM_LOCAL) {
-        vertexBuffer->update();
+    if (vertexUpdate) {
+        switch (vertexAccess) {
+            case BufferAccess::DYNAMIC:
+                vertexBuffer->update();
+                break;
+            case BufferAccess::STATIC:
+                vertexBuffer->update();
+                vertexBuffer->detach();
+                break;
+            default: break;
+        }
         vertexUpdate = false;
-        if (vertexAccess == BufferAccess::STATIC)
-            vertexBuffer->detach();
     }
     if (instanceBuffer) {
         if (instanceUpdate) {

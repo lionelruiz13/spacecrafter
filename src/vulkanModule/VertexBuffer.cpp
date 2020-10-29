@@ -1,19 +1,25 @@
 #include "VirtualSurface.hpp"
 #include "VertexBuffer.hpp"
+#include "BufferMgr.hpp"
 #include "tools/log.hpp"
 
 VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
     const VkVertexInputBindingDescription &_bindingDesc,
     const std::vector<VkVertexInputAttributeDescription> &_attributeDesc,
-    bool isExternallyUpdated) : master(_master), bindingDesc(_bindingDesc)
+    bool isExternallyUpdated, bool isStreamUpdate) : master(_master), bindingDesc(_bindingDesc)
 {
     bufferSize = _bindingDesc.stride * size;
+    attributeDesc.assign(_attributeDesc.begin(), _attributeDesc.end());
+    if (isStreamUpdate) {
+        subBuffer = master->acquireBuffer(bufferSize, false);
+        data = master->getBufferPtr(subBuffer);
+        offset = subBuffer.offset;
+        return;
+    }
 
     _master->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
     _master->mapMemory(stagingBufferMemory, &data);
     _master->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-
-    attributeDesc.assign(_attributeDesc.begin(), _attributeDesc.end());
 
     if (!isExternallyUpdated) {
         // Initialize update
@@ -48,9 +54,13 @@ VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
 VertexBuffer::~VertexBuffer()
 {
     detach();
-    vkDeviceWaitIdle(master->refDevice);
-    vkDestroyBuffer(master->refDevice, vertexBuffer, nullptr);
-    master->free(vertexBufferMemory);
+    if (vertexBuffer) {
+        vkDeviceWaitIdle(master->refDevice);
+        vkDestroyBuffer(master->refDevice, vertexBuffer, nullptr);
+        master->free(vertexBufferMemory);
+    } else {
+        master->releaseBuffer(subBuffer);
+    }
 }
 
 void VertexBuffer::print()
