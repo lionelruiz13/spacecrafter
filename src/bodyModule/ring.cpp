@@ -35,9 +35,6 @@
 #include "planetsephems/sideral_time.h"
 #include "tools/log.hpp"
 #include "vulkanModule/VertexArray.hpp"
-
-
-
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/PipelineLayout.hpp"
@@ -177,7 +174,7 @@ void Ring::createAsteroidRing(ThreadContext *context)
 
 	std::default_random_engine generator;
 	auto distance_distribution = std::uniform_real_distribution<float>(0.f, sum_probability);
-	auto z_shift_distribution = std::uniform_real_distribution<float>(-15.f*asteroid_radius, 15.f*asteroid_radius);
+	auto z_shift_distribution = std::uniform_real_distribution<float>(-0.8f*asteroid_radius, 0.8f*asteroid_radius);
 	for (int i = 0; i < NB_ASTEROIDS; ++i) {
 		float distance = distance_distribution(generator);
 		for (int j = 0; j < width; ++j) {
@@ -282,7 +279,7 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 			else mediumDOWN->draw(drawData->data);
 		}
 	}
-	if (screen_sz >600.f) {
+	if (screen_sz > 600.f) {
 		*static_cast<uint32_t *>(drawData->data) = 0;
 		*pAsteroidInstanceCount = NB_ASTEROIDS;
 		pUniformAsteroid->ModelViewMatrix = matrix;
