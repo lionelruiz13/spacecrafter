@@ -138,6 +138,7 @@ Texture::~Texture()
 void Texture::destroyStagingResources()
 {
     if (stagingBuffer) {
+        vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
         vkDestroySemaphore(master->refDevice, semaphore, nullptr);
         vkDestroyFence(master->refDevice, fence, nullptr);
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
