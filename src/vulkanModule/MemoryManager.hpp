@@ -17,6 +17,9 @@ struct MappedMemory {
     void *data = nullptr;
 };
 
+/**
+*   \brief Handle memory allocation and mapping
+*/
 class MemoryManager
 {
 public:

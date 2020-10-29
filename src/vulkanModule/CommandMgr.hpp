@@ -49,6 +49,11 @@ enum class renderPassCompatibility : uint8_t {
     SINGLE_SAMPLE = 2
 };
 
+/**
+*   \brief Handle commandBuffer, including allocation, build, synchronisation and submisssion
+*   Every calls to this CommandMgr must be in the same thread, or access to CommandMgr must be externally synchronized
+*   However, calls to CommandMgr doesn't depend to VirtualSurface's thread (excepted for frame submission if not external)
+*/
 class CommandMgr {
 public:
     //! @param nbCommandBuffers number of commandBuffers to create
@@ -118,15 +123,19 @@ public:
     void waitGraphicQueueIdle();
     //! wait all submitted command for actual frameIndex end
     void waitCompletion() {vkWaitForFences(refDevice, 1, &frames[refFrameIndex].fence, VK_TRUE, UINT64_MAX);}
-    //! wait all submitted command end
+    //! wait all submitted command for specific frameIndex end
     void waitCompletion(uint32_t frameIndex) {vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, UINT64_MAX);}
     bool isCompleted(uint32_t frameIndex) {return (vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, 0) == VK_SUCCESS);}
     void setTopSemaphore(int frameIndex, const VkSemaphore &topSemaphore) {isLinked=true;frames[frameIndex].topSemaphore = topSemaphore;}
     const VkSemaphore &getBottomSemaphore(int frameIndex) {return frames[frameIndex].bottomSemaphore;}
     int getCommandIndex();
+    //! Internal use only
     static void setPFN_vkCmdPushDescriptorSetKHR(PFN_vkCmdPushDescriptorSetKHR pfn) {PFN_pushSet = pfn;}
+    //! Internal use only
     static void setPFN_vkCmdBeginConditionalRenderingEXT(PFN_vkCmdBeginConditionalRenderingEXT pfn) {PFN_vkIf = pfn;}
+    //! Internal use only
     static void setPFN_vkCmdEndConditionalRenderingEXT(PFN_vkCmdEndConditionalRenderingEXT pfn) {PFN_vkEndIf = pfn;}
+    //! Tell if one command is in recording state
     bool isRecording() const {return frames[0].actual != VK_NULL_HANDLE;}
     //! Immediately release as many unused memory as possible, to call when out of memory
     void releaseUnusedMemory();

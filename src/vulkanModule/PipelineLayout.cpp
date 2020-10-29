@@ -79,9 +79,9 @@ void PipelineLayout::buildLayout(VkDescriptorSetLayoutCreateFlags flags)
     uniformsLayout.clear();
 }
 
-void PipelineLayout::setGlobalPipelineLayout(PipelineLayout *pl)
+void PipelineLayout::setGlobalPipelineLayout(PipelineLayout *pl, int index)
 {
-    VkDescriptorSetLayout tmp = pl->getDescriptorLayout();
+    VkDescriptorSetLayout tmp = pl->getDescriptorLayout(index);
     if (tmp == VK_NULL_HANDLE) {
         isOk = false;
         cLog::get()->write("Use of invalid Layout", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);

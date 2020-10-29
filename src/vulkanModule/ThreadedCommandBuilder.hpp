@@ -42,6 +42,7 @@ public:
     void updateVertex(VertexArray *vertex);
     void bindVertex(VertexArray *vertex);
     void bindPipeline(Pipeline *pipeline);
+    //! Doesn't support virtual uniform yet
     void bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
     void pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
     void pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, const void *data, uint32_t size);

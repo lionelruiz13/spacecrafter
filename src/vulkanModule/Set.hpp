@@ -14,27 +14,38 @@ class Texture;
 class TextureImage;
 class Buffer;
 
+/**
+*   \brief Handle binding for pipelineLayout layout
+*   Include uniform, uniform texture and storage buffer
+*/
 class Set {
 public:
     //! create a Set which can be push
     Set();
     //! create a Set which can be bind
+    //! Do not bind anything to it while bound to commandBuffer which can be submitted
     Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout, int setBinding = -1);
     ~Set();
+    //! Bind uniform to this set
     void bindUniform(Uniform *uniform, uint32_t binding);
+    //! Bind texture to this set
     void bindTexture(Texture *texture, uint32_t binding);
+    //! Bind storage buffer to this set
     void bindStorageBuffer(Buffer *buffer, uint32_t binding, uint32_t range);
     //! Bind uniform location
-    //! @return virtualUniformId to bind uniform to this location
+    //! @return virtualUniformId used as reference in setVirtualUniform
     int bindVirtualUniform(Uniform *master, uint32_t binding, uint32_t arraySize = 1);
-    //! Attach uniform to uniform location, doesn't affect set bindings to commandMgr before this call
+    //! Attach uniform to uniform location, can be used regardless to previous binding to commandBuffer
     void setVirtualUniform(Uniform *uniform, int virtualUniformID);
     //void bindTexture(TextureImage *texture, int binding);
     VkDescriptorSet *get();
+    //! Internal use only
     std::vector<uint32_t> &getDynamicOffsets() {return dynamicOffsets;}
+    //! Internal use only
     std::vector<VkWriteDescriptorSet> &getWrites() {return writeSet;}
     //! For ThreadedCommandBuilder only
     void swapWrites(std::vector<VkWriteDescriptorSet> &writeSetExt) {writeSet.swap(writeSetExt);}
+    //! Remove all previous binding, for push set only
     void clear() {writeSet.clear();}
     //! Manually update bindings
     void update();

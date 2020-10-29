@@ -25,6 +25,11 @@ class CommandMgr;
 class VertexBuffer;
 class Buffer;
 
+/**
+*   \brief Handle arrays used in local scope in draws.
+*   Include vertex, index and instance arrays
+*   Must be bound to pipeline when all vertex and instance entry were registered
+*/
 class VertexArray
 {
 public:

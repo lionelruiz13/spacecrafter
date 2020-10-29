@@ -10,9 +10,15 @@ class VirtualSurface;
 class TextureMgr;
 class TextureImage;
 
+/**
+*   \brief Manage texture, including mipmapping, writing, reading and sample
+*/
 class Texture {
 public:
-    //! @param _master The virtual surface using this texture for draw
+    /**
+    * @param _master The virtual surface using this texture for draw
+    * @param keepOnCPU If true, you can load/unload this texture from GPU
+    */
     Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachment = false, int width = -1, int height = -1);
     //! @param keepOnCPU If true, you can load/unload this texture from GPU
     Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename = "", bool keepOnCPU = true, bool mipmap = false);
@@ -21,17 +27,23 @@ public:
     virtual ~Texture();
     //! Export texture to GPU
     void use();
-    //! Release texture on GPU
+    //! Release texture on GPU (invalidate all previous bindings)
     virtual void unuse();
     //! Acquire pointer to staging memory
     void acquireStagingMemoryPtr(void **pPixels);
     //! Release pointer to staging memory
     void releaseStagingMemoryPtr();
+    //! Internal use only
     VkDescriptorImageInfo *getInfo() {return &imageInfo;}
+    //! Define texture path
     static void setTextureDir(std::string _textureDir) {textureDir = _textureDir;}
+    //! Inform if texture support is valid or not
     bool isValid() {return isOk;}
+    //! Internal use only
     VkImage getImage();
+    //! Write texture size in width and height arguments
     void getDimensions(int &width, int &height) {width=texWidth;height=texHeight;}
+    //! Return number of use() calls minus unuse() calls count
     int getUseCount() {return useCount;}
 protected:
     static std::string textureDir;

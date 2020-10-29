@@ -11,7 +11,7 @@ class VirtualSurface;
 
 #define UNIFIED_BUFFER_FLAGS VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT
 
-//! Manage virtual buffering for Uniform and Buffer
+//! Manage virtual buffering for Uniform
 class BufferMgr {
 public:
     BufferMgr(VirtualSurface *_master, int _bufferBlocSize = 512*1024);

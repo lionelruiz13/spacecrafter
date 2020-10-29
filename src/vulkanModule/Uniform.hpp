@@ -6,6 +6,9 @@
 
 class VirtualSurface;
 
+/**
+*   \brief Variable writable from CPU synchronized on GPU
+*/
 class Uniform {
 public:
     //! @param isVirtual if true, this uniform can and must be bound with bindVirtualUniform

@@ -7,6 +7,9 @@
 
 class VirtualSurface;
 
+/**
+*   Accessible memory from CPU synchronized with accessible memory from GPU
+*/
 class Buffer {
 public:
     Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage);
