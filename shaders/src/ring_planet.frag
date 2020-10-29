@@ -6,7 +6,7 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-layout (binding=1, set=1) uniform sampler2D Texture;
+layout (binding=1, set=0) uniform sampler2D Texture;
 layout (location=0) in vec2 TexCoord;
 layout (location=1) in float PlanetHalfAngle;
 layout (location=2) in float Separation;

@@ -91,7 +91,6 @@ void Ring::createSC_context(ThreadContext *context)
 	vertexAsteroid->registerInstanceBuffer(BufferAccess::STATIC, VK_FORMAT_R32G32B32_SFLOAT);
 
 	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
 	layout->setTextureLocation(1);
 	layout->buildLayout();
@@ -124,17 +123,14 @@ void Ring::createSC_context(ThreadContext *context)
 	set->bindTexture(tex->getTexture(), 1);
 
 	setAsteroid = std::make_unique<Set>(context->surface, context->setMgr, layoutAsteroid.get());
-	uniformAsteroid = std::make_unique<Uniform>(context->surface, sizeof(*pUniformAsteroid));
-	pUniformAsteroid = static_cast<typeof(pUniformAsteroid)>(uniformAsteroid->data);
-	setAsteroid->bindUniform(uniformAsteroid.get(), 0);
+	setAsteroid->bindUniform(uniform.get(), 0);
 
-	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	drawDataAsteroid = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
+	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand) + sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
 }
 
 void Ring::createAsteroidRing(ThreadContext *context)
 {
-	VkDrawIndexedIndirectCommand *pDrawDataAsteroid = static_cast<VkDrawIndexedIndirectCommand *>(drawDataAsteroid->data);
+	VkDrawIndexedIndirectCommand *pDrawDataAsteroid = reinterpret_cast<VkDrawIndexedIndirectCommand *>(static_cast<char *>(drawData->data) + sizeof(VkDrawIndirectCommand));
 	pAsteroidInstanceCount = &pDrawDataAsteroid->instanceCount;
 
 	const float asteroid_radius = (radius_max - radius_min) / 500.f;
@@ -194,7 +190,6 @@ void Ring::createAsteroidRing(ThreadContext *context)
 	pDrawDataAsteroid->firstIndex = 0;
 	pDrawDataAsteroid->vertexOffset = 0;
 	pDrawDataAsteroid->firstInstance = 0;
-	drawDataAsteroid->update();
 }
 
 Ring::~Ring(void)
@@ -215,14 +210,13 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 		if (!cmdMgr->isRecording())
 			return;
 		cmdMgr->bindPipeline(pipeline.get());
-		cmdMgr->bindSet(layout.get(), globalSet);
-		cmdMgr->bindSet(layout.get(), set.get(), 1);
+		cmdMgr->bindSet(layout.get(), set.get());
 		cmdMgr->bindVertex(vertex.get());
 		cmdMgr->indirectDraw(drawData.get());
 		cmdMgr->bindPipeline(pipelineAsteroid.get());
 		cmdMgr->bindSet(layoutAsteroid.get(), setAsteroid.get());
 		cmdMgr->bindVertex(vertexAsteroid.get());
-		cmdMgr->indirectDrawIndexed(drawDataAsteroid.get());
+		cmdMgr->indirectDrawIndexed(drawData.get(), sizeof(VkDrawIndirectCommand));
 		cmdMgr->compile();
 		needRecording = false;
 		return;
@@ -282,13 +276,9 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 	if (screen_sz > 600.f) {
 		*static_cast<uint32_t *>(drawData->data) = 0;
 		*pAsteroidInstanceCount = NB_ASTEROIDS;
-		pUniformAsteroid->ModelViewMatrix = matrix;
-		pUniformAsteroid->clipping_fov = prj->getClippingFov();
-		pUniformAsteroid->RingScale = mc;
 	} else
 		*pAsteroidInstanceCount = 0;
 	drawData->update();
-	drawDataAsteroid->update();
 
 	//shaderRing->unuse();
 	// glActiveTexture(GL_TEXTURE0);
