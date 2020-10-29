@@ -7,6 +7,7 @@
 #include <set>
 #include <array>
 
+class Vulkan;
 class VirtualSurface;
 class VertexArray;
 class VertexBuffer;
@@ -56,6 +57,8 @@ enum class renderPassCompatibility : uint8_t {
 */
 class CommandMgr {
 public:
+    //! Create CommandMgr for assisted command recording only (singleUseCommands == true, isExternal == true)
+    CommandMgr(Vulkan *_master);
     //! @param nbCommandBuffers number of commandBuffers to create
     CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame = false, bool singleUseCommands = false, bool isExternal = false, bool enableIndividualReset = false);
     ~CommandMgr();

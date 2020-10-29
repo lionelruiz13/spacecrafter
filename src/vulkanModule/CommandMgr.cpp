@@ -1,3 +1,4 @@
+#include "Vulkan.hpp"
 #include "VirtualSurface.hpp"
 #include "VertexBuffer.hpp"
 #include "Pipeline.hpp"
@@ -15,6 +16,8 @@ VkPipelineStageFlags CommandMgr::defaultStage = VK_PIPELINE_STAGE_COLOR_ATTACHME
 PFN_vkCmdPushDescriptorSetKHR CommandMgr::PFN_pushSet;
 PFN_vkCmdBeginConditionalRenderingEXT CommandMgr::PFN_vkIf;
 PFN_vkCmdEndConditionalRenderingEXT CommandMgr::PFN_vkEndIf;
+
+CommandMgr::CommandMgr(Vulkan *_master) : master(nullptr), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refResolveFramebuffers(_master->refResolveFramebuffers), refSingleSampleFramebuffers(_master->refSingleSampleFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(true), submissionPerFrame(true), nbCommandBuffers(0) {}
 
 CommandMgr::CommandMgr(VirtualSurface *_master, int nbCommandBuffers, bool submissionPerFrame, bool singleUseCommands, bool isExternal, bool enableIndividualReset) : master(_master), refDevice(_master->refDevice), refRenderPass(_master->refRenderPass), refSwapChainFramebuffers(_master->refSwapChainFramebuffers), refResolveFramebuffers(_master->refResolveFramebuffers), refSingleSampleFramebuffers(_master->refSingleSampleFramebuffers), refFrameIndex(_master->refFrameIndex), singleUse(singleUseCommands), submissionPerFrame(submissionPerFrame), nbCommandBuffers(nbCommandBuffers)
 {

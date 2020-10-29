@@ -54,14 +54,12 @@ protected:
     int texWidth=0, texHeight=0;
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
     SubMemory stagingBufferMemory;
-    VkFence fence;
     std::unique_ptr<TextureImage> image;
     int useCount = 0;
 private:
     void init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM);
     //! Destroy staging resources
     void destroyStagingResources();
-    VkSemaphore semaphore;
     VkFormat format;
     bool mipmap = false;
     int mipmapCount = 1;
@@ -76,6 +74,7 @@ public:
     void use(int width, int height);
     virtual void unuse() override;
 private:
+    VkFence fence;
     VkCommandBuffer cmdBuffer;
     VkSubmitInfo updateSubmitInfo;
 };

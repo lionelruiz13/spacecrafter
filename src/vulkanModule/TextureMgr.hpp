@@ -3,6 +3,7 @@
 
 #include <vulkan/vulkan.h>
 #include <map>
+#include <mutex>
 #include "SubMemory.hpp"
 
 class Vulkan;
@@ -17,14 +18,16 @@ public:
     void releaseImage(const std::pair<VkImage, VkImageView> &image, const std::pair<short, short> &size);
     void destroyImage(const VkImage &image, const VkImageView &imageView, SubMemory &memory);
     VkSampler createSampler(const VkSamplerCreateInfo &samplerInfo);
-    //! Set commandMgr with singleUseCommands set to true (required for mipmapping)
-    void setMipmapBuilder(CommandMgr *cmdMgr) {cmdMgrSingleUse = cmdMgr;}
-    CommandMgr *getMipmapBuilder() {return cmdMgrSingleUse;}
+    CommandMgr *getBuilder() {return cmdMgrSingleUse.get();}
+    void acquireSyncObject(VkFence *fence, VkSemaphore *semaphore);
+    void releaseSyncObject(VkFence fence, VkSemaphore semaphore);
 private:
+    std::mutex syncObjectAccess;
+    std::vector<std::pair<VkFence, VkSemaphore>> syncObject;
     //! Return unique value for this combination of parameters
     int getSamplerID(const VkSamplerCreateInfo &samplerInfo);
     Vulkan *master;
-    CommandMgr *cmdMgrSingleUse;
+    std::unique_ptr<CommandMgr> cmdMgrSingleUse;
     VkSampler defaultSampler = VK_NULL_HANDLE;
     const uint32_t chunkSize;
     // pair of memory/lowest_offset_available

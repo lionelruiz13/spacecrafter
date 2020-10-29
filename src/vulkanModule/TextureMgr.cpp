@@ -1,8 +1,9 @@
 #include "Vulkan.hpp"
 #include "TextureMgr.hpp"
-#include <mutex>
+#include <thread>
 #include "MemoryManager.hpp"
 #include "tools/log.hpp"
+#include "CommandMgr.hpp"
 // for default sampler
 #include "PipelineLayout.hpp"
 
@@ -14,10 +15,29 @@ TextureMgr::TextureMgr(Vulkan *_master, uint32_t _chunkSize) : master(_master), 
         cLog::get()->write("Failed to create default sampler, abort.", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         exit(1);
     }
+    syncObject.resize(4);
+    VkFenceCreateInfo fenceInfo{};
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = 0;
+    VkSemaphoreCreateInfo semaphoreInfo{};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    for (auto &syncObj : syncObject) {
+        if (vkCreateFence(master->refDevice, &fenceInfo, nullptr, &syncObj.first) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create fence.");
+        }
+        if (vkCreateSemaphore(master->refDevice, &semaphoreInfo, nullptr, &syncObj.second) != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create semaphore.");
+        }
+    }
+    cmdMgrSingleUse = std::make_unique<CommandMgr>(_master);
 }
 
 TextureMgr::~TextureMgr()
 {
+    for (auto &syncObj : syncObject) {
+        vkDestroyFence(master->refDevice, syncObj.first, nullptr);
+        vkDestroySemaphore(master->refDevice, syncObj.second, nullptr);
+    }
     for (auto &imageType : availableImages) {
         for (auto &image : imageType.second) {
             vkDestroyImageView(master->refDevice, image.second, nullptr);
@@ -55,15 +75,27 @@ VkSampler TextureMgr::createSampler(const VkSamplerCreateInfo &samplerInfo)
     return sampler;
 }
 
+void TextureMgr::acquireSyncObject(VkFence *fence, VkSemaphore *semaphore)
+{
+    while (syncObject.empty())
+        std::this_thread::yield();
+    syncObjectAccess.lock();
+    auto &tmp = syncObject.back();
+    *fence = tmp.first;
+    *semaphore = tmp.second;
+    syncObject.pop_back();
+    syncObjectAccess.unlock();
+}
+
+void TextureMgr::releaseSyncObject(VkFence fence, VkSemaphore semaphore)
+{
+    syncObjectAccess.lock();
+    syncObject.emplace_back(fence, semaphore);
+    syncObjectAccess.unlock();
+}
+
 TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool mipmap, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment, bool useConcurrency)
 {
-    // static std::mutex mtx;
-    // std::lock_guard<std::mutex> lck(mtx);
-    // if (format == VK_FORMAT_R8G8B8A8_SRGB && usage == VK_IMAGE_USAGE_SAMPLED_BIT && !availableImages[size].empty()) {
-    //     TextureImage *tmp = new TextureImage(this, availableImages[size].back(), size);
-    //     availableImages[size].pop_back();
-    //     return tmp;
-    // }
     // create image
     VkImage image;
     VkImageCreateInfo imageInfo{};
@@ -126,49 +158,6 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool 
         return nullptr;
     }
     return new TextureImage(this, std::pair<VkImage, VkImageView>(image, imageView), size, &memory);
-
-    // // get memory requirements
-    // VkMemoryRequirements memRequirements;
-    // vkGetImageMemoryRequirements(master->refDevice, image, &memRequirements);
-    // SubMemory memory;
-    // memory.memory = VK_NULL_HANDLE;
-    //
-    // if (format != VK_FORMAT_R8G8B8A8_SRGB || usage != (VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)) {
-    //     memory = master->getMemoryManager()->malloc(memRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-    //     if (memory.memory == VK_NULL_HANDLE)
-    //         return nullptr;
-    //     vkBindImageMemory(master->refDevice, image, memory.memory, memory.offset);
-    //     return new TextureImage(this, std::pair<VkImage, VkImageView>(image, imageView), size, &memory);
-    // }
-    //
-    // // search memory to bind
-    // for (auto &mem : allocatedMemory) {
-    //     int offset = ((mem.second - 1) / memRequirements.alignment + 1) * memRequirements.alignment;
-    //     if (offset + memRequirements.size <= chunkSize) {
-    //         vkBindImageMemory(master->refDevice, image, mem.first.memory, mem.first.offset + offset);
-    //         mem.second = offset + memRequirements.size;
-    //         return new TextureImage(this, std::pair<VkImage, VkImageView>(image, imageView), size);
-    //     }
-    // }
-    // // create new memory space
-    // if (memRequirements.size > chunkSize) {
-    //     std::cerr << "Error : Image memory size is bigger than chunk size" << std::endl;
-    //     vkDestroyImageView(master->refDevice, imageView, nullptr);
-    //     vkDestroyImage(master->refDevice, image, nullptr);
-    //     return nullptr;
-    // }
-    //
-    // memory = master->getMemoryManager()->malloc(memRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-    //
-    // if (memory.memory == VK_NULL_HANDLE) {
-    //     std::cerr << "Failed to allocate chunk of memory for textures." << std::endl;
-    //     vkDestroyImageView(master->refDevice, imageView, nullptr);
-    //     vkDestroyImage(master->refDevice, image, nullptr);
-    //     return nullptr;
-    // }
-    // allocatedMemory.push_back({memory, memRequirements.size});
-    // vkBindImageMemory(master->refDevice, image, memory.memory, memory.offset);
-    // return new TextureImage(this, std::pair<VkImage, VkImageView>(image, imageView), size);
 }
 
 void TextureMgr::releaseImage(const std::pair<VkImage, VkImageView> &image, const std::pair<short, short> &size)

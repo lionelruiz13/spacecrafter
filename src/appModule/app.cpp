@@ -99,7 +99,6 @@ App::App( SDLFacade* const sdl )
 	context.commandMgrSingleUse = new CommandMgr(context.surface, 8, true, true, true);
 	context.commandMgrSingleUseInterface = new ThreadedCommandBuilder(context.commandMgrSingleUse);
 	context.commandMgrDynamic = new CommandMgr(context.surface, 8, true, false, true, true);
-	globalContext.textureMgr->setMipmapBuilder(new CommandMgr(context.surface, 0, true, true, true));
 	commandIndexClear = context.commandMgr->getCommandIndex();
 	context.commandMgr->init(commandIndexClear);
 	context.commandMgr->beginRenderPass(renderPassType::CLEAR);
@@ -200,7 +199,6 @@ App::~App()
 	delete context.commandMgrDynamic;
 	delete globalContext.tracker;
 	delete context.setMgr;
-	delete globalContext.textureMgr->getMipmapBuilder();
 	delete globalContext.textureMgr;
 	delete globalContext.vulkan;
 }
