@@ -77,7 +77,7 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 		pDrawData[i].firstVertex = pDrawData[i].firstInstance = 0;
 	}
 	// ART
-	m_vertexArt = std::make_unique<VertexArray>(context->surface);
+	m_vertexArt = std::make_unique<VertexArray>(context->surface, nullptr, false);
 	m_vertexArt->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
 	m_vertexArt->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
 	m_vertexArt->build(16384);
