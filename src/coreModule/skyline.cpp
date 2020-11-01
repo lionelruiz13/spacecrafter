@@ -46,8 +46,8 @@
 //2479 lignes apres
 //1560 lignes au final
 
-#define NB_MAX_POINTS 4194304
-// 32 MiB
+#define NB_MAX_POINTS 4194304 / 4
+// 8 MiB
 
 ThreadContext *SkyLine::context;
 VertexArray *SkyLine::vertexModel;
