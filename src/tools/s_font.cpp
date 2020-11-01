@@ -107,13 +107,13 @@ void s_font::createSC_context(ThreadContext *_context)
 	commandIndexHorizontal = cmdMgr->getCommandIndex();
 	commandIndexPrint = cmdMgr->getCommandIndex();
 	vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface));
-	vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM_LOCAL);
-	vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM_LOCAL);
+	vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
+	vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
 	vertexHorizontal->build(4096);
 
 	vertexPrint = context->global->tracker->track(new VertexArray(context->surface));
-	vertexPrint->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM_LOCAL);
-	vertexPrint->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM_LOCAL);
+	vertexPrint->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
+	vertexPrint->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
 	vertexPrint->build(4096);
 
 	layoutHorizontal = context->global->tracker->track(new PipelineLayout(context->surface));
@@ -156,7 +156,7 @@ void s_font::beginPrint()
 
 	vertexHorizontal->setVertexOffset(0);
 	cmdMgr->init(commandIndexHorizontal, false);
-	cmdMgr->updateVertex(vertexHorizontal);
+	//cmdMgr->updateVertex(vertexHorizontal);
 	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_DEFAULT, renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindPipeline(pipelineHorizontal);
 	cmdMgr->bindSet(layoutHorizontal, context->global->globalSet, 1);
@@ -164,7 +164,7 @@ void s_font::beginPrint()
 
 	vertexPrint->setVertexOffset(0);
 	cmdMgr->init(commandIndexPrint, false);
-	cmdMgr->updateVertex(vertexPrint);
+	//cmdMgr->updateVertex(vertexPrint);
 	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_DEFAULT, renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindPipeline(pipelinePrint);
 	cmdMgr->bindVertex(vertexPrint);
