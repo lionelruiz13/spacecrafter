@@ -436,8 +436,8 @@ void Vulkan::initQueues(uint32_t nbQueues)
     VkQueue tmpQueue;
     for (auto index : graphicsAndPresentQueueFamilyIndex) {
         maxQueues = std::min(queueFamilyProperties[index].queueCount, nbQueues);
+        cLog::get()->write("Create " + std::to_string(maxQueues) + " graphic queues with present ability", LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
         for (int j = 0; j < maxQueues; j++) {
-            std::cout << "Create graphicAndPresentQueue\n";
             vkGetDeviceQueue(device, index, j, &tmpQueue);
             graphicsAndPresentQueues.push_back(tmpQueue);
         }
@@ -460,8 +460,8 @@ void Vulkan::initQueues(uint32_t nbQueues)
     }
     for (auto index : transferQueueFamilyIndex) {
         maxQueues = std::min(queueFamilyProperties[index].queueCount, nbQueues);
+        cLog::get()->write("Create " + std::to_string(maxQueues) + " transfer queues", LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
         for (int j = 0; j < maxQueues; j++) {
-            std::cout << "Create transferQueue\n";
             vkGetDeviceQueue(device, index, j, &tmpQueue);
             transferQueues.push_back(tmpQueue);
             transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity);
