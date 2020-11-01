@@ -1193,8 +1193,8 @@ void Vulkan::displayPhysicalDeviceInfo(VkPhysicalDeviceProperties &prop)
         case VK_VENDOR_ID_VIV: ss << "VIV"; break;
         case VK_VENDOR_ID_VSI: ss << "VSI"; break;
         case VK_VENDOR_ID_KAZAN: ss << "KAZAN"; break;
-        case VK_VENDOR_ID_CODEPLAY: ss << "CODEPLAY"; break;
-        case VK_VENDOR_ID_MESA: ss << "MESA"; break;
+        // case VK_VENDOR_ID_CODEPLAY: ss << "CODEPLAY"; break;
+        // case VK_VENDOR_ID_MESA: ss << "MESA"; break;
         case 0x1002: ss << "AMD"; break;
         case 0x1010: ss << "ImgTec"; break;
         case 0x10DE: ss << "NVIDIA"; break;
