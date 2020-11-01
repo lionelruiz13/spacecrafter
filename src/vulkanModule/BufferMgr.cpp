@@ -43,7 +43,7 @@ SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
     SubBuffer buffer;
     const auto itEnd = availableSubBuffer.end();
     for (auto it = availableSubBuffer.begin(); it != itEnd; ++it) {
-        if (it->size <= size || (isUniform && it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment <= size))
+        if (it->size < size || (isUniform && it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment < size))
             continue;
         buffer = *it;
         availableSubBuffer.erase(it);
