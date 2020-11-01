@@ -810,8 +810,8 @@ void Vulkan::createRenderPass(VkSampleCountFlagBits sampleCount)
         renderPass.swap(renderPassExternal);
     } else {
         // There is 1 sample for the renderPass builded by this call
-        renderPass[(uint8_t)renderPassType::RESOLVE_DEFAULT] = renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_CLEAR] = renderPass[(uint8_t)renderPassType::CLEAR];
-     renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_DEFAULT] = renderPass[(uint8_t)renderPassType::DEFAULT];
+        renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_CLEAR] = renderPass[(uint8_t)renderPassType::CLEAR];
+        renderPass[(uint8_t)renderPassType::RESOLVE_DEFAULT] = renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_DEFAULT] = renderPass[(uint8_t)renderPassType::DEFAULT];
         renderPass[(uint8_t)renderPassType::RESOLVE_PRESENT] = renderPass[(uint8_t)renderPassType::SINGLE_SAMPLE_PRESENT] = renderPass[(uint8_t)renderPassType::PRESENT];
         if (renderPassExternal.empty()) {
             // This call has build renderPass, and multisampling is disabled
