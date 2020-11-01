@@ -21,8 +21,6 @@
 #include "ojmModule/ojml.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
-// 
-// 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/VertexArray.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -91,7 +89,8 @@ void VR360::createSC_context(ThreadContext *_context)
 	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
 	pipeline->setDepthStencilMode();
 	pipeline->setCullMode(true);
-	sphere->bind(pipeline.get()); // bind Objl VertexArray to pipeline
+	sphere->bind(pipeline.get()); // bind Objl VertexArray to pipeline (common to sphere and cube)
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipeline->bindShader("vr360.vert.spv");
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
