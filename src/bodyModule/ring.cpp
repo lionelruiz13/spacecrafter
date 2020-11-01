@@ -74,6 +74,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 	vertex->update();
 
 	createAsteroidRing(context);
+	createDrawSingle();
 }
 
 void Ring::createSC_context(ThreadContext *context)
@@ -192,6 +193,19 @@ void Ring::createAsteroidRing(ThreadContext *context)
 	pDrawDataAsteroid->firstInstance = 0;
 }
 
+void Ring::createDrawSingle()
+{
+	commandIndexSingle = cmdMgr->initNew(pipeline.get(), renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
+	cmdMgr->bindSet(layout.get(), set.get());
+	cmdMgr->bindVertex(vertex.get());
+	cmdMgr->indirectDraw(drawData.get());
+	cmdMgr->bindPipeline(pipelineAsteroid.get());
+	cmdMgr->bindSet(layoutAsteroid.get(), setAsteroid.get());
+	cmdMgr->bindVertex(vertexAsteroid.get());
+	cmdMgr->indirectDrawIndexed(drawData.get(), sizeof(VkDrawIndirectCommand));
+	cmdMgr->compile();
+}
+
 Ring::~Ring(void)
 {
 	if (tex) delete tex;
@@ -206,7 +220,9 @@ Ring::~Ring(void)
 
 void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
-	if (needRecording) {
+	if (screen_sz == 1000.0) { // Test if ring must be drawn without his body
+		cmdMgr->setSubmission(commandIndexSingle);
+	} else if (needRecording) {
 		if (!cmdMgr->isRecording())
 			return;
 		cmdMgr->bindPipeline(pipeline.get());
@@ -273,7 +289,7 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 			else mediumDOWN->draw(drawData->data);
 		}
 	}
-	if (screen_sz > 600.f) {
+	if (screen_sz > 600.f && screen_sz != 1000.0) {
 		*static_cast<uint32_t *>(drawData->data) = 0;
 		*pAsteroidInstanceCount = NB_ASTEROIDS;
 	} else

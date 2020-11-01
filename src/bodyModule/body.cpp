@@ -820,7 +820,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	if(skipDrawingThisBody(observatory, drawHomePlanet)) {
 		if(hasRings()) {
-			drawRings(prj,mat,1000.0,lightDirection,eye_planet,initialRadius); // doesn't work yet
+			drawRings(prj,mat,1000.0,lightDirection,eye_planet,initialRadius);
 		}
 
 		return drawn;

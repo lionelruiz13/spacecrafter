@@ -104,10 +104,12 @@ private:
 	//std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
 	void createSC_context(ThreadContext *context);
 	void createAsteroidRing(ThreadContext *context);
+	void createDrawSingle();
 
 	bool needRecording = true;
 	CommandMgr *cmdMgr;
 	Set *globalSet;
+	int commandIndexSingle; // Draw rings without body
 	std::unique_ptr<Pipeline> pipeline, pipelineAsteroid;
 	std::unique_ptr<PipelineLayout> layout, layoutAsteroid;
 	std::unique_ptr<VertexArray> vertex, vertexAsteroid;
