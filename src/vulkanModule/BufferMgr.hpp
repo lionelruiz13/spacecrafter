@@ -4,7 +4,11 @@
 #include <vulkan/vulkan.h>
 #include "SubMemory.hpp"
 #include "SubBuffer.hpp"
+#include <vector>
+#include <memory>
 #include <list>
+#include <thread>
+#include <mutex>
 
 class Vulkan;
 class VirtualSurface;
@@ -26,13 +30,21 @@ public:
     void update();
     static void setUniformOffsetAlignment(int alignment) {uniformOffsetAlignment = alignment;}
 private:
-    static int uniformOffsetAlignment;
+    void releaseBuffer(); // Release next buffer in stack
+    static void startMainloop(BufferMgr *self);
+    std::unique_ptr<std::thread> releaseThread;
+    std::vector<SubBuffer> releaseStack;
+    bool isAlive = false;
+    std::mutex mutex;
+
     void insert(SubBuffer &subBuffer);
+    static int uniformOffsetAlignment;
     SubMemory bufferMemory;
     VkBuffer buffer;
-    std::list<SubBuffer> availableSubBuffer;
+    //! each std::list in this std::list are equally sized SubBuffer
+    std::list<std::list<SubBuffer>> availableSubBufferZones;
+    //std::list<SubBuffer> availableSubBuffer;
     int bufferBlocSize;
-    std::list<SubBuffer> zonesToUpdate;
     VkCommandBuffer cmdBuffer;
     VkSubmitInfo submitInfo;
     int lastMaxOffset = -1;

@@ -15,7 +15,7 @@ BufferMgr::BufferMgr(VirtualSurface *_master, int _bufferBlocSize) : master(_mas
     subBuffer.buffer = buffer;
     subBuffer.offset = 0;
     subBuffer.size = bufferBlocSize;
-    availableSubBuffer.push_back(subBuffer);
+    insert(subBuffer);
 
     if (!master->createBuffer(bufferBlocSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingMemory)) {
         throw std::runtime_error("Failed to create staging buffer bloc");
@@ -32,6 +32,10 @@ BufferMgr::BufferMgr(VirtualSurface *_master, int _bufferBlocSize) : master(_mas
 
 BufferMgr::~BufferMgr()
 {
+    if (isAlive) {
+        isAlive = false;
+        releaseThread->join();
+    }
     vkDestroyBuffer(master->refDevice, buffer, nullptr);
     master->free(bufferMemory);
     vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
@@ -40,75 +44,137 @@ BufferMgr::~BufferMgr()
 
 SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
 {
+    std::lock_guard<std::mutex> lock(mutex);
     SubBuffer buffer;
-    const auto itEnd = availableSubBuffer.end();
-    for (auto it = availableSubBuffer.begin(); it != itEnd; ++it) {
-        if (it->size < size || (isUniform && it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment < size))
+    for (auto availableSubBuffer = availableSubBufferZones.begin(); availableSubBuffer != availableSubBufferZones.end(); ++availableSubBuffer) {
+        if (availableSubBuffer->front().size < size)
             continue;
-        buffer = *it;
-        availableSubBuffer.erase(it);
-        if (isUniform && buffer.offset % uniformOffsetAlignment > 0) {
-            SubBuffer tmp = buffer;
-            tmp.size = uniformOffsetAlignment - buffer.offset % uniformOffsetAlignment;
-            buffer.offset += tmp.size;
-            buffer.size -= tmp.size;
-            insert(tmp);
+        if (!isUniform) {
+            buffer = availableSubBuffer->back();
+            availableSubBuffer->pop_back();
+            if (buffer.size > size) {
+                SubBuffer tmp = buffer;
+                tmp.size -= size;
+                tmp.offset += size;
+                buffer.size = size;
+                insert(tmp);
+            }
+            if (buffer.offset + buffer.size > maxOffset) maxOffset = buffer.offset + buffer.size;
+            if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
+            return buffer;
+        } // else
+        const auto itEnd = availableSubBuffer->end();
+        for (auto it = availableSubBuffer->begin(); it != itEnd; ++it) {
+            if (!it->possibleUniform)
+                break;
+            if (it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment < size)
+                continue;
+            buffer = *it;
+            availableSubBuffer->erase(it);
+            if (buffer.offset % uniformOffsetAlignment > 0) {
+                SubBuffer tmp = buffer;
+                tmp.size = uniformOffsetAlignment - buffer.offset % uniformOffsetAlignment;
+                buffer.offset += tmp.size;
+                buffer.size -= tmp.size;
+                insert(tmp);
+            }
+            if (buffer.size > size) {
+                SubBuffer tmp = buffer;
+                tmp.size -= size;
+                tmp.offset += size;
+                buffer.size = size;
+                insert(tmp);
+            }
+            if (buffer.offset + buffer.size > maxOffset) maxOffset = buffer.offset + buffer.size;
+            if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
+            return buffer;
         }
-        if (buffer.size > size) {
-            SubBuffer tmp = buffer;
-            tmp.size -= size;
-            tmp.offset += size;
-            buffer.size = size;
-            insert(tmp);
-        }
-        if (buffer.offset + buffer.size > maxOffset) maxOffset = buffer.offset + buffer.size;
-        return buffer;
     }
-    cLog::get()->write("Can't allocate buffer in global buffer !", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+    cLog::get()->write("Can't allocate buffer in global buffer !", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     buffer.buffer = VK_NULL_HANDLE;
     return buffer;
 }
 
 void BufferMgr::insert(SubBuffer &subBuffer)
 {
-    const auto itEnd = availableSubBuffer.end();
-    for (auto it = availableSubBuffer.begin(); it != itEnd; ++it) {
-        if (it->size >= subBuffer.size) {
-            availableSubBuffer.insert(it, subBuffer);
+    subBuffer.possibleUniform = (subBuffer.offset % uniformOffsetAlignment == 0) || (subBuffer.size > uniformOffsetAlignment - subBuffer.offset % uniformOffsetAlignment);
+    const auto itEnd = availableSubBufferZones.end();
+    for (auto it = availableSubBufferZones.begin(); it != itEnd; ++it) {
+        if (it->front().size == subBuffer.size) {
+            if (subBuffer.possibleUniform)
+                it->push_front(subBuffer);
+            else
+                it->push_back(subBuffer);
+            if (it->size() == 500 && !isAlive) {
+                isAlive = true;
+                releaseThread = std::make_unique<std::thread>(startMainloop, this);
+            }
+            return;
+        } else if (it->front().size > subBuffer.size) {
+            std::list<SubBuffer> tmpList;
+            tmpList.push_back(subBuffer);
+            availableSubBufferZones.insert(it, tmpList);
             return;
         }
     }
-    availableSubBuffer.push_back(subBuffer);
+    std::list<SubBuffer> tmpList;
+    tmpList.push_back(subBuffer);
+    availableSubBufferZones.push_back(tmpList);
 }
 
 void BufferMgr::releaseBuffer(SubBuffer &subBuffer)
 {
+    mutex.lock();
+    releaseStack.push_back(subBuffer);
+    mutex.unlock();
+    if (!isAlive)
+        releaseBuffer();
+}
+
+void BufferMgr::releaseBuffer()
+{
+    mutex.lock();
+    SubBuffer subBuffer = releaseStack.back();
+    releaseStack.pop_back();
     int buffBegin = subBuffer.offset;
     int buffEnd = buffBegin + subBuffer.size;
 
-    const auto itEnd = availableSubBuffer.end();
-    for (auto it = availableSubBuffer.begin(); it != itEnd; ++it) {
-        if (it->offset == buffEnd) {
-            subBuffer.size += it->size;
-        } else if (it->offset + it->size == buffBegin) {
-            subBuffer.offset = it->offset;
-            subBuffer.size += it->size;
-        } else {
-            continue;
+    for (auto availableSubBuffer = availableSubBufferZones.begin(); availableSubBuffer != availableSubBufferZones.end(); ++availableSubBuffer) {
+        const auto itEnd = availableSubBuffer->end();
+        for (auto it = availableSubBuffer->begin(); it != itEnd; ++it) {
+            if (it->offset == buffEnd) {
+                subBuffer.size += it->size;
+            } else if (it->offset + it->size == buffBegin) {
+                subBuffer.offset = it->offset;
+                subBuffer.size += it->size;
+            } else {
+                continue;
+            }
+            if (it == availableSubBuffer->begin()) {
+                availableSubBuffer->erase(it);
+                it = availableSubBuffer->begin();
+            } else {
+                auto tmpIt = it;
+                --it;
+                availableSubBuffer->erase(tmpIt);
+            }
         }
-        if (it == availableSubBuffer.begin()) {
-            availableSubBuffer.erase(it);
-            it = availableSubBuffer.begin();
-        } else {
-            auto tmpIt = it;
-            --it;
-            availableSubBuffer.erase(tmpIt);
+        if (availableSubBuffer->size() == 0) {
+            if (availableSubBuffer == availableSubBufferZones.begin()) {
+                availableSubBufferZones.erase(availableSubBuffer);
+                availableSubBuffer = availableSubBufferZones.begin();
+            } else {
+                auto tmpIt = availableSubBuffer;
+                --availableSubBuffer;
+                availableSubBufferZones.erase(tmpIt);
+            }
         }
     }
     if (subBuffer.offset + subBuffer.size >= maxOffset && subBuffer.offset < maxOffset) {
         maxOffset = subBuffer.offset;
     }
     insert(subBuffer);
+    mutex.unlock();
 }
 
 void *BufferMgr::getPtr(SubBuffer &subBuffer)
@@ -126,7 +192,7 @@ void BufferMgr::update()
         beginInfo.flags = 0;
         vkBeginCommandBuffer(cmdBuffer, &beginInfo);
         VkBufferCopy copyRegion{};
-        copyRegion.size = maxOffset;
+        copyRegion.size = lastMaxOffset;
         vkCmdCopyBuffer(cmdBuffer, stagingBuffer, buffer, 1, &copyRegion);
         vkEndCommandBuffer(cmdBuffer);
     }
@@ -138,4 +204,15 @@ void BufferMgr::update()
     submitInfo.signalSemaphoreCount = 0;
     submitInfo.waitSemaphoreCount = 0;
     master->submitTransfer(&submitInfo);
+}
+
+void BufferMgr::startMainloop(BufferMgr *self)
+{
+    while (true) {
+        while (self->isAlive && self->releaseStack.empty())
+            std::this_thread::yield();
+        if (!self->isAlive)
+            return;
+        self->releaseBuffer();
+    }
 }
