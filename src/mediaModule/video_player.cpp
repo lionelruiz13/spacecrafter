@@ -28,6 +28,7 @@
 #include "eventModule/EventVideo.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/VirtualSurface.hpp"
+#include "vulkanModule/Vulkan.hpp" // for submit
 
 VideoPlayer::VideoPlayer(Media* _media)
 {
@@ -278,7 +279,9 @@ void VideoPlayer::getNextVideoFrame()
 			// glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
 			// glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 		}
-		context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
+		context->commandMgrDynamic->setSubmission(commandIndex);
+		context->commandMgrDynamic->submitGuard();
+		context->global->vulkan->submit(context->commandMgrDynamic);
 	}
 	#endif
 }
