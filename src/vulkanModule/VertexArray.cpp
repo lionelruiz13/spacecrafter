@@ -87,6 +87,7 @@ VertexArray::VertexArray(VertexArray &model) : master(model.master), mgr(model.m
 void VertexArray::build(int _maxVertices)
 {
     maxVertices = _maxVertices;
+    vertexBuffer = nullptr; // Release resources of previous vertexBuffer if any
     vertexBuffer = std::make_shared<VertexBuffer>(master, maxVertices, bindingDesc, attributeDesc, (vertexAccess == BufferAccess::STREAM_LOCAL), (vertexAccess==BufferAccess::STREAM));
     pVertexData = static_cast<float *>(vertexBuffer->data);
 }
