@@ -32,8 +32,10 @@
 #include "navModule/navigator.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/s_font.hpp"
-#include "planetsephems/sideral_time.h"
 #include "tools/log.hpp"
+#include "tools/app_settings.hpp"
+#include "planetsephems/sideral_time.h"
+#include "ojmModule/ojml.hpp"
 #include "vulkanModule/VertexArray.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -86,9 +88,8 @@ void Ring::createSC_context(ThreadContext *context)
 	vertex->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
 	vertex->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
 
-	vertexAsteroid = std::make_unique<VertexArray>(context->surface, cmdMgr);
-	vertexAsteroid->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	vertexAsteroid->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
+	ojmlAsteroid = std::make_unique<OjmL>(AppSettings::Instance()->getModel3DDir()+"sat_ice.ojm", context);
+	vertexAsteroid = ojmlAsteroid->getVertexArray();
 	vertexAsteroid->registerInstanceBuffer(BufferAccess::STATIC, VK_FORMAT_R32G32B32_SFLOAT);
 
 	layout = std::make_unique<PipelineLayout>(context->surface);
@@ -109,12 +110,18 @@ void Ring::createSC_context(ThreadContext *context)
 	pipeline->bindShader("ring_planet.frag.spv");
 	pipeline->build();
 
+	float asteroid_radius = (radius_max - radius_min) / 200.f;
+	float colorR = 0.7, colorG = 0.7, colorB = 0.7;
 	pipelineAsteroid = std::make_unique<Pipeline>(context->surface, layoutAsteroid.get());
 	//pipelineAsteroid->setCullMode(true);
 	pipelineAsteroid->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-	pipelineAsteroid->bindVertex(vertexAsteroid.get());
+	pipelineAsteroid->bindVertex(vertexAsteroid);
 	pipelineAsteroid->bindShader("ring_test.vert.spv");
+	pipelineAsteroid->setSpecializedConstant(0, &asteroid_radius, sizeof(asteroid_radius));
 	pipelineAsteroid->bindShader("ring_test.frag.spv");
+	pipelineAsteroid->setSpecializedConstant(0, &colorR, sizeof(float));
+	pipelineAsteroid->setSpecializedConstant(1, &colorG, sizeof(float));
+	pipelineAsteroid->setSpecializedConstant(2, &colorB, sizeof(float));
 	pipelineAsteroid->build();
 
 	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
@@ -135,23 +142,7 @@ void Ring::createAsteroidRing(ThreadContext *context)
 	pAsteroidInstanceCount = &pDrawDataAsteroid->instanceCount;
 
 	const float asteroid_radius = (radius_max - radius_min) / 500.f;
-	std::vector<float> tmp;
-	insert_all(tmp,
-		asteroid_radius,0,0,  0.7,0.7,0.7,
-		-asteroid_radius,0,0, 0.3,0.3,0.3,
-		0,asteroid_radius,0,  0.5,0.5,0.5,
-		0,0,asteroid_radius,  0.5,0.5,0.5,
-		0,-asteroid_radius,0, 0.5,0.5,0.5,
-		0,0,-asteroid_radius, 0.5,0.5,0.5);
-	vertexAsteroid->build(tmp.size() / 6);
-	vertexAsteroid->fillVertexBuffer(tmp);
-	tmp.clear();
-
-	std::vector<uint16_t> tmpIndex;
-	insert_all(tmpIndex, 0,2,3, 0,3,4, 0,4,5, 0,5,2, 1,2,3, 1,3,4, 1,4,5, 1,5,2);
-	vertexAsteroid->registerIndexBuffer(BufferAccess::STATIC, tmpIndex.size(), 2, VK_INDEX_TYPE_UINT16);
-	vertexAsteroid->fillIndexBuffer(tmpIndex.size() / 2, reinterpret_cast<uint32_t *>(tmpIndex.data()));
-	pDrawDataAsteroid->indexCount = tmpIndex.size();
+	pDrawDataAsteroid->indexCount = vertexAsteroid->getIndiceCount();
 
 	int width, height;
 	tex->getDimensions(width, height);
@@ -169,6 +160,8 @@ void Ring::createAsteroidRing(ThreadContext *context)
 	}
 	tex->getTexture()->releaseStagingMemoryPtr();
 
+	std::vector<float> tmp;
+	tmp.reserve(NB_ASTEROIDS * 3);
 	std::default_random_engine generator;
 	auto distance_distribution = std::uniform_real_distribution<float>(0.f, sum_probability);
 	auto z_shift_distribution = std::uniform_real_distribution<float>(-0.8f*asteroid_radius, 0.8f*asteroid_radius);
@@ -201,7 +194,7 @@ void Ring::createDrawSingle()
 	cmdMgr->indirectDraw(drawData.get());
 	cmdMgr->bindPipeline(pipelineAsteroid.get());
 	cmdMgr->bindSet(layoutAsteroid.get(), setAsteroid.get());
-	cmdMgr->bindVertex(vertexAsteroid.get());
+	cmdMgr->bindVertex(vertexAsteroid);
 	cmdMgr->indirectDrawIndexed(drawData.get(), sizeof(VkDrawIndirectCommand));
 	cmdMgr->compile();
 }
@@ -231,7 +224,7 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 		cmdMgr->indirectDraw(drawData.get());
 		cmdMgr->bindPipeline(pipelineAsteroid.get());
 		cmdMgr->bindSet(layoutAsteroid.get(), setAsteroid.get());
-		cmdMgr->bindVertex(vertexAsteroid.get());
+		cmdMgr->bindVertex(vertexAsteroid);
 		cmdMgr->indirectDrawIndexed(drawData.get(), sizeof(VkDrawIndirectCommand));
 		cmdMgr->compile();
 		needRecording = false;

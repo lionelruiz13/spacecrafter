@@ -37,8 +37,6 @@
 #include "coreModule/callbacks.hpp"
 #include "tools/fader.hpp"
 #include "bodyModule/orbit.hpp"
-
-
 #include "vulkanModule/Context.hpp"
 
 class VertexArray;
@@ -48,6 +46,7 @@ class Set;
 class Uniform;
 class Buffer;
 class CommandMgr;
+class OjmL;
 
 class Ring2D {
 public:
@@ -112,7 +111,9 @@ private:
 	int commandIndexSingle; // Draw rings without body
 	std::unique_ptr<Pipeline> pipeline, pipelineAsteroid;
 	std::unique_ptr<PipelineLayout> layout, layoutAsteroid;
-	std::unique_ptr<VertexArray> vertex, vertexAsteroid;
+	std::unique_ptr<VertexArray> vertex;
+	std::unique_ptr<OjmL> ojmlAsteroid;
+	VertexArray *vertexAsteroid;
 	std::unique_ptr<Set> set, setAsteroid;
 	std::unique_ptr<Uniform> uniform;
 	std::unique_ptr<Buffer> drawData;
