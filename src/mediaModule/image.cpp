@@ -194,11 +194,11 @@ void Image::createSC_context(ThreadContext *_context)
 	context = _context;
 	// VertexArray
 	m_imageUnifiedGL = context->global->tracker->track(new VertexArray(context->surface));
-	m_imageUnifiedGL->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
-	m_imageUnifiedGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
+	m_imageUnifiedGL->registerVertexBuffer(BufferType::POS3D,BufferAccess::STREAM);
+	m_imageUnifiedGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::STREAM);
 	m_imageViewportGL = context->global->tracker->track(new VertexArray(context->surface));
-	m_imageViewportGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::DYNAMIC);
-	m_imageViewportGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::DYNAMIC);
+	m_imageViewportGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::STREAM);
+	m_imageViewportGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::STREAM);
 	// PipelineLayout
 	m_layoutViewport = context->global->tracker->track(new PipelineLayout(context->surface));
 	m_layoutViewport->setTextureLocation(0);
