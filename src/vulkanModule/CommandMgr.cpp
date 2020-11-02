@@ -178,28 +178,30 @@ void CommandMgr::resetSubmission()
 
 void CommandMgr::submitGuard()
 {
-    vkWaitForFences(refDevice, 1, &frames[refFrameIndex].fence, VK_TRUE, UINT64_MAX);
-    vkResetFences(refDevice, 1, &frames[refFrameIndex].fence);
+    vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, UINT64_MAX);
+    frameIndex = refFrameIndex;
+    vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, UINT64_MAX);
+    vkResetFences(refDevice, 1, &frames[frameIndex].fence);
 }
 
 void CommandMgr::submitAction()
 {
     if (needResolve) {
         if (submissionPerFrame) {
-            resolve(refFrameIndex);
+            resolve(frameIndex);
         } else {
             for (uint8_t frameIndex = 0; frameIndex < frames.size(); frameIndex++)
                 resolve(frameIndex);
         }
         needResolve = false;
     }
-    if (vkQueueSubmit(queue, frames[refFrameIndex].submitList.size(), frames[refFrameIndex].submitList.data(), frames[refFrameIndex].fence) != VK_SUCCESS) {
-        std::runtime_error("Error : Failed to submit commands.");
+    if (vkQueueSubmit(queue, frames[frameIndex].submitList.size(), frames[frameIndex].submitList.data(), frames[frameIndex].fence) != VK_SUCCESS) {
+        cLog::get()->write("Command submission from CommandMgr has failed (see vulkan-layers with debug=true)", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     }
     if (submissionPerFrame) {
-        frames[refFrameIndex].submittedCommandBuffers.clear();
-        frames[refFrameIndex].submittedSignalSemaphores.clear();
-        frames[refFrameIndex].submitList.clear();
+        frames[frameIndex].submittedCommandBuffers.clear();
+        frames[frameIndex].submittedSignalSemaphores.clear();
+        frames[frameIndex].submitList.clear();
         needResolve = true;
     }
 }

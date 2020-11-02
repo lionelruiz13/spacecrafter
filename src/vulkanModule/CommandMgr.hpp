@@ -178,6 +178,8 @@ private:
     const VkPipelineStageFlags stages[2] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT};
     //! actual frame index
     const uint32_t &refFrameIndex;
+    //! actual frame index when calling submitGuard used in submitAction
+    uint32_t frameIndex = 0;
     std::vector<struct frame> frames;
     const bool singleUse;
     const bool submissionPerFrame;
