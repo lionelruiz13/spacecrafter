@@ -118,7 +118,7 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 		vertex->build(4);
 	} else {
 		vertex = std::make_unique<VertexArray>(*m_imageUnifiedGL);
-		vertex->build(25*26*2);
+		vertexSize = 0;
 	}
 }
 
@@ -366,14 +366,9 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 
 void Image::setRatio(float ratio, float duration)
 {
-	int newVertexSize = std::min(int(ratio / 5) * (int(ratio / 5) + 1) * 2, 25 * 26 * 2);
 	if (duration <= 0) {
 		flag_ratio = 0;
 		image_ratio = ratio;
-		if (vertexSize != newVertexSize) {
-			vertexSize = newVertexSize;
-			vertex->build(vertexSize);
-		}
 		return;
 	}
 	flag_ratio = 1;
@@ -382,10 +377,6 @@ void Image::setRatio(float ratio, float duration)
 	end_ratio = ratio;
 	coef_ratio = (ratio-start_ratio)/end_time_ratio;
 	my_timer_ratio = 0; // count time elapsed from the beginning of the command
-	if (vertexSize < newVertexSize) {
-		vertexSize = newVertexSize;
-		vertex->build(vertexSize);
-	}
 }
 
 
@@ -411,6 +402,9 @@ bool Image::update(int delta_time)
 		if ( mult_scale >= 1) {
 			mult_scale = 1;
 			flag_scale = 0;
+			if (end_scale < start_scale) {
+
+			}
 		}
 
 		// this transition is parabolic for better visual results
@@ -483,11 +477,6 @@ bool Image::update(int delta_time)
 		else {
 			image_ratio = end_ratio;
 			flag_ratio = 0;
-			int newVertexSize = std::min(int(image_ratio / 5) * (int(image_ratio / 5) + 1) * 2, 25 * 26 * 2);
-			if (vertexSize != newVertexSize) {
-				vertexSize = newVertexSize;
-				vertex->build(vertexSize);
-			}
 		}
 	}
 	return 1;
@@ -677,15 +666,16 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 						         Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 						         imagev;
 					}
-					vecImgTex.push_back((i+k)/(float)grid_size);
+					insert_vec3(vecImgData, gridpt);
+
+					vecImgData.push_back((i+k)/(float)grid_size);
 
 					// l'image video est inversée
 					if (needFlip)
-						vecImgTex.push_back((grid_size-j)/(float)grid_size);
+						vecImgData.push_back((grid_size-j)/(float)grid_size);
 					else
-						vecImgTex.push_back(j/(float)grid_size);
+						vecImgData.push_back(j/(float)grid_size);
 
-					insert_vec3(vecImgPos, gridpt);
 				}
 			}
 		}
@@ -735,14 +725,16 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 
 		// shaderUnified->setUniform("clipping_fov", clipping_fov);
 
-		vertex->fillVertexBuffer(BufferType::POS3D,vecImgPos);
-		vertex->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+		if (vertexSize != vecImgData.size() / 5) {
+			vertexSize = vecImgData.size() / 5;
+			vertex->build(vertexSize);
+		}
+		vertex->fillVertexBuffer(vecImgData);
 		cmdMgr->bindVertex(vertex.get());
-		cmdMgr->draw(vecImgPos.size() / 3);
+		cmdMgr->draw(vertexSize);
 
 		// Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
 
-		vecImgPos.clear();
-		vecImgTex.clear();
+		vecImgData.clear();
 	}
 }

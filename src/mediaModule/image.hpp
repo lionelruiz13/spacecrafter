@@ -135,7 +135,7 @@ private:
 	float start_xpos, start_ypos, end_xpos, end_ypos;
 
 	//OpenGL vars
-	std::vector<float> vecImgTex, vecImgPos;
+	std::vector<float> vecImgPos, vecImgTex, vecImgData;
 	static ThreadContext *context;
 	static ThreadedCommandBuilder *cmdMgr;
 	static PipelineLayout *m_layoutViewport, *m_layoutUnifiedRGB, *m_layoutUnifiedYUV;
@@ -147,7 +147,7 @@ private:
 	static Set *m_setViewport, *m_setUnifiedRGB, *m_setUnifiedYUV;
 	static Pipeline *pipelineUsed;
 	std::unique_ptr<VertexArray> vertex;
-	int vertexSize;
+	uint32_t vertexSize;
 
 	//active la transparence
 	bool transparency;
