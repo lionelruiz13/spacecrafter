@@ -128,7 +128,7 @@ s_texture::s_texture(const std::string& _textureName, StreamTexture *_imgTex)
 	texRecap * tmp = new texRecap;
 	tmp->nbLink = 1;
 	//tmp->texID = texID;
-	int miplevel = 0;
+	//int miplevel = 0;
 	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
 	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
 	tmp->texture = _imgTex;
