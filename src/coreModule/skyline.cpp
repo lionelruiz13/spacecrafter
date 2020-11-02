@@ -46,9 +46,6 @@
 //2479 lignes apres
 //1560 lignes au final
 
-#define NB_MAX_POINTS 4194304 / 4
-// 8 MiB
-
 ThreadContext *SkyLine::context;
 VertexArray *SkyLine::vertexModel;
 PipelineLayout *SkyLine::layout;
@@ -91,30 +88,32 @@ void SkyLine::createSC_context(ThreadContext *_context)
 void SkyLine::createLocalResources()
 {
 	m_skylineGL = std::make_unique<VertexArray>(*vertexModel);
-	m_skylineGL->build(NB_MAX_POINTS);
 	uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor), true);
 	pColor = static_cast<typeof(pColor)>(uColor->data);
-	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	pNbVertex = static_cast<uint32_t *>(drawData->data);
-	pNbVertex[1] = 1; // instanceCount
-	pNbVertex[2] = pNbVertex[3] = 0; // offsets
-	drawData->update();
 	if (vUniformID == -1) {
 		vUniformID = set->bindVirtualUniform(uColor.get(), 0);
-	} else {
-		set->setVirtualUniform(uColor.get(), vUniformID);
 	}
-	CommandMgr *cmdMgr = context->commandMgr;
-	commandIndex = cmdMgr->initNew(pipeline);
+	commandIndex = context->commandMgrDynamic->getCommandIndex();
+}
+
+void SkyLine::build(int nbVertices)
+{
+	nbVertex = nbVertices;
+	m_skylineGL->build(nbVertices);
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	cmdMgr->init(commandIndex, pipeline);
 	cmdMgr->bindSet(layout, context->global->globalSet, 0);
+	set->setVirtualUniform(uColor.get(), vUniformID);
 	cmdMgr->bindSet(layout, set, 1);
 	cmdMgr->bindVertex(m_skylineGL.get());
-	cmdMgr->indirectDraw(drawData.get());
+	cmdMgr->draw(nbVertices);
 	cmdMgr->compile();
 }
 
 void SkyLine::drawSkylineGL(const Vec4f& Color)
 {
+	if (nbVertex != vecDrawPos.size() / 2)
+		build(vecDrawPos.size() / 2);
 	m_skylineGL->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
 	m_skylineGL->update();
 
@@ -127,9 +126,7 @@ void SkyLine::drawSkylineGL(const Vec4f& Color)
 	// m_skylineGL->unBind();
 	// shaderSkylineDraw->unuse();
 	//Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
-	*pNbVertex = vecDrawPos.size()/2;
-	drawData->update();
-	context->commandMgr->setSubmission(commandIndex);
+	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
 }
 
 void SkyLine::translateLabels(Translator& trans)

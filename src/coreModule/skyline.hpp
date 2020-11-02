@@ -89,8 +89,8 @@ public:
 	//static void createShader();
 	static void createSC_context(ThreadContext *_context);
 	void createLocalResources();
+	void build(int nbVertices);
 protected:
-
 	void drawSkylineGL(const Vec4f& Color);
 
 	double radius;
@@ -117,10 +117,9 @@ protected:
 	static int vUniformID;
 	int commandIndex;
 	std::unique_ptr<VertexArray> m_skylineGL;
+	uint32_t nbVertex = 0;
 	std::unique_ptr<Uniform> uColor;
 	Vec4f *pColor;
-	std::unique_ptr<Buffer> drawData;
-	uint32_t *pNbVertex;
 
 	std::vector<float> vecDrawPos;
 	std::vector<float> vecDrawMVPPos;
