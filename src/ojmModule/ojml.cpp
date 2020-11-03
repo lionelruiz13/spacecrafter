@@ -41,6 +41,8 @@ bool OjmL::init(const std::string & _fileName, ThreadContext *context, bool merg
 	is_ok = readOJML(_fileName);
 	if (is_ok) {
 		initGLparam(context, mergeVertexArray, maxVertex, maxIndex);
+		if (!mergeVertexArray)
+			dGL->setName("OjmL " + _fileName);
 	}
 	return is_ok;
 }

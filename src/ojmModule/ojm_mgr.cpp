@@ -298,6 +298,8 @@ void OjmMgr::createShader(ThreadContext *context)
 
 	commandIndex = cmdMgr->getCommandIndex();
 	commandIndexSwitch = cmdMgr->getCommandIndex();
+	cmdMgr->setName(commandIndex, "OjmMgr commandBuffer");
+	cmdMgr->setName(commandIndex, "OjmMgr switch commandBuffer");
 }
 
 // void OjmMgr::deleteShader()

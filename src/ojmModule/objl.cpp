@@ -69,6 +69,7 @@ bool ObjL::init(const std::string &repertory, const std::string &_name, ThreadCo
 			this->high->initFrom(&vertex);
 			this->medium->initFrom(&vertex);
 			this->low->initFrom(&vertex);
+			vertex.setName("ObjL " + _name);
 			return true;
 		} else {
 			//~ printf("Erreur de chargement d'un ojm %s\n", _name.c_str());
