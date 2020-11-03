@@ -785,6 +785,7 @@ void Core::switchMode(const std::string &mode)
 //! Execute all the drawing functions
 void Core::drawInSolarSystem(int delta_time)
 {
+	s_font::beginPrint(true); // multisample print
 	milky_way->draw(tone_converter, projection, navigation, timeMgr->getJulian());
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
@@ -799,6 +800,9 @@ void Core::drawInSolarSystem(int delta_time)
 	bodytrace->draw(projection, navigation);
 	skyDisplayMgr->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 	ssystem->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	if (!bodyDecor->canDrawLandscape()) {
+		s_font::nextPrint(false);
+	}
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
@@ -816,8 +820,10 @@ void Core::drawInSolarSystem(int delta_time)
 		atmosphere->draw(projection, observatory->getHomePlanetEnglishName());
 
 	// Draw the landscape
-	if (bodyDecor->canDrawLandscape())
+	if (bodyDecor->canDrawLandscape()) {
+		s_font::nextPrint(false);
 		landscape->draw(projection, navigation);
+	}
 
 	cardinals_points->draw(projection, observatory->getLatitude());
 }
@@ -825,6 +831,7 @@ void Core::drawInSolarSystem(int delta_time)
 //! Execute all the drawing functions
 void Core::drawInGalaxy(int delta_time)
 {
+	s_font::beginPrint(false);
 	starNav->computePosition(navigation->getObserverHelioPos());
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
@@ -846,6 +853,7 @@ void Core::drawInGalaxy(int delta_time)
 //! Execute all the drawing functions
 void Core::drawInUniverse(int delta_time)
 {
+	s_font::beginPrint(false);
 	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// glClear(GL_DEPTH_BUFFER_BIT);
 	//Renderer::clearDepthBuffer();

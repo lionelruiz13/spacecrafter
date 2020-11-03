@@ -56,6 +56,7 @@ public:
 
 	static void createSC_context(ThreadContext *context);
 	static void beginDraw();
+	static void nextDraw();
 	static void endDraw();
 
 private:
@@ -69,6 +70,8 @@ private:
 		float cmag;
 	} uData;
 	static int commandIndex;
+	static uint8_t commandIndexID;
+	static std::vector<int> commandIndexList;
 	static VirtualSurface *surface;
 	static Set *globalSet, *set;
 	static ThreadedCommandBuilder *cmdMgr;

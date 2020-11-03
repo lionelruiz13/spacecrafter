@@ -96,7 +96,7 @@ App::App( SDLFacade* const sdl )
 	context.surface = globalContext.vulkan->getVirtualSurface();
 	context.setMgr = new SetMgr(context.surface, 512);
 	context.commandMgr = new CommandMgr(context.surface, 64, true);
-	context.commandMgrSingleUse = new CommandMgr(context.surface, 9, true, true, true);
+	context.commandMgrSingleUse = new CommandMgr(context.surface, 15, true, true, true);
 	context.commandMgrSingleUseInterface = new ThreadedCommandBuilder(context.commandMgrSingleUse);
 	context.commandMgrDynamic = new CommandMgr(context.surface, 8, true, false, true, true);
 	commandIndexClear = context.commandMgr->getCommandIndex();
@@ -445,7 +445,6 @@ void App::draw(int delta_time)
 	context.commandMgr->waitCompletion();
 	context.commandMgrSingleUseInterface->reset();
 	context.commandMgr->setSubmission(commandIndexClear);
-	s_font::beginPrint();
 	core->draw(delta_time);
 	// Draw the Graphical ui and the Text ui
 	ui->draw();

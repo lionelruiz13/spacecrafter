@@ -30,11 +30,13 @@
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/hints.hpp"
+#include "bodyModule/halo.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "bodyModule/body_color.hpp"
 #include "navModule/observer.hpp"
 #include "tools/sc_const.hpp"
+#include "tools/s_font.hpp"
 
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/PipelineLayout.hpp"
@@ -302,6 +304,11 @@ void Sun::computeDraw(const Projector* prj, const Navigator * nav)
 bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected)
 {
 	bool drawn = false;
+
+    if (screen_sz > 2) {
+        Halo::nextDraw();
+        s_font::nextPrint(true);
+    }
 
 	//on ne dessine pas une planete sur laquel on se trouve
 	if (!drawHomePlanet && observatory->isOnBody(this)) {

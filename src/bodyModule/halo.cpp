@@ -34,6 +34,8 @@
 #include "vulkanModule/ResourceTracker.hpp"
 
 int Halo::commandIndex = -1;
+uint8_t Halo::commandIndexID;
+std::vector<int> Halo::commandIndexList;
 VirtualSurface *Halo::surface;
 Set *Halo::globalSet;
 Set *Halo::set;
@@ -66,9 +68,22 @@ void Halo::beginDraw()
 		set->bindTexture(tex_halo->getTexture(), 0);
 		last_tex_halo = tex_halo;
 	}
-	cmdMgr->init(commandIndex, false);
-	cmdMgr->beginRenderPass(renderPassType::DEFAULT);
-	cmdMgr->bindPipeline(pipeline);
+	commandIndexID = 0;
+	commandIndex = commandIndexList[commandIndexID++];
+	if (commandIndexID == commandIndexList.size()) commandIndexID = 0;
+	cmdMgr->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
+	cmdMgr->bindSet(layout, globalSet);
+	cmdMgr->bindSet(layout, set, 1);
+}
+
+void Halo::nextDraw()
+{
+	endDraw();
+	if (commandIndexID == commandIndexList.size())
+		commandIndexList.push_back(cmdMgr->getCommandIndex());
+	commandIndex = commandIndexList[commandIndexID++];
+	if (commandIndexID == commandIndexList.size()) commandIndexID = 0;
+	cmdMgr->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
 	cmdMgr->bindSet(layout, globalSet);
 	cmdMgr->bindSet(layout, set, 1);
 }
@@ -184,7 +199,9 @@ void Halo::createSC_context(ThreadContext *context)
 {
 	surface = context->surface;
 	cmdMgr = context->commandMgrSingleUseInterface;
-	commandIndex = cmdMgr->getCommandIndex();
+	commandIndexList.resize(3);
+	for (auto &value : commandIndexList)
+		value = cmdMgr->getCommandIndex();
 	cmdMgrTarget = context->commandMgr;
 	texMgr = context->global->textureMgr;
 	globalSet = context->global->globalSet;

@@ -91,8 +91,12 @@ public:
 	static void createSC_context(ThreadContext *_context);
 	//! met en place la fonte de secours
 	static void initBaseFont(const std::string& ttfFileName);
-	static void beginPrint();
-	static void endPrint();
+	//! Initialize printer
+	static void beginPrint(bool multisample);
+	//! Finalize printer, draw content and initialize next printer
+	static void nextPrint(bool multisample);
+	//! Finalize printer and draw content
+	static void endPrint(bool multisample = false);
 protected:
 	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 	renderedStringHash_t renderCache;
@@ -103,8 +107,11 @@ protected:
 	static std::string baseFontName;
 	TTF_Font *myFont =  nullptr;
 
-	static int commandIndexHorizontal;
-	static int commandIndexPrint;
+	static int activeID; // target id
+	static int commandIndexHorizontal, commandIndexPrint;
+	// commandIndex[0] is not multisampled
+	// all other were multisampled
+	static std::vector<std::pair<int, int>> commandIndex; // pair of {horizontal, print}
 	static ThreadContext *context;
 	static Set *set;
 	static VertexArray *vertexHorizontal;

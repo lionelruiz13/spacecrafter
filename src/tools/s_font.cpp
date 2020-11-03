@@ -48,8 +48,10 @@ Pipeline *s_font::pipelineHorizontal;
 Pipeline *s_font::pipelinePrint;
 PipelineLayout *s_font::layoutHorizontal;
 PipelineLayout *s_font::layoutPrint;
+int s_font::activeID = -1;
 int s_font::commandIndexHorizontal;
 int s_font::commandIndexPrint;
+std::vector<std::pair<int, int>> s_font::commandIndex;
 std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
 int s_font::nbFontInstances = 0;
 
@@ -104,8 +106,11 @@ void s_font::createSC_context(ThreadContext *_context)
 {
 	context = _context;
 	cmdMgr = context->commandMgrSingleUseInterface;
-	commandIndexHorizontal = cmdMgr->getCommandIndex();
-	commandIndexPrint = cmdMgr->getCommandIndex();
+	commandIndex.resize(4);
+	for (auto &value : commandIndex) {
+		value.first = cmdMgr->getCommandIndex();
+		value.second = cmdMgr->getCommandIndex();
+	}
 	vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface));
 	vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
 	vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
@@ -132,51 +137,79 @@ void s_font::createSC_context(ThreadContext *_context)
 	layoutPrint->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 16, sizeof(Mat4f)); // MVP
 	layoutPrint->build();
 
-	pipelineHorizontal = context->global->tracker->track(new Pipeline(context->surface, layoutHorizontal));
+	pipelineHorizontal = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutHorizontal}, {context->surface, layoutHorizontal}});
 	pipelineHorizontal->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
-	pipelineHorizontal->bindVertex(vertexHorizontal);
-	pipelineHorizontal->bindShader("sfontHorizontal.vert.spv");
-	pipelineHorizontal->bindShader("sfontHorizontal.frag.spv");
-	pipelineHorizontal->build();
+	for (int i = 0; i < 2; ++i) {
+		pipelineHorizontal[i].bindVertex(vertexHorizontal);
+		pipelineHorizontal[i].bindShader("sfontHorizontal.vert.spv");
+		pipelineHorizontal[i].bindShader("sfontHorizontal.frag.spv");
+		pipelineHorizontal[i].build();
+	}
 
-	pipelinePrint = context->global->tracker->track(new Pipeline(context->surface, layoutPrint));
+	pipelinePrint = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutPrint}, {context->surface, layoutPrint}});
 	pipelinePrint->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
-	pipelinePrint->bindVertex(vertexPrint);
-	pipelinePrint->bindShader("sfontPrint.vert.spv");
-	pipelinePrint->bindShader("sfontPrint.frag.spv");
-	pipelinePrint->build();
+	for (int i = 0; i < 2; ++i) {
+		pipelinePrint[i].bindVertex(vertexPrint);
+		pipelinePrint[i].bindShader("sfontPrint.vert.spv");
+		pipelinePrint[i].bindShader("sfontPrint.frag.spv");
+		pipelinePrint[i].build();
+	}
 
 	set = context->global->tracker->track(new Set());
 }
 
-void s_font::beginPrint()
+void s_font::beginPrint(bool multisample)
 {
 	tempCache.swap(tempCache2);
 	tempCache.clear();
 
 	vertexHorizontal->setVertexOffset(0);
-	cmdMgr->init(commandIndexHorizontal, false);
-	//cmdMgr->updateVertex(vertexHorizontal);
-	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_DEFAULT, renderPassCompatibility::SINGLE_SAMPLE);
-	cmdMgr->bindPipeline(pipelineHorizontal);
+	vertexPrint->setVertexOffset(0);
+
+	activeID = -1;
+	nextPrint(multisample);
+}
+
+void s_font::nextPrint(bool multisample)
+{
+	if (activeID == -1) {
+		activeID = multisample ? 1 : 0;
+		pipelineHorizontal += activeID;
+		pipelinePrint += activeID;
+	} else
+		endPrint(multisample);
+	if (activeID == (int) commandIndex.size()) {
+		commandIndex.emplace_back(cmdMgr->getCommandIndex(), cmdMgr->getCommandIndex());
+	}
+
+	commandIndexHorizontal = commandIndex[activeID].first;
+	cmdMgr->init(commandIndexHorizontal, pipelineHorizontal,
+		multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
+		multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindSet(layoutHorizontal, context->global->globalSet, 1);
 	cmdMgr->bindVertex(vertexHorizontal);
 
-	vertexPrint->setVertexOffset(0);
-	cmdMgr->init(commandIndexPrint, false);
-	//cmdMgr->updateVertex(vertexPrint);
-	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_DEFAULT, renderPassCompatibility::SINGLE_SAMPLE);
-	cmdMgr->bindPipeline(pipelinePrint);
+	commandIndexPrint = commandIndex[activeID].second;
+	cmdMgr->init(commandIndexPrint, pipelinePrint,
+		multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
+		multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
 	cmdMgr->bindVertex(vertexPrint);
 }
 
-void s_font::endPrint()
+void s_font::endPrint(bool multisample)
 {
-	//vertexHorizontal->update();
+	if (multisample)
+		activeID++;
+	else {
+		if (activeID != 0) {
+			pipelineHorizontal--;
+			pipelinePrint--;
+		}
+		activeID = 0;
+	}
 	cmdMgr->select(commandIndexHorizontal);
 	cmdMgr->compile();
 	cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
-	//vertexPrint->update();
 	cmdMgr->select(commandIndexPrint);
 	cmdMgr->compile();
 	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
