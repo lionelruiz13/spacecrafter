@@ -20,8 +20,9 @@ private:
     void mainloop();
     static void startMainloop(ThreadedCommandBuilder *self) {self->mainloop();}
     CommandMgr *master;
-    std::mutex mutex;
+    std::mutex mutex; // mutex for events queue
     std::queue<CmdEvent> events;
+    std::mutex mutexExec; // mutex for access to CommandMgr
     static const int BUFFER_SIZE;
     std::vector<char> buffer;
     uint32_t bufferOffset = 0;
@@ -54,7 +55,7 @@ public:
     // Combined CommandMgr's calls
     void init(int index, Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
     // Direct CommandMgr's calls
-    int getCommandIndex() {return master->getCommandIndex();}
+    int getCommandIndex();
     void setSubmission(int index, bool needDepthBuffer = false, CommandMgr *target = nullptr) {master->setSubmission(index, needDepthBuffer, target);}
 };
 

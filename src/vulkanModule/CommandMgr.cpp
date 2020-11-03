@@ -654,11 +654,21 @@ int CommandMgr::getCommandIndex()
 
     std::vector<VkCommandBuffer> tmp;
     tmp.resize(allocInfo.commandBufferCount);
-    if (vkAllocateCommandBuffers(refDevice, &allocInfo, tmp.data()) != VK_SUCCESS) {
-        throw std::runtime_error("échec de l'allocation de command buffers!");
+    if (singleUse) {
+        allocInfo.commandBufferCount = 1;
+    } else {
+        if (vkAllocateCommandBuffers(refDevice, &allocInfo, tmp.data()) != VK_SUCCESS) {
+            throw std::runtime_error("échec de l'allocation de command buffers!");
+        }
     }
     auto it = tmp.begin();
     for (auto &frame : frames) {
+        if (singleUse) {
+            allocInfo.commandPool = frame.cmdPool;
+            if (vkAllocateCommandBuffers(refDevice, &allocInfo, &(*it)) != VK_SUCCESS) {
+                throw std::runtime_error("échec de l'allocation de command buffers!");
+            }
+        }
         frame.commandBuffers.push_back(*it);
         it++;
         frame.signalSemaphores.resize(autoIndex + 1);

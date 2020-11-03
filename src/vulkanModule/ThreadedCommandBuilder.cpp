@@ -5,7 +5,7 @@
 #include <cstring> // for memcpy
 #include <cassert> // for assert
 
-#define CALL(func, flag, args) case CmdEventType::flag:master->func args;break
+#define CALL(func, flag, args) case CmdEventType::flag:mutexExec.lock();master->func args;mutexExec.unlock();break
 
 #define PUSH(type, name) arg.type = name; events.push(arg)
 #define DEF(flag) CmdEvent arg; mutex.lock(); PUSH(type, CmdEventType::flag)
@@ -19,7 +19,6 @@
 #define ARG3(type1, type2, type3) (arg3.type1, arg2.type2, arg1.type3);CHECK(3)
 #define ARG4(type1, type2, type3, type4) (arg4.type1, arg3.type2, arg2.type3, arg1.type4);CHECK(4)
 #define ARG5(type1, type2, type3, type4, type5) (arg5.type1, arg4.type2, arg3.type3, arg2.type4, arg1.type5);CHECK(5)
-
 
 ThreadedCommandBuilder::ThreadedCommandBuilder(CommandMgr *_master) : master(_master), usedSetCacheCount(0), thread(startMainloop, this)
 {
@@ -90,10 +89,7 @@ void ThreadedCommandBuilder::mainloop()
             CALL(pushConstant, PUSH_CONSTANT, ARG5(ptrPL, sf, ui, ptr, ui));
             CALL(draw, DRAW, ARG4(ui, ui, ui, ui));
             CALL(drawIndexed, DRAW_INDEXED, ARG5(ui, ui, ui, ui, ui));
-            case CmdEventType::COMPILE:
-                master->compile();
-                isCompiled++;
-                break;
+            CALL(compile, COMPILE, ARG0();isCompiled++);
             case CmdEventType::TERMINATE:
                 mutex.lock();
                 while (!events.empty())
@@ -260,4 +256,12 @@ void ThreadedCommandBuilder::init(int index, Pipeline *pipeline, renderPassType 
     init(index, compileSelected);
     beginRenderPass(renderPassType, compatibility);
     bindPipeline(pipeline);
+}
+
+int ThreadedCommandBuilder::getCommandIndex()
+{
+    mutexExec.lock();
+    int commandIndex = master->getCommandIndex();
+    mutexExec.unlock();
+    return commandIndex;
 }
