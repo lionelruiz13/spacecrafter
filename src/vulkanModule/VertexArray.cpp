@@ -3,6 +3,7 @@
 #include "VertexBuffer.hpp"
 #include "VertexArray.hpp"
 #include "Buffer.hpp"
+#include "tools/log.hpp"
 
 static unsigned int getLayout(const BufferType& bt)
 {
@@ -227,7 +228,6 @@ float *VertexArray::getInstanceBufferPtr()
 void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize, VkIndexType _indexType)
 {
     indexBuffer = std::make_shared<Buffer>(master, size * blockSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-    indexBuffer->setName("index buffer");
     indexType = _indexType;
     maxIndex = size;
     pIndexData = static_cast<unsigned int *>(indexBuffer->data);
@@ -297,14 +297,30 @@ void VertexArray::assign(VertexArray *vertex, uint32_t maxVertices, uint32_t max
 
 void VertexArray::print()
 {
+    std::ostringstream oss;
     if (pVertexData) {
-        std::cout << "VertexBuffer :\n";
-        vertexBuffer->print();
+        oss << "VertexBuffer :\n";
+        vertexBuffer->print(oss);
     }
     if (pIndexData) {
-        std::cout << "IndexBuffer :\n";
-        indexBuffer->print();
+        oss << "IndexBuffer :\n";
+        indexBuffer->print(oss);
     }
+    if (instanceBuffer) {
+        oss << "InstanceBuffer :\n";
+        instanceBuffer->print(oss);
+    }
+    cLog::get()->write(oss.str(), LOG_TYPE::L_OTHER);
+}
+
+void VertexArray::setName(const std::string &name)
+{
+    if (vertexBuffer)
+        vertexBuffer->setName("vertex buffer " + name);
+    if (indexBuffer)
+        indexBuffer->setName("index buffer " + name);
+    if (instanceBuffer)
+        instanceBuffer->setName("instance buffer " + name);
 }
 
 VertexArray::Vertice &VertexArray::operator[](int pos)

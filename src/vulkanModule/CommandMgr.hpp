@@ -122,6 +122,8 @@ public:
     void submit();
     //! reset all command buffer (for single-use command buffers), but keep their submission state
     void reset();
+    //! set custom name to command index
+    void setName(int commandIndex, const std::string &name);
     //! wait all pending submissions complete
     void waitGraphicQueueIdle();
     //! wait all submitted command for actual frameIndex end

@@ -265,3 +265,10 @@ int ThreadedCommandBuilder::getCommandIndex()
     mutexExec.unlock();
     return commandIndex;
 }
+
+void ThreadedCommandBuilder::setName(int commandIndex, const std::string &name)
+{
+    mutexExec.lock();
+    master->setName(commandIndex, name);
+    mutexExec.unlock();
+}

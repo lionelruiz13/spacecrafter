@@ -181,6 +181,7 @@ private:
     void initDebug(vk::InstanceCreateInfo *instanceCreateInfo);
     void startDebug();
     void destroyDebug();
+    static void printDebug(std::ostringstream &oss, std::string identifier);
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
         VkDebugUtilsMessageTypeFlagsEXT messageType,

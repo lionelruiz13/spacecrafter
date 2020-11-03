@@ -1,6 +1,7 @@
 #include "VirtualSurface.hpp"
 #include "Buffer.hpp"
 #include "BufferMgr.hpp"
+#include "tools/log.hpp"
 
 Buffer::Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage) : master(_master)
 {
@@ -63,9 +64,10 @@ Buffer::~Buffer()
     }
 }
 
-void Buffer::print()
+void Buffer::print(std::ostringstream &oss)
 {
-    std::cout << "\tIsSubBuffer : " << (buffer ? "false\n" : "true\n") << "\tIsDetached : " << (stagingBuffer ? "false\n" : "true\n");
+    oss << "\t\t\tIsSubBuffer : " << (buffer ? "false\n" : "true\n");
+    oss << "\t\t\tIsDetached : " << (stagingBuffer ? "false\n" : "true\n");
 }
 
 void Buffer::update()
@@ -103,8 +105,9 @@ void Buffer::invalidate()
 
 void Buffer::setName(const std::string &name)
 {
+    std::string fullname = name + " at B" + std::to_string(reinterpret_cast<long>(this));
     if (stagingBuffer)
-        master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, ("staging " + name));
+        master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging " + fullname);
     if (buffer)
-        master->setObjectName(buffer, VK_OBJECT_TYPE_BUFFER, name);
+        master->setObjectName(buffer, VK_OBJECT_TYPE_BUFFER, fullname);
 }

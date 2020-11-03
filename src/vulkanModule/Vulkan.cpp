@@ -4,6 +4,8 @@
 #include "mainModule/sdl_facade.hpp"
 #include <SDL2/SDL_vulkan.h>
 #include "CommandMgr.hpp"
+#include "VertexBuffer.hpp"
+#include "Buffer.hpp"
 #include "tools/log.hpp"
 #include "BufferMgr.hpp"
 #include <iostream>
@@ -1006,6 +1008,7 @@ void Vulkan::setupInterceptor(void *_pUserData, void(*_interceptor)(void *pUserD
     pUserData=_pUserData;
     interceptor=_interceptor;
     createBuffer(viewport.width * abs(viewport.height) * 4 * swapChainImages.size(), VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT, interceptBuffer, interceptBufferMemory);
+    setObjectName(interceptBuffer, VK_OBJECT_TYPE_BUFFER, "Frame interceptor buffer");
 
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -1174,12 +1177,29 @@ VKAPI_ATTR VkBool32 VKAPI_CALL Vulkan::debugCallback(
             << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
             ss << "\t\t\t" << "objectHandle = " << reinterpret_cast<void *>(pCallbackData->pObjects[i].objectHandle) << "\n"; // reinterpret_cast to have form 0x
             if (pCallbackData->pObjects[i].pObjectName) {
-                ss << "\t\t\t" << "objectName   = " << pCallbackData->pObjects[i].pObjectName << "\n";
+                std::string name = pCallbackData->pObjects[i].pObjectName;
+                size_t posAddress = name.find(" at ");
+                ss << "\t\t\t" << "objectName   = " << name.substr(0, posAddress) << "\n";
+                if (posAddress != std::string::npos)
+                    printDebug(ss, name.substr(posAddress + 4, std::string::npos));
             }
         }
     }
     cLog::get()->write(ss, LOG_TYPE::L_OTHER, LOG_FILE::VULKAN_LAYERS);
     return VK_FALSE;
+}
+
+void Vulkan::printDebug(std::ostringstream &oss, std::string identifier)
+{
+    long address = std::stol(identifier.substr(1, std::string::npos));
+    switch (identifier[0]) {
+        case 'V':
+            reinterpret_cast<VertexBuffer*>(address)->print(oss);
+            break;
+        case 'B':
+            reinterpret_cast<Buffer*>(address)->print(oss);
+            break;
+    }
 }
 
 void Vulkan::setObjectName(void *handle, VkObjectType type, const std::string &name)

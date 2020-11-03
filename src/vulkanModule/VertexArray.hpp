@@ -115,6 +115,8 @@ public:
     const std::vector<VkVertexInputAttributeDescription> &getInstanceAttributeDesc() {return attributeDesc2;}
     //! Display debug informations
     void print();
+    //! set custom name visible on debug layers (must be called when vertex, index and instance buffer were fully registered and build)
+    void setName(const std::string &name);
 private:
     VirtualSurface *master;
     CommandMgr *mgr;

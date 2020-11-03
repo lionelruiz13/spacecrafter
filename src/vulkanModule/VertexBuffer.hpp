@@ -18,7 +18,7 @@ public:
     VkBuffer &get() {return vertexBuffer ? vertexBuffer : subBuffer.buffer;}
     int getOffset() {return offset;}
     //! Display informations about this VertexBuffer
-    void print();
+    void print(std::ostringstream &oss);
     //! Update vertex content with data member
     //! @param size hint on number of bytes to update
     void update(int size = -1);
@@ -29,6 +29,8 @@ public:
     void *data;
     //! Destroy staging resources and only keep GPU-side buffer
     void detach();
+    //! Set custom name visible on debug layers
+    void setName(const std::string &name);
 private:
     VirtualSurface *master;
     VkCommandBuffer updater;
@@ -40,6 +42,7 @@ private:
     int offset = 0;
     SubBuffer subBuffer;
     VkSubmitInfo submitInfo{};
+    std::string customName;
     VkVertexInputBindingDescription bindingDesc;
     std::vector<VkVertexInputAttributeDescription> attributeDesc;
 };

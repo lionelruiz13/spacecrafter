@@ -633,6 +633,13 @@ void CommandMgr::vkEndIf()
     }
 }
 
+void CommandMgr::setName(int commandIndex, const std::string &name)
+{
+    for (uint32_t i = 0; i < frames.size(); ++i) {
+        master->setObjectName(frames[i].commandBuffers[commandIndex], VK_OBJECT_TYPE_COMMAND_BUFFER, std::to_string(i) + " " + name);
+    }
+}
+
 void CommandMgr::waitGraphicQueueIdle()
 {
     master->waitGraphicQueueIdle();

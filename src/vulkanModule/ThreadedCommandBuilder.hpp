@@ -56,6 +56,7 @@ public:
     void init(int index, Pipeline *pipeline, renderPassType renderPassType = renderPassType::DEFAULT, bool compileSelected = true, renderPassCompatibility compatibility = renderPassCompatibility::DEFAULT);
     // Direct CommandMgr's calls
     int getCommandIndex();
+    void setName(int commandIndex, const std::string &name);
     void setSubmission(int index, bool needDepthBuffer = false, CommandMgr *target = nullptr) {master->setSubmission(index, needDepthBuffer, target);}
 };
 

@@ -18,10 +18,10 @@ VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
     }
 
     _master->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
-    master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging vertexBuffer");
     _master->mapMemory(stagingBufferMemory, &data);
     _master->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-    master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "vertexBuffer");
+    master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging vertexBuffer at V" + std::to_string(reinterpret_cast<long>(this)));
+    master->setObjectName(vertexBuffer, VK_OBJECT_TYPE_BUFFER, "vertexBuffer at V" + std::to_string(reinterpret_cast<long>(this)));
 
     if (!isExternallyUpdated) {
         // Initialize update
@@ -50,6 +50,7 @@ VertexBuffer::VertexBuffer(VirtualSurface *_master, int size,
         submitInfo.pCommandBuffers = &updater;
         submitInfo.signalSemaphoreCount = 0;
         submitInfo.waitSemaphoreCount = 0;
+        master->setObjectName(updater, VK_OBJECT_TYPE_COMMAND_BUFFER, "update for VertexBuffer at V" + std::to_string(reinterpret_cast<long>(this)));
     }
 }
 
@@ -65,11 +66,17 @@ VertexBuffer::~VertexBuffer()
     }
 }
 
-void VertexBuffer::print()
+void VertexBuffer::print(std::ostringstream &oss)
 {
-    std::cout << "\tExternal update : " << ((submitInfo.commandBufferCount) ? "false" : "true") << "\n\tblocSize : " << bindingDesc.stride << "\n\tSize : " << bufferSize << "\n\tNbBlocs : " << bufferSize / bindingDesc.stride << "\n";
-    std::cout << "\tBufferHandle : " << reinterpret_cast<void *>(vertexBuffer) << "\n\tMemoryHandle : " << reinterpret_cast<void *>(vertexBufferMemory.memory) << "\n\tMemoryOffset : " << vertexBufferMemory.offset << " (" << reinterpret_cast<void *>(vertexBufferMemory.offset) << ")\n\tMemorySize : " << vertexBufferMemory.size << " (" << reinterpret_cast<void *>(vertexBufferMemory.size) << ")\n";
-    std::cout << "\n\tstagingBufferHandle : " << reinterpret_cast<void *>(stagingBuffer) << "\n\tstagingMemoryHandle : " << reinterpret_cast<void *>(stagingBufferMemory.memory) << "\n\tstagingMemoryOffset : " << stagingBufferMemory.offset << " (" << reinterpret_cast<void *>(stagingBufferMemory.offset) << ")\n\tstagingMemorySize : " << stagingBufferMemory.size << " (" << reinterpret_cast<void *>(stagingBufferMemory.size) << ")\n";
+    oss << "\t\t\tCustom name : " << customName << "\n";
+    oss << "\t\t\tExternal update : " << ((submitInfo.commandBufferCount) ? "false" : "true") << "\n\t\t\tblocSize : " << bindingDesc.stride << "\n\t\t\tSize : " << bufferSize << "\n\t\t\tNbBlocs : " << bufferSize / bindingDesc.stride << "\n";
+    oss << "\t\t\tBufferHandle : " << reinterpret_cast<void *>(vertexBuffer) << "\n\t\t\tMemoryHandle : " << reinterpret_cast<void *>(vertexBufferMemory.memory) << "\n\t\t\tMemoryOffset : " << vertexBufferMemory.offset << " (" << reinterpret_cast<void *>(vertexBufferMemory.offset) << ")\n\t\t\tMemorySize : " << vertexBufferMemory.size << " (" << reinterpret_cast<void *>(vertexBufferMemory.size) << ")\n";
+    oss << "\n\t\t\tstagingBufferHandle : " << reinterpret_cast<void *>(stagingBuffer) << "\n\t\t\tstagingMemoryHandle : " << reinterpret_cast<void *>(stagingBufferMemory.memory) << "\n\t\t\tstagingMemoryOffset : " << stagingBufferMemory.offset << " (" << reinterpret_cast<void *>(stagingBufferMemory.offset) << ")\n\t\t\tstagingMemorySize : " << stagingBufferMemory.size << " (" << reinterpret_cast<void *>(stagingBufferMemory.size) << ")\n";
+}
+
+void VertexBuffer::setName(const std::string &name)
+{
+    customName = name;
 }
 
 void VertexBuffer::update(int size)

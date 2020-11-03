@@ -18,7 +18,7 @@ public:
     VkBuffer &get() {return buffer ? buffer : subBuffer.buffer;}
     int getOffset() {return offset;}
     //! Display informations about this buffer
-    void print();
+    void print(std::ostringstream &oss);
     //! Update vertex content with data member
     void update();
     //! Intermediate buffer, write here (or read)
