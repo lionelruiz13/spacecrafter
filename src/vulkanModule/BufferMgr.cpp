@@ -30,6 +30,7 @@ BufferMgr::BufferMgr(VirtualSurface *_master, int _bufferBlocSize) : master(_mas
     allocInfo.commandBufferCount = 1;
 
     vkAllocateCommandBuffers(master->refDevice, &allocInfo, &cmdBuffer);
+    master->setObjectName(cmdBuffer, VK_OBJECT_TYPE_COMMAND_BUFFER, "update for BufferMgr");
 }
 
 BufferMgr::~BufferMgr()

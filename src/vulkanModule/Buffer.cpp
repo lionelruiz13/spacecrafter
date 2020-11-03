@@ -110,4 +110,6 @@ void Buffer::setName(const std::string &name)
         master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging " + fullname);
     if (buffer)
         master->setObjectName(buffer, VK_OBJECT_TYPE_BUFFER, fullname);
+    if (submitInfo.commandBufferCount > 0)
+        master->setObjectName(updater, VK_OBJECT_TYPE_COMMAND_BUFFER, "update for buffer " + fullname);
 }
