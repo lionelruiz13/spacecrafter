@@ -318,7 +318,7 @@ void Nebula::createSC_context(ThreadContext *context)
 		Nebula::m_texGL->fillVertexBuffer(BufferType::TEXTURE, 8,sDataTex );
 		Nebula::m_texGL->setVertexOffset(i * 4);
 	}
-	Nebula::commandIndex = context->commandMgrSingleUse->getCommandIndex();
+	Nebula::commandIndex = context->commandMgrSingleUseInterface->getCommandIndex();
 
 	Nebula::layout = context->global->tracker->track(new PipelineLayout(context->surface));
 	Nebula::layout->setTextureLocation(0);

@@ -147,7 +147,7 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 	cmdMgr->bindVertex(m_vertexLines.get());
 	cmdMgr->indirectDraw(drawData.get(), sizeof(*pDrawData));
 	cmdMgr->compile();
-	commandIndexArt = context->commandMgrSingleUse->getCommandIndex();
+	commandIndexArt = context->commandMgrSingleUseInterface->getCommandIndex();
 }
 
 ConstellationMgr::~ConstellationMgr()
