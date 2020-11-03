@@ -1127,6 +1127,7 @@ void Vulkan::startDebug()
     if (CreateDebugUtilsMessengerEXT(instance.get(), &debugCreateInfo, nullptr, &callback) != VK_SUCCESS) {
         throw std::runtime_error("Failed to set up debug messenger");
     }
+    ptr_vkSetDebugUtilsObjectNameEXT = (PFN_vkSetDebugUtilsObjectNameEXT) vkGetInstanceProcAddr(instance.get(), "vkSetDebugUtilsObjectNameEXT");
 }
 
 void Vulkan::destroyDebug()
@@ -1173,12 +1174,19 @@ VKAPI_ATTR VkBool32 VKAPI_CALL Vulkan::debugCallback(
             << vk::to_string( static_cast<vk::ObjectType>( pCallbackData->pObjects[i].objectType ) ) << "\n";
             ss << "\t\t\t" << "objectHandle = " << reinterpret_cast<void *>(pCallbackData->pObjects[i].objectHandle) << "\n"; // reinterpret_cast to have form 0x
             if (pCallbackData->pObjects[i].pObjectName) {
-                ss << "\t\t\t" << "objectName   = <" << pCallbackData->pObjects[i].pObjectName << ">\n";
+                ss << "\t\t\t" << "objectName   = " << pCallbackData->pObjects[i].pObjectName << "\n";
             }
         }
     }
     cLog::get()->write(ss, LOG_TYPE::L_OTHER, LOG_FILE::VULKAN_LAYERS);
     return VK_FALSE;
+}
+
+void Vulkan::setObjectName(void *handle, VkObjectType type, const std::string &name)
+{
+    VkDebugUtilsObjectNameInfoEXT nameInfo {VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT, nullptr, type, reinterpret_cast<uint64_t>(handle), name.c_str()};
+    if (hasLayer)
+        ptr_vkSetDebugUtilsObjectNameEXT(device, &nameInfo);
 }
 
 void Vulkan::displayPhysicalDeviceInfo(VkPhysicalDeviceProperties &prop)

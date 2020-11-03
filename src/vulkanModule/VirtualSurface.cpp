@@ -202,3 +202,4 @@ size_t &VirtualSurface::getGraphicsQueueIndex() {return master->getGraphicsQueue
 size_t VirtualSurface::getTransferQueueIndex() {return master->getTransferQueueFamilyIndex();}
 const VkPhysicalDeviceFeatures &VirtualSurface::getDeviceFeatures() {return master->getDeviceFeatures();}
 VkPipelineCache &VirtualSurface::getPipelineCache() {return master->getPipelineCache();}
+void VirtualSurface::setObjectName(void *handle, VkObjectType type, const std::string &name) {master->setObjectName(handle, type, name);}

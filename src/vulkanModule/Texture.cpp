@@ -48,13 +48,16 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename
 
     stbi_image_free(pixels);
 
+    imageName = filename;
     if (!keepOnCPU) {
         use();
         destroyStagingResources();
+    } else {
+        _master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging buffer of texture " + imageName);
     }
 }
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU, bool _mipmap, VkFormat _format, bool createSampler, VkSamplerAddressMode addressMode) : texWidth(width), texHeight(height)
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU, bool _mipmap, VkFormat _format, bool createSampler, VkSamplerAddressMode addressMode, const std::string &name) : texWidth(width), texHeight(height)
 {
     init(_master, _mgr, _mipmap, _format);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -75,9 +78,12 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int w
         imageInfo.sampler = _mgr->createSampler(samplerInfo);
     }
 
+    imageName = name;
     if (!keepOnCPU) {
         use();
         destroyStagingResources();
+    } else {
+        _master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging buffer of texture " + imageName);
     }
 }
 
@@ -98,6 +104,7 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachme
     } else {
         imageInfo.imageView = image->getImageView();
     }
+    imageName = "FrameBuffer attachment of VirtualSurface";
 }
 
 void Texture::acquireStagingMemoryPtr(void **pPixels)
@@ -224,6 +231,10 @@ void Texture::use()
     vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &commandBuffer);
     vkFreeCommandBuffers(master->refDevice, master->getCommandPool(), 1, &commandBuffer2);
     imageInfo.imageView = image->getImageView();
+    if (!imageName.empty()) {
+        master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, imageName);
+        master->setObjectName(image->getImageView(), VK_OBJECT_TYPE_IMAGE_VIEW, imageName);
+    }
 }
 
 void Texture::unuse()
@@ -271,6 +282,7 @@ void StreamTexture::use(int width, int height)
     texHeight = height;
     image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_R8_UNORM, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, false, true));
     master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
+    master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging buffer of Stream texture");
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -323,6 +335,8 @@ void StreamTexture::use(int width, int height)
     updateSubmitInfo.commandBufferCount = 1;
     updateSubmitInfo.pCommandBuffers = &cmdBuffer;
     imageInfo.imageView = image->getImageView();
+    master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, "Stream texture");
+    master->setObjectName(image->getImageView(), VK_OBJECT_TYPE_IMAGE_VIEW, "Stream texture");
 }
 
 void StreamTexture::unuse()

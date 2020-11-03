@@ -22,7 +22,7 @@ public:
     Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachment = false, int width = -1, int height = -1);
     //! @param keepOnCPU If true, you can load/unload this texture from GPU
     Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename = "", bool keepOnCPU = true, bool mipmap = false);
-    Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool mipmap = false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+    Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool mipmap = false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, const std::string &name = "unnamed\0");
     Texture();
     virtual ~Texture();
     //! Export texture to GPU
@@ -63,6 +63,7 @@ private:
     VkFormat format;
     bool mipmap = false;
     int mipmapCount = 1;
+    std::string imageName;
 };
 
 //! For texture streaming like a video

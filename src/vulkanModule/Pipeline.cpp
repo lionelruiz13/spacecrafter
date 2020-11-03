@@ -158,6 +158,8 @@ void Pipeline::bindShader(const std::string &filename, VkShaderStageFlagBits sta
     }
     delete buffer;
     shaderStages.push_back(tmp);
+    master->setObjectName(tmp.module, VK_OBJECT_TYPE_SHADER_MODULE, filename);
+    name += " " + filename;
 }
 
 void Pipeline::setSpecializedConstant(uint32_t constantID, void *data, size_t size)
@@ -273,6 +275,8 @@ void Pipeline::build()
     if (vkCreateGraphicsPipelines(master->refDevice, master->getPipelineCache(), 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
         cLog::get()->write("Faild to create Pipeline", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         graphicsPipeline = VK_NULL_HANDLE;
+    } else {
+        master->setObjectName(graphicsPipeline, VK_OBJECT_TYPE_PIPELINE, "Use" + name);
     }
     for (auto &stage : shaderStages) {
         vkDestroyShaderModule(master->refDevice, stage.module, nullptr);

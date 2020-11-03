@@ -100,3 +100,11 @@ void Buffer::invalidate()
     master->waitTransferQueueIdle();
     vkInvalidateMappedMemoryRanges(master->refDevice, 1, &range);
 }
+
+void Buffer::setName(const std::string &name)
+{
+    if (stagingBuffer)
+        master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, ("staging " + name));
+    if (buffer)
+        master->setObjectName(buffer, VK_OBJECT_TYPE_BUFFER, name);
+}

@@ -11,6 +11,7 @@ BufferMgr::BufferMgr(VirtualSurface *_master, int _bufferBlocSize) : master(_mas
     if (!master->createBuffer(bufferBlocSize, UNIFIED_BUFFER_FLAGS | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, buffer, bufferMemory)) {
         throw std::runtime_error("Failed to create buffer bloc");
     }
+    master->setObjectName(buffer, VK_OBJECT_TYPE_BUFFER, "BufferMgr");
     SubBuffer subBuffer;
     subBuffer.buffer = buffer;
     subBuffer.offset = 0;
@@ -20,6 +21,7 @@ BufferMgr::BufferMgr(VirtualSurface *_master, int _bufferBlocSize) : master(_mas
     if (!master->createBuffer(bufferBlocSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingMemory)) {
         throw std::runtime_error("Failed to create staging buffer bloc");
     }
+    master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging BufferMgr");
     master->mapMemory(stagingMemory, &data);
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;

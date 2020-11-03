@@ -89,6 +89,8 @@ public:
     void *getBufferPtr(SubBuffer &buffer);
     //! Release subBuffer back to global buffer
     void releaseBuffer(SubBuffer &buffer);
+    //! Attach name to vulkan handle
+    void setObjectName(void *handle, VkObjectType type, const std::string &name);
 
     const VkDevice &refDevice;
     const std::vector<VkRenderPass> &refRenderPass;

@@ -227,6 +227,7 @@ float *VertexArray::getInstanceBufferPtr()
 void VertexArray::registerIndexBuffer(const BufferAccess& ba, unsigned int size, size_t blockSize, VkIndexType _indexType)
 {
     indexBuffer = std::make_shared<Buffer>(master, size * blockSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    indexBuffer->setName("index buffer");
     indexType = _indexType;
     maxIndex = size;
     pIndexData = static_cast<unsigned int *>(indexBuffer->data);

@@ -27,6 +27,8 @@ public:
     void detach();
     //! Flush intermediate buffer to make storage buffer update visible
     void invalidate();
+    //! Set name to attach to buffer
+    void setName(const std::string &name);
 private:
     VirtualSurface *master;
     VkCommandBuffer updater;

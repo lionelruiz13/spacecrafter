@@ -79,6 +79,7 @@ private:
         std::vector<VkSpecializationMapEntry> entry;
         std::vector<char> data;
     };
+    std::string name;
     std::forward_list<std::string> pNames;
     std::forward_list<SpecializationInfo> specializationInfo;
     std::vector<VkPipelineShaderStageCreateInfo> shaderStages;

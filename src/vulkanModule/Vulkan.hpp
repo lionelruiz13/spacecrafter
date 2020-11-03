@@ -64,6 +64,7 @@ public:
     VkPhysicalDevice getPhysicalDevice() {return physicalDevice;}
     void setupInterceptor(void *_pUserData, void(*_interceptor)(void *pUserData, void *pData, uint32_t width, uint32_t height));
     void intercept() {interceptNextFrame = true;}
+    void setObjectName(void *handle, VkObjectType type, const std::string &name);
 
     //! getDevice();
     const VkDevice &refDevice;
@@ -189,6 +190,7 @@ private:
     VkDebugUtilsMessengerEXT callback;
     void displayPhysicalDeviceInfo(VkPhysicalDeviceProperties &prop);
     void displayEnabledFeaturesInfo();
+    PFN_vkSetDebugUtilsObjectNameEXT ptr_vkSetDebugUtilsObjectNameEXT = nullptr;
 
     bool checkDeviceExtensionSupport(VkPhysicalDevice pDevice);
     bool isDeviceSuitable(VkPhysicalDevice pDevice);
