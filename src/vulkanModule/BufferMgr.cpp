@@ -196,7 +196,7 @@ void BufferMgr::update()
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0;
         vkBeginCommandBuffer(cmdBuffer, &beginInfo);
-        VkBufferCopy copyRegion{0, 0, lastMaxOffset};
+        VkBufferCopy copyRegion{0, 0, (size_t) lastMaxOffset};
         vkCmdCopyBuffer(cmdBuffer, stagingBuffer, buffer, 1, &copyRegion);
         vkEndCommandBuffer(cmdBuffer);
     }
