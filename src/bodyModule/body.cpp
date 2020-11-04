@@ -834,13 +834,12 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	drawHints(nav, prj);
 
-    if (screen_sz > 5) {
-        Halo::nextDraw();
-        s_font::nextPrint(true);
-    }
 
 	if(isVisibleOnScreen()) {
-
+        if (screen_sz > 5) {
+            Halo::nextDraw();
+            s_font::nextPrint(true);
+        }
 		if(hasRings()) {
             // depth test forced
             drawAxis(prj,mat);

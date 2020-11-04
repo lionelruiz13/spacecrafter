@@ -305,11 +305,6 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
 {
 	bool drawn = false;
 
-    if (screen_sz > 2) {
-        Halo::nextDraw();
-        s_font::nextPrint(true);
-    }
-
 	//on ne dessine pas une planete sur laquel on se trouve
 	if (!drawHomePlanet && observatory->isOnBody(this)) {
 		return drawn;
@@ -321,6 +316,10 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
 		drawBigHalo(nav, prj, eye);
 
 	if (screen_sz > 1 && isVisible) {  // huge improvement in performance
+        if (screen_sz > 3) {
+            Halo::nextDraw();
+            s_font::nextPrint(true);
+        }
 		axis->drawAxis(prj, mat);
 		drawBody(prj, nav, mat, screen_sz);
 		drawn = true;
