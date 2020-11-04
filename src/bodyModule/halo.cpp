@@ -69,8 +69,8 @@ void Halo::beginDraw()
 		last_tex_halo = tex_halo;
 	}
 	commandIndexID = 0;
-	commandIndex = commandIndexList[commandIndexID++];
-	if (commandIndexID == commandIndexList.size()) commandIndexID = 0;
+	commandIndex = commandIndexList[commandIndexID];
+	commandIndexID++;
 	cmdMgr->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
 	cmdMgr->bindSet(layout, globalSet);
 	cmdMgr->bindSet(layout, set, 1);
@@ -81,8 +81,8 @@ void Halo::nextDraw()
 	endDraw();
 	if (commandIndexID == commandIndexList.size())
 		commandIndexList.push_back(cmdMgr->getCommandIndex());
-	commandIndex = commandIndexList[commandIndexID++];
-	if (commandIndexID == commandIndexList.size()) commandIndexID = 0;
+	commandIndex = commandIndexList[commandIndexID];
+	commandIndexID++;
 	cmdMgr->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
 	cmdMgr->bindSet(layout, globalSet);
 	cmdMgr->bindSet(layout, set, 1);
