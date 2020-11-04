@@ -35,7 +35,7 @@ private:
     std::unique_ptr<std::thread> releaseThread;
     std::vector<SubBuffer> releaseStack;
     bool isAlive = false;
-    std::mutex mutex;
+    std::mutex mutex, mutexQueue;
 
     void insert(SubBuffer &subBuffer);
     static int uniformOffsetAlignment;

@@ -127,21 +127,23 @@ void BufferMgr::insert(SubBuffer &subBuffer)
 
 void BufferMgr::releaseBuffer(SubBuffer &subBuffer)
 {
-    mutex.lock();
+    mutexQueue.lock();
     releaseStack.push_back(subBuffer);
-    mutex.unlock();
+    mutexQueue.unlock();
     if (!isAlive)
         releaseBuffer();
 }
 
 void BufferMgr::releaseBuffer()
 {
-    mutex.lock();
+    mutexQueue.lock();
     SubBuffer subBuffer = releaseStack.back();
     releaseStack.pop_back();
+    mutexQueue.unlock();
     int buffBegin = subBuffer.offset;
     int buffEnd = buffBegin + subBuffer.size;
 
+    mutex.lock();
     for (auto availableSubBuffer = availableSubBufferZones.begin(); availableSubBuffer != availableSubBufferZones.end(); ++availableSubBuffer) {
         const auto itEnd = availableSubBuffer->end();
         for (auto it = availableSubBuffer->begin(); it != itEnd; ++it) {
@@ -194,8 +196,7 @@ void BufferMgr::update()
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         beginInfo.flags = 0;
         vkBeginCommandBuffer(cmdBuffer, &beginInfo);
-        VkBufferCopy copyRegion{};
-        copyRegion.size = lastMaxOffset;
+        VkBufferCopy copyRegion{0, 0, lastMaxOffset};
         vkCmdCopyBuffer(cmdBuffer, stagingBuffer, buffer, 1, &copyRegion);
         vkEndCommandBuffer(cmdBuffer);
     }
