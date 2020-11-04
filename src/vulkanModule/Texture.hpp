@@ -64,6 +64,7 @@ private:
     bool mipmap = false;
     int mipmapCount = 1;
     std::string imageName;
+    VkCommandBuffer commandBuffer;
 };
 
 //! For texture streaming like a video

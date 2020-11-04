@@ -134,6 +134,8 @@ Texture::~Texture()
 void Texture::destroyStagingResources()
 {
     if (stagingBuffer) {
+        if (useCount > 0)
+            master->waitTransferQueueIdle();
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
         master->free(stagingBufferMemory);
         stagingBuffer = VK_NULL_HANDLE;
@@ -153,7 +155,6 @@ void Texture::use()
     CommandMgr *cmdMgr = mgr->getBuilder();
     VkFence fence;
     VkSemaphore semaphore;
-    mgr->acquireSyncObject(&fence, &semaphore);
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -161,7 +162,6 @@ void Texture::use()
     allocInfo.commandPool = master->getTransferPool();
     allocInfo.commandBufferCount = 1;
 
-    VkCommandBuffer commandBuffer;
     vkAllocateCommandBuffers(master->refDevice, &allocInfo, &commandBuffer);
 
     VkCommandBufferBeginInfo beginInfo{};
@@ -185,23 +185,30 @@ void Texture::use()
     region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, 1};
 
     vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, image->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+    if (!mipmap) {
+        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, 0);
+        cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+    }
     vkEndCommandBuffer(commandBuffer);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
-    submitInfo.signalSemaphoreCount = 1;
-    submitInfo.pSignalSemaphores = &semaphore;
+    if (mipmap) {
+        mgr->acquireSyncObject(&fence, &semaphore);
+        submitInfo.signalSemaphoreCount = 1;
+        submitInfo.pSignalSemaphores = &semaphore;
+    }
     master->submitTransfer(&submitInfo);
 
-    allocInfo.commandPool = master->getCommandPool();
-
-    VkCommandBuffer commandBuffer2;
-    vkAllocateCommandBuffers(master->refDevice, &allocInfo, &commandBuffer2);
-    vkBeginCommandBuffer(commandBuffer2, &beginInfo);
-    cmdMgr->grab(commandBuffer2);
     if (mipmap) {
+        allocInfo.commandPool = master->getCommandPool();
+        VkCommandBuffer commandBuffer2;
+        vkAllocateCommandBuffers(master->refDevice, &allocInfo, &commandBuffer2);
+        vkBeginCommandBuffer(commandBuffer2, &beginInfo);
+        cmdMgr->grab(commandBuffer2);
+
         for (int i = 0; i < mipmapCount - 1; ++i) {
             cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, i);
             cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
@@ -209,27 +216,23 @@ void Texture::use()
         }
         cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_SHADER_READ_BIT, 0, mipmapCount - 1);
         cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, mipmapCount - 1);
-    } else {
-        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
+        cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+        vkEndCommandBuffer(commandBuffer2);
+        VkPipelineStageFlags stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitSemaphores = &semaphore;
+        submitInfo.pWaitDstStageMask = &stage;
+        submitInfo.pCommandBuffers = &commandBuffer2;
+        submitInfo.signalSemaphoreCount = 0;
+        vkResetFences(master->refDevice, 1, &fence);
+        master->waitTransferQueueIdle();
+        if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
+            throw std::runtime_error("Error : Failed to submit commands.");
+        }
+        vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+        mgr->releaseSyncObject(fence, semaphore);
+        vkFreeCommandBuffers(master->refDevice, master->getCommandPool(), 1, &commandBuffer2);
     }
-    cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
-    vkEndCommandBuffer(commandBuffer2);
-
-    VkPipelineStageFlags stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitSemaphores = &semaphore;
-    submitInfo.pWaitDstStageMask = &stage;
-    submitInfo.pCommandBuffers = &commandBuffer2;
-    submitInfo.signalSemaphoreCount = 0;
-    vkResetFences(master->refDevice, 1, &fence);
-    master->waitTransferQueueIdle();
-    if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
-        throw std::runtime_error("Error : Failed to submit commands.");
-    }
-    vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
-    mgr->releaseSyncObject(fence, semaphore);
-    vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &commandBuffer);
-    vkFreeCommandBuffers(master->refDevice, master->getCommandPool(), 1, &commandBuffer2);
     imageInfo.imageView = image->getImageView();
     if (!imageName.empty()) {
         master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, imageName);
@@ -242,6 +245,7 @@ void Texture::unuse()
     if (--useCount == 0) {
         image = nullptr;
         imageInfo.imageView = VK_NULL_HANDLE;
+        vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &commandBuffer);
     }
 }
 

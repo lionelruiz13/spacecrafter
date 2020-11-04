@@ -48,7 +48,7 @@ static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std
     }
 }
 
-static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue, VkQueue vkqueue, std::mutex *mutex, bool *isAlive, uint8_t *active)
+static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue, VkQueue vkqueue, std::mutex *mutex, bool *isAlive, uint8_t *active, bool waitIdle)
 {
     std::pair<VkSubmitInfo, VkFence> actual;
     while (*isAlive) {
@@ -64,7 +64,8 @@ static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue
         queue->pop();
         mutex->unlock();
         vkQueueSubmit(vkqueue, 1, &actual.first, actual.second);
-        vkQueueWaitIdle(vkqueue); // must be replaced by wait for fence
+        if (waitIdle)
+            vkQueueWaitIdle(vkqueue);
         mutex->lock();
         (*active)--;
         mutex->unlock();
@@ -238,6 +239,11 @@ void Vulkan::waitTransferQueueIdle()
 {
     while (!transferQueue.empty() || transferActivity > 0)
         std::this_thread::yield();
+    if (transferQueues.size() == 1) {
+        transferQueueMutex.lock();
+        vkQueueWaitIdle(transferQueues.front());
+        transferQueueMutex.unlock();
+    }
 }
 
 void Vulkan::waitGraphicQueueIdle()
@@ -466,7 +472,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
         for (int j = 0; j < maxQueues; j++) {
             vkGetDeviceQueue(device, index, j, &tmpQueue);
             transferQueues.push_back(tmpQueue);
-            transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity);
+            transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity, maxQueues > 1);
         }
     }
 }
