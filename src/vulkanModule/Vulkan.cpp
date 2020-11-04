@@ -619,6 +619,7 @@ void Vulkan::createMultisample(VkSampleCountFlagBits sampleCount)
         if (vkCreateImage(device, &imageInfo, nullptr, &multisampleImage[i]) != VK_SUCCESS) {
             throw std::runtime_error("echec de la creation d'une image");
         }
+        setObjectName(multisampleImage[i], VK_OBJECT_TYPE_IMAGE, "Main FBO multisample color attachment");
 
         VkMemoryRequirements memRequirements;
         vkGetImageMemoryRequirements(device, multisampleImage[i], &memRequirements);
@@ -1001,6 +1002,7 @@ void Vulkan::createDepthResources(VkSampleCountFlagBits sampleCount)
     if (vkCreateImage(device, &imageInfo, nullptr, &depthImage) != VK_SUCCESS) {
         throw std::runtime_error("echec de la creation d'une image");
     }
+    setObjectName(depthImage, VK_OBJECT_TYPE_IMAGE, "Main FBO depth attachment");
 
     VkMemoryRequirements memRequirements;
     vkGetImageMemoryRequirements(device, depthImage, &memRequirements);

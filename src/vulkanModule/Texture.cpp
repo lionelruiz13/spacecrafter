@@ -57,7 +57,7 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename
     }
 }
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU, bool _mipmap, VkFormat _format, bool createSampler, VkSamplerAddressMode addressMode, const std::string &name) : texWidth(width), texHeight(height)
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU, bool _mipmap, VkFormat _format, const std::string &name, bool createSampler, VkSamplerAddressMode addressMode) : texWidth(width), texHeight(height)
 {
     init(_master, _mgr, _mipmap, _format);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -96,8 +96,10 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachme
     texHeight = (height == -1) ? abs(_master->getViewportState().pViewports->height) : height;
     if (isDepthAttachment) {
         image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_D24_UNORM_S8_UINT, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, true));
+        master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, "FBO depth attachment");
     } else {
         image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT));
+        master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, "FBO color attachment");
     }
     if (image == nullptr) {
         cLog::get()->write("Faild to create external image attachment", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);

@@ -216,7 +216,7 @@ void s_texture::createEmptyTex(const bool keepOnCPU)
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, loadWrapping);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	*/
-	texture = context->global->tracker->track(new Texture(context->surface, context->global->textureMgr, image_data, 1, 1, 0, keepOnCPU));
+	texture = context->global->tracker->track(new Texture(context->surface, context->global->textureMgr, image_data, 1, 1, keepOnCPU, false, VK_FORMAT_R8G8B8A8_UNORM, "Texture not found"));
 	//~ std::cout << "texture createEmptyTex" << textureName << std::endl;
 }
 
@@ -302,7 +302,7 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 			tmp->height = y;
 			tmp->size = x*y*4;
 			tmp->nbLink = 1;
-			tmp->textureHandle = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_SRGB, true, static_cast<VkSamplerAddressMode>(loadWrapping), fullName);
+			tmp->textureHandle = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_SRGB, fullName, true, static_cast<VkSamplerAddressMode>(loadWrapping));
 			tmp->texture = tmp->textureHandle.get();
 			tmp->mipmap = mipmap;
 

@@ -397,7 +397,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 	*/
-	rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, false, false, texture_format);
+	rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, false, false, texture_format, "string '" + s + "'");
 
 	if (withBorder) {
 		// ***********************************
@@ -442,7 +442,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
 		*/
-		rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, false, false, texture_format);
+		rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, false, false, texture_format, "string border '" + s + "'");
 		rendering.haveBorder =true;
 		SDL_FreeSurface(border);
 	}
