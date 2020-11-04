@@ -584,7 +584,7 @@ void App::startMainLoop()
 			this->update(deltaTime);		// And update the motions and data
 			this->draw(deltaTime);			// Do the drawings!
 			saveScreenInterface->readScreenShot();
-			globalContext.vulkan->sendFrame();
+			globalContext.vulkan->sendFrame(); // Send submission to the presentation engine
 			//mSdl->glSwapWindow();  			// And swap the buffers
 
 			internalFPS->setLastCount();
