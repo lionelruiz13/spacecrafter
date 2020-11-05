@@ -70,8 +70,11 @@ void VertexBuffer::print(std::ostringstream &oss)
 {
     oss << "\t\t\tCustom name : " << customName << "\n";
     oss << "\t\t\tExternal update : " << ((submitInfo.commandBufferCount) ? "false" : "true") << "\n\t\t\tblocSize : " << bindingDesc.stride << "\n\t\t\tSize : " << bufferSize << "\n\t\t\tNbBlocs : " << bufferSize / bindingDesc.stride << "\n";
+    oss << "\t\t\tIsDetached : " << (stagingBuffer ? "false\n" : "true\n");
     oss << "\t\t\tBufferHandle : " << reinterpret_cast<void *>(vertexBuffer) << "\n\t\t\tMemoryHandle : " << reinterpret_cast<void *>(vertexBufferMemory.memory) << "\n\t\t\tMemoryOffset : " << vertexBufferMemory.offset << " (" << reinterpret_cast<void *>(vertexBufferMemory.offset) << ")\n\t\t\tMemorySize : " << vertexBufferMemory.size << " (" << reinterpret_cast<void *>(vertexBufferMemory.size) << ")\n";
-    oss << "\n\t\t\tstagingBufferHandle : " << reinterpret_cast<void *>(stagingBuffer) << "\n\t\t\tstagingMemoryHandle : " << reinterpret_cast<void *>(stagingBufferMemory.memory) << "\n\t\t\tstagingMemoryOffset : " << stagingBufferMemory.offset << " (" << reinterpret_cast<void *>(stagingBufferMemory.offset) << ")\n\t\t\tstagingMemorySize : " << stagingBufferMemory.size << " (" << reinterpret_cast<void *>(stagingBufferMemory.size) << ")\n";
+    if (stagingBuffer) {
+        oss << "\t\t\tstagingBufferHandle : " << reinterpret_cast<void *>(stagingBuffer) << "\n\t\t\tstagingMemoryHandle : " << reinterpret_cast<void *>(stagingBufferMemory.memory) << "\n\t\t\tstagingMemoryOffset : " << stagingBufferMemory.offset << " (" << reinterpret_cast<void *>(stagingBufferMemory.offset) << ")\n\t\t\tstagingMemorySize : " << stagingBufferMemory.size << " (" << reinterpret_cast<void *>(stagingBufferMemory.size) << ")\n";
+    }
 }
 
 void VertexBuffer::setName(const std::string &name)
