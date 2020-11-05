@@ -38,6 +38,7 @@
 #include "tools/sc_const.hpp"
 #include "tools/s_font.hpp"
 
+#include "vulkanModule/Vulkan.hpp"
 #include "vulkanModule/Pipeline.hpp"
 #include "vulkanModule/PipelineLayout.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -80,7 +81,7 @@ Sun::Sun(Body *parent,
 	//more adding could be placed here for the constructor of Sun
 	tex_big_halo = nullptr;
 	createSunShader(context);
-	createHaloShader(context);
+	createHaloShader(context, context->global->vulkan->getSwapChainExtent().height);
 }
 
 Sun::~Sun()
@@ -116,7 +117,7 @@ void Sun::setBigHalo(const std::string& halotexfile, const std::string &path)
     }
 }
 
-void Sun::createHaloShader(ThreadContext *context)
+void Sun::createHaloShader(ThreadContext *context, float viewport_y)
 {
     cmdMgr = context->commandMgr;
 	// shaderBigHalo = std::make_unique<shaderProgram>();
@@ -165,6 +166,7 @@ void Sun::createHaloShader(ThreadContext *context)
     pipelineBigHalo->bindShader("sun_big_halo.vert.spv");
     pipelineBigHalo->bindShader("sun_big_halo.geom.spv");
     pipelineBigHalo->bindShader("sun_big_halo.frag.spv");
+    pipelineBigHalo->setSpecializedConstant(0, &viewport_y, sizeof(viewport_y));
     pipelineBigHalo->build();
 
     if (tex_big_halo) {
