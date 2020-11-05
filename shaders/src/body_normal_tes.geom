@@ -90,16 +90,17 @@ void main()
 	for(int i=0; i<3; i++) {
 
 		glPosition = vec3(gl_in[i].gl_Position);
+		positionL = planetRadius * glPosition;
 		//~ sans normalMap
 		//~ glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius ;
 		//~ avec normalMap
-		glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord[i]).x * coeffHeightMap);
+		glPosition = normalize(glPosition)*planetScaledRadius * (1.0+texture(heightmapTexture,TexCoord[i]).x * coeffHeightMap);
 
 		gl_Position = fisheyeProject(glPosition, clipping_fov);
 
-		positionL = planetRadius * NormalIn[i];
 		positionL.z = positionL.z * planetOneMinusOblateness;
 
+		//positionL = planetRadius * NormalIn[i];
 		Position = vec3(ModelViewMatrix * vec4(positionL,1.0));
  		Light = normalize(LightPosition - Position);
 
