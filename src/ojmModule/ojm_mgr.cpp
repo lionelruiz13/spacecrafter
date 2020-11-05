@@ -45,7 +45,7 @@ OjmMgr::OjmMgr(ThreadContext *context)
 	cmdMgrMaster = context->commandMgr;
 	surface = context->surface;
 	globalSet = context->global->globalSet;
-	createShader(context);
+	//createShader(context);
 }
 
 OjmMgr::~OjmMgr()
