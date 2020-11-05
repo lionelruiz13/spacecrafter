@@ -247,11 +247,10 @@ void Vulkan::waitTransferQueueIdle()
 {
     while (!transferQueue.empty() || transferActivity > 0)
         std::this_thread::yield();
-    if (transferQueues.size() == 1) {
-        transferQueueMutex.lock();
-        vkQueueWaitIdle(transferQueues.front());
-        transferQueueMutex.unlock();
-    }
+    transferQueueMutex.lock();
+    for (auto &vkqueue : transferQueues)
+        vkQueueWaitIdle(vkqueue);
+    transferQueueMutex.unlock();
 }
 
 void Vulkan::waitGraphicQueueIdle()
@@ -481,7 +480,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
         for (int j = 0; j < maxQueues; j++) {
             vkGetDeviceQueue(device, index, j, &tmpQueue);
             transferQueues.push_back(tmpQueue);
-            transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity, maxQueues > 1);
+            transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity, false);
         }
     }
 }

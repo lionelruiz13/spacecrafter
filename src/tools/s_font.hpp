@@ -98,7 +98,7 @@ public:
 	//! Finalize printer and draw content
 	static void endPrint(bool multisample = false);
 protected:
-	renderedString_struct renderString(const std::string &s, bool withBorder) const;
+	renderedString_struct renderString(const std::string &s, bool withBorder, bool keepOnCPU = false) const;
 	renderedStringHash_t renderCache;
 	static std::vector<renderedString_struct> tempCache, tempCache2; // to hold texture while it is used
 
