@@ -28,8 +28,6 @@
 #include "tools/log.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-// 
-// 
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"

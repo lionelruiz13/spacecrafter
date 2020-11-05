@@ -50,7 +50,7 @@
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
 // #include "vulkanModule/VertexArray.hpp"
-// 
+//
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
