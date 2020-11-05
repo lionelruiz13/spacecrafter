@@ -823,7 +823,7 @@ void HipStarMgr::executeDraw()
 	drawData->update();
 	if (!starTrace)
 		surface->acquireNextFrame();
-	cmdMgr->setSubmission(starTrace ? commandIndexHold : commandIndexClear);
+	cmdMgr->setSubmission(starTrace ? commandIndexHold : commandIndexClear, true);
 	surface->submitFrame();
 }
 

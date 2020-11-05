@@ -152,7 +152,7 @@ void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 		}
 	}
 	drawData->update();
-	cmdMgr->setSubmission(commandIndex, true);
+	cmdMgr->setSubmission(commandIndex, false);
 }
 
 void BodyTrace::addData(const Navigator *nav, double alt, double az)

@@ -90,7 +90,7 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     VkPhysicalDeviceProperties physicalDeviceProperties;
     vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
     displayPhysicalDeviceInfo(physicalDeviceProperties);
-    initQueues(8);
+    initQueues(16);
     initSwapchain(width, height, nbVirtualSurfaces);
     createImageViews();
     createRenderPass(sampleCount);
@@ -224,6 +224,14 @@ void Vulkan::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
     transferQueueMutex.unlock();
 }
 
+void Vulkan::submitGraphic(VkSubmitInfo &submitInfo)
+{
+    if (vkQueueSubmit(graphicsAndPresentQueues[selectedGraphicQueue++], 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+        cLog::get()->write("Command submission has failed (see vulkan-layers with debug=true)", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+    }
+    if (selectedGraphicQueue == (int) graphicsAndPresentQueues.size()) selectedGraphicQueue = assignedGraphicQueueCount;
+}
+
 void Vulkan::submit(CommandMgr *cmdMgr)
 {
     if (cmdMgr == nullptr) {
@@ -275,6 +283,7 @@ void Vulkan::finalize()
     for (uint32_t i = 0; i < interceptSubmitInfo.size(); ++i) {
         interceptSubmitInfo[i].pWaitSemaphores = &presentSemaphores[i];
     }
+    selectedGraphicQueue = assignedGraphicQueueCount;
 }
 
 void Vulkan::waitReady()

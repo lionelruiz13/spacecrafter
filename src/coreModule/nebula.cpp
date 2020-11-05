@@ -311,10 +311,10 @@ void Nebula::createSC_context(ThreadContext *context)
 	Nebula::m_texGL = context->global->tracker->track(new VertexArray(context->surface, nullptr, false));
 	Nebula::m_texGL ->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
 	Nebula::m_texGL ->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::STATIC);
-	Nebula::m_texGL ->build(4096);
+	Nebula::m_texGL ->build(MAX_NEBULA*4);
 
 	float sDataTex[8]={0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f};
-	for (int i = 0; i < 1024; i++) {
+	for (int i = 0; i < MAX_NEBULA; i++) {
 		Nebula::m_texGL->fillVertexBuffer(BufferType::TEXTURE, 8,sDataTex );
 		Nebula::m_texGL->setVertexOffset(i * 4);
 	}

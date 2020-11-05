@@ -317,8 +317,8 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
 
 	if (screen_sz > 1 && isVisible) {  // huge improvement in performance
         if (screen_sz > 3) {
-            Halo::nextDraw();
             s_font::nextPrint(true);
+            Halo::nextDraw();
         }
 		axis->drawAxis(prj, mat);
 		drawBody(prj, nav, mat, screen_sz);

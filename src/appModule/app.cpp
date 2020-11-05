@@ -438,13 +438,15 @@ void App::update(int delta_time)
 //! Main drawinf function called at each frame
 void App::draw(int delta_time)
 {
+	context.surface->waitTransferQueueIdle();
+	context.surface->waitGraphicQueueIdle();
+	context.commandMgr->waitCompletion();
 	context.surface->acquireNextFrame();
 	// appDraw->drawFirstLayer();
 	//Renderer::clearColor();
 
-	context.commandMgr->waitCompletion();
 	context.commandMgrSingleUseInterface->reset();
-	context.commandMgr->setSubmission(commandIndexClear);
+	context.commandMgr->setSubmission(commandIndexClear, true);
 	core->draw(delta_time);
 	// Draw the Graphical ui and the Text ui
 	ui->draw();

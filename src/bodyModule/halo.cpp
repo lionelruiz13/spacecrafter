@@ -92,7 +92,7 @@ void Halo::endDraw()
 {
 	cmdMgr->select(commandIndex);
 	cmdMgr->compile();
-	cmdMgr->setSubmission(commandIndex, false, cmdMgrTarget);
+	cmdMgr->setSubmission(commandIndex, true, cmdMgrTarget);
 }
 
 void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)

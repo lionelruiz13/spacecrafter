@@ -43,11 +43,12 @@ public:
     void unmapMemory(SubMemory& bufferMemory);
     size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
+    void submitGraphic(VkSubmitInfo &submitInfo);
     void waitTransferQueueIdle();
     void waitGraphicQueueIdle();
     void waitIdle();
     VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
-    VkQueue assignGraphicsQueue() {static short i = 0; return graphicsAndPresentQueues[i++];}
+    VkQueue assignGraphicsQueue() {return graphicsAndPresentQueues[assignedGraphicQueueCount++];}
     VkSwapchainKHR *assignSwapChain() {return swapChain.data();}
     void assignSwapChainFramebuffers(std::vector<VkFramebuffer> &framebuffers, int index) {framebuffers.assign(swapChainFramebuffers.begin(), swapChainFramebuffers.end());}
     auto &getGraphicsQueueIndex() {return graphicsAndPresentQueueFamilyIndex[0];}
@@ -88,6 +89,8 @@ private:
     VkRect2D scissor{};
     uint32_t frameIndex;
     int switcher = 0; // switch between MAX_FRAME_IN_FLIGHT elements
+    int assignedGraphicQueueCount = 0;
+    int selectedGraphicQueue = 0; // selected graphic queue for submissions
     VkSemaphore imageAvailableSemaphore;
     std::array<VkSemaphore, MAX_FRAMES_IN_FLIGHT> imageAvailableSemaphores;
     std::vector<VkSemaphore> presentSemaphores;

@@ -198,10 +198,13 @@ void s_font::nextPrint(bool multisample)
 
 void s_font::endPrint(bool multisample)
 {
+	bool newBatch = false;
 	if (multisample)
 		activeID++;
 	else {
-		if (activeID != 0) {
+		if (activeID == 0) {
+			newBatch = true;
+		} else {
 			pipelineHorizontal--;
 			pipelinePrint--;
 		}
@@ -209,7 +212,7 @@ void s_font::endPrint(bool multisample)
 	}
 	cmdMgr->select(commandIndexHorizontal);
 	cmdMgr->compile();
-	cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
+	cmdMgr->setSubmission(commandIndexHorizontal, newBatch, context->commandMgr);
 	cmdMgr->select(commandIndexPrint);
 	cmdMgr->compile();
 	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);

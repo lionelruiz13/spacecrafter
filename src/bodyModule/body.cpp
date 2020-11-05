@@ -837,8 +837,8 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	if(isVisibleOnScreen()) {
         if (screen_sz > 5) {
-            Halo::nextDraw();
             s_font::nextPrint(true);
+            Halo::nextDraw();
         }
 		if(hasRings()) {
             // depth test forced

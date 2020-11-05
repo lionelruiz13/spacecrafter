@@ -97,71 +97,59 @@ CommandMgr::~CommandMgr()
         vkDestroyCommandPool(refDevice, cmdPool, nullptr);
 }
 
-void CommandMgr::setSubmission(int index, bool needDepthBuffer, CommandMgr *target)
+void CommandMgr::setSubmission(int index, bool newBatch, CommandMgr *target)
 {
-    /*
-    if (withPrevious && !frames[refFrameIndex].submitList.empty() && *frames[refFrameIndex].submitList.back().pWaitDstStageMask == stage) {
-        if (submissionPerFrame) {
-            frames[refFrameIndex].submittedCommandBuffers.back().push_back(frames[refFrameIndex].commandBuffers[index]);
-            frames[refFrameIndex].submitList.back().commandBufferCount = frames[refFrameIndex].submittedCommandBuffers.back().size();
-            frames[refFrameIndex].submitList.back().pCommandBuffers = frames[refFrameIndex].submittedCommandBuffers.back().data();
-        } else {
-            for (auto &frame : frames) {
-                frame.submittedCommandBuffers.back().push_back(frame.commandBuffers[index]);
-                frame.submitList.back().commandBufferCount = frame.submittedCommandBuffers.back().size();
-                frame.submitList.back().pCommandBuffers = frame.submittedCommandBuffers.back().data();
-            }
-        }
-        return;
-    }
-    */
-
-    VkSubmitInfo submitInfo;
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.pNext = nullptr;
-    submitInfo.waitSemaphoreCount = 1;
-    submitInfo.pWaitDstStageMask = &stages[needDepthBuffer ? 1 : 0];
-    submitInfo.commandBufferCount = 1;
-    submitInfo.signalSemaphoreCount = 1;
-
-    if (target != nullptr && submissionPerFrame) {
-        // set dependency to previous command
-        submitInfo.pWaitSemaphores = target->frames[refFrameIndex].submittedSignalSemaphores.empty() ? &target->frames[refFrameIndex].topSemaphore : &target->frames[refFrameIndex].submittedSignalSemaphores.back();
-        // add dependency for next command
-        target->frames[refFrameIndex].submittedSignalSemaphores.push_back(frames[refFrameIndex].signalSemaphores[index]);
-        submitInfo.pSignalSemaphores = &target->frames[refFrameIndex].submittedSignalSemaphores.back();
-        // set command submission state
-        target->frames[refFrameIndex].submittedCommandBuffers.push_back({frames[refFrameIndex].commandBuffers[index]});
-        submitInfo.pCommandBuffers = target->frames[refFrameIndex].submittedCommandBuffers.back().data();
-        // append submission state
-        target->frames[refFrameIndex].submitList.push_back(submitInfo);
-        return;
-    }
-
-    if (submissionPerFrame) {
-        auto &frame = frames[refFrameIndex];
-        // set dependency to previous command
-        submitInfo.pWaitSemaphores = frame.submittedSignalSemaphores.empty() ? &frame.topSemaphore : &frame.submittedSignalSemaphores.back();
-        // add dependency for next command
-        frame.submittedSignalSemaphores.push_back(frame.signalSemaphores[index]);
-        submitInfo.pSignalSemaphores = &frame.submittedSignalSemaphores.back();
-        // set command submission state
-        frame.submittedCommandBuffers.push_back({frame.commandBuffers[index]});
-        submitInfo.pCommandBuffers = frame.submittedCommandBuffers.back().data();
-        // append submission state
-        frame.submitList.push_back(submitInfo);
-    } else {
-        for (auto &frame : frames) {
+    if (target == nullptr) target = this;
+    // Create new batch
+    if (newBatch) {
+        VkSubmitInfo submitInfo;
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.pNext = nullptr;
+        submitInfo.waitSemaphoreCount = 1;
+        submitInfo.pWaitDstStageMask = stages;
+        submitInfo.signalSemaphoreCount = 1;
+        if (target->submissionPerFrame) {
+            auto &frame = target->frames[target->refFrameIndex];
+            auto &srcFrame = frames[refFrameIndex];
             // set dependency to previous command
             submitInfo.pWaitSemaphores = frame.submittedSignalSemaphores.empty() ? &frame.topSemaphore : &frame.submittedSignalSemaphores.back();
             // add dependency for next command
-            frame.submittedSignalSemaphores.push_back(frame.signalSemaphores[index]);
+            frame.submittedSignalSemaphores.push_back(srcFrame.signalSemaphores[index]);
             submitInfo.pSignalSemaphores = &frame.submittedSignalSemaphores.back();
-            // set command submission state
-            frame.submittedCommandBuffers.push_back({frame.commandBuffers[index]});
-            submitInfo.pCommandBuffers = frame.submittedCommandBuffers.back().data();
+            // add commandBuffer storage
+            frame.submittedCommandBuffers.emplace_back();
             // append submission state
             frame.submitList.push_back(submitInfo);
+        } else {
+            for (auto &frame : target->frames) {
+                // set dependency to previous command
+                submitInfo.pWaitSemaphores = frame.submittedSignalSemaphores.empty() ? &frame.topSemaphore : &frame.submittedSignalSemaphores.back();
+                // add dependency for next command
+                frame.submittedSignalSemaphores.push_back(frame.signalSemaphores[index]);
+                submitInfo.pSignalSemaphores = &frame.submittedSignalSemaphores.back();
+                // add commandBuffer storage
+                frame.submittedCommandBuffers.emplace_back();
+                // append submission state
+                frame.submitList.push_back(submitInfo);
+            }
+        }
+    }
+    // Add command to the last batch
+    if (target->submissionPerFrame) {
+        auto &frame = target->frames[target->refFrameIndex];
+        auto &srcFrame = frames[refFrameIndex];
+        // add commandBuffer to the last batch
+        frame.submittedCommandBuffers.back().push_back(srcFrame.commandBuffers[index]);
+        // apply changes to vkSubmitInfo
+        frame.submitList.back().commandBufferCount = frame.submittedCommandBuffers.back().size();
+        frame.submitList.back().pCommandBuffers = frame.submittedCommandBuffers.back().data();
+    } else {
+        for (auto &frame : target->frames) {
+            // add commandBuffer to the last batch
+            frame.submittedCommandBuffers.back().push_back(frame.commandBuffers[index]);
+            // apply changes to vkSubmitInfo
+            frame.submitList.back().commandBufferCount = frame.submittedCommandBuffers.back().size();
+            frame.submitList.back().pCommandBuffers = frame.submittedCommandBuffers.back().data();
         }
     }
 }
@@ -195,7 +183,9 @@ void CommandMgr::submitAction()
         }
         needResolve = false;
     }
-    if (vkQueueSubmit(queue, frames[frameIndex].submitList.size(), frames[frameIndex].submitList.data(), frames[frameIndex].fence) != VK_SUCCESS) {
+    for (uint8_t i = 0; i < frames[frameIndex].submitList.size() - 1; ++i)
+        master->submitGraphic(frames[frameIndex].submitList[i]);
+    if (vkQueueSubmit(queue, 1, &frames[frameIndex].submitList.back(), frames[frameIndex].fence) != VK_SUCCESS) {
         cLog::get()->write("Command submission from CommandMgr has failed (see vulkan-layers with debug=true)", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     }
     if (submissionPerFrame) {
@@ -228,29 +218,29 @@ void CommandMgr::resolve(uint8_t frameIndex)
             submitInfo.commandBufferCount = 0;
             frames[frameIndex].submitList.push_back(submitInfo);
         } else {
-            // MERGE TEST
-            VkSubmitInfo submitInfo;
-            submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-            submitInfo.pNext = nullptr;
-            submitInfo.waitSemaphoreCount = 1;
-            submitInfo.pWaitSemaphores = &frames[frameIndex].topSemaphore;
-            submitInfo.pWaitDstStageMask = &defaultStage;
-            submitInfo.signalSemaphoreCount = 1;
-            submitInfo.pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
-            std::vector<VkCommandBuffer> pCmdBuff;
-            pCmdBuff.reserve(frames[frameIndex].submittedCommandBuffers.size());
-            for (auto &vecCmdBuff : frames[frameIndex].submittedCommandBuffers) {
-                for (auto &cmdBuff : vecCmdBuff) {
-                    pCmdBuff.push_back(cmdBuff);
-                }
-            }
-            frames[frameIndex].submittedCommandBuffers.front().swap(pCmdBuff);
-            submitInfo.commandBufferCount = frames[frameIndex].submittedCommandBuffers.front().size();
-            submitInfo.pCommandBuffers = frames[frameIndex].submittedCommandBuffers.front().data();
-            frames[frameIndex].submitList.clear();
-            frames[frameIndex].submitList.push_back(submitInfo);
-            // MERGE TEST END
-            //frames[frameIndex].submitList.back().pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+            // // MERGE TEST
+            // VkSubmitInfo submitInfo;
+            // submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+            // submitInfo.pNext = nullptr;
+            // submitInfo.waitSemaphoreCount = 1;
+            // submitInfo.pWaitSemaphores = &frames[frameIndex].topSemaphore;
+            // submitInfo.pWaitDstStageMask = &defaultStage;
+            // submitInfo.signalSemaphoreCount = 1;
+            // submitInfo.pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
+            // std::vector<VkCommandBuffer> pCmdBuff;
+            // pCmdBuff.reserve(frames[frameIndex].submittedCommandBuffers.size());
+            // for (auto &vecCmdBuff : frames[frameIndex].submittedCommandBuffers) {
+            //     for (auto &cmdBuff : vecCmdBuff) {
+            //         pCmdBuff.push_back(cmdBuff);
+            //     }
+            // }
+            // frames[frameIndex].submittedCommandBuffers.front().swap(pCmdBuff);
+            // submitInfo.commandBufferCount = frames[frameIndex].submittedCommandBuffers.front().size();
+            // submitInfo.pCommandBuffers = frames[frameIndex].submittedCommandBuffers.front().data();
+            // frames[frameIndex].submitList.clear();
+            // frames[frameIndex].submitList.push_back(submitInfo);
+            // // MERGE TEST END
+            frames[frameIndex].submitList.back().pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
         }
     } else {
         frames[frameIndex].submitList.front().waitSemaphoreCount = 0;

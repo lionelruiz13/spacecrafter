@@ -99,6 +99,11 @@ void VirtualSurface::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
     master->submitTransfer(submitInfo, fence);
 }
 
+void VirtualSurface::submitGraphic(VkSubmitInfo &submitInfo)
+{
+    master->submitGraphic(submitInfo);
+}
+
 void VirtualSurface::waitTransferQueueIdle()
 {
     master->waitTransferQueueIdle();

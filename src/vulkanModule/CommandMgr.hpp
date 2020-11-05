@@ -111,7 +111,7 @@ public:
     //! Finalize recording and deselect command
     void compile();
     //! @brief set command submission to be submitted by .submit()
-    void setSubmission(int index, bool needDepthBuffer = false, CommandMgr *target = nullptr);
+    void setSubmission(int index, bool newBatch = false, CommandMgr *target = nullptr);
     //! reset submission state for all commands
     void resetSubmission();
     //! declare submisssion

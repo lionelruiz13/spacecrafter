@@ -33,6 +33,8 @@ public:
     VkCommandPool &getCommandPool() {return cmdPool;}
     //! Relay transfer queue submission to master
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
+    //! Relay graphic queue submission to master
+    void submitGraphic(VkSubmitInfo &submitInfo);
     //! Wait all transfer commandBuffer to complete
     void waitTransferQueueIdle();
     //! Wait all graphic commandBuffer to be submitted

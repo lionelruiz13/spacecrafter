@@ -141,7 +141,7 @@ void AppDraw::drawViewportShape()
 
 void AppDraw::drawColorInverse()
 {
-    cmdMgr->setSubmission(commandIndexColorInverse);
+    cmdMgr->setSubmission(commandIndexColorInverse, true);
 }
 
 void AppDraw::setLineWidth(float w)
