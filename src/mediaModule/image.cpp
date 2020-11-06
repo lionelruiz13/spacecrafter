@@ -640,6 +640,35 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 
 	drawUp ? plotDirection = 1.0 : plotDirection = -1.0;
 
+	uVert.clipping_fov = prj->getClippingFov();
+
+	if (image_pos_type==IMG_POSITION::POS_DOME)
+		uVert.clipping_fov[2] = 180;
+
+	int index = transparency ? 1 : 0;
+	PipelineLayout *layout;
+	Set *set;
+	if (imageTexture->isYUV()) {
+		setPipeline(m_pipelineUnified[index | 2]);
+		layout = m_layoutUnifiedYUV;
+		set = m_setUnifiedYUV;
+	} else {
+		setPipeline(m_pipelineUnified[index]);
+		layout = m_layoutUnifiedRGB;
+		set = m_setUnifiedRGB;
+	}
+	set->clear();
+	imageTexture->bindImageTexture(set);
+	cmdMgr->pushSet(layout, set);
+	cmdMgr->pushConstant(layout, VK_SHADER_STAGE_VERTEX_BIT, 0, &uVert, 76);
+	if (transparency) {
+		float tmpBuff[5];
+		tmpBuff[0] = image_alpha;
+		*reinterpret_cast<Vec4f *>(tmpBuff + 1) = noColor;
+		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, tmpBuff, 20);
+	} else
+		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, &image_alpha, 4);
+
 	for (int i=0; i<howManyDisplay; i++) {
 		// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
 		imagev = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
@@ -679,62 +708,16 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 				}
 			}
 		}
-
-		//shaderUnified->use();
-
-		// shaderUnified->setUniform("ModelViewMatrix",matrix);
-		// shaderUnified->setUniform("fader", image_alpha);
-
-		// à cause des textures RGB
-		//shaderUnified->setUniform("useRGB", useRGB);
-		std::string sub1 = imageTexture->getType();
-		std::string sub2;
-
-		uVert.clipping_fov = prj->getClippingFov(); // global
-
-		if (image_pos_type==IMG_POSITION::POS_DOME)
-			uVert.clipping_fov[2] = 180;
-
-		int index = transparency ? 1 : 0;
-		PipelineLayout *layout;
-		Set *set;
-		if (imageTexture->isYUV()) {
-			setPipeline(m_pipelineUnified[index | 2]);
-			layout = m_layoutUnifiedYUV;
-			set = m_setUnifiedYUV;
-		} else {
-			setPipeline(m_pipelineUnified[index]);
-			layout = m_layoutUnifiedRGB;
-			set = m_setUnifiedRGB;
-		}
-		set->clear();
-		imageTexture->bindImageTexture(set);
-		cmdMgr->pushSet(layout, set);
-		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_VERTEX_BIT, 0, &uVert, 76);
-		if (transparency) {
-			float tmpBuff[5];
-			tmpBuff[0] = image_alpha;
-			*reinterpret_cast<Vec4f *>(tmpBuff + 1) = noColor;
-			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, tmpBuff, 20);
-		} else
-			cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, &image_alpha, 4);
-		//transparency ? sub2 = "useTransparency" : "useNoTransparency";
-
-		// shaderUnified->setSubroutines(GL_FRAGMENT_SHADER, {sub1, sub2});
-		// shaderUnified->setUniform("noColor",noColor);
-
-		// shaderUnified->setUniform("clipping_fov", clipping_fov);
-
-		if (vertexSize != vecImgData.size() / 5) {
-			vertexSize = vecImgData.size() / 5;
-			vertex->build(vertexSize);
-		}
-		vertex->fillVertexBuffer(vecImgData);
-		cmdMgr->bindVertex(vertex.get());
-		cmdMgr->draw(vertexSize);
-
-		// Renderer::drawMultiArrays(shaderUnified.get(), m_imageUnifiedGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, grid_size, (grid_size+1) * 2 );
-
-		vecImgData.clear();
 	}
+	if (vertexSize != vecImgData.size() / 5) {
+		vertexSize = vecImgData.size() / 5;
+		vertex->build(vertexSize);
+	}
+	vertex->fillVertexBuffer(vecImgData);
+	cmdMgr->bindVertex(vertex.get());
+	int rowSize = (grid_size + 1) * 2;
+	for (int i=0; i<grid_size * howManyDisplay; i++) {
+		cmdMgr->draw(rowSize, 1, i * rowSize);
+	}
+	vecImgData.clear();
 }
