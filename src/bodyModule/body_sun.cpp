@@ -249,6 +249,7 @@ void Sun::createSunShader(ThreadContext *context)
     pipelineSun->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
     pipelineSun->setCullMode(true);
     currentObj->bind(pipelineSun.get());
+    pipelineSun->removeVertexEntry(2);
     pipelineSun->bindShader("body_sun.vert.spv");
     pipelineSun->bindShader("body_sun.frag.spv");
     pipelineSun->build();

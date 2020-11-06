@@ -86,6 +86,7 @@ void MilkyWay::createSC_context(ThreadContext *_context)
 		pipelineMilky[i].setCullMode(true);
 		pipelineMilky[i].setBlendMode(BLEND_NONE);
 		sphere->bind(pipelineMilky + i);
+		pipelineMilky[i].removeVertexEntry(2);
 		pipelineMilky[i].bindShader("milkyway.vert.spv");
 		pipelineMilky[i].bindShader("milkyway.geom.spv");
 		pipelineMilky[i].bindShader(i == 0 ? "milkywayTwoTex.frag.spv" : "milkywayOneTex.frag.spv");
@@ -335,6 +336,7 @@ void MilkyWay::buildZodiacal()
 	pipelineZodiacal->setDepthStencilMode();
 	pipelineZodiacal->setCullMode(true);
 	sphere->bind(pipelineZodiacal.get());
+	pipelineZodiacal->removeVertexEntry(2);
 	pipelineZodiacal->bindShader("milkyway.vert.spv");
 	pipelineZodiacal->bindShader("milkyway.geom.spv");
 	pipelineZodiacal->bindShader("milkywayOneTex.frag.spv");

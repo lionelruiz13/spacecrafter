@@ -116,6 +116,8 @@ void Ring::createSC_context(ThreadContext *context)
 	//pipelineAsteroid->setCullMode(true);
 	pipelineAsteroid->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipelineAsteroid->bindVertex(vertexAsteroid);
+	pipelineAsteroid->removeVertexEntry(1);
+	pipelineAsteroid->removeVertexEntry(2);
 	pipelineAsteroid->bindShader("ring_test.vert.spv");
 	pipelineAsteroid->setSpecializedConstant(0, &asteroid_radius, sizeof(asteroid_radius));
 	pipelineAsteroid->bindShader("ring_test.frag.spv");
