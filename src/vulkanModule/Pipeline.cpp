@@ -247,6 +247,17 @@ void Pipeline::bindVertex(VertexBuffer &vertex, uint32_t binding)
     attributeDescriptions.insert(attributeDescriptions.end(), tmpAttributeDesc.begin(), tmpAttributeDesc.end());
 }
 
+void Pipeline::removeVertexEntry(int location)
+{
+    for (auto it = attributeDescriptions.begin(); it != attributeDescriptions.end(); ++it) {
+        if (it->location == location) {
+            attributeDescriptions.erase(it);
+            return;
+        }
+    }
+    cLog::get()->write("Failed to remove entry", LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
+}
+
 void Pipeline::build()
 {
     if (!isOk || bindingDescriptions.empty() || shaderStages.empty()) {

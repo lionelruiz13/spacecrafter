@@ -33,6 +33,8 @@ public:
     void bindVertex(VertexArray *vertex, uint32_t binding = 0);
     //! Define VertexBuffer layout
     void bindVertex(VertexBuffer &vertex, uint32_t binding);
+    //! Remove vertex/instance location, so that it won't be send to the vertex shader
+    void removeVertexEntry(int location);
     //! Set cull mode (default : false)
     void setCullMode(bool enable) {rasterizer.cullMode = enable ? VK_CULL_MODE_BACK_BIT : 0;}
     //! Set front face (default : false)
