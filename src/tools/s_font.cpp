@@ -401,6 +401,8 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 	*/
 	rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string '" + s + "'");
+	if (keepOnCPU)
+		rendering.stringTexture->use();
 
 	if (withBorder) {
 		// ***********************************
@@ -446,6 +448,9 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
 		*/
 		rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string border '" + s + "'");
+		if (keepOnCPU)
+			rendering.borderTexture->use();
+
 		rendering.haveBorder =true;
 		SDL_FreeSurface(border);
 	}
@@ -464,7 +469,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	// Get rendered texture
 	renderedString_struct rendering;
 	if(renderCache[str].textureW == 0) {
-		rendering = renderString(str, true, !cache); // because keepOnCPU use waitTransferQueueIdle
+		rendering = renderString(str, true, !cache); // because keepOnCPU=false use waitTransferQueueIdle
 		if(cache)
 			renderCache[str] = rendering;
 		tempCache.push_back(rendering); // to hold texture while it is used
