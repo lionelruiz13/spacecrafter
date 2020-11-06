@@ -49,8 +49,7 @@
 #include "vulkanModule/Buffer.hpp"
 
 #define NB_MAX_POINTS 4194304
-// 48 MiB in GPU per skyDisplay
-// 528 MiB in GPU for 11 skyDisplay
+
 const float deg2rad = 3.1415926 / 180.; // Convert deg to radian
 const float rad2deg = 180. / 3.1415926; // Converd radian to deg
 const float grad2rad = 3.1415926 / 18.; // Convert grind pas to radian
@@ -118,35 +117,30 @@ void SkyDisplay::createLocalResources()
 {
 	m_dataGL = std::make_unique<VertexArray>(context->surface);
 	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	m_dataGL->build(NB_MAX_POINTS);
 	uniformColorFader = std::make_unique<Uniform>(context->surface, 16, true);
 	pColor = static_cast<Vec3f *>(uniformColorFader->data);
 	pFader = static_cast<float *>(uniformColorFader->data) + 3;
 	uniformMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat), true);
 	pMat = static_cast<typeof(pMat)>(uniformMat->data);
-	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	pNbVertex = static_cast<uint32_t *>(drawData->data);
-	*pNbVertex = 0;
-	pNbVertex[1] = 1; // instanceCount
-	pNbVertex[2] = pNbVertex[3] = 0; // offsets
-	drawData->update();
+	commandIndex = context->commandMgrDynamic->getCommandIndex();
 }
 
-int SkyDisplay::beginRecord()
+void SkyDisplay::clear()
 {
-	int commandIndex = context->commandMgr->initNew(pipeline);
-	context->commandMgr->bindSet(layout, context->global->globalSet, 0);
-	return commandIndex;
+	dataSky.clear();
 }
 
-void SkyDisplay::endRecord()
+void SkyDisplay::build()
 {
-	context->commandMgr->compile();
-}
+	context->commandMgr->waitGraphicQueueIdle();
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
 
-void SkyDisplay::record()
-{
-	CommandMgr *cmdMgr = context->commandMgr;
+	m_dataGL->build(m_dataSize);
+	CommandMgr *cmdMgr = context->commandMgrDynamic;
+	cmdMgr->init(commandIndex, pipeline);
+	cmdMgr->bindSet(layout, context->global->globalSet, 0);
 	if (virtualColorFaderID == -1) {
 		virtualColorFaderID = set->bindVirtualUniform(uniformColorFader.get(), 0);
 		virtualMatID = set->bindVirtualUniform(uniformMat.get(), 1);
@@ -156,12 +150,8 @@ void SkyDisplay::record()
 	}
 	cmdMgr->bindSet(layout, set, 1);
 	cmdMgr->bindVertex(m_dataGL.get());
-	cmdMgr->indirectDraw(drawData.get());
-}
-
-void SkyDisplay::clear()
-{
-	dataSky.clear();
+	cmdMgr->draw(m_dataSize);
+	cmdMgr->compile();
 }
 
 //a optimiser
@@ -200,8 +190,6 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate()) {
-		*pNbVertex = 0;
-		drawData->update();
 		return;
 	}
 
@@ -214,12 +202,12 @@ void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	*pFader = fader.getInterstate();
 	*pMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
 
+	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
+
 	// m_dataGL->bind();
 	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3); //un point est représenté par 3 points
 	// m_dataGL->unBind();
 	// shaderSkyDisplay->unuse();
-	*pNbVertex = dataSky.size() / 3;
-	drawData->update();
 	//Renderer::drawArrays(shaderSkyDisplay.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3);
 }
 
@@ -256,6 +244,10 @@ void SkyPerson::loadData(const std::string& filename)
 	}
 
 	//on charge les points dans un vbo
+	if (m_dataSize != dataSky.size() / 3) {
+		m_dataSize = dataSky.size() / 3;
+		build();
+	}
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
 	m_dataGL->update();
 }
@@ -314,7 +306,12 @@ void SkyPerson::loadString(const std::string& message)
 	}
 
 	//on charge les points dans un vbo
+	if (m_dataSize != dataSky.size() / 3) {
+		m_dataSize = dataSky.size() / 3;
+		build();
+	}
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+	m_dataGL->update();
 }
 
 
@@ -324,8 +321,6 @@ SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate()) {
-		*pNbVertex = 0;
-		drawData->update();
 		return;
 	}
 
@@ -373,7 +368,12 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	aperson = (direction + tick) * deg2rad;
 
 	//on charge les points dans un vbo
+	if (m_dataSize != dataSky.size() / 3) {
+		m_dataSize = dataSky.size() / 3;
+		build();
+	}
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+	m_dataGL->update();
 
 	SkyDisplay::draw(prj,nav);
 
@@ -729,8 +729,6 @@ SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
 void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate()) {
-		*pNbVertex = 0;
-		drawData->update();
 		return;
 	}
 
@@ -778,7 +776,12 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 		insert_vec3(dataSky,pt1 );
 	}
 
+	if (m_dataSize != dataSky.size() / 3) {
+		m_dataSize = dataSky.size() / 3;
+		build();
+	}
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+	m_dataGL->update();
 
 	SkyDisplay::draw(prj,nav);
 
@@ -819,8 +822,6 @@ SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
 void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate() or (equPos == oldEquPos)) {
-		*pNbVertex = 0;
-		drawData->update();
 		return;
 	}
 	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
@@ -861,7 +862,12 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 		insert_vec3(dataSky,pt2 );
 	}
 
+	if (m_dataSize != dataSky.size() / 3) {
+		m_dataSize = dataSky.size() / 3;
+		build();
+	}
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+	m_dataGL->update();
 
 	SkyDisplay::draw(prj,nav);
 
@@ -881,8 +887,6 @@ SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
 void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate()) {
-		*pNbVertex = 0;
-		drawData->update();
 		return;
 	}
 
@@ -930,7 +934,12 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 		insert_vec3(dataSky,pt1 );
 	}
 
+	if (m_dataSize != dataSky.size() / 3) {
+		m_dataSize = dataSky.size() / 3;
+		build();
+	}
 	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
+	m_dataGL->update();
 
 	SkyDisplay::draw(prj,nav);
 

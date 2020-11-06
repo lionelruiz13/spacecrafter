@@ -31,7 +31,7 @@
 #include <vector>
 
 #include "tools/fader.hpp"
-// 
+//
 
 #include "tools/no_copy.hpp"
 #include "tools/vecmath.hpp"
@@ -101,10 +101,9 @@ public:
 
 	static void createSC_context(ThreadContext *_context);
 	void createLocalResources();
-	static int beginRecord();
-	static void endRecord();
-	void record();
 protected:
+	//! Build vertexBuffer and draw command
+	void build();
 	Vec3f color;
 	Vec3f *pColor;
 	double aperson;
@@ -118,11 +117,11 @@ protected:
 	static s_font* skydisplay_font;
 	std::unique_ptr<Uniform> uniformColorFader;
 	std::unique_ptr<Uniform> uniformMat;
-	std::unique_ptr<Buffer> drawData;
-	uint32_t *pNbVertex;
 
 	std::vector<float> dataSky;
 	PROJECTION_TYPE ptype;
+	int commandIndex;
+	uint32_t m_dataSize = 0;
 	std::unique_ptr<VertexArray> m_dataGL;
 	//static std::unique_ptr<shaderProgram> shaderSkyDisplay;
 	static ThreadContext *context;

@@ -44,7 +44,6 @@ void SkyDisplayMgr::draw(const Projector *prj,const Navigator *nav, Vec3d equPos
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
 		it->second->draw(prj, nav, equPos, oldEquPos);
 	}
-	cmdMgr->setSubmission(commandIndex);
 }
 
 void SkyDisplayMgr::drawPerson(const Projector *prj,const Navigator *nav)
@@ -52,22 +51,6 @@ void SkyDisplayMgr::drawPerson(const Projector *prj,const Navigator *nav)
 	if ((personAL!=nullptr) && (personEQ!=nullptr)) {
 		personAL->draw(prj,nav);
 		personEQ->draw(prj,nav);
-		cmdMgr->setSubmission(commandIndexPerson);
-	}
-}
-
-void SkyDisplayMgr::build()
-{
-	commandIndex = SkyDisplay::beginRecord();
-	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		it->second->record();
-	}
-	SkyDisplay::endRecord();
-	if ((personAL!=nullptr) && (personEQ!=nullptr)) {
-		commandIndexPerson = SkyDisplay::beginRecord();
-		personAL->record();
-		personEQ->record();
-		SkyDisplay::endRecord();
 	}
 }
 

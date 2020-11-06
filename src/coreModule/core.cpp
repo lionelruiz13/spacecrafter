@@ -131,7 +131,6 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ANGDIST);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_LOXODROMY);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
-	skyDisplayMgr->build(); // build rendering of all created skyDisplay
 
 	cardinals_points = new Cardinals();
 	meteors = new MeteorMgr(10, 60, context);
