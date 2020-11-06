@@ -318,7 +318,7 @@ void MilkyWay::buildMilkyway()
 	cmdMgr->compile();
 	if (useIrisMilky && currentMilky.name == defaultMilky.name) {
 		setIrisMilky->bindTexture(currentMilky.tex->getTexture(), 0);
-		if (onTextureTransition) setMilky->bindTexture(nextMilky.tex->getTexture(), 1);
+		if (onTextureTransition) setIrisMilky->bindTexture(nextMilky.tex->getTexture(), 1);
 		cmdMgr->init(commandIndexIrisMilky, onTextureTransition ? pipelineMilky : pipelineMilky + 1);
 		cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
 		cmdMgr->bindSet(layout.get(), setIrisMilky.get(), 1);
