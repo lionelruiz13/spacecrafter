@@ -46,7 +46,7 @@ Axis::Axis(Body * _body)
 	m_AxisGL = std::make_unique<VertexArray>(*vertexModel);
 	m_AxisGL->build(2);
 
-	set = std::make_unique<Set>(surface, setMgr, layout);
+	set = std::make_unique<Set>(surface, setMgr, layout, -1, false); // Don't initialize while unused
 	uMat = std::make_unique<Uniform>(surface, sizeof(Mat4f));
 	MVP = static_cast<Mat4f *>(uMat->data);
 	set->bindUniform(uMat.get(), 0);
@@ -149,7 +149,7 @@ void Axis::createSC_context(ThreadContext *context)
 	setMgr = context->setMgr;
 
 	vertexModel = context->global->tracker->track(new VertexArray(surface, cmdMgr));
-	vertexModel->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
+	vertexModel->registerVertexBuffer(BufferType::POS3D, BufferAccess::STREAM);
 
 	layout = context->global->tracker->track(new PipelineLayout(context->surface));
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);

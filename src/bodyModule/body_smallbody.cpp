@@ -100,7 +100,7 @@ void SmallBody::selectShader ()
 		myShader = SHADER_BUMP;
         drawState = BodyShader::getShaderBump();
 
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout, -1, false); // Don't initialize, save time and memory if never drawn
         uUmbraColor = std::make_unique<Uniform>(context->surface, sizeof(*pUmbraColor));
         pUmbraColor = static_cast<typeof(pUmbraColor)>(uUmbraColor->data);
         set->bindUniform(uUmbraColor.get(), 2);
@@ -113,21 +113,10 @@ void SmallBody::selectShader ()
 		myShader = SHADER_NORMAL;
 		drawState = BodyShader::getShaderNormal();
 
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
+        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout, -1, false); // Don't initialize, save time and memory if never drawn
         set->bindTexture(tex_current->getTexture(), 2);
         set->bindTexture(tex_eclipse_map->getTexture(), 3);
 	}
-    uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-    pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-    set->bindUniform(uGlobalVertProj.get(), 0);
-    uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-    pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-    set->bindUniform(uGlobalFrag.get(), 1);
-
-    pGlobalFrag->MoonRadius1 = 0;
-    pGlobalFrag->MoonRadius2 = 0;
-    pGlobalFrag->MoonRadius3 = 0;
-    pGlobalFrag->MoonRadius4 = 0;
 }
 
 void SmallBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
@@ -141,6 +130,18 @@ void SmallBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4
 
     switch (commandIndex) {
         case -2: // Command not builded
+            // Create general uniforms and bind them
+            uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+            pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+            set->bindUniform(uGlobalVertProj.get(), 0);
+            uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
+            pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
+            set->bindUniform(uGlobalFrag.get(), 1);
+            pGlobalFrag->MoonRadius1 = 0;
+            pGlobalFrag->MoonRadius2 = 0;
+            pGlobalFrag->MoonRadius3 = 0;
+            pGlobalFrag->MoonRadius4 = 0;
+            // Begin build command
             commandIndex = -1;
             if (!context->commandMgr->isRecording()) {
                 commandIndex = context->commandMgr->getCommandIndex();

@@ -70,7 +70,7 @@ void Hints::createSC_context(ThreadContext *_context)
 	// shaderHints->setUniformLocation({"Color", "fader"});
 
 	m_HintsGL = context->global->tracker->track(new VertexArray(context->surface, context->commandMgr));
-	m_HintsGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
+	m_HintsGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
 	//m_HintsGL->build(nbrFacets);
 
 	layout = context->global->tracker->track(new PipelineLayout(context->surface));
