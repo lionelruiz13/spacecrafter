@@ -11,32 +11,43 @@
 
 Set::Set() {}
 
-Set::Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout, int setBinding) : master(_master), mgr(_mgr)
+Set::Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout, int setBinding, bool initialize) : master(_master), mgr(_mgr)
 {
-    VkDescriptorSetAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     allocInfo.descriptorPool = _mgr->getDescriptorPool();
     allocInfo.descriptorSetCount = 1;
     allocInfo.pSetLayouts = &_layout->getDescriptorLayout(setBinding);
-    if (*allocInfo.pSetLayouts == VK_NULL_HANDLE) {
-        cLog::get()->write("Can't create Set from invalid Layout", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
-        set = VK_NULL_HANDLE;
-        return;
-    }
-    if (!createDescriptorSet(&allocInfo)) {
-        // retry (because it could have been solved)
-        if (!createDescriptorSet(&allocInfo)) {
-            cLog::get()->write("Failed to create Set from this SetMgr", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
-            set = VK_NULL_HANDLE;
-        }
+    if (initialize) {
+        init();
     }
 }
 
 Set::~Set() {}
 
-bool Set::createDescriptorSet(VkDescriptorSetAllocateInfo *allocInfo)
+void Set::init()
 {
-    switch (vkAllocateDescriptorSets(master->refDevice, allocInfo, &set)) {
+    if (initialized)
+        return;
+    initialized = true;
+    if (*allocInfo.pSetLayouts == VK_NULL_HANDLE) {
+        cLog::get()->write("Can't create Set from invalid Layout", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+        return;
+    }
+    if (!createDescriptorSet()) {
+        // retry (because it could have been solved)
+        if (!createDescriptorSet()) {
+            cLog::get()->write("Failed to create Set from this SetMgr", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+            set = VK_NULL_HANDLE;
+        }
+    }
+    for (auto &ws : writeSet) {
+        ws.dstSet = set;
+    }
+}
+
+bool Set::createDescriptorSet()
+{
+    switch (vkAllocateDescriptorSets(master->refDevice, &allocInfo, &set)) {
         case VK_SUCCESS:
             return true;
         case VK_ERROR_FRAGMENTED_POOL:
@@ -55,7 +66,7 @@ bool Set::createDescriptorSet(VkDescriptorSetAllocateInfo *allocInfo)
             return true;
     }
     mgr->extend();
-    allocInfo->descriptorPool = mgr->getDescriptorPool();
+    allocInfo.descriptorPool = mgr->getDescriptorPool();
     return false;
 }
 
@@ -122,6 +133,7 @@ void Set::bindTexture(TextureImage *texture, int binding)
 
 void Set::update()
 {
+    init();
     if (set) {
         vkUpdateDescriptorSets(master->refDevice, writeSet.size(), writeSet.data(), 0, nullptr);
         writeSet.clear();

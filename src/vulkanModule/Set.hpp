@@ -24,7 +24,7 @@ public:
     Set();
     //! create a Set which can be bind
     //! Do not bind anything to it while bound to commandBuffer which can be submitted
-    Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout, int setBinding = -1);
+    Set(VirtualSurface *_master, SetMgr *_mgr, PipelineLayout *_layout, int setBinding = -1, bool initialize = true);
     ~Set();
     //! Bind uniform to this set
     void bindUniform(Uniform *uniform, uint32_t binding);
@@ -50,14 +50,18 @@ public:
     //! Manually update bindings
     void update();
 private:
+    //! Allocate descriptorSet from SetMgr
+    void init();
     // create descriptorSet, return true on success
-    bool createDescriptorSet(VkDescriptorSetAllocateInfo *allocInfo);
+    bool createDescriptorSet();
     VirtualSurface *master;
     SetMgr *mgr;
+    VkDescriptorSetAllocateInfo allocInfo{};
     std::forward_list<VkDescriptorBufferInfo> storageBufferInfo;
     std::vector<VkWriteDescriptorSet> writeSet;
     std::vector<uint32_t> dynamicOffsets;
-    VkDescriptorSet set;
+    VkDescriptorSet set = VK_NULL_HANDLE;
+    bool initialized = false;
 };
 
 #endif /* end of include guard: SET_HPP */
