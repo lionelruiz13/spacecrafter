@@ -221,6 +221,7 @@ void Vulkan::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
 {
     transferQueueMutex.lock();
     transferQueue.emplace(*submitInfo, fence);
+    isTransferIdle = false;
     transferQueueMutex.unlock();
 }
 
@@ -247,9 +248,12 @@ void Vulkan::waitTransferQueueIdle()
 {
     while (!transferQueue.empty() || transferActivity > 0)
         std::this_thread::yield();
+    if (isTransferIdle)
+        return;
     transferQueueMutex.lock();
     for (auto &vkqueue : transferQueues)
         vkQueueWaitIdle(vkqueue);
+    isTransferIdle = true;
     transferQueueMutex.unlock();
 }
 

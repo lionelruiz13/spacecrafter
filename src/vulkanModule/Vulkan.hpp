@@ -161,6 +161,7 @@ private:
     std::queue<std::pair<VkSubmitInfo, VkFence>> transferQueue;
     std::mutex transferQueueMutex;
     uint8_t transferActivity = 0;
+    bool isTransferIdle = true;
     std::thread graphicThread;
     std::queue<CommandMgr *> graphicQueue;
     std::mutex graphicQueueMutex;
