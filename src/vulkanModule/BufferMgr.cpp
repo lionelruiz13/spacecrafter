@@ -60,19 +60,20 @@ SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
             if (optimalAvailableSubBuffer != availableSubBufferZones.end()) availableSubBuffer = optimalAvailableSubBuffer;
             buffer = availableSubBuffer->back();
             availableSubBuffer->pop_back();
+            if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
         }
     } else {
         for (availableSubBuffer = availableSubBufferZones.begin(); availableSubBuffer != availableSubBufferZones.end(); ++availableSubBuffer) {
             if (availableSubBuffer->front().size < size)
                 continue;
-            const auto itEnd = availableSubBuffer->end();
-            for (auto it = availableSubBuffer->begin(); it != itEnd; ++it) {
+            for (auto it = availableSubBuffer->begin(); it != availableSubBuffer->end(); ++it) {
                 if (!it->possibleUniform)
                     break;
                 if (it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment < size)
                     continue;
                 buffer = *it;
                 availableSubBuffer->erase(it);
+                if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
                 if (buffer.offset % uniformOffsetAlignment > 0) {
                     SubBuffer tmp = buffer;
                     tmp.size = uniformOffsetAlignment - buffer.offset % uniformOffsetAlignment;
@@ -82,6 +83,8 @@ SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
                 }
                 break;
             }
+            if (buffer.buffer != VK_NULL_HANDLE)
+                break;
         }
     }
     if (buffer.buffer == VK_NULL_HANDLE) {
@@ -95,7 +98,6 @@ SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
             insert(tmp);
         }
         if (buffer.offset + buffer.size > maxOffset) maxOffset = buffer.offset + buffer.size;
-        if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
     }
     return buffer;
 }
@@ -103,8 +105,7 @@ SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
 void BufferMgr::insert(SubBuffer &subBuffer)
 {
     subBuffer.possibleUniform = (subBuffer.offset % uniformOffsetAlignment == 0) || (subBuffer.size > uniformOffsetAlignment - subBuffer.offset % uniformOffsetAlignment);
-    const auto itEnd = availableSubBufferZones.end();
-    for (auto it = availableSubBufferZones.begin(); it != itEnd; ++it) {
+    for (auto it = availableSubBufferZones.begin(); it != availableSubBufferZones.end(); ++it) {
         if (it->front().size == subBuffer.size) {
             if (subBuffer.possibleUniform)
                 it->push_front(subBuffer);
@@ -147,8 +148,7 @@ void BufferMgr::releaseBuffer()
 
     mutex.lock();
     for (auto availableSubBuffer = availableSubBufferZones.begin(); availableSubBuffer != availableSubBufferZones.end(); ++availableSubBuffer) {
-        const auto itEnd = availableSubBuffer->end();
-        for (auto it = availableSubBuffer->begin(); it != itEnd; ++it) {
+        for (auto it = availableSubBuffer->begin(); it != availableSubBuffer->end(); ++it) {
             if (it->offset == buffEnd) {
                 subBuffer.size += it->size;
             } else if (it->offset + it->size == buffBegin) {

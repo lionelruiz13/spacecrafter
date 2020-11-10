@@ -156,7 +156,7 @@ void Pipeline::bindShader(const std::string &filename, VkShaderStageFlagBits sta
         isOk = false;
         return;
     }
-    delete buffer;
+    delete[] buffer;
     shaderStages.push_back(tmp);
     master->setObjectName(tmp.module, VK_OBJECT_TYPE_SHADER_MODULE, filename);
     name += " " + filename;

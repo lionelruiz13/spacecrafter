@@ -128,7 +128,7 @@ private:
     unsigned int *pIndexData = nullptr;
     BufferAccess vertexAccess = BufferAccess::STATIC;
     BufferAccess instanceAccess = BufferAccess::STATIC;
-    BufferAccess indexAccess;
+    BufferAccess indexAccess = BufferAccess::STATIC;
     VkVertexInputBindingDescription bindingDesc{0, 0, VK_VERTEX_INPUT_RATE_VERTEX};
     VkVertexInputBindingDescription bindingDesc2{1, 0, VK_VERTEX_INPUT_RATE_INSTANCE};
     std::vector<VkVertexInputAttributeDescription> attributeDesc;
