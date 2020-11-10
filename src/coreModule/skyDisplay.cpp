@@ -142,11 +142,11 @@ void SkyDisplay::build()
 	cmdMgr->init(commandIndex, pipeline);
 	cmdMgr->bindSet(layout, context->global->globalSet, 0);
 	if (virtualColorFaderID == -1) {
-		virtualColorFaderID = set->bindVirtualUniform(uniformColorFader.get(), 0);
-		virtualMatID = set->bindVirtualUniform(uniformMat.get(), 1);
+		virtualMatID = set->bindVirtualUniform(uniformMat.get(), 0);
+		virtualColorFaderID = set->bindVirtualUniform(uniformColorFader.get(), 1);
 	} else {
-		set->setVirtualUniform(uniformColorFader.get(), virtualColorFaderID);
 		set->setVirtualUniform(uniformMat.get(), virtualMatID);
+		set->setVirtualUniform(uniformColorFader.get(), virtualColorFaderID);
 	}
 	cmdMgr->bindSet(layout, set, 1);
 	cmdMgr->bindVertex(m_dataGL.get());
