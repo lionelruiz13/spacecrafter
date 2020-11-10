@@ -49,52 +49,54 @@ SubBuffer BufferMgr::acquireBuffer(int size, bool isUniform)
 {
     std::lock_guard<std::mutex> lock(mutex);
     SubBuffer buffer;
-    for (auto availableSubBuffer = availableSubBufferZones.begin(); availableSubBuffer != availableSubBufferZones.end(); ++availableSubBuffer) {
-        if (availableSubBuffer->front().size < size)
-            continue;
-        if (!isUniform) {
+    buffer.buffer = VK_NULL_HANDLE;
+    std::list<std::list<SubBuffer>>::iterator availableSubBuffer;
+    if (!isUniform) {
+        availableSubBuffer = std::find_if(availableSubBufferZones.begin(), availableSubBufferZones.end(),
+          [size](auto &value){return (value.back().size >= size);});
+        if (availableSubBuffer != availableSubBufferZones.end()) {
+            auto optimalAvailableSubBuffer = std::find_if(availableSubBuffer, availableSubBufferZones.end(),
+            [size](auto &value){return !(value.back().size < size || value.back().possibleUniform);});
+            if (optimalAvailableSubBuffer != availableSubBufferZones.end()) availableSubBuffer = optimalAvailableSubBuffer;
             buffer = availableSubBuffer->back();
             availableSubBuffer->pop_back();
-            if (buffer.size > size) {
-                SubBuffer tmp = buffer;
-                tmp.size -= size;
-                tmp.offset += size;
-                buffer.size = size;
-                insert(tmp);
-            }
-            if (buffer.offset + buffer.size > maxOffset) maxOffset = buffer.offset + buffer.size;
-            if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
-            return buffer;
-        } // else
-        const auto itEnd = availableSubBuffer->end();
-        for (auto it = availableSubBuffer->begin(); it != itEnd; ++it) {
-            if (!it->possibleUniform)
-                break;
-            if (it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment < size)
+        }
+    } else {
+        for (availableSubBuffer = availableSubBufferZones.begin(); availableSubBuffer != availableSubBufferZones.end(); ++availableSubBuffer) {
+            if (availableSubBuffer->front().size < size)
                 continue;
-            buffer = *it;
-            availableSubBuffer->erase(it);
-            if (buffer.offset % uniformOffsetAlignment > 0) {
-                SubBuffer tmp = buffer;
-                tmp.size = uniformOffsetAlignment - buffer.offset % uniformOffsetAlignment;
-                buffer.offset += tmp.size;
-                buffer.size -= tmp.size;
-                insert(tmp);
+            const auto itEnd = availableSubBuffer->end();
+            for (auto it = availableSubBuffer->begin(); it != itEnd; ++it) {
+                if (!it->possibleUniform)
+                    break;
+                if (it->offset % uniformOffsetAlignment > 0 && it->size + it->offset % uniformOffsetAlignment - uniformOffsetAlignment < size)
+                    continue;
+                buffer = *it;
+                availableSubBuffer->erase(it);
+                if (buffer.offset % uniformOffsetAlignment > 0) {
+                    SubBuffer tmp = buffer;
+                    tmp.size = uniformOffsetAlignment - buffer.offset % uniformOffsetAlignment;
+                    buffer.offset += tmp.size;
+                    buffer.size -= tmp.size;
+                    insert(tmp);
+                }
+                break;
             }
-            if (buffer.size > size) {
-                SubBuffer tmp = buffer;
-                tmp.size -= size;
-                tmp.offset += size;
-                buffer.size = size;
-                insert(tmp);
-            }
-            if (buffer.offset + buffer.size > maxOffset) maxOffset = buffer.offset + buffer.size;
-            if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
-            return buffer;
         }
     }
-    cLog::get()->write("Can't allocate buffer in global buffer !", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
-    buffer.buffer = VK_NULL_HANDLE;
+    if (buffer.buffer == VK_NULL_HANDLE) {
+        cLog::get()->write("Can't allocate buffer in global buffer !", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+    } else {
+        if (buffer.size > size) {
+            SubBuffer tmp = buffer;
+            tmp.size -= size;
+            tmp.offset += size;
+            buffer.size = size;
+            insert(tmp);
+        }
+        if (buffer.offset + buffer.size > maxOffset) maxOffset = buffer.offset + buffer.size;
+        if (availableSubBuffer->size() == 0) availableSubBufferZones.erase(availableSubBuffer);
+    }
     return buffer;
 }
 
