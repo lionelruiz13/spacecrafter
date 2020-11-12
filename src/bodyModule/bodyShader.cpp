@@ -78,11 +78,9 @@ void BodyShader::createShader(ThreadContext *context)
 
 	// ========== my_earth ========== //
 	myEarth.layout = context->global->tracker->track(new PipelineLayout(context->surface));
-	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // globalProj
+	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
 	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // globalFrag
-	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 2); // globalVertGeom
-	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 3); // globalTescGeom
-	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 4); // globalTesc
+	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 2); // globalTescGeom
 	myEarth.layout->setTextureLocation(5);
 	myEarth.layout->setTextureLocation(6);
 	myEarth.layout->setTextureLocation(7);
@@ -97,14 +95,14 @@ void BodyShader::createShader(ThreadContext *context)
 	myEarth.pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, myEarth.layout}, {context->surface, myEarth.layout}});
 	for (int i = 0; i < 2; ++i) {
 		myEarth.pipeline[i].setCullMode(true);
-		myEarth.pipeline[i].setFrontFace(); // Earth with tesselation don't have the same front face...
+		myEarth.pipeline[i].setFrontFace(); // Body with tesselation don't have the same front face...
 		myEarth.pipeline[i].setBlendMode(BLEND_NONE);
 		myEarth.pipeline[i].bindVertex(&vertex);
 		myEarth.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 		myEarth.pipeline[i].setTessellationState(3);
-		myEarth.pipeline[i].bindShader("my_earth.vert.spv");
-		myEarth.pipeline[i].bindShader("my_earth.tesc.spv");
-		myEarth.pipeline[i].bindShader("my_earth.tese.spv");
+		myEarth.pipeline[i].bindShader("body_tes.vert.spv");
+		myEarth.pipeline[i].bindShader("body_tes.tesc.spv");
+		myEarth.pipeline[i].bindShader("body_tes.tese.spv");
 		myEarth.pipeline[i].bindShader("my_earth.geom.spv");
 		myEarth.pipeline[i].bindShader("my_earth.frag.spv");
 		VkBool32 Clouds = (i == 1);
@@ -176,11 +174,9 @@ void BodyShader::createShader(ThreadContext *context)
 
 	// ========== body_normal_tes ========== //
 	shaderNormalTes.layout = context->global->tracker->track(new PipelineLayout(context->surface));
-	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // globalProj
+	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
 	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // globalFrag
-	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 2); // globalVertGeom
-	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 3); // globalTescGeom
-	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 4); // globalTesc
+	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 2); // globalTescGeom
 	shaderNormalTes.layout->setTextureLocation(5, nullptr, VK_SHADER_STAGE_GEOMETRY_BIT); // heightmapTexture
 	shaderNormalTes.layout->setTextureLocation(6); // mapTexture
 	shaderNormalTes.layout->setTextureLocation(7); // shadowTexture
@@ -190,13 +186,14 @@ void BodyShader::createShader(ThreadContext *context)
 
 	shaderNormalTes.pipeline = context->global->tracker->track(new Pipeline(context->surface, shaderNormalTes.layout));
 	shaderNormalTes.pipeline->setCullMode(true);
+	shaderNormalTes.pipeline->setFrontFace(); // Body with tesselation don't have the same front face...
 	shaderNormalTes.pipeline->setBlendMode(BLEND_NONE);
 	shaderNormalTes.pipeline->bindVertex(&vertex);
 	shaderNormalTes.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 	shaderNormalTes.pipeline->setTessellationState(3);
-	shaderNormalTes.pipeline->bindShader("body_normal_tes.vert.spv");
-	shaderNormalTes.pipeline->bindShader("body_normal_tes.tesc.spv");
-	shaderNormalTes.pipeline->bindShader("body_normal_tes.tese.spv");
+	shaderNormalTes.pipeline->bindShader("body_tes.vert.spv");
+	shaderNormalTes.pipeline->bindShader("body_tes.tesc.spv");
+	shaderNormalTes.pipeline->bindShader("body_tes.tese.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.geom.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.frag.spv");
 	shaderNormalTes.pipeline->build();
@@ -230,11 +227,9 @@ void BodyShader::createShader(ThreadContext *context)
 
 	// ========== my_moon ========== //
 	myMoon.layout = context->global->tracker->track(new PipelineLayout(context->surface));
-	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0); // globalProj
+	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
 	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // moonFrag
-	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 2); // globalVertGeom
-	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 3); // globalTescGeom
-	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 4); // globalTesc
+	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 2); // globalTescGeom
 	myMoon.layout->setTextureLocation(5); // mapTexture
 	myMoon.layout->setTextureLocation(6); // normalTexture
 	myMoon.layout->setTextureLocation(7); // shadowTexture
@@ -245,13 +240,14 @@ void BodyShader::createShader(ThreadContext *context)
 
 	myMoon.pipeline = context->global->tracker->track(new Pipeline(context->surface, myMoon.layout));
 	myMoon.pipeline->setCullMode(true);
+	myMoon.pipeline->setFrontFace(); // Body with tesselation don't have the same front face...
 	myMoon.pipeline->setBlendMode(BLEND_NONE);
 	myMoon.pipeline->bindVertex(&vertex);
 	myMoon.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 	myMoon.pipeline->setTessellationState(3);
-	myMoon.pipeline->bindShader("my_moon.vert.spv");
-	myMoon.pipeline->bindShader("my_moon.tesc.spv");
-	myMoon.pipeline->bindShader("my_moon.tese.spv");
+	myMoon.pipeline->bindShader("body_tes.vert.spv");
+	myMoon.pipeline->bindShader("body_tes.tesc.spv");
+	myMoon.pipeline->bindShader("body_tes.tese.spv");
 	myMoon.pipeline->bindShader("my_moon.geom.spv");
 	myMoon.pipeline->bindShader("my_moon.frag.spv");
 	myMoon.pipeline->build();

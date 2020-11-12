@@ -136,21 +136,15 @@ void BigBody::selectShader ()
 		myShader = SHADER_NIGHT_TES; // myEarth
 		drawState = BodyShader::getShaderNightTes();
         set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalProj));
-        pGlobalProj = static_cast<typeof(pGlobalProj)>(uGlobalProj->data);
-        set->bindUniform(uGlobalProj.get(), 0);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
         uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
         pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
         set->bindUniform(uGlobalFrag.get(), 1);
-        uGlobalVertGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertGeom));
-        pGlobalVertGeom = static_cast<typeof(pGlobalVertGeom)>(uGlobalVertGeom->data);
-        set->bindUniform(uGlobalVertGeom.get(), 2);
         uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
         pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
-        set->bindUniform(uGlobalTescGeom.get(), 3);
-        uGlobalTesc = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTesc));
-        pGlobalTesc = static_cast<typeof(pGlobalTesc)>(uGlobalTesc->data);
-        set->bindUniform(uGlobalTesc.get(), 4);
+        set->bindUniform(uGlobalTescGeom.get(), 2);
         set->bindTexture(tex_current->getTexture(), 5);
         set->bindTexture(tex_eclipse_map->getTexture(), 6);
         set->bindTexture(tex_night->getTexture(), 7);
@@ -229,21 +223,15 @@ void BigBody::selectShader ()
 		myShader = SHADER_NORMAL_TES;
 		drawState = BodyShader::getShaderNormalTes();
         set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalProj));
-        pGlobalProj = static_cast<typeof(pGlobalProj)>(uGlobalProj->data);
-        set->bindUniform(uGlobalProj.get(), 0);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
         uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
         pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
         set->bindUniform(uGlobalFrag.get(), 1);
-        uGlobalVertGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertGeom));
-        pGlobalVertGeom = static_cast<typeof(pGlobalVertGeom)>(uGlobalVertGeom->data);
-        set->bindUniform(uGlobalVertGeom.get(), 2);
         uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
         pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
-        set->bindUniform(uGlobalTescGeom.get(), 3);
-        uGlobalTesc = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTesc));
-        pGlobalTesc = static_cast<typeof(pGlobalTesc)>(uGlobalTesc->data);
-        set->bindUniform(uGlobalTesc.get(), 4);
+        set->bindUniform(uGlobalTescGeom.get(), 2);
         set->bindTexture(tex_heightmap->getTexture(), 5);
         set->bindTexture(tex_current->getTexture(), 6);
         set->bindTexture(tex_eclipse_map->getTexture(), 7);
@@ -344,38 +332,21 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	switch (myShader) {
         case SHADER_NIGHT_TES:
         case SHADER_NORMAL_TES:
-            pGlobalProj->ModelViewMatrix = matrix;
-            pGlobalProj->NormalMatrix = inv_matrix.transpose();
-            pGlobalProj->clipping_fov = prj->getClippingFov();
-            pGlobalProj->planetRadius = initialRadius;
-            pGlobalProj->LightPosition = eye_sun;
-            pGlobalVertGeom->planetScaledRadius = radius;
-            pGlobalVertGeom->planetOneMinusOblateness = one_minus_oblateness;
             pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
-            pGlobalTesc->ViewProjection = proj*view;
-            pGlobalTesc->Model = model;
             break;
         case SHADER_RINGED:
             pRingFrag->RingInnerRadius = rings->getInnerRadius();
             pRingFrag->RingOuterRadius = rings->getOuterRadius();
             *pModelViewMatrixInverse = inv_matrix;
-            [[fallthrough]];
+            break;
         case SHADER_BUMP:
+            *pUmbraColor = v3fNull; // deduced from body_moon
+            break;
         case SHADER_NIGHT:
         case SHADER_NORMAL:
 		default: //shader normal
-            pGlobalVertProj->ModelViewMatrix = matrix;
-            pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
-            pGlobalVertProj->clipping_fov = prj->getClippingFov();
-            pGlobalVertProj->planetRadius = initialRadius;
-            pGlobalVertProj->LightPosition = eye_sun;
-            pGlobalVertProj->planetScaledRadius = radius;
-            pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
 			break;
 	}
-    if (myShader == SHADER_BUMP) {
-        *pUmbraColor = v3fNull; // deduced from body_moon
-    }
 	int index=1;
 	double length;
 	double moonDotLight;
@@ -386,6 +357,13 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	Vec3d light = -planet_helio;
 	light.normalize();
 
+    pGlobalVertProj->ModelViewMatrix = matrix;
+    pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
+    pGlobalVertProj->clipping_fov = prj->getClippingFov();
+    pGlobalVertProj->planetRadius = initialRadius;
+    pGlobalVertProj->LightPosition = eye_sun;
+    pGlobalVertProj->planetScaledRadius = radius;
+    pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
     pGlobalFrag->SunHalfAngle = sun_half_angle;
 	std::list<Body*>::iterator iter;
 	for(iter=satellites.begin(); iter!=satellites.end() && index <= 4; iter++) {

@@ -10,30 +10,34 @@ layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
-#include <cam_block.glsl>
-
-layout (binding=2) uniform globalVertGeom {
+layout (binding=0) uniform globalProj {
+	mat4 ModelViewMatrix;
+	mat4 NormalMatrix;
+	vec3 clipping_fov;
+	float planetRadius;
+	vec3 LightPosition;
 	float planetScaledRadius;
 	float planetOneMinusOblateness;
 };
 
-layout(location=0) out vec3 glPosition;
+#include <fisheye_noMV.glsl>
+
+layout(location=0) out vec3 PositionOut;
 layout(location=1) out vec2 TexCoord;
 layout(location=2) out vec3 Normal;
-
+layout(location=3) out vec2 glPosition;
+layout(location=4) out int Visible;
 
 void main()
 {
-	/*
 	vec3 Position;
 	Position.x =position.x * planetScaledRadius;
 	Position.y =position.y * planetScaledRadius;
 	Position.z =position.z * planetScaledRadius * planetOneMinusOblateness;
 
-	glPosition = Position;
-	/*/
-	glPosition = position;
-	//*/
+	PositionOut = Position;
+	glPosition = vec2(fisheyeProject(Position, clipping_fov));
+	Visible = int(glPosition.x * glPosition.x + glPosition.y * glPosition.y <= 2.);
 	TexCoord = texcoord;
 	Normal = normal;
 }

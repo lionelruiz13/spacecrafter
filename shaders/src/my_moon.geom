@@ -25,16 +25,13 @@ layout (binding=0) uniform globalVertProj {
 	vec3 clipping_fov;
 	float planetRadius;
 	vec3 LightPosition;
-};
-
-#include <fisheye_noMV.glsl>
-
-layout (binding=2) uniform globalVertGeom {
 	float planetScaledRadius;
 	float planetOneMinusOblateness;
 };
 
-layout (binding=3) uniform globalTescGeom {
+#include <fisheye_noMV.glsl>
+
+layout (binding=2) uniform globalTescGeom {
     ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]
 };
 
@@ -64,8 +61,9 @@ layout (location=0) out gl_PerVertex
 //~ out vec3 Light;
 //~ out vec3 ViewDirection;
 
-layout (location=0) in vec2 TexCoordIn[3];
-layout (location=1) in vec3 NormalIn[3];
+layout(location=0) in vec3 glPositionIn[];
+layout(location=1) in vec2 TexCoordIn[];
+layout(location=2) in vec3 NormalIn[];
     //~ in vec3 tangent;
     //in vec3 tessCoord;
 
@@ -93,16 +91,16 @@ void main()
 
 	for(int i=0; i<3; i++) {
 
-		glPosition = vec3(gl_in[i].gl_Position);
+		glPosition = glPositionIn[i];
 		//~ sans normalMap
 		//~ glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius ;
 		//~ avec normalMap
-		glPosition.xyz= glPosition.xyz/length(glPosition.xyz)*planetScaledRadius * (1.0+texture(heightmapTexture,TexCoordIn[i]).x * coeffHeightMap);
+		glPosition.xyz= normalize(glPosition)*planetScaledRadius * (1.0+texture(heightmapTexture,TexCoordIn[i]).x * coeffHeightMap);
 
 		//gl_Position = ModelViewProjectionMatrix * posToFisheye(glPosition);
 		gl_Position = fisheyeProject(glPosition, clipping_fov);
 
-		positionL = planetRadius * NormalIn[i];
+		positionL = planetRadius * glPositionIn[i];
 		positionL.z = positionL.z * planetOneMinusOblateness;
 
 		Position = vec3(ModelViewMatrix * vec4(positionL,1.0));

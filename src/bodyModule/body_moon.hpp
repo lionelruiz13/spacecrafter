@@ -65,18 +65,15 @@ protected :
 
 	int commandIndex = -2;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal
+	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal tes
 	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal
 	std::unique_ptr<Uniform> uUmbraColor; // bump
-	std::unique_ptr<Uniform> uGlobalProj, uMoonFrag, uGlobalVertGeom, uGlobalTescGeom, uGlobalTesc; // moon
+	std::unique_ptr<Uniform> uMoonFrag, uGlobalTescGeom; // moon
 	globalVertProj *pGlobalVertProj = nullptr;
 	globalFrag *pGlobalFrag = nullptr;
 	Vec3f *pUmbraColor = nullptr;
-	globalProj *pGlobalProj = nullptr;
 	moonFrag *pMoonFrag = nullptr;
-	globalVertGeom *pGlobalVertGeom = nullptr;
 	globalTescGeom *pGlobalTescGeom = nullptr;
-	globalTesc *pGlobalTesc = nullptr;
 	std::unique_ptr<Buffer> drawData;
 	//shaderProgram *myShaderProg;	// Shader moderne
 	s_texture * tex_night=nullptr;			// for moon with night event to see

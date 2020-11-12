@@ -83,18 +83,15 @@ protected :
 	int commandIndex = -2;
 	int pipelineOffset = 0; // pipeline to select inside drawState
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal
+	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal tes
 	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal
 	std::unique_ptr<Uniform> uUmbraColor; // bump
-	std::unique_ptr<Uniform> uGlobalProj, uGlobalVertGeom, uGlobalTescGeom, uGlobalTesc; // tes
+	std::unique_ptr<Uniform> uGlobalTescGeom; // tes
 	std::unique_ptr<Uniform> uModelViewMatrixInverse, uRingFrag;
 	globalVertProj *pGlobalVertProj = nullptr;
 	globalFrag *pGlobalFrag = nullptr;
 	Vec3f *pUmbraColor = nullptr;
-	globalProj *pGlobalProj = nullptr;
-	globalVertGeom *pGlobalVertGeom = nullptr;
 	globalTescGeom *pGlobalTescGeom = nullptr;
-	globalTesc *pGlobalTesc = nullptr;
 	Mat4f *pModelViewMatrixInverse = nullptr;
 	ringFrag *pRingFrag = nullptr;
 	std::unique_ptr<Buffer> drawData;

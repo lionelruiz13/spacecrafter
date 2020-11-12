@@ -96,21 +96,15 @@ void Moon::selectShader()
 		drawState = BodyShader::getShaderMoonNormalTes();
 
         set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalProj));
-        pGlobalProj = static_cast<typeof(pGlobalProj)>(uGlobalProj->data);
-        set->bindUniform(uGlobalProj.get(), 0);
+        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
+        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
+        set->bindUniform(uGlobalVertProj.get(), 0);
         uMoonFrag = std::make_unique<Uniform>(context->surface, sizeof(*pMoonFrag));
         pMoonFrag = static_cast<typeof(pMoonFrag)>(uMoonFrag->data);
         set->bindUniform(uMoonFrag.get(), 1);
-        uGlobalVertGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertGeom));
-        pGlobalVertGeom = static_cast<typeof(pGlobalVertGeom)>(uGlobalVertGeom->data);
-        set->bindUniform(uGlobalVertGeom.get(), 2);
         uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
         pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
-        set->bindUniform(uGlobalTescGeom.get(), 3);
-        uGlobalTesc = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTesc));
-        pGlobalTesc = static_cast<typeof(pGlobalTesc)>(uGlobalTesc->data);
-        set->bindUniform(uGlobalTesc.get(), 4);
+        set->bindUniform(uGlobalTescGeom.get(), 2);
         set->bindTexture(tex_current->getTexture(), 5);
         set->bindTexture(tex_norm->getTexture(), 6);
         set->bindTexture(tex_eclipse_map->getTexture(), 7);
@@ -203,44 +197,33 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
 	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
 
 	Mat4f inv_matrix = matrix.inverse();
-    Mat4f proj = prj->getMatProjection().convert();
-	//load specific values for shader
+    //load specific values for shader
 	switch (myShader) {
         case SHADER_MOON_NORMAL_TES: // myMoon
-            pGlobalProj->ModelViewMatrix = matrix;
-            pGlobalProj->NormalMatrix = inv_matrix.transpose();
-            pGlobalProj->clipping_fov = prj->getClippingFov();
-            pGlobalProj->planetRadius = initialRadius;
-            pGlobalProj->LightPosition = eye_sun;
             pMoonFrag->MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
             pMoonFrag->MoonRadius1 = parent->getRadius();
             pMoonFrag->UmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
             pMoonFrag->SunHalfAngle = sun_half_angle;
-            pGlobalVertGeom->planetScaledRadius = radius;
-            pGlobalVertGeom->planetOneMinusOblateness = one_minus_oblateness;
             pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
-            pGlobalTesc->ViewProjection = proj*view;
-            pGlobalTesc->Model = model;
             break;
-
 		case SHADER_MOON_BUMP:
             *pUmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
             [[fallthrough]];
 		case SHADER_MOON_NIGHT:
 		case SHADER_MOON_NORMAL:
 		default: // Common uniform affectation
-            pGlobalVertProj->ModelViewMatrix = matrix;
-            pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
-            pGlobalVertProj->clipping_fov = prj->getClippingFov();
-            pGlobalVertProj->planetRadius = initialRadius;
-            pGlobalVertProj->LightPosition = eye_sun;
-            pGlobalVertProj->planetScaledRadius = radius;
-            pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
             pGlobalFrag->MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
             pGlobalFrag->MoonRadius1 = parent->getRadius();
             pGlobalFrag->SunHalfAngle = sun_half_angle;
 			break;
 	}
+    pGlobalVertProj->ModelViewMatrix = matrix;
+    pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
+    pGlobalVertProj->clipping_fov = prj->getClippingFov();
+    pGlobalVertProj->planetRadius = initialRadius;
+    pGlobalVertProj->LightPosition = eye_sun;
+    pGlobalVertProj->planetScaledRadius = radius;
+    pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
     /*
 	//paramétrage des matrices pour opengl4
 	myShaderProg->setUniform("ModelViewProjectionMatrix",proj*matrix);

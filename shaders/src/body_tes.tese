@@ -1,5 +1,5 @@
 //
-// my moon tessellation
+// my earth tessellation
 //
 
 #version 430 core
@@ -11,31 +11,20 @@ layout (triangles, equal_spacing) in;
 //layout (isolines, equal_spacing) in;
 //layout (triangles, fractional_odd_spacing)in;
 
-/*
-layout (location=0) in gl_PerVertex
-{
-  vec4 gl_Position;
-  float gl_PointSize;
-  float gl_ClipDistance[];
-} gl_in[gl_MaxPatchVertices];
 
+//uniform mat4 model;
+//uniform mat4 vp;
 
-layout (location=0) out gl_PerVertex {
-  vec4 gl_Position;
-  float gl_PointSize;
-  float gl_ClipDistance[];
-};
-*/
-
-layout (location=0) in vec2 TexCoordIn[];
-layout (location=1) in vec3 NormalIn[];
+layout (location=0) in vec3 glPositionIn[];
+layout (location=1) in vec2 TexCoordIn[];
+layout (location=2) in vec3 NormalIn[];
     //~ in vec3 tangent;
 
-layout (location=0) out vec2 TexCoord;
-layout (location=1) out vec3 Normal;
+layout (location=0) out vec3 glPositionOut; 
+layout (location=1) out vec2 TexCoordOut;
+layout (location=2) out vec3 NormalOut;
     //~ out vec3 tangent;
     //out vec3 tessCoord;
-
 
 void main(void)
 {
@@ -44,14 +33,13 @@ void main(void)
                                 gl_TessCoord.y,
                                 gl_TessCoord.z);
     */
-    vec2 TexCoord=TexCoordIn[0]*gl_TessCoord.x+
+    TexCoordOut= TexCoordIn[0]*gl_TessCoord.x+
                        TexCoordIn[1]*gl_TessCoord.y+
-                       TexCoordIn[2]*gl_TessCoord.z;
-    TexCoord = TexCoord;
+                       TexCoordIn[2]*gl_TessCoord.z;;
 
-    Normal= NormalIn[0]*gl_TessCoord.x+
-            NormalIn[1]*gl_TessCoord.y+
-            NormalIn[2]*gl_TessCoord.z;
+    NormalOut= NormalIn[0]*gl_TessCoord.x+
+                    NormalIn[1]*gl_TessCoord.y+
+                    NormalIn[2]*gl_TessCoord.z;
 
     //~ vec3 normal= tes_in[0].Normal*gl_TessCoord.x+
                  //~ tes_in[1].Normal*gl_TessCoord.y+
@@ -61,14 +49,10 @@ void main(void)
                   //~ tes_in[2].tangent*gl_TessCoord.z;
 
  // first we compute the position
-    vec4 position=(gl_TessCoord.x * gl_in[0].gl_Position)+
-                  (gl_TessCoord.y * gl_in[1].gl_Position)+
-                  (gl_TessCoord.z * gl_in[2].gl_Position);
-                  position.w=1.0;
-
+    vec3 position=(gl_TessCoord.x * glPositionIn[0])+
+                  (gl_TessCoord.y * glPositionIn[1])+
+                  (gl_TessCoord.z * glPositionIn[2]);
     //~ position.xyz= position.xyz/length(position.xyz);
-    
-    
 
-    gl_Position =  position;
+    glPositionOut = position;
 }
