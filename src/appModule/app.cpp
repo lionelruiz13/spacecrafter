@@ -440,7 +440,9 @@ void App::draw(int delta_time)
 {
 	context.surface->waitTransferQueueIdle();
 	context.surface->waitGraphicQueueIdle();
-	context.commandMgr->waitCompletion();
+	context.commandMgr->waitCompletion(0);
+	context.commandMgr->waitCompletion(1);
+	context.commandMgr->waitCompletion(2);
 	context.surface->acquireNextFrame();
 	// appDraw->drawFirstLayer();
 	//Renderer::clearColor();

@@ -27,12 +27,12 @@ static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std
     while (*isAlive) {
         while (queue->empty() && *isAlive)
             std::this_thread::yield();
-        master->waitTransferQueueIdle();
         mutex->lock();
         if (queue->empty()) {
             mutex->unlock();
             continue;
         }
+        master->waitTransferQueueIdle();
         (*active)++;
         actual = queue->front();
         queue->pop();
@@ -219,9 +219,9 @@ Vulkan::~Vulkan()
 
 void Vulkan::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
 {
+    isTransferIdle = false;
     transferQueueMutex.lock();
     transferQueue.emplace(*submitInfo, fence);
-    isTransferIdle = false;
     transferQueueMutex.unlock();
 }
 
@@ -246,10 +246,10 @@ void Vulkan::submit(CommandMgr *cmdMgr)
 
 void Vulkan::waitTransferQueueIdle()
 {
-    while (!transferQueue.empty() || transferActivity > 0)
-        std::this_thread::yield();
     if (isTransferIdle)
         return;
+    while (!transferQueue.empty() || transferActivity > 0)
+        std::this_thread::yield();
     transferQueueMutex.lock();
     for (auto &vkqueue : transferQueues)
         vkQueueWaitIdle(vkqueue);
@@ -509,13 +509,12 @@ static VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFor
 
 static VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes)
 {
+    return VK_PRESENT_MODE_FIFO_KHR;
     for (const auto& availablePresentMode : availablePresentModes) {
         if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
             return availablePresentMode;
         }
     }
-
-    return VK_PRESENT_MODE_FIFO_KHR;
 }
 
 static VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, uint32_t width, uint32_t height)
@@ -687,14 +686,14 @@ void Vulkan::createRenderPass(VkSampleCountFlagBits sampleCount)
     subpass.pColorAttachments = &colorAttachmentRef;
     subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
-    VkSubpassDependency dependency{};
-    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-    dependency.dstSubpass = 0;
-    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    dependency.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
-
+    VkSubpassDependency dependencies[2]{
+        {VK_SUBPASS_EXTERNAL, 0,
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT, VK_DEPENDENCY_BY_REGION_BIT},
+        {0, VK_SUBPASS_EXTERNAL,
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT, VK_DEPENDENCY_BY_REGION_BIT}
+    };
     std::vector<VkAttachmentDescription> attachments{colorAttachment, depthAttachment};
 
     VkRenderPassCreateInfo renderPassInfo{};
@@ -703,8 +702,8 @@ void Vulkan::createRenderPass(VkSampleCountFlagBits sampleCount)
     renderPassInfo.pAttachments = attachments.data();
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
-    renderPassInfo.dependencyCount = 1;
-    renderPassInfo.pDependencies = &dependency;
+    renderPassInfo.dependencyCount = 2;
+    renderPassInfo.pDependencies = dependencies;
 
     renderPass.resize(static_cast<uint8_t>(renderPassType::SINGLE_SAMPLE_PRESENT) + 1);
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::CLEAR]) != VK_SUCCESS) {
