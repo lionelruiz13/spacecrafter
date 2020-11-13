@@ -323,6 +323,11 @@ void VertexArray::setName(const std::string &name)
         instanceBuffer->setName("instance buffer " + name);
 }
 
+float *VertexArray::getStagingVertexBufferPtr()
+{
+    return pVertexData;
+}
+
 VertexArray::Vertice &VertexArray::operator[](int pos)
 {
     vertice.setData(pVertexData + pos * blockSize);

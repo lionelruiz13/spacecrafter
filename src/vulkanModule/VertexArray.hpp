@@ -113,6 +113,8 @@ public:
     const VkVertexInputBindingDescription &getInstanceBindingDesc() {return bindingDesc2;}
     //! Internally used
     const std::vector<VkVertexInputAttributeDescription> &getInstanceAttributeDesc() {return attributeDesc2;}
+    //! Return pointer to staging vertexBuffer memory according to actual vertexOffset
+    float *getStagingVertexBufferPtr();
     //! Display debug informations
     void print();
     //! set custom name visible on debug layers (must be called when vertex, index and instance buffer were fully registered and build)
