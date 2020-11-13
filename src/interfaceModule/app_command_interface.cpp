@@ -2985,11 +2985,6 @@ int AppCommandInterface::commandBody()
     if (argName == ACP_SC_HOME_PLANET  ) argName = coreLink->getObserverHomePlanetEnglishName();
 	std::string argMode = args[ACP_SC_MODE];
 
-	if (argMode=="in_galaxy" && !argName.empty()) {
-		stcore->starGalaxyCreate(argName);
-		return executeCommandStatus();
-	}
-
 	// traitement des OJM
 	if ((argMode=="in_universe" || argMode=="in_galaxy") && !argAction.empty()) {
 		if (argAction == W_LOAD) {

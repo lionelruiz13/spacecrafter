@@ -259,7 +259,9 @@ float BigBody::getOnScreenSize(const Projector* prj, const Navigator * nav, bool
 	else
 		rad = radius;
 
-	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./M_PI/prj->getFov()*prj->getViewportHeight();
+    double temp = getEarthEquPos(nav).lengthSquared()-rad*rad;
+    if (temp < 0.) temp = 0.000001; // In case we're closer than the radius of the rings
+	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }
 
 void BigBody::removeSatellite(Body *planet)
@@ -333,7 +335,7 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	switch (myShader) {
         case SHADER_NIGHT_TES:
         case SHADER_NORMAL_TES:
-            pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
+            pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getPlanetAltimetryFactor());
             break;
         case SHADER_RINGED:
             pRingFrag->RingInnerRadius = rings->getInnerRadius();
