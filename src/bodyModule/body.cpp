@@ -649,14 +649,13 @@ float Body::computeMagnitude(const Navigator * nav) const
 float Body::getOnScreenSize(const Projector* prj, const Navigator * nav, bool orb_only)
 {
 	double rad = radius;
-	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./M_PI/prj->getFov()*prj->getViewportHeight();
+	return atanf(rad/sqrt(getEarthEquPos(nav).lengthSquared()-rad*rad))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }
 
 // Return the angle (degrees) of the Body orb
 float Body::get_angular_size(const Projector* prj, const Navigator * nav)
 {
-
-	return atanf(radius*2.f/getEarthEquPos(nav).length())*180./M_PI;
+	return atanf(radius/sqrt(getEarthEquPos(nav).lengthSquared()-radius*radius))*2.f*180./M_PI;
 }
 
 
@@ -664,8 +663,9 @@ float Body::get_angular_size(const Projector* prj, const Navigator * nav)
 float Body::get_on_screen_bounding_size(const Projector* prj, const Navigator * nav)
 {
 	double rad = getBoundingRadius();
-
-	return atanf(rad*2.f/getEarthEquPos(nav).length())*180./M_PI/prj->getFov()*prj->getViewportHeight();
+    double temp = getEarthEquPos(nav).lengthSquared()-rad*rad;
+    if (temp < 0.) temp = 0.000001; // In case we're closer than the bounding radius
+	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }
 
 // Start/stop accumulating new trail data (clear old data)
