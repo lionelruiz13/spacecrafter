@@ -247,7 +247,7 @@ void Pipeline::bindVertex(VertexBuffer &vertex, uint32_t binding)
     attributeDescriptions.insert(attributeDescriptions.end(), tmpAttributeDesc.begin(), tmpAttributeDesc.end());
 }
 
-void Pipeline::removeVertexEntry(int location)
+void Pipeline::removeVertexEntry(uint32_t location)
 {
     for (auto it = attributeDescriptions.begin(); it != attributeDescriptions.end(); ++it) {
         if (it->location == location) {
