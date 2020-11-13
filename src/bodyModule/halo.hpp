@@ -82,6 +82,7 @@ private:
 	static VertexArray *m_haloGL;
 	static s_texture *last_tex_halo;
 	static s_texture *tex_halo;			// Little halo texture
+	static bool drawn;
 
 	float cmag;
 	float rmag;

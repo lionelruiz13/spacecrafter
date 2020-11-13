@@ -47,6 +47,7 @@ PipelineLayout *Halo::layout;
 VertexArray *Halo::m_haloGL;
 s_texture *Halo::tex_halo = nullptr;
 s_texture *Halo::last_tex_halo = nullptr;
+bool Halo::drawn;
 
 Halo::Halo(Body * _body)
 {
@@ -74,11 +75,13 @@ void Halo::beginDraw()
 	cmdMgr->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
 	cmdMgr->bindSet(layout, globalSet);
 	cmdMgr->bindSet(layout, set, 1);
+	drawn = false;
 }
 
 void Halo::nextDraw()
 {
 	endDraw();
+	drawn = false;
 	if (commandIndexID == commandIndexList.size())
 		commandIndexList.push_back(cmdMgr->getCommandIndex());
 	commandIndex = commandIndexList[commandIndexID];
@@ -92,7 +95,8 @@ void Halo::endDraw()
 {
 	cmdMgr->select(commandIndex);
 	cmdMgr->compile();
-	cmdMgr->setSubmission(commandIndex, true, cmdMgrTarget);
+	if (drawn)
+		cmdMgr->setSubmission(commandIndex, true, cmdMgrTarget);
 }
 
 void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
@@ -101,6 +105,7 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	computeHalo(nav, prj, eye);
 	if (rmag<1.21 && cmag < 0.05)
 		return;
+	drawn = true;
 
 	// StateGL::BlendFunc(GL_ONE, GL_ONE);
 	// glActiveTexture(GL_TEXTURE0);

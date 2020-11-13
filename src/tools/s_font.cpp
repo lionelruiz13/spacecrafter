@@ -54,6 +54,8 @@ int s_font::commandIndexPrint;
 std::vector<std::pair<int, int>> s_font::commandIndex;
 std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
 int s_font::nbFontInstances = 0;
+bool s_font::hasPrintH = false;
+bool s_font::hasPrint = false;
 
 std::string s_font::baseFontName;
 
@@ -198,24 +200,24 @@ void s_font::nextPrint(bool multisample)
 
 void s_font::endPrint(bool multisample)
 {
-	bool newBatch = false;
 	if (multisample)
 		activeID++;
 	else {
-		if (activeID == 0) {
-			newBatch = true;
-		} else {
+		if (activeID != 0) {
 			pipelineHorizontal--;
 			pipelinePrint--;
+			activeID = 0;
 		}
-		activeID = 0;
 	}
 	cmdMgr->select(commandIndexHorizontal);
 	cmdMgr->compile();
-	cmdMgr->setSubmission(commandIndexHorizontal, newBatch, context->commandMgr);
 	cmdMgr->select(commandIndexPrint);
 	cmdMgr->compile();
-	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
+	if (hasPrintH)
+		cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
+	if (hasPrint)
+		cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
+	hasPrintH = hasPrint = false;
 }
 
 //! print out a string
@@ -230,6 +232,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	} else if (offset == 4092) {
 		cLog::get()->write("Print per frame limit reached, next print for this frame won't appear.", LOG_TYPE::L_WARNING);
 	}
+	hasPrint = true;
 
 	renderedString_struct currentRender;
 	// If not cached, create texture
@@ -471,7 +474,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache)
 {
 	if (str.empty()) return;
-
+	hasPrintH = true;
 	// Get rendered texture
 	renderedString_struct rendering;
 	if(renderCache[str].textureW == 0) {

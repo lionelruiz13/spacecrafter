@@ -122,6 +122,7 @@ protected:
 	static PipelineLayout *layoutHorizontal;
 	static PipelineLayout *layoutPrint;
 	static int nbFontInstances;
+	static bool hasPrintH, hasPrint;
 };
 
 #endif  //_S_FONT_H
