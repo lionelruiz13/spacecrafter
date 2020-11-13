@@ -101,8 +101,9 @@ void CommandMgr::setSubmission(int index, bool newBatch, CommandMgr *target)
 {
     if (target == nullptr) target = this;
     // Create new batch
-    if (newBatch) {
-        VkSubmitInfo submitInfo;
+    if (newBatch || !target->inBatch) {
+        target->inBatch = true;
+        VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         submitInfo.pNext = nullptr;
         submitInfo.waitSemaphoreCount = 1;
@@ -166,6 +167,7 @@ void CommandMgr::resetSubmission()
 
 void CommandMgr::submitGuard()
 {
+    inBatch = false;
     vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, UINT64_MAX);
     frameIndex = refFrameIndex;
     vkWaitForFences(refDevice, 1, &frames[frameIndex].fence, VK_TRUE, UINT64_MAX);

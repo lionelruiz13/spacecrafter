@@ -110,6 +110,8 @@ public:
     void blit(Texture *src, Texture *dst, uint32_t srcMipLevel = 0, uint32_t dstMipLevel = 0, VkFilter filter = VK_FILTER_LINEAR);
     //! Finalize recording and deselect command
     void compile();
+    //! Define end of batch, so next setSubmission will create a new batch regardless to newBatch value
+    void endBatch() {inBatch=false;}
     //! @brief set command submission to be submitted by .submit()
     void setSubmission(int index, bool newBatch = false, CommandMgr *target = nullptr);
     //! reset submission state for all commands
@@ -191,6 +193,7 @@ private:
     short autoIndex = 0;
     bool inRenderPass = false;
     bool hasPipeline = false; // tell if there is a pipeline binded
+    bool inBatch = false;
 };
 
 #endif /* end of include guard: COMMAND_MGR_HPP */
