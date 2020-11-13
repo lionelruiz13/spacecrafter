@@ -31,7 +31,7 @@ layout (binding=2) uniform globalTescGeom {
 };
 
 
-float coeffHeightMap = 0.05 * float(TesParam[2]);
+float coeffHeightMap = 0.02 * float(TesParam[2]);
 
 //out
 //layout (location=0) out vec2 TexCoord;
