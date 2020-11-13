@@ -820,7 +820,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	if(skipDrawingThisBody(observatory, drawHomePlanet)) {
 		if(hasRings()) {
-			drawRings(prj,mat,1000.0,lightDirection,eye_planet,initialRadius);
+			drawRings(prj,observatory,mat,1000.0,lightDirection,eye_planet,initialRadius);
 		}
 
 		return drawn;
@@ -844,7 +844,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
             // depth test forced
             drawAxis(prj,mat);
 			drawBody(prj, nav, mat, screen_sz);
-			drawRings(prj,mat,screen_sz,lightDirection,eye_planet,initialRadius);
+			drawRings(prj,observatory,mat,screen_sz,lightDirection,eye_planet,initialRadius);
 		} else {
             // depth test if drawAxis (drawAxis if depthTest and Axis::actualdrawaxis)
             // if(!depthTest) //

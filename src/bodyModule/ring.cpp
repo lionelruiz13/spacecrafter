@@ -31,6 +31,7 @@
 #include "bodyModule/ring.hpp"
 #include "navModule/navigator.hpp"
 #include "coreModule/projector.hpp"
+#include "navModule/observer.hpp"
 #include "tools/s_font.hpp"
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
@@ -219,7 +220,7 @@ Ring::~Ring(void)
 	delete highDOWN;
 }
 
-void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
+void Ring::draw(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
 	if (screen_sz == 1000.0) { // Test if ring must be drawn without his body
 		cmdMgr->setSubmission(commandIndexSingle);
@@ -292,7 +293,7 @@ void Ring::draw(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _
 			else mediumDOWN->draw(drawData->data);
 		}
 	}
-	if (screen_sz > 600.f && screen_sz != 1000.0 && vertexAsteroid) {
+	if (obs && obs->getDistanceFromCenter() < radius_max * 10 && abs(obs->getLatitude()) < 2. && vertexAsteroid) {
 		*static_cast<uint32_t *>(drawData->data) = 0;
 		*pAsteroidInstanceCount = NB_ASTEROIDS;
 	} else

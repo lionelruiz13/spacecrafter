@@ -33,6 +33,7 @@
 #include "bodyModule/halo.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
+#include "navModule/observer.hpp"
 #include "tools/log.hpp"
 #include "bodyModule/ring.hpp"
 
@@ -434,10 +435,10 @@ void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMg
 }
 
 
-void BigBody::drawRings(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
+void BigBody::drawRings(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
 
-	rings->draw(prj,mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
+	rings->draw(prj,obs->isOnBody(this) ? obs : nullptr,mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
 
 }
 

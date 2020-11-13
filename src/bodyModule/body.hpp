@@ -425,7 +425,7 @@ protected:
 		return false;
 	}
 
-	virtual void drawRings(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) {
+	virtual void drawRings(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) {
 		return;
 	}
 

@@ -73,7 +73,7 @@ protected :
 		return rings != nullptr;
 	}
 
-	virtual void drawRings(const Projector* prj,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) override;
+	virtual void drawRings(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) override;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye) override;
 
