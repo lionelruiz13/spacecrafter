@@ -278,7 +278,7 @@ StreamTexture::~StreamTexture()
     vkDestroyFence(master->refDevice, fence, nullptr);
 }
 
-void StreamTexture::use(int width, int height)
+void StreamTexture::use(int width, int height, VkFormat format)
 {
     if (++useCount != 1) {
         assert(width == texWidth && height == texHeight);
@@ -286,7 +286,7 @@ void StreamTexture::use(int width, int height)
     }
     texWidth = width;
     texHeight = height;
-    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_R8_UNORM, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, false, true));
+    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, format, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, false, true));
     master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
     master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging buffer of Stream texture");
 

@@ -73,7 +73,7 @@ public:
     StreamTexture(VirtualSurface *_master, TextureMgr *_mgr, bool externUpdate = false);
     virtual ~StreamTexture();
     void update(); // Update texture content, set externUpdate to true to use
-    void use(int width, int height);
+    void use(int width, int height, VkFormat format = VK_FORMAT_R8_UNORM);
     virtual void unuse() override;
 private:
     VkFence fence;
