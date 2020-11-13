@@ -224,6 +224,13 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	if (s.empty())
 		return;
 
+	int offset = vertexPrint->getVertexOffset();
+	if (offset == 4096) {
+		return;
+	} else if (offset == 4092) {
+		cLog::get()->write("Print per frame limit reached, next print for this frame won't appear.", LOG_TYPE::L_WARNING);
+	}
+
 	renderedString_struct currentRender;
 	// If not cached, create texture
 	if(renderCache[s].textureW == 0 ) {
@@ -274,7 +281,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	cmdMgr->pushSet(layoutPrint, set);
 	cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
 	cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec4f), &MVP, sizeof(Mat4f));
-	int offset = vertexPrint->getVertexOffset();
 	cmdMgr->draw(4, 1, offset);
 	vertexPrint->setVertexOffset(offset + 4);
 
