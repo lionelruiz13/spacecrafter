@@ -757,6 +757,7 @@ void Core::draw(int delta_time)
 {
 	currentExecutor->draw(delta_time);
 	media->imageDraw(navigation, projection); // resolve multisample
+	context->commandMgr->endBatch();
 }
 
 void Core::switchMode(const std::string &mode)

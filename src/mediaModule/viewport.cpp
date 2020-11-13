@@ -157,5 +157,5 @@ void ViewPort::draw()
 	// }
 	// shaderViewPort->unuse();
 	// StateGL::disable(GL_BLEND);
-	cmdMgr->setSubmission(commandIndex, true, cmdMgrTarget);
+	cmdMgr->setSubmission(commandIndex, false, cmdMgrTarget);
 }

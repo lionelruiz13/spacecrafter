@@ -551,7 +551,7 @@ void Image::beginDraw()
 void Image::endDraw()
 {
 	cmdMgr->compile();
-	cmdMgr->setSubmission(commandIndex, false, context->commandMgr);
+	cmdMgr->setSubmission(commandIndex, true, context->commandMgr);
 }
 
 void Image::setPipeline(Pipeline *pipeline)
