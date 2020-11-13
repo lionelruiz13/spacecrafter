@@ -243,7 +243,7 @@ void AppDraw::initSplash(ThreadContext *context)
     vkCmdEndRenderPass(cmd);
     vkEndCommandBuffer(cmd);
     // Draw frame
-    VkSubmitInfo submitInfo;
+    VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
     submitInfo.pNext = nullptr;
     submitInfo.waitSemaphoreCount = 0;

@@ -38,13 +38,13 @@ public:
     //! Define texture path
     static void setTextureDir(std::string _textureDir) {textureDir = _textureDir;}
     //! Inform if texture support is valid or not
-    bool isValid() {return isOk;}
+    bool isValid() const {return isOk;}
     //! Internal use only
     VkImage getImage();
     //! Write texture size in width and height arguments
-    void getDimensions(int &width, int &height) {width=texWidth;height=texHeight;}
+    void getDimensions(int &width, int &height) const {width=texWidth;height=texHeight;}
     //! Return number of use() calls minus unuse() calls count
-    int getUseCount() {return useCount;}
+    int getUseCount() const {return useCount;}
 protected:
     static std::string textureDir;
     VirtualSurface *master;
@@ -78,7 +78,7 @@ public:
 private:
     VkFence fence;
     VkCommandBuffer cmdBuffer;
-    VkSubmitInfo updateSubmitInfo;
+    VkSubmitInfo updateSubmitInfo{};
 };
 
 #endif /* end of include guard: TEXTURE_HPP */

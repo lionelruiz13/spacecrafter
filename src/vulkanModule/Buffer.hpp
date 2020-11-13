@@ -16,7 +16,7 @@ public:
     Buffer(VirtualSurface *_master, int size, VkBufferUsageFlags usage);
     ~Buffer();
     VkBuffer &get() {return buffer ? buffer : subBuffer.buffer;}
-    int getOffset() {return offset;}
+    int getOffset() const {return offset;}
     //! Display informations about this buffer
     void print(std::ostringstream &oss);
     //! Update vertex content with data member

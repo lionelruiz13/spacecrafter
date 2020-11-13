@@ -216,6 +216,7 @@ void CommandMgr::resolve(uint8_t frameIndex)
             submitInfo.signalSemaphoreCount = 1;
             submitInfo.pSignalSemaphores = &frames[frameIndex].bottomSemaphore;
             submitInfo.commandBufferCount = 0;
+            submitInfo.pCommandBuffers = nullptr;
             frames[frameIndex].submitList.push_back(submitInfo);
         } else {
             // // MERGE TEST
