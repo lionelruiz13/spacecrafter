@@ -9,6 +9,7 @@
 
 TextureMgr::TextureMgr(Vulkan *_master, uint32_t _chunkSize) : master(_master), chunkSize(_chunkSize)
 {
+    master->setTextureMgr(this);
     PipelineLayout::DEFAULT_SAMPLER.anisotropyEnable = master->getDeviceFeatures().samplerAnisotropy;
     defaultSampler = createSampler(PipelineLayout::DEFAULT_SAMPLER);
     if (defaultSampler == VK_NULL_HANDLE) {
@@ -50,6 +51,27 @@ TextureMgr::~TextureMgr()
     for (auto &sampler : samplers) {
         vkDestroySampler(master->refDevice, sampler.second, nullptr);
     }
+}
+
+std::unique_ptr<TextureImage> TextureMgr::queryImage(TextureImage *ptr)
+{
+    for (auto it = cache.begin(); it != cache.end(); ++it) {
+        if (it->get() == ptr) {
+            std::unique_ptr<TextureImage> tmp = std::move(*it);
+            cache.erase(it);
+            return tmp;
+        }
+    }
+    return nullptr;
+}
+
+void TextureMgr::cacheImage(std::unique_ptr<TextureImage> &textureImage)
+{
+    cache.push_back(std::move(textureImage));
+}
+void TextureMgr::releaseCachedTextures()
+{
+    cache.clear();
 }
 
 int TextureMgr::getSamplerID(const VkSamplerCreateInfo &samplerInfo)

@@ -26,6 +26,7 @@ struct SwapChainSupportDetails {
 class VirtualSurface;
 class MemoryManager;
 class CommandMgr;
+class TextureMgr;
 
 class Vulkan {
 public:
@@ -45,7 +46,7 @@ public:
     size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
     void submitGraphic(VkSubmitInfo &submitInfo);
-    void waitTransferQueueIdle();
+    void waitTransferQueueIdle(bool waitCompletion = true);
     void waitGraphicQueueIdle();
     void waitIdle();
     VkPipelineViewportStateCreateInfo &getViewportState() {return viewportState;}
@@ -67,6 +68,9 @@ public:
     void setupInterceptor(void *_pUserData, void(*_interceptor)(void *pUserData, void *pData, uint32_t width, uint32_t height));
     void intercept() {interceptNextFrame = true;}
     void setObjectName(void *handle, VkObjectType type, const std::string &name);
+    //! Called by MemoryManager when getting low of memory,
+    void releaseUnusedMemory();
+    void setTextureMgr(TextureMgr *texMgr) {textureMgr = texMgr;}
 
     //! getDevice();
     const VkDevice &refDevice;
@@ -85,6 +89,7 @@ private:
     const char *EngineName;
     std::string cachePath;
     MemoryManager *memoryManager;
+    TextureMgr *textureMgr;
     VkPipelineViewportStateCreateInfo viewportState{};
     VkViewport viewport{};
     VkRect2D scissor{};

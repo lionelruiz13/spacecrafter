@@ -104,9 +104,9 @@ void VirtualSurface::submitGraphic(VkSubmitInfo &submitInfo)
     master->submitGraphic(submitInfo);
 }
 
-void VirtualSurface::waitTransferQueueIdle()
+void VirtualSurface::waitTransferQueueIdle(bool waitCompletion)
 {
-    master->waitTransferQueueIdle();
+    master->waitTransferQueueIdle(waitCompletion);
 }
 
 void VirtualSurface::waitGraphicQueueIdle()

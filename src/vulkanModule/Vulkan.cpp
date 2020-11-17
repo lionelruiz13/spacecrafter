@@ -5,6 +5,7 @@
 #include <SDL2/SDL_vulkan.h>
 #include "CommandMgr.hpp"
 #include "VertexBuffer.hpp"
+#include "TextureMgr.hpp"
 #include "Buffer.hpp"
 #include "tools/log.hpp"
 #include "BufferMgr.hpp"
@@ -244,17 +245,19 @@ void Vulkan::submit(CommandMgr *cmdMgr)
     graphicQueueMutex.unlock();
 }
 
-void Vulkan::waitTransferQueueIdle()
+void Vulkan::waitTransferQueueIdle(bool waitCompletion)
 {
     if (isTransferIdle)
         return;
     while (!transferQueue.empty() || transferActivity > 0)
         std::this_thread::yield();
-    transferQueueMutex.lock();
-    for (auto &vkqueue : transferQueues)
-        vkQueueWaitIdle(vkqueue);
-    isTransferIdle = true;
-    transferQueueMutex.unlock();
+    if (waitCompletion) {
+        transferQueueMutex.lock();
+        for (auto &vkqueue : transferQueues)
+            vkQueueWaitIdle(vkqueue);
+        isTransferIdle = true;
+        transferQueueMutex.unlock();
+    }
 }
 
 void Vulkan::waitGraphicQueueIdle()
@@ -920,6 +923,7 @@ void Vulkan::sendFrame()
     graphicQueueMutex.lock();
     graphicQueue.push(reinterpret_cast<CommandMgr *>(this));
     graphicQueueMutex.unlock();
+    memoryManager->endOfFrame();
 }
 
 void Vulkan::submitFrame()
@@ -1116,6 +1120,12 @@ void Vulkan::setupInterceptor(void *_pUserData, void(*_interceptor)(void *pUserD
         vkCmdPipelineBarrier(interceptCmdBuffer[i], VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrierOut);
         vkEndCommandBuffer(interceptCmdBuffer[i]);
     }
+}
+
+void Vulkan::releaseUnusedMemory()
+{
+    cLog::get()->write("Low GPU memory detected - release unused memory", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+    textureMgr->releaseCachedTextures();
 }
 
 // =============== DEBUG =============== //

@@ -21,6 +21,12 @@ public:
     CommandMgr *getBuilder() {return cmdMgrSingleUse.get();}
     void acquireSyncObject(VkFence *fence, VkSemaphore *semaphore);
     void releaseSyncObject(VkFence fence, VkSemaphore semaphore);
+    //! Return corresponding cached image if there is no releaseCachedTextures call in between, otherwise return nullptr
+    std::unique_ptr<TextureImage> queryImage(TextureImage *ptr);
+    //! Move image in cache. Cached images are released when calling releaseCachedTextures
+    void cacheImage(std::unique_ptr<TextureImage> &textureImage);
+    //! Release all cached textures
+    void releaseCachedTextures();
 private:
     std::mutex syncObjectAccess;
     std::vector<std::pair<VkFence, VkSemaphore>> syncObject;
@@ -30,6 +36,7 @@ private:
     std::unique_ptr<CommandMgr> cmdMgrSingleUse;
     VkSampler defaultSampler = VK_NULL_HANDLE;
     const uint32_t chunkSize;
+    std::vector<std::unique_ptr<TextureImage>> cache;
     // pair of memory/lowest_offset_available
     std::vector<std::pair<SubMemory, int>> allocatedMemory;
     // pair : {width, height}

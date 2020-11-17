@@ -25,9 +25,9 @@ public:
     Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool mipmap = false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, const std::string &name = "unnamed\0", bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
     Texture();
     virtual ~Texture();
-    //! Export texture to GPU
-    void use();
-    //! Release texture on GPU (invalidate all previous bindings)
+    //! Export texture to GPU. If forceUpdate is false, changes made in staging memory may not appear
+    void use(bool forceUpdate = false);
+    //! Release texture on GPU (may invalidate all previous bindings)
     virtual void unuse();
     //! Acquire pointer to staging memory
     void acquireStagingMemoryPtr(void **pPixels);
@@ -55,6 +55,7 @@ protected:
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
     SubMemory stagingBufferMemory;
     std::unique_ptr<TextureImage> image;
+    TextureImage *imagePtr = nullptr;
     int useCount = 0;
 private:
     void init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM);

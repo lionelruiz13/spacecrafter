@@ -35,6 +35,8 @@ public:
     //! Unmap memory
     void unmapMemory(SubMemory &subMemory);
     uint32_t getChunkSize() const {return chunkSize;}
+    //! Tell frame has complete
+    void endOfFrame() {hasReleasedUnusedMemory = false;}
 private:
     //! Assign the memory index according to requirements
     void findMemoryIndex(const VkMemoryRequirements &memRequirements, VkMemoryPropertyFlags properties, VkMemoryPropertyFlags preferedProperties, SubMemory *subMemory);
@@ -47,11 +49,14 @@ private:
     //! Merge with SubMemory of which the begin or the end is common
     void merge(SubMemory *subMemory);
     //! Return SubMemory which cover the whole newly allocated chunk of memory
-    SubMemory allocateChunk(uint32_t memoryIndex);
+    SubMemory allocateChunk(uint32_t memoryIndex, uint32_t specificChunkSize = UINT32_MAX);
     //! Write memory statistics in log
     void displayResources();
     std::mutex mtx;
     Vulkan *master;
+    bool hasReleasedUnusedMemory = false; // Tell if releaseUnusedMemory have been called this frame
+    uint16_t availableDeviceMemory; // Available GPU memory in MiB
+    uint16_t deviceMemoryHeap; // GPU memory heap index
     const VkDevice &refDevice;
     VkPhysicalDeviceMemoryProperties2 memProperties{};
     VkPhysicalDeviceMemoryBudgetPropertiesEXT memBudjet{};

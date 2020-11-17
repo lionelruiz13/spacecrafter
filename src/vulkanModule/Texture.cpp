@@ -126,6 +126,9 @@ VkImage Texture::getImage()
 
 Texture::~Texture()
 {
+    if (imagePtr)
+        image = mgr->queryImage(imagePtr);
+    image = nullptr;
     if (useCount > 0) {
         useCount = 1;
         unuse();
@@ -144,11 +147,18 @@ void Texture::destroyStagingResources()
     }
 }
 
-void Texture::use()
+void Texture::use(bool forceUpdate)
 {
     if (++useCount != 1)
         return;
-    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), mipmap));
+    if (imagePtr) {
+        image = mgr->queryImage(imagePtr);
+        imagePtr = nullptr;
+        if (!forceUpdate)
+            return;
+    }
+    if (image == nullptr)
+        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), mipmap));
     if (image == nullptr) {
         cLog::get()->write("Faild to create image support", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         useCount--;
@@ -227,7 +237,7 @@ void Texture::use()
         submitInfo.pCommandBuffers = &commandBuffer2;
         submitInfo.signalSemaphoreCount = 0;
         vkResetFences(master->refDevice, 1, &fence);
-        master->waitTransferQueueIdle();
+        master->waitTransferQueueIdle(false);
         if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
             throw std::runtime_error("Error : Failed to submit commands.");
         }
@@ -245,7 +255,7 @@ void Texture::use()
 void Texture::unuse()
 {
     if (--useCount == 0) {
-        image = nullptr;
+        mgr->cacheImage(image);
         imageInfo.imageView = VK_NULL_HANDLE;
         vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &commandBuffer);
     }

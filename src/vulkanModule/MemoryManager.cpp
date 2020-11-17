@@ -50,7 +50,7 @@ void MemoryManager::mapMemory(SubMemory &subMemory, void **data)
     mtx.lock();
     MappedMemory &mapmem = mappedMemory[subMemory.memory];
     if (mapmem.nbMapping++ == 0) {
-        if (vkMapMemory(refDevice, subMemory.memory, 0, chunkSize, 0, &mapmem.data) != VK_SUCCESS)
+        if (vkMapMemory(refDevice, subMemory.memory, 0, VK_WHOLE_SIZE, 0, &mapmem.data) != VK_SUCCESS)
             throw std::runtime_error("Faild to map memory");
     }
     mtx.unlock();
@@ -100,8 +100,21 @@ void MemoryManager::acquireSubMemory(const VkMemoryRequirements &memRequirements
             break;
         }
     }
-    if (subMemory->memory == VK_NULL_HANDLE)
-        *subMemory = allocateChunk(subMemory->memoryIndex);
+    if (subMemory->memory == VK_NULL_HANDLE) {
+        if (memProperties.memoryProperties.memoryTypes[subMemory->memoryIndex].propertyFlags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT) {
+            // host cached memory is rarely used, don't allocate a whole chunk for them
+            *subMemory = allocateChunk(subMemory->memoryIndex, memRequirements.size);
+            return;
+        }
+        if (!hasReleasedUnusedMemory && availableDeviceMemory <= 512 && memProperties.memoryProperties.memoryTypes[subMemory->memoryIndex].heapIndex == deviceMemoryHeap) {
+            master->releaseUnusedMemory();
+            hasReleasedUnusedMemory = true;
+            displayResources();
+            acquireSubMemory(memRequirements, subMemory);
+        } else {
+            *subMemory = allocateChunk(subMemory->memoryIndex);
+        }
+    }
 }
 
 void MemoryManager::allocateInSubMemory(const VkMemoryRequirements &memRequirements, SubMemory *subMemory)
@@ -163,24 +176,24 @@ void MemoryManager::merge(SubMemory *subMemory)
     }
 }
 
-SubMemory MemoryManager::allocateChunk(uint32_t memoryIndex)
+SubMemory MemoryManager::allocateChunk(uint32_t memoryIndex, uint32_t specificChunkSize)
 {
     SubMemory subMemory;
     subMemory.offset = 0;
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = subMemory.size = chunkSize;
+    allocInfo.allocationSize = subMemory.size = (specificChunkSize == UINT32_MAX) ? chunkSize : specificChunkSize;
     allocInfo.memoryTypeIndex = subMemory.memoryIndex = memoryIndex;
 
     std::ostringstream oss;
     std::string heapType = (memProperties.memoryProperties.memoryHeaps[memProperties.memoryProperties.memoryTypes[memoryIndex].heapIndex].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) ? "GPU" : "local";
 
     if (vkAllocateMemory(refDevice, &allocInfo, nullptr, &subMemory.memory) == VK_SUCCESS) {
-        oss << "Allocate chunk of " << chunkSize / 1024 / 1024 << " MiB in " << heapType << " memory.";
+        oss << "Allocate chunk of " << subMemory.size / 1024 / 1024 << " MiB in " << heapType << " memory.";
         cLog::get()->write(oss.str(), LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
         memory[memoryIndex].memoryChunks.push_back(subMemory.memory);
     } else {
-        oss << "Failed to allocate chunk of " << chunkSize / 1024 / 1024 << " MiB in " << heapType << " memory.";
+        oss << "Failed to allocate chunk of " << subMemory.size / 1024 / 1024 << " MiB in " << heapType << " memory.";
         cLog::get()->write(oss.str(),  LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         subMemory.memory = VK_NULL_HANDLE;
     }
@@ -194,6 +207,10 @@ void MemoryManager::displayResources()
     vkGetPhysicalDeviceMemoryProperties2(master->getPhysicalDevice(), &memProperties);
     std::ostringstream oss;
     for (uint32_t i = 0; i < memProperties.memoryProperties.memoryHeapCount; ++i) {
+        if (memProperties.memoryProperties.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) {
+            deviceMemoryHeap = i;
+            availableDeviceMemory = (memBudjet.heapBudget[i] - memBudjet.heapUsage[i]) / 1024 / 1024;
+        }
         oss << ((memProperties.memoryProperties.memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) ? "GPU" : "local") << " memory";
         oss << "\ttotal : " << memProperties.memoryProperties.memoryHeaps[i].size / 1024 / 1024 << " MiB   \tavailable : " << memBudjet.heapBudget[i] / 1024 / 1024 << " MiB\tused : " << memBudjet.heapUsage[i] / 1024 / 1024 << " MiB    \tfree : " << (memBudjet.heapBudget[i] - memBudjet.heapUsage[i]) / 1024 / 1024 << " MiB";
         cLog::get()->write(oss.str(), LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
