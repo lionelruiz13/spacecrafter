@@ -936,7 +936,7 @@ void Vulkan::submitFrame()
     presentInfo.waitSemaphoreCount = 1;
     if (interceptNextFrame) {
         submitTransfer(&interceptSubmitInfo[frameIndex]);
-        waitTransferQueueIdle();
+        waitTransferQueueIdle(false);
         presentInfo.pWaitSemaphores = &interceptEndSemaphores[frameIndex];
     } else {
         presentInfo.pWaitSemaphores = &presentSemaphores[frameIndex];
@@ -950,6 +950,8 @@ void Vulkan::submitFrame()
     }
     int oldFrameIndex = frameIndex;
     acquireNextFrame();
+    if (interceptNextFrame)
+        waitTransferQueueIdle(true);
     for (uint32_t i = 0; i < virtualSurface.size(); i++) {
         virtualSurface[i]->releaseFrame();
     }
