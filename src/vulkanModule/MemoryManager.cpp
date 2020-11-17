@@ -106,7 +106,7 @@ void MemoryManager::acquireSubMemory(const VkMemoryRequirements &memRequirements
             *subMemory = allocateChunk(subMemory->memoryIndex, memRequirements.size);
             return;
         }
-        if (!hasReleasedUnusedMemory && availableDeviceMemory <= 512 && memProperties.memoryProperties.memoryTypes[subMemory->memoryIndex].heapIndex == deviceMemoryHeap) {
+        if (!hasReleasedUnusedMemory && availableDeviceMemory <= 64 + chunkSize / 1024 / 1024 && memProperties.memoryProperties.memoryTypes[subMemory->memoryIndex].heapIndex == deviceMemoryHeap) {
             master->releaseUnusedMemory();
             hasReleasedUnusedMemory = true;
             displayResources();
