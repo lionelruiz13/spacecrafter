@@ -689,13 +689,19 @@ void Vulkan::createRenderPass(VkSampleCountFlagBits sampleCount)
     subpass.pColorAttachments = &colorAttachmentRef;
     subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
-    VkSubpassDependency dependencies[2]{
+    VkSubpassDependency dependencies[4]{
+        {VK_SUBPASS_EXTERNAL, 0,
+        VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+        VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT, VK_DEPENDENCY_BY_REGION_BIT},
         {VK_SUBPASS_EXTERNAL, 0,
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
         VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT, VK_DEPENDENCY_BY_REGION_BIT},
         {0, VK_SUBPASS_EXTERNAL,
         VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT, VK_DEPENDENCY_BY_REGION_BIT}
+        VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT, VK_DEPENDENCY_BY_REGION_BIT},
+        {0, VK_SUBPASS_EXTERNAL,
+        VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+        VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT, VK_DEPENDENCY_BY_REGION_BIT}
     };
     std::vector<VkAttachmentDescription> attachments{colorAttachment, depthAttachment};
 
@@ -706,7 +712,7 @@ void Vulkan::createRenderPass(VkSampleCountFlagBits sampleCount)
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
     renderPassInfo.dependencyCount = 2;
-    renderPassInfo.pDependencies = dependencies;
+    renderPassInfo.pDependencies = dependencies + 1;
 
     renderPass.resize(static_cast<uint8_t>(renderPassType::SINGLE_SAMPLE_PRESENT) + 1);
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::CLEAR]) != VK_SUCCESS) {
@@ -722,21 +728,27 @@ void Vulkan::createRenderPass(VkSampleCountFlagBits sampleCount)
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    renderPassInfo.dependencyCount = 3;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::CLEAR_DEPTH_BUFFER]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    renderPassInfo.dependencyCount = 4;
+    renderPassInfo.pDependencies = dependencies;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::USE_DEPTH_BUFFER]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    renderPassInfo.dependencyCount = 3;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::USE_DEPTH_BUFFER_DONT_SAVE]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
     attachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     attachments[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     attachments[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    renderPassInfo.dependencyCount = 2;
+    renderPassInfo.pDependencies = dependencies + 1;
     if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass[(uint8_t)renderPassType::PRESENT]) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create RenderPass");
     }
