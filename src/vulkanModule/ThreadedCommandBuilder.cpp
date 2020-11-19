@@ -7,9 +7,9 @@
 
 #define CALL(func, flag, args) case CmdEventType::flag:mutexExec.lock();master->func args;mutexExec.unlock();break
 
-#define PUSH(type, name) arg.type = name; events.push(arg)
-#define DEF(flag) CmdEvent arg; mutex.lock(); PUSH(type, CmdEventType::flag)
-#define UDEF() mutex.unlock()
+#define PUSH(type, name) arg.type = name; events.push(arg); ++nbArgs
+#define DEF(flag) CmdEventType eventType = CmdEventType::flag;CmdEvent arg;int nbArgs=-1; mutex.lock(); PUSH(type, eventType)
+#define UDEF() assert(getEventArgCount(eventType) == nbArgs);mutex.unlock()
 
 #define CHECK(count) assert(getEventArgCount(event.type) == count)
 
