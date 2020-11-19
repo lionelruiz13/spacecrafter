@@ -302,7 +302,7 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 			tmp->height = y;
 			tmp->size = x*y*4;
 			tmp->nbLink = 1;
-			tmp->textureHandle = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_SRGB, fullName, true, static_cast<VkSamplerAddressMode>(loadWrapping));
+			tmp->textureHandle = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_UNORM, fullName, true, static_cast<VkSamplerAddressMode>(loadWrapping));
 			tmp->texture = tmp->textureHandle.get();
 			tmp->mipmap = mipmap;
 

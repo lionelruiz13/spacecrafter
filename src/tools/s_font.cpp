@@ -397,9 +397,9 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	// get the number of channels in the SDL surface
 	VkFormat texture_format;
 	if (surface->format->Rmask == 0x000000ff)
-		texture_format = VK_FORMAT_R8G8B8A8_UINT;
+		texture_format = VK_FORMAT_R8G8B8A8_UNORM;
 	else
-		texture_format = VK_FORMAT_B8G8R8A8_UINT;
+		texture_format = VK_FORMAT_B8G8R8A8_UNORM;
 
 	/*
 	glGenTextures( 1, &rendering.stringTexture);
@@ -443,9 +443,9 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		}
 
 		if (border->format->Rmask == 0x000000ff)
-			texture_format = VK_FORMAT_R8G8B8A8_UINT; // GL_RGBA
+			texture_format = VK_FORMAT_R8G8B8A8_UNORM; // GL_RGBA
 		else
-			texture_format = VK_FORMAT_B8G8R8A8_UINT; // GL_BGRA
+			texture_format = VK_FORMAT_B8G8R8A8_UNORM; // GL_BGRA
 
 		/*
 		glGenTextures( 1, &rendering.borderTexture);
