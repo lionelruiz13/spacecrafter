@@ -331,7 +331,6 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 
 	Mat4f inv_matrix = matrix.inverse();
 	//load specific values for shader
-	Mat4f proj = prj->getMatProjection().convert();
 	switch (myShader) {
         case SHADER_NIGHT_TES:
         case SHADER_NORMAL_TES:
