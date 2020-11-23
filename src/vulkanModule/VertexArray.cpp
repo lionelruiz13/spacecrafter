@@ -96,7 +96,8 @@ void VertexArray::build(int _maxVertices)
 void VertexArray::buildInstanceBuffer(int _maxInstances)
 {
     maxInstances = _maxInstances;
-    instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2, (instanceAccess == BufferAccess::STREAM_LOCAL), (vertexAccess==BufferAccess::STREAM));
+    instanceBuffer = nullptr; // Release resources of previous instanceBuffer if any
+    instanceBuffer = std::make_unique<VertexBuffer>(master, maxInstances, bindingDesc2, attributeDesc2, (instanceAccess == BufferAccess::STREAM_LOCAL), (instanceAccess==BufferAccess::STREAM));
     pInstanceData = static_cast<float *>(instanceBuffer->data);
 }
 
@@ -106,7 +107,7 @@ void VertexArray::bind(CommandMgr *cmdMgr)
         cmdMgr = mgr;
     cmdMgr->bindVertex(vertexBuffer.get(), 0, vertexBuffer->getOffset());
     if (instanceBuffer)
-        cmdMgr->bindVertex(instanceBuffer.get(), 1);
+        cmdMgr->bindVertex(instanceBuffer.get(), 1, instanceBuffer->getOffset());
     if (indexBuffer)
         cmdMgr->bindIndex(indexBuffer.get(), indexType);
     if (updateOnBind)
