@@ -69,6 +69,7 @@ void TextureMgr::cacheImage(std::unique_ptr<TextureImage> &textureImage)
 {
     cache.push_back(std::move(textureImage));
 }
+
 void TextureMgr::releaseCachedTextures()
 {
     cache.clear();
@@ -160,9 +161,15 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, uint3
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = 1;
 
-    VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(master->refDevice, image, &memRequirements);
-    SubMemory memory = master->getMemoryManager()->malloc(memRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    VkMemoryDedicatedRequirements memDedicated{VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS, nullptr, 0, 0};
+    VkMemoryRequirements2 memRequirements;
+    memRequirements.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2;
+    memRequirements.pNext = &memDedicated;
+    VkImageMemoryRequirementsInfo2 memImageInfo{VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2, nullptr, image};
+    vkGetImageMemoryRequirements2(master->refDevice, &memImageInfo, &memRequirements);
+    SubMemory memory = (memDedicated.prefersDedicatedAllocation) ?
+        master->getMemoryManager()->dmalloc(memRequirements.memoryRequirements, image, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT):
+        master->getMemoryManager()->malloc(memRequirements.memoryRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     if (memory.memory == VK_NULL_HANDLE) {
         vkDestroyImage(master->refDevice, image, nullptr);
         return nullptr;

@@ -28,6 +28,8 @@ public:
     //! Allocate memory
     //! @return SubMemory.memory can be VK_NULL_HANDLE if memory allocation has failed
     SubMemory malloc(const VkMemoryRequirements &memRequirements, VkMemoryPropertyFlags properties, VkMemoryPropertyFlags preferedProperties = 0);
+    //! Allocate dedicated memory for an image
+    SubMemory dmalloc(const VkMemoryRequirements &memRequirements, VkImage image, VkMemoryPropertyFlags properties, VkMemoryPropertyFlags preferedProperties = 0);
     //! Release allocated memory
     void free(SubMemory &subMemory);
     //! Map memory

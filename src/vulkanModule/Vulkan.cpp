@@ -635,9 +635,15 @@ void Vulkan::createMultisample(VkSampleCountFlagBits sampleCount)
         }
         setObjectName(multisampleImage[i], VK_OBJECT_TYPE_IMAGE, "Main FBO multisample color attachment");
 
-        VkMemoryRequirements memRequirements;
-        vkGetImageMemoryRequirements(device, multisampleImage[i], &memRequirements);
-        multisampleImageMemory[i] = memoryManager->malloc(memRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+        VkMemoryDedicatedRequirements memDedicated{VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS, nullptr, 0, 0};
+        VkMemoryRequirements2 memRequirements;
+        memRequirements.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2;
+        memRequirements.pNext = &memDedicated;
+        VkImageMemoryRequirementsInfo2 memImageInfo{VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2, nullptr, multisampleImage[i]};
+        vkGetImageMemoryRequirements2(device, &memImageInfo, &memRequirements);
+        multisampleImageMemory[i] = (memDedicated.prefersDedicatedAllocation) ?
+            memoryManager->dmalloc(memRequirements.memoryRequirements, multisampleImage[i], VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT):
+            memoryManager->malloc(memRequirements.memoryRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
         vkBindImageMemory(device, multisampleImage[i], multisampleImageMemory[i].memory, multisampleImageMemory[i].offset);
         multisampleImageView[i] = createImageView(multisampleImage[i], swapChainImageFormat);
     }
@@ -1033,9 +1039,15 @@ void Vulkan::createDepthResources(VkSampleCountFlagBits sampleCount)
     }
     setObjectName(depthImage, VK_OBJECT_TYPE_IMAGE, "Main FBO depth attachment");
 
-    VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(device, depthImage, &memRequirements);
-    depthImageMemory = memoryManager->malloc(memRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+    VkMemoryDedicatedRequirements memDedicated{VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS, nullptr, 0, 0};
+    VkMemoryRequirements2 memRequirements;
+    memRequirements.sType = VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2;
+    memRequirements.pNext = &memDedicated;
+    VkImageMemoryRequirementsInfo2 memImageInfo{VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2, nullptr, depthImage};
+    vkGetImageMemoryRequirements2(device, &memImageInfo, &memRequirements);
+    depthImageMemory = (memDedicated.prefersDedicatedAllocation) ?
+        memoryManager->dmalloc(memRequirements.memoryRequirements, depthImage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT):
+        memoryManager->malloc(memRequirements.memoryRequirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
     vkBindImageMemory(device, depthImage, depthImageMemory.memory, depthImageMemory.offset);
     depthImageView = createImageView(depthImage, VK_FORMAT_D24_UNORM_S8_UINT, VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT);
 }

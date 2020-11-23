@@ -36,12 +36,45 @@ SubMemory MemoryManager::malloc(const VkMemoryRequirements &memRequirements, VkM
     return subMemory;
 }
 
+SubMemory MemoryManager::dmalloc(const VkMemoryRequirements &memRequirements, VkImage image, VkMemoryPropertyFlags properties, VkMemoryPropertyFlags preferedProperties)
+{
+    SubMemory subMemory;
+    subMemory.memory = VK_NULL_HANDLE;
+    findMemoryIndex(memRequirements, properties, preferedProperties, &subMemory);
+    mtx.lock();
+    if (availableDeviceMemory <= 64 + chunkSize / 1024 / 1024 && !hasReleasedUnusedMemory && memProperties.memoryProperties.memoryTypes[subMemory.memoryIndex].heapIndex == deviceMemoryHeap) {
+        master->releaseUnusedMemory();
+        hasReleasedUnusedMemory = true;
+        displayResources();
+    }
+    VkMemoryDedicatedAllocateInfo dedicatedInfo{VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO, nullptr, image, VK_NULL_HANDLE};
+    VkMemoryAllocateInfo allocInfo{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO, &dedicatedInfo, memRequirements.size, subMemory.memoryIndex};
+    std::ostringstream oss;
+    if (vkAllocateMemory(refDevice, &allocInfo, nullptr, &subMemory.memory) == VK_SUCCESS) {
+        oss << "Dedicated allocation of " << memRequirements.size / 1024 / 1024 << " MiB of GPU memory.";
+        cLog::get()->write(oss.str(), LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
+        subMemory.offset = 0;
+        subMemory.size = (VkDeviceSize) -1;
+    } else {
+        oss << "Failed dedicated allocation of " << memRequirements.size / 1024 / 1024 << " MiB of GPU memory.";
+        cLog::get()->write(oss.str(), LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+    }
+    if (!hasReleasedUnusedMemory)
+        displayResources();
+    mtx.unlock();
+    return subMemory;
+}
+
 void MemoryManager::free(SubMemory &subMemory)
 {
     if (subMemory.memory == VK_NULL_HANDLE) return;
     mtx.lock();
-    merge(&subMemory);
-    insert(subMemory);
+    if (subMemory.size == (VkDeviceSize) -1) {
+        vkFreeMemory(refDevice, subMemory.memory, nullptr);
+    } else {
+        merge(&subMemory);
+        insert(subMemory);
+    }
     mtx.unlock();
 }
 
