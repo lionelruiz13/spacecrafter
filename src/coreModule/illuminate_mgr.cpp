@@ -44,7 +44,6 @@
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/Uniform.hpp"
 #include "vulkanModule/Buffer.hpp"
-#include "vulkanModule/VertexBuffer.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
@@ -180,7 +179,7 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	// illumPos.clear();
 	// illumTex.clear();
 	// illumColor.clear();
-	float *illumData = static_cast<float *>(m_illumGL->getVertexBuffer().data);
+	float *illumData = m_illumGL->getStagingVertexBufferPtr();
 
 	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
 	illuminateGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f);
@@ -193,6 +192,8 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 	}
 	if (nbVertex == 0)
 		return;
+	m_illumGL->assumeVerticeChanged();
+	m_illumGL->update();
 	m_pDrawDataIllum[0] = nbVertex * 6;
 	m_drawDataIllum->update();
 
