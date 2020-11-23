@@ -116,17 +116,17 @@ void TextureMgr::releaseSyncObject(VkFence fence, VkSemaphore semaphore)
     syncObjectAccess.unlock();
 }
 
-TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool mipmap, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment, bool useConcurrency)
+TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, uint32_t depth, bool mipmap, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment, bool useConcurrency)
 {
     // create image
     VkImage image;
     VkImageCreateInfo imageInfo{};
     uint32_t indices[2];
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    imageInfo.imageType = VK_IMAGE_TYPE_2D;
+    imageInfo.imageType = (depth > 1) ? VK_IMAGE_TYPE_3D : VK_IMAGE_TYPE_2D;
     imageInfo.extent.width = size.first;
     imageInfo.extent.height = size.second;
-    imageInfo.extent.depth = 1;
+    imageInfo.extent.depth = depth;
     imageInfo.mipLevels = mipmap ? static_cast<uint32_t>(std::floor(std::log2(std::max(size.first, size.second)))) + 1 : 1;
     imageInfo.arrayLayers = 1;
     imageInfo.format = format;
@@ -152,7 +152,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, bool 
     VkImageViewCreateInfo viewInfo{};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = image;
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.viewType = (depth > 1) ? VK_IMAGE_VIEW_TYPE_3D : VK_IMAGE_VIEW_TYPE_2D;
     viewInfo.format = format;
     viewInfo.subresourceRange.aspectMask = (isDepthAttachment) ? VK_IMAGE_ASPECT_DEPTH_BIT : VK_IMAGE_ASPECT_COLOR_BIT;
     viewInfo.subresourceRange.baseMipLevel = 0;

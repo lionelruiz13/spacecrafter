@@ -601,14 +601,14 @@ void CommandMgr::compileBarriers(VkPipelineStageFlags srcStage, VkPipelineStageF
 
 void CommandMgr::blit(Texture *src, Texture *dst, uint32_t srcMipLevel, uint32_t dstMipLevel, VkFilter filter)
 {
-    int srcWidth, srcHeight, dstWidth, dstHeight;
-    src->getDimensions(srcWidth, srcHeight);
-    dst->getDimensions(dstWidth, dstHeight);
+    int srcWidth, srcHeight, srcDepth, dstWidth, dstHeight, dstDepth;
+    src->getDimensions(srcWidth, srcHeight, srcDepth);
+    dst->getDimensions(dstWidth, dstHeight, dstDepth);
     const VkImageBlit imageBlit = {
         {VK_IMAGE_ASPECT_COLOR_BIT, srcMipLevel, 0, 1},
-        {{0, 0, 0}, {std::max(srcWidth >> srcMipLevel, 1), std::max(srcHeight >> srcMipLevel, 1), 1}},
+        {{0, 0, 0}, {std::max(srcWidth >> srcMipLevel, 1), std::max(srcHeight >> srcMipLevel, 1), std::max(srcDepth >> srcMipLevel, 1)}},
         {VK_IMAGE_ASPECT_COLOR_BIT, dstMipLevel, 0, 1},
-        {{0, 0, 0}, {std::max(dstWidth >> dstMipLevel, 1), std::max(dstHeight >> dstMipLevel, 1), 1}}
+        {{0, 0, 0}, {std::max(dstWidth >> dstMipLevel, 1), std::max(dstHeight >> dstMipLevel, 1), std::max(dstDepth >> dstMipLevel, 1)}}
     };
     if (singleUse) {
         vkCmdBlitImage(actual, src->getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dst->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageBlit, VK_FILTER_LINEAR);

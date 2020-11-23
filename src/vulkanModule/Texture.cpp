@@ -25,12 +25,34 @@ void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFo
     imageInfo.imageView = VK_NULL_HANDLE;
 }
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename, bool keepOnCPU, bool _mipmap)
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU, bool _mipmap, bool createSampler, VkFormat _format, int nbChannels, bool is3d)
 {
-    init(_master, _mgr, _mipmap);
+    init(_master, _mgr, _mipmap, _format);
     int texChannels;
-    stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-    VkDeviceSize imageSize = texWidth * texHeight * 4;
+    stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, nbChannels);
+    VkDeviceSize imageSize = texWidth * texHeight * nbChannels;
+    VkBufferImageCopy region{};
+    region.bufferOffset = 0;
+    region.bufferRowLength = texWidth;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {0, 0, 0};
+    if (is3d) {
+        uint32_t height = texHeight;
+        texWidth = texHeight = texDepth = 1 << (static_cast<uint32_t>(std::log2(texHeight))*2/3);
+        region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, (height/texHeight)};
+        while (region.imageOffset.z < texDepth) {
+            regions.push_back(region);
+            region.bufferOffset += texWidth;
+            region.imageOffset.z += region.imageExtent.depth;
+        }
+    } else {
+        region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, 1};
+        regions.push_back(region);
+    }
     if (mipmap)
         mipmapCount = static_cast<uint32_t>(std::log2(std::max(texWidth, texHeight))) + 1;
 
@@ -47,6 +69,13 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename
     _master->unmapMemory(stagingBufferMemory);
 
     stbi_image_free(pixels);
+
+    if (createSampler) {
+        VkSamplerCreateInfo samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
+        samplerInfo.addressModeU = samplerInfo.addressModeV = samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+        samplerInfo.maxLod = mipmapCount;
+        imageInfo.sampler = _mgr->createSampler(samplerInfo);
+    }
 
     imageName = filename;
     if (!keepOnCPU) {
@@ -78,6 +107,18 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int w
         imageInfo.sampler = _mgr->createSampler(samplerInfo);
     }
 
+    VkBufferImageCopy region{};
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, 1};
+    regions.push_back(region);
+
     imageName = name;
     if (!keepOnCPU) {
         use();
@@ -95,10 +136,10 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachme
     texWidth = (width == -1) ? _master->getViewportState().pViewports->width : width;
     texHeight = (height == -1) ? abs(_master->getViewportState().pViewports->height) : height;
     if (isDepthAttachment) {
-        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_D24_UNORM_S8_UINT, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, true));
+        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), 1, false, VK_FORMAT_D24_UNORM_S8_UINT, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, true));
         master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, "FBO depth attachment");
     } else {
-        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT));
+        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), 1, false, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT));
         master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, "FBO color attachment");
     }
     if (image == nullptr) {
@@ -144,6 +185,7 @@ void Texture::destroyStagingResources()
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
         master->free(stagingBufferMemory);
         stagingBuffer = VK_NULL_HANDLE;
+        regions.clear();
     }
 }
 
@@ -158,7 +200,7 @@ void Texture::use(bool forceUpdate)
             return;
     }
     if (image == nullptr)
-        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), mipmap));
+        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), texDepth, mipmap, format));
     if (image == nullptr) {
         cLog::get()->write("Faild to create image support", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         useCount--;
@@ -185,18 +227,7 @@ void Texture::use(bool forceUpdate)
     cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0, VK_ACCESS_TRANSFER_WRITE_BIT);
     cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-    VkBufferImageCopy region{};
-    region.bufferOffset = 0;
-    region.bufferRowLength = 0;
-    region.bufferImageHeight = 0;
-    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    region.imageSubresource.mipLevel = 0;
-    region.imageSubresource.baseArrayLayer = 0;
-    region.imageSubresource.layerCount = 1;
-    region.imageOffset = {0, 0, 0};
-    region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, 1};
-
-    vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, image->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+    vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, image->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, regions.size(), regions.data());
     if (!mipmap) {
         cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, 0);
         cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
@@ -296,7 +327,7 @@ void StreamTexture::use(int width, int height, VkFormat format)
     }
     texWidth = width;
     texHeight = height;
-    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), false, format, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, false, true));
+    image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), 1, false, format, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, false, true));
     master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
     master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging buffer of Stream texture");
 

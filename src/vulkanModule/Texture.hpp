@@ -5,6 +5,7 @@
 #include <string>
 #include "SubMemory.hpp"
 #include <memory>
+#include <vector>
 
 class VirtualSurface;
 class TextureMgr;
@@ -20,8 +21,11 @@ public:
     * @param keepOnCPU If true, you can load/unload this texture from GPU
     */
     Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachment = false, int width = -1, int height = -1);
-    //! @param keepOnCPU If true, you can load/unload this texture from GPU
-    Texture(VirtualSurface *_master, TextureMgr *_mgr, std::string filename = "", bool keepOnCPU = true, bool mipmap = false);
+    /**
+    * @param keepOnCPU If true, you can load/unload this texture from GPU
+    * @param is3d If true, read as a power-of-two cube texture (width=height=depth) ordered in columns and lines
+    */
+    Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU = true, bool mipmap = false, bool createSampler=false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, int nbChannels=4, bool is3d = false);
     Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool mipmap = false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, const std::string &name = "unnamed\0", bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
     Texture();
     virtual ~Texture();
@@ -43,6 +47,9 @@ public:
     VkImage getImage();
     //! Write texture size in width and height arguments
     void getDimensions(int &width, int &height) const {width=texWidth;height=texHeight;}
+    //! Write texture size in width, height and depth arguments
+    void getDimensions(int &width, int &height, int &depth) const {width=texWidth;height=texHeight;depth=texDepth;}
+    int getMipmapCount() const {return mipmapCount;}
     //! Return number of use() calls minus unuse() calls count
     int getUseCount() const {return useCount;}
 protected:
@@ -51,7 +58,7 @@ protected:
     TextureMgr *mgr;
     bool isOk;
     VkDescriptorImageInfo imageInfo;
-    int texWidth=0, texHeight=0;
+    int texWidth=0, texHeight=0, texDepth=1;
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
     SubMemory stagingBufferMemory;
     std::unique_ptr<TextureImage> image;
@@ -66,6 +73,7 @@ private:
     int mipmapCount = 1;
     std::string imageName;
     VkCommandBuffer commandBuffer;
+    std::vector<VkBufferImageCopy> regions;
 };
 
 //! For texture streaming like a video
