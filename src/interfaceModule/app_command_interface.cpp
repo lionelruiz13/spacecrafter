@@ -3248,36 +3248,29 @@ int AppCommandInterface::commandBody()
 		}
 
 
-		std::string argColor = args[W_COLOR_VALUE];
-		if (argColor.empty())
-			argColor = args["color"];
-
+		std::string argColor = args[W_COLOR];
 		if (!argColor.empty()) {
+			std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
 			//gestion de la couleur
 			Vec3f Vcolor;
 			std::string argR= args[W_R];
 			std::string argG= args[W_G];
 			std::string argB= args[W_B];
-			AppCommandColor testColor(Vcolor, debug_message, argColor, argR,argG, argB);
-			if (!testColor)
+			std::string argColorValue = args[W_COLOR_VALUE];
+			//std::cout << "RGB: " << argR << " " << argG << " " << argB << std::endl;
+			AppCommandColor testColor(Vcolor, debug_message, argColorValue, argR, argG, argB);
+			if (!testColor) {
+				//std::cout << "Erreur color " << debug_message << std::endl;	
 				return executeCommandStatus();
+			}
 
+			//std::cout << "Infos lues : " << argColor << " " << Vcolor  << std::endl;
 			coreLink->planetSetColor(argName, argColor, Vcolor);
 			return executeCommandStatus();
 		}
 		debug_message = _("Command 'body': case name unknown argument");
 		return executeCommandStatus();
 	}
-
-	if (!args[W_TESSELATION].empty()) {
-		coreLink->planetTesselation(args[W_TESSELATION], evalInt(args[W_VALUE]));
-		return executeCommandStatus();
-	}
-
-	debug_message = _("Command 'body': unknown argument");
-	return executeCommandStatus();
-}
-
 
 int AppCommandInterface::commandFont()
 {
