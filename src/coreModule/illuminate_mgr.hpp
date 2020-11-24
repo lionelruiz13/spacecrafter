@@ -27,7 +27,7 @@
 #define _ILLUMINATE_MGR_H_
 
 // max amount of illuminate simultaneously displayed
-#define MAX_ILLUMINATE 16000
+#define MAX_ILLUMINATE 26000
 
 #include <vector>
 #include <memory>
