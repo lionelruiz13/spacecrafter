@@ -36,7 +36,7 @@ Media::Media()
 	viewPort = new ViewPort();
 	vr360 = new VR360();
 
-	strToVid["vr_cube"] = VID_TYPE::V_VRCUBE;
+	strToVid["vrcube"] = VID_TYPE::V_VRCUBE;
 	strToVid["vr360"] = VID_TYPE::V_VR360 ;
 	strToVid["image"] = VID_TYPE::V_IMAGE;
 	strToVid["viewport"] = VID_TYPE::V_FULLVIEWPORT;
