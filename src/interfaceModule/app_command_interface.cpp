@@ -3272,6 +3272,15 @@ int AppCommandInterface::commandBody()
 		return executeCommandStatus();
 	}
 
+	if (!args[W_TESSELATION].empty()) {
+		coreLink->planetTesselation(args[W_TESSELATION], evalInt(args[W_VALUE]));
+		return executeCommandStatus();
+	}
+
+	debug_message = _("Command 'body': unknown argument");
+	return executeCommandStatus();
+}
+
 int AppCommandInterface::commandFont()
 {
 	std::string fileName = args[W_FILENAME];
