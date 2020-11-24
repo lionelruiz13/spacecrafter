@@ -46,7 +46,7 @@
 #include "vulkanModule/Buffer.hpp"
 #include "vulkanModule/Texture.hpp"
 
-#define NB_ASTEROIDS 100000
+#define NB_ASTEROIDS 400000
 
 Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init, ThreadContext *context)
 	:radius_min(radius_min),radius_max(radius_max)
@@ -124,7 +124,7 @@ void Ring::createSC_context(ThreadContext *context)
 	layoutAsteroid->buildLayout();
 	layoutAsteroid->build();
 
-	float asteroid_radius = (radius_max - radius_min) / 200.f;
+	float asteroid_radius = (radius_max - radius_min) / 500.f;
 	pipelineAsteroid = std::make_unique<Pipeline>(context->surface, layoutAsteroid.get());
 	//pipelineAsteroid->setCullMode(true);
 	pipelineAsteroid->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
