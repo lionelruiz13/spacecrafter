@@ -267,6 +267,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
+		case SC_COMMAND::SC_DIVIDE :	return commandDivide(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
 		case SC_COMMAND::SC_PLANET_SCALE :	return commandPlanetScale(); break;
@@ -3246,23 +3247,21 @@ int AppCommandInterface::commandBody()
 			return executeCommandStatus();
 		}
 
-		std::string argColor = args[W_COLOR];
+
+		std::string argColor = args[W_COLOR_VALUE];
+		if (argColor.empty())
+			argColor = args["color"];
+
 		if (!argColor.empty()) {
-			std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
 			//gestion de la couleur
 			Vec3f Vcolor;
 			std::string argR= args[W_R];
 			std::string argG= args[W_G];
 			std::string argB= args[W_B];
-			std::string argColorValue = args[W_COLOR_VALUE];
-			//std::cout << "RGB: " << argR << " " << argG << " " << argB << std::endl;
-			AppCommandColor testColor(Vcolor, debug_message, argColorValue, argR, argG, argB);
-			if (!testColor) {
-				//std::cout << "Erreur color " << debug_message << std::endl;	
+			AppCommandColor testColor(Vcolor, debug_message, argColor, argR,argG, argB);
+			if (!testColor)
 				return executeCommandStatus();
-			}
 
-			//std::cout << "Infos lues : " << argColor << " " << Vcolor  << std::endl;
 			coreLink->planetSetColor(argName, argColor, Vcolor);
 			return executeCommandStatus();
 		}
@@ -3611,7 +3610,20 @@ int AppCommandInterface::commandMultiply()
 		std::string mValue = args.begin()->second;
 		appEval->commandMul(mArg,mValue);
 	} else {
-		debug_message = "unexpected error in command__addition";
+		debug_message = "unexpected error in command__multiply";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandDivide()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandDiv(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__divide";
 	}
 	return executeCommandStatus();
 }

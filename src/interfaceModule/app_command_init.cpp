@@ -63,6 +63,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_METEORS] = SC_COMMAND::SC_METEORS;
 	m_commands[ACP_CN_MOVETO] = SC_COMMAND::SC_MOVETO;
 	m_commands[ACP_CN_MULTIPLY] = SC_COMMAND::SC_MULTIPLY;
+	m_commands[ACP_CN_DIVIDE] = SC_COMMAND::SC_DIVIDE;
 	m_commands[ACP_CN_PERSONAL] = SC_COMMAND::SC_PERSONAL;
 	m_commands[ACP_CN_PERSONEQ] = SC_COMMAND::SC_PERSONEQ;
 	m_commands[ACP_CN_PLANET_SCALE] = SC_COMMAND::SC_PLANET_SCALE;

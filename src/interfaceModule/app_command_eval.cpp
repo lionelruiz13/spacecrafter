@@ -5,6 +5,7 @@
 std::function<double(double,double)> f_add = [](double x, double y){return x+y;};
 std::function<double(double,double)> f_sub = [](double x, double y){return x-y;};
 std::function<double(double,double)> f_mul = [](double x, double y){return x*y;};
+std::function<double(double,double)> f_div = [](double x, double y){return x/y;};
 
 AppCommandEval::AppCommandEval(CoreLink *_coreLink)
 {
@@ -21,6 +22,7 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_LONGITUDE]=SC_RESERVED_VAR::LONGITUDE;
 	m_reservedVar[ACI_RW_LATITUDE]=SC_RESERVED_VAR::LATITUDE;
 	m_reservedVar[ACI_RW_SUN_ALTITUDE]=SC_RESERVED_VAR::SUN_ALTITUDE;
+	m_reservedVar[ACI_RW_SUN_AZIMUTH]=SC_RESERVED_VAR::SUN_AZIMUTH;
 	m_reservedVar[ACI_RW_HEADING]=SC_RESERVED_VAR::HEADING;
 
 	// for conivence, the map inverse
@@ -97,6 +99,11 @@ void AppCommandEval::commandSub(const std::string& mArg, const std::string& mVal
 void AppCommandEval::commandMul(const std::string& mArg, const std::string& mValue)
 {
 	this->evalOps(mArg,mValue, f_mul);
+}
+
+void AppCommandEval::commandDiv(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_div);
 }
 
 
@@ -184,6 +191,8 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->getHeading(); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE:
 			return coreLink->getSunAltitude(); break;
+		case SC_RESERVED_VAR::SUN_AZIMUTH:
+			return coreLink->getSunAzimuth(); break;
 		default:
 			std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			return 0.0;
@@ -203,6 +212,8 @@ void AppCommandEval::setReservedVariable(const std::string &var, double value)
 		case  SC_RESERVED_VAR::HEADING :  
 			coreLink->setHeading(value); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE :
+			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+		case SC_RESERVED_VAR::SUN_AZIMUTH :
 			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		default:
 			std::cout << "Unknown reserved variable " << var << ". Do nothing." << std::endl;

@@ -99,6 +99,7 @@ protected:
 	int commandMeteors();
 	int commandMoveto();
 	int commandMultiply();
+	int commandDivide();
 	int commandPersonal();
 	int commandPersoneq();
 	int commandPlanetScale();
