@@ -149,6 +149,54 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, bool isDepthAttachme
     imageName = "FrameBuffer attachment of VirtualSurface";
 }
 
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, int width, int height, const std::string &name, VkSamplerAddressMode addressMode, VkFormat _format, int nbChannels)
+{
+    init(_master, _mgr, true, _format);
+    int texChannels;
+    stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, nbChannels);
+    assert(texWidth % width == 0 && texHeight % height == 0);
+    VkDeviceSize imageSize = texWidth * texHeight * nbChannels;
+    VkBufferImageCopy region{};
+    region.bufferOffset = 0;
+    region.bufferRowLength = texWidth;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = {(uint32_t) width, (uint32_t) height, (uint32_t) texHeight/height};
+    texDepth = texWidth * texHeight / (width * height);
+    while (region.bufferOffset < (uint32_t) texWidth) {
+        regions.push_back(region);
+        region.bufferOffset += width;
+        region.imageOffset.z += region.imageExtent.depth;
+    }
+    texWidth = width;
+    texHeight = height;
+    mipmapCount = static_cast<uint32_t>(std::log2(std::max(std::max(texWidth, texHeight), texDepth))) + 1;
+
+    if (!pixels) {
+        cLog::get()->write("Faild to load image '" + filename + "'", LOG_TYPE::L_WARNING);
+        isOk = false;
+        return;
+    }
+    _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
+
+    void *data;
+    _master->mapMemory(stagingBufferMemory, &data);
+    memcpy(data, pixels, static_cast<size_t>(imageSize));
+    _master->unmapMemory(stagingBufferMemory);
+    stbi_image_free(pixels);
+    VkSamplerCreateInfo samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
+    samplerInfo.addressModeU = samplerInfo.addressModeV = samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.maxLod = mipmapCount;
+    imageInfo.sampler = _mgr->createSampler(samplerInfo);
+    imageName = filename;
+    use();
+    destroyStagingResources();
+}
+
 void Texture::acquireStagingMemoryPtr(void **pPixels)
 {
     master->mapMemory(stagingBufferMemory, pPixels);
