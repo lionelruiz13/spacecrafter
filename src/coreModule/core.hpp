@@ -53,6 +53,7 @@
 #include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
 #include "coreModule/starNavigator.hpp"
+#include "coreModule/cloudNavigator.hpp"
 #include "mediaModule/text_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
@@ -597,6 +598,7 @@ private:
 	SkyLocalizer *skyloc;				// for sky cultures and locales
 	BodyTrace * bodytrace;				// the pen bodytrace
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
+	CloudNavigator* cloudNav; 			// draw galaxy gaz clouds
 	StarLines* starLines;				// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D
 	UBOCam* ubo_cam;

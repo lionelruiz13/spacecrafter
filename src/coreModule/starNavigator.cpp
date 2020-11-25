@@ -90,7 +90,6 @@ void StarNavigator::createSC_context(ThreadContext *_context)
 	layout->buildLayout();
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
-	pipeline->setDepthStencilMode();
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	pipeline->setBlendMode(BLEND_ADD);
 	pipeline->bindVertex(m_dataGL.get());
@@ -413,7 +412,7 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 void StarNavigator::build(int nbVertex)
 {
 	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	cmdMgr->init(commandIndex, pipeline.get());
+	cmdMgr->init(commandIndex, pipeline.get(), renderPassType::USE_DEPTH_BUFFER);
 	cmdMgr->bindSet(layout.get(), context->global->globalSet);
 	cmdMgr->bindSet(layout.get(), set.get(), 1);
 	cmdMgr->bindVertex(m_dataGL.get());
