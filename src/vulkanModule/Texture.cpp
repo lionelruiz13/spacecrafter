@@ -30,6 +30,11 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &f
     init(_master, _mgr, _mipmap, _format);
     int texChannels;
     stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, nbChannels);
+    if (!pixels) {
+        cLog::get()->write("Faild to load image '" + filename + "'", LOG_TYPE::L_WARNING);
+        isOk = false;
+        return;
+    }
     VkDeviceSize imageSize = texWidth * texHeight * nbChannels;
     VkBufferImageCopy region{};
     region.bufferOffset = 0;
@@ -43,7 +48,7 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &f
     if (is3d) {
         uint32_t height = texHeight;
         texWidth = texHeight = texDepth = 1 << (static_cast<uint32_t>(std::log2(texHeight))*2/3);
-        region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, (height/texHeight)};
+        region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, height/texHeight};
         while (region.imageOffset.z < texDepth) {
             regions.push_back(region);
             region.bufferOffset += texWidth;
@@ -55,12 +60,6 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &f
     }
     if (mipmap)
         mipmapCount = static_cast<uint32_t>(std::log2(std::max(texWidth, texHeight))) + 1;
-
-    if (!pixels) {
-        cLog::get()->write("Faild to load image '" + filename + "'", LOG_TYPE::L_WARNING);
-        isOk = false;
-        return;
-    }
     _master->createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
 
     void *data;
@@ -182,6 +181,8 @@ void Texture::destroyStagingResources()
     if (stagingBuffer) {
         if (useCount > 0)
             master->waitTransferQueueIdle();
+        else
+            isOk = false;
         vkDestroyBuffer(master->refDevice, stagingBuffer, nullptr);
         master->free(stagingBufferMemory);
         stagingBuffer = VK_NULL_HANDLE;
@@ -189,22 +190,22 @@ void Texture::destroyStagingResources()
     }
 }
 
-void Texture::use(bool forceUpdate)
+bool Texture::use(bool forceUpdate)
 {
     if (++useCount != 1)
-        return;
+        return true;
     if (imagePtr) {
         image = mgr->queryImage(imagePtr);
         imagePtr = nullptr;
-        if (!forceUpdate)
-            return;
+        if (image && !forceUpdate)
+            return true;
     }
     if (image == nullptr)
         image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), texDepth, mipmap, format));
     if (image == nullptr) {
         cLog::get()->write("Faild to create image support", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         useCount--;
-        return;
+        return false;
     }
     CommandMgr *cmdMgr = mgr->getBuilder();
     VkFence fence;
@@ -281,6 +282,7 @@ void Texture::use(bool forceUpdate)
         master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, imageName);
         master->setObjectName(image->getImageView(), VK_OBJECT_TYPE_IMAGE_VIEW, imageName);
     }
+    return true;
 }
 
 void Texture::unuse()
@@ -290,6 +292,7 @@ void Texture::unuse()
         imageInfo.imageView = VK_NULL_HANDLE;
         vkFreeCommandBuffers(master->refDevice, master->getTransferPool(), 1, &commandBuffer);
     }
+    if (useCount < 0) useCount = 0;
 }
 
 StreamTexture::StreamTexture(VirtualSurface *_master, TextureMgr *_mgr, bool externUpdate)
@@ -319,16 +322,19 @@ StreamTexture::~StreamTexture()
     vkDestroyFence(master->refDevice, fence, nullptr);
 }
 
-void StreamTexture::use(int width, int height, VkFormat format)
+bool StreamTexture::use(int width, int height, VkFormat format)
 {
     if (++useCount != 1) {
         assert(width == texWidth && height == texHeight);
-        return;
+        return true;
     }
     texWidth = width;
     texHeight = height;
     image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), 1, false, format, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, false, true));
-    master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory);
+    if (image == nullptr || !master->createBuffer(texWidth * texHeight, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_HOST_MEMORY, stagingBuffer, stagingBufferMemory)) {
+        useCount--;
+        return false;
+    }
     master->setObjectName(stagingBuffer, VK_OBJECT_TYPE_BUFFER, "staging buffer of Stream texture");
 
     VkCommandBufferAllocateInfo allocInfo{};
@@ -370,6 +376,7 @@ void StreamTexture::use(int width, int height, VkFormat format)
     imageInfo.imageView = image->getImageView();
     master->setObjectName(image->getImage(), VK_OBJECT_TYPE_IMAGE, "Stream texture");
     master->setObjectName(image->getImageView(), VK_OBJECT_TYPE_IMAGE_VIEW, "Stream texture");
+    return true;
 }
 
 void StreamTexture::unuse()
@@ -383,6 +390,7 @@ void StreamTexture::unuse()
         master->free(stagingBufferMemory);
         stagingBuffer = VK_NULL_HANDLE;
     }
+    if (useCount < 0) useCount = 0;
 }
 
 void StreamTexture::update()

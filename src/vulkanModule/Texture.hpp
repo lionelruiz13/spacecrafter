@@ -29,8 +29,8 @@ public:
     Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool mipmap = false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, const std::string &name = "unnamed\0", bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
     Texture();
     virtual ~Texture();
-    //! Export texture to GPU. If forceUpdate is false, changes made in staging memory may not appear
-    void use(bool forceUpdate = false);
+    //! Export texture to GPU and return true on success. If forceUpdate is false, changes made in staging memory may not appear
+    bool use(bool forceUpdate = false);
     //! Release texture on GPU (may invalidate all previous bindings)
     virtual void unuse();
     //! Acquire pointer to staging memory
@@ -56,7 +56,7 @@ protected:
     static std::string textureDir;
     VirtualSurface *master;
     TextureMgr *mgr;
-    bool isOk;
+    bool isOk = true;
     VkDescriptorImageInfo imageInfo;
     int texWidth=0, texHeight=0, texDepth=1;
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
@@ -82,7 +82,7 @@ public:
     StreamTexture(VirtualSurface *_master, TextureMgr *_mgr, bool externUpdate = false);
     virtual ~StreamTexture();
     void update(); // Update texture content, set externUpdate to true to use
-    void use(int width, int height, VkFormat format = VK_FORMAT_R8_UNORM);
+    bool use(int width, int height, VkFormat format = VK_FORMAT_R8_UNORM);
     virtual void unuse() override;
 private:
     VkFence fence;

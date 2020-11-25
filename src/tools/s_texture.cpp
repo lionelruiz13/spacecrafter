@@ -149,9 +149,9 @@ s_texture::~s_texture()
 	unload();
 }
 
-void s_texture::use()
+bool s_texture::use()
 {
-	texture->use();
+	return texture->use();
 }
 
 void s_texture::unuse()
@@ -305,6 +305,11 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 			tmp->textureHandle = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_UNORM, fullName.substr(fullName.find(".spacecrafter")+14), true, static_cast<VkSamplerAddressMode>(loadWrapping));
 			tmp->texture = tmp->textureHandle.get();
 			tmp->mipmap = mipmap;
+			if (!tmp->textureHandle->isValid()) {
+				cLog::get()->write("s_texture: failed to create texture " + fullName, LOG_TYPE::L_ERROR);
+				delete tmp;
+				return false;
+			}
 
 			texture = tmp->texture;
 

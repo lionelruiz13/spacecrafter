@@ -67,7 +67,8 @@ std::unique_ptr<TextureImage> TextureMgr::queryImage(TextureImage *ptr)
 
 void TextureMgr::cacheImage(std::unique_ptr<TextureImage> &textureImage)
 {
-    cache.push_back(std::move(textureImage));
+    if (textureImage)
+        cache.push_back(std::move(textureImage));
 }
 
 void TextureMgr::releaseCachedTextures()

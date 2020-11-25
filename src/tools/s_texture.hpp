@@ -88,7 +88,7 @@ public:
 	}
 
 	static void setContext(ThreadContext *_context) {context = _context;}
-	void use();
+	bool use();
 	void unuse();
 private:
 	void unload();
