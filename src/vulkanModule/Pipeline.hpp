@@ -52,6 +52,7 @@ public:
     void setLineWidth(float lineWidth);
     //! Set which renderPass types this pipeline will be used with
     void setRenderPassCompatibility(renderPassCompatibility compatibility);
+    void disableSampleShading() {multisampling.sampleShadingEnable = VK_FALSE;}
     //! Build pipeline for use
     void build();
     //! For internal use only
