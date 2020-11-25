@@ -21,7 +21,7 @@ PipelineLayout::~PipelineLayout()
     }
 }
 
-void PipelineLayout::setTextureLocation(uint32_t binding, const VkSamplerCreateInfo *samplerInfo, VkShaderStageFlags stage)
+void PipelineLayout::setTextureLocation(uint32_t binding, const VkSamplerCreateInfo *samplerInfo, VkShaderStageFlags stage, VkSampler *pSampler)
 {
     if (samplerInfo) {
         VkSampler tmpSampler;
@@ -34,7 +34,7 @@ void PipelineLayout::setTextureLocation(uint32_t binding, const VkSamplerCreateI
     samplerLayoutBinding.binding = binding;
     samplerLayoutBinding.descriptorCount = 1;
     samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    samplerLayoutBinding.pImmutableSamplers = samplerInfo ? &sampler.back() : nullptr;
+    samplerLayoutBinding.pImmutableSamplers = samplerInfo ? &sampler.back() : pSampler;
     samplerLayoutBinding.stageFlags = stage;
     uniformsLayout.push_back(samplerLayoutBinding);
 }
