@@ -67,6 +67,10 @@ public:
 	void commandMul(const std::string& mArg, const std::string& mValue);
 	//! first becomes first divided by the second
 	void commandDiv(const std::string& mArg, const std::string& mValue);
+	//! first becomes tangent of the second
+	void commandTan(const std::string& mArg, const std::string& mValue);
+	//! first becomes sine of the second
+	void commandSin(const std::string& mArg, const std::string& mValue);
 	//! fix the minimum random value for the internal random generator 
 	void commandRandomMin(const std::string& mValue);
 	//! fix the maximum random value for the internal random generator

@@ -6,6 +6,8 @@ std::function<double(double,double)> f_add = [](double x, double y){return x+y;}
 std::function<double(double,double)> f_sub = [](double x, double y){return x-y;};
 std::function<double(double,double)> f_mul = [](double x, double y){return x*y;};
 std::function<double(double,double)> f_div = [](double x, double y){return x/y;};
+std::function<double(double,double)> f_tan = [](double x, double y){return tan(y*3.1415926/180.0);};
+std::function<double(double,double)> f_sin = [](double x, double y){return sin(y*3.1415926/180.0);};
 
 AppCommandEval::AppCommandEval(CoreLink *_coreLink)
 {
@@ -104,6 +106,16 @@ void AppCommandEval::commandMul(const std::string& mArg, const std::string& mVal
 void AppCommandEval::commandDiv(const std::string& mArg, const std::string& mValue)
 {
 	this->evalOps(mArg,mValue, f_div);
+}
+
+void AppCommandEval::commandTan(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_tan);
+}
+
+void AppCommandEval::commandSin(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_sin);
 }
 
 

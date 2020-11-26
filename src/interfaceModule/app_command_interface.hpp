@@ -100,6 +100,8 @@ protected:
 	int commandMoveto();
 	int commandMultiply();
 	int commandDivide();
+	int commandTangent();
+	int commandSinus();
 	int commandPersonal();
 	int commandPersoneq();
 	int commandPlanetScale();
