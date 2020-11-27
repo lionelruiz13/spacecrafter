@@ -32,11 +32,10 @@ void main(void)
     NormalOut[ID] = NormalIn[ID];
     PositionOut[ID] = PositionIn[ID];
     if (ID == 0) {
-        float visible = float(VisibleIn[0] | VisibleIn[1] | VisibleIn[2]);
         vec3 tes = vec3(distance(glPositionIn[1], glPositionIn[2]),
                         distance(glPositionIn[0], glPositionIn[2]),
                         distance(glPositionIn[0], glPositionIn[1]));
-        tes = clamp(tes * 256 * visible, 1., 64.);
+        tes = clamp(tes * 256 * float((VisibleIn[0] | VisibleIn[1] | VisibleIn[2]) & int(tes.x * tes.y * tes.z != 0)), 1., 64.);
 
         gl_TessLevelOuter[0] = tes[0];
         gl_TessLevelOuter[1] = tes[1];
