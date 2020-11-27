@@ -25,8 +25,8 @@ layout (binding=1, set=1) uniform uMat {
 
 vec4 custom_project(vec4 invec)
 {
-	float zNear=1.0;
-	float zFar=16000.0;
+	float zNear=main_clipping_fov[0]; // 1.f
+	float zFar=main_clipping_fov[1] * 8.f; // 16000.f
 	float fov=main_clipping_fov[2];
 
 	float fisheye_scale_factor = 1.0/fov*180.0/M_PI*2.0;
@@ -66,7 +66,7 @@ vec4 custom_project(vec4 invec)
         win.x = viewport_center_x + win.x * f;
         win.y = viewport_center_y + win.y * f;
 
-        win.z = -(abs(depth) - zNear) / (zFar-zNear);
+        win.z = (abs(depth) - zNear) / (zFar-zNear);
         if (a<0.9*M_PI) 
 			win.w = 1.0;
         else
@@ -79,28 +79,31 @@ void main()
 {
 	//test sur le centre afin d'écarter les stars invisibles ou hors caméra
 	vec4 pos = custom_project( gl_in[0].gl_Position );
-	pos.z=0.0;
 	if (pos.w == 1.0) {
 		// en Bas à droite
 		gl_Position   = MVP2D * ( pos +vec4( mag[0], -mag[0], 0.0, 0.0) );
+                gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(1.0f, .0f);
 		TexColor= color[0];
 		EmitVertex();
 		
 		// en haut à droite
 		gl_Position   = MVP2D * ( pos +vec4( mag[0], mag[0], 0.0, 0.0) );
+                gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(1.0f, 1.0f);
 		TexColor= color[0];
 		EmitVertex();    
 		
 		// en Bas à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -mag[0], -mag[0], 0.0, 0.0) );
+                gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(0.0f, 0.0f);
 		TexColor= color[0];
 		EmitVertex();
 		
 		// en haut à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -mag[0], mag[0], 0.0, 0.0) );
+                gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(0.0f, 1.0f);
 		TexColor= color[0];
 		EmitVertex();

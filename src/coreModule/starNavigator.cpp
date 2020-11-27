@@ -28,9 +28,7 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-
-#include "vulkanModule/VertexArray.hpp"
-
+#include "coreModule/starViewer.hpp"
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -70,6 +68,9 @@ StarNavigator::StarNavigator(ThreadContext *context)
 	pool= new ThreadPool(std::thread::hardware_concurrency());
 
 	computeRCMagTable();
+
+	StarViewer::createSC_context(context);
+	//starViewer = std::make_unique<StarViewer>(Vec3f(0, 0, 0), Vec3f(0.8, 0.8, 0.2), 0.04);
 }
 
 void StarNavigator::createSC_context(ThreadContext *_context)
@@ -80,9 +81,9 @@ void StarNavigator::createSC_context(ThreadContext *_context)
 	// shaderStarNav->setUniformLocation("Mat");
 
 	m_dataGL = std::make_unique<VertexArray>(context->surface);
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_dataGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
-	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
+	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STREAM); // For fast allocation
+	m_dataGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STREAM); // For fast allocation
+	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STREAM); // For fast allocation
 	layout = std::make_unique<PipelineLayout>(context->surface);
 	layout->setGlobalPipelineLayout(context->global->globalLayout);
 	layout->setTextureLocation(0);
@@ -411,6 +412,10 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 
 void StarNavigator::build(int nbVertex)
 {
+	context->commandMgr->waitGraphicQueueIdle();
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
 	CommandMgr *cmdMgr = context->commandMgrDynamic;
 	cmdMgr->init(commandIndex, pipeline.get(), renderPassType::USE_DEPTH_BUFFER);
 	cmdMgr->bindSet(layout.get(), context->global->globalSet);
@@ -495,8 +500,8 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	// glActiveTexture(GL_TEXTURE0);
 	// glBindTexture(GL_TEXTURE_2D, starTexture->getID());
 
-	Mat4f matrix=nav->getHelioToEyeMat().convert();
-	*pMat=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+	Mat4f matrix=nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+	*pMat=matrix;
 
 	// shaderStarNav->use();
 	// shaderStarNav->setUniform("Mat",matrix);
@@ -507,4 +512,12 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	// shaderStarNav->unuse();
 	//Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
 	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
+	// std::cout << "NAV, MATRIX, VIEW, VIEW*MATRIX\n";
+	// nav->getHelioToEyeMat().print();
+	// matrix.print();
+	// nav->getViewMatrix().print();
+	// (nav->getViewMatrix() * Mat4d::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)).print();
+	static bool toggler = true;
+	if (starViewer)
+		starViewer->draw(nav, prj, toggler ? matrix : nav->getViewMatrix().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180));
 }

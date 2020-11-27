@@ -34,6 +34,7 @@ void UBOCam::IndexAndBinding(uint32_t program)   //TODO � tester
 
 void UBOCam::update()
 {
+	UBOdata.time += 0.01/60.;
 	/*
 	glBindBufferBase(GL_UNIFORM_BUFFER, block_id, block_buffer);
 	float* cam_ubo_ptr = (float*)glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(UBOData), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT);

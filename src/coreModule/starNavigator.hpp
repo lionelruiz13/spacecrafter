@@ -44,6 +44,7 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 class Uniform;
+class StarViewer;
 
 class StarNavigator: public NoCopy  {
 public:
@@ -141,6 +142,7 @@ private:
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<Set> set;
 	std::unique_ptr<Uniform> uMat;
+	std::unique_ptr<StarViewer> starViewer;
 	Mat4f *pMat;
 	//initialisation du shader et des VAO-VBO
 	void createSC_context(ThreadContext *_context);
