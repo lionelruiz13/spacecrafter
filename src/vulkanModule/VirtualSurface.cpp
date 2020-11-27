@@ -11,14 +11,17 @@ VirtualSurface::VirtualSurface(Vulkan *_master, int index, VkSampleCountFlagBits
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     poolInfo.queueFamilyIndex = _master->getTransferQueueFamilyIndex();
-
     if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &transferPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool for transfer operations.");
+    }
+    poolInfo.queueFamilyIndex = _master->getComputeQueueIndex();
+    if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &computePool) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create command pool for compute operations.");
     }
     poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
     poolInfo.queueFamilyIndex = _master->getGraphicsQueueIndex();
     if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &cmdPool) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create command pool for transfer operations.");
+        throw std::runtime_error("Failed to create command pool for graphic operations.");
     }
     graphicsQueue = _master->assignGraphicsQueue();
     _master->assignSwapChainFramebuffers(swapChainFramebuffers, index);
@@ -61,6 +64,7 @@ VirtualSurface::~VirtualSurface()
 {
     vkDestroyCommandPool(refDevice, transferPool, nullptr);
     vkDestroyCommandPool(refDevice, cmdPool, nullptr);
+    vkDestroyCommandPool(refDevice, computePool, nullptr);
     if (ownFramebuffers) {
         for (auto &fbuff : swapChainFramebuffers) {
             vkDestroyFramebuffer(refDevice, fbuff, nullptr);
@@ -99,9 +103,14 @@ void VirtualSurface::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
     master->submitTransfer(submitInfo, fence);
 }
 
-void VirtualSurface::submitGraphic(VkSubmitInfo &submitInfo)
+void VirtualSurface::submitGraphic(VkSubmitInfo &submitInfo, VkFence fence)
 {
-    master->submitGraphic(submitInfo);
+    master->submitGraphic(submitInfo, fence);
+}
+
+void VirtualSurface::submitCompute(VkSubmitInfo &submitInfo, VkFence fence)
+{
+    master->submitCompute(submitInfo, fence);
 }
 
 void VirtualSurface::waitTransferQueueIdle(bool waitCompletion)

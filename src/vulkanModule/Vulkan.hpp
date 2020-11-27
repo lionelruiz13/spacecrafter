@@ -45,7 +45,8 @@ public:
     void unmapMemory(SubMemory& bufferMemory);
     size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
-    void submitGraphic(VkSubmitInfo &submitInfo);
+    void submitGraphic(VkSubmitInfo &submitInfo, VkFence fence = VK_NULL_HANDLE);
+    void submitCompute(VkSubmitInfo &submitInfo, VkFence fence = VK_NULL_HANDLE);
     void waitTransferQueueIdle(bool waitCompletion = true);
     void waitGraphicQueueIdle();
     void waitIdle();
@@ -54,6 +55,7 @@ public:
     VkSwapchainKHR *assignSwapChain() {return swapChain.data();}
     void assignSwapChainFramebuffers(std::vector<VkFramebuffer> &framebuffers, int index) {framebuffers.assign(swapChainFramebuffers.begin(), swapChainFramebuffers.end());}
     auto &getGraphicsQueueIndex() {return graphicsAndPresentQueueFamilyIndex[0];}
+    auto &getComputeQueueIndex() {return computeQueueFamilyIndex.empty() ? graphicsAndPresentQueueFamilyIndex[0] : computeQueueFamilyIndex[0];}
     VirtualSurface *getVirtualSurface() {static short i = 0; return virtualSurface[i++].get();}
     VkExtent2D &getSwapChainExtent() {return swapChainExtent;}
     void finalize();
@@ -96,7 +98,8 @@ private:
     uint32_t frameIndex;
     int switcher = 0; // switch between MAX_FRAME_IN_FLIGHT elements
     int assignedGraphicQueueCount = 0;
-    int selectedGraphicQueue = 0; // selected graphic queue for submissions
+    std::atomic<int> selectedGraphicQueue = 0; // selected graphic queue for submissions
+    std::atomic<int> selectedComputeQueue = 0; // selected compute queue for submissions
     VkSemaphore imageAvailableSemaphore;
     std::array<VkSemaphore, MAX_FRAMES_IN_FLIGHT> imageAvailableSemaphores;
     std::vector<VkSemaphore> presentSemaphores;
@@ -113,10 +116,12 @@ private:
 
     std::vector<size_t> graphicsAndPresentQueueFamilyIndex;
     std::vector<size_t> graphicsQueueFamilyIndex;
+    std::vector<size_t> computeQueueFamilyIndex;
     std::vector<size_t> presentQueueFamilyIndex;
     std::vector<size_t> transferQueueFamilyIndex;
     std::vector<VkQueue> graphicsAndPresentQueues;
     std::vector<VkQueue> graphicsQueues;
+    std::vector<VkQueue> computeQueues;
     std::vector<VkQueue> presentQueues;
     std::vector<VkQueue> transferQueues;
     VkDevice device;

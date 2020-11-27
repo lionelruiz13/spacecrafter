@@ -25,9 +25,10 @@ void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFo
     imageInfo.imageView = VK_NULL_HANDLE;
 }
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU, bool _mipmap, bool createSampler, VkFormat _format, int nbChannels, bool is3d)
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU, bool _mipmap, bool createSampler, VkFormat _format, int nbChannels, bool is3d, bool useCustomMipmapComputation)
 {
     init(_master, _mgr, _mipmap, _format);
+    customMipmap = useCustomMipmapComputation;
     int texChannels;
     stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, nbChannels);
     if (!pixels) {
@@ -249,7 +250,7 @@ bool Texture::use(bool forceUpdate)
             return true;
     }
     if (image == nullptr)
-        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), texDepth, mipmap, format));
+        image = std::unique_ptr<TextureImage>(mgr->createImage(std::pair<short, short>(texWidth, texHeight), texDepth, mipmap, format, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | ((mipmap & customMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : 0)));
     if (image == nullptr) {
         cLog::get()->write("Faild to create image support", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         useCount--;
@@ -277,8 +278,8 @@ bool Texture::use(bool forceUpdate)
     cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
     vkCmdCopyBufferToImage(commandBuffer, stagingBuffer, image->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, regions.size(), regions.data());
-    if (!mipmap) {
-        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, 0);
+    if (!mipmap || customMipmap) {
+        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, customMipmap ? VK_IMAGE_LAYOUT_GENERAL : VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, 0);
         cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
     }
     vkEndCommandBuffer(commandBuffer);
@@ -295,35 +296,16 @@ bool Texture::use(bool forceUpdate)
     master->submitTransfer(&submitInfo);
 
     if (mipmap) {
-        allocInfo.commandPool = master->getCommandPool();
-        VkCommandBuffer commandBuffer2;
-        vkAllocateCommandBuffers(master->refDevice, &allocInfo, &commandBuffer2);
-        vkBeginCommandBuffer(commandBuffer2, &beginInfo);
-        cmdMgr->grab(commandBuffer2);
-
-        for (int i = 0; i < mipmapCount - 1; ++i) {
-            cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, i);
-            cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-            cmdMgr->blit(this, this, i, i + 1);
-        }
-        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_SHADER_READ_BIT, 0, mipmapCount - 1);
-        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, mipmapCount - 1);
-        cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
-        vkEndCommandBuffer(commandBuffer2);
         VkPipelineStageFlags stage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-        submitInfo.waitSemaphoreCount = 1;
         submitInfo.pWaitSemaphores = &semaphore;
         submitInfo.pWaitDstStageMask = &stage;
-        submitInfo.pCommandBuffers = &commandBuffer2;
+        submitInfo.waitSemaphoreCount = 1;
         submitInfo.signalSemaphoreCount = 0;
-        vkResetFences(master->refDevice, 1, &fence);
-        master->waitTransferQueueIdle(false);
-        if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
-            throw std::runtime_error("Error : Failed to submit commands.");
-        }
-        vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+        if (customMipmap)
+            computeCustomMipmap(allocInfo, submitInfo, fence);
+        else
+            computeMipmap(allocInfo, submitInfo, fence);
         mgr->releaseSyncObject(fence, semaphore);
-        vkFreeCommandBuffers(master->refDevice, master->getCommandPool(), 1, &commandBuffer2);
     }
     imageInfo.imageView = image->getImageView();
     if (!imageName.empty()) {
@@ -331,6 +313,88 @@ bool Texture::use(bool forceUpdate)
         master->setObjectName(image->getImageView(), VK_OBJECT_TYPE_IMAGE_VIEW, imageName);
     }
     return true;
+}
+
+void Texture::computeMipmap(VkCommandBufferAllocateInfo &allocInfo, VkSubmitInfo &submitInfo, VkFence &fence)
+{
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    CommandMgr *cmdMgr = mgr->getBuilder();
+    allocInfo.commandPool = master->getCommandPool();
+    VkCommandBuffer commandBuffer2;
+    vkAllocateCommandBuffers(master->refDevice, &allocInfo, &commandBuffer2);
+    vkBeginCommandBuffer(commandBuffer2, &beginInfo);
+    cmdMgr->grab(commandBuffer2);
+
+    for (int i = 0; i < mipmapCount - 1; ++i) {
+        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, i);
+        cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+        cmdMgr->blit(this, this, i, i + 1);
+    }
+    cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_READ_BIT, VK_ACCESS_SHADER_READ_BIT, 0, mipmapCount - 1);
+    cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, mipmapCount - 1);
+    cmdMgr->compileBarriers(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+    vkEndCommandBuffer(commandBuffer2);
+    submitInfo.pCommandBuffers = &commandBuffer2;
+    vkResetFences(master->refDevice, 1, &fence);
+    master->waitTransferQueueIdle(false);
+    if (vkQueueSubmit(master->getQueue(), 1, &submitInfo, fence) != VK_SUCCESS) {
+        throw std::runtime_error("Error : Failed to submit commands.");
+    }
+    vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+    vkFreeCommandBuffers(master->refDevice, master->getCommandPool(), 1, &commandBuffer2);
+}
+
+void Texture::computeCustomMipmap(VkCommandBufferAllocateInfo &allocInfo, VkSubmitInfo &submitInfo, VkFence &fence)
+{
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    CommandMgr *cmdMgr = mgr->getBuilder();
+    PipelineLayout *layout = mgr->getCustomMipmapPipelineLayout();
+    allocInfo.commandPool = master->getComputeCommandPool();
+    VkCommandBuffer commandBuffer2;
+    vkAllocateCommandBuffers(master->refDevice, &allocInfo, &commandBuffer2);
+    vkBeginCommandBuffer(commandBuffer2, &beginInfo);
+    cmdMgr->grab(commandBuffer2);
+    std::vector<VkImageView> views = mgr->createViewArray(image.get(), format, texDepth > 1);
+    VkDescriptorImageInfo desc[2]{{VK_NULL_HANDLE, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL}, {VK_NULL_HANDLE, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL}};
+    mgr->initCustomMipmap(cmdMgr);
+    VkWriteDescriptorSet descSet{VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET, nullptr, VK_NULL_HANDLE, 0, 0, 2,
+        VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,
+        desc, nullptr, nullptr};
+    for (int i = 0; i < mipmapCount - 3; ++i) {
+        int size = 1 << (mipmapCount - i - 2);
+        desc[0].imageView = views[i];
+        desc[1].imageView = views[i + 1];
+        cmdMgr->pushRawSet(layout, &descSet);
+        cmdMgr->dispatch(size, size, size);
+        cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, i + 1);
+        cmdMgr->compileBarriers(VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+    }
+    mgr->initCustomMipmapMini(cmdMgr);
+    desc[0].imageView = views[mipmapCount - 3];
+    desc[1].imageView = views[mipmapCount - 2];
+    cmdMgr->pushRawSet(layout, &descSet);
+    cmdMgr->dispatch(2, 2, 2);
+    cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, mipmapCount - 2);
+    cmdMgr->compileBarriers(VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT);
+    desc[0].imageView = views[mipmapCount - 2];
+    desc[1].imageView = views[mipmapCount - 1];
+    cmdMgr->pushRawSet(layout, &descSet);
+    cmdMgr->dispatch(1, 1, 1);
+    cmdMgr->addImageBarrier(this, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_ACCESS_SHADER_WRITE_BIT, 0);
+    cmdMgr->compileBarriers(VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT);
+    vkEndCommandBuffer(commandBuffer2);
+    submitInfo.pCommandBuffers = &commandBuffer2;
+    vkResetFences(master->refDevice, 1, &fence);
+    master->waitTransferQueueIdle(false);
+    master->submitCompute(submitInfo, fence);
+    vkWaitForFences(master->refDevice, 1, &fence, VK_TRUE, UINT64_MAX);
+    vkFreeCommandBuffers(master->refDevice, master->getComputeCommandPool(), 1, &commandBuffer2);
+    for (auto imgView : views)
+        vkDestroyImageView(master->refDevice, imgView, nullptr);
 }
 
 void Texture::unuse()

@@ -2,6 +2,7 @@
 #include "VirtualSurface.hpp"
 #include "VertexBuffer.hpp"
 #include "Pipeline.hpp"
+#include "ComputePipeline.hpp"
 #include "PipelineLayout.hpp"
 #include "CommandMgr.hpp"
 #include "Set.hpp"
@@ -185,9 +186,9 @@ void CommandMgr::submitAction()
         }
         needResolve = false;
     }
-    for (uint8_t i = 0; i < frames[frameIndex].submitList.size() - 1; ++i)
-        master->submitGraphic(frames[frameIndex].submitList[i]);
-    if (vkQueueSubmit(queue, 1, &frames[frameIndex].submitList.back(), frames[frameIndex].fence) != VK_SUCCESS) {
+    // for (uint8_t i = 0; i < frames[frameIndex].submitList.size() - 1; ++i)
+    //     master->submitGraphic(frames[frameIndex].submitList[i]);
+    if (vkQueueSubmit(queue, frames[frameIndex].submitList.size(), frames[frameIndex].submitList.data(), frames[frameIndex].fence) != VK_SUCCESS) {
         cLog::get()->write("Command submission from CommandMgr has failed (see vulkan-layers with debug=true)", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     }
     if (submissionPerFrame) {
@@ -491,6 +492,7 @@ void CommandMgr::bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize o
 void CommandMgr::bindPipeline(Pipeline *pipeline)
 {
     if (!inRenderPass || pipeline->get() == VK_NULL_HANDLE) {
+        cLog::get()->write("Invalid pipeline binding, all graphic operation depending to this pipeline will be skipped.", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
         hasPipeline = false;
         return;
     }
@@ -504,15 +506,34 @@ void CommandMgr::bindPipeline(Pipeline *pipeline)
     }
 }
 
+void CommandMgr::bindPipeline(ComputePipeline *pipeline)
+{
+    if (pipeline->get() == VK_NULL_HANDLE) {
+        cLog::get()->write("Invalid pipeline binding, all compute operation depending to this pipeline will be skipped.", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+        hasPipeline = false;
+        isCompute = false;
+        return;
+    }
+    hasPipeline = true;
+    isCompute = true;
+    if (singleUse) {
+        vkCmdBindPipeline(actual, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline->get());
+        return;
+    }
+    for (auto &frame : frames) {
+        vkCmdBindPipeline(frame.actual, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline->get());
+    }
+}
+
 void CommandMgr::bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding)
 {
     if (!hasPipeline) return;
     if (singleUse) {
-        vkCmdBindDescriptorSets(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, 1, uniform->get(), uniform->getDynamicOffsets().size(), uniform->getDynamicOffsets().data());
+        vkCmdBindDescriptorSets(actual, isCompute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, 1, uniform->get(), uniform->getDynamicOffsets().size(), uniform->getDynamicOffsets().data());
         return;
     }
     for (auto &frame : frames) {
-        vkCmdBindDescriptorSets(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, 1, uniform->get(), uniform->getDynamicOffsets().size(), uniform->getDynamicOffsets().data());
+        vkCmdBindDescriptorSets(frame.actual, isCompute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, 1, uniform->get(), uniform->getDynamicOffsets().size(), uniform->getDynamicOffsets().data());
     }
 }
 
@@ -520,11 +541,23 @@ void CommandMgr::pushSet(PipelineLayout *pipelineLayout, Set *uniform, int bindi
 {
     if (!hasPipeline) return;
     if (singleUse) {
-        PFN_pushSet(actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, uniform->getWrites().size(), uniform->getWrites().data());
+        PFN_pushSet(actual, isCompute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, uniform->getWrites().size(), uniform->getWrites().data());
         return;
     }
     for (auto &frame : frames) {
-        PFN_pushSet(frame.actual, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, uniform->getWrites().size(), uniform->getWrites().data());
+        PFN_pushSet(frame.actual, isCompute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, uniform->getWrites().size(), uniform->getWrites().data());
+    }
+}
+
+void CommandMgr::pushRawSet(PipelineLayout *pipelineLayout, VkWriteDescriptorSet *writes, int size, int binding)
+{
+    if (!hasPipeline) return;
+    if (singleUse) {
+        PFN_pushSet(actual, isCompute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, size, writes);
+        return;
+    }
+    for (auto &frame : frames) {
+        PFN_pushSet(frame.actual, isCompute ? VK_PIPELINE_BIND_POINT_COMPUTE : VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout->getPipelineLayout(), binding, size, writes);
     }
 }
 
@@ -616,6 +649,18 @@ void CommandMgr::blit(Texture *src, Texture *dst, uint32_t srcMipLevel, uint32_t
     }
     for (auto &frame : frames) {
         vkCmdBlitImage(frame.actual, src->getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dst->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageBlit, VK_FILTER_LINEAR);
+    }
+}
+
+void CommandMgr::dispatch(int x, int y, int z)
+{
+    if (!(hasPipeline & isCompute)) return;
+    if (singleUse) {
+        vkCmdDispatch(actual, x, y, z);
+        return;
+    }
+    for (auto &frame : frames) {
+        vkCmdDispatch(frame.actual, x, y, z);
     }
 }
 

@@ -53,7 +53,9 @@
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
+#include "vulkanModule/ComputePipeline.hpp"
 #include "vulkanModule/Texture.hpp"
+#include "vulkanModule/TextureMgr.hpp"
 
 Core::Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
@@ -73,6 +75,8 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	Texture::setTextureDir(AppSettings::Instance()->getTextureDir());
 	//set Shaders directory and suffix
 	Pipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
+	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
+	context->global->textureMgr->initCustomMipmap(context->surface);
 	// shaderProgram::setLogFile(AppSettings::Instance()->getLogDir()+"shader.log");
 	// shaderProgram::initLogFile();
 

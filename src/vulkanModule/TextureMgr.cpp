@@ -4,8 +4,8 @@
 #include "MemoryManager.hpp"
 #include "tools/log.hpp"
 #include "CommandMgr.hpp"
-// for default sampler
 #include "PipelineLayout.hpp"
+#include "ComputePipeline.hpp"
 
 TextureMgr::TextureMgr(Vulkan *_master, uint32_t _chunkSize) : master(_master), chunkSize(_chunkSize)
 {
@@ -51,6 +51,23 @@ TextureMgr::~TextureMgr()
     for (auto &sampler : samplers) {
         vkDestroySampler(master->refDevice, sampler.second, nullptr);
     }
+}
+
+void TextureMgr::initCustomMipmap(VirtualSurface *surface)
+{
+    customMipmapLayout = std::make_unique<PipelineLayout>(surface);
+    customMipmapLayout->setImageLocation(0);
+    customMipmapLayout->setImageLocation(1);
+    customMipmapLayout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+    customMipmapLayout->build();
+
+    customMipmap = std::make_unique<ComputePipeline>(surface, customMipmapLayout.get());
+    customMipmap->bindShader("smartDepthMipmap.comp.spv");
+    customMipmap->build();
+
+    customMipmapMini = std::make_unique<ComputePipeline>(surface, customMipmapLayout.get());
+    customMipmapMini->bindShader("smartDepthMipmapMini.comp.spv");
+    customMipmapMini->build();
 }
 
 std::unique_ptr<TextureImage> TextureMgr::queryImage(TextureImage *ptr)
@@ -118,6 +135,39 @@ void TextureMgr::releaseSyncObject(VkFence fence, VkSemaphore semaphore)
     syncObjectAccess.unlock();
 }
 
+void TextureMgr::initCustomMipmap(CommandMgr *cmdMgr)
+{
+    cmdMgr->bindPipeline(customMipmap.get());
+}
+
+void TextureMgr::initCustomMipmapMini(CommandMgr *cmdMgr)
+{
+    cmdMgr->bindPipeline(customMipmapMini.get());
+}
+
+std::vector<VkImageView> TextureMgr::createViewArray(TextureImage *texImg, VkFormat format, bool is3d)
+{
+    std::vector<VkImageView> tmp;
+    int mipmap = texImg->getMipmapCount();
+    tmp.resize(mipmap);
+    VkImageViewCreateInfo viewInfo{};
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.image = texImg->getImage();
+    viewInfo.viewType = is3d ? VK_IMAGE_VIEW_TYPE_3D : VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = format;
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.levelCount = 1;
+    viewInfo.subresourceRange.baseArrayLayer = 0;
+    viewInfo.subresourceRange.layerCount = 1;
+    for (int i = 0; i < mipmap; ++i) {
+        viewInfo.subresourceRange.baseMipLevel = i;
+        if (vkCreateImageView(master->refDevice, &viewInfo, nullptr, &tmp[i]) != VK_SUCCESS) {
+            cLog::get()->write("Faild to create VkImageView", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        }
+    }
+    return tmp;
+}
+
 TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, uint32_t depth, bool mipmap, VkFormat format, VkImageUsageFlags usage, bool isDepthAttachment, bool useConcurrency)
 {
     // create image
@@ -129,7 +179,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, uint3
     imageInfo.extent.width = size.first;
     imageInfo.extent.height = size.second;
     imageInfo.extent.depth = depth;
-    imageInfo.mipLevels = mipmap ? static_cast<uint32_t>(std::floor(std::log2(std::max(size.first, size.second)))) + 1 : 1;
+    imageInfo.mipLevels = mipmap ? static_cast<uint32_t>(std::floor(std::log2(std::max(std::max(size.first, size.second), (short) depth)))) + 1 : 1;
     imageInfo.arrayLayers = 1;
     imageInfo.format = format;
     imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
@@ -187,7 +237,7 @@ TextureImage *TextureMgr::createImage(const std::pair<short, short> &size, uint3
         master->free(memory);
         return nullptr;
     }
-    return new TextureImage(this, std::pair<VkImage, VkImageView>(image, imageView), size, &memory);
+    return new TextureImage(this, std::pair<VkImage, VkImageView>(image, imageView), size, imageInfo.mipLevels, &memory);
 }
 
 void TextureMgr::releaseImage(const std::pair<VkImage, VkImageView> &image, const std::pair<short, short> &size)
@@ -202,7 +252,7 @@ void TextureMgr::destroyImage(const VkImage &image, const VkImageView &imageView
     master->free(memory);
 }
 
-TextureImage::TextureImage(TextureMgr *_master, const std::pair<VkImage, VkImageView> &_image, const std::pair<short, short> &_size, SubMemory *_memory) : master(_master), image(_image.first), imageView(_image.second), size(_size)
+TextureImage::TextureImage(TextureMgr *_master, const std::pair<VkImage, VkImageView> &_image, const std::pair<short, short> &_size, int _mipmap, SubMemory *_memory) : master(_master), image(_image.first), imageView(_image.second), size(_size), mipmap(_mipmap)
 {
     if (_memory) {
         memory = *_memory;

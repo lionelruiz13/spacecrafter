@@ -24,8 +24,9 @@ public:
     /**
     * @param keepOnCPU If true, you can load/unload this texture from GPU
     * @param is3d If true, read as a power-of-two cube texture (width=height=depth) ordered in columns and lines
+    * @param useCustomMipmapComputation If true, compute each mipmap and apply value *= (2 - value) to each pixel's of the mipmap
     */
-    Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU = true, bool mipmap = false, bool createSampler=false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, int nbChannels=4, bool is3d = false);
+    Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU = true, bool mipmap = false, bool createSampler=false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, int nbChannels=4, bool is3d = false, bool useCustomMipmapComputation = false);
     Texture(VirtualSurface *_master, TextureMgr *_mgr, void *content, int width, int height, bool keepOnCPU = false, bool mipmap = false, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, const std::string &name = "unnamed", bool createSampler = true, VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
     //! Create 3D texture with mipmapping and sampler
     Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, int width, int height, const std::string &name = "unnamed 3D", VkSamplerAddressMode addressMode = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM, int nbChannels=4);
@@ -70,8 +71,11 @@ private:
     void init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFormat _format = VK_FORMAT_R8G8B8A8_UNORM);
     //! Destroy staging resources
     void destroyStagingResources();
+    void computeMipmap(VkCommandBufferAllocateInfo &allocInfo, VkSubmitInfo &submitInfo, VkFence &fence);
+    void computeCustomMipmap(VkCommandBufferAllocateInfo &allocInfo, VkSubmitInfo &submitInfo, VkFence &fence);
     VkFormat format;
     bool mipmap = false;
+    bool customMipmap = false;
     int mipmapCount = 1;
     std::string imageName;
     VkCommandBuffer commandBuffer;

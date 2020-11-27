@@ -31,10 +31,13 @@ public:
     ~VirtualSurface();
     VkCommandPool &getTransferPool() {return transferPool;}
     VkCommandPool &getCommandPool() {return cmdPool;}
+    VkCommandPool &getComputeCommandPool() {return computePool;}
     //! Relay transfer queue submission to master
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
     //! Relay graphic queue submission to master
-    void submitGraphic(VkSubmitInfo &submitInfo);
+    void submitGraphic(VkSubmitInfo &submitInfo, VkFence fence = VK_NULL_HANDLE);
+    //! Relay compute queue submission to master
+    void submitCompute(VkSubmitInfo &submitInfo, VkFence fence = VK_NULL_HANDLE);
     //! Wait all transfer commandBuffer to be submitted. if waitCompletion is true, wait completion too
     void waitTransferQueueIdle(bool waitCompletion = true);
     //! Wait all graphic commandBuffer to be submitted
@@ -115,6 +118,7 @@ private:
 
     VkCommandPool transferPool;
     VkCommandPool cmdPool;
+    VkCommandPool computePool;
     VkQueue graphicsQueue;
     Vulkan *master;
     std::unique_ptr<BufferMgr> bufferMgr;

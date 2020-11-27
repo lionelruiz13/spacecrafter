@@ -12,6 +12,7 @@ class VirtualSurface;
 class VertexArray;
 class VertexBuffer;
 class Pipeline;
+class ComputePipeline;
 class PipelineLayout;
 class Buffer;
 class Set;
@@ -84,10 +85,13 @@ public:
     void bindVertex(VertexBuffer *vertex, uint32_t firstBinding = 0, VkDeviceSize offset = 0);
     void bindIndex(Buffer *buffer, VkIndexType indexType, VkDeviceSize offset = 0);
     void bindPipeline(Pipeline *pipeline);
+    void bindPipeline(ComputePipeline *pipeline);
     //! @brief bind uniform buffers and textures
     void bindSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
     //! @brief push uniform buffers and textures
     void pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding = 0);
+    //! @brief push uniform buffers and textures without Set
+    void pushRawSet(PipelineLayout *pipelineLayout, VkWriteDescriptorSet *writes, int size = 1, int binding = 0);
     //! @brief push constant values
     void pushConstant(PipelineLayout *pipelineLayout, VkShaderStageFlags stage, uint32_t offset, const void *data, uint32_t size);
     //! @brief begin conditionnal rendering (affect draw commands only)
@@ -108,6 +112,8 @@ public:
     void compileBarriers(VkPipelineStageFlags srcStage, VkPipelineStageFlags dstStage, VkPipelineStageFlags dependencyFlags = VK_DEPENDENCY_BY_REGION_BIT);
     //! Execute blit operation
     void blit(Texture *src, Texture *dst, uint32_t srcMipLevel = 0, uint32_t dstMipLevel = 0, VkFilter filter = VK_FILTER_LINEAR);
+    //! Dispatch work to workgroups
+    void dispatch(int x, int y, int z);
     //! Finalize recording and deselect command
     void compile();
     //! Define end of batch, so next setSubmission will create a new batch regardless to newBatch value
@@ -193,6 +199,7 @@ private:
     short autoIndex = 0;
     bool inRenderPass = false;
     bool hasPipeline = false; // tell if there is a pipeline binded
+    bool isCompute = false; // tell if binded pipeline is compute pipeline
     bool inBatch = false;
 };
 

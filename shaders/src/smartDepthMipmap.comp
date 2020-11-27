@@ -1,0 +1,21 @@
+//
+// Smart depth mipmapping - apply to each mipmap pixel 'value *= 2.f - value'
+//
+#version 420
+#extension GL_ARB_compute_shader : require
+layout(local_size_x = 4, local_size_y = 4, local_size_z = 4) in;
+
+layout(binding=0, r8) uniform readonly image3D srcLayer;
+layout(binding=1, r8) uniform writeonly image3D dstLayer;
+
+#define LOAD(x,y,z) imageLoad(srcLayer, ivec3(baseX | x, baseY | y, baseZ | z)).r
+
+void main()
+{
+    const uint baseX = gl_GlobalInvocationID.x << 1;
+    const uint baseY = gl_GlobalInvocationID.y << 1;
+    const uint baseZ = gl_GlobalInvocationID.z << 1;
+
+    float value = (LOAD(0,0,0) + LOAD(0,0,1) + LOAD(0,1,0) + LOAD(0,1,1) + LOAD(1,0,0) + LOAD(1,0,1) + LOAD(1,1,0) + LOAD(1,1,1)) / 8.f;
+    imageStore(dstLayer, ivec3(gl_GlobalInvocationID), vec4((2.f - value) * value, 0,0,0));
+}

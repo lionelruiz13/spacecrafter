@@ -91,7 +91,7 @@ Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window
     VkPhysicalDeviceProperties physicalDeviceProperties;
     vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
     displayPhysicalDeviceInfo(physicalDeviceProperties);
-    initQueues(16);
+    initQueues(8);
     initSwapchain(width, height, nbVirtualSurfaces);
     createImageViews();
     createRenderPass(sampleCount);
@@ -226,12 +226,28 @@ void Vulkan::submitTransfer(VkSubmitInfo *submitInfo, VkFence fence)
     transferQueueMutex.unlock();
 }
 
-void Vulkan::submitGraphic(VkSubmitInfo &submitInfo)
+void Vulkan::submitGraphic(VkSubmitInfo &submitInfo, VkFence fence)
 {
-    if (vkQueueSubmit(graphicsAndPresentQueues[selectedGraphicQueue++], 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+    int selected = selectedGraphicQueue++;
+    if (selectedGraphicQueue >= (int) graphicsAndPresentQueues.size()) selectedGraphicQueue -= assignedGraphicQueueCount;
+    if (selected >= (int) graphicsAndPresentQueues.size()) selected -= assignedGraphicQueueCount;
+    if (vkQueueSubmit(graphicsAndPresentQueues[selected], 1, &submitInfo, fence) != VK_SUCCESS) {
         cLog::get()->write("Command submission has failed (see vulkan-layers with debug=true)", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     }
-    if (selectedGraphicQueue == (int) graphicsAndPresentQueues.size()) selectedGraphicQueue = assignedGraphicQueueCount;
+}
+
+void Vulkan::submitCompute(VkSubmitInfo &submitInfo, VkFence fence)
+{
+    if (computeQueues.empty()) {
+        submitGraphic(submitInfo);
+        return;
+    }
+    int selected = selectedComputeQueue++;
+    if (selectedComputeQueue >= (int) computeQueues.size()) selectedComputeQueue -= computeQueues.size();
+    if (selected >= (int) computeQueues.size()) selected -= computeQueues.size();
+    if (vkQueueSubmit(computeQueues[selected], 1, &submitInfo, fence) != VK_SUCCESS) {
+        cLog::get()->write("Command submission has failed (see vulkan-layers with debug=true)", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+    }
 }
 
 void Vulkan::submit(CommandMgr *cmdMgr)
@@ -409,9 +425,11 @@ void Vulkan::initQueues(uint32_t nbQueues)
                 graphicsAndPresentQueueFamilyIndex.push_back(i);
             else
                 graphicsQueueFamilyIndex.push_back(i);
-        } else if (presentSupport && !(qfp.queueFlags & vk::QueueFlagBits::eCompute))
+        } else if (qfp.queueFlags & vk::QueueFlagBits::eCompute)
+            computeQueueFamilyIndex.push_back(i);
+        else if (presentSupport)
             presentQueueFamilyIndex.push_back(i);
-        else if (qfp.queueFlags & vk::QueueFlagBits::eTransfer && !(qfp.queueFlags & vk::QueueFlagBits::eCompute))
+        else if (qfp.queueFlags & vk::QueueFlagBits::eTransfer)
             transferQueueFamilyIndex.push_back(i);
         else {
             i++;
@@ -471,6 +489,14 @@ void Vulkan::initQueues(uint32_t nbQueues)
             std::cout << "Create graphicQueue\n";
             vkGetDeviceQueue(device, index, j, &tmpQueue);
             graphicsQueues.push_back(tmpQueue);
+        }
+    }
+    for (auto index : computeQueueFamilyIndex) {
+        maxQueues = std::min(queueFamilyProperties[index].queueCount, nbQueues);
+        cLog::get()->write("Create " + std::to_string(maxQueues) + " compute queues", LOG_TYPE::L_DEBUG, LOG_FILE::VULKAN);
+        for (int j = 0; j < maxQueues; j++) {
+            vkGetDeviceQueue(device, index, j, &tmpQueue);
+            computeQueues.push_back(tmpQueue);
         }
     }
     for (auto index : presentQueueFamilyIndex) {
