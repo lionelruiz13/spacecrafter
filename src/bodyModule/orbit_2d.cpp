@@ -104,20 +104,21 @@ void Orbit2D::computeShader()
 	Vec3f center(body->orbit_position[0]-body->radius/10,
 				 body->orbit_position[1]-body->radius/10,
 			 	 body->orbit_position[2]-0*body->radius/10);
+	float coef = 1.f;
 	for (int n = 1; n<(ORBIT_ADDITIONNAL_POINTS / 2 + 1); n++) {
-		float coef = ((float) n) / (ORBIT_ADDITIONNAL_POINTS / 2. + 1.);
-		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][0] * (1 - coef) + center[0] * coef);
-		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][1] * (1 - coef) + center[1] * coef);
-		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][2] * (1 - coef) + center[2] * coef);
+		coef /= 1.3f;
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][0] * coef + center[0] * (1.f - coef));
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][1] * coef + center[1] * (1.f - coef));
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2-1][2] * coef + center[2] * (1.f - coef));
 	}
 	vecOrbit2dVertex.push_back(center[0]);
 	vecOrbit2dVertex.push_back(center[1]);
 	vecOrbit2dVertex.push_back(center[2]);
 	for (int n = 1; n<(ORBIT_ADDITIONNAL_POINTS / 2 + 1); n++) {
-		float coef = ((float) n) / (ORBIT_ADDITIONNAL_POINTS / 2. + 1.);
-		vecOrbit2dVertex.push_back(center[0] * (1 - coef) + orbitPoint[ORBIT_POINTS/2+1][0] * coef);
-		vecOrbit2dVertex.push_back(center[1] * (1 - coef) + orbitPoint[ORBIT_POINTS/2+1][1] * coef);
-		vecOrbit2dVertex.push_back(center[2] * (1 - coef) + orbitPoint[ORBIT_POINTS/2+1][2] * coef);
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2+1][0] * coef + center[0] * (1.f - coef));
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2+1][1] * coef + center[1] * (1.f - coef));
+		vecOrbit2dVertex.push_back(orbitPoint[ORBIT_POINTS/2+1][2] * coef + center[2] * (1.f - coef));
+		coef *= 1.3f;
 	}
 //-------------------------------------------------------------------------
 	for ( int n= ORBIT_POINTS/2+1; n< ORBIT_POINTS; n++) {
