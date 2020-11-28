@@ -40,6 +40,7 @@
 #include "bodyModule/body_decor.hpp"
 #include "coreModule/starNavigator.hpp"
 #include "coreModule/cloudNavigator.hpp"
+#include "coreModule/dsoNavigator.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/oort.hpp"
 #include "coreModule/dso3d.hpp"
@@ -91,6 +92,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	milky_way = new MilkyWay(context);
 	starNav = new StarNavigator(context);
 	cloudNav = new CloudNavigator(context);
+	dsoNav = new DsoNavigator(context, "dso3d.png");
 	starLines = new StarLines(context);
 	ojmMgr = new OjmMgr(context);
 	anchorManager = new AnchorManager(observatory,navigation, ssystem, timeMgr, ssystem->getOrbitCreator());
@@ -231,6 +233,7 @@ Core::~Core()
 	delete ojmMgr;
 	delete starNav;
 	delete cloudNav;
+	delete dsoNav;
 	delete starLines;
 	delete executorInGalaxy;
 	delete executorInSolarSystem;
@@ -840,6 +843,7 @@ void Core::drawInGalaxy(int delta_time)
 	s_font::beginPrint(false);
 	starNav->computePosition(navigation->getObserverHelioPos());
 	cloudNav->computePosition(navigation->getObserverHelioPos());
+	dsoNav->computePosition(navigation->getObserverHelioPos());
 
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
@@ -856,6 +860,7 @@ void Core::drawInGalaxy(int delta_time)
 	dso3d->draw(observatory->getAltitude(), projection, navigation);
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
 	starNav->draw(navigation, projection);
+	dsoNav->draw(navigation, projection);
 	cloudNav->draw(navigation, projection);
 }
 

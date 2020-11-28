@@ -54,6 +54,7 @@
 #include "coreModule/starLines.hpp"
 #include "coreModule/starNavigator.hpp"
 #include "coreModule/cloudNavigator.hpp"
+#include "coreModule/dsoNavigator.hpp"
 #include "mediaModule/text_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
@@ -599,6 +600,7 @@ private:
 	BodyTrace * bodytrace;				// the pen bodytrace
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	CloudNavigator* cloudNav; 			// draw galaxy gaz clouds
+	DsoNavigator* dsoNav; 				// draw 3d dso when in galaxy
 	StarLines* starLines;				// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D
 	UBOCam* ubo_cam;
