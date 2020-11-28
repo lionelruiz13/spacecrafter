@@ -119,6 +119,8 @@ public:
     void print();
     //! set custom name visible on debug layers (must be called when vertex, index and instance buffer were fully registered and build)
     void setName(const std::string &name);
+    //! Manually define the size of instance buffer component
+    void setInstanceBufferStride(int stride) {bindingDesc2.stride = stride; blockSize2 = bindingDesc2.stride / sizeof(float);}
 private:
     VirtualSurface *master;
     CommandMgr *mgr;
