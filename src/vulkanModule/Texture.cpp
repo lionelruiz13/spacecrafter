@@ -25,18 +25,22 @@ void Texture::init(VirtualSurface *_master, TextureMgr *_mgr, bool _mipmap, VkFo
     imageInfo.imageView = VK_NULL_HANDLE;
 }
 
-Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU, bool _mipmap, bool createSampler, VkFormat _format, int nbChannels, bool is3d, bool useCustomMipmapComputation)
+Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &filename, bool keepOnCPU, bool _mipmap, bool createSampler, VkFormat _format, int nbChannels, bool is3d, bool useCustomMipmapComputation, int componentSize)
 {
     init(_master, _mgr, _mipmap, _format);
     customMipmap = useCustomMipmapComputation;
     int texChannels;
-    stbi_uc* pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, nbChannels);
+    stbi_uc* pixels = nullptr;
+    if (componentSize == 1)
+        pixels = stbi_load((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, nbChannels);
+    else if (componentSize == 2)
+        pixels = reinterpret_cast<stbi_uc*>(stbi_load_16((textureDir + filename).c_str(), &texWidth, &texHeight, &texChannels, nbChannels));
     if (!pixels) {
         cLog::get()->write("Faild to load image '" + filename + "'", LOG_TYPE::L_WARNING);
         isOk = false;
         return;
     }
-    VkDeviceSize imageSize = texWidth * texHeight * nbChannels;
+    VkDeviceSize imageSize = texWidth * texHeight * nbChannels * componentSize;
     VkBufferImageCopy region{};
     region.bufferOffset = 0;
     region.bufferRowLength = texWidth;
@@ -52,7 +56,7 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &f
         region.imageExtent = {(uint32_t) texWidth, (uint32_t) texHeight, height/texHeight};
         while (region.imageOffset.z < texDepth) {
             regions.push_back(region);
-            region.bufferOffset += texWidth;
+            region.bufferOffset += texWidth * componentSize;
             region.imageOffset.z += region.imageExtent.depth;
         }
     } else {
