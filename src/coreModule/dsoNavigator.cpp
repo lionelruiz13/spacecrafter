@@ -41,7 +41,7 @@ DsoNavigator::DsoNavigator(ThreadContext *_context, const std::string& tex_file)
     vertex->assumeVerticeChanged();
     vertex->fillIndexBuffer(3*6, reinterpret_cast<uint32_t*>(&(tmp[0])));
 
-    texture = std::make_unique<Texture>(context->surface, context->global->textureMgr, "volum_helix.png", false, true, true, VK_FORMAT_R16_UNORM, 1, true, true, 2);
+    texture = std::make_unique<Texture>(context->surface, context->global->textureMgr, "dso3d.png", false, true, true, VK_FORMAT_R16_UNORM, 1, true, true, 2);
     if (!texture->isValid()) {
         cLog::get()->write("Uninitialized 3d texture for dsoNavigator", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
         return;
@@ -88,7 +88,7 @@ DsoNavigator::DsoNavigator(ThreadContext *_context, const std::string& tex_file)
     set->bindTexture(texture.get(), 3);
     set->bindTexture(colorTexture->getTexture(), 4);
 
-    //insert(Mat4f::scaling(Vec3f(1, 1, 0.5)), 0, 1);
+    insert(Mat4f::translation(Vec3f(299.78,-163.55,-63.53)) * Mat4f::yrotation(3.1415926f/2.f) * Mat4f::scaling(Vec3f(1, 1, 0.5)), 0, 1);
 }
 
 DsoNavigator::~DsoNavigator() {}

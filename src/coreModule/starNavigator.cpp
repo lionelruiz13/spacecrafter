@@ -519,5 +519,5 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	// (nav->getViewMatrix() * Mat4d::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)).print();
 	static bool toggler = true;
 	if (starViewer)
-		starViewer->draw(nav, prj, toggler ? matrix : nav->getViewMatrix().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180));
+		;//starViewer->draw(nav, prj, toggler ? matrix : nav->getViewMatrix().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180));
 }

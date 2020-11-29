@@ -45,7 +45,7 @@ CloudNavigator::CloudNavigator(ThreadContext *_context)
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 1);
     layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, 2);
-    layout->setTextureLocation(3, nullptr, VK_SHADER_STAGE_FRAGMENT_BIT, &texture->getInfo()->sampler);
+    layout->setTextureLocation(3, nullptr, VK_SHADER_STAGE_FRAGMENT_BIT, texture->isValid() ? &texture->getInfo()->sampler : nullptr);
     layout->buildLayout();
     layout->build();
 

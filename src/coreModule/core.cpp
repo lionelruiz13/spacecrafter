@@ -92,7 +92,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	milky_way = new MilkyWay(context);
 	starNav = new StarNavigator(context);
 	cloudNav = new CloudNavigator(context);
-	dsoNav = new DsoNavigator(context, "dso3d.png");
+	dsoNav = new DsoNavigator(context, "dso3d-color.png");
 	starLines = new StarLines(context);
 	ojmMgr = new OjmMgr(context);
 	anchorManager = new AnchorManager(observatory,navigation, ssystem, timeMgr, ssystem->getOrbitCreator());
