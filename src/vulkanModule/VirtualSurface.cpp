@@ -40,6 +40,10 @@ VirtualSurface::VirtualSurface(Vulkan *_master, std::vector<std::shared_ptr<Text
     if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &transferPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool for transfer operations.");
     }
+    poolInfo.queueFamilyIndex = _master->getComputeQueueIndex();
+    if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &computePool) != VK_SUCCESS) {
+        throw std::runtime_error("Failed to create command pool for compute operations.");
+    }
     poolInfo.queueFamilyIndex = _master->getGraphicsQueueIndex();
     if (vkCreateCommandPool(refDevice, &poolInfo, nullptr, &cmdPool) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create command pool for transfer operations.");
