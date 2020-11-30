@@ -269,9 +269,11 @@ void Vulkan::waitTransferQueueIdle(bool waitCompletion)
         std::this_thread::yield();
     if (waitCompletion) {
         transferQueueMutex.lock();
-        for (auto &vkqueue : transferQueues)
-            vkQueueWaitIdle(vkqueue);
-        isTransferIdle = true;
+        if (!isTransferIdle) {
+            for (auto &vkqueue : transferQueues)
+                vkQueueWaitIdle(vkqueue);
+            isTransferIdle = true;
+        }
         transferQueueMutex.unlock();
     }
 }
