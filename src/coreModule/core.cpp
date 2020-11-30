@@ -92,6 +92,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	milky_way = new MilkyWay(context);
 	starNav = new StarNavigator(context);
 	cloudNav = new CloudNavigator(context);
+	universeCloudNav = new CloudNavigator(context);
 	dsoNav = new DsoNavigator(context, "dso3d-color.png");
 	starLines = new StarLines(context);
 	ojmMgr = new OjmMgr(context);
@@ -233,6 +234,7 @@ Core::~Core()
 	delete ojmMgr;
 	delete starNav;
 	delete cloudNav;
+	delete universeCloudNav;
 	delete dsoNav;
 	delete starLines;
 	delete executorInGalaxy;
@@ -868,6 +870,7 @@ void Core::drawInGalaxy(int delta_time)
 void Core::drawInUniverse(int delta_time)
 {
 	s_font::beginPrint(false);
+	universeCloudNav->computePosition(navigation->getObserverHelioPos());
 	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// glClear(GL_DEPTH_BUFFER_BIT);
 	//Renderer::clearDepthBuffer();
@@ -875,6 +878,7 @@ void Core::drawInUniverse(int delta_time)
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
+	universeCloudNav->draw(navigation, projection);
 	tully->draw(observatory->getAltitude(), projection, navigation);
 	skyDisplayMgr->drawPerson(projection, navigation);
 }

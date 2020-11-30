@@ -232,7 +232,7 @@ void OjmMgr::rebuild()
 	*reinterpret_cast<Vec4f *>(buff) = pos;
 	*reinterpret_cast<Vec3f *>(buff + 4) = intensity;
 
-	cmdMgr->init(commandIndex, pipeline, (actualState == STATE_POSITION::IN_GALAXY) ? renderPassType::CLEAR_DEPTH_BUFFER : renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
+	cmdMgr->init(commandIndex, pipeline, (actualState == STATE_POSITION::IN_GALAXY || actualState == STATE_POSITION::IN_UNIVERSE) ? renderPassType::CLEAR_DEPTH_BUFFER : renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
 	cmdMgr->bindSet(layout.get(), globalSet);
 	cmdMgr->pushConstant(layout.get(), VK_SHADER_STAGE_FRAGMENT_BIT, 48, buff, 28);
 	for(unsigned int i=0; i< OjmVector.size(); i++) {
