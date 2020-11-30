@@ -512,12 +512,6 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	// shaderStarNav->unuse();
 	//Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
 	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
-	// std::cout << "NAV, MATRIX, VIEW, VIEW*MATRIX\n";
-	// nav->getHelioToEyeMat().print();
-	// matrix.print();
-	// nav->getViewMatrix().print();
-	// (nav->getViewMatrix() * Mat4d::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)).print();
-	static bool toggler = true;
 	if (starViewer)
-		;//starViewer->draw(nav, prj, toggler ? matrix : nav->getViewMatrix().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180));
+		starViewer->draw(nav, prj, matrix);
 }
