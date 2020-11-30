@@ -7,12 +7,12 @@ layout (triangles, equal_spacing) in;
 
 layout (location=0) in vec3 position[];
 layout (location=1) in vec3 texCoord[];
-layout (location=2) patch in vec2 data;
+layout (location=2) patch in vec3 data;
 layout (location=3) patch in mat4 invModel; // Use of mat4 as mat3 due to the nvidia bug of mat3 in the vulkan implementation
 
 layout (location=0) out vec3 direction;
 layout (location=1) out vec3 texCoordOut;
-layout (location=2) out flat vec2 dataOut;
+layout (location=2) out flat vec3 dataOut;
 
 layout (binding=1) uniform fov {
     vec3 clipping_fov;

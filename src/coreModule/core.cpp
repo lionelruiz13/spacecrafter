@@ -843,7 +843,7 @@ void Core::drawInGalaxy(int delta_time)
 	s_font::beginPrint(false);
 	starNav->computePosition(navigation->getObserverHelioPos());
 	cloudNav->computePosition(navigation->getObserverHelioPos());
-	dsoNav->computePosition(navigation->getObserverHelioPos());
+	dsoNav->computePosition(navigation->getObserverHelioPos(), projection);
 
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);

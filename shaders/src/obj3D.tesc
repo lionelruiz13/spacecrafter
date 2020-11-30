@@ -9,13 +9,13 @@ layout(vertices=3) out;
 
 layout (location=0) in vec3 position[];
 layout (location=1) in vec3 texCoord[];
-layout (location=2) in vec2 data[];
+layout (location=2) in vec3 data[];
 layout (location=3) in int visible[];
 layout (location=4) in mat4 invModel[];
 
 layout (location=0) out vec3 positionOut[];
 layout (location=1) out vec3 texCoordOut[];
-layout (location=2) patch out vec2 dataOut;
+layout (location=2) patch out vec3 dataOut;
 layout (location=3) patch out mat4 invModelOut;
 
 layout (binding=1) uniform fov {

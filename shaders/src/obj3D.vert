@@ -17,11 +17,11 @@ layout (binding=1) uniform fov {
 layout (location=0) in vec3 position;
 layout (location=6) in mat4 model;
 layout (location=10) in mat4 invmodel;
-layout (location=14) in vec2 data;
+layout (location=14) in vec3 data;
 
 layout (location=0) out vec3 positionOut;
 layout (location=1) out vec3 texCoord;
-layout (location=2) out vec2 dataOut;
+layout (location=2) out vec3 dataOut;
 layout (location=3) out int visible;
 layout (location=4) out mat4 invmodelOut; // To transmit to tese
 

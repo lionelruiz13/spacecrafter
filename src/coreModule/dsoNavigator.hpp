@@ -20,8 +20,8 @@ class DsoNavigator: public NoCopy {
 public:
     DsoNavigator(ThreadContext *_context, const std::string& tex_file);
     ~DsoNavigator();
-    void computePosition(Vec3f posI);
-    void draw(const Navigator * nav, const Projector* prj);
+    void computePosition(Vec3f posI, const Projector *prj);
+    void draw(const Navigator *nav, const Projector *prj);
     void insert(const Mat4f &model, int textureID, float unscale);
 private:
     void build(int nbDso);
@@ -36,7 +36,7 @@ private:
     struct dso {
         Mat4f model;
         Mat4f invmodel;
-        Vec2f data; // texOffset, coefScale
+        Vec3f data; // texOffset, coefScale, lod
     } *pInstance;
     std::vector<dso> dsoData;
     std::vector<Vec3f> dsoPos;

@@ -23,7 +23,7 @@ DsoNavigator::DsoNavigator(ThreadContext *_context, const std::string& tex_file)
     vertex->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
     for (int i = 0; i < 8; ++i)
         vertex->registerInstanceBuffer(BufferAccess::STREAM, VK_FORMAT_R32G32B32A32_SFLOAT); // model
-    vertex->registerInstanceBuffer(BufferAccess::STREAM, VK_FORMAT_R32G32_SFLOAT); // texOffset, coefScale
+    vertex->registerInstanceBuffer(BufferAccess::STREAM, VK_FORMAT_R32G32B32_SFLOAT); // texOffset, coefScale
     vertex->setInstanceBufferStride(sizeof(*pInstance));
     vertex->registerIndexBuffer(BufferAccess::STATIC, 3*2*6, 2, VK_INDEX_TYPE_UINT16);
     vertex->build(8);
@@ -110,7 +110,7 @@ void DsoNavigator::build(int nbDso)
 }
 
 //! Sort dso in depth-first order, linear in time when already sorted
-void DsoNavigator::computePosition(Vec3f posI)
+void DsoNavigator::computePosition(Vec3f posI, const Projector *prj)
 {
     if ((int) dsoData.size() != instanceCount) {
         memcpy(reinterpret_cast<void*>(dsoData.data()), pInstance, instanceCount * sizeof(dso));
@@ -124,6 +124,9 @@ void DsoNavigator::computePosition(Vec3f posI)
     dso tmpData;
     int swapI;
     bool invertMove = false;
+    const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+    float rad = 1.f / pInstance[instanceCount - 1].data[1];
+    pInstance[instanceCount - 1].data[2] = (lengthSquared > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared-rad*rad)) * coef)) : 0;
     for (int i = instanceCount - 2; i >= 0 || invertMove; --i) {
         float lengthSquared2 = (dsoPos[i + invertMove] - posI).lengthSquared();
         if (invertMove) {
@@ -142,6 +145,8 @@ void DsoNavigator::computePosition(Vec3f posI)
             lengthSquared = (dsoPos[i] - posI).lengthSquared();
             invertMove = false;
         } else {
+            rad = 1.f / pInstance[i].data[1];
+            pInstance[i].data[2] = (lengthSquared2 > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared2-rad*rad)) * coef)) : 0;
             if (lengthSquared > lengthSquared2) {
                 tmpPos = dsoPos[i];
                 dsoPos[i] = dsoPos[i + 1];
@@ -163,7 +168,7 @@ void DsoNavigator::computePosition(Vec3f posI)
 void DsoNavigator::insert(const Mat4f &model, int textureID, float unscale)
 {
     if (!texture->isValid()) return;
-    dsoData.push_back({model, model.inverse(), Vec2f(texScale * textureID, unscale)});
+    dsoData.push_back({model, model.inverse(), Vec3f(texScale * textureID, unscale, 0)});
     dsoPos.emplace_back(model.r[12], model.r[13], model.r[14]);
 }
 
