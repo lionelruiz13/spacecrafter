@@ -219,6 +219,27 @@ void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dir
 			exit(3);
 		}
 	}
+
+	// cas des languages 
+	subDir = CDIR +REP_LANGUAGE;
+	if (!dirExist(subDir)) {
+	if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
+			dirResult += "Creating home subdirectory "+REP_LANGUAGE+" succesfull\n";
+
+			//printf("cp  %s%s %s -r\n", DATADIR.c_str(), rep[i].c_str(), CDIR.c_str());
+			if (!useSystemCommand( std::string("cp ") + CONFIG_DATA_DIR + REP_LANGUAGE + " " + CDIR + " -r" )) {
+				fprintf(stderr, "I can't copy %s in %s directory\n",REP_LANGUAGE.c_str() ,CDIR.c_str() );
+				exit(-1);
+			} else
+				dirResult += "Copy " +REP_LANGUAGE +" in "+ CDIR + " ok\n";
+		}
+		else {
+			std::string err = "Unable to create local home subdirectory "+ REP_LANGUAGE +"\nProgram stopped\n";
+			fprintf(stderr, "%s\n",err.c_str() );
+			exit(3);
+		}
+	}
+
 	#endif
 }
 
