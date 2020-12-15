@@ -811,9 +811,6 @@ void Core::drawInSolarSystem(int delta_time)
 	bodytrace->draw(projection, navigation);
 	skyDisplayMgr->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 	ssystem->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
-	if (!bodyDecor->canDrawLandscape()) {
-		s_font::nextPrint(false);
-	}
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
@@ -827,12 +824,12 @@ void Core::drawInSolarSystem(int delta_time)
 	if (bodyDecor->canDrawMeteor() && (sky_brightness<0.1))
 		meteors->draw(projection, navigation);
 
+	s_font::nextPrint(false);
 	// if (bodyDecor->canDrawAtmosphere())
 		atmosphere->draw(projection, observatory->getHomePlanetEnglishName());
 
 	// Draw the landscape
 	if (bodyDecor->canDrawLandscape()) {
-		s_font::nextPrint(false);
 		landscape->draw(projection, navigation);
 	}
 
