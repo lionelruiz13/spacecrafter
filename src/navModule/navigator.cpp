@@ -261,7 +261,8 @@ void Navigator::updateViewMat(double fov)
 	}
 	f.normalize();
 
-	Vec3d s(f[1],-f[0],0.);
+	//Vec3d s(f ^ Vec3d(0, 0, 1));
+	Vec3d s(f[1],-f[0],0.); // Assume up vector is (0, 0, 1)
 
 	if ( viewing_mode == VIEW_EQUATOR) {
 		// convert everything back to local coord
