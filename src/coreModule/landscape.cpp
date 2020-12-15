@@ -33,8 +33,8 @@
 #include "navModule/navigator.hpp"
 
 // #include "vulkanModule/VertexArray.hpp"
-// 
-// 
+//
+//
 #include "vulkanModule/Context.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -427,9 +427,9 @@ void LandscapeFisheye::initShader()
 	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
 
 	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	cmdMgr->waitCompletion(0);
-	cmdMgr->waitCompletion(1);
-	cmdMgr->waitCompletion(2);
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
 	set->bindTexture(map_tex->getTexture(), 0);
 	if (haveNightTex) {
 		set->bindTexture(map_tex_night->getTexture(), 1);
@@ -648,9 +648,9 @@ void LandscapeSpherical::initShader()
 	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
 
 	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	cmdMgr->waitCompletion(0);
-	cmdMgr->waitCompletion(1);
-	cmdMgr->waitCompletion(2);
+	context->commandMgr->waitCompletion(0);
+	context->commandMgr->waitCompletion(1);
+	context->commandMgr->waitCompletion(2);
 	set->bindTexture(map_tex->getTexture(), 0);
 	if (haveNightTex) {
 		set->bindTexture(map_tex_night->getTexture(), 1);
