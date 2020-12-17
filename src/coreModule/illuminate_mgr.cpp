@@ -229,10 +229,10 @@ void IlluminateMgr::createSC_context(ThreadContext *context)
 	m_illumGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
 	m_illumGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
 	m_illumGL->build(MAX_ILLUMINATE * 4);
-	m_illumGL->registerIndexBuffer(BufferAccess::STATIC, MAX_ILLUMINATE * 6, 2, VK_INDEX_TYPE_UINT16);
+	m_illumGL->registerIndexBuffer(BufferAccess::STATIC, MAX_ILLUMINATE * 6);
 
 	{ // initialize index buffer
-		std::vector<uint16_t> tmpIndex;
+		std::vector<uint32_t> tmpIndex;
 		tmpIndex.reserve(MAX_ILLUMINATE * 6);
 		for (int i = 0; i < MAX_ILLUMINATE * 4; i += 4) {
 			tmpIndex.push_back(i + 0);
@@ -243,7 +243,7 @@ void IlluminateMgr::createSC_context(ThreadContext *context)
 			tmpIndex.push_back(i + 1);
 			tmpIndex.push_back(i + 3);
 		}
-		m_illumGL->fillIndexBuffer(MAX_ILLUMINATE * 3, reinterpret_cast<uint32_t *>(tmpIndex.data()));
+		m_illumGL->fillIndexBuffer(MAX_ILLUMINATE * 6, reinterpret_cast<uint32_t *>(tmpIndex.data()));
 	}
 	m_layoutIllum = std::make_unique<PipelineLayout>(context->surface);
 	m_layoutIllum->setTextureLocation(0);
