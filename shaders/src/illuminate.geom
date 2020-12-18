@@ -23,9 +23,10 @@ layout (location=1) out vec3 texColorOut;
 layout (binding=1) uniform ubo {
     mat4 Mat; // ModelViewMatrix
 };
-#include <custom_project.glsl>
+#include <custom_project_nocheck.glsl>
 
-
+// maximal squared distance accepted
+#define TOLERANCE 60000.0
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
 
 
@@ -35,8 +36,11 @@ void main(void)
 	pos1 = custom_project(position[0]);
 	pos2 = custom_project(position[1]);
 	pos3 = custom_project(position[2]);
+	vec2 dist1 = pos1.xy;
+	vec2 dist2 = dist1 - pos3.xy;
+	dist1 -= pos2.xy;
 
-	if ( pos1.w==1.0 && pos2.w==1.0 && pos3.w==1.0) {
+	if (main_clipping_fov[2] < 300.0 || ((dot(dist1, dist1) + dot(dist2, dist2)) < TOLERANCE)) {
 
 		gl_Position = MVP2D * pos1;
 		texCoordOut = texCoord[0];
