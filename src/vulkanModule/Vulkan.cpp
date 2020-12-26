@@ -239,7 +239,7 @@ void Vulkan::submitGraphic(VkSubmitInfo &submitInfo, VkFence fence)
 void Vulkan::submitCompute(VkSubmitInfo &submitInfo, VkFence fence)
 {
     if (computeQueues.empty()) {
-        submitGraphic(submitInfo);
+        submitGraphic(submitInfo, fence);
         return;
     }
     int selected = selectedComputeQueue++;
