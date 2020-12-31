@@ -401,7 +401,7 @@ bool NebulaMgr::loadDeepskyObject(std::string _englishName, std::string _DSOType
 	               tex_angular_size, _rotation, _credit, _luminance, deletable, false);
 
 	if (neb != nullptr) {
-		nebGrid.insert(std::move(neb), neb->XYZ_);
+		nebGrid.insert(std::move(neb), neb->XYZ_, neb->getAngularSize()/2.f);
 		return true;
 	} else
 		return false;

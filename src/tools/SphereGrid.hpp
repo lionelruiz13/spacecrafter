@@ -116,7 +116,7 @@ public:
 	//! A subdivision divides each zone into 4 sub-zones.
 	void subdivise(int _nbSubdivision);
 	//! Insert an element in this grid
-	void insert(T _element, Vec3f pos);
+	void insert(T _element, Vec3f pos, float objectRadius = 0);
 	//! Remove the corresponding element from this grid (optimized version)
 	void remove(const T &_element, const Vec3f &pos);
 	//! Remove the corresponding element from this grid
@@ -151,6 +151,8 @@ public:
 	// void setFov(Vec3f pos, float fov);
 	//! Determine which fields of view are visible
 	void intersect(const Vec3f& _pos, float fieldAngle);
+	//! Define maximal object radius in radian
+	void setMaxObjectRadius(float radius) {maxObjectRadius = radius;}
 private:
 	//! Set visibility flag of all sub-zones
 	void setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, bool isVisible);
@@ -168,6 +170,8 @@ private:
 	Tree<subGrid_t> dataCenter;
 	//! Number of subdivisions
 	int nbSubdivision = 0;
+	//! Biggest object radius in radian
+	float maxObjectRadius = 0;
 };
 
 template<typename T>
@@ -325,14 +329,14 @@ void SphereGrid<T>::subdivise(int _nbSubdivision)
 	void *ptr = allDataCenter.data(); // There must be no reallocation
 	nbSubdivision = _nbSubdivision;
 	for (auto &value: dataCenter) {
-		value->clear();
-		buildSubdivision(*value, 1);
+		value.clear();
+		buildSubdivision(value, 1);
 	}
 
 	// build angleLvl
 	Tree<subGrid_t> *actual = &dataCenter;
 	for (unsigned char i = 0; i <= nbSubdivision; i++) {
-		angleLvl.push_back(actual->value.center.dot(actual->value.corners[0]));
+		angleLvl.push_back(acosf(actual->value.center.dot(actual->value.corners[0])));
 		actual = &(*actual)[0];
 	}
 	assert(ptr == allDataCenter.data()); // There must be no reallocation
@@ -365,9 +369,9 @@ auto *SphereGrid<T>::getNearest(const Vec3f& _v)
 	Tree<subGrid_t> *actual = &dataCenter;
 	for (unsigned char i = 0; i <= nbSubdivision; i++) {
 		for (auto &data: *actual) {
-			if (v.dot(data->value.center) >= bestDot) {
-				bestDot = v.dot(data->value.center);
-				best = data.get();
+			if (v.dot(data.value.center) >= bestDot) {
+				bestDot = v.dot(data.value.center);
+				best = &data;
 			}
 		}
 		actual = best;
@@ -376,8 +380,10 @@ auto *SphereGrid<T>::getNearest(const Vec3f& _v)
 }
 
 template<typename T>
-void SphereGrid<T>::insert(T _element, Vec3f pos)
+void SphereGrid<T>::insert(T _element, Vec3f pos, float objectRadius)
 {
+	if (objectRadius > maxObjectRadius)
+		maxObjectRadius = objectRadius;
 	getNearest(pos)->first.push_back(std::move(_element));
 }
 
@@ -413,9 +419,9 @@ void SphereGrid<T>::setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, boo
 {
 	for (auto &it: data) {
 		if (subdivisionLvl < nbSubdivision) {
-			setVisibility(*it, subdivisionLvl + 1, isVisible);
+			setVisibility(it, subdivisionLvl + 1, isVisible);
 		} else {
-			it->value.element->second = isVisible;
+			it.value.element->second = isVisible;
 		}
 	}
 }
@@ -423,28 +429,28 @@ void SphereGrid<T>::setVisibility(Tree<subGrid_t> &data, int subdivisionLvl, boo
 template<typename T>
 void SphereGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl)
 {
-	const float max = cosf(fieldAngle/2.f + angleLvl[subdivisionLvl]);
+	const float max = cosf(std::min(fieldAngle/2.f + angleLvl[subdivisionLvl] + maxObjectRadius, (float) M_PI));
 
 	if (subdivisionLvl == nbSubdivision) {
 		// determine for all remaining zones if they were
 		for (auto &it: data) {
-			it->value.element->second = pos.dot(it->value.center) > max;
+			it.value.element->second = pos.dot(it.value.center) >= max;
 		}
 		return;
 	}
 
-	const float min = cosf(fieldAngle/2.f - angleLvl[subdivisionLvl]);
-
+	const float min = cosf(std::max(fieldAngle/2.f - angleLvl[subdivisionLvl] - maxObjectRadius, 0.f));
 	for (auto &it: data) {
-		if (pos.dot(it->value.center) > max) {
-			// all subZones were visible
-			setVisibility(*it, subdivisionLvl + 1, true);
-		} else if (pos.dot(it->value.center) > min) {
+		float value = pos.dot(it.value.center);
+		if (value < max) {
 			// all subZones weren't visible
-			setVisibility(*it, subdivisionLvl + 1, false);
+			setVisibility(it, subdivisionLvl + 1, false);
+		} else if (value >= min) {
+			// all subZones were visible
+			setVisibility(it, subdivisionLvl + 1, true);
 		} else {
 			// we must determine this for all subZones
-			subIntersect(pos, fieldAngle, *it, subdivisionLvl + 1);
+			subIntersect(pos, fieldAngle, it, subdivisionLvl + 1);
 		}
 	}
 }
@@ -452,12 +458,6 @@ void SphereGrid<T>::subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGri
 template<typename T>
 void SphereGrid<T>::intersect(const Vec3f& _pos, float fieldAngle)
 {
-	if (fieldAngle >= (3.1415926 - *angleLvl.rbegin()) * 2) { // Check if all zones are visible
-		for (auto &element: allDataCenter)
-			element.second = true;
-		return;
-	}
-
 	Vec3f pos = _pos;
 	pos.normalize();
 	subIntersect(pos, fieldAngle, dataCenter, 0);

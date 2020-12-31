@@ -33,20 +33,20 @@ public:
 	Tree() {}
 	Tree(T &data) : value(data) {}
 	//! return attached branch
-	Tree &operator[](int index) {return *tree[index];}
+	Tree &operator[](int index) {return tree[index];}
 	auto begin() {return tree.begin();}
 	auto end() {return tree.end();}
 	//! return number of attached branches
 	int size() const {return tree.size();}
 	//! create a new branch containing this data
-	void push_back(T &data) {tree.push_back(std::make_unique<Tree>(data));}
+	void push_back(T &data) {tree.push_back(data);}
 	//! remove all attached branches
 	void clear() {tree.clear();}
 
 	//! Data stored in this branch
 	T value;
 private:
-	std::vector<std::unique_ptr<Tree>> tree;
+	std::vector<Tree> tree;
 };
 
 
