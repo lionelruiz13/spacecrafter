@@ -278,15 +278,12 @@ void OjmMgr::createShader(ThreadContext *context)
 	vertex->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
 
 	pipeline = new Pipeline[2]{{surface, layout.get()}, {surface, layout.get()}};
-	VkBool32 useTexture;
 	for (short i = 0; i < 2; ++i) {
 		pipeline[i].setCullMode(true);
 		pipeline[i].bindVertex(vertex.get());
 		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		pipeline[i].bindShader("shaderOJM_noSUN.vert.spv");
-		pipeline[i].bindShader("shaderOJM_noSUN.frag.spv");
-		useTexture = (i == 0);
-		pipeline[i].setSpecializedConstant(0, &useTexture, sizeof(useTexture));
+		pipeline[i].bindShader((i == 0) ? "shaderOJM_noSUN_tex.frag.spv" : "shaderOJM_noSUN_notex.frag.spv");
 		pipeline[i].build();
 	}
 	set = std::make_unique<Set>(surface, context->setMgr, layout.get(), 2);

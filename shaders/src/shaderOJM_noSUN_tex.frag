@@ -14,7 +14,6 @@ layout (location=1) in vec2 TexCoord;
 layout (location=2) in vec3 Normal;
 
 layout (set = 1, binding=0) uniform sampler2D Tex1;
-layout(constant_id = 0) const bool useTexture = false;
 
 //uniform bool useTexture;
 
@@ -48,7 +47,7 @@ void phongModel( vec3 pos, vec3 norm, out vec3 ambAndDiff, out vec3 spec ) {
 
 void main()
 {
-    FragColor = useTexture ? texture(Tex1, TexCoord) : vec4(Ka,T);
+    FragColor = texture(Tex1, TexCoord);
     //~ vec3 ambAndDiff, spec;
     //~ vec4 texColor = mix(texture( Tex1, TexCoord ), vec4(Ka,1.0), useTexture);
     //~ phongModel( Position, Normal, ambAndDiff, spec );

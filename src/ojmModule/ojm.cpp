@@ -94,7 +94,7 @@ int Ojm::record(CommandMgr *cmdMgr, Pipeline *pipelines, PipelineLayout *layout,
 	std::array<float, 11> tmp;
 
 	for(unsigned int i=0;i<shapes.size();i++) {
-		if (shapes[i].map_Ka != nullptr) {
+		if (shapes[i].map_Ka != nullptr) { // There is a texture
 			if (selectedPipeline != 0) {
 				cmdMgr->bindPipeline(pipelines);
 				selectedPipeline = 0;
@@ -102,7 +102,7 @@ int Ojm::record(CommandMgr *cmdMgr, Pipeline *pipelines, PipelineLayout *layout,
 			set->clear();
 			set->bindTexture(shapes[i].map_Ka->getTexture(), 0);
 			cmdMgr->pushSet(layout, set, 1);
-		} else {
+		} else { // There is no texture
 			if (selectedPipeline != 1) {
 				cmdMgr->bindPipeline(pipelines + 1);
 				selectedPipeline = 1;
