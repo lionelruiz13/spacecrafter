@@ -1,6 +1,6 @@
 vec3 convertToRGB(in sampler2D t_y, in sampler2D t_u, in sampler2D t_v, in vec2 coord)
 {
-    float y = texture(t_y, coord).r;  
+    float y = texture(t_y, coord).r - 1./16.;  
     float u = texture(t_u, coord).r - 0.5;  
     float v = texture(t_v, coord).r - 0.5;  
 
