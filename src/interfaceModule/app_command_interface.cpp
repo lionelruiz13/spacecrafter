@@ -2774,7 +2774,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
+		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=-3;
 
 		if( !argStep.empty() )
 			sstep = evalDouble(argStep);
