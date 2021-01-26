@@ -74,7 +74,7 @@ body action clear
 body action initial
 
 # Set specific colors to parameters
-body name Moon color label r 0.4 g 0.5 b 0.5
+body name Moon color label r 0.9 g 0.5 b 0.5
 body name Moon color trail r 0.4 g 0.5 b 0.5
 body name Moon color orbit r 0.4 g 0.5 b 0.5
 body name all color orbit r 0.4 g 0.5 b 0.5
@@ -85,7 +85,7 @@ body name Earth skin_use true
 
 # Une fonction qui remplace agréablement r 0.4 g 0.5 b 0.5 (pour ceux utilisant d'autres logiciels de choix de couleur)
 body name Uranus color label color_value r12g215b215
-body name Uranus color label color_value x0F15EE
+body name Moon color label color_value x0F15EE
 
 # A static observer
 body action load name Solar_System2 parent Sun type Observer coord_func still_orbit orbit_x 0 orbit_y 0 orbit_z 1 rot_periode 1000000000000
@@ -568,6 +568,9 @@ flag zenith_line on
 # Draw zodiacal borders.
 flag zodiac on
 
+# Draw zodiacal light and gegenschein
+flag zodiacal_light toggle
+
 #################
 # HEADING
 
@@ -607,6 +610,24 @@ illuminate action clear
 # alpha=0 is invisible / alpha=0.5 is semi-transparent / alpha=1 is opaque.
 # Images are squares with a power of 2 value for dimensions (128/256/512/...) in PNG preferably but JPEG ans some others are supported.  
 # "mipmap on" is smoothing the image to avoid pixel blinking when the image is moved/zoomed (off by default).
+
+# Fisheye image without distortion
+image name i1 filename test_images/viewport.png coordinate_system viewport alpha 1 scale 0.2 mipmap on action load
+
+#In horizontal/dome coordinates, the scale defines the angular width of the image in degrees.
+image name i2 filename test_images/dome.png coordinate_system dome alpha 1 scale 30 altitude 15 azimuth 180 mipmap on action load
+
+#Square image positioned relatively to the normal view (dependant of the zoom factor)
+image name i3 filename test_images/horiz.png coordinate_system horizontal alpha 1 scale 30 altitude 15 azimuth 0 mipmap on action load
+
+#Square image positioned relatively to the sky in right ascension (azimuth=0 to 360°) and declination (altitude=-90° to 90°) coordinates
+image name i4 filename test_images/j2000.png coordinate_system j2000 alpha 0 scale 35 azimuth 0 altitude 90 mipmap on action load
+
+#Square image positioned relatively to the equatorial coordinates (sky moving through time).
+image name i5 filename test_images/equat.png coordinate_system equatorial alpha 1 scale 30 azimuth 0.00 altitude 0 mipmap on action load
+image name i6 filename test_images/equat.png coordinate_system equatorial alpha 1 scale 30 azimuth 90.00 altitude 0 mipmap on action load
+image name i7 filename test_images/equat.png coordinate_system equatorial alpha 1 scale 30 azimuth 180.00 altitude 0 mipmap on action load
+image name i8 filename test_images/equat.png coordinate_system equatorial alpha 1 scale 30 azimuth 270.00 altitude 0 mipmap on action load
 
 # Fisheye image without distortion
 # A scale 1 means that it occupies all the field. A greater factor will make it zoom. A<1 factor will diminish its size on the screen.
@@ -1053,6 +1074,8 @@ set constellation_art_intensity 0.5
 # full intensity
 set constellation_art_intensity 1
 
+set mode "InGalaxy"
+
 ################
 # FONT
 
@@ -1079,6 +1102,9 @@ set max_mag_nebula_name 4.0
 
 # only label stars brighter than this
 set max_mag_star_name 1.5
+
+# Go to the desired mode between InGalaxy InUniverse InSolarSystem
+set mode "InGalaxy"
 
 # scale of celestial bodies (1 is real size)
 set sun_scale 5
@@ -1156,6 +1182,7 @@ star_lines load asterism_all.fab
 flag star_lines on
 flag star_lines off
 star_lines action drop
+flag star_lines_selected toggle
 
 # Add an asterism on the fly
 star_lines asterism "UMa 7 67301 65378 65378 62956 62956 59774 59774 54061 54061 53910 53910 58001 58001 59774"
@@ -1184,17 +1211,21 @@ struct comment off
 
 struct loop 2
 # do it two times
-# do it two times
+struct loop end
+
+struct loop 4
+  # should do it four times
+  struct loop break
+  # but in fact do it just one 
 struct loop end
 
 #################
 # TEXT
 
 # Draw at 45° above South the text "Orion - The Hunter" for 4 seconds (first method)
-# align can be left/center/right (left by default)
+# align can be left/center/right (left by default) and display is on by default
 text name orion_string action drop
 text action load name orion_string string "Orion - The Hunter" altitude 45 azimuth 180 r 0.5 g 0.5 b 0.0 align center
-text name orion_string display on
 wait duration 2
 text name orion_string string "Orion - Le chasseur" action update
 wait duration 2
@@ -1248,12 +1279,22 @@ add a 1
 # multiply by a value a=a*2
 multiply a 2
 
+# divide by a value a=a/2
+divide a 2
+
 # create a variable with a random value
 random min 0 max 10
 define a random
 
 # Erase all the variables previously declared
 clear state variable
+
+# System variables
+# The following variables can be accessed within scripts:
+# altitude longitude latitude sun_altitude sun_azimuth heading
+
+# test if sun is set
+struct if sun_altitude inf 0
 
 #################
 # WAIT
