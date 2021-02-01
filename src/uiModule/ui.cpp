@@ -1506,9 +1506,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
-					this->executeCommand("star_lines action drop");
-					event = new FlagEvent( FLAG_NAMES::FN_STAR_LINES_SELECTED , FLAG_VALUES::FV_TOGGLE);
+					event = new ScriptEvent( IDIR+"internal/personasterism.sts");
 					EventRecorder::getInstance()->queue(event);
+					//this->executeCommand("star_lines action drop");
+					//event = new FlagEvent( FLAG_NAMES::FN_STAR_LINES_SELECTED , FLAG_VALUES::FV_TOGGLE);
+					//EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent(IDIR+"internal/sky_culture1.sts");
