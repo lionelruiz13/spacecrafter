@@ -416,6 +416,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_FN_OORT                                 "oort"
 #define ACP_FN_STARS_TRACE                          "stars_trace"
 #define ACP_FN_STAR_LINES                           "star_lines"
+#define ACP_FN_STAR_LINES_SELECTED                  "star_lines_selected"
 #define ACP_FN_SKY_DRAW                             "sky_draw"
 #define ACP_FN_DSO_PICTOGRAMS                       "dso_pictograms"
 #define ACP_FN_ZODIACAL_LIGHT                       "zodiacal_light"
