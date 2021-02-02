@@ -49,9 +49,9 @@
  * \brief classe representant le gestion de la voie lactée
  *
  *  La classe permet d'afficher sur une sphère céleste une texture de la voie lactée
- * 
+ *
  *  Elle représente aussi la lumière zodiacale
- * 
+ *
  */
 
 class OjmL;
@@ -66,7 +66,7 @@ class MilkyWay: public NoCopy {
 public:
 	MilkyWay();
 	virtual ~MilkyWay();
-	
+
 	//! dessine la sphère et la texture associée à la Milkyway.
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay);
 
@@ -94,22 +94,22 @@ public:
 	}
 
 	//! définie l'état de la lumière zodiacale
-	//! \param tex_file détermine le nom de la texture 
+	//! \param tex_file détermine le nom de la texture
 	//! \param _intensity détermine l'intensité de base associée à la texture
 	void defineZodiacalState(const std::string& tex_file, float _intensity);
 
 	//! définie l'état initial de la Milkyway
-	//! \param tex_file détermine le nom de la texture la représenant 
+	//! \param tex_file détermine le nom de la texture la représenant
 	//! \param _intensity détermine l'intensité de base associée à cette texture
 	void defineInitialMilkywayState(const std::string& path_file,const std::string& tex_file, const std::string& iris_tex_file, float _intensity);
-	
+
 	//! prépare le logiciel à un changement de Milkyway
-	//! \param tex_file détermine le nom de la nouvelle texture 
+	//! \param tex_file détermine le nom de la nouvelle texture
 	//! \param _intensity détermine l'intensité de base associée à la nouvelle texture
 	void changeMilkywayState(const std::string& full_tex_file, float _intensity);
 
 	//! prépare le logiciel à un changement de Milkyway sans toucher à son intensité
-	//! \param tex_file détermine le nom de la nouvelle texture 
+	//! \param tex_file détermine le nom de la nouvelle texture
 	void changeMilkywayStateWithoutIntensity(const std::string& full_tex_file);
 
 
@@ -158,6 +158,10 @@ public:
 		useIrisMilky = value;
 	}
 
+	void setZodiacalIntensity(float _intensity) {
+		zodiacal.intensity = _intensity;
+	}
+
 private:
 	struct MilkyData{
 		std::string name; // le nom exact de la texture
@@ -175,7 +179,7 @@ private:
 	OjmL* sphere = nullptr;
 
 	bool onTextureTransition = false;		//!< indique uen transition sur la texture
-	bool displayIrisMilky = false;			//!< indique que l'on doit utiliser la texture iris 
+	bool displayIrisMilky = false;			//!< indique que l'on doit utiliser la texture iris
 	bool useIrisMilky = false;				//!< avons nous besoin d'utiliser la texture iris ?
 
 	Scalable<float> intensityMilky;
