@@ -1145,6 +1145,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
+					event = new ScriptEvent( IDIR+"internal/sky_culture0.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL:
 					event = new ScriptEvent( IDIR+"internal/sky_culture3.sts");
@@ -2724,6 +2726,26 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case CTRL :
 					this->executeCommand("define a 0");
 					this->executeCommand("script action resume");
+					break;
+				default:
+					break;
+			}
+			break;
+
+		case SDL_SCANCODE_KP_ENTER :
+			switch(key_Modifier) {
+				case NONE:
+					this->executeCommand("deselect");
+					break;
+				case SUPER:
+					key_Modifier= NONE;
+					break;
+				case KWIN:
+					event = new ScriptEvent( SDIR+"fscripts/S16.sts");
+					EventRecorder::getInstance()->queue(event);						
+					key_Modifier= NONE;
+					break;
+				case CTRL :
 					break;
 				default:
 					break;
