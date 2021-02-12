@@ -2151,6 +2151,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
+					event = new ScriptEvent( SDIR+"fscripts/panorama0.sts");
+					EventRecorder::getInstance()->queue(event);
+					current_landscape = coreLink->landscapeGetName();
+					key_Modifier= NONE;
 					break;
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama3.sts");
