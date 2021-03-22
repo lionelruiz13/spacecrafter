@@ -2373,6 +2373,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL:
+					this->executeCommand("add b 1");
 					break;
 				// case ALT:
 				// 	coreLink->cameraMoveRelativeXYZ(0.,0.0,-1.0);
