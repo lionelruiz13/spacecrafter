@@ -89,7 +89,7 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 		// std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
 		//std::cout << "C_define : " <<  mArg.c_str() << " => " << evalDouble(mValue) << std::endl;
 		double v = evalDouble(mValue);
-		if (v == trunc(v)) 
+		if (v == trunc(v))
 			variables[mArg] = std::to_string(evalInt(mValue));
 		else
 			variables[mArg] = std::to_string(v);
@@ -211,28 +211,35 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			double lon = coreLink->observatoryGetLongitude() + 180;
 			lon = lon - 360 * floor(lon / 360.);
 			return lon - 180;
-		      }
-		case  SC_RESERVED_VAR::LATITUDE :  
-			return coreLink->observatoryGetLatitude(); 
-		case  SC_RESERVED_VAR::ALTITUDE :  
-			return coreLink->observatoryGetAltitude(); 
-		case  SC_RESERVED_VAR::HEADING :  
-			return coreLink->getHeading(); 
+		    }
+		case  SC_RESERVED_VAR::LATITUDE : {
+		    double lat = coreLink->observatoryGetLatitude();
+			if (lat>90) lat = 90.0;
+			if (lat<-90) lat = -90.0;
+			return lat;
+		    }
+		case  SC_RESERVED_VAR::ALTITUDE :
+			return coreLink->observatoryGetAltitude();
+		case  SC_RESERVED_VAR::HEADING :{
+			double azi = coreLink->getHeading() + 180;
+			azi = azi - 360 * floor(azi / 360.);
+			return azi - 180;
+		    }
 		case SC_RESERVED_VAR::SUN_ALTITUDE:
-			return coreLink->getSunAltitude(); 
+			return coreLink->getSunAltitude();
 		case SC_RESERVED_VAR::SUN_AZIMUTH: {
 			double azi = coreLink->getSunAzimuth() + 180;
 			azi = azi - 360 * floor(azi / 360.);
 			return azi - 180;
 		      }
 		case SC_RESERVED_VAR::DATE_YEAR:
-			return coreLink->getDateYear(); 
+			return coreLink->getDateYear();
 		case SC_RESERVED_VAR::DATE_MONTH:
-			return coreLink->getDateMonth(); 
+			return coreLink->getDateMonth();
 		case SC_RESERVED_VAR::DATE_DAY:
-			return coreLink->getDateDay(); 
+			return coreLink->getDateDay();
 		case SC_RESERVED_VAR::DATE_HOUR:
-			return coreLink->getDateHour(); 
+			return coreLink->getDateHour();
 		default:
 			std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			return 0.0;
@@ -243,13 +250,13 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 void AppCommandEval::setReservedVariable(const std::string &var, double value)
 {
 	switch (m_reservedVar[var]) {
-		case  SC_RESERVED_VAR::LONGITUDE :  
+		case  SC_RESERVED_VAR::LONGITUDE :
 			coreLink->observatorySetLongitude(value); break;
-		case  SC_RESERVED_VAR::LATITUDE :  
+		case  SC_RESERVED_VAR::LATITUDE :
 			coreLink->observatorySetLatitude(value); break;
-		case  SC_RESERVED_VAR::ALTITUDE :  
+		case  SC_RESERVED_VAR::ALTITUDE :
 			coreLink->observatorySetAltitude(value); break;
-		case  SC_RESERVED_VAR::HEADING :  
+		case  SC_RESERVED_VAR::HEADING :
 			coreLink->setHeading(value); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE :
 			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
