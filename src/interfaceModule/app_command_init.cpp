@@ -65,6 +65,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_MULTIPLY] = SC_COMMAND::SC_MULTIPLY;
 	m_commands[ACP_CN_DIVIDE] = SC_COMMAND::SC_DIVIDE;
 	m_commands[ACP_CN_TANGENT] = SC_COMMAND::SC_TANGENT;
+	m_commands[ACP_CN_TRUNC] = SC_COMMAND::SC_TRUNC;
 	m_commands[ACP_CN_SINUS] = SC_COMMAND::SC_SINUS;
 	m_commands[ACP_CN_PERSONAL] = SC_COMMAND::SC_PERSONAL;
 	m_commands[ACP_CN_PERSONEQ] = SC_COMMAND::SC_PERSONEQ;

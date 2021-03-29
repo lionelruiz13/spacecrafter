@@ -1,6 +1,7 @@
 # include "coreModule/coreLink.hpp"
 #include "tools/app_settings.hpp"
 #include "coreModule/coreFont.hpp"
+#include "appModule/space_date.hpp"
 
 CoreLink::CoreLink(Core * _core)
 {
@@ -23,4 +24,44 @@ bool CoreLink::loadCameraPosition(const std::string& filename)
 void CoreLink::fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue)
 {
 	core->coreFont->updateFont(_targetName, _fontName, _sizeValue);
+}
+
+double CoreLink::getDateYear() const
+{
+	double jd = core->timeMgr->getJDay();
+	int year,month,day,hour,minute;
+	double second;
+	
+	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
+	return year;
+}
+
+double CoreLink::getDateMonth() const
+{
+	double jd = core->timeMgr->getJDay();
+	int year,month,day,hour,minute;
+	double second;
+	
+	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
+	return month;
+}
+
+double CoreLink::getDateDay() const
+{
+	double jd = core->timeMgr->getJDay();
+	int year,month,day,hour,minute;
+	double second;
+	
+	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
+	return day;
+}
+
+double CoreLink::getDateHour() const
+{
+	double jd = core->timeMgr->getJDay();
+	int year,month,day,hour,minute;
+	double second;
+	
+	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
+	return hour;
 }

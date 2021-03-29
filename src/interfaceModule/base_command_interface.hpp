@@ -32,7 +32,7 @@
 enum class SC_COMMAND : char {SC_ADD = 30, SC_AUDIO, SC_BODY_TRACE, SC_BODY, SC_CAMERA, SC_CLEAR, SC_COLOR, SC_CONFIGURATION, SC_CONSTELLATION, SC_DATE, SC_DEFINE, SC_DESELECT,
 							  SC_DOMEMASTERS,
                               SC_DSO, SC_EXTERNASC_VIEWER, SC_FONT, SC_FLAG, SC_GET, SC_HEADING, SC_ILLUMINATE, SC_IMAGE, SC_LANDSCAPE, SC_SCREEN_FADER, SC_LOOK, SC_MEDIA, SC_METEORS,
-                              SC_MOVETO, SC_MULTIPLY, SC_DIVIDE, SC_TANGENT, SC_SINUS, SC_PERSONAL, SC_PERSONEQ, SC_PLANET_SCALE, SC_POSITION, SC_PRINT, SC_RANDOM,
+                              SC_MOVETO, SC_MULTIPLY, SC_DIVIDE, SC_TANGENT, SC_TRUNC, SC_SINUS, SC_PERSONAL, SC_PERSONEQ, SC_PLANET_SCALE, SC_POSITION, SC_PRINT, SC_RANDOM,
                               SC_SCRIPT, SC_SEARCH, SC_SELECT, SC_SET, SC_SHUTDOWN, SC_SKY_CULTURE, SC_STAR_LINES, SC_STRUCT, SC_SUNTRACE, SC_SUB, SC_TEXT,
                               SC_TIMERATE, SC_WAIT, SC_ZOOMR, SC_FLYTO
                              };
@@ -69,7 +69,7 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30, APP_AUTO_MOVE_DUR
                             APP_STALL_RADIUS_UNIT,/*APP_TULLY_COLOR_MODE,*/ APP_DATETIME_DISPLAY_POSITION,APP_DATETIME_DISPLAY_NUMBER,APP_FLAG_NONE
                             };
 
-enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, HEADING};
+enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, DATE_YEAR, DATE_MONTH, DATE_DAY, DATE_HOUR, HEADING};
 
 
 // nom des arguments des commandes
@@ -314,6 +314,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CN_MULTIPLY                             "multiply"
 #define ACP_CN_DIVIDE                             	"divide"
 #define ACP_CN_TANGENT                             	"tangent"
+#define ACP_CN_TRUNC                             	"trunc"
 #define ACP_CN_SINUS                             	"sinus"
 #define ACP_CN_PERSONAL                             "personal"
 #define ACP_CN_PERSONEQ                             "personeq"
@@ -575,7 +576,11 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACI_RW_LATITUDE             "latitude"
 #define ACI_RW_ALTITUDE             "altitude"
 #define ACI_RW_SUN_ALTITUDE         "sun_altitude"
-#define ACI_RW_SUN_AZIMUTH         "sun_azimuth"
+#define ACI_RW_SUN_AZIMUTH          "sun_azimuth"
+#define ACI_RW_DATE_YEAR            "date_year"
+#define ACI_RW_DATE_MONTH           "date_month"
+#define ACI_RW_DATE_DAY             "date_day"
+#define ACI_RW_DATE_HOUR            "date_hour"
 #define ACI_RW_HEADING              "heading"
 
 

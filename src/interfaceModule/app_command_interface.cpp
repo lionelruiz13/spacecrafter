@@ -269,6 +269,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
 		case SC_COMMAND::SC_DIVIDE :	return commandDivide(); break;
 		case SC_COMMAND::SC_TANGENT :	return commandTangent(); break;
+		case SC_COMMAND::SC_TRUNC :	return commandTrunc(); break;
 		case SC_COMMAND::SC_SINUS :	return commandSinus(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
@@ -3641,9 +3642,22 @@ int AppCommandInterface::commandTangent()
 	if (args.begin() != args.end()) {
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
-		appEval->commandDiv(mArg,mValue);
+		appEval->commandTan(mArg,mValue);
 	} else {
 		debug_message = "unexpected error in command__tangent";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandTrunc()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandTrunc(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__trunc";
 	}
 	return executeCommandStatus();
 }
@@ -3654,7 +3668,7 @@ int AppCommandInterface::commandSinus()
 	if (args.begin() != args.end()) {
 		std::string mArg = args.begin()->first;
 		std::string mValue = args.begin()->second;
-		appEval->commandDiv(mArg,mValue);
+		appEval->commandSin(mArg,mValue);
 	} else {
 		debug_message = "unexpected error in command__sinus";
 	}

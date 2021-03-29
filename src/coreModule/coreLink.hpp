@@ -10,6 +10,8 @@ public:
 	// StarLines---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
+	static void DateTimeFromJulianDay(double jd, int *year, int *month, int *day, int *hour, int *minute, double *second);
+
 	//! Set flag for displaying
 	void starLinesSetFlag(bool b) {
 		core->starLines->setFlagShow(b);
@@ -974,6 +976,19 @@ public:
 	double getSunAzimuth() const {
 		return core->ssystem->getSunAzimuth(core->navigation);
 	}
+
+	//return the Date
+	double getDateYear() const;
+
+	//return the Date
+	double getDateMonth() const;
+
+	//return the Date
+	double getDateDay() const;
+
+	//return the Date
+	double getDateHour() const;
+
 
 	// Fonctions non utilisée ?
 	// -------------------------------
