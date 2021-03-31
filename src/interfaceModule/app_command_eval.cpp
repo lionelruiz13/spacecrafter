@@ -47,8 +47,13 @@ std::string AppCommandEval::evalString(const std::string &var)
 	auto var_it = variables.find(var);
 	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
 		return var;
-	else // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		return var_it->second;
+	else {// trouvé on renvoie la valeur de ce qui est stocké en mémoire
+		double v = evalDouble(var_it->second);
+		if (v == trunc(v))
+			return std::to_string(evalInt(var_it->second));
+		else
+			return var_it->second;
+		}
 }
 
 double AppCommandEval::evalDouble(const std::string &var)
@@ -89,9 +94,9 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 		// std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
 		//std::cout << "C_define : " <<  mArg.c_str() << " => " << evalDouble(mValue) << std::endl;
 		double v = evalDouble(mValue);
-		if (v == trunc(v))
-			variables[mArg] = std::to_string(evalInt(mValue));
-		else
+		//if (v == trunc(v))
+		//	variables[mArg] = std::to_string(evalInt(mValue));
+		//else
 			variables[mArg] = std::to_string(v);
 	//	this->printVar();
 	}
@@ -147,8 +152,11 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 		std::cout << "not possible to operate with undefined variable so define to null from ops" << std::endl;
 		variables[mArg] = Utility::strToDouble (mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		double tmp = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
-		variables[mArg] = std::to_string(tmp);
+		double v = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
+		//if (v == trunc(v))
+		//	variables[mArg] = std::to_string(evalInt(mValue));
+		//else
+			variables[mArg] = std::to_string(v);
 	}
 }
 
