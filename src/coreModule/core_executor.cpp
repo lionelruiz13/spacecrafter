@@ -61,7 +61,7 @@ CoreExecutor* CoreExecutor::getNextMode()
  *
  *
  */
-CoreExecutorInSolarSystem::CoreExecutorInSolarSystem(Core* _core, Observer* _observer) 
+CoreExecutorInSolarSystem::CoreExecutorInSolarSystem(Core* _core, Observer* _observer)
 							: CoreExecutor(_core, _observer)
 {
 	name = "InSolarSystem";
@@ -69,7 +69,7 @@ CoreExecutorInSolarSystem::CoreExecutorInSolarSystem(Core* _core, Observer* _obs
 }
 
 
-CoreExecutorInSolarSystem::~CoreExecutorInSolarSystem() 
+CoreExecutorInSolarSystem::~CoreExecutorInSolarSystem()
 {}
 
 
@@ -80,7 +80,7 @@ void CoreExecutorInSolarSystem::onEnter()
 	//observer->loadBodyInSolarSystem();
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);
-	//réglage de l'altitude dans CoreExecutorInSolarSystem la première fois 
+	//réglage de l'altitude dans CoreExecutorInSolarSystem la première fois
 	if (observer->getAltitude() < maxAltToGoUp)
 		observer->setAltitude(observer->getAltitude() *1.E6);
 }
@@ -139,7 +139,7 @@ CoreExecutorInGalaxy::CoreExecutorInGalaxy(Core* _core, Observer* _observer)
 }
 
 
-CoreExecutorInGalaxy::~CoreExecutorInGalaxy() 
+CoreExecutorInGalaxy::~CoreExecutorInGalaxy()
 {}
 
 
@@ -147,7 +147,7 @@ void CoreExecutorInGalaxy::onEnter()
 {
 	std::cout << "J'arrive dans InGalaxy" << std::endl;
 	nextMode = nullptr;
-	//réglage de l'altitude dans CoreExecutorInGalaxy la première fois 
+	//réglage de l'altitude dans CoreExecutorInGalaxy la première fois
 	if (observer->getAltitude() < minAltToGoDown) {
 		std::cout << "On est dans inGalaxy mais trop bas: modification de l'altitude pour min" << std::endl;
 		observer->setAltitude((maxAltToGoUp+minAltToGoDown)/2.0);
@@ -213,17 +213,17 @@ CoreExecutorInUniverse::CoreExecutorInUniverse(Core* _core, Observer* _observer)
 {
 	name ="InUniverse";
 	minAltToGoDown = 1.E9;
-	maxAltToGoUp = 1.E13;
+	maxAltToGoUp = 1.E14;
 }
 
-CoreExecutorInUniverse::~CoreExecutorInUniverse() 
+CoreExecutorInUniverse::~CoreExecutorInUniverse()
 {}
 
 void CoreExecutorInUniverse::onEnter()
 {
 	std::cout << "J'arrive dans InUniverse" << std::endl;
 	nextMode = nullptr;
-	//réglage de l'altitude dans CoreExecutorInUniverse la première fois 
+	//réglage de l'altitude dans CoreExecutorInUniverse la première fois
 	//~ if (observer->getAltitude() <1.E9) {
 		printf("je change la valeur de l'altitude dans InUniverse\n");
 		observer->setAltitude(minAltToGoDown);
