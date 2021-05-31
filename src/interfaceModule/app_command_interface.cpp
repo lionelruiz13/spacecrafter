@@ -1123,7 +1123,7 @@ int AppCommandInterface::commandPersonal()
 	if (!argAction.empty()) {
 		if (argAction == W_LOAD) {
 			std::string fileName=args[W_FILENAME];
-			if (!fileName.empty())
+			if (fileName.empty())
 				fileName = "personal.txt";
 			if ( !CallSystem::isAbsolute(fileName))
 				fileName = scriptInterface->getScriptPath() + fileName;
