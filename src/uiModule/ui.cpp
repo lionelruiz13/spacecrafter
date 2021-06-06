@@ -495,6 +495,7 @@ void UI::lowerHeight()
 
 void UI::speedDecrease()
 {
+	media->playerJump(-10.0);
 	this->executeCommand("define x -1");
 	//if(scriptInterface->isScriptPlaying())
 	//	scriptInterface->slowerSpeed();
@@ -504,6 +505,7 @@ void UI::speedDecrease()
 
 void UI::speedIncrease()
 {
+	media->playerJump(10.0);
 	this->executeCommand("define x 1");
 	//if(scriptInterface->isScriptPlaying())
 	//	scriptInterface->fasterSpeed();
