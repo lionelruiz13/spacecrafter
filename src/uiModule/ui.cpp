@@ -495,22 +495,24 @@ void UI::lowerHeight()
 
 void UI::speedDecrease()
 {
-	media->playerJump(-10.0);
-	this->executeCommand("define x -1");
-	//if(scriptInterface->isScriptPlaying())
-	//	scriptInterface->slowerSpeed();
+	if (media->playerisVideoPlayed()) media->playerJump(-10.0);
+    else
+		if (!scriptInterface->isScriptPlaying())
+	//  	scriptInterface->slowerSpeed();
 	//else
-		deltaSpeed = DeltaSpeed::DOWN;
+			deltaSpeed = DeltaSpeed::DOWN;
+	this->executeCommand("define x -1");
 }
 
 void UI::speedIncrease()
 {
-	media->playerJump(10.0);
-	this->executeCommand("define x 1");
-	//if(scriptInterface->isScriptPlaying())
+	if (media->playerisVideoPlayed()) media->playerJump(10.0);
+	else
+		if (!scriptInterface->isScriptPlaying())
 	//	scriptInterface->fasterSpeed();
 	//else
-		deltaSpeed = DeltaSpeed::UP;
+			deltaSpeed = DeltaSpeed::UP;
+	this->executeCommand("define x 1");
 }
 
 void UI::turnLeft()
@@ -554,7 +556,8 @@ void UI::executeCommand(const std::string& command)
 
 void UI::pauseScriptOrTimeRate()
 {
-	media->playerPause();
+	if (media->playerisVideoPlayed()) media->playerPause();
+	else
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
 		// coreLink->timeResetMultiplier();
