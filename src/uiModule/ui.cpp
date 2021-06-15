@@ -497,7 +497,7 @@ void UI::speedDecrease()
 {
 	if (media->playerisVideoPlayed()) media->playerJump(-10.0);
     else
-		if (!scriptInterface->isScriptPlaying())
+	//	if (!scriptInterface->isScriptPlaying())
 	//  	scriptInterface->slowerSpeed();
 	//else
 			deltaSpeed = DeltaSpeed::DOWN;
@@ -508,7 +508,7 @@ void UI::speedIncrease()
 {
 	if (media->playerisVideoPlayed()) media->playerJump(10.0);
 	else
-		if (!scriptInterface->isScriptPlaying())
+	//	if (!scriptInterface->isScriptPlaying())
 	//	scriptInterface->fasterSpeed();
 	//else
 			deltaSpeed = DeltaSpeed::UP;
