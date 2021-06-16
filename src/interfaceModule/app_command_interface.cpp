@@ -2599,10 +2599,10 @@ int AppCommandInterface::commandLook()
 		std::string argTime = args[W_DURATION];
 
 		if(argTime.empty()){
-			coreLink->lookAt(stod(argAz), stod(argAlt));
+			coreLink->lookAt(evalDouble(argAz), evalDouble(argAlt));
 		}
 		else{
-			coreLink->lookAt(stod(argAz), stod(argAlt), stod(argTime));
+			coreLink->lookAt(evalDouble(argAz), evalDouble(argAlt), evalDouble(argTime));
 		}
 
 		return executeCommandStatus();
