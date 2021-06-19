@@ -989,6 +989,8 @@ public:
 	//return the Date
 	double getDateHour() const;
 
+	//return the Date
+	double getDateMinute() const;
 
 	// Fonctions non utilisée ?
 	// -------------------------------

@@ -30,6 +30,7 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_DATE_MONTH]=SC_RESERVED_VAR::DATE_MONTH;
 	m_reservedVar[ACI_RW_DATE_DAY]=SC_RESERVED_VAR::DATE_DAY;
 	m_reservedVar[ACI_RW_DATE_HOUR]=SC_RESERVED_VAR::DATE_HOUR;
+	m_reservedVar[ACI_RW_DATE_MINUTE]=SC_RESERVED_VAR::DATE_MINUTE;
 	m_reservedVar[ACI_RW_HEADING]=SC_RESERVED_VAR::HEADING;
 
 	// for conivence, the map inverse
@@ -248,6 +249,8 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->getDateDay();
 		case SC_RESERVED_VAR::DATE_HOUR:
 			return coreLink->getDateHour();
+		case SC_RESERVED_VAR::DATE_MINUTE:
+			return coreLink->getDateMinute();
 		default:
 			std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			return 0.0;
@@ -277,6 +280,8 @@ void AppCommandEval::setReservedVariable(const std::string &var, double value)
 		case SC_RESERVED_VAR::DATE_DAY :
 			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		case SC_RESERVED_VAR::DATE_HOUR :
+			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+		case SC_RESERVED_VAR::DATE_MINUTE :
 			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		default:
 			std::cout << "Unknown reserved variable " << var << ". Do nothing." << std::endl;

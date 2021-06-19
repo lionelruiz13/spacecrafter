@@ -69,7 +69,7 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30, APP_AUTO_MOVE_DUR
                             APP_STALL_RADIUS_UNIT,/*APP_TULLY_COLOR_MODE,*/ APP_DATETIME_DISPLAY_POSITION,APP_DATETIME_DISPLAY_NUMBER,APP_FLAG_NONE
                             };
 
-enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, DATE_YEAR, DATE_MONTH, DATE_DAY, DATE_HOUR, HEADING};
+enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, DATE_YEAR, DATE_MONTH, DATE_DAY, DATE_HOUR, DATE_MINUTE, HEADING};
 
 
 // nom des arguments des commandes
@@ -581,6 +581,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACI_RW_DATE_MONTH           "date_month"
 #define ACI_RW_DATE_DAY             "date_day"
 #define ACI_RW_DATE_HOUR            "date_hour"
+#define ACI_RW_DATE_MINUTE          "date_minute"
 #define ACI_RW_HEADING              "heading"
 
 
