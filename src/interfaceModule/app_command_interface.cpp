@@ -3335,7 +3335,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		double duration =0;
 
 		if ( ! argDuration.empty()) {
-			duration = stod(argDuration);
+			duration = evalDouble(argDuration);
 		}
 
 		bool result = coreLink->cameraAlignWithBody(argBody, duration);
