@@ -19,12 +19,13 @@
 
 bool Vulkan::isAlive = false;
 
-static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std::mutex *mutex, bool *isAlive, uint8_t *active)
+static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std::mutex *mutex, bool *isAlive, uint8_t *active, bool *uniQueuePtr, std::mutex *uniQueueMutex)
 {
     while (!*isAlive) // Wait isAlive became true
         std::this_thread::yield();
 
     CommandMgr *actual;
+    const bool uniQueue = *uniQueuePtr;
     while (*isAlive) {
         while (queue->empty() && *isAlive)
             std::this_thread::yield();
@@ -41,7 +42,12 @@ static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std
         if (actual == reinterpret_cast<CommandMgr *>(master)) {
             master->submitFrame();
         } else {
-            actual->submitAction();
+            if (uniQueue) {
+                uniQueueMutex->lock();
+                actual->submitAction();
+                uniQueueMutex->unlock();
+            } else
+                actual->submitAction();
         }
         mutex->lock();
         (*active)--;
@@ -49,7 +55,7 @@ static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std
     }
 }
 
-static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue, VkQueue vkqueue, std::mutex *mutex, bool *isAlive, uint8_t *active, bool waitIdle)
+static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue, VkQueue vkqueue, std::mutex *mutex, bool *isAlive, uint8_t *active, bool waitIdle, bool uniQueue = false, std::mutex *uniQueueMutex = nullptr)
 {
     std::pair<VkSubmitInfo, VkFence> actual;
     while (*isAlive) {
@@ -64,7 +70,12 @@ static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue
         actual = queue->front();
         queue->pop();
         mutex->unlock();
-        vkQueueSubmit(vkqueue, 1, &actual.first, actual.second);
+        if (uniQueue) {
+            uniQueueMutex->lock();
+            vkQueueSubmit(vkqueue, 1, &actual.first, actual.second);
+            uniQueueMutex->unlock();
+        } else
+            vkQueueSubmit(vkqueue, 1, &actual.first, actual.second);
         if (waitIdle)
             vkQueueWaitIdle(vkqueue);
         mutex->lock();
@@ -73,7 +84,7 @@ static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue
     }
 }
 
-Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers, VkSampleCountFlagBits sampleCount, std::string _cachePath) : refDevice(device), refRenderPass(renderPass), refRenderPassExternal(renderPassExternal), refRenderPassCompatibility(renderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(resolveFramebuffers), refSingleSampleFramebuffers(singleSampleFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName), graphicThread(graphicMainloop, &graphicQueue, this, &graphicQueueMutex, &isAlive, &graphicActivity)
+Vulkan::Vulkan(const char *_AppName, const char *_EngineName, SDL_Window *window, int nbVirtualSurfaces, int width, int height, int chunkSize, bool enableDebugLayers, VkSampleCountFlagBits sampleCount, std::string _cachePath) : refDevice(device), refRenderPass(renderPass), refRenderPassExternal(renderPassExternal), refRenderPassCompatibility(renderPassCompatibility), refSwapChainFramebuffers(swapChainFramebuffers), refResolveFramebuffers(resolveFramebuffers), refSingleSampleFramebuffers(singleSampleFramebuffers), refFrameIndex(frameIndex), refImageAvailableSemaphore(imageAvailableSemaphore), AppName(_AppName), EngineName(_EngineName), graphicThread(graphicMainloop, &graphicQueue, this, &graphicQueueMutex, &isAlive, &graphicActivity, &uniQueue, &uniQueueMutex)
 {
     assert(!isAlive); // There must be only one Vulkan instance
     cachePath = _cachePath;
@@ -231,9 +242,13 @@ void Vulkan::submitGraphic(VkSubmitInfo &submitInfo, VkFence fence)
     int selected = selectedGraphicQueue++;
     if (selectedGraphicQueue >= (int) graphicsAndPresentQueues.size()) selectedGraphicQueue -= assignedGraphicQueueCount;
     if (selected >= (int) graphicsAndPresentQueues.size()) selected -= assignedGraphicQueueCount;
+    if (uniQueue)
+        uniQueueMutex.lock();
     if (vkQueueSubmit(graphicsAndPresentQueues[selected], 1, &submitInfo, fence) != VK_SUCCESS) {
         cLog::get()->write("Command submission has failed (see vulkan-layers with debug=true)", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
     }
+    if (uniQueue)
+        uniQueueMutex.unlock();
 }
 
 void Vulkan::submitCompute(VkSubmitInfo &submitInfo, VkFence fence)
@@ -444,7 +459,7 @@ void Vulkan::initQueues(uint32_t nbQueues)
     }
     assert(graphicsQueueFamilyIndex.size() + graphicsAndPresentQueueFamilyIndex.size() > 0);
     assert(presentQueueFamilyIndex.size() + graphicsAndPresentQueueFamilyIndex.size() > 0);
-    assert(transferQueueFamilyIndex.size() > 0);
+    // assert(transferQueueFamilyIndex.size() > 0); // compatibility mode added
 
     VkPhysicalDeviceFeatures supportedDeviceFeatures;
     vkGetPhysicalDeviceFeatures(physicalDevice, &supportedDeviceFeatures);
@@ -515,8 +530,14 @@ void Vulkan::initQueues(uint32_t nbQueues)
         for (int j = 0; j < maxQueues; j++) {
             vkGetDeviceQueue(device, index, j, &tmpQueue);
             transferQueues.push_back(tmpQueue);
-            transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity, false);
+            transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity, false, uniQueue, &uniQueueMutex);
         }
+    }
+    if (transferThread.empty()) {
+        cLog::get()->write("No transfer queue detected, switch to compatibility mode", LOG_TYPE::L_WARNING, LOG_FILE::VULKAN);
+        uniQueue = true;
+        transferQueues.push_back(graphicsAndPresentQueues.front());
+        transferThread.emplace_back(transferMainloop, &transferQueue, tmpQueue, &transferQueueMutex, &isAlive, &transferActivity, false, uniQueue, &uniQueueMutex);
     }
 }
 
@@ -1090,7 +1111,7 @@ void Vulkan::setupInterceptor(void *_pUserData, void(*_interceptor)(void *pUserD
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.flags = 0; // Optionel
-    poolInfo.queueFamilyIndex = transferQueueFamilyIndex[0];
+    poolInfo.queueFamilyIndex = getTransferQueueFamilyIndex();
     if (vkCreateCommandPool(device, &poolInfo, nullptr, &interceptPool) != VK_SUCCESS) {
         throw std::runtime_error("échec de la création d'une command pool !");
     }

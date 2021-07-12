@@ -43,7 +43,7 @@ public:
     void free(SubMemory& bufferMemory);
     void mapMemory(SubMemory& bufferMemory, void **data);
     void unmapMemory(SubMemory& bufferMemory);
-    size_t getTransferQueueFamilyIndex() {return transferQueueFamilyIndex[0];}
+    size_t getTransferQueueFamilyIndex() {return (transferQueueFamilyIndex.empty()) ? graphicsAndPresentQueueFamilyIndex[0] : transferQueueFamilyIndex[0];}
     void submitTransfer(VkSubmitInfo *submitInfo, VkFence fence = VK_NULL_HANDLE);
     void submitGraphic(VkSubmitInfo &submitInfo, VkFence fence = VK_NULL_HANDLE);
     void submitCompute(VkSubmitInfo &submitInfo, VkFence fence = VK_NULL_HANDLE);
@@ -124,7 +124,7 @@ private:
     std::vector<VkQueue> computeQueues;
     std::vector<VkQueue> presentQueues;
     std::vector<VkQueue> transferQueues;
-    VkDevice device;
+    VkDevice device = VK_NULL_HANDLE;
 
     void initSwapchain(int width, int height, int nbVirtualSurfaces);
     std::vector<VkSwapchainKHR> swapChain;
@@ -177,6 +177,8 @@ private:
     std::queue<CommandMgr *> graphicQueue;
     std::mutex graphicQueueMutex;
     uint8_t graphicActivity = 0;
+    std::mutex uniQueueMutex;
+    bool uniQueue = false; // Intel GPU only have one queue
 
     // Interception
     void *pUserData;
