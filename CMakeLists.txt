@@ -41,8 +41,8 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 
 if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-  SET(CMAKE_C_FLAGS "-g -Wextra -Wall -Wno-unused-parameter -Wunreachable-code")
-  SET(CMAKE_CXX_FLAGS "-g -Wextra -Wall -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code -fconcepts")
+  SET(CMAKE_C_FLAGS "-g -Wextra -Wall -Wfatal-errors -Wno-unused-parameter -Wunreachable-code")
+  SET(CMAKE_CXX_FLAGS "-g -Wextra -Wall -Wfatal-errors -Wno-unused-parameter -Wmissing-declarations -Wredundant-decls -Wunreachable-code -fconcepts")
   message("Build type Debug. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode")
 endif()
 
