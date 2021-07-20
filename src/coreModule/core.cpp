@@ -61,7 +61,7 @@
 Core::Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
-	nebulas(nullptr), illuminates(nullptr), ssystem(NULL), milky_way(nullptr)
+	nebulas(nullptr), illuminates(nullptr), ssystemTmp(NULL), milky_way(nullptr)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
@@ -84,7 +84,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	ubo_cam = new UBOCam(context, "cam_block");
 	tone_converter = new ToneReproductor();
 	atmosphere = new Atmosphere(context);
-	ssystem = new SolarSystem(context);
+	// ssystem = new SolarSystem();
 	ssystemTmp = new SSystemFactory();
 	timeMgr = new TimeMgr();
 	observatory = new Observer(/**ssystem*/);
@@ -97,7 +97,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	dsoNav = new DsoNavigator(context, "dso3d-color.png");
 	starLines = new StarLines(context);
 	ojmMgr = new OjmMgr(context);
-	anchorManager = new AnchorManager(observatory,navigation, ssystem, timeMgr, ssystem->getOrbitCreator());
+	anchorManager = new AnchorManager(observatory,navigation, ssystemTmp->getSolarSystem(), timeMgr, ssystemTmp->getOrbitCreator());
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
 	skyGridMgr = new SkyGridMgr(context);
@@ -171,7 +171,7 @@ void Core::initCoreFont() const
 {
 	coreFont->hip_stars = hip_stars;
 	coreFont->nebulas = nebulas;
-	coreFont->ssystem = ssystem;
+	coreFont->ssystem = ssystemTmp->getSolarSystem();
 	coreFont->skyGridMgr = skyGridMgr;
 	coreFont->skyLineMgr = skyLineMgr;
 	coreFont->skyDisplayMgr = skyDisplayMgr;
@@ -221,7 +221,7 @@ Core::~Core()
 	delete atmosphere;
 	delete tone_converter;
 	// s_font::deleteShader();
-	delete ssystem;
+	//delete ssystem;
 	delete ssystemTmp;
 	delete skyloc;
 	skyloc = nullptr;
@@ -268,25 +268,25 @@ void Core::init(const InitParser& conf)
 	// Start splash with no fonts due to font collection delays
 	if (firstTime) {
 		// Init the solar system first
-		ssystem->iniColor( conf.getStr(SCS_COLOR, SCK_PLANET_HALO_COLOR),
+		ssystemTmp->iniColor( conf.getStr(SCS_COLOR, SCK_PLANET_HALO_COLOR),
 							conf.getStr(SCS_COLOR, SCK_PLANET_NAMES_COLOR),
 							conf.getStr(SCS_COLOR, SCK_PLANET_ORBITS_COLOR),
 							conf.getStr(SCS_COLOR, SCK_OBJECT_TRAILS_COLOR));
 
-		ssystem->iniTess( conf.getInt(SCS_RENDERING, SCK_MIN_TES_LEVEL),
+		ssystemTmp->iniTess( conf.getInt(SCS_RENDERING, SCK_MIN_TES_LEVEL),
 							conf.getInt(SCS_RENDERING, SCK_MAX_TES_LEVEL),
 							conf.getInt(SCS_RENDERING, SCK_PLANET_ALTIMETRY_LEVEL),
 							conf.getInt(SCS_RENDERING, SCK_MOON_ALTIMETRY_LEVEL),
 							conf.getInt(SCS_RENDERING, SCK_EARTH_ALTIMETRY_LEVEL));
 
-		ssystem->modelRingInit(conf.getInt(SCS_RENDERING, SCK_RINGS_LOW),
+		ssystemTmp->modelRingInit(conf.getInt(SCS_RENDERING, SCK_RINGS_LOW),
 		                         conf.getInt(SCS_RENDERING, SCK_RINGS_MEDIUM),
 		                         conf.getInt(SCS_RENDERING, SCK_RINGS_HIGH));
 
-		ssystem->iniTextures();
+		ssystemTmp->iniTextures();
 
-		ssystem->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
-
+		ssystemTmp->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
+		
 		anchorManager->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
 
 		anchorManager->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
@@ -333,12 +333,12 @@ void Core::init(const InitParser& conf)
 	starNav->setScale(conf.getDouble (SCS_STARS, SCK_STAR_SCALE));
 	starNav->setMagScale(conf.getDouble (SCS_STARS, SCK_STAR_MAG_SCALE));
 
-	ssystem->setFlagPlanets(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS));
-	ssystem->setFlagHints(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS));
-	ssystem->setFlagPlanetsOrbits(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS));
-	ssystem->setFlagLightTravelTime(conf.getBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME));
-	ssystem->setFlagTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
-	ssystem->startTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
+	ssystemTmp->setFlagPlanets(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS));
+	ssystemTmp->setFlagHints(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS));
+	ssystemTmp->setFlagPlanetsOrbits(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS));
+	ssystemTmp->setFlagLightTravelTime(conf.getBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME));
+	ssystemTmp->setFlagTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
+	ssystemTmp->startTrails(conf.getBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS));
 	nebulas->setFlagShow(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA));
 	nebulas->setFlagHints(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_HINTS));
 	nebulas->setNebulaNames(conf.getBoolean(SCS_ASTRO,SCK_FLAG_NEBULA_NAMES));
@@ -351,9 +351,9 @@ void Core::init(const InitParser& conf)
 	nebulas->setPictoSize(conf.getInt(SCS_VIEWING,SCK_NEBULA_PICTO_SIZE));
 	nebulas->setFlagBright(conf.getBoolean(SCS_ASTRO,SCK_FLAG_BRIGHT_NEBULAE));
 
-	ssystem->setScale(hip_stars->getScale());
+	ssystemTmp->setScale(hip_stars->getScale());
 	setPlanetsSizeLimit(conf.getDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT));
-	ssystem->setFlagClouds(true);
+	ssystemTmp->setFlagClouds(true);
 
 	observatory->load(conf, SCS_INIT_LOCATION);
 
@@ -403,13 +403,13 @@ void Core::init(const InitParser& conf)
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
 
 	// Compute planets data and init viewing position position of sun and all the satellites (ie planets)
-	ssystem->computePositions(timeMgr->getJDay(), observatory);
+	ssystemTmp->computePositions(timeMgr->getJDay(), observatory);
 
 	// Compute transform matrices between coordinates systems
 	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
 	navigation->updateViewMat(projection->getFov());
 
-	ssystem->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
+	ssystemTmp->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
 
 	std::string skyLocaleName = conf.getStr(SCS_LOCALIZATION, SCK_SKY_LOCALE);
 	initialvalue.initial_skyLocale=skyLocaleName;
@@ -514,10 +514,10 @@ void Core::init(const InitParser& conf)
 	skyLineMgr->setFlagShow(SKYLINE_TYPE::LINE_VERTICAL, conf.getBoolean(SCS_VIEWING,SCK_FLAG_VERTICAL_LINE));
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
 
-	ssystem->setFlagMoonScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED));
-	ssystem->setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? toujours true TODO
-	ssystem->setFlagSunScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED));
-	ssystem->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? toujours true TODO
+	ssystemTmp->setFlagMoonScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED));
+	ssystemTmp->setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? toujours true TODO
+	ssystemTmp->setFlagSunScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED));
+	ssystemTmp->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? toujours true TODO
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
 
@@ -527,7 +527,7 @@ void Core::init(const InitParser& conf)
 
 	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-	ssystem->initialSolarSystemBodies();
+	ssystemTmp->initialSolarSystemBodies();
 	setBodyDecor();
 	firstTime = 0;
 }
@@ -559,7 +559,7 @@ void Core::updateInSolarSystem(int delta_time)
 	navigation->update(delta_time);
 
 	// Position of sun and all the satellites (ie planets)
-	ssystem->computePositions(timeMgr->getJDay(), observatory);
+	ssystemTmp->computePositions(timeMgr->getJDay(), observatory);
 
 	anchorManager->update();
 
@@ -570,8 +570,8 @@ void Core::updateInSolarSystem(int delta_time)
 	// Field of view
 	projection->updateAutoZoom(delta_time, FlagManualZoom);
 	// update faders and Planet trails (call after nav is updated)
-	ssystem->update(delta_time, navigation, timeMgr);
-
+	ssystemTmp->update(delta_time, navigation, timeMgr);
+			
 	// Move the view direction and/or fov
 	updateMove(delta_time);
 	// Update info about selected object
@@ -599,7 +599,7 @@ void Core::updateInSolarSystem(int delta_time)
 	Vec3d sunPos = navigation->helioToLocal(temp);
 
 	// Compute the moon position in local coordinate
-	Vec3d moon = ssystem->getMoon()->get_heliocentric_ecliptic_pos();
+	Vec3d moon = ssystemTmp->getMoon()->get_heliocentric_ecliptic_pos();
 	Vec3d moonPos = navigation->helioToLocal(moon);
 
 	// Give the updated standard projection matrices to the projector
@@ -625,7 +625,7 @@ void Core::updateInSolarSystem(int delta_time)
 	moonPos.normalize();
 
 	double alt, az;
-	ssystem->bodyTraceGetAltAz(navigation, &alt, &az);
+	ssystemTmp->bodyTraceGetAltAz(navigation, &alt, &az);
 	bodytrace->addData(navigation, alt, az);
 
 	// compute global sky brightness TODO : make this more "scientifically"
@@ -646,14 +646,14 @@ void Core::updateInSolarSystem(int delta_time)
 
 void Core::ssystemComputePreDraw()
 {
-	ssystem->computePreDraw(projection, navigation);
+	ssystemTmp->computePreDraw(projection, navigation);
 }
 
 
 void Core::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 {
 	atmosphere->computeColor(timeMgr->getJDay(), sunPos, moonPos,
-	                          ssystem->getMoon()->get_phase(ssystem->getEarth()->get_heliocentric_ecliptic_pos()),
+	                          ssystemTmp->getMoon()->get_phase(ssystemTmp->getEarth()->get_heliocentric_ecliptic_pos()),
 	                          tone_converter, projection, observatory->getHomePlanetEnglishName(), observatory->getLatitude(), observatory->getAltitude(),
 	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
 }
@@ -681,7 +681,7 @@ void Core::updateInGalaxy(int delta_time)
 	navigation->update(delta_time);
 
 	// Position of sun and all the satellites (ie planets)
-	ssystem->computePositions(timeMgr->getJDay(), observatory);
+	ssystemTmp->computePositions(timeMgr->getJDay(), observatory);
 
 	anchorManager->update();
 
@@ -812,7 +812,7 @@ void Core::drawInSolarSystem(int delta_time)
 	skyLineMgr->draw(projection, navigation, timeMgr, observatory);
 	bodytrace->draw(projection, navigation);
 	skyDisplayMgr->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
-	ssystem->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	ssystemTmp->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
@@ -1032,7 +1032,7 @@ bool Core::loadLandscape(stringHash_t& param)
 //! Load a solar system body based on a hash of parameters mirroring the ssystem.ini file
 void Core::addSolarSystemBody(stringHash_t& param)
 {
-	ssystem->addBody(param);
+	ssystemTmp->addBody(param);
 }
 
 void Core::removeSolarSystemBody(const std::string& name)
@@ -1047,7 +1047,7 @@ void Core::removeSolarSystemBody(const std::string& name)
 		cLog::get()->write("Can not delete current home planet " + name);
 		return;
 	}
-	ssystem->removeBody(name);
+	ssystemTmp->removeBody(name);
 }
 
 void Core::removeSupplementalSolarSystemBodies()
@@ -1057,7 +1057,7 @@ void Core::removeSupplementalSolarSystemBodies()
 	if (selected_object.getType()==OBJECT_BODY /*&& selected_object.isDeleteable() */) {
 		unSelect();
 	}
-	ssystem->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
+	ssystemTmp->removeSupplementalBodies(observatory->getHomePlanetEnglishName());
 }
 
 
@@ -1078,7 +1078,7 @@ std::string Core::getHomePlanetEnglishName() const
 Object Core::searchByNameI18n(const std::string &name) const
 {
 	Object rval;
-	rval = ssystem->searchByNamesI18(name);
+	rval = ssystemTmp->searchByNamesI18(name);
 	if (rval) return rval;
 	rval = nebulas->searchByNameI18n(name);
 	if (rval) return rval;
@@ -1111,22 +1111,22 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		selected_object = hip_stars->searchHP(hpnum).get();
 		asterisms->setSelected(selected_object);
 		hip_stars->setSelected(selected_object);
-		ssystem->setSelected(""); //setPlanetsSelected("");
+		ssystemTmp->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="star") {
 		selected_object = hip_stars->search(id).get();
 		asterisms->setSelected(selected_object);
 		hip_stars->setSelected(selected_object);
-		ssystem->setSelected(""); //setPlanetsSelected("");
+		ssystemTmp->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
-		ssystem->setSelected(id); //setPlanetsSelected(id);
-		selected_object = ssystem->getSelected();
+		ssystemTmp->setSelected(id); //setPlanetsSelected(id);
+		selected_object = ssystemTmp->getSelected();
 		asterisms->setSelected(Object());
 
 	} else if (type=="nebula") {
 		selected_object = nebulas->search(id);
-		ssystem->setSelected(""); //setPlanetsSelected("");
+		ssystemTmp->setSelected(""); //setPlanetsSelected("");
 		asterisms->setSelected(Object());
 
 	} else if (type=="constellation") {
@@ -1135,7 +1135,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		asterisms->setSelected(id);
 
 		selected_object = nullptr;
-		ssystem->setSelected(""); //setPlanetsSelected("");
+		ssystemTmp->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="constellation_star") {
 		// For Find capability, select a star in constellation so can center view on constellation
@@ -1148,7 +1148,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		//		const unsigned int hpnum = asterisms->getFirstSelectedHP();
 		//		selected_object = hip_stars->searchHP(hpnum);
 		//		asterisms->setSelected(selected_object);
-		ssystem->setSelected(""); //setPlanetsSelected("");
+		ssystemTmp->setSelected(""); //setPlanetsSelected("");
 		//		// Some stars are shared, so now force constellation
 		//		asterisms->setSelected(id);
 	} else {
@@ -1192,7 +1192,7 @@ void Core::selectZodiac()
 	asterisms->setSelected("Psc");
 	asterisms->setSelected("Lib");
 	selected_object = nullptr;
-	ssystem->setSelected(""); //setPlanetsSelected("");
+	ssystemTmp->setSelected(""); //setPlanetsSelected("");
 }
 
 //! Find and select an object near given equatorial position
@@ -1240,8 +1240,8 @@ Object Core::cleverFind(const Vec3d& v) const
 	ypos = winpos[1];
 
 	// Collect the planets inside the range
-	if (ssystem->getFlagShow()) {
-		temp = ssystem->searchAround(v, fov_around, navigation, observatory, projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
+	if (ssystemTmp->getFlagShow()) {
+		temp = ssystemTmp->searchAround(v, fov_around, navigation, observatory, projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
 		if (is_default_object && temp.begin() != temp.end()) {
@@ -1289,7 +1289,7 @@ Object Core::cleverFind(const Vec3d& v) const
 			}
 		}
 		if ((*iter).getType()==OBJECT_BODY) {
-			if ( ssystem->getFlag(BODY_FLAG::F_HINTS)) {
+			if ( ssystemTmp->getFlag(BODY_FLAG::F_HINTS)) {
 				// easy to select, especially pluto
 				mag -= 15.f;
 			} else {
@@ -1495,7 +1495,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	cardinals_points->translateLabels(skyTranslator);
 	skyLineMgr->translateLabels(skyTranslator); //ecliptic_line
 	asterisms->translateNames(skyTranslator);
-	ssystem->translateNames(skyTranslator);
+	ssystemTmp->translateNames(skyTranslator);
 	nebulas->translateNames(skyTranslator);
 	hip_stars->updateI18n(skyTranslator);
 }
@@ -1528,7 +1528,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 
-	ssystem->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR),
+	ssystemTmp->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR), 
 								conf.getStr(section,SCK_PLANET_ORBITS_COLOR), conf.getStr(section,SCK_OBJECT_TRAILS_COLOR));
 
 	// default color override
@@ -1578,8 +1578,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_ART, asterisms->getFlagArt()); //constellationGetFlagArt());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_BOUNDARIES, asterisms->getFlagBoundaries()); //constellationGetFlagBoundaries());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK, asterisms->getFlagIsolateSelected()); //constellationGetFlagIsolateSelected());
-	conf.setDouble(SCS_VIEWING, SCK_MOON_SCALE, ssystem->getMoonScale());
-	conf.setDouble(SCS_VIEWING, SCK_SUN_SCALE, ssystem->getSunScale());
+	conf.setDouble(SCS_VIEWING, SCK_MOON_SCALE, ssystemTmp->getMoonScale());
+	conf.setDouble(SCS_VIEWING, SCK_SUN_SCALE, ssystemTmp->getSunScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATORIAL_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ECLIPTIC));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_GALACTIC_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_GALACTIC));
@@ -1604,8 +1604,8 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_PRECESSION_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CIRCUMPOLAR_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_TROPIC_LINES, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, ssystem->getFlagMoonScale()); //getFlagMoonScaled());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, ssystem->getFlagSunScale()); //getFlagSunScaled());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, ssystemTmp->getFlagMoonScale()); //getFlagMoonScaled());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, ssystemTmp->getFlagSunScale()); //getFlagSunScaled());
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, asterisms->getArtIntensity()); //constellationGetArtIntensity());
 	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, asterisms->getArtFadeDuration()); //constellationGetArtFadeDuration());
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE, getLightPollutionLimitingMagnitude());
@@ -1664,7 +1664,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setDouble (SCS_NAVIGATION, SCK_ZOOM_SPEED, vzm.zoom_speed);
 	conf.setDouble (SCS_NAVIGATION, SCK_HEADING, navigation->getHeading());
 	// Astro section
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, ssystem->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, ssystemTmp->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, nebulas->getFlagBright()); //nebulaGetFlagBright());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, hip_stars->getFlagShow()); //starGetFlag());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, hip_stars->getFlagNames()); //starGetFlagName());
@@ -1673,10 +1673,10 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_NAMES, nebulas->getNebulaNames()); //nebulaGetFlagNames());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_HINTS, nebulas->getFlagHints()); //nebulaGetFlagHints());
 	conf.setDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME, nebulas->getMaxMagHints()); //nebulaGetMaxMagHints());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS, ssystem->getFlagShow()); //planetsGetFlag());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, ssystem->getFlag(BODY_FLAG::F_HINTS)); //planetsGetFlagHints());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, ssystem->getFlagPlanetsOrbits()); //planetsGetFlagOrbits());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, ssystem->getFlagLightTravelTime()); //getFlagLightTravelTime());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS, ssystemTmp->getFlagShow()); //planetsGetFlag());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, ssystemTmp->getFlag(BODY_FLAG::F_HINTS)); //planetsGetFlagHints());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, ssystemTmp->getFlagPlanetsOrbits()); //planetsGetFlagOrbits());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, ssystemTmp->getFlagLightTravelTime()); //getFlagLightTravelTime());
 	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, milky_way->getFlagShow()); //milkyWayGetFlag());
 	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity()); //milkyWayGetIntensity());
 	conf.setDouble(SCS_ASTRO, SCK_STAR_SIZE_LIMIT, starGetSizeLimit());
@@ -1701,7 +1701,7 @@ Vec3f Core::getSelectedObjectInfoColor(void) const
 		return Vec3f(1, 1, 1);
 	}
 	if (selected_object.getType()==OBJECT_NEBULA) return nebulas->getLabelColor();
-	if (selected_object.getType()==OBJECT_BODY) return ssystem->getDefaultBodyColor("label");
+	if (selected_object.getType()==OBJECT_BODY) return ssystemTmp->getDefaultBodyColor("label");
 	if (selected_object.getType()==OBJECT_STAR) return selected_object.getRGB();
 	return Vec3f(1, 1, 1);
 }
@@ -1862,7 +1862,7 @@ void Core::updateMove(int delta_time)
 bool Core::setHomePlanet(const std::string &planet)
 {
 	// reset planet trails due to changed perspective
-	ssystem->startTrails( ssystem->getFlag(BODY_FLAG::F_TRAIL));
+	ssystemTmp->startTrails( ssystemTmp->getFlag(BODY_FLAG::F_TRAIL));
 	Event* event= new ObserverEvent(planet);
 	EventRecorder::getInstance()->queue(event);
 	if (planet=="selected")
@@ -1875,7 +1875,7 @@ bool Core::setHomePlanet(const std::string &planet)
 // For use by TUI
 std::string Core::getPlanetHashString()
 {
-	return ssystem->getPlanetHashString();
+	return ssystemTmp->getPlanetHashString();
 }
 
 //! Set simulation time to current real world time
@@ -1941,7 +1941,7 @@ bool Core::selectObject(const Object &obj)
 			}
 
 			if (selected_object.getType()==OBJECT_BODY) {
-				ssystem->setSelected(selected_object);
+				ssystemTmp->setSelected(selected_object);
 				// potentially record this action
 				if (!recordActionCallback.empty()) recordActionCallback("select planet " + selected_object.getEnglishName());
 			}
@@ -1971,8 +1971,8 @@ std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPre
 	std::vector <std::string>::const_iterator iter;
 
 	// Get matching planets
-	std::vector<std::string> matchingPlanets = ssystem->listMatchingObjectsI18n(objPrefix, maxNbItem);
-	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter)
+	std::vector<std::string> matchingPlanets = ssystemTmp->listMatchingObjectsI18n(objPrefix, maxNbItem);
+	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter) 
 		withType ? result.push_back(*iter+"(P)") : result.push_back(*iter);
 		// result.push_back(*iter);
 	maxNbItem-=matchingPlanets.size();
@@ -2031,7 +2031,7 @@ void Core::setStarSizeLimit(float f)
 //! ONLY SET THROUGH THIS METHOD
 void Core::setPlanetsSizeLimit(float f)
 {
-	ssystem->setSizeLimit(f + starGetSizeLimit());
+	ssystemTmp->setSizeLimit(f + starGetSizeLimit());
 	hip_stars->setObjectSizeLimit(f);
 }
 
