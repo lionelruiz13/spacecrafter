@@ -1433,42 +1433,6 @@ bool SolarSystem::getFlag(BODY_FLAG name)
 	return false;
 }
 
-void SolarSystem::setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c)
-{
-	if (englishName=="all")
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			it->second->body->setColor(colorName,c);
-		}
-	else{
-
-		Body * body = searchByEnglishName(englishName);
-
-		if(body != nullptr){
-			body->setColor(colorName, c);
-		}
-	}
-}
-
-const Vec3f SolarSystem::getBodyColor(const std::string &englishName, const std::string& colorName) const
-{
-	Body * body = searchByEnglishName(englishName);
-
-	if(body != nullptr){
-		return body->getColor(colorName);
-	}
-	else{
-		return v3fNull;
-	}
-}
-
-void SolarSystem::setDefaultBodyColor(const std::string& colorName, const Vec3f& c){
-	BodyColor::setDefault(colorName, c);
-}
-
-const Vec3f SolarSystem::getDefaultBodyColor(const std::string& colorName) const{
-	return BodyColor::getDefault(colorName);
-}
-
 void SolarSystem::planetTesselation(std::string name, int value) {
 	if (name=="min_tes_level") {
 		bodyTesselation->setMinTes(value);

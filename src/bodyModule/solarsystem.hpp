@@ -92,16 +92,6 @@ public:
 
 	std::string getPlanetHashString();  // locale and ssystem.ini names, newline delimiter, for tui
 
-	void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c);
-	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const;
-
-	void setDefaultBodyColor(const std::string& colorName, const Vec3f& c);
-	const Vec3f getDefaultBodyColor(const std::string& colorName) const;
-
-	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
-		BodyColor::setDefault(halo, label, orbit, trail);
-	}
-
 	void toggleHideSatellites(bool val);
 
 	//! Compute the position for every elements of the solar system.
@@ -333,11 +323,6 @@ public:
 
 	//get the state of the planet
 	bool getPlanetHidden(const std::string &name);
-
-	//return the default halo, label, orbit and trail color for default body
-	void iniColor(const std::string& _halo, const std::string& _label, const std::string& _orbit, const std::string& _trail) {
-		BodyColor::setDefault(_halo, _label, _orbit, _trail);
-	}
 
 	//initialise the body tesselation value
 	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
