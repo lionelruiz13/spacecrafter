@@ -1283,23 +1283,6 @@ void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* ti
 	}
 }
 
-float SolarSystem::getPlanetSizeScale(const std::string &name)
-{
-
-	Body * body = searchByEnglishName(name);
-
-	return body == nullptr ? 1.0 : body->getSphereScale();
-}
-
-void SolarSystem::setPlanetSizeScale(const std::string &name, float s)
-{
-	Body * body = searchByEnglishName(name);
-
-	if(body != nullptr){
-		body->setSphereScale(s);
-	}
-}
-
 // is a lunar eclipse close at hand?
 bool SolarSystem::nearLunarEclipse(const Navigator * nav, Projector *prj)
 {

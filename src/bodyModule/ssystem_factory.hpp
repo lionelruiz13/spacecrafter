@@ -32,6 +32,8 @@
 #include "bodyModule/solarsystem_color.hpp"
 #include "tools/ScModule.hpp"
 #include "bodyModule/solarsystem_tex.hpp"
+#include "bodyModule/solarsystem_scale.hpp"
+
 class ThreadContext;
 
 class SSystemFactory: public NoCopy {
@@ -55,7 +57,7 @@ public:
 
     //! Get base planets display limit in pixels
 	float getSizeLimit(void) const {
-		return ssystem->getSizeLimit();
+		return ssystemScale->getSizeLimit();
 	}
 
 	void bodyTraceBodyChange(const std::string &bodyName){
@@ -216,7 +218,7 @@ public:
     }
 
 	void setScale(float scale) {
-        ssystem->setScale(scale);
+        ssystemScale->setScale(scale);
     }
 
 	double getSunAltitude(const Navigator * nav) const {
@@ -228,7 +230,7 @@ public:
     }
 
 	void setPlanetSizeScale(const std::string &name, float s) {
-        ssystem->setPlanetSizeScale(name, s);
+        ssystemScale->setPlanetSizeScale(name, s);
     }
 
 	void planetTesselation(std::string name, int value) {
@@ -330,13 +332,14 @@ public:
     }
 
 	void setSizeLimit(float scale) {
-        ssystem->setSizeLimit(scale);
+        ssystemScale->setSizeLimit(scale);
     }
 
 private:
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
     std::unique_ptr<SolarSystemTex> ssystemTex;
+    std::unique_ptr<SolarSystemScale> ssystemScale;
 };
 
 #endif
