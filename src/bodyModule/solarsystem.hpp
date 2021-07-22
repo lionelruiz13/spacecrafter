@@ -51,8 +51,10 @@
 class ThreadContext;
 
 class OrbitCreator;
+class SSystemIterator;
 
 class SolarSystem: public NoCopy , public ModuleFont{
+    friend class SSystemIterator;
 public:
 	SolarSystem(ThreadContext *_context);
 	virtual ~SolarSystem();
@@ -382,6 +384,11 @@ public:
 
 	// return the Sun azimuth 
 	double getSunAzimuth(const Navigator * nav) const;
+
+	std::map<std::string, BodyContainer *>::iterator begin() {return systemBodies.begin();};
+    std::map<std::string, BodyContainer *>::iterator end() {return systemBodies.end();};	
+
+	std::unique_ptr<SSystemIterator> createIterator();
 
 private:
 	struct depthBucket {

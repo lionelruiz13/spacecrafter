@@ -22,16 +22,11 @@
  *
  */
 
-#include <memory>
+#include "bodyModule/solarsystem_color.hpp"
 
-#include "bodyModule/ssystem_factory.hpp"
+SolarSystemColor::SolarSystemColor(SolarSystem * _ssystem)
+{
+    ssystem = _ssystem;
+}
 
-SSystemFactory::SSystemFactory()
-{
-    ssystem = std::make_unique<SolarSystem>();
-    ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
-}
-    
-SSystemFactory::~SSystemFactory()
-{
-}
+SolarSystemColor::~SolarSystemColor() {};

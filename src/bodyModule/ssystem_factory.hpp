@@ -25,8 +25,11 @@
 #ifndef _SSYSTEMFACTORY_H_
 #define _SSYSTEMFACTORY_H_
 
+#include <memory>
+
 #include "tools/no_copy.hpp"
 #include "bodyModule/solarsystem.hpp"
+#include "bodyModule/solarsystem_color.hpp"
 
 class SSystemFactory: public NoCopy {
 public:
@@ -34,7 +37,7 @@ public:
     ~SSystemFactory();
 
     SolarSystem * getSolarSystem(void) {
-        return ssystem;
+        return ssystem.get();
     }
 
 	//! Set selected planet by english name or "" to select none
@@ -326,7 +329,8 @@ public:
     }
 
 private:
-    SolarSystem* ssystem;				// Manage the solar system
+    std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
+    std::unique_ptr<SolarSystemColor> ssystemColor;
 };
 
 #endif

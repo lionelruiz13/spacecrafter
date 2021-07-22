@@ -22,16 +22,40 @@
  *
  */
 
-#include <memory>
+#ifndef _SSYSTEM_ITERATOR_
+#define _SSYSTEM_ITERATOR_
 
-#include "bodyModule/ssystem_factory.hpp"
+#include <map>
+#include "solarsystem.hpp"
 
-SSystemFactory::SSystemFactory()
-{
-    ssystem = std::make_unique<SolarSystem>();
-    ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
-}
-    
-SSystemFactory::~SSystemFactory()
-{
-}
+class SolarSystem;
+
+class SSystemIterator {
+public:
+    typedef typename std::map<std::string, struct SolarSystem::BodyContainer *>::iterator iter_type;
+
+    SSystemIterator(SolarSystem* p_data);
+
+    void operator ++ (int)
+    {
+        this->next();
+    }
+
+    bool operator== (SSystemIterator right);
+    bool operator!= (SSystemIterator right);
+
+    void begin();
+    void end();
+
+    void next();
+
+    bool isDone();
+
+    iter_type current();
+
+    private:
+    SolarSystem *pointer;
+    iter_type m_it_;
+};
+
+#endif

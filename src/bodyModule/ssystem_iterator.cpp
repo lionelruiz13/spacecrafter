@@ -22,16 +22,28 @@
  *
  */
 
-#include <memory>
+#include "ssystem_iterator.hpp"
 
-#include "bodyModule/ssystem_factory.hpp"
-
-SSystemFactory::SSystemFactory()
-{
-    ssystem = std::make_unique<SolarSystem>();
-    ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
+SSystemIterator::SSystemIterator(SolarSystem* p_data) : pointer(p_data) {
+    m_it_ = pointer->systemBodies.begin();
 }
-    
-SSystemFactory::~SSystemFactory()
-{
+
+void SSystemIterator::begin() {
+    m_it_ = pointer->systemBodies.begin();
+}
+
+void SSystemIterator::end() {
+    m_it_ = pointer->systemBodies.end();
+}
+
+void SSystemIterator::next() {
+    m_it_++;
+}
+
+bool SSystemIterator::isDone() {
+    return (m_it_ == pointer->systemBodies.end());
+}
+
+std::map< std::string, SolarSystem::BodyContainer*>::iterator SSystemIterator::current() {
+    return m_it_;
 }

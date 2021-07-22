@@ -46,6 +46,9 @@
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
 #include "vulkanModule/Context.hpp"
+#include "tools/Renderer.hpp"
+#include "bodyModule/ssystem_iterator.hpp"
+
 
 #define SOLAR_MASS 1.989e30
 #define EARTH_MASS 5.976e24
@@ -1503,4 +1506,9 @@ double SolarSystem::getSunAzimuth(const Navigator * nav) const
 	double alt, az;
 	sun->getAltAz(nav, &alt, &az);
 	return az*180.0/M_PI;
+}
+
+std::unique_ptr<SSystemIterator> SolarSystem::createIterator()
+{
+	return std::make_unique<SSystemIterator>(this);
 }

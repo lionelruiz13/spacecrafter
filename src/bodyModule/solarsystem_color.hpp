@@ -22,16 +22,18 @@
  *
  */
 
-#include <memory>
+#ifndef _SSYSTEMCOLOR_H_
+#define _SSYSTEMCOLOR_H_
 
-#include "bodyModule/ssystem_factory.hpp"
+#include "solarsystem.hpp"
 
-SSystemFactory::SSystemFactory()
-{
-    ssystem = std::make_unique<SolarSystem>();
-    ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
-}
-    
-SSystemFactory::~SSystemFactory()
-{
-}
+class SolarSystemColor {
+public:
+    SolarSystemColor(SolarSystem * _ssystem);
+    ~SolarSystemColor();
+
+private:
+    SolarSystem * ssystem;
+};
+
+#endif
