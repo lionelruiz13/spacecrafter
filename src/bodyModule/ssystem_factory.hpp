@@ -31,7 +31,7 @@
 #include "bodyModule/solarsystem.hpp"
 #include "bodyModule/solarsystem_color.hpp"
 #include "tools/ScModule.hpp"
-
+#include "bodyModule/solarsystem_tex.hpp"
 class ThreadContext;
 
 class SSystemFactory: public NoCopy {
@@ -128,6 +128,7 @@ public:
 
 	void initialSolarSystemBodies() {
         ssystem->initialSolarSystemBodies();
+        ssystemTex->resetTesselationParams();
     }
 
 	void setPlanetHidden(const std::string &name, bool planethidden) {
@@ -167,15 +168,15 @@ public:
     }
 
 	void switchPlanetTexMap(const std::string &name, bool a) {
-        ssystem->switchPlanetTexMap(name, a);
+        ssystemTex->switchPlanetTexMap(name, a);
     }
 
 	bool getSwitchPlanetTexMap(const std::string &name) {
-        return ssystem->getSwitchPlanetTexMap(name);
+        return ssystemTex->getSwitchPlanetTexMap(name);
     }
 
 	void createTexSkin(const std::string &name, const std::string &texName) {
-        ssystem->createTexSkin(name, texName);
+        ssystemTex->createTexSkin(name, texName);
     }
 
 	bool getFlagPlanetsOrbits(void) const {
@@ -231,7 +232,7 @@ public:
     }
 
 	void planetTesselation(std::string name, int value) {
-        ssystem->planetTesselation(name, value);
+        ssystemTex->planetTesselation(name, value);
     }
     
 	const OrbitCreator * getOrbitCreator()const {
@@ -243,7 +244,7 @@ public:
     }
 
 	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
-        ssystem->iniTess(minTes, maxTes, planetTes, moonTes, earthTes);
+        ssystemTex->iniTess(minTes, maxTes, planetTes, moonTes, earthTes);
     }
 
 	void modelRingInit(int low, int medium, int high) {
@@ -251,7 +252,7 @@ public:
     }
 
 	void iniTextures() {
-        ssystem->iniTextures();
+        ssystemTex->iniTextures();
     }
 
 	void load(const std::string& planetfile) {
@@ -263,6 +264,7 @@ public:
     }
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr) {
+        ssystemTex->updateTesselation(delta_time);
         ssystem->update(delta_time, nav, timeMgr);
     }
 
@@ -334,6 +336,7 @@ public:
 private:
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
+    std::unique_ptr<SolarSystemTex> ssystemTex;
 };
 
 #endif
