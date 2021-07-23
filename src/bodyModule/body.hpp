@@ -166,7 +166,7 @@ public:
 
 	// Draw the Planet, if hint_ON is != 0 draw a circle and the name as well
 	// Return the squared distance in pixels between the current and the  previous position this Body was drawn at.
-	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected);
+	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet);
 
 	// Set the orbital elements
 	void set_rotation_elements(float _period, float _offset, double _epoch, float _obliquity, float _ascendingNode, float _precessionRate, double _sidereal_period, float _axial_tilt);

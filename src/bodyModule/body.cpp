@@ -814,7 +814,7 @@ double Body::getAxisAngle() const {
 	return axis->getAngle();
 }
 
-bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected)
+bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet)
 {
 	bool drawn = false;
 

@@ -158,37 +158,6 @@ public:
 		return flagShow;
 	}
 
-	//! set flag for Activate/Deactivate planets trails display
-	void setFlagTrails(bool b);
-
-	//! set flag for Activate/Deactivate planets hints display
-	void setFlagHints(bool b);
-
-	//! Activate/Deactivate planet&&satellites orbits display
-	void setFlagOrbits(bool b) {
-		setFlagPlanetsOrbits(b);
-		setFlagSatellitesOrbits(b);
-	}
-
-	//! Set flag for Activate/Deactivate planets orbits display
-	void setFlagPlanetsOrbits(bool b);
-
-	//! Set flag for Activate/Deactivate planet _name orbit display
-	void setFlagPlanetsOrbits(const std::string &_name, bool b);
-
-	//! Get flag for Activate/Deactivate planets orbits display
-	bool getFlagPlanetsOrbits(void) const {
-		return flagPlanetsOrbits;
-	}
-
-	//! Set flag for Activate/Deactivate satellites orbits display
-	void setFlagSatellitesOrbits(bool b);
-
-	//! getflag for Activate/Deactivate satellites orbits display
-	bool getFlagSatellitesOrbits(void) const {
-		return flagSatellitesOrbits;
-	}
-
 	void setFlagLightTravelTime(bool b) {
 		flag_light_travel_time = b;
 	}
@@ -267,19 +236,6 @@ public:
 	//! Find and return the list of at most maxNbItem objects auto-completing the passed object I18n name
 	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const;
 
-	//! Set selected planet by english name or "" to select none
-	void setSelected(const std::string& englishName) {
-		setSelected(searchByEnglishName(englishName));
-	}
-
-	//! Set selected object from its pointer
-	void setSelected(const Object &obj);
-
-	//! Get selected object's pointer
-	Object getSelected(void) const {
-		return selected;
-	}
-
 	//modify Planet "name" is hidden or not.
 	void setPlanetHidden(const std::string &name, bool planethidden);
 
@@ -349,9 +305,6 @@ private:
 	BigBody* earth=nullptr;	//return the earth
 	Body* bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 
-	//! The currently selected planet
-	Object selected;
-
 	// solar system related settings
 	float object_scale;  // should be kept synchronized with star scale...
 
@@ -374,11 +327,7 @@ private:
 	};
 
 	// Master settings
-	bool flagPlanetsOrbits;
-	bool flagSatellitesOrbits;
 	bool flag_light_travel_time;
-	bool flagHints= false;
-	bool flagTrails= false;
 	bool flagAxis= false;
 	bool flagShow= true;
 	bool flagHideSatellites = false;

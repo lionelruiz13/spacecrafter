@@ -68,8 +68,7 @@ static bool removeFromVector(SolarSystem::BodyContainer * bc, std::vector<SolarS
 
 SolarSystem::SolarSystem(ThreadContext *_context)
 	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.),
-	 flagPlanetsOrbits(false),flagSatellitesOrbits(false),
-	 flag_light_travel_time(false),flagHints(false),flagTrails(false)
+	 flag_light_travel_time(false)
 {
 	bodyTrace = nullptr;
 
@@ -95,8 +94,6 @@ SolarSystem::SolarSystem(ThreadContext *_context)
 
 SolarSystem::~SolarSystem()
 {
-	// release selected:
-	selected = Object();
 
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		if(it->second->body != nullptr){
@@ -546,12 +543,13 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	    Utility::strToDouble(param["axial_tilt"],0.) );
 
 	// Clone current flags to new body unless one is currently selected
-	p->setFlagHints(flagHints);
-	p->setFlagTrail(flagTrails);
-
-	if (!selected || selected == Object(sun)) {
-		p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
-	}
+	// WARNING TODO
+	//p->setFlagHints(flagHints);
+	//p->setFlagTrail(flagTrails);
+//
+	//if (!selected || selected == Object(sun)) {
+	//	p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
+	//}
 
 	BodyContainer  * container = new BodyContainer();
 	container->body = p;
@@ -983,7 +981,7 @@ void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* o
 			depthTest = true;
 			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
 		}
-		(*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, selected == (*it)->body);
+		(*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet);
 		//needClearDepthBuffer = true;
 	}
 	Halo::endDraw();
@@ -1158,122 +1156,12 @@ void SolarSystem::startTrails(bool b)
 	}
 }
 
-void SolarSystem::setFlagTrails(bool b)
-{
-	flagTrails = b;
-
-	if (!b || !selected || selected == Object(sun)) {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			it->second->body->setFlagTrail(b);
-		}
-	} else {
-		// if a Body is selected and trails are on, fade out non-selected ones
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (selected == it->second->body || (it->second->body->get_parent() && it->second->body->get_parent()->getEnglishName() == selected.getEnglishName()) )
-				it->second->body->setFlagTrail(b);
-			else it->second->body->setFlagTrail(false);
-		}
-	}
-}
-
 void SolarSystem::setFlagAxis(bool b)
 {
 	flagAxis=b;
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		it->second->body->setFlagAxis(b);
 	}
-}
-
-void SolarSystem::setFlagHints(bool b)
-{
-	flagHints = b;
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		it->second->body->setFlagHints(b);
-	}
-}
-
-void SolarSystem::setFlagPlanetsOrbits(bool b)
-{
-	flagPlanetsOrbits = b;
-
-	if (!b || !selected || selected == Object(sun)) {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (it->second->body->get_parent() && it->second->body->getParent()->getEnglishName() =="Sun")
-				it->second->body->setFlagOrbit(b);
-		}
-	} else {
-		// if a Body is selected and orbits are on,
-		// fade out non-selected ones
-		// unless they are orbiting the selected Body 20080612 DIGITALIS
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (!it->second->body->isSatellite()) {
-				if ((selected == it->second->body) && (it->second->body->getParent()->getEnglishName() =="Sun")){
-					it->second->body->setFlagOrbit(true);
-				}
-				else {
-					it->second->body->setFlagOrbit(false);
-				}
-			}
-			else {
-				if (selected == it->second->body->getParent()) {
-					it->second->body->setFlagOrbit(true);
-				}
-				else{
-					it->second->body->setFlagOrbit(false);
-				}
-			}
-		}
-	}
-}
-
-void SolarSystem::setFlagPlanetsOrbits(const std::string &_name, bool b)
-{
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		if (it->second->englishName == _name) {
-			it->second->body->setFlagOrbit(b);
-			return;
-		}
-	}
-}
-
-
-void SolarSystem::setFlagSatellitesOrbits(bool b)
-{
-	flagSatellitesOrbits = b;
-
-	if (!b || !selected || selected == Object(sun)) {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (it->second->body->get_parent() && it->second->body->getParent()->getEnglishName() !="Sun"){
-				it->second->body->setFlagOrbit(b);
-			}
-		}
-	}
-	else {
-		// if the mother Body is selected orbits are on, else orbits are off
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (it->second->body->isSatellite()) {
-				if (it->second->body->get_parent()->getEnglishName() == selected.getEnglishName() || it->second->englishName == selected.getEnglishName()) {
-					it->second->body->setFlagOrbit(true);
-				}
-				else{
-					it->second->body->setFlagOrbit(false);
-				}
-			}
-		}
-	}
-}
-
-void SolarSystem::setSelected(const Object &obj)
-{
-	if (obj.getType() == OBJECT_BODY){
-		selected = obj;
-	}
-	else{
-		selected = Object();
-	}
-	// Undraw other objects hints, orbit, trails etc..
-	setFlagOrbits(flagTrails);
-	setFlagTrails(flagTrails);  // TODO should just hide trail display and not affect data collection
 }
 
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
@@ -1349,10 +1237,7 @@ void SolarSystem::bodyTraceBodyChange(const std::string &bodyName)
 bool SolarSystem::getFlag(BODY_FLAG name)
 {
 	switch (name) {
-		case BODY_FLAG::F_TRAIL: return flagTrails; break;
-		case BODY_FLAG::F_HINTS: return flagHints; break;
 		case BODY_FLAG::F_AXIS : return flagAxis; break;
-		case BODY_FLAG::F_ORBIT : return (flagPlanetsOrbits||flagSatellitesOrbits); break;
 		case BODY_FLAG::F_CLOUDS: return Body::getFlagClouds(); break;
 		default: break;
 	}

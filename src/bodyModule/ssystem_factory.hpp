@@ -33,6 +33,7 @@
 #include "tools/ScModule.hpp"
 #include "bodyModule/solarsystem_tex.hpp"
 #include "bodyModule/solarsystem_scale.hpp"
+#include "bodyModule/solarsystem_selected.hpp"
 
 class ThreadContext;
 
@@ -47,12 +48,12 @@ public:
 
 	//! Set selected planet by english name or "" to select none
 	void setSelected(const std::string& englishName) {
-		ssystem->setSelected((englishName));
+		ssystemSelected->setSelected((englishName));
 	}
 
     //! Set selected object from its pointer
 	void setSelected(const Object &obj) {
-        ssystem->setSelected(obj);
+        ssystemSelected->setSelected(obj);
     }
 
     //! Get base planets display limit in pixels
@@ -125,7 +126,10 @@ public:
     }
 
     bool getFlag(BODY_FLAG name) {
-        return ssystem->getFlag(name);
+        if (name == BODY_FLAG::F_AXIS || name == BODY_FLAG::F_CLOUDS)
+            return ssystem->getFlag(name);
+        else
+            return ssystemSelected->getFlag(name);
     }
 
 	void initialSolarSystemBodies() {
@@ -150,7 +154,7 @@ public:
     }
 
 	void setFlagTrails(bool b) {
-        ssystem->setFlagTrails(b);
+        ssystemSelected->setFlagTrails(b);
     }
 
 	void setFlagAxis(bool b) {
@@ -158,15 +162,15 @@ public:
     }
 
 	void setFlagHints(bool b) {
-        ssystem->setFlagHints(b);
+        ssystemSelected->setFlagHints(b);
     }
 
 	void setFlagPlanetsOrbits(bool b) {
-        ssystem->setFlagPlanetsOrbits(b);
+        ssystemSelected->setFlagPlanetsOrbits(b);
     }
 
 	void setFlagPlanetsOrbits(const std::string &_name, bool b) {
-        ssystem->setFlagPlanetsOrbits(_name, b);
+        ssystemSelected->setFlagPlanetsOrbits(_name, b);
     }
 
 	void switchPlanetTexMap(const std::string &name, bool a) {
@@ -182,15 +186,15 @@ public:
     }
 
 	bool getFlagPlanetsOrbits(void) const {
-        return ssystem->getFlagPlanetsOrbits();
+        return ssystemSelected->getFlagPlanetsOrbits();
     }
 
 	void setFlagSatellitesOrbits(bool b) {
-        ssystem->setFlagSatellitesOrbits(b);
+        ssystemSelected->setFlagSatellitesOrbits(b);
     }
 
 	bool getFlagSatellitesOrbits(void) const {
-        return ssystem->getFlagSatellitesOrbits();
+        return ssystemSelected->getFlagSatellitesOrbits();
     }
 
 	void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c) {
@@ -301,7 +305,7 @@ public:
     }
 
 	Object getSelected(void) const {
-        return ssystem->getSelected();
+        return ssystemSelected->getSelected();
     }
 
     std::vector<Object> searchAround(Vec3d v,
@@ -340,6 +344,7 @@ private:
     std::unique_ptr<SolarSystemColor> ssystemColor;
     std::unique_ptr<SolarSystemTex> ssystemTex;
     std::unique_ptr<SolarSystemScale> ssystemScale;
+    std::unique_ptr<SolarSystemSelected> ssystemSelected;
 };
 
 #endif
