@@ -37,7 +37,7 @@ void SolarSystemColor::setBodyColor(const std::string &englishName, const std::s
 {
 	if (englishName=="all") {
         auto it = ssystem->createIterator();
-		for(it->begin(); !it->isDone(); (*it)++){
+		for(it->begin(); !it->end(); (*it)++){
 			it->current()->second->body->setColor(colorName,c);
 		}
     }

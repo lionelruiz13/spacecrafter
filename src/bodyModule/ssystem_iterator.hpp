@@ -45,11 +45,11 @@ public:
     bool operator!= (SSystemIterator right);
 
     void begin();
-    void end();
+    void last();
 
     void next();
 
-    bool isDone();
+    bool end();
 
     iter_type current();
 

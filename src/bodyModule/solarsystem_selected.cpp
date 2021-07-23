@@ -57,12 +57,12 @@ void SolarSystemSelected::setFlagTrails(bool b)
 	flagTrails = b;
 
 	if (!b || !selected || selected == Object(ssystem->getSun())) {
-		for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			it->current()->second->body->setFlagTrail(b);
 		}
 	} else {
 		// if a Body is selected and trails are on, fade out non-selected ones
-		for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			if (selected == it->current()->second->body || (it->current()->second->body->get_parent() && it->current()->second->body->get_parent()->getEnglishName() == selected.getEnglishName()) )
 				it->current()->second->body->setFlagTrail(b);
 			else it->current()->second->body->setFlagTrail(false);
@@ -73,14 +73,14 @@ void SolarSystemSelected::setFlagTrails(bool b)
 void SolarSystemSelected::setFlagHints(bool b)
 {
 	flagHints = b;
-	for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+	for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 		it->current()->second->body->setFlagHints(b);
 	}
 }
 
 void SolarSystemSelected::setFlagPlanetsOrbits(const std::string &_name, bool b)
 {
-	for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+	for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 		if (it->current()->second->englishName == _name) {
 			it->current()->second->body->setFlagOrbit(b);
 			return;
@@ -93,7 +93,7 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 	flagPlanetsOrbits = b;
 
 	if (!b || !selected || selected == Object(ssystem->getSun())) {
-		for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() =="Sun")
 				it->current()->second->body->setFlagOrbit(b);
 		}
@@ -101,7 +101,7 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 		// if a Body is selected and orbits are on,
 		// fade out non-selected ones
 		// unless they are orbiting the selected Body 20080612 DIGITALIS
-		for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			if (!it->current()->second->body->isSatellite()) {
 				if ((selected == it->current()->second->body) && (it->current()->second->body->getParent()->getEnglishName() =="Sun")){
 					it->current()->second->body->setFlagOrbit(true);
@@ -127,7 +127,7 @@ void SolarSystemSelected::setFlagSatellitesOrbits(bool b)
 	flagSatellitesOrbits = b;
 
 	if (!b || !selected || selected == Object(ssystem->getSun())) {
-		for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() !="Sun"){
 				it->current()->second->body->setFlagOrbit(b);
 			}
@@ -135,7 +135,7 @@ void SolarSystemSelected::setFlagSatellitesOrbits(bool b)
 	}
 	else {
 		// if the mother Body is selected orbits are on, else orbits are off
-		for(auto it = ssystem->createIterator(); !it->isDone(); (*it)++){
+		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			if (it->current()->second->body->isSatellite()) {
 				if (it->current()->second->body->get_parent()->getEnglishName() == selected.getEnglishName() || it->current()->second->englishName == selected.getEnglishName()) {
 					it->current()->second->body->setFlagOrbit(true);
