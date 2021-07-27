@@ -66,22 +66,13 @@ static bool removeFromVector(SolarSystem::BodyContainer * bc, std::vector<SolarS
 	return false;
 }
 
-SolarSystem::SolarSystem(ThreadContext *_context)
+SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
 	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.),
-	 flag_light_travel_time(false)
+	 flag_light_travel_time(false), objLMgr(_objLMgr)
 {
 	bodyTrace = nullptr;
 
-	objLMgr = new ObjLMgr(context);
-	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
-	objLMgr->insertDefault("Sphere");
-
-	if (!objLMgr->checkDefaultObject()) {
-		cLog::get()->write("SolarSystem: no default objMgr loaded, system aborded", LOG_TYPE::L_ERROR);
-		exit(-7);
-	}
-
-	Body::createShader(context); //TEMP
+	Body::createShader(context);
 	BodyShader::createShader(context);
 	Body::createDefaultAtmosphereParams();
 
@@ -112,7 +103,6 @@ SolarSystem::~SolarSystem()
 	earth = nullptr;
 
 	// if (font) delete font;
-	if (objLMgr) delete objLMgr;
 }
 
 void SolarSystem::setFont(float font_size, const std::string& font_name)
