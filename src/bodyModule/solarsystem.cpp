@@ -235,7 +235,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	//
 	// determination de l'orbite de l'astre
 	//
-	Orbit* orb = nullptr;
+	std::shared_ptr<Orbit> orb = nullptr;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
 
 	// default value of -1 means unused
@@ -247,15 +247,13 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 		//cout << "Creating Earth orbit...\n" << endl;
 		cLog::get()->write("Creating Earth orbit...", LOG_TYPE::L_INFO);
 		SpecialOrbit *sorb = new SpecialOrbit("emb_special");
-
 		if (!sorb->isValid()) {
 			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
 			cLog::get()->write(error, LOG_TYPE::L_ERROR);
 			return;
 		}
-
 		// NB. moon has to be added later
-		orb = new BinaryOrbit(sorb, 0.0121505677733761);
+		orb = std::make_shared<BinaryOrbit>(sorb, 0.0121505677733761);
 
 	} else if(funcname == "lunar_custom") {
 		// This allows chaotic Moon ephemeris to be removed once start leaving acurate and sane range
@@ -268,7 +266,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			return ;
 		}
 
-		orb = new MixedOrbit(sorb,
+		orb = std::make_shared<MixedOrbit>(sorb,
 		                     Utility::strToDouble(param["orbit_period"]),
 		                     SpaceDate::JulianDayFromDateTime(-10000, 1, 1, 1, 1, 1),
 		                     SpaceDate::JulianDayFromDateTime(10000, 1, 1, 1, 1, 1),
@@ -277,12 +275,12 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 		                     false);
 
 	} else if (funcname == "still_orbit") {
-		orb = new stillOrbit(Utility::strToDouble(param["orbit_x"]),
+		orb = std::make_shared<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
 	} else {
 
-		orb = orbitCreator->handle(param);
+		orb = std::move(orbitCreator->handle(param));
 
 		if(orb == nullptr) {
 			std::cout << "something went wrong when creating orbit from "<< englishName << std::endl;
@@ -374,7 +372,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                  bodyColor,
 			                  solLocalDay,
 			                  Utility::strToDouble(param["albedo"]),
-			                  orb,
+							  orb,
 			                  close_orbit,
 			                  param["model_name"],
 			                  deletable,
@@ -408,9 +406,10 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 					BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
 					if(earthOrbit) {
 						cLog::get()->write("Adding Moon to Earth binary orbit.", LOG_TYPE::L_INFO);
-						earthOrbit->setSecondaryOrbit(orb);
+						earthOrbit->setSecondaryOrbit(orb.get());
 					} else
 						cLog::get()->write(englishName + " body could not be added to Earth orbit.", LOG_TYPE::L_WARNING);
+
 				} else
 					cLog::get()->write(englishName + " body could not be added to Earth orbit calculation, position may be inacurate", LOG_TYPE::L_WARNING);
 			}

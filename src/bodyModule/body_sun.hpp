@@ -42,7 +42,7 @@ public:
 	    BodyColor * myColor,
 	    float _sol_local_day,
 	    float albedo,
-	    Orbit *orbit,
+	    std::shared_ptr<Orbit> orbit,
 	    bool close_orbit,
 	    ObjL* _currentObj,
 	    double orbit_bounding_radius,
