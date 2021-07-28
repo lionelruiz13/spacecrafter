@@ -73,7 +73,7 @@ Body::Body(Body *parent,
            bool _flagHalo,
            double _radius,
            double oblateness,
-           BodyColor* _myColor,
+           std::shared_ptr<BodyColor> _myColor,
            float _sol_local_day,
            float _albedo,
            std::shared_ptr<Orbit> _orbit,
@@ -91,8 +91,7 @@ Body::Body(Body *parent,
 	boundingRadius(-1), sun_half_angle(0.0)
 {
 	radius = _radius;
-
-	myColor = _myColor;
+	myColor = std::move(_myColor);
 	orbit_position = v3fNull;
 	sol_local_day = _sol_local_day;
 	typePlanet = _typePlanet;
@@ -166,8 +165,8 @@ Body::~Body()
 	axis = nullptr;
 	if (halo) delete halo;
 	halo = nullptr;
-	if (myColor) delete myColor;
-	myColor = nullptr;
+//	if (myColor) delete myColor;
+//	myColor = nullptr;
 }
 
 void Body::switchMapSkin(bool a) {

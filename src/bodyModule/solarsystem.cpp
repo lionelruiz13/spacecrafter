@@ -296,8 +296,8 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	// fin détermination de l'orbite
 	//
 
-	BodyColor* bodyColor = nullptr;
-	bodyColor = new BodyColor(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
+	std::shared_ptr<BodyColor> bodyColor = nullptr;
+	bodyColor = std::make_shared<BodyColor>(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
 
 	float solLocalDay= Utility::strToDouble(param["sol_local_day"],1.0);
 
