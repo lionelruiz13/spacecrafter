@@ -59,7 +59,7 @@ Sun::Sun(Body *parent,
          bool close_orbit,
          ObjL* _currentObj,
          double orbit_bounding_radius,
-		 BodyTexture* _bodyTexture,
+		 std::shared_ptr<BodyTexture> _bodyTexture,
          ThreadContext *context):
 	Body(parent,
 	     englishName,

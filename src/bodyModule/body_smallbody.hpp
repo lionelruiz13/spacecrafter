@@ -45,8 +45,8 @@ public:
 	          bool close_orbit,
 	          ObjL* _currentObj,
 	          double orbit_bounding_radius,
-			  BodyTexture* _bodyTexture,
-		  	  ThreadContext *context);
+			  std::shared_ptr<BodyTexture> _bodyTexture,
+			  ThreadContext *context);
 
 	virtual ~SmallBody();
 

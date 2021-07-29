@@ -313,7 +313,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 
 	std::string modelName = param["model_name"];
 
-	BodyTexture* bodyTexture = new BodyTexture();
+	std::shared_ptr<BodyTexture> bodyTexture = std::make_shared<BodyTexture>();
 	bodyTexture->tex_map = param["tex_map"];
 	bodyTexture->tex_norm = param["tex_normal"];
 	bodyTexture->tex_heightmap = param["tex_heightmap"];
@@ -345,10 +345,8 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                close_orbit,
 			                currentOBJ,
 			                orbit_bounding_radius,
-							bodyTexture,
-							context
-			               );
-			delete bodyTexture;
+			  				std::move(bodyTexture),
+							context);
 			//update of sun's big_halo texture
 			std::string bighalotexfile = param["tex_big_halo"];
 			if (!bighalotexfile.empty()) {
@@ -380,7 +378,6 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 							  bodyTexture,
 						  	  context);
 			p=p_artificial;
-			delete bodyTexture;
 			}
 			break;
 
@@ -414,7 +411,6 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 					cLog::get()->write(englishName + " body could not be added to Earth orbit calculation, position may be inacurate", LOG_TYPE::L_WARNING);
 			}
 			p=p_moon;
-			delete bodyTexture;
 		}
 		break;
 
@@ -433,7 +429,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                    close_orbit,
 			                    currentOBJ,
 			                    orbit_bounding_radius,
-								bodyTexture,
+								std::move(bodyTexture),
 								context
 								);
 			if (Utility::strToBool(param["rings"], 0)) {
@@ -449,7 +445,6 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			}
 
 			p = p_big;
-			delete bodyTexture;
 		}
 		break;
 
@@ -469,11 +464,10 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                        close_orbit,
 			                        currentOBJ,
 			                        orbit_bounding_radius,
-									bodyTexture,
+									std::move(bodyTexture),
 									context
 			                       );
 			p = p_small;
-			delete bodyTexture;
 		}
 		break;
 

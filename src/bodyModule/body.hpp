@@ -107,8 +107,8 @@ public:
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-	     const BodyTexture* _bodyTexture,
-	 	 ThreadContext *_context);
+	     const std::shared_ptr<BodyTexture> _bodyTexture;
+		 ThreadContext *context);
 	virtual ~Body();
 
 	double getRadius(void) const {

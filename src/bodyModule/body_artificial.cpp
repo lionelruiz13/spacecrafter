@@ -48,7 +48,7 @@ Artificial::Artificial(Body *parent,
                        const std::string& model_name,
                        bool _deleteable,
                        double orbit_bounding_radius,
-					   BodyTexture* _bodyTexture,
+					   std::shared_ptr<BodyTexture> _bodyTexture,
                        ThreadContext *context
                       ):
 	Body(parent,
