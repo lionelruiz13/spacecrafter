@@ -235,7 +235,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	//
 	// determination de l'orbite de l'astre
 	//
-	std::shared_ptr<Orbit> orb = nullptr;
+	std::unique_ptr<Orbit> orb = nullptr;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
 
 	// default value of -1 means unused
@@ -253,7 +253,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			return;
 		}
 		// NB. moon has to be added later
-		orb = std::make_shared<BinaryOrbit>(sorb, 0.0121505677733761);
+		orb = std::make_unique<BinaryOrbit>(sorb, 0.0121505677733761);
 
 	} else if(funcname == "lunar_custom") {
 		// This allows chaotic Moon ephemeris to be removed once start leaving acurate and sane range
@@ -266,7 +266,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			return ;
 		}
 
-		orb = std::make_shared<MixedOrbit>(sorb,
+		orb = std::make_unique<MixedOrbit>(sorb,
 		                     Utility::strToDouble(param["orbit_period"]),
 		                     SpaceDate::JulianDayFromDateTime(-10000, 1, 1, 1, 1, 1),
 		                     SpaceDate::JulianDayFromDateTime(10000, 1, 1, 1, 1, 1),
@@ -275,7 +275,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 		                     false);
 
 	} else if (funcname == "still_orbit") {
-		orb = std::make_shared<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
+		orb = std::make_unique<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
 	} else {
@@ -341,11 +341,11 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                bodyColor,
 			                solLocalDay,
 			                Utility::strToDouble(param["albedo"]),
-			                orb,
+			                std::move(orb),
 			                close_orbit,
 			                currentOBJ,
 			                orbit_bounding_radius,
-			  				std::move(bodyTexture),
+			  				bodyTexture,
 							context);
 			//update of sun's big_halo texture
 			std::string bighalotexfile = param["tex_big_halo"];
@@ -370,7 +370,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                  bodyColor,
 			                  solLocalDay,
 			                  Utility::strToDouble(param["albedo"]),
-							  orb,
+							  std::move(orb),
 			                  close_orbit,
 			                  param["model_name"],
 			                  deletable,
@@ -390,7 +390,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                  bodyColor,
 			                  solLocalDay,
 			                  Utility::strToDouble(param["albedo"]),
-			                  orb,
+			                  std::move(orb),
 			                  close_orbit,
 			                  currentOBJ,
 			                  orbit_bounding_radius,
@@ -425,11 +425,11 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                    bodyColor,
 			                    solLocalDay,
 			                    Utility::strToDouble(param["albedo"]),
-			                    orb,
+			                    std::move(orb),
 			                    close_orbit,
 			                    currentOBJ,
 			                    orbit_bounding_radius,
-								std::move(bodyTexture),
+								bodyTexture,
 								context
 								);
 			if (Utility::strToBool(param["rings"], 0)) {
@@ -460,11 +460,11 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                        bodyColor,
 			                        solLocalDay,
 			                        Utility::strToDouble(param["albedo"]),
-			                        orb,
+			                        std::move(orb),
 			                        close_orbit,
 			                        currentOBJ,
 			                        orbit_bounding_radius,
-									std::move(bodyTexture),
+									bodyTexture,
 									context
 			                       );
 			p = p_small;

@@ -28,7 +28,7 @@ OrbitCreatorEliptic::OrbitCreatorEliptic(const OrbitCreator * _next, const Solar
 	ssystem = _ssystem;
 }
 
-std::shared_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
+std::unique_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
 {
 
 	if(params["coord_func"] != "ell_orbit") {
@@ -87,7 +87,7 @@ std::shared_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
 	double pericenter_distance = semi_major_axis * (1.0 - eccentricity);
 
 	// Create an elliptical orbit
-	return std::make_shared<EllipticalOrbit>(
+	return std::make_unique<EllipticalOrbit>(
 	           pericenter_distance, eccentricity,
 	           inclination, ascending_node,
 	           arg_of_pericenter, anomaly_at_epoch,
@@ -103,7 +103,7 @@ OrbitCreatorComet::OrbitCreatorComet(const OrbitCreator * _next, const SolarSyst
 	ssystem = _ssystem;
 }
 
-std::shared_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
+std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 {
 
 	if(params["coord_func"] != "comet_orbit") {
@@ -218,7 +218,7 @@ std::shared_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 	const double ascending_node = Utility::strToDouble(params["orbit_ascendingnode"])*(M_PI/180.0);
 	const double arg_of_pericenter = Utility::strToDouble(params["orbit_argofpericenter"])*(M_PI/180.0);
 
-	return std::make_shared<CometOrbit>(
+	return std::make_unique<CometOrbit>(
 	           pericenter_distance, eccentricity,
 	           inclination, ascending_node,
 	           arg_of_pericenter, time_at_pericenter,
@@ -230,10 +230,10 @@ std::shared_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 OrbitCreatorSpecial::OrbitCreatorSpecial(const OrbitCreator * next) :
 	OrbitCreator(next) { }
 
-std::shared_ptr<Orbit> OrbitCreatorSpecial::handle(stringHash_t params) const
+std::unique_ptr<Orbit> OrbitCreatorSpecial::handle(stringHash_t params) const
 {
 
-	std::shared_ptr<SpecialOrbit> sorb = std::make_shared<SpecialOrbit>(params["coord_func"]);
+	std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>(params["coord_func"]);
 
 	if(!sorb->isValid()) {
 		if(next != nullptr)
@@ -253,7 +253,7 @@ OrbitCreatorBary::OrbitCreatorBary(const OrbitCreator * _next, SolarSystem * _ss
 	ssystem = _ssystem;
 }
 
-std::shared_ptr<Orbit> OrbitCreatorBary::handle(stringHash_t params) const
+std::unique_ptr<Orbit> OrbitCreatorBary::handle(stringHash_t params) const
 {
 
 	if(params["coord_func"] != "barycenter") {
@@ -283,5 +283,5 @@ std::shared_ptr<Orbit> OrbitCreatorBary::handle(stringHash_t params) const
 		return nullptr;
 	}
 
-	return std::make_shared<BarycenterOrbit>(bodyA, bodyB, stod(params["a"]), stod(params["b"]));
+	return std::make_unique<BarycenterOrbit>(bodyA, bodyB, stod(params["a"]), stod(params["b"]));
 }

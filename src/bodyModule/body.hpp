@@ -103,7 +103,7 @@ public:
 	     std::shared_ptr<BodyColor> _myColor,
 	     float _sol_local_day,
 	     float _albedo,
-	     std::shared_ptr<Orbit> _orbit,
+	     std::unique_ptr<Orbit> _orbit,
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
@@ -493,7 +493,7 @@ protected:
 	double lastJD;
 	double deltaJD;
 
-	std::shared_ptr<Orbit> orbit=nullptr;            // orbit object for this body
+	std::unique_ptr<Orbit> orbit=nullptr;            // orbit object for this body
 	Vec3f orbit_position;    // position de la planete
 
 	Body *parent;				// Body parent i.e. sun for earth
