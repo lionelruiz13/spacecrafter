@@ -27,6 +27,7 @@
 
 
 #include "tools/file_path.hpp"
+#include "bodyModule/body_color.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/orbit_3d.hpp"
@@ -49,7 +50,7 @@ Moon::Moon(Body *parent,
            bool flagHalo,
            double radius,
            double oblateness,
-           std::shared_ptr<BodyColor> _myColor,
+           std::unique_ptr<BodyColor> _myColor,
            float _sol_local_day,
            float albedo,
            std::unique_ptr<Orbit> orbit,
@@ -64,7 +65,7 @@ Moon::Moon(Body *parent,
 	     flagHalo,
 	     radius,
 	     oblateness,
-	     _myColor,
+	     std::move(_myColor),
 	     _sol_local_day,
 	     albedo,
 	     std::move(orbit),

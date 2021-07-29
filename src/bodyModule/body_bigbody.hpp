@@ -40,7 +40,7 @@ public:
 	        bool flagHalo,
 	        double radius,
 	        double oblateness,
-	        std::shared_ptr<BodyColor> myColor,
+	        std::unique_ptr<BodyColor> myColor,
 	        float _sol_local_day,
 	        float albedo,
 	        std::unique_ptr<Orbit> orbit,
