@@ -76,7 +76,7 @@ BigBody::BigBody(Body *parent,
 		 _bodyTexture,
 		 context
         ),
-	rings(NULL), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
+	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
 {
 	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
 		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
@@ -103,8 +103,8 @@ BigBody::BigBody(Body *parent,
 
 BigBody::~BigBody()
 {
-	if (rings) delete rings;
-	rings = nullptr;
+	//if (rings) delete rings;
+	//rings = nullptr;
 
 	if (tex_night) delete tex_night;
 	tex_night = nullptr;
@@ -121,8 +121,8 @@ BigBody::~BigBody()
 	orbitPlot = nullptr;
 }
 
-void BigBody::setRings(Ring* r) {
-	rings = r;
+void BigBody::setRings(std::unique_ptr<Ring> r) {
+	rings = std::move(r);
     if (myShader != SHADER_RINGED) {
         if (commandIndex == -1) {
             cLog::get()->write("Failed to enable rings.", LOG_TYPE::L_ERROR);

@@ -428,8 +428,8 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			if (Utility::strToBool(param["rings"], 0)) {
 				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
 				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
-				Ring *r = new Ring(r_min,r_max,param["tex_ring"],ringsInit,context);
-				p_big->setRings(r);
+				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit,context);
+				p_big->setRings(std::move(r));
 				p_big->updateBoundingRadii();
 			}
 
