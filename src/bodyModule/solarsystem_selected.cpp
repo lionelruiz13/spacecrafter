@@ -63,7 +63,7 @@ void SolarSystemSelected::setFlagTrails(bool b)
 	} else {
 		// if a Body is selected and trails are on, fade out non-selected ones
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			if (selected == it->current()->second->body || (it->current()->second->body->get_parent() && it->current()->second->body->get_parent()->getEnglishName() == selected.getEnglishName()) )
+			if (selected == it->current()->second->body.get() || (it->current()->second->body->get_parent() && it->current()->second->body->get_parent()->getEnglishName() == selected.getEnglishName()) )
 				it->current()->second->body->setFlagTrail(b);
 			else it->current()->second->body->setFlagTrail(false);
 		}
@@ -103,7 +103,7 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 		// unless they are orbiting the selected Body 20080612 DIGITALIS
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			if (!it->current()->second->body->isSatellite()) {
-				if ((selected == it->current()->second->body) && (it->current()->second->body->getParent()->getEnglishName() =="Sun")){
+				if ((selected == it->current()->second->body.get()) && (it->current()->second->body->getParent()->getEnglishName() =="Sun")){
 					it->current()->second->body->setFlagOrbit(true);
 				}
 				else {

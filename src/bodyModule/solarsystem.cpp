@@ -155,7 +155,7 @@ Body* SolarSystem::findBody(const std::string &name)
 {
 
 	if(systemBodies.count(name) != 0){
-		return systemBodies[name]->body;
+		return systemBodies[name]->body.get();
 	}
 	else{
 		return nullptr;
@@ -296,12 +296,12 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 
 	// Create the Body and add it to the list
 	// p est un pointeur utilisé pour l'objet qui sera au final intégré dans la liste des astres que gère body_mgr
-	Body* p = nullptr;
-	Sun *p_sun =nullptr;
-	Moon *p_moon =nullptr;
-	BigBody *p_big =nullptr;
-	SmallBody *p_small =nullptr;
-	Artificial *p_artificial = nullptr;
+	std::unique_ptr<Body> p = nullptr;
+	//std::shared_ptr<Sun> p_sun =nullptr;
+	//Moon *p_moon =nullptr;
+	//BigBody *p_big =nullptr;
+	//SmallBody *p_small =nullptr;
+	//std::unique_ptr<Artificial> p_artificial = nullptr;
 	ObjL* currentOBJ = nullptr;
 
 	std::string modelName = param["model_name"];
@@ -326,7 +326,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 
 	switch (typePlanet) {
 		case SUN : {
-			p_sun = new Sun(parent,
+			std::unique_ptr<Sun> p_sun = std::make_unique<Sun>(parent,
 			                englishName,
 			                Utility::strToBool(param["halo"]),
 			                Utility::strToDouble(param["radius"])/AU,
@@ -348,15 +348,15 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			}
 
 			if (englishName == "Sun") {
-				sun = p_sun;
-				bodyTrace = p_sun;
+				sun = p_sun.get();
+				bodyTrace = p_sun.get();
 			}
-			p = p_sun;
+			p = std::move(p_sun);
 		}
 		break;
 
 		case ARTIFICIAL: {
-			p_artificial = new Artificial(parent,
+			std::unique_ptr<Artificial> p_artificial = std::make_unique<Artificial>(parent,
 							  englishName,
 							  Utility::strToBool(param["halo"]),
 							  Utility::strToDouble(param["radius"])/AU,
@@ -370,12 +370,12 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                  orbit_bounding_radius,
 							  bodyTexture,
 						  	  context);
-			p=p_artificial;
+			p=std::move(p_artificial);
 			}
 			break;
 
 		case MOON: {
-			p_moon = new Moon(parent,
+			std::unique_ptr<Moon> p_moon = std::make_unique<Moon>(parent,
 			                  englishName,
 			                  Utility::strToBool(param["halo"]),
 			                  Utility::strToDouble(param["radius"])/AU,
@@ -391,7 +391,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 							  context
 			                 );
 			if (englishName == "Moon") {
-				moon = p_moon;
+				moon = p_moon.get();
 				if(earth) {
 					BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
 					if(earthOrbit) {
@@ -403,13 +403,13 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 				} else
 					cLog::get()->write(englishName + " body could not be added to Earth orbit calculation, position may be inacurate", LOG_TYPE::L_WARNING);
 			}
-			p=p_moon;
+			p=std::move(p_moon);
 		}
 		break;
 
 		case DWARF:
 		case PLANET: {
-			p_big = new BigBody(parent,
+			std::unique_ptr<BigBody> p_big = std::make_unique<BigBody>(parent,
 			                    englishName,
 			                    typePlanet,
 			                    Utility::strToBool(param["halo"]),
@@ -434,17 +434,17 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			}
 
 			if(englishName=="Earth") {
-				earth = p_big;
+				earth = p_big.get();
 			}
 
-			p = p_big;
+			p = std::move(p_big);
 		}
 		break;
 
 		case ASTEROID:
 		case KBO:
 		case COMET: {
-			p_small = new SmallBody(parent,
+			std::unique_ptr<SmallBody> p_small = std::make_unique<SmallBody>(parent,
 			                        englishName,
 			                        typePlanet,
 			                        Utility::strToBool(param["halo"]),
@@ -460,7 +460,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 									bodyTexture,
 									context
 			                       );
-			p = p_small;
+			p = std::move(p_small);
 		}
 		break;
 
@@ -527,8 +527,11 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	//	p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
 	//}
 
+	anchorManager->addAnchor(englishName, p.get());
+	p->updateBoundingRadii();
+
 	std::shared_ptr<BodyContainer> container = std::make_shared<BodyContainer>();
-	container->body = p;
+	container->body = std::move(p);
 	container->englishName = englishName;
 	container->isDeleteable = deletable;
 	container->isHidden = Utility::strToBool(param["hidden"], 0);
@@ -540,9 +543,6 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 		// std::cout << "renderedBodies from addBody " << englishName << std::endl;
 		renderedBodies.push_back(container);
 	}
-	anchorManager->addAnchor(englishName, p);
-
-	p->updateBoundingRadii();
 }
 
 bool SolarSystem::removeBodyNoSatellite(const std::string &name)
@@ -559,10 +559,10 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 
 	//check if the body was a satellite
 	if(bc->body->getParent() != nullptr){
-		bc->body->getParent()->removeSatellite(bc->body);
+		bc->body->getParent()->removeSatellite(bc->body.get());
 	}
 	// fix crash when delete body used from body_trace
-	if (bc->body == bodyTrace )
+	if (bc->body.get() == bodyTrace )
 		bodyTrace = sun;
 
 	//remove from containers :
@@ -572,8 +572,8 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 		removeFromVector(bc, renderedBodies);
 	}
 
-	anchorManager->removeAnchor(bc->body);
-	delete bc->body;
+	anchorManager->removeAnchor(bc->body.get());
+	//delete bc->body;
 
 	// std::cout << "removeBodyNoSatellite " << name << " is oki" << std::endl;
 
@@ -709,7 +709,7 @@ void SolarSystem::setPlanetHidden(const std::string &name, bool planethidden)
 {
 
 	for(auto it = systemBodies.begin(); it != systemBodies.end();it++){
-		Body * body = it->second->body;
+		Body * body = it->second->body.get();
 		if (
 			body->getEnglishName() == name ||
 			(body->get_parent() && body->get_parent()->getEnglishName() == name) ){
@@ -971,7 +971,7 @@ Body* SolarSystem::searchByEnglishName(const std::string &planetEnglishName) con
 	// side effect - bad?
 	//	transform(planetEnglishName.begin(), planetEnglishName.end(), planetEnglishName.begin(), ::tolower);
 	if(systemBodies.count(planetEnglishName) != 0){
-		return systemBodies.find(planetEnglishName)->second->body;
+		return systemBodies.find(planetEnglishName)->second->body.get();
 	}
 	else{
 		return nullptr;
@@ -985,7 +985,7 @@ Object SolarSystem::searchByNamesI18(const std::string &planetNameI18) const
 	//	transform(planetNameI18.begin(), planetNameI18.end(), planetNameI18.begin(), ::tolower);
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		if ( it->second->body->getNameI18n() == planetNameI18 )
-			return it->second->body; // also check standard ini file names
+			return it->second->body.get(); // also check standard ini file names
 	}
 	return nullptr;
 }
@@ -1003,7 +1003,7 @@ Object SolarSystem::search(Vec3d pos, const Navigator * nav, const Projector * p
 		equPos.normalize();
 		double cos_ang_dist = equPos[0]*pos[0] + equPos[1]*pos[1] + equPos[2]*pos[2];
 		if (cos_ang_dist>cos_angle_closest) {
-			closest = it->second->body;
+			closest = it->second->body.get();
 			cos_angle_closest = cos_ang_dist;
 		}
 	}
@@ -1040,7 +1040,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 		equPos.normalize();
 
 		// First see if within a Body disk
-		if (it->second->body != home_Body || aboveHomeBody) {
+		if (it->second->body.get() != home_Body || aboveHomeBody) {
 			// Don't want home Body too easy to select unless can see it
 
 			double angle = acos(v*equPos) * 180.f / M_PI;
@@ -1051,7 +1051,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 			if ( angle < it->second->body->get_angular_size(prj, nav)/2.f ) {
 
 				// If near planet, may be huge but hard to select, so check size
-				result.push_back(it->second->body);
+				result.push_back(it->second->body.get());
 				*default_last_item = true;
 
 				break;  // do not want any planets behind this one!
@@ -1060,7 +1060,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 		}
 		// See if within area of interest
 		if (equPos[0]*v[0] + equPos[1]*v[1] + equPos[2]*v[2]>=cos_lim_fov) {
-			result.push_back(it->second->body);
+			result.push_back(it->second->body.get());
 		}
 
 	}
