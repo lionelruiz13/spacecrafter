@@ -239,19 +239,19 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 
 		//cout << "Creating Earth orbit...\n" << endl;
 		cLog::get()->write("Creating Earth orbit...", LOG_TYPE::L_INFO);
-		SpecialOrbit *sorb = new SpecialOrbit("emb_special");
+		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("emb_special");
 		if (!sorb->isValid()) {
 			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
 			cLog::get()->write(error, LOG_TYPE::L_ERROR);
 			return;
 		}
 		// NB. moon has to be added later
-		orb = std::make_unique<BinaryOrbit>(sorb, 0.0121505677733761);
+		orb = std::make_unique<BinaryOrbit>(std::move(sorb), 0.0121505677733761);
 
 	} else if(funcname == "lunar_custom") {
 		// This allows chaotic Moon ephemeris to be removed once start leaving acurate and sane range
 
-		SpecialOrbit *sorb = new SpecialOrbit("lunar_special");
+		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("lunar_special");
 
 		if (!sorb->isValid()) {
 			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
@@ -259,7 +259,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			return ;
 		}
 
-		orb = std::make_unique<MixedOrbit>(sorb,
+		orb = std::make_unique<MixedOrbit>(std::move(sorb),
 		                     Utility::strToDouble(param["orbit_period"]),
 		                     SpaceDate::JulianDayFromDateTime(-10000, 1, 1, 1, 1, 1),
 		                     SpaceDate::JulianDayFromDateTime(10000, 1, 1, 1, 1, 1),
