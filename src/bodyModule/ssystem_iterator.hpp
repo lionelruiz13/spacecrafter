@@ -58,4 +58,32 @@ public:
     iter_type m_it_;
 };
 
+class SSystemIteratorVector {
+public:
+    typedef typename std::vector<std::shared_ptr<SolarSystem::BodyContainer>>::iterator iter_type;
+
+    SSystemIteratorVector(SolarSystem* p_data);
+
+    void operator ++ (int)
+    {
+        this->next();
+    }
+
+    bool operator== (SSystemIterator right);
+    bool operator!= (SSystemIterator right);
+
+    void begin();
+    void last();
+
+    void next();
+
+    bool end();
+
+    SolarSystem::BodyContainer* current();
+
+    private:
+    SolarSystem *pointer;
+    iter_type m_it_;
+};
+
 #endif

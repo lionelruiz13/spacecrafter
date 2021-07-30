@@ -52,19 +52,16 @@ class ThreadContext;
 
 class OrbitCreator;
 class SSystemIterator;
+class SSystemIteratorVector;
 
 class SolarSystem: public NoCopy , public ModuleFont{
     friend class SSystemIterator;
+	friend class SSystemIteratorVector;
 public:
 	SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
 	virtual ~SolarSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
-
-	//! Draw all the elements of the solar system
-	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,
-	          const ToneReproductor* eye,
-	          bool drawHomePlanet );
 
 	//! Load the bodies data from a file
 	void load(const std::string& planetfile);
@@ -93,14 +90,6 @@ public:
 	std::string getPlanetHashString();  // locale and ssystem.ini names, newline delimiter, for tui
 
 	void toggleHideSatellites(bool val);
-
-	//! Compute the position for every elements of the solar system.
-	//! home_planet is needed for light travel time computation
-	void computePositions(double date,const Observer *obs);
-
-	//! Compute the transformation matrix for every elements of the solar system.
-	//! home_planet is needed for light travel time computation
-	void computeTransMatrices(double date,const Observer * obs);
 
 	//! Search if any Planet is close to position given in earth equatorial position.
 	Object search(Vec3d, const Navigator * nav, const Projector * prj) const;
@@ -147,24 +136,6 @@ public:
 
 	//! set flag for Activate/Deactivate planets axis
 	void setFlagAxis(bool b);
-
-	//! set flag for Activate/Deactivate planets display
-	void setFlagPlanets(bool b) {
-		flagShow = b;
-	}
-
-	//! get flag for Activate/Deactivate planets display
-	bool getFlagShow(void) const {
-		return flagShow;
-	}
-
-	void setFlagLightTravelTime(bool b) {
-		flag_light_travel_time = b;
-	}
-
-	bool getFlagLightTravelTime(void) const {
-		return flag_light_travel_time;
-	}
 
 	//! Start/stop accumulating new trail data (clear old data)
 	void startTrails(bool b);
@@ -270,25 +241,19 @@ public:
 		bool initialHidden = false;
 	};
 
-	void computePreDraw(const Projector * prj, const Navigator * nav);
-
 	// return the Sun altitude
 	double getSunAltitude(const Navigator * nav) const;
 
 	// return the Sun azimuth 
 	double getSunAzimuth(const Navigator * nav) const;
 
-	std::map<std::string, std::shared_ptr<BodyContainer>>::iterator begin() {return systemBodies.begin();};
-    std::map<std::string, std::shared_ptr<BodyContainer>>::iterator end() {return systemBodies.end();};	
+	std::vector<std::shared_ptr<BodyContainer>>::iterator begin() {return renderedBodies.begin();};
+    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};	
 
 	std::unique_ptr<SSystemIterator> createIterator();
+	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
 
 private:
-	struct depthBucket {
-		double znear;
-		double zfar;
-	};
-
 	Body* findBody(const std::string &name);
 	std::shared_ptr<SolarSystem::BodyContainer> findBodyContainer(const std::string &name);
 
@@ -317,14 +282,11 @@ private:
 
 	std::map< std::string, std::shared_ptr<BodyContainer>> systemBodies; //Map containing the bodies and related information. the key is their english name
 	std::vector<std::shared_ptr<BodyContainer>> renderedBodies; //Contains bodies that are not hidden
-	std::list<depthBucket>listBuckets;
 
 	bool nearLunarEclipse(const Navigator * nav, Projector * prj);
 
 	// Master settings
-	bool flag_light_travel_time;
 	bool flagAxis= false;
-	bool flagShow= true;
 	bool flagHideSatellites = false;
 
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
