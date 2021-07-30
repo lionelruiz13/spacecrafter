@@ -85,7 +85,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	tone_converter = new ToneReproductor();
 	atmosphere = new Atmosphere(context);
 	// ssystem = new SolarSystem();
-	ssystemTmp = new SSystemFactory();
+	ssystemTmp = new SSystemFactory(context);
 	timeMgr = new TimeMgr();
 	observatory = new Observer(/**ssystem*/);
 	navigation = new Navigator();

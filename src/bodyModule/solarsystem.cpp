@@ -46,7 +46,6 @@
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
 #include "vulkanModule/Context.hpp"
-#include "tools/Renderer.hpp"
 #include "bodyModule/ssystem_iterator.hpp"
 
 
