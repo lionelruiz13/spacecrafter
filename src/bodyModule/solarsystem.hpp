@@ -278,8 +278,8 @@ public:
 	// return the Sun azimuth 
 	double getSunAzimuth(const Navigator * nav) const;
 
-	std::map<std::string, BodyContainer *>::iterator begin() {return systemBodies.begin();};
-    std::map<std::string, BodyContainer *>::iterator end() {return systemBodies.end();};	
+	std::map<std::string, std::shared_ptr<BodyContainer>>::iterator begin() {return systemBodies.begin();};
+    std::map<std::string, std::shared_ptr<BodyContainer>>::iterator end() {return systemBodies.end();};	
 
 	std::unique_ptr<SSystemIterator> createIterator();
 
@@ -290,7 +290,7 @@ private:
 	};
 
 	Body* findBody(const std::string &name);
-	BodyContainer * findBodyContainer(const std::string &name);
+	std::shared_ptr<SolarSystem::BodyContainer> findBodyContainer(const std::string &name);
 
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str);
@@ -315,8 +315,8 @@ private:
 
 	Vec3i ringsInit;
 
-	std::map< std::string, BodyContainer*> systemBodies; //Map containing the bodies and related information. the key is their english name
-	std::vector<BodyContainer *> renderedBodies; //Contains bodies that are not hidden
+	std::map< std::string, std::shared_ptr<BodyContainer>> systemBodies; //Map containing the bodies and related information. the key is their english name
+	std::vector<std::shared_ptr<BodyContainer>> renderedBodies; //Contains bodies that are not hidden
 	std::list<depthBucket>listBuckets;
 
 	bool nearLunarEclipse(const Navigator * nav, Projector * prj);
