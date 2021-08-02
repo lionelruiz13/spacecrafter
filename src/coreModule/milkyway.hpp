@@ -160,6 +160,10 @@ public:
 		initIris();
 	}
 
+	void setZodiacalIntensity(float _intensity) {
+		zodiacal.intensity = _intensity;
+	}
+
 private:
 	struct MilkyData{
 		std::string name; // le nom exact de la texture

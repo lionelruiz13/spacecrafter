@@ -4,11 +4,13 @@
 #include "coreModule/core.hpp"
 
 class CoreLink {
-public: 
+public:
 
 	////////////////////////////////////////////////////////////////////////////////
 	// StarLines---------------------------
 	////////////////////////////////////////////////////////////////////////////////
+
+	static void DateTimeFromJulianDay(double jd, int *year, int *month, int *day, int *hour, int *minute, double *second);
 
 	//! Set flag for displaying
 	void starLinesSetFlag(bool b) {
@@ -296,7 +298,7 @@ public:
 	// void illuminateLoad(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float rotation) {
 	// 	core->illuminates->loadIlluminate(name, ra, de, angular_size, r,g,b, rotation);
 	// }
-		
+
 	void illuminateRemove(unsigned int name) 	{
 		core->illuminates->remove(name);
 	}
@@ -448,9 +450,9 @@ public:
 	std::string tcpGetPosition() const {
 		char tmp[512];
 		memset(tmp, '\0', 512);
-		sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;", 
+		sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;",
 			core->observatory->getLatitude(), core->observatory->getLongitude(),
-			core->observatory->getAltitude(), core->timeMgr->getJDay(), 
+			core->observatory->getAltitude(), core->timeMgr->getJDay(),
 			core->navigation->getHeading());
 		return tmp;
 	}
@@ -545,13 +547,13 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Camera---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	
+
 	void cameraDisplayAnchor() {
 		core->anchorManager->displayAnchor();
 	}
 
 	bool cameraAddAnchor(stringHash_t& param) {
-		return core->anchorManager->addAnchor(param); 
+		return core->anchorManager->addAnchor(param);
 	}
 
 	bool cameraRemoveAnchor(const std::string &name) {
@@ -565,11 +567,11 @@ public:
 	bool cameraMoveToPoint(double x, double y, double z){
 		return core->anchorManager->setCurrentAnchorPos(Vec3d(x,y,z));
 	}
-	
+
 	bool cameraMoveToPoint(double x, double y, double z, double time){
 		return core->anchorManager->moveTo(Vec3d(x,y,z),time);
 	}
-	
+
 	bool cameraMoveToBody(const std::string& bodyName, double time, double alt = -1.0){
 
 		if(bodyName == "selected"){
@@ -582,15 +584,15 @@ public:
 
 		return core->anchorManager->moveToBody(bodyName,time, alt);
 	}
-	
+
 	bool cameraMoveRelativeXYZ( double x, double y, double z) {
 		return core->anchorManager->moveRelativeXYZ(x,y,z);
 	}
-	
+
 	bool cameraTransitionToPoint(const std::string& name){
 		return core->anchorManager->transitionToPoint(name);
 	}
-	
+
 	bool cameraTransitionToBody(const std::string& name){
 
 		if(name == "selected"){
@@ -601,13 +603,13 @@ public:
 	}
 
 	bool cameraSave(const std::string& name = "anchor");
-	
+
 	bool loadCameraPosition(const std::string& filename);
-	
+
 	bool lookAt(double az, double alt, double time = 1.){
 		return core->navigation->lookAt(az, alt, time);
 	}
-	
+
 	bool cameraSetFollowRotation(const std::string& name, bool value){
 		return core->anchorManager->setFollowRotation(value);
 	}
@@ -899,13 +901,13 @@ public:
 		core->ssystemTmp->setFlagPlanetsOrbits(_name, b);
 	}
 
-	//! Switch 
+	//! Switch
 	void planetSwitchTexMap(const std::string &_name, bool b) {
 		if (_name=="selected") core->ssystemTmp->switchPlanetTexMap(core->selected_object.getEnglishName(), b);
 		else core->ssystemTmp->switchPlanetTexMap(_name, b);
 	}
 
-	//! Switch 
+	//! Switch
 	bool planetGetSwitchTexMap(const std::string &_name) {
 		if (_name=="selected") return core->ssystemTmp->getSwitchPlanetTexMap(core->selected_object.getEnglishName());
 		else return core->ssystemTmp->getSwitchPlanetTexMap(_name);
@@ -974,6 +976,20 @@ public:
 	double getSunAzimuth() const {
 		return core->ssystemTmp->getSunAzimuth(core->navigation);
 	}
+
+  //return the Date
+	double getDateYear() const;
+
+	//return the Date
+	double getDateMonth() const;
+
+	//return the Date
+	double getDateDay() const;
+
+	//return the Date
+	double getDateHour() const;
+
+
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// //! Get base planets display scaling factor
@@ -1055,6 +1071,10 @@ public:
 	//! Set Milky Way intensity
 	void milkyWaySetIntensity(float f) {
 		core->milky_way->setIntensity(f);
+	}
+	//! Set Zodiacal intensity
+	void milkyWaySetZodiacalIntensity(float f) {
+		core->milky_way->setZodiacalIntensity(f);
 	}
 	//! Get Milky Way intensity
 	float milkyWayGetIntensity(void) const {
@@ -1239,6 +1259,10 @@ public:
 		return core->observatory->getLongitude();
 	}
 
+	double observatoryGetLongitudeForDisplay() {
+		return core->observatory->getLongitudeForDisplay();
+	}
+
 	double observatoryGetAltitude() {
 		return core->observatory->getAltitude();
 	}
@@ -1269,7 +1293,7 @@ public:
 	void observatorySetAltitude(double l) {
 	 	core->observatory->setAltitude(l);
 	}
-	
+
 	// void observatorySetSpacecraft(double l) {
 	// 	core->observatory->setSpacecraft(bool(l));
 	// }
@@ -1287,7 +1311,7 @@ public:
 	// }
 	///////////////////////////////////////////////////////////
 	// std::string getObserverName(){
-	// 	return core->observatory->getName(); 
+	// 	return core->observatory->getName();
 	// }
 
 	std::string getObserverHomePlanetEnglishName() {
@@ -1406,7 +1430,7 @@ public:
     CoreLink(Core* _core);
     ~CoreLink();
 
-private: 
+private:
     Core *core = nullptr;
 };
 

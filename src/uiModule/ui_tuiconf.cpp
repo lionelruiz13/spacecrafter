@@ -52,6 +52,7 @@ void UI::drawGravityUi()
 
 	if (FlagShowTuiDateTime) {
 		double jd = coreLink->getJDay();
+		double lonmodulo = coreLink->observatoryGetLongitudeForDisplay();
 		std::ostringstream os;
 
 		os << spaceDate->getPrintableDateLocal(jd) << " " << spaceDate->getPrintableTimeLocal(jd);
@@ -64,7 +65,7 @@ void UI::drawGravityUi()
 		if (FlagShowFps) os << "  FPS " << app->getFpsClock();
 		if (FlagShowLatLon) {
 			os << " Lat: " << Utility::printAngleDMS(coreLink->observatoryGetLatitude()*3.1415926/180)
-			   << " Lon: " << Utility::printAngleDMS(coreLink->observatoryGetLongitude()*3.1415926/180);
+			   << " Lon: " << Utility::printAngleDMS(lonmodulo*3.1415926/180);
 			if (coreLink->observatoryGetAltitude()>1000) {
 /*			    if (true)
 					os << " Alt: " << core->observatoryGetAltitude()/2.E+10 << "al";
@@ -74,7 +75,7 @@ void UI::drawGravityUi()
 		}
 
 		if (core->getFlagNav()) {
-			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), coreLink->observatoryGetLatitude(), coreLink->observatoryGetLongitude());
+			std::string info = spaceDate->getPrintableTimeNav(coreLink->getJDay(), coreLink->observatoryGetLatitude(), coreLink->observatoryGetLongitudeForDisplay());
 			std::string s_1, s_2, s_3;
 			s_1= info.substr(0, info.find("@"));
 			s_2= info.substr(info.find("@")+1);

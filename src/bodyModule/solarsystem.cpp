@@ -914,6 +914,7 @@ void SolarSystem::setFlagAxis(bool b)
 	}
 }
 
+
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
@@ -1016,4 +1017,12 @@ std::unique_ptr<SSystemIterator> SolarSystem::createIterator()
 std::unique_ptr<SSystemIteratorVector> SolarSystem::createIteratorVector()
 {
 	return std::make_unique<SSystemIteratorVector>(this);
+}
+
+
+double SolarSystem::getSunAzimuth(const Navigator * nav) const
+{
+	double alt, az;
+	sun->getAltAz(nav, &alt, &az);
+	return az*180.0/M_PI;
 }

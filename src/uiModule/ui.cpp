@@ -378,16 +378,16 @@ void UI::moveMouseAz(double x)
 void UI::moveLat(double x)
 {
 	if (x>0) this->executeCommand("add y -1"); else this->executeCommand("add y 1");
-	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
 		coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
-	else
-		coreLink->observerMoveRelLat(x,DURATION_COMMAND);
 }
 
 void UI::moveLon(double x)
 {
-	coreLink->observerMoveRelLon(x,DURATION_COMMAND);
 	if (x>0) this->executeCommand("add z 1"); else this->executeCommand("add z -1");
+	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
+		coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+	else
+		coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
 }
 
 void UI::lowerHeight(double x)
@@ -493,17 +493,19 @@ void UI::lowerHeight()
 
 void UI::speedDecrease()
 {
-	if(scriptInterface->isScriptPlaying())
-		scriptInterface->slowerSpeed();
-	else
+	this->executeCommand("define x -1");
+	//if(scriptInterface->isScriptPlaying())
+	//	scriptInterface->slowerSpeed();
+	//else
 		deltaSpeed = DeltaSpeed::DOWN;
 }
 
 void UI::speedIncrease()
 {
-	if(scriptInterface->isScriptPlaying())
-		scriptInterface->fasterSpeed();
-	else
+	this->executeCommand("define x 1");	
+	//if(scriptInterface->isScriptPlaying())
+	//	scriptInterface->fasterSpeed();
+	//else
 		deltaSpeed = DeltaSpeed::UP;
 }
 
@@ -1141,6 +1143,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
+					event = new ScriptEvent( IDIR+"internal/sky_culture0.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL:
 					event = new ScriptEvent( IDIR+"internal/sky_culture3.sts");
@@ -1502,9 +1506,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
-					this->executeCommand("star_lines action drop");
-					event = new FlagEvent( FLAG_NAMES::FN_STAR_LINES_SELECTED , FLAG_VALUES::FV_TOGGLE);
+					event = new ScriptEvent( IDIR+"internal/personasterism.sts");
 					EventRecorder::getInstance()->queue(event);
+					//this->executeCommand("star_lines action drop");
+					//event = new FlagEvent( FLAG_NAMES::FN_STAR_LINES_SELECTED , FLAG_VALUES::FV_TOGGLE);
+					//EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent(IDIR+"internal/sky_culture1.sts");
@@ -1565,7 +1571,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new FlagEvent( FLAG_NAMES::FN_PLANET_ORBITS , FLAG_VALUES::FV_TOGGLE);
+					event = new FlagEvent( FLAG_NAMES::FN_PLANETS_ORBITS , FLAG_VALUES::FV_TOGGLE);
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
@@ -2143,6 +2149,10 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case KWIN:
+					event = new ScriptEvent( SDIR+"fscripts/panorama0.sts");
+					EventRecorder::getInstance()->queue(event);
+					current_landscape = coreLink->landscapeGetName();
+					key_Modifier= NONE;
 					break;
 				case SHIFT :
 					event = new ScriptEvent( SDIR+"fscripts/panorama3.sts");
@@ -2361,6 +2371,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					key_Modifier= NONE;
 					break;
 				case CTRL:
+					this->executeCommand("add b 1");
 					break;
 				// case ALT:
 				// 	coreLink->cameraMoveRelativeXYZ(0.,0.0,-1.0);
@@ -2724,18 +2735,41 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			}
 			break;
 
+		case SDL_SCANCODE_KP_ENTER :
+			switch(key_Modifier) {
+				case NONE:
+					this->executeCommand("deselect");
+					break;
+				case SUPER:
+					key_Modifier= NONE;
+					break;
+				case KWIN:
+					event = new ScriptEvent( SDIR+"fscripts/S16.sts");
+					EventRecorder::getInstance()->queue(event);						
+					key_Modifier= NONE;
+					break;
+				case CTRL :
+					break;
+				default:
+					break;
+			}
+			break;
+
 
 		case  SDL_SCANCODE_F1:
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"01.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F01.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"13.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F13.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"25.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF01.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/01.sts");
@@ -2755,14 +2789,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F2 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"02.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F02.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"14.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F14.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"26.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF02.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/02.sts");
@@ -2781,14 +2818,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F3 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"03.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F03.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"15.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F15.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"27.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF03.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/03.sts");
@@ -2807,14 +2847,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F4:
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"04.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F04.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"16.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F16.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"28.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF04.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/04.sts");
@@ -2833,14 +2876,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F5:
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"05.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F05.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"17.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F17.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"29.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF05.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/05.sts");
@@ -2859,14 +2905,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F6 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"06.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F06.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"18.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F18.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"30.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF06.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/06.sts");
@@ -2885,14 +2934,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F7 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"07.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F07.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"19.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F19.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"31.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF07.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/07.sts");
@@ -2911,14 +2963,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F8 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"08.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F08.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"20.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F20.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"32.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF08.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/08.sts");
@@ -2937,14 +2992,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F9 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"09.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F09.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"21.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F21.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"33.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF09.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/09.sts");
@@ -2963,14 +3021,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F10 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"10.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F10.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"22.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F22.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"34.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF10.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/10.sts");
@@ -2989,18 +3050,21 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F11 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"11.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F11.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"23.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F23.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
+					break;
+				case SHIFT:
+					event = new ScriptEvent( SDIR+"fscripts/SF11.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/11.sts");
 					EventRecorder::getInstance()->queue(event);
-					break;
-				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"35.avi action play");
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W11.sts");
@@ -3015,14 +3079,17 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_F12 :
 			switch(key_Modifier) {
 				case NONE:
-					this->executeCommand("external_viewer filename "+VDIR+"12.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F12.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case SUPER:
-					this->executeCommand("external_viewer filename "+VDIR+"24.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/F24.sts");
+					EventRecorder::getInstance()->queue(event);				
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					this->executeCommand("external_viewer filename "+VDIR+"36.avi action play");
+					event = new ScriptEvent( SDIR+"fscripts/SF12.sts");
+					EventRecorder::getInstance()->queue(event);				
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/12.sts");

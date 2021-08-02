@@ -371,7 +371,7 @@ std::vector<Object> NebulaMgr::searchAround(Vec3d v, double lim_fov) const
 	double cos_lim_fov = cos(lim_fov * M_PI/180.);
 	static Vec3d equPos;
 
-	for (const auto &n : nebGrid) { // this somewhere ?
+	for (auto &n : nebGrid) {
 		equPos = n->XYZ_;
 		equPos.normalize();
 		if (equPos[0]*v[0] + equPos[1]*v[1] + equPos[2]*v[2]>=cos_lim_fov) {

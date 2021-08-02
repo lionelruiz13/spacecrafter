@@ -53,6 +53,8 @@
  * 
  */
 
+#include <ostream>
+
 template <typename T>
 class Scalable {
 public:

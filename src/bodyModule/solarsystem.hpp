@@ -248,7 +248,14 @@ public:
 	double getSunAzimuth(const Navigator * nav) const;
 
 	std::vector<std::shared_ptr<BodyContainer>>::iterator begin() {return renderedBodies.begin();};
-    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};	
+  std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};	
+
+private:
+	struct depthBucket {
+		double znear;
+		double zfar;
+	};
+
 
 	std::unique_ptr<SSystemIterator> createIterator();
 	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
