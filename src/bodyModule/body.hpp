@@ -74,6 +74,8 @@ typedef struct body_flags {
 
 enum BODY_TYPE {SUN = 0, PLANET = 1, MOON = 2, DWARF = 3, ASTEROID = 4, KBO = 5,  COMET = 6, ARTIFICIAL = 7, OBSERVER = 8, UNKNOWN = 10};
 
+enum TURN_AROUND {tANothing = 0, tACenter = 1, tABody = 2};
+
 typedef struct AtmosphereParams {
 	bool hasAtmosphere = false;
 	float limInf = 0.f;
@@ -412,6 +414,10 @@ public:
 
 	double getAxisAngle() const;
 
+	TURN_AROUND getTurnAround() {
+		return tAround;
+	}
+
 
 protected:
 
@@ -512,6 +518,8 @@ protected:
 
 	bool close_orbit; // whether to close orbit loop
 	bool is_satellite;  // whether has a Body as a parent
+
+	TURN_AROUND tAround;
 
 	double orbit_bounding_radius; // AU calculated at load time for elliptical orbits at least DIGITALIS
 	double boundingRadius;  // Cached AU value for use with depth buffer
