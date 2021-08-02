@@ -379,7 +379,7 @@ void CheckConfig::checkAstroSettings()
 	tmpSettings[SCK_FLAG_BRIGHT_NEBULAE]="true";
 	tmpSettings[SCK_MILKY_WAY_FADER_DURATION]="2";
 	tmpSettings[SCK_MILKY_WAY_INTENSITY]="0.7";
-	tmpSettings[SCK_ZODIACAL_INTENSITY]="0.7";
+	tmpSettings[SCK_ZODIACAL_INTENSITY]="0.3";
 	tmpSettings[SCK_MILKY_WAY_TEXTURE]="milkyway.png";
 	tmpSettings[SCK_MILKY_WAY_IRIS_TEXTURE]="milkyway_iris.png";
 	tmpSettings[SCK_ZODIACAL_LIGHT_TEXTURE]="zodiacale.png";

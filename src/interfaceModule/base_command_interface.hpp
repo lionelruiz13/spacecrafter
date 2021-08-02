@@ -32,7 +32,7 @@
 enum class SC_COMMAND : char {SC_ADD = 30, SC_AUDIO, SC_BODY_TRACE, SC_BODY, SC_CAMERA, SC_CLEAR, SC_COLOR, SC_CONFIGURATION, SC_CONSTELLATION, SC_DATE, SC_DEFINE, SC_DESELECT,
 							  SC_DOMEMASTERS,
                               SC_DSO, SC_EXTERNASC_VIEWER, SC_FONT, SC_FLAG, SC_GET, SC_HEADING, SC_ILLUMINATE, SC_IMAGE, SC_LANDSCAPE, SC_SCREEN_FADER, SC_LOOK, SC_MEDIA, SC_METEORS,
-                              SC_MOVETO, SC_MULTIPLY, SC_PERSONAL, SC_PERSONEQ, SC_PLANET_SCALE, SC_POSITION, SC_PRINT, SC_RANDOM,
+                              SC_MOVETO, SC_MULTIPLY, SC_DIVIDE, SC_TANGENT, SC_TRUNC, SC_SINUS, SC_PERSONAL, SC_PERSONEQ, SC_PLANET_SCALE, SC_POSITION, SC_PRINT, SC_RANDOM,
                               SC_SCRIPT, SC_SEARCH, SC_SELECT, SC_SET, SC_SHUTDOWN, SC_SKY_CULTURE, SC_STAR_LINES, SC_STRUCT, SC_SUNTRACE, SC_SUB, SC_TEXT,
                               SC_TIMERATE, SC_WAIT, SC_ZOOMR
                              };
@@ -51,12 +51,12 @@ enum class FLAG_NAMES: char {FN_ANTIALIAS_LINES = 30, FN_CONSTELLATION_DRAWING, 
                              FN_ZODIAC_LIGHT , FN_TULLY, FN_TULLY_COLOR_MODE, FN_SATELLITES, FN_MOUSECOORD, FN_ATMOSPHERIC_REFRACTION
                             };
 
-enum class COLORCOMMAND_NAMES: char {CC_CONSTELLATION_LINES = 30, CC_CONSTELLATION_NAMES, CC_CONSTELLATION_ART, CC_CONSTELLATION_BOUNDARIES, CC_CARDINAL_POINTS, 
-                                     CC_PLANET_ORBITS, CC_PLANET_NAMES, CC_PLANET_TRAILS, CC_AZIMUTHAL_GRID, CC_EQUATOR_GRID, CC_ECLIPTIC_GRID, 
-                                     CC_GALACTIC_GRID, CC_EQUATOR_LINE, CC_GALACTIC_LINE, CC_ECLIPTIC_LINE, CC_MERIDIAN_LINE, CC_ZENITH_LINE, 
-                                     CC_POLAR_POINT, CC_POLAR_CIRCLE, CC_ECLIPTIC_CENTER, CC_GALACTIC_POLE, CC_GALACTIC_CENTER, CC_VERNAL_POINTS, 
-                                     CC_ANALEMMA, CC_ANALEMMA_LINE, CC_GREENWICH_LINE, CC_ARIES_LINE, CC_ZODIAC, CC_PERSONAL, CC_PERSONEQ, 
-                                     CC_NAUTICAL_ALT, CC_NAUTICAL_RA, CC_OBJECT_COORDINATES, CC_MOUSE_COORDINATES, CC_ANGULAR_DISTANCE, CC_LOXODROMY, 
+enum class COLORCOMMAND_NAMES: char {CC_CONSTELLATION_LINES = 30, CC_CONSTELLATION_NAMES, CC_CONSTELLATION_ART, CC_CONSTELLATION_BOUNDARIES, CC_CARDINAL_POINTS,
+                                     CC_PLANET_ORBITS, CC_PLANET_NAMES, CC_PLANET_TRAILS, CC_AZIMUTHAL_GRID, CC_EQUATOR_GRID, CC_ECLIPTIC_GRID,
+                                     CC_GALACTIC_GRID, CC_EQUATOR_LINE, CC_GALACTIC_LINE, CC_ECLIPTIC_LINE, CC_MERIDIAN_LINE, CC_ZENITH_LINE,
+                                     CC_POLAR_POINT, CC_POLAR_CIRCLE, CC_ECLIPTIC_CENTER, CC_GALACTIC_POLE, CC_GALACTIC_CENTER, CC_VERNAL_POINTS,
+                                     CC_ANALEMMA, CC_ANALEMMA_LINE, CC_GREENWICH_LINE, CC_ARIES_LINE, CC_ZODIAC, CC_PERSONAL, CC_PERSONEQ,
+                                     CC_NAUTICAL_ALT, CC_NAUTICAL_RA, CC_OBJECT_COORDINATES, CC_MOUSE_COORDINATES, CC_ANGULAR_DISTANCE, CC_LOXODROMY,
                                      CC_ORTHODROMY, CC_VERTICAL_LINE, CC_NEBULA_NAMES, CC_NEBULA_CIRCLE, CC_PRECESSION_CIRCLE, CC_TEXT_USR_COLOR, CC_STAR_TABLE
                                     };
 
@@ -64,12 +64,12 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30, APP_AUTO_MOVE_DUR
                             APP_LIGHT_POLLUTION_LIMITING_MAGNITUDE,APP_HEADING,APP_HOME_PLANET,APP_LANDSCAPE_NAME,APP_LINE_WIDTH,APP_MAX_MAG_NEBULA_NAME,
                             APP_MAX_MAG_STAR_NAME,APP_MOON_SCALE,APP_SUN_SCALE,APP_MILKY_WAY_TEXTURE,APP_SKY_CULTURE,APP_SKY_LOCALE,APP_UI_LOCALE,
                             APP_STAR_MAG_SCALE,APP_STAR_SIZE_LIMIT,APP_PLANET_SIZE_LIMIT,APP_STAR_SCALE,APP_STAR_TWINKLE_AMOUNT,APP_STAR_FADER_DURATION,
-                            APP_STAR_LIMITING_MAG,APP_TIME_ZONE,APP_AMBIENT_LIGHT,APP_TEXT_FADING_DURATION,APP_MILKY_WAY_FADER_DURATION,APP_MILKY_WAY_INTENSITY,
+                            APP_STAR_LIMITING_MAG,APP_TIME_ZONE,APP_AMBIENT_LIGHT,APP_TEXT_FADING_DURATION,APP_MILKY_WAY_FADER_DURATION,APP_MILKY_WAY_INTENSITY,APP_ZODIACAL_INTENSITY,
                             APP_ZOOM_OFFSET,APP_STARTUP_TIME_MODE,APP_DATE_DISPLAY_FORMAT,APP_TIME_DISPLAY_FORMAT,APP_MODE,APP_SCREEN_FADER,
                             APP_STALL_RADIUS_UNIT,/*APP_TULLY_COLOR_MODE,*/ APP_DATETIME_DISPLAY_POSITION,APP_DATETIME_DISPLAY_NUMBER,APP_FLAG_NONE
                             };
 
-enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, HEADING};
+enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, DATE_YEAR, DATE_MONTH, DATE_DAY, DATE_HOUR, HEADING};
 
 
 // nom des arguments des commandes
@@ -124,6 +124,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_TRAIL                     "trail"
 #define W_INDEX                     "index"
 #define W_HP                        "hp"
+#define W_COLOR               "color"
 #define W_COLOR_VALUE               "color_value"
 #define W_NONE                      "NONE" //??
 #define W_DEFAULT                   "default"
@@ -312,6 +313,10 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CN_MOVETO                               "moveto"
 #define ACP_CN_MOVETOCITY                           "movetocity"
 #define ACP_CN_MULTIPLY                             "multiply"
+#define ACP_CN_DIVIDE                             	"divide"
+#define ACP_CN_TANGENT                             	"tangent"
+#define ACP_CN_TRUNC                             	"trunc"
+#define ACP_CN_SINUS                             	"sinus"
 #define ACP_CN_PERSONAL                             "personal"
 #define ACP_CN_PERSONEQ                             "personeq"
 #define ACP_CN_PLANET_SCALE                         "planet_scale"
@@ -413,6 +418,8 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_FN_OORT                                 "oort"
 #define ACP_FN_STARS_TRACE                          "stars_trace"
 #define ACP_FN_STAR_LINES                           "star_lines"
+#define ACP_FN_STAR_LINES_SELECTED                  "star_lines_selected"
+#define ACP_FN_SKY_DRAW                             "sky_draw"
 #define ACP_FN_DSO_PICTOGRAMS                       "dso_pictograms"
 #define ACP_FN_ZODIACAL_LIGHT                       "zodiacal_light"
 #define ACP_FN_TULLY                                "tully"
@@ -495,6 +502,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_SC_TEXT_FADING_DURATION                 "text_fading_duration"
 #define ACP_SC_MILKY_WAY_FADER_DURATION             "milky_way_fader_duration"
 #define ACP_SC_MILKY_WAY_INTENSITY                  "milky_way_intensity"
+#define ACP_SC_ZODIACAL_INTENSITY                   "zodiacal_intensity"
 #define ACP_SC_ZOOM_OFFSET                          "zoom_offset"
 #define ACP_SC_STARTUP_TIME_MODE                    "startup_time_mode"
 #define ACP_SC_DATE_DISPLAY_FORMAT                  "date_display_format"
@@ -569,6 +577,11 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACI_RW_LATITUDE             "latitude"
 #define ACI_RW_ALTITUDE             "altitude"
 #define ACI_RW_SUN_ALTITUDE         "sun_altitude"
+#define ACI_RW_SUN_AZIMUTH          "sun_azimuth"
+#define ACI_RW_DATE_YEAR            "date_year"
+#define ACI_RW_DATE_MONTH           "date_month"
+#define ACI_RW_DATE_DAY             "date_day"
+#define ACI_RW_DATE_HOUR            "date_hour"
 #define ACI_RW_HEADING              "heading"
 
 

@@ -57,19 +57,19 @@ public:
 	//! Renvoie un lien vers l'astre ou est localisé l'observer
 	//! @return une instance sur l'astre ou nullptr
 	//! @warning nullptr est retourné si l'observer n'est sur aucun astre
-	const Body *getHomeBody(void) const;
+	const Body *getHomeBody() const;
 
 	//! renvoie le nom anglais de la planète de l'observer
-	std::string getHomePlanetEnglishName(void) const;
+	std::string getHomePlanetEnglishName() const;
 	//! renvoie le nom I18n de la planète de l'observer
-	std::string getHomePlanetNameI18n(void) const;
+	std::string getHomePlanetNameI18n() const;
 
 	//! renvoie un booleen permettant de savoir si la planète de l'observer est soit la terre, soit la lune
 	bool isEarth() const;
 	bool isSun() const;
 
 	//! renvois la position a laquelle l'observer est attaché
-	Vec3d getObserverCenterPoint(void) const;
+	Vec3d getObserverCenterPoint() const;
 
 	//! renvoie la position de l'observer dans le systeme de coordonnée du soleil
 	Vec3d getHeliocentricPosition(double JD)const;
@@ -99,7 +99,7 @@ public:
 	}
 
 	//! renvoie la latitude de l'observer sur la planète
-	double getLatitude(void) const {
+	double getLatitude() const {
 		return latitude;
 	}
 
@@ -109,7 +109,8 @@ public:
 	}
 
 	//! renvoie la longitude de l'observer sur la planète
-	double getLongitude(void) const;
+	double getLongitude() const;
+	double getLongitudeForDisplay() const;
 
 	//! fixe l'altitude de l'observer sur la planète
 	void setAltitude(double a);

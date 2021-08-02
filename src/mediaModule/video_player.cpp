@@ -302,6 +302,7 @@ void VideoPlayer::stopCurrentVideo()
 		videoTexture.tex[i]->releaseStagingMemoryPtr();
 	}
 
+
 	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
 	EventRecorder::getInstance()->queue(event);
 	media->playerStop();

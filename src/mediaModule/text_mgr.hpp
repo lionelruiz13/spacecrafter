@@ -112,10 +112,8 @@ private:
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle
 	float fadingDuration;		// durée d'une fading de text (s'il existe) en secondes
-	std::string m_fontName;		// remembers what fontName is used
-	float m_fontSize; 			// remembers what fontSize is used
+	std::string m_fontName = "";		// remembers what fontName is used
+	float m_fontSize = 0; 			// remembers what fontSize is used
 };
 
 #endif
-
-

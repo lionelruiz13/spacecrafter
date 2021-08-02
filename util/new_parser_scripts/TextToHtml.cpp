@@ -20,7 +20,9 @@ void TextToHtml::lecture()
 {
 	OutHtml += "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Documentation</title>\n<style>";
 	OutHtml += inCss; //On place le style CSS
-	OutHtml += "</style>\n</head>\n<body>\n<header>\n<h1>Documentation des commandes script</h1>\n</header>\n";
+	OutHtml += "</style>\n</head>\n<body>\n";
+	OutHtml += "<a href=\"../../index.php\"><img id=\"back_docFR_index\" src=\"../../img/ui/back.png\" alt=\"back\"></a>\n";
+	OutHtml += "<header>\n<h1>Documentation des commandes script</h1>\n</header>\n";
 	//OutHtml += "<img src=\"logo.png\" alt=\"Logo\" class=\"logo\">";
 	OutHtml += "<section class=\"commande\">";
 

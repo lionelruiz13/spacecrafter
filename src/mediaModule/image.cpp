@@ -83,7 +83,7 @@ Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type
 
 void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
 {
-	flag_alpha = flag_scale = flag_location = flag_rotation = 0;
+	flag_alpha = flag_scale = flag_location = flag_rotation = ratio.onTransition = 0;
 	image_pos_type = pos_type;
 	image_alpha = 0;  // begin not visible
 	image_rotation = 0;
@@ -364,19 +364,19 @@ void Image::setLocation(float xpos, bool deltax, float ypos, bool deltay, float 
 }
 
 
-void Image::setRatio(float ratio, float duration)
+void Image::setRatio(float new_ratio, float duration)
 {
 	if (duration <= 0) {
-		flag_ratio = 0;
-		image_ratio = ratio;
+		ratio.onTransition = 0;
+		image_ratio = new_ratio;
 		return;
 	}
-	flag_ratio = 1;
-	end_time_ratio = int(duration * 1000.f);
-	start_ratio = image_ratio;
-	end_ratio = ratio;
-	coef_ratio = (ratio-start_ratio)/end_time_ratio;
-	my_timer_ratio = 0; // count time elapsed from the beginning of the command
+	ratio.onTransition = 1;
+	ratio.duration = int(duration * 1000.f);
+	ratio.start = image_ratio;
+	ratio.end = new_ratio;
+	ratio.coef = (new_ratio-ratio.start)/ratio.duration;
+	ratio.timer = 0; // count time elapsed from the beginning of the command
 }
 
 
@@ -429,20 +429,16 @@ bool Image::update(int delta_time)
 		if (flag_progressive_x) { // progressive movement in X-axis
 			if (my_timer < mid_time_x) { // acceleration phase
 				image_xpos = start_xpos + my_timer * my_timer * coef_xmove; // square function
-			}
-			else if (my_timer < end_time) {   // deceleration phase
+			} else if (my_timer < end_time) { // deceleration phase
 				image_xpos = end_xpos - (end_time - my_timer) * (end_time - my_timer) * coef_xmove; // (end - x)² function
-			}
-			else {   // movement completed
+			} else { // movement completed
 				image_xpos = end_xpos;
 				flag_location = 0;
 			}
-		}
-		else {   // linear movement in X-axis
+		} else { // linear movement in X-axis
 			if (my_timer < end_time) {
 				image_xpos = start_xpos + my_timer*x_move; // linear function
-			}
-			else {
+			} else {
 				image_xpos = end_xpos;
 				flag_location = 0;
 			}
@@ -450,33 +446,29 @@ bool Image::update(int delta_time)
 		if (flag_progressive_y) { // progressive movement in Y-axis
 			if (my_timer < mid_time_y) { // acceleration phase
 				image_ypos = start_ypos + my_timer * my_timer * coef_ymove; // square function
-			}
-			else if (my_timer < end_time) {   // deceleration phase
+			} else if (my_timer < end_time) { // deceleration phase
 				image_ypos = end_ypos - (end_time - my_timer) * (end_time - my_timer) * coef_ymove; // (end - x)² function
-			}
-			else {   // movement completed
+			} else { // movement completed
 				image_ypos = end_ypos;
 				flag_location = 0;
 			}
-		}
-		else {   // linear movement in Y-axis
+		} else { // linear movement in Y-axis
 			if (my_timer < end_time) {
 				image_ypos = start_ypos + my_timer*y_move; // linear function
-			}
-			else {
+			} else {
 				image_ypos = end_ypos;
 				flag_location = 0;
 			}
 		}
 	}
 
-	if (flag_ratio) {
-		my_timer_ratio += delta_time; // update local timer
-		if (my_timer_ratio < end_time_ratio)
-			image_ratio = start_ratio + my_timer_ratio*coef_ratio; // linear function
+	if (ratio.onTransition) {
+		ratio.timer += delta_time; // update local timer
+		if (ratio.timer < ratio.duration)
+			image_ratio = ratio.start + ratio.timer*ratio.coef; // linear function
 		else {
-			image_ratio = end_ratio;
-			flag_ratio = 0;
+			image_ratio = ratio.end;
+			ratio.onTransition = 0;
 		}
 	}
 	return 1;

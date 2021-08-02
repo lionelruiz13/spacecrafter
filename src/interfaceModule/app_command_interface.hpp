@@ -98,6 +98,10 @@ protected:
 	int commandMeteors();
 	int commandMoveto();
 	int commandMultiply();
+	int commandDivide();
+	int commandTangent();
+	int commandTrunc();
+	int commandSinus();
 	int commandPersonal();
 	int commandPersoneq();
 	int commandPlanetScale();

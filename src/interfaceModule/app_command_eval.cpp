@@ -5,6 +5,10 @@
 std::function<double(double,double)> f_add = [](double x, double y){return x+y;};
 std::function<double(double,double)> f_sub = [](double x, double y){return x-y;};
 std::function<double(double,double)> f_mul = [](double x, double y){return x*y;};
+std::function<double(double,double)> f_div = [](double x, double y){return x/y;};
+std::function<double(double,double)> f_tan = [](double x, double y){return tan(y*3.1415926/180.0);};
+std::function<double(double,double)> f_trunc = [](double x, double y){return trunc(y);};
+std::function<double(double,double)> f_sin = [](double x, double y){return sin(y*3.1415926/180.0);};
 
 AppCommandEval::AppCommandEval(CoreLink *_coreLink)
 {
@@ -21,6 +25,11 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_LONGITUDE]=SC_RESERVED_VAR::LONGITUDE;
 	m_reservedVar[ACI_RW_LATITUDE]=SC_RESERVED_VAR::LATITUDE;
 	m_reservedVar[ACI_RW_SUN_ALTITUDE]=SC_RESERVED_VAR::SUN_ALTITUDE;
+	m_reservedVar[ACI_RW_SUN_AZIMUTH]=SC_RESERVED_VAR::SUN_AZIMUTH;
+	m_reservedVar[ACI_RW_DATE_YEAR]=SC_RESERVED_VAR::DATE_YEAR;
+	m_reservedVar[ACI_RW_DATE_MONTH]=SC_RESERVED_VAR::DATE_MONTH;
+	m_reservedVar[ACI_RW_DATE_DAY]=SC_RESERVED_VAR::DATE_DAY;
+	m_reservedVar[ACI_RW_DATE_HOUR]=SC_RESERVED_VAR::DATE_HOUR;
 	m_reservedVar[ACI_RW_HEADING]=SC_RESERVED_VAR::HEADING;
 
 	// for conivence, the map inverse
@@ -38,8 +47,13 @@ std::string AppCommandEval::evalString(const std::string &var)
 	auto var_it = variables.find(var);
 	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
 		return var;
-	else // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		return var_it->second;
+	else {// trouvé on renvoie la valeur de ce qui est stocké en mémoire
+		double v = evalDouble(var_it->second);
+		if (v == trunc(v))
+			return std::to_string(evalInt(var_it->second));
+		else
+			return var_it->second;
+		}
 }
 
 double AppCommandEval::evalDouble(const std::string &var)
@@ -79,7 +93,11 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 		//~ printf("mValue = %s\n", mValue.c_str());
 		// std::cout << "Cette valeur de mValue vaut " << evalDouble(mValue) << std::endl;
 		//std::cout << "C_define : " <<  mArg.c_str() << " => " << evalDouble(mValue) << std::endl;
-		variables[mArg] = std::to_string( evalDouble(mValue) );
+		double v = evalDouble(mValue);
+		//if (v == trunc(v))
+		//	variables[mArg] = std::to_string(evalInt(mValue));
+		//else
+			variables[mArg] = std::to_string(v);
 	//	this->printVar();
 	}
 }
@@ -99,6 +117,26 @@ void AppCommandEval::commandMul(const std::string& mArg, const std::string& mVal
 	this->evalOps(mArg,mValue, f_mul);
 }
 
+void AppCommandEval::commandDiv(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_div);
+}
+
+void AppCommandEval::commandTan(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_tan);
+}
+
+void AppCommandEval::commandTrunc(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_trunc);
+}
+
+void AppCommandEval::commandSin(const std::string& mArg, const std::string& mValue)
+{
+	this->evalOps(mArg,mValue, f_sin);
+}
+
 
 void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f)
 {
@@ -114,8 +152,11 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 		std::cout << "not possible to operate with undefined variable so define to null from ops" << std::endl;
 		variables[mArg] = Utility::strToDouble (mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
-		double tmp = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
-		variables[mArg] = std::to_string(tmp);
+		double v = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
+		//if (v == trunc(v))
+		//	variables[mArg] = std::to_string(evalInt(mValue));
+		//else
+			variables[mArg] = std::to_string(v);
 	}
 }
 
@@ -174,16 +215,39 @@ void AppCommandEval::deleteVar()
 double AppCommandEval::evalReservedVariable(const std::string &var)
 {
 	switch (m_reservedVar[var]) {
-		case  SC_RESERVED_VAR::LONGITUDE :  
-			return coreLink->observatoryGetLongitude(); break;
-		case  SC_RESERVED_VAR::LATITUDE :  
-			return coreLink->observatoryGetLatitude(); break;
-		case  SC_RESERVED_VAR::ALTITUDE :  
-			return coreLink->observatoryGetAltitude(); break;
-		case  SC_RESERVED_VAR::HEADING :  
-			return coreLink->getHeading(); break;
+		case  SC_RESERVED_VAR::LONGITUDE : {
+			double lon = coreLink->observatoryGetLongitude() + 180;
+			lon = lon - 360 * floor(lon / 360.);
+			return lon - 180;
+		    }
+		case  SC_RESERVED_VAR::LATITUDE : {
+		    double lat = coreLink->observatoryGetLatitude();
+			if (lat>90) lat = 90.0;
+			if (lat<-90) lat = -90.0;
+			return lat;
+		    }
+		case  SC_RESERVED_VAR::ALTITUDE :
+			return coreLink->observatoryGetAltitude();
+		case  SC_RESERVED_VAR::HEADING :{
+			double azi = coreLink->getHeading() + 180;
+			azi = azi - 360 * floor(azi / 360.);
+			return azi - 180;
+		    }
 		case SC_RESERVED_VAR::SUN_ALTITUDE:
-			return coreLink->getSunAltitude(); break;
+			return coreLink->getSunAltitude();
+		case SC_RESERVED_VAR::SUN_AZIMUTH: {
+			double azi = coreLink->getSunAzimuth() + 180;
+			azi = azi - 360 * floor(azi / 360.);
+			return azi - 180;
+		      }
+		case SC_RESERVED_VAR::DATE_YEAR:
+			return coreLink->getDateYear();
+		case SC_RESERVED_VAR::DATE_MONTH:
+			return coreLink->getDateMonth();
+		case SC_RESERVED_VAR::DATE_DAY:
+			return coreLink->getDateDay();
+		case SC_RESERVED_VAR::DATE_HOUR:
+			return coreLink->getDateHour();
 		default:
 			std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			return 0.0;
@@ -194,15 +258,25 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 void AppCommandEval::setReservedVariable(const std::string &var, double value)
 {
 	switch (m_reservedVar[var]) {
-		case  SC_RESERVED_VAR::LONGITUDE :  
+		case  SC_RESERVED_VAR::LONGITUDE :
 			coreLink->observatorySetLongitude(value); break;
-		case  SC_RESERVED_VAR::LATITUDE :  
+		case  SC_RESERVED_VAR::LATITUDE :
 			coreLink->observatorySetLatitude(value); break;
-		case  SC_RESERVED_VAR::ALTITUDE :  
+		case  SC_RESERVED_VAR::ALTITUDE :
 			coreLink->observatorySetAltitude(value); break;
-		case  SC_RESERVED_VAR::HEADING :  
+		case  SC_RESERVED_VAR::HEADING :
 			coreLink->setHeading(value); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE :
+			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+		case SC_RESERVED_VAR::SUN_AZIMUTH :
+			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+		case SC_RESERVED_VAR::DATE_YEAR :
+			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+		case SC_RESERVED_VAR::DATE_MONTH :
+			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+		case SC_RESERVED_VAR::DATE_DAY :
+			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+		case SC_RESERVED_VAR::DATE_HOUR :
 			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		default:
 			std::cout << "Unknown reserved variable " << var << ". Do nothing." << std::endl;

@@ -149,8 +149,8 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		return false;
 	}
 
-	std::string line; // variable which will contain each line of the file
-	int index,typeGalaxy;
+	std::string line, index; // variable which will contain each line of the file
+	int typeGalaxy;
 	float r,g,b,x,y,z,xr,yr,zr;
 
 	/*
@@ -169,8 +169,8 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		nbGalaxy++;
 
 		xr=200.f*x;
-		yr=200.f*(y*cos(90*M_PI/180.0)-z*sin(90*M_PI/180.0));
-		zr=200.f*(y*sin(90*M_PI/180.0)+z*cos(90*M_PI/180.0));
+		yr=-200.f*z;
+		zr=200.f*y;
 
 		insert_all(posTully, xr, yr, zr);
 		insert_all(colorTully, r, g, b);
@@ -178,10 +178,11 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		texTully.push_back(typeGalaxy);
 
 		switch (typeGalaxy) {
-			case 0  : scaleTully.push_back(2.0); break;  //Dwarf
+			case 0  : scaleTully.push_back(8.0); break;  //Dwarf
 			case 13 : scaleTully.push_back(4.0); break;  // LMC
 			case 14 : scaleTully.push_back(4.0); break;  // SMC
-			case 9  : scaleTully.push_back(75.0); break; // AG
+			case 7  : scaleTully.push_back(0.125); break; // Elliptic
+			case 9  : scaleTully.push_back(64.0); break; // AG
 			case 10 : scaleTully.push_back(128.0); break; // Dark NEB
 			case 12 : scaleTully.push_back(128.0); break; // Bright NEB
 			default : scaleTully.push_back(0.25); break; // GALAXY

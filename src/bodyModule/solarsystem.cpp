@@ -1298,7 +1298,9 @@ void SolarSystem::setSelected(const Object &obj)
 		selected = Object();
 	}
 	// Undraw other objects hints, orbit, trails etc..
-	setFlagOrbits(flagTrails);
+	//setFlagOrbits(flagTrails);
+	setFlagPlanetsOrbits(flagPlanetsOrbits);
+	setFlagSatellitesOrbits(flagSatellitesOrbits);
 	setFlagTrails(flagTrails);  // TODO should just hide trail display and not affect data collection
 }
 
@@ -1496,4 +1498,11 @@ double SolarSystem::getSunAltitude(const Navigator * nav) const
 	double alt, az;
 	sun->getAltAz(nav, &alt, &az);
 	return alt*180.0/M_PI;
+}
+
+double SolarSystem::getSunAzimuth(const Navigator * nav) const
+{
+	double alt, az;
+	sun->getAltAz(nav, &alt, &az);
+	return az*180.0/M_PI;
 }

@@ -99,6 +99,13 @@ void AppCommandInterface::setTcp(ServerSocket* _tcp)
 int AppCommandInterface::parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments)
 {
   	std::string str = command_line;
+
+	// transformation des débuts de chaines de caratères en supprimant espaces et tabulations en début de chaine
+	while (str[0]==' ' || str[0]=='\t') {
+        str.erase(0,1);
+		//std::cout << str << std::endl;
+	}
+
 	// transformation des chaines utilisateurs de la forme " text" en "text"
   	std::size_t found = str.find(" \" ");
   	while(found!=std::string::npos) {
@@ -233,6 +240,10 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_METEORS :	return commandMeteors(); break;
 		case SC_COMMAND::SC_MOVETO :	return commandMoveto(); break;
 		case SC_COMMAND::SC_MULTIPLY :	return commandMultiply(); break;
+		case SC_COMMAND::SC_DIVIDE :	return commandDivide(); break;
+		case SC_COMMAND::SC_TANGENT :	return commandTangent(); break;
+		case SC_COMMAND::SC_TRUNC :	return commandTrunc(); break;
+		case SC_COMMAND::SC_SINUS :	return commandSinus(); break;
 		case SC_COMMAND::SC_PERSONAL :	return commandPersonal(); break;
 		case SC_COMMAND::SC_PERSONEQ :	return commandPersoneq(); break;
 		case SC_COMMAND::SC_PLANET_SCALE :	return commandPlanetScale(); break;
@@ -927,6 +938,10 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
+
+		default:
+			cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
+			break;
 	}
 	return true; // flag was found and updated
 }
@@ -1344,6 +1359,8 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE: 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		coreLink->textSetDefaultColor( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args[W_INDEX]), Vcolor ); break;
+		default:
+		break;
 	}
 	return executeCommandStatus();
 }
@@ -1509,6 +1526,9 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_MILKY_WAY_INTENSITY:
 						if (setValue==W_DEFAULT) coreLink->milkyWayRestoreIntensity(); else coreLink->milkyWaySetIntensity(evalDouble(setValue));
 						if (coreLink->milkyWayGetIntensity()) coreLink->milkyWaySetFlag(true);
+						break;
+		case SCD_NAMES::APP_ZODIACAL_INTENSITY:
+						coreLink->milkyWaySetZodiacalIntensity(evalDouble(setValue));
 						break;
 		case SCD_NAMES::APP_MILKY_WAY_TEXTURE:
 						if(setValue==W_DEFAULT) coreLink->milkyWayRestoreDefault();	else
@@ -2596,7 +2616,7 @@ int AppCommandInterface::commandTimerate()
 		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
 		double sstep = 1.05;
-		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
+		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=-3;
 
 		if( !argStep.empty() )
 			sstep = evalDouble(argStep);
@@ -3071,20 +3091,23 @@ int AppCommandInterface::commandBody()
 		}
 
 
-		std::string argColor = args[W_COLOR_VALUE];
-		if (argColor.empty())
-			argColor = args["color"];
-
+		std::string argColor = args[W_COLOR];
 		if (!argColor.empty()) {
+			std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
 			//gestion de la couleur
 			Vec3f Vcolor;
 			std::string argR= args[W_R];
 			std::string argG= args[W_G];
 			std::string argB= args[W_B];
-			AppCommandColor testColor(Vcolor, debug_message, argColor, argR,argG, argB);
-			if (!testColor)
+			std::string argColorValue = args[W_COLOR_VALUE];
+			//std::cout << "RGB: " << argR << " " << argG << " " << argB << std::endl;
+			AppCommandColor testColor(Vcolor, debug_message, argColorValue, argR, argG, argB);
+			if (!testColor) {
+				//std::cout << "Erreur color " << debug_message << std::endl;
 				return executeCommandStatus();
+			}
 
+			//std::cout << "Infos lues : " << argColor << " " << Vcolor  << std::endl;
 			coreLink->planetSetColor(argName, argColor, Vcolor);
 			return executeCommandStatus();
 		}
@@ -3100,7 +3123,6 @@ int AppCommandInterface::commandBody()
 	debug_message = _("Command 'body': unknown argument");
 	return executeCommandStatus();
 }
-
 
 int AppCommandInterface::commandFont()
 {
@@ -3433,7 +3455,59 @@ int AppCommandInterface::commandMultiply()
 		std::string mValue = args.begin()->second;
 		appEval->commandMul(mArg,mValue);
 	} else {
-		debug_message = "unexpected error in command__addition";
+		debug_message = "unexpected error in command__multiply";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandDivide()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandDiv(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__divide";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandTangent()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandTan(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__tangent";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandTrunc()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandTrunc(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__trunc";
+	}
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandSinus()
+{
+	// could loop if want to allow that syntax
+	if (args.begin() != args.end()) {
+		std::string mArg = args.begin()->first;
+		std::string mValue = args.begin()->second;
+		appEval->commandSin(mArg,mValue);
+	} else {
+		debug_message = "unexpected error in command__sinus";
 	}
 	return executeCommandStatus();
 }

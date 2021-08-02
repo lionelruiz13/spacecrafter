@@ -59,7 +59,8 @@ class ThreadContext;
  */
 class VideoPlayer {
 public:
-	//! Constructeur: initialise les états de la ffmpeg
+	//! \fn VideoPlayer
+	//! \brief Constructeur: initialise les états de la ffmpeg
 	VideoPlayer(Media* _media);
 
 	//! Destructeur, ferme les états de la ffmpeg

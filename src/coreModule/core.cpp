@@ -979,7 +979,7 @@ void Core::testLandscapeCompatibleWithAutoMode()
 	autoLandscapeMode = false;
 
 	// un satellite doit avoir Moon comme landscape de base
-	if (observatory->getHomeBody()->isSatellite() && landscape->getName() == "Moon") {
+	if (observatory->getHomeBody()->isSatellite() && landscape->getName() == "moon") {
 		autoLandscapeMode = true;
 		//std::cout << ": automode moon" << std::endl;
 		return;
