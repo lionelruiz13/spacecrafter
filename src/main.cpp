@@ -34,6 +34,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <sys/stat.h>
+#include <memory>
 
 #include "spacecrafter.hpp"
 #include "appModule/app.hpp"
@@ -235,9 +236,11 @@ int main(int argc, char **argv)
 	Log->write("LOCALE DIR: " + std::string(LOCALEDIR), LOG_TYPE::L_INFO);
 
 	//test if config.ini is not to old.
-	CheckConfig* configUptodate =  new CheckConfig();
+	{
+		std::unique_ptr<CheckConfig> configUptodate =  std::make_unique<CheckConfig>();
 	configUptodate->checkConfigIni(appDir+"config.ini", std::string(VERSION));
-	delete configUptodate;
+		//delete configUptodate;
+	}
 
 	//create AppSettings and InitParser
 	AppSettings::Init(appDir, dataRoot, LOCALEDIR);
@@ -249,9 +252,9 @@ int main(int argc, char **argv)
 	Log->setWriteLog(conf.getBoolean(SCS_MAIN, SCK_LOG));
 
 	#ifdef LINUX
-	CPUInfo *cpuInfo =  nullptr;
+	std::unique_ptr<CPUInfo> cpuInfo =  nullptr;
 	if (conf.getBoolean(SCS_MAIN,SCK_CPU_INFO)) {
-		cpuInfo = new CPUInfo();
+		cpuInfo = std::make_unique<CPUInfo>();
 		cpuInfo -> init(ini->getLogDir()+"CPUlog.csv",ini->getLogDir()+"GPUlog.csv");
 		cpuInfo -> start();
 		Log->write("CPUInfo actived",LOG_TYPE::L_DEBUG);
@@ -261,7 +264,7 @@ int main(int argc, char **argv)
 	//-------------------------------------------
 	// create the SDL windows for display
 	//-------------------------------------------
-	SDLFacade* sdl = new SDLFacade();
+	std::unique_ptr<SDLFacade> sdl = std::make_unique<SDLFacade>();
 	sdl->initSDL();
 
 	// détermination de la résolution initiale
@@ -290,10 +293,10 @@ int main(int argc, char **argv)
 	//-------------------------------------------
 	// create the main class for SC logical software
 	//-------------------------------------------
-	App* app = new App( sdl );
+	std::unique_ptr<App> app = std::make_unique<App>(sdl.get());
 
 	// Register custom suspend and term signal handers
-	ISignals* signalObj = ISignals::Create(app);
+	ISignals* signalObj = ISignals::Create(app.get());
 	signalObj->Register( SIGTSTP, ISignals::NSSigTSTP );
 	signalObj->Register( SIGTERM, ISignals::NSSigTERM );
 	signalObj->Register( SIGINT, ISignals::NSSigTERM );
@@ -319,8 +322,8 @@ int main(int argc, char **argv)
 	}
 	#endif
 
-	delete app;
-	delete sdl;
+	//delete app;
+	//delete sdl;
 	delete signalObj;
 
 	// Log->write("EOF", LOG_TYPE::L_INFO);
