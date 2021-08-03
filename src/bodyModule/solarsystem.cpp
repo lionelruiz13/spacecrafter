@@ -1020,11 +1020,3 @@ std::unique_ptr<SSystemIteratorVector> SolarSystem::createIteratorVector()
 {
 	return std::make_unique<SSystemIteratorVector>(this);
 }
-
-
-double SolarSystem::getSunAzimuth(const Navigator * nav) const
-{
-	double alt, az;
-	sun->getAltAz(nav, &alt, &az);
-	return az*180.0/M_PI;
-}
