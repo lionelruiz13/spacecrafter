@@ -53,7 +53,6 @@ public:
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
-
 	// load one object from a hash (returns error message if any)
 	// this public method always adds bodies as deletable
 	void addBody(stringHash_t & param) {
@@ -90,9 +89,6 @@ public:
 	                                  const Projector * prj,
 	                                  bool *default_last_item,
 	                                  bool aboveHomePlanet ) const;
-
-	//! Return the matching planet pointer if exists or nullptr
-	Body* searchByEnglishName(const std::string &planetEnglishName) const;
 
 	//! Return the matching planet pointer if exists or nullptr
 	//! @param planetNameI18n The case sensistive translated planet name
@@ -221,14 +217,6 @@ public:
 		return orbitCreator;
 	}
 
-	struct BodyContainer {
-		std::unique_ptr<Body> body=nullptr;
-		std::string englishName;  // for convenience
-		bool isDeleteable = false;
-		bool isHidden = false;
-		bool initialHidden = false;
-	};
-
 	// return the Sun altitude
 	double getSunAltitude(const Navigator * nav) const;
 
@@ -267,7 +255,6 @@ private:
 
 	Vec3i ringsInit;
 
-	std::map< std::string, std::shared_ptr<BodyContainer>> systemBodies; //Map containing the bodies and related information. the key is their english name
 	std::vector<std::shared_ptr<BodyContainer>> renderedBodies; //Contains bodies that are not hidden
 
 	bool nearLunarEclipse(const Navigator * nav, Projector * prj);

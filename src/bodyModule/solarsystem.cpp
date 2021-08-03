@@ -242,11 +242,6 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	// Create the Body and add it to the list
 	// p est un pointeur utilisé pour l'objet qui sera au final intégré dans la liste des astres que gère body_mgr
 	std::unique_ptr<Body> p = nullptr;
-	//std::shared_ptr<Sun> p_sun =nullptr;
-	//Moon *p_moon =nullptr;
-	//BigBody *p_big =nullptr;
-	//SmallBody *p_small =nullptr;
-	//std::unique_ptr<Artificial> p_artificial = nullptr;
 	ObjL* currentOBJ = nullptr;
 
 	std::string modelName = param["model_name"];
@@ -694,20 +689,6 @@ bool SolarSystem::getPlanetHidden(const std::string &name)
 	else{
 		return false;
 	}
-}
-
-Body* SolarSystem::searchByEnglishName(const std::string &planetEnglishName) const
-{
-	//printf("SolarSystem::searchByEnglishName(\"%s\"): start\n", planetEnglishName.c_str());
-	// side effect - bad?
-	//	transform(planetEnglishName.begin(), planetEnglishName.end(), planetEnglishName.begin(), ::tolower);
-	if(systemBodies.count(planetEnglishName) != 0){
-		return systemBodies.find(planetEnglishName)->second->body.get();
-	}
-	else{
-		return nullptr;
-	}
-
 }
 
 Object SolarSystem::searchByNamesI18(const std::string &planetNameI18) const

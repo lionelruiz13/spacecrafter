@@ -50,7 +50,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 	}
 
 	// sort all body from the furthest to the closest to the observer
-	sort(ssystem->begin(), ssystem->end(), [] (std::shared_ptr<SolarSystem::BodyContainer> const b1, std::shared_ptr<SolarSystem::BodyContainer> const b2) {
+	sort(ssystem->begin(), ssystem->end(), [] (std::shared_ptr<ProtoSystem::BodyContainer> const b1, std::shared_ptr<ProtoSystem::BodyContainer> const b2) {
 		return (b1->body->getDistance() > b2->body->getDistance());
 	});
 

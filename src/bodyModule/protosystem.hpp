@@ -48,13 +48,23 @@ public:
 	virtual void addBody(stringHash_t & param, bool deletable) = 0;
 
 	//! Return the matching planet pointer if exists or nullptr
-	virtual Body* searchByEnglishName(const std::string &planetEnglishName) const = 0;
+	Body* searchByEnglishName(const std::string &planetEnglishName) const;
 
+	struct BodyContainer {
+		std::unique_ptr<Body> body=nullptr;
+		std::string englishName;  // for convenience
+		bool isDeleteable = false;
+		bool isHidden = false;
+		bool initialHidden = false;
+	};
+	
 protected:
 
 	ThreadContext *context;
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
 	Body* bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 	OrbitCreator * orbitCreator = nullptr;
+	
 
+	std::map< std::string, std::shared_ptr<BodyContainer>> systemBodies; //Map containing the bodies and related information. the key is their english name
 };

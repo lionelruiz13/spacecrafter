@@ -79,3 +79,16 @@ void ProtoSystem::load(const std::string& planetfile)
 	cLog::get()->mark();
 }
 
+Body* ProtoSystem::searchByEnglishName(const std::string &planetEnglishName) const
+{
+	//printf("SolarSystem::searchByEnglishName(\"%s\"): start\n", planetEnglishName.c_str());
+	// side effect - bad?
+	//	transform(planetEnglishName.begin(), planetEnglishName.end(), planetEnglishName.begin(), ::tolower);
+	if(systemBodies.count(planetEnglishName) != 0){
+		return systemBodies.find(planetEnglishName)->second->body.get();
+	}
+	else{
+		return nullptr;
+	}
+
+}
