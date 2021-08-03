@@ -322,6 +322,7 @@ int main(int argc, char **argv)
 	}
 	#endif
 
+	app.reset();
 	//delete app;
 	//delete sdl;
 	delete signalObj;
