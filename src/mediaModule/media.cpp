@@ -239,13 +239,13 @@ void Media::playerRestart()
 
 void Media::playerJump(float deltaTime)
 {
-	float realDelta=0.0f;
+	float realDelta=0.f;
 	player->jumpInCurrentVideo(deltaTime, realDelta);
-	if (realDelta==0.0) {
+	if (realDelta==0.f) {
 		audio->musicRewind();
 		return;
 	}
-	if (realDelta==-1.0)
+	if (realDelta==-1.f)
 		audio->musicDrop();
 	else {
 		audio->musicResume();
@@ -255,13 +255,13 @@ void Media::playerJump(float deltaTime)
 
 void Media::playerInvertflow()
 {
-	float realDelta=0.0f;
+	float realDelta=0.f;
 	player->invertVideoFlow(realDelta);
-	if (realDelta==0.0) {
+	if (realDelta==0.f) {
 		audio->musicRewind();
 		return;
 	}
-	if (realDelta==-1.0)
+	if (realDelta==-1.f)
 		audio->musicDrop();
 	else {
 		audio->musicResume();
