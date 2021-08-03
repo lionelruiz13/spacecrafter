@@ -31,27 +31,16 @@
 #include <functional>
 #include <map>
 
-#include "tools/object.hpp"
 #include "bodyModule/orbit.hpp"
-#include "tools/translator.hpp"
-#include "navModule/observer.hpp"
-#include "navModule/anchor_manager.hpp"
 #include "tools/no_copy.hpp"
 #include "bodyModule/body_color.hpp"
-#include "tools/ScModule.hpp"
 #include "bodyModule/protosystem.hpp"
 
-class SSystemIterator;
-class SSystemIteratorVector;
 
-class SolarSystem: public NoCopy , public ModuleFont, public ProtoSystem{
-    friend class SSystemIterator;
-	friend class SSystemIteratorVector;
+class SolarSystem: public ProtoSystem{
 public:
 	SolarSystem(ThreadContext *o_context, ObjLMgr *_objLMgr);
 	virtual ~SolarSystem();
-
-	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
 	// load one object from a hash (returns error message if any)
 	// this public method always adds bodies as deletable
@@ -59,46 +48,11 @@ public:
 		addBody(param, true);
 	}
 
-	virtual void setFont(float font_size, const std::string& font_name) override;
-
 	//removes a body that has no satelites
 	bool removeBodyNoSatellite(const std::string &name);
 
-	//removes a body and its satellites
-	bool removeBody(const std::string &name);
-
-	//removes all bodies that do not come from ssystem.ini
-	bool removeSupplementalBodies(const std::string &name);
-
-	//! @brief Update i18 names from english names according to passed translator
-	//! The translation is done using gettext with translated strings defined in translations.h
-	void translateNames(Translator& trans);
-
-	std::string getPlanetHashString();  // locale and ssystem.ini names, newline delimiter, for tui
-
-	void toggleHideSatellites(bool val);
-
-	//! Search if any Planet is close to position given in earth equatorial position.
-	Object search(Vec3d, const Navigator * nav, const Projector * prj) const;
-
-	//! Return a stl vector containing the planets located inside the lim_fov circle around position v
-	std::vector<Object> searchAround(Vec3d v,
-	                                  double lim_fov,
-	                                  const Navigator * nav,
-	                                  const Observer* observatory,
-	                                  const Projector * prj,
-	                                  bool *default_last_item,
-	                                  bool aboveHomePlanet ) const;
-
-	//! Return the matching planet pointer if exists or nullptr
-	//! @param planetNameI18n The case sensistive translated planet name
-	Object searchByNamesI18(const std::string &planetNameI18n) const;
-
-
 	//! get the position Alt Az for Sun
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const;
-
-	void bodyTraceBodyChange(const std::string &bodyName);
 
 	//!return Earth planet object
 	Body* getEarth(void) const {
@@ -114,15 +68,6 @@ public:
 	Moon* getMoon(void) const {
 		return moon;
 	}
-
-	// get flag for Activate/Deactivate Body composant
-	bool getFlag(BODY_FLAG name);
-
-	//! set flag for Activate/Deactivate planets axis
-	void setFlagAxis(bool b);
-
-	//! Start/stop accumulating new trail data (clear old data)
-	void startTrails(bool b);
 
 	//! Set if Moon display is scaled
 	void setFlagMoonScale(bool b) {
@@ -176,46 +121,11 @@ public:
 	float getSunScale(void) const {
 		return SunScale;
 	}
-	//! Set flag for displaying clouds (planet rendering feature)
-	void setFlagClouds(bool b) {
-		Body::setFlagClouds(b);
-	}
-
-	bool getHideSatellitesFlag(){
-		return flagHideSatellites;
-	}
-
-	//! Get list of all the translated planets name
-	std::vector<std::string> getNamesI18(void);
-
-	//! Find and return the list of at most maxNbItem objects auto-completing the passed object I18n name
-	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const;
-
-	//modify Planet "name" is hidden or not.
-	void setPlanetHidden(const std::string &name, bool planethidden);
-
-	//get the state of the planet
-	bool getPlanetHidden(const std::string &name);
-
 
 	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
 	// réinitialise les paramètes de la tesselaiton
 	// prend en compte la taille et le flag caché ou pas
 	void initialSolarSystemBodies();
-
-	void modelRingInit(int low, int medium, int high) {
-		ringsInit=Vec3i(low, medium, high);
-	}
-
-	std::string getPlanetsPosition();
-	
-	void setAnchorManager(AnchorManager * _anchorManager){
-		anchorManager = _anchorManager;
-	}
-
-	const OrbitCreator * getOrbitCreator()const{
-		return orbitCreator;
-	}
 
 	// return the Sun altitude
 	double getSunAltitude(const Navigator * nav) const;
@@ -223,19 +133,8 @@ public:
 	// return the Sun azimuth 
 	double getSunAzimuth(const Navigator * nav) const;
 
-	std::vector<std::shared_ptr<BodyContainer>>::iterator begin() {return renderedBodies.begin();};
-    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};	
-
-	std::unique_ptr<SSystemIterator> createIterator();
-	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
-
-
 private:
-	Body* findBody(const std::string &name);
-	std::shared_ptr<SolarSystem::BodyContainer> findBodyContainer(const std::string &name);
 
-	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
-	BODY_TYPE setPlanetType (const std::string &str);
 
 	// load one object from a hash
 	void addBody(stringHash_t & param, bool deletable);
@@ -253,20 +152,7 @@ private:
 	float moonScale;	// Moon scale value
 	float SunScale;	// Sun scale value
 
-	Vec3i ringsInit;
-
-	std::vector<std::shared_ptr<BodyContainer>> renderedBodies; //Contains bodies that are not hidden
-
 	bool nearLunarEclipse(const Navigator * nav, Projector * prj);
-
-	// Master settings
-	bool flagAxis= false;
-	bool flagHideSatellites = false;
-
-
-	AnchorManager * anchorManager = nullptr;
-
-
 };
 
 #endif // _SOLARSYSTEM_H_

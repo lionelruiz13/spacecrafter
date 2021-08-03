@@ -24,7 +24,7 @@
 
 #include "ssystem_iterator.hpp"
 
-SSystemIterator::SSystemIterator(SolarSystem* p_data) : pointer(p_data) {
+SSystemIterator::SSystemIterator(ProtoSystem* p_data) : pointer(p_data) {
     m_it_ = pointer->systemBodies.begin();
 }
 
@@ -44,12 +44,12 @@ bool SSystemIterator::end() {
     return (m_it_ == pointer->systemBodies.end());
 }
 
-std::map< std::string, std::shared_ptr<SolarSystem::BodyContainer>>::iterator SSystemIterator::current() {
+std::map< std::string, std::shared_ptr<ProtoSystem::BodyContainer>>::iterator SSystemIterator::current() {
     return m_it_;
 }
 
 
-SSystemIteratorVector::SSystemIteratorVector(SolarSystem* p_data) : pointer(p_data) {
+SSystemIteratorVector::SSystemIteratorVector(ProtoSystem* p_data) : pointer(p_data) {
     m_it_ = pointer->renderedBodies.begin();
 }
 
@@ -69,6 +69,6 @@ bool SSystemIteratorVector::end() {
     return (m_it_ == pointer->renderedBodies.end());
 }
 
-SolarSystem::BodyContainer* SSystemIteratorVector::current() {
+ProtoSystem::BodyContainer* SSystemIteratorVector::current() {
     return m_it_->get();
 }

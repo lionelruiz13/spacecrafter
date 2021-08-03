@@ -28,13 +28,13 @@
 #include <map>
 #include "solarsystem.hpp"
 
-class SolarSystem;
+class ProtoSystem;
 
 class SSystemIterator {
 public:
-    typedef typename std::map<std::string, struct std::shared_ptr<SolarSystem::BodyContainer>>::iterator iter_type;
+    typedef typename std::map<std::string, struct std::shared_ptr<ProtoSystem::BodyContainer>>::iterator iter_type;
 
-    SSystemIterator(SolarSystem* p_data);
+    SSystemIterator(ProtoSystem* p_data);
 
     void operator ++ (int)
     {
@@ -54,15 +54,15 @@ public:
     iter_type current();
 
     private:
-    SolarSystem *pointer;
+    ProtoSystem *pointer;
     iter_type m_it_;
 };
 
 class SSystemIteratorVector {
 public:
-    typedef typename std::vector<std::shared_ptr<SolarSystem::BodyContainer>>::iterator iter_type;
+    typedef typename std::vector<std::shared_ptr<ProtoSystem::BodyContainer>>::iterator iter_type;
 
-    SSystemIteratorVector(SolarSystem* p_data);
+    SSystemIteratorVector(ProtoSystem* p_data);
 
     void operator ++ (int)
     {
@@ -79,10 +79,10 @@ public:
 
     bool end();
 
-    SolarSystem::BodyContainer* current();
+    ProtoSystem::BodyContainer* current();
 
     private:
-    SolarSystem *pointer;
+    ProtoSystem *pointer;
     iter_type m_it_;
 };
 
