@@ -253,13 +253,6 @@ public:
 	std::unique_ptr<SSystemIterator> createIterator();
 	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
 
-private:
-	struct depthBucket {
-		double znear;
-		double zfar;
-	};
-
-
 
 private:
 	Body* findBody(const std::string &name);
