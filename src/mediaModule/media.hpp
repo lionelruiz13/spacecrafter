@@ -79,8 +79,6 @@ struct VideoParam {
 //etat de la lecture vidéo
 enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360, V_VRCUBE};
 enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
-//etat de la lecture audio
-// enum class A_TYPE : char { V_NONE, V_AUDIO, V_VIDEO};
 
 
 class Media : public NoCopy {
@@ -95,8 +93,8 @@ public:
 	//
 	////////////////////////////////////////////////////////////////////////////
 
+	//! creation contexte Vulkan 
 	void init(ThreadContext *context);
-
 	void createSC_context(ThreadContext *context);
 
 	//! affiche une image du player video à destination du VR360
@@ -137,7 +135,6 @@ public:
 	//
 	////////////////////////////////////////////////////////////////////////////
 
-	// cette fonction remplace :
 	void audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam);
 
 	void audioVolume(const AudioVolume& volumeOrder, float _value);
@@ -191,7 +188,6 @@ public:
 	void audioMusicJump(float deltaTime) {
 		audio->musicJump(deltaTime);
 	}
-	// jusque la ...
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void audioUpdate(int delta_time) {
@@ -212,10 +208,6 @@ public:
 	int imageLoad(const std::string &filename, const  std::string &name, const std::string &coordinate, IMG_PROJECT project, bool mipmap) {
 		return imageMgr->loadImage( filename,  name, coordinate, project, mipmap);
 	}
-
-	// void imageClone(const std::string &name, int i) {
-	// 	imageMgr->clone(name,i);
-	// }
 
 	void imageDrop(const std::string &name) {
 		return imageMgr->drop_image(name);
@@ -327,13 +319,8 @@ private:
 		V_TYPE type;
 		V_STATE state;
 	};
-	// struct AudioState {
-	// 	A_TYPE type;
-	// 	A_STATE state;
-	// };
 
 	VideoState m_videoState;
-	// AudioState m_audioState;
 	std::map<std::string, VID_TYPE> strToVid;
 };
 

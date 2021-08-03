@@ -47,11 +47,6 @@ Media::Media()
 
 Media::~Media()
 {
-	// if (audio)	delete audio;
-	// if (imageMgr) delete imageMgr;
-	// if (player) delete player;
-	// if (vr360) delete vr360;
-	// if (viewPort) delete viewPort;
 }
 
 VID_TYPE Media::strToVideoType(const std::string& _value)
@@ -221,11 +216,12 @@ void Media::playerStop()
 		case V_TYPE::V_VIEWPORT :
 			viewPort->display(false);
 			break;
-		case V_TYPE::V_IMAGE: 
+		case V_TYPE::V_IMAGE:
 			if (!imageVideoName.empty())
 				imageMgr->drop_image(imageVideoName);
 			break;
-		default: break;
+		default:
+			break;
 	}
 	m_videoState.type=V_TYPE::V_NONE;
 }
@@ -278,8 +274,8 @@ void Media::init(ThreadContext *context)
 
 void Media::createSC_context(ThreadContext *context)
 {
-	viewPort-> createSC_context(context);
-	vr360-> createSC_context(context);
+	viewPort->createSC_context(context);
+	vr360->createSC_context(context);
 	imageMgr->createImageShader(context);
 	player->createTextures(context);
 }
