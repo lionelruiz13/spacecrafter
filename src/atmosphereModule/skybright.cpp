@@ -72,7 +72,12 @@ void Skybright::setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith
 	if (cos_dist_sun_zenith<0) air_mass_sun = 40;
 	else air_mass_sun = 1.f / (cos_dist_sun_zenith+0.025f*expf(-11.f*cos_dist_sun_zenith));
 
-	b_moon_term1 = pow10(-0.4f * (mag_moon + 54.32f));
+//if ( cor_optoma )
+    if (cos_dist_moon_zenith<0)
+		b_moon_term1 = pow10(-0.4f * (mag_moon + 54.32f))/(2.f);
+    else
+		b_moon_term1 = pow10(-0.4f * (mag_moon + 54.32f))/(2.f-1.5f*cos_dist_moon_zenith);
+//else
 
 	// Moon should have no impact if below the horizon
 	// .05 is ad hoc fadeout range - Rob
@@ -108,7 +113,7 @@ float Skybright::getLuminance(float cos_dist_moon, float cos_dist_sun, float cos
 	if (cos_dist_zenith < -1.f ) cos_dist_zenith = -1.f;
 	if (cos_dist_zenith > 1.f ) cos_dist_zenith = 1.f;
 
-	if (cor_optoma) cos_dist_moon = 0;
+	//if (cor_optoma) cos_dist_moon = 0;
 
 	float dist_moon = acosf(cos_dist_moon);
 	float dist_sun = acosf(cos_dist_sun);
@@ -140,7 +145,8 @@ float Skybright::getLuminance(float cos_dist_moon, float cos_dist_sun, float cos
 	b_daylight = 9.289663e-12 * (1.f - bKX) * (FS * C4 + 440000.f * (1.f - C4));
 
 	// Total sky brightness
-	b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon : b_total = b_night + b_daylight + b_moon;
+	//b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon : b_total = b_night + b_daylight + b_moon;
+	b_daylight>b_twilight ? b_total = b_night + b_twilight + b_moon/2.f : b_total = b_night + b_daylight + b_moon/2.f;
 
 	return (b_total<0.f) ? 0.f : b_total/1.11E-15 * 1E-5/M_PI; // cd/m^2
 

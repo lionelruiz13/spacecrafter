@@ -100,7 +100,7 @@ void UI::init(const InitParser& conf)
 	FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
 	MouseCursorTimeout  = conf.getDouble(SCS_GUI, SCK_MOUSE_CURSOR_TIMEOUT);
 	PosDateTime			= conf.getInt(SCS_GUI, SCK_DATETIME_DISPLAY_POSITION);
-	PosObjectInfo		= conf.getInt(SCS_GUI, SCK_OBJECT_INFO_DISPLAY_POSITION);	
+	PosObjectInfo		= conf.getInt(SCS_GUI, SCK_OBJECT_INFO_DISPLAY_POSITION);
 	PosMenuM			= conf.getInt(SCS_GUI, SCK_MENU_DISPLAY_POSITION);
 	FlagShowPlanetname	= conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_PLANETNAME);
 	MouseZoom			= conf.getInt(SCS_NAVIGATION, SCK_MOUSE_ZOOM);
@@ -177,19 +177,19 @@ int UI::handleMove(int x, int y)
 /*******************************************************************************/
 void UI::flag(UI_FLAG layerValue, bool _value) {
 	switch(layerValue) {
-		// case UI_FLAG::SHOW_FPS : 
+		// case UI_FLAG::SHOW_FPS :
 		// 	FlagShowFps = _value;
 		// 	break;
-		case UI_FLAG::SHOW_LATLON : 
+		case UI_FLAG::SHOW_LATLON :
 			FlagShowLatLon = _value;
-			break;		
-		case UI_FLAG::SHOW_TUISHORTOBJ_INFO : 
+			break;
+		case UI_FLAG::SHOW_TUISHORTOBJ_INFO :
 			FlagShowTuiShortObjInfo = _value;
 			break;
-		case UI_FLAG::SHOW_TUIDATETIME : 
+		case UI_FLAG::SHOW_TUIDATETIME :
 			FlagShowTuiDateTime = _value;
 			break;
-		case UI_FLAG::HANDLE_KEY_ONVIDEO : 
+		case UI_FLAG::HANDLE_KEY_ONVIDEO :
 			handleKeyOnVideo = _value;
 			break;
 		default: break;
@@ -205,9 +205,9 @@ void UI::toggle(UI_FLAG layerValue)
 		case UI_FLAG::SHOW_LATLON : FlagShowLatLon = ! FlagShowLatLon;
 			break;
 		case UI_FLAG::SHOW_TUISHORTOBJ_INFO : FlagShowTuiShortObjInfo = ! FlagShowTuiShortObjInfo;
-			break;		
+			break;
 		case UI_FLAG::SHOW_TUIDATETIME : FlagShowTuiDateTime = ! FlagShowTuiDateTime;
-			break;	
+			break;
 
 		default: break;
 	}
@@ -353,7 +353,7 @@ void UI::moveMouseAlt(double x)
 	int distZ=sqrt((posMouseX-m_sdl->getDisplayWidth()/2)*(posMouseX-m_sdl->getDisplayWidth()/2)+(posMouseY-m_sdl->getDisplayHeight()/2)*(posMouseY-m_sdl->getDisplayHeight()/2));
 	if (distZ<1)
 		distZ=1;
-		
+
 	if(abs(x) < 1){
 		x = x>0 ? 1 : -1;
 	}
@@ -493,20 +493,24 @@ void UI::lowerHeight()
 
 void UI::speedDecrease()
 {
-	this->executeCommand("define x -1");
-	//if(scriptInterface->isScriptPlaying())
-	//	scriptInterface->slowerSpeed();
+	if (media->playerisVideoPlayed()) media->playerJump(-10.0);
+    else
+	//	if (!scriptInterface->isScriptPlaying())
+	//  	scriptInterface->slowerSpeed();
 	//else
-		deltaSpeed = DeltaSpeed::DOWN;
+			deltaSpeed = DeltaSpeed::DOWN;
+	this->executeCommand("define x -1");
 }
 
 void UI::speedIncrease()
 {
-	this->executeCommand("define x 1");	
-	//if(scriptInterface->isScriptPlaying())
+	if (media->playerisVideoPlayed()) media->playerJump(10.0);
+	else
+	//	if (!scriptInterface->isScriptPlaying())
 	//	scriptInterface->fasterSpeed();
 	//else
-		deltaSpeed = DeltaSpeed::UP;
+			deltaSpeed = DeltaSpeed::UP;
+	this->executeCommand("define x 1");
 }
 
 void UI::turnLeft()
@@ -545,11 +549,13 @@ void UI::executeCommand(const std::string& command)
 {
 	//app->executeCommand(command);
 	Event* event = new CommandEvent(command);
-	EventRecorder::getInstance()->queue(event);	
+	EventRecorder::getInstance()->queue(event);
 }
 
 void UI::pauseScriptOrTimeRate()
 {
+	if (media->playerisVideoPlayed()) media->playerPause();
+	else
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
 		// coreLink->timeResetMultiplier();
@@ -572,7 +578,7 @@ void UI::handleInputs(SDL_Event E)
             /* and now we can call the function we wanted to call in the timer but couldn't because of the multithreading problems */
 			//media->externalUpdate(0); // @TODO  cette valeur ne sert à rien
 			Event* event = new FpsEvent(FPS_ORDER::AFTER_ONE_SECOND);
-			EventRecorder::getInstance()->queue(event);	
+			EventRecorder::getInstance()->queue(event);
             break;
         }
 
@@ -915,7 +921,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new CommandEvent("external_viewer filename "+ADIR+"02.mp3 action play");
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new CommandEvent("external_viewer filename "+ADIR+"06.mp3 action play");
@@ -1006,8 +1012,8 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					if (flag_creu != 1) {
 						event = new ScriptEvent( IDIR+"internal/windrose.sts");
 						EventRecorder::getInstance()->queue(event);
-					} 
-					else 
+					}
+					else
 						core->setLandscape(current_landscape);
 					flag_creu = (flag_creu+1)%2;
 					key_Modifier= NONE;
@@ -1100,7 +1106,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new FlagEvent( FLAG_NAMES::FN_EQUATOR_LINE , FLAG_VALUES::FV_TOGGLE);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new FlagEvent( FLAG_NAMES::FN_TROPIC_LINES , FLAG_VALUES::FV_TOGGLE);
@@ -1144,7 +1150,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( IDIR+"internal/sky_culture0.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL:
 					event = new ScriptEvent( IDIR+"internal/sky_culture3.sts");
@@ -1201,7 +1207,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 						event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
 						EventRecorder::getInstance()->queue(event);
 						this->executeCommand("timerate rate 0");
-					}	
+					}
 					break;
 				case SUPER:
 					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_CENTER , FLAG_VALUES::FV_TOGGLE);
@@ -1535,7 +1541,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case SHIFT:
 					event = new FlagEvent( FLAG_NAMES::FN_ATMOSPHERIC_REFRACTION , FLAG_VALUES::FV_TOGGLE);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					if (scriptInterface->isScriptRecording()) {
@@ -1641,7 +1647,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_DATETIME , FLAG_VALUES::FV_TOGGLE);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new FlagEvent( FLAG_NAMES::FN_SHOW_TUI_SHORT_OBJ_INFO , FLAG_VALUES::FV_TOGGLE);
@@ -1726,7 +1732,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new FlagEvent( FLAG_NAMES::FN_ANALEMMA_LINE , FLAG_VALUES::FV_TOGGLE);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_CENTER , FLAG_VALUES::FV_TOGGLE);
@@ -1743,7 +1749,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 				case CTRL :
 					this->executeCommand("select planet home_planet pointer off");
 					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_ON);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				default:
 					break;
@@ -1758,7 +1764,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case SUPER:
 					event = new FlagEvent( FLAG_NAMES::FN_LANDSCAPE , FLAG_VALUES::FV_TOGGLE);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT :
@@ -1767,7 +1773,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					current_landscape = coreLink->landscapeGetName();
 					break;
 				case KWIN:
-					this->executeCommand(std::string("body name selected skin_use toggle"));				
+					this->executeCommand(std::string("body name selected skin_use toggle"));
 					break;
 				case CTRL :
 					event = new FlagEvent( FLAG_NAMES::FN_CLOUDS , FLAG_VALUES::FV_TOGGLE);
@@ -1982,7 +1988,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new FlagEvent( FLAG_NAMES::FN_MILKY_WAY , FLAG_VALUES::FV_TOGGLE);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( IDIR+"internal/milkyway.sts");
@@ -2187,7 +2193,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					} break;
 				case SHIFT:
 					break;
-				case CTRL : 
+				case CTRL :
 					this->executeCommand("set home_planet selected");
 					break;
 				default:
@@ -2241,7 +2247,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
-				case CTRL: 
+				case CTRL:
 					this->executeCommand("set home_planet selected");
 					break;
 				default:
@@ -2251,7 +2257,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 
 		case SDL_SCANCODE_ESCAPE:
 			event = new ScriptEvent( SDIR+"internal/ctrl_space.sts");
-			EventRecorder::getInstance()->queue(event);			
+			EventRecorder::getInstance()->queue(event);
 			break;
 
 		case SDL_SCANCODE_INSERT:
@@ -2288,11 +2294,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 			}
 			break;
-			
+
 		case SDL_SCANCODE_RETURN:
 			this->executeCommand("deselect");
 			break;
-			
+
 		case SDL_SCANCODE_KP_1 :
 			switch(key_Modifier) {
 				case NONE:
@@ -2458,7 +2464,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S06.sts");
-					EventRecorder::getInstance()->queue(event);	
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL:
@@ -2489,7 +2495,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S07.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
@@ -2516,7 +2522,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S08.sts");
-					EventRecorder::getInstance()->queue(event);	
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
@@ -2547,12 +2553,12 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S09.sts");
-					EventRecorder::getInstance()->queue(event);	
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
 					event = new FlagEvent( FLAG_NAMES::FN_GALACTIC_GRID , FLAG_VALUES::FV_TOGGLE);
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					break;
 				// case ALT:
 				// 	coreLink->cameraMoveRelativeXYZ(0.,0.0,1.0);
@@ -2579,7 +2585,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S10.sts");
-					EventRecorder::getInstance()->queue(event);	
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL:
@@ -2614,11 +2620,11 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
-				case SHIFT: 
+				case SHIFT:
 				break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S11.sts");
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
@@ -2648,7 +2654,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S12.sts");
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
@@ -2672,7 +2678,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S13.sts");
-					EventRecorder::getInstance()->queue(event);						
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
@@ -2694,7 +2700,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S14.sts");
-					EventRecorder::getInstance()->queue(event);					
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
@@ -2720,7 +2726,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S15.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
@@ -2745,7 +2751,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/S16.sts");
-					EventRecorder::getInstance()->queue(event);						
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case CTRL :
@@ -2760,24 +2766,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F01.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F13.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF01.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/01.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W01.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2790,24 +2796,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F02.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F14.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF02.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/02.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W02.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2819,24 +2825,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F03.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F15.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF03.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/03.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W03.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2848,24 +2854,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F04.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F16.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF04.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/04.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W04.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2877,24 +2883,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F05.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F17.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF05.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/05.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W05.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2906,24 +2912,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F06.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F18.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF06.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/06.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W06.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2935,24 +2941,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F07.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F19.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF07.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/07.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
 					event = new ScriptEvent( SDIR+"fscripts/W07.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				default:
@@ -2964,16 +2970,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F08.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F20.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF08.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/08.sts");
@@ -2993,16 +2999,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F09.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F21.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF09.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/09.sts");
@@ -3022,16 +3028,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F10.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F22.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF10.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/10.sts");
@@ -3051,16 +3057,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F11.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F23.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF11.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/11.sts");
@@ -3080,16 +3086,16 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			switch(key_Modifier) {
 				case NONE:
 					event = new ScriptEvent( SDIR+"fscripts/F12.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
 					event = new ScriptEvent( SDIR+"fscripts/F24.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
 					event = new ScriptEvent( SDIR+"fscripts/SF12.sts");
-					EventRecorder::getInstance()->queue(event);				
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					event = new ScriptEvent( SDIR+"fscripts/12.sts");

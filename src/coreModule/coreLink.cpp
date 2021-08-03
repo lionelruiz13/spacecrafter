@@ -15,7 +15,7 @@ bool CoreLink::cameraSave(const std::string& name)
 {
 	return core->anchorManager->saveCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + name);
 }
-	
+
 bool CoreLink::loadCameraPosition(const std::string& filename)
 {
 	return core->anchorManager->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
@@ -31,7 +31,7 @@ double CoreLink::getDateYear() const
 	double jd = core->timeMgr->getJDay();
 	int year,month,day,hour,minute;
 	double second;
-	
+
 	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
 	return year;
 }
@@ -41,7 +41,7 @@ double CoreLink::getDateMonth() const
 	double jd = core->timeMgr->getJDay();
 	int year,month,day,hour,minute;
 	double second;
-	
+
 	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
 	return month;
 }
@@ -51,7 +51,7 @@ double CoreLink::getDateDay() const
 	double jd = core->timeMgr->getJDay();
 	int year,month,day,hour,minute;
 	double second;
-	
+
 	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
 	return day;
 }
@@ -61,7 +61,17 @@ double CoreLink::getDateHour() const
 	double jd = core->timeMgr->getJDay();
 	int year,month,day,hour,minute;
 	double second;
-	
+
 	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
 	return hour;
+}
+
+double CoreLink::getDateMinute() const
+{
+	double jd = core->timeMgr->getJDay();
+	int year,month,day,hour,minute;
+	double second;
+
+	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
+	return minute;
 }

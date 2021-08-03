@@ -1089,7 +1089,7 @@ int AppCommandInterface::commandPersonal()
 	if (!argAction.empty()) {
 		if (argAction == W_LOAD) {
 			std::string fileName=args[W_FILENAME];
-			if (!fileName.empty())
+			if (fileName.empty())
 				fileName = "personal.txt";
 			if ( !CallSystem::isAbsolute(fileName))
 				fileName = scriptInterface->getScriptPath() + fileName;
@@ -2437,10 +2437,10 @@ int AppCommandInterface::commandLook()
 		std::string argTime = args[W_DURATION];
 
 		if(argTime.empty()){
-			coreLink->lookAt(stod(argAz), stod(argAlt));
+			coreLink->lookAt(evalDouble(argAz), evalDouble(argAlt));
 		}
 		else{
-			coreLink->lookAt(stod(argAz), stod(argAlt), stod(argTime));
+			coreLink->lookAt(evalDouble(argAz), evalDouble(argAlt), evalDouble(argTime));
 		}
 
 		return executeCommandStatus();
@@ -3172,7 +3172,7 @@ int AppCommandInterface::commandCamera(unsigned long int &wait)
 		double duration =0;
 
 		if ( ! argDuration.empty()) {
-			duration = stod(argDuration);
+			duration = evalDouble(argDuration);
 		}
 
 		bool result = coreLink->cameraAlignWithBody(argBody, duration);
