@@ -78,7 +78,7 @@ struct VideoParam {
 enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360, V_VRCUBE};
 enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
 //etat de la lecture audio
-enum class A_TYPE : char { V_NONE, V_AUDIO, V_VIDEO};
+// enum class A_TYPE : char { V_NONE, V_AUDIO, V_VIDEO};
 
 
 class Media : public NoCopy {
@@ -302,7 +302,7 @@ public:
 
 	void playerInvertflow();
 
-	bool playerisVideoPlayed() {
+	bool playerIsVideoPlayed() {
 		return player->isVideoPlayed();
 	}
 
@@ -325,13 +325,13 @@ private:
 		V_TYPE type;
 		V_STATE state;
 	};
-	struct AudioState {
-		A_TYPE type;
-		A_STATE state;
-	};
+	// struct AudioState {
+	// 	A_TYPE type;
+	// 	A_STATE state;
+	// };
 
 	VideoState m_videoState;
-	AudioState m_audioState;
+	// AudioState m_audioState;
 	std::map<std::string, VID_TYPE> strToVid;
 };
 

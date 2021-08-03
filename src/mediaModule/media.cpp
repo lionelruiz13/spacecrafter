@@ -146,7 +146,7 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 	vr360->displayStop();
 	viewPort->displayStop();
 
-	if (!playerisVideoPlayed()) {
+	if (!playerIsVideoPlayed()) {
 		m_videoState.state=V_STATE::V_NONE;
 		m_videoState.type=V_TYPE::V_NONE;
 		cLog::get()->write("Media::playerPlay error playerVideo with "+filename, LOG_TYPE::L_ERROR);
