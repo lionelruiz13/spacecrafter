@@ -35,6 +35,7 @@ Media::Media()
 	player = std::make_unique<VideoPlayer>(this);
 	viewPort = std::make_unique<ViewPort>();
 	vr360 = std::make_unique<VR360>();
+	text_usr = std::make_unique<TextMgr>();
 
 	strToVid["vrcube"] = VID_TYPE::V_VRCUBE;
 	strToVid["vr360"] = VID_TYPE::V_VR360 ;
@@ -59,6 +60,12 @@ VID_TYPE Media::strToVideoType(const std::string& _value)
 	else
 		return it->second;
 }
+
+void Media::setProjector(const Projector* projection)
+{
+	prj=projection;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 void Media::audioMusicLoad(const std::string &filename, bool )

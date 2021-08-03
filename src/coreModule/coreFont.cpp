@@ -64,6 +64,7 @@ CoreFont::~CoreFont()
 
 void CoreFont::setFont()
 {
+	// core
     hip_stars->setFont(FontSizeGeneral, FontFileNameGeneral);
 	nebulas->setFont(FontSizeGeneral, FontFileNameGeneral);
 	ssystem->setFont(FontSizePlanet, FontFileNamePlanet);
@@ -72,6 +73,7 @@ void CoreFont::setFont()
 	skyDisplayMgr->setFont(FontSizePlanet, FontFileNamePlanet);
 	cardinals_points->setFont(FontSizeCardinalPoints, FontFileNameGeneral);
 	asterisms->setFont(FontSizeConstellation, FontFileNameConstellation);
+	// media
 	text_usr->setFont(FontSizeText, FontFileNameText);
 }
 

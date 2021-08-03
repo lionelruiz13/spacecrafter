@@ -459,7 +459,7 @@ void App::draw(int delta_time)
 	//draw video frame to classical viewport
 	media->drawViewPort();
 	//draw text user
-	core->textDraw();
+	media->textDraw();
 	s_font::endPrint();
 
 	// Fill with black around the circle

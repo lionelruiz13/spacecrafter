@@ -1357,7 +1357,7 @@ int AppCommandInterface::commandColor()
 		case COLORCOMMAND_NAMES::CC_NEBULA_NAMES:			coreLink->nebulaSetColorLabels( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_NEBULA_CIRCLE: 			coreLink->nebulaSetColorCircle( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_PRECESSION_CIRCLE: 		coreLink->skyLineMgrSetColor(SKYLINE_TYPE::LINE_PRECESSION, Vcolor ); break;
-		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		coreLink->textSetDefaultColor( Vcolor ); break;
+		case COLORCOMMAND_NAMES::CC_TEXT_USR_COLOR: 		media->textSetDefaultColor( Vcolor ); break;
 		case COLORCOMMAND_NAMES::CC_STAR_TABLE:				coreLink->starSetColorTable(evalInt(args[W_INDEX]), Vcolor ); break;
 		default:
 		break;
@@ -1556,7 +1556,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 						else
 							coreLink->uboSetAmbientLight(evalDouble(setValue));
 						break;
-		case SCD_NAMES::APP_TEXT_FADING_DURATION: coreLink-> textFadingDuration(Utility::strToFloat(setValue)); break;
+		case SCD_NAMES::APP_TEXT_FADING_DURATION: media->textFadingDuration(Utility::strToFloat(setValue)); break;
 		case SCD_NAMES::APP_ZOOM_OFFSET: stcore->setViewOffset(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(setValue); break;
 		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(setValue); break;
@@ -1964,7 +1964,7 @@ int AppCommandInterface::commandText()
 	std::string argAction = args[W_ACTION];
 
 	if (argAction== W_CLEAR) {
-		coreLink->textClear();
+		media->textClear();
 		return executeCommandStatus();
 	}
 
@@ -1976,7 +1976,7 @@ int AppCommandInterface::commandText()
 	argName = evalString(argName);
 
 	if (argAction==W_DROP) {
-		coreLink->textDel(argName);
+		media->textDel(argName);
 		return executeCommandStatus();
 	}
 
@@ -1992,7 +1992,7 @@ int AppCommandInterface::commandText()
 		}
 
 		if (argAction==W_UPDATE) {
-			coreLink->textNameUpdate(argName, argString);
+			media->textNameUpdate(argName, argString);
 			return executeCommandStatus();
 		} else
 		if (argAction== W_LOAD) {
@@ -2026,13 +2026,13 @@ int AppCommandInterface::commandText()
 				} else
 					textParam.useColor = false;
 
-				coreLink->textAdd(argName, textParam);
+				media->textAdd(argName, textParam);
 				// test si l'utilisateur spécifie argDisplay
 				if (!argDisplay.empty()) {
 					if ( Utility::isTrue(argDisplay) )
-						coreLink->textDisplay(argName,true);
+						media->textDisplay(argName,true);
 					else
-						coreLink->textDisplay(argName,false);
+						media->textDisplay(argName,false);
 					return executeCommandStatus();
 				}
 				return executeCommandStatus();
@@ -2046,9 +2046,9 @@ int AppCommandInterface::commandText()
 	// test argDisplay en commande indépendante
 	if (!argDisplay.empty()) {
 		if ( Utility::isTrue(argDisplay) )
-			coreLink->textDisplay(argName,true);
+			media->textDisplay(argName,true);
 		else
-			coreLink->textDisplay(argName,false);
+			media->textDisplay(argName,false);
 		return executeCommandStatus();
 	}
 
@@ -2074,7 +2074,7 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 	if (!argAction.empty()) {
 		if (argAction==W_END) {
 			scriptInterface->cancelScript();
-			coreLink->textClear();
+			media->textClear();
 			media->audioMusicHalt();
 			media->imageDropAllNoPersistent();
 			swapCommand = false;

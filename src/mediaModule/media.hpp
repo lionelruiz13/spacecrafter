@@ -32,6 +32,7 @@
 
 #include "mediaModule/audio.hpp"
 #include "mediaModule/image_mgr.hpp"
+#include "mediaModule/text_mgr.hpp"
 #include "mediaModule/video_player.hpp"
 #include "mediaModule/vr360.hpp"
 #include "mediaModule/viewport.hpp"
@@ -128,6 +129,13 @@ public:
 	//! \param v représente le booléan .
 	void setKeyColor(bool v) {
 		viewPort->setTransparency(v);
+	}
+
+	//TODO : delete this function.
+	[[deprecated("use anoter way to set text_usr")]] void setProjector(const Projector* projection);
+	//TODO : delete this function.
+	[[deprecated("use anoter way to set text_usr")]] TextMgr* getTextMgr() {
+		return text_usr.get();
 	}
 
 	////////////////////////////////////////////////////////////////////////////
@@ -273,6 +281,48 @@ public:
 
 	////////////////////////////////////////////////////////////////////////////
 	//
+	//interface text
+	//
+	////////////////////////////////////////////////////////////////////////////
+
+	void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
+		text_usr->add(name, textParam);
+	}
+
+	void textDel(std::string name) {
+		text_usr->del(name);
+	}
+
+	void textClear() {
+		text_usr->clear();
+	}
+
+	void textNameUpdate(std::string name, std::string text) {
+		text_usr->textUpdate(name, text);
+	}
+
+	void textDisplay(std::string name , bool displ) {
+		text_usr->textDisplay(name, displ);
+	}
+
+	void textFadingDuration(int a) {
+		text_usr->setFadingDuration(a);
+	}
+
+	void textSetDefaultColor(const Vec3f& v) {
+		text_usr->setColor(v);
+	}
+
+	void textDraw() {
+		text_usr->draw(prj);
+	}
+
+	void setTextColor(const Vec3f &color) {
+		text_usr->setColor(color);
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	//
 	//interface video
 	//
 	////////////////////////////////////////////////////////////////////////////
@@ -309,6 +359,8 @@ private:
 	std::unique_ptr<VideoPlayer> player = nullptr;
 	std::unique_ptr<VR360> vr360 = nullptr;
 	std::unique_ptr<ViewPort> viewPort = nullptr;
+	std::unique_ptr<TextMgr> text_usr = nullptr;				// manage all user text in dome
+	const Projector *prj;
 
 	std::string skyLanguage;
 	bool mplayerEnable;

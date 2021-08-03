@@ -69,6 +69,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	media = _media;
 	coreFont = new CoreFont(/*this,*/ std::min(width,height));
 	projection = new Projector( width,height, 60 );
+	media->setProjector(projection);
 	//glFrontFace(GL_CCW);
 
 	// Set textures directory and suffix
@@ -148,7 +149,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	hip_stars = new HipStarMgr(width,height, context);
 	asterisms = new ConstellationMgr(hip_stars, context);
 	illuminates= new IlluminateMgr(hip_stars, navigation, asterisms, context);
-	text_usr = new TextMgr();
+	//text_usr = new TextMgr();
 	oort =  new Oort(context);
 	dso3d = new Dso3d(context);
 	tully = new Tully(context);
@@ -177,7 +178,7 @@ void Core::initCoreFont() const
 	coreFont->skyDisplayMgr = skyDisplayMgr;
 	coreFont->cardinals_points = cardinals_points;
 	coreFont->asterisms = asterisms;
-	coreFont->text_usr = text_usr;
+	coreFont->text_usr = media->getTextMgr();
 }
 
 
@@ -227,7 +228,7 @@ Core::~Core()
 	skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
 	// Object::deleteShaders();
-	delete text_usr;
+	//delete text_usr;
 	delete bodytrace;
 	delete ubo_cam;
 	delete oort;
@@ -587,7 +588,7 @@ void Core::updateInSolarSystem(int delta_time)
 	nebulas->update(delta_time);
 	cardinals_points->update(delta_time);
 	milky_way->update(delta_time);
-	text_usr->update(delta_time);
+	//text_usr->update(delta_time);
 	bodytrace->update(delta_time);
 
 	starLines->update(delta_time);
@@ -698,7 +699,7 @@ void Core::updateInGalaxy(int delta_time)
 
 	starLines->update(delta_time);
 	milky_way->update(delta_time);
-	text_usr->update(delta_time);
+	//text_usr->update(delta_time);
 	dso3d->update(delta_time);
 	landscape->update(delta_time);
 
@@ -734,7 +735,7 @@ void Core::updateInUniverse(int delta_time)
 
 	tully->update(delta_time);
 	// milky3d->update(delta_time);
-	text_usr->update(delta_time);
+	//text_usr->update(delta_time);
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -760,10 +761,10 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 }
 
 
-void Core::textDraw()
-{
-	text_usr->draw(projection);
-}
+// void Core::textDraw()
+// {
+// 	text_usr->draw(projection);
+// }
 
 
 void Core::draw(int delta_time)
@@ -1557,7 +1558,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyDisplayMgr->setColor(SKYDISPLAY_NAME::SKY_ORTHODROMY,Utility::strToVec3f(conf.getStr(section,SCK_ORTHODROMY_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_CIRCLE_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_POINT_POLAR, Utility::strToVec3f(conf.getStr(section,SCK_POLAR_COLOR)));
-	text_usr->setColor(Utility::strToVec3f(conf.getStr(section,SCK_TEXT_USR_COLOR)));
+	media->setTextColor(Utility::strToVec3f(conf.getStr(section,SCK_TEXT_USR_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERNAL,Utility::strToVec3f(conf.getStr(section,SCK_VERNAL_POINTS_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_VERTICAL,Utility::strToVec3f(conf.getStr(section,SCK_VERTICAL_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_ZENITH,Utility::strToVec3f(conf.getStr(section,SCK_ZENITH_COLOR)));
