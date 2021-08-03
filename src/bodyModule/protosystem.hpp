@@ -32,15 +32,29 @@
 #include "bodyModule/body_artificial.hpp"
 
 class ThreadContext;
+class OrbitCreator;
 
 
 class ProtoSystem {
 public:
+
     ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
     ~ProtoSystem(){};
+	
+	//! Load the bodies data from a file
+	void load(const std::string& planetfile);
+
+	// load one object from a hash
+	virtual void addBody(stringHash_t & param, bool deletable) = 0;
+
+	//! Return the matching planet pointer if exists or nullptr
+	virtual Body* searchByEnglishName(const std::string &planetEnglishName) const = 0;
+
 protected:
+
 	ThreadContext *context;
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
 	Body* bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
+	OrbitCreator * orbitCreator = nullptr;
 
 };

@@ -22,6 +22,7 @@
 
 class Orbit;
 class SolarSystem;
+class ProtoSystem;
 
 class OrbitCreator {
 public:
@@ -39,21 +40,21 @@ protected:
 class OrbitCreatorEliptic : public OrbitCreator {
 public:
 	OrbitCreatorEliptic() = delete;
-	OrbitCreatorEliptic(const OrbitCreator * next, const SolarSystem * ssystem);
+	OrbitCreatorEliptic(const OrbitCreator * next, const ProtoSystem * ssystem);
 	virtual std::unique_ptr<Orbit> handle(stringHash_t params)const;
 
 private :
-	const SolarSystem * ssystem;
+	const ProtoSystem * psystem;
 };
 
 class OrbitCreatorComet : public OrbitCreator {
 public:
 	OrbitCreatorComet() = delete;
-	OrbitCreatorComet(const OrbitCreator * next, const SolarSystem * ssystem);
+	OrbitCreatorComet(const OrbitCreator * next, const ProtoSystem * ssystem);
 	virtual std::unique_ptr<Orbit> handle(stringHash_t params)const;
 
 private :
-	const SolarSystem * ssystem;
+	const ProtoSystem * psystem;
 };
 
 class OrbitCreatorSpecial : public OrbitCreator {
@@ -66,9 +67,9 @@ public:
 class OrbitCreatorBary : public OrbitCreator {
 public:
 	OrbitCreatorBary() = delete;
-	OrbitCreatorBary(const OrbitCreator *, SolarSystem * ssytem);
+	OrbitCreatorBary(const OrbitCreator *, ProtoSystem * _psystem);
 	virtual std::unique_ptr<Orbit> handle(stringHash_t params) const;
 
 private:
-	SolarSystem * ssystem;
+	ProtoSystem * psystem;
 };

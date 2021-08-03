@@ -41,7 +41,6 @@
 #include "tools/ScModule.hpp"
 #include "bodyModule/protosystem.hpp"
 
-class OrbitCreator;
 class SSystemIterator;
 class SSystemIteratorVector;
 
@@ -49,13 +48,11 @@ class SolarSystem: public NoCopy , public ModuleFont, public ProtoSystem{
     friend class SSystemIterator;
 	friend class SSystemIteratorVector;
 public:
-	SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
+	SolarSystem(ThreadContext *o_context, ObjLMgr *_objLMgr);
 	virtual ~SolarSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
-	//! Load the bodies data from a file
-	void load(const std::string& planetfile);
 
 	// load one object from a hash (returns error message if any)
 	// this public method always adds bodies as deletable
@@ -282,7 +279,6 @@ private:
 
 	AnchorManager * anchorManager = nullptr;
 
-	OrbitCreator * orbitCreator = nullptr;
 
 };
 

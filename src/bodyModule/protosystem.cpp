@@ -22,8 +22,14 @@
  *
  */
 
+#include <iostream>
+#include <fstream>
+#include <string>
+
 #include "bodyModule/protosystem.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
+#include "tools/log.hpp"
+
 
 
 ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
@@ -35,8 +41,41 @@ ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
 	BodyShader::createShader(context);
 	Body::createDefaultAtmosphereParams();
 
-	//OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
-	//OrbitCreator * comet = new OrbitCreatorComet(special, this);
-	//OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
-	//orbitCreator = new OrbitCreatorBary(elip, this);
+	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
+	OrbitCreator * comet = new OrbitCreatorComet(special, this);
+	OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
+	orbitCreator = new OrbitCreatorBary(elip, this);
 }
+
+// Init and load the solar system data
+void ProtoSystem::load(const std::string& planetfile)
+{
+	stringHash_t bodyParams;
+
+	std::ifstream fileBody (planetfile.c_str() , std::ifstream::in);
+	if(fileBody) {
+		std::string ligne;
+		while(getline(fileBody , ligne)) {
+			if (ligne[0] != '[' ) {
+				if (ligne[0]!='#' && ligne.size() != 0) {
+					int pos = ligne.find('=',0);
+					std::string p1=ligne.substr(0,pos-1);
+					std::string p2=ligne.substr(pos+2,ligne.size());
+					bodyParams[p1]=p2;
+				}
+			} else {
+				if (bodyParams.size() !=0) {
+					//TODO récupérer cette erreur s'il y en a !
+					addBody(bodyParams, false);  // config file bodies are not deletable
+					bodyParams.clear();
+				}
+			}
+		}
+		fileBody.close();
+	} else
+		cLog::get()->write("Unable to open file "+ planetfile, LOG_TYPE::L_ERROR);
+
+	cLog::get()->write("(solar system loaded)", LOG_TYPE::L_INFO);
+	cLog::get()->mark();
+}
+

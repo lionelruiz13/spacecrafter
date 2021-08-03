@@ -22,10 +22,10 @@
 //#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 
-OrbitCreatorEliptic::OrbitCreatorEliptic(const OrbitCreator * _next, const SolarSystem * _ssystem) :
+OrbitCreatorEliptic::OrbitCreatorEliptic(const OrbitCreator * _next, const ProtoSystem * _psystem) :
 	OrbitCreator(_next)
 {
-	ssystem = _ssystem;
+	psystem = _psystem;
 }
 
 std::unique_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
@@ -40,7 +40,7 @@ std::unique_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
 		}
 	}
 
-	Body * parent = ssystem->searchByEnglishName(params["parent"]);
+	Body * parent = psystem->searchByEnglishName(params["parent"]);
 
 	double parent_rot_obliquity = 0.0;
 	double parent_rot_asc_node = 0.0;
@@ -97,10 +97,10 @@ std::unique_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
 
 }
 
-OrbitCreatorComet::OrbitCreatorComet(const OrbitCreator * _next, const SolarSystem * _ssystem) :
+OrbitCreatorComet::OrbitCreatorComet(const OrbitCreator * _next, const ProtoSystem * _psystem) :
 	OrbitCreator(_next)
 {
-	ssystem = _ssystem;
+	psystem = _psystem;
 }
 
 std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
@@ -115,7 +115,7 @@ std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 		}
 	}
 
-	Body * parent = ssystem->searchByEnglishName(params["parent"]);
+	Body * parent = psystem->searchByEnglishName(params["parent"]);
 
 	double parent_rot_obliquity = 0.0;
 	double parent_rot_asc_node = 0.0;
@@ -247,10 +247,10 @@ std::unique_ptr<Orbit> OrbitCreatorSpecial::handle(stringHash_t params) const
 	return sorb;
 }
 
-OrbitCreatorBary::OrbitCreatorBary(const OrbitCreator * _next, SolarSystem * _ssystem):
+OrbitCreatorBary::OrbitCreatorBary(const OrbitCreator * _next, ProtoSystem * _psystem):
 	OrbitCreator(_next)
 {
-	ssystem = _ssystem;
+	psystem = _psystem;
 }
 
 std::unique_ptr<Orbit> OrbitCreatorBary::handle(stringHash_t params) const
@@ -275,8 +275,8 @@ std::unique_ptr<Orbit> OrbitCreatorBary::handle(stringHash_t params) const
 		return nullptr;
 	}
 
-	Body * bodyA = ssystem->searchByEnglishName(params["body_A"]);
-	Body * bodyB = ssystem->searchByEnglishName(params["body_B"]);
+	Body * bodyA = psystem->searchByEnglishName(params["body_A"]);
+	Body * bodyB = psystem->searchByEnglishName(params["body_B"]);
 
 	if(bodyA == nullptr || bodyB == nullptr) {
 		cLog::get()->write("OrbitCreatorBary::couldn't find one of the bodies");
