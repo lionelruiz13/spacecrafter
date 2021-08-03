@@ -93,8 +93,9 @@ public:
 	//
 	////////////////////////////////////////////////////////////////////////////
 
-	//! creation contexte Vulkan 
-	void init(ThreadContext *context);
+	//! création des structures pour les VR
+	void initVR360(ThreadContext *context);
+	//! creation contexte Vulkan
 	void createSC_context(ThreadContext *context);
 
 	//! affiche une image du player video à destination du VR360

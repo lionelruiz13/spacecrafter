@@ -341,9 +341,9 @@ void App::firstInit()
 	ui->init(conf);
 	ui->localizeTui();
 	ui->initTui();
-	media->init(&context);
 
 	appDraw->createSC_context(&context);
+	media->initVR360(&context);
 	media->createSC_context(&context);
 
 	enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);

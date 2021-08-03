@@ -267,7 +267,7 @@ void Media::playerInvertflow()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::init(ThreadContext *context)
+void Media::initVR360(ThreadContext *context)
 {
 	vr360->init(context);
 }
