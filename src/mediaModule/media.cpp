@@ -30,11 +30,11 @@
 
 Media::Media()
 {
-	audio = new Audio();
-	imageMgr = new ImageMgr();
-	player = new VideoPlayer(this);
-	viewPort = new ViewPort();
-	vr360 = new VR360();
+	audio = std::make_unique<Audio>();
+	imageMgr = std::make_unique<ImageMgr>();
+	player = std::make_unique<VideoPlayer>(this);
+	viewPort = std::make_unique<ViewPort>();
+	vr360 = std::make_unique<VR360>();
 
 	strToVid["vrcube"] = VID_TYPE::V_VRCUBE;
 	strToVid["vr360"] = VID_TYPE::V_VR360 ;
@@ -47,11 +47,11 @@ Media::Media()
 
 Media::~Media()
 {
-	if (audio)	delete audio;
-	if (imageMgr) delete imageMgr;
-	if (player) delete player;
-	if (vr360) delete vr360;
-	if (viewPort) delete viewPort;
+	// if (audio)	delete audio;
+	// if (imageMgr) delete imageMgr;
+	// if (player) delete player;
+	// if (vr360) delete vr360;
+	// if (viewPort) delete viewPort;
 }
 
 VID_TYPE Media::strToVideoType(const std::string& _value)

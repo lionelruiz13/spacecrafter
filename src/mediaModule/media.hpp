@@ -28,6 +28,8 @@
 
 #include <map>
 #include <string>
+#include <memory>
+
 #include "mediaModule/audio.hpp"
 #include "mediaModule/image_mgr.hpp"
 #include "mediaModule/video_player.hpp"
@@ -309,11 +311,11 @@ public:
 private:
 	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
 
-	Audio * audio = nullptr;
-	ImageMgr* imageMgr = nullptr;
-	VideoPlayer* player = nullptr;
-	VR360* vr360 = nullptr;
-	ViewPort* viewPort = nullptr;
+	std::unique_ptr<Audio> audio = nullptr;
+	std::unique_ptr<ImageMgr> imageMgr = nullptr;
+	std::unique_ptr<VideoPlayer> player = nullptr;
+	std::unique_ptr<VR360> vr360 = nullptr;
+	std::unique_ptr<ViewPort> viewPort = nullptr;
 
 	std::string skyLanguage;
 	bool mplayerEnable;
