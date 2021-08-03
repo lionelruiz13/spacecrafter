@@ -347,6 +347,7 @@ private:
     std::unique_ptr<SolarSystemScale> ssystemScale;
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
+    std::unique_ptr<ProtoSystem> protosystem;
 
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 };

@@ -31,30 +31,21 @@
 #include <functional>
 #include <map>
 
-#include "bodyModule/body_tesselation.hpp"
-#include "bodyModule/body_common.hpp"
-#include "bodyModule/body_sun.hpp"
-#include "bodyModule/body_moon.hpp"
-#include "bodyModule/body_bigbody.hpp"
-#include "bodyModule/body_smallbody.hpp"
-#include "bodyModule/body_artificial.hpp"
 #include "tools/object.hpp"
 #include "bodyModule/orbit.hpp"
 #include "tools/translator.hpp"
 #include "navModule/observer.hpp"
-#include "ojmModule/objl_mgr.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "tools/no_copy.hpp"
 #include "bodyModule/body_color.hpp"
 #include "tools/ScModule.hpp"
-
-class ThreadContext;
+#include "bodyModule/protosystem.hpp"
 
 class OrbitCreator;
 class SSystemIterator;
 class SSystemIteratorVector;
 
-class SolarSystem: public NoCopy , public ModuleFont{
+class SolarSystem: public NoCopy , public ModuleFont, public ProtoSystem{
     friend class SSystemIterator;
 	friend class SSystemIteratorVector;
 public:
@@ -264,12 +255,10 @@ private:
 	// load one object from a hash
 	void addBody(stringHash_t & param, bool deletable);
 
-	ThreadContext *context;
 
 	Sun* sun=nullptr; //return the Sun
 	Moon* moon=nullptr;	//return the Moon
 	BigBody* earth=nullptr;	//return the earth
-	Body* bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 
 	// solar system related settings
 	float object_scale;  // should be kept synchronized with star scale...
@@ -290,7 +279,6 @@ private:
 	bool flagAxis= false;
 	bool flagHideSatellites = false;
 
-	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
 
 	AnchorManager * anchorManager = nullptr;
 

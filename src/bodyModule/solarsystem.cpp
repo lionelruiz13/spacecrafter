@@ -56,14 +56,8 @@
 
 
 SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
-	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.), objLMgr(_objLMgr)
+	:ProtoSystem(_context, _objLMgr), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.)
 {
-	bodyTrace = nullptr;
-
-	Body::createShader(context);
-	BodyShader::createShader(context);
-	Body::createDefaultAtmosphereParams();
-
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
 	OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
@@ -83,7 +77,6 @@ SolarSystem::~SolarSystem()
 	moon = nullptr;
 	earth = nullptr;
 
-	// if (font) delete font;
 }
 
 void SolarSystem::setFont(float font_size, const std::string& font_name)
