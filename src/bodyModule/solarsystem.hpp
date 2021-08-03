@@ -51,18 +51,17 @@
 class ThreadContext;
 
 class OrbitCreator;
+class SSystemIterator;
+class SSystemIteratorVector;
 
 class SolarSystem: public NoCopy , public ModuleFont{
+    friend class SSystemIterator;
+	friend class SSystemIteratorVector;
 public:
-	SolarSystem(ThreadContext *_context);
+	SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
 	virtual ~SolarSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
-
-	//! Draw all the elements of the solar system
-	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,
-	          const ToneReproductor* eye,
-	          bool drawHomePlanet );
 
 	//! Load the bodies data from a file
 	void load(const std::string& planetfile);
@@ -90,25 +89,7 @@ public:
 
 	std::string getPlanetHashString();  // locale and ssystem.ini names, newline delimiter, for tui
 
-	void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c);
-	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const;
-
-	void setDefaultBodyColor(const std::string& colorName, const Vec3f& c);
-	const Vec3f getDefaultBodyColor(const std::string& colorName) const;
-
-	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
-		BodyColor::setDefault(halo, label, orbit, trail);
-	}
-
 	void toggleHideSatellites(bool val);
-
-	//! Compute the position for every elements of the solar system.
-	//! home_planet is needed for light travel time computation
-	void computePositions(double date,const Observer *obs);
-
-	//! Compute the transformation matrix for every elements of the solar system.
-	//! home_planet is needed for light travel time computation
-	void computeTransMatrices(double date,const Observer * obs);
 
 	//! Search if any Planet is close to position given in earth equatorial position.
 	Object search(Vec3d, const Navigator * nav, const Projector * prj) const;
@@ -156,87 +137,8 @@ public:
 	//! set flag for Activate/Deactivate planets axis
 	void setFlagAxis(bool b);
 
-	//! set flag for Activate/Deactivate planets display
-	void setFlagPlanets(bool b) {
-		flagShow = b;
-	}
-
-	//! get flag for Activate/Deactivate planets display
-	bool getFlagShow(void) const {
-		return flagShow;
-	}
-
-	//! set flag for Activate/Deactivate planets trails display
-	void setFlagTrails(bool b);
-
-	//! set flag for Activate/Deactivate planets hints display
-	void setFlagHints(bool b);
-
-	//! Activate/Deactivate planet&&satellites orbits display
-	void setFlagOrbits(bool b) {
-		setFlagPlanetsOrbits(b);
-		setFlagSatellitesOrbits(b);
-	}
-
-	//! Set flag for Activate/Deactivate planets orbits display
-	void setFlagPlanetsOrbits(bool b);
-
-	//! Set flag for Activate/Deactivate planet _name orbit display
-	void setFlagPlanetsOrbits(const std::string &_name, bool b);
-
-	//! Get flag for Activate/Deactivate planets orbits display
-	bool getFlagPlanetsOrbits(void) const {
-		return flagPlanetsOrbits;
-	}
-
-	//! Set flag for Activate/Deactivate satellites orbits display
-	void setFlagSatellitesOrbits(bool b);
-
-	//! getflag for Activate/Deactivate satellites orbits display
-	bool getFlagSatellitesOrbits(void) const {
-		return flagSatellitesOrbits;
-	}
-
-	void setFlagLightTravelTime(bool b) {
-		flag_light_travel_time = b;
-	}
-
-	bool getFlagLightTravelTime(void) const {
-		return flag_light_travel_time;
-	}
-
 	//! Start/stop accumulating new trail data (clear old data)
 	void startTrails(bool b);
-
-	//! Set base planets display scaling factor
-	void setScale(float scale) {
-		Body::setScale(scale);
-	}
-
-	//! Get base planets display scaling factor
-	float getScale(void) const {
-		return Body::getScale();
-	}
-
-	//! Set the scale factor s of the planet name
-	//! @param name the planet's name
-	void setPlanetSizeScale(const std::string &name, float s);
-
-	//! Get the scale factor of the planet name
-	float getPlanetSizeScale(const std::string &name);
-
-	//! Set base planets display limit in pixels
-	void setSizeLimit(float scale) {
-		Body::setSizeLimit(scale);
-	}
-
-	//! Get base planets display limit in pixels
-	float getSizeLimit(void) const {
-		return Body::getSizeLimit();
-	}
-
-	// send tesselation parms to body: name design the param to change to value
-	void planetTesselation(std::string name, int value);
 
 	//! Set if Moon display is scaled
 	void setFlagMoonScale(bool b) {
@@ -305,46 +207,12 @@ public:
 	//! Find and return the list of at most maxNbItem objects auto-completing the passed object I18n name
 	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const;
 
-	//! Set selected planet by english name or "" to select none
-	void setSelected(const std::string& englishName) {
-		setSelected(searchByEnglishName(englishName));
-	}
-
-	//! Set selected object from its pointer
-	void setSelected(const Object &obj);
-
-	//! Get selected object's pointer
-	Object getSelected(void) const {
-		return selected;
-	}
-
 	//modify Planet "name" is hidden or not.
 	void setPlanetHidden(const std::string &name, bool planethidden);
-
-	//switch tex map from Planet "name"
-	void switchPlanetTexMap(const std::string &name, bool a);
-
-	// return switch tex map value from Planet "name"
-	bool getSwitchPlanetTexMap(const std::string &name);
-
-	void createTexSkin(const std::string &name, const std::string &texName);
 
 	//get the state of the planet
 	bool getPlanetHidden(const std::string &name);
 
-	//return the default halo, label, orbit and trail color for default body
-	void iniColor(const std::string& _halo, const std::string& _label, const std::string& _orbit, const std::string& _trail) {
-		BodyColor::setDefault(_halo, _label, _orbit, _trail);
-	}
-
-	//initialise the body tesselation value
-	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
-		bodyTesselation->setMinTes(minTes, true);
-		bodyTesselation->setMaxTes(maxTes, true);
-		bodyTesselation->setPlanetTes(planetTes,true);
-		bodyTesselation->setMoonTes(moonTes,true);
-		bodyTesselation->setEarthTes(earthTes,true);
-	}
 
 	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
 	// réinitialise les paramètes de la tesselaiton
@@ -356,9 +224,7 @@ public:
 	}
 
 	std::string getPlanetsPosition();
-
-	void iniTextures();
-
+	
 	void setAnchorManager(AnchorManager * _anchorManager){
 		anchorManager = _anchorManager;
 	}
@@ -368,14 +234,12 @@ public:
 	}
 
 	struct BodyContainer {
-		Body* body=nullptr;
+		std::unique_ptr<Body> body=nullptr;
 		std::string englishName;  // for convenience
 		bool isDeleteable = false;
 		bool isHidden = false;
 		bool initialHidden = false;
 	};
-
-	void computePreDraw(const Projector * prj, const Navigator * nav);
 
 	// return the Sun altitude
 	double getSunAltitude(const Navigator * nav) const;
@@ -383,15 +247,22 @@ public:
 	// return the Sun azimuth 
 	double getSunAzimuth(const Navigator * nav) const;
 
+	std::vector<std::shared_ptr<BodyContainer>>::iterator begin() {return renderedBodies.begin();};
+  std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};	
+
 private:
 	struct depthBucket {
 		double znear;
 		double zfar;
 	};
 
+
+	std::unique_ptr<SSystemIterator> createIterator();
+	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
+
+private:
 	Body* findBody(const std::string &name);
-	BodyContainer * findBodyContainer(const std::string &name);
-	BodyTesselation *bodyTesselation=nullptr;
+	std::shared_ptr<SolarSystem::BodyContainer> findBodyContainer(const std::string &name);
 
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str);
@@ -406,9 +277,6 @@ private:
 	BigBody* earth=nullptr;	//return the earth
 	Body* bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 
-	//! The currently selected planet
-	Object selected;
-
 	// solar system related settings
 	float object_scale;  // should be kept synchronized with star scale...
 
@@ -419,25 +287,13 @@ private:
 
 	Vec3i ringsInit;
 
-	std::map< std::string, BodyContainer*> systemBodies; //Map containing the bodies and related information. the key is their english name
-	std::vector<BodyContainer *> renderedBodies; //Contains bodies that are not hidden
-	std::list<depthBucket>listBuckets;
+	std::map< std::string, std::shared_ptr<BodyContainer>> systemBodies; //Map containing the bodies and related information. the key is their english name
+	std::vector<std::shared_ptr<BodyContainer>> renderedBodies; //Contains bodies that are not hidden
 
 	bool nearLunarEclipse(const Navigator * nav, Projector * prj);
 
-	// And sort them from the furthest to the closest to the observer
-	static bool biggerDistance (BodyContainer * i,BodyContainer * j){
-		return (i->body->getDistance() > j->body->getDistance());
-	};
-
 	// Master settings
-	bool flagPlanetsOrbits;
-	bool flagSatellitesOrbits;
-	bool flag_light_travel_time;
-	bool flagHints= false;
-	bool flagTrails= false;
 	bool flagAxis= false;
-	bool flagShow= true;
 	bool flagHideSatellites = false;
 
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss

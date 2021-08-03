@@ -36,6 +36,7 @@
 #include "navModule/observer.hpp"
 #include "tools/log.hpp"
 #include "bodyModule/ring.hpp"
+#include "bodyModule/body_color.hpp"
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Set.hpp"
@@ -49,32 +50,33 @@ BigBody::BigBody(Body *parent,
                  bool flagHalo,
                  double radius,
                  double oblateness,
-                 BodyColor* _myColor,
+                 std::unique_ptr<BodyColor> _myColor,
                  float _sol_local_day,
                  float albedo,
-                 Orbit *orbit,
+                 std::unique_ptr<Orbit> orbit,
                  bool close_orbit,
                  ObjL* _currentObj,
                  double orbit_bounding_radius,
-				 BodyTexture* _bodyTexture,
-                 ThreadContext *context) :
+				 std::shared_ptr<BodyTexture> _bodyTexture,
+				 ThreadContext *context
+                ) :
 	Body(parent,
 	     englishName,
 	     _typePlanet,
 	     flagHalo,
 	     radius,
 	     oblateness,
-	     _myColor,
+	     std::move(_myColor),
 	     _sol_local_day,
 	     albedo,
-	     orbit,
+	     std::move(orbit),
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
 		 _bodyTexture,
 		 context
         ),
-	rings(NULL), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
+	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
 {
 	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
 		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
@@ -101,8 +103,8 @@ BigBody::BigBody(Body *parent,
 
 BigBody::~BigBody()
 {
-	if (rings) delete rings;
-	rings = nullptr;
+	//if (rings) delete rings;
+	//rings = nullptr;
 
 	if (tex_night) delete tex_night;
 	tex_night = nullptr;
@@ -119,8 +121,8 @@ BigBody::~BigBody()
 	orbitPlot = nullptr;
 }
 
-void BigBody::setRings(Ring* r) {
-	rings = r;
+void BigBody::setRings(std::unique_ptr<Ring> r) {
+	rings = std::move(r);
     if (myShader != SHADER_RINGED) {
         if (commandIndex == -1) {
             cLog::get()->write("Failed to enable rings.", LOG_TYPE::L_ERROR);

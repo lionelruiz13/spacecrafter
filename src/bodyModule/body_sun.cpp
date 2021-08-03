@@ -52,14 +52,14 @@ Sun::Sun(Body *parent,
          bool flagHalo,
          double radius,
          double oblateness,
-         BodyColor* myColor,
+         std::unique_ptr<BodyColor> myColor,
          float _sol_local_day,
          float albedo,
-         Orbit *orbit,
+         std::unique_ptr<Orbit> orbit,
          bool close_orbit,
          ObjL* _currentObj,
          double orbit_bounding_radius,
-		 BodyTexture* _bodyTexture,
+		 std::shared_ptr<BodyTexture> _bodyTexture,
          ThreadContext *context):
 	Body(parent,
 	     englishName,
@@ -67,10 +67,10 @@ Sun::Sun(Body *parent,
 	     flagHalo,
 	     radius,
 	     oblateness,
-	     myColor,
+	     std::move(myColor),
 	     _sol_local_day,
 	     albedo,
-	     orbit,
+	     std::move(orbit),
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
@@ -304,7 +304,7 @@ void Sun::computeDraw(const Projector* prj, const Navigator * nav)
 	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
 }
 
-bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected)
+bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet)
 {
 	bool drawn = false;
 

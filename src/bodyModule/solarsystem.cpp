@@ -46,6 +46,8 @@
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
 #include "vulkanModule/Context.hpp"
+#include "bodyModule/ssystem_iterator.hpp"
+
 
 #define SOLAR_MASS 1.989e30
 #define EARTH_MASS 5.976e24
@@ -53,40 +55,14 @@
 #define MARS_MASS  0.64185e24
 
 
-
-static bool removeFromVector(SolarSystem::BodyContainer * bc, std::vector<SolarSystem::BodyContainer *> &vec){
-	for(auto it = vec.begin(); it != vec.end();it++){
-		if(bc->englishName == (*it)->englishName){
-			vec.erase(it);
-			return true;
-		}
-	}
-	return false;
-}
-
-SolarSystem::SolarSystem(ThreadContext *_context)
-	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.),
-	 flagPlanetsOrbits(false),flagSatellitesOrbits(false),
-	 flag_light_travel_time(false),flagHints(false),flagTrails(false)
+SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
+	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.), objLMgr(_objLMgr)
 {
 	bodyTrace = nullptr;
 
-	objLMgr = new ObjLMgr(context);
-	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
-	objLMgr->insertDefault("Sphere");
-
-	if (!objLMgr->checkDefaultObject()) {
-		cLog::get()->write("SolarSystem: no default objMgr loaded, system aborded", LOG_TYPE::L_ERROR);
-		exit(-7);
-	}
-
-	Body::createShader(context); //TEMP
+	Body::createShader(context);
 	BodyShader::createShader(context);
 	Body::createDefaultAtmosphereParams();
-	bodyTesselation =  new(BodyTesselation);
-	assert(bodyTesselation != nullptr);
-	bodyTesselation->createTesselationParams();
-	Body::setTesselation(bodyTesselation);
 
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
@@ -97,32 +73,17 @@ SolarSystem::SolarSystem(ThreadContext *_context)
 
 SolarSystem::~SolarSystem()
 {
-	// release selected:
-	selected = Object();
-
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		if(it->second->body != nullptr){
-			delete it->second->body;
-			delete it->second;
-		}
-	}
 	systemBodies.clear();
 	renderedBodies.clear();
 
 	// BodyShader::deleteShader();
-	Body::deleteDefaultTexMap();
 	Body::deleteDefaultatmosphereParams();
-
-	if (bodyTesselation)
-		delete bodyTesselation;
-	bodyTesselation = nullptr;
 
 	sun = nullptr;
 	moon = nullptr;
 	earth = nullptr;
 
 	// if (font) delete font;
-	if (objLMgr) delete objLMgr;
 }
 
 void SolarSystem::setFont(float font_size, const std::string& font_name)
@@ -163,24 +124,6 @@ void SolarSystem::load(const std::string& planetfile)
 	cLog::get()->mark();
 }
 
-void SolarSystem::iniTextures()
-{
-	if( ! Body::setTexEclipseMap("bodies/eclipse_map.png")) {
-		cLog::get()->write("no tex_eclipse_map valid !", LOG_TYPE::L_ERROR);
-	}
-
-	if( ! Body::setTexDefaultMap("bodies/nomap.png")) {
-		cLog::get()->write("no tex_default_map valid !", LOG_TYPE::L_ERROR);
-	}
-
-	if( ! Body::setTexHaloMap("planethalo.png")) {
-		cLog::get()->write("no tex_halo valid !", LOG_TYPE::L_ERROR);
-	}
-
-	cLog::get()->write("(solar system) default textures loaded", LOG_TYPE::L_INFO);
-}
-
-
 BODY_TYPE SolarSystem::setPlanetType (const std::string &str)
 {
 	if (str =="Sun") return SUN;
@@ -200,14 +143,14 @@ Body* SolarSystem::findBody(const std::string &name)
 {
 
 	if(systemBodies.count(name) != 0){
-		return systemBodies[name]->body;
+		return systemBodies[name]->body.get();
 	}
 	else{
 		return nullptr;
 	}
 }
 
-SolarSystem::BodyContainer* SolarSystem::findBodyContainer(const std::string &name)
+std::shared_ptr<SolarSystem::BodyContainer> SolarSystem::findBodyContainer(const std::string &name)
 {
 	if(systemBodies.count(name) != 0){
 		return systemBodies[name];
@@ -238,13 +181,13 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	typePlanet= setPlanetType(type_Body);
 
 	// do not add if no name or no parent or no typePlanet
-	if (englishName=="") {
+	if (englishName.empty()) {
 		cLog::get()->write("SolarSystem: can not add body with no name", LOG_TYPE::L_WARNING);
 		return;
 	}
 
 	// no parent ? so it's Sun
-	if (str_parent=="")
+	if (str_parent.empty())
 		str_parent = "Sun";
 
 	// no type ? it's an asteroid
@@ -273,7 +216,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	//
 	// determination de l'orbite de l'astre
 	//
-	Orbit* orb = nullptr;
+	std::unique_ptr<Orbit> orb = nullptr;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
 
 	// default value of -1 means unused
@@ -284,21 +227,19 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 
 		//cout << "Creating Earth orbit...\n" << endl;
 		cLog::get()->write("Creating Earth orbit...", LOG_TYPE::L_INFO);
-		SpecialOrbit *sorb = new SpecialOrbit("emb_special");
-
+		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("emb_special");
 		if (!sorb->isValid()) {
 			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
 			cLog::get()->write(error, LOG_TYPE::L_ERROR);
 			return;
 		}
-
 		// NB. moon has to be added later
-		orb = new BinaryOrbit(sorb, 0.0121505677733761);
+		orb = std::make_unique<BinaryOrbit>(std::move(sorb), 0.0121505677733761);
 
 	} else if(funcname == "lunar_custom") {
 		// This allows chaotic Moon ephemeris to be removed once start leaving acurate and sane range
 
-		SpecialOrbit *sorb = new SpecialOrbit("lunar_special");
+		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("lunar_special");
 
 		if (!sorb->isValid()) {
 			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
@@ -306,7 +247,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			return ;
 		}
 
-		orb = new MixedOrbit(sorb,
+		orb = std::make_unique<MixedOrbit>(std::move(sorb),
 		                     Utility::strToDouble(param["orbit_period"]),
 		                     SpaceDate::JulianDayFromDateTime(-10000, 1, 1, 1, 1, 1),
 		                     SpaceDate::JulianDayFromDateTime(10000, 1, 1, 1, 1, 1),
@@ -315,12 +256,12 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 		                     false);
 
 	} else if (funcname == "still_orbit") {
-		orb = new stillOrbit(Utility::strToDouble(param["orbit_x"]),
+		orb = std::make_unique<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
 	} else {
 
-		orb = orbitCreator->handle(param);
+		orb = std::move(orbitCreator->handle(param));
 
 		if(orb == nullptr) {
 			std::cout << "something went wrong when creating orbit from "<< englishName << std::endl;
@@ -336,24 +277,24 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	// fin détermination de l'orbite
 	//
 
-	BodyColor* bodyColor = nullptr;
-	bodyColor = new BodyColor(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
+	std::unique_ptr<BodyColor> bodyColor = nullptr;
+	bodyColor = std::make_unique<BodyColor>(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
 
 	float solLocalDay= Utility::strToDouble(param["sol_local_day"],1.0);
 
 	// Create the Body and add it to the list
 	// p est un pointeur utilisé pour l'objet qui sera au final intégré dans la liste des astres que gère body_mgr
-	Body* p = nullptr;
-	Sun *p_sun =nullptr;
-	Moon *p_moon =nullptr;
-	BigBody *p_big =nullptr;
-	SmallBody *p_small =nullptr;
-	Artificial *p_artificial = nullptr;
+	std::unique_ptr<Body> p = nullptr;
+	//std::shared_ptr<Sun> p_sun =nullptr;
+	//Moon *p_moon =nullptr;
+	//BigBody *p_big =nullptr;
+	//SmallBody *p_small =nullptr;
+	//std::unique_ptr<Artificial> p_artificial = nullptr;
 	ObjL* currentOBJ = nullptr;
 
 	std::string modelName = param["model_name"];
 
-	BodyTexture* bodyTexture = new BodyTexture();
+	std::shared_ptr<BodyTexture> bodyTexture = std::make_shared<BodyTexture>();
 	bodyTexture->tex_map = param["tex_map"];
 	bodyTexture->tex_norm = param["tex_normal"];
 	bodyTexture->tex_heightmap = param["tex_heightmap"];
@@ -373,22 +314,20 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 
 	switch (typePlanet) {
 		case SUN : {
-			p_sun = new Sun(parent,
+			std::unique_ptr<Sun> p_sun = std::make_unique<Sun>(parent,
 			                englishName,
 			                Utility::strToBool(param["halo"]),
 			                Utility::strToDouble(param["radius"])/AU,
 			                Utility::strToDouble(param["oblateness"], 0.0),
-			                bodyColor,
+			                std::move(bodyColor),
 			                solLocalDay,
 			                Utility::strToDouble(param["albedo"]),
-			                orb,
+			                std::move(orb),
 			                close_orbit,
 			                currentOBJ,
 			                orbit_bounding_radius,
-							bodyTexture,
-							context
-			               );
-			delete bodyTexture;
+			  				bodyTexture,
+							context);
 			//update of sun's big_halo texture
 			std::string bighalotexfile = param["tex_big_halo"];
 			if (!bighalotexfile.empty()) {
@@ -397,43 +336,42 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			}
 
 			if (englishName == "Sun") {
-				sun = p_sun;
-				bodyTrace = p_sun;
+				sun = p_sun.get();
+				bodyTrace = p_sun.get();
 			}
-			p = p_sun;
+			p = std::move(p_sun);
 		}
 		break;
 
 		case ARTIFICIAL: {
-			p_artificial = new Artificial(parent,
+			std::unique_ptr<Artificial> p_artificial = std::make_unique<Artificial>(parent,
 							  englishName,
 							  Utility::strToBool(param["halo"]),
 							  Utility::strToDouble(param["radius"])/AU,
-			                  bodyColor,
+			                  std::move(bodyColor),
 			                  solLocalDay,
 			                  Utility::strToDouble(param["albedo"]),
-			                  orb,
+							  std::move(orb),
 			                  close_orbit,
 			                  param["model_name"],
 			                  deletable,
 			                  orbit_bounding_radius,
 							  bodyTexture,
 						  	  context);
-			p=p_artificial;
-			delete bodyTexture;
+			p=std::move(p_artificial);
 			}
 			break;
 
 		case MOON: {
-			p_moon = new Moon(parent,
+			std::unique_ptr<Moon> p_moon = std::make_unique<Moon>(parent,
 			                  englishName,
 			                  Utility::strToBool(param["halo"]),
 			                  Utility::strToDouble(param["radius"])/AU,
 			                  Utility::strToDouble(param["oblateness"], 0.0),
-			                  bodyColor,
+			                  std::move(bodyColor),
 			                  solLocalDay,
 			                  Utility::strToDouble(param["albedo"]),
-			                  orb,
+			                  std::move(orb),
 			                  close_orbit,
 			                  currentOBJ,
 			                  orbit_bounding_radius,
@@ -441,34 +379,34 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 							  context
 			                 );
 			if (englishName == "Moon") {
-				moon = p_moon;
+				moon = p_moon.get();
 				if(earth) {
 					BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
 					if(earthOrbit) {
 						cLog::get()->write("Adding Moon to Earth binary orbit.", LOG_TYPE::L_INFO);
-						earthOrbit->setSecondaryOrbit(orb);
+						earthOrbit->setSecondaryOrbit(orb.get());
 					} else
 						cLog::get()->write(englishName + " body could not be added to Earth orbit.", LOG_TYPE::L_WARNING);
+
 				} else
 					cLog::get()->write(englishName + " body could not be added to Earth orbit calculation, position may be inacurate", LOG_TYPE::L_WARNING);
 			}
-			p=p_moon;
-			delete bodyTexture;
+			p=std::move(p_moon);
 		}
 		break;
 
 		case DWARF:
 		case PLANET: {
-			p_big = new BigBody(parent,
+			std::unique_ptr<BigBody> p_big = std::make_unique<BigBody>(parent,
 			                    englishName,
 			                    typePlanet,
 			                    Utility::strToBool(param["halo"]),
 			                    Utility::strToDouble(param["radius"])/AU,
 			                    Utility::strToDouble(param["oblateness"], 0.0),
-			                    bodyColor,
+			                    std::move(bodyColor),
 			                    solLocalDay,
 			                    Utility::strToDouble(param["albedo"]),
-			                    orb,
+			                    std::move(orb),
 			                    close_orbit,
 			                    currentOBJ,
 			                    orbit_bounding_radius,
@@ -478,41 +416,39 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			if (Utility::strToBool(param["rings"], 0)) {
 				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
 				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
-				Ring *r = new Ring(r_min,r_max,param["tex_ring"],ringsInit,context);
-				p_big->setRings(r);
+				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit,context);
+				p_big->setRings(std::move(r));
 				p_big->updateBoundingRadii();
 			}
 
 			if(englishName=="Earth") {
-				earth = p_big;
+				earth = p_big.get();
 			}
 
-			p = p_big;
-			delete bodyTexture;
+			p = std::move(p_big);
 		}
 		break;
 
 		case ASTEROID:
 		case KBO:
 		case COMET: {
-			p_small = new SmallBody(parent,
+			std::unique_ptr<SmallBody> p_small = std::make_unique<SmallBody>(parent,
 			                        englishName,
 			                        typePlanet,
 			                        Utility::strToBool(param["halo"]),
 			                        Utility::strToDouble(param["radius"])/AU,
 			                        Utility::strToDouble(param["oblateness"], 0.0),
-			                        bodyColor,
+			                        std::move(bodyColor),
 			                        solLocalDay,
 			                        Utility::strToDouble(param["albedo"]),
-			                        orb,
+			                        std::move(orb),
 			                        close_orbit,
 			                        currentOBJ,
 			                        orbit_bounding_radius,
 									bodyTexture,
 									context
 			                       );
-			p = p_small;
-			delete bodyTexture;
+			p = std::move(p_small);
 		}
 		break;
 
@@ -571,29 +507,30 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	    Utility::strToDouble(param["axial_tilt"],0.) );
 
 	// Clone current flags to new body unless one is currently selected
-	p->setFlagHints(flagHints);
-	p->setFlagTrail(flagTrails);
+	// WARNING TODO
+	//p->setFlagHints(flagHints);
+	//p->setFlagTrail(flagTrails);
+//
+	//if (!selected || selected == Object(sun)) {
+	//	p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
+	//}
 
-	if (!selected || selected == Object(sun)) {
-		p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
-	}
+	anchorManager->addAnchor(englishName, p.get());
+	p->updateBoundingRadii();
 
-	BodyContainer  * container = new BodyContainer();
-	container->body = p;
+	std::shared_ptr<BodyContainer> container = std::make_shared<BodyContainer>();
+	container->body = std::move(p);
 	container->englishName = englishName;
 	container->isDeleteable = deletable;
 	container->isHidden = Utility::strToBool(param["hidden"], 0);
 	container->initialHidden = container->isHidden;
 
-	systemBodies.insert(std::pair<std::string, BodyContainer *>(englishName, container));
+	systemBodies.insert(std::pair<std::string, std::shared_ptr<BodyContainer>>(englishName, container));
 
 	if(!container->isHidden){
 		// std::cout << "renderedBodies from addBody " << englishName << std::endl;
 		renderedBodies.push_back(container);
 	}
-	anchorManager->addAnchor(englishName, p);
-
-	p->updateBoundingRadii();
 }
 
 bool SolarSystem::removeBodyNoSatellite(const std::string &name)
@@ -601,7 +538,7 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 	// std::cout << "removeBodyNoSatellite " << name << std::endl;
 	// std::cout << "removing : " << name << std::endl;
 
-	BodyContainer * bc = findBodyContainer(name);
+	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
 
 	if(bc == nullptr){
 		cLog::get()->write("SolarSystem::removeBodyNoSatellite : Could not find a body named : " + name );
@@ -610,22 +547,23 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 
 	//check if the body was a satellite
 	if(bc->body->getParent() != nullptr){
-		bc->body->getParent()->removeSatellite(bc->body);
+		bc->body->getParent()->removeSatellite(bc->body.get());
 	}
 	// fix crash when delete body used from body_trace
-	if (bc->body == bodyTrace )
+	if (bc->body.get() == bodyTrace )
 		bodyTrace = sun;
 
 	//remove from containers :
 	systemBodies.erase(bc->englishName);
 	if(!bc->isHidden){
 		// std::cout << "removeBodyNoSatellite from renderedBodies " << name << std::endl;
-		removeFromVector(bc, renderedBodies);
+		std::remove_if(renderedBodies.begin(), renderedBodies.end(), [bc](std::shared_ptr<BodyContainer> const obj) {
+			return bc->englishName == obj->englishName;
+		});
 	}
 
-	anchorManager->removeAnchor(bc->body);
-	delete bc->body;
-	delete bc;
+	anchorManager->removeAnchor(bc->body.get());
+	//delete bc->body;
 
 	// std::cout << "removeBodyNoSatellite " << name << " is oki" << std::endl;
 
@@ -645,7 +583,7 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 
 bool SolarSystem::removeBody(const std::string &name){
 	// std::cout << "removeBody " << name << std::endl;
-	BodyContainer * bc = findBodyContainer(name);
+	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
 
 	if(bc == nullptr){
 		cLog::get()->write("SolarSystem::removeBody : Could not find a body named : " + name );
@@ -674,7 +612,7 @@ bool SolarSystem::removeBody(const std::string &name){
 bool SolarSystem::removeSupplementalBodies(const std::string &name)
 {
 	// std::cout << "removeSupplementalBodies " << name << std::endl;
-	BodyContainer * bc = findBodyContainer(name);
+	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
 
 	if(bc == nullptr){
 		cLog::get()->write("SolarSystem::removeSupplementalBodies : Could not find a body named : " + name );
@@ -719,7 +657,9 @@ void SolarSystem::initialSolarSystemBodies(){
 		it->second->body->reinitParam();
 		if (it->second->isHidden != it->second->initialHidden) {
 			if(it->second->initialHidden){
-				removeFromVector(it->second,renderedBodies);
+				std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
+					return it->second->englishName == obj->englishName;
+				});
 			}
 			else{
 
@@ -728,7 +668,6 @@ void SolarSystem::initialSolarSystemBodies(){
 			it->second->isHidden = it->second->initialHidden;
 		}
 	}
-	bodyTesselation->resetTesselationParams();
 }
 
 void SolarSystem::toggleHideSatellites(bool val){
@@ -746,11 +685,12 @@ void SolarSystem::toggleHideSatellites(bool val){
 
 		//If we are a planet with satellites
 		if(it->second->body->getParent() &&
-		   it->second->body->getParent()->getEnglishName() == "Sun" &&
+		   //it->second->body->getParent()->getEnglishName() == "Sun" &&
+		   it->second->body->getTurnAround() == tACenter &&
 		   it->second->body->hasSatellite()){
 
 		   for(Body * satellite : it->second->body->getSatellites()){
-			   BodyContainer * sat = findBodyContainer(satellite->getEnglishName());
+			   std::shared_ptr<BodyContainer> sat = findBodyContainer(satellite->getEnglishName());
 				setPlanetHidden(sat->englishName, val);
 			}
 		}
@@ -762,7 +702,7 @@ void SolarSystem::setPlanetHidden(const std::string &name, bool planethidden)
 {
 
 	for(auto it = systemBodies.begin(); it != systemBodies.end();it++){
-		Body * body = it->second->body;
+		Body * body = it->second->body.get();
 		if (
 			body->getEnglishName() == name ||
 			(body->get_parent() && body->get_parent()->getEnglishName() == name) ){
@@ -770,7 +710,9 @@ void SolarSystem::setPlanetHidden(const std::string &name, bool planethidden)
 			it->second->isHidden = planethidden;
 
 			if(planethidden){
-				removeFromVector(it->second,renderedBodies);
+				std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
+					return it->second->englishName == obj->englishName;
+				});
 			}
 			else{
 				// std::cout << "Je cherche un doublon de " << name << std::endl;
@@ -797,232 +739,13 @@ bool SolarSystem::getPlanetHidden(const std::string &name)
 	}
 }
 
-// Compute the position for every elements of the solar system.
-// The order is not important since the position is computed relatively to the mother body
-void SolarSystem::computePositions(double date,const Observer *obs)
-{
-	if (flag_light_travel_time) {
-		const Vec3d home_pos(obs->getHeliocentricPosition(date));
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			const double light_speed_correction =
-			    (it->second->body->get_heliocentric_ecliptic_pos()-home_pos).length()
-			    * (149597870000.0 / (299792458.0 * 86400));
-			it->second->body->compute_position(date-light_speed_correction);
-		}
-	} else {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			it->second->body->compute_position(date);
-		}
-	}
-
-	computeTransMatrices(date, obs);
-}
-
-// Compute the transformation matrix for every elements of the solar system.
-// The elements have to be ordered hierarchically, eg. it's important to compute earth before moon.
-void SolarSystem::computeTransMatrices(double date,const Observer * obs)
-{
-	if (flag_light_travel_time) {
-		const Vec3d home_pos(obs->getHeliocentricPosition(date));
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			const double light_speed_correction =
-			    (it->second->body->get_heliocentric_ecliptic_pos()-home_pos).length()
-			    * (149597870000.0 / (299792458.0 * 86400));
-			it->second->body->compute_trans_matrix(date-light_speed_correction);
-		}
-	} else {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			it->second->body->compute_trans_matrix(date);
-		}
-	}
-}
-
-void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
-{
-	if (!getFlagShow())
-		return; // 0;
-
-	// Compute each Body distance to the observer
-	Vec3d obs_helio_pos = nav->getObserverHelioPos();
-	//	cout << "obs: " << obs_helio_pos << endl;
-
-	for (auto it = renderedBodies.begin(); it != renderedBodies.end(); it++){
-		(*it)->body->compute_distance(obs_helio_pos);
-		(*it)->body->computeMagnitude(obs_helio_pos);
-		(*it)->body->computeDraw(prj, nav);
-	}
-
-	// sort all body from the furthest to the closest to the observer
-	sort(renderedBodies.begin(), renderedBodies.end(), biggerDistance);
-
-	// Determine optimal depth buffer buckets for drawing the scene
-	// This is similar to Celestia, but instead of using ranges within one depth
-	// buffer we just clear and reuse the entire depth buffer for each bucket.
-	double znear, zfar;
-	double lastNear = 0;
-	double lastFar = 0;
-	int nBuckets = 0;
-	listBuckets.clear();
-	depthBucket db;
-
-	for (auto it = renderedBodies.begin(); it!= renderedBodies.end();it++) {
-		if ( (*it)->body->get_parent() == sun
-		        // This will only work with natural planets
-		        // and not some illustrative (huge) artificial planets for example
-		        && (*it)->body->get_on_screen_bounding_size(prj, nav) > 3 ) {
-
-			//~ std::cout << "Calcul de bucket pour " << (*iter)->englishName << std::endl;
-			double dist = (*it)->body->getEarthEquPos(nav).length();  // AU
-			double bounding = (*it)->body->getBoundingRadius() * 1.01;
-
-			if ( bounding >= 0 ) {
-				// this is not a hidden object
-
-				znear = dist - bounding;
-				zfar  = dist + bounding;
-
-				if (znear < 0.001){
-					znear = 0.00000001;
-				}
-				else{
-					if (znear < 0.05) {
-						znear *= 0.1;
-					}
-					else{
-						if (znear < 0.5){
-							znear *= 0.2;
-						}
-					}
-				}
-
-				// see if overlaps previous bucket
-				// TODO check that buffer isn't too deep
-				if ( nBuckets > 0 && zfar > lastNear ) {
-					// merge with last bucket
-
-					//cout << "merged buckets " << (*iter)->getEnglishName() << " " << znear << " " << zfar << " with " << lastNear << " " << lastFar << endl;
-					db = listBuckets.back();
-
-					if(znear < lastNear ) {
-						// Artificial planets may cover real planets, for example
-						lastNear = db.znear = znear;
-					}
-
-					if ( zfar > lastFar ) {
-						lastFar = db.zfar = zfar;
-					}
-
-					listBuckets.pop_back();
-					listBuckets.push_back(db);
-
-				} else {
-
-					// create a new bucket
-					//cout << "New bucket: " << (*iter)->getEnglishName() << znear << " zfar: " << zfar << endl;
-					lastNear = db.znear = znear;
-					lastFar  = db.zfar  = zfar;
-					nBuckets++;
-					listBuckets.push_back( db );
-				}
-			}
-		}
-	}
-}
-
-// Draw all the elements of the solar system
-// We are supposed to be in heliocentric coordinate
-void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* observatory, const ToneReproductor* eye, /*bool flag_point,*/ bool drawHomePlanet)
-{
-	if (!getFlagShow())
-		return; // 0;
-
-	Halo::beginDraw();
-	int nBuckets = listBuckets.size();
-
-	std::list<depthBucket>::iterator dbiter;
-
-	//~ cout << "***\n";
-	//~ dbiter = listBuckets.begin();
-	//~ while( dbiter != listBuckets.end() ) {
-	//~ cout << (*dbiter).znear << " " << (*dbiter).zfar << endl;
-	//~ dbiter++;
-	//~ }
-	//~ cout << "***\n";
-
-	// Draw the elements
-	double z_near, z_far;
-	prj->getClippingPlanes(&z_near,&z_far); // Save clipping planes
-
-	dbiter = listBuckets.begin();
-
-	// clear depth buffer
-	prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	// Renderer::clearDepthBuffer();
-
-	//float depthRange = 1.0f/nBuckets;
-	float currentBucket = nBuckets - 1;
-
-	// economize performance by not clearing depth buffer for each bucket... good?
-	//	cout << "\n\nNew depth rendering loop\n";
-	bool depthTest = true;  // small objects don't use depth test for efficiency
-	double dist;
-
-	for (auto it = renderedBodies.begin(); it != renderedBodies.end(); it++) {
-		dist = (*it)->body->getEarthEquPos(nav).length();
-		if (dist < (*dbiter).znear ) {
-			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << " qui a pour parent " << (*iter)->body->getParent()->getEnglishName() << std::endl;
-			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << std::endl;
-
-			// potentially use the next depth bucket
-			dbiter++;
-
-			if (dbiter == listBuckets.end() ) {
-				dbiter--;
-				// now closer than the first depth buffer
-			} else {
-				currentBucket--;
-
-				// TODO: evaluate performance tradeoff???
-				// glDepthRange(currentBucket*depthRange, (currentBucket+1)*depthRange);
-				// if (needClearDepthBuffer) {
-				// 	// glClear(GL_DEPTH_BUFFER_BIT);
-				// 	Renderer::clearDepthBuffer();
-				// 	needClearDepthBuffer = false;
-				// }
-
-				// get ready to start using
-				prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
-			}
-		}
-		if (dist > (*dbiter).zfar || dist < (*dbiter).znear) {
-			// don't use depth test (outside buckets)
-			//~ std::cout << "Outside bucket pour " << (*iter)->englishName << std::endl;
-			if ( depthTest )
-				prj->setClippingPlanes(z_near, z_far);
-			depthTest = false;
-
-		} else {
-			if (!depthTest)
-				prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
-
-			depthTest = true;
-			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
-		}
-		(*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, selected == (*it)->body);
-		//needClearDepthBuffer = true;
-	}
-	Halo::endDraw();
-	prj->setClippingPlanes(z_near,z_far);  // Restore old clipping planes
-}
-
 Body* SolarSystem::searchByEnglishName(const std::string &planetEnglishName) const
 {
 	//printf("SolarSystem::searchByEnglishName(\"%s\"): start\n", planetEnglishName.c_str());
 	// side effect - bad?
 	//	transform(planetEnglishName.begin(), planetEnglishName.end(), planetEnglishName.begin(), ::tolower);
 	if(systemBodies.count(planetEnglishName) != 0){
-		return systemBodies.find(planetEnglishName)->second->body;
+		return systemBodies.find(planetEnglishName)->second->body.get();
 	}
 	else{
 		return nullptr;
@@ -1036,7 +759,7 @@ Object SolarSystem::searchByNamesI18(const std::string &planetNameI18) const
 	//	transform(planetNameI18.begin(), planetNameI18.end(), planetNameI18.begin(), ::tolower);
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		if ( it->second->body->getNameI18n() == planetNameI18 )
-			return it->second->body; // also check standard ini file names
+			return it->second->body.get(); // also check standard ini file names
 	}
 	return nullptr;
 }
@@ -1054,7 +777,7 @@ Object SolarSystem::search(Vec3d pos, const Navigator * nav, const Projector * p
 		equPos.normalize();
 		double cos_ang_dist = equPos[0]*pos[0] + equPos[1]*pos[1] + equPos[2]*pos[2];
 		if (cos_ang_dist>cos_angle_closest) {
-			closest = it->second->body;
+			closest = it->second->body.get();
 			cos_angle_closest = cos_ang_dist;
 		}
 	}
@@ -1091,7 +814,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 		equPos.normalize();
 
 		// First see if within a Body disk
-		if (it->second->body != home_Body || aboveHomeBody) {
+		if (it->second->body.get() != home_Body || aboveHomeBody) {
 			// Don't want home Body too easy to select unless can see it
 
 			double angle = acos(v*equPos) * 180.f / M_PI;
@@ -1102,7 +825,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 			if ( angle < it->second->body->get_angular_size(prj, nav)/2.f ) {
 
 				// If near planet, may be huge but hard to select, so check size
-				result.push_back(it->second->body);
+				result.push_back(it->second->body.get());
 				*default_last_item = true;
 
 				break;  // do not want any planets behind this one!
@@ -1111,7 +834,7 @@ std::vector<Object> SolarSystem::searchAround(Vec3d v,
 		}
 		// See if within area of interest
 		if (equPos[0]*v[0] + equPos[1]*v[1] + equPos[2]*v[2]>=cos_lim_fov) {
-			result.push_back(it->second->body);
+			result.push_back(it->second->body.get());
 		}
 
 	}
@@ -1164,7 +887,8 @@ std::string SolarSystem::getPlanetHashString(void)
 	std::ostringstream oss;
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		if (!it->second->isDeleteable ) { // no supplemental bodies in list
-			if (it->second->body->get_parent() != nullptr && it->second->body->get_parent()->getEnglishName() != "Sun") {
+			//if (it->second->body->get_parent() != nullptr && it->second->body->get_parent()->getEnglishName() != "Sun") {
+			if (it->second->body->getTurnAround() == tABody) {
 				oss << Translator::globalTranslator.translateUTF8(it->second->body->get_parent()->getEnglishName())
 				    << " : ";
 			}
@@ -1184,24 +908,6 @@ void SolarSystem::startTrails(bool b)
 	}
 }
 
-void SolarSystem::setFlagTrails(bool b)
-{
-	flagTrails = b;
-
-	if (!b || !selected || selected == Object(sun)) {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			it->second->body->setFlagTrail(b);
-		}
-	} else {
-		// if a Body is selected and trails are on, fade out non-selected ones
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (selected == it->second->body || (it->second->body->get_parent() && it->second->body->get_parent()->getEnglishName() == selected.getEnglishName()) )
-				it->second->body->setFlagTrail(b);
-			else it->second->body->setFlagTrail(false);
-		}
-	}
-}
-
 void SolarSystem::setFlagAxis(bool b)
 {
 	flagAxis=b;
@@ -1210,152 +916,13 @@ void SolarSystem::setFlagAxis(bool b)
 	}
 }
 
-void SolarSystem::setFlagHints(bool b)
-{
-	flagHints = b;
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		it->second->body->setFlagHints(b);
-	}
-}
-
-void SolarSystem::setFlagPlanetsOrbits(bool b)
-{
-	flagPlanetsOrbits = b;
-
-	if (!b || !selected || selected == Object(sun)) {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (it->second->body->get_parent() && it->second->body->getParent()->getEnglishName() =="Sun")
-				it->second->body->setFlagOrbit(b);
-		}
-	} else {
-		// if a Body is selected and orbits are on,
-		// fade out non-selected ones
-		// unless they are orbiting the selected Body 20080612 DIGITALIS
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (!it->second->body->isSatellite()) {
-				if ((selected == it->second->body) && (it->second->body->getParent()->getEnglishName() =="Sun")){
-					it->second->body->setFlagOrbit(true);
-				}
-				else {
-					it->second->body->setFlagOrbit(false);
-				}
-			}
-			else {
-				if (selected == it->second->body->getParent()) {
-					it->second->body->setFlagOrbit(true);
-				}
-				else{
-					it->second->body->setFlagOrbit(false);
-				}
-			}
-		}
-	}
-}
-
-void SolarSystem::setFlagPlanetsOrbits(const std::string &_name, bool b)
-{
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		if (it->second->englishName == _name) {
-			it->second->body->setFlagOrbit(b);
-			return;
-		}
-	}
-}
-
-
-void SolarSystem::setFlagSatellitesOrbits(bool b)
-{
-	flagSatellitesOrbits = b;
-
-	if (!b || !selected || selected == Object(sun)) {
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (it->second->body->get_parent() && it->second->body->getParent()->getEnglishName() !="Sun"){
-				it->second->body->setFlagOrbit(b);
-			}
-		}
-	}
-	else {
-		// if the mother Body is selected orbits are on, else orbits are off
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			if (it->second->body->isSatellite()) {
-				if (it->second->body->get_parent()->getEnglishName() == selected.getEnglishName() || it->second->englishName == selected.getEnglishName()) {
-					it->second->body->setFlagOrbit(true);
-				}
-				else{
-					it->second->body->setFlagOrbit(false);
-				}
-			}
-		}
-	}
-}
-
-void SolarSystem::setSelected(const Object &obj)
-{
-	if (obj.getType() == OBJECT_BODY){
-		selected = obj;
-	}
-	else{
-		selected = Object();
-	}
-	// Undraw other objects hints, orbit, trails etc..
-	//setFlagOrbits(flagTrails);
-	setFlagPlanetsOrbits(flagPlanetsOrbits);
-	setFlagSatellitesOrbits(flagSatellitesOrbits);
-	setFlagTrails(flagTrails);  // TODO should just hide trail display and not affect data collection
-}
 
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
-	bodyTesselation->updateTesselation(delta_time);
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		it->second->body->update(delta_time, nav, timeMgr);
 	}
 }
-
-float SolarSystem::getPlanetSizeScale(const std::string &name)
-{
-
-	Body * body = searchByEnglishName(name);
-
-	return body == nullptr ? 1.0 : body->getSphereScale();
-}
-
-void SolarSystem::setPlanetSizeScale(const std::string &name, float s)
-{
-	Body * body = searchByEnglishName(name);
-
-	if(body != nullptr){
-		body->setSphereScale(s);
-	}
-}
-
-void SolarSystem::switchPlanetTexMap(const std::string &name, bool a)
-{
-	Body * body = searchByEnglishName(name);
-	if(body != nullptr){
-		body->switchMapSkin(a);
-	}
-}
-
-
-bool SolarSystem::getSwitchPlanetTexMap(const std::string &name)
-{
-	Body * body = searchByEnglishName(name);
-	if(body != nullptr){
-		return body->getSwitchMapSkin();
-	}
-	return false;
-}
-
-
-void SolarSystem::createTexSkin(const std::string &name, const std::string &texName)
-{
-	Body * body = searchByEnglishName(name);
-	if(body != nullptr){
-		body->createTexSkin(texName);
-	}
-}
-
 
 // is a lunar eclipse close at hand?
 bool SolarSystem::nearLunarEclipse(const Navigator * nav, Projector *prj)
@@ -1423,75 +990,12 @@ void SolarSystem::bodyTraceBodyChange(const std::string &bodyName)
 bool SolarSystem::getFlag(BODY_FLAG name)
 {
 	switch (name) {
-		case BODY_FLAG::F_TRAIL: return flagTrails; break;
-		case BODY_FLAG::F_HINTS: return flagHints; break;
 		case BODY_FLAG::F_AXIS : return flagAxis; break;
-		case BODY_FLAG::F_ORBIT : return (flagPlanetsOrbits||flagSatellitesOrbits); break;
 		case BODY_FLAG::F_CLOUDS: return Body::getFlagClouds(); break;
 		default: break;
 	}
 	return false;
 }
-
-void SolarSystem::setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c)
-{
-	if (englishName=="all")
-		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-			it->second->body->setColor(colorName,c);
-		}
-	else{
-
-		Body * body = searchByEnglishName(englishName);
-
-		if(body != nullptr){
-			body->setColor(colorName, c);
-		}
-	}
-}
-
-const Vec3f SolarSystem::getBodyColor(const std::string &englishName, const std::string& colorName) const
-{
-	Body * body = searchByEnglishName(englishName);
-
-	if(body != nullptr){
-		return body->getColor(colorName);
-	}
-	else{
-		return v3fNull;
-	}
-}
-
-void SolarSystem::setDefaultBodyColor(const std::string& colorName, const Vec3f& c){
-	BodyColor::setDefault(colorName, c);
-}
-
-const Vec3f SolarSystem::getDefaultBodyColor(const std::string& colorName) const{
-	return BodyColor::getDefault(colorName);
-}
-
-void SolarSystem::planetTesselation(std::string name, int value) {
-	if (name=="min_tes_level") {
-		bodyTesselation->setMinTes(value);
-		return;
-	}
-	if (name=="max_tes_level") {
-		bodyTesselation->setMaxTes(value);
-		return;
-	}
-	if (name=="planet_altimetry_level") {
-		bodyTesselation->setPlanetTes(value);
-		return;
-	}
-	if (name=="moon_altimetry_level") {
-		bodyTesselation->setMoonTes(value);
-		return;
-	}
-	if (name=="earth_altimetry_level") {
-		bodyTesselation->setEarthTes(value);
-		return;
-	}
-}
-
 
 double SolarSystem::getSunAltitude(const Navigator * nav) const
 {
@@ -1499,6 +1003,24 @@ double SolarSystem::getSunAltitude(const Navigator * nav) const
 	sun->getAltAz(nav, &alt, &az);
 	return alt*180.0/M_PI;
 }
+
+double SolarSystem::getSunAzimuth(const Navigator * nav) const
+{
+	double alt, az;
+	sun->getAltAz(nav, &alt, &az);
+	return az*180.0/M_PI;
+}
+
+std::unique_ptr<SSystemIterator> SolarSystem::createIterator()
+{
+	return std::make_unique<SSystemIterator>(this);
+}
+
+std::unique_ptr<SSystemIteratorVector> SolarSystem::createIteratorVector()
+{
+	return std::make_unique<SSystemIteratorVector>(this);
+}
+
 
 double SolarSystem::getSunAzimuth(const Navigator * nav) const
 {

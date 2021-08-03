@@ -74,6 +74,8 @@ typedef struct body_flags {
 
 enum BODY_TYPE {SUN = 0, PLANET = 1, MOON = 2, DWARF = 3, ASTEROID = 4, KBO = 5,  COMET = 6, ARTIFICIAL = 7, OBSERVER = 8, UNKNOWN = 10};
 
+enum TURN_AROUND {tANothing = 0, tACenter = 1, tABody = 2};
+
 typedef struct AtmosphereParams {
 	bool hasAtmosphere = false;
 	float limInf = 0.f;
@@ -100,15 +102,15 @@ public:
 	     bool _flagHalo,
 	     double radius,
 	     double oblateness,
-	     BodyColor* _myColor,
+	     std::unique_ptr<BodyColor> _myColor,
 	     float _sol_local_day,
 	     float _albedo,
-	     Orbit *orbit,
+	     std::unique_ptr<Orbit> _orbit,
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-	     const BodyTexture* _bodyTexture,
-	 	 ThreadContext *_context);
+	     const std::shared_ptr<BodyTexture> _bodyTexture,
+		 ThreadContext *context);
 	virtual ~Body();
 
 	double getRadius(void) const {
@@ -132,11 +134,11 @@ public:
 	}
 
 	Orbit *getOrbit() {
-		return orbit;
+		return orbit.get();
 	}
 
 	const Orbit * getOrbit()const {
-		return orbit;
+		return orbit.get();
 	}
 
 	/** Translate Body name using the passed translator */
@@ -166,7 +168,7 @@ public:
 
 	// Draw the Planet, if hint_ON is != 0 draw a circle and the name as well
 	// Return the squared distance in pixels between the current and the  previous position this Body was drawn at.
-	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected);
+	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet);
 
 	// Set the orbital elements
 	void set_rotation_elements(float _period, float _offset, double _epoch, float _obliquity, float _ascendingNode, float _precessionRate, double _sidereal_period, float _axial_tilt);
@@ -412,6 +414,10 @@ public:
 
 	double getAxisAngle() const;
 
+	TURN_AROUND getTurnAround() {
+		return tAround;
+	}
+
 
 protected:
 
@@ -464,7 +470,7 @@ protected:
 	BODY_TYPE typePlanet;			//get the type of Body in univers: real planet, moon, dwarf ...
 
 	ThreadContext *context;
-	BodyColor* myColor=nullptr;
+	std::shared_ptr<BodyColor> myColor=nullptr;
 	AtmosphereParams* atmosphereParams=nullptr;
 
 	static AtmosphereParams *defaultAtmosphereParams;
@@ -493,7 +499,7 @@ protected:
 	double lastJD;
 	double deltaJD;
 
-	Orbit *orbit=nullptr;            // orbit object for this body
+	std::unique_ptr<Orbit> orbit=nullptr;            // orbit object for this body
 	Vec3f orbit_position;    // position de la planete
 
 	Body *parent;				// Body parent i.e. sun for earth
@@ -512,6 +518,8 @@ protected:
 
 	bool close_orbit; // whether to close orbit loop
 	bool is_satellite;  // whether has a Body as a parent
+
+	TURN_AROUND tAround;
 
 	double orbit_bounding_radius; // AU calculated at load time for elliptical orbits at least DIGITALIS
 	double boundingRadius;  // Cached AU value for use with depth buffer

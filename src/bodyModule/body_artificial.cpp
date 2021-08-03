@@ -24,6 +24,7 @@
 #include "bodyModule/orbit_2d.hpp"
 #include "tools/app_settings.hpp"
 #include "bodyModule/body_artificial.hpp"
+#include "bodyModule/body_color.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/trail.hpp"
@@ -40,15 +41,15 @@ Artificial::Artificial(Body *parent,
                        const std::string& englishName,
                        bool flagHalo,
                        double radius,
-                       BodyColor* _myColor,
+                       std::unique_ptr<BodyColor> _myColor,
                        float _sol_local_day,
                        float albedo,
-                       Orbit *orbit,
+                       std::unique_ptr<Orbit> orbit,
                        bool close_orbit,
                        const std::string& model_name,
                        bool _deleteable,
                        double orbit_bounding_radius,
-					   BodyTexture* _bodyTexture,
+					   std::shared_ptr<BodyTexture> _bodyTexture,
                        ThreadContext *context
                       ):
 	Body(parent,
@@ -57,10 +58,10 @@ Artificial::Artificial(Body *parent,
 	     flagHalo,
 	     radius,
 	     1.0,
-	     _myColor,
+	     std::move(_myColor),
 	     _sol_local_day,
 	     albedo,
-	     orbit,
+	     std::move(orbit),
 	     close_orbit,
 	     nullptr,
 	     orbit_bounding_radius,

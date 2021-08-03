@@ -38,15 +38,15 @@ public:
 	           const std::string& englishName,
 	           bool flagHalo,
 	           double radius,
-	           BodyColor* _myColor,
+	           std::unique_ptr<BodyColor> _myColor,
 	           float _sol_local_day,
 	           float albedo,
-	           Orbit *orbit,
+	           std::unique_ptr<Orbit> orbit,
 	           bool close_orbit,
 	           const std::string& model_name,
 	           bool _deleteable,
 	           double orbit_bounding_radius,
-			   BodyTexture* _bodyTexture,
+			   std::shared_ptr<BodyTexture> _bodyTexture,
 			   ThreadContext *context
 	          );
 

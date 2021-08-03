@@ -73,26 +73,25 @@ Body::Body(Body *parent,
            bool _flagHalo,
            double _radius,
            double oblateness,
-           BodyColor* _myColor,
+           std::unique_ptr<BodyColor> _myColor,
            float _sol_local_day,
            float _albedo,
-           Orbit *orbit,
+           std::unique_ptr<Orbit> _orbit,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-           const BodyTexture* _bodyTexture,
-           ThreadContext *_context):
+           const std::shared_ptr<BodyTexture> _bodyTexture,
+		   ThreadContext *_context):
 	englishName(englishName), initialRadius(_radius), one_minus_oblateness(1.0-oblateness),
     context(_context),
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
-	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(orbit), parent(parent), close_orbit(close_orbit),
+	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
 	is_satellite(0), orbit_bounding_radius(orbit_bounding_radius),
 	boundingRadius(-1), sun_half_angle(0.0)
 {
 	radius = _radius;
-
-	myColor = _myColor;
+	myColor = std::move(_myColor);
 	orbit_position = v3fNull;
 	sol_local_day = _sol_local_day;
 	typePlanet = _typePlanet;
@@ -101,6 +100,12 @@ Body::Body(Body *parent,
 		parent->satellites.push_back(this);
 		if (parent->getEnglishName() != "Sun") is_satellite = 1; // quicker lookup
 	}
+	if (parent) {
+		if (parent->getEnglishName() == "Sun") tAround = tACenter;
+		else tAround = tABody;
+	} else 
+		tAround = tANothing;
+
 	ecliptic_pos= v3dNull;
 	rot_local_to_parent = Mat4d::identity();
 	rot_local_to_parent_unprecessed = Mat4d::identity();
@@ -158,16 +163,16 @@ Body::~Body()
 	tex_norm = nullptr;
 	if (tex_heightmap) delete tex_heightmap;
 	tex_heightmap = nullptr;
-	if(orbit) delete orbit;
-	orbit = nullptr;
+	//if(orbit) delete orbit;
+	//orbit = nullptr;
 	if (hints) delete hints;
 	hints = nullptr;
 	if (axis) delete axis;
 	axis = nullptr;
 	if (halo) delete halo;
 	halo = nullptr;
-	if (myColor) delete myColor;
-	myColor = nullptr;
+//	if (myColor) delete myColor;
+//	myColor = nullptr;
 }
 
 void Body::switchMapSkin(bool a) {
@@ -814,7 +819,7 @@ double Body::getAxisAngle() const {
 	return axis->getAngle();
 }
 
-bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool selected)
+bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet)
 {
 	bool drawn = false;
 

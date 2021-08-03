@@ -34,7 +34,7 @@ AnchorPointOrbit::AnchorPointOrbit(Orbit * _orbit, const TimeMgr* _timeMgr, cons
 
 AnchorPointOrbit::~AnchorPointOrbit()
 {
-	delete orbit;
+	//delete orbit;
 }
 
 void AnchorPointOrbit::update() noexcept

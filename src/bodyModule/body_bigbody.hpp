@@ -24,6 +24,7 @@
 
 
 #include "bodyModule/body.hpp"
+#include "bodyModule/ring.hpp"
 
 class Ring;
 class Set;
@@ -40,19 +41,19 @@ public:
 	        bool flagHalo,
 	        double radius,
 	        double oblateness,
-	        BodyColor* _myColor,
+	        std::unique_ptr<BodyColor> myColor,
 	        float _sol_local_day,
 	        float albedo,
-	        Orbit *orbit,
+	        std::unique_ptr<Orbit> orbit,
 	        bool close_orbit,
 	        ObjL* _currentObj,
 	        double orbit_bounding_radius,
-			BodyTexture* _bodyTexture,
+			std::shared_ptr<BodyTexture> _bodyTexture,
 			ThreadContext *context);
 
 	virtual ~BigBody();
 
-	void setRings(Ring* r);
+	void setRings(std::unique_ptr<Ring> r);
 
 	virtual void selectShader ();
 
@@ -79,7 +80,7 @@ protected :
 
 	// remove from parent satellite list
 	virtual void removeSatellite(Body *planet);
-	Ring* rings=nullptr;
+	std::unique_ptr<Ring> rings=nullptr;
 	int commandIndex = -2;
 	int pipelineOffset = 0; // pipeline to select inside drawState
 	std::unique_ptr<Set> set;

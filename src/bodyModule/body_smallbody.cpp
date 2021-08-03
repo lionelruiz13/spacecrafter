@@ -31,6 +31,7 @@
 #include "bodyModule/halo.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
+#include "bodyModule/body_color.hpp"
 
 #include "bodyModule/ring.hpp"
 
@@ -45,14 +46,14 @@ SmallBody::SmallBody(Body *parent,
                      bool flagHalo,
                      double radius,
                      double oblateness,
-                     BodyColor* _myColor,
+                     std::unique_ptr<BodyColor> _myColor,
                      float _sol_local_day,
                      float albedo,
-                     Orbit *orbit,
+                     std::unique_ptr<Orbit> orbit,
                      bool close_orbit,
                      ObjL* _currentObj,
                      double orbit_bounding_radius,
-					 BodyTexture* _bodyTexture,
+					 std::shared_ptr<BodyTexture> _bodyTexture,
                      ThreadContext *context):
 	Body(parent,
 	     englishName,
@@ -60,10 +61,10 @@ SmallBody::SmallBody(Body *parent,
 	     flagHalo,
 	     radius,
 	     oblateness,
-	     _myColor,
+	     std::move(_myColor),
 	     _sol_local_day,
 	     albedo,
-	     orbit,
+	     std::move(orbit),
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,

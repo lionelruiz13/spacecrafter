@@ -38,15 +38,15 @@ public:
 	          bool flagHalo,
 	          double radius,
 	          double oblateness,
-	          BodyColor* _myColor,
+	          std::unique_ptr<BodyColor> _myColor,
 	          float _sol_local_day,
 	          float albedo,
-	          Orbit *orbit,
+	          std::unique_ptr<Orbit> orbit,
 	          bool close_orbit,
 	          ObjL* _currentObj,
 	          double orbit_bounding_radius,
-			  BodyTexture* _bodyTexture,
-		  	  ThreadContext *context);
+			  std::shared_ptr<BodyTexture> _bodyTexture,
+			  ThreadContext *context);
 
 	virtual ~SmallBody();
 

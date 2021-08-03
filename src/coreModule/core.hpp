@@ -32,6 +32,7 @@
 #include "bodyModule/body_decor.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "bodyModule/solarsystem.hpp"
+#include "bodyModule/ssystem_factory.hpp"
 #include "coreModule/backup_mgr.hpp"
 #include "coreModule/callbacks.hpp"
 #include "coreModule/cardinals.hpp"
@@ -318,7 +319,7 @@ public:
 	void unSelect(void) {
 		selected_object=nullptr;
 		old_selected_object=nullptr;
-		ssystem->setSelected(Object());
+		ssystemTmp->setSelected(Object());
 	}
 
 	void unsetSelectedConstellation(std::string constellation) {
@@ -383,7 +384,7 @@ public:
 
 	//! Get base planets display scaling factor
 	float getPlanetsSizeLimit(void) const {
-		return (ssystem->getSizeLimit()-starGetSizeLimit());
+		return (ssystemTmp->getSizeLimit()-starGetSizeLimit());
 	}
 
 	std::string getPlanetHashString(void);
@@ -582,7 +583,9 @@ private:
 	NebulaMgr * nebulas;				// Manage the nebulas
 	IlluminateMgr * illuminates;		// Manage the illuminations
 	TextMgr * text_usr;				// manage all user text in dome
-	SolarSystem* ssystem;				// Manage the solar system
+	//SolarSystem* ssystem;				// Manage the solar system
+	SSystemFactory* ssystemTmp;
+
 	Atmosphere * atmosphere;			// Atmosphere
 	Media* media;
 	SkyGridMgr * skyGridMgr;			//! gestionnaire des grilles
