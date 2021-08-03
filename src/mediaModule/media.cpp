@@ -211,14 +211,22 @@ void Media::playerStop()
 	player->stopCurrentVideo();
 	m_videoState.state=V_STATE::V_NONE;
 	audio->musicDrop();
-	if (m_videoState.type==V_TYPE::V_VR360)
-		vr360->display(false);
-	if (m_videoState.type==V_TYPE::V_VRCUBE)
-		vr360->display(false);
-	if (m_videoState.type==V_TYPE::V_VIEWPORT)
-		viewPort->display(false);
-	if ((m_videoState.type==V_TYPE::V_IMAGE) && !imageVideoName.empty())
-		imageMgr->drop_image(imageVideoName);
+	switch(m_videoState.type) {
+		case V_TYPE::V_VR360 :
+			vr360->display(false);
+			break;
+		case V_TYPE::V_VRCUBE :
+			vr360->display(false);
+			break;
+		case V_TYPE::V_VIEWPORT :
+			viewPort->display(false);
+			break;
+		case V_TYPE::V_IMAGE: 
+			if (!imageVideoName.empty())
+				imageMgr->drop_image(imageVideoName);
+			break;
+		default: break;
+	}
 	m_videoState.type=V_TYPE::V_NONE;
 }
 
