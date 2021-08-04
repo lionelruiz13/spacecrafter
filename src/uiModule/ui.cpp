@@ -96,8 +96,8 @@ void UI::init(const InitParser& conf)
 	FlagShowFov			= conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_FOV);
 	FlagNumberPrint		= conf.getInt(SCS_GUI, SCK_FLAG_NUMBER_PRINT);
 
-	FontSizeGeneral		= conf.getDouble (SCS_FONT, SCK_FONT_GENERAL_SIZE);
-	FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
+	// FontSizeGeneral		= conf.getDouble (SCS_FONT, SCK_FONT_GENERAL_SIZE);
+	// FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
 	MouseCursorTimeout  = conf.getDouble(SCS_GUI, SCK_MOUSE_CURSOR_TIMEOUT);
 	PosDateTime			= conf.getInt(SCS_GUI, SCK_DATETIME_DISPLAY_POSITION);
 	PosObjectInfo		= conf.getInt(SCS_GUI, SCK_OBJECT_INFO_DISPLAY_POSITION);
