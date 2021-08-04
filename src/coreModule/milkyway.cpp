@@ -32,7 +32,6 @@
 #include "ojmModule/ojml.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
-#include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
