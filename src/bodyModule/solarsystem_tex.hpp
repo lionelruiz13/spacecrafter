@@ -64,7 +64,7 @@ public:
 
 private:
     SolarSystem * ssystem;
-    BodyTesselation *bodyTesselation=nullptr;
+    std::shared_ptr<BodyTesselation> bodyTesselation=nullptr;
 };
 
 #endif

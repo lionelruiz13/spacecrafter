@@ -378,7 +378,7 @@ public:
 		defaultAtmosphereParams = nullptr;
 	}
 
-	static void setTesselation(BodyTesselation *_bodyTesselation) {
+	static void setTesselation(std::shared_ptr<BodyTesselation> _bodyTesselation) {
 		Body::bodyTesselation = _bodyTesselation;
 	}
 
@@ -474,7 +474,7 @@ protected:
 	AtmosphereParams* atmosphereParams=nullptr;
 
 	static AtmosphereParams *defaultAtmosphereParams;
-	static BodyTesselation *bodyTesselation; 	// all global parameters with shader tesselaiton
+	static std::shared_ptr<BodyTesselation> bodyTesselation; 	// all global parameters with shader tesselaiton
 	float sol_local_day;			//time of a sideral day in this planet
 	float albedo;					// Body albedo
 	Mat4d rot_local_to_parent;

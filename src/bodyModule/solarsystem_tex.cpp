@@ -29,7 +29,7 @@ SolarSystemTex::SolarSystemTex(SolarSystem * _ssystem)
 {
     ssystem = _ssystem;
 
-    bodyTesselation =  new(BodyTesselation);
+    bodyTesselation =  std::make_shared<BodyTesselation>();
 	assert(bodyTesselation != nullptr);
 	bodyTesselation->createTesselationParams();
 	Body::setTesselation(bodyTesselation);
@@ -38,9 +38,6 @@ SolarSystemTex::SolarSystemTex(SolarSystem * _ssystem)
 SolarSystemTex::~SolarSystemTex()
 {
 	Body::deleteDefaultTexMap();
-    if (bodyTesselation)
-		delete bodyTesselation;
-	bodyTesselation = nullptr;
 }
 
 void SolarSystemTex::switchPlanetTexMap(const std::string &name, bool a)
