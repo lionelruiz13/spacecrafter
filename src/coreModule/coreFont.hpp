@@ -74,7 +74,7 @@ class CoreFont {
 public:
 	friend class Core;
 
-    CoreFont(/*Core* _core,*/ int _resolution);
+    CoreFont(int _resolution);
     ~CoreFont();
 	//! initialise les fontes: fichiers et tailles 
     void init(const InitParser& conf);
@@ -85,7 +85,7 @@ public:
  
 private:
 	void setStrToTarget();
-    //Core* core;
+	// Core
 	HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	NebulaMgr * nebulas;				// Manage the nebulas
 	SolarSystem* ssystem;				// Manage the solar system
@@ -94,18 +94,23 @@ private:
 	SkyDisplayMgr* skyDisplayMgr; 		//! gestionnaire de skyDisplay
 	Cardinals * cardinals_points;		// Cardinals points
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
+	// Media
 	TextMgr * text_usr;				// manage all user text in dome
+	// Ui
 
+	// Core
 	std::string FontFileNameGeneral;			//! The font file used by default during initialization
 	std::string FontFileNamePlanet;				//! The font for the planet system
 	std::string FontFileNameConstellation;		//! The font for all asterims
 	std::string FontFileNameMenu;
-	std::string FontFileNameText;
-	double FontSizeText;
 	double FontSizeGeneral;
 	double FontSizePlanet;
 	double FontSizeConstellation;
 	double FontSizeCardinalPoints;
+	// Media
+	std::string FontFileNameText;
+	double FontSizeText;
+
 
     int m_resolution;
 	double m_fontResolution;

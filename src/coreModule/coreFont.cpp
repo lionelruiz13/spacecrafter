@@ -115,9 +115,11 @@ void CoreFont::updateFont(const std::string& targetName, const std::string& font
 	}
 
 	switch(it->second) {
+		// Media
 		case TARGETFONT::CF_TEXTS :
 			text_usr->setFont(size==0 ? FontSizeText : size, fontName );
 			break;
+		// Core
 		case TARGETFONT::CF_PLANETS :
 			ssystem->setFont(size==0 ? FontSizePlanet : size, fontName );
 			break;
