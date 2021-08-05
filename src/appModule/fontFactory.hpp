@@ -54,6 +54,8 @@ enum class TARGETFONT : char {
 	CF_CONSTELLATIONS,
 	CF_CARDINALS,
 	CF_HIPSTARS,
+	CF_MENU,
+	CF_GENERAL,
 	CF_NONE
 };
 
@@ -93,8 +95,10 @@ private:
 	// Media
 	std::string FontFileNameText;
 	double FontSizeText;
-
-
+	// Ui
+	std::string FontNameTuiMenu;
+	float FontSizeTuiMenu;
+	
     int m_resolution;
 	double m_fontResolution;
 	std::map< std::string, TARGETFONT> m_strToTarget;

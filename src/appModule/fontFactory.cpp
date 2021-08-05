@@ -41,6 +41,8 @@ void FontFactory::setStrToTarget()
 	m_strToTarget[TF_CONSTELLATIONS] = TARGETFONT::CF_CONSTELLATIONS;
 	m_strToTarget[TF_CARDINAL] = TARGETFONT::CF_CARDINALS;
 	m_strToTarget[TF_STARS] = TARGETFONT::CF_HIPSTARS;
+	m_strToTarget[TF_MENU] = TARGETFONT::CF_MENU;
+	m_strToTarget[TF_GENERAL] = TARGETFONT::CF_GENERAL;
 }
 
 
@@ -59,16 +61,23 @@ void FontFactory::init(const InitParser& conf)
 	FontFileNameGeneral = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
 	FontFileNamePlanet = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME);
 	FontFileNameConstellation = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_NAME);
+
 	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
 
-	m_fontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
-    if (m_fontResolution <1.0)
-        m_fontResolution = 1024.0;
-    FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
+	FontNameTuiMenu = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_MENU_NAME);
+
 	FontSizeGeneral = conf.getDouble (SCS_FONT,SCK_FONT_GENERAL_SIZE);
 	FontSizeConstellation = conf.getDouble(SCS_FONT,SCK_FONT_CONSTELLATION_SIZE);
 	FontSizePlanet = conf.getDouble(SCS_FONT,SCK_FONT_PLANET_SIZE);
 	FontSizeCardinalPoints = conf.getDouble(SCS_FONT,SCK_FONT_CARDINALPOINTS_SIZE);
+
+    FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
+
+	FontSizeTuiMenu   = conf.getDouble (SCS_FONT, SCK_FONT_MENUTUI_SIZE);
+
+	m_fontResolution = conf.getDouble(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
+    if (m_fontResolution <1.0)
+        m_fontResolution = 1024.0;
 
     // mise à l'échelle des FontSize
     FontSizeText = round(FontSizeText * m_resolution / m_fontResolution) ;
@@ -76,6 +85,7 @@ void FontFactory::init(const InitParser& conf)
     FontSizeConstellation = round(FontSizeConstellation * m_resolution / m_fontResolution) ;
     FontSizePlanet = round(FontSizePlanet * m_resolution / m_fontResolution) ;
     FontSizeCardinalPoints = round(FontSizeCardinalPoints * m_resolution / m_fontResolution) ;
+	FontSizeTuiMenu = round(FontSizeTuiMenu * m_resolution / m_fontResolution) ;
 }
 
 
@@ -108,6 +118,10 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 			break;
 		case TARGETFONT::CF_HIPSTARS :
 			// hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
+			break;
+		case TARGETFONT::CF_MENU:
+			break;
+		case TARGETFONT::CF_GENERAL:
 			break;
 		case TARGETFONT::CF_NONE:
 			break;
