@@ -152,7 +152,6 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	oort =  new Oort(context);
 	dso3d = new Dso3d(context);
 	tully = new Tully(context);
-	bodytrace= new BodyTrace(context);
 	object_pointer_visibility = 1;
 
 	executorInSolarSystem = new CoreExecutorInSolarSystem(this, observatory);
@@ -228,7 +227,6 @@ Core::~Core()
 	Object::deleteTextures(); // Unload the pointer textures
 	// Object::deleteShaders();
 	delete text_usr;
-	delete bodytrace;
 	delete ubo_cam;
 	delete oort;
 	delete dso3d;
@@ -588,7 +586,6 @@ void Core::updateInSolarSystem(int delta_time)
 	cardinals_points->update(delta_time);
 	milky_way->update(delta_time);
 	text_usr->update(delta_time);
-	bodytrace->update(delta_time);
 
 	starLines->update(delta_time);
 
@@ -624,9 +621,8 @@ void Core::updateInSolarSystem(int delta_time)
 	sunPos.normalize();
 	moonPos.normalize();
 
-	double alt, az;
-	ssystemTmp->bodyTraceGetAltAz(navigation, &alt, &az);
-	bodytrace->addData(navigation, alt, az);
+	ssystemTmp->bodyTrace(navigation);
+
 
 	// compute global sky brightness TODO : make this more "scientifically"
 	// TODO: also add moonlight illumination
@@ -810,7 +806,6 @@ void Core::drawInSolarSystem(int delta_time)
 	hip_stars->draw(geodesic_grid, tone_converter, projection, timeMgr,observatory->getAltitude());
 	skyGridMgr->draw(projection);
 	skyLineMgr->draw(projection, navigation, timeMgr, observatory);
-	bodytrace->draw(projection, navigation);
 	skyDisplayMgr->draw(projection, navigation, selected_object.getEarthEquPos(navigation), old_selected_object.getEarthEquPos(navigation));
 	ssystemTmp->draw(projection,navigation, observatory, tone_converter, bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 

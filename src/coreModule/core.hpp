@@ -600,7 +600,6 @@ private:
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
 	SkyLocalizer *skyloc;				// for sky cultures and locales
-	BodyTrace * bodytrace;				// the pen bodytrace
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	CloudNavigator* cloudNav; 			// draw galaxy gaz clouds
 	CloudNavigator* universeCloudNav; 	// draw galaxy gaz clouds when in universe

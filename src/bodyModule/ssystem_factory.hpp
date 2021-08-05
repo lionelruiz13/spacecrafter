@@ -35,6 +35,7 @@
 #include "bodyModule/solarsystem_scale.hpp"
 #include "bodyModule/solarsystem_selected.hpp"
 #include "bodyModule/solarsystem_display.hpp"
+#include "bodyModule/body_trace.hpp"
 
 class ThreadContext;
 
@@ -273,6 +274,7 @@ public:
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr) {
         ssystemTex->updateTesselation(delta_time);
         ssystem->update(delta_time, nav, timeMgr);
+	    bodytrace->update(delta_time);
     }
 
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const {
@@ -286,6 +288,7 @@ public:
 	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,
 	          const ToneReproductor* eye,
 	          bool drawHomePlanet ) {
+    	bodytrace->draw(prj, nav);
         ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
     }
 
@@ -340,6 +343,41 @@ public:
         ssystemScale->setSizeLimit(scale);
     }
 
+    void bodyTrace(Navigator * navigation) {
+        double alt, az;
+        bodyTraceGetAltAz(navigation, &alt, &az);
+	    bodytrace->addData(navigation, alt, az);
+    }
+
+    void bodyTraceSetFlag(bool b) const {
+        bodytrace->setFlagShow(b);
+    }
+
+    bool bodyTraceGetFlag() const {
+        return bodytrace->getFlagShow();
+    }
+
+    void upPen() const {
+        bodytrace->upPen();
+    }
+
+    void downPen() const {
+        bodytrace->downPen();
+    }
+
+    void togglePen() const {
+        bodytrace->togglePen();
+    }
+
+    void clear() const {
+        bodytrace->clear();
+    }
+
+    void hide(int numberlist) const {
+        bodytrace->hide(numberlist);
+    }
+
+
 private:
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
@@ -350,6 +388,8 @@ private:
     std::unique_ptr<ProtoSystem> protosystem;
 
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
+
+	BodyTrace * bodytrace;				// the pen bodytrace
 };
 
 #endif

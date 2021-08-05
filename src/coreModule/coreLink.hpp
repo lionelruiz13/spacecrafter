@@ -398,34 +398,34 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	//! Set flag for displaying SunTrace
 	void bodyTraceSetFlag(bool b) const {
-		core->bodytrace->setFlagShow(b);
+		core->ssystemTmp->bodyTraceSetFlag(b);
 	}
 	//! Get flag for displaying SunTrace
 	bool bodyTraceGetFlag(void) const {
-		return core->bodytrace->getFlagShow();
+		return core->ssystemTmp->bodyTraceGetFlag();
 	}
 
 	void bodyPenUp() const {
-		core->bodytrace->upPen();
+		core->ssystemTmp->upPen();
 	}
 
 	void bodyPenDown() const {
-		core->bodytrace->downPen();
+		core->ssystemTmp->downPen();
 	}
 
 	void bodyPenToggle() const {
-		core->bodytrace->togglePen();
+		core->ssystemTmp->togglePen();
 	}
 
 	void bodyTraceClear () const {
-		core->bodytrace->clear();
+		core->ssystemTmp->clear();
 	}
 
 	void bodyTraceHide(std::string value) const {
 		if (value=="all")
-			core->bodytrace->hide(-1);
+			core->ssystemTmp->hide(-1);
 		else
-			core->bodytrace->hide(Utility::strToInt(value));
+			core->ssystemTmp->hide(Utility::strToInt(value));
 	}
 
 	void bodyTraceBodyChange(std::string bodyName) const {

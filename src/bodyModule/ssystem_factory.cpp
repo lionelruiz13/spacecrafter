@@ -46,8 +46,11 @@ SSystemFactory::SSystemFactory(ThreadContext *_context)
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
+	
+    bodytrace= new BodyTrace(_context);
 }
     
 SSystemFactory::~SSystemFactory()
 {
+	delete bodytrace;
 }

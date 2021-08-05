@@ -49,6 +49,7 @@ ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
 	OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
 	orbitCreator = new OrbitCreatorBary(elip, this);
+
 }
 
 ProtoSystem::~ProtoSystem()
