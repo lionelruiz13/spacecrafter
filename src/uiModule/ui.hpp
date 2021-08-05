@@ -223,8 +223,8 @@ private:
 	std::unique_ptr<s_font> tuiFont;		// The standard tui font - separate from gui so can reload on the fly
 	// float FontSizeGeneral;
 	// std::string FontNameGeneral;
-	std::string FontNameMenu;
-	float FontSizeMenuTui;
+	std::string FontNameTuiMenu;
+	float FontSizeTuiMenu;
 
 	bool FlagEnableTuiMenu;
 	bool FlagShowGravityUi;

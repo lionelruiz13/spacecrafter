@@ -136,7 +136,7 @@ void UI::initTui()
 	// if (tuiFont) delete tuiFont;
 
 	// Load standard font based on app locale
-	tuiFont = std::make_unique<s_font>(FontSizeMenuTui, FontNameMenu);
+	tuiFont = std::make_unique<s_font>(FontSizeTuiMenu, FontNameTuiMenu);
 	// if (!tuiFont) {
 	// 	cLog::get()->write("ui_tuiconf: error while creating font tuiFont",LOG_TYPE::L_ERROR);
 	// 	exit(-1);
@@ -460,7 +460,7 @@ void UI::localizeTui()
 {
 	cLog::get()->write("Localizing TUI for locale: " + app->getAppLanguage(),LOG_TYPE::L_INFO);
 	// if (tuiFont) delete tuiFont;
-	tuiFont = std::make_unique<s_font>(FontSizeMenuTui, FontNameMenu);
+	tuiFont = std::make_unique<s_font>(FontSizeTuiMenu, FontNameTuiMenu);
 	// tuiFont = new s_font(FontSizeMenuTui, FontNameMenu);
 	// if (!tuiFont) {
 	// 	cLog::get()->write("Error while creating font name tuiFont",LOG_TYPE::L_ERROR);
