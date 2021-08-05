@@ -50,15 +50,18 @@ friend class SSystemIteratorVector;
 public:
 
     ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
-    ~ProtoSystem(){};
+    ~ProtoSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 	
 	//! Load the bodies data from a file
 	void load(const std::string& planetfile);
 
-	// load one object from a hash
-	virtual void addBody(stringHash_t & param, bool deletable) = 0;
+	// load one object from a hash (returns error message if any)
+	// this public method always adds bodies as deletable
+	virtual void addBody(stringHash_t & param){
+		addBody(param, true);
+	}
 
 	//! Return the matching planet pointer if exists or nullptr
 	Body* searchByEnglishName(const std::string &planetEnglishName) const;
@@ -169,6 +172,9 @@ protected:
 	bool flagAxis= false;
 	bool flagHideSatellites = false;
 	
+	// load one object from a hash
+	virtual void addBody(stringHash_t & param, bool deletable);	
+
 	std::shared_ptr<ProtoSystem::BodyContainer> findBodyContainer(const std::string &name);
 	Body* findBody(const std::string &name);
 	

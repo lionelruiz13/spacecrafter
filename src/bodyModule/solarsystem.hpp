@@ -44,8 +44,8 @@ public:
 
 	// load one object from a hash (returns error message if any)
 	// this public method always adds bodies as deletable
-	void addBody(stringHash_t & param) {
-		addBody(param, true);
+	virtual void addBody(stringHash_t & param) override {
+		SolarSystem::addBody(param, true);
 	}
 
 	//removes a body that has no satelites
@@ -137,7 +137,7 @@ private:
 
 
 	// load one object from a hash
-	void addBody(stringHash_t & param, bool deletable);
+	virtual void addBody(stringHash_t & param, bool deletable) override;
 
 
 	Sun* sun=nullptr; //return the Sun

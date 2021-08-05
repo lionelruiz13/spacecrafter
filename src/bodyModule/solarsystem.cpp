@@ -48,10 +48,12 @@
 #include "vulkanModule/Context.hpp"
 
 
+
 #define SOLAR_MASS 1.989e30
 #define EARTH_MASS 5.976e24
 #define LUNAR_MASS 7.354e22
 #define MARS_MASS  0.64185e24
+
 
 
 SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)

@@ -29,6 +29,8 @@
 #include "bodyModule/protosystem.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "bodyModule/ssystem_iterator.hpp"
+#include "appModule/space_date.hpp"
+#include "navModule/navigator.hpp"
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 
@@ -48,6 +50,13 @@ ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
 	OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
 	orbitCreator = new OrbitCreatorBary(elip, this);
 }
+
+ProtoSystem::~ProtoSystem()
+{
+	systemBodies.clear();
+	renderedBodies.clear();
+}
+
 
 // Init and load the solar system data
 void ProtoSystem::load(const std::string& planetfile)
@@ -497,4 +506,322 @@ BODY_TYPE ProtoSystem::setPlanetType (const std::string &str)
 	else if (str == "Observer") return OBSERVER;
 	else
 		return UNKNOWN;
+}
+
+
+// Init and load one solar system object
+// This is a the private method
+void ProtoSystem::addBody(stringHash_t & param, bool deletable)
+{
+	//~ AutoPerfDebug apd(&pd, "SolarSystem::addBody$"); //Debug
+	BODY_TYPE typePlanet= UNKNOWN;
+	const std::string englishName = param["name"];
+	std::string str_parent = param["parent"];
+	const std::string type_Body = param["type"];
+	Body *parent = nullptr;
+
+	cLog::get()->write("Loading new Stellar System object... " + englishName, LOG_TYPE::L_INFO);
+	//~ cout << "Loading new Solar System object... " << englishName << endl;
+	//~ for ( stringHashIter_t iter = param.begin(); iter != param.end(); ++iter ) {
+	//~ cout << iter->first << " : " << iter->second << endl;
+	//~ }
+
+	// set the Body type: ie what it is in universe
+	typePlanet= setPlanetType(type_Body);
+
+	// do not add if no name or no parent or no typePlanet
+	if (englishName.empty()) {
+		cLog::get()->write("SolarSystem: can not add body with no name", LOG_TYPE::L_WARNING);
+		return;
+	}
+
+	// no parent ? so it's Sun
+	if (str_parent.empty())
+		str_parent = "Sun";
+
+	// no type ? it's an asteroid
+	if (typePlanet == UNKNOWN)
+		typePlanet = ASTEROID;
+
+	// Do not add if body already exists - name must be unique
+	if ( findBody(englishName)!=nullptr ) {
+		cLog::get()->write("SolarSystem: Can not add body named " + englishName + " because a body of that name already exist", LOG_TYPE::L_WARNING);
+		return;
+	//	return (std::string("Can not add body named \"") + englishName + std::string("\" because a body of that name already exists\n"));
+	}
+
+	if (str_parent!="none") {
+		parent = findBody(str_parent);
+
+		if (parent == nullptr) {
+			//std::string error = std::string("WARNING : can't find parent for ") + englishName;
+			cLog::get()->write("SolarSystem: can't find parent for " + englishName, LOG_TYPE::L_WARNING);
+			return;
+		}
+	}
+
+	const std::string funcname = param["coord_func"];
+
+	//
+	// determination de l'orbite de l'astre
+	//
+	std::unique_ptr<Orbit> orb = nullptr;
+	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
+
+	// default value of -1 means unused
+	double orbit_bounding_radius = Utility::strToDouble(param["orbit_bounding_radius"], -1);
+
+	if (funcname == "still_orbit") {
+		orb = std::make_unique<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
+		                     Utility::strToDouble(param["orbit_y"]),
+		                     Utility::strToDouble(param["orbit_z"]));
+	} else {
+
+		orb = std::move(orbitCreator->handle(param));
+
+		if(orb == nullptr) {
+			std::cout << "something went wrong when creating orbit from "<< englishName << std::endl;
+			cLog::get()->write("Error when creating orbit from " + englishName, LOG_TYPE::L_ERROR);
+		}
+	}
+
+	if(param["coord_func"] == "ell_orbit"){
+		orbit_bounding_radius = orb->getBoundingRadius();
+	}
+
+	//
+	// fin détermination de l'orbite
+	//
+
+	std::unique_ptr<BodyColor> bodyColor = nullptr;
+	bodyColor = std::make_unique<BodyColor>(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
+
+	float solLocalDay= Utility::strToDouble(param["sol_local_day"],1.0);
+
+	// Create the Body and add it to the list
+	// p est un pointeur utilisé pour l'objet qui sera au final intégré dans la liste des astres que gère body_mgr
+	std::unique_ptr<Body> p = nullptr;
+	ObjL* currentOBJ = nullptr;
+
+	std::string modelName = param["model_name"];
+
+	std::shared_ptr<BodyTexture> bodyTexture = std::make_shared<BodyTexture>();
+	bodyTexture->tex_map = param["tex_map"];
+	bodyTexture->tex_norm = param["tex_normal"];
+	bodyTexture->tex_heightmap = param["tex_heightmap"];
+	bodyTexture->tex_night = param["tex_night"];
+	bodyTexture->tex_specular = param["tex_specular"];
+	// bodyTexture->tex_cloud = param["tex_cloud"];
+	// bodyTexture->tex_cloud_normal = param["tex_cloud_normal"];
+	bodyTexture->tex_skin =  param["tex_skin"];
+
+
+	if ( !modelName.empty()) {
+		objLMgr->insertObj(modelName);
+		currentOBJ = objLMgr->select(modelName);
+	}
+	else
+		currentOBJ = objLMgr->selectDefault();
+
+	switch (typePlanet) {
+		case SUN : {
+			std::unique_ptr<Sun> p_sun = std::make_unique<Sun>(parent,
+			                englishName,
+			                Utility::strToBool(param["halo"]),
+			                Utility::strToDouble(param["radius"])/AU,
+			                Utility::strToDouble(param["oblateness"], 0.0),
+			                std::move(bodyColor),
+			                solLocalDay,
+			                Utility::strToDouble(param["albedo"]),
+			                std::move(orb),
+			                close_orbit,
+			                currentOBJ,
+			                orbit_bounding_radius,
+			  				bodyTexture,
+							context);
+			//update of sun's big_halo texture
+			std::string bighalotexfile = param["tex_big_halo"];
+			if (!bighalotexfile.empty()) {
+				p_sun->setBigHalo(bighalotexfile, param["path"]);
+				p_sun->setHaloSize(Utility::strToDouble(param["big_halo_size"], 50.f));
+			}
+
+			if (englishName == "Sun") {
+				//sun = p_sun.get();
+				bodyTrace = p_sun.get();
+			}
+			p = std::move(p_sun);
+		}
+		break;
+
+		case ARTIFICIAL: {
+			std::unique_ptr<Artificial> p_artificial = std::make_unique<Artificial>(parent,
+							  englishName,
+							  Utility::strToBool(param["halo"]),
+							  Utility::strToDouble(param["radius"])/AU,
+			                  std::move(bodyColor),
+			                  solLocalDay,
+			                  Utility::strToDouble(param["albedo"]),
+							  std::move(orb),
+			                  close_orbit,
+			                  param["model_name"],
+			                  deletable,
+			                  orbit_bounding_radius,
+							  bodyTexture,
+						  	  context);
+			p=std::move(p_artificial);
+			}
+			break;
+
+		case MOON: {
+			std::unique_ptr<Moon> p_moon = std::make_unique<Moon>(parent,
+			                  englishName,
+			                  Utility::strToBool(param["halo"]),
+			                  Utility::strToDouble(param["radius"])/AU,
+			                  Utility::strToDouble(param["oblateness"], 0.0),
+			                  std::move(bodyColor),
+			                  solLocalDay,
+			                  Utility::strToDouble(param["albedo"]),
+			                  std::move(orb),
+			                  close_orbit,
+			                  currentOBJ,
+			                  orbit_bounding_radius,
+							  bodyTexture,
+							  context
+			                 );
+			p=std::move(p_moon);
+		}
+		break;
+
+		case DWARF:
+		case PLANET: {
+			std::unique_ptr<BigBody> p_big = std::make_unique<BigBody>(parent,
+			                    englishName,
+			                    typePlanet,
+			                    Utility::strToBool(param["halo"]),
+			                    Utility::strToDouble(param["radius"])/AU,
+			                    Utility::strToDouble(param["oblateness"], 0.0),
+			                    std::move(bodyColor),
+			                    solLocalDay,
+			                    Utility::strToDouble(param["albedo"]),
+			                    std::move(orb),
+			                    close_orbit,
+			                    currentOBJ,
+			                    orbit_bounding_radius,
+								bodyTexture,
+								context
+								);
+			if (Utility::strToBool(param["rings"], 0)) {
+				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
+				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
+				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit,context);
+				p_big->setRings(std::move(r));
+				p_big->updateBoundingRadii();
+			}
+			p = std::move(p_big);
+		}
+		break;
+
+		case ASTEROID:
+		case KBO:
+		case COMET: {
+			std::unique_ptr<SmallBody> p_small = std::make_unique<SmallBody>(parent,
+			                        englishName,
+			                        typePlanet,
+			                        Utility::strToBool(param["halo"]),
+			                        Utility::strToDouble(param["radius"])/AU,
+			                        Utility::strToDouble(param["oblateness"], 0.0),
+			                        std::move(bodyColor),
+			                        solLocalDay,
+			                        Utility::strToDouble(param["albedo"]),
+			                        std::move(orb),
+			                        close_orbit,
+			                        currentOBJ,
+			                        orbit_bounding_radius,
+									bodyTexture,
+									context
+			                       );
+			p = std::move(p_small);
+		}
+		break;
+
+		default:
+			cLog::get()->write("Undefined body", LOG_TYPE::L_ERROR);
+	}
+	if (p == nullptr) {
+		cLog::get()->write("Failed to create body", LOG_TYPE::L_ERROR);
+		return;
+	}
+
+	if (!param["has_atmosphere"].empty()) {
+		AtmosphereParams* tmp = nullptr;
+		tmp = new(AtmosphereParams);
+		tmp->hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
+		tmp->limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
+		tmp->limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
+		tmp->limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);
+		p->setAtmosphereParams(tmp);
+	}
+
+
+	// Use J2000 N pole data if available
+	double rot_obliquity = Utility::strToDouble(param["rot_obliquity"],0.)*M_PI/180.;
+	double rot_asc_node  = Utility::strToDouble(param["rot_equator_ascending_node"],0.)*M_PI/180.;
+
+	// In J2000 coordinates
+	double J2000_npole_ra = Utility::strToDouble(param["rot_pole_ra"],0.)*M_PI/180.;
+	double J2000_npole_de = Utility::strToDouble(param["rot_pole_de"],0.)*M_PI/180.;
+
+	// NB: north pole needs to be defined by right hand rotation rule
+	if (param["rot_pole_ra"] != "" || param["rot_pole_de"] != "") {
+		// cout << "Using north pole data for " << englishName << endl;
+		Vec3d J2000_npole;
+		Utility::spheToRect(J2000_npole_ra,J2000_npole_de,J2000_npole);
+
+		Vec3d vsop87_pole(mat_j2000_to_vsop87.multiplyWithoutTranslation(J2000_npole));
+
+		double ra, de;
+		Utility::rectToSphe(&ra, &de, vsop87_pole);
+
+		rot_obliquity = (M_PI_2 - de);
+		rot_asc_node = (ra + M_PI_2);
+		//cout << "\tCalculated rotational obliquity: " << rot_obliquity*180./M_PI << endl;
+		//cout << "\tCalculated rotational ascending node: " << rot_asc_node*180./M_PI << endl;
+	}
+
+	p->set_rotation_elements(
+	    Utility::strToDouble(param["rot_periode"], Utility::strToDouble(param["orbit_period"], 24.))/24.,
+	    Utility::strToDouble(param["rot_rotation_offset"],0.),
+	    Utility::strToDouble(param["rot_epoch"], J2000),
+	    rot_obliquity,
+	    rot_asc_node,
+	    Utility::strToDouble(param["rot_precession_rate"],0.)*M_PI/(180*36525),
+	    Utility::strToDouble(param["orbit_visualization_period"],0.),
+	    Utility::strToDouble(param["axial_tilt"],0.) );
+
+	// Clone current flags to new body unless one is currently selected
+	// WARNING TODO
+	//p->setFlagHints(flagHints);
+	//p->setFlagTrail(flagTrails);
+//
+	//if (!selected || selected == Object(sun)) {
+	//	p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
+	//}
+
+	anchorManager->addAnchor(englishName, p.get());
+	p->updateBoundingRadii();
+
+	std::shared_ptr<BodyContainer> container = std::make_shared<BodyContainer>();
+	container->body = std::move(p);
+	container->englishName = englishName;
+	container->isDeleteable = deletable;
+	container->isHidden = Utility::strToBool(param["hidden"], 0);
+	container->initialHidden = container->isHidden;
+
+	systemBodies.insert(std::pair<std::string, std::shared_ptr<BodyContainer>>(englishName, container));
+
+	if(!container->isHidden){
+		// std::cout << "renderedBodies from addBody " << englishName << std::endl;
+		renderedBodies.push_back(container);
+	}
 }
