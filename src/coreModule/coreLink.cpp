@@ -13,12 +13,12 @@ CoreLink::~CoreLink()
 
 bool CoreLink::cameraSave(const std::string& name)
 {
-	return core->anchorManager->saveCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + name);
+	return core->ssystemFactory->cameraSave(AppSettings::Instance()->getUserDir() + "anchors/" + name);
 }
 
 bool CoreLink::loadCameraPosition(const std::string& filename)
 {
-	return core->anchorManager->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
+	return core->ssystemFactory->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
 }
 
 void CoreLink::fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue)

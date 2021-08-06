@@ -31,17 +31,19 @@
 #include "bodyModule/solarsystem.hpp"
 #include "bodyModule/solarsystem_color.hpp"
 #include "tools/ScModule.hpp"
+#include "tools/app_settings.hpp"
 #include "bodyModule/solarsystem_tex.hpp"
 #include "bodyModule/solarsystem_scale.hpp"
 #include "bodyModule/solarsystem_selected.hpp"
 #include "bodyModule/solarsystem_display.hpp"
 #include "bodyModule/body_trace.hpp"
+#include "mainModule/define_key.hpp"
 
 class ThreadContext;
 
 class SSystemFactory: public NoCopy {
 public:
-    SSystemFactory(ThreadContext *_context);
+    SSystemFactory(ThreadContext *_context, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
     ~SSystemFactory();
 
     SolarSystem * getSolarSystem(void) {
@@ -267,6 +269,10 @@ public:
         ssystem->load(planetfile);
     }
 
+	void loadStellar(const std::string& planetfile) {
+        stellarSystem->load(planetfile);
+    }
+
 	void computePositions(double date,const Observer *obs) {
         ssystemDisplay->computePositions(date, obs);
     }
@@ -377,6 +383,79 @@ public:
         bodytrace->hide(numberlist);
     }
 
+    void cameraDisplayAnchor() {
+        anchorManager->displayAnchor();
+    }
+
+    bool cameraAddAnchor(stringHash_t& param) {
+        return anchorManager->addAnchor(param);
+    }
+
+    bool cameraRemoveAnchor(const std::string &name) {
+		return anchorManager->removeAnchor(name);
+	}
+
+    bool cameraSwitchToAnchor(const std::string &name) {
+		return anchorManager->switchToAnchor(name);
+	}
+
+    bool cameraMoveToPoint(double x, double y, double z){
+		return anchorManager->setCurrentAnchorPos(Vec3d(x,y,z));
+	}
+
+	bool cameraMoveToPoint(double x, double y, double z, double time){
+		return anchorManager->moveTo(Vec3d(x,y,z),time);
+	}
+
+    bool cameraMoveToBody(const std::string& bodyName, double time, double alt) {
+        return anchorManager->moveToBody(bodyName, time, alt);
+    }
+
+    bool cameraMoveRelativeXYZ( double x, double y, double z) {
+		return anchorManager->moveRelativeXYZ(x,y,z);
+	}
+
+    bool cameraTransitionToPoint(const std::string& name){
+		return anchorManager->transitionToPoint(name);
+	}
+
+    bool cameraTransitionToBody(const std::string& name) {
+        return anchorManager->transitionToBody(name);
+    }
+
+    bool cameraSetFollowRotation(bool value){
+		return anchorManager->setFollowRotation(value);
+	}
+
+    void cameraSetRotationMultiplierCondition(float v) {
+		anchorManager->setRotationMultiplierCondition(v);
+	}
+
+    bool cameraAlignWithBody(const std::string& name, double duration){
+		return anchorManager->alignCameraToBody(name,duration);
+	}
+
+    void anchorManagerInit(const InitParser &conf) {
+        anchorManager->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
+		anchorManager->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
+		anchorManager->initFirstAnchor(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
+    }
+
+    void updateAnchorManager() {
+	    anchorManager->update();
+    }
+
+    bool switchToAnchor(const std::string& anchorName) {
+        return anchorManager->switchToAnchor(anchorName);
+    }
+
+    bool cameraSave(const std::string& name) {
+	    return anchorManager->saveCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + name);
+    }
+
+    bool loadCameraPosition(const std::string& filename) {
+	    return anchorManager->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
+    }
 
 private:
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
@@ -385,11 +464,13 @@ private:
     std::unique_ptr<SolarSystemScale> ssystemScale;
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
-    std::unique_ptr<ProtoSystem> protosystem;
+    std::unique_ptr<ProtoSystem> stellarSystem;
 
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 
 	BodyTrace * bodytrace;				// the pen bodytrace
+	AnchorManager * anchorManager=nullptr;
+
 };
 
 #endif

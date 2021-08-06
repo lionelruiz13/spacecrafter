@@ -69,7 +69,7 @@ public:
 	//removes a body and its satellites
 	bool removeBody(const std::string &name);
 	
-	virtual bool removeBodyNoSatellite(const std::string &name) = 0;
+	virtual bool removeBodyNoSatellite(const std::string &name){return true;}
 	
 	//removes all bodies that do not come from ssystem.ini
 	bool removeSupplementalBodies(const std::string &name);

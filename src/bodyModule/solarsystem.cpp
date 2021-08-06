@@ -536,8 +536,9 @@ bool SolarSystem::nearLunarEclipse(const Navigator * nav, Projector *prj)
 
 void SolarSystem::bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const
 {
-	bodyTrace->getAltAz(nav,alt,az);
+ 	bodyTrace->getAltAz(nav,alt,az);
 }
+
 double SolarSystem::getSunAltitude(const Navigator * nav) const
 {
 	double alt, az;

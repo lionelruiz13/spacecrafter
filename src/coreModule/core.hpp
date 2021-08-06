@@ -319,7 +319,7 @@ public:
 	void unSelect(void) {
 		selected_object=nullptr;
 		old_selected_object=nullptr;
-		ssystemTmp->setSelected(Object());
+		ssystemFactory->setSelected(Object());
 	}
 
 	void unsetSelectedConstellation(std::string constellation) {
@@ -384,7 +384,7 @@ public:
 
 	//! Get base planets display scaling factor
 	float getPlanetsSizeLimit(void) const {
-		return (ssystemTmp->getSizeLimit()-starGetSizeLimit());
+		return (ssystemFactory->getSizeLimit()-starGetSizeLimit());
 	}
 
 	std::string getPlanetHashString(void);
@@ -584,7 +584,7 @@ private:
 	IlluminateMgr * illuminates;		// Manage the illuminations
 	TextMgr * text_usr;				// manage all user text in dome
 	//SolarSystem* ssystem;				// Manage the solar system
-	SSystemFactory* ssystemTmp;
+	SSystemFactory* ssystemFactory;
 
 	Atmosphere * atmosphere;			// Atmosphere
 	Media* media;
@@ -609,7 +609,6 @@ private:
 	UBOCam* ubo_cam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
-	AnchorManager * anchorManager=nullptr;
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn

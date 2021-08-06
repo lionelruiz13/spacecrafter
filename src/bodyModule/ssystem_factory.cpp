@@ -28,7 +28,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 
-SSystemFactory::SSystemFactory(ThreadContext *_context)
+SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 {
     // creation ds models 3D pour les planetes
     objLMgr = std::make_unique<ObjLMgr>(_context);
@@ -46,11 +46,14 @@ SSystemFactory::SSystemFactory(ThreadContext *_context)
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
+    stellarSystem = std::make_unique<ProtoSystem>(_context, objLMgr.get());
 	
     bodytrace= new BodyTrace(_context);
+	anchorManager = new AnchorManager(observatory,navigation, getSolarSystem(), timeMgr, getOrbitCreator());
 }
     
 SSystemFactory::~SSystemFactory()
 {
+	delete anchorManager;
 	delete bodytrace;
 }
