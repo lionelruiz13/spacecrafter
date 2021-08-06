@@ -78,6 +78,13 @@ UI::UI(Core * _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl,  Media
 	is_dragging = false;
 }
 
+/*******************************************************************/
+
+void UI::registerFont(s_font* font)
+{
+	tuiFont = font;
+}
+
 /**********************************************************************************/
 UI::~UI()
 {
@@ -107,14 +114,14 @@ void UI::init(const InitParser& conf)
 
 	// Text ui section
 	// obsolete
-	FontSizeTuiMenu   = conf.getDouble (SCS_FONT, SCK_FONT_MENUTUI_SIZE);
+	//FontSizeTuiMenu   = conf.getDouble (SCS_FONT, SCK_FONT_MENUTUI_SIZE);
 	FlagEnableTuiMenu = conf.getBoolean(SCS_TUI, SCK_FLAG_ENABLE_TUI_MENU);
 	FlagShowGravityUi = conf.getBoolean(SCS_TUI, SCK_FLAG_SHOW_GRAVITY_UI);
 	FlagShowTuiDateTime = conf.getBoolean(SCS_TUI, SCK_FLAG_SHOW_TUI_DATETIME);
 	FlagShowTuiShortObjInfo = conf.getBoolean(SCS_TUI, SCK_FLAG_SHOW_TUI_SHORT_OBJ_INFO);
 	FlagMouseUsableInScript = conf.getBoolean(SCS_GUI, SCK_FLAG_MOUSE_USABLE_IN_SCRIPT);
 	// obsolete
-	FontNameTuiMenu = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_MENU_NAME);
+	//FontNameTuiMenu = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_MENU_NAME);
 
 	text_ui = Utility::strToVec3f(conf.getStr(SCS_TUI, SCK_TEXT_UI));
 	text_tui_root = Utility::strToVec3f(conf.getStr(SCS_TUI, SCK_TEXT_TUI_ROOT));

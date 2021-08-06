@@ -80,6 +80,7 @@ class UI {
 public:
 	UI(Core *, CoreLink *, App * _app, SDLFacade* _m_sdl, Media* _media);	// Create the ui. Need to call init() before use
 	virtual ~UI();		// Delete the ui
+	void registerFont(s_font* font);
 	void init(const InitParser& conf);		// Initialize the ui.
 
 	void initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate);
@@ -220,11 +221,11 @@ private:
 	int PosMenuM;
 
 	// Text UI
-	std::unique_ptr<s_font> tuiFont;		// The standard tui font - separate from gui so can reload on the fly
+	s_font* tuiFont = nullptr;		// The standard tui font - separate from gui so can reload on the fly
 	// float FontSizeGeneral;
 	// std::string FontNameGeneral;
-	std::string FontNameTuiMenu;
-	float FontSizeTuiMenu;
+	//std::string FontNameTuiMenu;
+	//float FontSizeTuiMenu;
 
 	bool FlagEnableTuiMenu;
 	bool FlagShowGravityUi;
