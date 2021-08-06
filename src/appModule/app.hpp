@@ -29,6 +29,7 @@
 
 #include <SDL2/SDL_thread.h>
 #include <queue>
+#include <memory>
 
 #include "tools/no_copy.hpp"
 #include "appModule/fps.hpp"
@@ -51,6 +52,7 @@ class ScriptMgr;
 class ScriptInterface;
 class SDLFacade;
 class s_font;
+class FontFactory;
 class Media;
 class Mkfifo;
 class UI;
@@ -180,6 +182,7 @@ private:
 	CoreLink* coreLink = nullptr;
 	CoreBackup* coreBackup = nullptr;
 	SDLFacade* mSdl = nullptr;
+	std::unique_ptr<FontFactory> fontFactory;
 	SaveScreenInterface* saveScreenInterface = nullptr;
 	ServerSocket * tcp = nullptr;
 	Fps* internalFPS = nullptr;				//! gestion fine du frameRate

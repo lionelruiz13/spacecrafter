@@ -39,6 +39,7 @@
 #include "appModule/appDraw.hpp"
 #include "appModule/save_screen_interface.hpp"
 #include "appModule/screenFader.hpp"
+#include "appModule/fontFactory.hpp"
 #include "appModule/mkfifo.hpp"
 #include "coreModule/callbacks.hpp"
 #include "coreModule/core.hpp"
@@ -105,6 +106,8 @@ App::App( SDLFacade* const sdl )
 	context.commandMgr->compile();
 	s_texture::setContext(&context);
 	*getContext() = context;
+
+	fontFactory = std::make_unique<FontFactory>(std::min(width,height));
 
 	media = new Media();
 	saveScreenInterface = new SaveScreenInterface(width, height, globalContext.vulkan);
@@ -193,6 +196,7 @@ App::~App()
 	delete internalFPS;
 	delete screenFader;
 	delete spaceDate;
+	fontFactory.release();
 	delete context.commandMgr;
 	delete context.commandMgrSingleUseInterface;
 	delete context.commandMgrSingleUse;
@@ -336,6 +340,9 @@ void App::firstInit()
 
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
+
+	fontFactory->init(conf);
+	fontFactory->buildAllFont();
 
 	core->init(conf);
 	ui->init(conf);

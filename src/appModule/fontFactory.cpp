@@ -47,13 +47,17 @@ void FontFactory::setStrToTarget()
 
 
 FontFactory::~FontFactory()
-{}
-
-void FontFactory::setFont()
 {
-	// core
-	// media
-	// Ui
+	tuiFont.release();
+}
+
+void FontFactory::buildAllFont()
+{
+	std::cout << "debut construction des fonts" << std::endl;
+	tuiFont = std::make_unique<s_font>(FontSizeTuiMenu, FontNameTuiMenu);
+	tuiFont->rebuild(FontSizeTuiMenu, FontNameTuiMenu);
+	tuiFont->rebuild(FontSizeTuiMenu+2, FontNameTuiMenu);
+	std::cout << "fin construction des fonts" << std::endl;
 }
 
 void FontFactory::init(const InitParser& conf)

@@ -25,7 +25,9 @@
 
 #include <string>
 #include <map>
+#include <memory>
 
+#include "tools/s_font.hpp"
 
 /**
  * \file fontFactory.hpp
@@ -35,7 +37,7 @@
  *
  * \class FontFactory
  *
- * \brief Transforms alphanumeric entry to Core Font 
+ * \brief Transforms alphanumeric entry to Font 
  *
  * The purpose of this class is to analyze character strings (string name and string size) 
  * and get to all Core Font Module aprouved s_font parameters
@@ -70,11 +72,17 @@ public:
     ~FontFactory();
 	//! initialise les fontes: fichiers et tailles 
     void init(const InitParser& conf);
-	//! crée les différentes fontes 
-    void setFont();
+	//! construit toutes les fontes
+	void buildAllFont();
+
+	s_font* getUiFont() {
+		//std::cout << "get ui fonts" << std::endl;
+		return tuiFont.get();
+	}
+
 	//! met à jour des fontes de Core
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
- 
+
 private:
 	void setStrToTarget();
 	// Core
@@ -82,6 +90,7 @@ private:
 	// Media
 
 	// Ui
+	std::unique_ptr<s_font> tuiFont = nullptr;
 
 	// Core
 	std::string FontFileNameGeneral;			//! The font file used by default during initialization
