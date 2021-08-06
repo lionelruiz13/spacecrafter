@@ -25,6 +25,8 @@
 
 #include <string>
 #include <map>
+#include <list>
+#include <utility>
 #include <memory>
 
 #include "tools/s_font.hpp"
@@ -56,10 +58,18 @@ enum class TARGETFONT : char {
 	CF_CONSTELLATIONS,
 	CF_CARDINALS,
 	CF_HIPSTARS,
-	CF_MENU,
+	CF_UIMENU,
 	CF_GENERAL,
 	CF_NONE
 };
+
+enum class CLASSEFONT : char {
+	CLASS_UI,
+	CLASS_TEXTMGR
+};
+
+
+typedef std::pair< CLASSEFONT, std::unique_ptr<s_font>> pairNameFontPtr;
 
 class InitParser;
 
@@ -80,6 +90,9 @@ public:
 		return tuiFont.get();
 	}
 
+	s_font* getFont(CLASSEFONT _cf);
+
+
 	//! met à jour des fontes de Core
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
 
@@ -91,6 +104,9 @@ private:
 
 	// Ui
 	std::unique_ptr<s_font> tuiFont = nullptr;
+
+	// All in one
+	std::list< pairNameFontPtr > listFont;
 
 	// Core
 	std::string FontFileNameGeneral;			//! The font file used by default during initialization

@@ -20,6 +20,8 @@
  *
  */
 
+#include <algorithm>
+
 #include "appModule/fontFactory.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/app_settings.hpp"
@@ -41,7 +43,7 @@ void FontFactory::setStrToTarget()
 	m_strToTarget[TF_CONSTELLATIONS] = TARGETFONT::CF_CONSTELLATIONS;
 	m_strToTarget[TF_CARDINAL] = TARGETFONT::CF_CARDINALS;
 	m_strToTarget[TF_STARS] = TARGETFONT::CF_HIPSTARS;
-	m_strToTarget[TF_MENU] = TARGETFONT::CF_MENU;
+	m_strToTarget[TF_MENU] = TARGETFONT::CF_UIMENU;
 	m_strToTarget[TF_GENERAL] = TARGETFONT::CF_GENERAL;
 }
 
@@ -58,6 +60,8 @@ void FontFactory::buildAllFont()
 	tuiFont->rebuild(FontSizeTuiMenu, FontNameTuiMenu);
 	tuiFont->rebuild(FontSizeTuiMenu+2, FontNameTuiMenu);
 	std::cout << "fin construction des fonts" << std::endl;
+
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_UI, std::make_unique<s_font>(FontSizeTuiMenu, FontNameTuiMenu)) );
 }
 
 void FontFactory::init(const InitParser& conf)
@@ -123,11 +127,23 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 		case TARGETFONT::CF_HIPSTARS :
 			// hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
 			break;
-		case TARGETFONT::CF_MENU:
+		case TARGETFONT::CF_UIMENU: {
+			auto it = std::find_if( listFont.begin(), listFont.end(),
+    			[&](const pairNameFontPtr &element){ return element.first == CLASSEFONT::CLASS_UI;} );
+			(*it).second->rebuild(size==0 ? FontSizeText : size, fontName);
+			std::cout << "test" << std::endl;}
 			break;
-		case TARGETFONT::CF_GENERAL:
+		case TARGETFONT::CF_GENERAL :
 			break;
 		case TARGETFONT::CF_NONE:
 			break;
 	}
 }
+
+
+s_font*  FontFactory::getFont(CLASSEFONT _cf)
+{
+	auto it = std::find_if( listFont.begin(), listFont.end(), [&](const pairNameFontPtr &element){ return element.first == _cf;} );
+	return (*it).second.get();
+}
+
