@@ -88,7 +88,6 @@ class Dso3d;
 class Media;
 class StarLines;
 class BodyTrace;
-// class CoreFont;
 class FontFactory;
 
 //!  @brief Main class for application core processing.
@@ -229,23 +228,6 @@ public:
 
 	//! set zoom/center offset (percent of fov radius)
 	void setViewOffset(double offset);
-
-	// double getViewOffset() {
-	// 	return navigation->getViewOffset();
-	// }
-
-	// //! set environment rotation around observer
-	// void setHeading(double heading, int duration=0) {
-	// 	navigation->changeHeading(heading, duration);
-	// }
-
-	// void setDefaultHeading() {
-	// 	navigation->setDefaultHeading();
-	// }
-
-	// double getHeading() {
-	// 	return navigation->getHeading();
-	// }
 
 	//! Set automove duration in seconds
 	void setAutoMoveDuration(float f) {
@@ -453,9 +435,6 @@ public:
 	//! Load color scheme from the given ini file and section name
 	void setColorScheme(const std::string& skinFile, const std::string& section);
 
-	//! Load font scheme from ini file
-	void setFontScheme(void);
-
 	// MAJ de l'UBO ubo_cam
 	void uboCamUpdate();
 
@@ -473,9 +452,6 @@ public:
 	void switchMode(const std::string &mode);
 
 	void saveCurrentConfig(InitParser &conf);
-
-	// void imageDraw();
-	//void textDraw();
 
 	void onAltitudeChange(double value) {
 		std::cout << "Modification altitude reçue "<< value << std::endl;
@@ -510,7 +486,6 @@ private:
 	void drawInUniverse(int delta_time);
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);
-	//void postDraw();
 
 	//! Update all the objects in solarsystem mode with respect to the time.
 	//! @param delta_time the time increment in ms.
@@ -568,7 +543,6 @@ private:
 	CoreExecutor* executorInGalaxy = nullptr;
 	CoreExecutor* executorInUniverse = nullptr;
 
-	// CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
 	FontFactory* fontFactory=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
@@ -584,8 +558,6 @@ private:
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
 	NebulaMgr * nebulas;				// Manage the nebulas
 	IlluminateMgr * illuminates;		// Manage the illuminations
-	//TextMgr * text_usr;				// manage all user text in dome
-	//SolarSystem* ssystem;				// Manage the solar system
 	SSystemFactory* ssystemTmp;
 
 	Atmosphere * atmosphere;			// Atmosphere
