@@ -181,6 +181,15 @@ void Core::initCoreFont() const
 	// coreFont->asterisms = asterisms;
 	//coreFont->text_usr = media->getTextMgr();
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
+
+	ssystemTmp->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
+	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
+	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
+	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
+
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
+	asterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
 }
 
 	// CLASS_HIPSTARS,

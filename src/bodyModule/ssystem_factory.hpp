@@ -47,6 +47,10 @@ public:
         return ssystem.get();
     }
 
+    void registerFont(s_font* _font) {
+        ssystem->registerFont(_font);
+    }
+
 	//! Set selected planet by english name or "" to select none
 	void setSelected(const std::string& englishName) {
 		ssystemSelected->setSelected((englishName));
