@@ -344,8 +344,8 @@ void App::firstInit()
 	fontFactory->init(conf);
 	fontFactory->buildAllFont();
 
-	ui->registerFont(fontFactory->getUiFont());
-
+//	ui->registerFont(fontFactory->getUiFont());
+	ui->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_UI));
 
 	core->init(conf);
 	ui->init(conf);

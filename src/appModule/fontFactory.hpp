@@ -90,7 +90,7 @@ public:
 		return tuiFont.get();
 	}
 
-	s_font* getFont(CLASSEFONT _cf);
+	s_font* registerFont(CLASSEFONT _cf);
 
 
 	//! met à jour des fontes de Core
