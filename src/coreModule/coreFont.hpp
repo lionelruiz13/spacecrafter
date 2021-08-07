@@ -95,7 +95,7 @@ private:
 	Cardinals * cardinals_points;		// Cardinals points
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
 	// Media
-	TextMgr * text_usr;				// manage all user text in dome
+	//TextMgr * text_usr;				// manage all user text in dome
 	// Ui
 
 	// Core

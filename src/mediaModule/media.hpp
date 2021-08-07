@@ -134,9 +134,11 @@ public:
 	//TODO : delete this function.
 	[[deprecated("use anoter way to set text_usr")]] void setProjector(const Projector* projection);
 	//TODO : delete this function.
-	[[deprecated("use anoter way to set text_usr")]] TextMgr* getTextMgr() {
-		return text_usr.get();
-	}
+	// [[deprecated("use anoter way to set text_usr")]] TextMgr* getTextMgr() {
+	// 	return text_usr.get();
+	// }
+
+
 
 	////////////////////////////////////////////////////////////////////////////
 	//
@@ -319,6 +321,10 @@ public:
 
 	void setTextColor(const Vec3f &color) {
 		text_usr->setColor(color);
+	}
+
+	void setTextFont(float font_size, const std::string& font_name) {
+		text_usr->setFont(font_size,font_name);
 	}
 
 	////////////////////////////////////////////////////////////////////////////

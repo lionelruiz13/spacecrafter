@@ -72,11 +72,12 @@ enum class CLASSEFONT : char {
 typedef std::pair< CLASSEFONT, std::unique_ptr<s_font>> pairNameFontPtr;
 
 class InitParser;
+class Media;
 
 class FontFactory {
 
 public:
-	friend class Core;
+	//friend class Core;
 
     FontFactory(int _resolution);
     ~FontFactory();
@@ -92,6 +93,8 @@ public:
 
 	s_font* registerFont(CLASSEFONT _cf);
 
+	// cas particulier de Media qui gère ses propres fontes
+	void initMediaFont(Media * _media);
 
 	//! met à jour des fontes de Core
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
@@ -101,7 +104,7 @@ private:
 	// Core
 
 	// Media
-
+	Media* media;
 	// Ui
 	std::unique_ptr<s_font> tuiFont = nullptr;
 

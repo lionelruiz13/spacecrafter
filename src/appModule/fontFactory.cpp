@@ -28,6 +28,7 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "mainModule/define_key.hpp"
+#include "mediaModule/media.hpp"
 #include "interfaceModule/base_command_interface.hpp"
 
 FontFactory::FontFactory(int _resolution)
@@ -51,6 +52,12 @@ void FontFactory::setStrToTarget()
 FontFactory::~FontFactory()
 {
 	tuiFont.release();
+	listFont.clear();
+}
+
+void FontFactory::initMediaFont(Media * _media)
+{
+	media=_media;
 }
 
 void FontFactory::buildAllFont()
@@ -61,7 +68,11 @@ void FontFactory::buildAllFont()
 	tuiFont->rebuild(FontSizeTuiMenu+2, FontNameTuiMenu);
 	std::cout << "fin construction des fonts" << std::endl;
 
+	// cas de Ui
 	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_UI, std::make_unique<s_font>(FontSizeTuiMenu, FontNameTuiMenu)) );
+
+	//cas spécial de Media
+	media->setTextFont(FontSizeText, FontFileNameText);
 }
 
 void FontFactory::init(const InitParser& conf)
@@ -112,7 +123,7 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 	switch(it->second) {
 		// Media
 		case TARGETFONT::CF_TEXTS :
-			// text_usr->setFont(size==0 ? FontSizeText : size, fontName );
+			media->setTextFont(size==0 ? FontSizeText : size, fontName );
 			break;
 		// Core
 		case TARGETFONT::CF_PLANETS :
@@ -131,7 +142,7 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 			auto it = std::find_if( listFont.begin(), listFont.end(),
     			[&](const pairNameFontPtr &element){ return element.first == CLASSEFONT::CLASS_UI;} );
 			(*it).second->rebuild(size==0 ? FontSizeText : size, fontName);
-			std::cout << "test" << std::endl;}
+			}
 			break;
 		case TARGETFONT::CF_GENERAL :
 			break;
@@ -141,7 +152,7 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 }
 
 
-s_font*  FontFactory::getFont(CLASSEFONT _cf)
+s_font*  FontFactory::registerFont(CLASSEFONT _cf)
 {
 	auto it = std::find_if( listFont.begin(), listFont.end(), [&](const pairNameFontPtr &element){ return element.first == _cf;} );
 	return (*it).second.get();

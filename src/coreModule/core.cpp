@@ -178,7 +178,7 @@ void Core::initCoreFont() const
 	coreFont->skyDisplayMgr = skyDisplayMgr;
 	coreFont->cardinals_points = cardinals_points;
 	coreFont->asterisms = asterisms;
-	coreFont->text_usr = media->getTextMgr();
+	//coreFont->text_usr = media->getTextMgr();
 }
 
 

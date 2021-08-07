@@ -342,6 +342,7 @@ void App::firstInit()
 	AppSettings::Instance()->loadAppSettings( &conf );
 
 	fontFactory->init(conf);
+	fontFactory->initMediaFont(media);
 	fontFactory->buildAllFont();
 
 //	ui->registerFont(fontFactory->getUiFont());

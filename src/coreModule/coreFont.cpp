@@ -74,7 +74,7 @@ void CoreFont::setFont()
 	cardinals_points->setFont(FontSizeCardinalPoints, FontFileNameGeneral);
 	asterisms->setFont(FontSizeConstellation, FontFileNameConstellation);
 	// media
-	text_usr->setFont(FontSizeText, FontFileNameText);
+	//text_usr->setFont(FontSizeText, FontFileNameText);
 }
 
 void CoreFont::init(const InitParser& conf)
@@ -117,7 +117,7 @@ void CoreFont::updateFont(const std::string& targetName, const std::string& font
 	switch(it->second) {
 		// Media
 		case TARGETFONT::CF_TEXTS :
-			text_usr->setFont(size==0 ? FontSizeText : size, fontName );
+			//text_usr->setFont(size==0 ? FontSizeText : size, fontName );
 			break;
 		// Core
 		case TARGETFONT::CF_PLANETS :
