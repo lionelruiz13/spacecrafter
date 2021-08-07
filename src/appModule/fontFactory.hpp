@@ -86,11 +86,6 @@ public:
 	//! construit toutes les fontes
 	void buildAllFont();
 
-	s_font* getUiFont() {
-		//std::cout << "get ui fonts" << std::endl;
-		return tuiFont.get();
-	}
-
 	s_font* registerFont(CLASSEFONT _cf);
 
 	// cas particulier de Media qui gère ses propres fontes
@@ -105,8 +100,6 @@ private:
 
 	// Media
 	Media* media;
-	// Ui
-	std::unique_ptr<s_font> tuiFont = nullptr;
 
 	// All in one
 	std::list< pairNameFontPtr > listFont;
