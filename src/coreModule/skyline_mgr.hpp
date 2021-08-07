@@ -40,7 +40,7 @@
 
 class ThreadContext;
 
-class SkyLineMgr: public NoCopy  {
+class SkyLineMgr: public NoCopy, public ModuleFont  {
 public:
 	SkyLineMgr(ThreadContext *context);
 	~SkyLineMgr();
@@ -53,7 +53,8 @@ public:
 	void draw(const Projector* prj, const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory);
 	void update(int delta_time);
 
-	void setFont(float font_size, const std::string& font_name);
+	//void setFont(float font_size, const std::string& font_name);
+	virtual void registerFont(s_font* _font) override;
 
 	void setInternalNav(bool a);
 

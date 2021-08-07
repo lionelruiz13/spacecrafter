@@ -228,7 +228,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 			}
 
 			if (textFader) {
-				n->drawName(prj, labelColor, font.get());
+				n->drawName(prj, labelColor, font);
 			}
 
 			//~ cout << "drawhint " << n->getEnglishName() << endl;

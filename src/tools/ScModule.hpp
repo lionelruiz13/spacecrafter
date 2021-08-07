@@ -54,13 +54,13 @@ class ModuleFont {
 public:
 	ModuleFont(){};
 	virtual ~ModuleFont(){};
-	virtual void setFont(float font_size, const std::string& font_name);
-
+	// virtual void setFont(float font_size, const std::string& font_name);
+	virtual void registerFont(s_font* _font);
 protected:
-    std::unique_ptr<s_font> font=nullptr;
-private:
-	std::string m_fontName = "\0";		// remembers what fontName is used
-	float m_fontSize = -1; 			// remembers what fontSize is used
+    s_font* font=nullptr;
+// private:
+// 	std::string m_fontName = "\0";		// remembers what fontName is used
+// 	float m_fontSize = -1; 			// remembers what fontSize is used
 };
 
 template <class faderType>

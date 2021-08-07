@@ -88,7 +88,7 @@ class Dso3d;
 class Media;
 class StarLines;
 class BodyTrace;
-class CoreFont;
+// class CoreFont;
 class FontFactory;
 
 //!  @brief Main class for application core processing.
@@ -568,7 +568,7 @@ private:
 	CoreExecutor* executorInGalaxy = nullptr;
 	CoreExecutor* executorInUniverse = nullptr;
 
-	CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
+	// CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
 	FontFactory* fontFactory=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..

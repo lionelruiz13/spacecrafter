@@ -65,13 +65,18 @@ void SkyGridMgr::setInternalNav(bool a)
 }
 
 
-void SkyGridMgr::setFont(float font_size, const std::string& font_name)
-{
-	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		it->second->setFont(font_size, font_name);
-	}
-}
+// void SkyGridMgr::setFont(float font_size, const std::string& font_name)
+// {
+// 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
+// 		it->second->setFont(font_size, font_name);
+// 	}
+// }
 
+void SkyGridMgr::registerFont(s_font* _font)
+{
+	font = _font;
+	SkyGrid::setFont(font);
+}
 
 void SkyGridMgr::flipFlagShow(SKYGRID_TYPE typeObj)
 {

@@ -50,7 +50,7 @@ class Uniform;
 class Buffer;
 
 //! Class which manages a line to display around the sky like the ecliptic line
-class SkyLine : public ModuleFont {
+class SkyLine {
 
 public:
 	//! Create and precompute positions
@@ -86,6 +86,9 @@ public:
 		fader = ! fader;
 	}
 
+	static void setFont(s_font* _font){
+		font = _font;
+	}
 	//static void createShader();
 	static void createSC_context(ThreadContext *_context);
 	void createLocalResources();
@@ -109,6 +112,7 @@ protected:
 
 	//Opengl
 	//static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;
+	static s_font * font;
 	static ThreadContext *context;
 	static VertexArray *vertexModel;
 	static PipelineLayout *layout;

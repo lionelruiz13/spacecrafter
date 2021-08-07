@@ -50,7 +50,7 @@ PipelineLayout *SkyGrid::layout;
 Set *SkyGrid::set;
 int SkyGrid::vUniformID0 = -1;
 int SkyGrid::vUniformID1;
-
+s_font* SkyGrid::font = nullptr;
 
 SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
                  double _radius, unsigned int _nb_alt_segment, unsigned int _nb_azi_segment) :
@@ -94,6 +94,7 @@ SkyGrid::~SkyGrid()
 	// if (font) delete font;
 	// font = nullptr;
 }
+
 
 void SkyGrid::createShader(ThreadContext *_context)
 {

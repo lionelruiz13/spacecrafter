@@ -32,7 +32,7 @@
 #include "coreModule/ubo_cam.hpp"
 #include "coreModule/core_executor.hpp"
 #include "coreModule/core_common.hpp"
-#include "coreModule/coreFont.hpp"
+// #include "coreModule/coreFont.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
@@ -69,7 +69,6 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	context = _context;
 	media = _media;
 	fontFactory = _fontFactory;
-	coreFont = new CoreFont(/*this,*/ std::min(width,height));
 	projection = new Projector( width,height, 60 );
 	media->setProjector(projection);
 	//glFrontFace(GL_CCW);
@@ -172,17 +171,26 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 
 void Core::initCoreFont() const
 {
-	coreFont->hip_stars = hip_stars;
-	coreFont->nebulas = nebulas;
-	coreFont->ssystem = ssystemTmp->getSolarSystem();
-	coreFont->skyGridMgr = skyGridMgr;
-	coreFont->skyLineMgr = skyLineMgr;
-	coreFont->skyDisplayMgr = skyDisplayMgr;
-	coreFont->cardinals_points = cardinals_points;
-	coreFont->asterisms = asterisms;
+	// coreFont->hip_stars = hip_stars;
+	// coreFont->nebulas = nebulas;
+	// coreFont->ssystem = ssystemTmp->getSolarSystem();
+	// coreFont->skyGridMgr = skyGridMgr;
+	// coreFont->skyLineMgr = skyLineMgr;
+	// coreFont->skyDisplayMgr = skyDisplayMgr;
+	// coreFont->cardinals_points = cardinals_points;
+	// coreFont->asterisms = asterisms;
 	//coreFont->text_usr = media->getTextMgr();
+	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 }
 
+	// CLASS_HIPSTARS,
+	// CLASS_NEBULAS,
+	// CLASS_SSYSTEM,
+	// CLASS_SKYGRID,
+	// CLASS_SKYLINE,
+	// CLASS_SKYDISPLAY,
+	// CLASS_CARDINALS,
+	// CLASS_ASTERIMS,
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
 {
@@ -260,7 +268,7 @@ void Core::init(const InitParser& conf)
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagNav(flagNav);
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
-	coreFont->init(conf);
+	//coreFont->init(conf);
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
 	illuminates->setDefaultSize(conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
@@ -371,7 +379,7 @@ void Core::init(const InitParser& conf)
 	navigation->setLocalVision(Vec3f(1,1e-05,0.2));
 
 	// Init fonts : should be moved in a specific fonction
-	coreFont->setFont();
+	//coreFont->setFont();
 
 	if (firstTime) {
 		milky_way->needToUseIris(conf.getBoolean(SCS_MAIN, SCK_MILKYWAY_IRIS));
@@ -1692,7 +1700,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 
 void Core::setFontScheme()
 {
-	coreFont->setFont();
+	//coreFont->setFont();
 }
 
 //! Get a color used to display info about the currently selected object

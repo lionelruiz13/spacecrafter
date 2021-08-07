@@ -22,13 +22,18 @@
 
 #include "tools/ScModule.hpp"
 
-void ModuleFont::setFont(float font_size, const std::string& font_name)
-{
-    // dont's wast time to reload what is already loaded
-	if ((font_size == m_fontSize) && (font_name == m_fontName))
-		return;
+// void ModuleFont::setFont(float font_size, const std::string& font_name)
+// {
+//     // dont's wast time to reload what is already loaded
+// 	if ((font_size == m_fontSize) && (font_name == m_fontName))
+// 		return;
 
-    font = std::make_unique<s_font>(font_size, font_name);
-    m_fontName = font_name;
-    m_fontSize = font_size;
+//     font->rebuild(font_size, font_name);
+//     m_fontName = font_name;
+//     m_fontSize = font_size;
+// }
+
+void  ModuleFont::registerFont(s_font* _font)
+{
+    font=_font;
 }
