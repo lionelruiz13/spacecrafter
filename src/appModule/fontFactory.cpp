@@ -63,6 +63,16 @@ void FontFactory::buildAllFont()
 {
 	std::cout << "debut construction des fonts" << std::endl;
 
+	// cas des objets de Core
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_ASTERIMS, std::make_unique<s_font>(FontSizeConstellation, FontFileNameConstellation)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SSYSTEM, std::make_unique<s_font>(FontSizePlanet, FontFileNamePlanet)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYDISPLAY, std::make_unique<s_font>(FontSizePlanet, FontFileNamePlanet)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_CARDINALS, std::make_unique<s_font>(FontSizeCardinalPoints, FontFileNameGeneral)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_HIPSTARS, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_NEBULAS, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYGRID, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYLINE, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
+
 	// cas de Ui
 	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_UI, std::make_unique<s_font>(FontSizeTuiMenu, FontNameTuiMenu)) );
 
