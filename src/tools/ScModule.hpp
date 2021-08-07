@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 of Association Sirius & Association Andromède
+ * Copyright (C) 2020-2021 of Association Sirius & Association Andromède
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,7 +25,6 @@
 
 class Projector;
 class Navigator;
-//class s_font;
 
 #include "tools/vecmath.hpp"
 #include "tools/fader.hpp"
@@ -54,13 +53,12 @@ class ModuleFont {
 public:
 	ModuleFont(){};
 	virtual ~ModuleFont(){};
-	// virtual void setFont(float font_size, const std::string& font_name);
-	virtual void registerFont(s_font* _font);
+	// get font attribued to this class
+	virtual void registerFont(s_font* _font){
+    	font=_font;
+	}
 protected:
     s_font* font=nullptr;
-// private:
-// 	std::string m_fontName = "\0";		// remembers what fontName is used
-// 	float m_fontSize = -1; 			// remembers what fontSize is used
 };
 
 template <class faderType>
@@ -87,46 +85,4 @@ protected:
     faderType fader;
 };
 
-/*
-class CoreModule {
-public:
-
-	void setColor(const Vec3f& c) {
-		color = c;
-	}
-	Vec3f getColor() {
-		return color;
-	}
-
-	virtual void draw(const Projector* prj, const Navigator* nav){};
-
-	virtual void update(int delta_time) {
-		fader.update(delta_time);
-	}
-
-    virtual void preDraw(const Projector* prj, const Navigator* nav){};
-
-    void drawFBO(){};
-
-	void setFaderDuration(float duration) {
-		fader.setDuration((int)(duration*1000.f));
-	}
-	void setFlagShow(bool b) {
-		fader = b;
-	}
-	bool getFlagShow(void) const {
-		return fader;
-	}
-
-	void flipFlagShow() {
-		fader = !fader;
-	}
-
-protected:
-    Vec3f color;
-    s_font* font=nullptr;
-    LinearFader fader;
-    // le FBO ?
-};
-*/
 #endif
