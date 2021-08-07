@@ -13,7 +13,7 @@
 *
 */
 
-#include "coreModule/dso3d.hpp"
+#include "inGalaxyModule/dso3d.hpp"
 #include "tools/utility.hpp"
 #include <string>
 #include "tools/log.hpp"

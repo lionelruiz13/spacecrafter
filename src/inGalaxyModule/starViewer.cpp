@@ -1,4 +1,4 @@
-#include "coreModule/starViewer.hpp"
+#include "inGalaxyModule/starViewer.hpp"
 #include "ojmModule/objl.hpp"
 #include "tools/app_settings.hpp"
 #include "coreModule/projector.hpp"

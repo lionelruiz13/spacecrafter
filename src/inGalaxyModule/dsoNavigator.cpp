@@ -1,4 +1,4 @@
-#include "dsoNavigator.hpp"
+#include "inGalaxyModule/dsoNavigator.hpp"
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"

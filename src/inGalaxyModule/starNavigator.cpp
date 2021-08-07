@@ -20,15 +20,15 @@
 #include <thread>
 #include <unistd.h>
 
-#include "coreModule/starNavigator.hpp"
-#include "coreModule/starManager.hpp"
+#include "inGalaxyModule/starNavigator.hpp"
+#include "inGalaxyModule/starManager.hpp"
 #include "tools/utility.hpp"
 
 #include "tools/ThreadPool.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "coreModule/starViewer.hpp"
+#include "inGalaxyModule/starViewer.hpp"
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"

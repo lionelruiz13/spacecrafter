@@ -1,4 +1,4 @@
-#include "cloudNavigator.hpp"
+#include "inGalaxyModule/cloudNavigator.hpp"
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
