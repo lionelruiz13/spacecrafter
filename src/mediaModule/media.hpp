@@ -131,14 +131,7 @@ public:
 		viewPort->setTransparency(v);
 	}
 
-	//TODO : delete this function.
-	[[deprecated("use anoter way to set text_usr")]] void setProjector(const Projector* projection);
-	//TODO : delete this function.
-	// [[deprecated("use anoter way to set text_usr")]] TextMgr* getTextMgr() {
-	// 	return text_usr.get();
-	// }
-
-
+	void setProjector(const Projector* projection);
 
 	////////////////////////////////////////////////////////////////////////////
 	//
@@ -149,8 +142,7 @@ public:
 	void audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam);
 
 	void audioVolume(const AudioVolume& volumeOrder, float _value);
-	// A partir d'içi
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	void audioSetVolume(int _value) {
 		audio->setVolume(_value);
 	}
@@ -286,7 +278,6 @@ public:
 	//interface text
 	//
 	////////////////////////////////////////////////////////////////////////////
-
 	void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
 		text_usr->add(name, textParam);
 	}

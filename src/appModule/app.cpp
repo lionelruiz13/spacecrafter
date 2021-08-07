@@ -4,7 +4,7 @@
  * Copyright (C) 2006 Fabien Chereau
  * Copyright (C) 2009, 2010 Digitalis Education Solutions, Inc.
  * Copyright (C) 2013 of the LSS team
- * Copyright (C) 2014-2017 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2021 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -56,7 +56,6 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
-
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"
@@ -154,7 +153,6 @@ App::App( SDLFacade* const sdl )
 	enable_mkfifo= false;
 	enable_tcp= false;
 	flagColorInverse= false;
-	// flagOnVideo = false;
 
 	appDraw = new AppDraw();
 	appDraw->init(width, height);
@@ -225,8 +223,6 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 				flagVisible = _value; break;
 		case APP_FLAG::ALIVE :
 				flagAlive = _value; break;
-		// case APP_FLAG::ON_VIDEO :
-		// 		flagOnVideo = _value; break;
 		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = _value; break;
 		case APP_FLAG::ANTIALIAS :
@@ -242,8 +238,6 @@ void App::toggle(APP_FLAG layerValue)
 				flagVisible = !flagVisible; break;
 		case APP_FLAG::ALIVE :
 				flagAlive = !flagAlive; break;
-		// case APP_FLAG::ON_VIDEO :
-		// 		flagOnVideo = !flagOnVideo; break;
 		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = !flagColorInverse; break;
 		case APP_FLAG::ANTIALIAS :
@@ -261,15 +255,10 @@ std::string App::getAppLanguage() {
 //! Load configuration from disk
 void App::init()
 {
-	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
-	//glClear(GL_COLOR_BUFFER_BIT);
-	//Renderer::clearColor();
-
 	// Initialize video device and other sdl parameters
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
 
-	//appDraw->setLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 	appDraw->setFlagAntialiasLines(conf.getBoolean(SCS_RENDERING, SCK_FLAG_ANTIALIAS_LINES));
 
 	internalFPS->setMaxFps(conf.getDouble (SCS_VIDEO,SCK_MAXIMUM_FPS));
@@ -318,7 +307,6 @@ void App::init()
 
 	//set all color
 	core->setColorScheme(settings->getConfigFile(), SCS_COLOR);
-	core->setFontScheme();
 
 	// play startup script
 	scriptMgr->playStartupScript();
@@ -331,12 +319,7 @@ void App::init()
 //! Load configuration from disk
 void App::firstInit()
 {
-	// Clear screen, this fixes a strange artifact at loading time in the upper top corner.
-	//glClear(GL_COLOR_BUFFER_BIT);
-	//Renderer::clearColor();
 	appDraw->initSplash(&context);
-	//mSdl->glSwapWindow();	// And swap the buffers
-	//Translator::initSystemLanguage();
 
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
@@ -345,7 +328,6 @@ void App::firstInit()
 	fontFactory->initMediaFont(media);
 	fontFactory->buildAllFont();
 
-//	ui->registerFont(fontFactory->getUiFont());
 	ui->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_UI));
 
 	core->init(conf);
@@ -422,8 +404,6 @@ void App::updateFromSharedData()
 void App::update(int delta_time)
 {
 	internalFPS->addFrame();
-	//internalFPS->addCalculatedTime(delta_time);
-
 	// change time rate if needed to fast forward scripts
 	delta_time *= scriptMgr->getMuliplierRate();
 	// run command from a running script
@@ -455,8 +435,6 @@ void App::draw(int delta_time)
 	context.commandMgr->waitCompletion(1);
 	context.commandMgr->waitCompletion(2);
 	context.surface->acquireNextFrame();
-	// appDraw->drawFirstLayer();
-	//Renderer::clearColor();
 
 	context.commandMgrSingleUseInterface->reset();
 	context.commandMgr->setSubmission(commandIndexClear, true);
@@ -560,20 +538,6 @@ void App::startMainLoop()
 
 	// Start the main loop
 	while (flagAlive) {
-		//std::cout << "Frame" <<std::endl;
-		// if (flagOnVideo != media->playerisVideoPlayed()) {
-		// 	if (media->playerisVideoPlayed() == false) {
-		// 		//std::cout << "vidéo arretée" << std::endl;
-		// 		media->playerStop();
-		// 		ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
-		// 	} else {
-		// 		ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, true);
-		// 		//std::cout << "vidéo lancée" << std::endl;
-		// 	}
-
-		// 	flagOnVideo = !flagOnVideo;
-		// }
-
 		while (SDL_PollEvent(&E)) {	// Fetch all Event Of The Queue
 			ui->handleInputs(E);
 		}
@@ -600,10 +564,8 @@ void App::startMainLoop()
 			this->draw(deltaTime);			// Do the drawings!
 			saveScreenInterface->readScreenShot();
 			globalContext.vulkan->sendFrame(); // Send submission to the presentation engine
-			//mSdl->glSwapWindow();  			// And swap the buffers
 
 			internalFPS->setLastCount();
-
 		}
 	}
 
