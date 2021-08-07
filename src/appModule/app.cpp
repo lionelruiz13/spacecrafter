@@ -116,7 +116,7 @@ App::App( SDLFacade* const sdl )
 
 	screenFader =  new ScreenFader();
 
-	core = new Core(&context, width, height, media, mBoost::callback<void, std::string>(this, &App::recordCommand));
+	core = new Core(&context, width, height, media, fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand));
 	coreLink = new CoreLink(core);
 	coreBackup = new CoreBackup(core);
 

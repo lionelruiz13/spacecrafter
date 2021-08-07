@@ -51,11 +51,11 @@ CoreFont::CoreFont(/*Core* core,*/ int _resolution)
 
 void CoreFont::setStrToTarget()
 {
-    m_strToTarget[TF_TEXT] = TARGETFONT::CF_TEXTS;
-	m_strToTarget[TF_PLANETS] = TARGETFONT::CF_PLANETS;
-	m_strToTarget[TF_CONSTELLATIONS] = TARGETFONT::CF_CONSTELLATIONS;
-	m_strToTarget[TF_CARDINAL] = TARGETFONT::CF_CARDINALS;
-	m_strToTarget[TF_STARS] = TARGETFONT::CF_HIPSTARS;
+    m_strToTarget[TF_TEXT] = TARGETFONT1::CF_TEXTS;
+	m_strToTarget[TF_PLANETS] = TARGETFONT1::CF_PLANETS;
+	m_strToTarget[TF_CONSTELLATIONS] = TARGETFONT1::CF_CONSTELLATIONS;
+	m_strToTarget[TF_CARDINAL] = TARGETFONT1::CF_CARDINALS;
+	m_strToTarget[TF_STARS] = TARGETFONT1::CF_HIPSTARS;
 }
 
 
@@ -116,23 +116,23 @@ void CoreFont::updateFont(const std::string& targetName, const std::string& font
 
 	switch(it->second) {
 		// Media
-		case TARGETFONT::CF_TEXTS :
+		case TARGETFONT1::CF_TEXTS :
 			//text_usr->setFont(size==0 ? FontSizeText : size, fontName );
 			break;
 		// Core
-		case TARGETFONT::CF_PLANETS :
+		case TARGETFONT1::CF_PLANETS :
 			ssystem->setFont(size==0 ? FontSizePlanet : size, fontName );
 			break;
-		case TARGETFONT::CF_CONSTELLATIONS :
+		case TARGETFONT1::CF_CONSTELLATIONS :
 			asterisms->setFont(size==0 ? FontSizeConstellation : size, fontName );
 			break;
-		case TARGETFONT::CF_CARDINALS :
+		case TARGETFONT1::CF_CARDINALS :
 			cardinals_points->setFont(size==0 ? FontSizeCardinalPoints : size, fontName );
 			break;
-		case TARGETFONT::CF_HIPSTARS :
+		case TARGETFONT1::CF_HIPSTARS :
 			hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
 			break;
-		case TARGETFONT::CF_NONE:
+		case TARGETFONT1::CF_NONE:
 			break;
 	}
 }

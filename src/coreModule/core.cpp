@@ -37,6 +37,7 @@
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
 #include "appModule/space_date.hpp"
+#include "appModule/fontFactory.hpp"
 #include "bodyModule/body_decor.hpp"
 #include "coreModule/starNavigator.hpp"
 #include "coreModule/cloudNavigator.hpp"
@@ -58,7 +59,7 @@
 #include "vulkanModule/Texture.hpp"
 #include "vulkanModule/TextureMgr.hpp"
 
-Core::Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
+Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystemTmp(NULL), milky_way(nullptr)
@@ -67,6 +68,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	recordActionCallback = recordCallback;
 	context = _context;
 	media = _media;
+	fontFactory = _fontFactory;
 	coreFont = new CoreFont(/*this,*/ std::min(width,height));
 	projection = new Projector( width,height, 60 );
 	media->setProjector(projection);

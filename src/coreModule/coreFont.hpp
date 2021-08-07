@@ -59,7 +59,7 @@ class ConstellationMgr;
 class TextMgr;
 
 //! used to translate string to TARGETFONT
-enum class TARGETFONT : char {
+enum class TARGETFONT1 : char {
 	CF_TEXTS, 
 	CF_PLANETS,
 	CF_CONSTELLATIONS,
@@ -114,7 +114,7 @@ private:
 
     int m_resolution;
 	double m_fontResolution;
-	std::map< std::string, TARGETFONT> m_strToTarget;
+	std::map< std::string, TARGETFONT1> m_strToTarget;
 };
 
 

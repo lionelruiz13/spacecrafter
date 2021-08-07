@@ -89,6 +89,7 @@ class Media;
 class StarLines;
 class BodyTrace;
 class CoreFont;
+class FontFactory;
 
 //!  @brief Main class for application core processing.
 //!
@@ -108,7 +109,7 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
+	Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback <void, std::string> & recordCallback);
 	virtual ~Core();
 
 	//! Init and load all main core components from the passed config file.
@@ -568,6 +569,7 @@ private:
 	CoreExecutor* executorInUniverse = nullptr;
 
 	CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
+	FontFactory* fontFactory=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	TimeMgr* timeMgr;				// Manage date and time
