@@ -42,6 +42,7 @@
 
 class Projector;
 class Navigator;
+class Subtitle;
 
 enum class AudioFunction : char {
 	AF_MUSICLOAD,
@@ -357,6 +358,7 @@ private:
 	std::unique_ptr<VR360> vr360 = nullptr;
 	std::unique_ptr<ViewPort> viewPort = nullptr;
 	std::unique_ptr<TextMgr> text_usr = nullptr;				// manage all user text in dome
+	std::unique_ptr<Subtitle> subtitle;
 	const Projector *prj;
 
 	std::string skyLanguage;
