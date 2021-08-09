@@ -205,6 +205,8 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_BODY                      "body"
 #define W_POINT                     "point"
 #define W_CREATE                    "create"
+#define W_COORDINATE_SYSTEM         "coordinate_system"
+#define W_EQUATORIAL                "equatorial"
 #define W_SWITCH                    "switch"
 #define W_EQUAL                     "equal"
 #define W_DIFF                      "diff"
