@@ -160,7 +160,7 @@ AnchorManager::AnchorManager(
 	timeMgr = mgr;
 
 	AnchorCreator * observatory = new AnchorObservatoryCreator(nullptr);	
-	AnchorCreator * orbit = new AnchorPointOrbitCreator(observatory,_ssystem,mgr, orbitCreator);
+	AnchorCreator * orbit = new AnchorPointOrbitCreator(observatory,_ssystem, mgr, orbitCreator);
 	AnchorCreator * body = new AnchorPointBodyCreator(orbit, _ssystem);
 	anchorCreator = new AnchorPointCreator(body);
 }
