@@ -49,7 +49,7 @@ SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, N
     stellarSystem = std::make_unique<ProtoSystem>(_context, objLMgr.get());
 	
     bodytrace= new BodyTrace(_context);
-	anchorManager = new AnchorManager(observatory,navigation, getSolarSystem(), timeMgr, getOrbitCreator());
+	anchorManager = new AnchorManager(observatory,navigation, this, timeMgr, getOrbitCreator());
 }
     
 SSystemFactory::~SSystemFactory()

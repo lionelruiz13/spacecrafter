@@ -349,6 +349,15 @@ public:
         ssystemScale->setSizeLimit(scale);
     }
 
+    //! Return the matching planet pointer if exists or nullptr
+	Body* searchByEnglishName(const std::string &planetEnglishName) const {
+        return ssystem->searchByEnglishName(planetEnglishName);
+    }
+
+    void setAnchorManager(AnchorManager * _anchorManager) {
+        ssystem->setAnchorManager(_anchorManager);
+    }
+
     void bodyTrace(Navigator * navigation) {
         double alt, az;
         bodyTraceGetAltAz(navigation, &alt, &az);

@@ -18,7 +18,7 @@
 #include "appModule/space_date.hpp"
 #include "bodyModule/body.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
-#include "bodyModule/solarsystem.hpp"
+#include "bodyModule/ssystem_factory.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "navModule/anchor_creator_cor.hpp"
 #include "navModule/anchor_manager.hpp"
@@ -149,7 +149,7 @@ AnchorPoint * AnchorManager::constructAnchor(stringHash_t params)
 
 AnchorManager::AnchorManager(
     Observer * obs, Navigator * nav,
-    SolarSystem * _ssystem,
+    SSystemFactory * _ssystem,
     TimeMgr * mgr,
     const OrbitCreator * orbitCreator) noexcept
 {

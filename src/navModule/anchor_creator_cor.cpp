@@ -17,7 +17,7 @@
 #include "anchor_point_observatory.hpp"
 #include "anchor_creator_cor.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
-#include "bodyModule/solarsystem.hpp"
+#include "bodyModule/ssystem_factory.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
 #include "tools/log.hpp"
@@ -76,7 +76,7 @@ AnchorPoint * AnchorObservatoryCreator::handle(stringHash_t params) const{
 	           stod(params["z"]));
 }
 
-AnchorPointBodyCreator::AnchorPointBodyCreator(const AnchorCreator * _next, const SolarSystem * _ssystem) :
+AnchorPointBodyCreator::AnchorPointBodyCreator(const AnchorCreator * _next, const SSystemFactory * _ssystem) :
 	AnchorCreator(_next)
 {
 	ssystem = _ssystem;
@@ -106,7 +106,7 @@ AnchorPoint * AnchorPointBodyCreator::handle(stringHash_t params)const
 
 AnchorPointOrbitCreator::AnchorPointOrbitCreator(
     const AnchorCreator * _next,
-    const SolarSystem * _ssystem,
+    const SSystemFactory * _ssystem,
     const TimeMgr * _timeMgr,
     const OrbitCreator * _orbitCreator):
 	AnchorCreator(_next)
