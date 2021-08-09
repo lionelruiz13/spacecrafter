@@ -66,6 +66,9 @@ void SSystemFactory::changeMode(const std::string mode)
         currentSystem = ssystem.get();
     else if (mode == "stellarsystem")
         currentSystem = stellarSystem.get();
+    else {
+        cLog::get()->write("Failed to switch system.", LOG_TYPE::L_ERROR);
+    }
 
     ssystemColor->changeSystem(currentSystem);
     ssystemDisplay->changeSystem(currentSystem);
