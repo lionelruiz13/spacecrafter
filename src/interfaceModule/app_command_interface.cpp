@@ -1946,11 +1946,11 @@ int AppCommandInterface::commandLandscape()
 int AppCommandInterface::commandScreenFader()
 {
 	Event* event;
-	if (!args["alpha"].empty()) {
-		if (!args["duration"].empty()) {
-			event = new ScreenFaderEvent(ScreenFaderEvent::CHANGE, evalDouble(args["alpha"]), evalDouble(args["duration"]));
+	if (!args[W_ALPHA].empty()) {
+		if (!args[W_DURATION].empty()) {
+			event = new ScreenFaderEvent(ScreenFaderEvent::CHANGE, evalDouble(args[W_ALPHA]), evalDouble(args[W_DURATION]));
 		} else {
-			event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args["alpha"]));
+			event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(args[W_ALPHA]));
 		}
 		EventRecorder::getInstance()->queue(event);
 	} else {
@@ -2225,12 +2225,12 @@ int AppCommandInterface::commandImage()
 			debug_message = _("command 'image': filename not found");
 			return executeCommandStatus();
 		}
-		std::string argCoordinate = args["coordinate_system"];
+		std::string argCoordinate = args[W_COORDINATE_SYSTEM];
 		if (!args[W_HP].empty()) {
-			argCoordinate = "equatorial";
+			argCoordinate = W_EQUATORIAL;
 		}
 
-		std::string argProject = args["project"];
+		std::string argProject = args[W_PROJECT];
 		IMG_PROJECT tmpProject = IMG_PROJECT::ONCE;
 		if (argProject==W_TWICE) {
 			tmpProject = IMG_PROJECT::TWICE;
@@ -2382,10 +2382,6 @@ int AppCommandInterface::commandSelect()
 	} else if (args[W_CONSTELLATION_STAR]!="") {
 		select_type = W_CONSTELLATION_STAR  ;
 		identifier = args[W_CONSTELLATION_STAR];
-	} else if (args["star_galaxy"]!="") {
-		select_type = "star_galaxy" ;
-		identifier = args["star_galaxy"];
-
 	} else {
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
@@ -2733,7 +2729,7 @@ int AppCommandInterface::commandMedia()
 				return executeCommandStatus();
 			}
 
-			std::string argProject = args["project"];
+			std::string argProject = args[W_PROJECT];
 			IMG_PROJECT tmpProject = IMG_PROJECT::ONCE;
 			if (argProject==W_TWICE) {
 				tmpProject = IMG_PROJECT::TWICE;
