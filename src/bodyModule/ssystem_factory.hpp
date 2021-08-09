@@ -66,11 +66,11 @@ public:
 	}
 
 	void bodyTraceBodyChange(const std::string &bodyName){
-        ssystem->bodyTraceBodyChange(bodyName);
+        currentSystem->bodyTraceBodyChange(bodyName);
     }
 
 	std::string getPlanetsPosition() {
-        return ssystem->getPlanetsPosition();
+        return currentSystem->getPlanetsPosition();
     }
 
     Body* getEarth(void) const {
@@ -90,7 +90,7 @@ public:
     }
 
     void startTrails(bool b) {
-        ssystem->startTrails(b);
+        currentSystem->startTrails(b);
     }
 
     void setFlagMoonScale(bool b) {
@@ -126,12 +126,12 @@ public:
     }
 
 	void setFlagClouds(bool b) {
-        ssystem->setFlagClouds(b);
+        currentSystem->setFlagClouds(b);
     }
 
     bool getFlag(BODY_FLAG name) {
         if (name == BODY_FLAG::F_AXIS || name == BODY_FLAG::F_CLOUDS)
-            return ssystem->getFlag(name);
+            return currentSystem->getFlag(name);
         else
             return ssystemSelected->getFlag(name);
     }
@@ -142,11 +142,11 @@ public:
     }
 
 	void setPlanetHidden(const std::string &name, bool planethidden) {
-        ssystem->setPlanetHidden(name, planethidden);
+        currentSystem->setPlanetHidden(name, planethidden);
     }
 
 	bool getPlanetHidden(const std::string &name) {
-        return ssystem->getPlanetHidden(name);
+        return currentSystem->getPlanetHidden(name);
     }
 
 	void setFlagPlanets(bool b) {
@@ -162,7 +162,7 @@ public:
     }
 
 	void setFlagAxis(bool b) {
-        ssystem->setFlagAxis(b);
+        currentSystem->setFlagAxis(b);
     }
 
 	void setFlagHints(bool b) {
@@ -218,11 +218,11 @@ public:
     }
 
 	bool getHideSatellitesFlag() {
-        return ssystem->getHideSatellitesFlag();
+        return currentSystem->getHideSatellitesFlag();
     }
 
 	void toggleHideSatellites(bool val) {
-        ssystem->toggleHideSatellites(val);
+        currentSystem->toggleHideSatellites(val);
     }
 
 	void setScale(float scale) {
@@ -246,7 +246,7 @@ public:
     }
     
 	const OrbitCreator * getOrbitCreator()const {
-        return ssystem->getOrbitCreator();   
+        return currentSystem->getOrbitCreator();   
     }
 
 	void iniColor(const std::string& _halo, const std::string& _label, const std::string& _orbit, const std::string& _trail) {
@@ -258,7 +258,7 @@ public:
     }
 
 	void modelRingInit(int low, int medium, int high) {
-        ssystem->modelRingInit(low, medium, high);
+        currentSystem->modelRingInit(low, medium, high);
     }
 
 	void iniTextures() {
@@ -266,7 +266,7 @@ public:
     }
 
 	void load(const std::string& planetfile) {
-        ssystem->load(planetfile);
+        currentSystem->load(planetfile);
     }
 
 	void loadStellar(const std::string& planetfile) {
@@ -279,7 +279,7 @@ public:
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr) {
         ssystemTex->updateTesselation(delta_time);
-        ssystem->update(delta_time, nav, timeMgr);
+        currentSystem->update(delta_time, nav, timeMgr);
 	    bodytrace->update(delta_time);
     }
 
@@ -299,19 +299,19 @@ public:
     }
 
 	void addBody(stringHash_t & param) {
-        ssystem->addBody(param);
+        currentSystem->addBody(param);
     }
 
 	bool removeBody(const std::string &name) {
-        return ssystem->removeBody(name);
+        return currentSystem->removeBody(name);
     }
 
 	bool removeSupplementalBodies(const std::string &name) {
-        return ssystem->removeSupplementalBodies(name);
+        return currentSystem->removeSupplementalBodies(name);
     }
 
 	Object searchByNamesI18(const std::string &planetNameI18n) const {
-        return ssystem->searchByNamesI18(planetNameI18n);
+        return currentSystem->searchByNamesI18(planetNameI18n);
     }
 
 	Object getSelected(void) const {
@@ -325,12 +325,12 @@ public:
 	                                  const Projector * prj,
 	                                  bool *default_last_item,
 	                                  bool aboveHomePlanet ) const {
-                                          return ssystem->searchAround(v, lim_fov, nav, observatory, prj, 
+                                          return currentSystem->searchAround(v, lim_fov, nav, observatory, prj, 
                                           default_last_item, aboveHomePlanet);
                                       }
 
 	void translateNames(Translator& trans) {
-        ssystem->translateNames(trans);
+        currentSystem->translateNames(trans);
     }
 
 	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
@@ -338,11 +338,11 @@ public:
     }
 
 	std::string getPlanetHashString() {
-        return ssystem->getPlanetHashString();
+        return currentSystem->getPlanetHashString();
     }
 
 	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const {
-        return ssystem->listMatchingObjectsI18n(objPrefix, maxNbItem);
+        return currentSystem->listMatchingObjectsI18n(objPrefix, maxNbItem);
     }
 
 	void setSizeLimit(float scale) {
@@ -351,11 +351,11 @@ public:
 
     //! Return the matching planet pointer if exists or nullptr
 	Body* searchByEnglishName(const std::string &planetEnglishName) const {
-        return ssystem->searchByEnglishName(planetEnglishName);
+        return currentSystem->searchByEnglishName(planetEnglishName);
     }
 
     void setAnchorManager(AnchorManager * _anchorManager) {
-        ssystem->setAnchorManager(_anchorManager);
+        currentSystem->setAnchorManager(_anchorManager);
     }
 
     void bodyTrace(Navigator * navigation) {
@@ -480,6 +480,7 @@ private:
 	BodyTrace * bodytrace;				// the pen bodytrace
 	AnchorManager * anchorManager=nullptr;
 
+    ProtoSystem *currentSystem = ssystem.get();
 };
 
 #endif
