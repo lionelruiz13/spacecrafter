@@ -283,6 +283,7 @@ void Core::init(const InitParser& conf)
 		ssystemFactory->iniTextures();
 
 		ssystemFactory->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
+		//ssystemFactory->loadStellar(AppSettings::Instance()->getUserDir() + "sirius_system.ini");
 
 		ssystemFactory->anchorManagerInit(conf);
 

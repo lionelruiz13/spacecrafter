@@ -29,7 +29,7 @@
 
 
 class AnchorPoint;
-class SSystemFactory;
+class ProtoSystem;
 class TimeMgr;
 class OrbitCreator;
 
@@ -66,21 +66,21 @@ public:
 class AnchorPointBodyCreator : public AnchorCreator {
 public:
 	AnchorPointBodyCreator() = delete;
-	AnchorPointBodyCreator(const AnchorCreator* _next, const SSystemFactory * ssystem);
+	AnchorPointBodyCreator(const AnchorCreator* _next, const ProtoSystem * ssystem);
 	AnchorPoint * handle(stringHash_t param)const;
 
 private :
-	const SSystemFactory * ssystem;
+	const ProtoSystem * ssystem;
 };
 
 class AnchorPointOrbitCreator : public AnchorCreator {
 public:
 	AnchorPointOrbitCreator() = delete;
-	AnchorPointOrbitCreator(const AnchorCreator* _next, const SSystemFactory * ssystem, const TimeMgr * timeMgr, const OrbitCreator * orbitCreator);
+	AnchorPointOrbitCreator(const AnchorCreator* _next, const ProtoSystem * ssystem, const TimeMgr * timeMgr, const OrbitCreator * orbitCreator);
 	AnchorPoint * handle(stringHash_t param)const;
 
 private :
-	const SSystemFactory * ssystem;
+	const ProtoSystem * ssystem;
 	const TimeMgr * timeMgr;
 	const OrbitCreator * orbitCreator;
 };

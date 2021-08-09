@@ -56,8 +56,8 @@
 
 
 
-SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
-	:ProtoSystem(_context, _objLMgr), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.)
+SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
+	:ProtoSystem(_context, _objLMgr, observatory, navigation, timeMgr), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.)
 {
 }
 

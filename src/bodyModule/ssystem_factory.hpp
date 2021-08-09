@@ -393,77 +393,77 @@ public:
     }
 
     void cameraDisplayAnchor() {
-        anchorManager->displayAnchor();
+        currentSystem->getAnchorManager()->displayAnchor();
     }
 
     bool cameraAddAnchor(stringHash_t& param) {
-        return anchorManager->addAnchor(param);
+        return currentSystem->getAnchorManager()->addAnchor(param);
     }
 
     bool cameraRemoveAnchor(const std::string &name) {
-		return anchorManager->removeAnchor(name);
+		return currentSystem->getAnchorManager()->removeAnchor(name);
 	}
 
     bool cameraSwitchToAnchor(const std::string &name) {
-		return anchorManager->switchToAnchor(name);
+		return currentSystem->getAnchorManager()->switchToAnchor(name);
 	}
 
     bool cameraMoveToPoint(double x, double y, double z){
-		return anchorManager->setCurrentAnchorPos(Vec3d(x,y,z));
+		return currentSystem->getAnchorManager()->setCurrentAnchorPos(Vec3d(x,y,z));
 	}
 
 	bool cameraMoveToPoint(double x, double y, double z, double time){
-		return anchorManager->moveTo(Vec3d(x,y,z),time);
+		return currentSystem->getAnchorManager()->moveTo(Vec3d(x,y,z),time);
 	}
 
     bool cameraMoveToBody(const std::string& bodyName, double time, double alt) {
-        return anchorManager->moveToBody(bodyName, time, alt);
+        return currentSystem->getAnchorManager()->moveToBody(bodyName, time, alt);
     }
 
     bool cameraMoveRelativeXYZ( double x, double y, double z) {
-		return anchorManager->moveRelativeXYZ(x,y,z);
+		return currentSystem->getAnchorManager()->moveRelativeXYZ(x,y,z);
 	}
 
     bool cameraTransitionToPoint(const std::string& name){
-		return anchorManager->transitionToPoint(name);
+		return currentSystem->getAnchorManager()->transitionToPoint(name);
 	}
 
     bool cameraTransitionToBody(const std::string& name) {
-        return anchorManager->transitionToBody(name);
+        return currentSystem->getAnchorManager()->transitionToBody(name);
     }
 
     bool cameraSetFollowRotation(bool value){
-		return anchorManager->setFollowRotation(value);
+		return currentSystem->getAnchorManager()->setFollowRotation(value);
 	}
 
     void cameraSetRotationMultiplierCondition(float v) {
-		anchorManager->setRotationMultiplierCondition(v);
+		currentSystem->getAnchorManager()->setRotationMultiplierCondition(v);
 	}
 
     bool cameraAlignWithBody(const std::string& name, double duration){
-		return anchorManager->alignCameraToBody(name,duration);
+		return currentSystem->getAnchorManager()->alignCameraToBody(name,duration);
 	}
 
     void anchorManagerInit(const InitParser &conf) {
-        anchorManager->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
-		anchorManager->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
-		anchorManager->initFirstAnchor(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
+        currentSystem->getAnchorManager()->setRotationMultiplierCondition(conf.getDouble(SCS_NAVIGATION, SCK_STALL_RADIUS_UNIT));
+		currentSystem->getAnchorManager()->load(AppSettings::Instance()->getUserDir() + "anchor.ini");
+		currentSystem->getAnchorManager()->initFirstAnchor(conf.getStr(SCS_INIT_LOCATION, SCK_HOME_PLANET));
     }
 
     void updateAnchorManager() {
-	    anchorManager->update();
+	    currentSystem->getAnchorManager()->update();
     }
 
     bool switchToAnchor(const std::string& anchorName) {
-        return anchorManager->switchToAnchor(anchorName);
+        return currentSystem->getAnchorManager()->switchToAnchor(anchorName);
     }
 
     bool cameraSave(const std::string& name) {
-	    return anchorManager->saveCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + name);
+	    return currentSystem->getAnchorManager()->saveCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + name);
     }
 
     bool loadCameraPosition(const std::string& filename) {
-	    return anchorManager->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
+	    return currentSystem->getAnchorManager()->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
     }
 
     void changeMode(const std::string mode);
@@ -480,7 +480,6 @@ private:
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 
 	BodyTrace * bodytrace;				// the pen bodytrace
-	AnchorManager * anchorManager=nullptr;
 
     ProtoSystem * currentSystem;
 };

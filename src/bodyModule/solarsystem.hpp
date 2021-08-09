@@ -39,7 +39,7 @@
 
 class SolarSystem: public ProtoSystem{
 public:
-	SolarSystem(ThreadContext *o_context, ObjLMgr *_objLMgr);
+	SolarSystem(ThreadContext *o_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
 	virtual ~SolarSystem();
 
 	// load one object from a hash (returns error message if any)

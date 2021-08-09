@@ -37,7 +37,7 @@
 #include <map>
 #include "tools/utility.hpp"
 
-class SSystemFactory;
+class ProtoSystem;
 class SolarSystem;
 class AnchorPoint;
 class Observer;
@@ -56,7 +56,7 @@ public:
 
 	AnchorManager() = delete;
 
-	AnchorManager(Observer * obs, Navigator * nav, SSystemFactory * _ssystem, TimeMgr * mgr, const OrbitCreator * orbitCreator)noexcept;
+	AnchorManager(Observer * obs, Navigator * nav, ProtoSystem * _ssystem, TimeMgr * mgr, const OrbitCreator * orbitCreator)noexcept;
 
 	AnchorManager(const AnchorManager&) = delete;
 
@@ -214,7 +214,7 @@ private:
 
 	Observer * observer = nullptr;
 	Navigator * navigator = nullptr;
-	const SSystemFactory * ssystem = nullptr;
+	const ProtoSystem * ssystem = nullptr;
 	TimeMgr * timeMgr = nullptr;
 	const AnchorCreator * anchorCreator = nullptr;
 

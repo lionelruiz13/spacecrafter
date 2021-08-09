@@ -49,7 +49,7 @@ friend class SSystemIterator;
 friend class SSystemIteratorVector;
 public:
 
-    ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
+    ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
     ~ProtoSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
@@ -142,6 +142,10 @@ public:
 		
 	void setAnchorManager(AnchorManager * _anchorManager){
 		anchorManager = _anchorManager;
+	}
+
+	AnchorManager *getAnchorManager() {
+		return anchorManager;
 	}
 
 	Object * getCenterObject() {

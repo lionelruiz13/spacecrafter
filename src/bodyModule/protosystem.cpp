@@ -36,7 +36,7 @@
 
 
 
-ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
+ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 	:context(_context), objLMgr(_objLMgr)
 {
 	bodyTrace = nullptr;
@@ -45,17 +45,20 @@ ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
 	BodyShader::createShader(context);
 	Body::createDefaultAtmosphereParams();
 
+
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
 	OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
 	orbitCreator = new OrbitCreatorBary(elip, this);
 
+	anchorManager = new AnchorManager(observatory,navigation, this, timeMgr, getOrbitCreator());
 }
 
 ProtoSystem::~ProtoSystem()
 {
 	systemBodies.clear();
 	renderedBodies.clear();
+	delete anchorManager;
 }
 
 

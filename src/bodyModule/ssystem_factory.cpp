@@ -40,22 +40,20 @@ SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, N
 		exit(-7);
 	}
 
-    ssystem = std::make_unique<SolarSystem>(_context, objLMgr.get());
+    ssystem = std::make_unique<SolarSystem>(_context, objLMgr.get(), observatory, navigation, timeMgr);
     currentSystem = ssystem.get();
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
-    stellarSystem = std::make_unique<ProtoSystem>(_context, objLMgr.get());
+    stellarSystem = std::make_unique<ProtoSystem>(_context, objLMgr.get(), observatory, navigation, timeMgr);
 	
     bodytrace= new BodyTrace(_context);
-	anchorManager = new AnchorManager(observatory,navigation, this, timeMgr, getOrbitCreator());
 }
     
 SSystemFactory::~SSystemFactory()
 {
-	delete anchorManager;
 	delete bodytrace;
 }
 

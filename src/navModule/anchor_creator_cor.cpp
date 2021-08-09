@@ -76,7 +76,7 @@ AnchorPoint * AnchorObservatoryCreator::handle(stringHash_t params) const{
 	           stod(params["z"]));
 }
 
-AnchorPointBodyCreator::AnchorPointBodyCreator(const AnchorCreator * _next, const SSystemFactory * _ssystem) :
+AnchorPointBodyCreator::AnchorPointBodyCreator(const AnchorCreator * _next, const ProtoSystem * _ssystem) :
 	AnchorCreator(_next)
 {
 	ssystem = _ssystem;
@@ -106,7 +106,7 @@ AnchorPoint * AnchorPointBodyCreator::handle(stringHash_t params)const
 
 AnchorPointOrbitCreator::AnchorPointOrbitCreator(
     const AnchorCreator * _next,
-    const SSystemFactory * _ssystem,
+    const ProtoSystem * _ssystem,
     const TimeMgr * _timeMgr,
     const OrbitCreator * _orbitCreator):
 	AnchorCreator(_next)

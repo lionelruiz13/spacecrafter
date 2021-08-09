@@ -149,7 +149,7 @@ AnchorPoint * AnchorManager::constructAnchor(stringHash_t params)
 
 AnchorManager::AnchorManager(
     Observer * obs, Navigator * nav,
-    SSystemFactory * _ssystem,
+    ProtoSystem * _ssystem,
     TimeMgr * mgr,
     const OrbitCreator * orbitCreator) noexcept
 {
