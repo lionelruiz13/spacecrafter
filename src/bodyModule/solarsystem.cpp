@@ -493,25 +493,6 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 	return true;
 }
 
-void SolarSystem::initialSolarSystemBodies(){
-	for(auto it = systemBodies.begin(); it != systemBodies.end();it++){
-		it->second->body->reinitParam();
-		if (it->second->isHidden != it->second->initialHidden) {
-			if(it->second->initialHidden){
-				std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
-					return it->second->englishName == obj->englishName;
-				});
-			}
-			else{
-
-				renderedBodies.push_back(it->second);
-			}
-			it->second->isHidden = it->second->initialHidden;
-		}
-	}
-}
-
-
 // is a lunar eclipse close at hand?
 bool SolarSystem::nearLunarEclipse(const Navigator * nav, Projector *prj)
 {

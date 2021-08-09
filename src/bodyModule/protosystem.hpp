@@ -151,6 +151,11 @@ public:
 	Object * getCenterObject() {
 		return centerObject;
 	}
+	
+	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
+	// réinitialise les paramètes de la tesselaiton
+	// prend en compte la taille et le flag caché ou pas
+	void initialSolarSystemBodies();
 
 	struct BodyContainer {
 		std::unique_ptr<Body> body=nullptr;

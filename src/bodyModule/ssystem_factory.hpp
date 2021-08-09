@@ -137,7 +137,7 @@ public:
     }
 
 	void initialSolarSystemBodies() {
-        ssystem->initialSolarSystemBodies();
+        currentSystem->initialSolarSystemBodies();
         ssystemTex->resetTesselationParams();
     }
 
