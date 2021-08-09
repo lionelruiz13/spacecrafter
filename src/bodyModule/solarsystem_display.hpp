@@ -29,9 +29,13 @@
 
 class SolarSystemDisplay {
 public:
-    SolarSystemDisplay(SolarSystem * _ssystem);
+    SolarSystemDisplay(ProtoSystem * _ssystem);
     ~SolarSystemDisplay(){};
-    
+
+    void changeSystem(ProtoSystem * _ssystem) {
+		ssystem = _ssystem;
+	}
+
 	void computePreDraw(const Projector * prj, const Navigator * nav);
 
 	//! Draw all the elements of the solar system
@@ -66,7 +70,7 @@ public:
 	void computeTransMatrices(double date,const Observer * obs);
 
 private:
-    SolarSystem * ssystem;
+    ProtoSystem * ssystem;
 	
 	bool flagShow= true;
 	bool flag_light_travel_time = false;

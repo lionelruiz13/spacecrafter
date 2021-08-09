@@ -29,8 +29,12 @@
 
 class SolarSystemTex {
 public:
-    SolarSystemTex(SolarSystem * _ssystem);
+    SolarSystemTex(ProtoSystem * _ssystem);
     ~SolarSystemTex();
+
+	void changeSystem(ProtoSystem * _ssystem) {
+		ssystem = _ssystem;
+	}
 
     //switch tex map from Planet "name"
 	void switchPlanetTexMap(const std::string &name, bool a);
@@ -63,7 +67,7 @@ public:
     }
 
 private:
-    SolarSystem * ssystem;
+    ProtoSystem * ssystem;
     std::shared_ptr<BodyTesselation> bodyTesselation=nullptr;
 };
 

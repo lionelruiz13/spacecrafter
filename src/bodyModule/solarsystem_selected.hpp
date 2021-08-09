@@ -26,9 +26,13 @@
 
 class SolarSystemSelected {
 public:
-    SolarSystemSelected(SolarSystem * _ssystem);
+    SolarSystemSelected(ProtoSystem * _ssystem);
     ~SolarSystemSelected();
 
+	void changeSystem(ProtoSystem * _ssystem) {
+		ssystem = _ssystem;
+	}
+	
 	//! Get selected object's pointer
 	Object getSelected(void) const {
 		return selected;
@@ -76,7 +80,7 @@ public:
 	bool getFlag(BODY_FLAG name);
 
 private:
-    SolarSystem * ssystem;
+    ProtoSystem * ssystem;
     //! The currently selected planet
 	Object selected;
 

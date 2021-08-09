@@ -25,7 +25,7 @@
 #include "solarsystem_tex.hpp"
 #include "tools/log.hpp"
 
-SolarSystemTex::SolarSystemTex(SolarSystem * _ssystem)
+SolarSystemTex::SolarSystemTex(ProtoSystem * _ssystem)
 {
     ssystem = _ssystem;
 

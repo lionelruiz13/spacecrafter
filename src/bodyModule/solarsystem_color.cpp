@@ -26,7 +26,7 @@
 #include "bodyModule/ssystem_iterator.hpp"
 #include "bodyModule/solarsystem.hpp"
 
-SolarSystemColor::SolarSystemColor(SolarSystem * _ssystem)
+SolarSystemColor::SolarSystemColor(ProtoSystem * _ssystem)
 {
     ssystem = _ssystem;
 }

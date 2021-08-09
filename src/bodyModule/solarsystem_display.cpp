@@ -30,7 +30,7 @@
 #include "coreModule/projector.hpp"
 
 
-SolarSystemDisplay::SolarSystemDisplay(SolarSystem * _ssystem)
+SolarSystemDisplay::SolarSystemDisplay(ProtoSystem * _ssystem)
 {
     ssystem = _ssystem;
 }
@@ -65,7 +65,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
 	depthBucket db;
 
 	for (auto it = ssystem->createIteratorVector(); !it->end() ;(*it)++) {
-		if ( it->current()->body->get_parent() == ssystem->getSun()
+		if ( it->current()->body->getTurnAround() == tACenter
 		        // This will only work with natural planets
 		        // and not some illustrative (huge) artificial planets for example
 		        && it->current()->body->get_on_screen_bounding_size(prj, nav) > 3 ) {

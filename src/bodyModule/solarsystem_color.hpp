@@ -29,8 +29,12 @@
 
 class SolarSystemColor {
 public:
-    SolarSystemColor(SolarSystem * _ssystem);
+    SolarSystemColor(ProtoSystem * _ssystem);
     ~SolarSystemColor();
+
+	void changeSystem(ProtoSystem * _ssystem) {
+		ssystem = _ssystem;
+	}
 
     void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c);
 
@@ -50,7 +54,7 @@ public:
 	}
 
 private:
-    SolarSystem * ssystem;
+    ProtoSystem * ssystem;
 };
 
 #endif

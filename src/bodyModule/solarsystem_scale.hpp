@@ -29,8 +29,12 @@
 
 class SolarSystemScale {
 public:
-    SolarSystemScale(SolarSystem * _ssystem);
+    SolarSystemScale(ProtoSystem * _ssystem);
     ~SolarSystemScale();
+
+	void changeSystem(ProtoSystem * _ssystem) {
+		ssystem = _ssystem;
+	}
 
     //! Set the scale factor s of the planet name
 	//! @param name the planet's name
@@ -60,7 +64,7 @@ public:
 	}
 
 private:
-    SolarSystem * ssystem;
+    ProtoSystem * ssystem;
 };
 
 #endif

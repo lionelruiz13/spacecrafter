@@ -144,6 +144,10 @@ public:
 		anchorManager = _anchorManager;
 	}
 
+	Object * getCenterObject() {
+		return centerObject;
+	}
+
 	struct BodyContainer {
 		std::unique_ptr<Body> body=nullptr;
 		std::string englishName;  // for convenience
@@ -168,6 +172,7 @@ protected:
 	OrbitCreator * orbitCreator = nullptr;
 	AnchorManager * anchorManager = nullptr;
 	Vec3i ringsInit;
+	Object * centerObject = nullptr;
 
 	// Master settings
 	bool flagAxis= false;

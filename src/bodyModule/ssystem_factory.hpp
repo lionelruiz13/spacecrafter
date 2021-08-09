@@ -466,6 +466,8 @@ public:
 	    return anchorManager->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
     }
 
+    void changeMode(const std::string mode);
+
 private:
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;

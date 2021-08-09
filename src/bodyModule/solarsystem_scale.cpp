@@ -25,7 +25,7 @@
 #include "solarsystem_scale.hpp"
 #include "solarsystem.hpp"
 
-SolarSystemScale::SolarSystemScale(SolarSystem * _ssystem) {
+SolarSystemScale::SolarSystemScale(ProtoSystem * _ssystem) {
     ssystem = _ssystem;
 }
 

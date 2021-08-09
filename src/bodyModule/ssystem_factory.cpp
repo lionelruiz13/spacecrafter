@@ -58,3 +58,18 @@ SSystemFactory::~SSystemFactory()
 	delete anchorManager;
 	delete bodytrace;
 }
+
+void SSystemFactory::changeMode(const std::string mode)
+{
+    // Temporaire en attendant la map
+    if (mode == "ssystem")
+        currentSystem = ssystem.get();
+    else if (mode == "stellarsystem")
+        currentSystem = stellarSystem.get();
+
+    ssystemColor->changeSystem(currentSystem);
+    ssystemDisplay->changeSystem(currentSystem);
+    ssystemScale->changeSystem(currentSystem);
+    ssystemSelected->changeSystem(currentSystem);
+    ssystemTex->changeSystem(currentSystem);
+}
