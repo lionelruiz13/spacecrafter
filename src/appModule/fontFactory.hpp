@@ -116,10 +116,22 @@ private:
 	std::string FontFileNamePlanet;				//! The font for the planet system
 	std::string FontFileNameConstellation;		//! The font for all asterims
 	std::string FontFileNameMenu;
+	std::string FontFileNameDisplay;
+	std::string FontFileNameCardinalPoints;
+	std::string FontFileNameHipStars;
+	std::string FontFileNameNebulas;
+	std::string FontFileNameGrid;
+	std::string FontFileNameLines;
 	double FontSizeGeneral;
 	double FontSizePlanet;
 	double FontSizeConstellation;
 	double FontSizeCardinalPoints;
+	double FontSizeGrid;
+	double FontSizeLines;
+	double FontSizeDisplay;
+	double FontSizeHipStars;
+	double FontSizeNebulas;
+
 	// Media
 	std::string FontFileNameText;
 	double FontSizeText;

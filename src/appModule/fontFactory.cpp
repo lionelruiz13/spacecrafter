@@ -66,12 +66,12 @@ void FontFactory::buildAllFont()
 	// cas des objets de Core
 	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_ASTERIMS, std::make_unique<s_font>(FontSizeConstellation, FontFileNameConstellation)) );
 	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SSYSTEM, std::make_unique<s_font>(FontSizePlanet, FontFileNamePlanet)) );
-	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYDISPLAY, std::make_unique<s_font>(FontSizePlanet, FontFileNamePlanet)) );
-	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_CARDINALS, std::make_unique<s_font>(FontSizeCardinalPoints, FontFileNameGeneral)) );
-	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_HIPSTARS, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
-	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_NEBULAS, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
-	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYGRID, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
-	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYLINE, std::make_unique<s_font>(FontSizeGeneral, FontFileNameGeneral)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYDISPLAY, std::make_unique<s_font>(FontSizeDisplay, FontFileNameDisplay)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_CARDINALS, std::make_unique<s_font>(FontSizeCardinalPoints, FontFileNameCardinalPoints)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_HIPSTARS, std::make_unique<s_font>(FontSizeHipStars, FontFileNameHipStars)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_NEBULAS, std::make_unique<s_font>(FontSizeNebulas, FontFileNameNebulas)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYGRID, std::make_unique<s_font>(FontSizeGrid, FontFileNameGrid)) );
+	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_SKYLINE, std::make_unique<s_font>(FontSizeLines, FontFileNameLines)) );
 
 	// cas de Ui
 	listFont.push_back( std::make_pair( CLASSEFONT::CLASS_UI, std::make_unique<s_font>(FontSizeTuiMenu, FontNameTuiMenu)) );
@@ -86,7 +86,12 @@ void FontFactory::init(const InitParser& conf)
 	FontFileNameGeneral = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
 	FontFileNamePlanet = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_PLANET_NAME);
 	FontFileNameConstellation = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CONSTELLATION_NAME);
-
+	FontFileNameDisplay = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_DISPLAY_NAME);
+	FontFileNameCardinalPoints = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_CARDINALPOINTS_NAME);
+	FontFileNameHipStars = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_HIPSTARS_NAME);
+	FontFileNameNebulas = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_NEBULAS_NAME);
+	FontFileNameGrid = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GRID_NAME);
+	FontFileNameLines = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_LINES_NAME);
 	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
 
 	FontNameTuiMenu = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_MENU_NAME);
@@ -95,6 +100,11 @@ void FontFactory::init(const InitParser& conf)
 	FontSizeConstellation = conf.getDouble(SCS_FONT,SCK_FONT_CONSTELLATION_SIZE);
 	FontSizePlanet = conf.getDouble(SCS_FONT,SCK_FONT_PLANET_SIZE);
 	FontSizeCardinalPoints = conf.getDouble(SCS_FONT,SCK_FONT_CARDINALPOINTS_SIZE);
+	FontSizeGrid = conf.getDouble (SCS_FONT,SCK_FONT_GRID_SIZE);
+	FontSizeLines = conf.getDouble (SCS_FONT,SCK_FONT_LINE_SIZE);
+	FontSizeDisplay = conf.getDouble (SCS_FONT,SCK_FONT_DISPLAY_SIZE);
+	FontSizeHipStars = conf.getDouble (SCS_FONT,SCK_FONT_HIPSTARS_SIZE);
+	FontSizeNebulas = conf.getDouble (SCS_FONT,SCK_FONT_NEBULAS_SIZE);
 
     FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
 

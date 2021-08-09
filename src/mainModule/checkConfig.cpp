@@ -183,9 +183,21 @@ void CheckConfig::checkFontSettings()
 	tmpSettings[SCK_FONT_PLANET_SIZE]="20";
 	tmpSettings[SCK_FONT_CONSTELLATION_NAME]="DejaVuSans.ttf";
 	tmpSettings[SCK_FONT_CONSTELLATION_SIZE]="22";
+	tmpSettings[SCK_FONT_CARDINALPOINTS_NAME] = "DejaVuSans.ttf";
 	tmpSettings[SCK_FONT_CARDINALPOINTS_SIZE]="30";
 	tmpSettings[SCK_FONT_TEXT_NAME]="DejaVuSans.ttf";
 	tmpSettings[SCK_FONT_TEXT_SIZE]="16";
+	tmpSettings[SCK_FONT_GRID_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_GRID_SIZE]="12";
+	tmpSettings[SCK_FONT_LINES_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_LINE_SIZE]="12";
+	tmpSettings[SCK_FONT_DISPLAY_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_DISPLAY_SIZE]="12";
+	tmpSettings[SCK_FONT_HIPSTARS_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_HIPSTARS_SIZE]="12";
+	tmpSettings[SCK_FONT_NEBULAS_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_NEBULAS_SIZE]="12";
+
 	tmpSettings[SCK_FONT_MENUGUI_SIZE]="12.5";
 	sectionSettings.push_back(SCS_FONT);
 	insertKeyFromTmpSettings(SCS_FONT);
