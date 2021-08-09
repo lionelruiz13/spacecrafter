@@ -41,6 +41,7 @@ SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, N
 	}
 
     ssystem = std::make_unique<SolarSystem>(_context, objLMgr.get());
+    currentSystem = ssystem.get();
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());

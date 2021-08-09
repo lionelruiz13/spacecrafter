@@ -135,6 +135,7 @@ public:
 	}
 	
 	std::string getPlanetsPosition();
+	
 	const OrbitCreator * getOrbitCreator()const{
 		return orbitCreator;
 	}
