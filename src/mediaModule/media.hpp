@@ -28,8 +28,11 @@
 
 #include <map>
 #include <string>
+#include <memory>
+
 #include "mediaModule/audio.hpp"
 #include "mediaModule/image_mgr.hpp"
+#include "mediaModule/text_mgr.hpp"
 #include "mediaModule/video_player.hpp"
 #include "mediaModule/vr360.hpp"
 #include "mediaModule/viewport.hpp"
@@ -77,8 +80,6 @@ struct VideoParam {
 //etat de la lecture vidéo
 enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360, V_VRCUBE};
 enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
-//etat de la lecture audio
-enum class A_TYPE : char { V_NONE, V_AUDIO, V_VIDEO};
 
 
 class Media : public NoCopy {
@@ -93,8 +94,9 @@ public:
 	//
 	////////////////////////////////////////////////////////////////////////////
 
-	void init(ThreadContext *context);
-
+	//! création des structures pour les VR
+	void initVR360(ThreadContext *context);
+	//! creation contexte Vulkan
 	void createSC_context(ThreadContext *context);
 
 	//! affiche une image du player video à destination du VR360
@@ -129,13 +131,19 @@ public:
 		viewPort->setTransparency(v);
 	}
 
+	//TODO : delete this function.
+	[[deprecated("use anoter way to set text_usr")]] void setProjector(const Projector* projection);
+	//TODO : delete this function.
+	[[deprecated("use anoter way to set text_usr")]] TextMgr* getTextMgr() {
+		return text_usr.get();
+	}
+
 	////////////////////////////////////////////////////////////////////////////
 	//
 	//interface audio
 	//
 	////////////////////////////////////////////////////////////////////////////
 
-	// cette fonction remplace :
 	void audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam);
 
 	void audioVolume(const AudioVolume& volumeOrder, float _value);
@@ -189,7 +197,6 @@ public:
 	void audioMusicJump(float deltaTime) {
 		audio->musicJump(deltaTime);
 	}
-	// jusque la ...
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void audioUpdate(int delta_time) {
@@ -210,10 +217,6 @@ public:
 	int imageLoad(const std::string &filename, const  std::string &name, const std::string &coordinate, IMG_PROJECT project, bool mipmap) {
 		return imageMgr->loadImage( filename,  name, coordinate, project, mipmap);
 	}
-
-	// void imageClone(const std::string &name, int i) {
-	// 	imageMgr->clone(name,i);
-	// }
 
 	void imageDrop(const std::string &name) {
 		return imageMgr->drop_image(name);
@@ -278,6 +281,48 @@ public:
 
 	////////////////////////////////////////////////////////////////////////////
 	//
+	//interface text
+	//
+	////////////////////////////////////////////////////////////////////////////
+
+	void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
+		text_usr->add(name, textParam);
+	}
+
+	void textDel(std::string name) {
+		text_usr->del(name);
+	}
+
+	void textClear() {
+		text_usr->clear();
+	}
+
+	void textNameUpdate(std::string name, std::string text) {
+		text_usr->textUpdate(name, text);
+	}
+
+	void textDisplay(std::string name , bool displ) {
+		text_usr->textDisplay(name, displ);
+	}
+
+	void textFadingDuration(int a) {
+		text_usr->setFadingDuration(a);
+	}
+
+	void textSetDefaultColor(const Vec3f& v) {
+		text_usr->setColor(v);
+	}
+
+	void textDraw() {
+		text_usr->draw(prj);
+	}
+
+	void setTextColor(const Vec3f &color) {
+		text_usr->setColor(color);
+	}
+
+	////////////////////////////////////////////////////////////////////////////
+	//
 	//interface video
 	//
 	////////////////////////////////////////////////////////////////////////////
@@ -302,18 +347,20 @@ public:
 
 	void playerInvertflow();
 
-	bool playerisVideoPlayed() {
+	bool playerIsVideoPlayed() {
 		return player->isVideoPlayed();
 	}
 
 private:
 	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
 
-	Audio * audio = nullptr;
-	ImageMgr* imageMgr = nullptr;
-	VideoPlayer* player = nullptr;
-	VR360* vr360 = nullptr;
-	ViewPort* viewPort = nullptr;
+	std::unique_ptr<Audio> audio = nullptr;
+	std::unique_ptr<ImageMgr> imageMgr = nullptr;
+	std::unique_ptr<VideoPlayer> player = nullptr;
+	std::unique_ptr<VR360> vr360 = nullptr;
+	std::unique_ptr<ViewPort> viewPort = nullptr;
+	std::unique_ptr<TextMgr> text_usr = nullptr;				// manage all user text in dome
+	const Projector *prj;
 
 	std::string skyLanguage;
 	bool mplayerEnable;
@@ -325,13 +372,8 @@ private:
 		V_TYPE type;
 		V_STATE state;
 	};
-	struct AudioState {
-		A_TYPE type;
-		A_STATE state;
-	};
 
 	VideoState m_videoState;
-	AudioState m_audioState;
 	std::map<std::string, VID_TYPE> strToVid;
 };
 

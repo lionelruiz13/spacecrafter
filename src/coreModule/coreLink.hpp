@@ -111,33 +111,33 @@ public:
 	// Text_usr---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
-		core->text_usr->add(name, textParam);
-	}
+	// void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
+	// 	core->text_usr->add(name, textParam);
+	// }
 
-	void textDel(std::string name) {
-		core->text_usr->del(name);
-	}
+	// void textDel(std::string name) {
+	// 	core->text_usr->del(name);
+	// }
 
-	void textClear() {
-		core->text_usr->clear();
-	}
+	// void textClear() {
+	// 	core->text_usr->clear();
+	// }
 
-	void textNameUpdate(std::string name, std::string text) {
-		core->text_usr->textUpdate(name, text);
-	}
+	// void textNameUpdate(std::string name, std::string text) {
+	// 	core->text_usr->textUpdate(name, text);
+	// }
 
-	void textDisplay(std::string name , bool displ) {
-		core->text_usr->textDisplay(name, displ);
-	}
+	// void textDisplay(std::string name , bool displ) {
+	// 	core->text_usr->textDisplay(name, displ);
+	// }
 
-	void textFadingDuration(int a) {
-		core->text_usr->setFadingDuration(a);
-	}
+	// void textFadingDuration(int a) {
+	// 	core->text_usr->setFadingDuration(a);
+	// }
 
-	void textSetDefaultColor(const Vec3f& v) {
-		core->text_usr->setColor(v);
-	}
+	// void textSetDefaultColor(const Vec3f& v) {
+	// 	core->text_usr->setColor(v);
+	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Time---------------------------

@@ -341,9 +341,9 @@ void App::firstInit()
 	ui->init(conf);
 	ui->localizeTui();
 	ui->initTui();
-	media->init(&context);
 
 	appDraw->createSC_context(&context);
+	media->initVR360(&context);
 	media->createSC_context(&context);
 
 	enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
@@ -459,7 +459,7 @@ void App::draw(int delta_time)
 	//draw video frame to classical viewport
 	media->drawViewPort();
 	//draw text user
-	core->textDraw();
+	media->textDraw();
 	s_font::endPrint();
 
 	// Fill with black around the circle

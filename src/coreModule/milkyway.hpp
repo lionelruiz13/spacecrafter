@@ -54,7 +54,6 @@
  */
 
 class OjmL;
-class s_font;
 class Projector;
 class Navigator;
 class ToneReproductor;

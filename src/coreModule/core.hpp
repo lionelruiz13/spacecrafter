@@ -474,7 +474,7 @@ public:
 	void saveCurrentConfig(InitParser &conf);
 
 	// void imageDraw();
-	void textDraw();
+	//void textDraw();
 
 	void onAltitudeChange(double value) {
 		std::cout << "Modification altitude reçue "<< value << std::endl;
@@ -582,7 +582,7 @@ private:
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
 	NebulaMgr * nebulas;				// Manage the nebulas
 	IlluminateMgr * illuminates;		// Manage the illuminations
-	TextMgr * text_usr;				// manage all user text in dome
+	//TextMgr * text_usr;				// manage all user text in dome
 	//SolarSystem* ssystem;				// Manage the solar system
 	SSystemFactory* ssystemFactory;
 

@@ -96,8 +96,8 @@ void UI::init(const InitParser& conf)
 	FlagShowFov			= conf.getBoolean(SCS_GUI, SCK_FLAG_SHOW_FOV);
 	FlagNumberPrint		= conf.getInt(SCS_GUI, SCK_FLAG_NUMBER_PRINT);
 
-	FontSizeGeneral		= conf.getDouble (SCS_FONT, SCK_FONT_GENERAL_SIZE);
-	FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
+	// FontSizeGeneral		= conf.getDouble (SCS_FONT, SCK_FONT_GENERAL_SIZE);
+	// FontNameGeneral     = AppSettings::Instance()->getUserFontDir() +conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
 	MouseCursorTimeout  = conf.getDouble(SCS_GUI, SCK_MOUSE_CURSOR_TIMEOUT);
 	PosDateTime			= conf.getInt(SCS_GUI, SCK_DATETIME_DISPLAY_POSITION);
 	PosObjectInfo		= conf.getInt(SCS_GUI, SCK_OBJECT_INFO_DISPLAY_POSITION);
@@ -493,7 +493,7 @@ void UI::lowerHeight()
 
 void UI::speedDecrease()
 {
-	if (media->playerisVideoPlayed()) media->playerJump(-10.0);
+	if (media->playerIsVideoPlayed()) media->playerJump(-10.0);
     else
 	//	if (!scriptInterface->isScriptPlaying())
 	//  	scriptInterface->slowerSpeed();
@@ -504,7 +504,7 @@ void UI::speedDecrease()
 
 void UI::speedIncrease()
 {
-	if (media->playerisVideoPlayed()) media->playerJump(10.0);
+	if (media->playerIsVideoPlayed()) media->playerJump(10.0);
 	else
 	//	if (!scriptInterface->isScriptPlaying())
 	//	scriptInterface->fasterSpeed();
@@ -554,7 +554,7 @@ void UI::executeCommand(const std::string& command)
 
 void UI::pauseScriptOrTimeRate()
 {
-	if (media->playerisVideoPlayed()) media->playerPause();
+	if (media->playerIsVideoPlayed()) media->playerPause();
 	else
 	if ( scriptInterface->isScriptPlaying() ) {
 		this->executeCommand("script action pause");
@@ -2598,7 +2598,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_TAB :
 			switch(key_Modifier) {
 				case NONE:
-					if (media->playerisVideoPlayed())
+					if (media->playerIsVideoPlayed())
 						handleKeyOnVideo = true;
 					break;
 				case SUPER:

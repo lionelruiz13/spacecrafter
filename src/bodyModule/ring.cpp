@@ -32,7 +32,6 @@
 #include "navModule/navigator.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/observer.hpp"
-#include "tools/s_font.hpp"
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
 #include "planetsephems/sideral_time.h"

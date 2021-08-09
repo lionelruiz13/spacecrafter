@@ -30,11 +30,12 @@
 
 Media::Media()
 {
-	audio = new Audio();
-	imageMgr = new ImageMgr();
-	player = new VideoPlayer(this);
-	viewPort = new ViewPort();
-	vr360 = new VR360();
+	audio = std::make_unique<Audio>();
+	imageMgr = std::make_unique<ImageMgr>();
+	player = std::make_unique<VideoPlayer>(this);
+	viewPort = std::make_unique<ViewPort>();
+	vr360 = std::make_unique<VR360>();
+	text_usr = std::make_unique<TextMgr>();
 
 	strToVid["vrcube"] = VID_TYPE::V_VRCUBE;
 	strToVid["vr360"] = VID_TYPE::V_VR360 ;
@@ -47,11 +48,6 @@ Media::Media()
 
 Media::~Media()
 {
-	if (audio)	delete audio;
-	if (imageMgr) delete imageMgr;
-	if (player) delete player;
-	if (vr360) delete vr360;
-	if (viewPort) delete viewPort;
 }
 
 VID_TYPE Media::strToVideoType(const std::string& _value)
@@ -64,6 +60,12 @@ VID_TYPE Media::strToVideoType(const std::string& _value)
 	else
 		return it->second;
 }
+
+void Media::setProjector(const Projector* projection)
+{
+	prj=projection;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 void Media::audioMusicLoad(const std::string &filename, bool )
@@ -146,7 +148,7 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 	vr360->displayStop();
 	viewPort->displayStop();
 
-	if (!playerisVideoPlayed()) {
+	if (!playerIsVideoPlayed()) {
 		m_videoState.state=V_STATE::V_NONE;
 		m_videoState.type=V_TYPE::V_NONE;
 		cLog::get()->write("Media::playerPlay error playerVideo with "+filename, LOG_TYPE::L_ERROR);
@@ -211,14 +213,23 @@ void Media::playerStop()
 	player->stopCurrentVideo();
 	m_videoState.state=V_STATE::V_NONE;
 	audio->musicDrop();
-	if (m_videoState.type==V_TYPE::V_VR360)
-		vr360->display(false);
-	if (m_videoState.type==V_TYPE::V_VRCUBE)
-		vr360->display(false);
-	if (m_videoState.type==V_TYPE::V_VIEWPORT)
-		viewPort->display(false);
-	if ((m_videoState.type==V_TYPE::V_IMAGE) && !imageVideoName.empty())
-		imageMgr->drop_image(imageVideoName);
+	switch(m_videoState.type) {
+		case V_TYPE::V_VR360 :
+			vr360->display(false);
+			break;
+		case V_TYPE::V_VRCUBE :
+			vr360->display(false);
+			break;
+		case V_TYPE::V_VIEWPORT :
+			viewPort->display(false);
+			break;
+		case V_TYPE::V_IMAGE:
+			if (!imageVideoName.empty())
+				imageMgr->drop_image(imageVideoName);
+			break;
+		default:
+			break;
+	}
 	m_videoState.type=V_TYPE::V_NONE;
 }
 
@@ -231,13 +242,13 @@ void Media::playerRestart()
 
 void Media::playerJump(float deltaTime)
 {
-	float realDelta=0.0f;
+	float realDelta=0.f;
 	player->jumpInCurrentVideo(deltaTime, realDelta);
-	if (realDelta==0.0) {
+	if (realDelta==0.f) {
 		audio->musicRewind();
 		return;
 	}
-	if (realDelta==-1.0)
+	if (realDelta==-1.f)
 		audio->musicDrop();
 	else {
 		audio->musicResume();
@@ -247,13 +258,13 @@ void Media::playerJump(float deltaTime)
 
 void Media::playerInvertflow()
 {
-	float realDelta=0.0f;
+	float realDelta=0.f;
 	player->invertVideoFlow(realDelta);
-	if (realDelta==0.0) {
+	if (realDelta==0.f) {
 		audio->musicRewind();
 		return;
 	}
-	if (realDelta==-1.0)
+	if (realDelta==-1.f)
 		audio->musicDrop();
 	else {
 		audio->musicResume();
@@ -263,15 +274,15 @@ void Media::playerInvertflow()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Media::init(ThreadContext *context)
+void Media::initVR360(ThreadContext *context)
 {
 	vr360->init(context);
 }
 
 void Media::createSC_context(ThreadContext *context)
 {
-	viewPort-> createSC_context(context);
-	vr360-> createSC_context(context);
+	viewPort->createSC_context(context);
+	vr360->createSC_context(context);
 	imageMgr->createImageShader(context);
 	player->createTextures(context);
 }
