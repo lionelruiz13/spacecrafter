@@ -2230,7 +2230,7 @@ int AppCommandInterface::commandImage()
 			argCoordinate = "equatorial";
 		}
 
-		std::string argProject = args["project"];
+		std::string argProject = args[W_PROJECT];
 		IMG_PROJECT tmpProject = IMG_PROJECT::ONCE;
 		if (argProject==W_TWICE) {
 			tmpProject = IMG_PROJECT::TWICE;
@@ -2733,7 +2733,7 @@ int AppCommandInterface::commandMedia()
 				return executeCommandStatus();
 			}
 
-			std::string argProject = args["project"];
+			std::string argProject = args[W_PROJECT];
 			IMG_PROJECT tmpProject = IMG_PROJECT::ONCE;
 			if (argProject==W_TWICE) {
 				tmpProject = IMG_PROJECT::TWICE;
