@@ -2382,10 +2382,6 @@ int AppCommandInterface::commandSelect()
 	} else if (args[W_CONSTELLATION_STAR]!="") {
 		select_type = W_CONSTELLATION_STAR  ;
 		identifier = args[W_CONSTELLATION_STAR];
-	} else if (args["star_galaxy"]!="") {
-		select_type = "star_galaxy" ;
-		identifier = args["star_galaxy"];
-
 	} else {
 		debug_message= "command 'select' : no object found";
 		return executeCommandStatus();
