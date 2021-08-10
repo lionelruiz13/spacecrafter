@@ -48,8 +48,13 @@ SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, N
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
     stellarSystem = std::make_unique<ProtoSystem>(_context, objLMgr.get(), observatory, navigation, timeMgr);
-	
+
     bodytrace= new BodyTrace(_context);
+
+    context = _context;
+    observatory = observatory;
+    navigation = navigation;
+    timeMgr = timeMgr;
 }
     
 SSystemFactory::~SSystemFactory()
@@ -59,13 +64,20 @@ SSystemFactory::~SSystemFactory()
 
 void SSystemFactory::changeMode(const std::string mode)
 {
-    // Temporaire en attendant la map
-    if (mode == "ssystem")
+    if (mode == "SolarSystem")
         currentSystem = ssystem.get();
-    else if (mode == "stellarsystem")
-        currentSystem = stellarSystem.get();
     else {
-        cLog::get()->write("Failed to switch system.", LOG_TYPE::L_ERROR);
+        //auto it = std::find_if(systems.begin(), systems.end(), [mode] (std::pair<std::string, std::unique_ptr<ProtoSystem>> item) {
+        //    return (item.first == mode);
+        //});
+        auto it = systems.begin();
+        for (; it != systems.end(); it++)
+            if (it->first == mode)
+                break;
+        if (it != systems.end())
+            currentSystem = it->second.get();
+        else
+            return;
     }
 
     ssystemColor->changeSystem(currentSystem);
@@ -73,4 +85,11 @@ void SSystemFactory::changeMode(const std::string mode)
     ssystemScale->changeSystem(currentSystem);
     ssystemSelected->changeSystem(currentSystem);
     ssystemTex->changeSystem(currentSystem);
+}
+
+void SSystemFactory::addSystem(const std::string name, const std::string file)
+{
+    std::unique_ptr<ProtoSystem> system = std::make_unique<ProtoSystem>(context, objLMgr.get(), observatory, navigation, timeMgr);
+    system->load(AppSettings::Instance()->getUserDir() + file);
+    systems.insert(std::pair<std::string, std::unique_ptr<ProtoSystem>>(name, std::move(system)));
 }

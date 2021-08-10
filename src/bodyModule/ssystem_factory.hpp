@@ -468,6 +468,8 @@ public:
 
     void changeMode(const std::string mode);
 
+    void addSystem(const std::string name, const std::string file);
+
 private:
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
@@ -477,10 +479,16 @@ private:
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
     std::unique_ptr<ProtoSystem> stellarSystem;
 
+    std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
+
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 
 	BodyTrace * bodytrace;				// the pen bodytrace
-
+    ThreadContext *context;
+    Observer *observatory;
+    Navigator *navigation;
+    TimeMgr *timeMgr;
+    
     ProtoSystem * currentSystem;
 };
 
