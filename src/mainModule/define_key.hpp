@@ -128,7 +128,7 @@
 #define SCK_FONT_GRID_SIZE                  "font_grid_size"
 #define SCK_FONT_LINES_NAME                 "font_lines_name"
 #define SCK_FONT_LINE_SIZE                  "font_line_size"
-#define SCK_FONT_HIPSTARS_NAME              "font_hipstars_name"
+#define SCK_FONT_HIPSTARS_NAME              "font_hip_stars_name"
 #define SCK_FONT_HIPSTARS_SIZE              "font_hip_stars_size"
 #define SCK_FONT_NEBULAS_NAME               "font_nebulas_name"
 #define SCK_FONT_NEBULAS_SIZE               "font_nebulas_size"
