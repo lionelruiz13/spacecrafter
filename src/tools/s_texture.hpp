@@ -30,6 +30,7 @@
 #include <string>
 //
 #include <map>
+#include <list>
 #include <memory>
 #include "vulkanModule/Context.hpp"
 
@@ -96,6 +97,8 @@ public:
 	static void setContext(ThreadContext *_context) {context = _context;}
 	bool use();
 	void unuse();
+	// Unload every loaded texture even if they are still in use
+	static void forceUnload();
 private:
 	void unload();
 	bool load(const std::string& fullName, bool mipmap = false, bool keepOnCPU = false);
@@ -124,7 +127,9 @@ private:
 	static std::map<std::string, texRecap*> texCache;
 	static bool loadInLowResolution;
 	static int lowResMax;
+	static std::list<s_texture *> activeTextures;
 	std::map<std::string, texRecap*>::iterator it;
+	std::list<s_texture *>::iterator self;
 };
 
 

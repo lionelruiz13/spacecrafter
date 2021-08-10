@@ -201,6 +201,7 @@ App::~App()
 	delete context.commandMgrDynamic;
 	delete globalContext.tracker;
 	delete context.setMgr;
+	s_texture::forceUnload();
 	delete globalContext.textureMgr;
 	delete globalContext.vulkan;
 }
