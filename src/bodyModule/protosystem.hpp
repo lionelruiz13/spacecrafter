@@ -29,6 +29,7 @@
 #include "bodyModule/body_tesselation.hpp"
 #include "bodyModule/body_common.hpp"
 #include "bodyModule/body_sun.hpp"
+#include "bodyModule/body_center.hpp"
 #include "bodyModule/body_moon.hpp"
 #include "bodyModule/body_bigbody.hpp"
 #include "bodyModule/body_smallbody.hpp"

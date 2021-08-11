@@ -62,7 +62,7 @@ SSystemFactory::~SSystemFactory()
 	delete bodytrace;
 }
 
-void SSystemFactory::changeMode(const std::string mode)
+void SSystemFactory::changeSystem(const std::string mode)
 {
     if (mode == "SolarSystem")
         currentSystem = ssystem.get();
@@ -77,6 +77,7 @@ void SSystemFactory::changeMode(const std::string mode)
         if (it != systems.end())
             currentSystem = it->second.get();
         else
+    // TODO LOG
             return;
     }
 
@@ -90,6 +91,6 @@ void SSystemFactory::changeMode(const std::string mode)
 void SSystemFactory::addSystem(const std::string name, const std::string file)
 {
     std::unique_ptr<ProtoSystem> system = std::make_unique<ProtoSystem>(context, objLMgr.get(), observatory, navigation, timeMgr);
-    system->load(AppSettings::Instance()->getUserDir() + file);
+    system->load(file);
     systems.insert(std::pair<std::string, std::unique_ptr<ProtoSystem>>(name, std::move(system)));
 }

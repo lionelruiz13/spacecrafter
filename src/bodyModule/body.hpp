@@ -418,6 +418,9 @@ public:
 		return tAround;
 	}
 
+	BODY_TYPE getBodyType() {
+		return typePlanet;
+	}
 
 protected:
 

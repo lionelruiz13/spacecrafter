@@ -98,10 +98,10 @@ Body::Body(Body *parent,
 	initialScale= 1.0;
 	if (parent) {
 		parent->satellites.push_back(this);
-		if (parent->getEnglishName() != "Sun") is_satellite = 1; // quicker lookup
+		if (parent->getBodyType() != CENTER) is_satellite = 1; // quicker lookup
 	}
 	if (parent) {
-		if (parent->getEnglishName() == "Sun") tAround = tACenter;
+		if (parent->getBodyType() == CENTER) tAround = tACenter;
 		else tAround = tABody;
 	} else 
 		tAround = tANothing;
@@ -565,6 +565,8 @@ std::string Body::getTypePlanet(const BODY_TYPE str)  const
 			return "artificial";
 		case 8 :
 			return "observer";
+		case 9 :
+			return "center";
 		default :
 			return "unknown";
 	}

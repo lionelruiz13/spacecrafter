@@ -508,6 +508,7 @@ BODY_TYPE ProtoSystem::setPlanetType (const std::string &str)
 	else if (str == "Comet") return COMET;
 	else if (str == "Artificial") return ARTIFICIAL;
 	else if (str == "Observer") return OBSERVER;
+	else if (str == "Center") return CENTER;
 	else
 		return UNKNOWN;
 }
@@ -628,6 +629,36 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 		currentOBJ = objLMgr->selectDefault();
 
 	switch (typePlanet) {
+		case CENTER: {
+			std::unique_ptr<Center> p_center = std::make_unique<Center>(parent,
+			                englishName,
+			                Utility::strToBool(param["halo"]),
+			                Utility::strToDouble(param["radius"])/AU,
+			                Utility::strToDouble(param["oblateness"], 0.0),
+			                std::move(bodyColor),
+			                solLocalDay,
+			                Utility::strToDouble(param["albedo"]),
+			                std::move(orb),
+			                close_orbit,
+			                currentOBJ,
+			                orbit_bounding_radius,
+			  				bodyTexture,
+							context);
+			//update of sun's big_halo texture
+			std::string bighalotexfile = param["tex_big_halo"];
+			if (!bighalotexfile.empty()) {
+				p_center->setBigHalo(bighalotexfile, param["path"]);
+				p_center->setHaloSize(Utility::strToDouble(param["big_halo_size"], 50.f));
+			}
+
+			//if (englishName == "Sun") {
+				//sun = p_sun.get();
+				bodyTrace = p_center.get();
+				centerObject = new Object(p_center.get());
+			//}
+			p = std::move(p_center);
+		}
+		break;
 		case SUN : {
 			std::unique_ptr<Sun> p_sun = std::make_unique<Sun>(parent,
 			                englishName,
@@ -650,11 +681,11 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				p_sun->setHaloSize(Utility::strToDouble(param["big_halo_size"], 50.f));
 			}
 
-			if (englishName == "Sun") {
+			//if (englishName == "Sun") {
 				//sun = p_sun.get();
-				bodyTrace = p_sun.get();
-				centerObject = new Object(p_sun.get());
-			}
+			//	bodyTrace = p_sun.get();
+			//	centerObject = new Object(p_sun.get());
+			//}
 			p = std::move(p_sun);
 		}
 		break;

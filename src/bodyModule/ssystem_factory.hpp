@@ -466,7 +466,7 @@ public:
 	    return currentSystem->getAnchorManager()->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
     }
 
-    void changeMode(const std::string mode);
+    void changeSystem(const std::string mode);
 
     void addSystem(const std::string name, const std::string file);
 
