@@ -100,9 +100,12 @@ public:
 	//! initialise l'ensemble des fontes utilisées par la classe
 	void setFont(float font_size, const std::string& font_name);
 
+	void resetFont(){};
+
+	void buildFont();
+
 	//! modifie la couleur par défaut des futurs nouveaux text
 	void setColor(const Vec3f& c);
-
 private:
 	void clearCache();			// vide les caches des fonts
 	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes

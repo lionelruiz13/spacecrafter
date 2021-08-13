@@ -188,30 +188,28 @@ void TextMgr::setFont(float font_size, const std::string& font_name)
 		font_size=SIZE_MIN_TO_DISPLAY;
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
-	// dont's wast time to reload what is already loaded
-	if ((font_size == m_fontSize) && (font_name == m_fontName))
-		return;
+	m_fontSize = font_size;
+	m_fontName = font_name;
+}
 
+void TextMgr::buildFont()
+{
 	this->clearCache();
 	this->clear();
 	textFont.clear();
 	isUsable= true;
 	textFont.reserve(NB_MAX_SIZE);
 	for(int i=0; i<NB_MAX_SIZE; i++) {
-		textFont.push_back(std::make_unique<s_font>(font_size+2*(i-3), font_name));
+		textFont.push_back(std::make_unique<s_font>(m_fontSize+2*(i-3), m_fontName));
 		if (textFont.back()==nullptr) {
 			cLog::get()->write("TEXT: can't create text usr font", LOG_TYPE::L_ERROR);
 			isUsable = false;
 			break;
 		}
 	}
-	// remerbers param's
-	m_fontName = font_name;
-	m_fontSize = font_size;
 	if (!isUsable)
 		cLog::get()->write("TEXT: module disable", LOG_TYPE::L_WARNING);
 }
-
 
 void TextMgr::draw(const Projector* prj)
 {

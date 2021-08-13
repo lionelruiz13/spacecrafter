@@ -319,6 +319,14 @@ public:
 		text_usr->setFont(font_size,font_name);
 	}
 
+	void buildTextFont() {
+		text_usr->buildFont();
+	}
+
+	void resetTextFont() {
+		text_usr->resetFont();
+	}
+
 	////////////////////////////////////////////////////////////////////////////
 	//
 	//interface video
