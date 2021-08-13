@@ -106,7 +106,7 @@ App::App( SDLFacade* const sdl )
 	s_texture::setContext(&context);
 	*getContext() = context;
 
-	fontFactory = std::make_unique<FontFactory>(std::min(width,height));
+	fontFactory = std::make_unique<FontFactory>();
 
 	media = new Media();
 	saveScreenInterface = new SaveScreenInterface(width, height, globalContext.vulkan);
@@ -324,7 +324,7 @@ void App::firstInit()
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
 
-	fontFactory->init(conf);
+	fontFactory->init(std::min(width,height), conf);
 	fontFactory->initMediaFont(media);
 	fontFactory->buildAllFont();
 
