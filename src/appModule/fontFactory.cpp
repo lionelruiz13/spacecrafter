@@ -157,7 +157,8 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 		case TARGETFONT::CF_UIMENU: {
 			auto it = std::find_if( listFont.begin(), listFont.end(),
     			[&](const pairNameFontPtr &element){ return element.first == CLASSEFONT::CLASS_UI;} );
-			(*it).second->rebuild(size==0 ? FontSizeText : size, fontName);
+			if (it != std::end(listFont))
+				(*it).second->rebuild(size==0 ? FontSizeText : size, fontName);
 			}
 			break;
 		case TARGETFONT::CF_GENERAL :
