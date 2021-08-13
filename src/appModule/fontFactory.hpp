@@ -108,6 +108,9 @@ public:
 	//! met à jour des fontes de Core
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
 
+	//! réinitialise toutes les fontes de FontFactory
+	void reloadAllFont();
+
 private:
 	void setStrToTarget();
 	// Core

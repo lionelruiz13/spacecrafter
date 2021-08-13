@@ -174,3 +174,8 @@ s_font*  FontFactory::registerFont(CLASSEFONT _cf)
 	return (*it).second.get();
 }
 
+
+void FontFactory::reloadAllFont()
+{
+	
+}
