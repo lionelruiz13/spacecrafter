@@ -18,6 +18,7 @@ void AppCommandInit::setObsoleteToken()
 	obsoletList.push_back("movetocity");
 	obsoletList.push_back("landscape_sets_location");
 	obsoletList.push_back("external_mplayer");
+	obsoletList.push_back("font_general_size");
 }
 
 bool AppCommandInit::isObsoleteToken(const std::string &source)
