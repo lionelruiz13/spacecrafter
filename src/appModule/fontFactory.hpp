@@ -78,6 +78,13 @@ enum class CLASSEFONT : char {
 
 typedef std::pair< CLASSEFONT, std::unique_ptr<s_font>> pairNameFontPtr;
 
+struct FontContener{
+	CLASSEFONT classeFont;
+	std::unique_ptr<s_font> fontPtr;
+	std::string nameFont;
+	float sizeFont;
+};
+
 class InitParser;
 class Media;
 
