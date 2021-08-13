@@ -52,16 +52,16 @@
 
 
 //! used to translate string to TARGETFONT
-enum class TARGETFONT : char {
-	CF_TEXTS, 
-	CF_PLANETS,
-	CF_CONSTELLATIONS,
-	CF_CARDINALS,
-	CF_HIPSTARS,
-	CF_UIMENU,
-	CF_GENERAL,
-	CF_NONE
-};
+// enum class TARGETFONT : char {
+// 	CF_TEXTS, 
+// 	CF_PLANETS,
+// 	CF_CONSTELLATIONS,
+// 	CF_CARDINALS,
+// 	CF_HIPSTARS,
+// 	CF_UIMENU,
+// 	CF_GENERAL,
+// 	CF_NONE
+// };
 
 enum class CLASSEFONT : char {
 	CLASS_HIPSTARS,
@@ -72,7 +72,8 @@ enum class CLASSEFONT : char {
 	CLASS_SKYDISPLAY,
 	CLASS_CARDINALS,
 	CLASS_ASTERIMS,
-	CLASS_UI
+	CLASS_UI,
+	CLASS_MENU
 };
 
 
@@ -153,7 +154,7 @@ private:
     // int m_resolution;
 	// double m_fontResolution;
 	float fontFactor;
-	std::map< std::string, TARGETFONT> m_strToTarget;
+	std::map< std::string, CLASSEFONT> m_strToTarget;
 };
 
 

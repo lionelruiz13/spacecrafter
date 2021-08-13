@@ -39,15 +39,17 @@ FontFactory::FontFactory()//int _resolution)
 
 void FontFactory::setStrToTarget()
 {
-    m_strToTarget[TF_TEXT] = TARGETFONT::CF_TEXTS;
-	m_strToTarget[TF_PLANETS] = TARGETFONT::CF_PLANETS;
-	m_strToTarget[TF_CONSTELLATIONS] = TARGETFONT::CF_CONSTELLATIONS;
-	m_strToTarget[TF_CARDINAL] = TARGETFONT::CF_CARDINALS;
-	m_strToTarget[TF_STARS] = TARGETFONT::CF_HIPSTARS;
-	m_strToTarget[TF_MENU] = TARGETFONT::CF_UIMENU;
-	m_strToTarget[TF_GENERAL] = TARGETFONT::CF_GENERAL;
+    m_strToTarget[TF_TEXT] = CLASSEFONT::CLASS_MENU;
+	m_strToTarget[TF_PLANETS] = CLASSEFONT::CLASS_SSYSTEM;
+	m_strToTarget[TF_CONSTELLATIONS] = CLASSEFONT::CLASS_ASTERIMS;
+	m_strToTarget[TF_CARDINAL] = CLASSEFONT::CLASS_CARDINALS;
+	m_strToTarget[TF_STARS] = CLASSEFONT::CLASS_HIPSTARS;
+	m_strToTarget[TF_MENU] = CLASSEFONT::CLASS_UI;
+	m_strToTarget[TF_NEBULAS] = CLASSEFONT::CLASS_NEBULAS;
+	m_strToTarget[TF_GRIDS] = CLASSEFONT::CLASS_SKYGRID;
+	m_strToTarget[TF_LINES] = CLASSEFONT::CLASS_SKYLINE;
+	m_strToTarget[TF_DISPLAYS] = CLASSEFONT::CLASS_SKYDISPLAY;
 }
-
 
 FontFactory::~FontFactory()
 {
@@ -110,7 +112,6 @@ void FontFactory::init(int resolution, const InitParser& conf)
 	FontSizeNebulas = round(FontSizeNebulas * fontFactor) ;
 	listFont.push_back(FontContener(CLASSEFONT::CLASS_NEBULAS, FontSizeNebulas, FontFileNameNebulas) );
 
-
 	std::string FontFileNameGrid = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GRID_NAME);
 	float FontSizeGrid = conf.getDouble (SCS_FONT,SCK_FONT_GRID_SIZE);
 	FontSizeGrid = round(FontSizeGrid * fontFactor) ;
@@ -140,6 +141,8 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 {
 	// gestion de la taille
 	double size = Utility::strToDouble(sizeValue) * fontFactor;
+	if (size ==0.f)
+		size=12.f;
 
 	//gestion du module
 	auto const it = m_strToTarget.find(targetName);
@@ -148,38 +151,39 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 		return;
 	}
 
-	//auto it2 = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == it->second;} );
+	auto it2 = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == it->second;} );
+	it2->fontPtr->rebuild(size, fontName);
 
-	switch(it->second) {
+/*	switch(it->second) {
 		// Media
-		case TARGETFONT::CF_TEXTS :
+		case CLASSEFONT::CF_TEXTS :
 			//media->setTextFont(size==0 ? FontSizeText : size, fontName );
 			break;
 		// Core
-		case TARGETFONT::CF_PLANETS :
+		case CLASSEFONT::CF_PLANETS :
 			// ssystem->setFont(size==0 ? FontSizePlanet : size, fontName );
 			break;
-		case TARGETFONT::CF_CONSTELLATIONS :
+		case CLASSEFONT::CF_CONSTELLATIONS :
 			// asterisms->setFont(size==0 ? FontSizeConstellation : size, fontName );
 			break;
-		case TARGETFONT::CF_CARDINALS :
+		case CLASSEFONT::CF_CARDINALS :
 			// cardinals_points->setFont(size==0 ? FontSizeCardinalPoints : size, fontName );
 			break;
-		case TARGETFONT::CF_HIPSTARS :
+		case CLASSEFONT::CF_HIPSTARS :
 			// hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
 			break;
-		case TARGETFONT::CF_UIMENU: {
+		case CLASSEFONT::CF_UIMENU: {
 			// auto it = std::find_if( listFont.begin(), listFont.end(),
     		// 	[&](const FontContener &element){ return element.classeFont == CLASSEFONT::CLASS_UI;} );
 			// if (it != std::end(listFont))
 			// 	(*it).fontPtr->rebuild(size==0 ? FontSizeText : size, fontName);
 			}
 			break;
-		case TARGETFONT::CF_GENERAL :
+		case CLASSEFONT::CF_GENERAL :
 			break;
-		case TARGETFONT::CF_NONE:
+		case CLASSEFONT::CF_NONE:
 			break;
-	}
+	}*/
 }
 
 
