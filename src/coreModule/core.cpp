@@ -174,6 +174,7 @@ void Core::initCoreFont() const
 
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
 	asterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
+	cardinals_points->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_CARDINALS));
 }
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
