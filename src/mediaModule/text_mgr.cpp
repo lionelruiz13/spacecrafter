@@ -184,12 +184,12 @@ void TextMgr::textDisplay(const std::string &name, bool displ)
 
 void TextMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (font_size<SIZE_MIN_TO_DISPLAY) {
-		font_size=SIZE_MIN_TO_DISPLAY;
+	mFontSize = font_size;
+	mFontName = font_name;
+	if (mFontSize<SIZE_MIN_TO_DISPLAY) {
+		mFontSize=SIZE_MIN_TO_DISPLAY;
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
-	m_fontSize = font_size;
-	m_fontName = font_name;
 }
 
 void TextMgr::buildFont()
@@ -200,7 +200,7 @@ void TextMgr::buildFont()
 	isUsable= true;
 	textFont.reserve(NB_MAX_SIZE);
 	for(int i=0; i<NB_MAX_SIZE; i++) {
-		textFont.push_back(std::make_unique<s_font>(m_fontSize+2*(i-3), m_fontName));
+		textFont.push_back(std::make_unique<s_font>(mFontSize+2*(i-3), mFontName));
 		if (textFont.back()==nullptr) {
 			cLog::get()->write("TEXT: can't create text usr font", LOG_TYPE::L_ERROR);
 			isUsable = false;
