@@ -34,6 +34,7 @@
 #include "app_command_color.hpp"
 #include "appModule/app.hpp"
 #include "appModule/save_screen_interface.hpp"
+#include "appModule/fontFactory.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
 #include "coreModule/backup_mgr.hpp"
@@ -55,13 +56,14 @@
 #include "uiModule/ui.hpp"
 
 
-AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui,  Media* _media)
+AppCommandInterface::AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui,  Media* _media, FontFactory* _fontFactory)
 {
 	stcore = core;
 	coreLink = _coreLink;
 	coreBackup = _coreBackup;
 	stapp = app;
 	media = _media;
+	fontFactory = _fontFactory;
 	ui = _ui;
 	swapCommand = false;
 	ifSwap = std::make_unique<IfSwap>();
@@ -3125,6 +3127,17 @@ int AppCommandInterface::commandFont()
 	std::string fileName = args[W_FILENAME];
 	std::string targetName = args[W_TARGET];
 
+	std::string action = args[W_ACTION];
+	if (!action.empty()) {
+		if (action==W_RESET) {
+			fontFactory->reloadAllFont();
+			return executeCommandStatus();
+		}
+		debug_message = _("Command 'font': unknown action argument");
+		return executeCommandStatus();
+	}
+
+
 	if (targetName.empty()) {
 		debug_message = _("Command 'font': missing target argument");
 		return executeCommandStatus();
@@ -3133,7 +3146,8 @@ int AppCommandInterface::commandFont()
 	if (!fileName.empty()) {
 		FilePath myFile  = FilePath(fileName, FilePath::TFP::FONTS);
 			if (myFile) {
-				coreLink->fontUpdateFont(targetName,myFile.toString(), args[W_SIZE]);
+				fontFactory->updateFont(targetName, fileName, args[W_SIZE]);
+
 				return executeCommandStatus();
 			} else {
 				debug_message= "command 'font' : filename "+ fileName + " can't be found";

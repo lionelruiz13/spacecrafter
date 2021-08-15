@@ -122,7 +122,7 @@ App::App( SDLFacade* const sdl )
 	screenFader->createSC_context(&context);
 
 	ui = new UI(core, coreLink, this, mSdl, media);
-	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
+	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media, fontFactory.get());
 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = new Fps();

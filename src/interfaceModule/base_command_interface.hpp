@@ -115,6 +115,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_ALL                       "all"
 #define W_PEN                       "pen"
 #define W_TARGET                    "target"
+#define W_RESET                     "reset"
 #define W_TOGGLE                    "toggle"
 #define W_HIDE                      "hide"
 #define W_SUN                       "sun"
