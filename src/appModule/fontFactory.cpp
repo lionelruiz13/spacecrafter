@@ -153,6 +153,12 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 		return;
 	}
 
+	// cas des texts
+	if (it->second == CLASSEFONT::CLASS_MENU) {
+		media->updateTextFont(size, fontName);
+		return;
+	}
+
 	auto it2 = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == it->second;} );
 	if (it2 != std::end(listFont))
 		it2->fontPtr->rebuild(size, fontName);

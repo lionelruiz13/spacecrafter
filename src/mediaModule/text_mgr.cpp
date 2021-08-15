@@ -196,7 +196,6 @@ void TextMgr::buildFont()
 {
 	this->clearCache();
 	this->clear();
-	textFont.clear();
 	isUsable= true;
 	textFont.reserve(NB_MAX_SIZE);
 	for(int i=0; i<NB_MAX_SIZE; i++) {
@@ -218,4 +217,12 @@ void TextMgr::draw(const Projector* prj)
 	for (const auto& [key, value] : textUsr) {
 		value->draw(prj);
 	}
+}
+
+void TextMgr::updateFont(double size, const std::string& fontName)
+{
+	this->clearCache();
+	this->clear();
+	for(int i=0; i<NB_MAX_SIZE; i++)
+		textFont[i]->rebuild(size+2*(i-3), fontName);
 }

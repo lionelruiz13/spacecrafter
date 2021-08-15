@@ -100,9 +100,12 @@ public:
 	//! initialise l'ensemble des fontes utilisées par la classe
 	void setFont(float font_size, const std::string& font_name);
 
-	void resetFont(){};
-
+	//void updateFont(const std::string& fontName, double sizeValue);
+	void updateFont(double size, const std::string& fontName);
 	void buildFont();
+	void resetFont(){
+		updateFont(mFontSize, mFontName);
+	};
 
 	//! modifie la couleur par défaut des futurs nouveaux text
 	void setColor(const Vec3f& c);

@@ -327,6 +327,10 @@ public:
 		textMgr->resetFont();
 	}
 
+	void updateTextFont(double size, const std::string& fontName) {
+		textMgr->updateFont(size, fontName);
+	}
+
 	////////////////////////////////////////////////////////////////////////////
 	//
 	//interface video
