@@ -3146,7 +3146,7 @@ int AppCommandInterface::commandFont()
 	if (!fileName.empty()) {
 		FilePath myFile  = FilePath(fileName, FilePath::TFP::FONTS);
 			if (myFile) {
-				fontFactory->updateFont(targetName, fileName, args[W_SIZE]);
+				fontFactory->updateFont(targetName, myFile.toString(), args[W_SIZE]);
 
 				return executeCommandStatus();
 			} else {
