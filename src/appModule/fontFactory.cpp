@@ -154,8 +154,13 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 	}
 
 	auto it2 = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == it->second;} );
-	it2->fontPtr->rebuild(size, fontName);
-
+	if (it2 != std::end(listFont))
+		it2->fontPtr->rebuild(size, fontName);
+	else {
+		std::cout << "erreur updateFont " << targetName << " not found" << std::endl;
+		assert(0);
+	}
+	
 /*	switch(it->second) {
 		// Media
 		case CLASSEFONT::CF_TEXTS :
@@ -192,7 +197,13 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 s_font*  FontFactory::registerFont(CLASSEFONT _cf)
 {
 	auto it = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == _cf;} );
-	return (*it).fontPtr.get();
+	if (it != std::end(listFont)) {
+		return (*it).fontPtr.get();
+	}	else {
+		std::cout << "erreur registerFont" << std::endl;
+		assert(0);
+		return nullptr;
+	}
 }
 
 
