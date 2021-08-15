@@ -314,6 +314,8 @@ void App::init()
 	coreBackup->saveGridState();
 	coreBackup->saveDisplayState();
 	coreBackup->saveLineState();
+
+	fontFactory->reloadAllFont();
 }
 
 //! Load configuration from disk
