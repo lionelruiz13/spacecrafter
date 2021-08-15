@@ -145,8 +145,8 @@ private:
 	// double FontSizeNebulas;
 
 	// // Media
-	// std::string FontFileNameText;
-	// double FontSizeText;
+	std::string FontFileNameText;
+	double FontSizeText;
 	// // Ui
 	// std::string FontNameTuiMenu;
 	// float FontSizeTuiMenu;

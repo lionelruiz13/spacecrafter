@@ -69,6 +69,7 @@ void FontFactory::buildAllFont()
 		[](FontContener &n){ n.fontPtr = std::make_unique<s_font>(n.sizeFont, n.nameFont); }
 	);
 
+	media->setTextFont(FontSizeText, FontFileNameText);
 	//cas spécial de Media
 	media->buildTextFont();
 	std::cout << "fin construction des fonts" << std::endl;
@@ -130,10 +131,11 @@ void FontFactory::init(int resolution, const InitParser& conf)
 	// FontFileNameGeneral = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
 	// FontSizeGeneral = conf.getDouble (SCS_FONT,SCK_FONT_GENERAL_SIZE);
 
-	std::string FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
-    float FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
+	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
+    FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
     FontSizeText = round(FontSizeText * fontFactor) ;
-	media->setTextFont(FontSizeText, FontFileNameText);
+	// TODO ppourquoi cette instruction plante ?
+	//	media->setTextFont(FontSizeText, FontFileNameText);
 }
 
 
