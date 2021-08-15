@@ -562,9 +562,9 @@ private:
 
 	Atmosphere * atmosphere;			// Atmosphere
 	Media* media;
-	SkyGridMgr * skyGridMgr;			//! gestionnaire des grilles
-	SkyLineMgr* skyLineMgr;				//! gestionnaire de lignes
-	SkyDisplayMgr* skyDisplayMgr; 		//! gestionnaire de skyDisplay
+	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! gestionnaire des grilles
+	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! gestionnaire de lignes
+	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! gestionnaire de skyDisplay
 	Oort * oort;						//! oort cloud
 	Dso3d *dso3d;						//! dso catalog for in_galaxy
 	Tully *tully;						//! tully galaxies

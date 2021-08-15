@@ -96,13 +96,13 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	anchorManager = new AnchorManager(observatory,navigation, ssystemTmp->getSolarSystem(), timeMgr, ssystemTmp->getOrbitCreator());
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
-	skyGridMgr = new SkyGridMgr(context);
+	skyGridMgr = std::make_unique<SkyGridMgr>(context);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 
-	skyLineMgr = new SkyLineMgr(context);
+	skyLineMgr = std::make_unique<SkyLineMgr>(context);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_POINT_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
@@ -126,7 +126,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
-	skyDisplayMgr = new SkyDisplayMgr(context);
+	skyDisplayMgr = std::make_unique<SkyDisplayMgr>(context);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICAL);
@@ -201,9 +201,9 @@ Core::~Core()
 	delete hip_stars;
 	delete nebulas;
 	delete illuminates;
-	delete skyGridMgr;
-	delete skyLineMgr;
-	delete skyDisplayMgr;
+	// skyGridMgr.reset(nullptr);
+	// skyLineMgr.reset(nullptr);
+	// skyDisplayMgr.reset(nullptr);
 	delete landscape;
 	delete cardinals_points;
 	landscape = nullptr;
