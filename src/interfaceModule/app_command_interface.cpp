@@ -3129,7 +3129,7 @@ int AppCommandInterface::commandFont()
 
 	std::string action = args[W_ACTION];
 	if (!action.empty()) {
-		if (action==W_RESET) {
+		if (action==W_INITIAL) {
 			fontFactory->reloadAllFont();
 			return executeCommandStatus();
 		}
