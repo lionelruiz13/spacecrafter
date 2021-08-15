@@ -45,7 +45,7 @@ void FontFactory::setStrToTarget()
 	m_strToTarget[TF_CARDINAL] = CLASSEFONT::CLASS_CARDINALS;
 	m_strToTarget[TF_STARS] = CLASSEFONT::CLASS_HIPSTARS;
 	m_strToTarget[TF_MENU] = CLASSEFONT::CLASS_UI;
-	m_strToTarget[TF_NEBULAS] = CLASSEFONT::CLASS_NEBULAS;
+	m_strToTarget[TF_NEBULAE] = CLASSEFONT::CLASS_NEBULAE;
 	m_strToTarget[TF_GRIDS] = CLASSEFONT::CLASS_SKYGRID;
 	m_strToTarget[TF_LINES] = CLASSEFONT::CLASS_SKYLINE;
 	m_strToTarget[TF_DISPLAYS] = CLASSEFONT::CLASS_SKYDISPLAY;
@@ -111,7 +111,7 @@ void FontFactory::init(int resolution, const InitParser& conf)
 	std::string FontFileNameNebulas = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_NEBULAS_NAME);
 	float FontSizeNebulas = conf.getDouble (SCS_FONT,SCK_FONT_NEBULAS_SIZE);
 	FontSizeNebulas = round(FontSizeNebulas * fontFactor) ;
-	listFont.push_back(FontContener(CLASSEFONT::CLASS_NEBULAS, FontSizeNebulas, FontFileNameNebulas) );
+	listFont.push_back(FontContener(CLASSEFONT::CLASS_NEBULAE, FontSizeNebulas, FontFileNameNebulas) );
 
 	std::string FontFileNameGrid = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GRID_NAME);
 	float FontSizeGrid = conf.getDouble (SCS_FONT,SCK_FONT_GRID_SIZE);

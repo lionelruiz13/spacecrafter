@@ -597,7 +597,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define TF_CARDINAL                   "cardinal_points"
 #define TF_STARS                      "stars"
 #define TF_MENU                       "menu"
-#define TF_NEBULAS                    "nebulas"
+#define TF_NEBULAE                    "nebulae"
 #define TF_GRIDS                      "grids"
 #define TF_LINES                      "lines"
 #define TF_DISPLAYS                   "displays"

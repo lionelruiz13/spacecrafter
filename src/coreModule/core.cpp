@@ -165,14 +165,14 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 void Core::initCoreFont() const
 {
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
-	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 
 	ssystemTmp->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
 	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 
-	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	asterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
 	cardinals_points->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_CARDINALS));
 }
