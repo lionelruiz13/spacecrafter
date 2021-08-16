@@ -115,13 +115,13 @@ public:
 	void init(const InitParser& conf);
 
 	//! Update all the objects in current mode
-	void update(int delta_time);
+	[[deprecated]] void update(int delta_time);
 
 	//! Update current mode
-	void updateMode();
+	[[deprecated]] void updateMode();
 
 	//! Draw all the objects in current mode
-	void draw(int delta_time);
+	[[deprecated]] void draw(int delta_time);
 
 	//! Set the sky culture from I18 name
 	//! Returns false and doesn't change if skyculture is invalid
@@ -449,16 +449,16 @@ public:
 		return flagNav;
 	}
 
-	void switchMode(const std::string &mode);
+	[[deprecated]] void switchMode(const std::string &mode);
 
 	void saveCurrentConfig(InitParser &conf);
 
-	void onAltitudeChange(double value) {
+	[[deprecated]]  void onAltitudeChange(double value) {
 		std::cout << "Modification altitude reçue "<< value << std::endl;
 		setBodyDecor();
 	}
 
-	void onObserverChange(std::string str) {
+	[[deprecated]]  void onObserverChange(std::string str) {
 		std::cout << "Modification observer to " << str << std::endl;
 		setLandscapeToBody();
 	}
@@ -469,35 +469,35 @@ private:
 		double move_speed, zoom_speed;		// Speed of movement and zooming
 	};
 
-	void ssystemComputePreDraw();
-	void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos);
-	void hipStarMgrPreDraw();
+	[[deprecated]]  void ssystemComputePreDraw();
+	[[deprecated]]  void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos);
+	[[deprecated]]  void hipStarMgrPreDraw();
 
 	//! Execute all the drawing functions in solarsystem mode
 	//! @param delta_time the time increment in ms.
-	void drawInSolarSystem(int delta_time);
+	[[deprecated]]  void drawInSolarSystem(int delta_time);
 
 	//! Execute all the drawing functions in galaxy mode
 	//! @param delta_time the time increment in ms.
-	void drawInGalaxy(int delta_time);
+	[[deprecated]]  void drawInGalaxy(int delta_time);
 
 	//! Execute all the drawing functions in universe mode
 	//! @param delta_time the time increment in ms.
-	void drawInUniverse(int delta_time);
+	[[deprecated]]  void drawInUniverse(int delta_time);
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);
 
 	//! Update all the objects in solarsystem mode with respect to the time.
 	//! @param delta_time the time increment in ms.
-	void updateInSolarSystem(int delta_time);
+	[[deprecated]]  void updateInSolarSystem(int delta_time);
 
 	//! Update all the objects in galaxy mode with respect to the time.
 	//! @param delta_time the time increment in ms.
-	void updateInGalaxy(int delta_time);
+	[[deprecated]]  void updateInGalaxy(int delta_time);
 
 	//! Update all the objects in universe mode with respect to the time.
 	//! @param delta_time the time increment in ms.
-	void updateInUniverse(int delta_time);
+	[[deprecated]]  void updateInUniverse(int delta_time);
 
 	//! Callback to record actions
 	mBoost::callback<void, std::string> recordActionCallback;
