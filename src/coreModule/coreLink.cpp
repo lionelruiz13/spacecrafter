@@ -22,10 +22,10 @@ bool CoreLink::loadCameraPosition(const std::string& filename)
 	return core->ssystemFactory->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
 }
 
-void CoreLink::fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue)
-{
-	core->fontFactory->updateFont(_targetName, _fontName, _sizeValue);
-}
+// void CoreLink::fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue)
+// {
+// 	core->fontFactory->updateFont(_targetName, _fontName, _sizeValue);
+// }
 
 double CoreLink::getDateYear() const
 {

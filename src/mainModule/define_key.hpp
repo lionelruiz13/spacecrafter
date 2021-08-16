@@ -113,7 +113,7 @@
 #define SCK_FLAG_MOUSE_USABLE_IN_SCRIPT     "flag_mouse_usable_in_script"
 #define SCK_FONT_RESOLUTION_SIZE            "font_resolution_size"
 #define SCK_FONT_GENERAL_NAME               "font_general_name"
-#define SCK_FONT_GENERAL_SIZE               "font_general_size"
+// #define SCK_FONT_GENERAL_SIZE               "font_general_size"
 #define SCK_FONT_MENU_NAME                  "font_menu_name"
 #define SCK_FONT_MENUTUI_SIZE               "font_menutui_size"
 #define SCK_FONT_PLANET_NAME                "font_planet_name"

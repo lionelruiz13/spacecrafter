@@ -36,7 +36,7 @@ Media::Media()
 	player = std::make_unique<VideoPlayer>(this);
 	viewPort = std::make_unique<ViewPort>();
 	vr360 = std::make_unique<VR360>();
-	text_usr = std::make_unique<TextMgr>();
+	textMgr = std::make_unique<TextMgr>();
 	subtitle = std::make_unique<Subtitle>();
 
 	strToVid["vrcube"] = VID_TYPE::V_VRCUBE;

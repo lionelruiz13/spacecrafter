@@ -106,7 +106,7 @@ App::App( SDLFacade* const sdl )
 	s_texture::setContext(&context);
 	*getContext() = context;
 
-	fontFactory = std::make_unique<FontFactory>(std::min(width,height));
+	fontFactory = std::make_unique<FontFactory>();
 
 	media = new Media();
 	saveScreenInterface = new SaveScreenInterface(width, height, globalContext.vulkan);
@@ -122,7 +122,7 @@ App::App( SDLFacade* const sdl )
 	screenFader->createSC_context(&context);
 
 	ui = new UI(core, coreLink, this, mSdl, media);
-	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media);
+	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media, fontFactory.get());
 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = new Fps();
@@ -314,6 +314,8 @@ void App::init()
 	coreBackup->saveGridState();
 	coreBackup->saveDisplayState();
 	coreBackup->saveLineState();
+
+	fontFactory->reloadAllFont();
 }
 
 //! Load configuration from disk
@@ -324,7 +326,7 @@ void App::firstInit()
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
 
-	fontFactory->init(conf);
+	fontFactory->init(std::min(width,height), conf);
 	fontFactory->initMediaFont(media);
 	fontFactory->buildAllFont();
 

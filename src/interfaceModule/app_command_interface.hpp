@@ -50,11 +50,12 @@ class SpaceDate;
 class Media;
 class SaveScreenInterface;
 class ServerSocket;
+class FontFactory;
 
 class AppCommandInterface: public NoCopy {
 
 public:
-	AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media);
+	AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media, FontFactory* _fontFactory);
 	~AppCommandInterface();
 
 	int terminateScript();
@@ -149,6 +150,7 @@ private:
 	ServerSocket *tcp = nullptr;
 	AppCommandInit *appInit = nullptr;
 	AppCommandEval *appEval = nullptr;
+	FontFactory *fontFactory = nullptr;
 
 	std::string commandline;
 	std::string command;

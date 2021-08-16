@@ -280,43 +280,55 @@ public:
 	//
 	////////////////////////////////////////////////////////////////////////////
 	void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
-		text_usr->add(name, textParam);
+		textMgr->add(name, textParam);
 	}
 
 	void textDel(std::string name) {
-		text_usr->del(name);
+		textMgr->del(name);
 	}
 
 	void textClear() {
-		text_usr->clear();
+		textMgr->clear();
 	}
 
 	void textNameUpdate(std::string name, std::string text) {
-		text_usr->textUpdate(name, text);
+		textMgr->textUpdate(name, text);
 	}
 
 	void textDisplay(std::string name , bool displ) {
-		text_usr->textDisplay(name, displ);
+		textMgr->textDisplay(name, displ);
 	}
 
 	void textFadingDuration(int a) {
-		text_usr->setFadingDuration(a);
+		textMgr->setFadingDuration(a);
 	}
 
 	void textSetDefaultColor(const Vec3f& v) {
-		text_usr->setColor(v);
+		textMgr->setColor(v);
 	}
 
 	void textDraw() {
-		text_usr->draw(prj);
+		textMgr->draw(prj);
 	}
 
 	void setTextColor(const Vec3f &color) {
-		text_usr->setColor(color);
+		textMgr->setColor(color);
 	}
 
 	void setTextFont(float font_size, const std::string& font_name) {
-		text_usr->setFont(font_size,font_name);
+		textMgr->setFont(font_size,font_name);
+	}
+
+	void buildTextFont() {
+		textMgr->buildFont();
+	}
+
+	void resetTextFont() {
+		textMgr->resetFont();
+	}
+
+	void updateTextFont(double size, const std::string& fontName) {
+		textMgr->updateFont(size, fontName);
 	}
 
 	////////////////////////////////////////////////////////////////////////////
@@ -357,7 +369,7 @@ private:
 	std::unique_ptr<VideoPlayer> player = nullptr;
 	std::unique_ptr<VR360> vr360 = nullptr;
 	std::unique_ptr<ViewPort> viewPort = nullptr;
-	std::unique_ptr<TextMgr> text_usr = nullptr;				// manage all user text in dome
+	std::unique_ptr<TextMgr> textMgr;				// manage all user text in dome
 	std::unique_ptr<Subtitle> subtitle;
 	const Projector *prj;
 

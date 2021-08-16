@@ -85,7 +85,7 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
 	} else
 	cLog::get()->write("s_font: loading font " + fontName, LOG_TYPE::L_INFO);
 	nbFontInstances++;
-	//cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << endl;
+	//std::cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << std::endl;
 }
 
 void s_font::rebuild(float size_i, const std::string& ttfFileName)
@@ -96,7 +96,7 @@ void s_font::rebuild(float size_i, const std::string& ttfFileName)
 
 	// create new and swap it if correct
 	TTF_Font *tmpFont =  nullptr;
-	tmpFont = TTF_OpenFont( fontName.c_str(), fontSize);
+	tmpFont = TTF_OpenFont( ttfFileName.c_str(), size_i);
 	if(!tmpFont) {
 		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
 		cLog::get()->write("s_font: no rebuild possible", LOG_TYPE::L_WARNING);

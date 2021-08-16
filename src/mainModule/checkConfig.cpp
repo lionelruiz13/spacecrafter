@@ -176,7 +176,7 @@ void CheckConfig::checkFontSettings()
 {
 	tmpSettings[SCK_FONT_RESOLUTION_SIZE]= "1024";
 	tmpSettings[SCK_FONT_GENERAL_NAME]="DejaVuSansMono.ttf";
-	tmpSettings[SCK_FONT_GENERAL_SIZE]="12";
+	// tmpSettings[SCK_FONT_GENERAL_SIZE]="12";
 	tmpSettings[SCK_FONT_MENU_NAME]="DejaVuSans.ttf";
 	tmpSettings[SCK_FONT_MENUTUI_SIZE]="18";
 	tmpSettings[SCK_FONT_PLANET_NAME]="DejaVuSans.ttf";

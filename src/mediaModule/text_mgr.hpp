@@ -100,9 +100,18 @@ public:
 	//! initialise l'ensemble des fontes utilisées par la classe
 	void setFont(float font_size, const std::string& font_name);
 
+	//! met a jours les fontes avec les nouveaux paramètres fontName et sizeValue
+	void updateFont(double size, const std::string& fontName);
+	//! construit les fontes déterminées par setFont 
+	void buildFont();
+
+	//! remet à jour les fontes d'origine
+	void resetFont(){
+		updateFont(mFontSize, mFontName);
+	};
+
 	//! modifie la couleur par défaut des futurs nouveaux text
 	void setColor(const Vec3f& c);
-
 private:
 	void clearCache();			// vide les caches des fonts
 	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
@@ -112,8 +121,8 @@ private:
 	Vec3f defaultTextColor;		// vecteur couleur par défaut
 	bool isUsable = false;		// indicateur si la classe est opérationelle
 	float fadingDuration;		// durée d'une fading de text (s'il existe) en secondes
-	std::string m_fontName = "";		// remembers what fontName is used
-	float m_fontSize = 0; 			// remembers what fontSize is used
+	std::string mFontName;		// remembers what fontName is used
+	float mFontSize; 			// remembers what fontSize is used
 };
 
 #endif

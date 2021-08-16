@@ -95,13 +95,13 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	ojmMgr = new OjmMgr(context);
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
-	skyGridMgr = new SkyGridMgr(context);
+	skyGridMgr = std::make_unique<SkyGridMgr>(context);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 
-	skyLineMgr = new SkyLineMgr(context);
+	skyLineMgr = std::make_unique<SkyLineMgr>(context);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_POINT_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
@@ -125,7 +125,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
-	skyDisplayMgr = new SkyDisplayMgr(context);
+	skyDisplayMgr = std::make_unique<SkyDisplayMgr>(context);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICAL);
@@ -160,18 +160,19 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	currentExecutor = executorInSolarSystem;
 }
 
-void Core::initCoreFont() const
+void Core::registerCoreFont() const
 {
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
-	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 
 	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
 	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
 
-	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	asterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
+	cardinals_points->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_CARDINALS));
 }
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
@@ -198,9 +199,9 @@ Core::~Core()
 	delete hip_stars;
 	delete nebulas;
 	delete illuminates;
-	delete skyGridMgr;
-	delete skyLineMgr;
-	delete skyDisplayMgr;
+	// skyGridMgr.reset(nullptr);
+	// skyLineMgr.reset(nullptr);
+	// skyDisplayMgr.reset(nullptr);
 	delete landscape;
 	delete cardinals_points;
 	landscape = nullptr;
@@ -241,8 +242,8 @@ Core::~Core()
 void Core::init(const InitParser& conf)
 {
 	if (firstTime) {
-		s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
-		this->initCoreFont();
+		//s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
+		this->registerCoreFont();
 	}
 
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);

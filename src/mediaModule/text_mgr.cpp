@@ -184,34 +184,31 @@ void TextMgr::textDisplay(const std::string &name, bool displ)
 
 void TextMgr::setFont(float font_size, const std::string& font_name)
 {
-	if (font_size<SIZE_MIN_TO_DISPLAY) {
-		font_size=SIZE_MIN_TO_DISPLAY;
+	mFontSize = font_size;
+	mFontName = font_name;
+	if (mFontSize<SIZE_MIN_TO_DISPLAY) {
+		mFontSize=SIZE_MIN_TO_DISPLAY;
 		cLog::get()->write("text size to small fixed to minimal", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 	}
-	// dont's wast time to reload what is already loaded
-	if ((font_size == m_fontSize) && (font_name == m_fontName))
-		return;
+}
 
+void TextMgr::buildFont()
+{
 	this->clearCache();
 	this->clear();
-	textFont.clear();
 	isUsable= true;
 	textFont.reserve(NB_MAX_SIZE);
 	for(int i=0; i<NB_MAX_SIZE; i++) {
-		textFont.push_back(std::make_unique<s_font>(font_size+2*(i-3), font_name));
+		textFont.push_back(std::make_unique<s_font>(mFontSize+2*(i-3), mFontName));
 		if (textFont.back()==nullptr) {
 			cLog::get()->write("TEXT: can't create text usr font", LOG_TYPE::L_ERROR);
 			isUsable = false;
 			break;
 		}
 	}
-	// remerbers param's
-	m_fontName = font_name;
-	m_fontSize = font_size;
 	if (!isUsable)
 		cLog::get()->write("TEXT: module disable", LOG_TYPE::L_WARNING);
 }
-
 
 void TextMgr::draw(const Projector* prj)
 {
@@ -220,4 +217,12 @@ void TextMgr::draw(const Projector* prj)
 	for (const auto& [key, value] : textUsr) {
 		value->draw(prj);
 	}
+}
+
+void TextMgr::updateFont(double size, const std::string& fontName)
+{
+	this->clearCache();
+	this->clear();
+	for(int i=0; i<NB_MAX_SIZE; i++)
+		textFont[i]->rebuild(size+2*(i-3), fontName);
 }
