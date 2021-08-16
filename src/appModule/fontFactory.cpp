@@ -73,6 +73,10 @@ void FontFactory::buildAllFont()
 
 void FontFactory::init(int resolution, const InitParser& conf)
 {
+	// test if the software can use fonts
+	s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
+
+	//scale resolution
 	int m_fontResolution = conf.getInt(SCS_FONT, SCK_FONT_RESOLUTION_SIZE);
     if (m_fontResolution<1) {
         m_fontResolution = 1024;

@@ -242,6 +242,7 @@ Core::~Core()
 void Core::init(const InitParser& conf)
 {
 	if (firstTime) {
+		//s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
 		this->registerCoreFont();
 	}
 
