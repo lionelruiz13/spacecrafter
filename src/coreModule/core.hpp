@@ -522,7 +522,7 @@ private:
 	void updateMove(int delta_time);
 
 	// initialize CoreFont class
-	void initCoreFont() const;
+	void registerCoreFont() const;
 
 	// adpate le landscape automatiquement au body sélectionné
 	void setLandscapeToBody();
