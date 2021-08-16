@@ -22,7 +22,7 @@
 #include <memory>
 
 #include "tools/vecmath.hpp"
-#include "coreModule/starManager.hpp"
+#include "inGalaxyModule/starManager.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/ThreadPool.hpp"
 #include "tools/no_copy.hpp"

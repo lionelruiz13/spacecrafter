@@ -51,7 +51,7 @@ class Uniform;
 
 //TODO: intégrer qu'une version de font car la font est commune à toutes les grilles
 //TODO: intégrer qu'une version du flag InternaNav qui est commun à toutes les grilles
-class SkyGrid : public ModuleFont {
+class SkyGrid {
 public:
 	virtual ~SkyGrid();
 
@@ -92,6 +92,10 @@ public:
 
 	static void createShader(ThreadContext *_context);
 
+	static void setFont(s_font* _font){
+		font = _font;
+	}
+
 protected:
 	// Create and precompute positions of a SkyGrid
 	SkyGrid(unsigned int _nb_meridian = 24, unsigned int _nb_parallel = 17,
@@ -124,7 +128,7 @@ protected:
 	Vec3f *pColor;
 	float *pFader;
 	//static std::unique_ptr<shaderProgram> shaderSkyGrid;
-
+	static s_font* font;
 private:
 	unsigned int nb_meridian;
 	unsigned int nb_parallel;

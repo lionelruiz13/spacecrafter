@@ -38,7 +38,7 @@
 #include "coreModule/cardinals.hpp"
 #include "coreModule/constellation_mgr.hpp"
 #include "coreModule/core.hpp"
-#include "coreModule/dso3d.hpp"
+#include "inGalaxyModule/dso3d.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/landscape.hpp"
 #include "coreModule/meteor_mgr.hpp"
@@ -53,9 +53,9 @@
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
-#include "coreModule/starNavigator.hpp"
-#include "coreModule/cloudNavigator.hpp"
-#include "coreModule/dsoNavigator.hpp"
+#include "inGalaxyModule/starNavigator.hpp"
+#include "inGalaxyModule/cloudNavigator.hpp"
+#include "inGalaxyModule/dsoNavigator.hpp"
 #include "mediaModule/text_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
@@ -88,7 +88,7 @@ class Dso3d;
 class Media;
 class StarLines;
 class BodyTrace;
-class CoreFont;
+class FontFactory;
 
 //!  @brief Main class for application core processing.
 //!
@@ -108,7 +108,7 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback <void, std::string> & recordCallback);
+	Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback <void, std::string> & recordCallback);
 	virtual ~Core();
 
 	//! Init and load all main core components from the passed config file.
@@ -228,23 +228,6 @@ public:
 
 	//! set zoom/center offset (percent of fov radius)
 	void setViewOffset(double offset);
-
-	// double getViewOffset() {
-	// 	return navigation->getViewOffset();
-	// }
-
-	// //! set environment rotation around observer
-	// void setHeading(double heading, int duration=0) {
-	// 	navigation->changeHeading(heading, duration);
-	// }
-
-	// void setDefaultHeading() {
-	// 	navigation->setDefaultHeading();
-	// }
-
-	// double getHeading() {
-	// 	return navigation->getHeading();
-	// }
 
 	//! Set automove duration in seconds
 	void setAutoMoveDuration(float f) {
@@ -452,9 +435,6 @@ public:
 	//! Load color scheme from the given ini file and section name
 	void setColorScheme(const std::string& skinFile, const std::string& section);
 
-	//! Load font scheme from ini file
-	void setFontScheme(void);
-
 	// MAJ de l'UBO ubo_cam
 	void uboCamUpdate();
 
@@ -472,9 +452,6 @@ public:
 	void switchMode(const std::string &mode);
 
 	void saveCurrentConfig(InitParser &conf);
-
-	// void imageDraw();
-	//void textDraw();
 
 	void onAltitudeChange(double value) {
 		std::cout << "Modification altitude reçue "<< value << std::endl;
@@ -509,7 +486,6 @@ private:
 	void drawInUniverse(int delta_time);
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);
-	//void postDraw();
 
 	//! Update all the objects in solarsystem mode with respect to the time.
 	//! @param delta_time the time increment in ms.
@@ -567,7 +543,7 @@ private:
 	CoreExecutor* executorInGalaxy = nullptr;
 	CoreExecutor* executorInUniverse = nullptr;
 
-	CoreFont* coreFont=nullptr;					// gestion complète des fontes du logiciel
+	FontFactory* fontFactory=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	TimeMgr* timeMgr;				// Manage date and time

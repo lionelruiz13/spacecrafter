@@ -47,7 +47,7 @@
 // };
 
 
-class SkyGridMgr: public NoCopy  {
+class SkyGridMgr: public NoCopy, public ModuleFont {
 public:
 	SkyGridMgr(ThreadContext *context);
 	~SkyGridMgr();
@@ -60,7 +60,8 @@ public:
 	void draw(const Projector* prj);
 	void update(int delta_time);
 
-	void setFont(float font_size, const std::string& font_name);
+	//void setFont(float font_size, const std::string& font_name);
+	virtual void registerFont(s_font* _font) override;
 
 	void setInternalNav(bool a);
 

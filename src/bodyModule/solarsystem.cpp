@@ -73,7 +73,12 @@ SolarSystem::~SolarSystem()
 	sun = nullptr;
 	moon = nullptr;
 	earth = nullptr;
+}
 
+void SolarSystem::registerFont(s_font* _font)
+{
+	font = _font;
+	Body::setFont(font);
 }
 
 // Init and load one solar system object

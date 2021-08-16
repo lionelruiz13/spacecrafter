@@ -2,7 +2,7 @@
  * Copyright (C) 2003 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
  * Copyright (C) 2013 of the LSS team
- * Copyright (C) 2014 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2021 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,22 +28,21 @@
 #include "tools/utility.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/log.hpp"
-//#include "tools/fmath.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "coreModule/core_executor.hpp"
 #include "coreModule/core_common.hpp"
-#include "coreModule/coreFont.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
 #include "appModule/space_date.hpp"
+#include "appModule/fontFactory.hpp"
 #include "bodyModule/body_decor.hpp"
-#include "coreModule/starNavigator.hpp"
-#include "coreModule/cloudNavigator.hpp"
-#include "coreModule/dsoNavigator.hpp"
+#include "inGalaxyModule/starNavigator.hpp"
+#include "inGalaxyModule/cloudNavigator.hpp"
+#include "inGalaxyModule/dsoNavigator.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/oort.hpp"
-#include "coreModule/dso3d.hpp"
+#include "inGalaxyModule/dso3d.hpp"
 #include "coreModule/landscape.hpp"
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
@@ -58,7 +57,7 @@
 #include "vulkanModule/Texture.hpp"
 #include "vulkanModule/TextureMgr.hpp"
 
-Core::Core(ThreadContext *_context, int width, int height, Media* _media, const mBoost::callback<void, std::string>& recordCallback) :
+Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback<void, std::string>& recordCallback) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)
@@ -67,10 +66,9 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	recordActionCallback = recordCallback;
 	context = _context;
 	media = _media;
-	coreFont = new CoreFont(/*this,*/ std::min(width,height));
+	fontFactory = _fontFactory;
 	projection = new Projector( width,height, 60 );
 	media->setProjector(projection);
-	//glFrontFace(GL_CCW);
 
 	// Set textures directory and suffix
 	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
@@ -79,15 +77,12 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	Pipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	context->global->textureMgr->initCustomMipmap(context->surface);
-	// shaderProgram::setLogFile(AppSettings::Instance()->getLogDir()+"shader.log");
-	// shaderProgram::initLogFile();
 
 	ubo_cam = new UBOCam(context, "cam_block");
 	tone_converter = new ToneReproductor();
 	atmosphere = new Atmosphere(context);
-	// ssystem = new SolarSystem();
 	timeMgr = new TimeMgr();
-	observatory = new Observer(/**ssystem*/);
+	observatory = new Observer();
 	navigation = new Navigator();
 	ssystemFactory = new SSystemFactory(context, observatory, navigation, timeMgr);
 	nebulas = new NebulaMgr(context);
@@ -148,7 +143,6 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 	hip_stars = new HipStarMgr(width,height, context);
 	asterisms = new ConstellationMgr(hip_stars, context);
 	illuminates= new IlluminateMgr(hip_stars, navigation, asterisms, context);
-	//text_usr = new TextMgr();
 	oort =  new Oort(context);
 	dso3d = new Dso3d(context);
 	tully = new Tully(context);
@@ -168,17 +162,17 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, const 
 
 void Core::initCoreFont() const
 {
-	coreFont->hip_stars = hip_stars;
-	coreFont->nebulas = nebulas;
-	coreFont->ssystem = ssystemFactory->getSolarSystem();
-	coreFont->skyGridMgr = skyGridMgr;
-	coreFont->skyLineMgr = skyLineMgr;
-	coreFont->skyDisplayMgr = skyDisplayMgr;
-	coreFont->cardinals_points = cardinals_points;
-	coreFont->asterisms = asterisms;
-	coreFont->text_usr = media->getTextMgr();
-}
+	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
 
+	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
+	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
+	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
+	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
+
+	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAS));
+	asterisms->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_ASTERIMS));
+}
 
 std::string Core::getListMatchingObjects(const std::string& objPrefix, unsigned int maxNbItem) const
 {
@@ -254,13 +248,9 @@ void Core::init(const InitParser& conf)
 	flagNav= conf.getBoolean(SCS_NAVIGATION, SCK_FLAG_NAVIGATION);
 	setFlagNav(flagNav);
 	FlagAtmosphericRefraction = conf.getBoolean(SCS_VIEWING,SCK_FLAG_ATMOSPHERIC_REFRACTION);
-	coreFont->init(conf);
 
 	initialvalue.initial_landscapeName=conf.getStr(SCS_INIT_LOCATION,SCK_LANDSCAPE_NAME);
 	illuminates->setDefaultSize(conf.getDouble(SCS_STARS, SCK_ILLUMINATE_SIZE));
-
-	// glDepthFunc(GL_LEQUAL);
-	// glDepthRange(0,1);
 
 	// Start splash with no fonts due to font collection delays
 	if (firstTime) {
@@ -287,7 +277,7 @@ void Core::init(const InitParser& conf)
 
 		ssystemFactory->anchorManagerInit(conf);
 
-		//ssystemTmp->loadStellar(AppSettings::Instance()->getUserDir() + "sirius_system.ini");
+		//ssystemFactory->loadStellar(AppSettings::Instance()->getUserDir() + "sirius_system.ini");
 
 		// Init stars
 		hip_stars->iniColorTable();
@@ -302,8 +292,6 @@ void Core::init(const InitParser& conf)
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
 
-		//starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.dat", true);
-		//starLines->loadCat(AppSettings::Instance()->getUserDir() + "asterism.dat", true);
 		starNav->loadData(AppSettings::Instance()->getUserDir() + "hip2007.txt", false);
 		starLines->loadCat(AppSettings::Instance()->getUserDir() + "asterism.txt", false);
 	}
@@ -363,9 +351,6 @@ void Core::init(const InitParser& conf)
 
 	timeMgr->setJDay(SpaceDate::JulianFromSys());
 	navigation->setLocalVision(Vec3f(1,1e-05,0.2));
-
-	// Init fonts : should be moved in a specific fonction
-	coreFont->setFont();
 
 	if (firstTime) {
 		milky_way->needToUseIris(conf.getBoolean(SCS_MAIN, SCK_MILKYWAY_IRIS));
@@ -693,7 +678,6 @@ void Core::updateInGalaxy(int delta_time)
 
 	starLines->update(delta_time);
 	milky_way->update(delta_time);
-	//text_usr->update(delta_time);
 	dso3d->update(delta_time);
 	landscape->update(delta_time);
 
@@ -728,8 +712,6 @@ void Core::updateInUniverse(int delta_time)
 	skyDisplayMgr->update(delta_time);
 
 	tully->update(delta_time);
-	// milky3d->update(delta_time);
-	//text_usr->update(delta_time);
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color
@@ -751,14 +733,7 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	projection->setClippingPlanes(clipping_min ,clipping_max);
 	// Init viewport to current projector values
 	projection->applyViewport();
-	//StateGL::BlendFunc(GL_ONE, GL_ONE);
 }
-
-
-// void Core::textDraw()
-// {
-// 	text_usr->draw(projection);
-// }
 
 
 void Core::draw(int delta_time)
@@ -821,8 +796,7 @@ void Core::drawInSolarSystem(int delta_time)
 		meteors->draw(projection, navigation);
 
 	s_font::nextPrint(false);
-	// if (bodyDecor->canDrawAtmosphere())
-		atmosphere->draw(projection, observatory->getHomePlanetEnglishName());
+	atmosphere->draw(projection, observatory->getHomePlanetEnglishName());
 
 	// Draw the landscape
 	if (bodyDecor->canDrawLandscape()) {
@@ -844,8 +818,6 @@ void Core::drawInGalaxy(int delta_time)
 	media->drawVR360(projection, navigation);
 
 	milky_way->draw(tone_converter, projection, navigation, timeMgr->getJulian());
-	// glClear(GL_DEPTH_BUFFER_BIT);
-	//Renderer::clearDepthBuffer();
 
 	//tracé des lignes sans activation du tampon de profondeur.
 	skyDisplayMgr->drawPerson(projection, navigation);
@@ -864,10 +836,6 @@ void Core::drawInUniverse(int delta_time)
 {
 	s_font::beginPrint(false);
 	universeCloudNav->computePosition(navigation->getObserverHelioPos());
-	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	// glClear(GL_DEPTH_BUFFER_BIT);
-	//Renderer::clearDepthBuffer();
-
 	//for VR360 drawing
 	media->drawVR360(projection, navigation);
 	ojmMgr->draw(projection, navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
@@ -884,7 +852,6 @@ void Core::setLandscapeToBody()
 		return;
 
 	//std::cout << "Core::setLandscapeToBody() with automode" << std::endl;
-
 	if (!observatory->isOnBody())
 		return;
 
@@ -928,34 +895,7 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 		newLandscape->fogSetFlagShow(landscape->fogGetFlagShow());
 		delete landscape;
 		landscape = newLandscape;
-
-		// bool previousLandscapeFlag = landscape->getFlagShow(); //landscapeGetFlag();
-
-		// //Switch between the inactive and active background
-		// Landscape* tempLandscape = landscape;
-		// landscape = newLandscape;
-		// inactiveLandscape = tempLandscape;
-
-		// //Fade off the old landscape
-		// inactiveLandscape->setFlagShow(false);
-		// //Fade in the new landscape (only if the landscape was activated)
-		// if (previousLandscapeFlag) {
-		// 	landscape->setFlagShow(false); //landscapeSetFlag(false);
-		// 	landscape->setFlagShow(true); //landscapeSetFlag(true);
-		// }
-
-		// /* We ignore the next update tick for the landscapes because when the landscape is very big
-		//  * it takes a long time to load, then the fader receives a bigger time delta than its duration
-		//  * and it doesn't fade in. To avoid that and always fade in the next update tick is ignored.
-		//  *
-		//  * TODO: this is quite ugly and should be replaced with a more elegant solution
-		//  */
-		// landscape->ignoreNextTick();
-		// inactiveLandscape->ignoreNextTick();
 	}
-	//observatory->setLandscapeName(new_landscape_name);
-	//observatory->setSpacecraft(false);
-	//std::cout << "Core::setLandscape(const std::string& new_landscape_name)"<< new_landscape_name << std::endl;
 	testLandscapeCompatibleWithAutoMode();
 	return 1;
 }
@@ -963,13 +903,8 @@ bool Core::setLandscape(const std::string& new_landscape_name)
 void Core::testLandscapeCompatibleWithAutoMode()
 {
 	//std::cout << "testLandscape :" << std::endl;
-
 	if (landscape->getName().empty())	return;
 	if (!observatory->isOnBody())		return;
-
-	//std::cout << ": Landscape name: " << landscape->getName() << std::endl;
-	//std::cout << ": Body name: " << observatory->getHomePlanetEnglishName() << std::endl;
-
 
 	// par défaut on ne fait pas confiance à l'utilisateur
 	autoLandscapeMode = false;
@@ -1355,14 +1290,12 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 			// if manual zoom mode, user can zoom out incrementally
 			float newfov = projection->getFov()*2.f;
 			if (newfov >= InitFov ) {
-
 				// Need to go to init fov/direction
 				projection->zoomTo(InitFov, move_duration);
 				navigation->moveTo(InitViewPos, move_duration, true, -1);
 				navigation->setFlagTraking(false);
 				navigation->setFlagLockEquPos(0);
 				return;
-
 			} else {
 				// faster zoom in manual zoom with object centered
 				float manual_move_duration = move_duration*.66f;
@@ -1395,7 +1328,6 @@ void Core::autoZoomOut(float move_duration, bool full, bool allow_manual_zoom)
 	navigation->moveTo(InitViewPos, move_duration, true, -1);
 	navigation->setFlagTraking(false);
 	navigation->setFlagLockEquPos(0);
-
 }
 
 //! Set the current sky culture according to passed name
@@ -1500,7 +1432,6 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 {
 	InitParser conf;
 	conf.load(skinFile);
-
 	// simple default color, rather than black which doesn't show up
 	// Load colors from config file
 	skyGridMgr->setColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL, Utility::strToVec3f(conf.getStr(section,SCK_AZIMUTHAL_COLOR)));
@@ -1567,11 +1498,11 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr(SCS_LOCALIZATION, SCK_SKY_CULTURE, getSkyCultureDir());
 	conf.setStr(SCS_LOCALIZATION, SCK_SKY_LOCALE, getSkyLanguage());
 	// viewing section
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_DRAWING, asterisms->getFlagLines()); //constellationGetFlagLines());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_NAME, asterisms->getFlagNames()); //constellationGetFlagNames());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_ART, asterisms->getFlagArt()); //constellationGetFlagArt());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_BOUNDARIES, asterisms->getFlagBoundaries()); //constellationGetFlagBoundaries());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK, asterisms->getFlagIsolateSelected()); //constellationGetFlagIsolateSelected());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_DRAWING, asterisms->getFlagLines());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_NAME, asterisms->getFlagNames());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_ART, asterisms->getFlagArt());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_BOUNDARIES, asterisms->getFlagBoundaries());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CONSTELLATION_PICK, asterisms->getFlagIsolateSelected());
 	conf.setDouble(SCS_VIEWING, SCK_MOON_SCALE, ssystemFactory->getMoonScale());
 	conf.setDouble(SCS_VIEWING, SCK_SUN_SCALE, ssystemFactory->getSunScale());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATORIAL_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_EQUATORIAL));
@@ -1580,7 +1511,7 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_AZIMUTAL_GRID, skyGridMgr->getFlagShow(SKYGRID_TYPE::GRID_ALTAZIMUTAL));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_EQUATOR_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_EQUATOR));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ECLIPTIC_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ECLIPTIC));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CARDINAL_POINTS, cardinals_points->getFlagShow()); //cardinalsPointsGetFlag());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CARDINAL_POINTS, cardinals_points->getFlagShow());
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_ZENITH_LINE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_ZENITH));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_POLAR_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_POLAR_POINT, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR));
@@ -1598,23 +1529,23 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_PRECESSION_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_PRECESSION));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_CIRCUMPOLAR_CIRCLE, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_CIRCUMPOLAR));
 	conf.setBoolean(SCS_VIEWING, SCK_FLAG_TROPIC_LINES, skyLineMgr->getFlagShow(SKYLINE_TYPE::LINE_TROPIC));
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, ssystemFactory->getFlagMoonScale()); //getFlagMoonScaled());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, ssystemFactory->getFlagSunScale()); //getFlagSunScaled());
-	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, asterisms->getArtIntensity()); //constellationGetArtIntensity());
-	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, asterisms->getArtFadeDuration()); //constellationGetArtFadeDuration());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED, ssystemFactory->getFlagMoonScale());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED, ssystemFactory->getFlagSunScale());
+	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_INTENSITY, asterisms->getArtIntensity());
+	conf.setDouble (SCS_VIEWING, SCK_CONSTELLATION_ART_FADE_DURATION, asterisms->getArtFadeDuration());
 	conf.setDouble(SCS_VIEWING, SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE, getLightPollutionLimitingMagnitude());
 	// Landscape section
-	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE, landscape->getFlagShow()); //landscapeGetFlag());
+	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_LANDSCAPE, landscape->getFlagShow());
 	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_ATMOSPHERE, bodyDecor->getAtmosphereState());
-	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, landscape->fogGetFlagShow()); //fogGetFlag());
+	conf.setBoolean(SCS_LANDSCAPE, SCK_FLAG_FOG, landscape->fogGetFlagShow());
 	// Star section
-	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, hip_stars->getScale()); //starGetScale());
-	conf.setDouble (SCS_STARS , SCK_STAR_MAG_SCALE, hip_stars->getMagScale()); //starGetMagScale());
-	conf.setDouble(SCS_STARS , SCK_MAX_MAG_STAR_NAME, hip_stars->getMaxMagName()); //starGetMaxMagName());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected()); //starGetFlagIsolateSelected());
-	conf.setBoolean(SCS_STARS , SCK_FLAG_STAR_TWINKLE, hip_stars->getFlagTwinkle()); //starGetFlagTwinkle());
-	conf.setDouble(SCS_STARS , SCK_STAR_TWINKLE_AMOUNT, hip_stars->getTwinkleAmount()); //starGetTwinkleAmount());
-	conf.setDouble(SCS_STARS , SCK_STAR_LIMITING_MAG, hip_stars->getMagConverterMaxScaled60DegMag()); //starGetLimitingMag());
+	conf.setDouble (SCS_STARS , SCK_STAR_SCALE, hip_stars->getScale());
+	conf.setDouble (SCS_STARS , SCK_STAR_MAG_SCALE, hip_stars->getMagScale());
+	conf.setDouble(SCS_STARS , SCK_MAX_MAG_STAR_NAME, hip_stars->getMaxMagName());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected());
+	conf.setBoolean(SCS_STARS , SCK_FLAG_STAR_TWINKLE, hip_stars->getFlagTwinkle());
+	conf.setDouble(SCS_STARS , SCK_STAR_TWINKLE_AMOUNT, hip_stars->getTwinkleAmount());
+	conf.setDouble(SCS_STARS , SCK_STAR_LIMITING_MAG, hip_stars->getMagConverterMaxScaled60DegMag());
 	// Color section
 	conf.setStr    (SCS_COLOR, SCK_AZIMUTHAL_COLOR, Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_ALTAZIMUTAL)));
 	conf.setStr    (SCS_COLOR, SCK_EQUATORIAL_COLOR, Utility::vec3fToStr(skyGridMgr->getColor(SKYGRID_TYPE::GRID_EQUATORIAL)));
@@ -1644,47 +1575,56 @@ void Core::saveCurrentConfig(InitParser &conf)
 	conf.setStr    (SCS_COLOR, SCK_ORTHODROMY,         Utility::vec3fToStr(skyDisplayMgr->getColor(SKYDISPLAY_NAME::SKY_ORTHODROMY)));
 	conf.setStr    (SCS_COLOR, SCK_GREENWICH_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_GREENWICH)));
 	conf.setStr    (SCS_COLOR, SCK_VERTICAL_LINE, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_VERTICAL)));
-	conf.setStr    (SCS_COLOR, SCK_CONST_LINES_COLOR, Utility::vec3fToStr(asterisms->getLineColor())); //constellationGetColorLine()));
-	conf.setStr    (SCS_COLOR, SCK_CONST_NAMES_COLOR, Utility::vec3fToStr(asterisms->getLabelColor())); //constellationGetColorNames()));
-	conf.setStr    (SCS_COLOR, SCK_CONST_ART_COLOR, Utility::vec3fToStr(asterisms->getArtColor())); //constellationGetColorArt()));
-	conf.setStr    (SCS_COLOR, SCK_CONST_BOUNDARY_COLOR, Utility::vec3fToStr(asterisms->getBoundaryColor())); //constellationGetColorBoundaries()));
-	conf.setStr	   (SCS_COLOR, SCK_NEBULA_LABEL_COLOR, Utility::vec3fToStr(nebulas->getLabelColor())); //nebulaGetColorLabels()));
-	conf.setStr	   (SCS_COLOR, SCK_NEBULA_CIRCLE_COLOR, Utility::vec3fToStr(nebulas->getCircleColor())); //nebulaGetColorCircle()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_LINES_COLOR, Utility::vec3fToStr(asterisms->getLineColor()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_NAMES_COLOR, Utility::vec3fToStr(asterisms->getLabelColor()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_ART_COLOR, Utility::vec3fToStr(asterisms->getArtColor()));
+	conf.setStr    (SCS_COLOR, SCK_CONST_BOUNDARY_COLOR, Utility::vec3fToStr(asterisms->getBoundaryColor()));
+	conf.setStr	   (SCS_COLOR, SCK_NEBULA_LABEL_COLOR, Utility::vec3fToStr(nebulas->getLabelColor()));
+	conf.setStr	   (SCS_COLOR, SCK_NEBULA_CIRCLE_COLOR, Utility::vec3fToStr(nebulas->getCircleColor()));
 	conf.setStr	   (SCS_COLOR, SCK_PRECESSION_CIRCLE_COLOR, Utility::vec3fToStr(skyLineMgr->getColor(SKYLINE_TYPE::LINE_PRECESSION)));
-	conf.setStr    (SCS_COLOR, SCK_CARDINAL_COLOR, Utility::vec3fToStr(cardinals_points->getColor())); //cardinalsPointsGetColor()));
+	conf.setStr    (SCS_COLOR, SCK_CARDINAL_COLOR, Utility::vec3fToStr(cardinals_points->getColor()));
 	// Navigation section
 	conf.setBoolean(SCS_NAVIGATION, SCK_FLAG_MANUAL_ZOOM, getFlagManualAutoZoom());
 	conf.setDouble (SCS_NAVIGATION, SCK_AUTO_MOVE_DURATION, getAutoMoveDuration());
 	conf.setDouble (SCS_NAVIGATION, SCK_ZOOM_SPEED, vzm.zoom_speed);
 	conf.setDouble (SCS_NAVIGATION, SCK_HEADING, navigation->getHeading());
 	// Astro section
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, ssystemFactory->getFlag(BODY_FLAG::F_TRAIL)); //planetsGetFlagTrails());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, nebulas->getFlagBright()); //nebulaGetFlagBright());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, hip_stars->getFlagShow()); //starGetFlag());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, hip_stars->getFlagNames()); //starGetFlagName());
-	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected()); //starGetFlagIsolateSelected());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA, nebulas->getFlagShow()); //nebulaGetFlag());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_NAMES, nebulas->getNebulaNames()); //nebulaGetFlagNames());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_HINTS, nebulas->getFlagHints()); //nebulaGetFlagHints());
-	conf.setDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME, nebulas->getMaxMagHints()); //nebulaGetMaxMagHints());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS, ssystemFactory->getFlagShow()); //planetsGetFlag());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, ssystemFactory->getFlag(BODY_FLAG::F_HINTS)); //planetsGetFlagHints());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, ssystemFactory->getFlagPlanetsOrbits()); //planetsGetFlagOrbits());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, ssystemFactory->getFlagLightTravelTime()); //getFlagLightTravelTime());
-	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, milky_way->getFlagShow()); //milkyWayGetFlag());
-	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity()); //milkyWayGetIntensity());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, ssystemFactory->getFlag(BODY_FLAG::F_TRAIL));
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, nebulas->getFlagBright());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, hip_stars->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, hip_stars->getFlagNames());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA, nebulas->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_NAMES, nebulas->getNebulaNames());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_HINTS, nebulas->getFlagHints());
+	conf.setDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME, nebulas->getMaxMagHints());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS, ssystemFactory->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, ssystemFactory->getFlag(BODY_FLAG::F_HINTS));
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, ssystemFactory->getFlagPlanetsOrbits());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, ssystemFactory->getFlagLightTravelTime());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, milky_way->getFlagShow());
+	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_OBJECT_TRAILS, ssystemFactory->getFlag(BODY_FLAG::F_TRAIL));
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_BRIGHT_NEBULAE, nebulas->getFlagBright());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STARS, hip_stars->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME, hip_stars->getFlagNames());
+	conf.setBoolean(SCS_VIEWING, SCK_FLAG_STAR_PICK, hip_stars->getFlagIsolateSelected());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA, nebulas->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_NAMES, nebulas->getNebulaNames());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_NEBULA_HINTS, nebulas->getFlagHints());
+	conf.setDouble(SCS_ASTRO, SCK_MAX_MAG_NEBULA_NAME, nebulas->getMaxMagHints());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS, ssystemFactory->getFlagShow());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_HINTS, ssystemFactory->getFlag(BODY_FLAG::F_HINTS));
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_PLANETS_ORBITS, ssystemFactory->getFlagPlanetsOrbits());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_LIGHT_TRAVEL_TIME, ssystemFactory->getFlagLightTravelTime());
+	conf.setBoolean(SCS_ASTRO, SCK_FLAG_MILKY_WAY, milky_way->getFlagShow());
+	conf.setDouble(SCS_ASTRO, SCK_MILKY_WAY_INTENSITY, milky_way->getIntensity());
 	conf.setDouble(SCS_ASTRO, SCK_STAR_SIZE_LIMIT, starGetSizeLimit());
 	conf.setDouble(SCS_ASTRO, SCK_PLANET_SIZE_MARGINAL_LIMIT, getPlanetsSizeLimit());
-
 	conf.setStr(SCS_INIT_LOCATION , SCK_LANDSCAPE_NAME, landscape->getName() );
 	conf.setStr(SCS_INIT_LOCATION , SCK_HOME_PLANET, observatory->getHomeBody()->getEnglishName());
 }
 
-
-void Core::setFontScheme()
-{
-	coreFont->setFont();
-}
 
 //! Get a color used to display info about the currently selected object
 // @TODO reafire que l'objet sélectionné renvoie sa propore couleur
@@ -1951,7 +1891,7 @@ bool Core::selectObject(const Object &obj)
 			return false;
 		}
 	}
-	assert(0);	// Non reachable code
+	assert(0);
 }
 
 
@@ -1968,28 +1908,24 @@ std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPre
 	std::vector<std::string> matchingPlanets = ssystemFactory->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter) 
 		withType ? result.push_back(*iter+"(P)") : result.push_back(*iter);
-		// result.push_back(*iter);
 	maxNbItem-=matchingPlanets.size();
 
 	// Get matching constellations
 	std::vector<std::string> matchingConstellations = asterisms->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingConstellations.begin(); iter != matchingConstellations.end(); ++iter)
 		withType ? result.push_back(*iter+"(C)") : result.push_back(*iter);
-		// result.push_back(*iter);
 	maxNbItem-=matchingConstellations.size();
 
 	// Get matching nebulae
 	std::vector<std::string> matchingNebulae = nebulas->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingNebulae.begin(); iter != matchingNebulae.end(); ++iter)
 		withType ? result.push_back(*iter+"(N)") : result.push_back(*iter);
-		// result.push_back(*iter);
 	maxNbItem-=matchingNebulae.size();
 
 	// Get matching stars
 	std::vector<std::string> matchingStars = hip_stars->listMatchingObjectsI18n(objPrefix, maxNbItem);
 	for (iter = matchingStars.begin(); iter != matchingStars.end(); ++iter)
 		withType ? result.push_back(*iter+"(S)") : result.push_back(*iter);
-		// result.push_back(*iter);
 	maxNbItem-=matchingStars.size();
 
 	std::sort(result.begin(), result.end());

@@ -1,6 +1,7 @@
 # include "coreModule/coreLink.hpp"
 #include "tools/app_settings.hpp"
-#include "coreModule/coreFont.hpp"
+//#include "coreModule/coreFont.hpp"
+#include "appModule/fontFactory.hpp"
 #include "appModule/space_date.hpp"
 
 CoreLink::CoreLink(Core * _core)
@@ -23,7 +24,7 @@ bool CoreLink::loadCameraPosition(const std::string& filename)
 
 void CoreLink::fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue)
 {
-	core->coreFont->updateFont(_targetName, _fontName, _sizeValue);
+	core->fontFactory->updateFont(_targetName, _fontName, _sizeValue);
 }
 
 double CoreLink::getDateYear() const

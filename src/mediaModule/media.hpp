@@ -42,6 +42,7 @@
 
 class Projector;
 class Navigator;
+class Subtitle;
 
 enum class AudioFunction : char {
 	AF_MUSICLOAD,
@@ -131,12 +132,7 @@ public:
 		viewPort->setTransparency(v);
 	}
 
-	//TODO : delete this function.
-	[[deprecated("use anoter way to set text_usr")]] void setProjector(const Projector* projection);
-	//TODO : delete this function.
-	[[deprecated("use anoter way to set text_usr")]] TextMgr* getTextMgr() {
-		return text_usr.get();
-	}
+	void setProjector(const Projector* projection);
 
 	////////////////////////////////////////////////////////////////////////////
 	//
@@ -147,8 +143,7 @@ public:
 	void audioFunction(const AudioFunction& audioFunction, const AudioParam& audioParam);
 
 	void audioVolume(const AudioVolume& volumeOrder, float _value);
-	// A partir d'içi
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	void audioSetVolume(int _value) {
 		audio->setVolume(_value);
 	}
@@ -284,7 +279,6 @@ public:
 	//interface text
 	//
 	////////////////////////////////////////////////////////////////////////////
-
 	void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
 		text_usr->add(name, textParam);
 	}
@@ -319,6 +313,10 @@ public:
 
 	void setTextColor(const Vec3f &color) {
 		text_usr->setColor(color);
+	}
+
+	void setTextFont(float font_size, const std::string& font_name) {
+		text_usr->setFont(font_size,font_name);
 	}
 
 	////////////////////////////////////////////////////////////////////////////
@@ -360,6 +358,7 @@ private:
 	std::unique_ptr<VR360> vr360 = nullptr;
 	std::unique_ptr<ViewPort> viewPort = nullptr;
 	std::unique_ptr<TextMgr> text_usr = nullptr;				// manage all user text in dome
+	std::unique_ptr<Subtitle> subtitle;
 	const Projector *prj;
 
 	std::string skyLanguage;

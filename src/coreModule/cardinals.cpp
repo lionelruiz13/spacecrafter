@@ -83,43 +83,43 @@ void Cardinals::draw(const Projector* prj, double latitude, bool gravityON) cons
 
 	// N for North
 	pos.set(-1.f, 0.f, 0.12f);
-	if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[0], Color, -shift, -shift);
+	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
 
 	// S for South
 	pos.set(1.f, 0.f, 0.12f);
-	if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[1], Color, -shift, -shift);
+	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
 
 	// E for East
 	pos.set(0.f, 1.f, 0.12f);
-	if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[2], Color, -shift, -shift);
+	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
 
 	// W for West
 	pos.set(0.f, -1.f, 0.12f);
-	if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[3], Color, -shift, -shift);
+	if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
 	if (internalNav) {
 		// NW
 		pos.set(-0.715f, -0.685f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[3], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
 		pos.set(-0.685f, -0.715f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[0], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
 
 		// SE
 		pos.set(0.715f, 0.685f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[2], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
 		pos.set(0.685f, 0.715f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[1], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
 
 		// NE
 		pos.set(-0.685f, 0.715f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[2], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[2], Color, -shift, -shift);
 		pos.set(-0.715f, 0.685f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[0], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[0], Color, -shift, -shift);
 
 		// SW
 		pos.set(0.715f, -0.685f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[1], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[1], Color, -shift, -shift);
 		pos.set(0.685f, -0.715f, 0.13f);
-		if (prj->projectLocal(pos,xy)) prj->printGravity180(font.get(), xy[0], xy[1], d[3], Color, -shift, -shift);
+		if (prj->projectLocal(pos,xy)) prj->printGravity180(font, xy[0], xy[1], d[3], Color, -shift, -shift);
 	}
 }
 

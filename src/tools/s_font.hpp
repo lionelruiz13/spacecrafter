@@ -75,6 +75,8 @@ public:
 	//! crée une fonte de taille size_i utilisant le fichier fonte nommé ttfFileName
 	s_font(float size_i, const std::string& ttfFileName);
 	virtual ~s_font();
+	//! modifie les paramètres de la fonte
+	void rebuild(float size_i, const std::string& ttfFileName);
 
 	//! affiche un texte s droit au point M(x,y) de couleur Color à la position MVP avec upsidedown indiquant s'il est à l'endroit ou à l'envers
 	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown);

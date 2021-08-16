@@ -549,7 +549,7 @@ void ConstellationMgr::drawNames(const Projector * prj)
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++) {
 		// Check if in the field of view
 		if (prj->projectJ2000Check((*iter)->getObsJ2000Pos(), const_cast<Vec3d&>((*iter)->getXYname())))
-			(*iter)->drawName(font.get(), prj);
+			(*iter)->drawName(font, prj);
 	}
 }
 

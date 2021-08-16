@@ -75,8 +75,6 @@ public:
 	//removes all bodies that do not come from ssystem.ini
 	bool removeSupplementalBodies(const std::string &name);
 
-	virtual void setFont(float font_size, const std::string& font_name) override;
-
 	//! @brief Update i18 names from english names according to passed translator
 	//! The translation is done using gettext with translated strings defined in translations.h
 	void translateNames(Translator& trans);

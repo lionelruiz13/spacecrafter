@@ -83,13 +83,18 @@ bool SkyLineMgr::isExist(SKYLINE_TYPE type_obj)
 		return false;
 }
 
-void SkyLineMgr::setFont(float font_size, const std::string& font_name)
-{
-	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		it->second->setFont(font_size, font_name);
-	}
-}
+// void SkyLineMgr::setFont(float font_size, const std::string& font_name)
+// {
+// 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
+// 		it->second->setFont(font_size, font_name);
+// 	}
+// }
 
+void SkyLineMgr::registerFont(s_font* _font)
+{
+	font = _font;
+	SkyLine::setFont(font);
+}
 
 void SkyLineMgr::flipFlagShow(SKYLINE_TYPE typeObj)
 {

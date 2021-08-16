@@ -48,6 +48,9 @@ public:
 		SolarSystem::addBody(param, true);
 	}
 
+	// virtual void setFont(float font_size, const std::string& font_name) override;
+	virtual void registerFont(s_font* _font) override;
+
 	//removes a body that has no satelites
 	bool removeBodyNoSatellite(const std::string &name);
 

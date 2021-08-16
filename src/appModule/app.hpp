@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2006 Fabien Chereau
  * Copyright (C) 2009, 2010 Digitalis Education Solutions, Inc.
- * Copyright (C) 2014 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2021 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@
 
 #include <SDL2/SDL_thread.h>
 #include <queue>
+#include <memory>
 
 #include "tools/no_copy.hpp"
 #include "appModule/fps.hpp"
@@ -38,19 +39,13 @@
 
 #include "vulkanModule/Context.hpp"
 
-// mac seems to use KMOD_META instead of KMOD_CTRL
-// #ifdef MACOSX
-// #define COMPATIBLE_KMOD_CTRL KMOD_META
-// #else
-// #define COMPATIBLE_KMOD_CTRL KMOD_CTRL
-// #endif
-
 // Predeclaration of some classes
 class AppCommandInterface;
 class ScriptMgr;
 class ScriptInterface;
 class SDLFacade;
 class s_font;
+class FontFactory;
 class Media;
 class Mkfifo;
 class UI;
@@ -64,7 +59,7 @@ class ScreenFader;
 class EventRecorder;
 class EventHandler;
 
-enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, /*ON_VIDEO,*/ COLOR_INVERSE};
+enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE};
 
 /**
 @author initial Fabien Chereau
@@ -147,7 +142,6 @@ private:
 
 	bool flagAlive; 				//!< indique si l'application doit s'arrêter ou pas
 	bool flagVisible;				//!< say if your App Is Visible or not
-	// bool flagOnVideo; 				//!< indique si une video est en cours de visionnage
 	bool flagColorInverse;			//!< indique si les couleurs de l'écran sont inversées
 	bool flagAlwaysVisible;			//!< say if SC should always remain visible
 
@@ -180,6 +174,7 @@ private:
 	CoreLink* coreLink = nullptr;
 	CoreBackup* coreBackup = nullptr;
 	SDLFacade* mSdl = nullptr;
+	std::unique_ptr<FontFactory> fontFactory;
 	SaveScreenInterface* saveScreenInterface = nullptr;
 	ServerSocket * tcp = nullptr;
 	Fps* internalFPS = nullptr;				//! gestion fine du frameRate

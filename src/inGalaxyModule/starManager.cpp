@@ -25,7 +25,7 @@
 #include <sstream>
 #include <fstream>
 #include <cmath>
-#include "coreModule/starManager.hpp"
+#include "inGalaxyModule/starManager.hpp"
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
 #include <unistd.h>

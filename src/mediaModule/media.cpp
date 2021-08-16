@@ -25,6 +25,7 @@
 #include <algorithm>
 #include "mediaModule/media.hpp"
 #include "tools/log.hpp"
+#include "mediaModule/subtitle.hpp"
 
 #define STEP_VOLUME 5
 
@@ -36,6 +37,7 @@ Media::Media()
 	viewPort = std::make_unique<ViewPort>();
 	vr360 = std::make_unique<VR360>();
 	text_usr = std::make_unique<TextMgr>();
+	subtitle = std::make_unique<Subtitle>();
 
 	strToVid["vrcube"] = VID_TYPE::V_VRCUBE;
 	strToVid["vr360"] = VID_TYPE::V_VR360 ;

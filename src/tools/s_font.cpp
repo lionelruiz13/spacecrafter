@@ -88,6 +88,29 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
 	//cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << endl;
 }
 
+void s_font::rebuild(float size_i, const std::string& ttfFileName)
+{
+	// dont's wast time to reload what is already loaded
+	if ((fontSize == size_i) && (fontName == ttfFileName))
+		return;
+
+	// create new and swap it if correct
+	TTF_Font *tmpFont =  nullptr;
+	tmpFont = TTF_OpenFont( fontName.c_str(), fontSize);
+	if(!tmpFont) {
+		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
+		cLog::get()->write("s_font: no rebuild possible", LOG_TYPE::L_WARNING);
+		return;
+	} else {
+		clearCache();
+		TTF_CloseFont(myFont);
+		fontName = ttfFileName;
+		fontSize = size_i;
+		myFont = tmpFont;
+		cLog::get()->write("s_font: rebuild font succes", LOG_TYPE::L_INFO);	
+	}
+}
+
 s_font::~s_font()
 {
 	clearCache();

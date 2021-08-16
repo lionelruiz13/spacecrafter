@@ -81,10 +81,16 @@ void SkyDisplayMgr::clear(SKYDISPLAY_NAME nameObj)
 	cLog::get()->write("SkyDisplayMgr error : clear not found " + getSkyName(nameObj), LOG_TYPE::L_WARNING);
 }
 
-void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
+// void SkyDisplayMgr::setFont(float font_size, const std::string& font_name)
+// {
+// 	ModuleFont::setFont(font_size, font_name);
+// 	SkyDisplay::setFont(font);
+// }
+
+void SkyDisplayMgr::registerFont(s_font* _font)
 {
-	ModuleFont::setFont(font_size, font_name);
-	SkyDisplay::setFont(font.get());
+	font = _font;
+	SkyDisplay::setFont(font);
 }
 
 void SkyDisplayMgr::loadData(SKYDISPLAY_NAME nameObj, const std::string& filename)

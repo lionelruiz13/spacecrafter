@@ -196,12 +196,6 @@ bool ProtoSystem::removeSupplementalBodies(const std::string &name)
 	return true;
 }
 
-void ProtoSystem::setFont(float font_size, const std::string& font_name)
-{
-	ModuleFont::setFont(font_size, font_name);
-	Body::setFont(font.get());
-}
-
 //! @brief Update i18 names from english names according to passed translator
 //! The translation is done using gettext with translated strings defined in translations.h
 void ProtoSystem::translateNames(Translator& trans)

@@ -1,4 +1,26 @@
-#include "cloudNavigator.hpp"
+/*
+ * Copyright (C) 2020 of the Association Andromède
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * Spacecrafter is a free open project of the LSS team
+ * See the TRADEMARKS file for free open project usage requirements.
+ *
+ */
+
+#include "inGalaxyModule/dsoNavigator.hpp"
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/Pipeline.hpp"
@@ -11,18 +33,20 @@
 
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
+#include "tools/s_texture.hpp"
+#include "tools/log.hpp"
 #include <cassert>
 
-CloudNavigator::CloudNavigator(ThreadContext *_context)
+DsoNavigator::DsoNavigator(ThreadContext *_context, const std::string& tex_file)
 {
     context = _context;
-    assert(sizeof(*pInstance) == 4*4 + 4*4*4 + 4*4*4);
     commandIndex = context->commandMgrDynamic->getCommandIndex();
     vertex = std::make_unique<VertexArray>(context->surface);
     vertex->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-    vertex->registerInstanceBuffer(BufferAccess::STREAM, VK_FORMAT_R32G32B32A32_SFLOAT); // color
     for (int i = 0; i < 8; ++i)
         vertex->registerInstanceBuffer(BufferAccess::STREAM, VK_FORMAT_R32G32B32A32_SFLOAT); // model
+    vertex->registerInstanceBuffer(BufferAccess::STREAM, VK_FORMAT_R32G32B32_SFLOAT); // texOffset, coefScale
+    vertex->setInstanceBufferStride(sizeof(*pInstance));
     vertex->registerIndexBuffer(BufferAccess::STATIC, 3*2*6, 2, VK_INDEX_TYPE_UINT16);
     vertex->build(8);
     Vec3f *ptr = reinterpret_cast<Vec3f *>(vertex->getStagingVertexBufferPtr());
@@ -39,29 +63,38 @@ CloudNavigator::CloudNavigator(ThreadContext *_context)
     vertex->assumeVerticeChanged();
     vertex->fillIndexBuffer(3*6, reinterpret_cast<uint32_t*>(&(tmp[0])));
 
-    texture = std::make_unique<Texture>(context->surface, context->global->textureMgr, "volum_cloud.png", false, true, true, VK_FORMAT_R8_UNORM, 1, true);
+    texture = std::make_unique<Texture>(context->surface, context->global->textureMgr, "dso3d.png", false, true, true, VK_FORMAT_R16_UNORM, 1, true, true, 2);
+    if (!texture->isValid()) {
+        cLog::get()->write("Uninitialized 3d texture for dsoNavigator", LOG_TYPE::L_ERROR, LOG_FILE::VULKAN);
+        return;
+    }
+    colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
 
     layout = std::make_unique<PipelineLayout>(context->surface);
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 1);
     layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT, 2);
-    layout->setTextureLocation(3, nullptr, VK_SHADER_STAGE_FRAGMENT_BIT, texture->isValid() ? &texture->getInfo()->sampler : nullptr);
+    layout->setTextureLocation(3, nullptr, VK_SHADER_STAGE_FRAGMENT_BIT, &texture->getInfo()->sampler);
+    layout->setTextureLocation(4, nullptr, VK_SHADER_STAGE_FRAGMENT_BIT, &colorTexture->getTexture()->getInfo()->sampler);
     layout->buildLayout();
     layout->build();
 
     pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
-    pipeline->setDepthStencilMode(VK_TRUE, VK_FALSE);
     pipeline->setCullMode(true);
     pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
     pipeline->setTessellationState(3);
     pipeline->disableSampleShading();
     pipeline->bindVertex(vertex.get());
-    pipeline->bindShader("cloud3D.vert.spv");
-    pipeline->bindShader("cloud3D.tesc.spv");
-    pipeline->bindShader("cloud3D.tese.spv");
-    pipeline->bindShader("cloud3D.frag.spv");
+    pipeline->bindShader("obj3D.vert.spv");
+    pipeline->bindShader("obj3D.tesc.spv");
+    pipeline->bindShader("obj3D.tese.spv");
+    pipeline->bindShader("obj3D.frag.spv");
     float maxLod = texture->getMipmapCount() - 1;
     pipeline->setSpecializedConstant(0, &maxLod, sizeof(maxLod));
+    int width, height;
+	colorTexture->getDimensions(width, height);
+    texScale = (width | height) ? (((float) height) / ((float) width)) : 0.f;
+    pipeline->setSpecializedConstant(1, &texScale, sizeof(texScale));
     pipeline->build();
 
     set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
@@ -75,56 +108,54 @@ CloudNavigator::CloudNavigator(ThreadContext *_context)
     pCamRotToLocal = static_cast<typeof(pCamRotToLocal)>(uCamRotToLocal->data);
     set->bindUniform(uCamRotToLocal.get(), 2);
     set->bindTexture(texture.get(), 3);
-    // //=============== TEST ===============//
-    // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(61.6645, 106.7731717, 8.732473606)) * Mat4f::scaling(1));
-    // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(57.8494, 101.6510559, 8.009581944)) * Mat4f::scaling(1));
-    // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(62.9656, 106.519477, 9.064920313)) * Mat4f::scaling(1));
-    // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(59.1472, 101.1386578, 8.995018229)) * Mat4f::scaling(1));
-    // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(58.6639, 100.3883491, 8.040727743)) * Mat4f::scaling(1));
-    // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(63.3615, 107.8446613, 9.884306462)) * Mat4f::scaling(1));
-    // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(57.7345, 101.5458561, 8.163640626)) * Mat4f::scaling(1));
+    set->bindTexture(colorTexture->getTexture(), 4);
+
+    insert(Mat4f::translation(Vec3f(299.78,-163.55,-63.53)) * Mat4f::yrotation(3.1415926f/2.f) * Mat4f::scaling(Vec3f(1, 1, 0.5)), 0, 1);
 }
 
-CloudNavigator::~CloudNavigator() {}
+DsoNavigator::~DsoNavigator() {}
 
-void CloudNavigator::build(int nbClouds)
+void DsoNavigator::build(int nbDso)
 {
     context->commandMgr->waitGraphicQueueIdle();
 	context->commandMgr->waitCompletion(0);
 	context->commandMgr->waitCompletion(1);
 	context->commandMgr->waitCompletion(2);
-    vertex->buildInstanceBuffer(nbClouds);
+    vertex->buildInstanceBuffer(nbDso);
     pInstance = reinterpret_cast<typeof(pInstance)>(vertex->getInstanceBufferPtr());
     CommandMgr *cmdMgr = context->commandMgrDynamic;
-    cmdMgr->init(commandIndex, pipeline.get(), renderPassType::USE_DEPTH_BUFFER_DONT_SAVE);
+    cmdMgr->init(commandIndex, pipeline.get(), renderPassType::USE_DEPTH_BUFFER);
     cmdMgr->bindVertex(vertex.get());
     cmdMgr->bindSet(layout.get(), set.get());
-    cmdMgr->drawIndexed(3*2*6, nbClouds);
+    cmdMgr->drawIndexed(3*2*6, nbDso);
     cmdMgr->compile();
 }
 
-//! Sort clouds in depth-first order, linear in time when already sorted
-void CloudNavigator::computePosition(Vec3f posI)
+//! Sort dso in depth-first order, linear in time when already sorted
+void DsoNavigator::computePosition(Vec3f posI, const Projector *prj)
 {
-    if ((int) cloudData.size() != instanceCount) {
-        memcpy(reinterpret_cast<void*>(cloudData.data()), pInstance, instanceCount * sizeof(cloud));
-        instanceCount = cloudData.size();
+    if ((int) dsoData.size() != instanceCount) {
+        memcpy(reinterpret_cast<void*>(dsoData.data()), pInstance, instanceCount * sizeof(dso));
+        instanceCount = dsoData.size();
         build(instanceCount);
-        memcpy(reinterpret_cast<void*>(pInstance), cloudData.data(), instanceCount * sizeof(cloud));
+        memcpy(reinterpret_cast<void*>(pInstance), dsoData.data(), instanceCount * sizeof(dso));
     }
     if (instanceCount == 0) return;
-    float lengthSquared = (cloudPos[instanceCount - 1] - posI).lengthSquared();
+    float lengthSquared = (dsoPos[instanceCount - 1] - posI).lengthSquared();
     Vec3f tmpPos;
-    cloud tmpData;
+    dso tmpData;
     int swapI;
     bool invertMove = false;
+    const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+    float rad = 1.f / pInstance[instanceCount - 1].data[1];
+    pInstance[instanceCount - 1].data[2] = (lengthSquared > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared-rad*rad)) * coef)) : 0;
     for (int i = instanceCount - 2; i >= 0 || invertMove; --i) {
-        float lengthSquared2 = (cloudPos[i + invertMove] - posI).lengthSquared();
+        float lengthSquared2 = (dsoPos[i + invertMove] - posI).lengthSquared();
         if (invertMove) {
             if (lengthSquared < lengthSquared2) {
-                tmpPos = cloudPos[i];
-                cloudPos[i] = cloudPos[i + 1];
-                cloudPos[i + 1] = tmpPos;
+                tmpPos = dsoPos[i];
+                dsoPos[i] = dsoPos[i + 1];
+                dsoPos[i + 1] = tmpPos;
                 tmpData = pInstance[i];
                 pInstance[i] = pInstance[i + 1];
                 pInstance[i + 1] = tmpData;
@@ -133,13 +164,15 @@ void CloudNavigator::computePosition(Vec3f posI)
                     continue;
             }
             i = swapI;
-            lengthSquared = (cloudPos[i] - posI).lengthSquared();
+            lengthSquared = (dsoPos[i] - posI).lengthSquared();
             invertMove = false;
         } else {
+            rad = 1.f / pInstance[i].data[1];
+            pInstance[i].data[2] = (lengthSquared2 > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared2-rad*rad)) * coef)) : 0;
             if (lengthSquared > lengthSquared2) {
-                tmpPos = cloudPos[i];
-                cloudPos[i] = cloudPos[i + 1];
-                cloudPos[i + 1] = tmpPos;
+                tmpPos = dsoPos[i];
+                dsoPos[i] = dsoPos[i + 1];
+                dsoPos[i + 1] = tmpPos;
                 tmpData = pInstance[i];
                 pInstance[i] = pInstance[i + 1];
                 pInstance[i + 1] = tmpData;
@@ -154,25 +187,17 @@ void CloudNavigator::computePosition(Vec3f posI)
     }
 }
 
-void CloudNavigator::insert(const Vec4f &color, const Mat4f &model)
+void DsoNavigator::insert(const Mat4f &model, int textureID, float unscale)
 {
-    cloudData.push_back({color, model, model.inverse()});
-    cloudPos.emplace_back(model.r[12], model.r[13], model.r[14]);
+    if (!texture->isValid()) return;
+    dsoData.push_back({model, model.inverse(), Vec3f(texScale * textureID, unscale, 0)});
+    dsoPos.emplace_back(model.r[12], model.r[13], model.r[14]);
 }
 
-void CloudNavigator::draw(const Navigator * nav, const Projector* prj)
+void DsoNavigator::draw(const Navigator * nav, const Projector* prj)
 {
     if (instanceCount == 0) return;
     Mat4f mat = nav->getHelioToEyeMat().convert();
-    *pModelViewMatrix = mat;
-    *pclipping_fov = prj->getClippingFov();
-    *pCamRotToLocal = mat.inverse();
-    context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
-}
-
-void CloudNavigator::draw(const Mat4f &mat, const Projector* prj)
-{
-    if (instanceCount == 0) return;
     *pModelViewMatrix = mat;
     *pclipping_fov = prj->getClippingFov();
     *pCamRotToLocal = mat.inverse();

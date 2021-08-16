@@ -52,6 +52,7 @@ PipelineLayout *SkyLine::layout;
 Pipeline *SkyLine::pipeline;
 Set *SkyLine::set;
 int SkyLine::vUniformID = -1;
+s_font* SkyLine::font = nullptr;
 
 SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
 	radius(_radius), nb_segment(_nb_segment), color(0.f, 0.f, 1.f)
