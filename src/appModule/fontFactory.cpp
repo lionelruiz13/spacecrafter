@@ -31,10 +31,9 @@
 #include "mediaModule/media.hpp"
 #include "interfaceModule/base_command_interface.hpp"
 
-FontFactory::FontFactory()//int _resolution)
+FontFactory::FontFactory()
 {
 	setStrToTarget();
-	//m_resolution = _resolution;
 }
 
 void FontFactory::setStrToTarget()
@@ -63,8 +62,6 @@ void FontFactory::initMediaFont(Media * _media)
 
 void FontFactory::buildAllFont()
 {
-	std::cout << "debut construction des fonts" << std::endl;
-
 	std::for_each(listFont.begin(), listFont.end(), 
 		[](FontContener &n){ n.fontPtr = std::make_unique<s_font>(n.sizeFont, n.nameFont); }
 	);
@@ -72,7 +69,6 @@ void FontFactory::buildAllFont()
 	media->setTextFont(FontSizeText, FontFileNameText);
 	//cas spécial de Media
 	media->buildTextFont();
-	std::cout << "fin construction des fonts" << std::endl;
 }
 
 void FontFactory::init(int resolution, const InitParser& conf)
@@ -128,13 +124,10 @@ void FontFactory::init(int resolution, const InitParser& conf)
 	FontSizeDisplay = round(FontSizeDisplay * fontFactor) ;
 	listFont.push_back(FontContener(CLASSEFONT::CLASS_SKYDISPLAY, FontSizeDisplay, FontFileNameDisplay) );
 
-	// FontFileNameGeneral = AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME);
-	// FontSizeGeneral = conf.getDouble (SCS_FONT,SCK_FONT_GENERAL_SIZE);
-
 	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
     FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
     FontSizeText = round(FontSizeText * fontFactor) ;
-	// TODO ppourquoi cette instruction plante ?
+	// TODO pourquoi cette instruction plante ?
 	//	media->setTextFont(FontSizeText, FontFileNameText);
 }
 
@@ -166,41 +159,10 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 		std::cout << "erreur updateFont " << targetName << " not found" << std::endl;
 		assert(0);
 	}
-	
-/*	switch(it->second) {
-		// Media
-		case CLASSEFONT::CF_TEXTS :
-			//media->setTextFont(size==0 ? FontSizeText : size, fontName );
-			break;
-		// Core
-		case CLASSEFONT::CF_PLANETS :
-			// ssystem->setFont(size==0 ? FontSizePlanet : size, fontName );
-			break;
-		case CLASSEFONT::CF_CONSTELLATIONS :
-			// asterisms->setFont(size==0 ? FontSizeConstellation : size, fontName );
-			break;
-		case CLASSEFONT::CF_CARDINALS :
-			// cardinals_points->setFont(size==0 ? FontSizeCardinalPoints : size, fontName );
-			break;
-		case CLASSEFONT::CF_HIPSTARS :
-			// hip_stars->setFont(size==0 ? FontSizeGeneral : size, fontName );
-			break;
-		case CLASSEFONT::CF_UIMENU: {
-			// auto it = std::find_if( listFont.begin(), listFont.end(),
-    		// 	[&](const FontContener &element){ return element.classeFont == CLASSEFONT::CLASS_UI;} );
-			// if (it != std::end(listFont))
-			// 	(*it).fontPtr->rebuild(size==0 ? FontSizeText : size, fontName);
-			}
-			break;
-		case CLASSEFONT::CF_GENERAL :
-			break;
-		case CLASSEFONT::CF_NONE:
-			break;
-	}*/
 }
 
 
-s_font*  FontFactory::registerFont(CLASSEFONT _cf)
+s_font* FontFactory::registerFont(CLASSEFONT _cf)
 {
 	auto it = std::find_if( listFont.begin(), listFont.end(), [&](const FontContener &element){ return element.classeFont == _cf;} );
 	if (it != std::end(listFont)) {

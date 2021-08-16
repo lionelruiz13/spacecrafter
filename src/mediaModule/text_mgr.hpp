@@ -100,9 +100,12 @@ public:
 	//! initialise l'ensemble des fontes utilisées par la classe
 	void setFont(float font_size, const std::string& font_name);
 
-	//void updateFont(const std::string& fontName, double sizeValue);
+	//! met a jours les fontes avec les nouveaux paramètres fontName et sizeValue
 	void updateFont(double size, const std::string& fontName);
+	//! construit les fontes déterminées par setFont 
 	void buildFont();
+
+	//! remet à jour les fontes d'origine
 	void resetFont(){
 		updateFont(mFontSize, mFontName);
 	};

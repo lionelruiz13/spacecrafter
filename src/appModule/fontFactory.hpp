@@ -51,18 +51,6 @@
 */
 
 
-//! used to translate string to TARGETFONT
-// enum class TARGETFONT : char {
-// 	CF_TEXTS, 
-// 	CF_PLANETS,
-// 	CF_CONSTELLATIONS,
-// 	CF_CARDINALS,
-// 	CF_HIPSTARS,
-// 	CF_UIMENU,
-// 	CF_GENERAL,
-// 	CF_NONE
-// };
-
 enum class CLASSEFONT : char {
 	CLASS_HIPSTARS,
 	CLASS_NEBULAE,
@@ -95,8 +83,6 @@ class Media;
 class FontFactory {
 
 public:
-	//friend class Core;
-
     FontFactory();
     ~FontFactory();
 	//! initialise les fontes: fichiers et tailles 
@@ -104,8 +90,8 @@ public:
 	//! construit toutes les fontes
 	void buildAllFont();
 
+	//! Demande a FontFactory de livrer un pointer sur la fonte de _cf
 	s_font* registerFont(CLASSEFONT _cf);
-
 	// cas particulier de Media qui gère ses propres fontes
 	void initMediaFont(Media * _media);
 
@@ -117,42 +103,13 @@ public:
 
 private:
 	void setStrToTarget();
-	// Media
 	Media* media;
-
 	// All in one
 	std::list<FontContener> listFont;
-
-	// // Core
-	// std::string FontFileNameGeneral;			//! The font file used by default during initialization
-	// std::string FontFileNamePlanet;				//! The font for the planet system
-	// std::string FontFileNameConstellation;		//! The font for all asterims
-	// std::string FontFileNameMenu;
-	// std::string FontFileNameDisplay;
-	// std::string FontFileNameCardinalPoints;
-	// std::string FontFileNameHipStars;
-	// std::string FontFileNameNebulas;
-	// std::string FontFileNameGrid;
-	// std::string FontFileNameLines;
-	// double FontSizeGeneral;
-	// double FontSizePlanet;
-	// double FontSizeConstellation;
-	// double FontSizeCardinalPoints;
-	// double FontSizeGrid;
-	// double FontSizeLines;
-	// double FontSizeDisplay;
-	// double FontSizeHipStars;
-	// double FontSizeNebulas;
 
 	// // Media
 	std::string FontFileNameText;
 	double FontSizeText;
-	// // Ui
-	// std::string FontNameTuiMenu;
-	// float FontSizeTuiMenu;
-	
-    // int m_resolution;
-	// double m_fontResolution;
 	float fontFactor;
 	std::map< std::string, CLASSEFONT> m_strToTarget;
 };
