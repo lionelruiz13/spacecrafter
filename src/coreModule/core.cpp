@@ -274,12 +274,13 @@ void Core::init(const InitParser& conf)
 		ssystemFactory->iniTextures();
 
 		ssystemFactory->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
-		//ssystemFactory->loadStellar(AppSettings::Instance()->getUserDir() + "sirius_system.ini");
 
 		ssystemFactory->anchorManagerInit(conf);
-
-		//ssystemFactory->loadStellar(AppSettings::Instance()->getUserDir() + "sirius_system.ini");
-
+		//TODO Oli: pense a utiliser classe de selection de fichiers.
+		ssystemFactory->addSystem("Sirius", AppSettings::Instance()->getUserDir() +"sirius_system.ini");
+		ssystemFactory->addSystem("51peg", AppSettings::Instance()->getUserDir() + "51peg_system.ini");
+		//ssystemFactory->changeSystem("51peg");
+		ssystemFactory->changeSystem("SolarSystem");
 		// Init stars
 		hip_stars->iniColorTable();
 		hip_stars->readColorTable();

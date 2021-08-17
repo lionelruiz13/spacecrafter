@@ -520,7 +520,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	Body *parent = nullptr;
 
 	cLog::get()->write("Loading new Stellar System object... " + englishName, LOG_TYPE::L_INFO);
-	//~ cout << "Loading new Solar System object... " << englishName << endl;
+	std::cout << "Loading new Stellar System object... " << englishName << std::endl;
 	//~ for ( stringHashIter_t iter = param.begin(); iter != param.end(); ++iter ) {
 	//~ cout << iter->first << " : " << iter->second << endl;
 	//~ }
