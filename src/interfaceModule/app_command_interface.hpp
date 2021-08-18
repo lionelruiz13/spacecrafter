@@ -59,6 +59,7 @@ public:
 	~AppCommandInterface();
 
 	int terminateScript();
+	void deleteVar();
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, unsigned long int &wait);
 
