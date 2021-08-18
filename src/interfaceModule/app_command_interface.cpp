@@ -97,6 +97,10 @@ void AppCommandInterface::setTcp(ServerSocket* _tcp)
 	tcp=_tcp;
 }
 
+void AppCommandInterface::deleteVar()
+{
+	appEval->deleteVar();
+}
 
 int AppCommandInterface::parseCommand(const std::string &command_line, std::string &command, stringHash_t &arguments)
 {
