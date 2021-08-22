@@ -143,7 +143,7 @@ void VirtualSurface::releaseBuffer(SubBuffer &buffer) {bufferMgr->releaseBuffer(
 int VirtualSurface::getNextFrame()
 {
     while (frameIndexQueue.empty())
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     return frameIndexQueue.front();
 }
 
@@ -155,7 +155,7 @@ void VirtualSurface::releaseFrame()
 void VirtualSurface::acquireNextFrame()
 {
     while (frameIndexQueue.size() == MAX_FRAMES_IN_FLIGHT - 1)
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     frameIndex = (frameIndex + 1) % swapChainFramebuffers.size();
 }
 
@@ -163,7 +163,7 @@ void VirtualSurface::submitFrame()
 {
     bufferMgr->update();
     while (dependencyFrameIndexQueue && dependencyFrameIndexQueue->empty())
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     for (uint8_t i = 0; i < commandMgrList.size(); ++i) {
         if (isThreaded) {
             commandMgrList[i]->submit();
@@ -178,7 +178,7 @@ void VirtualSurface::submitFrame()
 void VirtualSurface::waitEmpty()
 {
     while (!frameIndexQueue.empty())
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void VirtualSurface::finalize(bool waitMaster)
@@ -197,7 +197,7 @@ void VirtualSurface::finalize(bool waitMaster)
 void VirtualSurface::waitReady()
 {
     while (!isReady)
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void VirtualSurface::link(uint8_t frameIndex, VirtualSurface *dependency)
