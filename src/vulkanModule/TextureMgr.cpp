@@ -119,7 +119,7 @@ VkSampler TextureMgr::createSampler(const VkSamplerCreateInfo &samplerInfo)
 void TextureMgr::acquireSyncObject(VkFence *fence, VkSemaphore *semaphore)
 {
     while (syncObject.empty())
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     syncObjectAccess.lock();
     auto &tmp = syncObject.back();
     *fence = tmp.first;

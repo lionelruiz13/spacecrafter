@@ -316,6 +316,7 @@ void App::init()
 	coreBackup->saveLineState();
 
 	fontFactory->reloadAllFont();
+	commander->deleteVar();
 }
 
 //! Load configuration from disk

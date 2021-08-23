@@ -22,13 +22,13 @@ bool Vulkan::isAlive = false;
 static void graphicMainloop(std::queue<CommandMgr *> *queue, Vulkan *master, std::mutex *mutex, bool *isAlive, uint8_t *active, bool *uniQueuePtr, std::mutex *uniQueueMutex)
 {
     while (!*isAlive) // Wait isAlive became true
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
     CommandMgr *actual;
     const bool uniQueue = *uniQueuePtr;
     while (*isAlive) {
         while (queue->empty() && *isAlive)
-            std::this_thread::yield();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         mutex->lock();
         if (queue->empty()) {
             mutex->unlock();
@@ -60,7 +60,7 @@ static void transferMainloop(std::queue<std::pair<VkSubmitInfo, VkFence>> *queue
     std::pair<VkSubmitInfo, VkFence> actual;
     while (*isAlive) {
         while (queue->empty() && *isAlive)
-            std::this_thread::yield();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         mutex->lock();
         if (queue->empty()) {
             mutex->unlock();
@@ -281,7 +281,7 @@ void Vulkan::waitTransferQueueIdle(bool waitCompletion)
     if (isTransferIdle)
         return;
     while (!transferQueue.empty() || transferActivity > 0)
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     if (waitCompletion) {
         transferQueueMutex.lock();
         if (!isTransferIdle) {
@@ -296,7 +296,7 @@ void Vulkan::waitTransferQueueIdle(bool waitCompletion)
 void Vulkan::waitGraphicQueueIdle()
 {
     while (!graphicQueue.empty() || graphicActivity > 0)
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void Vulkan::waitIdle()
@@ -328,7 +328,7 @@ void Vulkan::finalize()
 void Vulkan::waitReady()
 {
     while (!isReady)
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 SwapChainSupportDetails Vulkan::querySwapChainSupport(VkPhysicalDevice device) {

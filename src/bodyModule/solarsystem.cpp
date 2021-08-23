@@ -474,9 +474,9 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 	systemBodies.erase(bc->englishName);
 	if(!bc->isHidden){
 		// std::cout << "removeBodyNoSatellite from renderedBodies " << name << std::endl;
-		std::remove_if(renderedBodies.begin(), renderedBodies.end(), [bc](std::shared_ptr<BodyContainer> const obj) {
+		renderedBodies.erase(std::remove_if(renderedBodies.begin(), renderedBodies.end(), [bc](std::shared_ptr<BodyContainer> const obj) {
 			return bc->englishName == obj->englishName;
-		});
+		}));
 	}
 
 	anchorManager->removeAnchor(bc->body.get());

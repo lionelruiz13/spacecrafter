@@ -35,7 +35,7 @@ ThreadedCommandBuilder::~ThreadedCommandBuilder()
 void ThreadedCommandBuilder::waitCompiled(uint8_t nbCommands)
 {
     while (isCompiled < nbCommands) {
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     isCompiled -= nbCommands;
 }
@@ -43,7 +43,7 @@ void ThreadedCommandBuilder::waitCompiled(uint8_t nbCommands)
 void ThreadedCommandBuilder::waitIdle(bool resetCompiledCount)
 {
     while (!events.empty() || processing) {
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     if (resetCompiledCount) {
         isCompiled = 0;
@@ -55,7 +55,7 @@ void ThreadedCommandBuilder::mainloop()
     CmdEvent event, arg1, arg2, arg3, arg4, arg5;
     while (true) {
         while (events.empty())
-            std::this_thread::yield();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
         processing = true;
         mutex.lock();
         if (events.empty()) {
@@ -183,7 +183,7 @@ void ThreadedCommandBuilder::bindSet(PipelineLayout *pipelineLayout, Set *unifor
 void ThreadedCommandBuilder::pushSet(PipelineLayout *pipelineLayout, Set *uniform, int binding)
 {
     while (usedSetCacheCount.load() >= setCache.size())
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     DEF(PUSH_SET);
     ++usedSetCacheCount;
     PUSH(ptrPL, pipelineLayout);
