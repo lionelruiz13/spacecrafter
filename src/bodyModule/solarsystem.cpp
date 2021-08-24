@@ -208,13 +208,13 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	typePlanet= setPlanetType(type_Body);
 
 	// do not add if no name or no parent or no typePlanet
-	if (englishName.empty()) {
+	if (englishName=="") {
 		cLog::get()->write("SolarSystem: can not add body with no name", LOG_TYPE::L_WARNING);
 		return;
 	}
 
 	// no parent ? so it's Sun
-	if (str_parent.empty())
+	if (str_parent=="")
 		str_parent = "Sun";
 
 	// no type ? it's an asteroid
