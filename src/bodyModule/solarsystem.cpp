@@ -822,9 +822,7 @@ void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 	}
 
 	// sort all body from the furthest to the closest to the observer
-	sort(renderedBodies.begin(), renderedBodies.end(), [] (BodyContainer * const b1, BodyContainer * const b2) {
-		return (b1->body->getDistance() > b2->body->getDistance());
-	});
+	sort(renderedBodies.begin(), renderedBodies.end(), biggerDistance);
 
 	// Determine optimal depth buffer buckets for drawing the scene
 	// This is similar to Celestia, but instead of using ranges within one depth

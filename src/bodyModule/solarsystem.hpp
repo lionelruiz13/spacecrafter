@@ -323,6 +323,11 @@ private:
 
 	bool nearLunarEclipse(const Navigator * nav, Projector * prj);
 
+	// And sort them from the furthest to the closest to the observer
+	static bool biggerDistance (BodyContainer * i,BodyContainer * j){
+		return (i->body->getDistance() > j->body->getDistance());
+	};
+
 	// Master settings
 	bool flag_light_travel_time;
 	bool flagAxis= false;
