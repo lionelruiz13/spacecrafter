@@ -30,8 +30,8 @@
 
 class SSystemFactory: public NoCopy {
 public:
-    SSystemFactory();
-    ~SSystemFactory();
+    SSystemFactory(){};
+    ~SSystemFactory(){};
 
     SolarSystem * getSolarSystem(void) {
         return ssystem;

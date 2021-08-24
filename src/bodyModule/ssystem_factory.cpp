@@ -23,13 +23,3 @@
  */
 
 #include "bodyModule/ssystem_factory.hpp"
-
-SSystemFactory::SSystemFactory()
-{
-    ssystem = new SolarSystem();
-}
-    
-SSystemFactory::~SSystemFactory()
-{
-    delete ssystem;
-}
