@@ -34,7 +34,6 @@
 #include "bodyModule/solarsystem_tex.hpp"
 #include "bodyModule/solarsystem_scale.hpp"
 #include "bodyModule/solarsystem_selected.hpp"
-#include "bodyModule/solarsystem_display.hpp"
 
 class ThreadContext;
 
@@ -83,11 +82,11 @@ public:
     }
 
     void setFlagLightTravelTime(bool b) {
-		ssystemDisplay->setFlagLightTravelTime(b);
+		ssystem->setFlagLightTravelTime(b);
 	}
 
     bool getFlagLightTravelTime(void) const {
-        return ssystemDisplay->getFlagLightTravelTime();
+        return ssystem->getFlagLightTravelTime();
     }
 
     void startTrails(bool b) {
@@ -151,11 +150,11 @@ public:
     }
 
 	void setFlagPlanets(bool b) {
-        ssystemDisplay->setFlagPlanets(b);
+        ssystem->setFlagPlanets(b);
     }
 
 	bool getFlagShow(void) const {
-        return ssystemDisplay->getFlagShow();
+        return ssystem->getFlagShow();
     }
 
 	void setFlagTrails(bool b) {
@@ -271,7 +270,7 @@ public:
     }
 
 	void computePositions(double date,const Observer *obs) {
-        ssystemDisplay->computePositions(date, obs);
+        ssystem->computePositions(date, obs);
     }
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr) {
@@ -284,13 +283,13 @@ public:
     }
 
 	void computePreDraw(const Projector * prj, const Navigator * nav) {
-        ssystemDisplay->computePreDraw(prj, nav);
+        ssystem->computePreDraw(prj, nav);
     }
 
 	void draw(Projector * prj, const Navigator * nav, const Observer* observatory,
 	          const ToneReproductor* eye,
 	          bool drawHomePlanet ) {
-        ssystemDisplay->draw(prj, nav, observatory, eye, drawHomePlanet);
+        ssystem->draw(prj, nav, observatory, eye, drawHomePlanet);
     }
 
 	void addBody(stringHash_t & param) {
@@ -350,7 +349,6 @@ private:
     std::unique_ptr<SolarSystemTex> ssystemTex;
     std::unique_ptr<SolarSystemScale> ssystemScale;
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
-    std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
 
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 };

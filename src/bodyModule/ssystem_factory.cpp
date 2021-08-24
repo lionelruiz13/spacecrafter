@@ -45,7 +45,6 @@ SSystemFactory::SSystemFactory(ThreadContext *_context)
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
-    ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
 }
     
 SSystemFactory::~SSystemFactory()

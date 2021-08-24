@@ -56,7 +56,8 @@
 
 
 SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
-	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.), objLMgr(_objLMgr)
+	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.),
+	 flag_light_travel_time(false), objLMgr(_objLMgr)
 {
 	bodyTrace = nullptr;
 
@@ -746,6 +747,227 @@ bool SolarSystem::getPlanetHidden(const std::string &name)
 	}
 }
 
+// Compute the position for every elements of the solar system.
+// The order is not important since the position is computed relatively to the mother body
+void SolarSystem::computePositions(double date,const Observer *obs)
+{
+	if (flag_light_travel_time) {
+		const Vec3d home_pos(obs->getHeliocentricPosition(date));
+		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
+			const double light_speed_correction =
+			    (it->second->body->get_heliocentric_ecliptic_pos()-home_pos).length()
+			    * (149597870000.0 / (299792458.0 * 86400));
+			it->second->body->compute_position(date-light_speed_correction);
+		}
+	} else {
+		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
+			it->second->body->compute_position(date);
+		}
+	}
+
+	computeTransMatrices(date, obs);
+}
+
+// Compute the transformation matrix for every elements of the solar system.
+// The elements have to be ordered hierarchically, eg. it's important to compute earth before moon.
+void SolarSystem::computeTransMatrices(double date,const Observer * obs)
+{
+	if (flag_light_travel_time) {
+		const Vec3d home_pos(obs->getHeliocentricPosition(date));
+		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
+			const double light_speed_correction =
+			    (it->second->body->get_heliocentric_ecliptic_pos()-home_pos).length()
+			    * (149597870000.0 / (299792458.0 * 86400));
+			it->second->body->compute_trans_matrix(date-light_speed_correction);
+		}
+	} else {
+		for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
+			it->second->body->compute_trans_matrix(date);
+		}
+	}
+}
+
+void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
+{
+	if (!getFlagShow())
+		return; // 0;
+
+	// Compute each Body distance to the observer
+	Vec3d obs_helio_pos = nav->getObserverHelioPos();
+	//	cout << "obs: " << obs_helio_pos << endl;
+
+	for (auto it = renderedBodies.begin(); it != renderedBodies.end(); it++){
+		(*it)->body->compute_distance(obs_helio_pos);
+		(*it)->body->computeMagnitude(obs_helio_pos);
+		(*it)->body->computeDraw(prj, nav);
+	}
+
+	// sort all body from the furthest to the closest to the observer
+	sort(renderedBodies.begin(), renderedBodies.end(), [] (std::shared_ptr<BodyContainer> const b1, std::shared_ptr<BodyContainer> const b2) {
+		return (b1->body->getDistance() > b2->body->getDistance());
+	});
+
+	// Determine optimal depth buffer buckets for drawing the scene
+	// This is similar to Celestia, but instead of using ranges within one depth
+	// buffer we just clear and reuse the entire depth buffer for each bucket.
+	double znear, zfar;
+	double lastNear = 0;
+	double lastFar = 0;
+	int nBuckets = 0;
+	listBuckets.clear();
+	depthBucket db;
+
+	for (auto it = renderedBodies.begin(); it!= renderedBodies.end();it++) {
+		if ( (*it)->body->get_parent() == sun
+		        // This will only work with natural planets
+		        // and not some illustrative (huge) artificial planets for example
+		        && (*it)->body->get_on_screen_bounding_size(prj, nav) > 3 ) {
+
+			//~ std::cout << "Calcul de bucket pour " << (*iter)->englishName << std::endl;
+			double dist = (*it)->body->getEarthEquPos(nav).length();  // AU
+			double bounding = (*it)->body->getBoundingRadius() * 1.01;
+
+			if ( bounding >= 0 ) {
+				// this is not a hidden object
+
+				znear = dist - bounding;
+				zfar  = dist + bounding;
+
+				if (znear < 0.001){
+					znear = 0.00000001;
+				}
+				else{
+					if (znear < 0.05) {
+						znear *= 0.1;
+					}
+					else{
+						if (znear < 0.5){
+							znear *= 0.2;
+						}
+					}
+				}
+
+				// see if overlaps previous bucket
+				// TODO check that buffer isn't too deep
+				if ( nBuckets > 0 && zfar > lastNear ) {
+					// merge with last bucket
+
+					//cout << "merged buckets " << (*iter)->getEnglishName() << " " << znear << " " << zfar << " with " << lastNear << " " << lastFar << endl;
+					db = listBuckets.back();
+
+					if(znear < lastNear ) {
+						// Artificial planets may cover real planets, for example
+						lastNear = db.znear = znear;
+					}
+
+					if ( zfar > lastFar ) {
+						lastFar = db.zfar = zfar;
+					}
+
+					listBuckets.pop_back();
+					listBuckets.push_back(db);
+
+				} else {
+
+					// create a new bucket
+					//cout << "New bucket: " << (*iter)->getEnglishName() << znear << " zfar: " << zfar << endl;
+					lastNear = db.znear = znear;
+					lastFar  = db.zfar  = zfar;
+					nBuckets++;
+					listBuckets.push_back( db );
+				}
+			}
+		}
+	}
+}
+
+// Draw all the elements of the solar system
+// We are supposed to be in heliocentric coordinate
+void SolarSystem::draw(Projector * prj, const Navigator * nav, const Observer* observatory, const ToneReproductor* eye, /*bool flag_point,*/ bool drawHomePlanet)
+{
+	if (!getFlagShow())
+		return; // 0;
+
+	Halo::beginDraw();
+	int nBuckets = listBuckets.size();
+
+	std::list<depthBucket>::iterator dbiter;
+
+	//~ cout << "***\n";
+	//~ dbiter = listBuckets.begin();
+	//~ while( dbiter != listBuckets.end() ) {
+	//~ cout << (*dbiter).znear << " " << (*dbiter).zfar << endl;
+	//~ dbiter++;
+	//~ }
+	//~ cout << "***\n";
+
+	// Draw the elements
+	double z_near, z_far;
+	prj->getClippingPlanes(&z_near,&z_far); // Save clipping planes
+
+	dbiter = listBuckets.begin();
+
+	// clear depth buffer
+	prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	// Renderer::clearDepthBuffer();
+
+	//float depthRange = 1.0f/nBuckets;
+	float currentBucket = nBuckets - 1;
+
+	// economize performance by not clearing depth buffer for each bucket... good?
+	//	cout << "\n\nNew depth rendering loop\n";
+	bool depthTest = true;  // small objects don't use depth test for efficiency
+	double dist;
+
+	for (auto it = renderedBodies.begin(); it != renderedBodies.end(); it++) {
+		dist = (*it)->body->getEarthEquPos(nav).length();
+		if (dist < (*dbiter).znear ) {
+			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << " qui a pour parent " << (*iter)->body->getParent()->getEnglishName() << std::endl;
+			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << std::endl;
+
+			// potentially use the next depth bucket
+			dbiter++;
+
+			if (dbiter == listBuckets.end() ) {
+				dbiter--;
+				// now closer than the first depth buffer
+			} else {
+				currentBucket--;
+
+				// TODO: evaluate performance tradeoff???
+				// glDepthRange(currentBucket*depthRange, (currentBucket+1)*depthRange);
+				// if (needClearDepthBuffer) {
+				// 	// glClear(GL_DEPTH_BUFFER_BIT);
+				// 	Renderer::clearDepthBuffer();
+				// 	needClearDepthBuffer = false;
+				// }
+
+				// get ready to start using
+				prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
+			}
+		}
+		if (dist > (*dbiter).zfar || dist < (*dbiter).znear) {
+			// don't use depth test (outside buckets)
+			//~ std::cout << "Outside bucket pour " << (*iter)->englishName << std::endl;
+			if ( depthTest )
+				prj->setClippingPlanes(z_near, z_far);
+			depthTest = false;
+
+		} else {
+			if (!depthTest)
+				prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
+
+			depthTest = true;
+			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
+		}
+		(*it)->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet);
+		//needClearDepthBuffer = true;
+	}
+	Halo::endDraw();
+	prj->setClippingPlanes(z_near,z_far);  // Restore old clipping planes
+}
+
 Body* SolarSystem::searchByEnglishName(const std::string &planetEnglishName) const
 {
 	//printf("SolarSystem::searchByEnglishName(\"%s\"): start\n", planetEnglishName.c_str());
@@ -1020,9 +1242,4 @@ double SolarSystem::getSunAzimuth(const Navigator * nav) const
 std::unique_ptr<SSystemIterator> SolarSystem::createIterator()
 {
 	return std::make_unique<SSystemIterator>(this);
-}
-
-std::unique_ptr<SSystemIteratorVector> SolarSystem::createIteratorVector()
-{
-	return std::make_unique<SSystemIteratorVector>(this);
 }

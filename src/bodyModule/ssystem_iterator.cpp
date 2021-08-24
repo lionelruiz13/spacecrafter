@@ -47,28 +47,3 @@ bool SSystemIterator::end() {
 std::map< std::string, std::shared_ptr<SolarSystem::BodyContainer>>::iterator SSystemIterator::current() {
     return m_it_;
 }
-
-
-SSystemIteratorVector::SSystemIteratorVector(SolarSystem* p_data) : pointer(p_data) {
-    m_it_ = pointer->renderedBodies.begin();
-}
-
-void SSystemIteratorVector::begin() {
-    m_it_ = pointer->renderedBodies.begin();
-}
-
-void SSystemIteratorVector::last() {
-    m_it_ = pointer->renderedBodies.end();
-}
-
-void SSystemIteratorVector::next() {
-    m_it_++;
-}
-
-bool SSystemIteratorVector::end() {
-    return (m_it_ == pointer->renderedBodies.end());
-}
-
-SolarSystem::BodyContainer* SSystemIteratorVector::current() {
-    return m_it_->get();
-}
