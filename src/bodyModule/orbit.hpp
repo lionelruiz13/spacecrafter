@@ -12,7 +12,6 @@
 
 #include "tools/vecmath.hpp"
 #include <string>
-#include <memory>
 
 // The callback type for the external position computation function
 typedef void (PositionFunctionType)(double jd,double xyz[3]);
@@ -204,7 +203,7 @@ private:
  */
 class MixedOrbit : public Orbit {
 public:
-	MixedOrbit(std::unique_ptr<Orbit> orbit, double period, double t0, double t1, double mass,
+	MixedOrbit(Orbit* orbit, double period, double t0, double t1, double mass,
 	           double _parent_rot_obliquity, // = 0.0,
 	           double _parent_rot_ascendingnode, // = 0.0
 	           double _parent_rot_J2000_longitude,
@@ -222,7 +221,7 @@ public:
 	virtual std::string saveOrbit() const;
 
 private:
-	std::unique_ptr<Orbit> primary;
+	Orbit* primary;
 	Orbit* afterApprox;
 	Orbit* beforeApprox;
 	double begin;
@@ -245,7 +244,7 @@ private:
  */
 class BinaryOrbit : public Orbit {
 public:
-	BinaryOrbit(std::unique_ptr<Orbit> barycenter, double ratio);
+	BinaryOrbit(Orbit* barycenter, double ratio);
 
 	virtual ~BinaryOrbit();
 
@@ -268,7 +267,7 @@ public:
 	virtual std::string saveOrbit() const;
 
 private:
-	std::unique_ptr<Orbit> barycenter;
+	Orbit* barycenter;
 	Orbit* secondary;
 	double ratio;
 

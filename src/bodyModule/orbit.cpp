@@ -712,12 +712,12 @@ void SpecialOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, dou
 }
 
 
-MixedOrbit::MixedOrbit(std::unique_ptr<Orbit> orbit, double period, double t0, double t1, double mass,
+MixedOrbit::MixedOrbit(Orbit* orbit, double period, double t0, double t1, double mass,
                        double _parent_rot_obliquity,
                        double _parent_rot_ascendingnode,
                        double _parent_rot_J2000_longitude,
                        bool useParentPrecession) :
-	primary(std::move(orbit)),
+	primary(orbit),
 	afterApprox(nullptr),
 	beforeApprox(nullptr),
 	begin(t0),
@@ -726,7 +726,7 @@ MixedOrbit::MixedOrbit(std::unique_ptr<Orbit> orbit, double period, double t0, d
 {
 	// \todo Remove assert!
 	assert(t1 > t0);
-	//assert(orbit != nullptr);
+	assert(orbit != nullptr);
 
 
 	double dt = 1.0 / 1440.0; // 1 minute
@@ -784,8 +784,8 @@ MixedOrbit::MixedOrbit(std::unique_ptr<Orbit> orbit, double period, double t0, d
 
 MixedOrbit::~MixedOrbit()
 {
-	//if (primary != nullptr)
-	//	delete primary;
+	if (primary != nullptr)
+		delete primary;
 	if (beforeApprox != nullptr)
 		delete beforeApprox;
 	if (afterApprox != nullptr)
@@ -824,8 +824,8 @@ bool MixedOrbit::useParentPrecession(double jd) const
 }
 
 
-BinaryOrbit::BinaryOrbit(std::unique_ptr<Orbit> barycenter, double ratio) :
-	barycenter(std::move(barycenter)),
+BinaryOrbit::BinaryOrbit(Orbit* barycenter, double ratio) :
+	barycenter(barycenter),
 	secondary(nullptr),
 	ratio(ratio)
 {
@@ -834,8 +834,8 @@ BinaryOrbit::BinaryOrbit(std::unique_ptr<Orbit> barycenter, double ratio) :
 
 BinaryOrbit::~BinaryOrbit()
 {
-	//if (barycenter != nullptr)
-	//	delete barycenter;
+	if (barycenter != nullptr)
+		delete barycenter;
 	// secondary is deleted by it's own planet
 }
 
