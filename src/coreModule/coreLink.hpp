@@ -972,6 +972,17 @@ public:
 		return core->ssystem->getSunAltitude(core->navigation);
 	}
 
+	//return the Sun azimuth
+	double getSunAzimuth() const {
+		return core->ssystem->getSunAzimuth(core->navigation);
+	}
+
+	double getDateYear() const;
+	double getDateMonth() const;
+	double getDateDay() const;
+	double getDateHour() const;
+	double getDateMinute() const;
+
 	// Fonctions non utilisée ?
 	// -------------------------------
 	// //! Get base planets display scaling factor

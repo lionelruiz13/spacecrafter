@@ -167,7 +167,7 @@ void Core::registerCoreFont() const
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 
-	ssystemTmp->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
+	ssystem->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
 	skyLineMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYLINE));
 	skyDisplayMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYDISPLAY));
