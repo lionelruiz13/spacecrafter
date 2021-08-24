@@ -32,7 +32,6 @@
 #include "bodyModule/body_decor.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "bodyModule/solarsystem.hpp"
-#include "bodyModule/ssystem_factory.hpp"
 #include "coreModule/backup_mgr.hpp"
 #include "coreModule/callbacks.hpp"
 #include "coreModule/cardinals.hpp"
@@ -560,8 +559,6 @@ private:
 	IlluminateMgr * illuminates;		// Manage the illuminations
 	TextMgr * text_usr;				// manage all user text in dome
 	SolarSystem* ssystem;				// Manage the solar system
-	SSystemFactory* ssystemTmp;
-
 	Atmosphere * atmosphere;			// Atmosphere
 	Media* media;
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! gestionnaire des grilles
