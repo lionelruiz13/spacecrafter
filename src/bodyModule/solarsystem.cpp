@@ -304,8 +304,8 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	// fin détermination de l'orbite
 	//
 
-	std::unique_ptr<BodyColor> bodyColor = nullptr;
-	bodyColor = std::make_unique<BodyColor>(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
+	std::shared_ptr<BodyColor> bodyColor = nullptr;
+	bodyColor = std::make_shared<BodyColor>(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
 
 	float solLocalDay= Utility::strToDouble(param["sol_local_day"],1.0);
 
@@ -346,7 +346,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                Utility::strToBool(param["halo"]),
 			                Utility::strToDouble(param["radius"])/AU,
 			                Utility::strToDouble(param["oblateness"], 0.0),
-			                std::move(bodyColor),
+			                bodyColor,
 			                solLocalDay,
 			                Utility::strToDouble(param["albedo"]),
 			                std::move(orb),
@@ -375,7 +375,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 							  englishName,
 							  Utility::strToBool(param["halo"]),
 							  Utility::strToDouble(param["radius"])/AU,
-			                  std::move(bodyColor),
+			                  bodyColor,
 			                  solLocalDay,
 			                  Utility::strToDouble(param["albedo"]),
 							  std::move(orb),
@@ -395,7 +395,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                  Utility::strToBool(param["halo"]),
 			                  Utility::strToDouble(param["radius"])/AU,
 			                  Utility::strToDouble(param["oblateness"], 0.0),
-			                  std::move(bodyColor),
+			                  bodyColor,
 			                  solLocalDay,
 			                  Utility::strToDouble(param["albedo"]),
 			                  std::move(orb),
@@ -430,7 +430,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                    Utility::strToBool(param["halo"]),
 			                    Utility::strToDouble(param["radius"])/AU,
 			                    Utility::strToDouble(param["oblateness"], 0.0),
-			                    std::move(bodyColor),
+			                    bodyColor,
 			                    solLocalDay,
 			                    Utility::strToDouble(param["albedo"]),
 			                    std::move(orb),
@@ -465,7 +465,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                        Utility::strToBool(param["halo"]),
 			                        Utility::strToDouble(param["radius"])/AU,
 			                        Utility::strToDouble(param["oblateness"], 0.0),
-			                        std::move(bodyColor),
+			                        bodyColor,
 			                        solLocalDay,
 			                        Utility::strToDouble(param["albedo"]),
 			                        std::move(orb),

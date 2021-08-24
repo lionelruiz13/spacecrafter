@@ -24,7 +24,6 @@
 #include "bodyModule/orbit_2d.hpp"
 #include "tools/app_settings.hpp"
 #include "bodyModule/body_artificial.hpp"
-#include "bodyModule/body_color.hpp"
 
 #include "bodyModule/axis.hpp"
 #include "bodyModule/trail.hpp"
@@ -41,7 +40,7 @@ Artificial::Artificial(Body *parent,
                        const std::string& englishName,
                        bool flagHalo,
                        double radius,
-                       std::unique_ptr<BodyColor> _myColor,
+                       std::shared_ptr<BodyColor> _myColor,
                        float _sol_local_day,
                        float albedo,
                        std::unique_ptr<Orbit> orbit,
@@ -58,7 +57,7 @@ Artificial::Artificial(Body *parent,
 	     flagHalo,
 	     radius,
 	     1.0,
-	     std::move(_myColor),
+	     _myColor,
 	     _sol_local_day,
 	     albedo,
 	     std::move(orbit),
