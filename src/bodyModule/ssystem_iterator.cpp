@@ -32,7 +32,7 @@ void SSystemIterator::begin() {
     m_it_ = pointer->systemBodies.begin();
 }
 
-void SSystemIterator::last() {
+void SSystemIterator::end() {
     m_it_ = pointer->systemBodies.end();
 }
 
@@ -40,7 +40,7 @@ void SSystemIterator::next() {
     m_it_++;
 }
 
-bool SSystemIterator::end() {
+bool SSystemIterator::isDone() {
     return (m_it_ == pointer->systemBodies.end());
 }
 
