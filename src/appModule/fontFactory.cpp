@@ -160,7 +160,8 @@ void FontFactory::updateFont(const std::string& targetName, const std::string& f
 	if (it2 != std::end(listFont))
 		it2->fontPtr->rebuild(size, fontName);
 	else {
-		std::cout << "erreur updateFont " << targetName << " not found" << std::endl;
+		//std::cout << "erreur updateFont " << targetName << " not found" << std::endl;
+		cLog::get()->write("Error updating font : target "+targetName+ " not found", LOG_TYPE::L_WARNING);
 		assert(0);
 	}
 }
@@ -172,7 +173,8 @@ s_font* FontFactory::registerFont(CLASSEFONT _cf)
 	if (it != std::end(listFont)) {
 		return (*it).fontPtr.get();
 	}	else {
-		std::cout << "erreur registerFont" << std::endl;
+		//std::cout << "erreur registerFont" << std::endl;
+		cLog::get()->write("Error registerFont", LOG_TYPE::L_ERROR);
 		assert(0);
 		return nullptr;
 	}

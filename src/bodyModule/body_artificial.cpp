@@ -23,6 +23,7 @@
  */
 #include "bodyModule/orbit_2d.hpp"
 #include "tools/app_settings.hpp"
+#include "tools/log.hpp"
 #include "bodyModule/body_artificial.hpp"
 
 #include "bodyModule/axis.hpp"
@@ -70,8 +71,9 @@ Artificial::Artificial(Body *parent,
 	selectShader();
     createSC_context(context);
 	obj3D = new Ojm(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius, context->surface);
-	if (!obj3D -> getOk())
-		std::cout << "Error with " << englishName << " " << model_name << std::endl;
+	if (!obj3D -> getOk()) {
+        cLog::get()->write("Error creating model3D with "+englishName +" "+model_name, LOG_TYPE::L_WARNING);
+    }
 	orbitPlot = new Orbit2D(this);
 
 }

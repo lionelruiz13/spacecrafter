@@ -99,7 +99,7 @@ bool StarLines::saveCat(const std::string& fileName, bool useBinary) noexcept
 
 bool StarLines::loadHipCat(const std::string& fileName) noexcept
 {
-	std::cout << "StarLines::loadHipCatalogue " << fileName << std::endl;
+	//std::cout << "StarLines::loadHipCatalogue " << fileName << std::endl;
 	std::ifstream fileIn(fileName);
 
 	if (!fileIn.is_open()) {
@@ -121,7 +121,7 @@ bool StarLines::loadHipCat(const std::string& fileName) noexcept
 		std::istringstream istr(record);
 		if (!(istr >> hip >> x >> y >> z)) {
 			cLog::get()->write("StarLines error parsing HIP_data "+record, LOG_TYPE::L_ERROR);
-			std::cout << "StarLines stars readed " << numberRead << std::endl;
+			//std::cout << "StarLines stars readed " << numberRead << std::endl;
 			return false;
 		}
 		tmp.first = hip;
@@ -132,7 +132,7 @@ bool StarLines::loadHipCat(const std::string& fileName) noexcept
 	fileIn.close();
 	cLog::get()->write("StarLines cat "+fileName, LOG_TYPE::L_DEBUG);
 	cLog::get()->write("StarLines stars readed "+ std::to_string(numberRead), LOG_TYPE::L_DEBUG);
-	std::cout << "StarLines stars readed " << numberRead << std::endl;
+	//std::cout << "StarLines stars readed " << numberRead << std::endl;
 	return true;
 }
 
@@ -147,7 +147,7 @@ void StarLines::loadHipStar(int name, Vec3f position ) noexcept
 
 bool StarLines::saveHipCat(const std::string& fileName) noexcept
 {
-	std::cout << "StarLines::saveHipCatalogue " << fileName << std::endl;
+	//std::cout << "StarLines::saveHipCatalogue " << fileName << std::endl;
 	std::ofstream fileOut(fileName);
 
 	if (!fileOut.is_open()) {
@@ -164,7 +164,7 @@ bool StarLines::saveHipCat(const std::string& fileName) noexcept
 
 bool StarLines::saveHipBinCat(const std::string& fileName) noexcept
 {
-	std::cout << "StarLines::saveHipBinCatalogue " << fileName << std::endl;
+	//std::cout << "StarLines::saveHipBinCatalogue " << fileName << std::endl;
 	std::ofstream fileOut(fileName);
 
 	if (!fileOut.is_open()) {
@@ -191,7 +191,7 @@ bool StarLines::saveHipBinCat(const std::string& fileName) noexcept
 
 bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 {
-	std::cout << "StarLines::loadHipBinCatalogue " << fileName << std::endl;
+	//std::cout << "StarLines::loadHipBinCatalogue " << fileName << std::endl;
 	std::ifstream fileIn(fileName, std::ios::binary|std::ios::in );
 
 	if (!fileIn.is_open()) {
@@ -225,7 +225,7 @@ bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 	fileIn.close();
 	cLog::get()->write("StarLines bin cat "+fileName, LOG_TYPE::L_DEBUG);
 	cLog::get()->write("StarLines stars readed : "+ std::to_string(numberRead), LOG_TYPE::L_DEBUG);
-	std::cout << "StarLines stars readed : " << numberRead << std::endl;
+	//std::cout << "StarLines stars readed : " << numberRead << std::endl;
 	return true;
 }
 

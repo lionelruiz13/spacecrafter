@@ -1,6 +1,7 @@
 #include "interfaceModule/app_command_eval.hpp"
 #include "coreModule/coreLink.hpp"
 #include "tools/utility.hpp"
+#include "tools/log.hpp"
 
 std::function<double(double,double)> f_add = [](double x, double y){return x+y;};
 std::function<double(double,double)> f_sub = [](double x, double y){return x-y;};
@@ -82,6 +83,7 @@ void AppCommandEval::define(const std::string& mArg, const std::string& mValue)
 	auto reservedVar = m_reservedVar.find(mArg);
 	if (reservedVar != m_reservedVar.end()) {
 		std::cout << mArg << " is a reservedVar so you can't define it" << std::endl;
+
 		return;
 	}
 	//std::cout << "C_define : " <<  mArg.c_str() << " => " << mValue.c_str() << std::endl;
@@ -150,7 +152,8 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 
 	auto var_it = variables.find(mArg);
 	if (var_it == variables.end()) { //pas trouvé donc on renvoie la valeur de la chaine
-		std::cout << "not possible to operate with undefined variable so define to null from ops" << std::endl;
+		//std::cout << "not possible to operate with undefined variable so define to null from ops" << std::endl;
+		cLog::get()->write("Not possible to operate with undefined variable so define to null from ops", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
 		variables[mArg] = Utility::strToDouble (mValue);
 	} else { // trouvé on renvoie la valeur de ce qui est stocké en mémoire
 		double v = f( Utility::strToDouble( variables[mArg] ) , this->evalDouble(mValue));
@@ -196,16 +199,20 @@ void AppCommandEval::commandRandomMax(const std::string& mValue)
 
 void AppCommandEval::printVar()
 {
-	std::cout << "+++++++++++++++++" << std::endl;
+	//std::cout << "+++++++++++++++++" << std::endl;
+	cLog::get()->mark( LOG_FILE::SCRIPT);
 	if (variables.size() == 0){
-		std::cout << "No variable available" << std::endl;
+		//std::cout << "No variable available" << std::endl;
+		cLog::get()->write("Not variable available", LOG_TYPE::L_INFO , LOG_FILE::SCRIPT);
 	}
 	else {
 		for (auto var_it = variables.begin(); var_it != variables.end(); ++var_it)	{
-			std::cout << var_it->first << " => " << var_it->second << '\n';
+			//std::cout << var_it->first << " => " << var_it->second << '\n';
+			cLog::get()->write(var_it->first + " => " + var_it->second, LOG_TYPE::L_INFO , LOG_FILE::SCRIPT);
 		}
 	}
-	std::cout << "-----------------" << std::endl;
+	//std::cout << "-----------------" << std::endl;
+	cLog::get()->mark(LOG_FILE::SCRIPT);
 }
 
 void AppCommandEval::deleteVar()
@@ -252,7 +259,8 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 		case SC_RESERVED_VAR::DATE_MINUTE:
 			return coreLink->getDateMinute();
 		default:
-			std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
+			//std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
+			cLog::get()->write("Unknown reserved variable " + var +". Default 0.0 is returned.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
 			return 0.0;
 	}
 }
@@ -270,20 +278,18 @@ void AppCommandEval::setReservedVariable(const std::string &var, double value)
 		case  SC_RESERVED_VAR::HEADING :
 			coreLink->setHeading(value); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE :
-			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		case SC_RESERVED_VAR::SUN_AZIMUTH :
-			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		case SC_RESERVED_VAR::DATE_YEAR :
-			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		case SC_RESERVED_VAR::DATE_MONTH :
-			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		case SC_RESERVED_VAR::DATE_DAY :
-			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		case SC_RESERVED_VAR::DATE_HOUR :
-			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
 		case SC_RESERVED_VAR::DATE_MINUTE :
-			std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl; break;
+			cLog::get()->write("No setter with reserved variable " + var +". Do nothing.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
+			//std::cout << "No setter with reserved variable " << var << ". Do nothing." << std::endl;
+			break;
 		default:
-			std::cout << "Unknown reserved variable " << var << ". Do nothing." << std::endl;
+			cLog::get()->write("Unknown reserved variable " + var +". Do nothing.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
+			//std::cout << "Unknown reserved variable " << var << ". Do nothing." << std::endl;
+			break;
 	}
 }
