@@ -103,7 +103,7 @@ public:
 	     BodyColor* _myColor,
 	     float _sol_local_day,
 	     float _albedo,
-	     std::shared_ptr<Orbit> _orbit,
+	     Orbit *orbit,
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
@@ -132,11 +132,11 @@ public:
 	}
 
 	Orbit *getOrbit() {
-		return orbit.get();
+		return orbit;
 	}
 
 	const Orbit * getOrbit()const {
-		return orbit.get();
+		return orbit;
 	}
 
 	/** Translate Body name using the passed translator */
@@ -493,7 +493,7 @@ protected:
 	double lastJD;
 	double deltaJD;
 
-	std::shared_ptr<Orbit> orbit=nullptr;            // orbit object for this body
+	Orbit *orbit=nullptr;            // orbit object for this body
 	Vec3f orbit_position;    // position de la planete
 
 	Body *parent;				// Body parent i.e. sun for earth

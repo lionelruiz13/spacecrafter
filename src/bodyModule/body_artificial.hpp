@@ -41,7 +41,7 @@ public:
 	           BodyColor* _myColor,
 	           float _sol_local_day,
 	           float albedo,
-	           std::shared_ptr<Orbit> orbit,
+	           Orbit *orbit,
 	           bool close_orbit,
 	           const std::string& model_name,
 	           bool _deleteable,

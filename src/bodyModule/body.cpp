@@ -76,7 +76,7 @@ Body::Body(Body *parent,
            BodyColor* _myColor,
            float _sol_local_day,
            float _albedo,
-           std::shared_ptr<Orbit> _orbit,
+           Orbit *orbit,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
@@ -86,7 +86,7 @@ Body::Body(Body *parent,
     context(_context),
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
-	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
+	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(orbit), parent(parent), close_orbit(close_orbit),
 	is_satellite(0), orbit_bounding_radius(orbit_bounding_radius),
 	boundingRadius(-1), sun_half_angle(0.0)
 {
@@ -158,8 +158,8 @@ Body::~Body()
 	tex_norm = nullptr;
 	if (tex_heightmap) delete tex_heightmap;
 	tex_heightmap = nullptr;
-	//if(orbit) delete orbit;
-	//orbit = nullptr;
+	if(orbit) delete orbit;
+	orbit = nullptr;
 	if (hints) delete hints;
 	hints = nullptr;
 	if (axis) delete axis;

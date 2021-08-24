@@ -127,7 +127,7 @@ AnchorPoint * AnchorPointOrbitCreator::handle(stringHash_t params)const
 		}
 	}
 
-	Orbit * orbit = orbitCreator->handle(params).get();
+	Orbit * orbit = orbitCreator->handle(params);
 
 	if(orbit == nullptr) {
 		cLog::get()->write("AnchorPointOrbitCreator:: could not create orbit from given paramaters");
