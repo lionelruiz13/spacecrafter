@@ -55,6 +55,17 @@
 #define MARS_MASS  0.64185e24
 
 
+
+static bool removeFromVector(std::shared_ptr<SolarSystem::BodyContainer> bc, std::vector<std::shared_ptr<SolarSystem::BodyContainer>> &vec){
+	for(auto it = vec.begin(); it != vec.end();it++){
+		if(bc->englishName == (*it)->englishName){
+			vec.erase(it);
+			return true;
+		}
+	}
+	return false;
+}
+
 SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
 	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.),
 	 flag_light_travel_time(false), objLMgr(_objLMgr)
@@ -566,9 +577,7 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 	systemBodies.erase(bc->englishName);
 	if(!bc->isHidden){
 		// std::cout << "removeBodyNoSatellite from renderedBodies " << name << std::endl;
-		renderedBodies.erase(std::remove_if(renderedBodies.begin(), renderedBodies.end(), [bc](std::shared_ptr<BodyContainer> const obj) {
-			return bc->englishName == obj->englishName;
-		}));
+		removeFromVector(bc, renderedBodies);
 	}
 
 	anchorManager->removeAnchor(bc->body.get());
@@ -666,9 +675,7 @@ void SolarSystem::initialSolarSystemBodies(){
 		it->second->body->reinitParam();
 		if (it->second->isHidden != it->second->initialHidden) {
 			if(it->second->initialHidden){
-				renderedBodies.erase(std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
-					return it->second->englishName == obj->englishName;
-				}));
+				removeFromVector(it->second,renderedBodies);
 			}
 			else{
 
@@ -718,9 +725,7 @@ void SolarSystem::setPlanetHidden(const std::string &name, bool planethidden)
 			it->second->isHidden = planethidden;
 
 			if(planethidden){
-				renderedBodies.erase(std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
-					return it->second->englishName == obj->englishName;
-				}));
+				removeFromVector(it->second,renderedBodies);
 			}
 			else{
 				// std::cout << "Je cherche un doublon de " << name << std::endl;
