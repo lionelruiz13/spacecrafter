@@ -32,16 +32,16 @@ SolarSystemScale::SolarSystemScale(SolarSystem * _ssystem) {
 SolarSystemScale::~SolarSystemScale(){};
 
 
-void SolarSystemScale::setPlanetSizeScale(const std::string &name, float s)
+void SolarSystem::setPlanetSizeScale(const std::string &name, float s)
 {
-	Body * body = ssystem->searchByEnglishName(name);
+	Body * body = ssytem->searchByEnglishName(name);
 
 	if(body != nullptr){
 		body->setSphereScale(s);
 	}
 }
 
-float SolarSystemScale::getPlanetSizeScale(const std::string &name)
+float SolarSystem::getPlanetSizeScale(const std::string &name)
 {
 
 	Body * body = ssystem->searchByEnglishName(name);
