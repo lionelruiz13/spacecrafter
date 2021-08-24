@@ -30,13 +30,10 @@
 #include "tools/no_copy.hpp"
 #include "bodyModule/solarsystem.hpp"
 #include "bodyModule/solarsystem_color.hpp"
-#include "tools/ScModule.hpp"
-
-class ThreadContext;
 
 class SSystemFactory: public NoCopy {
 public:
-    SSystemFactory(ThreadContext *_context);
+    SSystemFactory();
     ~SSystemFactory();
 
     SolarSystem * getSolarSystem(void) {

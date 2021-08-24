@@ -81,7 +81,8 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	ubo_cam = new UBOCam(context, "cam_block");
 	tone_converter = new ToneReproductor();
 	atmosphere = new Atmosphere(context);
-	ssystemTmp = new SSystemFactory(context);
+	// ssystem = new SolarSystem();
+	ssystemTmp = new SSystemFactory();
 	timeMgr = new TimeMgr();
 	observatory = new Observer();
 	navigation = new Navigator();

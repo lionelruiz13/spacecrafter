@@ -26,9 +26,9 @@
 
 #include "bodyModule/ssystem_factory.hpp"
 
-SSystemFactory::SSystemFactory(ThreadContext *_context)
+SSystemFactory::SSystemFactory()
 {
-    ssystem = std::make_unique<SolarSystem>(_context);
+    ssystem = std::make_unique<SolarSystem>();
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
 }
     
