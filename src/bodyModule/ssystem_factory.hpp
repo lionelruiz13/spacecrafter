@@ -195,19 +195,19 @@ public:
     }
 
 	void setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c) {
-        ssystemColor->setBodyColor(englishName, colorName, c);
+        ssystem->setBodyColor(englishName, colorName, c);
     }
 
 	const Vec3f getBodyColor(const std::string &englishName, const std::string& colorName) const {
-        return ssystemColor->getBodyColor(englishName, colorName);
+        return ssystem->getBodyColor(englishName, colorName);
     }
 
 	void setDefaultBodyColor(const std::string& colorName, const Vec3f& c) {
-        ssystemColor->setDefaultBodyColor(colorName, c);
+        ssystem->setDefaultBodyColor(colorName, c);
     }
 
 	const Vec3f getDefaultBodyColor(const std::string& colorName) const {
-        return ssystemColor->getDefaultBodyColor(colorName);
+        return ssystem->getDefaultBodyColor(colorName);
     }
 
 	bool getHideSatellitesFlag() {
@@ -243,7 +243,7 @@ public:
     }
 
 	void iniColor(const std::string& _halo, const std::string& _label, const std::string& _orbit, const std::string& _trail) {
-        ssystemColor->iniColor(_halo, _label, _orbit, _trail);
+        ssystem->iniColor(_halo, _label, _orbit, _trail);
     }
 
 	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
@@ -320,7 +320,7 @@ public:
     }
 
 	void setDefaultBodyColor(const std::string& halo, const std::string& label, const std::string& orbit, const std::string& trail) {
-        ssystemColor->setDefaultBodyColor(halo, label, orbit, trail);
+        ssystem->setDefaultBodyColor(halo, label, orbit, trail);
     }
 
 	std::string getPlanetHashString() {
