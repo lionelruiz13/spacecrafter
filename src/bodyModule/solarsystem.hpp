@@ -56,7 +56,7 @@ class SSystemIterator;
 class SolarSystem: public NoCopy , public ModuleFont{
     friend class SSystemIterator;
 public:
-	SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
+	SolarSystem(ThreadContext *_context);
 	virtual ~SolarSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);

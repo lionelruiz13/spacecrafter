@@ -25,22 +25,10 @@
 #include <memory>
 
 #include "bodyModule/ssystem_factory.hpp"
-#include "tools/app_settings.hpp"
-#include "tools/log.hpp"
 
 SSystemFactory::SSystemFactory(ThreadContext *_context)
 {
-    // creation ds models 3D pour les planetes
-    objLMgr = std::make_unique<ObjLMgr>(_context);
-	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
-	objLMgr->insertDefault("Sphere");
-
-	if (!objLMgr->checkDefaultObject()) {
-		cLog::get()->write("SolarSystem: no default objMgr loaded, system aborded", LOG_TYPE::L_ERROR);
-		exit(-7);
-	}
-
-    ssystem = std::make_unique<SolarSystem>(_context, objLMgr.get());
+    ssystem = std::make_unique<SolarSystem>(_context);
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
