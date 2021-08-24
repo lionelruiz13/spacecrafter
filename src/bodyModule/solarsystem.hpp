@@ -264,7 +264,7 @@ public:
 	}
 
 	struct BodyContainer {
-		std::unique_ptr<Body> body=nullptr;
+		Body* body=nullptr;
 		std::string englishName;  // for convenience
 		bool isDeleteable = false;
 		bool isHidden = false;
