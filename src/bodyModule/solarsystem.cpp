@@ -56,7 +56,7 @@
 
 
 
-static bool removeFromVector(std::shared_ptr<SolarSystem::BodyContainer> bc, std::vector<std::shared_ptr<SolarSystem::BodyContainer>> &vec){
+static bool removeFromVector(SolarSystem::BodyContainer * bc, std::vector<SolarSystem::BodyContainer *> &vec){
 	for(auto it = vec.begin(); it != vec.end();it++){
 		if(bc->englishName == (*it)->englishName){
 			vec.erase(it);
@@ -85,6 +85,13 @@ SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
 
 SolarSystem::~SolarSystem()
 {
+
+	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
+		if(it->second->body != nullptr){
+			delete it->second->body;
+			delete it->second;
+		}
+	}
 	systemBodies.clear();
 	renderedBodies.clear();
 
@@ -170,7 +177,7 @@ Body* SolarSystem::findBody(const std::string &name)
 	}
 }
 
-std::shared_ptr<SolarSystem::BodyContainer> SolarSystem::findBodyContainer(const std::string &name)
+SolarSystem::BodyContainer* SolarSystem::findBodyContainer(const std::string &name)
 {
 	if(systemBodies.count(name) != 0){
 		return systemBodies[name];
@@ -535,14 +542,14 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	//	p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
 	//}
 
-	std::shared_ptr<BodyContainer> container = std::make_shared<BodyContainer>();
+	BodyContainer  * container = new BodyContainer();
 	container->body = p;
 	container->englishName = englishName;
 	container->isDeleteable = deletable;
 	container->isHidden = Utility::strToBool(param["hidden"], 0);
 	container->initialHidden = container->isHidden;
 
-	systemBodies.insert(std::pair<std::string, std::shared_ptr<BodyContainer>>(englishName, container));
+	systemBodies.insert(std::pair<std::string, BodyContainer *>(englishName, container));
 
 	if(!container->isHidden){
 		// std::cout << "renderedBodies from addBody " << englishName << std::endl;
@@ -558,7 +565,7 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 	// std::cout << "removeBodyNoSatellite " << name << std::endl;
 	// std::cout << "removing : " << name << std::endl;
 
-	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
+	BodyContainer * bc = findBodyContainer(name);
 
 	if(bc == nullptr){
 		cLog::get()->write("SolarSystem::removeBodyNoSatellite : Could not find a body named : " + name );
@@ -582,6 +589,7 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 
 	anchorManager->removeAnchor(bc->body);
 	delete bc->body;
+	delete bc;
 
 	// std::cout << "removeBodyNoSatellite " << name << " is oki" << std::endl;
 
@@ -601,7 +609,7 @@ bool SolarSystem::removeBodyNoSatellite(const std::string &name)
 
 bool SolarSystem::removeBody(const std::string &name){
 	// std::cout << "removeBody " << name << std::endl;
-	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
+	BodyContainer * bc = findBodyContainer(name);
 
 	if(bc == nullptr){
 		cLog::get()->write("SolarSystem::removeBody : Could not find a body named : " + name );
@@ -630,7 +638,7 @@ bool SolarSystem::removeBody(const std::string &name){
 bool SolarSystem::removeSupplementalBodies(const std::string &name)
 {
 	// std::cout << "removeSupplementalBodies " << name << std::endl;
-	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
+	BodyContainer * bc = findBodyContainer(name);
 
 	if(bc == nullptr){
 		cLog::get()->write("SolarSystem::removeSupplementalBodies : Could not find a body named : " + name );
@@ -705,7 +713,7 @@ void SolarSystem::toggleHideSatellites(bool val){
 		   it->second->body->hasSatellite()){
 
 		   for(Body * satellite : it->second->body->getSatellites()){
-			   std::shared_ptr<BodyContainer> sat = findBodyContainer(satellite->getEnglishName());
+			   BodyContainer * sat = findBodyContainer(satellite->getEnglishName());
 				setPlanetHidden(sat->englishName, val);
 			}
 		}
@@ -808,7 +816,7 @@ void SolarSystem::computePreDraw(const Projector * prj, const Navigator * nav)
 	}
 
 	// sort all body from the furthest to the closest to the observer
-	sort(renderedBodies.begin(), renderedBodies.end(), [] (std::shared_ptr<BodyContainer> const b1, std::shared_ptr<BodyContainer> const b2) {
+	sort(renderedBodies.begin(), renderedBodies.end(), [] (BodyContainer * const b1, BodyContainer * const b2) {
 		return (b1->body->getDistance() > b2->body->getDistance());
 	});
 

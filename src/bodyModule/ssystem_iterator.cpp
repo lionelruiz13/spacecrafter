@@ -44,6 +44,6 @@ bool SSystemIterator::end() {
     return (m_it_ == pointer->systemBodies.end());
 }
 
-std::map< std::string, std::shared_ptr<SolarSystem::BodyContainer>>::iterator SSystemIterator::current() {
+std::map< std::string, SolarSystem::BodyContainer*>::iterator SSystemIterator::current() {
     return m_it_;
 }

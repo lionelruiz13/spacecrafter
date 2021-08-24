@@ -32,7 +32,7 @@ class SolarSystem;
 
 class SSystemIterator {
 public:
-    typedef typename std::map<std::string, struct std::shared_ptr<SolarSystem::BodyContainer>>::iterator iter_type;
+    typedef typename std::map<std::string, struct SolarSystem::BodyContainer *>::iterator iter_type;
 
     SSystemIterator(SolarSystem* p_data);
 
