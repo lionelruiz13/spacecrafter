@@ -429,10 +429,10 @@ public:
 	}
 
 	void bodyTraceBodyChange(std::string bodyName) const {
-		if (bodyName=="selected")
-			core->ssystemTmp->bodyTraceBodyChange(core->selected_object.getEnglishName());
-		else
-			core->ssystemTmp->bodyTraceBodyChange(bodyName);
+		if (bodyName=="selected") 
+			core->ssystem->bodyTraceBodyChange(core->selected_object.getEnglishName()); 
+		else 
+			core->ssystem->bodyTraceBodyChange(bodyName);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -444,7 +444,7 @@ public:
 	}
 
 	std::string getPlanetsPosition() const {
-		return core->ssystemTmp->getPlanetsPosition();
+		return core->ssystem->getPlanetsPosition();
 	}
 
 	std::string tcpGetPosition() const {
@@ -579,7 +579,7 @@ public:
 		}
 
 		if(bodyName == "default"){
-			return core->anchorManager->moveToBody(core->ssystemTmp->getEarth()->getEnglishName(), time, alt);
+			return core->anchorManager->moveToBody(core->ssystem->getEarth()->getEnglishName(), time, alt);
 		}
 
 		return core->anchorManager->moveToBody(bodyName,time, alt);
@@ -773,82 +773,82 @@ public:
 	// Planets flags
 
 	void setFlagLightTravelTime(bool b) {
-		core->ssystemTmp->setFlagLightTravelTime(b);
+		core->ssystem->setFlagLightTravelTime(b);
 	}
 	bool getFlagLightTravelTime(void) const {
-		return core->ssystemTmp->getFlagLightTravelTime();
+		return core->ssystem->getFlagLightTravelTime();
 	}
 
 	//! Start/stop displaying planets Trails
 	void startPlanetsTrails(bool b) {
-		core->ssystemTmp->startTrails(b);
+		core->ssystem->startTrails(b);
 	}
 
 	//! Set selected planets by englishName
 	//! @param englishName The planet name or "" to select no planet
 	void setPlanetsSelected(const std::string& englishName) {
-		core->ssystemTmp->setSelected(englishName);
+		core->ssystem->setSelected(englishName);
 	}
 
 	//! Set flag for displaying a scaled Moon
 	void setFlagMoonScaled(bool b) {
-		core->ssystemTmp->setFlagMoonScale(b);
+		core->ssystem->setFlagMoonScale(b);
 	}
 	//! Get flag for displaying a scaled Moon
 	bool getFlagMoonScaled(void) const {
-		return core->ssystemTmp->getFlagMoonScale();
+		return core->ssystem->getFlagMoonScale();
 	}
 
 	//! Set flag for displaying a scaled Sun
 	void setFlagSunScaled(bool b) {
-		core->ssystemTmp->setFlagSunScale(b);
+		core->ssystem->setFlagSunScale(b);
 	}
 	//! Get flag for displaying a scaled Sun
 	bool getFlagSunScaled(void) const {
-		return core->ssystemTmp->getFlagSunScale();
+		return core->ssystem->getFlagSunScale();
 	}
 
 	//! Set Moon scale
 	void setMoonScale(float f, bool resident = false) {
-		if (f<0) core->ssystemTmp->setMoonScale(1., false);
-		else core->ssystemTmp->setMoonScale(f, resident);
+		if (f<0) core->ssystem->setMoonScale(1., false);
+		else core->ssystem->setMoonScale(f, resident);
 	}
 	//! Get Moon scale
 	float getMoonScale(void) const {
-		return core->ssystemTmp->getMoonScale();
+		return core->ssystem->getMoonScale();
 	}
 
 	//! Set Sun scale
 	void setSunScale(float f, bool resident = false) {
-		if (f<0) core->ssystemTmp->setSunScale(1., false);
-		else core->ssystemTmp->setSunScale(f, resident);
+		if (f<0) core->ssystem->setSunScale(1., false);
+		else core->ssystem->setSunScale(f, resident);
 	}
 	//! Get Moon scale
 	float getSunScale(void) const {
-		return core->ssystemTmp->getSunScale();
+		return core->ssystem->getSunScale();
 	}
 
 	//! Set flag for displaying clouds (planet rendering feature)
 	void setFlagClouds(bool b) {
-		core->ssystemTmp->setFlagClouds(b);
+		core->ssystem->setFlagClouds(b);
 	}
 	//! Get flag for displaying Atmosphere
 	bool getFlagClouds(void) const {
-		return core->ssystemTmp->getFlag(BODY_FLAG::F_CLOUDS);
+		return core->ssystem->getFlag(BODY_FLAG::F_CLOUDS);
 	}
 
 	void initialSolarSystemBodies() {
-		return core->ssystemTmp->initialSolarSystemBodies();
+		return core->ssystem->initialSolarSystemBodies();
 	}
 
 	//cache une planete
 	void setPlanetHidden(std::string name, bool planethidden) {
-		core->ssystemTmp->setPlanetHidden(name, planethidden);
+		core->ssystem->setPlanetHidden(name, planethidden);
 	}
 
 	//indique si la planete est visible 1 ou pas 0
 	bool getPlanetHidden(std::string name) {
-		return core->ssystemTmp->getPlanetHidden(name);
+		return core->ssystem->getPlanetHidden(name);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -856,141 +856,121 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	//! Set flag for displaying Planets
 	void planetsSetFlag(bool b) {
-		core->ssystemTmp->setFlagPlanets(b);
+		core->ssystem->setFlagPlanets(b);
 	}
 	//! Get flag for displaying Planets
 	bool planetsGetFlag(void) const {
-		return core->ssystemTmp->getFlagShow();
+		return core->ssystem->getFlagShow();
 	}
 
 	//! Set flag for displaying Planets Trails
 	void planetsSetFlagTrails(bool b) {
-		core->ssystemTmp->setFlagTrails(b);
+		core->ssystem->setFlagTrails(b);
 	}
 	//! Get flag for displaying Planets Trails
 	bool planetsGetFlagTrails() const {
-		return core->ssystemTmp->getFlag(BODY_FLAG::F_TRAIL);
+		return core->ssystem->getFlag(BODY_FLAG::F_TRAIL);
 	}
 
 	//! Set flag for displaying Planets Axis
 	void planetsSetFlagAxis(bool b) {
-		core->ssystemTmp->setFlagAxis(b);
+		core->ssystem->setFlagAxis(b);
 	}
 	//! Get flag for displaying Planets Axis
 	bool planetsGetFlagAxis(void) const {
-		return core->ssystemTmp->getFlag(BODY_FLAG::F_AXIS);
+		return core->ssystem->getFlag(BODY_FLAG::F_AXIS);
 	}
 
 
 	//! Set flag for displaying Planets Hints
 	void planetsSetFlagHints(bool b) {
-		core->ssystemTmp->setFlagHints(b);
+		core->ssystem->setFlagHints(b);
 	}
 	//! Get flag for displaying Planets Hints
 	bool planetsGetFlagHints(void) const {
-		return core->ssystemTmp->getFlag(BODY_FLAG::F_HINTS);
+		return core->ssystem->getFlag(BODY_FLAG::F_HINTS);
 	}
 
 	//! Set flag for displaying Planets Orbits
 	void planetsSetFlagOrbits(bool b) {
-		core->ssystemTmp->setFlagPlanetsOrbits(b);
+		core->ssystem->setFlagPlanetsOrbits(b);
 	}
 
 	//! Set flag for displaying Planet name Orbit
 	void planetsSetFlagOrbits(const std::string &_name, bool b) {
-		core->ssystemTmp->setFlagPlanetsOrbits(_name, b);
+		core->ssystem->setFlagPlanetsOrbits(_name, b);
 	}
 
 	//! Switch
 	void planetSwitchTexMap(const std::string &_name, bool b) {
-		if (_name=="selected") core->ssystemTmp->switchPlanetTexMap(core->selected_object.getEnglishName(), b);
-		else core->ssystemTmp->switchPlanetTexMap(_name, b);
+		if (_name=="selected") core->ssystem->switchPlanetTexMap(core->selected_object.getEnglishName(), b); 
+		else core->ssystem->switchPlanetTexMap(_name, b);
 	}
 
 	//! Switch
 	bool planetGetSwitchTexMap(const std::string &_name) {
-		if (_name=="selected") return core->ssystemTmp->getSwitchPlanetTexMap(core->selected_object.getEnglishName());
-		else return core->ssystemTmp->getSwitchPlanetTexMap(_name);
+		if (_name=="selected") return core->ssystem->getSwitchPlanetTexMap(core->selected_object.getEnglishName());
+		else return core->ssystem->getSwitchPlanetTexMap(_name);
 	}
 
 	void planetCreateTexSkin(const std::string &name, const std::string &texName){
-		core->ssystemTmp->createTexSkin(name, texName);
+		core->ssystem->createTexSkin(name, texName);
 	}
 
 	//! Get flag for displaying Planets Orbits
 	bool planetsGetFlagOrbits(void) const {
-		return core->ssystemTmp->getFlagPlanetsOrbits();
+		return core->ssystem->getFlagPlanetsOrbits();
 	}
 
 	//! Set flag for displaying Satellites Orbits
 	void satellitesSetFlagOrbits(bool b) {
-		core->ssystemTmp->setFlagSatellitesOrbits(b);
+		core->ssystem->setFlagSatellitesOrbits(b);
 	}
 
 	//! Get flag for displaying Satellites Orbits
 	bool satellitesGetFlagOrbits(void) const {
-		return core->ssystemTmp->getFlagSatellitesOrbits();
+		return core->ssystem->getFlagSatellitesOrbits();
 	}
 	//! Set flag for displaying Planets & Satellites Orbits
 	void planetSetFlagOrbits(bool b) {
-		core->ssystemTmp->setFlagSatellitesOrbits(b);
-		core->ssystemTmp->setFlagPlanetsOrbits(b);
+		core->ssystem->setFlagSatellitesOrbits(b);
+		core->ssystem->setFlagPlanetsOrbits(b);
 		//ssystem->setFlagOrbits(b);
 	}
 
 	void planetSetColor(const std::string& englishName, const std::string& color, Vec3f c) const {
-		core->ssystemTmp->setBodyColor(englishName, color, c);
+		core->ssystem->setBodyColor(englishName, color, c);
 	}
 
 	Vec3f planetGetColor(const std::string& englishName, const std::string& color) const {
-		return core->ssystemTmp->getBodyColor(englishName, color);
+		return core->ssystem->getBodyColor(englishName, color);
 	}
 
 	void planetSetDefaultColor(const std::string& color, Vec3f c) const {
-		core->ssystemTmp->setDefaultBodyColor(color, c);
+		core->ssystem->setDefaultBodyColor(color, c);
 	}
 
 	Vec3f planetGetDefaultColor(const std::string& colorName) const {
-		return core->ssystemTmp->getDefaultBodyColor(colorName);
+		return core->ssystem->getDefaultBodyColor(colorName);
 	}
 
 	bool hideSatellitesFlag(){
-		return core->ssystemTmp->getHideSatellitesFlag();
+		return core->ssystem->getHideSatellitesFlag();
 	}
 
 	void setHideSatellites(bool val){
-		core->ssystemTmp->toggleHideSatellites(val);
+		core->ssystem->toggleHideSatellites(val);
 	}
 
 	//! Set base planets display scaling factor
 	void planetsSetScale(float f) {
-		core->ssystemTmp->setScale(f);
+		core->ssystem->setScale(f);
 	}
 
 	//return the Sun altitude
 	double getSunAltitude() const {
-		return core->ssystemTmp->getSunAltitude(core->navigation);
+		return core->ssystem->getSunAltitude(core->navigation);
 	}
-
-	//return the Sun azimuth
-	double getSunAzimuth() const {
-		return core->ssystemTmp->getSunAzimuth(core->navigation);
-	}
-
-  //return the Date
-	double getDateYear() const;
-
-	//return the Date
-	double getDateMonth() const;
-
-	//return the Date
-	double getDateDay() const;
-
-	//return the Date
-	double getDateHour() const;
-
-	//return the Date
-	double getDateMinute() const;
 
 	// Fonctions non utilisée ?
 	// -------------------------------
@@ -1002,7 +982,7 @@ public:
 
 	//! Set planets viewer scaling factor
 	void planetSetSizeScale(std::string name, float f) {
-		core->ssystemTmp->setPlanetSizeScale(name, f);
+		core->ssystem->setPlanetSizeScale(name, f);
 	}
 
 	// Fonctions non utilisée ?
@@ -1015,7 +995,7 @@ public:
 
 	// send param tesselation, name design the param to change to value
 	void planetTesselation(std::string name, int value) {
-		core->ssystemTmp->planetTesselation(name,value);
+		core->ssystem->planetTesselation(name,value);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

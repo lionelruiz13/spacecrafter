@@ -302,7 +302,7 @@ public:
 	void unSelect(void) {
 		selected_object=nullptr;
 		old_selected_object=nullptr;
-		ssystemTmp->setSelected(Object());
+		ssystem->setSelected(Object());
 	}
 
 	void unsetSelectedConstellation(std::string constellation) {
@@ -367,7 +367,7 @@ public:
 
 	//! Get base planets display scaling factor
 	float getPlanetsSizeLimit(void) const {
-		return (ssystemTmp->getSizeLimit()-starGetSizeLimit());
+		return (ssystem->getSizeLimit()-starGetSizeLimit());
 	}
 
 	std::string getPlanetHashString(void);
@@ -558,6 +558,8 @@ private:
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
 	NebulaMgr * nebulas;				// Manage the nebulas
 	IlluminateMgr * illuminates;		// Manage the illuminations
+	TextMgr * text_usr;				// manage all user text in dome
+	SolarSystem* ssystem;				// Manage the solar system
 	SSystemFactory* ssystemTmp;
 
 	Atmosphere * atmosphere;			// Atmosphere
