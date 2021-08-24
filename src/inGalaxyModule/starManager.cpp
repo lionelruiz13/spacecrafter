@@ -590,11 +590,11 @@ void StarManager::addHcStar(starInfo* star)
 	int hc_centerY = hcY * HCSIZE;
 	int hc_centerZ = hcZ * HCSIZE;
 
-	if  ( (abs(hc_centerX-X)>HCSIZE/2) || (abs(hc_centerY-Y)>HCSIZE/2) || (abs(hc_centerZ-Z)>HCSIZE/2) ) {
-		std::cout << "hc entree " << X << " " << Y << " " << Z << std::endl;
-		std::cout << "hc sortie " << hc_centerX << " " << hc_centerY << " " << hc_centerZ << std::endl;
+	// if  ( (abs(hc_centerX-X)>HCSIZE/2) || (abs(hc_centerY-Y)>HCSIZE/2) || (abs(hc_centerZ-Z)>HCSIZE/2) ) {
+	// 	std::cout << "hc entree " << X << " " << Y << " " << Z << std::endl;
+	// 	std::cout << "hc sortie " << hc_centerX << " " << hc_centerY << " " << hc_centerZ << std::endl;
 		//~ sleep(2);
-	}
+	// }
 
 	HyperCube *tmp=nullptr;
 	tmp = hcExist(hc_centerX, hc_centerY, hc_centerZ );
