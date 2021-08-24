@@ -85,6 +85,10 @@ SolarSystem::SolarSystem(ThreadContext *_context)
 	Body::createShader(context); //TEMP
 	BodyShader::createShader(context);
 	Body::createDefaultAtmosphereParams();
+	bodyTesselation =  new(BodyTesselation);
+	assert(bodyTesselation != nullptr);
+	bodyTesselation->createTesselationParams();
+	Body::setTesselation(bodyTesselation);
 
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
 	OrbitCreator * comet = new OrbitCreatorComet(special, this);
@@ -108,7 +112,12 @@ SolarSystem::~SolarSystem()
 	renderedBodies.clear();
 
 	// BodyShader::deleteShader();
+	Body::deleteDefaultTexMap();
 	Body::deleteDefaultatmosphereParams();
+
+	if (bodyTesselation)
+		delete bodyTesselation;
+	bodyTesselation = nullptr;
 
 	sun = nullptr;
 	moon = nullptr;
@@ -163,6 +172,24 @@ void SolarSystem::load(const std::string& planetfile)
 	cLog::get()->write("(solar system loaded)", LOG_TYPE::L_INFO);
 	cLog::get()->mark();
 }
+
+void SolarSystem::iniTextures()
+{
+	if( ! Body::setTexEclipseMap("bodies/eclipse_map.png")) {
+		cLog::get()->write("no tex_eclipse_map valid !", LOG_TYPE::L_ERROR);
+	}
+
+	if( ! Body::setTexDefaultMap("bodies/nomap.png")) {
+		cLog::get()->write("no tex_default_map valid !", LOG_TYPE::L_ERROR);
+	}
+
+	if( ! Body::setTexHaloMap("planethalo.png")) {
+		cLog::get()->write("no tex_halo valid !", LOG_TYPE::L_ERROR);
+	}
+
+	cLog::get()->write("(solar system) default textures loaded", LOG_TYPE::L_INFO);
+}
+
 
 BODY_TYPE SolarSystem::setPlanetType (const std::string &str)
 {
@@ -711,6 +738,7 @@ void SolarSystem::initialSolarSystemBodies(){
 			it->second->isHidden = it->second->initialHidden;
 		}
 	}
+	bodyTesselation->resetTesselationParams();
 }
 
 void SolarSystem::toggleHideSatellites(bool val){
@@ -1286,6 +1314,7 @@ void SolarSystem::setSelected(const Object &obj)
 
 void SolarSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
+	bodyTesselation->updateTesselation(delta_time);
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		it->second->body->update(delta_time, nav, timeMgr);
 	}
@@ -1307,6 +1336,34 @@ void SolarSystem::setPlanetSizeScale(const std::string &name, float s)
 		body->setSphereScale(s);
 	}
 }
+
+void SolarSystem::switchPlanetTexMap(const std::string &name, bool a)
+{
+	Body * body = searchByEnglishName(name);
+	if(body != nullptr){
+		body->switchMapSkin(a);
+	}
+}
+
+
+bool SolarSystem::getSwitchPlanetTexMap(const std::string &name)
+{
+	Body * body = searchByEnglishName(name);
+	if(body != nullptr){
+		return body->getSwitchMapSkin();
+	}
+	return false;
+}
+
+
+void SolarSystem::createTexSkin(const std::string &name, const std::string &texName)
+{
+	Body * body = searchByEnglishName(name);
+	if(body != nullptr){
+		body->createTexSkin(texName);
+	}
+}
+
 
 // is a lunar eclipse close at hand?
 bool SolarSystem::nearLunarEclipse(const Navigator * nav, Projector *prj)
@@ -1383,6 +1440,30 @@ bool SolarSystem::getFlag(BODY_FLAG name)
 	}
 	return false;
 }
+
+void SolarSystem::planetTesselation(std::string name, int value) {
+	if (name=="min_tes_level") {
+		bodyTesselation->setMinTes(value);
+		return;
+	}
+	if (name=="max_tes_level") {
+		bodyTesselation->setMaxTes(value);
+		return;
+	}
+	if (name=="planet_altimetry_level") {
+		bodyTesselation->setPlanetTes(value);
+		return;
+	}
+	if (name=="moon_altimetry_level") {
+		bodyTesselation->setMoonTes(value);
+		return;
+	}
+	if (name=="earth_altimetry_level") {
+		bodyTesselation->setEarthTes(value);
+		return;
+	}
+}
+
 
 double SolarSystem::getSunAltitude(const Navigator * nav) const
 {

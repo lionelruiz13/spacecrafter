@@ -228,6 +228,9 @@ public:
 		return Body::getSizeLimit();
 	}
 
+	// send tesselation parms to body: name design the param to change to value
+	void planetTesselation(std::string name, int value);
+
 	//! Set if Moon display is scaled
 	void setFlagMoonScale(bool b) {
 		if (!b) getMoon()->setSphereScale(1);
@@ -311,9 +314,25 @@ public:
 	//modify Planet "name" is hidden or not.
 	void setPlanetHidden(const std::string &name, bool planethidden);
 
+	//switch tex map from Planet "name"
+	void switchPlanetTexMap(const std::string &name, bool a);
+
+	// return switch tex map value from Planet "name"
+	bool getSwitchPlanetTexMap(const std::string &name);
+
+	void createTexSkin(const std::string &name, const std::string &texName);
+
 	//get the state of the planet
 	bool getPlanetHidden(const std::string &name);
 
+	//initialise the body tesselation value
+	void iniTess(int minTes, int maxTes, int planetTes, int moonTes, int earthTes) {
+		bodyTesselation->setMinTes(minTes, true);
+		bodyTesselation->setMaxTes(maxTes, true);
+		bodyTesselation->setPlanetTes(planetTes,true);
+		bodyTesselation->setMoonTes(moonTes,true);
+		bodyTesselation->setEarthTes(earthTes,true);
+	}
 
 	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
 	// réinitialise les paramètes de la tesselaiton
@@ -325,7 +344,9 @@ public:
 	}
 
 	std::string getPlanetsPosition();
-	
+
+	void iniTextures();
+
 	void setAnchorManager(AnchorManager * _anchorManager){
 		anchorManager = _anchorManager;
 	}
@@ -364,6 +385,7 @@ private:
 
 	Body* findBody(const std::string &name);
 	BodyContainer * findBodyContainer(const std::string &name);
+	BodyTesselation *bodyTesselation=nullptr;
 
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str);

@@ -30,7 +30,6 @@ SSystemFactory::SSystemFactory(ThreadContext *_context)
 {
     ssystem = std::make_unique<SolarSystem>(_context);
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
-    ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
 }
     
 SSystemFactory::~SSystemFactory()
