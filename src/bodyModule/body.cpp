@@ -81,7 +81,7 @@ Body::Body(Body *parent,
            ObjL* _currentObj,
            double orbit_bounding_radius,
            const std::shared_ptr<BodyTexture> _bodyTexture,
-		   ThreadContext *_context):
+		   ThreadContext *context):
 	englishName(englishName), initialRadius(_radius), one_minus_oblateness(1.0-oblateness),
     context(_context),
 	albedo(_albedo), axis_rotation(0.),
