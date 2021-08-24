@@ -38,7 +38,7 @@ public:
 	           const std::string& englishName,
 	           bool flagHalo,
 	           double radius,
-	           std::shared_ptr<BodyColor> _myColor,
+	           BodyColor* _myColor,
 	           float _sol_local_day,
 	           float albedo,
 	           std::shared_ptr<Orbit> orbit,

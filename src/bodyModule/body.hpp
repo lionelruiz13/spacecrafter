@@ -100,7 +100,7 @@ public:
 	     bool _flagHalo,
 	     double radius,
 	     double oblateness,
-	     std::shared_ptr<BodyColor> _myColor,
+	     BodyColor* _myColor,
 	     float _sol_local_day,
 	     float _albedo,
 	     std::shared_ptr<Orbit> _orbit,
@@ -464,7 +464,7 @@ protected:
 	BODY_TYPE typePlanet;			//get the type of Body in univers: real planet, moon, dwarf ...
 
 	ThreadContext *context;
-	std::shared_ptr<BodyColor> myColor=nullptr;
+	BodyColor* myColor=nullptr;
 	AtmosphereParams* atmosphereParams=nullptr;
 
 	static AtmosphereParams *defaultAtmosphereParams;
