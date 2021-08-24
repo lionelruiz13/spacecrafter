@@ -24,7 +24,6 @@
 
 #include "bodyModule/solarsystem_color.hpp"
 #include "bodyModule/ssystem_iterator.hpp"
-#include "bodyModule/solarsystem.hpp"
 
 SolarSystemColor::SolarSystemColor(SolarSystem * _ssystem)
 {

@@ -201,6 +201,33 @@ public:
 	//! Start/stop accumulating new trail data (clear old data)
 	void startTrails(bool b);
 
+	//! Set base planets display scaling factor
+	void setScale(float scale) {
+		Body::setScale(scale);
+	}
+
+	//! Get base planets display scaling factor
+	float getScale(void) const {
+		return Body::getScale();
+	}
+
+	//! Set the scale factor s of the planet name
+	//! @param name the planet's name
+	void setPlanetSizeScale(const std::string &name, float s);
+
+	//! Get the scale factor of the planet name
+	float getPlanetSizeScale(const std::string &name);
+
+	//! Set base planets display limit in pixels
+	void setSizeLimit(float scale) {
+		Body::setSizeLimit(scale);
+	}
+
+	//! Get base planets display limit in pixels
+	float getSizeLimit(void) const {
+		return Body::getSizeLimit();
+	}
+
 	//! Set if Moon display is scaled
 	void setFlagMoonScale(bool b) {
 		if (!b) getMoon()->setSphereScale(1);
