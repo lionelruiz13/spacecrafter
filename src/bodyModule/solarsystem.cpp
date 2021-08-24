@@ -331,7 +331,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 		orb = orbitCreator->handle(param);
 
 		if(orb == nullptr) {
-			std::cout << "something went wrong when creating orbit from "<< englishName << std::endl;
+			//std::cout << "something went wrong when creating orbit from "<< englishName << std::endl;
 			cLog::get()->write("Error when creating orbit from " + englishName, LOG_TYPE::L_ERROR);
 		}
 	}

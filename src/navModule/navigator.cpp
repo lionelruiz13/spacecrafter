@@ -430,7 +430,7 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 
 	axis = rotVsopToEye * axis;
 
-	std::cout << "axis : " << axis << std::endl;
+	//std::cout << "axis : " << axis << std::endl;
 
 	double opp = axis[0];
 	double adj = axis[1];
@@ -442,7 +442,7 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 		angle = -angle;
 	}
 
-	std::cout << angle * 180/M_PI << std::endl;
+	//std::cout << angle * 180/M_PI << std::endl;
 
 	changeHeading(angle * 180/M_PI, (int)(duration*1000));
 }

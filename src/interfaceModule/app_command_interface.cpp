@@ -1459,7 +1459,7 @@ int AppCommandInterface::commandPrint()
 	for(const auto& i : args) {
 		std::stringstream oss;
 		oss << "[" << i.first <<"] " << evalString(i.second);
-		std::cout << oss.str() << std::endl;
+		//std::cout << oss.str() << std::endl;
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING);
 	}
@@ -3095,7 +3095,7 @@ int AppCommandInterface::commandBody()
 
 		std::string argColor = args[W_COLOR];
 		if (!argColor.empty()) {
-			std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
+			//std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
 			//gestion de la couleur
 			Vec3f Vcolor;
 			std::string argR= args[W_R];
