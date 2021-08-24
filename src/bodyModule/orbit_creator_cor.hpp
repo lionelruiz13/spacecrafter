@@ -30,7 +30,7 @@ public:
 		next = _next;
 	}
 
-	virtual std::unique_ptr<Orbit> handle(stringHash_t param)const = 0;
+	virtual std::shared_ptr<Orbit> handle(stringHash_t param)const = 0;
 
 protected:
 	const OrbitCreator * next = nullptr;
@@ -40,7 +40,7 @@ class OrbitCreatorEliptic : public OrbitCreator {
 public:
 	OrbitCreatorEliptic() = delete;
 	OrbitCreatorEliptic(const OrbitCreator * next, const SolarSystem * ssystem);
-	virtual std::unique_ptr<Orbit> handle(stringHash_t params)const;
+	virtual std::shared_ptr<Orbit> handle(stringHash_t params)const;
 
 private :
 	const SolarSystem * ssystem;
@@ -50,7 +50,7 @@ class OrbitCreatorComet : public OrbitCreator {
 public:
 	OrbitCreatorComet() = delete;
 	OrbitCreatorComet(const OrbitCreator * next, const SolarSystem * ssystem);
-	virtual std::unique_ptr<Orbit> handle(stringHash_t params)const;
+	virtual std::shared_ptr<Orbit> handle(stringHash_t params)const;
 
 private :
 	const SolarSystem * ssystem;
@@ -60,14 +60,14 @@ class OrbitCreatorSpecial : public OrbitCreator {
 public:
 	OrbitCreatorSpecial() = delete;
 	OrbitCreatorSpecial(const OrbitCreator *);
-	virtual std::unique_ptr<Orbit> handle(stringHash_t params) const;
+	virtual std::shared_ptr<Orbit> handle(stringHash_t params) const;
 };
 
 class OrbitCreatorBary : public OrbitCreator {
 public:
 	OrbitCreatorBary() = delete;
 	OrbitCreatorBary(const OrbitCreator *, SolarSystem * ssytem);
-	virtual std::unique_ptr<Orbit> handle(stringHash_t params) const;
+	virtual std::shared_ptr<Orbit> handle(stringHash_t params) const;
 
 private:
 	SolarSystem * ssystem;
