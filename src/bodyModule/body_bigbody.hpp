@@ -24,7 +24,6 @@
 
 
 #include "bodyModule/body.hpp"
-#include "bodyModule/ring.hpp"
 
 class Ring;
 class Set;
@@ -53,7 +52,7 @@ public:
 
 	virtual ~BigBody();
 
-	void setRings(std::unique_ptr<Ring> r);
+	void setRings(Ring* r);
 
 	virtual void selectShader ();
 
@@ -80,7 +79,7 @@ protected :
 
 	// remove from parent satellite list
 	virtual void removeSatellite(Body *planet);
-	std::unique_ptr<Ring> rings=nullptr;
+	Ring* rings=nullptr;
 	int commandIndex = -2;
 	int pipelineOffset = 0; // pipeline to select inside drawState
 	std::unique_ptr<Set> set;
