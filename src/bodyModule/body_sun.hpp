@@ -60,7 +60,7 @@ public:
 
 
 	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye,
-	                    bool depthTest, bool drawHomePlanet) override;
+	                    bool depthTest, bool drawHomePlanet, bool selected);
 
 	void setBigHalo(const std::string& halotexfile, const std::string& path);
 
