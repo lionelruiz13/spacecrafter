@@ -693,8 +693,7 @@ void SolarSystem::toggleHideSatellites(bool val){
 
 		//If we are a planet with satellites
 		if(it->second->body->getParent() &&
-		   //it->second->body->getParent()->getEnglishName() == "Sun" &&
-		   it->second->body->getTurnAround() == tACenter &&
+		   it->second->body->getParent()->getEnglishName() == "Sun" &&
 		   it->second->body->hasSatellite()){
 
 		   for(Body * satellite : it->second->body->getSatellites()){
@@ -895,8 +894,7 @@ std::string SolarSystem::getPlanetHashString(void)
 	std::ostringstream oss;
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 		if (!it->second->isDeleteable ) { // no supplemental bodies in list
-			//if (it->second->body->get_parent() != nullptr && it->second->body->get_parent()->getEnglishName() != "Sun") {
-			if (it->second->body->getTurnAround() == tABody) {
+			if (it->second->body->get_parent() != nullptr && it->second->body->get_parent()->getEnglishName() != "Sun") {
 				oss << Translator::globalTranslator.translateUTF8(it->second->body->get_parent()->getEnglishName())
 				    << " : ";
 			}

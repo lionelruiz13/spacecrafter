@@ -94,8 +94,7 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 
 	if (!b || !selected || selected == Object(ssystem->getSun())) {
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			//if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() =="Sun")
-			if (it->current()->second->body->getTurnAround() == tACenter)
+			if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() =="Sun")
 				it->current()->second->body->setFlagOrbit(b);
 		}
 	} else {
@@ -104,8 +103,7 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 		// unless they are orbiting the selected Body 20080612 DIGITALIS
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			if (!it->current()->second->body->isSatellite()) {
-				//if ((selected == it->current()->second->body.get()) && (it->current()->second->body->getParent()->getEnglishName() =="Sun")){
-				if ((selected == it->current()->second->body.get()) && (it->current()->second->body->getTurnAround() == tACenter)) {
+				if ((selected == it->current()->second->body.get()) && (it->current()->second->body->getParent()->getEnglishName() =="Sun")){
 					it->current()->second->body->setFlagOrbit(true);
 				}
 				else {
@@ -130,8 +128,7 @@ void SolarSystemSelected::setFlagSatellitesOrbits(bool b)
 
 	if (!b || !selected || selected == Object(ssystem->getSun())) {
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			//if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() !="Sun"){
-			if (it->current()->second->body->getTurnAround() == tABody) {
+			if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() !="Sun"){
 				it->current()->second->body->setFlagOrbit(b);
 			}
 		}

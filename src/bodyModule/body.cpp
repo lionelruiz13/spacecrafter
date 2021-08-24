@@ -100,12 +100,6 @@ Body::Body(Body *parent,
 		parent->satellites.push_back(this);
 		if (parent->getEnglishName() != "Sun") is_satellite = 1; // quicker lookup
 	}
-	if (parent) {
-		if (parent->getEnglishName() == "Sun") tAround = tACenter;
-		else tAround = tABody;
-	} else 
-		tAround = tANothing;
-
 	ecliptic_pos= v3dNull;
 	rot_local_to_parent = Mat4d::identity();
 	rot_local_to_parent_unprecessed = Mat4d::identity();
