@@ -22,16 +22,14 @@
  *
  */
 
-#include <memory>
-
 #include "bodyModule/ssystem_factory.hpp"
 
 SSystemFactory::SSystemFactory()
 {
-    ssystem = std::make_unique<SolarSystem>();
-    ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
+    ssystem = new SolarSystem();
 }
     
 SSystemFactory::~SSystemFactory()
 {
+    delete ssystem;
 }

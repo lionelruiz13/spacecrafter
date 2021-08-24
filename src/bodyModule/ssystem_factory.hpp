@@ -25,11 +25,8 @@
 #ifndef _SSYSTEMFACTORY_H_
 #define _SSYSTEMFACTORY_H_
 
-#include <memory>
-
 #include "tools/no_copy.hpp"
 #include "bodyModule/solarsystem.hpp"
-#include "bodyModule/solarsystem_color.hpp"
 
 class SSystemFactory: public NoCopy {
 public:
@@ -37,7 +34,7 @@ public:
     ~SSystemFactory();
 
     SolarSystem * getSolarSystem(void) {
-        return ssystem.get();
+        return ssystem;
     }
 
     void registerFont(s_font* _font) {
@@ -333,8 +330,7 @@ public:
     }
 
 private:
-    std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
-    std::unique_ptr<SolarSystemColor> ssystemColor;
+    SolarSystem* ssystem;				// Manage the solar system
 };
 
 #endif
