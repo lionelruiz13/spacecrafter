@@ -66,6 +66,10 @@ vec4 fisheyeProject(vec3 invec, vec3 clipping_fov)
 		a = atan(win.z);
 	}
 	float f = fma(a, 1.f/M_PI, 0.5f) * fisheye_scale_factor;
+//	Realtime ALLSPHERE distorsion
+//	f = f *1200.f;
+//	f = (((((((((-1.553958085e-26*f + 1.430207232e-22)*f -4.958391394e-19)*f + 8.938737084e-16)*f -9.39081162e-13)*f + 5.979121144e-10)*f -2.293161246e-7)*f + 4.995598119e-5)*f -5.508786926e-3)*f + 1.665135788)*f + 6.526610628e-2;
+//	f = f/1200.f;
 
     depth = (fisheye_scale_factor > 1.3 && a > M_PI*0.4f) ? -1e30 : (depth - zNear) / (zFar-zNear);
     return vec4(win.x * f, win.y * f, depth, 1.);
