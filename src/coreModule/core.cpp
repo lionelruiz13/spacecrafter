@@ -244,6 +244,7 @@ void Core::init(const InitParser& conf)
 {
 	if (firstTime) {
 		//s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
+		s_texture::setLoadInLowResolution(conf.getBoolean(SCS_RENDERING, SCK_LOW_RES), conf.getInt(SCS_RENDERING, SCK_LOW_RES_MAX) );
 		this->registerCoreFont();
 	}
 

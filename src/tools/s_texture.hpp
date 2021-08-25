@@ -77,6 +77,12 @@ public:
 		s_texture::texDir = _texDir;
 	}
 
+	// Indique si l'on doit charger les textures en low resolution ou pas.
+	static void setLoadInLowResolution(bool value, int _maxRes) {
+		s_texture::loadInLowResolution = value;
+		s_texture::lowResMax = _maxRes;
+	}
+
 	// crée une texture rouge en cas de textures non chargée
 	void createEmptyTex(const bool keepOnCPU);
 
@@ -116,6 +122,8 @@ private:
 	static ThreadContext *context;
 	static std::string texDir;
 	static std::map<std::string, texRecap*> texCache;
+	static bool loadInLowResolution;
+	static int lowResMax;
 	std::map<std::string, texRecap*>::iterator it;
 };
 

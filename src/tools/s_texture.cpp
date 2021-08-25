@@ -39,7 +39,11 @@
 #include "vulkanModule/Texture.hpp"
 #include "vulkanModule/CommandMgr.hpp"
 
+#define MAX_LOW_RES 1024
+
 std::string s_texture::texDir = "./";
+bool s_texture::loadInLowResolution = false;
+int s_texture::lowResMax = MAX_LOW_RES;
 std::map<std::string, s_texture::texRecap*> s_texture::texCache;
 ThreadContext *s_texture::context;
 

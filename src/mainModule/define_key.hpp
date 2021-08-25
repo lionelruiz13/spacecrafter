@@ -246,6 +246,8 @@
 #define SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE      "light_pollution_limiting_magnitude"
 
 #define SCK_FLAG_NAVIGATION                 "flag_navigation"
+#define SCK_LOW_RES                         "low_resolution"
+#define SCK_LOW_RES_MAX                     "low_resolution_max"
 #define SCK_PRESET_SKY_TIME                 "preset_sky_time"
 #define SCK_AUTO_MOVE_DURATION              "auto_move_duration"
 #define SCK_DAY_KEY_MODE                    "day_key_mode"

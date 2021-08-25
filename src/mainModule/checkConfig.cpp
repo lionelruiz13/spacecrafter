@@ -94,6 +94,8 @@ void CheckConfig::checkVideoSettings()
 void CheckConfig::checkRenderingSettings()
 {
 	tmpSettings[SCK_FLAG_ANTIALIAS_LINES]="true";
+	tmpSettings[SCK_LOW_RES]="false";
+	tmpSettings[SCK_LOW_RES_MAX]="1024";
 	tmpSettings[SCK_ANTIALIASING]="8";
 	tmpSettings[SCK_LINE_WIDTH]="1.5";
 	tmpSettings[SCK_LANDSCAPE_SLICES]="80";
