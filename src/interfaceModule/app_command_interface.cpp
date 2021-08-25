@@ -1989,7 +1989,7 @@ int AppCommandInterface::commandText()
 	std::string argDisplay = args[W_DISPLAY];
 	std::string argString = args[W_STRING];
 
-	argString = evalString(argString);
+	argString = Translator::globalTranslator.translateUTF8(evalString(argString));
 
 	if (!argAction.empty()) {
 		if (argString.empty()) {
