@@ -27,6 +27,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include "stb_image.h"
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "stb_image_resize.h"
 #include <exception>
 #include "tools/call_system.hpp"
 #include <cassert>
@@ -251,6 +253,19 @@ bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
 				cLog::get()->write("s_texture: could not load " + fullName , LOG_TYPE::L_ERROR);
 				return false;
 			}
+			// gestion des textures trop volumineuses :|
+			if (s_texture::loadInLowResolution && x>s_texture::lowResMax) {
+				std::cout << "Resize " << fullName << std::endl;
+				cLog::get()->write("s_texture: resize " + fullName , LOG_TYPE::L_WARNING);
+				int xx = s_texture::lowResMax, yy= s_texture::lowResMax * y / x;
+				unsigned char* image_data_resized = new unsigned char[xx* yy * 4];
+				stbir_resize_uint8(image_data, x,y, 0, image_data_resized, xx, yy, 0, force_channels );
+				stbi_image_free(image_data);
+				image_data = image_data_resized;
+				x = xx;
+				y = yy;
+			}
+
 			blend(loadType, image_data, x*y*4);
 
 			// NPOT check
