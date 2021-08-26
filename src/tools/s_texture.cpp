@@ -41,6 +41,7 @@
 
 std::string s_texture::texDir = "./";
 std::map<std::string, s_texture::texRecap*> s_texture::texCache;
+std::list<s_texture *> s_texture::activeTextures;
 ThreadContext *s_texture::context;
 
 // s_texture::s_texture(const std::string& _textureName) : textureName(_textureName), texID(0),
@@ -81,6 +82,8 @@ s_texture::s_texture(const s_texture *t)
 		//~ std::cout << "Erreur de duplication " << textureName << std::endl;
 		cLog::get()->write("s_texture: erreur de duplication " + textureName , LOG_TYPE::L_ERROR);
 	}
+	activeTextures.push_front(this);
+	self = activeTextures.begin();
 }
 
 s_texture::s_texture(const std::string& _textureName, int _loadType, const bool mipmap, const bool keepOnCPU) : textureName(_textureName),
@@ -116,6 +119,8 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 
 	if (!succes)
 		createEmptyTex(keepOnCPU);
+	activeTextures.push_front(this);
+	self = activeTextures.begin();
 }
 
 s_texture::s_texture(const std::string& _textureName, StreamTexture *_imgTex)
@@ -138,6 +143,8 @@ s_texture::s_texture(const std::string& _textureName, StreamTexture *_imgTex)
 	tmp->size = width * height;
 	tmp->mipmap = false;
 	texCache[textureName]= tmp;
+	activeTextures.push_front(this);
+	self = activeTextures.begin();
 }
 
 s_texture::~s_texture()
@@ -147,6 +154,7 @@ s_texture::~s_texture()
 	context->commandMgr->waitCompletion(1);
 	context->commandMgr->waitCompletion(2);
 	unload();
+	activeTextures.erase(self);
 }
 
 bool s_texture::use()
@@ -404,4 +412,25 @@ unsigned long int s_texture::getTotalGPUMem()
 		(tmp->mipmap) ? sizeGPUMem += tmp->size*4/3 : sizeGPUMem = sizeGPUMem+tmp->size;
 	}
 	return sizeGPUMem;
+}
+
+void s_texture::forceUnload()
+{
+	cLog::get()->write("Force unloading all " + std::to_string(activeTextures.size()) + " active textures...", LOG_TYPE::L_DEBUG);
+	for (auto &t : activeTextures) {
+		t->unload();
+	}
+	if (texCache.empty()) {
+		cLog::get()->write("Forced unload completed.", LOG_TYPE::L_DEBUG);
+	} else {
+		cLog::get()->write("There is " + std::to_string(texCache.size()) + " unhandled loaded textures, unloading them.", LOG_TYPE::L_WARNING);
+		for (auto &tc : texCache) {
+			if (tc.second && tc.second->textureHandle) {
+				cLog::get()->write("Deleting unhandled loaded texture '" + tc.first + "' with " + std::to_string(tc.second->nbLink) + " use(s).", LOG_TYPE::L_DEBUG);
+				tc.second->textureHandle = nullptr;
+				tc.second->texture = nullptr;
+			}
+		}
+		cLog::get()->write("Unhandled textures unloaded.", LOG_TYPE::L_WARNING);
+	}
 }
