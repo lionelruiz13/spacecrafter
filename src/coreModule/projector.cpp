@@ -38,7 +38,7 @@
 
 
 Projector::Projector(const int width, const int height, double _fov)
-	:fov(1.0), min_fov(0.0001), max_fov(100),
+	:fov(1.0), min_fov(0.001), max_fov(100),
 	 zNear(0.1), zFar(10000),
 	 flag_auto_zoom(0)
 {
@@ -54,7 +54,7 @@ Projector::Projector(const int width, const int height, double _fov)
 	                   0., 1., 0., 0.,
 	                   0., 0., -1, 0.,
 	                   0., 0., 0., 1.);
-	min_fov = 0.0001;
+	min_fov = 0.001;
 	max_fov = 359.9;
 	setFov(_fov);
 }
