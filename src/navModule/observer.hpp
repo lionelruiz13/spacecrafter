@@ -93,9 +93,11 @@ public:
 	//! fixe la latitude de l'observer sur la planète
 	void setLatitude(double l) {
 		latitude=l;
-		if ( latitude==0.0 ) {
+		if ( latitude<=0.0 ) {
 			latitude=1e-6;
 		}
+		if ( latitude >= 90.0)
+			latitude = 90.0;
 	}
 
 	//! renvoie la latitude de l'observer sur la planète
