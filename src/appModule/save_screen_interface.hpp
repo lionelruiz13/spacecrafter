@@ -30,6 +30,7 @@
 #include <thread>
 #include <mutex>
 #include <string>
+#include <memory>
 #include "tools/no_copy.hpp"
 
 class Vulkan;
@@ -82,7 +83,7 @@ private:
     std::string getNextScreenshotFilename();
 
 	Vulkan *master;
-	SaveScreen* saveScreen = nullptr;
+	std::unique_ptr<SaveScreen> saveScreen;
     enum class ReadScreen : char {NONE, SNAPSHOT, VIDEO};
     ReadScreen readScreen= ReadScreen::NONE;
     std::string fileNameScreenshot;
