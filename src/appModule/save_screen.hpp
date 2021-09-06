@@ -87,7 +87,7 @@ private:
 	std::mutex mtx;  //!< mutex sur tab
 	unsigned char** buffer; //!< tableau de tableau de captures d'écran
 	bool* tab; //!< tableau servant à protéger les buffers des IO threads/app
-	bool isAvariable; //!< indique si le service de sauvegarde des images est opértationnel
+	bool isAvariable = true; //!< indique si le service de sauvegarde des images est opértationnel
 };
 
 #endif //SAVE_SCREEN_HPP
