@@ -48,7 +48,7 @@ void EventScreenFaderHandler::handle(const Event* e)
 		case ScreenFaderEvent::CHANGE :
 			screenFader->changeIntensity(event->getValue(), event->getTime());
 			break;
-		default : break;
+	//	default : break;
 	}
 }
 
@@ -67,7 +67,7 @@ void EventScreenFaderInterludeHandler::handle(const Event* e)
 		case ScreenFaderInterludeEvent::DOWN : 
 			screenFader->fixIntensityDown(event->getMin(), event->getMax(), event->getValue());
 			break;
-		default : break;
+		//default : break;
 	}
 }
 

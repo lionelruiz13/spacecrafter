@@ -44,6 +44,6 @@ void EventSaveScreenHandler::handle(const Event* e)
             break;
         case SAVESCREEN_ORDER::TOGGLE_VIDEO :
             saveScreenInterface->takeVideoShot();
-        default: break;
+      // default: break;
     }
 }
