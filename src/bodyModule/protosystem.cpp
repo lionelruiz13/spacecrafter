@@ -72,6 +72,8 @@ void ProtoSystem::load(const std::string& planetfile)
 		std::string ligne;
 		while(getline(fileBody , ligne)) {
 			if (ligne[0] != '[' ) {
+				if (ligne[ligne.length() - 1] == '\r')
+					ligne.pop_back();
 				if (ligne[0]!='#' && ligne.size() != 0) {
 					int pos = ligne.find('=',0);
 					std::string p1=ligne.substr(0,pos-1);
