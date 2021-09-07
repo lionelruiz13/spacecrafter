@@ -31,7 +31,7 @@ Skybright::Skybright() : SN(1.f)
 {
 	setDate(2003, 8, 0);
 	setLoc(M_PI_4, 1000., 25.f, 40.f);
-	setSunMoon(0.5, 0.5,0);
+	setSunMoon(0.5, 0.5); //,0);
 }
 
 // month : 1=Jan, 12=Dec
@@ -62,7 +62,7 @@ void Skybright::setLoc(float latitude, float altitude, float temperature, float 
 
 // Set the moon and sun zenith angular distance (cosin given)
 // and precompute what can be
-void Skybright::setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith, int cor_optoma)
+void Skybright::setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith) //, int cor_optoma)
 {
 	// Air mass for Moon
 	if (cos_dist_moon_zenith<0) air_mass_moon = 40.f;
@@ -96,7 +96,7 @@ void Skybright::setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith
 // Inputs : cos_dist_moon = cos(angular distance between moon and the position)
 //			cos_dist_sun  = cos(angular distance between sun  and the position)
 //			cos_dist_zenith = cos(angular distance between zenith and the position)
-float Skybright::getLuminance(float cos_dist_moon, float cos_dist_sun, float cos_dist_zenith, int cor_optoma)
+float Skybright::getLuminance(float cos_dist_moon, float cos_dist_sun, float cos_dist_zenith)//, int cor_optoma)
 {
 
 	double b_total;			// Total brightness

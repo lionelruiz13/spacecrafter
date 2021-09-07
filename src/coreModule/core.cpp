@@ -508,7 +508,7 @@ void Core::init(const InitParser& conf)
 
 	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE));
 
-	atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
+	//atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
 
 	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
