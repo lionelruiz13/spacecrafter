@@ -23,6 +23,7 @@
 #include "inGalaxyModule/starNavigator.hpp"
 #include "inGalaxyModule/starManager.hpp"
 #include "tools/utility.hpp"
+#include "tools/s_texture.hpp"
 
 #include "tools/ThreadPool.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"

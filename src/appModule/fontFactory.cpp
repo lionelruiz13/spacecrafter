@@ -22,6 +22,7 @@
 
 #include <algorithm>
 
+#include "tools/s_font.hpp"
 #include "appModule/fontFactory.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/app_settings.hpp"
