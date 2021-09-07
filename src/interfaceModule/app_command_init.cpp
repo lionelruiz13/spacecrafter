@@ -19,6 +19,7 @@ void AppCommandInit::setObsoleteToken()
 	obsoletList.push_back("landscape_sets_location");
 	obsoletList.push_back("external_mplayer");
 	obsoletList.push_back("font_general_size");
+	obsoletList.push_back("flag_optoma");
 }
 
 bool AppCommandInit::isObsoleteToken(const std::string &source)
