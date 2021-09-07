@@ -30,6 +30,9 @@
 #include <string>
 #include "appModule/space_date.hpp"
 #include "atmosphereModule/atmosphere.hpp"
+#include "atmosphereModule/skybright.hpp"
+#include "atmosphereModule/skylight.hpp"
+
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/sc_const.hpp"
