@@ -32,7 +32,7 @@
 
 #include <vector>
 #include "tools/vecmath.hpp"
-#include "tools/ia.hpp"
+//#include "tools/ia.hpp"
 
 //! \struct starInfo
 //! \brief Stars are stocked in this structure

@@ -24,7 +24,7 @@
 #include "tools/log.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "tools/ia.hpp"
+//#include "tools/ia.hpp"
 
 #include "vulkanModule/CommandMgr.hpp"
 #include "vulkanModule/VertexArray.hpp"
