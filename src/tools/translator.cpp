@@ -95,6 +95,8 @@ void Translator::reload()
 		std::size_t found;
 		while (std::getline(infile, line))
 		{
+			if (line[line.length() - 1] == '\r')
+				line.pop_back();
         	if (line[0] != '#' && line[0] != '\r' && line[0] != '\n' ) {
 				found = line.find("\";\"");
 				if (found != std::string::npos ) {
