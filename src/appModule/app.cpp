@@ -147,14 +147,14 @@ App::App( SDLFacade* const sdl )
 	eventHandler-> add(new EventVideoHandler(ui, scriptInterface), Event::E_VIDEO);
 
 	#if LINUX
-	mkfifo= new Mkfifo();
+	mkfifo = std::make_unique<Mkfifo>();
 	#endif
 
 	enable_mkfifo= false;
 	enable_tcp= false;
 	flagColorInverse= false;
 
-	appDraw = new AppDraw();
+	appDraw = std::make_unique<AppDraw>();
 	appDraw->init(width, height);
 }
 
@@ -176,11 +176,11 @@ App::~App()
 	context.commandMgrSingleUseInterface->terminate();
 	context.commandMgrSingleUseInterface->waitIdle();
 	globalContext.vulkan->waitIdle();
-	delete appDraw;
+	appDraw.release();
 	if (enable_tcp)
-		delete tcp;
+		tcp.release();
 	#if LINUX
-	delete mkfifo;
+		mkfifo.release();
 	#endif
 	delete ui;
 	delete scriptInterface;
@@ -352,9 +352,9 @@ void App::firstInit()
 		int port = conf.getInt(SCS_IO, SCK_TCP_PORT_IN);
 		int buffer_in_size=conf.getInt(SCS_IO, SCK_TCP_BUFFER_IN_SIZE);
 		cLog::get()->write("buffer TCP taille " + std::to_string(buffer_in_size));
-		tcp = new ServerSocket(port, 16, buffer_in_size);
+		tcp = std::make_unique<ServerSocket>(port, 16, buffer_in_size);
 		tcp->open();
-		commander->setTcp(tcp);
+		commander->setTcp(tcp.get());
 	}
 
 	#if LINUX // special mkfifo

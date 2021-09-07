@@ -176,11 +176,11 @@ private:
 	SDLFacade* mSdl = nullptr;
 	std::unique_ptr<FontFactory> fontFactory;
 	SaveScreenInterface* saveScreenInterface = nullptr;
-	ServerSocket * tcp = nullptr;
+	std::unique_ptr<ServerSocket> tcp;
 	Fps* internalFPS = nullptr;				//! gestion fine du frameRate
-	AppDraw* appDraw = nullptr;
+	std::unique_ptr<AppDraw> appDraw;
 	#if LINUX
-	Mkfifo* mkfifo = nullptr;
+	std::unique_ptr<Mkfifo> mkfifo;
 	#endif
 
 	SpaceDate * spaceDate = nullptr;			// Handles dates and conversions
