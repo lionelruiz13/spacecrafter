@@ -27,19 +27,21 @@
 #ifndef APP_H
 #define APP_H
 
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_thread.h>
 #include <queue>
 #include <memory>
 
 #include "tools/no_copy.hpp"
-#include "appModule/fps.hpp"
-#include "appModule/space_date.hpp"
+//#include "appModule/fps.hpp"
+//#include "appModule/space_date.hpp"
 //#include "spacecrafter.hpp"
-#include "tools/app_settings.hpp"
+
 
 #include "vulkanModule/Context.hpp"
 
 // Predeclaration of some classes
+class AppSettings;
 class AppCommandInterface;
 class ScriptMgr;
 class ScriptInterface;
@@ -58,6 +60,8 @@ class ServerSocket;
 class ScreenFader;
 class EventRecorder;
 class EventHandler;
+class Fps;
+class SpaceDate;
 
 enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE};
 
@@ -100,9 +104,7 @@ public:
 	//! Record a command if script recording is on
 	void recordCommand(const std::string& commandline);
 
-	int getFpsClock() const {
-		return internalFPS->getFps();
-	}
+	int getFpsClock() const;
 
 	void setPresetSkyTime(double _value) {
 		PresetSkyTime = _value;

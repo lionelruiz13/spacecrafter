@@ -37,7 +37,10 @@
 #include "spacecrafter.hpp"
 #include "appModule/app.hpp"
 #include "appModule/appDraw.hpp"
+#include "appModule/fps.hpp"
+#include "tools/app_settings.hpp"
 #include "appModule/save_screen_interface.hpp"
+#include "appModule/space_date.hpp"
 #include "appModule/screenFader.hpp"
 #include "appModule/fontFactory.hpp"
 #include "appModule/mkfifo.hpp"
@@ -204,6 +207,10 @@ App::~App()
 	s_texture::forceUnload();
 	delete globalContext.textureMgr;
 	delete globalContext.vulkan;
+}
+ 
+int App::getFpsClock() const {
+ 	return internalFPS->getFps();
 }
 
 void App::setLineWidth(float w) const {

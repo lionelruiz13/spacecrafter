@@ -34,6 +34,7 @@
 #include <dirent.h>
 
 #include "appModule/app.hpp"
+#include "appModule/space_date.hpp"
 #include "mainModule/sdl_facade.hpp"
 #include "scriptModule/script_interface.hpp"
 #include "coreModule/core.hpp"

@@ -34,6 +34,7 @@
 #include "app_command_color.hpp"
 #include "appModule/app.hpp"
 #include "appModule/save_screen_interface.hpp"
+#include "appModule/space_date.hpp"
 #include "appModule/fontFactory.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
