@@ -34,7 +34,7 @@
 #include "tools/no_copy.hpp"
 #include "appModule/fps.hpp"
 #include "appModule/space_date.hpp"
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "tools/app_settings.hpp"
 
 #include "vulkanModule/Context.hpp"

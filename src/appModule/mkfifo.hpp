@@ -27,7 +27,7 @@
 
 #include <SDL2/SDL_thread.h>
 #include <queue> //ServerSocket
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/app_settings.hpp"
 #include <string>
