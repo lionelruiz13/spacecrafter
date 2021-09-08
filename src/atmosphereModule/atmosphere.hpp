@@ -143,8 +143,8 @@ private:
 	void fillOutDataColor();
 	// void deleteShader();
 
-	Skylight sky;
-	Skybright skyb;
+	std::unique_ptr<Skylight> sky = std::make_unique<Skylight>();
+	std::unique_ptr<Skybright> skyb = std::make_unique<Skybright>();
 	Vec3f ** tab_sky=nullptr;	//!< For Atmosphere calculation
 
 	float world_adaptation_luminance;

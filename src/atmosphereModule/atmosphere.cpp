@@ -196,16 +196,16 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	moon_pos[1] = moonPos[1];
 	moon_pos[2] = moonPos[2];
 
-	sky.setParamsv(sun_pos, 5.f);
+	sky->setParamsv(sun_pos, 5.f);
 
-	skyb.setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
-	skyb.setSunMoon(moon_pos[2], sun_pos[2]);//, cor_optoma);
+	skyb->setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
+	skyb->setSunMoon(moon_pos[2], sun_pos[2]);//, cor_optoma);
 
 	// Calculate the date from the julian day.
 	ln_date date;
 	SpaceDate::JulianToDate(JD, &date);
 
-	skyb.setDate(date.years, date.months, moon_phase);
+	skyb->setDate(date.years, date.months, moon_phase);
 
 	Vec3d point(1., 0., 0.);
 
@@ -229,10 +229,10 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 			b2.pos[2] = point[2];
 
 			// Use the Skylight model for the color
-			sky.get_xyY_Valuev(b2);
+			sky->get_xyY_Valuev(b2);
 
 			// Use the Skybright.cpp 's models for brightness which gives better results.
-			b2.color[2] = skyb.getLuminance(moon_pos[0]*b2.pos[0]+moon_pos[1]*b2.pos[1]+
+			b2.color[2] = skyb->getLuminance(moon_pos[0]*b2.pos[0]+moon_pos[1]*b2.pos[1]+
 			                                 moon_pos[2]*b2.pos[2], sun_pos[0]*b2.pos[0]+sun_pos[1]*b2.pos[1]+
 			                                 sun_pos[2]*b2.pos[2], b2.pos[2]); //,cor_optoma);
 
