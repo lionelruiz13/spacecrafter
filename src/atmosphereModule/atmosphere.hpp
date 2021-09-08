@@ -32,8 +32,8 @@
 
 #include <vector>
 #include <memory>
-// #include "atmosphereModule/skybright.hpp"
-// #include "atmosphereModule/skylight.hpp"
+#include "atmosphereModule/skybright.hpp"
+#include "atmosphereModule/skylight.hpp"
 #include "tools/fader.hpp"
 
 
