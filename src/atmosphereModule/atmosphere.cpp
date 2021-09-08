@@ -196,7 +196,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	moon_pos[1] = moonPos[1];
 	moon_pos[2] = moonPos[2];
 
-	sky.setParamsv(sun_pos, 5.f, planetName);
+	sky.setParamsv(sun_pos, 5.f);
 
 	skyb.setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
 	skyb.setSunMoon(moon_pos[2], sun_pos[2]);//, cor_optoma);

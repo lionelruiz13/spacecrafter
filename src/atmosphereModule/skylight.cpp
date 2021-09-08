@@ -36,6 +36,8 @@
 
 Skylight::Skylight() : thetas(0.f), T(0.f)
 {
+	// TEMPORAIRE
+	setComputeTypeColor(SK_COMPUTE_COLOR::SK_EARTH_TYPE);
 }
 
 Skylight::~Skylight()
@@ -67,7 +69,7 @@ void Skylight::setParams(float _sun_zenith_angle, float _turbidity, std::string 
 
 }
 
-void Skylight::setParamsv(const float * _sun_pos, float _turbidity, std::string planetName)
+void Skylight::setParamsv(const float * _sun_pos, float _turbidity)
 {
 	// Store sun position
 	sun_pos[0] = _sun_pos[0];
@@ -80,12 +82,14 @@ void Skylight::setParamsv(const float * _sun_pos, float _turbidity, std::string 
 
 	// Precomputation of the distribution coefficients and zenith luminances/color
 	computeZenithLuminance();
-	if (planetName == "Mars")
-		computeZenithMarsColor();
-	else if ((planetName == "Venus") || (planetName == "Titan"))
-		computeZenithVenusColor();
-	else
-		computeZenithEarthColor();
+	//if (planetName == "Mars")
+	//	computeZenithMarsColor();
+	//else if ((planetName == "Venus") || (planetName == "Titan"))
+	//	computeZenithVenusColor();
+	//else
+	//	computeZenithEarthColor();
+	currentComputeFunction();
+	
 	computeLuminanceDistributionCoefs();
 	computeColorDistributionCoefs();
 
@@ -102,6 +106,16 @@ inline void Skylight::computeZenithLuminance(void)
 	zenith_luminance = 1000.f * ((4.0453f*T - 4.9710f) * tanf( (0.4444f - T/120.f) * (M_PI-2.f*thetas) ) -
 	                             0.2155f*T + 2.4192f);
 	if (zenith_luminance<=0.f) zenith_luminance=0.00000000001;
+}
+
+void Skylight::setComputeTypeColor(SK_COMPUTE_COLOR type)
+{
+	if (type == SK_COMPUTE_COLOR::SK_MARS_TYPE)
+		currentComputeFunction = std::bind(&Skylight::computeZenithMarsColor, this);
+	else if (type == SK_COMPUTE_COLOR::SK_VENUS_TYPE)
+		currentComputeFunction = std::bind(&Skylight::computeZenithVenusColor, this);
+	else if (type == SK_COMPUTE_COLOR::SK_EARTH_TYPE)
+		currentComputeFunction = std::bind(&Skylight::computeZenithEarthColor, this);
 }
 
 // Compute CIE x and y color components

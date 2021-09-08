@@ -28,6 +28,11 @@
 #ifndef _SKYLIGHT_H_
 #define _SKYLIGHT_H_
 
+#include <map>
+#include <functional>
+
+enum class SK_COMPUTE_COLOR : char {SK_EARTH_TYPE, SK_VENUS_TYPE, SK_MARS_TYPE};
+
 typedef struct {
 	float zenith_angle; 	// zenith_angle : angular distance to the zenith in radian
 	float dist_sun;			// dist_sun     : angular distance to the sun in radian
@@ -53,7 +58,7 @@ public:
 
 	// Same functions but in vector mode : faster because prevents extra cosine calculations
 	// The position vectors MUST be normalized, and the vertical z component is the third one
-	void setParamsv(const float * sun_pos, float turbidity, std::string planetName);
+	void setParamsv(const float * sun_pos, float turbidity);
 	void get_xyY_Valuev(skylight_struct2& position) const;
 
 private:
@@ -86,6 +91,10 @@ private:
 	// Compute CIE Y (luminance) for zenith in cd/m^2
 	inline void computeZenithLuminance(void);
 	// Compute CIE x and y color components
+
+	void setComputeTypeColor(SK_COMPUTE_COLOR type);
+
+	inline void computeZenithCurrentColor(void);
 	inline void computeZenithEarthColor(void);
 	inline void computeZenithVenusColor(void);
 	inline void computeZenithMarsColor(void);
@@ -94,6 +103,8 @@ private:
 	// Compute the color distribution coefficients
 	inline void computeColorDistributionCoefs(void);
 
+	std::function<void(void)> currentComputeFunction;
+	SK_COMPUTE_COLOR computeTypeColor = SK_COMPUTE_COLOR::SK_EARTH_TYPE;
 };
 
 #endif // _SKYLIGHT_H_
