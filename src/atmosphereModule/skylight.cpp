@@ -45,7 +45,7 @@ Skylight::~Skylight()
 }
 
 
-void Skylight::setParams(float _sun_zenith_angle, float _turbidity, std::string planetName)
+void Skylight::setParams(float _sun_zenith_angle, float _turbidity)// , std::string planetName)
 {
 	// Set the two main variables
 	thetas = _sun_zenith_angle;
@@ -53,10 +53,10 @@ void Skylight::setParams(float _sun_zenith_angle, float _turbidity, std::string 
 
 	// Precomputation of the distribution coefficients and zenith luminances/color
 	computeZenithLuminance();
-	if (planetName == "Earth")
+	// if (planetName == "Earth")
 		computeZenithEarthColor();
-	else
-		computeZenithMarsColor();
+	// else
+		// computeZenithMarsColor();
 
 	computeLuminanceDistributionCoefs();
 	computeColorDistributionCoefs();

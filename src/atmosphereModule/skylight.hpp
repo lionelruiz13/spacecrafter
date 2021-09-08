@@ -50,7 +50,7 @@ public:
 	virtual ~Skylight();
 	// Set the fixed parameters and precompute what can be
 	// This funtion has to be called once before any call to get_*_value()
-	void setParams(float sun_zenith_angle, float turbidity, std::string planetName);
+	void setParams(float sun_zenith_angle, float turbidity); //, std::string planetName);
 	// Compute the sky color at the given position in the xyY color system and store it in position.color
 	inline void get_xyY_Value(skylight_struct * position);
 	// Return the current zenith color
