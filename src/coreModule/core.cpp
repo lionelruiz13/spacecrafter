@@ -639,7 +639,7 @@ void Core::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 {
 	atmosphere->computeColor(timeMgr->getJDay(), sunPos, moonPos,
 	                          ssystemFactory->getMoon()->get_phase(ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
-	                          tone_converter, projection, observatory->getHomePlanetEnglishName(), observatory->getLatitude(), observatory->getAltitude(),
+	                          tone_converter, projection, observatory->getLatitude(), observatory->getAltitude(),
 	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
 }
 
