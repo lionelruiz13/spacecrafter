@@ -1804,6 +1804,7 @@ bool Core::setHomePlanet(const std::string &planet)
 	ssystemFactory->startTrails( ssystemFactory->getFlag(BODY_FLAG::F_TRAIL));
 	Event* event= new ObserverEvent(planet);
 	EventRecorder::getInstance()->queue(event);
+	setLandscapeToBody();
 	if (planet=="selected")
 		return ssystemFactory->switchToAnchor(selected_object.getEnglishName());
 	else

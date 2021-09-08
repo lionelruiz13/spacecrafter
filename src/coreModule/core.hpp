@@ -460,7 +460,7 @@ public:
 
 	[[deprecated]]  void onObserverChange(std::string str) {
 		std::cout << "Modification observer to " << str << std::endl;
-		setLandscapeToBody();
+		//setLandscapeToBody();
 	}
 
 private:
