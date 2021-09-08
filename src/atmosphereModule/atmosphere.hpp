@@ -56,7 +56,7 @@ public:
 	Atmosphere(ThreadContext *context);
 	virtual ~Atmosphere();
 
-	void computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase, const ToneReproductor * eye, const Projector* prj, const std::string &planetName,
+	void computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase, const ToneReproductor * eye, const Projector* prj,
 	                   float latitude = 45.f, float altitude = 200.f,
 	                   float temperature = 15.f, float relative_humidity = 40.f);
 

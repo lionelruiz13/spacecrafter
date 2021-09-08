@@ -139,7 +139,7 @@ void Atmosphere::createSC_context(ThreadContext *context)
 // }
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
-                               const ToneReproductor * eye, const Projector* prj,  const std::string &planetName,
+                               const ToneReproductor * eye, const Projector* prj,
                                float latitude, float altitude, float temperature, float relative_humidity)
 {
 	float min_mw_lum = 0.13;
