@@ -43,13 +43,8 @@ public:
 	enum S_TZ_FORMAT {S_TZ_CUSTOM, S_TZ_GMT_SHIFT, S_TZ_SYSTEM_DEFAULT};
 	
 	
-	SpaceDate() : 
-		timeFormat(S_TIME_SYSTEM_DEFAULT),
-		dateFormat(S_DATE_SYSTEM_DEFAULT), 
-		timeZoneMode(S_TZ_SYSTEM_DEFAULT),
-		GMTShift (0) { }
-		
-	~SpaceDate(){ }
+	SpaceDate(){}
+	~SpaceDate(){}
 	
 	std::string getPrintableTimeNav(double JDay, double Longitude, double latitude) const;
 	
@@ -167,11 +162,11 @@ private:
 	std::string sTimeFormatToString(S_TIME_FORMAT) const;
 
 	// Date and time variables
-	S_TIME_FORMAT timeFormat;
-	S_DATE_FORMAT dateFormat;
-	S_TZ_FORMAT timeZoneMode;		//! Can be the system default or a user defined value
+	S_TIME_FORMAT timeFormat = S_TIME_SYSTEM_DEFAULT;
+	S_DATE_FORMAT dateFormat = S_DATE_SYSTEM_DEFAULT;
+	S_TZ_FORMAT timeZoneMode = S_TZ_SYSTEM_DEFAULT;		//! Can be the system default or a user defined value
 	std::string custom_tz_name;		//! Something like "Europe/Paris"
-	float GMTShift;					//! Time shift between GMT time and local time in hour. (positive for Est of GMT)
+	float GMTShift = 0;					//! Time shift between GMT time and local time in hour. (positive for Est of GMT)
 };
 
 #endif
