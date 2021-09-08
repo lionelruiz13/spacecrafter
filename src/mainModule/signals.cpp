@@ -28,6 +28,7 @@
 #include "appModule/app.hpp"
 #include "mainModule/signals.hpp"
 #include "tools/app_settings.hpp"
+#include "tools/log.hpp"
 
 App* ISignals::m_app = NULL;
 
@@ -59,7 +60,8 @@ ISignals::~ISignals()
 void ISignals::NSSigTERM( int )
 {
 	// Tell app to stop gracefully
-	std::cout << "Caught SIGTERM, shutting down." << std::endl;
+	//std::cout << "Caught SIGTERM, shutting down." << std::endl;
+	cLog::get()->write("Caught SIGTERM, shutting down.");
 	if( m_app )
 		m_app->flag(APP_FLAG::ALIVE, false);
 }

@@ -228,10 +228,12 @@ unsigned int StarManager::getNbrStars()
 // LECTURE DU CATALOGUE INTERNE
 bool StarManager::loadStarCatalog(const std::string &fileName)
 {
-	std::cout << "StarManager::loadStarCatalog " << fileName << std::endl;
+	//std::cout << "StarManager::loadStarCatalog " << fileName << std::endl;
+	//cLog::get()->write("StarManager::loadStarCatalog " + fileName, LOG_TYPE::L_DEBUG);
 	std::ifstream file(fileName, std::ifstream::in);
 	if (!file.is_open()) {
-		std::cout << "ERREUR: Impossible d'ouvrir le fichier " << fileName << std::endl;
+		//std::cout << "ERREUR: Impossible d'ouvrir le fichier " << fileName << std::endl;
+		cLog::get()->write("StarManager::loadStarCatalog unable to open" + fileName, LOG_TYPE::L_ERROR);
 		return false;
 	}
 
@@ -248,8 +250,8 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	unsigned int numberRead = 0;
 
 	std::string line; // variable which will contain each line of the file
-	std::cout << "Lecture du catalogue "  << fileName << std::endl;
-	cLog::get()->write("Starmanager, loading catalogue "+fileName);
+	//std::cout << "Lecture du catalogue "  << fileName << std::endl;
+	cLog::get()->write("Starmanager, loading text catalogue "+fileName);
 
 	while (getline(file, line)) {
 		//on commence par un hypercube
@@ -257,7 +259,8 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 		istrHc >> obj >> hcX >> hcY >> hcZ >> cubesNumber;
 
 		if (obj[0] != 'H') {
-			std::cout << "error parsing:  H needed but i see "<< line << std::endl;
+			//std::cout << "error parsing:  H needed but i see "<< line << std::endl;
+			cLog::get()->write("StarManager error parsing:  H needed but i see "+line, LOG_TYPE::L_ERROR);
 			return false;
 		}
 
@@ -270,7 +273,8 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 			std::istringstream istrC(line);
 			istrC >> obj>> cubeX >> cubeY >> cubeZ >> starsNumber;
 			if (obj[0] != 'C') {
-				std::cout << "error parsing:  C needed but i see "<< line << std::endl;
+				//std::cout << "error parsing:  C needed but i see "<< line << std::endl;
+				cLog::get()->write("StarManager error parsing:  C needed but i see "+line, LOG_TYPE::L_ERROR);
 				return false;
 			}
 
@@ -285,7 +289,8 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 				istrS >> obj>> HIP >> starX >> starY >> starZ >> pmRA >> pmDE >> mag >> B_V >> pc;
 
 				if (obj[0] != 'S') {
-					std::cout << "error parsing:  S needed but i see "<< line << std::endl;
+					//std::cout << "error parsing:  S needed but i see "<< line << std::endl;
+					cLog::get()->write("StarManager error parsing:  S needed but i see "+line, LOG_TYPE::L_ERROR);
 					return false;
 				}
 
@@ -314,7 +319,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	oss << "Cubes      : " << nbrC << std::endl;
 	oss << "Stars      : " << nbrS;
 	cLog::get()->write(oss.str());
-	std::cout << oss.str() << std::endl;
+	//std::cout << oss.str() << std::endl;
 	return true;
 }
 
@@ -322,7 +327,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 // LECTURE DU CATALOGUE INTERNE
 bool StarManager::loadStarBinCatalog(const std::string &fileName)
 {
-	std::cout << "StarManager::loadStarBinCatalog " << fileName << std::endl;
+	//std::cout << "StarManager::loadStarBinCatalog " << fileName << std::endl;
 	std::ifstream fileIn(fileName, std::ios::binary| std::ios::in);
 	if (!fileIn.is_open()) {
 		cLog::get()->write("StarManager, error opening file "+fileName, LOG_TYPE::L_WARNING);
@@ -342,8 +347,8 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 	long unsigned int nbrH=0, nbrC=0, nbrS=0;
 
 	std::string line; // variable which will contain each line of the file
-	std::cout << "Lecture du catalogue "  << fileName << std::endl;
-	cLog::get()->write("Starmanager, loading catalogue "+fileName);
+	//std::cout << "Lecture du catalogue "  << fileName << std::endl;
+	cLog::get()->write("Starmanager, loading bin catalogue "+fileName);
 
 	while (!fileIn.eof()) {
 		//on commence par un hypercube
@@ -444,21 +449,23 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 	oss << "Cubes      : " << nbrC << std::endl;
 	oss << "Stars      : " << nbrS;
 	cLog::get()->write(oss.str());
-	std::cout << oss.str() << std::endl;
+	//std::cout << oss.str() << std::endl;
 	return true;
 }
 
 
 bool StarManager::saveStarBinCatalog(const std::string &fileName)
 {
-	std::cout << "StarManager::saveStarBinCatalog " << fileName << std::endl;	
+	//std::cout << "StarManager::saveStarBinCatalog " << fileName << std::endl;
+	cLog::get()->write("StarManager::saveStarBinCatalog " + fileName, LOG_TYPE::L_DEBUG);
 	std::ofstream file(fileName, std::ios::binary| std::ios::out);
 	std::cout.precision(6);
 	float x,y,z, pmRA, pmDE, mag, pc;
 	int nbr, B_V;
 
 	if (!file.is_open()) {
-		std::cout << "Error writing saveStarCatalog" << std::endl;
+		//std::cout << "Error writing saveStarCatalog" << std::endl;
+		cLog::get()->write("Error writing saveStarCatalog", LOG_TYPE::L_ERROR);	
 		return false;
 	}
 
@@ -517,7 +524,8 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 				file.write((char *)&B_V, sizeof(B_V));
 				file.write((char *)&pc, sizeof(pc));
 				if (file.bad())
-					std::cout << "error writing" << std::endl;
+					cLog::get()->write("Error writing", LOG_TYPE::L_ERROR);	
+					//std::cout << "error writing" << std::endl;
 
 				//~ file << "S" << " " << (*star)->HIP << " " << (*star)->posXYZ[0] << " " << (*star)->posXYZ[1] << " " << (*star)->posXYZ[2] << " " 
 				//~ << (*star)->pmRA << " " << (*star)->pmDE << " " << (*star)->mag << " " << (*star)->B_V << " " << (*star)->pc << std::endl;
@@ -531,12 +539,14 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 
 bool StarManager::saveStarCatalog(const std::string &fileName)
 {
-	std::cout << "StarManager::saveStarCatalog " << fileName << std::endl;
+	//std::cout << "StarManager::saveStarCatalog " << fileName << std::endl;
+	cLog::get()->write("StarManager::saveStarCatalog " + fileName, LOG_TYPE::L_DEBUG);
 	std::ofstream file(fileName);
 	std::cout.precision(6);
 
 	if (!file.is_open()) {
-		std::cout << "Error writing saveStarCatalog" << std::endl;
+		//std::cout << "Error writing saveStarCatalog" << std::endl;
+		cLog::get()->write("Error writing saveStarCatalog", LOG_TYPE::L_ERROR);
 		return false;
 	}
 
@@ -590,11 +600,11 @@ void StarManager::addHcStar(starInfo* star)
 	int hc_centerY = hcY * HCSIZE;
 	int hc_centerZ = hcZ * HCSIZE;
 
-	if  ( (abs(hc_centerX-X)>HCSIZE/2) || (abs(hc_centerY-Y)>HCSIZE/2) || (abs(hc_centerZ-Z)>HCSIZE/2) ) {
-		std::cout << "hc entree " << X << " " << Y << " " << Z << std::endl;
-		std::cout << "hc sortie " << hc_centerX << " " << hc_centerY << " " << hc_centerZ << std::endl;
+	// if  ( (abs(hc_centerX-X)>HCSIZE/2) || (abs(hc_centerY-Y)>HCSIZE/2) || (abs(hc_centerZ-Z)>HCSIZE/2) ) {
+	// 	std::cout << "hc entree " << X << " " << Y << " " << Z << std::endl;
+	// 	std::cout << "hc sortie " << hc_centerX << " " << hc_centerY << " " << hc_centerZ << std::endl;
 		//~ sleep(2);
-	}
+	// }
 
 	HyperCube *tmp=nullptr;
 	tmp = hcExist(hc_centerX, hc_centerY, hc_centerZ );
@@ -618,7 +628,8 @@ void StarManager::addHcStar(starInfo* star)
 //    http://cdsarc.u-strasbg.fr/viz-bin/Cat?I/311
 bool StarManager::loadStarRaw(const std::string &catPath)
 {
-	std::cout << "StarManager::loadStarRaw " << catPath << std::endl;
+	//std::cout << "StarManager::loadStarRaw " << catPath << std::endl;
+	cLog::get()->write("Starmanager::loadStarRaw " + catPath);
 	std::ifstream file(catPath);
 	unsigned int hip;
 	float RArad, DErad, Plx, pmRA, pmDE, mag_app, BV;

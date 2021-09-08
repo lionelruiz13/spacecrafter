@@ -30,6 +30,9 @@
 #include <string>
 #include "appModule/space_date.hpp"
 #include "atmosphereModule/atmosphere.hpp"
+#include "atmosphereModule/skybright.hpp"
+#include "atmosphereModule/skylight.hpp"
+
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/sc_const.hpp"
@@ -47,7 +50,7 @@
 
 
 Atmosphere::Atmosphere(ThreadContext *context) : world_adaptation_luminance(0.f), atm_intensity(0),
-	lightPollutionLuminance(0), cor_optoma(0)
+	lightPollutionLuminance(0)//, cor_optoma(0)
 {
 	// Create the vector array used to store the sky color on the full field of view
 	tab_sky = new Vec3f*[SKY_RESOLUTION+1];
@@ -196,7 +199,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	sky.setParamsv(sun_pos, 5.f, planetName);
 
 	skyb.setLoc(latitude * M_PI/180., altitude, temperature, relative_humidity);
-	skyb.setSunMoon(moon_pos[2], sun_pos[2], cor_optoma);
+	skyb.setSunMoon(moon_pos[2], sun_pos[2]);//, cor_optoma);
 
 	// Calculate the date from the julian day.
 	ln_date date;
@@ -231,7 +234,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 			// Use the Skybright.cpp 's models for brightness which gives better results.
 			b2.color[2] = skyb.getLuminance(moon_pos[0]*b2.pos[0]+moon_pos[1]*b2.pos[1]+
 			                                 moon_pos[2]*b2.pos[2], sun_pos[0]*b2.pos[0]+sun_pos[1]*b2.pos[1]+
-			                                 sun_pos[2]*b2.pos[2], b2.pos[2],cor_optoma);
+			                                 sun_pos[2]*b2.pos[2], b2.pos[2]); //,cor_optoma);
 
 			sum_lum+=b2.color[2];
 			eye->xyY_to_RGB(b2.color);

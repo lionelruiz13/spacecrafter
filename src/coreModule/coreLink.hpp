@@ -977,19 +977,10 @@ public:
 		return core->ssystemFactory->getSunAzimuth(core->navigation);
 	}
 
-  //return the Date
 	double getDateYear() const;
-
-	//return the Date
 	double getDateMonth() const;
-
-	//return the Date
 	double getDateDay() const;
-
-	//return the Date
 	double getDateHour() const;
-
-	//return the Date
 	double getDateMinute() const;
 
 	// Fonctions non utilisée ?

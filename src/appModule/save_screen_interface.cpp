@@ -21,14 +21,14 @@ SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _heig
 	height = _height;
 	master = _master;
 	minWH = std::min(width, height);
-	saveScreen = new SaveScreen(minWH);
+	saveScreen = std::make_unique<SaveScreen>(minWH);
 	master->setupInterceptor(this, writeScreenshot);
 }
 
 
 SaveScreenInterface::~SaveScreenInterface()
 {
-	delete saveScreen;
+	//delete saveScreen;
 }
 
 void SaveScreenInterface::startVideo()

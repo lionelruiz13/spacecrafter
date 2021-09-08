@@ -29,7 +29,7 @@
 #include <utility>
 #include <memory>
 
-#include "tools/s_font.hpp"
+
 
 /**
  * \file fontFactory.hpp
@@ -49,7 +49,7 @@
  * fonts to display. 
  *
 */
-
+class s_font;
 
 enum class CLASSEFONT : char {
 	CLASS_HIPSTARS,

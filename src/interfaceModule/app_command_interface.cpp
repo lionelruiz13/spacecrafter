@@ -34,6 +34,7 @@
 #include "app_command_color.hpp"
 #include "appModule/app.hpp"
 #include "appModule/save_screen_interface.hpp"
+#include "appModule/space_date.hpp"
 #include "appModule/fontFactory.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
@@ -1459,7 +1460,7 @@ int AppCommandInterface::commandPrint()
 	for(const auto& i : args) {
 		std::stringstream oss;
 		oss << "[" << i.first <<"] " << evalString(i.second);
-		std::cout << oss.str() << std::endl;
+		//std::cout << oss.str() << std::endl;
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 		cLog::get()->write(oss.str(),  LOG_TYPE::L_WARNING);
 	}
@@ -1989,7 +1990,7 @@ int AppCommandInterface::commandText()
 	std::string argDisplay = args[W_DISPLAY];
 	std::string argString = args[W_STRING];
 
-	argString = evalString(argString);
+	argString = Translator::globalTranslator.translateUTF8(evalString(argString));
 
 	if (!argAction.empty()) {
 		if (argString.empty()) {
@@ -3095,7 +3096,7 @@ int AppCommandInterface::commandBody()
 
 		std::string argColor = args[W_COLOR];
 		if (!argColor.empty()) {
-			std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
+			//std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
 			//gestion de la couleur
 			Vec3f Vcolor;
 			std::string argR= args[W_R];

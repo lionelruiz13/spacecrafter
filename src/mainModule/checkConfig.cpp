@@ -45,7 +45,7 @@ void CheckConfig::checkMainSettings()
 	tmpSettings[SCK_LOG]="true";
 	// mainSettings["debug_opengl"]="false";
 	tmpSettings[SCK_MILKYWAY_IRIS] = "false";
-	tmpSettings[SCK_FLAG_OPTOMA]="false";
+	// tmpSettings[SCK_FLAG_OPTOMA]="false";
 	// mainSettings["script_debug"]="false";
 	tmpSettings[SCK_CPU_INFO]="false";
 	tmpSettings[SCK_FLAG_ALWAYS_VISIBLE]="true";
@@ -94,6 +94,8 @@ void CheckConfig::checkVideoSettings()
 void CheckConfig::checkRenderingSettings()
 {
 	tmpSettings[SCK_FLAG_ANTIALIAS_LINES]="true";
+	tmpSettings[SCK_LOW_RES]="false";
+	tmpSettings[SCK_LOW_RES_MAX]="1024";
 	tmpSettings[SCK_ANTIALIASING]="8";
 	tmpSettings[SCK_LINE_WIDTH]="1.5";
 	tmpSettings[SCK_LANDSCAPE_SLICES]="80";

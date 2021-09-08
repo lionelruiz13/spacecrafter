@@ -257,7 +257,8 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 	// pipelineNebulaHint
 
 	if (vecHintPos.size() > MAX_HINT * 8) {
-		std::cout << "Too many nebula hint." << std::endl;
+		//std::cout << "Too many nebula hint." << std::endl;
+		cLog::get()->write("Too many nebula hint, reduce to MAX_HINT", LOG_TYPE::L_WARNING);
 		vecHintPos.resize(MAX_HINT * 8);
 		vecHintTex.resize(MAX_HINT * 8);
 		vecHintColor.resize(MAX_HINT * 12);

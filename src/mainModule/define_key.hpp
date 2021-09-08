@@ -48,7 +48,7 @@
 #define SCK_DEBUG                           "debug"
 #define SCK_LOG                             "write_log"
 #define SCK_MILKYWAY_IRIS                   "milkyway_iris"
-#define SCK_FLAG_OPTOMA                     "flag_optoma"
+// #define SCK_FLAG_OPTOMA                     "flag_optoma"
 #define SCK_CPU_INFO                        "cpu_info"
 #define SCK_FLAG_ALWAYS_VISIBLE             "flag_always_visible"
 
@@ -246,6 +246,8 @@
 #define SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE      "light_pollution_limiting_magnitude"
 
 #define SCK_FLAG_NAVIGATION                 "flag_navigation"
+#define SCK_LOW_RES                         "low_resolution"
+#define SCK_LOW_RES_MAX                     "low_resolution_max"
 #define SCK_PRESET_SKY_TIME                 "preset_sky_time"
 #define SCK_AUTO_MOVE_DURATION              "auto_move_duration"
 #define SCK_DAY_KEY_MODE                    "day_key_mode"

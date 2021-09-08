@@ -29,11 +29,11 @@
 #include <memory>
 #include <queue>
 
-#include "spacecrafter.hpp"
-#include "appModule/fps.hpp"
-#include "appModule/space_date.hpp"
-#include "tools/app_settings.hpp"
-
+//#include "spacecrafter.hpp"
+//#include "appModule/fps.hpp"
+//#include "appModule/space_date.hpp"
+//#include "tools/app_settings.hpp"
+#include "tools/vecmath.hpp"
 
 #include "tools/no_copy.hpp"
 

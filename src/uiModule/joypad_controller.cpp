@@ -220,7 +220,7 @@ void JoypadController::handleJoyButtonDown(const SDL_JoyButtonEvent &E) noexcept
 
 	if(isCommand(E.button)) {
 		for(std::string command : buttonCommand[E.button]) {
-			std::cout << command << std::endl;
+			//std::cout << command << std::endl;
 			ui->executeCommand(command);
 		}
 	} else {

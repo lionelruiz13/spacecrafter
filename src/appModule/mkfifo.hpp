@@ -27,7 +27,7 @@
 
 #include <SDL2/SDL_thread.h>
 #include <queue> //ServerSocket
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/app_settings.hpp"
 #include <string>
@@ -64,7 +64,7 @@ public:
 	bool update(std::string &output);
 private:
 	// indique l'état du Mkfifo
-	bool is_active;
+	bool is_active = false;
 	// taille du buffer
 	int buffer_size;
 	// queue contenant tous les messages obtenus depuis l'extérieur
@@ -72,7 +72,7 @@ private:
 	//nom complet du fichier pipe
 	std::string filename;
 	//mutex sur les lectures IO du pipe
-	SDL_mutex* lock;
+	SDL_mutex* lock = nullptr;
 	// create thread for mkfifo
 	SDL_Thread* threadMkfifoRead;
 	// function thread qui gere la lecture des données de l'extérieur

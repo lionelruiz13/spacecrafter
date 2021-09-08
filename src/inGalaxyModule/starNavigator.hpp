@@ -23,7 +23,6 @@
 
 #include "tools/vecmath.hpp"
 #include "inGalaxyModule/starManager.hpp"
-#include "tools/s_texture.hpp"
 #include "tools/ThreadPool.hpp"
 #include "tools/no_copy.hpp"
 #include "vulkanModule/Context.hpp"
@@ -45,6 +44,7 @@ class PipelineLayout;
 class Set;
 class Uniform;
 class StarViewer;
+class s_texture;
 
 class StarNavigator: public NoCopy  {
 public:

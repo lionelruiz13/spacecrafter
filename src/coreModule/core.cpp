@@ -243,6 +243,7 @@ void Core::init(const InitParser& conf)
 {
 	if (firstTime) {
 		//s_font::initBaseFont(AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_GENERAL_NAME));
+		s_texture::setLoadInLowResolution(conf.getBoolean(SCS_RENDERING, SCK_LOW_RES), conf.getInt(SCS_RENDERING, SCK_LOW_RES_MAX) );
 		this->registerCoreFont();
 	}
 
@@ -507,7 +508,9 @@ void Core::init(const InitParser& conf)
 
 	setLightPollutionLimitingMagnitude(conf.getDouble(SCS_VIEWING,SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE));
 
-	atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
+	//atmosphere->setFlagOptoma(conf.getBoolean(SCS_MAIN, SCK_FLAG_OPTOMA));
+
+	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
 	//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 

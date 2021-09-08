@@ -42,13 +42,13 @@ public:
 	// This funtion has to be called once before any call to getLuminance()
 	// Input : cos_dist_moon_zenith = cos(angular distance between moon and zenith)
 	//		   cos_dist_sun_zenith  = cos(angular distance between sun and zenith)
-	void setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith, int cor_optoma);
+	void setSunMoon(float cos_dist_moon_zenith, float cos_dist_sun_zenith);//, int cor_optoma);
 
 	// Compute the luminance at the given position
 	// Inputs : cos_dist_moon = cos(angular distance between moon and the position)
 	//			cos_dist_sun  = cos(angular distance between sun  and the position)
 	//			cos_dist_zenith = cos(angular distance between zenith and the position)
-	float getLuminance(float cos_dist_moon, float cos_dist_sun, float cos_dist_zenith, int cor_optoma);
+	float getLuminance(float cos_dist_moon, float cos_dist_sun, float cos_dist_zenith);//, int cor_optoma);
 
 private:
 	float air_mass_moon;	// Air mass for the Moon

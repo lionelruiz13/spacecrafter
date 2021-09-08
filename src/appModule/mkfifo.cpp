@@ -27,7 +27,7 @@
 #include <sstream>
 #include <string> //ServerSocket
 
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "appModule/mkfifo.hpp" //ServerSocket
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
@@ -48,13 +48,10 @@
 //mkfifo -----------------------
 Mkfifo::Mkfifo()
 {
-	is_active=false;
-	lock=NULL;
 }
 
 Mkfifo::~Mkfifo()
 {
-	is_active=false;
 }
 
 void Mkfifo::init(const std::string& _filename, int _buffer_size)

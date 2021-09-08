@@ -42,6 +42,9 @@
 
 #include "vulkanModule/Context.hpp"
 
+
+class Skylight;
+class Skybright;
 class Projector;
 class Navigator;
 class ToneReproductor;
@@ -112,16 +115,16 @@ public:
 		lightPollutionLuminance = luminance;
 	}
 
-	void setFlagOptoma (bool b) {
-		(b==0) ? cor_optoma=0 : cor_optoma=1;
-	}
+	// void setFlagOptoma (bool b) {
+	// 	(b==0) ? cor_optoma=0 : cor_optoma=1;
+	// }
 
-	//! Get the Optoma flag
-	bool getFlagOptoma() const {
-		if (cor_optoma)
-			return true;
-		else return false;
-	}
+	// //! Get the Optoma flag
+	// bool getFlagOptoma() const {
+	// 	if (cor_optoma)
+	// 		return true;
+	// 	else return false;
+	// }
 
 	float getLightPollutionLuminance() {
 		return lightPollutionLuminance;
@@ -149,7 +152,7 @@ private:
 	float atm_intensity;
 	ParabolicFader fader;
 	float lightPollutionLuminance; 	//! light pollution simulation, add to svn 20070220
-	int cor_optoma; //! flag for correction vp optoma
+//	int cor_optoma; //! flag for correction vp optoma
 
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;
