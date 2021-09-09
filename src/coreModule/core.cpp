@@ -1812,8 +1812,7 @@ void Core::setHomePlanet(const std::string &planet)
 	if (result) {
 		setLandscapeToBody();
 		// il faut obtenir ici la planete sur laquelle on se trouve pour accéder au champ modelAtmosphere qui se trouve dans AtmosphereParams du Body en question
-
-		//atmosphere->setModel(ssystemFactory-> );
+		atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
 	}
 }
 
