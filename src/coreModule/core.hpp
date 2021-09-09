@@ -453,12 +453,12 @@ public:
 
 	void saveCurrentConfig(InitParser &conf);
 
-	[[deprecated]]  void onAltitudeChange(double value) {
+	void onAltitudeChange(double value) {
 		std::cout << "Modification altitude reçue "<< value << std::endl;
 		setBodyDecor();
 	}
 
-	[[deprecated]]  void onObserverChange(std::string str) {
+	void onObserverChange(std::string str) {
 		std::cout << "Modification observer to " << str << std::endl;
 		//setLandscapeToBody();
 	}
