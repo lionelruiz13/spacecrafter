@@ -1798,17 +1798,23 @@ void Core::updateMove(int delta_time)
 }
 
 
-bool Core::setHomePlanet(const std::string &planet)
+void Core::setHomePlanet(const std::string &planet)
 {
 	// reset planet trails due to changed perspective
 	ssystemFactory->startTrails( ssystemFactory->getFlag(BODY_FLAG::F_TRAIL));
 	Event* event= new ObserverEvent(planet);
 	EventRecorder::getInstance()->queue(event);
-	setLandscapeToBody();
+	bool result = false;
 	if (planet=="selected")
-		return ssystemFactory->switchToAnchor(selected_object.getEnglishName());
+		result =  ssystemFactory->switchToAnchor(selected_object.getEnglishName());
 	else
-		return ssystemFactory->switchToAnchor(planet);
+		result =  ssystemFactory->switchToAnchor(planet);
+	if (result) {
+		setLandscapeToBody();
+		// il faut obtenir ici la planete sur laquelle on se trouve pour accéder au champ modelAtmosphere qui se trouve dans AtmosphereParams du Body en question
+
+		//atmosphere->setModel(ssystemFactory-> );
+	}
 }
 
 
