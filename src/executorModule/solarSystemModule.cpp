@@ -42,6 +42,7 @@ void SolarSystemModule::onEnter()
 void SolarSystemModule::onExit()
 {
 	std::cout << "Je quitte InSolarSystem" << std::endl;
+	core->timeMgr->setTimeSpeed(1);
 }
 
 
