@@ -20,4 +20,7 @@ struct BodyTexture {
 
 enum class BODY_FLAG : char {F_NONE, F_TRAIL, F_HINTS, F_AXIS, F_ORBIT, F_HALO, F_CLOUDS};
 
+enum class ATMOSPHERE_MODEL : char {NONE_MODEL, EARTH_MODEL, VENUS_MODEL, MARS_MODEL};
+
+
 #endif // _BODY_COMMON_HPP_

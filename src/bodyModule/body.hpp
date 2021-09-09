@@ -78,6 +78,7 @@ enum TURN_AROUND {tANothing = 0, tACenter = 1, tABody = 2};
 
 typedef struct AtmosphereParams {
 	bool hasAtmosphere = false;
+	ATMOSPHERE_MODEL modelAtmosphere = ATMOSPHERE_MODEL::NONE_MODEL;
 	float limInf = 0.f;
 	float limSup = 0.f;
 	float limLandscape = 0.f;
@@ -367,6 +368,7 @@ public:
 		defaultAtmosphereParams =  new(AtmosphereParams);
 		assert(defaultAtmosphereParams != nullptr);
 		defaultAtmosphereParams->hasAtmosphere = false;
+		defaultAtmosphereParams->modelAtmosphere = ATMOSPHERE_MODEL::NONE_MODEL;
 		defaultAtmosphereParams->limInf = 0.f;
 		defaultAtmosphereParams->limSup = 0.f;
 		defaultAtmosphereParams->limLandscape = 10000.f;

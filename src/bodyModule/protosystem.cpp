@@ -62,6 +62,14 @@ ProtoSystem::~ProtoSystem()
 }
 
 
+static ATMOSPHERE_MODEL setAtmosphere(const std::string& atmModel)
+{
+	if (atmModel=="earth_model") return ATMOSPHERE_MODEL::EARTH_MODEL;
+	if (atmModel=="venus_model") return ATMOSPHERE_MODEL::VENUS_MODEL;
+	if (atmModel=="mars_model") return ATMOSPHERE_MODEL::MARS_MODEL;
+	return ATMOSPHERE_MODEL::NONE_MODEL;
+}
+
 // Init and load the solar system data
 void ProtoSystem::load(const std::string& planetfile)
 {
@@ -791,6 +799,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 		AtmosphereParams* tmp = nullptr;
 		tmp = new(AtmosphereParams);
 		tmp->hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
+		tmp->modelAtmosphere = setAtmosphere(param["has_atmosphere"]);
 		tmp->limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
 		tmp->limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
 		tmp->limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);
