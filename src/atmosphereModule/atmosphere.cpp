@@ -292,3 +292,18 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 	//Renderer::drawMultiArrays(shaderAtmosphere.get(), m_atmGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, SKY_RESOLUTION, (SKY_RESOLUTION+1)*2 );
 	commandMgr->setSubmission(commandIndex);
 }
+
+
+void Atmosphere::setModel(ATMOSPHERE_MODEL atmModel)
+{
+	//default selection
+	SK_COMPUTE_COLOR tmp = SK_COMPUTE_COLOR::SK_EARTH_TYPE;
+	switch (atmModel)
+	{
+		case ATMOSPHERE_MODEL::EARTH_MODEL :	tmp = SK_COMPUTE_COLOR::SK_EARTH_TYPE; 		break; //for g++
+		case ATMOSPHERE_MODEL::VENUS_MODEL :	tmp = SK_COMPUTE_COLOR::SK_VENUS_TYPE; 		break;
+		case ATMOSPHERE_MODEL::MARS_MODEL :		tmp = SK_COMPUTE_COLOR::SK_MARS_TYPE; 		break;
+		case ATMOSPHERE_MODEL::NONE_MODEL :		break;
+	}
+	sky->setComputeTypeColor(tmp);
+}

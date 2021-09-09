@@ -34,6 +34,7 @@
 #include <memory>
 #include "atmosphereModule/skybright.hpp"
 #include "atmosphereModule/skylight.hpp"
+#include "bodyModule/body_common.hpp"
 #include "tools/fader.hpp"
 
 
@@ -135,6 +136,9 @@ public:
 
 	//! determine le viewport pour la construction des grilles
 	void initGridViewport(const Projector *prj);
+
+	// indique quel model d'atmosphère sera calculé en fonction de la planete
+	void setModel(ATMOSPHERE_MODEL atmModel);
 
 private:
 	//! initialise les paramètres du shader

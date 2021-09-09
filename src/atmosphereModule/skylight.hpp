@@ -61,6 +61,9 @@ public:
 	void setParamsv(const float * sun_pos, float turbidity);
 	void get_xyY_Valuev(skylight_struct2& position) const;
 
+	// Compute the sky color from varius planet localisation
+	void setComputeTypeColor(SK_COMPUTE_COLOR type);
+
 private:
 	float thetas;			// angular distance between the zenith and the sun in radian
 	float T;				// Turbidity : i.e. sky "clarity"
@@ -91,8 +94,6 @@ private:
 	// Compute CIE Y (luminance) for zenith in cd/m^2
 	inline void computeZenithLuminance(void);
 	// Compute CIE x and y color components
-
-	void setComputeTypeColor(SK_COMPUTE_COLOR type);
 
 	inline void computeZenithCurrentColor(void);
 	inline void computeZenithEarthColor(void);
