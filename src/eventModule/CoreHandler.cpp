@@ -27,13 +27,13 @@
 #include "coreModule/core.hpp"
 #include "eventModule/CoreEvent.hpp"
 
-void EventAltitudeHandler::handle(const Event* e)
+void EventAltitudeHandler::handle(const Event* e, Executor *executor)
 {
 	AltitudeEvent * event = (AltitudeEvent *)e;
-	core->onAltitudeChange(event->getAltitude());
+	executor->onAltitudeChange(event->getAltitude());
 }
 
-void EventObserverHandler::handle(const Event* e)
+void EventObserverHandler::handle(const Event* e, Executor *executor)
 {
 	ObserverEvent * event = (ObserverEvent *)e;
 	core->onObserverChange(event->getNewObserver());

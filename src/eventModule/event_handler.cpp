@@ -35,16 +35,16 @@ EventHandler::EventHandler(EventRecorder* _eventRecorder)
 	eventRecorder = _eventRecorder;
 }
 
-void EventHandler::handleEvents() {
+void EventHandler::handleEvents(Executor *executor) {
 	while (eventRecorder->haveEvents()) {
 		// assume e != nullptr
 		const Event* e = eventRecorder->getEvent();
-		this->handle(e);
+		this->handle(e, executor);
 		delete e;
 	}
 }
 
-void EventHandler::handle(const Event* e) {
+void EventHandler::handle(const Event* e, Executor *executor) {
 	Event::Event_Type et = e->getEventType();
 	auto it=handlerMap.find(et);
 
@@ -53,7 +53,7 @@ void EventHandler::handle(const Event* e) {
 		return;
 	}
 	
-	it->second->handle(e);
+	it->second->handle(e, executor);
 }
 
 void EventHandler::add(EventHandlerCanvas *sE, Event::Event_Type et){

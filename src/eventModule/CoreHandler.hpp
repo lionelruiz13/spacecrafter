@@ -51,7 +51,7 @@ public:
 	}
 	~EventAltitudeHandler() {
 	}
-    void handle(const Event* e) override;
+    void handle(const Event* e, Executor *executor) override;
 
 protected :
 	Core* core = nullptr;
@@ -70,7 +70,7 @@ public:
 	}
 	~EventObserverHandler() {
 	}
-    void handle(const Event* e) override;
+    void handle(const Event* e, Executor *executor) override;
 
 protected :
 	Core* core = nullptr;

@@ -33,6 +33,8 @@
 #ifndef _EVENT_HANDLER_CANVAS_HPP
 #define _EVENT_HANDLER_CANVAS_HPP
 
+#include "executorModule/executor.hpp"
+
 class Event;
 
 /**
@@ -50,7 +52,7 @@ public:
 	EventHandlerCanvas& operator = (EventHandlerCanvas const &) = delete;
 
 	// the function : performs the processing of a particular Event
-	virtual void handle(const Event* e) = 0;
+	virtual void handle(const Event* e, Executor *executor) = 0;
 };
 
 #endif // SUB_EVENT_HANDLER_HPP

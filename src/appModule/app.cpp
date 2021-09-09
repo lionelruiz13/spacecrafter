@@ -47,6 +47,7 @@
 #include "coreModule/callbacks.hpp"
 #include "coreModule/core.hpp"
 #include "coreModule/coreLink.hpp"
+#include "executorModule/executor.hpp"
 #include "eventModule/event_handler.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "interfaceModule/app_command_interface.hpp"
@@ -118,7 +119,8 @@ App::App( SDLFacade* const sdl )
 
 	screenFader =  new ScreenFader();
 
-	core = new Core(&context, width, height, media, fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand));
+	observatory = new Observer();
+	core = new Core(&context, width, height, media, fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
 	coreLink = new CoreLink(core);
 	coreBackup = new CoreBackup(core);
 
@@ -130,6 +132,8 @@ App::App( SDLFacade* const sdl )
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = new Fps();
 	spaceDate = new SpaceDate();
+
+	executor = std::make_unique<Executor>(core, observatory);
 
 	// fixation interface
 	ui->initInterfaces(scriptInterface,spaceDate);
@@ -192,7 +196,8 @@ App::~App()
 	delete commander;
 	delete coreLink;
 	delete coreBackup;
-	delete core;
+	delete core;	
+	delete observatory;
 	delete saveScreenInterface;
 	delete internalFPS;
 	delete screenFader;
@@ -432,8 +437,7 @@ void App::update(int delta_time)
 	screenFader->update(delta_time);
 	media->faderUpdate(delta_time);
 
-	core->updateMode();
-	core->update(delta_time);
+	executor->update(delta_time);
 }
 
 
@@ -449,7 +453,7 @@ void App::draw(int delta_time)
 
 	context.commandMgrSingleUseInterface->reset();
 	context.commandMgr->setSubmission(commandIndexClear, true);
-	core->draw(delta_time);
+	executor->draw(delta_time);
 	// Draw the Graphical ui and the Text ui
 	ui->draw();
 	//inversion des couleurs pour un ciel blanc
@@ -557,7 +561,7 @@ void App::startMainLoop()
 		ui->handleDeal();
 
 		// on applique toutes les modifications faites dans ui etc
-		eventHandler->handleEvents();
+		eventHandler->handleEvents(executor.get());
 
 		// If the application is not visible
 		if (!flagVisible && !flagAlwaysVisible) {
@@ -583,4 +587,8 @@ void App::startMainLoop()
 	SDL_RemoveTimer(my_timer_id);
 	CallSystem::killAllPidFrom("vlc");
 	CallSystem::killAllPidFrom("mplayer");
+}
+
+void App::switchMode(const std::string setValue) {
+		executor->switchMode(setValue);
 }

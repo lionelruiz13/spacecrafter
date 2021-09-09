@@ -62,6 +62,8 @@ class EventRecorder;
 class EventHandler;
 class Fps;
 class SpaceDate;
+class Executor;
+class Observer;
 
 enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE};
 
@@ -136,6 +138,8 @@ public:
 	//! modifie un flag via un toggle
 	void toggle(APP_FLAG layerValue);
 
+	void switchMode(const std::string setValue);
+
 private:
 	//! run any incoming command from shared memory interface
 	void updateFromSharedData();
@@ -181,8 +185,10 @@ private:
 	std::unique_ptr<ServerSocket> tcp;
 	Fps* internalFPS = nullptr;				//! gestion fine du frameRate
 	std::unique_ptr<AppDraw> appDraw;
+	Observer* observatory = nullptr;
 	#if LINUX
 	std::unique_ptr<Mkfifo> mkfifo;
+	std::unique_ptr<Executor> executor;
 	#endif
 
 	SpaceDate * spaceDate = nullptr;			// Handles dates and conversions

@@ -28,7 +28,7 @@
 #include "scriptModule/script_interface.hpp"
 #include "eventModule/EventScript.hpp"
 
-void EventScriptHandler::handle(const Event* e)
+void EventScriptHandler::handle(const Event* e, Executor *executor)
 {
 	ScriptEvent * event = (ScriptEvent *)e;
 	scriptInterface->playScript(event->getFileName());

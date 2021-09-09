@@ -29,7 +29,7 @@
 #include "eventModule/EventSaveScreen.hpp"
 
 
-void EventSaveScreenHandler::handle(const Event* e)
+void EventSaveScreenHandler::handle(const Event* e, Executor *executor)
 {
     SaveScreenEvent * event = (SaveScreenEvent *)e;
     switch(event->getOrder()) {

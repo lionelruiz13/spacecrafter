@@ -27,14 +27,14 @@
 #include "interfaceModule/app_command_interface.hpp"
 #include "eventModule/AppCommandEvent.hpp"
 
-void EventCommandHandler::handle(const Event* e)
+void EventCommandHandler::handle(const Event* e, Executor *executor)
 {
 	CommandEvent * event = (CommandEvent *)e;
 	commander->executeCommand(event->getCommandLine());
 }
 
 
-void EventFlagHandler::handle(const Event* e)
+void EventFlagHandler::handle(const Event* e, Executor *executor)
 {
 	FlagEvent * event = (FlagEvent *)e;
 	commander->setFlag(event->getFlagName(), event->getFlagValue());

@@ -51,7 +51,7 @@ public:
 	}
 	~EventCommandHandler() {
 	}
-    void handle(const Event* e) override;
+    void handle(const Event* e, Executor *executor) override;
 
 protected :
 	AppCommandInterface* commander = nullptr;
@@ -70,7 +70,7 @@ public:
 	}
 	~EventFlagHandler() {
 	}
-    void handle(const Event* e) override;
+    void handle(const Event* e, Executor *executor) override;
 
 protected :
 	AppCommandInterface* commander = nullptr;

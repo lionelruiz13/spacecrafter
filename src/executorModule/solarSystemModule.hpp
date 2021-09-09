@@ -1,8 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 Elitit-40
- * Copyright (C) 2020 Elitit-40
+ * Copyright (C) 2021 Jérémy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,32 +17,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * Spacecrafter is a free open project of the LSS team
+ * Spacecrafter is a free open project of of LSS team
  * See the TRADEMARKS file for free open project usage requirements.
  *
  */
 
-#include "eventModule/EventVideoHandler.hpp"
-#include "eventModule/EventVideo.hpp"
-#include "eventModule/event.hpp"
-#include "uiModule/ui.hpp"
-#include "scriptModule/script_interface.hpp"
+#ifndef _SOLARSYSTEM_MODULE_
+#define _SOLARSYSTEM_MODULE_
 
-void EventVideoHandler::handle(const Event* e, Executor *executor)
-{
-    VideoEvent * event = (VideoEvent *)e;
-    switch(event->getOrder()) {
-        case VIDEO_ORDER::PLAY :
-            ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, true);
-            scriptInterface->setIsVideoPlayed(true);
-            break;
+#include "executorModule.hpp"
+#include "coreModule/core.hpp"
+#include "mediaModule/media.hpp"
 
-        case VIDEO_ORDER::PAUSE :
-            break;
+class SolarSystemModule : public ExecutorModule {
+public:
 
-        case VIDEO_ORDER::STOP :
-            ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
-            scriptInterface->setIsVideoPlayed(false);
-            break;
-    }
-}
+    SolarSystemModule(Core* _core, Observer *_observer) : core(_core), observer(_observer) {maxAltToGoUp = 1.E16;};
+    ~SolarSystemModule() {};
+
+    virtual void onEnter() override;
+	virtual void onExit() override;
+	virtual void update(int delta_time) override;
+	virtual void draw(int delta_time) override;
+	virtual bool testValidAltitude(double altitude) override;
+
+private:
+    Core *core;
+    Observer *observer;
+};
+
+#endif

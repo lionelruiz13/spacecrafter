@@ -40,7 +40,7 @@ public:
 	}
 	~EventFpsHandler() {
 	}
-    void handle(const Event* e) override;
+    void handle(const Event* e, Executor *executor) override;
 
 protected :
 	Fps* clock = nullptr;

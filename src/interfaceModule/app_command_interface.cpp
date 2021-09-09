@@ -1568,7 +1568,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(setValue); break;
 		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(setValue); break;
 		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(setValue); break;
-		case SCD_NAMES::APP_MODE: stcore->switchMode(setValue); break;
+		case SCD_NAMES::APP_MODE: stapp->switchMode(setValue); break;
 		case SCD_NAMES::APP_SCREEN_FADER:
 						{	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(setValue));
 							EventRecorder::getInstance()->queue(event);

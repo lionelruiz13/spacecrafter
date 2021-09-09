@@ -1,8 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 Elitit-40
- * Copyright (C) 2020 Elitit-40
+ * Copyright (C) 2021 Jérémy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,33 +17,45 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * Spacecrafter is a free open project of the LSS team
+ * Spacecrafter is a free open project of of LSS team
  * See the TRADEMARKS file for free open project usage requirements.
  *
  */
 
+#ifndef _EXECUTOR_MODULE_
+#define _EXECUTOR_MODULE_
 
-#ifndef EVENT_SAVESCREEN_HANDLER_HPP
-#define EVENT_SAVESCREEN_HANDLER_HPP
-
-
-#include "event_handler_canvas.hpp"
-#include "event.hpp"
-
-class SaveScreenInterface;
-
-
-class EventSaveScreenHandler : public EventHandlerCanvas {
+class ExecutorModule {
 public:
-	EventSaveScreenHandler(SaveScreenInterface *_saveScreenInterface) {
-		saveScreenInterface = _saveScreenInterface;
-	}
-	~EventSaveScreenHandler() {
-	}
-    void handle(const Event* e, Executor *executor) override;
 
-protected :
-	SaveScreenInterface* saveScreenInterface = nullptr;
+    ~ExecutorModule() {};
+    
+	virtual void onEnter() = 0;
+	virtual void onExit() = 0;
+	virtual void update(int delta_time)=0;
+	virtual void draw(int delta_time)=0;
+	virtual bool testValidAltitude(double altitude)=0;
+
+	void defineDownMode(ExecutorModule *_downMode) {
+		downMode = _downMode;
+	}
+
+	void defineUpMode(ExecutorModule *_upMode) {
+		upMode = _upMode;
+	}
+
+	ExecutorModule *getNextMode() {
+		return nextMode;
+	}
+	
+protected:
+
+	double minAltToGoDown = 0.0;	// altitude min avant changement de mode vers upMode
+	double maxAltToGoUp = 0.0;		// altitude max avant changement de mode vers downMode
+
+	ExecutorModule *downMode = nullptr;
+	ExecutorModule *upMode = nullptr;
+	ExecutorModule *nextMode = nullptr;
 };
 
-#endif //EVENT_SAVESCREEN_HANDLER_HPP
+#endif

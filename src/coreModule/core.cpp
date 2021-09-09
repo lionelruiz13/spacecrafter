@@ -29,7 +29,6 @@
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/log.hpp"
 #include "coreModule/ubo_cam.hpp"
-#include "coreModule/core_executor.hpp"
 #include "coreModule/core_common.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/anchor_point.hpp"
@@ -57,7 +56,7 @@
 #include "vulkanModule/Texture.hpp"
 #include "vulkanModule/TextureMgr.hpp"
 
-Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback<void, std::string>& recordCallback) :
+Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback<void, std::string>& recordCallback, Observer *_observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)
@@ -69,7 +68,6 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	fontFactory = _fontFactory;
 	projection = new Projector( width,height, 60 );
 	media->setProjector(projection);
-
 	// Set textures directory and suffix
 	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
 	Texture::setTextureDir(AppSettings::Instance()->getTextureDir());
@@ -82,8 +80,8 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	tone_converter = new ToneReproductor();
 	atmosphere = new Atmosphere(context);
 	timeMgr = new TimeMgr();
-	observatory = new Observer();
 	navigation = new Navigator();
+	observatory = _observatory;
 	ssystemFactory = new SSystemFactory(context, observatory, navigation, timeMgr);
 	nebulas = new NebulaMgr(context);
 	milky_way = new MilkyWay(context);
@@ -148,16 +146,7 @@ Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFa
 	tully = new Tully(context);
 	object_pointer_visibility = 1;
 
-	executorInSolarSystem = new CoreExecutorInSolarSystem(this, observatory);
-	executorInGalaxy = new CoreExecutorInGalaxy(this,observatory);
-	executorInUniverse = new CoreExecutorInUniverse(this,observatory);
 
-	executorInSolarSystem->defineUpMode(executorInGalaxy);
-	executorInGalaxy->defineUpMode(executorInUniverse);
-	executorInGalaxy->defineDownMode(executorInSolarSystem);
-	executorInUniverse->defineDownMode(executorInGalaxy);
-
-	currentExecutor = executorInSolarSystem;
 }
 
 void Core::registerCoreFont() const
@@ -205,8 +194,6 @@ Core::~Core()
 	delete landscape;
 	delete cardinals_points;
 	landscape = nullptr;
-	delete observatory;
-	observatory = nullptr;
 	delete geodesic_grid;
 	delete milky_way;
 	delete timeMgr;
@@ -232,9 +219,6 @@ Core::~Core()
 	delete universeCloudNav;
 	delete dsoNav;
 	delete starLines;
-	delete executorInGalaxy;
-	delete executorInSolarSystem;
-	delete executorInUniverse;
 }
 
 
@@ -519,115 +503,6 @@ void Core::init(const InitParser& conf)
 	firstTime = 0;
 }
 
-void Core::update(int delta_time)
-{
-	currentExecutor->update(delta_time);
-}
-
-void Core::updateMode()
-{
-	if (currentExecutor->testValidAltitude(observatory->getAltitude())) {
-		currentExecutor->onExit();
-		currentExecutor = currentExecutor->getNextMode();
-		std::cout << "Changement de mode pour " << currentExecutor->getName() << std::endl;
-		currentExecutor->onEnter();
-	}
-}
-
-//! Update all the objects in function of the time
-void Core::updateInSolarSystem(int delta_time)
-{
-	if( firstTime ) // Do not update prior to Init. Causes intermittent problems at startup
-		return;
-
-	// Update the position of observation and time etc...
-	observatory->update(delta_time);
-	timeMgr->update(delta_time);
-	navigation->update(delta_time);
-
-	// Position of sun and all the satellites (ie planets)
-	ssystemFactory->computePositions(timeMgr->getJDay(), observatory);
-
-	ssystemFactory->updateAnchorManager();
-
-	// Transform matrices between coordinates systems
-	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
-	// Direction of vision
-	navigation->updateVisionVector(delta_time, selected_object);
-	// Field of view
-	projection->updateAutoZoom(delta_time, FlagManualZoom);
-	// update faders and Planet trails (call after nav is updated)
-	ssystemFactory->update(delta_time, navigation, timeMgr);
-			
-	// Move the view direction and/or fov
-	updateMove(delta_time);
-	// Update info about selected object
-	// selected_object.update();
-	// Update faders
-	skyGridMgr->update(delta_time);
-	skyLineMgr->update(delta_time);
-	skyDisplayMgr->update(delta_time);
-	asterisms->update(delta_time);
-	atmosphere->update(delta_time);
-	landscape->update(delta_time);
-	hip_stars->update(delta_time);
-	nebulas->update(delta_time);
-	cardinals_points->update(delta_time);
-	milky_way->update(delta_time);
-	//text_usr->update(delta_time);
-
-	starLines->update(delta_time);
-
-	oort->update(delta_time);
-
-	// Compute the sun position in local coordinate
-	Vec3d temp(0.,0.,0.);
-	Vec3d sunPos = navigation->helioToLocal(temp);
-
-	// Compute the moon position in local coordinate
-	Vec3d moon = ssystemFactory->getMoon()->get_heliocentric_ecliptic_pos();
-	Vec3d moonPos = navigation->helioToLocal(moon);
-
-	// Give the updated standard projection matrices to the projector
-	// NEEDED before atmosphere compute color
-	projection->setModelViewMatrices( navigation->getEarthEquToEyeMat(),
-	                                    navigation->getEarthEquToEyeMatFixed(),
-	                                    navigation->getHelioToEyeMat(),
-	                                    navigation->getLocalToEyeMat(),
-	                                    navigation->getJ2000ToEyeMat(),
-	                                    navigation->geTdomeMat(),
-	                                    navigation->getDomeFixedMat());
-
-	std::future<void> a = std::async(std::launch::async, &Core::ssystemComputePreDraw, this);
-	std::future<void> b = std::async(std::launch::async, &Core::atmosphereComputeColor, this, sunPos, moonPos);
-	std::future<void> c = std::async(std::launch::async, &Core::hipStarMgrPreDraw, this);
-
-	a.get();
-	b.get();
-	c.get();
-	tone_converter->setWorldAdaptationLuminance(atmosphere->getWorldAdaptationLuminance());
-
-	sunPos.normalize();
-	moonPos.normalize();
-
-	ssystemFactory->bodyTrace(navigation);
-
-
-	// compute global sky brightness TODO : make this more "scientifically"
-	// TODO: also add moonlight illumination
-	if (sunPos[2] < -0.1/1.5 ) sky_brightness = 0.01;
-	else sky_brightness = (0.01 + 1.5*(sunPos[2]+0.1/1.5));
-	// TODO make this more generic for non-atmosphere planets
-	if (atmosphere->getFadeIntensity() == 1) {
-		// If the atmosphere is on, a solar eclipse might darken the sky otherwise we just use the sun position calculation above
-		sky_brightness *= (atmosphere->getIntensity()+0.1);
-	}
-	// TODO: should calculate dimming with solar eclipse even without atmosphere on
-	landscape->setSkyBrightness(sky_brightness+0.05);
-
-
-	uboCamUpdate();
-}
 
 void Core::ssystemComputePreDraw()
 {
@@ -739,36 +614,6 @@ void Core::applyClippingPlanes(float clipping_min, float clipping_max)
 	// Init viewport to current projector values
 	projection->applyViewport();
 }
-
-
-void Core::draw(int delta_time)
-{
-	currentExecutor->draw(delta_time);
-	media->imageDraw(navigation, projection); // resolve multisample
-	context->commandMgr->endBatch();
-}
-
-void Core::switchMode(const std::string &mode)
-{
-	if (mode.empty())
-		return;
-
-	std::string modeValue = mode;
-	std::transform(modeValue.begin(), modeValue.end(),modeValue.begin(), ::tolower);
-
-	currentExecutor->onExit();
-	if (modeValue =="ingalaxy" || modeValue =="in_galaxy" ) {
-		currentExecutor = 	executorInGalaxy;
-	} else
-	if (modeValue =="inuniverse" || modeValue =="in_universe" ) {
-		currentExecutor = 	executorInUniverse;
-	} else
-	if (modeValue =="insolarsystem" || modeValue =="in_solarsystem" ) {
-		currentExecutor = 	executorInSolarSystem;
-	}
-	currentExecutor->onEnter();
-}
-
 
 //! Execute all the drawing functions
 void Core::drawInSolarSystem(int delta_time)

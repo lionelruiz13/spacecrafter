@@ -1,8 +1,7 @@
 /*
  * Spacecrafter astronomy simulation and visualization
  *
- * Copyright (C) 2018 Elitit-40
- * Copyright (C) 2020 Elitit-40
+ * Copyright (C) 2021 Jérémy Calvo
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,32 +17,38 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * Spacecrafter is a free open project of the LSS team
+ * Spacecrafter is a free open project of of LSS team
  * See the TRADEMARKS file for free open project usage requirements.
  *
  */
 
-#include "eventModule/EventVideoHandler.hpp"
-#include "eventModule/EventVideo.hpp"
+#include <iostream>
+#include "inPauseModule.hpp"
 #include "eventModule/event.hpp"
-#include "uiModule/ui.hpp"
-#include "scriptModule/script_interface.hpp"
+#include "eventModule/event_recorder.hpp"
+#include "eventModule/EventScreenFader.hpp"
 
-void EventVideoHandler::handle(const Event* e, Executor *executor)
+InPauseModule::InPauseModule(Core *_core, Observer *_observer) : core(_core), observer(_observer)
 {
-    VideoEvent * event = (VideoEvent *)e;
-    switch(event->getOrder()) {
-        case VIDEO_ORDER::PLAY :
-            ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, true);
-            scriptInterface->setIsVideoPlayed(true);
-            break;
 
-        case VIDEO_ORDER::PAUSE :
-            break;
+}
 
-        case VIDEO_ORDER::STOP :
-            ui->flag(UI_FLAG::HANDLE_KEY_ONVIDEO, false);
-            scriptInterface->setIsVideoPlayed(false);
-            break;
-    }
+void InPauseModule::onEnter()
+{
+
+}
+
+void InPauseModule::onExit()
+{
+
+}
+
+void InPauseModule::update(int delta_time)
+{
+
+}
+
+void InPauseModule::draw(int delta_time)
+{
+
 }

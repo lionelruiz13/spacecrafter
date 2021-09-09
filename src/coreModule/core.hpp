@@ -78,7 +78,6 @@
 #include "vulkanModule/Context.hpp"
 
 class StarNavigator;
-class CoreExecutor;
 class BodyDecor;
 class Landscape;
 class Translator;
@@ -96,10 +95,11 @@ class FontFactory;
 //! This class is the main API of the program. It must be documented using doxygen.
 class Core: public NoCopy {
 public:
-	friend class CoreExecutor;
-	friend class CoreExecutorInSolarSystem;
-	friend class CoreExecutorInGalaxy;
-	friend class CoreExecutorInUniverse;
+	friend class Executor;
+	friend class ExecutorModule;
+	friend class SolarSystemModule;
+	friend class InGalaxyModule;
+	friend class InUniverseModule;
 
 	friend class CoreLink;
 	friend class CoreBackup;
@@ -108,14 +108,11 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback <void, std::string> & recordCallback);
+	Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback <void, std::string> & recordCallback, Observer *_observatory);
 	virtual ~Core();
 
 	//! Init and load all main core components from the passed config file.
 	void init(const InitParser& conf);
-
-	//! Update all the objects in current mode
-	[[deprecated]] void update(int delta_time);
 
 	//! Update current mode
 	[[deprecated]] void updateMode();
@@ -449,14 +446,7 @@ public:
 		return flagNav;
 	}
 
-	[[deprecated]] void switchMode(const std::string &mode);
-
 	void saveCurrentConfig(InitParser &conf);
-
-	void onAltitudeChange(double value) {
-		std::cout << "Modification altitude reçue "<< value << std::endl;
-		setBodyDecor();
-	}
 
 	void onObserverChange(std::string str) {
 		std::cout << "Modification observer to " << str << std::endl;
@@ -469,7 +459,7 @@ private:
 		double move_speed, zoom_speed;		// Speed of movement and zooming
 	};
 
-	[[deprecated]]  void ssystemComputePreDraw();
+	void ssystemComputePreDraw();
 	[[deprecated]]  void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos);
 	[[deprecated]]  void hipStarMgrPreDraw();
 
@@ -537,11 +527,6 @@ private:
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
 	ThreadContext *context;
-
-	CoreExecutor* currentExecutor = nullptr;
-	CoreExecutor* executorInSolarSystem = nullptr;
-	CoreExecutor* executorInGalaxy = nullptr;
-	CoreExecutor* executorInUniverse = nullptr;
 
 	FontFactory* fontFactory=nullptr;					// gestion complète des fontes du logiciel
 	// Main elements of the program

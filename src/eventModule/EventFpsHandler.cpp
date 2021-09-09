@@ -29,7 +29,7 @@
 #include "eventModule/EventFps.hpp"
 
 
-void EventFpsHandler::handle(const Event* e)
+void EventFpsHandler::handle(const Event* e, Executor *executor)
 {
     FpsEvent * event = (FpsEvent *)e;
     switch(event->getOrder()) {

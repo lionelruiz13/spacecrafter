@@ -43,6 +43,7 @@ class EventRecorder;
 class EventHandlerCanvas;
 class Event;
 
+#include "executorModule/executor.hpp"
 
 /**
 * \class EventHandler
@@ -62,13 +63,13 @@ public:
 	~EventHandler() {};
 
 	//! Execute all Events stored by EventRecorder
-	void handleEvents();
+	void handleEvents(Executor *executor);
 	//! Add an EventType to execution task
 	void add(EventHandlerCanvas *sE, Event::Event_Type et);
 	//! Remove an EventType from the execution task
 	void remove(Event::Event_Type et);
 protected :
-    void handle(const Event* e);
+    void handle(const Event* e, Executor *executor);
 	EventRecorder* eventRecorder = nullptr;
 	std::map<Event::Event_Type, EventHandlerCanvas *> handlerMap;
 };

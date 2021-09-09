@@ -77,7 +77,7 @@ void SSystemFactory::changeSystem(const std::string mode)
         if (it != systems.end())
             currentSystem = it->second.get();
         else
-    // TODO LOG
+    // TODO LOG CHANGE SYSTEM
             return;
     }
 

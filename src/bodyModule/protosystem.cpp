@@ -277,9 +277,9 @@ void ProtoSystem::setPlanetHidden(const std::string &name, bool planethidden)
 			it->second->isHidden = planethidden;
 
 			if(planethidden){
-				std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
+				renderedBodies.erase(std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
 					return it->second->englishName == obj->englishName;
-				});
+				}));
 			}
 			else{
 				// std::cout << "Je cherche un doublon de " << name << std::endl;
@@ -874,9 +874,9 @@ void ProtoSystem::initialSolarSystemBodies(){
 		it->second->body->reinitParam();
 		if (it->second->isHidden != it->second->initialHidden) {
 			if(it->second->initialHidden){
-				std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
+				renderedBodies.erase(std::remove_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
 					return it->second->englishName == obj->englishName;
-				});
+				}));
 			}
 			else{
 

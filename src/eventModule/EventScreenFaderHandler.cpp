@@ -27,12 +27,12 @@
 #include "EventScreenFader.hpp"
 #include "appModule/screenFader.hpp"
 #include "eventModule/EventScreenFaderHandler.hpp"
-
+#include "executorModule/executor.hpp"
 
 /*
  * EventScreenFaderHandler ------------------------------------------------------------------------
 */
-void EventScreenFaderHandler::handle(const Event* e)
+void EventScreenFaderHandler::handle(const Event* e, Executor *executor)
 {
 	ScreenFaderEvent * event = (ScreenFaderEvent *)e;
 	switch (event->getStrategy()) {
@@ -57,7 +57,7 @@ void EventScreenFaderHandler::handle(const Event* e)
 /*
  * EventScreenFaderInterludeHandler ------------------------------------------------------------------
 */
-void EventScreenFaderInterludeHandler::handle(const Event* e)
+void EventScreenFaderInterludeHandler::handle(const Event* e, Executor *executor)
 {
 	ScreenFaderInterludeEvent * event = (ScreenFaderInterludeEvent *)e;
 	switch (event->getStrategy()) {
