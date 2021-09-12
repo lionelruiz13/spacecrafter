@@ -53,18 +53,10 @@
 
 //! constructor which loads all data from appropriate files
 ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars, ThreadContext *_context) :
-	hipStarMgr(_hip_stars),
-	flagNames(0),
-	flagLines(0),
-	flagArt(0),
-	flagBoundaries(0),
-	artColor(Vec3f(1.0,1.0,1.0)),
-	singleSelected(false)
+	hipStarMgr(_hip_stars)
 {
 	assert(hipStarMgr);
 	context = _context;
-	isolateSelected = false;
-
 	createSC_context(_context);
 }
 
