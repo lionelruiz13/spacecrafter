@@ -163,6 +163,54 @@ bool ProtoSystem::removeBody(const std::string &name){
 	return removeBodyNoSatellite(name);
 }
 
+bool ProtoSystem::removeBodyNoSatellite(const std::string &name)
+{
+	// std::cout << "removeBodyNoSatellite " << name << std::endl;
+	// std::cout << "removing : " << name << std::endl;
+
+	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
+
+	if(bc == nullptr){
+		cLog::get()->write("SolarSystem::removeBodyNoSatellite : Could not find a body named : " + name );
+		return false;
+	}
+
+	//check if the body was a satellite
+	if(bc->body->getParent() != nullptr){
+		bc->body->getParent()->removeSatellite(bc->body.get());
+	}
+	// fix crash when delete body used from body_trace
+	if (bc->body.get() == bodyTrace )
+		bodyTrace = getCenterObject();
+
+	//remove from containers :
+	systemBodies.erase(bc->englishName);
+	if(!bc->isHidden){
+		// std::cout << "removeBodyNoSatellite from renderedBodies " << name << std::endl;
+		renderedBodies.erase(std::remove_if(renderedBodies.begin(), renderedBodies.end(), [bc](std::shared_ptr<BodyContainer> const obj) {
+			return bc->englishName == obj->englishName;
+		}));
+	}
+
+	anchorManager->removeAnchor(bc->body.get());
+	//delete bc->body;
+
+	// std::cout << "removeBodyNoSatellite " << name << " is oki" << std::endl;
+
+	// std::cout << "début contenu de systemBodies--------------------" << std::endl;
+	// for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
+	// 	std::cout << "name " << it->first << std::endl;
+	// }
+	// std::cout << "fin contenu de systemBodies--------------------" << std::endl;
+
+	// std::cout << "début contenu de renderedBodies--------------------" << std::endl;
+	// for(auto it = renderedBodies.begin(); it != renderedBodies.end(); it++){
+	// 	std::cout << "name " << (*it)->englishName << std::endl;
+	// }
+	// std::cout << "fin contenu de renderedBodies--------------------" << std::endl;
+	return true;
+}
+
 bool ProtoSystem::removeSupplementalBodies(const std::string &name)
 {
 	// std::cout << "removeSupplementalBodies " << name << std::endl;
