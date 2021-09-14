@@ -147,7 +147,7 @@ public:
 		return anchorManager;
 	}
 
-	Object * getCenterObject() {
+	Body * getCenterObject() {
 		return centerObject;
 	}
 	
@@ -180,7 +180,7 @@ protected:
 	OrbitCreator * orbitCreator = nullptr;
 	AnchorManager * anchorManager = nullptr;
 	Vec3i ringsInit;
-	Object * centerObject = nullptr;
+	Body * centerObject = nullptr;
 
 	// Master settings
 	bool flagAxis= false;

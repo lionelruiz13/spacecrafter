@@ -658,7 +658,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			//if (englishName == "Sun") {
 				//sun = p_sun.get();
 				bodyTrace = p_center.get();
-				centerObject = new Object(p_center.get());
+				centerObject = p_center.get();
 			//}
 			p = std::move(p_center);
 		}
@@ -690,7 +690,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			//	bodyTrace = p_sun.get();
 			//}
 			if (!parent) {
-				centerObject = new Object(p_sun.get());
+				centerObject = p_sun.get();
 			}
 			p = std::move(p_sun);
 		}

@@ -265,7 +265,6 @@ void Core::init(const InitParser& conf)
 		ssystemFactory->addSystem("Sirius", AppSettings::Instance()->getUserDir() +"sirius_system.ini");
 		ssystemFactory->addSystem("51peg", AppSettings::Instance()->getUserDir() + "51peg_system.ini");
 		//ssystemFactory->changeSystem("51peg");
-		ssystemFactory->changeSystem("SolarSystem");
 		// Init stars
 		hip_stars->iniColorTable();
 		hip_stars->readColorTable();
