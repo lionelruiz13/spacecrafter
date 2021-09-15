@@ -30,8 +30,7 @@
 
 #include <map>
 #include <functional>
-
-enum class SK_COMPUTE_COLOR : char {SK_EARTH_TYPE, SK_VENUS_TYPE, SK_MARS_TYPE};
+#include "atmosphereModule/atmosphere_commun.hpp"
 
 typedef struct {
 	float zenith_angle; 	// zenith_angle : angular distance to the zenith in radian
