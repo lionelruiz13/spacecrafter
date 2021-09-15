@@ -61,7 +61,7 @@ public:
 	void get_xyY_Valuev(skylight_struct2& position) const;
 
 	// Compute the sky color from varius planet localisation
-	void setComputeTypeColor(SK_COMPUTE_COLOR type);
+	void setComputeTypeColor(ATMOSPHERE_MODEL type);
 
 private:
 	float thetas;			// angular distance between the zenith and the sun in radian
@@ -104,7 +104,7 @@ private:
 	inline void computeColorDistributionCoefs(void);
 
 	std::function<void(void)> currentComputeFunction;
-	SK_COMPUTE_COLOR computeTypeColor = SK_COMPUTE_COLOR::SK_EARTH_TYPE;
+	//SK_COMPUTE_COLOR computeTypeColor = SK_COMPUTE_COLOR::SK_EARTH_TYPE;
 };
 
 #endif // _SKYLIGHT_H_

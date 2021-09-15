@@ -296,14 +296,5 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 
 void Atmosphere::setModel(ATMOSPHERE_MODEL atmModel)
 {
-	//default selection
-	SK_COMPUTE_COLOR tmp = SK_COMPUTE_COLOR::SK_EARTH_TYPE;
-	switch (atmModel)
-	{
-		case ATMOSPHERE_MODEL::EARTH_MODEL :	tmp = SK_COMPUTE_COLOR::SK_EARTH_TYPE; 		break; //for g++
-		case ATMOSPHERE_MODEL::VENUS_MODEL :	tmp = SK_COMPUTE_COLOR::SK_VENUS_TYPE; 		break;
-		case ATMOSPHERE_MODEL::MARS_MODEL :		tmp = SK_COMPUTE_COLOR::SK_MARS_TYPE; 		break;
-		case ATMOSPHERE_MODEL::NONE_MODEL :		break;
-	}
-	sky->setComputeTypeColor(tmp);
+	sky->setComputeTypeColor(atmModel);
 }

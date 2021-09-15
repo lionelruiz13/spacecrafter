@@ -37,7 +37,7 @@
 Skylight::Skylight() : thetas(0.f), T(0.f)
 {
 	// TEMPORAIRE
-	setComputeTypeColor(SK_COMPUTE_COLOR::SK_EARTH_TYPE);
+	setComputeTypeColor(ATMOSPHERE_MODEL::EARTH_MODEL);// SK_COMPUTE_COLOR::SK_EARTH_TYPE::SK_EARTH_TYPE);
 }
 
 Skylight::~Skylight()
@@ -108,15 +108,24 @@ inline void Skylight::computeZenithLuminance(void)
 	if (zenith_luminance<=0.f) zenith_luminance=0.00000000001;
 }
 
-void Skylight::setComputeTypeColor(SK_COMPUTE_COLOR type)
+void Skylight::setComputeTypeColor(ATMOSPHERE_MODEL type)
 {
-	if (type == SK_COMPUTE_COLOR::SK_MARS_TYPE)
+	switch (type) {
+	case ATMOSPHERE_MODEL::MARS_MODEL : 
 		currentComputeFunction = std::bind(&Skylight::computeZenithMarsColor, this);
-	else if (type == SK_COMPUTE_COLOR::SK_VENUS_TYPE)
+		break;
+	case ATMOSPHERE_MODEL::VENUS_MODEL : 
 		currentComputeFunction = std::bind(&Skylight::computeZenithVenusColor, this);
-	else if (type == SK_COMPUTE_COLOR::SK_EARTH_TYPE)
+		break;
+	case ATMOSPHERE_MODEL::EARTH_MODEL : 
 		currentComputeFunction = std::bind(&Skylight::computeZenithEarthColor, this);
+		break;
+	default:
+		currentComputeFunction = std::bind(&Skylight::computeZenithEarthColor, this);
+		break;
+	}
 }
+
 
 // Compute CIE x and y color components
 inline void Skylight::computeZenithEarthColor()

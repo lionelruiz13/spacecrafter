@@ -25,8 +25,10 @@
 #ifndef _ATM_COMMUN_
 #define _ATM_COMMUN_
 
+#include <string>
+
 enum class ATMOSPHERE_MODEL : char {NONE_MODEL, EARTH_MODEL, VENUS_MODEL, MARS_MODEL};
 
-enum class SK_COMPUTE_COLOR : char {SK_EARTH_TYPE, SK_VENUS_TYPE, SK_MARS_TYPE};
+// enum class SK_COMPUTE_COLOR : char {SK_EARTH_TYPE, SK_VENUS_TYPE, SK_MARS_TYPE};
 
 #endif
