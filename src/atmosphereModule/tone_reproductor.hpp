@@ -95,10 +95,10 @@ public:
 	void xyY_to_RGB(float*) const;
 
 private:
-	float Lda;		// Display luminance adaptation (in cd/m^2)
-	float Lwa;		// World   luminance adaptation (in cd/m^2)
-	float one_over_maxdL;	// 1 / Display maximum luminance (in cd/m^2)
-	float one_over_gamma;	// 1 / Screen gamma value
+	float Lda = 50.f;					// Display luminance adaptation (in cd/m^2)
+	float Lwa = 40000.f;				// World   luminance adaptation (in cd/m^2)
+	float one_over_maxdL = 1.f/100.f;	// 1 / Display maximum luminance (in cd/m^2)
+	float one_over_gamma = 1.f/2.3f;	// 1 / Screen gamma value
 
 	// Precomputed variables
 	float alpha_da;

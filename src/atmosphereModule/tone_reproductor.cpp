@@ -29,7 +29,7 @@
 #include "tools/sc_const.hpp"
 
 // Set some values to prevent bugs in case of bad use
-ToneReproductor::ToneReproductor() : Lda(50.f), Lwa(40000.f), one_over_maxdL(1.f/100.f), one_over_gamma(1.f/2.3f)
+ToneReproductor::ToneReproductor() //: Lda(50.f), Lwa(40000.f), one_over_maxdL(1.f/100.f), one_over_gamma(1.f/2.3f)
 {
 	// Update alpha_da and beta_da values
 	float log10Lwa = log10f(Lwa);
