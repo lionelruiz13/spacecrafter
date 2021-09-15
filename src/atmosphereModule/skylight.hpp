@@ -64,8 +64,8 @@ public:
 	void setComputeTypeColor(ATMOSPHERE_MODEL type);
 
 private:
-	float thetas;			// angular distance between the zenith and the sun in radian
-	float T;				// Turbidity : i.e. sky "clarity"
+	float thetas = 0.f;			// angular distance between the zenith and the sun in radian
+	float T = 0.f;				// Turbidity : i.e. sky "clarity"
 	//  1 : pure air
 	//  2 : exceptionnally clear
 	//  4 : clear

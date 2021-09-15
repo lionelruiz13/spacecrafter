@@ -34,7 +34,7 @@
 #include "tools/sc_const.hpp"
 //#include "tools/fmath.hpp"
 
-Skylight::Skylight() : thetas(0.f), T(0.f)
+Skylight::Skylight()// : thetas(0.f), T(0.f)
 {
 	// TEMPORAIRE
 	setComputeTypeColor(ATMOSPHERE_MODEL::EARTH_MODEL);// SK_COMPUTE_COLOR::SK_EARTH_TYPE::SK_EARTH_TYPE);
