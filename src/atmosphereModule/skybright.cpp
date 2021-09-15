@@ -27,7 +27,7 @@
 //#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 
-Skybright::Skybright() : SN(1.f)
+Skybright::Skybright()// : SN(1.f)
 {
 	setDate(2003, 8, 0);
 	setLoc(M_PI_4, 1000., 25.f, 40.f);

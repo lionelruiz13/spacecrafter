@@ -48,9 +48,8 @@
 
 #define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
 
-
-Atmosphere::Atmosphere(ThreadContext *context) : world_adaptation_luminance(0.f), atm_intensity(0),
-	lightPollutionLuminance(0)//, cor_optoma(0)
+Atmosphere::Atmosphere(ThreadContext *context) // : world_adaptation_luminance(0.f), atm_intensity(0),
+											   //lightPollutionLuminance(0)//, cor_optoma(0)
 {
 	// Create the vector array used to store the sky color on the full field of view
 	tab_sky = new Vec3f*[SKY_RESOLUTION+1];

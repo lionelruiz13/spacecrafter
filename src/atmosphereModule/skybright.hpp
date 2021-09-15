@@ -58,7 +58,7 @@ private:
 	float K;				// Useful coef...
 	float C3;				// Term for moon brightness computation
 	float C4;				// Term for sky brightness computation
-	float SN; 				// Snellen Ratio (20/20=1.0, good 20/10=2.0)
+	float SN = 1.f; 		// Snellen Ratio (20/20=1.0, good 20/10=2.0)
 
 	// Optimisation variables
 	float b_night_term;

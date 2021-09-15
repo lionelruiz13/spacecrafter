@@ -151,11 +151,12 @@ private:
 	std::unique_ptr<Skybright> skyb = std::make_unique<Skybright>();
 	Vec3f ** tab_sky=nullptr;	//!< For Atmosphere calculation
 
-	float world_adaptation_luminance;
-	float milkyway_adaptation_luminance;
-	float atm_intensity;
+	float world_adaptation_luminance = 0.f;
+	float milkyway_adaptation_luminance = 0.f;
+	float atm_intensity = 0.f;
+
 	ParabolicFader fader;
-	float lightPollutionLuminance; 	//! light pollution simulation, add to svn 20070220
+	float lightPollutionLuminance = 0.f; 	//! light pollution simulation, add to svn 20070220
 //	int cor_optoma; //! flag for correction vp optoma
 
 	std::vector<float> dataColor;
