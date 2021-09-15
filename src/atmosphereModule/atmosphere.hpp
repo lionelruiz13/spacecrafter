@@ -93,20 +93,20 @@ public:
 	}
 
 	//! tells you actual atm intensity due to eclipses + fader
-	float getIntensity(void) {
+	float getIntensity() {
 		return atm_intensity;
 	}
 
 	//! let's you know how far faded in or out the atm is (0-1)
-	float getFadeIntensity(void) {
+	float getFadeIntensity() {
 		return fader.getInterstate();
 	}
 
-	float getWorldAdaptationLuminance(void) const { //unused
+	float getWorldAdaptationLuminance() const { //unused
 		return world_adaptation_luminance;
 	}
 
-	float getMilkywayAdaptationLuminance(void) const {
+	float getMilkywayAdaptationLuminance() const {
 		return milkyway_adaptation_luminance;
 	}
 
