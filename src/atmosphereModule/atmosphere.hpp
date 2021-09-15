@@ -32,8 +32,8 @@
 
 #include <vector>
 #include <memory>
-#include "atmosphereModule/skybright.hpp"
-#include "atmosphereModule/skylight.hpp"
+//#include "atmosphereModule/skybright.hpp"
+//#include "atmosphereModule/skylight.hpp"
 #include "atmosphereModule/atmosphere_commun.hpp"
 #include "tools/fader.hpp"
 
@@ -147,8 +147,8 @@ private:
 	void fillOutDataColor();
 	// void deleteShader();
 
-	std::unique_ptr<Skylight> sky = std::make_unique<Skylight>();
-	std::unique_ptr<Skybright> skyb = std::make_unique<Skybright>();
+	std::unique_ptr<Skylight> sky;
+	std::unique_ptr<Skybright> skyb;
 	Vec3f ** tab_sky=nullptr;	//!< For Atmosphere calculation
 
 	float world_adaptation_luminance = 0.f;
