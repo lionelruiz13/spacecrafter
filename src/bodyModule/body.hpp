@@ -49,6 +49,7 @@
 #include "rotation_elements.hpp"
 #include "tools/scalable.hpp"
 #include "vulkanModule/Context.hpp"
+#include "atmosphereModule/atmosphere_commun.hpp"
 
 
 class Trail;

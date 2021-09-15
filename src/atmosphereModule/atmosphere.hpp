@@ -34,7 +34,7 @@
 #include <memory>
 #include "atmosphereModule/skybright.hpp"
 #include "atmosphereModule/skylight.hpp"
-#include "bodyModule/body_common.hpp"
+#include "atmosphereModule/atmosphere_commun.hpp"
 #include "tools/fader.hpp"
 
 
