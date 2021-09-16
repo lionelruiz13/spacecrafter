@@ -221,7 +221,7 @@ private:
 	std::vector<Constellation*> asterisms;
 	HipStarMgr *hipStarMgr;
 	std::vector<Constellation*> selected;
-	bool isolateSelected;
+	bool isolateSelected = false;
 	std::vector<std::vector<Vec3f> *> allBoundarySegments;
 
 	Vec3f lineColor = Vec3f(.4,.4,.8);
@@ -229,10 +229,10 @@ private:
 	Vec3f labelColor = Vec3f(.4,.4,.8);
 
 	// These are THE master settings - individual constellation settings can vary based on selection status
-	bool flagNames;
-	bool flagLines;
-	bool flagArt;
-	bool flagBoundaries;
+	bool flagNames = false;
+	bool flagLines = false;
+	bool flagArt = false;
+	bool flagBoundaries = false;
 	float artFadeDuration;
 	float artMaxIntensity;
 
@@ -255,8 +255,8 @@ private:
 	    uint32_t    firstInstance;
 	} *pDrawData;
 
-	Vec3f artColor;
-	bool singleSelected;
+	Vec3f artColor = Vec3f(1.0,1.0,1.0);
+	bool singleSelected = false;
 	bool submitLinesAndBoundaries = false;
 };
 
