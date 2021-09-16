@@ -32,12 +32,11 @@
 
 #include "atmosphereModule/skylight.hpp"
 #include "tools/sc_const.hpp"
-//#include "tools/fmath.hpp"
 
-Skylight::Skylight()// : thetas(0.f), T(0.f)
+
+Skylight::Skylight()
 {
-	// TEMPORAIRE
-	setComputeTypeColor(ATMOSPHERE_MODEL::EARTH_MODEL);// SK_COMPUTE_COLOR::SK_EARTH_TYPE::SK_EARTH_TYPE);
+	setComputeTypeColor(ATMOSPHERE_MODEL::EARTH_MODEL);
 }
 
 Skylight::~Skylight()
@@ -45,7 +44,7 @@ Skylight::~Skylight()
 }
 
 
-void Skylight::setParams(float _sun_zenith_angle, float _turbidity)// , std::string planetName)
+void Skylight::setParams(float _sun_zenith_angle, float _turbidity)
 {
 	// Set the two main variables
 	thetas = _sun_zenith_angle;
@@ -53,11 +52,7 @@ void Skylight::setParams(float _sun_zenith_angle, float _turbidity)// , std::str
 
 	// Precomputation of the distribution coefficients and zenith luminances/color
 	computeZenithLuminance();
-	// if (planetName == "Earth")
-		computeZenithEarthColor();
-	// else
-		// computeZenithMarsColor();
-
+	computeZenithEarthColor();
 	computeLuminanceDistributionCoefs();
 	computeColorDistributionCoefs();
 
@@ -82,14 +77,7 @@ void Skylight::setParamsv(const float * _sun_pos, float _turbidity)
 
 	// Precomputation of the distribution coefficients and zenith luminances/color
 	computeZenithLuminance();
-	//if (planetName == "Mars")
-	//	computeZenithMarsColor();
-	//else if ((planetName == "Venus") || (planetName == "Titan"))
-	//	computeZenithVenusColor();
-	//else
-	//	computeZenithEarthColor();
 	currentComputeFunction();
-	
 	computeLuminanceDistributionCoefs();
 	computeColorDistributionCoefs();
 

@@ -25,7 +25,6 @@
 #include <cmath>
 
 #include "atmosphereModule/tone_reproductor.hpp"
-//#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 
 // Set some values to prevent bugs in case of bad use

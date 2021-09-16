@@ -48,8 +48,7 @@
 
 #define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
 
-Atmosphere::Atmosphere(ThreadContext *context) // : world_adaptation_luminance(0.f), atm_intensity(0),
-											   //lightPollutionLuminance(0)//, cor_optoma(0)
+Atmosphere::Atmosphere(ThreadContext *context)
 {
 	sky = std::make_unique<Skylight>();
 	skyb = std::make_unique<Skybright>();
@@ -70,7 +69,6 @@ Atmosphere::~Atmosphere()
 	if (tab_sky) delete [] tab_sky;
 	dataColor.clear();
 	dataPos.clear();
-	// deleteShader();
 }
 
 
@@ -100,9 +98,6 @@ void Atmosphere::initGridPos()
 
 void Atmosphere::createSC_context(ThreadContext *context)
 {
-	// shaderAtmosphere= std::make_unique<shaderProgram>();
-	// shaderAtmosphere->init("atmosphere.vert","atmosphere.frag");
-
 	m_atmGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
 	m_atmGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
 	m_atmGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
@@ -132,12 +127,6 @@ void Atmosphere::createSC_context(ThreadContext *context)
 	commandMgr->compile();
 }
 
-// void Atmosphere::deleteShader()
-// {
-// 	if (shaderAtmosphere)
-// 		delete shaderAtmosphere;
-// 	shaderAtmosphere=nullptr;
-// }
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
                                const ToneReproductor * eye, const Projector* prj,
@@ -254,18 +243,8 @@ void Atmosphere::fillOutDataColor()
 	dataColor.clear();
 	for (int y=0; y<SKY_RESOLUTION; y++) {
 		for (int x=0; x<SKY_RESOLUTION+1; x++) {
-			// dataColor.push_back(tab_sky[x][y][0]);
-			// dataColor.push_back(tab_sky[x][y][1]);
-			// dataColor.push_back(tab_sky[x][y][2]);
 			insert_vec3(dataColor,tab_sky[x][y]);
-			//~ glColor3fv(tab_sky[x][y]);
-			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+y*stepY));
-			// dataColor.push_back(tab_sky[x][y+1][0]);
-			// dataColor.push_back(tab_sky[x][y+1][1]);
-			// dataColor.push_back(tab_sky[x][y+1][2]);
 			insert_vec3(dataColor,tab_sky[x][y+1]);
-			//~ glColor3fv(tab_sky[x][y+1]);
-			//~ glVertexi((int)(viewport_left+x*stepX),(int)(view_bottom+(y+1)*stepY));
 		}
 	}
 	m_atmGL->fillVertexBuffer(BufferType::COLOR, dataColor);
@@ -279,18 +258,6 @@ void Atmosphere::draw(const Projector* prj, const std::string &planetName)
 
 	fillOutDataColor();
 
-	//StateGL::BlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
-	//StateGL::enable(GL_BLEND);
-
-	// shaderAtmosphere->use();
-	// m_atmGL->bind();
-	// for (int y=0; y<SKY_RESOLUTION; y++) {
-	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,y*(SKY_RESOLUTION+1)*2,(SKY_RESOLUTION+1)*2);
-	// }
-	// m_atmGL->unBind();
-	// shaderAtmosphere->unuse();
-
-	//Renderer::drawMultiArrays(shaderAtmosphere.get(), m_atmGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, SKY_RESOLUTION, (SKY_RESOLUTION+1)*2 );
 	commandMgr->setSubmission(commandIndex);
 }
 

@@ -24,14 +24,13 @@
 #include <cstdio>
 #include <cmath>
 #include "atmosphereModule/skybright.hpp"
-//#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 
-Skybright::Skybright()// : SN(1.f)
+Skybright::Skybright()
 {
 	setDate(2003, 8, 0);
 	setLoc(M_PI_4, 1000., 25.f, 40.f);
-	setSunMoon(0.5, 0.5); //,0);
+	setSunMoon(0.5, 0.5);
 }
 
 // month : 1=Jan, 12=Dec

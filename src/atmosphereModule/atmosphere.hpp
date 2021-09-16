@@ -32,8 +32,6 @@
 
 #include <vector>
 #include <memory>
-//#include "atmosphereModule/skybright.hpp"
-//#include "atmosphereModule/skylight.hpp"
 #include "atmosphereModule/atmosphere_commun.hpp"
 #include "tools/fader.hpp"
 
@@ -116,17 +114,6 @@ public:
 		lightPollutionLuminance = luminance;
 	}
 
-	// void setFlagOptoma (bool b) {
-	// 	(b==0) ? cor_optoma=0 : cor_optoma=1;
-	// }
-
-	// //! Get the Optoma flag
-	// bool getFlagOptoma() const {
-	// 	if (cor_optoma)
-	// 		return true;
-	// 	else return false;
-	// }
-
 	float getLightPollutionLuminance() {
 		return lightPollutionLuminance;
 	}
@@ -145,7 +132,6 @@ private:
 	void createSC_context(ThreadContext *context);
 	//! remplir les couleurs du conteneur
 	void fillOutDataColor();
-	// void deleteShader();
 
 	std::unique_ptr<Skylight> sky;
 	std::unique_ptr<Skybright> skyb;
@@ -157,7 +143,6 @@ private:
 
 	ParabolicFader fader;
 	float lightPollutionLuminance = 0.f; 	//! light pollution simulation, add to svn 20070220
-//	int cor_optoma; //! flag for correction vp optoma
 
 	std::vector<float> dataColor;
 	std::vector<float> dataPos;

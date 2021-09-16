@@ -104,7 +104,6 @@ private:
 	inline void computeColorDistributionCoefs(void);
 
 	std::function<void(void)> currentComputeFunction;
-	//SK_COMPUTE_COLOR computeTypeColor = SK_COMPUTE_COLOR::SK_EARTH_TYPE;
 };
 
 #endif // _SKYLIGHT_H_
