@@ -186,9 +186,9 @@ private:
 	Fps* internalFPS = nullptr;				//! gestion fine du frameRate
 	std::unique_ptr<AppDraw> appDraw;
 	Observer* observatory = nullptr;
+	std::unique_ptr<Executor> executor;
 	#if LINUX
 	std::unique_ptr<Mkfifo> mkfifo;
-	std::unique_ptr<Executor> executor;
 	#endif
 
 	SpaceDate * spaceDate = nullptr;			// Handles dates and conversions
