@@ -459,8 +459,6 @@ private:
 		double move_speed, zoom_speed;		// Speed of movement and zooming
 	};
 
-	void ssystemComputePreDraw();
-
 	//! Execute all the drawing functions in solarsystem mode
 	//! @param delta_time the time increment in ms.
 	[[deprecated]]  void drawInSolarSystem(int delta_time);

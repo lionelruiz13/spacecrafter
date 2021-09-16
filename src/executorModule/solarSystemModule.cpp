@@ -110,7 +110,7 @@ void SolarSystemModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 
-	std::future<void> a = std::async(std::launch::async, &Core::ssystemComputePreDraw, core);
+	std::future<void> a = std::async(std::launch::async, &SolarSystemModule::ssystemComputePreDraw, this);
 	std::future<void> b = std::async(std::launch::async, &SolarSystemModule::atmosphereComputeColor, this, sunPos, moonPos);
 	std::future<void> c = std::async(std::launch::async, &SolarSystemModule::hipStarMgrPreDraw, this);
 
@@ -207,4 +207,9 @@ void SolarSystemModule::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 void SolarSystemModule::hipStarMgrPreDraw()
 {
 	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr,core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+}
+
+void SolarSystemModule::ssystemComputePreDraw()
+{
+	core->ssystemFactory->computePreDraw(core->projection, core->navigation);
 }

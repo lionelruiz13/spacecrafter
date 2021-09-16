@@ -502,12 +502,6 @@ void Core::init(const InitParser& conf)
 	firstTime = 0;
 }
 
-
-void Core::ssystemComputePreDraw()
-{
-	ssystemFactory->computePreDraw(projection, navigation);
-}
-
 void Core::uboCamUpdate()
 {
 	ubo_cam->setViewport(projection->getViewport());

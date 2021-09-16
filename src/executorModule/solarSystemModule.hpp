@@ -43,6 +43,7 @@ public:
 
     void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos );
     void hipStarMgrPreDraw();
+    void ssystemComputePreDraw();
 
 private:
     Core *core;
