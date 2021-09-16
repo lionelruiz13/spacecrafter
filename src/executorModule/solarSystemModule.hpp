@@ -41,6 +41,8 @@ public:
 	virtual void draw(int delta_time) override;
 	virtual bool testValidAltitude(double altitude) override;
 
+    void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos );
+
 private:
     Core *core;
     Observer *observer;

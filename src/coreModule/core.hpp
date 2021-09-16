@@ -460,7 +460,6 @@ private:
 	};
 
 	void ssystemComputePreDraw();
-	[[deprecated]]  void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos);
 	[[deprecated]]  void hipStarMgrPreDraw();
 
 	//! Execute all the drawing functions in solarsystem mode
