@@ -112,7 +112,7 @@ void SolarSystemModule::update(int delta_time)
 
 	std::future<void> a = std::async(std::launch::async, &Core::ssystemComputePreDraw, core);
 	std::future<void> b = std::async(std::launch::async, &SolarSystemModule::atmosphereComputeColor, this, sunPos, moonPos);
-	std::future<void> c = std::async(std::launch::async, &Core::hipStarMgrPreDraw, core);
+	std::future<void> c = std::async(std::launch::async, &SolarSystemModule::hipStarMgrPreDraw, this);
 
 	a.get();
 	b.get();
@@ -202,4 +202,9 @@ void SolarSystemModule::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 	                          core->ssystemFactory->getMoon()->get_phase(core->ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
 	                          core->tone_converter, core->projection, core->observatory->getLatitude(), core->observatory->getAltitude(),
 	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
+}
+
+void SolarSystemModule::hipStarMgrPreDraw()
+{
+	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr,core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
 }

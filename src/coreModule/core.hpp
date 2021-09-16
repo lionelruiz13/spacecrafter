@@ -460,7 +460,6 @@ private:
 	};
 
 	void ssystemComputePreDraw();
-	[[deprecated]]  void hipStarMgrPreDraw();
 
 	//! Execute all the drawing functions in solarsystem mode
 	//! @param delta_time the time increment in ms.

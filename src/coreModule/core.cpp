@@ -508,11 +508,6 @@ void Core::ssystemComputePreDraw()
 	ssystemFactory->computePreDraw(projection, navigation);
 }
 
-void Core::hipStarMgrPreDraw()
-{
-	hip_stars->preDraw(geodesic_grid, tone_converter, projection, navigation, timeMgr,observatory->getAltitude(), atmosphere->getFlagShow() && FlagAtmosphericRefraction);
-}
-
 void Core::uboCamUpdate()
 {
 	ubo_cam->setViewport(projection->getViewport());

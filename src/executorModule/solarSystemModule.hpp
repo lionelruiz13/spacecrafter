@@ -42,6 +42,7 @@ public:
 	virtual bool testValidAltitude(double altitude) override;
 
     void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos );
+    void hipStarMgrPreDraw();
 
 private:
     Core *core;
