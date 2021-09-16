@@ -114,12 +114,6 @@ public:
 	//! Init and load all main core components from the passed config file.
 	void init(const InitParser& conf);
 
-	//! Update current mode
-	[[deprecated]] void updateMode();
-
-	//! Draw all the objects in current mode
-	[[deprecated]] void draw(int delta_time);
-
 	//! Set the sky culture from I18 name
 	//! Returns false and doesn't change if skyculture is invalid
 	bool setSkyCulture(const std::string& cultureName);
@@ -459,31 +453,7 @@ private:
 		double move_speed, zoom_speed;		// Speed of movement and zooming
 	};
 
-	//! Execute all the drawing functions in solarsystem mode
-	//! @param delta_time the time increment in ms.
-	[[deprecated]]  void drawInSolarSystem(int delta_time);
-
-	//! Execute all the drawing functions in galaxy mode
-	//! @param delta_time the time increment in ms.
-	[[deprecated]]  void drawInGalaxy(int delta_time);
-
-	//! Execute all the drawing functions in universe mode
-	//! @param delta_time the time increment in ms.
-	[[deprecated]]  void drawInUniverse(int delta_time);
-
 	void applyClippingPlanes(float clipping_min, float clipping_max);
-
-	//! Update all the objects in solarsystem mode with respect to the time.
-	//! @param delta_time the time increment in ms.
-	[[deprecated]]  void updateInSolarSystem(int delta_time);
-
-	//! Update all the objects in galaxy mode with respect to the time.
-	//! @param delta_time the time increment in ms.
-	[[deprecated]]  void updateInGalaxy(int delta_time);
-
-	//! Update all the objects in universe mode with respect to the time.
-	//! @param delta_time the time increment in ms.
-	[[deprecated]]  void updateInUniverse(int delta_time);
 
 	//! Callback to record actions
 	mBoost::callback<void, std::string> recordActionCallback;
