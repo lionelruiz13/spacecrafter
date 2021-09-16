@@ -29,14 +29,8 @@
 #include <memory>
 #include <queue>
 
-//#include "spacecrafter.hpp"
-//#include "appModule/fps.hpp"
-//#include "appModule/space_date.hpp"
-//#include "tools/app_settings.hpp"
 #include "tools/vecmath.hpp"
-
 #include "tools/no_copy.hpp"
-
 #include "vulkanModule/Context.hpp"
 
 class VertexArray;
@@ -58,8 +52,6 @@ public:
 	//! dessine le splash au démarrage
     void initSplash(ThreadContext *context);
 
-    //! clean screen with black color
-	// void drawFirstLayer();
 	//! rempli en noir l'extérieur du dôme
 	void drawViewportShape();
 	//! dessine le rendu final du logiciel en inversant les couleurs
@@ -73,9 +65,6 @@ public:
 	//! Set rendering flag of antialiased lines
 	void setFlagAntialiasLines(bool b) {
 		antialiasLines = b;
-
-		//if(b) glEnable(GL_LINE_SMOOTH);
-		//else glDisable(GL_LINE_SMOOTH);
 	}
 	//! Get display flag of constellation lines
 	bool getFlagAntialiasLines(void) {
@@ -88,9 +77,6 @@ public:
 	//! création des shaders
 	void createSC_context(ThreadContext *context);
 private:
-	//! suppression des shaders
-	// void deleteShader();
-
 	std::unique_ptr<VertexArray> m_viewportGL;
 	std::unique_ptr<PipelineLayout> layoutViewportShape, layoutColorInverse;
 	std::unique_ptr<Uniform> uRadius, uDecalage;

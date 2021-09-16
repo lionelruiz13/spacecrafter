@@ -33,11 +33,6 @@
 #include <memory>
 
 #include "tools/no_copy.hpp"
-//#include "appModule/fps.hpp"
-//#include "appModule/space_date.hpp"
-//#include "spacecrafter.hpp"
-
-
 #include "vulkanModule/Context.hpp"
 
 // Predeclaration of some classes

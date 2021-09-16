@@ -1,3 +1,28 @@
+/*
+ * Spacecrafter astronomy simulation and visualization
+ *
+ * Copyright (C) 2018-2020 of the LSS Team & Association Sirius
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ *
+ * Spacecrafter is a free open project of of LSS team
+ * See the TRADEMARKS file for free open project usage requirements.
+ *
+ */
+
 #include <SDL2/SDL.h>
 
 #include <iomanip>
@@ -5,8 +30,6 @@
 #include <iostream>
 
 #include "appModule/save_screen.hpp"
-// #define TJE_IMPLEMENTATION
-// #include "tiny_jpeg.h"
 #include "tools/log.hpp"
 
 #include "appModule/save_screen_interface.hpp"
@@ -28,7 +51,6 @@ SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _heig
 
 SaveScreenInterface::~SaveScreenInterface()
 {
-	//delete saveScreen;
 }
 
 void SaveScreenInterface::startVideo()
@@ -63,7 +85,6 @@ void SaveScreenInterface::readScreenShot()
 				fileNameScreenshot = getNextScreenshotFilename();
 			fileNameNextScreenshot.swap(fileNameScreenshot);
 			master->intercept();
-			//writeScreenshot(fileNameScreenshot);
 			fileNameScreenshot.clear();
 			readScreen=ReadScreen::NONE;
 			break;
@@ -73,7 +94,6 @@ void SaveScreenInterface::readScreenShot()
 			ss << std::setw(6) << std::setfill('0') << fileNumber;
 			fileNameNextScreenshot = videoBaseName + "-" + ss.str() + ".jpg";
 			master->intercept();
-			//writeScreenshot();
 			fileNumber++;
 			}
 			break;
@@ -98,7 +118,6 @@ void SaveScreenInterface::writeScreenshot(void *pSelf, void *pData, uint32_t wid
 	SaveScreenInterface *self = static_cast<SaveScreenInterface *>(pSelf);
 	//cette fonction peut être bloquante
 	self->saveScreen->getFreeIndex();
-	//glReadPixels( (width-minWH)/2, (height-minWH)/2, minWH, minWH, GL_RGB, GL_UNSIGNED_BYTE, saveScreen->getFreeBuffer());
 	unsigned char *data = static_cast<unsigned char *>(pData) + 4 * width * height; // Move at the end of the image
 	unsigned char *buff = self->saveScreen->getFreeBuffer();
 	for (uint32_t i = 0; i < height; ++i) { // Format is VK_FORMAT_B8G8R8A8_UNORM
