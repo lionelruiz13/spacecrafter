@@ -36,7 +36,19 @@
 #include "executorModule/inUniverseModule.hpp"
 #include "executorModule/inPauseModule.hpp"
 
-
+/**
+ * \file executor.hpp
+ * \brief Update / Draw functions mode handling
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class Executor
+ *
+ * \brief Chooses the right draw / update function depending on current mode
+ * 
+ * Allows to change mode manually or automatically depending on the altitude.
+ *
+*/
 class Executor {
 public:
     Executor(Core *_core, Observer *_observer);
