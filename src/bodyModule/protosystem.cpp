@@ -34,7 +34,8 @@
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
 
-
+#define EARTH_MASS 5.976e24
+#define LUNAR_MASS 7.354e22
 
 ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 	:context(_context), objLMgr(_objLMgr)
@@ -627,8 +628,40 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 	// default value of -1 means unused
 	double orbit_bounding_radius = Utility::strToDouble(param["orbit_bounding_radius"], -1);
+	if (funcname=="earth_custom") {
+		// Special case to take care of Earth-Moon Barycenter at a higher level than in ephemeris library
 
-	if (funcname == "still_orbit") {
+		//cout << "Creating Earth orbit...\n" << endl;
+		cLog::get()->write("Creating Earth orbit...", LOG_TYPE::L_INFO);
+		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("emb_special");
+		if (!sorb->isValid()) {
+			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
+			cLog::get()->write(error, LOG_TYPE::L_ERROR);
+			return;
+		}
+		// NB. moon has to be added later
+		orb = std::make_unique<BinaryOrbit>(std::move(sorb), 0.0121505677733761);
+
+	} else if(funcname == "lunar_custom") {
+		// This allows chaotic Moon ephemeris to be removed once start leaving acurate and sane range
+
+		std::unique_ptr<SpecialOrbit> sorb = std::make_unique<SpecialOrbit>("lunar_special");
+
+		if (!sorb->isValid()) {
+			std::string error = std::string("ERROR : can't find position function ") + funcname + std::string(" for ") + englishName + std::string("\n");
+			cLog::get()->write(error, LOG_TYPE::L_ERROR);
+			return ;
+		}
+
+		orb = std::make_unique<MixedOrbit>(std::move(sorb),
+		                     Utility::strToDouble(param["orbit_period"]),
+		                     SpaceDate::JulianDayFromDateTime(-10000, 1, 1, 1, 1, 1),
+		                     SpaceDate::JulianDayFromDateTime(10000, 1, 1, 1, 1, 1),
+		                     EARTH_MASS + LUNAR_MASS,
+		                     0, 0, 0,
+		                     false);
+
+	} else if (funcname == "still_orbit") {
 		orb = std::make_unique<stillOrbit>(Utility::strToDouble(param["orbit_x"]),
 		                     Utility::strToDouble(param["orbit_y"]),
 		                     Utility::strToDouble(param["orbit_z"]));
@@ -703,11 +736,8 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				p_center->setHaloSize(Utility::strToDouble(param["big_halo_size"], 50.f));
 			}
 
-			//if (englishName == "Sun") {
-				//sun = p_sun.get();
-				bodyTrace = p_center.get();
-				centerObject = p_center.get();
-			//}
+			bodyTrace = p_center.get();
+			centerObject = p_center.get();
 			p = std::move(p_center);
 		}
 		break;
@@ -733,12 +763,9 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				p_sun->setHaloSize(Utility::strToDouble(param["big_halo_size"], 50.f));
 			}
 
-			//if (englishName == "Sun") {
-				//sun = p_sun.get();
-			//	bodyTrace = p_sun.get();
-			//}
 			if (!parent) {
 				centerObject = p_sun.get();
+				bodyTrace = p_sun.get();
 			}
 			p = std::move(p_sun);
 		}
