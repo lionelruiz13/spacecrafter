@@ -23,6 +23,7 @@
  */
 
 #include "solarsystem.hpp"
+#include "tools/object.hpp"
 
 /**
  * \file solarsystem_selected.hpp

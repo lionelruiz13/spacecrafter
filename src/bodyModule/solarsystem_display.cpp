@@ -27,6 +27,7 @@
 #include "bodyModule/solarsystem.hpp"
 #include "bodyModule/halo.hpp"
 #include "navModule/navigator.hpp"
+#include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
 
 

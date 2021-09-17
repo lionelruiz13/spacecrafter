@@ -25,25 +25,23 @@
 #ifndef _PROTOSYSTEM_
 #define _PROTOSYSTEM_
 
-#include "ojmModule/objl_mgr.hpp"
-#include "bodyModule/body_tesselation.hpp"
-#include "bodyModule/body_common.hpp"
-#include "bodyModule/body_sun.hpp"
-#include "bodyModule/body_center.hpp"
-#include "bodyModule/body_moon.hpp"
-#include "bodyModule/body_bigbody.hpp"
-#include "bodyModule/body_smallbody.hpp"
-#include "bodyModule/body_artificial.hpp"
-#include "navModule/observer.hpp"
-#include "navModule/anchor_manager.hpp"
-#include "tools/translator.hpp"
-#include "tools/object.hpp"
+
+
+#include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
+#include "bodyModule/body.hpp"
 
 class ThreadContext;
 class OrbitCreator;
 class SSystemIterator;
 class SSystemIteratorVector;
+class ObjLMgr;
+class AnchorManager;
+class Object;
+class Observer;
+class TimeMgr;
+class Body;
+class Translator;
 
 class ProtoSystem: public NoCopy, public ModuleFont {
 friend class SSystemIterator;

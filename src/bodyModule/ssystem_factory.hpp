@@ -38,6 +38,8 @@
 #include "bodyModule/solarsystem_display.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "mainModule/define_key.hpp"
+#include "ojmModule/objl_mgr.hpp"
+#include "navModule/anchor_manager.hpp"
 
 /**
  * \file ssystem_factory.hpp

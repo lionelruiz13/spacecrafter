@@ -25,6 +25,7 @@
 #include "bodyModule/solarsystem_selected.hpp"
 #include "bodyModule/ssystem_iterator.hpp"
 #include "bodyModule/solarsystem.hpp"
+#include "tools/object.hpp"
 
 SolarSystemSelected::SolarSystemSelected(ProtoSystem * _ssystem)
 {

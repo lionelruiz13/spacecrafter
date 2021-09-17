@@ -31,11 +31,13 @@
 #include <functional>
 #include <map>
 
+#include "bodyModule/body_moon.hpp"
+#include "bodyModule/body_bigbody.hpp"
+#include "bodyModule/body_sun.hpp"
 #include "bodyModule/orbit.hpp"
 #include "tools/no_copy.hpp"
 #include "bodyModule/body_color.hpp"
 #include "bodyModule/protosystem.hpp"
-
 
 class SolarSystem: public ProtoSystem{
 public:

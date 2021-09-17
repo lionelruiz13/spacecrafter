@@ -31,8 +31,16 @@
 #include "bodyModule/ssystem_iterator.hpp"
 #include "appModule/space_date.hpp"
 #include "navModule/navigator.hpp"
+#include "navModule/observer.hpp"
+#include "navModule/anchor_manager.hpp"
+#include "ojmModule/objl_mgr.hpp"
 #include "tools/log.hpp"
 #include "tools/sc_const.hpp"
+#include "tools/translator.hpp"
+#include "bodyModule/body_smallbody.hpp"
+#include "bodyModule/body_artificial.hpp"
+#include "bodyModule/body_center.hpp"
+#include "tools/object.hpp"
 
 #define EARTH_MASS 5.976e24
 #define LUNAR_MASS 7.354e22

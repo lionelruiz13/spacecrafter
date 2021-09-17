@@ -72,7 +72,6 @@ typedef struct body_flags {
 	bool flag_trail, flag_hints, flag_axis, flag_orbit, flag_halo;
 } body_flags;
 
-enum BODY_TYPE {SUN = 0, PLANET = 1, MOON = 2, DWARF = 3, ASTEROID = 4, KBO = 5,  COMET = 6, ARTIFICIAL = 7, OBSERVER = 8, CENTER = 9, UNKNOWN = 10};
 
 enum TURN_AROUND {tANothing = 0, tACenter = 1, tABody = 2};
 

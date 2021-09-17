@@ -24,6 +24,7 @@
 
 #include <memory>
 
+#include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/ssystem_factory.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
