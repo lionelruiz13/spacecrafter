@@ -186,7 +186,7 @@ private:
 	std::unique_ptr<Mkfifo> mkfifo;
 	#endif
 
-	SpaceDate * spaceDate = nullptr;			// Handles dates and conversions
+	std::unique_ptr<SpaceDate> spaceDate;		// Handles dates and conversions
 	EventRecorder *eventRecorder = nullptr;
 	EventHandler *eventHandler = nullptr;
 

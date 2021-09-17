@@ -131,13 +131,13 @@ App::App( SDLFacade* const sdl )
 	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media.get());
 	scriptInterface = new ScriptInterface(scriptMgr);
 	internalFPS = std::make_unique<Fps>();
-	spaceDate = new SpaceDate();
+	spaceDate = std::make_unique<SpaceDate>();
 
 	executor = std::make_unique<Executor>(core, observatory);
 
 	// fixation interface
-	ui->initInterfaces(scriptInterface,spaceDate);
-	commander->initInterfaces(scriptInterface, spaceDate, saveScreenInterface.get());
+	ui->initInterfaces(scriptInterface,spaceDate.get());
+	commander->initInterfaces(scriptInterface, spaceDate.get(), saveScreenInterface.get());
 
 	EventRecorder::Init();
 	eventRecorder = EventRecorder::getInstance();
@@ -201,7 +201,7 @@ App::~App()
 	saveScreenInterface.release();
 	internalFPS.release();
 	screenFader.release();
-	delete spaceDate;
+	spaceDate.release();
 	fontFactory.release();
 	delete context.commandMgr;
 	delete context.commandMgrSingleUseInterface;
