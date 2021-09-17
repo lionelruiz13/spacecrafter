@@ -27,6 +27,20 @@
 
 #include "solarsystem.hpp"
 
+/**
+ * \file ssystem_display.hpp
+ * \brief Handle solar system drawing functions
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class SolarSystemDisplay
+ *
+ * \brief Contains solar system drawing and updating functions
+ * 
+ * Allow to set display flags
+ *
+*/
+
 class SolarSystemDisplay {
 public:
     SolarSystemDisplay(ProtoSystem * _ssystem);
