@@ -30,6 +30,18 @@
 
 class ProtoSystem;
 
+/**
+ * \file solarsystem_iterator.hpp
+ * \brief Handle solar system bodies iterator
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class SolarSystemIterator
+ *
+ * \brief Allows to iterate through solar system ssystemBodies map
+ *
+*/
+
 class SSystemIterator {
 public:
     typedef typename std::map<std::string, struct std::shared_ptr<ProtoSystem::BodyContainer>>::iterator iter_type;
