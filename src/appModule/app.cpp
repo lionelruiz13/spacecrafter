@@ -112,32 +112,32 @@ App::App( SDLFacade* const sdl )
 
 	fontFactory = std::make_unique<FontFactory>();
 
-	media = new Media();
-	saveScreenInterface = new SaveScreenInterface(width, height, globalContext.vulkan);
+	media = std::make_unique<Media>();
+	saveScreenInterface = std::make_unique<SaveScreenInterface>(width, height, globalContext.vulkan);
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
 
-	screenFader =  new ScreenFader();
+	screenFader =  std::make_unique<ScreenFader>();
 
 	observatory = new Observer();
-	core = new Core(&context, width, height, media, fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
+	core = new Core(&context, width, height, media.get(), fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
 	coreLink = new CoreLink(core);
 	coreBackup = new CoreBackup(core);
 
 	screenFader->createSC_context(&context);
 
-	ui = new UI(core, coreLink, this, mSdl, media);
-	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media, fontFactory.get());
-	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media);
+	ui = new UI(core, coreLink, this, mSdl, media.get());
+	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media.get(), fontFactory.get());
+	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media.get());
 	scriptInterface = new ScriptInterface(scriptMgr);
-	internalFPS = new Fps();
+	internalFPS = std::make_unique<Fps>();
 	spaceDate = new SpaceDate();
 
 	executor = std::make_unique<Executor>(core, observatory);
 
 	// fixation interface
 	ui->initInterfaces(scriptInterface,spaceDate);
-	commander->initInterfaces(scriptInterface, spaceDate, saveScreenInterface);
+	commander->initInterfaces(scriptInterface, spaceDate, saveScreenInterface.get());
 
 	EventRecorder::Init();
 	eventRecorder = EventRecorder::getInstance();
@@ -145,10 +145,10 @@ App::App( SDLFacade* const sdl )
 	eventHandler-> add(new EventScriptHandler(scriptInterface), Event::E_SCRIPT);
 	eventHandler-> add(new EventCommandHandler(commander), Event::E_COMMAND);
 	eventHandler-> add(new EventFlagHandler(commander), Event::E_FLAG);
-	eventHandler-> add(new EventScreenFaderHandler(screenFader), Event::E_SCREEN_FADER);
-	eventHandler-> add(new EventScreenFaderInterludeHandler(screenFader), Event::E_SCREEN_FADER_INTERLUDE);
-	eventHandler-> add(new EventSaveScreenHandler(saveScreenInterface), Event::E_SAVESCREEN);
-	eventHandler-> add(new EventFpsHandler(internalFPS), Event::E_FPS);
+	eventHandler-> add(new EventScreenFaderHandler(screenFader.get()), Event::E_SCREEN_FADER);
+	eventHandler-> add(new EventScreenFaderInterludeHandler(screenFader.get()), Event::E_SCREEN_FADER_INTERLUDE);
+	eventHandler-> add(new EventSaveScreenHandler(saveScreenInterface.get()), Event::E_SAVESCREEN);
+	eventHandler-> add(new EventFpsHandler(internalFPS.get()), Event::E_FPS);
 	eventHandler-> add(new EventAltitudeHandler(core), Event::E_CHANGE_ALTITUDE);
 	eventHandler-> add(new EventObserverHandler(core), Event::E_CHANGE_OBSERVER);
 	eventHandler-> add(new EventVideoHandler(ui, scriptInterface), Event::E_VIDEO);
@@ -192,15 +192,15 @@ App::~App()
 	delete ui;
 	delete scriptInterface;
 	delete scriptMgr;
-	delete media;
+	media.release();
 	delete commander;
 	delete coreLink;
 	delete coreBackup;
 	delete core;	
 	delete observatory;
-	delete saveScreenInterface;
-	delete internalFPS;
-	delete screenFader;
+	saveScreenInterface.release();
+	internalFPS.release();
+	screenFader.release();
 	delete spaceDate;
 	fontFactory.release();
 	delete context.commandMgr;
@@ -341,7 +341,7 @@ void App::firstInit()
 	AppSettings::Instance()->loadAppSettings( &conf );
 
 	fontFactory->init(std::min(width,height), conf);
-	fontFactory->initMediaFont(media);
+	fontFactory->initMediaFont(media.get());
 	fontFactory->buildAllFont();
 
 	ui->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_UI));

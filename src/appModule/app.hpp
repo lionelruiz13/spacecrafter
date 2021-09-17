@@ -166,9 +166,9 @@ private:
 	AppCommandInterface * commander = nullptr;	//! interface to perform all UI and scripting actions
 	ScriptMgr * scriptMgr = nullptr;			//! manage playing and recording scripts
 	ScriptInterface* scriptInterface = nullptr;	//! interface for other composents
-	Media* media = nullptr;						//!< media manager
+	std::unique_ptr<Media> media;				//!< media manager
 	UI * ui = nullptr;							//! The main User Interface
-	ScreenFader *screenFader = nullptr;			//! gestion des fondus
+	std::unique_ptr<ScreenFader> screenFader;	//! gestion des fondus
 
 	//! The assicated Core instance
 	Core* core = nullptr;
@@ -176,9 +176,9 @@ private:
 	CoreBackup* coreBackup = nullptr;
 	SDLFacade* mSdl = nullptr;
 	std::unique_ptr<FontFactory> fontFactory;
-	SaveScreenInterface* saveScreenInterface = nullptr;
+	std::unique_ptr<SaveScreenInterface> saveScreenInterface;
 	std::unique_ptr<ServerSocket> tcp;
-	Fps* internalFPS = nullptr;				//! gestion fine du frameRate
+	std::unique_ptr<Fps> internalFPS;			//! gestion fine du frameRate
 	std::unique_ptr<AppDraw> appDraw;
 	Observer* observatory = nullptr;
 	std::unique_ptr<Executor> executor;
