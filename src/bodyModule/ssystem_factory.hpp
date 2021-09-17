@@ -39,6 +39,20 @@
 #include "bodyModule/body_trace.hpp"
 #include "mainModule/define_key.hpp"
 
+/**
+ * \file ssystem_factory.hpp
+ * \brief Handle solar system functions
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class SSystemFactory
+ *
+ * \brief Wrapper for all Solar Systems functions
+ * 
+ * Allows to add systems and to select the active one
+ *
+*/
+
 class ThreadContext;
 
 class SSystemFactory: public NoCopy {
