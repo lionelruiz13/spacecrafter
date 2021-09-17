@@ -28,7 +28,7 @@
 #include "solarsystem.hpp"
 
 /**
- * \file ssystem_display.hpp
+ * \file solarsystem_display.hpp
  * \brief Handle solar system drawing functions
  * \author Jérémy Calvo
  * \version 1

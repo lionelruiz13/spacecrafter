@@ -27,6 +27,18 @@
 
 #include "bodyModule/solarsystem.hpp"
 
+/**
+ * \file solarsystem_scale.hpp
+ * \brief Handle solar system scale functions
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class SolarSystemScale
+ *
+ * \brief Acts on the solar system objects' size.
+ *
+*/
+
 class SolarSystemScale {
 public:
     SolarSystemScale(ProtoSystem * _ssystem);
