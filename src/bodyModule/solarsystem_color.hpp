@@ -27,6 +27,18 @@
 
 #include "solarsystem.hpp"
 
+/**
+ * \file solarsystem_color.hpp
+ * \brief Handle solar system color functions
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class SolarSystemColor
+ *
+ * \brief Acts on the solar system objects' color.
+ *
+*/
+
 class SolarSystemColor {
 public:
     SolarSystemColor(ProtoSystem * _ssystem);
