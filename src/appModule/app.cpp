@@ -93,7 +93,7 @@ App::App( SDLFacade* const sdl )
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 
 	int antialiasing = 1 << static_cast<int>(std::log2(conf.getInt(SCS_RENDERING, SCK_ANTIALIASING)|1));
-	globalContext.vulkan = new Vulkan("spacecrafter", nullptr, mSdl->getWindow(), 1, width, height, 256*1024*1024, cLog::get()->getDebug(), static_cast<VkSampleCountFlagBits>(antialiasing), settings->getUserDir());
+	globalContext.vulkan = new Vulkan(APP_LOWER_NAME, nullptr, mSdl->getWindow(), 1, width, height, 256*1024*1024, cLog::get()->getDebug(), static_cast<VkSampleCountFlagBits>(antialiasing), settings->getUserDir());
 	globalContext.tracker = new ResourceTracker();
 	globalContext.textureMgr = new TextureMgr(globalContext.vulkan);
 	context.global = &globalContext;
