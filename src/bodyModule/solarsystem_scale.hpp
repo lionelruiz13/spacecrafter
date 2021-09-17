@@ -35,7 +35,7 @@
  *
  * \class SolarSystemScale
  *
- * \brief Acts on the solar system objects' size.
+ * \brief Acts on the solar system objects's size.
  *
 */
 

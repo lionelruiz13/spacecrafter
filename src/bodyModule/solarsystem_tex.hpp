@@ -27,6 +27,18 @@
 
 #include "solarsystem.hpp"
 
+/**
+ * \file solarsystem_tex.hpp
+ * \brief Handle solar system textures functions
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class SolarSystemTexture
+ *
+ * \brief Acts on the solar system objects's textures.
+ *
+*/
+
 class SolarSystemTex {
 public:
     SolarSystemTex(ProtoSystem * _ssystem);
