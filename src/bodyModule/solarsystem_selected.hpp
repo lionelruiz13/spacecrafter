@@ -24,6 +24,20 @@
 
 #include "solarsystem.hpp"
 
+/**
+ * \file solarsystem_selected.hpp
+ * \brief Handle solar system select functions
+ * \author Jérémy Calvo
+ * \version 1
+ *
+ * \class SolarSystemSelected
+ *
+ * \brief Set the selected object in solar system
+ * 
+ * Acts on select flags
+ *
+*/
+
 class SolarSystemSelected {
 public:
     SolarSystemSelected(ProtoSystem * _ssystem);
