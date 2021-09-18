@@ -55,7 +55,7 @@ class FontFactory;
 class AppCommandInterface: public NoCopy {
 
 public:
-	AppCommandInterface(std::shared_ptr<Core> core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, std::shared_ptr<Media> _media, FontFactory* _fontFactory);
+	AppCommandInterface(std::shared_ptr<Core> core, std::shared_ptr<CoreLink> _coreLink, std::shared_ptr<CoreBackup> _coreBackup, App * app, std::shared_ptr<UI> _ui, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory);
 	~AppCommandInterface();
 
 	int terminateScript();
@@ -63,7 +63,7 @@ public:
 	int executeCommand(const std::string &commandline);
 	int executeCommand(const std::string &command, unsigned long int &wait);
 
-	void initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate, SaveScreenInterface* _saveScreenInterface);
+	void initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate, std::shared_ptr<SaveScreenInterface> _saveScreenInterface);
 
 	void setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value);
 	void setTcp(ServerSocket* _tcp);
@@ -140,18 +140,18 @@ private:
 	std::string evalString (const std::string &var);
 
 	std::shared_ptr<Core> stcore;
-	CoreLink *coreLink = nullptr;
-	CoreBackup* coreBackup = nullptr;
+	std::shared_ptr<CoreLink> coreLink;
+	std::shared_ptr<CoreBackup> coreBackup;
 	App * stapp = nullptr;
-	UI* ui = nullptr;
+	std::shared_ptr<UI> ui;
 	std::shared_ptr<Media> media;
-	ScriptInterface* scriptInterface = nullptr;
-	SpaceDate* spaceDate = nullptr;
-	SaveScreenInterface* saveScreenInterface=nullptr;
+	std::shared_ptr<ScriptInterface> scriptInterface;
+	std::shared_ptr<SpaceDate> spaceDate;
+	std::shared_ptr<SaveScreenInterface> saveScreenInterface;
 	ServerSocket *tcp = nullptr;
 	AppCommandInit *appInit = nullptr;
 	AppCommandEval *appEval = nullptr;
-	FontFactory *fontFactory = nullptr;
+	std::shared_ptr<FontFactory> fontFactory;
 
 	std::string commandline;
 	std::string command;

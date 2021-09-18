@@ -65,12 +65,12 @@ void InGalaxyModule::update(int delta_time)
 	core->navigation->update(delta_time);
 
 	// Position of sun and all the satellites (ie planets)
-	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), core->observatory);
+	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), core->observatory.get());
 
 	core->ssystemFactory->updateAnchorManager();
 
 	// Transform matrices between coordinates systems
-	core->navigation->updateTransformMatrices(core->observatory, core->timeMgr->getJDay());
+	core->navigation->updateTransformMatrices(core->observatory.get(), core->timeMgr->getJDay());
 	// Direction of vision
 	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view

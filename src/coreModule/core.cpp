@@ -56,7 +56,7 @@
 #include "vulkanModule/Texture.hpp"
 #include "vulkanModule/TextureMgr.hpp"
 
-Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, FontFactory* _fontFactory, const mBoost::callback<void, std::string>& recordCallback, Observer *_observatory) :
+Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)
@@ -82,7 +82,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	timeMgr = new TimeMgr();
 	navigation = new Navigator();
 	observatory = _observatory;
-	ssystemFactory = new SSystemFactory(context, observatory, navigation, timeMgr);
+	ssystemFactory = new SSystemFactory(context, observatory.get(), navigation, timeMgr);
 	nebulas = new NebulaMgr(context);
 	milky_way = new MilkyWay(context);
 	starNav = new StarNavigator(context);
@@ -371,10 +371,10 @@ void Core::init(const InitParser& conf)
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
 
 	// Compute planets data and init viewing position position of sun and all the satellites (ie planets)
-	ssystemFactory->computePositions(timeMgr->getJDay(), observatory);
+	ssystemFactory->computePositions(timeMgr->getJDay(), observatory.get());
 
 	// Compute transform matrices between coordinates systems
-	navigation->updateTransformMatrices(observatory, timeMgr->getJDay());
+	navigation->updateTransformMatrices(observatory.get(), timeMgr->getJDay());
 	navigation->updateViewMat(projection->getFov());
 
 	ssystemFactory->setSelected(""); //setPlanetsSelected("");	// Fix a bug on macosX! Thanks Fumio!
@@ -845,7 +845,7 @@ Object Core::cleverFind(const Vec3d& v) const
 
 	// Collect the planets inside the range
 	if (ssystemFactory->getFlagShow()) {
-		temp = ssystemFactory->searchAround(v, fov_around, navigation, observatory, projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
+		temp = ssystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
 		if (is_default_object && temp.begin() != temp.end()) {

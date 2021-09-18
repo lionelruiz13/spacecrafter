@@ -45,7 +45,7 @@ class Script;
 class ScriptMgr: public NoCopy {
 
 public:
-	ScriptMgr(AppCommandInterface * command_interface, const std::string &_data_dir, std::shared_ptr<Media> _media);
+	ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface, const std::string &_data_dir, std::shared_ptr<Media> _media);
 	~ScriptMgr();
 
 	//! lance un script 
@@ -167,8 +167,9 @@ private:
 	ScriptRecord sR;
 
 	std::string getRecordDate();
+	// external classes
 	std::shared_ptr<Media> media;
-	AppCommandInterface * commander = nullptr;  //!< for executing script commands
+	std::shared_ptr<AppCommandInterface> commander;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
 	long int wait_time;     //!< ms until next script command should be executed
 	bool waitOnVideo; 			//!< if Video launch, say if script should wait on it.

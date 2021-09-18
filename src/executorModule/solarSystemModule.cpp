@@ -58,12 +58,12 @@ void SolarSystemModule::update(int delta_time)
 	core->navigation->update(delta_time);
 
 	// Position of sun and all the satellites (ie planets)
-	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), core->observatory);
+	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), core->observatory.get());
 
 	core->ssystemFactory->updateAnchorManager();
 
 	// Transform matrices between coordinates systems
-	core->navigation->updateTransformMatrices(core->observatory, core->timeMgr->getJDay());
+	core->navigation->updateTransformMatrices(core->observatory.get(), core->timeMgr->getJDay());
 	// Direction of vision
 	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view
@@ -155,9 +155,9 @@ void SolarSystemModule::draw(int delta_time)
 	core->starLines->draw(core->projection);
 	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr, core->observatory->getAltitude());
 	core->skyGridMgr->draw(core->projection);
-	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr, core->observatory);
+	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr, core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
-	core->ssystemFactory->draw(core->projection, core->navigation, core->observatory, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->ssystemFactory->draw(core->projection, core->navigation, core->observatory.get(), core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene

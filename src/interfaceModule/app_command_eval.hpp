@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <functional>
+#include <memory>
 #include "interfaceModule/base_command_interface.hpp"
 #include "tools/no_copy.hpp"
 
@@ -46,7 +47,7 @@ class CoreLink;
 class AppCommandEval : public NoCopy{
 public: 
 	// constructor
-    AppCommandEval(CoreLink *_coreLink);
+    AppCommandEval(std::shared_ptr<CoreLink> _coreLink);
     // destructor ?
 	~AppCommandEval();
 
@@ -100,7 +101,7 @@ private:
 	std::map<SC_RESERVED_VAR, const std::string> m_reservedVarInv;
 	double max_random;
 	double min_random;
-	CoreLink *coreLink;
+	std::shared_ptr<CoreLink> coreLink;
 };
 
 #endif

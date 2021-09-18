@@ -25,7 +25,7 @@
 #include "scriptModule/script_interface.hpp"
 #include "scriptModule/script_mgr.hpp"
 
-ScriptInterface::ScriptInterface(ScriptMgr* _scriptMgr)
+ScriptInterface::ScriptInterface(std::shared_ptr<ScriptMgr> _scriptMgr)
 {
     scriptMgr = _scriptMgr;
     SelectedScript = SelectedScriptDirectory = "";

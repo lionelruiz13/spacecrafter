@@ -26,12 +26,13 @@
 #define SCRIPT_INTERFACE_HPP
 
 #include <string>
+#include <memory>
 
 class ScriptMgr;
 
 class ScriptInterface {
 public:
-    ScriptInterface(ScriptMgr* _scriptMgr);
+    ScriptInterface(std::shared_ptr<ScriptMgr> _scriptMgr);
     ~ScriptInterface();
 
 
@@ -90,7 +91,7 @@ public:
 	void setIsVideoPlayed(bool b) const;
 
 private:
-    ScriptMgr* scriptMgr;
+    std::shared_ptr<ScriptMgr> scriptMgr;
    	
     // Script related
 	std::string SelectedScript;  //! script filename (without directory) selected in a UI to run when exit UI

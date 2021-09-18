@@ -58,7 +58,7 @@ void InUniverseModule::update(int delta_time)
 	core->observatory->update(delta_time);
 	core->navigation->update(delta_time);
 	// Transform matrices between coordinates systems
-	core->navigation->updateTransformMatrices(core->observatory, core->timeMgr->getJDay());
+	core->navigation->updateTransformMatrices(core->observatory.get(), core->timeMgr->getJDay());
 	// Direction of vision
 	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view

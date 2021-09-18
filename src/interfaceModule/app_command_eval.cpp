@@ -11,7 +11,7 @@ std::function<double(double,double)> f_tan = [](double x, double y){return tan(y
 std::function<double(double,double)> f_trunc = [](double x, double y){return trunc(y);};
 std::function<double(double,double)> f_sin = [](double x, double y){return sin(y*3.1415926/180.0);};
 
-AppCommandEval::AppCommandEval(CoreLink *_coreLink)
+AppCommandEval::AppCommandEval(std::shared_ptr<CoreLink> _coreLink)
 {
 	min_random = 0.0;
 	max_random = 1.0;

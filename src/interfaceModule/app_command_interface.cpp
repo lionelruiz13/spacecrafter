@@ -57,7 +57,7 @@
 #include "uiModule/ui.hpp"
 
 
-AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, std::shared_ptr<Media> _media, FontFactory* _fontFactory)
+AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, std::shared_ptr<CoreLink> _coreLink, std::shared_ptr<CoreBackup> _coreBackup, App * app, std::shared_ptr<UI> _ui, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory)
 {
 	stcore = core;
 	coreLink = _coreLink;
@@ -77,7 +77,7 @@ AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, CoreLink *_
 	appInit->initialiseSetCommand(m_set, m_set_ToString);
 }
 
-void AppCommandInterface::initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate, SaveScreenInterface* _saveScreenInterface)
+void AppCommandInterface::initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate, std::shared_ptr<SaveScreenInterface> _saveScreenInterface)
 {
 	scriptInterface = _scriptInterface;
 	spaceDate = _spaceDate;

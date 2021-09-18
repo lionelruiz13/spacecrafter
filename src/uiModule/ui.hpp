@@ -83,7 +83,7 @@ public:
 	void registerFont(s_font* font);
 	void init(const InitParser& conf);		// Initialize the ui.
 
-	void initInterfaces(ScriptInterface* _scriptInterface, SpaceDate* _spaceDate);
+	void initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate);
 
 	void draw();							// Display the ui
 	void updateTimeouts(int delta_time);		// Update changing values
@@ -208,7 +208,7 @@ private:
 	SDLFacade* m_sdl;
 	std::shared_ptr<Media> media;
 	Event* event;
-	SpaceDate* spaceDate;
+	std::shared_ptr<SpaceDate> spaceDate;
 
 	// Flags and variables
 	bool FlagShowFps;			// no access between outand
@@ -392,7 +392,7 @@ private:
 	void handleJoyRemoveStick();
 
 	bool handleKeyOnVideo = false;   //! permet de basculer le mode clavier lors des videos
-	ScriptInterface * scriptInterface=nullptr;	//! gestion des interfaces liées aux scripts 
+	std::shared_ptr<ScriptInterface> scriptInterface;	//! gestion des interfaces liées aux scripts 
 };
 
 #endif  //_UI_H

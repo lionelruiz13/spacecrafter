@@ -167,28 +167,28 @@ private:
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr;		 			//! base pour les constantes du logiciel
-	std::unique_ptr<AppCommandInterface> commander;		//! interface to perform all UI and scripting actions
-	std::unique_ptr<ScriptMgr> scriptMgr;				//! manage playing and recording scripts
-	std::unique_ptr<ScriptInterface> scriptInterface;	//! interface for other composents
+	std::shared_ptr<AppCommandInterface> commander;		//! interface to perform all UI and scripting actions
+	std::shared_ptr<ScriptMgr> scriptMgr;				//! manage playing and recording scripts
+	std::shared_ptr<ScriptInterface> scriptInterface;	//! interface for other composents
 	std::shared_ptr<Media> media;						//!< media manager
-	std::unique_ptr<UI> ui;								//! The main User Interface
-	std::unique_ptr<ScreenFader> screenFader;			//! gestion des fondus
+	std::shared_ptr<UI> ui;								//! The main User Interface
+	std::shared_ptr<ScreenFader> screenFader;			//! gestion des fondus
 
 	std::shared_ptr<Core> core;
-	std::unique_ptr<CoreLink> coreLink;
-	std::unique_ptr<CoreBackup> coreBackup;
-	std::unique_ptr<FontFactory> fontFactory;
-	std::unique_ptr<SaveScreenInterface> saveScreenInterface;
+	std::shared_ptr<CoreLink> coreLink;
+	std::shared_ptr<CoreBackup> coreBackup;
+	std::shared_ptr<FontFactory> fontFactory;
+	std::shared_ptr<SaveScreenInterface> saveScreenInterface;
 	std::unique_ptr<ServerSocket> tcp;
 	std::unique_ptr<Fps> internalFPS;			//! gestion fine du frameRate
 	std::unique_ptr<AppDraw> appDraw;
-	std::unique_ptr<Observer> observatory;
+	std::shared_ptr<Observer> observatory;
 	std::unique_ptr<Executor> executor;
 	#if LINUX
 	std::unique_ptr<Mkfifo> mkfifo;
 	#endif
 
-	std::unique_ptr<SpaceDate> spaceDate;		// Handles dates and conversions
+	std::shared_ptr<SpaceDate> spaceDate;		// Handles dates and conversions
 	EventRecorder* eventRecorder;
 	EventHandler* eventHandler;
 

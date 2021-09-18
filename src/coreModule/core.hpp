@@ -108,7 +108,7 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, FontFactory* _fontFactory, const mBoost::callback <void, std::string> & recordCallback, Observer *_observatory);
+	Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback <void, std::string> & recordCallback, std::shared_ptr<Observer> _observatory);
 	virtual ~Core();
 
 	//! Init and load all main core components from the passed config file.
@@ -337,7 +337,7 @@ public:
 
 	//! Get a 1 line string briefly describing the currently NAV edition selected object
 	std::string getSelectedObjectShortInfoNav(void) const {
-		return selected_object.getShortInfoNavString(navigation, timeMgr, observatory);
+		return selected_object.getShortInfoNavString(navigation, timeMgr, observatory.get());
 	}
 
 
@@ -494,11 +494,15 @@ private:
 
 	ThreadContext *context;
 
-	FontFactory* fontFactory=nullptr;					// gestion complète des fontes du logiciel
+	// external class
+	std::shared_ptr<FontFactory> fontFactory;					// gestion complète des fontes du logiciel
+	std::shared_ptr<Observer> observatory;			// Manage observer position it's a pointer to the 3 other Observer
+	std::shared_ptr<Media> media;
+
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
 	TimeMgr* timeMgr;				// Manage date and time
-	Observer *observatory;			// Manage observer position it's a pointer to the 3 other Observer
+
 	Observer *obsSolarSystem;		// it's the historical Observer: so nothing to do with it now.
 	Observer *obsInGalaxy;			//observer that should be used in InGalaxy mode
 	Observer *ObsInUnivers;			//observer that should be used in InUnivers mode
@@ -514,7 +518,7 @@ private:
 	SSystemFactory* ssystemFactory;
 
 	Atmosphere * atmosphere;			// Atmosphere
-	std::shared_ptr<Media> media;
+
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! gestionnaire des grilles
 	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! gestionnaire de lignes
 	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! gestionnaire de skyDisplay
