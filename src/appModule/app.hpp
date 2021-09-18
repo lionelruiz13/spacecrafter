@@ -174,7 +174,7 @@ private:
 	std::unique_ptr<UI> ui;								//! The main User Interface
 	std::unique_ptr<ScreenFader> screenFader;			//! gestion des fondus
 
-	std::unique_ptr<Core> core;
+	std::shared_ptr<Core> core;
 	std::unique_ptr<CoreLink> coreLink;
 	std::unique_ptr<CoreBackup> coreBackup;
 	std::unique_ptr<FontFactory> fontFactory;

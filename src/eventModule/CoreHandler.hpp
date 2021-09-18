@@ -26,7 +26,7 @@
 #ifndef EVENT_CORE_HANDLER_HPP
 #define EVENT_CORE_HANDLER_HPP
 
-
+#include <memory>
 #include "event_handler_canvas.hpp"
 #include "event.hpp"
 
@@ -46,7 +46,7 @@ class Core;
 */
 class EventAltitudeHandler : public EventHandlerCanvas {
 public:
-	EventAltitudeHandler(Core *_core) {
+	EventAltitudeHandler(std::shared_ptr<Core> _core) {
 		core = _core;
 	}
 	~EventAltitudeHandler() {
@@ -54,7 +54,7 @@ public:
     void handle(const Event* e, Executor *executor) override;
 
 protected :
-	Core* core = nullptr;
+	std::shared_ptr<Core> core;
 };
 
 
@@ -65,7 +65,7 @@ protected :
 */
 class EventObserverHandler : public EventHandlerCanvas {
 public:
-	EventObserverHandler(Core *_core) {
+	EventObserverHandler(std::shared_ptr<Core> _core) {
 		core = _core;
 	}
 	~EventObserverHandler() {
@@ -73,7 +73,7 @@ public:
     void handle(const Event* e, Executor *executor) override;
 
 protected :
-	Core* core = nullptr;
+	std::shared_ptr<Core> core;
 };
 
 #endif

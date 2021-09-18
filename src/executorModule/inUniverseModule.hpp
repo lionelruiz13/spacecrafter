@@ -32,7 +32,7 @@
 class InUniverseModule : public ExecutorModule {
 public:
 
-    InUniverseModule(Core* _core, Observer *_observer);
+    InUniverseModule(std::shared_ptr<Core> _core, Observer *_observer);
     ~InUniverseModule() {};
 
     virtual void onEnter() override;
@@ -42,7 +42,7 @@ public:
     bool testValidAltitude(double altitude) override;
     
 private:
-    Core *core;
+    std::shared_ptr<Core> core;
     Observer *observer;
 };
 

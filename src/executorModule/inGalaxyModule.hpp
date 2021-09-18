@@ -32,7 +32,7 @@
 class InGalaxyModule : public ExecutorModule {
 public:
 
-    InGalaxyModule(Core* _core, Observer *_observer);
+    InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer);
     ~InGalaxyModule() {};
 
     virtual void onEnter() override;
@@ -42,7 +42,7 @@ public:
     bool testValidAltitude(double altitude) override;
 
 private:
-    Core *core;
+    std::shared_ptr<Core> core;
     Observer *observer;
 };
 

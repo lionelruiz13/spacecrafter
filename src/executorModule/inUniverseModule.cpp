@@ -28,7 +28,7 @@
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
 
-InUniverseModule::InUniverseModule(Core *_core, Observer *_observer) : core(_core), observer(_observer)
+InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {
     minAltToGoDown = 1.E10;
     maxAltToGoUp = 1.E15;

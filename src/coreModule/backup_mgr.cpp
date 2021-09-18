@@ -30,7 +30,7 @@
 
 #include "coreModule/core.hpp"
 
-CoreBackup::CoreBackup(Core* _core)
+CoreBackup::CoreBackup(std::shared_ptr<Core> _core)
 {
 	core = _core;
 }

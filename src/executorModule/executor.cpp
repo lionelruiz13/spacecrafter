@@ -26,7 +26,7 @@
 #include "vulkanModule/CommandMgr.hpp"
 #include "navModule/observer.hpp"
 
-Executor::Executor(Core *_core, Observer *_observer)
+Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
 {
     core = _core;
     observer = _observer;

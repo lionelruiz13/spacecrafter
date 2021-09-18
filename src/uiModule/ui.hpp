@@ -78,7 +78,7 @@ enum class UI_FLAG : char {SHOW_FPS, SHOW_LATLON, SHOW_FOV,
 class UI {
 
 public:
-	UI(Core *, CoreLink *, App * _app, SDLFacade* _m_sdl, Media* _media);	// Create the ui. Need to call init() before use
+	UI(std::shared_ptr<Core> _core, CoreLink *, App * _app, SDLFacade* _m_sdl, Media* _media);	// Create the ui. Need to call init() before use
 	virtual ~UI();		// Delete the ui
 	void registerFont(s_font* font);
 	void init(const InitParser& conf);		// Initialize the ui.
@@ -202,7 +202,7 @@ public:
 	void toggle(UI_FLAG layerValue);
 
 private:
-	Core * core;
+	std::shared_ptr<Core> core;
 	CoreLink * coreLink=nullptr;
 	App * app;
 	SDLFacade* m_sdl;

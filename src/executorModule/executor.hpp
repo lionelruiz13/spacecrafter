@@ -51,7 +51,7 @@
 */
 class Executor {
 public:
-    Executor(Core *_core, Observer *_observer);
+    Executor(std::shared_ptr<Core> _core, Observer *_observer);
 
     void draw(int delta_time);
     void update(int delta_time);
@@ -68,7 +68,7 @@ public:
 	}
 
 private:
-    Core *core;
+    std::shared_ptr<Core> core;
     Observer *observer;
 
     std::unique_ptr<SolarSystemModule> ssystemModule;

@@ -4,13 +4,6 @@
 #include "appModule/fontFactory.hpp"
 #include "appModule/space_date.hpp"
 
-CoreLink::CoreLink(Core * _core)
-{
-    core= _core;
-}
-
-CoreLink::~CoreLink()
-{}
 
 bool CoreLink::cameraSave(const std::string& name)
 {

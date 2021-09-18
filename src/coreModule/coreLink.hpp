@@ -1,6 +1,7 @@
 #ifndef CORELINK_HPP
 #define CORELINK_HPP
 
+#include <memory>
 #include "coreModule/core.hpp"
 
 class CoreLink {
@@ -1420,11 +1421,13 @@ public:
 		return core->navigation->getHeading();
 	}
 
-    CoreLink(Core* _core);
-    ~CoreLink();
+    CoreLink(std::shared_ptr<Core> _core) {
+		core = _core;
+	}
+    ~CoreLink(){};
 
 private:
-    Core *core = nullptr;
+    std::shared_ptr<Core> core;
 };
 
 #endif

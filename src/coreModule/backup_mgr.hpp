@@ -30,6 +30,7 @@
 #define _BACKUP_MGR_H_
 
 #include <string>
+#include <memory>
 #include "coreModule/core_common.hpp"
 
 struct InitialValue {
@@ -53,7 +54,7 @@ class Core;
 class CoreBackup {
 
 public:
-	CoreBackup(Core* _core);
+	CoreBackup(std::shared_ptr<Core> _core);
 	~CoreBackup();
 	void loadBackup();
 	void saveBackup();
@@ -75,7 +76,7 @@ private:
 	SkyGridSave	skyGridSave;
 	SkyDisplaySave skyDisplaySave;
 	SkyLineSave skyLineSave;
-	Core* core= nullptr;
+	std::shared_ptr<Core> core;
 };
 
 #endif // _BACKUP_MGR_H_

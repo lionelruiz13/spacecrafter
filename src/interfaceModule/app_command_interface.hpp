@@ -55,7 +55,7 @@ class FontFactory;
 class AppCommandInterface: public NoCopy {
 
 public:
-	AppCommandInterface(Core * core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media, FontFactory* _fontFactory);
+	AppCommandInterface(std::shared_ptr<Core> core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, Media* _media, FontFactory* _fontFactory);
 	~AppCommandInterface();
 
 	int terminateScript();
@@ -139,7 +139,7 @@ private:
 	int evalInt (const std::string &var);
 	std::string evalString (const std::string &var);
 
-	Core * stcore = nullptr;
+	std::shared_ptr<Core> stcore;
 	CoreLink *coreLink = nullptr;
 	CoreBackup* coreBackup = nullptr;
 	App * stapp = nullptr;
