@@ -183,26 +183,26 @@ App::~App()
 	context.commandMgrSingleUseInterface->terminate();
 	context.commandMgrSingleUseInterface->waitIdle();
 	globalContext.vulkan->waitIdle();
-	appDraw.release();
+	appDraw.reset();
 	if (enable_tcp)
-		tcp.release();
+		tcp.reset();
 	#if LINUX
-		mkfifo.release();
+		mkfifo.reset();
 	#endif
-	ui.release();
+	ui.reset();
 	scriptInterface.reset();
 	scriptMgr.reset();
-	media.release();
+	media.reset();
 	commander.reset();
-	coreLink.release();
-	coreBackup.release();
-	core.release();
+	coreLink.reset();
+	coreBackup.reset();
+	core.reset();
 	observatory.reset();
-	saveScreenInterface.release();
-	internalFPS.release();
-	screenFader.release();
-	spaceDate.release();
-	fontFactory.release();
+	saveScreenInterface.reset();
+	internalFPS.reset();
+	screenFader.reset();
+	spaceDate.reset();
+	fontFactory.reset();
 	delete context.commandMgr;
 	delete context.commandMgrSingleUseInterface;
 	delete context.commandMgrSingleUse;
