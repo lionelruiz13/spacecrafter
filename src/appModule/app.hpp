@@ -156,39 +156,41 @@ private:
 	bool enable_mkfifo;
 	bool flagMasterput;
 
+
+	// External class
+	SDLFacade* mSdl = nullptr;
+
 	// Graphic context
 	GlobalContext globalContext;
 	ThreadContext context;
 	int commandIndexClear;
 
 	// Main elements of the stel_app
-	AppSettings* settings = nullptr; 			//! base pour les constantes du logiciel
-	AppCommandInterface * commander = nullptr;	//! interface to perform all UI and scripting actions
-	ScriptMgr * scriptMgr = nullptr;			//! manage playing and recording scripts
-	ScriptInterface* scriptInterface = nullptr;	//! interface for other composents
-	std::unique_ptr<Media> media;				//!< media manager
-	UI * ui = nullptr;							//! The main User Interface
-	std::unique_ptr<ScreenFader> screenFader;	//! gestion des fondus
+	AppSettings* settings = nullptr;		 			//! base pour les constantes du logiciel
+	std::unique_ptr<AppCommandInterface> commander;		//! interface to perform all UI and scripting actions
+	std::unique_ptr<ScriptMgr> scriptMgr;				//! manage playing and recording scripts
+	std::unique_ptr<ScriptInterface> scriptInterface;	//! interface for other composents
+	std::unique_ptr<Media> media;						//!< media manager
+	std::unique_ptr<UI> ui;								//! The main User Interface
+	std::unique_ptr<ScreenFader> screenFader;			//! gestion des fondus
 
-	//! The assicated Core instance
-	Core* core = nullptr;
-	CoreLink* coreLink = nullptr;
-	CoreBackup* coreBackup = nullptr;
-	SDLFacade* mSdl = nullptr;
+	std::unique_ptr<Core> core;
+	std::unique_ptr<CoreLink> coreLink;
+	std::unique_ptr<CoreBackup> coreBackup;
 	std::unique_ptr<FontFactory> fontFactory;
 	std::unique_ptr<SaveScreenInterface> saveScreenInterface;
 	std::unique_ptr<ServerSocket> tcp;
 	std::unique_ptr<Fps> internalFPS;			//! gestion fine du frameRate
 	std::unique_ptr<AppDraw> appDraw;
-	Observer* observatory = nullptr;
+	std::unique_ptr<Observer> observatory;
 	std::unique_ptr<Executor> executor;
 	#if LINUX
 	std::unique_ptr<Mkfifo> mkfifo;
 	#endif
 
 	std::unique_ptr<SpaceDate> spaceDate;		// Handles dates and conversions
-	EventRecorder *eventRecorder = nullptr;
-	EventHandler *eventHandler = nullptr;
+	EventRecorder* eventRecorder;
+	EventHandler* eventHandler;
 
 	Uint16 width, height;  						//! Contient la résolution w et h de la fenetre SDL
 	SDL_Event	E;

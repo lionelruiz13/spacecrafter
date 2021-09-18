@@ -119,39 +119,39 @@ App::App( SDLFacade* const sdl )
 
 	screenFader =  std::make_unique<ScreenFader>();
 
-	observatory = new Observer();
-	core = new Core(&context, width, height, media.get(), fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
-	coreLink = new CoreLink(core);
-	coreBackup = new CoreBackup(core);
+	observatory = std::make_unique<Observer>();
+	core = std::make_unique<Core>(&context, width, height, media.get(), fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand), observatory.get());
+	coreLink = std::make_unique<CoreLink>(core.get());
+	coreBackup = std::make_unique<CoreBackup>(core.get());
 
 	screenFader->createSC_context(&context);
 
-	ui = new UI(core, coreLink, this, mSdl, media.get());
-	commander = new AppCommandInterface(core, coreLink, coreBackup, this, ui, media.get(), fontFactory.get());
-	scriptMgr = new ScriptMgr(commander, settings->getUserDir(), media.get());
-	scriptInterface = new ScriptInterface(scriptMgr);
+	ui = std::make_unique<UI>(core.get(), coreLink.get(), this, mSdl, media.get());
+	commander = std::make_unique<AppCommandInterface>(core.get(), coreLink.get(), coreBackup.get(), this, ui.get(), media.get(), fontFactory.get());
+	scriptMgr = std::make_unique<ScriptMgr>(commander.get(), settings->getUserDir(), media.get());
+	scriptInterface = std::make_unique<ScriptInterface>(scriptMgr.get());
 	internalFPS = std::make_unique<Fps>();
 	spaceDate = std::make_unique<SpaceDate>();
 
-	executor = std::make_unique<Executor>(core, observatory);
+	executor = std::make_unique<Executor>(core.get(), observatory.get());
 
 	// fixation interface
-	ui->initInterfaces(scriptInterface,spaceDate.get());
-	commander->initInterfaces(scriptInterface, spaceDate.get(), saveScreenInterface.get());
+	ui->initInterfaces(scriptInterface.get(),spaceDate.get());
+	commander->initInterfaces(scriptInterface.get(), spaceDate.get(), saveScreenInterface.get());
 
 	EventRecorder::Init();
 	eventRecorder = EventRecorder::getInstance();
 	eventHandler = new EventHandler(eventRecorder);
-	eventHandler-> add(new EventScriptHandler(scriptInterface), Event::E_SCRIPT);
-	eventHandler-> add(new EventCommandHandler(commander), Event::E_COMMAND);
-	eventHandler-> add(new EventFlagHandler(commander), Event::E_FLAG);
+	eventHandler-> add(new EventScriptHandler(scriptInterface.get()), Event::E_SCRIPT);
+	eventHandler-> add(new EventCommandHandler(commander.get()), Event::E_COMMAND);
+	eventHandler-> add(new EventFlagHandler(commander.get()), Event::E_FLAG);
 	eventHandler-> add(new EventScreenFaderHandler(screenFader.get()), Event::E_SCREEN_FADER);
 	eventHandler-> add(new EventScreenFaderInterludeHandler(screenFader.get()), Event::E_SCREEN_FADER_INTERLUDE);
 	eventHandler-> add(new EventSaveScreenHandler(saveScreenInterface.get()), Event::E_SAVESCREEN);
 	eventHandler-> add(new EventFpsHandler(internalFPS.get()), Event::E_FPS);
-	eventHandler-> add(new EventAltitudeHandler(core), Event::E_CHANGE_ALTITUDE);
-	eventHandler-> add(new EventObserverHandler(core), Event::E_CHANGE_OBSERVER);
-	eventHandler-> add(new EventVideoHandler(ui, scriptInterface), Event::E_VIDEO);
+	eventHandler-> add(new EventAltitudeHandler(core.get()), Event::E_CHANGE_ALTITUDE);
+	eventHandler-> add(new EventObserverHandler(core.get()), Event::E_CHANGE_OBSERVER);
+	eventHandler-> add(new EventVideoHandler(ui.get(), scriptInterface.get()), Event::E_VIDEO);
 
 	#if LINUX
 	mkfifo = std::make_unique<Mkfifo>();
@@ -189,15 +189,15 @@ App::~App()
 	#if LINUX
 		mkfifo.release();
 	#endif
-	delete ui;
-	delete scriptInterface;
-	delete scriptMgr;
+	ui.release();
+	scriptInterface.reset();
+	scriptMgr.reset();
 	media.release();
-	delete commander;
-	delete coreLink;
-	delete coreBackup;
-	delete core;	
-	delete observatory;
+	commander.reset();
+	coreLink.release();
+	coreBackup.release();
+	core.release();
+	observatory.reset();
 	saveScreenInterface.release();
 	internalFPS.release();
 	screenFader.release();
