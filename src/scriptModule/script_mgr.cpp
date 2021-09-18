@@ -40,7 +40,7 @@
 #include "tools/call_system.hpp"
 
 
-ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_data_dir, Media* _media )
+ScriptMgr::ScriptMgr(AppCommandInterface *command_interface,const std::string &_data_dir, std::shared_ptr<Media> _media )
 {
 	commander = command_interface;
 	DataDir = _data_dir;

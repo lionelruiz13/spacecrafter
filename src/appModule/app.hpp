@@ -170,7 +170,7 @@ private:
 	std::unique_ptr<AppCommandInterface> commander;		//! interface to perform all UI and scripting actions
 	std::unique_ptr<ScriptMgr> scriptMgr;				//! manage playing and recording scripts
 	std::unique_ptr<ScriptInterface> scriptInterface;	//! interface for other composents
-	std::unique_ptr<Media> media;						//!< media manager
+	std::shared_ptr<Media> media;						//!< media manager
 	std::unique_ptr<UI> ui;								//! The main User Interface
 	std::unique_ptr<ScreenFader> screenFader;			//! gestion des fondus
 

@@ -112,7 +112,7 @@ App::App( SDLFacade* const sdl )
 
 	fontFactory = std::make_unique<FontFactory>();
 
-	media = std::make_unique<Media>();
+	media = std::make_shared<Media>();
 	saveScreenInterface = std::make_unique<SaveScreenInterface>(width, height, globalContext.vulkan);
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
@@ -120,15 +120,15 @@ App::App( SDLFacade* const sdl )
 	screenFader =  std::make_unique<ScreenFader>();
 
 	observatory = std::make_unique<Observer>();
-	core = std::make_shared<Core>(&context, width, height, media.get(), fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand), observatory.get());
+	core = std::make_shared<Core>(&context, width, height, media, fontFactory.get(), mBoost::callback<void, std::string>(this, &App::recordCommand), observatory.get());
 	coreLink = std::make_unique<CoreLink>(core);
 	coreBackup = std::make_unique<CoreBackup>(core);
 
 	screenFader->createSC_context(&context);
 
-	ui = std::make_unique<UI>(core, coreLink.get(), this, mSdl, media.get());
-	commander = std::make_unique<AppCommandInterface>(core, coreLink.get(), coreBackup.get(), this, ui.get(), media.get(), fontFactory.get());
-	scriptMgr = std::make_unique<ScriptMgr>(commander.get(), settings->getUserDir(), media.get());
+	ui = std::make_unique<UI>(core, coreLink.get(), this, mSdl, media);
+	commander = std::make_unique<AppCommandInterface>(core, coreLink.get(), coreBackup.get(), this, ui.get(), media, fontFactory.get());
+	scriptMgr = std::make_unique<ScriptMgr>(commander.get(), settings->getUserDir(), media);
 	scriptInterface = std::make_unique<ScriptInterface>(scriptMgr.get());
 	internalFPS = std::make_unique<Fps>();
 	spaceDate = std::make_unique<SpaceDate>();

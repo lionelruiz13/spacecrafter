@@ -108,7 +108,7 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback <void, std::string> & recordCallback, Observer *_observatory);
+	Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, FontFactory* _fontFactory, const mBoost::callback <void, std::string> & recordCallback, Observer *_observatory);
 	virtual ~Core();
 
 	//! Init and load all main core components from the passed config file.
@@ -514,7 +514,7 @@ private:
 	SSystemFactory* ssystemFactory;
 
 	Atmosphere * atmosphere;			// Atmosphere
-	Media* media;
+	std::shared_ptr<Media> media;
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! gestionnaire des grilles
 	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! gestionnaire de lignes
 	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! gestionnaire de skyDisplay

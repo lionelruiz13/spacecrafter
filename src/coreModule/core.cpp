@@ -56,7 +56,7 @@
 #include "vulkanModule/Texture.hpp"
 #include "vulkanModule/TextureMgr.hpp"
 
-Core::Core(ThreadContext *_context, int width, int height, Media* _media, FontFactory* _fontFactory, const mBoost::callback<void, std::string>& recordCallback, Observer *_observatory) :
+Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, FontFactory* _fontFactory, const mBoost::callback<void, std::string>& recordCallback, Observer *_observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	nebulas(nullptr), illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)

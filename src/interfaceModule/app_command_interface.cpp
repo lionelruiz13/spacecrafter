@@ -57,7 +57,7 @@
 #include "uiModule/ui.hpp"
 
 
-AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui,  Media* _media, FontFactory* _fontFactory)
+AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, CoreLink *_coreLink, CoreBackup* _coreBackup, App * app, UI* _ui, std::shared_ptr<Media> _media, FontFactory* _fontFactory)
 {
 	stcore = core;
 	coreLink = _coreLink;

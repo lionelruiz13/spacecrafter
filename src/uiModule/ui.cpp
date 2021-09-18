@@ -58,7 +58,7 @@ static const double DURATION_COMMAND = 0.1;
 std::string default_landscape = "";
 std::string current_landscape = "";
 
-UI::UI(std::shared_ptr<Core> _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl,  Media* _media) :
+UI::UI(std::shared_ptr<Core> _core, CoreLink * _coreLink, App * _app, SDLFacade *_m_sdl, std::shared_ptr<Media> _media) :
 	tuiFont(nullptr),
 	FlagShowTuiMenu(0),
 	tui_root(nullptr),

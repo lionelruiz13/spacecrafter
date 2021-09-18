@@ -35,6 +35,7 @@
 #include <fstream>
 #include <list>
 #include <vector>
+#include <memory>
 #include "tools/no_copy.hpp"
 
 class AppCommandInterface;
@@ -44,7 +45,7 @@ class Script;
 class ScriptMgr: public NoCopy {
 
 public:
-	ScriptMgr(AppCommandInterface * command_interface, const std::string &_data_dir, Media * _media);
+	ScriptMgr(AppCommandInterface * command_interface, const std::string &_data_dir, std::shared_ptr<Media> _media);
 	~ScriptMgr();
 
 	//! lance un script 
@@ -166,7 +167,7 @@ private:
 	ScriptRecord sR;
 
 	std::string getRecordDate();
-	Media* media = nullptr;
+	std::shared_ptr<Media> media;
 	AppCommandInterface * commander = nullptr;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
 	long int wait_time;     //!< ms until next script command should be executed
