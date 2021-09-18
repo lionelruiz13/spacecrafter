@@ -127,7 +127,7 @@ App::App( SDLFacade* const sdl )
 	screenFader->createSC_context(&context);
 
 	ui = std::make_shared<UI>(core, coreLink.get(), this, mSdl, media);
-	commander = std::make_shared<AppCommandInterface>(core, coreLink, coreBackup, this, ui, media, fontFactory);
+	commander = std::make_shared<AppCommandInterface>(core, coreLink, coreBackup, std::shared_ptr<App>(this), ui, media, fontFactory);
 	scriptMgr = std::make_shared<ScriptMgr>(commander, settings->getUserDir(), media);
 	scriptInterface = std::make_shared<ScriptInterface>(scriptMgr);
 	internalFPS = std::make_unique<Fps>();
