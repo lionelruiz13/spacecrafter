@@ -139,6 +139,7 @@ private:
 	int evalInt (const std::string &var);
 	std::string evalString (const std::string &var);
 
+	// external classes
 	std::shared_ptr<Core> stcore;
 	std::shared_ptr<CoreLink> coreLink;
 	std::shared_ptr<CoreBackup> coreBackup;
@@ -149,9 +150,10 @@ private:
 	std::shared_ptr<SpaceDate> spaceDate;
 	std::shared_ptr<SaveScreenInterface> saveScreenInterface;
 	ServerSocket *tcp = nullptr;
-	AppCommandInit *appInit = nullptr;
-	AppCommandEval *appEval = nullptr;
 	std::shared_ptr<FontFactory> fontFactory;
+
+	std::unique_ptr<AppCommandInit> appInit;
+	std::unique_ptr<AppCommandEval> appEval;
 
 	std::string commandline;
 	std::string command;

@@ -69,8 +69,8 @@ AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, std::shared
 	swapCommand = false;
 	ifSwap = std::make_unique<IfSwap>();
 	ifSwap->reset();
-	appEval = new AppCommandEval(coreLink);
-	appInit = new AppCommandInit();
+	appEval = std::make_unique<AppCommandEval>(coreLink);
+	appInit = std::make_unique<AppCommandInit>();
 	appInit->initialiseCommandsName(m_commands, m_commands_ToString);
 	appInit->initialiseFlagsName(m_flags, m_flags_ToString);
 	appInit->initialiseColorCommand(m_color, m_color_ToString);
