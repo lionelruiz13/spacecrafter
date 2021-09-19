@@ -65,7 +65,7 @@
 #define SCK_FULLSCREEN                      "fullscreen"
 #define SCK_SCREEN_W                        "screen_w"
 #define SCK_SCREEN_H                        "screen_h"
-#define SCK_BBP_MODE                        "bbp_mode"
+//#define SCK_BBP_MODE                        "bbp_mode"
 #define SCK_MAXIMUM_FPS                     "maximum_fps"
 #define SCK_REC_VIDEO_FPS                   "rec_video_fps"
 

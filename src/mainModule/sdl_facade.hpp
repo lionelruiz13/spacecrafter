@@ -44,7 +44,7 @@ public:
 	void initSDL();
 
 	// Creates the rendering target. //Must be called prior to any OpenGL functions
-	void createWindow(const std::string& appName, Uint16 w, Uint16 h, int bbpMode, int antialiasing,  bool fullScreen, std::string iconFile); //, bool _debug);
+	void createWindow(const std::string& appName, Uint16 w, Uint16 h, bool fullScreen, std::string iconFile); //, bool _debug);
 
 	// Video mode queries
 	void getResolution( Uint16* const w, Uint16* const h ) const;

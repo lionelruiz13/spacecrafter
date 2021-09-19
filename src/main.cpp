@@ -271,7 +271,7 @@ int main(int argc, char **argv)
 	bool autoscreen = conf.getBoolean(SCS_VIDEO, SCK_AUTOSCREEN);
 	Uint16 curW, curH;
 	bool fullscreen;
-	int antialiasing;
+	//int antialiasing;
 
 	if (autoscreen) {
 		SDL_DisplayMode dm;
@@ -287,8 +287,9 @@ int main(int argc, char **argv)
 		curH = conf.getInt(SCS_VIDEO, SCK_SCREEN_H);
 		fullscreen = conf.getBoolean(SCS_VIDEO, SCK_FULLSCREEN);
 	}
-	antialiasing = conf.getInt(SCS_RENDERING, SCK_ANTIALIASING);
-	sdl->createWindow(APP_NAME, curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, dataRoot + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
+	//antialiasing = conf.getInt(SCS_RENDERING, SCK_ANTIALIASING);
+	//sdl->createWindow(APP_NAME, curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, dataRoot + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
+	sdl->createWindow(APP_NAME, curW, curH, fullscreen, dataRoot + "data/icon.bmp");
 
 	//-------------------------------------------
 	// create the main class for SC logical software

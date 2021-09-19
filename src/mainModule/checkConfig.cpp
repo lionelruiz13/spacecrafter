@@ -81,7 +81,7 @@ void CheckConfig::checkVideoSettings()
 	tmpSettings[SCK_FULLSCREEN]="false";
 	tmpSettings[SCK_SCREEN_W]="1024";
 	tmpSettings[SCK_SCREEN_H]="768";
-	tmpSettings[SCK_BBP_MODE]="24";
+	//tmpSettings[SCK_BBP_MODE]="24";
 	tmpSettings[SCK_MAXIMUM_FPS]="60";
 	tmpSettings[SCK_REC_VIDEO_FPS]="30";
 

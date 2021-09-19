@@ -45,9 +45,8 @@ void SDLFacade::getResolution( Uint16* const w, Uint16* const h ) const
 }
 
 
-void SDLFacade::createWindow(const std::string& appName, Uint16 w, Uint16 h, int bppMode, int antialiasing, bool fullScreen, std::string iconFile) // , bool _debugGL)
+void SDLFacade::createWindow(const std::string& appName, Uint16 w, Uint16 h, bool fullScreen, std::string iconFile) // , bool _debugGL)
 {
-	(void) bppMode; // Unused parameter
 	Uint32	Vflags;		// Our Video Flags
 	windowW = w;
 	windowH = h;
