@@ -22,6 +22,7 @@
  *
  */
 
+#include <chrono>
 #include "mainModule/CPUInfo.hpp"
 
 CPUInfo::CPUInfo()
@@ -88,7 +89,7 @@ void CPUInfo::getCPUstate(std::vector<CoreData> &entrie)
 		j++;
 	}
 }
-		//  
+
 
 void CPUInfo::getGPUstate()
 {
@@ -145,22 +146,6 @@ void CPUInfo::saveToFile()
 	gpuOss.str("");
 }
 
-//~ void CPUInfo::display(std::vector<CoreData> entrie)
-//~ {
-	//~ for (unsigned int i=0; i<nbThread+1; i++) {
-		//~ std::cout << entrie[i].times[S_USER] << "," 
-				//~ << entrie[i].times[S_NICE] << "," 
-				//~ << entrie[i].times[S_SYSTEM] << "," 
-				//~ << entrie[i].times[S_IDLE] << "," 
-				//~ << entrie[i].times[S_IOWAIT] << "," 
-				//~ << entrie[i].times[S_IRQ] << "," 
-				//~ << entrie[i].times[S_SOFTIRQ] << "," 
-				//~ << entrie[i].times[S_STEAL] << "," 
-				//~ << entrie[i].times[S_GUEST] << "," 
-				//~ << entrie[i].times[S_GUEST_NICE] << "," 
-		//~ << std::endl;
-	//~ }
-//~ }
 
 void CPUInfo::mainFunc()
 {

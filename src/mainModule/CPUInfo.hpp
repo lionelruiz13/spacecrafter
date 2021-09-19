@@ -25,14 +25,11 @@
 #ifndef _CPUINFO_H_
 #define _CPUINFO_H_
 
-#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <thread>
 #include <vector>
-#include <iostream>
 
 const int NUM_CPU_STATES = 10;
 const int TAMPON_SIZE = 10;

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2003 Fabien Chereau
  * Copyright (C) 2009 Digitalis Education Solutions, Inc.
- * Copyright (C) 2014 of the LSS Team & Association Sirius
+ * Copyright (C) 2014-2021 of the LSS Team & Association Sirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,8 +23,7 @@
  */
 
 /*
- * A wrapper around basic SDL functionality such as initialization, surface creation,
- * and available video mode queries.
+ * A wrapper around basic SDL functionality such as initialization, surface creation.
  */
 
 #pragma once
@@ -42,14 +41,13 @@ public:
 	virtual ~SDLFacade();
 
 	// Must be called prior to any other SDL methods
-	void initSDL( void );
+	void initSDL();
 
 	// Creates the rendering target. //Must be called prior to any OpenGL functions
 	void createWindow(const std::string& appName, Uint16 w, Uint16 h, int bbpMode, int antialiasing,  bool fullScreen, std::string iconFile); //, bool _debug);
 
 	// Video mode queries
 	void getResolution( Uint16* const w, Uint16* const h ) const;
-	void getCurrentRes( Uint16* const w, Uint16* const h ) const;
 	Uint16 getDisplayWidth() const {
 		return windowW;
 	}
@@ -68,14 +66,6 @@ public:
 	void warpMouseInCenter() {
 		SDL_WarpMouseInWindow( window, windowW /2, windowH /2);
 	}
-
-	void glSwapWindow() const{
-		SDL_GL_SwapWindow(window);
-	}
-
-	void getGLInfos();
-
-	void getWorkGroupsCapabilities();
 
 	SDL_Window *getWindow() {return window;}
 private:
