@@ -141,9 +141,9 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	hip_stars = new HipStarMgr(width,height, context);
 	asterisms = new ConstellationMgr(hip_stars, context);
 	illuminates= new IlluminateMgr(hip_stars, navigation, asterisms, context);
-	oort =  new Oort(context);
-	dso3d = new Dso3d(context);
-	tully = new Tully(context);
+	oort =  std::make_unique<Oort>(context);
+	dso3d = std::make_unique<Dso3d>(context);
+	tully = std::make_unique<Tully>(context);
 	object_pointer_visibility = 1;
 
 
@@ -210,9 +210,9 @@ Core::~Core()
 	// Object::deleteShaders();
 	//delete text_usr;
 	delete ubo_cam;
-	delete oort;
-	delete dso3d;
-	delete tully;
+	// delete oort;
+	// delete dso3d;
+	// delete tully;
 	delete ojmMgr;
 	delete starNav;
 	delete cloudNav;

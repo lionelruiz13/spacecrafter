@@ -522,9 +522,9 @@ private:
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! gestionnaire des grilles
 	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! gestionnaire de lignes
 	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! gestionnaire de skyDisplay
-	Oort * oort;						//! oort cloud
-	Dso3d *dso3d;						//! dso catalog for in_galaxy
-	Tully *tully;						//! tully galaxies
+	std::unique_ptr<Oort> oort;			//! oort cloud
+	std::unique_ptr<Dso3d> dso3d;		//! dso catalog for in_galaxy
+	std::unique_ptr<Tully> tully;		//! tully galaxies
 	Cardinals * cardinals_points;		// Cardinals points
 	MilkyWay * milky_way;				// Our galaxy
 	MeteorMgr * meteors;				// Manage meteor showers
