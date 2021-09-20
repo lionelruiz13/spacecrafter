@@ -23,6 +23,7 @@
 #ifndef _BODYDECOR_HPP_
 #define _BODYDECOR_HPP_
 
+#include <memory>
 
 class MilkyWay;
 class Atmosphere;
@@ -31,7 +32,7 @@ struct  AtmosphereParams;
 
 class BodyDecor {
 public:
-	BodyDecor(MilkyWay* _milky, Atmosphere* _atmosphere);
+	BodyDecor(std::shared_ptr<MilkyWay> _milky, Atmosphere* _atmosphere);
 	~BodyDecor() {}
 
 	//! indique si on est dans des conditions permettant de tracer le landscape
@@ -67,7 +68,7 @@ private:
 	bool atmState = false;
 	bool drawBody = false;
 
-	MilkyWay* milky = nullptr;
+	std::shared_ptr<MilkyWay> milky;
 	Atmosphere* atmosphere = nullptr;
 };
 

@@ -84,7 +84,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	observatory = _observatory;
 	ssystemFactory = new SSystemFactory(context, observatory.get(), navigation, timeMgr);
 	nebulas = new NebulaMgr(context);
-	milky_way = new MilkyWay(context);
+	milky_way = std::make_shared<MilkyWay>(context);
 	starNav = new StarNavigator(context);
 	cloudNav = new CloudNavigator(context);
 	universeCloudNav = new CloudNavigator(context);
@@ -134,8 +134,8 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_LOXODROMY);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
 
-	cardinals_points = new Cardinals();
-	meteors = new MeteorMgr(10, 60, context);
+	cardinals_points = std::make_unique<Cardinals>();
+	meteors = std::make_unique<MeteorMgr>(10, 60, context);
 	landscape = new Landscape();
 	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height, context);
@@ -192,12 +192,12 @@ Core::~Core()
 	// skyLineMgr.reset(nullptr);
 	// skyDisplayMgr.reset(nullptr);
 	delete landscape;
-	delete cardinals_points;
+	// delete cardinals_points;
 	landscape = nullptr;
 	delete geodesic_grid;
-	delete milky_way;
+	// delete milky_way;
 	delete timeMgr;
-	delete meteors;
+	// delete meteors;
 	meteors = nullptr;
 	delete atmosphere;
 	delete tone_converter;

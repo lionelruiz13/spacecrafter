@@ -525,9 +525,9 @@ private:
 	std::unique_ptr<Oort> oort;			//! oort cloud
 	std::unique_ptr<Dso3d> dso3d;		//! dso catalog for in_galaxy
 	std::unique_ptr<Tully> tully;		//! tully galaxies
-	Cardinals * cardinals_points;		// Cardinals points
-	MilkyWay * milky_way;				// Our galaxy
-	MeteorMgr * meteors;				// Manage meteor showers
+	std::unique_ptr<Cardinals> cardinals_points;		// Cardinals points
+	std::shared_ptr<MilkyWay> milky_way;				// Our galaxy
+	std::unique_ptr<MeteorMgr> meteors;				// Manage meteor showers
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
 	SkyLocalizer *skyloc;				// for sky cultures and locales
