@@ -58,8 +58,7 @@ static double fov= 180.;
 
 StarNavigator::StarNavigator(ThreadContext *context)
 {
-	starMgr = nullptr;
-	starMgr = new StarManager();
+	starMgr = std::make_unique<StarManager>();
 
 	createSC_context(context);
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
@@ -141,8 +140,6 @@ void StarNavigator::saveData(const std::string &fileName, bool binaryData) noexc
 StarNavigator::~StarNavigator()
 {
 	delete pool;
-	if (starMgr != nullptr)
-		delete starMgr;
 }
 
 void StarNavigator::clearBuffer()
@@ -150,6 +147,10 @@ void StarNavigator::clearBuffer()
 	starPos.clear();
 	starColor.clear();
 	starRadius.clear();
+}
+
+starInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
+	return starMgr->findStar(HIPName);
 }
 
 void StarNavigator::setListGlobalStarVisible()

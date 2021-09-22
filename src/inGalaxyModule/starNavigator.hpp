@@ -22,7 +22,7 @@
 #include <memory>
 
 #include "tools/vecmath.hpp"
-#include "inGalaxyModule/starManager.hpp"
+//#include "inGalaxyModule/starManager.hpp"
 #include "tools/ThreadPool.hpp"
 #include "tools/no_copy.hpp"
 #include "vulkanModule/Context.hpp"
@@ -45,6 +45,8 @@ class Set;
 class Uniform;
 class StarViewer;
 class s_texture;
+struct starInfo;
+class StarManager;
 
 class StarNavigator: public NoCopy  {
 public:
@@ -113,9 +115,7 @@ public:
 		needComputeRCMagTable = true;
 	}
 
-	starInfo* getStarInfo(unsigned int HIPName) const {
-		return starMgr->findStar(HIPName);
-	}
+	starInfo* getStarInfo(unsigned int HIPName) const;
 
 private:
 	//tampons pour l'affichage des shaders
@@ -131,7 +131,7 @@ private:
 	Vec3f old_pos;
 
 	//le gestionnaire de l'ensemble des étoiles
-	StarManager *starMgr;
+	std::unique_ptr<StarManager> starMgr;
 	// shader utilisé pour affichage
 	//std::unique_ptr<shaderProgram> shaderStarNav;
 	// structure de gestion des VAO-VBO
