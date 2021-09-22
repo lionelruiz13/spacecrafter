@@ -81,7 +81,7 @@ INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/src)
 #include_directories(${PROJECT_SOURCE_DIR}/iniparser)
 #include_directories($(GLEW_INCLUDE_DIRS)) # Can't find initparser/initparser.h without this statement
-INCLUDE_DIRECTORIES(${Vulkan_INCLUDE_DIRS})
+#INCLUDE_DIRECTORIES(${Vulkan_INCLUDE_DIRS})
 
 ########### Packaging info for CPack ###########
 INCLUDE(InstallRequiredSystemLibraries)

@@ -48,12 +48,12 @@
 #endif /*Linux*/
 
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+//#include <SDL2/SDL.h>
+//#include <SDL2/SDL_opengl.h>
 #include <string>
 
 
-#include <cassert>
+//#include <cassert>
 
 const std::string REP_SCRIPT = "scripts";
 const std::string REP_SCREENSHOT = "screenshot";

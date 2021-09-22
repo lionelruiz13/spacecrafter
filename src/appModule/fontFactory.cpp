@@ -21,6 +21,7 @@
  */
 
 #include <algorithm>
+#include <cassert>
 
 #include "tools/s_font.hpp"
 #include "appModule/fontFactory.hpp"

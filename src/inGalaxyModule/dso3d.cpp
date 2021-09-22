@@ -13,6 +13,7 @@
 *
 */
 
+#include <cassert>
 #include "inGalaxyModule/dso3d.hpp"
 #include "tools/utility.hpp"
 #include <string>
