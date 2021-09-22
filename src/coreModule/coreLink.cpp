@@ -4,6 +4,8 @@
 #include "appModule/fontFactory.hpp"
 #include "appModule/space_date.hpp"
 
+#include "coreModule/skyline_mgr.hpp"
+#include "coreModule/skygrid_mgr.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -68,4 +70,46 @@ double CoreLink::getDateMinute() const
 
 	SpaceDate::DateTimeFromJulianDay(jd, &year, &month, &day, &hour, &minute, &second);
 	return minute;
+}
+
+
+
+void CoreLink::skyLineMgrSetColor(SKYLINE_TYPE name, Vec3f a) {
+    core->skyLineMgr->setColor(name, a);
+};
+
+void CoreLink::skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a) {
+	core->skyGridMgr->setColor(name, a);
+}
+
+const Vec3f& CoreLink::skyLineMgrGetColor(SKYLINE_TYPE name) {
+	return core->skyLineMgr->getColor(name);
+}
+
+const Vec3f& CoreLink::skyGridMgrGetColor(SKYGRID_TYPE name) {
+	return core->skyGridMgr->getColor(name);
+}
+
+void CoreLink::skyLineMgrFlipFlagShow(SKYLINE_TYPE name) {
+	core->skyLineMgr->flipFlagShow(name);
+}
+
+void CoreLink::skyGridMgrFlipFlagShow(SKYGRID_TYPE name) {
+	core->skyGridMgr->flipFlagShow(name);
+}
+
+void CoreLink::skyLineMgrSetFlagShow(SKYLINE_TYPE name, bool value) {
+	core->skyLineMgr->setFlagShow(name, value);
+}
+
+void CoreLink::skyGridMgrSetFlagShow(SKYGRID_TYPE name, bool value) {
+	core->skyGridMgr->setFlagShow(name, value);
+}
+
+bool CoreLink::skyLineMgrGetFlagShow(SKYLINE_TYPE name) {
+	return core->skyLineMgr->getFlagShow(name);
+}
+
+bool CoreLink::skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
+	return core->skyGridMgr->getFlagShow(name);
 }

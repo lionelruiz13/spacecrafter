@@ -10,8 +10,8 @@
 #include "coreModule/meteor_mgr.hpp"
 #include "coreModule/milkyway.hpp"
 #include "coreModule/oort.hpp"
-#include "coreModule/skygrid_mgr.hpp"
-#include "coreModule/skyline_mgr.hpp"
+
+
 #include "coreModule/skydisplay_mgr.hpp"
 
 class CoreLink {
@@ -78,45 +78,25 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Skyline et Skygrid---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-    void skyLineMgrSetColor(SKYLINE_TYPE name, Vec3f a) {
-	    core->skyLineMgr->setColor(name, a);
-    };
+    void skyLineMgrSetColor(SKYLINE_TYPE name, Vec3f a);
 
-    void skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a) {
-		core->skyGridMgr->setColor(name, a);
-	}
+    void skyGridMgrSetColor(SKYGRID_TYPE name, Vec3f a);
 
-	const Vec3f& skyLineMgrGetColor(SKYLINE_TYPE name) {
-		return core->skyLineMgr->getColor(name);
-	}
+	const Vec3f& skyLineMgrGetColor(SKYLINE_TYPE name);
 
-	const Vec3f& skyGridMgrGetColor(SKYGRID_TYPE name) {
-		return core->skyGridMgr->getColor(name);
-	}
+	const Vec3f& skyGridMgrGetColor(SKYGRID_TYPE name);
 
-	void skyLineMgrFlipFlagShow(SKYLINE_TYPE name) {
-		core->skyLineMgr->flipFlagShow(name);
-	}
+	void skyLineMgrFlipFlagShow(SKYLINE_TYPE name);
 
-	void skyGridMgrFlipFlagShow(SKYGRID_TYPE name) {
-		core->skyGridMgr->flipFlagShow(name);
-	}
+	void skyGridMgrFlipFlagShow(SKYGRID_TYPE name);
 
-	void skyLineMgrSetFlagShow(SKYLINE_TYPE name, bool value) {
-		core->skyLineMgr->setFlagShow(name, value);
-	}
+	void skyLineMgrSetFlagShow(SKYLINE_TYPE name, bool value);
 
-	void skyGridMgrSetFlagShow(SKYGRID_TYPE name, bool value) {
-		core->skyGridMgr->setFlagShow(name, value);
-	}
+	void skyGridMgrSetFlagShow(SKYGRID_TYPE name, bool value);
 
-	bool skyLineMgrGetFlagShow(SKYLINE_TYPE name) {
-		return core->skyLineMgr->getFlagShow(name);
-	}
+	bool skyLineMgrGetFlagShow(SKYLINE_TYPE name);
 
-	bool skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
-		return core->skyGridMgr->getFlagShow(name);
-	}
+	bool skyGridMgrGetFlagShow(SKYGRID_TYPE name);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Text_usr---------------------------
