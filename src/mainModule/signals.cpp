@@ -24,7 +24,7 @@
  */
 
 #include <sys/time.h>
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "appModule/app.hpp"
 #include "mainModule/signals.hpp"
 #include "tools/app_settings.hpp"

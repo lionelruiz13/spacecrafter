@@ -18,7 +18,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 
 
 

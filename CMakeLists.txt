@@ -28,6 +28,10 @@ CONFIGURE_FILE (
 
 set (CMAKE_CXX_STANDARD 17)
 
+################# plateform configuration ############################
+
+add_compile_definitions(LINUX=1)
+
 ################# Flags configuration ############################
 
 message("---------------------------------------------")

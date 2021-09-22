@@ -38,7 +38,7 @@
 #include <string>
 #include "tools/init_parser.hpp"
 #include <time.h>
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "tools/no_copy.hpp"
 
 #ifndef _APPSETTINGS_HPP_
@@ -127,9 +127,7 @@ public:
 	const std::string getVframeDirectory() const;
 
 	//! Indique de quel est la version de Spacecrafter
-	const std::string getVersion() const {
-		return VERSION;
-	}
+	const std::string getVersion() const;
 
 	//! Console output of all methods of the class
 	void display_all() const;

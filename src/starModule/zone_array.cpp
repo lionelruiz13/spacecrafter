@@ -19,7 +19,7 @@
 
 #include <unistd.h>
 
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "coreModule/projector.hpp"
 #include "starModule/zone_array.hpp"
 #include "starModule/geodesic_grid.hpp"

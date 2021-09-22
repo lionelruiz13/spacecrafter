@@ -27,7 +27,7 @@
 #include <sstream>
 #include <string> //ServerSocket
 
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "tools/io.hpp" //ServerSocket
 #include "tools/utility.hpp"
 #include "tools/log.hpp" //ServerSocket

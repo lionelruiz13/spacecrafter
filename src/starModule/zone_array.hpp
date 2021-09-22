@@ -27,7 +27,7 @@
 #include <SDL2/SDL_endian.h>
 
 
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "starModule/zone_data.hpp"
 #include "navModule/navigator.hpp"
 #include "starModule/hip_star.hpp"

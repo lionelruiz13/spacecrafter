@@ -234,6 +234,10 @@ const std::string AppSettings::getUserDir() const
 	#endif
 }
 
+const std::string AppSettings::getVersion() const {
+	return VERSION;
+}
+
 void AppSettings::display_all() const
 {
 	std::cout << "------------------------------------------------------" << std::endl;

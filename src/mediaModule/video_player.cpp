@@ -18,7 +18,7 @@
 #include <SDL2/SDL.h>
 #include <chrono>
 
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "mediaModule/video_player.hpp"
 #include "tools/log.hpp"
 #include "tools/s_texture.hpp"

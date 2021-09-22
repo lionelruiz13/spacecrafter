@@ -31,7 +31,7 @@
 #include <SDL2/SDL_net.h> //ServerSocket
 #include <iostream> //ServerSocket
 
-#include "spacecrafter.hpp"
+//#include "spacecrafter.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 
