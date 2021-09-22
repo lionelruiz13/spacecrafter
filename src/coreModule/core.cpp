@@ -26,6 +26,7 @@
 #include <algorithm>
 #include "coreModule/core.hpp"
 #include "tools/utility.hpp"
+#include "tools/init_parser.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/log.hpp"
 #include "coreModule/ubo_cam.hpp"
@@ -42,12 +43,18 @@
 #include "coreModule/tully.hpp"
 #include "coreModule/oort.hpp"
 #include "inGalaxyModule/dso3d.hpp"
+#include "coreModule/skygrid_mgr.hpp"
+#include "coreModule/skyline_mgr.hpp"
+#include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/landscape.hpp"
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
+#include "coreModule/meteor_mgr.hpp"
+#include "coreModule/milkyway.hpp"
+#include "coreModule/cardinals.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -219,6 +226,14 @@ Core::~Core()
 	delete universeCloudNav;
 	delete dsoNav;
 	delete starLines;
+}
+
+void Core::setFlagNav(bool a)
+{
+	flagNav=a;
+	cardinals_points->setInternalNav(a);
+	skyGridMgr->setInternalNav(a);
+	skyLineMgr->setInternalNav(a);
 }
 
 

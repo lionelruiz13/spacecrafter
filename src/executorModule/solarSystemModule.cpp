@@ -27,6 +27,14 @@
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
+#include "coreModule/cardinals.hpp"
+#include "inGalaxyModule/dso3d.hpp"
+#include "coreModule/meteor_mgr.hpp"
+#include "coreModule/milkyway.hpp"
+#include "coreModule/oort.hpp"
+#include "coreModule/skygrid_mgr.hpp"
+#include "coreModule/skyline_mgr.hpp"
+#include "coreModule/skydisplay_mgr.hpp"
 
 void SolarSystemModule::onEnter()
 {    

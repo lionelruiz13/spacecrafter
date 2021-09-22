@@ -4,6 +4,16 @@
 #include <memory>
 #include "coreModule/core.hpp"
 
+//temporaire
+#include "coreModule/cardinals.hpp"
+#include "inGalaxyModule/dso3d.hpp"
+#include "coreModule/meteor_mgr.hpp"
+#include "coreModule/milkyway.hpp"
+#include "coreModule/oort.hpp"
+#include "coreModule/skygrid_mgr.hpp"
+#include "coreModule/skyline_mgr.hpp"
+#include "coreModule/skydisplay_mgr.hpp"
+
 class CoreLink {
 public:
 

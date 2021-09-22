@@ -27,8 +27,11 @@
 //! This file describe all backup option
 
 #include "coreModule/backup_mgr.hpp"
-
 #include "coreModule/core.hpp"
+#include "coreModule/skygrid_mgr.hpp"
+#include "coreModule/skyline_mgr.hpp"
+#include "coreModule/milkyway.hpp"
+#include "coreModule/skydisplay_mgr.hpp"
 
 CoreBackup::CoreBackup(std::shared_ptr<Core> _core)
 {

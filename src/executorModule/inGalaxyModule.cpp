@@ -28,6 +28,12 @@
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
 
+#include "coreModule/skygrid_mgr.hpp"
+#include "coreModule/skyline_mgr.hpp"
+#include "coreModule/skydisplay_mgr.hpp"
+#include "coreModule/milkyway.hpp"
+#include "inGalaxyModule/dso3d.hpp"
+
 InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {
     minAltToGoDown = 1.E10;

@@ -35,28 +35,27 @@
 #include "bodyModule/ssystem_factory.hpp"
 #include "coreModule/backup_mgr.hpp"
 #include "coreModule/callbacks.hpp"
-#include "coreModule/cardinals.hpp"
+//#include "coreModule/cardinals.hpp"
 #include "coreModule/constellation_mgr.hpp"
-#include "coreModule/core.hpp"
-#include "inGalaxyModule/dso3d.hpp"
+//#include "inGalaxyModule/dso3d.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/landscape.hpp"
-#include "coreModule/meteor_mgr.hpp"
-#include "coreModule/milkyway.hpp"
+//#include "coreModule/meteor_mgr.hpp"
+//#include "coreModule/milkyway.hpp"
 #include "coreModule/nebula_mgr.hpp"
-#include "coreModule/oort.hpp"
+//#include "coreModule/oort.hpp"
 #include "coreModule/projector.hpp"
-#include "coreModule/skygrid_mgr.hpp"
-#include "coreModule/skygrid.hpp"
-#include "coreModule/skyline_mgr.hpp"
-#include "coreModule/skyline.hpp"
-#include "coreModule/skydisplay_mgr.hpp"
-#include "coreModule/skyDisplay.hpp"
+//#include "coreModule/skygrid_mgr.hpp"
+//#include "coreModule/skygrid.hpp"
+//#include "coreModule/skyline_mgr.hpp"
+//#include "coreModule/skyline.hpp"
+//#include "coreModule/skydisplay_mgr.hpp"
+//#include "coreModule/skyDisplay.hpp"
 #include "coreModule/starLines.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
 #include "inGalaxyModule/cloudNavigator.hpp"
 #include "inGalaxyModule/dsoNavigator.hpp"
-#include "mediaModule/text_mgr.hpp"
+//#include "mediaModule/text_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/ubo_cam.hpp"
@@ -66,7 +65,7 @@
 #include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "starModule/hip_star_mgr.hpp"
-#include "tools/init_parser.hpp"
+
 #include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
 
@@ -88,6 +87,12 @@ class Media;
 class StarLines;
 class BodyTrace;
 class FontFactory;
+class SkyGridMgr;
+class SkyLineMgr;
+class SkyDisplayMgr;
+class Cardinals;
+class MeteorMgr;
+class MilkyWay;
 
 //!  @brief Main class for application core processing.
 //!
@@ -429,12 +434,7 @@ public:
 	// MAJ de l'UBO ubo_cam
 	void uboCamUpdate();
 
-	void setFlagNav(bool a) {
-		flagNav=a;
-		cardinals_points->setInternalNav(a);
-		skyGridMgr->setInternalNav(a);
-		skyLineMgr->setInternalNav(a);
-	}
+	void setFlagNav(bool a);
 
 	bool getFlagNav() {
 		return flagNav;
