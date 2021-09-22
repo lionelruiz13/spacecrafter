@@ -34,7 +34,7 @@
 #include "navModule/observer.hpp"
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
-#include "planetsephems/sideral_time.h"
+#include "../planetsephems/sideral_time.h"
 #include "ojmModule/ojml.hpp"
 #include "vulkanModule/VertexArray.hpp"
 #include "vulkanModule/CommandMgr.hpp"

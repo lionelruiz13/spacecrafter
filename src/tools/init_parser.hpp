@@ -30,7 +30,7 @@
 #include <string>
 #include <list>
 #include <iostream>
-#include "iniparser/iniparser.h"
+#include "../iniparser/iniparser.h"
 
 class InitParser {
 public:

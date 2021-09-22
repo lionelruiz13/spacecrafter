@@ -14,7 +14,7 @@
 
 #include "bodyModule/solve.hpp"
 #include "bodyModule/orbit.hpp"
-#include "planetsephems/stellplanet.h"
+#include "../planetsephems/stellplanet.h"
 #include "tools/vecmath.hpp"
 
 // temp
