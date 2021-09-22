@@ -492,7 +492,7 @@ void CheckConfig::checkMigration2020()
 }
 
 
-void CheckConfig::insertKeyFromTmpSettings(std::string nameSection)
+void CheckConfig::insertKeyFromTmpSettings(const std::string& nameSection)
 {
 	for (auto it=tmpSettings.begin(); it!=tmpSettings.end(); ++it) {
 		//important to keep a track  name:key

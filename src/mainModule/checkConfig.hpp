@@ -40,7 +40,7 @@ public:
 private:
 	void checkUselessSection();
 	void checkUselessKey();
-	void insertKeyFromTmpSettings(std::string nameSection);
+	void insertKeyFromTmpSettings(const std::string& nameSection);
 
 	void checkMainSettings();
 	void checkIoSettings();
