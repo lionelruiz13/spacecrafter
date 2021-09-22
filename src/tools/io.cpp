@@ -31,7 +31,7 @@
 #include "tools/io.hpp" //ServerSocket
 #include "tools/utility.hpp"
 #include "tools/log.hpp" //ServerSocket
-
+#include "tools/app_settings.hpp"
 
 #ifdef WIN32
 #include <direct.h>

@@ -17,7 +17,7 @@
 #include "tools/log.hpp"
 #include "uiModule/joypad_controller.hpp"
 #include "uiModule/ui.hpp"
-
+#include "tools/app_settings.hpp"
 
 //splits a string in a vector
 static void split(std::string str, std::string splitBy, std::vector<std::string>& tokens)

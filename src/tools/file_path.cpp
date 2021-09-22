@@ -25,6 +25,7 @@
 #include "tools/file_path.hpp"
 //#include "tools/utility.hpp"
 #include "tools/call_system.hpp"
+#include "tools/app_settings.hpp"
 
 std::string FilePath::scriptPath;
 

@@ -47,7 +47,7 @@ enum S_GUI_VALUE {
 
 #include <memory>
 #include "uiModule/ui_tui.hpp"
-#include "tools/app_settings.hpp"
+//#include "tools/app_settings.hpp"
 
 #define TUI_SCRIPT_MSG "Select and exit to run."
 
@@ -62,6 +62,7 @@ class JoypadController;
 class Event;
 class SpaceDate;
 class SDLFacade;
+class InitParser;
 
 /**
  *  Modification du comportement des touches

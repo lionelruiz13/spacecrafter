@@ -36,7 +36,7 @@
 #include "mediaModule/video_player.hpp"
 #include "mediaModule/vr360.hpp"
 #include "mediaModule/viewport.hpp"
-#include "tools/app_settings.hpp"
+//#include "tools/app_settings.hpp"
 #include "tools/no_copy.hpp"
 #include "vulkanModule/Context.hpp"
 

@@ -28,7 +28,7 @@
 #include <SDL2/SDL_thread.h>
 #include <queue> //ServerSocket
 #include "tools/no_copy.hpp"
-#include "tools/app_settings.hpp"
+//#include "tools/app_settings.hpp"
 #include <string>
 #include <SDL2/SDL_net.h> //ServerSocket
 #include <iostream> //ServerSocket

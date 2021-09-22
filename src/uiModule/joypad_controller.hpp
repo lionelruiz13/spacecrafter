@@ -43,7 +43,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "tools/app_settings.hpp"
+// #include "tools/app_settings.hpp"
 
 #ifndef _JOYPAD_CONTROLLER_HPP_
 #define _JOYPAD_CONTROLLER_HPP_

@@ -27,7 +27,7 @@
 #define _FILEPATH_
 
 #include <string>
-#include "tools/app_settings.hpp"
+//#include "tools/app_settings.hpp"
 
 /**
 * \file file_path.hpp
