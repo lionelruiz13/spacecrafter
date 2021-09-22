@@ -98,37 +98,6 @@ public:
 
 	bool skyGridMgrGetFlagShow(SKYGRID_TYPE name);
 
-	////////////////////////////////////////////////////////////////////////////////
-	// Text_usr---------------------------
-	////////////////////////////////////////////////////////////////////////////////
-
-	// void textAdd(const std::string& name, const TEXT_MGR_PARAM& textParam) {
-	// 	core->text_usr->add(name, textParam);
-	// }
-
-	// void textDel(std::string name) {
-	// 	core->text_usr->del(name);
-	// }
-
-	// void textClear() {
-	// 	core->text_usr->clear();
-	// }
-
-	// void textNameUpdate(std::string name, std::string text) {
-	// 	core->text_usr->textUpdate(name, text);
-	// }
-
-	// void textDisplay(std::string name , bool displ) {
-	// 	core->text_usr->textDisplay(name, displ);
-	// }
-
-	// void textFadingDuration(int a) {
-	// 	core->text_usr->setFadingDuration(a);
-	// }
-
-	// void textSetDefaultColor(const Vec3f& v) {
-	// 	core->text_usr->setColor(v);
-	// }
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Time---------------------------
@@ -170,17 +139,6 @@ public:
 	void timeSetFlagPause(bool _value) const {
 		core->timeMgr->setTimePause(_value);
 	}
-
-	// double timeGetMultiplier() const {
-	// 	return core->timeMgr->getTimeMultiplier();
-	// }
-	/*
-	void timeSetMultiplier(double _value) {
-		core->timeMgr->setTimeMultiplier(_value);
-	}
-	void timeResetMultiplier() {
-		core->timeMgr->setTimeMultiplier(1.0);
-	};*/
 
 	////////////////////////////////////////////////////////////////////////////////
 	// dateSun---------------------------
@@ -285,10 +243,6 @@ public:
 	void illuminateLoad(int number, const Vec3f& _color, double size, double rotation) {
 		core->illuminates->load(number, _color, size, rotation);
 	}
-
-	// void illuminateLoad(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float rotation) {
-	// 	core->illuminates->loadIlluminate(name, ra, de, angular_size, r,g,b, rotation);
-	// }
 
 	void illuminateRemove(unsigned int name) 	{
 		core->illuminates->remove(name);
@@ -974,26 +928,10 @@ public:
 	double getDateHour() const;
 	double getDateMinute() const;
 
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// //! Get base planets display scaling factor
-	// float planetsGetScale(void) const {
-	// 	return core->ssystem->getScale();
-	// }
-	///////////////////////////////////////////////////////////
-
 	//! Set planets viewer scaling factor
 	void planetSetSizeScale(std::string name, float f) {
 		core->ssystemFactory->setPlanetSizeScale(name, f);
 	}
-
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// //! Get planets viewer scaling factor
-	// float planetGetSizeScale(std::string name) {
-	// 	return core->ssystem->getPlanetSizeScale(name);
-	// }
-	///////////////////////////////////////////////////////////
 
 	// send param tesselation, name design the param to change to value
 	void planetTesselation(std::string name, int value) {
@@ -1077,13 +1015,6 @@ public:
 		core->milky_way->restoreIntensity();
 	}
 
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// void milkyWayUseIris(bool useIt) {
-	// 	core->milky_way->useIrisTexture(useIt);
-	// }
-	///////////////////////////////////////////////////////////
-
 	//! Change Milkyway texture
 	void milkyWayChangeState(const std::string& mdir, float _intensity) {
 		core->milky_way->changeMilkywayState(mdir, _intensity);
@@ -1116,18 +1047,6 @@ public:
 		return core->nebulas->getFlagHints();
 	}
 
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// //! Set Nebulae Hints circle scale
-	// void nebulaSetCircleScale(float f) {
-	// 	core->nebulas->setNebulaCircleScale(f);
-	// }
-	// //! Get Nebulae Hints circle scale
-	// float nebulaGetCircleScale(void) const {
-	// 	return core->nebulas->getNebulaCircleScale();
-	// }
-	///////////////////////////////////////////////////////////
-
 	//! Set flag for displaying Nebulae as bright
 	void nebulaSetFlagBright(bool b) {
 		core->nebulas->setFlagBright(b);
@@ -1155,13 +1074,6 @@ public:
 	Vec3f nebulaGetColorCircle(void) const {
 		return core->nebulas->getCircleColor();
 	}
-
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// void nebulaSetPictoSize(int value) const {
-	// 	core->nebulas->setPictoSize(value);
-	// }
-	///////////////////////////////////////////////////////////
 
 	//!set Flag DSO Name who display DSO name
 	void nebulaSetFlagNames (bool value) {
@@ -1203,13 +1115,6 @@ public:
 	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
 		core->skyDisplayMgr->flipFlagShow(nameObj);
 	}
-
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// Vec3f SkyDisplayMgrGetColor(SKYDISPLAY_NAME nameObj) {
-	// 	return core->skyDisplayMgr->getColor(nameObj);
-	// }
-	///////////////////////////////////////////////////////////
 
 	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
 		core->skyDisplayMgr->setColor(nameObj,v);
@@ -1277,26 +1182,6 @@ public:
 	void observatorySetAltitude(double l) {
 	 	core->observatory->setAltitude(l);
 	}
-
-	// void observatorySetSpacecraft(double l) {
-	// 	core->observatory->setSpacecraft(bool(l));
-	// }
-
-	// void observatorySaveBodyInSolarSystem() {
-	// 	core->observatory->saveBodyInSolarSystem();
-	// }
-
-	// void observatoryLoadBodyInSolarSystem() {
-	// 	core->observatory->loadBodyInSolarSystem();
-	// }
-
-	// void observatoryFixBodyToSun() {
-	// 	core->observatory->fixBodyToSun();
-	// }
-	///////////////////////////////////////////////////////////
-	// std::string getObserverName(){
-	// 	return core->observatory->getName();
-	// }
 
 	std::string getObserverHomePlanetEnglishName() {
 		return core->observatory->getHomePlanetEnglishName();
@@ -1374,25 +1259,6 @@ public:
 	bool atmosphericRefractionGetFlag(void) const {
 		return core->FlagAtmosphericRefraction;
 	}
-
-	//void fontUpdateFont(const std::string& _targetName, const std::string& _fontName, const std::string& _sizeValue);
-	// Fonctions non utilisée ?
-	// -------------------------------
-	// //! set flag for vp Optoma
-	// void atmosphereSetFlagOptoma(bool b) {
-	// 	core->atmosphere->setFlagOptoma(b);
-	// }
-
-	// //! Get flag for vp Optoma
-	// bool atmosphereGetFlagOptoma(void) const {
-	// 	return core->atmosphere->getFlagOptoma();
-	// }
-
-	// //! Get atmosphere fade duration in s
-	// float atmosphereGetFadeDuration(void) const {
-	// 	return core->atmosphere->getFaderDuration();
-	// }
-	///////////////////////////////////////////////////////////
 
 	double getViewOffset() {
 		return core->navigation->getViewOffset();
