@@ -44,6 +44,7 @@
 #include "uiModule/ui.hpp"
 #include "coreModule/coreLink.hpp"
 #include "appModule/fontFactory.hpp"
+#include "coreModule/time_mgr.hpp"
 #include "spacecrafter.hpp"
 
 // Draw simple gravity text ui.

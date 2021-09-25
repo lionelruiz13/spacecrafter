@@ -38,6 +38,7 @@
 #include "coreModule/starLines.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "atmosphereModule/atmosphere.hpp"
+#include "coreModule/time_mgr.hpp"
 
 void SolarSystemModule::onEnter()
 {    
@@ -80,7 +81,7 @@ void SolarSystemModule::update(int delta_time)
 	// Field of view
 	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
 	// update faders and Planet trails (call after nav is updated)
-	core->ssystemFactory->update(delta_time, core->navigation, core->timeMgr);
+	core->ssystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
 			
 	// Move the view direction and/or fov
 	core->updateMove(delta_time);
@@ -164,9 +165,9 @@ void SolarSystemModule::draw(int delta_time)
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->projection);
-	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr, observer->getAltitude());
+	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->skyGridMgr->draw(core->projection);
-	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr, observer);
+	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
 	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
@@ -175,7 +176,7 @@ void SolarSystemModule::draw(int delta_time)
 	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 
 	// Update meteors
-	core->meteors->update(core->projection, core->navigation, core->timeMgr, core->tone_converter, delta_time);
+	core->meteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
 
 	// retiré la condition && atmosphere->getFlagShow() de sorte à pouvoir en avoir par atmosphère ténue
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
@@ -217,7 +218,7 @@ void SolarSystemModule::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 
 void SolarSystemModule::hipStarMgrPreDraw()
 {
-	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr,observer->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
 }
 
 void SolarSystemModule::ssystemComputePreDraw()

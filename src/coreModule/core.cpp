@@ -57,6 +57,7 @@
 #include "coreModule/cardinals.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "atmosphereModule/atmosphere.hpp"
+#include "coreModule/time_mgr.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -88,10 +89,10 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	ubo_cam = new UBOCam(context, "cam_block");
 	tone_converter = new ToneReproductor();
 	atmosphere = std::make_shared<Atmosphere>(context);
-	timeMgr = new TimeMgr();
+	timeMgr = std::make_shared<TimeMgr>();
 	navigation = new Navigator();
 	observatory = _observatory;
-	ssystemFactory = new SSystemFactory(context, observatory.get(), navigation, timeMgr);
+	ssystemFactory = new SSystemFactory(context, observatory.get(), navigation, timeMgr.get());
 	nebulas = new NebulaMgr(context);
 	milky_way = std::make_shared<MilkyWay>(context);
 	starNav = new StarNavigator(context);
@@ -203,7 +204,7 @@ Core::~Core()
 	landscape = nullptr;
 	delete geodesic_grid;
 	// delete milky_way;
-	delete timeMgr;
+	//delete timeMgr;
 	// delete meteors;
 	meteors = nullptr;
 	//delete atmosphere;

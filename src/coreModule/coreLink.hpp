@@ -88,60 +88,31 @@ public:
 	// Time---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! Set time speed in JDay/sec
-	void timeSetSpeed(double ts) {
-		core->timeMgr->setTimeSpeed(ts);
-	}
+	void timeSetSpeed(double ts);
 
-	void timeChangeSpeed(double ts, double duration) {
-		core->timeMgr->changeTimeSpeed(ts, duration);
-	}
-
+	void timeChangeSpeed(double ts, double duration);
 	//! Get time speed in JDay/sec
-	double timeGetSpeed() const {
-		return core->timeMgr->getTimeSpeed();
-	}
+	double timeGetSpeed() const;
 
-	void timeLoadSpeed() const {
-		return core->timeMgr->loadTimeSpeed();
-	}
-	void timeSaveSpeed() const  {
-		core->timeMgr-> saveTimeSpeed();
-	}
+	void timeLoadSpeed() const;
 
+	void timeSaveSpeed() const;
 	//! Set the current date in Julian Day
-	void setJDay(double JD) {
-		core->timeMgr->setJDay(JD);
-	}
+	void setJDay(double JD);
 	//! Get the current date in Julian Day
-	double getJDay() const {
-		return core->timeMgr->getJDay();
-	}
-
-	bool timeGetFlagPause() const {
-		return core->timeMgr->getTimePause();
-	}
-
-	void timeSetFlagPause(bool _value) const {
-		core->timeMgr->setTimePause(_value);
-	}
+	double getJDay() const;
+	bool timeGetFlagPause() const;
+	void timeSetFlagPause(bool _value) const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// dateSun---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! return the JD time when the sun go down
-	double dateSunRise(double _jd, double _longitude, double _latitude) {
-		return core->timeMgr->dateSunRise(_jd,_longitude, _latitude);
-	}
-
+	double dateSunRise(double _jd, double _longitude, double _latitude);
 	//! return the JD time when the sun set up
-	double dateSunSet(double _jd, double _longitude, double _latitude) {
-		return core->timeMgr->dateSunSet(_jd,_longitude, _latitude);
-	}
-
+	double dateSunSet(double _jd, double _longitude, double _latitude);
 	//! return the JD time when the sun cross the meridian
-	double dateSunMeridian(double _jd, double _longitude, double _latitude) {
-		return core->timeMgr->dateSunMeridian(_jd,_longitude, _latitude);
-	}
+	double dateSunMeridian(double _jd, double _longitude, double _latitude);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Tully---------------------------
@@ -346,24 +317,11 @@ public:
 	// for TCP usage  ---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	std::string getConstellationSelectedShortName() const {
-		return core->asterisms->getSelectedShortName();
-	}
+	std::string getConstellationSelectedShortName() const;
 
-	std::string getPlanetsPosition() const {
-		return core->ssystemFactory->getPlanetsPosition();
-	}
+	std::string getPlanetsPosition() const;
 
-	std::string tcpGetPosition() const {
-		char tmp[512];
-		memset(tmp, '\0', 512);
-		sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;",
-			core->observatory->getLatitude(), core->observatory->getLongitude(),
-			core->observatory->getAltitude(), core->timeMgr->getJDay(),
-			core->navigation->getHeading());
-		return tmp;
-	}
-
+	std::string tcpGetPosition() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// UBO---------------------------
