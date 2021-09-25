@@ -38,7 +38,7 @@
 //#include "coreModule/cardinals.hpp"
 #include "coreModule/constellation_mgr.hpp"
 //#include "inGalaxyModule/dso3d.hpp"
-#include "coreModule/illuminate_mgr.hpp"
+//#include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/landscape.hpp"
 //#include "coreModule/meteor_mgr.hpp"
 //#include "coreModule/milkyway.hpp"
@@ -93,6 +93,7 @@ class SkyDisplayMgr;
 class Cardinals;
 class MeteorMgr;
 class MilkyWay;
+class IlluminateMgr;
 
 //!  @brief Main class for application core processing.
 //!
@@ -512,7 +513,7 @@ private:
 	HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
 	NebulaMgr * nebulas;				// Manage the nebulas
-	IlluminateMgr * illuminates;		// Manage the illuminations
+	std::unique_ptr<IlluminateMgr> illuminates;		// Manage the illuminations
 	//TextMgr * text_usr;				// manage all user text in dome
 	//SolarSystem* ssystem;				// Manage the solar system
 	SSystemFactory* ssystemFactory;

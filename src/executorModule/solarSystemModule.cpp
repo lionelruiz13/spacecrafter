@@ -36,6 +36,7 @@
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/starLines.hpp"
+#include "coreModule/illuminate_mgr.hpp"
 
 void SolarSystemModule::onEnter()
 {    

@@ -55,6 +55,7 @@
 #include "coreModule/meteor_mgr.hpp"
 #include "coreModule/milkyway.hpp"
 #include "coreModule/cardinals.hpp"
+#include "coreModule/illuminate_mgr.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -147,13 +148,11 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height, context);
 	asterisms = new ConstellationMgr(hip_stars, context);
-	illuminates= new IlluminateMgr(hip_stars, navigation, asterisms, context);
+	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms, context);
 	oort =  std::make_unique<Oort>(context);
 	dso3d = std::make_unique<Dso3d>(context);
 	tully = std::make_unique<Tully>(context);
 	object_pointer_visibility = 1;
-
-
 }
 
 void Core::registerCoreFont() const
@@ -194,7 +193,7 @@ Core::~Core()
 	delete asterisms;
 	delete hip_stars;
 	delete nebulas;
-	delete illuminates;
+	//delete illuminates;
 	// skyGridMgr.reset(nullptr);
 	// skyLineMgr.reset(nullptr);
 	// skyDisplayMgr.reset(nullptr);

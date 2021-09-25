@@ -184,52 +184,29 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Illuminate---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	void illuminateSetSize (double value) {
-		core->illuminates->setDefaultSize(value);
-	}
+	void illuminateSetSize (double value);
 
-	void illuminateLoadConstellation(const std::string& abbreviation, double size, double rotation) {
-		core->illuminates->loadConstellation(abbreviation, size, rotation);
-	}
-	void illuminateLoadConstellation(const std::string& abbreviation,const Vec3f& color, double size, double rotation) {
-		core->illuminates->loadConstellation(abbreviation, color, size, rotation);
-	}
-	void illuminateLoadAllConstellation(double size, double rotation) {
-		core->illuminates->loadAllConstellation(size, rotation);
-	}
+	void illuminateLoadConstellation(const std::string& abbreviation, double size, double rotation);
 
-	void illuminateLoad(int number, double size, double rotation) {
-		core->illuminates->load(number, size, rotation);
-	}
+	void illuminateLoadConstellation(const std::string& abbreviation,const Vec3f& color, double size, double rotation);
 
-	void illuminateLoad(int number, const Vec3f& _color, double size, double rotation) {
-		core->illuminates->load(number, _color, size, rotation);
-	}
+	void illuminateLoadAllConstellation(double size, double rotation);
 
-	void illuminateRemove(unsigned int name) 	{
-		core->illuminates->remove(name);
-	}
+	void illuminateLoad(int number, double size, double rotation);
 
-	void illuminateRemoveConstellation(const std::string abbreviation) 	{
-		core->illuminates->removeConstellation(abbreviation);
-	}
+	void illuminateLoad(int number, const Vec3f& _color, double size, double rotation);
 
-	void illuminateRemoveAllConstellation() 	{
-		core->illuminates->removeAllConstellation();
-	}
+	void illuminateRemove(unsigned int name);
 
-	void illuminateRemoveAll()
-	{
-		core->illuminates->removeAll();
-	}
+	void illuminateRemoveConstellation(const std::string abbreviation);
 
-	void illuminateChangeTex(const std::string& _fileName)	{
-		core->illuminates->changeTex(_fileName);
-	}
+	void illuminateRemoveAllConstellation();
 
-	void illuminateRemoveTex()	{
-		core->illuminates->removeTex();
-	}
+	void illuminateRemoveAll();
+
+	void illuminateChangeTex(const std::string& _fileName);
+
+	void illuminateRemoveTex();
 
 	////////////////////////////////////////////////////////////////////////////////
 	// stars

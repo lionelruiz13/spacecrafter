@@ -11,7 +11,7 @@
 #include "coreModule/cardinals.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/meteor_mgr.hpp"
-
+#include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/starLines.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
@@ -303,4 +303,54 @@ void CoreLink::starLinesLoadCat(const std::string &fileName, bool binaryMode){
 
 void CoreLink::starLinesLoadHipStar(int name, Vec3f position) {
 	core->starLines->loadHipStar(name, position);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Illuminate---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::illuminateSetSize (double value) {
+	core->illuminates->setDefaultSize(value);
+}
+
+void CoreLink::illuminateLoadConstellation(const std::string& abbreviation, double size, double rotation) {
+	core->illuminates->loadConstellation(abbreviation, size, rotation);
+}
+void CoreLink::illuminateLoadConstellation(const std::string& abbreviation,const Vec3f& color, double size, double rotation) {
+	core->illuminates->loadConstellation(abbreviation, color, size, rotation);
+}
+void CoreLink::illuminateLoadAllConstellation(double size, double rotation) {
+	core->illuminates->loadAllConstellation(size, rotation);
+}
+
+void CoreLink::illuminateLoad(int number, double size, double rotation) {
+	core->illuminates->load(number, size, rotation);
+}
+
+void CoreLink::illuminateLoad(int number, const Vec3f& _color, double size, double rotation) {
+	core->illuminates->load(number, _color, size, rotation);
+}
+
+void CoreLink::illuminateRemove(unsigned int name) 	{
+	core->illuminates->remove(name);
+}
+
+void CoreLink::illuminateRemoveConstellation(const std::string abbreviation) 	{
+	core->illuminates->removeConstellation(abbreviation);
+}
+
+void CoreLink::illuminateRemoveAllConstellation() 	{
+	core->illuminates->removeAllConstellation();
+}
+
+void CoreLink::illuminateRemoveAll()
+{
+	core->illuminates->removeAll();
+}
+
+void CoreLink::illuminateChangeTex(const std::string& _fileName)	{
+	core->illuminates->changeTex(_fileName);
+}
+
+void CoreLink::illuminateRemoveTex()	{
+	core->illuminates->removeTex();
 }
