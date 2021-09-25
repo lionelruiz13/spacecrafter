@@ -23,18 +23,18 @@ public:
 		core->starLines->setFlagSelected(b);
 	}
 
-	bool starLinesSelectedGetFlag(void) const {
+	bool starLinesSelectedGetFlag() const {
 		return core->starLines->getFlagSelected();
 	}
 
 
 	//! Get flag for displaying
-	bool starLinesGetFlag(void) const {
+	bool starLinesGetFlag() const {
 		return core->starLines->getFlagShow();
 	}
 
 	//! Vide tous les tampons de tracé
-	void starLinesDrop(void) const {
+	void starLinesDrop() const {
 		core->starLines->drop();
 	}
 
@@ -103,11 +103,11 @@ public:
 	}
 
 	//! Get time speed in JDay/sec
-	double timeGetSpeed(void) const {
+	double timeGetSpeed() const {
 		return core->timeMgr->getTimeSpeed();
 	}
 
-	void timeLoadSpeed(void) const {
+	void timeLoadSpeed() const {
 		return core->timeMgr->loadTimeSpeed();
 	}
 	void timeSaveSpeed() const  {
@@ -119,7 +119,7 @@ public:
 		core->timeMgr->setJDay(JD);
 	}
 	//! Get the current date in Julian Day
-	double getJDay(void) const {
+	double getJDay() const {
 		return core->timeMgr->getJDay();
 	}
 
@@ -176,7 +176,7 @@ public:
 		core->starNav->setFlagStars(b);
 	}
 
-	bool starGetFlag(void) const {
+	bool starGetFlag() const {
 		return core->hip_stars->getFlagShow();
 	}
 
@@ -184,7 +184,7 @@ public:
 		core->hip_stars->setFlagTrace(b);
 	}
 
-	bool starGetTraceFlag(void) const {
+	bool starGetTraceFlag() const {
 		return core->hip_stars->getFlagTrace();
 	}
 
@@ -199,14 +199,14 @@ public:
 	void starSetFlagName(bool b) {
 		core->hip_stars->setFlagNames(b);
 	}
-	bool starGetFlagName(void) const {
+	bool starGetFlagName() const {
 		return core->hip_stars->getFlagNames();
 	}
 
 	void starSetLimitingMag(float f) {
 		core->hip_stars->setMagConverterMaxScaled60DegMag(f);
 	}
-	float starGetLimitingMag(void) const {
+	float starGetLimitingMag() const {
 		return core->hip_stars->getMagConverterMaxScaled60DegMag();
 	}
 
@@ -267,14 +267,14 @@ public:
 	void starSetFlagTwinkle(bool b) {
 		core->hip_stars->setFlagTwinkle(b);
 	}
-	bool starGetFlagTwinkle(void) const {
+	bool starGetFlagTwinkle() const {
 		return core->hip_stars->getFlagTwinkle();
 	}
 
 	void starSetMaxMagName(float f) {
 		core->hip_stars->setMaxMagName(f);
 	}
-	float starGetMaxMagName(void) const {
+	float starGetMaxMagName() const {
 		return core->hip_stars->getMaxMagName();
 	}
 
@@ -287,7 +287,7 @@ public:
 		core->starNav->setScale(f);
 		core->hip_stars->setScale(f);
 	}
-	float starGetScale(void) const {
+	float starGetScale() const {
 		return core->hip_stars->getScale();
 	}
 
@@ -295,14 +295,14 @@ public:
 		core->starNav->setMagScale(f);
 		core->hip_stars->setMagScale(f);
 	}
-	float starGetMagScale(void) const {
+	float starGetMagScale() const {
 		return core->hip_stars->getMagScale();
 	}
 
 	void starSetTwinkleAmount(float f) {
 		core->hip_stars->setTwinkleAmount(f);
 	}
-	float  starGetTwinkleAmount(void) const {
+	float  starGetTwinkleAmount() const {
 		return core->hip_stars->getTwinkleAmount();
 	}
 
@@ -337,7 +337,7 @@ public:
 		core->ssystemFactory->bodyTraceSetFlag(b);
 	}
 	//! Get flag for displaying SunTrace
-	bool bodyTraceGetFlag(void) const {
+	bool bodyTraceGetFlag() const {
 		return core->ssystemFactory->bodyTraceGetFlag();
 	}
 
@@ -445,12 +445,12 @@ public:
 	}
 
 	//! Get current FOV (in degree)
-	float getFov(void) const {
+	float getFov() const {
 		return core->projection->getFov();
 	}
 
 	//! If is currently zooming, return the target FOV, otherwise return current FOV
-	double getAimFov(void) const {
+	double getAimFov() const {
 		return core->projection->getAimFov();
 	}
 
@@ -565,11 +565,11 @@ public:
 	//! Set flag for displaying Cardinals Points
 	void cardinalsPointsSetFlag(bool b);
 	//! Get flag for displaying Cardinals Points
-	bool cardinalsPointsGetFlag(void) const;
+	bool cardinalsPointsGetFlag() const;
 	//! Set Cardinals Points color
 	void cardinalsPointsSetColor(const Vec3f& v);
 	//! Get Cardinals Points color
-	Vec3f cardinalsPointsGetColor(void) const;
+	Vec3f cardinalsPointsGetColor() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Constellations---------------------------
@@ -580,7 +580,7 @@ public:
 		core->asterisms->setFlagLines(b);
 	}
 	//! Get display flag of constellation lines
-	bool constellationGetFlagLines(void) {
+	bool constellationGetFlagLines() {
 		return core->asterisms->getFlagLines();
 	}
 
@@ -589,7 +589,7 @@ public:
 		core->asterisms->setFlagArt(b);
 	}
 	//! Get display flag of constellation art
-	bool constellationGetFlagArt(void) {
+	bool constellationGetFlagArt() {
 		return core->asterisms->getFlagArt();
 	}
 
@@ -598,7 +598,7 @@ public:
 		core->asterisms->setFlagNames(b);
 	}
 	//! Get display flag of constellation names
-	bool constellationGetFlagNames(void) {
+	bool constellationGetFlagNames() {
 		return core->asterisms->getFlagNames();
 	}
 
@@ -607,10 +607,10 @@ public:
 		core->asterisms->setFlagBoundaries(b);
 	}
 	//! Get display flag of constellation boundaries
-	bool constellationGetFlagBoundaries(void) {
+	bool constellationGetFlagBoundaries() {
 		return core->asterisms->getFlagBoundaries();
 	}
-	Vec3f constellationGetColorBoundaries(void) const {
+	Vec3f constellationGetColorBoundaries() const {
 		return core->asterisms->getBoundaryColor();
 	}
 
@@ -619,7 +619,7 @@ public:
 		core->asterisms->setArtIntensity(f);
 	}
 	//! Get constellation art intensity
-	float constellationGetArtIntensity(void) const {
+	float constellationGetArtIntensity() const {
 		return core->asterisms->getArtIntensity();
 	}
 
@@ -628,7 +628,7 @@ public:
 		core->asterisms->setArtFadeDuration(f);
 	}
 	//! Get constellation art intensity
-	float constellationGetArtFadeDuration(void) const {
+	float constellationGetArtFadeDuration() const {
 		return core->asterisms->getArtFadeDuration();
 	}
 
@@ -638,7 +638,7 @@ public:
 	}
 
 	//! Get whether selected constellation is drawn alone
-	bool constellationGetFlagIsolateSelected(void) {
+	bool constellationGetFlagIsolateSelected() {
 		return core->asterisms->getFlagIsolateSelected();
 	}
 
@@ -648,7 +648,7 @@ public:
 	}
 
 	//! Get whether to draw the names for the selected stars or every star
-	bool starGetFlagIsolateSelected(void) {
+	bool starGetFlagIsolateSelected() {
 		return core->hip_stars->getFlagIsolateSelected();
 	}
 
@@ -702,7 +702,7 @@ public:
 	void setFlagLightTravelTime(bool b) {
 		core->ssystemFactory->setFlagLightTravelTime(b);
 	}
-	bool getFlagLightTravelTime(void) const {
+	bool getFlagLightTravelTime() const {
 		return core->ssystemFactory->getFlagLightTravelTime();
 	}
 
@@ -722,7 +722,7 @@ public:
 		core->ssystemFactory->setFlagMoonScale(b);
 	}
 	//! Get flag for displaying a scaled Moon
-	bool getFlagMoonScaled(void) const {
+	bool getFlagMoonScaled() const {
 		return core->ssystemFactory->getFlagMoonScale();
 	}
 
@@ -731,7 +731,7 @@ public:
 		core->ssystemFactory->setFlagSunScale(b);
 	}
 	//! Get flag for displaying a scaled Sun
-	bool getFlagSunScaled(void) const {
+	bool getFlagSunScaled() const {
 		return core->ssystemFactory->getFlagSunScale();
 	}
 
@@ -741,7 +741,7 @@ public:
 		else core->ssystemFactory->setMoonScale(f, resident);
 	}
 	//! Get Moon scale
-	float getMoonScale(void) const {
+	float getMoonScale() const {
 		return core->ssystemFactory->getMoonScale();
 	}
 
@@ -751,7 +751,7 @@ public:
 		else core->ssystemFactory->setSunScale(f, resident);
 	}
 	//! Get Moon scale
-	float getSunScale(void) const {
+	float getSunScale() const {
 		return core->ssystemFactory->getSunScale();
 	}
 
@@ -760,7 +760,7 @@ public:
 		core->ssystemFactory->setFlagClouds(b);
 	}
 	//! Get flag for displaying Atmosphere
-	bool getFlagClouds(void) const {
+	bool getFlagClouds() const {
 		return core->ssystemFactory->getFlag(BODY_FLAG::F_CLOUDS);
 	}
 
@@ -786,7 +786,7 @@ public:
 		core->ssystemFactory->setFlagPlanets(b);
 	}
 	//! Get flag for displaying Planets
-	bool planetsGetFlag(void) const {
+	bool planetsGetFlag() const {
 		return core->ssystemFactory->getFlagShow();
 	}
 
@@ -804,7 +804,7 @@ public:
 		core->ssystemFactory->setFlagAxis(b);
 	}
 	//! Get flag for displaying Planets Axis
-	bool planetsGetFlagAxis(void) const {
+	bool planetsGetFlagAxis() const {
 		return core->ssystemFactory->getFlag(BODY_FLAG::F_AXIS);
 	}
 
@@ -814,7 +814,7 @@ public:
 		core->ssystemFactory->setFlagHints(b);
 	}
 	//! Get flag for displaying Planets Hints
-	bool planetsGetFlagHints(void) const {
+	bool planetsGetFlagHints() const {
 		return core->ssystemFactory->getFlag(BODY_FLAG::F_HINTS);
 	}
 
@@ -845,7 +845,7 @@ public:
 	}
 
 	//! Get flag for displaying Planets Orbits
-	bool planetsGetFlagOrbits(void) const {
+	bool planetsGetFlagOrbits() const {
 		return core->ssystemFactory->getFlagPlanetsOrbits();
 	}
 
@@ -855,7 +855,7 @@ public:
 	}
 
 	//! Get flag for displaying Satellites Orbits
-	bool satellitesGetFlagOrbits(void) const {
+	bool satellitesGetFlagOrbits() const {
 		return core->ssystemFactory->getFlagSatellitesOrbits();
 	}
 	//! Set flag for displaying Planets & Satellites Orbits
@@ -929,7 +929,7 @@ public:
 		core->landscape->fogSetFlagShow(b);
 	}
 	//! Get flag for displaying Fog
-	bool fogGetFlag(void) const {
+	bool fogGetFlag() const {
 		return core->landscape->fogGetFlagShow();
 	}
 
@@ -942,12 +942,17 @@ public:
 		core->landscape->setFlagShow(b);
 	}
 	//! Get flag for displaying Landscape
-	bool landscapeGetFlag(void) const {
+	bool landscapeGetFlag() const {
 		return core->landscape->getFlagShow();
 	}
 
 	void rotateLandscape(double rotation) {
 		core->landscape->setRotation(rotation);
+	}
+
+
+	std::string landscapeGetName() {
+	 	return core->landscape->getName();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -990,7 +995,7 @@ public:
 		core->dso3d->setFlagShow(b);
 	}
 	//! Get flag for displaying Nebulae
-	bool nebulaGetFlag(void) const {
+	bool nebulaGetFlag() const {
 		return core->nebulas->getFlagShow();
 	}
 
@@ -999,7 +1004,7 @@ public:
 		core->nebulas->setFlagHints(b);
 	}
 	//! Get flag for displaying Nebulae Hints
-	bool nebulaGetFlagHints(void) const {
+	bool nebulaGetFlagHints() const {
 		return core->nebulas->getFlagHints();
 	}
 
@@ -1008,7 +1013,7 @@ public:
 		core->nebulas->setFlagBright(b);
 	}
 	//! Get flag for displaying Nebulae as brigth
-	bool nebulaGetFlagBright(void) const {
+	bool nebulaGetFlagBright() const {
 		return core->nebulas->getFlagBright();
 	}
 
@@ -1017,17 +1022,17 @@ public:
 		core->nebulas->setMaxMagHints(f);
 	}
 	//! Get maximum magnitude at which nebulae hints are displayed
-	float nebulaGetMaxMagHints(void) const {
+	float nebulaGetMaxMagHints() const {
 		return core->nebulas->getMaxMagHints();
 	}
 
 	//! return the color for the DSO object
-	Vec3f nebulaGetColorLabels(void) const {
+	Vec3f nebulaGetColorLabels() const {
 		return core->nebulas->getLabelColor();
 	}
 
 	//! return the color of the DSO circle
-	Vec3f nebulaGetColorCircle(void) const {
+	Vec3f nebulaGetColorCircle() const {
 		return core->nebulas->getCircleColor();
 	}
 
@@ -1075,11 +1080,6 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Observatory---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-
-	std::string landscapeGetName() {
-	 	return core->landscape->getName();
-	}
-
 	double observatoryGetLatitude() {
 		return core->observatory->getLatitude();
 	}
@@ -1179,7 +1179,7 @@ public:
 		core->setBodyDecor();
 	}
 	//! Get flag for displaying Atmosphere
-	bool atmosphereGetFlag(void) const {
+	bool atmosphereGetFlag() const {
 		return core->bodyDecor->getAtmosphereState();
 	}
 
@@ -1194,7 +1194,7 @@ public:
 	}
 
 	//! Get flag for activating atmospheric refraction correction
-	bool atmosphericRefractionGetFlag(void) const {
+	bool atmosphericRefractionGetFlag() const {
 		return core->FlagAtmosphericRefraction;
 	}
 
