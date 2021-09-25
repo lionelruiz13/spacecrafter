@@ -3,9 +3,14 @@
 //#include "coreModule/coreFont.hpp"
 #include "appModule/fontFactory.hpp"
 #include "appModule/space_date.hpp"
-
+#include "coreModule/oort.hpp"
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skygrid_mgr.hpp"
+#include "coreModule/milkyway.hpp"
+
+#include "coreModule/cardinals.hpp"
+
+#include "coreModule/meteor_mgr.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -72,7 +77,9 @@ double CoreLink::getDateMinute() const
 	return minute;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+// Skyline et Skygrid---------------------------
+////////////////////////////////////////////////////////////////////////////////
 
 void CoreLink::skyLineMgrSetColor(SKYLINE_TYPE name, Vec3f a) {
     core->skyLineMgr->setColor(name, a);
@@ -112,4 +119,101 @@ bool CoreLink::skyLineMgrGetFlagShow(SKYLINE_TYPE name) {
 
 bool CoreLink::skyGridMgrGetFlagShow(SKYGRID_TYPE name) {
 	return core->skyGridMgr->getFlagShow(name);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Oort    ---------------------------
+////////////////////////////////////////////////////////////////////////////////
+bool CoreLink::oortGetFlagShow() const {
+	return core->oort->getFlagShow();
+}
+
+void CoreLink::oortSetFlagShow(bool b) {
+	core->oort->setFlagShow(b);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Milky Way---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::milkyWaySetFlag(bool b) {
+	core->milky_way->setFlagShow(b);
+}
+
+bool CoreLink::milkyWayGetFlag() const {
+	return core->milky_way->getFlagShow();
+}
+
+void CoreLink::milkyWaySetFlagZodiacal(bool b) {
+	core->milky_way->setFlagZodiacal(b);
+}
+
+bool CoreLink::milkyWayGetFlagZodiacal() const {
+	return core->milky_way->getFlagZodiacal();
+}
+
+void CoreLink::milkyWaySetIntensity(float f) {
+	core->milky_way->setIntensity(f);
+}
+
+void CoreLink::milkyWaySetZodiacalIntensity(float f) {
+	core->milky_way->setZodiacalIntensity(f);
+}
+
+float CoreLink::milkyWayGetIntensity() const {
+	return core->milky_way->getIntensity();
+}
+
+void CoreLink::milkyWayRestoreDefault() {
+	core->milky_way->restoreDefaultMilky();
+}
+
+void CoreLink::milkyWaySetDuration(float f) {
+	core->milky_way->setFaderDuration(f*1000);
+}
+
+void CoreLink::milkyWayRestoreIntensity() {
+	core->milky_way->restoreIntensity();
+}
+
+void CoreLink::milkyWayChangeState(const std::string& mdir, float _intensity) {
+	core->milky_way->changeMilkywayState(mdir, _intensity);
+}
+
+void CoreLink::milkyWayChangeStateWithoutIntensity(const std::string& mdir) {
+	core->milky_way->changeMilkywayStateWithoutIntensity(mdir);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Meteors---------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+//! Set Meteor Rate in number per hour
+void CoreLink::setMeteorsRate(int f) {
+	core->meteors->setZHR(f);
+}
+
+//! Get Meteor Rate in number per hour
+int CoreLink::getMeteorsRate() const {
+	return core->meteors->getZHR();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// CardinalsPoints---------------------------
+////////////////////////////////////////////////////////////////////////////////
+//! Set flag for displaying Cardinals Points
+void CoreLink::cardinalsPointsSetFlag(bool b) {
+	core->cardinals_points->setFlagShow(b);
+}
+//! Get flag for displaying Cardinals Points
+bool CoreLink::cardinalsPointsGetFlag() const {
+	return core->cardinals_points->getFlagShow();
+}
+//! Set Cardinals Points color
+void CoreLink::cardinalsPointsSetColor(const Vec3f& v) {
+	core->cardinals_points->setColor(v);
+}
+//! Get Cardinals Points color
+Vec3f CoreLink::cardinalsPointsGetColor() const {
+	return core->cardinals_points->getColor();
 }

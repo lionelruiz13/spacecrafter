@@ -3,15 +3,7 @@
 
 #include <memory>
 #include "coreModule/core.hpp"
-
-//temporaire
-#include "coreModule/cardinals.hpp"
 #include "inGalaxyModule/dso3d.hpp"
-#include "coreModule/meteor_mgr.hpp"
-#include "coreModule/milkyway.hpp"
-#include "coreModule/oort.hpp"
-
-
 #include "coreModule/skydisplay_mgr.hpp"
 
 class CoreLink {
@@ -572,22 +564,13 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 
 	//! Set flag for displaying Cardinals Points
-	void cardinalsPointsSetFlag(bool b) {
-		core->cardinals_points->setFlagShow(b);
-	}
+	void cardinalsPointsSetFlag(bool b);
 	//! Get flag for displaying Cardinals Points
-	bool cardinalsPointsGetFlag(void) const {
-		return core->cardinals_points->getFlagShow();
-	}
-
+	bool cardinalsPointsGetFlag(void) const;
 	//! Set Cardinals Points color
-	void cardinalsPointsSetColor(const Vec3f& v) {
-		core->cardinals_points->setColor(v);
-	}
+	void cardinalsPointsSetColor(const Vec3f& v);
 	//! Get Cardinals Points color
-	Vec3f cardinalsPointsGetColor(void) const {
-		return core->cardinals_points->getColor();
-	}
+	Vec3f cardinalsPointsGetColor(void) const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Constellations---------------------------
@@ -973,57 +956,31 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 
 	//! Set flag for displaying Milky Way
-	void milkyWaySetFlag(bool b) {
-		core->milky_way->setFlagShow(b);
-	}
+	void milkyWaySetFlag(bool b);
 	//! Get flag for displaying Milky Way
-	bool milkyWayGetFlag(void) const {
-		return core->milky_way->getFlagShow();
-	}
-
+	bool milkyWayGetFlag() const;
 	//! Set flag for displaying Zodiacal Light
-	void milkyWaySetFlagZodiacal(bool b) {
-		core->milky_way->setFlagZodiacal(b);
-	}
+	void milkyWaySetFlagZodiacal(bool b);
 	//! Get flag for displaying Zodiacal Light
-	bool milkyWayGetFlagZodiacal(void) const {
-		return core->milky_way->getFlagZodiacal();
-	}
-
+	bool milkyWayGetFlagZodiacal() const;
 	//! Set Milky Way intensity
-	void milkyWaySetIntensity(float f) {
-		core->milky_way->setIntensity(f);
-	}
+	void milkyWaySetIntensity(float f);
 	//! Set Zodiacal intensity
-	void milkyWaySetZodiacalIntensity(float f) {
-		core->milky_way->setZodiacalIntensity(f);
-	}
+	void milkyWaySetZodiacalIntensity(float f);
 	//! Get Milky Way intensity
-	float milkyWayGetIntensity(void) const {
-		return core->milky_way->getIntensity();
-	}
+	float milkyWayGetIntensity() const;
 
-	void milkyWayRestoreDefault() {
-		core->milky_way->restoreDefaultMilky();
-	}
+	void milkyWayRestoreDefault();
 
-	void milkyWaySetDuration(float f) {
-		core->milky_way->setFaderDuration(f*1000);
-	}
-
-	void milkyWayRestoreIntensity() {
-		core->milky_way->restoreIntensity();
-	}
+	void milkyWaySetDuration(float f);
+	
+	void milkyWayRestoreIntensity();
 
 	//! Change Milkyway texture
-	void milkyWayChangeState(const std::string& mdir, float _intensity) {
-		core->milky_way->changeMilkywayState(mdir, _intensity);
-	}
+	void milkyWayChangeState(const std::string& mdir, float _intensity);
 
 	//! Change Milkyway texture without intensity
-	void milkyWayChangeStateWithoutIntensity(const std::string& mdir) {
-		core->milky_way->changeMilkywayStateWithoutIntensity(mdir);
-	}
+	void milkyWayChangeStateWithoutIntensity(const std::string& mdir);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Nebulae---------------------------
@@ -1095,13 +1052,9 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Oort    ---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	bool oortGetFlagShow() {
-		return core->oort->getFlagShow();
-	}
+	bool oortGetFlagShow() const;
 
-	void oortSetFlagShow(bool b) {
-		core->oort->setFlagShow(b);
-	}
+	void oortSetFlagShow(bool b);
 
 	////////////////////////////////////////////////////////////////////////////////
 	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
@@ -1221,15 +1174,13 @@ public:
 		core->navigation->setHeading(core->navigation->getHeading() + f);
 	}
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Meteors---------------------------
+	////////////////////////////////////////////////////////////////////////////////
 	//! Set Meteor Rate in number per hour
-	void setMeteorsRate(int f) {
-		core->meteors->setZHR(f);
-	}
-
+	void setMeteorsRate(int f);
 	//! Get Meteor Rate in number per hour
-	int getMeteorsRate(void) const {
-		return core->meteors->getZHR();
-	}
+	int getMeteorsRate() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere---------------------------
