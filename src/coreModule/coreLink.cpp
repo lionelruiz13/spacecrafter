@@ -9,7 +9,7 @@
 #include "coreModule/milkyway.hpp"
 
 #include "coreModule/cardinals.hpp"
-
+#include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/meteor_mgr.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
@@ -216,4 +216,35 @@ void CoreLink::cardinalsPointsSetColor(const Vec3f& v) {
 //! Get Cardinals Points color
 Vec3f CoreLink::cardinalsPointsGetColor() const {
 	return core->cardinals_points->getColor();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// SkyDisplayMgr    ---------------------------
+////////////////////////////////////////////////////////////////////////////////
+bool CoreLink::skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
+	return core->skyDisplayMgr->getFlagShow(nameObj);
+}
+
+void CoreLink::skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v) {
+	core->skyDisplayMgr->setFlagShow(nameObj,v);
+}
+
+void CoreLink::skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
+	core->skyDisplayMgr->flipFlagShow(nameObj);
+}
+
+void CoreLink::skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
+	core->skyDisplayMgr->setColor(nameObj,v);
+}
+
+void CoreLink::skyDisplayMgrClear(SKYDISPLAY_NAME nameObj) {
+	core->skyDisplayMgr->clear(nameObj);
+}
+
+void CoreLink::skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName) {
+	core->skyDisplayMgr->loadData(nameObj,fileName);
+}
+
+void CoreLink::skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr) {
+	core->skyDisplayMgr->loadString(nameObj,dataStr);
 }

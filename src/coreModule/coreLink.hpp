@@ -4,7 +4,6 @@
 #include <memory>
 #include "coreModule/core.hpp"
 #include "inGalaxyModule/dso3d.hpp"
-#include "coreModule/skydisplay_mgr.hpp"
 
 class CoreLink {
 public:
@@ -1057,33 +1056,21 @@ public:
 	void oortSetFlagShow(bool b);
 
 	////////////////////////////////////////////////////////////////////////////////
-	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj) {
-		return core->skyDisplayMgr->getFlagShow(nameObj);
-	}
+	// SkyDisplayMgr    ---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj);
+	
+	void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v);
+	
+	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj);
+	
+	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v);
 
-	void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v) {
-		core->skyDisplayMgr->setFlagShow(nameObj,v);
-	}
+	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj);
 
-	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj) {
-		core->skyDisplayMgr->flipFlagShow(nameObj);
-	}
+	void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName);
 
-	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v) {
-		core->skyDisplayMgr->setColor(nameObj,v);
-	}
-
-	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj) {
-		core->skyDisplayMgr->clear(nameObj);
-	}
-
-	void skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string& fileName) {
-		core->skyDisplayMgr->loadData(nameObj,fileName);
-	}
-
-	void skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr) {
-		core->skyDisplayMgr->loadString(nameObj,dataStr);
-	}
+	void skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Observatory---------------------------
