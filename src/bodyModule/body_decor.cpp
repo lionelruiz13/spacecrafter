@@ -3,7 +3,7 @@
 #include "coreModule/milkyway.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 
-BodyDecor::BodyDecor(std::shared_ptr<MilkyWay> _milky, Atmosphere* _atmosphere)
+BodyDecor::BodyDecor(std::shared_ptr<MilkyWay> _milky, std::shared_ptr<Atmosphere> _atmosphere)
 {
 	milky = _milky;
 	atmosphere = _atmosphere;

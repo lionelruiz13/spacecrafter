@@ -7,6 +7,7 @@
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skygrid_mgr.hpp"
 #include "coreModule/milkyway.hpp"
+#include "atmosphereModule/atmosphere.hpp"
 
 #include "coreModule/cardinals.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
@@ -353,4 +354,34 @@ void CoreLink::illuminateChangeTex(const std::string& _fileName)	{
 
 void CoreLink::illuminateRemoveTex()	{
 	core->illuminates->removeTex();
+}
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// Atmosphere---------------------------
+	////////////////////////////////////////////////////////////////////////////////
+
+//! Set flag for displaying Atmosphere
+void CoreLink::atmosphereSetFlag(bool b) {
+	core->bodyDecor->setAtmosphereState(b);
+	core->setBodyDecor();
+}
+//! Get flag for displaying Atmosphere
+bool CoreLink::atmosphereGetFlag() const {
+	return core->bodyDecor->getAtmosphereState();
+}
+
+//! Set atmosphere fade duration in s
+void CoreLink::atmosphereSetFadeDuration(float f) {
+	core->atmosphere->setFaderDuration(f);
+}
+
+//! Set flag for activating atmospheric refraction correction
+void CoreLink::atmosphericRefractionSetFlag(bool b) {
+	core->FlagAtmosphericRefraction = b;
+}
+
+//! Get flag for activating atmospheric refraction correction
+bool CoreLink::atmosphericRefractionGetFlag() const {
+	return core->FlagAtmosphericRefraction;
 }

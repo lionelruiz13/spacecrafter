@@ -1120,32 +1120,20 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-
 	//! Set flag for displaying Atmosphere
-	void atmosphereSetFlag(bool b) {
-		core->bodyDecor->setAtmosphereState(b);
-		core->setBodyDecor();
-	}
+	void atmosphereSetFlag(bool b);
 	//! Get flag for displaying Atmosphere
-	bool atmosphereGetFlag() const {
-		return core->bodyDecor->getAtmosphereState();
-	}
-
+	bool atmosphereGetFlag() const;
 	//! Set atmosphere fade duration in s
-	void atmosphereSetFadeDuration(float f) {
-		core->atmosphere->setFaderDuration(f);
-	}
-
+	void atmosphereSetFadeDuration(float f);
 	//! Set flag for activating atmospheric refraction correction
-	void atmosphericRefractionSetFlag(bool b) {
-		core->FlagAtmosphericRefraction = b;
-	}
-
+	void atmosphericRefractionSetFlag(bool b);
 	//! Get flag for activating atmospheric refraction correction
-	bool atmosphericRefractionGetFlag() const {
-		return core->FlagAtmosphericRefraction;
-	}
+	bool atmosphericRefractionGetFlag() const;
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Navigation -------------
+	////////////////////////////////////////////////////////////////////////////////
 	double getViewOffset() {
 		return core->navigation->getViewOffset();
 	}

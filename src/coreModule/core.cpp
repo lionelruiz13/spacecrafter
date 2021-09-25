@@ -56,6 +56,7 @@
 #include "coreModule/milkyway.hpp"
 #include "coreModule/cardinals.hpp"
 #include "coreModule/illuminate_mgr.hpp"
+#include "atmosphereModule/atmosphere.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -86,7 +87,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 
 	ubo_cam = new UBOCam(context, "cam_block");
 	tone_converter = new ToneReproductor();
-	atmosphere = new Atmosphere(context);
+	atmosphere = std::make_shared<Atmosphere>(context);
 	timeMgr = new TimeMgr();
 	navigation = new Navigator();
 	observatory = _observatory;
@@ -205,7 +206,7 @@ Core::~Core()
 	delete timeMgr;
 	// delete meteors;
 	meteors = nullptr;
-	delete atmosphere;
+	//delete atmosphere;
 	delete tone_converter;
 	// s_font::deleteShader();
 	//delete ssystem;
@@ -1498,6 +1499,13 @@ void Core::setHomePlanet(const std::string &planet)
 		// il faut obtenir ici la planete sur laquelle on se trouve pour accéder au champ modelAtmosphere qui se trouve dans AtmosphereParams du Body en question
 		atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
 	}
+}
+
+void Core::setLightPollutionLimitingMagnitude(float mag) {
+	lightPollutionLimitingMagnitude = mag;
+	float ln = log(mag);
+	float lum = 30.0842967491175 -19.9408790405749*ln +2.12969160094949*ln*ln - .2206;
+	atmosphere->setLightPollutionLuminance(lum);
 }
 
 

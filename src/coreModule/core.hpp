@@ -28,7 +28,7 @@
 
 #include <string>
 #include "bodyModule/body_common.hpp"
-#include "atmosphereModule/atmosphere.hpp"
+//#include "atmosphereModule/atmosphere.hpp"
 #include "bodyModule/body_decor.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "bodyModule/solarsystem.hpp"
@@ -94,6 +94,7 @@ class Cardinals;
 class MeteorMgr;
 class MilkyWay;
 class IlluminateMgr;
+class Atmosphere;
 
 //!  @brief Main class for application core processing.
 //!
@@ -414,12 +415,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere
 	//! Set light pollution limiting magnitude (naked eye)
-	void setLightPollutionLimitingMagnitude(float mag) {
-		lightPollutionLimitingMagnitude = mag;
-		float ln = log(mag);
-		float lum = 30.0842967491175 -19.9408790405749*ln +2.12969160094949*ln*ln - .2206;
-		atmosphere->setLightPollutionLuminance(lum);
-	}
+	void setLightPollutionLimitingMagnitude(float mag);
 	//! Get light pollution limiting magnitude
 	float getLightPollutionLimitingMagnitude(void) const {
 		return lightPollutionLimitingMagnitude;
@@ -518,7 +514,7 @@ private:
 	//SolarSystem* ssystem;				// Manage the solar system
 	SSystemFactory* ssystemFactory;
 
-	Atmosphere * atmosphere;			// Atmosphere
+	std::shared_ptr<Atmosphere> atmosphere;			// Atmosphere
 
 	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! gestionnaire des grilles
 	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! gestionnaire de lignes
