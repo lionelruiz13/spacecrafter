@@ -12,6 +12,8 @@
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/meteor_mgr.hpp"
 
+#include "coreModule/starLines.hpp"
+
 bool CoreLink::cameraSave(const std::string& name)
 {
 	return core->ssystemFactory->cameraSave(AppSettings::Instance()->getUserDir() + "anchors/" + name);
@@ -247,4 +249,58 @@ void CoreLink::skyDisplayMgrLoadData(SKYDISPLAY_NAME nameObj, const std::string&
 
 void CoreLink::skyDisplayMgrLoadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr) {
 	core->skyDisplayMgr->loadString(nameObj,dataStr);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// StarLines---------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+//! Set flag for displaying
+void CoreLink::starLinesSetFlag(bool b) {
+	core->starLines->setFlagShow(b);
+}
+
+void CoreLink::starLinesSelectedSetFlag(bool b) {
+	core->starLines->setFlagSelected(b);
+}
+
+bool CoreLink::starLinesSelectedGetFlag() const {
+	return core->starLines->getFlagSelected();
+}
+
+//! Get flag for displaying
+bool CoreLink::starLinesGetFlag() const {
+	return core->starLines->getFlagShow();
+}
+
+//! Vide tous les tampons de tracé
+void CoreLink::starLinesDrop() const {
+	core->starLines->drop();
+}
+
+//! Charge un ensemble d'asterismes d'un fichier
+void CoreLink::starLinesLoadData(const std::string &fileName) {
+	core->starLines->loadData(fileName);
+}
+
+//! Charge un asterisme à partir d'une ligne
+void CoreLink::starLinesLoadAsterism(std::string record) const {
+	core->starLines->loadStringData(record);
+}
+
+//! supprime le catalogue complet des asterismes
+void CoreLink::starLinesClear() {
+	core->starLines->clear();
+}
+
+void CoreLink::starLinesSaveCat(const std::string &fileName, bool binaryMode){
+	core->starLines->saveCat(fileName, binaryMode);
+}
+
+void CoreLink::starLinesLoadCat(const std::string &fileName, bool binaryMode){
+	core->starLines->loadCat(fileName, binaryMode);
+}
+
+void CoreLink::starLinesLoadHipStar(int name, Vec3f position) {
+	core->starLines->loadHipStar(name, position);
 }

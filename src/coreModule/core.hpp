@@ -51,7 +51,7 @@
 //#include "coreModule/skyline.hpp"
 //#include "coreModule/skydisplay_mgr.hpp"
 //#include "coreModule/skyDisplay.hpp"
-#include "coreModule/starLines.hpp"
+//#include "coreModule/starLines.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
 #include "inGalaxyModule/cloudNavigator.hpp"
 #include "inGalaxyModule/dsoNavigator.hpp"
@@ -525,8 +525,8 @@ private:
 	std::unique_ptr<Oort> oort;			//! oort cloud
 	std::unique_ptr<Dso3d> dso3d;		//! dso catalog for in_galaxy
 	std::unique_ptr<Tully> tully;		//! tully galaxies
-	std::unique_ptr<Cardinals> cardinals_points;		// Cardinals points
-	std::shared_ptr<MilkyWay> milky_way;				// Our galaxy
+	std::unique_ptr<Cardinals> cardinals_points;	// Cardinals points
+	std::shared_ptr<MilkyWay> milky_way;			// Our galaxy
 	std::unique_ptr<MeteorMgr> meteors;				// Manage meteor showers
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
@@ -535,7 +535,7 @@ private:
 	CloudNavigator* cloudNav; 			// draw galaxy gaz clouds
 	CloudNavigator* universeCloudNav; 	// draw galaxy gaz clouds when in universe
 	DsoNavigator* dsoNav; 				// draw 3d dso when in galaxy
-	StarLines* starLines;				// permet de tracer des lignes dans la galaxie
+	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D
 	UBOCam* ubo_cam;
 	GeodesicGrid* geodesic_grid;

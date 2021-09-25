@@ -96,7 +96,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	cloudNav = new CloudNavigator(context);
 	universeCloudNav = new CloudNavigator(context);
 	dsoNav = new DsoNavigator(context, "dso3d-color.png");
-	starLines = new StarLines(context);
+	starLines = std::make_unique<StarLines>(context);
 	ojmMgr = new OjmMgr(context);
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
@@ -225,7 +225,7 @@ Core::~Core()
 	delete cloudNav;
 	delete universeCloudNav;
 	delete dsoNav;
-	delete starLines;
+	//delete starLines;
 }
 
 void Core::setFlagNav(bool a)

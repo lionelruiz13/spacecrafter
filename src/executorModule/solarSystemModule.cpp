@@ -35,6 +35,7 @@
 #include "coreModule/skygrid_mgr.hpp"
 #include "coreModule/skyline_mgr.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
+#include "coreModule/starLines.hpp"
 
 void SolarSystemModule::onEnter()
 {    

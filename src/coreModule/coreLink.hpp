@@ -8,63 +8,34 @@
 class CoreLink {
 public:
 
+	static void DateTimeFromJulianDay(double jd, int *year, int *month, int *day, int *hour, int *minute, double *second);
+
 	////////////////////////////////////////////////////////////////////////////////
 	// StarLines---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-
-	static void DateTimeFromJulianDay(double jd, int *year, int *month, int *day, int *hour, int *minute, double *second);
-
 	//! Set flag for displaying
-	void starLinesSetFlag(bool b) {
-		core->starLines->setFlagShow(b);
-	}
+	void starLinesSetFlag(bool b);
 
-	void starLinesSelectedSetFlag(bool b) {
-		core->starLines->setFlagSelected(b);
-	}
+	void starLinesSelectedSetFlag(bool b);
 
-	bool starLinesSelectedGetFlag() const {
-		return core->starLines->getFlagSelected();
-	}
-
+	bool starLinesSelectedGetFlag() const;
 
 	//! Get flag for displaying
-	bool starLinesGetFlag() const {
-		return core->starLines->getFlagShow();
-	}
-
+	bool starLinesGetFlag() const;
 	//! Vide tous les tampons de tracé
-	void starLinesDrop() const {
-		core->starLines->drop();
-	}
-
+	void starLinesDrop() const;
 	//! Charge un ensemble d'asterismes d'un fichier
-	void starLinesLoadData(const std::string &fileName) {
-		core->starLines->loadData(fileName);
-	}
-
+	void starLinesLoadData(const std::string &fileName);
 	//! Charge un asterisme à partir d'une ligne
-	void starLinesLoadAsterism(std::string record) const {
-		core->starLines->loadStringData(record);
-	}
-
+	void starLinesLoadAsterism(std::string record) const;
 	//! supprime le catalogue complet des asterismes
-	void starLinesClear() {
-		core->starLines->clear();
-	}
+	void starLinesClear();
 
-	void starLinesSaveCat(const std::string &fileName, bool binaryMode){
-		core->starLines->saveCat(fileName, binaryMode);
-	}
+	void starLinesSaveCat(const std::string &fileName, bool binaryMode);
 
+	void starLinesLoadCat(const std::string &fileName, bool binaryMode);
 
-	void starLinesLoadCat(const std::string &fileName, bool binaryMode){
-		core->starLines->loadCat(fileName, binaryMode);
-	}
-
-	void starLinesLoadHipStar(int name, Vec3f position) {
-		core->starLines->loadHipStar(name, position);
-	}
+	void starLinesLoadHipStar(int name, Vec3f position);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Skyline et Skygrid---------------------------
