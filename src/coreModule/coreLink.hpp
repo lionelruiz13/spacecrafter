@@ -8,7 +8,7 @@
 class CoreLink {
 public:
 
-	static void DateTimeFromJulianDay(double jd, int *year, int *month, int *day, int *hour, int *minute, double *second);
+//	static void DateTimeFromJulianDay(double jd, int *year, int *month, int *day, int *hour, int *minute, double *second);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// StarLines---------------------------
