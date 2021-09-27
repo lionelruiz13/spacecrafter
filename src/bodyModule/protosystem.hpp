@@ -63,7 +63,7 @@ public:
 	}
 
 	//! Return the matching planet pointer if exists or nullptr
-	Body* searchByEnglishName(const std::string &planetEnglishName) const;
+	std::shared_ptr<Body> searchByEnglishName(const std::string &planetEnglishName) const;
 
 	//removes a body and its satellites
 	bool removeBody(const std::string &name);
@@ -145,7 +145,7 @@ public:
 		return anchorManager;
 	}
 
-	Body * getCenterObject() {
+	std::shared_ptr<Body> getCenterObject() {
 		return centerObject;
 	}
 	
@@ -155,7 +155,7 @@ public:
 	void initialSolarSystemBodies();
 
 	struct BodyContainer {
-		std::unique_ptr<Body> body=nullptr;
+		std::shared_ptr<Body> body=nullptr;
 		std::string englishName;  // for convenience
 		bool isDeleteable = false;
 		bool isHidden = false;
@@ -174,11 +174,11 @@ protected:
 
 	ThreadContext *context;
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
-	Body* bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
+	std::shared_ptr<Body> bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 	OrbitCreator * orbitCreator = nullptr;
 	AnchorManager * anchorManager = nullptr;
 	Vec3i ringsInit;
-	Body * centerObject = nullptr;
+	std::shared_ptr<Body> centerObject = nullptr;
 
 	// Master settings
 	bool flagAxis= false;

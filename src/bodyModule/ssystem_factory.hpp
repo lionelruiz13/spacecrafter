@@ -370,7 +370,7 @@ public:
     }
 
     //! Return the matching planet pointer if exists or nullptr
-	Body* searchByEnglishName(const std::string &planetEnglishName) const {
+	std::shared_ptr<Body> searchByEnglishName(const std::string &planetEnglishName) const {
         return currentSystem->searchByEnglishName(planetEnglishName);
     }
 

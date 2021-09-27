@@ -34,7 +34,7 @@ SolarSystemScale::~SolarSystemScale(){};
 
 void SolarSystemScale::setPlanetSizeScale(const std::string &name, float s)
 {
-	Body * body = ssystem->searchByEnglishName(name);
+	std::shared_ptr<Body> body = ssystem->searchByEnglishName(name);
 
 	if(body != nullptr){
 		body->setSphereScale(s);
@@ -44,7 +44,7 @@ void SolarSystemScale::setPlanetSizeScale(const std::string &name, float s)
 float SolarSystemScale::getPlanetSizeScale(const std::string &name)
 {
 
-	Body * body = ssystem->searchByEnglishName(name);
+	std::shared_ptr<Body> body = ssystem->searchByEnglishName(name);
 
 	return body == nullptr ? 1.0 : body->getSphereScale();
 }

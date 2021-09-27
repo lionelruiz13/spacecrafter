@@ -94,10 +94,10 @@ AnchorPoint * AnchorPointBodyCreator::handle(stringHash_t params)const
 		}
 	}
 
-	Body * body = ssystem->searchByEnglishName(params["body_name"]);
+	std::shared_ptr<Body> body = ssystem->searchByEnglishName(params["body_name"]);
 
 	if(body != nullptr)
-		return new AnchorPointBody(body);
+		return new AnchorPointBody(body.get());
 
 	cLog::get()->write("AnchorPointBodyCreator::handle the given body was not found in solar system");
 	return nullptr;
@@ -150,10 +150,10 @@ AnchorPoint * AnchorPointOrbitCreator::handle(stringHash_t params)const
 		                                  stod(params["orbit_center_z"])));
 	}
 	else {
-		Body * body = ssystem->searchByEnglishName(params["parent"]);
+		std::shared_ptr<Body> body = ssystem->searchByEnglishName(params["parent"]);
 
 		if(body != nullptr)
-			return new AnchorPointOrbit(orbit, timeMgr, body);
+			return new AnchorPointOrbit(orbit, timeMgr, body.get());
 		else {
 			cLog::get()->write("AnchorPointOrbitCreator:: could not find given parent : " + params["parent"]);
 			return nullptr;

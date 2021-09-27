@@ -58,7 +58,7 @@ public:
 
 	//! Set selected planet by english name or "" to select none
 	void setSelected(const std::string& englishName) {
-		setSelected(ssystem->searchByEnglishName(englishName));
+		setSelected(ssystem->searchByEnglishName(englishName).get());
 	}
 
 	//! set flag for Activate/Deactivate planets trails display

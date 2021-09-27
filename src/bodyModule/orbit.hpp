@@ -325,7 +325,7 @@ private:
 class BarycenterOrbit : public Orbit {
 public:
 	BarycenterOrbit() = delete;
-	BarycenterOrbit(Body * bodyA, Body * bodyB, double a, double b);
+	BarycenterOrbit(std::shared_ptr<Body> bodyA, std::shared_ptr<Body> bodyB, double a, double b);
 	virtual ~BarycenterOrbit() { }
 
 	void positionAtTimevInVSOP87Coordinates(double, double, double*) const;
@@ -337,7 +337,7 @@ public:
 	std::string saveOrbit() const;
 
 private:
-	Body * bodyA, *bodyB;
+	std::shared_ptr<Body> bodyA, bodyB;
 	double a,b;
 };
 

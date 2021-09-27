@@ -922,7 +922,7 @@ void linearOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, doub
 	v[2]=(JD0-t_start)/t_duration *posInitial[2] + (1-(JD0-t_start)/t_duration)* posFinal[2];
 }
 
-BarycenterOrbit::BarycenterOrbit(Body * _bodyA, Body * _bodyB, double _a, double _b)
+BarycenterOrbit::BarycenterOrbit(std::shared_ptr<Body> _bodyA, std::shared_ptr<Body> _bodyB, double _a, double _b)
 {
 	bodyA = _bodyA;
 	bodyB = _bodyB;

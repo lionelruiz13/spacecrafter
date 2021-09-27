@@ -42,7 +42,7 @@ SolarSystemTex::~SolarSystemTex()
 
 void SolarSystemTex::switchPlanetTexMap(const std::string &name, bool a)
 {
-	Body * body = ssystem->searchByEnglishName(name);
+	std::shared_ptr<Body> body = ssystem->searchByEnglishName(name);
 	if(body != nullptr){
 		body->switchMapSkin(a);
 	}
@@ -50,7 +50,7 @@ void SolarSystemTex::switchPlanetTexMap(const std::string &name, bool a)
 
 bool SolarSystemTex::getSwitchPlanetTexMap(const std::string &name)
 {
-	Body * body = ssystem->searchByEnglishName(name);
+	std::shared_ptr<Body> body = ssystem->searchByEnglishName(name);
 	if(body != nullptr){
 		return body->getSwitchMapSkin();
 	}
@@ -59,7 +59,7 @@ bool SolarSystemTex::getSwitchPlanetTexMap(const std::string &name)
 
 void SolarSystemTex::createTexSkin(const std::string &name, const std::string &texName)
 {
-	Body * body = ssystem->searchByEnglishName(name);
+	std::shared_ptr<Body> body = ssystem->searchByEnglishName(name);
 	if(body != nullptr){
 		body->createTexSkin(texName);
 	}

@@ -43,7 +43,7 @@ void SolarSystemColor::setBodyColor(const std::string &englishName, const std::s
     }
 	else{
 
-		Body * body = ssystem->searchByEnglishName(englishName);
+		std::shared_ptr<Body> body = ssystem->searchByEnglishName(englishName);
 
 		if(body != nullptr){
 			body->setColor(colorName, c);
@@ -53,7 +53,7 @@ void SolarSystemColor::setBodyColor(const std::string &englishName, const std::s
 
 const Vec3f SolarSystemColor::getBodyColor(const std::string &englishName, const std::string& colorName) const
 {
-	Body * body = ssystem->searchByEnglishName(englishName);
+	std::shared_ptr<Body> body = ssystem->searchByEnglishName(englishName);
 
 	if(body != nullptr){
 		return body->getColor(colorName);

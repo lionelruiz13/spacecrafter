@@ -40,7 +40,7 @@ std::unique_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
 		}
 	}
 
-	Body * parent = psystem->searchByEnglishName(params["parent"]);
+	std::shared_ptr<Body> parent = psystem->searchByEnglishName(params["parent"]);
 
 	double parent_rot_obliquity = 0.0;
 	double parent_rot_asc_node = 0.0;
@@ -115,7 +115,7 @@ std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 		}
 	}
 
-	Body * parent = psystem->searchByEnglishName(params["parent"]);
+	std::shared_ptr<Body> parent = psystem->searchByEnglishName(params["parent"]);
 
 	double parent_rot_obliquity = 0.0;
 	double parent_rot_asc_node = 0.0;
@@ -275,8 +275,8 @@ std::unique_ptr<Orbit> OrbitCreatorBary::handle(stringHash_t params) const
 		return nullptr;
 	}
 
-	Body * bodyA = psystem->searchByEnglishName(params["body_A"]);
-	Body * bodyB = psystem->searchByEnglishName(params["body_B"]);
+	std::shared_ptr<Body> bodyA = psystem->searchByEnglishName(params["body_A"]);
+	std::shared_ptr<Body> bodyB = psystem->searchByEnglishName(params["body_B"]);
 
 	if(bodyA == nullptr || bodyB == nullptr) {
 		cLog::get()->write("OrbitCreatorBary::couldn't find one of the bodies");

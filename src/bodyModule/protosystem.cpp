@@ -113,13 +113,13 @@ void ProtoSystem::load(const std::string& planetfile)
 	cLog::get()->mark();
 }
 
-Body* ProtoSystem::searchByEnglishName(const std::string &planetEnglishName) const
+std::shared_ptr<Body> ProtoSystem::searchByEnglishName(const std::string &planetEnglishName) const
 {
 	//printf("SolarSystem::searchByEnglishName(\"%s\"): start\n", planetEnglishName.c_str());
 	// side effect - bad?
 	//	transform(planetEnglishName.begin(), planetEnglishName.end(), planetEnglishName.begin(), ::tolower);
 	if(systemBodies.count(planetEnglishName) != 0){
-		return systemBodies.find(planetEnglishName)->second->body.get();
+		return systemBodies.find(planetEnglishName)->second->body;
 	}
 	else{
 		return nullptr;
@@ -189,7 +189,7 @@ bool ProtoSystem::removeBodyNoSatellite(const std::string &name)
 		bc->body->getParent()->removeSatellite(bc->body.get());
 	}
 	// fix crash when delete body used from body_trace
-	if (bc->body.get() == bodyTrace )
+	if (bc->body == bodyTrace )
 		bodyTrace = getCenterObject();
 
 	//remove from containers :
@@ -537,7 +537,7 @@ std::unique_ptr<SSystemIteratorVector> ProtoSystem::createIteratorVector()
 
 void ProtoSystem::bodyTraceBodyChange(const std::string &bodyName)
 {
-	Body * body = searchByEnglishName(bodyName);
+	std::shared_ptr<Body> body = searchByEnglishName(bodyName);
 
 	if(body != nullptr){
 		bodyTrace = body;
@@ -698,7 +698,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 	// Create the Body and add it to the list
 	// p est un pointeur utilisé pour l'objet qui sera au final intégré dans la liste des astres que gère body_mgr
-	std::unique_ptr<Body> p = nullptr;
+	std::shared_ptr<Body> p = nullptr;
 	ObjL* currentOBJ = nullptr;
 
 	std::string modelName = param["model_name"];
@@ -723,7 +723,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 	switch (typePlanet) {
 		case CENTER: {
-			std::unique_ptr<Center> p_center = std::make_unique<Center>(parent,
+			std::shared_ptr<Center> p_center = std::make_shared<Center>(parent,
 			                englishName,
 			                Utility::strToBool(param["halo"]),
 			                Utility::strToDouble(param["radius"])/AU,
@@ -744,13 +744,13 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				p_center->setHaloSize(Utility::strToDouble(param["big_halo_size"], 50.f));
 			}
 
-			bodyTrace = p_center.get();
-			centerObject = p_center.get();
+			bodyTrace = p_center;
+			centerObject = p_center;
 			p = std::move(p_center);
 		}
 		break;
 		case SUN : {
-			std::unique_ptr<Sun> p_sun = std::make_unique<Sun>(parent,
+			std::shared_ptr<Sun> p_sun = std::make_shared<Sun>(parent,
 			                englishName,
 			                Utility::strToBool(param["halo"]),
 			                Utility::strToDouble(param["radius"])/AU,
@@ -772,8 +772,8 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			}
 
 			if (!parent) {
-				centerObject = p_sun.get();
-				bodyTrace = p_sun.get();
+				centerObject = p_sun;
+				bodyTrace = p_sun;
 			}
 			p = std::move(p_sun);
 		}

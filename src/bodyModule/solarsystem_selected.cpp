@@ -57,7 +57,7 @@ void SolarSystemSelected::setFlagTrails(bool b)
 {
 	flagTrails = b;
 
-	if (!b || !selected || selected == Object(ssystem->getCenterObject())) {
+	if (!b || !selected || selected == Object(ssystem->getCenterObject().get())) {
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			it->current()->second->body->setFlagTrail(b);
 		}
@@ -93,7 +93,7 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 {
 	flagPlanetsOrbits = b;
 
-	if (!b || !selected || selected == Object(ssystem->getCenterObject())) {
+	if (!b || !selected || selected == Object(ssystem->getCenterObject().get())) {
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			//if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() =="Sun")
 			if (it->current()->second->body->getTurnAround() == tACenter)
@@ -129,7 +129,7 @@ void SolarSystemSelected::setFlagSatellitesOrbits(bool b)
 {
 	flagSatellitesOrbits = b;
 
-	if (!b || !selected || selected == Object(ssystem->getCenterObject())) {
+	if (!b || !selected || selected == Object(ssystem->getCenterObject().get())) {
 		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
 			//if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() !="Sun"){
 			if (it->current()->second->body->getTurnAround() == tABody) {
