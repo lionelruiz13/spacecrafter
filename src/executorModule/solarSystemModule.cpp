@@ -64,17 +64,17 @@ void SolarSystemModule::update(int delta_time)
 		return;
 
 	// Update the position of observation and time etc...
-	core->observatory->update(delta_time);
+	observer->update(delta_time);
 	core->timeMgr->update(delta_time);
 	core->navigation->update(delta_time);
 
 	// Position of sun and all the satellites (ie planets)
-	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), core->observatory.get());
+	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
 
 	core->ssystemFactory->updateAnchorManager();
 
 	// Transform matrices between coordinates systems
-	core->navigation->updateTransformMatrices(core->observatory.get(), core->timeMgr->getJDay());
+	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
 	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view
@@ -160,15 +160,15 @@ void SolarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
-	core->oort->draw(core->observatory->getAltitude(), core->projection, core->navigation);
+	core->oort->draw(observer->getAltitude(), core->projection, core->navigation);
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->projection);
-	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr, core->observatory->getAltitude());
+	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr, observer->getAltitude());
 	core->skyGridMgr->draw(core->projection);
-	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr, core->observatory.get());
+	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr, observer);
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
-	core->ssystemFactory->draw(core->projection, core->navigation, core->observatory.get(), core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
+	core->ssystemFactory->draw(core->projection, core->navigation, observer, core->tone_converter, core->bodyDecor->canDrawBody() /*aboveHomePlanet*/ );
 
 	// Draw the pointer on the currently selected object
 	// TODO: this would be improved if pointer was drawn at same time as object for correct depth in scene
@@ -183,14 +183,14 @@ void SolarSystemModule::draw(int delta_time)
 		core->meteors->draw(core->projection, core->navigation);
 
 	s_font::nextPrint(false);
-	core->atmosphere->draw(core->projection, core->observatory->getHomePlanetEnglishName());
+	core->atmosphere->draw(core->projection, observer->getHomePlanetEnglishName());
 
 	// Draw the landscape
 	if (core->bodyDecor->canDrawLandscape()) {
 		core->landscape->draw(core->projection, core->navigation);
 	}
 
-	core->cardinals_points->draw(core->projection, core->observatory->getLatitude());
+	core->cardinals_points->draw(core->projection, observer->getLatitude());
 }
 
 bool SolarSystemModule::testValidAltitude(double altitude)
@@ -211,13 +211,13 @@ void SolarSystemModule::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
 {
 	core->atmosphere->computeColor(core->timeMgr->getJDay(), sunPos, moonPos,
 	                          core->ssystemFactory->getMoon()->get_phase(core->ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
-	                          core->tone_converter, core->projection, core->observatory->getLatitude(), core->observatory->getAltitude(),
+	                          core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
 	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
 }
 
 void SolarSystemModule::hipStarMgrPreDraw()
 {
-	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr,core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr,observer->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
 }
 
 void SolarSystemModule::ssystemComputePreDraw()

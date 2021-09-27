@@ -56,10 +56,10 @@ void InUniverseModule::onExit()
 void InUniverseModule::update(int delta_time)
 {
 	// Update the position of observation and time etc...
-	core->observatory->update(delta_time);
+	observer->update(delta_time);
 	core->navigation->update(delta_time);
 	// Transform matrices between coordinates systems
-	core->navigation->updateTransformMatrices(core->observatory.get(), core->timeMgr->getJDay());
+	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
 	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view
@@ -95,7 +95,7 @@ void InUniverseModule::draw(int delta_time)
 	core->media->drawVR360(core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	core->universeCloudNav->draw(core->navigation, core->projection);
-	core->tully->draw(core->observatory->getAltitude(), core->projection, core->navigation);
+	core->tully->draw(observer->getAltitude(), core->projection, core->navigation);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	//core->postDraw();
 }

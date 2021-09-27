@@ -68,17 +68,17 @@ void InGalaxyModule::onExit()
 void InGalaxyModule::update(int delta_time)
 {
 		// Update the position of observation and time etc...
-	core->observatory->update(delta_time);
+	observer->update(delta_time);
 	core->timeMgr->update(delta_time);
 	core->navigation->update(delta_time);
 
 	// Position of sun and all the satellites (ie planets)
-	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), core->observatory.get());
+	core->ssystemFactory->computePositions(core->timeMgr->getJDay(), observer);
 
 	core->ssystemFactory->updateAnchorManager();
 
 	// Transform matrices between coordinates systems
-	core->navigation->updateTransformMatrices(core->observatory.get(), core->timeMgr->getJDay());
+	core->navigation->updateTransformMatrices(observer, core->timeMgr->getJDay());
 	// Direction of vision
 	core->navigation->updateVisionVector(delta_time, core->selected_object);
 	// Field of view
@@ -126,7 +126,7 @@ void InGalaxyModule::draw(int delta_time)
 	core->starLines->draw(core->navigation);
 
 	// transparence.
-	core->dso3d->draw(core->observatory->getAltitude(), core->projection, core->navigation);
+	core->dso3d->draw(observer->getAltitude(), core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
 	core->starNav->draw(core->navigation, core->projection);
 	core->dsoNav->draw(core->navigation, core->projection);
