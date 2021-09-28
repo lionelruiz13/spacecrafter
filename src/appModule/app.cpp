@@ -60,6 +60,7 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
+#include "coreModule/time_mgr.hpp"
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"

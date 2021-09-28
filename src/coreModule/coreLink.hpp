@@ -1,3 +1,26 @@
+/*
+ * Copyright (C) 2014-2021 of the LSS Team & Association Sirius
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * Spacecrafter is a free open project of of LSS team
+ * See the TRADEMARKS file for free open project usage requirements.
+ *
+ */
+
+
 #ifndef CORELINK_HPP
 #define CORELINK_HPP
 
@@ -65,60 +88,31 @@ public:
 	// Time---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! Set time speed in JDay/sec
-	void timeSetSpeed(double ts) {
-		core->timeMgr->setTimeSpeed(ts);
-	}
+	void timeSetSpeed(double ts);
 
-	void timeChangeSpeed(double ts, double duration) {
-		core->timeMgr->changeTimeSpeed(ts, duration);
-	}
-
+	void timeChangeSpeed(double ts, double duration);
 	//! Get time speed in JDay/sec
-	double timeGetSpeed() const {
-		return core->timeMgr->getTimeSpeed();
-	}
+	double timeGetSpeed() const;
 
-	void timeLoadSpeed() const {
-		return core->timeMgr->loadTimeSpeed();
-	}
-	void timeSaveSpeed() const  {
-		core->timeMgr-> saveTimeSpeed();
-	}
+	void timeLoadSpeed() const;
 
+	void timeSaveSpeed() const;
 	//! Set the current date in Julian Day
-	void setJDay(double JD) {
-		core->timeMgr->setJDay(JD);
-	}
+	void setJDay(double JD);
 	//! Get the current date in Julian Day
-	double getJDay() const {
-		return core->timeMgr->getJDay();
-	}
-
-	bool timeGetFlagPause() const {
-		return core->timeMgr->getTimePause();
-	}
-
-	void timeSetFlagPause(bool _value) const {
-		core->timeMgr->setTimePause(_value);
-	}
+	double getJDay() const;
+	bool timeGetFlagPause() const;
+	void timeSetFlagPause(bool _value) const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// dateSun---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! return the JD time when the sun go down
-	double dateSunRise(double _jd, double _longitude, double _latitude) {
-		return core->timeMgr->dateSunRise(_jd,_longitude, _latitude);
-	}
-
+	double dateSunRise(double _jd, double _longitude, double _latitude);
 	//! return the JD time when the sun set up
-	double dateSunSet(double _jd, double _longitude, double _latitude) {
-		return core->timeMgr->dateSunSet(_jd,_longitude, _latitude);
-	}
-
+	double dateSunSet(double _jd, double _longitude, double _latitude);
 	//! return the JD time when the sun cross the meridian
-	double dateSunMeridian(double _jd, double _longitude, double _latitude) {
-		return core->timeMgr->dateSunMeridian(_jd,_longitude, _latitude);
-	}
+	double dateSunMeridian(double _jd, double _longitude, double _latitude);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Tully---------------------------
@@ -323,24 +317,11 @@ public:
 	// for TCP usage  ---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	std::string getConstellationSelectedShortName() const {
-		return core->asterisms->getSelectedShortName();
-	}
+	std::string getConstellationSelectedShortName() const;
 
-	std::string getPlanetsPosition() const {
-		return core->ssystemFactory->getPlanetsPosition();
-	}
+	std::string getPlanetsPosition() const;
 
-	std::string tcpGetPosition() const {
-		char tmp[512];
-		memset(tmp, '\0', 512);
-		sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;",
-			core->observatory->getLatitude(), core->observatory->getLongitude(),
-			core->observatory->getAltitude(), core->timeMgr->getJDay(),
-			core->navigation->getHeading());
-		return tmp;
-	}
-
+	std::string tcpGetPosition() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// UBO---------------------------

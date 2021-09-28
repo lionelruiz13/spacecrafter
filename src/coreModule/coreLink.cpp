@@ -1,4 +1,26 @@
-# include "coreModule/coreLink.hpp"
+/*
+ * Copyright (C) 2014-2021 of the LSS Team & Association Sirius
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * Spacecrafter is a free open project of of LSS team
+ * See the TRADEMARKS file for free open project usage requirements.
+ *
+ */
+
+#include "coreModule/coreLink.hpp"
 #include "tools/app_settings.hpp"
 //#include "coreModule/coreFont.hpp"
 #include "appModule/fontFactory.hpp"
@@ -384,4 +406,85 @@ void CoreLink::atmosphericRefractionSetFlag(bool b) {
 //! Get flag for activating atmospheric refraction correction
 bool CoreLink::atmosphericRefractionGetFlag() const {
 	return core->FlagAtmosphericRefraction;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Time---------------------------
+////////////////////////////////////////////////////////////////////////////////
+//! Set time speed in JDay/sec
+void CoreLink::timeSetSpeed(double ts) {
+	core->timeMgr->setTimeSpeed(ts);
+}
+
+void CoreLink::timeChangeSpeed(double ts, double duration) {
+	core->timeMgr->changeTimeSpeed(ts, duration);
+}
+
+//! Get time speed in JDay/sec
+double CoreLink::timeGetSpeed() const {
+	return core->timeMgr->getTimeSpeed();
+}
+
+void CoreLink::timeLoadSpeed() const {
+	return core->timeMgr->loadTimeSpeed();
+}
+void CoreLink::timeSaveSpeed() const  {
+	core->timeMgr-> saveTimeSpeed();
+}
+
+//! Set the current date in Julian Day
+void CoreLink::setJDay(double JD) {
+	core->timeMgr->setJDay(JD);
+}
+//! Get the current date in Julian Day
+double CoreLink::getJDay() const {
+	return core->timeMgr->getJDay();
+}
+
+bool CoreLink::timeGetFlagPause() const {
+	return core->timeMgr->getTimePause();
+}
+
+void CoreLink::timeSetFlagPause(bool _value) const {
+	core->timeMgr->setTimePause(_value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// dateSun---------------------------
+////////////////////////////////////////////////////////////////////////////////
+//! return the JD time when the sun go down
+double CoreLink::dateSunRise(double _jd, double _longitude, double _latitude) {
+	return core->timeMgr->dateSunRise(_jd,_longitude, _latitude);
+}
+
+//! return the JD time when the sun set up
+double CoreLink::dateSunSet(double _jd, double _longitude, double _latitude) {
+	return core->timeMgr->dateSunSet(_jd,_longitude, _latitude);
+}
+
+//! return the JD time when the sun cross the meridian
+double CoreLink::dateSunMeridian(double _jd, double _longitude, double _latitude) {
+	return core->timeMgr->dateSunMeridian(_jd,_longitude, _latitude);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// for TCP usage  ---------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+std::string CoreLink::getConstellationSelectedShortName() const {
+	return core->asterisms->getSelectedShortName();
+}
+
+std::string CoreLink::getPlanetsPosition() const {
+	return core->ssystemFactory->getPlanetsPosition();
+}
+
+std::string CoreLink::tcpGetPosition() const {
+	char tmp[512];
+	memset(tmp, '\0', 512);
+	sprintf(tmp,"%2.2f;%3.2f;%10.2f;%10.6f;%10.6f;",
+		core->observatory->getLatitude(), core->observatory->getLongitude(),
+		core->observatory->getAltitude(), core->timeMgr->getJDay(),
+		core->navigation->getHeading());
+	return tmp;
 }

@@ -56,7 +56,7 @@
 #include "inGalaxyModule/cloudNavigator.hpp"
 #include "inGalaxyModule/dsoNavigator.hpp"
 //#include "mediaModule/text_mgr.hpp"
-#include "coreModule/time_mgr.hpp"
+//#include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "navModule/anchor_manager.hpp"
@@ -344,7 +344,7 @@ public:
 
 	//! Get a 1 line string briefly describing the currently NAV edition selected object
 	std::string getSelectedObjectShortInfoNav(void) const {
-		return selected_object.getShortInfoNavString(navigation, timeMgr, observatory.get());
+		return selected_object.getShortInfoNavString(navigation, timeMgr.get(), observatory.get());
 	}
 
 
@@ -498,7 +498,7 @@ private:
 
 	// Main elements of the program
 	Navigator * navigation;				// Manage all navigation parameters, coordinate transformations etc..
-	TimeMgr* timeMgr;				// Manage date and time
+	std::shared_ptr<TimeMgr> timeMgr;				// Manage date and time
 
 	Observer *obsSolarSystem;		// it's the historical Observer: so nothing to do with it now.
 	Observer *obsInGalaxy;			//observer that should be used in InGalaxy mode
