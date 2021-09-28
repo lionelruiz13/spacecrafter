@@ -326,7 +326,7 @@ void ProtoSystem::setPlanetHidden(const std::string &name, bool planethidden)
 {
 
 	for(auto it = systemBodies.begin(); it != systemBodies.end();it++){
-		Body * body = it->second->body.get();
+		std::shared_ptr<Body> body = it->second->body;
 		if (
 			body->getEnglishName() == name ||
 			(body->get_parent() && body->get_parent()->getEnglishName() == name) ){
