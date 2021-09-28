@@ -34,7 +34,7 @@ class Buffer;
 class Sun : public Body {
 
 public:
-	Sun(Body *parent,
+	Sun(std::shared_ptr<Body> parent,
 	    const std::string& englishName,
 	    bool flagHalo,
 	    double radius,

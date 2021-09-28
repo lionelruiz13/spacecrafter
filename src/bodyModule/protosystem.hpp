@@ -188,7 +188,7 @@ protected:
 	virtual void addBody(stringHash_t & param, bool deletable);	
 
 	std::shared_ptr<ProtoSystem::BodyContainer> findBodyContainer(const std::string &name);
-	Body* findBody(const std::string &name);
+	std::shared_ptr<Body> findBody(const std::string &name);
 	
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str); 

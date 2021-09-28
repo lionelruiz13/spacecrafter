@@ -67,7 +67,7 @@ s_texture *Body::tex_eclipse_map = nullptr;
 AtmosphereParams *Body::defaultAtmosphereParams = nullptr;
 std::shared_ptr<BodyTesselation> Body::bodyTesselation = nullptr;
 
-Body::Body(Body *parent,
+Body::Body(std::shared_ptr<Body> parent,
            const std::string& englishName,
            BODY_TYPE _typePlanet,
            bool _flagHalo,
@@ -529,7 +529,7 @@ void Body::compute_trans_matrix(double jd)
 Mat4d Body::getRotEquatorialToVsop87(void) const
 {
 	Mat4d rval = rot_local_to_parent;
-	if (parent) for (const Body *p=parent; p->parent; p=p->parent) {
+	if (parent) for (std::shared_ptr<Body> p=parent; p->parent; p=p->parent) {
 			rval = p->rot_local_to_parent * rval;
 		}
 	return rval;
@@ -538,7 +538,7 @@ Mat4d Body::getRotEquatorialToVsop87(void) const
 void Body::setRotEquatorialToVsop87(const Mat4d &m)
 {
 	Mat4d a = Mat4d::identity();
-	if (parent) for (const Body *p=parent; p->parent; p=p->parent) {
+	if (parent) for (std::shared_ptr<Body> p=parent; p->parent; p=p->parent) {
 			a = p->rot_local_to_parent * a;
 		}
 	rot_local_to_parent = a.transpose() * m;
@@ -596,7 +596,7 @@ Vec3d Body::get_ecliptic_pos() const
 Vec3d Body::get_heliocentric_ecliptic_pos() const
 {
 	Vec3d pos = ecliptic_pos;
-	const Body *p = parent;
+	std::shared_ptr<Body> p = parent;
 
 	while (p && p->parent) {
 		pos += p->ecliptic_pos;
@@ -610,7 +610,7 @@ Vec3d Body::get_heliocentric_ecliptic_pos() const
 void Body::set_heliocentric_ecliptic_pos(const Vec3d &pos)
 {
 	ecliptic_pos = pos;
-	const Body *p = parent;
+	std::shared_ptr<Body> p = parent;
 	if (p) while (p->parent) {
 			ecliptic_pos -= p->ecliptic_pos;
 			p = p->parent;
@@ -713,7 +713,7 @@ void Body::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 void Body::updateBoundingRadii()
 {
 	calculateBoundingRadius();
-	Body *p;
+	std::shared_ptr<Body> p;
 	p = parent;
 	while (p) {
 		p->calculateBoundingRadius();
@@ -761,7 +761,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 	// \todo account for moon orbit precession (independent of parent)
 	// also does not allow for multiple levels of precession
-	const Body *p = parent;
+	std::shared_ptr<Body> p = parent;
 
 	bool myParent = true;
 	while (p && p->get_parent()) {   //cette boucle ne sert que pour les lunes des planetes
@@ -920,7 +920,7 @@ Vec3d Body::getPositionAtDate(double jDate) const
 {
 
 	double * v = new double[3];
-	const Body * b = this;
+	std::shared_ptr<const Body> b = shared_from_this();
 
 	this->getOrbit()->positionAtTimevInVSOP87Coordinates(jDate, v);
 	Vec3d pos = Vec3d(v[0], v[1], v[2]);

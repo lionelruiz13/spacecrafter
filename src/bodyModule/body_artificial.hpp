@@ -34,7 +34,7 @@ class Artificial: public Body {
 
 
 public:
-	Artificial(Body *parent,
+	Artificial(std::shared_ptr<Body> parent,
 	           const std::string& englishName,
 	           bool flagHalo,
 	           double radius,

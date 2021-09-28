@@ -47,7 +47,7 @@
 #include "vulkanModule/Buffer.hpp"
 #include "vulkanModule/Set.hpp"
 
-Center::Center(Body *parent,
+Center::Center(std::shared_ptr<Body> parent,
          const std::string& englishName,
          bool flagHalo,
          double radius,

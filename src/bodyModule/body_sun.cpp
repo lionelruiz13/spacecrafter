@@ -47,7 +47,7 @@
 #include "vulkanModule/Buffer.hpp"
 #include "vulkanModule/Set.hpp"
 
-Sun::Sun(Body *parent,
+Sun::Sun(std::shared_ptr<Body> parent,
          const std::string& englishName,
          bool flagHalo,
          double radius,

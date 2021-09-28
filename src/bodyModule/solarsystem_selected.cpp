@@ -114,7 +114,7 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 				}
 			}
 			else {
-				if (selected == it->current()->second->body->getParent()) {
+				if (selected == it->current()->second->body->getParent().get()) {
 					it->current()->second->body->setFlagOrbit(true);
 				}
 				else{

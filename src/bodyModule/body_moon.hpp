@@ -33,7 +33,7 @@ class Moon : public Body {
 
 public:
 
-	Moon(Body *parent,
+	Moon(std::shared_ptr<Body> parent,
 	     const std::string& englishName,
 	     bool flagHalo,
 	     double radius,

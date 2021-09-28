@@ -547,11 +547,11 @@ void ProtoSystem::bodyTraceBodyChange(const std::string &bodyName)
 	}
 }
 
-Body* ProtoSystem::findBody(const std::string &name)
+std::shared_ptr<Body> ProtoSystem::findBody(const std::string &name)
 {
 
 	if(systemBodies.count(name) != 0){
-		return systemBodies[name]->body.get();
+		return systemBodies[name]->body;
 	}
 	else{
 		return nullptr;
@@ -584,7 +584,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	const std::string englishName = param["name"];
 	std::string str_parent = param["parent"];
 	const std::string type_Body = param["type"];
-	Body *parent = nullptr;
+	std::shared_ptr<Body> parent = nullptr;
 
 	cLog::get()->write("Loading new Stellar System object... " + englishName, LOG_TYPE::L_INFO);
 	std::cout << "Loading new Stellar System object... " << englishName << std::endl;

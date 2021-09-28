@@ -37,7 +37,7 @@
 #include "vulkanModule/Set.hpp"
 #include "vulkanModule/Uniform.hpp"
 
-Artificial::Artificial(Body *parent,
+Artificial::Artificial(std::shared_ptr<Body> parent,
                        const std::string& englishName,
                        bool flagHalo,
                        double radius,

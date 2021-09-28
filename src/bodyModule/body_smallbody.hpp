@@ -32,7 +32,7 @@ class Buffer;
 class SmallBody : public Body {
 
 public:
-	SmallBody(Body *parent,
+	SmallBody(std::shared_ptr<Body> parent,
 	          const std::string& englishName,
 	          BODY_TYPE _typePlanet,
 	          bool flagHalo,

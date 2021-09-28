@@ -85,7 +85,7 @@ typedef struct AtmosphereParams {
 } AtmosphereParams;
 
 
-class Body : public ObjectBase {
+class Body : public ObjectBase, public std::enable_shared_from_this<Body>{
 
 	friend class Trail;
 	friend class Hints;
@@ -97,7 +97,7 @@ class Body : public ObjectBase {
 	friend class BodyShader;
 
 public:
-	Body(Body *parent,
+	Body(std::shared_ptr<Body> parent,
 	     const std::string& englishName,
 	     BODY_TYPE _typePlanet,
 	     bool _flagHalo,
@@ -217,12 +217,12 @@ public:
 		return nameI18;
 	}
 
-	const Body *get_parent(void) const {
+	const std::shared_ptr<Body> get_parent(void) const {
 		return parent;
 	}
 
 	// modifiable
-	Body *getParent(void) {
+	std::shared_ptr<Body> getParent(void) {
 		return parent;
 	}
 
@@ -394,7 +394,7 @@ public:
 
 	Vec3d getPositionAtDate(double jDate) const;
 
-	const Body * getParent()const {
+	const std::shared_ptr<Body> getParent()const {
 		return parent;
 	}
 
@@ -507,7 +507,7 @@ protected:
 	std::unique_ptr<Orbit> orbit=nullptr;            // orbit object for this body
 	Vec3f orbit_position;    // position de la planete
 
-	Body *parent;				// Body parent i.e. sun for earth
+	std::shared_ptr<Body> parent;				// Body parent i.e. sun for earth
 
 	std::list<Body *> satellites;		// satellites of the Planet
 

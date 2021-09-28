@@ -44,7 +44,7 @@
 #include "vulkanModule/Buffer.hpp"
 #include "vulkanModule/Pipeline.hpp"
 
-BigBody::BigBody(Body *parent,
+BigBody::BigBody(std::shared_ptr<Body> parent,
                  const std::string& englishName,
                  BODY_TYPE _typePlanet,
                  bool flagHalo,

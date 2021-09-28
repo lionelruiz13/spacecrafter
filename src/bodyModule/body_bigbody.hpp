@@ -35,7 +35,7 @@ class BigBody : public Body {
 
 
 public:
-	BigBody(Body *parent,
+	BigBody(std::shared_ptr<Body> parent,
 	        const std::string& englishName,
 	        BODY_TYPE _typePlanet,
 	        bool flagHalo,

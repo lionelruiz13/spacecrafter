@@ -34,7 +34,7 @@ class Buffer;
 class Center : public Body {
 
 public:
-	Center(Body *parent,
+	Center(std::shared_ptr<Body> parent,
 	    const std::string& englishName,
 	    bool flagHalo,
 	    double radius,

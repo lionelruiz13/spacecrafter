@@ -40,7 +40,7 @@
 #include "vulkanModule/Uniform.hpp"
 #include "vulkanModule/Buffer.hpp"
 
-SmallBody::SmallBody(Body *parent,
+SmallBody::SmallBody(std::shared_ptr<Body> parent,
                      const std::string& englishName,
                      BODY_TYPE _typePlanet,
                      bool flagHalo,
