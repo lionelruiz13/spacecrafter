@@ -79,7 +79,7 @@ protected :
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye) override;
 
 	// remove from parent satellite list
-	virtual void removeSatellite(Body *planet);
+	virtual void removeSatellite(std::shared_ptr<Body> planet);
 	std::unique_ptr<Ring> rings=nullptr;
 	int commandIndex = -2;
 	int pipelineOffset = 0; // pipeline to select inside drawState

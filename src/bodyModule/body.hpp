@@ -85,7 +85,7 @@ typedef struct AtmosphereParams {
 } AtmosphereParams;
 
 
-class Body : public ObjectBase, public std::enable_shared_from_this<Body>{
+class Body : public ObjectBase, public std::enable_shared_from_this<Body> {
 
 	friend class Trail;
 	friend class Hints;
@@ -300,7 +300,7 @@ public:
 	}
 
 	// remove from parent satellite list
-	virtual void removeSatellite(Body *planet);
+	virtual void removeSatellite(std::shared_ptr<Body> planet);
 
 	// for depth buffering of orbits
 	void updateBoundingRadii();
@@ -388,7 +388,7 @@ public:
 
 	static void deleteDefaultTexMap();
 
-	std::list<Body *> getSatellites() {
+	std::list<std::shared_ptr<Body>> getSatellites() {
 		return satellites;
 	}
 
@@ -422,6 +422,10 @@ public:
 
 	BODY_TYPE getBodyType() {
 		return typePlanet;
+	}
+
+	void add_satellite(std::shared_ptr<Body> body) {
+		satellites.push_back(body);
 	}
 
 protected:
@@ -509,7 +513,7 @@ protected:
 
 	std::shared_ptr<Body> parent;				// Body parent i.e. sun for earth
 
-	std::list<Body *> satellites;		// satellites of the Planet
+	std::list<std::shared_ptr<Body>> satellites;		// satellites of the Planet
 
 	static s_font* planet_name_font;// Font for names
 	static float object_scale;

@@ -97,7 +97,6 @@ Body::Body(std::shared_ptr<Body> parent,
 	typePlanet = _typePlanet;
 	initialScale= 1.0;
 	if (parent) {
-		parent->satellites.push_back(this);
 		if (parent->getBodyType() != CENTER) is_satellite = 1; // quicker lookup
 	}
 	if (parent) {
@@ -730,8 +729,8 @@ double Body::calculateBoundingRadius()
 {
 	double d = radius.final();
 
-	std::list<Body *>::const_iterator iter;
-	std::list<Body *>::const_iterator end = satellites.end();
+	std::list<std::shared_ptr<Body>>::const_iterator iter;
+	std::list<std::shared_ptr<Body>>::const_iterator end = satellites.end();
 
 	double r;
 	for ( iter=satellites.begin(); iter != end; iter++) {
@@ -890,9 +889,9 @@ void Body::drawHints(const Navigator* nav, const Projector* prj)
 		hints->drawHints(nav, prj);
 }
 
-void Body::removeSatellite(Body *planet)
+void Body::removeSatellite(std::shared_ptr<Body> planet)
 {
-	std::list<Body *>::iterator iter;
+	std::list<std::shared_ptr<Body>>::iterator iter;
 	for (iter=satellites.begin(); iter != satellites.end(); iter++) {
 		if ( (*iter) == planet ) {
 			satellites.erase(iter);

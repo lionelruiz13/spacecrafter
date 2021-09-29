@@ -60,17 +60,17 @@ public:
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const;
 
 	//!return Earth planet object
-	Body* getEarth(void) const {
+	std::shared_ptr<Body> getEarth(void) const {
 		return earth;
 	}
 
 	//! return Sun planet object
-	Sun* getSun(void) const {
+	std::shared_ptr<Sun> getSun(void) const {
 		return sun;
 	}
 
 	//! return Moon planet object
-	Moon* getMoon(void) const {
+	std::shared_ptr<Moon> getMoon(void) const {
 		return moon;
 	}
 
@@ -140,9 +140,9 @@ private:
 	virtual void addBody(stringHash_t & param, bool deletable) override;
 
 
-	Sun* sun=nullptr; //return the Sun
-	Moon* moon=nullptr;	//return the Moon
-	BigBody* earth=nullptr;	//return the earth
+	std::shared_ptr<Sun> sun=nullptr; //return the Sun
+	std::shared_ptr<Moon> moon=nullptr;	//return the Moon
+	std::shared_ptr<BigBody> earth=nullptr;	//return the earth
 
 	// solar system related settings
 	float object_scale;  // should be kept synchronized with star scale...

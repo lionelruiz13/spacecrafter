@@ -156,7 +156,7 @@ bool ProtoSystem::removeBody(const std::string &name){
 	if(bc->body->hasSatellite()){
 		// std::cout << "removeBody " << name << " but have satellite" << std::endl;
 		std::vector<std::string> names;
-		std::list<Body *> satellites = bc->body->getSatellites();
+		std::list<std::shared_ptr<Body>> satellites = bc->body->getSatellites();
 
 		for(auto it = satellites.begin(); it != satellites.end(); it++){
 			names.push_back((*it)->getEnglishName());
@@ -186,7 +186,7 @@ bool ProtoSystem::removeBodyNoSatellite(const std::string &name)
 
 	//check if the body was a satellite
 	if(bc->body->getParent() != nullptr){
-		bc->body->getParent()->removeSatellite(bc->body.get());
+		bc->body->getParent()->removeSatellite(bc->body);
 	}
 	// fix crash when delete body used from body_trace
 	if (bc->body == bodyTrace )
@@ -314,7 +314,7 @@ void ProtoSystem::toggleHideSatellites(bool val){
 		   it->second->body->getTurnAround() == tACenter &&
 		   it->second->body->hasSatellite()){
 
-		   for(Body * satellite : it->second->body->getSatellites()){
+		   for(std::shared_ptr<Body> satellite : it->second->body->getSatellites()){
 			   std::shared_ptr<BodyContainer> sat = findBodyContainer(satellite->getEnglishName());
 				setPlanetHidden(sat->englishName, val);
 			}
@@ -585,7 +585,6 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	std::string str_parent = param["parent"];
 	const std::string type_Body = param["type"];
 	std::shared_ptr<Body> parent = nullptr;
-
 	cLog::get()->write("Loading new Stellar System object... " + englishName, LOG_TYPE::L_INFO);
 	std::cout << "Loading new Stellar System object... " << englishName << std::endl;
 	//~ for ( stringHashIter_t iter = param.begin(); iter != param.end(); ++iter ) {
@@ -746,7 +745,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 			bodyTrace = p_center;
 			centerObject = p_center;
-			p = std::move(p_center);
+			p = p_center;
 		}
 		break;
 		case SUN : {
@@ -775,12 +774,12 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				centerObject = p_sun;
 				bodyTrace = p_sun;
 			}
-			p = std::move(p_sun);
+			p = p_sun;
 		}
 		break;
 
 		case ARTIFICIAL: {
-			std::unique_ptr<Artificial> p_artificial = std::make_unique<Artificial>(parent,
+			std::shared_ptr<Artificial> p_artificial = std::make_shared<Artificial>(parent,
 							  englishName,
 							  Utility::strToBool(param["halo"]),
 							  Utility::strToDouble(param["radius"])/AU,
@@ -794,12 +793,12 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                  orbit_bounding_radius,
 							  bodyTexture,
 						  	  context);
-			p=std::move(p_artificial);
+			p= p_artificial;
 			}
 			break;
 
 		case MOON: {
-			std::unique_ptr<Moon> p_moon = std::make_unique<Moon>(parent,
+			std::shared_ptr<Moon> p_moon = std::make_shared<Moon>(parent,
 			                  englishName,
 			                  Utility::strToBool(param["halo"]),
 			                  Utility::strToDouble(param["radius"])/AU,
@@ -814,13 +813,13 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 							  bodyTexture,
 							  context
 			                 );
-			p=std::move(p_moon);
+			p= p_moon;
 		}
 		break;
 
 		case DWARF:
 		case PLANET: {
-			std::unique_ptr<BigBody> p_big = std::make_unique<BigBody>(parent,
+			std::shared_ptr<BigBody> p_big = std::make_shared<BigBody>(parent,
 			                    englishName,
 			                    typePlanet,
 			                    Utility::strToBool(param["halo"]),
@@ -836,6 +835,8 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 								bodyTexture,
 								context
 								);
+
+
 			if (Utility::strToBool(param["rings"], 0)) {
 				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
 				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
@@ -843,14 +844,14 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				p_big->setRings(std::move(r));
 				p_big->updateBoundingRadii();
 			}
-			p = std::move(p_big);
+			p = p_big;
 		}
 		break;
 
 		case ASTEROID:
 		case KBO:
 		case COMET: {
-			std::unique_ptr<SmallBody> p_small = std::make_unique<SmallBody>(parent,
+			std::shared_ptr<SmallBody> p_small = std::make_shared<SmallBody>(parent,
 			                        englishName,
 			                        typePlanet,
 			                        Utility::strToBool(param["halo"]),
@@ -866,7 +867,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 									bodyTexture,
 									context
 			                       );
-			p = std::move(p_small);
+			p = p_small;
 		}
 		break;
 
@@ -936,9 +937,11 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 	anchorManager->addAnchor(englishName, p.get());
 	p->updateBoundingRadii();
-
+	if (parent) {
+		parent->add_satellite(p);
+	}
 	std::shared_ptr<BodyContainer> container = std::make_shared<BodyContainer>();
-	container->body = std::move(p);
+	container->body = p;
 	container->englishName = englishName;
 	container->isDeleteable = deletable;
 	container->isHidden = Utility::strToBool(param["hidden"], 0);

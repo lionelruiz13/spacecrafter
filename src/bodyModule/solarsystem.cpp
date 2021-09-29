@@ -28,6 +28,7 @@
 #include <iostream>
 #include <string>
 #include <future>
+#include <memory>
 #include "bodyModule/solarsystem.hpp"
 #include "tools/s_texture.hpp"
 #include "bodyModule/orbit.hpp"
@@ -93,12 +94,10 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 	ProtoSystem::addBody(param, deletable);
 
 	if (typePlanet == SUN && englishName == "Sun") {
-		sun = dynamic_cast<Sun *>(systemBodies["Sun"].get()->body.get());
-		std::cout << sun->getEnglishName() << std::endl;
+		sun = std::dynamic_pointer_cast<Sun>(systemBodies["Sun"]->body);
 	}
 	else if (typePlanet == MOON && englishName == "Moon") {
-		moon = dynamic_cast<Moon *>(systemBodies["Moon"].get()->body.get());
-		std::cout << moon->getEnglishName() << std::endl;
+		moon = std::dynamic_pointer_cast<Moon>(systemBodies["Moon"]->body);
 			if(earth) {
 				BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
 				if(earthOrbit) {
@@ -110,8 +109,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			} else
 				cLog::get()->write(englishName + " body could not be added to Earth orbit calculation, position may be inacurate", LOG_TYPE::L_WARNING);
 	} else if (typePlanet == PLANET && englishName == "Earth") {
-		earth = dynamic_cast<BigBody *>(systemBodies["Earth"].get()->body.get());
-		std::cout << earth->getEnglishName() << std::endl;
+		earth = std::dynamic_pointer_cast<BigBody>(systemBodies["Earth"]->body);
 	}
 }
 

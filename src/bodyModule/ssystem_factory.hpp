@@ -93,11 +93,11 @@ public:
         return currentSystem->getPlanetsPosition();
     }
 
-    Body* getEarth(void) const {
+    std::shared_ptr<Body> getEarth(void) const {
 		return ssystem->getEarth();
 	}
 
-	Moon* getMoon(void) const {
+	std::shared_ptr<Moon> getMoon(void) const {
         return ssystem->getMoon();
     }
 

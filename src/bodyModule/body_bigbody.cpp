@@ -77,7 +77,7 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
 		 context
         ),
 	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
-{
+{	
 	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
 		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
 		tex_specular = new s_texture(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT);
@@ -266,9 +266,9 @@ float BigBody::getOnScreenSize(const Projector* prj, const Navigator * nav, bool
 	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }
 
-void BigBody::removeSatellite(Body *planet)
+void BigBody::removeSatellite(std::shared_ptr<Body> planet)
 {
-	std::list<Body *>::iterator iter;
+	std::list<std::shared_ptr<Body>>::iterator iter;
 	for (iter=satellites.begin(); iter != satellites.end(); iter++) {
 		if ( (*iter) == planet ) {
 			satellites.erase(iter);
@@ -283,8 +283,8 @@ double BigBody::calculateBoundingRadius()
 
 	if (rings) d = rings->getOuterRadius();
 
-	std::list<Body *>::const_iterator iter;
-	std::list<Body *>::const_iterator end = satellites.end();
+	std::list<std::shared_ptr<Body>>::const_iterator iter;
+	std::list<std::shared_ptr<Body>>::const_iterator end = satellites.end();
 
 	double r;
 	for ( iter=satellites.begin(); iter != end; iter++) {
@@ -369,7 +369,7 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
     pGlobalVertProj->planetScaledRadius = radius;
     pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
     pGlobalFrag->SunHalfAngle = sun_half_angle;
-	std::list<Body*>::iterator iter;
+	std::list<std::shared_ptr<Body>>::iterator iter;
 	for(iter=satellites.begin(); iter!=satellites.end() && index <= 4; iter++) {
 		tmp2 = (*iter)->get_heliocentric_ecliptic_pos() - planet_helio;
 		length = tmp2.length();
