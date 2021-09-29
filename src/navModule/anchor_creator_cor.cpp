@@ -25,7 +25,7 @@
 AnchorPointCreator::AnchorPointCreator(const AnchorCreator * _next):
 	AnchorCreator(_next) { }
 
-AnchorPoint * AnchorPointCreator::handle(stringHash_t params)const
+std::shared_ptr<AnchorPoint> AnchorPointCreator::handle(stringHash_t params)const
 {
 
 	if(params["type"] != "point") {
@@ -45,7 +45,7 @@ AnchorPoint * AnchorPointCreator::handle(stringHash_t params)const
 		return nullptr;
 	}
 
-	return new AnchorPoint(
+	return std::make_shared<AnchorPoint>(
 	           stod(params["x"]),
 	           stod(params["y"]),
 	           stod(params["z"]));
@@ -54,7 +54,7 @@ AnchorPoint * AnchorPointCreator::handle(stringHash_t params)const
 
 AnchorObservatoryCreator::AnchorObservatoryCreator(const AnchorCreator * next)
 	: AnchorCreator(next){ }
-AnchorPoint * AnchorObservatoryCreator::handle(stringHash_t params) const{
+std::shared_ptr<AnchorPoint> AnchorObservatoryCreator::handle(stringHash_t params) const{
 	if(params["type"] != "observatory") {
 		if(next != nullptr)
 			return next->handle(params);
@@ -70,7 +70,7 @@ AnchorPoint * AnchorObservatoryCreator::handle(stringHash_t params) const{
 		cLog::get()->write("AnchorPointCreator::handle x y or z parameter missing");
 		return nullptr;
 	}
-	return new AnchorPointObservatory(
+	return std::make_shared<AnchorPointObservatory>(
 	           stod(params["x"]),
 	           stod(params["y"]),
 	           stod(params["z"]));
@@ -82,7 +82,7 @@ AnchorPointBodyCreator::AnchorPointBodyCreator(const AnchorCreator * _next, cons
 	ssystem = _ssystem;
 }
 
-AnchorPoint * AnchorPointBodyCreator::handle(stringHash_t params)const
+std::shared_ptr<AnchorPoint> AnchorPointBodyCreator::handle(stringHash_t params)const
 {
 
 	if(params["type"] != "body") {
@@ -97,7 +97,7 @@ AnchorPoint * AnchorPointBodyCreator::handle(stringHash_t params)const
 	std::shared_ptr<Body> body = ssystem->searchByEnglishName(params["body_name"]);
 
 	if(body != nullptr)
-		return new AnchorPointBody(body.get());
+		return std::make_shared<AnchorPointBody>(body);
 
 	cLog::get()->write("AnchorPointBodyCreator::handle the given body was not found in solar system");
 	return nullptr;
@@ -116,7 +116,7 @@ AnchorPointOrbitCreator::AnchorPointOrbitCreator(
 	orbitCreator = _orbitCreator;
 }
 
-AnchorPoint * AnchorPointOrbitCreator::handle(stringHash_t params)const
+std::shared_ptr<AnchorPoint> AnchorPointOrbitCreator::handle(stringHash_t params)const
 {
 	if(params["type"] != "orbit") {
 		if(next != nullptr)
@@ -144,7 +144,7 @@ AnchorPoint * AnchorPointOrbitCreator::handle(stringHash_t params)const
 			return nullptr;
 		}
 
-		return new AnchorPointOrbit(orbit, timeMgr, nullptr,
+		return std::make_shared<AnchorPointOrbit>(orbit, timeMgr, nullptr,
 		                            Vec3d(stod(params["orbit_center_x"]),
 		                                  stod(params["orbit_center_y"]),
 		                                  stod(params["orbit_center_z"])));
@@ -153,7 +153,7 @@ AnchorPoint * AnchorPointOrbitCreator::handle(stringHash_t params)const
 		std::shared_ptr<Body> body = ssystem->searchByEnglishName(params["parent"]);
 
 		if(body != nullptr)
-			return new AnchorPointOrbit(orbit, timeMgr, body.get());
+			return std::make_shared<AnchorPointOrbit>(orbit, timeMgr, body.get());
 		else {
 			cLog::get()->write("AnchorPointOrbitCreator:: could not find given parent : " + params["parent"]);
 			return nullptr;

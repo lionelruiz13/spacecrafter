@@ -26,7 +26,7 @@
  */
 
 #include "tools/utility.hpp"
-
+#include <memory>
 
 class AnchorPoint;
 class ProtoSystem;
@@ -43,7 +43,7 @@ public:
 		next = _next;
 	}
 
-	virtual AnchorPoint * handle(stringHash_t param)const = 0;
+	virtual std::shared_ptr<AnchorPoint> handle(stringHash_t param)const = 0;
 
 protected:
 	const AnchorCreator * next = nullptr;
@@ -53,21 +53,21 @@ class AnchorPointCreator : public AnchorCreator {
 public:
 	AnchorPointCreator() = delete;
 	AnchorPointCreator(const AnchorCreator* _next);
-	AnchorPoint * handle(stringHash_t param)const;
+	std::shared_ptr<AnchorPoint> handle(stringHash_t param)const;
 };
 
 class AnchorObservatoryCreator : public AnchorCreator {
 public:
 	AnchorObservatoryCreator() = delete;
 	AnchorObservatoryCreator(const AnchorCreator* _next);
-	AnchorPoint * handle(stringHash_t param)const;
+	std::shared_ptr<AnchorPoint> handle(stringHash_t param)const;
 };
 
 class AnchorPointBodyCreator : public AnchorCreator {
 public:
 	AnchorPointBodyCreator() = delete;
 	AnchorPointBodyCreator(const AnchorCreator* _next, const ProtoSystem * ssystem);
-	AnchorPoint * handle(stringHash_t param)const;
+	std::shared_ptr<AnchorPoint> handle(stringHash_t param)const;
 
 private :
 	const ProtoSystem * ssystem;
@@ -77,7 +77,7 @@ class AnchorPointOrbitCreator : public AnchorCreator {
 public:
 	AnchorPointOrbitCreator() = delete;
 	AnchorPointOrbitCreator(const AnchorCreator* _next, const ProtoSystem * ssystem, const TimeMgr * timeMgr, const OrbitCreator * orbitCreator);
-	AnchorPoint * handle(stringHash_t param)const;
+	std::shared_ptr<AnchorPoint> handle(stringHash_t param)const;
 
 private :
 	const ProtoSystem * ssystem;

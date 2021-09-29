@@ -1056,7 +1056,7 @@ public:
 		return core->observatory->getHomePlanetEnglishName();
 	}
 
-	const Body* getObserverHomeBody(){
+	std::shared_ptr<Body> getObserverHomeBody(){
 		return core->observatory->getHomeBody();
 	}
 

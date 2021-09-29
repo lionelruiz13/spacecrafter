@@ -114,7 +114,7 @@ static AnchorManager::anchor_type getAnchorTypeFromString(const std::string & st
 /*
  * returns true if the anchor is of the given type
  */
-static bool rightType(const AnchorPoint * anchor, const AnchorManager::anchor_type & type)
+static bool rightType(std::shared_ptr<AnchorPoint> anchor, const AnchorManager::anchor_type & type)
 {
 
 	switch(type) {
@@ -142,7 +142,7 @@ static bool rightType(const AnchorPoint * anchor, const AnchorManager::anchor_ty
 	return false;
 }
 
-AnchorPoint * AnchorManager::constructAnchor(stringHash_t params)
+std::shared_ptr<AnchorPoint> AnchorManager::constructAnchor(stringHash_t params)
 {
 	return anchorCreator->handle(params);
 }
@@ -167,13 +167,13 @@ AnchorManager::AnchorManager(
 
 AnchorManager::~AnchorManager()
 {
-	for(auto it = anchors.begin(); it != anchors.end(); it++)
-		delete(it->second);
+	//for(auto it = anchors.begin(); it != anchors.end(); it++)
+	//	delete(it->second);
 
 	anchors.clear();
 }
 
-bool AnchorManager::addAnchor(const std::string& name, AnchorPoint * anchor) noexcept
+bool AnchorManager::addAnchor(const std::string& name, std::shared_ptr<AnchorPoint> anchor) noexcept
 {
 	auto it = anchors.find(name);
 	if(it != anchors.end()) //name already present in container
@@ -186,7 +186,7 @@ bool AnchorManager::addAnchor(const std::string& name, AnchorPoint * anchor) noe
 		return false;
 	}
 
-	anchors.insert(std::pair<std::string, AnchorPoint*>(name, anchor));
+	anchors.insert(std::pair<std::string, std::shared_ptr<AnchorPoint>>(name, anchor));
 	return true;
 }
 
@@ -198,7 +198,7 @@ bool AnchorManager::removeAnchor(const std::string& name) noexcept
 			if(currentAnchor == it->second)
 				return false;
 
-			delete(it->second);
+			//delete(it->second);
 			anchors.erase(it);
 			return true;
 		}
@@ -206,13 +206,13 @@ bool AnchorManager::removeAnchor(const std::string& name) noexcept
 	return false;
 }
 
-void AnchorManager::removeAnchor(const Body * body)noexcept
+void AnchorManager::removeAnchor(std::shared_ptr<Body> body)noexcept
 {
 	for(auto it = anchors.begin(); it != anchors.end(); it++) {
 
 		//if the anchor is linked to a body
 		if(typeid(*it->second) == typeid(AnchorPointBody)) {
-			AnchorPointBody * temp = ((AnchorPointBody*)it->second);
+			std::shared_ptr<AnchorPointBody> temp = std::dynamic_pointer_cast<AnchorPointBody>(it->second);
 
 			if(temp->getBody() == body) {
 				removeAnchor(it->first);
@@ -256,7 +256,7 @@ void AnchorManager::load(const std::string& path) noexcept
 	}
 }
 
-bool AnchorManager::addAnchor(const std::string& name, Body * b) noexcept
+bool AnchorManager::addAnchor(const std::string& name, std::shared_ptr<Body> b) noexcept
 {
 	if(b == nullptr) {
 		cLog::get()->write("error addAnchor Body nullptr " + name, LOG_TYPE::L_ERROR);
@@ -264,12 +264,12 @@ bool AnchorManager::addAnchor(const std::string& name, Body * b) noexcept
 		return false;
 	}
 
-	return addAnchor(name, new AnchorPointBody(b));
+	return addAnchor(name, std::make_shared<AnchorPointBody>(b));
 }
 
 bool AnchorManager::addAnchor(stringHash_t params)
 {
-	AnchorPoint * anchor = constructAnchor(params);
+	std::shared_ptr<AnchorPoint> anchor = constructAnchor(params);
 
 	if(!params["name"].empty()) {
 		// std::cout << "addAnchor params " << params["name"] << std::endl;
@@ -296,8 +296,8 @@ void AnchorManager::update() noexcept
 
 		if(typeid(*currentAnchor) == typeid(AnchorPointBody)){
 
-			AnchorPointBody * temp = (AnchorPointBody*)currentAnchor;
-			const Body * body = temp->getBody();
+			std::shared_ptr<AnchorPointBody> temp = std::dynamic_pointer_cast<AnchorPointBody>(currentAnchor);
+			const std::shared_ptr<Body> body = temp->getBody();
 			double radius = body->getRadius();
 
 			if(followRotation && observer->getAltitude() > radius * rotationMultiplierCondition * AU *1000.0){
@@ -413,7 +413,7 @@ bool AnchorManager::moveTo(const Vec3d& pos, double time)
 	return true;
 }
 
-bool AnchorManager::moveTo(const AnchorPointBody * targetAnchor, double time, double alt)
+bool AnchorManager::moveTo(std::shared_ptr<AnchorPointBody> targetAnchor, double time, double alt)
 {
 	if(moving) {
 		cLog::get()->write("AnchorManager:: error already moving to a destination", LOG_TYPE::L_ERROR);
@@ -468,7 +468,7 @@ bool AnchorManager::moveToBody(const std::string& bodyName, double time, double 
 	if(typeid(*it->second) != typeid(AnchorPointBody))
 		return false;
 
-	AnchorPointBody * target = ((AnchorPointBody*)it->second);
+	std::shared_ptr<AnchorPointBody> target = std::dynamic_pointer_cast<AnchorPointBody>(it->second);
 
 	return moveTo(target, time, alt);
 }
@@ -480,7 +480,7 @@ bool AnchorManager::transitionToPoint(const std::string& name)
 
 	if(it == anchors.end()) {
 
-		AnchorPoint * target = new AnchorPoint();
+		std::shared_ptr<AnchorPoint> target = std::make_shared<AnchorPoint>();
 		addAnchor(name, target);
 		return transitionToPoint(target);
 	}
@@ -492,12 +492,12 @@ bool AnchorManager::transitionToPoint(const std::string& name)
 		return false;
 	}
 
-	AnchorPoint * target = ((AnchorPoint*)it->second);
+	std::shared_ptr<AnchorPoint> target = std::dynamic_pointer_cast<AnchorPoint>(it->second);
 
 	return transitionToPoint(target);
 }
 
-bool AnchorManager::transitionToPoint(AnchorPoint * targetPoint)
+bool AnchorManager::transitionToPoint(std::shared_ptr<AnchorPoint> targetPoint)
 {
 
 	Vec3d obsPos = observer->getHeliocentricPosition(timeMgr->getJDay());
@@ -518,7 +518,7 @@ bool AnchorManager::transitionToPoint(AnchorPoint * targetPoint)
 
 }
 
-bool AnchorManager::transitionToBody(AnchorPointBody * targetBody)
+bool AnchorManager::transitionToBody(std::shared_ptr<AnchorPointBody> targetBody)
 {
 
 	//Note : we used a dichotomy for a lack of a better way to calculate longitude and latitude
@@ -658,7 +658,7 @@ bool AnchorManager::transitionToBody(const std::string& name)
 		return false;
 	}
 
-	AnchorPointBody * target = ((AnchorPointBody*)it->second);
+	std::shared_ptr<AnchorPointBody> target = std::dynamic_pointer_cast<AnchorPointBody>(it->second);
 	// std::cout << "changement vers " << name << std::endl;
 
 	return transitionToBody(target);
@@ -718,7 +718,7 @@ bool AnchorManager::loadCameraPosition(const std::string& fileName)
 	if(anchorParams.empty())
 		return false;
 
-	AnchorPoint * anchor = nullptr;
+	std::shared_ptr<AnchorPoint> anchor = nullptr;
 
 	auto it = anchors.find(anchorParams["name"]);
 
@@ -739,7 +739,7 @@ bool AnchorManager::loadCameraPosition(const std::string& fileName)
 	}
 
 	if(it != anchors.end())
-		anchors.insert(std::pair<std::string, AnchorPoint*>(anchorParams["name"], anchor));
+		anchors.insert(std::pair<std::string, std::shared_ptr<AnchorPoint>>(anchorParams["name"], anchor));
 
 	currentAnchor = anchor;
 	observer->setAnchorPoint(anchor);
@@ -763,7 +763,7 @@ bool AnchorManager::loadCameraPosition(const std::string& fileName)
 
 bool AnchorManager::alignCameraToBody(std::string name, double duration)
 {
-	AnchorPointBody * anchor = nullptr;
+	std::shared_ptr<AnchorPointBody> anchor = nullptr;
 
 	auto it = anchors.find(name);
 
@@ -777,7 +777,7 @@ bool AnchorManager::alignCameraToBody(std::string name, double duration)
 		return false;
 	}
 		
-	anchor = (AnchorPointBody*)(it->second);
+	anchor = std::dynamic_pointer_cast<AnchorPointBody>(it->second);
 	
 	Mat4d rot = anchor->getRotEquatorialToVsop87();
 

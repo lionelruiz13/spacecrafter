@@ -42,7 +42,7 @@ public:
 
 	AnchorPointBody() = delete;
 
-	AnchorPointBody(const Body * body)noexcept;
+	AnchorPointBody(std::shared_ptr<Body> body)noexcept;
 
 	~AnchorPointBody() { }
 
@@ -52,18 +52,18 @@ public:
 
 	void update() noexcept override;
 
-	bool isOnBody(const Body * body)const noexcept override;
+	bool isOnBody(std::shared_ptr<Body> body)const noexcept override;
 
 	bool isOnBody() const noexcept;
 
-	const Body* getBody() const noexcept override {
+	std::shared_ptr<Body> getBody() const noexcept override {
 		return body;
 	}
 
 	std::string saveAnchor()const noexcept;
 
 private:
-	const Body * body;
+	std::shared_ptr<Body> body;
 };
 
 #endif

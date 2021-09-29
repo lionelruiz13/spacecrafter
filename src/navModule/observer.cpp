@@ -113,11 +113,11 @@ bool Observer::isOnBody() const{
 	return anchor->isOnBody();
 }
 
-bool Observer::isOnBody(const Body * body)const{
+bool Observer::isOnBody(std::shared_ptr<Body> body)const{
 	return anchor->isOnBody(body);
 }
 
-const Body *Observer::getHomeBody(void) const
+std::shared_ptr<Body> Observer::getHomeBody(void) const
 {
 	if (anchor==nullptr)
 		return nullptr;
@@ -219,7 +219,7 @@ bool Observer::isOnBodyNamed(const std::string& bodyName){
 	if(!isOnBody())
 		return false;
 	
-	const Body * b = getHomeBody();
+	std::shared_ptr<Body> b = getHomeBody();
 	
 	if(b != nullptr)
 		return getHomeBody()->getEnglishName() == bodyName;
@@ -230,14 +230,14 @@ bool Observer::isOnBodyNamed(const std::string& bodyName){
 
 std::string Observer::getHomePlanetEnglishName(void) const
 {
-	const Body *p = getHomeBody();
+	std::shared_ptr<Body> p = getHomeBody();
 	return p ? p->getEnglishName() : "";
 }
 
 
 std::string Observer::getHomePlanetNameI18n(void) const
 {
-	const Body *p = getHomeBody();
+	std::shared_ptr<Body> p = getHomeBody();
 	return p ? p->getNameI18n() : "";
 }
 

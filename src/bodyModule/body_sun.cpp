@@ -309,7 +309,7 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
 	bool drawn = false;
 
 	//on ne dessine pas une planete sur laquel on se trouve
-	if (!drawHomePlanet && observatory->isOnBody(this)) {
+	if (!drawHomePlanet && observatory->isOnBody(shared_from_this())) {
 		return drawn;
 	}
 

@@ -28,6 +28,7 @@
 #define _OBSERVER_H_
 
 #include <string>
+#include <memory>
 #include "tools/init_parser.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
@@ -46,18 +47,18 @@ public:
 	Observer();
 	~Observer();
 
-	void setAnchorPoint(const AnchorPoint * _anchor){
+	void setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor){
 		anchor = _anchor;
 	}
 
 	bool isOnBody() const;
 
-	bool isOnBody(const Body * body) const;
+	bool isOnBody(std::shared_ptr<Body> body) const;
 
 	//! Renvoie un lien vers l'astre ou est localisé l'observer
 	//! @return une instance sur l'astre ou nullptr
 	//! @warning nullptr est retourné si l'observer n'est sur aucun astre
-	const Body *getHomeBody() const;
+	std::shared_ptr<Body> getHomeBody() const;
 
 	//! renvoie le nom anglais de la planète de l'observer
 	std::string getHomePlanetEnglishName() const;
@@ -173,7 +174,7 @@ private:
 	double start_alt, end_alt;
 	float move_to_coef, move_to_mult;
 
-	const AnchorPoint * anchor = nullptr;
+	std::shared_ptr<AnchorPoint> anchor = nullptr;
 };
 
 #endif // _OBSERVER_H_

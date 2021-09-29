@@ -41,6 +41,8 @@
 #ifndef ANCHOR_POINT_HPP
 #define ANCHOR_POINT_HPP
 
+#include <memory>
+
 #include "tools/vecmath.hpp"
 #include "tools/utility.hpp"
 
@@ -81,11 +83,11 @@ public:
 
 	virtual void update() noexcept;
 
-	virtual bool isOnBody(const Body * body) const noexcept;
+	virtual bool isOnBody(std::shared_ptr<Body> body) const noexcept;
 
 	virtual bool isOnBody() const noexcept;
 
-	virtual const Body* getBody() const noexcept;
+	virtual std::shared_ptr<Body> getBody() const noexcept;
 
 	virtual std::string saveAnchor()const noexcept;
 

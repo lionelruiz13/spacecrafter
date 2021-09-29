@@ -2902,7 +2902,7 @@ int AppCommandInterface::commandDate()
 	std::string argRelative = args[W_RELATIVE];
 	if (!argRelative.empty()) { // value is a float number of days
 		double days = evalDouble(argRelative);
-		const Body* home = coreLink->getObserverHomeBody();
+		std::shared_ptr<Body> home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
 			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument relative");
 			return executeCommandStatus();
@@ -2933,7 +2933,7 @@ int AppCommandInterface::commandDate()
 	std::string argSidereal = args[W_SIDEREAL];
 	if (!argSidereal.empty()) { // value is a float number of sidereal days
 		double days = evalDouble(argSidereal);
-		const Body* home = coreLink->getObserverHomeBody();
+		std::shared_ptr<Body> home = coreLink->getObserverHomeBody();
 		if (home==nullptr) {
 			debug_message = _("Error date local, vous devez être sur un astre pour utiliser l'argument sideral");
 			return executeCommandStatus();

@@ -19,7 +19,7 @@
 #include "navModule/anchor_point_body.hpp"
 //#include "tools/fmath.hpp"
 
-AnchorPointBody::AnchorPointBody(const Body * _body) noexcept
+AnchorPointBody::AnchorPointBody(std::shared_ptr<Body> _body) noexcept
 {
 	body = _body;
 	setHeliocentricEclipticPos(_body->get_heliocentric_ecliptic_pos());
@@ -75,7 +75,7 @@ void AnchorPointBody::update() noexcept
 	setHeliocentricEclipticPos(body->get_heliocentric_ecliptic_pos());
 }
 
-bool AnchorPointBody::isOnBody(const Body * _body)const noexcept
+bool AnchorPointBody::isOnBody(std::shared_ptr<Body> _body)const noexcept
 {
 	return body == _body;
 }

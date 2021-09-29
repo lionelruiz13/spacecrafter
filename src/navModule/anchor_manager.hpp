@@ -66,11 +66,11 @@ public:
 	* adds an achor to the map. does nothing if the name already exists
 	* returns true if the anchor is added
 	*/
-	bool addAnchor(const std::string& name, AnchorPoint * anchor) noexcept;
+	bool addAnchor(const std::string& name, std::shared_ptr<AnchorPoint> anchor) noexcept;
 
 	//! add a Body from solarsystem to the map .
 	//! @warning no control if the name already exist
-	bool addAnchor(const std::string& name, Body *b) noexcept;
+	bool addAnchor(const std::string& name, std::shared_ptr<Body> b) noexcept;
 
 	/*
 	* removes an anchor, does nothing if the anchor doesn't exist
@@ -80,7 +80,7 @@ public:
 	/*
 	 * remove all anchors linked to the body
 	 */
-	void removeAnchor(const Body * body)noexcept;
+	void removeAnchor(std::shared_ptr<Body> body)noexcept;
 
 	/*
 	 * loads anchors from ini file
@@ -141,7 +141,7 @@ public:
 	* moves the current anchor to the given body at given altitude in the given time
 	* can only move the current anchor if it is a fix point
 	*/
-	bool moveTo(const AnchorPointBody* target, double time, double alt);
+	bool moveTo(std::shared_ptr<AnchorPointBody> target, double time, double alt);
 
 	/*
 	* moves the current anchor to pos in the given time
@@ -152,7 +152,7 @@ public:
 	/*
 	* set the current anchor to a fix point at the observer's position
 	*/
-	bool transitionToPoint(AnchorPoint * targetPoint);
+	bool transitionToPoint(std::shared_ptr<AnchorPoint> targetPoint);
 
 	/*
 	* set the current anchor to a fix point at the observer's position
@@ -162,7 +162,7 @@ public:
 	/*
 	* set the current anchor to an anchor attached to the given AnchorPointBody
 	*/
-	bool transitionToBody(AnchorPointBody * targetBody);
+	bool transitionToBody(std::shared_ptr<AnchorPointBody> targetBody);
 
 	bool transitionToBody(const std::string& name);
 
@@ -179,7 +179,7 @@ public:
 	/*
 	 * returns an anchor constructed from given parameters
 	 */
-	AnchorPoint * constructAnchor(stringHash_t params);
+	std::shared_ptr<AnchorPoint> constructAnchor(stringHash_t params);
 
 	/*
 	 * sets the follow variable of given anchor point
@@ -218,8 +218,8 @@ private:
 	TimeMgr * timeMgr = nullptr;
 	const AnchorCreator * anchorCreator = nullptr;
 
-	std::map<std::string, AnchorPoint*> anchors; //container for anchor points
-	AnchorPoint * currentAnchor = nullptr;
+	std::map<std::string, std::shared_ptr<AnchorPoint>> anchors; //container for anchor points
+	std::shared_ptr<AnchorPoint> currentAnchor = nullptr;
 
 	bool moving = false;
 	Vec3d direction;

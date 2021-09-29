@@ -441,7 +441,7 @@ void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMg
 void BigBody::drawRings(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
 
-	rings->draw(prj,obs->isOnBody(this) ? obs : nullptr,mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
+	rings->draw(prj,obs->isOnBody(shared_from_this()) ? obs : nullptr,mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
 
 }
 

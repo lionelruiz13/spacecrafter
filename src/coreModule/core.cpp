@@ -662,7 +662,7 @@ void Core::removeSolarSystemBody(const std::string& name)
 		unSelect();
 	}
 	// Make sure not standing on this object!
-	const Body *p = observatory->getHomeBody();
+	std::shared_ptr<Body> p = observatory->getHomeBody();
 	if (p!= nullptr && p->getEnglishName() == name) {
 		cLog::get()->write("Can not delete current home planet " + name);
 		return;

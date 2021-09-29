@@ -50,7 +50,7 @@ void AnchorPoint::update()noexcept
 	//nothing to do here
 }
 
-bool AnchorPoint::isOnBody(const Body * body) const noexcept
+bool AnchorPoint::isOnBody(std::shared_ptr<Body> body) const noexcept
 {
 	return false;
 }
@@ -60,7 +60,7 @@ bool AnchorPoint::isOnBody() const noexcept
 	return false;
 }
 
-const Body* AnchorPoint::getBody() const noexcept
+std::shared_ptr<Body> AnchorPoint::getBody() const noexcept
 {
 	return nullptr;
 }

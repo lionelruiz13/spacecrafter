@@ -201,7 +201,7 @@ bool ProtoSystem::removeBodyNoSatellite(const std::string &name)
 		}));
 	}
 
-	anchorManager->removeAnchor(bc->body.get());
+	anchorManager->removeAnchor(bc->body);
 	//delete bc->body;
 
 	// std::cout << "removeBodyNoSatellite " << name << " is oki" << std::endl;
@@ -391,7 +391,7 @@ std::vector<Object> ProtoSystem::searchAround(Vec3d v,
 	v.normalize();
 	double cos_lim_fov = cos(lim_fov * M_PI/180.);
 	static Vec3d equPos;
-	const Body *home_Body = observatory->getHomeBody();
+	std::shared_ptr<Body> home_Body = observatory->getHomeBody();
 
 	*default_last_item = false;
 
@@ -403,7 +403,7 @@ std::vector<Object> ProtoSystem::searchAround(Vec3d v,
 		equPos.normalize();
 
 		// First see if within a Body disk
-		if (it->second->body.get() != home_Body || aboveHomeBody) {
+		if (it->second->body != home_Body || aboveHomeBody) {
 			// Don't want home Body too easy to select unless can see it
 
 			double angle = acos(v*equPos) * 180.f / M_PI;
@@ -935,7 +935,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	//	p->setFlagOrbit(getFlag(BODY_FLAG::F_ORBIT));
 	//}
 
-	anchorManager->addAnchor(englishName, p.get());
+	anchorManager->addAnchor(englishName, p);
 	p->updateBoundingRadii();
 	if (parent) {
 		parent->add_satellite(p);
