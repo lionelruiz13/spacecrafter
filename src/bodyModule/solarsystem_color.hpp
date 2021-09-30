@@ -25,7 +25,10 @@
 #ifndef _SSYSTEMCOLOR_H_
 #define _SSYSTEMCOLOR_H_
 
-#include "solarsystem.hpp"
+#include <string>
+#include "bodyModule/body_color.hpp"
+
+class ProtoSystem;
 
 /**
  * \file solarsystem_color.hpp
