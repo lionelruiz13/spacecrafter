@@ -25,7 +25,13 @@
 #ifndef _SOLARSYSTEM_DISPLAY_
 #define _SOLARSYSTEM_DISPLAY_
 
-#include "solarsystem.hpp"
+#include <list>
+
+class ProtoSystem;
+class Projector;
+class Navigator;
+class Observer;
+class ToneReproductor;
 
 /**
  * \file solarsystem_display.hpp
