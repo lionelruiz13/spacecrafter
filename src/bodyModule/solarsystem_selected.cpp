@@ -162,3 +162,7 @@ bool SolarSystemSelected::getFlag(BODY_FLAG name)
 	}
 	return false;
 }
+
+void SolarSystemSelected::setSelected(const std::string& englishName) {
+		setSelected(ssystem->searchByEnglishName(englishName).get());
+}

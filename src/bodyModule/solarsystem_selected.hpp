@@ -22,8 +22,10 @@
  *
  */
 
-#include "solarsystem.hpp"
 #include "tools/object.hpp"
+#include "bodyModule/body_common.hpp"
+
+class ProtoSystem;
 
 /**
  * \file solarsystem_selected.hpp
@@ -57,9 +59,7 @@ public:
 	void setSelected(const Object &obj);
 
 	//! Set selected planet by english name or "" to select none
-	void setSelected(const std::string& englishName) {
-		setSelected(ssystem->searchByEnglishName(englishName).get());
-	}
+	void setSelected(const std::string& englishName);
 
 	//! set flag for Activate/Deactivate planets trails display
 	void setFlagTrails(bool b);
