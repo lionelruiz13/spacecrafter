@@ -25,7 +25,10 @@
 #ifndef _SOLARSYSTEM_SCALE_
 #define _SOLARSYSTEM_SCALE_
 
-#include "bodyModule/solarsystem.hpp"
+#include <string>
+#include "bodyModule/body.hpp"
+
+class ProtoSystem;
 
 /**
  * \file solarsystem_scale.hpp
