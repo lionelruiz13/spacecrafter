@@ -26,7 +26,7 @@
 #define _SSYSTEM_ITERATOR_
 
 #include <map>
-#include "solarsystem.hpp"
+#include "protosystem.hpp"
 
 class ProtoSystem;
 

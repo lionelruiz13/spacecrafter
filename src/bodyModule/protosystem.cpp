@@ -26,7 +26,7 @@
 #include <fstream>
 #include <string>
 
-#include "bodyModule/protosystem.hpp"
+#include "bodyModule/solarsystem.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "bodyModule/ssystem_iterator.hpp"
 #include "appModule/space_date.hpp"
