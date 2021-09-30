@@ -22,8 +22,11 @@
  *
  */
 
+#include <assert.h>
 #include "solarsystem_tex.hpp"
 #include "tools/log.hpp"
+#include "bodyModule/body.hpp"
+#include "bodyModule/solarsystem.hpp"
 
 SolarSystemTex::SolarSystemTex(ProtoSystem * _ssystem)
 {

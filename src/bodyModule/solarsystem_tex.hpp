@@ -25,7 +25,11 @@
 #ifndef _SOLARSYSTEM_TEX_
 #define _SOLARSYSTEM_TEX_
 
-#include "solarsystem.hpp"
+#include <string>
+#include <memory>
+#include "bodyModule/body_tesselation.hpp"
+
+class ProtoSystem;
 
 /**
  * \file solarsystem_tex.hpp
