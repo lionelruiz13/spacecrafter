@@ -54,7 +54,7 @@
 //#include "coreModule/starLines.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
 //#include "inGalaxyModule/cloudNavigator.hpp"
-#include "inGalaxyModule/dsoNavigator.hpp"
+//#include "inGalaxyModule/dsoNavigator.hpp"
 //#include "mediaModule/text_mgr.hpp"
 //#include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
@@ -97,6 +97,7 @@ class IlluminateMgr;
 class Atmosphere;
 class SkyLocalizer;
 class CloudNavigator;
+class DsoNavigator;
 
 //!  @brief Main class for application core processing.
 //!
@@ -526,7 +527,7 @@ private:
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
-	DsoNavigator* dsoNav; 				// draw 3d dso when in galaxy
+	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
 	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D
 	UBOCam* ubo_cam;
