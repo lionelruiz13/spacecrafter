@@ -622,9 +622,9 @@ void CoreLink::starNavigatorSave(const std::string &fileName, bool binaryMode){
 // UBO---------------------------
 ////////////////////////////////////////////////////////////////////////////////
 void CoreLink::uboSetAmbientLight(float v) {
-	core->ubo_cam->setAmbientLight(v);
+	core->uboCam->setAmbientLight(v);
 }
 
 float CoreLink::uboGetAmbientLight() {
-	return core->ubo_cam->getAmbientLight();
+	return core->uboCam->getAmbientLight();
 }

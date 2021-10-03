@@ -427,7 +427,7 @@ public:
 	//! Load color scheme from the given ini file and section name
 	void setColorScheme(const std::string& skinFile, const std::string& section);
 
-	// MAJ de l'UBO ubo_cam
+	// MAJ de l'UBO uboCam
 	void uboCamUpdate();
 
 	void setFlagNav(bool a);
@@ -533,7 +533,7 @@ private:
 	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
 	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
 	std::unique_ptr<OjmMgr> ojmMgr;					// représente les obj3D
-	std::unique_ptr<UBOCam> ubo_cam;
+	std::unique_ptr<UBOCam> uboCam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
 

@@ -17,7 +17,7 @@ typedef struct GlobalContext {
     Vulkan *vulkan;
     TextureMgr *textureMgr;
     ResourceTracker *tracker;
-    PipelineLayout *globalLayout; // for ubo_cam
+    PipelineLayout *globalLayout; // for uboCam
     Set *globalSet;
 } GlobalContext;
 

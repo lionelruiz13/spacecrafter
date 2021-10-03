@@ -89,7 +89,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	context->global->textureMgr->initCustomMipmap(context->surface);
 
-	ubo_cam = std::make_unique<UBOCam>(context, "cam_block");
+	uboCam = std::make_unique<UBOCam>(context, "cam_block");
 	tone_converter = new ToneReproductor();
 	atmosphere = std::make_shared<Atmosphere>(context);
 	timeMgr = std::make_shared<TimeMgr>();
@@ -220,7 +220,7 @@ Core::~Core()
 	Object::deleteTextures(); // Unload the pointer textures
 	// Object::deleteShaders();
 	//delete text_usr;
-	//delete ubo_cam;
+	//delete uboCam;
 	// delete oort;
 	// delete dso3d;
 	// delete tully;
@@ -523,11 +523,11 @@ void Core::init(const InitParser& conf)
 
 void Core::uboCamUpdate()
 {
-	ubo_cam->setViewport(projection->getViewport());
-	ubo_cam->setClippingFov(projection->getClippingFov());
-	ubo_cam->setViewportCenter(projection->getViewportFloatCenter());
-	ubo_cam->setMVP2D(projection->getMatProjectionOrtho2D());
-	ubo_cam->update();
+	uboCam->setViewport(projection->getViewport());
+	uboCam->setClippingFov(projection->getClippingFov());
+	uboCam->setViewportCenter(projection->getViewportFloatCenter());
+	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
+	uboCam->update();
 }
 
 std::string Core::getSkyCulture() const {
