@@ -251,7 +251,7 @@ void Atmosphere::fillOutDataColor()
 	m_atmGL->update();
 }
 
-void Atmosphere::draw(const Projector* prj, const std::string &planetName)
+void Atmosphere::draw()
 {
 	if (!fader.getInterstate())
 		return;

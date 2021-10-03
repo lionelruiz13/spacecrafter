@@ -52,7 +52,7 @@ public:
 	~Tully();
 
 	//! affiche le nuage de points
-	void draw(double distance, const Projector *prj,const Navigator *nav) noexcept;
+	void draw(double distance, const Navigator *nav) noexcept;
 
 	//! mise à jour du fader
 	void update(int delta_time) {

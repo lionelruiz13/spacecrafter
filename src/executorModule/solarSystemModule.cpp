@@ -164,7 +164,7 @@ void SolarSystemModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->nebulas->draw(core->projection, core->navigation, core->tone_converter, core->atmosphere->getFlagShow() ? core->sky_brightness : 0);
-	core->oort->draw(observer->getAltitude(), core->projection, core->navigation);
+	core->oort->draw(observer->getAltitude(), core->navigation);
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->projection);
@@ -187,7 +187,7 @@ void SolarSystemModule::draw(int delta_time)
 		core->meteors->draw(core->projection, core->navigation);
 
 	s_font::nextPrint(false);
-	core->atmosphere->draw(core->projection, observer->getHomePlanetEnglishName());
+	core->atmosphere->draw();
 
 	// Draw the landscape
 	if (core->bodyDecor->canDrawLandscape()) {

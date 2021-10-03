@@ -39,7 +39,6 @@
 #include <memory>
 
 //! Class which manages the Oort Cloud
-class Projector;
 class Navigator;
 class VertexArray;
 class Pipeline;
@@ -55,7 +54,7 @@ public:
 	~Oort();
 
 	//! affiche le nuage de points
-	void draw(double distance, const Projector *prj,const Navigator *nav) noexcept;
+	void draw(double distance,const Navigator *nav) noexcept;
 
 	//! fixe la couleur du nuage
 	void setColor(const Vec3f& c) {

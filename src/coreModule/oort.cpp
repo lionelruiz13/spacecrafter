@@ -129,7 +129,7 @@ void Oort::build()
 	cmdMgr->compile();
 }
 
-void Oort::draw(double distance, const Projector *prj,const Navigator *nav) noexcept
+void Oort::draw(double distance, const Navigator *nav) noexcept
 {
 	if (!fader.getInterstate()) return;
 
