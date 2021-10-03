@@ -69,7 +69,7 @@
 //#include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
 
-#include "coreModule/sky_localizer.hpp"
+//#include "coreModule/sky_localizer.hpp"
 
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
@@ -95,6 +95,7 @@ class MeteorMgr;
 class MilkyWay;
 class IlluminateMgr;
 class Atmosphere;
+class SkyLocalizer;
 
 //!  @brief Main class for application core processing.
 //!
@@ -133,9 +134,7 @@ public:
 	}
 
 	//! Get the current sky culture I18 name
-	std::string getSkyCulture() const {
-		return skyloc->directoryToSkyCultureI18(skyCultureDir);
-	}
+	std::string getSkyCulture() const;
 
 	void setInitialSkyCulture() {
 		//printf("Culture %s\n",initialvalue.initial_skyCulture.c_str());
@@ -148,13 +147,8 @@ public:
 	}
 
 	//! Get the I18 available sky culture names
-	std::string getSkyCultureListI18() const {
-		return skyloc->getSkyCultureListI18();
-	}
-
-	std::string getSkyCultureHash() const {
-		return skyloc->getSkyCultureHash();
-	}
+	std::string getSkyCultureListI18() const;
+	std::string getSkyCultureHash() const;
 
 	bool loadSkyCulture(const std::string& culturePath);
 
@@ -527,7 +521,7 @@ private:
 	std::unique_ptr<MeteorMgr> meteors;				// Manage meteor showers
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
-	SkyLocalizer *skyloc;				// for sky cultures and locales
+	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
 	CloudNavigator* cloudNav; 			// draw galaxy gaz clouds
 	CloudNavigator* universeCloudNav; 	// draw galaxy gaz clouds when in universe

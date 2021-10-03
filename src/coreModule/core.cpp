@@ -58,6 +58,7 @@
 #include "coreModule/illuminate_mgr.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/time_mgr.hpp"
+#include "coreModule/sky_localizer.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -147,7 +148,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	cardinals_points = std::make_unique<Cardinals>();
 	meteors = std::make_unique<MeteorMgr>(10, 60, context);
 	landscape = new Landscape();
-	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
+	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height, context);
 	asterisms = new ConstellationMgr(hip_stars, context);
 	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms, context);
@@ -212,8 +213,8 @@ Core::~Core()
 	// s_font::deleteShader();
 	//delete ssystem;
 	delete ssystemFactory;
-	delete skyloc;
-	skyloc = nullptr;
+	//delete skyloc;
+	//skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
 	// Object::deleteShaders();
 	//delete text_usr;
@@ -525,6 +526,18 @@ void Core::uboCamUpdate()
 	ubo_cam->setViewportCenter(projection->getViewportFloatCenter());
 	ubo_cam->setMVP2D(projection->getMatProjectionOrtho2D());
 	ubo_cam->update();
+}
+
+std::string Core::getSkyCulture() const {
+	return skyloc->directoryToSkyCultureI18(skyCultureDir);
+}
+
+std::string Core::getSkyCultureListI18() const {
+	return skyloc->getSkyCultureListI18();
+}
+
+std::string Core::getSkyCultureHash() const {
+	return skyloc->getSkyCultureHash();
 }
 
 //! Execute commun first drawing functions
