@@ -53,7 +53,7 @@
 //#include "coreModule/skyDisplay.hpp"
 //#include "coreModule/starLines.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
-#include "inGalaxyModule/cloudNavigator.hpp"
+//#include "inGalaxyModule/cloudNavigator.hpp"
 #include "inGalaxyModule/dsoNavigator.hpp"
 //#include "mediaModule/text_mgr.hpp"
 //#include "coreModule/time_mgr.hpp"
@@ -96,6 +96,7 @@ class MilkyWay;
 class IlluminateMgr;
 class Atmosphere;
 class SkyLocalizer;
+class CloudNavigator;
 
 //!  @brief Main class for application core processing.
 //!
@@ -523,8 +524,8 @@ private:
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
 	StarNavigator* starNav; 			// permet le voyage dans les étoiles
-	CloudNavigator* cloudNav; 			// draw galaxy gaz clouds
-	CloudNavigator* universeCloudNav; 	// draw galaxy gaz clouds when in universe
+	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds
+	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
 	DsoNavigator* dsoNav; 				// draw 3d dso when in galaxy
 	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
 	OjmMgr * ojmMgr;					// représente les obj3D

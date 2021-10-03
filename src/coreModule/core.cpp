@@ -97,8 +97,8 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	nebulas = new NebulaMgr(context);
 	milky_way = std::make_shared<MilkyWay>(context);
 	starNav = new StarNavigator(context);
-	cloudNav = new CloudNavigator(context);
-	universeCloudNav = new CloudNavigator(context);
+	cloudNav = std::make_unique<CloudNavigator>(context);
+	universeCloudNav = std::make_unique<CloudNavigator>(context);
 	dsoNav = new DsoNavigator(context, "dso3d-color.png");
 	starLines = std::make_unique<StarLines>(context);
 	ojmMgr = new OjmMgr(context);
@@ -224,8 +224,8 @@ Core::~Core()
 	// delete tully;
 	delete ojmMgr;
 	delete starNav;
-	delete cloudNav;
-	delete universeCloudNav;
+	//delete cloudNav;
+	//delete universeCloudNav;
 	delete dsoNav;
 	//delete starLines;
 }

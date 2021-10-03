@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include "inUniverseModule.hpp"
+#include "inGalaxyModule/cloudNavigator.hpp"
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"

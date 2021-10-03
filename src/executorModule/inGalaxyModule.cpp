@@ -33,7 +33,7 @@
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/milkyway.hpp"
 #include "inGalaxyModule/dso3d.hpp"
-
+#include "inGalaxyModule/cloudNavigator.hpp"
 #include "coreModule/starLines.hpp"
 
 InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
