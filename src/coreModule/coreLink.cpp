@@ -38,6 +38,7 @@
 #include "coreModule/starLines.hpp"
 #include "ojmModule/ojm_mgr.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
+#include "coreModule/ubo_cam.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -615,4 +616,15 @@ void CoreLink::starNavigatorLoadOther(const std::string &fileName){
 
 void CoreLink::starNavigatorSave(const std::string &fileName, bool binaryMode){
 	core->starNav->saveData(fileName, binaryMode);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// UBO---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::uboSetAmbientLight(float v) {
+	core->ubo_cam->setAmbientLight(v);
+}
+
+float CoreLink::uboGetAmbientLight() {
+	return core->ubo_cam->getAmbientLight();
 }

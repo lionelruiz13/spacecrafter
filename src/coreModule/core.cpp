@@ -89,7 +89,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	context->global->textureMgr->initCustomMipmap(context->surface);
 
-	ubo_cam = new UBOCam(context, "cam_block");
+	ubo_cam = std::make_unique<UBOCam>(context, "cam_block");
 	tone_converter = new ToneReproductor();
 	atmosphere = std::make_shared<Atmosphere>(context);
 	timeMgr = std::make_shared<TimeMgr>();
@@ -220,7 +220,7 @@ Core::~Core()
 	Object::deleteTextures(); // Unload the pointer textures
 	// Object::deleteShaders();
 	//delete text_usr;
-	delete ubo_cam;
+	//delete ubo_cam;
 	// delete oort;
 	// delete dso3d;
 	// delete tully;
