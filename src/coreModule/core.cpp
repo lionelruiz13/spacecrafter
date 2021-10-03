@@ -89,7 +89,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	context->global->textureMgr->initCustomMipmap(context->surface);
 
-	uboCam = std::make_unique<UBOCam>(context, "cam_block");
+	uboCam = std::make_unique<UBOCam>(context);
 	tone_converter = new ToneReproductor();
 	atmosphere = std::make_shared<Atmosphere>(context);
 	timeMgr = std::make_shared<TimeMgr>();

@@ -1,7 +1,6 @@
 #ifndef UBOCAM_HPP_INCLUDED
 #define UBOCAM_HPP_INCLUDED
 
-#include <string>
 #include "tools/vecmath.hpp"
 
 #include "vulkanModule/Context.hpp"
@@ -35,11 +34,10 @@ class UBOCam {
 private:
 	Uniform *uniform;
 	UBOData &UBOdata;
-	std::string  UBOName;
 	PipelineLayout *globalLayout;
 	Set *globalSet;
 public:
-	UBOCam(ThreadContext *context, const std::string &UBOName_);
+	UBOCam(ThreadContext *context);
 	~UBOCam();
 	//void IndexAndBinding(uint32_t program);
 	void update();
