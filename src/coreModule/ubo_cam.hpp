@@ -41,7 +41,7 @@ private:
 public:
 	UBOCam(ThreadContext *context, const std::string &UBOName_);
 	~UBOCam();
-	void IndexAndBinding(uint32_t program);
+	//void IndexAndBinding(uint32_t program);
 	void update();
 
 	void setClippingFov(const Vec3f &v) {
