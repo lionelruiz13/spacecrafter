@@ -36,6 +36,7 @@
 #include "coreModule/meteor_mgr.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/starLines.hpp"
+#include "ojmModule/ojm_mgr.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -487,4 +488,19 @@ std::string CoreLink::tcpGetPosition() const {
 		core->observatory->getAltitude(), core->timeMgr->getJDay(),
 		core->navigation->getHeading());
 	return tmp;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// BodyOJM---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::BodyOJMLoad(const std::string &mode, const std::string &name, const std::string &filename, const std::string &pathFile, const Vec3f &Position, const float multiplier) {
+	core->ojmMgr->load(mode, name, filename, pathFile, Position, multiplier);
+}
+
+void CoreLink::BodyOJMRemove(const std::string &mode, const std::string &name){
+	core->ojmMgr->remove(mode, name);
+}
+
+void CoreLink::BodyOJMRemoveAll(const std::string &mode){
+	core->ojmMgr->removeAll(mode);
 }

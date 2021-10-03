@@ -59,6 +59,8 @@
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/sky_localizer.hpp"
+#include "ojmModule/ojm_mgr.hpp"
+
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -101,7 +103,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	universeCloudNav = std::make_unique<CloudNavigator>(context);
 	dsoNav = std::make_unique<DsoNavigator>(context, "dso3d-color.png");
 	starLines = std::make_unique<StarLines>(context);
-	ojmMgr = new OjmMgr(context);
+	ojmMgr = std::make_unique<OjmMgr>(context);
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
 	skyGridMgr = std::make_unique<SkyGridMgr>(context);
@@ -222,7 +224,7 @@ Core::~Core()
 	// delete oort;
 	// delete dso3d;
 	// delete tully;
-	delete ojmMgr;
+	// delete ojmMgr;
 	delete starNav;
 	//delete cloudNav;
 	//delete universeCloudNav;

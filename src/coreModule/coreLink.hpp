@@ -394,20 +394,14 @@ public:
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
-	// Body---------------------------
+	// BodyOJM---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
-	void BodyOJMLoad(const std::string &mode, const std::string &name, const std::string &filename, const std::string &pathFile, const Vec3f &Position, const float multiplier) {
-		core->ojmMgr->load(mode, name, filename, pathFile, Position, multiplier);
-	}
+	void BodyOJMLoad(const std::string &mode, const std::string &name, const std::string &filename, const std::string &pathFile, const Vec3f &Position, const float multiplier);
 
-	void BodyOJMRemove(const std::string &mode, const std::string &name){
-		core->ojmMgr->remove(mode, name);
-	}
+	void BodyOJMRemove(const std::string &mode, const std::string &name);
 
-	void BodyOJMRemoveAll(const std::string &mode){
-		core->ojmMgr->removeAll(mode);
-	}
+	void BodyOJMRemoveAll(const std::string &mode);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Camera---------------------------

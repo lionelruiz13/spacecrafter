@@ -62,7 +62,7 @@
 #include "navModule/anchor_manager.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
-#include "ojmModule/ojm_mgr.hpp"
+//#include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "starModule/hip_star_mgr.hpp"
 
@@ -98,6 +98,7 @@ class Atmosphere;
 class SkyLocalizer;
 class CloudNavigator;
 class DsoNavigator;
+class OjmMgr;
 
 //!  @brief Main class for application core processing.
 //!
@@ -529,7 +530,7 @@ private:
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
 	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
 	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
-	OjmMgr * ojmMgr;					// représente les obj3D
+	std::unique_ptr<OjmMgr> ojmMgr;					// représente les obj3D
 	UBOCam* ubo_cam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
