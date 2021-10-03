@@ -37,6 +37,7 @@
 #include "inGalaxyModule/dsoNavigator.hpp"
 #include "coreModule/starLines.hpp"
 #include "ojmModule/ojm_mgr.hpp"
+#include "inGalaxyModule/starNavigator.hpp"
 
 InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {

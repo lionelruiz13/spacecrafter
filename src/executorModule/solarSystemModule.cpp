@@ -23,6 +23,8 @@
  */
 
 #include <iostream>
+#include <future>
+
 #include "solarSystemModule.hpp"
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
@@ -39,6 +41,7 @@
 #include "coreModule/illuminate_mgr.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/time_mgr.hpp"
+
 
 void SolarSystemModule::onEnter()
 {    

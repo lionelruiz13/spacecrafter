@@ -133,47 +133,6 @@ public:
 	bool tullyGetWhiteColor() {
 		return core->tully->getWhiteColor();
 	}
-	////////////////////////////////////////////////////////////////////////////////
-	// Stars---------------------------
-	////////////////////////////////////////////////////////////////////////////////
-	void starSetFlag(bool b) {
-		core->hip_stars->setFlagShow(b);
-		core->starNav->setFlagStars(b);
-	}
-
-	bool starGetFlag() const {
-		return core->hip_stars->getFlagShow();
-	}
-
-	void starSetTraceFlag(bool b) {
-		core->hip_stars->setFlagTrace(b);
-	}
-
-	bool starGetTraceFlag() const {
-		return core->hip_stars->getFlagTrace();
-	}
-
-	void starSetColorTable(int p, Vec3f a) {
-		core->hip_stars->setColorStarTable(p,a);
-	}
-
-	void starSetDuration(float f) {
-		return core->hip_stars->setFaderDuration(f);
-	}
-
-	void starSetFlagName(bool b) {
-		core->hip_stars->setFlagNames(b);
-	}
-	bool starGetFlagName() const {
-		return core->hip_stars->getFlagNames();
-	}
-
-	void starSetLimitingMag(float f) {
-		core->hip_stars->setMagConverterMaxScaled60DegMag(f);
-	}
-	float starGetLimitingMag() const {
-		return core->hip_stars->getMagConverterMaxScaled60DegMag();
-	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Illuminate---------------------------
@@ -205,71 +164,60 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// stars
 	////////////////////////////////////////////////////////////////////////////////
+	void starSetFlag(bool b);
 
-	void starSetFlagTwinkle(bool b) {
-		core->hip_stars->setFlagTwinkle(b);
-	}
-	bool starGetFlagTwinkle() const {
-		return core->hip_stars->getFlagTwinkle();
-	}
+	bool starGetFlag() const;
 
-	void starSetMaxMagName(float f) {
-		core->hip_stars->setMaxMagName(f);
-	}
-	float starGetMaxMagName() const {
-		return core->hip_stars->getMaxMagName();
-	}
+	void starSetTraceFlag(bool b);
 
-	void starSetSizeLimit(float f) {
-		core->starNav->setStarSizeLimit(f);
-		core->setStarSizeLimit(f);
-	}
+	bool starGetTraceFlag() const;
 
-	void starSetScale(float f) {
-		core->starNav->setScale(f);
-		core->hip_stars->setScale(f);
-	}
-	float starGetScale() const {
-		return core->hip_stars->getScale();
-	}
+	void starSetColorTable(int p, Vec3f a);
 
-	void starSetMagScale(float f) {
-		core->starNav->setMagScale(f);
-		core->hip_stars->setMagScale(f);
-	}
-	float starGetMagScale() const {
-		return core->hip_stars->getMagScale();
-	}
+	void starSetDuration(float f);
 
-	void starSetTwinkleAmount(float f) {
-		core->hip_stars->setTwinkleAmount(f);
-	}
-	float  starGetTwinkleAmount() const {
-		return core->hip_stars->getTwinkleAmount();
-	}
+	void starSetFlagName(bool b);
+
+	bool starGetFlagName() const;
+
+	void starSetLimitingMag(float f);
+
+	float starGetLimitingMag() const;
+
+	void starSetFlagTwinkle(bool b);
+
+	bool starGetFlagTwinkle() const;
+
+	void starSetMaxMagName(float f);
+
+	float starGetMaxMagName() const;
+
+	void starSetSizeLimit(float f);
+
+	void starSetScale(float f);
+
+	float starGetScale() const;
+
+	void starSetMagScale(float f);
+
+	float starGetMagScale() const;
+
+	void starSetTwinkleAmount(float f);
+
+	float  starGetTwinkleAmount() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// StarNavigator---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	void starNavigatorClear(){
-		core->starNav->clear();
-	}
+	void starNavigatorClear();
 
-	void starNavigatorLoad(const std::string &fileName, bool binaryMode){
-		core->starNav->loadData(fileName, binaryMode);
-	}
+	void starNavigatorLoad(const std::string &fileName, bool binaryMode);
 
-	void starNavigatorLoadRaw(const std::string &fileName){
-		core->starNav->loadRawData(fileName);
-	}
+	void starNavigatorLoadRaw(const std::string &fileName);
 
-	void starNavigatorLoadOther(const std::string &fileName){
-		core->starNav->loadOtherData(fileName);
-	}
+	void starNavigatorLoadOther(const std::string &fileName);
 
-	void starNavigatorSave(const std::string &fileName, bool binaryMode){
-		core->starNav->saveData(fileName, binaryMode);
-	}
+	void starNavigatorSave(const std::string &fileName, bool binaryMode);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// SunTrace---------------------------

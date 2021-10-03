@@ -52,7 +52,7 @@
 //#include "coreModule/skydisplay_mgr.hpp"
 //#include "coreModule/skyDisplay.hpp"
 //#include "coreModule/starLines.hpp"
-#include "inGalaxyModule/starNavigator.hpp"
+//#include "inGalaxyModule/starNavigator.hpp"
 //#include "inGalaxyModule/cloudNavigator.hpp"
 //#include "inGalaxyModule/dsoNavigator.hpp"
 //#include "mediaModule/text_mgr.hpp"
@@ -99,6 +99,7 @@ class SkyLocalizer;
 class CloudNavigator;
 class DsoNavigator;
 class OjmMgr;
+class StarNavigator;
 
 //!  @brief Main class for application core processing.
 //!
@@ -525,7 +526,7 @@ private:
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
 	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
-	StarNavigator* starNav; 			// permet le voyage dans les étoiles
+	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les étoiles
 	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
 	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
