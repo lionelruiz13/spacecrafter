@@ -42,7 +42,7 @@
 #include "coreModule/landscape.hpp"
 //#include "coreModule/meteor_mgr.hpp"
 //#include "coreModule/milkyway.hpp"
-#include "coreModule/nebula_mgr.hpp"
+//#include "coreModule/nebula_mgr.hpp"
 //#include "coreModule/oort.hpp"
 #include "coreModule/projector.hpp"
 //#include "coreModule/skygrid_mgr.hpp"
@@ -75,6 +75,7 @@
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"
 #include "vulkanModule/Context.hpp"
+#include "tools/translator.hpp"
 
 class StarNavigator;
 class BodyDecor;
@@ -101,6 +102,7 @@ class DsoNavigator;
 class OjmMgr;
 class StarNavigator;
 class UBOCam;
+class NebulaMgr;
 
 //!  @brief Main class for application core processing.
 //!
@@ -380,13 +382,9 @@ public:
 	void removeSupplementalSolarSystemBodies();
 
 	//! set flag to display generic Hint or specific DSO type
-	void setDsoPictograms (bool value) {
-		nebulas->setDisplaySpecificHint(value);
-	}
+	void setDsoPictograms (bool value);
 	//! get flag to display generic Hint or specific DSO type
-	bool getDsoPictograms () {
-		return nebulas->getDisplaySpecificHint();
-	}
+	bool getDsoPictograms ();
 
 	bool loadNebula(double ra, double de, double magnitude, double angular_size, double rotation,
 	                std::string name, std::string filename, std::string credit, double texture_luminance_adjust,
@@ -507,7 +505,7 @@ private:
 	Object old_selected_object;		// The old selected object
 	HipStarMgr * hip_stars;		// Manage the hipparcos stars
 	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
-	NebulaMgr * nebulas;				// Manage the nebulas
+	std::unique_ptr<NebulaMgr> nebulas;				// Manage the nebulas
 	std::unique_ptr<IlluminateMgr> illuminates;		// Manage the illuminations
 	//TextMgr * text_usr;				// manage all user text in dome
 	//SolarSystem* ssystem;				// Manage the solar system

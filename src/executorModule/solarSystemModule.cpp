@@ -41,7 +41,7 @@
 #include "coreModule/illuminate_mgr.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/time_mgr.hpp"
-
+#include "coreModule/nebula_mgr.hpp"
 
 void SolarSystemModule::onEnter()
 {    
