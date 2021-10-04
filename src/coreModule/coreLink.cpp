@@ -36,6 +36,9 @@
 #include "coreModule/meteor_mgr.hpp"
 #include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/starLines.hpp"
+#include "ojmModule/ojm_mgr.hpp"
+#include "inGalaxyModule/starNavigator.hpp"
+#include "coreModule/ubo_cam.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -487,4 +490,141 @@ std::string CoreLink::tcpGetPosition() const {
 		core->observatory->getAltitude(), core->timeMgr->getJDay(),
 		core->navigation->getHeading());
 	return tmp;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// BodyOJM---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::BodyOJMLoad(const std::string &mode, const std::string &name, const std::string &filename, const std::string &pathFile, const Vec3f &Position, const float multiplier) {
+	core->ojmMgr->load(mode, name, filename, pathFile, Position, multiplier);
+}
+
+void CoreLink::BodyOJMRemove(const std::string &mode, const std::string &name){
+	core->ojmMgr->remove(mode, name);
+}
+
+void CoreLink::BodyOJMRemoveAll(const std::string &mode){
+	core->ojmMgr->removeAll(mode);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Stars---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::starSetFlag(bool b) {
+	core->hip_stars->setFlagShow(b);
+	core->starNav->setFlagStars(b);
+}
+
+bool CoreLink::starGetFlag() const {
+	return core->hip_stars->getFlagShow();
+}
+
+void CoreLink::starSetTraceFlag(bool b) {
+	core->hip_stars->setFlagTrace(b);
+}
+
+bool CoreLink::starGetTraceFlag() const {
+	return core->hip_stars->getFlagTrace();
+}
+
+void CoreLink::starSetColorTable(int p, Vec3f a) {
+	core->hip_stars->setColorStarTable(p,a);
+}
+
+void CoreLink::starSetDuration(float f) {
+	return core->hip_stars->setFaderDuration(f);
+}
+
+void CoreLink::starSetFlagName(bool b) {
+	core->hip_stars->setFlagNames(b);
+}
+bool CoreLink::starGetFlagName() const {
+	return core->hip_stars->getFlagNames();
+}
+
+void CoreLink::starSetLimitingMag(float f) {
+	core->hip_stars->setMagConverterMaxScaled60DegMag(f);
+}
+
+float CoreLink::starGetLimitingMag() const {
+	return core->hip_stars->getMagConverterMaxScaled60DegMag();
+}
+
+void CoreLink::starSetFlagTwinkle(bool b) {
+	core->hip_stars->setFlagTwinkle(b);
+}
+bool CoreLink::starGetFlagTwinkle() const {
+	return core->hip_stars->getFlagTwinkle();
+}
+
+void CoreLink::starSetMaxMagName(float f) {
+	core->hip_stars->setMaxMagName(f);
+}
+float CoreLink::starGetMaxMagName() const {
+	return core->hip_stars->getMaxMagName();
+}
+
+void CoreLink::starSetSizeLimit(float f) {
+	core->starNav->setStarSizeLimit(f);
+	core->setStarSizeLimit(f);
+}
+
+void CoreLink::starSetScale(float f) {
+	core->starNav->setScale(f);
+	core->hip_stars->setScale(f);
+}
+
+float CoreLink::starGetScale() const {
+	return core->hip_stars->getScale();
+}
+
+void CoreLink::starSetMagScale(float f) {
+	core->starNav->setMagScale(f);
+	core->hip_stars->setMagScale(f);
+}
+
+float CoreLink::starGetMagScale() const {
+	return core->hip_stars->getMagScale();
+}
+
+void CoreLink::starSetTwinkleAmount(float f) {
+	core->hip_stars->setTwinkleAmount(f);
+}
+
+float CoreLink::starGetTwinkleAmount() const {
+	return core->hip_stars->getTwinkleAmount();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// StarNavigator---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::starNavigatorClear(){
+	core->starNav->clear();
+}
+
+void CoreLink::starNavigatorLoad(const std::string &fileName, bool binaryMode){
+	core->starNav->loadData(fileName, binaryMode);
+}
+
+void CoreLink::starNavigatorLoadRaw(const std::string &fileName){
+	core->starNav->loadRawData(fileName);
+}
+
+void CoreLink::starNavigatorLoadOther(const std::string &fileName){
+	core->starNav->loadOtherData(fileName);
+}
+
+void CoreLink::starNavigatorSave(const std::string &fileName, bool binaryMode){
+	core->starNav->saveData(fileName, binaryMode);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// UBO---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::uboSetAmbientLight(float v) {
+	core->uboCam->setAmbientLight(v);
+}
+
+float CoreLink::uboGetAmbientLight() {
+	return core->uboCam->getAmbientLight();
 }

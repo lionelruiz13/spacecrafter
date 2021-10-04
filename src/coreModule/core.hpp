@@ -52,24 +52,24 @@
 //#include "coreModule/skydisplay_mgr.hpp"
 //#include "coreModule/skyDisplay.hpp"
 //#include "coreModule/starLines.hpp"
-#include "inGalaxyModule/starNavigator.hpp"
-#include "inGalaxyModule/cloudNavigator.hpp"
-#include "inGalaxyModule/dsoNavigator.hpp"
+//#include "inGalaxyModule/starNavigator.hpp"
+//#include "inGalaxyModule/cloudNavigator.hpp"
+//#include "inGalaxyModule/dsoNavigator.hpp"
 //#include "mediaModule/text_mgr.hpp"
 //#include "coreModule/time_mgr.hpp"
 #include "coreModule/tully.hpp"
-#include "coreModule/ubo_cam.hpp"
+//#include "coreModule/ubo_cam.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
-#include "ojmModule/ojm_mgr.hpp"
+//#include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "starModule/hip_star_mgr.hpp"
 
 //#include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
 
-#include "coreModule/sky_localizer.hpp"
+//#include "coreModule/sky_localizer.hpp"
 
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
@@ -95,6 +95,12 @@ class MeteorMgr;
 class MilkyWay;
 class IlluminateMgr;
 class Atmosphere;
+class SkyLocalizer;
+class CloudNavigator;
+class DsoNavigator;
+class OjmMgr;
+class StarNavigator;
+class UBOCam;
 
 //!  @brief Main class for application core processing.
 //!
@@ -133,9 +139,7 @@ public:
 	}
 
 	//! Get the current sky culture I18 name
-	std::string getSkyCulture() const {
-		return skyloc->directoryToSkyCultureI18(skyCultureDir);
-	}
+	std::string getSkyCulture() const;
 
 	void setInitialSkyCulture() {
 		//printf("Culture %s\n",initialvalue.initial_skyCulture.c_str());
@@ -148,13 +152,8 @@ public:
 	}
 
 	//! Get the I18 available sky culture names
-	std::string getSkyCultureListI18() const {
-		return skyloc->getSkyCultureListI18();
-	}
-
-	std::string getSkyCultureHash() const {
-		return skyloc->getSkyCultureHash();
-	}
+	std::string getSkyCultureListI18() const;
+	std::string getSkyCultureHash() const;
 
 	bool loadSkyCulture(const std::string& culturePath);
 
@@ -428,7 +427,7 @@ public:
 	//! Load color scheme from the given ini file and section name
 	void setColorScheme(const std::string& skinFile, const std::string& section);
 
-	// MAJ de l'UBO ubo_cam
+	// MAJ de l'UBO uboCam
 	void uboCamUpdate();
 
 	void setFlagNav(bool a);
@@ -527,14 +526,14 @@ private:
 	std::unique_ptr<MeteorMgr> meteors;				// Manage meteor showers
 	Landscape * landscape;				// The landscape ie the fog, the ground and "decor"
 	ToneReproductor * tone_converter;	// Tones conversion between simulation world and display device
-	SkyLocalizer *skyloc;				// for sky cultures and locales
-	StarNavigator* starNav; 			// permet le voyage dans les étoiles
-	CloudNavigator* cloudNav; 			// draw galaxy gaz clouds
-	CloudNavigator* universeCloudNav; 	// draw galaxy gaz clouds when in universe
-	DsoNavigator* dsoNav; 				// draw 3d dso when in galaxy
+	std::unique_ptr<SkyLocalizer> skyloc;				// for sky cultures and locales
+	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les étoiles
+	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds
+	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
+	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
 	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
-	OjmMgr * ojmMgr;					// représente les obj3D
-	UBOCam* ubo_cam;
+	std::unique_ptr<OjmMgr> ojmMgr;					// représente les obj3D
+	std::unique_ptr<UBOCam> uboCam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
 

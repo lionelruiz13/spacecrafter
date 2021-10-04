@@ -60,7 +60,7 @@ public:
 	                   float temperature = 15.f, float relative_humidity = 40.f);
 
 	//! Draw the atmosphere using the precalc values stored in tab_sky
-	void draw(const Projector* prj, const std::string &planetName);
+	void draw();
 
 	void update(int delta_time) {
 		fader.update(delta_time);

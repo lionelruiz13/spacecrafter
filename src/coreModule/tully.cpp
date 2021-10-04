@@ -298,7 +298,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 }
 
 
-void Tully::draw(double distance, const Projector *prj,const Navigator *nav) noexcept
+void Tully::draw(double distance, const Navigator *nav) noexcept
 {
 	if (!fader.getInterstate()) return;
 	if (!isAlive) return;

@@ -58,6 +58,9 @@
 #include "coreModule/illuminate_mgr.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/time_mgr.hpp"
+#include "coreModule/sky_localizer.hpp"
+#include "ojmModule/ojm_mgr.hpp"
+
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -86,7 +89,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	context->global->textureMgr->initCustomMipmap(context->surface);
 
-	ubo_cam = new UBOCam(context, "cam_block");
+	uboCam = std::make_unique<UBOCam>(context);
 	tone_converter = new ToneReproductor();
 	atmosphere = std::make_shared<Atmosphere>(context);
 	timeMgr = std::make_shared<TimeMgr>();
@@ -95,12 +98,12 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	ssystemFactory = new SSystemFactory(context, observatory.get(), navigation, timeMgr.get());
 	nebulas = new NebulaMgr(context);
 	milky_way = std::make_shared<MilkyWay>(context);
-	starNav = new StarNavigator(context);
-	cloudNav = new CloudNavigator(context);
-	universeCloudNav = new CloudNavigator(context);
-	dsoNav = new DsoNavigator(context, "dso3d-color.png");
+	starNav = std::make_unique<StarNavigator>(context);
+	cloudNav = std::make_unique<CloudNavigator>(context);
+	universeCloudNav = std::make_unique<CloudNavigator>(context);
+	dsoNav = std::make_unique<DsoNavigator>(context, "dso3d-color.png");
 	starLines = std::make_unique<StarLines>(context);
-	ojmMgr = new OjmMgr(context);
+	ojmMgr = std::make_unique<OjmMgr>(context);
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
 	skyGridMgr = std::make_unique<SkyGridMgr>(context);
@@ -147,7 +150,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	cardinals_points = std::make_unique<Cardinals>();
 	meteors = std::make_unique<MeteorMgr>(10, 60, context);
 	landscape = new Landscape();
-	skyloc = new SkyLocalizer(AppSettings::Instance()->getSkyCultureDir());
+	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
 	hip_stars = new HipStarMgr(width,height, context);
 	asterisms = new ConstellationMgr(hip_stars, context);
 	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms, context);
@@ -212,20 +215,20 @@ Core::~Core()
 	// s_font::deleteShader();
 	//delete ssystem;
 	delete ssystemFactory;
-	delete skyloc;
-	skyloc = nullptr;
+	//delete skyloc;
+	//skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
 	// Object::deleteShaders();
 	//delete text_usr;
-	delete ubo_cam;
+	//delete uboCam;
 	// delete oort;
 	// delete dso3d;
 	// delete tully;
-	delete ojmMgr;
-	delete starNav;
-	delete cloudNav;
-	delete universeCloudNav;
-	delete dsoNav;
+	// delete ojmMgr;
+	//delete starNav;
+	//delete cloudNav;
+	//delete universeCloudNav;
+	//delete dsoNav;
 	//delete starLines;
 }
 
@@ -520,11 +523,23 @@ void Core::init(const InitParser& conf)
 
 void Core::uboCamUpdate()
 {
-	ubo_cam->setViewport(projection->getViewport());
-	ubo_cam->setClippingFov(projection->getClippingFov());
-	ubo_cam->setViewportCenter(projection->getViewportFloatCenter());
-	ubo_cam->setMVP2D(projection->getMatProjectionOrtho2D());
-	ubo_cam->update();
+	uboCam->setViewport(projection->getViewport());
+	uboCam->setClippingFov(projection->getClippingFov());
+	uboCam->setViewportCenter(projection->getViewportFloatCenter());
+	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
+	uboCam->update();
+}
+
+std::string Core::getSkyCulture() const {
+	return skyloc->directoryToSkyCultureI18(skyCultureDir);
+}
+
+std::string Core::getSkyCultureListI18() const {
+	return skyloc->getSkyCultureListI18();
+}
+
+std::string Core::getSkyCultureHash() const {
+	return skyloc->getSkyCultureHash();
 }
 
 //! Execute commun first drawing functions

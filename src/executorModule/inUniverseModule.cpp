@@ -24,11 +24,13 @@
 
 #include <iostream>
 #include "inUniverseModule.hpp"
+#include "inGalaxyModule/cloudNavigator.hpp"
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
+#include "ojmModule/ojm_mgr.hpp"
 
 InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {
@@ -96,7 +98,7 @@ void InUniverseModule::draw(int delta_time)
 	core->media->drawVR360(core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	core->universeCloudNav->draw(core->navigation, core->projection);
-	core->tully->draw(observer->getAltitude(), core->projection, core->navigation);
+	core->tully->draw(observer->getAltitude(), core->navigation);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	//core->postDraw();
 }
