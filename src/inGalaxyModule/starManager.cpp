@@ -233,7 +233,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	std::ifstream file(fileName, std::ifstream::in);
 	if (!file.is_open()) {
 		//std::cout << "ERREUR: Impossible d'ouvrir le fichier " << fileName << std::endl;
-		cLog::get()->write("StarManager::loadStarCatalog unable to open" + fileName, LOG_TYPE::L_ERROR);
+		cLog::get()->write("StarManager::loadStar catalog unable to open" + fileName + " - Feature disabled", LOG_TYPE::L_ERROR);
 		return false;
 	}
 

@@ -182,7 +182,7 @@ Texture::Texture(VirtualSurface *_master, TextureMgr *_mgr, const std::string &f
     mipmapCount = static_cast<uint32_t>(std::log2(std::max(std::max(texWidth, texHeight), texDepth))) + 1;
 
     if (!pixels) {
-        cLog::get()->write("Faild to load image '" + filename + "'", LOG_TYPE::L_WARNING);
+        cLog::get()->write("Failed to load image '" + filename + "'", LOG_TYPE::L_WARNING);
         isOk = false;
         return;
     }

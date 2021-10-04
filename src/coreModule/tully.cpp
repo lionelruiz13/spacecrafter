@@ -144,8 +144,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 
 	if (!file) {
 		//~ cout << "ERREUR: Impossible d'ouvrir le fichier " << cat << std::endl;
-		cLog::get()->write("TULLY: Impossible d'ouvrir le fichier " + cat ,LOG_TYPE::L_ERROR);
-		cLog::get()->write("TULLY: classe désactivée "+ cat ,LOG_TYPE::L_WARNING);
+		cLog::get()->write("TULLY catalog: missing file " + cat + " - Feature disabled",LOG_TYPE::L_ERROR);
 		return false;
 	}
 

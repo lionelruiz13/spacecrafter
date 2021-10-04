@@ -103,7 +103,7 @@ bool StarLines::loadHipCat(const std::string& fileName) noexcept
 	std::ifstream fileIn(fileName);
 
 	if (!fileIn.is_open()) {
-		cLog::get()->write("StarLines error opening "+fileName, LOG_TYPE::L_ERROR);
+		cLog::get()->write("StarLines error opening "+fileName + " - Feature disabled", LOG_TYPE::L_ERROR);
 		return false;
 	}
 
