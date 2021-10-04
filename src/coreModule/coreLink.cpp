@@ -32,6 +32,7 @@
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/nebula_mgr.hpp"
 
+#include "inGalaxyModule/dso3d.hpp"
 #include "coreModule/cardinals.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/meteor_mgr.hpp"

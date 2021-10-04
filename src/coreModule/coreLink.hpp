@@ -26,7 +26,7 @@
 
 #include <memory>
 #include "coreModule/core.hpp"
-#include "inGalaxyModule/dso3d.hpp"
+
 
 class CoreLink {
 public:
@@ -866,7 +866,7 @@ public:
 	bool nebulaGetFlagNames ();
 	void nebulaSetColorLabels(const Vec3f& v);
 	void nebulaSetColorCircle(const Vec3f& v);
-	
+
 	////////////////////////////////////////////////////////////////////////////////
 	// Oort    ---------------------------
 	////////////////////////////////////////////////////////////////////////////////
