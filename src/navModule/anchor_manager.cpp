@@ -151,7 +151,7 @@ AnchorManager::AnchorManager(
     Observer * obs, Navigator * nav,
     ProtoSystem * _ssystem,
     TimeMgr * mgr,
-    const OrbitCreator * orbitCreator) noexcept
+    std::shared_ptr<OrbitCreator> orbitCreator) noexcept
 {
 	observer = obs;
 	navigator = nav;

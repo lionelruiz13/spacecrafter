@@ -56,7 +56,7 @@ public:
 
 	AnchorManager() = delete;
 
-	AnchorManager(Observer * obs, Navigator * nav, ProtoSystem * _ssystem, TimeMgr * mgr, const OrbitCreator * orbitCreator)noexcept;
+	AnchorManager(Observer * obs, Navigator * nav, ProtoSystem * _ssystem, TimeMgr * mgr, std::shared_ptr<OrbitCreator> orbitCreator)noexcept;
 
 	AnchorManager(const AnchorManager&) = delete;
 

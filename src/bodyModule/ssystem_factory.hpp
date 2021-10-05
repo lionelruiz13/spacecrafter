@@ -265,7 +265,7 @@ public:
         ssystemTex->planetTesselation(name, value);
     }
     
-	const OrbitCreator * getOrbitCreator()const {
+	const std::shared_ptr<OrbitCreator> getOrbitCreator()const {
         return currentSystem->getOrbitCreator();   
     }
 

@@ -108,7 +108,7 @@ AnchorPointOrbitCreator::AnchorPointOrbitCreator(
     const AnchorCreator * _next,
     const ProtoSystem * _ssystem,
     const TimeMgr * _timeMgr,
-    const OrbitCreator * _orbitCreator):
+    std::shared_ptr<OrbitCreator> _orbitCreator):
 	AnchorCreator(_next)
 {
 	ssystem = _ssystem;

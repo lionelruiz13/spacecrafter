@@ -76,11 +76,11 @@ private :
 class AnchorPointOrbitCreator : public AnchorCreator {
 public:
 	AnchorPointOrbitCreator() = delete;
-	AnchorPointOrbitCreator(const AnchorCreator* _next, const ProtoSystem * ssystem, const TimeMgr * timeMgr, const OrbitCreator * orbitCreator);
+	AnchorPointOrbitCreator(const AnchorCreator* _next, const ProtoSystem * ssystem, const TimeMgr * timeMgr, std::shared_ptr<OrbitCreator> orbitCreator);
 	std::shared_ptr<AnchorPoint> handle(stringHash_t param)const;
 
 private :
 	const ProtoSystem * ssystem;
 	const TimeMgr * timeMgr;
-	const OrbitCreator * orbitCreator;
+	std::shared_ptr<OrbitCreator> orbitCreator;
 };

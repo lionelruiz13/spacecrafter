@@ -133,7 +133,7 @@ public:
 	
 	std::string getPlanetsPosition();
 	
-	const OrbitCreator * getOrbitCreator()const{
+	std::shared_ptr<OrbitCreator> getOrbitCreator()const{
 		return orbitCreator;
 	}
 		
@@ -175,7 +175,7 @@ protected:
 	ThreadContext *context;
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
 	std::shared_ptr<Body> bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
-	OrbitCreator * orbitCreator = nullptr;
+	std::shared_ptr<OrbitCreator> orbitCreator = nullptr;
 	AnchorManager * anchorManager = nullptr;
 	Vec3i ringsInit;
 	std::shared_ptr<Body> centerObject = nullptr;
