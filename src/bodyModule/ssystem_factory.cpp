@@ -50,7 +50,7 @@ SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, N
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
     stellarSystem = std::make_unique<ProtoSystem>(_context, objLMgr.get(), observatory, navigation, timeMgr);
 
-    bodytrace= new BodyTrace(_context);
+    bodytrace= std::make_shared<BodyTrace>(_context);
 
     context = _context;
     observatory = observatory;
@@ -60,7 +60,7 @@ SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, N
     
 SSystemFactory::~SSystemFactory()
 {
-	delete bodytrace;
+	//delete bodytrace;
 }
 
 void SSystemFactory::changeSystem(const std::string mode)

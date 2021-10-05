@@ -503,7 +503,7 @@ private:
 
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 
-	BodyTrace * bodytrace;				// the pen bodytrace
+	std::shared_ptr<BodyTrace> bodytrace;				// the pen bodytrace
     ThreadContext *context;
     Observer *observatory;
     Navigator *navigation;
