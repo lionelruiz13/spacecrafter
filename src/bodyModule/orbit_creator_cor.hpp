@@ -27,20 +27,20 @@ class ProtoSystem;
 class OrbitCreator {
 public:
 	OrbitCreator() = delete;
-	OrbitCreator(const OrbitCreator * _next) {
+	OrbitCreator(std::shared_ptr<OrbitCreator> _next) {
 		next = _next;
 	}
 
 	virtual std::unique_ptr<Orbit> handle(stringHash_t param)const = 0;
 
 protected:
-	const OrbitCreator * next = nullptr;
+	std::shared_ptr<OrbitCreator> next = nullptr;
 };
 
 class OrbitCreatorEliptic : public OrbitCreator {
 public:
 	OrbitCreatorEliptic() = delete;
-	OrbitCreatorEliptic(const OrbitCreator * next, const ProtoSystem * ssystem);
+	OrbitCreatorEliptic(std::shared_ptr<OrbitCreator> next, const ProtoSystem * ssystem);
 	virtual std::unique_ptr<Orbit> handle(stringHash_t params)const;
 
 private :
@@ -50,7 +50,7 @@ private :
 class OrbitCreatorComet : public OrbitCreator {
 public:
 	OrbitCreatorComet() = delete;
-	OrbitCreatorComet(const OrbitCreator * next, const ProtoSystem * ssystem);
+	OrbitCreatorComet(std::shared_ptr<OrbitCreator> next, const ProtoSystem * ssystem);
 	virtual std::unique_ptr<Orbit> handle(stringHash_t params)const;
 
 private :
@@ -60,14 +60,14 @@ private :
 class OrbitCreatorSpecial : public OrbitCreator {
 public:
 	OrbitCreatorSpecial() = delete;
-	OrbitCreatorSpecial(const OrbitCreator *);
+	OrbitCreatorSpecial(std::shared_ptr<OrbitCreator>);
 	virtual std::unique_ptr<Orbit> handle(stringHash_t params) const;
 };
 
 class OrbitCreatorBary : public OrbitCreator {
 public:
 	OrbitCreatorBary() = delete;
-	OrbitCreatorBary(const OrbitCreator *, ProtoSystem * _psystem);
+	OrbitCreatorBary(std::shared_ptr<OrbitCreator>, ProtoSystem * _psystem);
 	virtual std::unique_ptr<Orbit> handle(stringHash_t params) const;
 
 private:

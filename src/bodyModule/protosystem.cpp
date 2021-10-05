@@ -55,9 +55,9 @@ ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *o
 	Body::createDefaultAtmosphereParams();
 
 
-	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
-	OrbitCreator * comet = new OrbitCreatorComet(special, this);
-	OrbitCreator * elip = new OrbitCreatorEliptic(comet, this);
+	std::shared_ptr<OrbitCreator> special = std::make_shared<OrbitCreatorSpecial>(nullptr);
+	std::shared_ptr<OrbitCreator> comet = std::make_shared<OrbitCreatorComet>(special, this);
+	std::shared_ptr<OrbitCreator> elip = std::make_shared<OrbitCreatorEliptic>(comet, this);
 	orbitCreator = new OrbitCreatorBary(elip, this);
 
 	anchorManager = new AnchorManager(observatory,navigation, this, timeMgr, getOrbitCreator());

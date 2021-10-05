@@ -22,7 +22,7 @@
 //#include "tools/fmath.hpp"
 #include "tools/sc_const.hpp"
 
-OrbitCreatorEliptic::OrbitCreatorEliptic(const OrbitCreator * _next, const ProtoSystem * _psystem) :
+OrbitCreatorEliptic::OrbitCreatorEliptic(std::shared_ptr<OrbitCreator> _next, const ProtoSystem * _psystem) :
 	OrbitCreator(_next)
 {
 	psystem = _psystem;
@@ -97,7 +97,7 @@ std::unique_ptr<Orbit> OrbitCreatorEliptic::handle(stringHash_t params) const
 
 }
 
-OrbitCreatorComet::OrbitCreatorComet(const OrbitCreator * _next, const ProtoSystem * _psystem) :
+OrbitCreatorComet::OrbitCreatorComet(std::shared_ptr<OrbitCreator> _next, const ProtoSystem * _psystem) :
 	OrbitCreator(_next)
 {
 	psystem = _psystem;
@@ -227,7 +227,7 @@ std::unique_ptr<Orbit> OrbitCreatorComet::handle(stringHash_t params) const
 
 }
 
-OrbitCreatorSpecial::OrbitCreatorSpecial(const OrbitCreator * next) :
+OrbitCreatorSpecial::OrbitCreatorSpecial(std::shared_ptr<OrbitCreator> next) :
 	OrbitCreator(next) { }
 
 std::unique_ptr<Orbit> OrbitCreatorSpecial::handle(stringHash_t params) const
@@ -247,7 +247,7 @@ std::unique_ptr<Orbit> OrbitCreatorSpecial::handle(stringHash_t params) const
 	return sorb;
 }
 
-OrbitCreatorBary::OrbitCreatorBary(const OrbitCreator * _next, ProtoSystem * _psystem):
+OrbitCreatorBary::OrbitCreatorBary(std::shared_ptr<OrbitCreator> _next, ProtoSystem * _psystem):
 	OrbitCreator(_next)
 {
 	psystem = _psystem;
