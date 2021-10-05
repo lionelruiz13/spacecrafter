@@ -374,7 +374,7 @@ public:
         return currentSystem->searchByEnglishName(planetEnglishName);
     }
 
-    void setAnchorManager(AnchorManager * _anchorManager) {
+    void setAnchorManager(std::shared_ptr<AnchorManager> _anchorManager) {
         currentSystem->setAnchorManager(_anchorManager);
     }
 

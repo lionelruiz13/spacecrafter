@@ -156,7 +156,7 @@ AnchorManager::AnchorManager(
 	observer = obs;
 	navigator = nav;
 	ssystem = _ssystem;
-	_ssystem->setAnchorManager(this);
+	//_ssystem->setAnchorManager(this);
 	timeMgr = mgr;
 
 	AnchorCreator * observatory = new AnchorObservatoryCreator(nullptr);	

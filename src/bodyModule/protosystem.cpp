@@ -60,14 +60,15 @@ ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *o
 	std::shared_ptr<OrbitCreator> elip = std::make_shared<OrbitCreatorEliptic>(comet, this);
 	orbitCreator = std::make_shared<OrbitCreatorBary>(elip, this);
 
-	anchorManager = new AnchorManager(observatory,navigation, this, timeMgr, getOrbitCreator());
+	anchorManager = std::make_shared<AnchorManager>(observatory,navigation, this, timeMgr, getOrbitCreator());
+	setAnchorManager(anchorManager);
 }
 
 ProtoSystem::~ProtoSystem()
 {
 	systemBodies.clear();
 	renderedBodies.clear();
-	delete anchorManager;
+	//delete anchorManager;
 }
 
 

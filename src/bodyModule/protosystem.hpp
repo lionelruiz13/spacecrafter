@@ -137,11 +137,11 @@ public:
 		return orbitCreator;
 	}
 		
-	void setAnchorManager(AnchorManager * _anchorManager){
+	void setAnchorManager(std::shared_ptr<AnchorManager> _anchorManager){
 		anchorManager = _anchorManager;
 	}
 
-	AnchorManager *getAnchorManager() {
+	std::shared_ptr<AnchorManager> getAnchorManager() {
 		return anchorManager;
 	}
 
@@ -176,7 +176,7 @@ protected:
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
 	std::shared_ptr<Body> bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 	std::shared_ptr<OrbitCreator> orbitCreator = nullptr;
-	AnchorManager * anchorManager = nullptr;
+	std::shared_ptr<AnchorManager> anchorManager = nullptr;
 	Vec3i ringsInit;
 	std::shared_ptr<Body> centerObject = nullptr;
 
