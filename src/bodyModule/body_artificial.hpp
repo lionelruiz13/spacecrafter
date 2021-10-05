@@ -63,7 +63,7 @@ protected :
 		return;
 	}
 
-	Ojm *obj3D;
+	std::unique_ptr<Ojm> obj3D;
 	std::unique_ptr<Set> set;
 	Set *pushSet;
 	std::unique_ptr<Uniform> uProj, uLight, uNormalMatrix;

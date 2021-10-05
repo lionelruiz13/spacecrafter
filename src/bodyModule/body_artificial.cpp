@@ -70,7 +70,7 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 {
 	selectShader();
     createSC_context(context);
-	obj3D = new Ojm(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius, context->surface);
+	obj3D = std::make_unique<Ojm>(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius, context->surface);
 	if (!obj3D -> getOk())
 		std::cout << "Error with " << englishName << " " << model_name << std::endl;
 	orbitPlot = new Orbit2D(this);
@@ -79,7 +79,7 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 
 Artificial::~Artificial()
 {
-	if (obj3D) delete obj3D;
+	//if (obj3D) delete obj3D;
 }
 
 void Artificial::selectShader ()
