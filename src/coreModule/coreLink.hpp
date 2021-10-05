@@ -26,7 +26,7 @@
 
 #include <memory>
 #include "coreModule/core.hpp"
-#include "inGalaxyModule/dso3d.hpp"
+
 
 class CoreLink {
 public:
@@ -282,29 +282,15 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 
 	//! hide a particular DSO
-	void dsoSelectName(std::string DSOName, bool hide) const {
-		return core->nebulas->selectName(hide, DSOName);
-	}
-
+	void dsoSelectName(std::string DSOName, bool hide) const;
 	//! hide all DSO
-	void dsoHideAll() const {
-		core->nebulas->hideAll();
-	}
-
+	void dsoHideAll() const;
 	//! show (unhide) all DSO
-	void dsoShowAll() const {
-		core->nebulas->showAll();
-	}
-
+	void dsoShowAll() const;
 	//! select all DSO in constellationName to be hidden or showed
-	void dsoSelectConstellation(bool hide, std::string constellationName) const {
-		core->nebulas->selectConstellation(hide, constellationName);
-	}
-
+	void dsoSelectConstellation(bool hide, std::string constellationName) const;
 	//! select all DSO with typeName to be hidden or showed
-	void dsoSelectType(bool hide, std::string typeName) const {
-		core->nebulas->selectType(hide, typeName);
-	}
+	void dsoSelectType(bool hide, std::string typeName) const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// FOV ( projection )
@@ -855,68 +841,31 @@ public:
 	// Nebulae---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	//! Set flag for displaying Nebulae
-	void nebulaSetFlag(bool b) {
-		core->nebulas->setFlagShow(b);
-		core->dso3d->setFlagShow(b);
-	}
+	void nebulaSetFlag(bool b);
 	//! Get flag for displaying Nebulae
-	bool nebulaGetFlag() const {
-		return core->nebulas->getFlagShow();
-	}
-
+	bool nebulaGetFlag() const;
 	//! Set flag for displaying Nebulae Hints
-	void nebulaSetFlagHints(bool b) {
-		core->nebulas->setFlagHints(b);
-	}
+	void nebulaSetFlagHints(bool b);
 	//! Get flag for displaying Nebulae Hints
-	bool nebulaGetFlagHints() const {
-		return core->nebulas->getFlagHints();
-	}
-
+	bool nebulaGetFlagHints() const;
 	//! Set flag for displaying Nebulae as bright
-	void nebulaSetFlagBright(bool b) {
-		core->nebulas->setFlagBright(b);
-	}
+	void nebulaSetFlagBright(bool b);
 	//! Get flag for displaying Nebulae as brigth
-	bool nebulaGetFlagBright() const {
-		return core->nebulas->getFlagBright();
-	}
-
+	bool nebulaGetFlagBright() const;
 	//! Set maximum magnitude at which nebulae hints are displayed
-	void nebulaSetMaxMagHints(float f) {
-		core->nebulas->setMaxMagHints(f);
-	}
+	void nebulaSetMaxMagHints(float f);
 	//! Get maximum magnitude at which nebulae hints are displayed
-	float nebulaGetMaxMagHints() const {
-		return core->nebulas->getMaxMagHints();
-	}
-
+	float nebulaGetMaxMagHints() const;
 	//! return the color for the DSO object
-	Vec3f nebulaGetColorLabels() const {
-		return core->nebulas->getLabelColor();
-	}
-
+	Vec3f nebulaGetColorLabels() const;
 	//! return the color of the DSO circle
-	Vec3f nebulaGetColorCircle() const {
-		return core->nebulas->getCircleColor();
-	}
-
+	Vec3f nebulaGetColorCircle() const;
 	//!set Flag DSO Name who display DSO name
-	void nebulaSetFlagNames (bool value) {
-		core->nebulas->setNebulaNames(value);
-	}
-
+	void nebulaSetFlagNames (bool value);
 	//!get flag DSO Name who display DSO name
-	bool nebulaGetFlagNames () {
-		return core->nebulas->getNebulaNames();
-	}
-
-	void nebulaSetColorLabels(const Vec3f& v) {
-		core->nebulas->setLabelColor(v);
-	}
-	void nebulaSetColorCircle(const Vec3f& v) {
-		core->nebulas->setCircleColor(v);
-	}
+	bool nebulaGetFlagNames ();
+	void nebulaSetColorLabels(const Vec3f& v);
+	void nebulaSetColorCircle(const Vec3f& v);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Oort    ---------------------------

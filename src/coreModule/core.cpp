@@ -60,7 +60,7 @@
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/sky_localizer.hpp"
 #include "ojmModule/ojm_mgr.hpp"
-
+#include "coreModule/nebula_mgr.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -72,7 +72,7 @@
 Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
-	nebulas(nullptr), illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)
+	illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
@@ -96,7 +96,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	navigation = new Navigator();
 	observatory = _observatory;
 	ssystemFactory = new SSystemFactory(context, observatory.get(), navigation, timeMgr.get());
-	nebulas = new NebulaMgr(context);
+	nebulas = std::make_unique<NebulaMgr>(context);
 	milky_way = std::make_shared<MilkyWay>(context);
 	starNav = std::make_unique<StarNavigator>(context);
 	cloudNav = std::make_unique<CloudNavigator>(context);
@@ -197,7 +197,7 @@ Core::~Core()
 	delete projection;
 	delete asterisms;
 	delete hip_stars;
-	delete nebulas;
+	//delete nebulas;
 	//delete illuminates;
 	// skyGridMgr.reset(nullptr);
 	// skyLineMgr.reset(nullptr);
@@ -540,6 +540,15 @@ std::string Core::getSkyCultureListI18() const {
 
 std::string Core::getSkyCultureHash() const {
 	return skyloc->getSkyCultureHash();
+}
+
+//! set flag to display generic Hint or specific DSO type
+void Core::setDsoPictograms (bool value) {
+	nebulas->setDisplaySpecificHint(value);
+	}
+//! get flag to display generic Hint or specific DSO type
+bool Core::getDsoPictograms () {
+	return nebulas->getDisplaySpecificHint();
 }
 
 //! Execute commun first drawing functions
