@@ -41,6 +41,7 @@
 
 
 #include "ojmModule/objl.hpp"
+#include "bodyModule/trail.hpp"
 #include "bodyModule/orbit_plot.hpp"
 #include "body_common.hpp"
 #include "body_tesselation.hpp"
@@ -549,7 +550,7 @@ protected:
 
 	body_flags flags;
 
-	Trail * trail = nullptr;
+	std::unique_ptr<Trail> trail = nullptr;
 	Hints * hints = nullptr;
 	Axis * axis = nullptr;
 	std::unique_ptr<OrbitPlot> orbitPlot = nullptr;

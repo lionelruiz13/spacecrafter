@@ -73,11 +73,11 @@ SmallBody::SmallBody(std::shared_ptr<Body> parent,
         )
 {
 	if (_typePlanet == COMET) {
-		trail = new Trail(this,2920);
+		trail = std::make_unique<Trail>(this,2920);
 		orbitPlot = std::make_unique<Orbit2D>(this, 4800);
 	}
 	else {
-		trail = new Trail(this, 60);
+		trail = std::make_unique<Trail>(this, 60);
 		orbitPlot = std::make_unique<Orbit2D>(this);
 	}
 
@@ -87,7 +87,7 @@ SmallBody::SmallBody(std::shared_ptr<Body> parent,
 
 SmallBody::~SmallBody()
 {
-	if (trail) delete trail;
+	//if (trail) delete trail;
 	trail = nullptr;
 	//if (orbitPlot) delete orbitPlot;
 	orbitPlot = nullptr;
