@@ -147,7 +147,7 @@ Body::Body(std::shared_ptr<Body> parent,
 	flags.flag_halo =_flagHalo;
 
 	hints = std::make_shared<Hints>(this);
-	axis = new Axis(this);
+	axis = std::make_shared<Axis>(this);
 	halo = new Halo(this);
 
 	tex_current = tex_map;
@@ -165,7 +165,7 @@ Body::~Body()
 	//orbit = nullptr;
 	//if (hints) delete hints;
 	hints = nullptr;
-	if (axis) delete axis;
+	//if (axis) delete axis;
 	axis = nullptr;
 	if (halo) delete halo;
 	halo = nullptr;

@@ -553,7 +553,7 @@ protected:
 
 	std::unique_ptr<Trail> trail = nullptr;
 	std::shared_ptr<Hints> hints = nullptr;
-	Axis * axis = nullptr;
+	std::shared_ptr<Axis> axis = nullptr;
 	std::unique_ptr<OrbitPlot> orbitPlot = nullptr;
 	Halo * halo = nullptr;
 
