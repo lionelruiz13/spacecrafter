@@ -44,6 +44,7 @@
 #include "bodyModule/trail.hpp"
 #include "bodyModule/orbit_plot.hpp"
 #include "body_common.hpp"
+#include "bodyModule/hints.hpp"
 #include "body_tesselation.hpp"
 #include "tools/scalable.hpp"
 #include "bodyModule/bodyShader.hpp"
@@ -551,7 +552,7 @@ protected:
 	body_flags flags;
 
 	std::unique_ptr<Trail> trail = nullptr;
-	Hints * hints = nullptr;
+	std::shared_ptr<Hints> hints = nullptr;
 	Axis * axis = nullptr;
 	std::unique_ptr<OrbitPlot> orbitPlot = nullptr;
 	Halo * halo = nullptr;

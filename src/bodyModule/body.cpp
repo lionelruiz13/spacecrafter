@@ -41,7 +41,6 @@
 
 #include "tools/file_path.hpp"
 #include "bodyModule/trail.hpp"
-#include "bodyModule/hints.hpp"
 #include "bodyModule/axis.hpp"
 #include "bodyModule/halo.hpp"
 #include "bodyModule/orbit_plot.hpp"
@@ -147,7 +146,7 @@ Body::Body(std::shared_ptr<Body> parent,
 	flags.flag_orbit =false;
 	flags.flag_halo =_flagHalo;
 
-	hints = new Hints(this);
+	hints = std::make_shared<Hints>(this);
 	axis = new Axis(this);
 	halo = new Halo(this);
 
@@ -164,7 +163,7 @@ Body::~Body()
 	tex_heightmap = nullptr;
 	//if(orbit) delete orbit;
 	//orbit = nullptr;
-	if (hints) delete hints;
+	//if (hints) delete hints;
 	hints = nullptr;
 	if (axis) delete axis;
 	axis = nullptr;
