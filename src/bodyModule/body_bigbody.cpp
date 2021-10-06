@@ -96,7 +96,7 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
 	// }
 
 	trail = new Trail(this,1460);
-	orbitPlot = new Orbit2D(this);
+	orbitPlot = std::make_unique<Orbit2D>(this);
     drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
 	selectShader();
 }
@@ -117,7 +117,7 @@ BigBody::~BigBody()
 
 	if (trail) delete trail;
 	trail = nullptr;
-	if (orbitPlot) delete orbitPlot;
+	//if (orbitPlot) delete orbitPlot;
 	orbitPlot = nullptr;
 }
 

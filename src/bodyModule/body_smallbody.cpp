@@ -74,11 +74,11 @@ SmallBody::SmallBody(std::shared_ptr<Body> parent,
 {
 	if (_typePlanet == COMET) {
 		trail = new Trail(this,2920);
-		orbitPlot = new Orbit2D(this, 4800);
+		orbitPlot = std::make_unique<Orbit2D>(this, 4800);
 	}
 	else {
 		trail = new Trail(this, 60);
-		orbitPlot = new Orbit2D(this);
+		orbitPlot = std::make_unique<Orbit2D>(this);
 	}
 
     drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
@@ -89,7 +89,7 @@ SmallBody::~SmallBody()
 {
 	if (trail) delete trail;
 	trail = nullptr;
-	if (orbitPlot) delete orbitPlot;
+	//if (orbitPlot) delete orbitPlot;
 	orbitPlot = nullptr;
 }
 

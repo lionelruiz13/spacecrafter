@@ -552,7 +552,7 @@ protected:
 	Trail * trail = nullptr;
 	Hints * hints = nullptr;
 	Axis * axis = nullptr;
-	OrbitPlot * orbitPlot = nullptr;
+	std::unique_ptr<OrbitPlot> orbitPlot = nullptr;
 	Halo * halo = nullptr;
 
 	Mat4f model;

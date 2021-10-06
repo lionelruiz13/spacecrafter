@@ -73,7 +73,7 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 	obj3D = std::make_unique<Ojm>(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius, context->surface);
 	if (!obj3D -> getOk())
 		std::cout << "Error with " << englishName << " " << model_name << std::endl;
-	orbitPlot = new Orbit2D(this);
+	orbitPlot = std::make_unique<Orbit2D>(this);
 
 }
 

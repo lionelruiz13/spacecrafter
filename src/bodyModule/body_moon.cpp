@@ -81,12 +81,12 @@ Moon::Moon(std::shared_ptr<Body> parent,
 	//more adding could be placed here for the constructor of Moon
     drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
 	selectShader();
-	orbitPlot = new Orbit3D(this);
+	orbitPlot = std::make_unique<Orbit3D>(this);
 }
 
 Moon::~Moon()
 {
-	if (orbitPlot) delete orbitPlot;
+	//if (orbitPlot) delete orbitPlot;
 }
 
 void Moon::selectShader()
