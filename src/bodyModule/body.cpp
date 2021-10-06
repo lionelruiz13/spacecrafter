@@ -148,7 +148,7 @@ Body::Body(std::shared_ptr<Body> parent,
 
 	hints = std::make_shared<Hints>(this);
 	axis = std::make_shared<Axis>(this);
-	halo = new Halo(this);
+	halo = std::make_shared<Halo>(this);
 
 	tex_current = tex_map;
 }
@@ -167,7 +167,7 @@ Body::~Body()
 	hints = nullptr;
 	//if (axis) delete axis;
 	axis = nullptr;
-	if (halo) delete halo;
+	//if (halo) delete halo;
 	halo = nullptr;
 //	if (myColor) delete myColor;
 //	myColor = nullptr;

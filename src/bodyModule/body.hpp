@@ -555,7 +555,7 @@ protected:
 	std::shared_ptr<Hints> hints = nullptr;
 	std::shared_ptr<Axis> axis = nullptr;
 	std::unique_ptr<OrbitPlot> orbitPlot = nullptr;
-	Halo * halo = nullptr;
+	std::shared_ptr<Halo> halo = nullptr;
 
 	Mat4f model;
 	Mat4f view;
