@@ -97,9 +97,9 @@ protected :
 	ringFrag *pRingFrag = nullptr;
 	std::unique_ptr<Buffer> drawData;
 	//utile pour le shader NIGHT
-	s_texture * tex_night;
-	s_texture * tex_specular;
-	s_texture * tex_cloud;
-	s_texture * tex_shadow_cloud;
-	s_texture * tex_norm_cloud;
+	std::shared_ptr<s_texture> tex_night;
+	std::shared_ptr<s_texture> tex_specular;
+	std::shared_ptr<s_texture> tex_cloud;
+	std::shared_ptr<s_texture> tex_shadow_cloud;
+	std::shared_ptr<s_texture> tex_norm_cloud;
 };

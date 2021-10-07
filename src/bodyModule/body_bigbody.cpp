@@ -79,8 +79,8 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
 	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
 {	
 	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
-		tex_night = new s_texture(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
-		tex_specular = new s_texture(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT);
+		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+		tex_specular = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT);
 	}
 
 	// if(_bodyTexture->tex_cloud != "") {
@@ -106,13 +106,13 @@ BigBody::~BigBody()
 	//if (rings) delete rings;
 	//rings = nullptr;
 
-	if (tex_night) delete tex_night;
+	//if (tex_night) delete tex_night;
 	tex_night = nullptr;
-	if (tex_specular) delete tex_specular;
+	//if (tex_specular) delete tex_specular;
 	tex_specular = nullptr;
-	if (tex_cloud) delete tex_cloud;
+	//if (tex_cloud) delete tex_cloud;
 	tex_cloud = nullptr;
-	if (tex_norm_cloud) delete tex_norm_cloud;
+	//if (tex_norm_cloud) delete tex_norm_cloud;
 	tex_norm_cloud = nullptr;
 
 	//if (trail) delete trail;
