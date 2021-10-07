@@ -57,7 +57,7 @@
 //#include "inGalaxyModule/dsoNavigator.hpp"
 //#include "mediaModule/text_mgr.hpp"
 //#include "coreModule/time_mgr.hpp"
-#include "coreModule/tully.hpp"
+//#include "coreModule/tully.hpp"
 //#include "coreModule/ubo_cam.hpp"
 #include "navModule/anchor_manager.hpp"
 #include "navModule/navigator.hpp"

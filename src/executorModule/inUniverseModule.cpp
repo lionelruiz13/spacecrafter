@@ -31,6 +31,7 @@
 #include "coreModule/skydisplay_mgr.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "ojmModule/ojm_mgr.hpp"
+#include "coreModule/tully.hpp"
 
 InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {

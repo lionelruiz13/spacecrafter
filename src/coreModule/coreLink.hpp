@@ -117,22 +117,13 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 	// Tully---------------------------
 	////////////////////////////////////////////////////////////////////////////////
-	void tullySetFlagShow(bool v) {
-		core->tully->setFlagShow(v);
-	}
+	void tullySetFlagShow(bool v);
 
-	bool tullyGetFlagShow() {
-		return core->tully->getFlagShow();
-	}
+	bool tullyGetFlagShow();
 
-	void tullySetWhiteColor(bool value)
-	{
-		core->tully->setWhiteColor(value);
-	}
+	void tullySetWhiteColor(bool value);
 
-	bool tullyGetWhiteColor() {
-		return core->tully->getWhiteColor();
-	}
+	bool tullyGetWhiteColor();
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Illuminate---------------------------

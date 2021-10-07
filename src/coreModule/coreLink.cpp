@@ -41,6 +41,7 @@
 #include "ojmModule/ojm_mgr.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
 #include "coreModule/ubo_cam.hpp"
+#include "coreModule/tully.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -726,3 +727,25 @@ void CoreLink::nebulaSetColorLabels(const Vec3f& v) {
 void CoreLink::nebulaSetColorCircle(const Vec3f& v) {
 	core->nebulas->setCircleColor(v);
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Tully---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::tullySetFlagShow(bool v) {
+	core->tully->setFlagShow(v);
+}
+
+bool CoreLink::tullyGetFlagShow() {
+	return core->tully->getFlagShow();
+}
+
+void CoreLink::tullySetWhiteColor(bool value)
+{
+	core->tully->setWhiteColor(value);
+}
+
+bool CoreLink::tullyGetWhiteColor() {
+	return core->tully->getWhiteColor();
+}
+
