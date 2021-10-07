@@ -76,5 +76,5 @@ protected :
 	globalTescGeom *pGlobalTescGeom = nullptr;
 	std::unique_ptr<Buffer> drawData;
 	//shaderProgram *myShaderProg;	// Shader moderne
-	s_texture * tex_night=nullptr;			// for moon with night event to see
+	std::shared_ptr<s_texture> tex_night=nullptr;			// for moon with night event to see
 };
