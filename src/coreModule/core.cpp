@@ -61,6 +61,8 @@
 #include "coreModule/sky_localizer.hpp"
 #include "ojmModule/ojm_mgr.hpp"
 #include "coreModule/nebula_mgr.hpp"
+#include "coreModule/constellation_mgr.hpp"
+#include "starModule/hip_star_mgr.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -152,8 +154,8 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	meteors = std::make_unique<MeteorMgr>(10, 60, context);
 	landscape = new Landscape();
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
-	hip_stars = new HipStarMgr(width,height, context);
-	asterisms = new ConstellationMgr(hip_stars, context);
+	hip_stars = std::make_shared<HipStarMgr>(width,height, context);
+	asterisms = std::make_shared<ConstellationMgr>(hip_stars, context);
 	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms, context);
 	oort =  std::make_unique<Oort>(context);
 	dso3d = std::make_unique<Dso3d>(context);
@@ -196,8 +198,8 @@ Core::~Core()
 	delete bodyDecor;
 	delete navigation;
 	delete projection;
-	delete asterisms;
-	delete hip_stars;
+	// delete asterisms;
+	// delete hip_stars;
 	//delete nebulas;
 	//delete illuminates;
 	// skyGridMgr.reset(nullptr);
@@ -862,6 +864,21 @@ void Core::deselect(void)
 	unSelect();
 	asterisms->deselect();
 	hip_stars->deselect();
+}
+
+void Core::unsetSelectedConstellation(std::string constellation) {
+	asterisms->unsetSelected(constellation);
+}
+
+
+bool Core::getStarEarthEquPosition(int HP, double &az, double &alt) {
+	Object star = hip_stars->searchHP(HP).get();
+	if (star) {
+		Vec3d earthEqu = star.getEarthEquPos(navigation);
+		Utility::rectToSphe(&az, &alt, earthEqu);
+		return true;
+	}
+	return false;
 }
 
 // - allow selection of large nearby planets more easily and do not select hidden planets

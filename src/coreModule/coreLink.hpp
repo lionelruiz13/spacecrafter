@@ -418,125 +418,58 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 
 	//! Set display flag of constellation lines
-	void constellationSetFlagLines(bool b) {
-		core->asterisms->setFlagLines(b);
-	}
+	void constellationSetFlagLines(bool b);
 	//! Get display flag of constellation lines
-	bool constellationGetFlagLines() {
-		return core->asterisms->getFlagLines();
-	}
-
+	bool constellationGetFlagLines();
 	//! Set display flag of constellation art
-	void constellationSetFlagArt(bool b) {
-		core->asterisms->setFlagArt(b);
-	}
+	void constellationSetFlagArt(bool b);
 	//! Get display flag of constellation art
-	bool constellationGetFlagArt() {
-		return core->asterisms->getFlagArt();
-	}
-
+	bool constellationGetFlagArt();
 	//! Set display flag of constellation names
-	void constellationSetFlagNames(bool b) {
-		core->asterisms->setFlagNames(b);
-	}
+	void constellationSetFlagNames(bool b);
 	//! Get display flag of constellation names
-	bool constellationGetFlagNames() {
-		return core->asterisms->getFlagNames();
-	}
-
+	bool constellationGetFlagNames();
 	//! Set display flag of constellation boundaries
-	void constellationSetFlagBoundaries(bool b) {
-		core->asterisms->setFlagBoundaries(b);
-	}
+	void constellationSetFlagBoundaries(bool b);
 	//! Get display flag of constellation boundaries
-	bool constellationGetFlagBoundaries() {
-		return core->asterisms->getFlagBoundaries();
-	}
-	Vec3f constellationGetColorBoundaries() const {
-		return core->asterisms->getBoundaryColor();
-	}
-
+	bool constellationGetFlagBoundaries();
+	Vec3f constellationGetColorBoundaries() const;
 	//! Set constellation art intensity
-	void constellationSetArtIntensity(float f) {
-		core->asterisms->setArtIntensity(f);
-	}
+	void constellationSetArtIntensity(float f);
 	//! Get constellation art intensity
-	float constellationGetArtIntensity() const {
-		return core->asterisms->getArtIntensity();
-	}
-
+	float constellationGetArtIntensity() const;
 	//! Set constellation art intensity
-	void constellationSetArtFadeDuration(float f) {
-		core->asterisms->setArtFadeDuration(f);
-	}
+	void constellationSetArtFadeDuration(float f);
 	//! Get constellation art intensity
-	float constellationGetArtFadeDuration() const {
-		return core->asterisms->getArtFadeDuration();
-	}
-
+	float constellationGetArtFadeDuration() const;
 	//! Set whether selected constellation is drawn alone
-	void constellationSetFlagIsolateSelected(bool b) {
-		core->asterisms->setFlagIsolateSelected(b);
-	}
-
+	void constellationSetFlagIsolateSelected(bool b);
 	//! Get whether selected constellation is drawn alone
-	bool constellationGetFlagIsolateSelected() {
-		return core->asterisms->getFlagIsolateSelected();
-	}
-
+	bool constellationGetFlagIsolateSelected();
 	//! Set whether to draw the names for the selected stars or every star
-	void starSetFlagIsolateSelected(bool b) {
-		return core->hip_stars->setFlagIsolateSelected(b);
-	}
-
+	void starSetFlagIsolateSelected(bool b);
 	//! Get whether to draw the names for the selected stars or every star
-	bool starGetFlagIsolateSelected() {
-		return core->hip_stars->getFlagIsolateSelected();
-	}
-
+	bool starGetFlagIsolateSelected();
 	//! Get constellation line color
-	Vec3f constellationGetColorLine() const {
-		return core->asterisms->getLineColor();
-	}
+	Vec3f constellationGetColorLine() const;
 	//! Set constellation line color
-	void constellationSetColorLine(const Vec3f& v) {
-		core->asterisms->setLineColor(v);
-	}
-
+	void constellationSetColorLine(const Vec3f& v);
 	//! Get constellation names color
-	Vec3f constellationGetColorNames() const {
-		return core->asterisms->getLabelColor();
-	}
+	Vec3f constellationGetColorNames() const;
 	//! Set constellation names color
-	void constellationSetColorNames(const Vec3f& v) {
-		core->asterisms->setLabelColor(v);
-	}
-
+	void constellationSetColorNames(const Vec3f& v);
 	//! Set constellation names color
-	void constellationSetColorNames(const std::string &argName, const Vec3f& v) {
-		core->asterisms->setLabelColor(argName, v);
-	}
-
+	void constellationSetColorNames(const std::string &argName, const Vec3f& v);
 	//! Get constellation art color
-	Vec3f constellationGetColorArt() const {
-		return core->asterisms->getArtColor();
-	}
+	Vec3f constellationGetColorArt() const;
 	//! Set constellation line color
-	void constellationSetColorArt(const Vec3f& v) {
-		core->asterisms->setArtColor(v);
-	}
+	void constellationSetColorArt(const Vec3f& v);
 
-	void constellationSetColorBoundaries(const Vec3f& v) {
-		core->asterisms->setBoundaryColor(v);
-	}
+	void constellationSetColorBoundaries(const Vec3f& v);
 
-	void constellationSetLineColor(const std::string &argName, const Vec3f& v) {
-		core->asterisms->setLineColor(argName, v);
-	}
+	void constellationSetLineColor(const std::string &argName, const Vec3f& v);
 
-	void constellationSetArtIntensity(const std::string &argName, float intensity) {
-		core->asterisms->setArtIntensity(argName, intensity);
-	}
+	void constellationSetArtIntensity(const std::string &argName, float intensity);
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// Planets flags

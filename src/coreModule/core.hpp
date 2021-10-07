@@ -36,7 +36,7 @@
 #include "coreModule/backup_mgr.hpp"
 #include "coreModule/callbacks.hpp"
 //#include "coreModule/cardinals.hpp"
-#include "coreModule/constellation_mgr.hpp"
+//#include "coreModule/constellation_mgr.hpp"
 //#include "inGalaxyModule/dso3d.hpp"
 //#include "coreModule/illuminate_mgr.hpp"
 #include "coreModule/landscape.hpp"
@@ -64,7 +64,7 @@
 #include "navModule/observer.hpp"
 //#include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
-#include "starModule/hip_star_mgr.hpp"
+//#include "starModule/hip_star_mgr.hpp"
 
 //#include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
@@ -103,6 +103,8 @@ class OjmMgr;
 class StarNavigator;
 class UBOCam;
 class NebulaMgr;
+class HipStarMgr;
+class ConstellationMgr;
 
 //!  @brief Main class for application core processing.
 //!
@@ -304,10 +306,7 @@ public:
 		ssystemFactory->setSelected(Object());
 	}
 
-	void unsetSelectedConstellation(std::string constellation) {
-		asterisms->unsetSelected(constellation);
-	}
-
+	void unsetSelectedConstellation(std::string constellation);
 	void deselect(void);
 
 	//! Set whether a pointer is to be drawn over selected object
@@ -328,15 +327,7 @@ public:
 		selected_object.getRaDeValue(navigation,ra,de);
 	}
 
-	bool getStarEarthEquPosition(int HP, double &az, double &alt) {
-		Object star = hip_stars->searchHP(HP).get();
-		if (star) {
-			Vec3d earthEqu = star.getEarthEquPos(navigation);
-			Utility::rectToSphe(&az, &alt, earthEqu);
-			return true;
-		}
-		return false;
-	}
+	bool getStarEarthEquPosition(int HP, double &az, double &alt);
 
 	//! Get a 1 line string briefly describing the currently selected object
 	std::string getSelectedObjectShortInfo(void) const {
@@ -503,8 +494,8 @@ private:
 	Projector * projection;				// Manage the projection mode and matrix
 	Object selected_object;			// The selected object
 	Object old_selected_object;		// The old selected object
-	HipStarMgr * hip_stars;		// Manage the hipparcos stars
-	ConstellationMgr * asterisms;		// Manage constellations (boundaries, names etc..)
+	std::shared_ptr<HipStarMgr> hip_stars;		// Manage the hipparcos stars
+	std::shared_ptr<ConstellationMgr> asterisms;		// Manage constellations (boundaries, names etc..)
 	std::unique_ptr<NebulaMgr> nebulas;				// Manage the nebulas
 	std::unique_ptr<IlluminateMgr> illuminates;		// Manage the illuminations
 	//TextMgr * text_usr;				// manage all user text in dome

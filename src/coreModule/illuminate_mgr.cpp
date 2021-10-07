@@ -48,7 +48,7 @@
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
 
-IlluminateMgr::IlluminateMgr(HipStarMgr * _hip_stars, Navigator* _navigator, ConstellationMgr* _asterism, ThreadContext *context)
+IlluminateMgr::IlluminateMgr(std::shared_ptr<HipStarMgr> _hip_stars, Navigator *_navigator, std::shared_ptr<ConstellationMgr> _asterism, ThreadContext *context)
 {
 	hip_stars = _hip_stars;
 	navigator = _navigator;
