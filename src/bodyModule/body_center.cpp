@@ -86,7 +86,7 @@ Center::Center(std::shared_ptr<Body> parent,
 
 Center::~Center()
 {
-	if (tex_big_halo) delete tex_big_halo;
+	//if (tex_big_halo) delete tex_big_halo;
 	tex_big_halo = nullptr;
 }
 
@@ -101,7 +101,7 @@ float Center::computeMagnitude(Vec3d obs_pos) const
 
 void Center::setBigHalo(const std::string& halotexfile, const std::string &path)
 {
-	tex_big_halo = new s_texture( path + halotexfile, TEX_LOAD_TYPE_PNG_SOLID);
+	tex_big_halo = std::make_shared<s_texture>( path + halotexfile, TEX_LOAD_TYPE_PNG_SOLID);
     if (descriptorSetBigHalo) {
         descriptorSetBigHalo->bindTexture(tex_big_halo->getTexture(), 0);
 
