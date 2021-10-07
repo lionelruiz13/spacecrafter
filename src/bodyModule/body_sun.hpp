@@ -78,7 +78,7 @@ public:
 protected:
 	//params
 	float big_halo_size;
-	s_texture * tex_big_halo;		// Big halo texture
+	std::shared_ptr<s_texture> tex_big_halo;		// Big halo texture
 
 	// Draw the big halo
 	void drawBigHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
