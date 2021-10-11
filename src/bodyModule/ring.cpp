@@ -51,7 +51,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 	:radius_min(radius_min),radius_max(radius_max)
 {
 	init = _init;
-	tex = new s_texture(texname, TEX_LOAD_TYPE_PNG_ALPHA, true, true);
+	tex = std::make_unique<s_texture>(texname, TEX_LOAD_TYPE_PNG_ALPHA, true, true);
 	tex->use();
 	int nbVertices = (init[0] * (4 + 1) + init[1] * (8 + 1) + init[2] * (16 + 1)) * 2 * 2;
 	createSC_context(context);
@@ -212,7 +212,7 @@ void Ring::createDrawSingle()
 
 Ring::~Ring(void)
 {
-	if (tex) delete tex;
+	//if (tex) delete tex;
 	tex = nullptr;
 	//delete lowUP;
 	//delete lowDOWN;

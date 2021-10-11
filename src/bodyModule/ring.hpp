@@ -99,7 +99,7 @@ public:
 private:
 	const double radius_min;
 	const double radius_max;
-	s_texture *tex;
+	std::unique_ptr<s_texture> tex;
 
 	//std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
 	void createSC_context(ThreadContext *context);
