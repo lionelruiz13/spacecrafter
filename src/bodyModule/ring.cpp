@@ -56,14 +56,14 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 	int nbVertices = (init[0] * (4 + 1) + init[1] * (8 + 1) + init[2] * (16 + 1)) * 2 * 2;
 	createSC_context(context);
 
-	lowUP = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, true, *vertex);
-	lowDOWN = new Ring2D((float) radius_min, (float) radius_max, init[0], 4, false, *vertex);
+	lowUP = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[0], 4, true, *vertex);
+	lowDOWN = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[0], 4, false, *vertex);
 
-	mediumUP = new Ring2D((float) radius_min, (float) radius_max, init[1], 8, true, *vertex);
-	mediumDOWN = new Ring2D((float) radius_min, (float) radius_max, init[1], 8, false, *vertex);
+	mediumUP = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[1], 8, true, *vertex);
+	mediumDOWN = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[1], 8, false, *vertex);
 
-	highUP = new Ring2D((float) radius_min, (float) radius_max, init[2], 16, true, *vertex);
-	highDOWN = new Ring2D((float) radius_min, (float) radius_max, init[2], 16, false, *vertex);
+	highUP = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[2], 16, true, *vertex);
+	highDOWN = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[2], 16, false, *vertex);
 
 	vertex->build(nbVertices);
 	highUP->initFrom(*vertex);
@@ -214,12 +214,12 @@ Ring::~Ring(void)
 {
 	if (tex) delete tex;
 	tex = nullptr;
-	delete lowUP;
-	delete lowDOWN;
-	delete mediumUP;
-	delete mediumDOWN;
-	delete highUP;
-	delete highDOWN;
+	//delete lowUP;
+	//delete lowDOWN;
+	//delete mediumUP;
+	//delete mediumDOWN;
+	//delete highUP;
+	//delete highDOWN;
 }
 
 void Ring::draw(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)

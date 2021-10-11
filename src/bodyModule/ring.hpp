@@ -130,12 +130,12 @@ private:
 		float SunnySideUp;
 	} *pUniform;
 
-	Ring2D* lowUP;
-	Ring2D* lowDOWN;
-	Ring2D* mediumUP;
-	Ring2D* mediumDOWN;
-	Ring2D* highUP;
-	Ring2D* highDOWN;
+	std::unique_ptr<Ring2D> lowUP;
+	std::unique_ptr<Ring2D> lowDOWN;
+	std::unique_ptr<Ring2D> mediumUP;
+	std::unique_ptr<Ring2D> mediumDOWN;
+	std::unique_ptr<Ring2D> highUP;
+	std::unique_ptr<Ring2D> highDOWN;
 
 	Vec3i init;
 	float mc = 1.0;
