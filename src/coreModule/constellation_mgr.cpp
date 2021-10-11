@@ -52,7 +52,7 @@
 #include "vulkanModule/ThreadedCommandBuilder.hpp"
 
 //! constructor which loads all data from appropriate files
-ConstellationMgr::ConstellationMgr(HipStarMgr *_hip_stars, ThreadContext *_context) :
+ConstellationMgr::ConstellationMgr(std::shared_ptr<HipStarMgr> _hip_stars, ThreadContext *_context) :
 	hipStarMgr(_hip_stars)
 {
 	assert(hipStarMgr);
@@ -248,7 +248,7 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 			continue;
 		cons = new Constellation;
 
-		if (cons->read(record, hipStarMgr)) {
+		if (cons->read(record, hipStarMgr.get())) {
 			asterisms.push_back(cons);
 		} else {
 			cLog::get()->write("ConstellationMgr::loadLinesAndArt on line " + std::to_string(line) + " of " + fileName, LOG_TYPE::L_ERROR);

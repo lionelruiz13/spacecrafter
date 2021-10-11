@@ -66,7 +66,7 @@ class Buffer;
   */
 class IlluminateMgr: public NoCopy {
 public:
-	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism, ThreadContext *context);
+	IlluminateMgr(std::shared_ptr<HipStarMgr> _hip_stars, Navigator *_navigator, std::shared_ptr<ConstellationMgr> _asterism, ThreadContext *context);
 	virtual ~IlluminateMgr();
 
 	// indique la taille d'affichage des illuminates par défaut
@@ -114,9 +114,9 @@ private:
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 
 
-	HipStarMgr* hip_stars = nullptr;			//!< provide acces point to HipStarMgr
+	std::shared_ptr<HipStarMgr> hip_stars;			//!< provide acces point to HipStarMgr
 	Navigator* navigator = nullptr;				//!< provide acces point to Navigator
-	ConstellationMgr* asterism= nullptr;		//!< provide acces point to ConstellationMgr
+	std::shared_ptr<ConstellationMgr> asterism;		//!< provide acces point to ConstellationMgr
 
 	//std::unique_ptr<shaderProgram> m_shaderIllum;	//!< shader how draw all illuminate
 	CommandMgr *cmdMgr;

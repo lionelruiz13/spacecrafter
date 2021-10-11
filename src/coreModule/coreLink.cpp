@@ -31,6 +31,8 @@
 #include "coreModule/milkyway.hpp"
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/nebula_mgr.hpp"
+#include "coreModule/constellation_mgr.hpp"
+#include "starModule/hip_star_mgr.hpp"
 
 #include "inGalaxyModule/dso3d.hpp"
 #include "coreModule/cardinals.hpp"
@@ -41,6 +43,7 @@
 #include "ojmModule/ojm_mgr.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
 #include "coreModule/ubo_cam.hpp"
+#include "coreModule/tully.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -725,4 +728,136 @@ void CoreLink::nebulaSetColorLabels(const Vec3f& v) {
 }
 void CoreLink::nebulaSetColorCircle(const Vec3f& v) {
 	core->nebulas->setCircleColor(v);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Tully---------------------------
+////////////////////////////////////////////////////////////////////////////////
+void CoreLink::tullySetFlagShow(bool v) {
+	core->tully->setFlagShow(v);
+}
+
+bool CoreLink::tullyGetFlagShow() {
+	return core->tully->getFlagShow();
+}
+
+void CoreLink::tullySetWhiteColor(bool value)
+{
+	core->tully->setWhiteColor(value);
+}
+
+bool CoreLink::tullyGetWhiteColor() {
+	return core->tully->getWhiteColor();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Constellations---------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+void CoreLink::constellationSetFlagLines(bool b) {
+	core->asterisms->setFlagLines(b);
+}
+
+bool CoreLink::constellationGetFlagLines() {
+	return core->asterisms->getFlagLines();
+}
+
+void CoreLink::constellationSetFlagArt(bool b) {
+	core->asterisms->setFlagArt(b);
+}
+
+bool CoreLink::constellationGetFlagArt() {
+	return core->asterisms->getFlagArt();
+}
+
+void CoreLink::constellationSetFlagNames(bool b) {
+	core->asterisms->setFlagNames(b);
+}
+
+bool CoreLink::constellationGetFlagNames() {
+	return core->asterisms->getFlagNames();
+}
+
+void CoreLink::constellationSetFlagBoundaries(bool b) {
+	core->asterisms->setFlagBoundaries(b);
+}
+
+bool CoreLink::constellationGetFlagBoundaries() {
+	return core->asterisms->getFlagBoundaries();
+}
+Vec3f CoreLink::constellationGetColorBoundaries() const {
+	return core->asterisms->getBoundaryColor();
+}
+
+void CoreLink::constellationSetArtIntensity(float f) {
+	core->asterisms->setArtIntensity(f);
+}
+
+float CoreLink::constellationGetArtIntensity() const {
+	return core->asterisms->getArtIntensity();
+}
+
+void CoreLink::constellationSetArtFadeDuration(float f) {
+	core->asterisms->setArtFadeDuration(f);
+}
+
+float CoreLink::constellationGetArtFadeDuration() const {
+	return core->asterisms->getArtFadeDuration();
+}
+
+void CoreLink::constellationSetFlagIsolateSelected(bool b) {
+	core->asterisms->setFlagIsolateSelected(b);
+}
+
+bool CoreLink::constellationGetFlagIsolateSelected() {
+	return core->asterisms->getFlagIsolateSelected();
+}
+
+void CoreLink::starSetFlagIsolateSelected(bool b) {
+	return core->hip_stars->setFlagIsolateSelected(b);
+}
+
+bool CoreLink::starGetFlagIsolateSelected() {
+	return core->hip_stars->getFlagIsolateSelected();
+}
+
+Vec3f CoreLink::constellationGetColorLine() const {
+	return core->asterisms->getLineColor();
+}
+
+void CoreLink::constellationSetColorLine(const Vec3f& v) {
+	core->asterisms->setLineColor(v);
+}
+
+Vec3f CoreLink::constellationGetColorNames() const {
+	return core->asterisms->getLabelColor();
+}
+
+void CoreLink::constellationSetColorNames(const Vec3f& v) {
+	core->asterisms->setLabelColor(v);
+}
+
+void CoreLink::constellationSetColorNames(const std::string &argName, const Vec3f& v) {
+	core->asterisms->setLabelColor(argName, v);
+}
+
+Vec3f CoreLink::constellationGetColorArt() const {
+	return core->asterisms->getArtColor();
+}
+
+void CoreLink::constellationSetColorArt(const Vec3f& v) {
+	core->asterisms->setArtColor(v);
+}
+
+void CoreLink::constellationSetColorBoundaries(const Vec3f& v) {
+	core->asterisms->setBoundaryColor(v);
+}
+
+void CoreLink::constellationSetLineColor(const std::string &argName, const Vec3f& v) {
+	core->asterisms->setLineColor(argName, v);
+}
+
+void CoreLink::constellationSetArtIntensity(const std::string &argName, float intensity) {
+	core->asterisms->setArtIntensity(argName, intensity);
 }

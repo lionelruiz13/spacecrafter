@@ -42,6 +42,8 @@
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "coreModule/nebula_mgr.hpp"
+#include "coreModule/constellation_mgr.hpp"
+#include "starModule/hip_star_mgr.hpp"
 
 void SolarSystemModule::onEnter()
 {    
