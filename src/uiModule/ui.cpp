@@ -46,6 +46,8 @@
 #include "tools/log.hpp"
 #include "uiModule/joypad_controller.hpp"
 #include "uiModule/ui.hpp"
+#include "mainModule/define_key.hpp"
+#include "tools/app_settings.hpp"
 
 static const double CoeffMultAltitude = 0.02;
 static const double DURATION_COMMAND = 0.1;

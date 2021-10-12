@@ -33,6 +33,7 @@
 #include "coreModule/nebula_mgr.hpp"
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
+#include "bodyModule/ssystem_factory.hpp"
 
 #include "inGalaxyModule/dso3d.hpp"
 #include "coreModule/cardinals.hpp"
@@ -860,4 +861,294 @@ void CoreLink::constellationSetLineColor(const std::string &argName, const Vec3f
 
 void CoreLink::constellationSetArtIntensity(const std::string &argName, float intensity) {
 	core->asterisms->setArtIntensity(argName, intensity);
+}
+
+void CoreLink::bodyTraceSetFlag(bool b) const {
+	core->ssystemFactory->bodyTraceSetFlag(b);
+}
+
+bool CoreLink::bodyTraceGetFlag() const {
+	return core->ssystemFactory->bodyTraceGetFlag();
+}
+
+void CoreLink::bodyPenUp() const {
+	core->ssystemFactory->upPen();
+}
+
+void CoreLink::bodyPenDown() const {
+	core->ssystemFactory->downPen();
+}
+
+void CoreLink::bodyPenToggle() const {
+	core->ssystemFactory->togglePen();
+}
+
+void CoreLink::bodyTraceClear () const {
+	core->ssystemFactory->clear();
+}
+
+void CoreLink::bodyTraceHide(std::string value) const {
+	if (value=="all")
+		core->ssystemFactory->hide(-1);
+	else
+		core->ssystemFactory->hide(Utility::strToInt(value));
+}
+
+void CoreLink::bodyTraceBodyChange(std::string bodyName) const {
+	if (bodyName=="selected")
+		core->ssystemFactory->bodyTraceBodyChange(core->selected_object.getEnglishName());
+	else
+		core->ssystemFactory->bodyTraceBodyChange(bodyName);
+}
+
+void CoreLink::cameraDisplayAnchor() {
+	core->ssystemFactory->cameraDisplayAnchor();
+}
+
+bool CoreLink::cameraAddAnchor(stringHash_t& param) {
+	return core->ssystemFactory->cameraAddAnchor(param);
+}
+
+bool CoreLink::cameraRemoveAnchor(const std::string &name) {
+	return core->ssystemFactory->cameraRemoveAnchor(name);
+}
+
+bool CoreLink::cameraSwitchToAnchor(const std::string &name) {
+	return core->ssystemFactory->cameraSwitchToAnchor(name);
+}
+
+bool CoreLink::cameraMoveToPoint(double x, double y, double z){
+	return core->ssystemFactory->cameraMoveToPoint(x,y,z);
+}
+
+bool CoreLink::cameraMoveToPoint(double x, double y, double z, double time){
+	return core->ssystemFactory->cameraMoveToPoint(x,y,z,time);
+}
+
+bool CoreLink::cameraMoveToBody(const std::string& bodyName, double time, double alt){
+
+	if(bodyName == "selected"){
+		return core->ssystemFactory->cameraMoveToBody(core->getSelectedPlanetEnglishName(), time, alt);
+	}
+
+	if(bodyName == "default"){
+		return core->ssystemFactory->cameraMoveToBody(core->ssystemFactory->getEarth()->getEnglishName(), time, alt);
+	}
+
+	return core->ssystemFactory->cameraMoveToBody(bodyName,time, alt);
+}
+
+bool CoreLink::cameraMoveRelativeXYZ( double x, double y, double z) {
+	return core->ssystemFactory->cameraMoveRelativeXYZ(x,y,z);
+}
+
+bool CoreLink::cameraTransitionToPoint(const std::string& name){
+	return core->ssystemFactory->cameraTransitionToPoint(name);
+}
+
+bool CoreLink::cameraTransitionToBody(const std::string& name){
+
+	if(name == "selected"){
+		return core->ssystemFactory->cameraTransitionToBody(core->getSelectedPlanetEnglishName());
+	}
+
+	return core->ssystemFactory->cameraTransitionToBody(name);
+}
+
+bool CoreLink::cameraSetFollowRotation(const std::string& name, bool value){
+	return core->ssystemFactory->cameraSetFollowRotation(value);
+}
+
+void CoreLink::cameraSetRotationMultiplierCondition(float v) {
+	core->ssystemFactory->cameraSetRotationMultiplierCondition(v);
+}
+
+bool CoreLink::cameraAlignWithBody(const std::string& name, double duration){
+	return core->ssystemFactory->cameraAlignWithBody(name,duration);
+}
+
+void CoreLink::setFlagLightTravelTime(bool b) {
+	core->ssystemFactory->setFlagLightTravelTime(b);
+}
+
+bool CoreLink::getFlagLightTravelTime() const {
+	return core->ssystemFactory->getFlagLightTravelTime();
+}
+
+void CoreLink::startPlanetsTrails(bool b) {
+	core->ssystemFactory->startTrails(b);
+}
+
+void CoreLink::setPlanetsSelected(const std::string& englishName) {
+	core->ssystemFactory->setSelected(englishName);
+}
+
+void CoreLink::setFlagMoonScaled(bool b) {
+	core->ssystemFactory->setFlagMoonScale(b);
+}
+
+bool CoreLink::getFlagMoonScaled() const {
+	return core->ssystemFactory->getFlagMoonScale();
+}
+
+void CoreLink::setFlagSunScaled(bool b) {
+	core->ssystemFactory->setFlagSunScale(b);
+}
+
+bool CoreLink::getFlagSunScaled() const {
+	return core->ssystemFactory->getFlagSunScale();
+}
+
+void CoreLink::setMoonScale(float f, bool resident) {
+	if (f<0) core->ssystemFactory->setMoonScale(1., false);
+	else core->ssystemFactory->setMoonScale(f, resident);
+}
+
+float CoreLink::getMoonScale() const {
+	return core->ssystemFactory->getMoonScale();
+}
+
+void CoreLink::setSunScale(float f, bool resident) {
+	if (f<0) core->ssystemFactory->setSunScale(1., false);
+	else core->ssystemFactory->setSunScale(f, resident);
+}
+
+void CoreLink::setFlagClouds(bool b) {
+	core->ssystemFactory->setFlagClouds(b);
+}
+
+bool CoreLink::getFlagClouds() const {
+	return core->ssystemFactory->getFlag(BODY_FLAG::F_CLOUDS);
+}
+
+float CoreLink::getSunScale() const {
+	return core->ssystemFactory->getSunScale();
+}
+
+void CoreLink::initialSolarSystemBodies() {
+	return core->ssystemFactory->initialSolarSystemBodies();
+}
+
+void CoreLink::setPlanetHidden(std::string name, bool planethidden) {
+	core->ssystemFactory->setPlanetHidden(name, planethidden);
+}
+
+bool CoreLink::getPlanetHidden(std::string name) {
+	return core->ssystemFactory->getPlanetHidden(name);
+}
+
+void CoreLink::planetsSetFlag(bool b) {
+	core->ssystemFactory->setFlagPlanets(b);
+}
+
+bool CoreLink::planetsGetFlag() const {
+	return core->ssystemFactory->getFlagShow();
+}
+
+void CoreLink::planetsSetFlagTrails(bool b) {
+	core->ssystemFactory->setFlagTrails(b);
+}
+
+bool CoreLink::planetsGetFlagTrails() const {
+	return core->ssystemFactory->getFlag(BODY_FLAG::F_TRAIL);
+}
+
+void CoreLink::planetsSetFlagAxis(bool b) {
+	core->ssystemFactory->setFlagAxis(b);
+}
+
+bool CoreLink::planetsGetFlagAxis() const {
+	return core->ssystemFactory->getFlag(BODY_FLAG::F_AXIS);
+}
+
+void CoreLink::planetsSetFlagHints(bool b) {
+	core->ssystemFactory->setFlagHints(b);
+}
+
+bool CoreLink::planetsGetFlagHints() const {
+	return core->ssystemFactory->getFlag(BODY_FLAG::F_HINTS);
+}
+
+void CoreLink::planetsSetFlagOrbits(bool b) {
+	core->ssystemFactory->setFlagPlanetsOrbits(b);
+}
+
+void CoreLink::planetsSetFlagOrbits(const std::string &_name, bool b) {
+	core->ssystemFactory->setFlagPlanetsOrbits(_name, b);
+}
+
+void CoreLink::planetSwitchTexMap(const std::string &_name, bool b) {
+	if (_name=="selected") core->ssystemFactory->switchPlanetTexMap(core->selected_object.getEnglishName(), b);
+	else core->ssystemFactory->switchPlanetTexMap(_name, b);
+}
+
+bool CoreLink::planetGetSwitchTexMap(const std::string &_name) {
+	if (_name=="selected") return core->ssystemFactory->getSwitchPlanetTexMap(core->selected_object.getEnglishName());
+	else return core->ssystemFactory->getSwitchPlanetTexMap(_name);
+}
+
+void CoreLink::planetCreateTexSkin(const std::string &name, const std::string &texName){
+	core->ssystemFactory->createTexSkin(name, texName);
+}
+
+bool CoreLink::planetsGetFlagOrbits() const {
+	return core->ssystemFactory->getFlagPlanetsOrbits();
+}
+
+void CoreLink::satellitesSetFlagOrbits(bool b) {
+	core->ssystemFactory->setFlagSatellitesOrbits(b);
+}
+
+bool CoreLink::satellitesGetFlagOrbits() const {
+	return core->ssystemFactory->getFlagSatellitesOrbits();
+}
+
+void CoreLink::planetSetFlagOrbits(bool b) {
+	core->ssystemFactory->setFlagSatellitesOrbits(b);
+	core->ssystemFactory->setFlagPlanetsOrbits(b);
+	//ssystem->setFlagOrbits(b);
+}
+
+void CoreLink::planetSetColor(const std::string& englishName, const std::string& color, Vec3f c) const {
+	core->ssystemFactory->setBodyColor(englishName, color, c);
+}
+
+Vec3f CoreLink::planetGetColor(const std::string& englishName, const std::string& color) const {
+	return core->ssystemFactory->getBodyColor(englishName, color);
+}
+
+void CoreLink::planetSetDefaultColor(const std::string& color, Vec3f c) const {
+	core->ssystemFactory->setDefaultBodyColor(color, c);
+}
+
+Vec3f CoreLink::planetGetDefaultColor(const std::string& colorName) const {
+	return core->ssystemFactory->getDefaultBodyColor(colorName);
+}
+
+bool CoreLink::hideSatellitesFlag(){
+	return core->ssystemFactory->getHideSatellitesFlag();
+}
+
+void CoreLink::setHideSatellites(bool val){
+	core->ssystemFactory->toggleHideSatellites(val);
+}
+
+void CoreLink::planetsSetScale(float f) {
+	core->ssystemFactory->setScale(f);
+}
+
+double CoreLink::getSunAltitude() const {
+	return core->ssystemFactory->getSunAltitude(core->navigation);
+}
+
+double CoreLink::getSunAzimuth() const {
+	return core->ssystemFactory->getSunAzimuth(core->navigation);
+}
+
+void CoreLink::planetSetSizeScale(std::string name, float f) {
+	core->ssystemFactory->setPlanetSizeScale(name, f);
+}
+
+void CoreLink::planetTesselation(std::string name, int value) {
+	core->ssystemFactory->planetTesselation(name,value);
 }

@@ -22,6 +22,8 @@
  *
  */
 
+#include "bodyModule/ssystem_factory.hpp"
+
 #ifndef _EXECUTOR_MODULE_
 #define _EXECUTOR_MODULE_
 

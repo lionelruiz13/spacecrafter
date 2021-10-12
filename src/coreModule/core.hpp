@@ -32,7 +32,7 @@
 #include "bodyModule/body_decor.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "bodyModule/solarsystem.hpp"
-#include "bodyModule/ssystem_factory.hpp"
+//#include "bodyModule/ssystem_factory.hpp"
 #include "coreModule/backup_mgr.hpp"
 #include "coreModule/callbacks.hpp"
 //#include "coreModule/cardinals.hpp"
@@ -105,6 +105,7 @@ class UBOCam;
 class NebulaMgr;
 class HipStarMgr;
 class ConstellationMgr;
+class SSystemFactory;
 
 //!  @brief Main class for application core processing.
 //!
@@ -300,11 +301,7 @@ public:
 
 	//! Deselect selected object if any
 	//! Does not deselect selected constellation
-	void unSelect(void) {
-		selected_object=nullptr;
-		old_selected_object=nullptr;
-		ssystemFactory->setSelected(Object());
-	}
+	void unSelect(void);
 
 	void unsetSelectedConstellation(std::string constellation);
 	void deselect(void);
@@ -356,9 +353,7 @@ public:
 	void setPlanetsSizeLimit(float f);
 
 	//! Get base planets display scaling factor
-	float getPlanetsSizeLimit(void) const {
-		return (ssystemFactory->getSizeLimit()-starGetSizeLimit());
-	}
+	float getPlanetsSizeLimit(void) const;
 
 	std::string getPlanetHashString(void);
 	//Fonctions ci dessus et dessous définit dans core.cpp

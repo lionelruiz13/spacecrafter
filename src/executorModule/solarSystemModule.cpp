@@ -44,6 +44,7 @@
 #include "coreModule/nebula_mgr.hpp"
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
+#include "bodyModule/ssystem_factory.hpp"
 
 void SolarSystemModule::onEnter()
 {    

@@ -49,6 +49,7 @@
 #include "coreModule/landscape.hpp"
 #include "mediaModule/media.hpp"
 #include "coreModule/starLines.hpp"
+#include "bodyModule/ssystem_factory.hpp"
 #include "bodyModule/body_trace.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
@@ -63,6 +64,7 @@
 #include "coreModule/nebula_mgr.hpp"
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
+#include "tools/app_settings.hpp"
 
 #include "vulkanModule/VirtualSurface.hpp"
 #include "vulkanModule/CommandMgr.hpp"
@@ -1774,4 +1776,14 @@ void Core::setJDayRelative(int year, int month)
 	ln_date current_date;
 	SpaceDate::JulianToDate(jd,&current_date);
 	timeMgr->setJDay(SpaceDate::JulianDayFromDateTime(current_date.years+year,current_date.months+month,current_date.days,current_date.hours,current_date.minutes,current_date.seconds));
+}
+
+void Core::unSelect(void) {
+	selected_object=nullptr;
+	old_selected_object=nullptr;
+	ssystemFactory->setSelected(Object());
+}
+
+float Core::getPlanetsSizeLimit(void) const {
+	return (ssystemFactory->getSizeLimit()-starGetSizeLimit());
 }

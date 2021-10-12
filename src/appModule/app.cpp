@@ -61,6 +61,7 @@
 #include "tools/utility.hpp"
 #include "uiModule/ui.hpp"
 #include "coreModule/time_mgr.hpp"
+#include "mainModule/define_key.hpp"
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"
