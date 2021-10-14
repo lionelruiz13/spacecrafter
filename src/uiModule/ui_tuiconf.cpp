@@ -48,7 +48,7 @@
 #include "spacecrafter.hpp"
 
 // Draw simple gravity text ui.
-void UI::drawGravityUi()
+void UI::drawGravityUi(MODULE module)
 {
 	// Normal transparency mode
 	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -74,7 +74,10 @@ void UI::drawGravityUi()
 /*			    if (true)
 					os << " Alt: " << core->observatoryGetAltitude()/2.E+10 << "al";
 			    else //*/
-					os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << "km";
+					if (module == SOLAR_SYSTEM)
+						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << "km";
+					else
+						os << " Alt: " << 1.057e-13 * (coreLink->observatoryGetAltitude()/1000) << "A.L.";
 			}
 		}
 

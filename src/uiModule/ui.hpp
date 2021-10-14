@@ -47,6 +47,7 @@ enum S_GUI_VALUE {
 
 #include <memory>
 #include "uiModule/ui_tui.hpp"
+#include "executorModule/executorModule.hpp"
 //#include "tools/app_settings.hpp"
 
 #define TUI_SCRIPT_MSG "Select and exit to run."
@@ -86,11 +87,11 @@ public:
 
 	void initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate);
 
-	void draw();							// Display the ui
+	void draw(MODULE module);							// Display the ui
 	void updateTimeouts(int delta_time);		// Update changing values
 	void saveCurrentConfig(InitParser &conf);
 
-	void drawGravityUi();	// Draw simple gravity text ui.
+	void drawGravityUi(MODULE module);	// Draw simple gravity text ui.
 	// Handle mouse clics
 	int handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_VALUE state);
 	// Handle mouse move

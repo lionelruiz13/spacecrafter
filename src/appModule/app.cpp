@@ -457,7 +457,7 @@ void App::draw(int delta_time)
 	context.commandMgr->setSubmission(commandIndexClear, true);
 	executor->draw(delta_time);
 	// Draw the Graphical ui and the Text ui
-	ui->draw();
+	ui->draw(executor->getExecutorModule());
 	//inversion des couleurs pour un ciel blanc
 	if (flagColorInverse)
 		appDraw->drawColorInverse();

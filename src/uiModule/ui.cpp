@@ -144,9 +144,9 @@ void UI::initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::
 }
 
 /*******************************************************************/
-void UI::draw()
+void UI::draw(MODULE module)
 {
-	if (FlagShowGravityUi) drawGravityUi();
+	if (FlagShowGravityUi) drawGravityUi(module);
 	if (FlagShowTuiMenu) drawTui();
 }
 
