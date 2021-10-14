@@ -27,6 +27,8 @@
 #ifndef _EXECUTOR_MODULE_
 #define _EXECUTOR_MODULE_
 
+enum MODULE {SOLAR_SYSTEM, IN_GALAXY, IN_UNIVERSE};
+
 class ExecutorModule {
 public:
 
@@ -49,12 +51,17 @@ public:
 	ExecutorModule *getNextMode() {
 		return nextMode;
 	}
+
+	MODULE getExecutorModule() {
+		return module;
+	}
 	
 protected:
 
 	double minAltToGoDown = 0.0;	// altitude min avant changement de mode vers upMode
 	double maxAltToGoUp = 0.0;		// altitude max avant changement de mode vers downMode
 
+	MODULE module;
 	ExecutorModule *downMode = nullptr;
 	ExecutorModule *upMode = nullptr;
 	ExecutorModule *nextMode = nullptr;

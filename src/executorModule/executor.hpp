@@ -67,6 +67,10 @@ public:
         updateMode(observer->getAltitude());
 	}
 
+    MODULE getExecutorModule() {
+        return currentMode->getExecutorModule();
+    }
+
 private:
     std::shared_ptr<Core> core;
     Observer *observer;

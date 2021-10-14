@@ -32,7 +32,7 @@
 class SolarSystemModule : public ExecutorModule {
 public:
 
-    SolarSystemModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer) {maxAltToGoUp = 1.E16;};
+    SolarSystemModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer) {maxAltToGoUp = 1.E16; module = MODULE::SOLAR_SYSTEM;};
     ~SolarSystemModule() {};
 
     virtual void onEnter() override;
