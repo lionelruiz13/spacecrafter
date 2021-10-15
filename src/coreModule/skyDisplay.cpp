@@ -786,7 +786,7 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	SkyDisplay::draw(prj,nav);
 
 	// Text
-	float ang, mn;
+	float ang, mn, sec;
 	ang = acos(sin(alt1) * sin(alt2) + cos(alt1) * cos(alt2) * cos(az2 - az1)) * rad2deg;
 	Utility::spheToRect(az1, alt1, pt3);
 	Utility::spheToRect(az2, alt2, pt4);
@@ -807,11 +807,19 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	(prj->*proj_func)(pt5, pt0);
 	Mat4f TRANSFO = Mat4f::translation(Vec3f(pt0[0], pt0[1], 0));
 	TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
-	oss << truncf(ang) << "°";
-	mn = truncf((ang - truncf(ang)) * 60);
-	if (mn < 10)
-		oss << "0";
-	oss << mn << "'";
+	if (truncf(ang) >= 1) {
+		oss << truncf(ang) << "°";
+		mn = truncf((ang - truncf(ang)) * 60);
+		if (mn < 10)
+			oss << "0";
+		oss << mn << "'";
+	} else {
+		oss << truncf(ang * 60) << "'";
+		sec = truncf((ang * 60 - truncf(ang * 60)) * 60);
+		if (sec < 10)
+			oss << "0";
+		oss << sec << "\"";
+	}
 	skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
 	oss.clear();
 }
