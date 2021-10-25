@@ -3,6 +3,7 @@
 
 #include <vulkan/vulkan.h>
 #include <list>
+#include <string>
 #include <vector>
 #include <set>
 #include <array>

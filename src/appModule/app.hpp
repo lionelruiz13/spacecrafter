@@ -31,6 +31,7 @@
 #include <SDL2/SDL_thread.h>
 #include <queue>
 #include <memory>
+#include <string>
 
 #include "tools/no_copy.hpp"
 #include "vulkanModule/Context.hpp"
