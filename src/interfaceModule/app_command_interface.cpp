@@ -1480,7 +1480,7 @@ int AppCommandInterface::commandSet()
 	//debug
 	for (const auto&i : args ) {
 		// std::cout << i.first << "->" << i.second << std::endl;
-		returnValue *= evalCommandSet(i.first , i.second);
+		returnValue = returnValue && evalCommandSet(i.first , i.second);
 	}
 	return returnValue;
 }
