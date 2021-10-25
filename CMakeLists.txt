@@ -26,7 +26,7 @@ CONFIGURE_FILE (
   "${CMAKE_CURRENT_SOURCE_DIR}/src/config.h"
   )
 
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 20)
 
 ################# plateform configuration ############################
 
