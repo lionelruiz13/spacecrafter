@@ -105,7 +105,7 @@ public:
 		return d.uint8[3];
 	}
 
-	enum {max_pos_val=0x7FFFFFFF};
+	static constexpr double max_pos_val=0x7FFFFFFF;
 
 	ObjectBaseP createStelObject(const SpecialZoneArray<Star1> *a, const SpecialZoneData<Star1> *z) const;
 
@@ -163,7 +163,7 @@ public :
 		return d[9] >> 3;
 	}
 
-	enum {max_pos_val=((1<<19)-1)};
+	static constexpr double max_pos_val=((1<<19)-1);
 
 	ObjectBaseP createStelObject(const SpecialZoneArray<Star2> *a, const SpecialZoneData<Star2> *z) const;
 
@@ -211,7 +211,7 @@ public:
 		return d[5] >> 3;
 	}
 
-	enum {max_pos_val=((1<<17)-1)};
+	static constexpr double max_pos_val=((1<<17)-1)	;
 
 	ObjectBaseP createStelObject(const SpecialZoneArray<Star3> *a, const SpecialZoneData<Star3> *z) const;
 
