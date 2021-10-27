@@ -7,7 +7,7 @@
 //  any purpose.
 
 //  Revision History
-//   20 Aug 2003 by Fabien Chéreau
+//   20 Aug 2003 by Fabien Chï¿½reau
 //                Changed a ARG1 into ARG2 which was causing weird bugs..!
 //                Removed an implicitly typename warning that occured with gcc 3.2.2
 //                and changed file names for consistency
@@ -270,12 +270,12 @@ struct SWITCH {
 // ===============================================================================
 template <typename T>
 struct is_used {
-	enum {RET = 1};
+	static const int RET = 1;
 };
 
 template <>
 struct is_used<unused_arg> {
-	enum {RET = 0};
+	static const int RET = 0;
 };
 
 
