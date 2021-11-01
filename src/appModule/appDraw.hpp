@@ -33,15 +33,16 @@
 #include "appModule/fps.hpp"
 #include "appModule/space_date.hpp"
 #include "tools/app_settings.hpp"
-
-
 #include "tools/no_copy.hpp"
 
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/SubBuffer.hpp"
 
+class VertexBuffer;
 class VertexArray;
-class Uniform;
+class Set;
 class Pipeline;
+class PipelineLayout;
+class Texture;
 /**
 @author AssociationSirius
 */
@@ -56,7 +57,7 @@ public:
 	void init(unsigned int _width, unsigned int _height);
 
 	//! dessine le splash au démarrage
-    void initSplash(ThreadContext *context);
+    void initSplash();
 
     //! clean screen with black color
 	// void drawFirstLayer();
@@ -86,20 +87,21 @@ public:
 	}
 
 	//! création des shaders
-	void createSC_context(ThreadContext *context);
+	void createSC_context();
 private:
 	//! suppression des shaders
 	// void deleteShader();
 
 	std::unique_ptr<VertexArray> m_viewportGL;
-	std::unique_ptr<PipelineLayout> layoutViewportShape, layoutColorInverse;
-	std::unique_ptr<Uniform> uRadius, uDecalage;
-	std::unique_ptr<Set> set;
+	std::unique_ptr<PipelineLayout> layoutEmpty;
 	std::unique_ptr<Pipeline> pipelineViewportShape, pipelineColorInverse;
-	CommandMgr *cmdMgr;
-	int *pRadius = nullptr;
-	Vec2i *pDecalage = nullptr;
-	int commandIndexViewportShape, commandIndexColorInverse;
+	std::unique_ptr<PipelineLayout> layout; // splash screen
+	std::unique_ptr<Pipeline> pipeline; // splash screen
+	std::unique_ptr<Texture> texture; // splash screen
+	SubBuffer staging;
+	std::unique_ptr<VertexBuffer> vertexBuffer; // 0-4 colorInverse, 4-16 viewportShape
+	// 0-3 viewport shape, 3-6 color inverse
+	std::vector<VkCommandBuffer> cmds;
 
 	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
 	bool antialiasLines;						//!< using GL_LINE_SMOOTH

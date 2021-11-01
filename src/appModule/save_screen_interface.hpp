@@ -31,8 +31,7 @@
 #include <mutex>
 #include <string>
 #include "tools/no_copy.hpp"
-
-class Vulkan;
+#include <vulkan/vulkan.h>
 
 /** @class SaveScreenInterface
 
@@ -50,11 +49,11 @@ class SaveScreen;
 
 class SaveScreenInterface : public NoCopy {
 public:
-	SaveScreenInterface(unsigned int _width, unsigned int _height, Vulkan *_master);
+	SaveScreenInterface(unsigned int _width, unsigned int _height);
 	~SaveScreenInterface();
 
     //! lit l'écran et le sauvegarde sur le disque dur
-    void readScreenShot();
+    void readScreenShot(VkCommandBuffer cmd);
 
     //! démarre la vidéo
     void startVideo();
@@ -81,7 +80,6 @@ private:
     static void writeScreenshot(void *pSelf, void *pData, uint32_t width, uint32_t height);
     std::string getNextScreenshotFilename();
 
-	Vulkan *master;
 	SaveScreen* saveScreen = nullptr;
     enum class ReadScreen : char {NONE, SNAPSHOT, VIDEO};
     ReadScreen readScreen= ReadScreen::NONE;

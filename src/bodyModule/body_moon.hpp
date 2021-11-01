@@ -24,10 +24,9 @@
 
 
 #include "bodyModule/body.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Set;
-class Uniform;
-class Buffer;
 
 class Moon : public Body {
 
@@ -45,8 +44,7 @@ public:
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-		 std::shared_ptr<BodyTexture> _bodyTexture,
-		 ThreadContext *context
+		 std::shared_ptr<BodyTexture> _bodyTexture
 		 );
 
 	virtual ~Moon();
@@ -54,27 +52,21 @@ public:
 	virtual void selectShader();
 
 protected :
+	void defineSet();
 
 	virtual void handleVisibilityFader(const Observer* observatory, const Projector* prj, const Navigator * nav) override;
 
-	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
-	virtual void drawTrail(const Navigator* nav, const Projector* prj) override {
+	virtual void drawTrail(VkCommandBuffer &cmd, const Navigator* nav, const Projector* prj) override {
 		return;
 	}
 
-	int commandIndex = -2;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal tes
-	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal
-	std::unique_ptr<Uniform> uUmbraColor; // bump
-	std::unique_ptr<Uniform> uMoonFrag, uGlobalTescGeom; // moon
-	globalVertProj *pGlobalVertProj = nullptr;
-	globalFrag *pGlobalFrag = nullptr;
-	Vec3f *pUmbraColor = nullptr;
-	moonFrag *pMoonFrag = nullptr;
-	globalTescGeom *pGlobalTescGeom = nullptr;
-	std::unique_ptr<Buffer> drawData;
-	//shaderProgram *myShaderProg;	// Shader moderne
-	s_texture * tex_night=nullptr;			// for moon with night event to see
+	std::unique_ptr<SharedBuffer<globalVertProj>> uGlobalVertProj; // night bump normal tes
+	std::unique_ptr<SharedBuffer<globalFrag>> uGlobalFrag; // night bump normal
+	std::unique_ptr<SharedBuffer<Vec3f>> uUmbraColor; // bump
+	std::unique_ptr<SharedBuffer<moonFrag>> uMoonFrag;
+	std::unique_ptr<SharedBuffer<globalTescGeom>> uGlobalTescGeom; // moon
+	std::unique_ptr<s_texture> tex_night=nullptr;			// for moon with night event to see
 };

@@ -4,10 +4,10 @@
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <list>
+#include <memory>
 
 #include "ojmModule/ojml.hpp"
-
-#include "vulkanModule/Context.hpp"
+#include <vulkan/vulkan.h>
 
 class Projector;
 class Pipeline;
@@ -35,10 +35,10 @@ class ObjL {
 public:
 	ObjL();
 	~ObjL();
-	void draw(const float screenSize, void *pDrawData);
-	bool init(const std::string &repertory, const std::string &name, ThreadContext *context);
-	void bind(CommandMgr *cmdMgr);
-	void bind(Pipeline *pipeline);
+	void draw(VkCommandBuffer &cmd, const float screenSize);
+	bool init(const std::string &repertory, const std::string &name);
+	void bind(VkCommandBuffer &cmd);
+	void bind(Pipeline &pipeline);
 
 	bool isOk() {
 		return isUsable;
@@ -47,9 +47,9 @@ public:
 private:
 	bool isUsable = false;
 
-	OjmL *low = nullptr;
-	OjmL *medium = nullptr;
-	OjmL *high = nullptr;
+	std::unique_ptr<OjmL> low;
+	std::unique_ptr<OjmL> medium;
+	std::unique_ptr<OjmL> high;
 };
 
 

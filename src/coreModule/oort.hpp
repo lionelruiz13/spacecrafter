@@ -32,26 +32,23 @@
 #include <fstream>
 
 #include "tools/fader.hpp"
-
 #include "tools/vecmath.hpp"
-#include "vulkanModule/Context.hpp"
 #include <vector>
 #include <memory>
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 //! Class which manages the Oort Cloud
 class Projector;
 class Navigator;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-//class shaderProgram;
-
 
 class Oort {
 public:
-	Oort(ThreadContext *context);
+	Oort();
 	~Oort();
 
 	//! affiche le nuage de points
@@ -60,6 +57,7 @@ public:
 	//! fixe la couleur du nuage
 	void setColor(const Vec3f& c) {
 		color = c;
+		uFrag->get().color = color;
 	}
 
 	//! renvoie la couleur du nuage
@@ -94,7 +92,7 @@ public:
 	void build();
 private:
 	// initialise le shader et les vao-vbo
-	void createSC_context(ThreadContext *_context);
+	void createSC_context();
 	// couleur uniforme du nuage
 	Vec3f color;
 	// fader pour affichage
@@ -102,19 +100,19 @@ private:
 	// coefficient sur l'intensité lumineuse
 	float intensity;
 	unsigned int nbAsteroids;
-	// données openGL
-	ThreadContext *context;
-	int commandIndex;
+	// Vulkan elements
+	VkCommandBuffer cmds[3];
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uMat, uFrag;
-	Mat4f *pMat;
-	Vec3f *pColor;
-	float *pIntensity;
 	std::unique_ptr<VertexArray> m_dataGL;
-	// shader responsable de l'affichage du nuage
-	//std::unique_ptr<shaderProgram> shaderOort;
+	std::unique_ptr<VertexBuffer> vertex;
+	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
+	struct frag {
+		Vec3f color;
+		float fader;
+	};
+	std::unique_ptr<SharedBuffer<frag>> uFrag;
 };
 
 #endif // ___OORT_HPP___

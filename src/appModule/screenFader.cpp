@@ -23,16 +23,8 @@
  */
 
 #include "appModule/screenFader.hpp"
-#include "vulkanModule/VertexArray.hpp"
-
-
-
-
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/CommandMgr.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 ScreenFader::ScreenFader()
 {
@@ -47,53 +39,35 @@ ScreenFader::~ScreenFader()
 {
 }
 
-void ScreenFader::createSC_context(ThreadContext *context)
+void ScreenFader::createSC_context()
 {
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 	// point en haut a gauche
 	// point en haut a droite
 	// point en bas à gauche
 	// point en bas à droite
 	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
 
-	m_screenGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
-	m_screenGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	m_screenGL->build(4);
-	m_screenGL->fillVertexBuffer(BufferType::POS2D, 8, points);
+	m_screenGL = std::make_unique<VertexArray>(vkmgr);
+	m_screenGL->createBindingEntry(2 * sizeof(float));
+	m_screenGL->addInput(VK_FORMAT_R32G32_SFLOAT);
+	vertex = m_screenGL->createBuffer(0, 4, context.globalBuffer.get());
+	memcpy(context.transfer->planCopy(vertex->get()), points, 8 * sizeof(float));
 
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0);
-	layout->buildLayout();
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(float));
 	layout->build();
 
-	uniform = std::make_unique<Uniform>(context->surface, sizeof(float));
-	pIntensity = static_cast<float *>(uniform->data);
-
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	set->bindUniform(uniform.get(), 0);
-
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
 	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
-	pipeline->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
 	pipeline->bindShader("screenFader.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipeline->bindShader("screenFader.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
-	pipeline->bindVertex(m_screenGL.get());
+	pipeline->bindVertex(*m_screenGL);
 	pipeline->build();
 
-	cmdMgr = context->commandMgr;
-
-	resolveCommandIndex = cmdMgr->getCommandIndex();
-	cmdMgr->init(resolveCommandIndex);
-	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_PRESENT, renderPassCompatibility::SINGLE_SAMPLE);
-	cmdMgr->compile();
-
-	commandIndex = cmdMgr->getCommandIndex();
-	cmdMgr->init(commandIndex);
-	cmdMgr->beginRenderPass(renderPassType::SINGLE_SAMPLE_PRESENT, renderPassCompatibility::SINGLE_SAMPLE);
-	cmdMgr->bindPipeline(pipeline.get());
-	cmdMgr->bindSet(layout.get(), set.get());
-	m_screenGL->bind();
-	cmdMgr->draw(4);
-	cmdMgr->compile();
+	for (int i = 0; i < 3; ++i)
+		cmds[i] = context.frame[i]->create(1);
 }
 
 void ScreenFader::update(int delta_time)
@@ -111,10 +85,14 @@ void ScreenFader::update(int delta_time)
 
 void ScreenFader::draw()
 {
-	if (intensity==0) {
-		cmdMgr->setSubmission(resolveCommandIndex);
+	if (intensity==0)
 		return;
-	}
-	*pIntensity = intensity;
-	cmdMgr->setSubmission(commandIndex);
+	Context &context = *Context::instance;
+	VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_FOREGROUND);
+	pipeline->bind(cmd);
+	vertex->bind(cmd);
+	layout->pushConstant(cmd, 0, &intensity);
+	vkCmdDraw(cmd, 4, 1, 0, 0);
+	context.frame[context.frameIdx]->compile(cmd);
+	context.frame[context.frameIdx]->toExecute(cmd, PASS_FOREGROUND);
 }

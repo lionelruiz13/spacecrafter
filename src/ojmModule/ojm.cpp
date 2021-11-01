@@ -5,14 +5,14 @@
 #include <array>
 
 #include "ojmModule/ojm.hpp"
-#include "vulkanModule/VertexArray.hpp"
-
-
-
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Pipeline.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/Core/BufferMgr.hpp"
+#include "EntityCore/Resource/Pipeline.hpp"
+#include "EntityCore/Resource/PipelineLayout.hpp"
+#include "EntityCore/Resource/VertexArray.hpp"
+#include "EntityCore/Resource/VertexBuffer.hpp"
+#include "EntityCore/Resource/Set.hpp"
+#include "EntityCore/Resource/TransferMgr.hpp"
 
 // *****************************************************************************
 //
@@ -20,9 +20,8 @@
 //
 // *****************************************************************************
 
-Ojm::Ojm( const std::string & _fileName, const std::string & _pathFile, float multiplier, VirtualSurface *_surface)
+Ojm::Ojm(const std::string & _fileName, const std::string & _pathFile, float multiplier)
 {
-	surface = _surface;
 	fileName = _fileName;
 	is_ok = false;
 	pathFile = _pathFile;
@@ -31,32 +30,16 @@ Ojm::Ojm( const std::string & _fileName, const std::string & _pathFile, float mu
 
 Ojm::~Ojm()
 {
-    for(unsigned int i=0;i<shapes.size();i++){
-		// glDeleteBuffers(1,&shapes[i].dGL.pos);
-		// glDeleteBuffers(1,&shapes[i].dGL.tex);
-		// glDeleteBuffers(1,&shapes[i].dGL.norm);
-		// glDeleteBuffers(1,&shapes[i].dGL.elementBuffer);
-		// glDeleteVertexArrays(1,&shapes[i].dGL.vao);
-
-    	if (shapes[i].map_Ka!=nullptr) {
-            delete shapes[i].map_Ka;
-            shapes[i].map_Ka=nullptr;
-        }
-    	if (shapes[i].map_Kd!=nullptr) {
-            delete shapes[i].map_Kd;
-            shapes[i].map_Kd=nullptr;
-        }
-    	if (shapes[i].map_Ks!=nullptr) {
-            delete shapes[i].map_Ks;
-            shapes[i].map_Ks=nullptr;
-        }
+    for(unsigned int i=0;i<shapes.size();i++) {
+		if (shapes[i].index.buffer)
+			Context::instance->indexBufferMgr->releaseBuffer(shapes[i].index);
     }
 	shapes.clear();
 }
 
-Ojm::Ojm(const std::string& _fileName, VirtualSurface *surface)
+Ojm::Ojm(const std::string& _fileName)
 {
-	Ojm(_fileName, "", 1.0, surface);
+	Ojm(_fileName, "", 1.0);
 }
 
 bool Ojm::init(float multiplier)
@@ -89,85 +72,69 @@ bool Ojm::testIndices()
 	return true;
 }
 
-int Ojm::record(CommandMgr *cmdMgr, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline)
+int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline, bool firstRecorded)
 {
-	std::array<float, 11> tmp;
+	float tmp[11];
 
+	if (firstRecorded && selectedPipeline != -1) {
+		VertexArray::bindGlobal(cmd, shapes[0].vertex->get());
+		vkCmdBindIndexBuffer(cmd, shapes[0].index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		firstRecorded = false;
+	}
 	for(unsigned int i=0;i<shapes.size();i++) {
 		if (shapes[i].map_Ka != nullptr) { // There is a texture
 			if (selectedPipeline != 0) {
-				cmdMgr->bindPipeline(pipelines);
+				pipelines[0].bind(cmd);
 				selectedPipeline = 0;
 			}
 			set->clear();
 			set->bindTexture(shapes[i].map_Ka->getTexture(), 0);
-			cmdMgr->pushSet(layout, set, 1);
+			set->push(cmd, *layout, 1);
 		} else { // There is no texture
 			if (selectedPipeline != 1) {
-				cmdMgr->bindPipeline(pipelines + 1);
+				pipelines[1].bind(cmd);
 				selectedPipeline = 1;
 			}
 		}
+		if (firstRecorded) {
+			VertexArray::bindGlobal(cmd, shapes[i].vertex->get());
+			vkCmdBindIndexBuffer(cmd, shapes[i].index.buffer, 0, VK_INDEX_TYPE_UINT32);
+			firstRecorded = false;
+		}
 		// Put data according to offset given in shader
-		*reinterpret_cast<Vec3f *>(tmp.data()) = shapes[i].Ka;
+		*reinterpret_cast<Vec3f *>(tmp) = shapes[i].Ka;
 		tmp[3] = shapes[i].Ns;
-		*reinterpret_cast<Vec3f *>(tmp.data() + 4) = shapes[i].Kd;
+		*reinterpret_cast<Vec3f *>(tmp + 4) = shapes[i].Kd;
 		tmp[7] = shapes[i].T;
-		*reinterpret_cast<Vec3f *>(tmp.data() + 8) = shapes[i].Ks;
-		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, tmp.data(), 44);
-		cmdMgr->bindVertex(shapes[i].dGL.get());
-		cmdMgr->drawIndexed(shapes[i].dGL->getIndiceCount());
+		*reinterpret_cast<Vec3f *>(tmp + 8) = shapes[i].Ks;
+		layout->pushConstant(cmd, 0, tmp, 0, 44);
+		vkCmdDrawIndexed(cmd, shapes[i].index.size / sizeof(int), 1, shapes[i].index.offset / sizeof(int), shapes[0].vertex->getOffset(), 0);
 	}
 	return selectedPipeline;
 }
 
 void Ojm::initGLparam()
 {
+	Context &context = *Context::instance;
+
 	for(unsigned int i=0;i<shapes.size();i++){
-
-        shapes[i].dGL = std::make_unique<VertexArray>(surface);
-		// glGenVertexArrays(1,&shapes[i].dGL.vao);
-		// glBindVertexArray(shapes[i].dGL.vao);
-        shapes[i].dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-        shapes[i].dGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-        shapes[i].dGL->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
-        shapes[i].dGL->registerIndexBuffer(BufferAccess::STATIC, shapes[i].indices.size());
-		shapes[i].dGL->build(shapes[i].vertices.size()/3);
-
-        // glGenBuffers(1,&shapes[i].dGL.pos);
-		// glGenBuffers(1,&shapes[i].dGL.tex);
-		// glGenBuffers(1,&shapes[i].dGL.norm);
-		// glGenBuffers(1,&shapes[i].dGL.elementBuffer);
-
-		// glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.pos);
-		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*shapes[i].vertices.size(), shapes[i].vertices.data(),GL_STATIC_DRAW);
-		// glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.tex);
-		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2*shapes[i].uvs.size(), shapes[i].uvs.data(),GL_STATIC_DRAW);
-		// glBindBuffer(GL_ARRAY_BUFFER,shapes[i].dGL.norm);
-		// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*shapes[i].normals.size(), shapes[i].normals.data(),GL_STATIC_DRAW);
-		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,shapes[i].dGL.elementBuffer);
-		// glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(unsigned int)*shapes[i].indices.size(), shapes[i].indices.data(),GL_STATIC_DRAW);
-
-        shapes[i].dGL->fillVertexBuffer(BufferType::POS3D,   shapes[i].vertices);
-        shapes[i].dGL->fillVertexBuffer(BufferType::TEXTURE, shapes[i].uvs);
-        shapes[i].dGL->fillVertexBuffer(BufferType::NORMAL,  shapes[i].normals);
-        shapes[i].dGL->fillIndexBuffer(shapes[i].indices);
-		shapes[i].dGL->update();
-		//*/
-		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.pos);
-		// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.tex);
-		// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-		// glBindBuffer(GL_ARRAY_BUFFER, shapes[i].dGL.norm);
-		// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shapes[i].dGL.elementBuffer);
-		// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
-
-		// glEnableVertexAttribArray(0);
-		// glEnableVertexAttribArray(1);
-		// glEnableVertexAttribArray(2);
-		// glEnableVertexAttribArray(3);
+		const int vertexCount = shapes[i].vertices.size() / 3;
+        shapes[i].vertex = context.ojmVertexArray->createBuffer(0, vertexCount, context.ojmBufferMgr.get());
+		shapes[i].index = context.indexBufferMgr->acquireBuffer(shapes[i].indices.size() * sizeof(int));
+		memcpy(context.transfer->planCopy(shapes[i].index), shapes[i].indices.data(), shapes[i].indices.size() * sizeof(int));
+		float *data = (float *) context.transfer->planCopy(shapes[i].vertex->get());
+		shapes[i].vertex->fillEntry(3, vertexCount, shapes[i].vertices.data(), data);
+		shapes[i].vertex->fillEntry(2, vertexCount, shapes[i].uvs.data(), data + 3);
+		shapes[i].vertex->fillEntry(3, vertexCount, shapes[i].normals.data(), data + 5);
+		// Release unused ressources
+		shapes[i].vertices.clear();
+		shapes[i].vertices.shrink_to_fit();
+		shapes[i].uvs.clear();
+		shapes[i].uvs.shrink_to_fit();
+		shapes[i].normals.clear();
+		shapes[i].normals.shrink_to_fit();
+		shapes[i].indices.clear();
+		shapes[i].indices.shrink_to_fit();
 	}
 }
 
@@ -310,7 +277,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                                 //~ map_ka_filename = map_ka_filename.substr(0,map_ka_filename.find('\n'));
                                 //~ cout << "map_ka : |"<<map_ka_filename << "|" << endl;
                                 if ( ! map_ka_filename.empty() && map_ka_filename!="0")
-									shapes[shapeIter].map_Ka = new s_texture(pathFile+map_ka_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
+									shapes[shapeIter].map_Ka = std::make_unique<s_texture>(pathFile+map_ka_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
                             }
                         break;
                         case 'd':
@@ -319,7 +286,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                                 //~ map_kd_filename = map_kd_filename.substr(0,map_kd_filename.find('\n'));
                                 //~ cout << "map_kd : |"<<map_kd_filename << "|" << endl;
                                 if ( ! map_kd_filename.empty() && map_kd_filename!="0")
-									shapes[shapeIter].map_Kd = new s_texture(pathFile+map_kd_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
+									shapes[shapeIter].map_Kd = std::make_unique<s_texture>(pathFile+map_kd_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
                             }
                         break;
                         case 's':
@@ -328,7 +295,7 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
                                 //~ map_ks_filename = map_ks_filename.substr(0,map_ks_filename.find('\n'));
                                 //~ cout << "map_ks : |"<<map_ks_filename << "|" << endl;
                                 if ( ! map_ks_filename.empty() && map_ks_filename!="0")
-									shapes[shapeIter].map_Ks = new s_texture(pathFile+map_ks_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
+									shapes[shapeIter].map_Ks = std::make_unique<s_texture>(pathFile+map_ks_filename, /*true*/ TEX_LOAD_TYPE_PNG_SOLID);
                             }
                         break;
 

@@ -7,13 +7,8 @@
 #include <vector>
 #include <string>
 #include <memory>
-
-class VertexArray;
-class CommandMgr;
-class Set;
-class Pipeline;
-class PipelineLayout;
-class VirtualSurface;
+#include "EntityCore/Forward.hpp"
+#include "EntityCore/SubBuffer.hpp"
 
 struct Shape {
     std::string name;
@@ -29,17 +24,18 @@ struct Shape {
 	float Ns;
 	float T=1.0;
 
-	s_texture *map_Ka=nullptr;
-	s_texture *map_Kd=nullptr;
-	s_texture *map_Ks=nullptr;
+	std::unique_ptr<s_texture> map_Ka;
+	std::unique_ptr<s_texture> map_Kd;
+	std::unique_ptr<s_texture> map_Ks;
 
-	std::unique_ptr<VertexArray> dGL;
+    std::unique_ptr<VertexBuffer> vertex;
+    SubBuffer index {};
 };
 
 class Ojm {
 public:
-	Ojm(const std::string& _fileName, VirtualSurface *surface);
-	Ojm(const std::string& _fileName, const std::string& _pathFile, float multiplier, VirtualSurface *_surface);
+	Ojm(const std::string& _fileName);
+	Ojm(const std::string& _fileName, const std::string& _pathFile, float multiplier);
 	~Ojm();
 
 	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
@@ -55,13 +51,12 @@ public:
 
     //! @brief record Ojm draw commands
     //! @param pipelines {pipeline with texture, pipeline without texture}
-    int record(CommandMgr *cmdMgr, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline = -1);
+    int record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline = -1, bool firstRecorded = true);
 
 	//! pour debugger : print
 	void print();
 
 private:
-    VirtualSurface *surface;
 	bool is_ok = false; //say if the model is correctly initialised and operationnal
 	//! vérifie si les indices coincident dans l'objet
 

@@ -30,35 +30,19 @@
 #include "mediaModule/imageTexture.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/s_texture.hpp"
-//
-// #include "vulkanModule/VertexArray.hpp"
-//
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/ThreadedCommandBuilder.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "tools/insert_all.hpp"
 
-// std::unique_ptr<shaderProgram> Image::shaderImageViewport;
-// std::unique_ptr<shaderProgram> Image::shaderUnified;
-// std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
-// std::unique_ptr<VertexArray> Image::m_imageViewportGL;
-ThreadContext *Image::context;
 PipelineLayout *Image::m_layoutViewport;
 PipelineLayout *Image::m_layoutUnifiedRGB;
 PipelineLayout *Image::m_layoutUnifiedYUV;
 Pipeline *Image::m_pipelineViewport;
 std::array<Pipeline *, 4> Image::m_pipelineUnified;
-VertexArray *Image::m_imageViewportGL;
-VertexArray *Image::m_imageUnifiedGL;
-int Image::commandIndex = -1;
-Set *Image::m_setViewport;
-Set *Image::m_setUnifiedRGB;
-Set *Image::m_setUnifiedYUV;
-ThreadedCommandBuilder *Image::cmdMgr;
+std::unique_ptr<VertexArray> Image::m_imageViewportGL;
+std::unique_ptr<VertexArray> Image::m_imageUnifiedGL;
+int Image::cmds[3];
+VkCommandBuffer Image::cmd = VK_NULL_HANDLE;
 Pipeline *Image::pipelineUsed = nullptr;
 
 Image::Image(const std::string& filename, const std::string& name, IMG_POSITION pos_type, IMG_PROJECT project, bool mipmap)
@@ -66,7 +50,7 @@ Image::Image(const std::string& filename, const std::string& name, IMG_POSITION 
 	// load image using alpha channel in image, otherwise no transparency
 	// other than through setAlpha method -- could allow alpha load option from command
 	s_texture* imageRGB = new s_texture(filename, TEX_LOAD_TYPE_PNG_ALPHA, mipmap);
-	imageTexture = new RBGImageTexture(imageRGB);
+	imageTexture = new RBGImageTexture(imageRGB, m_layoutUnifiedRGB);
 	initialise(name, pos_type,project, mipmap);
 }
 
@@ -75,7 +59,8 @@ Image::Image(VideoTexture imgTex, const std::string& name, IMG_POSITION pos_type
 	s_texture* imageY = new s_texture(name+"_y", imgTex.y);
 	s_texture* imageU = new s_texture(name+"_u", imgTex.u);
 	s_texture* imageV = new s_texture(name+"_v", imgTex.v);
-	imageTexture = new YUVImageTexture(imageY, imageU, imageV);
+	imageTexture = new YUVImageTexture(imageY, imageU, imageV, m_layoutUnifiedYUV);
+	imageTexture->setupSync(imgTex.sync);
 	needFlip = true;
 	isPersistent = true;
 	initialise(name, pos_type, project);
@@ -114,10 +99,16 @@ void Image::initialise(const std::string& name, IMG_POSITION pos_type, IMG_PROJE
 	else
 		image_ratio = (float)img_w/img_h;
 	if (pos_type == IMG_POSITION::POS_VIEWPORT) {
-		vertex = std::make_unique<VertexArray>(*m_imageViewportGL);
-		vertex->build(4);
+		if (needFlip) {
+			insert_all(vecImgTex,0,1,0,0,1,1,1,0);
+		}
+		else {
+			insert_all(vecImgTex,0,0,0,1,1,0,1,1);
+		}
+		vertex = m_imageViewportGL->createBuffer(0, 4, Context::instance->tinyMgr.get());
+		imgData = (float *) Context::instance->tinyMgr->getPtr(vertex->get());
+		vertex->fillEntry(2, 4, vecImgTex.data(), imgData + 2);
 	} else {
-		vertex = std::make_unique<VertexArray>(*m_imageUnifiedGL);
 		vertexSize = 0;
 	}
 }
@@ -165,74 +156,56 @@ Image::~Image()
 	vecImgTex.clear();
 }
 
-
-void Image::createShaderImageViewport()
+void Image::createSC_context()
 {
-	// shaderImageViewport = std::make_unique<shaderProgram>();
-	// shaderImageViewport->init("imageViewport.vert","imageViewport.frag");
-	// shaderImageViewport->setUniformLocation({"fader", "MVP"});
-}
-
-
-void Image::createShaderUnified()
-{
-	// shaderUnified = std::make_unique<shaderProgram>();
-	// shaderUnified->init("imageUnified.vert","imageUnified.frag");
-	// shaderUnified->setUniformLocation({"fader","ModelViewMatrix", "noColor", "clipping_fov"});
-	// shaderUnified->setUniformLocation("ModelViewMatrix");
-	// // a cause des textures YUV
-	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useRGB");
-	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useYUV");
-	// // a cause de la transparency
-	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useTransparency");
-	// shaderUnified->setSubroutineLocation(GL_FRAGMENT_SHADER, "useNoTransparency");
-}
-
-
-void Image::createSC_context(ThreadContext *_context)
-{
-	context = _context;
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 	// VertexArray
-	m_imageUnifiedGL = context->global->tracker->track(new VertexArray(context->surface));
-	m_imageUnifiedGL->registerVertexBuffer(BufferType::POS3D,BufferAccess::STREAM);
-	m_imageUnifiedGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::STREAM);
-	m_imageViewportGL = context->global->tracker->track(new VertexArray(context->surface));
-	m_imageViewportGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::STREAM);
-	m_imageViewportGL->registerVertexBuffer(BufferType::TEXTURE,BufferAccess::STREAM);
+	m_imageUnifiedGL = std::make_unique<VertexArray>(vkmgr);
+	m_imageUnifiedGL->createBindingEntry(5 * sizeof(float));
+	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
+	m_imageUnifiedGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
+	m_imageViewportGL = std::make_unique<VertexArray>(vkmgr);
+	m_imageViewportGL->createBindingEntry(4 * sizeof(float));
+	m_imageViewportGL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
+	m_imageViewportGL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
 	// PipelineLayout
-	m_layoutViewport = context->global->tracker->track(new PipelineLayout(context->surface));
-	m_layoutViewport->setTextureLocation(0);
-	m_layoutViewport->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
-	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 4);
-	m_layoutViewport->build();
-	m_layoutUnifiedRGB = context->global->tracker->track(new PipelineLayout(context->surface));
-	m_layoutUnifiedRGB->setGlobalPipelineLayout(m_layoutViewport);
+	m_layoutUnifiedRGB = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutUnifiedRGB);
+	m_layoutUnifiedRGB->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	m_layoutUnifiedRGB->buildLayout();
 	m_layoutUnifiedRGB->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
 	m_layoutUnifiedRGB->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
 	m_layoutUnifiedRGB->build();
-	m_layoutUnifiedYUV = context->global->tracker->track(new PipelineLayout(context->surface));
+	m_layoutUnifiedYUV = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutUnifiedYUV);
 	m_layoutUnifiedYUV->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	m_layoutUnifiedYUV->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	m_layoutUnifiedYUV->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
-	m_layoutUnifiedYUV->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	m_layoutUnifiedYUV->buildLayout();
 	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 76);
 	m_layoutUnifiedYUV->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 76, 20);
 	m_layoutUnifiedYUV->build();
+	m_layoutViewport = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(m_layoutViewport);
+	m_layoutViewport->setGlobalPipelineLayout(m_layoutUnifiedRGB);
+	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
+	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 4);
+	m_layoutViewport->build();
 	// Pipeline
-	m_pipelineViewport = context->global->tracker->track(new Pipeline(context->surface, m_layoutViewport));
+	m_pipelineViewport = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_FRONT, m_layoutViewport);
+	context.pipelines.emplace_back(m_pipelineViewport);
 	m_pipelineViewport->setDepthStencilMode();
-	m_pipelineViewport->setRenderPassCompatibility(renderPassCompatibility::RESOLVE);
-	m_pipelineViewport->bindVertex(m_imageViewportGL);
+	m_pipelineViewport->bindVertex(*m_imageViewportGL);
 	m_pipelineViewport->bindShader("imageViewport.vert.spv");
 	m_pipelineViewport->bindShader("imageViewport.frag.spv");
 	m_pipelineViewport->build();
 	for (int i = 0; i < 4; ++i) {
-		m_pipelineUnified[i] = context->global->tracker->track(new Pipeline(context->surface, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV));
+		m_pipelineUnified[i] = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_FRONT, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
+		context.pipelines.emplace_back(m_pipelineUnified[i]);
 		m_pipelineUnified[i]->setDepthStencilMode();
 		m_pipelineUnified[i]->setCullMode(true);
-		m_pipelineUnified[i]->setRenderPassCompatibility(renderPassCompatibility::RESOLVE);
-		m_pipelineUnified[i]->bindVertex(m_imageUnifiedGL);
+		m_pipelineUnified[i]->bindVertex(*m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
 	}
 	m_pipelineUnified[0]->bindShader("imageUnifiedRGB.frag.spv");
@@ -241,13 +214,9 @@ void Image::createSC_context(ThreadContext *_context)
 	m_pipelineUnified[3]->bindShader("imageUnifiedYUVTransparency.frag.spv");
 	for (int i = 0; i < 4; ++i)
 		m_pipelineUnified[i]->build();
-	// Set
-	m_setViewport = context->global->tracker->track(new Set());
-	m_setUnifiedRGB = m_setViewport;
-	m_setUnifiedYUV = context->global->tracker->track(new Set());
 	// CommandBuffer
-	cmdMgr = context->commandMgrSingleUseInterface;
-	commandIndex = cmdMgr->getCommandIndex();
+	for (int i = 0; i < 3; ++i)
+		cmds[i] = context.frame[i]->create(1);
 }
 
 void Image::setAlpha(float alpha, float duration)
@@ -481,22 +450,6 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 
 	initCache(prj);
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//imageTexture->bindImageTexture(set);
-	// if (useRGB) {
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture (GL_TEXTURE_2D, image_RGB->getID());
-	// } else {
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture (GL_TEXTURE_2D, image_Y->getID());
-	// glActiveTexture(GL_TEXTURE1);
-	// glBindTexture (GL_TEXTURE_2D, image_U->getID());
-	// glActiveTexture(GL_TEXTURE2);
-	// glBindTexture (GL_TEXTURE_2D, image_V->getID());
-	// }
-
 	switch (image_pos_type) {
 		case IMG_POSITION::POS_VIEWPORT:
 			drawViewport(nav, prj);
@@ -528,29 +481,26 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 	}
 
 	vecImgPos.clear();
-	vecImgTex.clear();
-
-	// StateGL::disable(GL_BLEND);
 }
 
 void Image::beginDraw()
 {
-	cmdMgr->init(commandIndex, false);
-	cmdMgr->beginRenderPass(renderPassType::RESOLVE_DEFAULT, renderPassCompatibility::RESOLVE);
+	cmd = Context::instance->frame[Context::instance->frameIdx]->begin(cmds[Context::instance->frameIdx], PASS_MULTISAMPLE_FRONT);
 	pipelineUsed = nullptr;
 }
 
 void Image::endDraw()
 {
-	cmdMgr->compile();
-	cmdMgr->setSubmission(commandIndex, true, context->commandMgr);
+	Context::instance->frame[Context::instance->frameIdx]->compile(cmd);
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_FRONT);
+	cmd = VK_NULL_HANDLE;
 }
 
 void Image::setPipeline(Pipeline *pipeline)
 {
 	if (pipelineUsed != pipeline) {
 		pipelineUsed = pipeline;
-		cmdMgr->bindPipeline(pipeline);
+		pipeline->bind(cmd);
 	}
 }
 
@@ -565,9 +515,7 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 		h /= image_ratio;
 	}
 	setPipeline(m_pipelineViewport);
-	m_setViewport->clear();
-	imageTexture->bindImageTexture(m_setViewport);
-	cmdMgr->pushSet(m_layoutViewport, m_setViewport);
+	imageTexture->bindSet(cmd, m_layoutViewport);
 
 	//	  cout << "drawing image viewport " << image_name << endl;
 	// at x or y = 1, image is centered on projection edge centered in viewport at 0,0
@@ -579,29 +527,14 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	TRANSFO = TRANSFO*Mat4f::translation( Vec3f(image_xpos*vieww/2, image_ypos*viewh/2, 0) );
 	TRANSFO = TRANSFO*Mat4f::rotation( Vec3f(0,0,-1), (-image_rotation-90) *M_PI/180. );
 
-	// l'image video est inversée
-	if (needFlip) {
-		insert_all(vecImgTex,0,1,0,0,1,1,1,0);
-	}
-	else {
-		insert_all(vecImgTex,0,0,0,1,1,0,1,1);
-	}
-
 	insert_all(vecImgPos, w, -h, -w, -h, w, h, -w, h);
-
-	vertex->fillVertexBuffer(BufferType::POS2D,vecImgPos);
-	vertex->fillVertexBuffer(BufferType::TEXTURE,vecImgTex);
+	vertex->fillEntry(2, 4, vecImgPos.data(), imgData);
 	MVP = MVP * TRANSFO;
-	cmdMgr->pushConstant(m_layoutViewport, VK_SHADER_STAGE_VERTEX_BIT, 0, &MVP, 64);
-	cmdMgr->pushConstant(m_layoutViewport, VK_SHADER_STAGE_FRAGMENT_BIT, 64, &image_alpha, 4);
-	cmdMgr->bindVertex(vertex.get());
-	cmdMgr->draw(4);
-
-	// shaderImageViewport->use();
-	// shaderImageViewport->setUniform("fader", image_alpha);
-	// shaderImageViewport->setUniform("MVP", MVP*TRANSFO);
-
-	// Renderer::drawArrays(shaderImageViewport.get(), m_imageViewportGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
+	m_layoutViewport->pushConstant(cmd, 0, &MVP);
+	m_layoutViewport->pushConstant(cmd, 1, &image_alpha);
+	vertex->bind(cmd);
+	vkCmdDraw(cmd, 4, 1, 0, 0);
+	imageTexture->unbindSet(cmd);
 }
 
 static int decalages(int i, int howManyDisplay)
@@ -639,28 +572,26 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 
 	int index = transparency ? 1 : 0;
 	PipelineLayout *layout;
-	Set *set;
 	if (imageTexture->isYUV()) {
 		setPipeline(m_pipelineUnified[index | 2]);
 		layout = m_layoutUnifiedYUV;
-		set = m_setUnifiedYUV;
 	} else {
 		setPipeline(m_pipelineUnified[index]);
 		layout = m_layoutUnifiedRGB;
-		set = m_setUnifiedRGB;
 	}
-	set->clear();
-	imageTexture->bindImageTexture(set);
-	cmdMgr->pushSet(layout, set);
-	cmdMgr->pushConstant(layout, VK_SHADER_STAGE_VERTEX_BIT, 0, &uVert, 76);
+	imageTexture->bindSet(cmd, layout);
+	layout->pushConstant(cmd, 0, &uVert);
 	if (transparency) {
 		float tmpBuff[5];
 		tmpBuff[0] = image_alpha;
 		*reinterpret_cast<Vec4f *>(tmpBuff + 1) = noColor;
-		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, tmpBuff, 20);
+		layout->pushConstant(cmd, 1, &tmpBuff, 0, 20);
 	} else
-		cmdMgr->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 76, &image_alpha, 4);
+		layout->pushConstant(cmd, 1, &image_alpha, 0, 4);
 
+	Context &context = *Context::instance;
+	imgData = (float *) context.transfer->beginPlanCopy(vertexSize * 5 * sizeof(float));
+	int currentSize = 0;
 	for (int i=0; i<howManyDisplay; i++) {
 		// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
 		imagev = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
@@ -687,29 +618,30 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 						         Mat4d::rotation( ortho2, image_scale*(i+k-grid_size/2.)/(float)grid_size*M_PI/180.) *
 						         imagev;
 					}
-					insert_vec3(vecImgData, gridpt);
-
-					vecImgData.push_back((i+k)/(float)grid_size);
+					*(imgData++) = gridpt[0];
+					*(imgData++) = gridpt[1];
+					*(imgData++) = gridpt[2];
+					*(imgData++) = (i+k)/(float)grid_size;
 
 					// l'image video est inversée
 					if (needFlip)
-						vecImgData.push_back((grid_size-j)/(float)grid_size);
+						*(imgData++) = (grid_size-j)/(float)grid_size;
 					else
-						vecImgData.push_back(j/(float)grid_size);
-
+						*(imgData++) = j/(float)grid_size;
+					++currentSize;
 				}
 			}
 		}
 	}
-	if (vertexSize != vecImgData.size() / 5) {
-		vertexSize = vecImgData.size() / 5;
-		vertex->build(vertexSize);
+	if (vertexSize != currentSize) {
+		vertexSize = currentSize;
+		vertex.reset();
+		vertex = m_imageViewportGL->createBuffer(0, currentSize, Context::instance->globalBuffer.get());
 	}
-	vertex->fillVertexBuffer(vecImgData);
-	cmdMgr->bindVertex(vertex.get());
+	context.transfer->endPlanCopy(vertex->get(), currentSize * 5 * sizeof(float));
+	vertex->bind(cmd);
 	int rowSize = (grid_size + 1) * 2;
 	for (int i=0; i<grid_size * howManyDisplay; i++) {
-		cmdMgr->draw(rowSize, 1, i * rowSize);
+		vkCmdDraw(cmd, rowSize, 1, i * rowSize, 0);
 	}
-	vecImgData.clear();
 }

@@ -48,8 +48,6 @@
 #include "bodyModule/body_color.hpp"
 #include "tools/ScModule.hpp"
 
-class ThreadContext;
-
 class OrbitCreator;
 class SSystemIterator;
 class SSystemIteratorVector;
@@ -58,7 +56,7 @@ class SolarSystem: public NoCopy , public ModuleFont{
     friend class SSystemIterator;
 	friend class SSystemIteratorVector;
 public:
-	SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr);
+	SolarSystem(ObjLMgr *_objLMgr);
 	virtual ~SolarSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
@@ -224,7 +222,7 @@ public:
 	}
 
 	std::string getPlanetsPosition();
-	
+
 	void setAnchorManager(AnchorManager * _anchorManager){
 		anchorManager = _anchorManager;
 	}
@@ -244,11 +242,11 @@ public:
 	// return the Sun altitude
 	double getSunAltitude(const Navigator * nav) const;
 
-	// return the Sun azimuth 
+	// return the Sun azimuth
 	double getSunAzimuth(const Navigator * nav) const;
 
 	std::vector<std::shared_ptr<BodyContainer>>::iterator begin() {return renderedBodies.begin();};
-    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};	
+    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};
 
 	std::unique_ptr<SSystemIterator> createIterator();
 	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
@@ -268,8 +266,6 @@ private:
 
 	// load one object from a hash
 	void addBody(stringHash_t & param, bool deletable);
-
-	ThreadContext *context;
 
 	Sun* sun=nullptr; //return the Sun
 	Moon* moon=nullptr;	//return the Moon

@@ -26,9 +26,8 @@
 
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventVideo.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/VirtualSurface.hpp"
-#include "vulkanModule/Vulkan.hpp" // for submit
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 VideoPlayer::VideoPlayer(Media* _media)
 {
@@ -49,11 +48,14 @@ VideoPlayer::~VideoPlayer()
 		delete videoTexture.tex[i];
 }
 
-void VideoPlayer::createTextures(ThreadContext *_context)
+void VideoPlayer::createTextures()
 {
-	context = _context;
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	const uint32_t widthMax = 4096;
+	const uint32_t heightMax = 2048;
+	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*3/2, "Staging video buffer");
 	for (int i = 0; i < 3; i++)
-		videoTexture.tex[i] = new StreamTexture(context->surface, context->global->textureMgr, true);
+		videoTexture.tex[i] = new Texture(vkmgr, *stagingBuffer, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "Video texture", VK_FORMAT_R8_UNORM);
 }
 
 void VideoPlayer::pauseCurrentVideo()
@@ -274,10 +276,8 @@ void VideoPlayer::getNextVideoFrame()
 		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 		for (int i = 0; i < 3; i++) {
 			memcpy(pImageBuffer[i], pFrameOut->data[i], widths[i] * heights[i]);
-			videoTexture.tex[i]->update();
-			// glBindTexture(GL_TEXTURE_2D,  videoTexture.tex[i]);
-			// glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, widths[i], heights[i], GL_LUMINANCE, GL_UNSIGNED_BYTE, pFrameOut->data[i]);
 		}
+		needUpdate = true;
 	}
 	#endif
 }
@@ -294,14 +294,6 @@ void VideoPlayer::stopCurrentVideo()
 	av_frame_free(&pFrameOut);
 	av_frame_free(&pFrameIn);
 	avcodec_close(pCodecCtx);
-	context->surface->waitGraphicQueueIdle();
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
-	for (int i = 0; i < 3; ++i) {
-		videoTexture.tex[i]->releaseStagingMemoryPtr();
-	}
-
 
 	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
 	EventRecorder::getInstance()->queue(event);
@@ -318,24 +310,32 @@ void VideoPlayer::initTexture()
 		heights[i] = _heights[i];
 	}
 
+	bool uninitialized = true;
 	for (int i = 0; i < 3; ++i) {
-		if (videoTexture.tex[i]->getUseCount() > 0) {
+		if (videoTexture.tex[i]->isOnGPU()) {
 			int width, height;
 			videoTexture.tex[i]->getDimensions(width, height);
-			if (width != widths[i] || height != heights[i]) {
+			if (width == widths[i] && height == heights[i]) {
+				uninitialized = false;
+			} else
 				videoTexture.tex[i]->unuse();
-				videoTexture.tex[i]->use(widths[i], heights[i]);
-			}
-		} else {
-			videoTexture.tex[i]->use(widths[i], heights[i]);
 		}
-		videoTexture.tex[i]->acquireStagingMemoryPtr(&pImageBuffer[i]);
-		// glBindTexture(GL_TEXTURE_2D, videoTexture.tex[i]);
-		// glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, widths[i],heights[i],0,GL_LUMINANCE,GL_UNSIGNED_BYTE, NULL);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		// glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		// glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	}
+	if (uninitialized) {
+		firstUse = true;
+		stagingBuffer->reset();
+		videoTexture.sync = std::make_shared<VideoSync>();
+		videoTexture.sync->syncOut = std::make_unique<SyncEvent>(VulkanMgr::instance);
+		videoTexture.sync->syncIn = std::make_unique<SyncEvent>(VulkanMgr::instance);
+		for (int i = 0; i < 3; ++i) {
+			videoTexture.tex[i]->init(widths[i], heights[i], nullptr, false, 1);
+			imageBuffers[i] = stagingBuffer->fastAcquireBuffer(widths[i] * heights[i]);
+			pImageBuffer[i] = stagingBuffer->getPtr(imageBuffers[i]);
+			videoTexture.sync->syncOut->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
+			videoTexture.sync->syncIn->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
+		}
+		videoTexture.sync->syncOut->build();
+		videoTexture.sync->syncIn->build();
 	}
 }
 
@@ -395,4 +395,36 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	#else
 	return false;
 	#endif
+}
+
+void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
+{
+	if (!videoTexture.sync || !videoTexture.sync->inUse)
+		return;
+	videoTexture.sync->inUse = false;
+	if (firstUse) {
+		SyncEvent helper;
+		for (int i = 0; i < 3; ++i)
+			helper.imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, 0, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
+		helper.placeBarrier(cmd);
+		firstUse = false;
+	} else {
+		videoTexture.sync->syncOut->dstDependency(cmd);
+		videoTexture.sync->syncOut->resetDependency(cmd, VK_PIPELINE_STAGE_2_COPY_BIT_KHR);
+	}
+	if (needUpdate) {
+		VkBufferImageCopy region;
+		region.bufferRowLength = region.bufferImageHeight = 0;
+		region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
+		region.imageOffset = VkOffset3D{};
+		region.imageExtent.depth = 1;
+		for (int i = 0; i < 3; ++i) {
+			region.bufferOffset = imageBuffers[i].offset;
+			region.imageExtent.width = widths[i];
+			region.imageExtent.height = heights[i];
+			vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		}
+		needUpdate = false;
+	}
+	videoTexture.sync->syncIn->srcDependency(cmd);
 }

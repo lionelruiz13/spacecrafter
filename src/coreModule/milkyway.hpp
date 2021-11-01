@@ -36,7 +36,6 @@
 #include "tools/vecmath.hpp"
 #include "tools/scalable.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
 
 /*!
  * \file milkyway.hpp
@@ -60,12 +59,13 @@ class Navigator;
 class ToneReproductor;
 class s_texture;
 class Pipeline;
-class Uniform;
+class PipelineLayout;
+class Set;
 
 class MilkyWay: public NoCopy {
 
 public:
-	MilkyWay(ThreadContext *context);
+	MilkyWay();
 	virtual ~MilkyWay();
 
 	//! dessine la sphère et la texture associée à la Milkyway.
@@ -157,7 +157,6 @@ public:
 
 	void needToUseIris(bool value) {
 		useIrisMilky = value;
-		initIris();
 	}
 
 	void setZodiacalIntensity(float _intensity) {
@@ -167,21 +166,18 @@ public:
 private:
 	struct MilkyData{
 		std::string name; // le nom exact de la texture
-		s_texture* tex = nullptr;
+		std::unique_ptr<s_texture> tex;
 		float intensity;
 	};
 
-	//shaderProgram* shaderMilkyway=nullptr;
-	//std::unique_ptr<shaderProgram> shaderMilkyway;
-	ThreadContext *context;
-	int commandIndexMilky, commandIndexIrisMilky, commandIndexZodiacal;
+	int cmds[3] = {-1, -1, -1};
 	std::unique_ptr<PipelineLayout> layout;
-	Pipeline *pipelineMilky = nullptr;
+	std::unique_ptr<PipelineLayout> layoutTwoTex;
+	Pipeline *pipelineMilky;
 	std::unique_ptr<Pipeline> pipelineZodiacal;
-	std::unique_ptr<Set> setMilky, setIrisMilky, setZodiacal;
-	std::unique_ptr<Uniform> uModelViewMatrixMilky, uFragMilky, uModelViewMatrixZodiacal, uFragZodiacal;
-	Mat4f *pModelViewMatrixMilky, *pModelViewMatrixZodiacal;
-	float *pCmagMilky, *pTexTransitMilky, *pCmagZodiacal;
+	std::unique_ptr<Set> setMilky;
+	std::unique_ptr<Set> setIrisMilky;
+	std::unique_ptr<Set> setZodiacal;
 	LinearFader showFader;
 	ParabolicFader switchTexFader;
 	LinearFader zodiacalFader;
@@ -205,11 +201,10 @@ private:
 	MilkyData irisMilky;
 
 
-	void createSC_context(ThreadContext *_context);
+	void createSC_context();
 	// void deleteShader();
 	void initModelMatrix();			//! création des matrices Model pour MilkyWay et Zodiacal
 	void deleteMapTex();
-	void initIris();
 	void buildMilkyway();
 	void buildZodiacal();
 };

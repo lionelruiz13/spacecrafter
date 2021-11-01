@@ -34,12 +34,11 @@
 #include "tools/fader.hpp"
 #include "tools/object_type.hpp"
 #include "tools/object.hpp"
-// 
-// 
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
+#include "EntityCore/Tools/SafeQueue.hpp"
 
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Translator;
 class InitParser;
@@ -52,11 +51,17 @@ class TimeMgr;
 class s_font;
 class HipStarMgr;
 class GeodesicGrid;
+
 class VertexArray;
-class Uniform;
+class VertexBuffer;
 class Pipeline;
-class Buffer;
+class PipelineLayout;
 class Texture;
+class Set;
+class RenderMgr;
+class FrameMgr;
+class SyncEvent;
+class TransferMgr;
 
 typedef std::tuple<double, double, const std::string , const Vec4f > starDBtoDraw;
 
@@ -65,6 +70,11 @@ class ZoneArray;
 class HipIndexStruct;
 }
 
+enum StarSync {
+	STAR_UNINITIALIZED, // Never used until now (thus VK_IMAGE_LAYOUT_UNDEFINED)
+	STAR_CLEAR, // Left in VK_IMAGE_LAYOUT_UNDEFINED after use
+	STAR_STORE // Left in VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL after use
+};
 
 class MagConverter {
 public:
@@ -141,7 +151,7 @@ private:
 class HipStarMgr;
 class HipStarMgr: public NoCopy , public ModuleFont, public ModuleFader<LinearFader> {
 public:
-	HipStarMgr(int width,int height, ThreadContext *_context);
+	HipStarMgr(int width,int height);
 	virtual ~HipStarMgr(void);
 
 	//!/////////////////////////////////////////////////////////////////////////
@@ -426,7 +436,12 @@ public:
 	}
 
 	//! Draw a star of specified position, magnitude and color.
-	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color) const;
+	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color);
+
+	int drawStar(const Projector *prj, const Vec3d &XY, const float rc_mag[2], const Vec3f &color) const {
+		//! drawStar write to vertexData and nbStarsToDraw, thus it can't be const
+		return const_cast<HipStarMgr *>(this)->drawStar(prj, XY, rc_mag, color);
+	}
 
 	//! Get the (translated) common name for a star with a specified
 	//! Hipparcos catalogue number.
@@ -447,7 +462,7 @@ public:
 	void iniColorTable();
 	void readColorTable ();
 	void setColorStarTable(int p, Vec3f a);
-
+	void updateFramebuffer(VkCommandBuffer cmd, VkCommandBuffer mainCmd);
 private:
 	//! Load all the stars from the files.
 	void load_data(const InitParser &conf);
@@ -503,37 +518,26 @@ private:
 
 	std::vector<starDBtoDraw> starNameToDraw;
 
-	s_texture* texPointer;		//! The selection pointer texture
-
-	mutable int nbStarsToDraw;
+	int nbStarsToDraw;
 	void createShaderParams(int width,int height);
-	static void sExecuteDraw(HipStarMgr *self);
-	void executeDraw();
-	// void deleteShader();
-	ThreadContext *context;
-	std::vector<std::shared_ptr<Texture>> colorBuffer;
 	std::unique_ptr<Texture> depthBuffer;
-	std::unique_ptr<VirtualSurface> surface;
-	std::unique_ptr<CommandMgr> cmdMgr;
-	std::unique_ptr<SetMgr> setMgr;
-	//std::unique_ptr<shaderProgram> shaderStars, shaderFBO;
-	// mutable std::vector<float> dataPos;
-	// mutable std::vector<float> dataMag;
-	// mutable std::vector<float> dataColor;
-	mutable float *vertexData;
+	SubBuffer staging;
+	float *vertexData;
+	int cmds[3] {-1, -1, -1};
 	std::unique_ptr<PipelineLayout> m_layoutStars, m_layoutFBO;
-	std::unique_ptr<Pipeline> m_pipelineStars, m_pipelineFBO;
+	std::unique_ptr<Pipeline> pipelineStarsClear, pipelineStarsReuse, m_pipelineFBO;
 	std::unique_ptr<VertexArray> m_starsGL, m_drawFBO_GL;
+	std::unique_ptr<VertexBuffer> vertexStars, vertexFBO;
 	std::unique_ptr<Set> m_setStars;
-	std::unique_ptr<Buffer> drawData;
-	uint32_t *pVertexCount;
-	int commandIndexClear, commandIndexHold;
-	typedef struct {
-		int commandIndex;
-		std::unique_ptr<Set> set;
-	} dataFBO_t;
-	std::vector<dataFBO_t> dataFBO;
-	int frameIndex = 0;
+	std::unique_ptr<Set> m_setFBO;
+	PushQueue<unsigned char, 7> previousSync;
+	std::unique_ptr<RenderMgr> renderPassClear; // Clear and store
+	std::unique_ptr<RenderMgr> renderPassReuse; // Reuse previous
+	std::unique_ptr<FrameMgr> framebufferClear;
+	std::unique_ptr<FrameMgr> framebufferReuse;
+	std::unique_ptr<SyncEvent> syncUse; // Wait drawn before use
+	std::unique_ptr<SyncEvent> syncClear; // Wait used before redraw
+	std::unique_ptr<SyncEvent> syncReuse; // Wait used before redraw
 	int sizeTexFbo;
 	bool starTrace = false;
 

@@ -28,8 +28,6 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/log.hpp"
-#include "vulkanModule/VertexArray.hpp"
-
 
 // Read Illuminate data passed in and compute x,y and z;
 Illuminate::Illuminate(unsigned int _name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation)
@@ -69,34 +67,9 @@ Illuminate::Illuminate(unsigned int _name, double ra, double de, double angular_
 	}
 }
 
-
 void Illuminate::draw(const Projector* prj, float *&dataVertex)
 {
 	float *pRaw = raw;
 	for (short i = 0; i < (3+2+3)*4; i++)
 		*(dataVertex++) = *(pRaw++);
-	/*
-	//color
-	insert_vec3(color, texColor,4);
-
-	//texture
-	insert_all(texture, 1.0,0.0, 1.0,1.0, 0.0,0.0, 0.0,1.0 );
-
-	//position
-	//~ glTexCoord2i(1,0);              // Bottom Right
-	// prj->projectJ2000(texQuadVertex[0],v);
-	insert_vec3(position, texQuadVertex[0]);
-
-	//~ glTexCoord2i(1,1);              // Top Right
-	// prj->projectJ2000(texQuadVertex[2],v);
-	insert_vec3(position, texQuadVertex[2]);
-
-	//~ glTexCoord2i(0,0);              // Bottom Left
-	// prj->projectJ2000(texQuadVertex[1],v);
-	insert_vec3(position, texQuadVertex[1]);
-
-	//~ glTexCoord2i(0,1);              // Top Left
-	// prj->projectJ2000(texQuadVertex[3],v);
-	insert_vec3(position, texQuadVertex[3]);
-	*/
 }

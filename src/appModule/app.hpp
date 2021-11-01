@@ -35,8 +35,7 @@
 #include "appModule/space_date.hpp"
 #include "spacecrafter.hpp"
 #include "tools/app_settings.hpp"
-
-#include "vulkanModule/Context.hpp"
+#include "tools/context.hpp"
 
 // mac seems to use KMOD_META instead of KMOD_CTRL
 // #ifdef MACOSX
@@ -63,6 +62,7 @@ class ServerSocket;
 class ScreenFader;
 class EventRecorder;
 class EventHandler;
+class FrameSender;
 
 enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, /*ON_VIDEO,*/ COLOR_INVERSE};
 
@@ -144,6 +144,10 @@ private:
 	void updateFromSharedData();
 	//! Use by masterput, poor but he does his job
 	void masterput();
+	//! Submit a frame
+	static void submitFrame(App *self, int id);
+	//! Initialize vulkan resources
+	void initVulkan(InitParser &conf);
 
 	bool flagAlive; 				//!< indique si l'application doit s'arrêter ou pas
 	bool flagVisible;				//!< say if your App Is Visible or not
@@ -162,9 +166,12 @@ private:
 	bool flagMasterput;
 
 	// Graphic context
-	GlobalContext globalContext;
-	ThreadContext context;
-	int commandIndexClear;
+	Context context;
+	std::unique_ptr<FrameSender> sender;
+	std::vector<std::unique_ptr<Texture>> senderImage; // If using sender instead of swapchain
+	VkSampleCountFlagBits sampleCount;
+	std::vector<std::unique_ptr<Texture>> multisampleImage;
+	std::unique_ptr<Texture> depthBuffer;
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr; 			//! base pour les constantes du logiciel

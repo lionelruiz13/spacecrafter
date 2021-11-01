@@ -5,10 +5,12 @@
 #include <cmath>
 
 #include "ojmModule/ojml.hpp"
-#include "vulkanModule/VertexArray.hpp"
-
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/Core/BufferMgr.hpp"
+#include "EntityCore/Resource/VertexArray.hpp"
+#include "EntityCore/Resource/VertexBuffer.hpp"
+#include "EntityCore/Resource/TransferMgr.hpp"
+#include "EntityCore/Resource/Pipeline.hpp"
 
 // *****************************************************************************
 //
@@ -16,127 +18,70 @@
 //
 // *****************************************************************************
 
-OjmL::OjmL(const std::string & _fileName, ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex)
+OjmL::OjmL(const std::string & _fileName)
 {
 	is_ok = false;
-	is_ok = init(_fileName, context, mergeVertexArray, maxVertex, maxIndex);
+	is_ok = init(_fileName);
 }
 
 OjmL::~OjmL()
 {
-	vertices.clear();
-	uvs.clear();
-	normals.clear();
-	indices.clear();
-
-	// glDeleteBuffers(1,&dGL->pos);
-	// glDeleteBuffers(1,&dGL->tex);
-	// glDeleteBuffers(1,&dGL->norm);
-	// glDeleteBuffers(1,&dGL->elementBuffer);
-    // glDeleteVertexArrays(1,&dGL->vao);
+	if (index.buffer) {
+		Context::instance->indexBufferMgr->releaseBuffer(index);
+	}
 }
 
-bool OjmL::init(const std::string & _fileName, ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex)
+bool OjmL::init(const std::string & _fileName)
 {
+	pIndex = (unsigned int *) Context::instance->transfer->beginPlanCopy(0); // We don't know the size yet
 	is_ok = readOJML(_fileName);
 	if (is_ok) {
-		initGLparam(context, mergeVertexArray, maxVertex, maxIndex);
-		if (!mergeVertexArray)
-			dGL->setName("OjmL " + _fileName);
+		initGLparam();
+	} else {
+		Context::instance->transfer->endPlanCopy(index, 0);
 	}
 	return is_ok;
 }
 
-void OjmL::bind(CommandMgr *cmdMgr)
-{
-	if (is_ok)
-		cmdMgr->bindVertex(dGL.get());
-}
-
-void OjmL::bind(Pipeline *pipeline)
-{
-	if (is_ok)
-		pipeline->bindVertex(dGL.get());
-}
-
-void OjmL::draw(void *pDrawData)
+void OjmL::bind(VkCommandBuffer &cmd)
 {
 	if (is_ok) {
-		// glBindVertexArray(dGL->vao);
-        // dGL->bind();
-		// GLCall( glDrawElements(mode, dGL->getIndiceCount(), GL_UNSIGNED_INT, (void*)0 ) );
-        // dGL->unBind();
-        //Renderer::drawElementsWithoutShader(dGL.get(), mode);
-		*static_cast<typeof(&drawData)>(pDrawData) = drawData;
+		vkCmdBindIndexBuffer(cmd, index.buffer, 0, VK_INDEX_TYPE_UINT32);
+		VertexArray::bindGlobal(cmd, vertex->get());
 	}
 }
 
-void OjmL::initGLparam(ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex)
+void OjmL::bind(Pipeline &pipeline)
 {
-    dGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
-    dGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-    dGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-    dGL->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
-	// glGenVertexArrays(1,&dGL->vao);
-	// glBindVertexArray(dGL->vao);
-
-	// glGenBuffers(1,&dGL->pos);
-	// glGenBuffers(1,&dGL->tex);
-	// glGenBuffers(1,&dGL->norm);
-	// glGenBuffers(1,&dGL->elementBuffer);
-	drawData.indexCount = indices.size();
-	drawData.instanceCount = 1;
-	drawData.vertexOffset = 0;
-	drawData.firstInstance = 0;
-	if (mergeVertexArray) {
-		*maxVertex += vertices.size() / 3;
-		*maxIndex += indices.size();
-	} else {
-		drawData.firstIndex = 0;
-		dGL->registerIndexBuffer(BufferAccess::STATIC, indices.size());
-		dGL->build(vertices.size() / 3);
-
-	    dGL->fillVertexBuffer(BufferType::POS3D,vertices);
-	    dGL->fillVertexBuffer(BufferType::TEXTURE,uvs);
-	    dGL->fillVertexBuffer(BufferType::NORMAL,normals);
-	    dGL->fillIndexBuffer(indices);
-	}
-	// glBindBuffer(GL_ARRAY_BUFFER,dGL->pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*vertices.size(), vertices.data(),GL_STATIC_DRAW);
-	// glBindBuffer(GL_ARRAY_BUFFER,dGL->tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*2*uvs.size(), uvs.data(),GL_STATIC_DRAW);
-	// glBindBuffer(GL_ARRAY_BUFFER,dGL->norm);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*3*normals.size(), normals.data(),GL_STATIC_DRAW);
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,dGL->elementBuffer);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER,sizeof(unsigned int)*indices.size(), indices.data(),GL_STATIC_DRAW);
-
-	// glBindBuffer(GL_ARRAY_BUFFER, dGL->pos);
-	// glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,NULL);
-	// glBindBuffer(GL_ARRAY_BUFFER, dGL->tex);
-	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-	// glBindBuffer(GL_ARRAY_BUFFER, dGL->norm);
-	// glVertexAttribPointer(2,3,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, dGL->elementBuffer);
-	// glVertexAttribPointer(3,1,GL_FLOAT,GL_FALSE,0,NULL);
-
-	// glEnableVertexAttribArray(0);
-	// glEnableVertexAttribArray(1);
-	// glEnableVertexAttribArray(2);
-	// glEnableVertexAttribArray(3);
+	if (is_ok)
+		pipeline.bindVertex(*Context::instance->ojmVertexArray);
 }
 
-void OjmL::initFrom(VertexArray *vertex)
+void OjmL::draw(VkCommandBuffer &cmd)
 {
 	if (is_ok) {
-		// assign one part of the vertex
-		dGL->assign(vertex, vertices.size() / 3, indices.size());
-		dGL->fillVertexBuffer(BufferType::POS3D,vertices);
-		dGL->fillVertexBuffer(BufferType::TEXTURE,uvs);
-		dGL->fillVertexBuffer(BufferType::NORMAL,normals);
-		dGL->fillIndexBuffer(indices);
-		drawData.firstIndex = dGL->getIndexOffset();
+		vkCmdDrawIndexed(cmd, indexCount, 1, index.offset / sizeof(unsigned int), vertex->getOffset(), 0);
 	}
+}
+
+void OjmL::initGLparam()
+{
+	Context &context = *Context::instance;
+	const int vertexCount = vertices.size() / 3;
+
+	index = context.indexBufferMgr->acquireBuffer(indexCount * sizeof(int));
+	context.transfer->endPlanCopy(index, indexCount * sizeof(int));
+	vertex = context.ojmVertexArray->createBuffer(0, vertexCount, context.ojmBufferMgr.get());
+	float *data = (float *) context.transfer->planCopy(vertex->get());
+	vertex->fillEntry(3, vertexCount, vertices.data(), data);
+	vertex->fillEntry(2, vertexCount, uvs.data(), data + 3);
+	vertex->fillEntry(3, vertexCount, normals.data(), data + 5);
+	vertices.clear();
+	vertices.shrink_to_fit();
+	uvs.clear();
+	uvs.shrink_to_fit();
+	normals.clear();
+	normals.shrink_to_fit();
 }
 
 bool OjmL::readOJML(const std::string & _fileName)
@@ -192,7 +137,8 @@ bool OjmL::readOJML(const std::string & _fileName)
                             indice[4] >> indice[5] >> indice[6] >> indice[7] >>
                             indice[8];
                         for(unsigned int k=0; k<9; k++)
-							indices.push_back(indice[k]);
+							*(pIndex++) = indice[k];
+						indexCount += 9;
                     }
                     break;
 
@@ -201,9 +147,10 @@ bool OjmL::readOJML(const std::string & _fileName)
                         unsigned int indice1, indice2, indice3;
                         std::stringstream ss(std::string(line+2));
                         ss>>indice1 >> indice2 >> indice3;
-                        indices.push_back(indice1);
-                        indices.push_back(indice2);
-                        indices.push_back(indice3);
+                        *(pIndex++) = indice1;
+                        *(pIndex++) = indice2;
+                        *(pIndex++) = indice3;
+						indexCount += 3;
                     }
                 break;
             }

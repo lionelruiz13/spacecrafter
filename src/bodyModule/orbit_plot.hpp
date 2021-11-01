@@ -25,13 +25,13 @@
 
 #include "tools/fader.hpp"
 #include "tools/vecmath.hpp"
-
-#include "vulkanModule/Context.hpp"
+#include <vulkan/vulkan.h>
 
 class Body;
 class Projector;
 class Navigator;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 
@@ -49,9 +49,10 @@ public:
 		orbit_fader = b;
 	}
 
-	virtual void drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d &mat) = 0;
+	virtual void drawOrbit(VkCommandBuffer &cmd, const Navigator * nav, const Projector* prj, const Mat4d &mat) = 0;
+	virtual bool doDraw(const Navigator * nav, const Projector* prj, const Mat4d &mat) = 0;
 
-	static void createSC_context(ThreadContext *_context);
+	static void createSC_context();
 	// static void deleteShader();
 
 	void updateShader(double delta_time);
@@ -65,6 +66,8 @@ public:
 
 protected:
 
+	void initDraw();
+
 	Body * body;
 
 	int ORBIT_POINTS;
@@ -76,12 +79,11 @@ protected:
 
 	LinearFader orbit_fader;
 
-	std::unique_ptr<VertexArray> orbit;
-	static CommandMgr *cmdMgr;
-	static ThreadContext *context;
+	std::unique_ptr<VertexBuffer> orbit;
 	static Pipeline *pipelineOrbit2d, *pipelineOrbit3d;
 	static PipelineLayout *layoutOrbit2d, *layoutOrbit3d;
-	static VertexArray *m_Orbit;
+	static std::unique_ptr<VertexArray> m_Orbit;
+	const int nbAdditionnalPoints;
 };
 
 #endif

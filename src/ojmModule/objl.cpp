@@ -3,8 +3,6 @@
 #include <SDL2/SDL.h>
 
 #include "ojmModule/objl.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/VertexArray.hpp"
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -17,34 +15,31 @@
 ObjL::ObjL()
 {}
 
-void ObjL::draw(const float screenSize, void *pDrawData)
+void ObjL::draw(VkCommandBuffer &cmd, const float screenSize)
 {
 	if (screenSize < 20) {
-		this->low->draw(pDrawData);
+		this->low->draw(cmd);
 	} else if (screenSize >180) {
-		this->high->draw(pDrawData);
+		this->high->draw(cmd);
 	} else {
-		this->medium->draw(pDrawData);
+		this->medium->draw(cmd);
 	}
 }
 
-void ObjL::bind(CommandMgr *cmdMgr)
+void ObjL::bind(VkCommandBuffer &cmd)
 {
-	this->high->bind(cmdMgr);
+	this->high->bind(cmd);
 }
 
-void ObjL::bind(Pipeline *pipeline)
+void ObjL::bind(Pipeline &pipeline)
 {
 	this->high->bind(pipeline);
 }
 
 ObjL::~ObjL() {
-	if (low) delete low;
-	if (medium) delete medium;
-	if (high) delete high;
 }
 
-bool ObjL::init(const std::string &repertory, const std::string &_name, ThreadContext *context)
+bool ObjL::init(const std::string &repertory, const std::string &_name)
 {
 	std::string nameL = repertory+"/"+ _name +"_1L.ojm";
 	std::string nameM = repertory+"/"+ _name +"_2M.ojm";
@@ -53,28 +48,17 @@ bool ObjL::init(const std::string &repertory, const std::string &_name, ThreadCo
 	//~ cout << nameL << endl << nameM << endl << nameH << endl;
 
 	if ( (CallSystem::fileExist(nameL)) && (CallSystem::fileExist(nameM)) && (CallSystem::fileExist(nameH)) ) {
-		int vertexSize = 0;
-		int indexSize = 0;
-		this->high = new OjmL(nameH, context, true, &vertexSize, &indexSize);
-		this->medium = new OjmL(nameM, context, true, &vertexSize, &indexSize);
-		this->low = new OjmL(nameL, context, true, &vertexSize, &indexSize);
+		this->high = std::make_unique<OjmL>(nameH);
+		this->medium = std::make_unique<OjmL>(nameM);
+		this->low = std::make_unique<OjmL>(nameL);
 
 		if (this->low->getOk() && this->medium->getOk() && this->high->getOk())  {
 			//~ printf("Les 3 ojm  %s sont ok\n", _name.c_str());
 			cLog::get()->write("Loading object "+ _name);
-			// Merge obj vertexBuffers
-			VertexArray vertex(*this->high->getVertexArray());
-			vertex.registerIndexBuffer(BufferAccess::STATIC, indexSize);
-			vertex.build(vertexSize);
-			this->high->initFrom(&vertex);
-			this->medium->initFrom(&vertex);
-			this->low->initFrom(&vertex);
-			vertex.setName("ObjL " + _name);
 			return true;
 		} else {
 			//~ printf("Erreur de chargement d'un ojm %s\n", _name.c_str());
 			cLog::get()->write("Error loading object "+ _name, LOG_TYPE::L_ERROR);
-			//on détruit l'objet puisqu'il n'est pas complet
 			return false;
 		}
 	} else {

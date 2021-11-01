@@ -32,26 +32,14 @@
 #include "tools/utility.hpp"
 #include "tools/file_path.hpp"
 #include "tools/log.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/ThreadedCommandBuilder.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 #define MAX_NEBULA 1024
 
-int Nebula::commandIndex;
-VertexArray *Nebula::m_texGL = nullptr;
-CommandMgr *Nebula::cmdMgr;
-ThreadedCommandBuilder *Nebula::cmdMgrInterface;
-CommandMgr *Nebula::cmdMgrTarget;
-Pipeline *Nebula::pipeline;
-PipelineLayout *Nebula::layout;
-Set *Nebula::globalSet;
-Set *Nebula::set;
-//std::unique_ptr<shaderProgram> Nebula::shaderNebulaTex = nullptr;
+std::unique_ptr<VertexArray> Nebula::m_texGL;
+Pipeline *Nebula::pipeline = nullptr;
+PipelineLayout *Nebula::layout = nullptr;
 
 float Nebula::hintsBrightness = 0;
 float Nebula::textBrightness = 0;
@@ -68,10 +56,9 @@ static float magToLuminance(float mag, float surface)
 //todo path est inutile
 Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _constellation, float _ra, float _de, float _mag, float _size, std::string _classe,
                float _distance, std::string tex_name, bool path, float tex_angular_size, float tex_rotation, std::string tex_credit, float _luminance, bool _deletable, bool _hidden) :
-	XYZ_(XYZ), neb_tex(nullptr)
+	XYZ_(XYZ)
 {
 	neb_color=Vec3f(0.2,0.2,1.);
-	tex_circle = nullptr;
 	englishName = _englishName;
 	nameI18 = englishName;
 	myDistance = _distance;
@@ -111,12 +98,12 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 	// Calc the angular size in radian
 	m_angular_size = tex_angular_size/2/60*M_PI/180;
 
-	neb_tex = new s_texture(FilePath(tex_name,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_ALPHA, true);  // use mipmaps
+	drawData.neb_tex = new s_texture(FilePath(tex_name,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_ALPHA, true);  // use mipmaps
 
 	luminance = magToLuminance(mag, tex_angular_size*tex_angular_size*3600);
 
 	// this is a huge performance drag if called every frame, so cache here
-	tex_avg_luminance = neb_tex->getAverageLuminance();
+	tex_avg_luminance = drawData.neb_tex->getAverageLuminance();
 
 	Vec3d imagev = Mat4d::zrotation(myRA-M_PI_2) * Mat4d::xrotation(myDe) * Vec3d(0,1,0);
 	Vec3d ortho1 = Mat4d::zrotation(myRA-M_PI_2) * Vec3d(1,0,0);
@@ -135,6 +122,8 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 			for(int k=0; k<3; k++)
 				sDataPos.push_back(grdptf[k]);
 	}
+	drawData.flag = DRAW_NEBULA;
+	drawData.data = sDataPos.data();
 
 	//what sort of circle should we draw ?
 	DSOType = getDsoType(_mtype);
@@ -193,8 +182,8 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 
 Nebula::~Nebula()
 {
-	if (neb_tex) delete neb_tex;
-	neb_tex = nullptr;
+	if (drawData.neb_tex) delete drawData.neb_tex;
+	drawData.neb_tex = nullptr;
 }
 
 nebula_type Nebula::getDsoType( std::string type)
@@ -302,11 +291,12 @@ double Nebula::getCloseFov(const Navigator*) const
 }
 
 
-void Nebula::createSC_context(ThreadContext *context)
+void Nebula::createSC_context()
 {
 	// Nebula::shaderNebulaTex = std::make_unique<shaderProgram>();
 	// Nebula::shaderNebulaTex->init("nebulaTex.vert","nebulaTex.geom","nebulaTex.frag");
 	// Nebula::shaderNebulaTex->setUniformLocation({"Mat","fader"});
+	/*
 
 	Nebula::m_texGL = context->global->tracker->track(new VertexArray(context->surface, nullptr, false));
 	Nebula::m_texGL ->registerVertexBuffer(BufferType::POS3D,BufferAccess::DYNAMIC);
@@ -323,7 +313,7 @@ void Nebula::createSC_context(ThreadContext *context)
 	Nebula::layout = context->global->tracker->track(new PipelineLayout(context->surface));
 	Nebula::layout->setTextureLocation(0);
 	Nebula::layout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	Nebula::layout->setGlobalPipelineLayout(context->global->globalLayout);
+	Nebula::layout->setGlobalPipelineLayout(context.layouts.front().get());
 	Nebula::layout->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, 0, sizeof(Mat4f));
 	Nebula::layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(Mat4f), 4);
 	Nebula::layout->build();
@@ -341,33 +331,32 @@ void Nebula::createSC_context(ThreadContext *context)
 	Nebula::cmdMgrInterface = context->commandMgrSingleUseInterface;
 	Nebula::cmdMgrTarget = context->commandMgr;
 	Nebula::commandIndex = Nebula::cmdMgr->getCommandIndex();
+	*/
 }
 
 void Nebula::beginDraw(const Projector* prj)
 {
-	Mat4f mat = prj->getMatJ2000ToEye();
-	m_texGL->setVertexOffset(0);
-	cmdMgrInterface->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
-	cmdMgrInterface->pushConstant(layout, VK_SHADER_STAGE_GEOMETRY_BIT, 0, &mat, sizeof(mat));
-	cmdMgrInterface->bindSet(layout, globalSet, 1);
-	cmdMgrInterface->bindVertex(m_texGL);
+	Context::instance->helper->beginNebulaDraw(prj->getMatJ2000ToEye());
+	// pipeline->bind(cmd);
+	// vertex->bind(cmd);
+	// layout->pushConstant(cmd, 0, &mat);
+	// cmdMgrInterface->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
+	// cmdMgrInterface->bindSet(layout, globalSet, 1);
+	// cmdMgrInterface->bindVertex(m_texGL);
 }
 
 void Nebula::endDraw()
 {
-	m_texGL->update();
-	cmdMgrInterface->select(commandIndex);
-	cmdMgrInterface->compile();
-	cmdMgr->setSubmission(commandIndex, false, cmdMgrTarget);
+	Context::instance->helper->endNebulaDraw();
+	// m_texGL->update();
+	// cmdMgrInterface->select(commandIndex);
+	// cmdMgrInterface->compile();
+	// cmdMgr->setSubmission(commandIndex, false, cmdMgrTarget);
 }
 
 void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor* eye, double sky_brightness, bool flagBright)
 {
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	if (!neb_tex || m_hidden || !m_selected) return;
-	cmdMgrInterface->select(commandIndex);
+	if (!drawData.neb_tex || m_hidden || !m_selected) return;
 
 	// daylight hackery
 	float ad_lum=eye->adaptLuminance(luminance);
@@ -393,37 +382,47 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 		//cout << "No bright nebula drawn for" << getEnglishName() << endl;
 	}
 
-	// shaderNebulaTex->use();
-	// shaderNebulaTex->setUniform("Mat", prj->getMatJ2000ToEye());
-	// shaderNebulaTex->setUniform("fader", color);
-	cmdMgrInterface->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 64, &color, sizeof(color));
+	drawData.color = color;
+	Context::instance->helper->draw(&drawData);
+	// cmdMgrInterface->pushConstant(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 64, &color, sizeof(color));
 
-	// glBindTexture (GL_TEXTURE_2D, neb_tex->getID());
-	set->clear();
-	set->bindTexture(neb_tex->getTexture(), 0);
-	cmdMgrInterface->pushSet(layout, set, 0);
+	// set->clear();
+	// set->bindTexture(drawData.neb_tex->getTexture(), 0);
+	// cmdMgrInterface->pushSet(layout, set, 0);
 
-	int offset = m_texGL->getVertexOffset();
-	m_texGL->fillVertexBuffer(BufferType::POS3D,sDataPos);
-	cmdMgrInterface->draw(4, 1, offset);
-	m_texGL->setVertexOffset(offset + 4);
+	// int offset = m_texGL->getVertexOffset();
+	// m_texGL->fillVertexBuffer(BufferType::POS3D,sDataPos);
+	// cmdMgrInterface->draw(4, 1, offset);
+	// m_texGL->setVertexOffset(offset + 4);
 
-	//Renderer::drawArrays(shaderNebulaTex.get(), m_texGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
+	//Renderer::drawArrays(shaderNebulaTex.get(), *m_texGL, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
 }
 
-void Nebula::drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor, bool displaySpecificHint, const Vec3f &circleColor, float r)
+void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r)
 {
 	if (m_hidden || !m_selected) return;
 	if (2.f/getOnScreenSize(prj, nav)<0.1) return;
 
+	++nbDraw;
+	struct VertexInput {
+		float posX;
+		float posY;
+		float texX;
+		float texY;
+		Vec3f color;
+	};
+	VertexInput *&vi = reinterpret_cast<VertexInput *&>(data);
 	if (displaySpecificHint) {
-		insert_vec3(vecHintColor, neb_color, 4);
-		insert_all(vecHintTex, posTex[0],posTex[1],posTex[0]+.25,posTex[1], posTex[0], posTex[1]+.25, posTex[0]+.25, posTex[1]+.25);
+		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] - r, posTex[0], posTex[1], neb_color};
+		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] - r, posTex[0]+.25, posTex[1], neb_color};
+		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] + r, posTex[0], posTex[1]+.25, neb_color};
+		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] + r, posTex[0]+.25, posTex[1]+.25, neb_color};
 	} else {
-		insert_vec3(vecHintColor, circleColor, 4);
-		insert_all(vecHintTex, 0.75f, 0.f, 1.f, 0.f, 0.75f, 0.25f, 1.f, 0.25f);
+		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] - r, 0.75f, 0.f, circleColor};
+		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] - r, 1.f, 0.f, circleColor};
+		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] + r, 0.75f, 0.25f, circleColor};
+		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] + r, 1.f, 0.25f, circleColor};
 	}
-	insert_all(vecHintPos, XY[0] + r, XY[1] - r, XY[0] - r, XY[1] - r, XY[0] + r, XY[1] + r, XY[0] - r, XY[1] + r);
 }
 
 void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont)
@@ -443,7 +442,6 @@ void Nebula::drawName(const Projector* prj, const Vec3f &labelColor, s_font *neb
 		prj->printGravity180(nebulaFont, XY[0]-shift-40, XY[1]+-shift-40, credit, Color, 0, 0);
 	}
 }
-
 
 std::string Nebula::getTypeToString(void) const
 {

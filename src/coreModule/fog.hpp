@@ -33,25 +33,23 @@
 #include "tools/vecmath.hpp"
 #include "tools/fader.hpp"
 #include "tools/utility.hpp"
-
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
-#include "vulkanModule/Context.hpp"
+
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class s_texture;
 class Navigator;
 class Projector;
 class VertexArray;
-class CommandMgr;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-//class shaderProgram;
 
 class Fog : public NoCopy, public ModuleFader<LinearFader> {
 public:
-	Fog(float _radius, ThreadContext *context);
+	Fog(float _radius);
 	~Fog();
 
 	void update(int delta_time) {
@@ -70,30 +68,31 @@ public:
 		sky_brightness = b;
 	}
 
-	static void createSC_context(ThreadContext *context);
+	static void createSC_context();
+	static void destroySC_context();
 
-	void draw(const Projector* prj, const Navigator* nav) const;
+	void draw(const Projector* prj, const Navigator* nav);
 
 	void initShader();
 
 private:
+	void createFogMesh(double radius, double height, int slices, int stacks, float *data);
 
-	void createFogMesh(double radius, double height, int slices, int stacks, std::vector<float>* dataTex, std::vector<float>* dataPos);
-
-	//static std::unique_ptr<shaderProgram> shaderFog;
 	static VertexArray *vertexModel;
 	static PipelineLayout *layout;
 	static Pipeline *pipeline;
 	static int vUniformID1, vUniformID2;
 	static Set *set;
-	int commandIndex;
-	CommandMgr *cmdMgr;
-	Set *globalSet;
-	std::unique_ptr<VertexArray> m_fogGL;
-	std::unique_ptr<Uniform> uMV, uFrag;
-	Mat4f *pMV;
-	float *psky_brightness, *pFader;
+
+	std::unique_ptr<VertexBuffer> vertex;
+	std::unique_ptr<SharedBuffer<Mat4f>> uMV;
+	struct frag {
+		float sky_brightness;
+		float fader;
+	};
+	std::unique_ptr<SharedBuffer<frag>> uFrag;
 	unsigned int nbVertex;			//nombre de vertex pour le fog
+	VkCommandBuffer cmds[3];
 	static s_texture* fog_tex;			// allways the same
 
 	float radius;
@@ -101,6 +100,5 @@ private:
 	float angle_shift;
 	float sky_brightness;
 };
-
 
 #endif // _LANDSCAPE_H_

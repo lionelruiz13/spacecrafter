@@ -33,69 +33,56 @@
 #include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-// #include "vulkanModule/VertexArray.hpp"
-// 
-// 
 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 #define NB_POINTS 200000
 
-Oort::Oort(ThreadContext *context)
+Oort::Oort()
 {
-	color = Vec3f(1.0,1.0,0.0);
 	fader = false;
-	createSC_context(context);
+	createSC_context();
+	uFrag->get().color = Vec3f(1.0,1.0,0.0);
 }
 
 Oort::~Oort()
 {}
 
-void Oort::createSC_context(ThreadContext *_context)
+void Oort::createSC_context()
 {
-	context = _context;
-	// shaderOort = std::make_unique<shaderProgram>();
-	// shaderOort->init("oort.vert","oort.frag");
-	// shaderOort->setUniformLocation({"Mat","color","intensity"});
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 
-	m_dataGL = std::make_unique<VertexArray>(context->surface);
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	m_dataGL = std::make_unique<VertexArray>(vkmgr);
+	m_dataGL->createBindingEntry(3*sizeof(float));
+	m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
 	layout->buildLayout();
 	layout->build();
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	pipeline->setDepthStencilMode();
-	pipeline->bindVertex(m_dataGL.get());
+	pipeline->bindVertex(*m_dataGL);
 	pipeline->bindShader("oort.vert.spv");
 	pipeline->bindShader("oort.frag.spv");
 	pipeline->build();
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
-	pMat = static_cast<typeof(pMat)>(uMat->data);
-	set->bindUniform(uMat.get(), 0);
-	uFrag = std::make_unique<Uniform>(context->surface, sizeof(float) * 4);
-	pColor = static_cast<typeof(pColor)>(uFrag->data);
-	pIntensity = static_cast<float *>(uFrag->data) + 3;
-	set->bindUniform(uFrag.get(), 1);
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	uMat = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+	set->bindUniform(uMat, 0);
+	uFrag = std::make_unique<SharedBuffer<frag>>(*context.uniformMgr);
+	set->bindUniform(uFrag, 1);
 }
-
 
 void Oort::populate(unsigned int nbr) noexcept
 {
 	float radius, theta, phi, r_theta, r_phi;
 	Vec3f tmp;
-	Vec3d tmp_local;
-	std::vector<float> dataOort;
+	vertex = m_dataGL->createBuffer(0, nbr, Context::instance->globalBuffer.get());
+	Vec3f *dataOort = (Vec3f *) Context::instance->transfer->planCopy(vertex->get());
 	for(unsigned int i=0; i<nbr ; i++) {
 		r_theta = (float) (rand()%3600);
 		r_phi = (float) (rand()%1400);
@@ -107,57 +94,44 @@ void Oort::populate(unsigned int nbr) noexcept
 		if (radius>4000) radius = radius*(1+(radius-4000)/4000);
 
 		Utility::spheToRect(theta*M_PI/180,phi*M_PI/180, tmp);
-		tmp = tmp * radius;
-		insert_vec3(dataOort, tmp);
-		//~ printf("%5.3f %5.3f %5.3f \n", tmp_local[0], tmp_local[1], tmp_local[2]);
+		*(dataOort++) = tmp * radius;
 	}
-
-	nbAsteroids = dataOort.size()/3 ;
-	//on charge les points dans un vbo
-	m_dataGL->build(nbAsteroids);
-	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataOort);
+	nbAsteroids = nbr;
 }
 
 void Oort::build()
 {
-	CommandMgr *cmdMgr = context->commandMgr;
-	commandIndex = cmdMgr->initNew(pipeline.get());
-	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
-	cmdMgr->bindSet(layout.get(), set.get(), 1);
-	cmdMgr->bindVertex(m_dataGL.get());
-	cmdMgr->draw(nbAsteroids);
-	cmdMgr->compile();
+	Context &context = *Context::instance;
+
+	context.cmdInfo.commandBufferCount = 3;
+	vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i) {
+		VkCommandBuffer cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_BACKGROUND);
+		pipeline->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		vertex->bind(cmd);
+		vkCmdDraw(cmd, nbAsteroids, 1, 0, 0);
+		context.frame[i]->compile(cmd);
+		context.frame[i]->setName(cmd, "Oort " + std::to_string(i));
+	}
 }
 
 void Oort::draw(double distance, const Projector *prj,const Navigator *nav) noexcept
 {
 	if (!fader.getInterstate()) return;
 
+	distance = abs(distance);
 	// gestion de l'intensité
-	if ((abs(distance) < 1e13) || (abs(distance) > 5.E15))
-	return;
+	if ((distance < 1e13) || (distance > 5.E15))
+		return;
 
-	intensity = std::min(1.0, (abs(distance/1.e13)-1));
-	if (abs(distance) > 1.E15) intensity = 1.25-0.25*(abs(distance/1.E15));
+	intensity = (distance > 1.E15) ? (1.25-0.25*(distance/1.E15)) : std::min(1.0, (distance/1.e13 - 1));
 	//~ printf("distance : %f\n", distance);
 	//~ printf("intensity : %f\n", intensity);
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	*uMat = nav->getHelioToEyeMat().convert();
+	uFrag->get().fader = intensity*fader.getInterstate();
 
-	*pMat = nav->getHelioToEyeMat().convert();
-	*pColor = color;
-	*pIntensity = intensity*fader.getInterstate();
-
-	// shaderOort->use();
-	// shaderOort->setUniform("Mat",matrix);
-	// shaderOort->setUniform("color", color);
-	// shaderOort->setUniform("intensity", intensity*fader.getInterstate());
-
-	// m_dataGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbAsteroids );
-	// m_dataGL->unBind();
-	// shaderOort->unuse();
-	//Renderer::drawArrays(shaderOort.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbAsteroids );
-	context->commandMgr->setSubmission(commandIndex);
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(Context::instance->frameIdx, PASS_BACKGROUND);
 }

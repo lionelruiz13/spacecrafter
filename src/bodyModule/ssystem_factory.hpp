@@ -36,11 +36,9 @@
 #include "bodyModule/solarsystem_selected.hpp"
 #include "bodyModule/solarsystem_display.hpp"
 
-class ThreadContext;
-
 class SSystemFactory: public NoCopy {
 public:
-    SSystemFactory(ThreadContext *_context);
+    SSystemFactory();
     ~SSystemFactory();
 
     SolarSystem * getSolarSystem(void) {
@@ -241,9 +239,9 @@ public:
 	void planetTesselation(std::string name, int value) {
         ssystemTex->planetTesselation(name, value);
     }
-    
+
 	const OrbitCreator * getOrbitCreator()const {
-        return ssystem->getOrbitCreator();   
+        return ssystem->getOrbitCreator();
     }
 
 	void iniColor(const std::string& _halo, const std::string& _label, const std::string& _orbit, const std::string& _trail) {
@@ -316,7 +314,7 @@ public:
 	                                  const Projector * prj,
 	                                  bool *default_last_item,
 	                                  bool aboveHomePlanet ) const {
-                                          return ssystem->searchAround(v, lim_fov, nav, observatory, prj, 
+                                          return ssystem->searchAround(v, lim_fov, nav, observatory, prj,
                                           default_last_item, aboveHomePlanet);
                                       }
 

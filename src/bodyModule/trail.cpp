@@ -19,23 +19,17 @@
 #include "coreModule/time_mgr.hpp"
 #include "bodyModule/body.hpp"
 #include "bodyModule/body_color.hpp"
-#include "vulkanModule/VertexArray.hpp"
 
+#include "tools/context.hpp"
+#include "EntityCore/Resource/VertexArray.hpp"
+#include "EntityCore/Resource/VertexBuffer.hpp"
+#include "EntityCore/Resource/Pipeline.hpp"
+#include "EntityCore/Resource/PipelineLayout.hpp"
+#include "EntityCore/Resource/TransferMgr.hpp"
 
-
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/Buffer.hpp"
-
-CommandMgr *Trail::cmdMgr;
-ThreadContext *Trail::context;
-VertexArray *Trail::m_dataGL;
-PipelineLayout *Trail::layout;
+std::unique_ptr<VertexArray> Trail::m_dataGL;
 Pipeline *Trail::pipeline;
+PipelineLayout *Trail::layout;
 
 Trail::Trail(Body * _body,
              int _MaxTrail,
@@ -50,99 +44,75 @@ Trail::Trail(Body * _body,
 	first_point(_first_point)
 {
 	body = _body;
-
-    vertex = std::make_unique<VertexArray>(*m_dataGL);
-    vertex->build(MaxTrail + 1);
-    drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-    *static_cast<VkDrawIndirectCommand *>(drawData->data) = (VkDrawIndirectCommand){0, 1, 0, 0};
-    nbVertices = static_cast<typeof(nbVertices)>(drawData->data);
-
-    set = std::make_unique<Set>(context->surface, context->setMgr, layout);
-    uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
-    pMat = static_cast<typeof(pMat)>(uMat->data);
-    set->bindUniform(uMat.get(), 0);
-    uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor));
-    pColor = static_cast<typeof(pColor)>(uColor->data);
-    set->bindUniform(uColor.get(), 1);
-    uFader = std::make_unique<Uniform>(context->surface, sizeof(*pFader));
-    pFader = static_cast<typeof(pFader)>(uFader->data);
-    set->bindUniform(uFader.get(), 2);
-    uNbPoints = std::make_unique<Uniform>(context->surface, sizeof(*pNbPoints));
-    pNbPoints = static_cast<typeof(pNbPoints)>(uNbPoints->data);
-    set->bindUniform(uNbPoints.get(), 3);
-
-    commandIndex = cmdMgr->initNew(pipeline, renderPassType::DEFAULT);
-    cmdMgr->bindSet(layout, set.get());
-    cmdMgr->bindSet(layout, context->global->globalSet, 1);
-    cmdMgr->bindVertex(vertex.get());
-    cmdMgr->indirectDraw(drawData.get());
-    cmdMgr->compile();
 }
-
 
 Trail::~Trail()
 {
-	vecTrailPos.clear();
-	vecTrailIntensity.clear();
 	trail.clear();
 }
 
-void Trail::drawTrail(const Navigator * nav, const Projector* prj)
+bool Trail::doDraw(const Navigator * nav, const Projector* prj)
 {
-	float fade = trail_fader.getInterstate();
-	if (!fade)
-		return;
-	if (trail.empty())
-		return;
+    return (trail_fader.getInterstate() && trail.size() >= 2);
+}
 
-	std::list<TrailPoint>::iterator iter;
-	std::list<TrailPoint>::iterator begin = trail.begin();
+void Trail::drawTrail(VkCommandBuffer &cmd, const Navigator * nav, const Projector* prj)
+{
+    if (!doDraw(nav, prj))
+        return;
 
-	float segment = 0;
+    Context &context = *Context::instance;
+    vertexOffset -= insertCount;
+    if (!vertex) {
+        vertex = m_dataGL->createBuffer(0, MaxTrail + TRAIL_OPTIMIZE_TRANSFER, context.globalBuffer.get());
+        vertexOffset = MaxTrail + TRAIL_OPTIMIZE_TRANSFER - trail.size();
+    }
 
-	// draw final segment to finish at current Body position
-	if ( !first_point) {
-		insert_vec3(vecTrailPos, body->getEarthEquPos(nav));
-		vecTrailIntensity.push_back(1.0);
-	}
+    if (vertexOffset >= 0) {
+        Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), vertexOffset * m_dataGL->alignment, insertCount * m_dataGL->alignment);
+        auto it = trail.begin();
+        for (int i = 0; i < insertCount; ++i) {
+            data[i] = it->point;
+            ++it;
+        }
+    } else {
+        vertexOffset = MaxTrail + TRAIL_OPTIMIZE_TRANSFER - trail.size();
+        Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), 0, insertCount * m_dataGL->alignment);
+        for (auto &v : trail)
+            *(data++) = v.point;
+    }
+    insertCount = 0;
 
-	for (iter=begin; iter != trail.end(); iter++) {
-		segment++;
-		insert_vec3(vecTrailPos, (*iter).point);
-		vecTrailIntensity.push_back( segment);
-	}
+    // But this is the first segment, not the last one...
+	// // draw final segment to finish at current Body position
+	// if (!first_point) {
+	// 	insert_vec3(vecTrailPos, body->getEarthEquPos(nav));
+	// 	vecTrailIntensity.push_back(1.0);
+	// }
 
-	int nbPos = vecTrailPos.size()/3 ;
+	// for (iter=begin; iter != trail.end(); iter++) {
+	// 	segment++;
+	// 	insert_vec3(vecTrailPos, (*iter).point);
+	// 	vecTrailIntensity.push_back( segment);
+	// }
+
+	int nbPos = trail.size();
 	if (nbPos >= 2) {
-
-		// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		// StateGL::enable(GL_BLEND);
-
-		// shaderTrail->use();
-		*pMat = prj->getMatEarthEquToEye();
-		*pColor = body->myColor->getTrail();
-		*pFader = fade;
-		*pNbPoints = nbPos;
-
-		vertex->fillVertexBuffer(BufferType::POS3D, vecTrailPos);
-		vertex->fillVertexBuffer(BufferType::MAG, vecTrailIntensity);
-        vertex->update();
-
-        *nbVertices = nbPos;
-        drawData->update();
-        cmdMgr->setSubmission(commandIndex);
-
-		// m_dataGL->bind();
-		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, nbPos);
-		// m_dataGL->unBind();
-		// shaderTrail->unuse();
-		// Renderer::drawArrays(shaderTrail.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 0, nbPos);
-
-		// StateGL::enable(GL_BLEND);
+        pipeline->bind(cmd);
+        const VkDeviceSize offset = vertex->get().offset + vertexOffset * m_dataGL->alignment;
+        vkCmdBindVertexBuffers(cmd, 0, 1, &vertex->get().buffer, &offset);
+        auto tmp1 = prj->getMatEarthEquToEye();
+        auto tmp2 = body->myColor->getTrail();
+		layout->pushConstant(cmd, 1, &tmp1);
+		layout->pushConstant(cmd, 2, &tmp2);
+        struct {
+            int vertexCount;
+            float fader;
+        } cstData {nbPos, trail_fader.getInterstate()};
+        layout->pushConstant(cmd, 0, &cstData);
+        layout->bindSet(cmd, *context.uboSet);
+        vkCmdDraw(cmd, trail.size(), 1, 0, 0);
 	}
-
-	vecTrailPos.clear();
-	vecTrailIntensity.clear();
 }
 
 // update trail points as needed
@@ -158,6 +128,7 @@ void Trail::updateTrail(const Navigator* nav, const TimeMgr* timeMgr)
 		dt=1;
 		trail.clear();
 		first_point = 0;
+        insertCount = 0;
 	}
 
 	// Note that when jump by a week or day at a time, loose detail on trails
@@ -170,6 +141,7 @@ void Trail::updateTrail(const Navigator* nav, const TimeMgr* timeMgr)
 		tp.point = nav->helioToEarthPosEqu(v);
 		tp.date = date;
 		trail.push_front( tp );
+        ++insertCount;
 
 		if ( trail.size() > (unsigned int)MaxTrail ) {
 			trail.pop_back();
@@ -205,31 +177,28 @@ void Trail::updateFader(int delta_time)
 	trail_fader.update(delta_time);
 }
 
-void Trail::createSC_context(ThreadContext *_context)
+void Trail::createSC_context()
 {
-    context = _context;
-    cmdMgr = context->commandMgr;
-	// shaderTrail = std::make_unique<shaderProgram>();
-	// shaderTrail->init( "body_trail.vert","body_trail.geom","body_trail.frag");
-	// shaderTrail->setUniformLocation({"Mat", "Color", "fader", "nbPoints"});
+    VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
 
-	m_dataGL = context->global->tracker->track(new VertexArray(context->surface, cmdMgr));
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
+    m_dataGL = std::make_unique<VertexArray>(vkmgr, 3*sizeof(float));
+    m_dataGL->createBindingEntry(3*sizeof(float));
+    m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 
-    layout = context->global->tracker->track(new PipelineLayout(context->surface));
-    layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
-    layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-    layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 2);
-    layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 3);
-    layout->buildLayout();
-    layout->setGlobalPipelineLayout(context->global->globalLayout);
+    layout = new PipelineLayout(vkmgr);
+    context.layouts.emplace_back(layout);
+    layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, sizeof(Mat4f) + sizeof(Vec3f), sizeof(int) + sizeof(float));
+    layout->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, 0, sizeof(Mat4f));
+    layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(Mat4f), sizeof(Vec3f));
+    layout->setGlobalPipelineLayout(context.layouts.front().get());
     layout->build();
 
-    pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+    pipeline = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout);
+    context.pipelines.emplace_back(pipeline);
     pipeline->setDepthStencilMode();
     pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
-    pipeline->bindVertex(m_dataGL);
+    pipeline->bindVertex(*m_dataGL);
     pipeline->bindShader("body_trail.vert.spv");
     pipeline->bindShader("body_trail.geom.spv");
     pipeline->bindShader("body_trail.frag.spv");

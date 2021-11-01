@@ -3,47 +3,52 @@
 
 #include "tools/vecmath.hpp"
 #include "tools/s_texture.hpp"
-//
-#include <vulkanModule/Context.hpp>
+#include <vulkan/vulkan.h>
+
+#include "EntityCore/SubBuffer.hpp"
 
 #include <vector>
 #include <string>
 #include <memory>
 
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 
 class OjmL {
 public:
-	OjmL(const std::string& _fileName, ThreadContext *context, bool mergeVertexArray = false, int *maxVertex = nullptr, int *maxIndex = nullptr);
+	OjmL(const std::string& _fileName);
 	~OjmL();
-
-	void initFrom(VertexArray *vertex);
 
 	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
 	bool getOk() {
 		return is_ok;
 	}
 
-	//! définit l'objet à dessiner
-	void draw(void *pDrawData);
+	//! Draw this OjmL, this is compatible with any bind() of an OjmL to this VkCommandBuffer
+	void draw(VkCommandBuffer &cmd);
 
-	VertexArray *getVertexArray() {return dGL.get();}
+	//! Bind VertexBuffer and IndexBuffer to draw any OjmL
+	void bind(VkCommandBuffer &cmd);
 
 	//! bind VertexArray
-	void bind(CommandMgr *cmdMgr);
-	void bind(Pipeline *pipeline);
+	void bind(Pipeline &pipeline);
+
+	//! Deprecated, only used by ring.cpp
+	VertexBuffer *getVertexBuffer() {return vertex.get();}
+	//! Deprecated, only used by ring.cpp
+	const SubBuffer &getIndexBuffer() {return index;}
 private:
 	bool is_ok = false;
 
 	//! charge et initialise un objet OJM
-	bool init(const std::string& _fileName, ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex);
+	bool init(const std::string& _fileName);
 
 	//! charge un objet OJM du disque dur
 	bool readOJML(const std::string& _fileName);
 
 	//! initialise tous les parametres GL de l'ojm
-	void initGLparam(ThreadContext *context, bool mergeVertexArray, int *maxVertex, int *maxIndex);
+	void initGLparam();
 
 	//! supprime les paramètres GL de l'ojm
 	void delGLparam();
@@ -51,15 +56,10 @@ private:
 	std::vector<float> vertices;
 	std::vector<float> uvs;
 	std::vector<float> normals;
-	std::vector<unsigned int> indices;
-	std::unique_ptr<VertexArray> dGL;
-	struct {
-	    uint32_t    indexCount;
-	    uint32_t    instanceCount;
-	    uint32_t    firstIndex;
-	    int32_t     vertexOffset;
-	    uint32_t    firstInstance;
-	} drawData;
+	std::unique_ptr<VertexBuffer> vertex;
+	SubBuffer index {};
+	unsigned int *pIndex = nullptr;
+	unsigned int indexCount = 0;
 };
 
 

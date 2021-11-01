@@ -36,14 +36,16 @@
 
 #include "tools/no_copy.hpp"
 #include "mediaModule/media_base.hpp"
-#include "vulkanModule/Context.hpp"
+#include <vulkan/vulkan.h>
 
 class s_texture;
 class Navigator;
 class Projector;
-class VertexArray;
-class ImageTexture;
 class Pipeline;
+class PipelineLayout;
+class VertexArray;
+class VertexBuffer;
+class ImageTexture;
 
 class Image : public NoCopy {
 
@@ -98,12 +100,7 @@ public:
 		return isPersistent;
 	}
 
-	static void createShaderUnified();
-	static void createShaderImageViewport();
-	static void createSC_context(ThreadContext *_context);
-
-	// static std::unique_ptr<shaderProgram> shaderImageViewport;
-	// static std::unique_ptr<shaderProgram> shaderUnified;
+	static void createSC_context();
 
 private:
 	void createLocalContext();
@@ -161,18 +158,17 @@ private:
 	linearTransition ratio;
 
 	//OpenGL vars
-	std::vector<float> vecImgPos, vecImgTex, vecImgData;
-	static ThreadContext *context;
-	static ThreadedCommandBuilder *cmdMgr;
+	std::vector<float> vecImgPos, vecImgTex;
+	float *imgData;
 	static PipelineLayout *m_layoutViewport, *m_layoutUnifiedRGB, *m_layoutUnifiedYUV;
 	static Pipeline *m_pipelineViewport;
 	// RGB, RBG with transparency, YUV, YUV with transparency
 	static std::array<Pipeline *, 4> m_pipelineUnified;
-	static VertexArray *m_imageViewportGL, *m_imageUnifiedGL;
-	static int commandIndex;
-	static Set *m_setViewport, *m_setUnifiedRGB, *m_setUnifiedYUV;
+	static std::unique_ptr<VertexArray> m_imageViewportGL, m_imageUnifiedGL;
+	static int cmds[3];
+	static VkCommandBuffer cmd; // Currently recording command
 	static Pipeline *pipelineUsed;
-	std::unique_ptr<VertexArray> vertex;
+	std::unique_ptr<VertexBuffer> vertex;
 	uint32_t vertexSize;
 
 	//active la transparence

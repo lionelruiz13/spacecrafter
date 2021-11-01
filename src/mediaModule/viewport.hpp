@@ -23,17 +23,15 @@
 //
 #include "tools/fader.hpp"
 #include "mediaModule/media_base.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 #define VP_FADER_DURATION 2000
 
 class VertexArray;
-// class shaderProgram;
-class CommandMgr;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
 
 class ViewPort {
 public:
@@ -48,24 +46,16 @@ public:
 	void setTexture(VideoTexture _tex);
 
 	//! build draw commands
-	void build();
+	void build(int frameIdx);
 
 	//! indique si la classe doit etre active ou pas
 	void display(bool alive) {
 		isAlive = true;
 		fader=alive;
-		if (alive)
-			build();
 	}
 
 	//! indique à la classe de se remettre en position de départ
-	void displayStop() {
-		isAlive = false;
-		fader=false;
-		fader.reset(false);
-		transparency = false;
-		noColor = Vec4f::null();
-	}
+	void displayStop();
 
 	//! indique si le viewport affiche l'image sur tout le dôme ou jsute 2fois une moitiée
 	void displayFullScreen(bool v) {
@@ -89,39 +79,36 @@ public:
 	}
 
 	//! indique si on active la transparence sur la KeyColor
-	void setTransparency(bool v) {
-		transparency = v;
-	}
+	void setTransparency(bool v);
 
 	//! KeyColor a utiliser pour la transparence
-	void setKeyColor(const Vec3f&color, float intensity) {
-		noColor = Vec4f(color[0], color[1], color[2],intensity);
-	}
+	void setKeyColor(const Vec3f&color, float intensity);
 
-	void createSC_context(ThreadContext *context);
+	void createSC_context();
 
 private:
 	//initialisation shader
 	void initParam();
 	//std::unique_ptr<shaderProgram> shaderViewPort;
-	CommandMgr *cmdMgr, *cmdMgrTarget;
-	int commandIndex;
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uFrag;
-	Vec4f *pNoColor;
-	float *pFader;
-	uint32_t *pTransparency; //vkBool32
-	std::unique_ptr<VertexArray> m_dualGL, m_fullGL;
+	struct s_frag {
+		Vec4f noColor;
+		float fader;
+		VkBool32 transparency;
+	};
+	std::unique_ptr<SharedBuffer<s_frag>> uFrag;
+	std::unique_ptr<VertexArray> vertexModel;
+	std::unique_ptr<VertexBuffer> vertex; // First 4 = fullscreen, next 8 = dual
+	std::shared_ptr<VideoSync> sync;
+	VkCommandBuffer cmds[3];
+	bool needUpdate[3]{};
 
 	//uint32_t videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
 	bool isAlive;		//!< active la classe
 	bool fullScreen; 	//!< indique la façon d'afficher l'image
 	bool skipping = false;		//!< initialise la variable définissant si on saute le fading ou non
-	bool transparency = false;	//!< active la transparence
-	// indique quelle couleur est à effacer de l'image
-	Vec4f noColor=Vec4f::null();
 	ParabolicFader fader;
 };
 

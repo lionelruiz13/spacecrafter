@@ -32,17 +32,14 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 
-// #include "vulkanModule/VertexArray.hpp"
-//
-//
-#include "vulkanModule/Context.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/Core/FrameMgr.hpp"
+#include "EntityCore/Resource/Pipeline.hpp"
+#include "EntityCore/Resource/PipelineLayout.hpp"
+#include "EntityCore/Resource/VertexArray.hpp"
+#include "EntityCore/Resource/VertexBuffer.hpp"
+#include "EntityCore/Resource/Set.hpp"
+#include "EntityCore/Resource/TransferMgr.hpp"
 
 //define word string in a same place
 #define L_TYPE 			"type"
@@ -61,15 +58,9 @@ int Landscape::stacks = 10;
 const float minShadeValue = 0.1f;
 const float maxShadeValue = 0.9f;
 
-ThreadContext *Landscape::context;
-int Landscape::commandIndex, Landscape::commandIndexNight;
 Pipeline *Landscape::pipeline;
 PipelineLayout *Landscape::layout;
-Set *Landscape::set;
-Uniform *Landscape::uModelViewMatrix, *Landscape::uFrag;
-Mat4f *Landscape::pModelViewMatrix;
-float *Landscape::psky_brightness;
-float *Landscape::pFader;
+std::unique_ptr<VertexArray> Landscape::vertexModel;
 
 static float setLimitedShade(float _value )
 {
@@ -87,14 +78,12 @@ Landscape::Landscape(float _radius) : radius(_radius), sky_brightness(1.)
 	m_limitedShade = false;
 
 	fog =nullptr;
-	if (context == nullptr) context = getContext();
-	fog = new Fog(0.95f, context);
+	fog = std::make_unique<Fog>(0.95f);
 	assert(fog!=nullptr);
 }
 
 Landscape::~Landscape()
 {
-	if (fog) delete fog;
 }
 
 void Landscape::setSkyBrightness(float b)
@@ -121,52 +110,36 @@ void Landscape::update(int delta_time)
 }
 
 
-void Landscape::createSC_context(ThreadContext *_context)
+void Landscape::createSC_context()
 {
-	context = _context;
-	VertexArray vertexModel(context->surface);
-	vertexModel.registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	vertexModel.registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	layout = context->global->tracker->track(new PipelineLayout(context->surface));
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
-	layout->setTextureLocation(0);
-	layout->setTextureLocation(1);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+
+	vertexModel = std::make_unique<VertexArray>(vkmgr);
+	vertexModel->createBindingEntry(5*sizeof(float));
+	vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	vertexModel->addInput(VK_FORMAT_R32G32_SFLOAT);
+
+	layout = new PipelineLayout(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
+	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 2);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3);
 	layout->buildLayout();
 	layout->build();
-	pipeline = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layout}, {context->surface, layout}});
+	pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_FOREGROUND, layout}, {vkmgr, *context.render, PASS_FOREGROUND, layout}};
 	for (int i = 0; i < 2; ++i) {
 		pipeline[i].setCullMode(true);
 		pipeline[i].setDepthStencilMode();
-		pipeline[i].bindVertex(&vertexModel);
+		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+		pipeline[i].bindVertex(*vertexModel);
 		pipeline[i].bindShader("landscape.vert.spv");
 		pipeline[i].bindShader("landscape.geom.spv");
 		pipeline[i].bindShader((i == 0) ? "landscapeNightTexture.frag.spv" : "landscape.frag.spv");
 		pipeline[i].build();
 	}
-	set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
-	uModelViewMatrix = context->global->tracker->track(new Uniform(context->surface, sizeof(*pModelViewMatrix)));
-	pModelViewMatrix = static_cast<typeof(pModelViewMatrix)>(uModelViewMatrix->data);
-	set->bindUniform(uModelViewMatrix, 2);
-	uFrag = context->global->tracker->track(new Uniform(context->surface, sizeof(float) * 2));
-	psky_brightness = static_cast<float *>(uFrag->data);
-	pFader = psky_brightness + 1;
-	set->bindUniform(uFrag, 3);
-	commandIndex = context->commandMgrDynamic->getCommandIndex();
-	commandIndexNight = context->commandMgrDynamic->getCommandIndex();
-
-	// shaderLandscape = std::make_unique<shaderProgram>();
-	// shaderLandscape->init("landscape.vert", "landscape.geom","landscape.frag");
-	//
-	// shaderLandscape->setUniformLocation("sky_brightness");
-	// shaderLandscape->setUniformLocation("fader");
-	// shaderLandscape->setUniformLocation("ModelViewMatrix");
-	//
-	// shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withNightTex");
-	// shaderLandscape->setSubroutineLocation(GL_FRAGMENT_SHADER,"withoutNightTex");
-
-	Fog::createSC_context(context);
+	Fog::createSC_context();
 }
 
 
@@ -285,46 +258,29 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 
 void Landscape::draw(const Projector* prj, const Navigator* nav)
 {
+	Context &context = *Context::instance;
 	if (!valid_landscape) return;
 	if (!fader.getInterstate()) return;
 
-	// Normal transparency mode
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// StateGL::enable(GL_CULL_FACE);
-	// StateGL::enable(GL_BLEND);
-
-	// shaderLandscape->use();
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, map_tex->getID());
 	if (haveNightTex && sky_brightness < 0.25) {
-		context->commandMgrDynamic->setSubmission(commandIndexNight, false, context->commandMgr);
-	}
-	else {
+		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx + 3], PASS_FOREGROUND);
+	} else {
 		if (m_limitedShade)
 			sky_brightness = std::max(sky_brightness, m_limitedShadeValue);
-		context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
+		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_FOREGROUND);
 	}
-	*psky_brightness = fmin(sky_brightness,1.0);
-	*pFader = fader.getInterstate();
-	*pModelViewMatrix = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
-	//Renderer::drawArrays(shaderLandscape.get(), m_landscapeGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,nbVertex);
-
-	// StateGL::disable(GL_CULL_FACE);
-	// StateGL::disable(GL_BLEND);
-
-	// glActiveTexture(GL_TEXTURE0);
+	uFrag->get().sky_brightness = fmin(sky_brightness,1.0);
+	uFrag->get().fader = fader.getInterstate();
+	*uMV = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
 
 	fog->draw(prj,nav);
 }
 
-
-void Landscape::deleteMapTex()
+void Landscape::destroySC_context()
 {
-	if (map_tex) delete map_tex;
-	map_tex = nullptr;
-	if (map_tex_night) delete map_tex_night;
-	map_tex_night = nullptr;
+	delete[] pipeline;
+	delete layout;
+	Fog::destroySC_context();
 }
 
 // *********************************************************************
@@ -341,7 +297,6 @@ LandscapeFisheye::LandscapeFisheye(float _radius) : Landscape(_radius)
 
 LandscapeFisheye::~LandscapeFisheye()
 {
-	deleteMapTex();
 }
 
 
@@ -391,10 +346,10 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 	valid_landscape = 1;  // assume ok...
 	cLog::get()->write( "Landscape Fisheye " + _name + " created", LOG_TYPE::L_INFO);
 	name = _name;
-	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+	map_tex = std::make_unique<s_texture>(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 
 	if (! _maptex_night.empty()) {
-		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+		map_tex_night = std::make_unique<s_texture>(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
 	} else {
 		haveNightTex = false;
@@ -413,42 +368,41 @@ void LandscapeFisheye::create(const std::string _name, const std::string _maptex
 
 void LandscapeFisheye::initShader()
 {
-	nbVertex = 2*slices*stacks + 2* stacks;
-	float *datatex = new float[nbVertex*2];
-	float *datapos = new float[nbVertex*3];
+	Context &context = *Context::instance;
 
-	createFisheyeMesh(radius,slices,stacks, tex_fov, datatex, datapos);
-
-	m_landscapeGL = std::make_unique<VertexArray>(context->surface);
-	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_landscapeGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	m_landscapeGL->build(nbVertex);
-	m_landscapeGL->fillVertexBuffer(BufferType::POS3D, nbVertex*3, datapos);
-	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
-
-	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
+	nbVertex = 2 * (slices + 1) * stacks;
+	createFisheyeMesh(radius,slices,stacks, tex_fov, (float *) context.transfer->beginPlanCopy(nbVertex * 5 * sizeof(float)));
+	vertex = vertexModel->createBuffer(0, nbVertex, context.globalBuffer.get());
+	context.transfer->endPlanCopy(vertex->get(), nbVertex * 5 * sizeof(float));
+	set = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, layout, -1, true, true);
+	uMV = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+	uFrag = std::make_unique<SharedBuffer<frag>>(*context.uniformMgr);
+	set->bindUniform(uMV, 2);
+	set->bindUniform(uFrag, 3);
 	set->bindTexture(map_tex->getTexture(), 0);
-	if (haveNightTex) {
+	if (haveNightTex)
 		set->bindTexture(map_tex_night->getTexture(), 1);
-		cmdMgr->init(commandIndexNight, pipeline);
-		cmdMgr->bindVertex(m_landscapeGL.get());
-		cmdMgr->bindSet(layout, context->global->globalSet, 0);
-		cmdMgr->bindSet(layout, set, 1);
-		cmdMgr->draw(nbVertex);
-		cmdMgr->compile();
-	}
-	cmdMgr->init(commandIndex, pipeline + 1);
-	cmdMgr->bindVertex(m_landscapeGL.get());
-	cmdMgr->bindSet(layout, context->global->globalSet, 0);
-	cmdMgr->bindSet(layout, set, 1);
-	cmdMgr->draw(nbVertex);
-	cmdMgr->compile();
 
-	if (datatex) delete datatex;
-	if (datapos) delete datapos;
+	context.cmdInfo.commandBufferCount = haveNightTex ? 6 : 3;
+	vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i) {
+		auto cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_FOREGROUND);
+		pipeline[1].bind(cmd);
+		vertex->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		vkCmdDraw(cmd, nbVertex, 1, 0, 0);
+		context.frame[i]->compile(cmd);
+		if (haveNightTex) {
+			auto cmd = cmds[i + 3];
+			context.frame[i]->begin(cmd, PASS_FOREGROUND);
+			pipeline[0].bind(cmd);
+			vertex->bind(cmd);
+			layout->bindSets(cmd, {*context.uboSet, *set});
+			vkCmdDraw(cmd, nbVertex, 1, 0, 0);
+			context.frame[i]->compile(cmd);
+		}
+	}
 }
 
 
@@ -465,8 +419,7 @@ static inline double FisheyeTexCoordFastT(double rho_div_fov, double costheta, d
 	return 0.5 + rho_div_fov * sintheta;
 }
 
-
-void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, float * datatex, float * datapos)
+void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, float *data)
 {
 	unsigned int indice1=0;
 	unsigned int indice3=0;
@@ -508,16 +461,11 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 				nbr++;
 				z=z-0.01; //TODO magic number to export
 
-				datatex[indice1] = FisheyeTexCoordFastS((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
-				indice1++;
-				datatex[indice1] = FisheyeTexCoordFastT((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
-				indice1++;
-				datapos[indice3]= x*radius;
-				indice3++;
-				datapos[indice3]= y*radius;
-				indice3++;
-				datapos[indice3]= z*radius;
-				indice3++;
+				*(data++) = x*radius;
+				*(data++) = y*radius;
+				*(data++) = z*radius;
+				*(data++) = FisheyeTexCoordFastS((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
+				*(data++) = FisheyeTexCoordFastT((rho + drho)/texture_fov,cos_sin_theta_p[0],-cos_sin_theta_p[1]);
 			}
 			x = -cos_sin_theta_p[1] * cos_sin_rho_p[1];
 			y = cos_sin_theta_p[0] * cos_sin_rho_p[1];
@@ -525,18 +473,11 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 			if (z>=0) {
 				nbr++;
 				z=z-0.01; //TODO magic number to export
-
-				datatex[indice1] = FisheyeTexCoordFastS(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
-				indice1++;
-				datatex[indice1] = FisheyeTexCoordFastT(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
-				indice1++;
-
-				datapos[indice3]= x*radius;
-				indice3++;
-				datapos[indice3]= y*radius;
-				indice3++;
-				datapos[indice3]= z*radius;
-				indice3++;
+				*(data++) = x*radius;
+				*(data++) = y*radius;
+				*(data++) = z*radius;
+				*(data++) = FisheyeTexCoordFastS(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
+				*(data++) = FisheyeTexCoordFastT(rho/M_PI, cos_sin_theta_p[0], -cos_sin_theta_p[1]);
 			}
 		}
 	}
@@ -557,7 +498,6 @@ LandscapeSpherical::LandscapeSpherical(float _radius) : Landscape(_radius),  bas
 
 LandscapeSpherical::~LandscapeSpherical()
 {
-	deleteMapTex();
 }
 
 
@@ -601,7 +541,6 @@ void LandscapeSpherical::load(const std::string& landscape_file, const std::stri
 	       pd.getBoolean(section_name, L_TEXTURE, true));
 }
 
-
 // create a spherical landscape from basic parameters (no ini file needed)
 void LandscapeSpherical::create(const std::string _name, const std::string _maptex, const float _base_altitude,
                                 const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, bool _mipmap)
@@ -609,10 +548,10 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 	valid_landscape = 1;  // assume ok...
 	cLog::get()->write( "Landscape Spherical " + _name + " created", LOG_TYPE::L_INFO);
 	name = _name;
-	map_tex = new s_texture(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+	map_tex = std::make_unique<s_texture>(_maptex,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 
 	if (!_maptex_night.empty()) {
-		map_tex_night = new s_texture(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
+		map_tex_night = std::make_unique<s_texture>(_maptex_night,TEX_LOAD_TYPE_PNG_ALPHA,_mipmap);
 		haveNightTex = true;
 	} else {
 		haveNightTex = false;
@@ -633,52 +572,47 @@ void LandscapeSpherical::create(const std::string _name, const std::string _mapt
 
 void LandscapeSpherical::initShader()
 {
-	nbVertex = 2*slices*stacks + 2* stacks;
+	Context &context = *Context::instance;
 
-	float *datatex = new float[nbVertex*2];
-	float *datapos = new float[nbVertex*3];
-
-	createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, datatex, datapos);
-
-	m_landscapeGL = std::make_unique<VertexArray>(context->surface);
-	m_landscapeGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_landscapeGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	m_landscapeGL->build(nbVertex);
-	m_landscapeGL->fillVertexBuffer(BufferType::POS3D, nbVertex*3, datapos);
-	m_landscapeGL->fillVertexBuffer(BufferType::TEXTURE, nbVertex*2, datatex);
-
-	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
+	nbVertex = 2 * (slices + 1) * stacks;
+	createSphericalMesh(radius, 1.0, slices,stacks, base_altitude, top_altitude, (float *) context.transfer->beginPlanCopy(nbVertex * 5 * sizeof(float)));
+	vertex = vertexModel->createBuffer(0, nbVertex, context.globalBuffer.get());
+	context.transfer->endPlanCopy(vertex->get(), nbVertex * 5 * sizeof(float));
+	set = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, layout, -1, true, true);
+	uMV = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+	uFrag = std::make_unique<SharedBuffer<frag>>(*context.uniformMgr);
+	set->bindUniform(uMV, 2);
+	set->bindUniform(uFrag, 3);
 	set->bindTexture(map_tex->getTexture(), 0);
-	if (haveNightTex) {
+	if (haveNightTex)
 		set->bindTexture(map_tex_night->getTexture(), 1);
-		cmdMgr->init(commandIndexNight, pipeline);
-		cmdMgr->bindVertex(m_landscapeGL.get());
-		cmdMgr->bindSet(layout, context->global->globalSet, 0);
-		cmdMgr->bindSet(layout, set, 1);
-		cmdMgr->draw(nbVertex);
-		cmdMgr->compile();
-	}
-	cmdMgr->init(commandIndex, pipeline + 1);
-	cmdMgr->bindVertex(m_landscapeGL.get());
-	cmdMgr->bindSet(layout, context->global->globalSet, 0);
-	cmdMgr->bindSet(layout, set, 1);
-	cmdMgr->draw(nbVertex);
-	cmdMgr->compile();
 
-	if (datatex) delete[] datatex;
-	if (datapos) delete[] datapos;
+	context.cmdInfo.commandBufferCount = haveNightTex ? 6 : 3;
+	vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i) {
+		auto cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_FOREGROUND);
+		pipeline[1].bind(cmd);
+		vertex->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		vkCmdDraw(cmd, nbVertex, 1, 0, 0);
+		context.frame[i]->compile(cmd);
+		if (haveNightTex) {
+			auto cmd = cmds[i + 3];
+			context.frame[i]->begin(cmd, PASS_FOREGROUND);
+			pipeline[0].bind(cmd);
+			vertex->bind(cmd);
+			layout->bindSets(cmd, {*context.uboSet, *set});
+			vkCmdDraw(cmd, nbVertex, 1, 0, 0);
+			context.frame[i]->compile(cmd);
+		}
+	}
 }
 
 
 void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
-        double bottom_altitude, double top_altitude, float * datatex, float * datapos)
+        double bottom_altitude, double top_altitude, float *data)
 {
-	unsigned int indiceTex=0;
-	unsigned int indicePos=0;
-
 	double bottom = M_PI / 180. * bottom_altitude;
 	double angular_height = M_PI / 180. * top_altitude - bottom;
 
@@ -719,21 +653,21 @@ void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_obl
 			y = cos_sin_theta_p[0] * cos_sin_rho_p[1];
 			z = -1.0 * cos_sin_rho_p[0];
 
-			datatex[indiceTex++]=1-s;
-			datatex[indiceTex++]=t;
-			datapos[indicePos++]=x*radius;
-			datapos[indicePos++]=y*radius;
-			datapos[indicePos++]=z * one_minus_oblateness * radius;
+			*(data++) = x*radius;
+			*(data++) = y*radius;
+			*(data++) = z * one_minus_oblateness * radius;
+			*(data++) = 1-s;
+			*(data++) = t;
 
 			x = -cos_sin_theta_p[1] * cos_sin_rho_p[3];
 			y = cos_sin_theta_p[0] * cos_sin_rho_p[3];
 			z = -1.0 * cos_sin_rho_p[2];
 
-			datatex[indiceTex++]=1-s;
-			datatex[indiceTex++]=t-dt;
-			datapos[indicePos++]=x*radius;
-			datapos[indicePos++]=y*radius;
-			datapos[indicePos++]=z * one_minus_oblateness * radius;
+			*(data++) = x*radius;
+			*(data++) = y*radius;
+			*(data++) = z * one_minus_oblateness * radius;
+			*(data++) = 1-s;
+			*(data++) = t-dt;
 
 			s += ds;
 		}

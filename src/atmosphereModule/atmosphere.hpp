@@ -39,18 +39,22 @@
 
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
-
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/SubBuffer.hpp"
 
 class Projector;
 class Navigator;
 class ToneReproductor;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 
-class Atmosphere: public NoCopy  {
+#define SKY_RESOLUTION 48
+#define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
+#define NB_INDEX (((SKY_RESOLUTION+1) * 2 + 1) * SKY_RESOLUTION)
+
+class Atmosphere: public NoCopy {
 public:
-	Atmosphere(ThreadContext *context);
+	Atmosphere();
 	virtual ~Atmosphere();
 
 	void computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase, const ToneReproductor * eye, const Projector* prj, const std::string &planetName,
@@ -135,14 +139,11 @@ public:
 
 private:
 	//! initialise les paramètres du shader
-	void createSC_context(ThreadContext *context);
-	//! remplir les couleurs du conteneur
-	void fillOutDataColor();
+	void createSC_context();
 	// void deleteShader();
 
 	Skylight sky;
 	Skybright skyb;
-	Vec3f ** tab_sky=nullptr;	//!< For Atmosphere calculation
 
 	float world_adaptation_luminance;
 	float milkyway_adaptation_luminance;
@@ -151,12 +152,14 @@ private:
 	float lightPollutionLuminance; 	//! light pollution simulation, add to svn 20070220
 	int cor_optoma; //! flag for correction vp optoma
 
-	std::vector<float> dataColor;
-	std::vector<float> dataPos;
 	std::unique_ptr<Pipeline> pipeline;
-	int commandIndex;
-	CommandMgr *commandMgr;
 	std::unique_ptr<VertexArray> m_atmGL;
+	std::unique_ptr<VertexBuffer> skyPos;
+	std::unique_ptr<VertexBuffer> skyColor;
+	SubBuffer stagingSkyColor;
+	SubBuffer indexBuffer;
+	Vec3f *pSkyColor = nullptr;
+	VkCommandBuffer cmds[3];
 
 	//variables sur la position de la grille
 	float stepX; //!< taille des pas sur l'axe des x

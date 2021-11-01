@@ -29,7 +29,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <iostream>
-#include <thread>
 
 #include "coreModule/projector.hpp"
 #include "coreModule/time_mgr.hpp"
@@ -49,20 +48,10 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 #include "tools/utility.hpp"
-// #include "vulkanModule/VertexArray.hpp"
-//
-
-#include "vulkanModule/VirtualSurface.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/SetMgr.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Texture.hpp"
-#include "vulkanModule/VertexBuffer.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Buffer.hpp"
+#include "coreModule/ubo_cam.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "EntityCore/Core/RenderMgr.hpp"
+#include "tools/context.hpp"
 
 static BigStarCatalog::StringArray spectral_array;
 static BigStarCatalog::StringArray component_array;
@@ -182,13 +171,12 @@ static void InitColorTableFromConfigFile(const InitParser &conf)
 }
 
 
-HipStarMgr::HipStarMgr(int width,int height, ThreadContext *_context) :
+HipStarMgr::HipStarMgr(int width,int height) :
 	starTexture(),
 	hip_index(new BigStarCatalog::HipIndexStruct[NR_OF_HIP+1]),
 	mag_converter(new MagConverter(*this)),
 	fontSize(13.)
 {
-	context = _context;
 	fader.setDuration(3000);
 	setMagConverterMaxScaled60DegMag(6.5f);
 	if (hip_index == 0 || mag_converter == 0) {
@@ -210,103 +198,131 @@ HipStarMgr::HipStarMgr(int width,int height, ThreadContext *_context) :
 //TODO fix float[NBR_MAX_STARS];
 void HipStarMgr::createShaderParams(int width,int height)
 {
-	colorBuffer.reserve(MAX_FRAMES_IN_FLIGHT);
-	for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-		colorBuffer.emplace_back(new Texture(context->surface, context->global->textureMgr, false));
-	}
-	depthBuffer = std::make_unique<Texture>(context->surface, context->global->textureMgr, true);
-	surface = std::make_unique<VirtualSurface>(context->global->vulkan, colorBuffer, *depthBuffer);
-	setMgr = std::make_unique<SetMgr>(surface.get(), 1, 0, 1);
-	cmdMgr = std::make_unique<CommandMgr>(surface.get(), 2, true);
-	drawData = std::make_unique<Buffer>(surface.get(), sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	*static_cast<VkDrawIndirectCommand *>(drawData->data) = (VkDrawIndirectCommand) {0, 1, 0, 0};
-	pVertexCount = static_cast<uint32_t *>(drawData->data);
-	// dataColor.reserve(NBR_MAX_STARS*3);
-	// dataMag.reserve(NBR_MAX_STARS);
-	// dataPos.reserve(NBR_MAX_STARS*2);
-
-	// shader pour FBO
-	// glGenVertexArrays(1,&drawFBO.vao);
-	// glBindVertexArray(drawFBO.vao);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 
 	float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
-	// glGenBuffers(1,&drawFBO.tex);
-	// glEnableVertexAttribArray(0);
-	// glBindBuffer(GL_ARRAY_BUFFER,drawFBO.tex);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataTex, GL_STATIC_DRAW);
-	// glVertexAttribPointer(1,2,GL_FLOAT,GL_FALSE,0,NULL);
-
 	float dataPos[]= {-1.0,-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
-	// glGenBuffers(1,&drawFBO.pos);
-	// glEnableVertexAttribArray(1);
-	// glBindBuffer(GL_ARRAY_BUFFER,drawFBO.pos);
-	// glBufferData(GL_ARRAY_BUFFER,sizeof(float)*8, dataPos, GL_STATIC_DRAW);
-	// glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,0,NULL);
-	m_drawFBO_GL = std::make_unique<VertexArray>(context->surface);
-	m_drawFBO_GL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	m_drawFBO_GL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	m_drawFBO_GL->build(4);
-	m_drawFBO_GL->fillVertexBuffer(BufferType::POS2D,8, dataPos);
-	m_drawFBO_GL->fillVertexBuffer(BufferType::TEXTURE,8, dataTex);
+
+	renderPassClear = std::make_unique<RenderMgr>(vkmgr);
+	int colorID = renderPassClear->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	int depthID = renderPassClear->attach(VK_FORMAT_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, false);
+	renderPassClear->setupClear(colorID, {0.f, 0.f, 0.f, 0.f});
+	renderPassClear->bindColor(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	renderPassClear->bindDepth(depthID, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	renderPassClear->setupClear(depthID, 1.f);
+	renderPassClear->pushLayer();
+	renderPassClear->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
+	renderPassClear->build(1);
+
+	renderPassReuse = std::make_unique<RenderMgr>(vkmgr);
+	colorID = renderPassReuse->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	depthID = renderPassReuse->attach(VK_FORMAT_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, false);
+	renderPassReuse->addDependency(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_SHADER_READ_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	renderPassReuse->bindColor(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	renderPassReuse->bindDepth(depthID, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	renderPassReuse->setupClear(depthID, 1.f);
+	renderPassReuse->pushLayer();
+	renderPassReuse->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
+	renderPassReuse->build(1);
+
+	depthBuffer = std::make_unique<Texture>(vkmgr, vkmgr.getSwapChainExtent().width, vkmgr.getSwapChainExtent().height);
+	depthBuffer->use();
+	framebufferClear = std::make_unique<FrameMgr>(vkmgr, *renderPassClear, 0, width, height, "hip_star single");
+	framebufferClear->bind(colorID, *context.starColorAttachment);
+	framebufferClear->bind(depthID, *depthBuffer);
+	framebufferClear->build();
+	framebufferReuse = std::make_unique<FrameMgr>(vkmgr, *renderPassReuse, 0, width, height, "hip_star combine");
+	framebufferReuse->bind(colorID, *context.starColorAttachment);
+	framebufferReuse->bind(depthID, *depthBuffer);
+	framebufferReuse->build();
+
+	syncUse = std::make_unique<SyncEvent>(&vkmgr);
+	syncUse->imageBarrier(*context.starColorAttachment,
+		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+		VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
+		VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
+	syncUse->build();
+	syncClear = std::make_unique<SyncEvent>(&vkmgr);
+	syncClear->imageBarrier(*context.starColorAttachment,
+		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+		VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_NONE_KHR,
+		VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_NONE_KHR);
+	syncClear->build();
+	syncReuse = std::make_unique<SyncEvent>(&vkmgr);
+	syncReuse->imageBarrier(*context.starColorAttachment,
+		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+		VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
+		VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT_KHR);
+	syncReuse->build();
+
+	m_drawFBO_GL = std::make_unique<VertexArray>(vkmgr);
+	m_drawFBO_GL->createBindingEntry(4 * sizeof(float));
+	m_drawFBO_GL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
+	m_drawFBO_GL->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
+	vertexFBO = m_drawFBO_GL->createBuffer(0, 4, context.globalBuffer.get());
+	float *data = (float *) context.transfer->planCopy(vertexFBO->get());
+	vertexFBO->fillEntry(2, 4, dataPos, data);
+	vertexFBO->fillEntry(2, 4, dataTex, data + 2);
 
 	// shader pour les étoiles
-	m_starsGL = std::make_unique<VertexArray>(surface.get());
-	m_starsGL->registerVertexBuffer(BufferType::POS2D,BufferAccess::STREAM_LOCAL);
-	m_starsGL->registerVertexBuffer(BufferType::COLOR,BufferAccess::STREAM_LOCAL);
-	m_starsGL->registerVertexBuffer(BufferType::MAG,BufferAccess::STREAM_LOCAL);
-	m_starsGL->build(NBR_MAX_STARS);
-	vertexData = static_cast<float *>(m_starsGL->getVertexBuffer().data);
+	m_starsGL = std::make_unique<VertexArray>(vkmgr);
+	m_starsGL->createBindingEntry(6 * sizeof(float));
+	m_starsGL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
+	m_starsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // COLOR
+	m_starsGL->addInput(VK_FORMAT_R32_SFLOAT); // MAG
+	vertexStars = m_starsGL->createBuffer(0, NBR_MAX_STARS, context.globalBuffer.get());
+	staging = context.stagingMgr->acquireBuffer(vertexStars->get().size);
 
 	auto samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
 	samplerInfo.anisotropyEnable = VK_FALSE;
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
-	m_layoutStars = std::make_unique<PipelineLayout>(surface.get());
+	m_layoutStars = std::make_unique<PipelineLayout>(vkmgr);
 	m_layoutStars->setTextureLocation(0, &samplerInfo);
+	m_layoutStars->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1);
 	m_layoutStars->buildLayout();
-	m_layoutStars->setGlobalPipelineLayout(context->global->globalLayout);
+	m_layoutStars->setGlobalPipelineLayout(context.layouts.front().get());
 	m_layoutStars->build();
-	m_setStars = std::make_unique<Set>(surface.get(), setMgr.get(), m_layoutStars.get());
+	m_setStars = std::make_unique<Set>(vkmgr, *context.setMgr, m_layoutStars.get());
+	m_setStars->bindUniform(*UBOCam::ubo, 1);
 
-	m_layoutFBO = std::make_unique<PipelineLayout>(context->surface);
+	m_layoutFBO = std::make_unique<PipelineLayout>(vkmgr);
 	samplerInfo.magFilter = samplerInfo.minFilter = VK_FILTER_NEAREST;
 	m_layoutFBO->setTextureLocation(0, &samplerInfo);
 	m_layoutFBO->buildLayout();
 	m_layoutFBO->build();
+	m_setFBO = std::make_unique<Set>(vkmgr, *context.setMgr, m_layoutFBO.get());
+	m_setFBO->bindTexture(*context.starColorAttachment, 0);
 
 	VkPipelineColorBlendAttachmentState blendMode = BLEND_ADD;
 	blendMode.colorBlendOp = blendMode.alphaBlendOp = VK_BLEND_OP_MAX;
-	m_pipelineStars = std::make_unique<Pipeline>(surface.get(), m_layoutStars.get());
-	m_pipelineStars->bindVertex(m_starsGL.get());
-	m_pipelineStars->setBlendMode(blendMode);
-	m_pipelineStars->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
-	m_pipelineStars->bindShader("stars.vert.spv");
-	m_pipelineStars->bindShader("stars.geom.spv");
-	m_pipelineStars->bindShader("stars.frag.spv");
-	m_pipelineStars->build();
+	pipelineStarsClear = std::make_unique<Pipeline>(vkmgr, *renderPassClear, 0, m_layoutStars.get());
+	pipelineStarsClear->bindVertex(*m_starsGL);
+	pipelineStarsClear->setBlendMode(blendMode);
+	pipelineStarsClear->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	pipelineStarsClear->bindShader("stars.vert.spv");
+	pipelineStarsClear->bindShader("stars.geom.spv");
+	pipelineStarsClear->bindShader("stars.frag.spv");
+	pipelineStarsClear->build();
 
-	m_pipelineFBO = std::make_unique<Pipeline>(context->surface, m_layoutFBO.get());
-	m_pipelineFBO->bindVertex(m_drawFBO_GL.get());
+	pipelineStarsReuse = std::make_unique<Pipeline>(vkmgr, *renderPassReuse, 0, m_layoutStars.get());
+	pipelineStarsReuse->bindVertex(*m_starsGL);
+	pipelineStarsReuse->setBlendMode(blendMode);
+	pipelineStarsReuse->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	pipelineStarsReuse->bindShader("stars.vert.spv");
+	pipelineStarsReuse->bindShader("stars.geom.spv");
+	pipelineStarsReuse->bindShader("stars.frag.spv");
+	pipelineStarsReuse->build();
+
+	m_pipelineFBO = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, m_layoutFBO.get());
+	m_pipelineFBO->bindVertex(*m_drawFBO_GL);
 	m_pipelineFBO->setBlendMode(BLEND_ADD);
+	m_pipelineFBO->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	m_pipelineFBO->bindShader("fbo.vert.spv");
 	m_pipelineFBO->bindShader("fbo.frag.spv");
 	m_pipelineFBO->build();
 
-	if (surface->ownCompleteFramebuffer()) {
-		cLog::get()->write("FBO setup succeeded");
-	} else {
-		cLog::get()->write("Error in FBO setup.", LOG_TYPE::L_ERROR);
-	}
-
-	dataFBO.resize(colorBuffer.size());
-	for (uint32_t i = 0; i < dataFBO.size(); i++) {
-		dataFBO[i].set = std::make_unique<Set>(context->surface, context->setMgr, m_layoutFBO.get());
-		dataFBO[i].set->bindTexture(colorBuffer[i].get(), 0);
-		dataFBO[i].commandIndex = context->commandMgr->initNew(m_pipelineFBO.get());
-		context->commandMgr->bindVertex(m_drawFBO_GL.get());
-		context->commandMgr->bindSet(m_layoutFBO.get(), dataFBO[i].set.get());
-		context->commandMgr->draw(4);
-		context->commandMgr->compile();
-	}
+	previousSync.emplace(STAR_UNINITIALIZED);
 }
 
 HipStarMgr::~HipStarMgr(void)
@@ -374,29 +390,6 @@ void HipStarMgr::init(const InitParser &conf)
 	// 	cLog::get()->write("HipStarMgr: Can't create starFont", LOG_TYPE::L_ERROR);
 	// 	assert(0);
 	// }
-	commandIndexClear = cmdMgr->getCommandIndex();
-	cmdMgr->init(commandIndexClear);
-	cmdMgr->updateVertex(m_starsGL.get());
-	cmdMgr->beginRenderPass(renderPassType::DEPTH_BUFFER_SINGLE_PASS_DRAW_USE);
-	cmdMgr->bindPipeline(m_pipelineStars.get());
-	cmdMgr->bindVertex(m_starsGL.get());
-	cmdMgr->bindSet(m_layoutStars.get(), m_setStars.get());
-	cmdMgr->bindSet(m_layoutStars.get(), context->global->globalSet, 1);
-	cmdMgr->indirectDraw(drawData.get());
-	cmdMgr->compile();
-	commandIndexHold = cmdMgr->getCommandIndex();
-	cmdMgr->init(commandIndexHold);
-	cmdMgr->updateVertex(m_starsGL.get());
-	cmdMgr->beginRenderPass(renderPassType::DEPTH_BUFFER_SINGLE_PASS_DRAW_USE_ADDITIVE);
-	cmdMgr->bindPipeline(m_pipelineStars.get());
-	cmdMgr->bindVertex(m_starsGL.get());
-	cmdMgr->bindSet(m_layoutStars.get(), m_setStars.get());
-	cmdMgr->bindSet(m_layoutStars.get(), context->global->globalSet, 1);
-	cmdMgr->indirectDraw(drawData.get());
-	cmdMgr->compile();
-
-	// Clear first framebuffer
-	//executeDraw();
 }
 
 void HipStarMgr::setGrid(GeodesicGrid* geodesic_grid)
@@ -582,7 +575,7 @@ void HipStarMgr::loadSciNames(const std::string& sciNameFile)
 	fclose(snFile);
 }
 
-int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color) const
+int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color)
 {
 	if (rc_mag[0]<=0.f || rc_mag[1]<=0.f || nbStarsToDraw >= NBR_MAX_STARS) return -1;
 
@@ -685,16 +678,13 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 {
 	starNameToDraw.clear();
 	double twinkle_param=1.;
-	if (altitude>2000) twinkle_param=std::max(0.,1.-(altitude-2000.)/50000.);
 	nbStarsToDraw = 0;
-	vertexData = static_cast<float *>(m_starsGL->getVertexBuffer().data);
-	// dataPos.clear();
-	// dataMag.clear();
-	// dataColor.clear();
+	if (altitude>2000) twinkle_param=std::max(0.,1.-(altitude-2000.)/50000.);
 	current_JDay = timeMgr->getJulian();
 
 	// If stars are turned off don't waste time below projecting all stars just to draw disembodied labels
 	if(!fader.getInterstate()) return 0.;
+	vertexData = (float *) Context::instance->stagingMgr->getPtr(staging);
 
 	int max_search_level = getMaxSearchLevel(eye, prj);
 	const GeodesicSearchResult* geodesic_search_result = grid->search(prj->unprojectViewport(),max_search_level);
@@ -716,7 +706,9 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		for (int i=it->second->mag_steps-1; i>=0; i--) {
 			const float mag = mag_min+k*i;
 			if (mag_converter->computeRCMag(mag, eye, rcmag_table + 2*i) < 0) {
-				if (i==0) return 0.; //goto exit_loop;
+				if (i==0) {
+					return 0.; //goto exit_loop;
+				}
 			}
 			rcmag_table[2*i] *= fader.getInterstate();
 		}
@@ -736,7 +728,6 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		}
 
 	}
-//~ exit_loop:
 	return 1.;
 }
 
@@ -745,86 +736,68 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	if (nbStarsToDraw==0)
 		return 0.;
 
-	executeDraw();
-	if (!surface->isEmpty()) {
-		frameIndex = surface->getNextFrame();
-		surface->releaseFrame();
-		//std::thread(HipStarMgr::sExecuteDraw, this).detach();
-	}
-	context->commandMgr->setSubmission(dataFBO[frameIndex].commandIndex);
-	//enable FBO
-	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
-	//render to colour attachment 0
-	//glDrawBuffer(GL_COLOR_ATTACHMENT0);
-	//clear the colour and depth buffers
-	// if (!starTrace)
-		//glClear(GL_COLOR_BUFFER_BIT);
-		// Renderer::clearColor();
+	previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
+	previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
+	Context &context = *Context::instance;
 
-	//dessin des etoiles
-	//shaderStars->use();
-
-	// m_starsGL->fillVertexBuffer(BufferType::POS2D, dataPos);
-	// m_starsGL->fillVertexBuffer(BufferType::COLOR, dataColor);
-	// m_starsGL->fillVertexBuffer(BufferType::MAG, dataMag);
-
-	// StateGL::enable(GL_BLEND);
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, starTexture->getID());
-
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
-	// glBlendEquation(GL_MAX);
-
-	// glViewport(0,0 , sizeTexFbo, sizeTexFbo);
-	//Renderer::viewport(0,0 , sizeTexFbo, sizeTexFbo);
-
-	// m_starsGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,nbStarsToDraw);
-	// m_starsGL->unBind();
-	// shaderStars->unuse();
-	//Renderer::drawArrays(shaderStars.get(), m_starsGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,nbStarsToDraw);
-
-
-	//unbind the FBO
-	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	//restore the default back buffer
-	//glDrawBuffer(GL_BACK_LEFT);
-
-	//ici rendre le FBO sur l'écran
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
-	// glBlendEquation(GL_FUNC_ADD);
-
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, renderTextureID);
-
-	//prj-> applyViewport();
-
-	//shaderFBO->use();
-//	glBindVertexArray(drawFBO.vao);
-	// m_drawFBO_GL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
-	// m_drawFBO_GL->unBind();
-	// shaderFBO->unuse();
-	//Renderer::drawArrays(shaderFBO.get(), m_drawFBO_GL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
-
+	// 6 * sizeof(float) is the vertex stride
+	context.transfer->planCopyBetween(staging, vertexStars->get(), nbStarsToDraw * 6 * sizeof(float));
+	if (cmds[context.frameIdx] == -1)
+		cmds[context.frameIdx] = context.frame[context.frameIdx]->create(1);
+	VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
+	syncUse->dstDependency(cmd);
+	m_pipelineFBO->bind(cmd);
+	m_layoutFBO->bindSet(cmd, *m_setFBO);
+	vertexFBO->bind(cmd);
+	vkCmdDraw(cmd, 4, 1, 0, 0);
+	// srcDependency and resetDependency can't be performed inside a RenderPass, report them later
+	context.frame[context.frameIdx]->compile(cmd);
+	context.frame[context.frameIdx]->toExecute(cmd, PASS_BACKGROUND);
 	this->drawStarName(prj);
-
+	context.starUsed[context.frameIdx] = this;
 	return 0.;
 }
 
-void HipStarMgr::sExecuteDraw(HipStarMgr *self)
+void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd, VkCommandBuffer mainCmd)
 {
-	self->executeDraw();
-}
-
-void HipStarMgr::executeDraw()
-{
-	*pVertexCount = nbStarsToDraw;
-	drawData->update();
-	if (!starTrace)
-		surface->acquireNextFrame();
-	cmdMgr->setSubmission(starTrace ? commandIndexHold : commandIndexClear, true);
-	surface->submitFrame();
+	unsigned char lastSync;
+	previousSync.pop(lastSync);
+	switch (lastSync) {
+		case STAR_UNINITIALIZED:
+			renderPassClear->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
+			pipelineStarsClear->bind(cmd);
+			break;
+		case STAR_CLEAR:
+			syncClear->dstDependency(cmd);
+			syncClear->resetDependency(cmd, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR);
+			renderPassClear->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
+			pipelineStarsClear->bind(cmd);
+			break;
+		case STAR_STORE:
+			syncReuse->dstDependency(cmd);
+			syncReuse->resetDependency(cmd, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR);
+			renderPassReuse->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
+			pipelineStarsReuse->bind(cmd);
+			break;
+	}
+	m_layoutStars->bindSet(cmd, *m_setStars);
+	vertexStars->bind(cmd);
+	vkCmdDraw(cmd, nbStarsToDraw, 1, 0, 0);
+	vkCmdEndRenderPass(cmd);
+	syncUse->srcDependency(cmd);
+	syncUse->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
+	unsigned char nextSync;
+	previousSync.pop(nextSync);
+	switch (nextSync) {
+		case STAR_UNINITIALIZED:
+			break;
+		case STAR_CLEAR:
+			syncClear->srcDependency(mainCmd);
+			break;
+		case STAR_STORE:
+			syncReuse->srcDependency(mainCmd);
+			break;
+	}
 }
 
 void HipStarMgr::drawStarName( Projector* prj )

@@ -36,18 +36,16 @@
 #include "tools/s_font.hpp"
 #include "coreModule/projector.hpp"
 #include "tools/fader.hpp"
-
 #include "tools/ScModule.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 //! Class which manages a grid to display in the sky
 
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-//class shaderProgram;
 
 //TODO: intégrer qu'une version de font car la font est commune à toutes les grilles
 //TODO: intégrer qu'une version du flag InternaNav qui est commun à toutes les grilles
@@ -55,7 +53,7 @@ class SkyGrid : public ModuleFont {
 public:
 	virtual ~SkyGrid();
 
-	void draw(const Projector* prj) const;
+	void draw(const Projector* prj);
 
 	void setColor(const Vec3f& c) {
 		color = c;
@@ -90,7 +88,8 @@ public:
 		internalNav=a;
 	}
 
-	static void createShader(ThreadContext *_context);
+	static void createShader();
+	static void destroyShader();
 
 protected:
 	// Create and precompute positions of a SkyGrid
@@ -111,19 +110,21 @@ protected:
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 
 	static unsigned int nbPointsToDraw;
-	static ThreadContext *context;
 	static VertexArray *m_dataGL;
 	static Pipeline *pipeline;
 	static PipelineLayout *layout;
 	static Set *set;
 	static int vUniformID0;
 	static int vUniformID1;
-	int commandIndex;
-	std::unique_ptr<Uniform> uMat, uFrag;
-	Mat4f *pMat;
-	Vec3f *pColor;
-	float *pFader;
-	//static std::unique_ptr<shaderProgram> shaderSkyGrid;
+	static std::weak_ptr<VertexBuffer> pVertex;
+	VkCommandBuffer cmds[3] {};
+	std::shared_ptr<VertexBuffer> vertex;
+	struct frag {
+		Vec3f color;
+		float fader;
+	};
+	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
+	std::unique_ptr<SharedBuffer<frag>> uFrag;
 
 private:
 	unsigned int nb_meridian;

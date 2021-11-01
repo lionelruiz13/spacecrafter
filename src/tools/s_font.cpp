@@ -25,37 +25,28 @@
 #include "tools/s_font.hpp"
 #include "tools/utility.hpp"
 #include "tools/call_system.hpp"
-
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "tools/draw_helper.hpp"
 #include "coreModule/projector.hpp"
-#include "vulkanModule/VertexArray.hpp"
 
-
-
-#include "vulkanModule/Texture.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/ThreadedCommandBuilder.hpp"
-
-ThreadContext *s_font::context;
-Set *s_font::set;
-VertexArray *s_font::vertexHorizontal;
-VertexArray *s_font::vertexPrint;
-ThreadedCommandBuilder *s_font::cmdMgr;
-Pipeline *s_font::pipelineHorizontal;
-Pipeline *s_font::pipelinePrint;
-PipelineLayout *s_font::layoutHorizontal;
-PipelineLayout *s_font::layoutPrint;
-int s_font::activeID = -1;
-int s_font::commandIndexHorizontal;
-int s_font::commandIndexPrint;
-std::vector<std::pair<int, int>> s_font::commandIndex;
+// Set *s_font::set;
+// VertexArray *s_font::vertexHorizontal;
+// VertexArray *s_font::vertexPrint;
+// Pipeline *s_font::pipelineHorizontal;
+// Pipeline *s_font::pipelinePrint;
+// PipelineLayout *s_font::layoutHorizontal;
+// PipelineLayout *s_font::layoutPrint;
+// int s_font::activeID = -1;
+// int s_font::commandIndexHorizontal;
+// int s_font::commandIndexPrint;
+// std::vector<std::pair<int, int>> s_font::commandIndex;
 std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
 int s_font::nbFontInstances = 0;
 bool s_font::hasPrintH = false;
 bool s_font::hasPrint = false;
+
+std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>> s_font::printData;
 
 std::string s_font::baseFontName;
 
@@ -94,9 +85,6 @@ s_font::~s_font()
 	TTF_CloseFont(myFont);
 	myFont = nullptr;
 	if (--nbFontInstances == 0) { // if it's the last s_font instance, clear per-frame caches
-		context->commandMgr->waitCompletion(0);
-		context->commandMgr->waitCompletion(1);
-		context->commandMgr->waitCompletion(2);
 		// There must be no command using those textures
 		tempCache.clear();
 		tempCache2.clear();
@@ -104,120 +92,124 @@ s_font::~s_font()
 }
 
 
-void s_font::createSC_context(ThreadContext *_context)
+void s_font::createSC_context()
 {
-	context = _context;
-	cmdMgr = context->commandMgrSingleUseInterface;
-	commandIndex.resize(4);
-	for (auto &value : commandIndex) {
-		value.first = cmdMgr->getCommandIndex();
-		value.second = cmdMgr->getCommandIndex();
+	printData.resize(3);
+	for (auto &value : printData) {
+		value.first.reserve(1024); // max 1024 print per frame
+		value.second.reserve(1024); // max 1024 printHorizontal per frame
 	}
-	vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface));
-	vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
-	vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
-	vertexHorizontal->build(4096);
-
-	vertexPrint = context->global->tracker->track(new VertexArray(context->surface));
-	vertexPrint->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
-	vertexPrint->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
-	vertexPrint->build(4096);
-
-	layoutHorizontal = context->global->tracker->track(new PipelineLayout(context->surface));
-	layoutHorizontal->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	layoutHorizontal->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
-	layoutHorizontal->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	layoutHorizontal->setGlobalPipelineLayout(context->global->globalLayout);
-	layoutHorizontal->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
-	layoutHorizontal->build();
-
-	layoutPrint = context->global->tracker->track(new PipelineLayout(context->surface));
-	layoutPrint->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	layoutPrint->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	layoutPrint->setGlobalPipelineLayout(context->global->globalLayout);
-	layoutPrint->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
-	layoutPrint->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 16, sizeof(Mat4f)); // MVP
-	layoutPrint->build();
-
-	pipelineHorizontal = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutHorizontal}, {context->surface, layoutHorizontal}});
-	pipelineHorizontal->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
-	for (int i = 0; i < 2; ++i) {
-		pipelineHorizontal[i].bindVertex(vertexHorizontal);
-		pipelineHorizontal[i].bindShader("sfontHorizontal.vert.spv");
-		pipelineHorizontal[i].bindShader("sfontHorizontal.frag.spv");
-		pipelineHorizontal[i].build();
-	}
-
-	pipelinePrint = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutPrint}, {context->surface, layoutPrint}});
-	pipelinePrint->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
-	for (int i = 0; i < 2; ++i) {
-		pipelinePrint[i].bindVertex(vertexPrint);
-		pipelinePrint[i].bindShader("sfontPrint.vert.spv");
-		pipelinePrint[i].bindShader("sfontPrint.frag.spv");
-		pipelinePrint[i].build();
-	}
-
-	set = context->global->tracker->track(new Set());
+	// for (auto &value : commandIndex) {
+	// 	value.first = cmdMgr->getCommandIndex();
+	// 	value.second = cmdMgr->getCommandIndex();
+	// }
+	// vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface));
+	// vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
+	// vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
+	// vertexHorizontal->build(4096);
+	//
+	// vertexPrint = context->global->tracker->track(new VertexArray(context->surface));
+	// vertexPrint->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
+	// vertexPrint->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
+	// vertexPrint->build(4096);
+	//
+	// layoutHorizontal = context->global->tracker->track(new PipelineLayout(context->surface));
+	// layoutHorizontal->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	// layoutHorizontal->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
+	// layoutHorizontal->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	// layoutHorizontal->setGlobalPipelineLayout(context.layouts.front().get());
+	// layoutHorizontal->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
+	// layoutHorizontal->build();
+	//
+	// layoutPrint = context->global->tracker->track(new PipelineLayout(context->surface));
+	// layoutPrint->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	// layoutPrint->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	// layoutPrint->setGlobalPipelineLayout(context.layouts.front().get());
+	// layoutPrint->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
+	// layoutPrint->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 16, sizeof(Mat4f)); // MVP
+	// layoutPrint->build();
+	//
+	// pipelineHorizontal = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutHorizontal}, {context->surface, layoutHorizontal}});
+	// pipelineHorizontal->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
+	// for (int i = 0; i < 2; ++i) {
+	// 	pipelineHorizontal[i].bindVertex(vertexHorizontal);
+	// 	pipelineHorizontal[i].bindShader("sfontHorizontal.vert.spv");
+	// 	pipelineHorizontal[i].bindShader("sfontHorizontal.frag.spv");
+	// 	pipelineHorizontal[i].build();
+	// }
+	//
+	// pipelinePrint = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutPrint}, {context->surface, layoutPrint}});
+	// pipelinePrint->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
+	// for (int i = 0; i < 2; ++i) {
+	// 	pipelinePrint[i].bindVertex(vertexPrint);
+	// 	pipelinePrint[i].bindShader("sfontPrint.vert.spv");
+	// 	pipelinePrint[i].bindShader("sfontPrint.frag.spv");
+	// 	pipelinePrint[i].build();
+	// }
+	//
+	// set = context->global->tracker->track(new Set());
 }
 
 void s_font::beginPrint(bool multisample)
 {
+	printData[Context::instance->frameIdx].first.clear();
+	printData[Context::instance->frameIdx].second.clear();
 	tempCache.swap(tempCache2);
 	tempCache.clear();
 
-	vertexHorizontal->setVertexOffset(0);
-	vertexPrint->setVertexOffset(0);
+	// vertexHorizontal->setVertexOffset(0);
+	// vertexPrint->setVertexOffset(0);
 
-	activeID = -1;
-	nextPrint(multisample);
+	// activeID = -1;
+	// nextPrint(multisample);
 }
 
 void s_font::nextPrint(bool multisample)
 {
-	if (activeID == -1) {
-		activeID = multisample ? 1 : 0;
-		pipelineHorizontal += activeID;
-		pipelinePrint += activeID;
-	} else
-		endPrint(multisample);
-	if (activeID == (int) commandIndex.size()) {
-		commandIndex.emplace_back(cmdMgr->getCommandIndex(), cmdMgr->getCommandIndex());
-	}
-
-	commandIndexHorizontal = commandIndex[activeID].first;
-	cmdMgr->init(commandIndexHorizontal, pipelineHorizontal,
-		multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
-		multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
-	cmdMgr->bindSet(layoutHorizontal, context->global->globalSet, 1);
-	cmdMgr->bindVertex(vertexHorizontal);
-
-	commandIndexPrint = commandIndex[activeID].second;
-	cmdMgr->init(commandIndexPrint, pipelinePrint,
-		multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
-		multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
-	cmdMgr->bindVertex(vertexPrint);
+	// if (activeID == -1) {
+	// 	activeID = multisample ? 1 : 0;
+	// 	pipelineHorizontal += activeID;
+	// 	pipelinePrint += activeID;
+	// } else
+	// 	endPrint(multisample);
+	// if (activeID == (int) commandIndex.size()) {
+	// 	commandIndex.emplace_back(cmdMgr->getCommandIndex(), cmdMgr->getCommandIndex());
+	// }
+	//
+	// commandIndexHorizontal = commandIndex[activeID].first;
+	// cmdMgr->init(commandIndexHorizontal, pipelineHorizontal,
+	// 	multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
+	// 	multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
+	// cmdMgr->bindSet(layoutHorizontal, context->global->globalSet, 1);
+	// cmdMgr->bindVertex(vertexHorizontal);
+	//
+	// commandIndexPrint = commandIndex[activeID].second;
+	// cmdMgr->init(commandIndexPrint, pipelinePrint,
+	// 	multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
+	// 	multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
+	// cmdMgr->bindVertex(vertexPrint);
 }
 
 void s_font::endPrint(bool multisample)
 {
-	if (multisample)
-		activeID++;
-	else {
-		if (activeID != 0) {
-			pipelineHorizontal--;
-			pipelinePrint--;
-			activeID = 0;
-		}
-	}
-	cmdMgr->select(commandIndexHorizontal);
-	cmdMgr->compile();
-	cmdMgr->select(commandIndexPrint);
-	cmdMgr->compile();
-	if (hasPrintH)
-		cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
-	if (hasPrint)
-		cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
-	hasPrintH = hasPrint = false;
+	// if (multisample)
+	// 	activeID++;
+	// else {
+	// 	if (activeID != 0) {
+	// 		pipelineHorizontal--;
+	// 		pipelinePrint--;
+	// 		activeID = 0;
+	// 	}
+	// }
+	// cmdMgr->select(commandIndexHorizontal);
+	// cmdMgr->compile();
+	// cmdMgr->select(commandIndexPrint);
+	// cmdMgr->compile();
+	// if (hasPrintH)
+	// 	cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
+	// if (hasPrint)
+	// 	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
+	// hasPrintH = hasPrint = false;
 }
 
 //! print out a string
@@ -226,12 +218,12 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	if (s.empty())
 		return;
 
-	int offset = vertexPrint->getVertexOffset();
-	if (offset == 4096) {
-		return;
-	} else if (offset == 4092) {
-		cLog::get()->write("Print per frame limit reached, next print for this frame won't appear.", LOG_TYPE::L_WARNING);
-	}
+	// int offset = vertexPrint->getVertexOffset();
+	// if (offset == 4096) {
+	// 	return;
+	// } else if (offset == 4092) {
+	// 	cLog::get()->write("Print per frame limit reached, next print for this frame won't appear.", LOG_TYPE::L_WARNING);
+	// }
 	hasPrint = true;
 
 	renderedString_struct currentRender;
@@ -253,49 +245,58 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 
 	float h = currentRender.textureH;
 	float w = currentRender.textureW;
+	// ===== Variables 'passed' up to down : [x, y, h, w, Texture *string, Color, MVP] ===== //
+	Context &context = *Context::instance;
+	auto &tmp = printData[context.frameIdx].first;
+	if (tmp.capacity() == tmp.size())
+		return;
+	tmp.push_back({DRAW_PRINT, x, y, h, w, Color, currentRender.stringTexture.get(), MVP});
+	context.helper->draw(&tmp.back());
+	if (tmp.capacity() == tmp.size())
+		cLog::get()->write("Limit of 1024 print per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
 
-	if(!upsidedown) {
-		y -= currentRender.stringH;  // adjust for base of text in texture
-		insert_all(vecPos, x, y, x, y+h, x+w, y, x+w, y+h);
-		insert_all(vecTex, 0, 0, 0, 1, 1, 0, 1, 1);
-
-	} else {
-		y -= currentRender.stringH;  // adjust for base of text in texture
-		insert_all(vecPos, x+w, y+h, x, y+h, x+w, y, x, y);
-		insert_all(vecTex, 1, 0, 0, 0, 1, 1, 0, 1);
-	}
-
-	/*
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
-	// Avoid edge visibility
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-	*/
-
-	//StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	vertexPrint->fillVertexBuffer(BufferType::POS2D, vecPos);
-	vertexPrint->fillVertexBuffer(BufferType::TEXTURE,vecTex);
-
-	set->clear();
-	set->bindTexture(currentRender.stringTexture.get(), 0);
-	cmdMgr->select(commandIndexPrint);
-	cmdMgr->pushSet(layoutPrint, set);
-	cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
-	cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec4f), &MVP, sizeof(Mat4f));
-	cmdMgr->draw(4, 1, offset);
-	vertexPrint->setVertexOffset(offset + 4);
-
-	/*
-	shaderPrint->use();
-	shaderPrint->setUniform("MVP", MVP);
-	shaderPrint->setUniform("Color", Color);
-	Renderer::drawArrays(shaderPrint.get(), m_fontGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
-	*/
-
-	vecPos.clear();
-	vecTex.clear();
+	// if(!upsidedown) {
+	// 	y -= currentRender.stringH;  // adjust for base of text in texture
+	// 	insert_all(vecPos, x, y, x, y+h, x+w, y, x+w, y+h);
+	// 	insert_all(vecTex, 0, 0, 0, 1, 1, 0, 1, 1);
+	//
+	// } else {
+	// 	y -= currentRender.stringH;  // adjust for base of text in texture
+	// 	insert_all(vecPos, x+w, y+h, x, y+h, x+w, y, x, y);
+	// 	insert_all(vecTex, 1, 0, 0, 0, 1, 1, 0, 1);
+	// }
+	//
+	// /*
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
+	// // Avoid edge visibility
+	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+	// */
+	//
+	// //StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//
+	// vertexPrint->fillVertexBuffer(BufferType::POS2D, vecPos);
+	// vertexPrint->fillVertexBuffer(BufferType::TEXTURE,vecTex);
+	//
+	// set->clear();
+	// set->bindTexture(currentRender.stringTexture.get(), 0);
+	// cmdMgr->select(commandIndexPrint);
+	// cmdMgr->pushSet(layoutPrint, set);
+	// cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
+	// cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec4f), &MVP, sizeof(Mat4f));
+	// cmdMgr->draw(4, 1, offset);
+	// vertexPrint->setVertexOffset(offset + 4);
+	//
+	// /*
+	// shaderPrint->use();
+	// shaderPrint->setUniform("MVP", MVP);
+	// shaderPrint->setUniform("Color", Color);
+	// Renderer::drawArrays(shaderPrint.get(), *m_fontGL, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
+	// */
+	//
+	// vecPos.clear();
+	// vecTex.clear();
 }
 
 float s_font::getStrLen(const std::string& s)
@@ -409,9 +410,10 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
 	*/
-	rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string '" + s + "'");
-	if (keepOnCPU)
-		rendering.stringTexture->use();
+	//==== CREATE TEXTURE ====//
+	// rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string '" + s + "'");
+	// if (keepOnCPU)
+	// 	rendering.stringTexture->use();
 
 	if (withBorder) {
 		// ***********************************
@@ -456,9 +458,10 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
 		*/
-		rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string border '" + s + "'");
-		if (keepOnCPU)
-			rendering.borderTexture->use();
+		//==== CREATE TEXTURE ====//
+		// rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string border '" + s + "'");
+		// if (keepOnCPU)
+		// 	rendering.borderTexture->use();
 
 		rendering.haveBorder =true;
 		SDL_FreeSurface(border);
@@ -520,64 +523,73 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	float theta = M_PI + atan2f(dx, dy - 1);
 	float psi = (float)getStrLen(str)/(d + 1);  // total angle of rotation
 
-	int steps = 2+int(psi*15);
-
-	std::vector<Vec2f> meshPoints;  // screen x,y
-	std::vector<float> vecPos;
-	std::vector<float> vecTex;
-
-	// Pre-calculate points (more efficient)
-	for (int i=0; i<=steps; i++) {
-		float angle, p, q;
-		angle = theta - i*psi/steps;
-		p = sin(angle);
-		q = cos(angle);
-
-		meshPoints.push_back(Vec2f(center[0]+p*(d-rendering.textureH), center[1]+q*(d-rendering.textureH)));
-		meshPoints.push_back(Vec2f(center[0]+p*d,center[1]+q*d));
-	}
-
-	Vec3f Color (texColor[0], texColor[1], texColor[2]);
-	/*
-	StateGL::enable(GL_BLEND);
-	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	*/
-
-	for (int i=0; i<=steps; i++) {
-		insert_vec2(vecPos,meshPoints[i*2]);
-		insert_vec2(vecPos,meshPoints[i*2+1]);
-		insert_all(vecTex, (float)i/steps, 0.f , (float)i/steps, 1.f);
-	}
-
-	/*
-	shaderHorizontal->use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
-	*/
-
-	//shaderHorizontal->setUniform("Color", Color);
-	vertexHorizontal->fillVertexBuffer(BufferType::POS2D, vecPos);
-	vertexHorizontal->fillVertexBuffer(BufferType::TEXTURE,vecTex);
-
-	set->clear();
-	set->bindTexture(rendering.stringTexture.get(), 0);
-	set->bindTexture(rendering.borderTexture.get(), 1);
-	cmdMgr->select(commandIndexHorizontal);
-	cmdMgr->pushSet(layoutHorizontal, set);
-	cmdMgr->pushConstant(layoutHorizontal, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
-	int offset = vertexHorizontal->getVertexOffset();
-	cmdMgr->draw(vecPos.size()/2, 1, offset);
-	vertexHorizontal->setVertexOffset(offset + vecPos.size()/2);
-
-	//Renderer::drawArrays(shaderHorizontal.get(), m_fontGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,vecPos.size()/2);
-
-	vecPos.clear();
-	vecTex.clear();
-
-	if (!cache) {
-		//glDeleteTextures( 1, &rendering.stringTexture);
-		//glDeleteTextures( 1, &rendering.borderTexture);
-	}
+	// ===== Variables 'passed' up to down : [thetha, psi, center[0:1], d, d-rendering.textureH, texColor, Texture *border, Texture *string] ===== //
+	Context &context = *Context::instance;
+	auto &tmp = printData[context.frameIdx].second;
+	if (tmp.capacity() == tmp.size())
+		return;
+	tmp.push_back({DRAW_PRINTH, theta, psi, {center[0], center[1]}, d, d-rendering.textureH, texColor, rendering.borderTexture.get(), rendering.stringTexture.get()});
+	context.helper->draw(&tmp.back());
+	if (tmp.capacity() == tmp.size())
+		cLog::get()->write("Limit of 1024 printHorizontal per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
+	// int steps = 2+int(psi*15);
+	//
+	// std::vector<Vec2f> meshPoints;  // screen x,y
+	// std::vector<float> vecPos;
+	// std::vector<float> vecTex;
+	//
+	// // Pre-calculate points (more efficient)
+	// for (int i=0; i<=steps; i++) {
+	// 	float angle, p, q;
+	// 	angle = theta - i*psi/steps;
+	// 	p = sin(angle);
+	// 	q = cos(angle);
+	//
+	// 	meshPoints.push_back(Vec2f(center[0]+p*(d-rendering.textureH), center[1]+q*(d-rendering.textureH)));
+	// 	meshPoints.push_back(Vec2f(center[0]+p*d,center[1]+q*d));
+	// }
+	//
+	// Vec3f Color (texColor[0], texColor[1], texColor[2]);
+	// /*
+	// StateGL::enable(GL_BLEND);
+	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// */
+	//
+	// for (int i=0; i<=steps; i++) {
+	// 	insert_vec2(vecPos,meshPoints[i*2]);
+	// 	insert_vec2(vecPos,meshPoints[i*2+1]);
+	// 	insert_all(vecTex, (float)i/steps, 0.f , (float)i/steps, 1.f);
+	// }
+	//
+	// /*
+	// shaderHorizontal->use();
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D, rendering.stringTexture);
+	// glActiveTexture(GL_TEXTURE1);
+	// glBindTexture(GL_TEXTURE_2D, rendering.borderTexture);
+	// */
+	//
+	// //shaderHorizontal->setUniform("Color", Color);
+	// vertexHorizontal->fillVertexBuffer(BufferType::POS2D, vecPos);
+	// vertexHorizontal->fillVertexBuffer(BufferType::TEXTURE,vecTex);
+	//
+	// set->clear();
+	// set->bindTexture(rendering.stringTexture.get(), 0);
+	// set->bindTexture(rendering.borderTexture.get(), 1);
+	// cmdMgr->select(commandIndexHorizontal);
+	// cmdMgr->pushSet(layoutHorizontal, set);
+	// cmdMgr->pushConstant(layoutHorizontal, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
+	// int offset = vertexHorizontal->getVertexOffset();
+	// cmdMgr->draw(vecPos.size()/2, 1, offset);
+	// vertexHorizontal->setVertexOffset(offset + vecPos.size()/2);
+	//
+	// //Renderer::drawArrays(shaderHorizontal.get(), *m_fontGL, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,vecPos.size()/2);
+	//
+	// vecPos.clear();
+	// vecTex.clear();
+	//
+	// if (!cache) {
+	// 	//glDeleteTextures( 1, &rendering.stringTexture);
+	// 	//glDeleteTextures( 1, &rendering.borderTexture);
+	// }
 }

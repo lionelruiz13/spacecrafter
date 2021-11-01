@@ -25,13 +25,46 @@
 #include <iostream>
 #include "mediaModule/imageTexture.hpp"
 #include "tools/s_texture.hpp"
-#include "vulkanModule/Set.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/Resource/Set.hpp"
+#include "EntityCore/Core/VulkanMgr.hpp"
+#include "EntityCore/Resource/PipelineLayout.hpp"
+#include "mediaModule/media_base.hpp"
+#include "EntityCore/Resource/SyncEvent.hpp"
 
-RBGImageTexture::RBGImageTexture(s_texture* img)
+ImageTexture::ImageTexture(PipelineLayout *layout)
+{
+	set = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, layout, -1, false, true);
+}
+
+void ImageTexture::bindSet(VkCommandBuffer cmd, PipelineLayout *layout)
+{
+	layout->bindSet(cmd, *set);
+	if (sync) {
+		sync->syncIn->dstDependency(cmd);
+		sync->inUse = true;
+	}
+}
+
+void ImageTexture::unbindSet(VkCommandBuffer cmd)
+{
+	if (sync) {
+		sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
+		sync->syncOut->srcDependency(cmd);
+	}
+}
+
+void ImageTexture::setupSync(std::shared_ptr<VideoSync> &_sync)
+{
+	sync = _sync;
+}
+
+RBGImageTexture::RBGImageTexture(s_texture* img, PipelineLayout *layout) : ImageTexture(layout)
 {
 	image = img;
 	type = "useRBG";
 	isyuv = false;
+	set->bindTexture(image->getTexture(), 0);
 }
 
 RBGImageTexture::~RBGImageTexture()
@@ -44,21 +77,16 @@ void RBGImageTexture::getDimensions(int &img_w, int &img_h)
 	image->getDimensions(img_w, img_h);
 }
 
-void RBGImageTexture::bindImageTexture(Set *set)
-{
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture (GL_TEXTURE_2D, image->getID());
-	set->bindTexture(image->getTexture(), 0);
-}
-
-
-YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV )
+YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV, PipelineLayout *layout) : ImageTexture(layout)
 {
 	imageY = imgY;
 	imageU = imgU;
 	imageV = imgV;
 	type = "useYUV";
 	isyuv = true;
+	set->bindTexture(imageY->getTexture(), 0);
+	set->bindTexture(imageU->getTexture(), 1);
+	set->bindTexture(imageV->getTexture(), 2);
 }
 
 YUVImageTexture::~YUVImageTexture()
@@ -71,17 +99,4 @@ YUVImageTexture::~YUVImageTexture()
 void YUVImageTexture::getDimensions(int &img_w, int &img_h)
 {
 	imageY->getDimensions(img_w, img_h);
-}
-
-void YUVImageTexture::bindImageTexture(Set *set)
-{
-	set->bindTexture(imageY->getTexture(), 0);
-	set->bindTexture(imageU->getTexture(), 1);
-	set->bindTexture(imageV->getTexture(), 2);
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture (GL_TEXTURE_2D, imageY->getID());
-	// glActiveTexture(GL_TEXTURE1);
-	// glBindTexture (GL_TEXTURE_2D, imageU->getID());
-	// glActiveTexture(GL_TEXTURE2);
-	// glBindTexture (GL_TEXTURE_2D, imageV->getID());
 }

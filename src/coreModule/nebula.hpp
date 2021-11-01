@@ -38,11 +38,9 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
 
-#include "vulkanModule/Context.hpp"
-
 class VertexArray;
-//class shaderProgram;
 class Pipeline;
+class PipelineLayout;
 
 /**
  * \brief     Type of deepSkyObject
@@ -142,7 +140,7 @@ public:
 		return DSOstringType;
 	}
 
-	static void createSC_context(ThreadContext *context);
+	static void createSC_context();
 	static void beginDraw(const Projector* prj);
 	static void endDraw();
 
@@ -201,7 +199,7 @@ public:
 
 	void drawTex(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness, bool flagBright);
 	void drawName(const Projector* prj, const Vec3f &labelColor, s_font *nebulaFont);
-	void drawHint(const Projector* prj, const Navigator * nav, std::vector<float> &vecHintPos, std::vector<float> &vecHintTex, std::vector<float> &vecHintColor, bool displaySpecificHint, const Vec3f &circleColor, float r);
+	void drawHint(const Projector* prj, const Navigator * nav, float *&data, int &nbDraw, bool displaySpecificHint, const Vec3f &circleColor, float r);
 private:
 	nebula_type getDsoType( std::string type);
 
@@ -220,7 +218,6 @@ private:
 	Vec3d XY;						// Store temporary 2D position
 	nebula_type DSOType;			// say what type of nebula it is
 
-	s_texture * neb_tex = nullptr;	// Texture
 	std::vector<float> sDataPos;	//all coordonates points for the 4 vertex
 	float luminance;				// Object luminance to use (value computed to compensate the texture avergae luminosity)
 	float tex_avg_luminance;        // avg luminance of the texture (saved here for performance)
@@ -238,18 +235,16 @@ private:
 
 	Vec2f posTex;
 
-	s_texture * tex_circle;			// The symbolic circle texture
+	struct {
+		unsigned char flag;
+		float color;
+		s_texture *neb_tex;
+		float *data; // all 4 vertices
+	} drawData;
 
-	static int commandIndex;
-	static CommandMgr *cmdMgr;
-	static ThreadedCommandBuilder *cmdMgrInterface;
-	static CommandMgr *cmdMgrTarget;
-	//static std::unique_ptr<shaderProgram> shaderNebulaTex;
-	static VertexArray *m_texGL;
+	static std::unique_ptr<VertexArray> m_texGL;
 	static Pipeline *pipeline;
 	static PipelineLayout *layout;
-	static Set *globalSet;
-	static Set *set;
 
 	static float hintsBrightness;
 	static float textBrightness;

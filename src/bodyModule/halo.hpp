@@ -25,7 +25,7 @@
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/SubBuffer.hpp"
 
 class Body;
 class Navigator;
@@ -33,10 +33,11 @@ class Projector;
 class ToneReproductor;
 class s_texture;
 class VertexArray;
+class VertexBuffer;
 class PipelineLayout;
 class Pipeline;
-class Uniform;
 class Texture;
+class Set;
 
 class Halo {
 public:
@@ -54,35 +55,36 @@ public:
 
 	static void deleteDefaultTexMap();
 
-	static void createSC_context(ThreadContext *context);
+	static void createSC_context();
+	static void destroySC_context();
 	static void beginDraw();
-	static void nextDraw();
+	static void nextDraw(VkCommandBuffer &cmd);
 	static void endDraw();
 
 private:
-
 	Body * body;
 
-	std::unique_ptr<VertexArray> vertex;
-	float *pHaloData;
-	struct {
-		Vec3f Color;
-		float cmag;
-	} uData;
-	static int commandIndex;
-	static uint8_t commandIndexID;
-	static std::vector<int> commandIndexList;
-	static VirtualSurface *surface;
-	static Set *globalSet, *set;
-	static ThreadedCommandBuilder *cmdMgr;
-	static CommandMgr *cmdMgrTarget;
-	static TextureMgr *texMgr;
-	static Pipeline *pipeline;
-	static PipelineLayout *layout;
-	static VertexArray *m_haloGL;
-	static s_texture *last_tex_halo;
-	static s_texture *tex_halo;			// Little halo texture
-	static bool drawn;
+	struct HaloContext {
+		struct {
+			Vec2f pos;
+			Vec3f Color;
+			float rmag;
+		} *pData;
+		std::unique_ptr<VertexArray> pattern;
+		std::unique_ptr<VertexBuffer> vertex;
+		std::unique_ptr<Pipeline> pipeline;
+		std::unique_ptr<PipelineLayout> layout;
+		std::unique_ptr<s_texture> tex_halo;
+		s_texture *last_tex_halo = nullptr;
+		std::unique_ptr<Set> set;
+		SubBuffer staging;
+		std::pair<int, int> blocs[3]; // copy block, pair of <offset, size>
+		int cmds[3] = {-1, -1, -1};
+		int initialOffset = 0;
+		int offset = 0; // vertex offset of the next packed draw
+		int size = 0; // current vertex count of the next packed draw
+	};
+	static std::unique_ptr<HaloContext> global;
 
 	float cmag;
 	float rmag;

@@ -34,34 +34,17 @@
 
 #include "tools/s_texture.hpp"
 #include "tools/log.hpp"
-
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/Texture.hpp"
-#include "vulkanModule/CommandMgr.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/Core/MemoryManager.hpp"
+#include "EntityCore/Resource/Texture.hpp"
+#include "EntityCore/Tools/SafeQueue.hpp"
 
 std::string s_texture::texDir = "./";
-std::map<std::string, s_texture::texRecap*> s_texture::texCache;
-std::list<s_texture *> s_texture::activeTextures;
-ThreadContext *s_texture::context;
-
-// s_texture::s_texture(const std::string& _textureName) : textureName(_textureName), texID(0),
-// 	loadType(PNG_BLEND1), loadWrapping(GL_CLAMP)
-// {
-// 	//~ s_texture(_textureName, TEX_LOAD_TYPE_PNG_BLEND1, GL_CLAMP);
-// 	bool succes;
-// 	if (Utility::isAbsolute(textureName))
-// 		succes = load(textureName);
-// 	else {
-// 		std::cout << "texture ayant besoin de texDir " << textureName << std::endl;
-// 		succes = load(texDir + textureName);
-// 	}
-
-// 	if (!succes)
-// 		createEmptyTex();
-// }
-
-s_texture::s_texture(const std::string& _textureName, const bool keepOnCPU) : s_texture(_textureName, PNG_BLEND1,/*GL_CLAMP*/ 0x2900, keepOnCPU)
-{}
+std::map<std::string, std::weak_ptr<s_texture::texRecap>> s_texture::texCache;
+std::list<s_texture::bigTexRecap> s_texture::bigTextures;
+PushQueue<s_texture::bigTexRecap *, 31> s_texture::bigTextureQueue;
+PushQueue<std::shared_ptr<s_texture::texRecap>> s_texture::textureQueue;
+std::atomic<long> s_texture::currentAllocation(0); // Allocations planned but not done yet
 
 s_texture::s_texture(const s_texture *t)
 {
@@ -69,24 +52,9 @@ s_texture::s_texture(const s_texture *t)
 	loadType = t->loadType;
 	loadWrapping = t->loadWrapping;
 	texture = t->texture;
-	width = t->width;
-	height = t->height;
-
-	it = texCache.find(textureName);
-
-	if (it != texCache.end()) {
-		texRecap * tmp = it->second;
-		tmp->nbLink++;
-	}
-	else {
-		//~ std::cout << "Erreur de duplication " << textureName << std::endl;
-		cLog::get()->write("s_texture: erreur de duplication " + textureName , LOG_TYPE::L_ERROR);
-	}
-	activeTextures.push_front(this);
-	self = activeTextures.begin();
 }
 
-s_texture::s_texture(const std::string& _textureName, int _loadType, const bool mipmap, const bool keepOnCPU) : textureName(_textureName),
+s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, int resolution, int depth, int nbChannels, int channelSize) : textureName(_textureName),
 	loadType(PNG_BLEND1), loadWrapping(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
 {
 	switch (_loadType) {
@@ -109,62 +77,27 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, const bool 
 		default :
 			loadType=PNG_BLEND3;
 	}
-	//texID=0;
 	bool succes;
 
 	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
-		succes = load(textureName, mipmap, keepOnCPU);
+		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize);
 	else
-		succes = load(texDir + textureName, false, keepOnCPU);
+		succes = preload(texDir + textureName, mipmap, resolution, depth, nbChannels, channelSize);
 
 	if (!succes)
-		createEmptyTex(keepOnCPU);
-	activeTextures.push_front(this);
-	self = activeTextures.begin();
+		createEmptyTex();
 }
 
-s_texture::s_texture(const std::string& _textureName, StreamTexture *_imgTex)
+s_texture::s_texture(const std::string& _textureName, Texture *_imgTex)
 {
-	//~ std::cout << "Création de s_texture " << _textureName <<" à partir d'un _imgTex" << std::endl;
+	texture = std::make_shared<texRecap>();
+	texture->texture = std::unique_ptr<Texture>(_imgTex);
 	textureName = _textureName;
-	texture = _imgTex;
 	loadType = PNG_SOLID;
 	loadWrapping = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-	texRecap * tmp = new texRecap;
-	tmp->nbLink = 1;
-	//tmp->texID = texID;
-	//int miplevel = 0;
-	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
-	//glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
-	tmp->texture = _imgTex;
-	_imgTex->getDimensions(width, height);
-	tmp->width = width;
-	tmp->height = height;
-	tmp->size = width * height;
-	tmp->mipmap = false;
-	texCache[textureName]= tmp;
-	activeTextures.push_front(this);
-	self = activeTextures.begin();
-}
-
-s_texture::~s_texture()
-{
-	context->commandMgr->waitGraphicQueueIdle();
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
-	unload();
-	activeTextures.erase(self);
-}
-
-bool s_texture::use()
-{
-	return texture->use();
-}
-
-void s_texture::unuse()
-{
-	texture->unuse();
+	_imgTex->getDimensions(texture->width, texture->height, texture->depth);
+	texture->size = texture->width * texture->height * texture->depth;
+	texCache[textureName] = texture;
 }
 
 void s_texture::blend( const int type, unsigned char* const data, const unsigned int sz )
@@ -201,236 +134,244 @@ void s_texture::blend( const int type, unsigned char* const data, const unsigned
 	}
 }
 
-/*
-bool s_texture::load(const std::string& fullName)
-{
-	// assume NO mipmap - DIGITALIS - put in svn
-	return load(fullName, false);
-}
-*/
-
-void s_texture::createEmptyTex(const bool keepOnCPU)
+void s_texture::createEmptyTex()
 {
 	unsigned char image_data[4] = {255,0,0,255};
-	/*
-	glGenTextures (1, &texID);
-	glActiveTexture (GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, texID);
 
-	glTexImage2D (GL_TEXTURE_2D,0,GL_RGBA,1,1,0,GL_RGBA,GL_UNSIGNED_BYTE,image_data);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, loadWrapping);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, loadWrapping);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	*/
-	texture = context->global->tracker->track(new Texture(context->surface, context->global->textureMgr, image_data, 1, 1, keepOnCPU, false, VK_FORMAT_R8G8B8A8_UNORM, "Texture not found"));
-	//~ std::cout << "texture createEmptyTex" << textureName << std::endl;
+	auto &tex = texCache["\0"];
+	if (tex.expired()) {
+		texture = std::make_shared<texRecap>();
+		texture->size = 4;
+		texture->width = 1;
+		texture->height = 1;
+		texture->depth = 1;
+		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->stagingMgr, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, "Fallback texture");
+		texture->texture->init(1, 1, image_data);
+		tex = texture;
+	} else {
+		texture = tex.lock();
+	}
 }
 
-bool s_texture::load(const std::string& fullName, bool mipmap, bool keepOnCPU)
+bool s_texture::preload(const std::string& fullName, bool mipmap, int resolution, int depth, int _nbChannels, int _channelSize)
 {
-	// std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
-	//vérifions dans le cache si l'image n'est pas déjà utilisée ailleurs
-	it = texCache.find(fullName);
-
-	if (it != texCache.end()) { // texture existe deja
-		//~ std::cout << "texture présente " << fullName << std::endl;
-		texRecap * tmp = it->second;
-		tmp->nbLink++;
-		width = tmp->width;
-		height = tmp->height;
-		//~ std::cout << "on augmente son nbLink à " << tmp->nbLink << std::endl;
-		texture = tmp->texture;
-		cLog::get()->write("s_texture: already in cache " + fullName , LOG_TYPE::L_INFO);
-		return true;
-	} else { //texture n'existe pas, on l'intègre dans la map
-		//code from Anthon Opengl4 tutorial
-		try {
-			int x, y, n;
-			int force_channels = 4;
-			unsigned char* image_data = nullptr;
-			image_data = stbi_load (fullName.c_str(), &x, &y, &n, force_channels);
-			if (!image_data) {
-				cLog::get()->write("s_texture: could not load " + fullName , LOG_TYPE::L_ERROR);
-				return false;
-			}
-			blend(loadType, image_data, x*y*4);
-
-			// NPOT check
-			if ((x & (x - 1)) != 0 || (y & (y - 1)) != 0) {
-				cLog::get()->write("s_texture: not power-of-2 dimensions for " + fullName , LOG_TYPE::L_WARNING);
-				//~ fprintf (stderr, "WARNING: texture %s is not power-of-2 dimensions\n", fullName.c_str());
-			}
-			int width_in_bytes = x * 4;
-			unsigned char *top = nullptr;
-			unsigned char *bottom = nullptr;
-			unsigned char temp = 0;
-			int half_height = y / 2;
-
-			for (int row = 0; row < half_height; row++) {
-				top = image_data + row * width_in_bytes;
-				bottom = image_data + (y - row - 1) * width_in_bytes;
-				for (int col = 0; col < width_in_bytes; col++) {
-					temp = *top;
-					*top = *bottom;
-					*bottom = temp;
-					top++;
-					bottom++;
-				}
-			}
-
-			/*
-			glGenTextures (1, &texID);
-			glActiveTexture (GL_TEXTURE0);
-			glBindTexture (GL_TEXTURE_2D, texID);
-			glTexImage2D (GL_TEXTURE_2D,0,GL_RGBA,x,y,0,GL_RGBA,GL_UNSIGNED_BYTE,image_data);
-
-			if( mipmap ) {
-				glGenerateMipmap (GL_TEXTURE_2D);
-				glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			} else {
-				glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			}
-
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, loadWrapping);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, loadWrapping);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			float max_aniso = 0.0f;
-			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_aniso);
-			// set the maximum!
-			glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_aniso);
-			*/
-
-			width = x;
-			height = y;
-			texRecap * tmp = new texRecap;
-			tmp->width = x;
-			tmp->height = y;
-			tmp->size = x*y*4;
-			tmp->nbLink = 1;
-			tmp->textureHandle = std::make_unique<Texture>(context->surface, context->global->textureMgr, image_data, width, height, keepOnCPU, mipmap, VK_FORMAT_R8G8B8A8_UNORM, fullName.substr(fullName.find(".spacecrafter")+14), true, static_cast<VkSamplerAddressMode>(loadWrapping));
-			tmp->texture = tmp->textureHandle.get();
-			tmp->mipmap = mipmap;
-			if (!tmp->textureHandle->isValid()) {
-				cLog::get()->write("s_texture: failed to create texture " + fullName, LOG_TYPE::L_ERROR);
-				delete tmp;
-				return false;
-			}
-
-			texture = tmp->texture;
-
-			texCache[fullName]= tmp;
-
-			// image_data != nullptr
-			stbi_image_free(image_data);
-
-		} catch( std::exception &e ) {
-			//~ std::cerr << "WARNING : failed loading texture file! " << e.what() << std::endl;
-			cLog::get()->write("s_texture: failed loading texture file " + fullName , LOG_TYPE::L_ERROR);
+	auto &tex = texCache[fullName];
+	nbChannels = _nbChannels;
+	channelSize = _channelSize;
+	if (tex.expired()) {
+		int channels;
+		texture = std::make_shared<texRecap>();
+		stbi_uc *data;
+		if (channelSize == 1)
+		 	data = stbi_load(fullName.c_str(), &texture->width, &texture->height, &channels, nbChannels);
+		else
+			data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &texture->width, &texture->height, &channels, nbChannels));
+		if (!data) {
+			cLog::get()->write("s_texture: could not load " + fullName , LOG_TYPE::L_ERROR);
 			return false;
 		}
-		cLog::get()->write("s_texture: loading " + fullName , LOG_TYPE::L_INFO);
-		return true;
+		texture->size = texture->width * texture->height * nbChannels * channelSize;
+		texture->depth = depth;
+		texture->mipmap = mipmap;
+		texture->bigTextureResolution = resolution;
+		texture->width /= 1 << ((static_cast<int>(std::log2(texture->depth)) - 1) / 2);
+		texture->height /= 1 << (static_cast<int>(std::log2(texture->depth)) / 2);
+		// if (channelSize == 1)
+		// 	blend(loadType, data, texture->size);
+		VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+		if (mipmap)
+			usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+		const VkImageType imgType = (depth > 1) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
+		--_nbChannels;
+		const VkFormat format = (const VkFormat[]) {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM}[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
+		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->texStagingMgr, usage, fullName.substr(fullName.find(".spacecrafter/")+14), format, imgType);
+		stbi_image_free(data);
+	} else {
+		texture = tex.lock();
+		cLog::get()->write("s_texture: already in cache " + fullName , LOG_TYPE::L_INFO);
 	}
-	return false; //just for gcc
+	return true;
 }
 
 void s_texture::unload()
 {
-	//~ std::cout << "on unload la texture " << textureName << std::endl;
-	it = texCache.find(textureName);
-
-	if (it != texCache.end()) {
-		texRecap * tmp = it->second;
-		if (tmp->nbLink == 1) {
-			//~ std::cout << "suppression réelle de " << textureName<< std::endl;
-			//glDeleteTextures(1, &texID);	// Delete The Texture
-			//texID = 0;
-			delete tmp;
-			texCache.erase(it);
-		} else {
-			//~ std::cout << "suppression virtuelle " << textureName<< std::endl;
-			tmp->nbLink--;
-			//~ std::cout << "Son link devient alors " << tmp->nbLink << std::endl;
-		}
-	}
+	texture.reset();
 }
 
-void s_texture::getDimensions(int &_width, int &_height) const
+bool s_texture::load()
 {
-	_width = width;
-	_height = height;
+	const std::string fullName = (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName)) ? textureName : texDir + textureName;
+	stbi_uc *data;
+	int unused;
+	if (channelSize == 1) {
+		data = stbi_load(fullName.c_str(), &unused, &unused, &unused, nbChannels);
+		blend(loadType, data, texture->size);
+	} else
+		data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &unused, &unused, &unused, nbChannels));
+	// Use negated height to flip this axis
+	bool ret = texture->texture->init(texture->width, -texture->height, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
+	if (!ret) {
+		releaseUnusedMemory();
+		ret = texture->texture->init(texture->width, -texture->height, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
+	}
+	stbi_image_free(data);
+	if (!ret) {
+		cLog::get()->write("s_texture: not enough memory for " + fullName, LOG_TYPE::L_ERROR);
+		return false;
+	}
+	return true;
+}
+
+void s_texture::getDimensions(int &width, int &height) const
+{
+	width = texture->width;
+	height = texture->height;
+}
+
+void s_texture::getDimensions(int &width, int &height, int &depth) const
+{
+	width = texture->width;
+	height = texture->height;
+	depth = texture->depth;
 }
 
 // Return the average texture luminance : 0 is black, 1 is white
 float s_texture::getAverageLuminance() const
 {
-	double sum;
+	double sum = 0;
 	uint8_t *p;
-	texture->acquireStagingMemoryPtr(reinterpret_cast<void **>(&p));
-	const long size = static_cast<long>(width)*static_cast<long>(height);
-	for (long i = 0; i < size; ++i) {
-		sum += p[i * 4];
+	const long size = static_cast<long>(texture->width)*static_cast<long>(texture->height);
+	if (texture->texture->isOnCPU()) {
+		p = (uint8_t *) texture->texture->acquireStagingMemoryPtr();
+		for (long i = 0; i < size; ++i)
+			sum += p[i * 4];
+		// texture->texture->releaseStagingMemoryPtr();
+	} else {
+		int width, height, channels;
+		p = stbi_load(textureName.c_str(), &width, &height, &channels, 4);
+		if (!p) {
+			cLog::get()->write("Failed to compute average luminance for " + textureName, LOG_TYPE::L_ERROR);
+			return (0);
+		}
+		for (long i = 0; i < size; ++i)
+			sum += p[i * 4];
+		stbi_image_free(p);
 	}
-	texture->releaseStagingMemoryPtr();
 	return (sum/size);
-	/*
-	glBindTexture(GL_TEXTURE_2D, texID);
-	int w, h , level=0;
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
-
-	//garde fou si texture trop petite
-	if (width>64 && height>64) {
-		level = 3;
-		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &w);
-		glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_HEIGHT, &h);
-	}
-	float* p = (float*)calloc(w*h, sizeof(float));
-	assert(p);
-
-	glGetTexImage(GL_TEXTURE_2D, level, GL_LUMINANCE, GL_FLOAT, p);
-	float sum = 0.f;
-	for (int i=0; i<w*h; ++i) {
-		sum += p[i];
-	}
-	free(p);
-
-	return sum/(w*h);
-	*/
-}
-
-unsigned long int s_texture::getTotalGPUMem()
-{
-	unsigned long int sizeGPUMem=0;
-	texRecap* tmp=nullptr;
-	std::map<std::string, texRecap*>::iterator itt;
-	for(itt = texCache.begin(); itt != texCache.end(); itt++) {
-		tmp= (itt)->second;
-		(tmp->mipmap) ? sizeGPUMem += tmp->size*4/3 : sizeGPUMem = sizeGPUMem+tmp->size;
-	}
-	return sizeGPUMem;
 }
 
 void s_texture::forceUnload()
 {
-	cLog::get()->write("Force unloading all " + std::to_string(activeTextures.size()) + " active textures...", LOG_TYPE::L_DEBUG);
-	for (auto &t : activeTextures) {
-		t->unload();
+	for (auto &value : texCache) {
+		auto tex = value.second.lock();
+		if (tex) {
+			cLog::get()->write("Force unloading of " + value.first + " used " + std::to_string(tex.use_count() - 1) + " times", LOG_TYPE::L_WARNING);
+			tex->texture = nullptr;
+		}
 	}
-	if (texCache.empty()) {
-		cLog::get()->write("Forced unload completed.", LOG_TYPE::L_DEBUG);
-	} else {
-		cLog::get()->write("There is " + std::to_string(texCache.size()) + " unhandled loaded textures, unloading them.", LOG_TYPE::L_WARNING);
-		for (auto &tc : texCache) {
-			if (tc.second && tc.second->textureHandle) {
-				cLog::get()->write("Deleting unhandled loaded texture '" + tc.first + "' with " + std::to_string(tc.second->nbLink) + " use(s).", LOG_TYPE::L_DEBUG);
-				tc.second->textureHandle = nullptr;
-				tc.second->texture = nullptr;
+	bigTextures.clear();
+}
+
+void s_texture::update()
+{
+	for (auto &bt : bigTextures) {
+		if (bt.ready) {
+			if (--bt.lifetime == 0) {
+				++bt.binding;
+				bt.ready = false;
+				bt.acquired = false;
 			}
 		}
-		cLog::get()->write("Unhandled textures unloaded.", LOG_TYPE::L_WARNING);
+	}
+}
+
+Texture &s_texture::getTexture()
+{
+	if (!texture->texture->isOnGPU()) {
+		if (!texture->texture->isOnCPU()) {
+			load();
+		}
+		texture->texture->use();
+		textureQueue.emplace(texture);
+	}
+	return *texture->texture;
+}
+
+Texture *s_texture::getBigTexture()
+{
+	if (texture->bigTexture) {
+		if (texture->bigTexture->binding == texture->bigTextureBinding) {
+			texture->bigTexture->lifetime = 3;
+			return (texture->bigTexture->ready ? texture->bigTexture->texture.get() : nullptr);
+		}
+		texture->bigTexture = nullptr;
+	}
+	texture->bigTexture = acquireBigTexture(texture->bigTextureResolution);
+	if (texture->bigTexture && texture->bigTexture->ready)
+		return texture->bigTexture->texture.get();
+	return nullptr;
+}
+
+s_texture::bigTexRecap *s_texture::acquireBigTexture(int resolution)
+{
+	int extPos = textureName.find_last_of('.');
+	for (auto &bt : bigTextures) {
+		if (!bt.acquired && bt.resolution <= resolution) {
+			std::string tmpName = textureName.substr(0, extPos) + std::to_string(bt.resolution) + "K" + textureName.substr(extPos);
+			if (tmpName == bt.texName) {
+				bt.lifetime = 3;
+				bt.ready = true;
+				bt.acquired = true;
+				texture->bigTextureBinding = bt.binding;
+				return &bt;
+			}
+			if (!std::ifstream(tmpName).good()) // Check if file exist
+				return nullptr;
+			bt.texName = tmpName;
+			texture->bigTextureBinding = bt.binding;
+			bt.lifetime = 3;
+			bt.ready = false;
+			bt.acquired = true;
+			bigTextureQueue.emplace(&bt);
+			return &bt;
+		}
+	}
+	// There is no bigTexRecap available, create another one
+	for (MemoryQuerry &querry : VulkanMgr::instance->getMemoryManager()->querryMemory()) {
+		if (!(querry.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
+			continue;
+		while (resolution * resolution * (4 * 1024 * 1024) > querry.free - currentAllocation)
+			resolution /= 2;
+		std::string tmpName = textureName.substr(0, extPos) + std::to_string(resolution) + "K" + textureName.substr(extPos);
+		if (resolution < 4 || !std::ifstream(tmpName).good()) // Check if file exist
+			return nullptr;
+		auto it = bigTextures.rbegin();
+		while (it != bigTextures.rend() && it->resolution < resolution)
+			++it;
+		auto it2 = it.base();
+		bigTextures.insert(it2, bigTexRecap{1, resolution, nullptr, tmpName, 3, false, true});
+		texture->bigTextureBinding = 1;
+		bigTextureQueue.emplace(texture->bigTexture);
+		currentAllocation += resolution * (resolution / 2) * 4 * 1024 * 1024 * 4/3;
+		return (&*it2);
+	}
+	return nullptr;
+}
+
+void s_texture::releaseUnusedMemory()
+{
+	cLog::get()->write("Not enough memory, attempt to release memory", LOG_TYPE::L_WARNING);
+	for (auto &bt : bigTextures) {
+		if (!bt.acquired)
+			bt.texture = nullptr;
+	}
+}
+
+void s_texture::recordTransfer(VkCommandBuffer cmd)
+{
+	std::shared_ptr<texRecap> tex;
+	while (textureQueue.pop(tex)) {
+		tex->texture->use(cmd, true);
+		// Note that we can release his staging memory in 3 frames !
 	}
 }

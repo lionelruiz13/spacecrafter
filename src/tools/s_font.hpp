@@ -35,8 +35,7 @@
 
 #include "tools/s_font_common.hpp"
 #include "tools/s_texture.hpp"
-
-#include "vulkanModule/Context.hpp"
+#include "tools/draw_helper.hpp"
 
 class VertexArray;
 class Projector;
@@ -88,7 +87,7 @@ public:
 	//! indique la taille en pixel du texte s
 	float getStrLen(const std::string& s);
 	//! crée tout le contexte graphique des fontes
-	static void createSC_context(ThreadContext *_context);
+	static void createSC_context();
 	//! met en place la fonte de secours
 	static void initBaseFont(const std::string& ttfFileName);
 	//! Initialize printer
@@ -101,26 +100,26 @@ protected:
 	renderedString_struct renderString(const std::string &s, bool withBorder, bool keepOnCPU = false) const;
 	renderedStringHash_t renderCache;
 	static std::vector<renderedString_struct> tempCache, tempCache2; // to hold texture while it is used
+	static std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>> printData;
 
 	float fontSize;
 	std::string fontName;
 	static std::string baseFontName;
 	TTF_Font *myFont =  nullptr;
 
-	static int activeID; // target id
-	static int commandIndexHorizontal, commandIndexPrint;
+	// static int activeID; // target id
+	// static int commandIndexHorizontal, commandIndexPrint;
 	// commandIndex[0] is not multisampled
 	// all other were multisampled
-	static std::vector<std::pair<int, int>> commandIndex; // pair of {horizontal, print}
-	static ThreadContext *context;
-	static Set *set;
-	static VertexArray *vertexHorizontal;
-	static VertexArray *vertexPrint;
-	static ThreadedCommandBuilder *cmdMgr;
-	static Pipeline *pipelineHorizontal;
-	static Pipeline *pipelinePrint;
-	static PipelineLayout *layoutHorizontal;
-	static PipelineLayout *layoutPrint;
+	// static std::vector<std::pair<int, int>> commandIndex; // pair of {horizontal, print}
+	// static Set *set;
+	// static VertexArray *vertexHorizontal;
+	// static VertexArray *vertexPrint;
+	// static ThreadedCommandBuilder *cmdMgr;
+	// static Pipeline *pipelineHorizontal;
+	// static Pipeline *pipelinePrint;
+	// static PipelineLayout *layoutHorizontal;
+	// static PipelineLayout *layoutPrint;
 	static int nbFontInstances;
 	static bool hasPrintH, hasPrint;
 };

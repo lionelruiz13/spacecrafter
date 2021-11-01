@@ -38,19 +38,14 @@
 #include "tools/no_copy.hpp"
 #include "tools/SphereGrid.hpp"
 
-#include "vulkanModule/Context.hpp"
-
 class HipStarMgr;
 class Navigator;
 class ConstellationMgr;
 class VertexArray;
-//class shaderProgram;
-class CommandMgr;
+class VertexBuffer;
 class PipelineLayout;
 class Pipeline;
 class Set;
-class Uniform;
-class Buffer;
 
 /*! \class IlluminateMgr
   * \brief handles all illuminate stars from Hipparcos catalog for better stars visualisation.
@@ -66,7 +61,7 @@ class Buffer;
   */
 class IlluminateMgr: public NoCopy {
 public:
-	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism, ThreadContext *context);
+	IlluminateMgr(HipStarMgr *_hip_stars, Navigator *_navigator, ConstellationMgr *_asterism);
 	virtual ~IlluminateMgr();
 
 	// indique la taille d'affichage des illuminates par défaut
@@ -108,38 +103,28 @@ public:
 private:
 	//! Load an individual Illuminate with all data
 	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
+	void buildSet();
 
 	SphereGrid<std::unique_ptr<Illuminate>> illuminateGrid;
 
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 
-
 	HipStarMgr* hip_stars = nullptr;			//!< provide acces point to HipStarMgr
 	Navigator* navigator = nullptr;				//!< provide acces point to Navigator
 	ConstellationMgr* asterism= nullptr;		//!< provide acces point to ConstellationMgr
 
-	//std::unique_ptr<shaderProgram> m_shaderIllum;	//!< shader how draw all illuminate
-	CommandMgr *cmdMgr;
-	CommandMgr *cmdMgrTarget;
-	Set *globalSet;
-	int commandIndex;
-	std::vector<float> illumPos;
-	std::vector<float> illumTex;
-	std::vector<float> illumColor;
+	int cmds[3];
 	std::unique_ptr<PipelineLayout> m_layoutIllum;
 	std::unique_ptr<Pipeline> m_pipelineIllum;
 	std::unique_ptr<VertexArray> m_illumGL;
+	std::unique_ptr<VertexBuffer> vertex;
+	SubBuffer index;
 	std::unique_ptr<Set> m_setIllum;
-	std::unique_ptr<Uniform> m_uniformIllum;
-	Mat4f *pModelViewMatrix;
-	std::unique_ptr<Buffer> m_drawDataIllum;
-	uint32_t *m_pDrawDataIllum;
 
-	s_texture * currentTex = nullptr;			//!< Pointer of texture used to draw
-	s_texture * defaultTex = nullptr;		//!< Common texture if no other texture defined
-	s_texture * userTex = nullptr;				//!< Texture define by user
+	std::shared_ptr<s_texture> currentTex;		//!< Pointer of texture used to draw
+	std::shared_ptr<s_texture> defaultTex;		//!< Common texture if no other texture defined
 
-	void createSC_context(ThreadContext *context);
+	void createSC_context();
 };
 
 #endif // _ILLUMINATE_MGR_H_

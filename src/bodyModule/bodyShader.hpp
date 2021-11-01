@@ -37,7 +37,6 @@
 
 //
 #include "tools/vecmath.hpp"
-#include "vulkanModule/Context.hpp"
 
 enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SHADER_BUMP = 2, SHADER_NIGHT = 3,SHADER_NIGHT_TES = 31,  SHADER_RINGED = 4,
 				SHADER_MODEL3D = 5, SHADER_MOON_NORMAL = 6, SHADER_MOON_NORMAL_TES = 61 , SHADER_MOON_BUMP = 7, SHADER_MOON_NIGHT=32, SHADER_ARTIFICIAL = 8};
@@ -51,6 +50,7 @@ enum SHADER_USE {SHADER_SUN = 0, SHADER_NORMAL = 1,  SHADER_NORMAL_TES = 11,  SH
 class VertexArray;
 class PipelineLayout;
 class Pipeline;
+class Set;
 
 typedef struct {
 	PipelineLayout *layout;
@@ -63,7 +63,7 @@ public:
 	BodyShader() {};
 	~BodyShader() {};
 
-	static void createShader(ThreadContext *context);
+	static void createShader();
 	// static void deleteShader();
 
 	static drawState_t *getShaderBump() {

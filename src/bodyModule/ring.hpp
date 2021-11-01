@@ -37,15 +37,15 @@
 #include "coreModule/callbacks.hpp"
 #include "tools/fader.hpp"
 #include "bodyModule/orbit.hpp"
-#include "vulkanModule/Context.hpp"
+
+#include "EntityCore/Resource/SharedBuffer.hpp"
+#include "EntityCore/Resource/Texture.hpp"
 
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-class Buffer;
-class CommandMgr;
 class OjmL;
 class Observer;
 
@@ -53,19 +53,11 @@ class Ring2D {
 public:
 	Ring2D(float _r_min, float _r_max, int slices, int stacks, bool h, VertexArray &vertexBase);
 	~Ring2D();
-	void initFrom(VertexArray &vertex);
-	void draw(void *pDrawData);
 
+	void draw(VkCommandBuffer &cmd);
 private:
 	void computeRing(int slices, int stacks, bool h);
-	std::vector<float> datas;
-	std::unique_ptr<VertexArray> m_dataGL; //currentModel
-	struct {
-		uint32_t vertexCount;
-    	uint32_t instanceCount;
-    	uint32_t firstVertex;
-    	uint32_t firstInstance;
-	} drawData{0, 1, 0, 0};
+	std::unique_ptr<VertexBuffer> m_dataGL; //currentModel
 	float r_min;
 	float r_max;
 };
@@ -75,10 +67,10 @@ private:
 class Ring {
 
 public:
-	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init, ThreadContext *context);
+	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init);
 	~Ring(void);
 
-	void draw(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
+	void draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
 
 	double getOuterRadius(void) const {
 		return radius_max*mc;
@@ -88,7 +80,7 @@ public:
 		return radius_min*mc;
 	}
 
-	auto getTexTexture(void) const {
+	auto &getTexTexture(void) const {
 		return tex->getTexture();
 	}
 
@@ -99,27 +91,22 @@ public:
 private:
 	const double radius_min;
 	const double radius_max;
-	s_texture *tex;
+	std::unique_ptr<s_texture> tex;
 
 	//std::unique_ptr<shaderProgram> shaderRing;	// Shader moderne
-	void createSC_context(ThreadContext *context);
-	void createAsteroidRing(ThreadContext *context);
-	void createDrawSingle();
+	void initialize();
+	void createSC_context();
+	void createAsteroidRing();
 
-	bool needRecording = true;
-	CommandMgr *cmdMgr;
-	Set *globalSet;
-	int commandIndexSingle; // Draw rings without body
 	std::unique_ptr<Pipeline> pipeline, pipelineAsteroid;
 	std::unique_ptr<PipelineLayout> layout, layoutAsteroid;
-	std::unique_ptr<VertexArray> vertex;
+	std::unique_ptr<VertexArray> vertex, vertexAsteroid;
+	std::unique_ptr<VertexBuffer> instanceAsteroid;
 	std::unique_ptr<OjmL> ojmlAsteroid;
-	VertexArray *vertexAsteroid;
+	VertexBuffer *bufferAsteroid;
+	SubBuffer indexAsteroid;
 	std::unique_ptr<Set> set, setAsteroid;
-	std::unique_ptr<Uniform> uniform;
-	std::unique_ptr<Buffer> drawData;
-	uint32_t *pAsteroidInstanceCount;
-	struct {
+	struct RingUniform {
 		Mat4f ModelViewMatrix;
 		Mat4f ModelViewMatrixInverse;
 		Vec3f clipping_fov;
@@ -128,17 +115,19 @@ private:
 		float PlanetRadius;
 		Vec3f LightDirection;
 		float SunnySideUp;
-	} *pUniform;
+	};
+	std::unique_ptr<SharedBuffer<RingUniform>> uniform;
 
-	Ring2D* lowUP;
-	Ring2D* lowDOWN;
-	Ring2D* mediumUP;
-	Ring2D* mediumDOWN;
-	Ring2D* highUP;
-	Ring2D* highDOWN;
+	std::unique_ptr<Ring2D> lowUP;
+	std::unique_ptr<Ring2D> lowDOWN;
+	std::unique_ptr<Ring2D> mediumUP;
+	std::unique_ptr<Ring2D> mediumDOWN;
+	std::unique_ptr<Ring2D> highUP;
+	std::unique_ptr<Ring2D> highDOWN;
 
 	Vec3i init;
 	float mc = 1.0;
+	bool initialized = false;
 };
 
 

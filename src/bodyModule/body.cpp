@@ -51,18 +51,16 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "bodyModule/body_color.hpp"
 #include "coreModule/time_mgr.hpp"
-
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/VertexArray.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 
 s_font* Body::planet_name_font = nullptr;
 float Body::object_scale = 1.f;
 float Body::object_size_limit = 9;
 LinearFader Body::flagClouds;
-s_texture *Body::defaultTexMap = nullptr;
-s_texture *Body::tex_eclipse_map = nullptr;
+std::shared_ptr<s_texture> Body::defaultTexMap = nullptr;
+std::shared_ptr<s_texture> Body::tex_eclipse_map = nullptr;
 
 AtmosphereParams *Body::defaultAtmosphereParams = nullptr;
 BodyTesselation *Body::bodyTesselation = nullptr;
@@ -80,10 +78,8 @@ Body::Body(Body *parent,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-           const std::shared_ptr<BodyTexture> _bodyTexture,
-		   ThreadContext *_context):
+           const std::shared_ptr<BodyTexture> _bodyTexture):
 	englishName(englishName), initialRadius(_radius), one_minus_oblateness(1.0-oblateness),
-    context(_context),
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
 	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
@@ -103,7 +99,7 @@ Body::Body(Body *parent,
 	if (parent) {
 		if (parent->getEnglishName() == "Sun") tAround = tACenter;
 		else tAround = tABody;
-	} else 
+	} else
 		tAround = tANothing;
 
 	ecliptic_pos= v3dNull;
@@ -119,19 +115,19 @@ Body::Body(Body *parent,
 		tex_map = defaultTexMap;
 	}
 	else {
-		tex_map = new s_texture(FilePath(_bodyTexture->tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+		tex_map = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
 	}
 
 	if (_bodyTexture->tex_skin !="") {
-		tex_skin = new s_texture(FilePath(_bodyTexture->tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+		tex_skin = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
 	}
 
 	if (_bodyTexture->tex_norm != "") {  //preparation au bump shader
-		tex_norm = new s_texture(FilePath(_bodyTexture->tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID);
+		tex_norm = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID);
 	}
 
 	if (_bodyTexture->tex_heightmap != "") {  //preparation à la tesselation
-		tex_heightmap = new s_texture(FilePath(_bodyTexture->tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+		tex_heightmap = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
 	}
 
 	nameI18 = englishName;
@@ -157,12 +153,6 @@ Body::Body(Body *parent,
 
 Body::~Body()
 {
-	if (tex_map && tex_map != defaultTexMap) delete tex_map;
-	tex_map = nullptr;
-	if (tex_norm) delete tex_norm;
-	tex_norm = nullptr;
-	if (tex_heightmap) delete tex_heightmap;
-	tex_heightmap = nullptr;
 	//if(orbit) delete orbit;
 	//orbit = nullptr;
 	if (hints) delete hints;
@@ -178,21 +168,22 @@ Body::~Body()
 void Body::switchMapSkin(bool a) {
 	if ((a==true) && tex_skin!=nullptr) {
 		tex_current = tex_skin;
+        changed = true;
 		return;
 	}
 	if (a==false) {
 		tex_current = tex_map;
+        changed = true;
 		return;
 	}
 }
 
 void Body::createTexSkin(const std::string &texName) {
 	if (tex_skin != nullptr) {
-		delete tex_skin;
-		tex_skin = nullptr;
 		tex_current = tex_map;
 	}
-	tex_skin = new s_texture(FilePath( texName,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+	tex_skin = std::make_shared<s_texture>(FilePath( texName,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+    changed = true;
 }
 
 void Body::setFlagHints(bool b)
@@ -277,20 +268,18 @@ const Vec3f Body::getColor(const std::string& colorName)
 
 void Body::deleteDefaultTexMap()
 {
-	if (defaultTexMap !=nullptr) delete defaultTexMap;
 	defaultTexMap = nullptr;
-	if (tex_eclipse_map !=nullptr) delete tex_eclipse_map;
 	tex_eclipse_map = nullptr;
 	Halo::deleteDefaultTexMap();
 }
 
-void Body::createShader(ThreadContext *context)
+void Body::createShader()
 {
-	OrbitPlot::createSC_context(context);
-	Trail::createSC_context(context);
-	Halo::createSC_context(context);
-	Hints::createSC_context(context);
-	Axis::createSC_context(context);
+	OrbitPlot::createSC_context();
+	Trail::createSC_context();
+	Halo::createSC_context();
+	Hints::createSC_context();
+	Axis::createSC_context();
 }
 
 // Return the information std::string "ready to print" :)
@@ -819,13 +808,22 @@ double Body::getAxisAngle() const {
 	return axis->getAngle();
 }
 
-bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet)
+bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer)
 {
 	bool drawn = false;
+    Context &context = *Context::instance;
+    FrameMgr &frame = *context.frame[context.frameIdx];
 
 	if(skipDrawingThisBody(observatory, drawHomePlanet)) {
 		if(hasRings()) {
-			drawRings(prj,observatory,mat,1000.0,lightDirection,eye_planet,initialRadius);
+            if (cmds[context.frameIdx] == -1) {
+                cmds[context.frameIdx] = frame.create(1);
+                frame.setName(cmds[context.frameIdx], englishName + " " +  std::to_string(context.frameIdx));
+            }
+            VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+			drawRings(cmd, prj,observatory,mat,1000.0,lightDirection,eye_planet,initialRadius);
+            frame.compile();
+            frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 		}
 
 		return drawn;
@@ -833,34 +831,52 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	handleVisibilityFader(observatory, prj, nav);
 
-	drawOrbit(observatory,nav, prj);
+    drawHints(nav, prj);
 
-	drawTrail(nav, prj);
+    if (canSkip(nav, prj)) {
+        drawHalo(nav, prj, eye);
+        return drawn;
+    }
 
-	drawHints(nav, prj);
+    if (cmds[context.frameIdx] == -1) {
+        cmds[context.frameIdx] = frame.create(1);
+        frame.setName(cmds[context.frameIdx], englishName + " " +  std::to_string(context.frameIdx));
+    }
+    VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
+    if (needClearDepthBuffer) {
+        VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+        VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+        vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+    }
+
+	drawOrbit(cmd, observatory,nav, prj);
+
+	drawTrail(cmd, nav, prj);
 
 	if(isVisibleOnScreen()) {
         if (screen_sz > 5) {
-            s_font::nextPrint(true);
-            Halo::nextDraw();
+            s_font::nextPrint(PASS_MULTISAMPLE_DEPTH);
+            Halo::nextDraw(cmd);
         }
 		if(hasRings()) {
-            // depth test forced
-            drawAxis(prj,mat);
-			drawBody(prj, nav, mat, screen_sz);
-			drawRings(prj,observatory,mat,screen_sz,lightDirection,eye_planet,initialRadius);
+            drawAxis(cmd, prj,mat);
+			drawBody(cmd, prj, nav, mat, screen_sz);
+			drawRings(cmd, prj,observatory,mat,screen_sz,lightDirection,eye_planet,initialRadius);
 		} else {
             // depth test if drawAxis (drawAxis if depthTest and Axis::actualdrawaxis)
             // if(!depthTest) //
             //     cLog::get()->write("Failed to disable depth test", LOG_TYPE::L_WARNING);
-            drawAxis(prj,mat);
-            drawBody(prj, nav, mat, screen_sz);
+            drawAxis(cmd, prj,mat);
+            drawBody(cmd, prj, nav, mat, screen_sz);
 		}
 		drawn = true;
 	}
+    frame.compile(cmds[context.frameIdx]);
 
 	drawHalo(nav, prj, eye);
+
+    frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
 	return drawn;
 }
@@ -871,15 +887,15 @@ bool Body::skipDrawingThisBody(const Observer* observatory, bool drawHomePlanet)
 }
 
 
-void Body::drawOrbit(const Observer* observatory, const Navigator* nav, const Projector* prj)
+void Body::drawOrbit(VkCommandBuffer &cmd, const Observer* observatory, const Navigator* nav, const Projector* prj)
 {
-	orbitPlot->drawOrbit(nav, prj, parent_mat);
+	orbitPlot->drawOrbit(cmd, nav, prj, parent_mat);
 }
 
-void Body::drawTrail(const Navigator* nav, const Projector* prj)
+void Body::drawTrail(VkCommandBuffer &cmd, const Navigator* nav, const Projector* prj)
 {
 	if(trail != nullptr)
-		trail->drawTrail(nav, prj);
+		trail->drawTrail(cmd, nav, prj);
 }
 
 void Body::drawHints(const Navigator* nav, const Projector* prj)
@@ -899,9 +915,9 @@ void Body::removeSatellite(Body *planet)
 	}
 }
 
-void Body::drawAxis(const Projector* prj, const Mat4d& mat)
+void Body::drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat)
 {
-	axis->drawAxis(prj, mat);
+	axis->drawAxis(cmd, prj, mat);
 }
 
 void Body::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
@@ -932,4 +948,11 @@ Vec3d Body::getPositionAtDate(double jDate) const
 	delete[] v;
 
 	return pos;
+}
+
+bool Body::canSkip(const Navigator* nav, const Projector* prj)
+{
+    const bool useOrbit = orbitPlot->doDraw(nav, prj, parent_mat);
+    const bool useTrail = (trail) && trail->doDraw(nav, prj);
+    return (!useOrbit && !useTrail && !isVisibleOnScreen());
 }

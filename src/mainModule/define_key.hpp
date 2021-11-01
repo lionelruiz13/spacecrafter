@@ -46,6 +46,7 @@
 // SCK_Y mean Spacecfrater Key Y
 #define SCK_VERSION                         "version"
 #define SCK_DEBUG                           "debug"
+#define SCK_DEBUG_LAYER                     "debug_layer"
 #define SCK_LOG                             "write_log"
 #define SCK_MILKYWAY_IRIS                   "milkyway_iris"
 #define SCK_FLAG_OPTOMA                     "flag_optoma"
@@ -63,6 +64,7 @@
 
 #define SCK_AUTOSCREEN                      "autoscreen"
 #define SCK_FULLSCREEN                      "fullscreen"
+#define SCK_REMOTE_DISPLAY                  "remote_display"
 #define SCK_SCREEN_W                        "screen_w"
 #define SCK_SCREEN_H                        "screen_h"
 #define SCK_BBP_MODE                        "bbp_mode"

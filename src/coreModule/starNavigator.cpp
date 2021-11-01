@@ -30,12 +30,8 @@
 #include "navModule/navigator.hpp"
 #include "coreModule/starViewer.hpp"
 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "tools/context.hpp"
 
 static float magnitude_max = 6.5;
 
@@ -55,12 +51,12 @@ static double fov= 180.;
 //
 // ===========================================================================
 
-StarNavigator::StarNavigator(ThreadContext *context)
+StarNavigator::StarNavigator() : nbStars(0)
 {
 	starMgr = nullptr;
 	starMgr = new StarManager();
 
-	createSC_context(context);
+	createSC_context();
 	starTexture = new s_texture("star16x16.png",TEX_LOAD_TYPE_PNG_SOLID,false);  // Load star texture no mipmap
 	set->bindTexture(starTexture->getTexture(), 0);
 	old_pos = v3fNull;
@@ -69,40 +65,40 @@ StarNavigator::StarNavigator(ThreadContext *context)
 
 	computeRCMagTable();
 
-	StarViewer::createSC_context(context);
-	//starViewer = std::make_unique<StarViewer>(Vec3f(0, 0, 0), Vec3f(0.8, 0.8, 0.2), 0.04);
+	StarViewer::createSC_context();
 }
 
-void StarNavigator::createSC_context(ThreadContext *_context)
+void StarNavigator::createSC_context()
 {
-	context = _context;
-	// shaderStarNav = std::make_unique<shaderProgram>();
-	// shaderStarNav -> init("starNav.vert","starNav.geom","starNav.frag");
-	// shaderStarNav->setUniformLocation("Mat");
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 
-	m_dataGL = std::make_unique<VertexArray>(context->surface);
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STREAM); // For fast allocation
-	m_dataGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STREAM); // For fast allocation
-	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STREAM); // For fast allocation
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
-	layout->setTextureLocation(0);
+	m_dataGL = std::make_unique<VertexArray>(vkmgr);
+	m_dataGL->createBindingEntry(7 * sizeof(float));
+	m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS
+	m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // COLOR
+	m_dataGL->addInput(VK_FORMAT_R32_SFLOAT); // MAG
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
+	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1);
 	layout->buildLayout();
 	layout->build();
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	pipeline->setBlendMode(BLEND_ADD);
-	pipeline->bindVertex(m_dataGL.get());
+	pipeline->bindVertex(*m_dataGL);
 	pipeline->bindShader("starNav.vert.spv");
 	pipeline->bindShader("starNav.geom.spv");
 	pipeline->bindShader("starNav.frag.spv");
 	pipeline->build();
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
-	pMat = static_cast<typeof(pMat)>(uMat->data);
-	set->bindUniform(uMat.get(), 1);
-	commandIndex = context->commandMgrDynamic->getCommandIndex();
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	uMat = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+	set->bindUniform(uMat, 1);
+	context.cmdInfo.commandBufferCount = 3;
+	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+	drawData = std::make_unique<SharedBuffer<VkDrawIndirectCommand>>(*context.tinyMgr);
+	*drawData = VkDrawIndirectCommand{0, 1, 0, 0};
 }
 
 
@@ -146,9 +142,8 @@ StarNavigator::~StarNavigator()
 
 void StarNavigator::clearBuffer()
 {
-	starPos.clear();
-	starColor.clear();
-	starRadius.clear();
+	nbStars = 0;
+	starVec = (float *) Context::instance->transfer->beginPlanCopy(maxStars * 7 * sizeof(float));
 }
 
 void StarNavigator::setListGlobalStarVisible()
@@ -178,9 +173,8 @@ void StarNavigator::setListGlobalStarVisible()
 		}
 	}
 	maxStars = listGlobalStarVisible.size();
+	build();
 }
-
-
 
 Vec3f StarNavigator::color_table[128] = {
 	Vec3f(0.780392,0.866666,1),
@@ -403,26 +397,24 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 		result.get();
 	results.clear();
 
-	m_dataGL->build(starPos.size() / 3);
-	m_dataGL->fillVertexBuffer(BufferType::POS3D, starPos);
-	m_dataGL->fillVertexBuffer(BufferType::COLOR, starColor);
-	m_dataGL->fillVertexBuffer(BufferType::MAG, starRadius);
-	build(starPos.size() / 3);
+	Context::instance->transfer->endPlanCopy(vertex->get(), nbStars * 7 * sizeof(float));
+	drawData->get().vertexCount = nbStars;
 }
 
-void StarNavigator::build(int nbVertex)
+void StarNavigator::build()
 {
-	context->commandMgr->waitGraphicQueueIdle();
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
-	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	cmdMgr->init(commandIndex, pipeline.get(), renderPassType::USE_DEPTH_BUFFER);
-	cmdMgr->bindSet(layout.get(), context->global->globalSet);
-	cmdMgr->bindSet(layout.get(), set.get(), 1);
-	cmdMgr->bindVertex(m_dataGL.get());
-	cmdMgr->draw(nbVertex);
-	cmdMgr->compile();
+	Context &context = *Context::instance;
+	vertex.reset();
+	vertex = m_dataGL->createBuffer(0, maxStars * 7, context.globalBuffer.get());
+	for (int i = 0; i < 3; ++i) {
+		auto cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+		pipeline->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		vertex->bind(cmd);
+		vkCmdDrawIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset(), 1, 0);
+		context.frame[i]->compile(cmd);
+	}
 }
 
 bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
@@ -475,12 +467,16 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 			//Détermination de la couleur
 			Vec3f tcolor = color_table[si->B_V]*intensite ;
 
-			//no simult acces to data
-			accesTab.lock();
-			insert_all(starPos, x, y, z);
-			insert_vec3(starColor, tcolor);
-			starRadius.push_back(magC/2);
-			accesTab.unlock();
+			// There must be no concurrent access to the same vulkan memory
+			accessTab.lock();
+			++nbStars;
+			*(starVec++) = x;
+			*(starVec++) = y;
+			*(starVec++) = z;
+			memcpy(starVec, (float *) tcolor, 3 * sizeof(float));
+			starVec += 3;
+			*(starVec++) = magC/2;
+			accessTab.unlock();
 		}
 	}
 	return true;
@@ -492,26 +488,14 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	if (starsFader==false)
 		return;
 
-	if (starPos.size()<1)
+	if (nbStars<1)
 		return;
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
-
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, starTexture->getID());
 
 	Mat4f matrix=nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
-	*pMat=matrix;
+	*uMat=matrix;
 
-	// shaderStarNav->use();
-	// shaderStarNav->setUniform("Mat",matrix);
-
-	// m_dataGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
-	// m_dataGL->unBind();
-	// shaderStarNav->unuse();
-	//Renderer::drawArrays(shaderStarNav.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST,0,starPos.size()/3);
-	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
+	const int idx = Context::instance->frameIdx;
+	Context::instance->frame[idx]->toExecute(cmds[idx], PASS_MULTISAMPLE_DEPTH);
 	if (starViewer)
 		starViewer->draw(nav, prj, matrix);
 }

@@ -4,8 +4,6 @@
 #include <string>
 #include "tools/vecmath.hpp"
 
-#include "vulkanModule/Context.hpp"
-
 //Shader part
 /*
 layout (std140) uniform cam_block
@@ -19,8 +17,8 @@ layout (std140) uniform cam_block
 };
 */
 
-class Uniform;
-class Set;
+#include "EntityCore/Forward.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 struct UBOData {
 	Vec4i viewport;
@@ -33,47 +31,47 @@ struct UBOData {
 
 class UBOCam {
 private:
-	Uniform *uniform;
-	UBOData &UBOdata;
+	SharedBuffer<UBOData> UBOdata;
 	std::string  UBOName;
 	PipelineLayout *globalLayout;
 	Set *globalSet;
+	float time = 0;
 public:
-	UBOCam(ThreadContext *context, const std::string &UBOName_);
+	UBOCam(const std::string &UBOName_);
 	~UBOCam();
-	void IndexAndBinding(uint32_t program);
 	void update();
 
 	void setClippingFov(const Vec3f &v) {
-		UBOdata.main_clipping_fov= v;
+		UBOdata->main_clipping_fov= v;
 	}
 
 	void setViewportCenter(const Vec3i &v) {
-		UBOdata.viewport_center = v;
+		UBOdata->viewport_center = v;
 	}
 
 	void setViewport(const Vec4i &v) {
-		UBOdata.viewport = v;
+		UBOdata->viewport = v;
 	}
 
 	void setMVP2D(const Mat4f &v) {
-		UBOdata.MVP2D = v;
-		UBOdata.MVP2D[0][2] = UBOdata.MVP2D[1][2] = UBOdata.MVP2D[2][2] = 0.f;
-		UBOdata.MVP2D[3][2] = 1.f;
+		UBOdata->MVP2D = v;
+		UBOdata->MVP2D[0][2] = UBOdata->MVP2D[1][2] = UBOdata->MVP2D[2][2] = 0.f;
+		UBOdata->MVP2D[3][2] = 1.f;
 	}
 
 	void setTime(float time) {
-		UBOdata.time = time;
+		UBOdata->time = time;
 	}
 
 	void setAmbientLight(float _ambient) {
-		UBOdata.ambient = _ambient;
+		UBOdata->ambient = _ambient;
 	}
 
 	float getAmbientLight() {
-		return UBOdata.ambient;
+		return UBOdata->ambient;
 	}
 
+	static SharedBuffer<UBOData> *ubo;
 };
 
 #endif // UBOCAM_HPP_INCLUDED

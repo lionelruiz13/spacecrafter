@@ -31,26 +31,18 @@
 #include "coreModule/skygrid.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/utility.hpp"
-#include "vulkanModule/VertexArray.hpp"
 
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-
-//std::unique_ptr<shaderProgram> SkyGrid::shaderSkyGrid;
 unsigned int SkyGrid::nbPointsToDraw = -1;
-ThreadContext *SkyGrid::context;
 VertexArray *SkyGrid::m_dataGL;
 Pipeline *SkyGrid::pipeline;
 PipelineLayout *SkyGrid::layout;
 Set *SkyGrid::set;
-int SkyGrid::vUniformID0 = -1;
+int SkyGrid::vUniformID0;
 int SkyGrid::vUniformID1;
-
+std::weak_ptr<VertexBuffer> SkyGrid::pVertex;
 
 SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
                  double _radius, unsigned int _nb_alt_segment, unsigned int _nb_azi_segment) :
@@ -75,8 +67,6 @@ SkyGrid::SkyGrid(unsigned int _nb_meridian, unsigned int _nb_parallel,
 			azi_points[np][i] *= radius;
 		}
 	}
-	createBuffer();
-    recordDraw();
 }
 
 SkyGrid::~SkyGrid()
@@ -95,147 +85,159 @@ SkyGrid::~SkyGrid()
 	// font = nullptr;
 }
 
-void SkyGrid::createShader(ThreadContext *_context)
+void SkyGrid::createShader()
 {
-    context = _context;
-	// shaderSkyGrid = std::make_unique<shaderProgram>();
-	// shaderSkyGrid->init("skygrid.vert","skygrid.geom","skygrid.frag");
-	// shaderSkyGrid->setUniformLocation({"color","fader","Mat"});
+    VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
 
-	m_dataGL = context->global->tracker->track(new VertexArray(context->surface));
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_dataGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
-    layout = context->global->tracker->track(new PipelineLayout(context->surface));
-    layout->setGlobalPipelineLayout(context->global->globalLayout);
+	m_dataGL = new VertexArray(vkmgr);
+    m_dataGL->createBindingEntry(4 * sizeof(float));
+    m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
+    m_dataGL->addInput(VK_FORMAT_R32_SFLOAT); // MAG
+    layout = new PipelineLayout(vkmgr);
+    layout->setGlobalPipelineLayout(context.layouts.front().get());
     layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
     layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
     layout->buildLayout();
     layout->build();
-    pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+    pipeline = new Pipeline(vkmgr, *context.render, PASS_BACKGROUND, layout);
     pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
     pipeline->setDepthStencilMode();
-    pipeline->bindVertex(m_dataGL);
+    pipeline->bindVertex(*m_dataGL);
     pipeline->bindShader("skygrid.vert.spv");
     pipeline->bindShader("skygrid.geom.spv");
     pipeline->bindShader("skygrid.frag.spv");
     pipeline->build();
-    set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
+    set = new Set(vkmgr, *context.setMgr, layout);
+    vUniformID0 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(Mat4f));
+    vUniformID1 = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, sizeof(frag));
 }
 
+void SkyGrid::destroyShader()
+{
+    delete m_dataGL;
+    delete pipeline;
+    delete layout;
+    delete set;
+}
 
 void SkyGrid::createBuffer()
 {
-	std::vector<float> dataSky;
-	std::vector<float> dataColor;
+    Context &context = *Context::instance;
+
+    vertex = m_dataGL->createBuffer(0, nbPointsToDraw, context.globalBuffer.get());
+    pVertex = vertex;
+    nbPointsToDraw = (nb_meridian * nb_alt_segment + nb_parallel * nb_azi_segment) * 2;
+	float *dataSky = (float *) context.transfer->planCopy(vertex->get());
 
 	// Draw meridians
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
-		insert_vec3(dataSky,alt_points[nm][0]);
-		dataColor.push_back(0.f);
+        *(dataSky++) = alt_points[nm][0][0];
+        *(dataSky++) = alt_points[nm][0][1];
+        *(dataSky++) = alt_points[nm][0][2];
+        *(dataSky++) = 0.f;
 
-		insert_vec3(dataSky,alt_points[nm][1]);
-		dataColor.push_back(1.f);
+        *(dataSky++) = alt_points[nm][1][0];
+        *(dataSky++) = alt_points[nm][1][1];
+        *(dataSky++) = alt_points[nm][1][2];
+        *(dataSky++) = 1.f;
 
 		for (unsigned int i=1; i<nb_alt_segment-1; ++i) {
-			insert_vec3(dataSky,alt_points[nm][i]);
-			dataColor.push_back(1.f);
+            *(dataSky++) = alt_points[nm][i][0];
+            *(dataSky++) = alt_points[nm][i][1];
+            *(dataSky++) = alt_points[nm][i][2];
+            *(dataSky++) = 1.f;
 
-			insert_vec3(dataSky,alt_points[nm][i+1]);
-			dataColor.push_back(1.f);
+            *(dataSky++) = alt_points[nm][i+1][0];
+            *(dataSky++) = alt_points[nm][i+1][1];
+            *(dataSky++) = alt_points[nm][i+1][2];
+            *(dataSky++) = 1.f;
 		}
 
-		insert_vec3(dataSky,alt_points[nm][nb_alt_segment-1]);
-		dataColor.push_back(1.f);
+        *(dataSky++) = alt_points[nm][nb_alt_segment - 1][0];
+        *(dataSky++) = alt_points[nm][nb_alt_segment - 1][1];
+        *(dataSky++) = alt_points[nm][nb_alt_segment - 1][2];
+        *(dataSky++) = 0.f;
 
-		insert_vec3(dataSky,alt_points[nm][nb_alt_segment]);
-		dataColor.push_back(0.f);
+        *(dataSky++) = alt_points[nm][nb_alt_segment][0];
+        *(dataSky++) = alt_points[nm][nb_alt_segment][1];
+        *(dataSky++) = alt_points[nm][nb_alt_segment][2];
+        *(dataSky++) = 1.f;
 	}
 
 	// Draw parallels
 	for (unsigned int np=0; np<nb_parallel; ++np) {
 		for (unsigned int i=0; i<nb_azi_segment; ++i) {
-			insert_vec3(dataSky,azi_points[np][i]);
-			dataColor.push_back(1.f);
+            *(dataSky++) = azi_points[np][i][0];
+            *(dataSky++) = azi_points[np][i][1];
+            *(dataSky++) = azi_points[np][i][2];
+            *(dataSky++) = 1.f;
 
-			insert_vec3(dataSky,azi_points[np][i+1]);
-			dataColor.push_back(1.f);
+            *(dataSky++) = azi_points[np][i+1][0];
+            *(dataSky++) = azi_points[np][i+1][1];
+            *(dataSky++) = azi_points[np][i+1][2];
+            *(dataSky++) = 1.f;
 		}
 	}
-
-    if (nbPointsToDraw == UINT32_MAX) {
-        nbPointsToDraw = dataSky.size()/3;
-        m_dataGL->build(nbPointsToDraw);
-    	m_dataGL->fillVertexBuffer(BufferType::POS3D, dataSky);
-    	m_dataGL->fillVertexBuffer(BufferType::MAG, dataColor);
-        m_dataGL->update();
-    }
-    assert(nbPointsToDraw == dataSky.size()/3);
-
-    // Uniform
-    uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat), true);
-    pMat = static_cast<typeof(pMat)>(uMat->data);
-    uFrag = std::make_unique<Uniform>(context->surface, sizeof(float) * 4, true);
-    pColor = static_cast<Vec3f *>(uFrag->data);
-    pFader = static_cast<float *>(uFrag->data) + 3;
 }
 
 void SkyGrid::recordDraw()
 {
-    if (vUniformID0 == -1) {
-        vUniformID0 = set->bindVirtualUniform(uMat.get(), 0);
-        vUniformID1 = set->bindVirtualUniform(uFrag.get(), 1);
-    } else {
-        set->setVirtualUniform(uMat.get(), vUniformID0);
-        set->setVirtualUniform(uFrag.get(), vUniformID1);
-    }
-    CommandMgr *cmdMgr = context->commandMgr;
-    commandIndex = cmdMgr->initNew(pipeline);
-    cmdMgr->bindSet(layout, context->global->globalSet, 0);
-    cmdMgr->bindSet(layout, set, 1);
-    cmdMgr->bindVertex(m_dataGL);
-    cmdMgr->draw(nbPointsToDraw);
-    cmdMgr->compile();
+    Context &context = *Context::instance;
+    uMat = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+    uFrag = std::make_unique<SharedBuffer<frag>>(*context.uniformMgr);
+    set->setVirtualUniform(uMat->getOffset(), vUniformID0);
+    set->setVirtualUniform(uFrag->getOffset(), vUniformID1);
+
+    context.cmdInfo.commandBufferCount = 3;
+    vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
+    for (int i = 0; i < 3; ++i) {
+		auto cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_BACKGROUND);
+		pipeline->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set}, *set);
+		vertex->bind(cmd);
+		vkCmdDraw(cmd, nbPointsToDraw, 1, 0, 0);
+		context.frame[i]->compile(cmd);
+	}
 }
 
-void SkyGrid::draw(const Projector* prj) const
+void SkyGrid::draw(const Projector* prj)
 {
 	if (!fader.getInterstate()) return;
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+    if (!vertex) {
+        vertex = pVertex.lock();
+        if (!vertex)
+            createBuffer();
+    }
+    if (!cmds[0])
+        recordDraw();
 
-	Vec3d pt1;
+    Vec3d pt1;
 	Vec3d pt2;
 
-	// shaderSkyGrid->use();
-	// shaderSkyGrid->setUniform("color", color);
-	// shaderSkyGrid->setUniform("fader", fader.getInterstate());
-    *pColor = color;
-    *pFader = fader.getInterstate();
+    uFrag->get().color = color;
+    uFrag->get().fader = fader.getInterstate();
 
 	switch (gtype) {
 		case EQUATORIAL:
-			*pMat = prj->getMatEarthEquToEye();
+			*uMat = prj->getMatEarthEquToEye();
 			break;
 		case ECLIPTIC :
-			*pMat = prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180));
+			*uMat = prj->getMatEarthEquToEye()* Mat4f::xrotation(23.4392803055555555556*(M_PI/180));
 			break;
 		case GALACTIC :
-			*pMat = prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180));
+			*uMat = prj->getMatJ2000ToEye()* Mat4f::zrotation(14.8595*(M_PI/180))*Mat4f::yrotation(-61.8717*(M_PI/180))*Mat4f::zrotation(55.5*(M_PI/180));
 			break;
 		case ALTAZIMUTAL :
-			*pMat = prj->getMatLocalToEye();
+			*uMat = prj->getMatLocalToEye();
 			break;
 		default:
 			return; //pour GCC
 	}
 
-	// m_dataGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, nbPointsToDraw); //un point est représenté par 3 points
-	// m_dataGL->unBind();
-	// shaderSkyGrid->unuse();
-	//Renderer::drawArrays(shaderSkyGrid.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, nbPointsToDraw); //un point est représenté par 3 points
-    context->commandMgr->setSubmission(commandIndex);
+    Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_BACKGROUND);
 
 	// tracé de texte.
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {

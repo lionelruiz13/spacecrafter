@@ -45,7 +45,6 @@
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
-#include "vulkanModule/Context.hpp"
 #include "bodyModule/ssystem_iterator.hpp"
 
 
@@ -55,13 +54,13 @@
 #define MARS_MASS  0.64185e24
 
 
-SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr)
-	:context(_context), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.), objLMgr(_objLMgr)
+SolarSystem::SolarSystem(ObjLMgr *_objLMgr)
+	:sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.), objLMgr(_objLMgr)
 {
 	bodyTrace = nullptr;
 
-	Body::createShader(context);
-	BodyShader::createShader(context);
+	Body::createShader();
+	BodyShader::createShader();
 	Body::createDefaultAtmosphereParams();
 
 	OrbitCreator * special = new OrbitCreatorSpecial(nullptr);
@@ -326,8 +325,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                close_orbit,
 			                currentOBJ,
 			                orbit_bounding_radius,
-			  				bodyTexture,
-							context);
+			  				bodyTexture);
 			//update of sun's big_halo texture
 			std::string bighalotexfile = param["tex_big_halo"];
 			if (!bighalotexfile.empty()) {
@@ -356,8 +354,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                  param["model_name"],
 			                  deletable,
 			                  orbit_bounding_radius,
-							  bodyTexture,
-						  	  context);
+							  bodyTexture);
 			p=std::move(p_artificial);
 			}
 			break;
@@ -375,8 +372,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                  close_orbit,
 			                  currentOBJ,
 			                  orbit_bounding_radius,
-							  bodyTexture,
-							  context
+							  bodyTexture
 			                 );
 			if (englishName == "Moon") {
 				moon = p_moon.get();
@@ -410,13 +406,12 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                    close_orbit,
 			                    currentOBJ,
 			                    orbit_bounding_radius,
-								bodyTexture,
-								context
+								bodyTexture
 								);
 			if (Utility::strToBool(param["rings"], 0)) {
 				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
 				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
-				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit,context);
+				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit);
 				p_big->setRings(std::move(r));
 				p_big->updateBoundingRadii();
 			}
@@ -445,8 +440,7 @@ void SolarSystem::addBody(stringHash_t & param, bool deletable)
 			                        close_orbit,
 			                        currentOBJ,
 			                        orbit_bounding_radius,
-									bodyTexture,
-									context
+									bodyTexture
 			                       );
 			p = std::move(p_small);
 		}

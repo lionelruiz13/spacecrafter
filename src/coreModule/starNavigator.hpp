@@ -26,7 +26,7 @@
 #include "tools/s_texture.hpp"
 #include "tools/ThreadPool.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 /*! \class StarNavigator
   * \brief classe permettant la balade dans les étoiles
@@ -39,16 +39,15 @@ class Projector;
 class Navigator;
 class ToneReproductor;
 class VertexArray;
-//class shaderProgram;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
 class StarViewer;
 
 class StarNavigator: public NoCopy  {
 public:
-	StarNavigator(ThreadContext *context);
+	StarNavigator();
 	~StarNavigator();
 
 	/*! /fn
@@ -75,7 +74,7 @@ public:
 	 */
 	void computePosition(Vec3f posI) noexcept;
 	//! Build draw command
-	void build(int nbVertex);
+	void build();
 
 	void setMagConverterMagShift(float s){
 		mag_shift = s;
@@ -119,9 +118,7 @@ public:
 
 private:
 	//tampons pour l'affichage des shaders
-	std::vector<float> starPos;
-	std::vector<float> starColor;
-	std::vector<float> starRadius;
+	float *starVec;
 
 	bool starsFader = true;
 
@@ -135,17 +132,17 @@ private:
 	// shader utilisé pour affichage
 	//std::unique_ptr<shaderProgram> shaderStarNav;
 	// structure de gestion des VAO-VBO
-	ThreadContext *context;
-	int commandIndex;
-	std::unique_ptr<VertexArray>  m_dataGL;
+	VkCommandBuffer cmds[3];
+	std::unique_ptr<VertexArray> m_dataGL;
+	std::unique_ptr<VertexBuffer> vertex;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uMat;
+	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
 	std::unique_ptr<StarViewer> starViewer;
-	Mat4f *pMat;
+	std::unique_ptr<SharedBuffer<VkDrawIndirectCommand>> drawData;
 	//initialisation du shader et des VAO-VBO
-	void createSC_context(ThreadContext *_context);
+	void createSC_context();
 
 	//précalcul de la table des couleurs
 	void computeRCMagTable();
@@ -153,6 +150,7 @@ private:
 	std::vector<starInfo*> listGlobalStarVisible;
 	// taille de la liste listGlobalStarVisible
 	unsigned int maxStars;
+	int nbStars;
 	//fonction permettant d'établir listGlobalStarVisible
 	void setListGlobalStarVisible();
 	//fonction permettant la mise à mise à zéro des tampons pour les shaders
@@ -170,7 +168,7 @@ private:
 	float rc_mag_table[2*256];
 
 	//mutex sur les tampons d'affichage
-	std::mutex accesTab;
+	std::mutex accessTab;
 	// sous fonction prévue pour les threads de calcul de computePosition
 	bool computeChunk(unsigned int first, unsigned int last);
 

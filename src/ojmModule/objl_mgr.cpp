@@ -14,7 +14,7 @@
 
 
 
-ObjLMgr::ObjLMgr(ThreadContext *_context) : context(_context)
+ObjLMgr::ObjLMgr()
 {
 }
 
@@ -81,7 +81,7 @@ bool ObjLMgr::insert(const std::string &name, bool _defaultObject)
 	std::string fullDirectory=defaultDirectory+name;
 	if ( CallSystem::dirExist(fullDirectory) ) {
 		tmp = new ObjL();
-		if (tmp->init(fullDirectory, name, context))  {
+		if (tmp->init(fullDirectory, name))  {
 			objectMap.insert(std::pair<std::string,ObjL*>(name, tmp));
 			//~ printf("ObjL insert %s\n", name.c_str());
 			cLog::get()->write("Succesfull loading model3D "+ name, LOG_TYPE::L_INFO);

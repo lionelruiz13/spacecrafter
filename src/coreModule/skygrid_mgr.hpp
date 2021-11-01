@@ -36,7 +36,6 @@
 #include "tools/fader.hpp"
 #include "coreModule/core_common.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
 
 // enum class GRID_TYPE : char {
 // 	GRID_EQUATORIAL,
@@ -49,7 +48,7 @@
 
 class SkyGridMgr: public NoCopy  {
 public:
-	SkyGridMgr(ThreadContext *context);
+	SkyGridMgr();
 	~SkyGridMgr();
 
 	int size() {

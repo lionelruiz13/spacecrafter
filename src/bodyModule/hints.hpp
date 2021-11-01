@@ -27,14 +27,13 @@
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
-#include "vulkanModule/Context.hpp"
 
 class Body;
 class Navigator;
 class Projector;
 class VertexArray;
-class Uniform;
 class Pipeline;
+class PipelineLayout;
 
 class Hints {
 public :
@@ -53,9 +52,9 @@ public :
 
 	void updateShader(double delta_time);
 
-	void computeHints();
+	void computeHints(float *&data);
 
-	static void createSC_context(ThreadContext *context);
+	static void createSC_context();
 
 private :
 	static const int nbrFacets;
@@ -63,19 +62,18 @@ private :
 
 	Body * body;
 
-	int commandIndex;
-	std::unique_ptr<VertexArray> vertex;
-	std::unique_ptr<Uniform> uColor, uFader;
-	std::unique_ptr<Set> set;
-	Vec4f *pColor;
-	float *pFader;
-	static ThreadContext *context;
-	static VertexArray *m_HintsGL;
+	static std::unique_ptr<VertexArray> m_HintsGL;
 	static Pipeline *pipeline;
 	static PipelineLayout *layout;
 	LinearFader hint_fader;
+	bool initialized = false;
 
-	std::vector<float> vecHintsPos;
+	struct {
+		unsigned char flag;
+		float fader;
+		Vec4f color;
+		Hints *self;
+	} drawData;
 };
 
 #endif // _HINTS_HPP_

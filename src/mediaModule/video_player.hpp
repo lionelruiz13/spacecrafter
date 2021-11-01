@@ -23,11 +23,12 @@
 #include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
+#include <array>
 
 
 
 #include "mediaModule/media_base.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/SubBuffer.hpp"
 
 #ifndef WIN32
 extern "C"
@@ -41,8 +42,8 @@ extern "C"
 
 class s_texture;
 class Media;
-class StreamTexture;
-class ThreadContext;
+class SyncEvent;
+class BufferMgr;
 
 /**
  * \class VideoPlayer
@@ -67,7 +68,7 @@ public:
 	~VideoPlayer();
 
 	//! Create video textures
-	void createTextures(ThreadContext *context);
+	void createTextures();
 
 	//! recherche la frame suivante
 	void update();
@@ -102,6 +103,8 @@ public:
 		return videoTexture;
 	}
 
+	//! Record texture update to the transfer command executed in the graphic queue where the texture is used
+	void recordUpdate(VkCommandBuffer cmd);
 private:
 	// renvoie la nouvelle frame vidéo et la convertit dans la mémoire de la CG.
 	void getNextVideoFrame();
@@ -116,7 +119,8 @@ private:
 
 	Media* media=nullptr;
 	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
-	ThreadContext *context;
+	std::unique_ptr<BufferMgr> stagingBuffer;
+	SubBuffer imageBuffers[3];
 	std::array<void *, 3> pImageBuffer;
 
 	std::string fileName; 	//!< nom de la vidéo
@@ -156,6 +160,8 @@ private:
 	AVStream		*video_st;
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
+	bool firstUse = true; // Tell if this texture is new and uninitialized yet
+	bool needUpdate = false; // Tell if there is an update to perform
 	#endif
 };
 

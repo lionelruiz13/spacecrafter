@@ -4,9 +4,6 @@
 #include "tools/vecmath.hpp"
 #include <map>
 
-
-#include "vulkanModule/Context.hpp"
-
 class ObjL;
 
 
@@ -35,7 +32,7 @@ class ObjL;
  */
 class ObjLMgr {
 public:
-	ObjLMgr(ThreadContext *_context);
+	ObjLMgr();
 
 	//! fixer le chemin relatif des objets3D
 	void setDirectoryPath(const std::string &directoryName) {
@@ -80,7 +77,6 @@ private:
 	std::map <const std::string, ObjL*> objectMap;
 	//! chemin absolu des objet3D
 	std::string defaultDirectory;
-	ThreadContext *context;
 	ObjL* defaultObject = nullptr;
 };
 

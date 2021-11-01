@@ -28,10 +28,10 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 
-SSystemFactory::SSystemFactory(ThreadContext *_context)
+SSystemFactory::SSystemFactory()
 {
     // creation ds models 3D pour les planetes
-    objLMgr = std::make_unique<ObjLMgr>(_context);
+    objLMgr = std::make_unique<ObjLMgr>();
 	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
 	objLMgr->insertDefault("Sphere");
 
@@ -40,14 +40,14 @@ SSystemFactory::SSystemFactory(ThreadContext *_context)
 		exit(-7);
 	}
 
-    ssystem = std::make_unique<SolarSystem>(_context, objLMgr.get());
+    ssystem = std::make_unique<SolarSystem>(objLMgr.get());
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
 }
-    
+
 SSystemFactory::~SSystemFactory()
 {
 }

@@ -31,21 +31,11 @@
 #include "tools/utility.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "vulkanModule/VertexArray.hpp"
 
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/VertexBuffer.hpp"
-#include "vulkanModule/Buffer.hpp"
-#include "vulkanModule/Buffer.hpp"
-
-
-BodyTrace::BodyTrace(ThreadContext *context)
+BodyTrace::BodyTrace()
 {
 	for(int i= 0; i<NB_MAX_LIST; i++) {
 		bodyData[i].size=0;
@@ -53,15 +43,15 @@ BodyTrace::BodyTrace(ThreadContext *context)
 		bodyData[i].old_punt[1]=0.0;
 		bodyData[i].hide=false;
 	}
-	createSC_context(context);
-	*bodyData[0].color= Vec3f(1.0,0.0,0.0);
-	*bodyData[1].color= Vec3f(0.2f, 0.2f, 0.7f);
-	*bodyData[2].color= Vec3f(0.5f, 0.9f, 0.4f);
-	*bodyData[3].color= Vec3f(0.3f, 0.6f, 0.1f);
-	*bodyData[4].color= Vec3f(0.1f, 0.8f, 0.5f);
-	*bodyData[5].color= Vec3f(0.f, 1.0f, 0.2f);
-	*bodyData[6].color= Vec3f(0.2f, 1.0f, 0.4f);
+	bodyData[0].color= Vec3f(1.0,0.0,0.0);
+	bodyData[1].color= Vec3f(0.2f, 0.2f, 0.7f);
+	bodyData[2].color= Vec3f(0.5f, 0.9f, 0.4f);
+	bodyData[3].color= Vec3f(0.3f, 0.6f, 0.1f);
+	bodyData[4].color= Vec3f(0.1f, 0.8f, 0.5f);
+	bodyData[5].color= Vec3f(0.f, 1.0f, 0.2f);
+	bodyData[6].color= Vec3f(0.2f, 1.0f, 0.4f);
 	//*bodyData[7].color= Vec3f(0.4f, 1.0f, 0.6f); // OUT OF INDEX !
+	createSC_context();
 	is_tracing=true;
 	currentUsedList=0;
 }
@@ -71,7 +61,7 @@ BodyTrace::~BodyTrace()
 
 void BodyTrace::hide(int numberList)
 {
-	if ( numberList > (NB_MAX_LIST-1)) return;
+	if (numberList >= NB_MAX_LIST) return;
 	if (numberList==-1) {
 		//-1 mean all the lists
 		for(int i=0; i<NB_MAX_LIST; i++)
@@ -81,78 +71,63 @@ void BodyTrace::hide(int numberList)
 		bodyData[numberList].hide= !bodyData[numberList].hide;
 }
 
-void BodyTrace::createSC_context(ThreadContext *context)
+void BodyTrace::createSC_context()
 {
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
-	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-	layout->buildLayout();
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
+
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
+	layout->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, 0, sizeof(Mat4f));
+	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(Mat4f), sizeof(Vec3f));
 	layout->build();
 
-	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand) * NB_MAX_LIST, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	VkDrawIndirectCommand *tmp = static_cast<VkDrawIndirectCommand *>(drawData->data);
+	pattern = std::make_unique<VertexArray>(vkmgr, sizeof(Vec3f));
+	pattern->createBindingEntry(sizeof(Vec3f));
+	pattern->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 
-	VertexArray tmp2(context->surface, context->commandMgr);
-	tmp2.registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
 	pipeline->setDepthStencilMode(VK_TRUE, VK_TRUE);
-	pipeline->bindVertex(&tmp2);
+	pipeline->bindVertex(*pattern);
 	pipeline->bindShader("body_trace.vert.spv");
 	pipeline->bindShader("body_trace.geom.spv");
 	pipeline->bindShader("body_trace.frag.spv");
 	pipeline->build();
 
-	cmdMgr = context->commandMgr;
-
-	commandIndex = cmdMgr->getCommandIndex();
-	cmdMgr->init(commandIndex);
-	cmdMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
-	cmdMgr->bindPipeline(pipeline.get());
-	cmdMgr->bindSet(layout.get(), context->global->globalSet, 1);
+	vertexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, sizeof(Vec3f) * MAX_POINTS * NB_MAX_LIST);
+	vertexBufferMgr->setName("BodyTrace VertexBuffers");
 
 	for(int i= 0; i<NB_MAX_LIST; i++) {
-		bodyData[i].uColor = std::make_unique<Uniform>(context->surface, sizeof(Vec3i));
-		bodyData[i].color = static_cast<Vec3f *>(bodyData[i].uColor->data);
-		bodyData[i].uMat = std::make_unique<Uniform>(context->surface, sizeof(Mat4f));
-		bodyData[i].mat = static_cast<Mat4f *>(bodyData[i].uMat->data);
-		bodyData[i].vertex = std::make_unique<VertexArray>(tmp2);
-		bodyData[i].vertex->build(MAX_POINTS);
-		bodyData[i].punts = static_cast<Vec3f *>(bodyData[i].vertex->getVertexBuffer().data);
-		bodyData[i].drawData = tmp++;
-		bodyData[i].drawData->vertexCount = 0;
-		bodyData[i].drawData->instanceCount = 1;
-		bodyData[i].drawData->firstVertex = 0;
-		bodyData[i].drawData->firstInstance = 0;
-		bodyData[i].set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-		bodyData[i].set->bindUniform(bodyData[i].uMat.get(), 0);
-		bodyData[i].set->bindUniform(bodyData[i].uColor.get(), 1);
-		cmdMgr->bindSet(layout.get(), bodyData[i].set.get());
-		bodyData[i].vertex->bind();
-		cmdMgr->indirectDraw(drawData.get(), i * sizeof(VkDrawIndirectCommand), 1);
+		bodyData[i].vertex = pattern->createBuffer(0, MAX_POINTS, vertexBufferMgr.get());
 	}
 
-	cmdMgr->compile();
+	for (int i = 0; i < 3; ++i) {
+		cmds[i] = context.frame[i]->create(1);
+	}
 }
 
 void BodyTrace::draw(const Projector *prj,const Navigator *nav)
 {
 	if (!fader.getInterstate()) return;
 
+	Context &context = *Context::instance;
+	FrameMgr &frame = *context.frame[context.frameIdx];
+	VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+	pipeline->bind(cmd);
+	layout->bindSet(cmd, *context.uboSet);
+	auto tmp = prj->getMatLocalToEye();
+	layout->pushConstant(cmd, 0, &tmp);
+	VertexArray::bindGlobal(cmd, bodyData[0].vertex->get());
+
 	for(int l=0; l<currentUsedList+1; l++) {
 		if (bodyData[l].size>2 && !bodyData[l].hide) {
-			//tracé en direct de la courbe de ci dessus
-			*bodyData[l].mat = prj->getMatLocalToEye();
-			bodyData[l].drawData->vertexCount = bodyData[l].size;
-			bodyData[l].vertex->update();
-		} else {
-			bodyData[l].drawData->vertexCount = 0;
+			layout->pushConstant(cmd, 1, &bodyData[l].color);
+			vkCmdDraw(cmd, bodyData[l].size, 1, bodyData[l].vertex->getOffset(), 0);
 		}
 	}
-	drawData->update();
-	cmdMgr->setSubmission(commandIndex, false);
+	frame.compile(cmds[context.frameIdx]);
+	frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 }
 
 void BodyTrace::addData(const Navigator *nav, double alt, double az)
@@ -163,19 +138,15 @@ void BodyTrace::addData(const Navigator *nav, double alt, double az)
 	if (bodyData[currentUsedList].size==0) {
 		bodyData[currentUsedList].old_punt[0]=alt;
 		bodyData[currentUsedList].old_punt[1]=az;
-		Utility::spheToRect(-(az+M_PI),alt,bodyData[currentUsedList].punts[0]);
+		Utility::spheToRect(-(az+M_PI),alt, *(Vec3f *) Context::instance->transfer->planCopy(bodyData[currentUsedList].vertex->get(), 0, sizeof(Vec3f)));
 		bodyData[currentUsedList].size=1;
-		bodyData[currentUsedList].vertex->assumeVerticeChanged();
-		bodyData[currentUsedList].drawData->vertexCount = bodyData[currentUsedList].size;
 	}
 	else {
 		if ( (abs(alt-bodyData[currentUsedList].old_punt[0])< 0.001) && (abs(az-bodyData[currentUsedList].old_punt[1])< 0.001) ) return;
 		if (bodyData[currentUsedList].size==(MAX_POINTS-1)) return;
 		bodyData[currentUsedList].old_punt[0]=alt;
 		bodyData[currentUsedList].old_punt[1]=az;
+		Utility::spheToRect(-(az+M_PI),alt, *(Vec3f *) Context::instance->transfer->planCopy(bodyData[currentUsedList].vertex->get(), sizeof(Vec3f) * bodyData[currentUsedList].size, sizeof(Vec3f)));
 		bodyData[currentUsedList].size+=1;
-		Utility::spheToRect(-(az+M_PI),alt,bodyData[currentUsedList].punts[bodyData[currentUsedList].size]);
-		bodyData[currentUsedList].vertex->assumeVerticeChanged();
-		bodyData[currentUsedList].drawData->vertexCount = bodyData[currentUsedList].size;
 	}
 }
