@@ -7,9 +7,9 @@
 #pragma optionNV(fastprecision off)
 
 
-layout (location = 0) in vec3 Position;
+layout (location = 0) in vec4 Position;
 
 void main(void)
 {
-	gl_Position = vec4(Position,1.0);
+	gl_Position = Position;
 }

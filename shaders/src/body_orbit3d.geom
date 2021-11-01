@@ -9,26 +9,12 @@
 
 //#define M_PI 3.14159265358979323846
 
-//layout uniform mat4 ModelViewProjectionMatrix;
+layout (push_constant) uniform ubo {
+	layout (offset=16) mat4 ModelViewMatrix;
+	vec3 clipping_fov;
+};
 
-//#include <cam_block.glsl>
-
-//////////////////// PROJECTION FISHEYE ////////////////////////////////
-
-// uniform mat4 inverseModelViewProjectionMatrix;
-// uniform mat4 ModelViewMatrix;
-//~ uniform ivec4 viewport; 
-//~ uniform vec3 viewport_center;
-
-layout (binding=2) uniform ubo {vec3 clipping_fov;};
-
-//~ uniform float zNear;
-//~ uniform float zFar;
-//~ uniform float fov;
-
-#include <fisheye.glsl>
-
-//////////////////// PROJECTION FISHEYE ////////////////////////////////
+#include <fisheye_noMV.glsl>
 
 //layout
 layout (lines) in;

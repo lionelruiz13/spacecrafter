@@ -8,7 +8,7 @@
 
 //layout
 layout (location=0)in vec2 position;
-layout (location=3)in vec4 color;
+layout (location=1)in vec4 color;
 
 // for MVP2D
 #include <cam_block_only.glsl>

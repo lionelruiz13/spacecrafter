@@ -6,7 +6,7 @@
 #pragma optimize(off)
 
 
-layout (binding=1) uniform uColor {vec3 Color;};
+layout (binding=0) uniform uColor {vec3 Color;};
  
 layout (location=0) out vec4 FragColor;
 

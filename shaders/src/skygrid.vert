@@ -5,7 +5,7 @@
 #pragma optimize(off)
 
 layout (location = 0) in vec3 Position;
-layout (location = 4) in float IntensityColor;
+layout (location = 1) in float IntensityColor;
 
 
 layout (location=0) out float intensityColor;

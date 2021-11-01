@@ -20,7 +20,7 @@ layout (location=1) out vec3 texColorOut;
 
 #include <cam_block.glsl>
 
-layout (binding=1) uniform ubo {
+layout (push_constant) uniform ubo {
     mat4 Mat; // ModelViewMatrix
 };
 #include <custom_project_nocheck.glsl>
