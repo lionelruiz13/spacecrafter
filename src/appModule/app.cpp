@@ -238,7 +238,13 @@ void App::initVulkan(InitParser &conf)
 	// PASS_BACKGROUND
 	context.render->setupClear(multiColorID, {0.f, 0.f, 0.f, 0.f});
 	context.render->bindColor(multiColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	// Sync with semaphore and load op
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
+	// Sync with texture update
+	context.render->addDependency(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, VK_ACCESS_SHADER_READ_BIT, false);
 	context.render->pushLayer();
+	context.render->addSelfDependency(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, VK_ACCESS_SHADER_READ_BIT);
+	context.render->addSelfDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
 	// // PASS_STAR_FBO
 	// context.render->bindColor(starID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	// context.render->bindPreserve(multiColorID);
@@ -268,7 +274,7 @@ void App::initVulkan(InitParser &conf)
 	context.starUsed.resize(3);
 	VkFenceCreateInfo fenceInfo {VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, nullptr, VK_FENCE_CREATE_SIGNALED_BIT};
 	VkSemaphoreCreateInfo semaphoreInfo {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, nullptr, 0};
-	FrameMgr::startHelper();
+	// FrameMgr::startHelper();
 	for (uint8_t i = 0; i < 3; ++i) {
 		context.transfers[i] = std::make_unique<TransferMgr>(*context.stagingMgr, 64*1024*1024);
 		// context.starSync[i] = std::make_unique<SyncEvent>(&vkmgr);

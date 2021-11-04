@@ -168,6 +168,7 @@ void Halo::createSC_context()
 	global->pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, global->layout.get());
 	global->pipeline->setBlendMode(BLEND_ADD);
 	global->pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	global->pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	global->pipeline->bindShader("body_halo.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	global->pipeline->bindShader("body_halo.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
 	global->pipeline->bindShader("body_halo.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
