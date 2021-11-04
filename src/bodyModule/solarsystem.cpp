@@ -77,6 +77,7 @@ SolarSystem::~SolarSystem()
 
 	// BodyShader::deleteShader();
 	Body::deleteDefaultatmosphereParams();
+	Body::deleteShader();
 
 	sun = nullptr;
 	moon = nullptr;

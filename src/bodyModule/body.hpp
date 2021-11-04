@@ -335,7 +335,7 @@ public:
 	}
 
 	static void createShader();
-	//static void deleteShader();
+	static void deleteShader();
 
 	const Mat4d get_rot_local_to_parent_unprecessed() const {
 		return rot_local_to_parent_unprecessed;

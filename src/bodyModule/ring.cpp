@@ -86,6 +86,11 @@ void Ring::createSC_context()
 	layout->buildLayout();
 	layout->build();
 
+	vertex = std::make_unique<VertexArray>(vkmgr);
+	vertex->createBindingEntry(3 * sizeof(float));
+	vertex->addInput(VK_FORMAT_R32G32_SFLOAT);
+	vertex->addInput(VK_FORMAT_R32_SFLOAT);
+
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipeline->setCullMode(true);
 	pipeline->bindVertex(*vertex);
@@ -239,7 +244,7 @@ Ring2D::Ring2D(float _r_min, float _r_max, int _slices, int _stacks, bool h, Ver
 	r_min = _r_min;
 	r_max = _r_max;
 
-	m_dataGL = base.createBuffer(0, _stacks * (_slices + 1), Context::instance->ojmBufferMgr.get());
+	m_dataGL = base.createBuffer(0, _stacks * (_slices + 1), Context::instance->globalBuffer.get());
 	computeRing(_slices, _stacks, h);
 }
 

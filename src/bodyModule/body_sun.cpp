@@ -279,8 +279,8 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
         }
 		axis->drawAxis(cmd, prj, mat);
 		drawBody(cmd, prj, nav, mat, screen_sz);
-        frame.compile(cmds[context.frameIdx]);
-        frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+        frame.compile(cmd);
+        frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 		drawn = true;
 	}
 

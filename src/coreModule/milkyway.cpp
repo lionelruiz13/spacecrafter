@@ -217,7 +217,7 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	}
 	Mat4f matrix = (nav->getJ2000ToEyeMat() * modelMilkyway ).convert();
 
-	if (displayIrisMilky && currentMilky.name == defaultMilky.name) {
+	if (displayIrisMilky && onTextureTransition && currentMilky.name == defaultMilky.name) {
 		pipelineMilky[0].bind(cmd);
 		layoutTwoTex->bindSets(cmd, {*context.uboSet, *setIrisMilky});
 		layoutTwoTex->pushConstant(cmd, 0, &matrix);

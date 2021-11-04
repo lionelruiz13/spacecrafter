@@ -185,7 +185,6 @@ void AppDraw::initSplash()
     context.lastFrameIdx = context.frameIdx;
     auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
     std::cout << "Acquire frame " << context.frameIdx << "\n";
-    vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx], VK_TRUE, UINT64_MAX);
     vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 
     FrameMgr &frame = *context.frame[context.frameIdx];
@@ -210,6 +209,6 @@ void AppDraw::initSplash()
     // vkQueueSubmit(context.graphicQueue, 1, &submit, VK_NULL_HANDLE);
     Texture *texPtr[] = {texture.get()};
     context.frame[context.frameIdx]->begin(VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS, 1, texPtr, context.transferSync[context.frameIdx].get());
-    context.frame[context.frameIdx]->submit();
-    context.transfer = context.transfers[context.frameIdx + 1].get(); // Assume next frame follow the previous one
+    context.frame[context.frameIdx]->submitInline();
+    context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume next frame follow the previous one
 }

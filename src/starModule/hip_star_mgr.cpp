@@ -201,7 +201,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
 
-	float dataTex[]= {0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
+	float dataTex[]= {0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0};
 	float dataPos[]= {-1.0,-1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
 
 	renderPassClear = std::make_unique<RenderMgr>(vkmgr);
@@ -246,14 +246,14 @@ void HipStarMgr::createShaderParams(int width,int height)
 	syncClear = std::make_unique<SyncEvent>(&vkmgr);
 	syncClear->imageBarrier(*context.starColorAttachment,
 		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-		VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_NONE_KHR,
-		VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_NONE_KHR);
+		VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
+		VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR);
 	syncClear->build();
 	syncReuse = std::make_unique<SyncEvent>(&vkmgr);
 	syncReuse->imageBarrier(*context.starColorAttachment,
 		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 		VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR,
-		VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT_KHR);
+		VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT_KHR | VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR);
 	syncReuse->build();
 
 	m_drawFBO_GL = std::make_unique<VertexArray>(vkmgr);
@@ -761,7 +761,20 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd, VkCommandBuffer mainCmd)
 {
 	unsigned char lastSync;
+	unsigned char nextSync;
 	previousSync.pop(lastSync);
+	previousSync.pop(nextSync);
+	syncUse->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
+	switch (nextSync) {
+		case STAR_UNINITIALIZED:
+			break;
+		case STAR_CLEAR:
+			syncClear->srcDependency(mainCmd);
+			break;
+		case STAR_STORE:
+			syncReuse->srcDependency(mainCmd);
+			break;
+	}
 	switch (lastSync) {
 		case STAR_UNINITIALIZED:
 			renderPassClear->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
@@ -785,19 +798,6 @@ void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd, VkCommandBuffer mainCmd)
 	vkCmdDraw(cmd, nbStarsToDraw, 1, 0, 0);
 	vkCmdEndRenderPass(cmd);
 	syncUse->srcDependency(cmd);
-	syncUse->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
-	unsigned char nextSync;
-	previousSync.pop(nextSync);
-	switch (nextSync) {
-		case STAR_UNINITIALIZED:
-			break;
-		case STAR_CLEAR:
-			syncClear->srcDependency(mainCmd);
-			break;
-		case STAR_STORE:
-			syncReuse->srcDependency(mainCmd);
-			break;
-	}
 }
 
 void HipStarMgr::drawStarName( Projector* prj )

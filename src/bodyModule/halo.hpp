@@ -78,13 +78,12 @@ private:
 		s_texture *last_tex_halo = nullptr;
 		std::unique_ptr<Set> set;
 		SubBuffer staging;
-		std::pair<int, int> blocs[3]; // copy block, pair of <offset, size>
 		int cmds[3] = {-1, -1, -1};
 		int initialOffset = 0;
 		int offset = 0; // vertex offset of the next packed draw
 		int size = 0; // current vertex count of the next packed draw
 	};
-	static std::unique_ptr<HaloContext> global;
+	static HaloContext *global;
 
 	float cmag;
 	float rmag;

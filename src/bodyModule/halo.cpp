@@ -25,7 +25,7 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
-std::unique_ptr<Halo::HaloContext> Halo::global;
+Halo::HaloContext *Halo::global;
 
 Halo::Halo(Body * _body)
 {
@@ -62,14 +62,12 @@ void Halo::endDraw()
 		frame.compile(cmd);
 		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 	}
-	global->blocs[context.frameIdx] = std::pair<int, int>(global->initialOffset, global->offset - global->initialOffset);
+	const int size = (global->offset - global->initialOffset) * (6 * sizeof(float));
+	const int offset = global->initialOffset * (6 * sizeof(float));
 	global->initialOffset = (global->initialOffset) ? 0 : global->offset;
 	global->offset = global->initialOffset;
-	// Upload vertices
-	const int size = global->blocs[context.frameIdx].second * (6 * sizeof(float));
 	if (size == 0)
 		return;
-	const int offset = global->blocs[context.frameIdx].first * (6 * sizeof(float));
 	context.transfer->planCopyBetween(global->staging, global->vertex->get(), size, offset, offset);
 }
 
@@ -79,7 +77,6 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	computeHalo(nav, prj, eye);
 	if (rmag<1.21 && cmag < 0.05)
 		return;
-
 	auto &data = global->pData[global->offset + global->size++];
 	data.pos = Vec2f((float) body->screenPos[0], (float)body->screenPos[1]);
 	data.Color = body->myColor->getHalo() * cmag;
@@ -148,7 +145,7 @@ void Halo::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
-	global = std::make_unique<HaloContext>();
+	global = new HaloContext();
 
 	for (int i = 0; i < 3; ++i)
 		global->cmds[i] = context.frame[i]->create(1);
@@ -182,8 +179,10 @@ void Halo::createSC_context()
 
 void Halo::destroySC_context()
 {
-	Context::instance->stagingMgr->releaseBuffer(global->staging);
-	global.reset();
+	if (global) {
+		Context::instance->stagingMgr->releaseBuffer(global->staging);
+		delete global;
+	}
 }
 
 bool Halo::setTexHaloMap(const std::string &texMap)

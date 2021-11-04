@@ -421,7 +421,7 @@ void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, cons
 			m_layoutArt->pushConstant(cmd, 0, &push, 0, sizeof(push));
 			submitSomething = true;
 		} else
-			m_layoutArt->pushConstant(cmd, 0, &push, offsetof(typeof(push), intensity), sizeof(push.intensity));
+			m_layoutArt->pushConstant(cmd, 0, &push.intensity, offsetof(typeof(push), intensity), sizeof(push.intensity));
 
 		m_setArt->clear();
 		m_setArt->bindTexture((*iter)->getTexture()->getTexture(), 0);

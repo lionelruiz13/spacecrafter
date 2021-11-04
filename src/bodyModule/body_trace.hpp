@@ -127,6 +127,7 @@ public:
 
 
 private:
+	std::unique_ptr<BufferMgr> vertexBufferMgr; // Must be destroyed after bodyData
 	BodyList bodyData[NB_MAX_LIST];
 	bool is_tracing;
 	int currentUsedList;
@@ -138,7 +139,6 @@ private:
 
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Pipeline> pipeline;
-	std::unique_ptr<BufferMgr> vertexBufferMgr;
 	std::unique_ptr<VertexArray> pattern;
 	int cmds[3] = {-1, -1, -1};
 };

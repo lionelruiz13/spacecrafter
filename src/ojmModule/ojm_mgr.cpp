@@ -203,7 +203,6 @@ void OjmMgr::createShader()
 	layout->build();
 
 	pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
-	context.pipelineArray.push_back(pipeline);
 	for (short i = 0; i < 2; ++i) {
 		pipeline[i].setCullMode(true);
 		pipeline[i].bindVertex(*context.ojmVertexArray);

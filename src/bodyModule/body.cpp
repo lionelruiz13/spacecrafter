@@ -271,6 +271,7 @@ void Body::deleteDefaultTexMap()
 	defaultTexMap = nullptr;
 	tex_eclipse_map = nullptr;
 	Halo::deleteDefaultTexMap();
+    Halo::destroySC_context();
 }
 
 void Body::createShader()
@@ -280,6 +281,11 @@ void Body::createShader()
 	Halo::createSC_context();
 	Hints::createSC_context();
 	Axis::createSC_context();
+}
+
+void Body::deleteShader()
+{
+    Axis::destroySC_context();
 }
 
 // Return the information std::string "ready to print" :)

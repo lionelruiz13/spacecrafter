@@ -406,6 +406,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		SyncEvent helper;
 		for (int i = 0; i < 3; ++i)
 			helper.imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 0, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, 0, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
+		helper.build();
 		helper.placeBarrier(cmd);
 		firstUse = false;
 	} else {

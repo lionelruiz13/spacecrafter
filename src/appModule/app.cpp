@@ -250,14 +250,14 @@ void App::initVulkan(InitParser &conf)
 	context.render->bindDepth(depthID, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 	if (multiColorID != colorID)
 		context.render->bindResolveDst(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-	context.render->addDependencyFrom(PASS_BACKGROUND, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT);
+	context.render->addDependencyFrom(PASS_BACKGROUND, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
 	context.render->pushLayer();
 	// PASS_FOREGROUND
 	context.render->bindColor(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
 	context.render->pushLayer();
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT);
-	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, VK_DEPENDENCY_BY_REGION_BIT);
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, 0, false);
 	context.render->build(3);
 	// ========== END DEFINE RENDERING ========== //
 	context.transfers.resize(3);
@@ -554,9 +554,9 @@ void App::draw(int delta_time)
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				return;
 		}
-		while (!context.frame[(context.frameIdx + 1) % 3]->isDone())
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		vkWaitForFences(vkmgr.refDevice, 1, &context.fences[(context.frameIdx + 1) % 3], VK_TRUE, UINT64_MAX);
+		// while (!context.frame[(context.frameIdx + 2) % 3]->isDone())
+		// 	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, UINT64_MAX);
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 		std::cout << "Acquire frame " << context.frameIdx << "\n";
 	}
@@ -583,7 +583,8 @@ void App::draw(int delta_time)
 
 	screenFader->draw();
 	context.frame[context.frameIdx]->begin(VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS, 0, nullptr, context.transferSync[context.frameIdx].get());
-	context.frame[context.frameIdx]->submit();
+	context.frame[context.frameIdx]->submitInline();
+	context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume the next frame follow the previous one
 }
 
 //! @brief Set the application locale. This apply to GUI, console messages etc..
