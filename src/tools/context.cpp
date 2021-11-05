@@ -14,6 +14,8 @@ Context::~Context()
     instance = nullptr;
     for (auto &f : fences)
         vkDestroyFence(VulkanMgr::instance->refDevice, f, nullptr);
+    for (auto &f : debugFences)
+        vkDestroyFence(VulkanMgr::instance->refDevice, f, nullptr);
     for (auto &s : semaphores)
         vkDestroySemaphore(VulkanMgr::instance->refDevice, s, nullptr);
     for (auto p : pipelineArray)

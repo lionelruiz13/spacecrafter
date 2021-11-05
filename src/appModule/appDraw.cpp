@@ -184,7 +184,7 @@ void AppDraw::initSplash()
 
     context.lastFrameIdx = context.frameIdx;
     auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
-    std::cout << "Acquire frame " << context.frameIdx << "\n";
+    // std::cout << "Acquire frame " << context.frameIdx << "\n";
     vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 
     FrameMgr &frame = *context.frame[context.frameIdx];

@@ -49,6 +49,7 @@ public:
     std::unique_ptr<RenderMgr> renderAlone; // Single-pass rendering without depth buffer
     std::vector<std::unique_ptr<FrameMgr>> frameAlone;
     std::vector<VkFence> fences;
+    std::vector<VkFence> debugFences;
     std::vector<VkSemaphore> semaphores;
     std::vector<VkCommandBuffer> graphicTransferCmd;
     std::vector<std::unique_ptr<Pipeline>> pipelines;

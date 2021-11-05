@@ -251,8 +251,10 @@ void App::initVulkan(InitParser &conf)
 	// PASS_BACKGROUND
 	context.render->setupClear(multiColorID, {0.f, 0.f, 0.f, 0.f});
 	context.render->bindColor(multiColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	// Sync with host writes to uniform and tiny vertexBuffer using tinyMgr
+	context.render->addDependency(VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT | VK_PIPELINE_STAGE_VERTEX_SHADER_BIT | VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT | VK_ACCESS_2_UNIFORM_READ_BIT_KHR, false);
 	// Sync with semaphore and load op
-	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
 	// Sync with texture update
 	context.render->addDependency(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, VK_ACCESS_SHADER_READ_BIT, false);
 	context.render->pushLayer();
@@ -270,10 +272,14 @@ void App::initVulkan(InitParser &conf)
 	if (multiColorID != colorID)
 		context.render->bindResolveDst(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	context.render->addDependencyFrom(PASS_BACKGROUND, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT, false);
+	context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
+	context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT | VK_PIPELINE_STAGE_VERTEX_SHADER_BIT | VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT | VK_ACCESS_2_UNIFORM_READ_BIT_KHR, false);
 	context.render->pushLayer();
 	// PASS_FOREGROUND
 	context.render->bindColor(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT | VK_PIPELINE_STAGE_VERTEX_SHADER_BIT | VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT | VK_ACCESS_2_UNIFORM_READ_BIT_KHR, false);
 	context.render->pushLayer();
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT);
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, 0, false);
@@ -282,6 +288,7 @@ void App::initVulkan(InitParser &conf)
 	context.transfers.resize(3);
 	context.transferSync.resize(3);
 	context.fences.resize(3);
+	context.debugFences.resize(3);
 	context.semaphores.resize(6);
 	context.graphicTransferCmd.resize(3);
 	context.starUsed.resize(3);
@@ -296,6 +303,7 @@ void App::initVulkan(InitParser &conf)
 		context.transferSync[i] = std::make_unique<SyncEvent>(&vkmgr);
 		context.transferSync[i]->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 		context.transferSync[i]->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+		context.transferSync[i]->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 		context.transferSync[i]->build();
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
 		if (vkmgr.getSwapchainView().empty()) {
@@ -310,6 +318,8 @@ void App::initVulkan(InitParser &conf)
 			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
 		context.frame.back()->build(context.graphicFamily->id, true, true);
 		vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, context.fences.data() + i);
+		fenceInfo.flags = 0;
+		vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, context.debugFences.data() + i);
 		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i);
 		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 3);
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
@@ -743,14 +753,18 @@ void App::submitFrame(App *self, int id)
 		vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		self->sender->presentFrame(id);
 	} else {
+		const int lastId = (id + 2) % 3;
 		VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 		VkSubmitInfo submit[2] {
 			{VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &cmd, 0, nullptr},
-			{VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + (id + 2) % 3], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]}
+			{VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + lastId], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]}
 		};
 		// std::cout << "Present frame " << id << "\n";
+		// vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.debugFences[lastId], VK_TRUE, UINT64_MAX);
+		// vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.debugFences[lastId]);
 		vkQueueSubmit(self->context.graphicQueue, 2, submit, self->context.fences[id]);
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
+		vkQueueWaitIdle(self->context.graphicQueue); // This is definetly bad, but nothing else work...
 		vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
 	}
 }
