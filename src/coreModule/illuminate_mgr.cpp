@@ -34,21 +34,21 @@
 #include "navModule/navigator.hpp"
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
-#include "vulkanModule/VertexArray.hpp"
 
-
-
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/Resource/VertexArray.hpp"
+#include "EntityCore/Resource/VertexBuffer.hpp"
+#include "EntityCore/Resource/Pipeline.hpp"
+#include "EntityCore/Resource/PipelineLayout.hpp"
+#include "EntityCore/Resource/Set.hpp"
+#include "EntityCore/Resource/TransferMgr.hpp"
+#include "EntityCore/Core/VulkanMgr.hpp"
+#include "EntityCore/Core/FrameMgr.hpp"
 
 //a copy of zone_array.hpp
 #define NR_OF_HIP 120416
 
-IlluminateMgr::IlluminateMgr(std::shared_ptr<HipStarMgr> _hip_stars, Navigator *_navigator, std::shared_ptr<ConstellationMgr> _asterism, ThreadContext *context)
+IlluminateMgr::IlluminateMgr(std::shared_ptr<HipStarMgr> _hip_stars, Navigator *_navigator, std::shared_ptr<ConstellationMgr> _asterism)
 {
 	hip_stars = _hip_stars;
 	navigator = _navigator;
@@ -56,20 +56,18 @@ IlluminateMgr::IlluminateMgr(std::shared_ptr<HipStarMgr> _hip_stars, Navigator *
 
 	illuminateGrid.subdivise(3);
 
-	defaultTex = new s_texture("star_illuminate.png", TEX_LOAD_TYPE_PNG_BLEND3 );
-	if (defaultTex ==nullptr)
+	defaultTex = std::make_shared<s_texture>("star_illuminate.png", TEX_LOAD_TYPE_PNG_BLEND3);
+	if (defaultTex == nullptr)
 		cLog::get()->write("Error loading texture illuminateTex", LOG_TYPE::L_ERROR);
 
 	currentTex = defaultTex;
-	createSC_context(context);
+	createSC_context();
 }
 
 IlluminateMgr::~IlluminateMgr()
 {
 	illuminateGrid.clear();
-
-	if (defaultTex) delete defaultTex;
-	defaultTex = nullptr;
+	Context::instance->indexBufferMgr->releaseBuffer(index);
 }
 
 // Load individual Illuminate for script
@@ -108,7 +106,6 @@ void IlluminateMgr::loadAllConstellation(double size, double rotation)
 		this->load(i,size,rotation);
 }
 
-
 void IlluminateMgr::removeConstellation(const std::string& abbreviation)
 {
 	std::vector<unsigned int> HPStars;
@@ -116,7 +113,6 @@ void IlluminateMgr::removeConstellation(const std::string& abbreviation)
 	for (auto i: HPStars)
 		this->remove(i);
 }
-
 
 void IlluminateMgr::removeAllConstellation()
 {
@@ -146,7 +142,6 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 	loadIlluminate(num, ra, de, size, _color[0], _color[1], _color[2], rotation );
 }
 
-
 // Load individual Illuminate
 void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  double angular_size, double r, double g, double b, double tex_rotation)
 {
@@ -172,15 +167,9 @@ void IlluminateMgr::removeAll()
 // Draw all the Illuminate
 void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 {
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//Vec3f pXYZ;
-
-	// illumPos.clear();
-	// illumTex.clear();
-	// illumColor.clear();
-	float *illumData = m_illumGL->getStagingVertexBufferPtr();
-
+	Context &context = *Context::instance;
+	auto cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
+	float *illumData = (float *) context.transfer->beginPlanCopy(MAX_ILLUMINATE * 8 * sizeof(float));
 	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
 	illuminateGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f);
 
@@ -190,70 +179,61 @@ void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 		if (++nbVertex == MAX_ILLUMINATE) // stop if vertexArray capacity is reached
 			break;
 	}
+	context.transfer->endPlanCopy(vertex->get(), nbVertex*4*8*sizeof(float));
 	if (nbVertex == 0)
 		return;
-	m_illumGL->assumeVerticeChanged();
-	m_illumGL->update();
-	m_pDrawDataIllum[0] = nbVertex * 6;
-	m_drawDataIllum->update();
 
-
-	//int nbrIllumToTrace = illumPos.size()/12;
-	// std::cout << "Illuminate à tracer: il y a " << nbrIllumToTrace << std::endl;
-	// std::cout << "illumPos   size : " << illumPos.size() << std::endl;
-	// std::cout << "illumTex   size : " << illumTex.size() << std::endl;
-	// std::cout << "illumColor size : " << illumColor.size() << std::endl;
-	//m_shaderIllum->use();
-
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, currentTex->getID());
-
-	*pModelViewMatrix = prj->getMatJ2000ToEye();
-
-	// m_illumGL->fillVertexBuffer(BufferType::POS3D, illumPos);
-	// m_illumGL->fillVertexBuffer(BufferType::TEXTURE, illumTex);
-	// m_illumGL->fillVertexBuffer(BufferType::COLOR, illumColor);
-	cmdMgr->setSubmission(commandIndex, false, cmdMgrTarget);
-	//Renderer::drawMultiArrays(m_shaderIllum.get(), m_illumGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, nbrIllumToTrace, 4);
+	m_pipelineIllum->bind(cmd);
+	m_layoutIllum->bindSets(cmd, {*m_setIllum, *context.uboSet});
+	vertex->bind(cmd);
+	vkCmdBindIndexBuffer(cmd, index.buffer, index.offset, VK_INDEX_TYPE_UINT32);
+	auto tmp1 = prj->getMatJ2000ToEye();
+	m_layoutIllum->pushConstant(cmd, 0, &tmp1);
+	vkCmdDrawIndexed(cmd, nbVertex * 6, 1, 0, 0, 0);
+	context.frame[context.frameIdx]->compile(cmd);
+	context.frame[context.frameIdx]->toExecute(cmd, PASS_BACKGROUND);
 }
 
-
-void IlluminateMgr::createSC_context(ThreadContext *context)
+void IlluminateMgr::buildSet()
 {
-	// m_shaderIllum = std::make_unique<shaderProgram>();
-	// m_shaderIllum->init("illuminate.vert", "illuminate.geom", "illuminate.frag");
-	// m_shaderIllum->setUniformLocation("ModelViewMatrix");
+	m_setIllum = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, m_layoutIllum.get(), -1, true, true);
+	m_setIllum->bindTexture(currentTex->getTexture(), 0);
+}
 
-	m_illumGL = std::make_unique<VertexArray>(context->surface);
-	m_illumGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	m_illumGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
-	m_illumGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
-	m_illumGL->build(MAX_ILLUMINATE * 4);
-	m_illumGL->registerIndexBuffer(BufferAccess::STATIC, MAX_ILLUMINATE * 6);
+void IlluminateMgr::createSC_context()
+{
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+
+	m_illumGL = std::make_unique<VertexArray>(vkmgr);
+	m_illumGL->createBindingEntry(8 * sizeof(float));
+	m_illumGL->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	m_illumGL->addInput(VK_FORMAT_R32G32_SFLOAT);
+	m_illumGL->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	vertex = m_illumGL->createBuffer(0, MAX_ILLUMINATE * 4, context.globalBuffer.get());
+	index = context.indexBufferMgr->acquireBuffer(MAX_ILLUMINATE * 6 * sizeof(uint32_t));
 
 	{ // initialize index buffer
-		std::vector<uint32_t> tmpIndex;
-		tmpIndex.reserve(MAX_ILLUMINATE * 6);
+		uint32_t *tmpIndex = (uint32_t *) context.transfer->planCopy(index);
 		for (int i = 0; i < MAX_ILLUMINATE * 4; i += 4) {
-			tmpIndex.push_back(i + 0);
-			tmpIndex.push_back(i + 1);
-			tmpIndex.push_back(i + 2);
+			*(tmpIndex++) = i + 0;
+			*(tmpIndex++) = i + 1;
+			*(tmpIndex++) = i + 2;
 
-			tmpIndex.push_back(i + 2);
-			tmpIndex.push_back(i + 1);
-			tmpIndex.push_back(i + 3);
+			*(tmpIndex++) = i + 2;
+			*(tmpIndex++) = i + 1;
+			*(tmpIndex++) = i + 3;
 		}
-		m_illumGL->fillIndexBuffer(MAX_ILLUMINATE * 6, reinterpret_cast<uint32_t *>(tmpIndex.data()));
 	}
-	m_layoutIllum = std::make_unique<PipelineLayout>(context->surface);
-	m_layoutIllum->setTextureLocation(0);
-	m_layoutIllum->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1);
+	m_layoutIllum = std::make_unique<PipelineLayout>(vkmgr);
+	m_layoutIllum->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	m_layoutIllum->buildLayout();
-	m_layoutIllum->setGlobalPipelineLayout(context->global->globalLayout);
+	m_layoutIllum->setGlobalPipelineLayout(context.layouts.front().get());
+	m_layoutIllum->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, 0, sizeof(Mat4f));
 	m_layoutIllum->build();
 
-	m_pipelineIllum = std::make_unique<Pipeline>(context->surface, m_layoutIllum.get());
-	m_pipelineIllum->bindVertex(m_illumGL.get());
+	m_pipelineIllum = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, m_layoutIllum.get());
+	m_pipelineIllum->bindVertex(*m_illumGL);
 	m_pipelineIllum->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	m_pipelineIllum->setDepthStencilMode();
 	m_pipelineIllum->bindShader("illuminate.vert.spv");
@@ -261,55 +241,26 @@ void IlluminateMgr::createSC_context(ThreadContext *context)
 	m_pipelineIllum->bindShader("illuminate.frag.spv");
 	m_pipelineIllum->build();
 
-	m_setIllum = std::make_unique<Set>(context->surface, context->setMgr, m_layoutIllum.get());
-	m_setIllum->bindTexture(currentTex->getTexture(), 0);
-	m_uniformIllum = std::make_unique<Uniform>(context->surface, sizeof(Mat4f));
-	pModelViewMatrix = static_cast<typeof(pModelViewMatrix)>(m_uniformIllum->data);
-	m_setIllum->bindUniform(m_uniformIllum.get(), 1);
-
-	m_drawDataIllum = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	m_pDrawDataIllum = static_cast<typeof(m_pDrawDataIllum)>(m_drawDataIllum->data);
-	m_pDrawDataIllum[1] = 1; // instanceCount
-	m_pDrawDataIllum[2] = m_pDrawDataIllum[3] = m_pDrawDataIllum[4] = 0; // offsets
-
-	cmdMgr = context->commandMgrDynamic;
-	cmdMgrTarget = context->commandMgr;
-	commandIndex = cmdMgr->initNew(m_pipelineIllum.get());
-	cmdMgr->bindSet(m_layoutIllum.get(), m_setIllum.get());
-	cmdMgr->bindSet(m_layoutIllum.get(), context->global->globalSet, 1);
-	cmdMgr->bindVertex(m_illumGL.get());
-	cmdMgr->indirectDrawIndexed(m_drawDataIllum.get());
-	cmdMgr->compile();
-	globalSet = context->global->globalSet;
+	for (int i = 0; i < 3; ++i)
+		cmds[i] = context.frame[i]->create(1);
+	buildSet();
 }
-
 
 void IlluminateMgr::changeTex(const std::string& fileName)
 {
-	this->removeTex();
-	userTex = new s_texture(fileName, TEX_LOAD_TYPE_PNG_BLEND3 );
-	if (userTex==nullptr) {
+	auto tmp = std::make_shared<s_texture>(fileName, TEX_LOAD_TYPE_PNG_BLEND3);
+	if (tmp==nullptr) {
 		cLog::get()->write("illuminate: error when loading user texture "+ fileName, LOG_TYPE::L_ERROR, LOG_FILE::SCRIPT);
+		return;
 	}
-	currentTex = userTex;
-	cmdMgrTarget->waitCompletion(0);
-	cmdMgrTarget->waitCompletion(1);
-	cmdMgrTarget->waitCompletion(2);
-	m_setIllum->bindTexture(currentTex->getTexture(), 0);
-	cmdMgr->init(commandIndex, m_pipelineIllum.get());
-	cmdMgr->bindSet(m_layoutIllum.get(), m_setIllum.get());
-	cmdMgr->bindSet(m_layoutIllum.get(), globalSet, 1);
-	cmdMgr->bindVertex(m_illumGL.get());
-	cmdMgr->indirectDrawIndexed(m_drawDataIllum.get());
-	cmdMgr->compile();
+	currentTex = tmp;
+	buildSet();
 }
 
 void IlluminateMgr::removeTex()
 {
-	if (currentTex == defaultTex) //nothing to do
-		return;
-	// here, userTex is used
-	currentTex = defaultTex;
-	delete userTex;
-	userTex = nullptr;
+	if (currentTex != defaultTex) {
+		currentTex = defaultTex;
+		buildSet();
+	}
 }

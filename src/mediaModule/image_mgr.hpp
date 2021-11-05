@@ -34,11 +34,11 @@
 #include "tools/vecmath.hpp"
 #include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
 
 class Image;
 class Navigator;
 class Projector;
+class Set;
 
 /**
  * @class ImageMgr
@@ -60,7 +60,7 @@ public:
 	virtual ~ImageMgr();
 
 	//! tube pour la création des shaders pour le draw des images
-	void createImageShader(ThreadContext *context);
+	void createImageShader();
 
 	//! charge une image dans le conteneur
 	bool loadImage(const std::string& filename, const std::string& name, const std::string& coordinate, IMG_PROJECT project, bool mipmap);

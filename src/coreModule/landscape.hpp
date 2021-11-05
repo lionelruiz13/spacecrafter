@@ -37,15 +37,16 @@
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 
+#include "EntityCore/Resource/SharedBuffer.hpp"
+
 class s_texture;
 class Navigator;
 class Projector;
 class VertexArray;
-class ThreadContext;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
 
 class Fog;
 
@@ -106,13 +107,13 @@ public:
 	static Landscape* createFromHash(stringHash_t & param);
 	static std::string getFileContent(const std::string& landscape_file);
 	static std::string getLandscapeNames(const std::string& landscape_file);
-	static void createSC_context(ThreadContext *_context);
+	static void createSC_context();
+	static void destroySC_context();
 protected:
-	Fog *fog=nullptr;
+	std::unique_ptr<Fog> fog;
 	virtual void load(const std::string& file_name, const std::string& section_name) {};
 	//! Load attributes common to all landscapes
 	void loadCommon(const std::string& landscape_file, const std::string& section_name);
-	void deleteMapTex();
 	float radius;
 	float sky_brightness;
 	bool valid_landscape;   // was a landscape loaded properly?
@@ -120,8 +121,8 @@ protected:
 	std::string name;
 	std::string author;
 	std::string description;
-	s_texture* map_tex;
-	s_texture* map_tex_night;
+	std::unique_ptr<s_texture> map_tex;
+	std::unique_ptr<s_texture> map_tex_night;
 	bool haveNightTex;
 	bool m_limitedShade;				// affichage de nuit non nocturne
 	float m_limitedShadeValue;			// indique quel pourcentage de lumière on garde pour l'affichage de nuit
@@ -129,18 +130,20 @@ protected:
 
 	static int slices;
 	static int stacks;
-	static ThreadContext *context;
-	static int commandIndex, commandIndexNight;
 	static Pipeline *pipeline;
 	static PipelineLayout *layout;
-	static Set *set;
-	static Uniform *uModelViewMatrix, *uFrag;
-	static Mat4f *pModelViewMatrix;
-	static float *psky_brightness, *pFader;
-	std::unique_ptr<VertexArray> m_landscapeGL;
+	static std::unique_ptr<VertexArray> vertexModel;
+	std::unique_ptr<SharedBuffer<Mat4f>> uMV;
+	struct frag {
+		float sky_brightness;
+		float fader;
+	};
+	std::unique_ptr<SharedBuffer<frag>> uFrag;
+	std::unique_ptr<VertexBuffer> vertex;
+	std::unique_ptr<Set> set;
+	VkCommandBuffer cmds[6] {}; // normal, then night
 	float rotate_z; // rotation around the z axis
 };
-
 
 class LandscapeFisheye : public Landscape {
 public:
@@ -150,7 +153,7 @@ public:
 	void create(const std::string _name, const std::string _maptex, double _texturefov,
 	            const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
 private:
-	void createFisheyeMesh(double radius, int slices, int stacks, double texture_fov,  float * datatex, float * datapos);
+	void createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, float *data);
 	void initShader();
 	float tex_fov;
 };
@@ -165,7 +168,7 @@ public:
 	            const float _top_altitude, const float _rotate_z, const std::string _maptex_night, float limitedShade, const bool _mipmap);
 private:
 	void createSphericalMesh(double radius, double one_minus_oblateness, int slices, int stacks,
-	                         double bottom_altitude, double top_altitude, float * datatex, float * datapos);
+	                         double bottom_altitude, double top_altitude, float * data);
 	void initShader();
 	float base_altitude, top_altitude;  // for partial sphere coverage
 };

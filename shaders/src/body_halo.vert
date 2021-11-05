@@ -7,20 +7,19 @@
 #pragma optionNV(fastprecision off)
 
 //layout
-layout (location=0)in vec2 position;
-layout (location=1)in vec2 texcoord;
-
-//externe
-//~ uniform mat4 ModelViewProjectionMatrix;
-
-#include <cam_block_only.glsl>
+layout(location=0) in vec2 pos;
+layout(location=1) in vec3 Color;
+layout(location=2) in float rmag;
 
 //out
-layout(location=0) out vec2 TexCoord;
+layout(location=0) out vec2 posOut;
+layout(location=1) out vec3 ColorOut;
+layout(location=2) out float rmagOut;
 
 void main()
 {
-	gl_Position = MVP2D * vec4(position,0.0,1.0);
-    TexCoord = texcoord;
+	posOut = pos;
+	ColorOut = Color;
+	rmagOut = rmag;
 }
 

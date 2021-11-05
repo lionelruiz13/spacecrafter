@@ -16,100 +16,53 @@
 #include "bodyModule/axis.hpp"
 #include "bodyModule/body.hpp"
 #include "coreModule/projector.hpp"
-#include "vulkanModule/VertexArray.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-
-
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/Buffer.hpp"
-
-Pipeline *Axis::pipeline;
-PipelineLayout *Axis::layout;
-Uniform *Axis::uColor;
-VertexArray *Axis::vertexModel;
-VirtualSurface *Axis::surface;
-SetMgr *Axis::setMgr;
-CommandMgr *Axis::cmdMgr;
-Buffer *Axis::bdrawaxis;
-int *Axis::drawaxis;
+std::unique_ptr<SharedBuffer<Vec3f>> Axis::uColor;
+std::unique_ptr<VertexArray> Axis::vertexModel;
+std::unique_ptr<Set> Axis::set;
+std::unique_ptr<Pipeline> Axis::pipeline;
+std::unique_ptr<PipelineLayout> Axis::layout;
 bool Axis::actualdrawaxis = false;
 
 Axis::Axis(Body * _body)
 {
 	body = _body;
-
-	m_AxisGL = std::make_unique<VertexArray>(*vertexModel);
-	m_AxisGL->build(2);
-
-	set = std::make_unique<Set>(surface, setMgr, layout, -1, false); // Don't initialize while unused
-	uMat = std::make_unique<Uniform>(surface, sizeof(Mat4f));
-	MVP = static_cast<Mat4f *>(uMat->data);
-	set->bindUniform(uMat.get(), 0);
-	set->bindUniform(uColor, 1);
 }
 
 void Axis::setFlagAxis(bool b)
 {
-	if (actualdrawaxis != b) {
-		*drawaxis = static_cast<int>(b);
-		bdrawaxis->update();
-		actualdrawaxis = b;
-	}
+	actualdrawaxis = b;
 }
 
-void Axis::drawAxis(const Projector* prj, const Mat4d& mat)
+void Axis::drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat)
 {
-	if (commandIndex == -1) {
-		commandIndex = cmdMgr->getCommandIndex();
-		cmdMgr->init(commandIndex);
-		cmdMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
-		cmdMgr->vkIf(bdrawaxis);
-		cmdMgr->bindPipeline(pipeline);
-		cmdMgr->bindVertex(m_AxisGL.get());
-		cmdMgr->bindSet(layout, set.get());
-		cmdMgr->draw(2);
-		cmdMgr->vkEndIf();
+	if (!actualdrawaxis)
 		return;
-	}
-	if(!actualdrawaxis) {
-		cmdMgr->setSubmission(commandIndex, false);
-		return;
+	if (!m_AxisGL) {
+		m_AxisGL = vertexModel->createBuffer(0, 2, Context::instance->tinyMgr.get());
+		pPosAxis = static_cast<typeof(pPosAxis)>(Context::instance->tinyMgr->getPtr(m_AxisGL->get()));
 	}
 
-	//glLineWidth(3.0);
-
-	//glEnable(GL_LINE_SMOOTH);
+	pipeline->bind(cmd);
+	VertexArray::bind(cmd, m_AxisGL->get());
+	layout->bindSet(cmd, *set, 0);
 
 	Mat4f proj = prj->getMatProjection().convert();
 	Mat4f matrix=mat.convert();
-	*MVP = proj*matrix;
+	Mat4f MVP = proj*matrix;
+	layout->pushConstant(cmd, 0, reinterpret_cast<void *>(&MVP));
 
 	computeAxis(prj, mat);
 
-	m_AxisGL->fillVertexBuffer(BufferType::POS3D, vecAxisPos);
-	m_AxisGL->update();
-
-	cmdMgr->setSubmission(commandIndex, false);
-
-	vecAxisPos.clear();
-
-	//glLineWidth(1.0);
-	//glDisable(GL_LINE_SMOOTH);
+	vkCmdDraw(cmd, 2, 1, 0, 0);
 }
 
 void Axis::computeAxis(const Projector* prj, const Mat4d& mat)
 {
-
-	Vec3d posAxis = prj->sVertex3v(0, 0,  1.4 * body->radius, mat);
-	insert_vec3(vecAxisPos,posAxis);
-
-	posAxis = prj->sVertex3v(0, 0,  -1.4 * body->radius, mat);
-	insert_vec3(vecAxisPos,posAxis);
+	pPosAxis[0] = prj->sVertex3v(0, 0,  1.4 * body->radius, mat);
+	pPosAxis[1] = prj->sVertex3v(0, 0,  -1.4 * body->radius, mat);
 }
 
 // Calculate the angle of the axis on the screen
@@ -142,35 +95,42 @@ void Axis::computeAxisAngle(const Projector* prj, const Mat4d& mat) {
 	}
 }
 
-void Axis::createSC_context(ThreadContext *context)
+void Axis::createSC_context()
 {
-	surface = context->surface;
-	cmdMgr = context->commandMgr;
-	setMgr = context->setMgr;
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 
-	vertexModel = context->global->tracker->track(new VertexArray(surface, cmdMgr));
-	vertexModel->registerVertexBuffer(BufferType::POS3D, BufferAccess::STREAM);
+	vertexModel = std::make_unique<VertexArray>(vkmgr, 3*sizeof(float));
+	vertexModel->createBindingEntry(3*sizeof(float));
+	vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 
-	layout = context->global->tracker->track(new PipelineLayout(context->surface));
-	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
-	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0);
 	layout->buildLayout();
+	layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(Mat4f));
 	layout->build();
 
-	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
 	pipeline->setLineWidth(3.0);
 	pipeline->bindShader("body_Axis.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipeline->bindShader("body_Axis.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
-	pipeline->bindVertex(vertexModel);
+	pipeline->bindVertex(*vertexModel);
 	pipeline->build();
 
-	uColor = context->global->tracker->track(new Uniform(surface, sizeof(Vec3f)));
-	Vec3f Color(1.0,0.0,0.0);
-	*static_cast<Vec3f *>(uColor->data) = Color;
+	uColor = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+	*uColor = Vec3f{1.0, 0.0, 0.0};
 
-	bdrawaxis = context->global->tracker->track(new Buffer(surface, 4, VK_BUFFER_USAGE_CONDITIONAL_RENDERING_BIT_EXT));
-	drawaxis = static_cast<int *>(bdrawaxis->data);
-	*drawaxis = static_cast<int>(actualdrawaxis);
-	bdrawaxis->update();
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	set->bindUniform(uColor, 0);
+	set->update();
+}
+
+void Axis::destroySC_context()
+{
+	uColor.reset();
+	pipeline.reset();
+	layout.reset();
+	set.reset();
+	vertexModel.reset();
 }

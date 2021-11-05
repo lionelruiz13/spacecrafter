@@ -32,10 +32,8 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "ojmModule/ojm.hpp"
-
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 Artificial::Artificial(std::shared_ptr<Body> parent,
                        const std::string& englishName,
@@ -49,8 +47,7 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
                        const std::string& model_name,
                        bool _deleteable,
                        double orbit_bounding_radius,
-					   std::shared_ptr<BodyTexture> _bodyTexture,
-                       ThreadContext *context
+					   std::shared_ptr<BodyTexture> _bodyTexture
                       ):
 	Body(parent,
 	     englishName,
@@ -65,12 +62,10 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 	     close_orbit,
 	     nullptr,
 	     orbit_bounding_radius,
-	     _bodyTexture,
-         context)
+	     _bodyTexture)
 {
 	selectShader();
-    createSC_context(context);
-	obj3D = std::make_unique<Ojm>(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius, context->surface);
+	obj3D = std::make_unique<Ojm>(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius);
 	if (!obj3D -> getOk())
 		std::cout << "Error with " << englishName << " " << model_name << std::endl;
 	orbitPlot = std::make_unique<Orbit2D>(this);
@@ -89,54 +84,34 @@ void Artificial::selectShader ()
     pushSet = BodyShader::getPushSetShaderArtificial();
 }
 
-void Artificial::createSC_context(ThreadContext *context)
+void Artificial::createSC_context()
 {
-    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout, 2);
-    uNormalMatrix = std::make_unique<Uniform>(context->surface, sizeof(*pNormalMatrix));
-    pNormalMatrix = static_cast<typeof(pNormalMatrix)>(uNormalMatrix->data);
-    set->bindUniform(uNormalMatrix.get(), 0);
-    uProj = std::make_unique<Uniform>(context->surface, sizeof(*pProj));
-    pProj = static_cast<typeof(pProj)>(uProj->data);
-    set->bindUniform(uProj.get(), 1);
-    uLight = std::make_unique<Uniform>(context->surface, sizeof(*pLight));
-    pLight = static_cast<typeof(pLight)>(uLight->data);
-    set->bindUniform(uLight.get(), 2);
+    if (initialized)
+        return;
+    auto &vkmgr = *VulkanMgr::instance;
+    auto &context = *Context::instance;
+    set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, 2, false, true);
+    uNormalMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+    uProj = std::make_unique<SharedBuffer<artGeom>>(*context.uniformMgr);
+    uLight = std::make_unique<SharedBuffer<LightInfo>>(*context.uniformMgr);
+    set->bindUniform(uNormalMatrix, 0);
+    set->bindUniform(uProj, 1);
+    set->bindUniform(uLight, 2);
 }
 
-void Artificial::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
-	//StateGL::enable(GL_CULL_FACE);
-	//StateGL::disable(GL_BLEND);
+    createSC_context();
 
-    switch (commandIndex) {
-        case -2: // Command not builded
-            commandIndex = -1;
-            if (!context->commandMgr->isRecording()) {
-                commandIndex = context->commandMgr->getCommandIndex();
-                context->commandMgr->init(commandIndex);
-                context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
-            }
-            pLight->Intensity =Vec3f(1.0, 1.0, 1.0);
-            context->commandMgr->bindSet(drawState->layout, context->global->globalSet, 0);
-            context->commandMgr->bindSet(drawState->layout, set.get(), 2);
-            obj3D->record(context->commandMgr, drawState->pipeline, drawState->layout, pushSet);
-            context->commandMgr->compile(); // There is no halo for body_artificial
-            return;
-        case -1: break;
-        default:
-            context->commandMgr->setSubmission(commandIndex);
-    }
+    auto &context = *Context::instance;
 
     Mat4f matrix = mat.convert();
-    *pNormalMatrix = matrix.inverse().transpose();
-    pProj->ModelViewMatrix = matrix;
-    pProj->clipping_fov = prj->getClippingFov();
-    pLight->Position = eye_sun;
-
-	//paramètres commun aux shaders
-	//myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
-
-	//myShaderProg->unuse();
-
-	//StateGL::disable(GL_CULL_FACE);
+    *uNormalMatrix = matrix.inverse().transpose();
+    uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
+    drawState->layout->bindSet(cmd, *context.uboSet);
+    drawState->layout->bindSet(cmd, *set, 2);
+    obj3D->record(cmd, drawState->pipeline, drawState->layout, pushSet);
+    uProj->get().ModelViewMatrix = matrix;
+    uProj->get().clipping_fov = prj->getClippingFov();
+    uLight->get().Position = eye_sun;
 }

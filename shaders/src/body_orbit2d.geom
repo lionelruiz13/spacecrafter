@@ -11,9 +11,9 @@ layout (lines) in;
 layout (line_strip, max_vertices = 2) out;
 
 //externe
-layout (binding=0) uniform uMat {mat4 Mat;};
+layout (push_constant) uniform uMat {layout (offset=16) mat4 Mat;};
 
-#include <cam_block.glsl>
+#include <cam_block_only.glsl>
 #include <custom_project.glsl>
 
 void main(void)

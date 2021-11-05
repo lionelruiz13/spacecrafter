@@ -46,22 +46,16 @@
 #include "ojmModule/objl_mgr.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
 #include "appModule/space_date.hpp"
-#include "vulkanModule/Context.hpp"
-
-
 
 #define SOLAR_MASS 1.989e30
 #define EARTH_MASS 5.976e24
 #define LUNAR_MASS 7.354e22
 #define MARS_MASS  0.64185e24
 
-
-
-SolarSystem::SolarSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
-	:ProtoSystem(_context, _objLMgr, observatory, navigation, timeMgr), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.)
+SolarSystem::SolarSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
+	:ProtoSystem(_objLMgr, observatory, navigation, timeMgr), sun(nullptr),moon(nullptr),earth(nullptr), moonScale(1.)
 {
 }
-
 
 SolarSystem::~SolarSystem()
 {
@@ -70,6 +64,7 @@ SolarSystem::~SolarSystem()
 
 	// BodyShader::deleteShader();
 	Body::deleteDefaultatmosphereParams();
+	Body::deleteShader();
 
 	sun = nullptr;
 	moon = nullptr;

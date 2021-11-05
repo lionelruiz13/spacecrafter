@@ -31,16 +31,14 @@
 
 #include "tools/no_copy.hpp"
 
+#include "EntityCore/Resource/SharedBuffer.hpp"
+
 class Projector;
 class Navigator;
 class Pipeline;
 class PipelineLayout;
-class CommandMgr;
-class VertexArray;
-class Uniform;
+class VertexBuffer;
 class Set;
-class VirtualSurface;
-class ThreadContext;
 
 class OjmMgr: public NoCopy {
 public:
@@ -50,7 +48,7 @@ public:
 		OTHER
 	};
 
-	OjmMgr(ThreadContext *context);
+	OjmMgr();
 	virtual ~OjmMgr();
 
 	bool load(const std::string &mode, const std::string &name, const std::string &fileName, const std::string &pathFile, Vec3f Position, float multiplier = 1.0f);
@@ -63,15 +61,15 @@ public:
 
 	void draw(Projector *prj, const Navigator *nav, STATE_POSITION state);
 
-	void init(ThreadContext *context)
+	void init()
 	{
-		createShader(context);
+		createShader();
 	}
 
 private:
 	OjmMgr::STATE_POSITION convert(const std::string & value);
 
-	void createShader(ThreadContext *context);
+	void createShader();
 	// void deleteShader();
 
 	bool remove(STATE_POSITION state, const std::string& name);
@@ -83,31 +81,24 @@ private:
 
 	struct OjmContainer
 	{
-		Ojm *Obj3D;
+		std::unique_ptr<Ojm> Obj3D;
 		std::string name;
 		Mat4f model;
 		STATE_POSITION myState;
-		std::unique_ptr<Uniform> uniform;
-		struct {
+		struct uniformData {
 			Mat4f ModelViewMatrix;
 			Mat4f NormalMatrix;
-		} *pUniform;
+		};
+		std::unique_ptr<SharedBuffer<uniformData>> uniform;
 	};
 	Mat4f view, proj;
-	VirtualSurface *surface;
-	CommandMgr *cmdMgr;
-	CommandMgr *cmdMgrMaster;
-	Set *globalSet;
 	STATE_POSITION actualState = OTHER; // mustn't match any possible state
-	std::vector<OjmContainer*> OjmVector;
-	//std::unique_ptr<shaderProgram> shaderOJM;
+	std::vector<std::unique_ptr<OjmContainer>> OjmVector;
 	std::unique_ptr<PipelineLayout> layout;
 	Pipeline *pipeline;
-	std::unique_ptr<VertexArray> vertex;
 	std::unique_ptr<Set> set, pushSet;
-	bool needRebuild = false; // for future commandMgr threading
-	int commandIndex, commandIndexSwitch;
-	std::unique_ptr<Uniform> uniformModel;
+	bool needRebuild[3] = {true, true, true};
+	VkCommandBuffer cmds[3];
 	int virtualUniformID;
 };
 

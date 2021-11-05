@@ -23,14 +23,12 @@
 #include "bodyModule/orbit_plot.hpp"
 #include "tools/fader.hpp"
 
-
 #include <vector>
+#include <vulkan/vulkan.h>
 
 class Body;
 class Projector;
 class Navigator;
-
-class Uniform;
 
 class Orbit3D : public OrbitPlot {
 public:
@@ -39,24 +37,13 @@ public:
 	Orbit3D(const Orbit3D&) = delete;
 	Orbit3D(Body* body, int segments = 180);
 
-	void drawOrbit(const Navigator * nav, const Projector* prj, const Mat4d &mat);
-
+	virtual void drawOrbit(VkCommandBuffer &cmd, const Navigator * nav, const Projector* prj, const Mat4d &mat) override;
+	virtual bool doDraw(const Navigator * nav, const Projector* prj, const Mat4d &mat) override;
 	void computeShader();
 
 private:
 
-	void setPrjMat(const Projector* prj, const Mat4d &mat);
-
-	std::vector<float> orbitSegments;
-	const Projector * prj;
-	Mat4d mat;
-
-	int commandIndex;
-	std::unique_ptr<Uniform> uModelViewMatrix, uColor, uclipping_fov;
-	std::unique_ptr<Set> set;
-	Mat4f *pModelViewMatrix;
-	Vec4f *pColor;
-	Vec3f *pclipping_fov;
+	float *orbitSegments;
 };
 
 #endif

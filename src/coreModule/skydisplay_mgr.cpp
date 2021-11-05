@@ -30,13 +30,9 @@
 #include "tools/log.hpp"
 #include "tools/s_font.hpp"
 
-
-#include "vulkanModule/CommandMgr.hpp"
-
-SkyDisplayMgr::SkyDisplayMgr(ThreadContext *context)
+SkyDisplayMgr::SkyDisplayMgr()
 {
-	cmdMgr = context->commandMgr;
-	SkyDisplay::createSC_context(context);
+	SkyDisplay::createSC_context();
 }
 
 void SkyDisplayMgr::draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
@@ -60,8 +56,7 @@ SkyDisplayMgr::~SkyDisplayMgr()
 		cLog::get()->write("SkyDisplayMgr : delete " + getSkyName(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
-	// if (font != nullptr)
-	// 	delete font;
+	SkyDisplay::destroySC_context();
 }
 
 void SkyDisplayMgr::update(int delta_time)

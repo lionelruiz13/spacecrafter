@@ -66,22 +66,17 @@
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/app_settings.hpp"
 
-#include "vulkanModule/VirtualSurface.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/ComputePipeline.hpp"
-#include "vulkanModule/Texture.hpp"
-#include "vulkanModule/TextureMgr.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 #include "coreModule/tully.hpp"
 
-Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
+Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
 	projection(nullptr), selected_object(nullptr), hip_stars(nullptr),
 	illuminates(nullptr), ssystemFactory(NULL), milky_way(nullptr)
 {
 	vzm={0.,0.,0.,0.,0.,0.00025};
 	recordActionCallback = recordCallback;
-	context = _context;
 	media = _media;
 	fontFactory = _fontFactory;
 	projection = new Projector( width,height, 60 );
@@ -92,32 +87,30 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	//set Shaders directory and suffix
 	Pipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
-	context->global->textureMgr->initCustomMipmap(context->surface);
-
-	uboCam = std::make_unique<UBOCam>(context);
+	uboCam = std::make_unique<UBOCam>();
 	tone_converter = new ToneReproductor();
-	atmosphere = std::make_shared<Atmosphere>(context);
+	atmosphere = std::make_shared<Atmosphere>();
 	timeMgr = std::make_shared<TimeMgr>();
 	navigation = new Navigator();
 	observatory = _observatory;
-	ssystemFactory = new SSystemFactory(context, observatory.get(), navigation, timeMgr.get());
-	nebulas = std::make_unique<NebulaMgr>(context);
-	milky_way = std::make_shared<MilkyWay>(context);
-	starNav = std::make_unique<StarNavigator>(context);
-	cloudNav = std::make_unique<CloudNavigator>(context);
-	universeCloudNav = std::make_unique<CloudNavigator>(context);
-	dsoNav = std::make_unique<DsoNavigator>(context, "dso3d-color.png");
-	starLines = std::make_unique<StarLines>(context);
-	ojmMgr = std::make_unique<OjmMgr>(context);
+	ssystemFactory = new SSystemFactory(observatory.get(), navigation, timeMgr.get());
+	nebulas = std::make_unique<NebulaMgr>();
+	milky_way = std::make_shared<MilkyWay>();
+	starNav = std::make_unique<StarNavigator>();
+	cloudNav = std::make_unique<CloudNavigator>();
+	universeCloudNav = std::make_unique<CloudNavigator>();
+	dsoNav = std::make_unique<DsoNavigator>("dso3d-color.png");
+	starLines = std::make_unique<StarLines>();
+	ojmMgr = std::make_unique<OjmMgr>();
 	bodyDecor = new BodyDecor(milky_way, atmosphere);
 
-	skyGridMgr = std::make_unique<SkyGridMgr>(context);
+	skyGridMgr = std::make_unique<SkyGridMgr>();
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_EQUATORIAL);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ECLIPTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_GALACTIC);
 	skyGridMgr->Create(SKYGRID_TYPE::GRID_ALTAZIMUTAL);
 
-	skyLineMgr = std::make_unique<SkyLineMgr>(context);
+	skyLineMgr = std::make_unique<SkyLineMgr>();
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_CIRCLE_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_POINT_POLAR);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ECLIPTIC_POLE);
@@ -141,7 +134,7 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZODIAC);
 	skyLineMgr->Create(SKYLINE_TYPE::LINE_ZENITH);
 
-	skyDisplayMgr = std::make_unique<SkyDisplayMgr>(context);
+	skyDisplayMgr = std::make_unique<SkyDisplayMgr>();
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONAL);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_PERSONEQ);
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_NAUTICAL);
@@ -153,15 +146,15 @@ Core::Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media
 	skyDisplayMgr->Create(SKYDISPLAY_NAME::SKY_ORTHODROMY);
 
 	cardinals_points = std::make_unique<Cardinals>();
-	meteors = std::make_unique<MeteorMgr>(10, 60, context);
+	meteors = std::make_unique<MeteorMgr>(10, 60);
 	landscape = new Landscape();
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
-	hip_stars = std::make_shared<HipStarMgr>(width,height, context);
-	asterisms = std::make_shared<ConstellationMgr>(hip_stars, context);
-	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms, context);
-	oort =  std::make_unique<Oort>(context);
-	dso3d = std::make_unique<Dso3d>(context);
-	tully = std::make_unique<Tully>(context);
+	hip_stars = std::make_shared<HipStarMgr>(width,height);
+	asterisms = std::make_shared<ConstellationMgr>(hip_stars);
+	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms);
+	oort =  std::make_unique<Oort>();
+	dso3d = std::make_unique<Dso3d>();
+	tully = std::make_unique<Tully>();
 	object_pointer_visibility = 1;
 }
 
@@ -223,6 +216,7 @@ Core::~Core()
 	//delete skyloc;
 	//skyloc = nullptr;
 	Object::deleteTextures(); // Unload the pointer textures
+	ObjectBase::uninit();
 	// Object::deleteShaders();
 	//delete text_usr;
 	//delete uboCam;
@@ -297,7 +291,7 @@ void Core::init(const InitParser& conf)
 		// Init nebulas
 		nebulas->loadDeepskyObject(AppSettings::Instance()->getUserDir() + "deepsky_objects.fab");
 
-		Landscape::createSC_context(context);
+		Landscape::createSC_context();
 		landscape->setSlices(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_SLICES));
 		landscape->setStacks(conf.getInt(SCS_RENDERING, SCK_LANDSCAPE_STACKS));
 		setLandscape(initialvalue.initial_landscapeName);
@@ -380,16 +374,16 @@ void Core::init(const InitParser& conf)
 		if (dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
 			dso3d->build();
 
-		ojmMgr->init(context);
+		ojmMgr->init();
 		// 3D object integration test
 		ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
 
 		// Load the pointer textures
 		Object::initTextures();
-		ObjectBase::createShaderStarPointeur(context);
-		ObjectBase::createShaderPointeur(context);
+		ObjectBase::createShaderStarPointeur();
+		ObjectBase::createShaderPointeur();
 		//Init of the text's shaders
-		s_font::createSC_context(context);
+		s_font::createSC_context();
 	}
 
 	tone_converter->setWorldAdaptationLuminance(3.75f + atmosphere->getIntensity()*40000.f);
@@ -532,7 +526,6 @@ void Core::uboCamUpdate()
 	uboCam->setClippingFov(projection->getClippingFov());
 	uboCam->setViewportCenter(projection->getViewportFloatCenter());
 	uboCam->setMVP2D(projection->getMatProjectionOrtho2D());
-	uboCam->update();
 }
 
 std::string Core::getSkyCulture() const {
@@ -1188,7 +1181,7 @@ void Core::setColorScheme(const std::string& skinFile, const std::string& sectio
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_EQUATOR, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 	skyLineMgr->setColor(SKYLINE_TYPE::LINE_TROPIC, Utility::strToVec3f(conf.getStr(section,SCK_EQUATOR_COLOR)));
 
-	ssystemFactory->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR), 
+	ssystemFactory->setDefaultBodyColor(conf.getStr(section,SCK_PLANET_NAMES_COLOR), conf.getStr(section,SCK_PLANET_NAMES_COLOR),
 								conf.getStr(section,SCK_PLANET_ORBITS_COLOR), conf.getStr(section,SCK_OBJECT_TRAILS_COLOR));
 
 	// default color override
@@ -1654,7 +1647,7 @@ std::vector<std::string> Core::listMatchingObjectsI18n(const std::string& objPre
 
 	// Get matching planets
 	std::vector<std::string> matchingPlanets = ssystemFactory->listMatchingObjectsI18n(objPrefix, maxNbItem);
-	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter) 
+	for (iter = matchingPlanets.begin(); iter != matchingPlanets.end(); ++iter)
 		withType ? result.push_back(*iter+"(P)") : result.push_back(*iter);
 	maxNbItem-=matchingPlanets.size();
 

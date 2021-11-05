@@ -38,11 +38,9 @@
 #include "coreModule/core_common.hpp"
 #include "tools/no_copy.hpp"
 
-class ThreadContext;
-
 class SkyLineMgr: public NoCopy, public ModuleFont  {
 public:
-	SkyLineMgr(ThreadContext *context);
+	SkyLineMgr();
 	~SkyLineMgr();
 
 	int size() {

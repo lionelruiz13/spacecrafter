@@ -15,9 +15,9 @@ layout (binding=1) uniform fov {
 #include <fisheyeNoMV.glsl>
 
 layout (location=0) in vec3 position;
-layout (location=6) in mat4 model;
-layout (location=10) in mat4 invmodel;
-layout (location=14) in vec3 data;
+layout (location=1) in mat4 model;
+layout (location=5) in mat4 invmodel;
+layout (location=9) in vec3 data;
 
 layout (location=0) out vec3 positionOut;
 layout (location=1) out vec3 texCoord;

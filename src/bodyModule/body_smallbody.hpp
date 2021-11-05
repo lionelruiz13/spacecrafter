@@ -23,11 +23,10 @@
  */
 
 #include "bodyModule/body.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Ring;
 class Set;
-class Uniform;
-class Buffer;
 
 class SmallBody : public Body {
 
@@ -45,23 +44,19 @@ public:
 	          bool close_orbit,
 	          ObjL* _currentObj,
 	          double orbit_bounding_radius,
-			  std::shared_ptr<BodyTexture> _bodyTexture,
-			  ThreadContext *context);
+			  std::shared_ptr<BodyTexture> _bodyTexture);
 
 	virtual ~SmallBody();
 
 	virtual void selectShader ();
 
 protected :
-	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	void defineSet();
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
-	int commandIndex = -2;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal
-	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal
-	std::unique_ptr<Uniform> uUmbraColor; // bump
-	globalVertProj *pGlobalVertProj = nullptr;
-	globalFrag *pGlobalFrag = nullptr;
-	Vec3f *pUmbraColor = nullptr;
-	std::unique_ptr<Buffer> drawData;
+	std::unique_ptr<SharedBuffer<globalVertProj>> uGlobalVertProj; // night bump normal
+	std::unique_ptr<SharedBuffer<globalFrag>> uGlobalFrag; // night bump normal
+	std::unique_ptr<SharedBuffer<Vec3f>> uUmbraColor; // bump
+	bool initialized = false;
 };

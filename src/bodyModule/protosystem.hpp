@@ -31,7 +31,6 @@
 #include "tools/ScModule.hpp"
 #include "bodyModule/body.hpp"
 
-class ThreadContext;
 class OrbitCreator;
 class SSystemIterator;
 class SSystemIteratorVector;
@@ -48,11 +47,11 @@ friend class SSystemIterator;
 friend class SSystemIteratorVector;
 public:
 
-    ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
+    ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
     ~ProtoSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
-	
+
 	//! Load the bodies data from a file
 	void load(const std::string& planetfile);
 
@@ -67,9 +66,9 @@ public:
 
 	//removes a body and its satellites
 	bool removeBody(const std::string &name);
-	
+
 	bool removeBodyNoSatellite(const std::string &name);
-	
+
 	//removes all bodies that do not come from ssystem.ini
 	bool removeSupplementalBodies(const std::string &name);
 
@@ -95,7 +94,7 @@ public:
 	                                  const Projector * prj,
 	                                  bool *default_last_item,
 	                                  bool aboveHomePlanet ) const;
-	
+
 	//! Return the matching planet pointer if exists or nullptr
 	//! @param planetNameI18n The case sensistive translated planet name
 	Object searchByNamesI18(const std::string &planetNameI18n) const;
@@ -105,10 +104,10 @@ public:
 
 	//! set flag for Activate/Deactivate planets axis
 	void setFlagAxis(bool b);
-	
+
 	//! Start/stop accumulating new trail data (clear old data)
 	void startTrails(bool b);
-	
+
 	//! Set flag for displaying clouds (planet rendering feature)
 	void setFlagClouds(bool b) {
 		Body::setFlagClouds(b);
@@ -130,13 +129,13 @@ public:
 	void modelRingInit(int low, int medium, int high) {
 		ringsInit=Vec3i(low, medium, high);
 	}
-	
+
 	std::string getPlanetsPosition();
-	
+
 	std::shared_ptr<OrbitCreator> getOrbitCreator()const{
 		return orbitCreator;
 	}
-		
+
 	void setAnchorManager(std::shared_ptr<AnchorManager> _anchorManager){
 		anchorManager = _anchorManager;
 	}
@@ -148,7 +147,7 @@ public:
 	std::shared_ptr<Body> getCenterObject() {
 		return centerObject;
 	}
-	
+
 	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
 	// réinitialise les paramètes de la tesselaiton
 	// prend en compte la taille et le flag caché ou pas
@@ -165,14 +164,13 @@ public:
 	void bodyTraceBodyChange(const std::string &bodyName);
 
 	std::vector<std::shared_ptr<BodyContainer>>::iterator begin() {return renderedBodies.begin();};
-    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};	
+    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};
 
 	std::unique_ptr<SSystemIterator> createIterator();
 	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
 
 protected:
 
-	ThreadContext *context;
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
 	std::shared_ptr<Body> bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 	std::shared_ptr<OrbitCreator> orbitCreator = nullptr;
@@ -183,16 +181,16 @@ protected:
 	// Master settings
 	bool flagAxis= false;
 	bool flagHideSatellites = false;
-	
+
 	// load one object from a hash
-	virtual void addBody(stringHash_t & param, bool deletable);	
+	virtual void addBody(stringHash_t & param, bool deletable);
 
 	std::shared_ptr<ProtoSystem::BodyContainer> findBodyContainer(const std::string &name);
 	std::shared_ptr<Body> findBody(const std::string &name);
-	
+
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
-	BODY_TYPE setPlanetType (const std::string &str); 
-	
+	BODY_TYPE setPlanetType (const std::string &str);
+
 	std::map< std::string, std::shared_ptr<BodyContainer>> systemBodies; //Map containing the bodies and related information. the key is their english name
 	std::vector<std::shared_ptr<BodyContainer>> renderedBodies; //Contains bodies that are not hidden
 };

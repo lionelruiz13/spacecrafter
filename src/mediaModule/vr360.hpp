@@ -22,7 +22,7 @@
 #include "tools/fader.hpp"
 #include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 // #define VR360_FADER_DURATION 3000
 
@@ -32,7 +32,6 @@ class OjmL;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
 //class shaderProgram;
 
 class VR360: public NoCopy {
@@ -40,7 +39,7 @@ public:
 	VR360();
 	virtual ~VR360();
 
-	void init(ThreadContext *context);
+	void init();
 
 	void setTexture(VideoTexture _tex);
 
@@ -65,7 +64,7 @@ public:
 	}
 
 	//! création des shaders
-	void createSC_context(ThreadContext *_context);
+	void createSC_context();
 private:
 	enum class TYPE : char { V_CUBE, V_SPHERE, V_NONE };
 
@@ -76,13 +75,12 @@ private:
 	bool canDraw = false;
 
 	//std::unique_ptr<shaderProgram> shaderVR360;
-	ThreadContext *context;
-	int commandIndex;
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uModelViewMatrix;
-	Mat4f *pModelViewMatrix;
+	std::shared_ptr<VideoSync> sync;
+	std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrix;
+	VkCommandBuffer cmds[3];
 
 	TYPE typeVR360 = TYPE::V_NONE;
 

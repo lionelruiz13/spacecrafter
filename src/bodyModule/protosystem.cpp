@@ -45,13 +45,13 @@
 #define EARTH_MASS 5.976e24
 #define LUNAR_MASS 7.354e22
 
-ProtoSystem::ProtoSystem(ThreadContext *_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
-	:context(_context), objLMgr(_objLMgr)
+ProtoSystem::ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
+	: objLMgr(_objLMgr)
 {
 	bodyTrace = nullptr;
 
-	Body::createShader(context);
-	BodyShader::createShader(context);
+	Body::createShader();
+	BodyShader::createShader();
 	Body::createDefaultAtmosphereParams();
 
 
@@ -735,8 +735,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                close_orbit,
 			                currentOBJ,
 			                orbit_bounding_radius,
-			  				bodyTexture,
-							context);
+			  				bodyTexture);
 			//update of sun's big_halo texture
 			std::string bighalotexfile = param["tex_big_halo"];
 			if (!bighalotexfile.empty()) {
@@ -762,8 +761,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                close_orbit,
 			                currentOBJ,
 			                orbit_bounding_radius,
-			  				bodyTexture,
-							context);
+			  				bodyTexture);
 			//update of sun's big_halo texture
 			std::string bighalotexfile = param["tex_big_halo"];
 			if (!bighalotexfile.empty()) {
@@ -792,8 +790,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                  param["model_name"],
 			                  deletable,
 			                  orbit_bounding_radius,
-							  bodyTexture,
-						  	  context);
+							  bodyTexture);
 			p= p_artificial;
 			}
 			break;
@@ -811,8 +808,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                  close_orbit,
 			                  currentOBJ,
 			                  orbit_bounding_radius,
-							  bodyTexture,
-							  context
+							  bodyTexture
 			                 );
 			p= p_moon;
 		}
@@ -833,15 +829,14 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                    close_orbit,
 			                    currentOBJ,
 			                    orbit_bounding_radius,
-								bodyTexture,
-								context
+								bodyTexture
 								);
 
 
 			if (Utility::strToBool(param["rings"], 0)) {
 				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
 				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
-				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit,context);
+				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit);
 				p_big->setRings(std::move(r));
 				p_big->updateBoundingRadii();
 			}
@@ -865,8 +860,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                        close_orbit,
 			                        currentOBJ,
 			                        orbit_bounding_radius,
-									bodyTexture,
-									context
+									bodyTexture
 			                       );
 			p = p_small;
 		}

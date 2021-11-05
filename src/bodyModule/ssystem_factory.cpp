@@ -29,10 +29,10 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 
-SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
+SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 {
     // creation ds models 3D pour les planetes
-    objLMgr = std::make_unique<ObjLMgr>(_context);
+    objLMgr = std::make_unique<ObjLMgr>();
 	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
 	objLMgr->insertDefault("Sphere");
 
@@ -41,23 +41,22 @@ SSystemFactory::SSystemFactory(ThreadContext *_context, Observer *observatory, N
 		exit(-7);
 	}
 
-    ssystem = std::make_unique<SolarSystem>(_context, objLMgr.get(), observatory, navigation, timeMgr);
+    ssystem = std::make_unique<SolarSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     currentSystem = ssystem.get();
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
-    stellarSystem = std::make_unique<ProtoSystem>(_context, objLMgr.get(), observatory, navigation, timeMgr);
+    stellarSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
 
-    bodytrace= std::make_shared<BodyTrace>(_context);
+    bodytrace= std::make_shared<BodyTrace>();
 
-    context = _context;
     observatory = observatory;
     navigation = navigation;
     timeMgr = timeMgr;
 }
-    
+
 SSystemFactory::~SSystemFactory()
 {
 	//delete bodytrace;
@@ -91,7 +90,7 @@ void SSystemFactory::changeSystem(const std::string mode)
 
 void SSystemFactory::addSystem(const std::string name, const std::string file)
 {
-    std::unique_ptr<ProtoSystem> system = std::make_unique<ProtoSystem>(context, objLMgr.get(), observatory, navigation, timeMgr);
+    std::unique_ptr<ProtoSystem> system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     system->load(file);
     systems.insert(std::pair<std::string, std::unique_ptr<ProtoSystem>>(name, std::move(system)));
 }

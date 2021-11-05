@@ -35,7 +35,7 @@
 
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class HipStarMgr;
 class Constellation;
@@ -44,15 +44,14 @@ class Navigator;
 class s_font;
 class Translator;
 class VertexArray;
+class VertexBuffer;
 class Set;
-class Uniform;
-class Buffer;
 class Pipeline;
 class PipelineLayout;
 
 class ConstellationMgr: public NoCopy , public ModuleFont {
 public:
-	ConstellationMgr(std::shared_ptr<HipStarMgr> _hip_stars, ThreadContext *_context);
+	ConstellationMgr(std::shared_ptr<HipStarMgr> _hip_stars);
 	~ConstellationMgr();
 
 	//! Draw constellation lines, art, names and boundaries if activated
@@ -138,10 +137,7 @@ public:
 	}
 
 	//! Define boundary color
-	void setBoundaryColor(const Vec3f& c) {
-		boundaryColor = c;
-		*pColor = c;
-	}
+	void setBoundaryColor(const Vec3f& c);
 
 	//! Get current boundary color
 	Vec3f getBoundaryColor() const {
@@ -209,15 +205,14 @@ public:
 
 private:
 	bool loadBoundaries(const std::string& conCatFile);
-	void drawLines(const Projector * prj);
-	void drawArt(const Projector * prj,const  Navigator * nav);
+	void drawLines(VkCommandBuffer &cmd, const Projector * prj);
+	void drawArt(VkCommandBuffer &cmd, const Projector * prj,const  Navigator * nav);
 	void drawNames(const Projector * prj);
-	void drawBoundaries(const Projector* prj);
+	void drawBoundaries(VkCommandBuffer &cmd, const Projector* prj);
 	void setSelectedConst(Constellation* c);
 
 	Constellation* isStarIn(const Object &s) const;
 	Constellation* findFromAbbreviation(const std::string& abbreviation) const;
-	ThreadContext *context;
 	std::vector<Constellation*> asterisms;
 	std::shared_ptr<HipStarMgr> hipStarMgr;
 	std::vector<Constellation*> selected;
@@ -236,28 +231,19 @@ private:
 	float artFadeDuration;
 	float artMaxIntensity;
 
-	void createSC_context(ThreadContext *context);
+	void createSC_context();
 
-	int commandIndex;
-	int commandIndexArt;
+	int cmds[3] {-1, -1, -1};
 	std::unique_ptr<Set> m_setArt, m_set;
-	std::unique_ptr<Uniform> uColor;
-	Vec3f *pColor;
+	std::unique_ptr<SharedBuffer<Vec3f>> uColor;
 	std::unique_ptr<PipelineLayout> m_layoutArt, m_layout;
-	//std::unique_ptr<shaderProgram> m_shaderArt, m_shaderBoundary, m_shaderLines;
 	std::unique_ptr<Pipeline> m_pipelineArt, m_pipelineBoundary, m_pipelineLines;
 	std::unique_ptr<VertexArray> m_vertexArt, m_vertexBoundary, m_vertexLines;
-	std::unique_ptr<Buffer> drawData;
-	struct {
-		uint32_t    vertexCount;
-	    uint32_t    instanceCount;
-	    uint32_t    firstVertex;
-	    uint32_t    firstInstance;
-	} *pDrawData;
+	std::unique_ptr<VertexBuffer> vertexArt, vertexBoundary, vertexLines;
 
 	Vec3f artColor = Vec3f(1.0,1.0,1.0);
 	bool singleSelected = false;
-	bool submitLinesAndBoundaries = false;
+	bool submitSomething = false;
 };
 
 #endif // _CONSTELLATION_MGR_H_

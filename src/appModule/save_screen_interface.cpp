@@ -36,16 +36,12 @@
 #include "eventModule/EventFps.hpp"
 #include "eventModule/event_recorder.hpp"
 
-#include "vulkanModule/Vulkan.hpp"
-
-SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _height, Vulkan *_master)
+SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _height)
 {
 	width = _width;
 	height = _height;
-	master = _master;
 	minWH = std::min(width, height);
 	saveScreen = std::make_unique<SaveScreen>(minWH);
-	master->setupInterceptor(this, writeScreenshot);
 }
 
 
@@ -75,7 +71,7 @@ void SaveScreenInterface::takeVideoShot()
 		this->startVideo();
 }
 
-void SaveScreenInterface::readScreenShot()
+void SaveScreenInterface::readScreenShot(VkCommandBuffer cmd)
 {
 	switch (readScreen) {
 		case ReadScreen::NONE : break;
@@ -84,7 +80,7 @@ void SaveScreenInterface::readScreenShot()
 			if (fileNameScreenshot.empty())
 				fileNameScreenshot = getNextScreenshotFilename();
 			fileNameNextScreenshot.swap(fileNameScreenshot);
-			master->intercept();
+			//master->intercept();
 			fileNameScreenshot.clear();
 			readScreen=ReadScreen::NONE;
 			break;
@@ -93,7 +89,7 @@ void SaveScreenInterface::readScreenShot()
 			std::ostringstream ss;
 			ss << std::setw(6) << std::setfill('0') << fileNumber;
 			fileNameNextScreenshot = videoBaseName + "-" + ss.str() + ".jpg";
-			master->intercept();
+			//master->intercept();
 			fileNumber++;
 			}
 			break;

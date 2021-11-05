@@ -25,22 +25,23 @@
 
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
 #include <memory>
+
+#include "EntityCore/SubBuffer.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Projector;
 class Navigator;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-class Buffer;
-class Texture;
+class s_texture;
 
 class CloudNavigator: public NoCopy {
 public:
-    CloudNavigator(ThreadContext *_context);
+    CloudNavigator();
     ~CloudNavigator();
     void computePosition(Vec3f posI);
     void draw(const Navigator * nav, const Projector* prj);
@@ -48,28 +49,29 @@ public:
     void insert(const Vec4f &color, const Mat4f &model);
 private:
     void build(int nbClouds);
-    ThreadContext *context;
 
-    int commandIndex;
     std::unique_ptr<PipelineLayout> layout;
     std::unique_ptr<Pipeline> pipeline;
-    std::unique_ptr<VertexArray> vertex;
-    std::unique_ptr<Texture> texture;
+    std::unique_ptr<VertexArray> vertexArray;
+    std::unique_ptr<VertexBuffer> vertex;
+    std::unique_ptr<VertexBuffer> instance;
+    SubBuffer index;
+    std::unique_ptr<s_texture> texture;
     struct cloud {
         Vec4f color;
         Mat4f model;
         Mat4f invmodel;
-    } *pInstance;
+    };
     std::vector<cloud> cloudData;
     std::vector<Vec3f> cloudPos;
 
     int instanceCount = 0;
+    int cmds[3] = {-1, -1, -1};
 
     std::unique_ptr<Set> set;
-    std::unique_ptr<Uniform> uModelViewMatrix, uclipping_fov, uCamRotToLocal;
-    Mat4f *pModelViewMatrix;
-    Vec3f *pclipping_fov;
-    Mat4f *pCamRotToLocal; // represent a Mat3f
+    std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrix;
+    std::unique_ptr<SharedBuffer<Vec3f>> uclipping_fov;
+    std::unique_ptr<SharedBuffer<Mat4f>> uCamRotToLocal; // represent a Mat3f
 };
 
 #endif /* end of include guard: CLOUD_NAVIGATOR_HPP */

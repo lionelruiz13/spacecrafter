@@ -59,9 +59,12 @@
 #include "tools/io.hpp"
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
 #include "uiModule/ui.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "mainModule/define_key.hpp"
+#include "starModule/hip_star_mgr.hpp"
 
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"
@@ -70,63 +73,42 @@
 #include "eventModule/EventFpsHandler.hpp"
 #include "eventModule/EventVideoHandler.hpp"
 #include "eventModule/CoreHandler.hpp"
-
-#include "vulkanModule/Vulkan.hpp"
-#include "vulkanModule/VirtualSurface.hpp"
-#include "vulkanModule/TextureMgr.hpp"
-#include "vulkanModule/SetMgr.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/ThreadedCommandBuilder.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "EntityCore/Core/RenderMgr.hpp"
+#include "EntityCore/Resource/FrameSender.hpp"
+#include "EntityCore/Resource/SetMgr.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
+Context *Context::instance = nullptr;
 
 App::App( SDLFacade* const sdl )
 {
 	mSdl = sdl;
 	flagMasterput =false;
-	mSdl->getResolution( &width, &height );
+	//mSdl->getResolution( &width, &height );
 
 	settings = AppSettings::Instance();
 	InitParser conf;
 	settings->loadAppSettings( &conf );
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 
-	int antialiasing = 1 << static_cast<int>(std::log2(conf.getInt(SCS_RENDERING, SCK_ANTIALIASING)|1));
-	globalContext.vulkan = new Vulkan(APP_LOWER_NAME, nullptr, mSdl->getWindow(), 1, width, height, 256*1024*1024, cLog::get()->getDebug(), static_cast<VkSampleCountFlagBits>(antialiasing), settings->getUserDir());
-	globalContext.tracker = new ResourceTracker();
-	globalContext.textureMgr = new TextureMgr(globalContext.vulkan);
-	context.global = &globalContext;
-	context.surface = globalContext.vulkan->getVirtualSurface();
-	context.setMgr = new SetMgr(context.surface, 512);
-	context.commandMgr = new CommandMgr(context.surface, 64, true);
-	context.commandMgrSingleUse = new CommandMgr(context.surface, 15, true, true, true);
-	context.commandMgrSingleUseInterface = new ThreadedCommandBuilder(context.commandMgrSingleUse);
-	context.commandMgrDynamic = new CommandMgr(context.surface, 8, true, false, true, true);
-	commandIndexClear = context.commandMgr->getCommandIndex();
-	context.commandMgr->init(commandIndexClear);
-	context.commandMgr->beginRenderPass(renderPassType::CLEAR);
-	context.commandMgr->compile();
-	s_texture::setContext(&context);
-	*getContext() = context;
+	initVulkan(conf);
 
 	fontFactory = std::make_unique<FontFactory>();
 
 	media = std::make_shared<Media>();
-	saveScreenInterface = std::make_shared<SaveScreenInterface>(width, height, globalContext.vulkan);
+	saveScreenInterface = std::make_shared<SaveScreenInterface>(width, height);
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
 
 	screenFader =  std::make_unique<ScreenFader>();
 
 	observatory = std::make_shared<Observer>();
-	core = std::make_shared<Core>(&context, width, height, media, fontFactory, mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
+	core = std::make_shared<Core>(width, height, media, fontFactory, mBoost::callback<void, std::string>(this, &App::recordCommand), observatory);
 	coreLink = std::make_unique<CoreLink>(core);
 	coreBackup = std::make_unique<CoreBackup>(core);
 
-	screenFader->createSC_context(&context);
+	screenFader->createSC_context();
 
 	ui = std::make_shared<UI>(core, coreLink.get(), this, mSdl, media);
 	commander = std::make_shared<AppCommandInterface>(core, coreLink, coreBackup, std::shared_ptr<App>(this), ui, media, fontFactory);
@@ -182,9 +164,10 @@ App::~App()
 
 	EventRecorder::End();
 
-	context.commandMgrSingleUseInterface->terminate();
-	context.commandMgrSingleUseInterface->waitIdle();
-	globalContext.vulkan->waitIdle();
+	sender = nullptr;
+	FrameMgr::stopHelper();
+	VulkanMgr::instance->waitIdle();
+	Landscape::destroySC_context();
 	appDraw.reset();
 	if (enable_tcp)
 		tcp.reset();
@@ -205,17 +188,137 @@ App::~App()
 	screenFader.reset();
 	spaceDate.reset();
 	fontFactory.reset();
-	delete context.commandMgr;
-	delete context.commandMgrSingleUseInterface;
-	delete context.commandMgrSingleUse;
-	delete context.commandMgrDynamic;
-	delete globalContext.tracker;
-	delete context.setMgr;
 	s_texture::forceUnload();
-	delete globalContext.textureMgr;
-	delete globalContext.vulkan;
 }
- 
+
+void App::initVulkan(InitParser &conf)
+{
+	cLog::get()->write("Initializing Vulkan...", LOG_TYPE::L_INFO);
+	int antialiasing = 1 << static_cast<int>(std::log2(conf.getInt(SCS_RENDERING, SCK_ANTIALIASING)|1));
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	width = vkmgr.getSwapChainExtent().width;
+	height = vkmgr.getSwapChainExtent().height;
+	context.helper = std::make_unique<DrawHelper>();
+	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 256*1024*1024, "Staging BufferMgr");
+	context.texStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, (4*1024*1024*1024l - 16*1024*1024l), "Texture staging BufferMgr");
+	context.readbackMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, 3*4*width*height, "readback BufferMgr");
+	context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "global BufferMgr");
+	context.uniformMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "uniform BufferMgr", true);
+	context.tinyMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "tiny BufferMgr");
+	context.ojmBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "OJM BufferMgr");
+	context.ojmVertexArray = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
+	context.ojmVertexArray->createBindingEntry(8*sizeof(float));
+	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	context.ojmVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
+	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	context.indexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 32*1024*1024, "indexBuffer BufferMgr");
+	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, 0, 1*1024*1024, "s_font and hint BufferMgr");
+	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 2*4*sizeof(float));
+	context.multiVertexArray->createBindingEntry(4*sizeof(float));
+	context.multiVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
+	context.multiVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
+	context.setMgr = std::make_unique<SetMgr>(vkmgr, 256, 256, 256, 1, true);
+	context.starColorAttachment = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	context.starColorAttachment->use();
+	sampleCount = static_cast<VkSampleCountFlagBits>(antialiasing);
+	depthBuffer = std::make_unique<Texture>(vkmgr, width, height, sampleCount);
+	depthBuffer->use();
+	if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+		for (int i = 0; i < 3; ++i) {
+			multisampleImage.push_back(std::make_unique<Texture>(vkmgr, width, height, sampleCount, "multisample color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
+			multisampleImage.back()->use();
+
+		}
+	}
+	context.graphicFamily = vkmgr.acquireQueue(context.graphicQueue, VulkanMgr::QueueType::GRAPHIC_COMPUTE, "main");
+	if (context.graphicFamily) {
+		context.computeQueue = context.graphicQueue;
+	} else {
+		context.graphicFamily = vkmgr.acquireQueue(context.graphicQueue, VulkanMgr::QueueType::GRAPHIC, "main compute");
+		vkmgr.acquireQueue(context.computeQueue, VulkanMgr::QueueType::COMPUTE, "main graphic");
+	}
+	VkCommandPoolCreateInfo poolInfo {VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, nullptr, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, context.graphicFamily->id};
+	vkCreateCommandPool(vkmgr.refDevice, &poolInfo, nullptr, &context.cmdPool);
+	context.cmdInfo.commandPool = context.cmdPool;
+	// ========== DEFINE RENDERING ========== //
+	context.render = std::make_unique<RenderMgr>(vkmgr);
+	int colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	int depthID = context.render->attach(VK_FORMAT_D24_UNORM_S8_UINT, sampleCount, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, false);
+	// int starID = context.render->attach(VK_FORMAT_R8G8B8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	int multiColorID = colorID;
+	if (sampleCount != VK_SAMPLE_COUNT_1_BIT)
+		multiColorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, sampleCount, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, false);
+	// PASS_BACKGROUND
+	context.render->setupClear(multiColorID, {0.f, 0.f, 0.f, 0.f});
+	context.render->bindColor(multiColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	// Sync with semaphore and load op
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
+	// Sync with texture update
+	context.render->addDependency(VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, VK_ACCESS_SHADER_READ_BIT, false);
+	context.render->pushLayer();
+	context.render->addSelfDependency(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, VK_ACCESS_SHADER_READ_BIT);
+	context.render->addSelfDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	// // PASS_STAR_FBO
+	// context.render->bindColor(starID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	// context.render->bindPreserve(multiColorID);
+	// context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
+	// context.render->pushLayer();
+	// PASS_MULTISAMPLE_DEPTH
+	context.render->bindColor(multiColorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	context.render->setupClear(depthID, 1.f);
+	context.render->bindDepth(depthID, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	if (multiColorID != colorID)
+		context.render->bindResolveDst(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	context.render->addDependencyFrom(PASS_BACKGROUND, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	context.render->pushLayer();
+	// PASS_FOREGROUND
+	context.render->bindColor(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	context.render->pushLayer();
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT);
+	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, 0, false);
+	context.render->build(3);
+	// ========== END DEFINE RENDERING ========== //
+	context.transfers.resize(3);
+	context.transferSync.resize(3);
+	context.fences.resize(3);
+	context.semaphores.resize(6);
+	context.graphicTransferCmd.resize(3);
+	context.starUsed.resize(3);
+	VkFenceCreateInfo fenceInfo {VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, nullptr, VK_FENCE_CREATE_SIGNALED_BIT};
+	VkSemaphoreCreateInfo semaphoreInfo {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, nullptr, 0};
+	// FrameMgr::startHelper();
+	for (uint8_t i = 0; i < 3; ++i) {
+		context.transfers[i] = std::make_unique<TransferMgr>(*context.stagingMgr, 64*1024*1024);
+		// context.starSync[i] = std::make_unique<SyncEvent>(&vkmgr);
+		// context.starSync[i]->imageBarrier(*context.starColorAttachment, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT_KHR | VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR);
+		// context.starSync[i]->build();
+		context.transferSync[i] = std::make_unique<SyncEvent>(&vkmgr);
+		context.transferSync[i]->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+		context.transferSync[i]->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+		context.transferSync[i]->build();
+		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
+		if (vkmgr.getSwapchainView().empty()) {
+			senderImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
+			context.frame.back()->bind(colorID, *senderImage.back());
+		} else {
+			context.frame.back()->bind(colorID, vkmgr.getSwapchainView()[i]);
+		}
+		context.frame.back()->bind(depthID, *depthBuffer);
+		// context.frame.back()->bind(starID, *context.starColorAttachment);
+		if (multiColorID != colorID)
+			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
+		context.frame.back()->build(context.graphicFamily->id, true, true);
+		vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, context.fences.data() + i);
+		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i);
+		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 3);
+		context.graphicTransferCmd[i] = context.frame.back()->createMain();
+	}
+	// context.starSync[i]->combineDstDependencies(*context.transferSync[(i + 1) % 3]); // Assume the frame are always in increasing order (0, 1, 2, 0, etc...)
+	context.transfer = context.transfers[0].get(); // Assume the first frame is the frame 0
+	cLog::get()->write("Vulkan initialization completed", LOG_TYPE::L_INFO);
+}
+
 int App::getFpsClock() const {
  	return internalFPS->getFps();
 }
@@ -337,7 +440,7 @@ void App::init()
 //! Load configuration from disk
 void App::firstInit()
 {
-	appDraw->initSplash(&context);
+	appDraw->initSplash();
 
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
@@ -353,9 +456,9 @@ void App::firstInit()
 	ui->localizeTui();
 	ui->initTui();
 
-	appDraw->createSC_context(&context);
-	media->initVR360(&context);
-	media->createSC_context(&context);
+	appDraw->createSC_context();
+	media->initVR360();
+	media->createSC_context();
 
 	enable_tcp=conf.getBoolean(SCS_IO, SCK_ENABLE_TCP);
 	enable_mkfifo=conf.getBoolean(SCS_IO, SCK_ENABLE_MKFIFO);
@@ -388,8 +491,6 @@ void App::firstInit()
 	cLog::get()->mark();
 
 	this->init();
-	context.surface->finalize(false);
-	globalContext.vulkan->finalize();
 }
 
 
@@ -446,15 +547,34 @@ void App::update(int delta_time)
 //! Main drawinf function called at each frame
 void App::draw(int delta_time)
 {
-	context.surface->waitTransferQueueIdle();
-	context.surface->waitGraphicQueueIdle();
-	context.commandMgr->waitCompletion(0);
-	context.commandMgr->waitCompletion(1);
-	context.commandMgr->waitCompletion(2);
-	context.surface->acquireNextFrame();
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	context.lastFrameIdx = context.frameIdx;
+	// Acquire a frame
+	if (sender) {
+		sender->acquireFrame(context.frameIdx);
+	} else {
+		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 1000, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
+		switch (res) {
+			case VK_SUCCESS:
+				break;
+			case VK_SUBOPTIMAL_KHR:
+				vkmgr.putLog("Suboptimal swapchain", LogType::WARNING);
+				break;
+			case VK_TIMEOUT:
+				vkmgr.putLog("Timeout for swapchain acquire", LogType::WARNING);
+				return;
+			default:
+				vkmgr.putLog("Invalid swapchain", LogType::ERROR);
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				return;
+		}
+		vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, UINT64_MAX);
+		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
+		// std::cout << "Acquire frame " << context.frameIdx << "\n";
+	}
+	context.frame[context.frameIdx]->discardRecord();
+	context.transfer = context.transfers[context.frameIdx].get();
 
-	context.commandMgrSingleUseInterface->reset();
-	context.commandMgr->setSubmission(commandIndexClear, true);
 	executor->draw(delta_time);
 	// Draw the Graphical ui and the Text ui
 	ui->draw(executor->getExecutorModule());
@@ -472,8 +592,9 @@ void App::draw(int delta_time)
 	appDraw->drawViewportShape();
 
 	screenFader->draw();
-	context.commandMgrSingleUseInterface->waitIdle();
-	context.surface->submitFrame();
+	context.frame[context.frameIdx]->begin(VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS, 0, nullptr, context.transferSync[context.frameIdx].get());
+	context.frame[context.frameIdx]->submitInline();
+	context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume the next frame follow the previous one
 }
 
 //! @brief Set the application locale. This apply to GUI, console messages etc..
@@ -579,8 +700,6 @@ void App::startMainLoop()
 
 			this->update(deltaTime);		// And update the motions and data
 			this->draw(deltaTime);			// Do the drawings!
-			saveScreenInterface->readScreenShot();
-			globalContext.vulkan->sendFrame(); // Send submission to the presentation engine
 
 			internalFPS->setLastCount();
 		}
@@ -593,4 +712,45 @@ void App::startMainLoop()
 
 void App::switchMode(const std::string setValue) {
 		executor->switchMode(setValue);
+}
+
+void App::submitFrame(App *self, int id)
+{
+	VkCommandBufferBeginInfo beginInfo {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, nullptr, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, nullptr};
+	VkCommandBuffer cmd = self->context.graphicTransferCmd[id];
+	vkBeginCommandBuffer(cmd, &beginInfo);
+	self->media->playerRecordUpdate(cmd);
+	s_texture::recordTransfer(cmd);
+	self->context.transfers[id]->copy(cmd);
+	self->context.transferSync[id]->srcDependency(cmd);
+	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();
+	vkCmdEndRenderPass(mainCmd);
+	if (self->context.starUsed[id]) {
+		self->context.starUsed[id]->updateFramebuffer(cmd, mainCmd);
+		self->context.starUsed[id] = nullptr;
+	}
+	vkEndCommandBuffer(cmd);
+
+	self->saveScreenInterface->readScreenShot(mainCmd);
+	// self->context.starSync[(id + 2) % 3]->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
+	self->context.transferSync[id]->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
+	// self->context.starSync[id]->srcDependency(mainCmd);
+	vkEndCommandBuffer(mainCmd);
+
+	if (self->sender) {
+		VkCommandBuffer cmdPair[] = {cmd, mainCmd};
+		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 2, cmdPair, 0, nullptr};
+		vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		self->sender->presentFrame(id);
+	} else {
+		VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		VkSubmitInfo submit[2] {
+			{VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &cmd, 0, nullptr},
+			{VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + (id + 2) % 3], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]}
+		};
+		// std::cout << "Present frame " << id << "\n";
+		vkQueueSubmit(self->context.graphicQueue, 2, submit, self->context.fences[id]);
+		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
+		vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
+	}
 }

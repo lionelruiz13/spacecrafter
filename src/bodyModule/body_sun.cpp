@@ -25,9 +25,6 @@
 
 #include "bodyModule/body_sun.hpp"
 
-
-#include "vulkanModule/VertexArray.hpp"
-
 #include "bodyModule/axis.hpp"
 #include "bodyModule/hints.hpp"
 #include "bodyModule/halo.hpp"
@@ -37,15 +34,8 @@
 #include "navModule/observer.hpp"
 #include "tools/sc_const.hpp"
 #include "tools/s_font.hpp"
-
-#include "vulkanModule/Vulkan.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Texture.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
-#include "vulkanModule/Set.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 Sun::Sun(std::shared_ptr<Body> parent,
          const std::string& englishName,
@@ -59,8 +49,7 @@ Sun::Sun(std::shared_ptr<Body> parent,
          bool close_orbit,
          ObjL* _currentObj,
          double orbit_bounding_radius,
-		 std::shared_ptr<BodyTexture> _bodyTexture,
-         ThreadContext *context):
+		 std::shared_ptr<BodyTexture> _bodyTexture):
 	Body(parent,
 	     englishName,
 	     SUN,
@@ -74,20 +63,16 @@ Sun::Sun(std::shared_ptr<Body> parent,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-		_bodyTexture,
-	    context
+		_bodyTexture
         )
 {
 	//more adding could be placed here for the constructor of Sun
-	tex_big_halo = nullptr;
-	createSunShader(context);
-	createHaloShader(context, context->global->vulkan->getSwapChainExtent().height);
+	createSunShader();
+	createHaloShader(VulkanMgr::instance->getSwapChainExtent().height);
 }
 
 Sun::~Sun()
 {
-	//if (tex_big_halo) delete tex_big_halo;
-	tex_big_halo = nullptr;
 }
 
 
@@ -99,70 +84,69 @@ float Sun::computeMagnitude(Vec3d obs_pos) const
 	return rval;
 }
 
-void Sun::setBigHalo(const std::string& halotexfile, const std::string &path)
+void Sun::buildHaloCmd()
 {
-	tex_big_halo = std::make_shared<s_texture>( path + halotexfile, TEX_LOAD_TYPE_PNG_SOLID);
-    if (descriptorSetBigHalo) {
-        descriptorSetBigHalo->bindTexture(tex_big_halo->getTexture(), 0);
-
-        commandIndexBigHalo = cmdMgr->getCommandIndex();
-        cmdMgr->init(commandIndexBigHalo);
-        cmdMgr->beginRenderPass(renderPassType::DEFAULT);
-        cmdMgr->bindPipeline(pipelineBigHalo.get());
-        cmdMgr->bindVertex(m_bigHaloGL.get());
-        cmdMgr->bindSet(layoutBigHalo.get(), descriptorSetBigHalo.get());
-        cmdMgr->bindSet(layoutBigHalo.get(), context->global->globalSet, 1);
-        cmdMgr->draw(1);
-        cmdMgr->compile();
+    Context &context = *Context::instance;
+    descriptorSetBigHalo->bindTexture(tex_big_halo->getTexture(), 0);
+    if (haloCmds[0] == VK_NULL_HANDLE) {
+        context.cmdInfo.commandBufferCount = 3;
+        vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, haloCmds);
+    }
+    for (int i = 0; i < 3; ++i) {
+        VkCommandBuffer &cmd = haloCmds[i];
+        context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+        pipelineBigHalo->bind(cmd);
+        VertexArray::bind(cmd, haloBuffer->get());
+        layoutBigHalo->bindSets(cmd, {*descriptorSetBigHalo->get(), *context.uboSet->get()});
+        vkCmdDraw(cmd, 1, 1, 0, 0);
+        context.frame[i]->compile(cmd);
     }
 }
 
-void Sun::createHaloShader(ThreadContext *context, float viewport_y)
+void Sun::setBigHalo(const std::string& halotexfile, const std::string &path)
 {
-    cmdMgr = context->commandMgr;
-	// shaderBigHalo = std::make_unique<shaderProgram>();
-	// shaderBigHalo->init("sun_big_halo.vert","sun_big_halo.geom","sun_big_halo.frag");
-	// shaderBigHalo->setUniformLocation("Rmag");
-	// shaderBigHalo->setUniformLocation("cmag");
-	// shaderBigHalo->setUniformLocation("Center");
-	// shaderBigHalo->setUniformLocation("radius");
-	// shaderBigHalo->setUniformLocation("color");
+	tex_big_halo = std::make_unique<s_texture>( path + halotexfile, TEX_LOAD_TYPE_PNG_SOLID);
+    if (descriptorSetBigHalo) {
+        buildHaloCmd();
+    }
+}
 
-	m_bigHaloGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
-	m_bigHaloGL ->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-    m_bigHaloGL->build(1);
+void Sun::createHaloShader(float viewport_y)
+{
+    VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
 
-    layoutBigHalo = std::make_unique<PipelineLayout>(context->surface);
-    layoutBigHalo->setTextureLocation(0);
+	m_bigHaloGL = std::make_unique<VertexArray>(vkmgr, sizeof(Vec2f));
+    m_bigHaloGL->createBindingEntry(sizeof(Vec2f));
+    m_bigHaloGL->addInput(VK_FORMAT_R32G32_SFLOAT);
+    haloBuffer = m_bigHaloGL->createBuffer(0, 1, context.tinyMgr.get());
+    screenPosF = static_cast<typeof(screenPosF)>(context.tinyMgr->getPtr(haloBuffer->get()));
+
+    layoutBigHalo = std::make_unique<PipelineLayout>(vkmgr);
+    layoutBigHalo->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
     layoutBigHalo->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1); // Rmag
     layoutBigHalo->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2); // cmag
     layoutBigHalo->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3); // radius
     layoutBigHalo->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 4); // color
     layoutBigHalo->buildLayout();
-    layoutBigHalo->setGlobalPipelineLayout(context->global->globalLayout);
+    layoutBigHalo->setGlobalPipelineLayout(context.layouts.front().get());
     layoutBigHalo->build();
 
-    descriptorSetBigHalo = std::make_unique<Set>(context->surface, context->setMgr, layoutBigHalo.get());
-    if (tex_big_halo)
-        descriptorSetBigHalo->bindTexture(tex_big_halo->getTexture(), 0);
-    uRmag = std::make_unique<Uniform>(context->surface, sizeof(*pRmag));
-    pRmag = static_cast<typeof(pRmag)>(uRmag->data);
-    descriptorSetBigHalo->bindUniform(uRmag.get(), 1);
-    uCmag = std::make_unique<Uniform>(context->surface, sizeof(*pCmag));
-    pCmag = static_cast<typeof(pCmag)>(uCmag->data);
-    descriptorSetBigHalo->bindUniform(uCmag.get(), 2);
-    uRadius = std::make_unique<Uniform>(context->surface, sizeof(*pRadius));
-    pRadius = static_cast<typeof(pRadius)>(uRadius->data);
-    descriptorSetBigHalo->bindUniform(uRadius.get(), 3);
-    uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor));
-    pColor = static_cast<typeof(pColor)>(uColor->data);
-    descriptorSetBigHalo->bindUniform(uColor.get(), 4);
+    descriptorSetBigHalo = std::make_unique<Set>(vkmgr, *context.setMgr, layoutBigHalo.get());
+    uRmag = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+    descriptorSetBigHalo->bindUniform(uRmag, 1);
+    uCmag = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+    descriptorSetBigHalo->bindUniform(uCmag, 2);
+    uRadius = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+    descriptorSetBigHalo->bindUniform(uRadius, 3);
+    uColor = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+    descriptorSetBigHalo->bindUniform(uColor, 4);
 
-    pipelineBigHalo = std::make_unique<Pipeline>(context->surface, layoutBigHalo.get());
+    pipelineBigHalo = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutBigHalo.get());
     pipelineBigHalo->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
     pipelineBigHalo->setDepthStencilMode(VK_FALSE, VK_FALSE);
     pipelineBigHalo->setBlendMode(BLEND_ADD);
-    pipelineBigHalo->bindVertex(m_bigHaloGL.get());
+    pipelineBigHalo->bindVertex(*m_bigHaloGL);
     pipelineBigHalo->bindShader("sun_big_halo.vert.spv");
     pipelineBigHalo->bindShader("sun_big_halo.geom.spv");
     pipelineBigHalo->bindShader("sun_big_halo.frag.spv");
@@ -170,24 +154,12 @@ void Sun::createHaloShader(ThreadContext *context, float viewport_y)
     pipelineBigHalo->build();
 
     if (tex_big_halo) {
-        commandIndexBigHalo = cmdMgr->getCommandIndex();
-        cmdMgr->init(commandIndexBigHalo);
-        cmdMgr->beginRenderPass(renderPassType::DEFAULT);
-        cmdMgr->bindPipeline(pipelineBigHalo.get());
-        cmdMgr->bindVertex(m_bigHaloGL.get());
-        cmdMgr->bindSet(layoutBigHalo.get(), descriptorSetBigHalo.get());
-        cmdMgr->bindSet(layoutBigHalo.get(), context->global->globalSet, 1);
-        cmdMgr->draw(1);
-        cmdMgr->compile();
+        buildHaloCmd();
     }
 }
 
-
 void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
 {
-	Vec2f screenPosF ((float) screenPos[0], (float)screenPos[1]);
-
-
 	float screen_r = getOnScreenSize(prj, nav);
 	float rmag = big_halo_size/2/sqrt(nav->getObserverHelioPos().length());
 	float cmag = rmag/screen_r;
@@ -200,72 +172,42 @@ void Sun::drawBigHalo(const Navigator* nav, const Projector* prj, const ToneRepr
 
 	if (rmag<32) rmag = 32;
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
+    *uColor = myColor->getHalo();
+    *uCmag = cmag;
+    *uRmag = rmag;
+    *uRadius = getOnScreenSize(prj, nav);
 
-	// shaderBigHalo->use();
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, tex_big_halo->getID());
+    *screenPosF = Vec2f((float) screenPos[0], (float)screenPos[1]);
 
-	// shaderBigHalo->setUniform("color", myColor->getHalo());
-	// shaderBigHalo->setUniform("cmag", cmag);
-	// shaderBigHalo->setUniform("Rmag", rmag);
-	// shaderBigHalo->setUniform("radius", getOnScreenSize(prj, nav));
-    *pColor = myColor->getHalo();
-    *pCmag = cmag;
-    *pRmag = rmag;
-    *pRadius = getOnScreenSize(prj, nav);
-
-	m_bigHaloGL->fillVertexBuffer(BufferType::POS2D, 2, screenPosF );
-    m_bigHaloGL->update();
-
-	//Renderer::drawArrays(shaderBigHalo.get(), m_bigHaloGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, 1);
-    cmdMgr->setSubmission(commandIndexBigHalo);
+    Context::instance->frame[Context::instance->frameIdx]->toExecute(haloCmds[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 }
 
-void Sun::createSunShader(ThreadContext *context)
+void Sun::createSunShader()
 {
+    VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
 	myShader = SHADER_SUN;
-	// shaderSun = std::make_unique<shaderProgram>();
-	// shaderSun->init( "body_sun.vert", "body_sun.frag");
-	// shaderSun->setUniformLocation("ModelViewProjectionMatrix");
-    //
-	// //fisheye
-	// shaderSun->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderSun->setUniformLocation("ModelViewMatrix");
-	// shaderSun->setUniformLocation("planetScaledRadius");
-    layoutSun = std::make_unique<PipelineLayout>(context->surface);
+    layoutSun = std::make_unique<PipelineLayout>(vkmgr);
     layoutSun->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // ModelViewMatrix
-    layoutSun->setTextureLocation(1);
+    auto tmp = PipelineLayout::DEFAULT_SAMPLER;
+    tmp.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+    layoutSun->setTextureLocation(1, &tmp);
     layoutSun->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 2); // clipping_fov
     layoutSun->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 3); // planetScaledRadius
     layoutSun->buildLayout();
-    layoutSun->setGlobalPipelineLayout(context->global->globalLayout);
+    layoutSun->setGlobalPipelineLayout(context.layouts.front().get());
     layoutSun->build();
 
-    pipelineSun = std::make_unique<Pipeline>(context->surface, layoutSun.get());
+    pipelineSun = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutSun.get());
     pipelineSun->setBlendMode(BLEND_NONE);
     //pipelineSun->setDepthStencilMode();
     pipelineSun->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
     pipelineSun->setCullMode(true);
-    currentObj->bind(pipelineSun.get());
+    currentObj->bind(*pipelineSun);
     pipelineSun->removeVertexEntry(2);
     pipelineSun->bindShader("body_sun.vert.spv");
     pipelineSun->bindShader("body_sun.frag.spv");
     pipelineSun->build();
-
-    descriptorSetSun = std::make_unique<Set>(context->surface, context->setMgr, layoutSun.get());
-    uModelViewMatrix = std::make_unique<Uniform>(context->surface, sizeof(*pModelViewMatrix));
-    pModelViewMatrix = static_cast<typeof(pModelViewMatrix)>(uModelViewMatrix->data);
-    descriptorSetSun->bindUniform(uModelViewMatrix.get(), 0);
-    uclipping_fov = std::make_unique<Uniform>(context->surface, sizeof(*pclipping_fov));
-    pclipping_fov = static_cast<typeof(pclipping_fov)>(uclipping_fov->data);
-    descriptorSetSun->bindUniform(uclipping_fov.get(), 2);
-    uPlanetScaledRadius = std::make_unique<Uniform>(context->surface, sizeof(*pPlanetScaledRadius));
-    pPlanetScaledRadius = static_cast<typeof(pPlanetScaledRadius)>(uPlanetScaledRadius->data);
-    descriptorSetSun->bindUniform(uPlanetScaledRadius.get(), 3);
-
-    drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
 }
 
 // Draw the Sun and all the related infos : name, circle etc..
@@ -304,7 +246,7 @@ void Sun::computeDraw(const Projector* prj, const Navigator * nav)
 	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
 }
 
-bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet)
+bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer)
 {
 	bool drawn = false;
 
@@ -319,70 +261,60 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
 		drawBigHalo(nav, prj, eye);
 
 	if (screen_sz > 1 && isVisible) {  // huge improvement in performance
-        if (screen_sz > 3) {
-            s_font::nextPrint(true);
-            Halo::nextDraw();
+        Context &context = *Context::instance;
+        FrameMgr &frame = *context.frame[context.frameIdx];
+        if (cmds[context.frameIdx] == -1) {
+            cmds[context.frameIdx] = frame.create(1);
+            frame.setName(cmds[context.frameIdx], englishName + " " + std::to_string(context.frameIdx));
         }
-		axis->drawAxis(prj, mat);
-		drawBody(prj, nav, mat, screen_sz);
+        VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+        if (needClearDepthBuffer) {
+            VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+            VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+            vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+        }
+        if (screen_sz > 3) {
+            s_font::nextPrint(PASS_MULTISAMPLE_DEPTH);
+            Halo::nextDraw(cmd);
+        }
+		axis->drawAxis(cmd, prj, mat);
+		drawBody(cmd, prj, nav, mat, screen_sz);
+        frame.compile(cmd);
+        frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 		drawn = true;
 	}
 
 	return drawn;
 }
 
-
-void Sun::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void Sun::defineSunSet()
 {
-	// StateGL::enable(GL_CULL_FACE);
-	// StateGL::disable(GL_BLEND);
-
-	// shaderSun->use();
-
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-    if (tex_current != last_tex_current) {
-        descriptorSetSun->bindTexture(tex_current->getTexture(), 1);
-        last_tex_current = tex_current;
+    Context &context = *Context::instance;
+    if (!uModelViewMatrix) {
+        uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+        uclipping_fov = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+        uPlanetScaledRadius = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
     }
+    descriptorSetSun = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, layoutSun.get(), -1, false, true);
+    descriptorSetSun->bindUniform(uModelViewMatrix, 0);
+    descriptorSetSun->bindTexture(tex_current->getTexture(), 1);
+    descriptorSetSun->bindUniform(uclipping_fov, 2);
+    descriptorSetSun->bindUniform(uPlanetScaledRadius, 3);
+    changed = false;
+}
 
-    if (commandIndexSun == -2) {
-        commandIndexSun = -1;
-        if (!cmdMgr->isRecording()) {
-            commandIndexSun = cmdMgr->getCommandIndex();
-            cmdMgr->init(commandIndexSun);
-            cmdMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
-        }
-        cmdMgr->bindPipeline(pipelineSun.get());
-        currentObj->bind(cmdMgr);
-        cmdMgr->bindSet(layoutSun.get(), descriptorSetSun.get());
-        cmdMgr->bindSet(layoutSun.get(), context->global->globalSet, 1);
-        cmdMgr->indirectDrawIndexed(drawData.get());
+void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+{
+    Context &context = *Context::instance;
+    if (changed)
+        defineSunSet();
 
-        cmdMgr->compile();
-        return;
-    } else if (commandIndexSun >= 0) {
-        cmdMgr->setSubmission(commandIndexSun);
-    }
+    *uModelViewMatrix = mat.convert() * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
+    *uclipping_fov = prj->getClippingFov();
+    *uPlanetScaledRadius = radius;
 
-	//paramétrage des matrices pour opengl4
-	// Mat4f proj = prj->getMatProjection().convert();
-	Mat4f matrix=mat.convert();
-	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
-
-	// shaderSun->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	// shaderSun->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	// shaderSun->setUniform("ModelViewMatrix",matrix);
-	// shaderSun->setUniform("planetScaledRadius",radius);
-    *pModelViewMatrix = matrix;
-    *pclipping_fov = prj->getClippingFov();
-    *pPlanetScaledRadius = radius;
-
-	currentObj->draw(screen_sz, drawData->data);
-    drawData->update();
-
-	// shaderSun->unuse();
-	// glActiveTexture(GL_TEXTURE0);
-	// StateGL::disable(GL_CULL_FACE);
+    pipelineSun->bind(cmd);
+    currentObj->bind(cmd);
+    layoutSun->bindSets(cmd, {*descriptorSetSun->get(), *context.uboSet->get()});
+	currentObj->draw(cmd, screen_sz);
 }

@@ -166,6 +166,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 	// economize performance by not clearing depth buffer for each bucket... good?
 	//	cout << "\n\nNew depth rendering loop\n";
 	bool depthTest = true;  // small objects don't use depth test for efficiency
+    bool newBucket = true;
 	double dist;
 
 	for (auto it = ssystem->createIteratorVector(); !it->end(); (*it)++) {
@@ -190,6 +191,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 				// 	Renderer::clearDepthBuffer();
 				// 	needClearDepthBuffer = false;
 				// }
+                newBucket = true;
 
 				// get ready to start using
 				prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
@@ -209,8 +211,10 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 			depthTest = true;
 			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
 		}
-		it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet);
-		//needClearDepthBuffer = true;
+        if (newBucket) {
+            newBucket = !it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, true);
+        } else
+		      it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, false);
 	}
 	Halo::endDraw();
 	prj->setClippingPlanes(z_near,z_far);  // Restore old clipping planes

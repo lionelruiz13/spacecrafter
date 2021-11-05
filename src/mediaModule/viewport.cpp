@@ -15,21 +15,13 @@
 
 
 #include "mediaModule/viewport.hpp"
-// #include "vulkanModule/VertexArray.hpp"
-//
-//
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/VertexArray.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 #include <cassert>
 
 ViewPort::ViewPort()
 {
 	isAlive = false;
-	transparency = false;
 	fader = false;
 	fader.setDuration(VP_FADER_DURATION);
 }
@@ -37,21 +29,19 @@ ViewPort::ViewPort()
 ViewPort::~ViewPort()
 {}
 
-void ViewPort::createSC_context(ThreadContext *context)
+void ViewPort::createSC_context()
 {
-	cmdMgr = context->commandMgrDynamic;
-	cmdMgrTarget = context->commandMgr;
-	commandIndex = cmdMgr->getCommandIndex();
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+	context.cmdInfo.commandBufferCount = 3;
+    vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+	vertexModel = std::make_unique<VertexArray>(vkmgr);
+	vertexModel->createBindingEntry(4 * sizeof(float));
+	vertexModel->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
+	vertexModel->addInput(VK_FORMAT_R32G32_SFLOAT); // TEXTURE
 	// FullScreen mode
 	float viewportPoints[8] = {-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
 	float viewportTex[8] =    { 0.0,  1.0, 1.0,  1.0,  0.0, 0.0, 1.0, 0.0};
-
-	m_fullGL = std::make_unique<VertexArray>(context->surface);
-	m_fullGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	m_fullGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	m_fullGL->build(4);
-	m_fullGL->fillVertexBuffer(BufferType::POS2D, 8, viewportPoints);
-	m_fullGL->fillVertexBuffer(BufferType::TEXTURE, 8, viewportTex);
 
 	// Dual Half Screen mode
 	float halfPoints[16] = {-1.0, -1.0, 1.0, -1.0,
@@ -66,96 +56,95 @@ void ViewPort::createSC_context(ThreadContext *context)
 	                         1.0, 1.0f, 0.0, 1.f
 	                       };
 
-	m_dualGL = std::make_unique<VertexArray>(context->surface);
-	m_dualGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	m_dualGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	m_dualGL->build(8);
-	m_dualGL->fillVertexBuffer(BufferType::POS2D, 16, halfPoints);
-	m_dualGL->fillVertexBuffer(BufferType::TEXTURE, 16, halfTex);
-	layout = std::make_unique<PipelineLayout>(context->surface);
+    vertex = vertexModel->createBuffer(0, 12, context.globalBuffer.get());
+	float *data = (float *) context.transfer->planCopy(vertex->get());
+	vertex->fillEntry(2, 4, viewportPoints, data);
+	vertex->fillEntry(2, 4, viewportTex, data + 2);
+	data += 4 * 4;
+	vertex->fillEntry(2, 8, halfPoints, data);
+	vertex->fillEntry(2, 8, halfTex, data + 2);
+	layout = std::make_unique<PipelineLayout>(vkmgr);
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3);
 	layout->buildLayout();
 	layout->build();
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
 	pipeline->setDepthStencilMode();
-	pipeline->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
-	pipeline->bindVertex(m_fullGL.get());
+	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("videoplayer.vert.spv");
 	pipeline->bindShader("videoplayer.frag.spv");
 	pipeline->build();
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uFrag = std::make_unique<Uniform>(context->surface, sizeof(*pNoColor) + sizeof(*pFader) + sizeof(*pTransparency));
-	pNoColor = static_cast<Vec4f *>(uFrag->data);
-	pFader = static_cast<float *>(uFrag->data) + 4;
-	assert(sizeof(float) == sizeof(VkBool32));
-	pTransparency = static_cast<VkBool32 *>(uFrag->data) + 5;
-	set->bindUniform(uFrag.get(), 3);
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	uFrag = std::make_unique<SharedBuffer<s_frag>>(*context.uniformMgr);
+	set->bindUniform(uFrag, 3);
+	uFrag->get().transparency = false;
+	uFrag->get().noColor = Vec4f::null();
 }
 
-void ViewPort::build()
+void ViewPort::build(int frameIdx)
 {
-	cmdMgr->init(commandIndex, pipeline.get(), renderPassType::SINGLE_SAMPLE_DEFAULT, true, renderPassCompatibility::SINGLE_SAMPLE);
-	cmdMgr->bindSet(layout.get(), set.get());
+	Context &context = *Context::instance;
+	VkCommandBuffer cmd = cmds[frameIdx];
+	context.frame[frameIdx]->begin(cmd, PASS_FOREGROUND);
+	sync->syncIn->dstDependency(cmd);
+	pipeline->bind(cmd);
+	layout->bindSet(cmd, *set);
+	vertex->bind(cmd);
 	if (fullScreen) {
-		cmdMgr->bindVertex(m_fullGL.get());
-		cmdMgr->draw(4);
+		vkCmdDraw(cmd, 4, 1, 0, 0);
 	} else {
-		cmdMgr->bindVertex(m_dualGL.get());
-		cmdMgr->draw(4);
-		cmdMgr->draw(4, 1, 4);
+		vkCmdDraw(cmd, 4, 1, 4, 0);
+		vkCmdDraw(cmd, 4, 1, 8, 0);
 	}
-	cmdMgr->compile();
+	sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
+	sync->syncOut->srcDependency(cmd);
+	context.frame[frameIdx]->compile(cmd);
 }
 
 void ViewPort::setTexture(VideoTexture _tex)
 {
 	// There must be no command using this set
-	cmdMgrTarget->waitCompletion(0);
-	cmdMgrTarget->waitCompletion(1);
-	cmdMgrTarget->waitCompletion(2);
-	set->bindTexture(_tex.y, 0);
-	set->bindTexture(_tex.u, 1);
-	set->bindTexture(_tex.v, 2);
+	set->bindTexture(*_tex.y, 0);
+	set->bindTexture(*_tex.u, 1);
+	set->bindTexture(*_tex.v, 2);
+	sync = _tex.sync;
+	for (int i = 0; i < 3; ++i)
+		needUpdate[i] = true;
 }
 
 void ViewPort::draw()
 {
 	if (! isAlive)
 		return;
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	sync->inUse = true;
 
-	// for(int i=0; i<3; i++) {
-	// 	glActiveTexture(GL_TEXTURE0+i);
-	// 	glBindTexture(GL_TEXTURE_2D, videoTex[i]);
-	// }
+	uFrag->get().fader = fader.getInterstate();
 
-	// shaderViewPort->use();
+	const int frameIdx = Context::instance->frameIdx;
+	if (needUpdate[frameIdx]) {
+		build(frameIdx);
+		needUpdate[frameIdx] = false;
+	}
+	Context::instance->frame[frameIdx]->toExecute(cmds[frameIdx], PASS_FOREGROUND);
+}
 
-	*pNoColor = noColor;
-	*pFader = fader.getInterstate();
-	*pTransparency = transparency ? VK_TRUE : VK_FALSE;
-	// shaderViewPort->setUniform("noColor",noColor);
-	// shaderViewPort->setUniform("fader", fader.getInterstate() );
-	// shaderViewPort->setUniform("transparency",transparency);
+void ViewPort::displayStop()
+{
+	isAlive = false;
+	fader=false;
+	fader.reset(false);
+	uFrag->get().transparency = VK_FALSE;
+	uFrag->get().noColor = Vec4f::null();
+}
 
-	// if (fullScreen) {
-		// m_fullGL->bind();
-		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
-		// m_fullGL->unBind();
-		//Renderer::drawArrays(shaderViewPort.get(), m_fullGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
-	// }
-	// else {
-		// m_dualGL->bind();
-		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
-		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,4,4);
-		// m_dualGL->unBind();
-		//Renderer::drawMultiArrays(shaderViewPort.get(), m_fullGL.get(), VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,2,4);
-	// }
-	// shaderViewPort->unuse();
-	// StateGL::disable(GL_BLEND);
-	cmdMgr->setSubmission(commandIndex, false, cmdMgrTarget);
+void ViewPort::setTransparency(bool v)
+{
+	uFrag->get().transparency = (v) ? VK_TRUE : VK_FALSE;
+}
+
+void ViewPort::setKeyColor(const Vec3f&color, float intensity)
+{
+	uFrag->get().noColor = Vec4f(color[0], color[1], color[2],intensity);
 }

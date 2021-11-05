@@ -24,12 +24,9 @@
 
 #include <memory>
 #include "bodyModule/body.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
-class VertexArray;
-class Uniform;
 class Pipeline;
-class Buffer;
 
 class Center : public Body {
 
@@ -46,8 +43,7 @@ public:
 	    bool close_orbit,
 	    ObjL* _currentObj,
 	    double orbit_bounding_radius,
-		std::shared_ptr<BodyTexture> _bodyTexture,
-		ThreadContext *context);
+		std::shared_ptr<BodyTexture> _bodyTexture);
 	~Center();
 
 	void setFlagOrbit(bool b) {
@@ -60,7 +56,7 @@ public:
 
 
 	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye,
-	                    bool depthTest, bool drawHomePlanet) override;
+	                    bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer) override;
 
 	void setBigHalo(const std::string& halotexfile, const std::string& path);
 
@@ -78,36 +74,34 @@ public:
 protected:
 	//params
 	float big_halo_size;
-	std::shared_ptr<s_texture> tex_big_halo;		// Big halo texture
+	std::unique_ptr<s_texture> tex_big_halo;		// Big halo texture
 
 	// Draw the big halo
 	void drawBigHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
 
-	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
-	void createHaloShader(ThreadContext *context, float viewport_y);
-	void createSunShader(ThreadContext *context);
+	void createHaloShader(float viewport_y);
+	void createSunShader();
 
 	void selectShader() {};
+	void defineSunSet();
+	void buildHaloCmd();
 
 	//variables
-	// shaderProgram *shaderSun;
 	SHADER_USE myShader;  			// the name of the shader used for his display
-	//shaderProgram *myShaderProg;	// Shader moderne
-	CommandMgr *cmdMgr = nullptr;
-	s_texture *last_tex_current = nullptr;
-	int commandIndexBigHalo, commandIndexSun = -2;
+	VkCommandBuffer haloCmds[3] {};
+	int cmds[3] {-1, -1, -1}; // sun cmds
 	std::unique_ptr<VertexArray> m_bigHaloGL;
+	std::unique_ptr<VertexBuffer> haloBuffer;
+	Vec2f *screenPosF = nullptr;
 	std::unique_ptr<Pipeline> pipelineBigHalo, pipelineSun;
 	std::unique_ptr<PipelineLayout> layoutBigHalo, layoutSun;
-	std::unique_ptr<Set> descriptorSetBigHalo, descriptorSetSun;
-	std::unique_ptr<Uniform> uRmag, uCmag, uRadius, uColor;
-	float *pRmag, *pCmag, *pRadius;
-	Vec3f *pColor;
-	std::unique_ptr<Uniform> uModelViewMatrix, uclipping_fov, uPlanetScaledRadius;
-	Mat4f *pModelViewMatrix;
-	Vec3f *pclipping_fov;
-	float *pPlanetScaledRadius;
-	std::unique_ptr<Buffer> drawData; // for Center
-	//std::unique_ptr<shaderProgram> shaderSun, shaderBigHalo;
+	std::unique_ptr<Set> descriptorSetBigHalo;
+	std::unique_ptr<Set> descriptorSetSun;
+	std::unique_ptr<SharedBuffer<float>> uRmag, uCmag, uRadius;
+	std::unique_ptr<SharedBuffer<Vec3f>> uColor;
+	std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrix;
+	std::unique_ptr<SharedBuffer<Vec3f>> uclipping_fov;
+	std::unique_ptr<SharedBuffer<float>> uPlanetScaledRadius;
 };

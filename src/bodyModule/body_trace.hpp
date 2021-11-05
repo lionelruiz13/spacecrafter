@@ -35,8 +35,7 @@
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 
-#include "vulkanModule/Context.hpp"
-#include "vulkan/vulkan.h"
+#include "EntityCore/SubBuffer.hpp"
 
 #define NB_MAX_LIST 7
 #define MAX_POINTS 16384
@@ -47,37 +46,31 @@ class Projector;
 class VertexArray;
 class PipelineLayout;
 class Pipeline;
-class Uniform;
-class Buffer;
+class VertexBuffer;
+class BufferMgr;
 
 //! Class which manages a line to display an object position around the sky
 class BodyTrace: public NoCopy {
 public:
 	struct BodyList {
-		Vec3f *color;
-		Mat4f *mat;
-		std::unique_ptr<Uniform> uColor;
-		std::unique_ptr<Uniform> uMat;
-		std::unique_ptr<Set> set;
-		std::unique_ptr<VertexArray> vertex;
-		Vec3f *punts;
-		VkDrawIndirectCommand *drawData;
+		Vec3f color;
+		std::unique_ptr<VertexBuffer> vertex;
 		int size;
 		Vec2f old_punt;
 		bool hide;
 	};
 
-	BodyTrace(ThreadContext *context);
+	BodyTrace();
 	virtual ~BodyTrace();
 
 	void draw(const Projector *prj,const Navigator *nav);
 
 	void setColor(const Vec3f& c, int numberlist) {
-		*bodyData[numberlist].color = c;
+		bodyData[numberlist].color = c;
 	}
 
 	const Vec3f& getColor( int numberlist) {
-		return *bodyData[numberlist].color;
+		return bodyData[numberlist].color;
 	}
 
 	void hide(int numberList);
@@ -134,6 +127,7 @@ public:
 
 
 private:
+	std::unique_ptr<BufferMgr> vertexBufferMgr; // Must be destroyed after bodyData
 	BodyList bodyData[NB_MAX_LIST];
 	bool is_tracing;
 	int currentUsedList;
@@ -141,15 +135,12 @@ private:
 	Vec3d pt1;
 	Vec3d pt2;
 
-	void createSC_context(ThreadContext *context);
-	CommandMgr *cmdMgr;
-	int commandIndex;
+	void createSC_context();
 
-	std::vector<float> vecVertex;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Pipeline> pipeline;
-	std::unique_ptr<Buffer> drawData;
+	std::unique_ptr<VertexArray> pattern;
+	int cmds[3] = {-1, -1, -1};
 };
-
 
 #endif // __BODYTRACE_H__

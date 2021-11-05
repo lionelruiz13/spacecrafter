@@ -36,14 +36,13 @@
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/SubBuffer.hpp"
 
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-class Buffer;
 
 /*! \class NebulaMgr
   * \brief NebulaMgr handles all deepsky_objects DSO.
@@ -51,7 +50,7 @@ class Buffer;
 
 class NebulaMgr : public NoCopy, public ModuleFont, public ModuleFader<LinearFader> {
 public:
-	NebulaMgr(ThreadContext *_context);
+	NebulaMgr();
 	virtual ~NebulaMgr();
 
 	//! Read the Nebulas data from a unique file cat
@@ -234,21 +233,18 @@ private:
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed
 
-	ThreadContext *context;
-	int commandIndex;
-	//std::unique_ptr<shaderProgram> shaderNebulaHint;
+	int cmds[3] = {-1, -1, -1};
 	std::unique_ptr<VertexArray> m_hintGL;
+	std::unique_ptr<VertexBuffer> vertexHint;
+	SubBuffer indexHint;
 	std::unique_ptr<Pipeline> pipelineHint;
 	std::unique_ptr<PipelineLayout> layoutHint;
 	std::unique_ptr<Set> setHint;
-	std::unique_ptr<Uniform> uniformHint;
-	float *pUniformHint;
-	std::unique_ptr<Buffer> drawDataHint;
-	uint32_t *pDrawDataHint;
 
-	std::vector<float> vecHintPos;		//!< array of coordinates of the nebula's position
-	std::vector<float> vecHintTex;		//!< array of coordinates of the nebula's texture
-	std::vector<float> vecHintColor;	//!< array of the nebula's color
+	// std::vector<float> vecHintPos;		//!< array of coordinates of the nebula's position
+	// std::vector<float> vecHintTex;		//!< array of coordinates of the nebula's texture
+	// std::vector<float> vecHintColor;	//!< array of the nebula's color
+	int nbDraw;
 
 	s_texture * tex_NEBULA;
 

@@ -26,17 +26,12 @@
 #include "navModule/navigator.hpp"
 //#include "tools/ia.hpp"
 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "tools/context.hpp"
 
-StarLines::StarLines(ThreadContext *_context)
+StarLines::StarLines()
 {
-	createSC_context(_context);
+	createSC_context();
 	lineColor =  Vec3f(1.0,1.0,0.0);
 }
 
@@ -45,38 +40,34 @@ StarLines::~StarLines()
 	linePos.clear();
 }
 
-void StarLines::createSC_context(ThreadContext *_context)
+void StarLines::createSC_context()
 {
-	context = _context;
-	// shaderStarLines = std::make_unique<shaderProgram>();
-	// shaderStarLines -> init("starLines.vert","starLines.geom", "starLines.frag");
-	// shaderStarLines->setUniformLocation({"Mat", "Color", "Fader"});
-
-	m_dataGL = std::make_unique<VertexArray>(context->surface);
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+	m_dataGL = std::make_unique<VertexArray>(vkmgr);
+	m_dataGL->createBindingEntry(3 * sizeof(float));
+	m_dataGL->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
 	layout->buildLayout();
 	layout->build();
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
 	pipeline->setDepthStencilMode();
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
-	pipeline->bindVertex(m_dataGL.get());
+	pipeline->bindVertex(*m_dataGL);
 	pipeline->bindShader("starLines.vert.spv");
 	pipeline->bindShader("starLines.geom.spv");
 	pipeline->bindShader("starLines.frag.spv");
 	pipeline->build();
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat));
-	pMat = static_cast<typeof(pMat)>(uMat->data);
-	set->bindUniform(uMat.get(), 0);
-	uFrag = std::make_unique<Uniform>(context->surface, sizeof(float) * 4);
-	pColor = static_cast<Vec3f *>(uFrag->data);
-	pFader = static_cast<float *>(uFrag->data) + 3;
-	set->bindUniform(uFrag.get(), 1);
-	commandIndex = context->commandMgrDynamic->getCommandIndex();
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	uMat = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+	set->bindUniform(uMat, 0);
+	uFrag = std::make_unique<SharedBuffer<frag>>(*context.uniformMgr);
+	set->bindUniform(uFrag, 1);
+	context.cmdInfo.commandBufferCount = 3;
+    vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
 }
 
 
@@ -310,20 +301,26 @@ void StarLines::loadStringData(const std::string& record) noexcept
 
 void StarLines::rebuild(std::vector<float> &vertexData)
 {
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
-	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	m_dataGL = std::make_unique<VertexArray>(context->surface);
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_dataGL->build(linePos.size() / 3);
-	m_dataGL->fillVertexBuffer(BufferType::POS3D, linePos);
-	cmdMgr->init(commandIndex, pipeline.get());
-	cmdMgr->bindVertex(m_dataGL.get());
-	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
-	cmdMgr->bindSet(layout.get(), set.get(), 1);
-	cmdMgr->draw(linePos.size() / 3);
-	cmdMgr->compile();
+	Context &context = *Context::instance;
+	vertex.reset();
+	vertex = m_dataGL->createBuffer(0, vertexData.size() / 3, context.globalBuffer.get());
+	memcpy(context.transfer->planCopy(vertex->get()), vertexData.data(), vertexData.size() * sizeof(float));
+	needRebuild[0] = true;
+	needRebuild[1] = true;
+	needRebuild[2] = true;
+}
+
+void StarLines::rebuildCommand(int idx)
+{
+	Context &context = *Context::instance;
+	auto cmd = cmds[idx];
+	context.frame[idx]->begin(cmd, PASS_BACKGROUND);
+	pipeline->bind(cmd);
+	layout->bindSets(cmd, {*context.uboSet, *set});
+	vertex->bind(cmd);
+	vkCmdDraw(cmd, vertex->getVertexCount(), 1, 0, 0);
+	context.frame[idx]->compile(cmd);
+	needRebuild[idx] = false;
 }
 
 void StarLines::drop()
@@ -370,25 +367,15 @@ void StarLines::draw(const Projector* prj) noexcept
 	this->drawGL(matrix);
 }
 
-
 //version 3D
 void StarLines::drawGL(Mat4f & matrix)  noexcept
 {
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
+	*uMat = matrix;
+	uFrag->get().color = lineColor;
+	uFrag->get().fader = showFader.getInterstate();
 
-	//shaderStarLines->use();
-	// shaderStarLines->setUniform("Mat",matrix);
-	// shaderStarLines->setUniform("Color",lineColor);
-	// shaderStarLines->setUniform("Fader", showFader.getInterstate() );
-	*pMat = matrix;
-	*pColor = lineColor;
-	*pFader = showFader.getInterstate();
-
-	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
-	// m_dataGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST,0,linePos.size()/3);
-	// m_dataGL->unBind();
-	// shaderStarLines->unuse();
-	//Renderer::drawArrays(shaderStarLines.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST,0,linePos.size()/3);
+	const int idx = Context::instance->frameIdx;
+	if (needRebuild[idx])
+		rebuildCommand(idx);
+	Context::instance->frame[idx]->toExecute(cmds[idx], PASS_BACKGROUND);
 }

@@ -38,50 +38,38 @@
 #include "tools/utility.hpp"
 #include "tools/s_font.hpp"
 #include "tools/log.hpp"
-
 #include "tools/translator.hpp"
-#include "vulkanModule/VertexArray.hpp"
-
-
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
-#include "vulkanModule/ThreadedCommandBuilder.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 //! constructor which loads all data from appropriate files
-ConstellationMgr::ConstellationMgr(std::shared_ptr<HipStarMgr> _hip_stars, ThreadContext *_context) :
+ConstellationMgr::ConstellationMgr(std::shared_ptr<HipStarMgr> _hip_stars) :
 	hipStarMgr(_hip_stars)
 {
 	assert(hipStarMgr);
-	context = _context;
-	createSC_context(_context);
+	createSC_context();
 }
 
-void ConstellationMgr::createSC_context(ThreadContext *context)
+void ConstellationMgr::createSC_context()
 {
-	drawData = std::make_unique<Buffer>(context->surface, sizeof(*pDrawData) * 2, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	pDrawData = static_cast<typeof(pDrawData)>(drawData->data);
-	for (int i = 0; i < 2; i++) {
-		pDrawData[i].instanceCount = 1;
-		pDrawData[i].firstVertex = pDrawData[i].firstInstance = 0;
-	}
+	Context &context = *Context::instance;
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+
 	// ART
-	m_vertexArt = std::make_unique<VertexArray>(context->surface, nullptr, false);
-	m_vertexArt->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	m_vertexArt->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::DYNAMIC);
-	m_vertexArt->build(16384);
-	m_layoutArt = std::make_unique<PipelineLayout>(context->surface);
-	m_layoutArt->setGlobalPipelineLayout(context->global->globalLayout);
-	m_layoutArt->setTextureLocation(0);
+	m_vertexArt = std::make_unique<VertexArray>(vkmgr);
+	m_vertexArt->createBindingEntry(4*sizeof(float));
+	m_vertexArt->addInput(VK_FORMAT_R32G32_SFLOAT);
+	m_vertexArt->addInput(VK_FORMAT_R32G32_SFLOAT);
+	vertexArt = m_vertexArt->createBuffer(0, 16384, context.globalBuffer.get());
+	m_layoutArt = std::make_unique<PipelineLayout>(vkmgr);
+	m_layoutArt->setGlobalPipelineLayout(context.layouts.front().get());
+	m_layoutArt->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	m_layoutArt->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
 	m_layoutArt->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16);
 	m_layoutArt->build();
 	m_setArt = std::make_unique<Set>();
-	m_pipelineArt = std::make_unique<Pipeline>(context->surface, m_layoutArt.get());
-	m_pipelineArt->bindVertex(m_vertexArt.get());
+	m_pipelineArt = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, m_layoutArt.get());
+	m_pipelineArt->bindVertex(*m_vertexArt);
 	m_pipelineArt->setCullMode(true);
 	m_pipelineArt->setFrontFace();
 	m_pipelineArt->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY);
@@ -93,23 +81,23 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 	m_pipelineArt->build();
 
 	// BOUNDARY AND LINES
-	m_layout = std::make_unique<PipelineLayout>(context->surface);
-	m_layout->setGlobalPipelineLayout(context->global->globalLayout);
+	m_layout = std::make_unique<PipelineLayout>(vkmgr);
+	m_layout->setGlobalPipelineLayout(context.layouts.front().get());
 	m_layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0);
 	m_layout->buildLayout();
 	m_layout->build();
-	m_set = std::make_unique<Set>(context->surface, context->setMgr, m_layout.get());
-	uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor));
-	pColor = static_cast<typeof(pColor)>(uColor->data);
-	m_set->bindUniform(uColor.get(), 0);
+	m_set = std::make_unique<Set>(vkmgr, *context.setMgr, m_layout.get(), -1, false, true);
+	uColor = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+	m_set->bindUniform(*uColor, 0);
 
 	// BOUNDARY
-	m_vertexBoundary = std::make_unique<VertexArray>(context->surface);
-	m_vertexBoundary->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	m_vertexBoundary->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
-	m_vertexBoundary->build(16384);
-	m_pipelineBoundary = std::make_unique<Pipeline>(context->surface, m_layout.get());
-	m_pipelineBoundary->bindVertex(m_vertexBoundary.get());
+	m_vertexBoundary = std::make_unique<VertexArray>(vkmgr);
+	m_vertexBoundary->createBindingEntry(3*sizeof(float));
+	m_vertexBoundary->addInput(VK_FORMAT_R32G32_SFLOAT);
+	m_vertexBoundary->addInput(VK_FORMAT_R32_SFLOAT);
+	vertexBoundary = m_vertexBoundary->createBuffer(0, 16384, context.globalBuffer.get());
+	m_pipelineBoundary = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, m_layout.get());
+	m_pipelineBoundary->bindVertex(*m_vertexBoundary);
 	m_pipelineBoundary->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 	m_pipelineBoundary->setDepthStencilMode();
 	m_pipelineBoundary->bindShader("constellationBoundary.vert.spv");
@@ -117,29 +105,22 @@ void ConstellationMgr::createSC_context(ThreadContext *context)
 	m_pipelineBoundary->build();
 
 	// LINES
-	m_vertexLines = std::make_unique<VertexArray>(context->surface);
-	m_vertexLines->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	m_vertexLines->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
-	m_vertexLines->build(16384);
-	m_pipelineLines = std::make_unique<Pipeline>(context->surface, m_layout.get());
-	m_pipelineLines->bindVertex(m_vertexLines.get());
+	m_vertexLines = std::make_unique<VertexArray>(vkmgr);
+	m_vertexLines->createBindingEntry(6*sizeof(float));
+	m_vertexLines->addInput(VK_FORMAT_R32G32_SFLOAT);
+	m_vertexLines->addInput(VK_FORMAT_R32G32B32A32_SFLOAT);
+	vertexLines = m_vertexLines->createBuffer(0, 16384, context.globalBuffer.get());
+	m_pipelineLines = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, m_layout.get());
+	m_pipelineLines->bindVertex(*m_vertexLines);
 	m_pipelineLines->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 	m_pipelineLines->setDepthStencilMode();
 	m_pipelineLines->bindShader("constellationLines.vert.spv");
 	m_pipelineLines->bindShader("constellationLines.frag.spv");
 	m_pipelineLines->build();
 
-	CommandMgr *cmdMgr = context->commandMgr;
-	commandIndex = cmdMgr->initNew(m_pipelineBoundary.get());
-	cmdMgr->bindSet(m_layout.get(), context->global->globalSet);
-	cmdMgr->bindSet(m_layout.get(), m_set.get(), 1);
-	cmdMgr->bindVertex(m_vertexBoundary.get());
-	cmdMgr->indirectDraw(drawData.get());
-	cmdMgr->bindPipeline(m_pipelineLines.get());
-	cmdMgr->bindVertex(m_vertexLines.get());
-	cmdMgr->indirectDraw(drawData.get(), sizeof(*pDrawData));
-	cmdMgr->compile();
-	commandIndexArt = context->commandMgrSingleUseInterface->getCommandIndex();
+	for (int i = 0; i < 3; ++i) {
+		cmds[i] = context.frame[i]->create(1);
+	}
 }
 
 ConstellationMgr::~ConstellationMgr()
@@ -158,7 +139,6 @@ ConstellationMgr::~ConstellationMgr()
 	allBoundarySegments.clear();
 }
 
-
 void ConstellationMgr::setLineColor(const Vec3f& c)
 {
 	lineColor = c;
@@ -167,7 +147,6 @@ void ConstellationMgr::setLineColor(const Vec3f& c)
 		(*iter)->setLineColor(c);
 	}
 }
-
 
 void ConstellationMgr::setLineColor(const std::string _name, const Vec3f& c)
 {
@@ -181,7 +160,6 @@ void ConstellationMgr::setLineColor(const std::string _name, const Vec3f& c)
 	}
 	cLog::get()->write("No constellation Color with shortName "+_name,LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT );
 }
-
 
 void ConstellationMgr::setLabelColor(const Vec3f& c)
 {
@@ -214,7 +192,6 @@ Vec3f ConstellationMgr::getArtColor() const
 {
 	return artColor;
 }
-
 
 // Load line and art data from files
 int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
@@ -390,79 +367,73 @@ void ConstellationMgr::setCurrentStates()
 
 void ConstellationMgr::draw(const Projector * prj,const Navigator * nav)
 {
-	drawLines(prj);
-	drawBoundaries(prj);
-	if (submitLinesAndBoundaries) {
-		context->commandMgr->setSubmission(commandIndex);
-		drawData->update();
-		submitLinesAndBoundaries = false;
-	}
+	Context &context = *Context::instance;
+	FrameMgr &frame = *context.frame[context.frameIdx];
+	VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_FOREGROUND);
+
+	submitSomething = false;
+	drawLines(cmd, prj);
+	drawBoundaries(cmd, prj);
 	drawNames(prj);
-	drawArt(prj, nav);
+	drawArt(cmd, prj, nav);
+	frame.compile(cmd);
+	if (submitSomething) {
+		frame.toExecute(cmd, PASS_FOREGROUND);
+	}
 }
 
 //! Draw constellations art textures
-void ConstellationMgr::drawArt(const Projector * prj, const Navigator * nav)
+void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, const Navigator * nav)
 {
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
-	// StateGL::enable(GL_BLEND);
-	// StateGL::enable(GL_CULL_FACE);
-	// glFrontFace(GL_CW);
-	//~ StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
+	Context &context = *Context::instance;
 	std::vector < Constellation * >::const_iterator iter;
 	std::vector<float> vecPos;
 	std::vector<float> vecTex;
 
-	//m_shaderArt->use();
-	m_vertexArt->setVertexOffset(0);
+	float *data = (float *) context.transfer->beginPlanCopy(vertexArt->get().size);
 	int offset = 0;
-	ThreadedCommandBuilder *cmdMgr = context->commandMgrSingleUseInterface;
-	cmdMgr->init(commandIndexArt, m_pipelineArt.get(), renderPassType::DEFAULT, false);
-	cmdMgr->bindVertex(m_vertexArt.get());
-	cmdMgr->bindSet(m_layoutArt.get(), context->global->globalSet, 0);
-	Vec3f color = getArtColor();
-	float intensity;
-	cmdMgr->pushConstant(m_layoutArt.get(), VK_SHADER_STAGE_FRAGMENT_BIT, 0, &color, 12);
+	struct {
+		Vec3f color;
+		float intensity;
+	} push;
+	push.color = getArtColor();
+
 	for (iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
 		(*iter)->drawArt(prj, nav, vecPos, vecTex);
 
 		if (vecPos.size()==0)
 			continue;
 
+		push.intensity = (*iter)->getArtIntensity();
+		if (offset == 0) {
+			m_pipelineArt->bind(cmd);
+			vertexArt->bind(cmd);
+			if (!submitSomething)
+				m_layoutArt->bindSet(cmd, *context.uboSet);
+			m_layoutArt->pushConstant(cmd, 0, &push, 0, sizeof(push));
+			submitSomething = true;
+		} else
+			m_layoutArt->pushConstant(cmd, 0, &push.intensity, offsetof(typeof(push), intensity), sizeof(push.intensity));
+
 		m_setArt->clear();
 		m_setArt->bindTexture((*iter)->getTexture()->getTexture(), 0);
-		cmdMgr->pushSet(m_layoutArt.get(), m_setArt.get(), 1);
-		intensity = (*iter)->getArtIntensity();
-		cmdMgr->pushConstant(m_layoutArt.get(), VK_SHADER_STAGE_FRAGMENT_BIT, 12, &intensity, 4);
+		m_setArt->push(cmd, *m_layoutArt, 1);
 
-		m_vertexArt->fillVertexBuffer(BufferType::POS2D, vecPos);
-		m_vertexArt->fillVertexBuffer(BufferType::TEXTURE, vecTex);
-		cmdMgr->draw(vecPos.size() / 2, 1, offset);
-		offset += vecPos.size() / 2;
-		m_vertexArt->setVertexOffset(offset);
-
-		// m_constellationGL->bind();
-		// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY, 0, vecPos.size()/2);
-		// m_constellationGL->unBind();
-		// Renderer::drawArraysWithoutShader(m_constellationGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY, 0, vecPos.size()/2);
+		const int localSize = vecPos.size() / 2;
+		vertexArt->fillEntry(2, localSize, vecPos.data(), data);
+		vertexArt->fillEntry(2, localSize, vecTex.data(), data + 2);
+		vkCmdDraw(cmd, localSize, 1, offset, 0);
+		offset += localSize;
+		data += localSize * 4;
 
 		vecPos.clear();
 		vecTex.clear();
 	}
-	cmdMgr->compile();
-	if (offset > 0) {
-		m_vertexArt->update();
-		context->commandMgrSingleUse->setSubmission(commandIndexArt, false, context->commandMgr);
-	}
-	//m_shaderArt->unuse();
-
-	// glFrontFace(GL_CCW);
-	// StateGL::disable(GL_CULL_FACE);
+	context.transfer->endPlanCopy(vertexArt->get(), offset * 4 * sizeof(float));
 }
 
 //! Draw constellations lines
-void ConstellationMgr::drawLines(const Projector * prj)
+void ConstellationMgr::drawLines(VkCommandBuffer &cmd, const Projector * prj)
 {
 	std::vector<float> vLinesPos;
 	std::vector<float> vLinesColor;
@@ -472,31 +443,23 @@ void ConstellationMgr::drawLines(const Projector * prj)
 		(*iter)->drawLines(prj, vLinesPos, vLinesColor);
 	}
 
-	pDrawData[1].vertexCount = vLinesPos.size() / 2;
 	if (vLinesPos.size()==0)
 		return;
-	m_vertexLines->fillVertexBuffer(BufferType::POS2D, vLinesPos);
-	m_vertexLines->fillVertexBuffer(BufferType::COLOR4, vLinesColor);
-	m_vertexLines->update();
-	submitLinesAndBoundaries = true;
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	//
-	// // m_shaderLines->use();
-	//
-	// m_constellationGL->fillVertexBuffer(BufferType::POS2D, vLinesPos);
-	// m_constellationGL->fillVertexBuffer(BufferType::COLOR4, vLinesColor);
-	//
-	// // m_constellationGL->bind();
-	// // glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vLinesPos.size()/2);
-	// // m_constellationGL->unBind();
-	// // m_shaderLines->unuse();
-	// Renderer::drawArrays(m_shaderLines.get(), m_constellationGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vLinesPos.size()/2);
+
+	m_pipelineLines->bind(cmd);
+	if (!submitSomething)
+		m_layout->bindSets(cmd, {*Context::instance->uboSet, *m_set});
+	vertexLines->bind(cmd);
+	const int vertexCount = vLinesPos.size() / 2;
+	vkCmdDraw(cmd, vertexCount, 1, 0, 0);
+	float *data = (float *) Context::instance->transfer->planCopy(vertexLines->get(), 0, vertexCount * 6 * sizeof(float));
+	vertexLines->fillEntry(2, vertexCount, vLinesPos.data(), data);
+	vertexLines->fillEntry(4, vertexCount, vLinesColor.data(), data + 2);
+	submitSomething = true;
 }
 
-
 //! Draw constellations lines
-void ConstellationMgr::drawBoundaries(const Projector * prj)
+void ConstellationMgr::drawBoundaries(VkCommandBuffer &cmd, const Projector * prj)
 {
 	std::vector<float> vBoundariesPos;
 	std::vector<float> vBoundariesIntensity;
@@ -506,37 +469,23 @@ void ConstellationMgr::drawBoundaries(const Projector * prj)
 		(*iter)->drawBoundary(prj, vBoundariesPos,vBoundariesIntensity, singleSelected);
 	}
 
-	pDrawData[0].vertexCount = vBoundariesPos.size() / 2;
 	if (vBoundariesPos.size()==0)
 		return;
-	m_vertexBoundary->fillVertexBuffer(BufferType::POS2D, vBoundariesPos);
-	m_vertexBoundary->fillVertexBuffer(BufferType::MAG, vBoundariesIntensity);
-	m_vertexBoundary->update();
-	submitLinesAndBoundaries = true;
-	// //~ StateGL::disable(GL_BLEND);
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	//
-	// m_shaderBoundary->use();
-	//
-	// m_shaderBoundary->setUniform("Color", boundaryColor);
-	//
-	// m_constellationGL->fillVertexBuffer(BufferType::POS2D, vBoundariesPos);
-	// m_constellationGL->fillVertexBuffer(BufferType::MAG, vBoundariesIntensity);
-	//
-	// // m_constellationGL->bind();
-	// // glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vBoundariesPos.size()/2);
-	// // m_constellationGL->unBind();
-	// // m_shaderBoundary->unuse();
-	// Renderer::drawArrays(m_shaderBoundary.get(), m_constellationGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, vBoundariesPos.size()/2);
+	m_pipelineBoundary->bind(cmd);
+	if (!submitSomething)
+		m_layout->bindSets(cmd, {Context::instance->uboSet->get(), m_set->get()});
+	vertexBoundary->bind(cmd);
+	const int vertexCount = vBoundariesPos.size() / 2;
+	vkCmdDraw(cmd, vertexCount, 1, 0, 0);
+	float *data = (float *) Context::instance->transfer->planCopy(vertexBoundary->get(), 0, vertexCount * 3 * sizeof(float));
+	vertexBoundary->fillEntry(2, vertexCount, vBoundariesPos.data(), data);
+	vertexBoundary->fillEntry(1, vertexCount, vBoundariesIntensity.data(), data + 2);
+	submitSomething = true;
 }
 
 //! Draw the names of all the constellations
 void ConstellationMgr::drawNames(const Projector * prj)
 {
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
-
 	std::vector < Constellation * >::const_iterator iter;
 	for (iter = asterisms.begin(); iter != asterisms.end(); iter++) {
 		// Check if in the field of view
@@ -738,7 +687,6 @@ void ConstellationMgr::setFlagArt(bool b)
 	}
 }
 
-
 void ConstellationMgr::setFlagNames(bool b)
 {
 	flagNames = b;
@@ -799,7 +747,6 @@ std::string ConstellationMgr::getSelectedShortName() const
 		result = "EOL"; //end of line
 	return result;
 }
-
 
 void ConstellationMgr::setSelectedConst(Constellation * c)
 {
@@ -902,7 +849,6 @@ void ConstellationMgr::unsetSelectedConst(Constellation * c)
 		c->setFlagBoundaries(false);
 	}
 }
-
 
 //! Load from file
 bool ConstellationMgr::loadBoundaries(const std::string& boundaryFile)
@@ -1015,7 +961,6 @@ std::vector<std::string> ConstellationMgr::listMatchingObjectsI18n(const std::st
 	return result;
 }
 
-
 void ConstellationMgr::getHPStarsFromAbbreviation(const std::string& abbreviation, std::vector<unsigned int>& HpStarsFromAsterim) const
 {
 	Constellation* target = findFromAbbreviation(abbreviation);
@@ -1029,4 +974,10 @@ void ConstellationMgr::getHPStarsFromAll(std::vector<unsigned int>& HpStarsFromA
 	for (auto iter = asterisms.begin(); iter != asterisms.end(); ++iter) {
 		(*iter)->getHPStarsFromAsterim(HpStarsFromAsterim);
 	}
+}
+
+void ConstellationMgr::setBoundaryColor(const Vec3f& c)
+{
+	boundaryColor = c;
+	*uColor = c;
 }

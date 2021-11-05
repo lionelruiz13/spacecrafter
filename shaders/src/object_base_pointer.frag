@@ -8,7 +8,7 @@
 layout (location=0) in vec2 TexCoord;
 
 layout (binding=0, set=1) uniform sampler2D texunit0;
-layout (binding=1, set=1) uniform uboFrag {
+layout (push_constant) uniform uboFrag {
 	vec3 color;
 };
 

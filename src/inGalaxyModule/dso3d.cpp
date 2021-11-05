@@ -26,83 +26,75 @@
 #include <iomanip>
 #include <math.h>
 #include "tools/s_texture.hpp"
-// #include "vulkanModule/VertexArray.hpp"
-// 
-// 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/VertexArray.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-Dso3d::Dso3d(ThreadContext *context)
+Dso3d::Dso3d()
 {
 	texNebulae = nullptr;
 	fader = true;
-	createSC_context(context);
+	createSC_context();
 	nbNebulae=0;
 }
 
 Dso3d::~Dso3d()
 {
-	if (texNebulae!=nullptr)
-		delete texNebulae;
-
 	posDso3d.clear();
 	scaleDso3d.clear();
 	texDso3d.clear();
 }
 
-void Dso3d::createSC_context(ThreadContext *context)
+void Dso3d::createSC_context()
 {
-	globalSet = context->global->globalSet;
-	cmdMgr = context->commandMgr;
-	// shaderDso3d = std::make_unique<shaderProgram>();
-	// shaderDso3d->init("dso3d.vert", "dso3d.geom","dso3d.frag");
-	// shaderDso3d->setUniformLocation({"Mat", "fader", "camPos", "nbTextures"});
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 
-	sData = std::make_unique<VertexArray>(context->surface);
-	sData->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	sData->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
-	sData->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
+	sData = std::make_unique<VertexArray>(vkmgr);
+	sData->createBindingEntry(5*sizeof(float));
+	sData->addInput(VK_FORMAT_R32G32B32_SFLOAT); // POS3D
+	sData->addInput(VK_FORMAT_R32_SFLOAT); // MAG
+	sData->addInput(VK_FORMAT_R32_SFLOAT); // SCALE
 
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-	layout->setTextureLocation(2);
+	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->buildLayout();
 	layout->build();
 
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	pipeline->setDepthStencilMode();
 	pipeline->setBlendMode(BLEND_ADD);
-	pipeline->bindVertex(sData.get());
+	pipeline->bindVertex(*sData);
 	pipeline->bindShader("dso3d.vert.spv");
 	pipeline->bindShader("dso3d.geom.spv");
 	pipeline->bindShader("dso3d.frag.spv");
 	pipeline->build();
 
 	assert(offsetof(pGeom_s, nbTextures) == 76); // check alignment
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGeom));
-	pGeom = static_cast<typeof(pGeom)>(uGeom->data);
-	set->bindUniform(uGeom.get(), 0);
-	uFader = std::make_unique<Uniform>(context->surface, sizeof(*pFader));
-	pFader = static_cast<typeof(pFader)>(uFader->data);
-	set->bindUniform(uFader.get(), 1);
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, true, true);
+	uGeom = std::make_unique<SharedBuffer<pGeom_s>>(*context.uniformMgr);
+	set->bindUniform(uGeom, 0);
+	uFader = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+	set->bindUniform(uFader, 1);
 }
 
 void Dso3d::build()
 {
-	commandIndex = cmdMgr->initNew(pipeline.get());
-	cmdMgr->bindSet(layout.get(), globalSet, 0);
-	cmdMgr->bindSet(layout.get(), set.get(), 1);
-	cmdMgr->bindVertex(sData.get());
-	cmdMgr->draw(nbNebulae);
-	cmdMgr->compile();
+	Context &context = *Context::instance;
+
+	context.cmdInfo.commandBufferCount = 3;
+	vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i) {
+		context.frame[i]->begin(cmds[i], PASS_MULTISAMPLE_DEPTH);
+		pipeline->bind(cmds[i]);
+		layout->bindSets(cmds[i], {*context.uboSet, *set});
+		vertex->bind(cmds[i]);
+		vkCmdDraw(cmds[i], nbNebulae, 1, 0, 0);
+		context.frame[i]->compile(cmds[i]);
+	}
 }
 
 bool Dso3d::loadCatalog(const std::string &cat) noexcept
@@ -150,21 +142,18 @@ bool Dso3d::loadCatalog(const std::string &cat) noexcept
 		scaleDso3d.push_back(size);
 	}
 	file.close();
-	sData->build(nbNebulae);
-	sData->fillVertexBuffer(BufferType::POS3D, posDso3d);
-	sData->fillVertexBuffer(BufferType::SCALE, scaleDso3d);
-	sData->fillVertexBuffer(BufferType::MAG, texDso3d);
+	vertex = sData->createBuffer(0, nbNebulae, Context::instance->globalBuffer.get());
+	float *data = (float *) Context::instance->transfer->planCopy(vertex->get());
+	vertex->fillEntry(3, nbNebulae, posDso3d.data(), data);
+	vertex->fillEntry(1, nbNebulae, texDso3d.data(), data + 3);
+	vertex->fillEntry(1, nbNebulae, scaleDso3d.data(), data + 4);
 
 	return true;
 }
 
 void Dso3d::setTexture(const std::string& tex_file)
 {
-	if (texNebulae != nullptr) {
-		delete texNebulae;
-		texNebulae = nullptr;
-	}
-	texNebulae =  new s_texture(/*1,*/tex_file,/*true*/ TEX_LOAD_TYPE_PNG_SOLID);
+	texNebulae = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
 
 	int width, height;
 	texNebulae->getDimensions(width, height);
@@ -173,35 +162,16 @@ void Dso3d::setTexture(const std::string& tex_file)
 		nbTextures = 0;
 	else
 		nbTextures = width / height;
-	pGeom->nbTextures = nbTextures;
+	uGeom->get().nbTextures = nbTextures;
 }
-
 
 void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noexcept
 {
-	if (!fader.getInterstate() || commandIndex == -1 || nbNebulae==0) return;
+	if (!fader.getInterstate() || nbNebulae==0) return;
 
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
-
-	pGeom->Mat = nav->getHelioToEyeMat().convert();
-
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, texNebulae->getID());
-
-	pGeom->camPos = nav->getObserverHelioPos();
-
-	// shaderDso3d->use();
-	// shaderDso3d->setUniform("Mat",matrix);
-	// shaderDso3d->setUniform("fader", fader.getInterstate());
-	// shaderDso3d->setUniform("camPos", camPos);
-	// shaderDso3d->setUniform("nbTextures", nbTextures);
-	*pFader = fader.getInterstate();
-	cmdMgr->setSubmission(commandIndex);
-
-	// sData->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbNebulae);
-	// sData->unBind();
-	// shaderDso3d->unuse();
-	// Renderer::drawArrays(shaderDso3d.get(), sData.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbNebulae);
+	uGeom->get().Mat = nav->getHelioToEyeMat().convert();
+	uGeom->get().camPos = nav->getObserverHelioPos();
+	*uFader = fader.getInterstate();
+	const int frameIdx = Context::instance->frameIdx;
+	Context::instance->frame[frameIdx]->toExecute(frameIdx, PASS_MULTISAMPLE_DEPTH);
 }

@@ -21,20 +21,20 @@
 #include "tools/vecmath.hpp"
 
 #include "tools/fader.hpp"
-// 
+//
 
 #include "tools/no_copy.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 using HIPpos = std::pair<int, Vec3f>;
 
 class Navigator;
 class Projector;
-class ThreadContext;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
 
 /*! \class StarLines
   * \brief classe représentant un astérisme customisé par l'utilisateur
@@ -44,7 +44,7 @@ class Uniform;
   */
 class StarLines: public NoCopy  {
 public:
-	StarLines(ThreadContext *_context);
+	StarLines();
 	~StarLines();
 
 	//! update les faders de la classe
@@ -131,24 +131,29 @@ protected:
 	// shader d'affichage
 	//std::unique_ptr<shaderProgram> shaderStarLines;
 	// context
-	ThreadContext *context;
-	int commandIndex;
+	VkCommandBuffer cmds[3];
+	bool needRebuild[3] {true, true, true};
 	// données VAO-VBO
 	std::unique_ptr<VertexArray> m_dataGL;
+	std::unique_ptr<VertexBuffer> vertex;
 	// uniform pattern of pipeline
 	std::unique_ptr<PipelineLayout> layout;
 	// whole draw context
 	std::unique_ptr<Pipeline> pipeline;
 	// set of local uniforms
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uMat, uFrag;
-	Mat4f *pMat;
-	Vec3f *pColor;
-	float *pFader;
+	struct frag {
+		Vec3f color;
+		float fader;
+	};
+	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
+	std::unique_ptr<SharedBuffer<frag>> uFrag;
 	// initialise le shader
-	void createSC_context(ThreadContext *_context);
-	//! build VertexArray and draw command with new datas
+	void createSC_context();
+	//! build VertexArray and fill it with new datas
 	void rebuild(std::vector<float> &vertexData);
+	//! build or rebuild command with new VertexArray and draw
+	void rebuildCommand(int idx);
 	// supprime le shader
 	// void deleteShader();
 	// tampon d'affichage

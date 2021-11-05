@@ -28,10 +28,10 @@
 #include "coreModule/skygrid_mgr.hpp"
 #include "tools/log.hpp"
 
-SkyGridMgr::SkyGridMgr(ThreadContext *context)
+SkyGridMgr::SkyGridMgr()
 {
 	baseColor=Vec3f(0.f, 0.f, 0.f);
-	SkyGrid::createShader(context);
+	SkyGrid::createShader();
 }
 
 void SkyGridMgr::draw(const Projector* prj)
@@ -47,6 +47,7 @@ SkyGridMgr::~SkyGridMgr()
 		cLog::get()->write("SkyGridMgr : delete " + typeToString(it->first), LOG_TYPE::L_INFO);
 		delete it->second;
 	}
+	SkyGrid::destroyShader();
 }
 
 void SkyGridMgr::update(int delta_time)

@@ -41,7 +41,7 @@
 
 class SolarSystem: public ProtoSystem{
 public:
-	SolarSystem(ThreadContext *o_context, ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
+	SolarSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
 	virtual ~SolarSystem();
 
 	// load one object from a hash (returns error message if any)
@@ -130,7 +130,7 @@ public:
 	// return the Sun altitude
 	double getSunAltitude(const Navigator * nav) const;
 
-	// return the Sun azimuth 
+	// return the Sun azimuth
 	double getSunAzimuth(const Navigator * nav) const;
 
 private:

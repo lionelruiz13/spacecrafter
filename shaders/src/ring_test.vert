@@ -17,8 +17,8 @@ layout (constant_id = 0) const float scale = 1.;
 
 layout (location=0) in vec3 position;
 
-layout (location=6) in vec3 Shift;
-layout (location=7) in vec3 Color;
+layout (location=1) in vec3 Shift;
+layout (location=2) in vec3 Color;
 
 layout (location=1) out float PlanetHalfAngle;
 layout (location=2) out float Separation;

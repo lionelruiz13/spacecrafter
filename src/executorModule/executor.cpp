@@ -23,14 +23,13 @@
  */
 
 #include "executor.hpp"
-#include "vulkanModule/CommandMgr.hpp"
 #include "navModule/observer.hpp"
 
 Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
 {
     core = _core;
     observer = _observer;
-    
+
     ssystemModule = std::make_unique<SolarSystemModule>(core, observer);
     inGalaxyModule = std::make_unique<InGalaxyModule>(core, observer);
     inUniverseModule = std::make_unique<InUniverseModule>(core, observer);
@@ -47,7 +46,6 @@ void Executor::draw(int delta_time)
 {
     currentMode->draw(delta_time);
     core->media->imageDraw(core->navigation, core->projection); // resolve multisample
-	core->context->commandMgr->endBatch();
 }
 
 void Executor::update(int delta_time)

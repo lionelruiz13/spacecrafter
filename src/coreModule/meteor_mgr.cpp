@@ -27,18 +27,12 @@
 #include "coreModule/meteor_mgr.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-
-// #include "vulkanModule/VertexArray.hpp"
-// 
-// 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Buffer.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 #define MAX_METEOR 4096
 
-MeteorMgr::MeteorMgr(int zhr, int maxv, ThreadContext *context)
+MeteorMgr::MeteorMgr(int zhr, int maxv)
 {
 	ZHR = zhr;
 	max_velocity = maxv;
@@ -47,12 +41,13 @@ MeteorMgr::MeteorMgr(int zhr, int maxv, ThreadContext *context)
 	// (calculated for average meteor magnitude of +2.5 and limiting magnitude of 5)
 	zhr_to_wsr = 1.6667f/3600.f;
 	// this is a correction factor to adjust for the model as programmed to match observed rates
-	createSC_context(context);
+	createSC_context();
 }
 
 MeteorMgr::~MeteorMgr()
-{}
-
+{
+	Context::instance->indexBufferMgr->releaseBuffer(index);
+}
 
 void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneReproductor* eye, int delta_time)
 {
@@ -95,73 +90,66 @@ void MeteorMgr::update(Projector *proj, Navigator* nav, TimeMgr* timeMgr, ToneRe
 	//  printf("mpf: %d\tm launched: %d\t(mps: %f)\t%d\n", mpf, mlaunch, ZHR*zhr_to_wsr, delta_time);
 }
 
-void MeteorMgr::createSC_context(ThreadContext *context)
+void MeteorMgr::createSC_context()
 {
-	cmdMgr = context->commandMgr;
-	// m_shaderMeteor = std::make_unique<shaderProgram>();
-	// m_shaderMeteor->init("meteor.vert","meteor.frag");
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
 
- 	m_meteorGL = std::make_unique<VertexArray>(context->surface);
-	m_meteorGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	m_meteorGL->registerVertexBuffer(BufferType::COLOR4, BufferAccess::DYNAMIC);
-	m_meteorGL->build(MAX_METEOR * 3);
-	m_meteorGL->registerIndexBuffer(BufferAccess::STATIC, MAX_METEOR * 4, 2, VK_INDEX_TYPE_UINT16);
-	{ // initialize index buffer
-		std::vector<uint16_t> tmpIndex;
-		tmpIndex.reserve(MAX_METEOR * 4);
-		for (int i = 0; i < MAX_METEOR * 3; i += 3) {
-			tmpIndex.push_back(i + 0);
-			tmpIndex.push_back(i + 1);
-			tmpIndex.push_back(i + 1);
-			tmpIndex.push_back(i + 2);
-		}
-		m_meteorGL->fillIndexBuffer(MAX_METEOR * 2, reinterpret_cast<uint32_t *>(tmpIndex.data()));
+ 	m_meteorGL = std::make_unique<VertexArray>(vkmgr);
+	m_meteorGL->createBindingEntry(6*sizeof(float));
+	m_meteorGL->addInput(VK_FORMAT_R32G32_SFLOAT);
+	m_meteorGL->addInput(VK_FORMAT_R32G32B32A32_SFLOAT);
+	vertex = m_meteorGL->createBuffer(0, MAX_METEOR * 3, context.globalBuffer.get());
+	index = context.indexBufferMgr->acquireBuffer(MAX_METEOR * 4 * sizeof(uint16_t));
+	uint16_t *tmpIndex = (uint16_t *) context.transfer->planCopy(index);
+	for (int i = 0; i < MAX_METEOR * 3; i += 3) {
+		*(tmpIndex++) = i + 0;
+		*(tmpIndex++) = i + 1;
+		*(tmpIndex++) = i + 1;
+		*(tmpIndex++) = i + 2;
 	}
-	pipeline = std::make_unique<Pipeline>(context->surface, context->global->globalLayout);
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_FRONT, context.layouts.front().get());
 	pipeline->setDepthStencilMode();
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
-	pipeline->bindVertex(m_meteorGL.get());
+	pipeline->bindVertex(*m_meteorGL);
 	pipeline->bindShader("meteor.vert.spv");
 	pipeline->bindShader("meteor.frag.spv");
 	pipeline->build();
-	drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	pNbVertex = static_cast<typeof(pNbVertex)>(drawData->data);
-	pNbVertex[1] = 1; // instanceCount
-	pNbVertex[2] = pNbVertex[3] = pNbVertex[4] = 0; // offsets
-	commandIndex = cmdMgr->initNew(pipeline.get());
-	cmdMgr->bindVertex(m_meteorGL.get());
-	cmdMgr->bindSet(context->global->globalLayout, context->global->globalSet);
-	cmdMgr->indirectDrawIndexed(drawData.get());
-	cmdMgr->compile();
+
+	drawData = std::make_unique<SharedBuffer<VkDrawIndexedIndirectCommand[3]>>(*context.tinyMgr);
+	context.cmdInfo.commandBufferCount = 3;
+	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i) {
+		VkCommandBuffer &cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_FRONT);
+		pipeline->bind(cmd);
+		context.layouts.front()->bindSets(cmd, {*context.uboSet});
+		vertex->bind(cmd);
+		vkCmdBindIndexBuffer(cmd, index.buffer, index.offset, VK_INDEX_TYPE_UINT16);
+		// vkCmdDrawIndexed(cmd, nbNebulae, 1, 0, 0);
+		vkCmdDrawIndexedIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset() + i * sizeof(VkDrawIndexedIndirectCommand), 1, sizeof(VkDrawIndexedIndirectCommand));
+		context.frame[i]->compile(cmd);
+		drawData->get()[i] = VkDrawIndexedIndirectCommand{0, 1, 0, 0, 0};
+		pNbVertex[i] = &drawData->get()[i].indexCount;
+	}
 }
 
 void MeteorMgr::draw(Projector *proj, Navigator* nav)
 {
+	Context &context = *Context::instance;
+
+	int nbMeteor = 0;
+	float *data = (float *) context.transfer->beginPlanCopy(MAX_METEOR * 3 * (5 * sizeof(float)));
 	for (auto& iter : m_activeMeteor) {
-    	iter->draw(proj, nav, vecPos, vecColor);
+    	iter->draw(proj, nav, data);
+		++nbMeteor;
 	}
+	if (nbMeteor > MAX_METEOR)
+		nbMeteor = MAX_METEOR;
 
-	if (vecPos.size()==0)
-		return;
-
-	m_meteorGL->fillVertexBuffer(BufferType::POS2D, vecPos);
-	m_meteorGL->fillVertexBuffer(BufferType::COLOR4, vecColor);
-	m_meteorGL->update();
-
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	// StateGL::enable(GL_BLEND);
-
-	// m_shaderMeteor->use();
-	// m_meteorGL->bind();
-	// for(unsigned int i=0; i < (vecPos.size()/3) ; i++)
-	// 	glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, 3*i, 3);
-	// m_meteorGL->unBind();
-	// m_shaderMeteor->unuse();
-	*pNbVertex = vecPos.size() / 2 * 4/3; // index per meteor / vertex per meteor
-	drawData->update();
-	cmdMgr->setSubmission(commandIndex);
-	//Renderer::drawMultiArrays(m_shaderMeteor.get(), m_meteorGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, vecPos.size()/3 , 3);
-
-	vecPos.clear();
-	vecColor.clear();
+	context.transfer->endPlanCopy(vertex->get(), nbMeteor * 3 * (5 * sizeof(float)));
+	if (nbMeteor) {
+		*pNbVertex[context.frameIdx] = nbMeteor * 4;
+		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_FRONT);
+	}
 }

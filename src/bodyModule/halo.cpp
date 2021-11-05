@@ -22,117 +22,65 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/s_texture.hpp"
 #include <iostream>
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/VertexBuffer.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/ThreadedCommandBuilder.hpp"
-#include "vulkanModule/Texture.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-int Halo::commandIndex = -1;
-uint8_t Halo::commandIndexID;
-std::vector<int> Halo::commandIndexList;
-VirtualSurface *Halo::surface;
-Set *Halo::globalSet;
-Set *Halo::set;
-ThreadedCommandBuilder *Halo::cmdMgr;
-CommandMgr *Halo::cmdMgrTarget;
-TextureMgr *Halo::texMgr;
-Pipeline *Halo::pipeline;
-PipelineLayout *Halo::layout;
-VertexArray *Halo::m_haloGL;
-s_texture *Halo::tex_halo = nullptr;
-s_texture *Halo::last_tex_halo = nullptr;
-bool Halo::drawn;
+Halo::HaloContext *Halo::global;
 
 Halo::Halo(Body * _body)
 {
 	body = _body;
-
-	vertex = std::make_unique<VertexArray>(*m_haloGL);
-	vertex->build(4);
-	pHaloData = static_cast<float *>(vertex->getVertexBuffer().data);
-	//! Initialize TexCoord
-	pHaloData[2] = 0;	pHaloData[3] = 0;
-	pHaloData[6] = 0;	pHaloData[7] = 1;
-	pHaloData[10] = 1;	pHaloData[11] = 0;
-	pHaloData[14] = 1;	pHaloData[15] = 1;
 }
 
 void Halo::beginDraw()
 {
-	if (last_tex_halo != tex_halo) {
-		set->bindTexture(tex_halo->getTexture(), 0);
-		last_tex_halo = tex_halo;
+	if (global->last_tex_halo != global->tex_halo.get()) {
+		global->set->bindTexture(global->tex_halo->getTexture(), 0);
+		global->last_tex_halo = global->tex_halo.get();
 	}
-	commandIndexID = 0;
-	commandIndex = commandIndexList[commandIndexID];
-	commandIndexID++;
-	cmdMgr->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
-	cmdMgr->bindSet(layout, globalSet);
-	cmdMgr->bindSet(layout, set, 1);
-	drawn = false;
 }
 
-void Halo::nextDraw()
+void Halo::nextDraw(VkCommandBuffer &cmd)
 {
-	endDraw();
-	drawn = false;
-	if (commandIndexID == commandIndexList.size())
-		commandIndexList.push_back(cmdMgr->getCommandIndex());
-	commandIndex = commandIndexList[commandIndexID];
-	commandIndexID++;
-	cmdMgr->init(commandIndex, pipeline, renderPassType::DEFAULT, false);
-	cmdMgr->bindSet(layout, globalSet);
-	cmdMgr->bindSet(layout, set, 1);
+	if (global->size) {
+		global->pipeline->bind(cmd);
+		global->layout->bindSets(cmd, {*Context::instance->uboSet->get(), *global->set->get()});
+		global->vertex->bind(cmd);
+		vkCmdDraw(cmd, global->size, 1, global->offset, 0);
+		global->offset += global->size;
+		global->size = 0;
+	}
 }
 
 void Halo::endDraw()
 {
-	cmdMgr->select(commandIndex);
-	cmdMgr->compile();
-	if (drawn)
-		cmdMgr->setSubmission(commandIndex, true, cmdMgrTarget);
+	Context &context = *Context::instance;
+	if (global->size) {
+		auto &frame = *context.frame[context.frameIdx];
+		auto &cmd = frame.begin(global->cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+		nextDraw(cmd);
+		frame.compile(cmd);
+		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
+	}
+	const int size = (global->offset - global->initialOffset) * (6 * sizeof(float));
+	const int offset = global->initialOffset * (6 * sizeof(float));
+	global->initialOffset = (global->initialOffset) ? 0 : global->offset;
+	global->offset = global->initialOffset;
+	if (size == 0)
+		return;
+	context.transfer->planCopyBetween(global->staging, global->vertex->get(), size, offset, offset);
 }
 
 void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
 {
-	if (!tex_halo) return;
+	if (!global->tex_halo) return;
 	computeHalo(nav, prj, eye);
 	if (rmag<1.21 && cmag < 0.05)
 		return;
-	drawn = true;
-
-	// StateGL::BlendFunc(GL_ONE, GL_ONE);
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, tex_halo->getID());
-
-	uData.Color = body->myColor->getHalo();
-	uData.cmag = cmag;
-
-	// vertex->fillVertexBuffer(BufferType::POS2D, vecHaloPos);
-	// vertex->fillVertexBuffer(BufferType::TEXTURE, vecHaloTex);
-	//vertex->update();
-
-	// if (tex_halo != last_tex_halo) {
-	// 	set->bindTexture(tex_halo->getTexture(), 0);
-	// 	last_tex_halo = tex_halo;
-	// 	build();
-	// }
-
-	// m_haloGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,0,4);
-	// m_haloGL->unBind();
-	// shaderHalo->unuse();
-	//cmdMgr->setSubmission(commandIndex, false, cmdMgrTarget);
-	cmdMgr->select(commandIndex);
-	cmdMgr->pushConstantNoCopy(layout, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &uData, sizeof(uData));
-	cmdMgr->bindVertex(vertex.get());
-	cmdMgr->draw(4);
+	auto &data = global->pData[global->offset + global->size++];
+	data.pos = Vec2f((float) body->screenPos[0], (float)body->screenPos[1]);
+	data.Color = body->myColor->getHalo() * cmag;
+	data.rmag = rmag;
 }
 
 void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
@@ -191,61 +139,64 @@ void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneRep
 
 	if (rmag<1.21 && cmag < 0.05)
 		return;
-
-	Vec2f screenPosF ((float) body->screenPos[0], (float)body->screenPos[1]);
-
-	pHaloData[0] = screenPosF[0]-rmag;	pHaloData[1] = screenPosF[1]-rmag;
-	pHaloData[4] = screenPosF[0]-rmag;	pHaloData[5] = screenPosF[1]+rmag;
-	pHaloData[8] = screenPosF[0]+rmag;	pHaloData[9] = screenPosF[1]-rmag;
-	pHaloData[12] = screenPosF[0]+rmag;	pHaloData[13] = screenPosF[1]+rmag;
 }
 
-void Halo::createSC_context(ThreadContext *context)
+void Halo::createSC_context()
 {
-	surface = context->surface;
-	cmdMgr = context->commandMgrSingleUseInterface;
-	commandIndexList.resize(3);
-	for (auto &value : commandIndexList)
-		value = cmdMgr->getCommandIndex();
-	cmdMgrTarget = context->commandMgr;
-	texMgr = context->global->textureMgr;
-	globalSet = context->global->globalSet;
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+	global = new HaloContext();
 
-	m_haloGL = context->global->tracker->track(new VertexArray(surface));
-	m_haloGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
-	m_haloGL->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
+	for (int i = 0; i < 3; ++i)
+		global->cmds[i] = context.frame[i]->create(1);
+	global->pattern = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
+	global->pattern->createBindingEntry(6*sizeof(float));
+	global->pattern->addInput(VK_FORMAT_R32G32_SFLOAT);
+	global->pattern->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	global->pattern->addInput(VK_FORMAT_R32_SFLOAT);
+	//! Note : 4096 is enough while there is no more than 2048 halo drawn per frame
+	global->vertex = global->pattern->createBuffer(0, 4096, context.ojmBufferMgr.get());
+	global->staging = context.stagingMgr->acquireBuffer(global->vertex->get().size);
+	global->pData = static_cast<typeof(global->pData)>(context.stagingMgr->getPtr(global->staging));
 
-	layout = context->global->tracker->track(new PipelineLayout(surface));
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
-	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->buildLayout();
-	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(uData));
-	layout->build();
+	global->layout = std::make_unique<PipelineLayout>(vkmgr);
+	global->layout->setGlobalPipelineLayout(context.layouts.front().get());
+	global->layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+	global->layout->buildLayout();
+	global->layout->build();
 
-	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
-	pipeline->setBlendMode(BLEND_ADD);
-	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
-	pipeline->bindShader("body_halo.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-	pipeline->bindShader("body_halo.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
-	pipeline->bindVertex(m_haloGL);
-	pipeline->build();
+	global->pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, global->layout.get());
+	global->pipeline->setBlendMode(BLEND_ADD);
+	global->pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	global->pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+	global->pipeline->bindShader("body_halo.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+	global->pipeline->bindShader("body_halo.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
+	global->pipeline->bindShader("body_halo.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+	global->pipeline->bindVertex(*global->pattern);
+	global->pipeline->build();
 
-	set = context->global->tracker->track(new Set(surface, context->setMgr, layout));
+	global->set = std::make_unique<Set>(vkmgr, *context.setMgr, global->layout.get(), -1);
+}
+
+void Halo::destroySC_context()
+{
+	if (global) {
+		Context::instance->stagingMgr->releaseBuffer(global->staging);
+		delete global;
+	}
 }
 
 bool Halo::setTexHaloMap(const std::string &texMap)
 {
-	tex_halo = new s_texture(texMap, TEX_LOAD_TYPE_PNG_SOLID_REPEAT,1);
-	if (tex_halo != nullptr)
+	auto tex_halo = new s_texture(texMap, TEX_LOAD_TYPE_PNG_SOLID_REPEAT,1);
+	if (tex_halo != nullptr) {
+		global->tex_halo = std::unique_ptr<s_texture>(tex_halo);
 		return true;
-	else
+	} else
 		return false;
 }
 
 void Halo::deleteDefaultTexMap()
 {
-	if(tex_halo != nullptr) {
-		delete tex_halo;
-		tex_halo = nullptr;
-	}
+	global->tex_halo = nullptr;
 }

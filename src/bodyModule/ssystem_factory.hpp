@@ -50,16 +50,14 @@
  * \class SSystemFactory
  *
  * \brief Wrapper for all Solar Systems functions
- * 
+ *
  * Allows to add systems and to select the active one
  *
 */
 
-class ThreadContext;
-
 class SSystemFactory: public NoCopy {
 public:
-    SSystemFactory(ThreadContext *_context, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
+    SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
     ~SSystemFactory();
 
     SolarSystem * getSolarSystem(void) {
@@ -264,9 +262,9 @@ public:
 	void planetTesselation(std::string name, int value) {
         ssystemTex->planetTesselation(name, value);
     }
-    
+
 	const std::shared_ptr<OrbitCreator> getOrbitCreator()const {
-        return currentSystem->getOrbitCreator();   
+        return currentSystem->getOrbitCreator();
     }
 
 	void iniColor(const std::string& _halo, const std::string& _label, const std::string& _orbit, const std::string& _trail) {
@@ -345,7 +343,7 @@ public:
 	                                  const Projector * prj,
 	                                  bool *default_last_item,
 	                                  bool aboveHomePlanet ) const {
-                                          return currentSystem->searchAround(v, lim_fov, nav, observatory, prj, 
+                                          return currentSystem->searchAround(v, lim_fov, nav, observatory, prj,
                                           default_last_item, aboveHomePlanet);
                                       }
 
@@ -504,11 +502,10 @@ private:
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 
 	std::shared_ptr<BodyTrace> bodytrace;				// the pen bodytrace
-    ThreadContext *context;
     Observer *observatory;
     Navigator *navigation;
     TimeMgr *timeMgr;
-    
+
     ProtoSystem * currentSystem;
 };
 

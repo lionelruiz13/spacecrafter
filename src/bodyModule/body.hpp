@@ -50,7 +50,6 @@
 #include "bodyModule/bodyShader.hpp"
 #include "rotation_elements.hpp"
 #include "tools/scalable.hpp"
-#include "vulkanModule/Context.hpp"
 #include "atmosphereModule/atmosphere_commun.hpp"
 
 
@@ -112,8 +111,7 @@ public:
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-	     const std::shared_ptr<BodyTexture> _bodyTexture,
-		 ThreadContext *context);
+	     const std::shared_ptr<BodyTexture> _bodyTexture);
 	virtual ~Body();
 
 	double getRadius(void) const {
@@ -171,7 +169,7 @@ public:
 
 	// Draw the Planet, if hint_ON is != 0 draw a circle and the name as well
 	// Return the squared distance in pixels between the current and the  previous position this Body was drawn at.
-	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet);
+	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer);
 
 	// Set the orbital elements
 	void set_rotation_elements(float _period, float _offset, double _epoch, float _obliquity, float _ascendingNode, float _precessionRate, double _sidereal_period, float _axial_tilt);
@@ -339,8 +337,8 @@ public:
 		radius= initialRadius * initialScale;
 	}
 
-	static void createShader(ThreadContext *context);
-	//static void deleteShader();
+	static void createShader();
+	static void deleteShader();
 
 	const Mat4d get_rot_local_to_parent_unprecessed() const {
 		return rot_local_to_parent_unprecessed;
@@ -351,7 +349,7 @@ public:
 	}
 
 	static bool setTexEclipseMap(const std::string &texMap) {
-		tex_eclipse_map = new s_texture(texMap, TEX_LOAD_TYPE_PNG_SOLID);
+		tex_eclipse_map = std::make_shared<s_texture>(texMap, TEX_LOAD_TYPE_PNG_SOLID);
 		if (tex_eclipse_map != nullptr)
 			return true;
 		else
@@ -359,7 +357,7 @@ public:
 	}
 
 	static bool setTexDefaultMap(const std::string &texMap) {
-		defaultTexMap = new s_texture(texMap, TEX_LOAD_TYPE_PNG_SOLID_REPEAT,1);
+		defaultTexMap = std::make_shared<s_texture>(texMap, TEX_LOAD_TYPE_PNG_SOLID_REPEAT,1);
 		if (defaultTexMap != nullptr)
 			return true;
 		else
@@ -442,13 +440,13 @@ protected:
 		return false;
 	}
 
-	virtual void drawRings(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) {
+	virtual void drawRings(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) {
 		return;
 	}
 
-	virtual void drawOrbit(const Observer* observatory, const Navigator* nav, const Projector* prj);
+	virtual void drawOrbit(VkCommandBuffer &cmd, const Observer* observatory, const Navigator* nav, const Projector* prj);
 
-	virtual void drawTrail(const Navigator* nav, const Projector* prj);
+	virtual void drawTrail(VkCommandBuffer &cmd, const Navigator* nav, const Projector* prj);
 
 	virtual void drawHints(const Navigator* nav, const Projector* prj);
 
@@ -456,7 +454,7 @@ protected:
 		return;
 	}
 
-	virtual void drawAxis(const Projector* prj, const Mat4d& mat);
+	virtual void drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat);
 
 	void drawAtmExt(const Projector* prj, const Navigator* nav, const Observer* observatory);
 
@@ -465,9 +463,12 @@ protected:
 	}
 
 	// Draw the 3D body: pshere or model3d
-	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz) = 0;
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz) = 0;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
+
+	// Return true if only the halo need to be drawn
+	virtual bool canSkip(const Navigator* nav, const Projector* prj);
 
 	std::string englishName; 			// english Body name
 	std::string nameI18;					// International translated name
@@ -480,7 +481,6 @@ protected:
 	Vec3d screenPos;			// Used to store temporarily the 2D position on screen
 	BODY_TYPE typePlanet;			//get the type of Body in univers: real planet, moon, dwarf ...
 
-	ThreadContext *context;
 	std::shared_ptr<BodyColor> myColor=nullptr;
 	AtmosphereParams* atmosphereParams=nullptr;
 
@@ -492,16 +492,18 @@ protected:
 	Mat4d rot_local_to_parent_unprecessed;  // currently used for moons (Moon elliptical orbit required this)
 	Mat4d mat_local_to_parent;		// Transfo matrix from local ecliptique to parent ecliptic
 	float axis_rotation;			// Rotation angle of the Body on it's axis
-	s_texture * tex_map=nullptr;			// Body map texture
-	s_texture * tex_skin=nullptr;			// Body skin texture
-	s_texture * tex_norm=nullptr;			// Body normal map
-	s_texture * tex_heightmap=nullptr;		// Body height map for Tessellation
-	s_texture * tex_current=nullptr;		// current body texture to display
+	std::shared_ptr<s_texture> tex_map=nullptr;			// Body map texture
+	std::shared_ptr<s_texture> tex_skin=nullptr;			// Body skin texture
+	std::shared_ptr<s_texture> tex_norm=nullptr;			// Body normal map
+	std::shared_ptr<s_texture> tex_heightmap=nullptr;		// Body height map for Tessellation
+	std::shared_ptr<s_texture> tex_current=nullptr;		// current body texture to display
 
 	Vec3f eye_sun;
 	Vec3f eye_planet;
 	SHADER_USE myShader;  			// the name of the shader used for his display
 	drawState_t *drawState;		// State for draw, include Pipeline and PipelineLayout
+	int cmds[3] = {-1, -1, -1};
+	bool changed = true;
 
 	ObjL *currentObj = nullptr;
 
@@ -535,8 +537,8 @@ protected:
 	double orbit_bounding_radius; // AU calculated at load time for elliptical orbits at least DIGITALIS
 	double boundingRadius;  // Cached AU value for use with depth buffer
 
-	static s_texture *defaultTexMap;  		// Default texture map for bodies if none supplied
-	static s_texture *tex_eclipse_map;  	// for moon shadow lookups
+	static std::shared_ptr<s_texture> defaultTexMap;  		// Default texture map for bodies if none supplied
+	static std::shared_ptr<s_texture> tex_eclipse_map;  	// for moon shadow lookups
 
 
 	float sun_half_angle; // for moon shadow calcs

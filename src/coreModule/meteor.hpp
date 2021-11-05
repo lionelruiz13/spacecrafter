@@ -45,7 +45,7 @@ public:
 	Meteor( Projector *proj, Navigator *nav, ToneReproductor* eye, double v);
 	virtual ~Meteor();
 	bool update(int delta_time);  // update position
-	bool draw(Projector *proj, Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecColor);		// Draw the meteor
+	bool draw(Projector *proj, Navigator* nav, float *&data);		// Draw the meteor
 	bool isAlive(void);          // see if burned out yet
 
 private:

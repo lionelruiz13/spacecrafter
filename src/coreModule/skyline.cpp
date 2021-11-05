@@ -32,26 +32,19 @@
 #include <string>
 #include "navModule/observer.hpp"
 
-#include "vulkanModule/Context.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "tools/insert_all.hpp"
 
 //2346 lignes avant
 //2479 lignes apres
 //1560 lignes au final
 
-ThreadContext *SkyLine::context;
-VertexArray *SkyLine::vertexModel;
+std::unique_ptr<VertexArray> SkyLine::vertexModel;
 PipelineLayout *SkyLine::layout;
 Pipeline *SkyLine::pipeline;
-Set *SkyLine::set;
-int SkyLine::vUniformID = -1;
+std::unique_ptr<Set> SkyLine::set;
+int SkyLine::vUniformID;
 s_font* SkyLine::font = nullptr;
 
 SkyLine::SkyLine(double _radius, unsigned int _nb_segment) :
@@ -66,68 +59,77 @@ SkyLine::~SkyLine()
 	// font = nullptr;
 }
 
-void SkyLine::createSC_context(ThreadContext *_context)
+void SkyLine::createSC_context()
 {
-	context = _context;
-	vertexModel = context->global->tracker->track(new VertexArray(context->surface));
-	vertexModel->registerVertexBuffer(BufferType::POS2D, BufferAccess::DYNAMIC);
-	layout = context->global->tracker->track(new PipelineLayout(context->surface));
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+	vertexModel = std::make_unique<VertexArray>(vkmgr, 2 * sizeof(float));
+	vertexModel->createBindingEntry(2 * sizeof(float));
+	vertexModel->addInput(VK_FORMAT_R32G32_SFLOAT);
+	layout = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(layout);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 1, true);
 	layout->buildLayout();
 	layout->build();
-	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline = new Pipeline(vkmgr, *context.render, PASS_BACKGROUND, layout);
+	context.pipelines.emplace_back(pipeline);
 	pipeline->setDepthStencilMode();
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
-	pipeline->bindVertex(vertexModel);
+	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("skylineDraw.vert.spv");
 	pipeline->bindShader("skylineDraw.frag.spv");
 	pipeline->build();
-	set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout);
+
+	vUniformID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(Vec4f));
 }
 
 void SkyLine::createLocalResources()
 {
-	m_skylineGL = std::make_unique<VertexArray>(*vertexModel);
-	uColor = std::make_unique<Uniform>(context->surface, sizeof(*pColor), true);
-	pColor = static_cast<typeof(pColor)>(uColor->data);
-	if (vUniformID == -1) {
-		vUniformID = set->bindVirtualUniform(uColor.get(), 0);
-	}
-	commandIndex = context->commandMgrDynamic->getCommandIndex();
+	Context &context = *Context::instance;
+	uColor = std::make_unique<SharedBuffer<Vec4f>>(*context.uniformMgr);
+	context.cmdInfo.commandBufferCount = 3;
+    vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
 }
 
 void SkyLine::build(int nbVertices)
 {
 	nbVertex = nbVertices;
-	m_skylineGL->build(nbVertices);
-	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	cmdMgr->init(commandIndex, pipeline);
-	cmdMgr->bindSet(layout, context->global->globalSet, 0);
-	set->setVirtualUniform(uColor.get(), vUniformID);
-	cmdMgr->bindSet(layout, set, 1);
-	cmdMgr->bindVertex(m_skylineGL.get());
-	cmdMgr->draw(nbVertices);
-	cmdMgr->compile();
+	m_skylineGL.reset();
+	m_skylineGL = vertexModel->createBuffer(0, nbVertices, Context::instance->globalBuffer.get());
+	needUpdate[0] = true;
+	needUpdate[1] = true;
+	needUpdate[2] = true;
+}
+
+void SkyLine::rebuildCommand(int idx)
+{
+	Context &context = *Context::instance;
+	set->setVirtualUniform(uColor->getOffset(), vUniformID);
+	auto cmd = cmds[idx];
+	context.frame[idx]->begin(cmd, PASS_BACKGROUND);
+	pipeline->bind(cmd);
+	layout->bindSets(cmd, {*context.uboSet, *set}, *set);
+	m_skylineGL->bind(cmd);
+	vkCmdDraw(cmd, nbVertex, 1, 0, 0);
+	context.frame[idx]->compile(cmd);
+	needUpdate[idx] = false;
 }
 
 void SkyLine::drawSkylineGL(const Vec4f& Color)
 {
 	if (nbVertex != vecDrawPos.size() / 2)
 		build(vecDrawPos.size() / 2);
-	m_skylineGL->fillVertexBuffer(BufferType::POS2D, vecDrawPos);
-	m_skylineGL->update();
+	Context &context = *Context::instance;
+	// to optimize by writing to the pointer returned by beginPlanCopy instead of a vector
+	memcpy(context.transfer->planCopy(m_skylineGL->get()), vecDrawPos.data(), vecDrawPos.size() * sizeof(float));
 
-	// shaderSkylineDraw->use();
-	// shaderSkylineDraw->setUniform("Color",Color);
-	*pColor = Color;
-
-	// m_skylineGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
-	// m_skylineGL->unBind();
-	// shaderSkylineDraw->unuse();
-	//Renderer::drawArrays(shaderSkylineDraw.get(), m_skylineGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0 ,vecDrawPos.size()/2);
-	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
+	*uColor = Color;
+	const int idx = context.frameIdx;
+	if (needUpdate[idx])
+		rebuildCommand(idx);
+	context.frame[idx]->toExecute(cmds[idx], PASS_BACKGROUND);
 }
 
 void SkyLine::translateLabels(Translator& trans)

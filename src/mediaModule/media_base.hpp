@@ -17,14 +17,23 @@
 #ifndef __MEDIA_BASE_HPP__
 #define __MEDIA_BASE_HPP__
 
+#include <memory>
 
-#include "vulkanModule/Texture.hpp"
+class Texture;
+class SyncEvent;
+
+struct VideoSync {
+	std::unique_ptr<SyncEvent> syncIn; // Signaled when image can be used
+	std::unique_ptr<SyncEvent> syncOut; // Signaled when image have been used
+	bool inUse = false;
+};
 
 struct VideoTexture {
-	StreamTexture *tex[3];
-	StreamTexture *&y = tex[0];
-	StreamTexture *&u = tex[1];
-	StreamTexture *&v = tex[2];
+	Texture *tex[3];
+	Texture *&y = tex[0];
+	Texture *&u = tex[1];
+	Texture *&v = tex[2];
+	std::shared_ptr<VideoSync> sync;
 };
 
 struct Resolution {

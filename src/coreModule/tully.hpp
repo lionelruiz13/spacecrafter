@@ -34,7 +34,7 @@
 #include "tools/fader.hpp"
 
 #include "tools/vecmath.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 //! Class which manages the Tully Galaxies catalog
 
@@ -42,13 +42,14 @@ class Projector;
 class Navigator;
 class s_texture;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
-class Uniform;
-class Buffer;
+class PipelineLayout;
+class Set;
 
 class Tully {
 public:
-	Tully(ThreadContext *_context);
+	Tully();
 	~Tully();
 
 	//! affiche le nuage de points
@@ -90,7 +91,7 @@ public:
 
 private:
 	// initialise les shaders ShaderPoints et ShaderSquare ainsi que les vao-vbo
-	void createSC_context(ThreadContext *_context);
+	void createSC_context();
 
 	void computeSquareGalaxies(Vec3f camPosition);
 
@@ -101,14 +102,9 @@ private:
 	Vec3f camPos;
 	//tableau de float fixe pour tampons openGL
 	std::vector<float> posTully;
-	std::vector<float> scaleTully;
 	std::vector<float> colorTully;
 	std::vector<float> texTully;
-
-	//tableau de float temporaire pour tampons openGL
-	std::vector<float> posTmpTully;
-	std::vector<float> texTmpTully;
-	std::vector<float> radiusTmpTully;
+	std::vector<float> scaleTully;
 
 	struct tmpTully {
 		Vec3f position;
@@ -127,24 +123,24 @@ private:
 	// renvoie le nombre des différentes textures dans la texture
 	int nbTextures;
 	// données Vulkan
-	ThreadContext *context;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uGeom, uFader;
-	Mat4f *pMat;
-	Vec3f *pCamPos;
-	int *pNbTextures;
-	float *pFader;
-	std::unique_ptr<Buffer> drawDataSquare;
-	uint32_t *pNbVertexSquare;
-	int commandIndexCustomColor, commandIndexWhiteColor;
+	struct s_geom {
+		Mat4f mat;
+		Vec3f camPos;
+		int nbTextures;
+	};
+	std::unique_ptr<SharedBuffer<s_geom>> uGeom;
+	std::unique_ptr<SharedBuffer<float>> uFader;
+	std::unique_ptr<SharedBuffer<VkDrawIndirectCommand>> drawDataSquare;
+	VkCommandBuffer cmdCustomColor[3];
+	VkCommandBuffer cmdWhiteColor[3];
 	Pipeline *pipelinePoints;
 	std::unique_ptr<Pipeline> pipelineSquare;
 	std::unique_ptr<VertexArray> m_pointsGL;
 	std::unique_ptr<VertexArray> m_squareGL;
-	// shader responsable de l'affichage du nuage
-	// std::unique_ptr<shaderProgram> shaderPoints;
-	// std::unique_ptr<shaderProgram> shaderSquare;
+	std::unique_ptr<VertexBuffer> vertexPoints;
+	std::unique_ptr<VertexBuffer> vertexSquare;
 };
 
 #endif // ___TULLY_HPP___

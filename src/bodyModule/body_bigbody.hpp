@@ -26,10 +26,10 @@
 #include "bodyModule/body.hpp"
 #include "bodyModule/ring.hpp"
 
+#include "EntityCore/Resource/SharedBuffer.hpp"
+
 class Ring;
 class Set;
-class Uniform;
-class Buffer;
 
 class BigBody : public Body {
 
@@ -48,8 +48,7 @@ public:
 	        bool close_orbit,
 	        ObjL* _currentObj,
 	        double orbit_bounding_radius,
-			std::shared_ptr<BodyTexture> _bodyTexture,
-			ThreadContext *context);
+			std::shared_ptr<BodyTexture> _bodyTexture);
 
 	virtual ~BigBody();
 
@@ -68,34 +67,27 @@ public:
 
 protected :
 
-	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
 	virtual bool hasRings() {
 		return rings != nullptr;
 	}
 
-	virtual void drawRings(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) override;
+	virtual void drawRings(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) override;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye) override;
 
 	// remove from parent satellite list
 	virtual void removeSatellite(std::shared_ptr<Body> planet);
 	std::unique_ptr<Ring> rings=nullptr;
-	int commandIndex = -2;
 	int pipelineOffset = 0; // pipeline to select inside drawState
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uGlobalVertProj; // night bump normal tes
-	std::unique_ptr<Uniform> uGlobalFrag; // night bump normal
-	std::unique_ptr<Uniform> uUmbraColor; // bump
-	std::unique_ptr<Uniform> uGlobalTescGeom; // tes
-	std::unique_ptr<Uniform> uModelViewMatrixInverse, uRingFrag;
-	globalVertProj *pGlobalVertProj = nullptr;
-	globalFrag *pGlobalFrag = nullptr;
-	Vec3f *pUmbraColor = nullptr;
-	globalTescGeom *pGlobalTescGeom = nullptr;
-	Mat4f *pModelViewMatrixInverse = nullptr;
-	ringFrag *pRingFrag = nullptr;
-	std::unique_ptr<Buffer> drawData;
+	std::unique_ptr<SharedBuffer<globalVertProj>> uGlobalVertProj; // night bump normal tes
+	std::unique_ptr<SharedBuffer<globalFrag>> uGlobalFrag; // night bump normal
+	std::unique_ptr<SharedBuffer<Vec3f>> uUmbraColor; // bump
+	std::unique_ptr<SharedBuffer<globalTescGeom>> uGlobalTescGeom; // tes
+	std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrixInverse;
+	std::unique_ptr<SharedBuffer<ringFrag>> uRingFrag;
 	//utile pour le shader NIGHT
 	std::shared_ptr<s_texture> tex_night;
 	std::shared_ptr<s_texture> tex_specular;

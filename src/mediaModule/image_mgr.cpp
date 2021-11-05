@@ -32,8 +32,6 @@
 #include "mediaModule/image.hpp"
 #include "tools/s_texture.hpp"
 
-
-
 ImageMgr::ImageMgr()
 {
 	strToPos["viewport"] = IMG_POSITION::POS_VIEWPORT;
@@ -44,11 +42,9 @@ ImageMgr::ImageMgr()
 	currentImg = nullptr;
 }
 
-void ImageMgr::createImageShader(ThreadContext *context)
+void ImageMgr::createImageShader()
 {
-	Image::createShaderUnified();
-	Image::createShaderImageViewport();
-	Image::createSC_context(context);
+	Image::createSC_context();
 }
 
 ImageMgr::~ImageMgr()

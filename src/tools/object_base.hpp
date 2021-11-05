@@ -33,19 +33,18 @@
 
 #include "tools/object_type.hpp"
 #include "tools/vecmath.hpp"
-//
-
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Navigator;
 class TimeMgr;
 class Observer;
 class Projector;
 class s_texture;
-//class shaderProgram;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
-class Uniform;
+class PipelineLayout;
+class Set;
 
 class ObjectBase;
 void intrusivePtrAddRef(ObjectBase* p);
@@ -118,33 +117,31 @@ public:
 		return 0;
 	}
 
-	static void createShaderStarPointeur(ThreadContext *context);
-	static void createShaderPointeur(ThreadContext *context);
-	static void build();
+	static void createShaderStarPointeur();
+	static void createShaderPointeur();
+	static void uninit();
 
 protected:
 	static int local_time;
 	static s_texture * pointer_star;
 	static s_texture * pointer_planet;
 	static s_texture * pointer_nebula;
-	std::vector<float> m_pos;
-	std::vector<float> m_indice;
-	Vec3f color;
 
-	// GL
-	static CommandMgr *cmdMgr, *cmdMgrTarget;
-	static int commandIndexPointer, commandIndexStarPointer;
-	static VertexArray *m_pointerGL, *m_starPointerGL;
-	static Pipeline *m_pipelinePointer, *m_pipelineStarPointer;
-	static PipelineLayout *m_layoutPointer, *m_layoutStarPointer;
-	static Set *m_setPointer, *m_setStarPointer, *m_globalSet;
-	static Uniform *m_uColor, *m_uGeom;
-	static Vec3f *m_pColor;
-	static OBJECT_TYPE lastType; // set default value which is different to every possible states
-	static struct objBaseGeom {
+	// Vulkan
+	struct objBaseGeom {
 		Mat4f matRotation;
 		float radius;
-	} *m_pGeom;
+	};
+	static VkCommandBuffer cmdPointer[6]; // 3 Planet and 3 Nebula
+	static VkCommandBuffer cmdStarPointer[3];
+	static VertexArray *pointerGL, *starPointerGL;
+	static VertexBuffer *vertexPointer, *vertexStarPointer;
+	static Pipeline *pipelinePointer, *pipelineStarPointer;
+	static PipelineLayout *layoutPointer, *layoutStarPointer;
+	static Set *setPlanetPointer, *setNebulaPointer, *setStarPointer;
+	static SharedBuffer<Vec3f> *uColor;
+	static SharedBuffer<objBaseGeom> *uGeom;
+	static OBJECT_TYPE lastType; // set default value which is different to every possible states
 	//shader for the pointer
 	//static std::unique_ptr<shaderProgram> m_shaderPointer, m_shaderStarPointer;
 };

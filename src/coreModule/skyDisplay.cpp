@@ -37,16 +37,9 @@
 #include "navModule/navigator.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/translator.hpp"
-#include "vulkanModule/VertexArray.hpp"
 
-
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/ResourceTracker.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 #define NB_MAX_POINTS 4194304
 
@@ -58,13 +51,12 @@ const float pi_div_2 = 1.5707963;		// pi/2
 // -------------------- SKYLINE_PERSONAL  ---------------------------------------------
 
 s_font* SkyDisplay::skydisplay_font = nullptr;
-ThreadContext *SkyDisplay::context;
-PipelineLayout *SkyDisplay::layout;
+std::unique_ptr<VertexArray> SkyDisplay::vertexModel;
 Pipeline *SkyDisplay::pipeline;
+PipelineLayout *SkyDisplay::layout;
 Set *SkyDisplay::set;
-int SkyDisplay::virtualColorFaderID = -1;
+int SkyDisplay::virtualFragID;
 int SkyDisplay::virtualMatID;
-//std::unique_ptr<shaderProgram> SkyDisplay::shaderSkyDisplay;
 
 SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
 {
@@ -85,73 +77,98 @@ SkyDisplay::SkyDisplay(PROJECTION_TYPE _ptype)
 
 SkyDisplay::~SkyDisplay()
 {
-	dataSky.clear();
 }
 
-void SkyDisplay::createSC_context(ThreadContext *_context)
+void SkyDisplay::createSC_context()
 {
-	VertexArray vertexModel(_context->surface);
-	vertexModel.registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	context = _context;
-	// shaderSkyDisplay = std::make_unique<shaderProgram>();
-	// shaderSkyDisplay->init("person.vert", "person.geom", "person.frag");
-	// shaderSkyDisplay->setUniformLocation({"color", "fader", "Mat"});
-	layout = context->global->tracker->track(new PipelineLayout(context->surface));
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+
+	vertexModel = std::make_unique<VertexArray>(vkmgr);
+	vertexModel->createBindingEntry(3 * sizeof(float));
+	vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	layout = new PipelineLayout(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0, 1, true);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1, 1, true);
 	layout->buildLayout();
 	layout->build();
-	pipeline = context->global->tracker->track(new Pipeline(context->surface, layout));
+	pipeline = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout);
 	pipeline->setDepthStencilMode();
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
-	pipeline->bindVertex(&vertexModel);
+	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("person.vert.spv");
 	pipeline->bindShader("person.geom.spv");
 	pipeline->bindShader("person.frag.spv");
 	pipeline->build();
-	set = context->global->tracker->track(new Set(context->surface, context->setMgr, layout));
+	set = new Set(vkmgr, *context.setMgr, layout);
+	virtualMatID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(Mat4f));
+	virtualFragID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 1, sizeof(frag));
+}
+
+void SkyDisplay::destroySC_context()
+{
+	delete pipeline;
+	delete layout;
+	delete set;
 }
 
 void SkyDisplay::createLocalResources()
 {
-	m_dataGL = std::make_unique<VertexArray>(context->surface);
-	m_dataGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	uniformColorFader = std::make_unique<Uniform>(context->surface, 16, true);
-	pColor = static_cast<Vec3f *>(uniformColorFader->data);
-	pFader = static_cast<float *>(uniformColorFader->data) + 3;
-	uniformMat = std::make_unique<Uniform>(context->surface, sizeof(*pMat), true);
-	pMat = static_cast<typeof(pMat)>(uniformMat->data);
-	commandIndex = context->commandMgrDynamic->getCommandIndex();
+	Context &context = *Context::instance;
+
+	uFrag = std::make_unique<SharedBuffer<frag>>(*context.uniformMgr);
+	uMat = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
 }
 
 void SkyDisplay::clear()
 {
-	dataSky.clear();
+	dataSky = (Vec3f *) Context::instance->transfer->beginPlanCopy(NB_MAX_POINTS * 3 * sizeof(float));
+	dataSkySize = 0;
 }
 
 void SkyDisplay::build()
 {
-	context->commandMgr->waitGraphicQueueIdle();
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
+	Context &context = *Context::instance;
 
-	m_dataGL->build(m_dataSize);
-	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	cmdMgr->init(commandIndex, pipeline);
-	cmdMgr->bindSet(layout, context->global->globalSet, 0);
-	if (virtualColorFaderID == -1) {
-		virtualMatID = set->bindVirtualUniform(uniformMat.get(), 0);
-		virtualColorFaderID = set->bindVirtualUniform(uniformColorFader.get(), 1);
+	vertex = vertexModel->createBuffer(0, m_dataSize, context.globalBuffer.get());
+	set->setVirtualUniform(uMat->getOffset(), virtualMatID);
+	set->setVirtualUniform(uFrag->getOffset(), virtualFragID);
+	if (cmds[0] == VK_NULL_HANDLE) {
+		context.cmdInfo.commandBufferCount = 3;
+		vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
+		for (int i = 0; i < 3; ++i) {
+			VkCommandBuffer &cmd = cmds[i];
+			context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+			pipeline->bind(cmd);
+			layout->bindSets(cmd, {*context.uboSet, *set});
+			vertex->bind(cmd);
+			vkCmdDraw(cmd, m_dataSize, 1, 0, 0);
+			context.frame[i]->compile(cmd);
+			context.frame[i]->setName(cmd, "SkyDisplay");
+		}
 	} else {
-		set->setVirtualUniform(uniformMat.get(), virtualMatID);
-		set->setVirtualUniform(uniformColorFader.get(), virtualColorFaderID);
+		needRebuild[0] = true;
+		needRebuild[1] = true;
+		needRebuild[2] = true;
 	}
-	cmdMgr->bindSet(layout, set, 1);
-	cmdMgr->bindVertex(m_dataGL.get());
-	cmdMgr->draw(m_dataSize);
-	cmdMgr->compile();
+}
+
+VkCommandBuffer SkyDisplay::getCommand()
+{
+	Context &context = *Context::instance;
+	VkCommandBuffer cmd = cmds[context.frameIdx];
+
+	if (needRebuild[context.frameIdx]) {
+		needRebuild[context.frameIdx] = false;
+		context.frame[context.frameIdx]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+		pipeline->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		vertex->bind(cmd);
+		vkCmdDraw(cmd, m_dataSize, 1, 0, 0);
+		context.frame[context.frameIdx]->compile(cmd);
+	}
+	return cmd;
 }
 
 //a optimiser
@@ -186,29 +203,14 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 	}
 }
 
-
 void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
 	if (!fader.getInterstate()) {
 		return;
 	}
-
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-
-	// shaderSkyDisplay->use();
-	// shaderSkyDisplay->setUniform("color", color);
-	//shaderSkyDisplay->setUniform("fader", fader.getInterstate());
-	*pFader = fader.getInterstate();
-	*pMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
-
-	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
-
-	// m_dataGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3); //un point est représenté par 3 points
-	// m_dataGL->unBind();
-	// shaderSkyDisplay->unuse();
-	//Renderer::drawArrays(shaderSkyDisplay.get(), m_dataGL.get(), VK_PRIMITIVE_TOPOLOGY_LINE_LIST, 0, dataSky.size() / 3);
+	uFrag->get().fader = fader.getInterstate();
+	*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(getCommand(), PASS_MULTISAMPLE_DEPTH);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -237,21 +239,20 @@ void SkyPerson::loadData(const std::string& filename)
 		for (int i = 0; i < nblines; i++) {
 			fichier >> alpha >> delta;
 			Utility::spheToRect(alpha, delta, punts);
-			insert_vec3(dataSky, punts);
+			*(dataSky++) = punts;
+			++dataSkySize;
 		}
 		aperson = alpha;
 		fichier.close();
 	}
 
 	//on charge les points dans un vbo
-	if (m_dataSize != dataSky.size() / 3) {
-		m_dataSize = dataSky.size() / 3;
+	if (m_dataSize != dataSkySize) {
+		m_dataSize = dataSkySize;
 		build();
 	}
-	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-	m_dataGL->update();
+	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 }
-
 
 void SkyPerson::loadString(const std::string& message)
 {
@@ -298,20 +299,21 @@ void SkyPerson::loadString(const std::string& message)
 
 	// std::cout << "dataTmp a " << dataTmp.size()  << std::endl;
 
+	clear();
 	Vec3f punts;
 	for (auto it =dataTmp.begin(); it!=dataTmp.end(); it++) {
 			Utility::spheToRect(*it, *++it, punts);
 			// std::cout << punts[0] << "|"<< punts[1] << "|"<< punts[2] << std::endl;
-			insert_vec3(dataSky,punts );
+			*(dataSky++) = punts;
+			++dataSkySize;
 	}
 
 	//on charge les points dans un vbo
-	if (m_dataSize != dataSky.size() / 3) {
-		m_dataSize = dataSky.size() / 3;
+	if (m_dataSize != dataSkySize) {
+		m_dataSize = dataSkySize;
 		build();
 	}
-	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-	m_dataGL->update();
+	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 }
 
 
@@ -346,10 +348,12 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	}
 	for (int j = -9; j < 9; j++) {
 		Utility::spheToRect(direction * deg2rad, j * grad2rad, punts);
-		insert_vec3(dataSky,punts );
+		*(dataSky++) = punts;
+		++dataSkySize;
 
 		Utility::spheToRect(direction * deg2rad, (j + 1) * grad2rad, punts);
-		insert_vec3(dataSky,punts );
+		*(dataSky++) = punts;
+		++dataSkySize;
 
 		for (int i = 0; i < 10; i++) {
 			if (i == 1)
@@ -359,21 +363,22 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			else
 				tick = 0.2 * 90 / (90 - (j * 10 + i));
 			Utility::spheToRect((direction - tick) * deg2rad, (j * 10 + i) * deg2rad, punts);
-			insert_vec3(dataSky,punts );
+			*(dataSky++) = punts;
+			++dataSkySize;
 
 			Utility::spheToRect((direction + tick) * deg2rad, (j * 10 + i) * deg2rad, punts);
-			insert_vec3(dataSky,punts );
+			*(dataSky++) = punts;
+			++dataSkySize;
 		}
 	}
 	aperson = (direction + tick) * deg2rad;
 
 	//on charge les points dans un vbo
-	if (m_dataSize != dataSky.size() / 3) {
-		m_dataSize = dataSky.size() / 3;
+	if (m_dataSize != dataSkySize) {
+		m_dataSize = dataSkySize;
 		build();
 	}
-	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-	m_dataGL->update();
+	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
 	SkyDisplay::draw(prj,nav);
 
@@ -722,7 +727,6 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 	}
 }
 
-
 SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
 {}
 
@@ -766,22 +770,23 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 	int npoints = 21;
 	float delta = (az1 - az2) / (npoints - 1);
 	for (int i = 0; i < npoints; i++) {
-		insert_vec3(dataSky,pt1 );
+		*(dataSky++) = pt1;
+		++dataSkySize;
 
 		azt = az1 - delta * i;
 		altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1 + 0.00001)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1 + 0.00001));
 		Utility::spheToRect(azt, altt, pt1);
 		if (i == 12)
 			pt5 = pt1;
-		insert_vec3(dataSky,pt1 );
+		*(dataSky++) = pt1;
+		++dataSkySize;
 	}
 
-	if (m_dataSize != dataSky.size() / 3) {
-		m_dataSize = dataSky.size() / 3;
+	if (m_dataSize != dataSkySize) {
+		m_dataSize = dataSkySize;
 		build();
 	}
-	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-	m_dataGL->update();
+	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
 	SkyDisplay::draw(prj,nav);
 
@@ -864,18 +869,19 @@ void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos
 	clear();
 	for (int j = 0; (pi_div_2 - fabs(de1 * (10 - j) / 10 + de2 * j / 10)) > 0.001; j++) {
 		Utility::spheToRect((ra1 * (10 - j) / 10 + ra2 * j / 10), (de1 * (10 - j) / 10 + de2 * j / 10), pt1);
-		insert_vec3(dataSky,pt1 );
+		*(dataSky++) = pt1;
+		++dataSkySize;
 
 		Utility::spheToRect((ra1 * (9 - j) / 10 + ra2 * (j + 1) / 10), (de1 * (9 - j) / 10 + de2 * (j + 1) / 10), pt2);
-		insert_vec3(dataSky,pt2 );
+		*(dataSky++) = pt2;
+		++dataSkySize;
 	}
 
-	if (m_dataSize != dataSky.size() / 3) {
-		m_dataSize = dataSky.size() / 3;
+	if (m_dataSize != dataSkySize) {
+		m_dataSize = dataSkySize;
 		build();
 	}
-	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-	m_dataGL->update();
+	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
 	SkyDisplay::draw(prj,nav);
 
@@ -932,22 +938,23 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 	int npoints = 21;
 	float delta = (az1 - az2) / (npoints - 1);
 	for (int i = 0; i < npoints; i++) {
-		insert_vec3(dataSky,pt1 );
+		*(dataSky++) = pt1;
+		++dataSkySize;
 
 		azt = az1 - delta * i;
 		altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1 + 0.00001)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1 + 0.00001));
 		Utility::spheToRect(azt, altt, pt1);
 		if (i == 12)
 			pt5 = pt1;
-		insert_vec3(dataSky,pt1 );
+		*(dataSky++) = pt1;
+		++dataSkySize;
 	}
 
-	if (m_dataSize != dataSky.size() / 3) {
-		m_dataSize = dataSky.size() / 3;
+	if (m_dataSize != dataSkySize) {
+		m_dataSize = dataSkySize;
 		build();
 	}
-	m_dataGL->fillVertexBuffer(BufferType::POS3D,dataSky);
-	m_dataGL->update();
+	Context::instance->transfer->endPlanCopy(vertex->get(), m_dataSize * 3 * sizeof(float));
 
 	SkyDisplay::draw(prj,nav);
 

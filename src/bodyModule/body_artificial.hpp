@@ -23,12 +23,11 @@
  */
 
 #include "bodyModule/body.hpp"
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/SubBuffer.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Ojm;
 class Set;
-class Uniform;
-class Buffer;
 
 class Artificial: public Body {
 
@@ -46,8 +45,7 @@ public:
 	           const std::string& model_name,
 	           bool _deleteable,
 	           double orbit_bounding_radius,
-			   std::shared_ptr<BodyTexture> _bodyTexture,
-			   ThreadContext *context
+			   std::shared_ptr<BodyTexture> _bodyTexture
 	          );
 
 	virtual ~Artificial();
@@ -55,9 +53,9 @@ public:
 	virtual void selectShader ();
 
 protected :
-	void createSC_context(ThreadContext *context);
+	void createSC_context();
 
-	virtual void drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)override {
 		return;
@@ -65,10 +63,9 @@ protected :
 
 	std::unique_ptr<Ojm> obj3D;
 	std::unique_ptr<Set> set;
+	std::unique_ptr<SharedBuffer<artGeom>> uProj;
+	std::unique_ptr<SharedBuffer<LightInfo>> uLight;
+	std::unique_ptr<SharedBuffer<Mat4f>> uNormalMatrix;
 	Set *pushSet;
-	std::unique_ptr<Uniform> uProj, uLight, uNormalMatrix;
-	Mat4f *pNormalMatrix;
-	artGeom *pProj;
-	LightInfo *pLight;
-	int commandIndex = -2;
+	bool initialized = false;
 };

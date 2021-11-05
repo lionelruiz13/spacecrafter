@@ -8,7 +8,7 @@
 
 //layout
 layout (location=0) in vec2 position;
-layout (location=4) in float intensity;
+layout (location=1) in float intensity;
 
 // for MVP2D
 #include <cam_block_only.glsl>

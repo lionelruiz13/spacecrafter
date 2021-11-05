@@ -21,12 +21,8 @@
 #include "ojmModule/ojml.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 #define VR360_FADER_DURATION 3000
 
@@ -36,10 +32,10 @@ VR360::VR360()
 	showFader.setDuration(VR360_FADER_DURATION);
 }
 
-void VR360::init(ThreadContext *context)
+void VR360::init()
 {
-	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Sphere.ojm", context);
-	cube = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Cube.ojm", context);
+	sphere = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Sphere.ojm");
+	cube = new OjmL(AppSettings::Instance()->getModel3DDir()+"VR360Cube.ojm");
 
 	if (sphere !=nullptr && sphere->getOk()) {
 		cLog::get()->write("VR360 loading ojml sphere", LOG_TYPE::L_INFO);
@@ -71,33 +67,31 @@ VR360::~VR360()
 	// deleteShader();
 }
 
-void VR360::createSC_context(ThreadContext *_context)
+void VR360::createSC_context()
 {
-	context = _context;
-	commandIndex = context->commandMgrDynamic->getCommandIndex();
-	// shaderVR360 = std::make_unique<shaderProgram>();
-	// shaderVR360->init( "vr360.vert","vr360.frag");
-	// shaderVR360->setUniformLocation({"intensity", "ModelViewMatrix"});
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+	context.cmdInfo.commandBufferCount = 3;
+    vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 3);
 	layout->buildLayout();
 	layout->build();
-	pipeline = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
 	pipeline->setDepthStencilMode();
 	pipeline->setCullMode(true);
-	sphere->bind(pipeline.get()); // bind Objl VertexArray to pipeline (common to sphere and cube)
+	sphere->bind(*pipeline); // bind Objl VertexBuffer to pipeline (common to every Obj/Ojm)
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipeline->bindShader("vr360.vert.spv");
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uModelViewMatrix = std::make_unique<Uniform>(context->surface, sizeof(*pModelViewMatrix));
-	pModelViewMatrix = static_cast<typeof(pModelViewMatrix)>(uModelViewMatrix->data);
-	set->bindUniform(uModelViewMatrix.get(), 3);
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+	set->bindUniform(uModelViewMatrix, 3);
 }
 
 // void VR360::deleteShader()
@@ -134,69 +128,50 @@ void VR360::displayStop()
 
 void VR360::build()
 {
-	CommandMgr *cmdMgr = context->commandMgrDynamic;
-	cmdMgr->init(commandIndex, pipeline.get());
-	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
-	cmdMgr->bindSet(layout.get(), set.get(), 1);
-	switch(typeVR360) {
-		case TYPE::V_CUBE:
-			cube->bind(cmdMgr);
-			cmdMgr->drawIndexed(cube->getVertexArray()->getIndiceCount());
-			break;
-		case TYPE::V_SPHERE:
-			sphere->bind(cmdMgr);
-			cmdMgr->drawIndexed(sphere->getVertexArray()->getIndiceCount());
-			break;
-		default:
-			break;
+	Context &context = *Context::instance;
+	for (int i = 0; i < 3; ++i) {
+		VkCommandBuffer cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_BACKGROUND);
+		sync->syncIn->dstDependency(cmd);
+		pipeline->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		switch(typeVR360) {
+			case TYPE::V_CUBE:
+				cube->bind(cmd);
+				cube->draw(cmd);
+				break;
+			case TYPE::V_SPHERE:
+				sphere->bind(cmd);
+				sphere->draw(cmd);
+				break;
+			default:
+				break;
+		}
+		sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
+		sync->syncOut->srcDependency(cmd);
+		context.frame[i]->compile(cmd);
 	}
-	cmdMgr->compile();
 }
 
 void VR360::setTexture(VideoTexture _tex)
 {
 	// There must be no command using this set
-	context->commandMgr->waitCompletion(0);
-	context->commandMgr->waitCompletion(1);
-	context->commandMgr->waitCompletion(2);
-	set->bindTexture(_tex.y, 0);
-	set->bindTexture(_tex.u, 1);
-	set->bindTexture(_tex.v, 2);
+	set->bindTexture(*_tex.y, 0);
+	set->bindTexture(*_tex.u, 1);
+	set->bindTexture(*_tex.v, 2);
+	sync = _tex.sync;
 }
 
 void VR360::draw(const Projector* prj, const Navigator* nav)
 {
 	if (!canDraw || !isAlive)
 		return;
+	sync->inUse = true;
 
-	//shaderVR360->use();
-
-	// for(int i=0; i<3; i++) {
-	// 	glActiveTexture(GL_TEXTURE0+i);
-	// 	glBindTexture(GL_TEXTURE_2D, videoTex[i]);
-	// }
-
-	//shaderVR360->setUniform("intensity", showFader.getInterstate());
-
-	*pModelViewMatrix = (nav->getJ2000ToEyeMat() *
+	*uModelViewMatrix = (nav->getJ2000ToEyeMat() *
 	                     Mat4d::xrotation(M_PI)*
 	                     Mat4d::yrotation(M_PI)*
 	                     Mat4d::zrotation(M_PI/180*270)).convert();
 
-	//shaderVR360->setUniform("ModelViewMatrix",matrix);
-
-	//StateGL::enable(GL_CULL_FACE);
-	// switch(typeVR360) {
-	// 	case TYPE::V_CUBE:
-	// 		cube->draw();
-	// 		break;
-	// 	case TYPE::V_SPHERE:
-	// 		sphere->draw();
-	// 		break;
-	// 	default:
-	// 		break;
-	// }
-	//StateGL::disable(GL_CULL_FACE);
-	//shaderVR360->unuse();
-	context->commandMgrDynamic->setSubmission(commandIndex, false, context->commandMgr);
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_BACKGROUND);
 }

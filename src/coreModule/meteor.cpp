@@ -224,7 +224,7 @@ bool Meteor::update(int delta_time)
 
 
 // returns true if visible
-bool Meteor::draw(Projector *proj, Navigator* nav, std::vector<float> &vecPos, std::vector<float> &vecColor)//ce prototype va changer
+bool Meteor::draw(Projector *proj, Navigator* nav, float *&data) //ce prototype va changer
 {
 	if (!alive) return(false);
 
@@ -262,29 +262,29 @@ bool Meteor::draw(Projector *proj, Navigator* nav, std::vector<float> &vecPos, s
 	posi[2] -= EARTH_RADIUS;
 	proj->projectLocal(posi/1216, intpos);
 
-	vecColor.push_back(0);
-	vecColor.push_back(0);
-	vecColor.push_back(0);
-	vecColor.push_back(0);
+	*(data++) = end[0];
+	*(data++) = end[1];
 
-	vecPos.push_back(end[0]);
-	vecPos.push_back(end[1]);
+	*(data++) = 0;
+	*(data++) = 0;
+	*(data++) = 0;
+	*(data++) = 0;
 
-	vecColor.push_back(1);
-	vecColor.push_back(1);
-	vecColor.push_back(1);
-	vecColor.push_back(tmag/2);
+	*(data++) = intpos[0];
+	*(data++) = intpos[1];
 
-	vecPos.push_back(intpos[0]);
-	vecPos.push_back(intpos[1]);
+	*(data++) = 1;
+	*(data++) = 1;
+	*(data++) = 1;
+	*(data++) = tmag/2;
 
-	vecColor.push_back(1);
-	vecColor.push_back(1);
-	vecColor.push_back(1);
-	vecColor.push_back(tmag);
+	*(data++) = start[0];
+	*(data++) = start[1];
 
-	vecPos.push_back(start[0]);
-	vecPos.push_back(start[1]);
+	*(data++) = 1;
+	*(data++) = 1;
+	*(data++) = 1;
+	*(data++) = tmag;
 
 	return(true);
 }

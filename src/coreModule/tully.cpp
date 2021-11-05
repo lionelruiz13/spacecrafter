@@ -34,20 +34,15 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/s_texture.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
+#include "tools/insert_all.hpp"
 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/VertexArray.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
-
-Tully::Tully(ThreadContext *_context)
+Tully::Tully()
 {
 	texGalaxy = nullptr;
 	fader = true;
-	createSC_context(_context);
+	createSC_context();
 	nbGalaxy=0;
 	nbTextures = 0;
 }
@@ -62,39 +57,32 @@ Tully::~Tully()
 	colorTully.clear();
 	texTully.clear();
 	scaleTully.clear();
-
-	posTmpTully.clear();
-	texTmpTully.clear();
-	radiusTmpTully.clear();
 }
 
-void Tully::createSC_context(ThreadContext *_context)
+void Tully::createSC_context()
 {
-	context = _context;
-	// shaderPoints = std::make_unique<shaderProgram>();
-	// shaderPoints->init("tully.vert","tully.geom","tully.frag");
-	// shaderPoints->setUniformLocation({"Mat", "fader", "camPos", "nbTextures"});
-	//
-	// shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useCustomColor");
-	// shaderPoints->setSubroutineLocation(GL_FRAGMENT_SHADER, "useWhiteColor");
-	layout = std::make_unique<PipelineLayout>(context->surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 0);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-	layout->setTextureLocation(2);
+	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->buildLayout();
 	layout->build();
 
-	m_pointsGL = std::make_unique<VertexArray>(context->surface);
-	m_pointsGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	m_pointsGL->registerVertexBuffer(BufferType::MAG, BufferAccess::STATIC);
-	m_pointsGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::STATIC);
-	m_pointsGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::STATIC);
-	pipelinePoints = new Pipeline[2]{{context->surface, layout.get()}, {context->surface, layout.get()}};
+	m_pointsGL = std::make_unique<VertexArray>(vkmgr);
+	m_pointsGL->createBindingEntry(8 * sizeof(float));
+	m_pointsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Pos3D
+	m_pointsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Color
+	m_pointsGL->addInput(VK_FORMAT_R32_SFLOAT); // Mag
+	m_pointsGL->addInput(VK_FORMAT_R32_SFLOAT); // Scale
+	pipelinePoints = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
 	for (int i = 0; i < 2; i++) {
 		pipelinePoints[i].setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 		pipelinePoints[i].setDepthStencilMode();
-		pipelinePoints[i].bindVertex(m_pointsGL.get());
+		pipelinePoints[i].bindVertex(*m_pointsGL);
 		pipelinePoints[i].bindShader("tully.vert.spv");
 		VkBool32 whiteColor = (i == 1);
 		pipelinePoints[i].setSpecializedConstant(0, &whiteColor, sizeof(whiteColor));
@@ -102,39 +90,30 @@ void Tully::createSC_context(ThreadContext *_context)
 		pipelinePoints[i].bindShader("tully.frag.spv");
 		pipelinePoints[i].build();
 	}
-	set = std::make_unique<Set>(context->surface, context->setMgr, layout.get());
-	uGeom = std::make_unique<Uniform>(context->surface, sizeof(*pMat) + sizeof(float)*3 + sizeof(*pNbTextures));
-	pMat = static_cast<typeof(pMat)>(uGeom->data);
-	pCamPos = reinterpret_cast<typeof(pCamPos)>(static_cast<char *>(uGeom->data) + sizeof(*pMat));
-	pNbTextures = reinterpret_cast<typeof(pNbTextures)>(static_cast<char *>(uGeom->data) + sizeof(*pMat) + sizeof(*pCamPos));
-	set->bindUniform(uGeom.get(), 0);
-	uFader = std::make_unique<Uniform>(context->surface, sizeof(float));
-	pFader = static_cast<float *>(uFader->data);
-	set->bindUniform(uFader.get(), 1);
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	uGeom = std::make_unique<SharedBuffer<s_geom>>(*context.uniformMgr);
+	set->bindUniform(uGeom, 0);
+	uFader = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+	set->bindUniform(uFader, 1);
 
-	// shaderSquare = std::make_unique<shaderProgram>();
-	// shaderSquare->init("tullyH.vert","tullyH.geom","tullyH.frag");
-	// shaderSquare->setUniformLocation({"Mat", "fader", "nbTextures"});
-
-	m_squareGL =  std::make_unique<VertexArray>(context->surface);
-	m_squareGL->registerVertexBuffer(BufferType::POS3D, BufferAccess::DYNAMIC);
-	m_squareGL->registerVertexBuffer(BufferType::MAG, BufferAccess::DYNAMIC);
-	m_squareGL->registerVertexBuffer(BufferType::SCALE, BufferAccess::DYNAMIC);
+	m_squareGL = std::make_unique<VertexArray>(vkmgr);
+	m_squareGL->createBindingEntry(5 * sizeof(float));
+	m_squareGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Pos3D
+	m_squareGL->addInput(VK_FORMAT_R32_SFLOAT); // Mag
+	m_squareGL->addInput(VK_FORMAT_R32_SFLOAT); // Scale
 	auto blendMode = BLEND_SRC_ALPHA;
 	blendMode.colorBlendOp = blendMode.alphaBlendOp = VK_BLEND_OP_MAX;
-	pipelineSquare = std::make_unique<Pipeline>(context->surface, layout.get());
+	pipelineSquare = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipelineSquare->setBlendMode(blendMode);
 	pipelineSquare->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 	pipelineSquare->setDepthStencilMode();
-	pipelineSquare->bindVertex(m_squareGL.get());
+	pipelineSquare->bindVertex(*m_squareGL);
 	pipelineSquare->bindShader("tullyH.vert.spv");
 	pipelineSquare->bindShader("tullyH.geom.spv");
 	pipelineSquare->bindShader("tullyH.frag.spv");
 	pipelineSquare->build();
-	drawDataSquare = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	pNbVertexSquare = static_cast<uint32_t *>(drawDataSquare->data);
-	pNbVertexSquare[1] = 1; // instanceCount
-	pNbVertexSquare[2] = pNbVertexSquare[3] = 0; // offsets
+	drawDataSquare = std::make_unique<SharedBuffer<VkDrawIndirectCommand>>(*context.tinyMgr);
+	*drawDataSquare = VkDrawIndirectCommand{0, 1, 0, 0};
 }
 
 
@@ -159,7 +138,6 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	*
 	*	int, 3 floats, 3 floats, un int
 	*/
-
 	while (getline(file, line)) {
 		if (line[0]=='#')
 			continue;
@@ -189,32 +167,44 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	}
 
 	file.close();
-	m_pointsGL->build(posTully.size() / 3);
-	m_squareGL->build(posTully.size() / 3);
-	m_pointsGL->fillVertexBuffer(BufferType::POS3D,posTully );
-	m_pointsGL->fillVertexBuffer(BufferType::COLOR,colorTully );
-	m_pointsGL->fillVertexBuffer(BufferType::MAG,texTully );
-	m_pointsGL->fillVertexBuffer(BufferType::SCALE,scaleTully );
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+	const int vertexCount = texTully.size();
+	vertexPoints = m_pointsGL->createBuffer(0, vertexCount, context.globalBuffer.get());
+	vertexSquare = m_pointsGL->createBuffer(0, vertexCount, context.globalBuffer.get());
+	float *staging = (float *) context.transfer->planCopy(vertexPoints->get());
+	vertexPoints->fillEntry(3, vertexCount, posTully.data(), staging);
+	vertexPoints->fillEntry(3, vertexCount, colorTully.data(), staging + 3);
+	vertexPoints->fillEntry(1, vertexCount, texTully.data(), staging + 6);
+	vertexPoints->fillEntry(1, vertexCount, scaleTully.data(), staging + 7);
 
-	CommandMgr *cmdMgr = context->commandMgr;
-	commandIndexCustomColor = cmdMgr->initNew(pipelinePoints);
-	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
-	cmdMgr->bindSet(layout.get(), set.get(), 1);
-	cmdMgr->bindVertex(m_pointsGL.get());
-	cmdMgr->draw(posTully.size() / 3);
-	cmdMgr->bindPipeline(pipelineSquare.get());
-	cmdMgr->bindVertex(m_squareGL.get());
-	cmdMgr->indirectDraw(drawDataSquare.get());
-	cmdMgr->compile();
-	commandIndexWhiteColor = cmdMgr->initNew(pipelinePoints + 1);
-	cmdMgr->bindSet(layout.get(), context->global->globalSet, 0);
-	cmdMgr->bindSet(layout.get(), set.get(), 1);
-	cmdMgr->bindVertex(m_pointsGL.get());
-	cmdMgr->draw(posTully.size() / 3);
-	cmdMgr->bindPipeline(pipelineSquare.get());
-	cmdMgr->bindVertex(m_squareGL.get());
-	cmdMgr->indirectDraw(drawDataSquare.get());
-	cmdMgr->compile();
+	// create and initialize
+	context.cmdInfo.commandBufferCount = 3;
+	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmdCustomColor);
+	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmdWhiteColor);
+	for (int i = 0; i < 3; ++i) {
+		VkCommandBuffer cmd = cmdCustomColor[i];
+		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+		pipelinePoints->bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		vertexPoints->bind(cmd);
+		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
+		pipelineSquare->bind(cmd);
+		vertexSquare->bind(cmd);
+		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
+		context.frame[i]->compile(cmd);
+
+		cmd = cmdWhiteColor[i];
+		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+		pipelinePoints[1].bind(cmd);
+		layout->bindSets(cmd, {*context.uboSet, *set});
+		vertexPoints->bind(cmd);
+		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
+		pipelineSquare->bind(cmd);
+		vertexSquare->bind(cmd);
+		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
+		context.frame[i]->compile(cmd);
+	}
 
 	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + std::to_string(nbGalaxy) );
 
@@ -277,24 +267,21 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	// printf("taille de la liste: %i\n", lTmpTully.size());
 	lTmpTully.sort(compTmpTully);
 
-	posTmpTully.clear();
-	radiusTmpTully.clear();
-	texTmpTully.clear();
+	int vertexCount = 0;
+	float *data = (float *) Context::instance->transfer->beginPlanCopy(vertexSquare->get().size);
 
 	for (std::list<tmpTully>::iterator it=lTmpTully.begin(); it!=lTmpTully.end(); ++it) {
-		insert_vec3(posTmpTully, (*it).position);
-		radiusTmpTully.push_back((*it).radius);
-		texTmpTully.push_back((*it).texture);
+		memcpy(data, (float *) (*it).position, 3 * sizeof(float));
+		data += 3;
+		*(data++) = (*it).texture;
+		*(data++) = (*it).radius;
+		++vertexCount;
 	}
+	Context::instance->transfer->endPlanCopy(vertexSquare->get(), vertexCount * 5 * sizeof(float));
 
 	lTmpTully.clear();	//données devenues inutiles
 
-	m_squareGL->fillVertexBuffer(BufferType::POS3D,posTmpTully );
-	m_squareGL->fillVertexBuffer(BufferType::MAG,texTmpTully );
-	m_squareGL->fillVertexBuffer(BufferType::SCALE,radiusTmpTully );
-	m_squareGL->update();
-	//*pNbVertexSquare = posTmpTully.size() / 3;
-	//drawDataSquare->update();
+	drawDataSquare->get().vertexCount = vertexCount;
 }
 
 
@@ -321,42 +308,13 @@ void Tully::draw(double distance, const Navigator *nav) noexcept
 	// shaderPoints->setUniform("fader", fader.getInterstate());
 	// shaderPoints->setUniform("camPos", camPos);
 	// shaderPoints->setUniform("nbTextures", nbTextures);
-	*pMat = matrix;
-	*pCamPos = camPos;
-	*pFader = fader.getInterstate();
-	*pNbTextures = nbTextures;
+	uGeom->get().mat = matrix;
+	uGeom->get().camPos = camPos;
+	*uFader = fader.getInterstate();
+	uGeom->get().nbTextures = nbTextures;
 
 	if (useWhiteColor)
-		//shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useWhiteColor");
-		context->commandMgr->setSubmission(commandIndexWhiteColor);
+		Context::instance->frame[Context::instance->frameIdx]->toExecute(cmdWhiteColor[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 	else
-		//shaderPoints->setSubroutine(GL_FRAGMENT_SHADER, "useCustomColor");
-		context->commandMgr->setSubmission(commandIndexCustomColor);
-
-	// m_pointsGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbGalaxy);
-	// m_pointsGL->unBind();
-	// shaderPoints->unuse();
-	//Renderer::drawArrays(shaderPoints.get(), m_pointsGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, nbGalaxy);
-
-	//tracé des galaxies de taille >1 px;
-	// StateGL::enable(GL_BLEND);
-	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Normal transparency mode
-	// glBlendEquation(GL_MAX);
-
-	// shaderSquare->use();
-	// shaderSquare->setUniform("Mat",matrix);
-	// shaderSquare->setUniform("fader", fader.getInterstate());
-	// shaderSquare->setUniform("nbTextures", nbTextures);
-
-	// m_squareGL->bind();
-	// glDrawArrays(VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, radiusTmpTully.size());
-	// m_squareGL->unBind();
-	// shaderSquare->unuse();
-	//Renderer::drawArrays(shaderSquare.get(), m_squareGL.get(), VK_PRIMITIVE_TOPOLOGY_POINT_LIST, 0, radiusTmpTully.size());
-	*pNbVertexSquare = radiusTmpTully.size();
-	drawDataSquare->update();
-	// glBlendEquation(GL_FUNC_ADD);
-	// StateGL::disable(GL_BLEND);
-	// StateGL::BlendFunc(GL_ONE, GL_ONE); // Normal transparency mode
+		Context::instance->frame[Context::instance->frameIdx]->toExecute(cmdCustomColor[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 }

@@ -29,19 +29,19 @@
 #include "tools/fader.hpp"
 
 #include "tools/vecmath.hpp"
-#include "vulkanModule/Context.hpp"
+#include <vulkan/vulkan.h>
+
+// Number of points added, reducing the global data upload per frame by reusing previously uploaded vertices
+#define TRAIL_OPTIMIZE_TRANSFER 10
 
 class Body;
 class Navigator;
 class Projector;
 class TimeMgr;
 class VertexArray;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
-class Uniform;
-class Buffer;
-class CommandMgr;
-class Set;
 
 typedef struct TrailPoint {
 	Vec3d point;
@@ -69,41 +69,30 @@ public:
 		startTrail(b);
 	}
 
-	void drawTrail(const Navigator * nav, const Projector* prj);
+	void drawTrail(VkCommandBuffer &cmd, const Navigator * nav, const Projector* prj);
+	bool doDraw(const Navigator * nav, const Projector* prj);
 	void updateTrail(const Navigator* nav, const TimeMgr* timeMgr);
 	void startTrail(bool b);
 	void updateFader(int delta_time);
-	static void createSC_context(ThreadContext *context);
+	static void createSC_context();
 
 private:
 	Body * body = nullptr;
-	static CommandMgr *cmdMgr;
-	static ThreadContext *context;
-	static VertexArray *m_dataGL;
+	static std::unique_ptr<VertexArray> m_dataGL;
 	static Pipeline *pipeline;
 	static PipelineLayout *layout;
-	int commandIndex;
-	std::unique_ptr<VertexArray> vertex;
-	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uMat, uColor, uFader, uNbPoints;
-	std::unique_ptr<Buffer> drawData;
-	uint32_t *nbVertices;
-	Mat4f *pMat;
-	Vec3f *pColor;
-	float *pFader;
-	int *pNbPoints;
-	// static std::unique_ptr<shaderProgram> shaderTrail;
+	std::unique_ptr<VertexBuffer> vertex;
 	LinearFader trail_fader;
 
-	std::vector<float> vecTrailPos;
-	std::vector<float> vecTrailIntensity;
 	std::list<TrailPoint>trail;
 
-	int MaxTrail;
+	const int MaxTrail;
 	double DeltaTrail;
 	double last_trailJD;
 	bool trail_on;  // accumulate trail data if true
 	bool first_point;  // if need to take first point of trail still
+	int vertexOffset = 0; // Current vertex offset
+	int insertCount = 0; // Number of insertion since the last draw
 };
 
 #endif //_TRAIL_HPP_

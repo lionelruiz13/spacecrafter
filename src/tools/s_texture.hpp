@@ -32,7 +32,8 @@
 #include <map>
 #include <list>
 #include <memory>
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Tools/SafeQueue.hpp"
+#include <vulkan/vulkan.h>
 
 //TODO supprimer cela et les remplacer par un enum class
 #define PNG_ALPHA  0
@@ -47,31 +48,35 @@
 #define TEX_LOAD_TYPE_PNG_BLEND1 7
 
 class Texture;
-class StreamTexture;
 
 class s_texture {
 public:
-	// création d'une texteure en détaillant ses paramètres
-	s_texture(const std::string& _textureName, int _loadType, const bool mipmap = false, const bool keepOnCPU = false);
-	// création d'une texture à partir d'une texture dynamique
-	s_texture(const std::string& _textureName, StreamTexture *_imgTex);
-	// création d'une texture basique sans mipmap
-	s_texture(const std::string& _textureName, const bool keepOnCPU = false);
+	// If resolution is set to 0, create a texture
+	// Otherwise, look for a texture which resolution is (resolution*1024)x(resolution*512) by adding std::to_string(resolution) + "K" before the file extension
+	// Note that a texture with lower power-of-two resolution may be querried depending to how many memory is available on the device
+	// As general rule, the lowest resolution which can be querried is 4K
+	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, int resolution = 0, int depth = 1, int nbChannels = 4, int channelSize = 1);
+	// création d'une texture à partir d'une texture, transmet l'ownership de la texture à s_texture
+	s_texture(const std::string& _textureName, Texture *_imgTex);
 	// destructeur de texture
-	~s_texture();
+	~s_texture() = default;
 	// création d'une texture par copie d'une autre
 	s_texture(const s_texture &t) = delete;
 	s_texture(const s_texture *t);
 	//interdiction d'opérateur =
 	const s_texture &operator=(const s_texture &t) = delete;
 
-	Texture *getTexture() const {return texture;}
+	// Return the big texture, or nullptr if not loaded at this frame
+	Texture *getBigTexture();
+	// Return the texture, request his loading if not loaded yet
+	Texture &getTexture();
 
 	// Return the average texture luminance : 0 is black, 1 is white
 	float getAverageLuminance() const;
 
 	// Returne les dimensions de la texture
 	void getDimensions(int &width, int &height) const;
+	void getDimensions(int &width, int &height, int &depth) const;
 
 	// Indique le chemin par défaut des textures par défaut.
 	static void setTexDir(const std::string& _texDir) {
@@ -81,55 +86,68 @@ public:
 	// Indique si l'on doit charger les textures en low resolution ou pas.
 	static void setLoadInLowResolution(bool value, int _maxRes) {
 		s_texture::loadInLowResolution = value;
-		s_texture::lowResMax = _maxRes;
+		s_texture::lowResMax = _maxRes*_maxRes*2;
 	}
 
 	// crée une texture rouge en cas de textures non chargée
-	void createEmptyTex(const bool keepOnCPU);
-
-	// DEPRECATED, Renvoie la taille utilisée par les textures dans la carte graphique
-	static unsigned long int getTotalGPUMem();
+	void createEmptyTex();
 
 	static long int getNumberTotalTexture(){
 		return texCache.size();
 	}
 
-	static void setContext(ThreadContext *_context) {context = _context;}
-	bool use();
-	void unuse();
-	// Unload every loaded texture even if they are still in use
+	// Release every big textures which have not been querried with getBigTexture() for 2 frames
+	static void update();
+	// Unload every big textures
 	static void forceUnload();
+	// Release memory of every unused big textures, may have side effect
+	static void releaseUnusedMemory();
+	// Record transfer of every newly created textures
+	static void recordTransfer(VkCommandBuffer cmd);
 private:
 	void unload();
-	bool load(const std::string& fullName, bool mipmap = false, bool keepOnCPU = false);
+	bool preload(const std::string& fullName, bool mipmap = false, int resolution = 0, int depth = 1, int nbChannels = 4, int channelSize = 1);
+	bool load();
+	struct bigTexRecap {
+		unsigned int binding; // Binding id, increased by 1 when getting unused
+		int resolution;
+		std::unique_ptr<Texture> texture;
+		std::string texName; // Name of the texture to load
+		unsigned char lifetime = 0; // Number of frames before releasing this bigTexture
+		bool ready = false; // Is this texture ready for use
+		bool acquired = false; // Is this texture currently acquired
+	};
+	bigTexRecap *acquireBigTexture(int resolution);
 
 	struct texRecap {
+		unsigned long int size;
 		int width;
 		int height;
-		unsigned long int size;
-		int nbLink;
-		Texture *texture;
-		std::unique_ptr<Texture> textureHandle; // To destroy owned textures
-		bool mipmap;
+		int depth;
+		std::unique_ptr<Texture> texture;
+		int bigTextureResolution = 0;
+		int bigTextureBinding = 0;
+		bigTexRecap *bigTexture = nullptr;
+		bool mipmap = false;
 	};
 
 	void blend( const int, unsigned char* const, const unsigned int );
 
 	std::string textureName;
+	std::shared_ptr<texRecap> texture;
 	int loadType;
 	int loadWrapping;
-	int width;
-	int height;
-	Texture *texture;
+	int nbChannels;
+	int channelSize;
 
-	static ThreadContext *context;
 	static std::string texDir;
-	static std::map<std::string, texRecap*> texCache;
 	static bool loadInLowResolution;
 	static int lowResMax;
-	static std::list<s_texture *> activeTextures;
-	std::map<std::string, texRecap*>::iterator it;
-	std::list<s_texture *>::iterator self;
+	static std::map<std::string, std::weak_ptr<texRecap>> texCache;
+	static std::list<bigTexRecap> bigTextures;
+	static PushQueue<bigTexRecap *, 31> bigTextureQueue;
+	static PushQueue<std::shared_ptr<texRecap>> textureQueue;
+	static std::atomic<long> currentAllocation; // Allocations planned but not done yet
 };
 
 

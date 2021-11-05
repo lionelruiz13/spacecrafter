@@ -23,18 +23,18 @@
 #include "tools/fader.hpp"
 
 #include "tools/vecmath.hpp"
+#include "tools/context.hpp"
 #include <vector>
 #include <memory>
 
-#include "vulkanModule/Context.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Body;
 class Projector;
 class VertexArray;
-class PipelineLayout;
+class VertexBuffer;
 class Pipeline;
-class Uniform;
-class Buffer;
+class PipelineLayout;
 
 class Axis {
 public:
@@ -45,7 +45,7 @@ public:
 
 	void setFlagAxis(bool b);
 
-	void drawAxis(const Projector* prj, const Mat4d& mat);
+	void drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat);
 
 	void computeAxis(const Projector* prj, const Mat4d& mat);
 
@@ -55,27 +55,20 @@ public:
 
 	void computeAxisAngle(const Projector* prj, const Mat4d& mat);
 
-	static void createSC_context(ThreadContext *context);
+	static void createSC_context();
+	static void destroySC_context();
 private:
-	int commandIndex = -1;
 	Body * body;
-	std::unique_ptr<VertexArray> m_AxisGL;
-	std::unique_ptr<Set> set;
-	std::unique_ptr<Uniform> uMat;
-	Mat4f *MVP;
-	static VirtualSurface *surface;
-	static SetMgr *setMgr;
-	static CommandMgr *cmdMgr;
+	Vec3f *pPosAxis = nullptr;
+	std::unique_ptr<VertexBuffer> m_AxisGL;
 
-	static Uniform *uColor;
-	static VertexArray *vertexModel;
-	static Pipeline *pipeline;
-	static PipelineLayout *layout;
+	static std::unique_ptr<SharedBuffer<Vec3f>> uColor;
+	static std::unique_ptr<VertexArray> vertexModel;
+	static std::unique_ptr<Set> set;
+	static std::unique_ptr<Pipeline> pipeline;
+	static std::unique_ptr<PipelineLayout> layout;
 
 	double axisAngle;
-	std::vector<float> vecAxisPos;
-	static Buffer *bdrawaxis;
-	static int *drawaxis;  // display or not Body axis
 	static bool actualdrawaxis;
 };
 

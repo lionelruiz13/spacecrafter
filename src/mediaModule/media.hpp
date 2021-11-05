@@ -38,7 +38,7 @@
 #include "mediaModule/viewport.hpp"
 //#include "tools/app_settings.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
+#include <vulkan/vulkan.h>
 
 class Projector;
 class Navigator;
@@ -96,9 +96,9 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 
 	//! création des structures pour les VR
-	void initVR360(ThreadContext *context);
+	void initVR360();
 	//! creation contexte Vulkan
-	void createSC_context(ThreadContext *context);
+	void createSC_context();
 
 	//! affiche une image du player video à destination du VR360
 	void drawVR360(const Projector* prj, const Navigator* nav) {
@@ -361,6 +361,9 @@ public:
 		return player->isVideoPlayed();
 	}
 
+	void playerRecordUpdate(VkCommandBuffer cmd) {
+		player->recordUpdate(cmd);
+	}
 private:
 	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
 

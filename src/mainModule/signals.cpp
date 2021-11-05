@@ -59,11 +59,20 @@ ISignals::~ISignals()
 
 void ISignals::NSSigTERM( int )
 {
+	static int counter = 0;
 	// Tell app to stop gracefully
 	//std::cout << "Caught SIGTERM, shutting down." << std::endl;
 	cLog::get()->write("Caught SIGTERM, shutting down.");
 	if( m_app )
 		m_app->flag(APP_FLAG::ALIVE, false);
+	switch (++counter) {
+		case 4:
+			std::cout << "Warning : Sending another SIGTERM will engage EMERGENCY EXIT !\n";
+			break;
+		case 5:
+			std::cout << "Engage EMERGENCY EXIT (may have side effect)\n";
+			exit(1);
+	}
 }
 
 void ISignals::NSSigTSTP( int )

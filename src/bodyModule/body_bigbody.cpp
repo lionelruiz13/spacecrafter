@@ -37,12 +37,8 @@
 #include "tools/log.hpp"
 #include "bodyModule/ring.hpp"
 #include "bodyModule/body_color.hpp"
-
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
-#include "vulkanModule/Pipeline.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 BigBody::BigBody(std::shared_ptr<Body> parent,
                  const std::string& englishName,
@@ -57,8 +53,7 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
                  bool close_orbit,
                  ObjL* _currentObj,
                  double orbit_bounding_radius,
-				 std::shared_ptr<BodyTexture> _bodyTexture,
-				 ThreadContext *context
+				 std::shared_ptr<BodyTexture> _bodyTexture
                 ) :
 	Body(parent,
 	     englishName,
@@ -73,32 +68,16 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-		 _bodyTexture,
-		 context
+		 _bodyTexture
         ),
 	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
-{	
+{
 	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
 		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
 		tex_specular = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT);
 	}
-
-	// if(_bodyTexture->tex_cloud != "") {
-	// 	// Try to use cloud texture in any event, even if can not use shader
-	// 	tex_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_ALPHA, true);
-
-	// 	if(_bodyTexture->tex_cloud_normal=="") {
-	// 		cLog::get()->write("No cloud normal texture defined for " + englishName, LOG_TYPE::L_ERROR);
-	// 	}
-	// 	else {
-	// 		tex_norm_cloud = new s_texture(FilePath(_bodyTexture->tex_cloud_normal,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
-	// 	}
-	// }
-
-	trail = std::make_unique<Trail>(this,1460);
-	orbitPlot = std::make_unique<Orbit2D>(this);
-    drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
-	selectShader();
+    trail = std::make_unique<Trail>(this,1460);
+    orbitPlot = std::make_unique<Orbit2D>(this);
 }
 
 BigBody::~BigBody()
@@ -124,30 +103,28 @@ BigBody::~BigBody()
 void BigBody::setRings(std::unique_ptr<Ring> r) {
 	rings = std::move(r);
     if (myShader != SHADER_RINGED) {
-        if (commandIndex == -1) {
-            cLog::get()->write("Failed to enable rings.", LOG_TYPE::L_ERROR);
-            return;
-        }
-        commandIndex = -2;
-        selectShader();
+        changed = true;
     }
 }
 
 void BigBody::selectShader ()
 {
-	if (tex_night && tex_heightmap) { //night Shader with tessellation
+    VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
+    changed = false;
+    if (tex_night && tex_heightmap) { //night Shader with tessellation
 		myShader = SHADER_NIGHT_TES; // myEarth
 		drawState = BodyShader::getShaderNightTes();
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-        set->bindUniform(uGlobalFrag.get(), 1);
-        uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
-        pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
-        set->bindUniform(uGlobalTescGeom.get(), 2);
+        set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+        if (!uGlobalVertProj)
+            uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        set->bindUniform(uGlobalVertProj, 0);
+        if (!uGlobalFrag)
+            uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+        set->bindUniform(uGlobalFrag, 1);
+        if (!uGlobalTescGeom)
+            uGlobalTescGeom = std::make_unique<SharedBuffer<globalTescGeom>>(*context.uniformMgr);
+        set->bindUniform(uGlobalTescGeom, 2);
         set->bindTexture(tex_current->getTexture(), 5);
         set->bindTexture(tex_eclipse_map->getTexture(), 6);
         set->bindTexture(tex_night->getTexture(), 7);
@@ -158,23 +135,19 @@ void BigBody::selectShader ()
             pipelineOffset = 1;
         }
         set->bindTexture(tex_heightmap->getTexture(), 11);
-        // if ((Body::flagClouds && tex_norm_cloud)==1)
-        // 	drawState->setUniform("Clouds",1);
-        // else
-        // 	drawState->setUniform("Clouds",0);
 		return;
 	}
 
 	if (tex_night) { //night Shader
 		myShader = SHADER_NIGHT;
 		drawState = BodyShader::getShaderNight();
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-        set->bindUniform(uGlobalFrag.get(), 1);
+        set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+        if (!uGlobalVertProj)
+            uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        set->bindUniform(uGlobalVertProj, 0);
+        if (!uGlobalFrag)
+            uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+        set->bindUniform(uGlobalFrag, 1);
         set->bindTexture(tex_current->getTexture(), 2);
         set->bindTexture(tex_eclipse_map->getTexture(), 3);
         set->bindTexture(tex_night->getTexture(), 4);
@@ -184,16 +157,16 @@ void BigBody::selectShader ()
 	if (tex_norm) { //bump Shader
 		myShader = SHADER_BUMP;
 		drawState = BodyShader::getShaderBump();
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-        set->bindUniform(uGlobalFrag.get(), 1);
-        uUmbraColor = std::make_unique<Uniform>(context->surface, sizeof(*pUmbraColor));
-        pUmbraColor = static_cast<typeof(pUmbraColor)>(uUmbraColor->data);
-        set->bindUniform(uUmbraColor.get(), 2);
+        set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+        if (!uGlobalVertProj)
+            uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        set->bindUniform(uGlobalVertProj, 0);
+        if (!uGlobalFrag)
+            uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+        set->bindUniform(uGlobalFrag, 1);
+        if (!uUmbraColor)
+            uUmbraColor = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+        set->bindUniform(uUmbraColor, 2);
         set->bindTexture(tex_current->getTexture(), 3);
         set->bindTexture(tex_norm->getTexture(), 4);
         set->bindTexture(tex_eclipse_map->getTexture(), 5);
@@ -203,19 +176,19 @@ void BigBody::selectShader ()
 	if (rings) { //ringed Shader
 		myShader = SHADER_RINGED;
 		drawState = BodyShader::getShaderRinged();
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-        set->bindUniform(uGlobalFrag.get(), 1);
-        uModelViewMatrixInverse = std::make_unique<Uniform>(context->surface, sizeof(*pModelViewMatrixInverse));
-        pModelViewMatrixInverse = static_cast<typeof(pModelViewMatrixInverse)>(uModelViewMatrixInverse->data);
-        set->bindUniform(uModelViewMatrixInverse.get(), 2);
-        uRingFrag = std::make_unique<Uniform>(context->surface, sizeof(*pRingFrag));
-        pRingFrag = static_cast<typeof(pRingFrag)>(uRingFrag->data);
-        set->bindUniform(uRingFrag.get(), 3);
+        set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+        if (!uGlobalVertProj)
+            uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        set->bindUniform(uGlobalVertProj, 0);
+        if (!uGlobalFrag)
+            uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+        set->bindUniform(uGlobalFrag, 1);
+        if (!uModelViewMatrixInverse)
+            uModelViewMatrixInverse = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+        set->bindUniform(uModelViewMatrixInverse, 2);
+        if (!uRingFrag)
+            uRingFrag = std::make_unique<SharedBuffer<ringFrag>>(*context.uniformMgr);
+        set->bindUniform(uRingFrag, 3);
         set->bindTexture(tex_current->getTexture(), 4);
         set->bindTexture(tex_eclipse_map->getTexture(), 5);
         set->bindTexture(rings->getTexTexture(), 6);
@@ -225,16 +198,16 @@ void BigBody::selectShader ()
 	if (tex_heightmap) {
 		myShader = SHADER_NORMAL_TES;
 		drawState = BodyShader::getShaderNormalTes();
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-        set->bindUniform(uGlobalFrag.get(), 1);
-        uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
-        pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
-        set->bindUniform(uGlobalTescGeom.get(), 2);
+        set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+        if (!uGlobalVertProj)
+            uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        set->bindUniform(uGlobalVertProj, 0);
+        if (!uGlobalFrag)
+            uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+        set->bindUniform(uGlobalFrag, 1);
+        if (!uGlobalTescGeom)
+            uGlobalTescGeom = std::make_unique<SharedBuffer<globalTescGeom>>(*context.uniformMgr);
+        set->bindUniform(uGlobalTescGeom, 2);
         set->bindTexture(tex_heightmap->getTexture(), 5);
         set->bindTexture(tex_current->getTexture(), 6);
         set->bindTexture(tex_eclipse_map->getTexture(), 7);
@@ -243,13 +216,13 @@ void BigBody::selectShader ()
 
 	myShader = SHADER_NORMAL;
 	drawState = BodyShader::getShaderNormal();
-    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-    uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-    pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-    set->bindUniform(uGlobalVertProj.get(), 0);
-    uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-    pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-    set->bindUniform(uGlobalFrag.get(), 1);
+    set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+    if (!uGlobalVertProj)
+        uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+    set->bindUniform(uGlobalVertProj, 0);
+    if (!uGlobalFrag)
+        uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+    set->bindUniform(uGlobalFrag, 1);
     set->bindTexture(tex_current->getTexture(), 2);
     set->bindTexture(tex_eclipse_map->getTexture(), 3);
 }
@@ -297,36 +270,13 @@ double BigBody::calculateBoundingRadius()
 	return boundingRadius;
 }
 
-void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void BigBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
-	//glEnable(GL_TEXTURE_2D);
-	// StateGL::enable(GL_CULL_FACE);
-	// StateGL::disable(GL_BLEND);
-
-//	glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-	//drawState->use();
-
-    switch (commandIndex) {
-        case -2: // Command not builded
-            commandIndex = -1;
-            if (!context->commandMgr->isRecording()) {
-                commandIndex = context->commandMgr->getCommandIndex();
-                context->commandMgr->init(commandIndex);
-                context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
-            }
-            context->commandMgr->bindPipeline(drawState->pipeline + pipelineOffset);
-            currentObj->bind(context->commandMgr);
-            context->commandMgr->bindSet(drawState->layout, set.get());
-            context->commandMgr->bindSet(drawState->layout, context->global->globalSet, 1);
-            context->commandMgr->indirectDrawIndexed(drawData.get());
-            if (!hasRings())
-                context->commandMgr->compile();
-            return;
-        case -1: break;
-        default:
-            context->commandMgr->setSubmission(commandIndex);
-    }
+    if (changed)
+        selectShader();
+    drawState->pipeline[pipelineOffset].bind(cmd);
+    currentObj->bind(cmd);
+    drawState->layout->bindSets(cmd, {*set.get(), *Context::instance->uboSet});
 
     Mat4f matrix=mat.convert();
 	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
@@ -336,15 +286,15 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	switch (myShader) {
         case SHADER_NIGHT_TES:
         case SHADER_NORMAL_TES:
-            pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getPlanetAltimetryFactor());
+            uGlobalTescGeom->get().TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getPlanetAltimetryFactor());
             break;
         case SHADER_RINGED:
-            pRingFrag->RingInnerRadius = rings->getInnerRadius();
-            pRingFrag->RingOuterRadius = rings->getOuterRadius();
-            *pModelViewMatrixInverse = inv_matrix;
+            uRingFrag->get().RingInnerRadius = rings->getInnerRadius();
+            uRingFrag->get().RingOuterRadius = rings->getOuterRadius();
+            *uModelViewMatrixInverse = inv_matrix;
             break;
         case SHADER_BUMP:
-            *pUmbraColor = v3fNull; // deduced from body_moon
+            *uUmbraColor = v3fNull; // deduced from body_moon
             break;
         case SHADER_NIGHT:
         case SHADER_NORMAL:
@@ -361,15 +311,15 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	Vec3d light = -planet_helio;
 	light.normalize();
 
-    pGlobalVertProj->ModelViewMatrix = matrix;
-    pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
-    pGlobalVertProj->clipping_fov = prj->getClippingFov();
-    pGlobalVertProj->planetRadius = initialRadius;
-    pGlobalVertProj->LightPosition = eye_sun;
-    pGlobalVertProj->planetScaledRadius = radius;
-    pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
-    pGlobalFrag->SunHalfAngle = sun_half_angle;
-	std::list<std::shared_ptr<Body>>::iterator iter;
+    uGlobalVertProj->get().ModelViewMatrix = matrix;
+    uGlobalVertProj->get().NormalMatrix = inv_matrix.transpose();
+    uGlobalVertProj->get().clipping_fov = prj->getClippingFov();
+    uGlobalVertProj->get().planetRadius = initialRadius;
+    uGlobalVertProj->get().LightPosition = eye_sun;
+    uGlobalVertProj->get().planetScaledRadius = radius;
+    uGlobalVertProj->get().planetOneMinusOblateness = one_minus_oblateness;
+    uGlobalFrag->get().SunHalfAngle = sun_half_angle;
+    std::list<std::shared_ptr<Body>>::iterator iter;
 	for(iter=satellites.begin(); iter!=satellites.end() && index <= 4; iter++) {
 		tmp2 = (*iter)->get_heliocentric_ecliptic_pos() - planet_helio;
 		length = tmp2.length();
@@ -379,20 +329,20 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 			tmp = nav->getHelioToEyeMat() * (*iter)->get_heliocentric_ecliptic_pos();
 
 			if (index==1) {
-				pGlobalFrag->MoonPosition1 = tmp;
-				pGlobalFrag->MoonRadius1 = (*iter)->getRadius()/(*iter)->getSphereScale();
+				uGlobalFrag->get().MoonPosition1 = tmp;
+				uGlobalFrag->get().MoonRadius1 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 			else if (index==2) {
-				pGlobalFrag->MoonPosition2 = tmp;
-				pGlobalFrag->MoonRadius2 = (*iter)->getRadius()/(*iter)->getSphereScale();
+				uGlobalFrag->get().MoonPosition2 = tmp;
+				uGlobalFrag->get().MoonRadius2 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 			else if (index==3) {
-				pGlobalFrag->MoonPosition3 = tmp;
-				pGlobalFrag->MoonRadius3 = (*iter)->getRadius()/(*iter)->getSphereScale();
+				uGlobalFrag->get().MoonPosition3 = tmp;
+				uGlobalFrag->get().MoonRadius3 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 			else if (index==4) {
-				pGlobalFrag->MoonPosition4 = tmp;
-				pGlobalFrag->MoonRadius4 = (*iter)->getRadius()/(*iter)->getSphereScale();
+				uGlobalFrag->get().MoonPosition4 = tmp;
+				uGlobalFrag->get().MoonRadius4 = (*iter)->getRadius()/(*iter)->getSphereScale();
 			}
 
 			index++;
@@ -402,20 +352,15 @@ void BigBody::drawBody(const Projector* prj, const Navigator * nav, const Mat4d&
 	// clear any leftover values
 	for(; index<=4; index++) {
 		if (index==1) // No moon data
-			pGlobalFrag->MoonRadius1 = 0.0;
+			uGlobalFrag->get().MoonRadius1 = 0.0;
 		if (index==2)
-			pGlobalFrag->MoonRadius2 = 0.0;
+			uGlobalFrag->get().MoonRadius2 = 0.0;
 		if (index==3)
-			pGlobalFrag->MoonRadius3 = 0.0;
+			uGlobalFrag->get().MoonRadius3 = 0.0;
 		if (index==4)
-			pGlobalFrag->MoonRadius4 = 0.0;
+			uGlobalFrag->get().MoonRadius4 = 0.0;
 	}
-	currentObj->draw(screen_sz, drawData->data);
-    drawData->update();
-	// drawState->use();
-	// glActiveTexture(GL_TEXTURE0);
-
-	// StateGL::disable(GL_CULL_FACE);
+	currentObj->draw(cmd, screen_sz);
 }
 
 void BigBody::setSphereScale(float s, bool initial_scale)
@@ -437,12 +382,9 @@ void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMg
 		rings->multiplyRadius(radius/initialRadius);
 }
 
-
-void BigBody::drawRings(const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
+void BigBody::drawRings(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
-
-	rings->draw(prj,obs->isOnBody(shared_from_this()) ? obs : nullptr,mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
-
+	rings->draw(cmd, prj,obs->isOnBody(shared_from_this()) ? obs : nullptr,mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
 }
 
 void BigBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)

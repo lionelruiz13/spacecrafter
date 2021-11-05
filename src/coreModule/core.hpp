@@ -74,7 +74,6 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
 #include "tools/translator.hpp"
 
 class StarNavigator;
@@ -126,7 +125,7 @@ public:
 	enum MOUNT_MODE { MOUNT_ALTAZIMUTAL, MOUNT_EQUATORIAL };
 
 	//! Inputs are the locale directory and root directory and callback function for recording actions
-	Core(ThreadContext *_context, int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback <void, std::string> & recordCallback, std::shared_ptr<Observer> _observatory);
+	Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback <void, std::string> & recordCallback, std::shared_ptr<Observer> _observatory);
 	virtual ~Core();
 
 	//! Init and load all main core components from the passed config file.
@@ -471,8 +470,6 @@ private:
 
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
-
-	ThreadContext *context;
 
 	// external class
 	std::shared_ptr<FontFactory> fontFactory;					// gestion complète des fontes du logiciel

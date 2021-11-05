@@ -40,14 +40,13 @@
 #include "tools/translator.hpp"
 #include "coreModule/time_mgr.hpp"
 #include "tools/ScModule.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class VertexArray;
-class ThreadContext;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-class Buffer;
 
 //! Class which manages a line to display around the sky like the ecliptic line
 class SkyLine {
@@ -90,9 +89,10 @@ public:
 		font = _font;
 	}
 	//static void createShader();
-	static void createSC_context(ThreadContext *_context);
+	static void createSC_context();
 	void createLocalResources();
 	void build(int nbVertices);
+	void rebuildCommand(int idx);
 protected:
 	void drawSkylineGL(const Vec4f& Color);
 
@@ -110,20 +110,19 @@ protected:
 	Vec4f tmp;
 	Mat4f TRANSFO; //a renommer
 
-	//Opengl
+	//Vulkan
 	//static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;
 	static s_font * font;
-	static ThreadContext *context;
-	static VertexArray *vertexModel;
+	static std::unique_ptr<VertexArray> vertexModel;
 	static PipelineLayout *layout;
 	static Pipeline *pipeline;
-	static Set *set;
+	static std::unique_ptr<Set> set;
 	static int vUniformID;
-	int commandIndex;
-	std::unique_ptr<VertexArray> m_skylineGL;
+	VkCommandBuffer cmds[3];
+	bool needUpdate[3] {true, true, true};
+	std::unique_ptr<VertexBuffer> m_skylineGL;
 	uint32_t nbVertex = 0;
-	std::unique_ptr<Uniform> uColor;
-	Vec4f *pColor;
+	std::unique_ptr<SharedBuffer<Vec4f>> uColor;
 
 	std::vector<float> vecDrawPos;
 	std::vector<float> vecDrawMVPPos;

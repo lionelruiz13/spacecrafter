@@ -5,7 +5,7 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (binding=1) uniform uColor {vec3 Color;};
+layout (push_constant) uniform uColor {layout (offset=64) vec3 Color;};
  
 layout (location=0) out vec4 FragColor;
 

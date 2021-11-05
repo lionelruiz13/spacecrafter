@@ -28,36 +28,16 @@
 #include "tools/log.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/PipelineLayout.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Context.hpp"
-#include "vulkanModule/VertexArray.hpp"
-
-OjmMgr::OjmMgr(ThreadContext *context)
+OjmMgr::OjmMgr()
 {
-	cmdMgr = context->commandMgrDynamic;
-	cmdMgrMaster = context->commandMgr;
-	surface = context->surface;
-	globalSet = context->global->globalSet;
-	//createShader(context);
 }
 
 OjmMgr::~OjmMgr()
 {
 	delete[] pipeline;
-	std::vector<OjmContainer*>::iterator iter;
-	for (iter=OjmVector.begin(); iter!=OjmVector.end(); iter++) {
-			if (*iter) delete *iter;
-			iter=OjmVector.erase(iter);
-			iter--;
-		}
-	OjmVector.clear();
-
-	// deleteShader();
 }
 
 OjmMgr::STATE_POSITION OjmMgr::convert(const std::string & value)
@@ -75,23 +55,24 @@ bool OjmMgr::load(const std::string &mode, const std::string &name, const std::s
 	//~ std::cout << "name " << name << " filename " << fileName << " pathFile " << pathFile << std::endl;
 	STATE_POSITION tmpState = convert(mode);
 	if (tmpState == actualState) {
-		needRebuild = true;
+		needRebuild[0] = true;
+		needRebuild[1] = true;
+		needRebuild[2] = true;
 	}
 	OjmContainer * tmp=nullptr;
 	tmp = new OjmContainer;
 	tmp->myState = tmpState;
 	tmp->name = name;
 	tmp->model = Mat4f::translation(Position);
-	tmp->Obj3D = new Ojm(fileName, pathFile, multiplier, surface);
-	tmp->uniform = std::make_unique<Uniform>(surface, sizeof(Mat4f) * 2, true);
-	tmp->pUniform = static_cast<typeof(tmp->pUniform)>(tmp->uniform->data);
+	tmp->Obj3D = std::make_unique<Ojm>(fileName, pathFile, multiplier);
+	tmp->uniform = std::make_unique<SharedBuffer<OjmContainer::uniformData>>(*Context::instance->uniformMgr);
 
 	if (!tmp->Obj3D->getOk()) {
 		delete tmp;
 		cLog::get()->write("Error loading ojm "+ name, LOG_TYPE::L_ERROR);
 		return false;
 	} else {
-		OjmVector.push_back(tmp);
+		OjmVector.emplace_back(tmp);
 		cLog::get()->write("Succesfull loading ojm "+ name, LOG_TYPE::L_INFO);
 		return true;
 	}
@@ -106,13 +87,14 @@ bool OjmMgr::remove(const std::string &mode, const std::string& _name)
 bool OjmMgr::remove(STATE_POSITION state, const std::string& _name)
 {
 	if (state == actualState) {
-		needRebuild = true;
+		needRebuild[0] = true;
+		needRebuild[1] = true;
+		needRebuild[2] = true;
 	}
-	std::vector<OjmContainer*>::iterator iter;
+	std::vector<std::unique_ptr<OjmContainer>>::iterator iter;
 	for (iter=OjmVector.begin(); iter!=OjmVector.end(); iter++) {
 
 		if ( ((*iter)->myState == state) && (*iter)->name == _name) {
-			if (*iter) delete *iter;
 			OjmVector.erase(iter);
 			cLog::get()->write("OJM found : delete " + _name, LOG_TYPE::L_DEBUG);
 			return true;
@@ -130,13 +112,14 @@ void OjmMgr::removeAll(const std::string &mode)
 void OjmMgr::removeAll(STATE_POSITION state)
 {
 	if (state == actualState) {
-		needRebuild = true;
+		needRebuild[0] = true;
+		needRebuild[1] = true;
+		needRebuild[2] = true;
 	}
-	std::vector<OjmContainer*>::iterator iter;
+	std::vector<std::unique_ptr<OjmContainer>>::iterator iter;
 	for (iter=OjmVector.begin(); iter!=OjmVector.end(); ++iter) {
 
 		if ( ((*iter)->myState == state)) {
-			if (*iter) delete *iter;
 			OjmVector.erase(iter);
 			iter--;
 			cLog::get()->write("OJM found and deleted", LOG_TYPE::L_DEBUG);
@@ -144,32 +127,21 @@ void OjmMgr::removeAll(STATE_POSITION state)
 	}
 }
 
-
 void OjmMgr::update(int delta_time)
 {}
 
 void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 {
-	//glEnable(GL_CULL_FACE); // enable cull_face
+	Context &context = *Context::instance;
 
-	// if (state == STATE_POSITION::IN_UNIVERSE) {
-	// 	StateGL::enable(GL_DEPTH_TEST);
-	// 	glDepthFunc(GL_LESS);
-	// }
-	//
-	// if (state == STATE_POSITION::IN_GALAXY) {
-	// 	StateGL::enable(GL_BLEND);
-	// 	StateGL::enable(GL_DEPTH_TEST);
-	// 	StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	// 	//~ glFrontFace(GL_CW);
-	// 	//~ glCullFace(GL_FRONT);
-	// 	//~ glEnable(GL_CULL_FACE); // enable cull_face
-	// }
 	if (state != actualState) {
+		needRebuild[0] = true;
+		needRebuild[1] = true;
+		needRebuild[2] = true;
 		actualState = state;
-		rebuild();
-		return; // we can't use command buffer of different state
 	}
+	if (needRebuild[context.frameIdx])
+		rebuild();
 
 	view = nav->getHelioToEyeMat().convert();
 	//~ view = view * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
@@ -183,88 +155,46 @@ void OjmMgr::draw(Projector *prj, const Navigator *nav, STATE_POSITION state)
 			continue;
 
 		modelViewMatrix = view * OjmVector[i]->model;
-		OjmVector[i]->pUniform->ModelViewMatrix = modelViewMatrix;
-		OjmVector[i]->pUniform->NormalMatrix = (modelViewMatrix.inverse()).transpose();
-		// shaderOJM->setUniform("ModelViewMatrix" , modelViewMatrix);
-		//shaderOJM->setUniform("ProjectionMatrix" , proj);
-		// shaderOJM->setUniform("NormalMatrix" , normal);
-		//shaderOJM->setUniform("MVP" , proj * view * OjmVector[i]->model);
-		//shaderOJM->setUniform("inverseModelViewProjectionMatrix",(proj * view * OjmVector[i]->model).inverse());
-
-		// shaderOJM->setUniform("Light.Position", Vec4f(0.0, 0.0, 0.0, 1.0));
-		// shaderOJM->setUniform("Light.Intensity", Vec3f(1.0, 1.0, 1.0));
-
-		//OjmVector[i]->Obj3D->draw(shaderOJM.get());
+		OjmVector[i]->uniform->get().ModelViewMatrix = modelViewMatrix;
+		OjmVector[i]->uniform->get().NormalMatrix = (modelViewMatrix.inverse()).transpose();
 	}
-	cmdMgr->setSubmission(commandIndex, false, cmdMgrMaster);
-
-	if (needRebuild)
-		rebuild();
-
-	//shaderOJM->unuse();
-
-	// if (state == STATE_POSITION::IN_UNIVERSE) {
-	// 	StateGL::disable(GL_DEPTH_TEST);
-	// 	glDepthFunc(GL_LEQUAL);
-	// }
-	//
-	// if (state == STATE_POSITION::IN_GALAXY) {
-	// 	StateGL::disable(GL_BLEND);
-	// 	StateGL::disable(GL_DEPTH_TEST);
-	// 	StateGL::BlendFunc(GL_ONE, GL_ZERO);
-	// 	// glClear(GL_DEPTH_BUFFER_BIT);
-	// 	Renderer::clearDepthBuffer();
-	//
-	// }
-	// glDisable(GL_CULL_FACE);
+	context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 }
 
 void OjmMgr::rebuild()
 {
-	int tmp = commandIndex;
-	commandIndex = commandIndexSwitch;
-	commandIndexSwitch = tmp;
-	tmp = 0; // selected pipeline is pipeline 0
-	needRebuild = false;
+	Context &context = *Context::instance;
+	int tmp = 0; // selected pipeline is pipeline 0
+	needRebuild[context.frameIdx] = false;
 	Vec4f pos(0.0, 0.0, 0.0, 1.0);
 	Vec3f intensity(1.0, 1.0, 1.0);
 	float buff[7];
 	*reinterpret_cast<Vec4f *>(buff) = pos;
 	*reinterpret_cast<Vec3f *>(buff + 4) = intensity;
-
-	cmdMgr->init(commandIndex, pipeline, (actualState == STATE_POSITION::IN_GALAXY || actualState == STATE_POSITION::IN_UNIVERSE) ? renderPassType::CLEAR_DEPTH_BUFFER : renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
-	cmdMgr->bindSet(layout.get(), globalSet);
-	cmdMgr->pushConstant(layout.get(), VK_SHADER_STAGE_FRAGMENT_BIT, 48, buff, 28);
+	VkCommandBuffer &cmd = cmds[context.frameIdx];
+	context.frame[context.frameIdx]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+    VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+    VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+    vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+	pipeline->bind(cmd);
+	layout->pushConstant(cmd, 0, buff, 12*sizeof(float), 7*sizeof(float));
 	for(unsigned int i=0; i< OjmVector.size(); i++) {
 		if (OjmVector[i]->myState != actualState)
 			continue;
-		set->setVirtualUniform(OjmVector[i]->uniform.get(), virtualUniformID);
-		cmdMgr->bindSet(layout.get(), set.get(), 2);
-		tmp = OjmVector[i]->Obj3D->record(cmdMgr, pipeline, layout.get(), pushSet.get(), tmp);
+		set->setVirtualUniform(OjmVector[i]->uniform->getOffset(), virtualUniformID);
+		layout->bindSet(cmd, *set);
+		tmp = OjmVector[i]->Obj3D->record(cmd, pipeline, layout.get(), pushSet.get(), tmp, (i == 0));
 	}
-	cmdMgr->compile();
+	context.frame[context.frameIdx]->compile(cmd);
 }
 
-void OjmMgr::createShader(ThreadContext *context)
+void OjmMgr::createShader()
 {
-	// shaderOJM= std::make_unique<shaderProgram>();
-	// shaderOJM->init("shaderOJM_noSUN.vert", "", "", "","shaderOJM_noSUN.frag");
-	// shaderOJM->setUniformLocation("ModelViewMatrix");
-	// shaderOJM->setUniformLocation("NormalMatrix");
-	// shaderOJM->setUniformLocation("ProjectionMatrix");
-	// shaderOJM->setUniformLocation("MVP");
-	// shaderOJM->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderOJM->setUniformLocation("Light.Position");
-	// shaderOJM->setUniformLocation("Light.Intensity");
-	// shaderOJM->setUniformLocation("Material.Ka");
-	// shaderOJM->setUniformLocation("Material.Kd");
-	// shaderOJM->setUniformLocation("Material.Ks");
-	// shaderOJM->setUniformLocation("Material.Ns");
-	// shaderOJM->setUniformLocation("T");
-	// shaderOJM->setUniformLocation("useTexture");
-	//~ shaderOJM->printInformations(); */
-	layout = std::make_unique<PipelineLayout>(surface);
-	layout->setGlobalPipelineLayout(context->global->globalLayout);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+
+	layout = std::make_unique<PipelineLayout>(vkmgr);
+	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0, 1, true);
@@ -272,32 +202,21 @@ void OjmMgr::createShader(ThreadContext *context)
 	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 76);
 	layout->build();
 
-	vertex = std::make_unique<VertexArray>(surface);
-	vertex->registerVertexBuffer(BufferType::POS3D, BufferAccess::STATIC);
-	vertex->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STATIC);
-	vertex->registerVertexBuffer(BufferType::NORMAL, BufferAccess::STATIC);
-
-	pipeline = new Pipeline[2]{{surface, layout.get()}, {surface, layout.get()}};
+	pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
 	for (short i = 0; i < 2; ++i) {
 		pipeline[i].setCullMode(true);
-		pipeline[i].bindVertex(vertex.get());
+		pipeline[i].bindVertex(*context.ojmVertexArray);
 		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		pipeline[i].bindShader("shaderOJM_noSUN.vert.spv");
 		pipeline[i].bindShader((i == 0) ? "shaderOJM_noSUN_tex.frag.spv" : "shaderOJM_noSUN_notex.frag.spv");
 		pipeline[i].build();
 	}
-	set = std::make_unique<Set>(surface, context->setMgr, layout.get(), 2);
-	uniformModel = std::make_unique<Uniform>(surface, sizeof(Mat4f) * 2, true);
-	virtualUniformID = set->bindVirtualUniform(uniformModel.get(), 0);
+	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), 2);
+	virtualUniformID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(OjmContainer::uniformData));
 	pushSet = std::make_unique<Set>();
-
-	commandIndex = cmdMgr->getCommandIndex();
-	commandIndexSwitch = cmdMgr->getCommandIndex();
-	cmdMgr->setName(commandIndex, "OjmMgr commandBuffer");
-	cmdMgr->setName(commandIndexSwitch, "OjmMgr switch commandBuffer");
+	context.cmdInfo.commandBufferCount = 3;
+	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i) {
+		vkmgr.setObjectName(cmds[i], VK_OBJECT_TYPE_COMMAND_BUFFER, "OjmMgr");
+	}
 }
-
-// void OjmMgr::deleteShader()
-// {
-// 	if(shaderOJM) shaderOJM=nullptr;
-// }

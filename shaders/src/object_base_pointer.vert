@@ -5,8 +5,8 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (location=0) in vec2 position;
-layout (location=4) in float _pos;
+layout (location=0) in vec4 position; // vec2
+layout (location=1) in float _pos;
 
 layout (location=0) out int posC;
 
@@ -14,6 +14,6 @@ layout (location=0) out int posC;
 void main()
 {
 	posC = int(_pos);
-	gl_Position = vec4(position,0.0,1.0);
+	gl_Position = position;
 }
 

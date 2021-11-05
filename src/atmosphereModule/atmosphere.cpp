@@ -38,39 +38,22 @@
 #include "tools/sc_const.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "tools/utility.hpp"
-#include "vulkanModule/VertexArray.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-
-#include "vulkanModule/Pipeline.hpp"
-#include "vulkanModule/CommandMgr.hpp"
-
-#define SKY_RESOLUTION 48
-
-#define NB_LUM ((SKY_RESOLUTION+1) * (SKY_RESOLUTION+1))
-
-Atmosphere::Atmosphere(ThreadContext *context)
+Atmosphere::Atmosphere()
 {
 	sky = std::make_unique<Skylight>();
 	skyb = std::make_unique<Skybright>();
-	// Create the vector array used to store the sky color on the full field of view
-	tab_sky = new Vec3f*[SKY_RESOLUTION+1];
-	for (int k=0; k<SKY_RESOLUTION+1 ; k++) {
-		tab_sky[k] = new Vec3f[SKY_RESOLUTION+1];
-	}
 	setFaderDuration(0.f);
-	createSC_context(context);
+	createSC_context();
 }
 
 Atmosphere::~Atmosphere()
 {
-	for (int k=0; k<SKY_RESOLUTION+1 ; k++) {
-		if (tab_sky[k]) delete [] tab_sky[k];
-	}
-	if (tab_sky) delete [] tab_sky;
-	dataColor.clear();
-	dataPos.clear();
+	Context::instance->stagingMgr->releaseBuffer(stagingSkyColor);
+	Context::instance->indexBufferMgr->releaseBuffer(indexBuffer);
 }
-
 
 void Atmosphere::initGridViewport(const Projector *prj)
 {
@@ -83,50 +66,71 @@ void Atmosphere::initGridViewport(const Projector *prj)
 //initialise la grille des points pour le calcul de l'atmosphere
 void Atmosphere::initGridPos()
 {
-	for (int y=0; y<SKY_RESOLUTION; y++) {
-		for (int x=0; x<SKY_RESOLUTION+1; x++) {
-			dataPos.push_back( viewport_left+x*stepX );
-			dataPos.push_back( viewport_bottom+y*stepY );
-			dataPos.push_back( viewport_left+x*stepX );
-			dataPos.push_back( viewport_bottom+(y+1)*stepY );
+	{
+		float *data = (float *) Context::instance->transfer->planCopy(skyPos->get());
+		for (int y=0; y<SKY_RESOLUTION+1; y++) {
+			for (int x=0; x<SKY_RESOLUTION+1; x++) {
+				*(data++) = viewport_left+x*stepX;
+				*(data++) = viewport_bottom+y*stepY;
+			}
 		}
 	}
-
-	m_atmGL->fillVertexBuffer(BufferType::POS2D, dataPos);
-	dataPos.clear();
+	{
+		uint16_t *data = (uint16_t *) Context::instance->transfer->planCopy(indexBuffer);
+		for (int y=0; y<SKY_RESOLUTION; ++y) {
+			const int offset1 = y * (SKY_RESOLUTION + 1);
+			const int offset2 = offset1 + SKY_RESOLUTION+1;
+			for (int x=0; x<SKY_RESOLUTION+1; ++x) {
+				*(data++) = x + offset1;
+				*(data++) = x + offset2;
+			}
+			*(data++) = UINT16_MAX;
+		}
+	}
 }
 
-void Atmosphere::createSC_context(ThreadContext *context)
+void Atmosphere::createSC_context()
 {
-	m_atmGL = std::make_unique<VertexArray>(context->surface, context->commandMgr);
-	m_atmGL->registerVertexBuffer(BufferType::COLOR, BufferAccess::DYNAMIC);
-	m_atmGL->registerVertexBuffer(BufferType::POS2D, BufferAccess::STATIC);
-	m_atmGL->build(SKY_RESOLUTION * (SKY_RESOLUTION + 1) * 2);
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+
+	m_atmGL = std::make_unique<VertexArray>(vkmgr);
+	m_atmGL->createBindingEntry(2 * sizeof(float));
+	m_atmGL->addInput(VK_FORMAT_R32G32_SFLOAT);
+	m_atmGL->createBindingEntry(3 * sizeof(float));
+	m_atmGL->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	skyPos = m_atmGL->createBuffer(0, NB_LUM, context.globalBuffer.get());
+	skyColor = m_atmGL->createBuffer(1, NB_LUM, context.globalBuffer.get());
 
 	auto blendMode = BLEND_ADD;
 	blendMode.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
 	blendMode.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
-	pipeline = std::make_unique<Pipeline>(context->surface, context->global->globalLayout);
-	pipeline->bindVertex(m_atmGL.get(), 0);
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, context.layouts.front().get());
+	pipeline->bindVertex(*m_atmGL);
 	pipeline->setBlendMode(blendMode);
 	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, true);
 	pipeline->bindShader("atmosphere.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipeline->bindShader("atmosphere.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipeline->build();
 
-	commandMgr = context->commandMgr;
-	commandIndex = commandMgr->getCommandIndex();
-	commandMgr->init(commandIndex);
-	commandMgr->beginRenderPass(renderPassType::DEFAULT);
-	commandMgr->bindPipeline(pipeline.get());
-	commandMgr->bindSet(context->global->globalLayout, context->global->globalSet);
-	m_atmGL->bind();
-	for (unsigned int y=0; y<SKY_RESOLUTION; y++) {
-		commandMgr->draw((SKY_RESOLUTION+1)*2, 1, y*(SKY_RESOLUTION+1)*2);
-	}
-	commandMgr->compile();
-}
+	indexBuffer = context.indexBufferMgr->acquireBuffer(NB_INDEX * sizeof(uint16_t));
+	stagingSkyColor = context.stagingMgr->acquireBuffer(NB_LUM * sizeof(Vec3f));
+	pSkyColor = (Vec3f *) context.stagingMgr->getPtr(stagingSkyColor);
 
+	context.cmdInfo.commandBufferCount = 3;
+	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i) {
+		VkCommandBuffer &cmd = cmds[i];
+		context.frame[i]->begin(cmd, PASS_FOREGROUND);
+		pipeline->bind(cmd);
+		context.layouts.front()->bindSet(cmd, *context.uboSet);
+		VertexArray::bind(cmd, {skyPos.get(), skyColor.get()});
+		vkCmdBindIndexBuffer(cmd, indexBuffer.buffer, indexBuffer.offset, VK_INDEX_TYPE_UINT16);
+		vkCmdDrawIndexed(cmd, NB_INDEX, 1, 0, 0, 0);
+		context.frame[i]->compile(cmd);
+	}
+}
 
 void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon_phase,
                                const ToneReproductor * eye, const Projector* prj,
@@ -228,7 +232,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 
 			sum_lum+=b2.color[2];
 			eye->xyY_to_RGB(b2.color);
-			tab_sky[x][y].set(atm_intensity*b2.color[0],atm_intensity*b2.color[1],atm_intensity*b2.color[2]);
+			pSkyColor[x + y * (SKY_RESOLUTION + 1)].set(atm_intensity*b2.color[0],atm_intensity*b2.color[1],atm_intensity*b2.color[2]);
 		}
 	}
 
@@ -237,30 +241,14 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	sum_lum = 0.f;
 }
 
-
-void Atmosphere::fillOutDataColor()
-{
-	dataColor.clear();
-	for (int y=0; y<SKY_RESOLUTION; y++) {
-		for (int x=0; x<SKY_RESOLUTION+1; x++) {
-			insert_vec3(dataColor,tab_sky[x][y]);
-			insert_vec3(dataColor,tab_sky[x][y+1]);
-		}
-	}
-	m_atmGL->fillVertexBuffer(BufferType::COLOR, dataColor);
-	m_atmGL->update();
-}
-
 void Atmosphere::draw()
 {
 	if (!fader.getInterstate())
 		return;
 
-	fillOutDataColor();
-
-	commandMgr->setSubmission(commandIndex);
+	Context::instance->transfer->planCopyBetween(stagingSkyColor, skyColor->get());
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_FOREGROUND);
 }
-
 
 void Atmosphere::setModel(ATMOSPHERE_MODEL atmModel)
 {

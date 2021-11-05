@@ -31,11 +31,10 @@
 #include <vector>
 
 #include "tools/fader.hpp"
-//
-
 #include "tools/no_copy.hpp"
 #include "tools/vecmath.hpp"
-#include "vulkanModule/Context.hpp"
+
+#include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Projector;
 class Navigator;
@@ -43,12 +42,10 @@ class ToneReproductor;
 class Translator;
 class s_font;
 class VertexArray;
-//class shaderProgram;
+class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class Uniform;
-class Buffer;
 
 //! Class which manages a personal line to display around the sky
 class SkyDisplay: public NoCopy  {
@@ -63,7 +60,7 @@ public:
 	virtual void draw(const Projector *prj,const Navigator *nav, Vec3d equPos= Vec3f(0,0,0), Vec3d oldEquPos= Vec3f(0,0,0));
 
 	void setColor(const Vec3f& c) {
-		*pColor = color = c;
+		uFrag->get().color = color = c;
 	}
 
 	const Vec3f& getColor() {
@@ -99,36 +96,42 @@ public:
 		skydisplay_font = _font;
 	}
 
-	static void createSC_context(ThreadContext *_context);
+	static void createSC_context();
+	static void destroySC_context();
 	void createLocalResources();
 protected:
-	//! Build vertexBuffer and draw command
+	//! Build vertexBuffer
 	void build();
+	//! Build command if needed and return the command to use
+	VkCommandBuffer getCommand();
 	Vec3f color;
-	Vec3f *pColor;
 	double aperson;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 	void draw_text(const Projector *prj,const Navigator *nav);
 	LinearFader fader;
-	float *pFader;
-	Mat4f *pMat;
 	Vec3d pt0, pt1, pt2, pt3, pt4, pt5;
 
 	static s_font* skydisplay_font;
-	std::unique_ptr<Uniform> uniformColorFader;
-	std::unique_ptr<Uniform> uniformMat;
+	struct frag {
+		Vec3f color;
+		float fader;
+	};
+	std::unique_ptr<SharedBuffer<frag>> uFrag;
+	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
 
-	std::vector<float> dataSky;
+	VkCommandBuffer cmds[3] {};
+	bool needRebuild[3] {false, false, false};
+	Vec3f *dataSky;
+	uint32_t dataSkySize = 0;
+	std::unique_ptr<VertexBuffer> vertex;
 	PROJECTION_TYPE ptype;
-	int commandIndex;
 	uint32_t m_dataSize = 0;
-	std::unique_ptr<VertexArray> m_dataGL;
 	//static std::unique_ptr<shaderProgram> shaderSkyDisplay;
-	static ThreadContext *context;
+	static std::unique_ptr<VertexArray> vertexModel;
 	static PipelineLayout *layout;
 	static Pipeline *pipeline;
 	static Set *set;
-	static int virtualColorFaderID;
+	static int virtualFragID;
 	static int virtualMatID;
 private:
 };

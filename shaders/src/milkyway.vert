@@ -8,10 +8,9 @@
 //layout
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
-//~ layout (location=2)in vec3 normal; // useless unitl now
 
 //fisheye projection inclusion
-layout (binding=2, set=1) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
+layout (push_constant) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
 #include <fisheye_noMV.glsl>
 
 // for main_clipping_fov

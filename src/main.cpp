@@ -46,6 +46,7 @@
 #include "tools/utility.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
+#include "EntityCore/Core/VulkanMgr.hpp"
 
 #ifdef LINUX
 #include "mainModule/CPUInfo.hpp"
@@ -55,6 +56,7 @@
 #include <sys/utsname.h>
 #endif
 
+#define GETV(offset) ((VERSION[offset] - '0') * 10 + VERSION[offset + 1] - '0')
 
 //! write in log file general information about spacecrafter
 static void writeGeneralInfo(void)
@@ -269,11 +271,12 @@ int main(int argc, char **argv)
 
 	// détermination de la résolution initiale
 	bool autoscreen = conf.getBoolean(SCS_VIDEO, SCK_AUTOSCREEN);
+	bool remote_display = conf.getBoolean(SCS_VIDEO, SCK_REMOTE_DISPLAY);
 	Uint16 curW, curH;
 	bool fullscreen;
 	//int antialiasing;
 
-	if (autoscreen) {
+	if (autoscreen && !remote_display) {
 		SDL_DisplayMode dm;
 		if (SDL_GetDesktopDisplayMode(0, &dm) != 0) {
 			SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
@@ -287,13 +290,23 @@ int main(int argc, char **argv)
 		curH = conf.getInt(SCS_VIDEO, SCK_SCREEN_H);
 		fullscreen = conf.getBoolean(SCS_VIDEO, SCK_FULLSCREEN);
 	}
-	//antialiasing = conf.getInt(SCS_RENDERING, SCK_ANTIALIASING);
-	//sdl->createWindow(APP_NAME, curW, curH, conf.getInt(SCS_VIDEO, SCK_BBP_MODE), antialiasing, fullscreen, dataRoot + "data/icon.bmp"); //, conf.getBoolean("main:debug_opengl"));
-	sdl->createWindow(APP_NAME, curW, curH, fullscreen, dataRoot + "data/icon.bmp");
+	// Only use if we want a window, otherwise...
+	if (!remote_display)
+		sdl->createWindow(APP_NAME, curW, curH, fullscreen, dataRoot + "data/icon.bmp");
 
 	//-------------------------------------------
 	// create the main class for SC logical software
 	//-------------------------------------------
+	auto curMin = std::min(curW, curH);
+	VkPhysicalDeviceFeatures requiredFeatures {};
+	VkPhysicalDeviceFeatures preferedFeatures {};
+	requiredFeatures.geometryShader = VK_TRUE;
+	requiredFeatures.tessellationShader = VK_TRUE;
+	requiredFeatures.sampleRateShading = VK_TRUE;
+	requiredFeatures.wideLines = VK_TRUE;
+	requiredFeatures.shaderFloat64 = VK_TRUE;
+	preferedFeatures.samplerAnisotropy = VK_TRUE;
+	std::unique_ptr<VulkanMgr> vulkan = std::make_unique<VulkanMgr>(APP_LOWER_NAME, VK_MAKE_API_VERSION(0, GETV(0), GETV(3), GETV(6)), sdl->getWindow(), curMin, -curMin, QueueRequirement{1, 0, 0, 1, 0}, requiredFeatures, preferedFeatures, 256, conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), conf.getBoolean(SCS_MAIN, SCK_DEBUG), conf.getBoolean(SCS_MAIN, SCK_LOG), ini->getUserDir(), 3, VK_IMAGE_USAGE_TRANSFER_SRC_BIT, true);
 	std::unique_ptr<App> app = std::make_unique<App>(sdl.get());
 
 	// Register custom suspend and term signal handers
@@ -324,8 +337,6 @@ int main(int argc, char **argv)
 	#endif
 
 	app.reset();
-	//delete app;
-	//delete sdl;
 	delete signalObj;
 
 	// Log->write("EOF", LOG_TYPE::L_INFO);

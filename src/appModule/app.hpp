@@ -34,7 +34,7 @@
 #include <string>
 
 #include "tools/no_copy.hpp"
-#include "vulkanModule/Context.hpp"
+#include "tools/context.hpp"
 
 // Predeclaration of some classes
 class AppSettings;
@@ -60,6 +60,8 @@ class Fps;
 class SpaceDate;
 class Executor;
 class Observer;
+class FrameSender;
+class InitParser;
 
 enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE};
 
@@ -141,6 +143,10 @@ private:
 	void updateFromSharedData();
 	//! Use by masterput, poor but he does his job
 	void masterput();
+	//! Submit a frame
+	static void submitFrame(App *self, int id);
+	//! Initialize vulkan resources
+	void initVulkan(InitParser &conf);
 
 	bool flagAlive; 				//!< indique si l'application doit s'arrêter ou pas
 	bool flagVisible;				//!< say if your App Is Visible or not
@@ -162,9 +168,12 @@ private:
 	SDLFacade* mSdl = nullptr;
 
 	// Graphic context
-	GlobalContext globalContext;
-	ThreadContext context;
-	int commandIndexClear;
+	Context context;
+	std::unique_ptr<FrameSender> sender;
+	std::vector<std::unique_ptr<Texture>> senderImage; // If using sender instead of swapchain
+	VkSampleCountFlagBits sampleCount;
+	std::vector<std::unique_ptr<Texture>> multisampleImage;
+	std::unique_ptr<Texture> depthBuffer;
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr;		 			//! base pour les constantes du logiciel

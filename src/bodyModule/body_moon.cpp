@@ -39,11 +39,8 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
-
-#include "vulkanModule/CommandMgr.hpp"
-#include "vulkanModule/Set.hpp"
-#include "vulkanModule/Uniform.hpp"
-#include "vulkanModule/Buffer.hpp"
+#include "tools/context.hpp"
+#include "EntityCore/EntityCore.hpp"
 
 Moon::Moon(std::shared_ptr<Body> parent,
            const std::string& englishName,
@@ -57,8 +54,7 @@ Moon::Moon(std::shared_ptr<Body> parent,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-		   std::shared_ptr<BodyTexture> _bodyTexture,
-		   ThreadContext *context):
+		   std::shared_ptr<BodyTexture> _bodyTexture):
 	Body(parent,
 	     englishName,
 	     MOON,
@@ -72,14 +68,12 @@ Moon::Moon(std::shared_ptr<Body> parent,
 	     close_orbit,
 	     _currentObj,
 	     orbit_bounding_radius,
-		 _bodyTexture,
-         context)
+		 _bodyTexture)
 {
 	if (_bodyTexture->tex_night != "") {
-		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+		tex_night = std::make_unique<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
 	}
 	//more adding could be placed here for the constructor of Moon
-    drawData = std::make_unique<Buffer>(context->surface, sizeof(VkDrawIndexedIndirectCommand), VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT);
 	selectShader();
 	orbitPlot = std::make_unique<Orbit3D>(this);
 }
@@ -89,108 +83,92 @@ Moon::~Moon()
 	//if (orbitPlot) delete orbitPlot;
 }
 
+void Moon::defineSet()
+{
+    VulkanMgr &vkmgr = *VulkanMgr::instance;
+    Context &context = *Context::instance;
+    set = std::make_unique<Set>(vkmgr, *context.setMgr, drawState->layout, -1, false, true);
+    set->bindUniform(uGlobalVertProj, 0);
+    switch (myShader) {
+        case SHADER_MOON_NORMAL_TES:
+            set->bindUniform(uMoonFrag, 1);
+            set->bindUniform(uGlobalTescGeom, 2);
+            set->bindTexture(tex_current->getTexture(), 5);
+            set->bindTexture(tex_norm->getTexture(), 6);
+            set->bindTexture(tex_eclipse_map->getTexture(), 7);
+            set->bindTexture(tex_heightmap->getTexture(), 8);
+            break;
+        case SHADER_MOON_NIGHT:
+            set->bindUniform(uGlobalFrag, 1);
+            set->bindTexture(tex_current->getTexture(), 2);
+            set->bindTexture(tex_eclipse_map->getTexture(), 3);
+            break;
+        case SHADER_MOON_BUMP:
+            set->bindUniform(uGlobalFrag, 1);
+            set->bindUniform(uUmbraColor, 2);
+            set->bindTexture(tex_current->getTexture(), 3);
+            set->bindTexture(tex_norm->getTexture(), 4);
+            set->bindTexture(tex_eclipse_map->getTexture(), 5);
+            break;
+        case SHADER_MOON_NORMAL:
+            set->bindUniform(uGlobalFrag, 1);
+            set->bindTexture(tex_current->getTexture(), 2);
+            set->bindTexture(tex_eclipse_map->getTexture(), 3);
+            break;
+        default:;
+    }
+    changed = false;
+}
+
 void Moon::selectShader()
 {
+    Context &context = *Context::instance;
 	//bool useShaderMoonNormal = true;
 	if (tex_heightmap!=nullptr) { //altimetry Shader
 		myShader = SHADER_MOON_NORMAL_TES;
 		drawState = BodyShader::getShaderMoonNormalTes();
 
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uMoonFrag = std::make_unique<Uniform>(context->surface, sizeof(*pMoonFrag));
-        pMoonFrag = static_cast<typeof(pMoonFrag)>(uMoonFrag->data);
-        set->bindUniform(uMoonFrag.get(), 1);
-        uGlobalTescGeom = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalTescGeom));
-        pGlobalTescGeom = static_cast<typeof(pGlobalTescGeom)>(uGlobalTescGeom->data);
-        set->bindUniform(uGlobalTescGeom.get(), 2);
-        set->bindTexture(tex_current->getTexture(), 5);
-        set->bindTexture(tex_norm->getTexture(), 6);
-        set->bindTexture(tex_eclipse_map->getTexture(), 7);
-        set->bindTexture(tex_heightmap->getTexture(), 8);
-		return;
+        uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        uMoonFrag = std::make_unique<SharedBuffer<moonFrag>>(*context.uniformMgr);
+        uGlobalTescGeom = std::make_unique<SharedBuffer<globalTescGeom>>(*context.uniformMgr);
+    	return;
 	}
 
 	if (tex_night!=nullptr) { //altimetry Shader
 		myShader = SHADER_MOON_NIGHT;
 		drawState = BodyShader::getShaderNight();
 
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-        set->bindUniform(uGlobalFrag.get(), 1);
-        set->bindTexture(tex_current->getTexture(), 2);
-        set->bindTexture(tex_eclipse_map->getTexture(), 3);
-		return;
+        uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+    	return;
 	}
 
 	if (tex_norm!=nullptr) { //bump Shader
 		myShader = SHADER_MOON_BUMP;
 		drawState = BodyShader::getShaderBump();
 
-        set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-        uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-        pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-        set->bindUniform(uGlobalVertProj.get(), 0);
-        uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-        pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-        set->bindUniform(uGlobalFrag.get(), 1);
-        uUmbraColor = std::make_unique<Uniform>(context->surface, sizeof(*pUmbraColor));
-        pUmbraColor = static_cast<typeof(pUmbraColor)>(uUmbraColor->data);
-        set->bindUniform(uUmbraColor.get(), 2);
-        set->bindTexture(tex_current->getTexture(), 3);
-        set->bindTexture(tex_norm->getTexture(), 4);
-        set->bindTexture(tex_eclipse_map->getTexture(), 5);
-		return;
+        uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+        uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
+        uUmbraColor = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+    	return;
 	}
 	//if (useShaderMoonNormal) { // normal shaders
 	myShader = SHADER_MOON_NORMAL;
 	drawState = BodyShader::getShaderNormal();
 
-    set = std::make_unique<Set>(context->surface, context->setMgr, drawState->layout);
-    uGlobalVertProj = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalVertProj));
-    pGlobalVertProj = static_cast<typeof(pGlobalVertProj)>(uGlobalVertProj->data);
-    set->bindUniform(uGlobalVertProj.get(), 0);
-    uGlobalFrag = std::make_unique<Uniform>(context->surface, sizeof(*pGlobalFrag));
-    pGlobalFrag = static_cast<typeof(pGlobalFrag)>(uGlobalFrag->data);
-    set->bindUniform(uGlobalFrag.get(), 1);
-    set->bindTexture(tex_current->getTexture(), 2);
-    set->bindTexture(tex_eclipse_map->getTexture(), 3);
+    uGlobalVertProj = std::make_unique<SharedBuffer<globalVertProj>>(*context.uniformMgr);
+    uGlobalFrag = std::make_unique<SharedBuffer<globalFrag>>(*context.uniformMgr);
 	//}
 }
 
-void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void Moon::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
 {
-	// StateGL::enable(GL_CULL_FACE);
-	// StateGL::disable(GL_BLEND);
+    if (changed)
+        defineSet();
 
-	//glBindTexture(GL_TEXTURE_2D, tex_current->getID());
-
-	//myShaderProg->use();
-    switch (commandIndex) {
-        case -2: // Command not builded
-            commandIndex = -1;
-            if (!context->commandMgr->isRecording()) {
-                commandIndex = context->commandMgr->getCommandIndex();
-                context->commandMgr->init(commandIndex);
-                context->commandMgr->beginRenderPass(renderPassType::CLEAR_DEPTH_BUFFER_DONT_SAVE);
-            }
-            context->commandMgr->bindPipeline(drawState->pipeline);
-            currentObj->bind(context->commandMgr);
-            context->commandMgr->bindSet(drawState->layout, set.get());
-            context->commandMgr->bindSet(drawState->layout, context->global->globalSet, 1);
-            context->commandMgr->indirectDrawIndexed(drawData.get());
-            context->commandMgr->compile(); // There is no halo for a moon
-            return;
-        case -1: break;
-        default:
-            context->commandMgr->setSubmission(commandIndex);
-    }
+    drawState->pipeline->bind(cmd);
+    currentObj->bind(cmd);
+    drawState->layout->bindSets(cmd, {*set.get(), *Context::instance->uboSet});
 
     Vec3f tmp= v3fNull;
 	Vec3f tmp2(0.4, 0.12, 0.0);
@@ -201,78 +179,32 @@ void Moon::drawBody(const Projector* prj, const Navigator * nav, const Mat4d& ma
     //load specific values for shader
 	switch (myShader) {
         case SHADER_MOON_NORMAL_TES: // myMoon
-            pMoonFrag->MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
-            pMoonFrag->MoonRadius1 = parent->getRadius();
-            pMoonFrag->UmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
-            pMoonFrag->SunHalfAngle = sun_half_angle;
-            pGlobalTescGeom->TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
+            uMoonFrag->get().MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
+            uMoonFrag->get().MoonRadius1 = parent->getRadius();
+            uMoonFrag->get().UmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
+            uMoonFrag->get().SunHalfAngle = sun_half_angle;
+            uGlobalTescGeom->get().TesParam = Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor());
             break;
 		case SHADER_MOON_BUMP:
-            *pUmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
+            *uUmbraColor = (getEnglishName() == "Moon") ? tmp2 : tmp;
             [[fallthrough]];
 		case SHADER_MOON_NIGHT:
 		case SHADER_MOON_NORMAL:
 		default: // Common uniform affectation
-            pGlobalFrag->MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
-            pGlobalFrag->MoonRadius1 = parent->getRadius();
-            pGlobalFrag->SunHalfAngle = sun_half_angle;
+            uGlobalFrag->get().MoonPosition1 = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
+            uGlobalFrag->get().MoonRadius1 = parent->getRadius();
+            uGlobalFrag->get().SunHalfAngle = sun_half_angle;
 			break;
 	}
-    pGlobalVertProj->ModelViewMatrix = matrix;
-    pGlobalVertProj->NormalMatrix = inv_matrix.transpose();
-    pGlobalVertProj->clipping_fov = prj->getClippingFov();
-    pGlobalVertProj->planetRadius = initialRadius;
-    pGlobalVertProj->LightPosition = eye_sun;
-    pGlobalVertProj->planetScaledRadius = radius;
-    pGlobalVertProj->planetOneMinusOblateness = one_minus_oblateness;
-    /*
-	//paramétrage des matrices pour opengl4
-	myShaderProg->setUniform("ModelViewProjectionMatrix",proj*matrix);
-	myShaderProg->setUniform("inverseModelViewProjectionMatrix",(proj*matrix).inverse());
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("clipping_fov",prj->getClippingFov());
-	myShaderProg->setUniform("planetScaledRadius",radius);
+    uGlobalVertProj->get().ModelViewMatrix = matrix;
+    uGlobalVertProj->get().NormalMatrix = inv_matrix.transpose();
+    uGlobalVertProj->get().clipping_fov = prj->getClippingFov();
+    uGlobalVertProj->get().planetRadius = initialRadius;
+    uGlobalVertProj->get().LightPosition = eye_sun;
+    uGlobalVertProj->get().planetScaledRadius = radius;
+    uGlobalVertProj->get().planetOneMinusOblateness = one_minus_oblateness;
 
-	//paramètres commun aux shaders sauf Sun
-	myShaderProg->setUniform("planetRadius",initialRadius);
-	myShaderProg->setUniform("planetOneMinusOblateness",one_minus_oblateness);
-	myShaderProg->setUniform("ModelViewMatrix",matrix);
-	myShaderProg->setUniform("NormalMatrix", inv_matrix.transpose());
-
-	//int index=1;
-	myShaderProg->setUniform("LightPosition",eye_sun);
-	myShaderProg->setUniform("SunHalfAngle",sun_half_angle);
-
-
-	if (myShader == SHADER_MOON_BUMP || myShader == SHADER_MOON_NORMAL_TES) {
-		if(getEnglishName() == "Moon")
-			myShaderProg->setUniform("UmbraColor",tmp2);
-		else
-			myShaderProg->setUniform("UmbraColor",tmp);
-	}
-
-	Vec3d planet_helio = get_heliocentric_ecliptic_pos();
-	Vec3d light = -planet_helio;
-	light.normalize();
-
-	// Parent may shadow this satellite
-	tmp = nav->getHelioToEyeMat() * parent->get_heliocentric_ecliptic_pos();
-	myShaderProg->setUniform("MoonPosition1",tmp);
-	myShaderProg->setUniform("MoonRadius1",parent->getRadius());
-
-	//tesselation
-	if ( myShader == SHADER_MOON_NORMAL_TES) {
-		myShaderProg->setUniform("TesParam",
-				Vec3i(bodyTesselation->getMinTesLevel(),bodyTesselation->getMaxTesLevel(), bodyTesselation->getMoonAltimetryFactor() ));
-	}
-    */
-
-    currentObj->draw(screen_sz, drawData->data);
-    drawData->update();
-	//myShaderProg->unuse();
-
-	//glActiveTexture(GL_TEXTURE0);
-	//StateGL::disable(GL_CULL_FACE);
+    currentObj->draw(cmd, screen_sz);
 }
 
 void Moon::handleVisibilityFader(const Observer* observatory, const Projector* prj, const Navigator * nav)

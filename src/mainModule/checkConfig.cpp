@@ -42,6 +42,7 @@ CheckConfig::~CheckConfig()
 void CheckConfig::checkMainSettings()
 {
 	tmpSettings[SCK_DEBUG]="false";
+	tmpSettings[SCK_DEBUG_LAYER]="false";
 	tmpSettings[SCK_LOG]="true";
 	// mainSettings["debug_opengl"]="false";
 	tmpSettings[SCK_MILKYWAY_IRIS] = "false";
@@ -79,6 +80,7 @@ void CheckConfig::checkVideoSettings()
 {
 	tmpSettings[SCK_AUTOSCREEN]="false";
 	tmpSettings[SCK_FULLSCREEN]="false";
+	tmpSettings[SCK_REMOTE_DISPLAY]="false";
 	tmpSettings[SCK_SCREEN_W]="1024";
 	tmpSettings[SCK_SCREEN_H]="768";
 	//tmpSettings[SCK_BBP_MODE]="24";
