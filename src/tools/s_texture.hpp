@@ -31,6 +31,7 @@
 //
 #include <map>
 #include <list>
+#include <vector>
 #include <memory>
 #include "EntityCore/Tools/SafeQueue.hpp"
 #include <vulkan/vulkan.h>
@@ -148,6 +149,8 @@ private:
 	static PushQueue<bigTexRecap *, 31> bigTextureQueue;
 	static PushQueue<std::shared_ptr<texRecap>> textureQueue;
 	static std::atomic<long> currentAllocation; // Allocations planned but not done yet
+	static std::vector<std::shared_ptr<texRecap>> releaseMemory[3];
+	static short releaseIdx;
 };
 
 

@@ -128,7 +128,7 @@ void Landscape::createSC_context()
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 3);
 	layout->buildLayout();
 	layout->build();
-	pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_FOREGROUND, layout}, {vkmgr, *context.render, PASS_FOREGROUND, layout}};
+	pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout}};
 	for (int i = 0; i < 2; ++i) {
 		pipeline[i].setCullMode(true);
 		pipeline[i].setDepthStencilMode();
@@ -263,11 +263,11 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 	if (!fader.getInterstate()) return;
 
 	if (haveNightTex && sky_brightness < 0.25) {
-		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx + 3], PASS_FOREGROUND);
+		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx + 3], PASS_MULTISAMPLE_DEPTH);
 	} else {
 		if (m_limitedShade)
 			sky_brightness = std::max(sky_brightness, m_limitedShadeValue);
-		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_FOREGROUND);
+		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 	}
 	uFrag->get().sky_brightness = fmin(sky_brightness,1.0);
 	uFrag->get().fader = fader.getInterstate();
@@ -387,7 +387,7 @@ void LandscapeFisheye::initShader()
 	vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
 	for (int i = 0; i < 3; ++i) {
 		auto cmd = cmds[i];
-		context.frame[i]->begin(cmd, PASS_FOREGROUND);
+		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
 		pipeline[1].bind(cmd);
 		vertex->bind(cmd);
 		layout->bindSets(cmd, {*context.uboSet, *set});
@@ -395,7 +395,7 @@ void LandscapeFisheye::initShader()
 		context.frame[i]->compile(cmd);
 		if (haveNightTex) {
 			auto cmd = cmds[i + 3];
-			context.frame[i]->begin(cmd, PASS_FOREGROUND);
+			context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
 			pipeline[0].bind(cmd);
 			vertex->bind(cmd);
 			layout->bindSets(cmd, {*context.uboSet, *set});
@@ -591,7 +591,7 @@ void LandscapeSpherical::initShader()
 	vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
 	for (int i = 0; i < 3; ++i) {
 		auto cmd = cmds[i];
-		context.frame[i]->begin(cmd, PASS_FOREGROUND);
+		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
 		pipeline[1].bind(cmd);
 		vertex->bind(cmd);
 		layout->bindSets(cmd, {*context.uboSet, *set});
@@ -599,7 +599,7 @@ void LandscapeSpherical::initShader()
 		context.frame[i]->compile(cmd);
 		if (haveNightTex) {
 			auto cmd = cmds[i + 3];
-			context.frame[i]->begin(cmd, PASS_FOREGROUND);
+			context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
 			pipeline[0].bind(cmd);
 			vertex->bind(cmd);
 			layout->bindSets(cmd, {*context.uboSet, *set});

@@ -51,6 +51,9 @@ PushQueue<std::shared_ptr<s_texture::texRecap>> s_texture::textureQueue;
 std::atomic<long> s_texture::currentAllocation(0); // Allocations planned but not done yet
 bool s_texture::loadInLowResolution = false;
 int s_texture::lowResMax = MAX_LOW_RES;
+std::vector<std::shared_ptr<s_texture::texRecap>> s_texture::releaseMemory[3];
+short s_texture::releaseIdx = 0;
+
 
 s_texture::s_texture(const s_texture *t)
 {
@@ -287,6 +290,9 @@ float s_texture::getAverageLuminance() const
 
 void s_texture::forceUnload()
 {
+	releaseMemory[0].clear();
+	releaseMemory[1].clear();
+	releaseMemory[2].clear();
 	for (auto &value : texCache) {
 		auto tex = value.second.lock();
 		if (tex) {
@@ -394,9 +400,13 @@ void s_texture::releaseUnusedMemory()
 
 void s_texture::recordTransfer(VkCommandBuffer cmd)
 {
+	for (auto &t : releaseMemory[releaseIdx])
+		t->texture->detach();
+	releaseMemory[releaseIdx].clear();
 	std::shared_ptr<texRecap> tex;
 	while (textureQueue.pop(tex)) {
 		tex->texture->use(cmd, true);
-		// Note that we can release his staging memory in 3 frames !
+		releaseMemory[releaseIdx].push_back(tex);
 	}
+	releaseIdx = (releaseIdx + 1) % 3;
 }

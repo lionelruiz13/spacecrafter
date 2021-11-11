@@ -105,7 +105,7 @@ void Atmosphere::createSC_context()
 	auto blendMode = BLEND_ADD;
 	blendMode.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
 	blendMode.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
-	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, context.layouts.front().get());
+	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, context.layouts.front().get());
 	pipeline->bindVertex(*m_atmGL);
 	pipeline->setBlendMode(blendMode);
 	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
@@ -122,7 +122,7 @@ void Atmosphere::createSC_context()
 	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
 	for (int i = 0; i < 3; ++i) {
 		VkCommandBuffer &cmd = cmds[i];
-		context.frame[i]->begin(cmd, PASS_FOREGROUND);
+		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
 		pipeline->bind(cmd);
 		context.layouts.front()->bindSet(cmd, *context.uboSet);
 		VertexArray::bind(cmd, {skyPos.get(), skyColor.get()});
@@ -247,7 +247,7 @@ void Atmosphere::draw()
 		return;
 
 	Context::instance->transfer->planCopyBetween(stagingSkyColor, skyColor->get());
-	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_FOREGROUND);
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 }
 
 void Atmosphere::setModel(ATMOSPHERE_MODEL atmModel)
