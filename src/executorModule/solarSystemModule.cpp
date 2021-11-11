@@ -45,9 +45,11 @@
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "bodyModule/ssystem_factory.hpp"
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
 
 void SolarSystemModule::onEnter()
-{    
+{
     std::cout << "J'arrive dans InSolarSystem" << std::endl;
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);
@@ -88,7 +90,7 @@ void SolarSystemModule::update(int delta_time)
 	core->projection->updateAutoZoom(delta_time, core->FlagManualZoom);
 	// update faders and Planet trails (call after nav is updated)
 	core->ssystemFactory->update(delta_time, core->navigation, core->timeMgr.get());
-			
+
 	// Move the view direction and/or fov
 	core->updateMove(delta_time);
 	// Update info about selected object
@@ -162,7 +164,7 @@ void SolarSystemModule::update(int delta_time)
 void SolarSystemModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.000001 ,200);
-	s_font::beginPrint(true); // multisample print
+	Context::instance->helper->beginDraw(PASS_BACKGROUND); // multisample print
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
@@ -189,7 +191,6 @@ void SolarSystemModule::draw(int delta_time)
 	if (core->bodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
 		core->meteors->draw(core->projection, core->navigation);
 
-	s_font::nextPrint(false);
 	core->atmosphere->draw();
 
 	// Draw the landscape

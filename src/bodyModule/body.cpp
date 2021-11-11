@@ -862,7 +862,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
 	if(isVisibleOnScreen()) {
         if (screen_sz > 5) {
-            s_font::nextPrint(PASS_MULTISAMPLE_DEPTH);
+            context.helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
             Halo::nextDraw(cmd);
         }
 		if(hasRings()) {

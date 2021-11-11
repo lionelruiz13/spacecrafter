@@ -279,6 +279,7 @@ void App::initVulkan(InitParser &conf)
 	// PASS_FOREGROUND
 	context.render->bindColor(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+	context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
 	context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT | VK_PIPELINE_STAGE_VERTEX_INPUT_BIT | VK_PIPELINE_STAGE_VERTEX_SHADER_BIT | VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT | VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT | VK_ACCESS_2_UNIFORM_READ_BIT_KHR, false);
 	context.render->pushLayer();
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT);
@@ -303,7 +304,8 @@ void App::initVulkan(InitParser &conf)
 		context.transferSync[i] = std::make_unique<SyncEvent>(&vkmgr);
 		context.transferSync[i]->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
 		context.transferSync[i]->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
-		context.transferSync[i]->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+		context.transferSync[i]->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+		context.transferSync[i]->bufferBarrier(*context.indexBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_INDEX_READ_BIT_KHR);
 		context.transferSync[i]->build();
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
 		if (vkmgr.getSwapchainView().empty()) {
@@ -586,6 +588,7 @@ void App::draw(int delta_time)
 	context.transfer = context.transfers[context.frameIdx].get();
 
 	executor->draw(delta_time);
+	context.helper->nextDraw(PASS_FOREGROUND);
 	// Draw the Graphical ui and the Text ui
 	ui->draw(executor->getExecutorModule());
 	//inversion des couleurs pour un ciel blanc
@@ -596,7 +599,7 @@ void App::draw(int delta_time)
 	media->drawViewPort();
 	//draw text user
 	media->textDraw();
-	s_font::endPrint();
+	context.helper->endDraw();
 
 	// Fill with black around the circle
 	appDraw->drawViewportShape();

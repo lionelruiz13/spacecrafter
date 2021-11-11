@@ -41,11 +41,12 @@ void DrawHelper::mainloop()
 
 void DrawHelper::beginDraw(unsigned char subpass)
 {
+    sigpass.emplace_back(s_sigpass{.flag=SIGNAL_PASS, .subpass=subpass});
+    queue.emplace((DrawData *) &sigpass.back());
 }
 
 void DrawHelper::nextDraw(unsigned char subpass)
 {
-    endDraw();
     beginDraw(subpass);
 }
 

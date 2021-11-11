@@ -24,6 +24,8 @@
 
 #include "executor.hpp"
 #include "navModule/observer.hpp"
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
 
 Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
 {
@@ -45,7 +47,8 @@ Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
 void Executor::draw(int delta_time)
 {
     currentMode->draw(delta_time);
-    core->media->imageDraw(core->navigation, core->projection); // resolve multisample
+    Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
+    core->media->imageDraw(core->navigation, core->projection);
 }
 
 void Executor::update(int delta_time)

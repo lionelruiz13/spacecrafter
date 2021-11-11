@@ -32,6 +32,8 @@
 #include "coreModule/time_mgr.hpp"
 #include "ojmModule/ojm_mgr.hpp"
 #include "coreModule/tully.hpp"
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
 
 InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {
@@ -95,7 +97,7 @@ void InUniverseModule::update(int delta_time)
 void InUniverseModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.0001 ,2000.1);
-	s_font::beginPrint(false);
+	Context::instance->helper->beginDraw(PASS_BACKGROUND);
 	core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);

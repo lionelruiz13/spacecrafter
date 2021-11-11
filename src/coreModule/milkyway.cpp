@@ -274,6 +274,10 @@ void MilkyWay::buildZodiacal()
 	pipelineZodiacal->removeVertexEntry(2);
 	pipelineZodiacal->bindShader("milkyway.vert.spv");
 	pipelineZodiacal->bindShader("milkyway.geom.spv");
-	pipelineZodiacal->bindShader("milkywayOneTex.frag.spv");
+	pipelineZodiacal->bindShader("zodiacal.frag.spv");
 	pipelineZodiacal->build();
+
+	setZodiacal = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, layout.get(), -1, false, true);
+	if (zodiacal.tex != nullptr)
+	setZodiacal->bindTexture(zodiacal.tex->getTexture(), 0);
 }

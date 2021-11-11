@@ -274,7 +274,7 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
             vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
         }
         if (screen_sz > 3) {
-            s_font::nextPrint(PASS_MULTISAMPLE_DEPTH);
+            context.helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
             Halo::nextDraw(cmd);
         }
 		axis->drawAxis(cmd, prj, mat);

@@ -38,6 +38,8 @@
 #include "coreModule/starLines.hpp"
 #include "ojmModule/ojm_mgr.hpp"
 #include "inGalaxyModule/starNavigator.hpp"
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
 
 InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {
@@ -116,7 +118,7 @@ void InGalaxyModule::update(int delta_time)
 void InGalaxyModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.01, 2000.01);
-	s_font::beginPrint(false);
+	Context::instance->helper->beginDraw(PASS_BACKGROUND);
 	core->starNav->computePosition(core->navigation->getObserverHelioPos());
 	core->cloudNav->computePosition(core->navigation->getObserverHelioPos());
 	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
