@@ -61,6 +61,7 @@ void ScreenFader::createSC_context()
 
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
 	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindShader("screenFader.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipeline->bindShader("screenFader.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipeline->bindVertex(*m_screenGL);

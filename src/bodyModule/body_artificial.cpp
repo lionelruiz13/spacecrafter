@@ -97,6 +97,7 @@ void Artificial::createSC_context()
     set->bindUniform(uNormalMatrix, 0);
     set->bindUniform(uProj, 1);
     set->bindUniform(uLight, 2);
+    initialized = true;
 }
 
 void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)

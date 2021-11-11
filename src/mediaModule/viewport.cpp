@@ -72,6 +72,7 @@ void ViewPort::createSC_context()
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
 	pipeline->setDepthStencilMode();
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("videoplayer.vert.spv");
 	pipeline->bindShader("videoplayer.frag.spv");

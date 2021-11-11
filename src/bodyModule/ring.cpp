@@ -92,6 +92,7 @@ void Ring::createSC_context()
 
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipeline->setCullMode(true);
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindVertex(*vertex);
 	pipeline->bindShader("ring_planet.vert.spv");
 	pipeline->bindShader("ring_planet.frag.spv");

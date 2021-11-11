@@ -196,6 +196,7 @@ void Image::createSC_context()
 	m_pipelineViewport = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_FRONT, m_layoutViewport);
 	context.pipelines.emplace_back(m_pipelineViewport);
 	m_pipelineViewport->setDepthStencilMode();
+	m_pipelineViewport->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	m_pipelineViewport->bindVertex(*m_imageViewportGL);
 	m_pipelineViewport->bindShader("imageViewport.vert.spv");
 	m_pipelineViewport->bindShader("imageViewport.frag.spv");
@@ -204,6 +205,7 @@ void Image::createSC_context()
 		m_pipelineUnified[i] = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_FRONT, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
 		context.pipelines.emplace_back(m_pipelineUnified[i]);
 		m_pipelineUnified[i]->setDepthStencilMode();
+		m_pipelineUnified[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 		m_pipelineUnified[i]->setCullMode(true);
 		m_pipelineUnified[i]->bindVertex(*m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
