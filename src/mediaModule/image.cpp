@@ -638,7 +638,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 	if (vertexSize != currentSize) {
 		vertexSize = currentSize;
 		vertex.reset();
-		vertex = m_imageViewportGL->createBuffer(0, currentSize, Context::instance->globalBuffer.get());
+		vertex = m_imageUnifiedGL->createBuffer(0, currentSize, Context::instance->globalBuffer.get());
 	}
 	context.transfer->endPlanCopy(vertex->get(), currentSize * 5 * sizeof(float));
 	vertex->bind(cmd);
