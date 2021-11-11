@@ -74,7 +74,8 @@ bool Ojm::testIndices()
 
 int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline, bool firstRecorded)
 {
-	float tmp[11];
+	float tmp[11] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+	Texture *boundTex = nullptr;
 
 	if (firstRecorded && selectedPipeline != -1) {
 		VertexArray::bindGlobal(cmd, shapes[0].vertex->get());
@@ -87,9 +88,12 @@ int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layou
 				pipelines[0].bind(cmd);
 				selectedPipeline = 0;
 			}
-			set->clear();
-			set->bindTexture(shapes[i].map_Ka->getTexture(), 0);
-			set->push(cmd, *layout, 1);
+			if (&shapes[i].map_Ka->getTexture() != boundTex) {
+				set->clear();
+				boundTex = &shapes[i].map_Ka->getTexture();
+				set->bindTexture(*boundTex, 0);
+				set->push(cmd, *layout, 1);
+			}
 		} else { // There is no texture
 			if (selectedPipeline != 1) {
 				pipelines[1].bind(cmd);
@@ -101,13 +105,17 @@ int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layou
 			vkCmdBindIndexBuffer(cmd, shapes[i].index.buffer, 0, VK_INDEX_TYPE_UINT32);
 			firstRecorded = false;
 		}
-		// Put data according to offset given in shader
-		*reinterpret_cast<Vec3f *>(tmp) = shapes[i].Ka;
-		tmp[3] = shapes[i].Ns;
-		*reinterpret_cast<Vec3f *>(tmp + 4) = shapes[i].Kd;
-		tmp[7] = shapes[i].T;
-		*reinterpret_cast<Vec3f *>(tmp + 8) = shapes[i].Ks;
-		layout->pushConstant(cmd, 0, tmp, 0, 44);
+		if (*reinterpret_cast<Vec3f *>(tmp) != shapes[i].Ka ||
+			*reinterpret_cast<Vec3f *>(tmp + 4) != shapes[i].Kd ||
+			*reinterpret_cast<Vec3f *>(tmp + 8) != shapes[i].Ks) {
+			// Put data according to offset given in shader
+			*reinterpret_cast<Vec3f *>(tmp) = shapes[i].Ka;
+			tmp[3] = shapes[i].Ns;
+			*reinterpret_cast<Vec3f *>(tmp + 4) = shapes[i].Kd;
+			tmp[7] = shapes[i].T;
+			*reinterpret_cast<Vec3f *>(tmp + 8) = shapes[i].Ks;
+			layout->pushConstant(cmd, 0, tmp, 0, 44);
+		}
 		vkCmdDrawIndexed(cmd, shapes[i].index.size / sizeof(int), 1, shapes[i].index.offset / sizeof(int), shapes[0].vertex->getOffset(), 0);
 	}
 	return selectedPipeline;
