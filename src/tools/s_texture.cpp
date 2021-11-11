@@ -179,6 +179,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, int resolution
 			cLog::get()->write("s_texture: could not load " + fullName , LOG_TYPE::L_ERROR);
 			return false;
 		}
+		tex = texture;
 		texture->size = texture->width * texture->height * nbChannels * channelSize;
 		texture->depth = depth;
 		texture->mipmap = mipmap;
