@@ -49,7 +49,6 @@ void Halo::nextDraw(VkCommandBuffer &cmd)
 		vkCmdDraw(cmd, global->size, 1, global->offset, 0);
 		global->offset += global->size;
 		global->size = 0;
-		std::cout << "DRAW HALO\n";
 	}
 }
 
@@ -62,7 +61,6 @@ void Halo::endDraw()
 		nextDraw(cmd);
 		frame.compile(cmd);
 		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
-		std::cout << "DRAW HALO\n";
 	}
 	const int size = (global->offset - global->initialOffset) * (6 * sizeof(float));
 	const int offset = global->initialOffset * (6 * sizeof(float));
