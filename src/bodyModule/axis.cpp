@@ -99,6 +99,7 @@ void Axis::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
+	assert(!vertexModel);
 
 	vertexModel = std::make_unique<VertexArray>(vkmgr, 3*sizeof(float));
 	vertexModel->createBindingEntry(3*sizeof(float));

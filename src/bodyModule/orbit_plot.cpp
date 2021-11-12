@@ -58,7 +58,7 @@ void OrbitPlot::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
-
+	assert(!m_Orbit);
 	m_Orbit = std::make_unique<VertexArray>(vkmgr, 3*sizeof(float));
 	m_Orbit->createBindingEntry(3*sizeof(float));
 	m_Orbit->addInput(VK_FORMAT_R32G32B32_SFLOAT);

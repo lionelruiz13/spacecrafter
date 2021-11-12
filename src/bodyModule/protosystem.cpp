@@ -45,15 +45,20 @@
 #define EARTH_MASS 5.976e24
 #define LUNAR_MASS 7.354e22
 
+bool ProtoSystem::initGuard = false;
+
+
 ProtoSystem::ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 	: objLMgr(_objLMgr)
 {
 	bodyTrace = nullptr;
 
-	Body::createShader();
-	BodyShader::createShader();
-	Body::createDefaultAtmosphereParams();
-
+	if (!initGuard) {
+		Body::createShader();
+		BodyShader::createShader();
+		Body::createDefaultAtmosphereParams();
+		initGuard = true;
+	}
 
 	std::shared_ptr<OrbitCreator> special = std::make_shared<OrbitCreatorSpecial>(nullptr);
 	std::shared_ptr<OrbitCreator> comet = std::make_shared<OrbitCreatorComet>(special, this);

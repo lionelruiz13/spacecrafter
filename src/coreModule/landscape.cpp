@@ -115,6 +115,7 @@ void Landscape::createSC_context()
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
 
+	assert(!vertexModel);
 	vertexModel = std::make_unique<VertexArray>(vkmgr);
 	vertexModel->createBindingEntry(5*sizeof(float));
 	vertexModel->addInput(VK_FORMAT_R32G32B32_SFLOAT);

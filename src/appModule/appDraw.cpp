@@ -66,6 +66,7 @@ void AppDraw::createSC_context()
     Context &context = *Context::instance;
     VulkanMgr &vkmgr = *VulkanMgr::instance;
 
+    assert(cmds.empty());
     layoutEmpty = std::make_unique<PipelineLayout>(vkmgr);
 	layoutEmpty->build();
 

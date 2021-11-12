@@ -25,7 +25,7 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
-Halo::HaloContext *Halo::global;
+Halo::HaloContext *Halo::global = nullptr;
 
 Halo::Halo(Body * _body)
 {
@@ -49,6 +49,7 @@ void Halo::nextDraw(VkCommandBuffer &cmd)
 		vkCmdDraw(cmd, global->size, 1, global->offset, 0);
 		global->offset += global->size;
 		global->size = 0;
+		std::cout << "DRAW HALO\n";
 	}
 }
 
@@ -61,6 +62,7 @@ void Halo::endDraw()
 		nextDraw(cmd);
 		frame.compile(cmd);
 		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
+		std::cout << "DRAW HALO\n";
 	}
 	const int size = (global->offset - global->initialOffset) * (6 * sizeof(float));
 	const int offset = global->initialOffset * (6 * sizeof(float));
@@ -145,6 +147,7 @@ void Halo::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
+	assert(!global);
 	global = new HaloContext();
 
 	for (int i = 0; i < 3; ++i)

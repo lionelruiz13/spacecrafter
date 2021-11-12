@@ -93,6 +93,7 @@ void Atmosphere::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
+	assert(!m_atmGL);
 
 	m_atmGL = std::make_unique<VertexArray>(vkmgr);
 	m_atmGL->createBindingEntry(2 * sizeof(float));

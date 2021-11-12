@@ -177,6 +177,7 @@ protected:
 	std::shared_ptr<AnchorManager> anchorManager = nullptr;
 	Vec3i ringsInit;
 	std::shared_ptr<Body> centerObject = nullptr;
+    static bool initGuard;
 
 	// Master settings
 	bool flagAxis= false;

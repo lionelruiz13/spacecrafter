@@ -48,6 +48,7 @@ void ScreenFader::createSC_context()
 	// point en bas à gauche
 	// point en bas à droite
 	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
+	assert(!m_screenGL);
 
 	m_screenGL = std::make_unique<VertexArray>(vkmgr);
 	m_screenGL->createBindingEntry(2 * sizeof(float));
