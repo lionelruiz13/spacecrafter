@@ -118,7 +118,7 @@ void InGalaxyModule::update(int delta_time)
 void InGalaxyModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.01, 2000.01);
-	Context::instance->helper->beginDraw(PASS_BACKGROUND);
+	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
 	core->starNav->computePosition(core->navigation->getObserverHelioPos());
 	core->cloudNav->computePosition(core->navigation->getObserverHelioPos());
 	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);

@@ -164,7 +164,7 @@ void SolarSystemModule::update(int delta_time)
 void SolarSystemModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.000001 ,200);
-	Context::instance->helper->beginDraw(PASS_BACKGROUND); // multisample print
+	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]); // multisample print
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);

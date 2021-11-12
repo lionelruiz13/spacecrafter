@@ -97,7 +97,7 @@ void InUniverseModule::update(int delta_time)
 void InUniverseModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.0001 ,2000.1);
-	Context::instance->helper->beginDraw(PASS_BACKGROUND);
+	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
 	core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);

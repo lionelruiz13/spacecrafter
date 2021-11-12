@@ -53,7 +53,7 @@ typedef union {
     unsigned char flag;
     s_print print;
     s_printh printh;
-    struct {
+    struct s_hint {
         unsigned char flag;
         float fader;
         Vec4f color;
@@ -86,30 +86,46 @@ public:
             std::this_thread::sleep_for(std::chrono::microseconds(100));
         }
     }
-    void beginDraw(unsigned char subpass);
+    void beginDraw(unsigned char subpass, FrameMgr &frame);
     void nextDraw(unsigned char subpass);
     void endDraw();
     void beginNebulaDraw(const Mat4f &mat);
     void endNebulaDraw();
+    void submit();
     // Wait until the worker thread has compiled every submitted commands for this frame
-    void waitCompletionOf(int frameIdx);
+    // void waitCompletionOf(int frameIdx);
 private:
+    void beginDraw(unsigned char subpass);
     void beginDrawCommand(unsigned char subpass); // Start draw command recording
     void endDrawCommand(unsigned char subpass); // Stop draw command recording
+    void drawPrint(s_print &data);
+    void drawPrintH(s_printh &data);
+    void drawHint(DrawData::s_hint &data);
+    VkCommandBuffer getCmd();
+    void pushCommand();
     void mainloop();
     std::thread thread;
     std::list<s_sigpass> sigpass;
     WorkQueue<DrawData *> queue;
     Mat4f nebulaMat;
+    FrameMgr *frame = nullptr;
+    unsigned char internalVFrameIdx = 0;
+    unsigned char externalVFrameIdx = 0;
+    unsigned char extCmdIdx;
+    bool hasRecorded = false;
+    bool hasRecordedNebula = false;
+    unsigned char internalSubpass;
+    unsigned char externalSubpass;
+    unsigned char lastFlag = SIGNAL_PASS;
     struct {
         VkCommandPool cmdPool;
         VkCommandBuffer nebula;
+        unsigned char intCmdIdx;
         std::vector<VkCommandBuffer> cmds;
-        std::mutex waiter; // internally used by waitCompletion
-        unsigned short internalLayer; // Command index currently selected by the worker thread
-        unsigned short externalLayer; // Command index subject to be submitted
-        bool hasDraw; // Tell if the next command must be submitted on nextDraw/endDraw or not
-        bool hasCompleted; // Tell if every submitted commands were compiled
+        std::vector<VkCommandBuffer> cancelledCmds;
+        std::mutex waitMutex;
+        // bool hasDraw; // Tell if the next command must be submitted on nextDraw/endDraw or not
+        bool hasCompleted = false; // Tell if every submitted commands were compiled
     } drawer[3];
 };
 

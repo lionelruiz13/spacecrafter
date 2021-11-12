@@ -198,7 +198,6 @@ void App::initVulkan(InitParser &conf)
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	width = vkmgr.getSwapChainExtent().width;
 	height = vkmgr.getSwapChainExtent().height;
-	context.helper = std::make_unique<DrawHelper>();
 	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 256*1024*1024, "Staging BufferMgr");
 	context.texStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 2*1024*1024*1024l, "Texture staging BufferMgr");
 	context.readbackMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, 3*4*width*height, "readback BufferMgr");
@@ -328,6 +327,7 @@ void App::initVulkan(InitParser &conf)
 	}
 	// context.starSync[i]->combineDstDependencies(*context.transferSync[(i + 1) % 3]); // Assume the frame are always in increasing order (0, 1, 2, 0, etc...)
 	context.transfer = context.transfers[0].get(); // Assume the first frame is the frame 0
+	context.helper = std::make_unique<DrawHelper>();
 	cLog::get()->write("Vulkan initialization completed", LOG_TYPE::L_INFO);
 }
 
@@ -585,6 +585,7 @@ void App::draw(int delta_time)
 		// std::cout << "Acquire frame " << context.frameIdx << "\n";
 	}
 	context.frame[context.frameIdx]->discardRecord();
+	context.setMgr->update();
 	context.transfer = context.transfers[context.frameIdx].get();
 
 	executor->draw(delta_time);
@@ -606,6 +607,7 @@ void App::draw(int delta_time)
 
 	screenFader->draw();
 	context.frame[context.frameIdx]->begin(VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS, 0, nullptr, context.transferSync[context.frameIdx].get());
+	context.helper->submit();
 	context.frame[context.frameIdx]->submitInline();
 	context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume the next frame follow the previous one
 }
