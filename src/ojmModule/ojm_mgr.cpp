@@ -177,12 +177,13 @@ void OjmMgr::rebuild()
     VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
     vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
 	pipeline->bind(cmd);
+	layout->bindSet(cmd, *context.uboSet);
 	layout->pushConstant(cmd, 0, buff, 12*sizeof(float), 7*sizeof(float));
 	for(unsigned int i=0; i< OjmVector.size(); i++) {
 		if (OjmVector[i]->myState != actualState)
 			continue;
 		set->setVirtualUniform(OjmVector[i]->uniform->getOffset(), virtualUniformID);
-		layout->bindSet(cmd, *set);
+		layout->bindSet(cmd, *set, 2);
 		tmp = OjmVector[i]->Obj3D->record(cmd, pipeline, layout.get(), pushSet.get(), tmp, (i == 0));
 	}
 	context.frame[context.frameIdx]->compile(cmd);

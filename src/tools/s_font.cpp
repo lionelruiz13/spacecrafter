@@ -29,6 +29,7 @@
 #include "EntityCore/EntityCore.hpp"
 #include "tools/draw_helper.hpp"
 #include "coreModule/projector.hpp"
+#include "EntityCore/Resource/TileMap.hpp"
 
 // Set *s_font::set;
 // VertexArray *s_font::vertexHorizontal;
@@ -43,12 +44,20 @@
 // std::vector<std::pair<int, int>> s_font::commandIndex;
 std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
 int s_font::nbFontInstances = 0;
-bool s_font::hasPrintH = false;
-bool s_font::hasPrint = false;
 
 std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>> s_font::printData;
 
 std::string s_font::baseFontName;
+
+TileMap *s_font::tileMap = nullptr;
+
+renderedString_struct::~renderedString_struct()
+{
+   	if (stringTexture.width)
+	   	s_font::tileMap->releaseSurface(stringTexture);
+   	if (haveBorder)
+   		s_font::tileMap->releaseSurface(borderTexture);
+}
 
 void s_font::initBaseFont(const std::string& ttfFileName)
 {
@@ -76,6 +85,15 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
 	} else
 	cLog::get()->write("s_font: loading font " + fontName, LOG_TYPE::L_INFO);
 	nbFontInstances++;
+	if (!tileMap) {
+        auto &context = *Context::instance;
+		tileMap = new TileMap(*VulkanMgr::instance, *context.stagingMgr, "s_font");
+		tileMap->createMap(8192, 512);
+        for (auto &t : context.transferSync) {
+            t->imageBarrier(**tileMap, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
+            t->build();
+        }
+	}
 	//std::cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << std::endl;
 }
 
@@ -98,7 +116,7 @@ void s_font::rebuild(float size_i, const std::string& ttfFileName)
 		fontName = ttfFileName;
 		fontSize = size_i;
 		myFont = tmpFont;
-		cLog::get()->write("s_font: rebuild font succes", LOG_TYPE::L_INFO);	
+		cLog::get()->write("s_font: rebuild font succes", LOG_TYPE::L_INFO);
 	}
 }
 
@@ -111,6 +129,10 @@ s_font::~s_font()
 		// There must be no command using those textures
 		tempCache.clear();
 		tempCache2.clear();
+		if (tileMap) {
+			delete tileMap;
+			tileMap = nullptr;
+		}
 	}
 }
 
@@ -173,66 +195,12 @@ void s_font::createSC_context()
 	// set = context->global->tracker->track(new Set());
 }
 
-void s_font::beginPrint(bool multisample)
+void s_font::beginPrint()
 {
 	printData[Context::instance->frameIdx].first.clear();
 	printData[Context::instance->frameIdx].second.clear();
 	tempCache.swap(tempCache2);
 	tempCache.clear();
-
-	// vertexHorizontal->setVertexOffset(0);
-	// vertexPrint->setVertexOffset(0);
-
-	// activeID = -1;
-	// nextPrint(multisample);
-}
-
-void s_font::nextPrint(bool multisample)
-{
-	// if (activeID == -1) {
-	// 	activeID = multisample ? 1 : 0;
-	// 	pipelineHorizontal += activeID;
-	// 	pipelinePrint += activeID;
-	// } else
-	// 	endPrint(multisample);
-	// if (activeID == (int) commandIndex.size()) {
-	// 	commandIndex.emplace_back(cmdMgr->getCommandIndex(), cmdMgr->getCommandIndex());
-	// }
-	//
-	// commandIndexHorizontal = commandIndex[activeID].first;
-	// cmdMgr->init(commandIndexHorizontal, pipelineHorizontal,
-	// 	multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
-	// 	multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
-	// cmdMgr->bindSet(layoutHorizontal, context->global->globalSet, 1);
-	// cmdMgr->bindVertex(vertexHorizontal);
-	//
-	// commandIndexPrint = commandIndex[activeID].second;
-	// cmdMgr->init(commandIndexPrint, pipelinePrint,
-	// 	multisample ? renderPassType::DEFAULT : renderPassType::SINGLE_SAMPLE_DEFAULT, false,
-	// 	multisample ? renderPassCompatibility::DEFAULT : renderPassCompatibility::SINGLE_SAMPLE);
-	// cmdMgr->bindVertex(vertexPrint);
-}
-
-void s_font::endPrint(bool multisample)
-{
-	// if (multisample)
-	// 	activeID++;
-	// else {
-	// 	if (activeID != 0) {
-	// 		pipelineHorizontal--;
-	// 		pipelinePrint--;
-	// 		activeID = 0;
-	// 	}
-	// }
-	// cmdMgr->select(commandIndexHorizontal);
-	// cmdMgr->compile();
-	// cmdMgr->select(commandIndexPrint);
-	// cmdMgr->compile();
-	// if (hasPrintH)
-	// 	cmdMgr->setSubmission(commandIndexHorizontal, false, context->commandMgr);
-	// if (hasPrint)
-	// 	cmdMgr->setSubmission(commandIndexPrint, false, context->commandMgr);
-	// hasPrintH = hasPrint = false;
 }
 
 //! print out a string
@@ -247,7 +215,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	// } else if (offset == 4092) {
 	// 	cLog::get()->write("Print per frame limit reached, next print for this frame won't appear.", LOG_TYPE::L_WARNING);
 	// }
-	hasPrint = true;
 
 	renderedString_struct currentRender;
 	// If not cached, create texture
@@ -263,17 +230,17 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	//StateGL::enable(GL_BLEND);
 
 	// Draw
-	std::vector<float> vecPos;
-	std::vector<float> vecTex;
+	// std::vector<float> vecPos;
+	// std::vector<float> vecTex;
 
-	float h = currentRender.textureH;
+	float h = (upsidedown) ? -currentRender.textureH : currentRender.textureH;
 	float w = currentRender.textureW;
 	// ===== Variables 'passed' up to down : [x, y, h, w, Texture *string, Color, MVP] ===== //
 	Context &context = *Context::instance;
 	auto &tmp = printData[context.frameIdx].first;
 	if (tmp.capacity() == tmp.size())
 		return;
-	tmp.push_back({DRAW_PRINT, x, y, h, w, Color, currentRender.stringTexture.get(), MVP});
+	tmp.push_back({DRAW_PRINT, x, y - currentRender.stringH, h, w, Color, &renderCache[s].stringTexture, MVP});
 	context.helper->draw(&tmp.back());
 	if (tmp.capacity() == tmp.size())
 		cLog::get()->write("Limit of 1024 print per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
@@ -403,7 +370,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	renderedString_struct nothing;
 	nothing.textureW = nothing.textureH = nothing.stringW = nothing.stringH = 0;
 	nothing.haveBorder =false;
-	nothing.stringTexture = 0;
+	nothing.stringTexture.width = 0;
 	if(!surface)  {
 		cLog::get()->write("s_font "+ fontName +": error SDL_CreateRGBSurface" + std::string(SDL_GetError()) , LOG_TYPE::L_ERROR);
 		SDL_FreeSurface(text);
@@ -437,6 +404,10 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	// rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string '" + s + "'");
 	// if (keepOnCPU)
 	// 	rendering.stringTexture->use();
+	rendering.stringTexture = tileMap->acquireSurface(rendering.textureW, rendering.textureH);
+	if (rendering.stringTexture.width) {
+		tileMap->writeSurface(rendering.stringTexture, surface->pixels);
+	}
 
 	if (withBorder) {
 		// ***********************************
@@ -485,8 +456,12 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		// rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string border '" + s + "'");
 		// if (keepOnCPU)
 		// 	rendering.borderTexture->use();
+		rendering.borderTexture = tileMap->acquireSurface(rendering.textureW, rendering.textureH);
+		if (rendering.borderTexture.width) {
+			tileMap->writeSurface(rendering.borderTexture, border->pixels);
+			rendering.haveBorder =true;
+		}
 
-		rendering.haveBorder =true;
 		SDL_FreeSurface(border);
 	}
 
@@ -500,16 +475,21 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 void s_font::printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache)
 {
 	if (str.empty()) return;
-	hasPrintH = true;
 	// Get rendered texture
 	renderedString_struct rendering;
+	SubTexture *subTex;
 	if(renderCache[str].textureW == 0) {
 		rendering = renderString(str, true, !cache); // because keepOnCPU=false use waitTransferQueueIdle
-		if(cache)
+		if(cache) {
 			renderCache[str] = rendering;
-		tempCache.push_back(rendering); // to hold texture while it is used
+			subTex = &renderCache[str].stringTexture;
+		} else {
+			tempCache.push_back(rendering); // to hold texture while it is used
+			subTex = &tempCache.back().stringTexture;
+		}
 	} else {
 		rendering = renderCache[str];
+		subTex = &renderCache[str].stringTexture;
 	}
 
 	float angle, lCercle;
@@ -551,7 +531,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	auto &tmp = printData[context.frameIdx].second;
 	if (tmp.capacity() == tmp.size())
 		return;
-	tmp.push_back({DRAW_PRINTH, theta, psi, {center[0], center[1]}, d, d-rendering.textureH, texColor, rendering.borderTexture.get(), rendering.stringTexture.get()});
+	tmp.push_back({DRAW_PRINTH, theta, psi, {center[0], center[1]}, d, d-rendering.textureH, texColor, subTex});
 	context.helper->draw(&tmp.back());
 	if (tmp.capacity() == tmp.size())
 		cLog::get()->write("Limit of 1024 printHorizontal per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);

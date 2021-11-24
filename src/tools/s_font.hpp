@@ -36,21 +36,24 @@
 #include "tools/s_font_common.hpp"
 #include "tools/s_texture.hpp"
 #include "tools/draw_helper.hpp"
+#include "EntityCore/SubTexture.hpp"
 
 class VertexArray;
 class Projector;
 class Texture;
 class Pipeline;
+class TileMap;
 
-typedef struct {
-	std::shared_ptr<Texture> stringTexture;  // Rendered string texture reference
-	std::shared_ptr<Texture> borderTexture;  // Rendered string bordered texture
+struct renderedString_struct {
+	~renderedString_struct();
+	SubTexture stringTexture;  // Rendered string texture reference
+	SubTexture borderTexture;  // Rendered string bordered texture
 	float textureW; 	   // Width of texture in pixels
 	float textureH; 	   // Height of texture in pixels
 	float stringW; 	       // Width of string portion in pixels
 	float stringH; 	       // Height of string portion in pixels
 	bool haveBorder;	   // if the text has a bordered texture
-} renderedString_struct;
+};
 
 typedef std::map< std::string, renderedString_struct > renderedStringHash_t;
 typedef renderedStringHash_t::const_iterator renderedStringHashIter_t;
@@ -93,11 +96,8 @@ public:
 	//! met en place la fonte de secours
 	static void initBaseFont(const std::string& ttfFileName);
 	//! Initialize printer
-	static void beginPrint(bool multisample);
-	//! Finalize printer, draw content and initialize next printer
-	static void nextPrint(bool multisample);
-	//! Finalize printer and draw content
-	static void endPrint(bool multisample = false);
+	static void beginPrint();
+	static TileMap *tileMap;
 protected:
 	renderedString_struct renderString(const std::string &s, bool withBorder, bool keepOnCPU = false) const;
 	renderedStringHash_t renderCache;
@@ -123,7 +123,6 @@ protected:
 	// static PipelineLayout *layoutHorizontal;
 	// static PipelineLayout *layoutPrint;
 	static int nbFontInstances;
-	static bool hasPrintH, hasPrint;
 };
 
 #endif  //_S_FONT_H

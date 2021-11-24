@@ -98,7 +98,7 @@ private:
 	Pipeline *pipeline;
 	std::unique_ptr<Set> set, pushSet;
 	bool needRebuild[3] = {true, true, true};
-	VkCommandBuffer cmds[3];
+	VkCommandBuffer cmds[3] {};
 	int virtualUniformID;
 };
 

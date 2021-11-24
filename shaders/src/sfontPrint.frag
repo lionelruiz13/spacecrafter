@@ -6,7 +6,7 @@
 #pragma optimize(off)
 
 
-layout (binding=0) uniform sampler2D mapTexture;
+layout (binding=1) uniform sampler2D mapTexture;
 layout(push_constant) uniform pushConstants {
 	vec4 Color;
 };

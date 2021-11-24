@@ -216,6 +216,8 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 	if(nbDraw==0)
 		return;
 
+	if (cmds[context.frameIdx] == -1)
+		cmds[context.frameIdx] = context.frame[context.frameIdx]->create(1);
 	VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
 
 	pipelineHint->bind(cmd);

@@ -173,5 +173,5 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	uGeom->get().camPos = nav->getObserverHelioPos();
 	*uFader = fader.getInterstate();
 	const int frameIdx = Context::instance->frameIdx;
-	Context::instance->frame[frameIdx]->toExecute(frameIdx, PASS_MULTISAMPLE_DEPTH);
+	Context::instance->frame[frameIdx]->toExecute(cmds[frameIdx], PASS_MULTISAMPLE_DEPTH);
 }

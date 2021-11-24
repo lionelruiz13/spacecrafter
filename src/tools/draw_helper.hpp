@@ -7,7 +7,10 @@
 #include <chrono>
 #include <list>
 #include "EntityCore/Forward.hpp"
+#include "EntityCore/SubTexture.hpp"
 #include "tools/vecmath.hpp"
+
+#define MAX_IDX 32*1024
 
 class Hints;
 class s_texture;
@@ -28,7 +31,7 @@ struct s_print {
     float h;
     float w;
     Vec4f Color;
-    Texture *string;
+    SubTexture *texture;
     Mat4f MVP;
 };
 
@@ -40,8 +43,7 @@ struct s_printh {
     float d;
     float d_sub_textureH;
     Vec3f texColor;
-    Texture *border;
-    Texture *string;
+    SubTexture *texture; // string, then border
 };
 
 struct s_sigpass {
@@ -101,11 +103,21 @@ private:
     void drawPrint(s_print &data);
     void drawPrintH(s_printh &data);
     void drawHint(DrawData::s_hint &data);
+    void bindPrint(VkCommandBuffer cmd);
+    void bindPrintH(VkCommandBuffer cmd);
+    void init();
     VkCommandBuffer getCmd();
     void pushCommand();
     void mainloop();
     std::thread thread;
     std::list<s_sigpass> sigpass;
+    std::unique_ptr<VertexArray> vertexPrint;
+    std::unique_ptr<VertexArray> vertexPrintH;
+    std::unique_ptr<PipelineLayout> layoutPrint;
+    std::unique_ptr<PipelineLayout> layoutPrintH;
+    std::unique_ptr<Set> setPrints;
+    std::vector<std::unique_ptr<Pipeline>> pipelinePrint;
+    std::vector<std::unique_ptr<Pipeline>> pipelinePrintH;
     WorkQueue<DrawData *> queue;
     Mat4f nebulaMat;
     FrameMgr *frame = nullptr;
@@ -117,6 +129,7 @@ private:
     unsigned char internalSubpass;
     unsigned char externalSubpass;
     unsigned char lastFlag = SIGNAL_PASS;
+    unsigned short drawIdx = 0;
     struct {
         VkCommandPool cmdPool;
         VkCommandBuffer nebula;

@@ -77,6 +77,7 @@
 #include "EntityCore/Core/RenderMgr.hpp"
 #include "EntityCore/Resource/FrameSender.hpp"
 #include "EntityCore/Resource/SetMgr.hpp"
+#include "EntityCore/Resource/TileMap.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
 Context *Context::instance = nullptr;
@@ -210,12 +211,9 @@ void App::initVulkan(InitParser &conf)
 	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 	context.ojmVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
 	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
-	context.indexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 32*1024*1024, "indexBuffer BufferMgr");
-	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, 0, 1*1024*1024, "s_font and hint BufferMgr");
-	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 2*4*sizeof(float));
-	context.multiVertexArray->createBindingEntry(4*sizeof(float));
-	context.multiVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
-	context.multiVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
+	context.indexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "indexBuffer BufferMgr");
+	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 6*sizeof(float));
+	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*32*1024, "draw_helper BufferMgr");
 	context.setMgr = std::make_unique<SetMgr>(vkmgr, 256, 256, 256, 1, true);
 	context.starColorAttachment = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	context.starColorAttachment->use();
@@ -325,7 +323,6 @@ void App::initVulkan(InitParser &conf)
 		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 3);
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
 	}
-	// context.starSync[i]->combineDstDependencies(*context.transferSync[(i + 1) % 3]); // Assume the frame are always in increasing order (0, 1, 2, 0, etc...)
 	context.transfer = context.transfers[0].get(); // Assume the first frame is the frame 0
 	context.helper = std::make_unique<DrawHelper>();
 	cLog::get()->write("Vulkan initialization completed", LOG_TYPE::L_INFO);
@@ -587,6 +584,7 @@ void App::draw(int delta_time)
 	context.frame[context.frameIdx]->discardRecord();
 	context.setMgr->update();
 	context.transfer = context.transfers[context.frameIdx].get();
+	s_font::beginPrint();
 
 	executor->draw(delta_time);
 	context.helper->nextDraw(PASS_FOREGROUND);
@@ -736,6 +734,8 @@ void App::submitFrame(App *self, int id)
 	vkBeginCommandBuffer(cmd, &beginInfo);
 	self->media->playerRecordUpdate(cmd);
 	s_texture::recordTransfer(cmd);
+	if (s_font::tileMap)
+		s_font::tileMap->uploadChanges(cmd, Implicit::SRC_LAYOUT);
 	self->context.transfers[id]->copy(cmd);
 	self->context.transferSync[id]->srcDependency(cmd);
 	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();
