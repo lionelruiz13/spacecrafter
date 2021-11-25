@@ -105,6 +105,8 @@ public:
 
 	//! Record texture update to the transfer command executed in the graphic queue where the texture is used
 	void recordUpdate(VkCommandBuffer cmd);
+	//! Record event synchronization which can't be performed inside the renderPass
+	void recordUpdateDependency(VkCommandBuffer cmd);
 private:
 	// renvoie la nouvelle frame vidéo et la convertit dans la mémoire de la CG.
 	void getNextVideoFrame();

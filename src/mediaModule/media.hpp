@@ -364,6 +364,9 @@ public:
 	void playerRecordUpdate(VkCommandBuffer cmd) {
 		player->recordUpdate(cmd);
 	}
+	void playerRecordUpdateDependency(VkCommandBuffer cmd) {
+		player->recordUpdateDependency(cmd);
+	}
 private:
 	bool playerPlay(const VID_TYPE &type, const std::string &filename, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
 

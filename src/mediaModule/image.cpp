@@ -536,7 +536,7 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 	m_layoutViewport->pushConstant(cmd, 1, &image_alpha);
 	vertex->bind(cmd);
 	vkCmdDraw(cmd, 4, 1, 0, 0);
-	imageTexture->unbindSet(cmd);
+	// imageTexture->unbindSet(cmd);
 }
 
 static int decalages(int i, int howManyDisplay)

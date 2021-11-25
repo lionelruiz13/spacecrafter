@@ -740,6 +740,7 @@ void App::submitFrame(App *self, int id)
 	self->context.transferSync[id]->srcDependency(cmd);
 	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();
 	vkCmdEndRenderPass(mainCmd);
+	self->media->playerRecordUpdateDependency(cmd);
 	if (self->context.starUsed[id]) {
 		self->context.starUsed[id]->updateFramebuffer(cmd, mainCmd);
 		self->context.starUsed[id] = nullptr;

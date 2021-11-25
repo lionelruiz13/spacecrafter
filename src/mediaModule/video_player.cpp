@@ -429,3 +429,11 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 	}
 	videoTexture.sync->syncIn->srcDependency(cmd);
 }
+
+void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
+{
+	if (!videoTexture.sync || !videoTexture.sync->inUse)
+		return;
+	videoTexture.sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
+	videoTexture.sync->syncOut->srcDependency(cmd);
+}
