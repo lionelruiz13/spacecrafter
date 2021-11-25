@@ -724,6 +724,7 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_SPACE :
 			media->playerPause();
 			break;
+		case SDL_SCANCODE_RETURN :
 		case SDL_SCANCODE_ESCAPE :
 			handleKeyOnVideo = false;
 			media->playerStop();
