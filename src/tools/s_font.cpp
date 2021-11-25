@@ -31,18 +31,8 @@
 #include "coreModule/projector.hpp"
 #include "EntityCore/Resource/TileMap.hpp"
 
-// Set *s_font::set;
-// VertexArray *s_font::vertexHorizontal;
-// VertexArray *s_font::vertexPrint;
-// Pipeline *s_font::pipelineHorizontal;
-// Pipeline *s_font::pipelinePrint;
-// PipelineLayout *s_font::layoutHorizontal;
-// PipelineLayout *s_font::layoutPrint;
-// int s_font::activeID = -1;
-// int s_font::commandIndexHorizontal;
-// int s_font::commandIndexPrint;
-// std::vector<std::pair<int, int>> s_font::commandIndex;
 std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
+std::string s_font::lastUncached;
 int s_font::nbFontInstances = 0;
 
 std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>> s_font::printData;
@@ -50,14 +40,6 @@ std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>
 std::string s_font::baseFontName;
 
 TileMap *s_font::tileMap = nullptr;
-
-renderedString_struct::~renderedString_struct()
-{
-   	if (stringTexture.width)
-	   	s_font::tileMap->releaseSurface(stringTexture);
-   	if (haveBorder)
-   		s_font::tileMap->releaseSurface(borderTexture);
-}
 
 void s_font::initBaseFont(const std::string& ttfFileName)
 {
@@ -144,55 +126,6 @@ void s_font::createSC_context()
 		value.first.reserve(1024); // max 1024 print per frame
 		value.second.reserve(1024); // max 1024 printHorizontal per frame
 	}
-	// for (auto &value : commandIndex) {
-	// 	value.first = cmdMgr->getCommandIndex();
-	// 	value.second = cmdMgr->getCommandIndex();
-	// }
-	// vertexHorizontal = context->global->tracker->track(new VertexArray(context->surface));
-	// vertexHorizontal->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
-	// vertexHorizontal->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
-	// vertexHorizontal->build(4096);
-	//
-	// vertexPrint = context->global->tracker->track(new VertexArray(context->surface));
-	// vertexPrint->registerVertexBuffer(BufferType::POS2D, BufferAccess::STREAM);
-	// vertexPrint->registerVertexBuffer(BufferType::TEXTURE, BufferAccess::STREAM);
-	// vertexPrint->build(4096);
-	//
-	// layoutHorizontal = context->global->tracker->track(new PipelineLayout(context->surface));
-	// layoutHorizontal->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	// layoutHorizontal->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
-	// layoutHorizontal->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	// layoutHorizontal->setGlobalPipelineLayout(context.layouts.front().get());
-	// layoutHorizontal->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
-	// layoutHorizontal->build();
-	//
-	// layoutPrint = context->global->tracker->track(new PipelineLayout(context->surface));
-	// layoutPrint->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	// layoutPrint->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
-	// layoutPrint->setGlobalPipelineLayout(context.layouts.front().get());
-	// layoutPrint->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
-	// layoutPrint->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 16, sizeof(Mat4f)); // MVP
-	// layoutPrint->build();
-	//
-	// pipelineHorizontal = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutHorizontal}, {context->surface, layoutHorizontal}});
-	// pipelineHorizontal->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
-	// for (int i = 0; i < 2; ++i) {
-	// 	pipelineHorizontal[i].bindVertex(vertexHorizontal);
-	// 	pipelineHorizontal[i].bindShader("sfontHorizontal.vert.spv");
-	// 	pipelineHorizontal[i].bindShader("sfontHorizontal.frag.spv");
-	// 	pipelineHorizontal[i].build();
-	// }
-	//
-	// pipelinePrint = context->global->tracker->trackArray(new Pipeline[2]{{context->surface, layoutPrint}, {context->surface, layoutPrint}});
-	// pipelinePrint->setRenderPassCompatibility(renderPassCompatibility::SINGLE_SAMPLE);
-	// for (int i = 0; i < 2; ++i) {
-	// 	pipelinePrint[i].bindVertex(vertexPrint);
-	// 	pipelinePrint[i].bindShader("sfontPrint.vert.spv");
-	// 	pipelinePrint[i].bindShader("sfontPrint.frag.spv");
-	// 	pipelinePrint[i].build();
-	// }
-	//
-	// set = context->global->tracker->track(new Set());
 }
 
 void s_font::beginPrint()
@@ -200,7 +133,16 @@ void s_font::beginPrint()
 	printData[Context::instance->frameIdx].first.clear();
 	printData[Context::instance->frameIdx].second.clear();
 	tempCache.swap(tempCache2);
+    for (int i = tempCache.size(); i--;) { // inverse release order reduce overhead
+        if (tempCache[i].stringTexture.width)
+            tileMap->releaseSurface(tempCache[i].stringTexture);
+        if (tempCache[i].haveBorder)
+            tileMap->releaseSurface(tempCache[i].borderTexture);
+    }
+    for (auto &c : tempCache) {
+    }
 	tempCache.clear();
+    lastUncached.clear();
 }
 
 //! print out a string
@@ -208,13 +150,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 {
 	if (s.empty())
 		return;
-
-	// int offset = vertexPrint->getVertexOffset();
-	// if (offset == 4096) {
-	// 	return;
-	// } else if (offset == 4092) {
-	// 	cLog::get()->write("Print per frame limit reached, next print for this frame won't appear.", LOG_TYPE::L_WARNING);
-	// }
 
 	renderedString_struct currentRender;
 	// If not cached, create texture
@@ -225,13 +160,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 		// read from cache
 		currentRender = renderCache[s];
 	}
-	tempCache.push_back(currentRender); // to hold texture while it is used
-
-	//StateGL::enable(GL_BLEND);
-
-	// Draw
-	// std::vector<float> vecPos;
-	// std::vector<float> vecTex;
 
 	float h = (upsidedown) ? -currentRender.textureH : currentRender.textureH;
 	float w = currentRender.textureW;
@@ -244,49 +172,6 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	context.helper->draw(&tmp.back());
 	if (tmp.capacity() == tmp.size())
 		cLog::get()->write("Limit of 1024 print per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
-
-	// if(!upsidedown) {
-	// 	y -= currentRender.stringH;  // adjust for base of text in texture
-	// 	insert_all(vecPos, x, y, x, y+h, x+w, y, x+w, y+h);
-	// 	insert_all(vecTex, 0, 0, 0, 1, 1, 0, 1, 1);
-	//
-	// } else {
-	// 	y -= currentRender.stringH;  // adjust for base of text in texture
-	// 	insert_all(vecPos, x+w, y+h, x, y+h, x+w, y, x, y);
-	// 	insert_all(vecTex, 1, 0, 0, 0, 1, 1, 0, 1);
-	// }
-	//
-	// /*
-	// glActiveTexture(GL_TEXTURE0);
-	// glBindTexture( GL_TEXTURE_2D, currentRender.stringTexture);
-	// // Avoid edge visibility
-	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-	// glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-	// */
-	//
-	// //StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//
-	// vertexPrint->fillVertexBuffer(BufferType::POS2D, vecPos);
-	// vertexPrint->fillVertexBuffer(BufferType::TEXTURE,vecTex);
-	//
-	// set->clear();
-	// set->bindTexture(currentRender.stringTexture.get(), 0);
-	// cmdMgr->select(commandIndexPrint);
-	// cmdMgr->pushSet(layoutPrint, set);
-	// cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_FRAGMENT_BIT, 0, &Color, sizeof(Vec4f));
-	// cmdMgr->pushConstant(layoutPrint, VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec4f), &MVP, sizeof(Mat4f));
-	// cmdMgr->draw(4, 1, offset);
-	// vertexPrint->setVertexOffset(offset + 4);
-	//
-	// /*
-	// shaderPrint->use();
-	// shaderPrint->setUniform("MVP", MVP);
-	// shaderPrint->setUniform("Color", Color);
-	// Renderer::drawArrays(shaderPrint.get(), *m_fontGL, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, 0, 4);
-	// */
-	//
-	// vecPos.clear();
-	// vecTex.clear();
 }
 
 float s_font::getStrLen(const std::string& s)
@@ -310,9 +195,10 @@ float s_font::getStrLen(const std::string& s)
 void s_font::clearCache(const std::string& s)
 {
 	if( renderCache[s].textureW != 0 ) {
-		// glDeleteTextures( 1, &renderCache[s].stringTexture);
-		// if (renderCache[s].haveBorder)
-		// 	glDeleteTextures( 1, &renderCache[s].borderTexture);
+        if (renderCache[s].stringTexture.width)
+            tileMap->releaseSurface(renderCache[s].stringTexture);
+        if (renderCache[s].haveBorder)
+            tileMap->releaseSurface(renderCache[s].borderTexture);
 		renderCache.erase(s);
 	}
 
@@ -321,20 +207,17 @@ void s_font::clearCache(const std::string& s)
 //! remove ALL cached textures
 void s_font::clearCache()
 {
-	/*
-	for ( renderedStringHashIter_t iter = renderCache.begin(); iter != renderCache.end(); ++iter ) {
-		if( (*iter).second.textureW != 0 ) {
-			glDeleteTextures( 1, &((*iter).second.stringTexture));
-			if ((*iter).second.haveBorder)
-				glDeleteTextures( 1, &((*iter).second.borderTexture));
-		}
-	}
-	*/
+    for (auto &c : renderCache) {
+        if (c.second.stringTexture.width)
+            tileMap->releaseSurface(c.second.stringTexture);
+        if (c.second.haveBorder)
+            tileMap->releaseSurface(c.second.borderTexture);
+    }
 	renderCache.clear();
 }
 
 //! Render a string to a texture
-renderedString_struct s_font::renderString(const std::string &s, bool withBorder, bool keepOnCPU) const
+renderedString_struct s_font::renderString(const std::string &s, bool withBorder) const
 {
 
 	renderedString_struct rendering;
@@ -392,18 +275,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	else
 		texture_format = VK_FORMAT_B8G8R8A8_UNORM;
 
-	/*
-	glGenTextures( 1, &rendering.stringTexture);
-	glBindTexture( GL_TEXTURE_2D, rendering.stringTexture);
-    // disable mipmapping on the new texture
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, surface->pixels );
-	*/
 	//==== CREATE TEXTURE ====//
-	// rendering.stringTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, surface->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string '" + s + "'");
-	// if (keepOnCPU)
-	// 	rendering.stringTexture->use();
 	rendering.stringTexture = tileMap->acquireSurface(rendering.textureW, rendering.textureH);
 	if (rendering.stringTexture.width) {
 		tileMap->writeSurface(rendering.stringTexture, surface->pixels);
@@ -443,19 +315,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		else
 			texture_format = VK_FORMAT_B8G8R8A8_UNORM; // GL_BGRA
 
-		/*
-		glGenTextures( 1, &rendering.borderTexture);
-		glBindTexture( GL_TEXTURE_2D, rendering.borderTexture);
-
-		// disable mipmapping on the new texture
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexImage2D( GL_TEXTURE_2D, 0, texture_format, (int)rendering.textureW, (int)rendering.textureH, 0, texture_format, GL_UNSIGNED_BYTE, border->pixels );
-		*/
 		//==== CREATE TEXTURE ====//
-		// rendering.borderTexture = std::make_unique<Texture>(context->surface, context->global->textureMgr, border->pixels, rendering.textureW, rendering.textureH, keepOnCPU, false, texture_format, "string border '" + s + "'");
-		// if (keepOnCPU)
-		// 	rendering.borderTexture->use();
 		rendering.borderTexture = tileMap->acquireSurface(rendering.textureW, rendering.textureH);
 		if (rendering.borderTexture.width) {
 			tileMap->writeSurface(rendering.borderTexture, border->pixels);
@@ -479,12 +339,15 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	renderedString_struct rendering;
 	SubTexture *subTex;
 	if(renderCache[str].textureW == 0) {
-		rendering = renderString(str, true, !cache); // because keepOnCPU=false use waitTransferQueueIdle
+		rendering = renderString(str, true);
 		if(cache) {
 			renderCache[str] = rendering;
 			subTex = &renderCache[str].stringTexture;
 		} else {
-			tempCache.push_back(rendering); // to hold texture while it is used
+            if (lastUncached != str) {
+                tempCache.push_back(rendering); // to hold texture while it is used
+                lastUncached = str;
+            }
 			subTex = &tempCache.back().stringTexture;
 		}
 	} else {

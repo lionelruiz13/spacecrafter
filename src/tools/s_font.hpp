@@ -45,7 +45,6 @@ class Pipeline;
 class TileMap;
 
 struct renderedString_struct {
-	~renderedString_struct();
 	SubTexture stringTexture;  // Rendered string texture reference
 	SubTexture borderTexture;  // Rendered string bordered texture
 	float textureW; 	   // Width of texture in pixels
@@ -85,9 +84,9 @@ public:
 	//! afficher un texte parallège à l'horizon en altitude azimuth
 	//! cache indique si l'on doit garder le texte en mémoire
 	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache);
-	//! supprime du cache le texte s
+	//! remove text s from cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame
 	void clearCache(const std::string& s);
-	//! supprime tous les textes de la font
+	//! remove every texts from font cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame
 	void clearCache();
 	//! indique la taille en pixel du texte s
 	float getStrLen(const std::string& s);
@@ -99,9 +98,10 @@ public:
 	static void beginPrint();
 	static TileMap *tileMap;
 protected:
-	renderedString_struct renderString(const std::string &s, bool withBorder, bool keepOnCPU = false) const;
+	renderedString_struct renderString(const std::string &s, bool withBorder) const;
 	renderedStringHash_t renderCache;
 	static std::vector<renderedString_struct> tempCache, tempCache2; // to hold texture while it is used
+	static std::string lastUncached;
 	static std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>> printData;
 
 	float fontSize;

@@ -94,21 +94,19 @@ void UI::drawGravityUi(MODULE module)
 			switch(FlagNumberPrint) {
 				case 3 :
 					PosDateTimeL=PosDateTimeL%120;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(),text_ui);//,  1,1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+120), os.str(), text_ui);//, 1,1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+240), os.str(), text_ui);//, 1,1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(),text_ui, TEXT_ALIGN::LEFT, false);//,  1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+120), os.str(), text_ui, TEXT_ALIGN::LEFT, false);//, 1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+240), os.str(), text_ui, TEXT_ALIGN::LEFT, false);//, 1,1);
 					break;
 				case 2 :
 					PosDateTimeL=PosDateTimeL%180;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui);//, 1,1);
-					core->printHorizontal(tuiFont, 5, (PosDateTimeL+180), os.str(), text_ui);//, 1,1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui, TEXT_ALIGN::LEFT, false);//, 1,1);
+					core->printHorizontal(tuiFont, 5, (PosDateTimeL+180), os.str(), text_ui, TEXT_ALIGN::LEFT, false);//, 1,1);
 					break;
 				default:
 					PosDateTimeL=PosDateTimeL%360;
-					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui);//,  1, 1);
+					core->printHorizontal(tuiFont, 5, PosDateTimeL, os.str(), text_ui, TEXT_ALIGN::LEFT, false);//,  1, 1);
 			}
-			// on n'en a plus besoin aussi on les supprime
-			tuiFont->clearCache(os.str());
 		}
 	}
 
