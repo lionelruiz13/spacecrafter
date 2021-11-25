@@ -123,8 +123,8 @@ void s_font::createSC_context()
 {
 	printData.resize(3);
 	for (auto &value : printData) {
-		value.first.reserve(1024); // max 1024 print per frame
-		value.second.reserve(1024); // max 1024 printHorizontal per frame
+		value.first.reserve(2048); // max 2048 print per frame
+		value.second.reserve(256); // max 256 printHorizontal per frame
 	}
 }
 
@@ -171,7 +171,7 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	tmp.push_back({DRAW_PRINT, x, y - currentRender.stringH, h, w, Color, &renderCache[s].stringTexture, MVP});
 	context.helper->draw(&tmp.back());
 	if (tmp.capacity() == tmp.size())
-		cLog::get()->write("Limit of 1024 print per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
+		cLog::get()->write("Limit of " + std::to_string(tmp.capacity()) + " print per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
 }
 
 float s_font::getStrLen(const std::string& s)
@@ -397,7 +397,7 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	tmp.push_back({DRAW_PRINTH, theta, psi, {center[0], center[1]}, d, d-rendering.textureH, texColor, subTex});
 	context.helper->draw(&tmp.back());
 	if (tmp.capacity() == tmp.size())
-		cLog::get()->write("Limit of 1024 printHorizontal per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
+		cLog::get()->write("Limit of " + std::to_string(tmp.capacity()) + " printHorizontal per frame reach, next attempt will be skipped\n", LOG_TYPE::L_WARNING);
 	// int steps = 2+int(psi*15);
 	//
 	// std::vector<Vec2f> meshPoints;  // screen x,y
