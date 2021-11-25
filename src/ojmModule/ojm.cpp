@@ -116,7 +116,7 @@ int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layou
 			*reinterpret_cast<Vec3f *>(tmp + 8) = shapes[i].Ks;
 			layout->pushConstant(cmd, 0, tmp, 0, 44);
 		}
-		vkCmdDrawIndexed(cmd, shapes[i].index.size / sizeof(int), 1, shapes[i].index.offset / sizeof(int), shapes[0].vertex->getOffset(), 0);
+		vkCmdDrawIndexed(cmd, shapes[i].index.size / sizeof(int), 1, shapes[i].index.offset / sizeof(int), shapes[i].vertex->getOffset(), 0);
 	}
 	return selectedPipeline;
 }
