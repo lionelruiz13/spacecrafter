@@ -169,6 +169,7 @@ void OjmMgr::rebuild()
 	Vec4f pos(0.0, 0.0, 0.0, 1.0);
 	Vec3f intensity(1.0, 1.0, 1.0);
 	float buff[7];
+	bool firstRecord = true;
 	*reinterpret_cast<Vec4f *>(buff) = pos;
 	*reinterpret_cast<Vec3f *>(buff + 4) = intensity;
 	VkCommandBuffer &cmd = cmds[context.frameIdx];
@@ -184,7 +185,8 @@ void OjmMgr::rebuild()
 			continue;
 		set->setVirtualUniform(OjmVector[i]->uniform->getOffset(), virtualUniformID);
 		layout->bindSet(cmd, *set, 2);
-		tmp = OjmVector[i]->Obj3D->record(cmd, pipeline, layout.get(), pushSet.get(), tmp, (i == 0));
+		tmp = OjmVector[i]->Obj3D->record(cmd, pipeline, layout.get(), pushSet.get(), tmp, firstRecord);
+		firstRecord = false;
 	}
 	context.frame[context.frameIdx]->compile(cmd);
 }
