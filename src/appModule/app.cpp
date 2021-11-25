@@ -770,7 +770,7 @@ void App::submitFrame(App *self, int id)
 		// vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.debugFences[lastId]);
 		vkQueueSubmit(self->context.graphicQueue, 2, submit, self->context.fences[id]);
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
-		vkQueueWaitIdle(self->context.graphicQueue); // This is definetly bad, but nothing else work...
+		// vkQueueWaitIdle(self->context.graphicQueue); // This is definetly bad, but nothing else work...
 		vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
 	}
 }
