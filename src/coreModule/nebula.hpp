@@ -41,6 +41,7 @@
 class VertexArray;
 class Pipeline;
 class PipelineLayout;
+class Set;
 
 /**
  * \brief     Type of deepSkyObject
@@ -144,6 +145,9 @@ public:
 	static void beginDraw(const Projector* prj);
 	static void endDraw();
 
+	//! Used by draw_helper
+	static PipelineLayout *initDraw(VkCommandBuffer cmd);
+
 	//! Return the radius of a circle containing the object on screen
 	float getOnScreenSize(const Projector* prj, const Navigator * nav = nullptr, bool orb_only = false) {
 		return m_angular_size * (180./M_PI) * (prj->getViewportHeight()/prj->getFov());
@@ -238,9 +242,11 @@ private:
 	struct {
 		unsigned char flag;
 		float color;
-		s_texture *neb_tex;
+		Set *set;
 		float *data; // all 4 vertices
 	} drawData;
+	std::unique_ptr<Set> set;
+	std::unique_ptr<s_texture> texture;
 
 	static std::unique_ptr<VertexArray> m_texGL;
 	static Pipeline *pipeline;

@@ -4,10 +4,10 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (push_constant) uniform ubo {
-    layout (offset=64) float fader;
-};
 layout (set=1, binding=0) uniform sampler2D mapTexture;
+layout (push_constant) uniform ubo {
+	float fader;
+};
 
 layout (location=0) out vec4 FragColor;
 

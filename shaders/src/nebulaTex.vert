@@ -7,8 +7,8 @@
 layout (location = 0) in vec4 Position;
 layout (location = 1) in vec2 TexCoord;
 
-layout (push_constant) uniform ubo {
-    mat4 Mat;
+layout (binding=1) uniform ubo {
+	mat4 Mat;
 };
 
 #include <cam_block_only.glsl>

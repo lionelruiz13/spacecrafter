@@ -27,13 +27,13 @@
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
+#include "EntityCore/Resource/PipelineLayout.hpp"
 
 class Body;
 class Navigator;
 class Projector;
 class VertexArray;
 class Pipeline;
-class PipelineLayout;
 
 class Hints {
 public :
@@ -52,10 +52,14 @@ public :
 
 	void updateShader(double delta_time);
 
-	void computeHints(float *&data);
+	int computeHints(float *&data);
 
 	static void createSC_context();
 
+	static void bind(VkCommandBuffer cmd, const Vec4f &color);
+	static inline void push(VkCommandBuffer cmd, const Vec4f &color) {
+		layout->pushConstant(cmd, 0, &color);
+	}
 private :
 	static const int nbrFacets;
 	static const int hintCircleRadius;
@@ -70,7 +74,6 @@ private :
 
 	struct {
 		unsigned char flag;
-		float fader;
 		Vec4f color;
 		Hints *self;
 	} drawData;

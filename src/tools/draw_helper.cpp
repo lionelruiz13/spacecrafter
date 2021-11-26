@@ -5,12 +5,14 @@
 #include "tools/s_font.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "EntityCore/Resource/TileMap.hpp"
+#include "bodyModule/hints.hpp"
+#include "coreModule/nebula.hpp"
 
 #define MAX_CMDS 16
 #define WRITE_PRINT(x, y, tx, ty) *(ptr++) = x; *(ptr++) = y; *(ptr++) = data.texture->tx; *ptr = data.texture->ty; ptr += 3
 #define WRITE_PRINTH(x, y, t1x, t1y, t2x, t2y) *(ptr++) = x; *(ptr++) = y; *(ptr++) = t1x; *(ptr++) = t1y; *(ptr++) = t2x; *(ptr++) = t2y
 
-DrawHelper::DrawHelper()
+DrawHelper::DrawHelper() : nebulaMat(*Context::instance->uniformMgr)
 {
     thread = std::thread(&DrawHelper::mainloop, this);
     VulkanMgr &vkmgr = *VulkanMgr::instance;
@@ -23,6 +25,8 @@ DrawHelper::DrawHelper()
         allocInfo.commandPool = drawer[i].cmdPool;
         drawer[i].cmds.resize(MAX_CMDS);
         vkAllocateCommandBuffers(vkmgr.refDevice, &allocInfo, drawer[i].cmds.data());
+        for (int j = 0; j < MAX_CMDS; ++j)
+            context.frame[i]->setName(drawer[i].cmds[j], "Helper " + std::to_string(i) + "-" + std::to_string(j));
         drawer[i].nebula = drawer[i].cmds.back();
         drawer[i].cmds.back() = VK_NULL_HANDLE;
     }
@@ -68,8 +72,17 @@ void DrawHelper::mainloop()
                 lastFlag = SIGNAL_PASS;
                 break;
             case DRAW_NEBULA:
+                drawNebula(data->nebula);
                 break;
             case SIGNAL_NEBULA:
+                if (data->sigPass.subpass == UINT8_MAX) {
+                    if (hasRecordedNebula) {
+                        vkEndCommandBuffer(drawer[internalVFrameIdx].nebula);
+                        hasRecordedNebula = false;
+                    } else {
+                        drawer[internalVFrameIdx].cancelledCmds.push_back(drawer[internalVFrameIdx].nebula);
+                    }
+                }
                 break;
         }
     }
@@ -112,7 +125,7 @@ void DrawHelper::pushCommand()
 void DrawHelper::beginNebulaDraw(const Mat4f &mat)
 {
     nebulaMat = mat;
-    sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=0});
+    sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=PASS_BACKGROUND});
     queue.emplace((DrawData *) &sigpass.back());
 }
 
@@ -120,6 +133,8 @@ void DrawHelper::endNebulaDraw()
 {
     sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=UINT8_MAX});
     queue.emplace((DrawData *) &sigpass.back());
+    queue.flush();
+    frame->toExecute(drawer[externalVFrameIdx].nebula, PASS_BACKGROUND);
 }
 
 void DrawHelper::submit()
@@ -331,12 +346,40 @@ void DrawHelper::drawPrintH(s_printh &data)
 void DrawHelper::drawHint(DrawData::s_hint &data)
 {
     auto cmd = getCmd();
+    if (lastFlag != DRAW_HINT) {
+        hintColor = data.color;
+        Hints::bind(cmd, hintColor);
+    } else if (hintColor != data.color) {
+        hintColor = data.color;
+        Hints::push(cmd, hintColor);
+    }
+    float *ptr = ((float *) Context::instance->multiVertexMgr->getPtr()) + drawIdx * 6;
+    const int drawCount = data.self->computeHints(ptr);
+    vkCmdDraw(cmd, drawCount, 1, drawIdx * 3, 0);
+    drawIdx += (drawCount + 2) / 3;
 }
 
-// void DrawHelper::waitCompletionOf(int frameIdx)
-// {
-//     if (!drawer[frameIdx].hasCompleted) {
-//         drawer[frameIdx].waiter.lock();
-//         drawer[frameIdx].waiter.unlock();
-//     }
-// }
+void DrawHelper::drawNebula(DrawData::s_nebula &data)
+{
+    auto cmd = drawer[internalVFrameIdx].nebula;
+    if (!hasRecordedNebula) {
+        hasRecordedNebula = true;
+        const VkDeviceSize zero = 0;
+        frame->begin(cmd, PASS_BACKGROUND);
+        vkCmdBindVertexBuffers(cmd, 0, 1, &Context::instance->multiVertexMgr->getBuffer(), &zero);
+        layoutNebula = Nebula::initDraw(cmd);
+        if (!setNebula) {
+            setNebula = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, layoutNebula);
+            setNebula->bindUniform(*UBOCam::ubo, 0);
+            setNebula->bindUniform(nebulaMat, 1);
+        }
+        layoutNebula->bindSets(cmd, {*setNebula, *data.set});
+    } else
+        layoutNebula->bindSet(cmd, *data.set, 1);
+    layoutNebula->pushConstant(cmd, 0, &data.color);
+    long *ptr = ((long *) Context::instance->multiVertexMgr->getPtr()) + drawIdx * 3;
+    for (int i = 0; i < 12; ++i)
+        ptr[i] = data.data[i];
+    vkCmdDraw(cmd, 4, 1, drawIdx, 0);
+    drawIdx += 4;
+}

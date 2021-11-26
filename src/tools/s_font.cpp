@@ -139,8 +139,6 @@ void s_font::beginPrint()
         if (tempCache[i].haveBorder)
             tileMap->releaseSurface(tempCache[i].borderTexture);
     }
-    for (auto &c : tempCache) {
-    }
 	tempCache.clear();
     lastUncached.clear();
 }

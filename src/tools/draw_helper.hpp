@@ -8,6 +8,7 @@
 #include <list>
 #include "EntityCore/Forward.hpp"
 #include "EntityCore/SubTexture.hpp"
+#include "EntityCore/Resource/SharedBuffer.hpp"
 #include "tools/vecmath.hpp"
 
 #define MAX_IDX 32*1024
@@ -61,10 +62,11 @@ typedef union {
         Vec4f color;
         Hints *self;
     } hint;
-    struct {
+    struct s_nebula {
         unsigned char flag;
         float color;
-        s_texture *neb_tex;
+        Set *set;
+        long *data; // all 4 vertices
     } nebula;
     s_sigpass sigPass;
 } DrawData; // sizeof(DrawData) == 32
@@ -103,6 +105,7 @@ private:
     void drawPrint(s_print &data);
     void drawPrintH(s_printh &data);
     void drawHint(DrawData::s_hint &data);
+    void drawNebula(DrawData::s_nebula &data);
     void bindPrint(VkCommandBuffer cmd);
     void bindPrintH(VkCommandBuffer cmd);
     void init();
@@ -116,10 +119,11 @@ private:
     std::unique_ptr<PipelineLayout> layoutPrint;
     std::unique_ptr<PipelineLayout> layoutPrintH;
     std::unique_ptr<Set> setPrints;
+    std::unique_ptr<Set> setNebula;
     std::vector<std::unique_ptr<Pipeline>> pipelinePrint;
     std::vector<std::unique_ptr<Pipeline>> pipelinePrintH;
     WorkQueue<DrawData *> queue;
-    Mat4f nebulaMat;
+    SharedBuffer<Mat4f> nebulaMat;
     FrameMgr *frame = nullptr;
     unsigned char internalVFrameIdx = 0;
     unsigned char externalVFrameIdx = 0;
@@ -130,6 +134,8 @@ private:
     unsigned char externalSubpass;
     unsigned char lastFlag = SIGNAL_PASS;
     unsigned short drawIdx = 0;
+    Vec4f hintColor;
+    PipelineLayout *layoutNebula = nullptr;
     struct {
         VkCommandPool cmdPool;
         VkCommandBuffer nebula;

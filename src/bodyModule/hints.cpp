@@ -76,11 +76,11 @@ void Hints::drawHints(const Navigator* nav, const Projector* prj)
 void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
 {
 	drawData.color = body->myColor->getLabel();
-	drawData.fader = hint_fader.getInterstate();
+	drawData.color[3] = hint_fader.getInterstate();
 	Context::instance->helper->draw(&drawData);
 }
 
-void Hints::computeHints(float *&data)
+int Hints::computeHints(float *&data)
 {
 	Vec3d pos = body->screenPos;
 	float angle;
@@ -91,9 +91,17 @@ void Hints::computeHints(float *&data)
 		*(data++) = pos[0] + hintCircleRadius * sin(angle);
 		*(data++) = pos[1] + hintCircleRadius * cos(angle);
 	}
+	return nbrFacets;
 }
 
 void Hints::updateShader(double delta_time)
 {
 	hint_fader.update(delta_time);
+}
+
+void Hints::bind(VkCommandBuffer cmd, const Vec4f &color)
+{
+	pipeline->bind(cmd);
+	layout->bindSet(cmd, *Context::instance->uboSet);
+	layout->pushConstant(cmd, 0, &color);
 }
