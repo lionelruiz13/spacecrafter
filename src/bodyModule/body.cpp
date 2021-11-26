@@ -92,10 +92,10 @@ Body::Body(std::shared_ptr<Body> parent,
 	typePlanet = _typePlanet;
 	initialScale= 1.0;
 	if (parent) {
-		if (parent->getBodyType() != CENTER) is_satellite = 1; // quicker lookup
+		if (parent->getBodyType() != CENTER && !(parent->getBodyType() == SUN && !parent->parent)) is_satellite = 1; // quicker lookup
 	}
 	if (parent) {
-		if (parent->getBodyType() == CENTER) tAround = tACenter;
+		if (parent->getBodyType() == CENTER || (parent->getBodyType() == SUN && !parent->parent)) tAround = tACenter;
 		else tAround = tABody;
 	} else
 		tAround = tANothing;
