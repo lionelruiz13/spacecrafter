@@ -53,6 +53,7 @@ void Hints::createSC_context()
 	context.pipelines.emplace_back(new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout));
 	pipeline = context.pipelines.back().get();
 	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
+	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
 	pipeline->bindShader("bodyHints.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipeline->bindShader("bodyHints.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 	pipeline->bindVertex(*m_HintsGL);

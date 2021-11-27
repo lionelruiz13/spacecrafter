@@ -29,7 +29,8 @@
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
-
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
 
 SolarSystemDisplay::SolarSystemDisplay(ProtoSystem * _ssystem)
 {
@@ -137,6 +138,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 		return; // 0;
 
 	Halo::beginDraw();
+    Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
 	int nBuckets = listBuckets.size();
 
 	std::list<depthBucket>::iterator dbiter;
