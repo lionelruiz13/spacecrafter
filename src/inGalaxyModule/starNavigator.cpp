@@ -97,6 +97,8 @@ void StarNavigator::createSC_context()
 	set->bindUniform(uMat, 1);
 	context.cmdInfo.commandBufferCount = 3;
 	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+	for (int i = 0; i < 3; ++i)
+        context.frame[i]->setName(cmds[i], "StarNav " + std::to_string(i));
 	drawData = std::make_unique<SharedBuffer<VkDrawIndirectCommand>>(*context.tinyMgr);
 	*drawData = VkDrawIndirectCommand{0, 1, 0, 0};
 }

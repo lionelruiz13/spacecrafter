@@ -94,6 +94,7 @@ void Dso3d::build()
 		vertex->bind(cmds[i]);
 		vkCmdDraw(cmds[i], nbNebulae, 1, 0, 0);
 		context.frame[i]->compile(cmds[i]);
+		context.frame[i]->setName(cmds[i], "Dso3D " + std::to_string(i));
 	}
 }
 

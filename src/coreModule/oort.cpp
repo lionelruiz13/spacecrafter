@@ -133,5 +133,5 @@ void Oort::draw(double distance, const Navigator *nav) noexcept
 	*uMat = nav->getHelioToEyeMat().convert();
 	uFrag->get().fader = intensity*fader.getInterstate();
 
-	Context::instance->frame[Context::instance->frameIdx]->toExecute(Context::instance->frameIdx, PASS_BACKGROUND);
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_BACKGROUND);
 }

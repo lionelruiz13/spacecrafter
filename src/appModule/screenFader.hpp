@@ -127,7 +127,7 @@ private:
 	bool flag_change_intensity = 0;
 	double start_value, end_value;
 	float move_to_coef, move_to_mult;
-	int cmds[3];
+	int cmds[3] {-1, -1, -1};
 	std::unique_ptr<VertexArray> m_screenGL;
 	std::unique_ptr<VertexBuffer> vertex;
 	std::unique_ptr<PipelineLayout> layout;

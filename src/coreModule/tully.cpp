@@ -193,6 +193,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		vertexSquare->bind(cmd);
 		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
 		context.frame[i]->compile(cmd);
+		context.frame[i]->setName(cmd, "Tully custom " + std::to_string(i));
 
 		cmd = cmdWhiteColor[i];
 		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
@@ -204,6 +205,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		vertexSquare->bind(cmd);
 		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
 		context.frame[i]->compile(cmd);
+		context.frame[i]->setName(cmd, "Tully white " + std::to_string(i));
 	}
 
 	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + std::to_string(nbGalaxy) );

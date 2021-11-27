@@ -107,6 +107,7 @@ void ObjectBase::createShaderPointeur()
 		layoutPointer->pushConstant(cmd, 0, &bodyColor);
 		vkCmdDraw(cmd, 4, 1, 0, 0);
 		context.frame[i]->compile(cmd);
+        context.frame[i]->setName(cmd, "Pointer " + std::to_string(i));
 	}
 	for (int i = 0; i < 3; ++i) {
 		auto cmd = cmdPointer[i + 3];
@@ -117,6 +118,7 @@ void ObjectBase::createShaderPointeur()
 		layoutPointer->pushConstant(cmd, 0, &nebulaColor);
 		vkCmdDraw(cmd, 4, 1, 0, 0);
 		context.frame[i]->compile(cmd);
+		context.frame[i]->setName(cmd, "Pointer " + std::to_string(i));
 	}
 }
 

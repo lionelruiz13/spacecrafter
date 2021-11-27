@@ -100,7 +100,7 @@ private:
 	float intensity;
 	unsigned int nbAsteroids;
 	// Vulkan elements
-	VkCommandBuffer cmds[3];
+	VkCommandBuffer cmds[3] {};
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set;

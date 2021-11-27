@@ -200,6 +200,7 @@ void SkyGrid::recordDraw()
 		vertex->bind(cmd);
 		vkCmdDraw(cmd, nbPointsToDraw, 1, 0, 0);
 		context.frame[i]->compile(cmd);
+        context.frame[i]->setName(cmd, "SkyGrid " + std::to_string(i));
 	}
 }
 

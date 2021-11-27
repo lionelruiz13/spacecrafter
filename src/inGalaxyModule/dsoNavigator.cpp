@@ -110,6 +110,8 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
 
     context.cmdInfo.commandBufferCount = 3;
 	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
+    for (int i = 0; i < 3; ++i)
+        context.frame[i]->setName(cmds[i], "DsoNav " + std::to_string(i));
 }
 
 DsoNavigator::~DsoNavigator() {}
