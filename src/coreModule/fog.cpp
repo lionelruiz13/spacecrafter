@@ -69,7 +69,7 @@ void Fog::createSC_context()
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2, 1, true);
 	layout->buildLayout();
 	layout->build();
-	pipeline = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout);
+	pipeline = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, layout);
 	pipeline->setDepthStencilMode();
 	pipeline->setFrontFace();
 	pipeline->setCullMode(true);
@@ -110,7 +110,7 @@ void Fog::initShader()
 	vkAllocateCommandBuffers(VulkanMgr::instance->refDevice, &context.cmdInfo, cmds);
 	for (int i = 0; i < 3; ++i) {
 		auto cmd = cmds[i];
-		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+		context.frame[i]->begin(cmd, PASS_FOREGROUND);
 		pipeline->bind(cmd);
 		layout->bindSets(cmd, {*context.uboSet, *set}, *set);
 		vertex->bind(cmd);
@@ -129,7 +129,7 @@ void Fog::draw(const Projector* prj, const Navigator* nav)
 	*uMV = (nav->getLocalToEyeMat() * Mat4d::translation(Vec3d(0.,0.,radius*sinf(angle_shift*M_PI/180.)))).convert();
 
 	const int frameIdx = Context::instance->frameIdx;
-	Context::instance->frame[frameIdx]->toExecute(cmds[frameIdx], PASS_MULTISAMPLE_DEPTH);
+	Context::instance->frame[frameIdx]->toExecute(cmds[frameIdx], PASS_FOREGROUND);
 }
 
 void Fog::createFogMesh(double radius, double height, int slices, int stacks, float *data)

@@ -241,8 +241,10 @@ void IlluminateMgr::createSC_context()
 	m_pipelineIllum->bindShader("illuminate.frag.spv");
 	m_pipelineIllum->build();
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 3; ++i) {
 		cmds[i] = context.frame[i]->create(1);
+		context.frame[i]->setName(cmds[i], "Illuminate " + std::to_string(i));
+	}
 	buildSet();
 }
 

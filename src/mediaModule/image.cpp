@@ -193,7 +193,7 @@ void Image::createSC_context()
 	m_layoutViewport->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 4);
 	m_layoutViewport->build();
 	// Pipeline
-	m_pipelineViewport = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_FRONT, m_layoutViewport);
+	m_pipelineViewport = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, m_layoutViewport);
 	context.pipelines.emplace_back(m_pipelineViewport);
 	m_pipelineViewport->setDepthStencilMode();
 	m_pipelineViewport->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
@@ -202,7 +202,7 @@ void Image::createSC_context()
 	m_pipelineViewport->bindShader("imageViewport.frag.spv");
 	m_pipelineViewport->build();
 	for (int i = 0; i < 4; ++i) {
-		m_pipelineUnified[i] = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_FRONT, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
+		m_pipelineUnified[i] = new Pipeline(vkmgr, *context.render, PASS_FOREGROUND, i < 2 ? m_layoutUnifiedRGB : m_layoutUnifiedYUV);
 		context.pipelines.emplace_back(m_pipelineUnified[i]);
 		m_pipelineUnified[i]->setDepthStencilMode();
 		m_pipelineUnified[i]->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
@@ -217,8 +217,10 @@ void Image::createSC_context()
 	for (int i = 0; i < 4; ++i)
 		m_pipelineUnified[i]->build();
 	// CommandBuffer
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 3; ++i) {
 		cmds[i] = context.frame[i]->create(1);
+		context.frame[i]->setName(cmds[i], "Image " + std::to_string(i));
+	}
 }
 
 void Image::setAlpha(float alpha, float duration)
@@ -487,14 +489,14 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 
 void Image::beginDraw()
 {
-	cmd = Context::instance->frame[Context::instance->frameIdx]->begin(cmds[Context::instance->frameIdx], PASS_MULTISAMPLE_FRONT);
+	cmd = Context::instance->frame[Context::instance->frameIdx]->begin(cmds[Context::instance->frameIdx], PASS_FOREGROUND);
 	pipelineUsed = nullptr;
 }
 
 void Image::endDraw()
 {
 	Context::instance->frame[Context::instance->frameIdx]->compile(cmd);
-	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_FRONT);
+	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmd, PASS_FOREGROUND);
 	cmd = VK_NULL_HANDLE;
 }
 

@@ -742,8 +742,10 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 
 	// 6 * sizeof(float) is the vertex stride
 	context.transfer->planCopyBetween(staging, vertexStars->get(), nbStarsToDraw * 6 * sizeof(float));
-	if (cmds[context.frameIdx] == -1)
+	if (cmds[context.frameIdx] == -1) {
 		cmds[context.frameIdx] = context.frame[context.frameIdx]->create(1);
+		context.frame[context.frameIdx]->setName(cmds[context.frameIdx], "HipStar draw FBO");
+	}
 	VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
 	syncUse->dstDependency(cmd);
 	m_pipelineFBO->bind(cmd);

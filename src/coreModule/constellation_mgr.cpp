@@ -120,6 +120,7 @@ void ConstellationMgr::createSC_context()
 
 	for (int i = 0; i < 3; ++i) {
 		cmds[i] = context.frame[i]->create(1);
+		context.frame[i]->setName(cmds[i], "ConstellationMgr " + std::to_string(i));
 	}
 }
 

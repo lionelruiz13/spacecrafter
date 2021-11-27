@@ -850,17 +850,16 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
     }
     VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
-    if (needClearDepthBuffer) {
-        VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
-        VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
-        vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
-    }
-
 	drawOrbit(cmd, observatory,nav, prj);
 
 	drawTrail(cmd, nav, prj);
 
 	if(isVisibleOnScreen()) {
+        if (needClearDepthBuffer) {
+            VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+            VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+            vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+        }
         if (screen_sz > 5) {
             context.helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
             Halo::nextDraw(cmd);

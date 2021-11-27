@@ -88,8 +88,10 @@ void StarViewer::createLocalContext()
 {
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     Context &context = *Context::instance;
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 3; ++i) {
         cmds[i] = context.frame[i]->create(1);
+        context.frame[i]->setName(cmds[i], "StarViewer " + std::to_string(i));
+    }
     set = std::make_unique<Set>(vkmgr, *context.setMgr, layout);
     uVert = std::make_unique<SharedBuffer<s_vert>>(*context.uniformMgr);
     set->bindUniform(uVert, 0);
