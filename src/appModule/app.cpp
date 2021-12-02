@@ -578,9 +578,13 @@ void App::draw(int delta_time)
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				return;
 		}
-		vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, UINT64_MAX);
+		if (vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10*1000*1000*1000) != VK_SUCCESS) {
+			vkmgr.putLog("CRITICAL : Frame not completed after 10s (timeout)", LogType::ERROR);
+			// Ok, but... what to do then ?
+			// Can't leave, as VulkanMgr internally call vkDeviceWaitIdle on destroy, which would never end in this case
+			exit(2);
+		}
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
-		// std::cout << "Acquire frame " << context.frameIdx << "\n";
 	}
 	context.frame[context.frameIdx]->discardRecord();
 	context.setMgr->update();
