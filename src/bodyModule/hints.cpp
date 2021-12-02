@@ -71,13 +71,7 @@ void Hints::drawHints(const Navigator* nav, const Projector* prj)
 	Vec4f Color( body->myColor->getLabel(),hint_fader.getInterstate());
 	prj->printGravity180(body->planet_name_font, body->screenPos[0], body->screenPos[1], body->getSkyLabel(nav), Color,/*1,*/ tmp, tmp);
 
-	drawHintCircle(nav, prj);
-}
-
-void Hints::drawHintCircle(const Navigator* nav, const Projector* prj)
-{
-	drawData.color = body->myColor->getLabel();
-	drawData.color[3] = hint_fader.getInterstate();
+	drawData.color = Color;
 	Context::instance->helper->draw(&drawData);
 }
 
@@ -86,13 +80,13 @@ int Hints::computeHints(float *&data)
 	Vec3d pos = body->screenPos;
 	float angle;
 
-	for (int i = 0; i < nbrFacets; i++) {
+	for (int i = 0; i <= nbrFacets; i++) {
 		angle = 2.0f*M_PI*i/nbrFacets;
 		// "*(data++) = value;" is similar to "data.push_back(value);"
 		*(data++) = pos[0] + hintCircleRadius * sin(angle);
 		*(data++) = pos[1] + hintCircleRadius * cos(angle);
 	}
-	return nbrFacets;
+	return nbrFacets + 1;
 }
 
 void Hints::updateShader(double delta_time)

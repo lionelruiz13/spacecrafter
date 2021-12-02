@@ -48,8 +48,6 @@ public :
 
 	void drawHints(const Navigator* nav, const Projector* prj);
 
-	void drawHintCircle(const Navigator* nav, const Projector* prj);
-
 	void updateShader(double delta_time);
 
 	int computeHints(float *&data);

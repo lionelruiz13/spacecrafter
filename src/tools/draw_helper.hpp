@@ -58,7 +58,6 @@ typedef union {
     s_printh printh;
     struct s_hint {
         unsigned char flag;
-        float fader;
         Vec4f color;
         Hints *self;
     } hint;
