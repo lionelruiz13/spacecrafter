@@ -194,7 +194,7 @@ VkCommandBuffer DrawHelper::getCmd()
     if (!hasRecorded) {
         hasRecorded = true;
         const VkDeviceSize zero = 0;
-        frame->begin(cmd, internalSubpass);
+        frame->beginAsync(cmd, internalSubpass);
         vkCmdBindVertexBuffers(cmd, 0, 1, &Context::instance->multiVertexMgr->getBuffer(), &zero);
     }
     return cmd;

@@ -341,6 +341,7 @@ int main(int argc, char **argv)
 
 	// Log->write("EOF", LOG_TYPE::L_INFO);
 	// Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+	vulkan.reset();
 	Log->close();
 	AppSettings::close();
 

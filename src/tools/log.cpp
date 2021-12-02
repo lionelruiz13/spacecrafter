@@ -27,6 +27,7 @@
 #include <string>
 #include <time.h>
 #include <SDL2/SDL.h>
+#include "EntityCore/Core/VulkanMgr.hpp"
 
 #define LOG_EE "(EE): "
 #define LOG_WW "(WW): "
@@ -208,6 +209,29 @@ void cLog::writeConsole(const std::string& texte, const LOG_TYPE& type)
 		std::cout << ligne;
 	}
 
+}
+
+void cLog::writeECLog(const std::string &string, LogType type)
+{
+	// This class must exist while VulkanMgr exist.
+	LOG_TYPE ltype;
+	switch (type) {
+		case LogType::ERROR:
+			ltype = LOG_TYPE::L_ERROR;
+			break;
+		case LogType::WARNING:
+			ltype = LOG_TYPE::L_WARNING;
+			break;
+		case LogType::DEBUG:
+			ltype = LOG_TYPE::L_DEBUG;
+			break;
+		case LogType::INFO:
+			ltype = LOG_TYPE::L_INFO;
+			break;
+		default:
+			ltype = LOG_TYPE::L_OTHER;
+	}
+	singleton->write(string, ltype, LOG_FILE::VULKAN);
 }
 
 std::string cLog::getDate()

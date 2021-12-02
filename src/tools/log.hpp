@@ -54,9 +54,11 @@ enum class LOG_FILE : char {
 	SCRIPT,
 	SHADER,
 	TCP,
-	VULKAN,
-	VULKAN_LAYERS
+	VULKAN
 };
+
+// From VulkanMgr
+enum class LogType : unsigned char;
 
 class cLog {
 public:
@@ -121,6 +123,8 @@ public:
 	void setDirectory(const std::string &directory) {
 		logDirectory = directory;
 	}
+
+	static void writeECLog(const std::string &string, LogType type);
 private:
     static cLog *singleton;
 	cLog();
