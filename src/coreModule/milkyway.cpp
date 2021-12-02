@@ -279,5 +279,5 @@ void MilkyWay::buildZodiacal()
 
 	setZodiacal = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, layout.get(), -1, false, true);
 	if (zodiacal.tex != nullptr)
-	setZodiacal->bindTexture(zodiacal.tex->getTexture(), 0);
+		setZodiacal->bindTexture(zodiacal.tex->getTexture(), 0);
 }

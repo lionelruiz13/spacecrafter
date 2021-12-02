@@ -27,7 +27,7 @@ po/*
 *.slo
 *.lo
 *.o
-*.spv
+#*.spv
 
 # Precompiled Headers
 *.gch

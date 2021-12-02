@@ -16,5 +16,7 @@ layout (location=0) out vec4 FragColor;
 
 void main(void)
 {
-	FragColor = texture(texunit0,TexCoord) * cmag;
+	vec4 color = texture(texunit0,TexCoord);
+	color.a *= cmag;
+	FragColor = color;
 }
