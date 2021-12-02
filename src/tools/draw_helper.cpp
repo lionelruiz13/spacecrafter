@@ -353,8 +353,11 @@ void DrawHelper::drawHint(DrawData::s_hint &data)
         hintColor = data.color;
         Hints::push(cmd, hintColor);
     }
+    if (drawIdx + MAX_HINT > MAX_IDX)
+        drawIdx = 0;
     float *ptr = ((float *) Context::instance->multiVertexMgr->getPtr()) + drawIdx * 6;
     const int drawCount = data.self->computeHints(ptr);
+    assert(drawCount / 3 < MAX_HINT);
     vkCmdDraw(cmd, drawCount, 1, drawIdx * 3, 0);
     drawIdx += (drawCount + 2) / 3;
 }
@@ -377,6 +380,8 @@ void DrawHelper::drawNebula(DrawData::s_nebula &data)
     } else
         layoutNebula->bindSet(cmd, *data.set, 1);
     layoutNebula->pushConstant(cmd, 0, &data.color);
+    if (drawIdx + 4 > MAX_IDX)
+        drawIdx = 0;
     long *ptr = ((long *) Context::instance->multiVertexMgr->getPtr()) + drawIdx * 3;
     for (int i = 0; i < 12; ++i)
         ptr[i] = data.data[i];
