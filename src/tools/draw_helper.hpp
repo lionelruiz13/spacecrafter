@@ -13,7 +13,7 @@
 
 #define MAX_IDX 32*1024
 // This work while there is no more than 96 vertices, otherwise...
-#define MAX_HINT 32
+#define MAX_HINT_IDX_ 32
 
 class Hints;
 class s_texture;
