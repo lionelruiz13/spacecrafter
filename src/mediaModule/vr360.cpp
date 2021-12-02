@@ -156,6 +156,7 @@ void VR360::build()
 void VR360::setTexture(VideoTexture _tex)
 {
 	// There must be no command using this set
+	set->unGet();
 	set->bindTexture(*_tex.y, 0);
 	set->bindTexture(*_tex.u, 1);
 	set->bindTexture(*_tex.v, 2);
