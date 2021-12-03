@@ -147,8 +147,6 @@ void VR360::build()
 			default:
 				break;
 		}
-		sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
-		sync->syncOut->srcDependency(cmd);
 		context.frame[i]->compile(cmd);
 	}
 }

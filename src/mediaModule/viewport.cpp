@@ -99,8 +99,6 @@ void ViewPort::build(int frameIdx)
 		vkCmdDraw(cmd, 4, 1, 4, 0);
 		vkCmdDraw(cmd, 4, 1, 8, 0);
 	}
-	sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
-	sync->syncOut->srcDependency(cmd);
 	context.frame[frameIdx]->compile(cmd);
 }
 

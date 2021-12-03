@@ -306,7 +306,7 @@ int main(int argc, char **argv)
 	requiredFeatures.wideLines = VK_TRUE;
 	requiredFeatures.shaderFloat64 = VK_TRUE;
 	preferedFeatures.samplerAnisotropy = VK_TRUE;
-	std::unique_ptr<VulkanMgr> vulkan = std::make_unique<VulkanMgr>(APP_LOWER_NAME, VK_MAKE_API_VERSION(0, GETV(0), GETV(3), GETV(6)), sdl->getWindow(), curMin, -curMin, QueueRequirement{1, 0, 0, 1, 0}, requiredFeatures, preferedFeatures, 256, conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), conf.getBoolean(SCS_MAIN, SCK_DEBUG), conf.getBoolean(SCS_MAIN, SCK_LOG), ini->getUserDir(), 3, VK_IMAGE_USAGE_TRANSFER_SRC_BIT, true);
+	std::unique_ptr<VulkanMgr> vulkan = std::make_unique<VulkanMgr>(APP_LOWER_NAME, VK_MAKE_API_VERSION(0, GETV(0), GETV(3), GETV(6)), sdl->getWindow(), curMin, -curMin, QueueRequirement{1, 0, 0, 1, 0}, requiredFeatures, preferedFeatures, 256, conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), conf.getBoolean(SCS_MAIN, SCK_DEBUG), conf.getBoolean(SCS_MAIN, SCK_LOG), ini->getUserDir(), 3, VK_IMAGE_USAGE_TRANSFER_SRC_BIT, true, cLog::writeECLog);
 	std::unique_ptr<App> app = std::make_unique<App>(sdl.get());
 
 	// Register custom suspend and term signal handers

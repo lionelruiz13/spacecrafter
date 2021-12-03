@@ -51,7 +51,6 @@ public :
 		return isyuv;
 	}
 	void bindSet(VkCommandBuffer cmd, PipelineLayout *layout);
-	void unbindSet(VkCommandBuffer cmd);
 	void setupSync(std::shared_ptr<VideoSync> &sync);
 protected:
 	std::string type;

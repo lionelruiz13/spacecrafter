@@ -46,14 +46,6 @@ void ImageTexture::bindSet(VkCommandBuffer cmd, PipelineLayout *layout)
 	}
 }
 
-void ImageTexture::unbindSet(VkCommandBuffer cmd)
-{
-	if (sync) {
-		sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
-		sync->syncOut->srcDependency(cmd);
-	}
-}
-
 void ImageTexture::setupSync(std::shared_ptr<VideoSync> &_sync)
 {
 	sync = _sync;
