@@ -43,7 +43,7 @@ public:
     std::unique_ptr<Texture> starColorAttachment;
     std::vector<HipStarMgr *> starUsed; // nullptr if not used at this frame, otherwise a pointer to a HipStarMgr which operate a draw
     //std::vector<std::unique_ptr<SyncEvent>> starSync; // synchronize access to starColorAttachment
-    std::vector<std::unique_ptr<SyncEvent>> transferSync; // synchronize transfers
+    std::unique_ptr<SyncEvent> transferSync; // synchronize transfers
     std::unique_ptr<RenderMgr> render;
     std::vector<std::unique_ptr<FrameMgr>> frame;
     std::unique_ptr<RenderMgr> renderAlone; // Single-pass rendering without depth buffer

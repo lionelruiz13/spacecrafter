@@ -17,6 +17,7 @@
 
 class Hints;
 class s_texture;
+class VideoPlayer;
 
 enum DrawFlag {
     DRAW_PRINT = 1,
@@ -25,6 +26,7 @@ enum DrawFlag {
     DRAW_NEBULA,
     SIGNAL_PASS,
     SIGNAL_NEBULA,
+    FRAME_SUBMIT,
 };
 
 struct s_print {
@@ -54,6 +56,11 @@ struct s_sigpass {
     unsigned char subpass;
 };
 
+struct s_submit {
+    unsigned char flag;
+    unsigned char frameIdx;
+};
+
 typedef union {
     unsigned char flag;
     s_print print;
@@ -70,6 +77,7 @@ typedef union {
         long *data; // all 4 vertices
     } nebula;
     s_sigpass sigPass;
+    s_submit submit;
 } DrawData; // sizeof(DrawData) == 32
 
 /**
@@ -96,7 +104,9 @@ public:
     void endDraw();
     void beginNebulaDraw(const Mat4f &mat);
     void endNebulaDraw();
-    void submit();
+    void waitFrame(unsigned char frameIdx);
+    void submitFrame(unsigned char frameIdx);
+    void setPlayer(VideoPlayer *_player) {player = _player;}
     // Wait until the worker thread has compiled every submitted commands for this frame
     // void waitCompletionOf(int frameIdx);
 private:
@@ -113,8 +123,9 @@ private:
     VkCommandBuffer getCmd();
     void pushCommand();
     void mainloop();
+    void submit(unsigned char frameIdx);
+    VideoPlayer *player = nullptr;
     std::thread thread;
-    std::list<s_sigpass> sigpass;
     std::unique_ptr<VertexArray> vertexPrint;
     std::unique_ptr<VertexArray> vertexPrintH;
     std::unique_ptr<PipelineLayout> layoutPrint;
@@ -138,14 +149,18 @@ private:
     Vec4f hintColor;
     PipelineLayout *layoutNebula = nullptr;
     struct {
+        FrameMgr *frame = nullptr;
         VkCommandPool cmdPool;
         VkCommandBuffer nebula;
-        unsigned char intCmdIdx;
         std::vector<VkCommandBuffer> cmds;
         std::vector<VkCommandBuffer> cancelledCmds;
+        std::list<s_sigpass> sigpass;
         std::mutex waitMutex;
         // bool hasDraw; // Tell if the next command must be submitted on nextDraw/endDraw or not
+        s_submit submitData {FRAME_SUBMIT, UINT8_MAX};
         bool hasCompleted = false; // Tell if every submitted commands were compiled
+        unsigned char intCmdIdx;
+        unsigned char realFrameIdx;
     } drawer[3];
 };
 

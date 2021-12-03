@@ -462,7 +462,8 @@ public:
 	void iniColorTable();
 	void readColorTable ();
 	void setColorStarTable(int p, Vec3f a);
-	void updateFramebuffer(VkCommandBuffer cmd, VkCommandBuffer mainCmd);
+	void updateFramebuffer(VkCommandBuffer cmd);
+	void syncFramebuffer(VkCommandBuffer cmd);
 private:
 	//! Load all the stars from the files.
 	void load_data(const InitParser &conf);
@@ -540,11 +541,8 @@ private:
 	std::unique_ptr<SyncEvent> syncReuse; // Wait used before redraw
 	int sizeTexFbo;
 	bool starTrace = false;
-
-	//FBO and render buffer object ID
-	//uint32_t fboID, rbID;
-	//offscreen render texture ID
-	//uint32_t renderTextureID;
+	unsigned char lastSync;
+	unsigned char nextSync;
 };
 
 

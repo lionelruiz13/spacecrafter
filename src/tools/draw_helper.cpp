@@ -7,6 +7,8 @@
 #include "EntityCore/Resource/TileMap.hpp"
 #include "bodyModule/hints.hpp"
 #include "coreModule/nebula.hpp"
+#include "mediaModule/video_player.hpp"
+#include "starModule/hip_star_mgr.hpp"
 
 #define MAX_CMDS 16
 #define WRITE_PRINT(x, y, tx, ty) *(ptr++) = x; *(ptr++) = y; *(ptr++) = data.texture->tx; *ptr = data.texture->ty; ptr += 3
@@ -84,6 +86,9 @@ void DrawHelper::mainloop()
                     }
                 }
                 break;
+            case FRAME_SUBMIT:
+                submit(data->submit.frameIdx);
+                break;
         }
     }
     queue.release();
@@ -91,7 +96,7 @@ void DrawHelper::mainloop()
 
 void DrawHelper::beginDraw(unsigned char subpass, FrameMgr &frame)
 {
-    this->frame = &frame;
+    drawer[externalVFrameIdx].frame = &frame;
     extCmdIdx = 0;
     beginDraw(subpass);
 }
@@ -99,8 +104,8 @@ void DrawHelper::beginDraw(unsigned char subpass, FrameMgr &frame)
 void DrawHelper::beginDraw(unsigned char subpass)
 {
     externalSubpass = subpass;
-    sigpass.emplace_back(s_sigpass{.flag=SIGNAL_PASS, .subpass=subpass});
-    queue.emplace((DrawData *) &sigpass.back());
+    drawer[externalVFrameIdx].sigpass.emplace_back(s_sigpass{.flag=SIGNAL_PASS, .subpass=subpass});
+    queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back());
 }
 
 void DrawHelper::nextDraw(unsigned char subpass)
@@ -111,61 +116,38 @@ void DrawHelper::nextDraw(unsigned char subpass)
 
 void DrawHelper::endDraw()
 {
-    sigpass.emplace_back(s_sigpass{.flag=SIGNAL_PASS, .subpass=UINT8_MAX});
-    queue.emplace((DrawData *) &sigpass.back());
+    drawer[externalVFrameIdx].sigpass.emplace_back(s_sigpass{.flag=SIGNAL_PASS, .subpass=UINT8_MAX});
+    queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back());
     pushCommand();
 }
 
 void DrawHelper::pushCommand()
 {
+    auto &d = drawer[externalVFrameIdx];
     queue.flush();
-    frame->toExecute(drawer[externalVFrameIdx].cmds[extCmdIdx++], externalSubpass);
+    d.frame->toExecute(d.cmds[extCmdIdx++], externalSubpass);
 }
 
 void DrawHelper::beginNebulaDraw(const Mat4f &mat)
 {
     nebulaMat = mat;
-    sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=PASS_BACKGROUND});
-    queue.emplace((DrawData *) &sigpass.back());
+    drawer[externalVFrameIdx].sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=PASS_BACKGROUND});
+    queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back());
 }
 
 void DrawHelper::endNebulaDraw()
 {
-    sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=UINT8_MAX});
-    queue.emplace((DrawData *) &sigpass.back());
+    auto &d = drawer[externalVFrameIdx];
+    d.sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=UINT8_MAX});
+    queue.emplace((DrawData *) &d.sigpass.back());
     queue.flush();
-    frame->toExecute(drawer[externalVFrameIdx].nebula, PASS_BACKGROUND);
-}
-
-void DrawHelper::submit()
-{
-    if (!frame)
-        return;
-    // Wait completion of previous events
-    while (!drawer[externalVFrameIdx].hasCompleted) {
-        queue.flush();
-        drawer[externalVFrameIdx].waitMutex.lock();
-        drawer[externalVFrameIdx].waitMutex.unlock();
-    }
-    sigpass.clear();
-    drawer[externalVFrameIdx].hasCompleted = false;
-    frame->cancelExecution(drawer[externalVFrameIdx++].cancelledCmds);
-    externalVFrameIdx %= 3;
-    frame = nullptr;
+    d.frame->toExecute(d.nebula, PASS_BACKGROUND);
 }
 
 void DrawHelper::beginDrawCommand(unsigned char subpass)
 {
-    auto &d = drawer[internalVFrameIdx];
-    if (subpass == UINT8_MAX) {
-        // End of frame
-        d.hasCompleted = true;
-        d.waitMutex.unlock();
-        ++internalVFrameIdx;
-        internalVFrameIdx %= 3;
-    } else {
+    if (subpass != UINT8_MAX)
         internalSubpass = subpass;
-    }
 }
 
 void DrawHelper::endDrawCommand(unsigned char subpass)
@@ -173,10 +155,11 @@ void DrawHelper::endDrawCommand(unsigned char subpass)
     auto &d = drawer[internalVFrameIdx];
     if (subpass == UINT8_MAX) {
         // Start of frame
+        d.waitMutex.lock();
         vkResetCommandPool(VulkanMgr::instance->refDevice, d.cmdPool, 0);
         d.cancelledCmds.clear();
         d.intCmdIdx = 0;
-        d.waitMutex.lock();
+        frame = d.frame;
     } else {
         if (hasRecorded) {
             vkEndCommandBuffer(d.cmds[d.intCmdIdx++]);
@@ -368,7 +351,7 @@ void DrawHelper::drawNebula(DrawData::s_nebula &data)
     if (!hasRecordedNebula) {
         hasRecordedNebula = true;
         const VkDeviceSize zero = 0;
-        frame->begin(cmd, PASS_BACKGROUND);
+        frame->beginAsync(cmd, PASS_BACKGROUND);
         vkCmdBindVertexBuffers(cmd, 0, 1, &Context::instance->multiVertexMgr->getBuffer(), &zero);
         layoutNebula = Nebula::initDraw(cmd);
         if (!setNebula) {
@@ -387,4 +370,50 @@ void DrawHelper::drawNebula(DrawData::s_nebula &data)
         ptr[i] = data.data[i];
     vkCmdDraw(cmd, 4, 1, drawIdx, 0);
     drawIdx += 4;
+}
+
+void DrawHelper::waitFrame(unsigned char frameIdx)
+{
+    for (uint8_t i = 0; i < 3; ++i) {
+        if (drawer[i].submitData.frameIdx == frameIdx) {
+            while (!drawer[i].hasCompleted) {
+                queue.flush();
+                drawer[i].waitMutex.lock();
+                drawer[i].waitMutex.unlock();
+            }
+            drawer[i].submitData.frameIdx = UINT8_MAX;
+            drawer[i].hasCompleted = false;
+            return;
+        }
+    }
+}
+
+void DrawHelper::submitFrame(unsigned char frameIdx)
+{
+    drawer[externalVFrameIdx].submitData.frameIdx = frameIdx;
+    queue.emplace((DrawData *) &drawer[externalVFrameIdx++].submitData);
+    externalVFrameIdx %= 3;
+    queue.flush();
+}
+
+void DrawHelper::submit(unsigned char frameIdx)
+{
+    auto &d = drawer[internalVFrameIdx++];
+    frame->cancelExecution(d.cancelledCmds);
+    auto cmd = frame->preBegin();
+    player->recordUpdate(cmd);
+    s_texture::recordTransfer(cmd);
+    if (s_font::tileMap)
+		s_font::tileMap->uploadChanges(cmd, Implicit::SRC_LAYOUT);
+    Context::instance->transfers[frameIdx]->copy(cmd);
+    Context::instance->transferSync->placeBarrier(cmd);
+    if (Context::instance->starUsed[frameIdx])
+        Context::instance->starUsed[frameIdx]->updateFramebuffer(cmd);
+    frame->postBegin();
+    frame->submitInline();
+    frame = nullptr;
+    d.sigpass.clear();
+    d.hasCompleted = true;
+    d.waitMutex.unlock();
+    internalVFrameIdx %= 3;
 }

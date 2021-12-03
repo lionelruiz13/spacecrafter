@@ -326,7 +326,7 @@ void VideoPlayer::initTexture()
 		stagingBuffer->reset();
 		videoTexture.sync = std::make_shared<VideoSync>();
 		videoTexture.sync->syncOut = std::make_unique<SyncEvent>(VulkanMgr::instance);
-		videoTexture.sync->syncIn = std::make_unique<SyncEvent>(VulkanMgr::instance);
+		videoTexture.sync->syncIn = std::make_unique<SyncEvent>();
 		for (int i = 0; i < 3; ++i) {
 			videoTexture.tex[i]->init(widths[i], heights[i], nullptr, false, 1);
 			imageBuffers[i] = stagingBuffer->fastAcquireBuffer(widths[i] * heights[i]);
@@ -426,7 +426,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		}
 		needUpdate = false;
 	}
-	videoTexture.sync->syncIn->srcDependency(cmd);
+	videoTexture.sync->syncIn->placeBarrier(cmd);
 }
 
 void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
@@ -434,6 +434,5 @@ void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
 	if (!videoTexture.sync || !videoTexture.sync->inUse)
 		return;
 	videoTexture.sync->inUse = false;
-	videoTexture.sync->syncIn->resetDependency(cmd, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR);
 	videoTexture.sync->syncOut->srcDependency(cmd);
 }

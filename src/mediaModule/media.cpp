@@ -26,6 +26,8 @@
 #include "mediaModule/media.hpp"
 #include "tools/log.hpp"
 #include "mediaModule/subtitle.hpp"
+#include "tools/context.hpp"
+#include "tools/draw_helper.hpp"
 
 #define STEP_VOLUME 5
 
@@ -46,6 +48,7 @@ Media::Media()
 	strToVid["dual_viewport"] = VID_TYPE::V_DUALVIEWPORT;
 
 	m_videoState = {V_TYPE::V_NONE, V_STATE::V_NONE};
+	Context::instance->helper->setPlayer(player.get());
 }
 
 Media::~Media()

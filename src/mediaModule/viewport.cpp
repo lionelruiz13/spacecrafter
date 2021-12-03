@@ -89,7 +89,6 @@ void ViewPort::build(int frameIdx)
 	Context &context = *Context::instance;
 	VkCommandBuffer cmd = cmds[frameIdx];
 	context.frame[frameIdx]->begin(cmd, PASS_FOREGROUND);
-	sync->syncIn->dstDependency(cmd);
 	pipeline->bind(cmd);
 	layout->bindSet(cmd, *set);
 	vertex->bind(cmd);

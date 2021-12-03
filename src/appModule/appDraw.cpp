@@ -208,8 +208,11 @@ void AppDraw::initSplash()
     // vkEndCommandBuffer(cmd2);
     // VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &cmd2, 0, nullptr};
     // vkQueueSubmit(context.graphicQueue, 1, &submit, VK_NULL_HANDLE);
-    Texture *texPtr[] = {texture.get()};
-    context.frame[context.frameIdx]->begin(VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS, 1, texPtr, context.transferSync[context.frameIdx].get());
+    auto mainCmd = context.frame[context.frameIdx]->preBegin();
+    texture->use(mainCmd, true);
+    context.transfers[context.frameIdx]->copy(mainCmd);
+    context.transferSync->placeBarrier(mainCmd);
+    context.frame[context.frameIdx]->postBegin();
     context.frame[context.frameIdx]->submitInline();
     context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume next frame follow the previous one
 }

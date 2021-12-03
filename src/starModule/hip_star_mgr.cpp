@@ -237,7 +237,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	framebufferReuse->bind(depthID, *depthBuffer);
 	framebufferReuse->build();
 
-	syncUse = std::make_unique<SyncEvent>(&vkmgr);
+	syncUse = std::make_unique<SyncEvent>();
 	syncUse->imageBarrier(*context.starColorAttachment,
 		VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
 		VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR,
@@ -747,7 +747,6 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 		context.frame[context.frameIdx]->setName(cmds[context.frameIdx], "HipStar draw FBO");
 	}
 	VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
-	syncUse->dstDependency(cmd);
 	m_pipelineFBO->bind(cmd);
 	m_layoutFBO->bindSet(cmd, *m_setFBO);
 	vertexFBO->bind(cmd);
@@ -760,23 +759,10 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	return 0.;
 }
 
-void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd, VkCommandBuffer mainCmd)
+void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd)
 {
-	unsigned char lastSync;
-	unsigned char nextSync;
 	previousSync.pop(lastSync);
 	previousSync.pop(nextSync);
-	syncUse->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
-	switch (nextSync) {
-		case STAR_UNINITIALIZED:
-			break;
-		case STAR_CLEAR:
-			syncClear->srcDependency(mainCmd);
-			break;
-		case STAR_STORE:
-			syncReuse->srcDependency(mainCmd);
-			break;
-	}
 	switch (lastSync) {
 		case STAR_UNINITIALIZED:
 			renderPassClear->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
@@ -799,7 +785,21 @@ void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd, VkCommandBuffer mainCmd)
 	vertexStars->bind(cmd);
 	vkCmdDraw(cmd, nbStarsToDraw, 1, 0, 0);
 	vkCmdEndRenderPass(cmd);
-	syncUse->srcDependency(cmd);
+	syncUse->placeBarrier(cmd);
+}
+
+void HipStarMgr::syncFramebuffer(VkCommandBuffer cmd)
+{
+	switch (nextSync) {
+		case STAR_UNINITIALIZED:
+			break;
+		case STAR_CLEAR:
+			syncClear->srcDependency(cmd);
+			break;
+		case STAR_STORE:
+			syncReuse->srcDependency(cmd);
+			break;
+	}
 }
 
 void HipStarMgr::drawStarName( Projector* prj )

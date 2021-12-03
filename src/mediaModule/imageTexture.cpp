@@ -41,7 +41,6 @@ void ImageTexture::bindSet(VkCommandBuffer cmd, PipelineLayout *layout)
 {
 	layout->bindSet(cmd, *set);
 	if (sync) {
-		sync->syncIn->dstDependency(cmd);
 		sync->inUse = true;
 	}
 }

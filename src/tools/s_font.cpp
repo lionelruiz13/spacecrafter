@@ -71,10 +71,8 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
         auto &context = *Context::instance;
 		tileMap = new TileMap(*VulkanMgr::instance, *context.stagingMgr, "s_font");
 		tileMap->createMap(8192, 512);
-        for (auto &t : context.transferSync) {
-            t->imageBarrier(**tileMap, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
-            t->build();
-        }
+        context.transferSync->imageBarrier(**tileMap, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
+        context.transferSync->build();
 	}
 	//std::cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << std::endl;
 }

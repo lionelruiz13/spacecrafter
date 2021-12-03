@@ -132,7 +132,6 @@ void VR360::build()
 	for (int i = 0; i < 3; ++i) {
 		VkCommandBuffer cmd = cmds[i];
 		context.frame[i]->begin(cmd, PASS_BACKGROUND);
-		sync->syncIn->dstDependency(cmd);
 		pipeline->bind(cmd);
 		layout->bindSets(cmd, {*context.uboSet, *set});
 		switch(typeVR360) {

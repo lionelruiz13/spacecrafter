@@ -285,8 +285,13 @@ void App::initVulkan(InitParser &conf)
 	context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, 0, false);
 	context.render->build(3);
 	// ========== END DEFINE RENDERING ========== //
+	context.transferSync = std::make_unique<SyncEvent>();
+	context.transferSync->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+	context.transferSync->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+	context.transferSync->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+	context.transferSync->bufferBarrier(*context.indexBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_INDEX_READ_BIT_KHR);
+	context.transferSync->build();
 	context.transfers.resize(3);
-	context.transferSync.resize(3);
 	context.fences.resize(3);
 	context.debugFences.resize(3);
 	context.semaphores.resize(6);
@@ -300,12 +305,6 @@ void App::initVulkan(InitParser &conf)
 		// context.starSync[i] = std::make_unique<SyncEvent>(&vkmgr);
 		// context.starSync[i]->imageBarrier(*context.starColorAttachment, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT_KHR | VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR);
 		// context.starSync[i]->build();
-		context.transferSync[i] = std::make_unique<SyncEvent>(&vkmgr);
-		context.transferSync[i]->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
-		context.transferSync[i]->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
-		context.transferSync[i]->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
-		context.transferSync[i]->bufferBarrier(*context.indexBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_INDEX_READ_BIT_KHR);
-		context.transferSync[i]->build();
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
 		if (vkmgr.getSwapchainView().empty()) {
 			senderImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
@@ -579,6 +578,7 @@ void App::draw(int delta_time)
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 				return;
 		}
+		context.helper->waitFrame(context.lastFrameIdx);
 		if (vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000) != VK_SUCCESS) {
 			vkmgr.putLog("CRITICAL : Frame not completed after 10s (timeout)", LogType::ERROR);
 			// Ok, but... what to do then ?
@@ -610,9 +610,9 @@ void App::draw(int delta_time)
 	appDraw->drawViewportShape();
 
 	screenFader->draw();
-	context.frame[context.frameIdx]->begin(VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS, 0, nullptr, context.transferSync[context.frameIdx].get());
-	context.helper->submit();
-	context.frame[context.frameIdx]->submitInline();
+	// auto mainCmd = context.frame[context.frameIdx]->preBegin();
+	context.helper->submitFrame(context.frameIdx);
+	// context.frame[context.frameIdx]->submitInline();
 	context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume the next frame follow the previous one
 }
 
@@ -735,48 +735,26 @@ void App::switchMode(const std::string setValue) {
 
 void App::submitFrame(App *self, int id)
 {
-	VkCommandBufferBeginInfo beginInfo {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, nullptr, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, nullptr};
-	VkCommandBuffer cmd = self->context.graphicTransferCmd[id];
-	vkBeginCommandBuffer(cmd, &beginInfo);
-	self->media->playerRecordUpdate(cmd);
-	s_texture::recordTransfer(cmd);
-	if (s_font::tileMap)
-		s_font::tileMap->uploadChanges(cmd, Implicit::SRC_LAYOUT);
-	self->context.transfers[id]->copy(cmd);
-	self->context.transferSync[id]->srcDependency(cmd);
 	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();
 	vkCmdEndRenderPass(mainCmd);
 	self->media->playerRecordUpdateDependency(mainCmd);
 	if (self->context.starUsed[id]) {
-		self->context.starUsed[id]->updateFramebuffer(cmd, mainCmd);
+		self->context.starUsed[id]->syncFramebuffer(mainCmd);
 		self->context.starUsed[id] = nullptr;
 	}
-	vkEndCommandBuffer(cmd);
-
 	self->saveScreenInterface->readScreenShot(mainCmd);
-	// self->context.starSync[(id + 2) % 3]->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
-	self->context.transferSync[id]->resetDependency(mainCmd, VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT_KHR);
-	// self->context.starSync[id]->srcDependency(mainCmd);
 	vkEndCommandBuffer(mainCmd);
 
 	if (self->sender) {
-		VkCommandBuffer cmdPair[] = {cmd, mainCmd};
-		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 2, cmdPair, 0, nullptr};
+		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &mainCmd, 0, nullptr};
 		vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		self->sender->presentFrame(id);
 	} else {
 		const int lastId = (id + 2) % 3;
 		VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		VkSubmitInfo submit[2] {
-			{VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &cmd, 0, nullptr},
-			{VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + lastId], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]}
-		};
-		// std::cout << "Present frame " << id << "\n";
-		// vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.debugFences[lastId], VK_TRUE, UINT64_MAX);
-		// vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.debugFences[lastId]);
-		vkQueueSubmit(self->context.graphicQueue, 2, submit, self->context.fences[id]);
+		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + lastId], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]};
+		vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
-		// vkQueueWaitIdle(self->context.graphicQueue); // This is definetly bad, but nothing else work...
 		vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
 	}
 }
