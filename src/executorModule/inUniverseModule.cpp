@@ -39,7 +39,7 @@ InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_obser
 {
 	module = MODULE::IN_UNIVERSE;
 
-    minAltToGoDown = 1.E10;
+    minAltToGoDown = 1.E9;
     maxAltToGoUp = 1.E15;
 }
 
