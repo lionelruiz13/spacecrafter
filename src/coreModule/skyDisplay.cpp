@@ -141,7 +141,7 @@ void SkyDisplay::build()
 			VkCommandBuffer &cmd = cmds[i];
 			context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
 			pipeline->bind(cmd);
-			layout->bindSets(cmd, {*context.uboSet, *set});
+			layout->bindSets(cmd, {*context.uboSet, *set}, *set);
 			vertex->bind(cmd);
 			vkCmdDraw(cmd, m_dataSize, 1, 0, 0);
 			context.frame[i]->compile(cmd);
