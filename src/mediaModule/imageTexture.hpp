@@ -37,6 +37,7 @@ class Projector;
 class Set;
 class PipelineLayout;
 class SyncEvent;
+class Texture;
 struct VideoSync;
 
 class ImageTexture {
@@ -72,13 +73,13 @@ private:
 
 class YUVImageTexture: public ImageTexture {
 public:
-	YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV, PipelineLayout *layout);
+	YUVImageTexture(Texture *imgY, Texture *imgU, Texture *imgV, PipelineLayout *layout);
 	virtual ~YUVImageTexture();
 	virtual void getDimensions(int &img_w, int &img_h)  override;
 private:
-	s_texture* imageY = nullptr;
-	s_texture* imageU = nullptr;
-	s_texture* imageV = nullptr;
+	Texture *imageY;
+	Texture *imageU;
+	Texture *imageV;
 };
 
 #endif // _IMAGE_TEXTURE_HPP

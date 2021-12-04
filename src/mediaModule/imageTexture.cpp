@@ -31,6 +31,7 @@
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "mediaModule/media_base.hpp"
 #include "EntityCore/Resource/SyncEvent.hpp"
+#include "EntityCore/Resource/Texture.hpp"
 
 ImageTexture::ImageTexture(PipelineLayout *layout)
 {
@@ -68,23 +69,20 @@ void RBGImageTexture::getDimensions(int &img_w, int &img_h)
 	image->getDimensions(img_w, img_h);
 }
 
-YUVImageTexture::YUVImageTexture(s_texture* imgY, s_texture* imgU, s_texture* imgV, PipelineLayout *layout) : ImageTexture(layout)
+YUVImageTexture::YUVImageTexture(Texture *imgY, Texture *imgU, Texture *imgV, PipelineLayout *layout) : ImageTexture(layout)
 {
 	imageY = imgY;
 	imageU = imgU;
 	imageV = imgV;
 	type = "useYUV";
 	isyuv = true;
-	set->bindTexture(imageY->getTexture(), 0);
-	set->bindTexture(imageU->getTexture(), 1);
-	set->bindTexture(imageV->getTexture(), 2);
+	set->bindTexture(*imageY, 0);
+	set->bindTexture(*imageU, 1);
+	set->bindTexture(*imageV, 2);
 }
 
 YUVImageTexture::~YUVImageTexture()
 {
-	if (imageY != nullptr)	delete imageY;
-	if (imageU != nullptr)	delete imageU;
-	if (imageV != nullptr)	delete imageV;
 }
 
 void YUVImageTexture::getDimensions(int &img_w, int &img_h)
