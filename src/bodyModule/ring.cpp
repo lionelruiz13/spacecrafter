@@ -244,7 +244,7 @@ Ring2D::Ring2D(float _r_min, float _r_max, int _slices, int _stacks, bool h, Ver
 	r_min = _r_min;
 	r_max = _r_max;
 
-	m_dataGL = base.createBuffer(0, _stacks * (_slices + 1), Context::instance->globalBuffer.get());
+	m_dataGL = base.createBuffer(0, _stacks * (_slices + 1) * 2, Context::instance->globalBuffer.get());
 	computeRing(_slices, _stacks, h);
 }
 
