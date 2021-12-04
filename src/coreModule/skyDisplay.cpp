@@ -163,7 +163,7 @@ VkCommandBuffer SkyDisplay::getCommand()
 		needRebuild[context.frameIdx] = false;
 		context.frame[context.frameIdx]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
 		pipeline->bind(cmd);
-		layout->bindSets(cmd, {*context.uboSet, *set});
+		layout->bindSets(cmd, {*context.uboSet, *set}, *set);
 		vertex->bind(cmd);
 		vkCmdDraw(cmd, m_dataSize, 1, 0, 0);
 		context.frame[context.frameIdx]->compile(cmd);
