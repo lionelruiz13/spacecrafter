@@ -75,9 +75,9 @@ void UI::drawGravityUi(MODULE module)
 					os << " Alt: " << core->observatoryGetAltitude()/2.E+10 << "al";
 			    else //*/
 					if (module == SOLAR_SYSTEM)
-						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << "km";
+						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km";
 					else
-						os << " Alt: " << 1.057e-13 * (coreLink->observatoryGetAltitude()/1000) << "A.L.";
+						os << " Alt: " << 2.26e-11 * coreLink->observatoryGetAltitude() << " l.y.";
 			}
 		}
 
