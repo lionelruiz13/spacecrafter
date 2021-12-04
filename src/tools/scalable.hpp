@@ -27,30 +27,30 @@
  * @file    scalable.hpp
  * @author  Olivier Nivoix
  * @version 1.0
- * 
+ *
  * @section REQUIREMENTS
- * no requirement 
- * 
+ * no requirement
+ *
  * @section DESCRIPTION
- * 
- * Cette classe template met à disposition des nombres T mobiles, qui évoluent d'eux même en fonction d'une unité de mesure. 
+ *
+ * Cette classe template met à disposition des nombres T mobiles, qui évoluent d'eux même en fonction d'une unité de mesure.
  * Define T with set() function.
  * Update T with update() function.
- * 
+ *
  * @section EXAMPLE
- * 
+ *
  *  Scalable<float> a;
  *  a.set(9.f);
- * 
+ *
  * 	a = 5.f;
- * 
+ *
  *  for (int i=0; i<50; i++) {
         a.update(20);
     }
- * 	
+ *
  *  La valeur de a passera de 9. à 5. pendant duration unité de temps, ici par paquets de 20.
- *  
- * 
+ *
+ *
  */
 
 #include <ostream>
@@ -69,11 +69,14 @@ public:
 
 	~Scalable() {
 	}
-	
+
     //! Increments the internal counter of delta_time ticks
 	void update(int delta_ticks) {
-        if (!isTransiting)
+        if (!isTransiting) {
+			changedInUpdate = false;
             return;
+		}
+		changedInUpdate = true;
         counter+=delta_ticks;
 		if (counter>=duration) {
 			// Transition is over
@@ -93,18 +96,18 @@ public:
         updateCoeff = (desiredValue - currentValue) / float(duration);
         return *this;
     }
-	
+
 	//! Opératuer de comparaison
     bool operator==(T s) const {
 		return currentValue==s;
 	}
-	
-	//! Opérateur de retour 
+
+	//! Opérateur de retour
 	operator T() const {
 		return currentValue;
 	}
 
-	//! Définition de la durée du transit 
+	//! Définition de la durée du transit
 	void setDuration(int _duration) {
 		duration = _duration;
         counter = 0;
@@ -132,10 +135,10 @@ public:
 	}
 
 	bool isScaling(){
-		return isTransiting;
+		return changedInUpdate;
 	}
 
-	//! compatibilité affichage ostream 
+	//! compatibilité affichage ostream
     friend std::ostream& operator << (std::ostream & sortie, const Scalable &s) {
 		return sortie << s.currentValue;
 	}
@@ -143,11 +146,12 @@ public:
 
 protected:
     int duration;	//!< nombre total d'unité de mesure du changement
-    int counter;	//!< nombre d'unité de mesure déjà écoulée 
+    int counter;	//!< nombre d'unité de mesure déjà écoulée
 	T currentValue;	//!< valeur du scalable
 	T desiredValue; //!< valeur finale après changement
     T updateCoeff = 0;	//!< valeur représentant 1 unité de changement
-    bool isTransiting = false;	//!< booléan indiquant si on effectue un changement 
+    bool isTransiting = false;	//!< booléan indiquant si on effectue un changement
+	bool changedInUpdate = false; //!< Tell if the value has changed with last update
 };
 
 #endif // _SCALABLE_HPP__
