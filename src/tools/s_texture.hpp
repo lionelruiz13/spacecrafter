@@ -121,6 +121,7 @@ private:
 	bigTexRecap *acquireBigTexture(int resolution);
 
 	struct texRecap {
+		~texRecap();
 		unsigned long int size;
 		int width;
 		int height;
@@ -150,7 +151,9 @@ private:
 	static PushQueue<std::shared_ptr<texRecap>> textureQueue;
 	static std::atomic<long> currentAllocation; // Allocations planned but not done yet
 	static std::vector<std::shared_ptr<texRecap>> releaseMemory[3];
+	static std::vector<std::unique_ptr<Texture>> releaseTexture[3];
 	static short releaseIdx;
+	static short releaseTexIdx;
 };
 
 

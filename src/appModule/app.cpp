@@ -579,7 +579,8 @@ void App::draw(int delta_time)
 				return;
 		}
 		context.helper->waitFrame(context.lastFrameIdx);
-		if (vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000) != VK_SUCCESS) {
+		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000);
+		if (res != VK_SUCCESS) {
 			vkmgr.putLog("CRITICAL : Frame not completed after 10s (timeout)", LogType::ERROR);
 			// Ok, but... what to do then ?
 			// Can't leave, as VulkanMgr internally call vkDeviceWaitIdle on destroy, which would never end in this case
@@ -587,6 +588,7 @@ void App::draw(int delta_time)
 		}
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 	}
+	s_texture::update();
 	context.frame[context.frameIdx]->discardRecord();
 	context.setMgr->update();
 	context.transfer = context.transfers[context.frameIdx].get();

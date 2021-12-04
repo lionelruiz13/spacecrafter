@@ -52,8 +52,15 @@ std::atomic<long> s_texture::currentAllocation(0); // Allocations planned but no
 bool s_texture::loadInLowResolution = false;
 int s_texture::lowResMax = MAX_LOW_RES;
 std::vector<std::shared_ptr<s_texture::texRecap>> s_texture::releaseMemory[3];
+std::vector<std::unique_ptr<Texture>> s_texture::releaseTexture[3];
 short s_texture::releaseIdx = 0;
+short s_texture::releaseTexIdx = 0;
 
+s_texture::texRecap::~texRecap()
+{
+   if (texture)
+	   releaseTexture[releaseTexIdx].push_back(std::move(texture));
+}
 
 s_texture::s_texture(const s_texture *t)
 {
@@ -294,6 +301,9 @@ void s_texture::forceUnload()
 	releaseMemory[0].clear();
 	releaseMemory[1].clear();
 	releaseMemory[2].clear();
+	releaseTexture[0].clear();
+	releaseTexture[1].clear();
+	releaseTexture[2].clear();
 	for (auto &value : texCache) {
 		auto tex = value.second.lock();
 		if (tex) {
@@ -306,6 +316,8 @@ void s_texture::forceUnload()
 
 void s_texture::update()
 {
+	releaseTexIdx = (releaseTexIdx + 1) % 3;
+	releaseTexture[releaseTexIdx].clear();
 	for (auto &bt : bigTextures) {
 		if (bt.ready) {
 			if (--bt.lifetime == 0) {
