@@ -196,7 +196,7 @@ void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,
 	                 + mat.r[ 9]*mat.r[13]
 	                 + mat.r[10]*mat.r[14];
 
-	assert(offsetof(RingUniform, SunnySideUp) == sizeof(float) * (16*2 + (3+1)*2 + 3));
+	static_assert(offsetof(RingUniform, SunnySideUp) == sizeof(float) * (16*2 + (3+1)*2 + 3), "Invalid alignment in Ring");
 	uniform->get().LightDirection = _lightDirection;
 	uniform->get().PlanetPosition = _planetPosition;
 	uniform->get().PlanetRadius = planetRadius;
