@@ -409,7 +409,7 @@ void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, cons
 		if (offset == 0) {
 			m_pipelineArt->bind(cmd);
 			vertexArt->bind(cmd);
-			if (!submitSomething)
+			// if (!submitSomething) // It sound like previous binding are not preserved...
 				m_layoutArt->bindSet(cmd, *context.uboSet);
 			m_layoutArt->pushConstant(cmd, 0, &push, 0, sizeof(push));
 			submitSomething = true;
