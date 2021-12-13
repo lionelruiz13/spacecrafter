@@ -68,7 +68,7 @@ void ConstellationMgr::createSC_context()
 	m_layoutArt->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16);
 	m_layoutArt->build();
 	m_setArt = std::make_unique<Set>();
-	m_pipelineArt = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, m_layoutArt.get());
+	m_pipelineArt = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, m_layoutArt.get());
 	m_pipelineArt->bindVertex(*m_vertexArt);
 	m_pipelineArt->setCullMode(true);
 	m_pipelineArt->setFrontFace();
@@ -96,7 +96,7 @@ void ConstellationMgr::createSC_context()
 	m_vertexBoundary->addInput(VK_FORMAT_R32G32_SFLOAT);
 	m_vertexBoundary->addInput(VK_FORMAT_R32_SFLOAT);
 	vertexBoundary = m_vertexBoundary->createBuffer(0, 16384, context.globalBuffer.get());
-	m_pipelineBoundary = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, m_layout.get());
+	m_pipelineBoundary = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, m_layout.get());
 	m_pipelineBoundary->bindVertex(*m_vertexBoundary);
 	m_pipelineBoundary->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 	m_pipelineBoundary->setDepthStencilMode();
@@ -110,7 +110,7 @@ void ConstellationMgr::createSC_context()
 	m_vertexLines->addInput(VK_FORMAT_R32G32_SFLOAT);
 	m_vertexLines->addInput(VK_FORMAT_R32G32B32A32_SFLOAT);
 	vertexLines = m_vertexLines->createBuffer(0, 16384, context.globalBuffer.get());
-	m_pipelineLines = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, m_layout.get());
+	m_pipelineLines = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, m_layout.get());
 	m_pipelineLines->bindVertex(*m_vertexLines);
 	m_pipelineLines->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_LIST);
 	m_pipelineLines->setDepthStencilMode();
@@ -370,7 +370,7 @@ void ConstellationMgr::draw(const Projector * prj,const Navigator * nav)
 {
 	Context &context = *Context::instance;
 	FrameMgr &frame = *context.frame[context.frameIdx];
-	VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_FOREGROUND);
+	VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
 	submitSomething = false;
 	drawLines(cmd, prj);
@@ -379,7 +379,7 @@ void ConstellationMgr::draw(const Projector * prj,const Navigator * nav)
 	drawArt(cmd, prj, nav);
 	frame.compile(cmd);
 	if (submitSomething) {
-		frame.toExecute(cmd, PASS_FOREGROUND);
+		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 	}
 }
 
