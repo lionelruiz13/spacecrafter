@@ -217,6 +217,7 @@ void DrawHelper::bindPrint(VkCommandBuffer cmd)
         if (!layoutPrintH)
             init();
         auto pipeline = std::make_unique<Pipeline>(*VulkanMgr::instance, *Context::instance->render, pipelinePrint.size(), layoutPrint.get());
+        pipeline->setDepthStencilMode();
         pipeline->bindVertex(*vertexPrint);
         pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
         pipeline->bindShader("sfontPrint.vert.spv");
@@ -242,6 +243,7 @@ void DrawHelper::bindPrintH(VkCommandBuffer cmd)
         if (!layoutPrintH)
             init();
         auto pipeline = std::make_unique<Pipeline>(*VulkanMgr::instance, *Context::instance->render, pipelinePrintH.size(), layoutPrintH.get());
+        pipeline->setDepthStencilMode();
         pipeline->bindVertex(*vertexPrintH);
         pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
         pipeline->bindShader("sfontHorizontal.vert.spv");
