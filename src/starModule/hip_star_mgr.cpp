@@ -226,7 +226,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	renderPassReuse->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
 	renderPassReuse->build(1);
 
-	depthBuffer = std::make_unique<Texture>(vkmgr, vkmgr.getSwapChainExtent().width, vkmgr.getSwapChainExtent().height);
+	depthBuffer = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height);
 	depthBuffer->use();
 	framebufferClear = std::make_unique<FrameMgr>(vkmgr, *renderPassClear, 0, width, height, "hip_star single");
 	framebufferClear->bind(colorID, *context.starColorAttachment);

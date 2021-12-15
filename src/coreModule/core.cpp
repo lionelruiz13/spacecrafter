@@ -149,7 +149,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	meteors = std::make_unique<MeteorMgr>(10, 60);
 	landscape = new Landscape();
 	skyloc = std::make_unique<SkyLocalizer>(AppSettings::Instance()->getSkyCultureDir());
-	hip_stars = std::make_shared<HipStarMgr>(width,height);
+	hip_stars = std::make_shared<HipStarMgr>(VulkanMgr::instance->getScreenRect().extent.width, VulkanMgr::instance->getScreenRect().extent.height);
 	asterisms = std::make_shared<ConstellationMgr>(hip_stars);
 	illuminates= std::make_unique<IlluminateMgr>(hip_stars, navigation, asterisms);
 	oort =  std::make_unique<Oort>();
