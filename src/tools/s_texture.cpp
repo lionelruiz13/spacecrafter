@@ -423,3 +423,18 @@ void s_texture::recordTransfer(VkCommandBuffer cmd)
 	}
 	releaseIdx = (releaseIdx + 1) % 3;
 }
+
+void *s_texture::acquireContent(bool &nonPersistant)
+{
+    if (nonPersistant && texture->texture->isOnCPU())
+        return texture->texture->acquireStagingMemoryPtr();
+    nonPersistant = false;
+    int realWidth, realHeight, unused;
+    const std::string fullName = (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName)) ? textureName : texDir + textureName;
+    return stbi_load(fullName.c_str(), &realWidth, &realHeight, &unused, nbChannels);
+}
+
+void s_texture::releaseContent(void *data)
+{
+    stbi_image_free(data);
+}

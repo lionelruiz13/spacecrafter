@@ -53,7 +53,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 	:radius_min(radius_min),radius_max(radius_max)
 {
 	init = _init;
-	tex = std::make_unique<s_texture>(texname, TEX_LOAD_TYPE_PNG_ALPHA, true, true);
+	tex = std::make_unique<s_texture>(texname, TEX_LOAD_TYPE_PNG_ALPHA, true);
 }
 
 void Ring::initialize()
@@ -146,7 +146,8 @@ void Ring::createAsteroidRing()
 
 	int width, height;
 	tex->getDimensions(width, height);
-	uint8_t *pData = (uint8_t *) tex->getTexture().acquireStagingMemoryPtr();
+    bool nonPersistant = true;
+	uint8_t *pData = (uint8_t *) tex->acquireContent(nonPersistant);
 	uint8_t *pDataLoop = pData + 2; // Use blue component for uranus rings
 
 	std::vector<float> probability;
@@ -179,7 +180,8 @@ void Ring::createAsteroidRing()
 		uint8_t *tmpColor = pData + j * 4;
 		(tmp++)->set(tmpColor[0] / 255.f, tmpColor[1] / 255.f, tmpColor[2] / 255.f);
 	}
-	// tex->getTexture().releaseStagingMemoryPtr();
+    if (!nonPersistant)
+        tex->releaseContent(pData);
 }
 
 Ring::~Ring(void)
