@@ -1,0 +1,4 @@
+[submodule "src/EntityCore"]
+	path = src/EntityCore
+	url = https://github.com/Calvin-Ruiz/EntityCore.git
+	branch = main

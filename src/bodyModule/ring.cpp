@@ -53,7 +53,7 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 	:radius_min(radius_min),radius_max(radius_max)
 {
 	init = _init;
-	tex = std::make_unique<s_texture>(texname, TEX_LOAD_TYPE_PNG_ALPHA, true, true);
+	tex = std::make_unique<s_texture>(texname, TEX_LOAD_TYPE_PNG_ALPHA, true);
 }
 
 void Ring::initialize()
@@ -146,7 +146,8 @@ void Ring::createAsteroidRing()
 
 	int width, height;
 	tex->getDimensions(width, height);
-	uint8_t *pData = (uint8_t *) tex->getTexture().acquireStagingMemoryPtr();
+    bool nonPersistant = true;
+	uint8_t *pData = (uint8_t *) tex->acquireContent(nonPersistant);
 	uint8_t *pDataLoop = pData + 2; // Use blue component for uranus rings
 
 	std::vector<float> probability;
@@ -179,7 +180,8 @@ void Ring::createAsteroidRing()
 		uint8_t *tmpColor = pData + j * 4;
 		(tmp++)->set(tmpColor[0] / 255.f, tmpColor[1] / 255.f, tmpColor[2] / 255.f);
 	}
-	// tex->getTexture().releaseStagingMemoryPtr();
+    if (!nonPersistant)
+        tex->releaseContent(pData);
 }
 
 Ring::~Ring(void)
@@ -210,31 +212,30 @@ void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,
 
 	uniform->get().SunnySideUp = (h>0.0) ? 1.0 : 0.0;
 
-	pipeline->bind(cmd);
-	layout->bindSet(cmd, *set);
+	if (vertexAsteroid && obs && obs->getDistanceFromCenter() < radius_max * 10 && abs(obs->getLatitude()) < 2.) {
+			pipelineAsteroid->bind(cmd);
+			layoutAsteroid->bindSet(cmd, *setAsteroid);
+			VertexArray::bind(cmd, {bufferAsteroid, instanceAsteroid.get()});
+			vkCmdBindIndexBuffer(cmd, indexAsteroid.buffer, indexAsteroid.offset, VK_INDEX_TYPE_UINT32);
+			vkCmdDrawIndexed(cmd, indexAsteroid.size / 4, instanceAsteroid->getVertexCount(), 0, 0, 0);
+	} else {
+		pipeline->bind(cmd);
+		layout->bindSet(cmd, *set);
 
-	if (screen_sz < 30.f) {
-		if (h>0.0) lowUP->draw(cmd);
-		else lowDOWN->draw(cmd);
-	}
-	else {
-		if (screen_sz >300.f) {
-			if (h>0.0) highUP->draw(cmd);
-			else highDOWN->draw(cmd);
+		if (screen_sz < 30.f) {
+			if (h>0.0) lowUP->draw(cmd);
+			else lowDOWN->draw(cmd);
 		}
 		else {
-			if (h>0.0) mediumUP->draw(cmd);
-			else mediumDOWN->draw(cmd);
+			if (screen_sz >300.f) {
+				if (h>0.0) highUP->draw(cmd);
+				else highDOWN->draw(cmd);
+			}
+			else {
+				if (h>0.0) mediumUP->draw(cmd);
+				else mediumDOWN->draw(cmd);
+			}
 		}
-	}
-	if (vertexAsteroid == nullptr)
-		return;
-	if (obs && obs->getDistanceFromCenter() < radius_max * 10 && abs(obs->getLatitude()) < 2.) {
-		pipelineAsteroid->bind(cmd);
-		layoutAsteroid->bindSet(cmd, *setAsteroid);
-		VertexArray::bind(cmd, {bufferAsteroid, instanceAsteroid.get()});
-		vkCmdBindIndexBuffer(cmd, indexAsteroid.buffer, indexAsteroid.offset, VK_INDEX_TYPE_UINT32);
-		vkCmdDrawIndexed(cmd, indexAsteroid.size / 4, instanceAsteroid->getVertexCount(), 0, 0, 0);
 	}
 }
 

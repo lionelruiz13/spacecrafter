@@ -126,9 +126,9 @@ void SkyGrid::createBuffer()
 {
     Context &context = *Context::instance;
 
+    nbPointsToDraw = (nb_meridian * nb_alt_segment + nb_parallel * nb_azi_segment) * 2;
     vertex = m_dataGL->createBuffer(0, nbPointsToDraw, context.globalBuffer.get());
     pVertex = vertex;
-    nbPointsToDraw = (nb_meridian * nb_alt_segment + nb_parallel * nb_azi_segment) * 2;
 	float *dataSky = (float *) context.transfer->planCopy(vertex->get());
 
 	// Draw meridians
@@ -158,12 +158,12 @@ void SkyGrid::createBuffer()
         *(dataSky++) = alt_points[nm][nb_alt_segment - 1][0];
         *(dataSky++) = alt_points[nm][nb_alt_segment - 1][1];
         *(dataSky++) = alt_points[nm][nb_alt_segment - 1][2];
-        *(dataSky++) = 0.f;
+        *(dataSky++) = 1.f;
 
         *(dataSky++) = alt_points[nm][nb_alt_segment][0];
         *(dataSky++) = alt_points[nm][nb_alt_segment][1];
         *(dataSky++) = alt_points[nm][nb_alt_segment][2];
-        *(dataSky++) = 1.f;
+        *(dataSky++) = 0.f;
 	}
 
 	// Draw parallels

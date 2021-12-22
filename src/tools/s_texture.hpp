@@ -79,6 +79,14 @@ public:
 	void getDimensions(int &width, int &height) const;
 	void getDimensions(int &width, int &height, int &depth) const;
 
+	// Return pointer to texture content, modification of this memory will result in undefined behavior
+	// if nonPersistant is true and remain true after this call :
+	// - texture content MAY be invalidated at the end of this frame
+	// - you MUSTN'T call releaseContent for returned pointer
+	void *acquireContent(bool &nonPersistant);
+	// Invalidate previously acquired texture content
+	void releaseContent(void *data);
+
 	// Indique le chemin par défaut des textures par défaut.
 	static void setTexDir(const std::string& _texDir) {
 		s_texture::texDir = _texDir;

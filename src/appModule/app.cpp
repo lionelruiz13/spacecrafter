@@ -215,7 +215,7 @@ void App::initVulkan(InitParser &conf)
 	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 6*sizeof(float));
 	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*32*1024, "draw_helper BufferMgr");
 	context.setMgr = std::make_unique<SetMgr>(vkmgr, 1024, 512, 1024, 1, true);
-	context.starColorAttachment = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	context.starColorAttachment->use();
 	sampleCount = static_cast<VkSampleCountFlagBits>(antialiasing);
 	depthBuffer = std::make_unique<Texture>(vkmgr, width, height, sampleCount);
@@ -579,9 +579,9 @@ void App::draw(int delta_time)
 				return;
 		}
 		context.helper->waitFrame(context.lastFrameIdx);
-		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000);
+		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 30L*1000*1000*1000);
 		if (res != VK_SUCCESS) {
-			vkmgr.putLog("CRITICAL : Frame not completed after 10s (timeout)", LogType::ERROR);
+			vkmgr.putLog("CRITICAL : Frame not completed after 30s (timeout)", LogType::ERROR);
 			// Ok, but... what to do then ?
 			// Can't leave, as VulkanMgr internally call vkDeviceWaitIdle on destroy, which would never end in this case
 			exit(2);

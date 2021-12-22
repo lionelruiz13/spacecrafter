@@ -226,7 +226,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	renderPassReuse->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT);
 	renderPassReuse->build(1);
 
-	depthBuffer = std::make_unique<Texture>(vkmgr, vkmgr.getSwapChainExtent().width, vkmgr.getSwapChainExtent().height);
+	depthBuffer = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height);
 	depthBuffer->use();
 	framebufferClear = std::make_unique<FrameMgr>(vkmgr, *renderPassClear, 0, width, height, "hip_star single");
 	framebufferClear->bind(colorID, *context.starColorAttachment);
@@ -281,7 +281,6 @@ void HipStarMgr::createShaderParams(int width,int height)
 	m_layoutStars->setTextureLocation(0, &samplerInfo);
 	m_layoutStars->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1);
 	m_layoutStars->buildLayout();
-	m_layoutStars->setGlobalPipelineLayout(context.layouts.front().get());
 	m_layoutStars->build();
 	m_setStars = std::make_unique<Set>(vkmgr, *context.setMgr, m_layoutStars.get());
 	m_setStars->bindUniform(*UBOCam::ubo, 1);
@@ -296,6 +295,21 @@ void HipStarMgr::createShaderParams(int width,int height)
 
 	VkPipelineColorBlendAttachmentState blendMode = BLEND_ADD;
 	blendMode.colorBlendOp = blendMode.alphaBlendOp = VK_BLEND_OP_MAX;
+	VkPipelineViewportStateCreateInfo viewportState {};
+	VkViewport viewport{};
+	VkRect2D scissor{};
+	viewport.width = width;
+    viewport.height = -height;
+	viewport.y = height;
+	viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+	scissor.offset = {0, 0};
+	scissor.extent = {(uint32_t) width, (uint32_t) height};
+	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.pViewports = &viewport;
+    viewportState.scissorCount = 1;
+    viewportState.pScissors = &scissor;
 	pipelineStarsClear = std::make_unique<Pipeline>(vkmgr, *renderPassClear, 0, m_layoutStars.get());
 	pipelineStarsClear->bindVertex(*m_starsGL);
 	pipelineStarsClear->setBlendMode(blendMode);
@@ -303,6 +317,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	pipelineStarsClear->bindShader("stars.vert.spv");
 	pipelineStarsClear->bindShader("stars.geom.spv");
 	pipelineStarsClear->bindShader("stars.frag.spv");
+	pipelineStarsClear->setViewportState(&viewportState);
 	pipelineStarsClear->build();
 
 	pipelineStarsReuse = std::make_unique<Pipeline>(vkmgr, *renderPassReuse, 0, m_layoutStars.get());
@@ -312,6 +327,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	pipelineStarsReuse->bindShader("stars.vert.spv");
 	pipelineStarsReuse->bindShader("stars.geom.spv");
 	pipelineStarsReuse->bindShader("stars.frag.spv");
+	pipelineStarsReuse->setViewportState(&viewportState);
 	pipelineStarsReuse->build();
 
 	m_pipelineFBO = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, m_layoutFBO.get());
