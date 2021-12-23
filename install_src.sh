@@ -18,6 +18,7 @@ cd build
 rm * *.* -rf
 fi
 
+git submodule update --init
 cmake ..
 make $1
 sudo make install
