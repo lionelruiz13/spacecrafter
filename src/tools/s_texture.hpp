@@ -49,6 +49,9 @@
 #define TEX_LOAD_TYPE_PNG_BLEND1 7
 
 class Texture;
+class Set;
+class ComputePipeline;
+class PipelineLayout;
 
 class s_texture {
 public:
@@ -135,12 +138,16 @@ private:
 		int height;
 		int depth;
 		std::unique_ptr<Texture> texture;
+		std::vector<VkImageView> imageViews;
+		std::vector<std::unique_ptr<Set>> sets;
 		int bigTextureResolution = 0;
 		int bigTextureBinding = 0;
 		bigTexRecap *bigTexture = nullptr;
 		bool mipmap = false;
 	};
 
+	//! Initialize resources required to build 3D mipmap
+	static void init3DBuild(texRecap &tex);
 	void blend( const int, unsigned char* const, const unsigned int );
 
 	std::string textureName;
@@ -162,6 +169,9 @@ private:
 	static std::vector<std::unique_ptr<Texture>> releaseTexture[3];
 	static short releaseIdx;
 	static short releaseTexIdx;
+	static PipelineLayout *layoutMipmap;
+	static ComputePipeline *pipelineMipmap4;
+	static ComputePipeline *pipelineMipmap1;
 };
 
 

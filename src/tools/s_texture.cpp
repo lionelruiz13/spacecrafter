@@ -39,6 +39,9 @@
 #include "tools/context.hpp"
 #include "EntityCore/Core/MemoryManager.hpp"
 #include "EntityCore/Resource/Texture.hpp"
+#include "EntityCore/Resource/Set.hpp"
+#include "EntityCore/Resource/ComputePipeline.hpp"
+#include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Tools/SafeQueue.hpp"
 
 #define MAX_LOW_RES 1024*512*4
@@ -55,6 +58,9 @@ std::vector<std::shared_ptr<s_texture::texRecap>> s_texture::releaseMemory[3];
 std::vector<std::unique_ptr<Texture>> s_texture::releaseTexture[3];
 short s_texture::releaseIdx = 0;
 short s_texture::releaseTexIdx = 0;
+PipelineLayout *s_texture::layoutMipmap = nullptr;
+ComputePipeline *s_texture::pipelineMipmap4 = nullptr;
+ComputePipeline *s_texture::pipelineMipmap1 = nullptr;
 
 s_texture::texRecap::~texRecap()
 {
@@ -204,7 +210,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, int resolution
 		// 	blend(loadType, data, texture->size);
 		VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		if (mipmap)
-			usage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+			usage |= (depth == 1) ? VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_STORAGE_BIT;
 		const VkImageType imgType = (depth > 1) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
 		--_nbChannels;
 		const VkFormat format = (const VkFormat[]) {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM}[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
@@ -312,6 +318,12 @@ void s_texture::forceUnload()
 		}
 	}
 	bigTextures.clear();
+    if (layoutMipmap) {
+        delete layoutMipmap;
+        delete pipelineMipmap4;
+        delete pipelineMipmap1;
+        layoutMipmap = nullptr;
+    }
 }
 
 void s_texture::update()
@@ -413,15 +425,85 @@ void s_texture::releaseUnusedMemory()
 
 void s_texture::recordTransfer(VkCommandBuffer cmd)
 {
-	for (auto &t : releaseMemory[releaseIdx])
+	for (auto &t : releaseMemory[releaseIdx]) {
 		t->texture->detach();
+        for (auto &v : t->imageViews)
+            vkDestroyImageView(VulkanMgr::instance->refDevice, v, nullptr);
+    }
 	releaseMemory[releaseIdx].clear();
 	std::shared_ptr<texRecap> tex;
 	while (textureQueue.pop(tex)) {
-		tex->texture->use(cmd, true);
+        if (tex->depth > 1 && tex->mipmap) {
+            {
+                VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {tex->texture->getAspect(), 0, 1, 0, 1}};
+                vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+            }
+            tex->texture->use(cmd, false);
+            init3DBuild(*tex);
+            {
+                VkImageMemoryBarrier barrier[2] {
+                    {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_GENERAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {tex->texture->getAspect(), 0, 1, 0, 1}},
+                    {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, 0, VK_ACCESS_SHADER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {tex->texture->getAspect(), 1, VK_REMAINING_MIP_LEVELS, 0, 1}}
+                };
+                vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 2, barrier);
+            }
+            VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_SHADER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_GENERAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {tex->texture->getAspect(), 1, 1, 0, 1}};
+            pipelineMipmap4->bind(cmd);
+            int setIdx = 0;
+            for (int depth = tex->depth / 8; depth > 0; depth /= 2) {
+                layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
+                vkCmdDispatch(cmd, depth, depth, depth);
+                vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+                ++barrier.subresourceRange.baseMipLevel;
+            }
+            pipelineMipmap1->bind(cmd);
+            // Build 2x2x2 mipmap
+            layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
+            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+            vkCmdDispatch(cmd, 2, 2, 2);
+            // Build 1x1x1 mipmap
+            layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
+            vkCmdDispatch(cmd, 1, 1, 1);
+            // Perform final transition
+            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            barrier.subresourceRange.baseMipLevel = 0;
+            barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
+            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+        } else
+            tex->texture->use(cmd, true);
 		releaseMemory[releaseIdx].push_back(tex);
 	}
 	releaseIdx = (releaseIdx + 1) % 3;
+}
+
+void s_texture::init3DBuild(texRecap &tex)
+{
+    auto &vkmgr = *VulkanMgr::instance;
+    auto &context = *Context::instance;
+    if (!layoutMipmap) {
+        layoutMipmap = new PipelineLayout(vkmgr);
+        layoutMipmap->setImageLocation(0);
+        layoutMipmap->setImageLocation(1);
+        layoutMipmap->buildLayout();
+        layoutMipmap->build();
+        pipelineMipmap4 = new ComputePipeline(vkmgr, layoutMipmap);
+        pipelineMipmap4->bindShader("smartDepthMipmap.comp.spv");
+        pipelineMipmap4->build();
+        pipelineMipmap1 = new ComputePipeline(vkmgr, layoutMipmap);
+        pipelineMipmap1->bindShader("smartDepthMipmapMini.comp.spv");
+        pipelineMipmap1->build();
+    }
+    const int mipmaps = tex.texture->getMipmapCount();
+    tex.imageViews.reserve(mipmaps);
+    for (int i = 0; i < mipmaps; ++i)
+        tex.imageViews.push_back(tex.texture->createView(i));
+    tex.sets.reserve(mipmaps - 1);
+    for (int i = 1; i < mipmaps; ++i) {
+        tex.sets.push_back(std::make_unique<Set>(vkmgr, *context.setMgr, layoutMipmap, -1, true, true));
+        tex.sets.back()->bindStorageImage(tex.imageViews[i - 1], 0);
+        tex.sets.back()->bindStorageImage(tex.imageViews[i], 1);
+    }
 }
 
 void *s_texture::acquireContent(bool &nonPersistant)
