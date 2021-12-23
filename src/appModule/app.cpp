@@ -749,8 +749,8 @@ void App::submitFrame(App *self, int id)
 		self->context.starUsed[id] = nullptr;
 	}
 	self->saveScreenInterface->readScreenShot(mainCmd);
-	if (sender) {
-		sender->setupReadback(mainCmd, id);
+	if (self->sender) {
+		self->sender->setupReadback(mainCmd, id);
 	}
 	vkEndCommandBuffer(mainCmd);
 
