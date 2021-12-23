@@ -78,6 +78,7 @@
 #include "EntityCore/Resource/FrameSender.hpp"
 #include "EntityCore/Resource/SetMgr.hpp"
 #include "EntityCore/Resource/TileMap.hpp"
+#include "tools/NDISender.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
 Context *Context::instance = nullptr;
@@ -326,6 +327,9 @@ void App::initVulkan(InitParser &conf)
 	}
 	context.transfer = context.transfers[0].get(); // Assume the first frame is the frame 0
 	context.helper = std::make_unique<DrawHelper>();
+	if (vkmgr.getSwapchainView().empty()) {
+		sender = std::make_unique<NDISender>(vkmgr, senderImage, context.fences.data());
+	}
 	cLog::get()->write("Vulkan initialization completed", LOG_TYPE::L_INFO);
 }
 
@@ -745,6 +749,9 @@ void App::submitFrame(App *self, int id)
 		self->context.starUsed[id] = nullptr;
 	}
 	self->saveScreenInterface->readScreenShot(mainCmd);
+	if (sender) {
+		sender->setupReadback(mainCmd, id);
+	}
 	vkEndCommandBuffer(mainCmd);
 
 	if (self->sender) {
