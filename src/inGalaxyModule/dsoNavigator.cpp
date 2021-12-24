@@ -50,7 +50,7 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
     vertexArray->createBindingEntry(sizeof(dso), VK_VERTEX_INPUT_RATE_INSTANCE);
     for (int i = 0; i < 8; ++i)
         vertexArray->addInput(VK_FORMAT_R32G32B32A32_SFLOAT); // model
-    vertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT); // texOffset, coefScale
+    vertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT); // texOffset, coefScale, lod
     vertex = vertexArray->createBuffer(0, 8, context.globalBuffer.get());
     Vec3f *ptr = (Vec3f *) context.transfer->planCopy(vertex->get());
     ptr[0].set(-1,1,1); ptr[1].set(1,1,1);
@@ -153,7 +153,11 @@ void DsoNavigator::computePosition(Vec3f posI, const Projector *prj)
     bool invertMove = false;
     const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
     float rad = 1.f / dsoData[instanceCount - 1].data[1];
-    dsoData[instanceCount - 1].data[2] = (lengthSquared > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared-rad*rad)) * coef)) : 0;
+    float tmpLod = (lengthSquared > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared-rad*rad)) * coef)) : 0;
+    if (dsoData[instanceCount - 1].data[2] != tmpLod) {
+        changed = true;
+        dsoData[instanceCount - 1].data[2] = tmpLod;
+    }
     for (int i = instanceCount - 2; i >= 0 || invertMove; --i) {
         float lengthSquared2 = (dsoPos[i + invertMove] - posI).lengthSquared();
         if (invertMove) {
@@ -174,7 +178,11 @@ void DsoNavigator::computePosition(Vec3f posI, const Projector *prj)
             invertMove = false;
         } else {
             rad = 1.f / dsoData[i].data[1];
-            dsoData[i].data[2] = (lengthSquared2 > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared2-rad*rad)) * coef)) : 0;
+            tmpLod = (lengthSquared2 > rad*rad) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared2-rad*rad)) * coef)) : 0;
+            if (dsoData[i].data[2] != tmpLod) {
+                changed = true;
+                dsoData[i].data[2] = tmpLod;
+            }
             if (lengthSquared > lengthSquared2) {
                 changed = true;
                 tmpPos = dsoPos[i];

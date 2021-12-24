@@ -240,7 +240,7 @@ bool s_texture::load()
 		blend(loadType, data, texture->size);
 	} else
 		data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &realWidth, &realHeight, &unused, nbChannels));
-	if (realWidth != texture->width) {
+	if (realWidth != texture->width && texture->depth == 1) {
 		// This texture have been rescaled
 		stbi_uc *dataIn = data;
 		data = new stbi_uc[texture->size];
@@ -254,7 +254,7 @@ bool s_texture::load()
 		releaseUnusedMemory();
 		ret = texture->texture->init(texture->width, texHeight, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
 	}
-	if (realWidth != texture->width)
+	if (realWidth != texture->width && texture->depth == 1)
 		delete[] data;
 	else
 		stbi_image_free(data);
