@@ -197,8 +197,8 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, int resolution
 		texture->depth = depth;
 		texture->mipmap = mipmap;
 		texture->bigTextureResolution = resolution;
-		texture->width /= 1 << ((static_cast<int>(std::log2(texture->depth)) - 1) / 2);
-		texture->height /= 1 << (static_cast<int>(std::log2(texture->depth)) / 2);
+		texture->width /= 1 << (static_cast<int>(std::log2(texture->depth)) / 2);
+		texture->height /= 1 << ((static_cast<int>(std::log2(texture->depth)) + 1) / 2);
 		if (loadInLowResolution && depth == 1 && texture->size > lowResMax) {
 			// Scale image, don't modify the x/y ratio
 			float scale = std::sqrt(lowResMax / (float) texture->size);
@@ -248,10 +248,11 @@ bool s_texture::load()
 		stbi_image_free(dataIn);
 	}
 	// Use negated height to flip this axis
-	bool ret = texture->texture->init(texture->width, -texture->height, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
+    const auto texHeight = (texture->depth == 1) ? -texture->height : texture->height;
+	bool ret = texture->texture->init(texture->width, texHeight, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
 	if (!ret) {
 		releaseUnusedMemory();
-		ret = texture->texture->init(texture->width, -texture->height, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
+		ret = texture->texture->init(texture->width, texHeight, data, texture->mipmap, nbChannels, channelSize, VK_IMAGE_ASPECT_COLOR_BIT, VK_SAMPLE_COUNT_1_BIT, texture->depth);
 	}
 	if (realWidth != texture->width)
 		delete[] data;
@@ -459,8 +460,8 @@ void s_texture::recordTransfer(VkCommandBuffer cmd)
             pipelineMipmap1->bind(cmd);
             // Build 2x2x2 mipmap
             layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
-            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
             vkCmdDispatch(cmd, 2, 2, 2);
+            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
             // Build 1x1x1 mipmap
             layoutMipmap->bindSet(cmd, *tex->sets[setIdx++], 0, VK_PIPELINE_BIND_POINT_COMPUTE);
             vkCmdDispatch(cmd, 1, 1, 1);
