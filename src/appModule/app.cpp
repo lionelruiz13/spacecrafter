@@ -200,7 +200,7 @@ void App::initVulkan(InitParser &conf)
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	width = vkmgr.getSwapChainExtent().width;
 	height = vkmgr.getSwapChainExtent().height;
-	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 256*1024*1024, "Staging BufferMgr");
+	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 512*1024*1024, "Staging BufferMgr");
 	context.texStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 2*1024*1024*1024l, "Texture staging BufferMgr");
 	context.readbackMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, 3*4*width*height, "readback BufferMgr");
 	context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "global BufferMgr");
@@ -596,6 +596,10 @@ void App::draw(int delta_time)
 	context.frame[context.frameIdx]->discardRecord();
 	context.setMgr->update();
 	context.transfer = context.transfers[context.frameIdx].get();
+	for (auto &buffer : context.transientBuffer[context.frameIdx]) {
+		context.stagingMgr->releaseBuffer(buffer);
+	}
+	context.transientBuffer[context.frameIdx].clear();
 	s_font::beginPrint();
 
 	executor->draw(delta_time);

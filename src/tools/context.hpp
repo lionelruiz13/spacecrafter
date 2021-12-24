@@ -6,6 +6,7 @@
 #include <mutex>
 #include "EntityCore/Forward.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
+#include "EntityCore/SubBuffer.hpp"
 class HipStarMgr;
 class DrawHelper;
 class QueueFamily;
@@ -55,6 +56,7 @@ public:
     std::vector<std::unique_ptr<Pipeline>> pipelines;
     std::vector<std::unique_ptr<PipelineLayout>> layouts;
     std::vector<Pipeline *> pipelineArray;
+    std::vector<SubBuffer> transientBuffer[3];
     // Add copy from staging buffer to a buffer
     std::unique_ptr<Set> uboSet;
     // For secondary commands

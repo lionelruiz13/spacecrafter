@@ -72,7 +72,15 @@ void OjmL::initGLparam()
 	index = context.indexBufferMgr->acquireBuffer(indexCount * sizeof(int));
 	context.transfer->endPlanCopy(index, indexCount * sizeof(int));
 	vertex = context.ojmVertexArray->createBuffer(0, vertexCount, context.ojmBufferMgr.get());
-	float *data = (float *) context.transfer->planCopy(vertex->get());
+	float *data;
+	if (vertex->get().size < 16*1024*1024) {
+		data = (float *) context.transfer->planCopy(vertex->get());
+	} else {
+		SubBuffer tmpBuffer = context.stagingMgr->acquireBuffer(vertex->get().size);
+		data = (float *) context.stagingMgr->getPtr(tmpBuffer);
+		context.transfer->planCopyBetween(tmpBuffer, vertex->get());
+		context.transientBuffer[context.frameIdx].push_back(tmpBuffer);
+	}
 	vertex->fillEntry(3, vertexCount, vertices.data(), data);
 	vertex->fillEntry(2, vertexCount, uvs.data(), data + 3);
 	vertex->fillEntry(3, vertexCount, normals.data(), data + 5);
