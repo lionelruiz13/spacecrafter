@@ -115,6 +115,7 @@ private:
 		float PlanetRadius;
 		Vec3f LightDirection;
 		float SunnySideUp;
+		float fadingFactor;
 	};
 	std::unique_ptr<SharedBuffer<RingUniform>> uniform;
 

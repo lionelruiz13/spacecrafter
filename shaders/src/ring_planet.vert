@@ -15,6 +15,7 @@ layout (binding=0, set=0) uniform ubo {
 	float PlanetRadius;
 	vec3 LightDirection;
 	float SunnySideUp;
+	float fadingFactor;
 };
 
 #include <fisheye_noMV.glsl>
@@ -27,6 +28,7 @@ layout (location=1) out float PlanetHalfAngle;
 layout (location=2) out float Separation;
 layout (location=3) out float SeparationAngle;
 layout (location=4) out float NdotL;
+layout (location=5) out float fading;
 
 //out
 layout (location=0) out vec2 TexCoord;
@@ -43,6 +45,9 @@ void main()
 	vec3 modelLight = vec3(ModelViewMatrixInverse * vec4(LightDirection,1.0));
 
 	NdotL = clamp(16.0*dot(vec3(0.0, 0.0, 1.0-2.0*SunnySideUp), modelLight), -1.0, 1.0);
-
-	gl_Position = fisheyeProject(Position3D*RingScale, clipping_fov);
+	
+	vec4 outPos = fisheyeProject(Position3D*RingScale, clipping_fov);
+	// fading depend on how close we are, thus on z value
+	fading = min(1, (outPos.z * (clipping_fov[1] - clipping_fov[0]) + clipping_fov[0]) * clipping_fov[2] * fadingFactor);
+	gl_Position = outPos;
 }
