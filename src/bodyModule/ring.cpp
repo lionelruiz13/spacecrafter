@@ -212,7 +212,7 @@ void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,
 
 	uniform->get().SunnySideUp = (h>0.0) ? 1.0 : 0.0;
 
-	if (vertexAsteroid && obs && obs->getDistanceFromCenter() < radius_max * 10 && abs(obs->getLatitude()) < 20.) {
+	if (vertexAsteroid && obs && obs->getDistanceFromCenter() < radius_max * 10 /* && abs(obs->getLatitude()) < 20. */) {
 		uniform->get().fadingFactor = 10;
 		pipelineAsteroid->bind(cmd);
 		layoutAsteroid->bindSet(cmd, *setAsteroid);
