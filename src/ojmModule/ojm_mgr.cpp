@@ -185,7 +185,7 @@ void OjmMgr::rebuild()
 			continue;
 		set->setVirtualUniform(OjmVector[i]->uniform->getOffset(), virtualUniformID);
 		layout->bindSet(cmd, *set, 2);
-		tmp = OjmVector[i]->Obj3D->record(cmd, pipeline, layout.get(), pushSet.get(), tmp, firstRecord);
+		tmp = OjmVector[i]->Obj3D->record(cmd, pipeline, layout.get(), tmp, firstRecord);
 		firstRecord = false;
 	}
 	context.frame[context.frameIdx]->compile(cmd);
@@ -199,7 +199,7 @@ void OjmMgr::createShader()
 	layout = std::make_unique<PipelineLayout>(vkmgr);
 	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	layout->buildLayout();
 	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0, 1, true);
 	layout->buildLayout();
 	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 76);
@@ -216,7 +216,6 @@ void OjmMgr::createShader()
 	}
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), 2);
 	virtualUniformID = set->bindVirtualUniform(context.uniformMgr->getBuffer(), 0, sizeof(OjmContainer::uniformData));
-	pushSet = std::make_unique<Set>();
 	context.cmdInfo.commandBufferCount = 3;
 	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
 	for (int i = 0; i < 3; ++i) {

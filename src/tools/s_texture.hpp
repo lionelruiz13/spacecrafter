@@ -89,6 +89,8 @@ public:
 	void *acquireContent(bool &nonPersistant);
 	// Invalidate previously acquired texture content
 	void releaseContent(void *data);
+	// Bind texture, assume set binding is 1 and only contain one texture at binding 0
+	void bindTexture(VkCommandBuffer cmd, PipelineLayout *layout);
 
 	// Indique le chemin par défaut des textures par défaut.
 	static void setTexDir(const std::string& _texDir) {
@@ -140,6 +142,7 @@ private:
 		std::unique_ptr<Texture> texture;
 		std::vector<VkImageView> imageViews;
 		std::vector<std::unique_ptr<Set>> sets;
+		std::unique_ptr<Set> ojmSet;
 		int bigTextureResolution = 0;
 		int bigTextureBinding = 0;
 		bigTexRecap *bigTexture = nullptr;

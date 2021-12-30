@@ -96,7 +96,7 @@ private:
 	std::vector<std::unique_ptr<OjmContainer>> OjmVector;
 	std::unique_ptr<PipelineLayout> layout;
 	Pipeline *pipeline;
-	std::unique_ptr<Set> set, pushSet;
+	std::unique_ptr<Set> set;
 	bool needRebuild[3] = {true, true, true};
 	VkCommandBuffer cmds[3] {};
 	int virtualUniformID;

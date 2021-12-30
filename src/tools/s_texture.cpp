@@ -521,3 +521,12 @@ void s_texture::releaseContent(void *data)
 {
     stbi_image_free(data);
 }
+
+void s_texture::bindTexture(VkCommandBuffer cmd, PipelineLayout *layout)
+{
+    if (!texture->ojmSet) {
+        texture->ojmSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, layout, 1, true, true);
+        texture->ojmSet->bindTexture(*texture->texture, 0);
+    }
+    layout->bindSet(cmd, *texture->ojmSet, 1);
+}

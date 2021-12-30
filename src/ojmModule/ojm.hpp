@@ -51,7 +51,7 @@ public:
 
     //! @brief record Ojm draw commands
     //! @param pipelines {pipeline with texture, pipeline without texture}
-    int record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline = -1, bool firstRecorded = true);
+    int record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline = -1, bool firstRecorded = true);
 
 	//! pour debugger : print
 	void print();

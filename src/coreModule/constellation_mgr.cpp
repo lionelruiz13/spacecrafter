@@ -64,10 +64,9 @@ void ConstellationMgr::createSC_context()
 	m_layoutArt = std::make_unique<PipelineLayout>(vkmgr);
 	m_layoutArt->setGlobalPipelineLayout(context.layouts.front().get());
 	m_layoutArt->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	m_layoutArt->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	m_layoutArt->buildLayout();
 	m_layoutArt->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16);
 	m_layoutArt->build();
-	m_setArt = std::make_unique<Set>();
 	m_pipelineArt = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, m_layoutArt.get());
 	m_pipelineArt->bindVertex(*m_vertexArt);
 	m_pipelineArt->setCullMode(true);
@@ -416,9 +415,7 @@ void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, cons
 		} else
 			m_layoutArt->pushConstant(cmd, 0, &push.intensity, offsetof(typeof(push), intensity), sizeof(push.intensity));
 
-		m_setArt->clear();
-		m_setArt->bindTexture((*iter)->getTexture()->getTexture(), 0);
-		m_setArt->push(cmd, *m_layoutArt, 1);
+		(*iter)->getTexture()->bindTexture(cmd, m_layoutArt.get());
 
 		const int localSize = vecPos.size() / 2;
 		vertexArt->fillEntry(2, localSize, vecPos.data(), data);

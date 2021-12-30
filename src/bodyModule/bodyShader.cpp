@@ -47,7 +47,6 @@ drawState_t BodyShader::shaderNormalTes;
 drawState_t BodyShader::myMoon;
 
 drawState_t BodyShader::shaderArtificial;
-Set *BodyShader::pushSetShaderArtificial;
 
 
 void BodyShader::createShader()
@@ -215,14 +214,13 @@ void BodyShader::createShader()
 	context.layouts.emplace_back(shaderArtificial.layout);
 	shaderArtificial.layout->setGlobalPipelineLayout(context.layouts.front().get());
 	shaderArtificial.layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-	shaderArtificial.layout->buildLayout(VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT_KHR);
+	shaderArtificial.layout->buildLayout();
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0); // NormalMatrix
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1); // artGeom
 	shaderArtificial.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 2); // LightInfo
 	shaderArtificial.layout->buildLayout();
 	shaderArtificial.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 44);
 	shaderArtificial.layout->build();
-	pushSetShaderArtificial = new Set();
 
 	shaderArtificial.pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}};
 	context.pipelineArray.push_back(shaderArtificial.pipeline);

@@ -110,10 +110,6 @@ public:
 		return &shaderArtificial;
 	};
 
-	static Set *getPushSetShaderArtificial() {
-		return pushSetShaderArtificial;
-	}
-
 protected:
 	static drawState_t shaderBump;
 	static drawState_t shaderNight; //, shaderMoonNight;
@@ -121,7 +117,6 @@ protected:
 	static drawState_t shaderRinged;
 	static drawState_t myMoon; //, shaderMoonBump, shaderMoonNormal;
 	static drawState_t shaderArtificial;
-	static Set *pushSetShaderArtificial;
 };
 
 typedef Mat4f mat4;

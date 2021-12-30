@@ -66,6 +66,5 @@ protected :
 	std::unique_ptr<SharedBuffer<artGeom>> uProj;
 	std::unique_ptr<SharedBuffer<LightInfo>> uLight;
 	std::unique_ptr<SharedBuffer<Mat4f>> uNormalMatrix;
-	Set *pushSet;
 	bool initialized = false;
 };

@@ -81,7 +81,6 @@ void Artificial::selectShader ()
 {
 	myShader = SHADER_ARTIFICIAL;
 	drawState = BodyShader::getShaderArtificial();
-    pushSet = BodyShader::getPushSetShaderArtificial();
 }
 
 void Artificial::createSC_context()
@@ -111,7 +110,7 @@ void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navi
     uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
     drawState->layout->bindSet(cmd, *context.uboSet);
     drawState->layout->bindSet(cmd, *set, 2);
-    obj3D->record(cmd, drawState->pipeline, drawState->layout, pushSet);
+    obj3D->record(cmd, drawState->pipeline, drawState->layout);
     uProj->get().ModelViewMatrix = matrix;
     uProj->get().clipping_fov = prj->getClippingFov();
     uLight->get().Position = eye_sun;

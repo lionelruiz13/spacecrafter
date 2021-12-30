@@ -72,7 +72,7 @@ bool Ojm::testIndices()
 	return true;
 }
 
-int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, Set *set, int selectedPipeline, bool firstRecorded)
+int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline, bool firstRecorded)
 {
 	float tmp[11] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 	Texture *boundTex = nullptr;
@@ -88,12 +88,8 @@ int Ojm::record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layou
 				pipelines[0].bind(cmd);
 				selectedPipeline = 0;
 			}
-			if (&shapes[i].map_Ka->getTexture() != boundTex) {
-				set->clear();
-				boundTex = &shapes[i].map_Ka->getTexture();
-				set->bindTexture(*boundTex, 0);
-				set->push(cmd, *layout, 1);
-			}
+			if (&shapes[i].map_Ka->getTexture() != boundTex)
+				shapes[i].map_Ka->bindTexture(cmd, layout);
 		} else { // There is no texture
 			if (selectedPipeline != 1) {
 				pipelines[1].bind(cmd);

@@ -234,7 +234,7 @@ private:
 	void createSC_context();
 
 	int cmds[3] {-1, -1, -1};
-	std::unique_ptr<Set> m_setArt, m_set;
+	std::unique_ptr<Set> m_set;
 	std::unique_ptr<SharedBuffer<Vec3f>> uColor;
 	std::unique_ptr<PipelineLayout> m_layoutArt, m_layout;
 	std::unique_ptr<Pipeline> m_pipelineArt, m_pipelineBoundary, m_pipelineLines;
