@@ -113,19 +113,19 @@ Body::Body(std::shared_ptr<Body> parent,
 		tex_map = defaultTexMap;
 	}
 	else {
-		tex_map = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+		tex_map = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
 	if (_bodyTexture->tex_skin !="") {
-		tex_skin = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+		tex_skin = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
 	if (_bodyTexture->tex_norm != "") {  //preparation au bump shader
-		tex_norm = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID);
+		tex_norm = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
 	if (_bodyTexture->tex_heightmap != "") {  //preparation à la tesselation
-		tex_heightmap = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, 1);
+		tex_heightmap = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
 	nameI18 = englishName;
@@ -180,7 +180,7 @@ void Body::createTexSkin(const std::string &texName) {
 	if (tex_skin != nullptr) {
 		tex_current = tex_map;
 	}
-	tex_skin = std::make_shared<s_texture>(FilePath( texName,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+	tex_skin = std::make_shared<s_texture>(FilePath( texName,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
     changed = true;
 }
 

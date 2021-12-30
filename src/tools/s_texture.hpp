@@ -59,7 +59,7 @@ public:
 	// Otherwise, look for a texture which resolution is (resolution*1024)x(resolution*512) by adding std::to_string(resolution) + "K" before the file extension
 	// Note that a texture with lower power-of-two resolution may be querried depending to how many memory is available on the device
 	// As general rule, the lowest resolution which can be querried is 4K
-	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, int resolution = 0, int depth = 1, int nbChannels = 4, int channelSize = 1);
+	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1);
 	// création d'une texture à partir d'une texture, transmet l'ownership de la texture à s_texture
 	s_texture(const std::string& _textureName, Texture *_imgTex);
 	// destructeur de texture
@@ -118,7 +118,7 @@ public:
 	static void recordTransfer(VkCommandBuffer cmd);
 private:
 	void unload();
-	bool preload(const std::string& fullName, bool mipmap = false, int resolution = 0, int depth = 1, int nbChannels = 4, int channelSize = 1);
+	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1);
 	bool load();
 	struct bigTexRecap {
 		unsigned int binding; // Binding id, increased by 1 when getting unused

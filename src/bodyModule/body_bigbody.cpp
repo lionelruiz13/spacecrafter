@@ -73,8 +73,8 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
 	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
 {
 	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
-		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
-		tex_specular = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT);
+		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
+		tex_specular = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
 	}
     trail = std::make_unique<Trail>(this,1460);
     orbitPlot = std::make_unique<Orbit2D>(this);
@@ -112,6 +112,7 @@ void BigBody::selectShader ()
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     Context &context = *Context::instance;
     changed = false;
+    bigSet.reset();
     if (tex_night && tex_heightmap) { //night Shader with tessellation
 		myShader = SHADER_NIGHT_TES; // myEarth
 		drawState = BodyShader::getShaderNightTes();
@@ -276,7 +277,7 @@ void BigBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigat
         selectShader();
     drawState->pipeline[pipelineOffset].bind(cmd);
     currentObj->bind(cmd);
-    drawState->layout->bindSets(cmd, {*set.get(), *Context::instance->uboSet});
+    drawState->layout->bindSets(cmd, {getSet(screen_sz), *Context::instance->uboSet});
 
     Mat4f matrix=mat.convert();
 	matrix = matrix * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
@@ -396,4 +397,136 @@ void BigBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneRep
         //StateGL::disable(GL_DEPTH_TEST);
 	}
 
+}
+
+Set &BigBody::getSet(float screen_sz)
+{
+    if (screen_sz < 180)
+        return *set;
+    switch (myShader) {
+        case SHADER_NIGHT_TES: {
+            auto tex0 = tex_current->getBigTexture(); // 5
+            auto tex1 = tex_eclipse_map->getBigTexture(); // 6
+            auto tex2 = tex_night->getBigTexture(); // 7
+            auto tex3 = tex_specular->getBigTexture(); // 8
+            auto tex4 = tex_heightmap->getBigTexture(); // 11
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2 && tex3 && tex4))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2 && tex3 && tex4) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindUniform(uGlobalTescGeom, 2);
+                    bigSet->bindTexture(*tex0, 5);
+                    bigSet->bindTexture(*tex1, 6);
+                    bigSet->bindTexture(*tex2, 7);
+                    bigSet->bindTexture(*tex3, 8);
+                    bigSet->bindTexture(*tex4, 11);
+                }
+            }
+            break;
+        }
+        case SHADER_NIGHT: {
+            auto tex0 = tex_current->getBigTexture(); // 2
+            auto tex1 = tex_eclipse_map->getBigTexture(); // 3
+            auto tex2 = tex_night->getBigTexture(); // 4
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindTexture(*tex0, 2);
+                    bigSet->bindTexture(*tex1, 3);
+                    bigSet->bindTexture(*tex2, 4);
+                }
+            }
+            break;
+        }
+        case SHADER_BUMP: {
+            auto tex0 = tex_current->getBigTexture(); // 3
+            auto tex1 = tex_norm->getBigTexture(); // 4
+            auto tex2 = tex_eclipse_map->getBigTexture(); // 5
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindUniform(uUmbraColor, 2);
+                    bigSet->bindTexture(*tex0, 3);
+                    bigSet->bindTexture(*tex1, 4);
+                    bigSet->bindTexture(*tex2, 5);
+                }
+            }
+            break;
+        }
+        case SHADER_RINGED: {
+            auto tex0 = tex_current->getBigTexture(); // 4
+            auto tex1 = tex_eclipse_map->getBigTexture(); // 5
+            if (bigSet) {
+                if (!(tex0 && tex1))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindUniform(uModelViewMatrixInverse, 2);
+                    bigSet->bindUniform(uRingFrag, 3);
+                    bigSet->bindTexture(*tex0, 4);
+                    bigSet->bindTexture(*tex1, 5);
+                    bigSet->bindTexture(rings->getTexTexture(), 6);
+                }
+            }
+            break;
+        }
+        case SHADER_NORMAL_TES: {
+            auto tex0 = tex_heightmap->getBigTexture(); // 5
+            auto tex1 = tex_current->getBigTexture(); // 6
+            auto tex2 = tex_eclipse_map->getBigTexture(); // 7
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindUniform(uGlobalTescGeom, 2);
+                    bigSet->bindTexture(*tex0, 5);
+                    bigSet->bindTexture(*tex1, 6);
+                    bigSet->bindTexture(*tex2, 7);
+                }
+            }
+            break;
+        }
+        case SHADER_NORMAL: {
+            auto tex0 = tex_current->getBigTexture(); // 2
+            auto tex1 = tex_eclipse_map->getBigTexture(); // 3
+            if (bigSet) {
+                if (!(tex0 && tex1))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindTexture(*tex0, 2);
+                    bigSet->bindTexture(*tex1, 3);
+                }
+            }
+            break;
+        }
+        default:
+            // Not handled !
+            return *set;
+    }
+    return bigSet ? *bigSet : *set;
 }

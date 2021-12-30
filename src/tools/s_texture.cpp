@@ -76,7 +76,7 @@ s_texture::s_texture(const s_texture *t)
 	texture = t->texture;
 }
 
-s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, int resolution, int depth, int nbChannels, int channelSize) : textureName(_textureName),
+s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize) : textureName(_textureName),
 	loadType(PNG_BLEND1), loadWrapping(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
 {
 	switch (_loadType) {
@@ -175,7 +175,7 @@ void s_texture::createEmptyTex()
 	}
 }
 
-bool s_texture::preload(const std::string& fullName, bool mipmap, int resolution, int depth, int _nbChannels, int _channelSize)
+bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolution, int depth, int _nbChannels, int _channelSize)
 {
 	auto &tex = texCache[fullName];
 	nbChannels = _nbChannels;
@@ -363,7 +363,7 @@ Texture *s_texture::getBigTexture()
 		}
 		texture->bigTexture = nullptr;
 	}
-	texture->bigTexture = acquireBigTexture(texture->bigTextureResolution);
+	// texture->bigTexture = acquireBigTexture(texture->bigTextureResolution);
 	if (texture->bigTexture && texture->bigTexture->ready)
 		return texture->bigTexture->texture.get();
 	return nullptr;
