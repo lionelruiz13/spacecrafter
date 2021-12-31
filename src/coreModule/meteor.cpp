@@ -223,7 +223,7 @@ bool Meteor::update(int delta_time)
 }
 
 
-// returns true if visible
+// returns true if drawn
 bool Meteor::draw(Projector *proj, Navigator* nav, float *&data) //ce prototype va changer
 {
 	if (!alive) return(false);
@@ -247,7 +247,7 @@ bool Meteor::draw(Projector *proj, Navigator* nav, float *&data) //ce prototype 
 	int t2 = proj->projectLocalCheck(epos/1216, end);
 
 	// don't draw if not visible (but may come into view)
-	if ( t1 + t2 == 0 ) return true;
+	if ( t1 + t2 == 0 ) return false; // return false because not drawn
 	//  printf("[%f %f %f] (%d, %d) (%d, %d)\n", position[0], position[1], position[2], (int)start[0], (int)start[1], (int)end[0], (int)end[1]);
 
 	// connect this point with last drawn point

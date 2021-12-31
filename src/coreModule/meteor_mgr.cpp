@@ -141,8 +141,8 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	int nbMeteor = 0;
 	float *data = (float *) context.transfer->beginPlanCopy(MAX_METEOR * 3 * (5 * sizeof(float)));
 	for (auto& iter : m_activeMeteor) {
-    	iter->draw(proj, nav, data);
-		++nbMeteor;
+    	if (iter->draw(proj, nav, data))
+			++nbMeteor;
 	}
 	if (nbMeteor > MAX_METEOR)
 		nbMeteor = MAX_METEOR;
