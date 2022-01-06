@@ -139,7 +139,7 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	Context &context = *Context::instance;
 
 	int nbMeteor = 0;
-	float *data = (float *) context.transfer->beginPlanCopy(MAX_METEOR * 3 * (5 * sizeof(float)));
+	float *data = (float *) context.transfer->beginPlanCopy(MAX_METEOR * 3 * (6 * sizeof(float)));
 	for (auto& iter : m_activeMeteor) {
     	if (iter->draw(proj, nav, data))
 			++nbMeteor;
@@ -147,7 +147,7 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 	if (nbMeteor > MAX_METEOR)
 		nbMeteor = MAX_METEOR;
 
-	context.transfer->endPlanCopy(vertex->get(), nbMeteor * 3 * (5 * sizeof(float)));
+	context.transfer->endPlanCopy(vertex->get(), nbMeteor * 3 * (6 * sizeof(float)));
 	if (nbMeteor) {
 		*pNbVertex[context.frameIdx] = nbMeteor * 4;
 		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_FRONT);
