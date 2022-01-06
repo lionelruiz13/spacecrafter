@@ -1534,8 +1534,12 @@ void Core::setHomePlanet(const std::string &planet)
 		result =  ssystemFactory->switchToAnchor(planet);
 	if (result) {
 		setLandscapeToBody();
-		// il faut obtenir ici la planete sur laquelle on se trouve pour accéder au champ modelAtmosphere qui se trouve dans AtmosphereParams du Body en question
-		atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
+		if (observatory->getHomeBody()) {
+			// il faut obtenir ici la planete sur laquelle on se trouve pour accéder au champ modelAtmosphere qui se trouve dans AtmosphereParams du Body en question
+			atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
+		} else {
+			cLog::get()->write("Can't setup Atmosphere : No home body", LOG_TYPE::L_WARNING);
+		}
 	}
 }
 
