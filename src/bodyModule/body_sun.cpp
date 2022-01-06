@@ -300,7 +300,28 @@ void Sun::defineSunSet()
     descriptorSetSun->bindTexture(tex_current->getTexture(), 1);
     descriptorSetSun->bindUniform(uclipping_fov, 2);
     descriptorSetSun->bindUniform(uPlanetScaledRadius, 3);
+    bigSet.reset();
     changed = false;
+}
+
+Set &Sun::getSet(float screen_sz)
+{
+    if (screen_sz < 180)
+        return *descriptorSetSun;
+    auto tex0 = tex_current->getBigTexture();
+    if (bigSet) {
+        if (!tex0)
+            bigSet.reset();
+    } else {
+        if (tex0) {
+            bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, layoutSun.get(), -1, true, true);
+            bigSet->bindUniform(uModelViewMatrix, 0);
+            bigSet->bindTexture(*tex0, 1);
+            bigSet->bindUniform(uclipping_fov, 2);
+            bigSet->bindUniform(uPlanetScaledRadius, 3);
+        }
+    }
+    return bigSet ? *bigSet : *descriptorSetSun;
 }
 
 void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
@@ -315,6 +336,6 @@ void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator *
 
     pipelineSun->bind(cmd);
     currentObj->bind(cmd);
-    layoutSun->bindSets(cmd, {*descriptorSetSun->get(), *context.uboSet->get()});
+    layoutSun->bindSets(cmd, {getSet(screen_sz), *context.uboSet});
 	currentObj->draw(cmd, screen_sz);
 }

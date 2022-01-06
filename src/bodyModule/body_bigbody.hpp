@@ -85,7 +85,6 @@ protected :
 	std::unique_ptr<Ring> rings=nullptr;
 	int pipelineOffset = 0; // pipeline to select inside drawState
 	std::unique_ptr<Set> set;
-	std::unique_ptr<Set> bigSet;
 	std::unique_ptr<SharedBuffer<globalVertProj>> uGlobalVertProj; // night bump normal tes
 	std::unique_ptr<SharedBuffer<globalFrag>> uGlobalFrag; // night bump normal
 	std::unique_ptr<SharedBuffer<Vec3f>> uUmbraColor; // bump

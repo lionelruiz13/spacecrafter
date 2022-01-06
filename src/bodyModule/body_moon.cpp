@@ -117,7 +117,80 @@ void Moon::defineSet()
             break;
         default:;
     }
+    bigSet.reset();
     changed = false;
+}
+
+Set &Moon::getSet(float screen_sz)
+{
+    if (screen_sz < 180)
+        return *set;
+    switch (myShader) {
+        case SHADER_MOON_NORMAL_TES: {
+            auto tex0 = tex_current->getBigTexture();
+            auto tex1 = tex_norm->getBigTexture();
+            auto tex2 = tex_eclipse_map->getBigTexture();
+            auto tex3 = tex_heightmap->getBigTexture();
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2 && tex3))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2 && tex3) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uMoonFrag, 1);
+                    bigSet->bindUniform(uGlobalTescGeom, 2);
+                    bigSet->bindTexture(*tex0, 5);
+                    bigSet->bindTexture(*tex1, 6);
+                    bigSet->bindTexture(*tex2, 7);
+                    bigSet->bindTexture(*tex3, 8);
+                }
+            }
+            break;
+        }
+        case SHADER_MOON_NIGHT:
+        case SHADER_MOON_NORMAL: {
+            auto tex0 = tex_current->getBigTexture();
+            auto tex1 = tex_eclipse_map->getBigTexture();
+            if (bigSet) {
+                if (!(tex0 && tex1))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindTexture(*tex0, 2);
+                    bigSet->bindTexture(*tex1, 3);
+                }
+            }
+            break;
+        }
+        case SHADER_MOON_BUMP: {
+            auto tex0 = tex_current->getBigTexture();
+            auto tex1 = tex_norm->getBigTexture();
+            auto tex2 = tex_eclipse_map->getBigTexture();
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindUniform(uUmbraColor, 2);
+                    bigSet->bindTexture(*tex0, 3);
+                    bigSet->bindTexture(*tex1, 4);
+                    bigSet->bindTexture(*tex2, 5);
+                }
+            }
+            break;
+        }
+        default:
+            // Not handled !
+            return *set;
+    }
+    return bigSet ? *bigSet : *set;
 }
 
 void Moon::selectShader()
@@ -168,7 +241,7 @@ void Moon::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator 
 
     drawState->pipeline->bind(cmd);
     currentObj->bind(cmd);
-    drawState->layout->bindSets(cmd, {*set.get(), *Context::instance->uboSet});
+    drawState->layout->bindSets(cmd, {getSet(screen_sz), *Context::instance->uboSet});
 
     Vec3f tmp= v3fNull;
 	Vec3f tmp2(0.4, 0.12, 0.0);

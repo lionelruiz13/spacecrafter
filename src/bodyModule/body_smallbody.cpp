@@ -105,7 +105,57 @@ void SmallBody::defineSet()
     }
     set->bindUniform(uGlobalVertProj, 0);
     set->bindUniform(uGlobalFrag, 1);
+    bigSet.reset();
     changed = false;
+}
+
+Set &SmallBody::getSet(float screen_sz)
+{
+    if (screen_sz < 180)
+        return *set;
+    switch (myShader) {
+        case SHADER_BUMP: {
+            auto tex0 = tex_current->getBigTexture(); // 3
+            auto tex1 = tex_norm->getBigTexture(); // 4
+            auto tex2 = tex_eclipse_map->getBigTexture(); // 5
+            if (bigSet) {
+                if (!(tex0 && tex1 && tex2))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1 && tex2) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindUniform(uUmbraColor, 2);
+                    bigSet->bindTexture(*tex0, 3);
+                    bigSet->bindTexture(*tex1, 4);
+                    bigSet->bindTexture(*tex2, 5);
+                }
+            }
+            break;
+        }
+        case SHADER_NORMAL: {
+            auto tex0 = tex_current->getBigTexture(); // 2
+            auto tex1 = tex_eclipse_map->getBigTexture(); // 3
+            if (bigSet) {
+                if (!(tex0 && tex1))
+                    bigSet.reset();
+            } else {
+                if (tex0 && tex1) {
+                    bigSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, drawState->layout, -1, true, true);
+                    bigSet->bindUniform(uGlobalVertProj, 0);
+                    bigSet->bindUniform(uGlobalFrag, 1);
+                    bigSet->bindTexture(*tex0, 2);
+                    bigSet->bindTexture(*tex1, 3);
+                }
+            }
+            break;
+        }
+        default:
+            // Not handled !
+            return *set;
+    }
+    return bigSet ? *bigSet : *set;
 }
 
 void SmallBody::selectShader ()
@@ -142,7 +192,7 @@ void SmallBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navig
 
     drawState->pipeline->bind(cmd);
     currentObj->bind(cmd);
-    drawState->layout->bindSets(cmd, {*set.get(), *Context::instance->uboSet});
+    drawState->layout->bindSets(cmd, {getSet(screen_sz), *Context::instance->uboSet});
 
 	//load specific values for shader
     Mat4f matrix = mat.convert() * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));

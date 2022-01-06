@@ -66,7 +66,7 @@ class Navigator;
 class Projector;
 class Observatory;
 class Observer;
-
+class Set;
 class BodyColor;
 
 
@@ -497,6 +497,7 @@ protected:
 	std::shared_ptr<s_texture> tex_norm=nullptr;			// Body normal map
 	std::shared_ptr<s_texture> tex_heightmap=nullptr;		// Body height map for Tessellation
 	std::shared_ptr<s_texture> tex_current=nullptr;		// current body texture to display
+	std::unique_ptr<Set> bigSet;
 
 	Vec3f eye_sun;
 	Vec3f eye_planet;

@@ -86,6 +86,8 @@ protected:
 
 	void selectShader() {};
 	void defineSunSet();
+	//! Return set to bind, may change at every frame
+	Set &getSet(float screen_sz);
 	void buildHaloCmd();
 
 	//variables
