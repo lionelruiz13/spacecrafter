@@ -35,6 +35,7 @@
 #include <memory>
 #include "EntityCore/Tools/SafeQueue.hpp"
 #include <vulkan/vulkan.h>
+#include <thread>
 
 //TODO supprimer cela et les remplacer par un enum class
 #define PNG_ALPHA  0
@@ -118,20 +119,27 @@ public:
 	static void releaseUnusedMemory();
 	// Record transfer of every newly created textures
 	static void recordTransfer(VkCommandBuffer cmd);
+	// Display information about active big textures
+	static void debugBigTexture();
 private:
 	void unload();
 	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1);
 	bool load();
+	bool load(unsigned char *data, int realWidth, int realHeight);
 	struct bigTexRecap {
 		unsigned int binding; // Binding id, increased by 1 when getting unused
-		int resolution;
+		unsigned short width;
+		unsigned short height;
 		std::unique_ptr<Texture> texture;
 		std::string texName; // Name of the texture to load
 		unsigned char lifetime = 0; // Number of frames before releasing this bigTexture
+		unsigned char formatIdx;
 		bool ready = false; // Is this texture ready for use
 		bool acquired = false; // Is this texture currently acquired
 	};
-	bigTexRecap *acquireBigTexture(int resolution);
+	bigTexRecap *acquireBigTexture();
+	bigTexRecap *acquireBigTexture(int width, int height);
+	static void bigTextureLoader();
 
 	struct texRecap {
 		~texRecap();
@@ -143,10 +151,12 @@ private:
 		std::vector<VkImageView> imageViews;
 		std::vector<std::unique_ptr<Set>> sets;
 		std::unique_ptr<Set> ojmSet;
-		int bigTextureResolution = 0;
-		int bigTextureBinding = 0;
-		bigTexRecap *bigTexture = nullptr;
+		unsigned int bigTextureBinding = 0;
+		unsigned short bigWidth = 0;
+		unsigned short bigHeight = 0;
+		unsigned short bigDepth = 1; // Not implemented yet
 		bool mipmap = false;
+		bigTexRecap *bigTexture = nullptr;
 	};
 
 	//! Initialize resources required to build 3D mipmap
@@ -162,12 +172,17 @@ private:
 
 	static std::string texDir;
 	static bool loadInLowResolution;
-	static int lowResMax;
+	static unsigned int lowResMax;
+	static unsigned int minifyMax; // Maximal size of texture preview
+	static bool releaseThisFrame; // Tell if releaseUnusedMemory have been called in this frame
 	static std::map<std::string, std::weak_ptr<texRecap>> texCache;
 	static std::list<bigTexRecap> bigTextures;
-	static PushQueue<bigTexRecap *, 31> bigTextureQueue;
+	static std::list<bigTexRecap> droppedBigTextures; // Big texture which have been freed
+	static WorkQueue<bigTexRecap *, 31> bigTextureQueue;
 	static PushQueue<std::shared_ptr<texRecap>> textureQueue;
-	static std::atomic<long> currentAllocation; // Allocations planned but not done yet
+	static PushQueue<std::unique_ptr<Texture>> droppedTextureQueue;
+	static PushQueue<VkImage> bigTextureReady; // Read textures ready for use
+	static std::atomic<long> currentAllocation; // Allocations/frees planned but not done yet
 	static std::vector<std::shared_ptr<texRecap>> releaseMemory[3];
 	static std::vector<std::unique_ptr<Texture>> releaseTexture[3];
 	static short releaseIdx;
@@ -175,7 +190,10 @@ private:
 	static PipelineLayout *layoutMipmap;
 	static ComputePipeline *pipelineMipmap4;
 	static ComputePipeline *pipelineMipmap1;
+	static std::thread bigTextureThread;
+	static VkFence uploadFence;
+	static bool asyncUpload;
+	static VkImageMemoryBarrier bigBarrier;
 };
-
 
 #endif // _S_TEXTURE_H_

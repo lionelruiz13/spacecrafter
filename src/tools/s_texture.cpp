@@ -28,6 +28,8 @@
 #include <stdlib.h>
 #include "stb_image.h"
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
+// We need bilinear sampling, and it seemed to be the closest of it
+#define STBIR_DEFAULT_FILTER_DOWNSAMPLE STBIR_FILTER_TRIANGLE
 #include "stb_image_resize.h"
 #include <exception>
 #include "tools/call_system.hpp"
@@ -43,17 +45,23 @@
 #include "EntityCore/Resource/ComputePipeline.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Tools/SafeQueue.hpp"
+#include "EntityCore/Core/BufferMgr.hpp"
 
 #define MAX_LOW_RES 1024*512*4
 
 std::string s_texture::texDir = "./";
 std::map<std::string, std::weak_ptr<s_texture::texRecap>> s_texture::texCache;
 std::list<s_texture::bigTexRecap> s_texture::bigTextures;
-PushQueue<s_texture::bigTexRecap *, 31> s_texture::bigTextureQueue;
+std::list<s_texture::bigTexRecap> s_texture::droppedBigTextures;
+WorkQueue<s_texture::bigTexRecap *, 31> s_texture::bigTextureQueue;
 PushQueue<std::shared_ptr<s_texture::texRecap>> s_texture::textureQueue;
+PushQueue<std::unique_ptr<Texture>> s_texture::droppedTextureQueue;
+PushQueue<VkImage> s_texture::bigTextureReady;
 std::atomic<long> s_texture::currentAllocation(0); // Allocations planned but not done yet
 bool s_texture::loadInLowResolution = false;
-int s_texture::lowResMax = MAX_LOW_RES;
+unsigned int s_texture::lowResMax = MAX_LOW_RES;
+unsigned int s_texture::minifyMax = 4*1024*1024; // Maximal size of texture preview
+bool s_texture::releaseThisFrame = true;
 std::vector<std::shared_ptr<s_texture::texRecap>> s_texture::releaseMemory[3];
 std::vector<std::unique_ptr<Texture>> s_texture::releaseTexture[3];
 short s_texture::releaseIdx = 0;
@@ -61,6 +69,11 @@ short s_texture::releaseTexIdx = 0;
 PipelineLayout *s_texture::layoutMipmap = nullptr;
 ComputePipeline *s_texture::pipelineMipmap4 = nullptr;
 ComputePipeline *s_texture::pipelineMipmap1 = nullptr;
+std::thread s_texture::bigTextureThread;
+VkFence s_texture::uploadFence = VK_NULL_HANDLE;
+bool s_texture::asyncUpload = true;
+VkImageMemoryBarrier s_texture::bigBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, {VK_IMAGE_ASPECT_COLOR_BIT, 0, VK_REMAINING_MIP_LEVELS, 0, 1}};
+
 
 s_texture::texRecap::~texRecap()
 {
@@ -184,21 +197,33 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 		int channels;
 		texture = std::make_shared<texRecap>();
 		stbi_uc *data;
+        int realWidth, realHeight;
 		if (channelSize == 1)
-		 	data = stbi_load(fullName.c_str(), &texture->width, &texture->height, &channels, nbChannels);
+		 	data = stbi_load(fullName.c_str(), &realWidth, &realHeight, &channels, nbChannels);
 		else
-			data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &texture->width, &texture->height, &channels, nbChannels));
+			data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &realWidth, &realHeight, &channels, nbChannels));
 		if (!data) {
 			cLog::get()->write("s_texture: could not load " + fullName , LOG_TYPE::L_ERROR);
 			return false;
 		}
 		tex = texture;
-		texture->size = texture->width * texture->height * nbChannels * channelSize;
 		texture->depth = depth;
 		texture->mipmap = mipmap;
-		texture->bigTextureResolution = resolution;
-		texture->width /= 1 << (static_cast<int>(std::log2(texture->depth)) / 2);
-		texture->height /= 1 << ((static_cast<int>(std::log2(texture->depth)) + 1) / 2);
+        if (resolution && (unsigned int) (realWidth * realHeight *4+2)/3 * nbChannels * channelSize > minifyMax) {
+            texture->bigWidth = realWidth;
+            texture->bigHeight = realHeight;
+            texture->width = realWidth;
+            texture->height = realHeight;
+            while ((unsigned int) (texture->width * texture->height *4+2)/3 * nbChannels * channelSize > minifyMax) {
+                texture->width /= 2;
+                texture->height /= 2;
+            }
+        } else {
+            const int depthPower = std::log2(depth);
+    		texture->width = realWidth / (1 << (depthPower / 2));
+    		texture->height = realHeight / (1 << ((depthPower + 1) / 2));
+        }
+        texture->size = texture->width * texture->height * nbChannels * channelSize;
 		if (loadInLowResolution && depth == 1 && texture->size > lowResMax) {
 			// Scale image, don't modify the x/y ratio
 			float scale = std::sqrt(lowResMax / (float) texture->size);
@@ -206,8 +231,8 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 			texture->height *= scale;
 			texture->size = texture->width * texture->height * nbChannels * channelSize;
 		}
-		// if (channelSize == 1)
-		// 	blend(loadType, data, texture->size);
+		if (channelSize == 1)
+			blend(loadType, data, texture->size);
 		VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		if (mipmap)
 			usage |= (depth == 1) ? VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_STORAGE_BIT;
@@ -215,9 +240,10 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 		--_nbChannels;
 		const VkFormat format = (const VkFormat[]) {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM}[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
 		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->texStagingMgr, usage, fullName.substr(fullName.find(".spacecrafter/")+14), format, imgType);
+        // std::cout << ">>>>> Texture " << realWidth << 'x' << realHeight << " loaded as " << texture->width << 'x' << texture->height << " <<<<<\n";
+        load(data, realWidth, realHeight);
 		stbi_image_free(data);
-		if (texture->size <= 1*1024*1024)
-			getTexture(); // Enfore loading the texture now
+    	textureQueue.emplace(texture);
 	} else {
 		texture = tex.lock();
 		cLog::get()->write("s_texture: already in cache " + fullName , LOG_TYPE::L_INFO);
@@ -240,12 +266,18 @@ bool s_texture::load()
 		blend(loadType, data, texture->size);
 	} else
 		data = reinterpret_cast<stbi_uc*>(stbi_load_16(fullName.c_str(), &realWidth, &realHeight, &unused, nbChannels));
+    auto ret = load(data, realWidth, realHeight);
+    stbi_image_free(data);
+    return ret;
+}
+
+bool s_texture::load(stbi_uc *data, int realWidth, int realHeight)
+{
 	if (realWidth != texture->width && texture->depth == 1) {
 		// This texture have been rescaled
 		stbi_uc *dataIn = data;
 		data = new stbi_uc[texture->size];
 		stbir_resize_uint8(dataIn, realWidth, realHeight, 0, data, texture->width, texture->height, 0, nbChannels);
-		stbi_image_free(dataIn);
 	}
 	// Use negated height to flip this axis
     const auto texHeight = (texture->depth == 1) ? -texture->height : texture->height;
@@ -256,10 +288,8 @@ bool s_texture::load()
 	}
 	if (realWidth != texture->width && texture->depth == 1)
 		delete[] data;
-	else
-		stbi_image_free(data);
 	if (!ret) {
-		cLog::get()->write("s_texture: not enough memory for " + fullName, LOG_TYPE::L_ERROR);
+		cLog::get()->write("s_texture: not enough memory for " + textureName, LOG_TYPE::L_ERROR);
 		return false;
 	}
 	return true;
@@ -318,7 +348,10 @@ void s_texture::forceUnload()
 			tex->texture = nullptr;
 		}
 	}
-	bigTextures.clear();
+    bigTextureQueue.close();
+    if (bigTextureThread.joinable())
+        bigTextureThread.join();
+    bigTextures.clear();
     if (layoutMipmap) {
         delete layoutMipmap;
         delete pipelineMipmap4;
@@ -340,87 +373,114 @@ void s_texture::update()
 			}
 		}
 	}
+    releaseThisFrame = false;
 }
 
 Texture &s_texture::getTexture()
 {
 	if (!texture->texture->isOnGPU()) {
-		if (!texture->texture->isOnCPU()) {
-			load();
-		}
 		texture->texture->use();
-		textureQueue.emplace(texture);
 	}
 	return *texture->texture;
 }
 
 Texture *s_texture::getBigTexture()
 {
+    if (texture->bigWidth == 0) {
+        return &getTexture();
+    }
 	if (texture->bigTexture) {
 		if (texture->bigTexture->binding == texture->bigTextureBinding) {
 			texture->bigTexture->lifetime = 3;
 			return (texture->bigTexture->ready ? texture->bigTexture->texture.get() : nullptr);
 		}
-		texture->bigTexture = nullptr;
 	}
-	// texture->bigTexture = acquireBigTexture(texture->bigTextureResolution);
+	texture->bigTexture = acquireBigTexture();
 	if (texture->bigTexture && texture->bigTexture->ready)
 		return texture->bigTexture->texture.get();
 	return nullptr;
 }
 
-s_texture::bigTexRecap *s_texture::acquireBigTexture(int resolution)
+s_texture::bigTexRecap *s_texture::acquireBigTexture()
 {
-	int extPos = textureName.find_last_of('.');
-	for (auto &bt : bigTextures) {
-		if (!bt.acquired && bt.resolution <= resolution) {
-			std::string tmpName = textureName.substr(0, extPos) + std::to_string(bt.resolution) + "K" + textureName.substr(extPos);
-			if (tmpName == bt.texName) {
-				bt.lifetime = 3;
-				bt.ready = true;
-				bt.acquired = true;
-				texture->bigTextureBinding = bt.binding;
-				return &bt;
-			}
-			if (!std::ifstream(tmpName).good()) // Check if file exist
-				return nullptr;
-			bt.texName = tmpName;
-			texture->bigTextureBinding = bt.binding;
-			bt.lifetime = 3;
-			bt.ready = false;
-			bt.acquired = true;
-			bigTextureQueue.emplace(&bt);
-			return &bt;
-		}
-	}
+    unsigned int width = texture->bigWidth;
+    unsigned int height = texture->bigHeight;
+    auto bt = acquireBigTexture(width, height);
+    if (bt)
+        return bt;
+    releaseUnusedMemory();
+    if (!bigTextureThread.joinable() && asyncUpload) {
+        bigTextureThread = std::thread(&s_texture::bigTextureLoader);
+    }
 	// There is no bigTexRecap available, create another one
 	for (MemoryQuerry &querry : VulkanMgr::instance->getMemoryManager()->querryMemory()) {
 		if (!(querry.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
 			continue;
-		while (resolution * resolution * (4 * 1024 * 1024) > querry.free - currentAllocation)
-			resolution /= 2;
-		std::string tmpName = textureName.substr(0, extPos) + std::to_string(resolution) + "K" + textureName.substr(extPos);
-		if (resolution < 4 || !std::ifstream(tmpName).good()) // Check if file exist
-			return nullptr;
-		auto it = bigTextures.rbegin();
-		while (it != bigTextures.rend() && it->resolution < resolution)
-			++it;
-		auto it2 = it.base();
-		bigTextures.insert(it2, bigTexRecap{1, resolution, nullptr, tmpName, 3, false, true});
+		while (width * height * nbChannels * channelSize * 2 > querry.free - currentAllocation) {
+            bt = acquireBigTexture(width, height);
+            if (bt)
+                return bt;
+            width /= 2;
+            height /= 2;
+        }
+		if ((width * height *4+2)/3 * nbChannels * channelSize <= minifyMax)
+			return nullptr; // Don't create a big texture with worse resolution than the preview one
+		bigTextures.push_back({1, (unsigned short) width, (unsigned short) height, nullptr, textureName, 3, (unsigned char) (nbChannels + 4 * channelSize - 5), false, true});
+        bt = &bigTextures.back();
 		texture->bigTextureBinding = 1;
-		bigTextureQueue.emplace(texture->bigTexture);
-		currentAllocation += resolution * (resolution / 2) * 4 * 1024 * 1024 * 4/3;
-		return (&*it2);
+		bigTextureQueue.emplace(bt);
+		currentAllocation += (width * height *4+2)/3 * nbChannels * channelSize;
+		return bt;
 	}
 	return nullptr;
 }
 
+s_texture::bigTexRecap *s_texture::acquireBigTexture(int width, int height)
+{
+    for (auto &bt : bigTextures) {
+        if (bt.width == width && bt.height == height && bt.formatIdx == (nbChannels + 4 * channelSize - 5)) {
+            if (bt.acquired) {
+                if (textureName == bt.texName) {
+                    bt.lifetime = 3;
+                    texture->bigTextureBinding = bt.binding;
+                    return &bt;
+                }
+                continue;
+            }
+            if (textureName == bt.texName && bt.texture) {
+                bt.lifetime = 3;
+                bt.ready = true;
+                bt.acquired = true;
+                texture->bigTextureBinding = bt.binding;
+                return &bt;
+            }
+            bt.texName = textureName;
+            texture->bigTextureBinding = bt.binding;
+            bt.lifetime = 3;
+            bt.ready = false;
+            bt.acquired = true;
+            bigTextureQueue.emplace(&bt);
+            return &bt;
+        }
+    }
+    return nullptr;
+}
+
 void s_texture::releaseUnusedMemory()
 {
-	cLog::get()->write("Not enough memory, attempt to release memory", LOG_TYPE::L_WARNING);
-	for (auto &bt : bigTextures) {
-		if (!bt.acquired)
-			bt.texture = nullptr;
+    if (releaseThisFrame)
+        return;
+    releaseThisFrame = true;
+	cLog::get()->write("Attempt to release memory from unused big texture", LOG_TYPE::L_DEBUG);
+	for (auto it = bigTextures.begin(); it != bigTextures.end();) {
+		if (!it->acquired) {
+            auto tmp = it++;
+            // Move texture to drop queue, thus tmp->texture became nullptr
+            currentAllocation -= tmp->texture->getTextureSize();
+            droppedTextureQueue.push(tmp->texture);
+            droppedBigTextures.splice(droppedBigTextures.end(), bigTextures, tmp);
+        } else
+            ++it;
 	}
 }
 
@@ -475,6 +535,12 @@ void s_texture::recordTransfer(VkCommandBuffer cmd)
             tex->texture->use(cmd, true);
 		releaseMemory[releaseIdx].push_back(tex);
 	}
+    std::vector<VkImageMemoryBarrier> barriers;
+    while (bigTextureReady.pop(bigBarrier.image))
+        barriers.push_back(bigBarrier);
+    if (!barriers.empty()) {
+        vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, barriers.size(), barriers.data());
+    }
 	releaseIdx = (releaseIdx + 1) % 3;
 }
 
@@ -529,4 +595,152 @@ void s_texture::bindTexture(VkCommandBuffer cmd, PipelineLayout *layout)
         texture->ojmSet->bindTexture(*texture->texture, 0);
     }
     layout->bindSet(cmd, *texture->ojmSet, 1);
+}
+
+void s_texture::bigTextureLoader()
+{
+    auto &vkmgr = *VulkanMgr::instance;
+    auto &context = *Context::instance;
+    bigTexRecap *tex;
+    std::unique_ptr<Texture> droppedTex;
+    VkQueue queue;
+    VkFence fence;
+    VkCommandBuffer cmd;
+    VkCommandPool pool;
+    stbi_uc *stor = new stbi_uc[BIG_TEXTURE_MIPMAP_SIZE];
+    VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &cmd, 0, nullptr};
+    auto queueFamily = vkmgr.acquireQueue(queue, VulkanMgr::QueueType::TRANSFER, "Async big texture loader");
+    {
+        if (!queueFamily) {
+            asyncUpload = false;
+            return;
+        }
+        bigBarrier.srcQueueFamilyIndex = queueFamily->id;
+        bigBarrier.dstQueueFamilyIndex = context.graphicFamily->id;
+        VkFenceCreateInfo fenceInfo {VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, nullptr, 0};
+        vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, &fence);
+        VkCommandPoolCreateInfo poolInfo {VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, nullptr, VK_COMMAND_POOL_CREATE_TRANSIENT_BIT, queueFamily->id};
+        vkCreateCommandPool(vkmgr.refDevice, &poolInfo, nullptr, &pool);
+        VkCommandBufferAllocateInfo cmdInfo {VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO, nullptr, pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1};
+        vkAllocateCommandBuffers(vkmgr.refDevice, &cmdInfo, &cmd);
+    }
+    bigTextureQueue.acquire();
+    while (bigTextureQueue.pop(tex)) {
+        while (droppedTextureQueue.pop(droppedTex)) {
+            currentAllocation += droppedTex->getTextureSize();
+            droppedTex.reset();
+        }
+        std::string texName = "big \"" + tex->texName.substr(tex->texName.find(".spacecrafter/")+14) + "\"";
+        cLog::get()->write("Loading " + texName + "...", LOG_TYPE::L_DEBUG);
+        unsigned int width = tex->width;
+        unsigned int height = tex->height;
+        // Not fully implemented 16-bpp support from here
+        const int _nbChannels = tex->formatIdx + 1;
+        if (tex->texture) {
+            tex->texture->rename(texName);
+        } else {
+            const VkFormat format = (const VkFormat[]) {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM}[tex->formatIdx];
+            tex->texture = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, texName, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, format, VK_IMAGE_ASPECT_COLOR_BIT, true);
+            tex->texture->use();
+            currentAllocation -= (width * height * 4+2)/3 * _nbChannels;
+        }
+        int realWidth, realHeight, unused;
+        stbi_uc *data = stbi_load(tex->texName.c_str(), &realWidth, &realHeight, &unused, _nbChannels);
+        // Invert Y axis by flipping pixels
+        {
+            long *src = (long *) data;
+            long *dst;
+            long tmp;
+            // Only work for textures with pair height and width
+            const long lineSize = realWidth * _nbChannels / sizeof(long);
+            int j = realHeight / 2;
+            while (j--) {
+                dst = src + (j * 2 + 1) * lineSize;
+                int i = lineSize;
+                while (i--) {
+                    tmp = *src;
+                    *(src++) = *dst;
+                    *(dst++) = tmp;
+                }
+            }
+        }
+        stbi_uc *src = data;
+        auto buffer = context.asyncTexStagingMgr->fastAcquireBuffer((width * height *4+2)/3 * _nbChannels);
+        stbi_uc *dst = stor;
+        stbi_uc *finalDst = (stbi_uc *) context.asyncTexStagingMgr->getPtr(buffer);
+        if ((unsigned int) realWidth + realHeight != width + height) {
+            stbir_resize_uint8(src, realWidth, realHeight, 0, dst, width, height, 0, _nbChannels);
+            src = dst;
+            dst += width * height * _nbChannels;
+        } else {
+            memcpy(finalDst, src, width * height * _nbChannels);
+            finalDst += width * height * _nbChannels;
+        }
+        VkBufferImageCopy region {buffer.offset, 0, 0, {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1}, {}, {width, height, 1}};
+        std::vector<VkBufferImageCopy> regions;
+        // cLog::get()->write("Computing mipmap of " + texName + "...", LOG_TYPE::L_DEBUG);
+        int subsize = width * height * _nbChannels;
+        while (width + height > 2) {
+            regions.push_back(region);
+            ++region.imageSubresource.mipLevel;
+            region.bufferOffset += subsize;
+            width = (width == 1) ? 1 : width/2;
+            height = (height == 1) ? 1 : height/2;
+            stbir_resize_uint8(src, region.imageExtent.width, region.imageExtent.height, 0, dst, width, height, 0, _nbChannels);
+            subsize = width * height * _nbChannels;
+            src = dst;
+            dst += subsize;
+            region.imageExtent.width = width;
+            region.imageExtent.height = height;
+        }
+        regions.push_back(region);
+        stbi_image_free(data);
+        if (asyncUpload) {
+            // cLog::get()->write("Uploading " + texName + "...", LOG_TYPE::L_DEBUG);
+            memcpy(finalDst, stor, dst - stor);
+            VkCommandBufferBeginInfo beginInfo {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, nullptr, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, nullptr};
+            vkBeginCommandBuffer(cmd, &beginInfo);
+            VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {VK_IMAGE_ASPECT_COLOR_BIT, 0, VK_REMAINING_MIP_LEVELS, 0, 1}};
+            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+            vkCmdCopyBufferToImage(cmd, buffer.buffer, tex->texture->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, regions.size(), regions.data());
+            barrier.srcAccessMask = barrier.dstAccessMask;
+            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+            barrier.oldLayout = barrier.newLayout;
+            barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            barrier.srcQueueFamilyIndex = queueFamily->id;
+            barrier.dstQueueFamilyIndex = context.graphicFamily->id;
+            vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
+            vkEndCommandBuffer(cmd);
+            vkQueueSubmit(queue, 1, &submit, fence);
+            auto res = vkWaitForFences(vkmgr.refDevice, 1, &fence, VK_TRUE, 60L*1000*1000*1000); // 60 seconds
+            if (res != VK_SUCCESS) {
+                vkmgr.putLog("Async texture upload has failed", LogType::ERROR);
+                continue;
+            } else
+                vkResetFences(vkmgr.refDevice, 1, &fence);
+            vkResetCommandPool(vkmgr.refDevice, pool, 0);
+            context.asyncTexStagingMgr->reset();
+            bigTextureReady.push(barrier.image);
+        }
+        tex->ready = true;
+        cLog::get()->write(texName + " is ready for use", LOG_TYPE::L_DEBUG);
+    }
+    bigTextureQueue.release();
+    vkDestroyFence(vkmgr.refDevice, fence, nullptr);
+    vkDestroyCommandPool(vkmgr.refDevice, pool, nullptr);
+    delete[] stor;
+}
+
+void s_texture::debugBigTexture()
+{
+    cLog::get()->write("Big texture resume :", LOG_TYPE::L_DEBUG);
+    for (auto &bt : bigTextures) {
+        std::ostringstream desc;
+        desc << "- " << bt.width << 'x' << bt.height;
+        if (bt.acquired) {
+            desc << ((bt.ready) ? " <active> " : " <uploading> ") << bt.texName.substr(bt.texName.find(".spacecrafter/")+14);
+        } else
+            desc << " <unused>";
+        cLog::get()->write(desc, LOG_TYPE::L_DEBUG);
+    }
 }

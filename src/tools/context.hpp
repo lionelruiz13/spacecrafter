@@ -11,6 +11,12 @@ class HipStarMgr;
 class DrawHelper;
 class QueueFamily;
 
+#define BIG_TEXTURE_MAIN_SIZE (16*1024*8*1024*4l)
+
+// Maximal size of the big texture with his mipmaps
+#define BIG_TEXTURE_SIZE 4l*(BIG_TEXTURE_MAIN_SIZE+2l)/3l
+#define BIG_TEXTURE_MIPMAP_SIZE (BIG_TEXTURE_MAIN_SIZE+2l)/3l
+
 enum {
     PASS_BACKGROUND = 0, // multi-sample, no depth buffer
     // PASS_STAR_FBO, // star framebuffer, no depth buffer
@@ -28,6 +34,7 @@ public:
     std::unique_ptr<DrawHelper> helper;
     std::unique_ptr<BufferMgr> stagingMgr;
     std::unique_ptr<BufferMgr> texStagingMgr;
+    std::unique_ptr<BufferMgr> asyncTexStagingMgr;
     std::vector<std::unique_ptr<TransferMgr>> transfers;
     TransferMgr *transfer; // Transfer selected now
     std::unique_ptr<BufferMgr> readbackMgr;
