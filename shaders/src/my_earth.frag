@@ -13,8 +13,8 @@ layout (binding=7) uniform sampler2D NightTexture;
 layout (binding=8) uniform sampler2D SpecularTexture;
 
 layout(constant_id = 0) const bool Clouds = false;
-layout (binding=9) uniform sampler2D CloudTexture;
-layout (binding=10) uniform sampler2D CloudNormalTexture;
+// layout (binding=9) uniform sampler2D CloudTexture;
+// layout (binding=10) uniform sampler2D CloudNormalTexture;
 
 layout (binding=1) uniform globalFrag {
 	vec3 MoonPosition1;
@@ -50,6 +50,7 @@ void main(void)
 	float diffuse = max(0.0, NdotL);
 	vec3 daycolor = (diffuse + specular) * daytime;
 	vec3 nightcolor = night;
+	/*
 	vec4 cloudColor = vec4(0.0, 0.0, 0.0, 0.0);
 	float cloudDiffuse = 0.0;
 	if(Clouds) {
@@ -58,6 +59,7 @@ void main(void)
 		vec3 normal_b = 2.0 * vec3(texture(CloudNormalTexture, TexCoord)) - vec3(1.0); 
 		cloudDiffuse = max(dot(normal_b, light_b), 0.0);
 	}
+	*/
 	float shadowScale = 1.0;
 	if(diffuse != 0.0) {
 		vec3 moon;
@@ -107,5 +109,6 @@ void main(void)
 		nightcolor = nightcolor * smoothstep(0.0, 0.1, 0.1 - diffuse); 
 		color = max(color, nightcolor); 
 	}
-	FragColor = vec4(mix(color, cloudColor.rgb*cloudDiffuse*shadowScale, cloudColor.a), 1.0); 
+	// FragColor = vec4(mix(color, cloudColor.rgb*cloudDiffuse*shadowScale, cloudColor.a), 1.0);
+	FragColor = vec4(color, 1.0);
 }
