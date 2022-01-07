@@ -349,7 +349,7 @@ public:
 	}
 
 	static bool setTexEclipseMap(const std::string &texMap) {
-		tex_eclipse_map = std::make_shared<s_texture>(texMap, TEX_LOAD_TYPE_PNG_SOLID, true, true);
+		tex_eclipse_map = std::make_shared<s_texture>(texMap, TEX_LOAD_TYPE_PNG_SOLID);
 		if (tex_eclipse_map != nullptr)
 			return true;
 		else
