@@ -42,7 +42,7 @@
 
 ScriptMgr::ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface,const std::string &_data_dir, std::shared_ptr<Media> _media )
 {
-	commander = command_interface;
+	commander = command_interface.get();
 	DataDir = _data_dir;
 	scriptState = ScriptState::NONE;
 	sR.recording = false;

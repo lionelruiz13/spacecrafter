@@ -169,7 +169,7 @@ private:
 	std::string getRecordDate();
 	// external classes
 	std::shared_ptr<Media> media;
-	std::shared_ptr<AppCommandInterface> commander;  //!< for executing script commands
+	AppCommandInterface *commander;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
 	long int wait_time;     //!< ms until next script command should be executed
 	bool waitOnVideo; 			//!< if Video launch, say if script should wait on it.

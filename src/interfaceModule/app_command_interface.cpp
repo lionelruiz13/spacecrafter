@@ -58,7 +58,7 @@
 #include "coreModule/time_mgr.hpp"
 
 
-AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, std::shared_ptr<CoreLink> _coreLink, std::shared_ptr<CoreBackup> _coreBackup, std::shared_ptr<App> _app, std::shared_ptr<UI> _ui, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory)
+AppCommandInterface::AppCommandInterface(std::shared_ptr<Core> core, std::shared_ptr<CoreLink> _coreLink, std::shared_ptr<CoreBackup> _coreBackup, App *_app, UI *_ui, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory)
 {
 	stcore = core;
 	coreLink = _coreLink;

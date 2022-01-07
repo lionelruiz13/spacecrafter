@@ -12,6 +12,7 @@ Context::Context()
 Context::~Context()
 {
     instance = nullptr;
+    helper.reset();
     for (auto &f : fences)
         vkDestroyFence(VulkanMgr::instance->refDevice, f, nullptr);
     for (auto &f : debugFences)

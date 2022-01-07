@@ -62,7 +62,9 @@ void EventHandler::add(EventHandlerCanvas *sE, Event::Event_Type et){
 
 void EventHandler::remove(Event::Event_Type et){
 	auto it=handlerMap.find(et);
+	if (it == handlerMap.end())
+		return;
 	if (it->second != nullptr)
 		delete it->second;
-  	handlerMap.erase(it);	
+  	handlerMap.erase(it);
 }
