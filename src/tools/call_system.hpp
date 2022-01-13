@@ -33,10 +33,10 @@
 
 /**
  * @file call_system.hpp
- * @brief Functions linked to system calls 
- * 
+ * @brief Functions linked to system calls
+ *
  * @class CallSystem
- * 
+ *
  * @brief Static class that provides functions linked to system calls.
  *
  */
@@ -49,8 +49,10 @@ public:
     static bool isReadable(const std::string& fileName);
     // test si le fichier existe
     static bool fileExist(const std::string& fileName);
-    // test si le répertoire existe 
+    // test si le répertoire existe
     static bool dirExist(const std::string& rep);
+	//! Recursively create missing directory to ensure the path exist
+	static void ensurePathExist(const std::string &path);
     //! returns true if the given path is absolute
     static bool isAbsolute(const std::string path);
     //! copie le fichier src à la destination dest
@@ -61,7 +63,7 @@ public:
     static void checkUserDirectory(const std::string &userDir, std::string & logResult);
     //! Vérifie que les sous répertoires utilisateurs sont présents et les reconstruit si besoin
     static void checkUserSubDirectory(const std::string &CDIR, std::string& dirResult);
-    //! lance une commande système 
+    //! lance une commande système
     static bool useSystemCommand(const std::string & strCommand);
     //! supprimme le programme prgm via son pid
     static bool killAllPidFrom(const std::string& prgm);

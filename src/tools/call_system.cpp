@@ -89,6 +89,26 @@ bool CallSystem::dirExist(const std::string& rep)
 		return false;
 }
 
+void CallSystem::ensurePathExist(const std::string &path)
+{
+    #if LINUX
+    DIR *dir = nullptr;
+	if ( (dir = opendir(path.c_str() )) != nullptr) {
+		closedir(dir);
+        return;
+	}
+    int subpath = path.find_last_of('/') - 1;
+    do {
+        if ( mkdir(path.substr(0, subpath - 1).c_str(), S_IRWXU | S_IRWXG) == 0) {
+            subpath = path.find_first_of('/', subpath + 2) - 1;
+        } else {
+            subpath = path.find_last_of('/', subpath);
+        }
+    } while (subpath != std::string::npos);
+    #else
+    cLog::get()->write("Can't create missing directory '" + path + "'", LOG_TYPE::L_ERROR);
+    #endif
+}
 
 bool CallSystem::fileCopy( const std::string &src, const std::string &dest)
 {
@@ -200,7 +220,7 @@ void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dir
 			dirResult +="Check " + it->first + " subdirectory ok\n";
 	}
 
-	// cas des textures 
+	// cas des textures
 	subDir = CDIR +REP_TEXTURE;
 	if (!dirExist(subDir)) {
 	if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
@@ -220,7 +240,7 @@ void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dir
 		}
 	}
 
-	// cas des languages 
+	// cas des languages
 	subDir = CDIR +REP_LANGUAGE;
 	if (!dirExist(subDir)) {
 	if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
@@ -252,14 +272,14 @@ bool CallSystem::useSystemCommand(const std::string & strCommand)
 		return false;
 	#else
 		return false;
-	#endif	
+	#endif
 }
 
 bool CallSystem::killAllPidFrom(const std::string& prgm)
 {
 	#if LINUX
 		std::string command = "ps aux | grep " + prgm + " | wc -l";
-		//recuperer le nombre de prgm lancés 
+		//recuperer le nombre de prgm lancés
 		const int LEN = 5;
 		char line[LEN];
 		FILE *cmd = popen(command.c_str(), "r");
@@ -272,7 +292,7 @@ bool CallSystem::killAllPidFrom(const std::string& prgm)
 			return false;
 	#else
 		return false;
-	#endif	
+	#endif
 }
 
 

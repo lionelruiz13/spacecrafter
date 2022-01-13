@@ -47,6 +47,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
+#include "tools/s_texture.hpp"
 
 #ifdef LINUX
 #include "mainModule/CPUInfo.hpp"
@@ -307,7 +308,8 @@ int main(int argc, char **argv)
 	requiredFeatures.shaderFloat64 = VK_TRUE;
 	preferedFeatures.samplerAnisotropy = VK_TRUE;
 	// For windowless usage (like NDI), don't create sdl window, sdl->getWindow() must then return nullptr.
-	std::unique_ptr<VulkanMgr> vulkan = std::make_unique<VulkanMgr>(APP_LOWER_NAME, VK_MAKE_API_VERSION(0, GETV(0), GETV(3), GETV(6)), sdl->getWindow(), curMin, -curMin, QueueRequirement{2, 0, 0, 1, 1}, requiredFeatures, preferedFeatures, 256, conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), conf.getBoolean(SCS_MAIN, SCK_DEBUG), conf.getBoolean(SCS_MAIN, SCK_LOG), ini->getUserDir(), 3, VK_IMAGE_USAGE_TRANSFER_SRC_BIT, false, cLog::writeECLog);
+	s_texture::loadCache(ini->getUserDir() + "cache/");
+	std::unique_ptr<VulkanMgr> vulkan = std::make_unique<VulkanMgr>(APP_LOWER_NAME, VK_MAKE_API_VERSION(0, GETV(0), GETV(3), GETV(6)), sdl->getWindow(), curMin, -curMin, QueueRequirement{2, 0, 0, 1, 1}, requiredFeatures, preferedFeatures, 256, conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), conf.getBoolean(SCS_MAIN, SCK_DEBUG), conf.getBoolean(SCS_MAIN, SCK_LOG), ini->getUserDir() + "cache/", 3, VK_IMAGE_USAGE_TRANSFER_SRC_BIT, false, cLog::writeECLog);
 	std::unique_ptr<App> app = std::make_unique<App>(sdl.get());
 
 	// Register custom suspend and term signal handers

@@ -37,6 +37,8 @@
 #include <vulkan/vulkan.h>
 #include <thread>
 
+class BigSave;
+
 //TODO supprimer cela et les remplacer par un enum class
 #define PNG_ALPHA  0
 #define PNG_SOLID  1
@@ -121,6 +123,8 @@ public:
 	static void recordTransfer(VkCommandBuffer cmd);
 	// Display information about active big textures
 	static void debugBigTexture();
+	// Setup cache path for textures, also enable use of cache
+	static void loadCache(const std::string &path);
 private:
 	void unload();
 	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1);
@@ -134,6 +138,7 @@ private:
 		std::string texName; // Name of the texture to load
 		unsigned char lifetime = 0; // Number of frames before releasing this bigTexture
 		unsigned char formatIdx;
+		int quickLoader = -1; // Used to optimize loading
 		bool ready = false; // Is this texture ready for use
 		bool acquired = false; // Is this texture currently acquired
 	};
@@ -156,6 +161,7 @@ private:
 		unsigned short bigHeight = 0;
 		unsigned short bigDepth = 1; // Not implemented yet
 		bool mipmap = false;
+		bool quickloadable = false;
 		bigTexRecap *bigTexture = nullptr;
 	};
 
@@ -163,12 +169,30 @@ private:
 	static void init3DBuild(texRecap &tex);
 	void blend( const int, unsigned char* const, const unsigned int );
 
+	//! Optimized texture cache loader
+	static void preQuickLoadCache(bigTexRecap *tex);
+	static bool quickLoadCache(bigTexRecap *tex, void *data, size_t size);
+	static void abortQuickLoadCache(bigTexRecap *tex);
+	static void quickSaveCache(bigTexRecap *tex, void *data, size_t size);
+	static std::string getCacheName(bigTexRecap *tex);
+
 	std::string textureName;
 	std::shared_ptr<texRecap> texture;
 	int loadType;
 	int loadWrapping;
 	int nbChannels;
 	int channelSize;
+
+	// If an index have been used and is no longer used, don't reuse it for something else
+	enum Section { // Sections of the cache
+		BIG_TEXTURE = 0, // string map
+	};
+
+	struct BigTextureCache {
+		int width;
+		int height;
+		bool cached;
+	};
 
 	static std::string texDir;
 	static bool loadInLowResolution;
@@ -194,6 +218,8 @@ private:
 	static VkFence uploadFence;
 	static bool asyncUpload;
 	static VkImageMemoryBarrier bigBarrier;
+	static BigSave cache;
+	static std::string cacheDir;
 };
 
 #endif // _S_TEXTURE_H_
