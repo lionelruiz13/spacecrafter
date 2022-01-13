@@ -76,6 +76,7 @@ bool s_texture::asyncUpload = true;
 VkImageMemoryBarrier s_texture::bigBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, {VK_IMAGE_ASPECT_COLOR_BIT, 0, VK_REMAINING_MIP_LEVELS, 0, 1}};
 BigSave s_texture::cache;
 std::string s_texture::cacheDir;
+bool s_texture::cacheTexture = false;
 
 s_texture::texRecap::~texRecap()
 {
@@ -686,8 +687,10 @@ void s_texture::bigTextureLoader()
         stbi_uc *data = stbi_load(tex->texName.c_str(), &realWidth, &realHeight, &unused, _nbChannels);
         std::string shortName = tex->texName.substr(tex->texName.find(".spacecrafter/")+14);
         auto &bigData = cache[Section::BIG_TEXTURE][shortName].get<BigTextureCache>();
-        if (bigData.width != realWidth || bigData.height != realHeight) {
+        const long datetime = 0; // Not implemented yet
+        if (bigData.width != realWidth || bigData.height != realHeight || bigData.datetime != datetime) {
             ++cache.get<int>(); // Inform update, required because reducedCheck is true
+            bigData.datetime = datetime;
             bigData.height = realHeight;
             bigData.width = realWidth;
             bigData.cached = false;
@@ -747,12 +750,8 @@ void s_texture::bigTextureLoader()
         regions.push_back(region);
         stbi_image_free(data);
         if (asyncUpload) {
-            if (!bigData.cached) {
-                quickSaveCache(tex, stor, dst - stor);
+            if (!bigData.cached)
                 memcpy(finalDst, stor, dst - stor);
-                bigData.cached = true;
-                ++cache.get<int>();
-            }
             VkCommandBufferBeginInfo beginInfo {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, nullptr, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, nullptr};
             vkBeginCommandBuffer(cmd, &beginInfo);
             VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {VK_IMAGE_ASPECT_COLOR_BIT, 0, VK_REMAINING_MIP_LEVELS, 0, 1}};
@@ -779,6 +778,11 @@ void s_texture::bigTextureLoader()
         }
         tex->ready = true;
         cLog::get()->write(texName + " is ready for use", LOG_TYPE::L_DEBUG);
+        if (!bigData.cached) {
+            quickSaveCache(tex, stor, dst - stor);
+            bigData.cached = true;
+            ++cache.get<int>();
+        }
     }
     bigTextureQueue.release();
     vkDestroyFence(vkmgr.refDevice, fence, nullptr);
@@ -800,9 +804,10 @@ void s_texture::debugBigTexture()
     }
 }
 
-void s_texture::loadCache(const std::string &path)
+void s_texture::loadCache(const std::string &path, bool _cacheTexture)
 {
     cacheDir = path;
+    cacheTexture = _cacheTexture;
     CallSystem::ensurePathExist(path);
     cache.open(path + "texture-cache", false, true, true);
 }
@@ -824,10 +829,12 @@ std::string s_texture::getCacheName(bigTexRecap *tex)
 
 void s_texture::preQuickLoadCache(bigTexRecap *tex)
 {
-    const std::string filename = cacheDir + getCacheName(tex);
-    tex->quickLoader = open(filename.c_str(), O_RDONLY);
-    if (tex->quickLoader != -1)
-        posix_fadvise(tex->quickLoader, 0, 0, POSIX_FADV_WILLNEED);
+    if (cacheTexture) {
+        const std::string filename = cacheDir + getCacheName(tex);
+        tex->quickLoader = open(filename.c_str(), O_RDONLY);
+        if (tex->quickLoader != -1)
+            posix_fadvise(tex->quickLoader, 0, 0, POSIX_FADV_WILLNEED);
+    }
 }
 
 void s_texture::abortQuickLoadCache(bigTexRecap *tex)
@@ -840,13 +847,16 @@ void s_texture::abortQuickLoadCache(bigTexRecap *tex)
 
 bool s_texture::quickLoadCache(bigTexRecap *tex, void *data, size_t size)
 {
-    if (tex->quickLoader == -1)
-        return false;
-    cLog::get()->write("Loading cached data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
-    read(tex->quickLoader, data, size);
-    close(tex->quickLoader);
-    tex->quickLoader = -1;
-    return true;
+    if (cacheTexture) {
+        if (tex->quickLoader == -1)
+            return false;
+        cLog::get()->write("Loading cached data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
+        read(tex->quickLoader, data, size);
+        close(tex->quickLoader);
+        tex->quickLoader = -1;
+        return true;
+    }
+    return false;
 }
 #else
 void s_texture::preQuickLoadCache(bigTexRecap *tex) {}
@@ -854,19 +864,25 @@ void s_texture::abortQuickLoadCache(bigTexRecap *tex) {}
 
 bool s_texture::quickLoadCache(bigTexRecap *tex, void *data, size_t size)
 {
-    std::ifstream file(cacheDir + getCacheName(tex), std::ifstream::binary);
-    if (file) {
-        cLog::get()->write("Loading cached data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
-        file.read(data, size);
+    if (cacheTexture) {
+        std::ifstream file(cacheDir + getCacheName(tex), std::ifstream::binary);
+        if (file) {
+            cLog::get()->write("Loading cached data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
+            file.read(data, size);
+            return true;
+        }
     }
+    return false;
 }
 #endif
 
 void s_texture::quickSaveCache(bigTexRecap *tex, void *data, size_t size)
 {
-    std::ofstream file(cacheDir + getCacheName(tex), std::ofstream::binary | std::ofstream::trunc);
-    if (file) {
-        cLog::get()->write("Caching data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
-        file.write((char *) data, size);
+    if (cacheTexture) {
+        std::ofstream file(cacheDir + getCacheName(tex), std::ofstream::binary | std::ofstream::trunc);
+        if (file) {
+            cLog::get()->write("Caching data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
+            file.write((char *) data, size);
+        }
     }
 }

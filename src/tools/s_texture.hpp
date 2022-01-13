@@ -124,7 +124,7 @@ public:
 	// Display information about active big textures
 	static void debugBigTexture();
 	// Setup cache path for textures, also enable use of cache
-	static void loadCache(const std::string &path);
+	static void loadCache(const std::string &path, bool _cacheTexture);
 private:
 	void unload();
 	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1);
@@ -189,6 +189,7 @@ private:
 	};
 
 	struct BigTextureCache {
+		long datetime;
 		int width;
 		int height;
 		bool cached;
@@ -220,6 +221,7 @@ private:
 	static VkImageMemoryBarrier bigBarrier;
 	static BigSave cache;
 	static std::string cacheDir;
+	static bool cacheTexture;
 };
 
 #endif // _S_TEXTURE_H_
