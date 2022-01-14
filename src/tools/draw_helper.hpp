@@ -11,7 +11,7 @@
 #include "EntityCore/Resource/SharedBuffer.hpp"
 #include "tools/vecmath.hpp"
 
-#define MAX_IDX 32*1024
+#define MAX_IDX 64*1024
 // This work while there is no more than 96 vertices, otherwise...
 #define MAX_HINT_IDX_ 32
 
@@ -134,7 +134,7 @@ private:
     std::unique_ptr<Set> setNebula;
     std::vector<std::unique_ptr<Pipeline>> pipelinePrint;
     std::vector<std::unique_ptr<Pipeline>> pipelinePrintH;
-    WorkQueue<DrawData *> queue;
+    WorkQueue<DrawData *, 4095> queue;
     SharedBuffer<Mat4f> nebulaMat;
     FrameMgr *frame = nullptr;
     unsigned char internalVFrameIdx = 0;
