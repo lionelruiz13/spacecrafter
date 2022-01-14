@@ -24,13 +24,14 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <array>
-
-
-
 #include "mediaModule/media_base.hpp"
 #include "EntityCore/SubBuffer.hpp"
 
 #ifndef WIN32
+#include <thread>
+#include <mutex>
+#include "EntityCore/Tools/SafeQueue.hpp"
+
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -109,7 +110,7 @@ public:
 	void recordUpdateDependency(VkCommandBuffer cmd);
 private:
 	// renvoie la nouvelle frame vidéo et la convertit dans la mémoire de la CG.
-	void getNextVideoFrame();
+	void getNextVideoFrame(int frameIdx);
 	// récupère la nouvelle frame vidéo avant conversion
 	void getNextFrame();
 	// initialisation de la classe
@@ -122,8 +123,8 @@ private:
 	Media* media=nullptr;
 	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
 	std::unique_ptr<BufferMgr> stagingBuffer;
-	SubBuffer imageBuffers[3];
-	std::array<void *, 3> pImageBuffer;
+	SubBuffer imageBuffers[3][2];
+	std::array<void *[2], 3> pImageBuffer;
 
 	std::string fileName; 	//!< nom de la vidéo
 	Resolution videoRes;	//!< int video_w, video_h;	//!< taille w,h  de la vidéo
@@ -153,6 +154,10 @@ private:
 	int heights[3];
 
 	#ifndef WIN32
+	enum VideoThreadEvent {
+		INTERRUPT = -2,
+		RESUME = -1
+	};
 	//parametres liés à ffmpeg
 	AVFormatContext	*pFormatCtx;
 	int				videoindex;
@@ -163,7 +168,15 @@ private:
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
-	bool needUpdate = false; // Tell if there is an update to perform
+	int needFrames = 0; // Tell how many frames are required
+	int frameIdxSwap = 0; // To alternate between frameIdx
+	void mainloop();
+	void threadInterrupt();
+	void threadResume();
+	std::thread thread;
+	std::mutex mtx;
+	PushQueue<int, 7> displayQueue; // Frames ready to display
+	WorkQueue<int, 7> requestQueue; // Frames to compute
 	#endif
 };
 

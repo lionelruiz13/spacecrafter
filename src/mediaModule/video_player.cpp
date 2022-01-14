@@ -53,7 +53,7 @@ void VideoPlayer::createTextures()
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	const uint32_t widthMax = 4096;
 	const uint32_t heightMax = 2048;
-	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*3/2, "Staging video buffer");
+	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*3, "Staging video buffer");
 	for (int i = 0; i < 3; i++)
 		videoTexture.tex[i] = new Texture(vkmgr, *stagingBuffer, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "Video texture", VK_FORMAT_R8_UNORM);
 }
@@ -97,7 +97,10 @@ bool VideoPlayer::restartCurrentVideo()
 	if (!m_isVideoPlayed)
 		return false;
 	#ifndef WIN32
-	if(av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD) < 0) {
+	threadInterrupt();
+	auto result = av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD);
+	threadResume();
+	if (result < 0) {
 		printf("av_seek_frame forward failed. \n");
 		return false;
 	}
@@ -115,6 +118,8 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	#ifndef WIN32
 	if (m_isVideoPlayed)
 		stopCurrentVideo();
+	if (thread.joinable())
+		thread.join();
 	std::ifstream fichier(_fileName.c_str());
 	if (!fichier.fail()) { // verifie si le fichier vidéo existe
 		cLog::get()->write("Videoplayer: reading file "+ _fileName, LOG_TYPE::L_INFO);
@@ -201,9 +206,12 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	firstCount = SDL_GetTicks();
 	lastCount = firstCount;
 	d_lastCount = firstCount;
-	currentFrame = 0;
+	currentFrame = 1; // because getNextVideoFrame fetch the frame 0
+	needFrames = 1;
+	frameIdxSwap = 0;
 	m_isVideoPlayed = true;
-	this->getNextVideoFrame();
+	thread = std::thread(&VideoPlayer::mainloop, this);
+	this->getNextVideoFrame(frameIdxSwap++); // The first frame must be ready on time
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
@@ -222,9 +230,12 @@ void VideoPlayer::update()
 	}
 	int timePassed = SDL_GetTicks()- lastCount;
 
-	if ( timePassed > (int)frameRateDuration) {
-		getNextVideoFrame();
-		d_lastCount = firstCount + (int)(frameRateDuration*currentFrame);
+	// We should prepair frames in advance
+	if ( timePassed > 0) {
+		requestQueue.emplace(frameIdxSwap++);
+		frameIdxSwap %= 2;
+		++needFrames;
+		d_lastCount = firstCount + (int)(frameRateDuration*++currentFrame);
 		lastCount = (int)d_lastCount;
 	}
 	#endif
@@ -240,7 +251,7 @@ void VideoPlayer::getNextFrame()
 		if(av_read_frame(pFormatCtx, packet)<0) {
 			cLog::get()->write("fin de fichier");
 			m_isVideoSeeking = true;
-			media->playerStop();
+			media->playerStop(); // We can't do that here !
 			return;
 		}
 
@@ -267,17 +278,18 @@ void VideoPlayer::getNextFrame()
 }
 
 
-void VideoPlayer::getNextVideoFrame()
+void VideoPlayer::getNextVideoFrame(int frameIdx)
 {
 	#ifndef WIN32
 	this->getNextFrame();
-	currentFrame ++;
 	if (!m_isVideoSeeking) {
 		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
 		for (int i = 0; i < 3; i++) {
-			memcpy(pImageBuffer[i], pFrameOut->data[i], widths[i] * heights[i]);
+			memcpy(pImageBuffer[i][frameIdx], pFrameOut->data[i], widths[i] * heights[i]);
 		}
-		needUpdate = true;
+		displayQueue.push(frameIdx);
+	} else {
+		displayQueue.emplace(-1);
 	}
 	#endif
 }
@@ -286,10 +298,16 @@ void VideoPlayer::getNextVideoFrame()
 void VideoPlayer::stopCurrentVideo()
 {
 	#ifndef WIN32
-	if (m_isVideoPlayed==false)
+	if (m_isVideoPlayed==false) {
+		if (thread.joinable() && thread.get_id() != std::this_thread::get_id())
+			thread.join();
 		return;
+	}
 
 	m_isVideoPlayed = false;
+	requestQueue.close();
+	if (thread.get_id() != std::this_thread::get_id())
+		thread.join(); // Don't overlap av_* calls, but don't self-join
 	sws_freeContext(img_convert_ctx);
 	av_frame_free(&pFrameOut);
 	av_frame_free(&pFrameIn);
@@ -329,8 +347,10 @@ void VideoPlayer::initTexture()
 		videoTexture.sync->syncIn = std::make_unique<SyncEvent>();
 		for (int i = 0; i < 3; ++i) {
 			videoTexture.tex[i]->init(widths[i], heights[i], nullptr, false, 1);
-			imageBuffers[i] = stagingBuffer->fastAcquireBuffer(widths[i] * heights[i]);
-			pImageBuffer[i] = stagingBuffer->getPtr(imageBuffers[i]);
+			for (int j = 0; j < 2; ++j) {
+				imageBuffers[i][j] = stagingBuffer->fastAcquireBuffer(widths[i] * heights[i]);
+				pImageBuffer[i][j] = stagingBuffer->getPtr(imageBuffers[i][j]);
+			}
 			videoTexture.sync->syncOut->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR);
 			videoTexture.sync->syncIn->imageBarrier(*videoTexture.tex[i], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
 		}
@@ -378,14 +398,17 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		return true;
 	}
 	if(currentFrame < nbTotalFrame) { // on verifie qu'on ne saute pas hors vidéo
-		if(avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000, INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
+		threadInterrupt();
+		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000, INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
 			printf("av_seek_frame forward failed. \n");
+			threadResume();
 			return false;
 		}
 		firstCount = firstCount - (int)( frameToSkeep * frameRateDuration);
 
 		reallyDeltaTime= currentFrame * frameRateDuration/1000.0;
 		m_isVideoSeeking = true;
+		threadResume();
 		return true;
 	}
 	// fin de fichier ... vidéo s'arrête
@@ -412,19 +435,22 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		videoTexture.sync->syncOut->dstDependency(cmd);
 		videoTexture.sync->syncOut->resetDependency(cmd, VK_PIPELINE_STAGE_2_COPY_BIT_KHR);
 	}
-	if (needUpdate) {
-		VkBufferImageCopy region;
-		region.bufferRowLength = region.bufferImageHeight = 0;
-		region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
-		region.imageOffset = VkOffset3D{};
-		region.imageExtent.depth = 1;
-		for (int i = 0; i < 3; ++i) {
-			region.bufferOffset = imageBuffers[i].offset;
-			region.imageExtent.width = widths[i];
-			region.imageExtent.height = heights[i];
-			vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+	int frameIdx;
+	if (needFrames && displayQueue.pop(frameIdx)) {
+		--needFrames;
+		if (frameIdx >= 0) {
+			VkBufferImageCopy region;
+			region.bufferRowLength = region.bufferImageHeight = 0;
+			region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
+			region.imageOffset = VkOffset3D{};
+			region.imageExtent.depth = 1;
+			for (int i = 0; i < 3; ++i) {
+				region.bufferOffset = imageBuffers[i][frameIdx].offset;
+				region.imageExtent.width = widths[i];
+				region.imageExtent.height = heights[i];
+				vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+			}
 		}
-		needUpdate = false;
 	}
 	videoTexture.sync->syncIn->placeBarrier(cmd);
 }
@@ -436,3 +462,38 @@ void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
 	videoTexture.sync->inUse = false;
 	videoTexture.sync->syncOut->srcDependency(cmd);
 }
+
+#ifndef WIN32
+void VideoPlayer::mainloop()
+{
+	mtx.lock();
+	int frameIdx;
+	requestQueue.acquire();
+	while (requestQueue.pop(frameIdx)) {
+		switch (frameIdx) {
+			case VideoThreadEvent::INTERRUPT:
+				mtx.unlock();
+				break;
+			case VideoThreadEvent::RESUME:
+				mtx.lock();
+				break;
+			default:
+				getNextVideoFrame(frameIdx);
+		}
+	}
+	requestQueue.release();
+	mtx.unlock();
+}
+
+void VideoPlayer::threadInterrupt()
+{
+	requestQueue.emplace(VideoThreadEvent::INTERRUPT);
+	mtx.lock();
+	requestQueue.emplace(VideoThreadEvent::RESUME);
+}
+
+void VideoPlayer::threadResume()
+{
+	mtx.unlock();
+}
+#endif
