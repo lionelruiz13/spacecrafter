@@ -99,7 +99,7 @@ App::App( SDLFacade* const sdl )
 	fontFactory = std::make_unique<FontFactory>();
 
 	media = std::make_shared<Media>();
-	saveScreenInterface = std::make_shared<SaveScreenInterface>(width, height);
+	saveScreenInterface = std::make_shared<SaveScreenInterface>(VulkanMgr::instance->getScreenRect());
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
 
@@ -604,6 +604,7 @@ void App::draw(int delta_time)
 		}
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 	}
+	saveScreenInterface->update();
 	s_texture::update();
 	context.frame[context.frameIdx]->discardRecord();
 	context.setMgr->update();
@@ -766,7 +767,7 @@ void App::submitFrame(App *self, int id)
 		self->context.starUsed[id]->syncFramebuffer(mainCmd);
 		self->context.starUsed[id] = nullptr;
 	}
-	self->saveScreenInterface->readScreenShot(mainCmd);
+	self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
 	if (self->sender) {
 		self->sender->setupReadback(mainCmd, id);
 	}

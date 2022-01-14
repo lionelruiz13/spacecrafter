@@ -31,26 +31,50 @@
 
 #include "appModule/save_screen.hpp"
 #include "tools/log.hpp"
-
+#include "tools/context.hpp"
 #include "appModule/save_screen_interface.hpp"
 #include "eventModule/EventFps.hpp"
 #include "eventModule/event_recorder.hpp"
+#include "EntityCore/EntityCore.hpp"
 
-SaveScreenInterface::SaveScreenInterface(unsigned int _width, unsigned int _height)
+SaveScreenInterface::SaveScreenInterface(VkRect2D screenRect)
 {
-	width = _width;
-	height = _height;
+	width = screenRect.extent.width;
+	height = screenRect.extent.height;
 	minWH = std::min(width, height);
 	saveScreen = std::make_unique<SaveScreen>(minWH);
+	auto &context = *Context::instance;
+	for (int i = 0; i < 3; ++i) {
+		buffers[i] = context.readbackMgr->acquireBuffer(minWH * minWH * 4);
+		pBuffers[i] = context.readbackMgr->getPtr(buffers[i]);
+	}
+	postBufferBarrier.buffer = buffers[0].buffer;
+	postBufferBarrier.size = buffers[0].size;
+	copyInfo.imageSubresource = VkImageSubresourceLayers{VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1};
+	copyInfo.imageOffset = VkOffset3D{screenRect.offset.x, screenRect.offset.y, 0};
+	copyInfo.imageExtent = VkExtent3D{width, height, 1};
 }
 
 
 SaveScreenInterface::~SaveScreenInterface()
 {
+	if (asyncEngine) {
+		pendingIdx.close();
+		saveScreen->stopStream();
+	}
+	if (thread.joinable())
+		thread.join();
 }
 
 void SaveScreenInterface::startVideo()
 {
+	if (asyncEngine)
+		return;
+	asyncEngine = true;
+	saveScreen->startStream();
+	if (thread.joinable())
+		thread.join();
+	thread = std::thread(&SaveScreenInterface::mainloop, this);
 	readScreen=ReadScreen::VIDEO;
 	Event* event = new FpsEvent(FPS_ORDER::LOW_FPS);
 	EventRecorder::getInstance()->queue(event);
@@ -58,6 +82,11 @@ void SaveScreenInterface::startVideo()
 
 void SaveScreenInterface::stopVideo()
 {
+	if (!asyncEngine)
+		return;
+	asyncEngine = false;
+	pendingIdx.close();
+	saveScreen->stopStream();
 	readScreen=ReadScreen::NONE;
 	Event* event = new FpsEvent(FPS_ORDER::HIGH_FPS);
 	EventRecorder::getInstance()->queue(event);
@@ -71,7 +100,7 @@ void SaveScreenInterface::takeVideoShot()
 		this->startVideo();
 }
 
-void SaveScreenInterface::readScreenShot(VkCommandBuffer cmd)
+void SaveScreenInterface::readScreenShot(VkCommandBuffer cmd, VkImage image)
 {
 	switch (readScreen) {
 		case ReadScreen::NONE : break;
@@ -80,21 +109,32 @@ void SaveScreenInterface::readScreenShot(VkCommandBuffer cmd)
 			if (fileNameScreenshot.empty())
 				fileNameScreenshot = getNextScreenshotFilename();
 			fileNameNextScreenshot.swap(fileNameScreenshot);
-			//master->intercept();
 			fileNameScreenshot.clear();
 			readScreen=ReadScreen::NONE;
+			shouldCapture = true;
 			break;
 
 		case ReadScreen::VIDEO : {
 			std::ostringstream ss;
 			ss << std::setw(6) << std::setfill('0') << fileNumber;
 			fileNameNextScreenshot = videoBaseName + "-" + ss.str() + ".jpg";
-			//master->intercept();
 			fileNumber++;
+			shouldCapture = true;
 			}
 			break;
 
 		default: break;
+	}
+	if (shouldCapture) {
+		bufferIdx = saveScreen->getFreeIndex();
+		preImageBarrier.image = image;
+		postImageBarrier.image = image;
+		vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &preImageBarrier);
+		copyInfo.bufferOffset = buffers[bufferIdx].offset;
+		vkCmdCopyImageToBuffer(cmd, image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, postBufferBarrier.buffer, 1, &copyInfo);
+		vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, 0, 0, nullptr, 0, nullptr, 1, &postImageBarrier);
+		postBufferBarrier.offset = copyInfo.bufferOffset;
+		vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 0, nullptr, 1, &postBufferBarrier, 0, nullptr);
 	}
 }
 
@@ -109,23 +149,21 @@ void SaveScreenInterface::takeScreenShot(const std::string& _fileName)
 		fileNameScreenshot = _fileName;
 }
 
-void SaveScreenInterface::writeScreenshot(void *pSelf, void *pData, uint32_t width, uint32_t height)
+void SaveScreenInterface::writeScreenshot(const std::string &fileName, int idx)
 {
-	SaveScreenInterface *self = static_cast<SaveScreenInterface *>(pSelf);
-	//cette fonction peut être bloquante
-	self->saveScreen->getFreeIndex();
-	unsigned char *data = static_cast<unsigned char *>(pData) + 4 * width * height; // Move at the end of the image
-	unsigned char *buff = self->saveScreen->getFreeBuffer();
-	for (uint32_t i = 0; i < height; ++i) { // Format is VK_FORMAT_B8G8R8A8_UNORM
-		data -= 2 * 4 * width; // Flip Y axis
-		for (uint32_t j = 0; j < width; ++j) {
-			*(buff++) = data[2]; // R component
-			*(buff++) = data[1]; // G component
-			*(buff++) = data[0]; // B component
-			data += 4;
+	Context::instance->readbackMgr->invalidate(buffers[idx]);
+	unsigned char *src = static_cast<unsigned char *>(pBuffers[idx]) + 4 * minWH * minWH; // Move at the end of the image
+	unsigned char *dst = saveScreen->getBuffer(idx);
+	for (uint32_t i = 0; i < minWH; ++i) { // Format is VK_FORMAT_B8G8R8A8_UNORM
+		src -= 2 * 4 * minWH; // Flip Y axis
+		for (uint32_t j = 0; j < minWH; ++j) {
+			*(dst++) = src[2]; // R component
+			*(dst++) = src[1]; // G component
+			*(dst++) = src[0]; // B component
+			src += 4;
 		}
 	}
-	self->saveScreen->saveScreenBuffer(self->fileNameNextScreenshot);
+	saveScreen->saveScreenBuffer(fileName, idx);
 }
 
 //! Return the next sequential screenshot filename to use
@@ -140,4 +178,25 @@ std::string SaveScreenInterface::getNextScreenshotFilename()
 
 	tempName = snapBaseName +timestr;
 	return tempName;
+}
+
+void SaveScreenInterface::update()
+{
+	if (!shouldCapture)
+		return;
+	if (asyncEngine)
+		pendingIdx.emplace({fileNameNextScreenshot, bufferIdx});
+	else
+		writeScreenshot(fileNameNextScreenshot, bufferIdx);
+	shouldCapture = false;
+}
+
+void SaveScreenInterface::mainloop()
+{
+	std::pair<std::string, int> args;
+	pendingIdx.acquire();
+	while (pendingIdx.pop(args)) {
+		writeScreenshot(args.first, args.second);
+	}
+	pendingIdx.release();
 }

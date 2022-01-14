@@ -33,6 +33,7 @@
 #include <memory>
 #include "tools/no_copy.hpp"
 #include <vulkan/vulkan.h>
+#include "EntityCore/Tools/SafeQueue.hpp"
 
 /** @class SaveScreenInterface
 
@@ -50,11 +51,11 @@ class SaveScreen;
 
 class SaveScreenInterface : public NoCopy {
 public:
-	SaveScreenInterface(unsigned int _width, unsigned int _height);
+	SaveScreenInterface(VkRect2D screenRect);
 	~SaveScreenInterface();
 
     //! lit l'écran et le sauvegarde sur le disque dur
-    void readScreenShot(VkCommandBuffer cmd);
+    void readScreenShot(VkCommandBuffer cmd, VkImage image);
 
     //! démarre la vidéo
     void startVideo();
@@ -77,9 +78,11 @@ public:
         snapBaseName = _value;
     }
 
+	void update();
 private:
-    static void writeScreenshot(void *pSelf, void *pData, uint32_t width, uint32_t height);
+    void writeScreenshot(const std::string &filename, int idx);
     std::string getNextScreenshotFilename();
+	void mainloop();
 
 	std::unique_ptr<SaveScreen> saveScreen;
     enum class ReadScreen : char {NONE, SNAPSHOT, VIDEO};
@@ -92,6 +95,17 @@ private:
     unsigned int height;
     unsigned int minWH;
 	std::string fileNameNextScreenshot;
+	bool shouldCapture = false;
+	bool asyncEngine = false;
+	SubBuffer buffers[3];
+	void *pBuffers[3];
+	int bufferIdx = 0;
+	WorkQueue<std::pair<std::string, int>, 3> pendingIdx; // Pending buffer idx
+	std::thread thread;
+	VkImageMemoryBarrier preImageBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}};
+	VkImageMemoryBarrier postImageBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_READ_BIT, 0, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}};
+	VkBufferMemoryBarrier postBufferBarrier {VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER, nullptr, VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_HOST_READ_BIT, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, VK_NULL_HANDLE, 0, 0};
+	VkBufferImageCopy copyInfo {};
 };
 
 #endif //SAVE_SCREEN_INTERFACE_HPP

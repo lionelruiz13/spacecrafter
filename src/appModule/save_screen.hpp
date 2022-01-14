@@ -29,7 +29,10 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <vector>
 #include "tools/no_copy.hpp"
+#include "EntityCore/Tools/SafeQueue.hpp"
+#include "EntityCore/SubBuffer.hpp"
 /** @class SaveScreen
 
  * @section EN BREF
@@ -56,38 +59,34 @@ public:
 	~SaveScreen();
 
 	//!fonction qui ordonne la sauvegarde d'un buffer connaissant son nom.
-	void saveScreenBuffer(const std::string &fileName);
+	void saveScreenBuffer(const std::string &fileName, int idx);
 
 	//!réserve un indice libre de [0..nb_cores-1] boucle s'il le faut
-	void getFreeIndex();
+	int getFreeIndex();
 
 	//!renvoie un pointeur sur un espace mémoire pour la sauvegarde
-	unsigned char* getFreeBuffer() {
-		return buffer[freeSlot];
-	}
+	unsigned char* getBuffer(int idx);
 
+	void startStream();
+	void stopStream();
 private:
-	//!thread servant à lancer la fonction de sauvegarde
-	std::thread taskThread(const std::string &fileName, int bufferIndice) {
-		return std::thread([=, this] { saveScreenToFile( fileName, bufferIndice); });
-	}
-
 	//!transforme un buffer en une image sur le disque
-	void saveScreenToFile(const std::string &fileName, int bufferIndice);
+	void saveScreenToFile(const std::string &fileName, int idx);
 
-	//! vérifie que tous les buffers ont été traités
-	bool isAllFree();
+	void threadLoop(int threadIdx);
 
-	int freeSlot; //!< indique un indice libre de buffer
-
-	std::thread * threadpool;	//!< contenant pour créer des threads à la volée.
 	unsigned int size_screen;	//!< taille carré de l'image à sauvegarder
-	unsigned int nb_cores;		//!< nombre de threads maxi
 
-	std::mutex mtx;  //!< mutex sur tab
-	unsigned char** buffer; //!< tableau de tableau de captures d'écran
-	bool* tab; //!< tableau servant à protéger les buffers des IO threads/app
+	int subIdx = 0;
+	int pBuffer[3] {-1, -1, -1};
+	std::vector<std::vector<unsigned char>> buffer;
+	std::vector<std::thread> threads;
+	std::vector<std::mutex> mtx;
+	bool active = false;
 	bool isAvariable = true; //!< indique si le service de sauvegarde des images est opértationnel
+	PushQueue<int, 7> bufferReady;
+	PopQueue<std::pair<std::string, int>, 7> requests;
+	std::condition_variable cv;
 };
 
 #endif //SAVE_SCREEN_HPP

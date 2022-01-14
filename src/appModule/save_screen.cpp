@@ -30,43 +30,20 @@
 #include "tools/log.hpp"
 
 
-SaveScreen::SaveScreen(unsigned int _size)
+SaveScreen::SaveScreen(unsigned int _size) : mtx(std::min(std::max(2, SDL_GetCPUCount()-4), 7))
 {
 	size_screen = _size;
-	nb_cores= std::max(1,SDL_GetCPUCount()-2); //on veut garder un thread pour la boucle principale plus un thread pour la soumission des commandes
-	freeSlot = -1;
 
-	buffer = nullptr;
-	tab = nullptr;
-
-	buffer = new unsigned char*[nb_cores];
-	if (buffer==nullptr) {
-		cLog::get()->write("SaveScreen : erreur création buffer", LOG_TYPE::L_ERROR);
+	try {
+		buffer.resize(mtx.size());
+		for (uint8_t i = 0; i < mtx.size(); ++i) {
+			buffer[i].resize(3 * size_screen * size_screen);
+			bufferReady.emplace(i);
+		}
+	} catch (...) {
 		isAvariable = false;
-		return;
+		cLog::get()->write("SaveScreen : erreur création buffer individuel", LOG_TYPE::L_ERROR);
 	}
-
-	tab = new bool[nb_cores];
-	if (tab==nullptr) {
-		cLog::get()->write("SaveScreen : erreur création tab", LOG_TYPE::L_ERROR);
-		isAvariable = false;
-		return;
-	}
-
-	for(unsigned int i = 0; i < nb_cores; i++) {
-		buffer[i]= nullptr;
-		buffer[i] = new unsigned char[3 * size_screen * size_screen];
-		if (buffer[i] == nullptr) {
-			cLog::get()->write("SaveScreen : erreur création buffer individuel", LOG_TYPE::L_ERROR);
-			tab[i]= false;
-			isAvariable = false;
-			return;
-		} else
-			tab[i]=true;
-	}
-
-	threadpool = nullptr;
-	threadpool = new std::thread[nb_cores];
 }
 
 
@@ -75,68 +52,77 @@ SaveScreen::~SaveScreen()
 	if (!isAvariable)
 		return;
 
-	//verification que tous les threads soient terminés
-	while (isAllFree() != true) {
-		SDL_Delay(10);
-	}
-
-	for(unsigned int i = 0; i < nb_cores; i++) {
-		delete[] buffer[i];
-	}
-	delete[] buffer;
-	delete[] tab;
+	stopStream();
 }
 
-bool SaveScreen::isAllFree()
-{
-	mtx.lock();
-	for(unsigned int i=0; i< nb_cores; i++) {
-		if (tab[i]==false) {
-			mtx.unlock();
-			return false;
-		}
-	}
-	mtx.unlock();
-	return true;
-}
-
-void SaveScreen::saveScreenBuffer(const std::string &fileName)
+void SaveScreen::saveScreenBuffer(const std::string &filename, int idx)
 {
 	if (!isAvariable)
 		return;
 
-	mtx.lock();
-	threadpool[freeSlot] = taskThread(fileName, freeSlot);
-	tab[freeSlot]=false;
-	threadpool[freeSlot].detach();
-	freeSlot=-1;
-	mtx.unlock();
-}
-
-void SaveScreen::getFreeIndex()
-{
-	freeSlot=-1;
-	while (freeSlot == -1) {
-		mtx.lock();
-		for(unsigned int i=0; i<nb_cores; i++) {
-			if (tab[i] == true) {
-				//~ printf("trouvé ! %i\n", i);
-				freeSlot=i;
-				break;
-			}
-		}
-		mtx.unlock();
-		SDL_Delay(10);
-		//~ printf("tout est occupé\n");
+	int bufferIdx = pBuffer[idx];
+	pBuffer[idx] = -1;
+	if (threads.empty()) {
+		std::thread(&SaveScreen::saveScreenToFile, this, filename, bufferIdx).detach();
+	} else {
+		requests.emplace({filename, bufferIdx});
+		cv.notify_one();
 	}
-	//~ printf("valeur de freeSlot %i\n",freeSlot);
 }
 
-void SaveScreen::saveScreenToFile(const std::string &fileName, int bufferIndice)
+int SaveScreen::getFreeIndex()
+{
+	subIdx %= 3;
+	while (pBuffer[subIdx] >= 0) {
+		SDL_Delay(10);
+	}
+	return subIdx++;
+}
+
+unsigned char *SaveScreen::getBuffer(int idx)
+{
+	int bufferIdx;
+	while (!bufferReady.pop(bufferIdx)) {
+		SDL_Delay(10);
+	}
+	pBuffer[idx] = bufferIdx;
+	return buffer[idx].data();
+}
+
+void SaveScreen::saveScreenToFile(const std::string &fileName, int idx)
 {
 	//~ printf("dans SaveScreen::saveScreenToFile\n");
-	tje_encode_to_file_at_quality(fileName.c_str(), 3,size_screen, size_screen, 3, buffer[bufferIndice]);
-	mtx.lock();
-	tab[bufferIndice]=true;
-	mtx.unlock();
+	tje_encode_to_file_at_quality(fileName.c_str(), 3,size_screen, size_screen, 3, buffer[idx].data());
+	bufferReady.emplace(idx);
+}
+
+void SaveScreen::startStream()
+{
+	cLog::get()->write("Starting frame encoding stream", LOG_TYPE::L_INFO);
+	active = true;
+	for (uint16_t i = 0; i < mtx.size(); ++i) {
+		threads.push_back(std::thread(&SaveScreen::threadLoop, this, i));
+	}
+}
+
+void SaveScreen::stopStream()
+{
+	cLog::get()->write("Stopping frame encoding stream", LOG_TYPE::L_INFO);
+	active = false;
+	cv.notify_all();
+	for (auto &t : threads)
+		t.join();
+	threads.clear();
+}
+
+void SaveScreen::threadLoop(int threadIdx)
+{
+	std::unique_lock<std::mutex> lock;
+	std::pair<std::string, int> req;
+	while (active) {
+		if (requests.pop(req)) {
+			saveScreenToFile(req.first, req.second);
+		} else
+			cv.wait(lock);
+	}
 }
