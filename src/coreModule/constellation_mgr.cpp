@@ -471,7 +471,7 @@ void ConstellationMgr::drawBoundaries(VkCommandBuffer &cmd, const Projector * pr
 		return;
 	m_pipelineBoundary->bind(cmd);
 	if (!submitSomething)
-		m_layout->bindSets(cmd, {Context::instance->uboSet->get(), m_set->get()});
+		m_layout->bindSets(cmd, {*Context::instance->uboSet, *m_set});
 	vertexBoundary->bind(cmd);
 	const int vertexCount = vBoundariesPos.size() / 2;
 	vkCmdDraw(cmd, vertexCount, 1, 0, 0);
