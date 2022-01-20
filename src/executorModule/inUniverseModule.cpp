@@ -88,7 +88,6 @@ void InUniverseModule::update(int delta_time)
 	                                    core->navigation->getJ2000ToEyeMat(),
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
-	core->uboCamUpdate();
 	Event* event = new ScreenFaderInterludeEvent(
 		ScreenFaderInterludeEvent::DOWN, minAltToGoDown,1.1*minAltToGoDown, observer->getAltitude());
 	EventRecorder::getInstance()->queue(event);

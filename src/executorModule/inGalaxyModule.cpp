@@ -109,7 +109,6 @@ void InGalaxyModule::update(int delta_time)
 	                                    core->navigation->getJ2000ToEyeMat(),
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
-	core->uboCamUpdate();
 	Event* event = new ScreenFaderInterludeEvent(
 		ScreenFaderInterludeEvent::UP, maxAltToGoUp/10.0,maxAltToGoUp, observer->getAltitude());
 	EventRecorder::getInstance()->queue(event);

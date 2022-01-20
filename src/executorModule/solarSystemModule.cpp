@@ -156,9 +156,6 @@ void SolarSystemModule::update(int delta_time)
 	}
 	// TODO: should calculate dimming with solar eclipse even without atmosphere on
 	core->landscape->setSkyBrightness(core->sky_brightness+0.05);
-
-
-	core->uboCamUpdate();
 }
 
 void SolarSystemModule::draw(int delta_time)
