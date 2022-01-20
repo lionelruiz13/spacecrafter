@@ -57,12 +57,15 @@ void SolarSystemModule::onEnter()
 	//réglage de l'altitude dans CoreExecutorInSolarSystem la première fois
 	if (observer->getAltitude() < maxAltToGoUp)
 		observer->setAltitude(observer->getAltitude() *1.E6);
+    thread = std::thread(&SolarSystemModule::asyncUpdateLoop, this);
 }
 
 void SolarSystemModule::onExit()
 {
 	std::cout << "Je quitte InSolarSystem" << std::endl;
 	core->timeMgr->setTimeSpeed(1);
+    threadQueue.close();
+    thread.join();
 }
 
 
@@ -93,24 +96,6 @@ void SolarSystemModule::update(int delta_time)
 
 	// Move the view direction and/or fov
 	core->updateMove(delta_time);
-	// Update info about selected object
-	// selected_object.update();
-	// Update faders
-	core->skyGridMgr->update(delta_time);
-	core->skyLineMgr->update(delta_time);
-	core->skyDisplayMgr->update(delta_time);
-	core->asterisms->update(delta_time);
-	core->atmosphere->update(delta_time);
-	core->landscape->update(delta_time);
-	core->hip_stars->update(delta_time);
-	core->nebulas->update(delta_time);
-	core->cardinals_points->update(delta_time);
-	core->milky_way->update(delta_time);
-	//text_usr->update(delta_time);
-
-	core->starLines->update(delta_time);
-
-	core->oort->update(delta_time);
 
 	// Compute the sun position in local coordinate
 	Vec3d temp(0.,0.,0.);
@@ -130,13 +115,25 @@ void SolarSystemModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 
-	std::future<void> a = std::async(std::launch::async, &SolarSystemModule::ssystemComputePreDraw, this);
-	std::future<void> b = std::async(std::launch::async, &SolarSystemModule::atmosphereComputeColor, this, sunPos, moonPos);
-	std::future<void> c = std::async(std::launch::async, &SolarSystemModule::hipStarMgrPreDraw, this);
+    asyncUpdateBegin({sunPos, moonPos});
+	// std::future<void> a = std::async(std::launch::async, &SolarSystemModule::ssystemComputePreDraw, this);
+	// std::future<void> b = std::async(std::launch::async, &SolarSystemModule::atmosphereComputeColor, this, sunPos, moonPos);
+	// std::future<void> c = std::async(std::launch::async, &SolarSystemModule::hipStarMgrPreDraw, this);
 
-	a.get();
-	b.get();
-	c.get();
+    // Update faders
+	core->skyGridMgr->update(delta_time);
+	core->skyLineMgr->update(delta_time);
+	core->skyDisplayMgr->update(delta_time);
+	core->asterisms->update(delta_time);
+	core->atmosphere->update(delta_time);
+	core->landscape->update(delta_time);
+	core->hip_stars->update(delta_time);
+	core->nebulas->update(delta_time);
+	core->cardinals_points->update(delta_time);
+	core->milky_way->update(delta_time);
+	core->starLines->update(delta_time);
+	core->oort->update(delta_time);
+
 	core->tone_converter->setWorldAdaptationLuminance(core->atmosphere->getWorldAdaptationLuminance());
 
 	sunPos.normalize();
@@ -160,8 +157,9 @@ void SolarSystemModule::update(int delta_time)
 
 void SolarSystemModule::draw(int delta_time)
 {
+    Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]); // multisample print
+    asyncUpdateEnd();
 	core->applyClippingPlanes(0.000001 ,200);
-	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]); // multisample print
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
@@ -229,4 +227,33 @@ void SolarSystemModule::hipStarMgrPreDraw()
 void SolarSystemModule::ssystemComputePreDraw()
 {
 	core->ssystemFactory->computePreDraw(core->projection, core->navigation);
+}
+
+void SolarSystemModule::asyncUpdateBegin(std::pair<Vec3d, Vec3d> data)
+{
+    asyncWorkState = true;
+    threadQueue.push(data);
+}
+
+void SolarSystemModule::asyncUpdateEnd()
+{
+    if (asyncWorkState)
+        threadQueue.waitIdle();
+}
+
+void SolarSystemModule::asyncUpdateLoop()
+{
+    // std::pair<sunPos, moonMos>
+    std::pair<Vec3d, Vec3d> data;
+    threadQueue.acquire();
+    while (threadQueue.pop(data)) {
+        core->ssystemFactory->computePreDraw(core->projection, core->navigation);
+        core->atmosphere->computeColor(core->timeMgr->getJDay(), data.first, data.second,
+    	                          core->ssystemFactory->getMoon()->get_phase(core->ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
+    	                          core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
+    	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
+        core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        asyncWorkState = false;
+    }
+    threadQueue.release();
 }

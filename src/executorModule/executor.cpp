@@ -42,6 +42,7 @@ Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
     inGalaxyModule->defineDownMode(ssystemModule.get());
     inGalaxyModule->defineUpMode(inUniverseModule.get());
     inUniverseModule->defineDownMode(inGalaxyModule.get());
+    currentMode->onEnter();
 }
 
 void Executor::draw(int delta_time)

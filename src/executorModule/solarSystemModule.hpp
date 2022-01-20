@@ -28,12 +28,14 @@
 #include "executorModule.hpp"
 #include "coreModule/core.hpp"
 #include "mediaModule/media.hpp"
+#include "EntityCore/Tools/SafeQueue.hpp"
+#include <thread>
 
 class SolarSystemModule : public ExecutorModule {
 public:
 
     SolarSystemModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer) {maxAltToGoUp = 1.E16; module = MODULE::SOLAR_SYSTEM;};
-    ~SolarSystemModule() {};
+    ~SolarSystemModule() {if (thread.joinable()) {threadQueue.close(); thread.join();}}
 
     virtual void onEnter() override;
 	virtual void onExit() override;
@@ -46,8 +48,16 @@ public:
     void ssystemComputePreDraw();
 
 private:
+    // Start async update
+    void asyncUpdateBegin(std::pair<Vec3d, Vec3d> data);
+    // Ensure async update has completed before continue
+    void asyncUpdateEnd();
+    void asyncUpdateLoop();
+    bool asyncWorkState = false; // used by asycnUpdateBegin and asyncUpdateEnd
     std::shared_ptr<Core> core;
     Observer *observer;
+    std::thread thread;
+    WorkQueue<std::pair<Vec3d, Vec3d>, 3> threadQueue;
 };
 
 #endif
