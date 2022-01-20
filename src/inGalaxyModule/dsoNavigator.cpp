@@ -66,7 +66,7 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
                            1,7,5, 5,3,1};
     memcpy(context.transfer->planCopy(index), tmp, 3*2*6*sizeof(uint16_t));
 
-    texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2);
+    texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
     colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
 
     layout = std::make_unique<PipelineLayout>(vkmgr);

@@ -37,7 +37,7 @@
 #include "navModule/navigator.hpp"
 #include <cassert>
 
-CloudNavigator::CloudNavigator()
+CloudNavigator::CloudNavigator(const std::string &filename)
 {
     Context &context = *Context::instance;
     VulkanMgr &vkmgr = *VulkanMgr::instance;
@@ -48,7 +48,8 @@ CloudNavigator::CloudNavigator()
     vertexArray->createBindingEntry(sizeof(cloud), VK_VERTEX_INPUT_RATE_INSTANCE);
     vertexArray->addInput(VK_FORMAT_R32G32B32A32_SFLOAT); // color
     for (int i = 0; i < 8; ++i)
-        vertexArray->addInput(VK_FORMAT_R32G32B32A32_SFLOAT); // model
+        vertexArray->addInput(VK_FORMAT_R32G32B32A32_SFLOAT); // model invmodel
+    vertexArray->addInput(VK_FORMAT_R32_SFLOAT); // lodFactor
     vertex = vertexArray->createBuffer(0, 8, context.globalBuffer.get());
     Vec3f *ptr = (Vec3f *) context.transfer->planCopy(vertex->get());
     ptr[0].set(-1,1,1); ptr[1].set(1,1,1);
@@ -87,6 +88,8 @@ CloudNavigator::CloudNavigator()
     pipeline->bindShader("cloud3D.frag.spv");
     float maxLod = texture->getTexture().getMipmapCount() - 1;
     pipeline->setSpecializedConstant(0, &maxLod, sizeof(maxLod));
+    float minLod = 0.; // The original texture is too big
+    pipeline->setSpecializedConstant(1, &minLod, sizeof(minLod));
     pipeline->build();
 
     set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
@@ -102,6 +105,10 @@ CloudNavigator::CloudNavigator()
         cmds[i] = context.frame[i]->create(1);
         context.frame[i]->setName(cmds[i], "cloud3D");
     }
+    addRule(5, Vec4f(0, 0, 0, 2.));
+    addRule(6, Vec4f(0.5, 0.05, 0.25, 2.));
+    if (!filename.empty())
+        loadCatalog(filename);
     // //=============== TEST ===============//
     // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(61.6645, 106.7731717, 8.732473606)) * Mat4f::scaling(1));
     // insert(Vec4f(0.08, 0.5, 0.8, 2.), Mat4f::translation(Vec3f(57.8494, 101.6510559, 8.009581944)) * Mat4f::scaling(1));
@@ -124,7 +131,7 @@ void CloudNavigator::build(int nbClouds)
 }
 
 //! Sort clouds in depth-first order, linear in time when already sorted
-void CloudNavigator::computePosition(Vec3f posI)
+void CloudNavigator::computePosition(Vec3f posI, const Projector *prj)
 {
     bool changed = false;
     if ((int) cloudData.size() != instanceCount) {
@@ -137,6 +144,14 @@ void CloudNavigator::computePosition(Vec3f posI)
     cloud tmpData;
     int swapI;
     bool invertMove = false;
+    const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
+    const float rad = 10.f;
+    const float radSquared = rad*rad;
+    float tmpLod = (lengthSquared > radSquared) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared-radSquared)) * coef)) : 0;
+    if (cloudData[instanceCount - 1].lodFactor != tmpLod) {
+        changed = true;
+        cloudData[instanceCount - 1].lodFactor = tmpLod;
+    }
     for (int i = instanceCount - 2; i >= 0 || invertMove; --i) {
         float lengthSquared2 = (cloudPos[i + invertMove] - posI).lengthSquared();
         if (invertMove) {
@@ -156,6 +171,11 @@ void CloudNavigator::computePosition(Vec3f posI)
             lengthSquared = (cloudPos[i] - posI).lengthSquared();
             invertMove = false;
         } else {
+            tmpLod = (lengthSquared2 > radSquared) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared2-radSquared)) * coef)) : 0;
+            if (cloudData[i].lodFactor != tmpLod) {
+                changed = true;
+                cloudData[i].lodFactor = tmpLod;
+            }
             if (lengthSquared > lengthSquared2) {
                 tmpPos = cloudPos[i];
                 cloudPos[i] = cloudPos[i + 1];
@@ -180,7 +200,7 @@ void CloudNavigator::computePosition(Vec3f posI)
 
 void CloudNavigator::insert(const Vec4f &color, const Mat4f &model)
 {
-    cloudData.push_back({color, model, model.inverse()});
+    cloudData.push_back({color, model, model.inverse(), 8});
     cloudPos.emplace_back(model.r[12], model.r[13], model.r[14]);
 }
 
@@ -205,4 +225,24 @@ void CloudNavigator::draw(const Mat4f &mat, const Projector* prj)
     vkCmdDrawIndexed(cmd, 3*2*6, instanceCount, 0, 0, 0);
     frame.compile(cmd);
     frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
+}
+
+void CloudNavigator::addRule(int index, Vec4f color)
+{
+    types[index] = cloudType{color};
+}
+
+void CloudNavigator::loadCatalog(const std::string &filename)
+{
+    std::ifstream file(filename);
+    float x, y, z;
+    while (file) {
+        int t = -1;
+        try {
+            file >> t >> x >> y >> z;
+            auto &data = types.at(t);
+            insert(data.color, Mat4f::translation(Vec3f(x, y, z)) * Mat4f::scaling(100));
+        } catch (...) {
+        }
+    }
 }

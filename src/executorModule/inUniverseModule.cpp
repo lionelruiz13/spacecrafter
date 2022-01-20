@@ -97,7 +97,7 @@ void InUniverseModule::draw(int delta_time)
 {
 	core->applyClippingPlanes(0.0001 ,2000.1);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
-	core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos());
+	core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);

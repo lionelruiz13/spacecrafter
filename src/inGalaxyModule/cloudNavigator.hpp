@@ -26,6 +26,7 @@
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 #include <memory>
+#include <map>
 
 #include "EntityCore/SubBuffer.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -41,12 +42,15 @@ class s_texture;
 
 class CloudNavigator: public NoCopy {
 public:
-    CloudNavigator();
+    CloudNavigator(const std::string &filename = "\0");
     ~CloudNavigator();
-    void computePosition(Vec3f posI);
+    void computePosition(Vec3f posI, const Projector *prj);
     void draw(const Navigator * nav, const Projector* prj);
     void draw(const Mat4f &mat, const Projector* prj);
     void insert(const Vec4f &color, const Mat4f &model);
+
+    void addRule(int index, Vec4f color);
+    void loadCatalog(const std::string &filename);
 private:
     void build(int nbClouds);
 
@@ -61,6 +65,10 @@ private:
         Vec4f color;
         Mat4f model;
         Mat4f invmodel;
+        float lodFactor;
+    };
+    struct cloudType {
+        Vec4f color;
     };
     std::vector<cloud> cloudData;
     std::vector<Vec3f> cloudPos;
@@ -72,6 +80,7 @@ private:
     std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrix;
     std::unique_ptr<SharedBuffer<Vec3f>> uclipping_fov;
     std::unique_ptr<SharedBuffer<Mat4f>> uCamRotToLocal; // represent a Mat3f
+    std::map<int, cloudType> types;
 };
 
 #endif /* end of include guard: CLOUD_NAVIGATOR_HPP */

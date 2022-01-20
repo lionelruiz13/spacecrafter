@@ -92,7 +92,7 @@ s_texture::s_texture(const s_texture *t)
 	texture = t->texture;
 }
 
-s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize) : textureName(_textureName),
+s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize, bool useBlendMipmap) : textureName(_textureName),
 	loadType(PNG_BLEND1), loadWrapping(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
 {
 	switch (_loadType) {
@@ -118,9 +118,9 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap
 	bool succes;
 
 	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
-		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize);
+		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap);
 	else
-		succes = preload(texDir + textureName, mipmap, resolution, depth, nbChannels, channelSize);
+		succes = preload(texDir + textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap);
 
 	if (!succes)
 		createEmptyTex();
@@ -191,7 +191,7 @@ void s_texture::createEmptyTex()
 	}
 }
 
-bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolution, int depth, int _nbChannels, int _channelSize)
+bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolution, int depth, int _nbChannels, int _channelSize, bool useBlendMipmap)
 {
 	auto &tex = texCache[fullName];
 	nbChannels = _nbChannels;
@@ -244,6 +244,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
         texture->height = realHeight;
 		texture->depth = depth;
 		texture->mipmap = mipmap;
+        texture->blendMipmap = useBlendMipmap;
         if (resolution && !minified && (unsigned int) (realWidth * realHeight *4+2)/3 * nbChannels * channelSize > minifyMax) {
             texture->bigWidth = realWidth;
             texture->bigHeight = realHeight;
@@ -533,7 +534,7 @@ void s_texture::recordTransfer(VkCommandBuffer cmd)
 	releaseMemory[releaseIdx].clear();
 	std::shared_ptr<texRecap> tex;
 	while (textureQueue.pop(tex)) {
-        if (tex->depth > 1 && tex->mipmap) {
+        if (tex->blendMipmap) {
             {
                 VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, 0, VK_ACCESS_TRANSFER_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, tex->texture->getImage(), {tex->texture->getAspect(), 0, 1, 0, 1}};
                 vkCmdPipelineBarrier(cmd, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);

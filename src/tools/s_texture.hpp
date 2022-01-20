@@ -58,11 +58,9 @@ class PipelineLayout;
 
 class s_texture {
 public:
-	// If resolution is set to 0, create a texture
-	// Otherwise, look for a texture which resolution is (resolution*1024)x(resolution*512) by adding std::to_string(resolution) + "K" before the file extension
-	// Note that a texture with lower power-of-two resolution may be querried depending to how many memory is available on the device
-	// As general rule, the lowest resolution which can be querried is 4K
-	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1);
+	// If resolution is true, use texture with -preview suffix, or downscale original texture
+	// In this case, the full resolution texture can be dynamically loaded and querried with getBigTexture()
+	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false);
 	// création d'une texture à partir d'une texture, transmet l'ownership de la texture à s_texture
 	s_texture(const std::string& _textureName, Texture *_imgTex);
 	// destructeur de texture
@@ -127,7 +125,7 @@ public:
 	static void loadCache(const std::string &path, bool _cacheTexture);
 private:
 	void unload();
-	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1);
+	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false);
 	bool load();
 	bool load(unsigned char *data, int realWidth, int realHeight);
 	struct bigTexRecap {
@@ -162,6 +160,7 @@ private:
 		unsigned short bigDepth = 1; // Not implemented yet
 		bool mipmap = false;
 		bool quickloadable = false;
+		bool blendMipmap = false;
 		bigTexRecap *bigTexture = nullptr;
 	};
 

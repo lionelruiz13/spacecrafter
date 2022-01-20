@@ -119,7 +119,7 @@ void InGalaxyModule::draw(int delta_time)
 	core->applyClippingPlanes(0.01, 2000.01);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
 	core->starNav->computePosition(core->navigation->getObserverHelioPos());
-	core->cloudNav->computePosition(core->navigation->getObserverHelioPos());
+	core->cloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	core->dsoNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 
 	//for VR360 drawing
