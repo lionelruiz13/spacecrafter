@@ -97,8 +97,8 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	nebulas = std::make_unique<NebulaMgr>();
 	milky_way = std::make_shared<MilkyWay>();
 	starNav = std::make_unique<StarNavigator>();
-	cloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
-	universeCloudNav = std::make_unique<CloudNavigator>();
+	cloudNav = std::make_unique<CloudNavigator>();
+	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 	dsoNav = std::make_unique<DsoNavigator>("dso3d-color.png");
 	starLines = std::make_unique<StarLines>();
 	ojmMgr = std::make_unique<OjmMgr>();

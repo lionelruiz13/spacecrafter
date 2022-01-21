@@ -145,7 +145,6 @@ void CloudNavigator::computePosition(Vec3f posI, const Projector *prj)
     int swapI;
     bool invertMove = false;
     const float coef = 2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
-    const float rad = 10.f;
     const float radSquared = rad*rad;
     float tmpLod = (lengthSquared > radSquared) ? std::floor(-std::log2(atanf(rad / sqrt(lengthSquared-radSquared)) * coef)) : 0;
     if (cloudData[instanceCount - 1].lodFactor != tmpLod) {
@@ -241,7 +240,9 @@ void CloudNavigator::loadCatalog(const std::string &filename)
         try {
             file >> t >> x >> y >> z;
             auto &data = types.at(t);
-            insert(data.color, Mat4f::translation(Vec3f(x, y, z)) * Mat4f::scaling(100));
+            Vec3f pos(x, y, z);
+            pos *= 0.00001;
+            insert(data.color, Mat4f::translation(pos) * Mat4f::scaling(rad));
         } catch (...) {
         }
     }

@@ -81,6 +81,7 @@ private:
     std::unique_ptr<SharedBuffer<Vec3f>> uclipping_fov;
     std::unique_ptr<SharedBuffer<Mat4f>> uCamRotToLocal; // represent a Mat3f
     std::map<int, cloudType> types;
+    float rad = 0.001;
 };
 
 #endif /* end of include guard: CLOUD_NAVIGATOR_HPP */
