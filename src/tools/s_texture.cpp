@@ -269,7 +269,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 			blend(loadType, data, texture->size);
 		VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		if (mipmap)
-			usage |= (depth == 1) ? VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_STORAGE_BIT;
+			usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 		const VkImageType imgType = (depth > 1) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
 		--_nbChannels;
 		const VkFormat format = (const VkFormat[]) {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM}[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
