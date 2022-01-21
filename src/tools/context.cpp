@@ -19,6 +19,7 @@ Context::~Context()
         vkDestroyFence(VulkanMgr::instance->refDevice, f, nullptr);
     for (auto &s : semaphores)
         vkDestroySemaphore(VulkanMgr::instance->refDevice, s, nullptr);
+    vkDestroyCommandPool(VulkanMgr::instance->refDevice, cmdPool, nullptr);
     for (auto p : pipelineArray)
         delete[] p;
 }

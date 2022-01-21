@@ -45,6 +45,9 @@ DrawHelper::~DrawHelper()
 {
     queue.close();
     thread.join();
+    for (int i = 0; i < 3; ++i) {
+        vkDestroyCommandPool(VulkanMgr::instance->refDevice, drawer[i].cmdPool, nullptr);
+    }
 }
 
 void DrawHelper::mainloop()
