@@ -30,13 +30,14 @@
 #include "tools/log.hpp"
 
 
-SaveScreen::SaveScreen(unsigned int _size) : mtx(std::min(std::max(2, SDL_GetCPUCount()-4), 7))
+SaveScreen::SaveScreen(unsigned int _size)
 {
+	nb_threads = std::min(std::max(2, SDL_GetCPUCount()-4), 7);
 	size_screen = _size;
 
 	try {
-		buffer.resize(mtx.size());
-		for (uint8_t i = 0; i < mtx.size(); ++i) {
+		buffer.resize(nb_threads + 2);
+		for (uint8_t i = 0; i < nb_threads + 2; ++i) {
 			buffer[i].resize(3 * size_screen * size_screen);
 			bufferReady.emplace(i);
 		}
@@ -66,7 +67,6 @@ void SaveScreen::saveScreenBuffer(const std::string &filename, int idx)
 		std::thread(&SaveScreen::saveScreenToFile, this, filename, bufferIdx).detach();
 	} else {
 		requests.emplace({filename, bufferIdx});
-		cv.notify_one();
 	}
 }
 
@@ -86,7 +86,7 @@ unsigned char *SaveScreen::getBuffer(int idx)
 		SDL_Delay(10);
 	}
 	pBuffer[idx] = bufferIdx;
-	return buffer[idx].data();
+	return buffer[bufferIdx].data();
 }
 
 void SaveScreen::saveScreenToFile(const std::string &fileName, int idx)
@@ -99,30 +99,29 @@ void SaveScreen::saveScreenToFile(const std::string &fileName, int idx)
 void SaveScreen::startStream()
 {
 	cLog::get()->write("Starting frame encoding stream", LOG_TYPE::L_INFO);
-	active = true;
-	for (uint16_t i = 0; i < mtx.size(); ++i) {
-		threads.push_back(std::thread(&SaveScreen::threadLoop, this, i));
+	requests.reopen();
+	for (uint16_t i = 0; i < nb_threads; ++i) {
+		threads.push_back(std::thread(&SaveScreen::threadLoop, this));
 	}
 }
 
 void SaveScreen::stopStream()
 {
 	cLog::get()->write("Stopping frame encoding stream", LOG_TYPE::L_INFO);
-	active = false;
-	cv.notify_all();
+	requests.close();
+	requests.flush(); // Temporary patch, should be fixed with next EntityCore version
 	for (auto &t : threads)
 		t.join();
 	threads.clear();
 }
 
-void SaveScreen::threadLoop(int threadIdx)
+void SaveScreen::threadLoop()
 {
-	std::unique_lock<std::mutex> lock;
+	DispatchOutQueue<std::pair<std::string, int>, 7, 7> requestQuerry(requests);
 	std::pair<std::string, int> req;
-	while (active) {
-		if (requests.pop(req)) {
-			saveScreenToFile(req.first, req.second);
-		} else
-			cv.wait(lock);
+	requestQuerry.acquire();
+	while (requestQuerry.pop(req)) {
+		saveScreenToFile(req.first, req.second);
 	}
+	requestQuerry.release();
 }

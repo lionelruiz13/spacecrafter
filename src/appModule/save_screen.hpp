@@ -28,7 +28,6 @@
 
 #include <iostream>
 #include <thread>
-#include <mutex>
 #include <vector>
 #include "tools/no_copy.hpp"
 #include "EntityCore/Tools/SafeQueue.hpp"
@@ -73,20 +72,18 @@ private:
 	//!transforme un buffer en une image sur le disque
 	void saveScreenToFile(const std::string &fileName, int idx);
 
-	void threadLoop(int threadIdx);
+	void threadLoop();
 
 	unsigned int size_screen;	//!< taille carré de l'image à sauvegarder
 
 	int subIdx = 0;
 	int pBuffer[3] {-1, -1, -1};
+	int nb_threads;
 	std::vector<std::vector<unsigned char>> buffer;
 	std::vector<std::thread> threads;
-	std::vector<std::mutex> mtx;
-	bool active = false;
 	bool isAvariable = true; //!< indique si le service de sauvegarde des images est opértationnel
-	PushQueue<int, 7> bufferReady;
-	PopQueue<std::pair<std::string, int>, 7> requests;
-	std::condition_variable cv;
+	PushQueue<int, 15> bufferReady;
+	DispatchInQueue<std::pair<std::string, int>, 7, 7> requests;
 };
 
 #endif //SAVE_SCREEN_HPP
