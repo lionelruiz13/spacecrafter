@@ -109,7 +109,6 @@ void SaveScreen::stopStream()
 {
 	cLog::get()->write("Stopping frame encoding stream", LOG_TYPE::L_INFO);
 	requests.close();
-	requests.flush(); // Temporary patch, should be fixed with next EntityCore version
 	for (auto &t : threads)
 		t.join();
 	threads.clear();
