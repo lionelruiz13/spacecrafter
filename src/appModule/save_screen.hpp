@@ -83,7 +83,7 @@ private:
 	std::vector<std::thread> threads;
 	bool isAvariable = true; //!< indique si le service de sauvegarde des images est opértationnel
 	PushQueue<int, 15> bufferReady;
-	DispatchInQueue<std::pair<std::string, int>, 7, 7> requests;
+	DispatchInQueue<std::pair<std::string, int>, 8, 8> requests;
 };
 
 #endif //SAVE_SCREEN_HPP

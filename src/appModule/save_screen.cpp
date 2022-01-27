@@ -32,7 +32,7 @@
 
 SaveScreen::SaveScreen(unsigned int _size)
 {
-	nb_threads = std::min(std::max(2, SDL_GetCPUCount()-4), 7);
+	nb_threads = std::min(std::max(2, SDL_GetCPUCount()-4), 8);
 	size_screen = _size;
 
 	try {
@@ -116,7 +116,7 @@ void SaveScreen::stopStream()
 
 void SaveScreen::threadLoop()
 {
-	DispatchOutQueue<std::pair<std::string, int>, 7, 7> requestQuerry(requests);
+	DispatchOutQueue<std::pair<std::string, int>, 8, 8> requestQuerry(requests);
 	std::pair<std::string, int> req;
 	requestQuerry.acquire();
 	while (requestQuerry.pop(req)) {
