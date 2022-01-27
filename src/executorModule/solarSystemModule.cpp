@@ -139,9 +139,6 @@ void SolarSystemModule::update(int delta_time)
 	sunPos.normalize();
 	moonPos.normalize();
 
-	core->ssystemFactory->bodyTrace(core->navigation);
-
-
 	// compute global sky brightness TODO : make this more "scientifically"
 	// TODO: also add moonlight illumination
 	if (sunPos[2] < -0.1/1.5 ) core->sky_brightness = 0.01;
@@ -253,6 +250,7 @@ void SolarSystemModule::asyncUpdateLoop()
     	                          core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
     	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
         core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
+        core->ssystemFactory->bodyTrace(core->navigation);
         asyncWorkState = false;
     }
     threadQueue.release();
