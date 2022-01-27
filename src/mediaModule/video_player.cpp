@@ -232,7 +232,7 @@ void VideoPlayer::update()
 	int timePassed = SDL_GetTicks()- lastCount;
 
 	// We should prepair frames in advance !
-	while (plannedFrames < MAX_CACHED_FRAMES) {
+	while (plannedFrames < (MAX_CACHED_FRAMES - 1)) {
 		requestQueue.emplace(frameIdxSwap);
 		frameIdxSwap = (frameIdxSwap + 1) % MAX_CACHED_FRAMES;
 		++plannedFrames;
