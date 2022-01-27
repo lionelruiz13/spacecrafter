@@ -196,6 +196,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 		cLog::get()->write("Video codec isn't in AV_PIX_FMT_YUV420P format", LOG_TYPE::L_ERROR);
 		return false;
 	}
+	thread = std::thread(&VideoPlayer::mainloop, this);
 	pFrameIn = av_frame_alloc();
 	pFrameOut=av_frame_alloc();
 	out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  pCodecCtx->width, pCodecCtx->height,1));
@@ -210,9 +211,9 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	currentFrame = 0;
 	plannedFrames = 1; // because getNextVideoFrame fetch the frame 0
 	needFrames = 0;
+	while (displayQueue.pop(frameIdxSwap)); // Clear frame to display cache
 	frameIdxSwap = 0;
 	m_isVideoPlayed = true;
-	thread = std::thread(&VideoPlayer::mainloop, this);
 	this->getNextVideoFrame(frameIdxSwap++); // The first frame must be ready on time
 
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
