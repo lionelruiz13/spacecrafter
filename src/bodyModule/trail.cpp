@@ -77,7 +77,7 @@ void Trail::drawTrail(VkCommandBuffer &cmd, const Navigator * nav, const Project
         }
     } else {
         vertexOffset = MaxTrail + TRAIL_OPTIMIZE_TRANSFER - trail.size();
-        Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), 0, insertCount * m_dataGL->alignment);
+        Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), vertexOffset * m_dataGL->alignment, insertCount * m_dataGL->alignment);
         for (auto &v : trail)
             *(data++) = v.point;
     }
