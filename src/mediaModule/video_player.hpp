@@ -46,7 +46,7 @@ class Media;
 class SyncEvent;
 class BufferMgr;
 
-#define MAX_CACHED_FRAMES 15
+#define MAX_CACHED_FRAMES 31
 
 /**
  * \class VideoPlayer
@@ -171,8 +171,8 @@ private:
 	struct SwsContext *img_convert_ctx;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
 	bool wantInterrupt = false; // Tell if the worker thread should be interrupted
-	int needFrames = 0; // Tell how many frames are required now
-	int plannedFrames = 0; // Tell how many frame have been planned but not used
+	std::atomic<int> needFrames = 0; // Tell how many frames are required now
+	std::atomic<int> plannedFrames = 0; // Tell how many frame have been planned but not used
 	int frameIdxSwap = 0; // To alternate between frameIdx
 	void mainloop();
 	// Interrupt video thread and drop every pending frames

@@ -43,6 +43,7 @@ VideoPlayer::VideoPlayer(Media* _media)
 
 VideoPlayer::~VideoPlayer()
 {
+	media = nullptr;
 	stopCurrentVideo();
 	for (int i = 0; i < 3; i++)
 		delete videoTexture.tex[i];
@@ -206,9 +207,9 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	firstCount = SDL_GetTicks();
 	lastCount = firstCount;
 	d_lastCount = firstCount;
-	currentFrame = 1; // because getNextVideoFrame fetch the frame 0
-	plannedFrames = currentFrame;
-	needFrames = currentFrame;
+	currentFrame = 0;
+	plannedFrames = 1; // because getNextVideoFrame fetch the frame 0
+	needFrames = 0;
 	frameIdxSwap = 0;
 	m_isVideoPlayed = true;
 	thread = std::thread(&VideoPlayer::mainloop, this);
@@ -319,9 +320,11 @@ void VideoPlayer::stopCurrentVideo()
 	av_frame_free(&pFrameIn);
 	avcodec_close(pCodecCtx);
 
-	Event* event = new VideoEvent(VIDEO_ORDER::STOP);
-	EventRecorder::getInstance()->queue(event);
-	media->playerStop();
+	if (media) {
+		Event* event = new VideoEvent(VIDEO_ORDER::STOP);
+		EventRecorder::getInstance()->queue(event);
+		media->playerStop();
+	}
 	#endif
 }
 
