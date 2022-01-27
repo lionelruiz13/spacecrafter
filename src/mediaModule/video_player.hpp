@@ -46,6 +46,8 @@ class Media;
 class SyncEvent;
 class BufferMgr;
 
+#define MAX_CACHED_FRAMES 15
+
 /**
  * \class VideoPlayer
  * \brief Classe qui gere toute les fonctions de la ffmpeg pour le player vidéo.
@@ -123,8 +125,8 @@ private:
 	Media* media=nullptr;
 	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
 	std::unique_ptr<BufferMgr> stagingBuffer;
-	SubBuffer imageBuffers[3][2];
-	std::array<void *[2], 3> pImageBuffer;
+	SubBuffer imageBuffers[3][MAX_CACHED_FRAMES];
+	std::array<void *[MAX_CACHED_FRAMES], 3> pImageBuffer;
 
 	std::string fileName; 	//!< nom de la vidéo
 	Resolution videoRes;	//!< int video_w, video_h;	//!< taille w,h  de la vidéo
@@ -168,15 +170,19 @@ private:
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
-	int needFrames = 0; // Tell how many frames are required
+	bool wantInterrupt = false; // Tell if the worker thread should be interrupted
+	int needFrames = 0; // Tell how many frames are required now
+	int plannedFrames = 0; // Tell how many frame have been planned but not used
 	int frameIdxSwap = 0; // To alternate between frameIdx
 	void mainloop();
+	// Interrupt video thread and drop every pending frames
 	void threadInterrupt();
+	// Resume video thread
 	void threadResume();
 	std::thread thread;
 	std::mutex mtx;
-	PushQueue<int, 7> displayQueue; // Frames ready to display
-	WorkQueue<int, 7> requestQueue; // Frames to compute
+	PushQueue<int, MAX_CACHED_FRAMES> displayQueue; // Frames ready to display
+	WorkQueue<int, MAX_CACHED_FRAMES> requestQueue; // Frames to compute
 	#endif
 };
 

@@ -53,7 +53,7 @@ void VideoPlayer::createTextures()
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	const uint32_t widthMax = 4096;
 	const uint32_t heightMax = 2048;
-	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*3, "Staging video buffer");
+	stagingBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, widthMax*heightMax*1.5*MAX_CACHED_FRAMES, "Staging video buffer");
 	for (int i = 0; i < 3; i++)
 		videoTexture.tex[i] = new Texture(vkmgr, *stagingBuffer, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "Video texture", VK_FORMAT_R8_UNORM);
 }
@@ -207,7 +207,8 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	lastCount = firstCount;
 	d_lastCount = firstCount;
 	currentFrame = 1; // because getNextVideoFrame fetch the frame 0
-	needFrames = 1;
+	plannedFrames = currentFrame;
+	needFrames = currentFrame;
 	frameIdxSwap = 0;
 	m_isVideoPlayed = true;
 	thread = std::thread(&VideoPlayer::mainloop, this);
@@ -230,10 +231,14 @@ void VideoPlayer::update()
 	}
 	int timePassed = SDL_GetTicks()- lastCount;
 
-	// We should prepair frames in advance
+	// We should prepair frames in advance !
+	while (plannedFrames < MAX_CACHED_FRAMES) {
+		requestQueue.emplace(frameIdxSwap);
+		frameIdxSwap = (frameIdxSwap + 1) % MAX_CACHED_FRAMES;
+		++plannedFrames;
+	}
+	// Tell how many frames we need now
 	if ( timePassed > 0) {
-		requestQueue.emplace(frameIdxSwap++);
-		frameIdxSwap %= 2;
 		++needFrames;
 		d_lastCount = firstCount + (int)(frameRateDuration*++currentFrame);
 		lastCount = (int)d_lastCount;
@@ -289,6 +294,7 @@ void VideoPlayer::getNextVideoFrame(int frameIdx)
 		}
 		displayQueue.push(frameIdx);
 	} else {
+		// The frame can't be decoded
 		displayQueue.emplace(-1);
 	}
 	#endif
@@ -347,7 +353,7 @@ void VideoPlayer::initTexture()
 		videoTexture.sync->syncIn = std::make_unique<SyncEvent>();
 		for (int i = 0; i < 3; ++i) {
 			videoTexture.tex[i]->init(widths[i], heights[i], nullptr, false, 1);
-			for (int j = 0; j < 2; ++j) {
+			for (int j = 0; j < MAX_CACHED_FRAMES; ++j) {
 				imageBuffers[i][j] = stagingBuffer->fastAcquireBuffer(widths[i] * heights[i]);
 				pImageBuffer[i][j] = stagingBuffer->getPtr(imageBuffers[i][j]);
 			}
@@ -438,6 +444,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 	int frameIdx;
 	if (needFrames && displayQueue.pop(frameIdx)) {
 		--needFrames;
+		--plannedFrames;
 		if (frameIdx >= 0) {
 			VkBufferImageCopy region;
 			region.bufferRowLength = region.bufferImageHeight = 0;
@@ -470,9 +477,14 @@ void VideoPlayer::mainloop()
 	int frameIdx;
 	requestQueue.acquire();
 	while (requestQueue.pop(frameIdx)) {
+		if (wantInterrupt) {
+			mtx.unlock();
+			requestQueue.abortPending();
+			wantInterrupt = false;
+			continue;
+		}
 		switch (frameIdx) {
 			case VideoThreadEvent::INTERRUPT:
-				mtx.unlock();
 				break;
 			case VideoThreadEvent::RESUME:
 				mtx.lock();
@@ -487,13 +499,20 @@ void VideoPlayer::mainloop()
 
 void VideoPlayer::threadInterrupt()
 {
-	requestQueue.emplace(VideoThreadEvent::INTERRUPT);
-	mtx.lock();
-	requestQueue.emplace(VideoThreadEvent::RESUME);
+	wantInterrupt = true;
+	requestQueue.emplace(VideoThreadEvent::INTERRUPT); // In case the requestQueue was empty
+	needFrames = 0;
+	plannedFrames = 0;
+	mtx.lock(); // Block until the video thread stop decoding frames.
+	int frameIdx;
+	while (displayQueue.pop(frameIdx));
 }
 
 void VideoPlayer::threadResume()
 {
+	if (wantInterrupt)
+		requestQueue.waitIdle(); // Ensure the thread interruption has completed
+	requestQueue.emplace(VideoThreadEvent::RESUME);
 	mtx.unlock();
 }
 #endif
