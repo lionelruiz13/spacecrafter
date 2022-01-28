@@ -3,6 +3,7 @@
 #include "EntityCore/EntityCore.hpp"
 #include "EntityCore/Core/RenderMgr.hpp"
 #include "EntityCore/Resource/SetMgr.hpp"
+#include "EntityCore/Tools/CaptureMetrics.hpp"
 
 Context::Context()
 {

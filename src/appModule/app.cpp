@@ -79,6 +79,8 @@
 #include "EntityCore/Resource/SetMgr.hpp"
 #include "EntityCore/Resource/TileMap.hpp"
 #include "tools/NDISender.hpp"
+#include "EntityCore/Tools/CaptureMetrics.hpp"
+#include "capture.hpp"
 
 EventRecorder* EventRecorder::instance = nullptr;
 Context *Context::instance = nullptr;
@@ -94,7 +96,13 @@ App::App( SDLFacade* const sdl )
 	settings->loadAppSettings( &conf );
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 
+	context.stat = std::make_unique<CaptureMetrics>(settings->getUserDir() + "log/statistics.dat", CAPTURE_FLAG_NAMES);
+	if (conf.getBoolean(SCS_MAIN, SCK_STATISTICS))
+		context.stat->startCapture();
+
+	context.stat->capture(Capture::FRAME_START);
 	initVulkan(conf);
+	context.stat->capture(Capture::INIT_VULKAN);
 
 	fontFactory = std::make_unique<FontFactory>();
 
@@ -147,8 +155,10 @@ App::App( SDLFacade* const sdl )
 	enable_tcp= false;
 	flagColorInverse= false;
 
+	context.stat->capture(Capture::INIT_GENERAL);
 	appDraw = std::make_unique<AppDraw>();
 	appDraw->init(width, height);
+	context.stat->capture(Capture::INIT_APPDRAW);
 }
 
 App::~App()
@@ -399,6 +409,7 @@ std::string App::getAppLanguage() {
 //! Load configuration from disk
 void App::init()
 {
+	context.stat->capture(Capture::APP_INIT_BEGIN);
 	// Initialize video device and other sdl parameters
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
@@ -461,12 +472,15 @@ void App::init()
 
 	fontFactory->reloadAllFont();
 	commander->deleteVar();
+	context.stat->capture(Capture::APP_INIT_END);
 }
 
 //! Load configuration from disk
 void App::firstInit()
 {
+	context.stat->capture(Capture::FRAME_START);
 	appDraw->initSplash();
+	context.stat->capture(Capture::INIT_SPLASH);
 
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
@@ -477,10 +491,14 @@ void App::firstInit()
 
 	ui->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_UI));
 
+	context.stat->capture(Capture::INIT_FONT);
+
 	core->init(conf);
+	context.stat->capture(Capture::INIT_CORE);
 	ui->init(conf);
 	ui->localizeTui();
 	ui->initTui();
+	context.stat->capture(Capture::INIT_UI);
 
 	appDraw->createSC_context();
 	media->initVR360();
@@ -553,20 +571,28 @@ void App::update(int delta_time)
 	delta_time *= scriptMgr->getMuliplierRate();
 	// run command from a running script
 	scriptMgr->update(delta_time);
+	context.stat->capture(Capture::SCRIPT_UPDATE);
 	if (!scriptMgr->isPaused() || !scriptMgr->isFaster() )	media->audioUpdate(delta_time);
+	context.stat->capture(Capture::MEDIA_AUDIO_UPDATE);
 	// run any incoming command from shared memory interface
 	updateFromSharedData();
+	context.stat->capture(Capture::NETWORK_UPDATE);
 
 	ui->updateTimeouts(delta_time);
 	ui->tuiUpdateWidgets();
+	context.stat->capture(Capture::UI_UPDATE);
 
 	if (!scriptMgr->isPaused()) media->imageUpdate(delta_time);
+	context.stat->capture(Capture::MEDIA_IMAGE_UPDATE);
 
 	media->playerUpdate();
+	context.stat->capture(Capture::MEDIA_PLAYER_UPDATE);
 	screenFader->update(delta_time);
 	media->faderUpdate(delta_time);
+	context.stat->capture(Capture::FADER_UPDATE);
 
 	executor->update(delta_time);
+	context.stat->capture(Capture::EXECUTOR_UPDATE);
 }
 
 
@@ -604,6 +630,7 @@ void App::draw(int delta_time)
 		}
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 	}
+	context.stat->capture(Capture::FRAME_ACQUIRE);
 	core->uboCamUpdate();
 	saveScreenInterface->update();
 	s_texture::update();
@@ -615,11 +642,14 @@ void App::draw(int delta_time)
 	}
 	context.transientBuffer[context.frameIdx].clear();
 	s_font::beginPrint();
+	context.stat->capture(Capture::DRAW_RESOURCE_READY);
 
 	executor->draw(delta_time);
+	context.stat->capture(Capture::EXECUTOR_DRAW);
 	context.helper->nextDraw(PASS_FOREGROUND);
 	// Draw the Graphical ui and the Text ui
 	ui->draw(executor->getExecutorModule());
+	context.stat->capture(Capture::UI_DRAW);
 	//inversion des couleurs pour un ciel blanc
 	if (flagColorInverse)
 		appDraw->drawColorInverse();
@@ -628,14 +658,18 @@ void App::draw(int delta_time)
 	media->drawViewPort();
 	//draw text user
 	media->textDraw();
+	context.stat->capture(Capture::MEDIA_DRAW);
 	context.helper->endDraw();
 
 	// Fill with black around the circle
 	appDraw->drawViewportShape();
 
 	screenFader->draw();
+
+	context.stat->capture(Capture::FOREGROUND_DRAW);
 	// auto mainCmd = context.frame[context.frameIdx]->preBegin();
 	context.helper->submitFrame(context.frameIdx);
+	context.stat->capture(Capture::ASYNC_FRAME_SUBMIT);
 	// context.frame[context.frameIdx]->submitInline();
 	context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume the next frame follow the previous one
 }
@@ -706,6 +740,7 @@ void App::masterput()
 
 void App::startMainLoop()
 {
+	context.stat->capture(Capture::FRAME_START);
 	flagVisible = true;		// At The Beginning, Our App Is Visible
 	flagAlive = true; 		// au debut, on veut que l'application ne s'arrete pas :)
 
@@ -718,6 +753,7 @@ void App::startMainLoop()
 	SDL_TimerID my_timer_id = SDL_AddTimer(1000, internalFPS->callbackfunc, nullptr);
 
 	// Start the main loop
+	context.stat->capture(Capture::APP_MAINLOOP_START);
 	while (flagAlive) {
 		while (SDL_PollEvent(&E)) {	// Fetch all Event Of The Queue
 			ui->handleInputs(E);
@@ -743,12 +779,14 @@ void App::startMainLoop()
 
 			deltaTime = internalFPS->getDeltaTime();
 
+			context.stat->capture(Capture::FRAME_START);
 			this->update(deltaTime);		// And update the motions and data
 			this->draw(deltaTime);			// Do the drawings!
 
 			internalFPS->setLastCount();
 		}
 	}
+	context.stat->capture(Capture::FRAME_START);
 
 	SDL_RemoveTimer(my_timer_id);
 	CallSystem::killAllPidFrom("vlc");

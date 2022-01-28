@@ -10,6 +10,7 @@
 class HipStarMgr;
 class DrawHelper;
 class QueueFamily;
+class CaptureMetrics;
 
 #define BIG_TEXTURE_MAIN_SIZE (16*1024*8*1024*4l)
 
@@ -31,6 +32,7 @@ public:
     ~Context();
 
     static Context *instance;
+    std::unique_ptr<CaptureMetrics> stat;
     std::unique_ptr<DrawHelper> helper;
     std::unique_ptr<BufferMgr> stagingMgr;
     std::unique_ptr<BufferMgr> texStagingMgr;

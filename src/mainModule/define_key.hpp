@@ -53,6 +53,7 @@
 // #define SCK_FLAG_OPTOMA                     "flag_optoma"
 #define SCK_CPU_INFO                        "cpu_info"
 #define SCK_FLAG_ALWAYS_VISIBLE             "flag_always_visible"
+#define SCK_STATISTICS                      "querry_statistics"
 
 #define SCK_ENABLE_MKFIFO                   "enable_mkfifo"
 #define SCK_ENABLE_TCP                      "enable_tcp"
