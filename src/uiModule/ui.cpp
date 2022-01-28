@@ -605,7 +605,10 @@ void UI::handleInputs(SDL_Event E)
 		case SDL_JOYBUTTONUP:
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYHATMOTION :
-			joypadController->handle(E);
+			if (joypadController)
+				joypadController->handle(E);
+			else
+				cLog::get()->write("Joypad event received from disconnected joypad ?", LOG_TYPE::L_WARNING);
 			break;
 
 		case SDL_WINDOWEVENT:
