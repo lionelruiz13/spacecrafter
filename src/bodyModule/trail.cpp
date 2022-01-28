@@ -62,26 +62,28 @@ void Trail::drawTrail(VkCommandBuffer &cmd, const Navigator * nav, const Project
         return;
 
     Context &context = *Context::instance;
-    vertexOffset -= insertCount;
-    if (!vertex) {
-        vertex = m_dataGL->createBuffer(0, MaxTrail + TRAIL_OPTIMIZE_TRANSFER, context.globalBuffer.get());
-        vertexOffset = MaxTrail + TRAIL_OPTIMIZE_TRANSFER - trail.size();
-    }
-
-    if (vertexOffset >= 0) {
-        Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), vertexOffset * m_dataGL->alignment, insertCount * m_dataGL->alignment);
-        auto it = trail.begin();
-        for (int i = 0; i < insertCount; ++i) {
-            data[i] = it->point;
-            ++it;
+    if (insertCount) {
+        vertexOffset -= insertCount;
+        if (!vertex) {
+            vertex = m_dataGL->createBuffer(0, MaxTrail + TRAIL_OPTIMIZE_TRANSFER, context.globalBuffer.get());
+            vertexOffset = MaxTrail + TRAIL_OPTIMIZE_TRANSFER - trail.size();
         }
-    } else {
-        vertexOffset = MaxTrail + TRAIL_OPTIMIZE_TRANSFER - trail.size();
-        Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), vertexOffset * m_dataGL->alignment, insertCount * m_dataGL->alignment);
-        for (auto &v : trail)
-            *(data++) = v.point;
+
+        if (vertexOffset >= 0) {
+            Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), vertexOffset * m_dataGL->alignment, insertCount * m_dataGL->alignment);
+            auto it = trail.begin();
+            for (int i = 0; i < insertCount; ++i) {
+                data[i] = it->point;
+                ++it;
+            }
+        } else {
+            vertexOffset = MaxTrail + TRAIL_OPTIMIZE_TRANSFER - trail.size();
+            Vec3f *data = (Vec3f *) context.transfer->planCopy(vertex->get(), vertexOffset * m_dataGL->alignment, trail.size() * m_dataGL->alignment);
+            for (auto &v : trail)
+                *(data++) = v.point;
+        }
+        insertCount = 0;
     }
-    insertCount = 0;
 
     // But this is the first segment, not the last one...
 	// // draw final segment to finish at current Body position
