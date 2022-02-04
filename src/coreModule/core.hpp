@@ -105,6 +105,7 @@ class NebulaMgr;
 class HipStarMgr;
 class ConstellationMgr;
 class SSystemFactory;
+class StarGalaxy;
 
 //!  @brief Main class for application core processing.
 //!
@@ -511,6 +512,7 @@ private:
 	std::unique_ptr<StarNavigator> starNav; 			// permet le voyage dans les étoiles
 	std::unique_ptr<CloudNavigator> cloudNav; 			// draw galaxy gaz clouds
 	std::unique_ptr<CloudNavigator> universeCloudNav; 	// draw galaxy gaz clouds when in universe
+	std::unique_ptr<StarGalaxy> starGalaxy; 			// draw galaxy stars when in universe
 	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
 	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
 	std::unique_ptr<OjmMgr> ojmMgr;					// représente les obj3D

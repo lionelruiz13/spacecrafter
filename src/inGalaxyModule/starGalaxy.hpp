@@ -20,15 +20,13 @@
  *
  */
 
-#ifndef CLOUD_NAVIGATOR_HPP
-#define CLOUD_NAVIGATOR_HPP
+#ifndef STAR_GALAXY_HPP
+#define STAR_GALAXY_HPP
 
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 #include <memory>
-#include <map>
 
-#include "EntityCore/SubBuffer.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
 class Projector;
@@ -40,49 +38,33 @@ class PipelineLayout;
 class Set;
 class s_texture;
 
-class CloudNavigator: public NoCopy {
+class StarGalaxy : public NoCopy {
 public:
-    CloudNavigator(const std::string &filename = "\0");
-    ~CloudNavigator();
-    void computePosition(Vec3f posI, const Projector *prj);
+    StarGalaxy(const std::string &filename = "\0");
+    ~StarGalaxy();
     void draw(const Navigator * nav, const Projector* prj);
-    void draw(const Mat4f &mat, const Projector* prj);
-    void insert(const Vec4f &color, const Mat4f &model);
 
-    void addRule(int index, Vec4f color);
     void loadCatalog(const std::string &filename);
+    bool isLoaded() const {return nbStars > 0;}
 private:
-    void build(int nbClouds);
-
+    int nbStars = 0;
+    int cmds[3] = {-1, -1, -1};
+    static const Vec3f color_table[128];
+    struct VertexEntry {
+        Vec3f pos;
+        Vec3f color;
+    };
     std::unique_ptr<PipelineLayout> layout;
     std::unique_ptr<Pipeline> pipeline;
     std::unique_ptr<VertexArray> vertexArray;
     std::unique_ptr<VertexBuffer> vertex;
-    std::unique_ptr<VertexBuffer> instance;
-    SubBuffer index;
-    std::unique_ptr<s_texture> texture;
-    struct cloud {
-        Vec4f color;
-        Mat4f model;
-        Mat4f invmodel;
-        float lodFactor;
-    };
-    struct cloudType {
-        Vec4f color;
-    };
-    std::vector<cloud> cloudData;
-    std::vector<Vec3f> cloudPos;
-
-    int instanceCount = 0;
-    int cmds[3] = {-1, -1, -1};
-
     std::unique_ptr<Set> set;
-    std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrix;
-    std::unique_ptr<SharedBuffer<Vec3f>> uclipping_fov;
-    std::unique_ptr<SharedBuffer<Mat4f>> uCamRotToLocal; // represent a Mat3f
-    std::map<int, cloudType> types;
-    float rad = 0.001;
+    struct UniformData {
+        Mat4f MV;
+        Vec3f clipping_fov;
+    };
+    SharedBuffer<UniformData> global;
     float scaling = 0.00001 / 7;
 };
 
-#endif /* end of include guard: CLOUD_NAVIGATOR_HPP */
+#endif /* end of include guard: STAR_GALAXY_HPP */

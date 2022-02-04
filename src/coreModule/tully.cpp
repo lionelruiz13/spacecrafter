@@ -106,7 +106,7 @@ void Tully::createSC_context()
 	pipelineSquare = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipelineSquare->setBlendMode(blendMode);
 	pipelineSquare->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
-	pipelineSquare->setDepthStencilMode();
+	// pipelineSquare->setDepthStencilMode();
 	pipelineSquare->bindVertex(*m_squareGL);
 	pipelineSquare->bindShader("tullyH.vert.spv");
 	pipelineSquare->bindShader("tullyH.geom.spv");

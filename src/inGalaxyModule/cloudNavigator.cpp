@@ -241,7 +241,7 @@ void CloudNavigator::loadCatalog(const std::string &filename)
             file >> t >> x >> y >> z;
             auto &data = types.at(t);
             Vec3f pos(x, y, z);
-            pos *= 0.00001;
+            pos *= scaling;
             insert(data.color, Mat4f::translation(pos) * Mat4f::scaling(rad));
         } catch (...) {
         }

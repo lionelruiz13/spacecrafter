@@ -65,7 +65,7 @@
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "tools/app_settings.hpp"
-
+#include "inGalaxyModule/starGalaxy.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "coreModule/tully.hpp"
@@ -99,6 +99,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	starNav = std::make_unique<StarNavigator>();
 	cloudNav = std::make_unique<CloudNavigator>();
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
+	starGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 	dsoNav = std::make_unique<DsoNavigator>("dso3d-color.png");
 	starLines = std::make_unique<StarLines>();
 	ojmMgr = std::make_unique<OjmMgr>();

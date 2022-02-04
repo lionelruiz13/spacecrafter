@@ -25,6 +25,7 @@
 #include <iostream>
 #include "inUniverseModule.hpp"
 #include "inGalaxyModule/cloudNavigator.hpp"
+#include "inGalaxyModule/starGalaxy.hpp"
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/EventScreenFader.hpp"
@@ -100,8 +101,12 @@ void InUniverseModule::draw(int delta_time)
 	core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
-	core->universeCloudNav->draw(core->navigation, core->projection);
+	if (core->starGalaxy->isLoaded()) {
+		core->starGalaxy->draw(core->navigation, core->projection);
+		core->universeCloudNav->draw(core->navigation, core->projection);
+	} else {
+		core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
+	}
 	core->tully->draw(observer->getAltitude(), core->navigation);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	//core->postDraw();
