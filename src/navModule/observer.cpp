@@ -182,7 +182,8 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, bool cal
 	end_lat = lat;
 
 	start_lon = longitude;
-	end_lon = lon;
+	current_lon = longitude;
+	rel_lon = lon - start_lon;
 
 	start_alt = altitude;
 	end_alt = alt;
@@ -261,7 +262,10 @@ void Observer::update(int delta_time)
 		}
 
 		setLatitude( start_lat - move_to_mult*(start_lat-end_lat) );
-		longitude = start_lon - move_to_mult*(start_lon-end_lon);
+		const double off_lon = longitude - current_lon;
+		current_lon += off_lon;
+		start_lon += off_lon;
+		longitude = start_lon + move_to_mult*rel_lon;
 		altitude  = start_alt - move_to_mult*(start_alt-end_alt);
 	}
 }

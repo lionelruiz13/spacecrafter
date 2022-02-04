@@ -92,14 +92,15 @@ void Navigator::updateVisionVector(int delta_time,const Object &selected)
 		v1.normalize();
 		v2.normalize();
 
+		double angle = 0;
 		// prevent one situation where doesn't work
-		if(v1 == v2 ) v1 = Mat4d::xrotation(0.0001) * v1;
+		if(v1 != v2 ) {
+			v4 = v1^v2;
+			v3 = v4^v1;  // in plane of v1 and v2 and orthogonal to v1
+			v3.normalize();
 
-		v4 = v1^v2;
-		v3 = v4^v1;  // in plane of v1 and v2 and orthogonal to v1
-		v3.normalize();
-
-		double angle = atan2( v4.length(), v1.dot(v2) );
+			angle = atan2( v4.length(), v1.dot(v2) );
+		}
 
 		local_vision = (v1*cos(angle*c) + v3*sin(angle*c));
 		equ_vision = localToEarthEqu(local_vision);

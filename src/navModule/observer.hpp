@@ -170,7 +170,7 @@ private:
 	// for changing position
 	bool flag_move_to;
 	double start_lat, end_lat;
-	double start_lon, end_lon;
+	double start_lon, current_lon, rel_lon;
 	double start_alt, end_alt;
 	float move_to_coef, move_to_mult;
 
