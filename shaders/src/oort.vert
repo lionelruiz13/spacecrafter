@@ -7,16 +7,14 @@
 layout (location = 0) in vec4 Position;
 
 layout (binding=0, set=1) uniform uMat {
-	mat4 Mat;
+	mat4 ModelViewMatrix;
 };
 
+#include <fisheye2D.glsl>
 #include <cam_block_only.glsl>
-#include <custom_project_nocheck.glsl>
 
 void main(void)
 {
-	vec4 pos = custom_project(Position);
-	pos.z = 0.0;
-	gl_Position = MVP2D * pos;
+	gl_Position = fisheye2D(Position, main_clipping_fov[2]);
 	gl_PointSize = 1.5;
 }
