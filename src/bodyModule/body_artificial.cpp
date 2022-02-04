@@ -105,7 +105,7 @@ void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navi
 
     auto &context = *Context::instance;
 
-    Mat4f matrix = mat.convert();
+    Mat4f matrix = mat.convert() * Mat4f::zrotation(M_PI/180*(axis_rotation + 90));
     *uNormalMatrix = matrix.inverse().transpose();
     uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
     drawState->layout->bindSet(cmd, *context.uboSet);
