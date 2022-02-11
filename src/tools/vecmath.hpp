@@ -300,6 +300,8 @@ public:
 
 	Matrix4<T> transpose() const;
 	Matrix4<T> inverse() const;
+	//! Inverse the matrix rotation and scaling, but not the translation
+	Matrix4<T> inverseUntranslated() const;
 	Matrix4<float> convert() const;
 	Matrix4<T> fastInverse() const;
 	void setAsOrthonormalFromZ();
@@ -2201,6 +2203,17 @@ template<class T> Matrix4<T> Matrix4<T>::fastInverse() const
 	                    r[1], r[5], r[9],  -r[7],
 	                    r[2], r[6], r[10], -r[11],
 	                    r[12], r[13], r[14], r[15]);
+}
+
+//! Inverse the rotation and scaling, but not the translation. Usefull to compute the ray direction in a volumetric 3D texture.
+template<class T> Matrix4<T> Matrix4<T>::inverseUntranslated() const
+{
+	T det = r[0] * (r[5]*r[10] - r[6]*r[9]) - r[4] * (r[1]*r[10] - r[2]*r[9]) + r[8] * (r[1]*r[6] - r[2]*r[5]);
+	Matrix4<T> ret(+(r[5]*r[10] - r[6]*r[9])/det, -(r[1]*r[10] - r[2]*r[9])/det, +(r[1]*r[6] - r[2]*r[5])/det, 0,
+				   -(r[4]*r[10] - r[6]*r[8])/det, +(r[0]*r[10] - r[2]*r[8])/det, -(r[0]*r[6] - r[2]*r[4])/det, 0,
+				   +(r[4]*r[9] - r[5]*r[8])/det, -(r[0]*r[9] - r[1]*r[8])/det, +(r[0]*r[5] - r[1]*r[4])/det, 0,
+				   0, 0, 0, 1);
+	return ret;
 }
 
 #endif // _VECMATH_HPP_INCLUDED

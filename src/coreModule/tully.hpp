@@ -136,7 +136,7 @@ private:
 	VkCommandBuffer cmdCustomColor[3];
 	VkCommandBuffer cmdWhiteColor[3];
 	Pipeline *pipelinePoints;
-	std::unique_ptr<Pipeline> pipelineSquare;
+	Pipeline *pipelineSquare;
 	std::unique_ptr<VertexArray> m_pointsGL;
 	std::unique_ptr<VertexArray> m_squareGL;
 	std::unique_ptr<VertexBuffer> vertexPoints;

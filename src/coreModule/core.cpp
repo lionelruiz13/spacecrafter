@@ -69,6 +69,7 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "coreModule/tully.hpp"
+#include "coreModule/volumObj3D.hpp"
 
 Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr<FontFactory> _fontFactory, const mBoost::callback<void, std::string>& recordCallback, std::shared_ptr<Observer> _observatory) :
 	skyTranslator(AppSettings::Instance()->getLanguageDir(), ""),
@@ -100,6 +101,7 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	cloudNav = std::make_unique<CloudNavigator>();
 	universeCloudNav = std::make_unique<CloudNavigator>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
 	starGalaxy = std::make_unique<StarGalaxy>(AppSettings::Instance()->getConfigDir() + "gal3d.dat");
+	volumGalaxy = std::make_unique<VolumObj3D>("mw_rgb_d4.jpg", "mw_d32.png", true);
 	dsoNav = std::make_unique<DsoNavigator>("dso3d-color.png");
 	starLines = std::make_unique<StarLines>();
 	ojmMgr = std::make_unique<OjmMgr>();

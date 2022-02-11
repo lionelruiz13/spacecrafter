@@ -38,6 +38,7 @@ void main()
 		if (radius<2.0) {
 			float intensity = max(min(radius,0.9), 0.3);
 			gl_Position   = MVP2D * ( pos );
+			gl_Position.z = clamp(pos.z, 0, 1);
 			gl_PointSize = radius;
 			TexColor= color[0];
 			intensityOut = intensity;

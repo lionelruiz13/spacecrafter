@@ -35,6 +35,7 @@
 #include "coreModule/tully.hpp"
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
+#include "coreModule/volumObj3D.hpp"
 
 InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_observer) : core(_core), observer(_observer)
 {
@@ -101,12 +102,10 @@ void InUniverseModule::draw(int delta_time)
 	core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	if (core->starGalaxy->isLoaded()) {
-		core->starGalaxy->draw(core->navigation, core->projection);
-		core->universeCloudNav->draw(core->navigation, core->projection);
-	} else {
+	if (core->volumGalaxy->loaded())
+		core->volumGalaxy->draw(core->navigation, core->projection);
+	else
 		core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
-	}
 	core->tully->draw(observer->getAltitude(), core->navigation);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	//core->postDraw();

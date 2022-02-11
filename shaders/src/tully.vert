@@ -6,7 +6,7 @@
 
 layout(constant_id = 0) const bool whiteColor = false;
 
-layout (location = 0) in vec3 inPosition;
+layout (location = 0) in vec4 inPosition;
 layout (location = 1) in vec3 inColor;
 layout (location = 2) in float inTexture;
 layout (location = 3) in float inScale;
@@ -20,7 +20,7 @@ layout (location=2) out vec3 color;
 
 void main(void)
 {
-	gl_Position = vec4(inPosition,1.0);
+	gl_Position = inPosition;
 
 	color = whiteColor ? vec3(1.0) : inColor;
 	scale= inScale;

@@ -52,6 +52,7 @@ Tully::~Tully()
 	if (texGalaxy!=nullptr)
 		delete texGalaxy;
 	delete[] pipelinePoints;
+	delete[] pipelineSquare;
 
 	posTully.clear();
 	colorTully.clear();
@@ -78,13 +79,16 @@ void Tully::createSC_context()
 	m_pointsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Color
 	m_pointsGL->addInput(VK_FORMAT_R32_SFLOAT); // Mag
 	m_pointsGL->addInput(VK_FORMAT_R32_SFLOAT); // Scale
-	pipelinePoints = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
-	for (int i = 0; i < 2; i++) {
+	pipelinePoints = new Pipeline[4]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
+	for (int i = 0; i < 4; i++) {
+		if (i & 2) {
+			pipelinePoints[i].setBlendMode(BLEND_SATURATE_ALPHA);
+			pipelinePoints[i].setDepthStencilMode(VK_TRUE, VK_FALSE, VK_COMPARE_OP_GREATER);
+		}
 		pipelinePoints[i].setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
-		pipelinePoints[i].setDepthStencilMode();
 		pipelinePoints[i].bindVertex(*m_pointsGL);
 		pipelinePoints[i].bindShader("tully.vert.spv");
-		VkBool32 whiteColor = (i == 1);
+		VkBool32 whiteColor = (i & 1);
 		pipelinePoints[i].setSpecializedConstant(0, &whiteColor, sizeof(whiteColor));
 		pipelinePoints[i].bindShader("tully.geom.spv");
 		pipelinePoints[i].bindShader("tully.frag.spv");
@@ -102,16 +106,25 @@ void Tully::createSC_context()
 	m_squareGL->addInput(VK_FORMAT_R32_SFLOAT); // Mag
 	m_squareGL->addInput(VK_FORMAT_R32_SFLOAT); // Scale
 	auto blendMode = BLEND_SRC_ALPHA;
+	auto blendMode2 = BLEND_SATURATE_ALPHA;
 	blendMode.colorBlendOp = blendMode.alphaBlendOp = VK_BLEND_OP_MAX;
-	pipelineSquare = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
-	pipelineSquare->setBlendMode(blendMode);
-	pipelineSquare->setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
-	// pipelineSquare->setDepthStencilMode();
-	pipelineSquare->bindVertex(*m_squareGL);
-	pipelineSquare->bindShader("tullyH.vert.spv");
-	pipelineSquare->bindShader("tullyH.geom.spv");
-	pipelineSquare->bindShader("tullyH.frag.spv");
-	pipelineSquare->build();
+	blendMode2.alphaBlendOp = VK_BLEND_OP_MAX;
+	pipelineSquare = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
+	for (int i = 0; i < 2; ++i) {
+		if (i & 1) {
+			pipelineSquare[i].setBlendMode(blendMode2);
+			pipelineSquare[i].setDepthStencilMode(VK_TRUE, VK_FALSE, VK_COMPARE_OP_GREATER_OR_EQUAL);
+		} else {
+			pipelineSquare[i].setBlendMode(blendMode);
+			pipelineSquare[i].setDepthStencilMode(VK_TRUE, VK_FALSE, VK_COMPARE_OP_LESS);
+		}
+		pipelineSquare[i].setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
+		pipelineSquare[i].bindVertex(*m_squareGL);
+		pipelineSquare[i].bindShader("tullyH.vert.spv");
+		pipelineSquare[i].bindShader("tullyH.geom.spv");
+		pipelineSquare[i].bindShader("tullyH.frag.spv");
+		pipelineSquare[i].build();
+	}
 	drawDataSquare = std::make_unique<SharedBuffer<VkDrawIndirectCommand>>(*context.tinyMgr);
 	*drawDataSquare = VkDrawIndirectCommand{0, 1, 0, 0};
 }
@@ -185,24 +198,32 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	for (int i = 0; i < 3; ++i) {
 		VkCommandBuffer cmd = cmdCustomColor[i];
 		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
-		pipelinePoints->bind(cmd);
+		pipelinePoints[2].bind(cmd);
 		layout->bindSets(cmd, {*context.uboSet, *set});
 		vertexPoints->bind(cmd);
 		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
-		pipelineSquare->bind(cmd);
+		pipelinePoints[0].bind(cmd);
+		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
+		pipelineSquare[1].bind(cmd);
 		vertexSquare->bind(cmd);
+		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
+		pipelineSquare[0].bind(cmd);
 		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
 		context.frame[i]->compile(cmd);
 		context.frame[i]->setName(cmd, "Tully custom " + std::to_string(i));
 
 		cmd = cmdWhiteColor[i];
 		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
-		pipelinePoints[1].bind(cmd);
+		pipelinePoints[3].bind(cmd);
 		layout->bindSets(cmd, {*context.uboSet, *set});
 		vertexPoints->bind(cmd);
 		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
-		pipelineSquare->bind(cmd);
+		pipelinePoints[1].bind(cmd);
+		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
+		pipelineSquare[1].bind(cmd);
 		vertexSquare->bind(cmd);
+		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
+		pipelineSquare[0].bind(cmd);
 		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
 		context.frame[i]->compile(cmd);
 		context.frame[i]->setName(cmd, "Tully white " + std::to_string(i));
