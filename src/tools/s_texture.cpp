@@ -55,9 +55,9 @@ std::map<std::string, std::weak_ptr<s_texture::texRecap>> s_texture::texCache;
 std::list<s_texture::bigTexRecap> s_texture::bigTextures;
 std::list<s_texture::bigTexRecap> s_texture::droppedBigTextures;
 WorkQueue<s_texture::bigTexRecap *, 31> s_texture::bigTextureQueue;
-PushQueue<std::shared_ptr<s_texture::texRecap>> s_texture::textureQueue;
-PushQueue<std::unique_ptr<Texture>> s_texture::droppedTextureQueue;
-PushQueue<VkImage> s_texture::bigTextureReady;
+PushQueue<std::shared_ptr<s_texture::texRecap>, 2047> s_texture::textureQueue;
+PushQueue<std::unique_ptr<Texture>, 2047> s_texture::droppedTextureQueue;
+PushQueue<VkImage, 2047> s_texture::bigTextureReady;
 std::atomic<long> s_texture::currentAllocation(0); // Allocations planned but not done yet
 bool s_texture::loadInLowResolution = false;
 unsigned int s_texture::lowResMax = MAX_LOW_RES;

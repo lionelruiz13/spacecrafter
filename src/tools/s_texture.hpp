@@ -203,9 +203,9 @@ private:
 	static std::list<bigTexRecap> bigTextures;
 	static std::list<bigTexRecap> droppedBigTextures; // Big texture which have been freed
 	static WorkQueue<bigTexRecap *, 31> bigTextureQueue;
-	static PushQueue<std::shared_ptr<texRecap>> textureQueue;
-	static PushQueue<std::unique_ptr<Texture>> droppedTextureQueue;
-	static PushQueue<VkImage> bigTextureReady; // Read textures ready for use
+	static PushQueue<std::shared_ptr<texRecap>, 2047> textureQueue;
+	static PushQueue<std::unique_ptr<Texture>, 2047> droppedTextureQueue;
+	static PushQueue<VkImage, 2047> bigTextureReady; // Read textures ready for use
 	static std::atomic<long> currentAllocation; // Allocations/frees planned but not done yet
 	static std::vector<std::shared_ptr<texRecap>> releaseMemory[3];
 	static std::vector<std::unique_ptr<Texture>> releaseTexture[3];
