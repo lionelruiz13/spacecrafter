@@ -37,6 +37,7 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 #include "tools/insert_all.hpp"
+#include "coreModule/volumObj3D.hpp"
 
 Tully::Tully()
 {
@@ -79,12 +80,10 @@ void Tully::createSC_context()
 	m_pointsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Color
 	m_pointsGL->addInput(VK_FORMAT_R32_SFLOAT); // Mag
 	m_pointsGL->addInput(VK_FORMAT_R32_SFLOAT); // Scale
-	pipelinePoints = new Pipeline[4]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
-	for (int i = 0; i < 4; i++) {
-		if (i & 2) {
-			pipelinePoints[i].setBlendMode(BLEND_SATURATE_ALPHA);
-			pipelinePoints[i].setDepthStencilMode(VK_TRUE, VK_FALSE, VK_COMPARE_OP_GREATER);
-		}
+	pipelinePoints = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
+	for (int i = 0; i < 2; i++) {
+		pipelinePoints[i].setBlendMode(BLEND_SATURATE_ALPHA);
+		pipelinePoints[i].setDepthStencilMode();
 		pipelinePoints[i].setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 		pipelinePoints[i].bindVertex(*m_pointsGL);
 		pipelinePoints[i].bindShader("tully.vert.spv");
@@ -100,24 +99,22 @@ void Tully::createSC_context()
 	uFader = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
 	set->bindUniform(uFader, 1);
 
+	bigSet = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+	bigSet->bindUniform(uGeom, 0);
+	uBigFader = std::make_unique<SharedBuffer<float>>(*context.uniformMgr);
+	bigSet->bindUniform(uBigFader, 1);
+
 	m_squareGL = std::make_unique<VertexArray>(vkmgr);
 	m_squareGL->createBindingEntry(5 * sizeof(float));
 	m_squareGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Pos3D
 	m_squareGL->addInput(VK_FORMAT_R32_SFLOAT); // Mag
 	m_squareGL->addInput(VK_FORMAT_R32_SFLOAT); // Scale
 	auto blendMode = BLEND_SRC_ALPHA;
-	auto blendMode2 = BLEND_SATURATE_ALPHA;
 	blendMode.colorBlendOp = blendMode.alphaBlendOp = VK_BLEND_OP_MAX;
-	blendMode2.alphaBlendOp = VK_BLEND_OP_MAX;
-	pipelineSquare = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
-	for (int i = 0; i < 2; ++i) {
-		if (i & 1) {
-			pipelineSquare[i].setBlendMode(blendMode2);
-			pipelineSquare[i].setDepthStencilMode(VK_TRUE, VK_FALSE, VK_COMPARE_OP_GREATER_OR_EQUAL);
-		} else {
-			pipelineSquare[i].setBlendMode(blendMode);
-			pipelineSquare[i].setDepthStencilMode(VK_TRUE, VK_FALSE, VK_COMPARE_OP_LESS);
-		}
+	pipelineSquare = new Pipeline[1]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get()}};
+	for (int i = 0; i < 1; ++i) {
+		pipelineSquare[i].setBlendMode(blendMode);
+		pipelineSquare[i].setDepthStencilMode();
 		pipelineSquare[i].setTopology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
 		pipelineSquare[i].bindVertex(*m_squareGL);
 		pipelineSquare[i].bindShader("tullyH.vert.spv");
@@ -125,8 +122,9 @@ void Tully::createSC_context()
 		pipelineSquare[i].bindShader("tullyH.frag.spv");
 		pipelineSquare[i].build();
 	}
-	drawDataSquare = std::make_unique<SharedBuffer<VkDrawIndirectCommand>>(*context.tinyMgr);
-	*drawDataSquare = VkDrawIndirectCommand{0, 1, 0, 0};
+	drawData = std::make_unique<SharedBuffer<VkDrawIndirectCommand[4]>>(*context.tinyMgr);
+	for (int i = 0; i < 4; ++i)
+		(**drawData)[i] = VkDrawIndirectCommand{0, 1, 0, 0};
 }
 
 
@@ -180,61 +178,202 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	}
 
 	file.close();
-	VulkanMgr &vkmgr = *VulkanMgr::instance;
+
 	Context &context = *Context::instance;
 	const int vertexCount = texTully.size();
 	vertexPoints = m_pointsGL->createBuffer(0, vertexCount, context.globalBuffer.get());
-	vertexSquare = m_pointsGL->createBuffer(0, vertexCount, context.globalBuffer.get());
-	float *staging = (float *) context.transfer->planCopy(vertexPoints->get());
-	vertexPoints->fillEntry(3, vertexCount, posTully.data(), staging);
-	vertexPoints->fillEntry(3, vertexCount, colorTully.data(), staging + 3);
-	vertexPoints->fillEntry(1, vertexCount, texTully.data(), staging + 6);
-	vertexPoints->fillEntry(1, vertexCount, scaleTully.data(), staging + 7);
-
-	// create and initialize
-	context.cmdInfo.commandBufferCount = 3;
-	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmdCustomColor);
-	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmdWhiteColor);
-	for (int i = 0; i < 3; ++i) {
-		VkCommandBuffer cmd = cmdCustomColor[i];
-		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
-		pipelinePoints[2].bind(cmd);
-		layout->bindSets(cmd, {*context.uboSet, *set});
-		vertexPoints->bind(cmd);
-		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
-		pipelinePoints[0].bind(cmd);
-		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
-		pipelineSquare[1].bind(cmd);
-		vertexSquare->bind(cmd);
-		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
-		pipelineSquare[0].bind(cmd);
-		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
-		context.frame[i]->compile(cmd);
-		context.frame[i]->setName(cmd, "Tully custom " + std::to_string(i));
-
-		cmd = cmdWhiteColor[i];
-		context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
-		pipelinePoints[3].bind(cmd);
-		layout->bindSets(cmd, {*context.uboSet, *set});
-		vertexPoints->bind(cmd);
-		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
-		pipelinePoints[1].bind(cmd);
-		vkCmdDraw(cmd, vertexCount, 1, 0, 0);
-		pipelineSquare[1].bind(cmd);
-		vertexSquare->bind(cmd);
-		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
-		pipelineSquare[0].bind(cmd);
-		vkCmdDrawIndirect(cmd, drawDataSquare->getBuffer().buffer, drawDataSquare->getOffset(), 1, 0);
-		context.frame[i]->compile(cmd);
-		context.frame[i]->setName(cmd, "Tully white " + std::to_string(i));
-	}
+	vertexSquare = m_squareGL->createBuffer(0, vertexCount, context.globalBuffer.get());
+	// float *staging = (float *) context.transfer->planCopy(vertexPoints->get());
+	// vertexPoints->fillEntry(3, vertexCount, posTully.data(), staging);
+	// vertexPoints->fillEntry(3, vertexCount, colorTully.data(), staging + 3);
+	// vertexPoints->fillEntry(1, vertexCount, texTully.data(), staging + 6);
+	// vertexPoints->fillEntry(1, vertexCount, scaleTully.data(), staging + 7);
 
 	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + std::to_string(nbGalaxy) );
 
 	isAlive = true;
+	needRebuild = true;
 	return true;
 }
 
+bool Tully::loadBigCatalog(const std::string &cat, float optimalDistance) noexcept
+{
+	std::ifstream file(cat, std::ifstream::in);
+
+	if (!file) {
+		//~ cout << "ERREUR: Impossible d'ouvrir le fichier " << cat << std::endl;
+		cLog::get()->write("TULLY catalog: missing file " + cat + " - Feature disabled",LOG_TYPE::L_ERROR);
+		return false;
+	}
+
+	bigCatalogMaxVisibilityAt = optimalDistance;
+
+	std::string line, index; // variable which will contain each line of the file
+	int typeGalaxy;
+	float r,g,b,x,y,z,xr,yr,zr;
+	Context &context = *Context::instance;
+	float *staging = (float *) context.transfer->beginPlanCopy(0);
+	int vertexCount = 0;
+
+	/*
+	*
+	* Format de ligne : index , composantes (r, g ,b) entre [0;1]
+	*					(x,y,z) coordonnées dans le repère et typeGalaxy: le type de l'objet
+	*
+	*	int, 3 floats, 3 floats, un int
+	*/
+	while (getline(file, line)) {
+		if (line[0]=='#')
+			continue;
+		std::istringstream aGalaxie(line);
+		aGalaxie >> index >> r >> g >> b >> x >> y >> z >> typeGalaxy;
+
+		xr=200.f*x;
+		yr=-200.f*z;
+		zr=200.f*y;
+
+		++vertexCount;
+		*(staging++) = xr;
+		*(staging++) = yr;
+		*(staging++) = zr;
+		*(staging++) = r;
+		*(staging++) = g;
+		*(staging++) = b;
+		*(staging++) = typeGalaxy;
+
+		switch (typeGalaxy) {
+			case 0  : *(staging++) = 8.0; break;  //Dwarf
+			case 13 : *(staging++) = 4.0; break;  // LMC
+			case 14 : *(staging++) = 4.0; break;  // SMC
+			case 7  : *(staging++) = 0.125; break; // Elliptic
+			case 9  : *(staging++) = 64.0; break; // AG
+			case 10 : *(staging++) = 128.0; break; // Dark NEB
+			case 12 : *(staging++) = 128.0; break; // Bright NEB
+			default : *(staging++) = 0.25; break; // GALAXY
+		}
+	}
+	file.close();
+
+	vertexPointsExt = m_pointsGL->createBuffer(0, vertexCount, context.globalBuffer.get());
+	context.transfer->endPlanCopy(vertexPointsExt->get(), vertexCount * 8 * sizeof(float));
+
+	needRebuild = true;
+	return true;
+}
+
+void Tully::build(VolumObj3D *withObject)
+{
+	if (!isAlive)
+		return;
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	Context &context = *Context::instance;
+
+	this->withObject = withObject;
+	// create and initialize
+	if (!cmdWhiteColor) {
+		context.cmdInfo.commandBufferCount = 6;
+		vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmdCustomColor);
+		cmdWhiteColor = cmdCustomColor + 3;
+	}
+	buildVertexSplit();
+	std::string headName[2] {"Tully custom ", "Tully white "};
+	if (withObject) {
+		headName[0] += "with volumObj3D ";
+		headName[1] += "with volumObj3D ";
+	}
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 2; ++j) {
+			VkCommandBuffer cmd = cmdCustomColor[i+j*3];
+			context.frame[i]->begin(cmd, PASS_MULTISAMPLE_DEPTH);
+			pipelineSquare[0].bind(cmd);
+			layout->bindSets(cmd, {*context.uboSet, *set});
+			vertexSquare->bind(cmd);
+			vkCmdDrawIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset(), 1, 0);
+			pipelinePoints[j].bind(cmd);
+			vertexPoints->bind(cmd);
+			if (withObject) {
+				vkCmdDrawIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset() + 2 * sizeof(VkDrawIndirectCommand), 1, 0);
+				withObject->recordVolumetricObject(cmd);
+				pipelineSquare[0].bind(cmd);
+				layout->bindSets(cmd, {*context.uboSet, *set});
+				vertexSquare->bind(cmd);
+				vkCmdDrawIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset() + 1 * sizeof(VkDrawIndirectCommand), 1, 0);
+				pipelinePoints[j].bind(cmd);
+				vertexPoints->bind(cmd);
+				vkCmdDrawIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset() + 3 * sizeof(VkDrawIndirectCommand), 1, 0);
+			} else {
+				vkCmdDraw(cmd, vertexPoints->getVertexCount(), 1, 0, 0);
+			}
+			if (vertexPointsExt) {
+				layout->bindSet(cmd, *bigSet, 1);
+				vertexPointsExt->bind(cmd);
+				vkCmdDraw(cmd, vertexPointsExt->getVertexCount(), 1, 0, 0);
+			}
+			context.frame[i]->compile(cmd);
+			context.frame[i]->setName(cmd, headName[j] + std::to_string(i));
+		}
+	}
+	needRebuild = false;
+}
+
+void Tully::buildVertexSplit()
+{
+	sortedDataTully.resize(nbGalaxy * 8);
+	float *staging = sortedDataTully.data();
+	if (withObject) {
+		drawDataPointFirstOffset = 0;
+		drawDataPointSecondSize = 0;
+		float *reverseStaging = staging + nbGalaxy * 8;
+		float x,y,z;
+		// Put the element behind from top to back, and element over from back to top
+		for(unsigned int i=0; i< nbGalaxy;i++) {
+			x=posTully[3*i];
+			y=posTully[3*i+1];
+			z=posTully[3*i+2];
+
+			Vec4f pos(x, y, z, 0);
+			pos -= withObject->getModel() * Vec4f(0,0,0,1);
+			// Now, pos is the position relative to the center of the observed object
+			pos = withObject->getModel().inverseUntranslated() * pos;
+			// Now, pos is the position in the object coordinates
+			if (pos[2] < 0) {
+				// Behind the center, regarding to the local z plane
+				++drawDataPointFirstOffset;
+				*(staging++) = x;
+				*(staging++) = y;
+				*(staging++) = z;
+				*(staging++) = colorTully[i*3+0];
+				*(staging++) = colorTully[i*3+1];
+				*(staging++) = colorTully[i*3+2];
+				*(staging++) = texTully[i];
+				*(staging++) = scaleTully[i];
+			} else {
+				// Over the center, regarding to the local z plane
+				++drawDataPointSecondSize;
+				*--reverseStaging = scaleTully[i];
+				*--reverseStaging = texTully[i];
+				*--reverseStaging = colorTully[i*3+2];
+				*--reverseStaging = colorTully[i*3+1];
+				*--reverseStaging = colorTully[i*3+0];
+				*--reverseStaging = z;
+				*--reverseStaging = y;
+				*--reverseStaging = x;
+			}
+		}
+
+		planeOrder = 2;
+	} else {
+		drawDataPointFirstOffset = nbGalaxy;
+		drawDataPointSecondSize = 0;
+		// Just put every elements in the vertexPoints
+		vertexPoints->fillEntry(3, nbGalaxy, posTully.data(), staging);
+		vertexPoints->fillEntry(3, nbGalaxy, colorTully.data(), staging + 3);
+		vertexPoints->fillEntry(1, nbGalaxy, texTully.data(), staging + 6);
+		vertexPoints->fillEntry(1, nbGalaxy, scaleTully.data(), staging + 7);
+		planeOrder = 0;
+	}
+	std::memcpy(Context::instance->transfer->planCopy(vertexPoints->get()), sortedDataTully.data(), vertexPoints->get().size);
+}
 
 void Tully::setTexture(const std::string& tex_file)
 {
@@ -251,14 +390,15 @@ void Tully::setTexture(const std::string& tex_file)
 		nbTextures = 0;
 	else
 		nbTextures = width / height;
+
+	needRebuild = true;
 }
 
 bool Tully::compTmpTully(const tmpTully &a,const tmpTully &b)
 {
-	if (a.distance>b.distance)
+	if (a.planeSide < b.planeSide)
 		return true;
-	else
-		return false;
+	return (a.distance > b.distance);
 }
 
 void Tully::computeSquareGalaxies(Vec3f camPosition)
@@ -268,14 +408,15 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	a = camPosition[0];
 	b = camPosition[1];
 	c = camPosition[2];
+	int squareOffset = 0;
 	for(unsigned int i=0; i< nbGalaxy;i++) {
-		x=posTully[3*i];
-		y=posTully[3*i+1];
-		z=posTully[3*i+2];
+		x=sortedDataTully[8*i];
+		y=sortedDataTully[8*i+1];
+		z=sortedDataTully[8*i+2];
 
 		//on ne sélectionne que les galaxies assez grandes pour être affichées
         distance=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
-		radius = 3.0/(distance*scaleTully[i]);
+		radius = 3.0/(distance*sortedDataTully[8*i+7]);
 		if (radius<2)
 			continue;
 
@@ -284,37 +425,62 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		tmp.position = Vec3f(x,y,z);
 		tmp.distance = distance;
 		tmp.radius = radius;
-		tmp.texture = texTully[i];
+		tmp.texture = sortedDataTully[8*i+6];
+		tmp.planeSide = (i >= drawDataPointFirstOffset) ^ planeOrder;
+		squareOffset += !tmp.planeSide;
 		lTmpTully.push_back(tmp);
 	}
+	int vertexCount = lTmpTully.size();
 	// printf("taille de la liste: %i\n", lTmpTully.size());
 	lTmpTully.sort(compTmpTully);
 
-	int vertexCount = 0;
-	float *data = (float *) Context::instance->transfer->beginPlanCopy(vertexSquare->get().size);
+	float *data = nullptr;
+	if (vertexCount)
+	 	data = (float *) Context::instance->transfer->planCopy(vertexSquare->get(), 0, vertexCount * 5 * sizeof(float));
 
-	for (std::list<tmpTully>::iterator it=lTmpTully.begin(); it!=lTmpTully.end(); ++it) {
-		memcpy(data, (float *) (*it).position, 3 * sizeof(float));
-		data += 3;
-		*(data++) = (*it).texture;
-		*(data++) = (*it).radius;
-		++vertexCount;
+	for (int i = 0; i < 2; ++i) {
+		for (std::list<tmpTully>::iterator it=lTmpTully.begin(); it!=lTmpTully.end(); ++it) {
+			if ((*it).planeSide == i) {
+				memcpy(data, (float *) (*it).position, 3 * sizeof(float));
+				data += 3;
+				*(data++) = (*it).texture;
+				*(data++) = (*it).radius;
+			}
+		}
 	}
-	Context::instance->transfer->endPlanCopy(vertexSquare->get(), vertexCount * 5 * sizeof(float));
 
 	lTmpTully.clear();	//données devenues inutiles
 
-	drawDataSquare->get().vertexCount = vertexCount;
+	drawData->get()[0].vertexCount = squareOffset;
+	drawData->get()[1].vertexCount = vertexCount - squareOffset;
+	drawData->get()[1].firstVertex = squareOffset;
 }
 
 
-void Tully::draw(double distance, const Navigator *nav) noexcept
+void Tully::draw(double distance, const Navigator *nav, const Projector *prj) noexcept
 {
 	if (!fader.getInterstate()) return;
 	if (!isAlive) return;
 
 	Mat4f matrix= nav->getHelioToEyeMat().convert();
 	camPos = nav->getObserverHelioPos();
+
+	if (withObject) {
+		if (planeOrder != ((withObject->drawExternal(nav, prj) * Vec4f {0, 0, 1, 0})[2] < 0)) {
+			planeOrder = ((withObject->drawExternal(nav, prj) * Vec4f {0, 0, 1, 0})[2] < 0);
+			if (planeOrder) {
+				(**drawData)[2].vertexCount = drawDataPointSecondSize;
+				(**drawData)[2].firstVertex = drawDataPointFirstOffset;
+				(**drawData)[3].vertexCount = drawDataPointFirstOffset;
+				(**drawData)[3].firstVertex = 0;
+			} else {
+				(**drawData)[2].vertexCount = drawDataPointFirstOffset;
+				(**drawData)[2].firstVertex = 0;
+				(**drawData)[3].vertexCount = drawDataPointSecondSize;
+				(**drawData)[3].firstVertex = drawDataPointFirstOffset;
+			}
+		}
+	}
 
 	computeSquareGalaxies(camPos);
 
@@ -334,6 +500,7 @@ void Tully::draw(double distance, const Navigator *nav) noexcept
 	uGeom->get().mat = matrix;
 	uGeom->get().camPos = camPos;
 	*uFader = fader.getInterstate();
+	*uBigFader = fader.getInterstate() * ((distance > bigCatalogMaxVisibilityAt) ? 1 : distance / bigCatalogMaxVisibilityAt);
 	uGeom->get().nbTextures = nbTextures;
 
 	if (useWhiteColor)

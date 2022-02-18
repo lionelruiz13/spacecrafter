@@ -38,7 +38,12 @@ public:
     VolumObj3D(const std::string& tex_color_file, const std::string &tex_absorbtion_file, bool z_reflection);
     ~VolumObj3D();
     void setModel(const Mat4f &model, const Vec3f &scale);
+    Mat4f getModel() const {
+        return model;
+    }
     void draw(const Navigator * nav, const Projector* prj);
+    Mat4f drawExternal(const Navigator * nav, const Projector* prj);
+    void recordVolumetricObject(VkCommandBuffer cmd);
     bool loaded() const {return isLoaded;}
 private:
     struct Transform {
