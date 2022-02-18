@@ -162,6 +162,10 @@ public:
 		zodiacal.intensity = _intensity;
 	}
 
+	void enableZodiacal(bool _allowZodiacal) {
+		allowZodiacal = _allowZodiacal;
+	}
+
 private:
 	struct MilkyData{
 		std::string name; // le nom exact de la texture
@@ -187,6 +191,7 @@ private:
 	bool onTextureTransition = false;		//!< indique uen transition sur la texture
 	bool displayIrisMilky = false;			//!< indique que l'on doit utiliser la texture iris
 	bool useIrisMilky = false;				//!< avons nous besoin d'utiliser la texture iris ?
+	bool allowZodiacal = false;
 
 	Scalable<float> intensityMilky;
 

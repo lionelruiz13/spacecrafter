@@ -231,7 +231,7 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	sphere->bind(cmd);
 	sphere->draw(cmd);
 	//nextZodiacalLight
-	if (zodiacal.tex != nullptr && zodiacalFader.getInterstate()) {
+	if (zodiacal.tex != nullptr && zodiacalFader.getInterstate() && allowZodiacal) {
 		pipelineZodiacal->bind(cmd);
 		frag.cmag = ad_lum * zodiacal.intensity * zodiacalFader.getInterstate();
 

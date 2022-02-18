@@ -58,6 +58,7 @@ void SolarSystemModule::onEnter()
 	if (observer->getAltitude() < maxAltToGoUp)
 		observer->setAltitude(observer->getAltitude() *1.E6);
     thread = std::thread(&SolarSystemModule::asyncUpdateLoop, this);
+    core->milky_way->enableZodiacal(true);
 }
 
 void SolarSystemModule::onExit()
@@ -66,6 +67,7 @@ void SolarSystemModule::onExit()
 	core->timeMgr->setTimeSpeed(1);
     threadQueue.close();
     thread.join();
+    core->milky_way->enableZodiacal(false);
 }
 
 
