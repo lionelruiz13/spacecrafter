@@ -46,7 +46,7 @@ InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer)
 	module = MODULE::IN_GALAXY;
 
     minAltToGoDown = 1.E10;
-    maxAltToGoUp = 1.E15;
+    maxAltToGoUp = 1.E14;
 }
 
 void InGalaxyModule::onEnter()
