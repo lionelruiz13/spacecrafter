@@ -105,8 +105,9 @@ CloudNavigator::CloudNavigator(const std::string &filename)
         cmds[i] = context.frame[i]->create(1);
         context.frame[i]->setName(cmds[i], "cloud3D");
     }
-    addRule(5, Vec4f(0, 0, 0, 2.));
-    addRule(6, Vec4f(0.5, 0.05, 0.25, 2.));
+    //addRule(6, Vec4f(0.5, 0.5, 0.9, 1.), 1.0);
+    addRule(8, Vec4f(0, 0, 0, 1.), 0.8);
+    addRule(9, Vec4f(0.5, 0.05, 0.25, 2.), 0.5);
     if (!filename.empty())
         loadCatalog(filename);
     // //=============== TEST ===============//
@@ -226,9 +227,9 @@ void CloudNavigator::draw(const Mat4f &mat, const Projector* prj)
     frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 }
 
-void CloudNavigator::addRule(int index, Vec4f color)
+void CloudNavigator::addRule(int index, Vec4f color, float scaling)
 {
-    types[index] = cloudType{color};
+    types[index] = cloudType{color, scaling};
 }
 
 void CloudNavigator::loadCatalog(const std::string &filename)
@@ -242,7 +243,7 @@ void CloudNavigator::loadCatalog(const std::string &filename)
             auto &data = types.at(t);
             Vec3f pos(x, y, z);
             pos *= scaling;
-            insert(data.color, Mat4f::translation(pos) * Mat4f::scaling(rad));
+            insert(data.color, Mat4f::translation(pos) * Mat4f::scaling(rad * data.scaling));
         } catch (...) {
         }
     }

@@ -49,7 +49,7 @@ public:
     void draw(const Mat4f &mat, const Projector* prj);
     void insert(const Vec4f &color, const Mat4f &model);
 
-    void addRule(int index, Vec4f color);
+    void addRule(int index, Vec4f color, float scaling = 1);
     void loadCatalog(const std::string &filename);
 private:
     void build(int nbClouds);
@@ -69,6 +69,7 @@ private:
     };
     struct cloudType {
         Vec4f color;
+        float scaling;
     };
     std::vector<cloud> cloudData;
     std::vector<Vec3f> cloudPos;
