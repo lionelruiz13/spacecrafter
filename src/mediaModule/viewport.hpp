@@ -32,6 +32,7 @@ class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
+class Navigator;
 
 class ViewPort {
 public:
@@ -39,7 +40,7 @@ public:
 	~ViewPort();
 
 	//! trace une texture sur le viewport
-	void draw();
+	void draw(double heading);
 
 	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
 	//! \param _tex, ref uint32_t textures YUV dans la CG
@@ -104,6 +105,7 @@ private:
 	std::shared_ptr<VideoSync> sync;
 	VkCommandBuffer cmds[3];
 	bool needUpdate[3]{};
+	float lastHeading = 0;
 
 	//uint32_t videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
 	bool isAlive;		//!< active la classe

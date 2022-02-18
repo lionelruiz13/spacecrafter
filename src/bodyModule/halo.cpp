@@ -100,8 +100,12 @@ void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneRep
 	// if size of star is too small (blink) we put its size to 1.2 --> no more blink
 	// And we compensate the difference of brighteness with cmag
 	if (rmag<1.2f) {
-		if (body->computeMagnitude(nav->getObserverHelioPos())>0.) cmag=rmag*rmag/1.44f;
-		else cmag=rmag/1.2f;
+		if (body->computeMagnitude(nav->getObserverHelioPos())>0.) {
+			cmag=rmag*rmag/1.44f;
+			if (body->computeMagnitude(nav->getObserverHelioPos())>6.)
+				cmag = 0;
+		} else
+			cmag=rmag/1.2f;
 		rmag=1.2f;
 	}
 	else {
