@@ -232,10 +232,18 @@ void StarGalaxy::loadCatalog(const std::string &filename)
 				colorID += 32;
 				break;
 			case 3:
-				colorID += 64;
+				colorID += 0;
 				break;
 			case 4:
+				colorID += 0;
+				break;
+			case 5:
+				break;
+			case 6:
 				colorID += 96;
+				break;
+			case 7:
+				colorID += 32;
 				break;
 			default:
 				continue;

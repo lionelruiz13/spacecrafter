@@ -64,7 +64,7 @@ private:
         Vec3f clipping_fov;
     };
     SharedBuffer<UniformData> global;
-    float scaling = 0.00001 / 7;
+    float scaling = 0.0000008;
 };
 
 #endif /* end of include guard: STAR_GALAXY_HPP */
