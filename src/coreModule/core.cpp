@@ -373,6 +373,7 @@ void Core::init(const InitParser& conf)
 		oort->build();
 		tully->setTexture("typegals.png");
 		tully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
+		tully->loadBigCatalog(AppSettings::Instance()->getUserDir() + "6df.dat", 5e+12);
 		dso3d->setTexture("dsocat.png");
 		if (dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
 			dso3d->build();

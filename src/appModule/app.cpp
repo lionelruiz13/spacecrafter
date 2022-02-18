@@ -814,14 +814,44 @@ void App::submitFrame(App *self, int id)
 
 	if (self->sender) {
 		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &mainCmd, 0, nullptr};
-		vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		auto res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		switch (res) {
+			case VK_SUCCESS:
+				break;
+			case VK_ERROR_DEVICE_LOST:
+				VulkanMgr::instance->putLog("CRITICAL : device lost", LogType::ERROR);
+				return;
+			default:
+				VulkanMgr::instance->putLog("Failed to submit frame", LogType::ERROR);
+				return;
+		}
 		self->sender->presentFrame(id);
 	} else {
 		const int lastId = (id + 2) % 3;
 		VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + lastId], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]};
-		vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		auto res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		switch (res) {
+			case VK_SUCCESS:
+				break;
+			case VK_ERROR_DEVICE_LOST:
+				VulkanMgr::instance->putLog("CRITICAL : device lost", LogType::ERROR);
+				return;
+			default:
+				VulkanMgr::instance->putLog("Failed to submit frame", LogType::ERROR);
+				return;
+		}
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
-		vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
+		res = vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
+		switch (res) {
+			case VK_SUCCESS:
+				break;
+			case VK_ERROR_DEVICE_LOST:
+				VulkanMgr::instance->putLog("CRITICAL : device lost on presentation request", LogType::ERROR);
+				return;
+			default:
+				VulkanMgr::instance->putLog("Frame refused by the presentation engine", LogType::WARNING);
+				return;
+		}
 	}
 }

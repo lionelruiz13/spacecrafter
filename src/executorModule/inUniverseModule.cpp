@@ -97,16 +97,20 @@ void InUniverseModule::update(int delta_time)
 
 void InUniverseModule::draw(int delta_time)
 {
-	core->applyClippingPlanes(0.0001 ,2000.1);
+	core->applyClippingPlanes(0.01, 10);
 	Context::instance->helper->beginDraw(PASS_BACKGROUND, *Context::instance->frame[Context::instance->frameIdx]);
-	core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
+	// core->universeCloudNav->computePosition(core->navigation->getObserverHelioPos(), core->projection);
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
-	if (core->volumGalaxy->loaded())
-		core->volumGalaxy->draw(core->navigation, core->projection);
-	else
+	if (core->volumGalaxy->loaded()) {
+		if (core->tully->mustBuild())
+			core->tully->build(core->volumGalaxy.get());
+	} else {
+		if (core->tully->mustBuild())
+			core->tully->build();
 		core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
-	core->tully->draw(observer->getAltitude(), core->navigation);
+	}
+	core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	//core->postDraw();
 }

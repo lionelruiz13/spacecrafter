@@ -91,6 +91,7 @@ VolumObj3D::Shared::Shared()
 
     vertex = vertexArray->createBuffer(0, 8, context.globalBuffer.get());
     Vec3f *ptr = (Vec3f *) context.transfer->planCopy(vertex->get());
+    // Volumetric 3D object
     ptr[0].set(-1,1,1); ptr[1].set(1,1,1);
     ptr[2].set(-1,-1,1); ptr[3].set(1,-1,1);
     ptr[4].set(-1,-1,-1); ptr[5].set(1,-1,-1);
@@ -110,6 +111,7 @@ VolumObj3D::Shared::Shared()
     pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
     pipeline->setTessellationState(3);
     pipeline->disableSampleShading();
+    pipeline->setDepthStencilMode();
     pipeline->setCullMode(true);
     pipeline->bindVertex(*vertexArray);
     pipeline->bindShader("volumObj3D.vert.spv");
@@ -155,4 +157,22 @@ void VolumObj3D::draw(const Navigator * nav, const Projector* prj)
     vkCmdDrawIndexed(cmd, 3*2*6, 1, 0, 0, 0);
     context.frame[context.frameIdx]->compile(cmd);
     context.frame[context.frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
+}
+
+Mat4f VolumObj3D::drawExternal(const Navigator * nav, const Projector* prj)
+{
+    Mat4f mat = nav->getHelioToEyeMat().convert() * model;
+    transform->ModelViewMatrix = mat;
+    transform->NormalMatrix = mat.inverseUntranslated();
+    transform->clipping_fov = prj->getClippingFov();
+    return mat;
+}
+
+void VolumObj3D::recordVolumetricObject(VkCommandBuffer cmd)
+{
+    shared->pipeline->bind(cmd);
+    shared->layout->bindSet(cmd, *set);
+    shared->vertex->bind(cmd);
+    vkCmdBindIndexBuffer(cmd, shared->index.buffer, shared->index.offset, VK_INDEX_TYPE_UINT16);
+    vkCmdDrawIndexed(cmd, 3*2*6, 1, 0, 0, 0);
 }

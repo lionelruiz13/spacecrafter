@@ -46,6 +46,7 @@ class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
+class VolumObj3D;
 
 class Tully {
 public:
@@ -53,7 +54,7 @@ public:
 	~Tully();
 
 	//! affiche le nuage de points
-	void draw(double distance, const Navigator *nav) noexcept;
+	void draw(double distance, const Navigator *nav, const Projector *prj) noexcept;
 
 	//! mise à jour du fader
 	void update(int delta_time) {
@@ -89,11 +90,24 @@ public:
 	//! lecture des données du catalogue passé dont le nom est passé en paramètre
 	bool loadCatalog(const std::string &cat) noexcept;
 
+	//! read the catalog to display with a fading of min(distance/optimalDistance, 1)
+	bool loadBigCatalog(const std::string &cat, float optimalDistance) noexcept;
+
+	//! Return true if tully need to be build before being drawn
+	bool mustBuild() const {
+		return needRebuild;
+	}
+
+	// Build the draw commands for the loaded catalogs and texture
+	void build(VolumObj3D *withObject = nullptr);
 private:
 	// initialise les shaders ShaderPoints et ShaderSquare ainsi que les vao-vbo
 	void createSC_context();
 
 	void computeSquareGalaxies(Vec3f camPosition);
+
+	//! Initialize the vertex buffer splitting for the object
+	void buildVertexSplit();
 
 	s_texture* texGalaxy;
 	LinearFader fader;
@@ -105,12 +119,15 @@ private:
 	std::vector<float> colorTully;
 	std::vector<float> texTully;
 	std::vector<float> scaleTully;
+	// Hold the data as they are stored in vertexPoints
+	std::vector<float> sortedDataTully;
 
 	struct tmpTully {
 		Vec3f position;
 		float distance;
 		float radius;
 		float texture;
+		uint8_t planeSide;
 	};
 	static bool compTmpTully(const tmpTully &a,const tmpTully &b);
 
@@ -119,12 +136,13 @@ private:
 	//renvoie le nombre de galaxies lues du/des catalogues
 	unsigned int nbGalaxy;
 	bool isAlive = false;
+	bool needRebuild = false;
 	bool useWhiteColor = true;
 	// renvoie le nombre des différentes textures dans la texture
 	int nbTextures;
 	// données Vulkan
 	std::unique_ptr<PipelineLayout> layout;
-	std::unique_ptr<Set> set;
+	std::unique_ptr<Set> set, bigSet;
 	struct s_geom {
 		Mat4f mat;
 		Vec3f camPos;
@@ -132,15 +150,23 @@ private:
 	};
 	std::unique_ptr<SharedBuffer<s_geom>> uGeom;
 	std::unique_ptr<SharedBuffer<float>> uFader;
-	std::unique_ptr<SharedBuffer<VkDrawIndirectCommand>> drawDataSquare;
-	VkCommandBuffer cmdCustomColor[3];
-	VkCommandBuffer cmdWhiteColor[3];
+	std::unique_ptr<SharedBuffer<float>> uBigFader;
+	float bigCatalogMaxVisibilityAt = 1;
+	// drawData for square back, square front, point back, point front
+	std::unique_ptr<SharedBuffer<VkDrawIndirectCommand[4]>> drawData;
+	VkCommandBuffer cmdCustomColor[6];
+	VkCommandBuffer *cmdWhiteColor = nullptr;
 	Pipeline *pipelinePoints;
 	Pipeline *pipelineSquare;
 	std::unique_ptr<VertexArray> m_pointsGL;
 	std::unique_ptr<VertexArray> m_squareGL;
 	std::unique_ptr<VertexBuffer> vertexPoints;
 	std::unique_ptr<VertexBuffer> vertexSquare;
+	std::unique_ptr<VertexBuffer> vertexPointsExt; // Big catalog points
+	VolumObj3D *withObject = nullptr;
+	uint32_t drawDataPointFirstOffset;
+	uint32_t drawDataPointSecondSize;
+	uint8_t planeOrder = 0; // 0 = plane 0 behind plane 1, 1 = plane 1 behind plane 0
 };
 
 #endif // ___TULLY_HPP___

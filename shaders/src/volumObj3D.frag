@@ -25,9 +25,14 @@ void main()
 
     const float coefNormalize = min(min(tmp.x, tmp.y), tmp.z);      // direction * coefNormalize = ray
     vec3 ray = direction * coefNormalize;
-    const float t_max = max(floor(length(ray * rayCoef) * rayPoints), 1);
-    ray = ray * texCoef / t_max;
+    const float t_max = floor(min(length(ray * rayCoef), 1.5) * rayPoints);
 
+    if (t_max < 0.5) {
+        fragColor = vec4(0);
+        return;
+    }
+
+    ray = ray * texCoef / t_max;
     float opacity = 0;
     vec3 coord = texCoord * texCoef + ray * 0.5f;
     vec4 color = vec4(0);
