@@ -102,6 +102,8 @@ void Halo::computeHalo(const Navigator* nav, const Projector* prj, const ToneRep
 	if (rmag<1.2f) {
 		if (body->computeMagnitude(nav->getObserverHelioPos())>0.) cmag=rmag*rmag/1.44f;
 		else cmag=rmag/1.2f;
+		//if (body->computeMagnitude(nav->getObserverHelioPos())>5.0f) cmag=cmag*rmag*rmag/1.44f;
+		if (body->computeMagnitude(nav->getObserverHelioPos())>6.5f) cmag=cmag*rmag*rmag/1.44f;
 		rmag=1.2f;
 	}
 	else {
