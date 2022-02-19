@@ -66,8 +66,7 @@ void OrbitPlot::createSC_context()
 	context.layouts.emplace_back(new PipelineLayout(vkmgr));
 	layoutOrbit2d = context.layouts.back().get();
 	layoutOrbit2d->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec4f));
-	layoutOrbit2d->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, sizeof(Vec4f), sizeof(Mat4f));
-	layoutOrbit2d->setGlobalPipelineLayout(context.layouts.front().get());
+	layoutOrbit2d->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, sizeof(Vec4f), sizeof(Mat4f) + sizeof(float));
 	layoutOrbit2d->build();
 
 	context.pipelines.emplace_back(new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutOrbit2d));
