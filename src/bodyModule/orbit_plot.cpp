@@ -88,7 +88,6 @@ void OrbitPlot::createSC_context()
 	context.pipelines.emplace_back(new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutOrbit3d));
 	pipelineOrbit3d = context.pipelines.back().get();
 	pipelineOrbit3d->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
-	pipelineOrbit3d->setDepthStencilMode();
 	pipelineOrbit3d->bindVertex(*m_Orbit);
 	pipelineOrbit3d->bindShader("body_orbit3d.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipelineOrbit3d->bindShader("body_orbit3d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);
