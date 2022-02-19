@@ -106,8 +106,8 @@ public:
 	}
 
 	//! affiche une image de player video à destination du ViewPort
-	void drawViewPort() {
-		viewPort->draw();
+	void drawViewPort(double heading) {
+		viewPort->draw(heading);
 	}
 
 	void faderUpdate(float delta_time) {

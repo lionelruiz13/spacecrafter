@@ -113,13 +113,32 @@ void ViewPort::setTexture(VideoTexture _tex)
 		needUpdate[i] = true;
 }
 
-void ViewPort::draw()
+void ViewPort::draw(double heading)
 {
 	if (! isAlive)
 		return;
 	sync->inUse = true;
 
 	uFrag->get().fader = fader.getInterstate();
+
+	if (heading != lastHeading) {
+		lastHeading = heading;
+		heading = heading * (3.1415926f / 180.f);
+		float viewportPoints[8] = {-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0};
+		float viewportTex[8] =    { 0.0,  1.0, 1.0,  1.0,  0.0, 0.0, 1.0, 0.0};
+		float c = cos(heading);
+		float s = sin(heading);
+		for (int i = 0; i < 4; ++i) {
+			float x = viewportPoints[i*2] * c - viewportPoints[i*2+1] * s;
+			float y = viewportPoints[i*2] * s + viewportPoints[i*2+1] * c;
+			viewportPoints[i*2] = x;
+			viewportPoints[i*2+1] = y;
+		}
+
+		float *data = (float *) Context::instance->transfer->planCopy(vertex->get(), 0, 16*sizeof(float));
+		vertex->fillEntry(2, 4, viewportPoints, data);
+		vertex->fillEntry(2, 4, viewportTex, data + 2);
+	}
 
 	const int frameIdx = Context::instance->frameIdx;
 	if (needUpdate[frameIdx]) {

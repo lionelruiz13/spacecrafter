@@ -66,8 +66,7 @@ void OrbitPlot::createSC_context()
 	context.layouts.emplace_back(new PipelineLayout(vkmgr));
 	layoutOrbit2d = context.layouts.back().get();
 	layoutOrbit2d->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec4f));
-	layoutOrbit2d->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, sizeof(Vec4f), sizeof(Mat4f));
-	layoutOrbit2d->setGlobalPipelineLayout(context.layouts.front().get());
+	layoutOrbit2d->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, sizeof(Vec4f), sizeof(Mat4f) + sizeof(float));
 	layoutOrbit2d->build();
 
 	context.pipelines.emplace_back(new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutOrbit2d));
@@ -89,7 +88,6 @@ void OrbitPlot::createSC_context()
 	context.pipelines.emplace_back(new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutOrbit3d));
 	pipelineOrbit3d = context.pipelines.back().get();
 	pipelineOrbit3d->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
-	pipelineOrbit3d->setDepthStencilMode();
 	pipelineOrbit3d->bindVertex(*m_Orbit);
 	pipelineOrbit3d->bindShader("body_orbit3d.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
 	pipelineOrbit3d->bindShader("body_orbit3d.geom.spv", VK_SHADER_STAGE_GEOMETRY_BIT);

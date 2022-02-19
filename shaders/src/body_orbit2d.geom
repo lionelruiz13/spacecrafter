@@ -8,32 +8,42 @@
 
 //layout
 layout (lines) in;
-layout (line_strip, max_vertices = 2) out;
+layout (line_strip, max_vertices = 16) out;
+
+layout (location=0) in vec4 position[];
+
 
 //externe
-layout (push_constant) uniform uMat {layout (offset=16) mat4 Mat;};
+layout (push_constant) uniform uMat {
+	layout (offset=16) mat4 ModelViewMatrix;
+	float fov;
+};
 
-#include <cam_block_only.glsl>
-#include <custom_project.glsl>
+#include <fisheye2D.glsl>
 
 void main(void)
 {
-	vec4 pos1, pos2;//, pos3, pos4;
+	vec4 pos1 = gl_in[0].gl_Position;
+	vec4 pos2 = gl_in[1].gl_Position;
+	vec4 pos = pos1 - pos2;
+	float spacing = sqrt(pos.x * pos.x + pos.y * pos.y);
 
-	pos1 = custom_project(gl_in[0].gl_Position);
-	pos2 = custom_project(gl_in[1].gl_Position);
+	if (spacing > 1.2)
+		return;
 
-	if ((pos1.w + pos2.w)==2.0) {
-		pos1.z = 0.0; pos2.z = 0.0;
+	gl_Position = pos1;
+	EmitVertex();
 
-		//first
-		gl_Position = MVP2D * pos1;
+	int nbLines = clamp(int(spacing * 32), 1, 15);
+	pos = position[0];
+	vec4 shift = (position[1] - pos) / nbLines;
+	while (--nbLines > 0) {
+		pos += shift;
+		gl_Position = fisheye2D(pos, fov);
 		EmitVertex();
-
-		//second
-		gl_Position = MVP2D * pos2;
-		EmitVertex();
-
-		EndPrimitive();
 	}
+
+	gl_Position = pos2;
+	EmitVertex();
+	EndPrimitive();
 }

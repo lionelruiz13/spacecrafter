@@ -23,6 +23,7 @@
 #include "EntityCore/Resource/Pipeline.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Resource/VertexBuffer.hpp"
+#include "coreModule/projector.hpp"
 
 Orbit2D::Orbit2D(Body* _body, int segments) : OrbitPlot(_body, segments, ORBIT_ADDITIONNAL_POINTS)
 {
@@ -48,12 +49,17 @@ void Orbit2D::drawOrbit(VkCommandBuffer &cmd, const Navigator * nav, const Proje
 
 	// Normal transparency mode
 	pipelineOrbit2d->bind(cmd);
-	layoutOrbit2d->bindSet(cmd, *context.uboSet);
+	// layoutOrbit2d->bindSet(cmd, *context.uboSet);
 	orbit->bind(cmd);
 	Vec4f color (body->myColor->getOrbit(), (orbit_fader.getInterstate()*body->visibilityFader.getInterstate()));
-	Mat4f matF = mat.convert();
+	struct {
+		Mat4f mat;
+		float fov;
+	} pushData;
+	pushData.mat = mat.convert();
+	pushData.fov = prj->getFov();
 	layoutOrbit2d->pushConstant(cmd, 0, &color);
-	layoutOrbit2d->pushConstant(cmd, 1, &matF);
+	layoutOrbit2d->pushConstant(cmd, 1, &pushData);
 	vkCmdDraw(cmd, ORBIT_POINTS + ORBIT_ADDITIONNAL_POINTS, 1, 0, 0);
 }
 
