@@ -170,6 +170,7 @@ private:
 	AVPacket		*packet;
 	struct SwsContext *img_convert_ctx;
 	bool firstUse = true; // Tell if this texture is new and uninitialized yet
+	bool decodeEnd = false; // Tell if the last frame of the video have been decoded
 	bool wantInterrupt = false; // Tell if the worker thread should be interrupted
 	std::atomic<int> needFrames = 0; // Tell how many frames are required now
 	std::atomic<int> plannedFrames = 0; // Tell how many frame have been planned but not used

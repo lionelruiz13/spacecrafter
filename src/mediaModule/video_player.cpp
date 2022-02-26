@@ -117,6 +117,7 @@ bool VideoPlayer::restartCurrentVideo()
 bool VideoPlayer::playNewVideo(const std::string& _fileName)
 {
 	#ifndef WIN32
+	decodeEnd = false;
 	if (m_isVideoPlayed)
 		stopCurrentVideo();
 	if (thread.joinable())
@@ -256,9 +257,11 @@ void VideoPlayer::getNextFrame()
 	while(!getNextFrame) {
 
 		if(av_read_frame(pFormatCtx, packet)<0) {
-			cLog::get()->write("fin de fichier");
 			m_isVideoSeeking = true;
-			media->playerStop(); // We can't do that here !
+			// Ensure no more frames will be submitted
+			plannedFrames += MAX_CACHED_FRAMES;
+			requestQueue.abortPending();
+			decodeEnd = true;
 			return;
 		}
 
@@ -307,15 +310,15 @@ void VideoPlayer::stopCurrentVideo()
 {
 	#ifndef WIN32
 	if (m_isVideoPlayed==false) {
-		if (thread.joinable() && thread.get_id() != std::this_thread::get_id())
+		if (thread.joinable())
 			thread.join();
 		return;
 	}
 
 	m_isVideoPlayed = false;
 	requestQueue.close();
-	if (thread.get_id() != std::this_thread::get_id())
-		thread.join(); // Don't overlap av_* calls, but don't self-join
+	thread.join(); // Don't overlap av_* calls
+	needFrames = 0;
 	sws_freeContext(img_convert_ctx);
 	av_frame_free(&pFrameOut);
 	av_frame_free(&pFrameIn);
@@ -450,22 +453,27 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 		videoTexture.sync->syncOut->dstDependency(cmd);
 		videoTexture.sync->syncOut->resetDependency(cmd, VK_PIPELINE_STAGE_2_COPY_BIT_KHR);
 	}
-	int frameIdx;
-	if (needFrames && displayQueue.pop(frameIdx)) {
-		--needFrames;
-		--plannedFrames;
-		if (frameIdx >= 0) {
-			VkBufferImageCopy region;
-			region.bufferRowLength = region.bufferImageHeight = 0;
-			region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
-			region.imageOffset = VkOffset3D{};
-			region.imageExtent.depth = 1;
-			for (int i = 0; i < 3; ++i) {
-				region.bufferOffset = imageBuffers[i][frameIdx].offset;
-				region.imageExtent.width = widths[i];
-				region.imageExtent.height = heights[i];
-				vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+	if (needFrames) {
+		int frameIdx;
+		if (displayQueue.pop(frameIdx)) {
+			--needFrames;
+			--plannedFrames;
+			if (frameIdx >= 0) {
+				VkBufferImageCopy region;
+				region.bufferRowLength = region.bufferImageHeight = 0;
+				region.imageSubresource = VkImageSubresourceLayers{videoTexture.tex[0]->getAspect(), 0, 0, 1};
+				region.imageOffset = VkOffset3D{};
+				region.imageExtent.depth = 1;
+				for (int i = 0; i < 3; ++i) {
+					region.bufferOffset = imageBuffers[i][frameIdx].offset;
+					region.imageExtent.width = widths[i];
+					region.imageExtent.height = heights[i];
+					vkCmdCopyBufferToImage(cmd, stagingBuffer->getBuffer(), videoTexture.tex[i]->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+				}
 			}
+		} else if (decodeEnd) {
+			cLog::get()->write("fin de fichier");
+			stopCurrentVideo();
 		}
 	}
 	videoTexture.sync->syncIn->placeBarrier(cmd);
@@ -513,6 +521,7 @@ void VideoPlayer::threadInterrupt()
 	needFrames = 0;
 	plannedFrames = 0;
 	mtx.lock(); // Block until the video thread stop decoding frames.
+	decodeEnd = false;
 	int frameIdx;
 	while (displayQueue.pop(frameIdx));
 }
