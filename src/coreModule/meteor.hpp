@@ -49,6 +49,7 @@ public:
 	bool isAlive(void);          // see if burned out yet
 
 private:
+	const static Vec3f radiant[366];
 	Mat4d mmat; // tranformation matrix to align radiant with earth direction of travel
 	Vec3d obs;  // observer position in meteor coord. system
 	Vec3d position;  // equatorial coordinate position
