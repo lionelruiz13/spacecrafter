@@ -184,14 +184,20 @@ void Navigator::updateMove(double deltaAz, double deltaAlt, double fov, double d
 
 	// recalc all the position variables
 	if (deltaAz || deltaAlt) {
-		if ( viewing_mode == VIEW_EQUATOR) {
-			Utility::spheToRect(azVision, altVision, equ_vision);
-			local_vision=earthEquToLocal(equ_vision);
+		if (duration) {
+			Vec3d aim;
+			Utility::spheToRect(azVision, altVision, aim);
+			moveTo(aim, duration, (viewing_mode == VIEW_HORIZON), 0);
 		} else {
-			Utility::spheToRect(azVision, altVision, local_vision);
-			// Calc the equatorial coordinate of the direction of vision wich was in Altazimuthal coordinate
-			equ_vision=localToEarthEqu(local_vision);
-			prec_equ_vision = mat_earth_equ_to_j2000*equ_vision;
+			if ( viewing_mode == VIEW_EQUATOR) {
+				Utility::spheToRect(azVision, altVision, equ_vision);
+				local_vision=earthEquToLocal(equ_vision);
+			} else {
+				Utility::spheToRect(azVision, altVision, local_vision);
+				// Calc the equatorial coordinate of the direction of vision wich was in Altazimuthal coordinate
+				equ_vision=localToEarthEqu(local_vision);
+				prec_equ_vision = mat_earth_equ_to_j2000*equ_vision;
+			}
 		}
 	}
 
