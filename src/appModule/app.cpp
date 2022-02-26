@@ -623,9 +623,17 @@ void App::draw(int delta_time)
 		context.helper->waitFrame(context.lastFrameIdx);
 		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 30L*1000*1000*1000);
 		if (res != VK_SUCCESS) {
-			vkmgr.putLog("CRITICAL : Frame not completed after 30s (timeout)", LogType::ERROR);
-			// Ok, but... what to do then ?
-			// Can't leave, as VulkanMgr internally call vkDeviceWaitIdle on destroy, which would never end in this case
+			switch (res) {
+				case VK_TIMEOUT:
+					vkmgr.putLog("CRITICAL : Frame not completed after 30s (timeout)", LogType::ERROR);
+					break;
+				case VK_ERROR_DEVICE_LOST:
+					vkmgr.putLog("CRITICAL : Device lost while waiting frame completion", LogType::ERROR);
+					break;
+				default:
+					vkmgr.putLog("CRITICAL : An error occured while waiting frame completion", LogType::ERROR);
+					break;
+			}
 			exit(2);
 		}
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
