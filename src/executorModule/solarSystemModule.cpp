@@ -48,6 +48,21 @@
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
 
+SolarSystemModule::SolarSystemModule(std::shared_ptr<Core> _core, Observer *_observer) :
+    core(_core), observer(_observer)
+{
+    maxAltToGoUp = 1.E16;
+    module = MODULE::SOLAR_SYSTEM;
+}
+
+SolarSystemModule::~SolarSystemModule()
+{
+    if (thread.joinable()) {
+        threadQueue.close();
+        thread.join();
+    }
+}
+
 void SolarSystemModule::onEnter()
 {
     std::cout << "J'arrive dans InSolarSystem" << std::endl;
