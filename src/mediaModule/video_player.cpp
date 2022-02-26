@@ -345,8 +345,13 @@ void VideoPlayer::initTexture()
 			videoTexture.tex[i]->getDimensions(width, height);
 			if (width == widths[i] && height == heights[i]) {
 				uninitialized = false;
-			} else
+			} else {
+				// The texture mustn't be in use while processing.
+				auto &context = *Context::instance;
+				context.helper->waitFrame(context.frameIdx);
+				vkQueueWaitIdle(context.graphicQueue);
 				videoTexture.tex[i]->unuse();
+			}
 		}
 	}
 	if (uninitialized) {
