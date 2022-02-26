@@ -654,12 +654,12 @@ void App::draw(int delta_time)
 	if (flagColorInverse)
 		appDraw->drawColorInverse();
 
-	//draw video frame to classical viewport
-	media->drawViewPort(coreLink->getHeading());
 	//draw text user
 	media->textDraw();
-	context.stat->capture(Capture::MEDIA_DRAW);
 	context.helper->endDraw();
+	//draw video frame to classical viewport
+	media->drawViewPort(coreLink->getHeading());
+	context.stat->capture(Capture::MEDIA_DRAW);
 
 	// Fill with black around the circle
 	appDraw->drawViewportShape();
