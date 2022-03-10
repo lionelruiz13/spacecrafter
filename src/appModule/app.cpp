@@ -605,7 +605,7 @@ void App::draw(int delta_time)
 	if (sender) {
 		sender->acquireFrame(context.frameIdx);
 	} else {
-		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 1000000, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
+		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 10000000, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
 		switch (res) {
 			case VK_SUCCESS:
 				break;
