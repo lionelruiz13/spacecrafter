@@ -80,7 +80,7 @@ void SolarSystemModule::onEnter()
 void SolarSystemModule::onExit()
 {
 	std::cout << "Je quitte InSolarSystem" << std::endl;
-	core->timeMgr->setTimeSpeed(1);
+	// core->timeMgr->setTimeSpeed(1);
     threadQueue.close();
     thread.join();
     core->milky_way->enableZodiacal(false);
