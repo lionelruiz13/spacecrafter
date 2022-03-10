@@ -285,6 +285,7 @@ public:
 
 	void load(const std::string& planetfile) {
         currentSystem->load(planetfile);
+        currentSystem->selectSystem();
     }
 
 	void loadStellar(const std::string& planetfile) {
@@ -469,7 +470,10 @@ public:
     }
 
     void updateAnchorManager() {
-	    currentSystem->getAnchorManager()->update();
+        if (inSystem)
+            currentSystem->getAnchorManager()->update();
+        else
+            galacticAnchorMgr->update();
     }
 
     bool switchToAnchor(const std::string& anchorName) {
@@ -484,10 +488,17 @@ public:
 	    return currentSystem->getAnchorManager()->loadCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + filename);
     }
 
-    void changeSystem(const std::string mode);
+    void changeSystem(const std::string &mode);
 
-    void addSystem(const std::string name, const std::string file);
+    void addSystem(const std::string &name, const std::string &file);
 
+    void loadGalacticSystem(const std::string &file);
+
+    // Enter a system (leave the galactic system)
+    void enterSystem();
+
+    // Leave a system (enter in the galactic system)
+    void leaveSystem();
 private:
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
@@ -496,6 +507,7 @@ private:
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
     std::unique_ptr<ProtoSystem> stellarSystem;
+    std::shared_ptr<AnchorManager> galacticAnchorMgr;
 
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
 
@@ -507,6 +519,7 @@ private:
     TimeMgr *timeMgr;
 
     ProtoSystem * currentSystem;
+    bool inSystem = true;
 };
 
 #endif

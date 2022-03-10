@@ -205,6 +205,16 @@ public:
 	bool alignCameraToBody(std::string name, double duration);
 
 	void displayAnchor() const;
+
+	/*
+	 *  Select the current anchor of this anchor manager
+	 */
+	void selectAnchor();
+
+	/*
+	 * Query the name of the currently selected anchor
+	 */
+	std::string querySelectedAnchorName() const;
 private:
 	//! returns the position the observer should be at the JD date
 	/*
@@ -233,7 +243,7 @@ private:
 	bool overrideRotationCondition = false;
 	float rotationMultiplierCondition = 5.0f;
 	double lastUpdate;
-
+	static double lastCorrection;
 };
 
 #endif

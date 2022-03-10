@@ -31,6 +31,7 @@
 #include <memory>
 #include "tools/init_parser.hpp"
 #include "tools/vecmath.hpp"
+#include "tools/rotator.hpp"
 #include "tools/no_copy.hpp"
 
 class Body;
@@ -49,6 +50,10 @@ public:
 
 	void setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor){
 		anchor = _anchor;
+	}
+
+	std::shared_ptr<AnchorPoint> getAnchorPoint() const {
+		return anchor;
 	}
 
 	bool isOnBody() const;
@@ -151,10 +156,24 @@ public:
 	//! move gradually to a new observation location
 	void moveTo(double lat, double lon, double alt, int duration, /*const std::string& _name,*/  bool calculate_duration=0);  // duration in ms
 
+	//! Move to quaternion angle (quaternion angle apply before every other transformations)
+	//! @param isMaxDuration is the given duration for a 180° rotation
+	void moveTo(const Vec4d &target, int duration, bool isMaxDuration = false);
+
+	//! Move to the quaternion angle relative to the current quaternion angle (quaternion angle apply before every other transformations)
+	//! @param isMaxDuration is the given duration for a 180° rotation
+	void moveRel(const Vec4d &relTarget, int duration, bool isMaxDuration = false);
+
+	//! Set quaternion angle (quaternion angle apply before every other transformations)
+	void setRotation(const Vec4d &target);
+
+	//! Set quaternion angle relative to the current quaternion angle (quaternion angle apply before every other transformations)
+	void setRelRotation(const Vec4d &relTarget);
+
 	//! for moving observer position gradually
 	void update(int delta_time);
-  
-  
+
+
 	//! returns true if we are on the named body
 	bool isOnBodyNamed(const std::string& bodyName);
 
@@ -175,6 +194,7 @@ private:
 	float move_to_coef, move_to_mult;
 
 	std::shared_ptr<AnchorPoint> anchor = nullptr;
+	Rotator<double> rotator;
 };
 
 #endif // _OBSERVER_H_

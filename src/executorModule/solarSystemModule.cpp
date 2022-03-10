@@ -74,6 +74,7 @@ void SolarSystemModule::onEnter()
 		observer->setAltitude(observer->getAltitude() *1.E6);
     thread = std::thread(&SolarSystemModule::asyncUpdateLoop, this);
     core->milky_way->enableZodiacal(true);
+    core->ssystemFactory->enterSystem();
 }
 
 void SolarSystemModule::onExit()
@@ -83,6 +84,7 @@ void SolarSystemModule::onExit()
     threadQueue.close();
     thread.join();
     core->milky_way->enableZodiacal(false);
+    core->ssystemFactory->leaveSystem();
 }
 
 

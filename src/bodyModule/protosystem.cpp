@@ -111,6 +111,8 @@ void ProtoSystem::load(const std::string& planetfile)
 				}
 			}
 		}
+		if (!bodyParams.empty())
+			addBody(bodyParams, false);  // config file bodies are not deletable
 		fileBody.close();
 	} else
 		cLog::get()->write("Unable to open file "+ planetfile, LOG_TYPE::L_ERROR);
@@ -976,4 +978,9 @@ void ProtoSystem::initialSolarSystemBodies(){
 			it->second->isHidden = it->second->initialHidden;
 		}
 	}
+}
+
+void ProtoSystem::selectSystem()
+{
+	anchorManager->selectAnchor();
 }

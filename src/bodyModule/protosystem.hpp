@@ -144,7 +144,7 @@ public:
 		return anchorManager;
 	}
 
-	std::shared_ptr<Body> getCenterObject() {
+	std::shared_ptr<Body> getCenterObject() const {
 		return centerObject;
 	}
 
@@ -169,6 +169,7 @@ public:
 	std::unique_ptr<SSystemIterator> createIterator();
 	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
 
+    void selectSystem();
 protected:
 
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss

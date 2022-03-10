@@ -28,6 +28,7 @@
 #include "bodyModule/ssystem_factory.hpp"
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
+#include "navModule/anchor_point.hpp"
 
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 {
@@ -43,6 +44,7 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
 
     ssystem = std::make_unique<SolarSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     currentSystem = ssystem.get();
+    galacticAnchorMgr = std::make_shared<AnchorManager>(observatory, navigation, currentSystem, timeMgr, currentSystem->getOrbitCreator());
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
@@ -62,25 +64,19 @@ SSystemFactory::~SSystemFactory()
 	//delete bodytrace;
 }
 
-void SSystemFactory::changeSystem(const std::string mode)
+void SSystemFactory::changeSystem(const std::string &mode)
 {
-    if (mode == "SolarSystem")
+    if (mode == "SolarSystem" || mode == "Sun")
         currentSystem = ssystem.get();
     else {
-        //auto it = std::find_if(systems.begin(), systems.end(), [mode] (std::pair<std::string, std::unique_ptr<ProtoSystem>> item) {
-        //    return (item.first == mode);
-        //});
-        auto it = systems.begin();
-        for (; it != systems.end(); it++)
-            if (it->first == mode)
-                break;
-        if (it != systems.end())
-            currentSystem = it->second.get();
-        else
-    // TODO LOG CHANGE SYSTEM
+        try {
+            currentSystem = systems.at(mode).get();
+        } catch (...) {
             return;
+        }
     }
 
+    currentSystem->selectSystem();
     ssystemColor->changeSystem(currentSystem);
     ssystemDisplay->changeSystem(currentSystem);
     ssystemScale->changeSystem(currentSystem);
@@ -88,9 +84,65 @@ void SSystemFactory::changeSystem(const std::string mode)
     ssystemTex->changeSystem(currentSystem);
 }
 
-void SSystemFactory::addSystem(const std::string name, const std::string file)
+void SSystemFactory::addSystem(const std::string &name, const std::string &file)
 {
-    std::unique_ptr<ProtoSystem> system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
+    auto &system = systems[name];
+    system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     system->load(file);
-    systems.insert(std::pair<std::string, std::unique_ptr<ProtoSystem>>(name, std::move(system)));
+}
+
+void SSystemFactory::loadGalacticSystem(const std::string &name)
+{
+    stringHash_t params;
+
+    std::ifstream file(name);
+    if (file) {
+        std::string line;
+		while(getline(file , line)) {
+            if (line.empty() || line.front() == '#')
+                continue;
+			if (line.front() != '[' ) {
+				if (line.back() == '\r')
+					line.pop_back();
+				auto pos = line.find_first_of('=');
+                if (pos != std::string::npos)
+					params[line.substr(0,pos-1)] = line.substr(pos+2);
+			} else if (!params.empty()) {
+                std::cout << "Params :\n";
+                for (auto &p : params) {
+                    std::cout << p.first << " : " << p.second << '\n';
+                }
+                params["type"] = "observatory";
+                galacticAnchorMgr->addAnchor(params);
+                params.clear();
+			}
+		}
+        if (!params.empty()) {
+            std::cout << "Params :\n";
+            for (auto &p : params) {
+                std::cout << p.first << " : " << p.second << '\n';
+            }
+            params["type"] = "observatory";
+            galacticAnchorMgr->addAnchor(params);
+        }
+		file.close();
+    } else {
+        galacticAnchorMgr->addAnchor("Sun", std::make_shared<AnchorPoint>(0, 0, 0));
+    }
+}
+
+void SSystemFactory::enterSystem()
+{
+    if (!inSystem) {
+        changeSystem(galacticAnchorMgr->querySelectedAnchorName());
+        inSystem = true;
+    }
+}
+
+void SSystemFactory::leaveSystem()
+{
+    if (inSystem) {
+        galacticAnchorMgr->selectAnchor();
+        inSystem = false;
+    }
 }

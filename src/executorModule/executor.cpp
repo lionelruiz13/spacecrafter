@@ -62,6 +62,8 @@ void Executor::updateMode(double altitude)
     if (currentMode->testValidAltitude(altitude)) {
         currentMode->onExit();
         currentMode = currentMode->getNextMode();
+        // Don't select an object from a different mode
+        core->selected_object = Object();
         currentMode->onEnter();
     }
 }
@@ -84,5 +86,7 @@ void Executor::switchMode(const std::string &mode)
 	if (modeValue =="insolarsystem" || modeValue =="in_solarsystem" ) {
 		currentMode = ssystemModule.get();
 	}
+    // Don't select an object from a different mode
+    core->selected_object = Object();
 	currentMode->onEnter();
 }

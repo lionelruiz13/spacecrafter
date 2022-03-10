@@ -59,19 +59,9 @@ void Observer::setAltitude(double a) {
 }
 
 
-Vec3d Observer::getHeliocentricPosition(double JD)const{
-	
-	Mat4d mat_local_to_earth_equ = getRotLocalToEquatorial(JD);
-	Mat4d mat_earth_equ_to_j2000 = mat_vsop87_to_j2000 * getRotEquatorialToVsop87();
-
-	Mat4d tmp = mat_j2000_to_vsop87 * 
-	    mat_earth_equ_to_j2000 *
-	    mat_local_to_earth_equ;
-
-	Mat4d mat_local_to_helio =  Mat4d::translation(getObserverCenterPoint()) * 
-		tmp * Mat4d::translation(Vec3d(0.,0., getDistanceFromCenter()));
-	
-	return mat_local_to_helio*Vec3d(0.,0.,0.);
+Vec3d Observer::getHeliocentricPosition(double JD) const
+{
+	return Mat4d::translation(getObserverCenterPoint()) * getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0., 0., getDistanceFromCenter());
 }
 
 
@@ -106,7 +96,7 @@ Mat4d Observer::getRotLocalToEquatorialFixed(double jd) const
 
 Mat4d Observer::getRotEquatorialToVsop87(void) const
 {
-	return anchor->getRotEquatorialToVsop87();
+	return anchor->getRotEquatorialToVsop87() * rotator.getCachedMatrix();
 }
 
 bool Observer::isOnBody() const{
@@ -212,6 +202,26 @@ void Observer::moveRelAlt(double alt, int delay) {
 	moveTo(latitude, longitude, altitude+alt, delay);
 }
 
+void Observer::moveTo(const Vec4d &target, int duration, bool isMaxDuration)
+{
+	rotator.moveTo(target, duration, isMaxDuration);
+}
+
+void Observer::moveRel(const Vec4d &relTarget, int duration, bool isMaxDuration)
+{
+	rotator.moveRel(relTarget, duration, isMaxDuration);
+}
+
+void Observer::setRotation(const Vec4d &target)
+{
+	rotator.setRotation(target);
+}
+
+void Observer::setRelRotation(const Vec4d &relTarget)
+{
+	rotator.setRelRotation(relTarget);
+}
+
 bool Observer::isOnBodyNamed(const std::string& bodyName){
 	
 	if(anchor == nullptr)
@@ -253,6 +263,7 @@ bool Observer::isSun() const {
 // for moving observer position gradually
 void Observer::update(int delta_time)
 {
+	rotator.update(delta_time, true);
 	if (flag_move_to) {
 		move_to_mult += move_to_coef*delta_time;
 

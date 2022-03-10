@@ -229,6 +229,8 @@ public:
 	inline const T            dot     (const Vector4<T>&)const;
 	inline const Vector4<T>   cross   (const Vector4<T>&)const;
 	inline const T            getSin  (const Vector4<T>&)const;
+	inline const Vector4<T> combineQuaternions(const Vector4<T>&) const;
+	inline const Vector4<T> inverse() const;
 	inline void toPlane(const Vector3<T>&);
 	inline void toPlane(const Vector4<T>&);
 
@@ -236,7 +238,6 @@ public:
 	inline T lengthSquared() const;
 	inline void normalize();
 	void correctW();
-
 
 	inline void transfo4d(const Mat4d&);
 	Vector4<float> convert() const;
@@ -286,6 +287,7 @@ public:
 	static Matrix4<T> getViewFromLookAt(const Matrix4<T>&m);
 	static Matrix4<T> yawPitchRoll(T const& ,T const& ,T const& );
 	static Matrix4<T> translation(const Vector3<T>&);
+	static Matrix4<T> fromQuaternion(const Vector4<T> &q);
 
 	static const Matrix4<T> rotation(const Vector3<T>&a,const Vector3<T>&b);
 	static const Matrix4<T> rotation(const Vector3<T>&, T);
@@ -304,6 +306,7 @@ public:
 	Matrix4<T> inverseUntranslated() const;
 	Matrix4<float> convert() const;
 	Matrix4<T> fastInverse() const;
+	Vector4<T> toQuaternion() const;
 	void setAsOrthonormalFromZ();
 	const Vec4f getVector(int column)const;
 
@@ -1253,6 +1256,25 @@ template<class T> const T            Vector4<T>::getSin  (const Vector4<T>&a)con
 	return this->cross(a).length();
 }
 
+//! Combine two quaternions
+//! From https://en.wikipedia.org/wiki/Quaternion#Scalar_and_vector_parts
+template<class T> const Vector4<T> Vector4<T>::combineQuaternions(const Vector4<T>&a) const
+{
+	Vector4<T> result(v[0]*a.v[0] - v[1]*a.v[1] - v[2]*a.v[2] - v[3]*a.v[3],
+		 			  v[0]*a.v[1] + a.v[0]*v[1] + v[2]*a.v[3]-v[3]*a.v[2],
+	                  v[0]*a.v[2] + a.v[0]*v[2] + v[3]*a.v[1]-v[1]*a.v[3],
+	                  v[0]*a.v[3] + a.v[0]*v[3] + v[1]*a.v[2]-v[2]*a.v[1]);
+	return result;
+}
+
+//! Inverse this quaternion
+template<class T> const Vector4<T> Vector4<T>::inverse() const
+{
+	const T tmp = 1 / (v[0]*v[0] + v[1]*v[1] + v[2]*v[2] + v[3]*v[3]);
+	Vector4<T> result(v[0] * tmp, -v[1] * tmp, -v[2] * tmp, -v[3] * tmp);
+	return result;
+}
+
 //! Puts this point to a 3D plane.
 //! @param a the 3D plane equation (without d, origin will belong to the plane.)
 template<class T> void Vector4<T>::toPlane(const Vector3<T>&a)
@@ -1301,6 +1323,7 @@ template<class T> void Vector4<T>::normalize()
 		v[3] *= s;
 	}
 }
+
 //! Set the fourth component of the vector at 1.0.
 //! This is useful after a true matrix multiplication.
 template<class T> void Vector4<T>::correctW()
@@ -2215,5 +2238,26 @@ template<class T> Matrix4<T> Matrix4<T>::inverseUntranslated() const
 				   0, 0, 0, 1);
 	return ret;
 }
+
+//! Construct rotation matrix from quaternion
+template<class T> Matrix4<T> Matrix4<T>::fromQuaternion(const Vector4<T> &q)
+{
+	const T a=q[0], b=q[1], c=q[2], d=q[3];
+	Matrix4<T> ret(a*a+b*b-c*c-d*d, 2*(a*d+b*c), 2*(b*d-a*c), 0,
+				   2*(b*c-a*d), a*a-b*b+c*c-d*d, 2*(a*b+c*d), 0,
+				   2*(a*c+b*d), 2*(c*d-a*b), a*a-b*b-c*c+d*d, 0,
+			  	   0, 0, 0, 1);
+	return ret;
+}
+
+//! Construct quaternion from rotation matrix
+//! Warning : only work with pure rotation matrix
+template<class T> Vector4<T> Matrix4<T>::toQuaternion() const
+{
+	// r4 is r*4, assume the r[0] is the biggest of the 3 values
+	T r4 = sqrt(1 + r[0] + r[5] + r[10]) * 2;
+	return Vector4<T>(r4/4, (r[2+1*4] - r[1+2*4])/r4, (r[0+2*4] - r[2+0*4])/r4, (r[1+0*4] - r[0+1*4])/r4);
+}
+
 
 #endif // _VECMATH_HPP_INCLUDED

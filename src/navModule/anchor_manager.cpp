@@ -34,6 +34,7 @@
 #include "eventModule/CoreEvent.hpp"
 #include "eventModule/event_recorder.hpp"
 
+double AnchorManager::lastCorrection = 0;
 
 /*
  * returns the position for a movement at given date
@@ -313,9 +314,8 @@ void AnchorManager::update() noexcept
 			if(!followRotation || overrideRotationCondition){
 				double correction;
 
-				correction = 
-					body->getSiderealTime(lastUpdate) - 
-					body->getSiderealTime(timeMgr->getJDay());
+				lastCorrection = body->getSiderealTime(timeMgr->getJDay());
+				correction = body->getSiderealTime(lastUpdate) - lastCorrection;
 
 				observer->setLongitude(observer->getLongitude() + correction);
 				lastUpdate = timeMgr->getJDay();
@@ -794,4 +794,38 @@ void AnchorManager::displayAnchor() const
 		std::cout << it.first << " - " << it.second->isOnBody() << " - " << it.second->getHeliocentricEclipticPos() << std::endl;
 	}
 	std::cout << " -----------------------------------------" <<std::endl;
+}
+
+void AnchorManager::selectAnchor()
+{
+	auto srcAnchor = observer->getAnchorPoint();
+	Mat4d srcMat;
+	if (srcAnchor)
+		srcMat = observer->getRotEquatorialToVsop87();
+	// Cancel last compensation
+	auto longitude = observer->getLongitude() + lastCorrection;
+	if (currentAnchor) {
+		observer->setAnchorPoint(currentAnchor);
+	} else {
+		switchToAnchor(ssystem->getCenterObject()->getEnglishName());
+	}
+	if (srcAnchor) { // Move to the new axis
+		auto quaternion = (currentAnchor->getRotEquatorialToVsop87().transpose() * srcMat).toQuaternion();
+		observer->setRelRotation(quaternion);
+		observer->moveTo({1, 0, 0, 0}, 10000, true);
+	}
+	auto tmp = dynamic_cast<AnchorPointBody *>(observer->getAnchorPoint().get());
+	lastUpdate = timeMgr->getJDay();
+	lastCorrection = (tmp) ? tmp->getBody()->getSiderealTime(lastUpdate) : 0;
+	observer->setLongitude(longitude - lastCorrection);
+	navigator->updateTransformMatrices(observer, lastUpdate);
+}
+
+std::string AnchorManager::querySelectedAnchorName() const
+{
+	for (auto &p : anchors) {
+		if (p.second == currentAnchor)
+			return p.first;
+	}
+	return {};
 }

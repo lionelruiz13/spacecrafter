@@ -283,8 +283,9 @@ void Core::init(const InitParser& conf)
 
 		ssystemFactory->anchorManagerInit(conf);
 		//TODO Oli: pense a utiliser classe de selection de fichiers.
+		ssystemFactory->loadGalacticSystem(AppSettings::Instance()->getUserDir() + "galactic.ini");
 		ssystemFactory->addSystem("Sirius", AppSettings::Instance()->getUserDir() +"sirius_system.ini");
-		ssystemFactory->addSystem("51peg", AppSettings::Instance()->getUserDir() + "51peg_system.ini");
+		ssystemFactory->addSystem("51Peg", AppSettings::Instance()->getUserDir() + "51peg_system.ini");
 		//ssystemFactory->changeSystem("51peg");
 		// Init stars
 		hip_stars->iniColorTable();
