@@ -807,7 +807,12 @@ void AnchorManager::selectAnchor()
 	if (currentAnchor) {
 		observer->setAnchorPoint(currentAnchor);
 	} else {
-		switchToAnchor(ssystem->getCenterObject()->getEnglishName());
+		if (ssystem->getCenterObject())
+			switchToAnchor(ssystem->getCenterObject()->getEnglishName());
+		else if (!switchToAnchor("Sun")) {
+			cLog::get()->write("Switch to system without center, which is invalid\n", LOG_TYPE::L_ERROR);
+			return;
+		}
 	}
 	if (srcAnchor) { // Move to the new axis
 		auto quaternion = (currentAnchor->getRotEquatorialToVsop87().transpose() * srcMat).toQuaternion();

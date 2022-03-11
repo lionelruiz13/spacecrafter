@@ -70,7 +70,7 @@ public:
 
 	//! Set selected planet by english name or "" to select none
 	void setSelected(const std::string& englishName) {
-		ssystemSelected->setSelected((englishName));
+        ssystemSelected->setSelected((englishName));
 	}
 
     //! Set selected object from its pointer
@@ -470,10 +470,7 @@ public:
     }
 
     void updateAnchorManager() {
-        if (inSystem)
-            currentSystem->getAnchorManager()->update();
-        else
-            galacticAnchorMgr->update();
+        currentSystem->getAnchorManager()->update();
     }
 
     bool switchToAnchor(const std::string& anchorName) {
@@ -494,12 +491,14 @@ public:
 
     void loadGalacticSystem(const std::string &file);
 
-    // Enter a system (leave the galactic system)
+    //! Enter a system (leave the galactic system)
     void enterSystem();
 
-    // Leave a system (enter in the galactic system)
+    //! Leave a system (enter in the galactic system)
     void leaveSystem();
 private:
+    //! Select current system
+    void selectSystem();
     std::unique_ptr<SolarSystem> ssystem;				// Manage the solar system
     std::unique_ptr<SolarSystemColor> ssystemColor;
     std::unique_ptr<SolarSystemTex> ssystemTex;
@@ -507,6 +506,8 @@ private:
     std::unique_ptr<SolarSystemSelected> ssystemSelected;
     std::unique_ptr<SolarSystemDisplay> ssystemDisplay;
     std::unique_ptr<ProtoSystem> stellarSystem;
+
+    std::unique_ptr<ProtoSystem> galacticSystem;
     std::shared_ptr<AnchorManager> galacticAnchorMgr;
 
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;

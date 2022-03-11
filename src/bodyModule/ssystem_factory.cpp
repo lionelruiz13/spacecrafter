@@ -44,19 +44,22 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
 
     ssystem = std::make_unique<SolarSystem>(objLMgr.get(), observatory, navigation, timeMgr);
     currentSystem = ssystem.get();
-    galacticAnchorMgr = std::make_shared<AnchorManager>(observatory, navigation, currentSystem, timeMgr, currentSystem->getOrbitCreator());
     ssystemColor = std::make_unique<SolarSystemColor>(ssystem.get());
     ssystemTex = std::make_unique<SolarSystemTex>(ssystem.get());
     ssystemSelected = std::make_unique<SolarSystemSelected>(ssystem.get());
     ssystemScale = std::make_unique<SolarSystemScale>(ssystem.get());
     ssystemDisplay = std::make_unique<SolarSystemDisplay>(ssystem.get());
+
     stellarSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
 
+    galacticSystem = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
+    galacticAnchorMgr = galacticSystem->getAnchorManager();
     bodytrace= std::make_shared<BodyTrace>();
 
-    observatory = observatory;
-    navigation = navigation;
-    timeMgr = timeMgr;
+    // Don't forget this-> for class variables with name of local variables
+    this->observatory = observatory;
+    this->navigation = navigation;
+    this->timeMgr = timeMgr;
 }
 
 SSystemFactory::~SSystemFactory()
@@ -75,7 +78,11 @@ void SSystemFactory::changeSystem(const std::string &mode)
             return;
         }
     }
+    selectSystem();
+}
 
+void SSystemFactory::selectSystem()
+{
     currentSystem->selectSystem();
     ssystemColor->changeSystem(currentSystem);
     ssystemDisplay->changeSystem(currentSystem);
@@ -142,7 +149,8 @@ void SSystemFactory::enterSystem()
 void SSystemFactory::leaveSystem()
 {
     if (inSystem) {
-        galacticAnchorMgr->selectAnchor();
+        currentSystem = galacticSystem.get();
+        selectSystem();
         inSystem = false;
     }
 }

@@ -185,6 +185,7 @@ void s_texture::createEmptyTex()
 		texture->depth = 1;
 		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->stagingMgr, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, "Fallback texture");
 		texture->texture->init(1, 1, image_data);
+        textureQueue.emplace(texture);
 		tex = texture;
 	} else {
 		texture = tex.lock();
