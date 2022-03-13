@@ -21,7 +21,7 @@ class CaptureMetrics;
 enum {
     PASS_BACKGROUND = 0, // multi-sample, no depth buffer
     // PASS_STAR_FBO, // star framebuffer, no depth buffer
-    PASS_MULTISAMPLE_DEPTH, // multi-sample, depth buffer
+    PASS_MULTISAMPLE_DEPTH = PASS_BACKGROUND, // multi-sample, depth buffer
     PASS_MULTISAMPLE_FRONT = PASS_MULTISAMPLE_DEPTH, // multi-sample, no depth buffer
     PASS_FOREGROUND, // single sample, no depth buffer
 };
