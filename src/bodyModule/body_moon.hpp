@@ -58,7 +58,7 @@ protected :
 
 	virtual void handleVisibilityFader(const Observer* observatory, const Projector* prj, const Navigator * nav) override;
 
-	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
 
 	virtual void drawTrail(VkCommandBuffer &cmd, const Navigator* nav, const Projector* prj) override {
 		return;

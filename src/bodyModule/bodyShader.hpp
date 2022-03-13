@@ -55,6 +55,7 @@ class Set;
 typedef struct {
 	PipelineLayout *layout;
 	Pipeline *pipeline;
+	Pipeline *pipelineNoDepth = nullptr;
 } drawState_t;
 
 class BodyShader {
@@ -64,7 +65,6 @@ public:
 	~BodyShader() {};
 
 	static void createShader();
-	// static void deleteShader();
 
 	static drawState_t *getShaderBump() {
 		return &shaderBump;
@@ -89,18 +89,6 @@ public:
 	static drawState_t *getShaderNormalTes() {
 		return &shaderNormalTes;
 	};
-
-	// static shaderProgram * getShaderMoonNormal() {
-	// 	return shaderMoonNormal.get();
-	// };
-
-	// static shaderProgram * getShaderMoonNight() {
-	// 	return shaderMoonNight.get();
-	// };
-
-	// static shaderProgram * getShaderMoonBump() {
-	// 	return shaderMoonBump.get();
-	// };
 
 	static drawState_t *getShaderMoonNormalTes() {
 		return &myMoon;

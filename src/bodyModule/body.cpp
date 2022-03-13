@@ -851,7 +851,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
     VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
 	if(isVisibleOnScreen()) {
-        if (needClearDepthBuffer) {
+        if (needClearDepthBuffer || (!depthTest && hasRings())) {
             VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
             VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
             vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
@@ -863,15 +863,17 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
             Halo::nextDraw(cmd);
         }
 		if(hasRings()) {
+            // Depth test is forced for ringed body
             drawAxis(cmd, prj,mat);
-			drawBody(cmd, prj, nav, mat, screen_sz);
+			drawBody(cmd, prj, nav, mat, screen_sz, true);
 			drawRings(cmd, prj,observatory,mat,screen_sz,lightDirection,eye_planet,initialRadius);
 		} else {
             // depth test if drawAxis (drawAxis if depthTest and Axis::actualdrawaxis)
-            // if(!depthTest) //
+            // if(!depthTest)
             //     cLog::get()->write("Failed to disable depth test", LOG_TYPE::L_WARNING);
-            drawAxis(cmd, prj,mat);
-            drawBody(cmd, prj, nav, mat, screen_sz);
+            if (depthTest)
+                drawAxis(cmd, prj,mat);
+            drawBody(cmd, prj, nav, mat, screen_sz, depthTest);
 		}
 		drawn = true;
 	} else {

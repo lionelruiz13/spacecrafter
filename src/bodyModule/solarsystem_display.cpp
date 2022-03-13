@@ -201,7 +201,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 		}
 		if (dist > (*dbiter).zfar || dist < (*dbiter).znear) {
 			// don't use depth test (outside buckets)
-			//~ std::cout << "Outside bucket pour " << (*iter)->englishName << std::endl;
+			// std::cout << "Outside bucket pour " << it->current()->body->getEnglishName() << std::endl;
 			if ( depthTest )
 				prj->setClippingPlanes(z_near, z_far);
 			depthTest = false;
@@ -213,10 +213,14 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 			depthTest = true;
 			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
 		}
-        if (newBucket) {
+        if (newBucket && depthTest) {
             newBucket = !it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, true);
-        } else
-		      it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, false);
+            // if (!newBucket)
+            //     std::cout << "Bucket cleared by " << it->current()->body->getEnglishName() << ", as usual.\n";
+        } else {
+            it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, false);
+                // std::cout << "Draw outside bucket for " << it->current()->body->getEnglishName() << ", is it what you expect ?\n";
+        }
 	}
 	Halo::endDraw();
 	prj->setClippingPlanes(z_near,z_far);  // Restore old clipping planes

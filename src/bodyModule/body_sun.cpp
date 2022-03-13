@@ -200,14 +200,15 @@ void Sun::createSunShader()
 
     pipelineSun = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutSun.get());
     pipelineSun->setBlendMode(BLEND_NONE);
-    //pipelineSun->setDepthStencilMode();
     pipelineSun->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
     pipelineSun->setCullMode(true);
     currentObj->bind(*pipelineSun);
     pipelineSun->removeVertexEntry(2);
     pipelineSun->bindShader("body_sun.vert.spv");
     pipelineSun->bindShader("body_sun.frag.spv");
-    pipelineSun->build();
+    pipelineSunNoDepth = std::unique_ptr<Pipeline>(pipelineSun->clone("Body Sun noDepth"));
+    pipelineSunNoDepth->setDepthStencilMode();
+    pipelineSun->build("Body Sun");
 }
 
 // Draw the Sun and all the related infos : name, circle etc..
@@ -277,8 +278,9 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
             context.helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
             Halo::nextDraw(cmd);
         }
-		axis->drawAxis(cmd, prj, mat);
-		drawBody(cmd, prj, nav, mat, screen_sz);
+        if (depthTest)
+		      axis->drawAxis(cmd, prj, mat);
+		drawBody(cmd, prj, nav, mat, screen_sz, depthTest);
         frame.compile(cmd);
         frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 		drawn = true;
@@ -324,7 +326,7 @@ Set &Sun::getSet(float screen_sz)
     return bigSet ? *bigSet : *descriptorSetSun;
 }
 
-void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     Context &context = *Context::instance;
     if (changed)
@@ -334,7 +336,10 @@ void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator *
     *uclipping_fov = prj->getClippingFov();
     *uPlanetScaledRadius = radius;
 
-    pipelineSun->bind(cmd);
+    if (depthTest)
+        pipelineSun->bind(cmd);
+    else
+        pipelineSunNoDepth->bind(cmd);
     currentObj->bind(cmd);
     layoutSun->bindSets(cmd, {getSet(screen_sz), *context.uboSet});
 	currentObj->draw(cmd, screen_sz);

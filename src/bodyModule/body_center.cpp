@@ -200,14 +200,15 @@ void Center::createSunShader()
 
     pipelineSun = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutSun.get());
     pipelineSun->setBlendMode(BLEND_NONE);
-    //pipelineSun->setDepthStencilMode();
     pipelineSun->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
     pipelineSun->setCullMode(true);
     currentObj->bind(*pipelineSun);
     pipelineSun->removeVertexEntry(2);
     pipelineSun->bindShader("body_sun.vert.spv");
     pipelineSun->bindShader("body_sun.frag.spv");
-    pipelineSun->build();
+    pipelineSunNoDepth = std::unique_ptr<Pipeline>(pipelineSun->clone("Body Center noDepth"));
+    pipelineSunNoDepth->setDepthStencilMode();
+    pipelineSun->build("Body Center");
 }
 
 // Draw the Center and all the related infos : name, circle etc..
@@ -277,8 +278,9 @@ bool Center::drawGL(Projector* prj, const Navigator* nav, const Observer* observ
             context.helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
             Halo::nextDraw(cmd);
         }
-		axis->drawAxis(cmd, prj, mat);
-		drawBody(cmd, prj, nav, mat, screen_sz);
+        if (depthTest)
+		      axis->drawAxis(cmd, prj, mat);
+		drawBody(cmd, prj, nav, mat, screen_sz, depthTest);
         frame.compile(cmd);
         frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 		drawn = true;
@@ -324,7 +326,7 @@ Set &Center::getSet(float screen_sz)
     return bigSet ? *bigSet : *descriptorSetSun;
 }
 
-void Center::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void Center::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     Context &context = *Context::instance;
     if (changed)
@@ -334,7 +336,10 @@ void Center::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigato
     *uclipping_fov = prj->getClippingFov();
     *uPlanetScaledRadius = radius;
 
-    pipelineSun->bind(cmd);
+    if (depthTest)
+        pipelineSun->bind(cmd);
+    else
+        pipelineSunNoDepth->bind(cmd);
     currentObj->bind(cmd);
     layoutSun->bindSets(cmd, {getSet(screen_sz), *context.uboSet});
 	currentObj->draw(cmd, screen_sz);

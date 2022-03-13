@@ -234,12 +234,15 @@ void Moon::selectShader()
 	//}
 }
 
-void Moon::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void Moon::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     if (changed)
         defineSet();
 
-    drawState->pipeline->bind(cmd);
+    if (depthTest)
+        drawState->pipeline->bind(cmd);
+    else
+        drawState->pipelineNoDepth->bind(cmd);
     currentObj->bind(cmd);
     drawState->layout->bindSets(cmd, {getSet(screen_sz), *Context::instance->uboSet});
 

@@ -99,7 +99,7 @@ void Artificial::createSC_context()
     initialized = true;
 }
 
-void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     createSC_context();
 
@@ -110,7 +110,7 @@ void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navi
     uLight->get().Intensity =Vec3f(1.0, 1.0, 1.0);
     drawState->layout->bindSet(cmd, *context.uboSet);
     drawState->layout->bindSet(cmd, *set, 2);
-    obj3D->record(cmd, drawState->pipeline, drawState->layout);
+    obj3D->record(cmd, depthTest ? drawState->pipeline : drawState->pipelineNoDepth, drawState->layout);
     uProj->get().ModelViewMatrix = matrix;
     uProj->get().clipping_fov = prj->getClippingFov();
     uLight->get().Position = eye_sun;

@@ -463,7 +463,7 @@ protected:
 	}
 
 	// Draw the 3D body: pshere or model3d
-	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz) = 0;
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest) = 0;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
 

@@ -41,11 +41,7 @@ drawState_t BodyShader::myEarth;
 drawState_t BodyShader::shaderRinged;
 drawState_t BodyShader::shaderNormal;
 drawState_t BodyShader::shaderNormalTes;
-// std::unique_ptr<shaderProgram> BodyShader::shaderMoonNight;
-// std::unique_ptr<shaderProgram> BodyShader::shaderMoonNormal;
-// std::unique_ptr<shaderProgram> BodyShader::shaderMoonBump;
 drawState_t BodyShader::myMoon;
-
 drawState_t BodyShader::shaderArtificial;
 
 
@@ -75,7 +71,10 @@ void BodyShader::createShader()
 	shaderNight.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderNight.pipeline->bindShader("body_night.vert.spv");
 	shaderNight.pipeline->bindShader("body_night.frag.spv");
-	shaderNight.pipeline->build();
+	shaderNight.pipelineNoDepth = shaderNight.pipeline->clone("shaderNight noDepth");
+	shaderNight.pipelineNoDepth->setDepthStencilMode();
+	context.pipelines.emplace_back(shaderNight.pipelineNoDepth);
+	shaderNight.pipeline->build("shaderNight");
 
 	// ========== my_earth ========== //
 	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
@@ -94,9 +93,9 @@ void BodyShader::createShader()
 	myEarth.layout->setGlobalPipelineLayout(context.layouts.front().get());
 	myEarth.layout->build();
 
-	myEarth.pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarth.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarth.layout}};
+	myEarth.pipeline = new Pipeline[4]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarth.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarth.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarth.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, myEarth.layout}};
 	context.pipelineArray.push_back(myEarth.pipeline);
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 4; ++i) {
 		myEarth.pipeline[i].setCullMode(true);
 		myEarth.pipeline[i].setFrontFace(); // Body with tesselation don't have the same front face...
 		myEarth.pipeline[i].setBlendMode(BLEND_NONE);
@@ -108,10 +107,15 @@ void BodyShader::createShader()
 		myEarth.pipeline[i].bindShader("body_tes.tese.spv");
 		myEarth.pipeline[i].bindShader("my_earth.geom.spv");
 		myEarth.pipeline[i].bindShader("my_earth.frag.spv");
-		VkBool32 Clouds = (i == 1);
+		VkBool32 Clouds = (i & 1);
 		myEarth.pipeline[i].setSpecializedConstant(1, &Clouds, sizeof(Clouds));
-		myEarth.pipeline[i].build();
+		if (i & 2) {
+			myEarth.pipeline[i].setDepthStencilMode();
+			myEarth.pipeline[i].build("myEarth noDepth");
+		} else
+			myEarth.pipeline[i].build("myEarth");
 	}
+	myEarth.pipelineNoDepth = myEarth.pipeline + 2;
 
 	// ========== body_bump ========== //
 	shaderBump.layout = new PipelineLayout(vkmgr);
@@ -134,7 +138,10 @@ void BodyShader::createShader()
 	shaderBump.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderBump.pipeline->bindShader("body_bump.vert.spv");
 	shaderBump.pipeline->bindShader("body_bump.frag.spv");
-	shaderBump.pipeline->build();
+	shaderBump.pipelineNoDepth = shaderBump.pipeline->clone("shaderBump noDepth");
+	shaderBump.pipelineNoDepth->setDepthStencilMode();
+	context.pipelines.emplace_back(shaderBump.pipelineNoDepth);
+	shaderBump.pipeline->build("shaderBump");
 
 	// ========== body_ringed ========== //
 	shaderRinged.layout = new PipelineLayout(vkmgr);
@@ -158,7 +165,7 @@ void BodyShader::createShader()
 	shaderRinged.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderRinged.pipeline->bindShader("body_ringed.vert.spv");
 	shaderRinged.pipeline->bindShader("body_ringed.frag.spv");
-	shaderRinged.pipeline->build();
+	shaderRinged.pipeline->build("shaderRinged");
 
 	// ========== body_normal ========== //
 	shaderNormal.layout = new PipelineLayout(vkmgr);
@@ -179,7 +186,10 @@ void BodyShader::createShader()
 	shaderNormal.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderNormal.pipeline->bindShader("body_normal.vert.spv");
 	shaderNormal.pipeline->bindShader("body_normal.frag.spv");
-	shaderNormal.pipeline->build();
+	shaderNormal.pipelineNoDepth = shaderNormal.pipeline->clone("shaderNormal noDepth");
+	shaderNormal.pipelineNoDepth->setDepthStencilMode();
+	context.pipelines.emplace_back(shaderNormal.pipelineNoDepth);
+	shaderNormal.pipeline->build("shaderNormal");
 
 	// ========== body_normal_tes ========== //
 	shaderNormalTes.layout = new PipelineLayout(vkmgr);
@@ -207,7 +217,10 @@ void BodyShader::createShader()
 	shaderNormalTes.pipeline->bindShader("body_tes.tese.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.geom.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.frag.spv");
-	shaderNormalTes.pipeline->build();
+	shaderNormalTes.pipelineNoDepth = shaderNormalTes.pipeline->clone("shaderNormalTes noDepth");
+	shaderNormalTes.pipelineNoDepth->setDepthStencilMode();
+	context.pipelines.emplace_back(shaderNormalTes.pipelineNoDepth);
+	shaderNormalTes.pipeline->build("shaderNormalTes");
 
 	// ========== body_artificial ========== //
 	shaderArtificial.layout = new PipelineLayout(vkmgr);
@@ -222,9 +235,9 @@ void BodyShader::createShader()
 	shaderArtificial.layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 44);
 	shaderArtificial.layout->build();
 
-	shaderArtificial.pipeline = new Pipeline[2]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}};
+	shaderArtificial.pipeline = new Pipeline[4]{{vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}, {vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, shaderArtificial.layout}};
 	context.pipelineArray.push_back(shaderArtificial.pipeline);
-	for (short i = 0; i < 2; ++i) {
+	for (short i = 0; i < 4; ++i) {
 		shaderArtificial.pipeline[i].setCullMode(true);
 		shaderArtificial.pipeline[i].setBlendMode(BLEND_NONE);
 		shaderArtificial.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
@@ -232,10 +245,16 @@ void BodyShader::createShader()
 		shaderArtificial.pipeline[i].bindShader("body_artificial.vert.spv");
 		shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
 		shaderArtificial.pipeline[i].bindShader("body_artificial.frag.spv");
-		VkBool32 useTexture = (i == 0);
+		VkBool32 useTexture = !(i & 1);
 		shaderArtificial.pipeline[i].setSpecializedConstant(0, &useTexture, sizeof(useTexture));
-		shaderArtificial.pipeline[i].build();
+		if (i & 2)
+			shaderArtificial.pipeline[i].setDepthStencilMode();
 	}
+	shaderArtificial.pipeline[0].build("shaderArtificial textured");
+	shaderArtificial.pipeline[1].build("shaderArtificial colored");
+	shaderArtificial.pipelineNoDepth = shaderArtificial.pipeline + 2;
+	shaderArtificial.pipelineNoDepth[0].build("shaderArtificial textured noDepth");
+	shaderArtificial.pipelineNoDepth[1].build("shaderArtificial colored noDepth");
 
 	// ========== my_moon ========== //
 	myMoon.layout = new PipelineLayout(vkmgr);
@@ -264,322 +283,8 @@ void BodyShader::createShader()
 	myMoon.pipeline->bindShader("body_tes.tese.spv");
 	myMoon.pipeline->bindShader("my_moon.geom.spv");
 	myMoon.pipeline->bindShader("my_moon.frag.spv");
-	myMoon.pipeline->build();
-
-	// shaderNight = std::make_unique<shaderProgram>();
-	// shaderNight->init( "body_night.vert", "body_night.frag");
-	// shaderNight->setUniformLocation("Clouds");
-	// shaderNight->setUniformLocation("CloudNormalTexture");
-	// shaderNight->setUniformLocation("CloudTexture");
-
-	//commum
-	// shaderNight->setUniformLocation("planetRadius");
-	// shaderNight->setUniformLocation("planetScaledRadius");
-	// shaderNight->setUniformLocation("planetOneMinusOblateness");
-	//
-	// shaderNight->setUniformLocation("SunHalfAngle");
-	// shaderNight->setUniformLocation("LightPosition");
-	// shaderNight->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderNight->setUniformLocation("ModelViewMatrix");
-	// shaderNight->setUniformLocation("NormalMatrix");
-	// shaderNight->setUniformLocation("ViewProjection");
-	// shaderNight->setUniformLocation("Model");
-	//
-	// shaderNight->setUniformLocation("MoonPosition1");
-	// shaderNight->setUniformLocation("MoonRadius1");
-	// shaderNight->setUniformLocation("MoonPosition2");
-	// shaderNight->setUniformLocation("MoonRadius2");
-	// shaderNight->setUniformLocation("MoonPosition3");
-	// shaderNight->setUniformLocation("MoonRadius3");
-	// shaderNight->setUniformLocation("MoonPosition4");
-	// shaderNight->setUniformLocation("MoonRadius4");
-	//
-	// shaderNight->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderNight->setUniformLocation("clipping_fov");
-
-	// shaderMoonNight = std::make_unique<shaderProgram>();
-	// shaderMoonNight->init( "body_moon_night.vert", "body_moon_night.frag");
-	// // shaderMoonNight->setUniformLocation("Clouds");
-	// // shaderMoonNight->setUniformLocation("CloudNormalTexture");
-	// // shaderMoonNight->setUniformLocation("CloudTexture");
-
-	// //commum
-	// shaderMoonNight->setUniformLocation("planetRadius");
-	// shaderMoonNight->setUniformLocation("planetScaledRadius");
-	// shaderMoonNight->setUniformLocation("planetOneMinusOblateness");
-
-	// shaderMoonNight->setUniformLocation("SunHalfAngle");
-	// shaderMoonNight->setUniformLocation("LightPosition");
-	// shaderMoonNight->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderMoonNight->setUniformLocation("ModelViewMatrix");
-	// shaderMoonNight->setUniformLocation("NormalMatrix");
-	// shaderMoonNight->setUniformLocation("ViewProjection");
-	// shaderMoonNight->setUniformLocation("Model");
-
-	// shaderMoonNight->setUniformLocation("MoonPosition1");
-	// shaderMoonNight->setUniformLocation("MoonRadius1");
-
-	// shaderMoonNight->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderMoonNight->setUniformLocation("clipping_fov");
-
-	// myEarth= std::make_unique<shaderProgram>();
-	// myEarth->init( "my_earth.vert", "my_earth.tesc","my_earth.tese", "my_earth.geom", "my_earth.frag");
-	// // myEarth->setUniformLocation("Clouds");
-	// // myEarth->setUniformLocation("CloudNormalTexture");
-	// // myEarth->setUniformLocation("CloudTexture");
-	// myEarth->setUniformLocation("TesParam");
-	//
-	// //commum
-	// myEarth->setUniformLocation("planetRadius");
-	// myEarth->setUniformLocation("planetScaledRadius");
-	// myEarth->setUniformLocation("planetOneMinusOblateness");
-	//
-	// myEarth->setUniformLocation("SunHalfAngle");
-	// myEarth->setUniformLocation("LightPosition");
-	// myEarth->setUniformLocation("ModelViewProjectionMatrix");
-	// myEarth->setUniformLocation("ModelViewMatrix");
-	// myEarth->setUniformLocation("NormalMatrix");
-	// myEarth->setUniformLocation("ViewProjection");
-	// myEarth->setUniformLocation("Model");
-	//
-	// myEarth->setUniformLocation("MoonPosition1");
-	// myEarth->setUniformLocation("MoonRadius1");
-	// myEarth->setUniformLocation("MoonPosition2");
-	// myEarth->setUniformLocation("MoonRadius2");
-	// myEarth->setUniformLocation("MoonPosition3");
-	// myEarth->setUniformLocation("MoonRadius3");
-	// myEarth->setUniformLocation("MoonPosition4");
-	// myEarth->setUniformLocation("MoonRadius4");
-	//
-	// //fisheye
-	// myEarth->setUniformLocation("inverseModelViewProjectionMatrix");
-	// myEarth->setUniformLocation("clipping_fov");
-	//
-	// shaderBump = std::make_unique<shaderProgram>();
-	// shaderBump->init( "body_bump.vert", "body_bump.frag");
-	// shaderBump->setUniformLocation("UmbraColor"); // custom frag
-	//
-	// //commum
-	// shaderBump->setUniformLocation("planetRadius");
-	// shaderBump->setUniformLocation("planetScaledRadius");
-	// shaderBump->setUniformLocation("planetOneMinusOblateness");
-	//
-	// shaderBump->setUniformLocation("SunHalfAngle");
-	// shaderBump->setUniformLocation("LightPosition");
-	// shaderBump->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderBump->setUniformLocation("ModelViewMatrix");
-	// shaderBump->setUniformLocation("NormalMatrix");
-	//
-	// shaderBump->setUniformLocation("MoonPosition1");
-	// shaderBump->setUniformLocation("MoonRadius1");
-	// shaderBump->setUniformLocation("MoonPosition2");
-	// shaderBump->setUniformLocation("MoonRadius2");
-	// shaderBump->setUniformLocation("MoonPosition3");
-	// shaderBump->setUniformLocation("MoonRadius3");
-	// shaderBump->setUniformLocation("MoonPosition4");
-	// shaderBump->setUniformLocation("MoonRadius4");
-	//
-	// //fisheye
-	// shaderBump->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderBump->setUniformLocation("clipping_fov");
-	//
-	// shaderRinged = std::make_unique<shaderProgram>();
-	// shaderRinged->init( "body_ringed.vert", "body_ringed.frag");
-	// shaderRinged->setUniformLocation("RingInnerRadius"); // custom frag
-	// shaderRinged->setUniformLocation("RingOuterRadius"); // custom frag
-	// //shaderRinged->setUniformLocation("UmbraColor");
-	//
-	// //commum
-	// shaderRinged->setUniformLocation("planetRadius");
-	// shaderRinged->setUniformLocation("planetScaledRadius");
-	// shaderRinged->setUniformLocation("planetOneMinusOblateness");
-	//
-	// shaderRinged->setUniformLocation("SunHalfAngle");
-	// shaderRinged->setUniformLocation("LightPosition");
-	// shaderRinged->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderRinged->setUniformLocation("ModelViewMatrix");
-	// shaderRinged->setUniformLocation("ModelViewMatrixInverse"); // custom vert
-	// shaderRinged->setUniformLocation("NormalMatrix");
-	//
-	// shaderRinged->setUniformLocation("MoonPosition1");
-	// shaderRinged->setUniformLocation("MoonRadius1");
-	// shaderRinged->setUniformLocation("MoonPosition2");
-	// shaderRinged->setUniformLocation("MoonRadius2");
-	// shaderRinged->setUniformLocation("MoonPosition3");
-	// shaderRinged->setUniformLocation("MoonRadius3");
-	// shaderRinged->setUniformLocation("MoonPosition4");
-	// shaderRinged->setUniformLocation("MoonRadius4");
-	//
-	// //fisheye
-	// shaderRinged->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderRinged->setUniformLocation("clipping_fov");
-	//
-	// shaderNormal = std::make_unique<shaderProgram>();
-	// shaderNormal->init("body_normal.vert", "body_normal.frag");
-	// //shaderNormal->setUniformLocation("UmbraColor");
-	//
-	// //commum
-	// shaderNormal->setUniformLocation("planetRadius");
-	// shaderNormal->setUniformLocation("planetScaledRadius");
-	// shaderNormal->setUniformLocation("planetOneMinusOblateness");
-	//
-	// shaderNormal->setUniformLocation("SunHalfAngle");
-	// shaderNormal->setUniformLocation("LightPosition");
-	// // shaderNormal->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderNormal->setUniformLocation("ModelViewMatrix");
-	// shaderNormal->setUniformLocation("NormalMatrix");
-	//
-	// shaderNormal->setUniformLocation("MoonPosition1");
-	// shaderNormal->setUniformLocation("MoonRadius1");
-	// shaderNormal->setUniformLocation("MoonPosition2");
-	// shaderNormal->setUniformLocation("MoonRadius2");
-	// shaderNormal->setUniformLocation("MoonPosition3");
-	// shaderNormal->setUniformLocation("MoonRadius3");
-	// shaderNormal->setUniformLocation("MoonPosition4");
-	// shaderNormal->setUniformLocation("MoonRadius4");
-	//
-	// //fisheye
-	// // shaderNormal->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderNormal->setUniformLocation("clipping_fov");
-	//
-	// shaderNormalTes = std::make_unique<shaderProgram>();
-	// shaderNormalTes->init( "body_normal_tes.vert", "body_normal_tes.tesc", "body_normal_tes.tese", "body_normal_tes.geom", "body_normal_tes.frag");
-	// //shaderNormalTes->setUniformLocation("UmbraColor");
-	// shaderNormalTes->setUniformLocation("TesParam");
-	//
-	// //commum
-	// shaderNormalTes->setUniformLocation("planetRadius");
-	// shaderNormalTes->setUniformLocation("planetScaledRadius");
-	// shaderNormalTes->setUniformLocation("planetOneMinusOblateness");
-	//
-	// shaderNormalTes->setUniformLocation("SunHalfAngle");
-	// shaderNormalTes->setUniformLocation("LightPosition");
-	// shaderNormalTes->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderNormalTes->setUniformLocation("ModelViewMatrix");
-	// shaderNormalTes->setUniformLocation("NormalMatrix");
-	// shaderNormalTes->setUniformLocation("ViewProjection");
-	// shaderNormalTes->setUniformLocation("Model");
-	//
-	// shaderNormalTes->setUniformLocation("MoonPosition1");
-	// shaderNormalTes->setUniformLocation("MoonRadius1");
-	// shaderNormalTes->setUniformLocation("MoonPosition2");
-	// shaderNormalTes->setUniformLocation("MoonRadius2");
-	// shaderNormalTes->setUniformLocation("MoonPosition3");
-	// shaderNormalTes->setUniformLocation("MoonRadius3");
-	// shaderNormalTes->setUniformLocation("MoonPosition4");
-	// shaderNormalTes->setUniformLocation("MoonRadius4");
-	//
-	// //fisheye
-	// shaderNormalTes->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderNormalTes->setUniformLocation("clipping_fov");
-
-
-
-	// shaderArtificial = std::make_unique<shaderProgram>();
-	// shaderArtificial->init( "body_artificial.vert", "body_artificial.geom", "body_artificial.frag");
-	//
-	// //commum
-	// shaderArtificial->setUniformLocation("radius");
-	// shaderArtificial->setUniformLocation("useTexture");
-	// shaderArtificial->setUniformLocation("ProjectionMatrix");
-	// shaderArtificial->setUniformLocation("ModelViewMatrix");
-	// shaderArtificial->setUniformLocation("NormalMatrix");
-	// shaderArtificial->setUniformLocation("MVP");
-	//
-	// shaderArtificial->setUniformLocation("Light.Position");
-	// shaderArtificial->setUniformLocation("Light.Intensity");
-	// shaderArtificial->setUniformLocation("Material.Ka");
-	// shaderArtificial->setUniformLocation("Material.Kd");
-	// shaderArtificial->setUniformLocation("Material.Ks");
-	// shaderArtificial->setUniformLocation("Material.Ns");
-	//
-	// //fisheye
-	// shaderArtificial->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderArtificial->setUniformLocation("clipping_fov");
-
-
-	// shaderMoonBump = std::make_unique<shaderProgram>();
-	// shaderMoonBump->init( "moon_bump.vert","", "","", "moon_bump.frag");
-	// shaderMoonBump->setUniformLocation("UmbraColor");
-	// //commum
-	// shaderMoonBump->setUniformLocation("planetRadius");
-	// shaderMoonBump->setUniformLocation("planetScaledRadius");
-	// shaderMoonBump->setUniformLocation("planetOneMinusOblateness");
-
-	// shaderMoonBump->setUniformLocation("SunHalfAngle");
-	// shaderMoonBump->setUniformLocation("LightPosition");
-	// shaderMoonBump->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderMoonBump->setUniformLocation("ModelViewMatrix");
-	// shaderMoonBump->setUniformLocation("NormalMatrix");
-
-	// shaderMoonBump->setUniformLocation("MoonPosition1");
-	// shaderMoonBump->setUniformLocation("MoonRadius1");
-
-	// //fisheye
-	// shaderMoonBump->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderMoonBump->setUniformLocation("clipping_fov");
-
-
-
-	// myMoon = std::make_unique<shaderProgram>();
-	// myMoon->init( "my_moon.vert","my_moon.tesc", "my_moon.tese","my_moon.geom", "my_moon.frag");
-	// myMoon->setUniformLocation("UmbraColor");
-	// myMoon->setUniformLocation("TesParam");
-	//
-	// //commum
-	// myMoon->setUniformLocation("planetRadius");
-	// myMoon->setUniformLocation("planetScaledRadius");
-	// myMoon->setUniformLocation("planetOneMinusOblateness");
-	//
-	// myMoon->setUniformLocation("SunHalfAngle");
-	// myMoon->setUniformLocation("LightPosition");
-	// myMoon->setUniformLocation("ModelViewProjectionMatrix");
-	// myMoon->setUniformLocation("ModelViewMatrix");
-	// myMoon->setUniformLocation("NormalMatrix");
-	//
-	// myMoon->setUniformLocation("MoonPosition1");
-	// myMoon->setUniformLocation("MoonRadius1");
-	//
-	// //fisheye
-	// myMoon->setUniformLocation("inverseModelViewProjectionMatrix");
-	// myMoon->setUniformLocation("clipping_fov");
-
-
-	// shaderMoonNormal = std::make_unique<shaderProgram>();
-	// shaderMoonNormal->init( "moon_normal.vert", "moon_normal.frag");
-	// //shaderMoonNormal->setUniformLocation("UmbraColor");
-
-	// //commum
-	// shaderMoonNormal->setUniformLocation("planetRadius");
-	// shaderMoonNormal->setUniformLocation("planetScaledRadius");
-	// shaderMoonNormal->setUniformLocation("planetOneMinusOblateness");
-
-	// shaderMoonNormal->setUniformLocation("SunHalfAngle");
-	// shaderMoonNormal->setUniformLocation("LightPosition");
-	// shaderMoonNormal->setUniformLocation("ModelViewProjectionMatrix");
-	// shaderMoonNormal->setUniformLocation("ModelViewMatrix");
-	// shaderMoonNormal->setUniformLocation("NormalMatrix");
-
-	// shaderMoonNormal->setUniformLocation("MoonPosition1");
-	// shaderMoonNormal->setUniformLocation("MoonRadius1");
-
-	// //fisheye
-	// shaderMoonNormal->setUniformLocation("inverseModelViewProjectionMatrix");
-	// shaderMoonNormal->setUniformLocation("clipping_fov");
+	myMoon.pipelineNoDepth = myMoon.pipeline->clone("myMoon noDepth");
+	myMoon.pipelineNoDepth->setDepthStencilMode();
+	context.pipelines.emplace_back(myMoon.pipelineNoDepth);
+	myMoon.pipeline->build("myMoon");
 }
-
-
-// void BodyShader::deleteShader()
-// {
-// 	if (shaderNight) delete shaderNight;
-// 	if (shaderMoonNight) delete shaderMoonNight;
-// 	if (myEarth) delete myEarth;
-// 	if (shaderBump) delete shaderBump;
-// 	if (shaderRinged) delete shaderRinged;
-// 	if (shaderNormal) delete shaderNormal;
-
-// 	if (shaderArtificial) delete shaderArtificial;
-// 	if (shaderMoonBump) delete shaderMoonBump;
-// 	if (myMoon) delete myMoon;
-// 	if (shaderMoonNormal) delete shaderMoonNormal;
-// }

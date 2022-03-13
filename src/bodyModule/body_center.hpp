@@ -79,7 +79,7 @@ protected:
 	// Draw the big halo
 	void drawBigHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
 
-	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
 
 	void createHaloShader(float viewport_y);
 	void createSunShader();
@@ -97,7 +97,7 @@ protected:
 	std::unique_ptr<VertexArray> m_bigHaloGL;
 	std::unique_ptr<VertexBuffer> haloBuffer;
 	Vec2f *screenPosF = nullptr;
-	std::unique_ptr<Pipeline> pipelineBigHalo, pipelineSun;
+	std::unique_ptr<Pipeline> pipelineBigHalo, pipelineSun, pipelineSunNoDepth;
 	std::unique_ptr<PipelineLayout> layoutBigHalo, layoutSun;
 	std::unique_ptr<Set> descriptorSetBigHalo;
 	std::unique_ptr<Set> descriptorSetSun;

@@ -55,7 +55,7 @@ public:
 protected :
 	void createSC_context();
 
-	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz);
+	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)override {
 		return;

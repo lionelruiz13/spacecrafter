@@ -271,11 +271,14 @@ double BigBody::calculateBoundingRadius()
 	return boundingRadius;
 }
 
-void BigBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz)
+void BigBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     if (changed)
         selectShader();
-    drawState->pipeline[pipelineOffset].bind(cmd);
+    if (depthTest)
+        drawState->pipeline[pipelineOffset].bind(cmd);
+    else
+        drawState->pipelineNoDepth[pipelineOffset].bind(cmd);
     currentObj->bind(cmd);
     drawState->layout->bindSets(cmd, {getSet(screen_sz), *Context::instance->uboSet});
 
