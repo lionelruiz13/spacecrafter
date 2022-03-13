@@ -496,6 +496,9 @@ public:
 
     //! Leave a system (enter in the galactic system)
     void leaveSystem();
+
+    //! Return the selected anchor name
+    std::string querySelectedAnchorName();
 private:
     //! Select current system
     void selectSystem();

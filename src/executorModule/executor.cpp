@@ -33,13 +33,16 @@ Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
     observer = _observer;
 
     ssystemModule = std::make_unique<SolarSystemModule>(core, observer);
+    stellarSystemModule = std::make_unique<StellarSystemModule>(core, observer);
     inGalaxyModule = std::make_unique<InGalaxyModule>(core, observer);
     inUniverseModule = std::make_unique<InUniverseModule>(core, observer);
     //inPauseModule = std::make_unique<InPauseModule>(core, observer);
     currentMode = ssystemModule.get();
 
     ssystemModule->defineUpMode(inGalaxyModule.get());
+    stellarSystemModule->defineUpMode(inGalaxyModule.get());
     inGalaxyModule->defineDownMode(ssystemModule.get());
+    inGalaxyModule->defineDownModeAlt(stellarSystemModule.get());
     inGalaxyModule->defineUpMode(inUniverseModule.get());
     inUniverseModule->defineDownMode(inGalaxyModule.get());
     currentMode->onEnter();
@@ -85,7 +88,10 @@ void Executor::switchMode(const std::string &mode)
 	} else
 	if (modeValue =="insolarsystem" || modeValue =="in_solarsystem" ) {
 		currentMode = ssystemModule.get();
-	}
+	} else
+    if (modeValue == "instellarsystem" || modeValue == "in_stellarsystem") {
+        currentMode = stellarSystemModule.get();
+    }
     // Don't select an object from a different mode
     core->selected_object = Object();
 	currentMode->onEnter();

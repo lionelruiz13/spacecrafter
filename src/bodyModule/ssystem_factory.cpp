@@ -138,10 +138,15 @@ void SSystemFactory::loadGalacticSystem(const std::string &name)
     }
 }
 
+std::string SSystemFactory::querySelectedAnchorName()
+{
+    return currentSystem->getAnchorManager()->querySelectedAnchorName();
+}
+
 void SSystemFactory::enterSystem()
 {
     if (!inSystem) {
-        changeSystem(galacticAnchorMgr->querySelectedAnchorName());
+        changeSystem(querySelectedAnchorName());
         inSystem = true;
     }
 }

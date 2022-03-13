@@ -32,6 +32,7 @@
 #include "coreModule/core.hpp"
 #include "executorModule/executorModule.hpp"
 #include "executorModule/solarSystemModule.hpp"
+#include "executorModule/stellarSystemModule.hpp"
 #include "executorModule/inGalaxyModule.hpp"
 #include "executorModule/inUniverseModule.hpp"
 #include "executorModule/inPauseModule.hpp"
@@ -76,6 +77,7 @@ private:
     Observer *observer;
 
     std::unique_ptr<SolarSystemModule> ssystemModule;
+    std::unique_ptr<StellarSystemModule> stellarSystemModule;
     std::unique_ptr<InGalaxyModule> inGalaxyModule;
     std::unique_ptr<InUniverseModule> inUniverseModule;
     //std::unique_ptr<InPauseModule> inPauseModule;

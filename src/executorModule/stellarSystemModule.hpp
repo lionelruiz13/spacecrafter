@@ -2,6 +2,7 @@
  * Spacecrafter astronomy simulation and visualization
  *
  * Copyright (C) 2021 Jérémy Calvo
+ * Copyright (C) 2022 Calvin Ruiz
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,32 +23,38 @@
  *
  */
 
-#ifndef _IN_GALAXY_MODULE_
-#define _IN_GALAXY_MODULE_
+#ifndef _STELLARSYSTEM_MODULE_
+#define _STELLARSYSTEM_MODULE_
 
 #include "executorModule.hpp"
 #include "coreModule/core.hpp"
 #include "mediaModule/media.hpp"
+#include "EntityCore/Tools/SafeQueue.hpp"
+#include <thread>
 
-class InGalaxyModule : public ExecutorModule {
+class StellarSystemModule : public ExecutorModule {
 public:
 
-    InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer);
-    ~InGalaxyModule() {};
+    StellarSystemModule(std::shared_ptr<Core> _core, Observer *_observer);
+    ~StellarSystemModule();
 
     virtual void onEnter() override;
 	virtual void onExit() override;
 	virtual void update(int delta_time) override;
 	virtual void draw(int delta_time) override;
-    bool testValidAltitude(double altitude) override;
+	virtual bool testValidAltitude(double altitude) override;
 
-    void defineDownModeAlt(ExecutorModule *_downModeAlt) {
-		downModeAlt = _downModeAlt;
-	}
 private:
+    // Start async update
+    void asyncUpdateBegin(std::pair<Vec3d, Vec3d> data);
+    // Ensure async update has completed before continue
+    void asyncUpdateEnd();
+    void asyncUpdateLoop();
+    bool asyncWorkState = false; // used by asycnUpdateBegin and asyncUpdateEnd
     std::shared_ptr<Core> core;
     Observer *observer;
-    ExecutorModule *downModeAlt = nullptr;
+    std::thread thread;
+    WorkQueue<std::pair<Vec3d, Vec3d>, 3> threadQueue;
 };
 
 #endif

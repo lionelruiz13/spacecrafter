@@ -70,6 +70,7 @@ void InGalaxyModule::onEnter()
 void InGalaxyModule::onExit()
 {
 	std::cout << "Je quitte InGalaxy" << std::endl;
+	core->ssystemFactory->enterSystem();
 }
 
 void InGalaxyModule::update(int delta_time)
@@ -149,7 +150,7 @@ bool InGalaxyModule::testValidAltitude(double altitude)
 		return true;
 	}
 	if (altitude<minAltToGoDown) {
-		nextMode = downMode;
+		nextMode = (core->ssystemFactory->querySelectedAnchorName() == "Sun") ? downMode : downModeAlt;
 		return true;
 	}
 	return false;

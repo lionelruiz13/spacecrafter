@@ -117,6 +117,7 @@ public:
 	friend class Executor;
 	friend class ExecutorModule;
 	friend class SolarSystemModule;
+	friend class StellarSystemModule;
 	friend class InGalaxyModule;
 	friend class InUniverseModule;
 
