@@ -18,9 +18,14 @@
 //
 // *****************************************************************************
 
+OjmL::OjmL(std::shared_ptr<VertexBuffer> vertex, SubBuffer index, unsigned int indexCount) :
+	vertex(vertex), index(index), indexCount(indexCount)
+{
+	is_ok = true;
+}
+
 OjmL::OjmL(const std::string & _fileName)
 {
-	is_ok = false;
 	is_ok = init(_fileName);
 }
 
@@ -71,9 +76,9 @@ void OjmL::initGLparam()
 
 	index = context.indexBufferMgr->acquireBuffer(indexCount * sizeof(int));
 	context.transfer->endPlanCopy(index, indexCount * sizeof(int));
-	vertex = context.ojmVertexArray->createBuffer(0, vertexCount, context.ojmBufferMgr.get());
+	vertex = std::shared_ptr<VertexBuffer>(context.ojmVertexArray->newBuffer(0, vertexCount, context.ojmBufferMgr.get()));
 	float *data;
-	if (vertex->get().size < 16*1024*1024) {
+	if (vertex->get().size < 8*1024*1024) {
 		data = (float *) context.transfer->planCopy(vertex->get());
 	} else {
 		SubBuffer tmpBuffer = context.stagingMgr->acquireBuffer(vertex->get().size);

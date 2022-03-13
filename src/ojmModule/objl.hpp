@@ -34,7 +34,7 @@ class Pipeline;
 class ObjL {
 public:
 	ObjL();
-	~ObjL();
+	virtual ~ObjL();
 	void draw(VkCommandBuffer &cmd, const float screenSize);
 	bool init(const std::string &repertory, const std::string &name);
 	void bind(VkCommandBuffer &cmd);
@@ -44,7 +44,7 @@ public:
 		return isUsable;
 	}
 
-private:
+protected:
 	bool isUsable = false;
 
 	std::unique_ptr<OjmL> low;

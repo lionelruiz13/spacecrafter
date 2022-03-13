@@ -3,6 +3,7 @@
 
 #include "ojmModule/objl_mgr.hpp"
 #include "ojmModule/objl.hpp"
+#include "ojmModule/SphereObjL.hpp"
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -16,6 +17,8 @@
 
 ObjLMgr::ObjLMgr()
 {
+	defaultObject = new SphereObjL();
+	objectMap["EquiSphere"] = defaultObject;
 }
 
 

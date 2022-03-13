@@ -18,6 +18,7 @@ class Pipeline;
 class OjmL {
 public:
 	OjmL(const std::string& _fileName);
+	OjmL(std::shared_ptr<VertexBuffer> vertex, SubBuffer index, unsigned int indexCount);
 	~OjmL();
 
 	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
@@ -56,7 +57,7 @@ private:
 	std::vector<float> vertices;
 	std::vector<float> uvs;
 	std::vector<float> normals;
-	std::unique_ptr<VertexBuffer> vertex;
+	std::shared_ptr<VertexBuffer> vertex;
 	SubBuffer index {};
 	unsigned int *pIndex = nullptr;
 	unsigned int indexCount = 0;
