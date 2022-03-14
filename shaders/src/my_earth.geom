@@ -31,7 +31,7 @@ layout (binding=2) uniform globalTescGeom {
 };
 
 
-float coeffHeightMap = 0.02 * float(TesParam[2]);
+float coeffHeightMap = 0.01 * float(TesParam[2]);
 
 //out
 //layout (location=0) out vec2 TexCoord;
@@ -72,7 +72,7 @@ void main()
 		binormal = vec3(0,-Normal.z,Normal.y);
 		tangent = cross(Normal,binormal);
 
-		TangentLight = vec3(dot(Light, tangent), dot(Light, binormal), dot(Light, Normal)); 
+		TangentLight = vec3(dot(Light, tangent), dot(Light, binormal), dot(Light, Normal));
 
 		PositionOut = Position;
 		LightOut = Light;
@@ -80,7 +80,7 @@ void main()
 		NormalOut = Normal;
 		TangentLightOut = TangentLight;
 		TexCoordOut = TexCoordIn[i];
-		
+
 		EmitVertex();
 	}
 

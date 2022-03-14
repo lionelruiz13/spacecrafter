@@ -76,7 +76,7 @@ layout (location=3) out vec3 LightOut;
 layout (location=4) out float NdotLOut;
 layout (location=5) out float Ambient;
 
-float coeffHeightMap = 0.05 * TesParam[2];
+float coeffHeightMap = 0.02 * TesParam[2];
 
 //////////////////// PROJECTION FISHEYE ////////////////////////////////
 void main()
