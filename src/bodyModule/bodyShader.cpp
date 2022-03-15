@@ -79,16 +79,16 @@ void BodyShader::createShader()
 	// ========== my_earth ========== //
 	context.layouts.push_back(std::make_unique<PipelineLayout>(vkmgr));
 	myEarth.layout = context.layouts.back().get();
-	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
+	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
 	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // globalFrag
-	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 2); // globalTescGeom
+	myEarth.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT | VK_SHADER_STAGE_VERTEX_BIT, 2); // globalTescGeom
 	myEarth.layout->setTextureLocation(5, &tmp);
 	myEarth.layout->setTextureLocation(6, &PipelineLayout::DEFAULT_SAMPLER);
 	myEarth.layout->setTextureLocation(7, &tmp);
 	myEarth.layout->setTextureLocation(8, &tmp);
 	myEarth.layout->setTextureLocation(9, &tmp);
 	myEarth.layout->setTextureLocation(10, &tmp);
-	myEarth.layout->setTextureLocation(11, &tmp, VK_SHADER_STAGE_GEOMETRY_BIT);
+	myEarth.layout->setTextureLocation(11, &tmp, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT);
 	myEarth.layout->buildLayout();
 	myEarth.layout->setGlobalPipelineLayout(context.layouts.front().get());
 	myEarth.layout->build();
@@ -104,8 +104,7 @@ void BodyShader::createShader()
 		myEarth.pipeline[i].setTessellationState(3);
 		myEarth.pipeline[i].bindShader("body_tes.vert.spv");
 		myEarth.pipeline[i].bindShader("body_tes.tesc.spv");
-		myEarth.pipeline[i].bindShader("body_tes.tese.spv");
-		myEarth.pipeline[i].bindShader("my_earth.geom.spv");
+		myEarth.pipeline[i].bindShader("my_earth.tese.spv");
 		myEarth.pipeline[i].bindShader("my_earth.frag.spv");
 		VkBool32 Clouds = (i & 1);
 		myEarth.pipeline[i].setSpecializedConstant(1, &Clouds, sizeof(Clouds));
@@ -194,10 +193,10 @@ void BodyShader::createShader()
 	// ========== body_normal_tes ========== //
 	shaderNormalTes.layout = new PipelineLayout(vkmgr);
 	context.layouts.emplace_back(shaderNormalTes.layout);
-	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
+	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
 	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // globalFrag
-	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 2); // globalTescGeom
-	shaderNormalTes.layout->setTextureLocation(5, &tmp, VK_SHADER_STAGE_GEOMETRY_BIT); // heightmapTexture
+	shaderNormalTes.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT | VK_SHADER_STAGE_VERTEX_BIT, 2); // globalTescGeom
+	shaderNormalTes.layout->setTextureLocation(5, &tmp, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT); // heightmapTexture
 	shaderNormalTes.layout->setTextureLocation(6, &tmp); // mapTexture
 	shaderNormalTes.layout->setTextureLocation(7, &PipelineLayout::DEFAULT_SAMPLER); // shadowTexture
 	shaderNormalTes.layout->buildLayout();
@@ -214,8 +213,7 @@ void BodyShader::createShader()
 	shaderNormalTes.pipeline->setTessellationState(3);
 	shaderNormalTes.pipeline->bindShader("body_tes.vert.spv");
 	shaderNormalTes.pipeline->bindShader("body_tes.tesc.spv");
-	shaderNormalTes.pipeline->bindShader("body_tes.tese.spv");
-	shaderNormalTes.pipeline->bindShader("body_normal_tes.geom.spv");
+	shaderNormalTes.pipeline->bindShader("body_normal_tes.tese.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.frag.spv");
 	shaderNormalTes.pipelineNoDepth = shaderNormalTes.pipeline->clone("shaderNormalTes noDepth");
 	shaderNormalTes.pipelineNoDepth->setDepthStencilMode();
@@ -259,13 +257,13 @@ void BodyShader::createShader()
 	// ========== my_moon ========== //
 	myMoon.layout = new PipelineLayout(vkmgr);
 	context.layouts.emplace_back(myMoon.layout);
-	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
+	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0); // globalVertProj
 	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 1); // moonFrag
-	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 2); // globalTescGeom
+	myMoon.layout->setUniformLocation(VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT | VK_SHADER_STAGE_VERTEX_BIT, 2); // globalTescGeom
 	myMoon.layout->setTextureLocation(5, &tmp); // mapTexture
 	myMoon.layout->setTextureLocation(6, &tmp); // normalTexture
 	myMoon.layout->setTextureLocation(7, &PipelineLayout::DEFAULT_SAMPLER); // shadowTexture
-	myMoon.layout->setTextureLocation(8, &tmp, VK_SHADER_STAGE_GEOMETRY_BIT); // heightmapTexture
+	myMoon.layout->setTextureLocation(8, &tmp, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT); // heightmapTexture
 	myMoon.layout->buildLayout();
 	myMoon.layout->setGlobalPipelineLayout(context.layouts.front().get());
 	myMoon.layout->build();
@@ -280,8 +278,7 @@ void BodyShader::createShader()
 	myMoon.pipeline->setTessellationState(3);
 	myMoon.pipeline->bindShader("body_tes.vert.spv");
 	myMoon.pipeline->bindShader("body_tes.tesc.spv");
-	myMoon.pipeline->bindShader("body_tes.tese.spv");
-	myMoon.pipeline->bindShader("my_moon.geom.spv");
+	myMoon.pipeline->bindShader("my_moon.tese.spv");
 	myMoon.pipeline->bindShader("my_moon.frag.spv");
 	myMoon.pipelineNoDepth = myMoon.pipeline->clone("myMoon noDepth");
 	myMoon.pipelineNoDepth->setDepthStencilMode();

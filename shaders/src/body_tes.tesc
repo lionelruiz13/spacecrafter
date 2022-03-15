@@ -16,8 +16,7 @@ layout (binding=2) uniform globalTescGeom {
 layout(location=0) in vec3 PositionIn[];
 layout(location=1) in vec2 TexCoordIn[];
 layout(location=2) in vec3 NormalIn[];
-layout(location=3) in vec2 glPositionIn[];
-layout(location=4) in int VisibleIn[];
+layout(location=3) in vec4 glPositionIn[];
 
 layout(location=0) out vec3 PositionOut[];
 layout(location=1) out vec2 TexCoordOut[];
@@ -32,10 +31,16 @@ void main(void)
     NormalOut[ID] = NormalIn[ID];
     PositionOut[ID] = PositionIn[ID];
     if (ID == 0) {
-        vec3 tes = vec3(distance(glPositionIn[1], glPositionIn[2]),
-                        distance(glPositionIn[0], glPositionIn[2]),
-                        distance(glPositionIn[0], glPositionIn[1]));
-        tes = clamp(tes * 256 * float((VisibleIn[0] | VisibleIn[1] | VisibleIn[2]) & int(tes.x * tes.y * tes.z != 0)), 1., 64.);
+        vec4 center = (glPositionIn[0] + glPositionIn[1] + glPositionIn[2]) / 3;
+        float centerDistance = sqrt(center.x * center.x + center.y * center.y);
+        vec3 tes = vec3(distance(glPositionIn[1].xy, glPositionIn[2].xy),
+                        distance(glPositionIn[0].xy, glPositionIn[2].xy),
+                        distance(glPositionIn[0].xy, glPositionIn[1].xy));
+        if (centerDistance > 1 + (tes.x + tes.y + tes.z)/2 + max(0, dot(center.xy, center.zw - center.xy) / centerDistance)) {
+            gl_TessLevelInner[0]=0;
+            return;
+	}
+        tes = clamp(tes * 128, TesParam[0], TesParam[1]);
 
         gl_TessLevelOuter[0] = tes[0];
         gl_TessLevelOuter[1] = tes[1];

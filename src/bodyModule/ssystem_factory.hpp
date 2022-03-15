@@ -156,7 +156,7 @@ public:
 
 	void initialSolarSystemBodies() {
         currentSystem->initialSolarSystemBodies();
-        ssystemTex->resetTesselationParams();
+        // ssystemTex->resetTesselationParams();
     }
 
 	void setPlanetHidden(const std::string &name, bool planethidden) {
