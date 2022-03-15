@@ -31,6 +31,7 @@
 // We need bilinear sampling, and it seemed to be the closest of it
 #define STBIR_DEFAULT_FILTER_DOWNSAMPLE STBIR_FILTER_TRIANGLE
 #include "stb_image_resize.h"
+#include "tiny_jpeg.h"
 #include <exception>
 #include "tools/call_system.hpp"
 #include <cassert>
@@ -47,8 +48,12 @@
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Tools/SafeQueue.hpp"
 #include "EntityCore/Core/BufferMgr.hpp"
+#include <filesystem>
 
 #define MAX_LOW_RES 1024*512*4
+// Number of tic from the last use after which a big texture is released
+// Set to 1 to release every big textures every tic
+#define BIG_TEXTURE_LIFETIME 90
 
 std::string s_texture::texDir = "./";
 std::map<std::string, std::weak_ptr<s_texture::texRecap>> s_texture::texCache;
@@ -210,10 +215,10 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             else
                 data = reinterpret_cast<stbi_uc*>(stbi_load_16(previewName.c_str(), &realWidth, &realHeight, &channels, nbChannels));
         }
-        std::string shortName = fullName.substr(fullName.find(".spacecrafter/")+14);
+        std::string cacheEntryName = getCacheEntryName(fullName);
         const bool minified = (data != nullptr);
         if (minified) { // We need to determine the size of the big texture
-            auto &bigData = cache[Section::BIG_TEXTURE][shortName].get<BigTextureCache>();
+            auto &bigData = cache[Section::BIG_TEXTURE][cacheEntryName].get<BigTextureCache>();
             if (bigData.width == 0) {
                 ++cache.get<int>(); // Inform update, required because reducedCheck is true
                 stbi_image_free(stbi_load(fullName.c_str(), &bigData.width, &bigData.height, &channels, nbChannels));
@@ -231,7 +236,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
     			return false;
     		}
             if (resolution) {
-                auto &bigData = cache[Section::BIG_TEXTURE][shortName].get<BigTextureCache>();
+                auto &bigData = cache[Section::BIG_TEXTURE][cacheEntryName].get<BigTextureCache>();
                 if (bigData.width == 0) {
                     ++cache.get<int>(); // Inform update, required because reducedCheck is true
                     bigData.width = realWidth;
@@ -427,7 +432,7 @@ Texture *s_texture::getBigTexture()
     }
 	if (texture->bigTexture) {
 		if (texture->bigTexture->binding == texture->bigTextureBinding) {
-			texture->bigTexture->lifetime = 3;
+			texture->bigTexture->lifetime = BIG_TEXTURE_LIFETIME;
 			return (texture->bigTexture->ready ? texture->bigTexture->texture.get() : nullptr);
 		}
 	}
@@ -445,11 +450,17 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture()
     auto bt = acquireBigTexture(width, height);
     if (bt)
         return bt;
-    releaseUnusedMemory();
     if (!bigTextureThread.joinable() && asyncUpload) {
         bigTextureThread = std::thread(&s_texture::bigTextureLoader);
     }
 	// There is no bigTexRecap available, create another one
+    for (MemoryQuerry &querry : VulkanMgr::instance->getMemoryManager()->querryMemory()) {
+        if (!(querry.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
+            continue;
+        if (width * height * nbChannels * channelSize * 2 > querry.free - currentAllocation)
+            releaseUnusedMemory();
+        break;
+    }
 	for (MemoryQuerry &querry : VulkanMgr::instance->getMemoryManager()->querryMemory()) {
 		if (!(querry.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT))
 			continue;
@@ -480,14 +491,14 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture(int width, int height)
         if (bt.width == width && bt.height == height && bt.formatIdx == (nbChannels + 4 * channelSize - 5)) {
             if (bt.acquired) {
                 if (textureName == bt.texName) {
-                    bt.lifetime = 3;
+                    bt.lifetime = BIG_TEXTURE_LIFETIME;
                     texture->bigTextureBinding = bt.binding;
                     return &bt;
                 }
                 continue;
             }
             if (textureName == bt.texName && bt.texture) {
-                bt.lifetime = 3;
+                bt.lifetime = BIG_TEXTURE_LIFETIME;
                 bt.ready = true;
                 bt.acquired = true;
                 texture->bigTextureBinding = bt.binding;
@@ -495,7 +506,7 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture(int width, int height)
             }
             bt.texName = textureName;
             texture->bigTextureBinding = bt.binding;
-            bt.lifetime = 3;
+            bt.lifetime = BIG_TEXTURE_LIFETIME;
             bt.ready = false;
             bt.acquired = true;
             if (texture->quickloadable)
@@ -653,6 +664,7 @@ void s_texture::bigTextureLoader()
     auto queueFamily = vkmgr.acquireQueue(queue, VulkanMgr::QueueType::TRANSFER, "Async big texture loader");
     {
         if (!queueFamily) {
+            vkmgr.putLog("Async dynamic texture loading unavailable for this GPU", LogType::WARNING);
             asyncUpload = false;
             return;
         }
@@ -671,8 +683,9 @@ void s_texture::bigTextureLoader()
             currentAllocation += droppedTex->getTextureSize();
             droppedTex.reset();
         }
-        std::string texName = "big \"" + tex->texName.substr(tex->texName.find(".spacecrafter/")+14) + "\"";
-        cLog::get()->write("Loading " + texName + "...", LOG_TYPE::L_DEBUG);
+        std::string shortName = tex->texName.substr(tex->texName.find(".spacecrafter/")+14);
+        std::string texName = "big \"" + shortName + "\"";
+        cLog::get()->write("Loading big " + shortName + "...", LOG_TYPE::L_DEBUG);
         unsigned int width = tex->width;
         unsigned int height = tex->height;
         // Not fully implemented 16-bpp support from here
@@ -685,54 +698,72 @@ void s_texture::bigTextureLoader()
             tex->texture->use();
             currentAllocation -= (width * height * 4+2)/3 * _nbChannels;
         }
-        int realWidth, realHeight, unused;
-        stbi_uc *data = stbi_load(tex->texName.c_str(), &realWidth, &realHeight, &unused, _nbChannels);
-        std::string shortName = tex->texName.substr(tex->texName.find(".spacecrafter/")+14);
-        auto &bigData = cache[Section::BIG_TEXTURE][shortName].get<BigTextureCache>();
-        const long datetime = 0; // Not implemented yet
-        if (bigData.width != realWidth || bigData.height != realHeight || bigData.datetime != datetime) {
+        auto buffer = context.asyncTexStagingMgr->fastAcquireBuffer((width * height *4+2)/3 * _nbChannels);
+        stbi_uc *finalDst = (stbi_uc *) context.asyncTexStagingMgr->getPtr(buffer);
+
+        auto &bigData = cache[Section::BIG_TEXTURE][getCacheEntryName(tex->texName)].get<BigTextureCache>();
+        long datetime;
+        try {
+            datetime = std::chrono::duration_cast<std::chrono::seconds>(std::filesystem::last_write_time(tex->texName).time_since_epoch()).count();
+        } catch (...) {
+            cLog::get()->write("Can't check modification time for this file, assume unchanged.", LOG_TYPE::L_DEBUG);
+            datetime = bigData.datetime;
+        }
+        if (bigData.datetime != datetime) {
             ++cache.get<int>(); // Inform update, required because reducedCheck is true
             bigData.datetime = datetime;
-            bigData.height = realHeight;
-            bigData.width = realWidth;
             bigData.cached = false;
             abortQuickLoadCache(tex);
         }
-        // Invert Y axis by flipping pixels
-        {
-            long *src = (long *) data;
-            long *dst;
-            long tmp;
-            // Only work for textures with pair height and width
-            const long lineSize = realWidth * _nbChannels / sizeof(long);
-            int j = realHeight / 2;
-            while (j--) {
-                dst = src + (j * 2 + 1) * lineSize;
-                int i = lineSize;
-                while (i--) {
-                    tmp = *src;
-                    *(src++) = *dst;
-                    *(dst++) = tmp;
+
+        stbi_uc *data = nullptr;
+        int realWidth, realHeight, unused;
+        if (bigData.cached) {
+            // Load the cached image which include mipmaps
+            bigData.cached = quickLoadCache(tex, bigData, stor, finalDst, width);
+        }
+        stbi_uc *src;
+        stbi_uc *dst;
+        if (!bigData.cached) {
+            // Load the original image, which is one single layer
+            data = stbi_load(tex->texName.c_str(), &realWidth, &realHeight, &unused, _nbChannels);
+            bigData.width = realWidth;
+            bigData.height = realHeight;
+            {
+                // Invert Y axis by flipping pixels
+                long *src = (long *) data;
+                long *dst;
+                long tmp;
+                // Only work for textures with pair height and width
+                const long lineSize = realWidth * _nbChannels / sizeof(long);
+                int j = realHeight / 2;
+                while (j--) {
+                    dst = src + (j * 2 + 1) * lineSize;
+                    int i = lineSize;
+                    while (i--) {
+                        tmp = *src;
+                        *(src++) = *dst;
+                        *(dst++) = tmp;
+                    }
                 }
             }
+            // Push the first layer, resize it if the texture is smaller than the first layer
+            src = data;
+            dst = stor;
+            if ((unsigned int) bigData.width + bigData.height != width + height) {
+                stbir_resize_uint8(src, realWidth, realHeight, 0, dst, width, height, 0, _nbChannels);
+                src = dst;
+                dst += width * height * _nbChannels;
+            } else {
+                memcpy(finalDst, src, width * height * _nbChannels);
+                finalDst += width * height * _nbChannels;
+            }
         }
-        stbi_uc *src = data;
-        auto buffer = context.asyncTexStagingMgr->fastAcquireBuffer((width * height *4+2)/3 * _nbChannels);
-        stbi_uc *dst = stor;
-        stbi_uc *finalDst = (stbi_uc *) context.asyncTexStagingMgr->getPtr(buffer);
-        if ((unsigned int) realWidth + realHeight != width + height) {
-            stbir_resize_uint8(src, realWidth, realHeight, 0, dst, width, height, 0, _nbChannels);
-            src = dst;
-            dst += width * height * _nbChannels;
-        } else {
-            memcpy(finalDst, src, width * height * _nbChannels);
-            finalDst += width * height * _nbChannels;
-        }
+
+        // Compute
         VkBufferImageCopy region {buffer.offset, 0, 0, {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1}, {}, {width, height, 1}};
         std::vector<VkBufferImageCopy> regions;
         int subsize = width * height * _nbChannels;
-        if (bigData.cached)
-            bigData.cached = quickLoadCache(tex, finalDst, (width * height +2)/3 * _nbChannels);
         while (width + height > 2) {
             regions.push_back(region);
             ++region.imageSubresource.mipLevel;
@@ -750,7 +781,7 @@ void s_texture::bigTextureLoader()
             region.imageExtent.height = height;
         }
         regions.push_back(region);
-        stbi_image_free(data);
+        // Upload cached datas
         if (asyncUpload) {
             if (!bigData.cached)
                 memcpy(finalDst, stor, dst - stor);
@@ -780,11 +811,15 @@ void s_texture::bigTextureLoader()
         }
         tex->ready = true;
         cLog::get()->write(texName + " is ready for use", LOG_TYPE::L_DEBUG);
-        if (!bigData.cached) {
-            quickSaveCache(tex, stor, dst - stor);
-            bigData.cached = true;
+        if (!bigData.cached && cacheTexture && (bigData.width == tex->width || bigData.width == tex->width / 2)) {
+            CacheSaveData info;
+            info.tex = tex;
+            info.cache = &bigData;
+            quickSaveCache(info, data, stor);
             ++cache.get<int>();
         }
+        if (data)
+            stbi_image_free(data);
     }
     bigTextureQueue.release();
     vkDestroyFence(vkmgr.refDevice, fence, nullptr);
@@ -812,17 +847,42 @@ void s_texture::loadCache(const std::string &path, bool _cacheTexture)
     cacheTexture = _cacheTexture;
     CallSystem::ensurePathExist(path);
     cache.open(path + "texture-cache", false, true, true);
+    if (cache[Section::CACHE_VERSION].get<int>() != 1) {
+        // Invalidate cache content
+        cLog::get()->write("Cache version incompatible with current version, reset cache.", LOG_TYPE::L_WARNING);
+        cache.reset();
+        cache[Section::CACHE_VERSION].get<int>() = 1;
+    }
 }
 
-std::string s_texture::getCacheName(bigTexRecap *tex)
+std::string s_texture::getCacheName(const std::string &name)
 {
-    std::string filename = tex->texName.substr(tex->texName.find(".spacecrafter/")+14);
+    const auto p1 = name.find(".spacecrafter/")+14;
+    const auto p2 = name.find_first_of('/', p1) - 1;
+    std::string filename = name.substr();
+    filename = name.substr(p2, name.size() - p2);
+    filename.front() = name[p1];
     for (char &c : filename) {
         if (c == '/')
             c = '-';
     }
     memcpy(filename.data() + filename.size() - 3, "dat", 3);
     return filename;
+}
+
+std::string s_texture::getCacheEntryName(const std::string &name)
+{
+    const auto p1 = name.find(".spacecrafter/")+14;
+    const auto p2 = name.find_first_of('/', p1) - 1;
+    std::string filename = name.substr();
+    filename = name.substr(p2, name.size() - p2 - 4);
+    filename.front() = name[p1];
+    return filename;
+}
+
+std::string s_texture::getCacheName(bigTexRecap *tex)
+{
+    return getCacheName(tex->texName);
 }
 
 #ifdef __linux__
@@ -847,13 +907,38 @@ void s_texture::abortQuickLoadCache(bigTexRecap *tex)
     tex->quickLoader = -1;
 }
 
-bool s_texture::quickLoadCache(bigTexRecap *tex, void *data, size_t size)
+bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, void *stor, void *data, int width)
 {
     if (cacheTexture) {
         if (tex->quickLoader == -1)
             return false;
         cLog::get()->write("Loading cached data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
-        read(tex->quickLoader, data, size);
+        if (cache.jpegLayers < 4) {
+            cLog::get()->write("Performance Issue : Height is not multiple of 64 for '" + tex->texName + "', this significatively increase both loading time and cache size.", LOG_TYPE::L_WARNING);
+        }
+        // Read the jpeg data
+        read(tex->quickLoader, stor, cache.jpegSize);
+        int vwidth, vheight, unused;
+        auto pixels = stbi_load_from_memory((stbi_uc *) stor, cache.jpegSize, &vwidth, &vheight, &unused, tex->formatIdx + 1);
+        auto srcBegin = pixels;
+        size_t fullSize = vwidth * vheight * (tex->formatIdx + 1);
+        // Define from which layer to start
+        int layerWidth = cache.width;
+        size_t layerSize = cache.width * cache.height * (tex->formatIdx + 1);
+        while (width < layerWidth) {
+            srcBegin += layerSize;
+            fullSize -= layerSize;
+            layerSize /= 4;
+            layerWidth /= 2;
+        }
+        fullSize /= 8; // Assume output is a multiple of 8 pixels.
+        long *src = (long *) srcBegin;
+        long *dst = (long *) data;
+        while (fullSize--)
+            *(dst++) = *(src++);
+        stbi_image_free(pixels);
+        // Read the raw cached data
+        read(tex->quickLoader, dst, cache.rawSize);
         close(tex->quickLoader);
         tex->quickLoader = -1;
         return true;
@@ -864,13 +949,38 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, void *data, size_t size)
 void s_texture::preQuickLoadCache(bigTexRecap *tex) {}
 void s_texture::abortQuickLoadCache(bigTexRecap *tex) {}
 
-bool s_texture::quickLoadCache(bigTexRecap *tex, void *data, size_t size)
+bool s_texture::quickLoadCache(bigTexRecap *tex, BigTextureCache &cache, void *stor, void *data, int width)
 {
     if (cacheTexture) {
         std::ifstream file(cacheDir + getCacheName(tex), std::ifstream::binary);
         if (file) {
             cLog::get()->write("Loading cached data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
-            file.read(data, size);
+            if (cache.jpegLayers < 4) {
+                cLog::get()->write("Performance Issue : Height is not multiple of 64 for '" + tex->texName + "', this significatively increase both loading time and cache size.", LOG_TYPE::L_WARNING);
+            }
+            // Read the jpeg data
+            file.read(tex->quickLoader, stor, cache.jpegSize);
+            int vwidth, vheight, unused;
+            auto pixels = stbi_load_from_memory(stor, cache.jpegSize, &vwidth, &vheight, &unused, tex->formatIdx + 1);
+            auto srcBegin = pixels;
+            size_t fullSize = vwidth * vheight * (tex->formatIdx + 1);
+            // Define from which layer to start
+            int layerWidth = cache.width;
+            size_t layerSize = cache.width * cache.height * (tex->formatIdx + 1);
+            while (width > layerWidth) {
+                srcBegin += layerSize;
+                fullSize -= layerSize;
+                layerSize /= 4;
+                layerWidth /= 2;
+            }
+            fullSize /= 8; // Assume output is a multiple of 8 pixels.
+            long *src = (long *) srcBegin;
+            long *dst = (long *) data;
+            while (fullSize--)
+                *(dst++) = *(src++);
+            stbi_image_free(pixels);
+            // Read the raw cached data
+            file.read(tex->quickLoader, dst, cache.rawSize);
             return true;
         }
     }
@@ -878,13 +988,82 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, void *data, size_t size)
 }
 #endif
 
-void s_texture::quickSaveCache(bigTexRecap *tex, void *data, size_t size)
+void s_texture::quickSaveCache(CacheSaveData &info, void *firstLayer, void *mipmaps)
 {
     if (cacheTexture) {
-        std::ofstream file(cacheDir + getCacheName(tex), std::ofstream::binary | std::ofstream::trunc);
-        if (file) {
-            cLog::get()->write("Caching data for '" + tex->texName + "'", LOG_TYPE::L_DEBUG);
-            file.write((char *) data, size);
+        info.file.open(cacheDir + getCacheName(info.tex), std::ofstream::binary | std::ofstream::trunc);
+        if (info.file) {
+            cLog::get()->write("Caching data for '" + info.tex->texName + "'", LOG_TYPE::L_DEBUG);
+            const int width = info.cache->width;
+            const int height = info.cache->height;
+            const int nbChannels = info.tex->formatIdx + 1;
+            const int firstLayerSize = height * width * nbChannels;
+            int mipmapSize = 0;
+            for (int w=width, h=height; (w | h) > 1;) {
+                if (w > 1)
+                    w /= 2;
+                if (h > 1)
+                    h /= 2;
+                mipmapSize += w * h * nbChannels;
+            }
+            // Unify image content to a single memory location
+            char *unified = (char *) malloc(firstLayerSize + mipmapSize);
+            memcpy(unified, firstLayer, firstLayerSize);
+            memcpy(unified + firstLayerSize, mipmaps, mipmapSize);
+            // Determine the number of layers
+            int tmp = height;
+            int vheight = height;
+            int layers = 1;
+            while (!(tmp & 3)) {
+                tmp /= 4;
+                vheight += tmp;
+                if (++layers == 4)
+                    break;
+            }
+            if (layers < 4) {
+                cLog::get()->write("Performance Issue : Height is not multiple of 64 for '" + info.tex->texName + "', this significatively increase both loading time and cache size.", LOG_TYPE::L_WARNING);
+            } else
+                layers = 4;
+            info.cache->jpegLayers = layers;
+            info.cache->jpegSize = 0;
+            tmp = width >> layers;
+            info.cache->rawSize = firstLayerSize + mipmapSize - width * vheight * nbChannels;
+            layers = 0;
+            while (tmp) {
+                tmp >>= 1;
+                ++layers;
+            }
+            info.cache->rawLayers = layers;
+            tmp -= info.cache->rawSize;
+            // This function inverse the Y axis while saving the image, inverse it before this happened
+            {
+                long *src = (long *) unified;
+                long tmp;
+                // Only work for textures with pair width and 4 channels, or width multiple of 8
+                const long lineSize = width * nbChannels / sizeof(long);
+                long *dst = src + (vheight - 1) * lineSize;
+                int j = vheight / 2;
+                while (j--) {
+                    int i = lineSize;
+                    while (i--) {
+                        tmp = *src;
+                        *(src++) = *dst;
+                        *(dst++) = tmp;
+                    }
+                    dst -= 2 * lineSize;
+                }
+            }
+            tje_encode_with_func(reinterpret_cast<tje_write_func*>(&subQuickSaveCache), &info, 3, width, vheight, nbChannels, (unsigned char *) unified);
+            // Write raw content
+            info.file.write(unified + firstLayerSize + mipmapSize - info.cache->rawSize, info.cache->rawSize);
+            info.cache->cached = true;
+            free(unified);
         }
     }
+}
+
+void s_texture::subQuickSaveCache(CacheSaveData *info, char *data, int size)
+{
+    info->file.write(data, size);
+    info->cache->jpegSize += size;
 }

@@ -36,6 +36,7 @@
 #include "EntityCore/Tools/SafeQueue.hpp"
 #include <vulkan/vulkan.h>
 #include <thread>
+#include <fstream>
 
 class BigSave;
 
@@ -168,12 +169,38 @@ private:
 	static void init3DBuild(texRecap &tex);
 	void blend( const int, unsigned char* const, const unsigned int );
 
+	// If an index have been used and is no longer used, don't reuse it for something else
+	enum Section { // Sections of the cache
+		BIG_TEXTURE = 0, // string map
+		CACHE_VERSION = 1, // Single int
+	};
+
+	struct BigTextureCache {
+		long datetime;
+		int width;
+		int height;
+		unsigned int jpegSize; // Size of the jpeg portion of the image
+		unsigned int rawSize; // Size of the raw portion of the image
+		unsigned char jpegLayers; // Number of jpeg layers
+		unsigned char rawLayers; // Number of raw layers
+		bool cached;
+	};
+
+	struct CacheSaveData {
+		std::ofstream file;
+		bigTexRecap *tex;
+		BigTextureCache *cache;
+	};
+
 	//! Optimized texture cache loader
 	static void preQuickLoadCache(bigTexRecap *tex);
-	static bool quickLoadCache(bigTexRecap *tex, void *data, size_t size);
+	static bool quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, void *stor, void *data, int width);
 	static void abortQuickLoadCache(bigTexRecap *tex);
-	static void quickSaveCache(bigTexRecap *tex, void *data, size_t size);
+	static void quickSaveCache(CacheSaveData &info, void *firstLayer, void *mipmaps);
+	static void subQuickSaveCache(CacheSaveData *info, char *data, int size);
 	static std::string getCacheName(bigTexRecap *tex);
+	static std::string getCacheName(const std::string &name);
+	static std::string getCacheEntryName(const std::string &name);
 
 	std::string textureName;
 	std::shared_ptr<texRecap> texture;
@@ -181,18 +208,6 @@ private:
 	int loadWrapping;
 	int nbChannels;
 	int channelSize;
-
-	// If an index have been used and is no longer used, don't reuse it for something else
-	enum Section { // Sections of the cache
-		BIG_TEXTURE = 0, // string map
-	};
-
-	struct BigTextureCache {
-		long datetime;
-		int width;
-		int height;
-		bool cached;
-	};
 
 	static std::string texDir;
 	static bool loadInLowResolution;
