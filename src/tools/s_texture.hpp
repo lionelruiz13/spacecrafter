@@ -116,14 +116,22 @@ public:
 	static void update();
 	// Unload every big textures
 	static void forceUnload();
-	// Release memory of every unused big textures, may have side effect
+	// Release memory of every unused big textures, might have side effect
 	static void releaseUnusedMemory();
+	// Release as many memory as possible, including actively used big textures. Can have side effect.
+	static void releaseAllMemory();
 	// Record transfer of every newly created textures
 	static void recordTransfer(VkCommandBuffer cmd);
 	// Display information about active big textures
 	static void debugBigTexture();
 	// Setup cache path for textures, also enable use of cache
 	static void loadCache(const std::string &path, bool _cacheTexture);
+	// Set the new value for bigTextureLifetime, and return his previous value
+	static int setBigTextureLifetime(int lifetime) {
+		int ret = bigTextureLifetime;
+		bigTextureLifetime = lifetime;
+		return ret;
+	}
 private:
 	void unload();
 	bool preload(const std::string& fullName, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false);
@@ -214,6 +222,7 @@ private:
 	static unsigned int lowResMax;
 	static unsigned int minifyMax; // Maximal size of texture preview
 	static bool releaseThisFrame; // Tell if releaseUnusedMemory have been called in this frame
+	static bool wantReleaseAllMemory; // Tell the Big texture loader to release all memory
 	static std::map<std::string, std::weak_ptr<texRecap>> texCache;
 	static std::list<bigTexRecap> bigTextures;
 	static std::list<bigTexRecap> droppedBigTextures; // Big texture which have been freed
@@ -236,6 +245,7 @@ private:
 	static BigSave cache;
 	static std::string cacheDir;
 	static bool cacheTexture;
+	static int bigTextureLifetime;
 };
 
 #endif // _S_TEXTURE_H_

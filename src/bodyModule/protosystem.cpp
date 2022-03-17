@@ -41,6 +41,7 @@
 #include "bodyModule/body_artificial.hpp"
 #include "bodyModule/body_center.hpp"
 #include "tools/object.hpp"
+#include "interfaceModule/base_command_interface.hpp"
 
 #define EARTH_MASS 5.976e24
 #define LUNAR_MASS 7.354e22
@@ -977,6 +978,25 @@ void ProtoSystem::initialSolarSystemBodies(){
 			}
 			it->second->isHidden = it->second->initialHidden;
 		}
+	}
+}
+
+void ProtoSystem::preloadBody(stringHash_t & param)
+{
+	auto body = searchByEnglishName(param[W_NAME]);
+	if (!param[W_PURGE].empty()) {
+		if (param[W_PURGE] == W_ALL) {
+			// Aggressive purge, release as many memory as possible, even used ones if possible
+			s_texture::releaseAllMemory();
+		}
+		if (param[W_PURGE] == W_AUTO)
+			s_texture::releaseUnusedMemory();
+	}
+	if (body) {
+		int duration = 60 * 10;
+		if (!param[W_KEEPTIME].empty())
+			duration = Utility::strToInt(param[W_KEEPTIME]);
+		body->preloadBigTextures(duration);
 	}
 }
 

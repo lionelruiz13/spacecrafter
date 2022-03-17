@@ -51,9 +51,6 @@
 #include <filesystem>
 
 #define MAX_LOW_RES 1024*512*4
-// Number of tic from the last use after which a big texture is released
-// Set to 1 to release every big textures every tic
-#define BIG_TEXTURE_LIFETIME 90
 
 std::string s_texture::texDir = "./";
 std::map<std::string, std::weak_ptr<s_texture::texRecap>> s_texture::texCache;
@@ -68,6 +65,7 @@ bool s_texture::loadInLowResolution = false;
 unsigned int s_texture::lowResMax = MAX_LOW_RES;
 unsigned int s_texture::minifyMax = 4*1024*1024; // Maximal size of texture preview
 bool s_texture::releaseThisFrame = true;
+bool s_texture::wantReleaseAllMemory = false;
 std::vector<std::shared_ptr<s_texture::texRecap>> s_texture::releaseMemory[3];
 std::vector<std::unique_ptr<Texture>> s_texture::releaseTexture[3];
 short s_texture::releaseIdx = 0;
@@ -82,6 +80,9 @@ VkImageMemoryBarrier s_texture::bigBarrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRI
 BigSave s_texture::cache;
 std::string s_texture::cacheDir;
 bool s_texture::cacheTexture = false;
+// Number of tic from the last use after which a big texture is released
+// Set to 1 to release every big textures every tic
+int s_texture::bigTextureLifetime = 90;
 
 s_texture::texRecap::~texRecap()
 {
@@ -432,7 +433,7 @@ Texture *s_texture::getBigTexture()
     }
 	if (texture->bigTexture) {
 		if (texture->bigTexture->binding == texture->bigTextureBinding) {
-			texture->bigTexture->lifetime = BIG_TEXTURE_LIFETIME;
+			texture->bigTexture->lifetime = bigTextureLifetime;
 			return (texture->bigTexture->ready ? texture->bigTexture->texture.get() : nullptr);
 		}
 	}
@@ -491,14 +492,14 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture(int width, int height)
         if (bt.width == width && bt.height == height && bt.formatIdx == (nbChannels + 4 * channelSize - 5)) {
             if (bt.acquired) {
                 if (textureName == bt.texName) {
-                    bt.lifetime = BIG_TEXTURE_LIFETIME;
+                    bt.lifetime = bigTextureLifetime;
                     texture->bigTextureBinding = bt.binding;
                     return &bt;
                 }
                 continue;
             }
             if (textureName == bt.texName && bt.texture) {
-                bt.lifetime = BIG_TEXTURE_LIFETIME;
+                bt.lifetime = bigTextureLifetime;
                 bt.ready = true;
                 bt.acquired = true;
                 texture->bigTextureBinding = bt.binding;
@@ -506,7 +507,7 @@ s_texture::bigTexRecap *s_texture::acquireBigTexture(int width, int height)
             }
             bt.texName = textureName;
             texture->bigTextureBinding = bt.binding;
-            bt.lifetime = BIG_TEXTURE_LIFETIME;
+            bt.lifetime = bigTextureLifetime;
             bt.ready = false;
             bt.acquired = true;
             if (texture->quickloadable)
@@ -527,13 +528,40 @@ void s_texture::releaseUnusedMemory()
 	for (auto it = bigTextures.begin(); it != bigTextures.end();) {
 		if (!it->acquired) {
             auto tmp = it++;
-            // Move texture to drop queue, thus tmp->texture became nullptr
             currentAllocation -= tmp->texture->getTextureSize();
+            // Move texture to drop queue, thus tmp->texture became nullptr
             droppedTextureQueue.push(tmp->texture);
             droppedBigTextures.splice(droppedBigTextures.end(), bigTextures, tmp);
         } else
             ++it;
 	}
+}
+
+void s_texture::releaseAllMemory()
+{
+    wantReleaseAllMemory = true;
+    cLog::get()->write("Attempt to release as many memory as possible", LOG_TYPE::L_DEBUG);
+    for (auto it = bigTextures.begin(); it != bigTextures.end();) {
+        auto tmp = it++;
+        if (it->ready || !it->acquired) {
+            if (it->lifetime != bigTextureLifetime) {
+                currentAllocation -= tmp->texture->getTextureSize();
+                // Move texture to drop queue, thus tmp->texture became nullptr
+                droppedTextureQueue.push(tmp->texture);
+                droppedBigTextures.splice(droppedBigTextures.end(), bigTextures, tmp);
+            } else {
+                cLog::get()->write("Can't release memory from texture '" + it->texName + "' : already acquired this frame", LOG_TYPE::L_WARNING);
+            }
+        } else {
+            // The texture will be released, but not immediately
+            ++it->binding;
+            it->ready = false;
+            it->acquired = false;
+            droppedBigTextures.splice(droppedBigTextures.end(), bigTextures, tmp);
+            // cLog::get()->write("Can't release memory from texture '" + it->texName + "' : currently loading", LOG_TYPE::L_WARNING);
+        }
+    }
+    bigTextureQueue.emplace(nullptr);
 }
 
 void s_texture::recordTransfer(VkCommandBuffer cmd)
@@ -679,6 +707,17 @@ void s_texture::bigTextureLoader()
     }
     bigTextureQueue.acquire();
     while (bigTextureQueue.pop(tex)) {
+        if (wantReleaseAllMemory) {
+            while (tex != nullptr) {
+                if (tex->texture) {
+                    tex->texture.reset();
+                } else {
+                    currentAllocation -= (tex->width * tex->height * 4+2)/3 * (tex->formatIdx + 1);
+                }
+            }
+            wantReleaseAllMemory = false;
+            continue;
+        }
         while (droppedTextureQueue.pop(droppedTex)) {
             currentAllocation += droppedTex->getTextureSize();
             droppedTex.reset();
@@ -809,6 +848,10 @@ void s_texture::bigTextureLoader()
             context.asyncTexStagingMgr->reset();
             bigTextureReady.push(barrier.image);
         }
+        if (wantReleaseAllMemory) { // In case we want release all memory
+            tex->texture.release();
+            continue;
+        }
         tex->ready = true;
         cLog::get()->write(texName + " is ready for use", LOG_TYPE::L_DEBUG);
         if (!bigData.cached && cacheTexture && (bigData.width == tex->width || bigData.width == tex->width / 2)) {
@@ -820,6 +863,10 @@ void s_texture::bigTextureLoader()
         }
         if (data)
             stbi_image_free(data);
+        if (wantReleaseAllMemory) { // Just in case we want to release all memory now, but not just before
+            tex->ready = false;
+            tex->texture.release();
+        }
     }
     bigTextureQueue.release();
     vkDestroyFence(vkmgr.refDevice, fence, nullptr);
@@ -949,7 +996,7 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
 void s_texture::preQuickLoadCache(bigTexRecap *tex) {}
 void s_texture::abortQuickLoadCache(bigTexRecap *tex) {}
 
-bool s_texture::quickLoadCache(bigTexRecap *tex, BigTextureCache &cache, void *stor, void *data, int width)
+bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, void *stor, void *data, int width)
 {
     if (cacheTexture) {
         std::ifstream file(cacheDir + getCacheName(tex), std::ifstream::binary);

@@ -81,7 +81,7 @@ protected :
 	virtual void removeSatellite(std::shared_ptr<Body> planet);
 
 	//! Return set to bind, may change at every frame
-	Set &getSet(float screen_sz);
+	virtual Set &getSet(float screen_sz) override;
 	std::unique_ptr<Ring> rings=nullptr;
 	int pipelineOffset = 0; // pipeline to select inside drawState
 	std::unique_ptr<Set> set;

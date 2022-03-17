@@ -61,6 +61,8 @@ public:
 		addBody(param, true);
 	}
 
+    virtual void preloadBody(stringHash_t & param);
+
 	//! Return the matching planet pointer if exists or nullptr
 	std::shared_ptr<Body> searchByEnglishName(const std::string &planetEnglishName) const;
 

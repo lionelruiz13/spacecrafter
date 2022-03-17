@@ -321,6 +321,10 @@ public:
         currentSystem->addBody(param);
     }
 
+    void preloadBody(stringHash_t & param) {
+        currentSystem->preloadBody(param);
+    }
+
 	bool removeBody(const std::string &name) {
         return currentSystem->removeBody(name);
     }

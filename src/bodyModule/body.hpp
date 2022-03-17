@@ -428,11 +428,17 @@ public:
 		satellites.push_back(body);
 	}
 
+	//! Ask this body to preload his textures
+	//! @param keepFrames number of frames from which the big texture can be destroyed if it was still unused
+	void preloadBigTextures(int keepFrames = 600);
 protected:
 
 	bool useParentPrecession(double jd) {
 		return getOrbit()->useParentPrecession(jd);
 	}
+
+	//! Return set to bind, may change at every frame
+	virtual Set &getSet(float screen_sz) = 0;
 
 	virtual bool skipDrawingThisBody(const Observer* observatory, bool drawHomePlanet);
 

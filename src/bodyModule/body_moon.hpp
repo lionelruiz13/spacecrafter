@@ -54,7 +54,7 @@ public:
 protected :
 	void defineSet();
 	//! Return set to bind, may change at every frame
-	Set &getSet(float screen_sz);
+	virtual Set &getSet(float screen_sz) override;
 
 	virtual void handleVisibilityFader(const Observer* observatory, const Projector* prj, const Navigator * nav) override;
 

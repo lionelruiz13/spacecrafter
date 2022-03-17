@@ -3059,6 +3059,8 @@ int AppCommandInterface::commandBody()
 			stcore->removeSupplementalSolarSystemBodies();
 		} else if (argAction == W_INITIAL  ) {
 			coreLink->initialSolarSystemBodies();
+		} else if (argAction == W_PRELOAD) {
+			stcore->preloadSolarSystemBody(args);
 		} else {
 			debug_message = "command 'body' : unknown action argument";
 		}

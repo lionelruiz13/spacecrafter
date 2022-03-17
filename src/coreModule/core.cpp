@@ -682,6 +682,11 @@ void Core::addSolarSystemBody(stringHash_t& param)
 	ssystemFactory->addBody(param);
 }
 
+void Core::preloadSolarSystemBody(stringHash_t& param)
+{
+	ssystemFactory->preloadBody(param);
+}
+
 void Core::removeSolarSystemBody(const std::string& name)
 {
 	// Make sure this object is not already selected so won't crash

@@ -53,7 +53,7 @@ public:
 protected :
 	void defineSet();
 	//! Return set to bind, may change at every frame
-	Set &getSet(float screen_sz);
+	virtual Set &getSet(float screen_sz) override;
 	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
 
 	std::unique_ptr<Set> set;

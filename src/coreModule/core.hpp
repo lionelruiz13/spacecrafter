@@ -366,6 +366,7 @@ public:
 
 	// for adding planets
 	void addSolarSystemBody(stringHash_t& param);
+	void preloadSolarSystemBody(stringHash_t& param);
 	void removeSolarSystemBody(const std::string& name);
 	void removeSupplementalSolarSystemBodies();
 

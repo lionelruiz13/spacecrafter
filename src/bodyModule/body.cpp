@@ -964,3 +964,10 @@ bool Body::canSkip(const Navigator* nav, const Projector* prj)
     const bool useTrail = (trail) && trail->doDraw(nav, prj);
     return (!useOrbit && !useTrail && !isVisibleOnScreen());
 }
+
+void Body::preloadBigTextures(int keepFrames)
+{
+    int tmp = s_texture::setBigTextureLifetime(keepFrames);
+    getSet(2048); // Assume the big texture is used for such screen_sz
+    s_texture::setBigTextureLifetime(tmp);
+}
