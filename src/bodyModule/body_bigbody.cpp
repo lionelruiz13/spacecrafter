@@ -539,7 +539,8 @@ void BigBody::preload(int keepFrames)
     int tmp = s_texture::setBigTextureLifetime(keepFrames);
     if (changed)
         selectShader();
-    rings->preload();
+    if (rings)
+        rings->preload();
     getSet(2048); // Assume the big texture is used for such screen_sz
     s_texture::setBigTextureLifetime(tmp);
 }
