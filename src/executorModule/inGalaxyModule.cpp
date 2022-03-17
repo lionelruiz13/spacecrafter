@@ -70,7 +70,6 @@ void InGalaxyModule::onEnter()
 void InGalaxyModule::onExit()
 {
 	std::cout << "Je quitte InGalaxy" << std::endl;
-	core->ssystemFactory->enterSystem();
 }
 
 void InGalaxyModule::update(int delta_time)
