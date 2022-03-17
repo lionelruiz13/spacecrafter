@@ -58,8 +58,26 @@ Ring::Ring(double radius_min,double radius_max,const std::string &texname, const
 
 void Ring::initialize()
 {
+	if (initialized) {
+		if (asteroidComputed) {
+			if (threadAsteroid.joinable()) {
+				threadAsteroid.join();
+				auto staging = asyncStagingBuffer->fastAcquireBuffer(instanceAsteroid->get().size);
+				Context::instance->transfer->planCopyBetween(staging, instanceAsteroid->get());
+				asteroidReady = true;
+			} else {
+				// We have already joined the threadAsteroid, clear ressources
+				asyncStagingBuffer.reset();
+				fullyInitialized = true;
+			}
+		}
+		return;
+	}
 	// tex->use(); This no longer exist
 	createSC_context();
+
+	if (bufferAsteroid)
+		threadAsteroid = std::thread(&Ring::createAsteroidRing, this);
 
 	lowUP = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[0], 4, true, *vertex);
 	lowDOWN = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[0], 4, false, *vertex);
@@ -70,8 +88,8 @@ void Ring::initialize()
 	highUP = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[2], 16, true, *vertex);
 	highDOWN = std::make_unique<Ring2D>((float) radius_min, (float) radius_max, init[2], 16, false, *vertex);
 
-	createAsteroidRing();
 	initialized = true;
+	fullyInitialized = !bufferAsteroid;
 }
 
 void Ring::createSC_context()
@@ -138,15 +156,12 @@ void Ring::createSC_context()
 
 void Ring::createAsteroidRing()
 {
-	if (bufferAsteroid == nullptr)
-		return;
-
 	Context &context = *Context::instance;
 	const float asteroid_radius = (radius_max - radius_min) / 500.f;
 
 	int width, height;
 	tex->getDimensions(width, height);
-    bool nonPersistant = true;
+    bool nonPersistant = false;
 	uint8_t *pData = (uint8_t *) tex->acquireContent(nonPersistant);
 	uint8_t *pDataLoop = pData + 2; // Use blue component for uranus rings
 
@@ -160,8 +175,11 @@ void Ring::createAsteroidRing()
 		probability.push_back(sum_probability);
 		pDataLoop += 4;
 	}
+	// Just hope nobody is currently creating/freeing a buffer from the ojmBufferMgr...
 	instanceAsteroid = vertexAsteroid->createBuffer(1, NB_ASTEROIDS, nullptr, context.ojmBufferMgr.get());
-	Vec3f *tmp = static_cast<Vec3f *>(context.transfer->planCopy(instanceAsteroid->get()));
+	// This is not possible, but... Anyway...
+	asyncStagingBuffer = std::make_unique<BufferMgr>(*VulkanMgr::instance, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, instanceAsteroid->get().size, "ring buffer");
+	Vec3f *tmp = static_cast<Vec3f *>(asyncStagingBuffer->getPtr());
 	std::default_random_engine generator;
 	auto distance_distribution = std::uniform_real_distribution<float>(0.f, sum_probability);
 	auto z_shift_distribution = std::uniform_real_distribution<float>(-0.8f*asteroid_radius, 0.8f*asteroid_radius);
@@ -180,8 +198,8 @@ void Ring::createAsteroidRing()
 		uint8_t *tmpColor = pData + j * 4;
 		(tmp++)->set(tmpColor[0] / 255.f, tmpColor[1] / 255.f, tmpColor[2] / 255.f);
 	}
-    if (!nonPersistant)
-        tex->releaseContent(pData);
+    tex->releaseContent(pData);
+	asteroidComputed = true;
 }
 
 Ring::~Ring(void)
@@ -190,7 +208,7 @@ Ring::~Ring(void)
 
 void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
-	if (!initialized)
+	if (!fullyInitialized)
 		initialize();
 
 	// solve the ring wraparound by culling: decide if we are above or below the ring plane
@@ -212,7 +230,7 @@ void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,
 
 	uniform->get().SunnySideUp = (h>0.0) ? 1.0 : 0.0;
 
-	if (vertexAsteroid && obs && obs->getDistanceFromCenter() < radius_max * 10 /* && abs(obs->getLatitude()) < 20. */) {
+	if (asteroidReady && obs && obs->getDistanceFromCenter() < radius_max * 10 /* && abs(obs->getLatitude()) < 20. */) {
 		uniform->get().fadingFactor = 10;
 		pipelineAsteroid->bind(cmd);
 		layoutAsteroid->bindSet(cmd, *setAsteroid);
@@ -303,4 +321,10 @@ void Ring2D::computeRing(int slices, int stacks, bool h)
 			*(datas++) = tex_r1;
 		}
 	}
+}
+
+void Ring::preload()
+{
+	if (!fullyInitialized)
+		initialize();
 }

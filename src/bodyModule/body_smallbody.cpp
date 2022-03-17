@@ -113,6 +113,8 @@ Set &SmallBody::getSet(float screen_sz)
 {
     if (screen_sz < 180)
         return *set;
+    if (!initialized)
+        selectShader();
     switch (myShader) {
         case SHADER_BUMP: {
             auto tex0 = tex_current->getBigTexture(); // 3

@@ -65,6 +65,7 @@ public:
 
 	virtual void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
+	virtual void preload(int keepFrames) override;
 protected :
 
 	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);

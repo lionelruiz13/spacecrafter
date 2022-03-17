@@ -996,7 +996,7 @@ void ProtoSystem::preloadBody(stringHash_t & param)
 		int duration = 60 * 10;
 		if (!param[W_KEEPTIME].empty())
 			duration = Utility::strToInt(param[W_KEEPTIME]);
-		body->preloadBigTextures(duration);
+		body->preload(duration);
 	}
 }
 

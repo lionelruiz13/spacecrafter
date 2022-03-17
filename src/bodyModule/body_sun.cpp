@@ -310,6 +310,8 @@ Set &Sun::getSet(float screen_sz)
 {
     if (screen_sz < 180)
         return *descriptorSetSun;
+    if (changed)
+        defineSunSet();
     auto tex0 = tex_current->getBigTexture();
     if (bigSet) {
         if (!tex0)

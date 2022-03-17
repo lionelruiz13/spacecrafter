@@ -430,7 +430,7 @@ public:
 
 	//! Ask this body to preload his textures
 	//! @param keepFrames number of frames from which the big texture can be destroyed if it was still unused
-	void preloadBigTextures(int keepFrames = 600);
+	virtual void preload(int keepFrames);
 protected:
 
 	bool useParentPrecession(double jd) {

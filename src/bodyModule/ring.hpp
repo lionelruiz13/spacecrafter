@@ -88,6 +88,7 @@ public:
 		mc =f;
 	}
 
+	void preload();
 private:
 	const double radius_min;
 	const double radius_max;
@@ -125,10 +126,15 @@ private:
 	std::unique_ptr<Ring2D> mediumDOWN;
 	std::unique_ptr<Ring2D> highUP;
 	std::unique_ptr<Ring2D> highDOWN;
+	std::unique_ptr<BufferMgr> asyncStagingBuffer;
+	std::thread threadAsteroid;
 
 	Vec3i init;
 	float mc = 1.0;
 	bool initialized = false;
+	bool fullyInitialized = false;
+	bool asteroidComputed = false;
+	bool asteroidReady = false;
 };
 
 
