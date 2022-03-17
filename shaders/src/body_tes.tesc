@@ -36,7 +36,7 @@ void main(void)
         vec3 tes = vec3(distance(glPositionIn[1].xy, glPositionIn[2].xy),
                         distance(glPositionIn[0].xy, glPositionIn[2].xy),
                         distance(glPositionIn[0].xy, glPositionIn[1].xy));
-        if (centerDistance > 1 + (tes.x + tes.y + tes.z)/2 + max(0, dot(center.xy, center.zw - center.xy) / centerDistance)) {
+        if (centerDistance > 1 + (tes.x + tes.y + tes.z)/2 + max(0, dot(center.xy, center.xy - center.zw) / centerDistance)) {
             gl_TessLevelInner[0]=0;
             return;
 	}
