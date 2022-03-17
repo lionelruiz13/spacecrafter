@@ -684,6 +684,8 @@ void Core::addSolarSystemBody(stringHash_t& param)
 
 void Core::preloadSolarSystemBody(stringHash_t& param)
 {
+	if (param["name"] == "selected")
+		param["name"] = getSelectedPlanetEnglishName();
 	ssystemFactory->preloadBody(param);
 }
 
