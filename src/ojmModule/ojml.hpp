@@ -35,6 +35,10 @@ public:
 	//! bind VertexArray
 	void bind(Pipeline &pipeline);
 
+	int getVertexCount() const;
+	int getIndexCount() const {
+		return indexCount;
+	}
 	//! Deprecated, only used by ring.cpp
 	VertexBuffer *getVertexBuffer() {return vertex.get();}
 	//! Deprecated, only used by ring.cpp

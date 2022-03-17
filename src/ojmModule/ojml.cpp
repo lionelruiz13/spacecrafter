@@ -172,3 +172,8 @@ bool OjmL::readOJML(const std::string & _fileName)
     }
 	return false;
 }
+
+int OjmL::getVertexCount() const
+{
+	return vertex->getVertexCount();
+}

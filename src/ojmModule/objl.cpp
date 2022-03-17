@@ -55,6 +55,12 @@ bool ObjL::init(const std::string &repertory, const std::string &_name)
 		if (this->low->getOk() && this->medium->getOk() && this->high->getOk())  {
 			//~ printf("Les 3 ojm  %s sont ok\n", _name.c_str());
 			cLog::get()->write("Loading object "+ _name);
+			if (this->medium->getVertexCount() > 20000) {
+				cLog::get()->write("Performance Issue : Too many vertices for '" + nameM + "' (Keep Below 20 000)", LOG_TYPE::L_WARNING);
+			}
+			if (this->low->getVertexCount() > 4000) {
+				cLog::get()->write("Performance Issue : Too many vertices for '" + nameL + "' (Keep Below 4 000)", LOG_TYPE::L_WARNING);
+			}
 			return true;
 		} else {
 			//~ printf("Erreur de chargement d'un ojm %s\n", _name.c_str());
