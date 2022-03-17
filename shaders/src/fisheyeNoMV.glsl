@@ -1,3 +1,6 @@
+//////////////////// PROJECTION FISHEYE ////////////////////////////////
+#extension GL_KHR_shader_subgroup_vote : enable
+
 #define M_PI 3.14159265358979323846
 
 double my_atan(in double x)
@@ -51,7 +54,7 @@ vec4 fisheyeProjectNoMV(vec3 win, in vec3 clipping_fov)
 	win /= sqrt(rq1)+1e-30; // Don't divide by zero
 	float a;
 
-	if ((clipping_fov[2] < 0.03f) || (win.z > 5.f)) {
+	if (subgroupAny((clipping_fov[2] < 0.03f) || (win.z > 5.f))) { // Don't use both atan and my_atan in a subgroup, it would reduce performances
 		a = float(my_atan(win.z));
 	} else {
 		a = atan(win.z);
