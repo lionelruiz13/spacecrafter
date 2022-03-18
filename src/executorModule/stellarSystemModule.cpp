@@ -75,6 +75,8 @@ void StellarSystemModule::onEnter()
 		observer->setAltitude(observer->getAltitude() *1.E6);
     thread = std::thread(&StellarSystemModule::asyncUpdateLoop, this);
     core->ssystemFactory->enterSystem();
+    core->setFlagTracking(false); // Just in case
+    core->selectObject(core->ssystemFactory->getSelected());
 }
 
 void StellarSystemModule::onExit()

@@ -88,6 +88,7 @@ void SSystemFactory::selectSystem()
     ssystemDisplay->changeSystem(currentSystem);
     ssystemScale->changeSystem(currentSystem);
     ssystemSelected->changeSystem(currentSystem);
+    ssystemSelected->setSelected(querySelectedAnchorName());
     ssystemTex->changeSystem(currentSystem);
 }
 

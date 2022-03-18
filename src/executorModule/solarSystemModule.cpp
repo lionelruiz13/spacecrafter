@@ -75,6 +75,8 @@ void SolarSystemModule::onEnter()
     thread = std::thread(&SolarSystemModule::asyncUpdateLoop, this);
     core->milky_way->enableZodiacal(true);
     core->ssystemFactory->enterSystem();
+    core->setFlagTracking(false); // Just in case
+    core->selectObject(core->ssystemFactory->getSelected());
 }
 
 void SolarSystemModule::onExit()
