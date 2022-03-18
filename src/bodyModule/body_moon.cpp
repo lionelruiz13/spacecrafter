@@ -190,7 +190,7 @@ Set &Moon::getSet(float screen_sz)
             // Not handled !
             return *set;
     }
-    return bigSet ? *bigSet : *set;
+    return (bigSet && screen_sz > 512) ? *bigSet : *set;
 }
 
 void Moon::selectShader()
