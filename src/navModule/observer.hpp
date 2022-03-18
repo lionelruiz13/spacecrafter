@@ -179,6 +179,11 @@ public:
 	//! For switching between quaternion and lon/lat mode
 	void setQuaternionMode(bool mode);
 
+	//! Return true if in quaterion mode
+	bool getQuaternionMode() const {
+		return flag_quaternion_mode;
+	}
+
 	//! returns true if we are on the named body
 	bool isOnBodyNamed(const std::string& bodyName);
 

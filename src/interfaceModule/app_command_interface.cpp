@@ -946,7 +946,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			coreLink->atmosphericRefractionSetFlag(newval);
 			break;
-
+		case FLAG_NAMES::FN_QUATERNION_MODE:
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->getQuaternionMode();
+			coreLink->setQuaternionMode(newval);
+			break;
 		default:
 			cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
 			break;

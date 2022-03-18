@@ -748,6 +748,14 @@ public:
 		std::cout << core->observatory->getObserverCenterPoint() << std::endl;
 	}
 
+	void setQuaternionMode(bool mode) {
+		core->observatory->setQuaternionMode(mode);
+	}
+
+	bool getQuaternionMode() const {
+		return core->observatory->getQuaternionMode();
+	}
+
 	//! change the Heading value
 	void moveHeadingRelative(float f) {
 		core->navigation->setHeading(core->navigation->getHeading() + f);
