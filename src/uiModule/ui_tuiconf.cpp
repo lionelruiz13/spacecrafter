@@ -71,13 +71,16 @@ void UI::drawGravityUi(MODULE module)
 			os << " Lat: " << Utility::printAngleDMS(coreLink->observatoryGetLatitude()*3.1415926/180)
 			   << " Lon: " << Utility::printAngleDMS(lonmodulo*3.1415926/180);
 			if (coreLink->observatoryGetAltitude()>1000) {
-/*			    if (true)
-					os << " Alt: " << core->observatoryGetAltitude()/2.E+10 << "al";
-			    else //*/
-					if (module == SOLAR_SYSTEM)
+				switch (module) {
+					case SOLAR_SYSTEM:
+					case STELLAR_SYSTEM:
 						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km";
-					else
+						break;
+					case IN_UNIVERSE:
+					case IN_GALAXY:
 						os << " Alt: " << 2.26e-11 * coreLink->observatoryGetAltitude() << " l.y.";
+						break;
+				}
 			}
 		}
 
