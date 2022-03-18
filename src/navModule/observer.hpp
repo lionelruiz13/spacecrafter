@@ -153,6 +153,9 @@ public:
 	//! Move to relative altitude where home planet is fixed.
 	void moveRelAlt(double alt, int delay);
 
+	//! Move gradually to a relative longitude latitude altitude where home planet is fixed/
+	void moveRel(double lat, double lon, double alt, int duration, bool calculate_duration=0);
+
 	//! move gradually to a new observation location
 	void moveTo(double lat, double lon, double alt, int duration, /*const std::string& _name,*/  bool calculate_duration=0);  // duration in ms
 
@@ -173,6 +176,8 @@ public:
 	//! for moving observer position gradually
 	void update(int delta_time);
 
+	//! For switching between quaternion and lon/lat mode
+	void setQuaternionMode(bool mode);
 
 	//! returns true if we are on the named body
 	bool isOnBodyNamed(const std::string& bodyName);
@@ -188,6 +193,7 @@ private:
 
 	// for changing position
 	bool flag_move_to;
+	bool flag_quaternion_mode = false; // True for quaternion movements, false for lon/lat movements
 	double start_lat, end_lat;
 	double start_lon, current_lon, rel_lon;
 	double start_alt, end_alt;

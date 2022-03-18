@@ -66,7 +66,7 @@ public:
         return true;
     }
     //! Update the internal cached current quaternion if it is outdated, and return it
-    inline const Vector4<T> &getQuanterion() {
+    inline const Vector4<T> &getQuaternion() {
         if (outdatedCurrent) {
             // Compute slerp
             float t = timer / timerTarget;
@@ -81,13 +81,13 @@ public:
         return current;
     }
     //! Return the cached quaternion without updating it
-    inline const Vector4<T> &getCachedQuanterion() const {
+    inline const Vector4<T> &getCachedQuaternion() const {
         return current;
     }
     //! Update the internal cached matrix if it is outdated, and return it
     inline const Matrix4<T> &getMatrix() {
         if (outdatedMat) {
-            mat = Matrix4<T>::fromQuaternion(getQuanterion());
+            mat = Matrix4<T>::fromQuaternion(getQuaternion());
             outdatedMat = false;
         }
         return mat;
@@ -95,6 +95,10 @@ public:
     //! Return the cached matrix without updating it
     inline const Matrix4<T> &getCachedMatrix() const {
         return mat;
+    }
+    //! Return the time in milliseconds before the end of the movement
+    inline int timeBeforeEnd() const {
+        return (onTransition) ? (timerTarget - timer) : 0;
     }
 private:
     float timer;

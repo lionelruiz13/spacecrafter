@@ -159,6 +159,9 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, bool cal
 		else duration = 250;  // Small change should be almost instantaneous
 	}
 
+	if (flag_quaternion_mode)
+		moveTo({1, 0, 0, 0}, duration);
+
 	if (duration==0) {
 		setLatitude(lat);
 		setLongitude(lon);
@@ -186,20 +189,31 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, bool cal
 }
 
 void Observer::moveRelLat(double lat, int delay) {
-	double latimem = latitude+lat;
-	if (latimem>90) latimem=90;
-	if (latimem<-90) latimem=-90;
-	moveTo(latimem, longitude, altitude, delay);
+	moveRel(lat, 0, 0, delay);
 }
 
 //! Move to relative longitude where home planet is fixed.
 void Observer::moveRelLon(double lon, int delay) {
-	moveTo(latitude, longitude+lon, altitude, delay);
+	moveRel(0, lon, 0, delay);
 }
 
 //! Move to relative altitude where home planet is fixed.
 void Observer::moveRelAlt(double alt, int delay) {
 	moveTo(latitude, longitude, altitude+alt, delay);
+}
+
+void Observer::moveRel(double lat, double lon, double alt, int duration, bool calculate_duration)
+{
+	double latimem = latitude+lat;
+	if (latimem>90) latimem=90;
+	if (latimem<-90) latimem=-90;
+	if (flag_quaternion_mode) {
+		// zyrotation should be optimized
+		moveRel(Vec4d::zyrotation(lon*(M_PI/180.), -lat*(M_PI/180.)), duration);
+		lat = 0;
+		lon = 0;
+	}
+	moveTo(latimem, longitude+lon, altitude+alt, duration, calculate_duration);
 }
 
 void Observer::moveTo(const Vec4d &target, int duration, bool isMaxDuration)
@@ -297,4 +311,35 @@ double Observer::getLongitudeForDisplay() const
 		tmp += 360;
 	}
 	return tmp;
+}
+
+void Observer::setQuaternionMode(bool mode)
+{
+	if (mode != flag_quaternion_mode) {
+		flag_quaternion_mode = mode;
+		if (mode) {
+			// Swap to quaternion mode, nothing to do
+		} else {
+			auto lonLatRotation = getRotLocalToEquatorial(0).toQuaternion(); // Longitude/latitude quaternion
+			longitude = latitude = 0;
+			// auto noRotation = getRotLocalToEquatorial(0).toQuaternion(); // Rotation with null longitude/latitude
+			auto &quatRotation = rotator.getQuaternion();
+			auto fullRotation = quatRotation.combineQuaternions(lonLatRotation); // Current rotation
+			// auto baseRotation = quatRotation.combineQuaternions(noRotation); // Offset rotation
+			// Compute the latitude/longitude of noRotation
+			double offLon, offLat;
+			Utility::rectToSphe(&offLon, &offLat, getRotLocalToEquatorial(0) * Vec3d(0, 0, 1));
+			Utility::rectToSphe(&longitude, &latitude, Mat4d::fromQuaternion(fullRotation) * Vec3d(0, 0, 1));
+			// Compute the latitude/longitude of fullRotation
+			// The real rotation can make a difference
+			longitude = (longitude - offLon) * 180 / M_PI;
+			latitude = (latitude - offLat) * 180 / M_PI;
+
+			// zrotation(longitude) * yrotation(latitude) should give the same position
+			// Compensate what remain of the rotation
+			setRotation(fullRotation.combineQuaternions(getRotLocalToEquatorial(0).toQuaternion().inverse()));
+			// Reinitialize quaterion rotation
+			moveTo({1, 0, 0, 0}, 10000, true);
+		}
+	}
 }

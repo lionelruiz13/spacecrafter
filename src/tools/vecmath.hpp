@@ -193,7 +193,7 @@ public:
 	inline Vector4(const Vector4<T>&);
 	inline Vector4(const Vector3<T>&);
 	inline Vector4(const Vector3<T>&, T);
-	inline Vector4(T, T, T, T);
+	constexpr Vector4(T, T, T, T);
 	inline Vector4(T, T, T);
 
 	inline Vector4& operator=(const Vector4<T>&);
@@ -225,11 +225,15 @@ public:
 
 	static Vector4 null();
 	static Vector4 nullW();
+	static constexpr Vector4 xrotation(T angle);
+	static constexpr Vector4 yrotation(T angle);
+	static constexpr Vector4 zrotation(T angle);
+	static constexpr Vector4 zyrotation(T zangle, T yangle);
 
 	inline const T            dot     (const Vector4<T>&)const;
 	inline const Vector4<T>   cross   (const Vector4<T>&)const;
 	inline const T            getSin  (const Vector4<T>&)const;
-	inline const Vector4<T> combineQuaternions(const Vector4<T>&) const;
+	inline constexpr const Vector4<T> combineQuaternions(const Vector4<T>&) const;
 	inline const Vector4<T> inverse() const;
 	inline void toPlane(const Vector3<T>&);
 	inline void toPlane(const Vector4<T>&);
@@ -1026,7 +1030,7 @@ template<class T> Vector4<T>::Vector4(const Vector3<T>& a, T b)
 //! y second value.
 //! z third value.
 //! a fourth value (w).
-template<class T> Vector4<T>::Vector4(T x, T y, T z, T a)
+template<class T> constexpr Vector4<T>::Vector4(T x, T y, T z, T a)
 {
 	v[0]=x;
 	v[1]=y;
@@ -1230,6 +1234,35 @@ template<class T> Vector4<T> Vector4<T>::nullW()
 	return Vector4<T>(0.0,0.0,0.0,1.0);
 }
 
+template<class T> constexpr Vector4<T> Vector4<T>::xrotation(T angle)
+{
+	T c = (T) cos(angle);
+	T s = (T) sin(angle);
+	T r2 = sqrt(2 + 2 * c);
+	return Vector4<T>(r2/2, s/r2, 0, 0);
+}
+
+template<class T> constexpr Vector4<T> Vector4<T>::yrotation(T angle)
+{
+	T c = (T) cos(angle);
+	T s = (T) sin(angle);
+	T r2 = sqrt(2 + 2 * c);
+	return Vector4<T>(r2/2, 0, s/r2, 0);
+}
+
+template<class T> constexpr Vector4<T> Vector4<T>::zrotation(T angle)
+{
+	T c = (T) cos(angle);
+	T s = (T) sin(angle);
+	T r2 = sqrt(2 + 2 * c);
+	return Vector4<T>(r2/2, 0, 0, s/r2);
+}
+
+template<class T> constexpr Vector4<T> Vector4<T>::zyrotation(T zangle, T yangle)
+{
+	return zrotation(zangle).combineQuaternions(yrotation(yangle));
+}
+
 //! dot product.
 //! @param b the other vector
 //! @return the dot product.
@@ -1258,7 +1291,7 @@ template<class T> const T            Vector4<T>::getSin  (const Vector4<T>&a)con
 
 //! Combine two quaternions
 //! From https://en.wikipedia.org/wiki/Quaternion#Scalar_and_vector_parts
-template<class T> const Vector4<T> Vector4<T>::combineQuaternions(const Vector4<T>&a) const
+template<class T> constexpr const Vector4<T> Vector4<T>::combineQuaternions(const Vector4<T>&a) const
 {
 	Vector4<T> result(v[0]*a.v[0] - v[1]*a.v[1] - v[2]*a.v[2] - v[3]*a.v[3],
 		 			  v[0]*a.v[1] + a.v[0]*v[1] + v[2]*a.v[3]-v[3]*a.v[2],
@@ -2258,6 +2291,5 @@ template<class T> Vector4<T> Matrix4<T>::toQuaternion() const
 	T r4 = sqrt(1 + r[0] + r[5] + r[10]) * 2;
 	return Vector4<T>(r4/4, (r[2+1*4] - r[1+2*4])/r4, (r[0+2*4] - r[2+0*4])/r4, (r[1+0*4] - r[0+1*4])/r4);
 }
-
 
 #endif // _VECMATH_HPP_INCLUDED
