@@ -325,7 +325,7 @@ Set &Sun::getSet(float screen_sz)
             bigSet->bindUniform(uPlanetScaledRadius, 3);
         }
     }
-    return bigSet ? *bigSet : *descriptorSetSun;
+    return (bigSet && screen_sz > 512) ? *bigSet : *descriptorSetSun;
 }
 
 void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
