@@ -59,6 +59,7 @@ struct s_sigpass {
 struct s_submit {
     unsigned char flag;
     unsigned char frameIdx;
+    unsigned char lastFrameIdx;
 };
 
 typedef union {
@@ -105,10 +106,14 @@ public:
     void beginNebulaDraw(const Mat4f &mat);
     void endNebulaDraw();
     void waitFrame(unsigned char frameIdx);
-    void submitFrame(unsigned char frameIdx);
+    void submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx);
     void setPlayer(VideoPlayer *_player) {player = _player;}
     // Wait until the worker thread has compiled every submitted commands for this frame
     // void waitCompletionOf(int frameIdx);
+    //! This can be called from the submitFunc only
+    unsigned char getLastFrameIdx() const {
+        return currentLastFrameIdx;
+    }
 private:
     void beginDraw(unsigned char subpass);
     void beginDrawCommand(unsigned char subpass); // Start draw command recording
@@ -123,7 +128,7 @@ private:
     VkCommandBuffer getCmd();
     void pushCommand();
     void mainloop();
-    void submit(unsigned char frameIdx);
+    void submit(unsigned char frameIdx, unsigned char lastFrameIdx);
     VideoPlayer *player = nullptr;
     std::thread thread;
     std::unique_ptr<VertexArray> vertexPrint;
@@ -146,6 +151,7 @@ private:
     unsigned char externalSubpass;
     unsigned char lastFlag = SIGNAL_PASS;
     unsigned short drawIdx = 0;
+    unsigned char currentLastFrameIdx = 2;
     Vec4f hintColor;
     PipelineLayout *layoutNebula = nullptr;
     struct {
@@ -157,7 +163,7 @@ private:
         std::list<s_sigpass> sigpass;
         std::mutex waitMutex;
         // bool hasDraw; // Tell if the next command must be submitted on nextDraw/endDraw or not
-        s_submit submitData {FRAME_SUBMIT, UINT8_MAX};
+        s_submit submitData {FRAME_SUBMIT, UINT8_MAX, UINT8_MAX};
         bool hasCompleted = false; // Tell if every submitted commands were compiled
         unsigned char intCmdIdx;
         unsigned char realFrameIdx;

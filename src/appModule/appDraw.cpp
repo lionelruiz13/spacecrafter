@@ -183,9 +183,8 @@ void AppDraw::initSplash()
     pipeline->bindShader("splash.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
     pipeline->build();
 
-    context.lastFrameIdx = context.frameIdx;
+    context.lastFrameIdx = 2;
     auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
-    // std::cout << "Acquire frame " << context.frameIdx << "\n";
     vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 
     FrameMgr &frame = *context.frame[context.frameIdx];
@@ -197,22 +196,11 @@ void AppDraw::initSplash()
     vkCmdDraw(cmd, 4, 1, 0, 0);
     frame.compile();
     frame.toExecute(cmd, PASS_FOREGROUND);
-    // VkCommandBuffer cmd2;
-    // VkCommandBufferAllocateInfo allocInfo {VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO, nullptr, context.cmdPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1};
-    // vkAllocateCommandBuffers(vkmgr.refDevice, &allocInfo, &cmd2);
-    // VkCommandBufferBeginInfo beginInfo {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO, nullptr, VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT, nullptr};
-    // VkImageMemoryBarrier barrier {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER, nullptr, 0, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_QUEUE_FAMILY_IGNORED, VK_QUEUE_FAMILY_IGNORED, context.starColorAttachment->getImage(), {context.starColorAttachment->getAspect(), 0, 1, 0, 1}};
-    // vkBeginCommandBuffer(cmd2, &beginInfo);
-    // vkCmdPipelineBarrier(cmd2, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier);
-    // // context.starSync[context.lastFrameIdx]->srcDependency(cmd2);
-    // vkEndCommandBuffer(cmd2);
-    // VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &cmd2, 0, nullptr};
-    // vkQueueSubmit(context.graphicQueue, 1, &submit, VK_NULL_HANDLE);
     auto mainCmd = context.frame[context.frameIdx]->preBegin();
     texture->use(mainCmd, true);
-    context.transfers[context.frameIdx]->copy(mainCmd);
+    context.transfer->copy(mainCmd);
     context.transferSync->placeBarrier(mainCmd);
     context.frame[context.frameIdx]->postBegin();
     context.frame[context.frameIdx]->submitInline();
-    context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume next frame follow the previous one
+    context.transfer = context.transfers[context.frameIdx].get();
 }

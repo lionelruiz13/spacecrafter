@@ -338,13 +338,16 @@ void App::initVulkan(InitParser &conf)
 			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
 		context.frame.back()->build(context.graphicFamily->id, true, true);
 		vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, context.fences.data() + i);
+		vkmgr.setObjectName(context.fences[i], VK_OBJECT_TYPE_FENCE, "Frame " + std::to_string(i));
 		fenceInfo.flags = 0;
 		vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, context.debugFences.data() + i);
 		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i);
+		vkmgr.setObjectName(context.semaphores[i], VK_OBJECT_TYPE_SEMAPHORE, "Acquire " + std::to_string(i));
 		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 3);
+		vkmgr.setObjectName(context.semaphores[i + 3], VK_OBJECT_TYPE_SEMAPHORE, "Present " + std::to_string(i));
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
 	}
-	context.transfer = context.transfers[0].get(); // Assume the first frame is the frame 0
+	context.transfer = context.transfers[2].get(); // Assume the previous frame is the frame 2
 	context.helper = std::make_unique<DrawHelper>();
 	if (vkmgr.getSwapchainView().empty()) {
 		sender = std::make_unique<NDISender>(vkmgr, senderImage, context.fences.data());
@@ -618,11 +621,11 @@ void App::draw(int delta_time)
 				return;
 		}
 		context.helper->waitFrame(context.lastFrameIdx);
-		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 30L*1000*1000*1000);
+		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000);
 		if (res != VK_SUCCESS) {
 			switch (res) {
 				case VK_TIMEOUT:
-					vkmgr.putLog("CRITICAL : Frame not completed after 30s (timeout)", LogType::ERROR);
+					vkmgr.putLog("CRITICAL : Frame not completed after 10s (timeout)", LogType::ERROR);
 					break;
 				case VK_ERROR_DEVICE_LOST:
 					vkmgr.putLog("CRITICAL : Device lost while waiting frame completion", LogType::ERROR);
@@ -641,7 +644,6 @@ void App::draw(int delta_time)
 	s_texture::update();
 	context.frame[context.frameIdx]->discardRecord();
 	context.setMgr->update();
-	context.transfer = context.transfers[context.frameIdx].get();
 	for (auto &buffer : context.transientBuffer[context.frameIdx]) {
 		context.stagingMgr->releaseBuffer(buffer);
 	}
@@ -672,11 +674,9 @@ void App::draw(int delta_time)
 	screenFader->draw();
 
 	context.stat->capture(Capture::FOREGROUND_DRAW);
-	// auto mainCmd = context.frame[context.frameIdx]->preBegin();
-	context.helper->submitFrame(context.frameIdx);
+	context.helper->submitFrame(context.frameIdx, context.lastFrameIdx);
 	context.stat->capture(Capture::ASYNC_FRAME_SUBMIT);
-	// context.frame[context.frameIdx]->submitInline();
-	context.transfer = context.transfers[(context.frameIdx + 1) % 3].get(); // Assume the next frame follow the previous one
+	context.transfer = context.transfers[context.frameIdx].get();
 }
 
 //! @brief Set the application locale. This apply to GUI, console messages etc..
@@ -832,9 +832,8 @@ void App::submitFrame(App *self, int id)
 		}
 		self->sender->presentFrame(id);
 	} else {
-		const int lastId = (id + 2) % 3;
 		VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + lastId], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]};
+		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + Context::instance->helper->getLastFrameIdx()], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]};
 		auto res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		switch (res) {
 			case VK_SUCCESS:

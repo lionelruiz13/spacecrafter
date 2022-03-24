@@ -90,7 +90,7 @@ void DrawHelper::mainloop()
                 }
                 break;
             case FRAME_SUBMIT:
-                submit(data->submit.frameIdx);
+                submit(data->submit.frameIdx, data->submit.lastFrameIdx);
                 break;
         }
     }
@@ -393,16 +393,18 @@ void DrawHelper::waitFrame(unsigned char frameIdx)
     }
 }
 
-void DrawHelper::submitFrame(unsigned char frameIdx)
+void DrawHelper::submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx)
 {
     drawer[externalVFrameIdx].submitData.frameIdx = frameIdx;
+    drawer[externalVFrameIdx].submitData.lastFrameIdx = lastFrameIdx;
     queue.emplace((DrawData *) &drawer[externalVFrameIdx++].submitData);
     externalVFrameIdx %= 3;
     queue.flush();
 }
 
-void DrawHelper::submit(unsigned char frameIdx)
+void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
 {
+    currentLastFrameIdx = lastFrameIdx;
     auto &d = drawer[internalVFrameIdx++];
     frame->cancelExecution(d.cancelledCmds);
     auto cmd = frame->preBegin();
@@ -410,7 +412,7 @@ void DrawHelper::submit(unsigned char frameIdx)
     s_texture::recordTransfer(cmd);
     if (s_font::tileMap)
 		s_font::tileMap->uploadChanges(cmd, Implicit::SRC_LAYOUT);
-    Context::instance->transfers[frameIdx]->copy(cmd);
+    Context::instance->transfers[lastFrameIdx]->copy(cmd);
     Context::instance->transferSync->placeBarrier(cmd);
     if (Context::instance->starUsed[frameIdx])
         Context::instance->starUsed[frameIdx]->updateFramebuffer(cmd);
