@@ -13,30 +13,26 @@ public:
 
     //! Initiate a movement
     inline void moveTo(const Vector4<T> &target, int duration, bool isMaxDuration = false) {
-        if (duration) {
-            timer = 0;
-            src = current;
-            dst = target;
-            float cosTheta = src.dot(dst);
-            onTransition = true;
-            if (cosTheta < 0) {
-                dst = -dst;
-                cosTheta = src.dot(dst);
-            }
-            if (cosTheta < 1) {
-                theta = acos(cosTheta);
-                timerTarget = (isMaxDuration) ? (duration * (theta / M_PI)) : (duration);
-                invSinTheta = 1 / sin(theta);
-            } else {
-                timerTarget = 0;
-            }
+        timer = 0;
+        src = current;
+        dst = target;
+        float cosTheta = src.dot(dst);
+        onTransition = true;
+        if (cosTheta < 0) {
+            dst = -dst;
+            cosTheta = src.dot(dst);
+        }
+        if (cosTheta < 1) {
+            theta = acos(cosTheta);
+            timerTarget = (isMaxDuration) ? (duration * (theta / M_PI)) : (duration);
+            invSinTheta = 1 / sin(theta);
         } else {
-            setRotation(target);
+            timerTarget = 0;
         }
     }
     //! Initiate a movement relative to the final rotation of the last movement
     inline void moveRel(const Vector4<T> &relTarget, int duration, bool isMaxDuration = false) {
-        moveTo(dst.combineQuaternions(relTarget), duration, isMaxDuration);
+        moveTo(relTarget.combineQuaternions(dst), duration, isMaxDuration);
     }
     //! Set a rotation without any delay
     inline void setRotation(const Vector4<T> &target) {
@@ -44,9 +40,19 @@ public:
         mat = Matrix4<T>::fromQuaternion(target);
         outdatedCurrent = outdatedMat = onTransition = false;
     }
+    //! Set a rotation relative to the position before applying the rotation of this rotator
+    inline void setPreRotation(const Vector4<T> &relTarget) {
+        if (onTransition) {
+            src = src.combineQuaternions(relTarget);
+            dst = dst.combineQuaternions(relTarget);
+        } else {
+            dst = current = current.combineQuaternions(relTarget);
+            outdatedMat = true;
+        }
+    }
     //! Set a rotation relative to the final rotation of the last movement
     inline void setRelRotation(const Vector4<T> &relTarget) {
-        setRotation(dst.combineQuaternions(relTarget));
+        setRotation(relTarget.combineQuaternions(dst));
     }
     //! Return true if currently moving
     inline bool moving() const {
@@ -103,6 +109,10 @@ public:
     //! Return the time in milliseconds before the end of the movement
     inline int timeBeforeEnd() const {
         return (onTransition) ? (timerTarget - timer) : 0;
+    }
+    //! Return the quaternion of the end of the movement
+    inline const Vector4<T> &getTarget() const {
+        return (onTransition) ? current : dst;
     }
 private:
     float timer;

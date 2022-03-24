@@ -951,6 +951,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->getQuaternionMode();
 			coreLink->setQuaternionMode(newval);
 			break;
+		case FLAG_NAMES::FN_EYE_RELATIVE_MODE:
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->getEyeRelativeMode();
+			coreLink->setEyeRelativeMode(newval);
+			break;
 		default:
 			cLog::get()->write("no effect with unknown case ",LOG_TYPE::L_DEBUG);
 			break;

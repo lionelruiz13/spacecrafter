@@ -756,6 +756,14 @@ public:
 		return core->observatory->getQuaternionMode();
 	}
 
+	void setEyeRelativeMode(bool mode) {
+		core->observatory->setEyeRelativeMode(mode);
+	}
+
+	bool getEyeRelativeMode() const {
+		return core->observatory->getEyeRelativeMode();
+	}
+
 	//! change the Heading value
 	void moveHeadingRelative(float f) {
 		core->navigation->setHeading(core->navigation->getHeading() + f);

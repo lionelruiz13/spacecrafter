@@ -801,6 +801,18 @@ template<class T> Vector3<T>& Vector3<T>::operator*=(T s)
 	v[2] *= s;
 	return *this;
 }
+
+//!  /= operator
+//! @param the other vector to multiply.
+//! @return *this
+template<class T> Vector3<T>& Vector3<T>::operator/=(T s)
+{
+	v[0] /= s;
+	v[1] /= s;
+	v[2] /= s;
+	return *this;
+}
+
 //!  -= operator
 //! @return - this vector.
 template<class T> Vector3<T> Vector3<T>::operator-() const

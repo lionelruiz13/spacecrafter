@@ -48,9 +48,7 @@ public:
 	Observer();
 	~Observer();
 
-	void setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor){
-		anchor = _anchor;
-	}
+	void setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor);
 
 	std::shared_ptr<AnchorPoint> getAnchorPoint() const {
 		return anchor;
@@ -82,6 +80,8 @@ public:
 
 	//! renvoie la distance:  centre de la planete et altitude de l'observer
 	double getDistanceFromCenter(void) const;
+	//! modifie l'altitude pour correspondre à la distance entre le centre de la planète et l'observer voulu
+	void setDistanceFromCenter(double distance);
 
 	//! renvoie la matrice de position equatorial à partir de la position local de la planète
 	Mat4d getRotLocalToEquatorial(double jd) const;
@@ -167,6 +167,12 @@ public:
 	//! @param isMaxDuration is the given duration for a 180° rotation
 	void moveRel(const Vec4d &relTarget, int duration, bool isMaxDuration = false);
 
+	//! Perform a movement relative to eye, only work for instantaneous movements
+	void moveEyeRel(const Vec3d &eyeTarget);
+
+	//! Perform a movement relative to current position
+	void moveRel3D(const Vec3d &target);
+
 	//! Set quaternion angle (quaternion angle apply before every other transformations)
 	void setRotation(const Vec4d &target);
 
@@ -184,9 +190,21 @@ public:
 		return flag_quaternion_mode;
 	}
 
+	//! Tell if altitide movement should be forward movement
+	void setEyeRelativeMode(bool mode);
+
+	//! Return true if in quaterion mode
+	bool getEyeRelativeMode() const {
+		return flag_eye_relative_mode;
+	}
+
 	//! returns true if we are on the named body
 	bool isOnBodyNamed(const std::string& bodyName);
 
+	void setEyeMatrix(const Mat4d &mat_eye_to_local, const Mat4d &mat_altitude_to_earth_equ) {
+		this->mat_eye_to_local = mat_eye_to_local;
+		this->mat_altitude_to_earth_equ = mat_altitude_to_earth_equ;
+	}
 private:
 	double longitude;			//!< Longitude in degree
 	double latitude;			//!< Latitude in degree
@@ -199,6 +217,7 @@ private:
 	// for changing position
 	bool flag_move_to;
 	bool flag_quaternion_mode = false; // True for quaternion movements, false for lon/lat movements
+	bool flag_eye_relative_mode = false; // True to redirect movements in eye relative, require quaterion mode to be enabled
 	double start_lat, end_lat;
 	double start_lon, current_lon, rel_lon;
 	double start_alt, end_alt;
@@ -206,6 +225,9 @@ private:
 
 	std::shared_ptr<AnchorPoint> anchor = nullptr;
 	Rotator<double> rotator;
+
+	Mat4d mat_altitude_to_earth_equ; // observer altitude to anchor equatorial
+	Mat4d mat_eye_to_local;
 };
 
 #endif // _OBSERVER_H_

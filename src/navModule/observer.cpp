@@ -79,6 +79,13 @@ double Observer::getDistanceFromCenter(void) const
 		return altitude/(1000*AU);
 }
 
+void Observer::setDistanceFromCenter(double distance)
+{
+	if(anchor->isOnBody())
+		altitude = (distance - getHomeBody()->getRadius()) * (1000*AU);
+	else
+		altitude = distance*(1000*AU);
+}
 
 Mat4d Observer::getRotLocalToEquatorial(double jd) const
 {
@@ -199,21 +206,60 @@ void Observer::moveRelLon(double lon, int delay) {
 
 //! Move to relative altitude where home planet is fixed.
 void Observer::moveRelAlt(double alt, int delay) {
-	moveTo(latitude, longitude, altitude+alt, delay);
+	if (flag_eye_relative_mode && delay == 0) {
+		moveEyeRel(Vec3d(0, 0, alt));
+	} else
+		moveTo(latitude, longitude, altitude+alt, delay);
 }
 
 void Observer::moveRel(double lat, double lon, double alt, int duration, bool calculate_duration)
 {
 	if (flag_quaternion_mode) {
-		// zyrotation should be optimized
-		moveRel(Vec4d::zyrotation(lon*(M_PI/180.), -lat*(M_PI/180.)), duration);
-		lat = 0;
-		lon = 0;
+		if (duration) {
+			rotator.moveRel(Vec4d::zyrotation(lon*(M_PI/180.), -lat*(M_PI/180.)), duration);
+			if (alt) {
+				if (flag_move_to) {
+					end_alt += alt;
+				} else {
+					end_alt = altitude + alt;
+					flag_move_to = 1;
+				}
+				start_alt = altitude;
+				move_to_coef = 1.0f/duration;
+				move_to_mult = 0;
+			}
+		} else {
+			rotator.setRelRotation(Vec4d::zyrotation(lon*(M_PI/180.), -lat*(M_PI/180.)));
+			if (alt)
+				setAltitude(altitude+alt);
+		}
+	} else {
+		double latimem = latitude+lat;
+		if (latimem>90) latimem=90;
+		if (latimem<-90) latimem=-90;
+		moveTo(latimem, longitude+lon, altitude+alt, duration, calculate_duration);
 	}
-	double latimem = latitude+lat;
-	if (latimem>90) latimem=90;
-	if (latimem<-90) latimem=-90;
-	moveTo(latimem, longitude+lon, altitude+alt, duration, calculate_duration);
+}
+
+void Observer::moveEyeRel(const Vec3d &eyeTarget)
+{
+	// Note : Lack of eye compensation...
+	moveRel3D(mat_eye_to_local * eyeTarget);
+}
+
+void Observer::moveRel3D(const Vec3d &target)
+{
+	Vec3d local_to_altitude(0., 0., getDistanceFromCenter());
+	Vec3d relativeRotation = Vec3d(0., 0., getDistanceFromCenter()) + target;
+	double targetDistanceFromCenter = relativeRotation.length();
+	setDistanceFromCenter(targetDistanceFromCenter);
+	relativeRotation /= targetDistanceFromCenter;
+	double lon, lat;
+	Utility::rectToSphe(&lon, &lat, relativeRotation);
+	rotator.setPreRotation(mat_altitude_to_earth_equ.toQuaternion().combineQuaternions(Vec4d::zyrotation(lon, lat)));
+	// Should perform some heading compensation, as it might move...
+	if (!rotator.moving())
+		rotator.getMatrix(); // Update internal cache, as we use getCachedMatrix later-on
 }
 
 void Observer::moveTo(const Vec4d &target, int duration, bool isMaxDuration)
@@ -237,20 +283,20 @@ void Observer::setRelRotation(const Vec4d &relTarget)
 }
 
 bool Observer::isOnBodyNamed(const std::string& bodyName){
-	
+
 	if(anchor == nullptr)
 		return false;
-	
+
 	if(!isOnBody())
 		return false;
-	
+
 	std::shared_ptr<Body> b = getHomeBody();
-	
+
 	if(b != nullptr)
 		return getHomeBody()->getEnglishName() == bodyName;
-	
+
 	return false;
-	
+
 }
 
 std::string Observer::getHomePlanetEnglishName(void) const
@@ -342,4 +388,21 @@ void Observer::setQuaternionMode(bool mode)
 			moveTo({1, 0, 0, 0}, 10000, true);
 		}
 	}
+}
+
+void Observer::setEyeRelativeMode(bool mode)
+{
+	flag_eye_relative_mode = mode;
+}
+
+void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
+{
+	if (flag_eye_relative_mode) {
+		// In eye relative mode, we want to be able to dynamically change of anchor without moving
+		// auto current = rotator.getQuaternion();
+		// auto relTarget = rotator.getQuaternion().inverse().combineQuaternions(rotator.getTarget());
+		// auto time = rotator.timeBeforeEnd();
+		anchor = _anchor;
+	} else
+		anchor = _anchor;
 }

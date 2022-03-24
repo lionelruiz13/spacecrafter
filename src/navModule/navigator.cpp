@@ -222,7 +222,7 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 
 	mat_equ_to_vsop87 = position->getRotEquatorialToVsop87();
 
-	mat_earth_equ_to_j2000 = mat_vsop87_to_j2000 * position->getRotEquatorialToVsop87();
+	mat_earth_equ_to_j2000 = mat_vsop87_to_j2000 * mat_equ_to_vsop87;
 	mat_j2000_to_earth_equ = mat_earth_equ_to_j2000.transpose();
 
 	mat_helioToEarthEqu =
@@ -240,6 +240,8 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 	                      tmp *
 	                      Mat4d::translation(Vec3d(0.,0., position->getDistanceFromCenter()));
 
+	// This define the local movement expected : mat_helio_to_local * local_movement * mat_local_to_helio
+
 	mat_helio_to_local =  Mat4d::translation(Vec3d(0.,0.,-position->getDistanceFromCenter())) *
 	                      tmp.transpose() *
 	                      Mat4d::translation(-position->getObserverCenterPoint());
@@ -250,6 +252,8 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 	                   0, 0, 0, 1);
 
 	mat_dome = Mat4d::zrotation(heading*M_PI/180.f) * mat_dome_fixed;
+
+	position->setEyeMatrix(mat_eye_to_local, mat_local_to_earth_equ);
 }
 
 
@@ -307,12 +311,13 @@ void Navigator::updateViewMat(double fov)
 
 	// heading
 	mat_local_to_eye =  Mat4d::zrotation(heading*M_PI/180.f + 0.0001) * mat_local_to_eye;
+	mat_eye_to_local = mat_local_to_eye.transpose();
 
 	// cout << "heading : " << heading*M_PI/180.f + 0.0001 << endl;
 
 	heading_vector = Vec3d(0,1,0);
 
-	heading_vector = mat_equ_to_vsop87 * mat_local_to_earth_equ * mat_local_to_eye.transpose() * heading_vector;
+	heading_vector = mat_equ_to_vsop87 * mat_local_to_earth_equ * mat_eye_to_local * heading_vector;
 
 	// cout << heading_vector << endl;
 

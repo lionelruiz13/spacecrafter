@@ -230,6 +230,7 @@ private:
 	Mat4d mat_j2000_to_earth_equ;
 
 	Mat4d mat_local_to_eye;			//!< {Main matrix} View matrix for observer local drawing (exclude camera position)
+	Mat4d mat_eye_to_local;			//!< Eye to local, used to compute movement relative to eye
 
 	Mat4d mat_earth_equ_to_eye;		//!< View matrix for geocentric equatorial drawing
 	Mat4d mat_earth_equ_to_eye_fixed;		//!< View matrix for geocentric equatorial drawing
