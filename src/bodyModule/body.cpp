@@ -747,7 +747,7 @@ double Body::calculateBoundingRadius()
 
 void Body::computeDraw(const Projector* prj, const Navigator* nav)
 {
-	eye_sun = nav->getHelioToEyeMat() * v3fNull;
+	eye_sun = nav->getHelioToEyeMat().getTranslation();
 
 	mat = mat_local_to_parent;
 	parent_mat = Mat4d::identity();
@@ -786,11 +786,10 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 	mat = nav->getHelioToEyeMat() * mat;
 
 	proj = prj->getMatProjection().convert();
-	matrix=mat.convert();
 
 	parent_mat = nav->getHelioToEyeMat() * parent_mat;
 
-	eye_planet = mat * v3fNull;
+    eye_planet = mat.getTranslation();
 
 	lightDirection = eye_sun - eye_planet;
 	sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!

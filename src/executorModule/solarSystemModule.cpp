@@ -229,24 +229,6 @@ bool SolarSystemModule::testValidAltitude(double altitude)
 	return false;
 }
 
-void SolarSystemModule::atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos )
-{
-	core->atmosphere->computeColor(core->timeMgr->getJDay(), sunPos, moonPos,
-	                          core->ssystemFactory->getMoon()->get_phase(core->ssystemFactory->getEarth()->get_heliocentric_ecliptic_pos()),
-	                          core->tone_converter, core->projection, observer->getLatitude(), observer->getAltitude(),
-	                          15.f, 40.f);	// Temperature = 15c, relative humidity = 40%
-}
-
-void SolarSystemModule::hipStarMgrPreDraw()
-{
-	core->hip_stars->preDraw(core->geodesic_grid, core->tone_converter, core->projection, core->navigation, core->timeMgr.get(),core->observatory->getAltitude(), core->atmosphere->getFlagShow() && core->FlagAtmosphericRefraction);
-}
-
-void SolarSystemModule::ssystemComputePreDraw()
-{
-	core->ssystemFactory->computePreDraw(core->projection, core->navigation);
-}
-
 void SolarSystemModule::asyncUpdateBegin(std::pair<Vec3d, Vec3d> data)
 {
     asyncWorkState = true;

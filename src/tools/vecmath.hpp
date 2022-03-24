@@ -229,6 +229,7 @@ public:
 	static constexpr Vector4 yrotation(T angle);
 	static constexpr Vector4 zrotation(T angle);
 	static constexpr Vector4 zyrotation(T zangle, T yangle);
+	static constexpr Vector4 yzrotation(T yangle, T zangle);
 
 	inline const T            dot     (const Vector4<T>&)const;
 	inline const Vector4<T>   cross   (const Vector4<T>&)const;
@@ -312,6 +313,7 @@ public:
 	Matrix4<T> fastInverse() const;
 	Vector4<T> toQuaternion() const;
 	void setAsOrthonormalFromZ();
+	Vector3<T> getTranslation() const;
 	const Vec4f getVector(int column)const;
 
 	Matrix4<T> linearMix(const Matrix4<T> other,const T coef )const;
@@ -1260,7 +1262,24 @@ template<class T> constexpr Vector4<T> Vector4<T>::zrotation(T angle)
 
 template<class T> constexpr Vector4<T> Vector4<T>::zyrotation(T zangle, T yangle)
 {
-	return zrotation(zangle).combineQuaternions(yrotation(yangle));
+	T zr = sqrt(2 + 2 * cos(zangle));
+	T yr = sqrt(2 + 2 * cos(yangle));
+	T zs = sin(zangle) / zr;
+	T ys = sin(yangle) / yr;
+	zr /= 2;
+	yr /= 2;
+	return Vector4<T>(zr*yr, -zs*ys, zr*ys, yr*zs);
+}
+
+template<class T> constexpr Vector4<T> Vector4<T>::yzrotation(T yangle, T zangle)
+{
+	T yr = sqrt(2 + 2 * cos(yangle));
+	T zr = sqrt(2 + 2 * cos(zangle));
+	T ys = sin(yangle) / yr;
+	T zs = sin(zangle) / zr;
+	yr /= 2;
+	zr /= 2;
+	return Vector4<T>(yr*zr, ys*zs, yr*zs, zr*ys);
 }
 
 //! dot product.
@@ -2180,6 +2199,11 @@ template<class T> void Matrix4<T>::setAsOrthonormalFromZ()
 	setVector(f,2);
 	setVector(s,0);
 	setVector(t,1);
+}
+
+template<class T> Vector3<T> Matrix4<T>::getTranslation() const
+{
+	return Vector3<T>(r[12], r[13], r[14]);
 }
 
 //! Get a vector of the matrix.

@@ -42,6 +42,14 @@ do
     glslc $src -o $dst -I . --target-env="vulkan1.1"
 done
 echo "==============================================="
+echo "======== COMPUTE SHADER ========"
+for src in *.comp
+do
+    dst="../compiled/$src.spv"
+    echo "compile $src"
+    glslc $src -o $dst -I . --target-env="vulkan1.1"
+done
+echo "==============================================="
   exit 0
 fi
 for src in $@

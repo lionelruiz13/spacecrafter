@@ -43,10 +43,6 @@ public:
 	virtual void draw(int delta_time) override;
 	virtual bool testValidAltitude(double altitude) override;
 
-    void atmosphereComputeColor(Vec3d sunPos, Vec3d moonPos );
-    void hipStarMgrPreDraw();
-    void ssystemComputePreDraw();
-
 private:
     // Start async update
     void asyncUpdateBegin(std::pair<Vec3d, Vec3d> data);
