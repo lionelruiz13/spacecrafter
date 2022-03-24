@@ -13,21 +13,25 @@ public:
 
     //! Initiate a movement
     inline void moveTo(const Vector4<T> &target, int duration, bool isMaxDuration = false) {
-        timer = 0;
-        src = current;
-        dst = target;
-        float cosTheta = src.dot(dst);
-        onTransition = true;
-        if (cosTheta < 0) {
-            dst = -dst;
-            cosTheta = src.dot(dst);
-        }
-        if (cosTheta < 1) {
-            theta = acos(cosTheta);
-            timerTarget = (isMaxDuration) ? (duration * (theta / M_PI)) : (duration);
-            invSinTheta = 1 / sin(theta);
+        if (duration) {
+            timer = 0;
+            src = current;
+            dst = target;
+            float cosTheta = src.dot(dst);
+            onTransition = true;
+            if (cosTheta < 0) {
+                dst = -dst;
+                cosTheta = src.dot(dst);
+            }
+            if (cosTheta < 1) {
+                theta = acos(cosTheta);
+                timerTarget = (isMaxDuration) ? (duration * (theta / M_PI)) : (duration);
+                invSinTheta = 1 / sin(theta);
+            } else {
+                timerTarget = 0;
+            }
         } else {
-            timerTarget = 0;
+            setRotation(target);
         }
     }
     //! Initiate a movement relative to the final rotation of the last movement

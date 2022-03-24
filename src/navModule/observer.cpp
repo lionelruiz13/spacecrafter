@@ -204,15 +204,15 @@ void Observer::moveRelAlt(double alt, int delay) {
 
 void Observer::moveRel(double lat, double lon, double alt, int duration, bool calculate_duration)
 {
-	double latimem = latitude+lat;
-	if (latimem>90) latimem=90;
-	if (latimem<-90) latimem=-90;
 	if (flag_quaternion_mode) {
 		// zyrotation should be optimized
 		moveRel(Vec4d::zyrotation(lon*(M_PI/180.), -lat*(M_PI/180.)), duration);
 		lat = 0;
 		lon = 0;
 	}
+	double latimem = latitude+lat;
+	if (latimem>90) latimem=90;
+	if (latimem<-90) latimem=-90;
 	moveTo(latimem, longitude+lon, altitude+alt, duration, calculate_duration);
 }
 
