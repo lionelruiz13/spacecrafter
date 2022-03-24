@@ -29,6 +29,7 @@
 #include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "navModule/anchor_point.hpp"
+#include "navModule/anchor_point_observatory.hpp"
 
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 {
@@ -135,7 +136,7 @@ void SSystemFactory::loadGalacticSystem(const std::string &name)
         }
 		file.close();
     } else {
-        galacticAnchorMgr->addAnchor("Sun", std::make_shared<AnchorPoint>(0, 0, 0));
+        galacticAnchorMgr->addAnchor("Sun", std::make_shared<AnchorPointObservatory>(0, 0, 0));
     }
 }
 
