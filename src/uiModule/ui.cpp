@@ -548,6 +548,7 @@ void UI::leftClick()
 {
 	handleClic(posMouseX, posMouseY, s_gui::S_GUI_MOUSE_LEFT, s_gui::S_GUI_PRESSED);
 	handleClic(posMouseX, posMouseY, s_gui::S_GUI_MOUSE_LEFT, s_gui::S_GUI_RELEASED);
+	this->executeCommand("define a -1");
 }
 
 void UI::rightClick()
