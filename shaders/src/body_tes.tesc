@@ -33,11 +33,19 @@ void main(void)
     if (ID == 0) {
         vec4 center = (glPositionIn[0] + glPositionIn[1] + glPositionIn[2]) / 3;
         float centerDistance = sqrt(center.x * center.x + center.y * center.y);
-        vec3 tes = vec3(distance(glPositionIn[1].xy, glPositionIn[2].xy),
-                        distance(glPositionIn[0].xy, glPositionIn[2].xy),
-                        distance(glPositionIn[0].xy, glPositionIn[1].xy));
-        if (centerDistance > 1 + (tes.x + tes.y + tes.z)/2 + max(0, dot(center.xy, center.xy - center.zw) / centerDistance)) {
+        vec2 v0 = glPositionIn[0].xy;
+        vec2 v1 = glPositionIn[1].xy;
+        vec2 v2 = glPositionIn[2].xy;
+        vec3 tes = vec3(distance(v1, v2),
+                        distance(v0, v2),
+                        distance(v0, v1));
+        v1 -= v0;
+        v2 -= v0;
+        if (centerDistance > (1 + (tes.x + tes.y + tes.z)/2 + max(0, dot(center.xy, center.xy - center.zw) / centerDistance)) * float(v1.x * v2.y > v1.y * v2.x)) {
             gl_TessLevelInner[0]=0;
+            gl_TessLevelOuter[0]=0;
+            gl_TessLevelOuter[1]=0;
+            gl_TessLevelOuter[2]=0;
             return;
 	}
         tes = clamp(tes * 128, TesParam[0], TesParam[1]);
