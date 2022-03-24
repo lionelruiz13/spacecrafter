@@ -88,7 +88,7 @@ void BodyTrace::createSC_context()
 
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
-	pipeline->setDepthStencilMode(VK_TRUE, VK_TRUE);
+	pipeline->setDepthStencilMode(VK_FALSE, VK_FALSE);
 	pipeline->bindVertex(*pattern);
 	pipeline->bindShader("body_trace.vert.spv");
 	pipeline->bindShader("body_trace.geom.spv");
