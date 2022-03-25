@@ -6,7 +6,7 @@
 #pragma optimize(off)
 
 
-layout (push_constant) uniform uColor {layout (offset=64) vec3 Color;};
+layout (push_constant) uniform uColor {vec3 Color;};
 
 layout (location=0) out vec4 FragColor;
 
@@ -15,8 +15,4 @@ layout (location=0) in float indice;
 void main(void)
 {
 	FragColor = vec4(Color, indice);
-
-	//Coloration en rouge, on indique au programme que l'on veut du rouge !
-	// couleur R G B A ou A est la transparence
-	//~ FragColor = vec4 (1.0, 0.0, 0.0, fader);
 }

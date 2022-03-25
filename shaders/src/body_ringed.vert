@@ -20,14 +20,14 @@ layout (binding=2) uniform custom {
 	mat4 ModelViewMatrixInverse;
 };
 
-#include <fisheye_noMV.glsl>
+#include <cam_block.glsl>
+#include <fisheye.glsl>
 
 //layout
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
-#include <cam_block.glsl>
 
 //out
 layout (location=0) out vec2 TexCoord;
@@ -53,12 +53,12 @@ void main()
 	vec3 positionL = planetRadius * position ;
 	positionL.z = positionL.z * planetOneMinusOblateness;
 	OriginalPosition = positionL;
-	Position = vec3(ModelViewMatrix * vec4(positionL,1.0));  
+	Position = vec3(ModelViewMatrix * vec4(positionL,1.0));
 	Light = normalize(LightPosition - Position);
 
 	//Other
 	vec3 Normal = normalize(mat3(NormalMatrix) * normal);
-	ModelLight = vec3(ModelViewMatrixInverse * vec4(Light,1.0)); 
+	ModelLight = vec3(ModelViewMatrixInverse * vec4(Light,1.0));
 	NdotL = dot(Normal, Light);
 	TexCoord = texcoord;
 	Ambient = ambient;

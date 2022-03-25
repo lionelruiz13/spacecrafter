@@ -10,33 +10,26 @@
 layout (lines) in;
 layout (line_strip, max_vertices = 2) out;
 
-//externe
-layout (push_constant) uniform uMat {mat4 Mat;};
-
-#include <cam_block_only.glsl>
-#include <custom_project.glsl>
-
 layout (location=0) in float indice[2];
 layout (location=0) out float indiceOut;
 
+#include <cam_block_only.glsl>
+
+#define SQUARED_TOLERANCE 0.16
+
 void main(void)
 {
-	vec4 pos1, pos2;
+	vec2 dist = gl_in[1].gl_Position.xy - gl_in[0].gl_Position.xy;
 
-	pos1 = custom_project(gl_in[0].gl_Position);
-	pos2 = custom_project(gl_in[1].gl_Position);
-
-	if ( pos1.w==1.0 && pos2.w==1.0) {
-		pos1.z = 0.0; pos2.z==1.0;
-
-		gl_Position = MVP2D * pos1;
+	if (main_clipping_fov[2] < 300.0 || dot(dist, dist) < SQUARED_TOLERANCE) {
+		gl_Position = gl_in[0].gl_Position;
 		indiceOut = indice[0];
 		EmitVertex();
 
-		gl_Position = MVP2D * pos2;
+		gl_Position = gl_in[1].gl_Position;
 		indiceOut = indice[1];
 		EmitVertex();
 
-		EndPrimitive();	
+		EndPrimitive();
 	}
 }

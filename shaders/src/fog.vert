@@ -14,7 +14,7 @@ layout (binding=1, set=1) uniform ubo {
 	mat4 ModelViewMatrix;
 };
 //fisheye projection inclusion
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 // for main_clipping_fov
 #include <cam_block_only.glsl>

@@ -30,15 +30,15 @@ void main()
 	// position de la galaxie
 	vec4 pos = custom_project( gl_in[0].gl_Position );
 	// distance de la galaxie à la caméra correspond anciennement à d=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
-	float distance = length(gl_in[0].gl_Position-vec4(camPos, 1.0)); 
+	float dist = distance(vec3(gl_in[0].gl_Position), camPos);
 	// taille apparente de la galaxie correspond à radiusTully.push_back(.3/(d*scaleTully[i]));
-	float radius = 0.3 / (scale[0] * distance);
+	float radius = 0.3 / (scale[0] * dist);
+	pos.z = clamp(pos.z, 0, 1);
 
 	if (pos.w == 1.0) {
 		if (radius<2.0) {
 			float intensity = max(min(radius,0.9), 0.3);
 			gl_Position   = MVP2D * ( pos );
-			gl_Position.z = clamp(pos.z, 0, 1);
 			gl_PointSize = radius;
 			TexColor= color[0];
 			intensityOut = intensity;

@@ -20,6 +20,7 @@ layout (binding=0) uniform globalProj {
 	float planetOneMinusOblateness;
 };
 
+#include <cam_block.glsl>
 #include <fisheye2D.glsl>
 
 layout(location=0) out vec3 PositionOut;

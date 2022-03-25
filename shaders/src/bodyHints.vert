@@ -14,4 +14,3 @@ void main()
 {
 	gl_Position = MVP2D * vec4(position,0.0,1.0);
 }
-

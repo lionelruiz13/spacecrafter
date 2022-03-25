@@ -6,13 +6,14 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
+layout (binding=0) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
+#include <cam_block.glsl>
 #include <fisheye.glsl>
 
 //layout
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 
-#include <cam_block.glsl>
 
 //externe
 layout(binding=3) uniform ubo1 {float planetScaledRadius;};

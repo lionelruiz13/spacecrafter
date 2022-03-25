@@ -19,7 +19,7 @@ layout (binding=0, set=2) uniform custom {
 	mat4 NormalMatrix;
 };
 
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 //uniform vec3 clipping_fov;
 //uniform mat4 ProjectionMatrix;

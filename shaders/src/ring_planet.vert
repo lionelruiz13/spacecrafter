@@ -18,7 +18,7 @@ layout (binding=0, set=0) uniform ubo {
 	float fadingFactor;
 };
 
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 //layout
 layout (location=0)in vec3 Position3D; // Missing component 2 is set to 0 (see Vulkan spec)
@@ -45,7 +45,7 @@ void main()
 	vec3 modelLight = vec3(ModelViewMatrixInverse * vec4(LightDirection,1.0));
 
 	NdotL = clamp(16.0*dot(vec3(0.0, 0.0, 1.0-2.0*SunnySideUp), modelLight), -1.0, 1.0);
-	
+
 	vec4 outPos = fisheyeProject(Position3D*RingScale, clipping_fov);
 	// fading depend on how close we are, thus on z value
 	fading = min(1, (outPos.z * (clipping_fov[1] - clipping_fov[0]) + clipping_fov[0]) * clipping_fov[2] * fadingFactor);

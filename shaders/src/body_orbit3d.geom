@@ -14,7 +14,7 @@ layout (push_constant) uniform ubo {
 	vec3 clipping_fov;
 };
 
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 //layout
 layout (lines) in;

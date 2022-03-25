@@ -19,7 +19,7 @@ layout (binding=1, set=2) uniform artGeom {
 	vec3 clipping_fov;
 };
 
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 //in-out
 layout (location=0) in vec3 Position[3];
@@ -40,7 +40,7 @@ void main(void)
 
     for(int i=0; i<3; i++)
         pos[i] = fisheyeProject(Position[i], clipping_fov);
-    
+
     vec2 pos0 = pos[0].xy;
     if (clipping_fov[2] < 300.0 || (length(pos0 - pos[1].xy) + length(pos0 - pos[2].xy)) < TOLERANCE) {
         for(int i=0; i<3; i++) {

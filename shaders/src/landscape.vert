@@ -8,7 +8,7 @@
 
 //fisheye projection inclusion
 layout (binding=2, set=1) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 // for main_clipping_fov
 #include <cam_block_only.glsl>

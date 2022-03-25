@@ -23,7 +23,7 @@ layout (binding=0) uniform globalProj {
 };
 
 #include <cam_block.glsl>
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 layout (binding=2) uniform globalTescGeom {
 	ivec3 TesParam;         // [min_tes_lvl, max_tes_lvl, coeff_altimetry]

@@ -13,6 +13,7 @@ layout (std140) uniform cam_block
 	mat4 MVP2D;
 	float ambient;
 	float time;
+	bool allsphere
 };
 */
 
@@ -26,6 +27,7 @@ struct UBOData {
 	Mat4f MVP2D;
 	float ambient;
 	float time;
+	VkBool32 allsphere;
 };
 
 class UBOCam {
@@ -34,6 +36,7 @@ private:
 	PipelineLayout *globalLayout;
 	Set *globalSet;
 	float time = 0;
+	bool lastAllsphere = false;
 public:
 	UBOCam();
 	~UBOCam();
@@ -58,6 +61,7 @@ public:
 	}
 
 	void setTime(float time) {
+		this->time = time;
 		UBOdata->time = time;
 	}
 
@@ -67,6 +71,13 @@ public:
 
 	float getAmbientLight() {
 		return UBOdata->ambient;
+	}
+
+	void setAllsphere(bool state) {
+		if (state != lastAllsphere) {
+			UBOdata->allsphere = state;
+			lastAllsphere = state;
+		}
 	}
 
 	static SharedBuffer<UBOData> *ubo;

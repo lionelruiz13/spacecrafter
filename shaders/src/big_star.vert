@@ -14,7 +14,7 @@ layout (binding=0, set=1) uniform ubo {
     float radius;
 };
 
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 #include <cam_block_only.glsl>
 
 void main()

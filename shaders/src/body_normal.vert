@@ -16,14 +16,14 @@ layout (binding=0) uniform globalVertProj {
 	float planetOneMinusOblateness;
 };
 
-#include <fisheye_noMV.glsl>
+#include <cam_block.glsl>
+#include <fisheye.glsl>
 
 //layout
 layout (location=0)in vec3 position;
 layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
-#include <cam_block.glsl>
 
 //out
 layout (location=0) out vec2 TexCoord;
@@ -47,7 +47,7 @@ void main()
     //Light
 	vec3 positionL = planetRadius * position ;
 	positionL.z = positionL.z * planetOneMinusOblateness;
-	Position = vec3(ModelViewMatrix * vec4(positionL,1.0));  
+	Position = vec3(ModelViewMatrix * vec4(positionL,1.0));
 	Light = normalize(LightPosition - Position);
 
 	//Other

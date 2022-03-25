@@ -103,15 +103,14 @@ void Trail::drawTrail(VkCommandBuffer &cmd, const Navigator * nav, const Project
         pipeline->bind(cmd);
         const VkDeviceSize offset = vertex->get().offset + vertexOffset * m_dataGL->alignment;
         vkCmdBindVertexBuffers(cmd, 0, 1, &vertex->get().buffer, &offset);
-        auto tmp1 = prj->getMatEarthEquToEye();
-        auto tmp2 = body->myColor->getTrail();
-		layout->pushConstant(cmd, 1, &tmp1);
-		layout->pushConstant(cmd, 2, &tmp2);
+        auto tmp1 = body->myColor->getTrail();
+        layout->pushConstant(cmd, 0, &tmp1);
         struct {
             int vertexCount;
+            Mat4f modelViewMatrix;
             float fader;
-        } cstData {nbPos, trail_fader.getInterstate()};
-        layout->pushConstant(cmd, 0, &cstData);
+        } cstData {nbPos, prj->getMatEarthEquToEye(), trail_fader.getInterstate()};
+        layout->pushConstant(cmd, 1, &cstData);
         layout->bindSet(cmd, *context.uboSet);
         vkCmdDraw(cmd, trail.size(), 1, 0, 0);
 	}
@@ -190,9 +189,8 @@ void Trail::createSC_context()
 
     layout = new PipelineLayout(vkmgr);
     context.layouts.emplace_back(layout);
-    layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, sizeof(Mat4f) + sizeof(Vec3f), sizeof(int) + sizeof(float));
-    layout->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, 0, sizeof(Mat4f));
-    layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, sizeof(Mat4f), sizeof(Vec3f));
+    layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec3f));
+    layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, sizeof(Vec3f), sizeof(int) + sizeof(Mat4f) + sizeof(float));
     layout->setGlobalPipelineLayout(context.layouts.front().get());
     layout->build();
 

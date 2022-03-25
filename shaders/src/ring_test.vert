@@ -13,7 +13,7 @@ layout (binding=0, set=0) uniform ubo {
 
 layout (constant_id = 0) const float scale = 1.;
 
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 layout (location=0) in vec3 position;
 

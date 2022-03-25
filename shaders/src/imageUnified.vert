@@ -16,7 +16,7 @@ layout (push_constant) uniform uVert {
 	mat4 ModelViewMatrix;
 	layout (offset=64) vec3 clipping_fov;
 };
-#include <fisheye_noMV.glsl>
+#include <fisheye.glsl>
 
 layout (location=0) out vec2 TexCoord;
 

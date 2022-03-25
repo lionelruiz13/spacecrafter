@@ -18,10 +18,12 @@ layout (set = 0, binding = 1) uniform cam_block
 	mat4 MVP2D;
 	float ambient;
 	float time;
+	bool allsphere;
 };
 
 layout (location=0) in float mag[];
 layout (location=1) in vec3 color[];
+layout (location=2) in vec2 position[];
 
 layout (location=0) out vec2 TexCoord;
 layout (location=1) out vec3 TexColor;
@@ -31,26 +33,27 @@ void main(void)
 {
     float mag1 = mag[0]/2;
     float mag2 = -mag1;
+	vec2 pos = position[0];
     //en bas à droite
-    gl_Position   = MVP2D * (gl_in[0].gl_Position+vec4(mag1, mag2, 0.0, 0.0));
+    gl_Position   = MVP2D * vec4(pos+vec2(mag1, mag2), 0.0, 1.0);
     TexCoord= vec2(1.0f, .0f);
     TexColor= color[0];
     EmitVertex();
 
     // en haut à droite
-    gl_Position   = MVP2D * (gl_in[0].gl_Position+vec4(mag1, mag1, 0.0, 0.0));
+    gl_Position   = MVP2D * vec4(pos+vec2(mag1, mag1), 0.0, 1.0);
     TexCoord= vec2(1.0f, 1.0f);
     TexColor= color[0];
-    EmitVertex();    
+    EmitVertex();
 
     // en Bas à gauche
-    gl_Position   = MVP2D * (gl_in[0].gl_Position+vec4(mag2, mag2, 0.0,0.0));
+    gl_Position   = MVP2D * vec4(pos+vec2(mag2, mag2), 0.0,1.0);
     TexCoord= vec2(0.0f, 0.0f);
     TexColor= color[0];
     EmitVertex();
 
     // en haut à gauche
-    gl_Position   = MVP2D * (gl_in[0].gl_Position+vec4(mag2, mag1,0.0,0.0));
+    gl_Position   = MVP2D * vec4(pos+vec2(mag2, mag1),0.0,1.0);
     TexCoord= vec2(0.0f, 1.0f);
     TexColor= color[0];
     EmitVertex();
@@ -58,5 +61,3 @@ void main(void)
 
     EndPrimitive();
 }
-
- 

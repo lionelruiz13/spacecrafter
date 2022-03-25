@@ -289,7 +289,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_NEAREST;
 	m_layoutStars = std::make_unique<PipelineLayout>(vkmgr);
 	m_layoutStars->setTextureLocation(0, &samplerInfo);
-	m_layoutStars->setUniformLocation(VK_SHADER_STAGE_GEOMETRY_BIT, 1);
+	m_layoutStars->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, 1);
 	m_layoutStars->buildLayout();
 	m_layoutStars->build();
 	m_setStars = std::make_unique<Set>(vkmgr, *context.setMgr, m_layoutStars.get());
