@@ -65,7 +65,7 @@ bool s_texture::loadInLowResolution = false;
 unsigned int s_texture::lowResMax = MAX_LOW_RES;
 unsigned int s_texture::minifyMax = 4*1024*1024; // Maximal size of texture preview
 bool s_texture::releaseThisFrame = true;
-bool s_texture::wantReleaseAllMemory = false;
+int s_texture::wantReleaseAllMemory = 0;
 std::vector<std::shared_ptr<s_texture::texRecap>> s_texture::releaseMemory[3];
 std::vector<std::unique_ptr<Texture>> s_texture::releaseTexture[3];
 short s_texture::releaseIdx = 0;
@@ -539,7 +539,7 @@ void s_texture::releaseUnusedMemory()
 
 void s_texture::releaseAllMemory()
 {
-    wantReleaseAllMemory = true;
+    ++wantReleaseAllMemory;
     cLog::get()->write("Attempt to release as many memory as possible", LOG_TYPE::L_DEBUG);
     for (auto it = bigTextures.begin(); it != bigTextures.end();) {
         auto tmp = it++;
@@ -708,14 +708,15 @@ void s_texture::bigTextureLoader()
     bigTextureQueue.acquire();
     while (bigTextureQueue.pop(tex)) {
         if (wantReleaseAllMemory) {
-            while (tex != nullptr) {
+            if (tex) {
                 if (tex->texture) {
                     tex->texture.reset();
                 } else {
                     currentAllocation -= (tex->width * tex->height * 4+2)/3 * (tex->formatIdx + 1);
                 }
+            } else {
+                --wantReleaseAllMemory;
             }
-            wantReleaseAllMemory = false;
             continue;
         }
         while (droppedTextureQueue.pop(droppedTex)) {

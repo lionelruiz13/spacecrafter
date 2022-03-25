@@ -222,7 +222,7 @@ private:
 	static unsigned int lowResMax;
 	static unsigned int minifyMax; // Maximal size of texture preview
 	static bool releaseThisFrame; // Tell if releaseUnusedMemory have been called in this frame
-	static bool wantReleaseAllMemory; // Tell the Big texture loader to release all memory
+	static int wantReleaseAllMemory; // Tell the Big texture loader to release all memory
 	static std::map<std::string, std::weak_ptr<texRecap>> texCache;
 	static std::list<bigTexRecap> bigTextures;
 	static std::list<bigTexRecap> droppedBigTextures; // Big texture which have been freed
