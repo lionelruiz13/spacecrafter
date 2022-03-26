@@ -5,17 +5,12 @@
 #pragma debug(on)
 #pragma optimize(off)
 
-layout (set = 1, binding=0) uniform sampler2D mapTexture;
-layout(constant_id = 0) const bool useTexture = false;
-
 layout (location=0) out vec4 FragColor;
 
 layout (location=0) in vec3 Position;
 layout (location=1) in vec2 TexCoord;
 layout (location=2) in vec3 Normal;
 layout (location=3) in float Ambient;
-
-//uniform bool useTexture;
 
 layout (binding=2, set=2) uniform LightInfo {
     vec3 Position;	// Light position in eye coords.
@@ -51,10 +46,7 @@ float simple(vec3 pos, vec3 norm) {
 void main()
 {
   vec4 texColor;
-  if (useTexture)
-		texColor = texture(mapTexture, TexCoord);
-	else
-		texColor = vec4(Material.Ka,1.0);
+  texColor = vec4(Material.Ka,1.0);
 
   vec3 ambAndDiff, spec;
   phongModel(Position, Normal, ambAndDiff, spec );

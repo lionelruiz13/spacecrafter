@@ -242,9 +242,7 @@ void BodyShader::createShader()
 		shaderArtificial.pipeline[i].bindVertex(*context.ojmVertexArray);
 		shaderArtificial.pipeline[i].bindShader("body_artificial.vert.spv");
 		shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
-		shaderArtificial.pipeline[i].bindShader("body_artificial.frag.spv");
-		VkBool32 useTexture = !(i & 1);
-		shaderArtificial.pipeline[i].setSpecializedConstant(0, &useTexture, sizeof(useTexture));
+		shaderArtificial.pipeline[i].bindShader((i & 1) ? "body_artificial_notex.frag.spv" : "body_artificial_tex.frag.spv");
 		if (i & 2)
 			shaderArtificial.pipeline[i].setDepthStencilMode();
 	}
