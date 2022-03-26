@@ -519,10 +519,10 @@ private:
 
 	std::vector<starDBtoDraw> starNameToDraw;
 
-	int nbStarsToDraw;
+	int nbStarsToDraw[2];
 	void createShaderParams(int width,int height);
 	std::unique_ptr<Texture> depthBuffer;
-	SubBuffer staging;
+	SubBuffer staging[2];
 	float *vertexData;
 	int cmds[3] {-1, -1, -1};
 	std::unique_ptr<PipelineLayout> m_layoutStars, m_layoutFBO;
@@ -543,6 +543,8 @@ private:
 	bool starTrace = false;
 	unsigned char lastSync;
 	unsigned char nextSync;
+	unsigned char drawIdx = 0;
+	unsigned char submitIdx = 0;
 };
 
 

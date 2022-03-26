@@ -282,7 +282,8 @@ void HipStarMgr::createShaderParams(int width,int height)
 	m_starsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // COLOR
 	m_starsGL->addInput(VK_FORMAT_R32_SFLOAT); // MAG
 	vertexStars = m_starsGL->createBuffer(0, NBR_MAX_STARS, context.globalBuffer.get());
-	staging = context.stagingMgr->acquireBuffer(vertexStars->get().size);
+	staging[0] = context.stagingMgr->acquireBuffer(vertexStars->get().size);
+	staging[1] = context.stagingMgr->acquireBuffer(vertexStars->get().size);
 
 	auto samplerInfo = PipelineLayout::DEFAULT_SAMPLER;
 	samplerInfo.anisotropyEnable = VK_FALSE;
@@ -603,7 +604,7 @@ void HipStarMgr::loadSciNames(const std::string& sciNameFile)
 
 int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_mag[2], const Vec3f &color)
 {
-	if (rc_mag[0]<=0.f || rc_mag[1]<=0.f || nbStarsToDraw >= NBR_MAX_STARS) return -1;
+	if (rc_mag[0]<=0.f || rc_mag[1]<=0.f || nbStarsToDraw[drawIdx] >= NBR_MAX_STARS) return -1;
 
 	float mag = 2.f*rc_mag[0];
 
@@ -620,7 +621,7 @@ int HipStarMgr::drawStar(const Projector *prj,const Vec3d &XY, const float rc_ma
 	*(vertexData++) = color[2]*rc_mag[1]*(1.-twinkle_amount*rand()/RAND_MAX);
 	*(vertexData++) = mag;
 
-	nbStarsToDraw += 1;
+	nbStarsToDraw[drawIdx] += 1;
 
 	return 0;
 }
@@ -704,13 +705,13 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 {
 	starNameToDraw.clear();
 	double twinkle_param=1.;
-	nbStarsToDraw = 0;
+	nbStarsToDraw[drawIdx] = 0;
 	if (altitude>2000) twinkle_param=std::max(0.,1.-(altitude-2000.)/50000.);
 	current_JDay = timeMgr->getJulian();
 
 	// If stars are turned off don't waste time below projecting all stars just to draw disembodied labels
 	if(!fader.getInterstate()) return 0.;
-	vertexData = (float *) Context::instance->stagingMgr->getPtr(staging);
+	vertexData = (float *) Context::instance->stagingMgr->getPtr(staging[drawIdx]);
 
 	int max_search_level = getMaxSearchLevel(eye, prj);
 	const GeodesicSearchResult* geodesic_search_result = grid->search(prj->unprojectViewport(),max_search_level);
@@ -759,7 +760,7 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 
 double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, TimeMgr* timeMgr, float altitude)
 {
-	if (nbStarsToDraw==0)
+	if (nbStarsToDraw[drawIdx]==0)
 		return 0.;
 
 	previousSync.emplace(starTrace ? STAR_STORE : STAR_CLEAR);
@@ -767,7 +768,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	Context &context = *Context::instance;
 
 	// 6 * sizeof(float) is the vertex stride
-	context.transfer->planCopyBetween(staging, vertexStars->get(), nbStarsToDraw * 6 * sizeof(float));
+	context.transfer->planCopyBetween(staging[drawIdx], vertexStars->get(), nbStarsToDraw[drawIdx] * 6 * sizeof(float));
 	if (cmds[context.frameIdx] == -1) {
 		cmds[context.frameIdx] = context.frame[context.frameIdx]->create(1);
 		context.frame[context.frameIdx]->setName(cmds[context.frameIdx], "HipStar draw FBO");
@@ -782,6 +783,7 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	context.frame[context.frameIdx]->toExecute(cmd, PASS_BACKGROUND);
 	this->drawStarName(prj);
 	context.starUsed[context.frameIdx] = this;
+	drawIdx = !drawIdx;
 	return 0.;
 }
 
@@ -809,7 +811,8 @@ void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd)
 	}
 	m_layoutStars->bindSet(cmd, *m_setStars);
 	vertexStars->bind(cmd);
-	vkCmdDraw(cmd, nbStarsToDraw, 1, 0, 0);
+	vkCmdDraw(cmd, nbStarsToDraw[submitIdx], 1, 0, 0);
+	submitIdx = !submitIdx;
 	vkCmdEndRenderPass(cmd);
 	syncUse->placeBarrier(cmd);
 }
