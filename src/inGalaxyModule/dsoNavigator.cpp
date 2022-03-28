@@ -106,7 +106,7 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
     set->bindTexture(texture->getTexture(), 3);
     set->bindTexture(colorTexture->getTexture(), 4);
 
-    insert(Mat4f::translation(Vec3f(299.78,-163.55,-63.53)) * Mat4f::yrotation(3.1415926f/2.f) * Mat4f::scaling(Vec3f(1, 1, 0.5)), 0, 1);
+    insert(Mat4f::translation(Vec3f(177.43,-96.80,-37.60)) * Mat4f::yrotation(3.1415926f/2.f) * Mat4f::scaling(Vec3f(1, 1, 0.5)), 0, 1);
 
     context.cmdInfo.commandBufferCount = 3;
 	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
