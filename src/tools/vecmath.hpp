@@ -292,7 +292,7 @@ public:
 	static Matrix4<T> getViewFromLookAt(const Matrix4<T>&m);
 	static Matrix4<T> yawPitchRoll(T const& ,T const& ,T const& );
 	static Matrix4<T> translation(const Vector3<T>&);
-	static Matrix4<T> fromQuaternion(const Vector4<T> &q);
+	static constexpr Matrix4<T> fromQuaternion(const Vector4<T> &q);
 
 	static const Matrix4<T> rotation(const Vector3<T>&a,const Vector3<T>&b);
 	static const Matrix4<T> rotation(const Vector3<T>&, T);
@@ -2309,7 +2309,7 @@ template<class T> Matrix4<T> Matrix4<T>::inverseUntranslated() const
 }
 
 //! Construct rotation matrix from quaternion
-template<class T> Matrix4<T> Matrix4<T>::fromQuaternion(const Vector4<T> &q)
+template<class T> constexpr Matrix4<T> Matrix4<T>::fromQuaternion(const Vector4<T> &q)
 {
 	const T a=q[0], b=q[1], c=q[2], d=q[3];
 	Matrix4<T> ret(a*a+b*b-c*c-d*d, 2*(a*d+b*c), 2*(b*d-a*c), 0,

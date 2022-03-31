@@ -69,6 +69,7 @@ public:
 	 * \param prj (non utilisé)
 	 */
 	void draw(const Navigator * nav, const Projector* prj) const noexcept;
+	void drawRaw(const Mat4f &matrix) const noexcept;
 	/*! /fn
 	 * \brief calcule les étoiles à afficher à partir de la structure
 	 * \param posI, position en parsec de l'observateur par rapport au soleil

@@ -51,6 +51,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_DESELECT] = SC_COMMAND::SC_DESELECT;
 	m_commands[ACP_CN_DOMEMASTERS] = SC_COMMAND::SC_DOMEMASTERS;
 	m_commands[ACP_CN_DSO] = SC_COMMAND::SC_DSO;
+	m_commands[ACP_CN_DSO3D] = SC_COMMAND::SC_DSO3D;
 	m_commands[ACP_CN_EXTERNAL_VIEWER] = SC_COMMAND::SC_EXTERNASC_VIEWER;
 	m_commands[ACP_CN_FONT] = SC_COMMAND::SC_FONT;
 	m_commands[ACP_CN_HEADING] = SC_COMMAND::SC_HEADING;

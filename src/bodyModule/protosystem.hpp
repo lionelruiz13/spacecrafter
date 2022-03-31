@@ -47,7 +47,7 @@ friend class SSystemIterator;
 friend class SSystemIteratorVector;
 public:
 
-    ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
+    ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr, const Vec3d &centerPos = {});
     ~ProtoSystem();
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
@@ -172,14 +172,17 @@ public:
 	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
 
     void selectSystem();
-protected:
 
+    static Vec3d getCenterPos() {return currentCenterPos;}
+protected:
+    static Vec3d currentCenterPos;
 	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
 	std::shared_ptr<Body> bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
 	std::shared_ptr<OrbitCreator> orbitCreator = nullptr;
 	std::shared_ptr<AnchorManager> anchorManager = nullptr;
+    std::shared_ptr<Body> centerObject = nullptr;
+    Vec3d centerPos;
 	Vec3i ringsInit;
-	std::shared_ptr<Body> centerObject = nullptr;
     static bool initGuard;
 
 	// Master settings

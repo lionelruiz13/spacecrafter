@@ -262,6 +262,11 @@ public:
 	//! select all DSO with typeName to be hidden or showed
 	void dsoSelectType(bool hide, std::string typeName) const;
 
+	//! Insert a volumetric dso from script
+	void dsoNavInsert(std::map<std::string, std::string> &args);
+	//! Override dsoNavigator resources, allow loading another set of volumetric dso
+	void dsoNavOverrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth);
+
 	////////////////////////////////////////////////////////////////////////////////
 	// FOV ( projection )
 	////////////////////////////////////////////////////////////////////////////////

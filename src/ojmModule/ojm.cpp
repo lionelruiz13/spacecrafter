@@ -13,6 +13,7 @@
 #include "EntityCore/Resource/VertexBuffer.hpp"
 #include "EntityCore/Resource/Set.hpp"
 #include "EntityCore/Resource/TransferMgr.hpp"
+#include "tools/log.hpp"
 
 // *****************************************************************************
 //
@@ -47,7 +48,16 @@ bool Ojm::init(float multiplier)
 	is_ok = readOJM(fileName, multiplier);
 	if (is_ok) {
 		is_ok=testIndices();
-		initGLparam();
+		if (is_ok)
+			initGLparam();
+		else {
+			cLog::get()->write("Mismatching data sizes in ojm " + fileName, LOG_TYPE::L_ERROR);
+			for (unsigned int i = 0; i < shapes.size(); ++i) {
+				std::ostringstream oss;
+				oss << "Shape " << i << " | Vertices : " << shapes[i].vertices.size()/3 << " | Uvs : " << shapes[i].uvs.size()/2 << " | Normals : " << shapes[i].normals.size()/3 << " | Indices : " << shapes[i].indices.size();
+				cLog::get()->write(oss, LOG_TYPE::L_DEBUG);
+			}
+		}
 	}
 	return is_ok;
 }
@@ -59,9 +69,9 @@ bool Ojm::testIndices()
 			std::cout << "vertices.size != normals.size : abord"<<std::endl;
 			return false;
 		}
-		if (shapes[i].uvs.size()==0) {
+		if (shapes[i].uvs.empty()) {
 			Vec2f data{0.0,0.0};
-			for(unsigned int k=0; k< shapes[i].vertices.size(); k++)
+			for(unsigned int k = shapes[i].vertices.size()/3; k; --k)
 				insert_vec2(shapes[i].uvs, data);
 		}
 		if ((shapes[i].vertices.size()/3) != (shapes[i].uvs.size()/2)) {

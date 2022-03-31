@@ -180,17 +180,17 @@ void s_texture::blend( const int type, unsigned char* const data, const unsigned
 
 void s_texture::createEmptyTex()
 {
-	unsigned char image_data[4] = {255,0,0,255};
+	unsigned char image_data[8] = {255,0,0,255, 255,0,0,255}; // Must be a multiple of 8
 
 	auto &tex = texCache["\0"];
 	if (tex.expired()) {
 		texture = std::make_shared<texRecap>();
-		texture->size = 4;
-		texture->width = 1;
+		texture->size = 8;
+		texture->width = 2;
 		texture->height = 1;
 		texture->depth = 1;
 		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->stagingMgr, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, "Fallback texture");
-		texture->texture->init(1, 1, image_data);
+		texture->texture->init(2, 1, image_data);
         textureQueue.emplace(texture);
 		tex = texture;
 	} else {
@@ -204,6 +204,19 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 	nbChannels = _nbChannels;
 	channelSize = _channelSize;
 	if (tex.expired()) {
+        if (fullName.substr(fullName.size() - 5) == "empty") {
+            unsigned char image_data[8] = {0,0,0,0, 0,0,0,0}; // Must be a multiple of 8
+            texture = std::make_shared<texRecap>();
+    		texture->size = 8;
+    		texture->width = 2;
+    		texture->height = 1;
+    		texture->depth = 1;
+    		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->stagingMgr, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, "Empty texture");
+    		texture->texture->init(2, 1, image_data);
+            textureQueue.emplace(texture);
+    		tex = texture;
+            return true;
+        }
 		int channels;
 		texture = std::make_shared<texRecap>();
 		stbi_uc *data = nullptr;

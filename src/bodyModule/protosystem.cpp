@@ -47,10 +47,10 @@
 #define LUNAR_MASS 7.354e22
 
 bool ProtoSystem::initGuard = false;
+Vec3d ProtoSystem::currentCenterPos = {};
 
-
-ProtoSystem::ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
-	: objLMgr(_objLMgr)
+ProtoSystem::ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr, const Vec3d &centerPos)
+	: objLMgr(_objLMgr), centerPos(centerPos)
 {
 	bodyTrace = nullptr;
 
@@ -612,13 +612,17 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 		return;
 	}
 
-	// no parent ? so it's Sun
-	if (str_parent.empty())
-		str_parent = "Sun";
+	// no parent ? so it's the center body
+	if (str_parent.empty()) {
+		str_parent = (centerObject) ? centerObject->getEnglishName() : "none";
+		cLog::get()->write("No body parent specified, assume parent is " + str_parent + " (Specify none for no parent)", LOG_TYPE::L_WARNING);
+	}
 
 	// no type ? it's an asteroid
-	if (typePlanet == UNKNOWN)
+	if (typePlanet == UNKNOWN) {
 		typePlanet = ASTEROID;
+		cLog::get()->write("No valid body type specified for " + englishName + ", assume 'Asteroid'", LOG_TYPE::L_WARNING);
+	}
 
 	// Do not add if body already exists - name must be unique
 	if ( findBody(englishName)!=nullptr ) {
@@ -1003,4 +1007,5 @@ void ProtoSystem::preloadBody(stringHash_t & param)
 void ProtoSystem::selectSystem()
 {
 	anchorManager->selectAnchor();
+	currentCenterPos = centerPos;
 }

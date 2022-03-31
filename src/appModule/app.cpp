@@ -639,6 +639,7 @@ void App::draw(int delta_time)
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 	}
 	context.stat->capture(Capture::FRAME_ACQUIRE);
+	vkmgr.update();
 	core->uboCamUpdate();
 	saveScreenInterface->update();
 	s_texture::update();

@@ -26,15 +26,17 @@ void main()
     const float coefNormalize = min(min(tmp.x, tmp.y), tmp.z);      // direction * coefNormalize = ray
     const float base_t_max = exp2(maxlod - lod);                    // Value of t_max for a ray of length 1.f
     const float t_max = floor(base_t_max * coefNormalize * data.y); // Value of t_max scaled by the ray length
-    const vec3 dir = direction * coefNormalize / t_max;             // Ray length / t_max
+    vec3 dir = direction * coefNormalize / t_max;             // Ray length / t_max
 
     float opacity = 0;
     vec3 coord = texCoord + dir * 0.5f;
+    coord.x = coord.x * texScale + texOffset;
+    dir.x *= texScale;
     float t;
     vec4 color = vec4(0);
     for (t = 0.5f; t < t_max; t += 1.f) {
         float localOpacity = textureLod(mapTexture, coord, lod).x / colorScale * (1.f - opacity);
-        color += localOpacity * textureLod(colorTexture, vec2(coord.x * texScale + texOffset, coord.y), lod);
+        color += localOpacity * textureLod(colorTexture, vec2(coord), lod);
         opacity += localOpacity;
         if (opacity > 0.99f) {
             color /= opacity;

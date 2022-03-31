@@ -108,8 +108,8 @@ void InUniverseModule::draw(int delta_time)
 	} else {
 		if (core->tully->mustBuild())
 			core->tully->build();
-		core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	}
+	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	//core->postDraw();
