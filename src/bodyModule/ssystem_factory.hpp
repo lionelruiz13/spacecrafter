@@ -247,12 +247,20 @@ public:
         ssystemScale->setScale(scale);
     }
 
-	double getSunAltitude(const Navigator * nav) const {
+    double getSunAltitude(const Navigator * nav) const {
         return ssystem->getSunAltitude(nav);
     }
 
 	double getSunAzimuth(const Navigator * nav) const {
         return ssystem->getSunAzimuth(nav);
+    }
+
+    double getSelectedRA(const Navigator * nav) const {
+        return ssystem->getSelectedRA(nav);
+    }
+
+	double getSelectedDE(const Navigator * nav) const {
+        return ssystem->getSelectedDE(nav);
     }
 
 	void setPlanetSizeScale(const std::string &name, float s) {

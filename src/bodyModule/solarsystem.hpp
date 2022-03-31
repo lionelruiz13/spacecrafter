@@ -133,6 +133,12 @@ public:
 	// return the Sun azimuth
 	double getSunAzimuth(const Navigator * nav) const;
 
+	// return the Selected body RA
+	double getSelectedRA(const Navigator * nav) const;
+
+	// return the Selected body DE
+	double getSelectedDE(const Navigator * nav) const;
+
 private:
 
 

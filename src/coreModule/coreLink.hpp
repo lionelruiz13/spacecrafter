@@ -537,6 +537,12 @@ public:
 	//return the Sun azimuth
 	double getSunAzimuth() const;
 
+	//return the Sected body RA
+	double getSelectedRA() const;
+
+	//return the Selected body DE
+	double getSelectedDE() const;
+
 	double getDateYear() const;
 	double getDateMonth() const;
 	double getDateDay() const;
@@ -606,7 +612,7 @@ public:
 	void milkyWayRestoreDefault();
 
 	void milkyWaySetDuration(float f);
-	
+
 	void milkyWayRestoreIntensity();
 
 	//! Change Milkyway texture
@@ -656,11 +662,11 @@ public:
 	// SkyDisplayMgr    ---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj);
-	
+
 	void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v);
-	
+
 	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj);
-	
+
 	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v);
 
 	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj);

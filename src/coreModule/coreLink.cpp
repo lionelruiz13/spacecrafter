@@ -1141,6 +1141,14 @@ double CoreLink::getSunAltitude() const {
 	return core->ssystemFactory->getSunAltitude(core->navigation);
 }
 
+double CoreLink::getSelectedRA() const {
+	return core->ssystemFactory->getSelectedRA(core->navigation);
+}
+
+double CoreLink::getSelectedDE() const {
+	return core->ssystemFactory->getSelectedDE(core->navigation);
+}
+
 double CoreLink::getSunAzimuth() const {
 	return core->ssystemFactory->getSunAzimuth(core->navigation);
 }
