@@ -96,7 +96,7 @@ void SSystemFactory::selectSystem()
 void SSystemFactory::addSystem(const std::string &name, const std::string &file)
 {
     auto &system = systems[name];
-    system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr);
+    system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr, systemOffsets[name]);
     system->load(file);
 }
 
@@ -123,6 +123,7 @@ void SSystemFactory::loadGalacticSystem(const std::string &name)
                 }
                 params["type"] = "observatory";
                 galacticAnchorMgr->addAnchor(params);
+                systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
                 params.clear();
 			}
 		}
@@ -133,6 +134,7 @@ void SSystemFactory::loadGalacticSystem(const std::string &name)
             }
             params["type"] = "observatory";
             galacticAnchorMgr->addAnchor(params);
+            systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
         }
 		file.close();
     } else {

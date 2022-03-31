@@ -495,11 +495,15 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	if (nbStars<1)
 		return;
 
-	Mat4f matrix=nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
-	*uMat=matrix;
-
-	const int idx = Context::instance->frameIdx;
-	Context::instance->frame[idx]->toExecute(cmds[idx], PASS_MULTISAMPLE_DEPTH);
+	auto matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+	drawRaw(matrix);
 	if (starViewer)
 		starViewer->draw(nav, prj, matrix);
+}
+
+void StarNavigator::drawRaw(const Mat4f &matrix) const noexcept
+{
+	*uMat = matrix;
+	const int idx = Context::instance->frameIdx;
+	Context::instance->frame[idx]->toExecute(cmds[idx], PASS_MULTISAMPLE_DEPTH);
 }

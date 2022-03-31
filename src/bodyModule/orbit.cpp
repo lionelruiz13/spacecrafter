@@ -24,6 +24,7 @@
 #include "tools/sc_const.hpp"
 #include "bodyModule/body.hpp"
 #include "tools/vecmath.hpp"
+#include "bodyModule/protosystem.hpp"
 
 
 #define EPSILON 1e-10 //a placer dans my_const
@@ -567,6 +568,14 @@ static EllipticalOrbit* StateVectorToOrbit(const Vec3d& position,  // km
 }
 
 
+static void get_stellar_helio_coordsv(double jd, double xyz[3])
+{
+	const auto &tmp = ProtoSystem::getCenterPos();
+	xyz[0] = tmp[0];
+	xyz[1] = tmp[1];
+	xyz[2] = tmp[2];
+}
+
 //! A Special Orbit uses special ephemeris algorithms
 
 SpecialOrbit::SpecialOrbit(std::string ephemerisName) :
@@ -579,6 +588,9 @@ SpecialOrbit::SpecialOrbit(std::string ephemerisName) :
 
 	if (ephemerisName=="sun_special")
 		positionFunction = &get_sun_helio_coordsv;
+
+	if (ephemerisName=="stellar_special")
+		positionFunction = &get_stellar_helio_coordsv;
 
 	if (ephemerisName=="mercury_special") {
 		positionFunction = &get_mercury_helio_coordsv;

@@ -518,6 +518,7 @@ private:
     std::shared_ptr<AnchorManager> galacticAnchorMgr;
 
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
+    std::map<std::string, Vec3d> systemOffsets;
 
 	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
 

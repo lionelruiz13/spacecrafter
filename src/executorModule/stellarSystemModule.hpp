@@ -53,6 +53,7 @@ private:
     bool asyncWorkState = false; // used by asycnUpdateBegin and asyncUpdateEnd
     std::shared_ptr<Core> core;
     Observer *observer;
+    Vec3d center;
     std::thread thread;
     WorkQueue<std::pair<Vec3d, Vec3d>, 3> threadQueue;
 };

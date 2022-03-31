@@ -48,11 +48,12 @@
 #include "bodyModule/ssystem_factory.hpp"
 #include "tools/context.hpp"
 #include "tools/draw_helper.hpp"
+#include "inGalaxyModule/starNavigator.hpp"
 
 StellarSystemModule::StellarSystemModule(std::shared_ptr<Core> _core, Observer *_observer) :
     core(_core), observer(_observer)
 {
-    maxAltToGoUp = 1.E16;
+    maxAltToGoUp = 1.E10;
     module = MODULE::STELLAR_SYSTEM;
 }
 
@@ -69,11 +70,10 @@ void StellarSystemModule::onEnter()
     std::cout << "J'arrive dans InStellarSystem" << std::endl;
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);
-	// TODO
-	//réglage de l'altitude dans CoreExecutorInStellarSystem la première fois
-	if (observer->getAltitude() < maxAltToGoUp)
-		observer->setAltitude(observer->getAltitude() *1.E6);
     thread = std::thread(&StellarSystemModule::asyncUpdateLoop, this);
+    center = observer->getObserverCenterPoint();
+    core->starNav->computePosition(center);
+    // We should inject the starNav stars into the hip_star_mgr
     core->ssystemFactory->enterSystem();
     core->setFlagTracking(false); // Just in case
     core->selectObject(core->ssystemFactory->getSelected());
@@ -179,7 +179,8 @@ void StellarSystemModule::draw(int delta_time)
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->projection);
-	core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
+    core->starNav->drawRaw(Mat4f::scaling(1e-6) * core->navigation->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180));
+	// core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->skyGridMgr->draw(core->projection);
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());
 	core->skyDisplayMgr->draw(core->projection, core->navigation, core->selected_object.getEarthEquPos(core->navigation), core->old_selected_object.getEarthEquPos(core->navigation));
