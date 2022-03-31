@@ -381,7 +381,8 @@ void Core::init(const InitParser& conf)
 
 		ojmMgr->init();
 		// 3D object integration test
-		ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
+		if (!volumGalaxy->loaded())
+			ojmMgr-> load("in_universe", "Milkyway", AppSettings::Instance()->getModel3DDir() + "Milkyway/Milkyway.ojm",AppSettings::Instance()->getModel3DDir()+"Milkyway/", Vec3f(0.0000001,0.0000001,0.0000001), 0.01);
 
 		// Load the pointer textures
 		Object::initTextures();
