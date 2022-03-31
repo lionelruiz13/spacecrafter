@@ -212,7 +212,7 @@ void StellarSystemModule::draw(int delta_time)
 bool StellarSystemModule::testValidAltitude(double altitude)
 {
 	if (altitude>maxAltToGoUp) {
-		std::cout << "Swapping to mode Solar System" << std::endl;
+		std::cout << "Swapping to mode Stellar System" << std::endl;
 		nextMode = upMode;
 		if (upMode == nullptr)
 			std::cout << "upMode not defined" << std::endl;

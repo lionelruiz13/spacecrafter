@@ -63,7 +63,7 @@ void InGalaxyModule::onEnter()
 	}
 	else {
 		std::cout << "On est dans inGalaxy mais ni trop haut ni trop bas." << std::endl;
-		observer->setAltitude((minAltToGoDown+maxAltToGoUp/2.0));
+		// observer->setAltitude((minAltToGoDown+maxAltToGoUp/2.0));
 	}
 }
 
