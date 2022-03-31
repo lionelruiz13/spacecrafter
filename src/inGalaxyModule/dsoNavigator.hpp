@@ -27,6 +27,8 @@
 #include "tools/no_copy.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 #include <memory>
+#include <map>
+#include <string>
 
 class Projector;
 class Navigator;
@@ -43,7 +45,14 @@ public:
     ~DsoNavigator();
     void computePosition(Vec3f posI, const Projector *prj);
     void draw(const Navigator *nav, const Projector *prj);
+    // Script version of insert
+    void insert(std::map<std::string, std::string> &args);
+    // Simplified version of insert
+    void insert(const Vec3f &position, const Vec2f &zyrotation, const Vec3f &shaping, float scaling, int textureID);
+    //! Insert a dso, textureID is the subtexture of the texture to use (like dso3d)
     void insert(const Mat4f &model, int textureID, float unscale);
+    //! Override dsoNavigator resources, allow loading another set of dso
+    void overrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth);
 private:
     void build();
 

@@ -94,9 +94,9 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
 	colorTexture->getDimensions(width, height);
     texScale = (width | height) ? (((float) height) / ((float) width)) : 0.f;
     pipeline->setSpecializedConstant(1, &texScale, sizeof(texScale));
-    pipeline->build();
+    pipeline->build("DsoNavigator", true);
 
-    set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
+    set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, true, true);
     uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
     set->bindUniform(uModelViewMatrix, 0);
     uclipping_fov = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
@@ -115,6 +115,34 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
 }
 
 DsoNavigator::~DsoNavigator() {}
+
+void DsoNavigator::overrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth)
+{
+    auto &context = *Context::instance;
+    texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
+    colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
+    float maxLod = texture->getTexture().getMipmapCount() - 1;
+    pipeline->setSpecializedConstantOf("obj3D.frag.spv", 0, &maxLod, sizeof(maxLod));
+    int width, height;
+	colorTexture->getDimensions(width, height);
+    texScale = (width | height) ? (((float) height) / ((float) width)) : 0.f;
+    pipeline->setSpecializedConstantOf("obj3D.frag.spv", 1, &texScale, sizeof(texScale));
+    pipeline->build("DsoNavigator", true);
+
+    set = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, layout.get(), -1, true, true);
+    uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+    set->bindUniform(uModelViewMatrix, 0);
+    uclipping_fov = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+    set->bindUniform(uclipping_fov, 1);
+    uCamRotToLocal = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+    set->bindUniform(uCamRotToLocal, 2);
+    set->bindTexture(texture->getTexture(), 3);
+    set->bindTexture(colorTexture->getTexture(), 4);
+
+    dsoData.clear();
+    dsoPos.clear();
+    instanceCount = -1; // Ensure rebuild will occur
+}
 
 void DsoNavigator::build()
 {
@@ -213,6 +241,36 @@ void DsoNavigator::insert(const Mat4f &model, int textureID, float unscale)
 {
     dsoData.push_back({model, model.inverse(), Vec3f(texScale * textureID, unscale, 0)});
     dsoPos.emplace_back(model.r[12], model.r[13], model.r[14]);
+}
+
+void DsoNavigator::insert(const Vec3f &position, const Vec2f &zyrotation, const Vec3f &shaping, float scaling, int textureID)
+{
+    insert(Mat4f::translation(position) * Mat4f::fromQuaternion(Vec4f::zyrotation(zyrotation[0], zyrotation[1])) * Mat4f::scaling(shaping * scaling), textureID, 1/scaling);
+}
+
+#define EXTRACT(var, key) it = args.find(#key); if (it != args.end()) var = std::stof(it->second)
+
+void DsoNavigator::insert(std::map<std::string, std::string> &args)
+{
+    Vec3f position;
+    Vec2f zyrotation;
+    Vec3f shaping(1, 1, 1);
+    float scaling = 1;
+    int textureID = 0;
+    auto it = args.find("index");
+    if (it != args.end())
+        textureID = std::stoi(it->second);
+    EXTRACT(position[0], x);
+    EXTRACT(position[1], y);
+    EXTRACT(position[2], z);
+    EXTRACT(zyrotation[0], ra);
+    EXTRACT(zyrotation[1], de);
+    EXTRACT(shaping[0], xscale);
+    EXTRACT(shaping[1], yscale);
+    EXTRACT(shaping[2], zscale);
+    EXTRACT(scaling, scale);
+    zyrotation *= 3.1415926f/180.f;
+    insert(position, zyrotation, shaping, scaling, textureID);
 }
 
 void DsoNavigator::draw(const Navigator * nav, const Projector* prj)

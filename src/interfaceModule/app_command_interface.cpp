@@ -234,6 +234,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 		case SC_COMMAND::SC_DESELECT :	return commandDeselect(); break;
 		case SC_COMMAND::SC_DOMEMASTERS :	return commandDomemasters(); break;
 		case SC_COMMAND::SC_DSO :	return commandDso(); break;
+		case SC_COMMAND::SC_DSO3D :	return commandDso3D(); break;
 		case SC_COMMAND::SC_EXTERNASC_VIEWER :	return commandExternalViewer(); break;
 		case SC_COMMAND::SC_FLAG :	return commandFlag(); break;
 		case SC_COMMAND::SC_FONT :	return commandFont(); break;
@@ -1203,6 +1204,19 @@ int AppCommandInterface::commandDso()
 	}
 
 	debug_message = _("command 'dso' : unknown argument");
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandDso3D()
+{
+	std::string argAction = args[W_ACTION];
+	if (argAction == W_LOAD) {
+		coreLink->dsoNavInsert(args);
+	} else if (argAction == W_RESTART) {
+		coreLink->dsoNavOverrideCurrent(args["color_tex"], args["alpha_tex"], std::stoi(args["depth"]));
+	} else {
+		debug_message = _("command 'dso3d' : unknown argument");
+	}
 	return executeCommandStatus();
 }
 

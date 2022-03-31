@@ -262,6 +262,11 @@ public:
 	//! select all DSO with typeName to be hidden or showed
 	void dsoSelectType(bool hide, std::string typeName) const;
 
+	//! Insert a volumetric dso from script
+	void dsoNavInsert(std::map<std::string, std::string> &args);
+	//! Override dsoNavigator resources, allow loading another set of volumetric dso
+	void dsoNavOverrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth);
+
 	////////////////////////////////////////////////////////////////////////////////
 	// FOV ( projection )
 	////////////////////////////////////////////////////////////////////////////////
@@ -606,7 +611,7 @@ public:
 	void milkyWayRestoreDefault();
 
 	void milkyWaySetDuration(float f);
-	
+
 	void milkyWayRestoreIntensity();
 
 	//! Change Milkyway texture
@@ -656,11 +661,11 @@ public:
 	// SkyDisplayMgr    ---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 	bool skyDisplayMgrGetFlag(SKYDISPLAY_NAME nameObj);
-	
+
 	void skyDisplayMgrSetFlag(SKYDISPLAY_NAME nameObj, bool v);
-	
+
 	void skyDisplayMgrFlipFlag(SKYDISPLAY_NAME nameObj);
-	
+
 	void skyDisplayMgrSetColor(SKYDISPLAY_NAME nameObj, const Vec3f& v);
 
 	void skyDisplayMgrClear(SKYDISPLAY_NAME nameObj);

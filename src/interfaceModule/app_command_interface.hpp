@@ -85,6 +85,7 @@ protected:
 	int commandDeselect();
 	int commandDomemasters();
 	int commandDso();
+	int commandDso3D();
 	//int commandExternalMplayer();
 	int commandExternalViewer();
 	int commandFont();

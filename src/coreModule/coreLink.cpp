@@ -34,7 +34,7 @@
 #include "coreModule/constellation_mgr.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "bodyModule/ssystem_factory.hpp"
-
+#include "inGalaxyModule/dsoNavigator.hpp"
 #include "inGalaxyModule/dso3d.hpp"
 #include "coreModule/cardinals.hpp"
 #include "coreModule/skydisplay_mgr.hpp"
@@ -662,6 +662,16 @@ void CoreLink::dsoSelectConstellation(bool hide, std::string constellationName) 
 //! select all DSO with typeName to be hidden or showed
 void CoreLink::dsoSelectType(bool hide, std::string typeName) const {
 	core->nebulas->selectType(hide, typeName);
+}
+
+//! Insert a volumetric dso from script
+void CoreLink::dsoNavInsert(std::map<std::string, std::string> &args) {
+	core->dsoNav->insert(args);
+}
+
+//! Override dsoNavigator resources, allow loading another set of volumetric dso
+void CoreLink::dsoNavOverrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth) {
+	core->dsoNav->overrideCurrent(tex_file, tex3d_file, depth);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
