@@ -204,7 +204,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 	nbChannels = _nbChannels;
 	channelSize = _channelSize;
 	if (tex.expired()) {
-        if (fullName == "empty") {
+        if (fullName.substr(fullName.size() - 5) == "empty") {
             unsigned char image_data[8] = {0,0,0,0, 0,0,0,0}; // Must be a multiple of 8
             texture = std::make_shared<texRecap>();
     		texture->size = 8;
