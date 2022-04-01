@@ -248,7 +248,7 @@ void DsoNavigator::insert(const Vec3f &position, const Vec2f &zyrotation, const 
     insert(Mat4f::translation(position) * Mat4f::fromQuaternion(Vec4f::zyrotation(zyrotation[0], zyrotation[1])) * Mat4f::scaling(shaping * scaling), textureID, 1/scaling);
 }
 
-#define EXTRACT(var, key) it = args.find(#key); if (it != args.end()) var = std::stof(it->second)
+#define EXTRACT(var, key) it = args.find(key); if (it != args.end()) var = std::stof(it->second)
 
 void DsoNavigator::insert(std::map<std::string, std::string> &args)
 {
@@ -260,15 +260,15 @@ void DsoNavigator::insert(std::map<std::string, std::string> &args)
     auto it = args.find("index");
     if (it != args.end())
         textureID = std::stoi(it->second);
-    EXTRACT(position[0], x);
-    EXTRACT(position[1], y);
-    EXTRACT(position[2], z);
-    EXTRACT(zyrotation[0], ra);
-    EXTRACT(zyrotation[1], de);
-    EXTRACT(shaping[0], xscale);
-    EXTRACT(shaping[1], yscale);
-    EXTRACT(shaping[2], zscale);
-    EXTRACT(scaling, scale);
+    EXTRACT(position[0], "pos_x");
+    EXTRACT(position[1], "pos_y");
+    EXTRACT(position[2], "pos_z");
+    EXTRACT(zyrotation[0], "zrot");
+    EXTRACT(zyrotation[1], "yrot");
+    EXTRACT(shaping[0], "xscale");
+    EXTRACT(shaping[1], "yscale");
+    EXTRACT(shaping[2], "zscale");
+    EXTRACT(scaling, "scale");
     zyrotation *= 3.1415926f/180.f;
     insert(position, zyrotation, shaping, scaling, textureID);
 }
