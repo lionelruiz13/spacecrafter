@@ -41,7 +41,7 @@ class s_texture;
 
 class DsoNavigator: public NoCopy {
 public:
-    DsoNavigator(const std::string& tex_file, const std::string &tex3d_file = "dso3d.png", int depth = 256);
+    DsoNavigator();
     ~DsoNavigator();
     void computePosition(Vec3f posI, const Projector *prj);
     void draw(const Navigator *nav, const Projector *prj);

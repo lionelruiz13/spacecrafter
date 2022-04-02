@@ -39,7 +39,7 @@
 #include "tools/context.hpp"
 #include <cassert>
 
-DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d_file, int depth)
+DsoNavigator::DsoNavigator()
 {
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     Context &context = *Context::instance;
@@ -66,9 +66,6 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
                            1,7,5, 5,3,1};
     memcpy(context.transfer->planCopy(index), tmp, 3*2*6*sizeof(uint16_t));
 
-    // texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
-    // colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
-
     layout = std::make_unique<PipelineLayout>(vkmgr);
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 0);
     layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, 1);
@@ -91,22 +88,9 @@ DsoNavigator::DsoNavigator(const std::string& tex_file, const std::string &tex3d
     float maxLod = 0;
     pipeline->setSpecializedConstant(0, &maxLod, sizeof(maxLod));
     int width = 1, height = 1;
-	// colorTexture->getDimensions(width, height);
     texScale = (width | height) ? (((float) height) / ((float) width)) : 0.f;
     pipeline->setSpecializedConstant(1, &texScale, sizeof(texScale));
     pipeline->build("DsoNavigator", true);
-
-    // set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, true, true);
-    // uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
-    // set->bindUniform(uModelViewMatrix, 0);
-    // uclipping_fov = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
-    // set->bindUniform(uclipping_fov, 1);
-    // uCamRotToLocal = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
-    // set->bindUniform(uCamRotToLocal, 2);
-    // set->bindTexture(texture->getTexture(), 3);
-    // set->bindTexture(colorTexture->getTexture(), 4);
-
-    // insert(Mat4f::translation(Vec3f(177.43,-96.80,-37.60)) * Mat4f::yrotation(3.1415926f/2.f) * Mat4f::scaling(Vec3f(1, 1, 0.5)), 0, 1);
 
     context.cmdInfo.commandBufferCount = 3;
 	vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmds);
@@ -141,7 +125,7 @@ void DsoNavigator::overrideCurrent(const std::string& tex_file, const std::strin
 
     dsoData.clear();
     dsoPos.clear();
-    instanceCount = -1; // Ensure rebuild will occur
+    instanceCount = 0; // Ensure rebuild will occur
 }
 
 void DsoNavigator::build()
