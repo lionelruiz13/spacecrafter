@@ -254,7 +254,6 @@ void DsoNavigator::insert(std::map<std::string, std::string> &args)
     EXTRACT(shaping[1], "yscale");
     EXTRACT(shaping[2], "zscale");
     EXTRACT(scaling, "scale");
-    yawPitchRoll *= 3.1415926f/180.f;
     insert(position, yawPitchRoll, shaping, scaling, textureID);
 }
 
