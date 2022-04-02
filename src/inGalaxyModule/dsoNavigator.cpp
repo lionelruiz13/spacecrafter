@@ -227,9 +227,9 @@ void DsoNavigator::insert(const Mat4f &model, int textureID, float unscale)
     dsoPos.emplace_back(model.r[12], model.r[13], model.r[14]);
 }
 
-void DsoNavigator::insert(const Vec3f &position, const Vec2f &zyrotation, const Vec3f &shaping, float scaling, int textureID)
+void DsoNavigator::insert(const Vec3f &position, const Vec3f &yawPitchRoll, const Vec3f &shaping, float scaling, int textureID)
 {
-    insert(Mat4f::translation(position) * Mat4f::fromQuaternion(Vec4f::zyrotation(zyrotation[0], zyrotation[1])) * Mat4f::scaling(shaping * scaling), textureID, 1/scaling);
+    insert(Mat4f::translation(position) * Mat4f::yawPitchRoll(yawPitchRoll[0], yawPitchRoll[1], yawPitchRoll[2]) * Mat4f::scaling(shaping * scaling), textureID, 1/scaling);
 }
 
 #define EXTRACT(var, key) it = args.find(key); if (it != args.end()) var = std::stof(it->second)
@@ -237,7 +237,7 @@ void DsoNavigator::insert(const Vec3f &position, const Vec2f &zyrotation, const 
 void DsoNavigator::insert(std::map<std::string, std::string> &args)
 {
     Vec3f position;
-    Vec2f zyrotation;
+    Vec3f yawPitchRoll;
     Vec3f shaping(1, 1, 1);
     float scaling = 1;
     int textureID = 0;
@@ -247,14 +247,15 @@ void DsoNavigator::insert(std::map<std::string, std::string> &args)
     EXTRACT(position[0], "pos_x");
     EXTRACT(position[1], "pos_y");
     EXTRACT(position[2], "pos_z");
-    EXTRACT(zyrotation[0], "zrot");
-    EXTRACT(zyrotation[1], "yrot");
+    EXTRACT(yawPitchRoll[0], "yaw");
+    EXTRACT(yawPitchRoll[1], "pitch");
+    EXTRACT(yawPitchRoll[2], "roll");
     EXTRACT(shaping[0], "xscale");
     EXTRACT(shaping[1], "yscale");
     EXTRACT(shaping[2], "zscale");
     EXTRACT(scaling, "scale");
-    zyrotation *= 3.1415926f/180.f;
-    insert(position, zyrotation, shaping, scaling, textureID);
+    yawPitchRoll *= 3.1415926f/180.f;
+    insert(position, yawPitchRoll, shaping, scaling, textureID);
 }
 
 void DsoNavigator::draw(const Navigator * nav, const Projector* prj)

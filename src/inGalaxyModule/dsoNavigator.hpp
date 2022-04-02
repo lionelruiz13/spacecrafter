@@ -48,7 +48,7 @@ public:
     // Script version of insert
     void insert(std::map<std::string, std::string> &args);
     // Simplified version of insert
-    void insert(const Vec3f &position, const Vec2f &zyrotation, const Vec3f &shaping, float scaling, int textureID);
+    void insert(const Vec3f &position, const Vec3f &yawPitchRoll, const Vec3f &shaping, float scaling, int textureID);
     //! Insert a dso, textureID is the subtexture of the texture to use (like dso3d)
     void insert(const Mat4f &model, int textureID, float unscale);
     //! Override dsoNavigator resources, allow loading another set of dso
