@@ -501,7 +501,8 @@ public:
 
     void addSystem(const std::string &name, const std::string &file);
 
-    void loadGalacticSystem(const std::string &file);
+    void loadGalacticSystem(const std::string &path, const std::string &file);
+    void loadSystem(const std::string &path, stringHash_t &params);
 
     //! Enter a system (leave the galactic system)
     void enterSystem();

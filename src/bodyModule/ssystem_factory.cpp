@@ -100,11 +100,11 @@ void SSystemFactory::addSystem(const std::string &name, const std::string &file)
     system->load(file);
 }
 
-void SSystemFactory::loadGalacticSystem(const std::string &name)
+void SSystemFactory::loadGalacticSystem(const std::string &path, const std::string &name)
 {
     stringHash_t params;
 
-    std::ifstream file(name);
+    std::ifstream file(path + name);
     if (file) {
         std::string line;
 		while(getline(file , line)) {
@@ -116,30 +116,29 @@ void SSystemFactory::loadGalacticSystem(const std::string &name)
 				auto pos = line.find_first_of('=');
                 if (pos != std::string::npos)
 					params[line.substr(0,pos-1)] = line.substr(pos+2);
-			} else if (!params.empty()) {
-                std::cout << "Params :\n";
-                for (auto &p : params) {
-                    std::cout << p.first << " : " << p.second << '\n';
-                }
-                params["type"] = "observatory";
-                galacticAnchorMgr->addAnchor(params);
-                systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
-                params.clear();
-			}
-		}
-        if (!params.empty()) {
-            std::cout << "Params :\n";
-            for (auto &p : params) {
-                std::cout << p.first << " : " << p.second << '\n';
-            }
-            params["type"] = "observatory";
-            galacticAnchorMgr->addAnchor(params);
-            systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
-        }
+			} else if (!params.empty())
+                loadSystem(path, params);
+    		}
+        if (!params.empty())
+            loadSystem(path, params);
 		file.close();
     } else {
         galacticAnchorMgr->addAnchor("Sun", std::make_shared<AnchorPointObservatory>(0, 0, 0));
     }
+}
+
+void SSystemFactory::loadSystem(const std::string &path, stringHash_t &params)
+{
+    std::cout << "Params :\n";
+    for (auto &p : params) {
+        std::cout << p.first << " : " << p.second << '\n';
+    }
+    params["type"] = "observatory";
+    galacticAnchorMgr->addAnchor(params);
+    systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
+    if (!params["system"].empty())
+        addSystem(params["name"], path + params["system"]);
+    params.clear();
 }
 
 std::string SSystemFactory::querySelectedAnchorName()
