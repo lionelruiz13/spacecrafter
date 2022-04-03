@@ -55,7 +55,7 @@ void InGalaxyModule::onEnter()
 	//réglage de l'altitude dans CoreExecutorInGalaxy la première fois
 	if (observer->getAltitude() < minAltToGoDown) {
 		std::cout << "On est dans inGalaxy mais trop bas: modification de l'altitude pour min" << std::endl;
-		observer->setAltitude((maxAltToGoUp+minAltToGoDown)/2.0);
+		observer->setAltitude(maxAltToGoUp);
 	} else
 	if (observer->getAltitude() > maxAltToGoUp) {
 		std::cout << "On est dans inGalaxy mais trop haut: modification de l'altitude pour max" << std::endl;
