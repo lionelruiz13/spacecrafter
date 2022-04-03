@@ -1346,7 +1346,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					if ( scriptInterface->isScriptPlaying() ) {
 						event = new CommandEvent("script action resume");
 						EventRecorder::getInstance()->queue(event);
-						// coreLink->timeResetMultiplier();
+						scriptInterface->defaultSpeed();
 					} else {
 						event = new CommandEvent("timerate rate 1");
 						EventRecorder::getInstance()->queue(event);
