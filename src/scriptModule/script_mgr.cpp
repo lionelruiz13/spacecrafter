@@ -182,6 +182,12 @@ void ScriptMgr::slowerSpeed()
 	}
 }
 
+void ScriptMgr::defaultSpeed()
+{
+	multiplierRate = 1;
+	media->audioMusicSync();
+	media->audioMusicResume();
+}
 
 std::string ScriptMgr::getRecordDate()
 {

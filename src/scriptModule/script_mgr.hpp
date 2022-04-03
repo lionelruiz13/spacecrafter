@@ -48,7 +48,7 @@ public:
 	ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface, const std::string &_data_dir, std::shared_ptr<Media> _media);
 	~ScriptMgr();
 
-	//! lance un script 
+	//! lance un script
 	bool playScript(const std::string &fullFileName);
 
 	//! place the given script at the begin of the command queue
@@ -70,9 +70,7 @@ public:
 	void slowerSpeed();
 
 	//! play script without acceleration
-	void defaultSpeed(){
-		multiplierRate = 1;
-	}
+	void defaultSpeed();
 
 	//! start playing paused script
 	void resumeScript();
@@ -152,7 +150,7 @@ public:
 
 	void setIsVideoPlayed(bool b) {
 		isVideoPlayed = b;
-	} 
+	}
 
 private:
 	// les états du moteur de script via à vis des scripts en cours.
@@ -175,7 +173,7 @@ private:
 	bool waitOnVideo; 			//!< if Video launch, say if script should wait on it.
 	bool isVideoPlayed;		 	//!< say if a video is played
 	std::string DataDir;
-	int multiplierRate=1; 
+	int multiplierRate=1;
 	bool isInLoop; 		//!< on est entrain de lire les instructions d'une loop
 	bool repeatLoop; 	//!< on est entrain de répéter une boucle
 	int nbrLoop;		//!< nombre de tours de boucles restants
