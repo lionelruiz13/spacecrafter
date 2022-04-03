@@ -51,25 +51,25 @@ InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer)
 
 void InGalaxyModule::onEnter()
 {
-	std::cout << "J'arrive dans InGalaxy" << std::endl;
-	//réglage de l'altitude dans CoreExecutorInGalaxy la première fois
+	std::cout << "->InGalaxy" << std::endl;
+	//set altitude in CoreExecutorInGalaxy when enter
 	if (observer->getAltitude() < minAltToGoDown) {
-		std::cout << "On est dans inGalaxy mais trop bas: modification de l'altitude pour min" << std::endl;
+		std::cout << "too low -> altitude = min" << std::endl;
 		observer->setAltitude(maxAltToGoUp);
 	} else
 	if (observer->getAltitude() > maxAltToGoUp) {
-		std::cout << "On est dans inGalaxy mais trop haut: modification de l'altitude pour max" << std::endl;
+		std::cout << "too high -> altitude = max" << std::endl;
 		observer->setAltitude(minAltToGoDown);
 	}
 	else {
-		std::cout << "On est dans inGalaxy mais ni trop haut ni trop bas." << std::endl;
+		std::cout << "InGalaxy mode" << std::endl;
 		// observer->setAltitude((minAltToGoDown+maxAltToGoUp/2.0));
 	}
 }
 
 void InGalaxyModule::onExit()
 {
-	std::cout << "Je quitte InGalaxy" << std::endl;
+	std::cout << "InGalaxy->" << std::endl;
 }
 
 void InGalaxyModule::update(int delta_time)

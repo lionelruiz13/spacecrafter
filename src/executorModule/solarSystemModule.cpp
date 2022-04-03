@@ -65,11 +65,10 @@ SolarSystemModule::~SolarSystemModule()
 
 void SolarSystemModule::onEnter()
 {
-    std::cout << "J'arrive dans InSolarSystem" << std::endl;
+    std::cout << "->InSolarSystem" << std::endl;
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);
-	// TODO
-	//réglage de l'altitude dans CoreExecutorInSolarSystem la première fois
+	//set altitude in CoreExecutorInSolarSystem when enter
 	if (observer->getAltitude() < maxAltToGoUp)
 		observer->setAltitude(observer->getAltitude() *1.E6);
     thread = std::thread(&SolarSystemModule::asyncUpdateLoop, this);
@@ -81,7 +80,7 @@ void SolarSystemModule::onEnter()
 
 void SolarSystemModule::onExit()
 {
-	std::cout << "Je quitte InSolarSystem" << std::endl;
+	std::cout << "InSolarSystem->" << std::endl;
 	// core->timeMgr->setTimeSpeed(1);
     threadQueue.close();
     thread.join();

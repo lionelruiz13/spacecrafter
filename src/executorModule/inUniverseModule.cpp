@@ -47,20 +47,18 @@ InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_obser
 
 void InUniverseModule::onEnter()
 {
-    std::cout << "J'arrive dans InUniverse" << std::endl;
-	//réglage de l'altitude dans CoreExecutorInUniverse la première fois
-	//~ if (observer->getAltitude() <1.E9) {
-		printf("je change la valeur de l'altitude dans InUniverse\n");
-		observer->setAltitude(minAltToGoDown);
-		Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
-		EventRecorder::getInstance()->queue(event);
+    std::cout << "->InUniverse" << std::endl;
+	//set altitude in CoreExecutorInUniverse when enter
+	observer->setAltitude(minAltToGoDown);
+	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
+	EventRecorder::getInstance()->queue(event);
 }
 
 void InUniverseModule::onExit()
 {
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 1.0);
 	EventRecorder::getInstance()->queue(event);
-	std::cout << "Je quitte InUniverse" << std::endl;
+	std::cout << "InUniverse->" << std::endl;
 }
 
 void InUniverseModule::update(int delta_time)

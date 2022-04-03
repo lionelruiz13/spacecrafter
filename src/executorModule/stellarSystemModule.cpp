@@ -67,7 +67,7 @@ StellarSystemModule::~StellarSystemModule()
 
 void StellarSystemModule::onEnter()
 {
-    std::cout << "J'arrive dans InStellarSystem" << std::endl;
+    std::cout << "->InStellarSystem" << std::endl;
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);
     thread = std::thread(&StellarSystemModule::asyncUpdateLoop, this);
@@ -81,7 +81,7 @@ void StellarSystemModule::onEnter()
 
 void StellarSystemModule::onExit()
 {
-	std::cout << "Je quitte InStellarSystem" << std::endl;
+	std::cout << "InStellarSystem->" << std::endl;
     threadQueue.close();
     thread.join();
     core->ssystemFactory->leaveSystem();
