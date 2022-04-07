@@ -80,7 +80,7 @@ public:
 	void rebuild(float size_i, const std::string& ttfFileName);
 
 	//! affiche un texte s droit au point M(x,y) de couleur Color à la position MVP avec upsidedown indiquant s'il est à l'endroit ou à l'envers
-	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown);
+	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown, bool cached = true);
 	//! afficher un texte parallège à l'horizon en altitude azimuth
 	//! cache indique si l'on doit garder le texte en mémoire
 	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache);
@@ -103,6 +103,8 @@ protected:
 	static std::vector<renderedString_struct> tempCache, tempCache2; // to hold texture while it is used
 	static std::string lastUncached;
 	static std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>> printData;
+	static std::list<s_font *> fontList;
+	std::list<s_font *>::iterator self;
 
 	float fontSize;
 	std::string fontName;
@@ -123,6 +125,7 @@ protected:
 	// static PipelineLayout *layoutHorizontal;
 	// static PipelineLayout *layoutPrint;
 	static int nbFontInstances;
+	static bool needFlush;
 };
 
 #endif  //_S_FONT_H

@@ -620,7 +620,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 		if (mn < 10)
 			oss << "0";
 		oss << mn << "'";
-		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1);
+		skydisplay_font->print(2, -2, oss.str(), colorT, MVP * TRANSFO, 1, false);
 		oss.clear();
 	}
 	// AZ

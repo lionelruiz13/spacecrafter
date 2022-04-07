@@ -34,6 +34,8 @@
 std::vector<renderedString_struct> s_font::tempCache, s_font::tempCache2;
 std::string s_font::lastUncached;
 int s_font::nbFontInstances = 0;
+bool s_font::needFlush = false;
+std::list<s_font *> s_font::fontList;
 
 std::vector<std::pair<std::vector<struct s_print>, std::vector<struct s_printh>>> s_font::printData;
 
@@ -75,6 +77,8 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
         context.transferSync->build();
 	}
 	//std::cout << "Created new font with size: " << fontSize << " and TTF name : " << fontName << std::endl;
+	fontList.push_front(this);
+	self = fontList.begin();
 }
 
 void s_font::rebuild(float size_i, const std::string& ttfFileName)
@@ -114,6 +118,7 @@ s_font::~s_font()
 			tileMap = nullptr;
 		}
 	}
+	fontList.erase(self);
 }
 
 
@@ -130,7 +135,19 @@ void s_font::beginPrint()
 {
 	printData[Context::instance->frameIdx].first.clear();
 	printData[Context::instance->frameIdx].second.clear();
-	tempCache.swap(tempCache2);
+	if (needFlush) {
+		// Clear every subtextures, both cached and uncached.
+		// Needing to flush will cause graphical glitch for one frame (due to missing texture)
+		// Clearing everything may cause other graphical glitch of text for this frame only, but avoid missing text display for further prints
+		cLog::get()->write("s_font : Out of text surface, reset every text allocation to get space", LOG_TYPE::L_WARNING);
+		for (auto f : fontList)
+			f->clearCache();
+		tempCache.insert(tempCache.begin(), tempCache2.begin(), tempCache2.end());
+		tempCache2.clear();
+		needFlush = false;
+	} else {
+		tempCache.swap(tempCache2);
+	}
     for (int i = tempCache.size(); i--;) { // inverse release order reduce overhead
         if (tempCache[i].stringTexture.width)
             tileMap->releaseSurface(tempCache[i].stringTexture);
@@ -142,7 +159,7 @@ void s_font::beginPrint()
 }
 
 //! print out a string
-void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown)
+void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP, int upsidedown, bool cache)
 {
 	if (s.empty())
 		return;
@@ -151,6 +168,14 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	// If not cached, create texture
 	if(renderCache[s].textureW == 0 ) {
 		currentRender = renderString(s, false);
+		if(cache) {
+			renderCache[s] = currentRender;
+		} else {
+            if (lastUncached != s) {
+                tempCache.push_back(currentRender); // to hold texture while it is used
+                lastUncached = s;
+            }
+		}
 		renderCache[s] = currentRender;
 	} else {
 		// read from cache
@@ -275,7 +300,8 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	rendering.stringTexture = tileMap->acquireSurface(rendering.textureW, rendering.textureH);
 	if (rendering.stringTexture.width) {
 		tileMap->writeSurface(rendering.stringTexture, surface->pixels);
-	}
+	} else
+		needFlush = true;
 
 	if (withBorder) {
 		// ***********************************
@@ -316,7 +342,8 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 		if (rendering.borderTexture.width) {
 			tileMap->writeSurface(rendering.borderTexture, border->pixels);
 			rendering.haveBorder =true;
-		}
+		} else
+			needFlush = true;
 
 		SDL_FreeSurface(border);
 	}
