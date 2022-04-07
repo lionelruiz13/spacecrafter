@@ -393,9 +393,9 @@ void Nebula::drawHint(const Projector* prj, const Navigator * nav, float *&data,
 	VertexInput *&vi = reinterpret_cast<VertexInput *&>(data);
 	if (displaySpecificHint) {
 		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] - r, posTex[0], posTex[1], neb_color};
-		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] - r, posTex[0]+.25, posTex[1], neb_color};
-		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] + r, posTex[0], posTex[1]+.25, neb_color};
-		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] + r, posTex[0]+.25, posTex[1]+.25, neb_color};
+		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] - r, posTex[0]+.25f, posTex[1], neb_color};
+		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] + r, posTex[0], posTex[1]+.25f, neb_color};
+		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] + r, posTex[0]+.25f, posTex[1]+.25f, neb_color};
 	} else {
 		*(vi++) = VertexInput{(float) XY[0] + r, (float) XY[1] - r, 0.75f, 0.f, circleColor};
 		*(vi++) = VertexInput{(float) XY[0] - r, (float) XY[1] - r, 1.f, 0.f, circleColor};

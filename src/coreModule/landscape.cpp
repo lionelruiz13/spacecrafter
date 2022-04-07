@@ -422,8 +422,8 @@ static inline double FisheyeTexCoordFastT(double rho_div_fov, double costheta, d
 
 void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, double texture_fov, float *data)
 {
-	unsigned int indice1=0;
-	unsigned int indice3=0;
+	// unsigned int indice1=0;
+	// unsigned int indice3=0;
 	double rho,x,y,z;
 	int i, j;
 

@@ -592,7 +592,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 
 	Context &context = *Context::instance;
 	imgData = (float *) context.transfer->beginPlanCopy(vertexSize * 5 * sizeof(float));
-	int currentSize = 0;
+	uint32_t currentSize = 0;
 	for (int i=0; i<howManyDisplay; i++) {
 		// altitude = xpos, azimuth = ypos (0 at North), image top towards zenith when rotation = 0
 		imagev = Mat4d::zrotation(plotDirection*(image_ypos+decalages(i,howManyDisplay)-90)*M_PI/180.) * Mat4d::xrotation(image_xpos*M_PI/180.) * Vec3d(0,1,0);
