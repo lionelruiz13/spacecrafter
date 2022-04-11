@@ -6,8 +6,8 @@
 #define _CONFIG_H_
 
 #define PACKAGE  "spacecrafter"
-#define VERSION "21.09.20"
-#define APP_NAME "spacecrafter 21.09.20"
+#define VERSION "22.04.02"
+#define APP_NAME "spacecrafter 22.04.02"
 #define APP_LOWER_NAME "spacecrafter"
 #define USER_NAME "LSS Open Project"
 #define USER_EDITION "Linux Edition Vulkan 2022"
