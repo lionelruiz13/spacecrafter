@@ -2425,7 +2425,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL:
 					this->executeCommand("add s 1");
-					this->executeCommand("add z -1");
+					//this->executeCommand("add z -1");
 					break;
 				// case ALT:
 				// 	coreLink->cameraMoveRelativeXYZ(-1.,0.0,0.0);
@@ -2485,7 +2485,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL:
 					this->executeCommand("add s -1");
-					this->executeCommand("add z 1");
+					//this->executeCommand("add z 1");
 					break;
 				// case ALT:
 				// 	coreLink->cameraMoveRelativeXYZ(1.,0.0,0.0);
