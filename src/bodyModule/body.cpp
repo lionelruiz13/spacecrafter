@@ -757,7 +757,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 	std::shared_ptr<Body> p = parent;
 
 	bool myParent = true;
-	while (p && p->get_parent()) {   //cette boucle ne sert que pour les lunes des planetes
+	while (p) {   //cette boucle ne sert que pour les lunes des planetes
 
 		// Some orbits are already precessed, namely elp82
 		if(myParent && !useParentPrecession(lastJD)) {

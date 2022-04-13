@@ -219,11 +219,38 @@ void Sun::computeDraw(const Projector* prj, const Navigator * nav)
 	mat = mat_local_to_parent;
 	parent_mat = Mat4d::identity();
 
+    // \todo account for moon orbit precession (independent of parent)
+	// also does not allow for multiple levels of precession
+	std::shared_ptr<Body> p = parent;
+
+    bool myParent = true;
+	while (p) {   //cette boucle ne sert que pour les lunes des planetes
+
+		// Some orbits are already precessed, namely elp82
+		if(myParent && !useParentPrecession(lastJD)) {
+			mat = Mat4d::translation(p->get_ecliptic_pos())
+			      * mat
+			      * p->get_rot_local_to_parent_unprecessed();
+		}
+		else {
+			mat = Mat4d::translation(p->get_ecliptic_pos())
+			      * mat
+			      * p->get_rot_local_to_parent();
+		}
+
+		parent_mat = Mat4d::translation(p->get_ecliptic_pos())
+		             * parent_mat;
+
+		p = p->get_parent();
+
+		myParent = false;
+	}
+
 	// This removed totally the Body shaking bug!!!
 	mat = nav->getHelioToEyeMat() * mat;
 	parent_mat = nav->getHelioToEyeMat() * parent_mat;
 
-	eye_planet = mat * v3fNull;
+    eye_planet = mat.getTranslation();
 
 	lightDirection = eye_sun - eye_planet;
 	sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
