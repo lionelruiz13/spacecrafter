@@ -219,7 +219,8 @@ private:
 	bool flag_quaternion_mode = false; // True for quaternion movements, false for lon/lat movements
 	bool flag_eye_relative_mode = false; // True to redirect movements in eye relative, require quaterion mode to be enabled
 	double start_lat, end_lat;
-	double start_lon, current_lon, rel_lon;
+	// double start_lon, current_lon;
+	double rel_lon;
 	double start_alt, end_alt;
 	float move_to_coef, move_to_mult;
 

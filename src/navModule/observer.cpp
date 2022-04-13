@@ -52,6 +52,8 @@ Observer::Observer()
 Observer::~Observer(){ }
 
 void Observer::setAltitude(double a) {
+	if (a < 0.1)
+		a = 0.1;
 	altitude=a;
 	flag_move_to = 0;
 	Event* event = new AltitudeEvent(a);
@@ -181,9 +183,9 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, bool cal
 	start_lat = latitude;
 	end_lat = lat;
 
-	start_lon = longitude;
-	current_lon = longitude;
-	rel_lon = lon - start_lon;
+	// start_lon = longitude;
+	// current_lon = longitude;
+	rel_lon = lon - longitude;
 
 	start_alt = altitude;
 	end_alt = alt;
@@ -325,18 +327,21 @@ void Observer::update(int delta_time)
 {
 	rotator.update(delta_time, true);
 	if (flag_move_to) {
+		auto inter_move_to_mult = move_to_mult;
 		move_to_mult += move_to_coef*delta_time;
 
 		if ( move_to_mult >= 1) {
 			move_to_mult = 1;
 			flag_move_to = 0;
 		}
+		inter_move_to_mult = move_to_mult - inter_move_to_mult;
 
 		setLatitude( start_lat - move_to_mult*(start_lat-end_lat) );
-		const double off_lon = longitude - current_lon;
-		current_lon += off_lon;
-		start_lon += off_lon;
-		longitude = start_lon + move_to_mult*rel_lon;
+		// const double off_lon = longitude - current_lon;
+		// current_lon += off_lon;
+		// start_lon += off_lon;
+		longitude += inter_move_to_mult*rel_lon;
+		// current_lon = longitude;
 		altitude  = start_alt - move_to_mult*(start_alt-end_alt);
 	}
 }
