@@ -184,9 +184,10 @@ void SaveScreenInterface::update()
 {
 	if (!shouldCapture)
 		return;
-	if (asyncEngine)
-		pendingIdx.emplace({fileNameNextScreenshot, bufferIdx});
-	else
+	if (asyncEngine) {
+		while (!pendingIdx.emplace({fileNameNextScreenshot, bufferIdx}))
+			SDL_Delay(10);
+	} else
 		writeScreenshot(fileNameNextScreenshot, bufferIdx);
 	shouldCapture = false;
 }

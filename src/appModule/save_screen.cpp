@@ -66,7 +66,9 @@ void SaveScreen::saveScreenBuffer(const std::string &filename, int idx)
 	if (threads.empty()) {
 		std::thread(&SaveScreen::saveScreenToFile, this, filename, bufferIdx).detach();
 	} else {
-		requests.emplace({filename, bufferIdx});
+		while (!requests.emplace({filename, bufferIdx})) {
+			SDL_Delay(10);
+		}
 	}
 }
 
