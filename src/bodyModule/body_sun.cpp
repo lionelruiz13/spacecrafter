@@ -224,8 +224,7 @@ void Sun::computeDraw(const Projector* prj, const Navigator * nav)
 	std::shared_ptr<Body> p = parent;
 
     bool myParent = true;
-	while (p) {   //cette boucle ne sert que pour les lunes des planetes
-
+	while (p && p->get_parent()) {   //This loop works to enable planets for stellarsystems and moons for solarsystem
 		// Some orbits are already precessed, namely elp82
 		if(myParent && !useParentPrecession(lastJD)) {
 			mat = Mat4d::translation(p->get_ecliptic_pos())

@@ -757,7 +757,7 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 	std::shared_ptr<Body> p = parent;
 
 	bool myParent = true;
-	while (p) {   //cette boucle ne sert que pour les lunes des planetes
+	if (p) {   //this loop worked to enable moons when while but now with if ?
 
 		// Some orbits are already precessed, namely elp82
 		if(myParent && !useParentPrecession(lastJD)) {
@@ -778,6 +778,22 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 		myParent = false;
 	}
+
+    for (p = parent; p; p = p->get_parent()) {
+        if (p->getBodyType() == SUN) {
+            // Work in progress : Find eye_sun for stellarsystems searching what was used for eye_planet
+            //std::cout << "Eye_sun : " << eye_sun << "\n";
+            //std::cout << "Ecl_pos : " << p->get_ecliptic_pos() << "\n";
+            //std::cout << "HetoEye : " << nav->getHelioToEyeMat().getTranslation() << "\n";
+            //std::cout << "Position : " <<nav->helioToEarthPosEqu(p->get_ecliptic_pos()) << "\n";
+            //eye_sun = Vec3f{10.6544, 0.144372, -6.40092};
+            //eye_sun = Vec3f(12.04585,-3.06285,0.13738);
+            //eye_sun = p->get_ecliptic_pos();//Vec3f{0.0, 0.0, 0.0};//p->get_ecliptic_pos(); wxc
+            //eye_sun = nav->getHelioToEyeMat().getTranslation();
+            //eye_sun -= nav->helioToEarthPosEqu(p->get_ecliptic_pos());
+            break;
+        }
+    }
 
 	model = mat.convert();
 	view = nav->getHelioToEyeMat().convert();
