@@ -18,7 +18,7 @@ cd build
 rm * *.* -rf
 fi
 
-git submodule update --init || (cd ../src && rm -rf EntityCore && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
+git submodule update --init || (cd ../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
 cmake .. -DCMAKE_UILD_TYPE=Release
 make $1
 sudo make install
