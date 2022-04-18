@@ -779,22 +779,6 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 		myParent = false;
 	}
 
-    for (p = parent; p; p = p->get_parent()) {
-        if (p->getBodyType() == SUN) {
-            // Work in progress : Find eye_sun for stellarsystems searching what was used for eye_planet
-            //std::cout << "Eye_sun : " << eye_sun << "\n";
-            //std::cout << "Ecl_pos : " << p->get_ecliptic_pos() << "\n";
-            //std::cout << "HetoEye : " << nav->getHelioToEyeMat().getTranslation() << "\n";
-            //std::cout << "Position : " <<nav->helioToEarthPosEqu(p->get_ecliptic_pos()) << "\n";
-            //eye_sun = Vec3f{10.6544, 0.144372, -6.40092};
-            //eye_sun = Vec3f(12.04585,-3.06285,0.13738);
-            //eye_sun = p->get_ecliptic_pos();//Vec3f{0.0, 0.0, 0.0};//p->get_ecliptic_pos(); wxc
-            //eye_sun = nav->getHelioToEyeMat().getTranslation();
-            //eye_sun -= nav->helioToEarthPosEqu(p->get_ecliptic_pos());
-            break;
-        }
-    }
-
 	model = mat.convert();
 	view = nav->getHelioToEyeMat().convert();
 	vp = prj->getMatProjection().convert() * view;
@@ -808,7 +792,14 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
     eye_planet = mat.getTranslation();
 
 	lightDirection = eye_sun - eye_planet;
-	sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
+    sun_half_angle = atan(696000.0/AU/lightDirection.length());  // hard coded Sun radius!
+    for (p = parent; p; p = p->get_parent()) {
+        if (p->getBodyType() == SUN) {
+            eye_sun = (nav->getHelioToEyeMat() * p->mat_local_to_parent).getTranslation();
+            sun_half_angle = atan(p->radius/AU/lightDirection.length());
+            break;
+        }
+    }
 
 	lightDirection.normalize();
 
