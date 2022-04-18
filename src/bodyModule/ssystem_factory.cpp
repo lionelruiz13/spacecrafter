@@ -36,7 +36,7 @@ SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, Tim
     // creation ds models 3D pour les planetes
     objLMgr = std::make_unique<ObjLMgr>();
 	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
-	// objLMgr->insertDefault("Sphere");
+	objLMgr->insertDefault("Sphere");
 
 	if (!objLMgr->checkDefaultObject()) {
 		cLog::get()->write("SolarSystem: no default objMgr loaded, system aborded", LOG_TYPE::L_ERROR);
