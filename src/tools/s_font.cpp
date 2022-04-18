@@ -72,7 +72,7 @@ s_font::s_font(float size_i, const std::string& ttfFileName)
 	if (!tileMap) {
         auto &context = *Context::instance;
 		tileMap = new TileMap(*VulkanMgr::instance, *context.stagingMgr, "s_font");
-		tileMap->createMap(8192, 512);
+		tileMap->createMap(8192, 1024);
         context.transferSync->imageBarrier(**tileMap, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_SHADER_SAMPLED_READ_BIT_KHR);
         context.transferSync->build();
 	}
@@ -142,12 +142,11 @@ void s_font::beginPrint()
 		cLog::get()->write("s_font : Out of text surface, reset every text allocation to get space", LOG_TYPE::L_WARNING);
 		for (auto f : fontList)
 			f->clearCache();
-		tempCache.insert(tempCache.begin(), tempCache2.begin(), tempCache2.end());
-		tempCache2.clear();
+		// tempCache.insert(tempCache.end(), tempCache2.begin(), tempCache2.end());
+		// tempCache2.clear();
 		needFlush = false;
-	} else {
-		tempCache.swap(tempCache2);
 	}
+	tempCache.swap(tempCache2);
     for (int i = tempCache.size(); i--;) { // inverse release order reduce overhead
         if (tempCache[i].stringTexture.width)
             tileMap->releaseSurface(tempCache[i].stringTexture);
