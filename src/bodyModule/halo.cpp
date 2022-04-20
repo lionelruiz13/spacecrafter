@@ -23,6 +23,7 @@
 #include "tools/s_texture.hpp"
 #include <iostream>
 #include "tools/context.hpp"
+#include "tools/log.hpp"
 #include "EntityCore/EntityCore.hpp"
 
 Halo::HaloContext *Halo::global = nullptr;
@@ -62,12 +63,16 @@ void Halo::endDraw()
 		frame.compile(cmd);
 		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 	}
-	const int size = (global->offset - global->initialOffset) * (6 * sizeof(float));
+	int size = (global->offset - global->initialOffset) * (6 * sizeof(float));
 	const int offset = global->initialOffset * (6 * sizeof(float));
 	global->initialOffset = (global->initialOffset) ? 0 : global->offset;
 	global->offset = global->initialOffset;
 	if (size == 0)
 		return;
+	if (size / (6 * sizeof(float)) > global->vertex->getVertexCount() / 2) {
+		cLog::get()->write("Too many bodies are drawn (" + std::to_string(size / (6 * sizeof(float))) + " > " + std::to_string(global->vertex->getVertexCount() / 2) + "), THIS MAY CAUSE GRAPHICAL GLITCHES !", LOG_TYPE::L_WARNING);
+		size = global->vertex->getVertexCount() / 2 * (6 * sizeof(float));
+	}
 	context.transfer->planCopyBetween(global->staging, global->vertex->get(), size, offset, offset);
 }
 
@@ -157,8 +162,8 @@ void Halo::createSC_context()
 	global->pattern->addInput(VK_FORMAT_R32G32_SFLOAT);
 	global->pattern->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 	global->pattern->addInput(VK_FORMAT_R32_SFLOAT);
-	//! Note : 4096 is enough while there is no more than 2048 halo drawn per frame
-	global->vertex = global->pattern->createBuffer(0, 4096, context.ojmBufferMgr.get());
+	//! Note : 16384 is enough while there is no more than 8192 halo drawn per frame
+	global->vertex = global->pattern->createBuffer(0, 16384, context.ojmBufferMgr.get());
 	global->staging = context.stagingMgr->acquireBuffer(global->vertex->get().size);
 	global->pData = static_cast<typeof(global->pData)>(context.stagingMgr->getPtr(global->staging));
 
