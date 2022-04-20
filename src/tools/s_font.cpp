@@ -142,8 +142,8 @@ void s_font::beginPrint()
 		cLog::get()->write("s_font : Out of text surface, reset every text allocation to get space", LOG_TYPE::L_WARNING);
 		for (auto f : fontList)
 			f->clearCache();
-		// tempCache.insert(tempCache.end(), tempCache2.begin(), tempCache2.end());
-		// tempCache2.clear();
+		tempCache.insert(tempCache.end(), tempCache2.begin(), tempCache2.end());
+		tempCache2.clear();
 		needFlush = false;
 	}
 	tempCache.swap(tempCache2);
@@ -166,16 +166,17 @@ void s_font::print(float x, float y, const std::string& s, Vec4f Color, Mat4f MV
 	renderedString_struct currentRender;
 	// If not cached, create texture
 	if(renderCache[s].textureW == 0 ) {
-		currentRender = renderString(s, false);
-		if(cache) {
-			renderCache[s] = currentRender;
+		if (lastUncached == s) {
+			currentRender = tempCache.back();
 		} else {
-            if (lastUncached != s) {
+			currentRender = renderString(s, false);
+			if(cache) {
+				renderCache[s] = currentRender;
+			} else {
                 tempCache.push_back(currentRender); // to hold texture while it is used
                 lastUncached = s;
-            }
+			}
 		}
-		renderCache[s] = currentRender;
 	} else {
 		// read from cache
 		currentRender = renderCache[s];
@@ -361,16 +362,19 @@ void s_font::printHorizontal(const Projector * prj, float altitude, float azimut
 	renderedString_struct rendering;
 	SubTexture *subTex;
 	if(renderCache[str].textureW == 0) {
-		rendering = renderString(str, true);
-		if(cache) {
-			renderCache[str] = rendering;
-			subTex = &renderCache[str].stringTexture;
-		} else {
-            if (lastUncached != str) {
-                tempCache.push_back(rendering); // to hold texture while it is used
-                lastUncached = str;
-            }
+		if (lastUncached == str) {
+			rendering = tempCache.back();
 			subTex = &tempCache.back().stringTexture;
+		} else {
+			rendering = renderString(str, true);
+			if(cache) {
+				renderCache[str] = rendering;
+				subTex = &renderCache[str].stringTexture;
+			} else {
+	            tempCache.push_back(rendering); // to hold texture while it is used
+	            lastUncached = str;
+				subTex = &tempCache.back().stringTexture;
+			}
 		}
 	} else {
 		rendering = renderCache[str];
