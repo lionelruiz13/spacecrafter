@@ -145,8 +145,9 @@ void s_font::beginPrint()
 		tempCache.insert(tempCache.end(), tempCache2.begin(), tempCache2.end());
 		tempCache2.clear();
 		needFlush = false;
+	} else {
+	    tempCache.swap(tempCache2);
 	}
-	tempCache.swap(tempCache2);
     for (int i = tempCache.size(); i--;) { // inverse release order reduce overhead
         if (tempCache[i].stringTexture.width)
             tileMap->releaseSurface(tempCache[i].stringTexture);
