@@ -38,10 +38,10 @@ double AnchorManager::lastCorrection = 0;
 
 /*
  * returns the position for a movement at given date
- * 
+ *
  * The trajectory followed is a straight line between two points, however the speed is a logistic function.
  * This allows the speed to be low at the start and finish, but hight in between.
- * 
+ *
  */
 Vec3d AnchorManager::getTravelPosition(double JD)
 {
@@ -160,7 +160,7 @@ AnchorManager::AnchorManager(
 	//_ssystem->setAnchorManager(this);
 	timeMgr = mgr;
 
-	AnchorCreator * observatory = new AnchorObservatoryCreator(nullptr);	
+	AnchorCreator * observatory = new AnchorObservatoryCreator(nullptr);
 	AnchorCreator * orbit = new AnchorPointOrbitCreator(observatory,_ssystem, mgr, orbitCreator);
 	AnchorCreator * body = new AnchorPointBodyCreator(orbit, _ssystem);
 	anchorCreator = new AnchorPointCreator(body);
@@ -526,7 +526,7 @@ bool AnchorManager::transitionToBody(std::shared_ptr<AnchorPointBody> targetBody
 	Vec3d obsPos = currentAnchor->getHeliocentricEclipticPos();
 
 	Vec3d bodyPos = targetBody->getBody()->get_heliocentric_ecliptic_pos();
-	
+
 	double planetRadius = targetBody->getBody()->getRadius() * AU * 1000;
 
 	double alt = (obsPos-bodyPos).length() * AU * 1000 - planetRadius;
@@ -548,9 +548,9 @@ bool AnchorManager::transitionToBody(std::shared_ptr<AnchorPointBody> targetBody
 	double lower;
 	double upper;
 	double interval = 90;
-	
+
 	//decide wich half of the circle we start on
-	observer->setLongitude(-90);		
+	observer->setLongitude(-90);
 	navigator->updateTransformMatrices(observer, timeMgr->getJDay());
 	posLower = observer->getHeliocentricPosition(timeMgr->getJDay());
 
@@ -572,8 +572,8 @@ bool AnchorManager::transitionToBody(std::shared_ptr<AnchorPointBody> targetBody
 	}
 
 	while(interval > 0.00001){
-		
-		observer->setLongitude(lower);	
+
+		observer->setLongitude(lower);
 		navigator->updateTransformMatrices(observer, timeMgr->getJDay());
 		posLower = observer->getHeliocentricPosition(timeMgr->getJDay());
 
@@ -599,14 +599,14 @@ bool AnchorManager::transitionToBody(std::shared_ptr<AnchorPointBody> targetBody
 
 	observer->setLongitude(longitude);
 
-	
+
 	lower = -90;
 	upper = 90;
 	interval = 90;
 
 	while(interval > 0.01){
 
-		observer->setLatitude(lower);	
+		observer->setLatitude(lower);
 		navigator->updateTransformMatrices(observer, timeMgr->getJDay());
 		posLower = observer->getHeliocentricPosition(timeMgr->getJDay());
 
@@ -630,8 +630,9 @@ bool AnchorManager::transitionToBody(std::shared_ptr<AnchorPointBody> targetBody
 	observer->setLatitude( (lower+upper)/2 );
 
 	//angle to heading
-	if (angle > 180) angle = -(-180 + (angle - 180));
-	if (angle < -180) angle = 180 + (angle + 180);
+	// if (angle > 180) angle = -(-180 + (angle - 180)); // angle = 360 - angle
+	// if (angle < -180) angle = 180 + (angle + 180); // angle += 360
+	angle -= floor((angle + 180.) / 360.) * 360.;
 
 	//set the heading to the same angle that the planet was originally seen at
 	navigator->setHeading(-angle);
@@ -776,9 +777,9 @@ bool AnchorManager::alignCameraToBody(std::string name, double duration)
 		cLog::get()->write("AnchorManager::alignCameraToBody wrong anchor type", LOG_TYPE::L_WARNING);
 		return false;
 	}
-		
+
 	anchor = std::dynamic_pointer_cast<AnchorPointBody>(it->second);
-	
+
 	Mat4d rot = anchor->getRotEquatorialToVsop87();
 
 	navigator->alignUpVectorTo(rot, duration);

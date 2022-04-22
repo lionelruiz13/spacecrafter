@@ -355,12 +355,8 @@ double Observer::getLongitude() const
 double Observer::getLongitudeForDisplay() const
 {
 	double tmp = longitude;
-	while (tmp > 180) {
-		tmp -= 360;
-	}
-	while (tmp < -180 ) {
-		tmp += 360;
-	}
+
+	tmp -= floor((tmp + 180.) / 360.) * 360.;
 	return tmp;
 }
 

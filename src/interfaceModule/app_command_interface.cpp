@@ -1926,8 +1926,8 @@ int AppCommandInterface::commandHeading()
 	if (!argDeltaHeading.empty() ) {
 		float fdelay = evalDouble(args[W_DURATION]);
 		double heading = evalDouble(argDeltaHeading) + coreLink->getHeading();
-		if (heading > 180) heading -= 360;
-		if (heading < -180) heading += 360;
+
+		heading -= floor((heading + 180.) / 360.) * 360.;
 
 		std::stringstream oss;
 		oss << "heading from : " << coreLink->getHeading() << " to: " << heading;

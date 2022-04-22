@@ -174,15 +174,13 @@ public:
 
 	void setDefaultHeading(double _heading) {
 		defaultHeading = _heading;
-		while (defaultHeading > 180) defaultHeading -= 360;
-		while (defaultHeading < -180) defaultHeading += 360;
+		defaultHeading -= floor((defaultHeading + 180.) / 360.) * 360.;
 	}
 
 	double getHeading() const {
 		double h = heading;
 		// keep within -180 to 180 for TUI compatibility
-		while (h > 180) h -= 360;
-		while (h < -180) h += 360;
+		h -= floor((h + 180.) / 360.) * 360.;
 		return h;
 	}
 
