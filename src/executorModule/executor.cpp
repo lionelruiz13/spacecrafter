@@ -51,7 +51,7 @@ Executor::Executor(std::shared_ptr<Core> _core, Observer *_observer)
 void Executor::draw(int delta_time)
 {
     currentMode->draw(delta_time);
-    Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
+    Context::instance->helper->nextDraw(PASS_FOREGROUND);
     core->media->imageDraw(core->navigation, core->projection);
 }
 

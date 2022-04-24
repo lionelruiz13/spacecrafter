@@ -406,7 +406,8 @@ void DrawHelper::submit(unsigned char frameIdx, unsigned char lastFrameIdx)
 {
     currentLastFrameIdx = lastFrameIdx;
     auto &d = drawer[internalVFrameIdx++];
-    frame->cancelExecution(d.cancelledCmds);
+    if (!d.cancelledCmds.empty())
+        frame->cancelExecution(d.cancelledCmds);
     auto cmd = frame->preBegin();
     player->recordUpdate(cmd);
     s_texture::recordTransfer(cmd);

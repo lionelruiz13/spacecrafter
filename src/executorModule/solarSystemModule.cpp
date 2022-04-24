@@ -203,7 +203,7 @@ void SolarSystemModule::draw(int delta_time)
 	if (core->bodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
 		core->meteors->draw(core->projection, core->navigation);
 
-    Context::instance->helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
+    Context::instance->helper->nextDraw(PASS_FOREGROUND);
 	core->atmosphere->draw();
 
 	// Draw the landscape
