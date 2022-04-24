@@ -883,6 +883,12 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 		}
 		drawn = true;
 	} else {
+        if (needClearDepthBuffer) {
+            VkClearAttachment clearAttachment {VK_IMAGE_ASPECT_DEPTH_BIT, 0, {.depthStencil={1.f,0}}};
+            VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
+            vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
+            drawn = true;
+        }
         drawOrbit(cmd, observatory,nav, prj);
         drawTrail(cmd, nav, prj);
     }
