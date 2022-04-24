@@ -49,6 +49,8 @@
 
 #define NB_ASTEROIDS 400000
 
+double Ring::fadingFactor = 40;
+
 Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init)
 	:radius_min(radius_min),radius_max(radius_max)
 {
@@ -163,18 +165,24 @@ void Ring::createAsteroidRing()
 	tex->getDimensions(width, height);
     bool nonPersistant = false;
 	uint8_t *pData = (uint8_t *) tex->acquireContent(nonPersistant);
-	uint8_t *pDataLoop = pData + 2; // Use blue component for uranus rings
+	uint8_t *pDataLoop = pData + 3; // Use alpha from R G B A
 
 	std::vector<float> probability;
 	probability.reserve(width + 1);
 	float sum_probability = 0;
 	probability.push_back(sum_probability);
 	for (int i = 0; i < width; ++i) {
-		sum_probability += std::max(*pDataLoop / 256.f - 0.15f, 0.f);
+		float alpha = *pDataLoop / 255.f;
+		sum_probability += std::max(alpha*alpha - 0.01f, 0.f);
 		// In the texture, 0.15 correspond to no asteroids
 		probability.push_back(sum_probability);
+		std::cout << "Color";
+		for (int i = -3; i < 1; ++i)
+			std::cout << ' ' << (int) pDataLoop[i];
+		std::cout << "\n";
 		pDataLoop += 4;
 	}
+	std::cout << "\e[94mRing density : " << sum_probability << "\e[0m\n";
 	// Just hope nobody is currently creating/freeing a buffer from the ojmBufferMgr...
 	instanceAsteroid = vertexAsteroid->createBuffer(1, NB_ASTEROIDS, nullptr, context.ojmBufferMgr.get());
 	// This is not possible, but... Anyway...
@@ -196,7 +204,8 @@ void Ring::createAsteroidRing()
 		float z_shift = z_shift_distribution(generator) + z_shift_distribution(generator);
 		*(tmp++) = Vec3f(Mat4f::zrotation(i * 3.141592653589793238 * 2 / NB_ASTEROIDS) * Vec4f(distance, 0., z_shift, 1.));
 		uint8_t *tmpColor = pData + j * 4;
-		(tmp++)->set(tmpColor[0] / 255.f, tmpColor[1] / 255.f, tmpColor[2] / 255.f);
+		float factor = std::min(tmpColor[3] / 128.f, 1.f) / 255.f;
+		(tmp++)->set(tmpColor[0] * factor, tmpColor[1] * factor, tmpColor[2] * factor);
 	}
     tex->releaseContent(pData);
 	asteroidComputed = true;
@@ -231,7 +240,7 @@ void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,
 	uniform->get().SunnySideUp = (h>0.0) ? 1.0 : 0.0;
 
 	if (asteroidReady && obs && obs->getDistanceFromCenter() < radius_max * 10 /* && abs(obs->getLatitude()) < 20. */) {
-		uniform->get().fadingFactor = 10;
+		uniform->get().fadingFactor = fadingFactor; // calibrated over Saturn radiux_max
 		pipelineAsteroid->bind(cmd);
 		layoutAsteroid->bindSet(cmd, *setAsteroid);
 		VertexArray::bind(cmd, {bufferAsteroid, instanceAsteroid.get()});

@@ -90,6 +90,7 @@ public:
 
 	void preload();
 private:
+	static double fadingFactor;
 	const double radius_min;
 	const double radius_max;
 	std::unique_ptr<s_texture> tex;
