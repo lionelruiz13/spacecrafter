@@ -80,11 +80,11 @@ void CheckConfig::checkIoSettings()
 
 void CheckConfig::checkVideoSettings()
 {
-	tmpSettings[SCK_AUTOSCREEN]="false";
-	tmpSettings[SCK_FULLSCREEN]="false";
+	tmpSettings[SCK_AUTOSCREEN]="true";
+	tmpSettings[SCK_FULLSCREEN]="true";
 	tmpSettings[SCK_REMOTE_DISPLAY]="false";
 	tmpSettings[SCK_SCREEN_W]="1024";
-	tmpSettings[SCK_SCREEN_H]="768";
+	tmpSettings[SCK_SCREEN_H]="1024";
 	//tmpSettings[SCK_BBP_MODE]="24";
 	tmpSettings[SCK_MAXIMUM_FPS]="60";
 	tmpSettings[SCK_REC_VIDEO_FPS]="30";
@@ -181,27 +181,27 @@ void CheckConfig::checkGuiSettings()
 void CheckConfig::checkFontSettings()
 {
 	tmpSettings[SCK_FONT_RESOLUTION_SIZE]= "1024";
-	tmpSettings[SCK_FONT_GENERAL_NAME]="DejaVuSansMono.ttf";
-	// tmpSettings[SCK_FONT_GENERAL_SIZE]="12";
-	tmpSettings[SCK_FONT_MENU_NAME]="DejaVuSans.ttf";
-	tmpSettings[SCK_FONT_MENUTUI_SIZE]="18";
-	tmpSettings[SCK_FONT_PLANET_NAME]="DejaVuSans.ttf";
-	tmpSettings[SCK_FONT_PLANET_SIZE]="20";
-	tmpSettings[SCK_FONT_CONSTELLATION_NAME]="DejaVuSans.ttf";
-	tmpSettings[SCK_FONT_CONSTELLATION_SIZE]="22";
-	tmpSettings[SCK_FONT_CARDINALPOINTS_NAME] = "DejaVuSans.ttf";
-	tmpSettings[SCK_FONT_CARDINALPOINTS_SIZE]="30";
-	tmpSettings[SCK_FONT_TEXT_NAME]="DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_GENERAL_NAME]="DejaVuSans-Bold.ttf";
+	// tmpSettings[SCK_FONT_GENERAL_SIZE]="10";
+	tmpSettings[SCK_FONT_MENU_NAME]="DejaVuSans-Bold.ttf";
+	tmpSettings[SCK_FONT_MENUTUI_SIZE]="12";
+	tmpSettings[SCK_FONT_PLANET_NAME]="DejaVuSans-Bold.ttf";
+	tmpSettings[SCK_FONT_PLANET_SIZE]="10";
+	tmpSettings[SCK_FONT_CONSTELLATION_NAME]="DejaVuSans-Bold.ttf";
+	tmpSettings[SCK_FONT_CONSTELLATION_SIZE]="12";
+	tmpSettings[SCK_FONT_CARDINALPOINTS_NAME] = "DejaVuSans-Bold.ttf";
+	tmpSettings[SCK_FONT_CARDINALPOINTS_SIZE]="24";
+	tmpSettings[SCK_FONT_TEXT_NAME]="DejaVuSans-Bold.ttf";
 	tmpSettings[SCK_FONT_TEXT_SIZE]="16";
-	tmpSettings[SCK_FONT_GRID_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_GRID_NAME] = "DejaVuSans-Bold.ttf";
 	tmpSettings[SCK_FONT_GRID_SIZE]="12";
 	tmpSettings[SCK_FONT_LINES_NAME] = "DejaVuSans.ttf";
 	tmpSettings[SCK_FONT_LINE_SIZE]="12";
-	tmpSettings[SCK_FONT_DISPLAY_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_DISPLAY_NAME] = "DejaVuSans-Bold.ttf";
 	tmpSettings[SCK_FONT_DISPLAY_SIZE]="12";
-	tmpSettings[SCK_FONT_HIPSTARS_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_HIPSTARS_NAME] = "DejaVuSans-Bold.ttf";
 	tmpSettings[SCK_FONT_HIPSTARS_SIZE]="12";
-	tmpSettings[SCK_FONT_NEBULAS_NAME] = "DejaVuSans.ttf";
+	tmpSettings[SCK_FONT_NEBULAS_NAME] = "DejaVuSans-Bold.ttf";
 	tmpSettings[SCK_FONT_NEBULAS_SIZE]="12";
 
 	tmpSettings[SCK_FONT_MENUGUI_SIZE]="12.5";
@@ -347,7 +347,7 @@ void CheckConfig::checkViewingSettings()
 	tmpSettings[SCK_FLAG_ATMOSPHERIC_REFRACTION] = "false";
 	tmpSettings[SCK_MOON_SCALE] = "5";
 	tmpSettings[SCK_SUN_SCALE] = "5";
-	tmpSettings[SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE] = "6";
+	tmpSettings[SCK_LIGHT_POLLUTION_LIMITING_MAGNITUDE] = "6.5";
 
 	sectionSettings.push_back(SCS_VIEWING);
 	insertKeyFromTmpSettings(SCS_VIEWING);
