@@ -107,7 +107,7 @@ App::App( SDLFacade* const sdl )
 	fontFactory = std::make_unique<FontFactory>();
 
 	media = std::make_shared<Media>();
-	saveScreenInterface = std::make_shared<SaveScreenInterface>(VulkanMgr::instance->getScreenRect());
+	saveScreenInterface = std::make_shared<SaveScreenInterface>(VulkanMgr::instance->getScreenRect(), (sender) ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 	saveScreenInterface->setVideoBaseName(settings->getVframeDirectory() + APP_LOWER_NAME);
 	saveScreenInterface->setSnapBaseName(settings->getScreenshotDirectory() + APP_LOWER_NAME);
 
@@ -317,7 +317,7 @@ void App::initVulkan(InitParser &conf)
 	context.semaphores.resize(6);
 	context.graphicTransferCmd.resize(3);
 	context.starUsed.resize(3);
-	VkFenceCreateInfo fenceInfo {VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, nullptr, VK_FENCE_CREATE_SIGNALED_BIT};
+	VkFenceCreateInfo fenceInfo {VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, nullptr, (vkmgr.getSwapchainView().empty()) ? 0 : VK_FENCE_CREATE_SIGNALED_BIT};
 	VkSemaphoreCreateInfo semaphoreInfo {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, nullptr, 0};
 	// FrameMgr::startHelper();
 	for (uint8_t i = 0; i < 3; ++i) {
@@ -327,7 +327,7 @@ void App::initVulkan(InitParser &conf)
 		// context.starSync[i]->build();
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
 		if (vkmgr.getSwapchainView().empty()) {
-			senderImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
+			senderImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
 			context.frame.back()->bind(colorID, *senderImage.back());
 		} else {
 			context.frame.back()->bind(colorID, vkmgr.getSwapchainView()[i]);
@@ -479,8 +479,10 @@ void App::init()
 void App::firstInit()
 {
 	context.stat->capture(Capture::FRAME_START);
-	appDraw->initSplash();
-	context.stat->capture(Capture::INIT_SPLASH);
+	if (!sender) {
+		appDraw->initSplash();
+		context.stat->capture(Capture::INIT_SPLASH);
+	}
 
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
@@ -812,7 +814,10 @@ void App::submitFrame(App *self, int id)
 		self->context.starUsed[id]->syncFramebuffer(mainCmd);
 		self->context.starUsed[id] = nullptr;
 	}
-	self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
+	if (self->sender)
+		self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
+	else
+		self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
 	if (self->sender) {
 		self->sender->setupReadback(mainCmd, id);
 	}

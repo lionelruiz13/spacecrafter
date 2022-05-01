@@ -37,7 +37,7 @@
 #include "eventModule/event_recorder.hpp"
 #include "EntityCore/EntityCore.hpp"
 
-SaveScreenInterface::SaveScreenInterface(VkRect2D screenRect)
+SaveScreenInterface::SaveScreenInterface(VkRect2D screenRect, VkImageLayout layout)
 {
 	width = screenRect.extent.width;
 	height = screenRect.extent.height;
@@ -50,6 +50,7 @@ SaveScreenInterface::SaveScreenInterface(VkRect2D screenRect)
 	}
 	postBufferBarrier.buffer = buffers[0].buffer;
 	postBufferBarrier.size = buffers[0].size;
+	preImageBarrier.oldLayout = postImageBarrier.newLayout = layout;
 	copyInfo.imageSubresource = VkImageSubresourceLayers{VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1};
 	copyInfo.imageOffset = VkOffset3D{screenRect.offset.x, screenRect.offset.y, 0};
 	copyInfo.imageExtent = VkExtent3D{width, height, 1};
