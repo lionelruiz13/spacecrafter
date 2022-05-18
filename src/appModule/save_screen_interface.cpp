@@ -153,16 +153,17 @@ void SaveScreenInterface::takeScreenShot(const std::string& _fileName)
 void SaveScreenInterface::writeScreenshot(const std::string &fileName, int idx)
 {
 	Context::instance->readbackMgr->invalidate(buffers[idx]);
-	unsigned char *src = static_cast<unsigned char *>(pBuffers[idx]) + 4 * minWH * minWH; // Move at the end of the image
+	unsigned char *src = static_cast<unsigned char *>(pBuffers[idx]) + 4 * minWH * (minWH - 1); // Move at the last line of the image
 	unsigned char *dst = saveScreen->getBuffer(idx);
+	// Flip Y axis
 	for (uint32_t i = 0; i < minWH; ++i) { // Format is VK_FORMAT_B8G8R8A8_UNORM
-		src -= 2 * 4 * minWH; // Flip Y axis
 		for (uint32_t j = 0; j < minWH; ++j) {
 			*(dst++) = src[2]; // R component
 			*(dst++) = src[1]; // G component
 			*(dst++) = src[0]; // B component
 			src += 4;
 		}
+		src -= 2 * 4 * minWH;
 	}
 	saveScreen->saveScreenBuffer(fileName, idx);
 }
