@@ -643,7 +643,6 @@ void App::draw(int delta_time)
 	context.stat->capture(Capture::FRAME_ACQUIRE);
 	vkmgr.update();
 	core->uboCamUpdate();
-	saveScreenInterface->update();
 	s_texture::update();
 	context.frame[context.frameIdx]->discardRecord();
 	context.setMgr->update();
@@ -814,6 +813,7 @@ void App::submitFrame(App *self, int id)
 		self->context.starUsed[id]->syncFramebuffer(mainCmd);
 		self->context.starUsed[id] = nullptr;
 	}
+	self->saveScreenInterface->update();
 	if (self->sender)
 		self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
 	else
