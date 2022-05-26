@@ -186,8 +186,7 @@ Landscape* Landscape::createFromHash(stringHash_t & param)
 	else
 		texture = param[L_PATH] + param[L_TEXTURE];
 
-	bool mipmap;
-	Utility::isTrue(param[L_TEXTURE]) ? mipmap = true: mipmap = false;
+	bool mipmap = param[L_MIPMAP].empty() ? true : Utility::isTrue(param[L_MIPMAP]);
 
 	// NOTE: textures should be full filename (and path)
 	if (param[L_TYPE]==L_FISHEYE) {
