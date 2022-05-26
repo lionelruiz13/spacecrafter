@@ -76,6 +76,7 @@
 #define SCK_FLAG_ANTIALIAS_LINES            "flag_antialias_lines"
 #define SCK_ANTIALIASING                    "antialiasing"
 #define SCK_LINE_WIDTH                      "line_width"
+#define SCK_ANISOTROPY                      "anisotropy"
 #define SCK_LANDSCAPE_SLICES                "landscape_slices"
 #define SCK_LANDSCAPE_STACKS                "landscape_stacks"
 #define SCK_MIN_TES_LEVEL                   "min_tes_level"

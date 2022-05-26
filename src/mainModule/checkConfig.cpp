@@ -102,6 +102,7 @@ void CheckConfig::checkRenderingSettings()
 	tmpSettings[SCK_LOW_RES_MAX]="1024";
 	tmpSettings[SCK_ANTIALIASING]="8";
 	tmpSettings[SCK_LINE_WIDTH]="1.5";
+	tmpSettings[SCK_ANISOTROPY]="8";
 	tmpSettings[SCK_LANDSCAPE_SLICES]="80";
 	tmpSettings[SCK_LANDSCAPE_STACKS]="20";
 	tmpSettings[SCK_MIN_TES_LEVEL]="1";

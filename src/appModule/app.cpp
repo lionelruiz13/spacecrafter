@@ -95,6 +95,7 @@ App::App( SDLFacade* const sdl )
 	InitParser conf;
 	settings->loadAppSettings( &conf );
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
+	PipelineLayout::DEFAULT_SAMPLER.maxAnisotropy = conf.getDouble(SCS_RENDERING, SCK_ANISOTROPY);
 
 	context.stat = std::make_unique<CaptureMetrics>(settings->getUserDir() + "log/statistics.dat", CAPTURE_FLAG_NAMES);
 	if (conf.getBoolean(SCS_MAIN, SCK_STATISTICS))
