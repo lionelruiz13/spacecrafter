@@ -158,6 +158,8 @@ App::App( SDLFacade* const sdl )
 	context.stat->capture(Capture::INIT_GENERAL);
 	appDraw = std::make_unique<AppDraw>();
 	appDraw->init(width, height);
+	appDraw->setLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
+
 	context.stat->capture(Capture::INIT_APPDRAW);
 }
 

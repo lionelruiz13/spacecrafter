@@ -150,10 +150,8 @@ void AppDraw::drawColorInverse()
 
 void AppDraw::setLineWidth(float w)
 {
-   if (abs(m_lineWidth-w)<0.5f) {
-       Pipeline::setDefaultLineWidth(m_lineWidth);
-   }
-   m_lineWidth = w;
+    m_lineWidth = (w > 0.5f) ? w : 0.5f;
+    Pipeline::setDefaultLineWidth(m_lineWidth);
 }
 
 void AppDraw::initSplash()
