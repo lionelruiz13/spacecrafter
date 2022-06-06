@@ -154,6 +154,7 @@ private:
 	bool flagAlwaysVisible;			//!< say if SC should always remain visible
 
 	double PresetSkyTime;
+	double baseHeading;
 	std::string StartupTimeMode;	//! Can be "now" or "preset"
 	std::string DayKeyMode;			//! calendar or sidereal
 	unsigned int deltaTime; 		//! représente la durée théorique d'une frame

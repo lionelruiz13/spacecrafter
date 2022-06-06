@@ -96,6 +96,7 @@ App::App( SDLFacade* const sdl )
 	settings->loadAppSettings( &conf );
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 	flushFrames = conf.getBoolean(SCS_RENDERING, SCK_FLUSH_FRAMES);
+	baseHeading = conf.getDouble (SCS_NAVIGATION,SCK_HEADING);
 	PipelineLayout::DEFAULT_SAMPLER.maxAnisotropy = conf.getDouble(SCS_RENDERING, SCK_ANISOTROPY);
 
 	context.stat = std::make_unique<CaptureMetrics>(settings->getUserDir() + "log/statistics.dat", CAPTURE_FLAG_NAMES);
@@ -675,7 +676,7 @@ void App::draw(int delta_time)
 	media->textDraw();
 	context.helper->endDraw();
 	//draw video frame to classical viewport
-	media->drawViewPort(coreLink->getHeading());
+	media->drawViewPort(coreLink->getHeading() - baseHeading);
 	context.stat->capture(Capture::MEDIA_DRAW);
 
 	// Fill with black around the circle
