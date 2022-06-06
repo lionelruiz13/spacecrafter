@@ -256,11 +256,15 @@ public:
     }
 
     double getSelectedRA(const Navigator * nav) const {
-        return ssystem->getSelectedRA(nav);
+        double ra=0, de;
+        ssystemSelected->getSelected().getRaDeValue(nav, &ra, &de);
+    	return ra*180.0/M_PI;
     }
 
 	double getSelectedDE(const Navigator * nav) const {
-        return ssystem->getSelectedDE(nav);
+        double ra, de=0;
+    	ssystemSelected->getSelected().getRaDeValue(nav, &ra, &de);
+    	return de*180.0/M_PI;
     }
 
 	void setPlanetSizeScale(const std::string &name, float s) {

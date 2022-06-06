@@ -124,6 +124,7 @@ public:
 
 	//is still use ?
 	void getAltAz(const Navigator * nav, double *alt, double *az) const;
+	virtual void getRaDeValue(const Navigator *nav,double *ra, double *de) const override;
 
 	std::string getShortInfoString(const Navigator * nav) const;
 	std::string getShortInfoNavString(const Navigator * nav, const TimeMgr * timeMgr, const Observer* observatory) const;

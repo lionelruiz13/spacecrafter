@@ -354,6 +354,11 @@ void Body::getAltAz(const Navigator * nav, double *alt, double *az) const
 	*alt= _alt;
 }
 
+void Body::getRaDeValue(const Navigator *nav,double *ra, double *de) const
+{
+    Utility::rectToSphe(ra, de, getEarthEquPos(nav));
+}
+
 std::string Body::getShortInfoNavString(const Navigator * nav, const TimeMgr * timeMgr, const Observer* observatory) const
 {
 	std::ostringstream oss;
