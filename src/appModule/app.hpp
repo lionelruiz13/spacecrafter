@@ -174,6 +174,7 @@ private:
 	VkSampleCountFlagBits sampleCount;
 	std::vector<std::unique_ptr<Texture>> multisampleImage;
 	std::unique_ptr<Texture> depthBuffer;
+	bool flushFrames; // Flush every frames, reduce framerates but potentially remove some graphical glitches
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr;		 			//! base pour les constantes du logiciel

@@ -95,6 +95,7 @@ App::App( SDLFacade* const sdl )
 	InitParser conf;
 	settings->loadAppSettings( &conf );
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
+	flushFrames = conf.getBoolean(SCS_RENDERING, SCK_FLUSH_FRAMES);
 	PipelineLayout::DEFAULT_SAMPLER.maxAnisotropy = conf.getDouble(SCS_RENDERING, SCK_ANISOTROPY);
 
 	context.stat = std::make_unique<CaptureMetrics>(settings->getUserDir() + "log/statistics.dat", CAPTURE_FLAG_NAMES);
@@ -162,6 +163,8 @@ App::App( SDLFacade* const sdl )
 	appDraw->setLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 
 	context.stat->capture(Capture::INIT_APPDRAW);
+	if (flushFrames)
+		cLog::get()->write("Performance issue : Frame flush is enabled", LOG_TYPE::L_WARNING);
 }
 
 App::~App()
@@ -317,7 +320,7 @@ void App::initVulkan(InitParser &conf)
 	context.transfers.resize(3);
 	context.fences.resize(3);
 	context.debugFences.resize(3);
-	context.semaphores.resize(6);
+	context.semaphores.resize(9);
 	context.graphicTransferCmd.resize(3);
 	context.starUsed.resize(3);
 	VkFenceCreateInfo fenceInfo {VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, nullptr, (vkmgr.getSwapchainView().empty()) ? 0 : VK_FENCE_CREATE_SIGNALED_BIT};
@@ -348,6 +351,8 @@ void App::initVulkan(InitParser &conf)
 		vkmgr.setObjectName(context.semaphores[i], VK_OBJECT_TYPE_SEMAPHORE, "Acquire " + std::to_string(i));
 		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 3);
 		vkmgr.setObjectName(context.semaphores[i + 3], VK_OBJECT_TYPE_SEMAPHORE, "Present " + std::to_string(i));
+		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 6);
+		vkmgr.setObjectName(context.semaphores[i + 3], VK_OBJECT_TYPE_SEMAPHORE, "Flush " + std::to_string(i));
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
 	}
 	context.transfer = context.transfers[2].get(); // Assume the previous frame is the frame 2
@@ -682,6 +687,11 @@ void App::draw(int delta_time)
 	context.helper->submitFrame(context.frameIdx, context.lastFrameIdx);
 	context.stat->capture(Capture::ASYNC_FRAME_SUBMIT);
 	context.transfer = context.transfers[context.frameIdx].get();
+
+	if (flushFrames) {
+		context.helper->waitFrame(context.lastFrameIdx);
+		vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000);
+	}
 }
 
 //! @brief Set the application locale. This apply to GUI, console messages etc..
@@ -817,12 +827,14 @@ void App::submitFrame(App *self, int id)
 		self->context.starUsed[id] = nullptr;
 	}
 	self->saveScreenInterface->update();
-	if (self->sender)
-		self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
-	else
-		self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
-	if (self->sender) {
-		self->sender->setupReadback(mainCmd, id);
+	if (!self->flushFrames) {
+		if (self->sender)
+			self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
+		else
+			self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
+		if (self->sender) {
+			self->sender->setupReadback(mainCmd, id);
+		}
 	}
 	vkEndCommandBuffer(mainCmd);
 
@@ -839,10 +851,21 @@ void App::submitFrame(App *self, int id)
 				VulkanMgr::instance->putLog("Failed to submit frame", LogType::ERROR);
 				return;
 		}
+		if (self->flushFrames) {
+			vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id], VK_TRUE, 10L*1000*1000*1000);
+			vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id]);
+			self->context.frame[id]->preBegin();
+			self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
+			if (self->sender) {
+				self->sender->setupReadback(mainCmd, id);
+			}
+			vkEndCommandBuffer(mainCmd);
+			vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		}
 		self->sender->presentFrame(id);
 	} else {
 		VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + Context::instance->helper->getLastFrameIdx()], &stage, 1, &mainCmd, 1, &self->context.semaphores[id]};
+		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + Context::instance->helper->getLastFrameIdx()], &stage, 1, &mainCmd, 1, &self->context.semaphores[self->flushFrames ? (id+6) : (id)]};
 		auto res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		switch (res) {
 			case VK_SUCCESS:
@@ -853,6 +876,19 @@ void App::submitFrame(App *self, int id)
 			default:
 				VulkanMgr::instance->putLog("Failed to submit frame", LogType::ERROR);
 				return;
+		}
+		if (self->flushFrames) {
+			vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id], VK_TRUE, 10L*1000*1000*1000);
+			vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id]);
+			submit.pWaitSemaphores = submit.pSignalSemaphores;
+			submit.pSignalSemaphores = &self->context.semaphores[id];
+			self->context.frame[id]->preBegin();
+			self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
+			if (self->sender) {
+				self->sender->setupReadback(mainCmd, id);
+			}
+			vkEndCommandBuffer(mainCmd);
+			vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		}
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
 		res = vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
