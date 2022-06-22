@@ -14,8 +14,8 @@ message("---------------------------------------------")
 
 project(spacecrafter)
 SET(SPACECRAFTER_YEAR "22")
-SET(SPACECRAFTER_MONTH "04")
-SET(SPACECRAFTER_DAY "02")
+SET(SPACECRAFTER_MONTH "05")
+SET(SPACECRAFTER_DAY "10")
 SET(SPACECRAFTER_USER_NAME "LSS Open Project")
 SET(SPACECRAFTER_USER_EDITION "Linux Edition Vulkan 2022")
 SET(SPACECRAFTER_VERSION "${SPACECRAFTER_YEAR}.${SPACECRAFTER_MONTH}.${SPACECRAFTER_DAY}")
@@ -62,7 +62,7 @@ SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -fconcepts")
 message("Build type Coverage. Use -DCMAKE_BUILD_TYPE=Release to activate Release mode")
 endif()
 
-###########  additional compile flags ########### 
+###########  additional compile flags ###########
 # SET(CMAKE_C_FLAGS "-g -Wextra -Wall -Wno-ignored-qualifiers -Wno-unused-parameter")
 # SET(CMAKE_CXX_FLAGS "-g -Wextra -Wall -Wno-ignored-qualifiers -Wno-unused-parameter")
 
@@ -106,12 +106,12 @@ SET(CPACK_PACKAGE_EXECUTABLES "spacecrafter" "Spacecrafter")
 set(CPACK_SOURCE_IGNORE_FILES "/.git/" "/build/" "/doc/" "www/" "utils/")
 INCLUDE(CPack)
 
-###########  subdirectory  ########### 
+###########  subdirectory  ###########
 add_subdirectory(shaders)
 add_subdirectory(src)
 add_subdirectory(data)
-ADD_SUBDIRECTORY( planetsephems ) 
-ADD_SUBDIRECTORY( iniparser ) 
+ADD_SUBDIRECTORY( planetsephems )
+ADD_SUBDIRECTORY( iniparser )
 
 
 
