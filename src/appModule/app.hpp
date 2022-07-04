@@ -63,7 +63,7 @@ class Observer;
 class FrameSender;
 class InitParser;
 
-enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE};
+enum class APP_FLAG : char {NONE, ANTIALIAS, VISIBLE, ALIVE, COLOR_INVERSE, SUBTITLE};
 
 /**
 @author initial Fabien Chereau
@@ -148,9 +148,10 @@ private:
 	//! Initialize vulkan resources
 	void initVulkan(InitParser &conf);
 
-	bool flagAlive; 				//!< indique si l'application doit s'arrêter ou pas
+	bool flagAlive; 				//!< indicates if the application should stop or not
 	bool flagVisible;				//!< say if your App Is Visible or not
-	bool flagColorInverse;			//!< indique si les couleurs de l'écran sont inversées
+	bool flagColorInverse;			//!< indicates if the colors on the screen are inverted*.
+	bool flagSubtitle;				//!< active text on top of videos
 	bool flagAlwaysVisible;			//!< say if SC should always remain visible
 
 	double PresetSkyTime;

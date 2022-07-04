@@ -356,6 +356,7 @@ PARAMETER lock_sky_position @ boolean
 PARAMETER body_trace @ boolean
 PARAMETER show_latlon @ boolean
 PARAMETER color_inverse @ boolean
+PARAMETER subtitle @ boolean
 PARAMETER oort @ boolean
 PARAMETER stars_trace @ boolean
 PARAMETER star_lines @ boolean

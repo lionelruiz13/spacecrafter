@@ -190,6 +190,7 @@ void AppCommandInit::initialiseFlagsName(std::map<const std::string, FLAG_NAMES>
 	m_flags[ACP_FN_SATELLITES] = FLAG_NAMES::FN_SATELLITES;
 	m_flags[ACP_FN_QUATERNION_MODE] = FLAG_NAMES::FN_QUATERNION_MODE;
 	m_flags[ACP_FN_EYE_RELATIVE_MODE] = FLAG_NAMES::FN_EYE_RELATIVE_MODE;
+	m_flags[ACP_FN_SUBTITLE] = FLAG_NAMES::FN_SUBTITLE;
 
 	for (auto it = m_flags.begin(); it != m_flags.end(); ++it) {
         m_flagsToString.emplace(it->second, it->first);

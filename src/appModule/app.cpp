@@ -157,6 +157,7 @@ App::App( SDLFacade* const sdl )
 	enable_mkfifo= false;
 	enable_tcp= false;
 	flagColorInverse= false;
+	flagSubtitle= false;
 
 	context.stat->capture(Capture::INIT_GENERAL);
 	appDraw = std::make_unique<AppDraw>();
@@ -388,6 +389,8 @@ void App::flag(APP_FLAG layerValue, bool _value) {
 				flagAlive = _value; break;
 		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = _value; break;
+		case APP_FLAG::SUBTITLE :
+				flagSubtitle = _value; break;
 		case APP_FLAG::ANTIALIAS :
 				appDraw->setFlagAntialiasLines(_value); break;
 		default: break;
@@ -403,6 +406,8 @@ void App::toggle(APP_FLAG layerValue)
 				flagAlive = !flagAlive; break;
 		case APP_FLAG::COLOR_INVERSE :
 				flagColorInverse = !flagColorInverse; break;
+		case APP_FLAG::SUBTITLE :
+				flagSubtitle = !flagSubtitle; break;
 		case APP_FLAG::ANTIALIAS :
 				appDraw->flipFlagAntialiasLines(); break;
 		default: break;
@@ -672,12 +677,22 @@ void App::draw(int delta_time)
 	if (flagColorInverse)
 		appDraw->drawColorInverse();
 
-	//draw text user
-	media->textDraw();
-	context.helper->endDraw();
-	//draw video frame to classical viewport
-	media->drawViewPort(coreLink->getHeading() - baseHeading);
-	context.stat->capture(Capture::MEDIA_DRAW);
+	if (flagSubtitle) {
+		//draw video frame to classical viewport
+		media->drawViewPort(coreLink->getHeading() - baseHeading);
+		//draw text user
+		media->textDraw();
+		context.stat->capture(Capture::MEDIA_DRAW);
+		context.helper->endDraw();
+	} else {
+		//draw text user
+		media->textDraw();
+		context.helper->endDraw();
+		//draw video frame to classical viewport
+		media->drawViewPort(coreLink->getHeading() - baseHeading);
+		context.stat->capture(Capture::MEDIA_DRAW);
+	}
+
 
 	// Fill with black around the circle
 	appDraw->drawViewportShape();

@@ -391,6 +391,7 @@ PARAMETER lock_sky_position @ vrai/faux
 PARAMETER body_trace @ vrai/faux
 PARAMETER show_latlon @ vrai/faux
 PARAMETER color_inverse @ vrai/faux
+PARAMETER subtitle @ vrai/faux
 PARAMETER oort @ vrai/faux
 PARAMETER stars_trace @ vrai/faux
 PARAMETER star_lines @ vrai/faux

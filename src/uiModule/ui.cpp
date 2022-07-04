@@ -1650,6 +1650,9 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("date relative_year -1");
 					break;
 				case KWIN:
+					event = new FlagEvent( FLAG_NAMES::FN_SUBTITLE , FLAG_VALUES::FV_TOGGLE);
+					EventRecorder::getInstance()->queue(event);
+					key_Modifier= NONE;
 					break;
 				case CTRL :
 					this->executeCommand("date relative -7");

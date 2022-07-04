@@ -914,6 +914,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				stapp->flag(APP_FLAG::COLOR_INVERSE, newval);
 			break;
 
+		case FLAG_NAMES::FN_SUBTITLE :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				stapp->toggle(APP_FLAG::SUBTITLE);
+			else
+				stapp->flag(APP_FLAG::SUBTITLE, newval);
+			break;
+
 		case FLAG_NAMES::FN_STARS_TRACE :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->starGetTraceFlag();
