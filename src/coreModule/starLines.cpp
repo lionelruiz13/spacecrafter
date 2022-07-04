@@ -271,8 +271,8 @@ void StarLines::loadStringData(const std::string& record) noexcept
 			continue;
 		}
 
-		Vec3f tmp1 = searchInHip(HIP1);
-		Vec3f tmp2 = searchInHip(HIP2);
+		Vec3d tmp1 = searchInHip(HIP1);
+		Vec3d tmp2 = searchInHip(HIP2);
 		if (tmp1==VNull || tmp2 ==VNull) {
 			if (tmp1==VNull) {
 				//printf("StarLines error parsing HIP %i not found\n", HIP1);
@@ -287,12 +287,12 @@ void StarLines::loadStringData(const std::string& record) noexcept
 			// SEGMENT THE LINES
 			int nblines=10;
 			for(int j=0; j<nblines ; j++) {
-				linePos.push_back(tmp1[0]*(nblines-j)/nblines+tmp2[0]*j/nblines);
-				linePos.push_back(tmp1[1]*(nblines-j)/nblines+tmp2[1]*j/nblines);
-				linePos.push_back(tmp1[2]*(nblines-j)/nblines+tmp2[2]*j/nblines);
-				linePos.push_back(tmp1[0]*(nblines-(j+1))/nblines+tmp2[0]*(j+1)/nblines);
-				linePos.push_back(tmp1[1]*(nblines-(j+1))/nblines+tmp2[1]*(j+1)/nblines);
-				linePos.push_back(tmp1[2]*(nblines-(j+1))/nblines+tmp2[2]*(j+1)/nblines);
+				linePos.push_back((tmp1[0]*(nblines-j)+tmp2[0]*j)/nblines);
+				linePos.push_back((tmp1[1]*(nblines-j)+tmp2[1]*j)/nblines);
+				linePos.push_back((tmp1[2]*(nblines-j)+tmp2[2]*j)/nblines);
+				linePos.push_back((tmp1[0]*(nblines-(j+1))+tmp2[0]*(j+1))/nblines);
+				linePos.push_back((tmp1[1]*(nblines-(j+1))+tmp2[1]*(j+1))/nblines);
+				linePos.push_back((tmp1[2]*(nblines-(j+1))+tmp2[2]*(j+1))/nblines);
 			}
 		}
 	}

@@ -114,11 +114,14 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 		  if ((ra2-ra1)>M_PI) ra1+=2*M_PI;
 		  if ((ra1-ra2)>M_PI) ra2+=2*M_PI;
 		  Utility::spheToRect(ra1,de1, gettemp1);
-		  int npoints=11;
-		  float delta=(ra1-ra2)/(npoints-1);
-		  for(int i=0; i<npoints ; i++) {
+		  int npoints=10;
+		  float delta=(ra1-ra2)/(npoints);
+		  for(int i=0; i<=npoints ; i++) {
 			rat=ra1-delta*i;
-			det=atan(((tan(de2)*sin(rat-ra1))/sin(ra2-ra1+0.00001))+(tan(de1)*sin(ra2-rat))/sin(ra2-ra1+0.00001));
+			if (ra2 - ra1 != 0)
+				det=atan(((tan(de2)*sin(rat-ra1))/sin(ra2-ra1))+(tan(de1)*sin(ra2-rat))/sin(ra2-ra1));
+			else
+				det=M_PI/2.;
 			Utility::spheToRect(rat,det, gettemp2);
 			if (prj->projectJ2000LineCheck( gettemp1,startemp1, gettemp2,startemp2)) {
 
