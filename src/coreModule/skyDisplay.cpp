@@ -774,7 +774,10 @@ void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 		++dataSkySize;
 
 		azt = az1 - delta * i;
-		altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1 + 0.00001)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1 + 0.00001));
+		if (az1-az2 != 0)
+		  altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1));
+        else
+		  altt = M_PI/2.;
 		Utility::spheToRect(azt, altt, pt1);
 		if (i == 12)
 			pt5 = pt1;
@@ -942,7 +945,10 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 		++dataSkySize;
 
 		azt = az1 - delta * i;
-		altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1 + 0.00001)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1 + 0.00001));
+		if (az1-az2 != 0)
+		  altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1));
+		else
+		  altt = M_PI/2.;		  
 		Utility::spheToRect(azt, altt, pt1);
 		if (i == 12)
 			pt5 = pt1;
