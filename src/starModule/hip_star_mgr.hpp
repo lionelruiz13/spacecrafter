@@ -19,7 +19,7 @@
 
 #ifndef _STAR_MGR_H_
 #define _STAR_MGR_H_
-#define NBR_MAX_STARS 8000
+#define NBR_MAX_STARS 256000
 
 #include <vector>
 #include <map>
