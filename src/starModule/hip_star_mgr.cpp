@@ -441,7 +441,7 @@ void HipStarMgr::load_data(const InitParser &baseConf)
 	InitParser conf;
 	conf.load(AppSettings::Instance()->getConfigDir() + "stars.ini");
 
-	for (int i=0; i<8; i++) {
+	for (int i=0; i<9; i++) {
 		char key_name[64];
 		sprintf(key_name,"cat_file_name_%02d",i);
 		const std::string cat_file_name = conf.getStr("stars",key_name).c_str();
