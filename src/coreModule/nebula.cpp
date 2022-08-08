@@ -355,7 +355,7 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	float color = 1;
 	float nebulaScreenSize = getOnScreenSize(prj,nav);
 	float minZoom = prj->getViewportHeight()/75.;
-	float maxZoom = prj->getViewportHeight()/60.;
+	float maxZoom = prj->getViewportHeight()/10.;
 
 	if (flagBright && sky_brightness < 0.011 && ( nebulaScreenSize < maxZoom) && (nebulaScreenSize > minZoom)) {
 	       // fade the nebula while zooming
