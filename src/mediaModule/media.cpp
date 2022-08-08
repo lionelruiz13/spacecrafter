@@ -190,7 +190,7 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 			imageMgr->loadImage(player->getYUV_VideoTexture(),_name, _position, tmpProject);
 			break;
 		case VID_TYPE::V_NONE :
-			playerStop();
+			playerStop(false);
 			m_videoState.state=V_STATE::V_NONE;
 			m_videoState.type=V_TYPE::V_NONE;
 			break;
@@ -212,15 +212,16 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const
 	return tmp;
 }
 
-void Media::playerStop()
+void Media::playerStop(bool newVideo)
 {
 	cLog::get()->write("Media::playerPlayStop", LOG_TYPE::L_INFO);
-	player->stopCurrentVideo();
+	player->stopCurrentVideo(newVideo);
 	m_videoState.state=V_STATE::V_NONE;
 	audio->musicDrop();
 	switch(m_videoState.type) {
 		case V_TYPE::V_VR360 :
-			vr360->display(false);
+			if (!newVideo)
+				vr360->display(false);
 			break;
 		case V_TYPE::V_VRCUBE :
 			vr360->display(false);

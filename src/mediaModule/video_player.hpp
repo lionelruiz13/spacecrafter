@@ -80,7 +80,7 @@ public:
 	bool playNewVideo(const std::string& fileName);
 
 	//! termine la lecture d'une vidéo en cours
-	void stopCurrentVideo();
+	void stopCurrentVideo(bool newVideo);
 
 	//! met la video en pause
 	void pauseCurrentVideo();

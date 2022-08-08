@@ -44,7 +44,7 @@ VideoPlayer::VideoPlayer(Media* _media)
 VideoPlayer::~VideoPlayer()
 {
 	media = nullptr;
-	stopCurrentVideo();
+	stopCurrentVideo(false);
 	for (int i = 0; i < 3; i++)
 		delete videoTexture.tex[i];
 }
@@ -119,7 +119,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	#ifndef WIN32
 	decodeEnd = false;
 	if (m_isVideoPlayed)
-		stopCurrentVideo();
+		stopCurrentVideo(true);
 	if (thread.joinable())
 		thread.join();
 	std::ifstream fichier(_fileName.c_str());
@@ -306,7 +306,7 @@ void VideoPlayer::getNextVideoFrame(int frameIdx)
 }
 
 
-void VideoPlayer::stopCurrentVideo()
+void VideoPlayer::stopCurrentVideo(bool newVideo)
 {
 	#ifndef WIN32
 	if (m_isVideoPlayed==false) {
@@ -327,7 +327,7 @@ void VideoPlayer::stopCurrentVideo()
 	if (media) {
 		Event* event = new VideoEvent(VIDEO_ORDER::STOP);
 		EventRecorder::getInstance()->queue(event);
-		media->playerStop();
+		media->playerStop(newVideo);
 	}
 	#endif
 }
@@ -430,7 +430,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		return true;
 	}
 	// fin de fichier ... vidéo s'arrête
-	this->stopCurrentVideo();
+	this->stopCurrentVideo(false);
 	reallyDeltaTime= -1.0;
 	return true;
 	#else
@@ -473,7 +473,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 			}
 		} else if (decodeEnd) {
 			cLog::get()->write("fin de fichier");
-			stopCurrentVideo();
+			stopCurrentVideo(false);
 		}
 	}
 	videoTexture.sync->syncIn->placeBarrier(cmd);

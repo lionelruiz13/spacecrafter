@@ -2846,7 +2846,7 @@ int AppCommandInterface::commandMedia()
 			return executeCommandStatus();
 
 		} else if (argAction == W_STOP) {
-			media->playerStop();
+			media->playerStop(false);
 			return executeCommandStatus();
 		} else if (argAction == W_PAUSE) {
 			media->playerPause();

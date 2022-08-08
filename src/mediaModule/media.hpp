@@ -349,7 +349,7 @@ public:
 
 	bool playerPlay(const VID_TYPE &type, const std::string &videoname, const std::string &audioname, const std::string& _name, const std::string& _position, IMG_PROJECT tmpProject);
 
-	void playerStop();
+	void playerStop(bool newVideo);
 
 	void playerRestart();
 

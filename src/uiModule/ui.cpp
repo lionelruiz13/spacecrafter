@@ -731,12 +731,12 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_RETURN :
 		case SDL_SCANCODE_ESCAPE :
 			handleKeyOnVideo = false;
-			media->playerStop();
+			media->playerStop(false);
 			break;
 		case SDL_SCANCODE_A :
 		case SDL_SCANCODE_G :
 			handleKeyOnVideo = false;
-			media->playerStop();
+			media->playerStop(false);
 			break;
 		case SDL_SCANCODE_J :
 			media->playerInvertflow();
