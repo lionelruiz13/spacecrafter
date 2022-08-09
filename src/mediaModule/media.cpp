@@ -224,7 +224,8 @@ void Media::playerStop(bool newVideo)
 				vr360->display(false);
 			break;
 		case V_TYPE::V_VRCUBE :
-			vr360->display(false);
+			if (!newVideo)
+				vr360->display(false);
 			break;
 		case V_TYPE::V_VIEWPORT :
 			viewPort->display(false);
