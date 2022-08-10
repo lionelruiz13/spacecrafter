@@ -384,6 +384,7 @@ private:
 	bool audioNoPause=false;
 
 	std::string imageVideoName;
+	bool audioNotInVideo;
 
 	struct VideoState {
 		V_TYPE type;

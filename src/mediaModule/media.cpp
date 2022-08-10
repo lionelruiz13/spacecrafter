@@ -203,12 +203,14 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &videoname, const
 	cLog::get()->write("Media::playerPlay trying to play videofilename "+videoname, LOG_TYPE::L_DEBUG);
 	bool tmp = playerPlay(type, videoname, _name, _position, tmpProject);
 	if (tmp && !audioname.empty()) {
+		audioNotInVideo = false;
 		audioMusicHalt();
 		audioMusicLoad(audioname, false);
 		audioMusicPlay();
 		cLog::get()->write("Media::playerPlay trying to play audiofilename "+audioname, LOG_TYPE::L_DEBUG);
 		return true;
-	}
+	} else
+		audioNotInVideo = true;
 	return tmp;
 }
 
@@ -217,7 +219,8 @@ void Media::playerStop(bool newVideo)
 	cLog::get()->write("Media::playerPlayStop", LOG_TYPE::L_INFO);
 	player->stopCurrentVideo(newVideo);
 	m_videoState.state=V_STATE::V_NONE;
-	audio->musicDrop();
+	if (!audioNotInVideo)
+		audio->musicDrop();
 	switch(m_videoState.type) {
 		case V_TYPE::V_VR360 :
 			if (!newVideo)
