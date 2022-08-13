@@ -95,6 +95,8 @@ void ProtoSystem::load(const std::string& planetfile)
 	if(fileBody) {
 		std::string ligne;
 		while(getline(fileBody , ligne)) {
+			if (ligne.size() < 2)
+				continue;
 			if (ligne[0] != '[' ) {
 				if (ligne[ligne.length() - 1] == '\r')
 					ligne.pop_back();

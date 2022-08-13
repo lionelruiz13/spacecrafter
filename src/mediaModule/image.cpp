@@ -571,13 +571,12 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 	if (image_pos_type==IMG_POSITION::POS_DOME)
 		uVert.clipping_fov[2] = 180;
 
-	int index = transparency ? 1 : 0;
 	PipelineLayout *layout;
 	if (imageTexture->isYUV()) {
-		setPipeline(m_pipelineUnified[index | 2]);
+		setPipeline(m_pipelineUnified[transparency ? 3 : 2]);
 		layout = m_layoutUnifiedYUV;
 	} else {
-		setPipeline(m_pipelineUnified[index]);
+		setPipeline(m_pipelineUnified[transparency ? 1 : 0]);
 		layout = m_layoutUnifiedRGB;
 	}
 	imageTexture->bindSet(cmd, layout);

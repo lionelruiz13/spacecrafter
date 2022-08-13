@@ -172,7 +172,7 @@ private:
 	uint32_t vertexSize;
 
 	//active la transparence
-	bool transparency;
+	bool transparency = false;
 	// indique quelle couleur est à effacer de l'image nocolor[3] indique le delta de couleur
 	Vec4f noColor;
 

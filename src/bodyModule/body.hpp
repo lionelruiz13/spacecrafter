@@ -508,7 +508,7 @@ protected:
 
 	Vec3f eye_sun;
 	Vec3f eye_planet;
-	SHADER_USE myShader;  			// the name of the shader used for his display
+	SHADER_USE myShader = SHADER_UNDEFINED;  			// the name of the shader used for his display
 	drawState_t *drawState;		// State for draw, include Pipeline and PipelineLayout
 	int cmds[3] = {-1, -1, -1};
 	bool changed = true;
