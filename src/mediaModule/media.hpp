@@ -162,6 +162,11 @@ public:
 		audio->musicPlay();
 	}
 
+	void audioMusicMute() {
+		if (!audioNoPause)
+			audio->musicMute();
+	}
+
 	void audioMusicPause() {
 		if (!audioNoPause)
 			audio->musicPause();

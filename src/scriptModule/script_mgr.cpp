@@ -160,7 +160,7 @@ void ScriptMgr::fasterSpeed()
 		return;
 
 	if (multiplierRate==1)
-		media->audioMusicPause();
+		media->audioMusicMute();
 
 	if (multiplierRate>4)
 		return;

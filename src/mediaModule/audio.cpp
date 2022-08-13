@@ -188,6 +188,17 @@ void Audio::musicPause()
 		this->musicResume();
 }
 
+void Audio::musicMute()
+{
+	if (!music_loaded)
+		return;
+
+	if (music_isPlaying) {
+		cLog::get()->write("Audio::musicMusic get mute "+ music_name, LOG_TYPE::L_DEBUG );
+		Mix_PauseMusic();
+	}
+}
+
 void Audio::musicResume()
 {
 	if (!music_loaded)	return;

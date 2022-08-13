@@ -85,6 +85,8 @@ public:
 	void musicPlay();
 	//! met la lecture du fichier en pause. Si réapliqué, recommence la lecture du fichier
 	void musicPause();
+    //! Pause the audio playing without pausing the read position. Require sync on resume.
+	void musicMute();
 	//! reprend la lecture du fichier en pause.
 	void musicResume();
 	//! recommence la lecture du fichier au départ
