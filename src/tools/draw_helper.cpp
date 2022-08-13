@@ -108,7 +108,8 @@ void DrawHelper::beginDraw(unsigned char subpass)
 {
     externalSubpass = subpass;
     drawer[externalVFrameIdx].sigpass.emplace_back(s_sigpass{.flag=SIGNAL_PASS, .subpass=subpass});
-    queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back());
+    while (!queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back()))
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void DrawHelper::nextDraw(unsigned char subpass)
@@ -120,7 +121,8 @@ void DrawHelper::nextDraw(unsigned char subpass)
 void DrawHelper::endDraw()
 {
     drawer[externalVFrameIdx].sigpass.emplace_back(s_sigpass{.flag=SIGNAL_PASS, .subpass=UINT8_MAX});
-    queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back());
+    while (!queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back()))
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     pushCommand();
 }
 
@@ -135,15 +137,17 @@ void DrawHelper::beginNebulaDraw(const Mat4f &mat)
 {
     nebulaMat = mat;
     drawer[externalVFrameIdx].sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=PASS_BACKGROUND});
-    queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back());
+    while (!queue.emplace((DrawData *) &drawer[externalVFrameIdx].sigpass.back()))
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void DrawHelper::endNebulaDraw()
 {
     auto &d = drawer[externalVFrameIdx];
     d.sigpass.emplace_back(s_sigpass{.flag=SIGNAL_NEBULA, .subpass=UINT8_MAX});
-    queue.emplace((DrawData *) &d.sigpass.back());
     queue.flush();
+    while (!queue.emplace((DrawData *) &d.sigpass.back()))
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     d.frame->toExecute(d.nebula, PASS_BACKGROUND);
 }
 
@@ -397,7 +401,8 @@ void DrawHelper::submitFrame(unsigned char frameIdx, unsigned char lastFrameIdx)
 {
     drawer[externalVFrameIdx].submitData.frameIdx = frameIdx;
     drawer[externalVFrameIdx].submitData.lastFrameIdx = lastFrameIdx;
-    queue.emplace((DrawData *) &drawer[externalVFrameIdx++].submitData);
+    while (!queue.emplace((DrawData *) &drawer[externalVFrameIdx++].submitData))
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     externalVFrameIdx %= 3;
     queue.flush();
 }

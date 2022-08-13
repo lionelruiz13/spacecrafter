@@ -49,10 +49,10 @@ void Axis::drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat
 	VertexArray::bind(cmd, m_AxisGL->get());
 	layout->bindSet(cmd, *set, 0);
 
-	Mat4f proj = prj->getMatProjection().convert();
-	Mat4f matrix=mat.convert();
-	Mat4f MVP = proj*matrix;
-	layout->pushConstant(cmd, 0, reinterpret_cast<void *>(&MVP));
+	// Mat4f proj = prj->getMatProjection().convert();
+	// Mat4f matrix=mat.convert();
+	// Mat4f MVP = proj*matrix;
+	// layout->pushConstant(cmd, 0, reinterpret_cast<void *>(&MVP));
 
 	computeAxis(prj, mat);
 
@@ -61,8 +61,22 @@ void Axis::drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat
 
 void Axis::computeAxis(const Projector* prj, const Mat4d& mat)
 {
-	pPosAxis[0] = prj->sVertex3v(0, 0,  1.4 * body->radius, mat);
-	pPosAxis[1] = prj->sVertex3v(0, 0,  -1.4 * body->radius, mat);
+	// Perform fisheye projection
+	auto clipping_fov = prj->getClippingFov();
+
+	Vec3d pos = mat * Vec3d(0, 0, 1.4 * body->radius);
+	float rq1 = pos[0]*pos[0]+pos[1]*pos[1];
+	float depth = (sqrt(rq1 + pos[2]*pos[2]) - clipping_fov[0]) / (clipping_fov[1] - clipping_fov[0]);
+	pos /= sqrt(rq1)+1e-30; // Don't divide by zero
+	float f = (atan(pos[2]) / M_PI + 0.5f) * 360. / clipping_fov[2];
+	pPosAxis[0] = Vec3d(pos[0] * f, pos[1] * f, depth);
+
+	pos = mat * Vec3d(0, 0, -1.4 * body->radius);
+	rq1 = pos[0]*pos[0]+pos[1]*pos[1];
+	depth = (sqrt(rq1 + pos[2]*pos[2]) - clipping_fov[0]) / (clipping_fov[1] - clipping_fov[0]);
+	pos /= sqrt(rq1)+1e-30; // Don't divide by zero
+	f = (atan(pos[2]) / M_PI + 0.5f) * 360. / clipping_fov[2];
+	pPosAxis[1] = Vec3d(pos[0] * f, pos[1] * f, depth);
 }
 
 // Calculate the angle of the axis on the screen
@@ -108,7 +122,7 @@ void Axis::createSC_context()
 	layout = std::make_unique<PipelineLayout>(vkmgr);
 	layout->setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT, 0);
 	layout->buildLayout();
-	layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(Mat4f));
+	// layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(Mat4f));
 	layout->build();
 
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layout.get());
