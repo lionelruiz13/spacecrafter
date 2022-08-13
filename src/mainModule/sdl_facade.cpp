@@ -34,8 +34,10 @@ SDLFacade::SDLFacade()
 
 SDLFacade::~SDLFacade()
 {
-	SDL_FreeCursor(Cursor);
-	SDL_DestroyWindow(window);
+	if (Cursor)
+		SDL_FreeCursor(Cursor);
+	if (window)
+		SDL_DestroyWindow(window);
 }
 
 void SDLFacade::getResolution( Uint16* const w, Uint16* const h ) const
@@ -44,6 +46,16 @@ void SDLFacade::getResolution( Uint16* const w, Uint16* const h ) const
 	*h = windowH;
 }
 
+void SDLFacade::createEmptyWindow(const std::string& appName, Uint16 w, Uint16 h)
+{
+	windowW = w;
+	windowH = h;
+	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0"); //lost screen after mplayer
+	window  = SDL_CreateWindow(appName.c_str(),SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,windowW,windowH,SDL_WINDOW_SHOWN);
+	isWindowEmpty = true;
+	SDL_DisableScreenSaver();
+	cLog::get()->mark();
+}
 
 void SDLFacade::createWindow(const std::string& appName, Uint16 w, Uint16 h, bool fullScreen, std::string iconFile) // , bool _debugGL)
 {

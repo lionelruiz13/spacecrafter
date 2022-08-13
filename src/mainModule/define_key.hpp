@@ -67,6 +67,7 @@
 #define SCK_AUTOSCREEN                      "autoscreen"
 #define SCK_FULLSCREEN                      "fullscreen"
 #define SCK_REMOTE_DISPLAY                  "remote_display"
+#define SCK_KEEP_EMPTY_WINDOW               "keep_empty_window"
 #define SCK_SCREEN_W                        "screen_w"
 #define SCK_SCREEN_H                        "screen_h"
 //#define SCK_BBP_MODE                        "bbp_mode"

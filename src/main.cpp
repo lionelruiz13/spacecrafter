@@ -273,6 +273,7 @@ int main(int argc, char **argv)
 	// détermination de la résolution initiale
 	bool autoscreen = conf.getBoolean(SCS_VIDEO, SCK_AUTOSCREEN);
 	bool remote_display = conf.getBoolean(SCS_VIDEO, SCK_REMOTE_DISPLAY);
+	bool keep_empty_window = conf.getBoolean(SCS_VIDEO, SCK_KEEP_EMPTY_WINDOW);
 	Uint16 curW, curH;
 	bool fullscreen;
 	//int antialiasing;
@@ -294,6 +295,8 @@ int main(int argc, char **argv)
 	// Only use if we want a window, otherwise...
 	if (!remote_display)
 		sdl->createWindow(APP_NAME, curW, curH, fullscreen, dataRoot + "data/icon.bmp");
+	else if (keep_empty_window)
+		sdl->createEmptyWindow(APP_NAME, curW, curH);
 
 	//-------------------------------------------
 	// create the main class for SC logical software

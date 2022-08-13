@@ -45,6 +45,7 @@ public:
 
 	// Creates the rendering target. //Must be called prior to any OpenGL functions
 	void createWindow(const std::string& appName, Uint16 w, Uint16 h, bool fullScreen, std::string iconFile); //, bool _debug);
+	void createEmptyWindow(const std::string& appName, Uint16 w, Uint16 h);
 
 	// Video mode queries
 	void getResolution( Uint16* const w, Uint16* const h ) const;
@@ -67,12 +68,14 @@ public:
 		SDL_WarpMouseInWindow( window, windowW /2, windowH /2);
 	}
 
-	SDL_Window *getWindow() {return window;}
+	SDL_Window *getWindow() {
+		return isWindowEmpty ? nullptr : window;
+	}
 private:
 	void getLogInfos(int w, int h);
 	SDL_Window *window = nullptr;
-	SDL_GLContext context;
 	SDL_Cursor *Cursor = nullptr;
 	Uint16 windowW;
 	Uint16 windowH;
+	bool isWindowEmpty = false;
 };
