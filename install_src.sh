@@ -19,9 +19,9 @@ rm * *.* -rf
 fi
 
 git submodule update --init || (cd ../src && git clone https://github.com/Calvin-Ruiz/EntityCore.git)
-cmake .. -DCMAKE_UILD_TYPE=Release
-make $1
-sudo make install
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . $1 --config Release
+sudo cmake --install . --config Release
 cd ..
 
 echo -e "\033[32mScript completed.\033[0m"
