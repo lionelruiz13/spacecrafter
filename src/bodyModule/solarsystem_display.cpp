@@ -172,7 +172,12 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 	double dist;
 
 	for (auto it = ssystem->createIteratorVector(); !it->end(); (*it)++) {
-		dist = it->current()->body->getEarthEquPos(nav).length();
+        auto *bodyHandle = &it->current().get();
+        if (!body) {
+//            cLog::get()->write("Nullptr received as body in the system display", LOG_TYPE::L_WARNING);
+            continue;
+        }
+		dist = bodyHandle->body->getEarthEquPos(nav).length();
 		if (dist < (*dbiter).znear ) {
 			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << " qui a pour parent " << (*iter)->body->getParent()->getEnglishName() << std::endl;
 			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << std::endl;
@@ -214,11 +219,11 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
 		}
         if (newBucket && depthTest) {
-            newBucket = !it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, true);
+            newBucket = !bodyHandle->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, true);
             // if (!newBucket)
             //     std::cout << "Bucket cleared by " << it->current()->body->getEnglishName() << ", as usual.\n";
         } else {
-            it->current()->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, false);
+            bodyHandle->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, false);
                 // std::cout << "Draw outside bucket for " << it->current()->body->getEnglishName() << ", is it what you expect ?\n";
         }
 	}
