@@ -91,9 +91,11 @@ public:
 
     bool end();
 
-    ProtoSystem::BodyContainer* current();
+    inline std::shared_ptr<ProtoSystem::BodyContainer> &current() {
+        return *m_it_;
+    }
 
-    private:
+private:
     ProtoSystem *pointer;
     iter_type m_it_;
 };

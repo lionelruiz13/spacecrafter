@@ -68,7 +68,3 @@ void SSystemIteratorVector::next() {
 bool SSystemIteratorVector::end() {
     return (m_it_ == pointer->renderedBodies.end());
 }
-
-ProtoSystem::BodyContainer* SSystemIteratorVector::current() {
-    return m_it_->get();
-}
