@@ -172,8 +172,8 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 	double dist;
 
 	for (auto it = ssystem->createIteratorVector(); !it->end(); (*it)++) {
-        auto *bodyHandle = &it->current().get();
-        if (!body) {
+        auto *bodyHandle = it->current().get();
+        if (!bodyHandle) {
 //            cLog::get()->write("Nullptr received as body in the system display", LOG_TYPE::L_WARNING);
             continue;
         }
