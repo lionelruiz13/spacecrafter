@@ -75,6 +75,9 @@ public:
 	virtual std::string getEnglishName() const = 0;
 	virtual std::string getNameI18n() const = 0;
 
+	//! return Alt and Az for a star
+	virtual void getAltAz(const Navigator *nav,double *alt, double *az) const {};
+
 	//! return Ra and Dec for a star
 	virtual void getRaDeValue(const Navigator *nav,double *ra, double *de) const {};
 

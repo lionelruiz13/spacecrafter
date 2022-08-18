@@ -27,6 +27,8 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_LATITUDE]=SC_RESERVED_VAR::LATITUDE;
 	m_reservedVar[ACI_RW_SUN_ALTITUDE]=SC_RESERVED_VAR::SUN_ALTITUDE;
 	m_reservedVar[ACI_RW_SUN_AZIMUTH]=SC_RESERVED_VAR::SUN_AZIMUTH;
+	m_reservedVar[ACI_RW_SELECTED_AZ]=SC_RESERVED_VAR::SELECTED_AZ;
+	m_reservedVar[ACI_RW_SELECTED_ALT]=SC_RESERVED_VAR::SELECTED_ALT;
 	m_reservedVar[ACI_RW_SELECTED_RA]=SC_RESERVED_VAR::SELECTED_RA;
 	m_reservedVar[ACI_RW_SELECTED_DE]=SC_RESERVED_VAR::SELECTED_DE;
 	m_reservedVar[ACI_RW_DATE_YEAR]=SC_RESERVED_VAR::DATE_YEAR;
@@ -243,17 +245,21 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			azi = azi - 360 * floor(azi / 360.);
 			return azi - 180;
 		    }
-			case SC_RESERVED_VAR::SUN_ALTITUDE:
-				return coreLink->getSunAltitude();
-			case SC_RESERVED_VAR::SELECTED_RA:
-				return coreLink->getSelectedRA();
-			case SC_RESERVED_VAR::SELECTED_DE:
-				return coreLink->getSelectedDE();
+		case SC_RESERVED_VAR::SUN_ALTITUDE:
+			return coreLink->getSunAltitude();
 		case SC_RESERVED_VAR::SUN_AZIMUTH: {
 			double azi = coreLink->getSunAzimuth() + 180;
 			azi = azi - 360 * floor(azi / 360.);
 			return azi - 180;
-		      }
+	        }
+		case SC_RESERVED_VAR::SELECTED_AZ:
+			return coreLink->getSelectedAZ();
+		case SC_RESERVED_VAR::SELECTED_ALT:
+			return coreLink->getSelectedALT();
+		case SC_RESERVED_VAR::SELECTED_RA:
+			return coreLink->getSelectedRA();
+		case SC_RESERVED_VAR::SELECTED_DE:
+			return coreLink->getSelectedDE();
 		case SC_RESERVED_VAR::DATE_YEAR:
 			return coreLink->getDateYear();
 		case SC_RESERVED_VAR::DATE_MONTH:

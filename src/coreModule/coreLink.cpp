@@ -1151,16 +1151,24 @@ double CoreLink::getSunAltitude() const {
 	return core->ssystemFactory->getSunAltitude(core->navigation);
 }
 
+double CoreLink::getSunAzimuth() const {
+	return core->ssystemFactory->getSunAzimuth(core->navigation);
+}
+
+double CoreLink::getSelectedAZ() const {
+	return core->ssystemFactory->getSelectedAZ(core->navigation);
+}
+
+double CoreLink::getSelectedALT() const {
+	return core->ssystemFactory->getSelectedALT(core->navigation);
+}
+
 double CoreLink::getSelectedRA() const {
 	return core->ssystemFactory->getSelectedRA(core->navigation);
 }
 
 double CoreLink::getSelectedDE() const {
 	return core->ssystemFactory->getSelectedDE(core->navigation);
-}
-
-double CoreLink::getSunAzimuth() const {
-	return core->ssystemFactory->getSunAzimuth(core->navigation);
 }
 
 void CoreLink::planetSetSizeScale(std::string name, float f) {

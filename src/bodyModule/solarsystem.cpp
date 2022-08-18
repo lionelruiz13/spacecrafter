@@ -143,19 +143,21 @@ double SolarSystem::getSunAltitude(const Navigator * nav) const
 	return alt*180.0/M_PI;
 }
 
-double SolarSystem::getSelectedRA(const Navigator * nav) const
-{
-	double alt, az;
-	moon->getAltAz(nav, &alt, &az);
-	return alt*180.0/M_PI;
-}
-
-double SolarSystem::getSelectedDE(const Navigator * nav) const
-{
-	double alt, az;
-	moon->getAltAz(nav, &alt, &az);
-	return az*180.0/M_PI;
-}
+// UNUSED ?
+// double SolarSystem::getSelectedRA(const Navigator * nav) const
+// {
+// 	double alt, az;
+// 	moon->getAltAz(nav, &alt, &az);
+// 	return alt*180.0/M_PI;
+// }
+//
+// // UNUSED ?
+// double SolarSystem::getSelectedDE(const Navigator * nav) const
+// {
+// 	double alt, az;
+// 	moon->getAltAz(nav, &alt, &az);
+// 	return az*180.0/M_PI;
+// }
 
 double SolarSystem::getSunAzimuth(const Navigator * nav) const
 {

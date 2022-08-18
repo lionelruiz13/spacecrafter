@@ -542,6 +542,12 @@ public:
 	//return the Sun azimuth
 	double getSunAzimuth() const;
 
+	//return the Sected body AZ
+	double getSelectedAZ() const;
+
+	//return the Selected body ALT
+	double getSelectedALT() const;
+
 	//return the Sected body RA
 	double getSelectedRA() const;
 

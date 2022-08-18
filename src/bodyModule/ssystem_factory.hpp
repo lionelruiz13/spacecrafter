@@ -255,6 +255,17 @@ public:
         return ssystem->getSunAzimuth(nav);
     }
 
+    double getSelectedAZ(const Navigator * nav) const {
+        double alt, az=0;
+        ssystemSelected->getSelected().getAltAz(nav, &alt, &az);
+    	return az*180./M_PI;
+    }
+
+	double getSelectedALT(const Navigator * nav) const {
+        double alt=0, az;
+    	ssystemSelected->getSelected().getAltAz(nav, &alt, &az);
+    	return alt*180./M_PI;
+    }
     double getSelectedRA(const Navigator * nav) const {
         double ra=0, de;
         ssystemSelected->getSelected().getRaDeValue(nav, &ra, &de);

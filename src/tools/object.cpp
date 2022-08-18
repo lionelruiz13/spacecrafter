@@ -151,6 +151,11 @@ std::string Object::getInfoString(const Navigator *nav) const
 	return rep->getInfoString(nav);
 }
 
+void Object::getAltAz(const Navigator *nav ,double *alt, double *az) const
+{
+	return rep->getAltAz(nav,alt,az);
+}
+
 void Object::getRaDeValue(const Navigator *nav ,double *ra, double *de) const
 {
 	return rep->getRaDeValue(nav,ra,de);

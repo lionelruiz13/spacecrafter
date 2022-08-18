@@ -63,6 +63,9 @@ public:
 	std::string getShortInfoNavString(const Navigator *nav, const TimeMgr * timeMgr, const Observer* observatory) const;
 
 	//! return the Ra et Dec for a star
+	void getAltAz(const Navigator *nav ,double *alt, double *az) const;
+
+	//! return the Ra et Dec for a star
 	void getRaDeValue(const Navigator *nav ,double *ra, double *de) const;
 
 	//! Return object's type

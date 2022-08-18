@@ -122,8 +122,7 @@ public:
 	std::string getInfoString(const Navigator * nav) const override;
 	std::string getTypePlanet(const BODY_TYPE str) const;
 
-	//is still use ?
-	void getAltAz(const Navigator * nav, double *alt, double *az) const;
+	virtual void getAltAz(const Navigator * nav, double *alt, double *az) const override;
 	virtual void getRaDeValue(const Navigator *nav,double *ra, double *de) const override;
 
 	std::string getShortInfoString(const Navigator * nav) const;
