@@ -985,6 +985,7 @@ int AppCommandInterface::executeCommandStatus()
 	if (debug_message.empty()) {
 		// if recording commands, do that now
 		if (recordable) scriptInterface->recordCommand(commandline);
+		recordable = 1;
 		//cLog::get()->write( "have execute: " + commandline ,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 		return true;
 	} else {
