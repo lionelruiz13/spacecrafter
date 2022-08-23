@@ -43,7 +43,7 @@ SaveScreen::SaveScreen(unsigned int _size)
 		}
 	} catch (...) {
 		isAvariable = false;
-		cLog::get()->write("SaveScreen : erreur création buffer individuel", LOG_TYPE::L_ERROR);
+		cLog::get()->write("SaveScreen : error creation individual buffer", LOG_TYPE::L_ERROR);
 	}
 }
 

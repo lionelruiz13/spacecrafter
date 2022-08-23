@@ -125,7 +125,7 @@ int main(int argc,char**argv)
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
 	std::cout<<"Max textures: "<<texture_units<<std::endl;
 
-	// On crée le temps en dernier pour qu'il soit initialisé après les chargements...
+	// We create the time last so that it is initialized after the loads...
 	Time time;
 
 	while(windowIsOpen) {

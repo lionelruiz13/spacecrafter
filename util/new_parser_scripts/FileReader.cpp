@@ -16,10 +16,10 @@ std::vector<std::string> FileReader::getText()
 
 void FileReader::loadFile(const std::string& fileName)
 {
-	std::ifstream fichier(fileName); //On ouvre le fichier
+	std::ifstream fichier(fileName); //we open the file
 
-	if( fichier.fail() ) { //On vérifier si l'ouverture s'est bien déroulé
-		std::cout << "Fichier " + fileName + " inexistant ou non lisible.\n" << std::endl;
+	if( fichier.fail() ) { // On check if the opening went well
+		std::cout << "File " + fileName + " non-existent or not readable.\n" << std::endl;
 		exit(-1);
 	}
 }
@@ -30,9 +30,9 @@ void FileReader::readFileText()
 	std::string ligne;
 	std::string result = "";
 
-	if(monFlux) { // si le fichier est bien ouvert, on commence le traitement
-		while(getline(monFlux, ligne)) { //On découpe le fichier dans un vecteur
-			if(ligne.substr(0,4) == "NAME" && result != "") { //On veux récupérer un bloc, donc de NAME à @@
+	if(monFlux) { // if the file is well opened, we start the processing
+		while(getline(monFlux, ligne)) { // We cut the file in a vector
+			if(ligne.substr(0,4) == "NAME" && result != "") { // We want to recover a block, so from NAME to @@
 				text.push_back(result);
 				result = ligne + "\n";
 			}
@@ -42,7 +42,7 @@ void FileReader::readFileText()
 		}
 	}
 	else {
-		std::cout << "ERREUR: Impossible d'ouvrir le fichier .txt en lecture." << std::endl;
+		std::cout << "ERROR: Unable to open the .txt file for reading." << std::endl;
 		exit(-3);
 	}
 }
@@ -60,7 +60,7 @@ std::string FileReader::readFileCss()
 		}
 	}
 	else {
-		std::cout << "ERREUR: Impossible d'ouvrir le fichier .css en lecture." << std::endl;
+		std::cout << "ERROR: Unable to open the .css file for reading." << std::endl;
 		exit(-2);
 	}
 

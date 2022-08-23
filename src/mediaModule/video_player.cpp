@@ -472,7 +472,7 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				}
 			}
 		} else if (decodeEnd) {
-			cLog::get()->write("fin de fichier");
+			cLog::get()->write("end of file");
 			stopCurrentVideo(false);
 		}
 	}

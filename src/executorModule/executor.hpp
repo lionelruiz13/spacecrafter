@@ -63,7 +63,7 @@ public:
     void switchMode(const std::string &mode);
 	
     void onAltitudeChange(double value) {
-		std::cout << "Modification altitude reçue "<< value << std::endl;
+		std::cout << "Altitude change received "<< value << std::endl;
 		core->setBodyDecor();
         updateMode(observer->getAltitude());
 	}

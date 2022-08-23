@@ -94,12 +94,12 @@ bool ScriptMgr::addScriptFirst(const std::string & script)
 
 	//get the tokens into a vector
 	while (getline(iss, line)){
-		// transformation des débuts de chaines de caratères en supprimant espaces et tabulations en début de chaine
+		// transformation of the beginning of character strings by deleting spaces and tabs at the beginning of the string
 		while (line[0]==' ' || line[0]=='\t') {
 	        line.erase(0,1);
 			//std::cout << str << std::endl;
 		}
-		// prise en compte des lignes
+		// consideration of lines
 		if ( line[0] != '#' && line[0] != 0 && line[0] != '\r' && line[0] != '\n') {
 			token = new Token(line, getScriptPath());
 			commands.push_back(token);
@@ -285,12 +285,12 @@ void ScriptMgr::update(int delta_time)
 			unsigned long int wait=0;
 
 			if (repeatLoop) {
-				//~ printf("tour de boucle %i\n", nbrLoop);
+				//~ printf("loop tour %i\n", nbrLoop);
 				if (indiceInLoop < loopVector.size()) {
 					commander->executeCommand(loopVector[indiceInLoop], wait);
 					wait_time += wait;
 					indiceInLoop++;
-				} else { //fin de tour de boucle on recommence sauf si nbrLoop==0
+				} else { //at the end of the loop, we start again except if nbrLoop==0
 					nbrLoop=nbrLoop-1;
 
 					if (nbrLoop <= 0) {
@@ -354,10 +354,10 @@ std::string ScriptMgr::getScriptList(const std::string &directory)
 std::string ScriptMgr::getScriptPath()
 {
 	if (DataDir=="") {
-		//printf("getScriptPath1 retourne : %s\n", AppSettings::Instance()->getScriptDir().c_str());
+		//printf("getScriptPath1 return : %s\n", AppSettings::Instance()->getScriptDir().c_str());
 		return AppSettings::Instance()->getScriptDir();
 	} else {
-		//printf("getScriptPath2 retourne : %s\n", DataDir.c_str());
+		//printf("getScriptPath2 return : %s\n", DataDir.c_str());
 		return DataDir;
 	}
 }

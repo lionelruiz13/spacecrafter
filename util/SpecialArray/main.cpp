@@ -3,7 +3,7 @@
 #include <iostream>
 
 void print_tableau(SpecialArray<int> &tableau){
-	for(int i = 0; i < tableau.size(); i++) std::cout << "tableau[" << i << "] = " << tableau[i] << std::endl;
+	for(int i = 0; i < tableau.size(); i++) std::cout << "table[" << i << "] = " << tableau[i] << std::endl;
 	std::cout << std::endl;
 }
 

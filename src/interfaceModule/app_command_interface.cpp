@@ -108,13 +108,13 @@ int AppCommandInterface::parseCommand(const std::string &command_line, std::stri
 {
   	std::string str = command_line;
 
-	// transformation des débuts de chaines de caratères en supprimant espaces et tabulations en début de chaine
+	// transformation of the beginning of character strings by deleting spaces and tabs at the beginning of the string
 	while (str[0]==' ' || str[0]=='\t') {
         str.erase(0,1);
 		//std::cout << str << std::endl;
 	}
 
-	// transformation des chaines utilisateurs de la forme " text" en "text"
+	// transformation of user strings of the form "text" to "text
   	std::size_t found = str.find(" \" ");
   	while(found!=std::string::npos) {
   		str.erase(found+2,1);
@@ -206,7 +206,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 
 	// if (swapCommand== true || swapIfCommand == true)
 	if ((swapCommand== true || ifSwap->get()==true) && !unskippable) {	 // on n'execute pas les commandes qui suivent
-		cLog::get()->write("cette commande n'a pas été exécutée " + commandline, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);  //A traduire
+		cLog::get()->write("this command has not been executed " + commandline, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);  //A traduire
 		return 1;
 	}
 	unskippable = false;
@@ -3130,8 +3130,8 @@ int AppCommandInterface::commandBody()
 
 		std::string argColor = args[W_COLOR];
 		if (!argColor.empty()) {
-			//std::cout << "Je reçois une info de couleur pour " << argName << std::endl;
-			//gestion de la couleur
+			//std::cout << "I receive a color info for " << argName << std::endl;
+			//color management
 			Vec3f Vcolor;
 			std::string argR= args[W_R];
 			std::string argG= args[W_G];
@@ -3140,11 +3140,11 @@ int AppCommandInterface::commandBody()
 			//std::cout << "RGB: " << argR << " " << argG << " " << argB << std::endl;
 			AppCommandColor testColor(Vcolor, debug_message, argColorValue, argR, argG, argB);
 			if (!testColor) {
-				//std::cout << "Erreur color " << debug_message << std::endl;
+				//std::cout << "Error color " << debug_message << std::endl;
 				return executeCommandStatus();
 			}
 
-			//std::cout << "Infos lues : " << argColor << " " << Vcolor  << std::endl;
+			//std::cout << "News read : " << argColor << " " << Vcolor  << std::endl;
 			coreLink->planetSetColor(argName, argColor, Vcolor);
 			return executeCommandStatus();
 		}

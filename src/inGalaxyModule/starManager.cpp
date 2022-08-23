@@ -65,7 +65,7 @@ Cube::Cube( int  a, int b, int c):size(CUBESIZE)
 	c_z=c;
 	NbTotalCube ++;
 	MinMagnitude = 500;
-	//~ printf("création d'un cube de centre (%i,%i,%i)\n", c_x, c_y, c_z);
+	//~ printf("creation of a cube of center (%i,%i,%i)\n", c_x, c_y, c_z);
 }
 
 
@@ -101,7 +101,7 @@ HyperCube::HyperCube(int x, int y, int z) :hcSize(HCSIZE), min(9999), max(0)
 	NbTotalHyperCube ++;
 	MinMagnitude = 500;
 	nbrCubes=0;
-	//~ printf("création d'un hypercube de centre (%i,%i,%i)\n", c_x, c_y, c_z);
+	//~ printf("creation of a hypercube of center (%i,%i,%i)\n", c_x, c_y, c_z);
 }
 
 void HyperCube::addCube(Cube *c)
@@ -168,7 +168,7 @@ void HyperCube::addCubeStar(starInfo* star)
 
 HyperCube::~HyperCube()
 {
-	//~ printf("Suppression H...\n");
+	//~ printf("Delete H...\n");
 	while(!cubeList.empty()) {
 		delete cubeList.back();
 		cubeList.pop_back();
@@ -207,7 +207,7 @@ void StarManager::addHyperCube(HyperCube *hcb)
 
 StarManager::~StarManager()
 {
-	//~ printf("suppression ...\n");
+	//~ printf("delete ...\n");
 	while(!hyperCubeList.empty()) {
 		delete hyperCubeList.back();
 		hyperCubeList.pop_back();
@@ -232,7 +232,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	//cLog::get()->write("StarManager::loadStarCatalog " + fileName, LOG_TYPE::L_DEBUG);
 	std::ifstream file(fileName, std::ifstream::in);
 	if (!file.is_open()) {
-		//std::cout << "ERREUR: Impossible d'ouvrir le fichier " << fileName << std::endl;
+		//std::cout << "ERROR: Unable to open the file " << fileName << std::endl;
 		cLog::get()->write("StarManager::loadStar catalog unable to open" + fileName + " - Feature disabled", LOG_TYPE::L_ERROR);
 		return false;
 	}
@@ -250,7 +250,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	unsigned int numberRead = 0;
 
 	std::string line; // variable which will contain each line of the file
-	//std::cout << "Lecture du catalogue "  << fileName << std::endl;
+	//std::cout << "Reading the catalog "  << fileName << std::endl;
 	cLog::get()->write("Starmanager, loading text catalogue "+fileName);
 
 	while (getline(file, line)) {
@@ -347,7 +347,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 	long unsigned int nbrH=0, nbrC=0, nbrS=0;
 
 	std::string line; // variable which will contain each line of the file
-	//std::cout << "Lecture du catalogue "  << fileName << std::endl;
+	//std::cout << "Reading the catalog "  << fileName << std::endl;
 	cLog::get()->write("Starmanager, loading bin catalogue "+fileName);
 
 	while (!fileIn.eof()) {
@@ -601,8 +601,8 @@ void StarManager::addHcStar(starInfo* star)
 	int hc_centerZ = hcZ * HCSIZE;
 
 	// if  ( (abs(hc_centerX-X)>HCSIZE/2) || (abs(hc_centerY-Y)>HCSIZE/2) || (abs(hc_centerZ-Z)>HCSIZE/2) ) {
-	// 	std::cout << "hc entree " << X << " " << Y << " " << Z << std::endl;
-	// 	std::cout << "hc sortie " << hc_centerX << " " << hc_centerY << " " << hc_centerZ << std::endl;
+	// 	std::cout << "hc input " << X << " " << Y << " " << Z << std::endl;
+	// 	std::cout << "hc output " << hc_centerX << " " << hc_centerY << " " << hc_centerZ << std::endl;
 		//~ sleep(2);
 	// }
 
@@ -653,7 +653,7 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 
 	if (file) { // Fails if can't open the file
 		std::string line1; // variable which will contain each line of the file
-		cLog::get()->write("Lecture du catalogue initial " + catPath);
+		cLog::get()->write("Reading the initial catalog " + catPath);
 
 		// readig file line per line
 		while (getline(file, line1)) {
@@ -788,14 +788,14 @@ void StarManager::HyperCubeStatistiques()
 		statHc[tmp]=statHc[tmp]+1;
 	}
 	std::cout << std::endl;
-	std::cout << "Statistiques sur le nombre de cubes dans les HyperCubes" << std::endl;
-	std::cout << std::setw(12) << "Nombre : " << "Hypercubes concernés" << std::endl;
+	std::cout << "Statistics on the number of cubes in HyperCubes" << std::endl;
+	std::cout << std::setw(12) << "Number : " << "Hypercubes concerned" << std::endl;
 	for(int i=0; i<NBR_PAS_STATHC; i++) {
 		std::cout << std::setw(3) << i*8 << " à " << std::setw(3) << (i+1)*8 << " : " << std::setw(12) << statHc[i] << std::endl;
 	}
 	std::cout << std::endl;
-	std::cout << un_cube << " hc avec qu'un cube à gérer" << std::endl;
-	std::cout << max_cube << " hc à capacité maximale" << std::endl;
+	std::cout << un_cube << " hc with only one cube to manage" << std::endl;
+	std::cout << max_cube << " hc at max capacity" << std::endl;
 }
 
 
@@ -817,8 +817,8 @@ void StarManager::MagStarStatistiques()
 		}
 	}
 	std::cout << std::endl;
-	std::cout << "Répartition des magnitudes des étoiles" << std::endl;
-	std::cout << std::setw(9) << "Magnitude : " << "Nombre d'étoiles" << std::endl;
+	std::cout << "Distribution of star magnitudes" << std::endl;
+	std::cout << std::setw(9) << "Magnitude : " << "Number of stars" << std::endl;
 	for(int i=0; i< MAG_PAS; i++)
 		std::cout << std::setw(3) << i*5-40<< " à " << std::setw(3) << i*5-35 << " : " << std::setw(12) << statMagStars[i] << std::endl;
 }
@@ -831,17 +831,17 @@ bool StarManager::verificationData()
 	for(std::vector<HyperCube*>::iterator i = hyperCubeList.begin(); i!= hyperCubeList.end(); ++i) {
 		HyperCube *tmp =(*i);
 		if (tmp->getCx() %HCSIZE !=0 || tmp->getCy() %HCSIZE !=0 || tmp->getCz() %HCSIZE !=0 ) {
-			printf("HyperCube -- coordonnées %i %i %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
+			printf("HyperCube -- coordinates %i %i %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
 			return false;
 		}
 
 		if (tmp->getNbrCubes()<0 || tmp->getNbrCubes()>nbr_cube_max) {
-			printf("HyperCube -%i %i %i- nombre de cubes %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz(), tmp->getNbrCubes());
+			printf("HyperCube -%i %i %i- numbers of cubes %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz(), tmp->getNbrCubes());
 			return false;
 		}
 
 		if (tmp->getNbrCubes()==0) {
-			printf("HyperCube -%i %i %i- aucun cube\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
+			printf("HyperCube -%i %i %i- no cube\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
 		}
 
 		//verification des cubes
@@ -850,20 +850,20 @@ bool StarManager::verificationData()
 			Cube *tmp2 = (*j);
 
 			if (tmp2->getCx() %CUBESIZE !=0 || tmp2->getCy() %CUBESIZE !=0 || tmp2->getCz() %CUBESIZE !=0 ) {
-				printf("HyperCube -- coordonnées %i %i %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
-				printf("Cube -- coordonnées %i %i %i\n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz());
+				printf("HyperCube -- coordinates %i %i %i\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
+				printf("Cube -- coordinates %i %i %i\n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz());
 				return false;
 			}
 
 			if (tmp2->getNbStars()<0 || tmp2->getNbStars()>65000) {
 				printf("HyperCube -%i %i %i-\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
-				printf("Cube -- coordonnées %i %i %i stars : %i\n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz(), tmp2->getNbStars());
+				printf("Cube -- coordinates %i %i %i stars : %i\n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz(), tmp2->getNbStars());
 				return false;
 			}
 
 			if (tmp2->getNbStars()==0) {
 				printf("HyperCube -%i %i %i-\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
-				printf("Cube -- coordonnées %i %i %i %i n'a aucune etoile \n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz(), tmp2->getNbStars());
+				printf("Cube -- coordinates %i %i %i %i has no stars \n", tmp2->getCx(), tmp2->getCy(), tmp2->getCz(), tmp2->getNbStars());
 			}
 		}
 	}
@@ -929,8 +929,8 @@ bool StarManager::loadOtherStar(const std::string &fileName)
 
 	if (fileIn) { // Fails if can't open the file
 		std::string line; // variable which will contain each line of the file
-		// cout << "Lecture du catalogue "  << fileNameIn << std::endl;
-		cLog::get()->write("StarManager ajout du fichier "+fileName );
+		// cout << "Reading the catalog "  << fileNameIn << std::endl;
+		cLog::get()->write("StarManager add the file "+fileName );
 
 		unsigned int hip;
 		float ra, de, plx, pmRa, pmDe, mag, bv;

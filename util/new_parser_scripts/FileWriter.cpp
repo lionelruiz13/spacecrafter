@@ -11,10 +11,10 @@ FileWriter::~FileWriter() {}
 
 void FileWriter::loadFile(const std::string& fileName)
 {
-	std::ofstream fichier(fileName); //On ouvre le fichier
+	std::ofstream fichier(fileName); // We open the file
 
-	if(!fichier) { //On teste si tout est OK
-		std::cout << "ERREUR: Impossible d'ouvrir le fichier .html en écriture." << std::endl;
+	if(!fichier) { // We test if everything is OK
+		std::cout << "ERROR: Unable to open the .html file for writing." << std::endl;
 	}
 }
 
@@ -22,10 +22,10 @@ void FileWriter::writeInFile(const std::string inHtml)
 {
 	std::ofstream fichier(outFile);
 
-	if(fichier) { //On teste si tout est OK
+	if(fichier) { // We test if everything is OK
 		fichier << inHtml << std::endl;
 	}
 	else {
-		std::cout << "ERREUR: Impossible d'écrire dans le fichier." << std::endl;
+		std::cout << "ERROR: Unable to write to the file." << std::endl;
 	}
 }

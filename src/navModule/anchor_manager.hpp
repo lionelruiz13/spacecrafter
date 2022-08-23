@@ -195,7 +195,7 @@ public:
 	bool setRotationMultiplierCondition(float v) noexcept {
 		if (v>1.0)
 			rotationMultiplierCondition = v;
-		//~ std::cout << "limite pour la rotation " << rotationMultiplierCondition << std::endl;
+		//~ std::cout << "limit for rotation " << rotationMultiplierCondition << std::endl;
 		return true;
 	}
 

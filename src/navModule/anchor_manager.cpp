@@ -251,7 +251,7 @@ void AnchorManager::load(const std::string& path) noexcept
 		fileAnchor.close();
 	}
 	else {
-		//pour debug
+		//for debug
 		// std::cout << "Error reading fileAnchor " << path.c_str() << std::endl;
 		cLog::get()->write("Error reading fileAnchor", LOG_TYPE::L_ERROR);
 	}
@@ -348,11 +348,11 @@ bool AnchorManager::switchToAnchor(const std::string& anchorName) noexcept
 	if(it != anchors.end()) {
 		currentAnchor = it->second;
 		observer->setAnchorPoint(it->second);
-		// std::cout << "switchToAnchor: changement fait pour " << anchorName  << std::endl;
+		// std::cout << "switchToAnchor: change made to " << anchorName  << std::endl;
 		return true;
 	}
 
-	// std::cout << "switchToAnchor: erreur de changement pour " << anchorName << std::endl;
+	// std::cout << "switchToAnchor: change error for " << anchorName << std::endl;
 	return false;
 }
 
@@ -370,7 +370,7 @@ bool AnchorManager::moveRelativeXYZ(double x, double y, double z) noexcept
 {
 	Vec3d newPos = currentAnchor->getHeliocentricEclipticPos() + Vec3d(x,y,z);
 	setCurrentAnchorPos(newPos);
-	// std::cout << "Modification de " << x <<" "<< y <<" "<< z<< std::endl;
+	// std::cout << "Modification of " << x <<" "<< y <<" "<< z<< std::endl;
 	return true;
 }
 
@@ -487,7 +487,7 @@ bool AnchorManager::transitionToPoint(const std::string& name)
 
 	if(typeid(*it->second) != typeid(AnchorPoint)) {
 		// @TODO passage via cLog
-		// std::cout << "pas un AnchorPoint" << std::endl;
+		// std::cout << "not a AnchorPoint" << std::endl;
 		cLog::get()->write("AnchorManager::transitionToPoint: not an AnchorPoint "+name, LOG_TYPE::L_ERROR);
 		return false;
 	}
@@ -654,13 +654,13 @@ bool AnchorManager::transitionToBody(const std::string& name)
 
 	if(typeid(*it->second) != typeid(AnchorPointBody)) {
 		// @TODO passage via cLog
-		// std::cout << "pas un body" << std::endl;
+		// std::cout << "not a body" << std::endl;
 		cLog::get()->write("AnchorManager::transitionToPoint: not a body "+name, LOG_TYPE::L_ERROR);
 		return false;
 	}
 
 	std::shared_ptr<AnchorPointBody> target = std::dynamic_pointer_cast<AnchorPointBody>(it->second);
-	// std::cout << "changement vers " << name << std::endl;
+	// std::cout << "change to " << name << std::endl;
 
 	return transitionToBody(target);
 }

@@ -333,8 +333,8 @@ void UI::setFlagShowTuiMenu(const bool flag)
 
 void UI::handleJoyHat(SDL_JoyHatEvent E)
 {
-	// Mouvement d'un chapeau Nous devons donc utiliser le champ jhat
-	//printf("Mouvement du chapeau %d du joystick %d\n",E.jhat.hat,E.jhat.which);
+	// Movement of a hat We must therefore use the field jhat
+	//printf("Movement of the cap %d of the joystick %d\n",E.jhat.hat,E.jhat.which);
 	switch (E.value) {
 		case SDL_HAT_CENTERED:
 			core->turnUp(0);

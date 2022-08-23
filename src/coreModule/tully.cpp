@@ -189,7 +189,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	// vertexPoints->fillEntry(1, vertexCount, texTully.data(), staging + 6);
 	// vertexPoints->fillEntry(1, vertexCount, scaleTully.data(), staging + 7);
 
-	cLog::get()->write("Tully chargement réussi du catalogue : nombre d'items " + std::to_string(nbGalaxy) );
+	cLog::get()->write("Tully successful catalog loading: number of items " + std::to_string(nbGalaxy) );
 
 	isAlive = true;
 	needRebuild = true;
@@ -431,7 +431,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		lTmpTully.push_back(tmp);
 	}
 	int vertexCount = lTmpTully.size();
-	// printf("taille de la liste: %i\n", lTmpTully.size());
+	// printf("list size: %i\n", lTmpTully.size());
 	lTmpTully.sort(compTmpTully);
 
 	float *data = nullptr;

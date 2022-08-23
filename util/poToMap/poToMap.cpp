@@ -29,13 +29,13 @@
 
 int main(int argc, char **argv)
 {
-	// test nombre d'arguments
+	// test number of arguments
 	if (argc <2) {
 		exit(-1);
 	}
 
-	//lecture
-	// ici argv[1] existe, on peut l'utiliser
+	//Reading
+	// here argv[1] exists, we can use it
 	std::ifstream infile;
 	infile.open(argv[1], std::ifstream::in);
 	if (!infile.is_open()) {
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 		exit(-2);
 	}
 
-	//écriture
+	//Writing
 	std::ofstream outfile;
     std::string oldName = argv[1];
     std::size_t found = oldName.find_first_of(".");
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
     std::map<std::string, std::string> m_translator;
 
-    //traitement
+    //treatment
 	std::string line;
     std::size_t foundGID, foundSTR;
 

@@ -135,7 +135,7 @@ int main()
         //initialisation
         Vec4f vm1{a1, b1, c1, d1};
         glm::vec4 glmv1{a1, b1, c1, d1};
-        // égalité
+        // égality
         assert(compareVec4(vm1, glmv1));
 
         Vec4f vm2{a2, b2, c2, d2};

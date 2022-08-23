@@ -42,13 +42,13 @@ int main()
     /* write "Hi" to the FIFO */
     fd = open(myfifo, O_WRONLY);
     if (fd < 0) {
-		printf("Impossible d'ouvrir le fichier\n");
+		printf("Unable to open the file\n");
         return -1;
     }
 
     int resol = write(fd, msg , msg_size);
 	if (resol != msg_size)
-		printf("Erreur d'écriture: voulu %i, sur %i\n", resol, msg_size);
+		printf("Writing error: wanted %i, on %i\n", resol, msg_size);
 
     close(fd);
 

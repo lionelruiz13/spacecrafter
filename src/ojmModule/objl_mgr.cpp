@@ -42,8 +42,8 @@ ObjL* ObjLMgr::select(const std::string &name)
 	tmp = find(name);
 
 	if (tmp == nullptr) {
-		//~ printf("Objet selectionné %s inexistant!\n", name.c_str());
-		cLog::get()->write("objet "+ name + " sélectionné inexistant", LOG_TYPE::L_ERROR);
+		//~ printf("Selected object %s non-existent!\n", name.c_str());
+		cLog::get()->write("object "+ name + " selected non-existent", LOG_TYPE::L_ERROR);
 		return defaultObject;
 	}
 	return tmp;
@@ -61,12 +61,12 @@ ObjL* ObjLMgr::find(const std::string &_name)
 	//~ std::map<std::string, ObjL* >::iterator it;
 	//~ for (it=objectMap.begin(); it!=objectMap.end(); ++it) {
 		//~ if (it->first == _name) {
-			//~ //printf("Retour de %s\n", _name.c_str());
+			//~ //printf("Return from %s\n", _name.c_str());
 			//~ return it->second;
 		//~ }
 	//~ }
-	//~ //printf("Objet %s inexistant!\n", _name.c_str());
-	//~ //cLog::get()->write("Objet "+ _name + " inexistant", LOG_TYPE::L_ERROR);
+	//~ //printf("Object %s non-existent!\n", _name.c_str());
+	//~ //cLog::get()->write("Object "+ _name + " non-existent", LOG_TYPE::L_ERROR);
 	//~ return nullptr;
 //~ }
 
@@ -93,16 +93,16 @@ bool ObjLMgr::insert(const std::string &name, bool _defaultObject)
 			return true;
 		} else {
 			if (_defaultObject)
-				cLog::get()->write("Erreur de chargement du model3D par défaut "+ name, LOG_TYPE::L_ERROR);
+				cLog::get()->write("Error loading the default model3D "+ name, LOG_TYPE::L_ERROR);
 			else
-				cLog::get()->write("Erreur de chargement du model3D "+ name, LOG_TYPE::L_ERROR);
-			//~ printf("erreur de chargement du model3D %s\n", name.c_str());
+				cLog::get()->write("Error loading model3D "+ name, LOG_TYPE::L_ERROR);
+			//~ printf("Error loading model3D %s\n", name.c_str());
 			delete tmp;
 			return false;
 		}
 	} else {
-		cLog::get()->write("Erreur de dossier "+ defaultDirectory, LOG_TYPE::L_ERROR);
-		//~ printf("erreur à propos du dossier %s\n", repertory.c_str());
+		cLog::get()->write("Directory error "+ defaultDirectory, LOG_TYPE::L_ERROR);
+		//~ printf("error about the directory %s\n", repertory.c_str());
 		return false;
 	}
 }

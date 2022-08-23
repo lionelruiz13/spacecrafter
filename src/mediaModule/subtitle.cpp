@@ -77,10 +77,10 @@ void Subtitle::loadFile(const std::string& fileName)
 	if( !fichier.fail() ) {
 		_FILE = fileName.c_str();
 		readFile();
-		std::cout << "Fichier existant et charger.\n";
+		std::cout << "Existing file and load.\n";
 	}
 	else {
-		std::cout << "Fichier inexistant ou non lisible.\n";
+		std::cout << "File does not exist or is not readable.\n";
 	}
 }
 
@@ -119,7 +119,7 @@ void Subtitle::readFile()
 		}
 	}
 	else {
-		std::cout << "ERREUR: Impossible d'ouvrir le fichier en lecture." << std::endl;
+		std::cout << "ERROR: Unable to open the file for reading." << std::endl;
 	}
 }
 

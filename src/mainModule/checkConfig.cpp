@@ -536,7 +536,7 @@ void CheckConfig::checkUselessKey()
 			for (auto itKey=listCandidateKey.begin(); itKey != listCandidateKey.end(); ++itKey) {
 				// std::cout << "clef candidate " << *itKey << std::endl;
 				auto it3 = std::find(sectionKeySettings.begin(), sectionKeySettings.end(), *itKey);
-				// Si la clef n'esite pas, on le notifie
+				// If the key does not fit, we notify it
 				if(it3 == sectionKeySettings.end()) {
 					//std::cout << "key " << *itKey << std::endl;/*" doesn't exist, you can safely discard it" << std::endl;*/
 					cLog::get()->write("key " + *itKey + " doesn't exist, you can safely discard it", LOG_TYPE::L_WARNING);

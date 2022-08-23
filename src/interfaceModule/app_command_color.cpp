@@ -128,7 +128,7 @@ void AppCommandColor::decodeRGBColor(Vec3f &color, const std::string &_value, st
 	j = _value.find("g");
 	k = _value.find("b");
 
-	//~ std::cout << "Départ " << _value << " i " << i << " j " << j << " k " << k << std::endl;
+	//~ std::cout << "Start " << _value << " i " << i << " j " << j << " k " << k << std::endl;
 
 	std::string RColor, GColor, BColor;
 	RColor = _value.substr(i+1,j-(i+1));

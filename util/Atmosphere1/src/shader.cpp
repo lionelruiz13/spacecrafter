@@ -333,7 +333,7 @@ int shaderProgram::getUniformLocation(const char * name )
 	pos = uniformLocations.find(name);
 
 	if( pos == uniformLocations.end() ) {
-		printf("%i : erreur avec %s atribution uniformLocations\n", program, name);
+		printf("%i : error with %s atribution uniformLocations\n", program, name);
 		uniformLocations[name] = glGetUniformLocation(program, name);
 	}
 	return uniformLocations[name];

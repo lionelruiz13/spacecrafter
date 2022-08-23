@@ -218,17 +218,17 @@ bool ProtoSystem::removeBodyNoSatellite(const std::string &name)
 
 	// std::cout << "removeBodyNoSatellite " << name << " is oki" << std::endl;
 
-	// std::cout << "début contenu de systemBodies--------------------" << std::endl;
+	// std::cout << "Start of the content of systemBodies--------------------" << std::endl;
 	// for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
 	// 	std::cout << "name " << it->first << std::endl;
 	// }
-	// std::cout << "fin contenu de systemBodies--------------------" << std::endl;
+	// std::cout << "End of the content of systemBodies--------------------" << std::endl;
 
-	// std::cout << "début contenu de renderedBodies--------------------" << std::endl;
+	// std::cout << "Start of the content of renderedBodies--------------------" << std::endl;
 	// for(auto it = renderedBodies.begin(); it != renderedBodies.end(); it++){
 	// 	std::cout << "name " << (*it)->englishName << std::endl;
 	// }
-	// std::cout << "fin contenu de renderedBodies--------------------" << std::endl;
+	// std::cout << "End of the content of renderedBodies--------------------" << std::endl;
 	return true;
 }
 
@@ -353,13 +353,13 @@ void ProtoSystem::setPlanetHidden(const std::string &name, bool planethidden)
 					renderedBodies.erase(it2);
 			}
 			else{
-				// std::cout << "Je cherche un doublon de " << name << std::endl;
+				// std::cout << "I am looking for a duplicate of " << name << std::endl;
 				if (std::find(renderedBodies.begin(), renderedBodies.end(), it->second) == renderedBodies.end() ) {
 					renderedBodies.push_back(it->second);
-					// std::cout << "je crée vraiment "<< name << " dans renderedBodies" << std::endl;
+					// std::cout << "I really create "<< name << " in renderedBodies" << std::endl;
 				}
 				// else {
-					// std::cout << "j'ai évité un doublon" << std::endl;
+					// std::cout << "I avoided a duplicate" << std::endl;
 				// }
 			}
 

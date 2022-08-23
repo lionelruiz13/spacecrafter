@@ -177,7 +177,7 @@ bool ObjToOjm::fusionMaterials()
 			for(unsigned short j=i+1; j< obj->meshes.size(); j++) {
 				if ( obj->meshes[i]->material->name == obj->meshes[j]->material->name ) {
 
-					//std::cout << "etape " << i << " " << j << std::endl;
+					//std::cout << "step " << i << " " << j << std::endl;
 
 					int nbUv1 = obj->meshes[i]->uvIndices.size();
 					int nbUv2 = obj->meshes[j]->uvIndices.size();
@@ -214,7 +214,7 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 	if(!stream.is_open())
 		return -1;
 
-	//std::cout << "Début export OBJ" << std::endl;
+	//std::cout << "Start export OBJ" << std::endl;
 
 	stream<<"# Spacecrafter personal file format"<<std::endl;
 	stream<<"# By Olivier Nivoix and Jérôme Lartillot"<< std::endl;
@@ -269,7 +269,7 @@ bool ObjToOjm::exportOJM(const std::string &filename)
 		stream<<std::endl;
 	}
 
-	//std::cout << "Fin export OBJ" << std::endl;
+	//std::cout << "End export OBJ" << std::endl;
 	return true;
 }
 
@@ -280,7 +280,7 @@ bool ObjToOjm::exportV3D(const std::string &filename)
 	if(!stream.is_open())
 		return -1;
 
-	//std::cout << "Début export V3D" << std::endl;
+	//std::cout << "Start export V3D" << std::endl;
 
 	stream<<"# Vertex 3D file format"<<std::endl;
 	stream<<"# By Association Sirius && Andromede"<< std::endl;
@@ -330,6 +330,6 @@ bool ObjToOjm::exportV3D(const std::string &filename)
 		stream<<std::endl;
 	}
 
-	//std::cout << "Fin export V3D" << std::endl;
+	//std::cout << "End export V3D" << std::endl;
 	return true;
 }

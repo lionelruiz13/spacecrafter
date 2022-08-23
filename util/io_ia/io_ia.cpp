@@ -326,7 +326,7 @@ void WriteBinary::insertDescription(const std::string &_description)
 int main(int argc, char **argv)
 {
 if (1) {
-	std::cout << "Ecriture des données :" << std::endl;
+	std::cout << "Writing data :" << std::endl;
 
 	WriteBinary myFile("olivier.bin");
 	myFile.writeHeader("Test","200101");
@@ -352,10 +352,10 @@ if (1) {
 	std::cout << "char tab " << b << std::endl;
 
 	Vec3f m(0.1, 0.5, 0.9);
-	std::cout << "Vecteur "<< m[0] << " " << m[1] << " " << m[2] << std::endl;
+	std::cout << "Vector "<< m[0] << " " << m[1] << " " << m[2] << std::endl;
 	myFile.write(m);
 
-	std::string mys = "Il fait beau mais chaud, j'adore le soir me pronener au clair de lune.";
+	std::string mys = "The weather is nice but warm, I love to walk in the moonlight in the evening.";
 	myFile.writeString( mys);
 	std::cout << "string " << mys << " taille "<< mys.length() << std::endl;
 
@@ -367,17 +367,17 @@ if (1) {
 	n[3] = Vec3i(34, 21, 90);
 	n[4] = Vec3i(45, 13, 80);
 	n[5] = Vec3i(56, 24, 70);
-	std::cout << "Vecteurs "<< n[0] << " " << n[1] << " " << n[2] << " " <<  n[3] << " " << n[4] << " " << n[5]<< std::endl;
+	std::cout << "Vectors "<< n[0] << " " << n[1] << " " << n[2] << " " <<  n[3] << " " << n[4] << " " << n[5]<< std::endl;
 	myFile.write(n);
 
-	std::cout << "Erreur ? : "<< myFile.getError() << std::endl;
+	std::cout << "Error ? : "<< myFile.getError() << std::endl;
 	myFile.close();
 }
 
 	std::cout << std::endl;
 
 if (1) {
-	std::cout << "Lecture des données :" << std::endl;
+	std::cout << "Reading the data :" << std::endl;
 
 	ReadBinary myFile("olivier.bin");
 	myFile.readHeader();
@@ -407,17 +407,17 @@ if (1) {
 
 	Vec3f m;
 	myFile.read(m);
-	std::cout << "Vecteur "<< m[0] << " " << m[1] << " " << m[2] << std::endl;
+	std::cout << "Vector "<< m[0] << " " << m[1] << " " << m[2] << std::endl;
 
 	std::string mys;
 	myFile.readString(mys);
-	std::cout << "string " << mys << " taille " << mys.length() << std::endl;
+	std::cout << "string " << mys << " size " << mys.length() << std::endl;
 
 	Vec3i n[6];
 	myFile.read(n);
-	std::cout << "Vecteurs "<< n[0] << " " << n[1] << " " << n[2] << " " <<  n[3] << " " << n[4] << " " << n[5]<< std::endl;
+	std::cout << "Vectors "<< n[0] << " " << n[1] << " " << n[2] << " " <<  n[3] << " " << n[4] << " " << n[5]<< std::endl;
 
-	std::cout << "Erreur ? : "<< myFile.getError() << std::endl;
+	std::cout << "Error ? : "<< myFile.getError() << std::endl;
 	myFile.close();
 }
 

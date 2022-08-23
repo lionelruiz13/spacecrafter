@@ -217,10 +217,10 @@ int main(int argc, char **argv)
 	//~ std::string filenameOBJ = "milkyway.obj";
 	//~ computeMilkyway(slices, stacks, dataVertex, dataTexture, dataNormal);
 
-	std::cout << "nombre de vectex " << dataVertex.size() << std::endl;
-	std::cout << "nombre de texture " << dataTexture.size() << std::endl;
-	std::cout << "nombre de normal " << dataNormal.size() << std::endl;
-	std::cout << "nombre de points " <<  dataVertex.size() /3 << std::endl;
+	std::cout << "number of vectex " << dataVertex.size() << std::endl;
+	std::cout << "number of texture " << dataTexture.size() << std::endl;
+	std::cout << "number of normal " << dataNormal.size() << std::endl;
+	std::cout << "number of points " <<  dataVertex.size() /3 << std::endl;
 
 	std::ofstream stream;
 

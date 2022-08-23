@@ -261,7 +261,7 @@ void SkyPerson::loadString(const std::string& message)
     float ftemp;
 	std::string txt = message;
 	// std::cout << message << std::endl;
-    //Vérifie la présence d'une lettre
+    // Checks for the presence of a letter
     for(std::string::size_type i = 0; i < txt.length(); i++)
     {
         char c = txt[i];
@@ -277,11 +277,11 @@ void SkyPerson::loadString(const std::string& message)
     std::string token;
 
 	std::vector<float> dataTmp;
-    //Décompose la chaine de caractère
+    // Decompose the string
     while ((pos = txt.find(delimiter)) != std::string::npos) {
         token = txt.substr(0, pos);
 		// std::cout << "   " << token << " | " ;
-	    //fonction plus résistante aux erreurs
+	    // more error resistant function
 		std::istringstream dstr( token );
 		dstr >> ftemp;
 		//ftemp = std::stof(token);
@@ -290,8 +290,8 @@ void SkyPerson::loadString(const std::string& message)
         txt.erase(0, pos + delimiter.length());
 		// std::cout << txt  << std::endl;
     }
-	// on vérifie quand même que le contenu est bien un multiple de 2
-	// sinon on supprime les dernières valeurs.
+	// we still check that the content is a multiple of 2
+	// otherwise we delete the last values.
 	if (dataTmp.size()%2!=0) {
 		dataTmp.pop_back();
 	 	cLog::get()->write("Skyperson loading incomplete data", LOG_TYPE::L_WARNING);
@@ -308,7 +308,7 @@ void SkyPerson::loadString(const std::string& message)
 			++dataSkySize;
 	}
 
-	//on charge les points dans un vbo
+	// we load the points in a vbo
 	if (m_dataSize != dataSkySize) {
 		m_dataSize = dataSkySize;
 		build();

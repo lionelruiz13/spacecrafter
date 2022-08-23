@@ -179,8 +179,8 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
         }
 		dist = bodyHandle->body->getEarthEquPos(nav).length();
 		if (dist < (*dbiter).znear ) {
-			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << " qui a pour parent " << (*iter)->body->getParent()->getEnglishName() << std::endl;
-			//~ std::cout << "Changement de bucket pour " << (*iter)->englishName << std::endl;
+			//~ std::cout << "Change of bucket for " << (*iter)->englishName << " which has as parent " << (*iter)->body->getParent()->getEnglishName() << std::endl;
+			//~ std::cout << "Change of bucket for " << (*iter)->englishName << std::endl;
 
 			// potentially use the next depth bucket
 			dbiter++;
@@ -206,7 +206,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 		}
 		if (dist > (*dbiter).zfar || dist < (*dbiter).znear) {
 			// don't use depth test (outside buckets)
-			// std::cout << "Outside bucket pour " << it->current()->body->getEnglishName() << std::endl;
+			// std::cout << "Outside bucket for " << it->current()->body->getEnglishName() << std::endl;
 			if ( depthTest )
 				prj->setClippingPlanes(z_near, z_far);
 			depthTest = false;
@@ -216,7 +216,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 				prj->setClippingPlanes((*dbiter).znear*.99, (*dbiter).zfar*1.01);
 
 			depthTest = true;
-			//~ std::cout << "inside bucket pour " << (*iter)->englishName << std::endl;
+			//~ std::cout << "inside bucket for " << (*iter)->englishName << std::endl;
 		}
         if (newBucket && depthTest) {
             newBucket = !bodyHandle->body->drawGL(prj, nav, observatory, eye, depthTest, drawHomePlanet, true);

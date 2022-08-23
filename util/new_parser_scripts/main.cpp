@@ -9,19 +9,19 @@
 int main()
 {
 
-	//Déclaration des fichiers entrée et sortie
+	//Declaration of input and output files
 	std::string source = "input_fr.txt";
 	std::string sourceCSS = "style.css";
 	std::string destination = "resultat.html";
 
-	//Lecture des fichier d'entrèe
+	//Read input files
 	FileReader* reader = new FileReader(source, sourceCSS);
 	reader->readFileText();
 
-	//Lecture du fichier de sortie
+	//Reading the output file
 	FileWriter* writer = new FileWriter(destination);
 
-	//Transformation de fichier txt en html
+	//Transformation of txt file to html
 	TextToHtml* parser = new TextToHtml(reader->getText(), reader->readFileCss());
 
 	writer->writeInFile(parser->getHtml());

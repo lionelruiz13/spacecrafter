@@ -360,5 +360,5 @@ void AppCommandInit::searchNeighbour(const std::string &source, const std::list<
 	}
 	std::string helpMsg = source + " is unknown. Did you mean "+ solution + " ?";
 	cLog::get()->write( helpMsg,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
-	//std::cout << source << " a pour proche valeur " << solution << std::endl;
+	//std::cout << source << " has for close value " << solution << std::endl;
 }

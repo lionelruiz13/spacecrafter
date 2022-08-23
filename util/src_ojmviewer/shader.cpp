@@ -68,7 +68,7 @@ void shaderProgram::debugShader( GLuint shader, const std::string &str)
 		// on alloue un espace memoire dans lequel OpenGL ecrira le message
 		log = (char*)malloc(logsize + 1);
 		if(log == nullptr) {
-			std::cout<<"impossible d'allouer de la memoire !\n"<<std::endl;
+			std::cout<<"impossible to allocate memory !\n"<<std::endl;
 			exit(EXIT_FAILURE);
 		}
 		memset(log, '\0', logsize + 1);
@@ -102,7 +102,7 @@ void shaderProgram::debugProgram()
 		// on alloue un espace memoire dans lequel OpenGL ecrira le message
 		log = (char*)malloc(maxLength + 1);
 		if(log == nullptr) {
-			std::cout<<"impossible d'allouer de la memoire !\n"<<std::endl;
+			std::cout<<"impossible to allocate memory !\n"<<std::endl;
 			exit(EXIT_FAILURE);
 		}
 		memset(log, '\0', maxLength + 1);
@@ -551,7 +551,7 @@ void shaderProgram::setSubroutine(GLenum ShaderType, const char * name )
 		std::ostringstream out;
 		out << program << " : error with " << name << " atribution SubroutineLocations";
 		writeToLog(out.str() );	
-		// printf("%i : erreur avec %s atribution SubroutineLocations\n", program, name);
+		// printf("%i : error with %s atribution SubroutineLocations\n", program, name);
 		//~ uniformLocations[name] = glGetUniformLocation(program, name);
 		return ;
 	}

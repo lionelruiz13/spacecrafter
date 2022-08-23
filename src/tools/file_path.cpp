@@ -39,18 +39,18 @@ FilePath::FilePath(const std::string& fileName, const std::string& localisation)
 	if (fileName.empty())
 		return;
 
-	//~ printf("FilePath solicité sur internationalisation\n");
+	//~ printf("FilePath solicited on internationalisation\n");
 	//~ printf("FilePath langue %s\n", localisation.c_str());
 
 	if (scriptPath.empty()) {
-		//~ printf("FilePath scriptPath non initialisé\n");
+		//~ printf("FilePath scriptPath not initialized\n");
 		return;
 	}
 
 	std::string fileNameAdapted = fileName;
 	fileNameAdapted[fileNameAdapted.size()-6]=localisation[0];
 	fileNameAdapted[fileNameAdapted.size()-5]=localisation[1];
-	//~ printf("FilePath internationalisation travaille sur %s\n", fileNameAdapted.c_str());
+	//~ printf("FilePath internationalisation work on %s\n", fileNameAdapted.c_str());
 
 	if ( !CallSystem::isAbsolute(fileName)) {
 		fullFileName = scriptPath+fileNameAdapted;
@@ -104,25 +104,25 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 	if (fileName.empty())
 		return;
 
-	// on teste si le fichier a un nom absolu, on teste simplement son existance
+	// we test if the file has an absolute name, we simply test its existence
 	if (CallSystem::isAbsolute(fileName)) {
 		fullFileName = fileName;
 		isFileExist = CallSystem::fileExist(fullFileName);
 		return;
 	}
 
-	// On recherche d'abord dans le dossier des scripts si le dossier existe
+	// First we search in the scripts folder if the folder exists
 	if ( ! scriptPath.empty() ) {
 		fullFileName = scriptPath+fileName;
 		isFileExist = CallSystem::fileExist(fullFileName);
-		// si le ficheir existe, plus rien à faire.
+		// if the form exists, nothing more to do.
 		if (isFileExist)
 			return;
 	}
 
 	fullFileName = fileName;
-	//~ std::cout << "recherche (hors script) existance fichier  " << fullFileName << std::endl;
-	// Si le fichier n'existe pas, alors on regarde dans le dossier spécifié
+	//~ std::cout << "search (off script) file existence  " << fullFileName << std::endl;
+	// If the file does not exist, then we look in the specified folder
 	isFileExist = CallSystem::fileExist(fullFileName);
 	if (!isFileExist) {
 		switch(type) {

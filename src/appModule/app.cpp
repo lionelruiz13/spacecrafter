@@ -528,7 +528,7 @@ void App::firstInit()
 	if (enable_tcp) {
 		int port = conf.getInt(SCS_IO, SCK_TCP_PORT_IN);
 		int buffer_in_size=conf.getInt(SCS_IO, SCK_TCP_BUFFER_IN_SIZE);
-		cLog::get()->write("buffer TCP taille " + std::to_string(buffer_in_size));
+		cLog::get()->write("buffer TCP size " + std::to_string(buffer_in_size));
 		tcp = std::make_unique<ServerSocket>(port, 16, buffer_in_size);
 		tcp->open();
 		commander->setTcp(tcp.get());
@@ -539,7 +539,7 @@ void App::firstInit()
 		std::string mplayerMkfifoName = conf.getStr(SCS_IO, SCK_MPLAYER_MKFIFO_NAME);
 		std::string mkfifo_file_in = conf.getStr(SCS_IO, SCK_MKFIFO_FILE_IN);
 		int buffer_in_size=conf.getInt(SCS_IO, SCK_MKFIFO_BUFFER_IN_SIZE);
-		cLog::get()->write("buffer MKFIFO taille "+ std::to_string(buffer_in_size));
+		cLog::get()->write("buffer MKFIFO size "+ std::to_string(buffer_in_size));
 		mkfifo->init(mkfifo_file_in, buffer_in_size);
 	}
 	#endif

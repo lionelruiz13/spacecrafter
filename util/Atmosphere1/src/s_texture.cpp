@@ -59,19 +59,19 @@ bool s_texture::load(std::string fullName)
 
 bool s_texture::load(std::string fullName, bool mipmap)
 {
-	std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
-	//vérifions dans le cache si l'image n'est pas déjà utilisée ailleurs
+	std::cout << "reading the texture |"<< fullName << "| " << std::endl;
+	// let's check in the cache if the image is not already used elsewhere
 	it = texCache.find(fullName);
 
-	if (it != texCache.end()) { // texture existe deja
-		//~ std::cout << "texture présente " << fullName << std::endl;
+	if (it != texCache.end()) { // texture already exists
+		//~ std::cout << "present texture " << fullName << std::endl;
 		texRecap * tmp = it->second;
 		tmp->nbLink++;
-		//~ std::cout << "on augmente son nbLink à " << tmp->nbLink << std::endl;
+		//~ std::cout << "we increase its nbLink to " << tmp->nbLink << std::endl;
 		texID = tmp->texID;
 		//Log.write("s_texture: already in cache " + fullName , cLog::LOG_TYPE::L_INFO);
 		return true;
-	} else { //texture n'existe pas, on l'intègre dans la map
+	} else { // texture does not exist, we integrate it in the map
 		//code from Anthon Opengl4 tutorial
 		try {
 			int x, y, n;
@@ -129,21 +129,21 @@ bool s_texture::load(std::string fullName, bool mipmap)
 
 void s_texture::unload()
 {
-	//~ std::cout << "on unload la texture " << textureName << std::endl;
+	//~ std::cout << "we unload the texture " << textureName << std::endl;
 	it = texCache.find(textureName);
 
 	if (it != texCache.end()) {
 		texRecap * tmp = it->second;
 		if (tmp->nbLink == 1) {
-			//~ std::cout << "suppression réelle de " << textureName<< std::endl;
+			//~ std::cout << "actual deletion of " << textureName<< std::endl;
 			glDeleteTextures(1, &texID);	// Delete The Texture
 			texID = 0;
 			delete tmp;
 			texCache.erase(it);
 		} else {
-			//~ std::cout << "suppression virtuelle " << textureName<< std::endl;
+			//~ std::cout << "virtual deletion " << textureName<< std::endl;
 			tmp->nbLink--;
-			//~ std::cout << "Son link devient alors " << tmp->nbLink << std::endl;
+			//~ std::cout << "His link then becomes " << tmp->nbLink << std::endl;
 		}
 	}
 }

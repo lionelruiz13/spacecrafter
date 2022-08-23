@@ -98,7 +98,7 @@ void s_texture::createEmptyTex()
 
 bool s_texture::load(const std::string& fullName, bool mipmap)
 {
-	//~ std::cout << "lecture de la texture |"<< fullName << "| " << std::endl;
+	//~ std::cout << "reading the texture |"<< fullName << "| " << std::endl;
 
 		//code from Anthon Opengl4 tutorial
 		try {
@@ -169,7 +169,7 @@ bool s_texture::load(const std::string& fullName, bool mipmap)
 
 void s_texture::unload()
 {
-	//~ std::cout << "on unload la texture " << textureName << std::endl;
+	//~ std::cout << "unload the texture " << textureName << std::endl;
 	glDeleteTextures(1, &texID);	// Delete The Texture
 }
 

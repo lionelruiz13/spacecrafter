@@ -321,13 +321,13 @@ bool Ojm::readOJM(const std::string& filename, float multiplier)
 
 void Ojm::print()
 {
-	std::cout<< "Nombre de shape " << shapes.size() << std::endl;
+	std::cout<< "Number of shape " << shapes.size() << std::endl;
 	for(unsigned int i=0; i< shapes.size();i++) {
 		std::cout<< "***** shapes n°"<< i<< std::endl;
-		std::cout<< "Nombre de vectrices " << shapes[i].vertices.size() << std::endl;
-		std::cout<< "Nombre d'uvs        " << shapes[i].uvs.size() << std::endl;
-		std::cout<< "Nombre de normales  " << shapes[i].normals.size() << std::endl;
-		std::cout<< "Nombre d'indices  " << shapes[i].indices.size() << std::endl;
+		std::cout<< "Number of vectrices " << shapes[i].vertices.size() << std::endl;
+		std::cout<< "Nombre Number of uvs        " << shapes[i].uvs.size() << std::endl;
+		std::cout<< "Number of normales  " << shapes[i].normals.size() << std::endl;
+		std::cout<< "Nombre Number of indices  " << shapes[i].indices.size() << std::endl;
 		std::cout << "v ";
 /*		for(unsigned int j=0; j< shapes[i].vertices.size() ; j++)
 			std::cout << " " << shapes[i].vertices[j];

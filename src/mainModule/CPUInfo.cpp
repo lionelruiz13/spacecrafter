@@ -135,7 +135,7 @@ void CPUInfo::archivingData()
 
 void CPUInfo::saveToFile()
 {
-	//~ std::cout << "savegarde..." << std::endl;
+	//~ std::cout << "save..." << std::endl;
 	for(unsigned int i=0; i<diff; i++) {
 		CPUfileLog << oss[i].str();
 		oss[i].str("");

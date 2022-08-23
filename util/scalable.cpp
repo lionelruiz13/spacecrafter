@@ -86,35 +86,35 @@ std::ostream & operator << (std::ostream & sortie, const Scalable &s)
 int main()
 {
     Scalable a;
-    std::cout << "Valeur de a " << a << std::endl;
+    std::cout << "Value of a " << a << std::endl;
 
     a.set(9.f);
-    std::cout << "Valeur de a " << a << std::endl; 
+    std::cout << "Value of a " << a << std::endl; 
 
     a = 7.0;
 
-    std::cout << "Valeur de a " << a << std::endl; 
+    std::cout << "Value of a " << a << std::endl; 
 
     for (int i=0; i<54; i++) {
         a.update(20+rand()%20-10);
-        std::cout << "Valeur de a " << a << std::endl;
+        std::cout << "Value of a " << a << std::endl;
     }
 
-    std::cout << "Tests de calculs "  << std::endl;
+    std::cout << "Calculation tests "  << std::endl;
 
     float b = 4.3;
-    std::cout << "Valeur de b " << b << std::endl;
+    std::cout << "Value of b " << b << std::endl;
     float c = b+a;
-    std::cout << "Valeur de b+a " << c << std::endl;
+    std::cout << "Value of b+a " << c << std::endl;
 
 
     // a = 17.0;
 
-    // std::cout << "Valeur de a " << a << std::endl; 
+    // std::cout << "Value of a " << a << std::endl; 
 
     // for (int i=0; i<21; i++) {
     //     a.update(50+rand()%20-10);
-    //     std::cout << "Valeur de a " << a << std::endl;
+    //     std::cout << "Value of a " << a << std::endl;
     // }
 
 

@@ -71,14 +71,14 @@ static std::string removeExtension(const std::string& filename)
 
 int main(int argc, char **argv)
 {
-	// variables globales
+	// global variables
 	bool toOptimize = true;
 	bool displayCopyright = false;
 	bool displayHelp = false;
 	bool displayPrint = false;
 	std::string name;
 
-	// Traitement des données
+	// Data processing
 	int c;
 	while ((c = getopt (argc, argv, "hcnp")) != -1) {
 		switch (c) {
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 				break;
 		}
 	}
-	//fin du traitement des données
+	//end of data processing
 
 	if (displayCopyright)
 		display_copyright();
@@ -120,28 +120,28 @@ int main(int argc, char **argv)
 		}
 	}
 
-	//charge le fichier OBJ
+	//load OBJ file
 	Obj3D obj3D(name +".obj");
 
-	// affiche informations sur les datas du fichier OBJ
+	// displays information about the data in the OBJ file
 	if (displayPrint)
 		obj3D.print();
 
-	// création du convertisseur
+	// creation of the converter
 	ObjToOjm converter;
-	// import du fichier dans le convertisseur
+	// import the file into the converter
 	converter.importOBJ(&obj3D);
 	if (displayPrint)	
 		std::cout << argv[0] << ":  import converter without errors" << std::endl;
 
-	//fusionne les matériaux identiques
+	//merges identical materials
 	if (toOptimize)
 		converter.fusionMaterials();
 
-	//indexe des sommets afin de réduire le nombre de points à traiter
+	//indexes vertices to reduce the number of points to be processed
 	converter.createUniqueIndexFromVertices();
 
-	//exporte le résultat dans les différents formats
+	//export the result in different formats
 	converter.exportOJM(name + ".ojm");
 	converter.exportV3D(name + ".v3d");
 
