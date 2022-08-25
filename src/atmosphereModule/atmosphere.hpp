@@ -122,17 +122,17 @@ public:
 		return lightPollutionLuminance;
 	}
 
-	//! construit la grille d'affichage des points pour les shaders
+	//! builds the point display grid for the shaders
 	void initGridPos();
 
-	//! determine le viewport pour la construction des grilles
+	//! determines the viewport for the construction of the grids
 	void initGridViewport(const Projector *prj);
 
-	// indique quel model d'atmosphère sera calculé en fonction de la planete
+	// indicates which atmosphere model will be calculated according to the planet
 	void setModel(ATMOSPHERE_MODEL atmModel);
 
 private:
-	//! initialise les paramètres du shader
+	//! initialize the shader parameters
 	void createSC_context();
 
 	std::unique_ptr<Skylight> sky;
@@ -154,11 +154,11 @@ private:
 	Vec3f *pSkyColor = nullptr;
 	VkCommandBuffer cmds[3];
 
-	//variables sur la position de la grille
-	float stepX; //!< taille des pas sur l'axe des x
-	float stepY; //!< taille des pas sur l'axe des y
-	float viewport_left; //!<espacement à gauche de la grille
-	float viewport_bottom; //!< espacement en bas de la grille
+	//variables on the grid position
+	float stepX; //!< step size on the x axis
+	float stepY; //!< step size on the y-axis
+	float viewport_left; //!<spacing on the left of the grid
+	float viewport_bottom; //!< spacing at the bottom of the grid
 };
 
 #endif // _ATMOSTPHERE_H_

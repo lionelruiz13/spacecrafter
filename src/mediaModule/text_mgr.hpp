@@ -71,56 +71,56 @@ class TextMgr: public NoCopy {
 public:
 	TextMgr();
 	~TextMgr();
-	//! transmet les variations de temps aux différents textes
+	//! transmits the time variations to the different texts
 	void update(int delta_time);
 
-	//! ordonne le tracé des différents textes
+	//! orders the layout of the different texts
 	void draw(const Projector* prj);
 
-	//! ajoute un texte dans le conteneur textUsr
+	//! adds a text to the textUsr container
 	void add(const std::string& name, const TEXT_MGR_PARAM& textParam);
 
-	//! retire un texte du conteneur textUsr
+	//! removes a text from the textUsr container
 	void del(const std::string &name);
 
-	//! retire tous les textes du conteneur
+	//! removes all the texts from the container
 	void clear();
 
-	//! permet de changer le texte d'un text du conteneur
+	//! allows to change the text of a text in the container
 	void textUpdate(const std::string &name, const std::string &text);
 
-	//! permet de masquer un texte du conteneur
+	//! allows to hide a text in the container
 	void textDisplay(const std::string &name, bool displ);
 
-	//! permet de changer le fading d'un texte du conteneur
+	//! allows to change the fading of a text in the container
 	void setFadingDuration(float t) {
 		fadingDuration = t;
 	}
 
-	//! initialise l'ensemble des fontes utilisées par la classe
+	//! initialize all the fonts used by the class
 	void setFont(float font_size, const std::string& font_name);
 
-	//! met a jours les fontes avec les nouveaux paramètres fontName et sizeValue
+	//! updates the fonts with the new parameters fontName and sizeValue
 	void updateFont(double size, const std::string& fontName);
-	//! construit les fontes déterminées par setFont 
+	//! builds the fonts determined by setFont 
 	void buildFont();
 
-	//! remet à jour les fontes d'origine
+	//! update the original fonts
 	void resetFont(){
 		updateFont(mFontSize, mFontName);
 	};
 
-	//! modifie la couleur par défaut des futurs nouveaux text
+	//! change the default color of the future new text
 	void setColor(const Vec3f& c);
 private:
-	void clearCache();			// vide les caches des fonts
-	std::map<std::string, std::unique_ptr<Text>> textUsr; // le conteneur de tous les textes
-	std::map<std::string, FONT_SIZE> strToFontSize; // convertir txt to FONT_SIZE
-	std::map<std::string, TEXT_ALIGN> strToTextAlign; // convertir txt to TEXT_POSITION
-	std::vector<std::unique_ptr<s_font>> textFont;		// l'ensemble de fontes utilisés
-	Vec3f defaultTextColor;		// vecteur couleur par défaut
-	bool isUsable = false;		// indicateur si la classe est opérationelle
-	float fadingDuration;		// durée d'une fading de text (s'il existe) en secondes
+	void clearCache();			// empties the fonts caches
+	std::map<std::string, std::unique_ptr<Text>> textUsr; // the container for all texts
+	std::map<std::string, FONT_SIZE> strToFontSize; // convert txt to FONT_SIZE
+	std::map<std::string, TEXT_ALIGN> strToTextAlign; // convert txt to TEXT_POSITION
+	std::vector<std::unique_ptr<s_font>> textFont;		// the set of fonts used
+	Vec3f defaultTextColor;		// default color vector
+	bool isUsable = false;		// indicator if the class is operational
+	float fadingDuration;		// duration of a text fading (if it exists) in seconds
 	std::string mFontName;		// remembers what fontName is used
 	float mFontSize; 			// remembers what fontSize is used
 };

@@ -39,25 +39,25 @@ void Subtitle::update(int time)
 	int i = _numSub;
 	bool find = false;
 
-	if(time > _deltaTime) { // on regarde si la vidéo va dans le sens de lecture, ou que le curseur est palcé après le dernier message trouvé
-		while(!find && (i < _vSub.size())) { //on cherche le nouveau message à afficher à partir du dernier message trouvé.
+	if(time > _deltaTime) { // we look if the video goes in the direction of reading, or that the cursor is placed after the last found message
+		while(!find && (i < _vSub.size())) { //we look for the new message to display from the last found message.
 			if( (_vSub[i].Tcode1 < time) && (time < _vSub[i].Tcode2)) {
-				_numSub = i; // on sauvegarde la nouvelle position
-				find = true; // on dis que l'on a trouver
+				_numSub = i; // save the new position
+				find = true; // we say that we have found
 			}
 			i++;
 		}
 	}
-	else {   // on regarde si la vidéo va dans le sens contraire de lecture, ou que le curseur est placé avant le dernier message trouvé.
-		while(!find && (i >= 0)) { //on cherche le nouveau message à afficher à partir du dernier message trouvé.
+	else {   // we look if the video goes in the opposite direction of reading, or that the cursor is placed before the last found message.
+		while(!find && (i >= 0)) { //look for the new message to be displayed starting from the last message found.
 			if( (_vSub[i].Tcode1 < time) && (time < _vSub[i].Tcode2)) {
-				_numSub = i; // on sauvegarde la nouvelle position
-				find = true; // on dis que l'on a trouver
+				_numSub = i; // we save the new position
+				find = true; // we say that we have found
 			}
 			i--;
 		}
 	}
-	_deltaTime = time; // on garde en mémoire le temps qui a été demander pour le réutiliser plus tard.
+	_deltaTime = time; // we keep in memory the time that has been requested to reuse it later.
 }
 
 int Subtitle::TimeToMs(std::string& time)
@@ -70,7 +70,7 @@ int Subtitle::TimeToMs(std::string& time)
 	return result;
 }
 
-//Primitives de gestion du fichier
+//File management primitives
 void Subtitle::loadFile(const std::string& fileName)
 {
 	std::ifstream fichier( fileName.c_str() );
@@ -88,7 +88,7 @@ void Subtitle::readFile()
 {
 	std::ifstream monFlux(_FILE.c_str());
 
-	if(monFlux) { // si le fichier est bien ouvert, on commence le traitement
+	if(monFlux) { // if the file is open, we start the processing
 		std::string ligne;
 		int nbLigne = 1;
 		std::string str1;
@@ -98,21 +98,21 @@ void Subtitle::readFile()
 
 		while(getline(monFlux, ligne)) {
 			switch(nbLigne) {
-				case 1: //ligne du numéro de sous-tire, ou du personnage
+				case 1: //line of the subtitle number, or the character
 					str1 = ligne.c_str();
 					nbLigne++;
 					break;
-				case 2: //ligne des times-codes
+				case 2: //line of time-codes
 					str2 = ligne.substr(0,12);
 					str3 = ligne.substr(17,12);
 					nbLigne++;
 					break;
-				case 3: //ligne du message
+				case 3: //message line
 					str4 = ligne.c_str();
 					addSub(TimeToMs(str2), TimeToMs(str3), str1, str4);
 					nbLigne++;
 					break;
-				default: //ligne vide, ajout dans le vecteur
+				default: //empty line, added in the vector
 					nbLigne = 1;
 					break;
 			}

@@ -40,7 +40,7 @@
 
 class BigSave;
 
-//TODO supprimer cela et les remplacer par un enum class
+//TODO delete this and replace it with an enum class
 #define PNG_ALPHA  0
 #define PNG_SOLID  1
 #define PNG_BLEND1 7
@@ -62,14 +62,14 @@ public:
 	// If resolution is true, use texture with -preview suffix, or downscale original texture
 	// In this case, the full resolution texture can be dynamically loaded and querried with getBigTexture()
 	s_texture(const std::string& _textureName, int _loadType = TEX_LOAD_TYPE_PNG_BLEND1, bool mipmap = false, bool resolution = false, int depth = 1, int nbChannels = 4, int channelSize = 1, bool useBlendMipmap = false);
-	// création d'une texture à partir d'une texture, transmet l'ownership de la texture à s_texture
+	// create a texture from a texture, pass the ownership of the texture to s_texture
 	s_texture(const std::string& _textureName, Texture *_imgTex);
-	// destructeur de texture
+	// texture destructor
 	~s_texture() = default;
 	// création d'une texture par copie d'une autre
 	s_texture(const s_texture &t) = delete;
 	s_texture(const s_texture *t);
-	//interdiction d'opérateur =
+	//ban operator =
 	const s_texture &operator=(const s_texture &t) = delete;
 
 	// Return the big texture, or nullptr if not loaded at this frame
@@ -80,7 +80,7 @@ public:
 	// Return the average texture luminance : 0 is black, 1 is white
 	float getAverageLuminance() const;
 
-	// Returne les dimensions de la texture
+	// returns the dimensions of the texture
 	void getDimensions(int &width, int &height) const;
 	void getDimensions(int &width, int &height, int &depth) const;
 
@@ -94,18 +94,18 @@ public:
 	// Bind texture, assume set binding is 1 and only contain one texture at binding 0
 	void bindTexture(VkCommandBuffer cmd, PipelineLayout *layout);
 
-	// Indique le chemin par défaut des textures par défaut.
+	// Indicates the default path of the textures.
 	static void setTexDir(const std::string& _texDir) {
 		s_texture::texDir = _texDir;
 	}
 
-	// Indique si l'on doit charger les textures en low resolution ou pas.
+	// Indicates if we must load the textures in low resolution or not.
 	static void setLoadInLowResolution(bool value, int _maxRes) {
 		s_texture::loadInLowResolution = value;
 		s_texture::lowResMax = _maxRes*_maxRes*2;
 	}
 
-	// crée une texture rouge en cas de textures non chargée
+	// creates a red texture in case of not loaded textures
 	void createEmptyTex();
 
 	static long int getNumberTotalTexture(){

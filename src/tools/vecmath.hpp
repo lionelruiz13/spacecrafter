@@ -2329,3 +2329,4 @@ template<class T> Vector4<T> Matrix4<T>::toQuaternion() const
 }
 
 #endif // _VECMATH_HPP_INCLUDED
+  

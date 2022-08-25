@@ -14,7 +14,7 @@
 
 // *****************************************************************************
 //
-// CLASSE OJML: un dérivé de OJM mais avec un seul shape
+// CLASSE OJML: a derivative of OJM but with one shape
 //
 // *****************************************************************************
 

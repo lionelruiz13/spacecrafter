@@ -171,15 +171,15 @@ VkCommandBuffer SkyDisplay::getCommand()
 	return cmd;
 }
 
-//a optimiser
+//a optimize
 void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 {
 	for (int i = -9; i < 10; i++) {
 		std::ostringstream oss;
-		//création des positions de points dans pt3,pt4
+		//creation of point positions in pt3,pt4
 		Utility::spheToRect(aperson - 0.31415926, (i - 0.0001) * grad2rad, pt3);
 		Utility::spheToRect(aperson - 0.31415926 + 0.01, (i - 0.0001) * grad2rad, pt4);
-		//test si pt3,pt4 est affichable et transmet à pt1,pt2 sa position
+		//test if pt3,pt4 is displayable and transmit to pt1,pt2 its position
 		if (((prj->*proj_func)(pt3, pt1)) && ((prj->*proj_func)(pt4, pt2))) {
 			double angle;
 			const double dx = pt1[0] - pt2[0];
@@ -192,7 +192,7 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 			if (i == -9)
 				angle += 3.1415926;
 			Mat4f MVP = prj->getMatProjectionOrtho2D();
-			//suite de transformations de position à partir des coordonnées de pt1
+			//sequence of position transformations from the coordinates of pt1
 			Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 			TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 			//oss << pt1[0] << " " << pt2[0] << pt1[1] << " " << pt2[1];
@@ -215,7 +215,7 @@ void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, 
 
 ///////////////////////////////////////////////////////////////////////
 //
-//      Classes dérivées
+//      Derived classes
 //
 //
 ////////////////////////////////////////////////////////////////////////
@@ -246,7 +246,7 @@ void SkyPerson::loadData(const std::string& filename)
 		fichier.close();
 	}
 
-	//on charge les points dans un vbo
+	//we load the points in a vbo
 	if (m_dataSize != dataSkySize) {
 		m_dataSize = dataSkySize;
 		build();
@@ -256,7 +256,7 @@ void SkyPerson::loadData(const std::string& filename)
 
 void SkyPerson::loadString(const std::string& message)
 {
-	//on récupère d'abord les 2 nombres et ensuite on les converit...
+	//we first get the 2 numbers and then we convert them...
     std::string delimiter = ";";
     float ftemp;
 	std::string txt = message;
@@ -373,7 +373,7 @@ void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 	}
 	aperson = (direction + tick) * deg2rad;
 
-	//on charge les points dans un vbo
+	//we load the points in a vbo
 	if (m_dataSize != dataSkySize) {
 		m_dataSize = dataSkySize;
 		build();
@@ -430,7 +430,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "alt:";
@@ -465,7 +465,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from punts coordinates
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "az :";
@@ -502,7 +502,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "ra :";
@@ -532,7 +532,7 @@ void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "dec:";
@@ -603,7 +603,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "alt:";
@@ -638,7 +638,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "az :";
@@ -675,7 +675,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "ra :";
@@ -705,7 +705,7 @@ void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, V
 			angle *= -1;
 		std::ostringstream oss;
 		Mat4f MVP = prj->getMatProjectionOrtho2D();
-		//suite de transformations de position à partir des coordonnées de punts
+		//sequence of position transformations from the coordinates of punts
 		Mat4f TRANSFO = Mat4f::translation(Vec3f(pt1[0], pt1[1], 0));
 		TRANSFO = TRANSFO * Mat4f::rotation(Vec3f(0, 0, -1), pi_div_2 - angle);
 		oss << "dec:";

@@ -150,9 +150,9 @@ public:
 		return centerObject;
 	}
 
-	//reinitialise l'ensemble des planetes comme elles étaient au chargement initial du logiciel
-	// réinitialise les paramètes de la tesselaiton
-	// prend en compte la taille et le flag caché ou pas
+	//resets all planets as they were when the software was first loaded
+	// reset the parameters of the tesselaiton
+	// takes into account the size and the flag hidden or not
 	void initialSolarSystemBodies();
 
 	struct BodyContainer {
@@ -176,8 +176,8 @@ public:
     static Vec3d getCenterPos() {return currentCenterPos;}
 protected:
     static Vec3d currentCenterPos;
-	ObjLMgr* objLMgr=nullptr;					// représente  les objets légers du ss
-	std::shared_ptr<Body> bodyTrace=nullptr; //retourne le body qui est sélectionné par bodyTrace
+	ObjLMgr* objLMgr=nullptr;					// represents the light objects of the ss
+	std::shared_ptr<Body> bodyTrace=nullptr; //returns the body that is selected by bodyTrace
 	std::shared_ptr<OrbitCreator> orbitCreator = nullptr;
 	std::shared_ptr<AnchorManager> anchorManager = nullptr;
     std::shared_ptr<Body> centerObject = nullptr;

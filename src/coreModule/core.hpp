@@ -358,10 +358,10 @@ public:
 	float getPlanetsSizeLimit(void) const;
 
 	std::string getPlanetHashString(void);
-	//Fonctions ci dessus et dessous définit dans core.cpp
+	//Functions above and below defined in core.cpp
 	void setHomePlanet(const std::string &planet);
 
-	//! Ajoute year année(s) et month mois à la date actuelle sans toucher aux autres paramètres de la date
+	//! Adds year(s) and month(s) to the current date without affecting the other date parameters
 	void setJDayRelative(int year, int month);
 
 	// for adding planets
@@ -463,20 +463,20 @@ private:
 	// initialize CoreFont class
 	void registerCoreFont() const;
 
-	// adpate le landscape automatiquement au body sélectionné
+	// automatically adapts the landscape to the selected body
 	void setLandscapeToBody();
 
-	//valide les décisions d'affichage des décors du body
+	//validates the display decisions of the body's scenery
 	void setBodyDecor();
 
-	// vérifie si le landsacpe est compatible avec le mode auto
+	// check if the landsacpe is compatible with the auto mode
 	void testLandscapeCompatibleWithAutoMode();
 
 	std::string skyCultureDir;			// The directory containing data for the culture used for constellations, etc..
 	Translator skyTranslator;			// The translator used for astronomical object naming
 
 	// external class
-	std::shared_ptr<FontFactory> fontFactory;					// gestion complète des fontes du logiciel
+	std::shared_ptr<FontFactory> fontFactory;					// complete management of the software fonts
 	std::shared_ptr<Observer> observatory;			// Manage observer position it's a pointer to the 3 other Observer
 	std::shared_ptr<Media> media;
 
@@ -500,9 +500,9 @@ private:
 
 	std::shared_ptr<Atmosphere> atmosphere;			// Atmosphere
 
-	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! gestionnaire des grilles
-	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! gestionnaire de lignes
-	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! gestionnaire de skyDisplay
+	std::unique_ptr<SkyGridMgr> skyGridMgr;				//! grid manager
+	std::unique_ptr<SkyLineMgr> skyLineMgr;				//! line manager
+	std::unique_ptr<SkyDisplayMgr> skyDisplayMgr; 		//! skyDisplay manager
 	std::unique_ptr<Oort> oort;			//! oort cloud
 	std::unique_ptr<Dso3d> dso3d;		//! dso catalog for in_galaxy
 	std::unique_ptr<Tully> tully;		//! tully galaxies
@@ -518,8 +518,8 @@ private:
 	std::unique_ptr<StarGalaxy> starGalaxy; 			// draw galaxy stars when in universe
 	std::unique_ptr<VolumObj3D> volumGalaxy; 			// draw volumetric galaxy
 	std::unique_ptr<DsoNavigator> dsoNav; 				// draw 3d dso when in galaxy
-	std::unique_ptr<StarLines> starLines;			// permet de tracer des lignes dans la galaxie
-	std::unique_ptr<OjmMgr> ojmMgr;					// représente les obj3D
+	std::unique_ptr<StarLines> starLines;			// allows to draw lines in the galaxy
+	std::unique_ptr<OjmMgr> ojmMgr;					// represents obj3D
 	std::unique_ptr<UBOCam> uboCam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;

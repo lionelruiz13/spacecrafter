@@ -46,7 +46,7 @@ TileMap *s_font::tileMap = nullptr;
 void s_font::initBaseFont(const std::string& ttfFileName)
 {
 	baseFontName = ttfFileName;
-	//on teste la fonte de base, si elle n'est pas opérationnelle, on stoppe tout.
+	//We test the basic font, if it is not operational, we stop everything.
 	TTF_Font *tmp = TTF_OpenFont( baseFontName.c_str(), 12);
 	if(!tmp) {
 		cLog::get()->write("s_font: TTF_OpenFont error: "+ std::string(TTF_GetError()), LOG_TYPE::L_ERROR);
@@ -307,7 +307,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	if (withBorder) {
 		// ***********************************
 		//
-		// création de la bordure
+		// creation of the border
 		//
 		// ***********************************
 		SDL_Surface *border = SDL_CreateRGBSurface(SDL_SWSURFACE, (int)rendering.textureW, (int)rendering.textureH, 32, rmask, gmask, bmask, amask);
@@ -325,7 +325,7 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 			if(pass%2) shifty = -1;
 				else shifty = 1;
 
-			//why (decalageX;decalageY) ? la texture initiale commence en (decalageX;decalageY)
+			//why (decalageX;decalageY) ? the initial texture starts in (decalageX;decalageY)
 			tmp.x=decalageX+shiftx;
 			tmp.y=decalageY+shifty;
 			tmp.w=text->w;

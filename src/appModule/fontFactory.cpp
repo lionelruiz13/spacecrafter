@@ -69,7 +69,7 @@ void FontFactory::buildAllFont()
 	);
 
 	media->setTextFont(FontSizeText, FontFileNameText);
-	//cas spécial de Media
+	//special case of Media
 	media->buildTextFont();
 }
 
@@ -133,26 +133,26 @@ void FontFactory::init(int resolution, const InitParser& conf)
 	FontFileNameText =  AppSettings::Instance()->getUserFontDir()+conf.getStr(SCS_FONT, SCK_FONT_TEXT_NAME);
     FontSizeText =  conf.getDouble(SCS_FONT, SCK_FONT_TEXT_SIZE);
     FontSizeText = round(FontSizeText * fontFactor) ;
-	// TODO pourquoi cette instruction plante ?
+	// TODO why does this instruction plant?
 	//	media->setTextFont(FontSizeText, FontFileNameText);
 }
 
 
 void FontFactory::updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue)
 {
-	// gestion de la taille
+	// management of the
 	double size = Utility::strToDouble(sizeValue) * fontFactor;
 	if (size ==0.f)
 		size=12.f;
 
-	//gestion du module
+	//management of the module
 	auto const it = m_strToTarget.find(targetName);
 	if (it == m_strToTarget.end()) {
 		cLog::get()->write("Unknown FontFactory target "+targetName, LOG_TYPE::L_WARNING);
 		return;
 	}
 
-	// cas des texts
+	// case of texts
 	if (it->second == CLASSEFONT::CLASS_MENU) {
 		media->updateTextFont(size, fontName);
 		return;
@@ -175,7 +175,7 @@ s_font* FontFactory::registerFont(CLASSEFONT _cf)
 	if (it != std::end(listFont)) {
 		return (*it).fontPtr.get();
 	}	else {
-		//std::cout << "erreur registerFont" << std::endl;
+		//std::cout << "error registerFont" << std::endl;
 		cLog::get()->write("Error registerFont", LOG_TYPE::L_ERROR);
 		assert(0);
 		return nullptr;

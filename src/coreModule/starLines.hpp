@@ -37,22 +37,21 @@ class PipelineLayout;
 class Set;
 
 /*! \class StarLines
-  * \brief classe représentant un astérisme customisé par l'utilisateur
+  * \brief class representing an asterism customized by the user
   *
-  *  \details Cette classe dessine un astérisme customisé à partir d'un catalogue
-  *  d'étoiles HIP chargé en amont.
+  *  \details This class draws a custom asterism from an uploaded HIP star catalog.
   */
 class StarLines: public NoCopy  {
 public:
 	StarLines();
 	~StarLines();
 
-	//! update les faders de la classe
+	//! update the faders of the class
 	void update(int delta_time) {
 		showFader.update(delta_time);
 	}
 
-	//! fixe l'état du fader
+	//! set the state of the fader
 	void setFlagShow(bool b) {
 		showFader = b;
 	}
@@ -61,79 +60,79 @@ public:
 		selectedFader = b;
 	}
 
-	//! récupère l'état du fader
+	//! retrieve the state of the fader
 	bool getFlagSelected(void) const {
 		return selectedFader;
 	}
 
-	//! récupère l'état du fader
+	//! retrieves the state of the fader
 	bool getFlagShow(void) const {
 		return showFader;
 	}
 
-	//! indique la couleur du tracé
+	//! indicates the color of the trace
 	void setColor(const Vec3f& c) {
 		lineColor = c;
 	}
 
-	//! renvoie la couleur du tracé
+	//! rsends the color of the track
 	const Vec3f& getColor() {
 		return lineColor;
 	}
 
-	//! \brief charge une étoile pour le catalogue
+	//! \brief loads a star for the catalog
 	void loadHipStar(int name, Vec3f position ) noexcept;
 
-	//! \brief charge un fichier utilisateur d'astérismes dans les tampons
-	//! \param fileName représente le nom complet du fichier des datas
+	//! \brief loads a user file of asterisks in the buffers
+	//! \param fileName represents the full name of the data file
 	bool loadData(const std::string& fileName) noexcept;
 
-	//! \brief charge un seul asterisme dans les tampons
-	//! \param fileName représente le nom complet du fichier des datas
+	//! \brief loads a single asterism in the buffers
+	//! \param fileName represents the full name of the dataset
 	void loadStringData(const std::string& record) noexcept;
 
-	//! \brief lit le catalogue des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
+	//! \brief reads the catalog of the brightest stars
+	//! \return true if everything is oki, false otherwise
 	bool loadCat(const std::string& fileName, bool useBinary) noexcept;
 
-	//! \brief sauvegarde le catalogue des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
+	//! \brief save the catalog of the brightest stars
+	//! \return true if all is oki, false otherwise
 	bool saveCat(const std::string& fileName, bool useBinary) noexcept;
 
-	//! dessine les asterismes issus de loadData IN_SOLARSYSTEM
+	//! draw asterisms from loadData IN_SOLARSYSTEM
 	void draw(const Projector* prj) noexcept;
-	//! dessine les asterismes issus de loadData dans IN_GALAXY
+	//! draw asterisms from loadData in IN_GALAXY
 	void draw(const Navigator * nav) noexcept;
 
-	//! Supprime le contenu des tampons d'affichage
+	//! Delete the content of the display buffers
 	void drop();
 
-	//! Supprime le contenu du catalogue d'étoiles
+	//! Delete the content of the star catalog
 	void clear() {
 		HIP_data.clear();
 	}
 
 protected:
-	//! \brief lit le catalogue des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
+	//! \brief reads the catalog of the brightest stars
+	//! \return true if all is oki, false otherwise
 	bool loadHipCat(const std::string& fileName) noexcept;
-	//! \brief lit le catalogue binaire des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
+	//! \brief reads the binary catalog of the brightest stars
+	//! \return true if everything is oki, false otherwise
 	bool loadHipBinCat(const std::string& fileName) noexcept;
 
-	//! sauvegarde le catalogue des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
+	//! sausaves the catalog of the brightest stars
+	//! \return true if all is oki, false otherwise
 	bool saveHipCat(const std::string& fileName) noexcept;
-	//! sauvegarde le catalogue binaire des étoiles les plus lumineuses
-	//! \return true si tout est oki, false sinon
+	//! save the binary catalog of the brightest stars
+	//! \return true if everything is oki, false otherwise
 	bool saveHipBinCat(const std::string& fileName) noexcept;
 
-	// shader d'affichage
+	// display shader
 	//std::unique_ptr<shaderProgram> shaderStarLines;
 	// context
 	VkCommandBuffer cmds[3];
 	bool needRebuild[3] {true, true, true};
-	// données VAO-VBO
+	// data VAO-VBO
 	std::unique_ptr<VertexArray> m_dataGL;
 	std::unique_ptr<VertexBuffer> vertex;
 	// uniform pattern of pipeline
@@ -148,28 +147,28 @@ protected:
 	};
 	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
 	std::unique_ptr<SharedBuffer<frag>> uFrag;
-	// initialise le shader
+	// initialize the shader
 	void createSC_context();
 	//! build VertexArray and fill it with new datas
 	void rebuild(std::vector<float> &vertexData);
 	//! build or rebuild command with new VertexArray and draw
 	void rebuildCommand(int idx);
-	// supprime le shader
+	// deletes the shader
 	// void deleteShader();
-	// tampon d'affichage
+	// display buffer
 	std::vector<float> linePos;
-	// conteneur des étoiles servant à créer les sommets des lignes
+	// stars container used to create the vertices of the lines
 	std::vector<HIPpos> HIP_data;
-	// recherche dans HIP_data les coordonnées d'une étoile
+	// search in HIP_data the coordinates of a star
 	Vec3f searchInHip(int HIP);
-	// fader d'affichage
+	// display fader
 	LinearFader showFader;
 	LinearFader selectedFader;
-	// indique si l'on doit recharger les tampons dans la CG
+	// indicates if we have to reload the buffers in the CG
 	//bool isModified = true;
-	// couleur du tracé des lines
+	// color of the line drawing
 	Vec3f lineColor;
-	// fonction de tracé effectif des asterismes suviant le mode choisi
+	// function of effective drawing of asterisms according to the chosen mode
 	void drawGL(Mat4f& matrix) noexcept;
 };
 #endif

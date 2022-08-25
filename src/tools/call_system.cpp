@@ -220,7 +220,7 @@ void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dir
 			dirResult +="Check " + it->first + " subdirectory ok\n";
 	}
 
-	// cas des textures
+	// case of textures
 	subDir = CDIR +REP_TEXTURE;
 	if (!dirExist(subDir)) {
 	if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
@@ -240,7 +240,7 @@ void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dir
 		}
 	}
 
-	// cas des languages
+	// case of languages
 	subDir = CDIR +REP_LANGUAGE;
 	if (!dirExist(subDir)) {
 	if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
@@ -279,7 +279,7 @@ bool CallSystem::killAllPidFrom(const std::string& prgm)
 {
 	#if LINUX
 		std::string command = "ps aux | grep " + prgm + " | wc -l";
-		//recuperer le nombre de prgm lancés
+		//Recover the number of launched programs
 		const int LEN = 5;
 		char line[LEN];
 		FILE *cmd = popen(command.c_str(), "r");

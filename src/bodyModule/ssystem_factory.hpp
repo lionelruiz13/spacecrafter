@@ -544,7 +544,7 @@ private:
     std::map<std::string, std::unique_ptr<ProtoSystem>> systems;
     std::map<std::string, Vec3d> systemOffsets;
 
-	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// représente  les objets légers du ss
+	std::unique_ptr<ObjLMgr> objLMgr=nullptr;					// represents the light objects of the ss
 
 	std::shared_ptr<BodyTrace> bodytrace;				// the pen bodytrace
     Observer *observatory;

@@ -106,9 +106,9 @@ protected:
 	mutable Vec3d pt2;
 	std::string month[13]; // labels for translating on ecliptic
 
-	//variables utilitaires
+	//utility variables
 	Vec4f tmp;
-	Mat4f TRANSFO; //a renommer
+	Mat4f TRANSFO; //to rename
 
 	//Vulkan
 	//static std::unique_ptr<shaderProgram> shaderSkylineDraw; //, shaderTropicDrawTick, shaderSkylineMVPDraw;

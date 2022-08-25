@@ -85,20 +85,20 @@ class FontFactory {
 public:
     FontFactory();
     ~FontFactory();
-	//! initialise les fontes: fichiers et tailles 
+	//! initialize fonts: files and sizes 
     void init(int _resolution, const InitParser& conf);
-	//! construit toutes les fontes
+	//! builds all fonts
 	void buildAllFont();
 
-	//! Demande a FontFactory de livrer un pointer sur la fonte de _cf
+	//! Asks FontFactory to deliver a pointer to the font of _cf
 	s_font* registerFont(CLASSEFONT _cf);
-	// cas particulier de Media qui gère ses propres fontes
+	// special case of Media managing its own fonts
 	void initMediaFont(Media * _media);
 
-	//! met à jour des fontes de Core
+	//! updates Core fonts
 	void updateFont(const std::string& targetName, const std::string& fontName, const std::string& sizeValue);
 
-	//! réinitialise toutes les fontes de FontFactory
+	//! resets all FontFactory fonts
 	void reloadAllFont();
 
 private:

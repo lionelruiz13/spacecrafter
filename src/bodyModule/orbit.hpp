@@ -274,14 +274,14 @@ private:
 
 };
 
-/*! Une orbit still représente une orbite figée par rapport à son repère
- *  Exemple: satellite géostationnaire figé
- *  Elle est utilisée à des fin d'observation principalement
+/*! An orbit still represents a fixed orbit with respect to its reference frame
+ * Example: geostationary satellite frozen
+ * It is mainly used for observation purposes
  *
  */
 class stillOrbit : public Orbit {
 public:
-	//! création d'une orbite still au point de coordonnée cartésienne (x,y,z)
+	//! creation of an orbit still at the Cartesian coordinate point (x,y,z)
 	stillOrbit(double _x, double _y, double _z);
 
 	virtual ~stillOrbit();

@@ -234,7 +234,7 @@ void ScriptMgr::recordCommand(const std::string &commandline)
 	if (sR.recording) {
 		// write to file...
 		if (sR.record_elapsed_time) {
-			//on s'occupe de toutes les attentes mais on ne garde qu'un chiffre après la virgule
+			//we take care of all expectations but keep only one digit after the decimal point
 			double timeToWait = (sR.record_elapsed_time/100)/10.f;
 			if (timeToWait>0.4)
 				sR.rec_file << "wait duration " << timeToWait << std::endl;
@@ -303,7 +303,7 @@ void ScriptMgr::update(int delta_time)
 				}
 			} else if ( (script->getFirst(comd,DataDir)) == 1 ) {
 
-				if (isInLoop) {//on est dans une boucle et on doit copier la boucle dans une list.
+				if (isInLoop) {//we are in a loop and we have to copy the loop in a list.
 					loopVector.push_back(comd);
 				}
 				commander->executeCommand(comd, wait);

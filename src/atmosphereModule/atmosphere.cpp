@@ -63,7 +63,7 @@ void Atmosphere::initGridViewport(const Projector *prj)
 	viewport_bottom = (float)prj->getViewportPosY();
 }
 
-//initialise la grille des points pour le calcul de l'atmosphere
+//initializes the point grid for the atmosphere calculation
 void Atmosphere::initGridPos()
 {
 	{

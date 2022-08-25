@@ -133,7 +133,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	std::ifstream file(cat, std::ifstream::in);
 
 	if (!file) {
-		//~ cout << "ERREUR: Impossible d'ouvrir le fichier " << cat << std::endl;
+		//~ cout << "ERROR: Unable to open the file " << cat << std::endl;
 		cLog::get()->write("TULLY catalog: missing file " + cat + " - Feature disabled",LOG_TYPE::L_ERROR);
 		return false;
 	}
@@ -144,8 +144,8 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 
 	/*
 	*
-	* Format de ligne : index , composantes (r, g ,b) entre [0;1]
-	*					(x,y,z) coordonnées dans le repère et typeGalaxy: le type de l'objet
+	* Line format: index, components (r, g ,b) between [0;1]
+	* 			   (x,y,z) coordinates in the frame and typeGalaxy: the type of the object
 	*
 	*	int, 3 floats, 3 floats, un int
 	*/
@@ -201,7 +201,7 @@ bool Tully::loadBigCatalog(const std::string &cat, float optimalDistance) noexce
 	std::ifstream file(cat, std::ifstream::in);
 
 	if (!file) {
-		//~ cout << "ERREUR: Impossible d'ouvrir le fichier " << cat << std::endl;
+		//~ cout << "ERROR: Unable to open the file  " << cat << std::endl;
 		cLog::get()->write("TULLY catalog: missing file " + cat + " - Feature disabled",LOG_TYPE::L_ERROR);
 		return false;
 	}
@@ -217,8 +217,8 @@ bool Tully::loadBigCatalog(const std::string &cat, float optimalDistance) noexce
 
 	/*
 	*
-	* Format de ligne : index , composantes (r, g ,b) entre [0;1]
-	*					(x,y,z) coordonnées dans le repère et typeGalaxy: le type de l'objet
+	* Line format: index, components (r, g ,b) between [0;1]
+	* 			   (x,y,z) coordinates in the frame and typeGalaxy: the type of the object
 	*
 	*	int, 3 floats, 3 floats, un int
 	*/
@@ -414,13 +414,13 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		y=sortedDataTully[8*i+1];
 		z=sortedDataTully[8*i+2];
 
-		//on ne sélectionne que les galaxies assez grandes pour être affichées
+		//only galaxies large enough to be displayed are selected
         distance=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
 		radius = 3.0/(distance*sortedDataTully[8*i+7]);
 		if (radius<2)
 			continue;
 
-		/* OPTIMISATION : radius < 2 signifie que d²< (3/2scale)² */
+		/* OPTIMISATION : radius < 2 means that d²< (3/2scale)² */
 		tmpTully tmp;
 		tmp.position = Vec3f(x,y,z);
 		tmp.distance = distance;
@@ -449,7 +449,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		}
 	}
 
-	lTmpTully.clear();	//données devenues inutiles
+	lTmpTully.clear();	//data become useless
 
 	drawData->get()[0].vertexCount = squareOffset;
 	drawData->get()[1].vertexCount = vertexCount - squareOffset;

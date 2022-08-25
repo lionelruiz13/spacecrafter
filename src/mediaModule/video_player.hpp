@@ -50,58 +50,58 @@ class BufferMgr;
 
 /**
  * \class VideoPlayer
- * \brief Classe qui gere toute les fonctions de la ffmpeg pour le player vidéo.
+ * \brief Class that handles all the ffmpeg functions for the video player.
  *
- * Son but est de rendre un pointeur sur texture(s) utilisable dans le reste du logiciel
- * Deux possibilités s'offrent à l'utilisateur :
- * - une texture en RBG24 classique (mais lente à obtenir à cause des conversions)
- * - 3 textures YUV420p directement (rapide à obtenir: directement du fichier à la carte graphique)
+ * Its goal is to make a pointer on texture(s) usable in the rest of the software
+ * Two possibilities are offered to the user :
+ * - a classic RBG24 texture (but slow to obtain because of conversions)
+ * - 3 YUV420p textures directly (fast to obtain: directly from the file to the graphic card)
  *
- * La classe gère d'elle même le bon fps c'est à dire qu'elle regarde via des appels à SDL_GetTicks si elle doit mettre la frame à jour.
- * Si c'est le cas, alors elle met à jour la/les texture(s).
+ * The class manages by itself the good fps, that is to say that it looks via calls to SDL_GetTicks if it must update the frame.
+ * If it is the case, then it updates the texture(s).
  *
  */
 class VideoPlayer {
 public:
 	//! \fn VideoPlayer
-	//! \brief Constructeur: initialise les états de la ffmpeg
+	//! \brief Constructor: initializes the states of the ffmpeg
 	VideoPlayer(Media* _media);
 
-	//! Destructeur, ferme les états de la ffmpeg
+	//! Destructor, closes the states of the ffmpeg
 	~VideoPlayer();
 
 	//! Create video textures
 	void createTextures();
 
-	//! recherche la frame suivante
+	//! looks for the next frame
 	void update();
 
-	//! initialise la ffmpeg avec le nom du fichier passé en argument
+	//! initializes the ffmpeg with the name of the file passed in argument
 	bool playNewVideo(const std::string& fileName);
 
-	//! termine la lecture d'une vidéo en cours
+	//! ends the playback of a video in progress
 	void stopCurrentVideo(bool newVideo);
 
-	//! met la video en pause
+	//! pauses the video
 	void pauseCurrentVideo();
 
-	//! Redémarre la vidéo actuelle au début
+	//! Restarts the current video at the beginning
 	bool restartCurrentVideo();
 
 	bool invertVideoFlow(float &reallyDeltaTime);
 
-	//! Permet de faire un saut relatif dans le flux video
-	//! \param seconde temps a sauter (en secondes)
-	//! \param reallyDeltaTime : indique à la classe Media de combien on s'est déplacé au final.
+	//! Allows to make a relative jump in the video stream
+	//! \param seconde time to jump (in seconds)
+	//! \param reallyDeltaTime : tells the Media class how far we have moved in the end.
 	bool jumpInCurrentVideo(float seconde, float &reallyDeltaTime);
 
-	//! Renvoie l'état du player
-	//! @return true si un fichier est en cours de lecture, false sinon
+	//! Returns the state of the player
+	//! @return true if a file is playing, false otherwise
 	bool isVideoPlayed() const {
 		return m_isVideoPlayed;
 	}
 
-	//! Renvoie l'ID des textures YUV dans le GPU représentant la frame lue du fichier vidéo
+	//! Returns the ID of the YUV textures in the GPU representing the frame read from the video file
 	VideoTexture getYUV_VideoTexture() const {
 		return videoTexture;
 	}
@@ -111,43 +111,43 @@ public:
 	//! Record event synchronization which can't be performed inside the renderPass
 	void recordUpdateDependency(VkCommandBuffer cmd);
 private:
-	// renvoie la nouvelle frame vidéo et la convertit dans la mémoire de la CG.
+	// returns the new video frame and converts it in the CG memory.
 	void getNextVideoFrame(int frameIdx);
-	// récupère la nouvelle frame vidéo avant conversion
+	// retrieves the new video frame before conversion
 	void getNextFrame();
-	// initialisation de la classe
+	// initialization of the class
 	void init();
-	// fonction interne de saut dans la vidéo
+	// internal jump function in the video
 	bool seekVideo(int64_t frameToSkeep, float &reallyDeltaTime);
-	//! initialise une texture à la taille de la vidéo
+	//! initialize a texture to the size of the video
 	void initTexture();
 
 	Media* media=nullptr;
-	VideoTexture videoTexture;	//!< renvoie les indices des textures pour les classes nécessitant
+	VideoTexture videoTexture;	//!< returns the texture indices for the classes requiring
 	std::unique_ptr<BufferMgr> stagingBuffer;
 	SubBuffer imageBuffers[3][MAX_CACHED_FRAMES];
 	std::array<void *[MAX_CACHED_FRAMES], 3> pImageBuffer;
 
-	std::string fileName; 	//!< nom de la vidéo
-	Resolution videoRes;	//!< int video_w, video_h;	//!< taille w,h  de la vidéo
+	std::string fileName; 	//!< video name
+	Resolution videoRes;	//!< int video_w, video_h;	//!< size w,h of the vidéo
 
-	bool m_isVideoPlayed;	//!< indique si une vidéo est en cours de lecture
-	bool m_isVideoInPause;	//!< indique si la video est en pause
-	bool m_isVideoSeeking;	//!< indique si on est entrain de sauter de frame
+	bool m_isVideoPlayed;	//!< indicates if a video is playing
+	bool m_isVideoInPause;	//!< indicates if the video is paused
+	bool m_isVideoSeeking;	//!< indicates if a frame is being skipped
 
-	//gestion des durées
+	//time management
 	int64_t TickCount;
 	int64_t firstCount;
 	int64_t lastCount;
 	double d_lastCount;
 
-	//Gestion frameRate
-	int64_t currentFrame;	//!< numéro de la frame actuelle
-	int64_t nbTotalFrame;	//!< nombre de frames prévues par la vidéo
+	//frameRate management
+	int64_t currentFrame;	//!< number of the current frame
+	int64_t nbTotalFrame;	//!< number of frames in the video
 	double frameRate;
 	double frameRateDuration;
 
-	//gestion de la pause
+	//pause management
 	Uint32 startPause;
 	Uint32 endPause;
 
@@ -160,7 +160,7 @@ private:
 		INTERRUPT = -2,
 		RESUME = -1
 	};
-	//parametres liés à ffmpeg
+	//parameters related to ffmpeg
 	AVFormatContext	*pFormatCtx;
 	int				videoindex;
 	AVCodecContext	*pCodecCtx;

@@ -36,9 +36,9 @@
 #include "EntityCore/EntityCore.hpp"
 #include "tools/insert_all.hpp"
 
-//2346 lignes avant
-//2479 lignes apres
-//1560 lignes au final
+//2346 lines before
+//2479 lines after
+//1560 lines at the end
 
 std::unique_ptr<VertexArray> SkyLine::vertexModel;
 PipelineLayout *SkyLine::layout;
@@ -243,7 +243,7 @@ SkyLine_Zodiac::~SkyLine_Zodiac()
 void SkyLine_Zodiac::draw(const Projector *prj,const Navigator *nav, const TimeMgr* timeMgr, const Observer* observatory)
 {
 	if (!fader.getInterstate()) return;
-	// TODO changer cette condition
+	// TODO change this condition
 	if (!(observatory->isEarth())) return;
 
 	Vec4f Color (color[0], color[1], color[2], fader.getInterstate());
@@ -1170,7 +1170,7 @@ SkyLine_Ecliptic::SkyLine_Ecliptic(double _radius = 1., unsigned int _nb_segment
 	SkyLine(_radius, _nb_segment)
 {
 	proj_func = &Projector::projectJ2000;
-	inclination = 23.4392803055555555556;  //inutile ?
+	inclination = 23.4392803055555555556;  //useless ?
 }
 
 SkyLine_Ecliptic::~SkyLine_Ecliptic()

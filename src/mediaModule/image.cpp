@@ -115,7 +115,7 @@ void Image::initCache(const Projector * prj)
 	if (initialised)
 		return;
 
-	// données qui ne sont calculées qu'une fois
+	// data that is calculated only once
 	vieww = prj->getViewportWidth();
 	viewh = prj->getViewportHeight();
 
@@ -540,18 +540,18 @@ void Image::drawViewport(const Navigator * nav, const Projector * prj)
 
 static int decalages(int i, int howManyDisplay)
 {
-	// si pas de clone à afficher: direct 0
+	// if no clone to display: direct 0
 	//if (howManyDisplay==1) return 0;
 
-	// on affiche d'abord l'original: direct 0
+	// display the original first: direct 0
 	//if (howManyDisplay==2 && i==0) return 0;
 	if (howManyDisplay==2 && i==1) return 180;
 
-	// on affiche d'abord l'original: direct 0
+	// display the original first: direct 0
 	//if (howManyDisplay==3 && i==0) return 0;
 	if (howManyDisplay==3 && i==1) return 120;
 	if (howManyDisplay==3 && i==2) return 180;
-	//dans tous les autes cas
+	//in all other cases
 	return 0;
 }
 
@@ -623,7 +623,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 					*(imgData++) = gridpt[2];
 					*(imgData++) = (i+k)/(float)grid_size;
 
-					// l'image video est inversée
+					// the video image is inverted
 					if (needFlip)
 						*(imgData++) = (grid_size-j)/(float)grid_size;
 					else

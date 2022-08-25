@@ -53,10 +53,10 @@ class Set;
   * \date 13 mai 2020
   *
   * @section DESCRIPTION
-  * Cette classe stocke dans la structure illumianteGrid un illuminate, objet visant à recouvrir une étoile d'une texture
-  * afin de la rendre plus visible sous le dôme.
+  * This class stores in the illuminatingGrid structure an illuminate, object aiming at covering a star with a texture
+  * to make it more visible under the dome.
   *
-  * Les étoiles sont issues du catalogue Hipparcos.
+  * The stars are from the Hipparcos catalog.
   *
   */
 class IlluminateMgr: public NoCopy {
@@ -64,14 +64,14 @@ public:
 	IlluminateMgr(std::shared_ptr<HipStarMgr> _hip_stars, Navigator *_navigator, std::shared_ptr<ConstellationMgr> _asterism);
 	virtual ~IlluminateMgr();
 
-	// indique la taille d'affichage des illuminates par défaut
+	// indicates the default size of the illuminates
 	void setDefaultSize(double v) {
 		defaultSize =v;
 	}
 
-	// construit l'illuminate d'une étoile
+	// builds the illuminate of a star
 	void load(int num, double size, double rotation);
-	// construit l'illuminate d'une étoile en indiquant la couleur utilisée
+	// constructs the illuminate of a star by indicating the color used
 	void load(int num, const Vec3f& _color, double _size, double rotation);
 
 	//! remove user added Illuminate
@@ -83,21 +83,21 @@ public:
 	//! Draw all the Illuminate
 	void draw(Projector *prj, const Navigator *nav);
 
-	//! change la texture par defaut des illuminates par le fichier proposé en paramètre
+	//! change the default texture of the illuminates by the file proposed in parameter
 	void changeTex(const std::string& fileName);
-	//!	supprime la texture définie par l'utilisateur
+	//!	remove the texture defined by the user
 	void removeTex();
 
-	//! charge toutes les étoiles de l'asterism d'une constellation
+	//! load all the stars of the asterism of a constellation
 	void loadConstellation(const std::string& abbreviation, double size, double rotation);
-	//! charge toutes les étoiles de l'asterism d'une constellation en imposant la couleur du groupement
+	//! load all the stars of the asterism of a constellation by imposing the color of the grouping
 	void loadConstellation(const std::string& abbreviation, const Vec3f& color, double size, double rotation);
-	//! charge toutes les étoiles de tous les asterismes d'une sky_culture
+	//! load all stars of all asterisms of a sky_culture
 	void loadAllConstellation(double size, double rotation);
 
-	//! supprime toutes les étoiles de l'asterism d'une constellation
+	//! delete all the stars of the asterism of a constellation
 	void removeConstellation(const std::string& abbreviation);
-	//! supprime toutes les étoiles de tous les asterismes d'une sky_culture
+	//! removes all stars from all asterisms of a sky_culture
 	void removeAllConstellation();
 
 private:

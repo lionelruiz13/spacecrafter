@@ -124,9 +124,9 @@ protected:
 	std::unique_ptr<s_texture> map_tex;
 	std::unique_ptr<s_texture> map_tex_night;
 	bool haveNightTex;
-	bool m_limitedShade;				// affichage de nuit non nocturne
-	float m_limitedShadeValue;			// indique quel pourcentage de lumière on garde pour l'affichage de nuit
-	unsigned int nbVertex;				// nombre de vertex des landscapes
+	bool m_limitedShade;				// non-night display
+	float m_limitedShadeValue;			// indicates what percentage of light is kept for the night display
+	unsigned int nbVertex;				// number of vertexes of the landscapes
 
 	static int slices;
 	static int stacks;

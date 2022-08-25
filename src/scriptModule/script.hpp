@@ -32,7 +32,7 @@
 #include <vector>
 #include <string>
 
-//gestion des lignes de code d'un script
+//management of the lines of code of a script
 class Token {
 public:
 	//s: ligne of script_file p: path of script_file
@@ -54,22 +54,22 @@ private:
 	std::string path;
 };
 
-//gestion complete des scripts
+//complete management of scripts
 class Script {
 public:
 	Script();
 	~Script();
 
-	//! affiche le contenu du script
+	//! displays the script content
 	void printScript();
 
-	//! charge un fichier script en mémoire
+	//! loads a script file into memory
 	int load(const std::string &script_file, const std::string &script_path );
 
-	//! vide la pile d'instructions de scripts en mémoire
+	//! empties the stack of script instructions in memory
 	void clean();
 
-	//!renvoie un élément de la liste avec son chemin
+	//!returns an item from the list with its path
 	int getFirst(std::string &command, std::string &dataDir);
 
 	//! adds the given Token in first position in the command queue

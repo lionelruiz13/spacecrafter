@@ -36,39 +36,39 @@ const int TAMPON_SIZE = 10;
 
 /**
  * \class CPUInfo
- * \brief Création des Journaux d'utilisation des cores du CPU
+ * \brief Creation of CPU cores usage logs
  * \author Olivier NIVOIX
  * \date 16 juin 2018
  * 
- * Cette classe a pour but d'enregister régulièrement les activités des cores du processeur dans un fichier
+ * The purpose of this class is to regularly record the activities of the processor cores in a file
  * 
  * @section DESCRIPTION
  * 
- * La classe utilise la lecture du fichier systeme /proc/stat qu'elle parse 
+ * The class uses the reading of the system file /proc/stat that it parses 
  * 
- * start() crée un thread qui enregistre périodiquement les informations de /proc/stat
+ * start() creates a thread that periodically records information from /proc/stat
  * 
- * stop() arrête le thread et ferme les enregistrements.
+ * stop() stops the thread and closes the records.
  * 
- * @section partie thread
+ * @section part thread
  * 
- * Au lancement de start(), la fonction crée un thread qui boucle de cette façon:
+ * When starting() is launched, the function creates a thread that loops in this way:
  * 
  * std::this_thread::sleep_for(std::chrono::seconds(1));
  * this -> getCPUstate();
  * this -> archivingData();
  * 
- * archivingData() vide le tableau des informations grâce à la variable nbDiff qui varie de 0 à TAMPON_SIZE
+ * archivingData() empties the information table thanks to the variable nbDiff which varies from 0 to BUFFER_SIZE
  * 
- * @section FONCTIONNEMENT
+ * @section OPERATION
  * 
- * La classe possède peu de méthodes.
+ * The class has few methods.
  * 
  * CPUInfo cpuInfo;
- * cpuInfo.init("fichier_destination");
+ * cpuInfo.init("destination_file");
  * cpuInfo.start();
  * 
- * ... instructions diverses ...
+ * ... various instructions ...
  * 
  * cpuInfo.stop();
  * 
@@ -80,20 +80,20 @@ public:
 	CPUInfo();
 	~CPUInfo();
 
-	//! débute l'analyse des journaux du CPU
+	//! starts the analysis of CPU logs
 	void start();
 
-	//! termine l'analyse des journaux du CPU
+	//! ends the analysis of the CPU logs
 	void stop();
 
-	//! récupère les paramètres necéssaires à la classe
-	//! \param CPUlogFile : nom du fichier conservant les données du CPU
-	//! \param GPUlogFile : nom du fichier conservant les données du GPU
+	//! retrieves the parameters needed by the class
+	//! \param CPUlogFile : name of the file storing the CPU data
+	//! \param GPUlogFile : name of the file storing GPU data
 	void init(const std::string &logCPU_file, const std::string &logGPU_file );
 	//~ void display(std::vector<CoreData> entrie);
 
 private:
-	// description des entrées de /proc/stat
+	// description of /proc/stat entries
 	enum CPUStates {
 		S_USER = 0,
 		S_NICE,
@@ -107,36 +107,36 @@ private:
 		S_GUEST_NICE
 	};
 
-	//contient les info d'un coeur
+	//contains info from one core
 	typedef struct CoreData {
 		size_t times[NUM_CPU_STATES];
 	} CoreData;
 
-	// fonction principale pour le thread
+	// main function for the thread
 	void mainFunc();
-	// permet de réaliser une capture des données dans entrieA ou entrieB
+	// allows to capture data in entrieA or entrieB
 	void getCPUstate();
-	//fonction permetttant de lire une valeur du GPU
+	//function to read a value from the GPU
 	void getGPUstate();
-	// fonction de d'archivage des données dans un tableau
+	// function to store data in an array
 	void archivingData();
-	// permet de réaliser une capture des données dans une entrie spécifiée
+	// allows you to capture data in a specified entry
 	void getCPUstate(std::vector<CoreData> &entrie);
-	// réalise la soustraction entre deux entries
+	// performs the subtraction between two entries
 	void diffEntrie(const std::vector<CoreData> entrieA, const std::vector<CoreData> entrieB);
-	// fonction qui permet de sauvegarder physiquement les infos sur le DD
+	// function that allows to physically save the information on the DD
 	void saveToFile();
-	// variables servant aux captures des données
+	// variables used for data capture
 	std::vector<CoreData> entrieA, entrieB, result;
-	std::stringstream oss[TAMPON_SIZE];	// tampon des sorties pour CPUfileLog
-	std::stringstream gpuOss;	 		// chaine de caractere des sorties du GPU
-	unsigned int nbThread=0;	// Variable contenant le nombre de core disponibles sur la machine
-	unsigned long int frame=0;	// Numéro de la frame analysée
-	unsigned char diff = 0;		// compteur différences avant sauvegarde dans CPUfileLog
-	bool isActived = true;		// Indicateur pour clore le thread
+	std::stringstream oss[TAMPON_SIZE];	// output buffer for CPUfileLog
+	std::stringstream gpuOss;	 		// cGPU output character string
+	unsigned int nbThread=0;	// Variable containing the number of cores available on the machine
+	unsigned long int frame=0;	// Number of the analyzed frame
+	unsigned char diff = 0;		// Difference counter before saving in CPUfileLog
+	bool isActived = true;		// Flag to close the thread
 	std::thread t;				// thread
-	std::ofstream CPUfileLog;	// fichier à destination des informations CPU
-	std::ofstream GPUfileLog;	// fichier à destination des informations GPU
+	std::ofstream CPUfileLog;	// file for CPU information
+	std::ofstream GPUfileLog;	// file for GPU information
 };
 
 

@@ -198,7 +198,7 @@ void SolarSystemModule::draw(int delta_time)
 	// Update meteors
 	core->meteors->update(core->projection, core->navigation, core->timeMgr.get(), core->tone_converter, delta_time);
 
-	// retiré la condition && atmosphere->getFlagShow() de sorte à pouvoir en avoir par atmosphère ténue
+	// removed the condition && atmosphere->getFlagShow() so that you can have some by atmosphere
 	// if (!aboveHomePlanet && (sky_brightness<0.1) && (observatory->getHomeBody()->getEnglishName() == "Earth" || observatory->getHomeBody()->getEnglishName() == "Mars")) {
 	if (core->bodyDecor->canDrawMeteor() && (core->sky_brightness<0.1))
 		core->meteors->draw(core->projection, core->navigation);

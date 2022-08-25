@@ -38,7 +38,7 @@ static bool checkHexColor(std::string s)
 	char c;
 	for(int i=1; i<7; i++) {
 		c=s[i];
-		//on vérifie que le char est bien dans les bons intervales
+		//we check that the tank is in the right intervals
 		if (!(((c>=48)&&(c<=57)) || ((c>=65)&&(c<=70)) || ((c>=97)&&(c<=102))))
 			return false;
 	}
@@ -62,7 +62,7 @@ void AppCommandColor::setClassicColor(Vec3f &color, std::string debug_message,
 	r = Utility::strToDouble(_r);
 	g = Utility::strToDouble(_g);
 	b = Utility::strToDouble(_b);
-	// test des valeurs obtenues
+	// test of the obtained values
 	if ( r<0.f ||g<0.f || b<0.f) {
 		debug_message = "r g b : negative value";
 		return;
@@ -94,7 +94,7 @@ AppCommandColor::AppCommandColor(Vec3f &color, std::string &debug_message,
                                  const std::string &_argR, const std::string &_argG, const std::string &_argB)
 {
 	if (!_value.empty()) {
-		//cas HEXADECIMAL
+		//case HEXADECIMAL
 		if (_value[0]=='x') {
 			if (checkHexColor(_value)) {
 				this->setHexColor(color, _value);
@@ -103,19 +103,19 @@ AppCommandColor::AppCommandColor(Vec3f &color, std::string &debug_message,
 				debug_message = "'color' wrong hexColor string";
 				return;
 			}
-		} else { //cas RBG_COLOR
+		} else { //case RBG_COLOR
 			decodeRGBColor(color, _value, debug_message);
 			return;
 		}
 	}
-	//cas R G B
+	//case R G B
 	if( _argR.empty() && _argG.empty() && _argB.empty()) {
 		debug_message = "'color': missing expected argument 'r' or 'g' or 'b'";
 	} else {
 		this->setClassicColor(color, debug_message, _argR, _argG, _argB);
 		return;
 	}
-	// aucun des cas
+	// none of the cases
 	debug_message = "'color': no argument color";
 }
 

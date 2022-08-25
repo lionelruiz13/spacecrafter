@@ -275,7 +275,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	vertexFBO->fillEntry(2, 4, dataPos, data);
 	vertexFBO->fillEntry(2, 4, dataTex, data + 2);
 
-	// shader pour les étoiles
+	// shader for the stars
 	m_starsGL = std::make_unique<VertexArray>(vkmgr);
 	m_starsGL->createBindingEntry(6 * sizeof(float));
 	m_starsGL->addInput(VK_FORMAT_R32G32_SFLOAT); // POS2D
@@ -837,7 +837,7 @@ void HipStarMgr::drawStarName( Projector* prj )
 		prj->printGravity180(font, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
 		//  prj->printGravity180(starFont,xy[0],xy[1], starname, Color, true, 4, 4);//, false);
 	}
-	//cout << "Nombre de nom à afficher : " << starNameToDraw.size() << endl;
+	//cout << "Number of the names to print : " << starNameToDraw.size() << endl;
 }
 
 

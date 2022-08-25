@@ -123,7 +123,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	if (thread.joinable())
 		thread.join();
 	std::ifstream fichier(_fileName.c_str());
-	if (!fichier.fail()) { // verifie si le fichier vidéo existe
+	if (!fichier.fail()) { // check if the video file exists
 		cLog::get()->write("Videoplayer: reading file "+ _fileName, LOG_TYPE::L_INFO);
 		fileName = _fileName;
 	}
@@ -134,7 +134,7 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 
 	init();
 
-	//tests internes à ffmpeg
+	//internal tests at ffmpeg
 	if(avformat_open_input(&pFormatCtx,fileName.c_str(),NULL,NULL)!=0) {
 		cLog::get()->write("Couldn't open input stream.", LOG_TYPE::L_ERROR);
 		avformat_close_input(&pFormatCtx);
@@ -409,13 +409,13 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	#ifndef WIN32
 	currentFrame = currentFrame + frameToSkeep;
 
-	//saut avant le début de la vidéo
+	//jump before the beginning of the video
 	if (currentFrame <= 0) {
 		this->restartCurrentVideo();
 		reallyDeltaTime=0.0;
 		return true;
 	}
-	if(currentFrame < nbTotalFrame) { // on verifie qu'on ne saute pas hors vidéo
+	if(currentFrame < nbTotalFrame) { // we check that we don't jump out of the video
 		threadInterrupt();
 		if (avformat_seek_file(pFormatCtx, -1, INT64_MIN, currentFrame * frameRateDuration *1000, INT64_MAX, AVSEEK_FLAG_ANY) < 0) {
 			printf("av_seek_frame forward failed. \n");
@@ -429,7 +429,7 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 		threadResume();
 		return true;
 	}
-	// fin de fichier ... vidéo s'arrête
+	// end of file ... video stops
 	this->stopCurrentVideo(false);
 	reallyDeltaTime= -1.0;
 	return true;

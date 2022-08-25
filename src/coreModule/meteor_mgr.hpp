@@ -77,7 +77,7 @@ private:
 	int max_velocity;
 	double zhr_to_wsr;  // factor to convert from zhr to whole earth per second rate
 
-	// un meteor = 3 positions, donc 6 floats points
+	// a meteor = 3 positions, so 6 floats points
 	std::vector<float> vecPos;
 	std::vector<float> vecColor;
 

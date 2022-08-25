@@ -140,7 +140,7 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 	switch (DSOType) {
 		case GALXY:
 			neb_color= Vec3f(0.3,0.3,1.);
-			posTex = Vec2f(.25, .5); //Donne le points bas gauche de la la grande texture a prendre
+			posTex = Vec2f(.25, .5); //Gives the lower left point of the large texture to take
 			break;
 		case OPNCL:
 			neb_color= Vec3f(0.,1.0,1.0);

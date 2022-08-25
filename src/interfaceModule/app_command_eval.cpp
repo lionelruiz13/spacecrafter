@@ -51,9 +51,9 @@ AppCommandEval::~AppCommandEval()
 std::string AppCommandEval::evalString(const std::string &var)
 {
 	auto var_it = variables.find(var);
-	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
+	if (var_it == variables.end()) //not found so we return the value of the string
 		return var;
-	else {// trouvé on renvoie la valeur de ce qui est stocké en mémoire
+	else {// found returns the value of what is stored in memory
 		double v = evalDouble(var_it->second);
 		if (v == trunc(v))
 			return std::to_string(evalInt(var_it->second));
@@ -70,9 +70,9 @@ double AppCommandEval::evalDouble(const std::string &var)
 		return evalReservedVariable(var);
 
 	auto var_it = variables.find(var);
-	if (var_it == variables.end()) //pas trouvé donc on renvoie la valeur de la chaine
+	if (var_it == variables.end()) //not found so we return the value of the string
 		return Utility::strToDouble(var);
-	else // trouvé on renvoie la valeur de ce qui est stocké en mémoire
+	else // found returns the value of what is stored in memory
 		return Utility::strToDouble(var_it->second);
 }
 
@@ -155,7 +155,7 @@ void AppCommandEval::evalOps(const std::string& mArg, const std::string& mValue,
 	}
 
 	auto var_it = variables.find(mArg);
-	if (var_it == variables.end()) { //pas trouvé donc on renvoie la valeur de la chaine
+	if (var_it == variables.end()) { //not found so we return the value of the string
 		//std::cout << "not possible to operate with undefined variable so define to null from ops" << std::endl;
 		cLog::get()->write("Not possible to operate with undefined variable so define to null from ops", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
 		variables[mArg] = Utility::strToDouble (mValue);

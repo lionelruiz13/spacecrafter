@@ -252,13 +252,13 @@ bool Body::getFlagOrbit(void)const
 	return flags.flag_orbit;
 }
 
-// fixe une couleur
+// set a color
 void Body::setColor(const std::string& colorName,  const Vec3f& oc)
 {
 	myColor->set(colorName, oc);
 }
 
-// récupère une couleur d'un paramètre
+// retrieves a color from a parameter
 const Vec3f Body::getColor(const std::string& colorName)
 {
 	return myColor->get(colorName);

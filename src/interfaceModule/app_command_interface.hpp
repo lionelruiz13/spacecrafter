@@ -160,21 +160,21 @@ private:
 	std::string command;
 	stringHash_t args;
 	int recordable;
-	bool swapCommand;					// boolean qui indique si l'instruction doit etre exécutée ou pas
+	bool swapCommand;					// boolean which indicates if the instruction must be executed or not
 	bool unskippable = false;			// set to true to force execution of the next command
-	std::unique_ptr<IfSwap> ifSwap; 	// gestionnnaire des if multiples
+	std::unique_ptr<IfSwap> ifSwap; 	// management of multiple if statements
 	std::string debug_message;			//!< for 'executeCommand' error details
 
-	// transcription entre le texte et la commande associée
+	// transcription between the text and the associated command
 	std::map<const std::string, SC_COMMAND> m_commands;
 	std::map<SC_COMMAND, const std::string> m_commands_ToString;
-	// transcription entre le texte et le flag associé
+	// transcription between the text and the associated flag
 	std::map<const std::string, FLAG_NAMES> m_flags;
 	std::map<FLAG_NAMES, const std::string> m_flags_ToString;
-	// transcription entre le texte et la couleur associée
+	// transcription between the text and the associated color
 	std::map<const std::string, COLORCOMMAND_NAMES> m_color;
 	std::map<COLORCOMMAND_NAMES, const std::string> m_color_ToString;
-	// transcription entre le texte et la commande interface associé
+	// transcription between the text and the associated interface command
 	std::map<const std::string, SCD_NAMES> m_set;
 	std::map<SCD_NAMES, const std::string> m_set_ToString;
 };

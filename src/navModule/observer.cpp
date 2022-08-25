@@ -120,10 +120,10 @@ std::shared_ptr<Body> Observer::getHomeBody(void) const
 {
 	if (anchor==nullptr)
 		return nullptr;
-	// si on n'est pas sur un Body
+	// if we are not on a Body
 	if (!anchor->isOnBody())
 		return nullptr;
-	// sinon on renvoie bien un Body
+	// otherwise a Body is returned
 	return anchor->getBody();
 }
 

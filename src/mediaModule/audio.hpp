@@ -42,23 +42,23 @@
 #include "tools/no_copy.hpp"
 
 
-//! enumération des états de lecture d'un fichier audio
-enum class A_STATE: char { V_NONE, // fichier non chargé
-                           V_PAUSE,// lecture du fichier en pause
-                           V_PLAY, // lecture du fichier en cours
-                           V_STOP  // lecture du fichier stoppée
+//! enumeration of playback states of an audio file
+enum class A_STATE: char { V_NONE, // file not loaded
+                           V_PAUSE,// file is paused
+                           V_PLAY, // file is playing
+                           V_STOP  // file playback stopped
                          };
 
 
 
 /**
  * @class Audio
- * @brief Initialise la lib SDL2_mixer et effectue les opérations sur un fichier musique AudioMusic
+ * @brief Initialize the lib SDL2_mixer and perform operations on a music file AudioMusic
  *
- * La classe sert d'intermédiaire entre Média et l'audio.
- * Elle effectue tous les contrôles pour pouvoir lire un fichier musique.
+ * The class is used as an intermediary between Media and Audio.
+ * It performs all the controls to play a music file.
  *
- * Par défaut, elle initialise le driver audio pour lire des musiques en 44100 Hz, stéréo, en unsigned 16 bits
+ * By default, it initializes the audio driver to read music in 44100 Hz, stereo, in unsigned 16 bits
  *
  */
 
@@ -69,47 +69,47 @@ public:
 	Audio();
 	Audio(int Frequency, int channel, int chunksize);
 	~Audio();
-	//! indique combien de temps s'est écoulé depuis le dernier tour de boucle
+	//! indicates how much time has elapsed since the last loop
 	void update(int delta_time);
-	//! fixe le volume audio
+	//! fixes the audio volume
 	void setVolume(int _value);
-	//! diminue le volume audio
+	//! decreases the audio volume
 	void incrementVolume(int value=5);
-	//! augmente le volume audio
+	//! increases the audio volume
 	void decrementVolume(int value=5);
 
-	/* ordres possibles pour la lecture d'un fichier audio*/
-	//! charge un fichier dans le gestionnaire
+	/* possible commands for playing an audio file*/
+	//! loads a file into the manager
 	void musicLoad(const std::string& filename, bool _loop);
-	//! entame la lecture d'un fichier audio chargé précédemment
+	//! starts playing a previously loaded audio file
 	void musicPlay();
-	//! met la lecture du fichier en pause. Si réapliqué, recommence la lecture du fichier
+	//! pauses the playback of the file. If reapplied, starts playing the file again
 	void musicPause();
     //! Pause the audio playing without pausing the read position. Require sync on resume.
 	void musicMute();
-	//! reprend la lecture du fichier en pause.
+	//! resumes the playback of the paused file.
 	void musicResume();
-	//! recommence la lecture du fichier au départ
+	//! restarts the playback of the file from the beginning
 	void musicRewind();
-	//! stoppe la lecture du fichier
+	//! stops the playback of the file
 	void musicHalt();
-	//! synchronise le fichier son avec le temps écoulé dans la théorie
+	//! synchronizes the sound file with the time elapsed in the theory
 	void musicSync();
-	//! décharge le fichier du gestionnaire
+	//! unloads the file from the manager
 	void musicDrop();
-	//! réalise un saut à la position voulue, exprimée en seconde.
+	//! makes a jump to the desired position, expressed in seconds.
 	void musicJump(float secondJump);
 
 private:
-	int master_volume;				//!< volume de sortie du gestionnaire de son
-	Mix_Music *track = nullptr;		//!< pointeur interne vers le flux audio
-	std::string music_name;			//!< nom du fichier du flux audio
+	int master_volume;				//!< sound manager output volume
+	Mix_Music *track = nullptr;		//!< internal pointer to the audio stream
+	std::string music_name;			//!< file name of the audio stream
 	double elapsed_seconds;  		//!< current offset into the track
-	bool music_isPlaying = false;		//!< indique qu'une musique est entrain d'être jouée.
-	bool music_loaded = false;			//!< donne l'état du flux
-	bool isDriverReady;					//!< indique si le soft peut utiliser le driver audio
-	A_STATE state = A_STATE::V_NONE;	//!< Etat du fichier musique
-	bool loop;							//!< Le flux tourne t'il en boucle ?
+	bool music_isPlaying = false;		//!< indicates that music is being played.
+	bool music_loaded = false;			//!< gives the state of the stream
+	bool isDriverReady;					//!< indicates if the software can use the audio driver
+	A_STATE state = A_STATE::V_NONE;	//!< Status of the music file
+	bool loop;							//!< Is the stream running in a loop ?
 
 };
 

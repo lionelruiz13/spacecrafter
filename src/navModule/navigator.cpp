@@ -408,14 +408,13 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 
 	/**
 	 *
-	 * axis doit être le vecteur représentant la direction de l'axe de la planète
-	 * on ramène ce vecteur dans le repère de la caméra (eye). Dans le plan de la
-	 * caméra (x vers la droite y vers le haut z vers nous) on peut déterminer l'
-	 * angle que fait le vecteur par rapport à l'axe y. Cet de cet angle que l'on
-	 * doit tourner le heading de la caméra pour que l'axe soit aligné.
+	 * axis must be the vector representing the direction of the axis of the planet
+	 * we bring this vector in the camera frame (eye). In the camera plane
+	 * (x to the right y to the top z to us) we can determine the angle that the
+	 * vector makes with respect to the y axis. It is from this angle that we the
+	 * camera heading must be turned so that the axis is aligned.
 	 *
-	 * A noter que quand on passe sur la planète notre heading doit être remis à
-	 * zéro
+	 * Note that when we pass on the planet our heading must be reset to zero
 	 *
 	 *     opp
 	 *    _______
@@ -427,7 +426,7 @@ void Navigator::alignUpVectorTo(const Mat4d& rotlocalToVsop87, double duration){
 	 *    |/            zo----->x
 	 *
 	 *
-	 * Je n'arrive pas à obtenir l'axe de la planète à l'heure actuelle
+	 * I can't get the axis of the planet at the moment
 	 *
 	 **/
 

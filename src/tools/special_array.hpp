@@ -1,10 +1,10 @@
 /*
-Classe minimale pour tableau circulaire
-Utilité : Cette classe permet de pousser des éléments en début et en fin de tableau avec une complexité en O(1)
-Usage : à inclure dans le programme C++
-Remarque : cette classe est minimale (incomplète) et peut provoquer des erreurs dans le cas d'une utilisation spécifique
-Auteur : Aurélien Schwab <aurelien.schwab+dev@gmail.com> pour immersiveadventure.net
-Mise à jour le 27/05/2017
+Minimum class for circular array
+Use: This class allows to push elements at the beginning and at the end of the array with a complexity in O(1)
+Usage: to be included in the C++ program
+Remark : this class is minimal (incomplete) and can cause errors in case of specific use
+Author: Aurélien Schwab <aurelien.schwab+dev@gmail.com> for immersiveadventure.net
+Updated on 27/05/2017
 */
 
 #ifndef SPECIAL_ARRAY_H
@@ -17,13 +17,13 @@ class SpecialArray {
 
 private:
 
-	T* array; //Pointeur du tableau qui va stocker les éléments
-	unsigned int asize; //Taille du tableau
-	unsigned int begin; //Début du tableau
+	T* array; //Pointer of the array that will store the elements
+	unsigned int asize; //Size of the array
+	unsigned int begin; //Start of the array
 
 	void backward() {
-		if(begin == 0) begin = asize; //Si on est au début on reboucle en à la fin
-		begin--; //On recule
+		if(begin == 0) begin = asize; //If we are at the beginning we loop to the end
+		begin--; //We go backwards
 	}
 
 public:
@@ -32,48 +32,48 @@ public:
 	SpecialArray(const SpecialArray<T> &sa) = delete; //TODO
 
 	SpecialArray(const unsigned int size) : asize(size), begin(0) {
-		array = new T[size];    //Constructeur
+		array = new T[size];    //Constructor
 	}
 	~SpecialArray() {
-		delete array;    //Destructeur TODO delete[]
+		delete array;    //Destructor TODO delete[]
 	}
 
 	const unsigned int size() const {
 		return asize;
-	}; //Getter de la taille du tableau
+	}; //Delete the size of the array
 
 
-	T& push(int move) { //Ajout par devant
+	T& push(int move) { //Add from the front
 		if(move < 0) return pushFront();
 		return pushBack();
 	}
 
-	T& pushFront() { //Ajout par devant
+	T& pushFront() { //Add by front
 		backward();
-		return array[begin]; //On assigne la valeur
+		return array[begin]; //Assign value
 	}
 
-	T& pushBack() { //Ajout par derrière
+	T& pushBack() { //Adding from behind
 		if(++begin == asize) {
 			begin = 0;
 			return array[asize-1];
 		} else return array[begin-1];
 	}
 
-	void pushFront(const T &value) { //Ajout par devant
+	void pushFront(const T &value) { //Add in front
 		backward();
-		array[begin] = value; //On assigne la valeur
+		array[begin] = value; //We assign the value
 	}
 
-	void pushBack(const T &value) { //Ajout par derrière
-		array[begin] = value; //On assigne la valeur
-		if(++begin == asize) begin = 0; //On avance et si on est à la fin on reboucle au début
+	void pushBack(const T &value) { //Add from behind
+		array[begin] = value; //Assign the value
+		if(++begin == asize) begin = 0; //We go forward and if we are at the end we loop back to the beginning
 	}
 
-	T& operator[](const unsigned int index) { //Accès aléatoire à un élément //TODO const
-		if(index < 0 || index >= asize) throw; //TODO //En dehors du tableau
-		if(begin + index >= asize) return array[begin + index - asize]; //Avant begin
-		return array[index + begin]; //Après begin
+	T& operator[](const unsigned int index) { //Random access to an element //TODO const
+		if(index < 0 || index >= asize) throw; //TODO //Outside the array
+		if(begin + index >= asize) return array[begin + index - asize]; //Before begin
+		return array[index + begin]; //After begin
 	}
 
 };

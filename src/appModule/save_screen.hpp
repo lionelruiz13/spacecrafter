@@ -34,21 +34,21 @@
 #include "EntityCore/SubBuffer.hpp"
 /** @class SaveScreen
 
- * @section EN BREF
- * Cette classe permet de sauvegarder simultanément plusieurs tampons
- * qui correspondent à des captures d'écran issus de app.hpp
+ * @section IN BRIEF
+ * This class allows you to save several buffers simultaneously
+ * that correspond to screenshots from app.hpp
  *
  *
  * @section DESCRIPTION
- * A l'initialisation de cette classe est construit n-1 buffers pour la
- * capture d'écran, ou n désigne le nombre de threads physiques disponibles
- * sur la machine.
+ * At the initialization of this class is built n-1 buffers for the
+ * screenshot, where n denotes the number of physical threads available
+ * on the machine.
  *
- * Protégé par un mutex, bool* tab indique quels buffers sont libres et
- * disponibles pour stocker le retour de glReadPixel en mémoire RAM
+ * Protected by a mutex, bool* tab indicates which buffers are free and
+ * available to store the return of glReadPixel in RAM
  *
- * Dès qu'un thread à terminé sa sauvegarde, il renseigne bool* tab qu'il libère
- * l'utilisation d'un buffer
+ * As soon as a thread has finished saving, it informs bool* tab that it is free
+ * the use of a buffer
  *
 */
 
@@ -57,31 +57,31 @@ public:
 	SaveScreen(unsigned int _size);
 	~SaveScreen();
 
-	//!fonction qui ordonne la sauvegarde d'un buffer connaissant son nom.
+	//!function that orders the saving of a buffer knowing its name.
 	void saveScreenBuffer(const std::string &fileName, int idx);
 
-	//!réserve un indice libre de [0..nb_cores-1] boucle s'il le faut
+	//!reserves a free index of [0..nb_cores-1] loop if necessary
 	int getFreeIndex();
 
-	//!renvoie un pointeur sur un espace mémoire pour la sauvegarde
+	//!returns a pointer to a memory space for saving
 	unsigned char* getBuffer(int idx);
 
 	void startStream();
 	void stopStream();
 private:
-	//!transforme un buffer en une image sur le disque
+	//!transforms a buffer into an image on the disk
 	void saveScreenToFile(const std::string &fileName, int idx);
 
 	void threadLoop();
 
-	unsigned int size_screen;	//!< taille carré de l'image à sauvegarder
+	unsigned int size_screen;	//!< square size of the image to save
 
 	int subIdx = 0;
 	int pBuffer[3] {-1, -1, -1};
 	int nb_threads;
 	std::vector<std::vector<unsigned char>> buffer;
 	std::vector<std::thread> threads;
-	bool isAvariable = true; //!< indique si le service de sauvegarde des images est opértationnel
+	bool isAvariable = true; //!< indicates if the image backup service is operational
 	PushQueue<int, 15> bufferReady;
 	DispatchInQueue<std::pair<std::string, int>, 8, 8> requests;
 };

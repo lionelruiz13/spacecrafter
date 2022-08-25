@@ -47,8 +47,8 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 
-//TODO: intégrer qu'une version de font car la font est commune à toutes les grilles
-//TODO: intégrer qu'une version du flag InternaNav qui est commun à toutes les grilles
+//TODO: integrate only one version of font because the font is common to all grids
+//TODO: integrate only one version of the InternaNav flag which is common to all grids
 class SkyGrid {
 public:
 	virtual ~SkyGrid();
@@ -79,7 +79,7 @@ public:
 		return fader;
 	}
 
-	//! change FlagShow: inverse la valeur du flag
+	//! change FlagShow: invert the value of the flag
 	void flipFlagShow() {
 		fader=!fader;
 	}

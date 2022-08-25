@@ -46,31 +46,31 @@
 class Mkfifo : public NoCopy {
 public:
 	/*!
-	 * \brief Initialise la communication MKFIFO
-	 * \param _filename nom complet du fichier spécial mkfifo
-	 * \param _buffer_size taille du buffer concernant les string
+	 * \brief Initialize the MKFIFO communication
+	 * \param _filename full name of the special file mkfifo
+	 * \param _buffer_size size of the buffer concerning the strings
 	 */
 	void init(const std::string& _filename, int _buffer_size);
-	//! constructeur
+	//! constructor
 	Mkfifo();
-	//! destructeur
+	//! destructor
 	~Mkfifo();
 	/*!
-	 * \brief récupère une information du pipe
-	 * \param chaine de caractère recevant l'information
-	 * \return true si message obtenu, false sinon
+	 * \brief retrieve an information from the pipe
+	 * \param string receiving the information
+	 * \return true if message obtained, false otherwise
 	 */
 	bool update(std::string &output);
 private:
-	// indique l'état du Mkfifo
+	// indicates the state of the Mkfifo
 	bool is_active = false;
-	// taille du buffer
+	// size of the buffer
 	int buffer_size;
-	// queue contenant tous les messages obtenus depuis l'extérieur
+	// queue containing all messages obtained from the outside
 	std::queue<std::string> from_outside;
-	//nom complet du fichier pipe
+	//full name of the pipe file
 	std::string filename;
-	//mutex sur les lectures IO du pipe
+	//mutex on the pipe IO readings
 	SDL_mutex* lock = nullptr;
 	// create thread for mkfifo
 	SDL_Thread* threadMkfifoRead;

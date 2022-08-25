@@ -39,26 +39,26 @@ public:
 	ViewPort();
 	~ViewPort();
 
-	//! trace une texture sur le viewport
+	//! draws a texture on the viewport
 	void draw(double heading);
 
-	//! indique quelle id de texture (dans la CG) ViewPort utilisera pour affichage
-	//! \param _tex, ref uint32_t textures YUV dans la CG
+	//! indicates which texture id (in the CG) ViewPort will use for display
+	//! \param _tex, ref uint32_t YUV textures in the CG
 	void setTexture(VideoTexture _tex);
 
 	//! build draw commands
 	void build(int frameIdx);
 
-	//! indique si la classe doit etre active ou pas
+	//! indicates if the class should be active or not
 	void display(bool alive) {
 		isAlive = true;
 		fader=alive;
 	}
 
-	//! indique à la classe de se remettre en position de départ
+	//! tells the class to go back to the start position
 	void displayStop();
 
-	//! indique si le viewport affiche l'image sur tout le dôme ou jsute 2fois une moitiée
+	//! indicates if the viewport displays the image on the whole dome or only 2 times a half
 	void displayFullScreen(bool v) {
 		fullScreen = v;
 	}
@@ -67,7 +67,7 @@ public:
 		//! fader.setDuration(400);
 	}
 
-	//! update le fader
+	//! update the fader
 	void update(int delta_time) {
 		if (skipping and fader.isTransiting())
 			fader.update(VP_FADER_DURATION);
@@ -79,16 +79,16 @@ public:
 		}
 	}
 
-	//! indique si on active la transparence sur la KeyColor
+	//! indicates whether to enable transparency on the KeyColor
 	void setTransparency(bool v);
 
-	//! KeyColor a utiliser pour la transparence
+	//! KeyColor to use for transparency
 	void setKeyColor(const Vec3f&color, float intensity);
 
 	void createSC_context();
 
 private:
-	//initialisation shader
+	//initialization shader
 	void initParam();
 	//std::unique_ptr<shaderProgram> shaderViewPort;
 	std::unique_ptr<Pipeline> pipeline;
@@ -107,10 +107,10 @@ private:
 	bool needUpdate[3]{};
 	float lastHeading = 0;
 
-	//uint32_t videoTex[3];	//!< indique quelles textures YUV sont utilisées pour affichage
-	bool isAlive;		//!< active la classe
-	bool fullScreen; 	//!< indique la façon d'afficher l'image
-	bool skipping = false;		//!< initialise la variable définissant si on saute le fading ou non
+	//uint32_t videoTex[3];	//!< indicates which YUV textures are used for display
+	bool isAlive;		//!< activate the class
+	bool fullScreen; 	//!< indicates the way to display the image
+	bool skipping = false;		//!< initializes the variable defining if we skip fading or not
 	ParabolicFader fader;
 };
 

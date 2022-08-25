@@ -28,10 +28,10 @@
 #include "EntityCore/Resource/SharedBuffer.hpp"
 
 /*! \class StarNavigator
-  * \brief classe permettant la balade dans les étoiles
+  * \brief class allowing the stroll in the stars
   *
-  *  \details La classe a la responsabilité de traiter l'ensemble des étoiles pour permettre
-  *  un voyage dans l'espace. (unité de base: le parsec)
+  *  \details The class is responsible for processing all the stars to 
+  * allow a trip in space (basic unit: the parsec)
   */
 
 class Projector;
@@ -53,10 +53,10 @@ public:
 	~StarNavigator();
 
 	/*! /fn
-	 * \brief Charge en mémoire le catalogue d'étoiles
-	 * \param fileName, le nom complet du fichier des data
-	 * \param mode, quel type de data doit lire le programme
-	 * \param binaryData: lecture des données binaires ou non.
+	 * \brief Loads the star catalog into memory
+	 * \param fileName, the full name of the data file
+	 * \param mode, what type of data the program should read
+	 * \param binaryData: read binary data or not.
 	 */
 	void loadRawData(const std::string &fileName) noexcept;
 	void loadOtherData(const std::string &fileName) noexcept;
@@ -64,16 +64,16 @@ public:
 
 	void saveData(const std::string &fileName, bool binaryData) noexcept;
 	/*! /fn
-	 * \brief affiche à l'écran les étoiles du catalogue
-	 * \param nav pour les matrices de changement de repères
-	 * \param prj (non utilisé)
+	 * \brief displays the stars of the catalog on the screen
+	 * \param nav for marker change matrices
+	 * \param prj (not used)
 	 */
 	void draw(const Navigator * nav, const Projector* prj) const noexcept;
 	void drawRaw(const Mat4f &matrix) const noexcept;
 	/*! /fn
-	 * \brief calcule les étoiles à afficher à partir de la structure
-	 * \param posI, position en parsec de l'observateur par rapport au soleil
-	 * \todo que faire en cas d'erreur ?
+	 * \brief calculates the stars to display from the structure
+	 * \param posI, position in parsec of the observer with respect to the sun
+	 * \todo what to do in case of error ?
 	 */
 	void computePosition(Vec3f posI) noexcept;
 	//! Build draw command
@@ -118,21 +118,21 @@ public:
 	starInfo* getStarInfo(unsigned int HIPName) const;
 
 private:
-	//tampons pour l'affichage des shaders
+	//buffers for displaying shaders
 	float *starVec;
 
 	bool starsFader = true;
 
-	// position de l'observateur en parsec
+	// observer's position in parsec
 	Vec3f pos;
-	// valeur de pos à la frame d'avant
+	// pos value at the front frame
 	Vec3f old_pos;
 
-	//le gestionnaire de l'ensemble des étoiles
+	//the manager of the set of stars
 	std::unique_ptr<StarManager> starMgr;
-	// shader utilisé pour affichage
+	// shader used for display
 	//std::unique_ptr<shaderProgram> shaderStarNav;
-	// structure de gestion des VAO-VBO
+	// VAO-VBO management structure
 	VkCommandBuffer cmds[3];
 	std::unique_ptr<VertexArray> m_dataGL;
 	std::unique_ptr<VertexBuffer> vertex;
@@ -142,35 +142,35 @@ private:
 	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
 	std::unique_ptr<StarViewer> starViewer;
 	std::unique_ptr<SharedBuffer<VkDrawIndirectCommand>> drawData;
-	//initialisation du shader et des VAO-VBO
+	//initialization of shader and VAO-VBO
 	void createSC_context();
 
-	//précalcul de la table des couleurs
+	//precalculation of the color table
 	void computeRCMagTable();
-	//liste des étoiles à afficher issue du StarManager
+	//list of stars to display from the StarManager
 	std::vector<starInfo*> listGlobalStarVisible;
-	// taille de la liste listGlobalStarVisible
+	// size of the listGlobalStarVisible
 	unsigned int maxStars;
 	int nbStars;
-	//fonction permettant d'établir listGlobalStarVisible
+	//function to set listGlobalStarVisible
 	void setListGlobalStarVisible();
-	//fonction permettant la mise à mise à zéro des tampons pour les shaders
+	//function to set buffers for shaders to zero
 	void clearBuffer();
 
-	// fonction permettant le calcul des couleurs et rayon d'une étoile en fonction de sa magnitude
+	// function to calculate the colors and radius of a star according to its magnitude
 	int computeRCMag(float mag, const ToneReproductor *eye, float rc_mag[2]);
 
-	//table des couleurs
+	//color table
 	static Vec3f color_table[128];
 
-	//texture utilisée pour afficher une étoile
+	//texture used to display a star
 	s_texture *starTexture;
-	// tableau indiquant le rayon et l'intensité des couleurs
+	// table showing the radius and intensity of colors
 	float rc_mag_table[2*256];
 
-	//mutex sur les tampons d'affichage
+	//mutex on display buffers
 	std::mutex accessTab;
-	// sous fonction prévue pour les threads de calcul de computePosition
+	// sub-function for computePosition threads
 	bool computeChunk(unsigned int first, unsigned int last);
 
 	float mag_shift = 0.f;	//<stars, mag_converter_mag_schift>

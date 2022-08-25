@@ -93,7 +93,7 @@ private:
 	//! fonction operator to avoid code duplication
 	void evalOps(const std::string& mArg, const std::string& mValue, std::function<double(double,double)> f);
 	
-	//variables utilisées dans le moteur de scripts
+	//variables used in the scripting engine
 	std::map<const std::string, std::string> variables;
 	// map of system variables accessible through CoreLink
 	std::map<const std::string, SC_RESERVED_VAR> m_reservedVar;

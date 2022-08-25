@@ -171,7 +171,7 @@ void SkyGridMgr::Create(SKYGRID_TYPE type_obj)
 	SkyGrid* tmp=nullptr;
 	auto it=m_map.find(type_obj);
 
-	//si l'itérateur ne vaut pas map.end(), cela signifie que que la clé à été trouvée
+	//if the iterator is not map.end(), it means that the key has been found
 	if(it!=m_map.end()) {
 		cLog::get()->write("SkyGridMgr SkyGrid already create " + typeToString(type_obj) , LOG_TYPE::L_ERROR);
 		return;
@@ -209,7 +209,7 @@ void SkyGridMgr::Create(SKYGRID_TYPE type_obj)
 			return;
 			break;
 
-		default: // grille inconnue
+		default: // unknow grid
 			cLog::get()->write("SkyGridMgr SkyGrid unknown " + typeToString(type_obj) , LOG_TYPE::L_ERROR);
 			break;
 	}

@@ -527,7 +527,7 @@ void CheckConfig::checkUselessKey()
 {
 	for (auto i =0; i<user_conf.getNsec(); i++) {
 		std::string test = user_conf.getSecname(i);
-		// on recherche si la section existe
+		// we search if the section exists
 		auto itSec = std::find(sectionSettings.begin(), sectionSettings.end(), test);
 		if(itSec != sectionSettings.end()) {
 			// std::cout << "section " << *itSec << std::endl;

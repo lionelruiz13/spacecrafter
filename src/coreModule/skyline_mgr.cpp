@@ -44,7 +44,7 @@ void SkyLineMgr::draw(const Projector* prj, const Navigator *nav, const TimeMgr*
 SkyLineMgr::~SkyLineMgr()
 {
 	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		//~ cout << "suppression de " << it->first << endl;
+		//~ cout << "suppression of " << it->first << endl;
 		cLog::get()->write("SkyLineMgr : delete " + typeToString(it->first) , LOG_TYPE::L_INFO);
 		delete it->second;
 	}
@@ -75,7 +75,7 @@ void SkyLineMgr::setInternalNav(bool a)
 bool SkyLineMgr::isExist(SKYLINE_TYPE type_obj)
 {
 	auto it=m_map.find(type_obj);
-	//si l'itérateur ne vaut pas map.end(), cela signifie que que la clé à été trouvée
+	//if the iterator is not map.end(), it means that the key has been found
 	if(it!=m_map.end())
 		return true;
 	else
@@ -262,7 +262,7 @@ void SkyLineMgr::Create(SKYLINE_TYPE type_obj)
 	SkyLine* tmp=nullptr;
 	auto it=m_map.find(type_obj);
 
-	//si l'itérateur ne vaut pas map.end(), cela signifie que que la clé à été trouvée
+	//if the iterator is not map.end(), it means that the key has been found
 	if(it!=m_map.end()) {
 		cLog::get()->write("SkyLineMgr already create " + typeToString(type_obj) , LOG_TYPE::L_ERROR);
 		return;

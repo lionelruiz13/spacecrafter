@@ -45,137 +45,137 @@
 
 
 /*
-Serveur de contrôle de l'application
-Utilité : ce programme permet de dialoguer avec l'application par le réseau
-Usage : à inclure dans le programme C++
-Auteur : Aurélien Schwab <aurelien.schwab+dev@gmail.com> pour association-sirius.org
-Mise à jour le 17/05/2016
+Application control server
+Utility: this program allows to talk with the application through the network
+Usage: to include in the C++ program
+Author: Aurélien Schwab <aurelien.schwab+dev@gmail.com> for association-sirius.org
+Updated on 17/05/2016
 */
 
-/* Code d'erreur */
-#define IO_NO_ERROR 0 //Par d'erreur
+/* Error code */
+#define IO_NO_ERROR 0 //By error
 
-/* Codes d'erreur dans l'initialisation */
-#define SDL_NET_INIT_ERROR_CODE			1 //Erreur lors de l'initialisation de SDL
-#define SDL_RESOLEVHOST_ERROR_CODE 		2 //Erreur lors de la préparation de la structure pour le serveur
-#define SDL_ALLOCSOCKETSET_ERROR_CODE 	3 //Erreur lors de l'allocation du SocketSet
-#define SDL_CREATEMUTEX_ERROR_CODE 		4 //Erreur lors de la création du mutex de verouillage d'activité du thread
-#define NEW_TCPSOCKET_TAB_ERROR_CODE 	5 //Erreur lors de l'allocation du tableau de sockets clients
-#define NEW_BOOL_TAB_ERROR_CODE 		6 //Erreur lors de l'allocation du tableau de sockets clients
-#define NEW_BUFFER_ERROR_CODE 			7 //Erreur lors de l'allocation du buffer
-/* Codes d'erreur dans l'ouverture */
-#define SERVER_SOCKET_OPEN_ERROR_CODE 	101 //Erreur lors de l'ouverture du socket serveur
-#define SDL_ADDSOCKET_SERVER_ERROR_CODE	102 //Erreur lors de l'ajout du socket serveur au SocketSet
+/* Error codes in the initialization */
+#define SDL_NET_INIT_ERROR_CODE			1 //Error in SDL initialization
+#define SDL_RESOLEVHOST_ERROR_CODE 		2 //Error when preparing the structure for the server
+#define SDL_ALLOCSOCKETSET_ERROR_CODE 	3 //Error during SocketSet allocation
+#define SDL_CREATEMUTEX_ERROR_CODE 		4 //Error when creating the thread activity lock mutex
+#define NEW_TCPSOCKET_TAB_ERROR_CODE 	5 //Error when allocating the client sockets array
+#define NEW_BOOL_TAB_ERROR_CODE 		6 //Error while allocating the client sockets array
+#define NEW_BUFFER_ERROR_CODE 			7 //Error while allocating the buffer
+/* Error codes in opening */
+#define SERVER_SOCKET_OPEN_ERROR_CODE 	101 //Error when opening the server socket
+#define SDL_ADDSOCKET_SERVER_ERROR_CODE	102 //Error when adding the server socket to the SocketSet
 #define SDL_CREATETHREAD_ERROR_CODE 	103
-/* Codes d'erreur dans le traitement */
+/* Error codes in processing */
 #define SDL_LOCKMUTEX_ERROR_CODE 		201
 #define SDL_UNLOCKMUTEX_ERROR_CODE 		202
-#define SDL_CHECKSOCKETS_ERROR_CODE 	203 //Erreur lors de la vérification du SocketSet
+#define SDL_CHECKSOCKETS_ERROR_CODE 	203 //Error when checking the SocketSet
 #define SDL_SEND_ERROR_CODE 			204
 #define SDL_DELSOCKET_CLIENT_ERROR_CODE 205
-/* Codes d'erreur dans la fermeture */
+/* Error codes in closing */
 #define SERVER_NOT_OPEN_CODE 			301
 
 #define CLIENT_SEPARATOR1 				"|"
 #define CLIENT_SEPARATOR2 				"/"
-#define DEBUG_SEPARATOR3 				" | " //Troisième déparateur dans le debug
+#define DEBUG_SEPARATOR3 				" | " //Third error in the debug
 
 
 class ServerSocket {
 public:
-	/* Constructeurs et destructeur */
-	ServerSocket(unsigned int port); //Contructeur simple 
-	ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Constructeur avancé 
-	~ServerSocket(); //Destructeur
+	/* Constructors and destructor */
+	ServerSocket(unsigned int port); //Simple constructor 
+	ServerSocket(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Advanced constructor 
+	~ServerSocket(); //Destructor
 
-	/* Fonctions d'action sur le serveur */
-	int open(); //Fonction d'ouverture du socket serveur
-	int close(); //Fonction de fermeture du socket serveur
+	/* Action functions on the server */
+	int open(); //Function to open the server socket
+	int close(); //Function to close the server socket
 
-	/* Fonction d'affichage des statistiques non-nulles */
+	/* Function to display non-zero statistics */
 	void stats();
 
-	// transfert des données entrantes du TCP/IP à l'intérieur du programme
+	// transfer incoming data from TCP/IP inside the program
 	std::string getInput();
-	// transfert des données internes à l'extérieur du programme
+	// transfer of internal data outside the program
 	void setOutput(std::string data);
 
 private:
-	/* Variables configurables */
-	unsigned int port; //Port d'écoute du serveur
-	unsigned int maxClients; //Nombre maxium de clients (comme le serveur prends une place dans le set de sockets, ce nombre est égal à la taille du set -1)
-	unsigned int bufferSize; //Taille du buffer de réception
-	LOG_TYPE logType; //Type de log (spécifique à l'application)
+	/* Configurable variables */
+	unsigned int port; //Server listening port
+	unsigned int maxClients; //Maximum number of clients (as the server takes a place in the socket set, this number is equal to the size of the set -1)
+	unsigned int bufferSize; //Receive buffer size
+	LOG_TYPE logType; //Log type (application specific)
 
-	/* Variables d'état */
-	bool serverOpen; //Etat du serveur
-	unsigned int clientCount; //Nombre de clients actuellement connectés au serveur
-	unsigned int broadcastId; //Id du message de broadcast
+	/* Status variables */
+	bool serverOpen; //Server status
+	unsigned int clientCount; //Number of clients currently connected to the server
+	unsigned int broadcastId; //Broadcast message id
 
-	/* Variables de statistiques */
-	unsigned int maxSimultaneousClient; //Nombre maximum de clients connectés simulatannément
+	/* Statistics variables */
+	unsigned int maxSimultaneousClient; //Maximum number of clients simulataneously connected
 
-	unsigned int connection; //Nombre total de connexions
-	unsigned int refusedConnectionServerFull; //Nombre total de connexions refusées pour cause de serveur plein
-	unsigned int cannotAcceptClient; //Nombre total d'erreurs lors de l'acceptation du client
+	unsigned int connection; //Total number of connections
+	unsigned int refusedConnectionServerFull; //Total number of refused connections due to server full
+	unsigned int cannotAcceptClient; //Total number of errors during client acceptance
 
-	unsigned int requestRecieved; //Nombre total de requêtes
-	unsigned int dataRecieved; //Total de données reçues
-	unsigned int possibleBufferOverflow; //Nombre total de buffer overflow
+	unsigned int requestRecieved; //Total number of requests
+	unsigned int dataRecieved; //Total received data
+	unsigned int possibleBufferOverflow; //Total number of buffer overflows
 
-	unsigned int requestSend; //Nombre total de requêtes envoyées
-	unsigned int dataSend; //Total de données envoyées
-	unsigned int requestSendFailed; //Nombre total d'erreurs lors de l'envoi de la requête
+	unsigned int requestSend; //Total number of requests sent
+	unsigned int dataSend; //Total data sent
+	unsigned int requestSendFailed; //Total number of errors while sending the request
 
-	/* Variables du serveur */
-	IPaddress serverIP; //IP du serveur (0.0.0.0 pour écouter sur toutes les IPs du serveur)
-	TCPsocket serverSocket; //Socket d'écoute du serveurs
-	SDLNet_SocketSet socketSet; //Tableau de surveillance des sockets
-	TCPsocket* clientSocketTab; //Tableau de sockets client
-	bool* clientBroadcastTab; //Tableau de demandes de feedback
+	/* Server variables */
+	IPaddress serverIP; //Server IP (0.0.0.0 to listen on all server IPs)
+	TCPsocket serverSocket; //Server listening socket
+	SDLNet_SocketSet socketSet; //Socket monitoring table
+	TCPsocket* clientSocketTab; //Client sockets table
+	bool* clientBroadcastTab; //Feedback request table
 
-	/* Variables du thread */
-	SDL_Thread *thread; //Thread du serveur qui attends les paquets
-	int threadReturnValue; //Valeur de retour du thread
+	/* Thread variables */
+	SDL_Thread *thread; //Thread of the server that waits for the packets
+	int threadReturnValue; //Return value of the thread
 	bool stopThread;
 	int lock(SDL_mutex *mutex);
 	int unlock(SDL_mutex *mutex);
-	SDL_mutex *running; //Mutex de serveur actif
-	int activeSocketsCount; //Nombre de sockets actifs
-	char* buffer; //Buffer de réception
+	SDL_mutex *running; //Mutex of active server
+	int activeSocketsCount; //Number of active sockets
+	char* buffer; //Receive buffer
 
-	/* Variables de stockage des données */
-	std::queue<std::string> inputQueue; //File d'entrée
-	std::queue<std::string> outputQueue; //File de sortie
-	SDL_mutex *inputting; //Mutex de la file d'entrée
-	SDL_mutex *outputting; //Mutex de la file de sortie
+	/* Data storage variables */
+	std::queue<std::string> inputQueue; //Input queue
+	std::queue<std::string> outputQueue; //Output queue
+	SDL_mutex *inputting; //Input queue mutex
+	SDL_mutex *outputting; //Mutex of the output queue
 
-	/* Fonction et code d'initialisation */
-	int init(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Fonction d'initialisation appellée par les constructeurs
-	int initErrorCode; //Code d'erreur de l'initialisation
+	/* Initialization function and code */
+	int init(unsigned int port, unsigned int maxClients, unsigned int bufferSize); //Initialization function called by the constructors
+	int initErrorCode; //Initialization error code
 
-	/* Fonctions de traitement */
-	static int threadWrapper(void *Data); //Fonction qui délègue run
-	int run(); //Boucle de traitement des données entrantes
-	void checkNewClient(); //Fonction de vérification de nouveaux clients
-	void checkNewData(); //Fonction de vérification de nouvelles données
-	void computeNewData(unsigned int client); //Fonction de traitement des données
-	bool computeString(unsigned int client, std::string string); //Fonction de traitement de la chaîne
-	bool computeHttp(unsigned int client, std::string string);//Fonction de traitement d'une requête HTTP (BETA)
-	void computeNormalString(unsigned int client, std::string string);//Fonction de traitement d'une requête normale
-	void checkDataToSend(); //Fonction d'envoi de données reçues de l'application
-	int broadcast(std::string data); //Fonction de broadcast aux clients
-	int close(unsigned int client); //Fonction de fermeture du socket client
+	/* Processing functions */
+	static int threadWrapper(void *Data); //Function that delegates run
+	int run(); //Incoming data processing loop
+	void checkNewClient(); //Function to check new clients
+	void checkNewData(); //New data verification function
+	void computeNewData(unsigned int client); //Data processing function
+	bool computeString(unsigned int client, std::string string); //Chain processing function
+	bool computeHttp(unsigned int client, std::string string);//HTTP request processing function (BETA)
+	void computeNormalString(unsigned int client, std::string string);//Normal request processing function
+	void checkDataToSend(); //Sending function of data received from the application
+	int broadcast(std::string data); //Function of broadcasting to the clients
+	int close(unsigned int client); //Function to close the client socket
 
-	/* Fonctions de factorisation ou d'assistance */
-	int send(TCPsocket client); //Fonction qui envoi la chaine contenue dans le buffer
+	/* FFactoring or assistance functions */
+	int send(TCPsocket client); //Function that sends the string contained in the buffer
 	int resetThread(); //Fonction qui redémarre le thread de traiement quand il est inactif
-	int killThread(); //Fonction qui kill le thread de traitement quand il est inactif
+	int killThread(); //Function that kills the processing thread when it is inactive
 
-	std::string humanReadable(unsigned int); //Fonction qui renvoi une chaine formatée (B, KB, MB, GB)
-	std::string clientIp(unsigned int client); //Fonction qui renvoi l'adresse IP du client sous forme de chaîne
+	std::string humanReadable(unsigned int); //Function that returns a formatted string (B, KB, MB, GB)
+	std::string clientIp(unsigned int client); //Function that returns the IP address of the client as a string
 
-	/* Fonctions de debug */
+	/* Debug functions */
 	void debugOut(std::string msg, LOG_TYPE log);//Debug
 
 	std::string replace(std::string base, const std::string from, const std::string to);

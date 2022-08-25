@@ -77,9 +77,9 @@ private:
 		std::for_each(envents.begin(), envents.end(), [](const Event* e) { delete e; });
 		envents.clear();
 	}
-    //singleton pour ne pas changer toutes les classes du logiciel
+    //singleton to not change all the classes of the software
     static EventRecorder * instance;
-    // la liste des évènements
+    // the event list
     std::list<const Event*> envents;
 };
 

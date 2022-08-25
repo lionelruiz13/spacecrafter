@@ -93,7 +93,7 @@ unsigned char *SaveScreen::getBuffer(int idx)
 
 void SaveScreen::saveScreenToFile(const std::string &fileName, int idx)
 {
-	//~ printf("dans SaveScreen::saveScreenToFile\n");
+	//~ printf("in SaveScreen::saveScreenToFile\n");
 	tje_encode_to_file_at_quality(fileName.c_str(), 3,size_screen, size_screen, 3, buffer[idx].data());
 	bufferReady.emplace(idx);
 }

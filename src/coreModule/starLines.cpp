@@ -196,11 +196,11 @@ bool StarLines::loadHipBinCat(const std::string& fileName) noexcept
 	HIPpos tmp;
 	char Ver[3];
 	unsigned int numberRead = 0;
-	//lecture version
+	//Reading version
 	fileIn.read((char *)&Ver,sizeof(Ver));
 	//~ printf("%c %c %c\n", Ver[0], Ver[1], Ver[2]);
 
-	//lecture des etoiles
+	//Reading of stars
 	while (!fileIn.eof()) {
 
 		fileIn.read((char *)&hip,sizeof(hip));
@@ -341,12 +341,12 @@ Vec3f StarLines::searchInHip(int HIP)
 //version 3D in GALAXY mode
 void StarLines::draw(const Navigator * nav) noexcept
 {
-	//commun aux deux fonctions
+	//common to both functions
 	if (linePos.size()<2)
 		return;
 	if (!showFader.getInterstate() ) return;
 
-	//paramétrage des matrices pour opengl4
+	//matrix settings for opengl4
 	Mat4f matrix=nav->getHelioToEyeMat().convert();
 	matrix=matrix*Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 
@@ -356,12 +356,12 @@ void StarLines::draw(const Navigator * nav) noexcept
 //version 2D, in SOLAR_SYSTEM MODE
 void StarLines::draw(const Projector* prj) noexcept
 {
-	//commun aux deux fonctions
+	//common to both functions
 	if (linePos.size()<2)
 		return;
 	if (!showFader.getInterstate() ) return;
 
-	//paramétrage des matrices pour opengl4
+	//parameterization of matrices for opengl4
 	Mat4f matrix= prj-> getMatJ2000ToEye()*Mat4f::xrotation(-M_PI_2);
 
 	this->drawGL(matrix);

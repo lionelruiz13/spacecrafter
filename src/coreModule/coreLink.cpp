@@ -305,22 +305,22 @@ bool CoreLink::starLinesGetFlag() const {
 	return core->starLines->getFlagShow();
 }
 
-//! Vide tous les tampons de tracé
+//! Empty all plot buffers
 void CoreLink::starLinesDrop() const {
 	core->starLines->drop();
 }
 
-//! Charge un ensemble d'asterismes d'un fichier
+//! Loads a set of asterisms from a file
 void CoreLink::starLinesLoadData(const std::string &fileName) {
 	core->starLines->loadData(fileName);
 }
 
-//! Charge un asterisme à partir d'une ligne
+//! Loads an asterism from a line
 void CoreLink::starLinesLoadAsterism(std::string record) const {
 	core->starLines->loadStringData(record);
 }
 
-//! supprime le catalogue complet des asterismes
+//! deletes the complete catalog of asterisms
 void CoreLink::starLinesClear() {
 	core->starLines->clear();
 }

@@ -92,7 +92,7 @@ protected :
 	std::unique_ptr<SharedBuffer<globalTescGeom>> uGlobalTescGeom; // tes
 	std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrixInverse;
 	std::unique_ptr<SharedBuffer<ringFrag>> uRingFrag;
-	//utile pour le shader NIGHT
+	//useful for shader NIGHT
 	std::shared_ptr<s_texture> tex_night;
 	std::shared_ptr<s_texture> tex_specular;
 	std::shared_ptr<s_texture> tex_cloud;

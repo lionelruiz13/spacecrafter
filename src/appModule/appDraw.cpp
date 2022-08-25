@@ -74,9 +74,9 @@ void AppDraw::createSC_context()
     Vec2i decalage {m_decalage_x + m_radius, m_decalage_y + m_radius};
 
 	float points[] = {
-        // point en haut a gauche, en haut a droite, en bas à gauche, en bas à droite
+        // points top left, top right, bottom left, bottom right
         -1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f,
-        // triangle en haut à gauche, en haut à droite, en bas à droite, en bas à gauche
+        // triangle top left, top right, bottom right, bottom left
         -1, 0, -1, -1, 0, -1,
         0, -1, 1, -1, 1, 0,
         1, 0, 1, 1, 0, 1,

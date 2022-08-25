@@ -30,7 +30,7 @@
 #include "appModule/fps.hpp"
 
 
-//! ajoute une frame
+//! add a frame
 void Fps::addFrame() {
 	numberFrames++;
 	frame++;
@@ -44,18 +44,18 @@ void Fps::afterOneSecond()
 
 unsigned int Fps::getDeltaTime() const {
 	if (recVideoMode)
-		return frameDuration; //on ne veut pas que le soft prenne du retard lors de résolution élevée
+		return frameDuration; //we don't want the software to lag at high resolution
 	else
 		return tickCount - lastCount;
 }
 
-//! bascule en mode enregistrement de vidéo
+//! switches to video recording mode
 void Fps::selectVideoFps() {
 	recVideoMode = true;
 	frameDuration= (unsigned int) (SECONDEDURATION/videoFPS);
 }
 
-//! bascule en mode normal
+//! switches to normal mode
 void Fps::selectMaxFps() {
 	recVideoMode = false;
 	frameDuration= (unsigned int) (SECONDEDURATION/maxFPS);

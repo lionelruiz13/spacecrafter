@@ -51,28 +51,28 @@ public:
 	Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color);
 	~Text();
 
-	//! occulte ou pas le text à l'affichage
+	//! hide or not the text on the display
 	void setDisplay(bool b) {
 		fader=b;
 	}
 
-	//! indique l'état du text vis à vis de l'affichage
+	//! indicates the state of the text with respect to the display
 	bool getDisplay() const {
 		return fader;
 	}
 
-	//! renvoie le nom du text
+	//! returns the name of the text
 	std::string getName() const {
 		return name;
 	}
 
-	//! modifie le message du text
+	//! modify the text's message
 	void textUpdate(const std::string &_text);
 
-	//! affiche le texte à l'écran
+	//! displays the text on the screen
 	void draw(const Projector* prj);
 
-	//! met à jour l'état du fader d'affichage
+	//! updates the state of the display fader
 	void update(int delta_time);
 
 private:

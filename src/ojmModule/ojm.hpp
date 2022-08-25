@@ -38,40 +38,40 @@ public:
 	Ojm(const std::string& _fileName, const std::string& _pathFile, float multiplier);
 	~Ojm();
 
-	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
+	//! returns the state of the object: loaded and operational, negative otherwise
 	bool getOk() {
 		return is_ok;
 	}
 
-	//! charge et initialise un objet OJM
+	//! loads and initializes an OJM object
 	bool init(float multiplier = 1.0);
 
-	//! dessine l'objet
+	//! draws the object
 	//void draw(shaderProgram *shader);
 
     //! @brief record Ojm draw commands
     //! @param pipelines {pipeline with texture, pipeline without texture}
     int record(VkCommandBuffer &cmd, Pipeline *pipelines, PipelineLayout *layout, int selectedPipeline = -1, bool firstRecorded = true);
 
-	//! pour debugger : print
+	//! for debugging : print
 	void print();
 
 private:
 	bool is_ok = false; //say if the model is correctly initialised and operationnal
-	//! vérifie si les indices coincident dans l'objet
+	//! checks if the indices in the object match
 
 	bool testIndices();
 
-	//! charge un objet OJM du disque dur
+	//! loads an OJM object from the hard disk
 	bool readOJM(const std::string& filename, float multiplier= 1.0);
 
-	//! indices des différents morceaux de l'objet
+	//! indices the different pieces of the object
 	std::vector<Shape> shapes;
 
-	//! initialise tous les parametres GL de l'ojm
+	//! initializes all GL parameters of the ojm
 	void initGLparam();
 
-	//! supprime les paramètres GL de l'ojm
+	//! removes GL parameters from the ojm
 	void delGLparam();
 
 	std::string fileName;

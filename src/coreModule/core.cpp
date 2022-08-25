@@ -282,7 +282,7 @@ void Core::init(const InitParser& conf)
 		ssystemFactory->load(AppSettings::Instance()->getUserDir() + "ssystem.ini");
 
 		ssystemFactory->anchorManagerInit(conf);
-		//TODO Oli: pense a utiliser classe de selection de fichiers.
+		//TODO Oli: remember to use file selection class.
 		ssystemFactory->loadGalacticSystem(AppSettings::Instance()->getUserDir(), "galactic.ini");
 		// Init stars
 		hip_stars->iniColorTable();
@@ -504,9 +504,9 @@ void Core::init(const InitParser& conf)
 	cardinals_points->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_CARDINAL_POINTS));
 
 	ssystemFactory->setFlagMoonScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_MOON_SCALED));
-	ssystemFactory->setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? toujours true TODO
+	ssystemFactory->setMoonScale(conf.getDouble (SCS_VIEWING,SCK_MOON_SCALE), true); //? always true TODO
 	ssystemFactory->setFlagSunScale(conf.getBoolean(SCS_VIEWING, SCK_FLAG_SUN_SCALED));
-	ssystemFactory->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? toujours true TODO
+	ssystemFactory->setSunScale(conf.getDouble (SCS_VIEWING,SCK_SUN_SCALE), true); //? always true TODO
 
 	oort->setFlagShow(conf.getBoolean(SCS_VIEWING,SCK_FLAG_OORT));
 
@@ -571,23 +571,23 @@ void Core::setLandscapeToBody()
 	if (!observatory->isOnBody())
 		return;
 
-	// cas du soleil
+	// case of the sun
 	if (observatory->isSun()) {
 		this->setLandscape("sun");
 	}
 
-	//cas des planetes sauf la Terre
+	//case of the planets except the Earth
 	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite()){
 		setLandscape(observatory->getHomeBody()->getEnglishName());
 		atmosphere->setFlagShow(true);
 		bodyDecor->setAtmosphereState(true);
 	}
 
-	//cas des satellites des planetes
+	//case of satellites of planets
 	if (observatory->getHomeBody()->isSatellite())
 		setLandscape("moon");
 
-	//cas spécial Earth
+	//special case Earth
 	if (observatory->isEarth())
 		setLandscape(initialvalue.initial_landscapeName);
 
@@ -622,31 +622,31 @@ void Core::testLandscapeCompatibleWithAutoMode()
 	if (landscape->getName().empty())	return;
 	if (!observatory->isOnBody())		return;
 
-	// par défaut on ne fait pas confiance à l'utilisateur
+	// by default the user is not trusted
 	autoLandscapeMode = false;
 
-	// un satellite doit avoir Moon comme landscape de base
+	// a satellite must have Moon as its base landscape
 	if (observatory->getHomeBody()->isSatellite() && landscape->getName() == "moon") {
 		autoLandscapeMode = true;
 		//std::cout << ": automode moon" << std::endl;
 		return;
 	}
 
-	// cas du soleil
+	// case of the sun
 	if (observatory->isSun() &&  landscape->getName() == "sun") {
 		autoLandscapeMode = true;
 		//std::cout << ": automode sun" << std::endl;
 		return;
 	}
 
-	//cas des planetes sauf la Terre
+	//case of planets except Earth
 	if (!observatory->isEarth() && !observatory->getHomeBody()->isSatellite() && landscape->getName() == observatory->getHomeBody()->getEnglishName()) {
 		autoLandscapeMode = true;
 		//std::cout << ": automode planet" << std::endl;
 		return;
 	}
 
-	//cas spécial Earth
+	//special case Earth
 	if (observatory->isEarth() && landscape->getName() == initialvalue.initial_landscapeName) {
 		//std::cout << ": automode earth" << std::endl;
 		autoLandscapeMode = true;
@@ -1545,7 +1545,7 @@ void Core::setHomePlanet(const std::string &planet)
 	if (result) {
 		setLandscapeToBody();
 		if (observatory->getHomeBody()) {
-			// il faut obtenir ici la planete sur laquelle on se trouve pour accéder au champ modelAtmosphere qui se trouve dans AtmosphereParams du Body en question
+			// here you have to get the planet you are on to access the modelAtmosphere field in AtmosphereParams of the body in question
 			atmosphere->setModel(observatory->getHomeBody()->getAtmosphereParams()->modelAtmosphere);
 		} else {
 			cLog::get()->write("Can't setup Atmosphere : No home body", LOG_TYPE::L_WARNING);

@@ -48,7 +48,7 @@ public:
 	ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface, const std::string &_data_dir, std::shared_ptr<Media> _media);
 	~ScriptMgr();
 
-	//! lance un script
+	//! play a script
 	bool playScript(const std::string &fullFileName);
 
 	//! place the given script at the begin of the command queue
@@ -107,30 +107,30 @@ public:
 	//! get list of scripts in a directory
 	std::string getScriptList(const std::string &directory);
 
-	//! indique le chemin absolu d'où le script à été lancé.
+	//! indicates the absolute path from where the script was launched.
 	std::string getScriptPath();
 
 	//! @deprecated ?
-	//! a quoi sert cette fonction si dans load on a déjà l'information ?
+	//! what is the use of this function if in load we already have the information ?
 	void setPath(const std::string &path) {
 		DataDir=path;
 	}
 
-	//! indique si on est dans une boucle ou pas
+	//! indicates if we are in a loop or not
 	void setLoop(bool a) {
 		isInLoop=a;
 	}
 
-	//! initialisation du systeme de boucle
+	//! initialization of the loop system
 	void initIterator() {
 		indiceInLoop= 0;
 		if (loopVector.size()) {
 			repeatLoop = true;
-			loopVector.pop_back(); //on enlève le struct loop end de trop
+			loopVector.pop_back(); //we remove the loop end structure too
 		}
 	}
 
-	//! fixe le nombre de tour de boucle à faire
+	//! set the number of loop turns to do
 	void setNbrLoop( int a) {
 		nbrLoop=a;
 	}
@@ -153,12 +153,12 @@ public:
 	}
 
 private:
-	// les états du moteur de script via à vis des scripts en cours.
+	// the states of the script engine with respect to the current scripts.
 	enum class ScriptState : char {PLAY, PAUSE, NONE};
 	ScriptState scriptState;
-	// la gestion des enregistrements
+	// record management
 	struct ScriptRecord {
-		std::fstream rec_file;	//!< le pointeur sur le fichier
+		std::fstream rec_file;	//!< the pointer to the file
 		bool recording;  		//!< is a script being recorded?
 		unsigned long int record_elapsed_time;  //!< ms since last command recorded
 	};
@@ -174,11 +174,11 @@ private:
 	bool isVideoPlayed;		 	//!< say if a video is played
 	std::string DataDir;
 	int multiplierRate=1;
-	bool isInLoop; 		//!< on est entrain de lire les instructions d'une loop
-	bool repeatLoop; 	//!< on est entrain de répéter une boucle
-	int nbrLoop;		//!< nombre de tours de boucles restants
-	std::vector<std::string> loopVector; //!< le vector qui contient les instructions de loop à répéter
-	unsigned int indiceInLoop; //!< indique l'endroit ou l'on se trouve dans la loop
+	bool isInLoop; 		//!< we are reading the instructions of a loop
+	bool repeatLoop; 	//!< we are repeating a loop
+	int nbrLoop;		//!< number of remaining loops
+	std::vector<std::string> loopVector; //!< the vector that contains the loop instructions to be repeated
+	unsigned int indiceInLoop; //!< indicates the place where we are in the loop
 };
 
 

@@ -56,7 +56,7 @@ public:
 	virtual void retain() {}
 	virtual void release() {}
 
-	//! dessine le pointeur de l'objet sélectionné en fonction de son type.
+	//! draws the pointer of the selected object according to its type.
 	void drawPointer(int delta_time, const Projector* prj, const Navigator *nav);
 
 	//! Write I18n information about the object in string.
@@ -110,10 +110,10 @@ public:
 		return -1.;
 	}
 
-	//! fonction qui initialise les shaders permettant le dessin des pointeurs
+	//! function that initializes the shaders allowing the drawing of pointers
 	static void initTextures();
 
-	//! fonction qui libère la mémoire des textures des pointeurs
+	//! function that frees the memory of the pointers' textures
 	static void deleteTextures();
 
 	virtual float getOnScreenSize(const Projector *prj, const Navigator *nav = NULL, bool orb_only = false) {

@@ -3215,7 +3215,7 @@ int UI::handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VA
 		return handlKkeysOnTui(key, mod, unicode, state);
 	}
 
-	//gestion touches video
+	//video key management
 	if (handleKeyOnVideo && state==s_gui::S_GUI_PRESSED) { //isOnVideo
 		return handleKeysOnVideo(key,mod,unicode,state);
 	}

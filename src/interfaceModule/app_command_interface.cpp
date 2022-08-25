@@ -1331,7 +1331,7 @@ int AppCommandInterface::commandSuntrace()
 
 int AppCommandInterface::commandColor()
 {
-	//gestion de la couleur
+	//color management
 	Vec3f Vcolor;
 	std::string argValue = args[W_VALUE];
 	std::string argR= args[W_R];
@@ -1420,7 +1420,7 @@ int AppCommandInterface::commandIlluminate()
 		coreLink->illuminateRemoveAllConstellation();
 	}
 
-	//gestion de la couleur
+	//management color
 	Vec3f Vcolor;
 	std::string argValue = args[W_COLOR_VALUE];
 	std::string argR= args[W_R];
@@ -1502,7 +1502,7 @@ int AppCommandInterface::commandPrint()
 
 int AppCommandInterface::commandSet()
 {
-	// cas ou l'on tappe juste set
+	// in case we just hit set
 	if (args.begin() == args.end()) {
 		debug_message = "command_'set': malformed command";
 		return executeCommandStatus();
@@ -1724,7 +1724,7 @@ int AppCommandInterface::commandConfiguration()
 			debug_message = "command 'configuration': unknown module argument";
 	}
 
-	// comme commande indépendante de argModule
+	// as a command independent of argModule
 	if (!argAction.empty()) {
 		if(argAction== W_LOAD) {
 			stapp->init();
@@ -2039,7 +2039,7 @@ int AppCommandInterface::commandText()
 			std::string argAltitude = args[W_ALTITUDE];
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
 
-				//création paramètres
+				//creation of parameters
 				TEXT_MGR_PARAM textParam;
 				textParam.string = argString;
 				textParam.azimuth = evalDouble(argAzimuth);
@@ -2050,7 +2050,7 @@ int AppCommandInterface::commandText()
 				textParam.textAlign = args[W_ALIGN];
 				if (!textParam.textAlign.empty())
 					std::transform(textParam.textAlign.begin(), textParam.textAlign.end(),textParam.textAlign.begin(), ::toupper);
-				//gestion de la couleur
+				//color management
 				Vec3f Vcolor;
 				std::string argValue = args[W_COLOR_VALUE];
 				std::string argR= args[W_R];
@@ -2066,7 +2066,7 @@ int AppCommandInterface::commandText()
 					textParam.useColor = false;
 
 				media->textAdd(argName, textParam);
-				// test si l'utilisateur spécifie argDisplay
+				// test if user specifies argDisplay
 				if (!argDisplay.empty()) {
 					if ( Utility::isTrue(argDisplay) )
 						media->textDisplay(argName,true);
@@ -2082,7 +2082,7 @@ int AppCommandInterface::commandText()
 		}
 	}
 
-	// test argDisplay en commande indépendante
+	// test argDisplay in independent command
 	if (!argDisplay.empty()) {
 		if ( Utility::isTrue(argDisplay) )
 			media->textDisplay(argName,true);
@@ -2179,7 +2179,7 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 
 int AppCommandInterface::commandAudio()
 {
-	//gestion du volume
+	//volume management
 	std::string argVolume = args[W_VOLUME];
 	if (!argVolume.empty()) {
 		if (argVolume == W_INCREMENT) {
@@ -2191,14 +2191,14 @@ int AppCommandInterface::commandAudio()
 		return executeCommandStatus();
 	}
 
-	//gestion de la pause des audio dans les scripts
+	//management of audio pause in scripts
 	std::string argMusicPause= args[W_NOPAUSE];
 	if (!argMusicPause.empty()) {
 		media->audioSetMusicToPause(Utility::isTrue(args[W_NOPAUSE]));
 		return executeCommandStatus();
 	}
 
-	//gestion des actions
+	//action management
 	std::string argAction = args[W_ACTION];
 	if (!argAction.empty()) {
 		if (argAction ==W_DROP) {
@@ -2282,7 +2282,7 @@ int AppCommandInterface::commandImage()
 		if (Utility::isTrue(args[W_MIPMAP]))
 			mipmap = 1;
 
-		//TODO récupérer une erreur compréhensible plutot qu'un int ?
+		//TODO recover an understandable error rather than an int?
 		int status = media->imageLoad(myFile.toString(), evalString(argName), argCoordinate, tmpProject , mipmap);
 		if (status!=1) {
 			debug_message = _("Unable to load image: ") + argName;
@@ -2295,7 +2295,7 @@ int AppCommandInterface::commandImage()
 		return executeCommandStatus();
 	}
 
-	//initialisation de toutes les variables
+	//initialization of all variables
 	std::string argDuration = args[W_DURATION];
 	std::string argAlpha = args[W_ALPHA];
 	std::string argScale = args[W_SCALE];
@@ -2779,7 +2779,7 @@ int AppCommandInterface::commandMedia()
 
 			if (!audioName.empty()) {
 				if ( audioName ==W_AUTO) {
-					// On teste si un fichier de langue existe on prend videoName et on rajoute -fr par exemple à la place de son extention et on rajoute apres ogg
+					// We test if a file of language exists we take videoName and we add -fr for example in the place of its extention and we add after ogg
 					audioName = videoName;
 					if (audioName.size()>5) {
 						audioName[audioName.size()-1]='.';
@@ -2799,15 +2799,15 @@ int AppCommandInterface::commandMedia()
 						}
 					}
 				} else {
-					// si l'audio existe sous forme -fr.ogg alors on le modifie en appliquant la langue de la sky_culture
-					if (audioName.size()>8 && audioName[audioName.size()-7]=='-') { // internationalisation possible
+					// if the audio exists as -en.ogg then it is modified by applying the language of the sky_culture
+					if (audioName.size()>8 && audioName[audioName.size()-7]=='-') { // internationalization possible
 						FilePath fileAudio = FilePath(audioName, stcore->getSkyLanguage() );
 						if (!fileAudio.exist()) {
 							cLog::get()->write("command 'media':: locale audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
 							media->playerPlay(type, fileVideo.toString(), "", argName, argPosition,tmpProject );
 						} else
 							media->playerPlay(type, fileVideo.toString(), fileAudio.toString(), argName, argPosition,tmpProject );
-					} else { //fichier simple sans internationalisation
+					} else { //simple file without internationalization
 						FilePath fileAudio = FilePath(audioName, localRepertory);
 						if (!fileAudio.exist()) {
 							cLog::get()->write("command 'media':: audio not found ", LOG_TYPE::L_WARNING, LOG_FILE::SCRIPT);
@@ -2888,7 +2888,7 @@ int AppCommandInterface::commandDomemasters()
 
 int AppCommandInterface::commandDate()
 {
-	//cas du jday
+	//case of jday
 	std::string argJday = args[W_JDAY];
 	if (!argJday.empty() ) {
 		//TODO stcore doit renvoyer un code rectour erreur
@@ -2896,7 +2896,7 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas du local
+	//case of local
 	std::string argLocal = args[W_LOCAL];
 	if (!argLocal.empty() ) {
 		// ISO 8601-like format [[+/-]YYYY-MM-DD]Thh:mm:ss (no timzone offset, T is literal)
@@ -2917,7 +2917,7 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas de l'utc
+	//case of utc
 	std::string argUtc = args[W_UTC];
 	if (!argUtc.empty()) {
 		double jd;
@@ -2929,7 +2929,7 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas du relative
+	//case of relative
 	std::string argRelative = args[W_RELATIVE];
 	if (!argRelative.empty()) { // value is a float number of days
 		double days = evalDouble(argRelative);
@@ -2944,7 +2944,7 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas du relative_year
+	//case of relative_year
 	std::string argRelativeYear = args[W_RELATIVE_YEAR];
 	if (!argRelativeYear.empty()) {
 		int years = evalInt(argRelativeYear);
@@ -2952,7 +2952,7 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas du relative_month
+	//case of relative_month
 	std::string argRelativeMonth = args[W_RELATIVE_MONTH];
 	if (!argRelativeMonth.empty()) {
 		int months = evalInt(argRelativeMonth);
@@ -2960,7 +2960,7 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas du sidereal
+	//case of sidereal
 	std::string argSidereal = args[W_SIDEREAL];
 	if (!argSidereal.empty()) { // value is a float number of sidereal days
 		double days = evalDouble(argSidereal);
@@ -2976,7 +2976,7 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas du load
+	//case of load
 	std::string argLoad = args[ W_LOAD];
 	if (!argLoad.empty()) {
 		if (argLoad == W_CURRENT) { //IIICCCCIIII
@@ -3005,24 +3005,24 @@ int AppCommandInterface::commandDate()
 		return executeCommandStatus();
 	}
 
-	//cas du Sun
+	//case of Sun
 	std::string argSun = args[W_SUN];
 	if (!argSun.empty()) {
 		if (argSun == W_SET) {
 			double tmp=coreLink->dateSunSet(coreLink->getJDay(), coreLink->observatoryGetLongitude(), coreLink->observatoryGetLatitude());
-			if (tmp != 0.0) //TODO et si ==?
+			if (tmp != 0.0) //TODO and if ==?
 				coreLink->setJDay(tmp);
 		} else if (argSun == W_RISE) {
 			double tmp=coreLink->dateSunRise(coreLink->getJDay(), coreLink->observatoryGetLongitude(), coreLink->observatoryGetLatitude());
-			if (tmp != 0.0) //TODO et si ==?
+			if (tmp != 0.0) //TODO and if ==?
 				coreLink->setJDay(tmp);
 		} else if (argSun == W_MERIDIAN) {
 			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), coreLink->observatoryGetLongitude(), coreLink->observatoryGetLatitude());
-			if (tmp != 0.0) //TODO et si ==?
+			if (tmp != 0.0) //TODO and if ==?
 				coreLink->setJDay(tmp);
 		} else if (argSun == W_MIDNIGHT) {
 			double tmp=coreLink->dateSunMeridian(coreLink->getJDay(), coreLink->observatoryGetLongitude()+180, -coreLink->observatoryGetLatitude());
-			if (tmp != 0.0) //TODO et si ==?
+			if (tmp != 0.0) //TODO and if ==?
 				coreLink->setJDay(tmp);
 		} else
 			_("Command 'date': unknown sun value");
@@ -3034,13 +3034,13 @@ int AppCommandInterface::commandDate()
 
 int AppCommandInterface::commandBody()
 {
-	//gestion des actions
+	//share management
 	std::string argAction = args[W_ACTION];
 	std::string argName = args[W_NAME];
     if (argName == ACP_SC_HOME_PLANET  ) argName = coreLink->getObserverHomePlanetEnglishName();
 	std::string argMode = args[ACP_SC_MODE];
 
-	// traitement des OJM
+	// OJM processing
 	if ((argMode=="in_universe" || argMode=="in_galaxy") && !argAction.empty()) {
 		if (argAction == W_LOAD) {
 			std::string argFileName = args[W_FILENAME];
@@ -3098,10 +3098,10 @@ int AppCommandInterface::commandBody()
 		return executeCommandStatus();
 	}
 
-	//gestion des actions
+	//stock management
 	if (!argName.empty() ) {
 
-		//sous cas hidden
+		//under hidden case
 		std::string argHidden = args[W_HIDDEN];
 		if (!argHidden.empty()) {
 			if (Utility::isTrue(argHidden)) {
@@ -3115,7 +3115,7 @@ int AppCommandInterface::commandBody()
 			return executeCommandStatus();
 		}
 
-		//sous cas orbit
+		//under case orbit
 		std::string argOrbit = args[W_ORBIT];
 		if (!argOrbit.empty()) {
 			if (Utility::isTrue(argOrbit)) {
@@ -3200,7 +3200,7 @@ int AppCommandInterface::commandFont()
 
 int AppCommandInterface::commandCamera(unsigned long int &wait)
 {
-	//gestion des actions
+	//stock management
 	std::string argAction = args[W_ACTION];
 	std::string argName = args[W_NAME];
 

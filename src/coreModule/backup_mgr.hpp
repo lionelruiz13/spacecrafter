@@ -59,15 +59,15 @@ public:
 	void loadBackup();
 	void saveBackup();
 
-	//gestion des états des grilles
+	//grid status management
 	void saveGridState();
 	void loadGridState();
 
-	//gestion des états de SkyDkisplay
+	//SkyDkisplay state management
 	void saveDisplayState();
 	void loadDisplayState();
 
-	//gestion des états de SkyLine
+	//SkyLine status management
 	void saveLineState();
 	void loadLineState();
 

@@ -33,17 +33,17 @@
 #include <cstdlib>
 
 /**
- * Les entrées sorties des fichiers binaires sont de la forme
+ * The inputs and outputs of the binary files are of the form
  * 
- * pour les hypercubes:
+ * for hypercubes:
  * | Char c='H' | 3 floats posX, posY, posZ | 1 uint number (of cube) |
  *    1                          12                     4             = 17 octets
  * 
- * Pour les cubes:
+ * For cubes:
  * | Char c='c' | 3 floats posX, posY, posZ | 1 uint number ( of stars) |
  *           1                     12                   4               = 17 octets
  * 
- * Pour les étoiles:
+ * For stars:
  * | Char c='s' | 1 uint  name HIP| 3floats posX, posY, posZ | 2floats pmRa, pmDe | float mag | int B_V | float pc(parsec)| 
  *           1                  4                       12                8               4          4        4          = 37 octets
  */
@@ -120,7 +120,7 @@ unsigned int HyperCube::getNbrStars()
 	return tmp;
 }
 
-//Détermine si un cube existe, si oui retourne un pointeur
+//Determine if a cube exists, if so return a pointer
 Cube* HyperCube::cubeExist(int a, int b, int c)
 {
 	std::vector<Cube*> list = getCubeList();
@@ -133,7 +133,7 @@ Cube* HyperCube::cubeExist(int a, int b, int c)
 	return nullptr;
 }
 
-//Trouver dans quelle Cube se trouve l'étoile
+//Find in which cube the star is located
 void HyperCube::addCubeStar(starInfo* star)
 {
 	float X = star->posXYZ[0];
@@ -157,8 +157,8 @@ void HyperCube::addCubeStar(starInfo* star)
 	Cube *tmp = nullptr;
 	tmp= cubeExist(cub_centerX, cub_centerY, cub_centerZ);
 
-	if ( tmp == nullptr) { //retourne un pointeur null ni le cube n'existe pas
-		tmp = new Cube(cub_centerX, cub_centerY, cub_centerZ); //Création d'un cube
+	if ( tmp == nullptr) { //return a null pointer nor the cube does not exist
+		tmp = new Cube(cub_centerX, cub_centerY, cub_centerZ); //Creation of a cube
 		addCube(tmp);
 		tmp->addStar(star);
 	} else {
@@ -177,7 +177,7 @@ HyperCube::~HyperCube()
 
 float HyperCube::getMinMagnitude()
 {
-	//si pas calculé alors calcule le
+	//if not computed then computes it
 	if (MinMagnitude==500) {
 		for(std::vector<Cube*>::iterator i = cubeList.begin(); i!= cubeList.end(); ++i) {
 			if( (*i)->getMinMagnitude() <MinMagnitude  )
@@ -225,7 +225,7 @@ unsigned int StarManager::getNbrStars()
 	return tmp;
 }
 
-// LECTURE DU CATALOGUE INTERNE
+// READING THE INTERNAL CATALOG
 bool StarManager::loadStarCatalog(const std::string &fileName)
 {
 	//std::cout << "StarManager::loadStarCatalog " << fileName << std::endl;
@@ -254,7 +254,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	cLog::get()->write("Starmanager, loading text catalogue "+fileName);
 
 	while (getline(file, line)) {
-		//on commence par un hypercube
+		//we start with a hypercube
 		std::istringstream istrHc(line);
 		istrHc >> obj >> hcX >> hcY >> hcZ >> cubesNumber;
 
@@ -267,7 +267,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 		HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
 		nbrH++;
 
-		// on lit chaque cube les un après les autres
+		// we read each cube one after the other
 		for(int i=0; i<cubesNumber; i++) {
 			getline(file, line);
 			std::istringstream istrC(line);
@@ -281,7 +281,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 			Cube *cube = new Cube(cubeX,cubeY,cubeZ);
 			nbrC++;
 
-			// on lit toutes les etoiles dans le cube
+			// we read all the stars in the cube
 			for(int i=0; i<starsNumber; i++) {
 				getline(file, line);
 
@@ -308,7 +308,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 				cube->addStar(si);
 				numberRead++;
 			}
-			hc->addCube(cube); //TODO et si le nombre de cube est dépassé ?
+			hc->addCube(cube); //TODO what if the number of cubes is exceeded?
 		}
 		addHyperCube(hc);
 	}
@@ -324,7 +324,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 }
 
 
-// LECTURE DU CATALOGUE INTERNE
+// READING THE INTERNAL CATALOG
 bool StarManager::loadStarBinCatalog(const std::string &fileName)
 {
 	//std::cout << "StarManager::loadStarBinCatalog " << fileName << std::endl;
@@ -351,7 +351,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 	cLog::get()->write("Starmanager, loading bin catalogue "+fileName);
 
 	while (!fileIn.eof()) {
-		//on commence par un hypercube
+		//we start with a hypercube
 		if (!fileIn.get(c))
 			break;
 
@@ -375,7 +375,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 		HyperCube *hc = new HyperCube(hcX,hcY,hcZ);
 		fileIn.read((char *)&cubesNumber,sizeof(cubesNumber));
 
-		// on lit chaque cube les un après les autres
+		// we read each cube one after the other
 		for(int i=0; i<cubesNumber; i++) {
 
 			fileIn.get(c);
@@ -398,7 +398,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 			Cube *cube = new Cube(cubeX,cubeY,cubeZ);
 			fileIn.read((char *)&starsNumber,sizeof(starsNumber));
 
-			// on lit toutes les etoiles dans le cube
+			// we read all the stars in the cube
 			for(int i=0; i<starsNumber; i++) {
 
 				fileIn.get(c);
@@ -438,7 +438,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 
 				cube->addStar(si);
 			}
-			hc->addCube(cube); //TODO et si le nombre de cube est dépassé ?
+			hc->addCube(cube); //TODO and if the number of cubes is exceeded?
 		}
 		addHyperCube(hc);
 	}
@@ -571,7 +571,7 @@ bool StarManager::saveStarCatalog(const std::string &fileName)
 	return true;
 }
 
-//Détermine si un hypercube existe, si oui retourne un pointeur
+//Determine if a hypercube exists, if so return a pointer
 HyperCube* StarManager::hcExist(int a, int b, int c)
 {
 	std::vector<HyperCube*> list = getHyperCubeList();
@@ -585,7 +585,7 @@ HyperCube* StarManager::hcExist(int a, int b, int c)
 }
 
 
-//Trouver dans quel Hypercube se trouve l'étoile
+//Find in which hypercube the star is located
 void StarManager::addHcStar(starInfo* star)
 {
 	float X = star->posXYZ[0];
@@ -609,17 +609,17 @@ void StarManager::addHcStar(starInfo* star)
 	HyperCube *tmp=nullptr;
 	tmp = hcExist(hc_centerX, hc_centerY, hc_centerZ );
 
-	if (tmp == nullptr) { //retourne un pointeur null ni l'hypercube n'existe pas
+	if (tmp == nullptr) { //return a null pointer nor the hypercube does not exist
 		tmp = new HyperCube(hc_centerX, hc_centerY, hc_centerZ);
-		addHyperCube(tmp); //ajoute un hypercube au StarManager
+		addHyperCube(tmp); //adds a hypercube to the StarManager
 		tmp->addCubeStar(star);
 	} else {
 		tmp->addCubeStar(star);
 	}
 }
 
-// Fonction de lecture du catalogue d'étoile
-// Rempli une liste d'étoiles avec celles trouvées dans le catalogue
+// Star catalog reading function
+// Fills a list of stars with those found in the catalog
 //
 //    I/311 Hipparcos, the New Reduction  (van Leeuwen, 2007)
 //    Hipparcos, the new Reduction of the Raw data van Leeuwen F.
@@ -635,7 +635,7 @@ bool StarManager::loadStarRaw(const std::string &catPath)
 	float RArad, DErad, Plx, pmRA, pmDE, mag_app, BV;
 	unsigned starAccepted=0, starRejected =0;
 
-	//Création de l'hypercube et du cube initial pour contenir le soleil
+	//Create the hypercube and the initial cube to contain the sun
 	Vec3f origin(0.00001, 0.00001, 0.00001);
 	starInfo *sun = new starInfo;
 	sun->posXYZ = origin;
@@ -705,10 +705,10 @@ starInfo* StarManager::createStar(unsigned int hip, float RArad, float DErad, fl
 	float x, y, z;
 	double parsec;
 
-	// conversion en coordonnées x,y,z
-	// on décide de modifier le Plx minimal et de le fixer à 0.2 ce qui fait une étoile au pire à 16000 al
+	// conversion in x,y,z coordinates
+	// we decide to modify the minimal Plx and to fix it at 0.2 which makes a star at worst at 16000 al
 	if (Plx >PLX_MIN) {
-		parsec = 1000.0 / Plx; //calcul en parsec
+		parsec = 1000.0 / Plx; //calculation in parsec
 	} else {
 		parsec = 1000.0 / (PLX_MIN+0.01* (rand()%10) );
 	}
@@ -717,7 +717,7 @@ starInfo* StarManager::createStar(unsigned int hip, float RArad, float DErad, fl
 	y = parsec * sin ( DErad );
 	z = parsec * sin ( RArad ) * cos( DErad );
 
-	//patch Lionel Ruiz pour mise en conformité avec le repère d'OpenGL
+	//patch Lionel Ruiz to conform to the OpenGL benchmark
 	x = -x;
 	y = -y;
 
@@ -759,7 +759,7 @@ int StarManager::getNbrCubes()
 
 float StarManager::getMinMagnitude()
 {
-	//si pas calculé alors calcule le
+	//if not calculated then calculate it
 	if (MinMagnitude==500) {
 		for(std::vector<HyperCube*>::iterator i = hyperCubeList.begin(); i!= hyperCubeList.end(); ++i) {
 			if( (*i)->getMinMagnitude() <MinMagnitude  )
@@ -783,7 +783,7 @@ void StarManager::HyperCubeStatistiques()
 		if (tmp==1) un_cube++;
 		if (tmp==tmp_max_cube) max_cube++;
 		tmp= tmp/val;
-		if (tmp>=NBR_PAS_STATHC) //TODO vraiment utile ?
+		if (tmp>=NBR_PAS_STATHC) //TODO really useful ?
 			tmp = NBR_PAS_STATHC -1;
 		statHc[tmp]=statHc[tmp]+1;
 	}
@@ -827,7 +827,7 @@ void StarManager::MagStarStatistiques()
 bool StarManager::verificationData()
 {
 	int nbr_cube_max = (HCSIZE/CUBESIZE)*(HCSIZE/CUBESIZE)*(HCSIZE/CUBESIZE);
-	//verification des hypercubes
+	//verification of hypercubes
 	for(std::vector<HyperCube*>::iterator i = hyperCubeList.begin(); i!= hyperCubeList.end(); ++i) {
 		HyperCube *tmp =(*i);
 		if (tmp->getCx() %HCSIZE !=0 || tmp->getCy() %HCSIZE !=0 || tmp->getCz() %HCSIZE !=0 ) {
@@ -844,7 +844,7 @@ bool StarManager::verificationData()
 			printf("HyperCube -%i %i %i- no cube\n", tmp->getCx(), tmp->getCy(), tmp->getCz());
 		}
 
-		//verification des cubes
+		//verification of cubes
 		std::vector<Cube*> List = (*i)->getCubeList();
 		for(std::vector<Cube*>::iterator j = List.begin(); j!= List.end(); ++j) {
 			Cube *tmp2 = (*j);
@@ -870,7 +870,7 @@ bool StarManager::verificationData()
 	return true;
 }
 
-//TODO la meme en version BINAIRE
+//TODO the same in BINARY version
 bool StarManager::saveAsterismStarsPosition(const std::string &fileNameIn,const std::string &fileNameOut)
 {
 	std::cout << "StarManager::saveAsterismStarsPosition " << fileNameIn << " " << fileNameOut << std::endl;
@@ -882,7 +882,7 @@ bool StarManager::saveAsterismStarsPosition(const std::string &fileNameIn,const 
 
 	if (fileIn && fileOut) { // Fails if can't open the file
 		std::string line; // variable which will contain each line of the file
-		// cout << "Lecture du catalogue "  << fileNameIn << std::endl;
+		// cout << "Reading the catalog "  << fileNameIn << std::endl;
 		cLog::get()->write("StarManager read AsterismCatalogue "+fileNameIn );
 		cLog::get()->write("StarManager write AsterismCatalogue "+fileNameOut );
 

@@ -50,53 +50,53 @@ public:
 	Oort();
 	~Oort();
 
-	//! affiche le nuage de points
+	//! displays the point cloud
 	void draw(double distance,const Navigator *nav) noexcept;
 
-	//! fixe la couleur du nuage
+	//! sets the color of the cloud
 	void setColor(const Vec3f& c) {
 		color = c;
 		uFrag->get().color = color;
 	}
 
-	//! renvoie la couleur du nuage
+	//! returns the color of the cloud
 	const Vec3f& getColor() {
 		return color;
 	}
 
-	//! mise à jour du fader
+	//! update the fader
 	void update(int delta_time) {
 		fader.update(delta_time);
 	}
 
-	//! modifie la durée du fader
+	//! changes the duration of the fader
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
 	}
 
-	//! modifie le fader
+	//! modify the fader
 	void setFlagShow(bool b) {
 		fader = b;
 	}
 
-	//! renvoie la valeur du fader
+	//! returns the value of the fader
 	bool getFlagShow(void) const {
 		return fader;
 	}
 
-	//! construit le nuage
-	//! \param nbr le nombre de points dans le nuage
+	//! builds the cloud
+	//! \param nbr the number of points in the cloud
 	void populate(unsigned int nbr) noexcept;
 	//! build draw command
 	void build();
 private:
-	// initialise le shader et les vao-vbo
+	// initialize the shader and the vao-vbo
 	void createSC_context();
-	// couleur uniforme du nuage
+	// uniform color of the cloud
 	Vec3f color;
-	// fader pour affichage
+	// fader for display
 	LinearFader fader;
-	// coefficient sur l'intensité lumineuse
+	// coefficient on light intensity
 	float intensity;
 	unsigned int nbAsteroids;
 	// Vulkan elements

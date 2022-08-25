@@ -93,7 +93,7 @@ void UI::drawGravityUi(MODULE module)
 			core->printHorizontal(tuiFont, 4 ,120, s_2 ,text_ui, TEXT_ALIGN::LEFT, false);//, 1, 1);
 		} else {
 			int PosDateTimeL = PosDateTime;
-			//on met les textes en cache car on les affiche plusieurs fois
+			//we cache the texts because we display them several times
 			switch(FlagNumberPrint) {
 				case 3 :
 					PosDateTimeL=PosDateTimeL%120;

@@ -91,7 +91,7 @@ private:
 		float fader;
 	};
 	std::unique_ptr<SharedBuffer<frag>> uFrag;
-	unsigned int nbVertex;			//nombre de vertex pour le fog
+	unsigned int nbVertex;			//number of vertex for the fog
 	VkCommandBuffer cmds[3];
 	static s_texture* fog_tex;			// allways the same
 

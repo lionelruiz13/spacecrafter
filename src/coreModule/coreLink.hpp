@@ -45,13 +45,13 @@ public:
 
 	//! Get flag for displaying
 	bool starLinesGetFlag() const;
-	//! Vide tous les tampons de tracé
+	//! Empty all plot buffers
 	void starLinesDrop() const;
-	//! Charge un ensemble d'asterismes d'un fichier
+	//! Loads a set of asterisms from a file
 	void starLinesLoadData(const std::string &fileName);
-	//! Charge un asterisme à partir d'une ligne
+	//! Loads an asterism from a line
 	void starLinesLoadAsterism(std::string record) const;
-	//! supprime le catalogue complet des asterismes
+	//! deletes the complete catalog of asterisms
 	void starLinesClear();
 
 	void starLinesSaveCat(const std::string &fileName, bool binaryMode);
@@ -461,10 +461,10 @@ public:
 
 	void initialSolarSystemBodies();
 
-	//cache une planete
+	//hides a planet
 	void setPlanetHidden(std::string name, bool planethidden);
 
-	//indique si la planete est visible 1 ou pas 0
+	//indicates if the planet is visible 1 or not 0
 	bool getPlanetHidden(std::string name);
 
 	////////////////////////////////////////////////////////////////////////////////

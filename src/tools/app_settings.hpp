@@ -54,13 +54,13 @@ public:
 	//! Obtains config.ini settings. Caller must allocate InitParser.
 	void loadAppSettings( InitParser* const ) const;
 
-	//! renvie le fichier de configuration du logiciel
+	//! returns the software configuration file
 	const std::string getConfigFile() const;
 
-	//! renvoie le répertoire de configuration
+	//! returns the configuration directory
 	const std::string getConfigDir() const;
 
-	//! renvoie le nom du répertoire des données
+	//! returns the name of the data directory
 	const std::string getDataRoot() const;
 
 	//! Get the name of the directory containing the data
@@ -126,7 +126,7 @@ public:
 	//! Determine where vframes files should go on different platforms
 	const std::string getVframeDirectory() const;
 
-	//! Indique de quel est la version de Spacecrafter
+	//! indicates the version of Spacecrafter
 	const std::string getVersion() const;
 
 	//! Console output of all methods of the class

@@ -108,7 +108,7 @@ void ProtoSystem::load(const std::string& planetfile)
 				}
 			} else {
 				if (bodyParams.size() !=0) {
-					//TODO récupérer cette erreur s'il y en a !
+					//TODO recover this error if there is one!
 					addBody(bodyParams, false);  // config file bodies are not deletable
 					bodyParams.clear();
 				}
@@ -646,7 +646,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	const std::string funcname = param["coord_func"];
 
 	//
-	// determination de l'orbite de l'astre
+	// determination of the orbit of the star
 	//
 	std::unique_ptr<Orbit> orb = nullptr;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
@@ -705,7 +705,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	}
 
 	//
-	// fin détermination de l'orbite
+	// end orbit determination
 	//
 
 	std::unique_ptr<BodyColor> bodyColor = nullptr;
@@ -714,7 +714,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	float solLocalDay= Utility::strToDouble(param["sol_local_day"],1.0);
 
 	// Create the Body and add it to the list
-	// p est un pointeur utilisé pour l'objet qui sera au final intégré dans la liste des astres que gère body_mgr
+	// p is a pointer used for the object that will be finally integrated in the list of stars that body_mgr manages
 	std::shared_ptr<Body> p = nullptr;
 	ObjL* currentOBJ = nullptr;
 

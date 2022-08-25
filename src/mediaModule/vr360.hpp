@@ -58,12 +58,12 @@ public:
 	//! build draw command
 	void build();
 
-	//! update les faders de la classe
+	//! update faders of the classe
 	void update(int delta_time) {
 		showFader.update(delta_time);
 	}
 
-	//! création des shaders
+	//! ccreation of shaders
 	void createSC_context();
 private:
 	enum class TYPE : char { V_CUBE, V_SPHERE, V_NONE };

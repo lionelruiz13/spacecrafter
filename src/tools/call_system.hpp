@@ -43,31 +43,31 @@
 class CallSystem
 {
 public:
-    // sépare str en path et file
+    // separates str into path and file
 	static void splitFilename(const std::string& str, std::string &pathFile,std::string &fileName);
-    // test si le fichier existe et est accessible
+    // test if the file exists and is accessible
     static bool isReadable(const std::string& fileName);
-    // test si le fichier existe
+    // test if the file exists
     static bool fileExist(const std::string& fileName);
-    // test si le répertoire existe
+    // test if the directory exists
     static bool dirExist(const std::string& rep);
 	//! Recursively create missing directory to ensure the path exist
 	static void ensurePathExist(const std::string &path);
     //! returns true if the given path is absolute
     static bool isAbsolute(const std::string path);
-    //! copie le fichier src à la destination dest
+    //! copies the src file to the destination dest
     static bool fileCopy(const std::string &src, const std::string &dest) ;
-    //! Vérifie que les fichiers ini des utilisateurs sont présents et les reconstruit si besoin
+    //! Checks if the user ini files are present and rebuilds them if needed
     static void checkIniFiles(const std::string &CDIR, const std::string &DATA_ROOT);
-    //! Vérifie que userDir existe et le crée. renvoie le résultat dans logResult
+    //! Checks if userDir exists and creates it. returns the result in logResult
     static void checkUserDirectory(const std::string &userDir, std::string & logResult);
-    //! Vérifie que les sous répertoires utilisateurs sont présents et les reconstruit si besoin
+    //! Checks if user subdirectories are present and rebuilds them if needed
     static void checkUserSubDirectory(const std::string &CDIR, std::string& dirResult);
-    //! lance une commande système
+    //! runs a system command
     static bool useSystemCommand(const std::string & strCommand);
-    //! supprimme le programme prgm via son pid
+    //! deletes the prgm program via its pid
     static bool killAllPidFrom(const std::string& prgm);
-    //! Donne des informations sur la quantité de RAM disponible sur la machine
+    //! Gives information about the amount of RAM available on the machine
     static const std::string getRamInfo();
 };
 

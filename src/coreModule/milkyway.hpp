@@ -39,16 +39,16 @@
 
 /*!
  * \file milkyway.hpp
- * \brief conteneur de la classe MilkyWay
+ * \brief container of the MilkyWay class
  * \date 2016-03-10
  */
 
 /*! \class MilkyWay
- * \brief classe representant le gestion de la voie lactée
+ * \brief class representing the management of the milky way
  *
- *  La classe permet d'afficher sur une sphère céleste une texture de la voie lactée
+ *  The class allows to display on a celestial sphere a texture of the Milky Way
  *
- *  Elle représente aussi la lumière zodiacale
+ *  It also represents the zodiacal light
  *
  */
 
@@ -67,10 +67,10 @@ public:
 	MilkyWay();
 	virtual ~MilkyWay();
 
-	//! dessine la sphère et la texture associée à la Milkyway.
+	//! draws the sphere and the texture associated to the Milkyway.
 	void draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay);
 
-	//! update les faders de la classe
+	//! update the faders of the class
 	void update(int delta_time) {
 		showFader.update(delta_time);
 		switchTexFader.update(delta_time);
@@ -78,57 +78,57 @@ public:
 		zodiacalFader.update(delta_time);
 	}
 
-	//! modifie l'intensité lumineuse de la texture représentant la Milkyway
+	//! changes the light intensity of the texture representing the Milkyway
 	void setIntensity(float _intensity){
 		intensityMilky = _intensity;
 	}
 
-	//! renvoie l'intensité de la texture représentant la Milkyway
+	//! returns the intensity of the texture representing the Milkyway
 	float getIntensity() const {
 		return intensityMilky;
 	};
 
-	//! fixe l'état du fader de l'affichage de la Milkyway
+	//! sets the state of the fader of the Milkyway display
 	void setFlagShow(bool b) {
 		showFader = b;
 	}
 
-	//! définie l'état de la lumière zodiacale
-	//! \param tex_file détermine le nom de la texture
-	//! \param _intensity détermine l'intensité de base associée à la texture
+	//! sets the state of the zodiacal light
+	//! \param tex_file determines the name of the texture
+	//! \param _intensity sets the base intensity associated with the texture
 	void defineZodiacalState(const std::string& tex_file, float _intensity);
 
-	//! définie l'état initial de la Milkyway
-	//! \param tex_file détermine le nom de la texture la représenant
-	//! \param _intensity détermine l'intensité de base associée à cette texture
+	//! sets the initial state of the Milkyway
+	//! \param tex_file determines the name of the texture representing it
+	//! \param _intensity determines the basic intensity associated with this texture
 	void defineInitialMilkywayState(const std::string& path_file,const std::string& tex_file, const std::string& iris_tex_file, float _intensity);
 
-	//! prépare le logiciel à un changement de Milkyway
+	//! prepares the software for a change of Milkyway
 	//! \param tex_file détermine le nom de la nouvelle texture
-	//! \param _intensity détermine l'intensité de base associée à la nouvelle texture
+	//! \param _intensity determines the basic intensity associated with the new texture
 	void changeMilkywayState(const std::string& full_tex_file, float _intensity);
 
-	//! prépare le logiciel à un changement de Milkyway sans toucher à son intensité
-	//! \param tex_file détermine le nom de la nouvelle texture
+	//! prepares the software to a change of Milkyway without touching its intensity
+	//! \param tex_file determines the name of the new texture
 	void changeMilkywayStateWithoutIntensity(const std::string& full_tex_file);
 
 
-	//! récupère l'état du fader de l'affichage de la Milkyway
+	//! retrieves the state of the fader of the Milkyway display
 	bool getFlagShow(void) const {
 		return showFader;
 	}
 
-	//! fixe l'état du fader de l'affichage de la Milkyway
+	//! sets the state of the fader of the Milkyway display
 	void setFlagZodiacal(bool b) {
 		zodiacalFader = b;
 	}
 
-	//! récupère l'état du fader de l'affichage de la Milkyway
+	//! retrieves the fader state from the Milkyway display
 	bool getFlagZodiacal(void) const {
 		return zodiacalFader;
 	}
 
-	//! fixe la durée de transition entre deux états du fader de l'affichage
+	//! sets the transition time between two display fader states
 	void setFaderDuration(float f) {
 		f *=1000;
 		showFader.setDuration(f);
@@ -137,15 +137,15 @@ public:
 		intensityMilky.setDuration(f);
 	}
 
-	//! remet l'intensité de la Milkyway à l'intensité initiale.
+	//! resets the intensity of the Milkyway to the initial intensity.
 	void restoreIntensity() {
 		intensityMilky = currentMilky.intensity;
 	}
 
-	//! permutte les textures currentTex et nextTex après une transition
+	//! swaps the currentTex and nextTex textures after a transition
 	void endTexTransition();
 
-	//! restaure la milkyway par défaut
+	//! restores the default milkyway
 	void restoreDefaultMilky();
 
 	void useIrisTexture(bool v) {
@@ -168,7 +168,7 @@ public:
 
 private:
 	struct MilkyData{
-		std::string name; // le nom exact de la texture
+		std::string name; // the exact name of the texture
 		std::unique_ptr<s_texture> tex;
 		float intensity;
 	};
@@ -188,9 +188,9 @@ private:
 
 	OjmL* sphere = nullptr;
 
-	bool onTextureTransition = false;		//!< indique uen transition sur la texture
-	bool displayIrisMilky = false;			//!< indique que l'on doit utiliser la texture iris
-	bool useIrisMilky = false;				//!< avons nous besoin d'utiliser la texture iris ?
+	bool onTextureTransition = false;		//!< indicates a transition on the texture
+	bool displayIrisMilky = false;			//!< indicates that we need to use the iris texture
+	bool useIrisMilky = false;				//!< do we need to use the iris texture?
 	bool allowZodiacal = false;
 
 	Scalable<float> intensityMilky;
@@ -207,7 +207,7 @@ private:
 
 	void createSC_context();
 	// void deleteShader();
-	void initModelMatrix();			//! création des matrices Model pour MilkyWay et Zodiacal
+	void initModelMatrix();			//! creation of the Model matrices for MilkyWay and Zodiacal
 	void deleteMapTex();
 	void buildMilkyway();
 	void buildZodiacal();

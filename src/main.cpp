@@ -270,7 +270,7 @@ int main(int argc, char **argv)
 	std::unique_ptr<SDLFacade> sdl = std::make_unique<SDLFacade>();
 	sdl->initSDL();
 
-	// détermination de la résolution initiale
+	// determination of the initial resolution
 	bool autoscreen = conf.getBoolean(SCS_VIDEO, SCK_AUTOSCREEN);
 	bool remote_display = conf.getBoolean(SCS_VIDEO, SCK_REMOTE_DISPLAY);
 	bool keep_empty_window = conf.getBoolean(SCS_VIDEO, SCK_KEEP_EMPTY_WINDOW);

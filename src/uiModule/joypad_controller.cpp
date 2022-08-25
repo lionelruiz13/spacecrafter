@@ -73,7 +73,7 @@ JoypadController::JoypadController(UI * _ui) noexcept
 	}
 
 
-	//a remplacer un jour
+	//to replace one day
 	hatActions = new joy_button_action[nbrHats*4];
 
 	for(int i = 0; i < nbrHats*4; i++) {

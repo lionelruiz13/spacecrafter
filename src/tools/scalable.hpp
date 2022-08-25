@@ -33,7 +33,7 @@
  *
  * @section DESCRIPTION
  *
- * Cette classe template met à disposition des nombres T mobiles, qui évoluent d'eux même en fonction d'une unité de mesure.
+ * This template class provides mobile numbers T, which evolve by themselves according to a unit of measurement.
  * Define T with set() function.
  * Update T with update() function.
  *
@@ -48,7 +48,7 @@
         a.update(20);
     }
  *
- *  La valeur de a passera de 9. à 5. pendant duration unité de temps, ici par paquets de 20.
+ *  The value of a will go from 9. to 5. during a unit of time, here by packets of 20.
  *
  *
  */
@@ -88,7 +88,7 @@ public:
 		}
     }
 
-	//! opérateur d'assignement
+	//! assignment operator
 	Scalable& operator=(T s){
         desiredValue = s;
         isTransiting = true;
@@ -97,35 +97,35 @@ public:
         return *this;
     }
 
-	//! Opératuer de comparaison
+	//! Comparison operator
     bool operator==(T s) const {
 		return currentValue==s;
 	}
 
-	//! Opérateur de retour
+	//! Return operator
 	operator T() const {
 		return currentValue;
 	}
 
-	//! Définition de la durée du transit
+	//! Definition of transit time
 	void setDuration(int _duration) {
 		duration = _duration;
         counter = 0;
 	}
 
-	//! Indication de la durée du transit
+	//! Indication of the duration of the transit
 	float getDuration() const {
         return duration;
     }
 
-	//! Définition initiale et initialisation du scalable
+	//! Initial definition and initialization of scalable
     void set(T f){
         currentValue = f;
         desiredValue = f;
         isTransiting = false;
     }
 
-	//! renvoie la valeur actuelle du scalable dans le type T
+	//! returns the current value of the scalable in the type T
     T value() const {
         return currentValue;
     }
@@ -138,19 +138,19 @@ public:
 		return changedInUpdate;
 	}
 
-	//! compatibilité affichage ostream
+	//! ostream display compatibility
     friend std::ostream& operator << (std::ostream & sortie, const Scalable &s) {
 		return sortie << s.currentValue;
 	}
 
 
 protected:
-    int duration;	//!< nombre total d'unité de mesure du changement
-    int counter;	//!< nombre d'unité de mesure déjà écoulée
-	T currentValue;	//!< valeur du scalable
-	T desiredValue; //!< valeur finale après changement
-    T updateCoeff = 0;	//!< valeur représentant 1 unité de changement
-    bool isTransiting = false;	//!< booléan indiquant si on effectue un changement
+    int duration;	//!< total number of measurement units of the change
+    int counter;	//!< number of measurement units already elapsed
+	T currentValue;	//!< value of the scalable
+	T desiredValue; //!< final value after change
+    T updateCoeff = 0;	//!< value representing 1 unit of change
+    bool isTransiting = false;	//!< boolean indicating if a change is made
 	bool changedInUpdate = false; //!< Tell if the value has changed with last update
 };
 

@@ -72,7 +72,7 @@ enum class SCD_NAMES: char {APP_ATMOSPHERE_FADE_DURATION = 30, APP_AUTO_MOVE_DUR
 enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE, SUN_AZIMUTH, DATE_YEAR, DATE_MONTH, DATE_DAY, DATE_HOUR, DATE_MINUTE, HEADING, SELECTED_RA, SELECTED_DE, SELECTED_AZ, SELECTED_ALT };
 
 
-// nom des arguments des commandes
+// name of the arguments of the commands
 #define W_ALIGN                     "align"
 #define W_FILENAME                  "filename"
 #define W_SIZE                      "size"
@@ -284,7 +284,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_TERMINATION               "termination"
 #define W_PRELOAD					"preload"
 
-// nom des arguments maps appCommandInit
+// name of the arguments maps appCommandInit
 //CommandsNames
 #define ACP_CN_ADD                                  "add"
 #define ACP_CN_AUDIO                                "audio"

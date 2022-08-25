@@ -172,7 +172,7 @@ void MilkyWay::restoreDefaultMilky()
 	switchTexFader = true;
 	setIntensity(defaultMilky.intensity);
 	buildMilkyway();
-	// cout << "Valeur de Intensity " << intensityMilky << endl;
+	// cout << "Value of Intensity " << intensityMilky << endl;
 }
 
 void MilkyWay::endTexTransition()

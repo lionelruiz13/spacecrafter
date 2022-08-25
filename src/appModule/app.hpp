@@ -131,9 +131,9 @@ public:
 	float getLineWidth() const;
 	float getFlagAntialiasLines() const;
 
-	//! modifie un flag de App donnée par APP_FLAG
+	//! modifies a flag given by APP_FLAG
 	void flag(APP_FLAG layerValue, bool _value);
-	//! modifie un flag via un toggle
+	//! modify a flag via a toggle
 	void toggle(APP_FLAG layerValue);
 
 	void switchMode(const std::string setValue);
@@ -158,7 +158,7 @@ private:
 	double baseHeading;
 	std::string StartupTimeMode;	//! Can be "now" or "preset"
 	std::string DayKeyMode;			//! calendar or sidereal
-	unsigned int deltaTime; 		//! représente la durée théorique d'une frame
+	unsigned int deltaTime; 		//! represents the theoretical duration of a frame
 
 	//communication with other processus
 	bool enable_tcp;
@@ -179,13 +179,13 @@ private:
 	bool flushFrames; // Flush every frames, reduce framerates but potentially remove some graphical glitches
 
 	// Main elements of the stel_app
-	AppSettings* settings = nullptr;		 			//! base pour les constantes du logiciel
+	AppSettings* settings = nullptr;		 			//! base for the software constants
 	std::shared_ptr<AppCommandInterface> commander;		//! interface to perform all UI and scripting actions
 	std::shared_ptr<ScriptMgr> scriptMgr;				//! manage playing and recording scripts
 	std::shared_ptr<ScriptInterface> scriptInterface;	//! interface for other composents
 	std::shared_ptr<Media> media;						//!< media manager
 	std::shared_ptr<UI> ui;								//! The main User Interface
-	std::shared_ptr<ScreenFader> screenFader;			//! gestion des fondus
+	std::shared_ptr<ScreenFader> screenFader;			//! fade management
 
 	std::shared_ptr<Core> core;
 	std::shared_ptr<CoreLink> coreLink;
@@ -193,7 +193,7 @@ private:
 	std::shared_ptr<FontFactory> fontFactory;
 	std::shared_ptr<SaveScreenInterface> saveScreenInterface;
 	std::unique_ptr<ServerSocket> tcp;
-	std::unique_ptr<Fps> internalFPS;			//! gestion fine du frameRate
+	std::unique_ptr<Fps> internalFPS;			//! fine management of the frameRate
 	std::unique_ptr<AppDraw> appDraw;
 	std::shared_ptr<Observer> observatory;
 	std::unique_ptr<Executor> executor;
@@ -205,7 +205,7 @@ private:
 	EventRecorder* eventRecorder;
 	EventHandler* eventHandler;
 
-	Uint16 width, height;  						//! Contient la résolution w et h de la fenetre SDL
+	Uint16 width, height;  						//! Contains the resolution w and h of the SDL window
 	SDL_Event	E;
 };
 #endif

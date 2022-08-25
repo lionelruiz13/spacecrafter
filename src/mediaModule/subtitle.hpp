@@ -37,51 +37,51 @@ public:
 	~Subtitle();
 
 	/**
-	* Ppdate permet, grâce au temps en paramètre, de rechercher directement le prochain message (s'il existe)
-	* et le garde en mémoire jusqu'à la demande d'affichage
+	* Ppdate allows, thanks to the time in parameter, to search directly the next message (if it exists)
+	* and keeps it in memory until the display request
 	*/
 	void update(int time);
 
-	//Primitives de gestion du fichier
+	//Primitives of file management
 	/**
-	*  Permet de charger un fichier de type sous_Titre.srt
+	*  Allows to load a file of type sub_title.srt
 	*/
 	void loadFile(const std::string& fileName);
 
 	/**
-	* Cette fonction permetteras d'afficher, en fonction des paramètres lu dans le fichier, le sous-titre au dernier temps demandé.
-	* Les sous_titre ne s'affichent que selon la demande de l'utilisateur, avec un boolean.
+	* This function will display, according to the parameters read in the file, the subtitle at the last requested time.
+	* The subtitles are only displayed according to the user's request, with a boolean.
 	*/
 	void writeToConsole(bool &toDisplay);
 
 private:
 	/**
-	 * Permet de convertir, à partir du format string, le temps au format 00:00:00,000 en un entier en millisecondes
+	 * Allows to convert, from the string format, the time in 00:00:00,000 format into an integer in milliseconds
 	 */
 	int TimeToMs(std::string& time);
 
 	/**
-	*   Fonction qui lit et initialise le vecteur de sous titre
+	*   Function that reads and initializes the subtitle vector
 	*/
 	void readFile();
 
 	/**
-	 * Permet d'ajouter un élément à la fin du vecteur
+	 * Allows to add an element at the end of the vector
 	 */
 	void addSub(int tc1, int tc2, std::string &c, std::string &msg);
 
-	int _deltaTime; // _deltaTime sert à garder en mémoire la dernière position demandé par l'utilisateur
-	std::string _FILE; // permet de garder en mémoire le fichier.srt de sous_titre
+	int _deltaTime; // _deltaTime is used to keep in memory the last position requested by the user
+	std::string _FILE; // allows to keep in memory the subtitle .srt file
 
 	struct sub_Struct {
 		int Tcode1;
 		int Tcode2;
 		std::string character;
 		std::string msg;
-	}; // Structure de traitement des données de sous titre.
+	}; // Structure for processing subtitle data.
 
 	std::vector<sub_Struct> _vSub;
-	int _numSub; //garde en mémoire l'emplacement du dernier sous_titre affiché.
+	int _numSub; //keeps track of the location of the last displayed subtitle.
 };
 
 #endif //SOUS_TITRE_HPP

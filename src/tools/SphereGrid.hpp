@@ -162,7 +162,7 @@ private:
 	void subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl);
 	//! Return a pointer to the nearest zone of -v
 	auto *getNearest(const Vec3f& _v);
-	//! Angle entre le centre d'un triange et l'un de ses sommets pour un niveau de division donné
+	//! Angle between the center of a triangular and one of its vertices for a given division level
 	std::vector<float> angleLvl;
 	//! Optimized container for access
 	dataCenterType_t allDataCenter;

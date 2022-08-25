@@ -84,7 +84,7 @@ void Audio::musicLoad(const std::string& filename, bool _loop)
 		this->musicDrop();
 		state = A_STATE::V_NONE;
 	}
-	// réinitilisation de track pour garantir l'état futur de la classe
+	// track reset to guarantee the future state of the class
 	track = nullptr;
 	track = Mix_LoadMUS(filename.c_str());
 	if (track == nullptr) {

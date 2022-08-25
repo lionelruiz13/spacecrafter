@@ -190,7 +190,7 @@ public:
 		return true;
 	}
 	/*
-	 * fixe le coefficient sur l'altitude pour suspendre la rotation de l'ancre
+	 * sets the coefficient on the altitude to suspend the rotation of the anchor
 	 */
 	bool setRotationMultiplierCondition(float v) noexcept {
 		if (v>1.0)

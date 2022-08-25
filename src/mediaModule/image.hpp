@@ -73,7 +73,7 @@ public:
 		isPersistent = value;
 	}
 
-	//! indique si on active la transparence sur la KeyColor
+	//! indicates whether transparency is enabled on the KeyColor
 	void setTransparency(bool v) {
 		transparency = v;
 	}
@@ -171,16 +171,16 @@ private:
 	std::unique_ptr<VertexBuffer> vertex;
 	uint32_t vertexSize;
 
-	//active la transparence
+	//enables transparency
 	bool transparency = false;
-	// indique quelle couleur est à effacer de l'image nocolor[3] indique le delta de couleur
+	// indicates which color is to be deleted from the image nocolor[3] indicates the color delta
 	Vec4f noColor;
 
-	//données utiles au cache
+	//useful data for the cache
 	bool initialised = false;
 	int vieww, viewh;
 
-	//combien de fois l'image est elle affichée sur le dôme ?
+	//how many times is the image displayed on the dome?
 	int howManyDisplay = 1;
 
 	float cx, cy, radius, prj_ratio;

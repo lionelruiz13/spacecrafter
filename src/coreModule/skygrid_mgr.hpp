@@ -54,7 +54,7 @@ public:
 	int size() {
 		return m_map.size();
 	};
-	//Celle qui va créer les objets
+	//The one that will create the objects
 	void Create(SKYGRID_TYPE type_obj);
 	void draw(const Projector* prj);
 	void update(int delta_time);
@@ -67,12 +67,12 @@ public:
 	void setColor(SKYGRID_TYPE typeObj, const Vec3f& c);
 	const Vec3f& getColor(SKYGRID_TYPE typeObj);
 
-	//! change FlagShow: inverse la valeur du flag
+	//! change FlagShow: reverses the value of the flag
 	void setFlagShow(SKYGRID_TYPE typeObj, bool b);
 	bool getFlagShow(SKYGRID_TYPE typeObj);
 	void flipFlagShow(SKYGRID_TYPE typeObj);
 
-	// fonctions de sauvegarde de l'état des grilles
+	// functions to save the state of the grids
 	void saveState(SkyGridSave &obj);
 	void loadState(SkyGridSave &obj);
 private:

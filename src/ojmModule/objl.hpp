@@ -14,20 +14,20 @@ class Pipeline;
 
 /**
  * \class ObjL
- * \brief Conteneur de fichiers OJML
+ * \brief OJML file container
  * \author Olivier NIVOIX
  * \date 21 juin 2018
  *
- * Cette classe a pour but de regrouper trois objets OJM d'un même objet physique et d'en afficher un en fonction de sa distance supposée à l'écran
+ * The purpose of this class is to group three OJM objects of the same physical object and to display one of them according to its supposed distance from the screen
  *
  * @section DESCRIPTION
  *
- * Cette classe ne sert que de wrapper.
- * Doit doit être utilisé avec un indirectDrawIndexed.
+ * This class is only used as a wrapper.
+ * Must be used with an indirectDrawIndexed.
  *
- * low représente l'objet vu de loin
- * medium le représente à une distance intermédiaire
- * high le représente à courte distance
+ * low represents the object seen from a distance
+ * medium represents it at an intermediate distance
+ * high represents it at short distance
  *
  */
 

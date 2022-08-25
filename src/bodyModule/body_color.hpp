@@ -5,27 +5,27 @@
 #include <string>
 
 /*
-*	gestion des couleurs d'un Body
+*	color management of a Body
 *
-*	Cette classe est un conteneur des informations regroupant toutes les couleurs d'un Body
-*		halo, label, orbit et trail
-*	Elle contient les couleurs initiales du Body ainsi que les couleurs par défaut (variables statiques)
+* This class is a container of information grouping all the colors of a body
+* halo, label, orbit and trail
+* It contains the initial colors of the body and the default colors (static variables)
 *
 */
 
-//TODO : const std::string &name devraient être des ENUM
+//TODO : const std::string &name should be an ENUM
 
 class BodyColor {
 
 public:
-	//! Constructeur
+	//! Constructor
 	BodyColor();
 
-	//! Constructeur
-	//! @param halo la couleur du halo du body
-	//! @param label la couleur du label du body
-	//! @param orbit la couleur de l'orbite du body
-	//! @param trail la couleur du trail du body
+	//! Constructor
+	//! @param halo the color of the halo of the body
+	//! @param label the color of the body's label
+	//! @param orbit the color of the body's orbit
+	//! @param trail the color of the body's trail
 	BodyColor(const std::string &_halo, const std::string &_label, const std::string &_orbit, const std::string &_trail);
 	~BodyColor();
 

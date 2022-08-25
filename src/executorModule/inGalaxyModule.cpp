@@ -127,11 +127,11 @@ void InGalaxyModule::draw(int delta_time)
 
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
 
-	//tracé des lignes sans activation du tampon de profondeur.
+	//drawing lines without activating the depth buffer.
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	core->starLines->draw(core->navigation);
 
-	// transparence.
+	// transparency.
 	core->dso3d->draw(observer->getAltitude(), core->projection, core->navigation);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_GALAXY);
 	core->starNav->draw(core->navigation, core->projection);

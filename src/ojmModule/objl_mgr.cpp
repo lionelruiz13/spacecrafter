@@ -74,7 +74,7 @@ ObjL* ObjLMgr::find(const std::string &_name)
 bool ObjLMgr::insert(const std::string &name, bool _defaultObject)
 {
 	ObjL* tmp=nullptr;
-	// verification que l'objet n'est pas déjà intégré
+	// check that the object is not already integrated
 	if (!_defaultObject) {
 		tmp = find(name);
 		if (tmp !=nullptr)

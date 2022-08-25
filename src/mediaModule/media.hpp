@@ -78,7 +78,7 @@ struct VideoParam {
 	IMG_PROJECT tmpProject;
 };
 
-//etat de la lecture vidéo
+//status of video playback
 enum class V_TYPE : char { V_NONE, V_VIEWPORT, V_IMAGE, V_VR360, V_VRCUBE};
 enum class V_STATE: char { V_NONE, V_PAUSE, V_PLAY };
 
@@ -95,17 +95,17 @@ public:
 	//
 	////////////////////////////////////////////////////////////////////////////
 
-	//! création des structures pour les VR
+	//! creation of structures for VR
 	void initVR360();
-	//! creation contexte Vulkan
+	//! creation of Vulkan context
 	void createSC_context();
 
-	//! affiche une image du player video à destination du VR360
+	//! displays an image of the video player for the VR360
 	void drawVR360(const Projector* prj, const Navigator* nav) {
 		vr360->draw(prj, nav);
 	}
 
-	//! affiche une image de player video à destination du ViewPort
+	//! displays a video player image to the ViewPort
 	void drawViewPort(double heading) {
 		viewPort->draw(heading);
 	}
@@ -119,15 +119,15 @@ public:
 		viewPort->disableFader();
 	}
 
-	//! permet d'indiquer au shader la couleur à effacer
-	//! \param color représente les 3 composantes RGB
-	//! \param intensity représente -+ un delta de différence de couleurs
+	//! allows you to indicate to the shader the color to be erased
+	//! \param color represents the 3 RGB components
+	//! \param intensity represents -+ a delta of color difference
 	void setKeyColor(const Vec3f &color, float intensity = 0.05) {
 		viewPort->setKeyColor(color,intensity);
 	}
 
-	//! active la transparence lors de la lecture des vidéos
-	//! \param v représente le booléan .
+	//! enables transparency when playing videos
+	//! \param v represents the boolean .
 	void setKeyColor(bool v) {
 		viewPort->setTransparency(v);
 	}
@@ -136,7 +136,7 @@ public:
 
 	////////////////////////////////////////////////////////////////////////////
 	//
-	//interface audio
+	//audio interface
 	//
 	////////////////////////////////////////////////////////////////////////////
 
@@ -203,15 +203,15 @@ public:
 		audio->update(delta_time);
 	}
 
-	//! Permet de fixer le comportement
-	//! @param true: la musique continue à jouer si le script entre en pause
-	//! @param false: la musique s'arrète de jouer si le script entre en pause
+	//! Allows you to set the behavior
+	//! @param true: the music continues to play if the script is paused
+	//! @param false: the music stops playing if the script is paused
 	void audioSetMusicToPause(bool value) {
 		audioNoPause = value;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//
-	//interface image
+	//image interface
 	//
 	////////////////////////////////////////////////////////////////////////////
 	int imageLoad(const std::string &filename, const  std::string &name, const std::string &coordinate, IMG_PROJECT project, bool mipmap) {
@@ -266,15 +266,15 @@ public:
 		imageMgr->draw(nav, prj);
 	}
 
-	//! permet d'indiquer au shader la couleur à effacer
-	//! \param color représente les 3 composantes RGB
-	//! \param intensity représente -+ un delta de différence de couleurs
+	//! allows you to indicate to the shader the color to be erased
+	//! \param color represents the 3 RGB components
+	//! \param intensity represents -+ a delta of color difference
 	void imageSetKeyColor(const Vec3f &color, float intensity = 0.05) {
 		imageMgr->setKeyColor(color,intensity);
 	}
 
-	//! active la transparence lors de la lecture des vidéos
-	//! \param v représente le booléan .
+	//! activates transparency when playing videos
+	//! \param v represents the boolean .
 	void imageSetKeyColor(bool v) {
 		imageMgr->setTransparency(v);
 	}
@@ -338,7 +338,7 @@ public:
 
 	////////////////////////////////////////////////////////////////////////////
 	//
-	//interface video
+	//video interface
 	//
 	////////////////////////////////////////////////////////////////////////////
 	VID_TYPE strToVideoType(const std::string& value);

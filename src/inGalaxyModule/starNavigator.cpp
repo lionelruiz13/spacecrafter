@@ -314,7 +314,7 @@ Vec3f StarNavigator::color_table[128] = {
 
 void StarNavigator::computeRCMagTable()
 {
-	//calcul de l'intensité lumineuse et du rayon
+	//calculation of light intensity and radius
 	ToneReproductor *eye = new ToneReproductor();
 	eye->setWorldAdaptationLuminance(4.721604);
 
@@ -331,7 +331,7 @@ void StarNavigator::computeRCMagTable()
 
 int StarNavigator::computeRCMag(float mag, const ToneReproductor *eye, float rc_mag[2])
 {
-	// code issue de hip_star_mgr
+	// code from hip_star_mgr
 	if (mag > max_mag) {
 		rc_mag[0] = rc_mag[1] = 0.f;
 		return -1;
@@ -374,7 +374,7 @@ int StarNavigator::computeRCMag(float mag, const ToneReproductor *eye, float rc_
 	return 0;
 }
 
-//pos designe la position de la caméra
+//pos indicates the position of the camera
 void StarNavigator::computePosition(Vec3f posI) noexcept
 {
 	if (listGlobalStarVisible.size()<1)
@@ -385,8 +385,8 @@ void StarNavigator::computePosition(Vec3f posI) noexcept
 	if (needComputeRCMagTable) {
 		this->computeRCMagTable();
 	} else {
-		if ((pos-old_pos).length() < DELTA_PARSEC) { //test de proximité
-			return; //rien à faire.
+		if ((pos-old_pos).length() < DELTA_PARSEC) { //proximity test
+			return; //nothing to do.
 		}
 	}
 
@@ -434,12 +434,12 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 		float y = si->posXYZ[1];
 		float z = si->posXYZ[2];
 
-		//test magnitude si magnitude trop faible, l'étoile ne sera pas affichée
+		//test magnitude if magnitude too low, the star will not be displayed
 		float dist =sqrt((x-pos[0])*(x-pos[0]) + (y-pos[1])*(y-pos[1]) +(z-pos[2])*(z-pos[2]));
 		float mag_v = si->mag+5*(log10(dist)-1);
 		if ( mag_v  < magnitude_max) {
 
-			//calcul du rayon et de l'intensité lumineuse
+			//calculation of the radius and luminous intensity
 			mag_v= round(mag_v*1000)/1000;
 			indice = (int)((mag_v-(-4.0))/0.05);
 
@@ -455,20 +455,20 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 			if (intensite <0.01)
 				continue;
 
-			// Issue de hip_star_mgr::drawStar
+			// Output of hip_star_mgr::drawStar
 			float magC = 2.f*rayon;
 			// Roll off star size limit as fov decreases to match planet halo scale
 			RangeMap<float> rmap(180, 1, -starSizeLimit, -(starSizeLimit + objectSizeLimit));
 			float rolloff = -rmap.Map(fov);
 			if( magC > rolloff )
 				magC = rolloff;
-			//FIN
+			//END
 
 			if (magC <0.2)
 				continue;
 
 
-			//Détermination de la couleur
+			//Determination of the color
 			Vec3f tcolor = color_table[si->B_V]*intensite ;
 
 			// There must be no concurrent access to the same vulkan memory

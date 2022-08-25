@@ -9,54 +9,54 @@ class ObjL;
 
 /**
  * \class ObjLMgr
- * \brief Gestionnaire d'objets 3D dans le logiciel
+ * \brief 3D objects manager in the software
  * \author Olivier NIVOIX
  * \date 21 juin 2018
  *
- * Cette classe a pour but de regrouper la gestion de tous les objets 3D de Body
+ * The purpose of this class is to group the management of all 3D objects in Body
  *
  * @section DESCRIPTION
  *
- * Tout objet affiché par Body est géré dans cette classe.
+ * Any object displayed by Body is managed in this class.
  *
- * Cette séparation permet de pouvoir afficher un même objet 3D pour différentes planètes.
+ * This separation allows to display the same 3D object for different planets.
  *
- * Le tracé est laissé à la charge des fichiers ObjL contenus dans la map.
+ * The layout is left to the ObjL files contained in the map.
  *
- * @section FONCTIONNEMENT
+ * @section OPERATION
  *
- * Une map sert de conteneur pour le stockage des ObjL.
+ * A map is used as a container for the storage of ObjL.
  *
- * Les classes de Body viennent chercher l'objet qui les intéresse.
+ * The Body classes come to get the object they are interested in.
  *
  */
 class ObjLMgr {
 public:
 	ObjLMgr();
 
-	//! fixer le chemin relatif des objets3D
+	//! set the relative path of the3D objects
 	void setDirectoryPath(const std::string &directoryName) {
 		defaultDirectory = directoryName;
 	}
 
 	~ObjLMgr();
 
-	//! ajout d'un objet3D dans la map s'il n'existe pas déjà
-	//! @param nom du nouvel objet name
+	//! add an object3D in the map if it does not already exist
+	//! @param name of the new object name
 	bool insertObj(const std::string &_name){
 		return this->insert(_name, false);
 	}
 
-	//! ajout de l'objet3D par défaut dans la map
-	//! @param nom du nouvel objet name
+	//! add the default 3D object in the map
+	//! @param name of the new object name
 	bool insertDefault(const std::string &_name) {
 		return this->insert(_name, true);
 	}
 
-	//! sélectionne un objet3D dans la map
+	//! select a 3D object in the map
 	ObjL* select(const std::string &name);
 
-	//! sélectionne l'objet par défaut
+	//! selects the default object
 	ObjL* selectDefault() {
 		return defaultObject;
 	}
@@ -66,16 +66,16 @@ public:
 	}
 
 private:
-	//! ajout d'un objet3D dans la map s'il n'existe pas déjà
-	//! @param nom du nouvel objet name
-	//! @param indicateur de l'objet par defaut
+	//! add a 3D object in the map if it doesn't already exist
+	//! @param name of the new object name
+	//! @param indicator of the default object
 	bool insert(const std::string &name, bool _defaultObject= false);
 
-	//! recherche dans la liste un pointeur sur un model3D au nom de name
+	//! search in the list for a pointer to a model3D with the name of name
 	ObjL* find(const std::string &name);
-	//! map des objet3D, identifié par le nom
+	//! map of 3D objects, identified by the name
 	std::map <const std::string, ObjL*> objectMap;
-	//! chemin absolu des objet3D
+	//! absolute path of the 3D objects
 	std::string defaultDirectory;
 	ObjL* defaultObject = nullptr;
 };

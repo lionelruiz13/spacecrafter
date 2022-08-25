@@ -236,12 +236,12 @@ void SkyGrid::draw(const Projector* prj)
 			*uMat = prj->getMatLocalToEye();
 			break;
 		default:
-			return; //pour GCC
+			return; //for GCC
 	}
 
     Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_BACKGROUND);
 
-	// tracé de texte.
+	// text plot.
 	for (unsigned int nm=0; nm<nb_meridian; ++nm) {
 
 		Vec4f Color (color[0],color[1],color[2],fader.getInterstate());

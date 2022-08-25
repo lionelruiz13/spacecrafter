@@ -170,7 +170,7 @@ void SkyDisplayMgr::Create(SKYDISPLAY_NAME nameObj)
 	SkyDisplay* tmp=nullptr;
 	auto it=m_map.find(nameObj);
 
-	//si l'itérateur ne vaut pas map.end(), cela signifie que que la clé à été trouvée
+	//if the iterator is not map.end(), it means that the key has been found
 	if(it!=m_map.end()) {
 		cLog::get()->write("SkyDisplayMgr SkyGrid already create " + getSkyName(nameObj), LOG_TYPE::L_ERROR);
 		return;
@@ -234,7 +234,7 @@ void SkyDisplayMgr::Create(SKYDISPLAY_NAME nameObj)
 			return;
 			break;
 
-		default: // inconnue
+		default: // unknow
 			break;
 	}
 }

@@ -25,7 +25,7 @@ enum class SKYLINE_TYPE : char {
 		LINE_UNKNOWN
 	};
 
-//structure qui stocke les grilles à un instant t
+//structure that stores the grids at a time t
 struct SkyLineSave {
 	bool circle_polar;
 	bool point_polar;
@@ -57,7 +57,7 @@ enum class SKYGRID_TYPE : char {
 	GRID_UNKNOWN
 };
 
-//structure qui stocke les grilles à un instant t
+//structure that stores the grids at a time t
 struct SkyGridSave {
 	bool equatorial;
 	bool ecliptic;
@@ -86,7 +86,7 @@ enum class SKYDISPLAY_NAME : char{
 	SKY_ANGDIST
 };
 
-//structure qui stocke SkyDisplay à un instant t
+//structure that stores SkyDisplay at a time t
 struct SkyDisplaySave {
 	bool personal;
 	bool personeq;

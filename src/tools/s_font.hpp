@@ -73,26 +73,26 @@ typedef renderedStringHash_t::const_iterator renderedStringHashIter_t;
 class s_font {
 
 public:
-	//! crée une fonte de taille size_i utilisant le fichier fonte nommé ttfFileName
+	//! creates a font of size_i using the font file named ttfFileName
 	s_font(float size_i, const std::string& ttfFileName);
 	virtual ~s_font();
-	//! modifie les paramètres de la fonte
+	//! modify the parameters of the font
 	void rebuild(float size_i, const std::string& ttfFileName);
 
-	//! affiche un texte s droit au point M(x,y) de couleur Color à la position MVP avec upsidedown indiquant s'il est à l'endroit ou à l'envers
+	//! display a text s right at the point M(x,y) of color Color at the position MVP with upsidedown indicating if it is upright or upside down
 	void print(float x, float y, const std::string& s, Vec4f Color, Mat4f MVP ,int upsidedown, bool cached = true);
-	//! afficher un texte parallège à l'horizon en altitude azimuth
-	//! cache indique si l'on doit garder le texte en mémoire
+	//! display a text parallel to the horizon in altitude azimuth
+	//! cache indicates whether to keep the text in memory
 	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache);
 	//! remove text s from cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame
 	void clearCache(const std::string& s);
 	//! remove every texts from font cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame
 	void clearCache();
-	//! indique la taille en pixel du texte s
+	//! indicates the size in pixels of the text s
 	float getStrLen(const std::string& s);
-	//! crée tout le contexte graphique des fontes
+	//! creates the whole graphic context of the fonts
 	static void createSC_context();
-	//! met en place la fonte de secours
+	//! sets up the backup font
 	static void initBaseFont(const std::string& ttfFileName);
 	//! Initialize printer
 	static void beginPrint();

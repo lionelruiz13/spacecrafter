@@ -21,7 +21,7 @@ public:
 	OjmL(std::shared_ptr<VertexBuffer> vertex, SubBuffer index, unsigned int indexCount);
 	~OjmL();
 
-	//! renvoie l'état de l'objet: chargé et opérationnel, négatif sinon
+	//! returns the state of the object: loaded and operational, negative otherwise
 	bool getOk() {
 		return is_ok;
 	}
@@ -46,16 +46,16 @@ public:
 private:
 	bool is_ok = false;
 
-	//! charge et initialise un objet OJM
+	//! loads and initializes an OJM object
 	bool init(const std::string& _fileName);
 
-	//! charge un objet OJM du disque dur
+	//! loads an OJM object from the hard disk
 	bool readOJML(const std::string& _fileName);
 
-	//! initialise tous les parametres GL de l'ojm
+	//! initializes all GL parameters of the ojm
 	void initGLparam();
 
-	//! supprime les paramètres GL de l'ojm
+	//! deletes the GL parameters of the ojm
 	void delGLparam();
 
 	std::vector<float> vertices;

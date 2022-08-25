@@ -20,7 +20,7 @@ void BodyDecor::anchorAssign(/*bool Spacecraft*/)
 		drawLandscape = false;
 	// }
 	drawMeteor = false;
-	// on est dans l'espace
+	// we are in space
 	drawBody = true;
 	milky->useIrisTexture(true);
 }
@@ -28,7 +28,7 @@ void BodyDecor::anchorAssign(/*bool Spacecraft*/)
 void BodyDecor::bodyAssign(double altitude, const AtmosphereParams* atmParam/*, bool Spacecraft*/)
 {
 
-	// gestion du landscape et du body
+	// landscape and body management
 	if ((altitude<atmParam->limLandscape) /*or Spacecraft*/) {
 		drawLandscape = true;
 		drawBody = false; //Spacecraft;
@@ -49,7 +49,7 @@ void BodyDecor::bodyAssign(double altitude, const AtmosphereParams* atmParam/*, 
 
 	bool outZoneAtmosphere = (altitude > atmParam->limSup);
 
-	//on est sur un body mais en dehors de la zone de l'atmosphere
+	//we are on a body but outside the atmosphere zone
 	if (outZoneAtmosphere) {
 		atmosphere->setFlagShow(false);
 		drawMeteor = false;
@@ -57,8 +57,8 @@ void BodyDecor::bodyAssign(double altitude, const AtmosphereParams* atmParam/*, 
 		return;
 	}
 
-	//on est sur un body qui a une atmosphere et on est dedans
-	//l'utilisateur ne veut pas tracer d'atmosphere
+	//we are on a body that has an atmosphere and we are in it
+	//the user doesn't want to draw an atmosphere
 	if (!atmState) {
 		atmosphere->setFlagShow(false);
 		milky->useIrisTexture(true);
@@ -66,7 +66,7 @@ void BodyDecor::bodyAssign(double altitude, const AtmosphereParams* atmParam/*, 
 		return;
 	}
 
-	// on se retrouve dans le cas sur un body qui a une atmosphere et on est proche de l'astre
+	// we are on a body that has an atmosphere and we are close to the star
 	if (altitude < atmParam->limInf) {
 		atmosphere->setFlagShow(true);
 		milky->useIrisTexture(false);

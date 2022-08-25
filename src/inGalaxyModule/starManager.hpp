@@ -20,13 +20,13 @@
 #ifndef STARMANAGER_HPP
 #define STARMANAGER_HPP
 
-// défini la longueur en parsec du côté d'un cube
+// defines the length in parsec of the side of a cube
 #define CUBESIZE 100
 
-// défini la longueur en parsec du côté d'un HyperCube
+// define the length in parsec of the side of a HyperCube
 #define HCSIZE 400
 
-// define liés aux statistiques
+// define related to statistics
 #define NBR_PAS_STATHC 8
 #define MAG_PAS 12
 
@@ -37,12 +37,12 @@
 //! \struct starInfo
 //! \brief Stars are stocked in this structure
 struct starInfo {
-	unsigned int HIP;	//nom de l'étoile
-	Vec3f posXYZ;	//position dans l'espace en al
-	float pmRA;	// RA en mas
-	float pmDE;	// DE en mas
-	float mag;	//magnitude de l'objet
-	int B_V;	//index de couleur de l'objet
+	unsigned int HIP;	//name of the star
+	Vec3f posXYZ;	//position in space in al
+	float pmRA;	// RA in mas
+	float pmDE;	// DE in mas
+	float mag;	//magnitude of the object
+	int B_V;	//color index of the object
 	float pc; 	//unit : parsec
 };
 

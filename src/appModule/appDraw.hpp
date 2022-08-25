@@ -52,12 +52,12 @@ public:
 	//! Initialize application drawer
 	void init(unsigned int _width, unsigned int _height);
 
-	//! dessine le splash au démarrage
+	//! draws the splash at startup
     void initSplash();
 
-	//! rempli en noir l'extérieur du dôme
+	//! filled in black the outside of the dome
 	void drawViewportShape();
-	//! dessine le rendu final du logiciel en inversant les couleurs
+	//! draws the final rendering of the software by inverting the colors
 	void drawColorInverse();
 
 	void setLineWidth(float w);
@@ -77,7 +77,7 @@ public:
 		setFlagAntialiasLines(!antialiasLines);
 	}
 
-	//! création des shaders
+	//! creation of shaders
 	void createSC_context();
 private:
 	std::unique_ptr<VertexArray> m_viewportGL;
@@ -91,10 +91,10 @@ private:
 	// 0-3 viewport shape, 3-6 color inverse
 	std::vector<VkCommandBuffer> cmds;
 
-	float m_lineWidth;							//!< épaisseur du tracé des lignes openGL
+	float m_lineWidth;							//!< openGL line thickness
 	bool antialiasLines;						//!< using GL_LINE_SMOOTH
-    Uint16 width, height;  						//!< Contient la résolution w et h de la fenetre SDL
-	Uint16 m_radius, m_decalage_x, m_decalage_y;	//!< pour optimisation des calculs
+    Uint16 width, height;  						//!< Contains the resolution w and h of the SDL window
+	Uint16 m_radius, m_decalage_x, m_decalage_y;	//!< for calculation optimization
 };
 
 #endif

@@ -73,10 +73,10 @@ void Orbit2D::computeShader()
 
 //-------------------------------------------------------------------------
 //
-// gestion du point passant par le centre de la planete
+// management of the point passing through the center of the planet
 //
 //-------------------------------------------------------------------------
-	//ICI insertion du point passant par le centre de la planete
+	//HERE insertion of the point passing through the center of the planet
 	body->orbit_position= body->get_ecliptic_pos();
 	Vec3f center(body->orbit_position[0]-body->radius/10,
 				 body->orbit_position[1]-body->radius/10,

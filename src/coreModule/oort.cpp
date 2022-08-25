@@ -122,7 +122,7 @@ void Oort::draw(double distance, const Navigator *nav) noexcept
 	if (!fader.getInterstate()) return;
 
 	distance = abs(distance);
-	// gestion de l'intensité
+	// management of intensity
 	if ((distance < 1e13) || (distance > 5.E15))
 		return;
 

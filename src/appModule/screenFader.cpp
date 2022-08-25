@@ -43,10 +43,10 @@ void ScreenFader::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
-	// point en haut a gauche
-	// point en haut a droite
-	// point en bas à gauche
-	// point en bas à droite
+	// point on the top left
+	// top right point
+	// point at the bottom left
+	// point at the bottom right
 	float points[8] = {-1.f, 1.f, 1.f, 1.f, -1.f, -1.f, 1.f, -1.f};
 	assert(!m_screenGL);
 

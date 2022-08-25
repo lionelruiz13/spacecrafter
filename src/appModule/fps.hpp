@@ -40,75 +40,75 @@
 */
 
 /*! @class Fps
-* @brief classe s'occupant du framerate et des FPS
+* @brief class dealing with framerate and FPS
 *
 * @description
-* La classe Fps gère le framerate du logiciel. Elle utilise pour cela deux conditions
-* - la fonction wait :  elle s'occupe de la durée d'une frame par rapport à une autre. (vue locale, soumise à l'imperfection des arrondis d'entiers de ms)
-* - la fonction afterOneSecond : elle s'occupe de de la durée des frames sur une période d'une seconde afin de déterminer le FPS
-* - afterOneSecond est lancée via un trigger SDL dans App.hpp toutes les 1000 ms.
+* The Fps class manages the framerate of the software. It uses two conditions for this
+* the wait function : it takes care of the duration of a frame compared to another one. (local view, subject to the imperfection of ms integer rounding)
+* the afterOneSecond function : it takes care of the duration of the frames over a period of one second in order to determine the FPS
+* afterOneSecond is launched via an SDL trigger in App.hpp every 1000 ms.
 */
 class Fps  : public NoCopy {
 public:
 	Fps(){};
 	~Fps(){};
 
-	//! Initialise les paramètres de l'horloge
+	//! Initializes the clock parameters
 	void init() {
 		initCount= SDL_GetTicks();
 		lastCount= SDL_GetTicks();
 	};
 
-	//! renvoie le nombre de frames affichées depuis le lancement du logiciel
+	//! returns the number of frames displayed since the launch of the software
 	unsigned long int getElapsedFrame() const {
 		return numberFrames;
 	}
 
-	//! ajoute une frame
+	//! adds a frame
 	void addFrame();
 
-	//! renvoie la durée d'un tour de boucle 
+	//! returns the duration of a loop 
 	unsigned int getDeltaTime() const;
 
 
-	//! indique à quel FPS le logiciel doit tourner en mode capture vidéo
+	//! indicates at what FPS the program should run in video capture mode
 	void setVideoFps(float fps) {
 		videoFPS = fps;
 	}
 
-	//! indique à quel FPS le logiciel doit tourner en mode normal
+	//! indicates at what FPS the program should run in normal mode
 	void setMaxFps(float fps) {
 		maxFPS = fps;
 	}
 
-	//! bascule en mode enregistrement de vidéo
+	//! switches to video recording mode
 	void selectVideoFps();
 
-	//! bascule en mode normal 
+	//! switches to normal mode 
 	void selectMaxFps();
 
-	//! Prend une mesure de temps
+	//! Takes a time measurement
 	void setTickCount() {
 		tickCount = SDL_GetTicks();
 	}
 
-	//! Modifie le temps de référence de l'horloge
+	//! Changes the reference time of the clock
 	void setLastCount() {
 		lastCount = tickCount;
 	}
 
-	//! indique le FPS actuel
+	//! indicates the current FPS
 	int getFps() const {
 		return fps;
 	}
 
-	// Détermine la durée d'attente entre deux frames pour obtenir le FPS théorique
+	// Determines how long to wait between two frames to get the theoretical FPS
 	void wait();
 
-	//! Calcule le FPS par seconde et corrige les différences
+	//! Calculates the FPS per second and corrects the differences
 	void afterOneSecond();
 
-	//! fonction callback lancée par SDL2
+	//! callback function launched by SDL2
 	static Uint32 callbackfunc(Uint32 interval, void *param);
 private:
 	uint64_t numberFrames=0;

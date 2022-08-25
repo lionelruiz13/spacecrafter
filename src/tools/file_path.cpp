@@ -54,36 +54,36 @@ FilePath::FilePath(const std::string& fileName, const std::string& localisation)
 
 	if ( !CallSystem::isAbsolute(fileName)) {
 		fullFileName = scriptPath+fileNameAdapted;
-		// localisation dans scriptPath
+		// localisation in scriptPath
 		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
 		fullFileName = AppSettings::Instance()->getMediaDir() + fileNameAdapted;
-		// localisation dans media
+		// localisation in media
 		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
 		//localisation non existante
 		fullFileName = scriptPath+fileName;
-		// localisation dans scriptPath
+		// localisation in scriptPath
 		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
 		fullFileName = AppSettings::Instance()->getMediaDir() + fileName;
-		// localisation dans media, dernier test
+		// localisation in media, last test
 		isFileExist = CallSystem::fileExist(fullFileName);
 	}
 	else {
-		//test version de localisation
+		//test version of localisation
 		fullFileName = fileNameAdapted;
 		isFileExist = CallSystem::fileExist(fullFileName);
 		if (isFileExist)
 			return;
 
-		//test fichier de base
+		//test basic file
 		fullFileName = fileName;
 		isFileExist = CallSystem::fileExist(fullFileName);
 	}

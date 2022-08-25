@@ -37,13 +37,13 @@
 
 /** @class SaveScreenInterface
 
- * @section EN BREF
- * Classe qui s'occupe des captures d'écran, dans le cas d'une simple capture d'écran ou
- * pour la réalisation d'une série vidéo.
+ * @section IN BRIEF
+ * Class that deals with screenshots, in the case of a simple screenshot or
+ * for the realization of a video series.
  *
  * @section DESCRIPTION
- * La fonction phare est void readScreenShot();
- * Elle réalise une capture de l'écran en fonction des paramètes enregistrés dans la classe.
+ * The main function is void readScreenShot();
+ * It takes a screen shot according to the parameters registered in the class.
  *
 */
 
@@ -54,26 +54,26 @@ public:
 	SaveScreenInterface(VkRect2D screenRect, VkImageLayout layout);
 	~SaveScreenInterface();
 
-    //! lit l'écran et le sauvegarde sur le disque dur
+    //! reads the screen and saves it to the hard disk
     void readScreenShot(VkCommandBuffer cmd, VkImage image);
 
-    //! démarre la vidéo
+    //! starts the video
     void startVideo();
 
-    //! arrête la vidéo
+    //! stops the video
     void stopVideo();
 
     void takeVideoShot();
 
     //! prend une capture d'écran
-    //! de part sa nature, cette focntion peut être bloquante
+    //! due to its nature, this function can be blocking
     void takeScreenShot(const std::string& _fileName="");
 
-    //! fixe le répertoire ou l'on doit stocker les fichiers vidéo
+    //! sets the directory where the video files should be stored
     void setVideoBaseName(const std::string& _value) {
         videoBaseName = _value;
     }
-    //! fixe le répertoire ou l'on doit stocker les fichiers de capture d'écran
+    //! sets the directory where the screen capture files should be stored
     void setSnapBaseName(const std::string& _value) {
         snapBaseName = _value;
     }

@@ -66,10 +66,10 @@ class SDLFacade;
 class InitParser;
 
 /**
- *  Modification du comportement des touches
- * 	CTRL et SHIFT représentent les touches du même nom
- *  SUPER représente la touche ² (à gauche de &1)
- *  KWIN représente la touche Windows (entre CTRL et ALT)
+ *  Changing the behavior of the keys
+ * 	CTRL and SHIFT represent the keys of the same name
+ *  SUPER represents the ² key (to the left of &1)
+ *  KWIN represents the Windows key (between CTRL and ALT)
  */
 enum MODIFIER { NONE, CTRL, KWIN, SUPER, SHIFT};
 
@@ -198,9 +198,9 @@ public:
 	int handleKeysReleased(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VALUE state);
 
 
-	//! modifie un flag de App donnée par APP_FLAG
+	//! modify a flag given by APP_FLAG
 	void flag(UI_FLAG layerValue, bool _value);
-	//! modifie un flag via un toggle
+	//! modify a flag via a toggle
 	void toggle(UI_FLAG layerValue);
 
 private:
@@ -381,7 +381,7 @@ private:
 
 	double KeyTimeLeft;  							// for shift timeout (seconds)
 
-	enum class DeltaSpeed: char {NO, UP, DOWN} deltaSpeed;	//!< variation de l'accélération du temps via le joystick
+	enum class DeltaSpeed: char {NO, UP, DOWN} deltaSpeed;	//!< variation of the time acceleration via the joystick
 
 	//Joystick
 	JoypadController * joypadController = nullptr;
@@ -393,8 +393,8 @@ private:
 	void handleJoyAddStick();
 	void handleJoyRemoveStick();
 
-	bool handleKeyOnVideo = false;   //! permet de basculer le mode clavier lors des videos
-	std::shared_ptr<ScriptInterface> scriptInterface;	//! gestion des interfaces liées aux scripts 
+	bool handleKeyOnVideo = false;   //! allows to switch the keyboard mode during videos
+	std::shared_ptr<ScriptInterface> scriptInterface;	//! management of interfaces linked to scripts 
 };
 
 #endif  //_UI_H

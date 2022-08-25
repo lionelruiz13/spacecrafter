@@ -181,7 +181,7 @@ bool AnchorManager::addAnchor(const std::string& name, std::shared_ptr<AnchorPoi
 		return false;
 
 	if(anchor == nullptr) {
-		// @TODO le passer en log
+		// @TODO pass it in log
 		cLog::get()->write("error addAnchor AnchorPoint nullptr " + name, LOG_TYPE::L_ERROR);
 		// std::cout << "error addAnchor AnchorPoint nullptr " << name << std::endl;
 		return false;

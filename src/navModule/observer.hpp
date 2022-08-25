@@ -38,8 +38,8 @@ class Body;
 class AnchorPoint;
 
 //! @class Observer
-//! @brief Gère la position de la caméra
-//! L'Observer est basée sur une Ancre, avec un déplacement relatif à l'ancre en latitude, longitude et altitude
+//! @brief Manages the camera's position
+//! The Observer is based on an Anchor, with a displacement relative to the anchor in latitude, longitude and altitude
 //!
 
 class Observer: public NoCopy {
@@ -58,45 +58,45 @@ public:
 
 	bool isOnBody(std::shared_ptr<Body> body) const;
 
-	//! Renvoie un lien vers l'astre ou est localisé l'observer
-	//! @return une instance sur l'astre ou nullptr
-	//! @warning nullptr est retourné si l'observer n'est sur aucun astre
+	//! Returns a link to the star where the observer is located
+	//! @return an instance on the star or nullptr
+	//! @warning nullptr is returned if the observer is not on any star
 	std::shared_ptr<Body> getHomeBody() const;
 
-	//! renvoie le nom anglais de la planète de l'observer
+	//! returns the english name of the planet of the observer
 	std::string getHomePlanetEnglishName() const;
-	//! renvoie le nom I18n de la planète de l'observer
+	//! returns the I18n name of the planet of the observer
 	std::string getHomePlanetNameI18n() const;
 
-	//! renvoie un booleen permettant de savoir si la planète de l'observer est soit la terre, soit la lune
+	//! returns a boolean allowing to know if the planet of the observer is either the earth or the moon
 	bool isEarth() const;
 	bool isSun() const;
 
-	//! renvois la position a laquelle l'observer est attaché
+	//! returns the position to which the observer is attached
 	Vec3d getObserverCenterPoint() const;
 
-	//! renvoie la position de l'observer dans le systeme de coordonnée du soleil
+	//! returns the position of the observer in the sun coordinate system
 	Vec3d getHeliocentricPosition(double JD)const;
 
-	//! renvoie la distance:  centre de la planete et altitude de l'observer
+	//! returns the distance: center of the planet and altitude of the observer
 	double getDistanceFromCenter(void) const;
-	//! modifie l'altitude pour correspondre à la distance entre le centre de la planète et l'observer voulu
+	//! changes the altitude to match the distance between the center of the planet and the desired observer
 	void setDistanceFromCenter(double distance);
 
-	//! renvoie la matrice de position equatorial à partir de la position local de la planète
+	//! returns the equatorial position matrix from the local position of the planet
 	Mat4d getRotLocalToEquatorial(double jd) const;
 	Mat4d getRotLocalToEquatorialFixed(double jd) const;
 	//! Compute the z rotation to use from equatorial to geographic coordinates
 	Mat4d getRotEquatorialToVsop87(void) const;
 
-	//! savegarde la position de l'observer dans un fichier
+	//! save the observer's position in a file
 	//void save(const std::string& file, const std::string& section);
 	//! change settings but don't write to files
 	void setConf(InitParser &conf, const std::string& section);
-	//! charge la position de l'observer d'un fichier de configuration
+	//! load the observer's position from a configuration file
 	void load(const InitParser& conf, const std::string& section);
 
-	//! fixe la latitude de l'observer sur la planète
+	//! set the latitude of the observer on the planet
 	void setLatitude(double l) {
 		latitude=l;
 		if ( latitude==0.0 ) {
@@ -113,12 +113,12 @@ public:
 		return latitude;
 	}
 
-	//! fixe la longitude de l'observer sur la planète
+	//! fixes the longitude of the observer on the planet
 	void setLongitude(double l) {
 		longitude=l;
 	}
 
-	//! renvoie la longitude de l'observer sur la planète
+	//! returns the longitude of the observer on the planet
 	double getLongitude() const;
 	double getLongitudeForDisplay() const;
 
@@ -130,16 +130,16 @@ public:
 		return altitude;
 	}
 
-	// sert à retrouver la position initiale de l'observer après qu'il se soit déplacé afin d'y revenir
-	//! renvoie la latitude initiale de l'observer à son chargement
+	// is used to find the initial position of the observer after it has moved in order to return to it
+	//! returns the initial latitude of the observer to its load
 	double getDefaultLatitude() {
 		return defaultLatitude;
 	}
-	//! renvoie la longitude initiale de l'observer à son chargement
+	//! returns the initial longitude of the observer at its loading
 	double getDefaultLongitude() {
 		return defaultLongitude;
 	}
-	//! renvoie l'altitude initiale de l'observer à son chargement
+	//! returns the initial altitude of the observer at its loading
 	double getDefaultAltitude() {
 		return defaultAltitude;
 	}

@@ -41,7 +41,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_BODY_TRACE] = SC_COMMAND::SC_BODY_TRACE;
 	m_commands[ACP_CN_BODY] = SC_COMMAND::SC_BODY;
 	m_commands[ACP_CN_CAMERA] = SC_COMMAND::SC_CAMERA;
-	m_commands[ACP_CN_FLYTO] = SC_COMMAND::SC_CAMERA; //alias de camera
+	m_commands[ACP_CN_FLYTO] = SC_COMMAND::SC_CAMERA; //alias of camera
 	m_commands[ACP_CN_CLEAR] = SC_COMMAND::SC_CLEAR;
 	m_commands[ACP_CN_COLOR] = SC_COMMAND::SC_COLOR;
 	m_commands[ACP_CN_CONFIGURATION] = SC_COMMAND::SC_CONFIGURATION;

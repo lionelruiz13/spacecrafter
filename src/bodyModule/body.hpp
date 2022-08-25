@@ -164,7 +164,7 @@ public:
 	virtual float computeMagnitude(const Vec3d obs_pos) const;
 	float computeMagnitude(const Navigator * nav) const;
 
-	// calcule tous les éléments nécessaires pour préparer le draw
+	// calculates all the elements necessary to prepare the draw
 	virtual void computeDraw(const Projector* prj, const Navigator* nav);
 
 	// Draw the Planet, if hint_ON is != 0 draw a circle and the name as well
@@ -230,19 +230,19 @@ public:
 		planet_name_font = f;
 	}
 
-	//cela parle de magnitude avec les étoiles
+	//it talks about magnitude with the stars
 	static void setScale(float s) {
 		object_scale = s;
 	}
-	//cela parle de magnitude avec les étoiles
+	//it talks about magnitude with the stars
 	static float getScale(void) {
 		return object_scale;
 	}
 	//fonction qui modifie multiplicativement par s le rayon du corps celeste
-	// afin de savoir si on doit garder en mémoire cette taille d'affichage, on utilise le bool
+	// in order to know if we should keep this display size in memory, we use the bool
 	virtual void setSphereScale(float s, bool initial_scale =  false);
 
-	// renvoie le ratio rayon_actuel/rayon_initial
+	// returns the ratio radius_actual/initial radius
 	float getSphereScale(void) {
 		return (radius/initialRadius);
 	}
@@ -256,10 +256,10 @@ public:
 
 
 
-	// fixe une couleur
+	// set a color
 	void setColor(const std::string& colorName,  const Vec3f& oc);
 
-	// récupère une couleur d'un paramètre
+	// retrieves a color from a parameter
 	const Vec3f getColor(const std::string& colorName);
 
 	//! Start/stop accumulating new trail data (clear old data)
@@ -330,7 +330,7 @@ public:
 		return sol_local_day;
 	}
 
-	// TODO selectionne le shader approprié au Body
+	// TODO selects the appropriate shader for the Body
 	virtual void selectShader ()= 0;
 
 	void reinitParam() {
@@ -520,7 +520,7 @@ protected:
 	double deltaJD;
 
 	std::unique_ptr<Orbit> orbit=nullptr;            // orbit object for this body
-	Vec3f orbit_position;    // position de la planete
+	Vec3f orbit_position;    // position of the planet
 
 	std::shared_ptr<Body> parent;				// Body parent i.e. sun for earth
 
@@ -550,7 +550,7 @@ protected:
 
 	float sun_half_angle; // for moon shadow calcs
 
-	//variables mise en cache
+	//variables caching
 	Mat4d mat;
 	Mat4d parent_mat;
 	Vec3f lightDirection;

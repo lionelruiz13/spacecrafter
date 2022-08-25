@@ -48,7 +48,7 @@ public:
 	int size() {
 		return m_map.size();
 	};
-	//Celle qui va créer les objets
+	//The one that will create the
 	void Create(SKYDISPLAY_NAME nameObj);
 	void build();
 	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
@@ -68,7 +68,7 @@ public:
 	bool getFlagShow(SKYDISPLAY_NAME nameObj);
 	void flipFlagShow(SKYDISPLAY_NAME nameObj);
 
-	// fonctions de sauvegarde de l'état de SkyDisplay
+	// functions to save the state of SkyDisplay
 	void saveState(SkyDisplaySave &obj);
 	void loadState(SkyDisplaySave &obj);
 

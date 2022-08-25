@@ -33,7 +33,7 @@
 
 SSystemFactory::SSystemFactory(Observer *observatory, Navigator *navigation, TimeMgr *timeMgr)
 {
-    // creation ds models 3D pour les planetes
+    // creation of 3D models for planets
     objLMgr = std::make_unique<ObjLMgr>();
 	objLMgr -> setDirectoryPath(AppSettings::Instance()->getModel3DDir() );
 	objLMgr->insertDefault("Sphere");

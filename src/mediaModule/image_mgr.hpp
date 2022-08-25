@@ -42,15 +42,15 @@ class Set;
 
 /**
  * @class ImageMgr
- * @brief Cette classe s'ocupe de gérer toutes les entités Image utilisées dans les scripts.
+ * @brief This class manages all the image entities used in the scripts.
  *
- * Le conteneur active_images contient toutes les images qui sont indépendantes.
- * Cette classe sert alors gestionnaire d'images.
+ * The active_images container contains all the images that are independent.
+ * This class is then used as an image manager.
  *
- * Certaines images sont permanantes, aussi elles ne sont pas affectées par la suppression
+ * Some images are permanent, so they are not affected by deletion
  *
- * currentImg permet de modifier les images du conteneur grace à la fonction
- * setImage. Si currentImg est défini, alors setXXXX modifie l'image concernée.
+ * currentImg allows to modify the images of the container with the function
+ * setImage. If currentImg is defined, then setXXXX modifies the concerned image.
  */
 
 
@@ -59,46 +59,46 @@ public:
 	ImageMgr();
 	virtual ~ImageMgr();
 
-	//! tube pour la création des shaders pour le draw des images
+	//! tube for creating shaders for drawing images
 	void createImageShader();
 
-	//! charge une image dans le conteneur
+	//! load an image in the container
 	bool loadImage(const std::string& filename, const std::string& name, const std::string& coordinate, IMG_PROJECT project, bool mipmap);
-	//! charge une image venant directement de l'OpenGL
+	//! load an image directly from the OpenGL
 	bool loadImage(VideoTexture imgTex, const std::string& name, const std::string& coordinate, IMG_PROJECT project);
-	//! supprime du conteneur l'image name
+	//! removes the image name from the container
 	void drop_image(const std::string &name);
-	//! supprime toutes les images du conteneur non persistantes
+	//! deletes all non-persistent images from the container
 	void dropAllNoPersistent();
-	//! supprime toutes les images du conteneur
+	//! deletes all the images in the container
 	void dropAllImages();
 
-	//! modifie la persistance de currentImg
+	//! changes the persistence of currentImg
 	void setPersistent(bool value);
-	//! change l'image ciblée par currentImg
+	//! changes the target image of currentImg
 	bool setImage(const std::string &name);
-	//! modifie la transparence de currentImg
+	//! changes the transparency of currentImg
 	void setAlpha(float alpha, float duration);
-	//! modifie la taille de currentImg
+	//! changes the size of currentImg
 	void setScale(float scale, float duration);
-	//! modifie l'angle de rotation de currentImg
+	//! changes the rotation angle of currentImg
 	void setRotation(float rotation, float duration);
-	//! modifie la position de currentImg sur le dome
+	//! changes the position of currentImg on the dome
 	void setLocation(float xpos, bool deltax, float ypos, bool deltay, float duration, bool accelerate_x = false, bool decelerate_x = false, bool accelerate_y = false, bool decelerate_y = false);
-	//! modifie le ratio de currentImg
+	//! changes the ratio of currentImg
 	void setRatio(float ratio, float duration);
 
-	//! active la suppression de couleur
+	//! enables color removal
 	void setTransparency(bool v);
-	//! détermine la couleur de l'image à effacer au tracé
+	//! determines the color of the image to be deleted on the plot
 	void setKeyColor(const Vec3f& _color, float _intensity);
 
-	//! mise à jour des fader des images
+	//! update the fader of the images
 	void update(int delta_time);
-	//! affiche toutes les images du conteneur
+	//! displays all the images in the container
 	void draw(const Navigator * nav, const Projector * prj);
 
-	//! convertit une chaine de caractère en enum IMAGE_POSITIONING
+	//! converts a string into IMAGE_POSITIONING enum
 	IMG_POSITION  convertStrToPosition( const std::string & coordinate) const;
 private:
 	Image * currentImg=nullptr;

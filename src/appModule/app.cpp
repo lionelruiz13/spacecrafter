@@ -673,7 +673,7 @@ void App::draw(int delta_time)
 	// Draw the Graphical ui and the Text ui
 	ui->draw(executor->getExecutorModule());
 	context.stat->capture(Capture::UI_DRAW);
-	//inversion des couleurs pour un ciel blanc
+	//color inversion for a white sky
 	if (flagColorInverse)
 		appDraw->drawColorInverse();
 
@@ -778,7 +778,7 @@ void App::startMainLoop()
 {
 	context.stat->capture(Capture::FRAME_START);
 	flagVisible = true;		// At The Beginning, Our App Is Visible
-	flagAlive = true; 		// au debut, on veut que l'application ne s'arrete pas :)
+	flagAlive = true; 		// at the beginning, we want the application not to stop :)
 
 	//center mouse in middle screen
 	mSdl->warpMouseInCenter();
@@ -795,10 +795,10 @@ void App::startMainLoop()
 			ui->handleInputs(E);
 		}
 
-		//analyse le joystick au cas ou des events ont été accumulés pour le joystick
+		//analyzes the joystick in case events have been accumulated for the joystick
 		ui->handleDeal();
 
-		// on applique toutes les modifications faites dans ui etc
+		// we apply all the modifications made in ui etc
 		eventHandler->handleEvents(executor.get());
 
 		// If the application is not visible

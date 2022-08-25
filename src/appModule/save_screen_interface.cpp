@@ -142,7 +142,7 @@ void SaveScreenInterface::readScreenShot(VkCommandBuffer cmd, VkImage image)
 
 void SaveScreenInterface::takeScreenShot(const std::string& _fileName)
 {
-	if (readScreen==ReadScreen::VIDEO)	//si déjà en capture vidéo, on ne fait pas un snap
+	if (readScreen==ReadScreen::VIDEO)	//if already in video capture, we don't make a snap
 		return;
 	else
 		readScreen= ReadScreen::SNAPSHOT;

@@ -251,7 +251,7 @@ bool Center::drawGL(Projector* prj, const Navigator* nav, const Observer* observ
 {
 	bool drawn = false;
 
-	//on ne dessine pas une planete sur laquel on se trouve
+	//we don't draw a planet on which we are
 	if (!drawHomePlanet && observatory->isOnBody(shared_from_this())) {
 		return drawn;
 	}

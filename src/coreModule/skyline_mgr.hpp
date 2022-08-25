@@ -59,12 +59,12 @@ public:
 	void setColor(SKYLINE_TYPE typeObj, const Vec3f& c);
 	const Vec3f& getColor(SKYLINE_TYPE typeObj);
 
-	//! change FlagShow: inverse la valeur du flag
+	//! change FlagShow: reverses the value of the flag
 	void setFlagShow(SKYLINE_TYPE typeObj, bool b);
 	bool getFlagShow(SKYLINE_TYPE typeObj);
 	void flipFlagShow(SKYLINE_TYPE typeObj);
 
-	// fonctions de sauvegarde de l'état des Lines
+	// functions for saving the state of the Lines
 	void saveState(SkyLineSave &obj);
 	void loadState(SkyLineSave &obj);
 

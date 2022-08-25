@@ -40,33 +40,33 @@
 *
 * \brief Define swap for multiple if command to app command interface
 *
-* Les conditions IF sont évaluées simplement par un boolean qui indique si l'instruction doit etre exécutée ou non.
-* Le logiciel recopie toutes les instructions en mémoire avant de les exécuter une à une.
-* L'obectif de cette classe est d'indiquer dans une hiérarchie de if imbriqués si l'instruction qui suit doit etre exécutée ou non 
-* Elle se réfère au vector m_ifSwapCommand qui contient les différents niveaux de scripts 
+* IF conditions are simply evaluated by a boolean that indicates whether the instruction should be executed or not.
+* The software copies all the instructions in memory before executing them one by one
+* The purpose of this class is to indicate in a hierarchy of nested if statements whether the following statement should be executed or not 
+* It refers to the vector m_ifSwapCommand which contains the different levels of scripts 
 * 
-* m_ifSwapCommand[i] = true indique que le if n°i est dans la partie ou il réfute les instructions qui suivent, on ne doit pas les executer
-* (et donc dans ce cas tous les m_ifSwapCommand[i+1] et suivant sont inutiles)
+* m_ifSwapCommand[i] = true indicates that the if n°i is in the part where it refutes the following instructions, they should not be executed
+* (and so in this case all m_ifSwapCommand[i+1] and following are useless)
 *
-* m_ifSwapCommand[i] = false indique que le if n°i est dans la partie ou il accepte les instructions qui suivent, on doit les executer
+* m_ifSwapCommand[i] = false indicates that the if n°i is in the part where it accepts the following instructions, they must be executed
 */
 
 class IfSwap : public NoCopy {
 public:
     IfSwap();
     ~IfSwap();
-    //! décale pour supprimer un ancien if
+    //! shift to delete an old if
     void pop();
-    //! décale pour construire un nouveau if dans l'état v
+    //! shift to build a new if in state v
     void push(bool v);
-    //! remet à zéro toutes les conditions sur les if
+    //! resets all conditions on if
     void reset();
-    //! permutte la valeur du dernier if 
+    //! swap the value of the last if 
     void revert();
-    //! renvoie la valeur indiquant l'execution de la commande qui suit
+    //! returns the value indicating the execution of the next command
     bool get() const ;
 private:
-    //! fonction qui indique si l'on doit executer les commandes qui sont définies dans un script
+    //! function that indicates whether to execute the commands that are defined in a script
     void defineCommandSwap();
     std::vector<bool> m_ifSwapCommand;
     bool commandSwap = false;

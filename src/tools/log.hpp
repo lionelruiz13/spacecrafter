@@ -66,7 +66,7 @@ public:
 	cLog& operator=(cLog const&) = delete;
 	~cLog();
 
-    //! pour obtenir le singleton
+    //! to get the singleton
     static cLog *get() {
 		if (!singleton)
           singleton = new cLog();
@@ -75,30 +75,30 @@ public:
     }
 
 	/*!
-	*  \brief Ecrit une string dans un log
-	*  \param type : enum du type (optionnel, INFO par defaut)
-	*  \param fichier : enum du fichier (optionnel, INTERNAL par defaut)
+	*  \brief Write a string to a log
+	*  \param type : type enum (optional, INFO by default)
+	*  \param fichier : file enum (optional, INTERNAL by default)
 	*/
 	void write(const std::string& texte, const LOG_TYPE& type = LOG_TYPE::L_INFO, const LOG_FILE& fichier = LOG_FILE::INTERNAL);
 
 	/*!
-	*  \brief Ecrit un flux dans un log
-	*  \param type : enum du type (optionnel, INFO par defaut)
-	*  \param fichier : enum du fichier (optionnel, INTERNAL par defaut)
+	*  \brief Writes a stream to a log
+	*  \param type : enum of type (optional, INFO by default)
+	*  \param fichier : file enum (optional, INTERNAL by default)
 	*/
 	inline void write(const std::ostringstream& texte, const LOG_TYPE& type = LOG_TYPE::L_INFO, const LOG_FILE& fichier = LOG_FILE::INTERNAL) {
 		write(texte.str(), type, fichier);
 	}
 
 	/*!
-	*  \brief Insère une marque dans le log
-	*  \param fichier : enum du fichier (optionnel, INTERNAL par defaut)
+	*  \brief Inserts a mark in the log
+	*  \param fichier : file enum (optional, INTERNAL by default)
 	*/
 	void mark(const LOG_FILE& fichier = LOG_FILE::INTERNAL);
 
 	/*!
-	*  \brief Configure l'état du Debug
-	*  \param debugging : état du Debug souhaité (true ou false)
+	*  \brief Set the Debug state
+	*  \param debugging : desired Debug state (true or false)
 	*/
 	void setDebug(bool debugging) {
 		isDebug = debugging;
@@ -109,8 +109,8 @@ public:
 	}
 
 	/*!
-	*  \brief Retourn l'état du Debug
-	*  \return true si le Debug est activé, false sinon
+	*  \brief Returns the Debug state
+	*  \return true if the Debug is activated, false otherwise
 	*/
 	bool getDebug() {
 		return isDebug;

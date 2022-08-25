@@ -41,52 +41,52 @@ public:
 	Dso3d();
 	~Dso3d();
 
-	//! affiche le nuage de points
+	//! displays the point cloud
 	void draw(double distance, const Projector *prj,const Navigator *nav) noexcept;
 
-	//! mise à jour du fader
+	//! update fader
 	void update(int delta_time) {
 		fader.update(delta_time);
 	}
 
-	//! modifie la durée du fader
+	//! changes the fader duration
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
 	}
 
-	//! modifie le fader
+	//! modify the fader
 	void setFlagShow(bool b) {
 		fader = b;
 	}
 
-	//! renvoie la valeur du fader
+	//! returns the value of the fader
 	bool getFlagShow(void) const {
 		return fader;
 	}
 
-	//! permet de mettre à jour la texture des nébuleuses
+	//! allows to update the texture of the nebulae
 	void setTexture(const std::string& tex_file);
 
-	//! lecture des données du catalogue dont le nom est passé en paramètre
+	//! read data from the catalog whose name is passed in parameter
 	bool loadCatalog(const std::string &cat) noexcept;
 
 	//! Build draw command
 	void build();
 private:
-	// initialise le shader
+	// iinitialize the shader
 	void createSC_context();
-	// renseigne le nombre de textures dans texNebulae
+	// set the number of textures in texNebulae
 	int nbTextures;
-	// position camera
+	// camera position
 	Vec3f camPos;
 	std::unique_ptr<s_texture> texNebulae;
-	// fader pour affichage
+	// fader for display
 	LinearFader fader;
-	//tableau de float pour tampon openGL
+	//float array for openGL buffer
 	std::vector<float> posDso3d;
 	std::vector<float> scaleDso3d;
 	std::vector<float> texDso3d;
-	//renvoie le nombre de nebulae lues du/des catalogues
+	//returns the number of nebulae read from the catalog(s)
 	unsigned int nbNebulae;
 	std::unique_ptr<VertexArray> sData;
 	std::unique_ptr<VertexBuffer> vertex;

@@ -58,8 +58,8 @@ public:
 	
 protected:
 
-	double minAltToGoDown = 0.0;	// altitude min avant changement de mode vers upMode
-	double maxAltToGoUp = 0.0;		// altitude max avant changement de mode vers downMode
+	double minAltToGoDown = 0.0;	// min altitude before switching to upMode
+	double maxAltToGoUp = 0.0;		// max altitude before switching to downMode
 
 	MODULE module;
 	ExecutorModule *downMode = nullptr;

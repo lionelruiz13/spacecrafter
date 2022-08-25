@@ -35,23 +35,23 @@ public:
 	BodyDecor(std::shared_ptr<MilkyWay> _milky, std::shared_ptr<Atmosphere> _atmosphere);
 	~BodyDecor() {}
 
-	//! indique si on est dans des conditions permettant de tracer le landscape
+	//! indicates if we are in conditions that allow us to trace the landscape
 	bool canDrawLandscape() {
 		return drawLandscape;
 	}
-	//! indique si on est dans des conditions permettant de tracer les météors
+	//! indicates if you are in conditions that allow you to plot the meteors
 	bool canDrawMeteor() {
 		return drawMeteor;
 	}
-	//! indique si on est dans des conditions permettant de tracer la représentation 3D du Body
+	//! indicates if the conditions are right to plot the 3D representation of the Body
 	bool canDrawBody() {
 		return drawBody;
 	}
 
-	// fonction calculant les différents flags lorsqu'on est dans l'espace
+	// function that calculates the different flags when we are in space
 	void anchorAssign(/*bool Spacecraft*/);
 
-	// fonction calculant les différents flags lorsqu'on est sur un body
+	// function calculating the different flags when we are on a body
 	void bodyAssign(double altitude, const AtmosphereParams* atmParam/*, bool Spacecraft*/);
 
 	bool getAtmosphereState() {

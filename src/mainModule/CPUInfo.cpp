@@ -28,7 +28,7 @@
 CPUInfo::CPUInfo()
 {
 	this->nbThread = std::thread::hardware_concurrency();
-	//~ std::cout << "Le CPU dispose de " << this->nbThread << " threads" << std::endl;
+	//~ std::cout << "The CPU has " << this->nbThread << " threads" << std::endl;
 	entrieA.resize(nbThread+1);
 	entrieB.resize(nbThread+1);
 	result.resize(nbThread+1);
@@ -97,7 +97,7 @@ void CPUInfo::getGPUstate()
     FILE* pipe = nullptr;
 	pipe = popen("nvidia-smi --format=csv,noheader,nounits --query-gpu=utilization.gpu,utilization.memory,memory.free,pstate,fan.speed,temperature.gpu", "r");
     if (!pipe) return;
-	//seule la 1° ligne nous intéresse
+	//only the 1st line interests us
 	if (fgets(buffer, 128, pipe) != NULL)
         gpuOss << frame-1 <<  "," << std::string(buffer);
 

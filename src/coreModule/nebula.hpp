@@ -233,7 +233,7 @@ private:
 
 	bool m_deletable;				// whether a script added this nebula
 	bool m_hidden;  				// whether hidden from being visible
-	bool m_selected;				// indique si la nébuleuse est selectionnée pour affichage ou pas.
+	bool m_selected;				// indicates whether the nebula is selected for display or not.
 
 	Vec3f neb_color;				// particular color for the DSO
 

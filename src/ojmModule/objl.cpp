@@ -7,7 +7,7 @@
 #include <sstream>
 #include <cmath>
 
-// Modèles disponibles
+// Available models
 //
 // https://space.frieger.com/asteroids/asteroids/
 

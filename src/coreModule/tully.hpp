@@ -53,25 +53,25 @@ public:
 	Tully();
 	~Tully();
 
-	//! affiche le nuage de points
+	//! displays the point cloud
 	void draw(double distance, const Navigator *nav, const Projector *prj) noexcept;
 
-	//! mise à jour du fader
+	//! update fader
 	void update(int delta_time) {
 		fader.update(delta_time);
 	}
 
-	//! modifie la durée du fader
+	//! changes the fader duration
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
 	}
 
-	//! modifie le fader
+	//! modify the fader
 	void setFlagShow(bool b) {
 		fader = b;
 	}
 
-	//! renvoie la valeur du fader
+	//! returns the value of the fader
 	bool getFlagShow(void) const {
 		return fader;
 	}
@@ -84,10 +84,10 @@ public:
 		return useWhiteColor;
 	}
 
-	//! permet de mettre à jour la texture des galaxies
+	//! allows to update the texture of the galaxies
 	void setTexture(const std::string& tex_file/*, const std::string& tex_file_small*/);
 
-	//! lecture des données du catalogue passé dont le nom est passé en paramètre
+	//! read the data from the passed catalog whose name is passed in parameter
 	bool loadCatalog(const std::string &cat) noexcept;
 
 	//! read the catalog to display with a fading of min(distance/optimalDistance, 1)
@@ -101,7 +101,7 @@ public:
 	// Build the draw commands for the loaded catalogs and texture
 	void build(VolumObj3D *withObject = nullptr);
 private:
-	// initialise les shaders ShaderPoints et ShaderSquare ainsi que les vao-vbo
+	// initialize ShaderPoints and ShaderSquare shaders and vao-vbo
 	void createSC_context();
 
 	void computeSquareGalaxies(Vec3f camPosition);
@@ -112,9 +112,9 @@ private:
 	s_texture* texGalaxy;
 	LinearFader fader;
 
-	//position camera
+	//camera position
 	Vec3f camPos;
-	//tableau de float fixe pour tampons openGL
+	//fixed float array for openGL buffers
 	std::vector<float> posTully;
 	std::vector<float> colorTully;
 	std::vector<float> texTully;
@@ -133,14 +133,14 @@ private:
 
 	std::list<tmpTully> lTmpTully;
 
-	//renvoie le nombre de galaxies lues du/des catalogues
+	//return the number of galaxies read from the catalog(s)
 	unsigned int nbGalaxy;
 	bool isAlive = false;
 	bool needRebuild = false;
 	bool useWhiteColor = true;
-	// renvoie le nombre des différentes textures dans la texture
+	// returns the number of different textures in the texture
 	int nbTextures;
-	// données Vulkan
+	// Vulkan data
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set, bigSet;
 	struct s_geom {

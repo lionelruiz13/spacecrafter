@@ -56,14 +56,14 @@ public:
 	void update(int delta_time);
 
 
-	//! fixe l'intensité à a.
+	//! sets the intensity to a.
 	void setIntensity(float a) {
 		intensity = a;
 	}
 
-	//! opère un fondu vers le haut:
-	//! Plus value se rapproche de max, et plus l'intensité augmente
-	//! Si value < min, l'intensité est nulle
+	//! fade up:
+	//! As value gets closer to max, the intensity increases
+	//! If value < min, the intensity is zero
 	void fixIntensityUp(float min, float max, float value) {
 		if (value<min) {
 			intensity = 0.0;
@@ -77,10 +77,10 @@ public:
 		}
 	}
 
-	//! opère un fondu vers le bas:
-	//! quand  value se rapproche de min, l'intensité augmente
-	//! quand value se rapproche de max, l'intensité diminue
-	//! si value > max, l'intensité est nulle
+	//! fades down:
+	//! when value approaches min, the intensity increases
+	//! when value approaches max, the intensity decreases
+	//! if value > max, the intensity is zero
 	void fixIntensityDown(float min, float max, float value) {
 			if (value> max)
 				intensity = 0.0;
@@ -92,14 +92,14 @@ public:
 			}
 	}
 
-	//! augmente l'intensité de a
+	//! increases the intensity of a
 	void upGrade(float a) {
 		intensity += a;
 		if (intensity >1.0)
 			intensity = 1.0;
 	}
 
-	//! diminue l'intensité de a
+	//! decreases the intensity of a
 	void downGrade(float a) {
 		intensity -= a;
 		if (intensity <0.0)
@@ -122,7 +122,7 @@ public:
 
 	void initShader();
 private:
-	//détermine l'intensité du voile sur l'écran
+	//determines the intensity of the veil on the screen
 	float intensity = 0.0;
 	bool flag_change_intensity = 0;
 	double start_value, end_value;
@@ -133,7 +133,7 @@ private:
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Pipeline> pipeline;
 
-	// paramètres openGL
+	// openGL parameters
 	void initShaderParams();
 };
 
