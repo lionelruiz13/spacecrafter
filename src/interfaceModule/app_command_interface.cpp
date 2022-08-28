@@ -2163,11 +2163,11 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 
 	std::string argSpeed = args[W_SPEED];
 	if (!argSpeed.empty()) {
-		if (argAction==W_FASTER) {
+		if (argSpeed==W_FASTER) {
 			scriptInterface->fasterSpeed();
-		} else if (argAction==W_SLOWER) {
+		} else if (argSpeed==W_SLOWER) {
 			scriptInterface->slowerSpeed();
-		} else if (argAction==W_DEFAULT) {
+		} else if (argSpeed==W_DEFAULT) {
 			scriptInterface->defaultSpeed();
 		} else
 			debug_message = "command_script : unknown parameter from 'speed' argument";
