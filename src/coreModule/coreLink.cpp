@@ -202,7 +202,7 @@ void CoreLink::milkyWayRestoreDefault() {
 }
 
 void CoreLink::milkyWaySetDuration(float f) {
-	core->milky_way->setFaderDuration(f*1000);
+	core->milky_way->setFaderDuration(f);
 }
 
 void CoreLink::milkyWayRestoreIntensity() {
