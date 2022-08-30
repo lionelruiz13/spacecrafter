@@ -2746,6 +2746,15 @@ int AppCommandInterface::commandMedia()
 	if (!argAction.empty() ) {
 
 		if (argAction == W_PLAY) {
+
+			std::string argLoop = args[W_LOOP];
+			if (!argLoop.empty()) {
+				if (Utility::isTrue(argLoop))
+					media->playerloop(true);
+				else
+					media->playerloop(false);
+			}
+
 			std::string type_string = args[W_TYPE];
 			VID_TYPE type = media->strToVideoType(type_string);
 			if (type==VID_TYPE::V_NONE) {

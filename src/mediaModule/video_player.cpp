@@ -472,8 +472,12 @@ void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
 				}
 			}
 		} else if (decodeEnd) {
-			cLog::get()->write("end of file");
-			stopCurrentVideo(false);
+			if (media->ifLoop())
+				media->playerRestart();
+			else {
+				cLog::get()->write("end of file");
+				stopCurrentVideo(false);
+			}
 		}
 	}
 	videoTexture.sync->syncIn->placeBarrier(cmd);

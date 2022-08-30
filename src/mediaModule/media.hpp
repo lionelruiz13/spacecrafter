@@ -343,6 +343,14 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 	VID_TYPE strToVideoType(const std::string& value);
 
+	void playerloop(bool _loop) {
+		loop = _loop;
+	}
+
+	bool ifLoop() {
+		return loop;
+	}
+
 	void playerUpdate() {
 		player->update();
 	}
@@ -387,6 +395,7 @@ private:
 	std::string skyLanguage;
 	bool mplayerEnable;
 	bool audioNoPause=false;
+	bool loop=false;
 
 	std::string imageVideoName;
 	bool audioNotInVideo;

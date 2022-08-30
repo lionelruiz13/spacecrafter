@@ -257,6 +257,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_OGG                       "ogg"
 #define W_JUMP                      "jump"
 #define W_RESTART                   "restart"
+#define W_LOOP                      "loop"
 #define W_UTC                       "utc"
 #define W_CURRENT                   "current"
 #define W_PRESET                    "preset"
