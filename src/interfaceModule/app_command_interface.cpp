@@ -2026,6 +2026,7 @@ int AppCommandInterface::commandText()
 
 	if (!argAction.empty()) {
 		if (argString.empty()) {
+			media->textClear();
 			debug_message = _("Command 'text': argument 'string' needed");
 			return executeCommandStatus();
 		}
