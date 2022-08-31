@@ -2750,9 +2750,9 @@ int AppCommandInterface::commandMedia()
 			std::string argLoop = args[W_LOOP];
 			if (!argLoop.empty()) {
 				if (Utility::isTrue(argLoop))
-					media->playerloop(true);
+					media->setLoop(true);
 				else
-					media->playerloop(false);
+					media->setLoop(false);
 			}
 
 			std::string type_string = args[W_TYPE];
