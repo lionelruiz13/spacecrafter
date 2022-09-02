@@ -343,11 +343,11 @@ public:
 	////////////////////////////////////////////////////////////////////////////
 	VID_TYPE strToVideoType(const std::string& value);
 
-	void playerloop(bool _loop) {
+	void setLoop(bool _loop) {
 		loop = _loop;
 	}
 
-	bool ifLoop() {
+	bool getLoop() const {
 		return loop;
 	}
 
