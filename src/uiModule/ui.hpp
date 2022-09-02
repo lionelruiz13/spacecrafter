@@ -49,6 +49,7 @@ enum S_GUI_VALUE {
 #include "uiModule/ui_tui.hpp"
 #include "executorModule/executorModule.hpp"
 //#include "tools/app_settings.hpp"
+#include "tools/file_path.hpp"
 
 #define TUI_SCRIPT_MSG "Select and exit to run."
 

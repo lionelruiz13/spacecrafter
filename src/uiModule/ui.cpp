@@ -135,6 +135,85 @@ void UI::init(const InitParser& conf)
 	default_landscape = coreLink->landscapeGetName();
 	current_landscape = coreLink->landscapeGetName();
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
+
+	// initial.sts commands
+	media->imageDropAll();
+	app->switchMode("in_solarsystem");
+	double lat = coreLink->observatoryGetLatitude();
+	double lon = coreLink->observatoryGetLongitude();
+	double alt = 75;
+	int delay = (int)(1000.*0);
+	coreLink->observerMoveTo(lat,lon,alt,delay);
+	core->setHomePlanet("Earth");
+	coreLink->milkyWaySetFlagZodiacal(false);
+	app->flag(APP_FLAG::COLOR_INVERSE, false);	
+	core->setDsoPictograms(false);
+
+	coreLink->planetSwitchTexMap("Sun", false);
+	coreLink->planetSwitchTexMap("Mercury", false);
+	coreLink->planetSwitchTexMap("Venus", false);
+	coreLink->planetSwitchTexMap("Earth", false);
+	coreLink->planetSwitchTexMap("Mars", false);
+	coreLink->planetSwitchTexMap("Jupiter", false);
+	coreLink->planetSwitchTexMap("Saturn", false);
+	coreLink->planetSwitchTexMap("Uranus", false);
+	coreLink->planetSwitchTexMap("Neptune", false);
+	coreLink->bodyTraceBodyChange("Sun");
+	coreLink->bodyPenDown();
+
+	// TODO: init with config.ini values
+	coreLink->milkyWaySetFlag(true);
+	coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_POINT_POLAR, false);
+	coreLink->skyLineMgrSetFlagShow(SKYLINE_TYPE::LINE_CIRCLE_POLAR, false);
+	coreLink->starSetTraceFlag(false);
+	coreLink->starLinesSetFlag(false);
+	coreLink->planetsSetFlagOrbits(false);
+	coreLink->satellitesSetFlagOrbits(false);
+	coreLink->planetsSetFlagHints(false);
+	coreLink->setDefaultHeading();
+	core->setInitialLandscapeName();
+	core->removeSupplementalNebulae();
+	coreLink->illuminateRemoveTex();
+	coreLink->illuminateRemoveAll();
+	coreLink->milkyWayRestoreDefault();
+	coreLink->nebulaSetFlag(true);
+	coreLink->nebulaSetFlagBright(true);
+	coreLink->bodyTraceSetFlag(false);
+	coreLink->milkyWayRestoreIntensity();
+	coreLink->bodyTraceClear();
+	coreLink->uboSetAmbientLight(0.03);
+	coreLink->starSetFlag(true);
+	coreLink->planetsSetFlag(true);
+	coreLink->atmosphereSetFlag(true);
+	coreLink->landscapeSetFlag(true);
+	coreLink->planetsSetFlagAxis(false);
+	coreLink->bodyTraceClear();
+	coreLink->bodyTraceSetFlag(false);
+	coreLink->setFlagSunScaled(false);
+
+	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0);
+	EventRecorder::getInstance()->queue(event);
+	executeCommand(DESELECT);
+	coreLink->BodyOJMRemoveAll("in_universe");
+	coreLink->BodyOJMRemoveAll("in_galaxy");
+
+	coreLink->starLinesLoadData(scriptInterface->getScriptPath() + "asterism_all.fab");
+
+	core->setInitialSkyCulture();
+	core->setInitialSkyLocale();
+	core->removeSupplementalSolarSystemBodies();
+	coreLink->initialSolarSystemBodies();
+
+	FilePath myFile  = FilePath("stopmusic.sh", FilePath::TFP::DATA);
+	std::string action="sh "+ myFile.toString() + " &";
+	CallSystem::useSystemCommand(action);
+	CallSystem::killAllPidFrom("vlc");
+	CallSystem::killAllPidFrom("mplayer");
+
+	scriptInterface->cancelScript();
+	media->textClear();
+	media->audioMusicHalt();
+	media->imageDropAllNoPersistent();
 }
 
 void UI::initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate)
