@@ -38,6 +38,7 @@
 #include "mediaModule/viewport.hpp"
 //#include "tools/app_settings.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/context.hpp"
 #include <vulkan/vulkan.h>
 
 class Projector;
@@ -351,6 +352,18 @@ public:
 		return loop;
 	}
 
+	bool getDualViewport() {
+		return dualViewport;
+	}
+
+	void setDualViewport(bool _dualViewport) {
+		dualViewport = _dualViewport;
+		viewPort->displayFullScreen(!dualViewport);
+		const int frameIdx = Context::instance->frameIdx;
+		viewPort->build(frameIdx);
+		viewPort->setTexture(player->getYUV_VideoTexture());
+	}
+	
 	void playerUpdate() {
 		player->update();
 	}
@@ -396,6 +409,7 @@ private:
 	bool mplayerEnable;
 	bool audioNoPause=false;
 	bool loop=false;
+	bool dualViewport=false;
 
 	std::string imageVideoName;
 	bool audioNotInVideo;

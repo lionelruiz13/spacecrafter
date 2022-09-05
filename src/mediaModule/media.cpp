@@ -177,12 +177,14 @@ bool Media::playerPlay(const VID_TYPE &type, const std::string &filename, const 
 			viewPort->displayFullScreen(true);
 			viewPort->display(true);
 			m_videoState.type=V_TYPE::V_VIEWPORT;
+			dualViewport=false;
 			break;
 		case VID_TYPE::V_DUALVIEWPORT :
 			viewPort->setTexture(player->getYUV_VideoTexture());
 			viewPort->displayFullScreen(false);
 			viewPort->display(true);
 			m_videoState.type=V_TYPE::V_VIEWPORT;
+			dualViewport=true;
 			break;
 		case VID_TYPE::V_IMAGE :
 			m_videoState.type=V_TYPE::V_IMAGE;
