@@ -350,6 +350,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			coreLink->constellationSetFlagArt(newval);
 			break;
 
+			case FLAG_NAMES::FN_DUAL_VIEWPORT :
+				if (flag_value==FLAG_VALUES::FV_TOGGLE)
+					newval = !coreLink->mediaGetFlagDualViewport();
+
+				coreLink->mediaSetFlagDualViewport(newval);
+				break;
+
 		case FLAG_NAMES::FN_CONSTELLATION_BOUNDARIES :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->constellationGetFlagBoundaries();
@@ -1901,6 +1908,7 @@ int AppCommandInterface::commandClear()
 	executeCommand(FLAG_SHOW_TUI_DATETIME_OFF);
 	executeCommand(FLAG_STAR_NAMES_OFF);
 	executeCommand(FLAG_SHOW_TUI_SHORT_OBJ_INFO_OFF);
+	executeCommand(FLAG_DUAL_VIEWPORT_OFF);
 
 	// make sure planets, stars, etc. are turned on!
 	executeCommand(FLAG_STARS_ON);

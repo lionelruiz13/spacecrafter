@@ -375,8 +375,13 @@ public:
 	bool constellationGetFlagNames();
 	//! Set display flag of constellation boundaries
 	void constellationSetFlagBoundaries(bool b);
+	//! Get dual viewport
+	bool mediaGetFlagDualViewport();
+	//! Set dual viewport
+	void mediaSetFlagDualViewport(bool b);
 	//! Get display flag of constellation boundaries
 	bool constellationGetFlagBoundaries();
+  //! Get constellation color boundaries
 	Vec3f constellationGetColorBoundaries() const;
 	//! Set constellation art intensity
 	void constellationSetArtIntensity(float f);

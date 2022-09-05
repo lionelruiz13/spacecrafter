@@ -146,7 +146,7 @@ void UI::init(const InitParser& conf)
 	coreLink->observerMoveTo(lat,lon,alt,delay);
 	core->setHomePlanet("Earth");
 	coreLink->milkyWaySetFlagZodiacal(false);
-	app->flag(APP_FLAG::COLOR_INVERSE, false);	
+	app->flag(APP_FLAG::COLOR_INVERSE, false);
 	core->setDsoPictograms(false);
 
 	coreLink->planetSwitchTexMap("Sun", false);
@@ -820,6 +820,9 @@ int UI::handleKeysOnVideo(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S
 		case SDL_SCANCODE_J :
 			media->playerInvertflow();
 			break;
+		case SDL_SCANCODE_D :
+			this->executeCommand("flag dual_viewport toggle");
+		  break;
 		case SDL_SCANCODE_K :
 			if ( scriptInterface->isScriptPlaying() ) {
 				this->executeCommand("script action resume");

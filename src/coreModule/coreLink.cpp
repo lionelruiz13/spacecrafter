@@ -45,6 +45,7 @@
 #include "inGalaxyModule/starNavigator.hpp"
 #include "coreModule/ubo_cam.hpp"
 #include "coreModule/tully.hpp"
+#include "mediaModule/media.hpp"
 
 bool CoreLink::cameraSave(const std::string& name)
 {
@@ -797,6 +798,15 @@ void CoreLink::constellationSetFlagBoundaries(bool b) {
 bool CoreLink::constellationGetFlagBoundaries() {
 	return core->asterisms->getFlagBoundaries();
 }
+
+void CoreLink::mediaSetFlagDualViewport(bool b) {
+	return core->media->setDualViewport(b);
+}
+
+bool CoreLink::mediaGetFlagDualViewport() {
+	return core->media->getDualViewport();
+}
+
 Vec3f CoreLink::constellationGetColorBoundaries() const {
 	return core->asterisms->getBoundaryColor();
 }

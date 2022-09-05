@@ -39,7 +39,7 @@ enum class SC_COMMAND : char {SC_ADD = 30, SC_AUDIO, SC_BODY_TRACE, SC_BODY, SC_
 
 enum class FLAG_VALUES: char { FV_TOGGLE, FV_ON, FV_OFF};
 
-enum class FLAG_NAMES: char {FN_ANTIALIAS_LINES = 30, FN_CONSTELLATION_DRAWING, FN_CONSTELLATION_NAMES, FN_CONSTELLATION_ART, FN_CONSTELLATION_BOUNDARIES, FN_CONSTELLATION_PICK,
+enum class FLAG_NAMES: char {FN_ANTIALIAS_LINES = 30, FN_CONSTELLATION_DRAWING, FN_CONSTELLATION_NAMES, FN_CONSTELLATION_ART, FN_DUAL_VIEWPORT, FN_CONSTELLATION_BOUNDARIES, FN_CONSTELLATION_PICK,
                              FN_STAR_TWINKLE, FN_NAVIGATION, FN_SHOW_TUI_DATETIME, FN_SHOW_TUI_SHORT_OBJ_INFO, FN_MANUAL_ZOOM, FN_LIGHT_TRAVEL_TIME, FN_DSO_PICTOGRAMS,
                              FN_FOG, FN_ATMOSPHERE, FN_AZIMUTHAL_GRID, FN_EQUATORIAL_GRID, FN_ECLIPTIC_GRID, FN_GALACTIC_GRID, FN_EQUATOR_LINE, FN_GALACTIC_LINE,
                              FN_ECLIPTIC_LINE, FN_PRECESSION_CIRCLE, FN_CIRCUMPOLAR_CIRCLE, FN_TROPIC_LINES, FN_MERIDIAN_LINE, FN_ZENITH_LINE, FN_POLAR_CIRCLE, FN_POLAR_POINT,
@@ -350,6 +350,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_FN_CONSTELLATION_DRAWING                "constellation_drawing"
 #define ACP_FN_CONSTELLATION_NAMES                  "constellation_names"
 #define ACP_FN_CONSTELLATION_ART                    "constellation_art"
+#define ACP_FN_DUAL_VIEWPORT                        "dual_viewport"
 #define ACP_FN_CONSTELLATION_BOUNDARIES             "constellation_boundaries"
 #define ACP_FN_CONSTELLATION_PICK                   "constellation_pick"
 #define ACP_FN_STAR_TWINKLE                         "star_twinkle"
@@ -573,6 +574,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define FLAG_SATELLITES_ORBITS_OFF          "flag satellites_orbits off"
 #define FLAG_SHOW_TUI_DATETIME_OFF          "flag show_tui_datetime off"
 #define FLAG_STAR_NAMES_OFF                 "flag star_names off"
+#define FLAG_DUAL_VIEWPORT_OFF              "flag dual_viewport off"
 #define FLAG_SHOW_TUI_SHORT_OBJ_INFO_OFF    "flag show_tui_short_obj_info off"
 #define FLAG_STARS_ON                       "flag stars on"
 #define FLAG_PLANETS_ON                     "flag planets on"
