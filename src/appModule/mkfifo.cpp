@@ -32,18 +32,14 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 
-#ifdef LINUX
+#ifdef __linux__
 //for pipe
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <unistd.h>
+
 #endif
-
-
-#if LINUX // special mkfifo
-
 
 //mkfifo -----------------------
 Mkfifo::Mkfifo()
@@ -70,6 +66,7 @@ int Mkfifo::thread_wrapper(void *Data)
 
 int Mkfifo::thread()
 {
+	#ifdef __linux__
 	cLog::get()->write("Thread MKFIFO, buffer_in_size is "+std::to_string(buffer_size), LOG_TYPE::L_INFO, LOG_FILE::TCP);
 	int fdtr;
 	char *in;
@@ -77,15 +74,14 @@ int Mkfifo::thread()
 	if (in ==NULL) return 1;
 
 	cLog::get()->write("Pipe named  " + filename, LOG_TYPE::L_INFO);
+	// doesn't xexist
 	unlink(filename.c_str());
 	if (mkfifo((filename.c_str()), S_IRWXU| S_IWGRP | S_IWOTH ) == -1) { //TODO why result has no g+o=w mode ?
 		cLog::get()->write("Error creating MkFifo pipe thread in_thread "+std::to_string(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
 		return 2;
 	} else {
 		cLog::get()->write("Creating Mkfifo pipe successfull", LOG_TYPE::L_INFO);
-		char mode[] = "0777";
-		int i = strtol(mode, 0, 8);
-		chmod(filename.c_str(),i);
+		chmod(filename.c_str(), 0777);
 	}
 	if((fdtr = open (filename.c_str(), O_RDONLY )) == -1) {
 		cLog::get()->write("Unable to open named mkfifo pipe, error code is "+std::to_string(errno), LOG_TYPE::L_ERROR, LOG_FILE::TCP);
@@ -112,6 +108,13 @@ int Mkfifo::thread()
 	free(in);
 	unlink(filename.c_str());
 	return 0;
+
+	#else
+	cLog::get()->write("Mkfifo is not implemented on windows", LOG_TYPE::L_ERROR, LOG_FILE::TCP);
+	is_active = false;
+	return 2;
+
+	#endif
 }
 
 bool Mkfifo::update(std::string &output)
@@ -129,5 +132,3 @@ bool Mkfifo::update(std::string &output)
 	} else
 		return false;
 }
-
-#endif

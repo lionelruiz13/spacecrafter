@@ -19,8 +19,11 @@
 #include "tools/log.hpp"
 #include "tools/utility.hpp"
 //#include "spacecrafter.hpp"
-
-
+#ifdef WIN32
+#define NOMINMAX
+#include <windows.h>
+#define timegm _mkgmtime
+#endif
 
 std::string SpaceDate::getPrintableTimeNav(double jd, double latitude, double longitude) const
 {
@@ -36,7 +39,7 @@ std::string SpaceDate::getPrintableTimeNav(double jd, double latitude, double lo
 	while (sidereal>=360) sidereal-=360;
 	while (sidereal<0)    sidereal+=360;
 	LST=sidereal+longitude;
-	while (LST>=360) 
+	while (LST>=360)
 		LST-=360;
 	while (LST<0)
 		LST+=360;
@@ -45,9 +48,9 @@ std::string SpaceDate::getPrintableTimeNav(double jd, double latitude, double lo
 	l=280.4665+0.98564736*(jd-2451545)+c;
 	r=-2.468*sin(2*l*3.1415926/180)+0.053*sin(4*l*3.1415926/180)-0.0014*sin(6*l*3.1415926/180);
 	lct=-longitude+c+r;
-	while (lct>360) 
+	while (lct>360)
 		lct-=360;
-	while(lct<0) 
+	while(lct<0)
 		lct+=360;
 
 	os << getPrintableDateLocal(jd) << " " << getPrintableTimeLocal(jd) << "  UTC " << getPrintableTimeUTC(jd) << " GST " << Utility::printAngleHMS(sidereal*3.1415926/180) << " LST " << Utility::printAngleHMS(LST*3.1415926/180);
@@ -89,7 +92,7 @@ std::string SpaceDate::TimeZoneNameFromSystem(double JD)
 // Win32 API GetTimeZoneInformation.
 float SpaceDate::GMTShiftFromSystem(double JD, bool _local)
 {
-	#ifdef LINUX
+	#ifdef __linux__
 	// if( !AppSettings::Instance()->Windows() ) {
 		struct tm * timeinfo;
 
@@ -97,7 +100,7 @@ float SpaceDate::GMTShiftFromSystem(double JD, bool _local)
 			// JD is UTC
 			struct tm rawtime;
 			TimeTmFromJulian(JD, &rawtime);
-			time_t ltime = timegm(&rawtime);
+			time_t ltime = timegm(&rawtime); // This is not a portable way to getting time
 			timeinfo = localtime(&ltime);
 		} else {
 			time_t rtime;
@@ -387,7 +390,7 @@ size_t SpaceDate::myStrftime(char *s, size_t max, const char *fmt, const struct 
 
 		// Date only in current locale. Can only handle on Windows by returning ISO date.
 		if( sfmt == "%x" ) {
-			std::string iso = 
+			std::string iso =
 				ISO8601TimeUTC(JulianDayFromDateTime(tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec), true);
 			size = std::min(max, iso.length());
 			strncpy( s, iso.c_str(), size );
@@ -546,7 +549,8 @@ float SpaceDate::getGMTShift(double JD, bool _local) const
 
 void SpaceDate::setCustomTzName(const std::string& tzname)
 {
-	#if LINUX
+	// TODO : use std::chrono::zoned_time
+	#if __linux__
 	custom_tz_name = tzname;
 	timeZoneMode = S_TZ_CUSTOM;
 
@@ -618,4 +622,3 @@ std::string SpaceDate::sDateFormatToString(S_DATE_FORMAT df) const
 	cLog::get()->write(oss.str(), LOG_TYPE::L_WARNING );
 	return "system_default";
 }
-

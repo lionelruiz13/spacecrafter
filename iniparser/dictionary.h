@@ -21,7 +21,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
+#ifdef __linux__
+
+#else
+typedef __int64 ssize_t;
+#endif
 
 #ifdef __cplusplus
 extern "C" {

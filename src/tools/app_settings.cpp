@@ -225,12 +225,10 @@ const std::string AppSettings::getLanguageDir() const
 
 const std::string AppSettings::getUserDir() const
 {
-	#ifdef LINUX
-	std::string homeDir = getenv("HOME");
-	std::string cDir = homeDir + "/." + APP_LOWER_NAME + "/";
-	return cDir;
+	#ifdef __linux__
+		return std::string(getenv("HOME")) + "/." + APP_LOWER_NAME + "/";
 	#else
-	return m_configDir;
+		return std::string("%AppData%/.") + APP_LOWER_NAME + "/";
 	#endif
 }
 

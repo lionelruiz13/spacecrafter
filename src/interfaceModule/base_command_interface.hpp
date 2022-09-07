@@ -243,6 +243,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_MP3                       "mp3"
 #define W_OGG                       "ogg"
 #define W_SH                        ".sh"
+#define W_BAT 						"bat"
 #define W_SWF                       "swf"
 #define W_PNG                       "png"
 #define W_STOP                      "stop"

@@ -24,6 +24,7 @@
 
 #include <chrono>
 #include "mainModule/CPUInfo.hpp"
+#include "EntityCore/Tools/LinuxExecutor.hpp"
 
 CPUInfo::CPUInfo()
 {
@@ -93,15 +94,14 @@ void CPUInfo::getCPUstate(std::vector<CoreData> &entrie)
 
 void CPUInfo::getGPUstate()
 {
-	char buffer[128];
-    FILE* pipe = nullptr;
-	pipe = popen("nvidia-smi --format=csv,noheader,nounits --query-gpu=utilization.gpu,utilization.memory,memory.free,pstate,fan.speed,temperature.gpu", "r");
-    if (!pipe) return;
-	//seule la 1° ligne nous intéresse
-	if (fgets(buffer, 128, pipe) != NULL)
-        gpuOss << frame-1 <<  "," << std::string(buffer);
-
-    pclose(pipe);
+	std::vector<char> cache;
+	const char *args[] = {"nvidia-smi", "--format=csv,noheader,nounits", "--query-gpu=utilization.gpu,utilization.memory,memory.free,pstate,fan.speed,temperature.gpu"};
+	ExecutorInfo info{.args=args, .pushedInput={}, .saveOutput=true};
+	auto instance = LinuxExecutor::instance->spawnInstance(info, cache);
+	LinuxExecutor::instance->waitInstance(instance);
+	gpuOss << frame-1 << ',';
+	gpuOss.write(instance->output.data(), instance->output.size());
+	LinuxExecutor::instance->closeInstance(instance);
 }
 
 
@@ -115,17 +115,17 @@ void CPUInfo::archivingData()
 
 	for (unsigned int i=0; i<nbThread+1; i++) {
 
-		oss[diff-1] << frame-1  << "," << i << "," 
-				<< result[i].times[S_USER] << "," 
-				<< result[i].times[S_NICE] << "," 
-				<< result[i].times[S_SYSTEM] << "," 
-				<< result[i].times[S_IDLE] << "," 
-				<< result[i].times[S_IOWAIT] << "," 
-				<< result[i].times[S_IRQ] << "," 
-				<< result[i].times[S_SOFTIRQ] << "," 
-				<< result[i].times[S_STEAL] << "," 
-				<< result[i].times[S_GUEST] << "," 
-				<< result[i].times[S_GUEST_NICE] << "," 
+		oss[diff-1] << frame-1  << "," << i << ","
+				<< result[i].times[S_USER] << ","
+				<< result[i].times[S_NICE] << ","
+				<< result[i].times[S_SYSTEM] << ","
+				<< result[i].times[S_IDLE] << ","
+				<< result[i].times[S_IOWAIT] << ","
+				<< result[i].times[S_IRQ] << ","
+				<< result[i].times[S_SOFTIRQ] << ","
+				<< result[i].times[S_STEAL] << ","
+				<< result[i].times[S_GUEST] << ","
+				<< result[i].times[S_GUEST_NICE] << ","
 		<< std::endl;
 	}
 	if (diff>TAMPON_SIZE-1)
@@ -186,5 +186,5 @@ void CPUInfo::init(const std::string &logCPU_file, const std::string &logGPU_fil
 
 	if (!CPUfileLog.is_open() || !GPUfileLog.is_open())
 		isActived = false;
-	
+
 }

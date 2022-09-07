@@ -82,7 +82,7 @@ public:
 			// Transition is over
 			isTransiting = false;
 			currentValue = desiredValue;
-            counter = 0.;
+            counter = 0;
 		} else {
 			currentValue = currentValue + updateCoeff * delta_ticks;
 		}
@@ -93,7 +93,7 @@ public:
         desiredValue = s;
         isTransiting = true;
         counter = 0;
-        updateCoeff = (desiredValue - currentValue) / float(duration);
+        updateCoeff = (T) ((desiredValue - currentValue) / float(duration));
         return *this;
     }
 

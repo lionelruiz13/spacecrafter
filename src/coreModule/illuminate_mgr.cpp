@@ -143,7 +143,7 @@ void IlluminateMgr::load(int num, const Vec3f& _color, double _size, double rota
 }
 
 // Load individual Illuminate
-void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  double angular_size, double r, double g, double b, double tex_rotation)
+void IlluminateMgr::loadIlluminate(unsigned int name, double ra, double de,  double angular_size, double r, double g, double b, float tex_rotation)
 {
 	if (angular_size<1.0)
 		angular_size=defaultSize;

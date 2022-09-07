@@ -28,23 +28,23 @@
 #include "inGalaxyModule/starManager.hpp"
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
-#include <unistd.h>
+
 #include <list>
 #include <cstdlib>
 
 /**
  * Les entrées sorties des fichiers binaires sont de la forme
- * 
+ *
  * pour les hypercubes:
  * | Char c='H' | 3 floats posX, posY, posZ | 1 uint number (of cube) |
  *    1                          12                     4             = 17 octets
- * 
+ *
  * Pour les cubes:
  * | Char c='c' | 3 floats posX, posY, posZ | 1 uint number ( of stars) |
  *           1                     12                   4               = 17 octets
- * 
+ *
  * Pour les étoiles:
- * | Char c='s' | 1 uint  name HIP| 3floats posX, posY, posZ | 2floats pmRa, pmDe | float mag | int B_V | float pc(parsec)| 
+ * | Char c='s' | 1 uint  name HIP| 3floats posX, posY, posZ | 2floats pmRa, pmDe | float mag | int B_V | float pc(parsec)|
  *           1                  4                       12                8               4          4        4          = 37 octets
  */
 
@@ -443,7 +443,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 		addHyperCube(hc);
 	}
 	fileIn.close();
-	
+
 	std::ostringstream oss;
 	oss << "HyperCubes : " << nbrH << std::endl;
 	oss << "Cubes      : " << nbrC << std::endl;
@@ -465,7 +465,7 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 
 	if (!file.is_open()) {
 		//std::cout << "Error writing saveStarCatalog" << std::endl;
-		cLog::get()->write("Error writing saveStarCatalog", LOG_TYPE::L_ERROR);	
+		cLog::get()->write("Error writing saveStarCatalog", LOG_TYPE::L_ERROR);
 		return false;
 	}
 
@@ -524,10 +524,10 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 				file.write((char *)&B_V, sizeof(B_V));
 				file.write((char *)&pc, sizeof(pc));
 				if (file.bad())
-					cLog::get()->write("Error writing", LOG_TYPE::L_ERROR);	
+					cLog::get()->write("Error writing", LOG_TYPE::L_ERROR);
 					//std::cout << "error writing" << std::endl;
 
-				//~ file << "S" << " " << (*star)->HIP << " " << (*star)->posXYZ[0] << " " << (*star)->posXYZ[1] << " " << (*star)->posXYZ[2] << " " 
+				//~ file << "S" << " " << (*star)->HIP << " " << (*star)->posXYZ[0] << " " << (*star)->posXYZ[1] << " " << (*star)->posXYZ[2] << " "
 				//~ << (*star)->pmRA << " " << (*star)->pmDE << " " << (*star)->mag << " " << (*star)->B_V << " " << (*star)->pc << std::endl;
 			}
 		}
@@ -740,7 +740,7 @@ starInfo* StarManager::createStar(unsigned int hip, float RArad, float DErad, fl
 		cLog::get()->write("Star B_V to 0 with hip "+ std::to_string(si->HIP), LOG_TYPE::L_WARNING);
 	}
 	if (si->B_V >127) {
-		si->B_V = 127; 
+		si->B_V = 127;
 		// cout << si->HIP << " " << si ->B_V << endl;
 		cLog::get()->write("Star B_V to 127 with hip "+ std::to_string(si->HIP), LOG_TYPE::L_WARNING);
 	}
@@ -937,11 +937,11 @@ bool StarManager::loadOtherStar(const std::string &fileName)
 		starInfo * si =nullptr;
 
 		while (getline(fileIn, line)) {
-			
+
 			if (line !="") {
 				if (line[0]=='#')
 					continue;
-				
+
 				std::istringstream parseLine(line);
 				parseLine >> hip >> ra >> de >> plx >> pmRa >> pmDe >> mag >> bv;
 

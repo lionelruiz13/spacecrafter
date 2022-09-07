@@ -120,14 +120,14 @@ private:
 	//pour distinguer quelle texture ont doit utiliser:
 	// bool useRGB;
 
-	typedef struct {
+	struct linearTransition {
 		bool onTransition = false;	// Is on transition
 		int timer;		// Elapsed time from the beginning of the transition
 		int duration;	// Transition duration
 		float start;	// Initial position
 		float end;		// Final position
 		float coef;		// defined as start + coef * duration == end
-	} linearTransition;
+	};
 
 	void drawViewport(const Navigator * nav, Projector * prj);
 	void drawUnified(bool drawUp, const Navigator * nav, Projector * prj);

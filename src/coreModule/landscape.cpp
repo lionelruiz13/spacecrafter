@@ -41,6 +41,15 @@
 #include "EntityCore/Resource/Set.hpp"
 #include "EntityCore/Resource/TransferMgr.hpp"
 
+#ifdef WIN32
+#include <malloc.h>
+#ifndef alloca
+#define alloca _alloca
+#endif
+#else
+#include <alloca.h>
+#endif
+
 //define word string in a same place
 #define L_TYPE 			"type"
 #define L_SPHERICAL		"spherical"
@@ -428,7 +437,7 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 
 	int nbr=0;
 	const double drho = M_PI / stacks;
-	double cos_sin_rho[2*(stacks+1)];
+	double *cos_sin_rho = (double *) alloca(sizeof(double) * 2*(stacks+1));
 	double *cos_sin_rho_p = cos_sin_rho;
 	for (i = 0; i <= stacks; i++) {
 		const double rho = i * drho;
@@ -437,7 +446,7 @@ void LandscapeFisheye::createFisheyeMesh(double radius, int slices, int stacks, 
 	}
 
 	const double dtheta = 2.0 * M_PI / slices;
-	double cos_sin_theta[2*(slices+1)];
+	double *cos_sin_theta = (double *) alloca(sizeof(double) * 2*(slices+1));
 	double *cos_sin_theta_p = cos_sin_theta;
 	for (i = 0; i <= slices; i++) {
 		const double theta = (i == slices) ? 0.0 : i * dtheta;
@@ -622,7 +631,7 @@ void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_obl
 	t=0.0; // from inside texture is reversed
 
 	const float drho = angular_height / (float) stacks;
-	double cos_sin_rho[2*(stacks+1)];
+	double *cos_sin_rho = (double *) alloca(sizeof(double) * 2*(stacks+1));
 	double *cos_sin_rho_p = cos_sin_rho;
 	for (i = 0; i <= stacks; i++) {
 		double rho = M_PI_2 + bottom + i * drho;
@@ -631,7 +640,7 @@ void LandscapeSpherical::createSphericalMesh(double radius, double one_minus_obl
 	}
 
 	const float dtheta = 2.0 * M_PI / (float) slices;
-	double cos_sin_theta[2*(slices+1)];
+	double *cos_sin_theta = (double *) alloca(sizeof(double) * 2*(slices+1));
 	double *cos_sin_theta_p = cos_sin_theta;
 	for (i = 0; i <= slices; i++) {
 		double theta = (i == slices) ? 0.0 : i * dtheta;

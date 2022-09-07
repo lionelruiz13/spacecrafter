@@ -17,13 +17,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#include <unistd.h>
+
 
 //#include "spacecrafter.hpp"
 #include "coreModule/projector.hpp"
 #include "starModule/zone_array.hpp"
 #include "starModule/geodesic_grid.hpp"
-#include "tools/app_settings.hpp"
+#include "tools/app_settings.hpp"#w
 #include "tools/log.hpp"
 #include "tools/object_base.hpp"
 #include "tools/s_texture.hpp"
@@ -80,9 +80,10 @@ static inline int ReadInt(FILE *f,unsigned int &x)
 #define FILE_MAGIC_NATIVE 0x835f040b
 #define MAX_MAJOR_FILE_VERSION 0
 
-#if (!defined(__GNUC__))
-#warning Star catalogue loading has only been tested with gcc
-#endif
+// The #warning preprocessor is not implemented on MSVC
+// #if (!defined(__GNUC__))
+// #warning Star catalogue loading has only been tested with gcc
+// #endif
 
 ZoneArray *ZoneArray::create(const HipStarMgr &hip_star_mgr, const std::string& extended_file_name)
 {
@@ -258,7 +259,7 @@ void ZoneArray1::updateHipIndex(HipIndexStruct hip_index[]) const
 template<class Star> SpecialZoneArray<Star>::~SpecialZoneArray(void)
 {
 	if (stars) {
-		#if LINUX
+		#ifdef __linux__
 		if (mmap_start != MAP_FAILED) {
 			munmap(mmap_start,((char*)stars-(char*)mmap_start) +sizeof(Star)*nr_of_stars);
 		} else {
@@ -366,7 +367,7 @@ void SpecialZoneArray<Star>::searchAround(int index,const Vec3d &v, double cos_l
 template<class Star>
 SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, const HipStarMgr &hip_star_mgr, int level, int mag_min,int mag_range, int mag_steps)
 	:ZoneArray(hip_star_mgr,level, mag_min,mag_range,mag_steps), stars(0),
-	 #if LINUX
+	 #ifdef __linux__
 	 mmap_start(MAP_FAILED)
 	 #else
 	 mmap_start(NULL), mapping_handle(NULL)
@@ -408,7 +409,7 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 		} else {
 			if (use_mmap) {
 				const long start_in_file = ftell(f);
-				#if LINUX
+				#ifdef __linux__
 				const long page_size = sysconf(_SC_PAGE_SIZE);
 				#else
 				SYSTEM_INFO system_info;
@@ -416,10 +417,10 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 				const long page_size = system_info.dwAllocationGranularity;
 				#endif /* LINUX */
 				const long mmap_offset = start_in_file % page_size;
-				#if LINUX
+				#ifdef __linux__
 				mmap_start = mmap(0,mmap_offset+sizeof(Star)*nr_of_stars,PROT_READ, MAP_PRIVATE | MAP_NORESERVE, fileno(f),start_in_file-mmap_offset);
 				if (mmap_start == MAP_FAILED) {
-					std::cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray:  mmap(" << fileno(f) << ',' << start_in_file << ',' 
+					std::cerr << "ERROR: SpecialZoneArray(" << level << ")::SpecialZoneArray:  mmap(" << fileno(f) << ',' << start_in_file << ','
 							  << (sizeof(Star)*nr_of_stars) << ") failed: " << strerror(errno) << std::endl;
 					stars = 0;
 					nr_of_stars = 0;
@@ -497,4 +498,3 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 
 
 } // namespace BigStarCatalog
-

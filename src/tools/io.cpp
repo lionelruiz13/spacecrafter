@@ -34,6 +34,7 @@
 #include "tools/app_settings.hpp"
 
 #ifdef WIN32
+#define NOMINMAX
 #include <direct.h>
 #endif
 
@@ -87,7 +88,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	this->bufferSize = bufferSize;
 
 	debugOut("-- INIT --", LOG_TYPE::L_DEBUG); //Debug
-	debugOut("Port " + toString(port) + DEBUG_SEPARATOR3 + "Slots " + toString(maxClients) + DEBUG_SEPARATOR3 + "Buffer " + 
+	debugOut("Port " + toString(port) + DEBUG_SEPARATOR3 + "Slots " + toString(maxClients) + DEBUG_SEPARATOR3 + "Buffer " +
 			toString(bufferSize) + " B" + DEBUG_SEPARATOR3 + ")", LOG_TYPE::L_INFO); //Debug
 
 	/* Avertissements de configuration */
@@ -194,7 +195,7 @@ int ServerSocket::init(unsigned int port, unsigned int maxClients, unsigned int 
 	return IO_NO_ERROR; //Pas d'erreur
 }
 
-	
+
 std::string ServerSocket::replace(std::string base, const std::string from, const std::string to)
 {
 	std::string SecureCopy = base;
@@ -325,7 +326,7 @@ std::string ServerSocket::getInput()
 {
 	if(lock(inputting) == IO_NO_ERROR) {
 		std::string data;
-		if(inputQueue.empty()) 
+		if(inputQueue.empty())
 			data = "";
 		else {
 			data = inputQueue.front();
@@ -395,7 +396,7 @@ int ServerSocket::run()
 void ServerSocket::checkNewClient()
 {
 	debugOut("-- CHECK NEW CLIENT --", LOG_TYPE::L_DEBUG); //Debug
-	
+
 	if (SDLNet_SocketReady(serverSocket) != 0) { //S'il y a des nouveaux clients
 		if (clientCount < maxClients) { //S'il y a de la place pour le client
 			unsigned int freeSpot = maxClients - 1;
@@ -433,7 +434,7 @@ void ServerSocket::checkNewClient()
 			TCPsocket tempSock = SDLNet_TCP_Accept(serverSocket); //Accepte le client dans un socket
 			if(tempSock == NULL) { //Erreur lors de l'acceptation du client
 				cannotAcceptClient++;
-				
+
 			debugOut("SDL_ACCEPT_CLIENT_ERROR", LOG_TYPE::L_WARNING); //Debug
 			}
 
@@ -449,7 +450,7 @@ void ServerSocket::checkNewClient()
 void ServerSocket::checkNewData()
 {
 	debugOut("-- CHECK NEW DATA --", LOG_TYPE::L_DEBUG); //Debug
-	
+
 	int clientSocketActivity;
 	for (unsigned int client = 0; client < maxClients; client++) { //Parcours de tous les clients connectés
 
@@ -460,17 +461,17 @@ void ServerSocket::checkNewData()
 
 				int receivedByteCount = SDLNet_TCP_Recv(clientSocketTab[client], buffer, bufferSize); //Réception des données du client
 				if (receivedByteCount <= 0) { //Déconnexion du client
-					
+
 					debugOut("RESETED_BY_PEER "+ clientIp(client), LOG_TYPE::L_INFO); //Debug
-					
+
 					close(client); //Opérations de fermeture du socket du client
 				} else if ((unsigned int)receivedByteCount >= bufferSize) { //Buffer overflow
 					possibleBufferOverflow++; //Incrémente le nombre total de buffer overflow
 					strcpy(buffer, "SERVER_OVERFLOW"); //Prépare le message
 					send(clientSocketTab[client]); //Envoi du message
-					
+
 					debugOut("BUFFER_OVERFLOW too many data "+ clientIp(client), LOG_TYPE::L_WARNING); //Debug
-					
+
 					close(client); //Fermeture du socket client
 				} else {
 
@@ -587,13 +588,13 @@ bool ServerSocket::computeHttp(unsigned int client, std::string string)
 
 		close(client); //Fermeture de la connection
 		return true;
-	} else 
+	} else
 	if (string.substr(0,4) == "POST") { //Requête HTTP POST (pas supportée)
 		strcpy(buffer, "HTTP/1.0 500 Internal Error\r\nServer: SpaceCrafter (HTTP/BETA)\r\nContent-Length: 0\r\n\r\n");
 		send(clientSocketTab[client]);
 		close(client);
 		return true;
-	} else 
+	} else
 		return false;
 	#else
 	return true;
@@ -606,12 +607,12 @@ void ServerSocket::computeNormalString(unsigned int client, std::string string)
 	if(string.substr(0, 7) == "$NOTICE") { //Commande NOTICE
 		strcpy(buffer, "$NOTICE $LOGON $LOGOFF");
 		send(clientSocketTab[client]);
-	} else 
+	} else
 	if(string.substr(0, 4) == "$LOG") { //Commande LOG
 		if(string.substr(4, 2) == "ON" && !clientBroadcastTab[client]) { //LOGON
 			clientBroadcastTab[client] = true; //Changement des préférences du client
 			strcpy(buffer, "Vous receverez maintenant les logs\n");
-		} else 
+		} else
 		if(string.substr(4, 3) == "OFF" && clientBroadcastTab[client]) { //LOGOFF
 			clientBroadcastTab[client] = false; //Changement des préférences du client
 			strcpy(buffer, "Vous receverez maintenant PLUS les logs\n");

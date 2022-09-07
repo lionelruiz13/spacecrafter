@@ -238,7 +238,7 @@ std::string cLog::getDate()
 {
 	time_t tTime = time(NULL);
 	tm * tmTime = localtime (&tTime);
-	char timestr[8];
+	char timestr[32];
 	strftime(timestr, 21, "%y.%m.%d", tmTime);
 	return std::string(timestr);
 }

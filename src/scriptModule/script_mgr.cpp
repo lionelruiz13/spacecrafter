@@ -27,9 +27,9 @@
 
 #include <iostream>
 #include <string>
-#include <dirent.h>
 #include <cstdio>
 #include <set>
+#include <filesystem>
 #include "interfaceModule/app_command_interface.hpp"
 #include "scriptModule/script_mgr.hpp"
 #include "mediaModule/media.hpp"
@@ -67,13 +67,7 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO);
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 
-	std::string script_file, script_path;
-	CallSystem::splitFilename(fullFileName, script_path , script_file);
-	//~ cout << "fullname: " << fullFileName << endl;
-	//~ cout << "script_path: " << script_path << endl;
-	//~ cout << "script_file: " << script_file << endl;
-
-	if ( script->load(fullFileName, script_path) ) {
+	if ( script->load(fullFileName, std::filesystem::path(fullFileName).parent_path().string()) ) {
 		multiplierRate=1;
 		scriptState = ScriptState::PLAY;
 		wait_time = 0;
@@ -321,33 +315,24 @@ void ScriptMgr::update(int delta_time)
 // get a list of script files from directory in alphabetical order
 std::string ScriptMgr::getScriptList(const std::string &directory)
 {
-	std::multiset<std::string> items;
-	std::multiset<std::string>::iterator iter;
+	std::error_code ec;
+	std::set<std::string> result; // So entries are sorted
 
-	struct dirent *entryp;
-	DIR *dp;
-	std::string tmp;
-
-	if ((dp = opendir(directory.c_str())) != NULL) {
-		// TODO: sort the directory
-		while ((entryp = readdir(dp)) != NULL) {
-			tmp = entryp->d_name;
-
-			if (tmp.length()>4 && tmp.find(".sts", tmp.length()-4)!=std::string::npos ) {
-				items.insert(tmp + "\n");
-				//cout << entryp->d_name << endl;
-			}
+	for (const auto &entry : std::filesystem::directory_iterator(directory, ec)) {
+		if (entry.is_regular_file() && entry.path().extension() == ".sts") {
+			result.insert(entry.path().stem().string());
 		}
-		closedir(dp);
-	} else {
-		cLog::get()->write("ScriptMgr::Unable to read script directory", LOG_TYPE::L_ERROR);
 	}
-	std::string result="";
-	for (iter=items.begin(); iter!=items.end(); iter++ ) {
-		result += (*iter);
+	if (ec) {
+		cLog::get()->write("ScriptMgr::Unable to read script directory", LOG_TYPE::L_ERROR);
+		return {};
 	}
 
-	return result;
+	std::ostringstream out;
+	for (auto &str : result) {
+		out << str << '\n';
+	}
+	return out.str();
 
 }
 

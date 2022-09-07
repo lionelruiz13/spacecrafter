@@ -19,7 +19,7 @@
 
 #include <stdio.h>
 #include <inttypes.h>
-#include <unistd.h>
+
 #include <iostream>
 #include <string>
 #include <SDL2/SDL.h>
@@ -27,7 +27,6 @@
 #include "mediaModule/media_base.hpp"
 #include "EntityCore/SubBuffer.hpp"
 
-#ifndef WIN32
 #include <thread>
 #include <mutex>
 #include "EntityCore/Tools/SafeQueue.hpp"
@@ -39,7 +38,6 @@ extern "C"
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
 }
-#endif
 
 class s_texture;
 class Media;
@@ -155,7 +153,7 @@ private:
 	int widths[3];
 	int heights[3];
 
-	#ifndef WIN32
+
 	enum VideoThreadEvent {
 		INTERRUPT = -2,
 		RESUME = -1
@@ -164,7 +162,7 @@ private:
 	AVFormatContext	*pFormatCtx;
 	int				videoindex;
 	AVCodecContext	*pCodecCtx;
-	AVCodec			*pCodec;
+	const AVCodec	*pCodec;
 	AVFrame			*pFrameIn,*pFrameOut;
 	AVStream		*video_st;
 	AVPacket		*packet;
@@ -184,7 +182,6 @@ private:
 	std::mutex mtx;
 	PushQueue<int, MAX_CACHED_FRAMES> displayQueue; // Frames ready to display
 	WorkQueue<int, MAX_CACHED_FRAMES> requestQueue; // Frames to compute
-	#endif
 };
 
 #endif // VIDEOPLAYER_HPP

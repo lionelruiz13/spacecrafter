@@ -37,8 +37,14 @@ struct TopTriangle {
 	const unsigned char corners[3];   // index der Ecken
 };
 
+#ifdef __GNUC__
 constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
 constexpr float icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
+#else // constexpr sqrt is not supported for non-gcc compilers
+constexpr float icosahedron_G = 1.6180339887498948482045868343656;
+constexpr float icosahedron_b = 0.52573111211913360602566908484788;
+#endif
+
 constexpr float icosahedron_a = icosahedron_b*icosahedron_G;
 
 const Vec3f icosahedron_corners[12] = {
@@ -101,11 +107,11 @@ public:
 	typedef std::pair<dataType_t, bool> elementType_t;
 	typedef std::vector<elementType_t> dataCenterType_t;
 
-	typedef struct {
+	struct subGrid_t {
 		elementType_t *element;
 		Vec3f corners[3];
 		Vec3f center;
-	} subGrid_t;
+	};
 
 	class iterator;
 	class const_iterator;
@@ -127,25 +133,25 @@ public:
 	//! Standard std::list::erase
 	void erase(SphereGrid::iterator &it);
 	//! Returns an iterator on the first visible element that iterates through all visible elements
-	auto begin() {
+	SphereGrid::iterator begin() {
 		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end());
 	};
-	auto begin() const {
+	SphereGrid::const_iterator begin() const {
 		return SphereGrid::const_iterator(allDataCenter.begin(), allDataCenter.end());
 	};
 	//! Returns an iterator on the first element that iterates through all the elements
-	auto rawBegin() {
+	SphereGrid::iterator rawBegin() {
 		return SphereGrid::iterator(allDataCenter.begin(), allDataCenter.end(), false);
 	}
-	auto rawBegin() const {
+	SphereGrid::const_iterator rawBegin() const {
 		return SphereGrid::const_iterator(allDataCenter.begin(), allDataCenter.end(), false);
 	}
 	//! Remove all elements from this grid
 	void clear();
-	auto end() {
+	SphereGrid::iterator end() {
 		return SphereGrid::iterator(allDataCenter.end());
 	};
-	auto end() const {
+	SphereGrid::const_iterator end() const {
 		return SphereGrid::const_iterator(allDataCenter.end());
 	};
 	// void setFov(Vec3f pos, float fov);
@@ -161,7 +167,7 @@ private:
 	//! Determine if one zone is visible
 	void subIntersect(const Vec3f &pos, float fieldAngle, Tree<subGrid_t> &data, int subdivisionLvl);
 	//! Return a pointer to the nearest zone of -v
-	auto *getNearest(const Vec3f& _v);
+	SphereGrid<T>::elementType_t *getNearest(const Vec3f& _v);
 	//! Angle entre le centre d'un triange et l'un de ses sommets pour un niveau de division donné
 	std::vector<float> angleLvl;
 	//! Optimized container for access
@@ -177,7 +183,7 @@ private:
 template<typename T>
 class SphereGrid<T>::iterator {
 public:
-	iterator(typename SphereGrid::dataCenterType_t::iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::iterator &_zoneEnd, bool _skipUnvisible = true) : iterLastZone(_zoneEnd), skipUnvisible(_skipUnvisible) {
+	iterator(typename SphereGrid<T>::dataCenterType_t::iterator _zoneBegin, const typename SphereGrid<T>::dataCenterType_t::iterator &_zoneEnd, bool _skipUnvisible = true) : iterLastZone(_zoneEnd), skipUnvisible(_skipUnvisible) {
 		// Move iterZone to the first non-empty container
 		for (iterZone = _zoneBegin; iterZone != iterLastZone && (iterZone->first.size() == 0 || (_skipUnvisible && !iterZone->second)); iterZone++);
 		if (iterZone != iterLastZone) {
@@ -185,7 +191,7 @@ public:
 			iterLastElement = iterZone->first.cend();
 		}
 	}
-	iterator(const typename SphereGrid::dataCenterType_t::iterator &_iterZone) : iterZone(_iterZone) {}
+	iterator(const typename SphereGrid<T>::dataCenterType_t::iterator &_iterZone) : iterZone(_iterZone) {}
 	bool operator!=(iterator compare) const {
 		return iterZone != compare.iterZone;
 	}
@@ -223,17 +229,17 @@ public:
 	typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
 protected:
 	iterator() {}
-	typename dataCenterType_t::iterator iterZone;
-	typename dataCenterType_t::const_iterator iterLastZone;
-	typename dataType_t::iterator iterElement;
-	typename dataType_t::const_iterator iterLastElement;
-	const bool skipUnvisible = true;
+	typename SphereGrid<T>::dataCenterType_t::iterator iterZone;
+	typename SphereGrid<T>::dataCenterType_t::const_iterator iterLastZone;
+	typename SphereGrid<T>::dataType_t::iterator iterElement;
+	typename SphereGrid<T>::dataType_t::const_iterator iterLastElement;
+	bool skipUnvisible = true; // Can't be const for operator= (MSVC requirement)
 };
 
 template<typename T>
 class SphereGrid<T>::const_iterator {
 public:
-	const_iterator(typename SphereGrid::dataCenterType_t::const_iterator _zoneBegin, const typename SphereGrid::dataCenterType_t::const_iterator &_zoneEnd, bool _skipUnvisible = true) : iterLastZone(_zoneEnd), skipUnvisible(_skipUnvisible) {
+	const_iterator(typename SphereGrid<T>::dataCenterType_t::const_iterator _zoneBegin, const typename SphereGrid<T>::dataCenterType_t::const_iterator &_zoneEnd, bool _skipUnvisible = true) : iterLastZone(_zoneEnd), skipUnvisible(_skipUnvisible) {
 		// Move iterZone to the first non-empty container
 		for (iterZone = _zoneBegin; iterZone != iterLastZone && (iterZone->first.size() == 0 || (_skipUnvisible && !iterZone->second)); iterZone++);
 		if (iterZone != iterLastZone) {
@@ -241,7 +247,7 @@ public:
 			iterLastElement = iterZone->first.cend();
 		}
 	}
-	const_iterator(const typename SphereGrid::dataCenterType_t::const_iterator &_iterZone) : iterZone(_iterZone) {}
+	const_iterator(const typename SphereGrid<T>::dataCenterType_t::const_iterator &_iterZone) : iterZone(_iterZone) {}
 	bool operator!=(iterator compare) const {
 		return iterZone != compare.iterZone;
 	}
@@ -273,11 +279,11 @@ public:
 	typedef std::forward_iterator_tag iterator_category;  //usually std::forward_iterator_tag or similar
 private:
 	const_iterator() {}
-	typename dataCenterType_t::const_iterator iterZone;
-	typename dataType_t::const_iterator iterElement;
-	typename dataCenterType_t::const_iterator iterLastZone;
-	typename dataType_t::const_iterator iterLastElement;
-	const bool skipUnvisible = true;
+	typename SphereGrid<T>::dataCenterType_t::const_iterator iterZone;
+	typename SphereGrid<T>::dataType_t::const_iterator iterElement;
+	typename SphereGrid<T>::dataCenterType_t::const_iterator iterLastZone;
+	typename SphereGrid<T>::dataType_t::const_iterator iterLastElement;
+	bool skipUnvisible = true; // Can't be const for operator= (MSVC requirement)
 };
 
 template<typename T>
@@ -325,7 +331,7 @@ void SphereGrid<T>::subdivise(int _nbSubdivision)
 	// clear content to rebuild grid
 	allDataCenter.clear();
 	angleLvl.clear();
-	allDataCenter.reserve(20 * pow(4, _nbSubdivision)); // This container mustn't need to reallocate memory
+	// allDataCenter.reserve(20 * pow(4, _nbSubdivision)); // This container mustn't need to reallocate memory
 	void *ptr = allDataCenter.data(); // There must be no reallocation
 	nbSubdivision = _nbSubdivision;
 	for (auto &value: dataCenter) {
@@ -359,7 +365,7 @@ SphereGrid<T>::SphereGrid()
 }
 
 template<typename T>
-auto *SphereGrid<T>::getNearest(const Vec3f& _v)
+SphereGrid<T>::elementType_t *SphereGrid<T>::getNearest(const Vec3f& _v)
 {
 	Vec3f v=_v;
 	float bestDot = -2.f;

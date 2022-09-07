@@ -42,7 +42,7 @@ void Axis::drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat
 		return;
 	if (!m_AxisGL) {
 		m_AxisGL = vertexModel->createBuffer(0, 2, Context::instance->tinyMgr.get());
-		pPosAxis = static_cast<typeof(pPosAxis)>(Context::instance->tinyMgr->getPtr(m_AxisGL->get()));
+		pPosAxis = static_cast<Vec3f *>(Context::instance->tinyMgr->getPtr(m_AxisGL->get()));
 	}
 
 	pipeline->bind(cmd);

@@ -102,10 +102,14 @@ public:
 
 private:
 	//! Load an individual Illuminate with all data
-	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, double tex_rotation);
+	void loadIlluminate(unsigned int name, double ra, double de, double angular_size, double r, double g, double b, float tex_rotation);
 	void buildSet();
 
+	#ifdef _MSC_VER // MSVC is not C++11 compliant, using copy for moving in resize and reserve
+	SphereGrid<std::shared_ptr<Illuminate>> illuminateGrid;
+	#else
 	SphereGrid<std::unique_ptr<Illuminate>> illuminateGrid;
+	#endif
 
 	double defaultSize;							//!< defautl Size from illuninate if not precised
 

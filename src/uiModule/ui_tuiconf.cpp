@@ -31,7 +31,6 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
-#include <dirent.h>
 
 #include "appModule/app.hpp"
 #include "appModule/space_date.hpp"

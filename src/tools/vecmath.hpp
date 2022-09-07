@@ -48,6 +48,11 @@
 #include <iostream>
 #include <vector>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#define M_PI_2 (M_PI / 2)
+#endif
+
 template<class T> class Vector2;
 template<class T> class Vector3;
 template<class T> class Vector4;
@@ -656,9 +661,9 @@ template<class T> Vector3<T>::Vector3(const Vector4<T>&a)
 //! @param a the vector to copy.
 template<class T> template<class T2> Vector3<T>::Vector3(const Vector3<T2>& a)
 {
-	v[0]=a.v[0];
-	v[1]=a.v[1];
-	v[2]=a.v[2];
+	v[0]=(T) a.v[0];
+	v[1]=(T) a.v[1];
+	v[2]=(T) a.v[2];
 }
 
 //! constructor from 3 values.
@@ -2282,10 +2287,10 @@ template<class T> void Matrix4<T>::print(void) const
 //! Convert to a float matrix
 template<class T> Matrix4<float> Matrix4<T>::convert() const
 {
-	return Matrix4<float>(	r[0], r[1], r[2],  r[3],
-	                        r[4], r[5], r[6],  r[7],
-	                        r[8], r[9], r[10], r[11],
-	                        r[12], r[13], r[14], r[15]);
+	return Matrix4<float>(	(float) r[0], (float) r[1], (float) r[2],  (float) r[3],
+	                        (float) r[4], (float) r[5], (float) r[6],  (float) r[7],
+	                        (float) r[8], (float) r[9], (float) r[10], (float) r[11],
+	                        (float) r[12], (float) r[13], (float) r[14], (float) r[15]);
 }
 
 

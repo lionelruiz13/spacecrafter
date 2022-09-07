@@ -119,7 +119,7 @@ void Center::createHaloShader(float viewport_y)
     m_bigHaloGL->createBindingEntry(sizeof(Vec2f));
     m_bigHaloGL->addInput(VK_FORMAT_R32G32_SFLOAT);
     haloBuffer = m_bigHaloGL->createBuffer(0, 1, context.tinyMgr.get());
-    screenPosF = static_cast<typeof(screenPosF)>(context.tinyMgr->getPtr(haloBuffer->get()));
+    screenPosF = static_cast<Vec2f *>(context.tinyMgr->getPtr(haloBuffer->get()));
 
     layoutBigHalo = std::make_unique<PipelineLayout>(vkmgr);
     layoutBigHalo->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);

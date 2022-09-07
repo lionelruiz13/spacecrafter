@@ -165,7 +165,7 @@ void Halo::createSC_context()
 	//! Note : 16384 is enough while there is no more than 8192 halo drawn per frame
 	global->vertex = global->pattern->createBuffer(0, 16384, context.ojmBufferMgr.get());
 	global->staging = context.stagingMgr->acquireBuffer(global->vertex->get().size);
-	global->pData = static_cast<typeof(global->pData)>(context.stagingMgr->getPtr(global->staging));
+	global->pData = static_cast<HaloContext::pData_t *>(context.stagingMgr->getPtr(global->staging));
 
 	global->layout = std::make_unique<PipelineLayout>(vkmgr);
 	global->layout->setGlobalPipelineLayout(context.layouts.front().get());

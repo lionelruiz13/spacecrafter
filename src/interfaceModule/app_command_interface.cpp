@@ -1815,7 +1815,12 @@ int AppCommandInterface::commandExternalViewer()
 				action1="sh "+ myFile.toString() + " &";
 			else
 				debug_message= "command_externalViewer shell script fileName not found";
-
+		} else if (extention == W_BAT) {
+			FilePath myFile  = FilePath(argFileName, FilePath::TFP::DATA);
+			if (myFile)
+				action1= myFile.toString() + " &";
+			else
+				debug_message= "command_externalViewer shell script fileName not found";
 		} else if (extention == W_SWF) {
 			FilePath myFile  = FilePath(argFileName);
 			if (myFile)

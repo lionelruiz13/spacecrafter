@@ -12,11 +12,16 @@ class DrawHelper;
 class QueueFamily;
 class CaptureMetrics;
 
-#define BIG_TEXTURE_MAIN_SIZE (16*1024*8*1024*4l)
-
 // Maximal size of the big texture with his mipmaps
+#ifdef WIN32 // Only windows long long are unix long
+#define BIG_TEXTURE_MAIN_SIZE (16*1024*8*1024*4ll)
+#define BIG_TEXTURE_SIZE 4ll*(BIG_TEXTURE_MAIN_SIZE+2ll)/3ll
+#define BIG_TEXTURE_MIPMAP_SIZE (BIG_TEXTURE_MAIN_SIZE+2ll)/3ll
+#else
+#define BIG_TEXTURE_MAIN_SIZE (16*1024*8*1024*4l)
 #define BIG_TEXTURE_SIZE 4l*(BIG_TEXTURE_MAIN_SIZE+2l)/3l
 #define BIG_TEXTURE_MIPMAP_SIZE (BIG_TEXTURE_MAIN_SIZE+2l)/3l
+#endif
 
 enum {
     PASS_BACKGROUND = 0, // multi-sample, no depth buffer
