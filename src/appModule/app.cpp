@@ -486,6 +486,10 @@ void App::init()
 
 	fontFactory->reloadAllFont();
 	commander->deleteVar();
+	core->init(conf);
+	ui->init(conf);
+	core->init(conf);
+	ui->init(conf);
 	context.stat->capture(Capture::APP_INIT_END);
 }
 

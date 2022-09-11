@@ -73,6 +73,8 @@ void SolarSystemModule::onEnter()
 		observer->setAltitude(observer->getAltitude() *1.E6);
     thread = std::thread(&SolarSystemModule::asyncUpdateLoop, this);
     core->milky_way->enableZodiacal(true);
+    // Ensure we enter the solar system
+    core->ssystemFactory->switchToAnchor("Sun");
     core->ssystemFactory->enterSystem();
     core->setFlagTracking(false); // Just in case
     core->selectObject(core->ssystemFactory->getSelected());

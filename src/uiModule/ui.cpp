@@ -137,17 +137,17 @@ void UI::init(const InitParser& conf)
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
 
 	// initial.sts commands
-	media->imageDropAll();
 	app->switchMode("in_solarsystem");
 	core->setHomePlanet("Earth");
-	double lat = coreLink->observatoryGetLatitude();
-	double lon = coreLink->observatoryGetLongitude();
-	double alt = 75;
-	int delay = (int)(1000.*0);
+	double lati = coreLink->observatoryGetLatitude();
+	double longi = coreLink->observatoryGetLongitude();
+	double alti = coreLink->observatoryGetAltitude()/1000000.0;
+	coreLink->observerMoveTo(lati,longi,alti,0);
+
+	media->imageDropAll();
 	coreLink->milkyWaySetFlagZodiacal(false);
 	app->flag(APP_FLAG::COLOR_INVERSE, false);
 	core->setDsoPictograms(false);
-	coreLink->observerMoveTo(lat,lon,alt,delay);
 
 	coreLink->planetSwitchTexMap("Sun", false);
 	coreLink->planetSwitchTexMap("Mercury", false);
@@ -2310,8 +2310,6 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					this->executeCommand("date load preset");
 					break;
 				case SUPER:
-					app->init();
-					app->init();
 					app->init();
 					event = new ScriptEvent( IDIR+"internal/initial.sts");
 					EventRecorder::getInstance()->queue(event);
