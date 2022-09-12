@@ -12,6 +12,8 @@ build
 
 #vscode
 .vscode
+.vs
+out
 
 # Gettext
 .deps/*
