@@ -46,7 +46,8 @@ struct starInfo {
 	float pc; 	//unit : parsec
 };
 
-
+// GPU need posXYZ, mag, B_V (COMPACT = 4 float, 1 int)
+// CPU need HIP
 
 
 //! \class Cube

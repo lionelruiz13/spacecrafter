@@ -67,7 +67,8 @@ bool ScriptMgr::playScript(const std::string &fullFileName)
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO);
 	cLog::get()->write("ScriptMgr: load "+ fullFileName, LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
 
-	if ( script->load(fullFileName, std::filesystem::path(fullFileName).parent_path().string()) ) {
+
+	if ( script->load(fullFileName, fullFileName.substr(0, fullFileName.find_last_of("/\\") + 1)) ) {
 		multiplierRate=1;
 		scriptState = ScriptState::PLAY;
 		wait_time = 0;
@@ -338,7 +339,7 @@ std::string ScriptMgr::getScriptList(const std::string &directory)
 
 std::string ScriptMgr::getScriptPath()
 {
-	if (DataDir=="") {
+	if (DataDir.empty()) {
 		//printf("getScriptPath1 retourne : %s\n", AppSettings::Instance()->getScriptDir().c_str());
 		return AppSettings::Instance()->getScriptDir();
 	} else {

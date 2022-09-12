@@ -140,4 +140,6 @@ FilePath::FilePath(const std::string& fileName, TFP type)
 		};
 	isFileExist = CallSystem::fileExist(fullFileName);
 	}
+	if (!isFileExist)
+		std::cout << "No '" << fileName << "', '" << scriptPath << fileName << "' or '"  << fullFileName << "' found\n";
 }
