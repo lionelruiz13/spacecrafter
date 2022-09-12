@@ -61,7 +61,7 @@ SkyLocalizer::SkyLocalizer(const std::string& cultureDir)
 		if (!std::filesystem::exists(configName))
 			continue;
 		InitParser conf;
-		conf.load(entry.path().string());
+		conf.load(configName.string());
 		dirToNameEnglish[entry.path().filename().string()] = conf.getStr("info:name");
 	}
 }

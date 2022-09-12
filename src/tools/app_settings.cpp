@@ -228,7 +228,7 @@ const std::string AppSettings::getUserDir() const
 	#ifdef __linux__
 		return std::string(getenv("HOME")) + "/." + APP_LOWER_NAME + "/";
 	#else
-		return std::string("%AppData%/.") + APP_LOWER_NAME + "/";
+		return std::string(getenv("USERPROFILE")) + "/." + APP_LOWER_NAME + "/";
 	#endif
 }
 
