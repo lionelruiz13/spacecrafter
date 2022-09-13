@@ -33,15 +33,13 @@
 #include <SDL2/SDL_net.h> //ServerSocket
 #include <iostream> //ServerSocket
 
-#ifdef LINUX
+#ifdef __linux__
 //for pipe
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
 #endif
-
-#if LINUX // special mkfifo
 
 class Mkfifo : public NoCopy {
 public:
@@ -79,6 +77,5 @@ private:
 	// function what call threadMkfifoRead
 	static int thread_wrapper(void *Data);
 };
-#endif
 
 #endif // IO_H

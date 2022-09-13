@@ -41,6 +41,7 @@
 #include "tools/utility.hpp"
 
 #ifdef WIN32
+#define NOMINMAX
 #include <Windows.h>
 #endif
 
@@ -501,9 +502,9 @@ long int Utility::strToLong(const std::string& str)
 }
 
 
-float Utility::clamp( float value, float min, float max ) 
-{ 
-    return ( value < min ) ? ( min ) : ( ( value>max) ? ( max) : (value) ); 
+float Utility::clamp( float value, float min, float max )
+{
+    return ( value < min ) ? ( min ) : ( ( value>max) ? ( max) : (value) );
 }
 
 bool Utility::isBoolean(const std::string &a)

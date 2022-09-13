@@ -65,7 +65,7 @@ private:
 	Body * body;
 
 	struct HaloContext {
-		struct {
+		struct pData_t {
 			Vec2f pos;
 			Vec3f Color;
 			float rmag;

@@ -47,7 +47,7 @@ public:
 		return Vec3d(viewport_center[0], viewport_center[1], viewport_radius);
 	}
 	Vec3f getViewportFloatCenter(void) const {
-		return Vec3f(viewport_center[0], viewport_center[1], viewport_radius);
+		return Vec3f((float) viewport_center[0], (float) viewport_center[1], (float) viewport_radius);
 	}
 
 	double getViewportRadius(void) const {
@@ -249,7 +249,7 @@ public:
 	StelGeom::ConvexS unprojectViewport(void) const;
 
 	Mat4f getMatProjectionOrtho2D() const {
-		return Mat4f::ortho2D(vec_viewport[0], vec_viewport[0] + vec_viewport[2], vec_viewport[1], vec_viewport[1] + vec_viewport[3]);
+		return Mat4f::ortho2D((float) vec_viewport[0], (float) (vec_viewport[0] + vec_viewport[2]), (float) vec_viewport[1], (float) (vec_viewport[1] + vec_viewport[3]));
 	}
 
 	//! return the current Projection Matrix
@@ -259,7 +259,7 @@ public:
 
 	//! return float zNear, zFar and fov direct for GLSL usage
 	Vec3f getClippingFov () const {
-		return Vec3f( zNear, zFar, fov);
+		return Vec3f((float) zNear, (float) zFar, (float) fov);
 	}
 
 	Mat4f getMatLocalToEye() const {

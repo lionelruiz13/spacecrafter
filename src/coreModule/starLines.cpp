@@ -17,7 +17,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <unistd.h>
+
 
 #include "coreModule/starLines.hpp"
 #include "tools/utility.hpp"
@@ -249,7 +249,7 @@ void StarLines::loadStringData(const std::string& record) noexcept
 {
 	unsigned int HIP1;
 	unsigned int HIP2;
-	Vec3f VNull(0.0,0.0,0.0);
+	Vec3d VNull(0.0,0.0,0.0);
 	std::string abbreviation;
 	unsigned int nb_segments=0;
 

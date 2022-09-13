@@ -228,7 +228,11 @@ private:
 	LinearFader hintsFader;			//!< Hint about position and number of dso
 	LinearFader textFader;			//!< Display names smoothly
 
+	#ifdef _MSC_VER // MSVC is not C++11 compliant, using copy for moving in resize and reserve
+	typedef SphereGrid<std::shared_ptr<Nebula>> nebGrid_t;
+	#else
 	typedef SphereGrid<std::unique_ptr<Nebula>> nebGrid_t;
+	#endif
 	nebGrid_t nebGrid;
 
 	float maxMagHints;				//!< Define maximum magnitude at which nebulae hints are displayed

@@ -23,7 +23,7 @@
  * It is not needed for Windows platforms.
  * Uncomment it if needed.
  */
-/* #include <unistd.h> */
+/*  */
 
 #include "dictionary.h"
 

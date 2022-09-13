@@ -108,7 +108,7 @@ public:
 	// creates a red texture in case of not loaded textures
 	void createEmptyTex();
 
-	static long int getNumberTotalTexture(){
+	static int64_t getNumberTotalTexture(){
 		return texCache.size();
 	}
 

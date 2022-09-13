@@ -47,6 +47,15 @@
 #include "EntityCore/Core/FrameMgr.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 
+#ifdef WIN32
+#include <malloc.h>
+#ifndef alloca
+#define alloca _alloca
+#endif
+#else
+#include <alloca.h>
+#endif
+
 #define NB_ASTEROIDS 400000
 
 double Ring::fadingFactor = 40;
@@ -296,7 +305,7 @@ void Ring2D::computeRing(int slices, int stacks, bool h)
 	const double dtheta = 2.0 * M_PI / slices*(1-2*h);
 
 	//~ if (slices < 0) slices = -slices;
-	double cos_sin_theta[2*(slices+1)];
+	double *cos_sin_theta = (double *) alloca(sizeof(double) * 2*(slices+1));
 	double *cos_sin_theta_p = cos_sin_theta;
 	for (j = 0; j <= slices; j++) {
 		theta = (j == slices) ? 0.0 : j * dtheta;

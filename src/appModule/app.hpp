@@ -197,9 +197,7 @@ private:
 	std::unique_ptr<AppDraw> appDraw;
 	std::shared_ptr<Observer> observatory;
 	std::unique_ptr<Executor> executor;
-	#if LINUX
 	std::unique_ptr<Mkfifo> mkfifo;
-	#endif
 
 	std::shared_ptr<SpaceDate> spaceDate;		// Handles dates and conversions
 	EventRecorder* eventRecorder;

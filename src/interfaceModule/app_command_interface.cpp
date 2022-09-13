@@ -1823,7 +1823,12 @@ int AppCommandInterface::commandExternalViewer()
 				action1="sh "+ myFile.toString() + " &";
 			else
 				debug_message= "command_externalViewer shell script fileName not found";
-
+		} else if (extention == W_BAT) {
+			FilePath myFile  = FilePath(argFileName, FilePath::TFP::DATA);
+			if (myFile)
+				action1= myFile.toString() + " &";
+			else
+				debug_message= "command_externalViewer shell script fileName not found";
 		} else if (extention == W_SWF) {
 			FilePath myFile  = FilePath(argFileName);
 			if (myFile)
@@ -2128,25 +2133,12 @@ int AppCommandInterface::commandScript(unsigned long int &wait)
 			swapCommand = false;
 			ifSwap->reset();
 		} else if (argAction==W_PLAY && !filen.empty()) {
-			int le=-1;
-
 			std::string file_with_path = FilePath(filen, FilePath::TFP::SCRIPT);
-			std::string new_script_path="";
-
-			for (unsigned int i=0; i<file_with_path.length(); i++) {
-				if (file_with_path[i]=='/') {
-					le=i;
-				}
-			}
-			for (int i=0; i<=le; i++) {
-				new_script_path+=file_with_path[i];
-			}
-
 			if( !scriptInterface->playScript(file_with_path) ) {
 				debug_message = "Unable to execute script : " + file_with_path;
 				cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 			} else {
-				scriptInterface->setScriptPath(new_script_path);
+				scriptInterface->setScriptPath(file_with_path.substr(0, file_with_path.find_last_of("/\\") + 1));
 			}
 		} else if (argAction==W_RECORD) {
 			scriptInterface->recordScript(filen);

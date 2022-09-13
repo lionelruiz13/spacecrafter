@@ -30,12 +30,10 @@
 #include <string>
 #include <iostream>
 #include <cstdlib>
-#include <dirent.h>
 #include <vector>
 #include <SDL2/SDL.h>
-#include <sys/stat.h>
 #include <memory>
-
+#include <filesystem>
 #include "spacecrafter.hpp"
 #include "appModule/app.hpp"
 #include "mainModule/checkConfig.hpp"
@@ -48,13 +46,19 @@
 #include "tools/log.hpp"
 #include "EntityCore/Core/VulkanMgr.hpp"
 #include "tools/s_texture.hpp"
-
-#ifdef LINUX
 #include "mainModule/CPUInfo.hpp"
+#include "EntityCore/Tools/LinuxExecutor.hpp"
+
+#ifdef __linux__
 #include <sys/types.h>
-#include <unistd.h>
+#include <sys/stat.h>
 #include <errno.h>
 #include <sys/utsname.h>
+#endif
+
+#ifdef _MSC_VER
+// Maybe not recommended, but it doesn't compile otherwise
+#undef main
 #endif
 
 #define GETV(offset) ((VERSION[offset] - '0') * 10 + VERSION[offset + 1] - '0')
@@ -79,7 +83,7 @@ static void writeGeneralInfo(void)
 //! write to log file information about his linux OS
 static void getUnameInfo()
 {
-	#ifdef LINUX
+	#ifdef __linux__
 	//get uname's info
 	struct utsname buffer;
 	errno = 0;
@@ -104,14 +108,14 @@ static void getUnameInfo()
 }
 
 // Display usage in the console
-static void usage(char **argv)
+static void usage(const char **argv)
 {
 	std::cout << APP_NAME << std::endl;
 	std::cout << _("Usage: %s [OPTION] ...\n -v, --version \tOutput version information and exit.\n -h, --help \tDisplay this help and exit.\n");
 }
 
 // Check command line arguments
-static void check_command_line(int argc, char **argv)
+static void check_command_line(int argc, const char **argv)
 {
 	if (argc == 2) {
 		if (!(strcmp(argv[1],"--version") && strcmp(argv[1],"-v"))) {
@@ -131,11 +135,10 @@ static void check_command_line(int argc, char **argv)
 	}
 }
 
-#ifdef LINUX
 //! create a lock file to avoid lanching more instance of spacecrafter
 static void create_lock_file(std::string lock_file)
 {
-	std::ofstream file(lock_file.c_str(), std::ios::out);
+	std::ofstream file(lock_file, std::ios::out);
 	file << getpid() << std::endl;
 	file.close();
 }
@@ -143,7 +146,7 @@ static void create_lock_file(std::string lock_file)
 //! check if a lock file already exist
 static bool is_lock_file(std::string lock_file)
 {
-	std::ifstream file(lock_file.c_str(), std::ios::in);
+	std::ifstream file(lock_file, std::ios::in);
 	if (!file ) {
 		return false;
 	} else {
@@ -158,26 +161,31 @@ static bool is_lock_file(std::string lock_file)
 	}
 	return false; //for compiler
 }
-#endif
 
+static void remove_lock_file(std::string lock_file)
+{
+	if (std::filesystem::remove(lock_file))
+		cLog::get()->write("File file.lock successfully deleted",  LOG_TYPE::L_INFO);
+	else
+		cLog::get()->write("Error deleting file.lock",  LOG_TYPE::L_ERROR);
+}
 
 // Main procedure
-int main(int argc, char **argv)
+int main(int argc, const char *argv[])
 {
 	// fix all repertory
-	#if LINUX
-	std::string homeDir = getenv("HOME");
-	std::string appDir = homeDir + "/." + APP_LOWER_NAME+"/";
-	std::string dataRoot = std::string(CONFIG_DATA_DIR);
-	#else //win32
-	std::string homeDir = "";
-	std::string appDir = "";
-	std::string dataRoot="";
-	std::string CONFIG_DATA_DIR="";
-	std::string LOCALEDIR="";
+	#ifdef __linux__
+	const std::string homeDir = getenv("HOME");
+	#else
+	const std::string homeDir = getenv("USERPROFILE");
 	#endif
+	const std::string appDir = homeDir + "/." + APP_LOWER_NAME+"/";
+	const std::string dataRoot = std::string(CONFIG_DATA_DIR);
 	// Check the command line
 	check_command_line(argc, argv);
+
+	LinuxExecutor executor(1, 1);
+	executor.start(false);
 
 	//check if home Directory exist and if not try to create it.
 	std::string dirResult;
@@ -189,11 +197,7 @@ int main(int argc, char **argv)
 	//-------------------------------------------
 	cLog* Log = cLog::get();
 
-	#ifdef LINUX
-		Log->setDirectory(getenv("HOME") + std::string("/.") + APP_LOWER_NAME +"/log/");
-	#else // on windows
-		Log->setDirectory("log\\");
-	#endif
+	Log->setDirectory(appDir + "log/");
 
 	// Open log files
 	Log->openLog(LOG_FILE::INTERNAL, "spacecrafter");
@@ -218,8 +222,7 @@ int main(int argc, char **argv)
 	//-------------------------------------------
 
 	// if lock_file is created, check if it's valid and avoid launch SC twice.
-	#ifdef LINUX
-	std::string lock_file = PATH_FILE_LOCK;
+	std::string lock_file = (std::filesystem::temp_directory_path()/PATH_FILE_LOCK).string();
 	Log->write("Lock file is "+ lock_file,LOG_TYPE::L_INFO);
 	Log->write("My getpid() is "+ std::to_string(getpid()), LOG_TYPE::L_INFO);
 
@@ -228,7 +231,6 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	create_lock_file(lock_file);
-	#endif
 
 	// Used for getting system date formatting
 	setlocale(LC_TIME, "");
@@ -254,7 +256,6 @@ int main(int argc, char **argv)
 	Log->setDebug(conf.getBoolean(SCS_MAIN, SCK_DEBUG));
 	Log->setWriteLog(conf.getBoolean(SCS_MAIN, SCK_LOG));
 
-	#ifdef LINUX
 	std::unique_ptr<CPUInfo> cpuInfo =  nullptr;
 	if (conf.getBoolean(SCS_MAIN,SCK_CPU_INFO)) {
 		cpuInfo = std::make_unique<CPUInfo>();
@@ -262,7 +263,6 @@ int main(int argc, char **argv)
 		cpuInfo -> start();
 		Log->write("CPUInfo actived",LOG_TYPE::L_DEBUG);
 	}
-	#endif
 
 	//-------------------------------------------
 	// create the SDL windows for display
@@ -329,19 +329,12 @@ int main(int argc, char **argv)
 	//SC logical software end here
 
 	// Close all
-	#ifdef LINUX
-	// remove correctly the lock file
-	if( unlink(lock_file.c_str()) != 0 )
-		Log->write("Error deleting file.lock",  LOG_TYPE::L_ERROR);
-	else
-		Log->write("File file.lock successfully deleted",  LOG_TYPE::L_INFO);
-	#endif
+	executor.close();
+	remove_lock_file(lock_file);
 	// close cpu information
-	#ifdef LINUX
 	if (cpuInfo != nullptr) {
 		cpuInfo->stop();
 	}
-	#endif
 
 	app.reset();
 	delete signalObj;
@@ -351,6 +344,10 @@ int main(int argc, char **argv)
 	vulkan.reset();
 	Log->close();
 	AppSettings::close();
+
+	int timeout = 30; // Let up to 3 seconds for the LinuxExecutor to close
+	while (!executor.closed() && timeout--)
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	return 0;
 }

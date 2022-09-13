@@ -27,43 +27,17 @@
 #include "spacecrafter.hpp"
 #include "tools/init_parser.hpp"
 #include "tools/log.hpp"
-#include <dirent.h>
 #include <vector>
 #include <map>
 #include <sstream>
-
-#ifdef LINUX
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/utsname.h>
-#include <sys/sysinfo.h>
-#endif
+#include <filesystem>
 
 #define BUFFER_SIZE 1024
 
-
-#ifdef WIN32
-#include <Windows.h>
-#endif
-
 bool CallSystem::isAbsolute(const std::string path)
 {
-#if WIN32
-    return path[1] == ':';
-#else
-    return path[0] == '/';
-#endif
+    return std::filesystem::path(path).is_absolute();
 }
-
-void CallSystem::splitFilename (const std::string& str, std::string &pathFile,std::string &fileName)
-{
-  std::size_t found = str.find_last_of("/\\");
-  pathFile = str.substr(0,found+1);
-  fileName = str.substr(found+1);
-}
-
 
 bool CallSystem::isReadable(const std::string & fileName)
 {
@@ -74,62 +48,31 @@ bool CallSystem::isReadable(const std::string & fileName)
 
 bool CallSystem::fileExist(const std::string& fileName)
 {
-    std::ifstream infile(fileName);
-    return infile.good();
+    std::error_code ec; // To avoid throw
+    return std::filesystem::exists(fileName, ec);
 }
 
 bool CallSystem::dirExist(const std::string& rep)
 {
-	DIR *dir = nullptr;
-	if ( (dir = opendir(rep.c_str() )) != nullptr) {
-		closedir(dir);
-		return true;
-	}
-	else
-		return false;
+    std::error_code ec;
+    return std::filesystem::is_directory(rep, ec) && !ec;
 }
 
 void CallSystem::ensurePathExist(const std::string &path)
 {
-    #if LINUX
-    DIR *dir = nullptr;
-	if ( (dir = opendir(path.c_str() )) != nullptr) {
-		closedir(dir);
-        return;
-	}
-    int subpath = path.find_last_of('/') - 1;
-    do {
-        if ( mkdir(path.substr(0, subpath - 1).c_str(), S_IRWXU | S_IRWXG) == 0) {
-            subpath = path.find_first_of('/', subpath + 2) - 1;
-        } else {
-            subpath = path.find_last_of('/', subpath);
-        }
-    } while (subpath != std::string::npos);
-    #else
-    cLog::get()->write("Can't create missing directory '" + path + "'", LOG_TYPE::L_ERROR);
-    #endif
+    if (!std::filesystem::exists(path))
+        std::filesystem::create_directories(path);
 }
 
-bool CallSystem::fileCopy( const std::string &src, const std::string &dest)
+bool CallSystem::fileCopy( const std::string &src, const std::string &dst)
 {
-	std::ifstream source(src, std::ios::binary);
-	if (!source.good())
-		return false;
-    std::ofstream destination(dest, std::ios::binary);
-	if (!destination.good())
-		return false;
-
-    destination << source.rdbuf();
-
-    source.close();
-    destination.close();
-	return true;
+    std::error_code ec;
+    std::filesystem::copy_file(src, dst, ec);
+    return !ec;
 }
-
 
 void CallSystem::checkIniFiles(const std::string &CDIR, const std::string &DATA_ROOT)
 {
-	#if LINUX
 	std::string DATADIR=std::string(CONFIG_DATA_DIR)+"data/";
 
 	std::vector<std::string> listIniFile;
@@ -147,34 +90,23 @@ void CallSystem::checkIniFiles(const std::string &CDIR, const std::string &DATA_
 			fileCopy(DATADIR +"default_"+(*it), CDIR + (*it));
 		}
 	}
-	#endif
 }
-
-
 
 void CallSystem::checkUserDirectory(const std::string &userDir, std::string & logResult)
 {
-	#if LINUX
-	if (dirExist(userDir) ) {
-		logResult = "Check home directory ok\n";
-	} else {
-		if ( mkdir(userDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
-			logResult = "Creating home directory succesfull\n";
-		} else {
-			fprintf(stderr, "Unable to create local home directory\nProgram stopped\n");
-			exit(2);
-		}
-	}
-	#endif
+    if (std::filesystem::exists(userDir)) {
+        logResult = "Check home directory ok\n";
+    } else {
+        logResult = "Home directory successfully created\n";
+        std::filesystem::create_directories(userDir); // This throw error on failure
+    }
 }
-
-
 
 void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dirResult)
 {
-	#if LINUX
 	// take name and true if Directory should be copied or not
 	std::map<std::string,bool> listSubDirectory;
+    std::ostringstream out;
 
 	listSubDirectory[REP_AUDIO]=true;
 	listSubDirectory[REP_FONT]=true;
@@ -194,90 +126,65 @@ void CallSystem::checkUserSubDirectory(const std::string &CDIR, std::string& dir
 	listSubDirectory[REP_MODEL3D]=true;
 	listSubDirectory[REP_LANGUAGE]=true;
 
-	std::string DATADIR=std::string(CONFIG_DATA_DIR)+"data/";
-
-	std::string subDir;
-	for (std::map<std::string,bool>::iterator it=listSubDirectory.begin(); it!=listSubDirectory.end(); ++it) {
-		subDir= CDIR + it->first;
-		if ( ! dirExist( subDir.c_str()) ) {
-			if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
-				dirResult += "Creating home subdirectory "+it->first+" succesfull\n";
-
-				//printf("cp  %s%s %s -r\n", DATADIR.c_str(), rep[i].c_str(), CDIR.c_str());
-				if (it->second) {
-					if (!useSystemCommand( std::string("cp ") + DATADIR + it->first+ " " + CDIR + " -r")) {
-						fprintf(stderr, "I can't copy %s in %s directory\n",it->first.c_str() ,CDIR.c_str() );
-						exit(-1);
-					} else
-						dirResult += "Copy " +it->first +" in "+ CDIR + " ok\n";
-				}
-			} else {
-				std::string err = "Unable to create local home subdirectory "+ it->first +"\nProgram stopped\n";
-				fprintf(stderr, "%s\n",err.c_str() );
-				exit(3);
-			}
+    std::filesystem::path subDir;
+	for (auto &entry : listSubDirectory) {
+        subDir = CDIR + entry.first;
+        if (!std::filesystem::exists(subDir)) {
+            if (std::filesystem::create_directories(subDir)) {
+                out << "Successfully created home subdirectory " << entry.first << '\n';
+                if (entry.second) {
+                    std::error_code ec;
+                    std::filesystem::copy(std::string(CONFIG_DATA_DIR)+"data/"+entry.first, subDir, std::filesystem::copy_options::recursive, ec);
+                    if (ec) {
+                        out << "Completed copy of " << entry.first << " in " << CDIR << '\n';
+                    } else {
+                        std::cerr << "Failed to copy " << entry.first << " in " << CDIR << "\nAbort !\n";
+                        exit(-1);
+                    }
+                }
+            } else {
+                std::cerr << "Failed to create local home subdirectory " << entry.first << "\nAbort !\n";
+                exit(3);
+            }
 		} else
-			dirResult +="Check " + it->first + " subdirectory ok\n";
+			out << "Check " << entry.first << " subdirectory ok\n";
 	}
 
-	// case of textures
-	subDir = CDIR +REP_TEXTURE;
-	if (!dirExist(subDir)) {
-	if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
-			dirResult += "Creating home subdirectory "+REP_TEXTURE+" succesfull\n";
+    checkUserSubDirectory(CDIR, REP_TEXTURE, out);
+    checkUserSubDirectory(CDIR, REP_LANGUAGE, out);
+    dirResult += out.str();
+}
 
-			//printf("cp  %s%s %s -r\n", DATADIR.c_str(), rep[i].c_str(), CDIR.c_str());
-			if (!useSystemCommand( std::string("cp ") + CONFIG_DATA_DIR + REP_TEXTURE + " " + CDIR + " -r" )) {
-				fprintf(stderr, "I can't copy %s in %s directory\n",REP_TEXTURE.c_str() ,CDIR.c_str() );
-				exit(-1);
-			} else
-				dirResult += "Copy " +REP_TEXTURE +" in "+ CDIR + " ok\n";
-		}
-		else {
-			std::string err = "Unable to create local home subdirectory "+ REP_TEXTURE +"\nProgram stopped\n";
-			fprintf(stderr, "%s\n",err.c_str() );
-			exit(3);
-		}
-	}
-
-	// case of languages
-	subDir = CDIR +REP_LANGUAGE;
-	if (!dirExist(subDir)) {
-	if ( mkdir( subDir.c_str(), S_IRWXU | S_IRWXG) == 0)  {
-			dirResult += "Creating home subdirectory "+REP_LANGUAGE+" succesfull\n";
-
-			//printf("cp  %s%s %s -r\n", DATADIR.c_str(), rep[i].c_str(), CDIR.c_str());
-			if (!useSystemCommand( std::string("cp ") + CONFIG_DATA_DIR + REP_LANGUAGE + " " + CDIR + " -r" )) {
-				fprintf(stderr, "I can't copy %s in %s directory\n",REP_LANGUAGE.c_str() ,CDIR.c_str() );
-				exit(-1);
-			} else
-				dirResult += "Copy " +REP_LANGUAGE +" in "+ CDIR + " ok\n";
-		}
-		else {
-			std::string err = "Unable to create local home subdirectory "+ REP_LANGUAGE +"\nProgram stopped\n";
-			fprintf(stderr, "%s\n",err.c_str() );
-			exit(3);
-		}
-	}
-
-	#endif
+void CallSystem::checkUserSubDirectory(const std::string &CDIR, const std::string &subDirectory, std::ostringstream &out)
+{
+    std::filesystem::path subDir = CDIR + subDirectory;
+    if (!std::filesystem::exists(subDir)) {
+        std::error_code ec;
+        std::filesystem::copy(std::string(CONFIG_DATA_DIR)+"data/"+subDirectory, subDir, std::filesystem::copy_options::recursive, ec);
+        if (ec) {
+            out << "Completed copy of " << subDirectory << " in " << CDIR << '\n';
+        } else {
+            std::cerr << "Failed to copy " << subDirectory << " in " << CDIR << "\nAbort !\n";
+            exit(-1);
+        }
+    }
 }
 
 bool CallSystem::useSystemCommand(const std::string & strCommand)
 {
-	#if LINUX
+	// #if LINUX // Redundant : This condition is true for linux and windows
 	if (system(strCommand.c_str())==0)
 		return true;
 	else
 		return false;
-	#else
-		return false;
-	#endif
+	// #else
+	// 	return false;
+	// #endif
 }
 
 bool CallSystem::killAllPidFrom(const std::string& prgm)
 {
-	#if LINUX
+	#ifdef __linux__
 		std::string command = "ps aux | grep " + prgm + " | wc -l";
 		//Recover the number of launched programs
 		const int LEN = 5;
@@ -295,11 +202,9 @@ bool CallSystem::killAllPidFrom(const std::string& prgm)
 	#endif
 }
 
-
-
 const std::string CallSystem::getRamInfo()
 {
-	#if LINUX
+	#ifdef __linux__
 		struct sysinfo info;
 		sysinfo(&info);
 		std::ostringstream strInfo;
@@ -313,6 +218,6 @@ const std::string CallSystem::getRamInfo()
 		// std::cout << "procs " << (size_t)info.procs << std::endl;
 		return strInfo.str();
 	#else
-		return "";
+		return {};
 	#endif
 }

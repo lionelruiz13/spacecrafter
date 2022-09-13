@@ -51,8 +51,10 @@ if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
 endif()
 
 if( CMAKE_BUILD_TYPE STREQUAL "Release" )
+if(UNIX)
 SET(CMAKE_C_FLAGS " -Ofast -Wall")
 SET(CMAKE_CXX_FLAGS " -Ofast -Wall -fconcepts")
+endif()
 message("Build type Release. Use -DCMAKE_BUILD_TYPE=Debug to activate Debug mode")
 endif()
 
@@ -63,23 +65,33 @@ message("Build type Coverage. Use -DCMAKE_BUILD_TYPE=Release to activate Release
 endif()
 
 ###########  additional compile flags ###########
+if(UNIX)
 # SET(CMAKE_C_FLAGS "-g -Wextra -Wall -Wno-ignored-qualifiers -Wno-unused-parameter")
 # SET(CMAKE_CXX_FLAGS "-g -Wextra -Wall -Wno-ignored-qualifiers -Wno-unused-parameter")
-
+endif()
 
 ########### Find packages ###########
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+FIND_PACKAGE(Vulkan REQUIRED)
+
+if (UNIX)
 FIND_PACKAGE(SDL2 REQUIRED)
 FIND_PACKAGE(SDL2_mixer REQUIRED)
 FIND_PACKAGE(SDL2_ttf REQUIRED)
 FIND_PACKAGE(SDL2_net REQUIRED)
-FIND_PACKAGE(Vulkan REQUIRED)
 FIND_PACKAGE(FFmpeg REQUIRED)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
-INCLUDE_DIRECTORIES(${Vulkan_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR})
+else()
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
+link_directories(${PROJECT_SOURCE_DIR}/lib)
+INCLUDE_DIRECTORIES($ENV{VULKAN_SDK}/Include)
+link_directories($ENV{VULKAN_SDK}/Lib)
+endif()
+
+INCLUDE_DIRECTORIES(${Vulkan_INCLUDE_DIR})
 
 # set include path
 include_directories(${PROJECT_SOURCE_DIR}/src)

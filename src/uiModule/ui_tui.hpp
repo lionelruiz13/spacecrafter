@@ -574,6 +574,7 @@ public:
 	void replaceItemList(std::string s, int selection) {
 		items.clear();
 		value.clear();
+		current = items.end();
 		addItemList(s);
 		current = items.begin();
 		for (int j=0; j<selection; j++) {
@@ -685,6 +686,7 @@ public:
 	}
 	void replaceItemList(std::string s, int selection) {
 		items.clear();
+		current = items.end();
 		addItemList(s);
 
 		current = items.begin();

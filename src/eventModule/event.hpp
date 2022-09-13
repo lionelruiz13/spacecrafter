@@ -31,10 +31,15 @@
 #include <map>
 #include <iostream>
 
+#ifdef WIN32
+// Win32 define E_NOT_SET, remove it's definition to avoid conflict with event flag
+#undef E_NOT_SET
+#endif
+
 class Event{
 
 public :
-    enum Event_Type : char { 
+    enum Event_Type : char {
         E_NOT_SET = 0,
         E_SCRIPT,
         E_COMMAND,
@@ -48,13 +53,13 @@ public :
         E_VIDEO
         //....
     };
-    
-    Event(){ 
+
+    Event(){
         type = E_NOT_SET;
     }
 
     virtual ~Event(){};
-    
+
     Event(Event_Type _type){
 		type=_type;
 	}
@@ -73,7 +78,7 @@ public :
     virtual std::string toString() const {
         return Event::eventTypeToString[type];
     }
-   
+
 protected :
     Event_Type type;
 };

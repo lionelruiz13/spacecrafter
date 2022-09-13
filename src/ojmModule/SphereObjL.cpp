@@ -25,15 +25,29 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
-constexpr double icosahedron_G = 0.5*(1.0+sqrt(5.0));
-constexpr double icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
+#ifdef __GNUC__
+constexpr float icosahedron_G = 0.5*(1.0+sqrt(5.0));
+constexpr float icosahedron_b = 1.0/sqrt(1.0+icosahedron_G*icosahedron_G);
+#else // constexpr sqrt is not supported for non-gcc compilers
+constexpr float icosahedron_G = 1.6180339887498948482045868343656;
+constexpr float icosahedron_b = 0.52573111211913360602566908484788;
+#endif
+
 constexpr double icosahedron_a = icosahedron_b*icosahedron_G;
 constexpr double segment = icosahedron_b * 2;
+constexpr double PI_MUL_2 = M_PI * 2;
+
+#ifdef __GNUC__
+constexpr double radius = segment / (2 * sin(M_PI / 5));
 constexpr double height = segment * sqrt(3)/2;
 constexpr double halfHeight = height / 2;
-constexpr double radius = segment / (2 * sin(M_PI / 5));
 constexpr double interTex = asin(halfHeight) / M_PI;
-constexpr double PI_MUL_2 = M_PI * 2;
+#else // constexpr sqrt, sin/asin aren't supported for non-gcc compilers
+constexpr double radius = segment / (2 * 0.58778525229247312916870595463907);
+constexpr double height = segment * 1.7320508075688772935274463415059/2;
+constexpr double halfHeight = height / 2;
+constexpr double interTex = 0.47270520316574216 / M_PI;
+#endif
 
 // Counter-clockwise triangles
 const SphereObjL::Triangle icosahedron_triangles[20]= {

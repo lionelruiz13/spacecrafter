@@ -25,34 +25,45 @@
 
 #include <iostream>
 #include <fstream>
-#include <dirent.h>
 #include "coreModule/sky_localizer.hpp"
 #include "tools/translator.hpp"
 #include "tools/init_parser.hpp"
 #include <cassert>
+#include <filesystem>
 
 SkyLocalizer::SkyLocalizer(const std::string& cultureDir)
 {
-	struct dirent *entryp;
-	DIR *dp;
+	// struct dirent *entryp;
+	// DIR *dp;
+	//
+	// if ((dp = opendir(cultureDir.c_str())) == NULL) {
+	// 	std::cerr << "Unable to find culture directory:" << cultureDir << std::endl;
+	// 	assert(0);
+	// }
+	//
+	// while ((entryp = readdir(dp)) != NULL) {
+	// 	std::string tmp = entryp->d_name;
+	// 	std::string tmpfic = cultureDir+"/"+tmp+"/info.ini";
+	// 	FILE* fic = fopen(tmpfic.c_str(), "r");
+	// 	if (fic) {
+	// 		InitParser conf;
+	// 		conf.load(tmpfic);
+	// 		dirToNameEnglish[tmp] = conf.getStr("info:name");
+	// 		fclose(fic);
+	// 	}
+	// }
+	// closedir(dp);
 
-	if ((dp = opendir(cultureDir.c_str())) == NULL) {
-		std::cerr << "Unable to find culture directory:" << cultureDir << std::endl;
-		assert(0);
+	for (const auto &entry : std::filesystem::directory_iterator{cultureDir}) {
+		if (!entry.is_directory())
+			continue;
+		const std::filesystem::path configName = entry.path()/"info.ini";
+		if (!std::filesystem::exists(configName))
+			continue;
+		InitParser conf;
+		conf.load(configName.string());
+		dirToNameEnglish[entry.path().filename().string()] = conf.getStr("info:name");
 	}
-
-	while ((entryp = readdir(dp)) != NULL) {
-		std::string tmp = entryp->d_name;
-		std::string tmpfic = cultureDir+"/"+tmp+"/info.ini";
-		FILE* fic = fopen(tmpfic.c_str(), "r");
-		if (fic) {
-			InitParser conf;
-			conf.load(tmpfic);
-			dirToNameEnglish[tmp] = conf.getStr("info:name");
-			fclose(fic);
-		}
-	}
-	closedir(dp);
 }
 
 SkyLocalizer::~SkyLocalizer()

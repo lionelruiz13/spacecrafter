@@ -32,9 +32,9 @@
 /**
  * @file fader.hpp
  * @brief contains all the fader classes that manage the transition between two states
- * 
+ *
  * @class Fader
- * 
+ *
  * @brief Class canvas which manages a (usually smooth) transition between two states (typically ON/OFF) in function of a counter
  * It used for various purpose like smooth transitions between two states
  *
@@ -89,9 +89,9 @@ protected:
 
 /**
  *  @class BooleanFader
- * 
+ *
  * @brief boolean transition between two states
- * 
+ *
  */
 class BooleanFader : public Fader {
 public:
@@ -134,9 +134,9 @@ protected:
 
 /**
  *  @class LinearFader
- * 
+ *
  * @brief Linear transition between two states
- * 
+ *
  * Please note that state is updated instantaneously, so if you need to draw something fading in
  * and out, you need to check the interstate value (!=0) to know to draw when on AND during transitions
  */
@@ -220,7 +220,7 @@ public:
 			duration = _duration;
 	}
 	virtual float getDuration() override {
-		return duration;
+		return (float) duration;
 	}
 	void setMaxValue(float _max) override {
 		if (interstate >=  max_value) interstate =_max;
@@ -240,9 +240,9 @@ protected:
 
 /**
  *  @class ParabolicFader
- * 
+ *
  * @brief Parabolic transition between two states
- * 
+ *
  * Please note that state is updated instantaneously, so if you need to draw something fading in
  * and out, you need to check the interstate value (!=0) to know to draw when on AND during transitions
  */
@@ -324,7 +324,7 @@ public:
 		duration = _duration;
 	}
 	virtual float getDuration() override {
-		return duration;
+		return (float) duration;
 	}
 	virtual bool isTransiting() override {
 		return is_transiting;
