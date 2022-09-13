@@ -47,6 +47,7 @@ InUniverseModule::InUniverseModule(std::shared_ptr<Core> _core, Observer *_obser
 
 void InUniverseModule::onEnter()
 {
+	core->setFlagIngalaxy(MODULE::IN_UNIVERSE);
     std::cout << "->InUniverse" << std::endl;
 	//set altitude in CoreExecutorInUniverse when enter
 	observer->setAltitude(minAltToGoDown);

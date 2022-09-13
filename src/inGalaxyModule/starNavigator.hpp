@@ -25,7 +25,11 @@
 //#include "inGalaxyModule/starManager.hpp"
 #include "tools/ThreadPool.hpp"
 #include "tools/no_copy.hpp"
+#include "tools/object_type.hpp"
+#include "tools/object.hpp"
+#include "starModule/geodesic_grid.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
+
 
 /*! \class StarNavigator
   * \brief class allowing the stroll in the stars
@@ -110,12 +114,18 @@ public:
 		needComputeRCMagTable = true;
 	}
 
+	bool getFlagStars() {
+		return starsFader;
+	}
+
 	void clear(){
 		listGlobalStarVisible.clear();
 		needComputeRCMagTable = true;
 	}
 
 	starInfo* getStarInfo(unsigned int HIPName) const;
+
+	std::vector<ObjectBaseP> searchAround(const Vec3d& v, double limitFov, const Navigator *nav);
 
 private:
 	//buffers for displaying shaders

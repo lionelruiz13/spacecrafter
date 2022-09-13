@@ -30,6 +30,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "inGalaxyModule/starViewer.hpp"
+#include "inGalaxyModule/Star3DWrapper.hpp"
 
 #include "EntityCore/EntityCore.hpp"
 #include "tools/context.hpp"
@@ -486,6 +487,26 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 	return true;
 }
 
+
+std::vector<ObjectBaseP> StarNavigator::searchAround(const Vec3d& v, double limitFov, const Navigator *nav)
+{
+	std::vector<ObjectBaseP> result;
+	if (!getFlagStars())
+		return result;
+	auto matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+	Vec3d pos(v);
+	pos.normalize();
+	limitFov = limitFov * (M_PI/180.);
+	double cosLimitFov = cos(limitFov);
+	for (auto &star: listGlobalStarVisible) {
+		auto tmp = matrix * star->posXYZ;
+		tmp.normalize();
+		float dotProduct = tmp.dot(pos);
+		if (dotProduct > cosLimitFov)
+			result.push_back(new Star3DWrapper(star));
+	}
+	return result;
+}
 
 void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noexcept
 {

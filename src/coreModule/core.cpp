@@ -907,7 +907,7 @@ Object Core::cleverFind(const Vec3d& v) const
 	ypos = winpos[1];
 
 	// Collect the planets inside the range
-	if (ssystemFactory->getFlagShow()) {
+	if (ssystemFactory->getFlagShow() && (curentModule == MODULE::SOLAR_SYSTEM || curentModule == MODULE::STELLAR_SYSTEM)) {
 		temp = ssystemFactory->searchAround(v, fov_around, navigation, observatory.get(), projection, &is_default_object, bodyDecor->canDrawBody()); //aboveHomePlanet);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 
@@ -925,14 +925,20 @@ Object Core::cleverFind(const Vec3d& v) const
 	Vec3d p = navigation->earthEquToJ2000(v);
 
 	// The nebulas inside the range
-	if (nebulas->getFlagShow()) {
+	if (nebulas->getFlagShow() && (curentModule == MODULE::SOLAR_SYSTEM || curentModule == MODULE::STELLAR_SYSTEM)) {
 		temp = nebulas->searchAround(p, fov_around);
 		candidates.insert(candidates.begin(), temp.begin(), temp.end());
 	}
 
 	// And the stars inside the range
-	if (hip_stars->getFlagShow()) {
+	if (hip_stars->getFlagShow() && curentModule == MODULE::SOLAR_SYSTEM) {
 		std::vector<ObjectBaseP > tmp = hip_stars->searchAround(p, fov_around, geodesic_grid);
+		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
+			candidates.push_back( Object(itr->get()) );
+		}
+	}
+	if (starNav->getFlagStars() && curentModule == MODULE::IN_GALAXY) {
+		std::vector<ObjectBaseP > tmp = starNav->searchAround(p, fov_around, navigation);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
 		}

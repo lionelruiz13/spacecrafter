@@ -65,6 +65,7 @@ SolarSystemModule::~SolarSystemModule()
 
 void SolarSystemModule::onEnter()
 {
+	core->setFlagIngalaxy(MODULE::SOLAR_SYSTEM);
     std::cout << "->InSolarSystem" << std::endl;
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);

@@ -51,6 +51,7 @@ InGalaxyModule::InGalaxyModule(std::shared_ptr<Core> _core, Observer *_observer)
 
 void InGalaxyModule::onEnter()
 {
+	core->setFlagIngalaxy(MODULE::IN_GALAXY);
 	std::cout << "->InGalaxy" << std::endl;
 	//set altitude in CoreExecutorInGalaxy when enter
 	if (observer->getAltitude() < minAltToGoDown) {
@@ -126,6 +127,8 @@ void InGalaxyModule::draw(int delta_time)
 	core->media->drawVR360(core->projection, core->navigation);
 
 	core->milky_way->draw(core->tone_converter, core->projection, core->navigation, core->timeMgr->getJulian());
+
+	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 
 	//drawing lines without activating the depth buffer.
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);

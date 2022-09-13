@@ -67,6 +67,7 @@ StellarSystemModule::~StellarSystemModule()
 
 void StellarSystemModule::onEnter()
 {
+	core->setFlagIngalaxy(MODULE::STELLAR_SYSTEM);
     std::cout << "->InStellarSystem" << std::endl;
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0.0);
 	EventRecorder::getInstance()->queue(event);

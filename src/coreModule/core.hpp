@@ -65,6 +65,7 @@
 //#include "ojmModule/ojm_mgr.hpp"
 #include "starModule/geodesic_grid.hpp"
 //#include "starModule/hip_star_mgr.hpp"
+#include "executorModule/executorModule.hpp"
 
 //#include "mainModule/define_key.hpp"
 #include "tools/object.hpp"
@@ -423,6 +424,14 @@ public:
 		return flagNav;
 	}
 
+	void setFlagIngalaxy(MODULE a) {
+		curentModule = a;
+	}
+
+	MODULE getFlagIngalaxy() {
+		return curentModule;
+	}
+
 	void saveCurrentConfig(InitParser &conf);
 
 	void onObserverChange(std::string str) {
@@ -523,6 +532,7 @@ private:
 	std::unique_ptr<UBOCam> uboCam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
+	MODULE curentModule = MODULE::SOLAR_SYSTEM;
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn
