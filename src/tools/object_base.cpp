@@ -187,41 +187,20 @@ void ObjectBase::uninit()
 // Draw a nice animated pointer around the object
 void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigator * nav)
 {
-	local_time+=delta_time;
-	Vec3d pos=getEarthEquPos(nav);
 	Vec3d screenposd;
+	local_time += delta_time;
 	// Compute 2D pos and return if outside screen
-	if (!prj->projectEarthEqu(pos, screenposd)) return;
-
-	Vec2f screenpos = Vec2f((float) screenposd[0], (float) screenposd[1]);
-
-	// If object is large enough, no need for distracting pointer
-	if (getType()==OBJECT_NEBULA || getType()==OBJECT_BODY) {
-		double size = getOnScreenSize(prj, nav, false);
-		if ( size > prj->getViewportRadius()*.1f ) return;
-	}
-
-	float size = getOnScreenSize(prj, nav, false);
-	size+=20.f;
-	size+=10.f*sin(0.002f * local_time);
+	if (!prj->projectEarthEqu(getEarthEquPos(nav), screenposd))
+		return;
 
 	Context &context = *Context::instance;
 	switch (getType()) {
 		case OBJECT_STAR: {
-			Vec3d screenPos;
-			Mat4f matRotation = Mat4f::zrotation((float)local_time/750.);
-
-			// Compute 2D pos and return if outside screen
-			if (!prj->projectEarthEqu(pos, screenPos)) return;
-
-			Vec3f screenPosFloat(screenPos[0], screenPos[1], screenPos[2]);
-			float radius=13.f;
-
-			*(Vec3f *) context.transfer->planCopy(vertexStarPointer->get(), 0, sizeof(screenPosFloat)) = screenPosFloat;
+			*(Vec3f *) context.transfer->planCopy(vertexStarPointer->get(), 0, sizeof(Vec3f)) = Vec3f(screenposd[0], screenposd[1], screenposd[2]);
 
 			//SET UNIFORM
-			uGeom->get().matRotation = matRotation;
-			uGeom->get().radius = radius;
+			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
+			uGeom->get().radius = 13.f;
 			*uColor = getRGB();
 
 			context.frame[context.frameIdx]->toExecute(cmdStarPointer[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
@@ -229,6 +208,12 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 		}
 		case OBJECT_BODY:
 		case OBJECT_NEBULA: {
+			float size = getOnScreenSize(prj, nav, false);
+			// If object is large enough, no need for distracting pointer
+			if (size > prj->getViewportRadius()*.1f)
+				return;
+			size += 20.f + 10.f*sin(0.002f * local_time);
+			Vec2f screenpos(screenposd[0], screenposd[1]);
 			float *data = (float *) context.transfer->planCopy(vertexPointer->get());
 			*(data++) = (screenpos[0] -size/2);
 			*(data++) = (screenpos[1] +size/2);
