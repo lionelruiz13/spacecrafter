@@ -82,6 +82,10 @@
 #include "EntityCore/Tools/CaptureMetrics.hpp"
 #include "capture.hpp"
 
+#ifdef __linux__
+#include <unistd.h>
+#endif
+
 EventRecorder* EventRecorder::instance = nullptr;
 Context *Context::instance = nullptr;
 

@@ -54,6 +54,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include <sys/utsname.h>
+#include <unistd.h>
 #endif
 
 #ifdef _MSC_VER

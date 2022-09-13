@@ -31,6 +31,10 @@
 #include <map>
 #include <sstream>
 #include <filesystem>
+#ifdef __linux__
+#include <unistd.h>
+#include <sys/sysinfo.h>
+#endif
 
 #define BUFFER_SIZE 1024
 

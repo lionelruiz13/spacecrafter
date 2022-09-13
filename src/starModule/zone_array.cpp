@@ -23,10 +23,13 @@
 #include "coreModule/projector.hpp"
 #include "starModule/zone_array.hpp"
 #include "starModule/geodesic_grid.hpp"
-#include "tools/app_settings.hpp"#w
+#include "tools/app_settings.hpp"
 #include "tools/log.hpp"
 #include "tools/object_base.hpp"
 #include "tools/s_texture.hpp"
+#ifdef __linux__
+#include <unistd.h>
+#endif
 
 namespace BigStarCatalog {
 
