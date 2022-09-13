@@ -31,7 +31,12 @@
 
 #include "tools/log.hpp"
 
-
+#ifdef WIN32
+#include <malloc.h>
+#define alloca _alloca
+#else
+#include <alloca.h>
+#endif
 
 #define DEBUG 0
 
@@ -269,7 +274,7 @@ std::list<std::string> InitParser::getKeyFromSection(int i) const  //get all key
 {
 	int nbKey = iniparser_getsecnkeys(dico, iniparser_getsecname(dico, i));
 	//std::cout << nbKey<< std::endl;
-	const char* keys[nbKey];
+	const char **keys = (const char **) alloca(sizeof(const char *) * nbKey);
 	std::list<std::string> keyList;
 	iniparser_getseckeys(dico, iniparser_getsecname(dico, i), keys);
 	for (auto j =0; j< nbKey; j++) {

@@ -84,6 +84,9 @@ bool s_texture::cacheTexture = false;
 // Set to 1 to release every big textures every tic
 int s_texture::bigTextureLifetime = 90;
 
+// Conversion table
+const VkFormat formatTable[] = {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM};
+
 s_texture::texRecap::~texRecap()
 {
    if (texture)
@@ -292,7 +295,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 			usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 		const VkImageType imgType = (depth > 1) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
 		--_nbChannels;
-		const VkFormat format = (const VkFormat[]) {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM}[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
+		const VkFormat format = formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
 		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->texStagingMgr, usage, fullName.substr(fullName.find(".spacecrafter/")+14), format, imgType);
         load(data, realWidth, realHeight);
 		stbi_image_free(data);
@@ -746,7 +749,7 @@ void s_texture::bigTextureLoader()
         if (tex->texture) {
             tex->texture->rename(texName);
         } else {
-            const VkFormat format = (const VkFormat[]) {VK_FORMAT_R8_UNORM, VK_FORMAT_R8G8_UNORM, VK_FORMAT_R8G8B8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_R16_UNORM, VK_FORMAT_R16G16_UNORM, VK_FORMAT_R16G16B16_UNORM, VK_FORMAT_R16G16B16A16_UNORM}[tex->formatIdx];
+            const VkFormat format = formatTable[tex->formatIdx];
             tex->texture = std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, texName, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, format, VK_IMAGE_ASPECT_COLOR_BIT, true);
             tex->texture->use();
             currentAllocation -= (width * height * 4+2)/3 * _nbChannels;
@@ -948,7 +951,7 @@ std::string s_texture::getCacheName(bigTexRecap *tex)
 
 #ifdef __linux__
 #include <fcntl.h>
-#include <unistd.h>
+
 
 void s_texture::preQuickLoadCache(bigTexRecap *tex)
 {
@@ -1020,9 +1023,9 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
                 cLog::get()->write("Performance Issue : Height is not multiple of 64 for '" + tex->texName + "', this significatively increase both loading time and cache size.", LOG_TYPE::L_WARNING);
             }
             // Read the jpeg data
-            file.read(tex->quickLoader, stor, cache.jpegSize);
+            file.read((char *) stor, cache.jpegSize);
             int vwidth, vheight, unused;
-            auto pixels = stbi_load_from_memory(stor, cache.jpegSize, &vwidth, &vheight, &unused, tex->formatIdx + 1);
+            auto pixels = stbi_load_from_memory((stbi_uc *) stor, cache.jpegSize, &vwidth, &vheight, &unused, tex->formatIdx + 1);
             auto srcBegin = pixels;
             size_t fullSize = vwidth * vheight * (tex->formatIdx + 1);
             // Define from which layer to start
@@ -1041,7 +1044,7 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
                 *(dst++) = *(src++);
             stbi_image_free(pixels);
             // Read the raw cached data
-            file.read(tex->quickLoader, dst, cache.rawSize);
+            file.read(reinterpret_cast<char *>(dst), cache.rawSize);
             return true;
         }
     }

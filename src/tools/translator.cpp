@@ -25,12 +25,12 @@
  */
 
 #include <cassert>
-#include <dirent.h>
 #include <cstdio>
 #include <vector>
 #include <algorithm>
 #include <fstream>
-
+#include <set>
+#include <filesystem>
 #include "tools/translator.hpp"
 #include "tools/app_settings.hpp"
 
@@ -80,7 +80,7 @@ Translator::Translator(const std::string& _moDirectory, const std::string& _lang
 void Translator::reload()
 {
 	if (Translator::lastUsed == this) return;
-	
+
 	//load all string in m_translator, so clear existing
 	m_translator.clear();
 
@@ -107,7 +107,7 @@ void Translator::reload()
                     	m_translator[key] = value;
 				}
         	}
-		}	
+		}
 		infile.close();
 	}
 
@@ -121,34 +121,26 @@ void Translator::reload()
 //! Get available language codes from directory tree
 std::string Translator::getAvailableLanguagesCodes(const std::string& localeDir)
 {
-	struct dirent *entryp;
-	DIR *dp;
-	std::vector<std::string> result;
+	std::error_code ec;
+	std::set<std::string> result; // So results are sorted
 
-	//std::cout << "Reading translations in directory: " << localeDir << std::endl;
-	if ((dp = opendir(localeDir.c_str())) == NULL) {
-		std::cerr << "Unable to find locale directory containing translations:" << localeDir << std::endl;
-		return "";
-	}
-
-	while ((entryp = readdir(dp)) != NULL) {
-		std::string tmp = entryp->d_name;
-
-		if (tmp.substr(tmp.find_last_of(".") + 1) == "txt") {
-			result.push_back(tmp.substr(0,tmp.find_last_of(".")));
+	for (const auto &entry : std::filesystem::directory_iterator(localeDir, ec)) {
+		if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+			result.insert(entry.path().stem().string());
 		}
 	}
-	closedir(dp);
 
-	// Sort the language names by alphabetic order
-	std::sort(result.begin(), result.end());
+	if (ec) {
+		std::cerr << "Unable to find locale directory containing translations:" << localeDir << std::endl;
+		return {};
+	}
 
 	std::string output;
-	std::vector<std::string>::iterator iter;
-	for (iter=result.begin(); iter!=result.end(); ++iter) {
-		if (iter!=result.begin()) output+="\n";
-		output+=*iter;
+	for (auto &str : result) {
+		output += str;
+		output.push_back('\n');
 	}
+	output.pop_back(); // Remove the '\n' at the end of the list
 	return output;
 }
 

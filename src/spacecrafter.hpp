@@ -32,20 +32,20 @@
 
 // Windows
 #if defined( WIN32 ) || defined ( __MWERKS__ ) || defined( _MSC_VER ) || defined( MINGW32 )
-#undef WIN32
-//#define WIN32 1
 #undef USER_EDITION
 #define USER_EDITION "Windows"
+#define NOMINMAX
 #include <windows.h>
-#endif /*WIN32*/
 
+#define CONFIG_DATA_DIR "C:/Program Files (x86)/spacecrafter/"
+#define LOCALEDIR "C:/Program Files (x86)/spacecrafter/locale/"
+#else
 // Linux
-#ifndef WIN32
-//#define LINUX 1
-#define PATH_FILE_LOCK "/tmp/spacecrafter.lock"
 #define CONFIG_DATA_DIR "/usr/local/share/spacecrafter/"
 #define LOCALEDIR "/usr/local/share/locale/"
-#endif /*Linux*/
+#endif /*WIN32*/
+
+#define PATH_FILE_LOCK "spacecrafter.lock"
 
 
 //#include <SDL2/SDL.h>
@@ -74,6 +74,6 @@ const std::string REP_SKY_CULTURE = "sky_cultures";
 
 const std::string REP_DATA = "data";
 const std::string REP_SHADER = "shaders";
-const std::string REP_LANGUAGE = "language"; 
+const std::string REP_LANGUAGE = "language";
 
 #endif /*_SPACECRAFTER_HPP_*/

@@ -45,6 +45,11 @@
 const double AU    =    149597870.691; //Kilometers
 const double SPEED_OF_LIGHT = 299792.458;
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#define M_PI_2 (M_PI / 2)
+#define M_PI_4 (M_PI / 4)
+#endif
 
 // #define pow10(x) pow(10,(x))
 

@@ -27,6 +27,7 @@
 
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <stdlib.h>
 #include <stdlib.h>
 
@@ -43,8 +44,6 @@
 class CallSystem
 {
 public:
-    // separates str into path and file
-	static void splitFilename(const std::string& str, std::string &pathFile,std::string &fileName);
     // test if the file exists and is accessible
     static bool isReadable(const std::string& fileName);
     // test if the file exists
@@ -63,6 +62,8 @@ public:
     static void checkUserDirectory(const std::string &userDir, std::string & logResult);
     //! Checks if user subdirectories are present and rebuilds them if needed
     static void checkUserSubDirectory(const std::string &CDIR, std::string& dirResult);
+	//! Check if the given user subdirectory exists, rebuild it if it don't
+	static void checkUserSubDirectory(const std::string &CDIR, const std::string &subDirectory, std::ostringstream &out);
     //! runs a system command
     static bool useSystemCommand(const std::string & strCommand);
     //! deletes the prgm program via its pid

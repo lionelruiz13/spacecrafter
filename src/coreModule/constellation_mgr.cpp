@@ -392,7 +392,7 @@ void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, cons
 
 	float *data = (float *) context.transfer->beginPlanCopy(vertexArt->get().size);
 	int offset = 0;
-	struct {
+	struct _push_t {
 		Vec3f color;
 		float intensity;
 	} push;
@@ -413,7 +413,7 @@ void ConstellationMgr::drawArt(VkCommandBuffer &cmd, const Projector * prj, cons
 			m_layoutArt->pushConstant(cmd, 0, &push, 0, sizeof(push));
 			submitSomething = true;
 		} else
-			m_layoutArt->pushConstant(cmd, 0, &push.intensity, offsetof(typeof(push), intensity), sizeof(push.intensity));
+			m_layoutArt->pushConstant(cmd, 0, &push.intensity, offsetof(_push_t, intensity), sizeof(push.intensity));
 
 		(*iter)->getTexture()->bindTexture(cmd, m_layoutArt.get());
 

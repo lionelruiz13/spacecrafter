@@ -35,9 +35,7 @@ VideoPlayer::VideoPlayer(Media* _media)
 	m_isVideoPlayed = false;
 	m_isVideoInPause = false;
 	m_isVideoSeeking = false;
-	#ifndef WIN32
 	img_convert_ctx = NULL;
-	#endif
 }
 
 
@@ -83,13 +81,11 @@ void VideoPlayer::init()
 	m_isVideoPlayed = false;
 	m_isVideoInPause= false;
 	m_isVideoSeeking = false;
-	#ifndef WIN32
 	#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
 	av_register_all();
 	#endif
 	avformat_network_init();
 	pFormatCtx = avformat_alloc_context();
-	#endif
 }
 
 
@@ -97,7 +93,6 @@ bool VideoPlayer::restartCurrentVideo()
 {
 	if (!m_isVideoPlayed)
 		return false;
-	#ifndef WIN32
 	threadInterrupt();
 	auto result = av_seek_frame(pFormatCtx, -1, 0, AVSEEK_FLAG_BACKWARD);
 	threadResume();
@@ -110,13 +105,11 @@ bool VideoPlayer::restartCurrentVideo()
 	currentFrame = 0;
 
 	return true;
-	#endif
 }
 
 
 bool VideoPlayer::playNewVideo(const std::string& _fileName)
 {
-	#ifndef WIN32
 	decodeEnd = false;
 	if (m_isVideoPlayed)
 		stopCurrentVideo(true);
@@ -220,12 +213,10 @@ bool VideoPlayer::playNewVideo(const std::string& _fileName)
 	Event* event = new VideoEvent(VIDEO_ORDER::PLAY);
 	EventRecorder::getInstance()->queue(event);
 	return true;
-	#endif
 }
 
 void VideoPlayer::update()
 {
-	#ifndef WIN32
 	if (! m_isVideoPlayed)
 		return;
 
@@ -246,12 +237,10 @@ void VideoPlayer::update()
 		d_lastCount = firstCount + (int)(frameRateDuration*++currentFrame);
 		lastCount = (int)d_lastCount;
 	}
-	#endif
 }
 
 void VideoPlayer::getNextFrame()
 {
-	#ifndef WIN32
 	bool getNextFrame= false;
 
 	while(!getNextFrame) {
@@ -284,13 +273,11 @@ void VideoPlayer::getNextFrame()
 			av_packet_unref(packet);
 		}
 	}
-	#endif
 }
 
 
 void VideoPlayer::getNextVideoFrame(int frameIdx)
 {
-	#ifndef WIN32
 	this->getNextFrame();
 	if (!m_isVideoSeeking) {
 		sws_scale(img_convert_ctx, pFrameIn->data, pFrameIn->linesize, 0, pCodecCtx->height, pFrameOut->data, pFrameOut->linesize);
@@ -302,13 +289,11 @@ void VideoPlayer::getNextVideoFrame(int frameIdx)
 		// The frame can't be decoded
 		displayQueue.emplace(-1);
 	}
-	#endif
 }
 
 
 void VideoPlayer::stopCurrentVideo(bool newVideo)
 {
-	#ifndef WIN32
 	if (m_isVideoPlayed==false) {
 		if (thread.joinable())
 			thread.join();
@@ -329,7 +314,6 @@ void VideoPlayer::stopCurrentVideo(bool newVideo)
 		EventRecorder::getInstance()->queue(event);
 		media->playerStop(newVideo);
 	}
-	#endif
 }
 
 void VideoPlayer::initTexture()
@@ -386,10 +370,8 @@ bool VideoPlayer::jumpInCurrentVideo(float deltaTime, float &reallyDeltaTime)
 	if (m_isVideoInPause==true)
 		this->pauseCurrentVideo();
 
-	#ifndef WIN32
 	int64_t frameToSkeep = (1000.0*deltaTime) / frameRateDuration;
 	return seekVideo(frameToSkeep, reallyDeltaTime);
-	#endif
 }
 
 
@@ -406,7 +388,6 @@ bool VideoPlayer::invertVideoFlow(float &reallyDeltaTime)
 
 bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 {
-	#ifndef WIN32
 	currentFrame = currentFrame + frameToSkeep;
 
 	//jump before the beginning of the video
@@ -433,9 +414,6 @@ bool VideoPlayer::seekVideo(int64_t frameToSkeep, float &reallyDeltaTime)
 	this->stopCurrentVideo(false);
 	reallyDeltaTime= -1.0;
 	return true;
-	#else
-	return false;
-	#endif
 }
 
 void VideoPlayer::recordUpdate(VkCommandBuffer cmd)
@@ -492,7 +470,6 @@ void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
 	videoTexture.sync->syncOut->srcDependency(cmd);
 }
 
-#ifndef WIN32
 void VideoPlayer::mainloop()
 {
 	mtx.lock();
@@ -538,4 +515,3 @@ void VideoPlayer::threadResume()
 	requestQueue.emplace(VideoThreadEvent::RESUME);
 	mtx.unlock();
 }
-#endif

@@ -31,7 +31,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <unistd.h>
+
 #include <sstream>
 
 #include "spacecrafter.hpp"
@@ -82,8 +82,14 @@
 #include "EntityCore/Tools/CaptureMetrics.hpp"
 #include "capture.hpp"
 
+#ifdef __linux__
+#include <unistd.h>
+#endif
+
 EventRecorder* EventRecorder::instance = nullptr;
 Context *Context::instance = nullptr;
+
+constexpr int64_t WAIT_TIME = 10LL*1000*1000*1000;
 
 App::App( SDLFacade* const sdl )
 {
@@ -150,9 +156,7 @@ App::App( SDLFacade* const sdl )
 	eventHandler-> add(new EventObserverHandler(core), Event::E_CHANGE_OBSERVER);
 	eventHandler-> add(new EventVideoHandler(ui.get(), scriptInterface.get()), Event::E_VIDEO);
 
-	#if LINUX
 	mkfifo = std::make_unique<Mkfifo>();
-	#endif
 
 	enable_mkfifo= false;
 	enable_tcp= false;
@@ -191,9 +195,7 @@ App::~App()
 	appDraw.reset();
 	if (enable_tcp)
 		tcp.reset();
-	#if LINUX
-		mkfifo.reset();
-	#endif
+	mkfifo.reset();
 	ui.reset();
 	scriptInterface.reset();
 	scriptMgr.reset();
@@ -440,13 +442,11 @@ void App::init()
 
 	// time_zone used to be in init_location section of config, so use that as fallback when reading config - Rob
 	std::string tzstr = conf.getStr(SCS_LOCALIZATION, SCK_TIME_ZONE);
-	#if LINUX
 	if (tzstr == "system_default") {
 		spaceDate->setTimeZoneMode(SpaceDate::S_TZ_FORMAT::S_TZ_SYSTEM_DEFAULT);
 		// Set the program global intern timezones variables from the system locale
 		tzset();
 	} else {
-	#endif
 		if (tzstr == "gmt+x") {
 			spaceDate->setTimeZoneMode(SpaceDate::S_TZ_FORMAT::S_TZ_GMT_SHIFT);
 		} else {
@@ -454,9 +454,7 @@ void App::init()
 			spaceDate->setTimeZoneMode(SpaceDate::S_TZ_FORMAT::S_TZ_SYSTEM_DEFAULT);
 			spaceDate->setCustomTzName(tzstr);
 		}
-	#if LINUX
 	}
-	#endif
 
 	core->init(conf);
 
@@ -538,7 +536,6 @@ void App::firstInit()
 		commander->setTcp(tcp.get());
 	}
 
-	#if LINUX // special mkfifo
 	if (enable_mkfifo) {
 		std::string mplayerMkfifoName = conf.getStr(SCS_IO, SCK_MPLAYER_MKFIFO_NAME);
 		std::string mkfifo_file_in = conf.getStr(SCS_IO, SCK_MKFIFO_FILE_IN);
@@ -546,7 +543,6 @@ void App::firstInit()
 		cLog::get()->write("buffer MKFIFO size "+ std::to_string(buffer_in_size));
 		mkfifo->init(mkfifo_file_in, buffer_in_size);
 	}
-	#endif
 
 	cLog::get()->write(CallSystem::getRamInfo());
 	cLog::get()->mark();
@@ -562,12 +558,10 @@ void App::updateFromSharedData()
 {
 	if (enable_mkfifo) {
 		std::string out;
-		#if LINUX
 		if (mkfifo->update(out)) {
 			cLog::get()->write("get mkfifo: " + out);
 			commander->executeCommand(out);
 		}
-		#endif
 	}
 	if (enable_tcp) {
 		std::string out;
@@ -641,7 +635,7 @@ void App::draw(int delta_time)
 				return;
 		}
 		context.helper->waitFrame(context.lastFrameIdx);
-		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000);
+		res = vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, WAIT_TIME);
 		if (res != VK_SUCCESS) {
 			switch (res) {
 				case VK_TIMEOUT:
@@ -710,7 +704,7 @@ void App::draw(int delta_time)
 
 	if (flushFrames) {
 		context.helper->waitFrame(context.lastFrameIdx);
-		vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, 10L*1000*1000*1000);
+		vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, WAIT_TIME);
 	}
 }
 
@@ -872,7 +866,7 @@ void App::submitFrame(App *self, int id)
 				return;
 		}
 		if (self->flushFrames) {
-			vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id], VK_TRUE, 10L*1000*1000*1000);
+			vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id], VK_TRUE, WAIT_TIME);
 			vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id]);
 			self->context.frame[id]->preBegin();
 			self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
@@ -898,7 +892,7 @@ void App::submitFrame(App *self, int id)
 				return;
 		}
 		if (self->flushFrames) {
-			vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id], VK_TRUE, 10L*1000*1000*1000);
+			vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id], VK_TRUE, WAIT_TIME);
 			vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id]);
 			submit.pWaitSemaphores = submit.pSignalSemaphores;
 			submit.pSignalSemaphores = &self->context.semaphores[id];

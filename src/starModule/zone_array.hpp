@@ -34,7 +34,7 @@
 #include "starModule/hip_star_mgr.hpp"
 //#include "tools/fmath.hpp"
 
-#if LINUX
+#ifdef __linux__
 #include <sys/mman.h>
 #include <errno.h>
 #include <string.h>
@@ -45,6 +45,7 @@ class s_texture;
 
 #ifdef WIN32
 #include <io.h>
+#define NOMINMAX
 #include <windows.h>
 #endif
 

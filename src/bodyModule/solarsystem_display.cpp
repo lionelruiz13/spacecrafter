@@ -183,10 +183,8 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 			//~ std::cout << "Change of bucket for " << (*iter)->englishName << std::endl;
 
 			// potentially use the next depth bucket
-			dbiter++;
-
-			if (dbiter == listBuckets.end() ) {
-				dbiter--;
+			if (++dbiter == listBuckets.end()) {
+				--listBuckets.end();
 				// now closer than the first depth buffer
 			} else {
 				currentBucket--;

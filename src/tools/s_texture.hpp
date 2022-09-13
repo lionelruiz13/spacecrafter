@@ -28,7 +28,6 @@
 #define _S_TEXTURE_H_
 
 #include <string>
-//
 #include <map>
 #include <list>
 #include <vector>
@@ -37,6 +36,9 @@
 #include <vulkan/vulkan.h>
 #include <thread>
 #include <fstream>
+#ifdef __linux__
+#include <unistd.h>
+#endif
 
 class BigSave;
 
@@ -108,7 +110,7 @@ public:
 	// creates a red texture in case of not loaded textures
 	void createEmptyTex();
 
-	static long int getNumberTotalTexture(){
+	static int64_t getNumberTotalTexture(){
 		return texCache.size();
 	}
 

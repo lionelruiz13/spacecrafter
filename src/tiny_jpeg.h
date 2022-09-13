@@ -197,7 +197,7 @@ int tje_encode_with_func(tje_write_func* func,
 #define TJEI_BUFFER_SIZE 1024
 
 #ifdef _WIN32
-
+#define NOMINMAX
 #include <windows.h>
 #ifndef snprintf
 #define snprintf sprintf_s
@@ -1276,4 +1276,3 @@ int tje_encode_with_func(tje_write_func* func,
 #ifdef __cplusplus
 }  // extern C
 #endif
-

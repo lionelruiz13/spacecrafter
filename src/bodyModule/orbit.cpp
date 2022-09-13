@@ -258,7 +258,7 @@ Vec3d EllipticalOrbit::positionAtE(double E) const
 }
 
 // Standard iteration for solving Kepler's Equation
-struct SolveKeplerFunc1 : public std::unary_function<double, double> {
+struct SolveKeplerFunc1 {
 	double ecc;
 	double M;
 
@@ -274,7 +274,7 @@ struct SolveKeplerFunc1 : public std::unary_function<double, double> {
 // Faster converging iteration for Kepler's Equation; more efficient
 // than above for orbits with eccentricities greater than 0.3.  This
 // is from Jean Meeus's _Astronomical Algorithms_ (2nd ed), p. 199
-struct SolveKeplerFunc2 : public std::unary_function<double, double> {
+struct SolveKeplerFunc2 {
 	double ecc;
 	double M;
 
@@ -296,7 +296,7 @@ static double sign(double x)
 		return 0.;
 }
 
-struct SolveKeplerLaguerreConway : public std::unary_function<double, double> {
+struct SolveKeplerLaguerreConway {
 	double ecc;
 	double M;
 
@@ -315,7 +315,7 @@ struct SolveKeplerLaguerreConway : public std::unary_function<double, double> {
 	}
 };
 
-struct SolveKeplerLaguerreConwayHyp : public std::unary_function<double, double> {
+struct SolveKeplerLaguerreConwayHyp {
 	double ecc;
 	double M;
 

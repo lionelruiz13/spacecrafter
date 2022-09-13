@@ -82,8 +82,8 @@ Body::Body(std::shared_ptr<Body> parent,
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
 	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
-	is_satellite(0), orbit_bounding_radius(orbit_bounding_radius),
-	boundingRadius(-1), sun_half_angle(0.0)
+	is_satellite(parent && parent->getBodyType() != CENTER && parent->getBodyType() != SUN),
+    orbit_bounding_radius(orbit_bounding_radius), boundingRadius(-1), sun_half_angle(0.0)
 {
 	radius = _radius;
 	myColor = std::move(_myColor);
@@ -91,9 +91,6 @@ Body::Body(std::shared_ptr<Body> parent,
 	sol_local_day = _sol_local_day;
 	typePlanet = _typePlanet;
 	initialScale= 1.0;
-	if (parent) {
-		if (parent->getBodyType() != CENTER && !(parent->getBodyType() == SUN && !parent->parent)) is_satellite = 1; // quicker lookup
-	}
 	if (parent) {
 		if (parent->getBodyType() == CENTER || (parent->getBodyType() == SUN && !parent->parent)) tAround = tACenter;
 		else tAround = tABody;

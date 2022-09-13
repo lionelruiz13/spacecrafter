@@ -52,11 +52,11 @@ class PipelineLayout;
 class Pipeline;
 class Set;
 
-typedef struct {
+struct drawState_t {
 	PipelineLayout *layout;
 	Pipeline *pipeline;
 	Pipeline *pipelineNoDepth = nullptr;
-} drawState_t;
+};
 
 class BodyShader {
 
