@@ -38,6 +38,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 {
 	m_commands[ACP_CN_ADD] = SC_COMMAND::SC_ADD;
 	m_commands[ACP_CN_AUDIO] = SC_COMMAND::SC_AUDIO;
+	m_commands[ACP_CN_MODE] = SC_COMMAND::SC_MODE;
 	m_commands[ACP_CN_BODY_TRACE] = SC_COMMAND::SC_BODY_TRACE;
 	m_commands[ACP_CN_BODY] = SC_COMMAND::SC_BODY;
 	m_commands[ACP_CN_CAMERA] = SC_COMMAND::SC_CAMERA;

@@ -222,6 +222,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, unsigne
 	switch(m_commands_it->second) {
 		case SC_COMMAND::SC_ADD : 	return commandAdd(); break;
 		case SC_COMMAND::SC_AUDIO : 	return commandAudio(); break;
+		case SC_COMMAND::SC_MODE: 	return commandModeJump(); break;
 		case SC_COMMAND::SC_BODY_TRACE :	return commandBodyTrace();  break;
 		case SC_COMMAND::SC_BODY :	return commandBody(); break;
 		case SC_COMMAND::SC_CAMERA :	return commandCamera(wait); break;
@@ -1607,7 +1608,6 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 		case SCD_NAMES::APP_STARTUP_TIME_MODE: stapp->setStartupTimeMode(setValue); break;
 		case SCD_NAMES::APP_DATE_DISPLAY_FORMAT: spaceDate->setDateFormatStr(setValue); break;
 		case SCD_NAMES::APP_TIME_DISPLAY_FORMAT: spaceDate->setTimeFormatStr(setValue); break;
-		case SCD_NAMES::APP_MODE: stapp->switchMode(setValue); break;
 		case SCD_NAMES::APP_SCREEN_FADER:
 						{	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, evalDouble(setValue));
 							EventRecorder::getInstance()->queue(event);
@@ -2739,6 +2739,30 @@ int AppCommandInterface::commandMoveto()
 	return executeCommandStatus();
 }
 
+int AppCommandInterface::commandModeJump()
+{
+	std::string argJump = args[W_JUMP];
+	if (!argJump.empty()) {
+		stapp->switchMode(argJump);
+
+		std::string argBody = args[W_BODY];
+		if (!argBody.empty())
+			stcore->setHomePlanet(argBody);
+
+		std::string argAlt = args[W_ALTITUDE];
+		if (!argAlt.empty()) {
+			double lati = coreLink->observatoryGetLatitude();
+			double longi = coreLink->observatoryGetLongitude();
+			double alt = coreLink->observatoryGetAltitude();
+			if (argAlt[0] == '+' || argAlt[0] == '-')
+				alt += evalDouble(argAlt);
+			else
+				alt = evalDouble(argAlt);
+			coreLink->observerMoveTo(lati,longi,alt,0);
+		}
+	}
+	return executeCommandStatus();
+}
 
 int AppCommandInterface::commandMedia()
 {

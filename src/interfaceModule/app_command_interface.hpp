@@ -72,6 +72,7 @@ protected:
 	//all different command
 	int commandAdd();
 	int commandAudio();
+	int commandModeJump();
 	int commandBodyTrace();
 	int commandBody();
 	int commandCamera(unsigned long int &wait);
