@@ -185,7 +185,7 @@ int main(int argc, const char *argv[])
 	// Check the command line
 	check_command_line(argc, argv);
 
-	LinuxExecutor executor(1, 1);
+	LinuxExecutor executor(0, 0);
 	executor.start(false);
 
 	//check if home Directory exist and if not try to create it.
