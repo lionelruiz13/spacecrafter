@@ -493,15 +493,12 @@ std::vector<ObjectBaseP> StarNavigator::searchAround(const Vec3d& v, double limi
 	std::vector<ObjectBaseP> result;
 	if (!getFlagStars())
 		return result;
-	auto matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
-	Vec3d pos(v);
-	pos.normalize();
 	limitFov = limitFov * (M_PI/180.);
 	double cosLimitFov = cos(limitFov);
 	for (auto &star: listGlobalStarVisible) {
-		auto tmp = matrix * star->posXYZ;
+		auto tmp = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * star->posXYZ);
 		tmp.normalize();
-		float dotProduct = tmp.dot(pos);
+		float dotProduct = tmp.dot(v);
 		if (dotProduct > cosLimitFov)
 			result.push_back(new Star3DWrapper(star));
 	}

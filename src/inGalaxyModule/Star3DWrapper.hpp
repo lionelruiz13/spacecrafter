@@ -66,8 +66,8 @@ public:
         *de = star->pmDE;
     }
 
-    Vec3d getEarthEquPos(const Navigator *nav) const override{
-		return nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * star->posXYZ;
+    virtual Vec3d getEarthEquPos(const Navigator *nav) const override {
+        return nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * star->posXYZ);
 	}
 
     virtual Vec3d getObsJ2000Pos(const Navigator *nav) const override {

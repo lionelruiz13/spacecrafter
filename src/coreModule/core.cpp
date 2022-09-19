@@ -938,7 +938,7 @@ Object Core::cleverFind(const Vec3d& v) const
 		}
 	}
 	if (starNav->getFlagStars() && curentModule == MODULE::IN_GALAXY) {
-		std::vector<ObjectBaseP > tmp = starNav->searchAround(p, fov_around, navigation);
+		std::vector<ObjectBaseP > tmp = starNav->searchAround(v, fov_around, navigation);
 		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
 			candidates.push_back( Object(itr->get()) );
 		}
