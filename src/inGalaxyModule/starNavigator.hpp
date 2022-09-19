@@ -34,7 +34,7 @@
 /*! \class StarNavigator
   * \brief class allowing the stroll in the stars
   *
-  *  \details The class is responsible for processing all the stars to 
+  *  \details The class is responsible for processing all the stars to
   * allow a trip in space (basic unit: the parsec)
   */
 
@@ -125,7 +125,7 @@ public:
 
 	starInfo* getStarInfo(unsigned int HIPName) const;
 
-	std::vector<ObjectBaseP> searchAround(const Vec3d& v, double limitFov, const Navigator *nav);
+	std::vector<ObjectBaseP> searchAround(Vec3d v, double limitFov, const Navigator *nav);
 
 private:
 	//buffers for displaying shaders

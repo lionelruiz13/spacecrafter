@@ -488,11 +488,12 @@ bool StarNavigator::computeChunk(unsigned int first, unsigned int last)
 }
 
 
-std::vector<ObjectBaseP> StarNavigator::searchAround(const Vec3d& v, double limitFov, const Navigator *nav)
+std::vector<ObjectBaseP> StarNavigator::searchAround(Vec3d v, double limitFov, const Navigator *nav)
 {
 	std::vector<ObjectBaseP> result;
 	if (!getFlagStars())
 		return result;
+	v.normalize();
 	limitFov = limitFov * (M_PI/180.);
 	double cosLimitFov = cos(limitFov);
 	for (auto &star: listGlobalStarVisible) {
