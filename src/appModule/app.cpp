@@ -100,8 +100,10 @@ App::App( SDLFacade* const sdl )
 	settings = AppSettings::Instance();
 	InitParser conf;
 	settings->loadAppSettings( &conf );
+	Texture::setTextureDir(settings->getTextureDir());
+	Pipeline::setShaderDir(settings->getShaderDir());
+	ComputePipeline::setShaderDir(settings->getShaderDir());
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
-	flushFrames = conf.getBoolean(SCS_RENDERING, SCK_FLUSH_FRAMES);
 	baseHeading = conf.getDouble (SCS_NAVIGATION,SCK_HEADING);
 	PipelineLayout::DEFAULT_SAMPLER.maxAnisotropy = conf.getDouble(SCS_RENDERING, SCK_ANISOTROPY);
 
@@ -119,7 +121,9 @@ App::App( SDLFacade* const sdl )
 		appDraw->initSplash();
 		context.stat->capture(Capture::INIT_SPLASH);
 	}
+	flushFrames = conf.getBoolean(SCS_RENDERING, SCK_FLUSH_FRAMES);
 
+	finalizeInitVulkan(conf);
 	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
 	fontFactory = std::make_unique<FontFactory>();
 
@@ -222,40 +226,13 @@ App::~App()
 
 void App::initVulkan(InitParser &conf)
 {
-	cLog::get()->write("Initializing Vulkan...", LOG_TYPE::L_INFO);
-	int antialiasing = 1 << static_cast<int>(std::log2(conf.getInt(SCS_RENDERING, SCK_ANTIALIASING)|1));
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	cLog::get()->write("Initializing Vulkan...", LOG_TYPE::L_INFO);
+	sampleCount = static_cast<VkSampleCountFlagBits>(1 << static_cast<int>(std::log2(conf.getInt(SCS_RENDERING, SCK_ANTIALIASING)|1)));
 	width = vkmgr.getSwapChainExtent().width;
 	height = vkmgr.getSwapChainExtent().height;
 	context.stagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 512*1024*1024, "Staging BufferMgr");
-	context.texStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 1*1024*1024*1024, "Texture staging BufferMgr");
-	context.asyncTexStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, BIG_TEXTURE_SIZE, "Async texture upload buffer"); // Support up to 16k x 8k big texture, around 682 Mo
-	context.readbackMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, 3*4*width*height, "readback BufferMgr");
-	context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "global BufferMgr");
-	context.uniformMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "uniform BufferMgr", true);
-	context.tinyMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "tiny BufferMgr");
-	context.ojmBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "OJM BufferMgr");
-	context.ojmVertexArray = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
-	context.ojmVertexArray->createBindingEntry(8*sizeof(float));
-	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
-	context.ojmVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
-	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
-	context.indexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "indexBuffer BufferMgr");
-	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 6*sizeof(float));
-	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*64*1024, "draw_helper BufferMgr");
 	context.setMgr = std::make_unique<SetMgr>(vkmgr, 4096, 1024, 4096, 1, 64, true);
-	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
-	context.starColorAttachment->use();
-	sampleCount = static_cast<VkSampleCountFlagBits>(antialiasing);
-	depthBuffer = std::make_unique<Texture>(vkmgr, width, height, sampleCount);
-	depthBuffer->use();
-	if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
-		for (int i = 0; i < 3; ++i) {
-			multisampleImage.push_back(std::make_unique<Texture>(vkmgr, width, height, sampleCount, "multisample color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
-			multisampleImage.back()->use();
-
-		}
-	}
 	context.graphicFamily = vkmgr.acquireQueue(context.graphicQueue, VulkanMgr::QueueType::GRAPHIC_COMPUTE, "main");
 	if (context.graphicFamily) {
 		context.computeQueue = context.graphicQueue;
@@ -264,13 +241,13 @@ void App::initVulkan(InitParser &conf)
 		vkmgr.acquireQueue(context.computeQueue, VulkanMgr::QueueType::COMPUTE, "main graphic");
 	}
 	context.collector = std::make_unique<Collector>(vkmgr);
-	context.cmdInfo.commandPool = context.cmdPool = context.collector->create(
-		VkCommandPoolCreateInfo{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, nullptr, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, context.graphicFamily->id}, "Secondary CmdPool");
+	depthBuffer = std::make_unique<Texture>(vkmgr, width, height, sampleCount);
+	depthBuffer->use();
 	// ========== DEFINE RENDERING ========== //
 	context.render = std::make_unique<RenderMgr>(vkmgr);
-	int colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-	int depthID = context.render->attach(VK_FORMAT_D24_UNORM_S8_UINT, sampleCount, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, false);
-	int multiColorID = colorID;
+	colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+	depthID = context.render->attach(VK_FORMAT_D24_UNORM_S8_UINT, sampleCount, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, false);
+	multiColorID = colorID;
 	if (sampleCount != VK_SAMPLE_COUNT_1_BIT)
 		multiColorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, sampleCount, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, false);
 	// PASS_BACKGROUND
@@ -294,7 +271,7 @@ void App::initVulkan(InitParser &conf)
 	if (multiColorID != colorID) {
 		context.render->bindResolveDst(colorID, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 		// Sync with semaphore
-		// context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
+		context.render->addDependencyFrom(-1, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, false);
 	}
 	// Sync with use in previous subPass
 	// context.render->addDependency(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT, VK_ACCESS_COLOR_ATTACHMENT_READ_BIT);
@@ -323,24 +300,71 @@ void App::initVulkan(InitParser &conf)
 	context.render->build(3);
 	// ========== END DEFINE RENDERING ========== //
 	context.transferSync = std::make_unique<SyncEvent>();
-	context.transferSync->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
-	context.transferSync->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
-	context.transferSync->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
-	context.transferSync->bufferBarrier(*context.indexBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_INDEX_READ_BIT_KHR);
-	context.transferSync->build();
 	context.transfers.resize(3);
 	context.fences.resize(3);
 	context.semaphores.resize(6);
 	context.graphicTransferCmd.resize(3);
 	context.starUsed.resize(3);
-	bool fenceSignaled = !vkmgr.getSwapchainView().empty();
-	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
-	// FrameMgr::startHelper();
-	for (uint8_t i = 0; i < 3; ++i) {
+	if (sampleCount != VK_SAMPLE_COUNT_1_BIT) {
+		for (int i = 0; i < 3; ++i) {
+			multisampleImage.push_back(std::make_unique<Texture>(vkmgr, width, height, sampleCount, "multisample color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
+		}
+	}
+	for (int i = 0; i < 3; ++i)
 		context.transfers[i] = std::make_unique<TransferMgr>(*context.stagingMgr, 64*1024*1024);
-		// context.starSync[i] = std::make_unique<SyncEvent>(&vkmgr);
-		// context.starSync[i]->imageBarrier(*context.starColorAttachment, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR, VK_ACCESS_2_COLOR_ATTACHMENT_READ_BIT_KHR | VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT_KHR);
-		// context.starSync[i]->build();
+	context.transfer = context.transfers[context.lastFrameIdx].get(); // Assume the previous frame is the frame 2
+	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
+	{ // Only build the first frame
+		constexpr int i = 0;
+		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, 0, width, height, "main " + std::to_string(0), (void (*)(void *, int)) &App::submitFrame, (void *) this));
+		if (vkmgr.getSwapchainView().empty()) {
+			senderImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(0), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
+			context.frame.back()->bind(colorID, *senderImage.back());
+		} else {
+			context.frame.back()->bind(colorID, vkmgr.getSwapchainView()[i]);
+		}
+		context.frame.back()->bind(depthID, *depthBuffer);
+		if (multiColorID != colorID)
+			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
+		context.frame.back()->build(context.graphicFamily->id, true, true);
+		context.graphicTransferCmd[i] = context.frame.back()->createMain();
+	}
+	for (int i = 0; i < 3; ++i) {
+		context.fences[i] = context.collector->createFence(!vkmgr.getSwapchainView().empty(), "Frame " + std::to_string(i));
+		context.semaphores[i] = context.collector->createSemaphore("Acquire " + std::to_string(i));
+		context.semaphores[i + 3] = context.collector->createSemaphore("Present " + std::to_string(i));
+	}
+}
+
+void App::finalizeInitVulkan(InitParser &conf)
+{
+	VulkanMgr &vkmgr = *VulkanMgr::instance;
+	cLog::get()->write("Finalizing Vulkan initialization...", LOG_TYPE::L_INFO);
+	context.texStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, 1*1024*1024*1024, "Texture staging BufferMgr");
+	context.asyncTexStagingMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0, BIG_TEXTURE_SIZE, "Async texture upload buffer"); // Support up to 16k x 8k big texture, around 682 Mo
+	context.readbackMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, 3*4*width*height, "readback BufferMgr");
+	context.globalBuffer = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "global BufferMgr");
+	context.uniformMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "uniform BufferMgr", true);
+	context.tinyMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 1*1024*1024, "tiny BufferMgr");
+	context.ojmBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 128*1024*1024, "OJM BufferMgr");
+	context.ojmVertexArray = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
+	context.ojmVertexArray->createBindingEntry(8*sizeof(float));
+	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	context.ojmVertexArray->addInput(VK_FORMAT_R32G32_SFLOAT);
+	context.ojmVertexArray->addInput(VK_FORMAT_R32G32B32_SFLOAT);
+	context.indexBufferMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, 64*1024*1024, "indexBuffer BufferMgr");
+	context.multiVertexArray = std::make_unique<VertexArray>(vkmgr, 6*sizeof(float));
+	context.multiVertexMgr = std::make_unique<BufferMgr>(vkmgr, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, context.multiVertexArray->alignment*64*1024, "draw_helper BufferMgr");
+	context.starColorAttachment = std::make_unique<Texture>(vkmgr, vkmgr.getScreenRect().extent.width, vkmgr.getScreenRect().extent.height, VK_SAMPLE_COUNT_1_BIT, "star FBO", VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+	context.starColorAttachment->use();
+	context.transferSync->bufferBarrier(*context.globalBuffer, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+	context.transferSync->bufferBarrier(*context.multiVertexMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+	context.transferSync->bufferBarrier(*context.ojmBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_VERTEX_ATTRIBUTE_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_VERTEX_ATTRIBUTE_READ_BIT_KHR);
+	context.transferSync->bufferBarrier(*context.indexBufferMgr, VK_PIPELINE_STAGE_2_COPY_BIT_KHR, VK_PIPELINE_STAGE_2_INDEX_INPUT_BIT_KHR, VK_ACCESS_2_TRANSFER_WRITE_BIT_KHR, VK_ACCESS_2_INDEX_READ_BIT_KHR);
+	context.transferSync->build();
+	context.cmdInfo.commandPool = context.cmdPool = context.collector->create(
+		VkCommandPoolCreateInfo{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, nullptr, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, context.graphicFamily->id}, "Secondary CmdPool");
+	for (uint8_t i = 1; i < 3; ++i) {
 		context.frame.push_back(std::make_unique<FrameMgr>(vkmgr, *context.render, i, width, height, "main " + std::to_string(i), (void (*)(void *, int)) &App::submitFrame, (void *) this));
 		if (vkmgr.getSwapchainView().empty()) {
 			senderImage.push_back(std::make_unique<Texture>(vkmgr, width, height, VK_SAMPLE_COUNT_1_BIT, "main color " + std::to_string(i), VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT));
@@ -349,17 +373,14 @@ void App::initVulkan(InitParser &conf)
 			context.frame.back()->bind(colorID, vkmgr.getSwapchainView()[i]);
 		}
 		context.frame.back()->bind(depthID, *depthBuffer);
-		// context.frame.back()->bind(starID, *context.starColorAttachment);
 		if (multiColorID != colorID)
 			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
 		context.frame.back()->build(context.graphicFamily->id, true, true);
-		context.fences[i] = context.collector->createFence(fenceSignaled, "Frame " + std::to_string(i));
-		fenceSignaled = true;
+		context.fences[i] = context.collector->createFence(true, "Frame " + std::to_string(i));
 		context.semaphores[i] = context.collector->createSemaphore("Acquire " + std::to_string(i));
 		context.semaphores[i + 3] = context.collector->createSemaphore("Present " + std::to_string(i));
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
 	}
-	context.transfer = context.transfers[2].get(); // Assume the previous frame is the frame 2
 	context.helper = std::make_unique<DrawHelper>();
 	if (vkmgr.getSwapchainView().empty()) {
 		sender = std::make_unique<NDISender>(vkmgr, senderImage, context.fences.data());
@@ -615,8 +636,7 @@ void App::draw(int delta_time)
 	if (sender) {
 		sender->acquireFrame(context.frameIdx);
 	} else {
-		context.waitFrameSync[0].semaphore = context.semaphores[context.lastFrameIdx + 3];
-		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 10000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
+		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 10000000, context.semaphores[context.lastFrameIdx], VK_NULL_HANDLE, &context.frameIdx);
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -833,23 +853,27 @@ void App::submitFrame(App *self, int id)
 {
 	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();
 	vkCmdEndRenderPass(mainCmd);
-	self->media->playerRecordUpdateDependency(mainCmd);
-	if (self->context.starUsed[id]) {
-		self->context.starUsed[id]->syncFramebuffer(mainCmd);
-		self->context.starUsed[id] = nullptr;
-	}
-	self->saveScreenInterface->update();
-	if (!self->flushFrames) {
-		if (self->sender) {
-			self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
-			self->sender->setupReadback(mainCmd, id);
-		} else
-			self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
-	}
+	if (self->media) { // Is initialized
+		self->context.waitFrameSync[0].semaphore = self->context.semaphores[self->context.helper->getLastFrameIdx()];
+		self->media->playerRecordUpdateDependency(mainCmd);
+		if (self->context.starUsed[id]) {
+			self->context.starUsed[id]->syncFramebuffer(mainCmd);
+			self->context.starUsed[id] = nullptr;
+		}
+		self->saveScreenInterface->update();
+		if (!self->flushFrames) {
+			if (self->sender) {
+				self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
+				self->sender->setupReadback(mainCmd, id);
+			} else
+				self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
+		}
+	} else
+		self->context.waitFrameSync[0].semaphore = self->context.semaphores[self->context.lastFrameIdx];
+	self->context.signalFrameSync[0].semaphore = self->context.semaphores[id + 3];
 	vkEndCommandBuffer(mainCmd);
 	self->context.waitFrameSync[1].value = self->context.signalFrameSync[1].value;
 	self->context.signalFrameSync[1].value = ++self->context.syncPoint;
-
 	VkResult res;
 	if (self->sender) {
 		if (SyncEvent::useSynchronization2()) {
@@ -885,11 +909,13 @@ void App::submitFrame(App *self, int id)
 	} else {
 		if (SyncEvent::useSynchronization2()) {
 			VkCommandBufferSubmitInfoKHR cmdSubmit {VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO_KHR, nullptr, mainCmd, 0};
-			VkSubmitInfo2KHR submit {VK_STRUCTURE_TYPE_SUBMIT_INFO_2_KHR, nullptr, 0, 2, self->context.waitFrameSync, 1, &cmdSubmit, 2, self->context.signalFrameSync + 1};
+			VkSubmitInfo2KHR submit {VK_STRUCTURE_TYPE_SUBMIT_INFO_2_KHR, nullptr, 0, 2, self->context.waitFrameSync, 1, &cmdSubmit, 2, self->context.signalFrameSync};
 			res = SyncEvent::ptr_vkQueueSubmit2KHR(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		} else {
+			VkSemaphore waitSemaphores[2] = {self->context.waitFrameSync[0].semaphore, self->context.waitFrameSync[1].semaphore};
+			VkSemaphore signalSemaphores[2] = {self->context.signalFrameSync[0].semaphore, self->context.signalFrameSync[1].semaphore};
 			VkPipelineStageFlags stages[2] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, self->context.transferSync->compatConvStage(self->context.waitFrameSync[1].stageMask)};
-			VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + Context::instance->helper->getLastFrameIdx()], stages, 1, &mainCmd, 1, &self->context.semaphores[self->flushFrames ? (id+6) : (id)]};
+			VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 2, waitSemaphores, stages, 1, &mainCmd, 2, signalSemaphores};
 			res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		}
 		switch (res) {
@@ -911,7 +937,7 @@ void App::submitFrame(App *self, int id)
 			VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &mainCmd, 0, nullptr};
 			vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		}
-		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
+		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id+3], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
 		res = vkQueuePresentKHR(self->context.graphicQueue, &presentInfo);
 		switch (res) {
 			case VK_SUCCESS:

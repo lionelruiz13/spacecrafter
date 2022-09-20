@@ -85,8 +85,6 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	// Set textures directory and suffix
 	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
 	//set Shaders directory and suffix
-	Pipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
-	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	uboCam = std::make_unique<UBOCam>();
 	tone_converter = new ToneReproductor();
 	atmosphere = std::make_shared<Atmosphere>();

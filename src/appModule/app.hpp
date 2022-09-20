@@ -145,8 +145,10 @@ private:
 	void masterput();
 	//! Submit a frame
 	static void submitFrame(App *self, int id);
-	//! Initialize vulkan resources
+	//! Initialize vulkan resources needed for the splash screen
 	void initVulkan(InitParser &conf);
+	//! Initialize vulkan resources needed outside of the splash screen
+	void finalizeInitVulkan(InitParser &conf);
 
 	bool flagAlive; 				//!< indicates if the application should stop or not
 	bool flagVisible;				//!< say if your App Is Visible or not
@@ -176,7 +178,7 @@ private:
 	VkSampleCountFlagBits sampleCount;
 	std::vector<std::unique_ptr<Texture>> multisampleImage;
 	std::unique_ptr<Texture> depthBuffer;
-	bool flushFrames; // Flush every frames, reduce framerates but potentially remove some graphical glitches
+	bool flushFrames = false; // Flush every frames, reduce framerates but potentially remove some graphical glitches
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr;		 			//! base for the software constants
@@ -204,6 +206,7 @@ private:
 	EventHandler* eventHandler;
 
 	Uint16 width, height;  						//! Contains the resolution w and h of the SDL window
+	int colorID, depthID, multiColorID;
 	SDL_Event	E;
 };
 #endif

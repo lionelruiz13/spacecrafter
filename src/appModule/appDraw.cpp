@@ -182,7 +182,8 @@ void AppDraw::initSplash()
     pipeline->build();
 
     context.lastFrameIdx = 2;
-    vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
+    context.waitFrameSync[0].semaphore = context.semaphores[context.lastFrameIdx];
+    vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
     vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 
     FrameMgr &frame = *context.frame[context.frameIdx];
