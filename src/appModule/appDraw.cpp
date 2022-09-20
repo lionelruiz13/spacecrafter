@@ -198,7 +198,6 @@ void AppDraw::initSplash()
     auto mainCmd = context.frame[context.frameIdx]->preBegin();
     texture->use(mainCmd, true);
     context.transfer->copy(mainCmd);
-    context.transferSync->placeBarrier(mainCmd);
     context.frame[context.frameIdx]->postBegin();
     context.frame[context.frameIdx]->submitInline();
     context.transfer = context.transfers[context.frameIdx].get();
