@@ -113,6 +113,14 @@ App::App( SDLFacade* const sdl )
 	initVulkan(conf);
 	context.stat->capture(Capture::INIT_VULKAN);
 
+	// Display splash screen earlier
+	appDraw = std::make_unique<AppDraw>();
+	if (!VulkanMgr::instance->getSwapchainView().empty()) {
+		appDraw->initSplash();
+		context.stat->capture(Capture::INIT_SPLASH);
+	}
+
+	s_texture::loadCache(settings->getUserDir() + "cache/", conf.getBoolean(SCS_MAIN, SCK_TEX_CACHE));
 	fontFactory = std::make_unique<FontFactory>();
 
 	media = std::make_shared<Media>();
@@ -164,7 +172,6 @@ App::App( SDLFacade* const sdl )
 	flagSubtitle= false;
 
 	context.stat->capture(Capture::INIT_GENERAL);
-	appDraw = std::make_unique<AppDraw>();
 	appDraw->init(width, height);
 	appDraw->setLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 
@@ -256,9 +263,9 @@ void App::initVulkan(InitParser &conf)
 		context.graphicFamily = vkmgr.acquireQueue(context.graphicQueue, VulkanMgr::QueueType::GRAPHIC, "main compute");
 		vkmgr.acquireQueue(context.computeQueue, VulkanMgr::QueueType::COMPUTE, "main graphic");
 	}
-	VkCommandPoolCreateInfo poolInfo {VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, nullptr, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, context.graphicFamily->id};
-	vkCreateCommandPool(vkmgr.refDevice, &poolInfo, nullptr, &context.cmdPool);
-	context.cmdInfo.commandPool = context.cmdPool;
+	context.collector = std::make_unique<Collector>(vkmgr);
+	context.cmdInfo.commandPool = context.cmdPool = context.collector->create(
+		VkCommandPoolCreateInfo{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO, nullptr, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT, context.graphicFamily->id}, "Secondary CmdPool");
 	// ========== DEFINE RENDERING ========== //
 	context.render = std::make_unique<RenderMgr>(vkmgr);
 	int colorID = context.render->attach(VK_FORMAT_B8G8R8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_LAYOUT_UNDEFINED, vkmgr.getSwapchainView().empty() ? VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL : VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
@@ -323,12 +330,11 @@ void App::initVulkan(InitParser &conf)
 	context.transferSync->build();
 	context.transfers.resize(3);
 	context.fences.resize(3);
-	context.debugFences.resize(3);
-	context.semaphores.resize(9);
+	context.semaphores.resize(6);
 	context.graphicTransferCmd.resize(3);
 	context.starUsed.resize(3);
-	VkFenceCreateInfo fenceInfo {VK_STRUCTURE_TYPE_FENCE_CREATE_INFO, nullptr, (vkmgr.getSwapchainView().empty()) ? 0 : VK_FENCE_CREATE_SIGNALED_BIT};
-	VkSemaphoreCreateInfo semaphoreInfo {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO, nullptr, 0};
+	bool fenceSignaled = !vkmgr.getSwapchainView().empty();
+	context.waitFrameSync[1].semaphore = context.signalFrameSync[1].semaphore = context.collector->createSemaphore(0, "Timeline");
 	// FrameMgr::startHelper();
 	for (uint8_t i = 0; i < 3; ++i) {
 		context.transfers[i] = std::make_unique<TransferMgr>(*context.stagingMgr, 64*1024*1024);
@@ -347,16 +353,10 @@ void App::initVulkan(InitParser &conf)
 		if (multiColorID != colorID)
 			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
 		context.frame.back()->build(context.graphicFamily->id, true, true);
-		vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, context.fences.data() + i);
-		vkmgr.setObjectName(context.fences[i], VK_OBJECT_TYPE_FENCE, "Frame " + std::to_string(i));
-		fenceInfo.flags = 0;
-		vkCreateFence(vkmgr.refDevice, &fenceInfo, nullptr, context.debugFences.data() + i);
-		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i);
-		vkmgr.setObjectName(context.semaphores[i], VK_OBJECT_TYPE_SEMAPHORE, "Acquire " + std::to_string(i));
-		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 3);
-		vkmgr.setObjectName(context.semaphores[i + 3], VK_OBJECT_TYPE_SEMAPHORE, "Present " + std::to_string(i));
-		vkCreateSemaphore(vkmgr.refDevice, &semaphoreInfo, nullptr, context.semaphores.data() + i + 6);
-		vkmgr.setObjectName(context.semaphores[i + 3], VK_OBJECT_TYPE_SEMAPHORE, "Flush " + std::to_string(i));
+		context.fences[i] = context.collector->createFence(fenceSignaled, "Frame " + std::to_string(i));
+		fenceSignaled = true;
+		context.semaphores[i] = context.collector->createSemaphore("Acquire " + std::to_string(i));
+		context.semaphores[i + 3] = context.collector->createSemaphore("Present " + std::to_string(i));
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
 	}
 	context.transfer = context.transfers[2].get(); // Assume the previous frame is the frame 2
@@ -495,10 +495,6 @@ void App::init()
 void App::firstInit()
 {
 	context.stat->capture(Capture::FRAME_START);
-	if (!sender) {
-		appDraw->initSplash();
-		context.stat->capture(Capture::INIT_SPLASH);
-	}
 
 	InitParser conf;
 	AppSettings::Instance()->loadAppSettings( &conf );
@@ -619,7 +615,8 @@ void App::draw(int delta_time)
 	if (sender) {
 		sender->acquireFrame(context.frameIdx);
 	} else {
-		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 10000000, context.semaphores[context.lastFrameIdx + 3], VK_NULL_HANDLE, &context.frameIdx);
+		context.waitFrameSync[0].semaphore = context.semaphores[context.lastFrameIdx + 3];
+		auto res = vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), 10000000, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -652,6 +649,7 @@ void App::draw(int delta_time)
 		}
 		vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 	}
+	// Define semaphore synchronization semantics
 	context.stat->capture(Capture::FRAME_ACQUIRE);
 	vkmgr.update();
 	core->uboCamUpdate();
@@ -842,19 +840,27 @@ void App::submitFrame(App *self, int id)
 	}
 	self->saveScreenInterface->update();
 	if (!self->flushFrames) {
-		if (self->sender)
-			self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
-		else
-			self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
 		if (self->sender) {
+			self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
 			self->sender->setupReadback(mainCmd, id);
-		}
+		} else
+			self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
 	}
 	vkEndCommandBuffer(mainCmd);
+	self->context.waitFrameSync[1].value = self->context.signalFrameSync[1].value;
+	self->context.signalFrameSync[1].value = ++self->context.syncPoint;
 
+	VkResult res;
 	if (self->sender) {
-		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &mainCmd, 0, nullptr};
-		auto res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		if (SyncEvent::useSynchronization2()) {
+			VkCommandBufferSubmitInfoKHR cmdSubmit {VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO_KHR, nullptr, mainCmd, 0};
+			VkSubmitInfo2KHR submit {VK_STRUCTURE_TYPE_SUBMIT_INFO_2_KHR, nullptr, 0, 1, self->context.waitFrameSync + 1, 1, &cmdSubmit, 1, self->context.signalFrameSync + 1};
+			res = SyncEvent::ptr_vkQueueSubmit2KHR(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		} else {
+			VkPipelineStageFlags stage = self->context.transferSync->compatConvStage(self->context.waitFrameSync[1].stageMask);
+			VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, self->context.waitFrameSync[1].semaphore != VK_NULL_HANDLE, &self->context.waitFrameSync[1].semaphore, &stage, 1, &mainCmd, 1, &self->context.signalFrameSync[1].semaphore};
+			res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		}
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -870,17 +876,22 @@ void App::submitFrame(App *self, int id)
 			vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id]);
 			self->context.frame[id]->preBegin();
 			self->saveScreenInterface->readScreenShot(mainCmd, self->senderImage[id]->getImage());
-			if (self->sender) {
-				self->sender->setupReadback(mainCmd, id);
-			}
+			self->sender->setupReadback(mainCmd, id);
 			vkEndCommandBuffer(mainCmd);
+			VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &mainCmd, 0, nullptr};
 			vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		}
 		self->sender->presentFrame(id);
 	} else {
-		VkPipelineStageFlags stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + Context::instance->helper->getLastFrameIdx()], &stage, 1, &mainCmd, 1, &self->context.semaphores[self->flushFrames ? (id+6) : (id)]};
-		auto res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		if (SyncEvent::useSynchronization2()) {
+			VkCommandBufferSubmitInfoKHR cmdSubmit {VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO_KHR, nullptr, mainCmd, 0};
+			VkSubmitInfo2KHR submit {VK_STRUCTURE_TYPE_SUBMIT_INFO_2_KHR, nullptr, 0, 2, self->context.waitFrameSync, 1, &cmdSubmit, 2, self->context.signalFrameSync + 1};
+			res = SyncEvent::ptr_vkQueueSubmit2KHR(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		} else {
+			VkPipelineStageFlags stages[2] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, self->context.transferSync->compatConvStage(self->context.waitFrameSync[1].stageMask)};
+			VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 1, &self->context.semaphores[3 + Context::instance->helper->getLastFrameIdx()], stages, 1, &mainCmd, 1, &self->context.semaphores[self->flushFrames ? (id+6) : (id)]};
+			res = vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
+		}
 		switch (res) {
 			case VK_SUCCESS:
 				break;
@@ -894,14 +905,10 @@ void App::submitFrame(App *self, int id)
 		if (self->flushFrames) {
 			vkWaitForFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id], VK_TRUE, WAIT_TIME);
 			vkResetFences(VulkanMgr::instance->refDevice, 1, &self->context.fences[id]);
-			submit.pWaitSemaphores = submit.pSignalSemaphores;
-			submit.pSignalSemaphores = &self->context.semaphores[id];
 			self->context.frame[id]->preBegin();
 			self->saveScreenInterface->readScreenShot(mainCmd, VulkanMgr::instance->getSwapchainImage()[id]);
-			if (self->sender) {
-				self->sender->setupReadback(mainCmd, id);
-			}
 			vkEndCommandBuffer(mainCmd);
+			VkSubmitInfo submit {VK_STRUCTURE_TYPE_SUBMIT_INFO, nullptr, 0, nullptr, nullptr, 1, &mainCmd, 0, nullptr};
 			vkQueueSubmit(self->context.graphicQueue, 1, &submit, self->context.fences[id]);
 		}
 		VkPresentInfoKHR presentInfo {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR, nullptr, 1, &self->context.semaphores[id], 1, &VulkanMgr::instance->getSwapchain(), (uint32_t *) &id, nullptr};
@@ -917,4 +924,7 @@ void App::submitFrame(App *self, int id)
 				return;
 		}
 	}
+	self->context.waitFrameSync[1].stageMask = self->context.nextWaitStage;
+	self->context.signalFrameSync[1].stageMask = VK_PIPELINE_STAGE_2_LATE_FRAGMENT_TESTS_BIT_KHR;
+	self->context.nextWaitStage = VK_PIPELINE_STAGE_2_EARLY_FRAGMENT_TESTS_BIT_KHR;
 }

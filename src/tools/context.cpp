@@ -14,13 +14,6 @@ Context::~Context()
 {
     instance = nullptr;
     helper.reset();
-    for (auto &f : fences)
-        vkDestroyFence(VulkanMgr::instance->refDevice, f, nullptr);
-    for (auto &f : debugFences)
-        vkDestroyFence(VulkanMgr::instance->refDevice, f, nullptr);
-    for (auto &s : semaphores)
-        vkDestroySemaphore(VulkanMgr::instance->refDevice, s, nullptr);
-    vkDestroyCommandPool(VulkanMgr::instance->refDevice, cmdPool, nullptr);
     for (auto p : pipelineArray)
         delete[] p;
 }

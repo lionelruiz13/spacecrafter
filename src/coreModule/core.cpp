@@ -84,7 +84,6 @@ Core::Core(int width, int height, std::shared_ptr<Media> _media, std::shared_ptr
 	media->setProjector(projection);
 	// Set textures directory and suffix
 	s_texture::setTexDir(AppSettings::Instance()->getTextureDir() );
-	Texture::setTextureDir(AppSettings::Instance()->getTextureDir());
 	//set Shaders directory and suffix
 	Pipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );
 	ComputePipeline::setShaderDir(AppSettings::Instance()->getShaderDir() );

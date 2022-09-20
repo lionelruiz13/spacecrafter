@@ -783,6 +783,8 @@ double HipStarMgr::draw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj
 	context.frame[context.frameIdx]->toExecute(cmd, PASS_BACKGROUND);
 	this->drawStarName(prj);
 	context.starUsed[context.frameIdx] = this;
+	context.waitFrameSync[1].stageMask |= VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR;
+	context.signalFrameSync[1].stageMask |= VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT_KHR;
 	drawIdx = !drawIdx;
 	return 0.;
 }
@@ -797,14 +799,14 @@ void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd)
 			pipelineStarsClear->bind(cmd);
 			break;
 		case STAR_CLEAR:
-			syncClear->dstDependency(cmd);
-			syncClear->resetDependency(cmd, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR);
+			// syncClear->dstDependency(cmd);
+			// syncClear->resetDependency(cmd, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR);
 			renderPassClear->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
 			pipelineStarsClear->bind(cmd);
 			break;
 		case STAR_STORE:
-			syncReuse->dstDependency(cmd);
-			syncReuse->resetDependency(cmd, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR);
+			// syncReuse->dstDependency(cmd);
+			// syncReuse->resetDependency(cmd, VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR);
 			renderPassReuse->begin(0, cmd); // 0 is the index of the single FrameMgr created from this renderPass
 			pipelineStarsReuse->bind(cmd);
 			break;
@@ -819,16 +821,16 @@ void HipStarMgr::updateFramebuffer(VkCommandBuffer cmd)
 
 void HipStarMgr::syncFramebuffer(VkCommandBuffer cmd)
 {
-	switch (nextSync) {
-		case STAR_UNINITIALIZED:
-			break;
-		case STAR_CLEAR:
-			syncClear->srcDependency(cmd);
-			break;
-		case STAR_STORE:
-			syncReuse->srcDependency(cmd);
-			break;
-	}
+	// switch (nextSync) {
+	// 	case STAR_UNINITIALIZED:
+	// 		break;
+	// 	case STAR_CLEAR:
+	// 		syncClear->srcDependency(cmd);
+	// 		break;
+	// 	case STAR_STORE:
+	// 		syncReuse->srcDependency(cmd);
+	// 		break;
+	// }
 }
 
 void HipStarMgr::drawStarName( Projector* prj )
