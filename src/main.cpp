@@ -165,7 +165,8 @@ static bool is_lock_file(std::string lock_file)
 
 static void remove_lock_file(std::string lock_file)
 {
-	if (std::filesystem::remove(lock_file))
+	std::error_code ec;
+	if (std::filesystem::remove(lock_file, ec) && !ec)
 		cLog::get()->write("File file.lock successfully deleted",  LOG_TYPE::L_INFO);
 	else
 		cLog::get()->write("Error deleting file.lock",  LOG_TYPE::L_ERROR);
