@@ -329,8 +329,10 @@ void App::initVulkan(InitParser &conf)
 		context.frame.back()->build(context.graphicFamily->id, true, true);
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
 	}
+	bool signalFence = !vkmgr.getSwapchainView().empty();
 	for (int i = 0; i < 3; ++i) {
-		context.fences[i] = context.collector->createFence(!vkmgr.getSwapchainView().empty(), "Frame " + std::to_string(i));
+		context.fences[i] = context.collector->createFence(signalFence, "Frame " + std::to_string(i));
+		signalFence = true;
 		context.semaphores[i] = context.collector->createSemaphore("Acquire " + std::to_string(i));
 		context.semaphores[i + 3] = context.collector->createSemaphore("Present " + std::to_string(i));
 	}
@@ -376,9 +378,6 @@ void App::finalizeInitVulkan(InitParser &conf)
 		if (multiColorID != colorID)
 			context.frame.back()->bind(multiColorID, *multisampleImage[i]);
 		context.frame.back()->build(context.graphicFamily->id, true, true);
-		context.fences[i] = context.collector->createFence(true, "Frame " + std::to_string(i));
-		context.semaphores[i] = context.collector->createSemaphore("Acquire " + std::to_string(i));
-		context.semaphores[i + 3] = context.collector->createSemaphore("Present " + std::to_string(i));
 		context.graphicTransferCmd[i] = context.frame.back()->createMain();
 	}
 	context.helper = std::make_unique<DrawHelper>();
