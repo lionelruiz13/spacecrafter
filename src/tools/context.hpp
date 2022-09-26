@@ -79,7 +79,7 @@ public:
     // Last synchronization value of the timeline semaphore
     uint64_t syncPoint = 0;
     // Semaphore synchronization - sync from current frame to next frame
-    VkPipelineStageFlags2KHR nextWaitStage;
+    VkPipelineStageFlags2KHR nextWaitStage = 0;
     // Add copy from staging buffer to a buffer
     std::unique_ptr<Set> uboSet;
     // For secondary commands
