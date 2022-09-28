@@ -1592,6 +1592,60 @@ bool Core::getIsTimeNow(void) const
 	return previousResult;
 }
 
+//set name as number for selected_object
+bool Core::setSelectedBodyName(Object selected_object)
+{
+	std::string object_name = selected_object.getEnglishName();
+	if (object_name == "Sun")
+		selected_body_name = 0;
+	else if (object_name == "Mercury")
+		selected_body_name = 100;
+	else if (object_name == "Venus")
+		selected_body_name = 200;
+	else if (object_name == "Earth")
+		selected_body_name = 300;
+	else if (object_name == "Moon")
+		selected_body_name = 301;
+	else if (object_name == "Mars")
+		selected_body_name = 400;
+	else if (object_name == "Phobos")
+		selected_body_name = 401;
+	else if (object_name == "Deimos")
+		selected_body_name = 402;
+	else if (object_name == "Jupiter")
+		selected_body_name = 500;
+	else if (object_name == "Io")
+		selected_body_name = 501;
+	else if (object_name == "Europa")
+		selected_body_name = 502;
+	else if (object_name == "Ganymed")
+		selected_body_name = 503;
+	else if (object_name == "Callisto")
+		selected_body_name = 504;
+	else if (object_name == "Satun")
+		selected_body_name = 600;
+	else if (object_name == "Tethys")
+		selected_body_name = 601;
+	else if (object_name == "Rhea")
+		selected_body_name = 602;
+	else if (object_name == "Dione")
+		selected_body_name = 603;
+	else if (object_name == "Titan")
+		selected_body_name = 604;
+	else if (object_name == "Uranus")
+		selected_body_name = 700;
+	else if (object_name == "Neptune")
+		selected_body_name = 800;
+	else if (object_name == "Triton")
+		selected_body_name = 801;
+	else if (object_name == "Pluto")
+		selected_body_name = 900;
+	else if (object_name == "Charon")
+		selected_body_name = 901;
+	else
+		selected_body_name = 999;
+}
+
 //! Select passed object
 //! @return true if the object was selected (false if the same was already selected)
 bool Core::selectObject(const Object &obj)
@@ -1610,6 +1664,7 @@ bool Core::selectObject(const Object &obj)
 
 		// If an object has been found
 		if (selected_object) {
+			setSelectedBodyName(selected_object);
 			// If an object was selected keep the earth following
 			if (getFlagTracking()) navigation->setFlagLockEquPos(1);
 			setFlagTracking(false);

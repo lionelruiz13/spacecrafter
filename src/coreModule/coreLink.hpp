@@ -565,6 +565,9 @@ public:
 	double getDateHour() const;
 	double getDateMinute() const;
 
+	//return body selected
+	double getBodySelected() const;
+
 	//! Set planets viewer scaling factor
 	void planetSetSizeScale(std::string name, float f);
 

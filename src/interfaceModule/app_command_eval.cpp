@@ -37,6 +37,7 @@ void AppCommandEval::initReservedVariable()
 	m_reservedVar[ACI_RW_DATE_HOUR]=SC_RESERVED_VAR::DATE_HOUR;
 	m_reservedVar[ACI_RW_DATE_MINUTE]=SC_RESERVED_VAR::DATE_MINUTE;
 	m_reservedVar[ACI_RW_HEADING]=SC_RESERVED_VAR::HEADING;
+	m_reservedVar[ACI_RW_BODY_SELECTED]=SC_RESERVED_VAR::BODY_SELECTED;
 
 	// for conivence, the map inverse
 	for (const auto& [key, val] : m_reservedVar)
@@ -270,6 +271,8 @@ double AppCommandEval::evalReservedVariable(const std::string &var)
 			return coreLink->getDateHour();
 		case SC_RESERVED_VAR::DATE_MINUTE:
 			return coreLink->getDateMinute();
+		case SC_RESERVED_VAR::BODY_SELECTED:
+			return coreLink->getBodySelected();
 		default:
 			//std::cout << "Unknown reserved variable " << var << ". Default 0.0 is returned." << std::endl;
 			cLog::get()->write("Unknown reserved variable " + var +". Default 0.0 is returned.", LOG_TYPE::L_WARNING , LOG_FILE::SCRIPT);
@@ -290,6 +293,7 @@ void AppCommandEval::setReservedVariable(const std::string &var, double value)
 		case  SC_RESERVED_VAR::HEADING :
 			coreLink->setHeading(value); break;
 		case SC_RESERVED_VAR::SUN_ALTITUDE :
+		case SC_RESERVED_VAR::BODY_SELECTED :
 		case SC_RESERVED_VAR::SUN_AZIMUTH :
 		case SC_RESERVED_VAR::DATE_YEAR :
 		case SC_RESERVED_VAR::DATE_MONTH :

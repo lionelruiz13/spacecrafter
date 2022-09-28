@@ -1181,6 +1181,10 @@ double CoreLink::getSelectedDE() const {
 	return core->ssystemFactory->getSelectedDE(core->navigation);
 }
 
+double CoreLink::getBodySelected() const {
+	return double(core->getSelectedBodyName());
+}
+
 void CoreLink::planetSetSizeScale(std::string name, float f) {
 	core->ssystemFactory->setPlanetSizeScale(name, f);
 }
