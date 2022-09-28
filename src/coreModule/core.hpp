@@ -459,7 +459,7 @@ private:
 	bool selectObject(const Object &obj);
 
 	//set name as number for selected_object
-	bool setSelectedBodyName(Object selected_object);
+	bool setSelectedBodyName(const Object &selected_object);
 
 	//! Find any kind of object by the name
 	Object searchByNameI18n(const std::string &name) const;

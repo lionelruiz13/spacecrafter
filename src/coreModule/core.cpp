@@ -1593,7 +1593,7 @@ bool Core::getIsTimeNow(void) const
 }
 
 //set name as number for selected_object
-bool Core::setSelectedBodyName(Object selected_object)
+bool Core::setSelectedBodyName(const Object &selected_object)
 {
 	std::string object_name = selected_object.getEnglishName();
 	if (object_name == "Sun")
@@ -1664,7 +1664,7 @@ bool Core::selectObject(const Object &obj)
 
 		// If an object has been found
 		if (selected_object) {
-			setSelectedBodyName(selected_object);
+			// setSelectedBodyName(selected_object);
 			// If an object was selected keep the earth following
 			if (getFlagTracking()) navigation->setFlagLockEquPos(1);
 			setFlagTracking(false);

@@ -30,6 +30,8 @@
 class ObjectUninitialized : public ObjectBase {
 public:
 	ObjectUninitialized() {}
+
+	static ObjectUninitialized instance;
 private:
 	std::string getInfoString(const Navigator *nav) const
 	{
@@ -55,7 +57,7 @@ private:
 	}
 	std::string getEnglishName() const
 	{
-		return "";
+		return {};
 	}
 	std::string getNameI18n() const
 	{
@@ -79,7 +81,7 @@ private:
 	//~ }
 };
 
-static ObjectUninitialized uninitialized_object;
+ObjectUninitialized ObjectUninitialized::instance;
 
 Object::~Object()
 {
@@ -87,13 +89,13 @@ Object::~Object()
 }
 
 Object::Object()
-	:rep(&uninitialized_object)
+	:rep(&ObjectUninitialized::instance)
 {
 	rep->retain();
 }
 
 Object::Object(ObjectBase *r)
-	:rep(r?r:&uninitialized_object)
+	:rep(r?r:&ObjectUninitialized::instance)
 {
 	rep->retain();
 }
@@ -119,14 +121,14 @@ const Object &Object::operator=(ObjectBase* const r)
 		rep = r;
 		rep->retain();
 	} else
-		rep = &uninitialized_object;
+		rep = &ObjectUninitialized::instance;
 
 	return *this;
 }
 
 Object::operator bool() const
 {
-	return (rep != &uninitialized_object);
+	return (rep != &ObjectUninitialized::instance);
 }
 
 bool Object::operator==(const Object &o) const
