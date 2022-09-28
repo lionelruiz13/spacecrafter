@@ -126,7 +126,7 @@ void Oort::draw(double distance, const Navigator *nav) noexcept
 	if ((distance < 1e13) || (distance > 1.E16))
 		return;
 
-	intensity = (distance > 1.E12) ? (1.-0.0001*(distance/1.E12)) : std::min(1.0, (distance/1.e13 - 1));
+	intensity = (distance > 1.E14) ? (1.-0.01*(distance/1.E14)) : std::min(1.0, (distance/1.E13 - 1));
 	//~ printf("distance : %f\n", distance);
 	//~ printf("intensity : %f\n", intensity);
 
