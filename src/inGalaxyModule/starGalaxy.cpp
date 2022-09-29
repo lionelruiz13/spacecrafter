@@ -220,7 +220,7 @@ void StarGalaxy::loadCatalog(const std::string &filename)
     std::ifstream file(filename);
 	std::vector<VertexEntry> tmp;
     float x, y, z;
-	int colorID; // A "random" initial value
+	int colorID=0; // A "random" initial value
     while (file) {
         int t = -1;
 		file >> t >> x >> y >> z;

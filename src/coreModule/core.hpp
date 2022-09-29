@@ -459,7 +459,7 @@ private:
 	bool selectObject(const Object &obj);
 
 	//set name as number for selected_object
-	bool setSelectedBodyName(const Object &selected_object);
+	void setSelectedBodyName(const Object &selected_object);
 
 	//! Find any kind of object by the name
 	Object searchByNameI18n(const std::string &name) const;
@@ -555,7 +555,7 @@ private:
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
-	int selected_body_name=0;
+	int selected_body_name;
 
 	InitialValue initialvalue;			// variable used to remember various string indicators in use
 };
