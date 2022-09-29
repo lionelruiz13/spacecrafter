@@ -1664,7 +1664,7 @@ bool Core::selectObject(const Object &obj)
 
 		// If an object has been found
 		if (selected_object) {
-			setSelectedBodyName(selected_object);
+			//setSelectedBodyName(selected_object);
 			// If an object was selected keep the earth following
 			if (getFlagTracking()) navigation->setFlagLockEquPos(1);
 			setFlagTracking(false);
