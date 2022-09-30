@@ -483,7 +483,7 @@ private:
 	bool flagStarTwinkle;
 	float twinkleAmount;
 	bool gravityLabel;
-	bool isolateSelected;
+	bool isolateSelected=false;
 	std::map<std::string, bool> selected_star;
 	std::vector<int> selected_stars;
 

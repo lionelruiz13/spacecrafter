@@ -555,7 +555,7 @@ private:
 	Vec3d InitViewPos;					// Default viewing direction
 	float auto_move_duration;			// Duration of movement for the auto move to a selected objectin seconds
 	float lightPollutionLimitingMagnitude;  // Defined naked eye limiting magnitude (due to light pollution)
-	int selected_body_name;
+	int selected_body_name=999;
 
 	InitialValue initialvalue;			// variable used to remember various string indicators in use
 };

@@ -185,6 +185,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 			// potentially use the next depth bucket
 			if (++dbiter == listBuckets.end()) {
 				--listBuckets.end();
+				--dbiter;
 				// now closer than the first depth buffer
 			} else {
 				currentBucket--;
