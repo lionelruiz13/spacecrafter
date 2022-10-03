@@ -78,15 +78,15 @@ SphereObjL::SphereObjL()
 	auto &context = *Context::instance;
 	SubBuffer indexLow, indexMedium, indexHigh, tmpBuffer;
 	unsigned int indexCountLow, indexCountMedium, indexCountHigh, tmp;
-	unsigned long *src, *dst;
+	uint64_t *src, *dst;
 	// Construct sphere and upload indices
 
 	construct(SUBDIVISE_LOW_RES);
 	indexCountLow = triangles.size() * 3;
 	indexLow = context.indexBufferMgr->acquireBuffer(indexCountLow * sizeof(int));
 	tmp = indexCountLow / 2;
-	src = (unsigned long *) triangles.data();
-	dst = (unsigned long *) context.transfer->planCopy(indexLow);
+	src = (uint64_t *) triangles.data();
+	dst = (uint64_t *) context.transfer->planCopy(indexLow);
 	while (tmp--)
 		*(dst++) = *(src++);
 
@@ -95,8 +95,8 @@ SphereObjL::SphereObjL()
 	indexCountMedium = triangles.size() * 3;
 	indexMedium = context.indexBufferMgr->acquireBuffer(indexCountMedium * sizeof(int));
 	tmp = indexCountMedium / 2;
-	src = (unsigned long *) triangles.data();
-	dst = (unsigned long *) context.transfer->planCopy(indexMedium);
+	src = (uint64_t *) triangles.data();
+	dst = (uint64_t *) context.transfer->planCopy(indexMedium);
 	while (tmp--)
 		*(dst++) = *(src++);
 
@@ -105,8 +105,8 @@ SphereObjL::SphereObjL()
 	indexCountHigh = triangles.size() * 3;
 	indexHigh = context.indexBufferMgr->acquireBuffer(indexCountHigh * sizeof(int));
 	tmp = indexCountHigh / 2;
-	src = (unsigned long *) triangles.data();
-	dst = (unsigned long *) context.transfer->planCopy(indexHigh);
+	src = (uint64_t *) triangles.data();
+	dst = (uint64_t *) context.transfer->planCopy(indexHigh);
 	while (tmp--)
 		*(dst++) = *(src++);
 
@@ -114,8 +114,8 @@ SphereObjL::SphereObjL()
 	auto vertex = std::shared_ptr<VertexBuffer>(context.ojmVertexArray->newBuffer(0, points.size(), context.ojmBufferMgr.get()));
 	tmpBuffer = context.stagingMgr->acquireBuffer(vertex->get().size);
 	tmp = points.size() * sizeof(OjmPoint) / sizeof(*dst);
-	dst = (unsigned long *) context.stagingMgr->getPtr(tmpBuffer);
-	src = (unsigned long *) points.data();
+	dst = (uint64_t *) context.stagingMgr->getPtr(tmpBuffer);
+	src = (uint64_t *) points.data();
 	while (tmp--)
 		*(dst++) = *(src++);
 	context.transfer->planCopyBetween(tmpBuffer, vertex->get());

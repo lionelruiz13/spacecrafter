@@ -75,7 +75,7 @@ typedef union {
         unsigned char flag;
         float color;
         Set *set;
-        long *data; // all 4 vertices
+        int64_t *data; // all 4 vertices
     } nebula;
     s_sigpass sigPass;
     s_submit submit;

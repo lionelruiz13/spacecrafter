@@ -60,7 +60,7 @@ WorkQueue<s_texture::bigTexRecap *, 31> s_texture::bigTextureQueue;
 PushQueue<std::shared_ptr<s_texture::texRecap>, 2047> s_texture::textureQueue;
 PushQueue<std::unique_ptr<Texture>, 2047> s_texture::droppedTextureQueue;
 PushQueue<VkImage, 2047> s_texture::bigTextureReady;
-std::atomic<long> s_texture::currentAllocation(0); // Allocations planned but not done yet
+std::atomic<int64_t> s_texture::currentAllocation(0); // Allocations planned but not done yet
 bool s_texture::loadInLowResolution = false;
 unsigned int s_texture::lowResMax = MAX_LOW_RES;
 unsigned int s_texture::minifyMax = 4*1024*1024; // Maximal size of texture preview
@@ -370,10 +370,10 @@ float s_texture::getAverageLuminance() const
 {
 	double sum = 0;
 	uint8_t *p;
-	const long size = static_cast<long>(texture->width)*static_cast<long>(texture->height);
+	const int64_t size = static_cast<int64_t>(texture->width)*static_cast<int64_t>(texture->height);
 	if (texture->texture->isOnCPU()) {
 		p = (uint8_t *) texture->texture->acquireStagingMemoryPtr();
-		for (long i = 0; i < size; ++i)
+		for (int64_t i = 0; i < size; ++i)
 			sum += p[i * 4];
 		// texture->texture->releaseStagingMemoryPtr();
 	} else {
@@ -383,7 +383,7 @@ float s_texture::getAverageLuminance() const
 			cLog::get()->write("Failed to compute average luminance for " + textureName, LOG_TYPE::L_ERROR);
 			return (0);
 		}
-		for (long i = 0; i < size; ++i)
+		for (int64_t i = 0; i < size; ++i)
 			sum += p[i * 4];
 		stbi_image_free(p);
 	}
@@ -758,7 +758,7 @@ void s_texture::bigTextureLoader()
         stbi_uc *finalDst = (stbi_uc *) context.asyncTexStagingMgr->getPtr(buffer);
 
         auto &bigData = cache[Section::BIG_TEXTURE][getCacheEntryName(tex->texName)].get<BigTextureCache>();
-        long datetime;
+        int64_t datetime;
         try {
             datetime = std::chrono::duration_cast<std::chrono::seconds>(std::filesystem::last_write_time(tex->texName).time_since_epoch()).count();
         } catch (...) {
@@ -787,11 +787,11 @@ void s_texture::bigTextureLoader()
             bigData.height = realHeight;
             {
                 // Invert Y axis by flipping pixels
-                long *src = (long *) data;
-                long *dst;
-                long tmp;
+                int64_t *src = (int64_t *) data;
+                int64_t *dst;
+                int64_t tmp;
                 // Only work for textures with pair height and width
-                const long lineSize = realWidth * _nbChannels / sizeof(long);
+                const int64_t lineSize = realWidth * _nbChannels / sizeof(int64_t);
                 int j = realHeight / 2;
                 while (j--) {
                     dst = src + (j * 2 + 1) * lineSize;
@@ -996,8 +996,8 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
             layerWidth /= 2;
         }
         fullSize /= 8; // Assume output is a multiple of 8 pixels.
-        long *src = (long *) srcBegin;
-        long *dst = (long *) data;
+        int64_t *src = (int64_t *) srcBegin;
+        int64_t *dst = (int64_t *) data;
         while (fullSize--)
             *(dst++) = *(src++);
         stbi_image_free(pixels);
@@ -1038,8 +1038,8 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
                 layerWidth /= 2;
             }
             fullSize /= 8; // Assume output is a multiple of 8 pixels.
-            long *src = (long *) srcBegin;
-            long *dst = (long *) data;
+            int64_t *src = (int64_t *) srcBegin;
+            int64_t *dst = (int64_t *) data;
             while (fullSize--)
                 *(dst++) = *(src++);
             stbi_image_free(pixels);
@@ -1101,11 +1101,11 @@ void s_texture::quickSaveCache(CacheSaveData &info, void *firstLayer, void *mipm
             tmp -= info.cache->rawSize;
             // This function inverse the Y axis while saving the image, inverse it before this happened
             {
-                long *src = (long *) unified;
-                long tmp;
+                int64_t *src = (int64_t *) unified;
+                int64_t tmp;
                 // Only work for textures with pair width and 4 channels, or width multiple of 8
-                const long lineSize = width * nbChannels / sizeof(long);
-                long *dst = src + (vheight - 1) * lineSize;
+                const int64_t lineSize = width * nbChannels / sizeof(int64_t);
+                int64_t *dst = src + (vheight - 1) * lineSize;
                 int j = vheight / 2;
                 while (j--) {
                     int i = lineSize;

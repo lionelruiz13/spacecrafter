@@ -246,7 +246,7 @@ bool StarManager::loadStarCatalog(const std::string &fileName)
 	float starX, starY, starZ;
 	float pmRA, pmDE, mag, pc;
 	int B_V;
-	long unsigned int nbrH=0, nbrC=0, nbrS=0;
+	uint64_t nbrH=0, nbrC=0, nbrS=0;
 	unsigned int numberRead = 0;
 
 	std::string line; // variable which will contain each line of the file
@@ -344,7 +344,7 @@ bool StarManager::loadStarBinCatalog(const std::string &fileName)
 	float starX, starY, starZ;
 	float pmRA, pmDE, mag, pc;
 	int B_V;
-	long unsigned int nbrH=0, nbrC=0, nbrS=0;
+	uint64_t nbrH=0, nbrC=0, nbrS=0;
 
 	std::string line; // variable which will contain each line of the file
 	//std::cout << "Reading the catalog "  << fileName << std::endl;
@@ -469,7 +469,7 @@ bool StarManager::saveStarBinCatalog(const std::string &fileName)
 		return false;
 	}
 
-	long unsigned  int nbrH=0, nbrC=0, nbrS=0;
+	uint64_t nbrH=0, nbrC=0, nbrS=0;
 
 	for(std::vector<HyperCube*>::iterator hc = hyperCubeList.begin(); hc!= hyperCubeList.end(); hc++) {
 

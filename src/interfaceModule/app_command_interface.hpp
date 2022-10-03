@@ -61,7 +61,7 @@ public:
 	int terminateScript();
 	void deleteVar();
 	int executeCommand(const std::string &commandline);
-	int executeCommand(const std::string &command, unsigned long int &wait);
+	int executeCommand(const std::string &command, uint64_t &wait);
 
 	void initInterfaces(std::shared_ptr<ScriptInterface> _scriptInterface, std::shared_ptr<SpaceDate> _spaceDate, std::shared_ptr<SaveScreenInterface> _saveScreenInterface);
 
@@ -75,7 +75,7 @@ protected:
 	int commandModeJump();
 	int commandBodyTrace();
 	int commandBody();
-	int commandCamera(unsigned long int &wait);
+	int commandCamera(uint64_t &wait);
 	int commandClear();
 	int commandColor();
 	int commandComment();
@@ -112,7 +112,7 @@ protected:
 	int commandPosition();
 	int commandPrint();
 	int commandRandom();
-	int commandScript(unsigned long int &wait);
+	int commandScript(uint64_t &wait);
 	int commandSearch();
 	int commandSelect();
 	int commandSet();
@@ -125,8 +125,8 @@ protected:
 	int commandText();
 	int commandTimerate();
 	int commandUncomment();
-	int commandWait(unsigned long int &wait);
-	int commandZoom(unsigned long int &wait);
+	int commandWait(uint64_t &wait);
+	int commandZoom(uint64_t &wait);
 
 private:
 	FLAG_VALUES convertStrToFlagValues(const std::string &value);

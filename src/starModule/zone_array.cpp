@@ -411,15 +411,15 @@ SpecialZoneArray<Star>::SpecialZoneArray(FILE *f,bool byte_swap,bool use_mmap, c
 			nr_of_zones = 0;
 		} else {
 			if (use_mmap) {
-				const long start_in_file = ftell(f);
+				const int64_t start_in_file = ftell(f);
 				#ifdef __linux__
-				const long page_size = sysconf(_SC_PAGE_SIZE);
+				const int64_t page_size = sysconf(_SC_PAGE_SIZE);
 				#else
 				SYSTEM_INFO system_info;
 				GetSystemInfo(&system_info);
-				const long page_size = system_info.dwAllocationGranularity;
+				const int64_t page_size = system_info.dwAllocationGranularity;
 				#endif /* LINUX */
-				const long mmap_offset = start_in_file % page_size;
+				const int64_t mmap_offset = start_in_file % page_size;
 				#ifdef __linux__
 				mmap_start = mmap(0,mmap_offset+sizeof(Star)*nr_of_stars,PROT_READ, MAP_PRIVATE | MAP_NORESERVE, fileno(f),start_in_file-mmap_offset);
 				if (mmap_start == MAP_FAILED) {

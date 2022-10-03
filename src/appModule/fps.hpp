@@ -60,14 +60,14 @@ public:
 	};
 
 	//! returns the number of frames displayed since the launch of the software
-	unsigned long int getElapsedFrame() const {
+	uint64_t getElapsedFrame() const {
 		return numberFrames;
 	}
 
 	//! adds a frame
 	void addFrame();
 
-	//! returns the duration of a loop 
+	//! returns the duration of a loop
 	unsigned int getDeltaTime() const;
 
 
@@ -84,7 +84,7 @@ public:
 	//! switches to video recording mode
 	void selectVideoFps();
 
-	//! switches to normal mode 
+	//! switches to normal mode
 	void selectMaxFps();
 
 	//! Takes a time measurement

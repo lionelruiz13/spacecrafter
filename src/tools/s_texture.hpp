@@ -157,7 +157,7 @@ private:
 
 	struct texRecap {
 		~texRecap();
-		unsigned long int size;
+		uint64_t size;
 		int width;
 		int height;
 		int depth;
@@ -186,7 +186,7 @@ private:
 	};
 
 	struct BigTextureCache {
-		long datetime;
+		int64_t datetime;
 		int width;
 		int height;
 		unsigned int jpegSize; // Size of the jpeg portion of the image
@@ -232,7 +232,7 @@ private:
 	static PushQueue<std::shared_ptr<texRecap>, 2047> textureQueue;
 	static PushQueue<std::unique_ptr<Texture>, 2047> droppedTextureQueue;
 	static PushQueue<VkImage, 2047> bigTextureReady; // Read textures ready for use
-	static std::atomic<long> currentAllocation; // Allocations/frees planned but not done yet
+	static std::atomic<int64_t> currentAllocation; // Allocations/frees planned but not done yet
 	static std::vector<std::shared_ptr<texRecap>> releaseMemory[3];
 	static std::vector<std::unique_ptr<Texture>> releaseTexture[3];
 	static short releaseIdx;

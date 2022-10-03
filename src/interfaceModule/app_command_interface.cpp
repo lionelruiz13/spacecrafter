@@ -166,12 +166,12 @@ int AppCommandInterface::terminateScript()
 
 int AppCommandInterface::executeCommand(const std::string &commandline )
 {
-	unsigned long int delay;
+	uint64_t delay;
 	return executeCommand(commandline, delay);
 }
 
 //! @brief called by script executors and transform a std::string to instruction
-int AppCommandInterface::executeCommand(const std::string &_commandline, unsigned long int &wait)
+int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_t &wait)
 {
 	recordable = 1;  // true if command should be recorded (if recording)
 	debug_message.clear(); // initialise to empty
@@ -1091,7 +1091,7 @@ int AppCommandInterface::commandPlanetScale()
 	return executeCommandStatus();
 }
 
-int AppCommandInterface::commandWait(unsigned long int &wait)
+int AppCommandInterface::commandWait(uint64_t &wait)
 {
 
 	if (!args[W_DURATION].empty()) {
@@ -2120,7 +2120,7 @@ int AppCommandInterface::commandSkyCulture()
 	return executeCommandStatus();
 }
 
-int AppCommandInterface::commandScript(unsigned long int &wait)
+int AppCommandInterface::commandScript(uint64_t &wait)
 {
 	std::string argAction = args[W_ACTION];
 	std::string filen = args[W_FILENAME];
@@ -2529,7 +2529,7 @@ int AppCommandInterface::commandPosition()
 	return executeCommandStatus();
 }
 
-int AppCommandInterface::commandZoom(unsigned long int &wait)
+int AppCommandInterface::commandZoom(uint64_t &wait)
 {
 	double duration = Utility::strToPosDouble(args[W_DURATION]);
 	std::string argAuto = args[W_AUTO];
@@ -3232,7 +3232,7 @@ int AppCommandInterface::commandFont()
 	return executeCommandStatus();
 }
 
-int AppCommandInterface::commandCamera(unsigned long int &wait)
+int AppCommandInterface::commandCamera(uint64_t &wait)
 {
 	//stock management
 	std::string argAction = args[W_ACTION];
