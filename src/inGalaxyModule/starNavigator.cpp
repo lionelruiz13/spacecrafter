@@ -530,17 +530,23 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 	if (starViewer)
 		starViewer->draw(nav, prj, matrix);
 
+	if (!names_fader.getInterstate())
+		return;
+
 	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
 	
 	for (auto &s: listGlobalStarVisible) {
-		unsigned int max_mag_star_name = 0;
+		float max_mag_star_name = 1.5;
+		float x = -s->posXYZ[0];
+		float y = s->posXYZ[1];
+		float z = s->posXYZ[2];
+		float dist =sqrt((x-pos[0])*(x-pos[0]) + (y-pos[1])*(y-pos[1]) +(z-pos[2])*(z-pos[2]));
+		float mag_v = s->mag+5*(log10(dist)-1);
 
-		// not sure about these 2 lines 
-		if (names_fader.getInterstate()) max_mag_star_name = 70;
-		if (s->mag >= 0 && s->mag < max_mag_star_name) {
-
+		if (mag_v < max_mag_star_name) {
 			const std::string starname = std::to_string(s->HIP);
 			if (!starname.empty()) {
+				
 				// not the right position for the moment
 				Vec3f pos = matrix * s->posXYZ;
 
