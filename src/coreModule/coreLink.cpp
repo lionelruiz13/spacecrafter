@@ -693,6 +693,11 @@ void CoreLink::dsoNavOverrideCurrent(const std::string& tex_file, const std::str
 	core->dsoNav->overrideCurrent(tex_file, tex3d_file, depth);
 }
 
+//! Define the main volumetric object to draw
+void CoreLink::dsoNavSetupVolumetric(std::map<std::string, std::string> &args, int defaultColorDepth) {
+	core->dsoNav->setupVolumetric(args, defaultColorDepth);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Nebulae---------------------------
 ////////////////////////////////////////////////////////////////////////////////

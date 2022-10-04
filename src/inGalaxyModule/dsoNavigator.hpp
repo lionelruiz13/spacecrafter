@@ -38,6 +38,7 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 class s_texture;
+class VolumObj3D;
 
 class DsoNavigator: public NoCopy {
 public:
@@ -53,6 +54,8 @@ public:
     void insert(const Mat4f &model, int textureID, float unscale);
     //! Override dsoNavigator resources, allow loading another set of dso
     void overrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth);
+    //! Place a unique 3D volumetric object in the world
+    void setupVolumetric(std::map<std::string, std::string> &args, int colorDepth = 0);
 private:
     void build();
 
@@ -64,6 +67,7 @@ private:
     SubBuffer index;
     std::unique_ptr<s_texture> texture;
     std::unique_ptr<s_texture> colorTexture;
+    std::unique_ptr<VolumObj3D> volum3D;
     struct dso {
         Mat4f model;
         Mat4f invmodel;
@@ -81,6 +85,7 @@ private:
     VkCommandBuffer cmds[3];
     float texScale;
     bool needRebuild[3];
+    bool instanced = false;
 };
 
 #endif /* end of include guard: DSO_NAVIGATOR_HPP */

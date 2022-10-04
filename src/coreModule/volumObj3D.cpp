@@ -39,6 +39,8 @@ VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex
     auto &vkmgr = *VulkanMgr::instance;
     auto &context = *Context::instance;
 
+    if (tex_color_file.empty())
+        return;
     int mapDepth;
     {
         int tmpSize = tex_absorbtion_file.find_last_of('.');
@@ -86,6 +88,57 @@ VolumObj3D::~VolumObj3D()
     for (int i = 0; i < 3; ++i) {
         Context::instance->frame[i]->destroy(cmds[i]);
     }
+}
+
+void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::string &tex_absorbtion_file, int _rayPoints, bool z_reflection, int colorDepth, int absorbtionDepth)
+{
+    if (colorDepth == 0) {
+        int tmpSize = tex_color_file.find_last_of('.');
+        int tmpPos = tex_color_file.find_last_of('d', tmpSize) + 1;
+        colorDepth = std::stoi(tex_color_file.substr(tmpPos, tmpSize - tmpPos));
+    }
+    if (absorbtionDepth == 0) {
+        int tmpSize = tex_absorbtion_file.find_last_of('.');
+        int tmpPos = tex_absorbtion_file.find_last_of('d', tmpSize) + 1;
+        absorbtionDepth = std::stoi(tex_absorbtion_file.substr(tmpPos, tmpSize - tmpPos));
+    }
+    rayPoints = (_rayPoints) ? _rayPoints : 512;
+    ray->texCoef = Vec3f(1, 1, (z_reflection) ? 2 : 1);
+    ray->rayPoints = rayPoints;
+    inRay->zScale = (z_reflection) ? 2 : 1;
+    mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, absorbtionDepth, 1, 1);
+    colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1);
+
+    isLoaded = true;
+    int size;
+    mapTexture->getDimensions(size, size);
+    if (size < 8)
+        isLoaded = false;
+    colorTexture->getDimensions(size, size);
+    if (size < 8)
+        isLoaded = false;
+    if (isLoaded) {
+        set = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, shared->layout.get(), -1, true, true);
+        set->bindUniform(transform, 0);
+        set->bindUniform(ray, 1);
+        set->bindTexture(mapTexture->getTexture(), 2);
+        set->bindTexture(colorTexture->getTexture(), 3);
+        inSet = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, shared->inLayout.get(), -1, true, true);
+        inSet->bindUniform(inTransform, 0);
+        inSet->bindUniform(inRay, 1);
+        inSet->bindTexture(mapTexture->getTexture(), 2);
+        inSet->bindTexture(colorTexture->getTexture(), 3);
+    } else
+        cLog::get()->write("Volumetric texture missing", LOG_TYPE::L_WARNING);
+}
+
+void VolumObj3D::drop()
+{
+    isLoaded = false;
+    set.reset();
+    inSet.reset();
+    mapTexture.reset();
+    colorTexture.reset();
 }
 
 VolumObj3D::Shared::Shared()
@@ -184,7 +237,7 @@ void VolumObj3D::setModel(const Mat4f &_model, const Vec3f &scale)
     inTransform->invScale.v[2] = 1/scale.v[2]/rayPoints;
 }
 
-bool VolumObj3D::draw(const Navigator * nav, const Projector* prj)
+void VolumObj3D::draw(const Navigator * nav, const Projector* prj)
 {
     Mat4f mat = nav->getHelioToEyeMat().convert() * model;
     Vec3f camCoord = (mat.inverseUntranslated() * -mat.getTranslation()) / 2 + Vec3f(0.5f, 0.5f, 0.5f);
@@ -200,10 +253,8 @@ bool VolumObj3D::draw(const Navigator * nav, const Projector* prj)
     }
 
     Context &context = *Context::instance;
-    VkCommandBuffer cmd;
+    VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
     if (reClamp.lengthSquared() > 0.002) { // more than 5% outside range
-        return false;
-        cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
         transform->ModelViewMatrix = mat;
         transform->NormalMatrix = mat.inverseUntranslated();
         transform->clipping_fov = prj->getClippingFov();
@@ -215,7 +266,6 @@ bool VolumObj3D::draw(const Navigator * nav, const Projector* prj)
         vkCmdDrawIndexed(cmd, 3*2*6, 1, 0, 0, 0);
     } else {
         camCoord += reClamp;
-        cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j)
                 inTransform->ModelViewMatrix[i].v[j] = mat.r[i*4+j];
@@ -228,6 +278,40 @@ bool VolumObj3D::draw(const Navigator * nav, const Projector* prj)
         shared->obj->bind(cmd);
         shared->obj->draw(cmd, 1024);
     }
+    context.frame[context.frameIdx]->compile(cmd);
+    context.frame[context.frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
+}
+
+bool VolumObj3D::drawInside(const Navigator * nav, const Projector* prj)
+{
+    Mat4f mat = nav->getHelioToEyeMat().convert() * model;
+    Vec3f camCoord = (mat.inverseUntranslated() * -mat.getTranslation()) / 2 + Vec3f(0.5f, 0.5f, 0.5f);
+    Vec3f reClamp;
+    for (int i = 0; i < 3; ++i) {
+        if (camCoord.v[i] < 0) {
+            reClamp.v[i] = -camCoord.v[i];
+        } else if (camCoord.v[i] > 1) {
+            reClamp.v[i] = 1 - camCoord.v[i];
+        } else {
+            reClamp.v[i] = 0;
+        }
+    }
+    if (reClamp.lengthSquared() > 0.002) // more than 5% outside range
+        return false;
+
+    Context &context = *Context::instance;
+    VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+    camCoord += reClamp;
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j)
+            inTransform->ModelViewMatrix[i].v[j] = mat.r[i*4+j];
+    }
+    inTransform->fov = prj->getFov()*M_PI/360;
+    inRay->camCoord = camCoord;
+    shared->inPipeline->bind(cmd);
+    shared->inLayout->bindSet(cmd, *inSet);
+    shared->obj->bind(cmd);
+    shared->obj->draw(cmd, 1024);
     context.frame[context.frameIdx]->compile(cmd);
     context.frame[context.frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
     return true;

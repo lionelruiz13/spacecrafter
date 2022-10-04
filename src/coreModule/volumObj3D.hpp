@@ -42,9 +42,12 @@ public:
     Mat4f getModel() const {
         return model;
     }
-    bool draw(const Navigator * nav, const Projector* prj);
+    void draw(const Navigator * nav, const Projector* prj);
+    bool drawInside(const Navigator * nav, const Projector* prj);
     Mat4f drawExternal(const Navigator * nav, const Projector* prj);
     void recordVolumetricObject(VkCommandBuffer cmd);
+    void reconstruct(const std::string& tex_color_file, const std::string &tex_absorbtion_file, int _rayPoints = 0, bool z_reflection = false, int colorDepth = 0, int absorbtionDepth = 0);
+    void drop();
     bool loaded() const {return isLoaded;}
 private:
     struct Transform {
@@ -86,7 +89,7 @@ private:
     std::shared_ptr<Shared> shared;
     Mat4f model;
     int cmds[3] {-1, -1, -1};
-    const int rayPoints = 512;
+    int rayPoints = 512;
     bool isLoaded = false;
     static std::weak_ptr<Shared> refShared;
 };

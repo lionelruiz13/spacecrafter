@@ -106,7 +106,7 @@ void InUniverseModule::draw(int delta_time)
 			core->tully->build(core->volumGalaxy.get());
 			minAltToGoDown = 1.e8; // Reduce min altitude so we can go inside the volumetric galaxy
 		}
-		if (!core->volumGalaxy->draw(core->navigation, core->projection))
+		if (!core->volumGalaxy->drawInside(core->navigation, core->projection))
 			core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
 	} else {
 		if (core->tully->mustBuild())

@@ -1232,9 +1232,17 @@ int AppCommandInterface::commandDso3D()
 {
 	std::string argAction = args[W_ACTION];
 	if (argAction == W_LOAD) {
-		coreLink->dsoNavInsert(args);
+		if (args["color_tex"].empty())
+			coreLink->dsoNavInsert(args);
+		else
+			coreLink->dsoNavSetupVolumetric(args, 0);
 	} else if (argAction == W_RESTART) {
-		coreLink->dsoNavOverrideCurrent(args["color_tex"], args["alpha_tex"], std::stoi(args["depth"]));
+		if (args["maxobject"].empty() || args["maxobject"] == "1") {
+			if (args["color_depth"].empty())
+				args["color_depth"] = args["depth"]; // Not sure anyway
+			coreLink->dsoNavSetupVolumetric(args, 1);
+		} else
+			coreLink->dsoNavOverrideCurrent(args["color_tex"], args["alpha_tex"], std::stoi(args["depth"]));
 	} else {
 		debug_message = _("command 'dso3d' : unknown argument");
 	}

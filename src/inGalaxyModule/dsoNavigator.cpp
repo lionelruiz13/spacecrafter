@@ -21,7 +21,7 @@
  */
 
 #include "inGalaxyModule/dsoNavigator.hpp"
-
+#include "coreModule/volumObj3D.hpp"
 #include "EntityCore/Resource/Pipeline.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Resource/VertexArray.hpp"
@@ -102,6 +102,18 @@ DsoNavigator::~DsoNavigator() {}
 
 void DsoNavigator::overrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth)
 {
+    if (volum3D)
+        volum3D->drop();
+    texture.reset();
+    colorTexture.reset();
+    dsoData.clear();
+    dsoPos.clear();
+    set.reset();
+    instanceCount = 0; // Ensure rebuild will occur
+    if (tex_file.empty())
+        return;
+
+    instanced = true;
     auto &context = *Context::instance;
     texture = std::make_unique<s_texture>(tex3d_file, TEX_LOAD_TYPE_PNG_SOLID, true, 0, depth, 1, 2, true);
     colorTexture = std::make_unique<s_texture>(tex_file, TEX_LOAD_TYPE_PNG_SOLID);
@@ -114,18 +126,17 @@ void DsoNavigator::overrideCurrent(const std::string& tex_file, const std::strin
     pipeline->build("DsoNavigator", true);
 
     set = std::make_unique<Set>(*VulkanMgr::instance, *context.setMgr, layout.get(), -1, true, true);
-    uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+    if (!uModelViewMatrix)
+        uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
     set->bindUniform(uModelViewMatrix, 0);
-    uclipping_fov = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
+    if (!uclipping_fov)
+        uclipping_fov = std::make_unique<SharedBuffer<Vec3f>>(*context.uniformMgr);
     set->bindUniform(uclipping_fov, 1);
-    uCamRotToLocal = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
+    if (!uCamRotToLocal)
+        uCamRotToLocal = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
     set->bindUniform(uCamRotToLocal, 2);
     set->bindTexture(texture->getTexture(), 3);
     set->bindTexture(colorTexture->getTexture(), 4);
-
-    dsoData.clear();
-    dsoPos.clear();
-    instanceCount = 0; // Ensure rebuild will occur
 }
 
 void DsoNavigator::build()
@@ -233,17 +244,16 @@ void DsoNavigator::insert(const Vec3f &position, const Vec3f &yawPitchRoll, cons
 }
 
 #define EXTRACT(var, key) it = args.find(key); if (it != args.end()) var = std::stof(it->second)
+#define IEXTRACT(var, key) it = args.find(key); if (it != args.end()) var = std::stoi(it->second)
 
 void DsoNavigator::insert(std::map<std::string, std::string> &args)
 {
     Vec3f position;
-    Vec3f yawPitchRoll;
+    Vec3f yawPitchRoll(0, 0, 0);
     Vec3f shaping(1, 1, 1);
     float scaling = 1;
     int textureID = 0;
-    auto it = args.find("index");
-    if (it != args.end())
-        textureID = std::stoi(it->second);
+    auto IEXTRACT(textureID, "index");
     EXTRACT(position[0], "pos_x");
     EXTRACT(position[1], "pos_y");
     EXTRACT(position[2], "pos_z");
@@ -254,12 +264,50 @@ void DsoNavigator::insert(std::map<std::string, std::string> &args)
     EXTRACT(shaping[1], "yscale");
     EXTRACT(shaping[2], "zscale");
     EXTRACT(scaling, "scale");
-    insert(position, yawPitchRoll, shaping, scaling, textureID);
+    if (instanced) {
+        insert(position, yawPitchRoll, shaping, scaling, textureID);
+    } else {
+        volum3D->setModel(Mat4f::translation(position) * Mat4f::yawPitchRoll(yawPitchRoll[0], yawPitchRoll[1], yawPitchRoll[2]) * Mat4f::scaling(scaling), shaping);
+    }
+}
+
+void DsoNavigator::setupVolumetric(std::map<std::string, std::string> &args, int colorDepth)
+{
+    if (!volum3D)
+        volum3D = std::make_unique<VolumObj3D>("\0", "\0", false);
+    Vec3f position;
+    Vec3f yawPitchRoll(0, 0, 0);
+    Vec3f shaping(1, 1, 1);
+    float scaling = 1;
+    int absorbtionDepth = 0;
+    int rayPoints = 0;
+    bool z_reflection = false;
+    auto it = args.find("z_reflection");
+    if (it != args.end())
+        it->second == "true";
+    IEXTRACT(rayPoints, "rate");
+    EXTRACT(position[0], "pos_x");
+    EXTRACT(position[1], "pos_y");
+    EXTRACT(position[2], "pos_z");
+    EXTRACT(yawPitchRoll[0], "yaw");
+    EXTRACT(yawPitchRoll[1], "pitch");
+    EXTRACT(yawPitchRoll[2], "roll");
+    EXTRACT(shaping[0], "xscale");
+    EXTRACT(shaping[1], "yscale");
+    EXTRACT(shaping[2], "zscale");
+    EXTRACT(scaling, "scale");
+    IEXTRACT(absorbtionDepth, "depth");
+    IEXTRACT(colorDepth, "color_depth");
+    volum3D->reconstruct(args["color_tex"], args["alpha_tex"], rayPoints, z_reflection, colorDepth, absorbtionDepth);
+    volum3D->setModel(Mat4f::translation(position) * Mat4f::yawPitchRoll(yawPitchRoll[0], yawPitchRoll[1], yawPitchRoll[2]) * Mat4f::scaling(scaling), shaping);
 }
 
 void DsoNavigator::draw(const Navigator * nav, const Projector* prj)
 {
-    if (instanceCount == 0) return;
+    if (volum3D && volum3D->loaded())
+        volum3D->draw(nav, prj);
+    if (instanceCount == 0)
+        return;
     Context &context = *Context::instance;
     if (needRebuild[context.frameIdx])
         build();

@@ -276,6 +276,8 @@ public:
 	void dsoNavInsert(std::map<std::string, std::string> &args);
 	//! Override dsoNavigator resources, allow loading another set of volumetric dso
 	void dsoNavOverrideCurrent(const std::string& tex_file, const std::string &tex3d_file, int depth);
+	//! Define the main volumetric object to draw
+	void dsoNavSetupVolumetric(std::map<std::string, std::string> &args, int defaultColorDepth);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// FOV ( projection )
