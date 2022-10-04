@@ -396,47 +396,23 @@ std::string Utility::printAngleHMS(double angle, bool decimals)
 // }
 
 
-double Utility::strToDouble(const std::string& str)
+double Utility::strToDouble(const std::string& str, double default_value)
 {
-	if (str.empty()) return 0.;
-	double dbl;
-	std::istringstream dstr( str );
-
-	dstr >> dbl;
-	return dbl;
-}
-
-
-float Utility::strToFloat(const std::string& str)
-{
-	if (str.empty()) return 0.;
-	float dbl;
-	std::istringstream dstr( str );
-
-	dstr >> dbl;
-	return dbl;
+	try {
+		return std::stod(str);
+	} catch (...) {
+		return default_value;
+	}
 }
 
 
 float Utility::strToFloat(const std::string& str, float default_value)
 {
-	if (str.empty()) return default_value;
-	float dbl;
-	std::istringstream dstr( str );
-
-	dstr >> dbl;
-	return dbl;
-}
-
-
-double Utility::strToDouble(const std::string& str, double default_value)
-{
-	if (str.empty()) return default_value;
-	double dbl;
-	std::istringstream dstr( str );
-
-	dstr >> dbl;
-	return dbl;
+	try {
+		return std::stod(str);
+	} catch (...) {
+		return default_value;
+	}
 }
 
 

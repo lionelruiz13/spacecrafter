@@ -72,7 +72,7 @@ public:
 	void recordCommand(const std::string &commandline);
 
 	void setSelectedScript(std::string filename) {
-		SelectedScript = filename;
+		SelectedScript = filename + ".sts";
 	}
 
 	void setSelectedScriptDirectory(std::string path) {
@@ -92,7 +92,7 @@ public:
 
 private:
     std::shared_ptr<ScriptMgr> scriptMgr;
-   	
+
     // Script related
 	std::string SelectedScript;  //! script filename (without directory) selected in a UI to run when exit UI
 	std::string SelectedScriptDirectory;  //! script directory for same

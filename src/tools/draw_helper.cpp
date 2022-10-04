@@ -374,7 +374,7 @@ void DrawHelper::drawNebula(DrawData::s_nebula &data)
     layoutNebula->pushConstant(cmd, 0, &data.color);
     if (drawIdx + 4 > MAX_IDX)
         drawIdx = 0;
-    long *ptr = ((long *) Context::instance->multiVertexMgr->getPtr()) + drawIdx * 3;
+    int64_t *ptr = ((int64_t *) Context::instance->multiVertexMgr->getPtr()) + drawIdx * 3;
     for (int i = 0; i < 12; ++i)
         ptr[i] = data.data[i];
     vkCmdDraw(cmd, 4, 1, drawIdx, 0);

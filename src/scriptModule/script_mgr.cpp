@@ -277,7 +277,7 @@ void ScriptMgr::update(int delta_time)
 		while (wait_time==0) {
 			std::string comd;
 
-			unsigned long int wait=0;
+			uint64_t wait=0;
 
 			if (repeatLoop) {
 				//~ printf("loop tour %i\n", nbrLoop);

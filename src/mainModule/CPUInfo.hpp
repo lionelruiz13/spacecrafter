@@ -131,7 +131,7 @@ private:
 	std::stringstream oss[TAMPON_SIZE];	// output buffer for CPUfileLog
 	std::stringstream gpuOss;	 		// cGPU output character string
 	unsigned int nbThread=0;	// Variable containing the number of cores available on the machine
-	unsigned long int frame=0;	// Number of the analyzed frame
+	uint64_t frame=0;	// Number of the analyzed frame
 	unsigned char diff = 0;		// Difference counter before saving in CPUfileLog
 	bool isActived = true;		// Flag to close the thread
 	std::thread t;				// thread

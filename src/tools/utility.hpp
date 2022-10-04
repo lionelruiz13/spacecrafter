@@ -121,7 +121,7 @@ public:
 
 	//! returns true if the given path is absolute
 //    static bool isAbsolute(const std::string path);
-	//! indicates if file exist on system 
+	//! indicates if file exist on system
 //	static bool testFileExistence(const std::string& fileName);
 
 	static void spheToRect(double lng, double lat, Vec3d& v);
@@ -130,11 +130,9 @@ public:
 	static void rectToSphe(double *lng, double *lat, const Vec3d& v);
 	static void rectToSphe(float *lng, float *lat, const Vec3f& v);
 
-	static float strToFloat(const std::string& str);
-	static float strToFloat(const std::string& str, float default_value);
+	static float strToFloat(const std::string& str, float default_value = 0);
 
-	static double strToDouble(const std::string& str);
-	static double strToDouble(const std::string& str, double default_value);
+	static double strToDouble(const std::string& str, double default_value = 0);
 	// always positive
 	static double strToPosDouble(const std::string& str);
 	// true, 1 vs false, 0

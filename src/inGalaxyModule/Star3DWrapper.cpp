@@ -18,7 +18,6 @@
 #include <fstream>
 #include <cmath>
 #include <thread>
-#include <unistd.h>
 
 #include "inGalaxyModule/Star3DWrapper.hpp"
 

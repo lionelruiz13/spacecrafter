@@ -76,6 +76,8 @@ void UI::drawGravityUi(MODULE module)
 						os << " Alt: " << coreLink->observatoryGetAltitude()/1000 << " km";
 						break;
 					case IN_UNIVERSE:
+					  os << " Alt: " << 6.89e-5 * coreLink->observatoryGetAltitude() << " l.y.";
+					  break;
 					case IN_GALAXY:
 						os << " Alt: " << 2.26e-11 * coreLink->observatoryGetAltitude() << " l.y.";
 						break;

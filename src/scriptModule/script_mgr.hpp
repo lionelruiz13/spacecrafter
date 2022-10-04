@@ -160,7 +160,7 @@ private:
 	struct ScriptRecord {
 		std::fstream rec_file;	//!< the pointer to the file
 		bool recording;  		//!< is a script being recorded?
-		unsigned long int record_elapsed_time;  //!< ms since last command recorded
+		uint64_t record_elapsed_time;  //!< ms since last command recorded
 	};
 	ScriptRecord sR;
 
@@ -169,7 +169,7 @@ private:
 	std::shared_ptr<Media> media;
 	AppCommandInterface *commander;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
-	long int wait_time;     //!< ms until next script command should be executed
+	int64_t wait_time;     //!< ms until next script command should be executed
 	bool waitOnVideo; 			//!< if Video launch, say if script should wait on it.
 	bool isVideoPlayed;		 	//!< say if a video is played
 	std::string DataDir;

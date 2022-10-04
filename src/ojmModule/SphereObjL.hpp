@@ -63,7 +63,7 @@ public:
 	virtual ~SphereObjL();
 private:
 
-	inline unsigned int getIntersect(unsigned long p1, unsigned long p2) {
+	inline unsigned int getIntersect(uint64_t p1, uint64_t p2) {
 		if (p1 < p2) {
 			auto &p = lines[p2 | (p1 << 32)];
 			if (p)
@@ -93,7 +93,7 @@ private:
 	void subdivise();
 	std::vector<OjmPoint> points;
 	std::thread asyncConstructor;
-	std::map<unsigned long, unsigned int> lines;
+	std::map<uint64_t, unsigned int> lines;
 	std::vector<Triangle> triangles;
 	unsigned char subdiviseLevel = 0;
 };
