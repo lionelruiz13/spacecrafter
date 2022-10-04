@@ -548,7 +548,7 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 			if (!starname.empty()) {
 				
 				// not the right position for the moment
-				Vec3f pos = matrix * s->posXYZ;
+				Vec3f pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * s->posXYZ);
 
 				Vec4f Color(HipStarMgr::color_table[s->B_V][0]*0.75,
 							HipStarMgr::color_table[s->B_V][1]*0.75,
