@@ -197,7 +197,7 @@ void UI::init(const InitParser& conf)
 	coreLink->BodyOJMRemoveAll("in_universe");
 	coreLink->BodyOJMRemoveAll("in_galaxy");
 
-	coreLink->starLinesLoadData(scriptInterface->getScriptPath() + "asterism_all.fab");
+	coreLink->starLinesLoadData(scriptInterface->getScriptPath() + "internal/asterism_all.fab");
 
 	core->setInitialSkyCulture();
 	core->setInitialSkyLocale();
