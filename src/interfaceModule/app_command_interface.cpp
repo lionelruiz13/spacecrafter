@@ -1597,7 +1597,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 							coreLink->planetsSetScale(evalDouble(setValue));
 						break;
 		case SCD_NAMES::APP_STAR_TWINKLE_AMOUNT: coreLink->starSetTwinkleAmount(evalDouble(setValue)); break;
-		case SCD_NAMES::APP_STAR_FADER_DURATION: coreLink->starSetDuration(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_STAR_FADER_DURATION: coreLink->starSetDuration(evalDouble(setValue));coreLink->starNavSetDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_STAR_LIMITING_MAG: coreLink->starSetLimitingMag(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_TIME_ZONE: spaceDate->setCustomTimezone(setValue); break;
 		case SCD_NAMES::APP_AMBIENT_LIGHT:

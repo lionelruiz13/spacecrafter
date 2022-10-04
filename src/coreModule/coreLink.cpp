@@ -542,6 +542,10 @@ void CoreLink::starSetDuration(float f) {
 	return core->hip_stars->setFaderDuration(f);
 }
 
+void CoreLink::starNavSetDuration(float f) {
+	return core->starNav->setFaderDuration(f);
+}
+
 void CoreLink::starSetFlagName(bool b) {
 	core->hip_stars->setFlagNames(b);
 }

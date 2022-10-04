@@ -167,6 +167,8 @@ public:
 
 	void starSetDuration(float f);
 
+	void starNavSetDuration(float f);
+
 	void starSetFlagName(bool b);
 
 	bool starNavGetFlagName() const;
