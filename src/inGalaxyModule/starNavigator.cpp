@@ -24,7 +24,7 @@
 #include "inGalaxyModule/starManager.hpp"
 #include "tools/utility.hpp"
 #include "tools/s_texture.hpp"
-
+#include "tools/log.hpp"
 #include "tools/ThreadPool.hpp"
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
@@ -46,6 +46,11 @@ static float objectSizeLimit = 0;
 static float min_rmag = 0.346891f;
 static double fov= 180.;
 ////////////////////////////////////////////////////////////////////////////////
+
+std::map<int,std::string> StarNavigator::common_names_map;
+std::map<int,std::string> StarNavigator::common_names_map_i18n;
+std::map<std::string,int> StarNavigator::common_names_index;
+std::map<std::string,int> StarNavigator::common_names_index_i18n;
 
 // ===========================================================================
 //
@@ -128,6 +133,72 @@ void StarNavigator::loadData(const std::string &fileName, bool binaryData) noexc
 	setListGlobalStarVisible();
 }
 
+//! Load common names from file
+int StarNavigator::loadCommonNames(const std::string& commonNameFile)
+{
+	common_names_map.clear();
+	common_names_map_i18n.clear();
+	common_names_index.clear();
+	common_names_index_i18n.clear();
+
+	cLog::get()->write("Loading star names from " + commonNameFile);
+
+	FILE *cnFile=fopen(commonNameFile.c_str(),"r");
+	if (!cnFile) {
+		std::cerr << "Warning " << commonNameFile << " not found." << std::endl;
+		return 0;
+	}
+
+	// Assign names to the matching stars, now support spaces in names
+	char line[256];
+	while (fgets(line, sizeof(line), cnFile)) {
+		line[sizeof(line)-1] = '\0';
+		unsigned int hip;
+		if (sscanf(line,"%u",&hip)!=1) {
+			std::cerr << "ERROR: StarMgr::loadCommonNames(" << commonNameFile << "): bad line: \"" << line << '"' << std::endl;
+			return 0;
+		}
+		unsigned int i = 0;
+		while (line[i]!='|' && i<sizeof(line)-2) ++i;
+		i++;
+		std::string englishCommonName =  line+i;
+		// remove newline
+		englishCommonName.erase(englishCommonName.length()-1, 1);
+
+		// remove underscores
+		for (std::string::size_type j=0; j<englishCommonName.length(); ++j) {
+			if (englishCommonName[j]=='_') englishCommonName[j]=' ';
+		}
+		const std::string commonNameI18n = _(englishCommonName.c_str());
+		std::string commonNameI18n_cap = commonNameI18n;
+		transform(commonNameI18n.begin(), commonNameI18n.end(), commonNameI18n_cap.begin(), ::toupper);
+
+		common_names_map[hip] = englishCommonName;
+		common_names_index[englishCommonName] = hip;
+		common_names_map_i18n[hip] = commonNameI18n;
+		common_names_index_i18n[commonNameI18n_cap] = hip;
+
+	}
+	fclose(cnFile);
+	return 1;
+}
+
+//! Update i18 names from english names according to passed translator.
+//! The translation is done using gettext with translated strings defined in translations.h
+void StarNavigator::updateI18n(Translator& trans)
+{
+	common_names_map_i18n.clear();
+	common_names_index_i18n.clear();
+	for (std::map<int,std::string>::iterator it(common_names_map.begin()); it!=common_names_map.end(); it++) {
+		const int i = it->first;
+		const std::string t(trans.translateUTF8(it->second));
+		common_names_map_i18n[i] = t;
+		std::string t_cap = t;
+		transform(t.begin(), t.end(), t_cap.begin(), ::toupper);
+		common_names_index_i18n[t_cap] = i;
+	}
+}
+
 
 void StarNavigator::saveData(const std::string &fileName, bool binaryData) noexcept
 {
@@ -150,6 +221,10 @@ void StarNavigator::clearBuffer()
 
 starInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
 	return starMgr->findStar(HIPName);
+}
+
+std::string StarNavigator::getStarName(unsigned int HIPName) const {
+	return common_names_map_i18n[HIPName];
 }
 
 void StarNavigator::setListGlobalStarVisible()
@@ -549,7 +624,7 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scali
 		float mag_v = s->mag+5*(log10(dist)-1);
 
 		if (mag_v < max_mag_star_name) {
-			const std::string starname = std::to_string(s->HIP);
+			const std::string starname = getStarName(s->HIP);
 			if (!starname.empty()) {
 
 				// not the right position for the moment

@@ -27,6 +27,7 @@
 #include "tools/no_copy.hpp"
 #include "tools/object_type.hpp"
 #include "tools/object.hpp"
+#include "tools/translator.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
 #include "tools/fader.hpp"
@@ -70,6 +71,11 @@ public:
 	void loadOtherData(const std::string &fileName) noexcept;
 	void loadData(const std::string &fileName, bool binaryData) noexcept;
 
+	//! Loads common names for stars from a file.
+	//! Called when the SkyCulture is updated.
+	//! @param the path to a file containing the common names for bright stars.
+	int loadCommonNames(const std::string& commonNameFile);
+
 	void saveData(const std::string &fileName, bool binaryData) noexcept;
 	/*! /fn
 	 * \brief displays the stars of the catalog on the screen
@@ -93,6 +99,9 @@ public:
 		names_fader.update(deltaTime);
 		fader.update(deltaTime);
 	}
+
+	//! Translate text.
+	virtual void updateI18n(Translator& trans);
 
 	void setMagConverterMagShift(float s){
 		mag_shift = s;
@@ -160,6 +169,8 @@ public:
 	}
 
 	starInfo* getStarInfo(unsigned int HIPName) const;
+
+	std::string getStarName(unsigned int HIPName) const;
 
 	std::vector<ObjectBaseP> searchAround(Vec3d v, double limitFov, const Navigator *nav);
 
@@ -230,6 +241,11 @@ private:
 	float starScale = 0.9f; // <stars, star_scale>
 	float starMagScale = 0.9f; // <stars,star_mag_scale>
 	float starSizeLimit = 9.0; // <astro:star_size_limit>
+
+	static std::map<int, std::string> common_names_map;
+	static std::map<int, std::string> common_names_map_i18n;
+	static std::map<std::string, int> common_names_index;
+	static std::map<std::string, int> common_names_index_i18n;
 
 	bool needComputeRCMagTable = true;
 

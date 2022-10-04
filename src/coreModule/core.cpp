@@ -1108,11 +1108,13 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 
 	// Load culture star names in english
 	hip_stars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
+	starNav->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
 	// Turn on sci names for western culture only
 	hip_stars->setFlagSciNames( skyCultureDir.compare(0, 7, "western") ==0 );
 
 	// translate
 	hip_stars->updateI18n(skyTranslator);
+	starNav->updateI18n(skyTranslator);
 
 	return 1;
 }
@@ -1141,9 +1143,11 @@ bool Core::loadSkyCulture(const std::string& culturePath)
 
 	// Load culture star names in english
 	hip_stars->loadCommonNames(culturePath + "/star_names.fab");
+	starNav->loadCommonNames(culturePath + "/star_names.fab");
 
 	// translate
 	hip_stars->updateI18n(skyTranslator);
+	starNav->updateI18n(skyTranslator);
 
 	return 1;
 }
@@ -1169,6 +1173,7 @@ void Core::setSkyLanguage(const std::string& newSkyLocaleName)
 	ssystemFactory->translateNames(skyTranslator);
 	nebulas->translateNames(skyTranslator);
 	hip_stars->updateI18n(skyTranslator);
+	starNav->updateI18n(skyTranslator);
 }
 
 
