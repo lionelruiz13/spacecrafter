@@ -180,7 +180,7 @@ void StellarSystemModule::draw(int delta_time)
 	core->illuminates->draw(core->projection, core->navigation);
 	core->asterisms->draw(core->projection, core->navigation);
 	core->starLines->draw(core->navigation);
-    core->starNav->drawRaw(Mat4f::scaling(1e-6) * core->navigation->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180));
+    core->starNav->draw(core->navigation, core->projection, true);
 	// core->hip_stars->draw(core->geodesic_grid, core->tone_converter, core->projection, core->timeMgr.get(), core->observatory->getAltitude());
 	core->skyGridMgr->draw(core->projection);
 	core->skyLineMgr->draw(core->projection, core->navigation, core->timeMgr.get(), core->observatory.get());

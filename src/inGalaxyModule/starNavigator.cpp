@@ -516,7 +516,7 @@ void StarNavigator::drawStarName(const Projector* prj)
 	//std::cout << "Number of the names to print : " << starNameToDraw.size() << "\n";
 }
 
-void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
+void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scaling) noexcept
 {
 	if (starsFader==false)
 		return;
@@ -526,7 +526,11 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 
 	starNameToDraw.clear();
 
-	auto matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+	Mat4f matrix;
+	if (scaling)
+		matrix = Mat4f::scaling(1e-6) * nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
+	else
+		matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 	drawRaw(matrix);
 	if (starViewer)
 		starViewer->draw(nav, prj, matrix);
@@ -549,7 +553,12 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 			if (!starname.empty()) {
 
 				// not the right position for the moment
-				Vec3f pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * s->posXYZ);
+				Vec3f pos;
+				if (scaling)
+					// change this to apply the right scaling
+					pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)*(s->posXYZ*1E-6));
+				else
+					pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * s->posXYZ);
 				pos[0] = -pos[0];
 				Vec3d screenposd;
 				prj->projectEarthEqu(pos, screenposd);
