@@ -534,7 +534,7 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 		return;
 
 	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
-	
+
 	for (auto &s: listGlobalStarVisible) {
 		float max_mag_star_name = 1.5;
 		float x = -s->posXYZ[0];
@@ -546,15 +546,17 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 		if (mag_v < max_mag_star_name) {
 			const std::string starname = std::to_string(s->HIP);
 			if (!starname.empty()) {
-				
+
 				// not the right position for the moment
 				Vec3f pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * s->posXYZ);
+				Vec3d screenposd;
+				prj->projectEarthEqu(pos, screenposd);
 
 				Vec4f Color(HipStarMgr::color_table[s->B_V][0]*0.75,
 							HipStarMgr::color_table[s->B_V][1]*0.75,
 							HipStarMgr::color_table[s->B_V][2]*0.75,
 							names_brightness);
-				starNameToDraw.push_back(std::make_tuple(pos[0],pos[1], starname, Color));
+				starNameToDraw.push_back(std::make_tuple(screenposd[0],screenposd[1], starname, Color));
 			}
 		}
 	}
