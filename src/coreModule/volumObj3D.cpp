@@ -39,6 +39,10 @@ VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex
     auto &vkmgr = *VulkanMgr::instance;
     auto &context = *Context::instance;
 
+    for (int i = 0; i < 3; ++i) {
+        cmds[i] = context.frame[i]->create(1);
+        context.frame[i]->setName(cmds[i], "VolumObj3D " + std::to_string(i));
+    }
     if (tex_color_file.empty())
         return;
     int mapDepth;
@@ -57,10 +61,6 @@ VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex
     set->bindUniform(ray, 1);
     set->bindTexture(mapTexture->getTexture(), 2);
     set->bindTexture(colorTexture->getTexture(), 3);
-    for (int i = 0; i < 3; ++i) {
-        cmds[i] = context.frame[i]->create(1);
-        context.frame[i]->setName(cmds[i], "VolumObj3D " + std::to_string(i));
-    }
     inSet = std::make_unique<Set>(vkmgr, *context.setMgr, shared->inLayout.get(), -1, true, true);
     inSet->bindUniform(inTransform, 0);
     inSet->bindUniform(inRay, 1);
