@@ -499,6 +499,7 @@ std::vector<ObjectBaseP> StarNavigator::searchAround(Vec3d v, double limitFov, c
 	double cosLimitFov = cos(limitFov);
 	for (auto &star: listGlobalStarVisible) {
 		auto tmp = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * star->posXYZ);
+		tmp[0] = -tmp[0];
 		tmp.normalize();
 		float dotProduct = tmp.dot(v);
 		if (dotProduct > cosLimitFov)
@@ -549,6 +550,7 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 
 				// not the right position for the moment
 				Vec3f pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * s->posXYZ);
+				pos[0] = -pos[0];
 				Vec3d screenposd;
 				prj->projectEarthEqu(pos, screenposd);
 
