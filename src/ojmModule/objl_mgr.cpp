@@ -8,15 +8,20 @@
 #include <sstream>
 #include <cmath>
 #include "tools/log.hpp"
+#include <cassert>
 
 // Models ?
 //
 // https://space.frieger.com/asteroids/asteroids/
 
 
+ObjLMgr *ObjLMgr::instance = nullptr;
 
 ObjLMgr::ObjLMgr()
 {
+	// There must be one and only one instance of this class to avoid ObjL duplication
+	assert(!instance);
+	instance = this;
 	defaultObject = new SphereObjL();
 	objectMap["EquiSphere"] = defaultObject;
 }
@@ -24,6 +29,7 @@ ObjLMgr::ObjLMgr()
 
 ObjLMgr::~ObjLMgr()
 {
+	instance = nullptr;
 	defaultObject = nullptr;
 	std::map<std::string, ObjL *>::iterator it;
 	for (it=objectMap.begin(); it!=objectMap.end(); ++it) {

@@ -102,13 +102,17 @@ void InUniverseModule::draw(int delta_time)
 	//for VR360 drawing
 	core->media->drawVR360(core->projection, core->navigation);
 	if (core->volumGalaxy->loaded()) {
-		if (core->tully->mustBuild())
+		if (core->tully->mustBuild()) {
 			core->tully->build(core->volumGalaxy.get());
+			minAltToGoDown = 1.e8; // Reduce min altitude so we can go inside the volumetric galaxy
+		}
+		if (!core->volumGalaxy->draw(core->navigation, core->projection))
+			core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
 	} else {
 		if (core->tully->mustBuild())
 			core->tully->build();
+		core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
 	}
-	core->tully->draw(observer->getAltitude(), core->navigation, core->projection);
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
 	//core->postDraw();

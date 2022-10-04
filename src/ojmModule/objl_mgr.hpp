@@ -65,6 +65,8 @@ public:
 		return (defaultObject != nullptr);
 	}
 
+	// Ensure uniqueness and simplify reuse of ObjL elements
+	static ObjLMgr *instance;
 private:
 	//! add a 3D object in the map if it doesn't already exist
 	//! @param name of the new object name

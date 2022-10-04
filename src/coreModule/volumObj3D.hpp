@@ -31,6 +31,7 @@
 class Navigator;
 class Projector;
 class s_texture;
+class ObjL;
 
 // Volumetric 3D object
 class VolumObj3D {
@@ -41,7 +42,7 @@ public:
     Mat4f getModel() const {
         return model;
     }
-    void draw(const Navigator * nav, const Projector* prj);
+    bool draw(const Navigator * nav, const Projector* prj);
     Mat4f drawExternal(const Navigator * nav, const Projector* prj);
     void recordVolumetricObject(VkCommandBuffer cmd);
     bool loaded() const {return isLoaded;}
@@ -56,23 +57,36 @@ private:
         float rayPoints; // Number of points sampled for a ray of length 1
         Vec3f rayCoef; // Length of the ray relative
     };
+    struct InTransform {
+        Vec4f ModelViewMatrix[3]; // ModelViewMatrix without transform
+        Vec3f invScale; // Inverse of the box scale, unit is sample
+        float fov; // fov in radian
+    };
+    struct InRay {
+        Vec3f camCoord;
+        int zScale;
+    };
     struct Shared {
         Shared();
         ~Shared();
-        std::unique_ptr<Pipeline> pipeline;
-        std::unique_ptr<PipelineLayout> layout;
-        std::unique_ptr<VertexArray> vertexArray;
+        std::unique_ptr<Pipeline> pipeline, inPipeline;
+        std::unique_ptr<PipelineLayout> layout, inLayout;
+        std::unique_ptr<VertexArray> vertexArray, inVertexArray;
         std::unique_ptr<VertexBuffer> vertex;
+        ObjL *obj;
         SubBuffer index;
     };
     SharedBuffer<Transform> transform;
     SharedBuffer<Ray> ray;
+    SharedBuffer<InTransform> inTransform;
+    SharedBuffer<InRay> inRay;
     std::unique_ptr<s_texture> mapTexture;
     std::unique_ptr<s_texture> colorTexture;
-    std::unique_ptr<Set> set;
+    std::unique_ptr<Set> set, inSet;
     std::shared_ptr<Shared> shared;
     Mat4f model;
     int cmds[3] {-1, -1, -1};
+    const int rayPoints = 512;
     bool isLoaded = false;
     static std::weak_ptr<Shared> refShared;
 };
