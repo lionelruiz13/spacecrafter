@@ -162,6 +162,7 @@ void Core::registerCoreFont() const
 {
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
+	starNav->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 
 	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
@@ -315,9 +316,11 @@ void Core::init(const InitParser& conf)
 	hip_stars->setMagConverterMaxScaled60DegMag(conf.getDouble(SCS_STARS,SCK_STAR_LIMITING_MAG));
 
 	starNav->setMagConverterMagShift(conf.getDouble(SCS_STARS,SCK_MAG_CONVERTER_MAG_SHIFT));
+	starNav->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
 	starNav->setMagConverterMaxMag(conf.getDouble(SCS_STARS,SCK_MAG_CONVERTER_MAX_MAG));
 	starNav->setStarSizeLimit(conf.getDouble(SCS_ASTRO,SCK_STAR_SIZE_LIMIT));
 	starNav->setScale(conf.getDouble (SCS_STARS, SCK_STAR_SCALE));
+	starNav->setMaxMagName(conf.getDouble (SCS_STARS, SCK_MAX_MAG_STAR_NAME));
 	starNav->setMagScale(conf.getDouble (SCS_STARS, SCK_STAR_MAG_SCALE));
 
 	ssystemFactory->setFlagPlanets(conf.getBoolean(SCS_ASTRO, SCK_FLAG_PLANETS));

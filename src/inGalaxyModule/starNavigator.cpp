@@ -62,6 +62,7 @@ StarNavigator::StarNavigator() : nbStars(0)
 	set->bindTexture(starTexture->getTexture(), 0);
 	old_pos = v3fNull;
 
+	fader.setDuration(3000);
 	pool= new ThreadPool(std::thread::hardware_concurrency());
 
 	computeRCMagTable();
@@ -506,7 +507,15 @@ std::vector<ObjectBaseP> StarNavigator::searchAround(Vec3d v, double limitFov, c
 	return result;
 }
 
-void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noexcept
+void StarNavigator::drawStarName(const Projector* prj)
+{
+	for (auto const& token : starNameToDraw) {
+		prj->printGravity180(font, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
+	}
+	//std::cout << "Number of the names to print : " << starNameToDraw.size() << "\n";
+}
+
+void StarNavigator::draw(const Navigator * nav, const Projector* prj) noexcept
 {
 	if (starsFader==false)
 		return;
@@ -514,10 +523,36 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj) const noex
 	if (nbStars<1)
 		return;
 
+	starNameToDraw.clear();
+
 	auto matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 	drawRaw(matrix);
 	if (starViewer)
 		starViewer->draw(nav, prj, matrix);
+
+	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
+	
+	for (auto &s: listGlobalStarVisible) {
+		unsigned int max_mag_star_name = 0;
+
+		// not sure about these 2 lines 
+		if (names_fader.getInterstate()) max_mag_star_name = 70;
+		if (s->mag >= 0 && s->mag < max_mag_star_name) {
+
+			const std::string starname = std::to_string(s->HIP);
+			if (!starname.empty()) {
+				// not the right position for the moment
+				Vec3f pos = matrix * s->posXYZ;
+
+				Vec4f Color(HipStarMgr::color_table[s->B_V][0]*0.75,
+							HipStarMgr::color_table[s->B_V][1]*0.75,
+							HipStarMgr::color_table[s->B_V][2]*0.75,
+							names_brightness);
+				starNameToDraw.push_back(std::make_tuple(pos[0],pos[1], starname, Color));
+			}
+		}
+	}
+	this->drawStarName(prj);
 }
 
 void StarNavigator::drawRaw(const Mat4f &matrix) const noexcept

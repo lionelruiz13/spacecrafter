@@ -29,6 +29,8 @@
 #include "tools/object.hpp"
 #include "starModule/geodesic_grid.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
+#include "tools/fader.hpp"
+#include "tools/ScModule.hpp"
 
 
 /*! \class StarNavigator
@@ -51,7 +53,9 @@ class s_texture;
 struct starInfo;
 class StarManager;
 
-class StarNavigator: public NoCopy  {
+typedef std::tuple<double, double, const std::string , const Vec4f > starDBtoDraw;
+
+class StarNavigator: public NoCopy , public ModuleFont, public ModuleFader<LinearFader> {
 public:
 	StarNavigator();
 	~StarNavigator();
@@ -72,7 +76,7 @@ public:
 	 * \param nav for marker change matrices
 	 * \param prj (not used)
 	 */
-	void draw(const Navigator * nav, const Projector* prj) const noexcept;
+	void draw(const Navigator * nav, const Projector* prj) noexcept;
 	void drawRaw(const Mat4f &matrix) const noexcept;
 	/*! /fn
 	 * \brief calculates the stars to display from the structure
@@ -83,6 +87,13 @@ public:
 	//! Build draw command
 	void build();
 
+	//! Update any time-dependent features.
+	//! Includes fading in and out stars and labels when they are turned on and off.
+	virtual void update(double deltaTime) {
+		names_fader.update(deltaTime);
+		fader.update(deltaTime);
+	}
+
 	void setMagConverterMagShift(float s){
 		mag_shift = s;
 		needComputeRCMagTable = true;
@@ -91,6 +102,15 @@ public:
 	void setMagConverterMaxMag(float mag) {
 		max_mag = mag;
 		needComputeRCMagTable = true;
+	}
+
+	//! Set maximum magnitude at which stars names are displayed.
+	void setMaxMagName(float b) {
+		maxMagStarName=b;
+	}
+	//! Get maximum magnitude at which stars names are displayed.
+	float getMaxMagName(void) const {
+		return maxMagStarName;
 	}
 
 	void setStarSizeLimit(float f) {
@@ -118,6 +138,22 @@ public:
 		return starsFader;
 	}
 
+	//! Sets the time it takes for star names to fade and off.
+	//! @param duration the time in seconds.
+	void setNamesFadeDuration(float duration) {
+		names_fader.setDuration((int) (duration * 1000.f));
+	}
+
+	//! Set display flag for Star names (labels).
+	void setFlagNames(bool b) {
+		names_fader=b;
+	}
+
+	//! Get display flag for Star names (labels).
+	bool getFlagNames(void) const {
+		return names_fader==true;
+	}
+
 	void clear(){
 		listGlobalStarVisible.clear();
 		needComputeRCMagTable = true;
@@ -131,7 +167,12 @@ private:
 	//buffers for displaying shaders
 	float *starVec;
 
+
+	void drawStarName(const Projector* prj);
+
+	LinearFader names_fader;
 	bool starsFader = true;
+	std::vector<starDBtoDraw> starNameToDraw;
 
 	// observer's position in parsec
 	Vec3f pos;
@@ -185,6 +226,7 @@ private:
 
 	float mag_shift = 0.f;	//<stars, mag_converter_mag_schift>
 	float max_mag= 6.5f;		//<stars, mag_converter_max_mag>
+	float maxMagStarName;
 	float starScale = 0.9f; // <stars, star_scale>
 	float starMagScale = 0.9f; // <stars,star_mag_scale>
 	float starSizeLimit = 9.0; // <astro:star_size_limit>

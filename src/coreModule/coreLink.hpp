@@ -169,6 +169,10 @@ public:
 
 	void starSetFlagName(bool b);
 
+	bool starNavGetFlagName() const;
+
+	void starNavSetFlagName(bool b);
+
 	bool starGetFlagName() const;
 
 	void starSetLimitingMag(float f);
@@ -182,6 +186,10 @@ public:
 	void starSetMaxMagName(float f);
 
 	float starGetMaxMagName() const;
+
+	void starNavSetMaxMagName(float f);
+
+	float starNavGetMaxMagName() const;
 
 	void starSetSizeLimit(float f);
 

@@ -549,6 +549,13 @@ bool CoreLink::starGetFlagName() const {
 	return core->hip_stars->getFlagNames();
 }
 
+void CoreLink::starNavSetFlagName(bool b) {
+	core->starNav->setFlagNames(b);
+}
+bool CoreLink::starNavGetFlagName() const {
+	return core->starNav->getFlagNames();
+}
+
 void CoreLink::starSetLimitingMag(float f) {
 	core->hip_stars->setMagConverterMaxScaled60DegMag(f);
 }
@@ -569,6 +576,13 @@ void CoreLink::starSetMaxMagName(float f) {
 }
 float CoreLink::starGetMaxMagName() const {
 	return core->hip_stars->getMaxMagName();
+}
+
+void CoreLink::starNavSetMaxMagName(float f) {
+	core->starNav->setMaxMagName(f);
+}
+float CoreLink::starNavGetMaxMagName() const {
+	return core->starNav->getMaxMagName();
 }
 
 void CoreLink::starSetSizeLimit(float f) {

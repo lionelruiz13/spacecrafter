@@ -741,6 +741,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->starGetFlagName();
 
 			coreLink->starSetFlagName(newval);
+
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->starNavGetFlagName();
+
+			coreLink->starNavSetFlagName(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_PICK :
@@ -1566,7 +1571,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 						if (setValue==W_DEFAULT) stcore->setInitialLandscapeName(); else stcore->setLandscape(setValue); break;
 		case SCD_NAMES::APP_LINE_WIDTH:	stapp->setLineWidth(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MAX_MAG_NEBULA_NAME: coreLink->nebulaSetMaxMagHints(evalDouble(setValue)); break;
-		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_MAX_MAG_STAR_NAME: coreLink->starSetMaxMagName(evalDouble(setValue)); coreLink->starNavSetMaxMagName(evalDouble(setValue));break;
 		case SCD_NAMES::APP_MOON_SCALE: coreLink->setMoonScale(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_SUN_SCALE: coreLink->setSunScale(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_MILKY_WAY_FADER_DURATION: coreLink->milkyWaySetDuration(evalDouble(setValue)); break;
