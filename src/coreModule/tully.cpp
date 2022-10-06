@@ -537,7 +537,7 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 
 		Vec3f pos(x, y, z);
 		pos = nav->helioToEarthPosEqu(pos);
-		pos[0] = -pos[0];
+		//pos[0] = -pos[0];
 		Vec3d screenposd;
 		prj->projectEarthEqu(pos, screenposd);
 
