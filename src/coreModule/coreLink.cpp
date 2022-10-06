@@ -556,6 +556,7 @@ bool CoreLink::starGetFlagName() const {
 void CoreLink::starNavSetFlagName(bool b) {
 	core->starNav->setFlagNames(b);
 }
+
 bool CoreLink::starNavGetFlagName() const {
 	return core->starNav->getFlagNames();
 }
@@ -784,6 +785,18 @@ void CoreLink::tullySetWhiteColor(bool value)
 
 bool CoreLink::tullyGetWhiteColor() {
 	return core->tully->getWhiteColor();
+}
+
+void CoreLink::tullySetFlagName(bool b) {
+	core->tully->setFlagNames(b);
+}
+
+bool CoreLink::tullyGetFlagName() const {
+	return core->tully->getFlagNames();
+}
+
+void CoreLink::tullySetDuration(float f) {
+	return core->tully->setFaderDuration(f);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

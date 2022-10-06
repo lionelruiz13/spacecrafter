@@ -627,10 +627,8 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scali
 			const std::string starname = getStarName(s->HIP);
 			if (!starname.empty()) {
 
-				// not the right position for the moment
 				Vec3f pos;
 				if (scaling)
-					// change this to apply the right scaling
 					pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)*(s->posXYZ))*1E-6;
 				else
 					pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * s->posXYZ);

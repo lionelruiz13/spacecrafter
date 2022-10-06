@@ -26,6 +26,7 @@
 #include <math.h>
 
 #include "coreModule/tully.hpp"
+#include "starModule/hip_star_mgr.hpp"
 #include "tools/utility.hpp"
 #include "tools/log.hpp"
 #include "tools/app_settings.hpp"
@@ -160,6 +161,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		yr=-200.f*z;
 		zr=200.f*y;
 
+		insert_all(nameTully, index);
 		insert_all(posTully, xr, yr, zr);
 		insert_all(colorTully, r, g, b);
 
@@ -456,11 +458,21 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	drawData->get()[1].firstVertex = squareOffset;
 }
 
+void Tully::drawGalaxyName(const Projector* prj)
+{
+	for (auto const& token : galaxyNameToDraw) {
+		prj->printGravity180(font, std::get<0>(token), std::get<1>(token), std::get<2>(token), std::get<3>(token), 4,4);
+	}
+	// std::cout << "Number of the names to print : " << galaxyNameToDraw.size() << "\n";
+}
+
 
 void Tully::draw(double distance, const Navigator *nav, const Projector *prj) noexcept
 {
 	if (!fader.getInterstate()) return;
 	if (!isAlive) return;
+
+	galaxyNameToDraw.clear();
 
 	Mat4f matrix= nav->getHelioToEyeMat().convert();
 	camPos = nav->getObserverHelioPos();
@@ -507,4 +519,42 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 		Context::instance->frame[Context::instance->frameIdx]->toExecute(cmdWhiteColor[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 	else
 		Context::instance->frame[Context::instance->frameIdx]->toExecute(cmdCustomColor[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
+
+
+	if (!names_fader.getInterstate())
+		return;
+
+	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
+	float x,y,z,a,b,c,distanceGal;
+	a = camPos[0];
+	b = camPos[1];
+	c = camPos[2];
+
+	for(unsigned int i=0; i< nbGalaxy;i++) {
+		x=sortedDataTully[8*i];
+		y=sortedDataTully[8*i+1];
+		z=sortedDataTully[8*i+2];
+
+		Vec3f pos(x, y, z);
+		pos = nav->helioToEarthPosEqu(pos);
+		pos[0] = -pos[0];
+		Vec3d screenposd;
+		prj->projectEarthEqu(pos, screenposd);
+
+        distanceGal=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
+		if (distanceGal < 0.01) {
+			std::string galaxyName = nameTully[i];
+			if (!galaxyName.empty()) {
+				Vec4f Color(HipStarMgr::color_table[int(colorTully[i*3+0]*255)][0]*0.75,
+							HipStarMgr::color_table[int(colorTully[i*3+1]*255)][1]*0.75,
+							HipStarMgr::color_table[int(colorTully[i*3+2]*255)][2]*0.75,
+							names_brightness);
+				// printf("color: %f, %f, %f\n", colorTully[i*3+0], colorTully[i*3+1], colorTully[i*3+2]);
+
+				galaxyNameToDraw.push_back(std::make_tuple(screenposd[0],screenposd[1], galaxyName, Color));
+			}
+		}
+	}
+
+	this->drawGalaxyName(prj);
 }

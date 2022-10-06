@@ -163,6 +163,7 @@ void Core::registerCoreFont() const
 	hip_stars->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 	nebulas->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_NEBULAE));
 	starNav->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
+	tully->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_HIPSTARS));
 
 	ssystemFactory->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SSYSTEM));
 	skyGridMgr->registerFont(fontFactory->registerFont(CLASSEFONT::CLASS_SKYGRID));
@@ -373,6 +374,7 @@ void Core::init(const InitParser& conf)
 		tully->setTexture("typegals.png");
 		tully->loadCatalog(AppSettings::Instance()->getUserDir() + "tully.dat");
 		tully->loadBigCatalog(AppSettings::Instance()->getUserDir() + "6df.dat", 5e+12);
+		tully->setFlagNames(conf.getBoolean(SCS_ASTRO, SCK_FLAG_STAR_NAME));
 		dso3d->setTexture("dsocat.png");
 		if (dso3d->loadCatalog(AppSettings::Instance()->getUserDir() + "dso3d.dat"))
 			dso3d->build();

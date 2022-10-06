@@ -32,6 +32,7 @@
 #include <memory>
 
 #include "tools/fader.hpp"
+#include "tools/ScModule.hpp"
 
 #include "tools/vecmath.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -48,7 +49,9 @@ class PipelineLayout;
 class Set;
 class VolumObj3D;
 
-class Tully {
+typedef std::tuple<double, double, const std::string , const Vec4f > starDBtoDraw;
+
+class Tully: public ModuleFont {
 public:
 	Tully();
 	~Tully();
@@ -58,12 +61,19 @@ public:
 
 	//! update fader
 	void update(int delta_time) {
+		names_fader.update(delta_time);
 		fader.update(delta_time);
 	}
 
 	//! changes the fader duration
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
+	}
+
+	//! Sets the time it takes for star names to fade and off.
+	//! @param duration the time in seconds.
+	void setNamesFadeDuration(float duration) {
+		names_fader.setDuration((int) (duration * 1000.f));
 	}
 
 	//! modify the fader
@@ -74,6 +84,16 @@ public:
 	//! returns the value of the fader
 	bool getFlagShow(void) const {
 		return fader;
+	}
+
+	//! Set display flag for Star names (labels).
+	void setFlagNames(bool b) {
+		names_fader=b;
+	}
+
+	//! Get display flag for Star names (labels).
+	bool getFlagNames(void) const {
+		return names_fader==true;
 	}
 
 	void setWhiteColor(bool b) {
@@ -109,12 +129,17 @@ private:
 	//! Initialize the vertex buffer splitting for the object
 	void buildVertexSplit();
 
+	void drawGalaxyName(const Projector* prj);
+
 	s_texture* texGalaxy;
 	LinearFader fader;
+	LinearFader names_fader;
+	std::vector<starDBtoDraw> galaxyNameToDraw;
 
 	//camera position
 	Vec3f camPos;
 	//fixed float array for openGL buffers
+	std::vector<std::string> nameTully;
 	std::vector<float> posTully;
 	std::vector<float> colorTully;
 	std::vector<float> texTully;
@@ -124,10 +149,12 @@ private:
 
 	struct tmpTully {
 		Vec3f position;
+		Vec3f color;
 		float distance;
 		float radius;
 		float texture;
 		uint8_t planeSide;
+		std::string name;
 	};
 	static bool compTmpTully(const tmpTully &a,const tmpTully &b);
 

@@ -746,6 +746,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->starNavGetFlagName();
 
 			coreLink->starNavSetFlagName(newval);
+
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->tullyGetFlagName();
+
+			coreLink->tullySetFlagName(newval);
 			break;
 
 		case FLAG_NAMES::FN_STAR_PICK :
