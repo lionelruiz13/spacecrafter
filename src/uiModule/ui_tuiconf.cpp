@@ -262,7 +262,7 @@ void UI::initTui()
 	tui_star_labelmaxmag->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbStars));
 	tui_stars_twinkle = new s_tui::DecimalItem(0., 1., 0.3,std::string("4.4 "), 0.1);
 	tui_stars_twinkle->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbStars));
-	tui_star_limitingmag = new s_tui::DecimalItem(0., 7., 6.5,std::string("4.5 "), 0.1);
+	tui_star_limitingmag = new s_tui::DecimalItem(0., 9.0, 6.5,std::string("4.5 "), 0.1);
 	tui_star_limitingmag->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbStars));
 
 	tui_menu_stars->addComponent(tui_stars_show);
@@ -345,62 +345,62 @@ void UI::initTui()
 	tui_menu_colors->addComponent(tui_colors_circumpolar_circle_color);
 
 	// *** Effects
-	tui_effect_light_pollution = new s_tui::DecimalItem(0.5, 7, 6.5,std::string("5.9 "), 0.5 );
+	tui_effect_light_pollution = new s_tui::DecimalItem(0., 9.0, 7.0,std::string("6.1 "), 0.5 );
 	tui_effect_light_pollution->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_light_pollution);
 
-	tui_effect_manual_zoom = new s_tui::BooleanItem(false,std::string("5.2 ") );
+	tui_effect_manual_zoom = new s_tui::BooleanItem(false,std::string("6.2 ") );
 	tui_effect_manual_zoom->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_manual_zoom);
 
-	tui_effect_pointobj = new s_tui::BooleanItem(false,std::string("5.3 ") );
+	tui_effect_pointobj = new s_tui::BooleanItem(false,std::string("6.3 ") );
 	tui_effect_pointobj->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_pointobj);
 
-	tui_effect_object_scale = new s_tui::DecimalItem(0, 25, 1,std::string("5.4 "), 0.05);  // changed to .05 delta
+	tui_effect_object_scale = new s_tui::DecimalItem(0, 25, 1,std::string("6.4 "), 0.05);  // changed to .05 delta
 	tui_effect_object_scale->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_object_scale);
 
-	tui_effect_star_size_limit = new s_tui::DecimalItem(0.25, 25, 5,std::string("5.4 "), 0.25);
+	tui_effect_star_size_limit = new s_tui::DecimalItem(0.25, 25, 5,std::string("6.5 "), 0.25);
 	tui_effect_star_size_limit->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_star_size_limit);
 
-	tui_effect_planet_size_limit = new s_tui::DecimalItem(-10, 10, 4,std::string("5.4 "), 0.25);
+	tui_effect_planet_size_limit = new s_tui::DecimalItem(-10, 10, 4,std::string("6.6 "), 0.25);
 	tui_effect_planet_size_limit->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_planet_size_limit);
 
 
 
-	tui_effect_milkyway_intensity = new s_tui::DecimalItem(0, 100, 1,std::string("5.5 "), .1);  // cvs
+	tui_effect_milkyway_intensity = new s_tui::DecimalItem(0, 100, 1,std::string("6.7 "), .1);  // cvs
 	tui_effect_milkyway_intensity->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffectsMilkywayIntensity));
 	tui_menu_effects->addComponent(tui_effect_milkyway_intensity);
 
-	tui_effect_nebulae_label_magnitude = new s_tui::DecimalItem(0, 100, 1,std::string("5.6 "), .5);
+	tui_effect_nebulae_label_magnitude = new s_tui::DecimalItem(0, 100, 1,std::string("6.8 "), .5);
 	tui_effect_nebulae_label_magnitude->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffectsNebulaeLabelMagnitude));
 	tui_menu_effects->addComponent(tui_effect_nebulae_label_magnitude);
 
-	tui_effect_view_offset = new s_tui::DecimalItem(-0.5, 0.5, 0,std::string("7.7 "), 0.05 );
+	tui_effect_view_offset = new s_tui::DecimalItem(-0.5, 0.5, 0,std::string("6.9 "), 0.05 );
 	tui_effect_view_offset->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbViewportRelated));
 	tui_menu_effects->addComponent(tui_effect_view_offset);
 
 
-	tui_effect_zoom_duration = new s_tui::DecimalItem(1, 10, 2,std::string("5.7 ") );
+	tui_effect_zoom_duration = new s_tui::DecimalItem(1, 10, 2,std::string("6.10 ") );
 	tui_effect_zoom_duration->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_zoom_duration);
 
-	tui_effect_cursor_timeout = new s_tui::DecimalItem(0, 60, 1,std::string("5.8 ") );
+	tui_effect_cursor_timeout = new s_tui::DecimalItem(0, 60, 1,std::string("6.11 ") );
 	tui_effect_cursor_timeout->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_cursor_timeout);
 
-	tui_effect_light_travel = new s_tui::BooleanItem(false,std::string("6.10 ") );
+	tui_effect_light_travel = new s_tui::BooleanItem(false,std::string("6.12 ") );
 	tui_effect_light_travel->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_light_travel);
 
-	tui_effect_antialias = new s_tui::BooleanItem(false,std::string("6.11 ") );
+	tui_effect_antialias = new s_tui::BooleanItem(false,std::string("6.13 ") );
 	tui_effect_antialias->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_antialias);
 
-	tui_effect_line_width = new s_tui::DecimalItem(0.125, 5, 1,std::string("6.12 "), 0.125 );
+	tui_effect_line_width = new s_tui::DecimalItem(0.125, 5, 1,std::string("6.14 "), 0.125 );
 	tui_effect_line_width->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_line_width);
 
