@@ -191,7 +191,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 	// vertexPoints->fillEntry(1, vertexCount, texTully.data(), staging + 6);
 	// vertexPoints->fillEntry(1, vertexCount, scaleTully.data(), staging + 7);
 
-	cLog::get()->write("Tully successful catalog loading: number of items " + std::to_string(nbGalaxy) );
+	cLog::get()->write("Tully catalog successfully loaded: number of items " + std::to_string(nbGalaxy) );
 
 	isAlive = true;
 	needRebuild = true;
@@ -204,7 +204,7 @@ bool Tully::loadBigCatalog(const std::string &cat, float optimalDistance) noexce
 
 	if (!file) {
 		//~ cout << "ERROR: Unable to open the file  " << cat << std::endl;
-		cLog::get()->write("TULLY catalog: missing file " + cat + " - Feature disabled",LOG_TYPE::L_ERROR);
+		cLog::get()->write("Tully catalog: file missing " + cat + " - Feature disabled",LOG_TYPE::L_ERROR);
 		return false;
 	}
 
