@@ -79,8 +79,8 @@ private:
 	std::string name;
 	std::string text;
 	Vec3f textColor;
-	int altitude;
-	int azimuth;
+	float altitude;
+	float azimuth;
 	BooleanFader fader;
 	s_font* textFont;
 	TEXT_ALIGN textAlign;
