@@ -545,10 +545,11 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 		if (distanceGal < 0.01) {
 			std::string galaxyName = nameTully[i];
 			if (!galaxyName.empty()) {
-				Vec4f Color(HipStarMgr::color_table[int(colorTully[i*3+0]*255)][0]*0.75,
-							HipStarMgr::color_table[int(colorTully[i*3+1]*255)][1]*0.75,
-							HipStarMgr::color_table[int(colorTully[i*3+2]*255)][2]*0.75,
-							names_brightness);
+				// Vec4f Color(HipStarMgr::color_table[int(colorTully[i*3+0]*255)][0]*0.75,
+				// 			HipStarMgr::color_table[int(colorTully[i*3+1]*255)][1]*0.75,
+				// 			HipStarMgr::color_table[int(colorTully[i*3+2]*255)][2]*0.75,
+				// 			names_brightness);
+				Vec4f Color(colorTully[i*3+0], colorTully[i*3+1], colorTully[i*3+2], names_brightness);
 				// printf("color: %f, %f, %f\n", colorTully[i*3+0], colorTully[i*3+1], colorTully[i*3+2]);
 
 				galaxyNameToDraw.push_back(std::make_tuple(screenposd[0],screenposd[1], galaxyName, Color));
