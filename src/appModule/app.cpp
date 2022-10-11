@@ -221,7 +221,6 @@ App::~App()
 	screenFader.reset();
 	spaceDate.reset();
 	fontFactory.reset();
-	s_texture::forceUnload();
 }
 
 void App::initVulkan(InitParser &conf)

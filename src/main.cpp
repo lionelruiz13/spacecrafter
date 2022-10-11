@@ -350,6 +350,7 @@ int main(int argc, const char *argv[])
 
 	// Log->write("EOF", LOG_TYPE::L_INFO);
 	// Log->write("EOF", LOG_TYPE::L_INFO, LOG_FILE::SCRIPT);
+	s_texture::forceUnload();
 	vulkan.reset();
 	Log->close();
 	AppSettings::close();
