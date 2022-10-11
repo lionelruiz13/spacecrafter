@@ -186,24 +186,23 @@ void MilkyWay::endTexTransition()
 
 void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator* nav, double julianDay)
 {
-	if (!isDraw) return;
-	if (!showFader.getInterstate() ) return;
+	if (!(isDraw && showFader.getInterstate()))
+		return;
 
 	// .045 chosen so that ad_lum = 1 at standard NELM of 6.5
 	float ad_lum=eye->adaptLuminance(.045);
 
 	// NB The tone reproducer code is simply incorrect, so this function fades out the Milky Way by the time eye limiting mag gets to ~5
-	if(ad_lum < .9987 )
+	if (ad_lum < 0) {
+		ad_lum = 0;
+	} else if (ad_lum < .9987)
 		ad_lum = -ad_lum*3.6168 +ad_lum*ad_lum*9.6253 -ad_lum*ad_lum*ad_lum*5.0121;
-	if(ad_lum < 0) ad_lum = 0;
 
 	struct {
 		float cmag;
 		float texTransit;
 	} frag;
-	frag.cmag = ad_lum * showFader.getInterstate();
-
-	frag.cmag *= intensityMilky;
+	frag.cmag = ad_lum * showFader.getInterstate() * intensityMilky;
 
 	if (onTextureTransition && (switchTexFader.getInterstate()>0.99))
 		endTexTransition();
@@ -211,21 +210,22 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 	Context &context = *Context::instance;
 	VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
 
-	if (onTextureTransition) {
-		frag.texTransit = switchTexFader.getInterstate();
-	}
 	Mat4f matrix = (nav->getJ2000ToEyeMat() * modelMilkyway ).convert();
 
-	if (displayIrisMilky && onTextureTransition && currentMilky.name == defaultMilky.name) {
+	if (onTextureTransition) {
+		frag.texTransit = switchTexFader.getInterstate();
 		pipelineMilky[0].bind(cmd);
-		layoutTwoTex->bindSets(cmd, {*context.uboSet, *setIrisMilky});
+		layoutTwoTex->bindSets(cmd, {*context.uboSet, *setMilky});
 		layoutTwoTex->pushConstant(cmd, 0, &matrix);
 		layoutTwoTex->pushConstant(cmd, 1, &frag);
 	} else {
 		pipelineMilky[1].bind(cmd);
-		layout->bindSets(cmd, {*context.uboSet, *setMilky});
 		layout->pushConstant(cmd, 0, &matrix);
 		layout->pushConstant(cmd, 1, &frag);
+		if (displayIrisMilky && currentMilky.name == defaultMilky.name) {
+			layout->bindSets(cmd, {*context.uboSet, *setIrisMilky});
+		} else
+			layout->bindSets(cmd, {*context.uboSet, *setMilky});
 	}
 
 	sphere->bind(cmd);
@@ -253,14 +253,18 @@ void MilkyWay::buildMilkyway()
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
 
-	setMilky = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, false, true);
-	setMilky->bindTexture(currentMilky.tex->getTexture(), 0);
-	if (useIrisMilky && currentMilky.name == defaultMilky.name) {
-		setIrisMilky = std::make_unique<Set>(vkmgr, *context.setMgr, layoutTwoTex.get(), -1, false, true);
-		setIrisMilky->bindTexture(currentMilky.tex->getTexture(), 0);
-		if (onTextureTransition)
-			setIrisMilky->bindTexture(nextMilky.tex->getTexture(), 1);
+	if (onTextureTransition) {
+		setMilky = std::make_unique<Set>(vkmgr, *context.setMgr, layoutTwoTex.get(), -1, false, true);
+		setMilky->bindTexture(nextMilky.tex->getTexture(), 1);
+		setIrisMilky.reset();
+	} else {
+		if (useIrisMilky && currentMilky.name == defaultMilky.name) {
+			setIrisMilky = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, false, true);
+			setIrisMilky->bindTexture(irisMilky.tex->getTexture(), 0);
+		}
+		setMilky = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, false, true);
 	}
+	setMilky->bindTexture(currentMilky.tex->getTexture(), 0);
 }
 
 void MilkyWay::buildZodiacal()
