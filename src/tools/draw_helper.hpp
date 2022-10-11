@@ -47,7 +47,7 @@ struct s_printh {
     Vec2d center;
     float d;
     float d_sub_textureH;
-    Vec3f texColor;
+    Vec4f texColor;
     SubTexture *texture; // string, then border
 };
 

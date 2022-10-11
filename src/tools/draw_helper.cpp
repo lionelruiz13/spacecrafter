@@ -211,7 +211,7 @@ void DrawHelper::init()
 
     layoutPrintH = std::make_unique<PipelineLayout>(vkmgr);
     layoutPrintH->setGlobalPipelineLayout(layoutPrint.get());
-    layoutPrintH->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 12); // Color
+    layoutPrintH->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, 16); // Color
     layoutPrintH->build();
 
     setPrints->bindUniform(*UBOCam::ubo, 0);

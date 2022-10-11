@@ -128,7 +128,7 @@ void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 	else
 		color = defaultTextColor;
 
-	std::unique_ptr token  = std::make_unique<Text>(name, textParam.string, textParam.altitude, textParam.azimuth, tmp, textAlign, color);
+	std::unique_ptr token  = std::make_unique<Text>(name, textParam.string, textParam.altitude, textParam.azimuth, tmp, textAlign, color, textParam.fader);
 	textUsr[name]=std::move(token);
 }
 

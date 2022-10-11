@@ -65,6 +65,7 @@ struct TEXT_MGR_PARAM {
 	std::string textAlign;
 	Vec3f color;
 	bool useColor;
+	bool fader;
 };
 
 class TextMgr: public NoCopy {

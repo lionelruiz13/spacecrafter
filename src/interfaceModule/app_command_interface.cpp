@@ -2096,7 +2096,14 @@ int AppCommandInterface::commandText()
 					textParam.useColor = true;
 				} else
 					textParam.useColor = false;
-
+				textParam.fader = false;
+				std::string argFader = args[W_FADER];
+				if (!argFader.empty()) {
+					if (Utility::isTrue(argFader))
+						textParam.fader = true;
+					else
+						textParam.fader = false;
+				}
 				media->textAdd(argName, textParam);
 				// test if user specifies argDisplay
 				if (!argDisplay.empty()) {

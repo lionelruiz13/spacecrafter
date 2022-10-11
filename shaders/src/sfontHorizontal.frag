@@ -8,7 +8,7 @@
 
 layout (binding=1) uniform sampler2D tex;
 layout(push_constant) uniform pushConstants {
-	vec3 Color;
+	vec4 Color;
 };
 
 layout (location=0) in vec2 TexCoord;
@@ -26,5 +26,5 @@ void main(void)
 	// FragColor = textureColor;
 
 	// Commented code do the same as the following :
-	FragColor = vec4(vec3(texture(tex, TexCoord)) * Color, texture(tex, TexCoord2).a);
+	FragColor = vec4(vec3(texture(tex, TexCoord)), texture(tex, TexCoord2).a) * Color;
 }

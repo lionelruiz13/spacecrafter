@@ -84,6 +84,9 @@ public:
 	//! display a text parallel to the horizon in altitude azimuth
 	//! cache indicates whether to keep the text in memory
 	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec3f& texColor, TEXT_ALIGN testPos, bool cache);
+	//! display a text parallel to the horizon in altitude azimuth
+	//! cache indicates whether to keep the text in memory
+	void printHorizontal(const Projector * prj, float altitude, float azimuth, const std::string& str, Vec4f& texColor, TEXT_ALIGN testPos, bool cache);
 	//! remove text s from cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame
 	void clearCache(const std::string& s);
 	//! remove every texts from font cache, after which it may be overwritten by any further print* call which occur before the final submission of the current frame

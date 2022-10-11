@@ -31,7 +31,7 @@
 #include "mediaModule/text.hpp"
 
 
-Text::Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font* _myFont, const TEXT_ALIGN &_textAlign,  const Vec3f &color)
+Text::Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font* _myFont, const TEXT_ALIGN &_textAlign,  const Vec3f &color, bool _textFader)
 {
 	name= _name;
 	text= _text;
@@ -41,6 +41,9 @@ Text::Text(const std::string &_name, const std::string &_text, float _altitude, 
 	textFont =_myFont;
 	textAlign = _textAlign;
 	fader = true;
+	text_fader.setDuration(3000);
+	text_fader = _textFader;
+
 }
 
 
@@ -51,6 +54,7 @@ Text::~Text()
 void Text::update(int delta_time)
 {
 	fader.update(delta_time);
+	text_fader.update(delta_time);
 }
 
 void Text::draw(const Projector* prj)
@@ -59,6 +63,8 @@ void Text::draw(const Projector* prj)
 
 	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// StateGL::enable(GL_BLEND);
+	if (text_fader.getInterstate())
+		textColor[3] = text_fader.getInterstate();
 	textFont->printHorizontal(prj, altitude, azimuth, text,textColor, textAlign, true);
 }
 

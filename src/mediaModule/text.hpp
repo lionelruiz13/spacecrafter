@@ -48,7 +48,7 @@
  */
 class Text {
 public:
-	Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color);
+	Text(const std::string &_name, const std::string &_text, float _altitude, float _azimuth, s_font *_myFont, const TEXT_ALIGN &_textAlign, const Vec3f &color, bool _textFader);
 	~Text();
 
 	//! hide or not the text on the display
@@ -59,6 +59,16 @@ public:
 	//! indicates the state of the text with respect to the display
 	bool getDisplay() const {
 		return fader;
+	}
+
+	//! Set display flag for text fader.
+	void setFlagTextFader(bool b) {
+		text_fader=b;
+	}
+
+	//! Get display flag for text fader.
+	bool getFlagTextFader(void) const {
+		return text_fader==true;
 	}
 
 	//! returns the name of the text
@@ -78,10 +88,11 @@ public:
 private:
 	std::string name;
 	std::string text;
-	Vec3f textColor;
+	Vec4f textColor;
 	float altitude;
 	float azimuth;
 	BooleanFader fader;
+	LinearFader text_fader;
 	s_font* textFont;
 	TEXT_ALIGN textAlign;
 };
