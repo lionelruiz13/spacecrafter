@@ -36,13 +36,15 @@ void main()
     int t;
     {
         vec3 dirCoef = (step(vec3(0.f), direction) - camCoord) / direction;
-        t = int(min(min(dirCoef.x, dirCoef.y), dirCoef.z*zScale)); // Distance in samples to the border
+        t = int(min(min(dirCoef.x, dirCoef.y), dirCoef.z)); // Distance in samples to the border
         if (t < 1)
             discard;
     }
 
+    vec3 dir = direction;
+    dir.z *= zScale;
     vec4 color = vec4(0);
-    for (vec3 coord = vec3(camCoord.x, camCoord.y, camCoord.z*zScale); t-- >= 0; coord += direction) {
+    for (vec3 coord = vec3(camCoord.x, camCoord.y, camCoord.z*zScale); t-- >= 0; coord += dir) {
         color += texture(colorTexture, coord) * (texture(mapTexture, coord).x * ((1.f - color.a) / colorScale));
         if (color.a > 0.99f) { // Avoid processing for less than 1% of the color processing
             fragColor = color / color.a;

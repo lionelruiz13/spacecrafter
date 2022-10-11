@@ -13,7 +13,7 @@ layout (binding=0) uniform ubo {
 
 void main()
 {
-    vec3 pos = ModelViewMatrix * position;
+    vec3 pos = ModelViewMatrix * (position * shape); // Undo scaling
     pos /= sqrt(pos.x*pos.x + pos.y*pos.y) + 1e-30;
     const float f = (atan(pos.z) + M_PI_2) / fov;
     gl_Position = vec4(pos.x * f, pos.y * f, 0, 1);
