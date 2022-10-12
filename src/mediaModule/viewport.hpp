@@ -64,7 +64,7 @@ public:
 	}
 
 	void disableFader() {
-		//! fader.setDuration(400);
+		disable_fader = true;
 	}
 
 	//! update the fader
@@ -112,6 +112,7 @@ private:
 	bool fullScreen; 	//!< indicates the way to display the image
 	bool skipping = false;		//!< initializes the variable defining if we skip fading or not
 	ParabolicFader fader;
+	bool disable_fader = false;
 };
 
 #endif // __VP_HPP__
