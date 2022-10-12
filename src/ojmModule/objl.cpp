@@ -1,7 +1,7 @@
 #include "tools/call_system.hpp" //direxist
 #include "tools/log.hpp"
 #include <SDL2/SDL.h>
-
+#include "ojmModule/objl_mgr.hpp"
 #include "ojmModule/objl.hpp"
 #include <iostream>
 #include <sstream>
@@ -59,7 +59,14 @@ bool ObjL::init(const std::string &repertory, const std::string &_name)
 				cLog::get()->write("Performance Issue : Too many vertices for '" + nameM + "' (Keep Below 20 000)", LOG_TYPE::L_WARNING);
 			}
 			if (this->low->getVertexCount() > 4000) {
-				cLog::get()->write("Performance Issue : Too many vertices for '" + nameL + "' (Keep Below 4 000)", LOG_TYPE::L_WARNING);
+				if (this->low->getVertexCount() > 40000) {
+					cLog::get()->write("Major Performance Issue : Up to 10x over limit for '" + nameL + "'(Keep Below 4 000) - Fallback to EquiSphere", LOG_TYPE::L_ERROR);
+					if (ObjLMgr::instance)
+						this->low = ObjLMgr::instance->select("EquiSphere")->low->makeLink();
+					else
+						cLog::get()->write("FALLBACK FAILURE : Can't fallback to EquiSphere without ObjLMgr instance", LOG_TYPE::L_ERROR);
+				} else
+					cLog::get()->write("Performance Issue : Too many vertices for '" + nameL + "' (Keep Below 4 000)", LOG_TYPE::L_WARNING);
 			}
 			return true;
 		} else {

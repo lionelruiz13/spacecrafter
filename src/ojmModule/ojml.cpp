@@ -29,9 +29,16 @@ OjmL::OjmL(const std::string & _fileName)
 	is_ok = init(_fileName);
 }
 
+std::unique_ptr<OjmL> OjmL::makeLink()
+{
+	auto tmp = index;
+	tmp.size = 0;
+	return std::make_unique<OjmL>(vertex, tmp, indexCount);
+}
+
 OjmL::~OjmL()
 {
-	if (index.buffer) {
+	if (index.buffer && index.size) {
 		Context::instance->indexBufferMgr->releaseBuffer(index);
 	}
 }

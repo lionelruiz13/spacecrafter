@@ -21,6 +21,9 @@ public:
 	OjmL(std::shared_ptr<VertexBuffer> vertex, SubBuffer index, unsigned int indexCount);
 	~OjmL();
 
+	//! USE WITH CAUTION - Create an ObjL linked to this one - Destroying this object INVALIDATE all OjmL linked to it
+	std::unique_ptr<OjmL> makeLink();
+
 	//! returns the state of the object: loaded and operational, negative otherwise
 	bool getOk() {
 		return is_ok;
@@ -42,7 +45,7 @@ public:
 	//! Deprecated, only used by ring.cpp
 	VertexBuffer *getVertexBuffer() {return vertex.get();}
 	//! Deprecated, only used by ring.cpp
-	const SubBuffer &getIndexBuffer() {return index;}
+	const SubBuffer &getIndexBuffer() const {return index;}
 private:
 	bool is_ok = false;
 
