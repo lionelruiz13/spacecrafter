@@ -365,6 +365,7 @@ void BigBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigat
 			uGlobalFrag->get().MoonRadius4 = 0.0;
 	}
 	currentObj->draw(cmd, screen_sz);
+    drawAtmExt(cmd, prj, nav, matrix, screen_sz, depthTest);
 }
 
 void BigBody::setSphereScale(float s, bool initial_scale)

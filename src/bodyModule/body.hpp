@@ -68,6 +68,7 @@ class Observatory;
 class Observer;
 class Set;
 class BodyColor;
+class AtmExt;
 
 
 typedef struct body_flags {
@@ -462,7 +463,7 @@ protected:
 
 	virtual void drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat);
 
-	void drawAtmExt(const Projector* prj, const Navigator* nav, const Observer* observatory);
+	void drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, float screen_sz, bool depthTest);
 
 	virtual bool isVisibleOnScreen() {
 		return screen_sz > 1 && isVisible;
@@ -511,6 +512,7 @@ protected:
 	drawState_t *drawState;		// State for draw, include Pipeline and PipelineLayout
 	int cmds[3] = {-1, -1, -1};
 	bool changed = true;
+	bool hasAtmosphere = false;
 
 	ObjL *currentObj = nullptr;
 
@@ -560,11 +562,12 @@ protected:
 
 	body_flags flags;
 
-	std::unique_ptr<Trail> trail = nullptr;
-	std::shared_ptr<Hints> hints = nullptr;
-	std::shared_ptr<Axis> axis = nullptr;
-	std::unique_ptr<OrbitPlot> orbitPlot = nullptr;
-	std::shared_ptr<Halo> halo = nullptr;
+	std::unique_ptr<Trail> trail;
+	std::shared_ptr<Hints> hints;
+	std::shared_ptr<Axis> axis;
+	std::unique_ptr<OrbitPlot> orbitPlot;
+	std::shared_ptr<Halo> halo;
+	std::unique_ptr<AtmExt> atmExt;
 
 	Mat4f model;
 	Mat4f view;

@@ -44,6 +44,7 @@
 #include "bodyModule/axis.hpp"
 #include "bodyModule/halo.hpp"
 #include "bodyModule/orbit_plot.hpp"
+#include "bodyModule/atm_ext.hpp"
 #include "tools/s_font.hpp"
 #include "navModule/navigator.hpp"
 #include "tools/translator.hpp"
@@ -950,6 +951,20 @@ void Body::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 		//StateGL::disable(GL_DEPTH_TEST);
 		halo->drawHalo(nav, prj, eye);
 	}
+}
+
+void Body::drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, float screen_sz, bool depthTest)
+{
+    if (hasAtmosphere && screen_sz > 10) {
+        if (!atmExt) // AtmExt creation is fast AND never grouped
+            atmExt = std::make_unique<AtmExt>(this, currentObj);
+        // Pass everything internal to this body
+        atmExt->uniform->sunPos = eye_sun;
+        atmExt->uniform->bodyPos = eye_planet;
+        atmExt->uniform->planetOneMinusOblateness = one_minus_oblateness;
+        atmExt->uniform->TesParam.set(bodyTesselation->getMinTesLevel(), bodyTesselation->getMaxTesLevel());
+        atmExt->draw(cmd, prj, nav, mat, radius, screen_sz, depthTest);
+    }
 }
 
 Vec3d Body::getPositionAtDate(double jDate) const
