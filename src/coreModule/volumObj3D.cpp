@@ -282,7 +282,7 @@ void VolumObj3D::draw(const Navigator * nav, const Projector* prj)
     context.frame[context.frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 }
 
-bool VolumObj3D::drawInside(const Navigator * nav, const Projector* prj)
+bool VolumObj3D::isInside(const Navigator *nav)
 {
     Mat4f mat = nav->getHelioToEyeMat().convert() * model;
     Vec3f camCoord = (mat.inverseUntranslated() * -mat.getTranslation()) / 2 + Vec3f(0.5f, 0.5f, 0.5f);
@@ -299,22 +299,27 @@ bool VolumObj3D::drawInside(const Navigator * nav, const Projector* prj)
     if (reClamp.lengthSquared() > 0.002) // more than 5% outside range
         return false;
 
-    Context &context = *Context::instance;
-    VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
     camCoord += reClamp;
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j)
             inTransform->ModelViewMatrix[i].v[j] = mat.r[i*4+j];
     }
-    inTransform->fov = prj->getFov()*M_PI/360;
     inRay->camCoord = camCoord;
+    return true;
+}
+
+void VolumObj3D::drawInside(const Navigator * nav, const Projector* prj)
+{
+    Context &context = *Context::instance;
+    VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+
+    inTransform->fov = prj->getFov()*M_PI/360;
     shared->inPipeline->bind(cmd);
     shared->inLayout->bindSet(cmd, *inSet);
     shared->obj->bind(cmd);
     shared->obj->draw(cmd, 1024);
     context.frame[context.frameIdx]->compile(cmd);
     context.frame[context.frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
-    return true;
 }
 
 Mat4f VolumObj3D::drawExternal(const Navigator * nav, const Projector* prj)

@@ -118,8 +118,18 @@ public:
 		return needRebuild;
 	}
 
+	// Build the draw commands for the loaded catalogs and texture, doesn't modify assigned withObject
+	void buildInternal();
+
 	// Build the draw commands for the loaded catalogs and texture
-	void build(VolumObj3D *withObject = nullptr);
+	void build(VolumObj3D *withObject = nullptr) {
+		if (!isAlive)
+			return;
+		this->withObject = withObject;
+		includeObject = (withObject != nullptr);
+		buildVertexSplit();
+		buildInternal();
+	}
 private:
 	// initialize ShaderPoints and ShaderSquare shaders and vao-vbo
 	void createSC_context();
@@ -194,6 +204,7 @@ private:
 	uint32_t drawDataPointFirstOffset;
 	uint32_t drawDataPointSecondSize;
 	uint8_t planeOrder = 0; // 0 = plane 0 behind plane 1, 1 = plane 1 behind plane 0
+	bool includeObject = false;
 };
 
 #endif // ___TULLY_HPP___

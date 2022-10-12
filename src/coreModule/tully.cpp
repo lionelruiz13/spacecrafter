@@ -263,23 +263,19 @@ bool Tully::loadBigCatalog(const std::string &cat, float optimalDistance) noexce
 	return true;
 }
 
-void Tully::build(VolumObj3D *withObject)
+void Tully::buildInternal()
 {
-	if (!isAlive)
-		return;
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
 	Context &context = *Context::instance;
 
-	this->withObject = withObject;
 	// create and initialize
 	if (!cmdWhiteColor) {
 		context.cmdInfo.commandBufferCount = 6;
 		vkAllocateCommandBuffers(vkmgr.refDevice, &context.cmdInfo, cmdCustomColor);
 		cmdWhiteColor = cmdCustomColor + 3;
 	}
-	buildVertexSplit();
 	std::string headName[2] {"Tully custom ", "Tully white "};
-	if (withObject) {
+	if (includeObject) {
 		headName[0] += "with volumObj3D ";
 		headName[1] += "with volumObj3D ";
 	}
@@ -293,7 +289,7 @@ void Tully::build(VolumObj3D *withObject)
 			vkCmdDrawIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset(), 1, 0);
 			pipelinePoints[j].bind(cmd);
 			vertexPoints->bind(cmd);
-			if (withObject) {
+			if (includeObject) {
 				vkCmdDrawIndirect(cmd, drawData->getBuffer().buffer, drawData->getOffset() + 2 * sizeof(VkDrawIndirectCommand), 1, 0);
 				withObject->recordVolumetricObject(cmd);
 				pipelineSquare[0].bind(cmd);
@@ -453,9 +449,12 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 
 	lTmpTully.clear();	//data become useless
 
-	drawData->get()[0].vertexCount = squareOffset;
-	drawData->get()[1].vertexCount = vertexCount - squareOffset;
-	drawData->get()[1].firstVertex = squareOffset;
+	if (includeObject) {
+		drawData->get()[0].vertexCount = squareOffset;
+		drawData->get()[1].vertexCount = vertexCount - squareOffset;
+		drawData->get()[1].firstVertex = squareOffset;
+	} else
+		drawData->get()[0].vertexCount = vertexCount;
 }
 
 void Tully::drawGalaxyName(const Projector* prj)
@@ -469,8 +468,8 @@ void Tully::drawGalaxyName(const Projector* prj)
 
 void Tully::draw(double distance, const Navigator *nav, const Projector *prj) noexcept
 {
-	if (!fader.getInterstate()) return;
-	if (!isAlive) return;
+	if (!(isAlive && fader.getInterstate()))
+		return;
 
 	galaxyNameToDraw.clear();
 
@@ -478,6 +477,11 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 	camPos = nav->getObserverHelioPos();
 
 	if (withObject) {
+		if (withObject->isInside(nav) == includeObject) {
+			includeObject = !includeObject;
+			VulkanMgr::instance->waitIdle(); // Avoid rewriting commands in use - this doesn't check pending submission in the draw_helper
+			buildInternal();
+		}
 		if (planeOrder != ((withObject->drawExternal(nav, prj) * Vec4f {0, 0, 1, 0})[2] < 0)) {
 			planeOrder = ((withObject->drawExternal(nav, prj) * Vec4f {0, 0, 1, 0})[2] < 0);
 			if (planeOrder) {
@@ -520,6 +524,8 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 	else
 		Context::instance->frame[Context::instance->frameIdx]->toExecute(cmdCustomColor[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 
+	if (!includeObject)
+		withObject->drawInside(nav, prj);
 
 	if (!names_fader.getInterstate())
 		return;

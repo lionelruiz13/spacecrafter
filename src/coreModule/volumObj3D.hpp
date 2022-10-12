@@ -43,7 +43,9 @@ public:
         return model;
     }
     void draw(const Navigator * nav, const Projector* prj);
-    bool drawInside(const Navigator * nav, const Projector* prj);
+    bool isInside(const Navigator *nav);
+    //! Perform a draw after isInside returned true
+    void drawInside(const Navigator * nav, const Projector* prj);
     Mat4f drawExternal(const Navigator * nav, const Projector* prj);
     void recordVolumetricObject(VkCommandBuffer cmd);
     void reconstruct(const std::string& tex_color_file, const std::string &tex_absorbtion_file, int _rayPoints = 0, bool z_reflection = false, int colorDepth = 0, int absorbtionDepth = 0);
