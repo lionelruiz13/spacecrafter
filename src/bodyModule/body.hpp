@@ -402,7 +402,7 @@ public:
 
 	void setAtmosphereParams(AtmosphereParams* tmp ) {
 		atmosphereParams = tmp;
-		hasAtmosphere = true; // EXPERIMENTAL
+		// hasAtmosphere = true; // EXPERIMENTAL
 	}
 
 	void switchMapSkin(bool a);
