@@ -119,7 +119,10 @@ void ViewPort::draw(double heading)
 		return;
 	sync->inUse = true;
 
-	uFrag->get().fader = fader.getInterstate();
+	float value_fader = fader.getInterstate();
+	if (disable_fader && value_fader < 1)
+		value_fader = 1;
+	uFrag->get().fader = value_fader;
 
 	if (heading != lastHeading) {
 		lastHeading = heading;
