@@ -54,6 +54,8 @@ public:
 	//! hide or not the text on the display
 	void setDisplay(bool b) {
 		fader=b;
+		if (!b)
+			text_fader=b;
 	}
 
 	//! indicates the state of the text with respect to the display
@@ -95,6 +97,7 @@ private:
 	LinearFader text_fader;
 	s_font* textFont;
 	TEXT_ALIGN textAlign;
+	bool fade_out;
 };
 
 #endif // TEXT_HPP

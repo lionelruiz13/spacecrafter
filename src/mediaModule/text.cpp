@@ -43,6 +43,7 @@ Text::Text(const std::string &_name, const std::string &_text, float _altitude, 
 	fader = true;
 	text_fader.setDuration(3000);
 	text_fader = _textFader;
+	fade_out = _textFader;
 
 }
 
@@ -59,12 +60,14 @@ void Text::update(int delta_time)
 
 void Text::draw(const Projector* prj)
 {
-	if ( !fader.getInterstate() ) return;
+	if ( !fader.getInterstate() && !fade_out) return;
 
 	// StateGL::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// StateGL::enable(GL_BLEND);
 	if (text_fader.getInterstate())
 		textColor[3] = text_fader.getInterstate();
+	else
+		fade_out = false;
 	textFont->printHorizontal(prj, altitude, azimuth, text,textColor, textAlign, true);
 }
 
