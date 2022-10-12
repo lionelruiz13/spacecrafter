@@ -240,31 +240,18 @@ float BigBody::getOnScreenSize(const Projector* prj, const Navigator * nav, bool
 	return atanf(rad/sqrt(temp))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }
 
-void BigBody::removeSatellite(std::shared_ptr<Body> planet)
-{
-	std::list<std::shared_ptr<Body>>::iterator iter;
-	for (iter=satellites.begin(); iter != satellites.end(); iter++) {
-		if ( (*iter) == planet ) {
-			satellites.erase(iter);
-			break;
-		}
-	}
-}
-
 double BigBody::calculateBoundingRadius()
 {
 	double d = radius.final();
 
-	if (rings) d = rings->getOuterRadius();
-
-	std::list<std::shared_ptr<Body>>::const_iterator iter;
-	std::list<std::shared_ptr<Body>>::const_iterator end = satellites.end();
+	if (rings)
+        d = rings->getOuterRadius();
 
 	double r;
-	for ( iter=satellites.begin(); iter != end; iter++) {
-
-		r = (*iter)->getBoundingRadius();
-		if ( r > d ) d = r;
+	for (auto it : satellites) {
+		r = it->getBoundingRadius();
+		if (r > d)
+            d = r;
 	}
 
 	boundingRadius = d;
@@ -323,8 +310,7 @@ void BigBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigat
     uGlobalVertProj->get().planetScaledRadius = radius;
     uGlobalVertProj->get().planetOneMinusOblateness = one_minus_oblateness;
     uGlobalFrag->get().SunHalfAngle = sun_half_angle;
-    std::list<std::shared_ptr<Body>>::iterator iter;
-	for(iter=satellites.begin(); iter!=satellites.end() && index <= 4; iter++) {
+	for (auto iter=satellites.begin(); iter!=satellites.end() && index <= 4; iter++) {
 		tmp2 = (*iter)->get_heliocentric_ecliptic_pos() - planet_helio;
 		length = tmp2.length();
 		tmp2.normalize();

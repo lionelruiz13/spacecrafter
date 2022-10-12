@@ -167,10 +167,9 @@ bool ProtoSystem::removeBody(const std::string &name){
 	if(bc->body->hasSatellite()){
 		// std::cout << "removeBody " << name << " but have satellite" << std::endl;
 		std::vector<std::string> names;
-		std::list<std::shared_ptr<Body>> satellites = bc->body->getSatellites();
 
-		for(auto it = satellites.begin(); it != satellites.end(); it++){
-			names.push_back((*it)->getEnglishName());
+		for (auto it : bc->body->getSatellites()) {
+			names.push_back(it->getEnglishName());
 		}
 
 		for(std::string satName : names){
@@ -195,10 +194,6 @@ bool ProtoSystem::removeBodyNoSatellite(const std::string &name)
 		return false;
 	}
 
-	//check if the body was a satellite
-	if(bc->body->getParent() != nullptr){
-		bc->body->getParent()->removeSatellite(bc->body);
-	}
 	// fix crash when delete body used from body_trace
 	if (bc->body == bodyTrace )
 		bodyTrace = getCenterObject();
@@ -326,7 +321,7 @@ void ProtoSystem::toggleHideSatellites(bool val){
 		   it->second->body->getTurnAround() == tACenter &&
 		   it->second->body->hasSatellite()){
 
-		   for(std::shared_ptr<Body> satellite : it->second->body->getSatellites()){
+		   for (auto satellite : it->second->body->getSatellites()){
 			   std::shared_ptr<BodyContainer> sat = findBodyContainer(satellite->getEnglishName());
 				setPlanetHidden(sat->englishName, val);
 			}
@@ -949,9 +944,6 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 	anchorManager->addAnchor(englishName, p);
 	p->updateBoundingRadii();
-	if (parent) {
-		parent->add_satellite(p);
-	}
 	std::shared_ptr<BodyContainer> container = std::make_shared<BodyContainer>();
 	container->body = p;
 	container->englishName = englishName;

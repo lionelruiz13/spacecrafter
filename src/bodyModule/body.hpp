@@ -300,9 +300,6 @@ public:
 		return is_satellite;
 	}
 
-	// remove from parent satellite list
-	virtual void removeSatellite(std::shared_ptr<Body> planet);
-
 	// for depth buffering of orbits
 	void updateBoundingRadii();
 	virtual double calculateBoundingRadius();
@@ -389,13 +386,13 @@ public:
 
 	static void deleteDefaultTexMap();
 
-	std::list<std::shared_ptr<Body>> getSatellites() {
+	inline std::list<Body *> getSatellites() const {
 		return satellites;
 	}
 
 	Vec3d getPositionAtDate(double jDate) const;
 
-	const std::shared_ptr<Body> getParent()const {
+	inline const std::shared_ptr<Body> &getParent() const {
 		return parent;
 	}
 
@@ -405,6 +402,7 @@ public:
 
 	void setAtmosphereParams(AtmosphereParams* tmp ) {
 		atmosphereParams = tmp;
+		hasAtmosphere = true; // EXPERIMENTAL
 	}
 
 	void switchMapSkin(bool a);
@@ -423,10 +421,6 @@ public:
 
 	BODY_TYPE getBodyType() {
 		return typePlanet;
-	}
-
-	void add_satellite(std::shared_ptr<Body> body) {
-		satellites.push_back(body);
 	}
 
 	//! Ask this body to preload his textures
@@ -525,8 +519,7 @@ protected:
 	Vec3f orbit_position;    // position of the planet
 
 	std::shared_ptr<Body> parent;				// Body parent i.e. sun for earth
-
-	std::list<std::shared_ptr<Body>> satellites;		// satellites of the Planet
+	std::list<Body *> satellites;		// satellites of the Planet
 
 	static s_font* planet_name_font;// Font for names
 	static float object_scale;

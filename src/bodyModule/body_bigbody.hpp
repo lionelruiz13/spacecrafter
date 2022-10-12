@@ -78,9 +78,6 @@ protected :
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye) override;
 
-	// remove from parent satellite list
-	virtual void removeSatellite(std::shared_ptr<Body> planet);
-
 	//! Return set to bind, may change at every frame
 	virtual Set &getSet(float screen_sz) override;
 	std::unique_ptr<Ring> rings=nullptr;

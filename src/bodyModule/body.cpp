@@ -93,8 +93,11 @@ Body::Body(std::shared_ptr<Body> parent,
 	typePlanet = _typePlanet;
 	initialScale= 1.0;
 	if (parent) {
-		if (parent->getBodyType() == CENTER || (parent->getBodyType() == SUN && !parent->parent)) tAround = tACenter;
-		else tAround = tABody;
+        parent->satellites.push_back(parent.get());
+		if (parent->getBodyType() == CENTER || (parent->getBodyType() == SUN && !parent->parent))
+            tAround = tACenter;
+		else
+            tAround = tABody;
 	} else
 		tAround = tANothing;
 
@@ -107,22 +110,20 @@ Body::Body(std::shared_ptr<Body> parent,
 	if (_radius==0.0)
 		radius = 1/AU;
 
-	if(_bodyTexture->tex_map == "") {
+	if (_bodyTexture->tex_map.empty()) {
 		tex_map = defaultTexMap;
-	}
-	else {
+	} else
 		tex_map = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
-	}
 
-	if (_bodyTexture->tex_skin !="") {
+	if (!_bodyTexture->tex_skin.empty()) {
 		tex_skin = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
-	if (_bodyTexture->tex_norm != "") {  //preparation au bump shader
+	if (!_bodyTexture->tex_norm.empty()) {  //preparation au bump shader
 		tex_norm = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
-	if (_bodyTexture->tex_heightmap != "") {  //preparation à la tesselation
+	if (!_bodyTexture->tex_heightmap.empty()) {  //preparation à la tesselation
 		tex_heightmap = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
@@ -149,16 +150,8 @@ Body::Body(std::shared_ptr<Body> parent,
 
 Body::~Body()
 {
-	//if(orbit) delete orbit;
-	//orbit = nullptr;
-	//if (hints) delete hints;
-	hints = nullptr;
-	//if (axis) delete axis;
-	axis = nullptr;
-	//if (halo) delete halo;
-	halo = nullptr;
-//	if (myColor) delete myColor;
-//	myColor = nullptr;
+    if (parent)
+        parent->satellites.remove(this);
 }
 
 void Body::switchMapSkin(bool a) {
@@ -726,23 +719,19 @@ double Body::calculateBoundingRadius()
 {
 	double d = radius.final();
 
-	std::list<std::shared_ptr<Body>>::const_iterator iter;
-	std::list<std::shared_ptr<Body>>::const_iterator end = satellites.end();
-
 	double r;
-	for ( iter=satellites.begin(); iter != end; iter++) {
-
-		r = (*iter)->getBoundingRadius();
-		if ( r > d ) d = r;
+    for (auto it : satellites) {
+		r = it->getBoundingRadius();
+		if (r > d)
+            d = r;
 	}
 
 	// if we are a planet, we want the boundary radius including all satellites
 	// if we are a satellite, we want the full orbit radius as well
-	if ( is_satellite ) {
-		if ( d > orbit_bounding_radius + radius.final() ) boundingRadius = d;
-		else boundingRadius = orbit_bounding_radius + radius.final();
-	}
-	else boundingRadius = d;
+	if (is_satellite) {
+        boundingRadius = std::max(d, orbit_bounding_radius + radius.final());
+	} else
+        boundingRadius = d;
 
 	return boundingRadius;
 }
@@ -925,17 +914,6 @@ void Body::drawHints(const Navigator* nav, const Projector* prj)
 {
 	if (ang_dist>0.25)
 		hints->drawHints(nav, prj);
-}
-
-void Body::removeSatellite(std::shared_ptr<Body> planet)
-{
-	std::list<std::shared_ptr<Body>>::iterator iter;
-	for (iter=satellites.begin(); iter != satellites.end(); iter++) {
-		if ( (*iter) == planet ) {
-			satellites.erase(iter);
-			break;
-		}
-	}
 }
 
 void Body::drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat)
