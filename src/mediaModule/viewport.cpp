@@ -155,6 +155,7 @@ void ViewPort::displayStop()
 {
 	isAlive = false;
 	fader=false;
+	disable_fader=false;
 	fader.reset(false);
 	uFrag->get().transparency = VK_FALSE;
 	uFrag->get().noColor = Vec4f::null();
