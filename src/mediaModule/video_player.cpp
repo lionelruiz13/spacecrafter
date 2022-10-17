@@ -473,37 +473,26 @@ void VideoPlayer::recordUpdateDependency(VkCommandBuffer cmd)
 
 void VideoPlayer::mainloop()
 {
-	mtx.lock();
 	int frameIdx;
 	requestQueue.acquire();
 	while (requestQueue.pop(frameIdx)) {
 		if (wantInterrupt) {
-			mtx.unlock();
 			requestQueue.abortPending();
-			wantInterrupt = false;
 			continue;
 		}
-		switch (frameIdx) {
-			case VideoThreadEvent::INTERRUPT:
-				break;
-			case VideoThreadEvent::RESUME:
-				mtx.lock();
-				break;
-			default:
-				getNextVideoFrame(frameIdx);
-		}
+		getNextVideoFrame(frameIdx);
 	}
 	requestQueue.release();
-	mtx.unlock();
 }
 
 void VideoPlayer::threadInterrupt()
 {
 	wantInterrupt = true;
-	requestQueue.emplace(VideoThreadEvent::INTERRUPT); // In case the requestQueue was empty
+	requestQueue.interrupt();
+	wantInterrupt = false;
+	requestQueue.abortPending();
 	needFrames = 0;
 	plannedFrames = 0;
-	mtx.lock(); // Block until the video thread stop decoding frames.
 	decodeEnd = false;
 	int frameIdx;
 	while (displayQueue.pop(frameIdx));
@@ -511,8 +500,5 @@ void VideoPlayer::threadInterrupt()
 
 void VideoPlayer::threadResume()
 {
-	if (wantInterrupt)
-		requestQueue.waitIdle(); // Ensure the thread interruption has completed
-	requestQueue.emplace(VideoThreadEvent::RESUME);
-	mtx.unlock();
+	requestQueue.resume();
 }

@@ -179,7 +179,6 @@ private:
 	// Resume video thread
 	void threadResume();
 	std::thread thread;
-	std::mutex mtx;
 	PushQueue<int, MAX_CACHED_FRAMES> displayQueue; // Frames ready to display
 	WorkQueue<int, MAX_CACHED_FRAMES> requestQueue; // Frames to compute
 };
