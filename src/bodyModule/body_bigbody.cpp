@@ -242,7 +242,10 @@ float BigBody::getOnScreenSize(const Projector* prj, const Navigator * nav, bool
 
 double BigBody::calculateBoundingRadius()
 {
-	double d = radius.final();
+	double d = radius;
+
+	if (hasAtmosphere)
+		d *= 1.1; // Atmosphere shouldn't be bigger than that
 
 	if (rings)
         d = rings->getOuterRadius();
@@ -369,8 +372,11 @@ void BigBody::setSphereScale(float s, bool initial_scale)
 void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
 	Body::update(delta_time, nav, timeMgr);
-	if (radius.isScaling() && rings!=nullptr)
-		rings->multiplyRadius(radius/initialRadius);
+	if (radius.isScaling()) {
+        calculateBoundingRadius();
+        if (rings)
+            rings->multiplyRadius(radius/initialRadius);
+    }
 }
 
 void BigBody::drawRings(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)

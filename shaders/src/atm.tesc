@@ -38,7 +38,7 @@ void main(void)
             v2 -= v0;
         }
         vec3 tes = vec3(distance(v1, v2), length(v2), length(v1));
-        if (v1.x * v2.y > v1.y * v2.x || centerDistance > (1 + (tes.x + tes.y + tes.z)/2)) {
+        if (v1.x * v2.y < v1.y * v2.x || centerDistance > (1 + (tes.x + tes.y + tes.z)/2)) {
             gl_TessLevelInner[0]=0;
             gl_TessLevelOuter[0]=0;
             gl_TessLevelOuter[1]=0;
