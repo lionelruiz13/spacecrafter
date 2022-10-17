@@ -76,6 +76,7 @@ void SSystemFactory::changeSystem(const std::string &mode)
         try {
             currentSystem = systems.at(mode).get();
         } catch (...) {
+            // currentSystem = systems[mode] = createSystem(mode);
             return;
         }
     }

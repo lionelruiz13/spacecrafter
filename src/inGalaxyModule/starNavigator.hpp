@@ -202,7 +202,7 @@ private:
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<Set> set;
 	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
-	std::unique_ptr<StarViewer> starViewer;
+	std::unique_ptr<StarViewer> starViewer; // Unique procedurally generated star
 	std::unique_ptr<SharedBuffer<VkDrawIndirectCommand>> drawData;
 	//initialization of shader and VAO-VBO
 	void createSC_context();
