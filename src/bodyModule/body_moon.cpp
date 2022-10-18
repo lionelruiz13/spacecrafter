@@ -300,6 +300,7 @@ void Moon::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator 
     uGlobalVertProj->get().planetOneMinusOblateness = one_minus_oblateness;
 
     currentObj->draw(cmd, screen_sz);
+    drawAtmExt(cmd, prj, nav, matrix, screen_sz, depthTest);
 }
 
 void Moon::handleVisibilityFader(const Observer* observatory, const Projector* prj, const Navigator * nav)
