@@ -1766,9 +1766,6 @@ void Core::setFlagTracking(bool b)
 		navigation->setFlagTraking(0);
 	} else if ( !navigation->getFlagTraking()) {
 		navigation->moveTo(selected_object.getEarthEquPos(navigation), getAutoMoveDuration());
-		setHomePlanet(selected_object.getEnglishName());
-		selectObject("planet", selected_object.getEnglishName());
-		setFlagSelectedObjectPointer(true);
 		navigation->setFlagTraking(1);
 	}
 }
