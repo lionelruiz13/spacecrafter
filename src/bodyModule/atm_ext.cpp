@@ -14,13 +14,8 @@ public:
     _dataSet() :
         layout(*VulkanMgr::instance),
         pipeline(*VulkanMgr::instance, *Context::instance->render, PASS_BACKGROUND),
-        pipelineNoDepth(*VulkanMgr::instance, *Context::instance->render, PASS_BACKGROUND),
-        texture("test/AtmosphereGradient3.jpg", TEX_LOAD_TYPE_PNG_ALPHA)
+        pipelineNoDepth(*VulkanMgr::instance, *Context::instance->render, PASS_BACKGROUND)
     {
-        if (texture.getTexture().getTextureSize() < 32) {
-            enabled = false; // The texture is not loaded
-            return;
-        }
         layout.setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0);
         layout.setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
         layout.buildLayout();
@@ -58,23 +53,23 @@ public:
     ~_dataSet() = default;
     PipelineLayout layout;
     Pipeline pipeline, pipelineNoDepth;
-    s_texture texture;
     bool enabled = true;
 };
 
 std::weak_ptr<AtmExt::_dataSet> AtmExt::_shared;
 
-AtmExt::AtmExt(Body *parent, ObjL *obj) :
-    uniform(*Context::instance->uniformMgr), parent(*parent), obj(obj)
+AtmExt::AtmExt(Body *parent, ObjL *obj, const std::string &model) :
+    uniform(*Context::instance->uniformMgr), parent(*parent), obj(obj), texture(model, TEX_LOAD_TYPE_PNG_ALPHA)
 {
+    if (texture.getTexture().getTextureSize() < 32)
+        return;
     shared = _shared.lock();
     if (!shared)
         _shared = shared = std::make_shared<_dataSet>();
-    if (shared->enabled) {
-        set = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, &shared->layout, -1, true, true);
-        set->bindUniform(uniform, 0);
-        set->bindTexture(shared->texture.getTexture(), 1);
-    }
+    set = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, &shared->layout, -1, true, true);
+    set->bindUniform(uniform, 0);
+    set->bindTexture(texture.getTexture(), 1);
+    enabled = true;
 }
 
 AtmExt::~AtmExt()
@@ -83,7 +78,7 @@ AtmExt::~AtmExt()
 
 void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float screen_sz, bool depthTest)
 {
-    if (shared->enabled) {
+    if (enabled) {
         uniform->ModelViewMatrix = mat;
         uniform->sunPos = sunPos;
         uniform->planetRadius = radius;

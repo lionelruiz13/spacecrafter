@@ -12,7 +12,7 @@ class ObjL;
 
 class AtmExt {
 public:
-    AtmExt(Body *parent, ObjL *obj);
+    AtmExt(Body *parent, ObjL *obj, const std::string &model);
     ~AtmExt();
 
     void draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float screen_sz, bool depthTest);
@@ -37,6 +37,8 @@ private:
     Body &parent;
     ObjL *obj;
     std::unique_ptr<Set> set;
+    s_texture texture;
+    bool enabled = false;
 };
 
 #endif /* end of include guard: ATM_EXT_HPP_ */

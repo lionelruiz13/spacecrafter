@@ -86,6 +86,20 @@ static ATMOSPHERE_MODEL setAtmosphere(const std::string& atmModel)
 	return ATMOSPHERE_MODEL::NONE_MODEL;
 }
 
+static std::string setAtmosphereTable(ATMOSPHERE_MODEL atmModel)
+{
+	switch (atmModel) {
+		case ATMOSPHERE_MODEL::EARTH_MODEL:
+			return "bodies/AtmosphereGradient3.jpg";
+		case ATMOSPHERE_MODEL::VENUS_MODEL:
+			return "bodies/AtmosphereGradient2.jpg";
+		case ATMOSPHERE_MODEL::MARS_MODEL:
+			return "bodies/AtmosphereGradient4.jpg";
+		default:
+			return {};
+	}
+}
+
 // Init and load the solar system data
 void ProtoSystem::load(const std::string& planetfile)
 {
@@ -891,6 +905,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 		tmp = new(AtmosphereParams);
 		tmp->hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
 		tmp->modelAtmosphere = setAtmosphere(param["atmosphere_model"]);
+		tmp->tableAtmosphere = setAtmosphereTable(tmp->modelAtmosphere);
 		tmp->limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
 		tmp->limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
 		tmp->limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);
