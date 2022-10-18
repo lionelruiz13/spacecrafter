@@ -360,20 +360,19 @@ void Nebula::drawTex(const Projector* prj, const Navigator* nav, ToneReproductor
 	if (flagBright && sky_brightness < 0.011 && ( nebulaScreenSize < maxZoom) && (nebulaScreenSize > minZoom)) {
 	       // fade the nebula while zooming
 	       color = (nebulaScreenSize - minZoom) / ( maxZoom - minZoom );
-	       color *= nebulaBrightness;
-	} else if (flagBright && sky_brightness < 0.011 && (getOnScreenSize(prj, nav) > maxZoom)) {
-
-		//cout << "Bright nebula drawn for" << getEnglishName() << endl;
-		color *= nebulaBrightness;
+	} else if (flagBright && sky_brightness < 0.011 && (nebulaScreenSize > maxZoom)) {
 	} else {
 		// TODO this should be revisited to be less ad hoc
+		if (tex_avg_luminance == 0)
+			return;
 		// 3 is a fudge factor since only about 1/3 of a texture is not black background
 		float cmag = 3 * ad_lum / tex_avg_luminance * texLuminanceAdjust;
-		color = color * cmag * nebulaBrightness;
+		color = (cmag < 1) ? cmag : 1;
 		//cout << "No bright nebula drawn for" << getEnglishName() << endl;
 	}
-
-	drawData.color = color;
+	if (color < 0.001)
+		return;
+	drawData.color = color * nebulaBrightness;
 	Context::instance->helper->draw(&drawData);
 }
 
