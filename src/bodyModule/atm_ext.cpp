@@ -2,6 +2,7 @@
 #include "EntityCore/Resource/Pipeline.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Resource/Set.hpp"
+#include "EntityCore/Resource/Texture.hpp"
 #include "tools/context.hpp"
 #include "tools/s_texture.hpp"
 #include "coreModule/projector.hpp"
@@ -16,6 +17,10 @@ public:
         pipelineNoDepth(*VulkanMgr::instance, *Context::instance->render, PASS_BACKGROUND),
         texture("test/AtmosphereGradient3.jpg", TEX_LOAD_TYPE_PNG_ALPHA)
     {
+        if (texture.getTexture().getTextureSize() < 32) {
+            enabled = false; // The texture is not loaded
+            return;
+        }
         layout.setUniformLocation(VK_SHADER_STAGE_FRAGMENT_BIT | VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT | VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT | VK_SHADER_STAGE_VERTEX_BIT, 0);
         layout.setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
         layout.buildLayout();
@@ -54,6 +59,7 @@ public:
     PipelineLayout layout;
     Pipeline pipeline, pipelineNoDepth;
     s_texture texture;
+    bool enabled = true;
 };
 
 std::weak_ptr<AtmExt::_dataSet> AtmExt::_shared;
@@ -64,26 +70,34 @@ AtmExt::AtmExt(Body *parent, ObjL *obj) :
     shared = _shared.lock();
     if (!shared)
         _shared = shared = std::make_shared<_dataSet>();
-    set = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, &shared->layout, -1, true, true);
-    set->bindUniform(uniform, 0);
-    set->bindTexture(shared->texture.getTexture(), 1);
+    if (shared->enabled) {
+        set = std::make_unique<Set>(*VulkanMgr::instance, *Context::instance->setMgr, &shared->layout, -1, true, true);
+        set->bindUniform(uniform, 0);
+        set->bindTexture(shared->texture.getTexture(), 1);
+    }
 }
 
 AtmExt::~AtmExt()
 {
 }
 
-void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, float radius, float screen_sz, bool depthTest)
+void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float screen_sz, bool depthTest)
 {
-    uniform->ModelViewMatrix = mat;
-    uniform->clipping_fov = prj->getClippingFov();
-    uniform->planetRadius = radius;
-    uniform->atmRadius = radius * 1.05; // Constant for experimental version
-    uniform->atmAlpha = 1; // Apply fader here
-    if (depthTest)
-        shared->pipeline.bind(cmd);
-    else
-        shared->pipelineNoDepth.bind(cmd);
-    shared->layout.bindSet(cmd, *set);
-    obj->draw(cmd, screen_sz);
+    if (shared->enabled) {
+        uniform->ModelViewMatrix = mat;
+        uniform->sunPos = sunPos;
+        uniform->planetRadius = radius;
+        uniform->bodyPos = bodyPos;
+        uniform->planetOneMinusOblateness = planetOneMinusOblateness;
+        uniform->clipping_fov = prj->getClippingFov();
+        uniform->atmRadius = radius * 1.05;
+        uniform->TesParam = TesParam;
+        uniform->atmAlpha = 1; // Apply fader here
+        if (depthTest)
+            shared->pipeline.bind(cmd);
+        else
+            shared->pipelineNoDepth.bind(cmd);
+        shared->layout.bindSet(cmd, *set);
+        obj->draw(cmd, screen_sz);
+    }
 }

@@ -936,12 +936,7 @@ void Body::drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator
     if (hasAtmosphere && screen_sz > 10) {
         if (!atmExt) // AtmExt creation is fast AND never grouped
             atmExt = std::make_unique<AtmExt>(this, currentObj);
-        // Pass everything internal to this body
-        atmExt->uniform->sunPos = eye_sun;
-        atmExt->uniform->bodyPos = eye_planet;
-        atmExt->uniform->planetOneMinusOblateness = one_minus_oblateness;
-        atmExt->uniform->TesParam.set(bodyTesselation->getMinTesLevel(), bodyTesselation->getMaxTesLevel());
-        atmExt->draw(cmd, prj, nav, mat, radius, screen_sz, depthTest);
+        atmExt->draw(cmd, prj, nav, mat, eye_sun, eye_planet, one_minus_oblateness, Vec2i(bodyTesselation->getMinTesLevel(), bodyTesselation->getMaxTesLevel()), radius, screen_sz, depthTest);
     }
 }
 

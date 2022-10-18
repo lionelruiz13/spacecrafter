@@ -15,7 +15,7 @@ public:
     AtmExt(Body *parent, ObjL *obj);
     ~AtmExt();
 
-    void draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, float radius, float screen_sz, bool depthTest);
+    void draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float screen_sz, bool depthTest);
 
     struct _uniform {
         Mat4f ModelViewMatrix;
@@ -28,10 +28,11 @@ public:
         Vec2i TesParam;
         float atmAlpha; // this value is a scale for atmosphere transparency
     };
-    SharedBuffer<_uniform> uniform;
 private:
     class _dataSet;
     static std::weak_ptr<_dataSet> _shared;
+
+    SharedBuffer<_uniform> uniform;
     std::shared_ptr<_dataSet> shared;
     Body &parent;
     ObjL *obj;

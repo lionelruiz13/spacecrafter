@@ -402,7 +402,7 @@ public:
 
 	void setAtmosphereParams(AtmosphereParams* tmp ) {
 		atmosphereParams = tmp;
-		// hasAtmosphere = true; // EXPERIMENTAL
+		hasAtmosphere = tmp && (tmp->modelAtmosphere == ATMOSPHERE_MODEL::EARTH_MODEL);
 	}
 
 	void switchMapSkin(bool a);
