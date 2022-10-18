@@ -81,6 +81,7 @@ enum TURN_AROUND {tANothing = 0, tACenter = 1, tABody = 2};
 typedef struct AtmosphereParams {
 	bool hasAtmosphere = false;
 	ATMOSPHERE_MODEL modelAtmosphere = ATMOSPHERE_MODEL::NONE_MODEL;
+	std::string tableAtmosphere;
 	float limInf = 0.f;
 	float limSup = 0.f;
 	float limLandscape = 0.f;
@@ -402,7 +403,7 @@ public:
 
 	void setAtmosphereParams(AtmosphereParams* tmp ) {
 		atmosphereParams = tmp;
-		// hasAtmosphere = true; // EXPERIMENTAL
+		hasAtmosphere = tmp && !tmp->tableAtmosphere.empty();
 	}
 
 	void switchMapSkin(bool a);

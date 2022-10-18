@@ -22,13 +22,21 @@ void main(void)
 {
     // Normalized ray from the camera to the atmosphere entrypoint
     vec3 ray = normalize(pos);
+    vec3 pos2 = pos/planetRadius;
+    vec3 bodyPos2 = bodyPos/planetRadius;
+    vec3 rayToSun = normalize(sunPos - bodyPos);
+    float atmRadius2 = atmRadius/planetRadius;
+    // NEW CODE
+    // What is known : touch atmosphere
+    // What is not : touch earth
+    // END CODE
 
     // may be used to make a sun throug atmosphere
     //vec3 sunCamPos   = (UBOData.view*vec4(0.0,0.0,0.0,1.0)).xyz;
 
     // Body position (not eye coordinnates)
 
-    vec3 sunToPxl = pos - sunPos;
+    // vec3 sunToPxl = pos - sunPos;
 
 
     // So first step is know whether the light hit the ground or
@@ -36,9 +44,9 @@ void main(void)
     // line/sphere collision:
     //https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
     // delta = (F.(C-O))²-||C-O||²+r²
-    vec3 OC = -bodyPos;
-    float b = dot(ray,OC);
-    float delta = b*b -dot(OC,OC)+ planetRadius*planetRadius;
+    vec3 OC = -bodyPos2;
+    float b = dot(ray,OC); //= -0,0000504613 * x
+    float delta = b*b -dot(OC,OC) +1;//;+ planetRadius*planetRadius;
     float deltaAtm;
 
     float result;
@@ -50,7 +58,7 @@ void main(void)
 
     } else {
         // atmosphère touchée
-        deltaAtm = delta + atmRadius*atmRadius - planetRadius*planetRadius;
+        deltaAtm = delta + atmRadius2*atmRadius2 -1;// - planetRadius*planetRadius;
 
         float deltasqrt = sqrt(deltaAtm);
         result =  -b + deltasqrt;
@@ -59,7 +67,7 @@ void main(void)
     // get the intersection point
     vec3 intersect = ray*result;
     // Now we now the distance traveled by the light in the atmosphere
-    vec3 atmVec= intersect - pos;
+    vec3 atmVec= intersect - pos2;
     float atmLength = length(atmVec);
 
     // we got enough to get the lowest point reached by our atmosphere vector
@@ -68,7 +76,7 @@ void main(void)
     if (delta>0)
         gradUV.y = 0.9;
     else
-        gradUV.y = (length((pos+ atmVec*0.5)-bodyPos)-planetRadius)/(atmRadius-planetRadius);
+        gradUV.y = (length((pos2+ atmVec*0.5)-bodyPos2)-1)/(atmRadius2-1); // 1 was planetRadius
 
 
     // Now we'll make some ray tracing to get an accurate shadow in the atmosphere.
@@ -81,7 +89,7 @@ void main(void)
     #define NBPOINTS 20
     #define NBPOINTSINV 0.05
     vec3 point;
-    OC = sunPos - bodyPos;
+    OC = rayToSun;
     float scatteredLight=0.0;
     vec3 sunToPoint [NBPOINTS];
     vec4 sunColor = vec4(1.0,1.0,0.3,1.0);
@@ -90,25 +98,25 @@ void main(void)
     // we compute the first point separately
     sunToPoint[0] = normalize(pos - sunPos);
     b = dot(sunToPoint[0],OC);
-    delta = b*b -dot(OC,OC)+ planetRadius*planetRadius;
+    delta = b*b -dot(OC,OC) +1;//+ planetRadius*planetRadius;
     if (delta<0.0) {
         scatteredLight+=NBPOINTSINV*atmAlpha;
-        if (dot(pos-bodyPos,sunPos-bodyPos)>0)
+        if (dot(pos2-bodyPos2,rayToSun)>0)
             scatteredLight+=NBPOINTSINV*atmAlpha;
     }
 
     for (int i=1; i<NBPOINTS; i++) {
         float floati = i;
-        point = pos+ atmVec*NBPOINTSINV*floati;
+        point = pos2+ atmVec*NBPOINTSINV*floati;
 
         // we first test if the point face the sun to improve performances
-        if (dot(point-bodyPos,sunPos-bodyPos)>0) {
+        if (dot(point-bodyPos2,rayToSun)>0) {
             scatteredLight+=NBPOINTSINV*atmAlpha;
         } else {
             // in the other case we need to test the collision with the earth
-            sunToPoint[i] = normalize(point - sunPos);
+            sunToPoint[i] = -rayToSun;
             b = dot(sunToPoint[i],OC);
-            delta = b*b -dot(OC,OC)+ planetRadius*planetRadius;
+            delta = b*b -dot(OC,OC)+ 1;//planetRadius*planetRadius;
             if (delta<0.0) {
                 scatteredLight+=NBPOINTSINV*atmAlpha;
 
@@ -144,10 +152,10 @@ void main(void)
     // http://petrocket.blogspot.fr/2010/04/atmosphere-shader-update-and-treegrass.html
     float StretchAmount = 0.5;
     float ln,lnn,lc;
-    ln  = -dot(sunToPoint[0], normalize(pos - bodyPos));
+    ln  = -dot(sunToPoint[0], normalize(pos2 - bodyPos2));
     //lnn = dot(-sunToPoint[0], normalize(camPos - fs_in.pos));
     lnn = -dot(sunToPoint[0], -ray);
-    lc  = -dot(sunToPoint[0], normalize(-bodyPos));
+    lc  = -dot(sunToPoint[0], normalize(-bodyPos2));
 
     ln  = max(0,ln  + StretchAmount);
     lnn = max(0,lnn + StretchAmount);
@@ -165,7 +173,7 @@ void main(void)
     // % of the segment in the atmosphere enlightened *
     // length of this segment * a custom value to get the result closer to [0.1]
     // because the length of this segment depends of your sphere's rayons.
-    skyColor.a = scatteredLight*(atmLength*1.5);
+    skyColor.a = scatteredLight*(atmLength);
 
     color = skyColor /* * (1.0-sunAmount) + sunColor*sunAmount*/;
 }
