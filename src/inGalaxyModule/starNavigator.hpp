@@ -170,7 +170,7 @@ public:
 
 	starInfo* getStarInfo(unsigned int HIPName) const;
 
-	std::string getStarName(unsigned int HIPName) const;
+	static std::string getStarName(unsigned int HIPName);
 
 	std::vector<ObjectBaseP> searchAround(Vec3d v, double limitFov, const Navigator *nav);
 

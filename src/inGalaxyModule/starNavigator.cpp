@@ -223,7 +223,7 @@ starInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
 	return starMgr->findStar(HIPName);
 }
 
-std::string StarNavigator::getStarName(unsigned int HIPName) const {
+std::string StarNavigator::getStarName(unsigned int HIPName) {
 	return common_names_map_i18n[HIPName];
 }
 

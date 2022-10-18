@@ -52,6 +52,11 @@ std::string Star3DWrapper::getShortInfoString(const Navigator *nav) const
 	oss.setf(std::ios::fixed, std::ios::floatfield);
 	oss.precision(2);
 	oss << "Magnitude: " << getMag(nav);
+	std::string name = StarNavigator::getStarName(star->HIP);
+	if (!name.empty())
+		oss << " Name: " << StarNavigator::getStarName(star->HIP);
+	else
+		oss << " Name: " << star->HIP;
 	return oss.str();
 }
 
