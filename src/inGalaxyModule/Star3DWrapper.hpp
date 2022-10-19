@@ -84,6 +84,6 @@ public:
 private:
     int refCount = 0;
     // observer's position in parsec
-	Vec3f pos;
     starInfo *star;
+	Vec3f pos;
 };
