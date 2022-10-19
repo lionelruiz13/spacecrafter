@@ -60,3 +60,13 @@ std::string Star3DWrapper::getShortInfoString(const Navigator *nav) const
 	return oss.str();
 }
 
+float Star3DWrapper::getMag(const Navigator *nav) const
+{
+	float x = -star->posXYZ[0];
+	float y = star->posXYZ[1];
+	float z = star->posXYZ[2];
+	float dist =sqrt((x-pos[0])*(x-pos[0]) + (y-pos[1])*(y-pos[1]) +(z-pos[2])*(z-pos[2]));
+	float mag_v = star->mag+5*(log10(dist)-1);
+	return mag_v;
+}
+

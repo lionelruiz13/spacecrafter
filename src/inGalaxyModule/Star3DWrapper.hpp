@@ -29,7 +29,7 @@
 
 class Star3DWrapper : public ObjectBase {
 public:
-    Star3DWrapper(starInfo *star) : star(star) {}
+    Star3DWrapper(starInfo *star, Vec3f pos) : star(star), pos(pos) {}
     virtual ~Star3DWrapper() = default;
 
     virtual void retain() override {
@@ -75,9 +75,7 @@ public:
         return nav->earthEquToJ2000(getEarthEquPos(nav));
     }
 
-    virtual float getMag(const Navigator *nav) const override {
-        return star->mag;
-    }
+    virtual float getMag(const Navigator *nav) const override;
 
     float getBV(void) const {
 		return star->B_V;
@@ -85,5 +83,7 @@ public:
 
 private:
     int refCount = 0;
+    // observer's position in parsec
+	Vec3f pos;
     starInfo *star;
 };

@@ -578,7 +578,7 @@ std::vector<ObjectBaseP> StarNavigator::searchAround(Vec3d v, double limitFov, c
 		tmp.normalize();
 		float dotProduct = tmp.dot(v);
 		if (dotProduct > cosLimitFov)
-			result.push_back(new Star3DWrapper(star));
+			result.push_back(new Star3DWrapper(star, pos));
 	}
 	return result;
 }
