@@ -616,14 +616,13 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scali
 	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
 
 	for (auto &s: listGlobalStarVisible) {
-		float max_mag_star_name = 1.5;
 		float x = -s->posXYZ[0];
 		float y = s->posXYZ[1];
 		float z = s->posXYZ[2];
 		float dist =sqrt((x-pos[0])*(x-pos[0]) + (y-pos[1])*(y-pos[1]) +(z-pos[2])*(z-pos[2]));
 		float mag_v = s->mag+5*(log10(dist)-1);
 
-		if (mag_v < max_mag_star_name) {
+		if (mag_v < maxMagStarName) {
 			const std::string starname = getStarName(s->HIP);
 			if (!starname.empty()) {
 
