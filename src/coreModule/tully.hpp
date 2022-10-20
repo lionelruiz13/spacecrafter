@@ -149,7 +149,7 @@ private:
 	//camera position
 	Vec3f camPos;
 	//fixed float array for openGL buffers
-	std::vector<std::string> nameTully;
+	std::vector<float> nameTully;
 	std::vector<float> posTully;
 	std::vector<float> colorTully;
 	std::vector<float> texTully;

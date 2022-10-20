@@ -60,6 +60,7 @@ Tully::~Tully()
 	colorTully.clear();
 	texTully.clear();
 	scaleTully.clear();
+	nameTully.clear();
 }
 
 void Tully::createSC_context()
@@ -76,7 +77,7 @@ void Tully::createSC_context()
 	layout->build();
 
 	m_pointsGL = std::make_unique<VertexArray>(vkmgr);
-	m_pointsGL->createBindingEntry(8 * sizeof(float));
+	m_pointsGL->createBindingEntry(9 * sizeof(float));
 	m_pointsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Pos3D
 	m_pointsGL->addInput(VK_FORMAT_R32G32B32_SFLOAT); // Color
 	m_pointsGL->addInput(VK_FORMAT_R32_SFLOAT); // Mag
@@ -139,8 +140,8 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		return false;
 	}
 
-	std::string line, index; // variable which will contain each line of the file
-	int typeGalaxy;
+	std::string line; // variable which will contain each line of the file
+	int index, typeGalaxy;
 	float r,g,b,x,y,z,xr,yr,zr;
 
 	/*
@@ -161,7 +162,7 @@ bool Tully::loadCatalog(const std::string &cat) noexcept
 		yr=-200.f*z;
 		zr=200.f*y;
 
-		insert_all(nameTully, index);
+		nameTully.push_back(index);
 		insert_all(posTully, xr, yr, zr);
 		insert_all(colorTully, r, g, b);
 
@@ -257,7 +258,7 @@ bool Tully::loadBigCatalog(const std::string &cat, float optimalDistance) noexce
 	file.close();
 
 	vertexPointsExt = m_pointsGL->createBuffer(0, vertexCount, context.globalBuffer.get());
-	context.transfer->endPlanCopy(vertexPointsExt->get(), vertexCount * 8 * sizeof(float));
+	context.transfer->endPlanCopy(vertexPointsExt->get(), vertexCount * 9 * sizeof(float));
 
 	needRebuild = true;
 	return true;
@@ -316,12 +317,12 @@ void Tully::buildInternal()
 
 void Tully::buildVertexSplit()
 {
-	sortedDataTully.resize(nbGalaxy * 8);
+	sortedDataTully.resize(nbGalaxy * 9);
 	float *staging = sortedDataTully.data();
 	if (withObject) {
 		drawDataPointFirstOffset = 0;
 		drawDataPointSecondSize = 0;
-		float *reverseStaging = staging + nbGalaxy * 8;
+		float *reverseStaging = staging + nbGalaxy * 9;
 		float x,y,z;
 		// Put the element behind from top to back, and element over from back to top
 		for(unsigned int i=0; i< nbGalaxy;i++) {
@@ -345,9 +346,11 @@ void Tully::buildVertexSplit()
 				*(staging++) = colorTully[i*3+2];
 				*(staging++) = texTully[i];
 				*(staging++) = scaleTully[i];
+				*(staging++) = nameTully[i];
 			} else {
 				// Over the center, regarding to the local z plane
 				++drawDataPointSecondSize;
+				*--reverseStaging = nameTully[i];
 				*--reverseStaging = scaleTully[i];
 				*--reverseStaging = texTully[i];
 				*--reverseStaging = colorTully[i*3+2];
@@ -368,6 +371,7 @@ void Tully::buildVertexSplit()
 		vertexPoints->fillEntry(3, nbGalaxy, colorTully.data(), staging + 3);
 		vertexPoints->fillEntry(1, nbGalaxy, texTully.data(), staging + 6);
 		vertexPoints->fillEntry(1, nbGalaxy, scaleTully.data(), staging + 7);
+		vertexPoints->fillEntry(1, nbGalaxy, nameTully.data(), staging + 8);
 		planeOrder = 0;
 	}
 	std::memcpy(Context::instance->transfer->planCopy(vertexPoints->get()), sortedDataTully.data(), vertexPoints->get().size);
@@ -408,13 +412,13 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 	c = camPosition[2];
 	int squareOffset = 0;
 	for(unsigned int i=0; i< nbGalaxy;i++) {
-		x=sortedDataTully[8*i];
-		y=sortedDataTully[8*i+1];
-		z=sortedDataTully[8*i+2];
+		x=sortedDataTully[9*i];
+		y=sortedDataTully[9*i+1];
+		z=sortedDataTully[9*i+2];
 
 		//only galaxies large enough to be displayed are selected
         distance=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
-		radius = 3.0/(distance*sortedDataTully[8*i+7]);
+		radius = 3.0/(distance*sortedDataTully[9*i+7]);
 		if (radius<2)
 			continue;
 
@@ -423,7 +427,7 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		tmp.position = Vec3f(x,y,z);
 		tmp.distance = distance;
 		tmp.radius = radius;
-		tmp.texture = sortedDataTully[8*i+6];
+		tmp.texture = sortedDataTully[9*i+6];
 		tmp.planeSide = (i >= drawDataPointFirstOffset) ^ planeOrder;
 		squareOffset += !tmp.planeSide;
 		lTmpTully.push_back(tmp);
@@ -535,11 +539,10 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 	a = camPos[0];
 	b = camPos[1];
 	c = camPos[2];
-
 	for(unsigned int i=0; i< nbGalaxy;i++) {
-		x=sortedDataTully[8*i];
-		y=sortedDataTully[8*i+1];
-		z=sortedDataTully[8*i+2];
+		x=sortedDataTully[9*i];
+		y=sortedDataTully[9*i+1];
+		z=sortedDataTully[9*i+2];
 
 		Vec3f pos(x, y, z);
 		pos = nav->helioToEarthPosEqu(pos);
@@ -549,19 +552,17 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 
         distanceGal=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
 		if (distanceGal < 0.01) {
-			std::string galaxyName = nameTully[i];
+			std::string galaxyName = std::to_string(int(sortedDataTully[9*i+8]));
 			if (!galaxyName.empty()) {
 				// Vec4f Color(HipStarMgr::color_table[int(colorTully[i*3+0]*255)][0]*0.75,
 				// 			HipStarMgr::color_table[int(colorTully[i*3+1]*255)][1]*0.75,
 				// 			HipStarMgr::color_table[int(colorTully[i*3+2]*255)][2]*0.75,
 				// 			names_brightness);
-				Vec4f Color(colorTully[i*3+0], colorTully[i*3+1], colorTully[i*3+2], names_brightness);
-				// printf("color: %f, %f, %f\n", colorTully[i*3+0], colorTully[i*3+1], colorTully[i*3+2]);
-
+				Vec4f Color(sortedDataTully[9*i+3], sortedDataTully[9*i+4], sortedDataTully[9*i+5], names_brightness);
+				// printf("color: %f, %f, %f\n", sortedDataTully[9*i+3], sortedDataTully[9*i+4], sortedDataTully[9*i+5]);
 				galaxyNameToDraw.push_back(std::make_tuple(screenposd[0],screenposd[1], galaxyName, Color));
 			}
 		}
 	}
-
 	this->drawGalaxyName(prj);
 }
