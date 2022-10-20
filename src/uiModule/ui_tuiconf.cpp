@@ -258,7 +258,7 @@ void UI::initTui()
 	tui_stars_show->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbStars));
 	tui_star_magscale = new s_tui::DecimalItem(0,30, 1,std::string("4.2 "), 0.1 );
 	tui_star_magscale->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbStars));
-	tui_star_labelmaxmag = new s_tui::DecimalItem(-1.5, 10., 2,std::string("4.3 ") );
+	tui_star_labelmaxmag = new s_tui::DecimalItem(-1.5, 9.5, 1.5,std::string("4.3 "),0.5 );
 	tui_star_labelmaxmag->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbStars));
 	tui_stars_twinkle = new s_tui::DecimalItem(0., 1., 0.3,std::string("4.4 "), 0.1);
 	tui_stars_twinkle->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbStars));
