@@ -57,7 +57,7 @@ public:
 	}
 
     virtual std::string getEnglishName() const override {
-        return "";
+        return StarNavigator::getStarName(star->HIP);
     }
 
     virtual void getRaDeValue(const Navigator *nav,double *ra, double *de) const override {
