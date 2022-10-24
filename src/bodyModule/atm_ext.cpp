@@ -20,6 +20,8 @@ public:
         layout.setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
         layout.buildLayout();
         layout.build();
+        auto tmp = BLEND_SRC_ALPHA;
+        tmp.colorBlendOp = VK_BLEND_OP_MAX;
 
         pipeline.bindLayout(layout);
         pipeline.setCullMode(true);
@@ -29,12 +31,14 @@ public:
         pipeline.setTessellationState(3);
         pipeline.removeVertexEntry(1);
         pipeline.removeVertexEntry(2);
+        pipeline.setBlendMode(tmp);
         pipeline.bindShader("atm.vert.spv");
         pipeline.bindShader("atm.tesc.spv");
         pipeline.bindShader("atm.tese.spv");
         pipeline.bindShader("atm.frag.spv");
         pipeline.build("AtmExt");
 
+        pipelineNoDepth.setDepthStencilMode();
         pipelineNoDepth.bindLayout(layout);
         pipelineNoDepth.setCullMode(true);
         pipelineNoDepth.setFrontFace();
@@ -43,11 +47,11 @@ public:
         pipelineNoDepth.setTessellationState(3);
         pipelineNoDepth.removeVertexEntry(1);
         pipelineNoDepth.removeVertexEntry(2);
+        pipeline.setBlendMode(tmp);
         pipelineNoDepth.bindShader("atm.vert.spv");
         pipelineNoDepth.bindShader("atm.tesc.spv");
         pipelineNoDepth.bindShader("atm.tese.spv");
         pipelineNoDepth.bindShader("atm.frag.spv");
-        pipelineNoDepth.setDepthStencilMode();
         pipelineNoDepth.build("AtmExt noDepth");
     }
     ~_dataSet() = default;
