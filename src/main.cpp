@@ -312,6 +312,7 @@ int main(int argc, const char *argv[])
 		.redirectLog=cLog::writeECLog, .cachePath=ini->getUserDir()+"cache/", .logPath=appDir+"log/",
 		.swapchainUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, .chunkSize=256, .forceSwapchainCount=3,
 		.enableDebugLayers=conf.getBoolean(SCS_MAIN, SCK_DEBUG_LAYER), .drawLogs=conf.getBoolean(SCS_MAIN, SCK_DEBUG),
+		.saveLogs=conf.getBoolean(SCS_MAIN, SCK_LOG), .preserveCrashLogs = true,
 		.preferIntegrated=false, .allowOverrides=true, .customReleaseMemory=&s_texture::releaseUnusedMemory
 	};
 	vkmgrInfo.requiredFeatures.features.geometryShader = VK_TRUE;
