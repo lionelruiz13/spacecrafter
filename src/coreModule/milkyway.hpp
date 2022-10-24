@@ -168,6 +168,10 @@ public:
 		allowZodiacal = _allowZodiacal;
 	}
 
+	void setPollum(float value) {
+		pollum = value;
+	}
+
 private:
 	struct MilkyData{
 		std::string name; // the exact name of the texture

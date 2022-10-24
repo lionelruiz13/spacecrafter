@@ -1572,6 +1572,8 @@ void Core::setLightPollutionLimitingMagnitude(float mag) {
 	float ln = log(mag);
 	float lum = 30.0842967491175 -19.9408790405749*ln +2.12969160094949*ln*ln - .2206;
 	atmosphere->setLightPollutionLuminance(lum);
+	float pollum = (pollum < 0) ? 0 : (5.0-mag)*0.1;
+	milky_way->setPollum(pollum);
 	//int nb = int(mag);
 	//if (nb == 0) nb = 1;
 	//milky_way->changeMilkywayStateWithoutIntensity(AppSettings::Instance()->getTextureDir() + "milkyway" + std::to_string(nb) + ".png");

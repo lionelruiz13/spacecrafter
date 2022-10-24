@@ -345,7 +345,7 @@ void UI::initTui()
 	tui_menu_colors->addComponent(tui_colors_circumpolar_circle_color);
 
 	// *** Effects
-	tui_effect_light_pollution = new s_tui::DecimalItem(0., 9.0, 7.0,std::string("6.1 "), 0.5 );
+	tui_effect_light_pollution = new s_tui::DecimalItem(0.5, 9.0, 6.5,std::string("6.1 "), 0.5 );
 	tui_effect_light_pollution->setOnChangeCallback(mBoost::callback<void>(this, &UI::tuiCbEffects));
 	tui_menu_effects->addComponent(tui_effect_light_pollution);
 
