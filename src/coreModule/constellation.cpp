@@ -149,9 +149,16 @@ void Constellation::drawLines(const Projector* prj, std::vector<float> &vLinesPo
 //! Draw the name
 void Constellation::drawName(s_font *constfont, const Projector* prj) const
 {
-	if (!name_fader.getInterstate()) return;
+	if (!name_fader.getInterstate())
+		return;
 	Vec4f Color(labelColor[0], labelColor[1], labelColor[2], name_fader.getInterstate());
-	prj->printGravity180(constfont, XYname[0], XYname[1], nameI18, Color, -constfont->getStrLen(nameI18)/2, 0);
+	// prj->printGravity180(constfont, XYname[0], XYname[1], nameI18, Color, -constfont->getStrLen(nameI18)/2, 0);
+	float az, alt;
+	Utility::rectToSphe(&az, &alt, prj->getMatJ2000ToEye() * XYZname);
+	alt += M_PI_2;
+	alt *= (180*180/M_PI)/prj->getFov();
+	if (alt < 90.f)
+		constfont->printHorizontal(prj, std::min(90.f - alt, 80.f), az*180.f/M_PI-90.f, nameI18, Color, TEXT_ALIGN::CENTER, true);
 }
 
 

@@ -1197,6 +1197,17 @@ template<class T> Vector4<T>& Vector4<T>::operator*=(T s)
 	v[3] *= s;
 	return *this;
 }
+//!  /= operator
+//! @param the other vector to divide.
+//! @return *this
+template<class T> Vector4<T>& Vector4<T>::operator/=(T s)
+{
+	v[0] /= s;
+	v[1] /= s;
+	v[2] /= s;
+	v[3] /= s;
+	return *this;
+}
 //!  -= operator
 //! @return - this vector.
 template<class T> Vector4<T> Vector4<T>::operator-() const
@@ -2334,4 +2345,3 @@ template<class T> Vector4<T> Matrix4<T>::toQuaternion() const
 }
 
 #endif // _VECMATH_HPP_INCLUDED
-  

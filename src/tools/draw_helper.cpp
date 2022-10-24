@@ -229,7 +229,7 @@ void DrawHelper::bindPrint(VkCommandBuffer cmd)
         pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
         pipeline->bindShader("sfontPrint.vert.spv");
         pipeline->bindShader("sfontPrint.frag.spv");
-        pipeline->build();
+        pipeline->build("drawPrint");
         pipelinePrint.push_back(std::move(pipeline));
     }
     switch (lastFlag) {
@@ -237,6 +237,7 @@ void DrawHelper::bindPrint(VkCommandBuffer cmd)
             break;
         case DRAW_PRINTH:
             pipelinePrint[internalSubpass]->bind(cmd);
+            layoutPrint->bindSet(cmd, *setPrints);
             break;
         default:
             pipelinePrint[internalSubpass]->bind(cmd);
@@ -255,7 +256,7 @@ void DrawHelper::bindPrintH(VkCommandBuffer cmd)
         pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
         pipeline->bindShader("sfontHorizontal.vert.spv");
         pipeline->bindShader("sfontHorizontal.frag.spv");
-        pipeline->build();
+        pipeline->build("drawPrintH");
         pipelinePrintH.push_back(std::move(pipeline));
     }
     switch (lastFlag) {
@@ -263,6 +264,7 @@ void DrawHelper::bindPrintH(VkCommandBuffer cmd)
             break;
         case DRAW_PRINT:
             pipelinePrintH[internalSubpass]->bind(cmd);
+            layoutPrintH->bindSet(cmd, *setPrints);
             break;
         default:
             pipelinePrintH[internalSubpass]->bind(cmd);
