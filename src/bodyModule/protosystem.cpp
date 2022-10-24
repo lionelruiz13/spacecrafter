@@ -100,6 +100,29 @@ static std::string setAtmosphereTable(ATMOSPHERE_MODEL atmModel)
 	}
 }
 
+void ProtoSystem::load(Object &obj)
+{
+	stringHash_t bodyParams;
+	bodyParams["name"] = obj.getEnglishName();
+	bodyParams["parent"] = "Center" + bodyParams["name"];
+	bodyParams["type"] = "Sun";
+	bodyParams["radius"] = "1190.856";
+	bodyParams["halo"] = "false";
+	Vec3f color = obj.getRGB();
+	bodyParams["color"] = std::to_string(color[0]) + "," + std::to_string(color[1]) + "," + std::to_string(color[2]);
+	bodyParams["label_color"] = bodyParams["color"];
+	bodyParams["orbit_color"] = bodyParams["color"];
+	bodyParams["tex_map"] = "bodies/sirius.png";
+	bodyParams["tex_halo"] = "empty";
+	bodyParams["tex_big_halo"] = "big_halo.png";
+	bodyParams["big_halo_size"] = "10";
+	bodyParams["lighting"] = "false";
+	bodyParams["albedo"] = "-1.";
+	bodyParams["coord_func"] = "stellar_special";
+	addBody(bodyParams, false);
+	bodyParams.clear();
+}
+
 // Init and load the solar system data
 void ProtoSystem::load(const std::string& planetfile)
 {

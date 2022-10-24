@@ -76,7 +76,8 @@ void SSystemFactory::changeSystem(const std::string &mode)
         try {
             currentSystem = systems.at(mode).get();
         } catch (...) {
-            // currentSystem = systems[mode] = createSystem(mode);
+            createSystem(mode);
+            currentSystem = systems.at(mode).get();
             return;
         }
     }
@@ -139,6 +140,23 @@ void SSystemFactory::loadSystem(const std::string &path, stringHash_t &params)
     systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
     if (!params["system"].empty())
         addSystem(params["name"], path + params["system"]);
+    params.clear();
+}
+
+void SSystemFactory::createSystem(const std::string &mode)
+{
+    stringHash_t params;
+    params["name"] = selected_object.getEnglishName();
+    auto pos = selected_object.getEarthEquPos(navigation);
+    params["x"] =  pos[0];
+    params["y"] =  pos[1];
+    params["z"] =  pos[2];
+    params["type"] = "observatory";
+    galacticAnchorMgr->addAnchor(params);
+    systemOffsets[params["name"]].set(stod(params["x"]), stod(params["y"]), stod(params["z"]));
+    auto &system = systems[mode];
+    system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr, systemOffsets[params["name"]]);
+    system->load(selected_object);
     params.clear();
 }
 

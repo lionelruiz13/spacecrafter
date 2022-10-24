@@ -55,6 +55,9 @@ public:
 	//! Load the bodies data from a file
 	void load(const std::string& planetfile);
 
+	//! Load the bodies data from an object
+	void load(Object &obj);
+
 	// load one object from a hash (returns error message if any)
 	// this public method always adds bodies as deletable
 	virtual void addBody(stringHash_t & param){

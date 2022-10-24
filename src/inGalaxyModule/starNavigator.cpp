@@ -224,7 +224,11 @@ starInfo* StarNavigator::getStarInfo(unsigned int HIPName) const {
 }
 
 std::string StarNavigator::getStarName(unsigned int HIPName) {
-	return common_names_map_i18n[HIPName];
+	std::string name = common_names_map_i18n[HIPName];
+	if (!name.empty())
+		return name;
+	else
+		return std::to_string(HIPName);
 }
 
 void StarNavigator::setListGlobalStarVisible()

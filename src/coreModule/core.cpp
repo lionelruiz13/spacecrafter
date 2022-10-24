@@ -1681,6 +1681,7 @@ bool Core::selectObject(const Object &obj)
 			setFlagTracking(false);
 
 			if (selected_object.getType()==OBJECT_STAR) {
+				ssystemFactory->setSelectedObject(selected_object);
 				asterisms->setSelected(selected_object);
 				hip_stars->setSelected(selected_object);
 

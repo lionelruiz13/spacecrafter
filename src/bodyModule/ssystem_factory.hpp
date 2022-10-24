@@ -68,6 +68,10 @@ public:
         ssystem->registerFont(_font);
     }
 
+    void setSelectedObject(Object &obj) {
+        selected_object = obj;
+	}
+
 	//! Set selected planet by english name or "" to select none
 	void setSelected(const std::string& englishName) {
         ssystemSelected->setSelected((englishName));
@@ -518,6 +522,7 @@ public:
 
     void loadGalacticSystem(const std::string &path, const std::string &file);
     void loadSystem(const std::string &path, stringHash_t &params);
+    void createSystem(const std::string &mode);
 
     //! Enter a system (leave the galactic system)
     void enterSystem();
@@ -553,6 +558,7 @@ private:
 
     ProtoSystem * currentSystem;
     bool inSystem = true;
+    Object selected_object;
 };
 
 #endif
