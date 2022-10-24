@@ -173,7 +173,7 @@ void main(void)
     // % of the segment in the atmosphere enlightened *
     // length of this segment * a custom value to get the result closer to [0.1]
     // because the length of this segment depends of your sphere's rayons.
-    skyColor *= scatteredLight*(atmLength);
+    skyColor *= min(scatteredLight*(atmLength), 1);
 
     color = skyColor /* * (1.0-sunAmount) + sunColor*sunAmount*/;
 }
