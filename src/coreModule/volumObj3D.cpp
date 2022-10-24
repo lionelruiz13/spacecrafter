@@ -53,8 +53,8 @@ VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex
         tmpSize = tex_color_file.find_last_of('.');
         tmpPos = tex_color_file.find_last_of('d', tmpSize) + 1;
         int colorDepth = std::stoi(tex_color_file.substr(tmpPos, tmpSize - tmpPos));
-        mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, mapDepth, 1, 1);
-        colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1);
+        mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, mapDepth, 1, 1, false, true);
+        colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true);
     }
     set = std::make_unique<Set>(vkmgr, *context.setMgr, shared->layout.get(), -1, true, true);
     set->bindUniform(transform, 0);
@@ -107,7 +107,7 @@ void VolumObj3D::reconstruct(const std::string& tex_color_file, const std::strin
     ray->rayPoints = rayPoints;
     inRay->zScale = (z_reflection) ? 2 : 1;
     mapTexture = std::make_unique<s_texture>(tex_absorbtion_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, absorbtionDepth, 1, 1);
-    colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1);
+    colorTexture = std::make_unique<s_texture>(tex_color_file, TEX_LOAD_TYPE_PNG_SOLID, false, false, colorDepth, 4, 1, false, true);
 
     isLoaded = true;
     int size;

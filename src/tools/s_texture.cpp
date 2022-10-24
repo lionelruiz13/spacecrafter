@@ -101,7 +101,7 @@ s_texture::s_texture(const s_texture *t)
 	texture = t->texture;
 }
 
-s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize, bool useBlendMipmap) : textureName(_textureName),
+s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap, bool resolution, int depth, int nbChannels, int channelSize, bool useBlendMipmap, bool force3D) : textureName(_textureName),
 	loadType(PNG_BLEND1), loadWrapping(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE)
 {
 	switch (_loadType) {
@@ -127,9 +127,9 @@ s_texture::s_texture(const std::string& _textureName, int _loadType, bool mipmap
 	bool succes;
 
 	if (CallSystem::isAbsolute(textureName) || CallSystem::fileExist(textureName))
-		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap);
+		succes = preload(textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D);
 	else
-		succes = preload(texDir + textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap);
+		succes = preload(texDir + textureName, mipmap, resolution, depth, nbChannels, channelSize, useBlendMipmap, force3D);
 
 	if (!succes)
 		createEmptyTex();
@@ -201,7 +201,7 @@ void s_texture::createEmptyTex()
 	}
 }
 
-bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolution, int depth, int _nbChannels, int _channelSize, bool useBlendMipmap)
+bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolution, int depth, int _nbChannels, int _channelSize, bool useBlendMipmap, bool force3D)
 {
 	auto &tex = texCache[fullName];
 	nbChannels = _nbChannels;
@@ -220,6 +220,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
     		tex = texture;
             return true;
         }
+
 		int channels;
 		texture = std::make_shared<texRecap>();
 		stbi_uc *data = nullptr;
@@ -232,6 +233,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
             else
                 data = reinterpret_cast<stbi_uc*>(stbi_load_16(previewName.c_str(), &realWidth, &realHeight, &channels, nbChannels));
         }
+
         std::string cacheEntryName = getCacheEntryName(fullName);
         const bool minified = (data != nullptr);
         if (minified) { // We need to determine the size of the big texture
@@ -262,6 +264,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
                 texture->quickloadable = bigData.cached;
             }
         }
+
 		tex = texture;
         texture->width = realWidth;
         texture->height = realHeight;
@@ -293,7 +296,7 @@ bool s_texture::preload(const std::string& fullName, bool mipmap, bool resolutio
 		VkImageUsageFlags usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 		if (mipmap)
 			usage |= (useBlendMipmap) ? VK_IMAGE_USAGE_STORAGE_BIT : VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-		const VkImageType imgType = (depth > 1) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
+		const VkImageType imgType = (depth > 1 || force3D) ? VK_IMAGE_TYPE_3D : ((texture->height > 1) ? VK_IMAGE_TYPE_2D : VK_IMAGE_TYPE_1D);
 		--_nbChannels;
 		const VkFormat format = formatTable[(channelSize == 1) ? _nbChannels : (_nbChannels | 4)];
 		texture->texture = std::make_unique<Texture>(*VulkanMgr::instance, *Context::instance->texStagingMgr, usage, fullName.substr(fullName.find(".spacecrafter/")+14), format, imgType);

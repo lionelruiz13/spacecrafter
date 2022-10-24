@@ -1243,8 +1243,6 @@ int AppCommandInterface::commandDso3D()
 			coreLink->dsoNavSetupVolumetric(args, 0);
 	} else if (argAction == W_RESTART) {
 		if (args["maxobject"].empty() || args["maxobject"] == "1") {
-			if (args["color_depth"].empty())
-				args["color_depth"] = args["depth"]; // Not sure anyway
 			coreLink->dsoNavSetupVolumetric(args, 1);
 		} else
 			coreLink->dsoNavOverrideCurrent(args["color_tex"], args["alpha_tex"], std::stoi(args["depth"]));
