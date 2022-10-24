@@ -906,6 +906,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 		tmp->hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
 		tmp->modelAtmosphere = setAtmosphere(param["atmosphere_model"]);
 		tmp->tableAtmosphere = param["atmosphere_ext_model"].empty() ? setAtmosphereTable(tmp->modelAtmosphere) : param["atmosphere_ext_model"];
+		tmp->atmosphereRadiusFactor = param["atmosphere_radius_factor"].empty() ? 1.05 : Utility::strToDouble(param["atmosphere_radius_factor"]);
 		tmp->limInf = Utility::strToFloat(param["atmosphere_lim_inf"], 40000.f);
 		tmp->limSup = Utility::strToFloat(param["atmosphere_lim_sup"], 80000.f);
 		tmp->limLandscape = Utility::strToFloat(param["atmosphere_lim_landscape"], 10000.f);

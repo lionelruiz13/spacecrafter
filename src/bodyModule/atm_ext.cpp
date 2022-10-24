@@ -80,7 +80,7 @@ AtmExt::~AtmExt()
 {
 }
 
-void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float screen_sz, bool depthTest)
+void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, const Vec3f &sunPos, const Vec3f &bodyPos, float planetOneMinusOblateness, const Vec2i &TesParam, float radius, float atmRadius, float screen_sz, bool depthTest)
 {
     if (enabled) {
         uniform->ModelViewMatrix = mat;
@@ -89,7 +89,7 @@ void AtmExt::draw(VkCommandBuffer cmd, const Projector *prj, const Navigator *na
         uniform->bodyPos = bodyPos;
         uniform->planetOneMinusOblateness = planetOneMinusOblateness;
         uniform->clipping_fov = prj->getClippingFov();
-        uniform->atmRadius = radius * 1.05;
+        uniform->atmRadius = atmRadius;
         uniform->TesParam = TesParam;
         uniform->atmAlpha = 1; // Apply fader here
         if (depthTest)

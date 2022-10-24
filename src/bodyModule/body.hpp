@@ -82,6 +82,7 @@ typedef struct AtmosphereParams {
 	bool hasAtmosphere = false;
 	ATMOSPHERE_MODEL modelAtmosphere = ATMOSPHERE_MODEL::NONE_MODEL;
 	std::string tableAtmosphere;
+	float atmosphereRadiusFactor = 1.05; // Coefficient multiplied by the radius to get the atmosphere radius
 	float limInf = 0.f;
 	float limSup = 0.f;
 	float limLandscape = 0.f;
