@@ -51,6 +51,7 @@ MilkyWay::MilkyWay()
 	}
 	switchTexFader = false;
 	intensityMilky.set(0.f);
+	pollum.set(0.f);
 	createSC_context();
 	initModelMatrix();
 }
@@ -64,7 +65,7 @@ void MilkyWay::createSC_context()
 	layout->setGlobalPipelineLayout(context.layouts.front().get());
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
-	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 4);
+	layout->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 8);
 	layout->buildLayout();
 	layout->build();
 	layoutTwoTex = std::make_unique<PipelineLayout>(vkmgr);
@@ -72,7 +73,7 @@ void MilkyWay::createSC_context()
 	layoutTwoTex->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layoutTwoTex->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	layoutTwoTex->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, 64);
-	layoutTwoTex->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 8);
+	layoutTwoTex->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 64, 12);
 	layoutTwoTex->buildLayout();
 	layoutTwoTex->build();
 	pipelineMilky = new Pipeline[2]{{vkmgr, *context.render, PASS_BACKGROUND, layoutTwoTex.get()}, {vkmgr, *context.render, PASS_BACKGROUND, layout.get()}};
@@ -200,9 +201,11 @@ void MilkyWay::draw(ToneReproductor * eye, const Projector* prj, const Navigator
 
 	struct {
 		float cmag;
+		float pollum;
 		float texTransit;
 	} frag;
 	frag.cmag = ad_lum * showFader.getInterstate() * intensityMilky;
+	frag.pollum = pollum;
 
 	if (onTextureTransition && (switchTexFader.getInterstate()>0.99))
 		endTexTransition();

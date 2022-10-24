@@ -75,6 +75,7 @@ public:
 		showFader.update(delta_time);
 		switchTexFader.update(delta_time);
 		intensityMilky.update(delta_time);
+		pollum.update(delta_time);
 		zodiacalFader.update(delta_time);
 	}
 
@@ -135,6 +136,7 @@ public:
 		switchTexFader.setDuration(f);
 		zodiacalFader.setDuration(f);
 		intensityMilky.setDuration(f);
+		pollum.setDuration(f);
 	}
 
 	//! resets the intensity of the Milkyway to the initial intensity.
@@ -194,6 +196,7 @@ private:
 	bool allowZodiacal = false;
 
 	Scalable<float> intensityMilky;
+	Scalable<float> pollum;
 
 	Mat4d modelMilkyway;
 	Mat4d modelZodiacal;
