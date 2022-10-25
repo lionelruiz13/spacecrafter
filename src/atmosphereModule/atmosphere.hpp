@@ -79,6 +79,15 @@ public:
 		return fader.getDuration()/1000.f;
 	}
 
+	//set default_fader duration
+	void setDefaultFaderDuration(float duration) {
+		default_fader_duration = duration;
+	}
+
+	void setDefaultFaderDuration() {
+		setFaderDuration(default_fader_duration);
+	}
+
 	//! Define whether to display atmosphere
 	void setFlagShow(bool b) {
 		fader = b;
@@ -159,6 +168,7 @@ private:
 	float stepY; //!< step size on the y-axis
 	float viewport_left; //!<spacing on the left of the grid
 	float viewport_bottom; //!< spacing at the bottom of the grid
+	float default_fader_duration;
 };
 
 #endif // _ATMOSTPHERE_H_

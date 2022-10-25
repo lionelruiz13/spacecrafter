@@ -829,6 +829,8 @@ public:
 	bool atmosphereGetFlag() const;
 	//! Set atmosphere fade duration in s
 	void atmosphereSetFadeDuration(float f);
+	//! Set default atmosphere fade duration
+	void atmosphereSetDefaultFadeDuration();
 	//! Set flag for activating atmospheric refraction correction
 	void atmosphericRefractionSetFlag(bool b);
 	//! Get flag for activating atmospheric refraction correction

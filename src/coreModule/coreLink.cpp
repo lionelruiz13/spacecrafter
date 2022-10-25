@@ -408,6 +408,11 @@ void CoreLink::atmosphereSetFadeDuration(float f) {
 	core->atmosphere->setFaderDuration(f);
 }
 
+//! Set default atmosphere fade duration
+void CoreLink::atmosphereSetDefaultFadeDuration() {
+	core->atmosphere->setDefaultFaderDuration();
+}
+
 //! Set flag for activating atmospheric refraction correction
 void CoreLink::atmosphericRefractionSetFlag(bool b) {
 	core->FlagAtmosphericRefraction = b;
