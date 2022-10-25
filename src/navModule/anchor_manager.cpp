@@ -281,7 +281,26 @@ bool AnchorManager::addAnchor(stringHash_t params)
 
 void AnchorManager::update() noexcept
 {
-	if(currentAnchor != nullptr) {
+	if (observer->getEyeRelativeMode()) {
+		// Assume the nearest anchor doesn't change when the observer doesn't move
+		const Vec3d center = observer->getObserverCenterPoint();
+		if (center != lastCenterPosition) {
+			lastCenterPosition = center;
+			// Set the nearest anchor to the observer
+			double bestFit = observer->getDistanceFromCenter();
+			bestFit *= bestFit;
+			for (auto &a : anchors) {
+				if (a.second->isOnBody()) // Otherwise it crash...
+					a.second->update();
+				double tmp = (a.second->getHeliocentricEclipticPos() - center).lengthSquared();
+				if (tmp < bestFit) {
+					bestFit = tmp;
+					currentAnchor = a.second;
+					observer->setAnchorPoint(currentAnchor);
+				}
+			}
+		}
+	} else if (currentAnchor != nullptr) {
 
 		if(!moving)
 			currentAnchor->update();
@@ -321,7 +340,6 @@ void AnchorManager::update() noexcept
 				lastUpdate = timeMgr->getJDay();
 			}
 		}
-
 	}
 }
 

@@ -47,6 +47,8 @@
 #include "coreModule/tully.hpp"
 #include "mediaModule/media.hpp"
 
+CoreLink *CoreLink::instance = nullptr;
+
 bool CoreLink::cameraSave(const std::string& name)
 {
 	return core->ssystemFactory->cameraSave(AppSettings::Instance()->getUserDir() + "anchors/" + name);

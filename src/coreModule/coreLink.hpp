@@ -856,9 +856,13 @@ public:
 
     CoreLink(std::shared_ptr<Core> _core) {
 		core = _core;
+		instance = this;
 	}
-    ~CoreLink(){};
+    ~CoreLink() {
+		instance = nullptr;
+	};
 
+	static CoreLink *instance;
 private:
     std::shared_ptr<Core> core;
 };

@@ -236,15 +236,15 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 	    mat_earth_equ_to_j2000 *
 	    mat_local_to_earth_equ;
 
-	mat_local_to_helio =  Mat4d::translation(position->getObserverCenterPoint()) *
-	                      tmp *
-	                      Mat4d::translation(Vec3d(0.,0., position->getDistanceFromCenter()));
-
 	// This define the local movement expected : mat_helio_to_local * local_movement * mat_local_to_helio
+	mat_local_to_helio = Mat4d::translation(position->getObserverCenterPoint()) * tmp;
+	mat_helio_to_local = tmp.transpose() * Mat4d::translation(-position->getObserverCenterPoint());
 
-	mat_helio_to_local =  Mat4d::translation(Vec3d(0.,0.,-position->getDistanceFromCenter())) *
-	                      tmp.transpose() *
-	                      Mat4d::translation(-position->getObserverCenterPoint());
+	if (!position->getEyeRelativeMode()) {
+		mat_local_to_helio = mat_local_to_helio * Mat4d::translation(Vec3d(0.,0., position->getDistanceFromCenter()));
+		mat_helio_to_local = Mat4d::translation(Vec3d(0.,0.,-position->getDistanceFromCenter())) * mat_helio_to_local;
+	}
+
 
 	mat_dome_fixed.set(0, -1, 0, 0,
 	                   -1, 0, 0, 0,
@@ -253,7 +253,7 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 
 	mat_dome = Mat4d::zrotation(heading*M_PI/180.f) * mat_dome_fixed;
 
-	position->setEyeMatrix(mat_eye_to_local, mat_local_to_earth_equ);
+	position->setEyeMatrix(mat_helio_to_eye.inverseUntranslated(), mat_local_to_earth_equ);
 }
 
 
@@ -339,8 +339,7 @@ void Navigator::updateViewMat(double fov)
 // Return the observer heliocentric position
 Vec3d Navigator::getObserverHelioPos() const
 {
-	Vec3d v(0.,0.,0.);
-	return mat_local_to_helio*v;
+	return mat_local_to_helio.getTranslation();
 }
 
 

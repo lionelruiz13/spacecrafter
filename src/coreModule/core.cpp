@@ -1523,7 +1523,7 @@ void Core::updateMove(int delta_time)
 	}
 
 	if (vzm.deltaHeight!=0) {
-		observatory->setAltitude(observatory->getAltitude()*vzm.deltaHeight);
+		observatory->multAltitude(vzm.deltaHeight);
 	}
 
 	if (vzm.deltaFov != 0 ) {

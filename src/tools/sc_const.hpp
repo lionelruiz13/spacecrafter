@@ -42,8 +42,8 @@
 //~ # define M_SQRT2	1.41421356237309504880	/* sqrt(2) */
 //~ # define M_SQRT1_2	0.70710678118654752440	/* 1/sqrt(2) */
 
-const double AU    =    149597870.691; //Kilometers
-const double SPEED_OF_LIGHT = 299792.458;
+constexpr double AU    =    149597870.691; //Kilometers
+constexpr double SPEED_OF_LIGHT = 299792.458;
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

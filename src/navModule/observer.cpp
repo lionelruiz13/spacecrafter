@@ -27,7 +27,6 @@
 #include <string>
 #include <cstdlib>
 #include <algorithm>
-
 #include "bodyModule/body.hpp"
 #include "navModule/anchor_point.hpp"
 #include "navModule/anchor_point_body.hpp"
@@ -40,12 +39,17 @@
 #include "eventModule/event_recorder.hpp"
 #include "eventModule/CoreEvent.hpp"
 #include "mainModule/define_key.hpp"
+#include "coreModule/coreLink.hpp"
+
+// Slowdown factor used for eye relative movements
+constexpr double eyeMoveDivisor = 4*1000*AU;
 
 Observer::Observer()
 	: longitude(0.), latitude(1e-9), altitude(0),
 	defaultLongitude(0), defaultLatitude(1e-9), defaultAltitude(0)
 {
 	flag_move_to = false;
+	anchorAlt = std::make_shared<AnchorPoint>();
 }
 
 
@@ -63,9 +67,9 @@ void Observer::setAltitude(double a) {
 
 Vec3d Observer::getHeliocentricPosition(double JD) const
 {
-	return Mat4d::translation(getObserverCenterPoint()) * getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0., 0., getDistanceFromCenter());
+	return (flag_eye_relative_mode) ? anchor->getHeliocentricEclipticPos() : Mat4d::translation(getObserverCenterPoint()) * getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0., 0., getDistanceFromCenter());
 }
-
+// anchor->getHeliocentricEclipticPos() - anchorAlt->getHeliocentricEclipticPos() = getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0, 0, 1)
 
 Vec3d Observer::getObserverCenterPoint(void) const
 {
@@ -75,16 +79,21 @@ Vec3d Observer::getObserverCenterPoint(void) const
 
 double Observer::getDistanceFromCenter(void) const
 {
-	if(anchor->isOnBody())
-		return getHomeBody()->getRadius() + (altitude/(1000*AU));
-	else
-		return altitude/(1000*AU);
+	if (flag_eye_relative_mode) {
+		return (anchorAlt->getHeliocentricEclipticPos() - anchor->getHeliocentricEclipticPos()).length();
+	} else {
+		if (anchor->isOnBody())
+			return anchor->getBody()->getRadius() + (altitude/(1000*AU));
+		else
+			return altitude/(1000*AU);
+	}
 }
 
 void Observer::setDistanceFromCenter(double distance)
 {
-	if(anchor->isOnBody())
-		altitude = (distance - getHomeBody()->getRadius()) * (1000*AU);
+	auto &tmp = (flag_eye_relative_mode) ? anchorAlt : anchor;
+	if (tmp->isOnBody())
+		altitude = (distance - tmp->getBody()->getRadius()) * (1000*AU);
 	else
 		altitude = distance*(1000*AU);
 }
@@ -198,20 +207,33 @@ void Observer::moveTo(double lat, double lon, double alt, int duration, bool cal
 }
 
 void Observer::moveRelLat(double lat, int delay) {
-	moveRel(lat, 0, 0, delay);
+	if (flag_eye_relative_mode) {
+		moveEyeRel(Vec3d(0, lat / 10.f * altitude, 0));
+	} else
+		moveRel(lat, 0, 0, delay);
 }
 
 //! Move to relative longitude where home planet is fixed.
 void Observer::moveRelLon(double lon, int delay) {
-	moveRel(0, lon, 0, delay);
+	if (flag_eye_relative_mode) {
+		moveEyeRel(Vec3d(lon / 10.f * altitude, 0, 0));
+	} else
+		moveRel(0, lon, 0, delay);
 }
 
 //! Move to relative altitude where home planet is fixed.
 void Observer::moveRelAlt(double alt, int delay) {
-	if (flag_eye_relative_mode && delay == 0) {
-		moveEyeRel(Vec3d(0, 0, alt));
+	if (flag_eye_relative_mode) {
+		moveEyeRel(Vec3d(0, 0, -alt / 1.f));
 	} else
 		moveTo(latitude, longitude, altitude+alt, delay);
+}
+
+void Observer::multAltitude(double coef) {
+	if (flag_eye_relative_mode) {
+		moveEyeRel(Vec3d(0, 0, altitude * (coef-1)));
+	} else
+		setAltitude(altitude * coef);
 }
 
 void Observer::moveRel(double lat, double lon, double alt, int duration, bool calculate_duration)
@@ -245,12 +267,13 @@ void Observer::moveRel(double lat, double lon, double alt, int duration, bool ca
 
 void Observer::moveEyeRel(const Vec3d &eyeTarget)
 {
-	// Note : Lack of eye compensation...
-	moveRel3D(mat_eye_to_local * eyeTarget);
+	moveRel3D(mat_eye_to_helio_untranslated.multiplyWithoutTranslation(eyeTarget));
 }
 
 void Observer::moveRel3D(const Vec3d &target)
 {
+	anchor->setHeliocentricEclipticPos(anchor->getHeliocentricEclipticPos() + target/eyeMoveDivisor);
+	/*
 	Vec3d local_to_altitude(0., 0., getDistanceFromCenter());
 	Vec3d relativeRotation = Vec3d(0., 0., getDistanceFromCenter()) + target;
 	double targetDistanceFromCenter = relativeRotation.length();
@@ -262,6 +285,7 @@ void Observer::moveRel3D(const Vec3d &target)
 	// Should perform some heading compensation, as it might move...
 	if (!rotator.moving())
 		rotator.getMatrix(); // Update internal cache, as we use getCachedMatrix later-on
+	*/
 }
 
 void Observer::moveTo(const Vec4d &target, int duration, bool isMaxDuration)
@@ -344,6 +368,18 @@ void Observer::update(int delta_time)
 		// current_lon = longitude;
 		altitude  = start_alt - move_to_mult*(start_alt-end_alt);
 	}
+	if (flag_eye_relative_mode) {
+		// Update altitude
+		setDistanceFromCenter(getDistanceFromCenter());
+		// Update longitude and latitude
+		auto relPos = anchor->getHeliocentricEclipticPos() - anchorAlt->getHeliocentricEclipticPos();
+		relPos = anchorAlt->getRotEquatorialToVsop87().transpose() * relPos;
+		Utility::rectToSphe(&longitude, &latitude, relPos);
+		longitude *= 180/M_PI;
+		latitude *= 180/M_PI;
+		if (anchorAlt->isOnBody())
+			longitude -= anchorAlt->getBody()->getSiderealTime(CoreLink::instance->getJDay());
+	}
 }
 
 
@@ -393,17 +429,22 @@ void Observer::setQuaternionMode(bool mode)
 
 void Observer::setEyeRelativeMode(bool mode)
 {
+	if (flag_eye_relative_mode == mode)
+		return;
+	if (mode)
+		anchorAlt->setHeliocentricEclipticPos(getHeliocentricPosition(CoreLink::instance->getJDay()));
 	flag_eye_relative_mode = mode;
+	anchor.swap(anchorAlt);
 }
 
 void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 {
 	if (flag_eye_relative_mode) {
-		// In eye relative mode, we want to be able to dynamically change of anchor without moving
-		// auto current = rotator.getQuaternion();
-		// auto relTarget = rotator.getQuaternion().inverse().combineQuaternions(rotator.getTarget());
-		// auto time = rotator.timeBeforeEnd();
-		anchor = _anchor;
+		anchorAlt = _anchor;
 	} else
 		anchor = _anchor;
 }
+
+// lon = 1.96841976537792
+// lat = 46.176495867768431
+// sideral = 252.38943488471656

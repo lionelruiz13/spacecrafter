@@ -130,6 +130,9 @@ public:
 		return altitude;
 	}
 
+	//! Mutliply the altitude by a coefficient, or advance to a value which depends on the distance to the anchor
+	void multAltitude(double coef);
+
 	// is used to find the initial position of the observer after it has moved in order to return to it
 	//! returns the initial latitude of the observer to its load
 	double getDefaultLatitude() {
@@ -194,15 +197,15 @@ public:
 	void setEyeRelativeMode(bool mode);
 
 	//! Return true if in quaterion mode
-	bool getEyeRelativeMode() const {
+	inline bool getEyeRelativeMode() const {
 		return flag_eye_relative_mode;
 	}
 
 	//! returns true if we are on the named body
 	bool isOnBodyNamed(const std::string& bodyName);
 
-	void setEyeMatrix(const Mat4d &mat_eye_to_local, const Mat4d &mat_altitude_to_earth_equ) {
-		this->mat_eye_to_local = mat_eye_to_local;
+	void setEyeMatrix(const Mat4d &mat_eye_to_helio_untranslated, const Mat4d &mat_altitude_to_earth_equ) {
+		this->mat_eye_to_helio_untranslated = mat_eye_to_helio_untranslated;
 		this->mat_altitude_to_earth_equ = mat_altitude_to_earth_equ;
 	}
 private:
@@ -224,11 +227,12 @@ private:
 	double start_alt, end_alt;
 	float move_to_coef, move_to_mult;
 
-	std::shared_ptr<AnchorPoint> anchor = nullptr;
+	std::shared_ptr<AnchorPoint> anchor; // Current anchor
+	std::shared_ptr<AnchorPoint> anchorAlt; // Alternate anchor
 	Rotator<double> rotator;
 
 	Mat4d mat_altitude_to_earth_equ; // observer altitude to anchor equatorial
-	Mat4d mat_eye_to_local;
+	Mat4d mat_eye_to_helio_untranslated;
 };
 
 #endif // _OBSERVER_H_

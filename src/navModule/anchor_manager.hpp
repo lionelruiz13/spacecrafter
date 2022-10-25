@@ -18,16 +18,16 @@
 //! \date may 2018
 
 /*
- * This class stores all the anchor points the software uses in a map. 
+ * This class stores all the anchor points the software uses in a map.
  * They are identified by a unique name.
  * All interactions with anchor points should be handled in this class.
  * This class contains methods meant to be called by scripts to navigate
  * between anchor points.
- * 
+ *
  * This class has a current anchor. This is the anchor the camera is attached to.
- * The current anchor is updated whenever this class is updated. 
- * /!\ Note that other anchor points are not updated; 
- * 
+ * The current anchor is updated whenever this class is updated.
+ * /!\ Note that other anchor points are not updated;
+ *
  */
 
 #ifndef ANCHOR_MANAGER_HPP
@@ -108,7 +108,7 @@ public:
 	 * sets the current anchor
 	 * returns true if an anchor matching anchorName is found
 	 * returns false otherwise
-	 */	
+	 */
 	bool switchToAnchor(const std::string& anchorName) noexcept;
 
 	//! initialize the frist anchor point
@@ -127,7 +127,7 @@ public:
 	bool setCurrentAnchorPos(const Vec3d& pos) noexcept;
 
 	/*
-	 * adds the given x, y, z to the current anchor's position 
+	 * adds the given x, y, z to the current anchor's position
 	 */
 	bool moveRelativeXYZ(double x, double y, double z) noexcept;
 
@@ -243,6 +243,7 @@ private:
 	bool overrideRotationCondition = false;
 	float rotationMultiplierCondition = 5.0f;
 	double lastUpdate;
+	Vec3d lastCenterPosition;
 	static double lastCorrection;
 };
 
