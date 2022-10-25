@@ -119,6 +119,12 @@ void ProtoSystem::load(Object &obj)
 	bodyParams["lighting"] = "false";
 	bodyParams["albedo"] = "-1.";
 	bodyParams["coord_func"] = "stellar_special";
+	if (bodyParams["parent"] != "none") {
+		stringHash_t parentParams = bodyParams;
+		parentParams["name"] = bodyParams["parent"];
+		parentParams["parent"] = "none";
+		addBody(parentParams, false);
+	}
 	addBody(bodyParams, false);
 	bodyParams.clear();
 }
