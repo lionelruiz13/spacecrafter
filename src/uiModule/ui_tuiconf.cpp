@@ -128,8 +128,26 @@ void UI::drawGravityUi(MODULE module)
 			core->printHorizontal(tuiFont, 16, PosObjectInfo , info, tmpColor, TEXT_ALIGN::LEFT, false);//, 1,1);
 			// tuiFont->clearCache(s_1);
 			// tuiFont->clearCache(s_2);
-		} else
-			core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor, TEXT_ALIGN::LEFT, false);//,  1,1);
+		} else {
+			int PosObjectInfoL = PosObjectInfo;
+			//we cache the texts because we display them several times
+			switch(FlagNumberPrint) {
+				case 3 :
+					PosObjectInfo=PosObjectInfo%120;
+					core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor, TEXT_ALIGN::LEFT, false);//,  1,1);
+					core->printHorizontal(tuiFont, 5, (PosObjectInfoL+120) , info, tmpColor, TEXT_ALIGN::LEFT, false);//,  1,1);
+					core->printHorizontal(tuiFont, 5, (PosObjectInfoL+240) , info, tmpColor, TEXT_ALIGN::LEFT, false);//,  1,1);
+					break;
+				case 2 :
+					PosObjectInfo=PosObjectInfo%180;
+					core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor, TEXT_ALIGN::LEFT, false);//,  1,1);
+					core->printHorizontal(tuiFont, 5, (PosObjectInfoL+180) , info, tmpColor, TEXT_ALIGN::LEFT, false);//,  1,1);
+					break;
+				default:
+					PosObjectInfo=PosObjectInfo%360;
+					core->printHorizontal(tuiFont, 5, PosObjectInfo , info, tmpColor, TEXT_ALIGN::LEFT, false);//,  1,1);
+			}
+		}
 		// tuiFont->clearCache(info);
 	}
 }
