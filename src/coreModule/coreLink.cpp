@@ -410,6 +410,11 @@ void CoreLink::atmosphereSetFadeDuration(float f) {
 	core->atmosphere->setFaderDuration(f);
 }
 
+//! Set default atmosphere fade duration
+void CoreLink::atmosphereSetDefaultFadeDuration() {
+	core->atmosphere->setDefaultFaderDuration();
+}
+
 //! Set flag for activating atmospheric refraction correction
 void CoreLink::atmosphericRefractionSetFlag(bool b) {
 	core->FlagAtmosphericRefraction = b;
@@ -709,6 +714,19 @@ void CoreLink::nebulaSetFlag(bool b) {
 	core->nebulas->setFlagShow(b);
 	core->dso3d->setFlagShow(b);
 }
+
+void CoreLink::dso3dSetDuration(float f) {
+	return core->dso3d->setFaderDuration(f);
+}
+
+void CoreLink::dso3dSetFlagName(bool b) {
+	core->dso3d->setFlagNames(b);
+}
+
+bool CoreLink::dso3dGetFlagName() const {
+	return core->dso3d->getFlagNames();
+}
+
 //! Get flag for displaying Nebulae
 bool CoreLink::nebulaGetFlag() const {
 	return core->nebulas->getFlagShow();

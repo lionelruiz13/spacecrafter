@@ -24,6 +24,7 @@
 #include "tools/fader.hpp"
 #include "tools/vecmath.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
+#include "tools/ScModule.hpp"
 
 //! Class which manages the DSO Catalog for in_galaxy
 
@@ -36,7 +37,7 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 
-class Dso3d {
+class Dso3d: public ModuleFont {
 public:
 	Dso3d();
 	~Dso3d();
@@ -44,14 +45,23 @@ public:
 	//! displays the point cloud
 	void draw(double distance, const Projector *prj,const Navigator *nav) noexcept;
 
+	void drawDsoName(const Projector* prj, const Navigator *nav);
+
 	//! update fader
 	void update(int delta_time) {
 		fader.update(delta_time);
+		names_fader.update(delta_time);
 	}
 
 	//! changes the fader duration
 	void setFaderDuration(float duration) {
 		fader.setDuration((int)(duration*1000.f));
+	}
+
+	//! Sets the time it takes for star names to fade and off.
+	//! @param duration the time in seconds.
+	void setNamesFadeDuration(float duration) {
+		names_fader.setDuration((int) (duration * 1000.f));
 	}
 
 	//! modify the fader
@@ -62,6 +72,26 @@ public:
 	//! returns the value of the fader
 	bool getFlagShow(void) const {
 		return fader;
+	}
+
+	//! Set display flag for names.
+	void setFlagNames(bool b) {
+		names_fader=b;
+	}
+
+	//! Get display flag for names.
+	bool getFlagNames(void) const {
+		return names_fader==true;
+	}
+
+	//! Define the default Label Color for DSO font
+	void setLabelColor(const Vec3f& c) {
+		labelColor = c;
+	}
+
+	//! get the actual Label Color for DSO font
+	const Vec3f &getLabelColor(void) const {
+		return labelColor;
 	}
 
 	//! allows to update the texture of the nebulae
@@ -82,10 +112,12 @@ private:
 	std::unique_ptr<s_texture> texNebulae;
 	// fader for display
 	LinearFader fader;
+	LinearFader names_fader;
 	//float array for openGL buffer
 	std::vector<float> posDso3d;
 	std::vector<float> scaleDso3d;
 	std::vector<float> texDso3d;
+	std::vector<std::string> nameDso3d;
 	//returns the number of nebulae read from the catalog(s)
 	unsigned int nbNebulae;
 	std::unique_ptr<VertexArray> sData;
@@ -101,6 +133,7 @@ private:
 	};
 	std::unique_ptr<SharedBuffer<pGeom_s>> uGeom;
 	std::unique_ptr<SharedBuffer<float>> uFader;
+	Vec3f labelColor;
 };
 
 #endif // ___DSO3D_HPP___

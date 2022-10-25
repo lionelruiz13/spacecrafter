@@ -42,6 +42,7 @@ Dso3d::~Dso3d()
 	posDso3d.clear();
 	scaleDso3d.clear();
 	texDso3d.clear();
+	nameDso3d.clear();
 }
 
 void Dso3d::createSC_context()
@@ -119,6 +120,8 @@ bool Dso3d::loadCatalog(const std::string &cat) noexcept
 		std::istringstream aNebulae(line);
 		aNebulae >> index >> xyz >> alpha >> delta >> r >> size >> typeNebula;
 		nbNebulae++;
+		//dso name
+		nameDso3d.push_back(index);
 		//x y z position
 		if (xyz==1) {
 			posDso3d.push_back(alpha);
@@ -166,6 +169,23 @@ void Dso3d::setTexture(const std::string& tex_file)
 	uGeom->get().nbTextures = nbTextures;
 }
 
+void Dso3d::drawDsoName(const Projector* prj, const Navigator *nav)
+{
+	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
+	Vec4f color(labelColor);
+	color[3] = names_brightness;
+	for(unsigned int i=0; i< nbNebulae;i++) {
+		Vec3f posXYZ(posDso3d[i*3], posDso3d[i*3+1], posDso3d[i*3+2]);
+		Vec3f pos;
+		pos = nav->helioToEarthPosEqu(posXYZ);
+		//pos[0] = -pos[0];
+		Vec3d screenposd;
+		prj->projectEarthEqu(pos, screenposd);
+
+		prj->printGravity180(font, screenposd[0], screenposd[1], nameDso3d[i], color, 4,4);
+	}
+}
+
 void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noexcept
 {
 	if (!fader.getInterstate() || nbNebulae==0) return;
@@ -175,4 +195,6 @@ void Dso3d::draw(double distance, const Projector *prj,const Navigator *nav) noe
 	*uFader = fader.getInterstate();
 	const int frameIdx = Context::instance->frameIdx;
 	Context::instance->frame[frameIdx]->toExecute(cmds[frameIdx], PASS_MULTISAMPLE_DEPTH);
+	if (names_fader.getInterstate())
+		drawDsoName(prj, nav);
 }

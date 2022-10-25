@@ -839,6 +839,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			if (newval) coreLink->nebulaSetFlagNames(true); // make sure visible
 			coreLink->nebulaSetFlagNames(newval);
+
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->dso3dGetFlagName();
+
+			coreLink->dso3dSetFlagName(newval);
 			break;
 
 		case FLAG_NAMES::FN_MILKY_WAY :
@@ -1569,7 +1574,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 	parserSet = parseCommandSet(setName);
 	// eval SET_NAME
 	switch(parserSet) {
-		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : coreLink->atmosphereSetFadeDuration(evalDouble(setValue)); break;
+		case SCD_NAMES::APP_ATMOSPHERE_FADE_DURATION : if (setValue==W_DEFAULT) coreLink->atmosphereSetDefaultFadeDuration(); else coreLink->atmosphereSetFadeDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_AUTO_MOVE_DURATION : stcore->setAutoMoveDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_FADE_DURATION: coreLink->constellationSetArtFadeDuration(evalDouble(setValue)); break;
 		case SCD_NAMES::APP_CONSTELLATION_ART_INTENSITY: coreLink->constellationSetArtIntensity(evalDouble(setValue)); break;
