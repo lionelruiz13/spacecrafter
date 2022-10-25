@@ -178,7 +178,7 @@ void Dso3d::drawDsoName(const Projector* prj, const Navigator *nav)
 		Vec3f posXYZ(posDso3d[i*3], posDso3d[i*3+1], posDso3d[i*3+2]);
 		Vec3f pos;
 		pos = nav->helioToEarthPosEqu(posXYZ);
-		pos[0] = -pos[0];
+		//pos[0] = -pos[0];
 		Vec3d screenposd;
 		prj->projectEarthEqu(pos, screenposd);
 
