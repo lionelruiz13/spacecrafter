@@ -839,6 +839,11 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 
 			if (newval) coreLink->nebulaSetFlagNames(true); // make sure visible
 			coreLink->nebulaSetFlagNames(newval);
+
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->dso3dGetFlagName();
+
+			coreLink->dso3dSetFlagName(newval);
 			break;
 
 		case FLAG_NAMES::FN_MILKY_WAY :

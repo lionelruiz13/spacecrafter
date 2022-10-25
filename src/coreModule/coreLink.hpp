@@ -687,6 +687,12 @@ public:
 	bool nebulaGetFlagNames ();
 	void nebulaSetColorLabels(const Vec3f& v);
 	void nebulaSetColorCircle(const Vec3f& v);
+	//! Set fader duration for dso3d names
+	void dso3dSetDuration(float f);
+	//! Set flag for displaying dso3d names
+	void dso3dSetFlagName(bool b);
+	//! Set flag for displaying dso3d names
+	bool dso3dGetFlagName() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Oort    ---------------------------

@@ -712,6 +712,19 @@ void CoreLink::nebulaSetFlag(bool b) {
 	core->nebulas->setFlagShow(b);
 	core->dso3d->setFlagShow(b);
 }
+
+void CoreLink::dso3dSetDuration(float f) {
+	return core->dso3d->setFaderDuration(f);
+}
+
+void CoreLink::dso3dSetFlagName(bool b) {
+	core->dso3d->setFlagNames(b);
+}
+
+bool CoreLink::dso3dGetFlagName() const {
+	return core->dso3d->getFlagNames();
+}
+
 //! Get flag for displaying Nebulae
 bool CoreLink::nebulaGetFlag() const {
 	return core->nebulas->getFlagShow();
