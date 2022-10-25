@@ -123,6 +123,7 @@ void ProtoSystem::load(Object &obj)
 		stringHash_t parentParams = bodyParams;
 		parentParams["name"] = bodyParams["parent"];
 		parentParams["parent"] = "none";
+		parentParams["type"] = "Center";
 		addBody(parentParams, false);
 	}
 	addBody(bodyParams, false);
