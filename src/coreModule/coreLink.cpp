@@ -786,6 +786,14 @@ void CoreLink::nebulaSetColorCircle(const Vec3f& v) {
 	core->nebulas->setCircleColor(v);
 }
 
+void CoreLink::nebulaSetFlagIsolateSelected(bool b) {
+	return core->nebulas->setFlagIsolateSelected(b);
+}
+
+bool CoreLink::nebulaGetFlagIsolateSelected() {
+	return core->nebulas->getFlagIsolateSelected();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tully---------------------------

@@ -875,6 +875,7 @@ void Core::deselect(void)
 	unSelect();
 	asterisms->deselect();
 	hip_stars->deselect();
+	nebulas->deselect();
 }
 
 void Core::unsetSelectedConstellation(std::string constellation) {
@@ -1715,6 +1716,7 @@ bool Core::selectObject(const Object &obj)
 			}
 
 			if (selected_object.getType()==OBJECT_NEBULA) {
+				nebulas->setSelected(selected_object);
 				// potentially record this action
 				if (!recordActionCallback.empty()) recordActionCallback("select nebula \"" + selected_object.getEnglishName() + "\"");
 			}

@@ -188,6 +188,22 @@ public:
 		return textFader;
 	}
 
+	void setSelected(Object ojb);
+
+	void deselect() {
+		selected_nebulas.clear();
+	}
+
+	//! Set whether selected Nebulas must be displayed alone
+	void setFlagIsolateSelected(bool s) {
+		isolateSelected = s;
+	}
+
+	//! Get whether selected Nebulas are displayed alone
+	bool getFlagIsolateSelected(void) const {
+		return isolateSelected;
+	}
+
 	//! Find and return the list of at most maxNbItem objects auto-completing the passed object I18n name
 	//! @param objPrefix the case insensitive first letters of the searched object
 	//! @param maxNbItem the maximum number of returned object names
@@ -258,6 +274,9 @@ private:
 	bool flagBright;			// Define if nebulae must be drawn in bright mode
 	bool displaySpecificHint;	// Define if specific or generic Hints are to be displayed
 	int dsoPictoSize;			// Define the size/2 from picto tex
+
+	bool isolateSelected=false;
+	std::map<std::string, bool> selected_nebulas;
 };
 
 #endif // _NEBULA_MGR_H_

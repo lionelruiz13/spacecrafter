@@ -197,7 +197,13 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 			}
 
 			if (textFader) {
-				n->drawName(prj, labelColor, font);
+				if (isolateSelected) {
+					const std::string nebula_name = n->getNameI18n();
+					if (selected_nebulas.find(nebula_name) != selected_nebulas.end()) {
+						n->drawName(prj, labelColor, font);
+					}
+				} else
+					n->drawName(prj, labelColor, font);
 			}
 
 			//~ cout << "drawhint " << n->getEnglishName() << endl;
@@ -332,6 +338,15 @@ std::vector<Object> NebulaMgr::searchAround(Vec3d v, double lim_fov) const
 		}
 	}
 	return result;
+}
+
+void NebulaMgr::setSelected(Object obj) {
+	auto it = selected_nebulas.find(obj.getNameI18n());
+	if (it != selected_nebulas.end()) {
+		selected_nebulas.erase(it);
+	} else {
+		selected_nebulas.insert(std::pair<std::string, bool>(obj.getNameI18n(), true));
+	}
 }
 
 bool NebulaMgr::loadDeepskyObject(std::string _englishName, std::string _DSOType, std::string _constellation, float _ra, float _de, float _mag, float _size, std::string _classe,
