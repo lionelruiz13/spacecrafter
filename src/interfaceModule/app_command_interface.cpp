@@ -758,7 +758,9 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 				newval = !coreLink->starGetFlagIsolateSelected();
 
 			coreLink->starSetFlagIsolateSelected(newval);
+			break;
 
+		case FLAG_NAMES::FN_DSO_PICK :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->nebulaGetFlagIsolateSelected();
 
