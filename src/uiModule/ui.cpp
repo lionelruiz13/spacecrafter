@@ -2122,7 +2122,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
-					this->executeCommand("nebula action clear");
+					this->executeCommand("flag dso_pick toggle");
 					key_Modifier= NONE;
 					break;
 				case KWIN:
@@ -2366,7 +2366,28 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 			this->executeCommand("position action save");
 			break;
 		case SDL_SCANCODE_DELETE:
-			this->executeCommand("position action load");
+			switch(key_Modifier) {
+				case NONE:
+ 				    this->executeCommand("position action load");
+					break;
+				case SHIFT:
+					this->executeCommand("nebula action clear");
+					break;
+				case SUPER:
+					event = new ScriptEvent( IDIR+"internal/clear_mess.sts");
+					EventRecorder::getInstance()->queue(event);
+					key_Modifier= NONE;
+					break;
+				case KWIN:
+					this->executeCommand("image action purge");
+					key_Modifier= NONE;
+					break;
+				case CTRL:
+					this->executeCommand("body action clear");
+					break;
+				default:
+					break;
+			}
 			break;
 		case SDL_SCANCODE_HOME:
 			app->init();
