@@ -469,16 +469,25 @@ void UI::moveMouseAz(double x)
 void UI::moveLat(double x)
 {
 	if (x>0) this->executeCommand("add y -1"); else this->executeCommand("add y 1");
-		coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
+		if (fabs(coreLink->getHeading())>90)
+			coreLink->observerMoveRelLat(x,DURATION_COMMAND);
+		else
+			coreLink->observerMoveRelLat(-x,DURATION_COMMAND);
 }
 
 void UI::moveLon(double x)
 {
 	if (x>0) this->executeCommand("add z 1"); else this->executeCommand("add z -1");
 	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
-		coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+	  	if (fabs(coreLink->getHeading())>90)
+			coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
+		else
+			coreLink->observerMoveRelLon(x,DURATION_COMMAND);
 	else
-		coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
+		if (fabs(coreLink->getHeading())>90)
+			coreLink->observerMoveRelLon(x,DURATION_COMMAND);
+		else
+			coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
 }
 
 void UI::lowerHeight(double x)
