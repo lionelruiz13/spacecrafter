@@ -36,13 +36,13 @@ sudo apt install -y libswresample-dev
 sudo apt install -y mplayer
 
 sudo apt install -y vulkan-tools
-sudo apt install -y libvulkan-dev
+sudo apt install -y libvulkan-dev vulkan-headers
 sudo apt install -y vulkan-validationlayers-dev
 
-wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
-sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-focal.list http://packages.lunarg.com/vulkan/lunarg-vulkan-focal.list
-sudo apt update
-sudo apt install -y vulkan-sdk
+#wget -qO - http://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+#sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-focal.list http://packages.lunarg.com/vulkan/lunarg-vulkan-focal.list
+#sudo apt update
+#sudo apt install -y vulkan-sdk
 
 echo Install completed.
 
