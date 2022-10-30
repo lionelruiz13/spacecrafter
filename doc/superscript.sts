@@ -1,7 +1,7 @@
 ###
 ### Superscript - SpaceCrafter Script
 ###
-### Copyright 2015-2020 Lionel RUIZ - lionel.ruiz@live.fr
+### Copyright 2015-2022 Lionel RUIZ - lionel.ruiz@live.fr
 ###
 ### License:
 ###
@@ -127,6 +127,15 @@ body action remove mode in_universe name multiverse
 
 body action clear
 
+# Preload the big texture of the defined Body
+body action preload name Earth 
+
+# Free the memory for all the big textures of planets
+body purge all
+
+# Free the memory for all the unexploited big textures of planets
+body purge auto
+
 #################
 # BODY_TRACE
 
@@ -204,7 +213,7 @@ color property cardinal_points r 1 g 1 b 0.6
 color property constellation_art r 1 g 1 b 1
 color property constellation_boundaries r 0.4 g 0.3 b 0
 color property constellation_lines r 0.05 g 0.05 b 0.3
-color property constellation_names r 0.6 g 0.7 b 0
+color property constellation_names r 0.6 g 0.7 b 0.9
 color property ecliptic_line r 1 g 0.2 b 0.2
 color property equator_grid r 0.5 g 1 b 0.5
 color property equator_line r 0.5 g 1 b 0.5
@@ -212,11 +221,8 @@ color property galactic_grid r 0.3 g 0.3 b 0.3
 color property meridian_line r 0 g 0.8 b 1
 color property personal r 0.3 g 0.7 b 1
 color property personeq r 0.3 g 0.7 b 1
-color property planet_names r 0.3 g 0.7 b 1
-color property planet_orbits r 0.2 g 0.2 b 0.2
-color property planet_trails r 1 g 0.5 b 0
 color property precession_circle r 0.6 g 0.4 b 0
-color property zodiac r 0.75 g 0 b 0.75
+color property zodiac r 0.75 g 0.75 b 0.75
 
 #################
 # COMMENT
@@ -321,6 +327,12 @@ set startup_time_mode now
 #domemasters action record
 
 #################
+# DSO3D
+
+dso3d action reset color_tex m57.png alpha_tex m57volumetric.png depth 256 color_depth 1
+dso3d action load pos_x 123 pos_y 342 pos_z 50 zrot 0 yrot 0 xscale 1 yscale 1 zscale 1 scale 10
+
+#################
 # EXTERNAL_MPLAYER
 
 # Play a specified video file using mplayer with controls
@@ -398,6 +410,9 @@ flag constellation_pick on
 # draw pictograms instead of grey circles
 flag dso_pictograms on
 
+# Draw dso names of only selected dso or all the dso
+flag dso_pick on
+
 # Draw ecliptic poles.
 flag ecliptic_center on
 
@@ -412,6 +427,9 @@ flag equator_line on
 
 # Draw equatorial grid.
 flag equatorial_grid on
+
+# Navigate through planets with Joypad
+flag eye_relative_mode on
 
 # Draw fog along the horizon (support depends on landscape).
 flag fog on
@@ -437,8 +455,8 @@ flag landscape on
 # Whether to correct for light travel time when drawing planets and moons.
 flag light_travel_time on
 
-# Sets the ground rotating instead of the stars
-flag lock_sky_position on
+# Sets the ground rotating instead of the stars (default = on)
+flag lock_sky_position off
 
 # Indicate alt/az ra/dec of selected object.
 flag object_coordinates on
@@ -484,6 +502,9 @@ flag planet_orbits on
 # Draw planets orbits.
 flag planets_orbits on
 
+# Switch to quaternion mode (move around the planet freely)
+flag quaternion_mode on
+
 # Draw satellites orbits.
 flag satellites_orbits on
 
@@ -498,9 +519,6 @@ flag polar_circle on
 
 # Draw Earth precession circle.
 flag precession_circle on
-
-# Draw satellites orbits.
-flag satellites_orbits on
 
 # If on, will print script errors to the screen.  Good for debugging.
 flag script_gui_debug on
@@ -541,7 +559,10 @@ flag star_lines on
 # Draw the sun movement through the sky.
 flag body_trace on
 
-# Draw the sun exagerated.
+# Draw texts on top of videos.
+flag subtitle on
+
+# Draw the sun exaggerated in size.
 flag sun_scaled on
 
 # Center view on currently selected object.
@@ -570,6 +591,24 @@ flag zodiac on
 
 # Draw zodiacal light and gegenschein
 flag zodiacal_light toggle
+
+################
+# FONT
+
+# change the default font for each category of text
+font target text filename Cyberbit.ttf size 18
+
+font target planets filename Gloria.ttf size 14
+font target constellations filename Gloria.ttf size 23
+font target cardinal_points filename Gloria.ttf size 10
+font target stars filename Gloria.ttf size 12
+font target menu filename Gloria.ttf size 16
+font target nebulae filename Gloria.ttf size 12
+font target grids filename Gloria.ttf size 13
+font target lines filename Gloria.ttf size 15
+font target displays filename Gloria.ttf size 11
+
+font action initial
 
 #################
 # HEADING
@@ -760,6 +799,9 @@ media action play videoname superscript/dummy.avi type VR360
 
 media action play videoname superscript/dummy.avi type VIEWPORT
 
+#Play the bottom part of a video duplicated at 180°
+media action play type DUAL_VIEWPORT videoname superscript/show.avi audioname superscript/show.ogg keycolor off
+
 media action pause
 
 media action jump value 10
@@ -791,9 +833,15 @@ wait duration 5
 zoom fov 200 duration 5
 wait duration 5
 
-#Play a rectangular video duplicated
-media action play type IMAGE name "video" videoname morphing/figures_arabes.mp4 audioname morphing/figures_arabes.ogg position horizontal
+#Play a rectangular video duplicated SC2022 and up
+# Use TWICE for duplication and THRICE for triple video setting
+media action play type IMAGE name "video" videoname video.mp4 audioname videoname.ogg position dome project twice
 image name "video" alpha 1 scale 100 altitude 45 rotation 0 azimuth 180
+
+#Play a rectangular video duplicated SC2020 and earlier
+media action play type IMAGE name "video" videoname video.mp4 audioname videoname.ogg position dome
+image name "video" alpha 1 scale 100 altitude 45 rotation 0 azimuth 180
+# Use TWICE for duplication and THRICE for triple video setting
 image name "video" action twice
 
 # Play a mobile rectangular video with transparency
@@ -848,6 +896,12 @@ flag stars_trace on
 timerate rate 360
 wait duration 3
 flag stars_trace off
+
+#################
+# MODE
+
+# jump to any mode (in_solarsystem in_galaxy in_universe in_stellarsystem)
+mode jump in_solarsystem body Earth altitude 75
 
 #################
 # MOVETO
@@ -1003,7 +1057,7 @@ body name Callisto hidden true
 # If a script calls another script, the first will continue after the called script finishes
 script filename superscript/perso.sts action play
 
-# Stops definetely the script (hash has to be removed)
+# Stops definetly the script (hash has to be removed)
 #script action end
 
 # Pausing a script and wait pressing on <SPACE> or <K> (hash has to be removed)
@@ -1054,10 +1108,12 @@ select planet home_planet pointer off
 # SET
 
 # set the fading of the atmosphere
-set atmosphere_fade_duration 3
+set atmosphere_fade_duration 1
 flag atmosphere off
 wait duration 1
 flag atmosphere on
+wait duration 1
+set atmosphere_fade_duration default
 
 # used for auto zoom
 set auto_move_duration 5
@@ -1075,16 +1131,6 @@ set constellation_art_intensity 0.5
 set constellation_art_intensity 1
 
 set mode "InGalaxy"
-
-################
-# FONT
-
-# change the default font for each category of text
-font target constellations filename Cyberbit.ttf size 12
-font target cardinal_points filename Cyberbit.ttf size 36
-font target planets filename Cyberbit.ttf size 20
-font target stars filename Cyberbit.ttf size 12
-font target text filename Cyberbit.ttf size 18
 
 # change of Landscape
 # see the landscapes.ini file
@@ -1107,7 +1153,7 @@ set max_mag_star_name 1.5
 set mode "InGalaxy"
 
 # scale of celestial bodies (1 is real size)
-set sun_scale 5
+set sun_scale 10
 set moon_scale 5
 
 # what azimuthal position is at the bottom of the screen (East in the example)
@@ -1134,7 +1180,7 @@ set sky_locale fr
 # Default is 6.5. Simply does not draw stars dimmer than this value at a full sky view. Might be removed in future releases.
 set star_limiting_mag 6.5
 
-# limit the scale of stars depending on the mangitude of the stars
+# limit the scale of stars depending on the magnitude of the stars
 set star_mag_scale 2.0
 
 # Set the stars fade duration
@@ -1172,7 +1218,7 @@ set sky_culture inca
 ################
 #SHUTDOWN:
 
-#Quit stellarium360 properly (hash has to be removed)
+#Quit SpaceCrafter properly (hash has to be removed)
 #shutdown action now
 
 #################
@@ -1182,6 +1228,10 @@ star_lines load asterism_all.fab
 flag star_lines on
 flag star_lines off
 star_lines action drop
+# erase the 3D starlines
+deselect
+
+
 flag star_lines_selected toggle
 
 # Add an asterism on the fly
@@ -1213,6 +1263,8 @@ struct loop 2
 # do it two times
 struct loop end
 
+# beware, you can't insert a script in a loop
+
 struct loop 4
   # should do it four times
   struct loop break
@@ -1222,10 +1274,11 @@ struct loop end
 #################
 # TEXT
 
-# Draw at 45° above South the text "Orion - The Hunter" for 4 seconds (first method)
+# Draw at 45° above South the text "Orion - The Hunter" for 4 seconds
 # align can be left/center/right (left by default) and display is on by default
 text name orion_string action drop
-text action load name orion_string string "Orion - The Hunter" altitude 45 azimuth 180 r 0.5 g 0.5 b 0.0 align center
+# by default, fader is off
+text name orion_string string "Orion - The Hunter" altitude 10 azimuth 180 r 0.0 g 0.5 b 0.5 align center action load fader on
 wait duration 2
 text name orion_string string "Orion - Le chasseur" action update
 wait duration 2
@@ -1234,16 +1287,7 @@ wait duration 2
 text name orion_string action drop
 text action clear
 
-# Draw at 45° above South the text "Orion - The Hunter" for 4 seconds (second method)
-# Size must be chosen between XX_SMALL X_SMALL SMALL MEDIUM LARGE X_LARGE XX_LARGE
-text action load name orion_string string "Orion - The Hunter" size MEDIUM altitude 45 azimuth 180 r 0.5 g 0.5 b 0.0 display on timeout 4
-wait duration 2
-text name orion_string string "Orion - Le chasseur" action update
-wait duration 2
-text name orion_string display off
-wait duration 2
-text name orion_string action drop
-text action clear
+
 
 #################
 # TIMERATE
@@ -1282,6 +1326,15 @@ multiply a 2
 # divide by a value a=a/2
 divide a 2
 
+# a=tan(b)
+tangent a b
+
+# a=trunc(b)
+trunc a b
+
+# a=sin(b) with b in degrees
+sinus a b
+
 # create a variable with a random value
 random min 0 max 10
 define a random
@@ -1291,10 +1344,16 @@ clear state variable
 
 # System variables
 # The following variables can be accessed within scripts:
-# altitude longitude latitude sun_altitude sun_azimuth heading
+# altitude longitude latitude sun_altitude sun_azimuth heading date_year date_month date_day date_hour date_minute selected_ra selected_de selected_alt selected_az
+
+# body_selected which value is 999 except if is selected... Sun=0 Mercury=100 Venus=200 Earth=300 Moon=301 Mars=400 Phobos=401 Deimos=402 Jupiter=500 Io=501 Europa=502 Ganymed=503 Callisto=504 Saturn=600 ...
+struct if body_selected equal 300
+  text name info string "It's your home" altitude 10 azimuth 180 r 0.0 g 0.5 b 0.5 align center action load display on
+struct if end
 
 # test if sun is set
 struct if sun_altitude inf 0
+struct if end
 
 #################
 # WAIT
