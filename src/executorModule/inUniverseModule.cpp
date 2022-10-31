@@ -114,6 +114,7 @@ void InUniverseModule::draw(int delta_time)
 	}
 	core->ojmMgr->draw(core->projection, core->navigation, OjmMgr::STATE_POSITION::IN_UNIVERSE);
 	core->skyDisplayMgr->drawPerson(core->projection, core->navigation);
+	if (core->selected_object && core->object_pointer_visibility) core->selected_object.drawPointer(delta_time, core->projection, core->navigation);
 	//core->postDraw();
 }
 

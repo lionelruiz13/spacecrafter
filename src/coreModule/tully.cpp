@@ -39,6 +39,7 @@
 #include "EntityCore/EntityCore.hpp"
 #include "tools/insert_all.hpp"
 #include "coreModule/volumObj3D.hpp"
+#include "coreModule/TullyWrapper.hpp"
 
 Tully::Tully()
 {
@@ -456,6 +457,27 @@ void Tully::computeSquareGalaxies(Vec3f camPosition)
 		drawData->get()[1].firstVertex = squareOffset;
 	} else
 		drawData->get()[0].vertexCount = vertexCount;
+}
+
+std::vector<ObjectBaseP> Tully::searchAround(Vec3d v, double limitFov, const Navigator *nav)
+{
+	std::vector<ObjectBaseP> result;
+	v.normalize();
+	limitFov = limitFov * (M_PI/180.);
+	double cosLimitFov = cos(limitFov);
+	float x,y,z;
+	for(unsigned int i=0; i< nbGalaxy;i++) {
+		x=posTully[3*i];
+		y=posTully[3*i+1];
+		z=posTully[3*i+2];
+		Vec3f pos(x, y, z);
+		auto tmp = nav->helioToEarthPosEqu(pos);
+		tmp.normalize();
+		float dotProduct = tmp.dot(v);
+		if (dotProduct > cosLimitFov)
+			result.push_back(new TullyWrapper(pos, nameTully[i], OBJECT_STAR_CLUSTER));
+	}
+	return result;
 }
 
 void Tully::drawGalaxyName(const Projector* prj)

@@ -951,8 +951,16 @@ Object Core::cleverFind(const Vec3d& v) const
 		}
 	}
 
+	if (tully->getFlagShow() && curentModule == MODULE::IN_UNIVERSE) {
+		std::vector<ObjectBaseP > tmp = tully->searchAround(v, fov_around, navigation);
+		for( std::vector<ObjectBaseP >::const_iterator itr = tmp.begin(); itr != tmp.end(); ++itr ) {
+			candidates.push_back( Object(itr->get()) );
+		}
+	}
+
 	// Now select the object minimizing the function y = distance(in pixel) + magnitude
 	float best_object_value;
+	float best_object_distance = 10000000.f;
 	best_object_value = 100000.f;
 	std::vector<Object>::iterator iter = candidates.begin();
 	while (iter != candidates.end()) {
@@ -976,8 +984,15 @@ Object Core::cleverFind(const Vec3d& v) const
 				mag -= 8.f;
 			}
 		}
-		if (distance + mag < best_object_value) {
+		if ((*iter).getType()==OBJECT_STAR_CLUSTER) {
+			if (distance < best_object_distance) {
+				best_object_distance = distance;
+				sobj = *iter;
+			}
+		}
+		else if (distance + mag < best_object_value) {
 			best_object_value = distance + mag;
+			best_object_distance = distance;
 			sobj = *iter;
 		}
 		iter++;

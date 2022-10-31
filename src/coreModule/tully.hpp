@@ -33,9 +33,9 @@
 
 #include "tools/fader.hpp"
 #include "tools/ScModule.hpp"
-
 #include "tools/vecmath.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
+#include "tools/object_base.hpp"
 
 //! Class which manages the Tully Galaxies catalog
 
@@ -130,6 +130,9 @@ public:
 		buildVertexSplit();
 		buildInternal();
 	}
+
+	std::vector<ObjectBaseP> searchAround(Vec3d v, double limitFov, const Navigator *nav);
+
 private:
 	// initialize ShaderPoints and ShaderSquare shaders and vao-vbo
 	void createSC_context();

@@ -235,6 +235,17 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 				(getType() == OBJECT_BODY) ? (context.frameIdx) : (context.frameIdx + 3)], PASS_MULTISAMPLE_DEPTH);
 			break;
 		}
+		case OBJECT_STAR_CLUSTER: {
+			*(Vec3f *) context.transfer->planCopy(vertexStarPointer->get(), 0, sizeof(Vec3f)) = Vec3f(screenposd[0], screenposd[1], screenposd[2]);
+
+			//SET UNIFORM
+			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
+			uGeom->get().radius = 13.f;
+			*uColor = getRGB();
+
+			context.frame[context.frameIdx]->toExecute(cmdStarPointer[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+			break;
+		}
 		default:;
 	}
 }

@@ -14,6 +14,7 @@ enum OBJECT_TYPE {
 	OBJECT_BODY,
 	OBJECT_NEBULA,
 	OBJECT_CONSTELLATION,
+	OBJECT_STAR_CLUSTER,
 };
 
 //! Intrusive pointer used to manage StelObject with smart pointers
