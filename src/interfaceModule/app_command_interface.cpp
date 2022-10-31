@@ -2609,9 +2609,8 @@ int AppCommandInterface::commandTimerate()
 	// NOTE: accuracy issue related to frame rate
 	if (!argRate.empty()) {
 		if (argDuration.empty()) {
-			coreLink->timeSetSpeed(evalDouble(argRate)*JD_SECOND);
-			coreLink->timeSaveSpeed();
 			coreLink->timeSetFlagPause(false);
+			coreLink->timeSetSpeed(evalDouble(argRate)*JD_SECOND);
 		} else {
 			//std::cout << "Changing timerate to " << argRate << " duration: " << argDuration << std::endl;
 			coreLink->timeChangeSpeed(evalDouble(argRate)*JD_SECOND, stod(argDuration));
@@ -2619,21 +2618,13 @@ int AppCommandInterface::commandTimerate()
 	} else if (argAction==W_PAUSE) {
 		//std::cout << "Changing timerate to pause" << std::endl;
 		coreLink->timeSetFlagPause(!coreLink->timeGetFlagPause());
-		if (coreLink->timeGetFlagPause()) {
-			// TODO pause should be all handled in core methods
-			coreLink->timeSaveSpeed();
-			coreLink->timeSetSpeed(0);
-		} else {
-			coreLink->timeLoadSpeed();
-		}
 	} else if (argAction==W_RESUME) {
 		//std::cout << "Changing timerate to resume" << std::endl;
 		coreLink->timeSetFlagPause(false);
-		coreLink->timeLoadSpeed();
 	} else if (argAction==W_INCREMENT) {
 		// speed up time rate
-		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
 
 		double sstep = 2.;
 
@@ -2645,14 +2636,13 @@ int AppCommandInterface::commandTimerate()
 		else if (s>=0. && s<JD_SECOND) s=JD_SECOND;
 		else if (s>=-JD_SECOND && s<0.) s=0.;
 		coreLink->timeSetSpeed(s);
-		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 
 	} else if (argAction == W_SINCREMENT) {
 		// speed up time rate
-		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
 		double sstep = 1.05;
 		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=3;
 		if( !argStep.empty() )
@@ -2663,12 +2653,11 @@ int AppCommandInterface::commandTimerate()
 		else if (s>=0. && s<JD_SECOND) s=JD_SECOND;
 		else if (s>=-JD_SECOND && s<0.) s=0.;
 		coreLink->timeSetSpeed(s);
-		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 	} else if (argAction==W_DECREMENT) {
-		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
 
 		double sstep = 2.;
 
@@ -2680,12 +2669,11 @@ int AppCommandInterface::commandTimerate()
 		else if (s>-JD_SECOND && s<=0.) s=-JD_SECOND;
 		else if (s>0. && s<=JD_SECOND) s=0.;
 		coreLink->timeSetSpeed(s);
-		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 	} else if (argAction == W_SDECREMENT) {
-		coreLink->timeSetFlagPause(false);
 		double s = coreLink->timeGetSpeed();
+		coreLink->timeSetFlagPause(false);
 		double sstep = 1.05;
 		if ((abs(s)<3) && (coreLink->observatoryGetAltitude()>150E9)) s=-3;
 
@@ -2697,7 +2685,6 @@ int AppCommandInterface::commandTimerate()
 		else if (s>-JD_SECOND && s<=0.) s=-JD_SECOND;
 		else if (s>0. && s<=JD_SECOND) s=0.;
 		coreLink->timeSetSpeed(s);
-		coreLink->timeSaveSpeed();
 		// for safest script replay, record as absolute amount
 		commandline = "timerate rate " + std::to_string(s/JD_SECOND);
 	} else

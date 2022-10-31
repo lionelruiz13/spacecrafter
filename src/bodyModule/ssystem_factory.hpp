@@ -508,6 +508,11 @@ public:
         return currentSystem->getAnchorManager()->switchToAnchor(anchorName);
     }
 
+    bool switchToAnchor(const Object &selection) {
+        currentSystem->getAnchorManager()->switchToAnchor(selection);
+        return true;
+    }
+
     bool cameraSave(const std::string& name) {
 	    return currentSystem->getAnchorManager()->saveCameraPosition(AppSettings::Instance()->getUserDir() + "anchors/" + name);
     }

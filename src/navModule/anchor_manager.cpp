@@ -283,7 +283,7 @@ void AnchorManager::update() noexcept
 {
 	if (observer->getEyeRelativeMode()) {
 		// Assume the nearest anchor doesn't change when the observer doesn't move
-		const Vec3d center = observer->getObserverCenterPoint();
+		const Vec3d center = observer->getHeliocentricPosition(timeMgr->getJDay());
 		if (center != lastCenterPosition) {
 			lastCenterPosition = center;
 			// Set the nearest anchor to the observer
@@ -372,6 +372,16 @@ bool AnchorManager::switchToAnchor(const std::string& anchorName) noexcept
 
 	// std::cout << "switchToAnchor: change error for " << anchorName << std::endl;
 	return false;
+}
+
+void AnchorManager::switchToAnchor(const Object &selection) noexcept
+{
+	if (!switchToAnchor(selection.getEnglishName())) {
+		// Here ?
+		currentAnchor = std::make_shared<AnchorPointObservatory>(navigator->earthPosEquToHelio(selection.getEarthEquPos(navigator)));
+		addAnchor(selection.getEnglishName(), currentAnchor);
+		observer->setAnchorPoint(currentAnchor);
+	}
 }
 
 bool AnchorManager::setCurrentAnchorPos(const Vec3d& pos) noexcept

@@ -94,15 +94,16 @@ public:
 	//! Get time speed in JDay/sec
 	double timeGetSpeed() const;
 
-	void timeLoadSpeed() const;
-
-	void timeSaveSpeed() const;
 	//! Set the current date in Julian Day
 	void setJDay(double JD);
 	//! Get the current date in Julian Day
 	double getJDay() const;
 	bool timeGetFlagPause() const;
 	void timeSetFlagPause(bool _value) const;
+	//! Acquire a time lock
+	void timeLock();
+	//! Release a time lock
+	void timeUnlock();
 
 	////////////////////////////////////////////////////////////////////////////////
 	// dateSun---------------------------

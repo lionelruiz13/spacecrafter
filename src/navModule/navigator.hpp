@@ -130,6 +130,11 @@ public:
 		return mat_local_to_earth_equ*mat_helio_to_local*v;
 	}
 
+	//! Transform vector from false equatorial coordinate to heliocentric : equatorial coordinate but centered on the observer position (usefull for objects close to earth)
+	Vec3d earthPosEquToHelio(const Vec3d& v) const {
+		return mat_local_to_helio*mat_earth_equ_to_local*v;
+	}
+
 	//! Return the view matrix for some coordinate systems
 	const Mat4d& getHelioToEyeMat() const {
 		return mat_helio_to_eye;

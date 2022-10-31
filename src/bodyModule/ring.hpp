@@ -70,7 +70,7 @@ public:
 	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init);
 	~Ring(void);
 
-	void draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
+	void draw(VkCommandBuffer &cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
 
 	double getOuterRadius(void) const {
 		return radius_max*mc;

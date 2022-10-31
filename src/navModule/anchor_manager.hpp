@@ -111,6 +111,12 @@ public:
 	 */
 	bool switchToAnchor(const std::string& anchorName) noexcept;
 
+	/*
+	 * sets the current anchor
+	 * create a new anchor if no matching anchorName is found
+	 */
+	void switchToAnchor(const Object &selection) noexcept;
+
 	//! initialize the frist anchor point
 	//! @warning returns exit(-1) if no anchor point was found
 	void initFirstAnchor(const std::string& anchorName) noexcept;

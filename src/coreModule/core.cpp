@@ -1573,7 +1573,7 @@ void Core::setHomePlanet(const std::string &planet)
 	EventRecorder::getInstance()->queue(event);
 	bool result = false;
 	if (planet=="selected")
-		result =  ssystemFactory->switchToAnchor(selected_object.getEnglishName());
+		result =  ssystemFactory->switchToAnchor(selected_object);
 	else
 		result =  ssystemFactory->switchToAnchor(planet);
 	if (result) {

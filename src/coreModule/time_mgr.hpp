@@ -33,6 +33,7 @@
 
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"
+#include <cassert>
 
 class TimeMgr : public NoCopy {
 public:
@@ -54,24 +55,33 @@ public:
 		time_speed=ts;
 	}
 
-	void saveTimeSpeed() {
-		temp_time_velocity = time_speed;
-		//std::cout << "Save TimeSpeed to "<< temp_time_velocity << std::endl;
-	}
-	void loadTimeSpeed() {
-		//std::cout << "ReloadTimeSpeed to "<< temp_time_velocity << std::endl;
-		time_speed = temp_time_velocity;
-	}
-
 	double getTimeSpeed(void) const {
-		return time_speed;
+		return (timeLockCount) ? 0 : time_speed;
 	}
 
 	double getTimePause(void) const {
 		return FlagTimePause;
 	}
 	void setTimePause(bool _value) {
-		FlagTimePause=_value;
+		if (FlagTimePause != _value) {
+			if (_value) {
+				FlagTimePause = true;
+				++timeLockCount;
+			} else {
+				FlagTimePause = false;
+				--timeLockCount;
+			}
+		}
+	}
+
+	//! Acquire a time lock, prevent time to change while at least one lock is hold
+	inline void lockTime() {
+		++timeLockCount;
+	}
+
+	//! Release a time lock
+	inline void unlockTime() {
+		assert(--timeLockCount >= 0);
 	}
 
 	// double getTimeMultiplier() const {
@@ -100,10 +110,10 @@ private:
 	// Time variable
 	double time_speed;				// Positive : forward, Negative : Backward, 1 = 1sec/sec
 	double JDay;        			// Curent time in Julian day
-	bool FlagTimePause;				// say if software time is in pause 
+	bool FlagTimePause = false;		// say if software time is in pause
 	bool FlagChangeTimeSpeed;
+	int timeLockCount = 0;			// Number for lock acquired, paused if non-zero
 	double start_time_speed, end_time_speed;
-	double temp_time_velocity;		//! Used to store time speed while in pause
 //	int time_multiplier;			//! used for adjusting delta_time for script speeds
 	float move_to_coef, move_to_mult;
 };
