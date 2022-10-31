@@ -42,7 +42,7 @@
 #include "coreModule/coreLink.hpp"
 
 // Slowdown factor used for eye relative movements
-constexpr double eyeMoveDivisor = 4*1000*AU;
+constexpr double eyeMoveDivisor = 1*1000*AU;
 
 Observer::Observer()
 	: longitude(0.), latitude(1e-9), altitude(0),
