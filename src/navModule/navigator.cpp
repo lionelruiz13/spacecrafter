@@ -237,12 +237,13 @@ void Navigator::updateTransformMatrices(Observer* position, double _JDay)
 	    mat_local_to_earth_equ;
 
 	// This define the local movement expected : mat_helio_to_local * local_movement * mat_local_to_helio
-	mat_local_to_helio = Mat4d::translation(position->getObserverCenterPoint()) * tmp;
-	mat_helio_to_local = tmp.transpose() * Mat4d::translation(-position->getObserverCenterPoint());
 
-	if (!position->getEyeRelativeMode()) {
-		mat_local_to_helio = mat_local_to_helio * Mat4d::translation(Vec3d(0.,0., position->getDistanceFromCenter()));
-		mat_helio_to_local = Mat4d::translation(Vec3d(0.,0.,-position->getDistanceFromCenter())) * mat_helio_to_local;
+	if (position->getEyeRelativeMode()) {
+		mat_local_to_helio = Mat4d::translation(position->getHeliocentricPosition(_JDay)) * tmp;
+		mat_helio_to_local = tmp.transpose() * Mat4d::translation(-position->getHeliocentricPosition(_JDay));
+	} else {
+		mat_local_to_helio = Mat4d::translation(position->getObserverCenterPoint()) * tmp * Mat4d::translation(Vec3d(0.,0., position->getDistanceFromCenter()));
+		mat_helio_to_local = Mat4d::translation(Vec3d(0.,0.,-position->getDistanceFromCenter())) * tmp.transpose() * Mat4d::translation(-position->getObserverCenterPoint());
 	}
 
 

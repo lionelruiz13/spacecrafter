@@ -867,6 +867,14 @@ public:
 		return core->navigation->getHeading();
 	}
 
+	const Vec3d& getLocalVision() const { //unused
+		return core->navigation->getLocalVision();
+	}
+
+	void setLocalVision(const Vec3d& _pos) {
+		core->navigation->setLocalVision(_pos);
+	}
+
     CoreLink(std::shared_ptr<Core> _core) {
 		core = _core;
 		instance = this;
