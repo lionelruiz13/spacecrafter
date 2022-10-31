@@ -69,13 +69,11 @@ Vec3d Observer::getHeliocentricPosition(double JD) const
 {
 	return (flag_eye_relative_mode) ? anchor->getHeliocentricEclipticPos() : Mat4d::translation(getObserverCenterPoint()) * getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0., 0., getDistanceFromCenter());
 }
-// anchor->getHeliocentricEclipticPos() - anchorAlt->getHeliocentricEclipticPos() = getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0, 0, 1)
 
 Vec3d Observer::getObserverCenterPoint(void) const
 {
 	return (flag_eye_relative_mode) ? anchorAlt->getHeliocentricEclipticPos() : anchor->getHeliocentricEclipticPos();
 }
-
 
 double Observer::getDistanceFromCenter(void) const
 {
@@ -117,23 +115,17 @@ Mat4d Observer::getRotEquatorialToVsop87(void) const
 	return anchor->getRotEquatorialToVsop87() * rotator.getCachedMatrix();
 }
 
-bool Observer::isOnBody() const{
-	return anchor->isOnBody();
+bool Observer::isOnBody() const {
+	return (flag_eye_relative_mode) ? anchorAlt->isOnBody() : anchor->isOnBody();
 }
 
-bool Observer::isOnBody(std::shared_ptr<Body> body)const{
-	return anchor->isOnBody(body);
+bool Observer::isOnBody(std::shared_ptr<Body> body) const {
+	return (flag_eye_relative_mode) ? anchorAlt->isOnBody(body) : anchor->isOnBody(body);
 }
 
 std::shared_ptr<Body> Observer::getHomeBody(void) const
 {
-	if (anchor==nullptr)
-		return nullptr;
-	// if we are not on a Body
-	if (!anchor->isOnBody())
-		return nullptr;
-	// otherwise a Body is returned
-	return anchor->getBody();
+	return (flag_eye_relative_mode) ? anchorAlt->getBody() : anchor->getBody();
 }
 
 void Observer::load(const InitParser& conf, const std::string& section)
@@ -431,8 +423,13 @@ void Observer::setEyeRelativeMode(bool mode)
 {
 	if (flag_eye_relative_mode == mode)
 		return;
-	if (mode)
+	if (mode) {
 		anchorAlt->setHeliocentricEclipticPos(getHeliocentricPosition(CoreLink::instance->getJDay()));
+		// Save location and restore it afterhand
+		CoreLink::instance->timeLock();
+	} else {
+		CoreLink::instance->timeUnlock();
+	}
 	flag_eye_relative_mode = mode;
 	anchor.swap(anchorAlt);
 }
@@ -444,7 +441,3 @@ void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 	} else
 		anchor = _anchor;
 }
-
-// lon = 1.96841976537792
-// lat = 46.176495867768431
-// sideral = 252.38943488471656

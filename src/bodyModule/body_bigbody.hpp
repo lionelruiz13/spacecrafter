@@ -22,6 +22,8 @@
  *
  */
 
+#ifndef _BODY_BIGBODY_HPP_
+#define _BODY_BIGBODY_HPP_
 
 #include "bodyModule/body.hpp"
 #include "bodyModule/ring.hpp"
@@ -96,3 +98,5 @@ protected :
 	std::shared_ptr<s_texture> tex_shadow_cloud;
 	std::shared_ptr<s_texture> tex_norm_cloud;
 };
+
+#endif

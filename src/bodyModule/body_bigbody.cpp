@@ -24,7 +24,7 @@
 
 #include "bodyModule/orbit_2d.hpp"
 #include "bodyModule/body_bigbody.hpp"
-
+#include "coreModule/coreLink.hpp"
 #include "tools/file_path.hpp"
 #include "bodyModule/trail.hpp"
 #include "bodyModule/axis.hpp"
@@ -381,7 +381,8 @@ void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMg
 
 void BigBody::drawRings(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
-	rings->draw(cmd, prj,obs->isOnBody(shared_from_this()) ? obs : nullptr,mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
+    const double observerDistanceToBody = (get_heliocentric_ecliptic_pos() - obs->getHeliocentricPosition(CoreLink::instance->getJDay())).length();
+	rings->draw(cmd, prj, observerDistanceToBody, mat,screen_sz,_lightDirection,_planetPosition,planetRadius);
 }
 
 void BigBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)

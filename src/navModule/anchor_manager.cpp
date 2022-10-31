@@ -283,7 +283,7 @@ void AnchorManager::update() noexcept
 {
 	if (observer->getEyeRelativeMode()) {
 		// Assume the nearest anchor doesn't change when the observer doesn't move
-		const Vec3d center = observer->getObserverCenterPoint();
+		const Vec3d center = observer->getHeliocentricPosition(timeMgr->getJDay());
 		if (center != lastCenterPosition) {
 			lastCenterPosition = center;
 			// Set the nearest anchor to the observer

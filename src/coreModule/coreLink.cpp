@@ -442,13 +442,6 @@ double CoreLink::timeGetSpeed() const {
 	return core->timeMgr->getTimeSpeed();
 }
 
-void CoreLink::timeLoadSpeed() const {
-	return core->timeMgr->loadTimeSpeed();
-}
-void CoreLink::timeSaveSpeed() const  {
-	core->timeMgr-> saveTimeSpeed();
-}
-
 //! Set the current date in Julian Day
 void CoreLink::setJDay(double JD) {
 	core->timeMgr->setJDay(JD);
@@ -464,6 +457,14 @@ bool CoreLink::timeGetFlagPause() const {
 
 void CoreLink::timeSetFlagPause(bool _value) const {
 	core->timeMgr->setTimePause(_value);
+}
+
+void CoreLink::timeLock() {
+	core->timeMgr->lockTime();
+}
+
+void CoreLink::timeUnlock() {
+	core->timeMgr->unlockTime();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

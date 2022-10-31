@@ -15,7 +15,6 @@ TimeMgr::TimeMgr()
 	end_time_speed = 0;
 	time_speed= JD_SECOND;
 	// time_multiplier = 1.0;
-	temp_time_velocity = time_speed;
 }
 
 
@@ -26,6 +25,8 @@ TimeMgr::~TimeMgr()
 // Increment time
 void TimeMgr::update(int delta_time)
 {
+	if (timeLockCount)
+		return;
 
 	if (FlagChangeTimeSpeed) {
 		move_to_mult += move_to_coef*delta_time;
@@ -33,7 +34,6 @@ void TimeMgr::update(int delta_time)
 		if ( move_to_mult >= 1) {
 			move_to_mult = 1;
 			FlagChangeTimeSpeed = 0;
-			saveTimeSpeed();
 			setTimePause(false);
 		}
 		time_speed = start_time_speed - move_to_mult*(start_time_speed-end_time_speed);

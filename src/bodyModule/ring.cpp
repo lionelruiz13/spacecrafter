@@ -224,7 +224,7 @@ Ring::~Ring(void)
 {
 }
 
-void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
+void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
 	if (!fullyInitialized)
 		initialize();
@@ -248,7 +248,7 @@ void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,
 
 	uniform->get().SunnySideUp = (h>0.0) ? 1.0 : 0.0;
 
-	if (asteroidReady && obs && obs->getDistanceFromCenter() < radius_max * 10 /* && abs(obs->getLatitude()) < 20. */) {
+	if (asteroidReady && observerDistanceToBody < radius_max * 10) {
 		uniform->get().fadingFactor = fadingFactor; // calibrated over Saturn radiux_max
 		pipelineAsteroid->bind(cmd);
 		layoutAsteroid->bindSet(cmd, *setAsteroid);
