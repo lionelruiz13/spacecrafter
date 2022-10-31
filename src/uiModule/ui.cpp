@@ -478,7 +478,7 @@ void UI::moveLat(double x)
 void UI::moveLon(double x)
 {
 	if (x>0) this->executeCommand("add z 1"); else this->executeCommand("add z -1");
-	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName())
+	if (core->getSelectedPlanetEnglishName()==core->getHomePlanetEnglishName() || coreLink->getEyeRelativeMode())
 	  	if (fabs(coreLink->getHeading())>90)
 			coreLink->observerMoveRelLon(-x,DURATION_COMMAND);
 		else
