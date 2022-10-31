@@ -207,8 +207,21 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 			}
 
 			//~ cout << "drawhint " << n->getEnglishName() << endl;
-			if ( n->getAngularSize()<size_limit && nbDraw < MAX_HINT)
-				n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
+			if ( n->getAngularSize()<size_limit && nbDraw < MAX_HINT) {
+				if (!displaySpecificHint)
+					n->drawHint(prj, nav, data, nbDraw, displaySpecificHint, circleColor, getPictoSize());
+				else {
+					bool displayPicto = false;
+					if (isolateSelected) {
+						const std::string nebula_name = n->getNameI18n();
+						if (selected_nebulas.find(nebula_name) != selected_nebulas.end())
+							displayPicto = true;
+					}
+					else
+						displayPicto = true;
+					n->drawHint(prj, nav, data, nbDraw, displayPicto, circleColor, getPictoSize());
+				}
+			}
 		}
 	}
 	Nebula::endDraw();
