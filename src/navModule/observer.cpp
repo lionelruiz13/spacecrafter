@@ -433,7 +433,7 @@ void Observer::setEyeRelativeMode(bool mode)
 	auto local_vision = getRotLocalToEquatorial(JD) * CoreLink::instance->getLocalVision();
 	flag_eye_relative_mode = mode;
 	anchor.swap(anchorAlt);
-	CoreLink::instance->setLocalVision(getRotLocalToEquatorial(JD) * local_vision);
+	CoreLink::instance->setLocalVision(getRotLocalToEquatorial(JD).transpose() * local_vision);
 }
 
 void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
