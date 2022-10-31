@@ -73,7 +73,7 @@ Vec3d Observer::getHeliocentricPosition(double JD) const
 
 Vec3d Observer::getObserverCenterPoint(void) const
 {
-	return anchor->getHeliocentricEclipticPos();
+	return (flag_eye_relative_mode) ? anchorAlt->getHeliocentricEclipticPos() : anchor->getHeliocentricEclipticPos();
 }
 
 

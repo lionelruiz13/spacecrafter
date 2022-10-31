@@ -374,6 +374,16 @@ bool AnchorManager::switchToAnchor(const std::string& anchorName) noexcept
 	return false;
 }
 
+void AnchorManager::switchToAnchor(const Object &selection) noexcept
+{
+	if (!switchToAnchor(selection.getEnglishName())) {
+		// Here ?
+		currentAnchor = std::make_shared<AnchorPointObservatory>(navigator->earthPosEquToHelio(selection.getEarthEquPos(navigator)));
+		addAnchor(selection.getEnglishName(), currentAnchor);
+		observer->setAnchorPoint(currentAnchor);
+	}
+}
+
 bool AnchorManager::setCurrentAnchorPos(const Vec3d& pos) noexcept
 {
 	if(typeid(*currentAnchor) != typeid(AnchorPointBody)) {

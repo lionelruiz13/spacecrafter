@@ -104,7 +104,7 @@ void ProtoSystem::load(Object &obj)
 {
 	stringHash_t bodyParams;
 	bodyParams["name"] = obj.getEnglishName();
-	bodyParams["parent"] = "Center" + bodyParams["name"];
+	bodyParams["parent"] = "none";
 	bodyParams["type"] = "Sun";
 	bodyParams["radius"] = "1190.856";
 	bodyParams["halo"] = "false";
