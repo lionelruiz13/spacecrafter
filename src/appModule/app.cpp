@@ -106,6 +106,7 @@ App::App( SDLFacade* const sdl )
 	Pipeline::setDefaultLineWidth(conf.getDouble(SCS_RENDERING, SCK_LINE_WIDTH));
 	baseHeading = conf.getDouble (SCS_NAVIGATION,SCK_HEADING);
 	PipelineLayout::DEFAULT_SAMPLER.maxAnisotropy = conf.getDouble(SCS_RENDERING, SCK_ANISOTROPY);
+	context.isFloat64Supported = VulkanMgr::instance->getDeviceFeatures().features.shaderFloat64;
 
 	context.stat = std::make_unique<CaptureMetrics>(settings->getUserDir() + "log/statistics.dat", CAPTURE_FLAG_NAMES);
 	if (conf.getBoolean(SCS_MAIN, SCK_STATISTICS))

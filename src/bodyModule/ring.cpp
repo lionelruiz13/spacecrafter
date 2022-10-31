@@ -124,6 +124,7 @@ void Ring::createSC_context()
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindVertex(*vertex);
 	pipeline->bindShader("ring_planet.vert.spv");
+	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	pipeline->bindShader("ring_planet.frag.spv");
 	pipeline->build();
 
@@ -157,7 +158,8 @@ void Ring::createSC_context()
 	pipelineAsteroid->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipelineAsteroid->bindVertex(*vertexAsteroid);
 	pipelineAsteroid->bindShader("ring_test.vert.spv");
-	pipelineAsteroid->setSpecializedConstant(0, &asteroid_radius, sizeof(asteroid_radius));
+	pipelineAsteroid->setSpecializedConstant(0, asteroid_radius);
+	pipelineAsteroid->setSpecializedConstant(7, context.isFloat64Supported);
 	pipelineAsteroid->bindShader("ring_test.frag.spv");
 	pipelineAsteroid->build();
 

@@ -82,8 +82,10 @@ DsoNavigator::DsoNavigator()
     pipeline->disableSampleShading();
     pipeline->bindVertex(*vertexArray);
     pipeline->bindShader("obj3D.vert.spv");
+    pipeline->setSpecializedConstant(7, context.isFloat64Supported);
     pipeline->bindShader("obj3D.tesc.spv");
     pipeline->bindShader("obj3D.tese.spv");
+    pipeline->setSpecializedConstant(7, context.isFloat64Supported);
     pipeline->bindShader("obj3D.frag.spv");
     float maxLod = 0;
     pipeline->setSpecializedConstant(0, &maxLod, sizeof(maxLod));

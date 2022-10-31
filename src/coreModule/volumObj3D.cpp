@@ -182,8 +182,10 @@ VolumObj3D::Shared::Shared()
     pipeline->setCullMode(true);
     pipeline->bindVertex(*vertexArray);
     pipeline->bindShader("volumObj3D.vert.spv");
+    pipeline->setSpecializedConstant(7, context.isFloat64Supported);
     pipeline->bindShader("volumObj3D.tesc.spv");
     pipeline->bindShader("volumObj3D.tese.spv");
+    pipeline->setSpecializedConstant(7, context.isFloat64Supported);
     pipeline->bindShader("volumObj3D.frag.spv");
     pipeline->build();
 
@@ -201,6 +203,7 @@ VolumObj3D::Shared::Shared()
     inPipeline->setFrontFace();
     inPipeline->bindVertex(*inVertexArray);
     inPipeline->bindShader("inVolumObj3D.vert.spv");
+    inPipeline->setSpecializedConstant(7, context.isFloat64Supported);
     inPipeline->bindShader("inVolumObj3D.frag.spv");
     auto &screenRect = vkmgr.getScreenRect();
     int radius2 = screenRect.extent.width / 2;

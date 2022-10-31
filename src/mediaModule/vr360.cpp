@@ -87,6 +87,7 @@ void VR360::createSC_context()
 	sphere->bind(*pipeline); // bind Objl VertexBuffer to pipeline (common to every Obj/Ojm)
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipeline->bindShader("vr360.vert.spv");
+	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());

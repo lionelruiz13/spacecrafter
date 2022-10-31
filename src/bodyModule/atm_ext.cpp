@@ -33,8 +33,10 @@ public:
         pipeline.removeVertexEntry(2);
         pipeline.setBlendMode(tmp);
         pipeline.bindShader("atm.vert.spv");
+        pipeline.setSpecializedConstant(7, Context::instance->isFloat64Supported);
         pipeline.bindShader("atm.tesc.spv");
         pipeline.bindShader("atm.tese.spv");
+        pipeline.setSpecializedConstant(7, Context::instance->isFloat64Supported);
         pipeline.bindShader("atm.frag.spv");
         pipeline.build("AtmExt");
 
@@ -47,10 +49,12 @@ public:
         pipelineNoDepth.setTessellationState(3);
         pipelineNoDepth.removeVertexEntry(1);
         pipelineNoDepth.removeVertexEntry(2);
-        pipeline.setBlendMode(tmp);
+        pipelineNoDepth.setBlendMode(tmp);
         pipelineNoDepth.bindShader("atm.vert.spv");
+        pipelineNoDepth.setSpecializedConstant(7, Context::instance->isFloat64Supported);
         pipelineNoDepth.bindShader("atm.tesc.spv");
         pipelineNoDepth.bindShader("atm.tese.spv");
+        pipelineNoDepth.setSpecializedConstant(7, Context::instance->isFloat64Supported);
         pipelineNoDepth.bindShader("atm.frag.spv");
         pipelineNoDepth.build("AtmExt noDepth");
     }

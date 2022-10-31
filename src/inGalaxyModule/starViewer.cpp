@@ -66,6 +66,7 @@ void StarViewer::createSC_context()
     pipeline->removeVertexEntry(1);
     pipeline->removeVertexEntry(2);
     pipeline->bindShader("big_star.vert.spv");
+    pipeline->setSpecializedConstant(7, context.isFloat64Supported);
     pipeline->bindShader("big_star.frag.spv");
     pipeline->build();
 

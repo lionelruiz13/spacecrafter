@@ -70,6 +70,7 @@ void BodyShader::createShader()
 	shaderNight.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	shaderNight.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderNight.pipeline->bindShader("body_night.vert.spv");
+	shaderNight.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	shaderNight.pipeline->bindShader("body_night.frag.spv");
 	shaderNight.pipelineNoDepth = shaderNight.pipeline->clone("shaderNight noDepth");
 	shaderNight.pipelineNoDepth->setDepthStencilMode();
@@ -103,8 +104,10 @@ void BodyShader::createShader()
 		myEarth.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 		myEarth.pipeline[i].setTessellationState(3);
 		myEarth.pipeline[i].bindShader("body_tes.vert.spv");
+		myEarth.pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
 		myEarth.pipeline[i].bindShader("body_tes.tesc.spv");
 		myEarth.pipeline[i].bindShader("my_earth.tese.spv");
+		myEarth.pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
 		myEarth.pipeline[i].bindShader("my_earth.frag.spv");
 		VkBool32 Clouds = (i & 1);
 		myEarth.pipeline[i].setSpecializedConstant(1, &Clouds, sizeof(Clouds));
@@ -136,6 +139,7 @@ void BodyShader::createShader()
 	shaderBump.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	shaderBump.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderBump.pipeline->bindShader("body_bump.vert.spv");
+	shaderBump.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	shaderBump.pipeline->bindShader("body_bump.frag.spv");
 	shaderBump.pipelineNoDepth = shaderBump.pipeline->clone("shaderBump noDepth");
 	shaderBump.pipelineNoDepth->setDepthStencilMode();
@@ -163,6 +167,7 @@ void BodyShader::createShader()
 	shaderRinged.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	shaderRinged.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderRinged.pipeline->bindShader("body_ringed.vert.spv");
+	shaderRinged.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	shaderRinged.pipeline->bindShader("body_ringed.frag.spv");
 	shaderRinged.pipeline->build("shaderRinged");
 
@@ -184,6 +189,7 @@ void BodyShader::createShader()
 	shaderNormal.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	shaderNormal.pipeline->bindVertex(*context.ojmVertexArray);
 	shaderNormal.pipeline->bindShader("body_normal.vert.spv");
+	shaderNormal.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	shaderNormal.pipeline->bindShader("body_normal.frag.spv");
 	shaderNormal.pipelineNoDepth = shaderNormal.pipeline->clone("shaderNormal noDepth");
 	shaderNormal.pipelineNoDepth->setDepthStencilMode();
@@ -212,8 +218,10 @@ void BodyShader::createShader()
 	shaderNormalTes.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 	shaderNormalTes.pipeline->setTessellationState(3);
 	shaderNormalTes.pipeline->bindShader("body_tes.vert.spv");
+	shaderNormalTes.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	shaderNormalTes.pipeline->bindShader("body_tes.tesc.spv");
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.tese.spv");
+	shaderNormalTes.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	shaderNormalTes.pipeline->bindShader("body_normal_tes.frag.spv");
 	shaderNormalTes.pipelineNoDepth = shaderNormalTes.pipeline->clone("shaderNormalTes noDepth");
 	shaderNormalTes.pipelineNoDepth->setDepthStencilMode();
@@ -241,6 +249,7 @@ void BodyShader::createShader()
 		shaderArtificial.pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		shaderArtificial.pipeline[i].bindVertex(*context.ojmVertexArray);
 		shaderArtificial.pipeline[i].bindShader("body_artificial.vert.spv");
+		shaderArtificial.pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
 		shaderArtificial.pipeline[i].bindShader("body_artificial.geom.spv");
 		shaderArtificial.pipeline[i].bindShader((i & 1) ? "body_artificial_notex.frag.spv" : "body_artificial_tex.frag.spv");
 		if (i & 2)
@@ -275,8 +284,10 @@ void BodyShader::createShader()
 	myMoon.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_PATCH_LIST);
 	myMoon.pipeline->setTessellationState(3);
 	myMoon.pipeline->bindShader("body_tes.vert.spv");
+	myMoon.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	myMoon.pipeline->bindShader("body_tes.tesc.spv");
 	myMoon.pipeline->bindShader("my_moon.tese.spv");
+	myMoon.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	myMoon.pipeline->bindShader("my_moon.frag.spv");
 	myMoon.pipelineNoDepth = myMoon.pipeline->clone("myMoon noDepth");
 	myMoon.pipelineNoDepth->setDepthStencilMode();

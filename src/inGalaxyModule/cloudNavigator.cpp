@@ -83,8 +83,10 @@ CloudNavigator::CloudNavigator(const std::string &filename)
     pipeline->disableSampleShading();
     pipeline->bindVertex(*vertexArray);
     pipeline->bindShader("cloud3D.vert.spv");
+    pipeline->setSpecializedConstant(7, context.isFloat64Supported);
     pipeline->bindShader("cloud3D.tesc.spv");
     pipeline->bindShader("cloud3D.tese.spv");
+    pipeline->setSpecializedConstant(7, context.isFloat64Supported);
     pipeline->bindShader("cloud3D.frag.spv");
     float maxLod = texture->getTexture().getMipmapCount() - 1;
     pipeline->setSpecializedConstant(0, &maxLod, sizeof(maxLod));

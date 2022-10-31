@@ -211,6 +211,7 @@ void OjmMgr::createShader()
 		pipeline[i].bindVertex(*context.ojmVertexArray);
 		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 		pipeline[i].bindShader("shaderOJM_noSUN.vert.spv");
+		pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
 		pipeline[i].bindShader((i == 0) ? "shaderOJM_noSUN_tex.frag.spv" : "shaderOJM_noSUN_notex.frag.spv");
 		pipeline[i].build();
 	}

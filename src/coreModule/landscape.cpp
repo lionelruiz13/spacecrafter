@@ -145,6 +145,7 @@ void Landscape::createSC_context()
 		pipeline[i].setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 		pipeline[i].bindVertex(*vertexModel);
 		pipeline[i].bindShader("landscape.vert.spv");
+		pipeline[i].setSpecializedConstant(7, context.isFloat64Supported);
 		pipeline[i].bindShader("landscape.geom.spv");
 		pipeline[i].bindShader((i == 0) ? "landscapeNightTexture.frag.spv" : "landscape.frag.spv");
 		pipeline[i].build();

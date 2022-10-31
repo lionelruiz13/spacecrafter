@@ -85,6 +85,7 @@ void MilkyWay::createSC_context()
 		sphere->bind(pipelineMilky[i]);
 		pipelineMilky[i].removeVertexEntry(2);
 		pipelineMilky[i].bindShader("milkyway.vert.spv");
+		pipelineMilky[i].setSpecializedConstant(7, context.isFloat64Supported);
 		pipelineMilky[i].bindShader("milkyway.geom.spv");
 		pipelineMilky[i].bindShader(i == 0 ? "milkywayTwoTex.frag.spv" : "milkywayOneTex.frag.spv");
 		pipelineMilky[i].build();

@@ -206,6 +206,7 @@ void Image::createSC_context()
 		m_pipelineUnified[i]->setCullMode(true);
 		m_pipelineUnified[i]->bindVertex(*m_imageUnifiedGL);
 		m_pipelineUnified[i]->bindShader("imageUnified.vert.spv");
+		m_pipelineUnified[i]->setSpecializedConstant(7, context.isFloat64Supported);
 	}
 	m_pipelineUnified[0]->bindShader("imageUnifiedRGB.frag.spv");
 	m_pipelineUnified[1]->bindShader("imageUnifiedRGBTransparency.frag.spv");

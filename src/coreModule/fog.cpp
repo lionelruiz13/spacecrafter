@@ -77,6 +77,7 @@ void Fog::createSC_context()
 	pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 	pipeline->bindVertex(*vertexModel);
 	pipeline->bindShader("fog.vert.spv");
+	pipeline->setSpecializedConstant(7, context.isFloat64Supported);
 	pipeline->bindShader("fog.frag.spv");
 	pipeline->build();
 	set = new Set(vkmgr, *context.setMgr, layout);

@@ -319,7 +319,7 @@ int main(int argc, const char *argv[])
 	vkmgrInfo.requiredFeatures.features.tessellationShader = VK_TRUE;
 	vkmgrInfo.requiredFeatures.features.sampleRateShading = VK_TRUE;
 	vkmgrInfo.requiredFeatures.features.wideLines = VK_TRUE;
-	vkmgrInfo.requiredFeatures.features.shaderFloat64 = VK_TRUE;
+	vkmgrInfo.preferedFeatures.features.shaderFloat64 = VK_TRUE;
 	vkmgrInfo.preferedFeatures.features.samplerAnisotropy = VK_TRUE;
 	vkmgrInfo.preferedFeatures.pNext = &timelineSemaphore;
 

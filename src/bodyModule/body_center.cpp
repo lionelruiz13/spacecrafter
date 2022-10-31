@@ -205,6 +205,7 @@ void Center::createSunShader()
     currentObj->bind(*pipelineSun);
     pipelineSun->removeVertexEntry(2);
     pipelineSun->bindShader("body_sun.vert.spv");
+    pipelineSun->setSpecializedConstant(7, context.isFloat64Supported);
     pipelineSun->bindShader("body_sun.frag.spv");
     pipelineSunNoDepth = std::unique_ptr<Pipeline>(pipelineSun->clone("Body Center noDepth"));
     pipelineSunNoDepth->setDepthStencilMode();

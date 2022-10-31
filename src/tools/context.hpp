@@ -92,6 +92,7 @@ public:
     unsigned int ojmAlignment = 3*8*sizeof(float); // obj : POS3D(3) TEXTURE(2) NORMAL(3)
     uint32_t frameIdx = 2;
     uint32_t lastFrameIdx = 1;
+    VkBool32 isFloat64Supported = VK_TRUE;
 };
 
 #endif /* end of include guard: CONTEXT_HPP_ */
