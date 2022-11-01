@@ -578,12 +578,12 @@ void UI::stopTurnDown()
 
 void UI::turnHorizontal(double s)
 {
-	core->turnHorizontal(s);
+	core->turnHorizontal(abs(s) > 0.3 ? s : 0);
 }
 
 void UI::turnVertical(double s)
 {
-	core->turnVertical(s);
+	core->turnVertical(abs(s) > 0.3 ? s : 0);
 }
 
 void UI::zoomIn()
