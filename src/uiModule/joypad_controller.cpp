@@ -52,6 +52,7 @@ JoypadController::JoypadController(UI * _ui) noexcept
 
 	axisValues = new double[nbrAxis];
 	axisActions = new joy_axis_action[nbrAxis];
+	axisAltActions = new joy_axis_action[nbrAxis];
 	axisSensitivity = new double[nbrAxis];
 	axisDeadZone = new double[nbrAxis];
 	axisIsStick = new bool[nbrAxis];
@@ -59,45 +60,41 @@ JoypadController::JoypadController(UI * _ui) noexcept
 
 	for (int i = 0; i < nbrAxis; i++) {
 		axisValues[i] = 0;
-		axisActions[i].action = nullptr;
 		axisSensitivity[i] = 0;
 		axisDeadZone[i] = 0;
 		axisIsStick[i] = false;
 	}
 
 	buttonActions = new joy_button_action[nbrButtons];
-
-	for(int i = 0; i < nbrButtons; i++) {
-		buttonActions[i].onPressAction = nullptr;
-		buttonActions[i].onReleaseAction = nullptr;
-	}
-
+	buttonAltActions = new joy_button_action[nbrButtons];
 
 	//to replace one day
 	hatActions = new joy_button_action[nbrHats*4];
+	hatAltActions = new joy_button_action[nbrHats*4];
+	hatValues = new Uint8[nbrHats];
 
-	for(int i = 0; i < nbrHats*4; i++) {
-		hatActions[i].onPressAction = nullptr;
-		hatActions[i].onReleaseAction = nullptr;
-	}
-	cLog::get()->write("Create JoypadController" , LOG_TYPE::L_INFO); 
+	cLog::get()->write("Create JoypadController" , LOG_TYPE::L_INFO);
 }
 
 JoypadController::~JoypadController()
 {
 	purge();
 	handleDeal();
-	
-	cLog::get()->write("delete JoypadController", LOG_TYPE::L_INFO); 
+
+	cLog::get()->write("delete JoypadController", LOG_TYPE::L_INFO);
 	SDL_JoystickClose(joystick);
 	joystick = nullptr;
 	delete[] axisActions;
+	delete[] axisAltActions;
 	delete[] buttonActions;
+	delete[] buttonAltActions;
 	delete[] axisValues;
 	delete[] axisSensitivity;
 	delete[] axisDeadZone;
 	delete[] axisIsStick;
-
+	delete[] hatActions;
+	delete[] hatAltActions;
+	delete[] hatValues;
 }
 
 /*
@@ -113,20 +110,22 @@ void JoypadController::init(const std::string &_configName) noexcept
 	std::string model = SDL_JoystickName(joystick);
 
 	//~ cout << model << " connected" << endl;
-	cLog::get()->write("Joypad: model name "+ model + " detected", LOG_TYPE::L_INFO);  
+	cLog::get()->write("Joypad: model name "+ model + " detected", LOG_TYPE::L_INFO);
 
 	if(!conf.findEntry(model)) {
 		model = "joy_default";
 		//~ cout << "no config detected switching to default" << endl;
-		cLog::get()->write("Joypad: no config detected switching to default", LOG_TYPE::L_WARNING);  
+		cLog::get()->write("Joypad: no config detected switching to default", LOG_TYPE::L_WARNING);
 	} else {
 		//~ cout << "config detected"<<endl;
-		cLog::get()->write("Joypad: config detected", LOG_TYPE::L_INFO);  
+		cLog::get()->write("Joypad: config detected", LOG_TYPE::L_INFO);
 	}
 
 	for (int i = 0; i < nbrAxis; i++) {
 		std::string actionStr = conf.getStr(model,"AXIS" + std::to_string(i));
 		axisActions[i] = getAxisActionFromString(actionStr);
+		actionStr = conf.getStr(model,"AXIS" + std::to_string(i) + "_ALT");
+		axisAltActions[i] = actionStr.empty() ? axisActions[i] : getAxisActionFromString(actionStr);
 		axisDeadZone[i] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_DEADZONE");
 		axisSensitivity[i] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_SENSITIVITY");
 		axisIsStick[i] = conf.getBoolean(model,"AXIS" + std::to_string(i) + "_IS_STICK");
@@ -135,20 +134,36 @@ void JoypadController::init(const std::string &_configName) noexcept
 	for (int i = 0; i < nbrButtons; i++) {
 		std::string actionStr = conf.getStr(model,"BUTTON" + std::to_string(i));
 		buttonActions[i] = getButtonActionFromString(actionStr, i);
+		actionStr = conf.getStr(model,"BUTTON" + std::to_string(i) + "_ALT");
+		buttonAltActions[i] = actionStr.empty() ? buttonActions[i] : getButtonActionFromString(actionStr, i+nbrButtons);
 	}
 
 	for(int i = 0; i < nbrHats; i++) {
+		hatValues[i] = 0;
+
+		int idx = i*4 + (int)(hat_event::hat_down);
 		std::string actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_DOWN");
-		hatActions[i + (int)(hat_event::hat_down)] = getButtonActionFromString(actionStr, -1);
+		hatActions[idx] = getButtonActionFromString(actionStr, (nbrButtons+idx)*2);
+		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_DOWN_ALT");
+		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr, (nbrButtons+idx)*2+1);
 
+		idx = i*4 + (int)(hat_event::hat_up);
 		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_UP");
-		hatActions[i + (int)(hat_event::hat_up)] = getButtonActionFromString(actionStr, -1);
+		hatActions[idx] = getButtonActionFromString(actionStr,  (nbrButtons+idx)*2);
+		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_UP_ALT");
+		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr,  (nbrButtons+idx)*2+1);
 
+		idx = i*4 + (int)(hat_event::hat_left);
 		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_LEFT");
-		hatActions[i + (int)(hat_event::hat_left)] = getButtonActionFromString(actionStr, -1);
+		hatActions[idx] = getButtonActionFromString(actionStr,  (nbrButtons+idx)*2);
+		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_LEFT_ALT");
+		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr,  (nbrButtons+idx)*2+1);
 
+		idx = i*4 + (int)(hat_event::hat_right);
 		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_RIGHT");
-		hatActions[i + (int)(hat_event::hat_right)] = getButtonActionFromString(actionStr, -1);
+		hatActions[idx] = getButtonActionFromString(actionStr,  (nbrButtons+idx)*2);
+		actionStr = conf.getStr(model,"HAT" + std::to_string(i) + "_RIGHT_ALT");
+		hatAltActions[idx] = actionStr.empty() ? hatActions[idx] : getButtonActionFromString(actionStr,  (nbrButtons+idx)*2+1);
 	}
 
 	purge();
@@ -191,13 +206,13 @@ void JoypadController::handleDeal() noexcept
 
 		if(axisIsStick[i]) {
 			if (abs(axisValues[i])> axisDeadZone[i]) {
-				joy_axis_action axis_action = axisActions[i];
+				joy_axis_action axis_action = (mode ? axisAltActions : axisActions)[i];
 				if(axis_action.action != nullptr)
 					(ui->*axis_action.action)(((axisValues[i]>0)-(axisValues[i]<0))*(abs(axisValues[i])-axisDeadZone[i])/(axisSensitivity[i]-axisDeadZone[i]));
 			}
 		} else {
 			if ((axisValues[i] + 32768.0) > axisDeadZone[i]) {
-				joy_axis_action axis_action = axisActions[i];
+				joy_axis_action axis_action = (mode ? axisAltActions : axisActions)[i];
 				if(axis_action.action != nullptr)
 					(ui->*axis_action.action)((axisValues[i] + 32768.0-axisDeadZone[i])/(axisSensitivity[i]-axisDeadZone[i]));
 			}
@@ -207,9 +222,17 @@ void JoypadController::handleDeal() noexcept
 
 void JoypadController::handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept
 {
-	joy_button_action button_action = buttonActions[E.button];
-	if(button_action.onReleaseAction != nullptr)
-		(ui->*button_action.onReleaseAction)();
+	int idx = (E.button+mode*nbrButtons)*2+1;
+	if(isCommand(idx)) {
+		for(std::string command : buttonCommand[idx]) {
+			//std::cout << command << std::endl;
+			ui->executeCommand(command);
+		}
+	} else {
+		joy_button_action button_action = (mode ? buttonAltActions : buttonActions)[E.button];
+		if(button_action.onReleaseAction != nullptr)
+			(ui->*button_action.onReleaseAction)();
+	}
 }
 
 /*
@@ -217,61 +240,72 @@ void JoypadController::handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept
  */
 void JoypadController::handleJoyButtonDown(const SDL_JoyButtonEvent &E) noexcept
 {
-
-	if(isCommand(E.button)) {
-		for(std::string command : buttonCommand[E.button]) {
+	int idx = (E.button+mode*nbrButtons)*2;
+	if(isCommand(idx)) {
+		for(std::string command : buttonCommand[idx]) {
 			//std::cout << command << std::endl;
 			ui->executeCommand(command);
 		}
 	} else {
-		joy_button_action button_action = buttonActions[E.button];
+		joy_button_action button_action = (mode ? buttonAltActions : buttonActions)[E.button];
 
 		if(button_action.onPressAction != nullptr)
 			(ui->*button_action.onPressAction)();
 	}
 }
 
+#define HANDLE_HAT_BIT(flag) \
+if (diff & HAT_BIT(flag)) { \
+	if (value & HAT_BIT(flag)) { \
+		if (hat_action[int(hat_event::flag)+4*E.hat].onPressAction) \
+			(ui->*hat_action[int(flag)+4*E.hat].onPressAction)(); \
+	} else { \
+		if (hat_action[int(flag)+4*E.hat].onReleaseAction) \
+			(ui->*hat_action[int(flag)+4*E.hat].onReleaseAction)(); \
+	} \
+} \
+
 void JoypadController::handleJoyHat(const SDL_JoyHatEvent &E) noexcept
 {
+	joy_button_action *hat_action = (mode ? hatAltActions : hatActions);
+	Uint8 value;
 
-	joy_button_action hat_action;
-
-	switch(E.value) {
+	switch (E.value) {
 		case SDL_HAT_CENTERED:
-			//we perform the onRelease action of every button for that hat
-			for(int i = E.hat; i < E.hat + 4; i++) {
-				hat_action = hatActions[i];
-				if(hat_action.onReleaseAction != nullptr)
-					(ui->*hat_action.onReleaseAction)();
-			}
+			value = 0;
 			break;
-
-		case SDL_HAT_DOWN :
-			hat_action = hatActions[E.hat + (int)(hat_event::hat_down)];
-			if(hat_action.onPressAction != nullptr)
-				(ui->*hat_action.onPressAction)();
-
+		case SDL_HAT_UP:
+			value = HAT_BIT(hat_up);
 			break;
-
-		case SDL_HAT_LEFT :
-			hat_action = hatActions[E.hat + (int)hat_event::hat_left];
-			if(hat_action.onPressAction != nullptr)
-				(ui->*hat_action.onPressAction)();
-
+		case SDL_HAT_DOWN:
+			value = HAT_BIT(hat_down);
 			break;
-		case SDL_HAT_RIGHT :
-			hat_action = hatActions[E.hat + (int)hat_event::hat_right];
-			if(hat_action.onPressAction != nullptr)
-				(ui->*hat_action.onPressAction)();
-
+		case SDL_HAT_LEFT:
+			value = HAT_BIT(hat_left);
 			break;
-		case SDL_HAT_UP :
-			hat_action = hatActions[E.hat + (int)hat_event::hat_up];
-			if(hat_action.onPressAction != nullptr)
-				(ui->*hat_action.onPressAction)();
-
+		case SDL_HAT_RIGHT:
+			value = HAT_BIT(hat_right);
+			break;
+		case SDL_HAT_LEFTUP:
+			value = HAT_BIT(hat_left) | HAT_BIT(hat_up);
+			break;
+		case SDL_HAT_RIGHTUP:
+			value = HAT_BIT(hat_right) | HAT_BIT(hat_up);
+			break;
+		case SDL_HAT_LEFTDOWN:
+			value = HAT_BIT(hat_left) | HAT_BIT(hat_down);
+			break;
+		case SDL_HAT_RIGHTDOWN:
+			value = HAT_BIT(hat_right) | HAT_BIT(hat_down);
 			break;
 	}
+
+	Uint8 diff = value ^ hatValues[E.hat];
+	hatValues[E.hat] = value;
+	HANDLE_HAT_BIT(hat_left);
+	HANDLE_HAT_BIT(hat_right);
+	HANDLE_HAT_BIT(hat_up);
+	HANDLE_HAT_BIT(hat_down);
 }
 
 /*
@@ -282,7 +316,7 @@ void JoypadController::purge() noexcept{
 	for (int i = 0; i < nbrAxis; i++){
 		axisValues[i] = axisIsStick[i] ? 0.0 : -32768.0;
 	}
-	
+
 }
 
 /*
@@ -291,9 +325,7 @@ void JoypadController::purge() noexcept{
  */
 joy_axis_action JoypadController::getAxisActionFromString(const std::string &actionStr) noexcept
 {
-
 	joy_axis_action axis_action;
-	axis_action.action = nullptr;
 
 	if(actionStr == "mouse_alt") {
 		axis_action.action = &UI::moveMouseAlt;
@@ -322,6 +354,16 @@ joy_axis_action JoypadController::getAxisActionFromString(const std::string &act
 
 	if(actionStr == "lower_height") {
 		axis_action.action = &UI::lowerHeight;
+		return axis_action;
+	}
+
+	if(actionStr == "turn_horizontal") {
+		axis_action.action = &UI::turnHorizontal;
+		return axis_action;
+	}
+
+	if(actionStr == "turn_vertical") {
+		axis_action.action = &UI::turnVertical;
 		return axis_action;
 	}
 

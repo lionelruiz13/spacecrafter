@@ -1429,41 +1429,74 @@ Vec3f Core::getCursorPosEqu(int x, int y)
 	return v;
 }
 
+void Core::turnHorizontal(float s)
+{
+	if (s && FlagEnableMoveKeys) {
+		vzm.deltaAz = s;
+		vzm.coefAz = abs(s);
+		setFlagTracking(false);
+		setFlagLockSkyPosition(false);
+	} else {
+		vzm.deltaAz = 0;
+		vzm.coefAz = 1;
+	}
+}
+
+void Core::turnVertical(float s)
+{
+	if (s && FlagEnableMoveKeys) {
+		vzm.deltaAlt = s;
+		vzm.coefAlt = abs(s);
+		setFlagTracking(false);
+		setFlagLockSkyPosition(false);
+	} else {
+		vzm.deltaAlt = 0;
+		vzm.coefAlt = 1;
+	}
+}
+
 void Core::turnRight(int s)
 {
 	if (s && FlagEnableMoveKeys) {
 		vzm.deltaAz = 1;
+		vzm.coefAz = 1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
-	} else vzm.deltaAz = 0;
+	} else if (vzm.deltaAz > 0)
+		vzm.deltaAz = 0;
 }
 
 void Core::turnLeft(int s)
 {
 	if (s && FlagEnableMoveKeys) {
 		vzm.deltaAz = -1;
+		vzm.coefAz = 1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
-
-	} else vzm.deltaAz = 0;
+	} else if (vzm.deltaAz < 0)
+		vzm.deltaAz = 0;
 }
 
 void Core::turnUp(int s)
 {
 	if (s && FlagEnableMoveKeys) {
 		vzm.deltaAlt = 1;
+		vzm.coefAlt = 1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
-	} else vzm.deltaAlt = 0;
+	} else  if (vzm.deltaAlt > 0)
+		vzm.deltaAlt = 0;
 }
 
 void Core::turnDown(int s)
 {
 	if (s && FlagEnableMoveKeys) {
 		vzm.deltaAlt = -1;
+		vzm.coefAlt = 1;
 		setFlagTracking(false);
 		setFlagLockSkyPosition(false);
-	} else vzm.deltaAlt = 0;
+	} else if (vzm.deltaAlt < 0)
+	 	vzm.deltaAlt = 0;
 }
 
 
@@ -1514,20 +1547,20 @@ void Core::updateMove(int delta_time)
 	double deplzoom=vzm.zoom_speed*delta_time*projection->getFov();
 
 	if (vzm.deltaAz<0) {
-		vzm.deltaAz = -depl/30;
+		vzm.deltaAz = -vzm.coefAz*depl/30;
 		if (vzm.deltaAz<-0.2) vzm.deltaAz = -0.2;
 	} else {
 		if (vzm.deltaAz>0) {
-			vzm.deltaAz = (depl/30);
+			vzm.deltaAz = vzm.coefAz*(depl/30);
 			if (vzm.deltaAz>0.2) vzm.deltaAz = 0.2;
 		}
 	}
 	if (vzm.deltaAlt<0) {
-		vzm.deltaAlt = -depl/30;
+		vzm.deltaAlt = -vzm.coefAlt*depl/30;
 		if (vzm.deltaAlt<-0.2) vzm.deltaAlt = -0.2;
 	} else {
 		if (vzm.deltaAlt>0) {
-			vzm.deltaAlt = depl/30;
+			vzm.deltaAlt = vzm.coefAlt*depl/30;
 			if (vzm.deltaAlt>0.2) vzm.deltaAlt = 0.2;
 		}
 	}

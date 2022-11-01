@@ -576,6 +576,16 @@ void UI::stopTurnDown()
 	core->turnDown(0);
 }
 
+void UI::turnHorizontal(double s)
+{
+	core->turnHorizontal(s);
+}
+
+void UI::turnVertical(double s)
+{
+	core->turnVertical(s);
+}
+
 void UI::zoomIn()
 {
 	core->zoomIn(1);
@@ -791,8 +801,10 @@ void UI::handleDeltaSpeed() noexcept
 
 void UI::handleDeal()
 {
-	if(joypadController!=nullptr)
+	if(joypadController!=nullptr) {
+		joypadController->setMode(CoreLink::instance->getEyeRelativeMode());
 		joypadController->handleDeal();
+	}
 
 	handleDeltaSpeed();
 }

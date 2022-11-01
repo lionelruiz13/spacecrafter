@@ -21,18 +21,18 @@
 /*
  * The goal of this class is to link spacecrafter's methods to joystick events.
  * It also handle sensitivity and deadzones for the axes
- * 
+ *
  * This class handles three types of events :
  *  - axis movement
  *  - button presses
  *  - hat presses
- * 
+ *
  * Each of these is linked to a function of the UI class
  * The functions are parsed from the joypad.ini file
- * 
+ *
  * axis movement are linked to a void function which takes a double as input
  * button and hat presses are linked to two functions : press and release. both are void functions that take no parameters
- *  
+ *
  * if you wish to add a new function to pick from :
  * 	- implement the needed functions in the UI class
  *  - add a new case to getAxisActionFromString or getButtonActionFromString
@@ -50,14 +50,17 @@
 
 class UI;
 
+typedef void (UI::*button_action_t)();
+typedef void (UI::*axis_action_t)(double);
+
 /*
  * Contains both the actions to perform when a button is pressed and realeased
  * Each action is a function pointer to a method from the UI class
  * They must have the following declaration : void UI::myFunc(void);
  */
 typedef struct joy_button_action {
-	void (UI::*onPressAction)();
-	void (UI::*onReleaseAction)();
+	button_action_t onPressAction = nullptr;
+	button_action_t onReleaseAction = nullptr;
 } joy_button_action;
 
 /*
@@ -66,8 +69,10 @@ typedef struct joy_button_action {
  * It must have the following declaration : void UI::myFunc(double);
  */
 typedef struct joy_axis_action {
-	void (UI::*action)(double x);
+	axis_action_t action = nullptr;
 } joy_axis_action;
+
+#define HAT_BIT(flag) (1 << int(hat_event::flag))
 
 class JoypadController {
 
@@ -97,13 +102,20 @@ public:
 	 */
 	void handleDeal() noexcept;
 
+	inline bool getMode() const {
+		return mode;
+	}
+	inline void setMode(bool value) {
+		mode = value;
+	}
+
 private:
-	
+
 	/*
 	 * resets all controlls to their deault values
 	 */
 	void purge() noexcept;
-	
+
 	/*
 	 * Handles value changes from the joypad axis
 	 */
@@ -150,13 +162,18 @@ private:
 	int nbrHats;
 
 	joy_axis_action* axisActions;					//actions to perform for each axis
+	joy_axis_action* axisAltActions;				//alternate actions to perform for each axis
 	joy_button_action* buttonActions; 				//actions to perform for each button
+	joy_button_action* buttonAltActions; 			//alternate actions to perform for each button
 	std::map<Uint8, std::vector<std::string>> buttonCommand; 	//commands associated with their button code
 	joy_button_action* hatActions;					//actions to perform for each hat
+	joy_button_action* hatAltActions;				//alternate actions to perform for each hat
 
+	Uint8 *hatValues;
 	double *axisValues; 							//values of the controller's axises
 	double *axisSensitivity;
 	double *axisDeadZone;
 	bool * axisIsStick;
+	bool mode = false; // false = default, true = alternate
 };
 #endif //_JOYPAD_CONTROLLER_HPP_

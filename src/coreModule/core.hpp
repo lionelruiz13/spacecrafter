@@ -268,6 +268,10 @@ public:
 	void raiseHeight(int);
 	void lowerHeight(int);
 
+	// Analogic viewing direction functions
+	void turnHorizontal(float);
+	void turnVertical(float);
+
 	//! Make the first screen position correspond to the second (useful for mouse dragging)
 	void dragView(int x1, int y1, int x2, int y2);
 
@@ -447,6 +451,7 @@ private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
 		double move_speed, zoom_speed;		// Speed of movement and zooming
+		double coefAlt=1, coefAz=1; // Coefficient applied to deltaAlt and deltaAz, used for joystick axis
 	};
 
 	void applyClippingPlanes(float clipping_min, float clipping_max);

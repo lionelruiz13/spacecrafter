@@ -120,7 +120,7 @@ public:
 	void setDateDisplayNumber(int _value) {
 		FlagNumberPrint = _value;
 	}
-	
+
 	//! handle Joystick Hat
 	void handleJoyHat(SDL_JoyHatEvent E);
 
@@ -185,6 +185,9 @@ public:
 	void turnLeft();
 
 	void stopTurnLeft();
+
+	void turnHorizontal(double);
+	void turnVertical(double);
 
 	void executeCommand(const std::string& command);
 
@@ -388,14 +391,14 @@ private:
 	JoypadController * joypadController = nullptr;
 
 	/*
-	 * Performs actions for deltaSpeed for joypad axis 
+	 * Performs actions for deltaSpeed for joypad axis
 	 */
 	void handleDeltaSpeed() noexcept;
 	void handleJoyAddStick();
 	void handleJoyRemoveStick();
 
 	bool handleKeyOnVideo = false;   //! allows to switch the keyboard mode during videos
-	std::shared_ptr<ScriptInterface> scriptInterface;	//! management of interfaces linked to scripts 
+	std::shared_ptr<ScriptInterface> scriptInterface;	//! management of interfaces linked to scripts
 };
 
 #endif  //_UI_H
