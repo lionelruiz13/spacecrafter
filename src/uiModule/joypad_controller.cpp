@@ -133,9 +133,9 @@ void JoypadController::init(const std::string &_configName) noexcept
 
 	for (int i = 0; i < nbrButtons; i++) {
 		std::string actionStr = conf.getStr(model,"BUTTON" + std::to_string(i));
-		buttonActions[i] = getButtonActionFromString(actionStr, i);
+		buttonActions[i] = getButtonActionFromString(actionStr, i*2);
 		actionStr = conf.getStr(model,"BUTTON" + std::to_string(i) + "_ALT");
-		buttonAltActions[i] = actionStr.empty() ? buttonActions[i] : getButtonActionFromString(actionStr, i+nbrButtons);
+		buttonAltActions[i] = actionStr.empty() ? buttonActions[i] : getButtonActionFromString(actionStr, i*2+1);
 	}
 
 	for(int i = 0; i < nbrHats; i++) {
@@ -222,17 +222,9 @@ void JoypadController::handleDeal() noexcept
 
 void JoypadController::handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept
 {
-	int idx = (E.button+mode*nbrButtons)*2+1;
-	if(isCommand(idx)) {
-		for(std::string command : buttonCommand[idx]) {
-			//std::cout << command << std::endl;
-			ui->executeCommand(command);
-		}
-	} else {
-		joy_button_action button_action = (mode ? buttonAltActions : buttonActions)[E.button];
-		if(button_action.onReleaseAction != nullptr)
-			(ui->*button_action.onReleaseAction)();
-	}
+	joy_button_action button_action = (mode ? buttonAltActions : buttonActions)[E.button];
+	if(button_action.onReleaseAction != nullptr)
+		(ui->*button_action.onReleaseAction)();
 }
 
 /*
@@ -240,7 +232,7 @@ void JoypadController::handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept
  */
 void JoypadController::handleJoyButtonDown(const SDL_JoyButtonEvent &E) noexcept
 {
-	int idx = (E.button+mode*nbrButtons)*2;
+	int idx = E.button*2+mode;
 	if(isCommand(idx)) {
 		for(std::string command : buttonCommand[idx]) {
 			//std::cout << command << std::endl;
