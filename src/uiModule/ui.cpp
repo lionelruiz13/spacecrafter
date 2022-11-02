@@ -1040,24 +1040,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_COMMA :
 			switch(key_Modifier) {
 				case NONE:
-					event = new CommandEvent("external_viewer filename "+ADIR+"02.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"02.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new CommandEvent("external_viewer filename "+ADIR+"06.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"06.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new CommandEvent("external_viewer filename "+ADIR+"14.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"14.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
-					event = new CommandEvent("external_viewer filename "+ADIR+"18.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"18.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL:
-					event = new CommandEvent("external_viewer filename "+ADIR+"10.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"10.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				default:
@@ -1068,24 +1068,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_PERIOD :
 			switch(key_Modifier) {
 				case NONE:
-					event = new CommandEvent("external_viewer filename "+ADIR+"03.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"03.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new CommandEvent("external_viewer filename "+ADIR+"07.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"07.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new CommandEvent("external_viewer filename "+ADIR+"15.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"15.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
-					event = new CommandEvent("external_viewer filename "+ADIR+"19.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"19.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL:
-					event = new CommandEvent("external_viewer filename "+ADIR+"11.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"11.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				default:
@@ -1096,24 +1096,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_SLASH :
 			switch(key_Modifier) {
 				case NONE:
-					event = new CommandEvent("external_viewer filename "+ADIR+"04.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"04.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new CommandEvent("external_viewer filename "+ADIR+"08.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"08.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new CommandEvent("external_viewer filename "+ADIR+"16.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"16.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
-					event = new CommandEvent("external_viewer filename "+ADIR+"20.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"20.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL:
-					event = new CommandEvent("external_viewer filename "+ADIR+"12.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"12.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				default:
@@ -1511,24 +1511,24 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 		case SDL_SCANCODE_M :
 			switch(key_Modifier) {
 				case NONE:
-					event = new CommandEvent("external_viewer filename "+ADIR+"01.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"01.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case SUPER:
-					event = new CommandEvent("external_viewer filename "+ADIR+"05.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"05.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
 				case SHIFT:
-					event = new CommandEvent("external_viewer filename "+ADIR+"13.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"13.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case KWIN:
-					event = new CommandEvent("external_viewer filename "+ADIR+"17.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"17.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
-					event = new CommandEvent("external_viewer filename "+ADIR+"09.mp3 action play");
+					event = new CommandEvent("audio filename "+ADIR+"09.ogg action play");
 					EventRecorder::getInstance()->queue(event);
 				default:
 					break;
