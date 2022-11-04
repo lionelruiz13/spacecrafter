@@ -47,9 +47,12 @@ public:
 	bool update(int delta_time);  // update position
 	bool draw(Projector *proj, Navigator* nav, float *&data);		// Draw the meteor
 	bool isAlive(void);          // see if burned out yet
+	void createRadiant(int day, const Vec3f newRadiant) {
+		radiant[day] = newRadiant;
+	}
 
 private:
-	const static Vec3f radiant[366];
+	static Vec3f radiant[366];
 	Mat4d mmat; // tranformation matrix to align radiant with earth direction of travel
 	Vec3d obs;  // observer position in meteor coord. system
 	Vec3d position;  // equatorial coordinate position

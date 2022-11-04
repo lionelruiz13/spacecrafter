@@ -48,7 +48,7 @@ which are generally not at the apex of the Earth's way, such as the Perseids sho
 #include "atmosphereModule/tone_reproductor.hpp"
 
 // meteor showers through the year {ra de zhr}
-const Vec3f Meteor::radiant[366] = {
+Vec3f Meteor::radiant[366] = {
 	//JAN
 	{15.47, 50., 0.},{15.47, 50., 175.},{15.47, 50., 200.},{15.47, 50., 175.},{15.47, 50., 125.},{15.47, 50., 75.},{15.47, 50., 45.},{7.2, 32., 0.},{0., 0., 0.},{0., 0., 0.},
 	{0., 0., 0.},{0., 0., 0.},{16.4, 62.4, 0.},{0., 0., 0.},{15.07, 44., 0.},{0., 0., 0.},{19.67, 51., 0.},{0., 0., 0.},{0., 0., 0.},{9.33, -9., 5.},

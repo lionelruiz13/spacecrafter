@@ -830,6 +830,8 @@ public:
 	void setMeteorsRate(int f);
 	//! Get Meteor Rate in number per hour
 	int getMeteorsRate() const;
+	//! create new radiant
+	void createRadiant(int day, const Vec3f newRadiant);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere---------------------------

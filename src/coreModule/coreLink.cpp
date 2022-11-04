@@ -235,6 +235,10 @@ int CoreLink::getMeteorsRate() const {
 	return core->meteors->getZHR();
 }
 
+void CoreLink::createRadiant(int day, const Vec3f newRadiant) {
+	core->meteors->createRadiant(day, newRadiant);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // CardinalsPoints---------------------------
 ////////////////////////////////////////////////////////////////////////////////

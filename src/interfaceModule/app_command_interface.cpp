@@ -1991,8 +1991,14 @@ int AppCommandInterface::commandHeading()
 
 int AppCommandInterface::commandMeteors()
 {
-	std::string argZhr=args[W_ZHR];
-	if (! argZhr.empty()) {
+	std::string argDay = args[W_DAY];
+	if (!argDay.empty()) {
+		float argRa = !args[W_RA].empty() ? evalDouble(args[W_RA]) : 0.;
+		float argDe = !args[W_DE].empty() ? evalDouble(args[W_DE]) : 0.;
+		float argZhr = !args[W_ZHR].empty() ? evalDouble(args[W_ZHR]) : 0.;
+		coreLink->createRadiant(evalInt(argDay), Vec3f(argRa, argDe, argZhr));
+		return executeCommandStatus();
+	} else if (!args[W_ZHR].empty()) {
 		coreLink->setMeteorsRate(evalInt(args[W_ZHR]));
 	} else
 		debug_message = "command 'meteors' : no zhr argument";

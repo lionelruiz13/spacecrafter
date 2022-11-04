@@ -153,3 +153,10 @@ void MeteorMgr::draw(Projector *proj, Navigator* nav)
 		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_FRONT);
 	}
 }
+
+void MeteorMgr::createRadiant(int day, const Vec3f newRadiant)
+{
+	for (auto& iter : m_activeMeteor) {
+    	iter->createRadiant(day, newRadiant);
+	}
+}

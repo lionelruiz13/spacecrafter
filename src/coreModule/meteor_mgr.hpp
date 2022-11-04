@@ -69,6 +69,8 @@ public:
 	// Draw the meteors
 	void draw(Projector *proj, Navigator* nav);
 
+	void createRadiant(int day, const Vec3f newRadiant);
+
 private:
 	void createSC_context();
 	std::list<std::unique_ptr<Meteor>> m_activeMeteor;		// list containing all active meteors
