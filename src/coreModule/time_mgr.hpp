@@ -76,12 +76,12 @@ public:
 
 	//! Acquire a time lock, prevent time to change while at least one lock is hold
 	inline void lockTime() {
-		++timeLockCount;
+		// ++timeLockCount;
 	}
 
 	//! Release a time lock
 	inline void unlockTime() {
-		assert(--timeLockCount >= 0);
+		// assert(--timeLockCount >= 0);
 	}
 
 	// double getTimeMultiplier() const {
