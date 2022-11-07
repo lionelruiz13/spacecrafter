@@ -3149,6 +3149,7 @@ int AppCommandInterface::commandBody()
 			// textures relative to script
 			args[W_PATH] = scriptInterface->getScriptPath();
 			// Load a new solar system object
+			args["tex_ring"] = args[W_PATH] + args["tex_ring"];
 			stcore->addSolarSystemBody(args);
 		} else if (argAction == W_DROP && argName != "") {
 			// Delete an existing object, but only if was added by a script!
