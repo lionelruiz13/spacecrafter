@@ -49,8 +49,7 @@ public:
 	bool draw(Projector *proj, Navigator* nav, float *&data);		// Draw the meteor
 	bool isAlive(void);          // see if burned out yet
 	void createRadiant(int day, const Vec3f newRadiant) {
-		if (day > 0)
-			radiant[day-1] = newRadiant;
+		radiant[(day-1) % 366] = newRadiant;
 	}
 	void clear();
 

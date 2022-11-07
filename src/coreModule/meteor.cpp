@@ -131,7 +131,7 @@ Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 	equ_rotation = acos( sun_dir.dot( Vec3d(1,0,0) ) );
 	if ( sun_dir[1] < 0 ) equ_rotation = 2*M_PI - equ_rotation;
 
-	unsigned int day_of_year = 79+equ_rotation*365/(2*M_PI);
+	unsigned int day_of_year = 81+equ_rotation*365/(2*M_PI);
 	day_of_year %= 365;
 	// radiant is located at 90° from Sun position
 	equ_rotation -= M_PI_2;
