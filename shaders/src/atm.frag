@@ -70,7 +70,7 @@ void main(void)
     vec3 atmVec= intersect - pos2;
     float atmLength = length(atmVec);
 
-    if (atmLength > atmRadius2*2) // Critical precision issue - discard fragment to avoid graphical glitch
+    if (atmLength > atmRadius2/2) // Critical precision issue - discard fragment to avoid graphical glitch
         discard;
 
     // we got enough to get the lowest point reached by our atmosphere vector
