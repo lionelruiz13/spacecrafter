@@ -832,6 +832,8 @@ public:
 	int getMeteorsRate() const;
 	//! create new radiant
 	void createRadiant(int day, const Vec3f newRadiant);
+	//! clear radiants
+	void clearRadiants();
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Atmosphere---------------------------

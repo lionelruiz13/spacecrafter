@@ -71,6 +71,8 @@ public:
 
 	void createRadiant(int day, const Vec3f newRadiant);
 
+	void clearRadiants();
+
 private:
 	void createSC_context();
 	std::list<std::unique_ptr<Meteor>> m_activeMeteor;		// list containing all active meteors

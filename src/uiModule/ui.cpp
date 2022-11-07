@@ -191,6 +191,7 @@ void UI::init(const InitParser& conf)
 	coreLink->bodyTraceSetFlag(false);
 	coreLink->setFlagSunScaled(false);
 	coreLink->setEyeRelativeMode(false);
+	coreLink->clearRadiants();
 
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0);
 	EventRecorder::getInstance()->queue(event);

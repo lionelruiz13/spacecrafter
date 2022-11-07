@@ -1991,6 +1991,12 @@ int AppCommandInterface::commandHeading()
 
 int AppCommandInterface::commandMeteors()
 {
+	std::string argAction = args[W_ACTION];
+	if (argAction== W_CLEAR) {
+		coreLink->clearRadiants();
+		return executeCommandStatus();
+	}
+
 	std::string argDay = args[W_DAY];
 	if (!argDay.empty()) {
 		float argRa = !args[W_RA].empty() ? evalDouble(args[W_RA]) : 0.;

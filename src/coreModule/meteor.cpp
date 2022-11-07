@@ -48,7 +48,7 @@ which are generally not at the apex of the Earth's way, such as the Perseids sho
 #include "atmosphereModule/tone_reproductor.hpp"
 
 // meteor showers through the year {ra de zhr}
-Vec3f Meteor::radiant[366] = {
+const std::array<Vec3f, 366> Meteor::baseRadiant {{
 	//JAN
 	{15.47, 50., 0.},{15.47, 50., 175.},{15.47, 50., 200.},{15.47, 50., 175.},{15.47, 50., 125.},{15.47, 50., 75.},{15.47, 50., 45.},{7.2, 32., 0.},{0., 0., 0.},{0., 0., 0.},
 	{0., 0., 0.},{0., 0., 0.},{16.4, 62.4, 0.},{0., 0., 0.},{15.07, 44., 0.},{0., 0., 0.},{19.67, 51., 0.},{0., 0., 0.},{0., 0., 0.},{9.33, -9., 5.},
@@ -104,7 +104,14 @@ Vec3f Meteor::radiant[366] = {
 	{7.5, 32.6, 40.},{7.5, 32.6, 40.},{7.5, 32.6, 80.},{7.5, 32.6, 80.},{7.5, 32.6, 40.},{7.5, 32.6, 40.},{14.47, 76., 10.},{14.47, 76., 10.},{14.47, 76., 10.},{14.47, 76., 10.},
 	{14.47, 76., 10.},{14.47, 76., 15.},{14.47, 76., 10.},{14.47, 76., 10.},{0., 0., 0.},{0., 0., 0.},{0., 0., 0.},{0., 0., 0.},{0., 0., 0.},{0., 0., 0.},
 	{0., 0., 0.}
-};
+}};
+
+std::array<Vec3f, 366> Meteor::radiant = Meteor::baseRadiant;
+
+void Meteor::clear()
+{
+	radiant = baseRadiant;
+}
 
 Meteor::Meteor(Projector *proj, Navigator* nav, ToneReproductor* eye, double v)
 {
