@@ -3160,6 +3160,8 @@ int AppCommandInterface::commandBody()
 		} else if (argAction == W_INITIAL  ) {
 			coreLink->initialSolarSystemBodies();
 		} else if (argAction == W_PRELOAD) {
+			auto &kt = args[W_KEEPTIME];
+			kt = std::to_string(Utility::strToInt(kt, 10) * stapp->getTargetFps());
 			stcore->preloadSolarSystemBody(args);
 		} else {
 			debug_message = "command 'body' : unknown action argument";

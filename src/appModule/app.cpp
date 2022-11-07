@@ -391,6 +391,10 @@ int App::getFpsClock() const {
  	return internalFPS->getFps();
 }
 
+int App::getTargetFps() const {
+	return internalFPS->getTargetFps();
+}
+
 void App::setLineWidth(float w) const {
 	appDraw->setLineWidth(w);
 }
