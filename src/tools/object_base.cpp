@@ -248,7 +248,8 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 
 			//SET UNIFORM
 			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
-			uGeom->get().radius = 13.f;
+			float factor = prj->getViewportHeight() / m_fontResolution;
+			uGeom->get().radius = 13.f * factor;
 			*uColor = getRGB();
 
 			context.frame[context.frameIdx]->toExecute(cmdStarPointer[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
