@@ -429,11 +429,11 @@ public:
 	}
 
 	void setFlagIngalaxy(MODULE a) {
-		curentModule = a;
+		currentModule = a;
 	}
 
 	MODULE getFlagIngalaxy() {
-		return curentModule;
+		return currentModule;
 	}
 
 	void saveCurrentConfig(InitParser &conf);
@@ -544,7 +544,7 @@ private:
 	std::unique_ptr<UBOCam> uboCam;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
-	MODULE curentModule = MODULE::SOLAR_SYSTEM;
+	MODULE currentModule = MODULE::SOLAR_SYSTEM;
 
 	float sky_brightness;				// Current sky Brightness in ?
 	bool object_pointer_visibility;		// Should selected object pointer be drawn

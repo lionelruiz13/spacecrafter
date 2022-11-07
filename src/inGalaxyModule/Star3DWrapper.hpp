@@ -66,8 +66,9 @@ public:
     }
 
     virtual Vec3d getEarthEquPos(const Navigator *nav) const override {
-        auto tmp = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * star->posXYZ);
+        auto tmp = star->posXYZ;
         tmp[0] = -tmp[0];
+        tmp = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * tmp);
         return tmp;
 	}
 
