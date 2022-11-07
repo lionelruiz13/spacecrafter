@@ -105,6 +105,7 @@ public:
 	void recordCommand(const std::string& commandline);
 
 	int getFpsClock() const;
+	int getTargetFps() const;
 
 	void setPresetSkyTime(double _value) {
 		PresetSkyTime = _value;

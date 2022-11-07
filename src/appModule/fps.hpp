@@ -97,6 +97,11 @@ public:
 		lastCount = tickCount;
 	}
 
+	//! indicates the current target FPS
+	int getTargetFps() const {
+		return recVideoMode ? videoFPS : maxFPS;
+	}
+
 	//! indicates the current FPS
 	int getFps() const {
 		return fps;

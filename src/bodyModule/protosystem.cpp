@@ -1022,12 +1022,8 @@ void ProtoSystem::preloadBody(stringHash_t & param)
 		if (param[W_PURGE] == W_AUTO)
 			s_texture::releaseUnusedMemory();
 	}
-	if (body) {
-		int duration = 60 * 10;
-		if (!param[W_KEEPTIME].empty())
-			duration = Utility::strToInt(param[W_KEEPTIME]);
-		body->preload(duration);
-	}
+	if (body)
+		body->preload(std::stoi(param[W_KEEPTIME]));
 }
 
 void ProtoSystem::selectSystem()
