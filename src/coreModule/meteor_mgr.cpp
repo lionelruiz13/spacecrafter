@@ -160,3 +160,10 @@ void MeteorMgr::createRadiant(int day, const Vec3f newRadiant)
     	iter->createRadiant(day, newRadiant);
 	}
 }
+
+void MeteorMgr::clearRadiants()
+{
+	for (auto& iter : m_activeMeteor) {
+    	iter->clear();
+	}
+}

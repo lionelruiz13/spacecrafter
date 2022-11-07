@@ -27,6 +27,7 @@
 #define _METEOR_H_
 
 #include "tools/vecmath.hpp"
+#include <array>
 #include <vector>
 
 class Projector;
@@ -51,9 +52,11 @@ public:
 		if (day > 0)
 			radiant[day-1] = newRadiant;
 	}
+	void clear();
 
 private:
-	static Vec3f radiant[366];
+	static std::array<Vec3f, 366> radiant;
+	const static std::array<Vec3f, 366> baseRadiant;
 	Mat4d mmat; // tranformation matrix to align radiant with earth direction of travel
 	Vec3d obs;  // observer position in meteor coord. system
 	Vec3d position;  // equatorial coordinate position

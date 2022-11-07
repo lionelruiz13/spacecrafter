@@ -239,6 +239,10 @@ void CoreLink::createRadiant(int day, const Vec3f newRadiant) {
 	core->meteors->createRadiant(day, newRadiant);
 }
 
+void CoreLink::clearRadiants() {
+	core->meteors->clearRadiants();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // CardinalsPoints---------------------------
 ////////////////////////////////////////////////////////////////////////////////
