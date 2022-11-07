@@ -390,6 +390,7 @@ void Core::init(const InitParser& conf)
 		Object::initTextures();
 		ObjectBase::createShaderStarPointeur();
 		ObjectBase::createShaderPointeur();
+		ObjectBase::setFontResolution(conf.getInt(SCS_FONT, SCK_FONT_RESOLUTION_SIZE));
 		//Init of the text's shaders
 		s_font::createSC_context();
 	}

@@ -52,6 +52,7 @@ s_texture * ObjectBase::pointer_planet = nullptr;
 s_texture * ObjectBase::pointer_nebula = nullptr;
 
 int ObjectBase::local_time = 0;
+float ObjectBase::m_fontResolution = 1.;
 
 VkCommandBuffer ObjectBase::cmdPointer[6];
 VkCommandBuffer ObjectBase::cmdStarPointer[3];
@@ -184,6 +185,11 @@ void ObjectBase::uninit()
 	delete uGeom;
 }
 
+void ObjectBase::setFontResolution(int fontResolution)
+{
+	m_fontResolution = fontResolution;
+}
+
 // Draw a nice animated pointer around the object
 void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigator * nav)
 {
@@ -200,7 +206,9 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 
 			//SET UNIFORM
 			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
-			uGeom->get().radius = 13.f;
+			// factor for resolution size
+			float factor = prj->getViewportHeight() / m_fontResolution;
+			uGeom->get().radius = 13.f * factor;
 			*uColor = getRGB();
 
 			context.frame[context.frameIdx]->toExecute(cmdStarPointer[context.frameIdx], PASS_MULTISAMPLE_DEPTH);

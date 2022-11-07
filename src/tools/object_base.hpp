@@ -123,12 +123,14 @@ public:
 	static void createShaderStarPointeur();
 	static void createShaderPointeur();
 	static void uninit();
+	static void setFontResolution(int fontResolution);
 
 protected:
 	static int local_time;
 	static s_texture * pointer_star;
 	static s_texture * pointer_planet;
 	static s_texture * pointer_nebula;
+	static float m_fontResolution;
 
 	// Vulkan
 	struct objBaseGeom {
