@@ -477,6 +477,10 @@ void Image::draw(const Navigator * nav, const Projector * prj)
 			drawUnified(true, nav, prj);
 			break;
 
+		case IMG_POSITION::POS_SPHERICAL:
+			// drawSpherical(nav, prj);
+			break;
+
 		default:
 			return;
 			break;

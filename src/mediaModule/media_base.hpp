@@ -47,7 +47,8 @@ enum class IMG_POSITION : char {
 	POS_HORIZONTAL,
 	POS_EQUATORIAL,
 	POS_J2000,
-	POS_DOME
+	POS_DOME,
+	POS_SPHERICAL
 };
 
 enum class IMG_PROJECT : char {
