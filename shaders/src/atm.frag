@@ -70,7 +70,7 @@ void main(void)
     vec3 atmVec= intersect - pos2;
     float atmLength = length(atmVec);
 
-    if (atmLength > atmRadius2/2) // Critical precision issue - discard fragment to avoid graphical glitch
+    if (atmLength > atmRadius2*2) // Critical precision issue - discard fragment to avoid graphical glitch
         discard;
 
     // we got enough to get the lowest point reached by our atmosphere vector
@@ -150,6 +150,10 @@ void main(void)
         }
     }
 
+    scatteredLight *= atmLength;
+    if (scatteredLight > 1)
+        discard;
+
     // Now to compute x for the gradient, we need some angles
     // and then copy this:
     // http://petrocket.blogspot.fr/2010/04/atmosphere-shader-update-and-treegrass.html
@@ -176,7 +180,7 @@ void main(void)
     // % of the segment in the atmosphere enlightened *
     // length of this segment * a custom value to get the result closer to [0.1]
     // because the length of this segment depends of your sphere's rayons.
-    skyColor *= min(scatteredLight*(atmLength), 1);
+    skyColor *= scatteredLight;
 
     color = skyColor /* * (1.0-sunAmount) + sunColor*sunAmount*/;
 }
