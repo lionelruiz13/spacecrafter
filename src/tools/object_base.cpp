@@ -221,6 +221,8 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 			if (size > prj->getViewportRadius()*.1f)
 				return;
 			size += 20.f + 10.f*sin(0.002f * local_time);
+			float factor = prj->getViewportHeight() / m_fontResolution;
+			size *= factor;
 			Vec2f screenpos(screenposd[0], screenposd[1]);
 			float *data = (float *) context.transfer->planCopy(vertexPointer->get());
 			*(data++) = (screenpos[0] -size/2);
