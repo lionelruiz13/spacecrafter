@@ -984,7 +984,8 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
             cLog::get()->write("Performance Issue : Height is not multiple of 64 for '" + tex->texName + "', this significatively increase both loading time and cache size.", LOG_TYPE::L_WARNING);
         }
         // Read the jpeg data
-        read(tex->quickLoader, stor, cache.jpegSize);
+        if (read(tex->quickLoader, stor, cache.jpegSize) != -1)
+            throw std::system_error(errno, std::system_category(), "read");
         int vwidth, vheight, unused;
         auto pixels = stbi_load_from_memory((stbi_uc *) stor, cache.jpegSize, &vwidth, &vheight, &unused, tex->formatIdx + 1);
         auto srcBegin = pixels;
@@ -1005,7 +1006,8 @@ bool s_texture::quickLoadCache(bigTexRecap *tex, const BigTextureCache &cache, v
             *(dst++) = *(src++);
         stbi_image_free(pixels);
         // Read the raw cached data
-        read(tex->quickLoader, dst, cache.rawSize);
+        if (read(tex->quickLoader, dst, cache.rawSize) != -1)
+            throw std::system_error(errno, std::system_category(), "read");
         close(tex->quickLoader);
         tex->quickLoader = -1;
         return true;

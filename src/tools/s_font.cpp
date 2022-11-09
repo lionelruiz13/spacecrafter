@@ -392,6 +392,7 @@ void s_font::printHorizontal(const Projector *prj, float altitude, float azimuth
 			lCercle = 2.f*M_PI*prj->getViewportRadius() * (90.f-altitude)/90.f;
 			angle = 360.f * rendering.textureW / lCercle / 2.f; //because center
 			break;
+		default: angle = 0; break;
 	}
 
 	Vec3d startV, screen;

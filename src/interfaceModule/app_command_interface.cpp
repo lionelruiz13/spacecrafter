@@ -1651,6 +1651,7 @@ int AppCommandInterface::evalCommandSet(const std::string& setName, const std::s
 						//cLog::get()->write( debug_message,LOG_TYPE::L_DEBUG, LOG_FILE::SCRIPT );
 						return executeCommandStatus();
 						break;
+		case SCD_NAMES::APP_MODE: break;
 	}
 	return executeCommandStatus();
 }

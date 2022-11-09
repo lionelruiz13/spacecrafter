@@ -194,7 +194,8 @@ bool CallSystem::killAllPidFrom(const std::string& prgm)
 		const int LEN = 5;
 		char line[LEN];
 		FILE *cmd = popen(command.c_str(), "r");
-		fgets(line, LEN, cmd);
+		if (fgets(line, LEN, cmd) == NULL)
+			throw std::system_error(errno, std::system_category(), "fgets");
 		pclose(cmd);
 		if (std::stoi(line)>2) {
 			std::string order = "killall "+prgm+" &";

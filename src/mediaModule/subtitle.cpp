@@ -40,7 +40,7 @@ void Subtitle::update(int time)
 	bool find = false;
 
 	if(time > _deltaTime) { // we look if the video goes in the direction of reading, or that the cursor is placed after the last found message
-		while(!find && (i < _vSub.size())) { //we look for the new message to display from the last found message.
+		while(!find && (i < (int)_vSub.size())) { //we look for the new message to display from the last found message.
 			if( (_vSub[i].Tcode1 < time) && (time < _vSub[i].Tcode2)) {
 				_numSub = i; // save the new position
 				find = true; // we say that we have found

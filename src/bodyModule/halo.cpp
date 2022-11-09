@@ -69,7 +69,7 @@ void Halo::endDraw()
 	global->offset = global->initialOffset;
 	if (size == 0)
 		return;
-	if (size / (6 * sizeof(float)) > global->vertex->getVertexCount() / 2) {
+	if ((int)(size / (6 * sizeof(float))) > global->vertex->getVertexCount() / 2) {
 		cLog::get()->write("Too many bodies are drawn (" + std::to_string(size / (6 * sizeof(float))) + " > " + std::to_string(global->vertex->getVertexCount() / 2) + "), THIS MAY CAUSE GRAPHICAL GLITCHES !", LOG_TYPE::L_WARNING);
 		size = global->vertex->getVertexCount() / 2 * (6 * sizeof(float));
 	}
