@@ -291,11 +291,12 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 	SDL_BlitSurface(text, NULL, surface, &tmp);
 
 	// get the number of channels in the SDL surface
-	VkFormat texture_format;
-	if (surface->format->Rmask == 0x000000ff)
-		texture_format = VK_FORMAT_R8G8B8A8_UNORM;
-	else
-		texture_format = VK_FORMAT_B8G8R8A8_UNORM;
+	// Not used
+	// VkFormat texture_format;
+	// if (surface->format->Rmask == 0x000000ff)
+	// 	texture_format = VK_FORMAT_R8G8B8A8_UNORM;
+	// else
+	// 	texture_format = VK_FORMAT_B8G8R8A8_UNORM;
 
 	//==== CREATE TEXTURE ====//
 	rendering.stringTexture = tileMap->acquireSurface(rendering.textureW, rendering.textureH);
@@ -333,10 +334,11 @@ renderedString_struct s_font::renderString(const std::string &s, bool withBorder
 			SDL_BlitSurface(text, NULL, border,  &tmp);
 		}
 
-		if (border->format->Rmask == 0x000000ff)
-			texture_format = VK_FORMAT_R8G8B8A8_UNORM; // GL_RGBA
-		else
-			texture_format = VK_FORMAT_B8G8R8A8_UNORM; // GL_BGRA
+		// Not used
+		// if (border->format->Rmask == 0x000000ff)
+		// 	texture_format = VK_FORMAT_R8G8B8A8_UNORM; // GL_RGBA
+		// else
+		// 	texture_format = VK_FORMAT_B8G8R8A8_UNORM; // GL_BGRA
 
 		//==== CREATE TEXTURE ====//
 		rendering.borderTexture = tileMap->acquireSurface(rendering.textureW, rendering.textureH);

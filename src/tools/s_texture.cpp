@@ -781,8 +781,8 @@ void s_texture::bigTextureLoader()
             // Load the cached image which include mipmaps
             bigData.cached = quickLoadCache(tex, bigData, stor, finalDst, width);
         }
-        stbi_uc *src;
-        stbi_uc *dst;
+        stbi_uc *src = nullptr;
+        stbi_uc *dst = nullptr;
         if (!bigData.cached) {
             // Load the original image, which is one single layer
             data = stbi_load(tex->texName.c_str(), &realWidth, &realHeight, &unused, _nbChannels);
