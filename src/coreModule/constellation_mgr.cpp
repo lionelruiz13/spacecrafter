@@ -213,6 +213,9 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 		delete(*iter);
 	}
 	asterisms.clear();
+	std::vector<std::string> tmpSelected;
+	for (std::vector < Constellation * >::iterator iter_select = selected.begin(); iter_select != selected.end(); ++iter_select)
+		tmpSelected.push_back((*iter_select)->getShortName());
 	selected.clear();
 
 	Constellation *cons = nullptr;
@@ -233,6 +236,14 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 		}
 	}
 	inf.close();
+
+	// set selected constellations
+	for (std::string s_iter : tmpSelected) {
+		for (std::vector < Constellation * >::iterator a_iter = asterisms.begin(); a_iter != asterisms.end(); ++a_iter) {
+			if ((*a_iter)->getShortName() == s_iter && s_iter != tmpSelected.back())
+				selected.push_back((*a_iter));
+		}
+	}
 
 	// Set current states
 	setCurrentStates();
