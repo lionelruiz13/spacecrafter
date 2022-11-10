@@ -85,7 +85,7 @@ void OjmL::initGLparam()
 	context.transfer->endPlanCopy(index, indexCount * sizeof(int));
 	vertex = std::shared_ptr<VertexBuffer>(context.ojmVertexArray->newBuffer(0, vertexCount, context.ojmBufferMgr.get()));
 	float *data;
-	if (vertex->get().size < 8*1024*1024) {
+	if (vertex->get().size < 2*1024*1024) {
 		data = (float *) context.transfer->planCopy(vertex->get());
 	} else {
 		SubBuffer tmpBuffer = context.stagingMgr->acquireBuffer(vertex->get().size);
