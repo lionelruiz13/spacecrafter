@@ -547,7 +547,7 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 	else
 		Context::instance->frame[Context::instance->frameIdx]->toExecute(cmdCustomColor[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 
-	if (!includeObject)
+	if (!includeObject && withObject)
 		withObject->drawInside(nav, prj);
 
 	if (!names_fader.getInterstate())
