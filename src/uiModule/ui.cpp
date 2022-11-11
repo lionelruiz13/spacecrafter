@@ -2312,11 +2312,13 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					EventRecorder::getInstance()->queue(event);
 					key_Modifier= NONE;
 					break;
-				case KWIN: {
+				case KWIN:
 					event = new ScriptEvent( IDIR+"internal/fly_to_selected.sts");
 					EventRecorder::getInstance()->queue(event);
-					} break;
+					break;
 				case SHIFT:
+					event = new ScriptEvent( IDIR+"internal/landing.sts");
+					EventRecorder::getInstance()->queue(event);
 					break;
 				case CTRL :
 					this->executeCommand("set home_planet selected");
