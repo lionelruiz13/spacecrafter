@@ -240,7 +240,7 @@ int ConstellationMgr::loadLinesAndArt(const std::string &skyCultureDir)
 	// set selected constellations
 	for (std::string s_iter : tmpSelected) {
 		for (std::vector < Constellation * >::iterator a_iter = asterisms.begin(); a_iter != asterisms.end(); ++a_iter) {
-			if ((*a_iter)->getShortName() == s_iter && s_iter != tmpSelected.back())
+			if ((*a_iter)->getShortName() == s_iter)
 				selected.push_back((*a_iter));
 		}
 	}
