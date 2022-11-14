@@ -222,7 +222,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 				return;
 			size += 20.f + 10.f*sin(0.002f * local_time);
 			float factor = prj->getViewportHeight() / m_fontResolution;
-			size *= factor;
+			size *= sqrtf(factor);
 			Vec2f screenpos(screenposd[0], screenposd[1]);
 			float *data = (float *) context.transfer->planCopy(vertexPointer->get());
 			*(data++) = (screenpos[0] -size/2);
@@ -251,7 +251,7 @@ void ObjectBase::drawPointer(int delta_time, const Projector* prj, const Navigat
 			//SET UNIFORM
 			uGeom->get().matRotation = Mat4f::zrotation((float)local_time/750.);
 			float factor = prj->getViewportHeight() / m_fontResolution;
-			uGeom->get().radius = 13.f * factor;
+			uGeom->get().radius = 13.f * sqrtf(factor);
 			*uColor = getRGB();
 
 			context.frame[context.frameIdx]->toExecute(cmdStarPointer[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
