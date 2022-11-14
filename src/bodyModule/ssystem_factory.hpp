@@ -527,7 +527,7 @@ public:
 
     void loadGalacticSystem(const std::string &path, const std::string &file);
     void loadSystem(const std::string &path, stringHash_t &params);
-    void createSystem(const std::string &mode);
+    std::unique_ptr<ProtoSystem> &createSystem(const std::string &mode);
 
     //! Enter a system (leave the galactic system)
     void enterSystem();

@@ -78,9 +78,7 @@ void SSystemFactory::changeSystem(const std::string &mode)
         try {
             currentSystem = systems.at(mode).get();
         } catch (...) {
-            createSystem(mode);
-            currentSystem = systems.at(mode).get();
-            return;
+            currentSystem = createSystem(mode).get();
         }
     }
     selectSystem();
@@ -145,7 +143,7 @@ void SSystemFactory::loadSystem(const std::string &path, stringHash_t &params)
     params.clear();
 }
 
-void SSystemFactory::createSystem(const std::string &mode)
+std::unique_ptr<ProtoSystem> &SSystemFactory::createSystem(const std::string &mode)
 {
     stringHash_t params;
     auto pos = observatory->getObserverCenterPoint();
@@ -159,6 +157,7 @@ void SSystemFactory::createSystem(const std::string &mode)
     auto &system = systems[mode];
     system = std::make_unique<ProtoSystem>(objLMgr.get(), observatory, navigation, timeMgr, systemOffsets[mode]);
     system->load(selected_object);
+    return system;
 }
 
 std::string SSystemFactory::querySelectedAnchorName()
