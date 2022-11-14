@@ -1124,9 +1124,10 @@ bool Core::setSkyCultureDir(const std::string& cultureDir)
 	// as constellations have changed, clear out any selection and retest for match!
 	if (selected_object && selected_object.getType()==OBJECT_STAR) {
 		asterisms->setSelected(selected_object);
-	} else {
-		asterisms->setSelected(Object());
 	}
+	// else {
+		// asterisms->setSelected(Object());
+	// }
 
 	// Load culture star names in english
 	hip_stars->loadCommonNames(AppSettings::Instance()->getSkyCultureDir() + skyCultureDir + "/star_names.fab");
