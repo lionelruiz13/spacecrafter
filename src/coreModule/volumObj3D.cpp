@@ -70,7 +70,7 @@ VolumObj3D::VolumObj3D(const std::string& tex_color_file, const std::string &tex
     ray->texCoef = Vec3f(1, 1, (z_reflection) ? 2 : 1);
     ray->rayPoints = rayPoints;
     inRay->zScale = (z_reflection) ? 2 : 1;
-    setModel(Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
+    setModel(Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) * Mat4f::scaling(0.01), Vec3f(1, 1, 1/8.));
     isLoaded = true;
     int size;
     mapTexture->getDimensions(size, size);
