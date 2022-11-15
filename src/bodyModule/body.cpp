@@ -890,6 +890,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 	return drawn;
 }
 
+bool Body::skipDrawingThisBody(const Observer *observatory, bool drawHomePlanet)
 {
 	return !drawHomePlanet && observatory->isOnBody(this);
 }
