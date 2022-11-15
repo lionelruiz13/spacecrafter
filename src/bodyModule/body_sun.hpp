@@ -22,6 +22,9 @@
  *
  */
 
+#ifndef BODY_SUN_HPP_
+#define BODY_SUN_HPP_
+
 #include <memory>
 #include "bodyModule/body.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -43,7 +46,8 @@ public:
 	    bool close_orbit,
 	    ObjL* _currentObj,
 	    double orbit_bounding_radius,
-		std::shared_ptr<BodyTexture> _bodyTexture);
+		std::shared_ptr<BodyTexture> _bodyTexture,
+		BODY_TYPE _typePlanet = SUN);
 	~Sun();
 
 	void setFlagOrbit(bool b) {
@@ -106,3 +110,5 @@ protected:
 	std::unique_ptr<SharedBuffer<Vec3f>> uclipping_fov;
 	std::unique_ptr<SharedBuffer<float>> uPlanetScaledRadius;
 };
+
+#endif /* end of include guard: BODY_SUN_HPP_ */

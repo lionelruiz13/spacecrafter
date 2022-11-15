@@ -1,8 +1,11 @@
 #include "coreModule/ubo_cam.hpp"
 #include "tools/context.hpp"
+#include "coreModule/coreLink.hpp"
 #include "EntityCore/Core/BufferMgr.hpp"
 #include "EntityCore/Resource/Set.hpp"
 #include "EntityCore/Resource/PipelineLayout.hpp"
+
+constexpr double JD2MINUTE = 24*60;
 
 SharedBuffer<UBOData> *UBOCam::ubo = nullptr;
 
@@ -29,6 +32,5 @@ UBOCam::~UBOCam()
 
 void UBOCam::update()
 {
-	time += 0.01/60.;
-	UBOdata->time = time;
+	UBOdata->time = std::fmod(CoreLink::instance->getJDay(), 7.) * JD2MINUTE;
 }

@@ -26,15 +26,18 @@
 #include "coreModule/projector.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
+#include "EntityCore/Core/FrameMgr.hpp"
 
-PipelineLayout *StarViewer::layout;
+PipelineLayout *StarViewer::layout = nullptr;
 Pipeline *StarViewer::pipeline, *StarViewer::pipelineCorona;
 std::unique_ptr<VertexArray> StarViewer::modelHalo;
 
-StarViewer::StarViewer(const Vec3f &pos, const Vec3f &color, const float _radius)
+StarViewer::StarViewer(const Vec3f &color, const float _radius, ObjL *_objl)
 {
+    if (!layout)
+        createSC_context();
     createLocalContext();
-    model = Mat4f::translation(pos);
+    objl = _objl;
     radius = _radius;
     (*uFrag)->color = color;
     (*uFrag)->radius = radius;
@@ -78,6 +81,7 @@ void StarViewer::createSC_context()
     pipelineCorona = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, context.layouts.front().get());
     context.pipelines.emplace_back(pipelineCorona);
     pipelineCorona->setDepthStencilMode();
+    pipelineCorona->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
     pipelineCorona->setBlendMode(BLEND_ADD);
     pipelineCorona->bindVertex(*modelHalo);
     pipelineCorona->bindShader("big_star_halo.vert.spv");
@@ -109,24 +113,17 @@ void StarViewer::createLocalContext()
     pVertexHalo[11] = -1.;
     pVertexHalo[14] = 1.;
     pVertexHalo[15] = 1.;
-
-    objl = std::make_unique<ObjL>();
-    objl->init(AppSettings::Instance()->getModel3DDir() + "Sphere", "Sphere");
 }
 
-void StarViewer::draw(const Navigator * nav, const Projector* prj, const Mat4f &mat)
+void StarViewer::draw(const Navigator * nav, const Projector* prj, const Mat4d &mat, float screen_size)
 {
-    Vec3f pos = mat * model * v3fNull;
-    float screen_size = getOnScreenSize(prj, pos);
-    pos = mat.transpose() * (pos / 2) - mat.transpose() * pos;
+    Vec3f pos = mat.inverseUntranslated() * -mat.getTranslation();
     pos.normalize();
     (*uFrag)->cam_view = pos;
-    Mat4d mat2(mat.r[0], mat.r[1], mat.r[2], mat.r[3], mat.r[4], mat.r[5], mat.r[6], mat.r[7], mat.r[8], mat.r[9], mat.r[10], mat.r[11], mat.r[12], mat.r[13], mat.r[14], mat.r[15]);
     Vec3d screenPos;
-    if (!prj->projectCustomCheck(v3fNull, screenPos, mat2, (int)(screen_size*2)))
+    if (!prj->projectCustomCheck(v3fNull, screenPos, mat, (int)(screen_size*2)))
         return;
-
-    (*uVert)->ModelViewMatrix = mat * model;
+    (*uVert)->ModelViewMatrix = mat.convert();
     (*uVert)->clipping_fov = prj->getClippingFov();
     Context &context = *Context::instance;
     VkCommandBuffer cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
@@ -149,10 +146,4 @@ void StarViewer::draw(const Navigator * nav, const Projector* prj, const Mat4f &
 
     context.frame[context.frameIdx]->compile(cmd);
     context.frame[context.frameIdx]->toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
-}
-
-// Return the radius of a circle containing the object on screen
-float StarViewer::getOnScreenSize(const Projector* prj, const Vec3f &pos)
-{
-    return atanf(radius/sqrt(pos.lengthSquared() - radius * radius))*2.f*180./M_PI/prj->getFov()*prj->getViewportHeight();
 }

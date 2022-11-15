@@ -40,6 +40,7 @@
 #include "bodyModule/body_smallbody.hpp"
 #include "bodyModule/body_artificial.hpp"
 #include "bodyModule/body_center.hpp"
+#include "bodyModule/body_star.hpp"
 #include "tools/object.hpp"
 #include "interfaceModule/base_command_interface.hpp"
 
@@ -91,27 +92,19 @@ void ProtoSystem::load(Object &obj)
 	stringHash_t bodyParams;
 	bodyParams["name"] = obj.getEnglishName();
 	bodyParams["parent"] = "none";
-	bodyParams["type"] = "Sun";
+	bodyParams["type"] = "Star";
 	bodyParams["radius"] = "1190.856";
 	bodyParams["halo"] = "false";
 	Vec3f color = obj.getRGB();
 	bodyParams["color"] = std::to_string(color[0]) + "," + std::to_string(color[1]) + "," + std::to_string(color[2]);
 	bodyParams["label_color"] = bodyParams["color"];
 	bodyParams["orbit_color"] = bodyParams["color"];
-	bodyParams["tex_map"] = "bodies/sirius.png";
 	bodyParams["tex_halo"] = "empty";
 	bodyParams["tex_big_halo"] = "big_halo.png";
 	bodyParams["big_halo_size"] = "10";
 	bodyParams["lighting"] = "false";
 	bodyParams["albedo"] = "-1.";
 	bodyParams["coord_func"] = "stellar_special";
-	if (bodyParams["parent"] != "none") {
-		stringHash_t parentParams = bodyParams;
-		parentParams["name"] = bodyParams["parent"];
-		parentParams["parent"] = "none";
-		parentParams["type"] = "Center";
-		addBody(parentParams, false);
-	}
 	addBody(bodyParams, false);
 	bodyParams.clear();
 }
@@ -597,22 +590,34 @@ std::shared_ptr<Body> ProtoSystem::findBody(const std::string &name)
 	}
 }
 
-BODY_TYPE ProtoSystem::setPlanetType (const std::string &str)
-{
-	if (str =="Sun") return SUN;
-	else if (str == "Planet") return PLANET;
-	else if (str == "Moon") return MOON;
-	else if (str == "Dwarf") return DWARF;
-	else if (str == "Asteroid") return ASTEROID;
-	else if (str == "KBO") return KBO;
-	else if (str == "Comet") return COMET;
-	else if (str == "Artificial") return ARTIFICIAL;
-	else if (str == "Observer") return OBSERVER;
-	else if (str == "Center") return CENTER;
-	else
-		return UNKNOWN;
+constexpr uint32_t casify(const char *data) {
+	return ((uint32_t) data[0]) | (((uint32_t) data[1]) << 8) | (((uint32_t) data[2]) << 16) | (((uint32_t) data[3]) << 24);
 }
 
+#define CASE(name, type) case casify(name): return type
+
+BODY_TYPE ProtoSystem::setPlanetType (const std::string &str)
+{
+	if (str.size() < 3)
+		return UNKNOWN;
+	switch (*(const uint32_t *) str.data()) {
+		CASE("Sun", SUN);
+		CASE("Star", STAR);
+		CASE("Planet", PLANET);
+		CASE("Moon", MOON);
+		CASE("Dwarf", DWARF);
+		CASE("Asteroid", ASTEROID);
+		CASE("KBO", KBO);
+		CASE("Comet", COMET);
+		CASE("Artificial", ARTIFICIAL);
+		CASE("Observer", OBSERVER);
+		CASE("Center", CENTER);
+		default:
+			return UNKNOWN;
+	}
+}
+
+#undef CASE
 
 // Init and load one solar system object
 // This is a the private method
@@ -733,8 +738,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	// end orbit determination
 	//
 
-	std::unique_ptr<BodyColor> bodyColor = nullptr;
-	bodyColor = std::make_unique<BodyColor>(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
+	auto bodyColor = std::make_unique<BodyColor>(param["color"], param["label_color"], param["orbit_color"], param["trail_color"]);
 
 	float solLocalDay= Utility::strToDouble(param["sol_local_day"],1.0);
 
@@ -818,7 +822,34 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			p = p_sun;
 		}
 		break;
+		case STAR :  {
+			auto p_sun = std::make_shared<BodyStar>(parent,
+			                englishName,
+			                Utility::strToBool(param["halo"]),
+			                Utility::strToDouble(param["radius"])/AU,
+			                Utility::strToDouble(param["oblateness"], 0.0),
+			                std::move(bodyColor),
+			                solLocalDay,
+			                Utility::strToDouble(param["albedo"]),
+			                std::move(orb),
+			                close_orbit,
+			                currentOBJ,
+			                orbit_bounding_radius,
+			  				bodyTexture);
+			//update of sun's big_halo texture
+			std::string bighalotexfile = param["tex_big_halo"];
+			if (!bighalotexfile.empty()) {
+				p_sun->setBigHalo(bighalotexfile, param["path"]);
+				p_sun->setHaloSize(Utility::strToDouble(param["big_halo_size"], 50.f));
+			}
 
+			if (!parent) {
+				centerObject = p_sun;
+				bodyTrace = p_sun;
+			}
+			p = p_sun;
+		}
+		break;
 		case ARTIFICIAL: {
 			std::shared_ptr<Artificial> p_artificial = std::make_shared<Artificial>(parent,
 							  englishName,

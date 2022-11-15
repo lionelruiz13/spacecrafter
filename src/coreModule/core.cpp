@@ -532,6 +532,7 @@ void Core::init(const InitParser& conf)
 
 void Core::uboCamUpdate()
 {
+	uboCam->update();
 	uboCam->setViewport(projection->getViewport());
 	uboCam->setClippingFov(projection->getClippingFov());
 	uboCam->setViewportCenter(projection->getViewportFloatCenter());

@@ -49,10 +49,12 @@ Sun::Sun(std::shared_ptr<Body> parent,
          bool close_orbit,
          ObjL* _currentObj,
          double orbit_bounding_radius,
-		 std::shared_ptr<BodyTexture> _bodyTexture):
+		 std::shared_ptr<BodyTexture> _bodyTexture,
+         BODY_TYPE _typePlanet
+     ):
 	Body(parent,
 	     englishName,
-	     SUN,
+	     _typePlanet,
 	     flagHalo,
 	     radius,
 	     oblateness,

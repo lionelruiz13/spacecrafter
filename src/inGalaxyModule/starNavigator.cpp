@@ -29,7 +29,6 @@
 #include "atmosphereModule/tone_reproductor.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
-#include "inGalaxyModule/starViewer.hpp"
 #include "inGalaxyModule/Star3DWrapper.hpp"
 
 #include "EntityCore/EntityCore.hpp"
@@ -71,8 +70,6 @@ StarNavigator::StarNavigator() : nbStars(0)
 	pool= new ThreadPool(std::thread::hardware_concurrency());
 
 	computeRCMagTable();
-
-	StarViewer::createSC_context();
 }
 
 void StarNavigator::createSC_context()
@@ -611,8 +608,6 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scali
 	else
 		matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 	drawRaw(matrix);
-	if (starViewer)
-		starViewer->draw(nav, prj, matrix);
 
 	if (!names_fader.getInterstate())
 		return;
@@ -620,24 +615,20 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scali
 	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
 
 	for (auto &s: listGlobalStarVisible) {
-		float x = -s->posXYZ[0];
-		float y = s->posXYZ[1];
-		float z = s->posXYZ[2];
-		float dist =sqrt((x-pos[0])*(x-pos[0]) + (y-pos[1])*(y-pos[1]) +(z-pos[2])*(z-pos[2]));
+		Vec3f spos(-s->posXYZ[0], s->posXYZ[1], s->posXYZ[2]);
+		float dist = (spos - pos).length();
 		float mag_v = s->mag+5*(log10(dist)-1);
 
 		if (mag_v < maxMagStarName) {
 			const std::string starname = getStarName(s->HIP);
 			if (!starname.empty()) {
 
-				Vec3f pos;
 				if (scaling)
-					pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)*(s->posXYZ))*1E-6;
+					spos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)*spos)*1E-6;
 				else
-					pos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180) * s->posXYZ);
-				pos[0] = -pos[0];
+					spos = nav->helioToEarthPosEqu(Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180)*spos);
 				Vec3d screenposd;
-				prj->projectEarthEqu(pos, screenposd);
+				prj->projectEarthEqu(spos, screenposd);
 
 				Vec4f Color(HipStarMgr::color_table[s->B_V][0]*0.75,
 							HipStarMgr::color_table[s->B_V][1]*0.75,

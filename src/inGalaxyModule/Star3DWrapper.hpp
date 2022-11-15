@@ -82,6 +82,9 @@ public:
 		return star->B_V;
 	}
 
+    virtual Vec3f getRGB() const override {
+		return StarNavigator::bvToColor(star->B_V);
+	}
 private:
     int refCount = 0;
     // observer's position in parsec

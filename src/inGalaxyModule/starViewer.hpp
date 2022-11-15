@@ -35,18 +35,21 @@ class ObjL;
 
 class StarViewer {
 public:
-    StarViewer(const Vec3f &pos, const Vec3f &color, const float radius);
+    StarViewer(const Vec3f &color, const float radius, ObjL *_objl);
     ~StarViewer();
-    void draw(const Navigator * nav, const Projector* prj, const Mat4f &mat);
+    inline void setRadius(float _radius) {
+        radius = _radius;
+        (*uFrag)->radius = _radius;
+        (*uVert)->radius = _radius;
+    }
+    void draw(const Navigator * nav, const Projector* prj, const Mat4d &mat, float screen_size);
     static void createSC_context();
 private:
     void createLocalContext();
-    float getOnScreenSize(const Projector* prj, const Vec3f &pos);
 
     static PipelineLayout *layout;
     static Pipeline *pipeline, *pipelineCorona;
     static std::unique_ptr<VertexArray> modelHalo;
-    Mat4f model;
     int cmds[3];
     std::unique_ptr<Set> set;
     struct s_vert {
@@ -64,5 +67,5 @@ private:
     std::unique_ptr<VertexBuffer> vertexHalo;
     float *pVertexHalo;
     float radius;
-    std::unique_ptr<ObjL> objl;
+    ObjL *objl;
 };

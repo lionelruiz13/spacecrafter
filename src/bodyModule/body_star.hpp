@@ -2,6 +2,7 @@
  * Spacecrafter astronomy simulation and visualization
  *
  * Copyright (C) 2017 Immersive Adventure
+ * Copyright (C) 2017-2020 AssociationSirius
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,25 +23,33 @@
  *
  */
 
+#ifndef BODY_STAR_HPP_
+#define BODY_STAR_HPP_
+
 #include "bodyModule/body_sun.hpp"
+#include "inGalaxyModule/starViewer.hpp"
 
-class Center : public Sun {
-
+class BodyStar : public Sun {
 public:
-	Center(std::shared_ptr<Body> parent,
-	    const std::string& englishName,
-	    bool flagHalo,
-	    double radius,
-	    double oblateness,
-	    std::unique_ptr<BodyColor> myColor,
-	    float _sol_local_day,
-	    float albedo,
-	    std::unique_ptr<Orbit> orbit,
-	    bool close_orbit,
-	    ObjL* _currentObj,
-	    double orbit_bounding_radius,
-		std::shared_ptr<BodyTexture> _bodyTexture);
-	~Center();
+    BodyStar(std::shared_ptr<Body> parent,
+        const std::string& englishName,
+        bool flagHalo,
+        double radius,
+        double oblateness,
+        std::unique_ptr<BodyColor> myColor,
+        float _sol_local_day,
+        float albedo,
+        std::unique_ptr<Orbit> orbit,
+        bool close_orbit,
+        ObjL* _currentObj,
+        double orbit_bounding_radius,
+        std::shared_ptr<BodyTexture> _bodyTexture);
+    ~BodyStar();
 
-	virtual void computeDraw(const Projector* prj, const Navigator * nav) override;
+    virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye,
+ 	                    bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer) override;
+private:
+    std::unique_ptr<StarViewer> starViewer;
 };
+
+#endif /* end of include guard: BODY_STAR_HPP_ */

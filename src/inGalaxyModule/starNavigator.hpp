@@ -49,7 +49,6 @@ class VertexBuffer;
 class Pipeline;
 class PipelineLayout;
 class Set;
-class StarViewer;
 class s_texture;
 struct starInfo;
 class StarManager;
@@ -174,6 +173,10 @@ public:
 
 	std::vector<ObjectBaseP> searchAround(Vec3d v, double limitFov, const Navigator *nav);
 
+	static Vec3f bvToColor(int bv) {
+		return color_table[bv];
+	}
+
 private:
 	//buffers for displaying shaders
 	float *starVec;
@@ -202,7 +205,6 @@ private:
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<Set> set;
 	std::unique_ptr<SharedBuffer<Mat4f>> uMat;
-	std::unique_ptr<StarViewer> starViewer; // Unique procedurally generated star
 	std::unique_ptr<SharedBuffer<VkDrawIndirectCommand>> drawData;
 	//initialization of shader and VAO-VBO
 	void createSC_context();
