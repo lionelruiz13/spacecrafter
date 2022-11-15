@@ -155,7 +155,7 @@ public:
 private:
 	// the states of the script engine with respect to the current scripts.
 	enum class ScriptState : char {PLAY, PAUSE, NONE};
-	ScriptState scriptState;
+	ScriptState scriptState = ScriptState::NONE;
 	// record management
 	struct ScriptRecord {
 		std::fstream rec_file;	//!< the pointer to the file
@@ -169,16 +169,16 @@ private:
 	std::shared_ptr<Media> media;
 	AppCommandInterface *commander;  //!< for executing script commands
 	Script * script = nullptr; //!< currently loaded script
-	int64_t wait_time;     //!< ms until next script command should be executed
-	bool waitOnVideo; 			//!< if Video launch, say if script should wait on it.
-	bool isVideoPlayed;		 	//!< say if a video is played
+	int64_t wait_time=0;     //!< ms until next script command should be executed
+	bool waitOnVideo=false; 			//!< if Video launch, say if script should wait on it.
+	bool isVideoPlayed = false;		 	//!< say if a video is played
 	std::string DataDir;
 	int multiplierRate=1;
-	bool isInLoop; 		//!< we are reading the instructions of a loop
-	bool repeatLoop; 	//!< we are repeating a loop
-	int nbrLoop;		//!< number of remaining loops
+	bool isInLoop=false; 		//!< we are reading the instructions of a loop
+	bool repeatLoop=false; 	//!< we are repeating a loop
+	int nbrLoop=0;		//!< number of remaining loops
 	std::vector<std::string> loopVector; //!< the vector that contains the loop instructions to be repeated
-	unsigned int indiceInLoop; //!< indicates the place where we are in the loop
+	unsigned int indiceInLoop=0; //!< indicates the place where we are in the loop
 };
 
 

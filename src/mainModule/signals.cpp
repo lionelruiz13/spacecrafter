@@ -76,7 +76,7 @@ void ISignals::NSSigTERM( int )
 
 void ISignals::NSSigTSTP( int )
 {
-	struct sigaction restore;
+	struct sigaction restore{};
 	restore.sa_handler = SIG_DFL;
 	restore.sa_flags = SA_RESTART;
 	sigaction( SIGTSTP, &restore, NULL );
@@ -87,13 +87,13 @@ void ISignals::NSSigTSTP( int )
 void ISignals::NSSigCONT( int )
 {
 	// Re-register SIGTSTP handler then raise default SIGCONT
-	struct sigaction act;
+	struct sigaction act{};
 	act.sa_handler = ISignals::NSSigTSTP;
 	act.sa_flags = SA_RESTART;
 	sigaction( SIGTSTP, &act, NULL );
 
 	// Restore default continue handler
-	struct sigaction restore;
+	struct sigaction restore{};
 	restore.sa_handler = SIG_DFL;
 	restore.sa_flags = SA_RESTART;
 	sigaction( SIGCONT, &restore, NULL );
@@ -105,7 +105,7 @@ void ISignals::NSSigCONT( int )
 // Posix Signal Implementation ////////////////////////////////////////////////
 void PosixSignals::Register( int sigid, void(*handler)(int) )
 {
-	struct sigaction act;
+	struct sigaction act{};
 	act.sa_handler = handler;
 	act.sa_flags = SA_RESTART;
 	sigaction ( sigid, &act, NULL);
@@ -113,7 +113,7 @@ void PosixSignals::Register( int sigid, void(*handler)(int) )
 
 void PosixSignals::UnRegister( int sigid )
 {
-	struct sigaction act;
+	struct sigaction act{};
 	act.sa_handler = SIG_DFL;
 	act.sa_flags = SA_RESTART;
 	sigaction ( sigid, &act, NULL);

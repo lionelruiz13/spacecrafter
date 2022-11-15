@@ -44,14 +44,8 @@ ScriptMgr::ScriptMgr(std::shared_ptr<AppCommandInterface> command_interface,cons
 {
 	commander = command_interface.get();
 	DataDir = _data_dir;
-	scriptState = ScriptState::NONE;
 	sR.recording = false;
 	sR.record_elapsed_time = 0;
-	multiplierRate=1;
-	nbrLoop =0;
-	isInLoop = false;
-	repeatLoop = false;
-	waitOnVideo = false;
 	media = _media;
 	script= new Script();
 }

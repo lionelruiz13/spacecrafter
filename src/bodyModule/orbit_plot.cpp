@@ -35,7 +35,6 @@ OrbitPlot::OrbitPlot(Body* _body, int segments, int nbAdditionnalPoints) : nbAdd
 	body = _body;
 	ORBIT_POINTS = segments;
 	orbitPoint = new Vec3d[ORBIT_POINTS];
-	orbit_cached = 0;
 }
 
 OrbitPlot::~OrbitPlot()

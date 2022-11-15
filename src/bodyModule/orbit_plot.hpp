@@ -73,8 +73,8 @@ protected:
 	int ORBIT_POINTS;
 
 	double delta_orbitJD;
-	double last_orbitJD;
-	bool orbit_cached;
+	double last_orbitJD = 0;
+	bool orbit_cached = false;
 	Vec3d * orbitPoint;
 
 	LinearFader orbit_fader;
