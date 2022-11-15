@@ -54,7 +54,7 @@ protected :
 	void defineSet();
 	//! Return set to bind, may change at every frame
 	virtual Set &getSet(float screen_sz) override;
-	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
+	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
 
 	std::unique_ptr<Set> set;
 	std::unique_ptr<SharedBuffer<globalVertProj>> uGlobalVertProj; // night bump normal

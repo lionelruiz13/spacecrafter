@@ -702,11 +702,8 @@ void Body::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 void Body::updateBoundingRadii()
 {
 	calculateBoundingRadius();
-	std::shared_ptr<Body> p;
-	p = parent;
-	while (p) {
+	for (Body *p = parent.get(); p; p = p->parent.get()) {
 		p->calculateBoundingRadius();
-		p = p->parent;
 	}
 }
 
@@ -824,7 +821,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
                 cmds[context.frameIdx] = frame.create(1);
                 frame.setName(cmds[context.frameIdx], englishName + " " +  std::to_string(context.frameIdx));
             }
-            VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+            VkCommandBuffer cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 			drawRings(cmd, prj,observatory,mat,1000.0,lightDirection,eye_planet,initialRadius);
             frame.compile();
             frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
@@ -846,7 +843,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
         cmds[context.frameIdx] = frame.create(1);
         frame.setName(cmds[context.frameIdx], englishName + " " +  std::to_string(context.frameIdx));
     }
-    VkCommandBuffer &cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
+    VkCommandBuffer cmd = frame.begin(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
 	if(isVisibleOnScreen()) {
         if (needClearDepthBuffer || (!depthTest && hasRings())) {
@@ -893,18 +890,17 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 	return drawn;
 }
 
-bool Body::skipDrawingThisBody(const Observer* observatory, bool drawHomePlanet)
 {
-	return !drawHomePlanet && observatory->isOnBody(shared_from_this());
+	return !drawHomePlanet && observatory->isOnBody(this);
 }
 
 
-void Body::drawOrbit(VkCommandBuffer &cmd, const Observer* observatory, const Navigator* nav, const Projector* prj)
+void Body::drawOrbit(VkCommandBuffer cmd, const Observer* observatory, const Navigator* nav, const Projector* prj)
 {
 	orbitPlot->drawOrbit(cmd, nav, prj, parent_mat);
 }
 
-void Body::drawTrail(VkCommandBuffer &cmd, const Navigator* nav, const Projector* prj)
+void Body::drawTrail(VkCommandBuffer cmd, const Navigator* nav, const Projector* prj)
 {
 	if(trail != nullptr)
 		trail->drawTrail(cmd, nav, prj);
@@ -916,7 +912,7 @@ void Body::drawHints(const Navigator* nav, const Projector* prj)
 		hints->drawHints(nav, prj);
 }
 
-void Body::drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat)
+void Body::drawAxis(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat)
 {
 	axis->drawAxis(cmd, prj, mat);
 }

@@ -261,7 +261,7 @@ double BigBody::calculateBoundingRadius()
 	return boundingRadius;
 }
 
-void BigBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
+void BigBody::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     if (changed)
         selectShader();
@@ -379,7 +379,7 @@ void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMg
     }
 }
 
-void BigBody::drawRings(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
+void BigBody::drawRings(VkCommandBuffer cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
     const double observerDistanceToBody = (get_heliocentric_ecliptic_pos() - obs->getHeliocentricPosition(CoreLink::instance->getJDay())).length();
 	rings->draw(cmd, prj, observerDistanceToBody, mat,screen_sz,_lightDirection,_planetPosition,planetRadius);

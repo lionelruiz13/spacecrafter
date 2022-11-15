@@ -184,7 +184,7 @@ void SmallBody::selectShader ()
     initialized = true;
 }
 
-void SmallBody::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
+void SmallBody::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     if (initialized) {
         if (changed)

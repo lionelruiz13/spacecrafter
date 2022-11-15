@@ -99,7 +99,7 @@ void Artificial::createSC_context()
     initialized = true;
 }
 
-void Artificial::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
+void Artificial::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     createSC_context();
 

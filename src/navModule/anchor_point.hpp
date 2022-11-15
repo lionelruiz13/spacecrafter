@@ -83,7 +83,7 @@ public:
 
 	virtual void update() noexcept;
 
-	virtual bool isOnBody(std::shared_ptr<Body> body) const noexcept;
+	virtual bool isOnBody(Body *body) const noexcept;
 
 	virtual bool isOnBody() const noexcept;
 

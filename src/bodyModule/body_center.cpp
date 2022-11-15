@@ -253,7 +253,7 @@ bool Center::drawGL(Projector* prj, const Navigator* nav, const Observer* observ
 	bool drawn = false;
 
 	//we don't draw a planet on which we are
-	if (!drawHomePlanet && observatory->isOnBody(shared_from_this())) {
+	if (!drawHomePlanet && observatory->isOnBody(this)) {
 		return drawn;
 	}
 
@@ -329,7 +329,7 @@ Set &Center::getSet(float screen_sz)
     return (bigSet && screen_sz > 512) ? *bigSet : *descriptorSetSun;
 }
 
-void Center::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
+void Center::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     Context &context = *Context::instance;
     if (changed)

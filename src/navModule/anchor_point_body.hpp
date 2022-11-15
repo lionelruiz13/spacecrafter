@@ -21,7 +21,7 @@
  * This anchor point is attached to a body.
  * It follows the body's trajectory
  * The rotation is followed when close enough to the body
- * It is also possible to ignore the rotation with overrideRotationCondition. 
+ * It is also possible to ignore the rotation with overrideRotationCondition.
  * This parameter is set by the script : camera action follow_rotation [true/false]
  */
 
@@ -52,7 +52,7 @@ public:
 
 	void update() noexcept override;
 
-	bool isOnBody(std::shared_ptr<Body> body)const noexcept override;
+	bool isOnBody(Body *body) const noexcept override;
 
 	bool isOnBody() const noexcept;
 

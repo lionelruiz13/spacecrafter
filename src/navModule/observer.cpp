@@ -119,7 +119,7 @@ bool Observer::isOnBody() const {
 	return (flag_eye_relative_mode) ? anchorAlt->isOnBody() : anchor->isOnBody();
 }
 
-bool Observer::isOnBody(std::shared_ptr<Body> body) const {
+bool Observer::isOnBody(Body *body) const {
 	return (flag_eye_relative_mode) ? anchorAlt->isOnBody(body) : anchor->isOnBody(body);
 }
 

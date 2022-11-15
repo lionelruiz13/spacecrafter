@@ -75,9 +75,9 @@ void AnchorPointBody::update() noexcept
 	setHeliocentricEclipticPos(body->get_heliocentric_ecliptic_pos());
 }
 
-bool AnchorPointBody::isOnBody(std::shared_ptr<Body> _body)const noexcept
+bool AnchorPointBody::isOnBody(Body *_body) const noexcept
 {
-	return body == _body;
+	return body.get() == _body;
 }
 
 bool AnchorPointBody::isOnBody()const noexcept
@@ -96,4 +96,3 @@ std::string AnchorPointBody::saveAnchor()const noexcept
 	return os.str();
 
 }
-

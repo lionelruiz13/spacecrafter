@@ -279,7 +279,7 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
 	bool drawn = false;
 
 	//on ne dessine pas une planete sur laquel on se trouve
-	if (!drawHomePlanet && observatory->isOnBody(shared_from_this())) {
+	if (!drawHomePlanet && observatory->isOnBody(this)) {
 		return drawn;
 	}
 
@@ -288,7 +288,7 @@ bool Sun::drawGL(Projector* prj, const Navigator* nav, const Observer* observato
 	if (isVisible && tex_big_halo)
 		drawBigHalo(nav, prj, eye);
 
-	if (screen_sz > 1 && isVisible) {  // huge improvement in performance
+	if (isVisibleOnScreen()) {  // huge improvement in performance
         Context &context = *Context::instance;
         FrameMgr &frame = *context.frame[context.frameIdx];
         if (cmds[context.frameIdx] == -1) {
@@ -355,7 +355,7 @@ Set &Sun::getSet(float screen_sz)
     return (bigSet && screen_sz > 512) ? *bigSet : *descriptorSetSun;
 }
 
-void Sun::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
+void Sun::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     Context &context = *Context::instance;
     if (changed)

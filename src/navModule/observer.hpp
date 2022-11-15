@@ -56,7 +56,7 @@ public:
 
 	bool isOnBody() const;
 
-	bool isOnBody(std::shared_ptr<Body> body) const;
+	bool isOnBody(Body *body) const;
 
 	//! Returns a link to the star where the observer is located
 	//! @return an instance on the star or nullptr

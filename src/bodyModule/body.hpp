@@ -428,6 +428,10 @@ public:
 	//! Ask this body to preload his textures
 	//! @param keepFrames number of frames from which the big texture can be destroyed if it was still unused
 	virtual void preload(int keepFrames);
+
+	inline bool isVisibleOnScreen() {
+		return screen_sz > 2 && isVisible;
+	}
 protected:
 
 	bool useParentPrecession(double jd) {
@@ -443,13 +447,13 @@ protected:
 		return false;
 	}
 
-	virtual void drawRings(VkCommandBuffer &cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) {
+	virtual void drawRings(VkCommandBuffer cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) {
 		return;
 	}
 
-	virtual void drawOrbit(VkCommandBuffer &cmd, const Observer* observatory, const Navigator* nav, const Projector* prj);
+	virtual void drawOrbit(VkCommandBuffer cmd, const Observer* observatory, const Navigator* nav, const Projector* prj);
 
-	virtual void drawTrail(VkCommandBuffer &cmd, const Navigator* nav, const Projector* prj);
+	virtual void drawTrail(VkCommandBuffer cmd, const Navigator* nav, const Projector* prj);
 
 	virtual void drawHints(const Navigator* nav, const Projector* prj);
 
@@ -457,16 +461,13 @@ protected:
 		return;
 	}
 
-	virtual void drawAxis(VkCommandBuffer &cmd, const Projector* prj, const Mat4d& mat);
+
+	virtual void drawAxis(VkCommandBuffer cmd, const Projector* prj, const Mat4d& mat);
 
 	void drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, float screen_sz, bool depthTest);
 
-	virtual bool isVisibleOnScreen() {
-		return screen_sz > 1 && isVisible;
-	}
-
 	// Draw the 3D body: pshere or model3d
-	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest) = 0;
+	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest) = 0;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
 

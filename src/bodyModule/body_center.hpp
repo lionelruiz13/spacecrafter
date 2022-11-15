@@ -79,7 +79,7 @@ protected:
 	// Draw the big halo
 	void drawBigHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
 
-	virtual void drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
+	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
 
 	void createHaloShader(float viewport_y);
 	void createSunShader();

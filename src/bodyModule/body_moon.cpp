@@ -253,7 +253,7 @@ void Moon::selectShader()
 	//}
 }
 
-void Moon::drawBody(VkCommandBuffer &cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
+void Moon::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
     if (changed)
         defineSet();
@@ -307,7 +307,7 @@ void Moon::handleVisibilityFader(const Observer* observatory, const Projector* p
 {
 	if (prj->getFov()>30) {
 		// If not in the parent Body system OR one of the other sister moons do not draw
-		if (observatory->isOnBody() && !observatory->isOnBody(parent) && parent != observatory->getHomeBody()->get_parent() && getEarthEquPos(nav).length() > 1) {
+		if (observatory->isOnBody() && !observatory->isOnBody(parent.get()) && parent != observatory->getHomeBody()->get_parent() && getEarthEquPos(nav).length() > 1) {
 			// If further than 1 AU of object if flying
 			visibilityFader = false; // orbits will fade in and out now
 		}
