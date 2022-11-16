@@ -500,7 +500,6 @@ void App::init()
 	core->setColorScheme(settings->getConfigFile(), SCS_COLOR);
 
 	// play startup script
-	scriptMgr->playStartupScript();
 	// on sauvegarde ici l'état des composants du logiciel.
 	coreBackup->saveGridState();
 	coreBackup->saveDisplayState();
@@ -512,6 +511,7 @@ void App::init()
 	ui->init(conf);
 	core->init(conf);
 	ui->init(conf);
+	scriptMgr->playStartupScript();
 	context.stat->capture(Capture::APP_INIT_END);
 }
 
