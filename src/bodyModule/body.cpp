@@ -54,6 +54,10 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
+// for compute tail shape
+#define COMET_TAIL_SLICES 16u // segments around the perimeter
+#define COMET_TAIL_STACKS 16u // cuts along the rotational axis
+
 
 s_font* Body::planet_name_font = nullptr;
 float Body::object_scale = 1.f;
@@ -85,6 +89,14 @@ Body::Body(std::shared_ptr<Body> parent,
 	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
 	is_satellite(parent && parent->getBodyType() != CENTER && parent->getBodyType() != SUN),
     orbit_bounding_radius(orbit_bounding_radius), boundingRadius(-1), sun_half_angle(0.0)
+	// tailFactors(-1., -1.), // mark "invalid"
+	// tailActive(false),
+	// tailBright(false),
+	// deltaJDEtail(15.0*JD_MINUTE), // update tail geometry every 15 minutes only
+	// lastJDEtail(0.0),
+	// dustTailWidthFactor(1.5f),
+	// dustTailLengthFactor(0.4f),
+	// dustTailBrightnessFactor(1.5f),
 {
 	radius = _radius;
 	myColor = std::move(_myColor);
@@ -681,6 +693,100 @@ void Body::translateName(Translator& trans)
 	nameI18 = trans.translateUTF8(englishName);
 }
 
+// Formula found at http://www.projectpluto.com/update7b.htm#comet_tail_formula
+// adpat this formul to spacecrafter
+// Vec2f Body::getComaDiameterAndTailLengthAU() const
+// {
+// 	const float r = static_cast<float>(getHeliocentricEclipticPos().norm());
+
+// 	const float Do = powf(10.0f, ((-0.0033f*mhelio - 0.07f) * mhelio + 3.25f));
+// 	const float common = 1.0f - powf(10.0f, (-2.0f*r));
+// 	const float D = Do * common * (1.0f - powf(10.0f, -r)) * (1000.0f*AU_KMf);
+// 	const float Lo = powf(10.0f, ((-0.0075f*mhelio - 0.19f) * mhelio + 2.1f));
+// 	const float L = Lo*(1.0f-powf(10.0f, -4.0f*r)) * common * (1e6f*AU_KMf);
+// 	return Vec2f(D, L);
+// }
+
+
+// adapt to vulkan ???
+// void Body::computeComa(const float diameter)
+// {
+// 	StelPainter::computeFanDisk(0.5f*diameter, 3, 3, comaVertexArr, comaTexCoordArr);
+// }
+
+// adapt to vulkan ???
+//! create parabola shell to represent a tail. Designed for slices=16, stacks=16, but should work with other sizes as well.
+//! (Maybe slices must be an even number.)
+// Parabola equation: z=x²/2p.
+// xOffset for the dust tail, this may introduce a bend. Units are x per sqrt(z).
+// void Body::computeParabola(const float parameter, const float radius, const float zshift,
+// 						  QVector<Vec3d>& vertexArr, QVector<Vec2f>& texCoordArr,
+// 						  QVector<unsigned short> &indices, const float xOffset)
+// {
+// 	// keep the array and replace contents. However, using replace() is only slightly faster.
+// 	if (vertexArr.length() < static_cast<int>(((COMET_TAIL_SLICES*COMET_TAIL_STACKS+1))))
+// 		vertexArr.resize((COMET_TAIL_SLICES*COMET_TAIL_STACKS+1));
+// 	if (createTailIndices) indices.clear();
+// 	if (createTailTextureCoords) texCoordArr.clear();
+// 	// The parabola has triangular faces with vertices on two circles that are rotated against each other.
+// 	float xa[2*COMET_TAIL_SLICES];
+// 	float ya[2*COMET_TAIL_SLICES];
+// 	float x, y, z;
+
+// 	// fill xa, ya with sin/cosines. TBD: make more efficient with index mirroring etc.
+// 	float da=M_PIf/COMET_TAIL_SLICES; // full circle/2slices
+// 	for (unsigned short int i=0; i<2*COMET_TAIL_SLICES; ++i){
+// 		xa[i]=-sin(i*da);
+// 		ya[i]=cos(i*da);
+// 	}
+
+// 	vertexArr.replace(0, Vec3d(0.0, 0.0, static_cast<double>(zshift)));
+// 	int vertexArrIndex=1;
+// 	if (createTailTextureCoords) texCoordArr << Vec2f(0.5f, 0.5f);
+// 	// define the indices lying on circles, starting at 1: odd rings have 1/slices+1/2slices, even-numbered rings straight 1/slices
+// 	// inner ring#1
+// 	for (unsigned short int ring=1; ring<=COMET_TAIL_STACKS; ++ring){
+// 		z=ring*radius/COMET_TAIL_STACKS; z=z*z/(2*parameter) + zshift;
+// 		const float xShift= xOffset*z*z;
+// 		for (unsigned short int i=ring & 1; i<2*COMET_TAIL_SLICES; i+=2) { // i.e., ring1 has shifted vertices, ring2 has even ones.
+// 			x=xa[i]*radius*ring/COMET_TAIL_STACKS;
+// 			y=ya[i]*radius*ring/COMET_TAIL_STACKS;
+// 			vertexArr.replace(vertexArrIndex++, Vec3d(static_cast<double>(x+xShift), static_cast<double>(y), static_cast<double>(z)));
+// 			if (createTailTextureCoords) texCoordArr << Vec2f(0.5f+ 0.5f*x/radius, 0.5f+0.5f*y/radius);
+// 		}
+// 	}
+// 	// now link the faces with indices.
+// 	if (createTailIndices)
+// 	{
+// 		for (unsigned short i=1; i<COMET_TAIL_SLICES; ++i) indices << 0 << i << i+1;
+// 		indices << 0 << COMET_TAIL_SLICES << 1; // close inner fan.
+// 		// The other slices are a repeating pattern of 2 possibilities. Index @ring always is on the inner ring (slices-agon)
+// 		for (unsigned short ring=1; ring<COMET_TAIL_STACKS; ring+=2) { // odd rings
+// 			const unsigned short int first=(ring-1)*COMET_TAIL_SLICES+1;
+// 			for (unsigned short int i=0; i<COMET_TAIL_SLICES-1; ++i){
+// 				indices << first+i << first+COMET_TAIL_SLICES+i << first+COMET_TAIL_SLICES+1+i;
+// 				indices << first+i << first+COMET_TAIL_SLICES+1+i << first+1+i;
+// 			}
+// 			// closing slice: mesh with other indices...
+// 			indices << ring*COMET_TAIL_SLICES << (ring+1)*COMET_TAIL_SLICES << ring*COMET_TAIL_SLICES+1;
+// 			indices << ring*COMET_TAIL_SLICES << ring*COMET_TAIL_SLICES+1 << first;
+// 		}
+
+// 		for (unsigned short int ring=2; ring<COMET_TAIL_STACKS; ring+=2) { // even rings: different sequence.
+// 			const unsigned short int first=(ring-1)*COMET_TAIL_SLICES+1;
+// 			for (unsigned short int i=0; i<COMET_TAIL_SLICES-1; ++i){
+// 				indices << first+i << first+COMET_TAIL_SLICES+i << first+1+i;
+// 				indices << first+1+i << first+COMET_TAIL_SLICES+i << first+COMET_TAIL_SLICES+1+i;
+// 			}
+// 			// closing slice: mesh with other indices...
+// 			indices << ring*COMET_TAIL_SLICES << (ring+1)*COMET_TAIL_SLICES << first;
+// 			indices << first << (ring+1)*COMET_TAIL_SLICES << ring*COMET_TAIL_SLICES+1;
+// 		}
+// 	}
+// 	createTailIndices=false;
+// 	createTailTextureCoords=false;
+// }
+
 void Body::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
 	radius.update(delta_time);
@@ -696,6 +802,67 @@ void Body::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 		trail->updateFader(delta_time);
 		trail->updateTrail(nav, timeMgr);
 	}
+
+	// // The rest deals with updating tail geometries and brightness
+	// double dateJDE = timeMgr->getJDay();
+
+	// // adapt to spacecrafter
+	// //if (!static_cast<KeplerOrbit*>(orbitPtr)->objectDateValid(dateJDE)) return; // don't do anything if out of useful date range. This allows having hundreds of comet elements.
+
+	// if (fabs(lastJDEtail-dateJDE)>deltaJDEtail) {
+	// 	lastJDEtail=dateJDE;
+
+	// 	if (orbit->getUpdateTails()){
+	// 		// Compute lengths and orientations from orbit object, but only if required.
+	// 		tailFactors=getComaDiameterAndTailLengthAU();
+
+	// 		// Note that we use a diameter larger than what the formula returns. A scale factor of 1.2 is ad-hoc/empirical (GZ), but may look better.
+	// 		computeComa(1.0f*tailFactors[0]); // TBD: APPARENTLY NO SCALING? REMOVE 1.0 and note above.
+
+	// 		tailActive = (tailFactors[1] > tailFactors[0]); // Inhibit tails drawing if too short. Would be nice to include geometric projection angle, but this is too costly.
+
+	// 		if (tailActive)
+	// 		{
+	// 			float gasTailEndRadius=qMax(tailFactors[0], 0.025f*tailFactors[1]) ; // This avoids too slim gas tails for bright comets like Hale-Bopp.
+	// 			float gasparameter=gasTailEndRadius*gasTailEndRadius/(2.0f*tailFactors[1]); // parabola formula: z=r²/2p, so p=r²/2z
+	// 			// The dust tail is thicker and usually shorter. The factors can be configured in the elements.
+	// 			float dustparameter=gasTailEndRadius*gasTailEndRadius*dustTailWidthFactor*dustTailWidthFactor/(2.0f*dustTailLengthFactor*tailFactors[1]);
+
+	// 			// Find valid parameters to create paraboloid vertex arrays: dustTail, gasTail.
+	// 			computeParabola(gasparameter, gasTailEndRadius, -0.5f*gasparameter, gastailVertexArr,  tailTexCoordArr, tailIndices);
+	// 			// Now we make a skewed parabola. Skew factor (xOffset, last arg) is rather ad-hoc/empirical. TBD later: Find physically correct solution.
+	// 			computeParabola(dustparameter, dustTailWidthFactor*gasTailEndRadius, -0.5f*dustparameter, dusttailVertexArr, tailTexCoordArr, tailIndices, 25.0f*static_cast<float>(static_cast<KeplerOrbit*>(orbitPtr)->getVelocity().norm()));
+	// 			//dusttailColorArr.fill(Vec3f(0.3,0.3,0.3), dusttailVertexArr.length());
+
+
+	// 			// 2014-08 for 0.13.1 Moved from drawTail() to save lots of computation per frame (There *are* folks downloading all 730 MPC current comet elements...)
+	// 			// Find rotation matrix from 0/0/1 to eclipticPosition: crossproduct for axis (normal vector), dotproduct for angle.
+	// 			Vec3d eclposNrm=eclipticPos+aberrationPush; eclposNrm.normalize();
+	// 			gasTailRot=Mat4d::rotation(Vec3d(0.0, 0.0, 1.0)^(eclposNrm), std::acos(Vec3d(0.0, 0.0, 1.0).dot(eclposNrm)) );
+
+	// 			// adapt to spacecrafter
+	// 			Vec3d velocity=static_cast<KeplerOrbit*>(orbitPtr)->getVelocity(); // [AU/d]
+	// 			// This was a try to rotate a straight parabola somewhat away from the antisolar direction.
+	// 			//Mat4d dustTailRot=Mat4d::rotation(eclposNrm^(-velocity), 0.15f*std::acos(eclposNrm.dot(-velocity))); // GZ: This scale factor of 0.15 is empirical from photos of Halley and Hale-Bopp.
+	// 			// The curved tail is curved towards positive X. We first rotate around the Z axis into a direction opposite of the motion vector, then again the antisolar rotation applies.
+	// 			// In addition, we let the dust tail already start with a light tilt.
+	// 			dustTailRot=gasTailRot * Mat4d::zrotation(atan2(velocity[1], velocity[0]) + M_PI) * Mat4d::yrotation(5.0*velocity.norm());
+
+	// 			// adapt to vulkan ???
+	// 			// Rotate vertex arrays:
+	// 			Vec3d* gasVertices= static_cast<Vec3d*>(gastailVertexArr.data());
+	// 			Vec3d* dustVertices=static_cast<Vec3d*>(dusttailVertexArr.data());
+	// 			for (unsigned short int i=0; i<COMET_TAIL_SLICES*COMET_TAIL_STACKS+1; ++i)
+	// 			{
+	// 				gasVertices[i].transfo4d(gasTailRot);
+	// 				dustVertices[i].transfo4d(dustTailRot);
+	// 			}
+	// 		}
+	// 		orbit->setUpdateTails(false); // don't update until position has been recalculated elsewhere
+	// 	}
+	// }
+	// gastailColorArr.fill(gasColor  *intensityFovScale, gastailVertexArr.length());
+	// dusttailColorArr.fill(dustColor*intensityFovScale, dusttailVertexArr.length());
 }
 
 // Update bounding radii from child up to parent(s)
@@ -887,8 +1054,37 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 
     frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 
+	// // to adapt...
+	// // but tails should also be drawn if comet core is off-screen...
+	// if (tailActive && tailBright)
+	// {
+	// 	drawTail(core,transfo,true);  // gas tail
+	// 	drawTail(core,transfo,false); // dust tail
+	// }
+
 	return drawn;
 }
+
+// // adapt to vulkan ???
+// void Body::drawTail(StelCore* core, StelProjector::ModelViewTranformP transfo, bool gas)
+// {
+// 	StelPainter sPainter(core->getProjection(transfo));
+// 	sPainter.setBlending(true, GL_ONE, GL_ONE);
+
+// 	tailTexture->bind();
+
+// 	if (gas) {
+// 		StelVertexArray vaGas(static_cast<const QVector<Vec3d> >(gastailVertexArr), StelVertexArray::Triangles,
+// 				      static_cast<const QVector<Vec2f> >(tailTexCoordArr), tailIndices, static_cast<const QVector<Vec3f> >(gastailColorArr));
+// 		sPainter.drawStelVertexArray(vaGas, true);
+
+// 	} else {
+// 		StelVertexArray vaDust(static_cast<const QVector<Vec3d> >(dusttailVertexArr), StelVertexArray::Triangles,
+// 				      static_cast<const QVector<Vec2f> >(tailTexCoordArr), tailIndices, static_cast<const QVector<Vec3f> >(dusttailColorArr));
+// 		sPainter.drawStelVertexArray(vaDust, true);
+// 	}
+// 	sPainter.setBlending(false);
+// }
 
 bool Body::skipDrawingThisBody(const Observer *observatory, bool drawHomePlanet)
 {

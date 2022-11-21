@@ -114,7 +114,7 @@ CometOrbit::CometOrbit(double pericenter_distance,
                        double parent_rot_J2000_longitude)
 	:q(pericenter_distance),e(eccentricity),i(inclination),
 	 Om(ascendingNode),o(arg_of_perhelion),t0(time_at_perihelion),
-	 n(mean_motion)
+	 n(mean_motion) //, updateTails(true)
 {
 
 	const double c_obl = cos(parent_rot_obliquity);
@@ -143,6 +143,10 @@ void CometOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, doubl
 	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
 	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
 	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+
+
+	// to adapt
+	// setUpdateTails(true);
 }
 
 Vec3d CometOrbit::positionAtTime(double JD) const

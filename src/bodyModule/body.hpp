@@ -52,6 +52,8 @@
 #include "tools/scalable.hpp"
 #include "atmosphereModule/atmosphere_commun.hpp"
 
+#define JD_MINUTE 0.00069444444444444444444
+
 
 class Trail;
 class Hints;
@@ -173,6 +175,17 @@ public:
 	// Draw the Planet, if hint_ON is != 0 draw a circle and the name as well
 	// Return the squared distance in pixels between the current and the  previous position this Body was drawn at.
 	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer);
+
+	// // draw the tail of the comet
+	// void drawTail(StelCore* core, StelProjector::ModelViewTranformP transfo, bool gas);
+
+	// Vec2f getComaDiameterAndTailLengthAU() const;
+
+	// void computeComa(const float diameter);
+
+	// void computeParabola(const float parameter, const float radius, const float zshift,
+	// 					  QVector<Vec3d>& vertexArr, QVector<Vec2f>& texCoordArr,
+	// 					  QVector<unsigned short> &indices, const float xOffset);
 
 	// Set the orbital elements
 	void set_rotation_elements(float _period, float _offset, double _epoch, float _obliquity, float _ascendingNode, float _precessionRate, double _sidereal_period, float _axial_tilt);
@@ -569,6 +582,36 @@ protected:
 	Mat4f view;
 	Mat4f vp;
 	Mat4f proj;
+
+	// //GZ Tail additions
+	// Vec2f tailFactors; // result of latest call to getComaDiameterAndTailLengthAU(); Results cached here for infostring. [0]=Coma diameter, [1] gas tail length.
+	// bool tailActive;		//! true if there is a tail long enough to be worth drawing. Drawing tails is quite costly.
+	// bool tailBright;		//! true if tail is bright enough to draw.
+	// double deltaJDEtail;            //! like deltaJDE, but time difference between tail geometry updates.
+	// double lastJDEtail;             //! like lastJDE, but time of last tail geometry update.
+	// Mat4d gasTailRot;		//! rotation matrix for gas tail parabola
+	// Mat4d dustTailRot;		//! rotation matrix for the skewed dust tail parabola
+	// float dustTailWidthFactor;      //!< empirical individual broadening of the dust tail end, compared to the gas tail end. Actually, dust tail width=2*comaWidth*dustTailWidthFactor. Default 1.5
+	// float dustTailLengthFactor;     //!< empirical individual length of dust tail relative to gas tail. Taken from ssystem.ini, typical value 0.3..0.5, default 0.4
+	// float dustTailBrightnessFactor; //!< empirical individual brightness of dust tail relative to gas tail. Taken from ssystem.ini, default 1.5
+
+	// // adapt to vulkan ???
+	// QVector<Vec3d> comaVertexArr;
+	// QVector<Vec2f> comaTexCoordArr; //  --> 2014-08: could also be declared static, but it is filled by StelPainter...
+
+	// // These are static to avoid having index arrays for each comet when all are equal.
+	// static bool createTailIndices;
+	// static bool createTailTextureCoords;
+
+	// // adapt to vulkan ???
+	// QVector<Vec3d> gastailVertexArr;  // computed frequently, describes parabolic shape (along z axis) of gas tail.
+	// QVector<Vec3d> dusttailVertexArr; // computed frequently, describes parabolic shape (along z axis) of dust tail.
+	// QVector<Vec3f> gastailColorArr;    // NEW computed for every 5 mins, modulates gas tail brightness for extinction
+	// QVector<Vec3f> dusttailColorArr;   // NEW computed for every 5 mins, modulates dust tail brightness for extinction
+	// static QVector<Vec2f> tailTexCoordArr; // computed only once for all comets!
+	// static QVector<unsigned short> tailIndices; // computed only once for all comets!
+	// static StelTextureSP comaTexture;
+	// static StelTextureSP tailTexture;      // it seems not really necessary to have different textures. gas tail is just painted blue.
 
 };
 
