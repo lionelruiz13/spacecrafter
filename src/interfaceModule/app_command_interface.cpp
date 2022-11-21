@@ -767,6 +767,13 @@ bool AppCommandInterface::setFlag(FLAG_NAMES flagName, FLAG_VALUES flag_value, b
 			coreLink->nebulaSetFlagIsolateSelected(newval);
 			break;
 
+		case FLAG_NAMES::FN_BODY_PICK :
+			if (flag_value==FLAG_VALUES::FV_TOGGLE)
+				newval = !coreLink->bodyGetFlagIsolateSelected();
+
+			coreLink->bodySetFlagIsolateSelected(newval);
+			break;
+
 		case FLAG_NAMES::FN_PLANETS :
 			if (flag_value==FLAG_VALUES::FV_TOGGLE)
 				newval = !coreLink->planetsGetFlag();

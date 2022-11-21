@@ -191,6 +191,10 @@ public:
         ssystemSelected->setFlagHints(b);
     }
 
+    void setFlagIsolateSelected(bool b) {ssystemSelected->setFlagIsolateSelected(b);}
+
+    bool getFlagIsolateSelected() {return ssystemSelected->getFlagIsolateSelected();}
+
 	void setFlagPlanetsOrbits(bool b) {
         ssystemSelected->setFlagPlanetsOrbits(b);
     }
