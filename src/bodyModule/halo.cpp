@@ -83,7 +83,8 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	if (rmag<1.21 && cmag < 0.05)
 		return;
 	auto &data = global->pData[global->offset + global->size++];
-	data.pos = Vec2f((float) body->screenPos[0], (float)body->screenPos[1]);
+	data.pos[0] = body->screenPos[0];
+	data.pos[1] = body->screenPos[1];
 	data.Color = body->myColor->getHalo() * cmag;
 	data.Color[3] = 1.;
 	data.rmag = rmag;

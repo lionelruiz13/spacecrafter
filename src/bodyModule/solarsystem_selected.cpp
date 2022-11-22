@@ -77,7 +77,8 @@ void SolarSystemSelected::setFlagIsolateSelected(bool b)
 	flagIsolateSelected = b;
 
 	if (b) {
-		selected.as<Body>()->setFlagHints(true);
+		if (auto body = selected.as<Body>())
+            body->setFlagHints(true);
 		for (auto &v : *ssystem)
 			v.second.body->setFlagHints(false);
 	} else
