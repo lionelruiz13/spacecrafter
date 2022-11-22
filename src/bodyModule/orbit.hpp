@@ -37,6 +37,9 @@ public:
 	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const {
 		positionAtTimevInVSOP87Coordinates(JD, JD, v);
 	}
+	// //! updating comet tails is a bit expensive. try not to overdo it.
+	// virtual bool getUpdateTails() const;
+	// virtual void setUpdateTails(const bool update);
 
 	virtual OsculatingFunctionType * getOsculatingFunction() const {
 		return nullptr;
@@ -137,7 +140,9 @@ public:
 
 	// Compute the orbit for a specified Julian date and return an "application compliant" function
 	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
-
+	// //! updating comet tails is a bit expensive. try not to overdo it.
+	// virtual bool getUpdateTails() const override{ return updateTails; }
+	// virtual void setUpdateTails(const bool update) override{ updateTails=update; }
 	Vec3d positionAtTime(double) const;
 	double getPeriod() const;
 	double getBoundingRadius() const;
@@ -152,6 +157,7 @@ private:
 	const double t0;
 	const double n;
 	double rotate_to_vsop87[9];
+	bool updateTails; //!< flag to signal that comet tails must be recomputed.
 };
 
 

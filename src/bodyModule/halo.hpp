@@ -27,6 +27,8 @@
 #include <memory>
 #include "EntityCore/SubBuffer.hpp"
 
+constexpr int HALO_STRIDE = 8*sizeof(float);
+
 class Body;
 class Navigator;
 class Projector;
@@ -65,9 +67,9 @@ private:
 	Body * body;
 
 	struct HaloContext {
-		struct pData_t {
+		struct alignas(HALO_STRIDE) pData_t {
 			Vec2f pos;
-			Vec3f Color;
+			Vec4f Color;
 			float rmag;
 		} *pData;
 		std::unique_ptr<VertexArray> pattern;

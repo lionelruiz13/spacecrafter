@@ -1258,6 +1258,14 @@ double CoreLink::getBodySelected() const {
 	return double(core->getSelectedBodyName());
 }
 
+void CoreLink::bodySetFlagIsolateSelected(bool b) {
+	core->ssystemFactory->setFlagIsolateSelected(b);
+}
+
+bool CoreLink::bodyGetFlagIsolateSelected() {
+	return core->ssystemFactory->getFlagIsolateSelected();
+}
+
 void CoreLink::planetSetSizeScale(std::string name, float f) {
 	core->ssystemFactory->setPlanetSizeScale(name, f);
 }

@@ -902,9 +902,9 @@ int UI::handlKkeysOnTui(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_G
 			event = new ScriptEvent( scriptInterface->getSelectedScriptDirectory()+scriptInterface->getSelectedScript());
 			EventRecorder::getInstance()->queue(event);
 		}
-		// clear out now
-		scriptInterface->setSelectedScriptDirectory("");
-		scriptInterface->setSelectedScript("");
+		// // clear out now
+		// scriptInterface->setSelectedScriptDirectory("");
+		// scriptInterface->setSelectedScript("");
 		return 1;
 	}
 

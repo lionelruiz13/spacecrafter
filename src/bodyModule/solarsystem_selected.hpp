@@ -94,6 +94,10 @@ public:
 
 	bool getFlag(BODY_FLAG name);
 
+	void setFlagIsolateSelected(bool b);
+
+    bool getFlagIsolateSelected() {return flagIsolateSelected;}
+
 private:
     ProtoSystem * ssystem;
     //! The currently selected planet
@@ -103,4 +107,5 @@ private:
 	bool flagHints= false;
 	bool flagPlanetsOrbits= false;
 	bool flagSatellitesOrbits= false;
+	bool flagIsolateSelected= false;
 };

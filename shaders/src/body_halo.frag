@@ -10,13 +10,13 @@ layout(binding=0, set=1) uniform sampler2D mapTexture;
 
 //in
 layout(location=0) in vec2 TexCoord;
-layout(location=1) in vec3 Color;
+layout(location=1) in vec4 Color;
 
 //out
-layout(location=0) out vec3 FragColor;
+layout(location=0) out vec4 FragColor;
 
 void main(void)
 {
-	FragColor = vec3(texture(mapTexture,TexCoord)) * Color;
+	FragColor = texture(mapTexture,TexCoord) * Color;
 }
 
