@@ -109,7 +109,7 @@ Nebula::Nebula(std::string _englishName, std::string _mtype, std::string _conste
 	luminance = magToLuminance(mag, tex_angular_size*tex_angular_size*3600);
 
 	// this is a huge performance drag if called every frame, so cache here
-	tex_avg_luminance = texture->getAverageLuminance();
+	tex_avg_luminance = 0.5; //texture->getAverageLuminance();
 
 	Vec3d imagev = Mat4d::zrotation(myRA-M_PI_2) * Mat4d::xrotation(myDe) * Vec3d(0,1,0);
 	Vec3d ortho1 = Mat4d::zrotation(myRA-M_PI_2) * Vec3d(1,0,0);
