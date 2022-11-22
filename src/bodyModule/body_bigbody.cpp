@@ -29,7 +29,7 @@
 #include "bodyModule/trail.hpp"
 #include "bodyModule/axis.hpp"
 #include "bodyModule/hints.hpp"
-#include "bodyModule/orbit_2d.hpp"
+#include "bodyModule/orbit_3d.hpp"
 #include "bodyModule/halo.hpp"
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
@@ -53,7 +53,7 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
                  bool close_orbit,
                  ObjL* _currentObj,
                  double orbit_bounding_radius,
-				 std::shared_ptr<BodyTexture> _bodyTexture
+				 const BodyTexture &_bodyTexture
                 ) :
 	Body(parent,
 	     englishName,
@@ -72,12 +72,16 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
         ),
 	rings(nullptr), tex_night(nullptr), tex_specular(nullptr), tex_cloud(nullptr), tex_shadow_cloud(nullptr), tex_norm_cloud(nullptr)
 {
-	if (_bodyTexture->tex_night != "") {  // prépare au night_shader
-		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
-		tex_specular = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
+	if (_bodyTexture.tex_night != "") {  // prépare au night_shader
+		tex_night = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true, true);
+		tex_specular = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_specular,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, true);
 	}
     trail = std::make_unique<Trail>(this,1460);
-    orbitPlot = std::make_unique<Orbit2D>(this);
+    orbitPlot = std::make_unique<Orbit3D>(this);
+    if (orbit_bounding_radius <= 0) {
+        orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
+        orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
+    }
 }
 
 BigBody::~BigBody()
@@ -242,22 +246,16 @@ float BigBody::getOnScreenSize(const Projector* prj, const Navigator * nav, bool
 
 double BigBody::calculateBoundingRadius()
 {
-	double d = radius;
+    double d = radius;
 
 	if (hasAtmosphere)
-		d *= 1.1; // Atmosphere shouldn't be bigger than that
+		d *= atmosphereParams->atmosphereRadiusFactor; // Atmosphere shouldn't be bigger than that
 
-	if (rings)
+	if (rings && d < rings->getOuterRadius())
         d = rings->getOuterRadius();
 
-	double r;
-	for (auto it : satellites) {
-		r = it->getBoundingRadius();
-		if (r > d)
-            d = r;
-	}
-
-	boundingRadius = d;
+    if (d > Body::calculateBoundingRadius())
+	   boundingRadius = d;
 	return boundingRadius;
 }
 
@@ -364,18 +362,15 @@ void BigBody::setSphereScale(float s, bool initial_scale)
 		initialScale = s;
 	if (rings!=nullptr)
 		rings->multiplyRadius(s);
-
-	calculateBoundingRadius();
-	updateBoundingRadii();
 }
 
 void BigBody::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
 	Body::update(delta_time, nav, timeMgr);
-	if (radius.isScaling()) {
-        calculateBoundingRadius();
-        if (rings)
-            rings->multiplyRadius(radius/initialRadius);
+	if (radius.isScaling() && rings) {
+        rings->multiplyRadius(radius/initialRadius);
+        if (boundingRadius < rings->getOuterRadius())
+            boundingRadius = rings->getOuterRadius();
     }
 }
 
@@ -537,4 +532,11 @@ void BigBody::preload(int keepFrames)
         rings->preload();
     getSet(2048); // Assume the big texture is used for such screen_sz
     s_texture::setBigTextureLifetime(tmp);
+}
+
+void BigBody::drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj)
+{
+    Body::drawOrbit(cmdBodyDepth, cmdOrbit, observatory, nav, prj);
+    if (rings && isVisibleOnScreen())
+        rings->drawDepthTrace(cmdBodyDepth, *BodyShader::getShaderDepthTrace()->layout);
 }

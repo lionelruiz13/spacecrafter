@@ -43,6 +43,7 @@ drawState_t BodyShader::shaderNormal;
 drawState_t BodyShader::shaderNormalTes;
 drawState_t BodyShader::myMoon;
 drawState_t BodyShader::shaderArtificial;
+drawState_t BodyShader::depthTrace;
 
 
 void BodyShader::createShader()
@@ -293,4 +294,22 @@ void BodyShader::createShader()
 	myMoon.pipelineNoDepth->setDepthStencilMode();
 	context.pipelines.emplace_back(myMoon.pipelineNoDepth);
 	myMoon.pipeline->build("myMoon");
+
+	// ========== depthTrace ========== //
+	depthTrace.layout = new PipelineLayout(vkmgr);
+	context.layouts.emplace_back(depthTrace.layout);
+	depthTrace.layout->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(depthTraceInfo));
+	depthTrace.layout->build();
+
+	depthTrace.pipeline = new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, depthTrace.layout);
+	context.pipelines.emplace_back(depthTrace.pipeline);
+	depthTrace.pipeline->setCullMode(true);
+	depthTrace.pipeline->setBlendMode(BLEND_NONE);
+	depthTrace.pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	depthTrace.pipeline->bindVertex(*context.ojmVertexArray);
+	depthTrace.pipeline->removeVertexEntry(1);
+	depthTrace.pipeline->removeVertexEntry(2);
+	depthTrace.pipeline->bindShader("body_depth_trace.vert.spv");
+	depthTrace.pipeline->setSpecializedConstant(7, context.isFloat64Supported);
+	depthTrace.pipeline->build("depthTrace");
 }

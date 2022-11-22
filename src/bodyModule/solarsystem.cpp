@@ -79,32 +79,29 @@ void SolarSystem::registerFont(s_font* _font)
 
 // Init and load one solar system object
 // This is a the private method
-void SolarSystem::addBody(stringHash_t & param, bool deletable)
+void SolarSystem::addBody(stringHash_t param, bool deletable)
 {
-	BODY_TYPE typePlanet= UNKNOWN;
-	const std::string englishName = param["name"];
-	const std::string type_Body = param["type"];
-	typePlanet= setPlanetType(type_Body);
+	const std::string &englishName = param["name"];
+	BODY_TYPE typePlanet = setPlanetType(param["type"]);
 
-	ProtoSystem::addBody(param, deletable);
+	ProtoSystem::addBody(std::move(param), deletable);
 
 	if (typePlanet == SUN && englishName == "Sun") {
-		sun = std::dynamic_pointer_cast<Sun>(systemBodies["Sun"]->body);
-	}
-	else if (typePlanet == MOON && englishName == "Moon") {
-		moon = std::dynamic_pointer_cast<Moon>(systemBodies["Moon"]->body);
-			if(earth) {
-				BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
-				if(earthOrbit) {
-					cLog::get()->write("Adding Moon to Earth binary orbit.", LOG_TYPE::L_INFO);
-					earthOrbit->setSecondaryOrbit(systemBodies["Moon"].get()->body.get()->getOrbit());
-				} else
-					cLog::get()->write(englishName + " body could not be added to Earth orbit.", LOG_TYPE::L_WARNING);
-
+		sun = std::dynamic_pointer_cast<Sun>(systemBodies["Sun"].body);
+	} else if (typePlanet == MOON && englishName == "Moon") {
+		moon = std::dynamic_pointer_cast<Moon>(systemBodies["Moon"].body);
+		if (earth) {
+			BinaryOrbit *earthOrbit = dynamic_cast<BinaryOrbit *>(earth->getOrbit());
+			if (earthOrbit) {
+				cLog::get()->write("Adding Moon to Earth binary orbit.", LOG_TYPE::L_INFO);
+				earthOrbit->setSecondaryOrbit(systemBodies["Moon"].body->getOrbit());
 			} else
-				cLog::get()->write(englishName + " body could not be added to Earth orbit calculation, position may be inacurate", LOG_TYPE::L_WARNING);
+				cLog::get()->write(englishName + " body could not be added to Earth orbit.", LOG_TYPE::L_WARNING);
+
+		} else
+			cLog::get()->write(englishName + " body could not be added to Earth orbit calculation, position may be inacurate", LOG_TYPE::L_WARNING);
 	} else if (typePlanet == PLANET && englishName == "Earth") {
-		earth = std::dynamic_pointer_cast<BigBody>(systemBodies["Earth"]->body);
+		earth = std::dynamic_pointer_cast<BigBody>(systemBodies["Earth"].body);
 	}
 }
 

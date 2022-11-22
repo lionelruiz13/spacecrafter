@@ -45,7 +45,7 @@ BodyStar::BodyStar(std::shared_ptr<Body> parent,
         bool close_orbit,
         ObjL* _currentObj,
         double orbit_bounding_radius,
-        std::shared_ptr<BodyTexture> _bodyTexture) :
+        const BodyTexture &_bodyTexture) :
     Sun(parent,
         englishName,
         flagHalo,

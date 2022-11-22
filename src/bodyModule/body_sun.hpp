@@ -46,7 +46,7 @@ public:
 	    bool close_orbit,
 	    ObjL* _currentObj,
 	    double orbit_bounding_radius,
-		std::shared_ptr<BodyTexture> _bodyTexture,
+		const BodyTexture &_bodyTexture,
 		BODY_TYPE _typePlanet = SUN);
 	~Sun();
 

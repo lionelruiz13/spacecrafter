@@ -28,7 +28,7 @@
 
 #include "tools/file_path.hpp"
 #include "bodyModule/body_color.hpp"
-
+#include "coreModule/coreLink.hpp"
 #include "bodyModule/axis.hpp"
 #include "bodyModule/orbit_3d.hpp"
 #include "bodyModule/axis.hpp"
@@ -54,7 +54,7 @@ Moon::Moon(std::shared_ptr<Body> parent,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-		   std::shared_ptr<BodyTexture> _bodyTexture):
+		   const BodyTexture &_bodyTexture):
 	Body(parent,
 	     englishName,
 	     MOON,
@@ -70,12 +70,16 @@ Moon::Moon(std::shared_ptr<Body> parent,
 	     orbit_bounding_radius,
 		 _bodyTexture)
 {
-	if (_bodyTexture->tex_night != "") {
-		tex_night = std::make_unique<s_texture>(FilePath(_bodyTexture->tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
+	if (_bodyTexture.tex_night != "") {
+		tex_night = std::make_unique<s_texture>(FilePath(_bodyTexture.tex_night,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID_REPEAT, 1);
 	}
 	//more adding could be placed here for the constructor of Moon
 	selectShader();
 	orbitPlot = std::make_unique<Orbit3D>(this);
+    if (orbit_bounding_radius <= 0) {
+        orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
+        orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
+    }
 }
 
 Moon::~Moon()

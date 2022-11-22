@@ -43,7 +43,7 @@ public:
         bool close_orbit,
         ObjL* _currentObj,
         double orbit_bounding_radius,
-        std::shared_ptr<BodyTexture> _bodyTexture);
+        const BodyTexture &_bodyTexture);
     ~BodyStar();
 
     virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye,

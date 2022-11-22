@@ -114,7 +114,7 @@ public:
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-	     const std::shared_ptr<BodyTexture> _bodyTexture);
+	     const BodyTexture &_bodyTexture);
 	virtual ~Body();
 
 	double getRadius(void) const {
@@ -174,6 +174,9 @@ public:
 	// Return the squared distance in pixels between the current and the  previous position this Body was drawn at.
 	virtual bool drawGL(Projector* prj, const Navigator* nav, const Observer* observatory, const ToneReproductor* eye, bool depthTest, bool drawHomePlanet, bool needClearDepthBuffer);
 
+	// Draw the Planet trace in the depth buffer
+	virtual void drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj);
+
 	// Set the orbital elements
 	void set_rotation_elements(float _period, float _offset, double _epoch, float _obliquity, float _ascendingNode, float _precessionRate, double _sidereal_period, float _axial_tilt);
 
@@ -199,7 +202,7 @@ public:
 	void set_heliocentric_ecliptic_pos(const Vec3d &pos);
 
 	// Compute the distance to the given position in heliocentric coordinate (in AU)
-	double compute_distance(const Vec3d& obs_helio_pos);
+	// double compute_distance(const Vec3d& obs_helio_pos);
 	double getDistance(void) const {
 		return distance;
 	}
@@ -310,6 +313,10 @@ public:
 		return boundingRadius;
 	}
 
+	double getBoundingRadiusWithOrbit() const {
+		return boundingRadiusWithOrbit;
+	}
+
 	// Return the radius of a circle containing the object on screen
 	virtual float getOnScreenSize(const Projector* prj, const Navigator * nav, bool orb_only = false) override;
 
@@ -388,7 +395,7 @@ public:
 
 	static void deleteDefaultTexMap();
 
-	inline std::list<Body *> getSatellites() const {
+	inline const std::list<Body *> &getSatellites() const {
 		return satellites;
 	}
 
@@ -432,6 +439,8 @@ public:
 	inline bool isVisibleOnScreen() {
 		return screen_sz > 2 && isVisible;
 	}
+
+	virtual bool needBucket(const Observer *obs);
 protected:
 
 	bool useParentPrecession(double jd) {
@@ -443,6 +452,9 @@ protected:
 
 	virtual bool skipDrawingThisBody(const Observer* observatory, bool drawHomePlanet);
 
+	// Return true if only the halo need to be drawn
+	virtual bool canSkip(const Navigator* nav, const Projector* prj);
+
 	virtual bool hasRings() {
 		return false;
 	}
@@ -450,8 +462,6 @@ protected:
 	virtual void drawRings(VkCommandBuffer cmd, const Projector* prj, const Observer *obs,const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius) {
 		return;
 	}
-
-	virtual void drawOrbit(VkCommandBuffer cmd, const Observer* observatory, const Navigator* nav, const Projector* prj);
 
 	virtual void drawTrail(VkCommandBuffer cmd, const Navigator* nav, const Projector* prj);
 
@@ -470,9 +480,6 @@ protected:
 	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest) = 0;
 
 	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye);
-
-	// Return true if only the halo need to be drawn
-	virtual bool canSkip(const Navigator* nav, const Projector* prj);
 
 	std::string englishName; 			// english Body name
 	std::string nameI18;					// International translated name
@@ -541,6 +548,7 @@ protected:
 
 	double orbit_bounding_radius; // AU calculated at load time for elliptical orbits at least DIGITALIS
 	double boundingRadius;  // Cached AU value for use with depth buffer
+	double boundingRadiusWithOrbit;  // Cached AU value for use with depth buffer
 
 	static std::shared_ptr<s_texture> defaultTexMap;  		// Default texture map for bodies if none supplied
 	static std::shared_ptr<s_texture> tex_eclipse_map;  	// for moon shadow lookups

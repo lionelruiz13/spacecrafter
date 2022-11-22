@@ -48,7 +48,7 @@ Center::Center(std::shared_ptr<Body> parent,
          bool close_orbit,
          ObjL* _currentObj,
          double orbit_bounding_radius,
-		 std::shared_ptr<BodyTexture> _bodyTexture):
+		 const BodyTexture &_bodyTexture):
 	Sun(parent,
 	     englishName,
 	     flagHalo,
@@ -104,4 +104,7 @@ void Center::computeDraw(const Projector* prj, const Navigator * nav)
 	// Draw the name, and the circle if it's not too close from the body it's turning around
 	// this prevents name overlaping (ie for jupiter satellites)
 	ang_dist = 300.f*atan(get_ecliptic_pos().length()/getEarthEquPos(nav).length())/prj->getFov();
+
+    // Compute the distance to the observer
+    distance = eye_planet.length();
 }

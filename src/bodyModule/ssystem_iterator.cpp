@@ -22,6 +22,7 @@
  *
  */
 
+/*
 #include "ssystem_iterator.hpp"
 
 SSystemIterator::SSystemIterator(ProtoSystem* p_data) : pointer(p_data) {
@@ -68,3 +69,4 @@ void SSystemIteratorVector::next() {
 bool SSystemIteratorVector::end() {
     return (m_it_ == pointer->renderedBodies.end());
 }
+*/

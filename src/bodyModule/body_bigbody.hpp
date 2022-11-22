@@ -50,7 +50,7 @@ public:
 	        bool close_orbit,
 	        ObjL* _currentObj,
 	        double orbit_bounding_radius,
-			std::shared_ptr<BodyTexture> _bodyTexture);
+			const BodyTexture &_bodyTexture);
 
 	virtual ~BigBody();
 
@@ -68,6 +68,8 @@ public:
 	virtual void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
 	virtual void preload(int keepFrames) override;
+
+	virtual void drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj) override;
 protected :
 
 	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);

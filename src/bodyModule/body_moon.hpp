@@ -21,7 +21,8 @@
  * See the TRADEMARKS file for free open project usage requirements.
  *
  */
-
+#ifndef BODY_MOON_HPP_
+#define BODY_MOON_HPP_
 
 #include "bodyModule/body.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -44,7 +45,7 @@ public:
 	     bool close_orbit,
 	     ObjL* _currentObj,
 	     double orbit_bounding_radius,
-		 std::shared_ptr<BodyTexture> _bodyTexture
+		 const BodyTexture &_bodyTexture
 		 );
 
 	virtual ~Moon();
@@ -72,3 +73,5 @@ protected :
 	std::unique_ptr<SharedBuffer<globalTescGeom>> uGlobalTescGeom; // moon
 	std::unique_ptr<s_texture> tex_night=nullptr;			// for moon with night event to see
 };
+
+#endif /* end of include guard: BODY_MOON_HPP_ */

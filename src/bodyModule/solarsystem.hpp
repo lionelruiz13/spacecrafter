@@ -44,17 +44,8 @@ public:
 	SolarSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr);
 	virtual ~SolarSystem();
 
-	// load one object from a hash (returns error message if any)
-	// this public method always adds bodies as deletable
-	virtual void addBody(stringHash_t & param) override {
-		SolarSystem::addBody(param, true);
-	}
-
 	// virtual void setFont(float font_size, const std::string& font_name) override;
 	virtual void registerFont(s_font* _font) override;
-
-	//removes a body that has no satelites
-	bool removeBodyNoSatellite(const std::string &name);
 
 	//! get the position Alt Az for Sun
 	void bodyTraceGetAltAz(const Navigator *nav, double *alt, double *az) const;
@@ -143,7 +134,7 @@ private:
 
 
 	// load one object from a hash
-	virtual void addBody(stringHash_t & param, bool deletable) override;
+	virtual void addBody(stringHash_t param, bool deletable) override;
 
 
 	std::shared_ptr<Sun> sun=nullptr; //return the Sun

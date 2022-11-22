@@ -23,7 +23,6 @@
  */
 
 #include "bodyModule/solarsystem_color.hpp"
-#include "bodyModule/ssystem_iterator.hpp"
 #include "bodyModule/solarsystem.hpp"
 
 SolarSystemColor::SolarSystemColor(ProtoSystem * _ssystem)
@@ -36,18 +35,12 @@ SolarSystemColor::~SolarSystemColor() {};
 void SolarSystemColor::setBodyColor(const std::string &englishName, const std::string& colorName, const Vec3f& c)
 {
 	if (englishName=="all") {
-        auto it = ssystem->createIterator();
-		for(it->begin(); !it->end(); (*it)++){
-			it->current()->second->body->setColor(colorName,c);
-		}
-    }
-	else{
-
-		std::shared_ptr<Body> body = ssystem->searchByEnglishName(englishName);
-
-		if(body != nullptr){
-			body->setColor(colorName, c);
-		}
+        for (const auto &it : *ssystem)
+            it.second.body->setColor(colorName,c);
+    } else {
+        if (auto body = ssystem->searchByEnglishName(englishName)) {
+            body->setColor(colorName, c);
+        }
 	}
 }
 

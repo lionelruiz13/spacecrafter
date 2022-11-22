@@ -81,7 +81,7 @@ void OrbitPlot::createSC_context()
 	context.layouts.emplace_back(new PipelineLayout(vkmgr));
 	layoutOrbit3d = context.layouts.back().get();
 	layoutOrbit3d->setPushConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(Vec4f));
-	layoutOrbit3d->setPushConstant(VK_SHADER_STAGE_GEOMETRY_BIT, sizeof(Vec4f), sizeof(Mat4f) + sizeof(Vec3f));
+	layoutOrbit3d->setPushConstant(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_GEOMETRY_BIT, sizeof(Vec4f), sizeof(Mat4f) + sizeof(Vec3f));
 	layoutOrbit3d->build();
 
 	context.pipelines.emplace_back(new Pipeline(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, layoutOrbit3d));
@@ -99,14 +99,14 @@ void OrbitPlot::updateShader(double delta_time)
 	orbit_fader.update(delta_time);
 }
 
-void OrbitPlot::computeOrbit(double date)
+void OrbitPlot::computeOrbit(double date, bool force)
 {
 	// Large performance advantage from avoiding object overhead
 	OsculatingFunctionType *oscFunc = body->orbit->getOsculatingFunction();
 
 
 	// for performance only update orbit points if visible
-	if (body->visibilityFader.getInterstate()>0.000001 && delta_orbitJD > 0 && (fabs(last_orbitJD-date)>delta_orbitJD || !orbit_cached)) {
+	if ((body->visibilityFader.getInterstate()>0.000001 && delta_orbitJD > 0 && (fabs(last_orbitJD-date)>delta_orbitJD || !orbit_cached)) || force) {
 		// calculate orbit first (for line drawing)
 		double date_increment = body->re.sidereal_period/ORBIT_POINTS;
 		double calc_date;
@@ -186,4 +186,15 @@ void OrbitPlot::computeOrbit(double date)
 			}
 		}
 	}
+}
+
+double OrbitPlot::computeOrbitBoundingRadius() const
+{
+	double highestSquaredLength = 0;
+	for (int i = 0; i < ORBIT_POINTS; ++i) {
+		double tmp = orbitPoint[i].lengthSquared();
+		if (tmp > highestSquaredLength)
+			highestSquaredLength = tmp;
+	}
+	return sqrt(highestSquaredLength);
 }

@@ -58,15 +58,15 @@ void SolarSystemSelected::setFlagTrails(bool b)
 	flagTrails = b;
 
 	if (!b || !selected || selected == Object(ssystem->getCenterObject().get())) {
-		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			it->current()->second->body->setFlagTrail(b);
+        for (auto &v : *ssystem) {
+			v.second.body->setFlagTrail(b);
 		}
 	} else {
 		// if a Body is selected and trails are on, fade out non-selected ones
-		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			if (selected == it->current()->second->body.get() || (it->current()->second->body->get_parent() && it->current()->second->body->get_parent()->getEnglishName() == selected.getEnglishName()) )
-				it->current()->second->body->setFlagTrail(b);
-			else it->current()->second->body->setFlagTrail(false);
+        for (auto &v : *ssystem) {
+			if (selected == v.second.body.get() || (v.second.body->get_parent() && v.second.body->get_parent()->getEnglishName() == selected.getEnglishName()) )
+				v.second.body->setFlagTrail(b);
+			else v.second.body->setFlagTrail(false);
 		}
 	}
 }
@@ -74,16 +74,16 @@ void SolarSystemSelected::setFlagTrails(bool b)
 void SolarSystemSelected::setFlagHints(bool b)
 {
 	flagHints = b;
-	for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-		it->current()->second->body->setFlagHints(b);
+    for (auto &v : *ssystem) {
+		v.second.body->setFlagHints(b);
 	}
 }
 
 void SolarSystemSelected::setFlagPlanetsOrbits(const std::string &_name, bool b)
 {
-	for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-		if (it->current()->second->englishName == _name) {
-			it->current()->second->body->setFlagOrbit(b);
+    for (auto &v : *ssystem) {
+		if (v.first == _name) {
+			v.second.body->setFlagOrbit(b);
 			return;
 		}
 	}
@@ -94,31 +94,31 @@ void SolarSystemSelected::setFlagPlanetsOrbits(bool b)
 	flagPlanetsOrbits = b;
 
 	if (!b || !selected || selected == Object(ssystem->getCenterObject().get())) {
-		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			//if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() =="Sun")
-			if (it->current()->second->body->getTurnAround() == tACenter)
-				it->current()->second->body->setFlagOrbit(b);
+        for (auto &v : *ssystem) {
+			//if (v.second.body->get_parent() && v.second.body->getParent()->getEnglishName() =="Sun")
+			if (v.second.body->getTurnAround() == tACenter)
+				v.second.body->setFlagOrbit(b);
 		}
 	} else {
 		// if a Body is selected and orbits are on,
 		// fade out non-selected ones
 		// unless they are orbiting the selected Body 20080612 DIGITALIS
-		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			if (!it->current()->second->body->isSatellite()) {
-				//if ((selected == it->current()->second->body.get()) && (it->current()->second->body->getParent()->getEnglishName() =="Sun")){
-				if ((selected == it->current()->second->body.get()) && (it->current()->second->body->getTurnAround() == tACenter)) {
-					it->current()->second->body->setFlagOrbit(true);
+        for (auto &v : *ssystem) {
+			if (!v.second.body->isSatellite()) {
+				//if ((selected == v.second.body.get()) && (v.second.body->getParent()->getEnglishName() =="Sun")){
+				if ((selected == v.second.body.get()) && (v.second.body->getTurnAround() == tACenter)) {
+					v.second.body->setFlagOrbit(true);
 				}
 				else {
-					it->current()->second->body->setFlagOrbit(false);
+					v.second.body->setFlagOrbit(false);
 				}
 			}
 			else {
-				if (selected == it->current()->second->body->getParent().get()) {
-					it->current()->second->body->setFlagOrbit(true);
+				if (selected == v.second.body->getParent().get()) {
+					v.second.body->setFlagOrbit(true);
 				}
 				else{
-					it->current()->second->body->setFlagOrbit(false);
+					v.second.body->setFlagOrbit(false);
 				}
 			}
 		}
@@ -130,22 +130,22 @@ void SolarSystemSelected::setFlagSatellitesOrbits(bool b)
 	flagSatellitesOrbits = b;
 
 	if (!b || !selected || selected == Object(ssystem->getCenterObject().get())) {
-		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			//if (it->current()->second->body->get_parent() && it->current()->second->body->getParent()->getEnglishName() !="Sun"){
-			if (it->current()->second->body->getTurnAround() == tABody) {
-				it->current()->second->body->setFlagOrbit(b);
+        for (auto &v : *ssystem) {
+			//if (v.second.body->get_parent() && v.second.body->getParent()->getEnglishName() !="Sun"){
+			if (v.second.body->getTurnAround() == tABody) {
+				v.second.body->setFlagOrbit(b);
 			}
 		}
 	}
 	else {
 		// if the mother Body is selected orbits are on, else orbits are off
-		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			if (it->current()->second->body->isSatellite()) {
-				if (it->current()->second->body->get_parent()->getEnglishName() == selected.getEnglishName() || it->current()->second->englishName == selected.getEnglishName()) {
-					it->current()->second->body->setFlagOrbit(true);
+        for (auto &v : *ssystem) {
+			if (v.second.body->isSatellite()) {
+				if (v.second.body->get_parent()->getEnglishName() == selected.getEnglishName() || v.first == selected.getEnglishName()) {
+					v.second.body->setFlagOrbit(true);
 				}
 				else{
-					it->current()->second->body->setFlagOrbit(false);
+					v.second.body->setFlagOrbit(false);
 				}
 			}
 		}

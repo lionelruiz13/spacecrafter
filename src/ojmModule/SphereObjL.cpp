@@ -104,11 +104,14 @@ SphereObjL::SphereObjL()
 		subdivise();
 	indexCountHigh = triangles.size() * 3;
 	indexHigh = context.indexBufferMgr->acquireBuffer(indexCountHigh * sizeof(int));
+	tmpBuffer = context.stagingMgr->acquireBuffer(indexCountHigh * sizeof(int));
 	tmp = indexCountHigh / 2;
 	src = (uint64_t *) triangles.data();
-	dst = (uint64_t *) context.transfer->planCopy(indexHigh);
+	dst = (uint64_t *) context.stagingMgr->getPtr(tmpBuffer);
 	while (tmp--)
 		*(dst++) = *(src++);
+	context.transfer->planCopyBetween(tmpBuffer, indexHigh);
+	context.transientBuffer[context.frameIdx].push_back(tmpBuffer);
 
 	// Upload vertices
 	auto vertex = std::shared_ptr<VertexBuffer>(context.ojmVertexArray->newBuffer(0, points.size(), context.ojmBufferMgr.get()));

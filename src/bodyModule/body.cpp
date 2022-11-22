@@ -78,7 +78,7 @@ Body::Body(std::shared_ptr<Body> parent,
            bool close_orbit,
            ObjL* _currentObj,
            double orbit_bounding_radius,
-           const std::shared_ptr<BodyTexture> _bodyTexture):
+           const BodyTexture &_bodyTexture):
 	englishName(englishName), initialRadius(_radius), one_minus_oblateness(1.0-oblateness),
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
@@ -93,7 +93,7 @@ Body::Body(std::shared_ptr<Body> parent,
 	typePlanet = _typePlanet;
 	initialScale= 1.0;
 	if (parent) {
-        parent->satellites.push_back(parent.get());
+        parent->satellites.push_back(this);
 		if (parent->getBodyType() == CENTER || (parent->getBodyType() == SUN && !parent->parent))
             tAround = tACenter;
 		else
@@ -110,21 +110,21 @@ Body::Body(std::shared_ptr<Body> parent,
 	if (_radius==0.0)
 		radius = 1/AU;
 
-	if (_bodyTexture->tex_map.empty()) {
+	if (_bodyTexture.tex_map.empty()) {
 		tex_map = defaultTexMap;
 	} else
-		tex_map = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
+		tex_map = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_map,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 
-	if (!_bodyTexture->tex_skin.empty()) {
-		tex_skin = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
+	if (!_bodyTexture.tex_skin.empty()) {
+		tex_skin = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_skin,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
-	if (!_bodyTexture->tex_norm.empty()) {  //preparation au bump shader
-		tex_norm = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
+	if (!_bodyTexture.tex_norm.empty()) {  //preparation au bump shader
+		tex_norm = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_norm,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
-	if (!_bodyTexture->tex_heightmap.empty()) {  //preparation à la tesselation
-		tex_heightmap = std::make_shared<s_texture>(FilePath(_bodyTexture->tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
+	if (!_bodyTexture.tex_heightmap.empty()) {  //preparation à la tesselation
+		tex_heightmap = std::make_shared<s_texture>(FilePath(_bodyTexture.tex_heightmap,FilePath::TFP::TEXTURE).toString(), TEX_LOAD_TYPE_PNG_SOLID, true, true);
 	}
 
 	nameI18 = englishName;
@@ -446,7 +446,6 @@ void Body::setSphereScale(float s, bool initial_scale )
 	radius = initialRadius * s;
 	if (initial_scale)
 		initialScale = s;
-	updateBoundingRadii();
 }
 
 // Return the Body position in rectangular earth equatorial coordinate
@@ -608,11 +607,11 @@ void Body::set_heliocentric_ecliptic_pos(const Vec3d &pos)
 
 
 // Compute the distance to the given position in heliocentric coordinate (in AU)
-double Body::compute_distance(const Vec3d& obs_helio_pos)
-{
-	distance = (obs_helio_pos-get_heliocentric_ecliptic_pos()).length();
-	return distance;
-}
+// double Body::compute_distance(const Vec3d& obs_helio_pos)
+// {
+// 	distance = (obs_helio_pos-get_heliocentric_ecliptic_pos()).length();
+// 	return distance;
+// }
 
 // Get the phase angle for an observer at pos obs_pos in the heliocentric coordinate (dist in AU)
 double Body::get_phase(Vec3d obs_pos) const
@@ -684,8 +683,10 @@ void Body::translateName(Translator& trans)
 void Body::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
 	radius.update(delta_time);
+    if (radius.isScaling())
+        updateBoundingRadii();
 
-	visibilityFader.update(delta_time);
+    visibilityFader.update(delta_time);
 
 	if(orbitPlot!= nullptr)
 		orbitPlot->updateShader(delta_time);
@@ -714,25 +715,28 @@ void Body::updateBoundingRadii()
 // Caches result until next call, can retrieve with getBoundingRadius
 double Body::calculateBoundingRadius()
 {
-	double d = radius.final();
+	double d = radius;
 
-	double r;
+    switch (myShader) {
+        case SHADER_MOON_NORMAL_TES:
+        case SHADER_NORMAL_TES:
+        case SHADER_NIGHT_TES:
+            d *= bodyTesselation->getPlanetAltimetryFactor();
+            break;
+        default:;
+    }
+    boundingRadius = d;
+
     for (auto it : satellites) {
-		r = it->getBoundingRadius();
-		if (r > d)
-            d = r;
-	}
-
-	// if we are a planet, we want the boundary radius including all satellites
-	// if we are a satellite, we want the full orbit radius as well
-	if (is_satellite) {
-        boundingRadius = std::max(d, orbit_bounding_radius + radius.final());
-	} else
-        boundingRadius = d;
-
+        if (it->orbit_bounding_radius > 0) {
+            double tmp = it->boundingRadius + it->orbit_bounding_radius;
+            if (d < tmp)
+                d = tmp;
+        }
+    }
+    boundingRadiusWithOrbit = d;
 	return boundingRadius;
 }
-
 
 void Body::computeDraw(const Projector* prj, const Navigator* nav)
 {
@@ -803,6 +807,9 @@ void Body::computeDraw(const Projector* prj, const Navigator* nav)
 
 	//Compute the angle of the axis
 	axis->computeAxisAngle(prj, mat);
+
+    // Compute the distance to the observer
+    distance = eye_planet.length();
 }
 
 double Body::getAxisAngle() const {
@@ -851,7 +858,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
             VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
             vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
         }
-        drawOrbit(cmd, observatory,nav, prj);
+        // drawOrbit(cmd, observatory,nav, prj);
     	drawTrail(cmd, nav, prj);
         if (screen_sz > 5) {
             context.helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
@@ -878,7 +885,7 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
             vkCmdClearAttachments(cmd, 1, &clearAttachment, 1, &clearRect);
             drawn = true;
         }
-        drawOrbit(cmd, observatory,nav, prj);
+        // drawOrbit(cmd, observatory,nav, prj);
         drawTrail(cmd, nav, prj);
     }
     frame.compile(cmds[context.frameIdx]);
@@ -890,15 +897,20 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 	return drawn;
 }
 
+void Body::drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj)
+{
+    if (isVisibleOnScreen()) {
+        depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), (float) radius, (float) one_minus_oblateness};
+        BodyShader::getShaderDepthTrace()->layout->pushConstant(cmdBodyDepth, 0, &pdata);
+        currentObj->draw(cmdBodyDepth, 1);
+    }
+    if (orbitPlot)
+        orbitPlot->drawOrbit(cmdOrbit, nav, prj, parent_mat);
+}
+
 bool Body::skipDrawingThisBody(const Observer *observatory, bool drawHomePlanet)
 {
 	return !drawHomePlanet && observatory->isOnBody(this);
-}
-
-
-void Body::drawOrbit(VkCommandBuffer cmd, const Observer* observatory, const Navigator* nav, const Projector* prj)
-{
-	orbitPlot->drawOrbit(cmd, nav, prj, parent_mat);
 }
 
 void Body::drawTrail(VkCommandBuffer cmd, const Navigator* nav, const Projector* prj)
@@ -959,9 +971,9 @@ Vec3d Body::getPositionAtDate(double jDate) const
 
 bool Body::canSkip(const Navigator* nav, const Projector* prj)
 {
-    const bool useOrbit = orbitPlot->doDraw(nav, prj, parent_mat);
+    // const bool useOrbit = orbitPlot->doDraw(nav, prj, parent_mat);
     const bool useTrail = (trail) && trail->doDraw(nav, prj);
-    return (!useOrbit && !useTrail && !isVisibleOnScreen());
+    return (!useTrail && !isVisibleOnScreen());
 }
 
 void Body::preload(int keepFrames)
@@ -969,4 +981,9 @@ void Body::preload(int keepFrames)
     int tmp = s_texture::setBigTextureLifetime(keepFrames);
     getSet(2048); // Assume the big texture is used for such screen_sz
     s_texture::setBigTextureLifetime(tmp);
+}
+
+bool Body::needBucket(const Observer *obs)
+{
+   return isVisibleOnScreen() || obs->isOnBody(this);
 }

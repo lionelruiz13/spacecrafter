@@ -39,7 +39,7 @@ public:
 	    bool close_orbit,
 	    ObjL* _currentObj,
 	    double orbit_bounding_radius,
-		std::shared_ptr<BodyTexture> _bodyTexture);
+		const BodyTexture &_bodyTexture);
 	~Center();
 
 	virtual void computeDraw(const Projector* prj, const Navigator * nav) override;

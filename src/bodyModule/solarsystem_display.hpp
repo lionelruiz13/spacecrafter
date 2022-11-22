@@ -25,7 +25,7 @@
 #ifndef _SOLARSYSTEM_DISPLAY_
 #define _SOLARSYSTEM_DISPLAY_
 
-#include <list>
+#include <vector>
 
 class ProtoSystem;
 class Projector;
@@ -42,7 +42,7 @@ class ToneReproductor;
  * \class SolarSystemDisplay
  *
  * \brief Contains solar system drawing and updating functions
- * 
+ *
  * Allow to set display flags
  *
 */
@@ -91,7 +91,7 @@ public:
 
 private:
     ProtoSystem * ssystem;
-	
+
 	bool flagShow= true;
 	bool flag_light_travel_time = false;
 
@@ -100,8 +100,8 @@ private:
 		double zfar;
 	};
 
-	std::list<depthBucket>listBuckets;
-
+	std::vector<depthBucket> listBuckets;
+    int cmds[3] {-1};
 };
 
 #endif

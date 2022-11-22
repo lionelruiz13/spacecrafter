@@ -54,7 +54,7 @@ public:
 	Ring2D(float _r_min, float _r_max, int slices, int stacks, bool h, VertexArray &vertexBase);
 	~Ring2D();
 
-	void draw(VkCommandBuffer &cmd);
+	void draw(VkCommandBuffer cmd);
 private:
 	void computeRing(int slices, int stacks, bool h);
 	std::unique_ptr<VertexBuffer> m_dataGL; //currentModel
@@ -70,7 +70,9 @@ public:
 	Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &init);
 	~Ring(void);
 
-	void draw(VkCommandBuffer &cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
+	void draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz,Vec3f& lightDirection,Vec3f& planetPosition, float planetRadius);
+
+	void drawDepthTrace(VkCommandBuffer cmd, VkPipelineLayout layout);
 
 	double getOuterRadius(void) const {
 		return radius_max*mc;
@@ -100,7 +102,7 @@ private:
 	void createSC_context();
 	void createAsteroidRing();
 
-	std::unique_ptr<Pipeline> pipeline, pipelineAsteroid;
+	std::unique_ptr<Pipeline> pipeline, pipelineAsteroid, pipelineDepthTrace;
 	std::unique_ptr<PipelineLayout> layout, layoutAsteroid;
 	std::unique_ptr<VertexArray> vertex, vertexAsteroid;
 	std::unique_ptr<VertexBuffer> instanceAsteroid;

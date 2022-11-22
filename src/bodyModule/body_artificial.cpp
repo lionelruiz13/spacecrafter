@@ -21,11 +21,15 @@
  * See the TRADEMARKS file for free open project usage requirements.
  *
  */
+#ifndef BODY_ARTIFICIAL_HPP_
+#define BODY_ARTIFICIAL_HPP_
+
 #include "bodyModule/orbit_2d.hpp"
 #include "tools/app_settings.hpp"
 #include "bodyModule/body_artificial.hpp"
 #include "bodyModule/body_color.hpp"
-
+#include "bodyModule/orbit_3d.hpp"
+#include "coreModule/coreLink.hpp"
 #include "bodyModule/axis.hpp"
 #include "bodyModule/trail.hpp"
 #include "bodyModule/hints.hpp"
@@ -47,7 +51,7 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
                        const std::string& model_name,
                        bool _deleteable,
                        double orbit_bounding_radius,
-					   std::shared_ptr<BodyTexture> _bodyTexture
+					   const BodyTexture &_bodyTexture
                       ):
 	Body(parent,
 	     englishName,
@@ -68,8 +72,11 @@ Artificial::Artificial(std::shared_ptr<Body> parent,
 	obj3D = std::make_unique<Ojm>(AppSettings::Instance()->getModel3DDir() + model_name+"/" + model_name+".ojm", AppSettings::Instance()->getModel3DDir() + model_name+"/", radius);
 	if (!obj3D -> getOk())
 		std::cout << "Error with " << englishName << " " << model_name << std::endl;
-	orbitPlot = std::make_unique<Orbit2D>(this);
-
+    orbitPlot = std::make_unique<Orbit3D>(this);
+    if (orbit_bounding_radius <= 0) {
+        orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
+        orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
+    }
 }
 
 Artificial::~Artificial()
@@ -115,3 +122,5 @@ void Artificial::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navig
     uProj->get().clipping_fov = prj->getClippingFov();
     uLight->get().Position = eye_sun;
 }
+
+#endif /* end of include guard: BODY_ARTIFICIAL_HPP_ */

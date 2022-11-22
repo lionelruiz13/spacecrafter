@@ -28,7 +28,6 @@
 
 #include "bodyModule/solarsystem.hpp"
 #include "bodyModule/orbit_creator_cor.hpp"
-#include "bodyModule/ssystem_iterator.hpp"
 #include "appModule/space_date.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
@@ -105,8 +104,7 @@ void ProtoSystem::load(Object &obj)
 	bodyParams["lighting"] = "false";
 	bodyParams["albedo"] = "-1.";
 	bodyParams["coord_func"] = "stellar_special";
-	addBody(bodyParams, false);
-	bodyParams.clear();
+	addBody(std::move(bodyParams), false);
 }
 
 // Init and load the solar system data
@@ -132,13 +130,12 @@ void ProtoSystem::load(const std::string& planetfile)
 			} else {
 				if (bodyParams.size() !=0) {
 					//TODO recover this error if there is one!
-					addBody(bodyParams, false);  // config file bodies are not deletable
-					bodyParams.clear();
+					addBody(std::move(bodyParams), false);  // config file bodies are not deletable
 				}
 			}
 		}
 		if (!bodyParams.empty())
-			addBody(bodyParams, false);  // config file bodies are not deletable
+			addBody(std::move(bodyParams), false);  // config file bodies are not deletable
 		fileBody.close();
 	} else
 		cLog::get()->write("Unable to open file "+ planetfile, LOG_TYPE::L_ERROR);
@@ -147,149 +144,75 @@ void ProtoSystem::load(const std::string& planetfile)
 	cLog::get()->mark();
 }
 
-std::shared_ptr<Body> ProtoSystem::searchByEnglishName(const std::string &planetEnglishName) const
-{
-	//printf("SolarSystem::searchByEnglishName(\"%s\"): start\n", planetEnglishName.c_str());
-	// side effect - bad?
-	//	transform(planetEnglishName.begin(), planetEnglishName.end(), planetEnglishName.begin(), ::tolower);
-	if(systemBodies.count(planetEnglishName) != 0){
-		return systemBodies.find(planetEnglishName)->second->body;
-	}
-	else{
-		return nullptr;
-	}
-}
-
 void ProtoSystem::update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr)
 {
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		it->second->body->update(delta_time, nav, timeMgr);
+	for (auto &v : systemBodies) {
+		v.second.body->update(delta_time, nav, timeMgr);
 	}
 }
 
-
-std::shared_ptr<ProtoSystem::BodyContainer> ProtoSystem::findBodyContainer(const std::string &name)
+bool ProtoSystem::removeBody(const std::string &name)
 {
-	if(systemBodies.count(name) != 0){
-		return systemBodies[name];
-	}
-	else{
-		return nullptr;
-	}
-}
-
-bool ProtoSystem::removeBody(const std::string &name){
 	// std::cout << "removeBody " << name << std::endl;
-	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
+	auto it = systemBodies.find(name);
 
-	if(bc == nullptr){
+	if (it == systemBodies.end()) {
 		cLog::get()->write("SolarSystem::removeBody : Could not find a body named : " + name );
 		return false;
 	}
 
-	if(bc->body->hasSatellite()){
+	if (it->second.body->hasSatellite()) {
 		// std::cout << "removeBody " << name << " but have satellite" << std::endl;
 		std::vector<std::string> names;
 
-		for (auto it : bc->body->getSatellites()) {
-			names.push_back(it->getEnglishName());
+		for (auto sat : it->second.body->getSatellites()) {
+			names.push_back(sat->getEnglishName());
 		}
 
-		for(std::string satName : names){
-			if(!removeBody(satName)){
+		for (const std::string &satName : names) {
+			if (!removeBody(satName)) {
 				cLog::get()->write("SolarSystem::removeBody : Could not remove satelite : " + satName );
 			}
 		}
 	}
 	// std::cout << "removeBody " << name << " is oki" << std::endl;
-	return removeBodyNoSatellite(name);
+	removeBodyNoSatellite(it);
+	return true;
 }
 
-bool ProtoSystem::removeBodyNoSatellite(const std::string &name)
+void ProtoSystem::removeBodyNoSatellite(std::map<std::string, BodyContainer>::iterator it)
 {
-	// std::cout << "removeBodyNoSatellite " << name << std::endl;
-	// std::cout << "removing : " << name << std::endl;
-
-	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
-
-	if(bc == nullptr){
-		cLog::get()->write("SolarSystem::removeBodyNoSatellite : Could not find a body named : " + name );
-		return false;
-	}
-
 	// fix crash when delete body used from body_trace
-	if (bc->body == bodyTrace )
+	if (it->second.body == bodyTrace)
 		bodyTrace = getCenterObject();
 
-	//remove from containers :
-	systemBodies.erase(bc->englishName);
-	if(!bc->isHidden){
-		auto it2 = std::find_if(renderedBodies.begin(), renderedBodies.end(), [bc](std::shared_ptr<BodyContainer> const obj) {
-			return bc->englishName == obj->englishName;
-		});
-		if (it2 != renderedBodies.end())
-			renderedBodies.erase(it2);
-	}
-
-	anchorManager->removeAnchor(bc->body);
-	//delete bc->body;
-
-	// std::cout << "removeBodyNoSatellite " << name << " is oki" << std::endl;
-
-	// std::cout << "Start of the content of systemBodies--------------------" << std::endl;
-	// for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-	// 	std::cout << "name " << it->first << std::endl;
-	// }
-	// std::cout << "End of the content of systemBodies--------------------" << std::endl;
-
-	// std::cout << "Start of the content of renderedBodies--------------------" << std::endl;
-	// for(auto it = renderedBodies.begin(); it != renderedBodies.end(); it++){
-	// 	std::cout << "name " << (*it)->englishName << std::endl;
-	// }
-	// std::cout << "End of the content of renderedBodies--------------------" << std::endl;
-	return true;
+	hideBody(it->second.body.get());
+	anchorManager->removeAnchor(it->second.body);
+	systemBodies.erase(it);
 }
 
 bool ProtoSystem::removeSupplementalBodies(const std::string &name)
 {
-	// std::cout << "removeSupplementalBodies " << name << std::endl;
-	std::shared_ptr<BodyContainer> bc = findBodyContainer(name);
+	auto bc = systemBodies.find(name);
 
-	if(bc == nullptr){
+	if (bc == systemBodies.end()) {
 		cLog::get()->write("SolarSystem::removeSupplementalBodies : Could not find a body named : " + name );
 		return false;
 	}
 
-	if(bc->isDeleteable){
-		cLog::get()->write("SolarSystem::removeSupplementalBodies : Can't distroy suplementary bodies if attached to one");
+	if (bc->second.isDeleteable) {
+		cLog::get()->write("SolarSystem::removeSupplementalBodies : Can't destroy suplementary bodies if attached to one");
 		return false;
 	}
 
-	std::vector<std::string> names;
-
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-
-		if(it->second->isDeleteable){
-
-			if(!it->second->body->getParent()){
-				names.push_back(it->first);
-			}
-			else{
-				std::vector<std::string>::iterator ite;
-
-				ite = find(names.begin(), names.end(),it->first);
-
-				if(ite == names.end()){
-					names.push_back(it->first);
-				}
-			}
-		}
+	std::vector<std::map<std::string, BodyContainer>::iterator> targets;
+	for (auto it = systemBodies.begin(); it != systemBodies.end(); it++) {
+		if (it->second.isDeleteable)
+			targets.push_back(it);
 	}
 
-	for(std::string name : names){
-		removeBody(name);
-	}
-	// std::cout << "removeSupplementalBodies " << name << " is oki" << std::endl;
+	for (auto &it : targets)
+		removeBodyNoSatellite(it);
 	return true;
 }
 
@@ -297,9 +220,8 @@ bool ProtoSystem::removeSupplementalBodies(const std::string &name)
 //! The translation is done using gettext with translated strings defined in translations.h
 void ProtoSystem::translateNames(Translator& trans)
 {
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		it->second->body->translateName(trans);
-	}
+	for (auto &v : systemBodies)
+		v.second.body->translateName(trans);
 
 	if(font)
 		font->clearCache();
@@ -310,16 +232,15 @@ void ProtoSystem::translateNames(Translator& trans)
 std::string ProtoSystem::getPlanetHashString(void)
 {
 	std::ostringstream oss;
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		if (!it->second->isDeleteable ) { // no supplemental bodies in list
-			//if (it->second->body->get_parent() != nullptr && it->second->body->get_parent()->getEnglishName() != "Sun") {
-			if (it->second->body->getTurnAround() == tABody) {
-				oss << Translator::globalTranslator.translateUTF8(it->second->body->get_parent()->getEnglishName())
+	for (auto it = systemBodies.begin(); it != systemBodies.end(); it++){
+		if (!it->second.isDeleteable ) { // no supplemental bodies in list
+			if (it->second.body->getTurnAround() == tABody) {
+				oss << Translator::globalTranslator.translateUTF8(it->second.body->get_parent()->getEnglishName())
 				    << " : ";
 			}
 
-			oss << Translator::globalTranslator.translateUTF8(it->second->englishName) << "\n";
-			oss << it->second->englishName << "\n";
+			oss << Translator::globalTranslator.translateUTF8(it->first) << "\n";
+			oss << it->first << "\n";
 		}
 	}
 	return oss.str();
@@ -329,60 +250,43 @@ void ProtoSystem::toggleHideSatellites(bool val){
 
 	val = !val;
 
-	if(flagHideSatellites == val){
+	if (flagHideSatellites == val)
 		return;
-	}
-	else{
-		flagHideSatellites = val;
-	}
 
-	for(auto it = systemBodies.begin(); it != systemBodies.end();it++){
-
-		//If we are a planet with satellites
-		if(it->second->body->getParent() &&
-		   //it->second->body->getParent()->getEnglishName() == "Sun" &&
-		   it->second->body->getTurnAround() == tACenter &&
-		   it->second->body->hasSatellite()){
-
-		   for (auto satellite : it->second->body->getSatellites()){
-			   std::shared_ptr<BodyContainer> sat = findBodyContainer(satellite->getEnglishName());
-				setPlanetHidden(sat->englishName, val);
-			}
+	flagHideSatellites = val;
+	if (val) {
+		for (auto &v : systemBodies) {
+			if (v.second.body->isSatellite())
+				hideBody(v.second.body.get());
+		}
+	} else {
+		for (auto &v : systemBodies) {
+			if (v.second.body->isSatellite())
+				showBody(v.second.body.get());
 		}
 	}
 }
 
 void ProtoSystem::setPlanetHidden(const std::string &name, bool planethidden)
 {
-
-	for(auto it = systemBodies.begin(); it != systemBodies.end();it++){
-		std::shared_ptr<Body> body = it->second->body;
-		if (
-			body->getEnglishName() == name ||
-			(body->get_parent() && body->get_parent()->getEnglishName() == name) ){
-
-			it->second->isHidden = planethidden;
-
-			if(planethidden){
-				auto it2 = std::find_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
-					return it->second->englishName == obj->englishName;
-				});
-				if (it2 != renderedBodies.end())
-					renderedBodies.erase(it2);
-			}
-			else{
-				// std::cout << "I am looking for a duplicate of " << name << std::endl;
-				if (std::find(renderedBodies.begin(), renderedBodies.end(), it->second) == renderedBodies.end() ) {
-					renderedBodies.push_back(it->second);
-					// std::cout << "I really create "<< name << " in renderedBodies" << std::endl;
-				}
-				// else {
-					// std::cout << "I avoided a duplicate" << std::endl;
-				// }
-			}
-
-		}
+	Body *body;
+	try {
+		body = systemBodies.at(name).body.get();
+	} catch (...) {
+		return;
 	}
+	if (planethidden) {
+		hideBodyRecursive(body);
+	} else {
+		showBody(body);
+	}
+}
+
+void ProtoSystem::hideBodyRecursive(Body *body)
+{
+	for (auto &b : body->getSatellites())
+		hideBodyRecursive(b);
+	hideBody(body);
 }
 
 // Search if any Body is close to position given in earth equatorial position and return the distance
@@ -391,23 +295,18 @@ Object ProtoSystem::search(Vec3d pos, const Navigator * nav, const Projector * p
 	pos.normalize();
 	Body * closest = nullptr;
 	double cos_angle_closest = 0.;
-	static Vec3d equPos;
 
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		equPos = it->second->body->getEarthEquPos(nav);
+	for (auto &v : systemBodies){
+		Vec3d equPos = v.second.body->getEarthEquPos(nav);
 		equPos.normalize();
 		double cos_ang_dist = equPos[0]*pos[0] + equPos[1]*pos[1] + equPos[2]*pos[2];
 		if (cos_ang_dist>cos_angle_closest) {
-			closest = it->second->body.get();
+			closest = v.second.body.get();
 			cos_angle_closest = cos_ang_dist;
 		}
 	}
 
-	if (cos_angle_closest>0.999) {
-		return closest;
-	}
-	else
-		return nullptr;
+	return (cos_angle_closest>0.999) ? closest : nullptr;
 }
 
 // Return a stl vector containing the planets located inside the lim_fov circle around position v
@@ -422,20 +321,19 @@ std::vector<Object> ProtoSystem::searchAround(Vec3d v,
 	std::vector<Object> result;
 	v.normalize();
 	double cos_lim_fov = cos(lim_fov * M_PI/180.);
-	static Vec3d equPos;
-	std::shared_ptr<Body> home_Body = observatory->getHomeBody();
+	auto home_Body = observatory->getHomeBody().get();
 
 	*default_last_item = false;
 
 	// Should still be sorted by distance from farthest to closest
 	// So work backwards to go closest to furthest
-	for(auto it = systemBodies.rbegin(); it != systemBodies.rend(); it++){//reverse order
-
-		equPos = it->second->body->getEarthEquPos(nav);
+	const auto _end = sortedRenderedBodies.rend();
+	for (auto it = sortedRenderedBodies.rbegin(); it != _end; ++it) {
+		Vec3d equPos = (*it)->getEarthEquPos(nav);
 		equPos.normalize();
 
 		// First see if within a Body disk
-		if (it->second->body != home_Body || aboveHomeBody) {
+		if ((*it) != home_Body || aboveHomeBody) {
 			// Don't want home Body too easy to select unless can see it
 
 			double angle = acos(v*equPos) * 180.f / M_PI;
@@ -443,21 +341,18 @@ std::vector<Object> ProtoSystem::searchAround(Vec3d v,
 			  //~ << " angle: " << angle << " screen_angle: "
 			  //~ << (*iter)->get_angular_size(prj, nav)/2.f
 			  //~ << endl;
-			if ( angle < it->second->body->get_angular_size(prj, nav)/2.f ) {
-
+			if ( angle < (*it)->get_angular_size(prj, nav)/2.f ) {
 				// If near planet, may be huge but hard to select, so check size
-				result.push_back(it->second->body.get());
+				result.push_back((*it));
 				*default_last_item = true;
-
+				// TODO take distance into consideration
 				break;  // do not want any planets behind this one!
-
 			}
 		}
 		// See if within area of interest
 		if (equPos[0]*v[0] + equPos[1]*v[1] + equPos[2]*v[2]>=cos_lim_fov) {
-			result.push_back(it->second->body.get());
+			result.push_back((*it));
 		}
-
 	}
 	return result;
 }
@@ -466,9 +361,9 @@ Object ProtoSystem::searchByNamesI18(const std::string &planetNameI18) const
 {
 	// side effect - bad?
 	//	transform(planetNameI18.begin(), planetNameI18.end(), planetNameI18.begin(), ::tolower);
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		if ( it->second->body->getNameI18n() == planetNameI18 )
-			return it->second->body.get(); // also check standard ini file names
+	for (auto &v : systemBodies) {
+		if (v.second.body->getNameI18n() == planetNameI18)
+			return v.second.body.get();
 	}
 	return nullptr;
 }
@@ -486,43 +381,40 @@ bool ProtoSystem::getFlag(BODY_FLAG name)
 
 void ProtoSystem::setFlagAxis(bool b)
 {
-	flagAxis=b;
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		it->second->body->setFlagAxis(b);
-	}
+	flagAxis = b;
+	for (auto &v : systemBodies)
+		v.second.body->setFlagAxis(b);
 }
 
 void ProtoSystem::startTrails(bool b)
 {
 	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		it->second->body->startTrail(b);
+		it->second.body->startTrail(b);
 	}
 }
 
-std::vector<std::string> ProtoSystem::getNamesI18(void)
+std::vector<std::string> ProtoSystem::getNamesI18()
 {
 	std::vector<std::string> names;
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		names.push_back(it->second->body->getNameI18n());
-	}
+	names.reserve(systemBodies.size());
+	for (auto &v : systemBodies)
+		names.push_back(v.second.body->getNameI18n());
 	return names;
 }
 
 //! Find and return the list of at most maxNbItem objects auto-completing the passed object I18n name
-std::vector<std::string> ProtoSystem::listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const
+std::vector<std::string> ProtoSystem::listMatchingObjectsI18n(std::string objPrefix, unsigned int maxNbItem) const
 {
 	std::vector<std::string> result;
-	if (maxNbItem==0) return result;
+	if (maxNbItem==0)
+		return result;
 
-	std::string objw = objPrefix;
-	transform(objw.begin(), objw.end(), objw.begin(), ::toupper);
-
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-
-		std::string constw = it->second->body->getNameI18n().substr(0, objw.size());
+	transform(objPrefix.begin(), objPrefix.end(), objPrefix.begin(), ::toupper);
+	for (auto &v : systemBodies) {
+		std::string constw = v.second.body->getNameI18n().substr(0, objPrefix.size());
 		transform(constw.begin(), constw.end(), constw.begin(), ::toupper);
-		if (constw==objw) {
-			result.push_back(it->second->body->getNameI18n());
+		if (constw==objPrefix) {
+			result.push_back(v.second.body->getNameI18n());
 			if (result.size()==maxNbItem)
 				return result;
 		}
@@ -532,10 +424,9 @@ std::vector<std::string> ProtoSystem::listMatchingObjectsI18n(const std::string&
 
 bool ProtoSystem::getPlanetHidden(const std::string &name)
 {
-	if(systemBodies.count(name) != 0){
-		return systemBodies[name]->isHidden;
-	}
-	else{
+	try {
+		return !renderedBodies.count(systemBodies.at(name).body.get());
+	} catch (...) {
 		return false;
 	}
 }
@@ -545,48 +436,24 @@ std::string ProtoSystem::getPlanetsPosition()
 	std::string msg;
 	Vec3d tmp;
 
-	for(auto it = systemBodies.begin(); it != systemBodies.end(); it++){
-		if (it->second->body->isSatellite())
+	for (auto &value : systemBodies) {
+		if (value.second.body->isSatellite())
 			continue;
-		tmp = it->second->body->get_heliocentric_ecliptic_pos();
+		tmp = value.second.body->get_heliocentric_ecliptic_pos();
 		tmp[0]= round(tmp[0]*100);
 		tmp[1]= round(tmp[1]*100);
 		tmp[2]= round(tmp[2]*100);
-		msg= msg+it->second->body->getNameI18n()+":"+std::to_string(tmp[0])+":"+std::to_string(tmp[1])+":"+std::to_string(tmp[2])+";";
+		msg= msg+value.second.body->getNameI18n()+":"+std::to_string(tmp[0])+":"+std::to_string(tmp[1])+":"+std::to_string(tmp[2])+";";
 	}
 	return msg;
 }
 
-std::unique_ptr<SSystemIterator> ProtoSystem::createIterator()
-{
-	return std::make_unique<SSystemIterator>(this);
-}
-
-std::unique_ptr<SSystemIteratorVector> ProtoSystem::createIteratorVector()
-{
-	return std::make_unique<SSystemIteratorVector>(this);
-}
-
 void ProtoSystem::bodyTraceBodyChange(const std::string &bodyName)
 {
-	std::shared_ptr<Body> body = searchByEnglishName(bodyName);
-
-	if(body != nullptr){
-		bodyTrace = body;
-	}
-	else{
+	try {
+		bodyTrace = systemBodies.at(bodyName).body;
+	} catch (...) {
 		cLog::get()->write("Unknown planet_name in bodyTraceBodyChange", LOG_TYPE::L_ERROR);
-	}
-}
-
-std::shared_ptr<Body> ProtoSystem::findBody(const std::string &name)
-{
-
-	if(systemBodies.count(name) != 0){
-		return systemBodies[name]->body;
-	}
-	else{
-		return nullptr;
 	}
 }
 
@@ -621,22 +488,18 @@ BODY_TYPE ProtoSystem::setPlanetType (const std::string &str)
 
 // Init and load one solar system object
 // This is a the private method
-void ProtoSystem::addBody(stringHash_t & param, bool deletable)
+void ProtoSystem::addBody(stringHash_t param, bool deletable)
 {
-	//~ AutoPerfDebug apd(&pd, "SolarSystem::addBody$"); //Debug
-	BODY_TYPE typePlanet= UNKNOWN;
-	const std::string englishName = param["name"];
-	std::string str_parent = param["parent"];
-	const std::string type_Body = param["type"];
-	std::shared_ptr<Body> parent = nullptr;
-	cLog::get()->write("Loading new Stellar System object... " + englishName, LOG_TYPE::L_INFO);
-	std::cout << "Loading new Stellar System object... " << englishName << std::endl;
-	//~ for ( stringHashIter_t iter = param.begin(); iter != param.end(); ++iter ) {
-	//~ cout << iter->first << " : " << iter->second << endl;
-	//~ }
+	// Avoid string copy and map search
+	const std::string &englishName = param["name"];
+	const std::string &str_parent = param["parent"];
+	const std::string &funcname = param["coord_func"];
+	// p is a pointer used for the object that will be finally integrated in the list of stars that body_mgr manages
+	std::shared_ptr<Body> p, parent;
 
+	cLog::get()->write("Loading new Stellar System object... " + englishName, LOG_TYPE::L_INFO);
 	// set the Body type: ie what it is in universe
-	typePlanet= setPlanetType(type_Body);
+	BODY_TYPE typePlanet = setPlanetType(param["type"]);
 
 	// do not add if no name or no parent or no typePlanet
 	if (englishName.empty()) {
@@ -646,8 +509,14 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 	// no parent ? so it's the center body
 	if (str_parent.empty()) {
-		str_parent = (centerObject) ? centerObject->getEnglishName() : "none";
-		cLog::get()->write("No body parent specified, assume parent is " + str_parent + " (Specify none for no parent)", LOG_TYPE::L_WARNING);
+		parent = centerObject;
+		cLog::get()->write("No parent specified for " + englishName + ", assume parent is the center body (Specify 'none' for no parent)", LOG_TYPE::L_WARNING);
+	} else if (str_parent != "none") {
+		parent = searchByEnglishName(str_parent);
+		if (parent == nullptr) {
+			cLog::get()->write("SolarSystem: can't find parent for " + englishName, LOG_TYPE::L_WARNING);
+			return;
+		}
 	}
 
 	// no type ? it's an asteroid
@@ -657,28 +526,15 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	}
 
 	// Do not add if body already exists - name must be unique
-	if ( findBody(englishName)!=nullptr ) {
+	if (systemBodies.find(englishName) != systemBodies.end()) {
 		cLog::get()->write("SolarSystem: Can not add body named " + englishName + " because a body of that name already exist", LOG_TYPE::L_WARNING);
 		return;
-	//	return (std::string("Can not add body named \"") + englishName + std::string("\" because a body of that name already exists\n"));
 	}
-
-	if (str_parent!="none") {
-		parent = findBody(str_parent);
-
-		if (parent == nullptr) {
-			//std::string error = std::string("WARNING : can't find parent for ") + englishName;
-			cLog::get()->write("SolarSystem: can't find parent for " + englishName, LOG_TYPE::L_WARNING);
-			return;
-		}
-	}
-
-	const std::string funcname = param["coord_func"];
 
 	//
 	// determination of the orbit of the star
 	//
-	std::unique_ptr<Orbit> orb = nullptr;
+	std::unique_ptr<Orbit> orb;
 	bool close_orbit = Utility::strToBool(param["close_orbit"], 1);
 
 	// default value of -1 means unused
@@ -743,33 +599,30 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 	float solLocalDay= Utility::strToDouble(param["sol_local_day"],1.0);
 
 	// Create the Body and add it to the list
-	// p is a pointer used for the object that will be finally integrated in the list of stars that body_mgr manages
-	std::shared_ptr<Body> p = nullptr;
-	ObjL* currentOBJ = nullptr;
+	BodyTexture bodyTexture {
+		.tex_map = param["tex_map"],
+		.tex_map_alternative = {},
+		.tex_norm = param["tex_normal"],
+		.tex_night = param["tex_night"],
+		.tex_specular = param["tex_specular"],
+		.tex_heightmap = param["tex_heightmap"],
+		.tex_skin =  param["tex_skin"]
+	};
 
-	std::string modelName = param["model_name"];
-
-	std::shared_ptr<BodyTexture> bodyTexture = std::make_shared<BodyTexture>();
-	bodyTexture->tex_map = param["tex_map"];
-	bodyTexture->tex_norm = param["tex_normal"];
-	bodyTexture->tex_heightmap = param["tex_heightmap"];
-	bodyTexture->tex_night = param["tex_night"];
-	bodyTexture->tex_specular = param["tex_specular"];
-	// bodyTexture->tex_cloud = param["tex_cloud"];
-	// bodyTexture->tex_cloud_normal = param["tex_cloud_normal"];
-	bodyTexture->tex_skin =  param["tex_skin"];
-
-
-	if ( !modelName.empty()) {
-		objLMgr->insertObj(modelName);
-		currentOBJ = objLMgr->select(modelName);
+	ObjL *currentOBJ;
+	{
+		const std::string &modelName = param["model_name"];
+		if (modelName.empty()) {
+			currentOBJ = objLMgr->selectDefault();
+		} else {
+			objLMgr->insertObj(modelName);
+			currentOBJ = objLMgr->select(modelName);
+		}
 	}
-	else
-		currentOBJ = objLMgr->selectDefault();
 
 	switch (typePlanet) {
 		case CENTER: {
-			std::shared_ptr<Center> p_center = std::make_shared<Center>(parent,
+			auto p_center = std::make_shared<Center>(parent,
 			                englishName,
 			                Utility::strToBool(param["halo"]),
 			                Utility::strToDouble(param["radius"])/AU,
@@ -791,11 +644,11 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 			bodyTrace = p_center;
 			centerObject = p_center;
-			p = p_center;
+			p = std::move(p_center);
 		}
 		break;
 		case SUN : {
-			std::shared_ptr<Sun> p_sun = std::make_shared<Sun>(parent,
+			auto p_sun = std::make_shared<Sun>(parent,
 			                englishName,
 			                Utility::strToBool(param["halo"]),
 			                Utility::strToDouble(param["radius"])/AU,
@@ -819,7 +672,7 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				centerObject = p_sun;
 				bodyTrace = p_sun;
 			}
-			p = p_sun;
+			p = std::move(p_sun);
 		}
 		break;
 		case STAR :  {
@@ -847,11 +700,11 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 				centerObject = p_sun;
 				bodyTrace = p_sun;
 			}
-			p = p_sun;
+			p = std::move(p_sun);
 		}
 		break;
-		case ARTIFICIAL: {
-			std::shared_ptr<Artificial> p_artificial = std::make_shared<Artificial>(parent,
+		case ARTIFICIAL:
+			p = std::make_shared<Artificial>(std::move(parent),
 							  englishName,
 							  Utility::strToBool(param["halo"]),
 							  Utility::strToDouble(param["radius"])/AU,
@@ -864,12 +717,9 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                  deletable,
 			                  orbit_bounding_radius,
 							  bodyTexture);
-			p= p_artificial;
-			}
 			break;
-
-		case MOON: {
-			std::shared_ptr<Moon> p_moon = std::make_shared<Moon>(parent,
+		case MOON:
+			p = std::make_shared<Moon>(std::move(parent),
 			                  englishName,
 			                  Utility::strToBool(param["halo"]),
 			                  Utility::strToDouble(param["radius"])/AU,
@@ -883,13 +733,10 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                  orbit_bounding_radius,
 							  bodyTexture
 			                 );
-			p= p_moon;
-		}
-		break;
-
+			break;
 		case DWARF:
 		case PLANET: {
-			std::shared_ptr<BigBody> p_big = std::make_shared<BigBody>(parent,
+			std::shared_ptr<BigBody> p_big = std::make_shared<BigBody>(std::move(parent),
 			                    englishName,
 			                    typePlanet,
 			                    Utility::strToBool(param["halo"]),
@@ -905,22 +752,18 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 								bodyTexture
 								);
 
-
 			if (Utility::strToBool(param["rings"], 0)) {
 				const double r_min = Utility::strToDouble(param["ring_inner_size"])/AU;
 				const double r_max = Utility::strToDouble(param["ring_outer_size"])/AU;
-				std::unique_ptr<Ring> r = std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit);
-				p_big->setRings(std::move(r));
-				p_big->updateBoundingRadii();
+				p_big->setRings(std::make_unique<Ring>(r_min,r_max,param["tex_ring"],ringsInit));
 			}
-			p = p_big;
+			p = std::move(p_big);
 		}
 		break;
-
 		case ASTEROID:
 		case KBO:
-		case COMET: {
-			std::shared_ptr<SmallBody> p_small = std::make_shared<SmallBody>(parent,
+		case COMET:
+			p = std::make_shared<SmallBody>(std::move(parent),
 			                        englishName,
 			                        typePlanet,
 			                        Utility::strToBool(param["halo"]),
@@ -933,12 +776,8 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 			                        close_orbit,
 			                        currentOBJ,
 			                        orbit_bounding_radius,
-									bodyTexture
-			                       );
-			p = p_small;
-		}
-		break;
-
+									bodyTexture);
+			break;
 		default:
 			cLog::get()->write("Undefined body", LOG_TYPE::L_ERROR);
 	}
@@ -1007,44 +846,31 @@ void ProtoSystem::addBody(stringHash_t & param, bool deletable)
 
 	anchorManager->addAnchor(englishName, p);
 	p->updateBoundingRadii();
-	std::shared_ptr<BodyContainer> container = std::make_shared<BodyContainer>();
-	container->body = p;
-	container->englishName = englishName;
-	container->isDeleteable = deletable;
-	container->isHidden = Utility::strToBool(param["hidden"], 0);
-	container->initialHidden = container->isHidden;
 
-	systemBodies.insert(std::pair<std::string, std::shared_ptr<BodyContainer>>(englishName, container));
+	bool isHidden = Utility::strToBool(param["hidden"], 0);
+	if (!isHidden)
+		showBody(p.get());
 
-	if(!container->isHidden){
-		// std::cout << "renderedBodies from addBody " << englishName << std::endl;
-		renderedBodies.push_back(container);
-	}
+	systemBodies.insert(std::pair<std::string, BodyContainer>(englishName, {
+		.body = std::move(p),
+		.isDeleteable = deletable,
+		.initialHidden = isHidden,
+	}));
 }
 
-void ProtoSystem::initialSolarSystemBodies(){
-	for(auto it = systemBodies.begin(); it != systemBodies.end();it++){
-		it->second->body->reinitParam();
-		if (it->second->isHidden != it->second->initialHidden) {
-			if(it->second->initialHidden){
-				auto it2 = std::find_if(renderedBodies.begin(), renderedBodies.end(), [it](std::shared_ptr<BodyContainer> const obj) {
-					return it->second->englishName == obj->englishName;
-				});
-				if (it2 != renderedBodies.end())
-					renderedBodies.erase(it2);
-			}
-			else{
-
-				renderedBodies.push_back(it->second);
-			}
-			it->second->isHidden = it->second->initialHidden;
-		}
+void ProtoSystem::initialSolarSystemBodies()
+{
+	for (auto &v : systemBodies) {
+		v.second.body->reinitParam();
+		if (v.second.initialHidden) {
+			hideBody(v.second.body.get());
+		} else
+			showBody(v.second.body.get());
 	}
 }
 
 void ProtoSystem::preloadBody(stringHash_t & param)
 {
-	auto body = searchByEnglishName(param[W_NAME]);
 	if (!param[W_PURGE].empty()) {
 		if (param[W_PURGE] == W_ALL) {
 			// Aggressive purge, release as many memory as possible, even used ones if possible
@@ -1053,7 +879,7 @@ void ProtoSystem::preloadBody(stringHash_t & param)
 		if (param[W_PURGE] == W_AUTO)
 			s_texture::releaseUnusedMemory();
 	}
-	if (body)
+	if (auto body = searchByEnglishName(param[W_NAME]))
 		body->preload(std::stoi(param[W_KEEPTIME]));
 }
 
@@ -1061,4 +887,31 @@ void ProtoSystem::selectSystem()
 {
 	anchorManager->selectAnchor();
 	currentCenterPos = centerPos;
+}
+
+void ProtoSystem::computeDraw(const Projector *prj, const Navigator *nav)
+{
+	for (Body *body : renderedBodies)
+		body->computeDraw(prj, nav);
+	if (sortedRenderedBodies.size() < 2)
+		return; // Nothing to sort
+
+	// Use dual bubble sort algorithm - average complexity of O(N) as bodies stay mostly sorted between frames
+	// This come with a higher complexity at the frame newly showing multiple bodies (due to addBody or setPlanetHidden)
+	Body ** const begin = sortedRenderedBodies.data() - 1;
+	Body ** const end = begin + sortedRenderedBodies.size();
+	Body **swapPos;
+	Body **pos = sortedRenderedBodies.data();
+	Body *tmp;
+	do {
+		if (pos[0]->getDistance() < pos[1]->getDistance()) {
+			swapPos = pos;
+			tmp = pos[1];
+			do { // Backward loop, bring up the body
+				pos[1] = pos[0];
+			} while (--pos != begin && pos[0]->getDistance() < pos[1]->getDistance());
+			pos[1] = tmp;
+			pos = swapPos;
+		}
+	} while (++pos < end);
 }

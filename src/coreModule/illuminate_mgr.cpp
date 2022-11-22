@@ -168,8 +168,10 @@ void IlluminateMgr::removeAll()
 void IlluminateMgr::draw(Projector* prj, const Navigator * nav)
 {
 	Context &context = *Context::instance;
-	auto cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
 	float *illumData = (float *) context.transfer->beginPlanCopy(MAX_ILLUMINATE * 8 * sizeof(float));
+	if (!illumData)
+		return;
+	auto cmd = context.frame[context.frameIdx]->begin(cmds[context.frameIdx], PASS_BACKGROUND);
 	float max_fov = std::max( prj->getFov(), prj->getFov()*prj->getViewportWidth()/prj->getViewportHeight());
 	illuminateGrid.intersect(nav->getPrecEquVision(), max_fov*M_PI/180.f);
 

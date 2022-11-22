@@ -30,6 +30,7 @@
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
 #include "bodyModule/body.hpp"
+#include <set>
 
 class OrbitCreator;
 class SSystemIterator;
@@ -43,12 +44,17 @@ class Body;
 class Translator;
 
 class ProtoSystem: public NoCopy, public ModuleFont {
-friend class SSystemIterator;
-friend class SSystemIteratorVector;
+    friend class SSystemIterator;
+    friend class SSystemIteratorVector;
 public:
-
     ProtoSystem(ObjLMgr *_objLMgr, Observer *observatory, Navigator *navigation, TimeMgr *timeMgr, const Vec3d &centerPos = {});
     ~ProtoSystem();
+
+    struct BodyContainer {
+		std::shared_ptr<Body> body;
+		bool isDeleteable = true;
+		bool initialHidden = false;
+	};
 
 	void update(int delta_time, const Navigator* nav, const TimeMgr* timeMgr);
 
@@ -60,19 +66,25 @@ public:
 
 	// load one object from a hash (returns error message if any)
 	// this public method always adds bodies as deletable
-	virtual void addBody(stringHash_t & param){
+	inline void addBody(stringHash_t &param) {
 		addBody(param, true);
 	}
 
     virtual void preloadBody(stringHash_t & param);
 
 	//! Return the matching planet pointer if exists or nullptr
-	std::shared_ptr<Body> searchByEnglishName(const std::string &planetEnglishName) const;
+	inline std::shared_ptr<Body> searchByEnglishName(const std::string &planetEnglishName) const {
+        try {
+            return systemBodies.at(planetEnglishName).body;
+        } catch (...) {
+            return nullptr;
+        }
+    }
 
 	//removes a body and its satellites
 	bool removeBody(const std::string &name);
 
-	bool removeBodyNoSatellite(const std::string &name);
+	void removeBodyNoSatellite(std::map<std::string, BodyContainer>::iterator it);
 
 	//removes all bodies that do not come from ssystem.ini
 	bool removeSupplementalBodies(const std::string &name);
@@ -126,7 +138,7 @@ public:
 	std::vector<std::string> getNamesI18(void);
 
 	//! Find and return the list of at most maxNbItem objects auto-completing the passed object I18n name
-	std::vector<std::string> listMatchingObjectsI18n(const std::string& objPrefix, unsigned int maxNbItem) const;
+	std::vector<std::string> listMatchingObjectsI18n(std::string objPrefix, unsigned int maxNbItem) const;
 
 	//get the state of the planet
 	bool getPlanetHidden(const std::string &name);
@@ -158,32 +170,39 @@ public:
 	// takes into account the size and the flag hidden or not
 	void initialSolarSystemBodies();
 
-	struct BodyContainer {
-		std::shared_ptr<Body> body=nullptr;
-		std::string englishName;  // for convenience
-		bool isDeleteable = false;
-		bool isHidden = false;
-		bool initialHidden = false;
-	};
-
 	void bodyTraceBodyChange(const std::string &bodyName);
 
-	std::vector<std::shared_ptr<BodyContainer>>::iterator begin() {return renderedBodies.begin();};
-    std::vector<std::shared_ptr<BodyContainer>>::iterator end() {return renderedBodies.end();};
+    //! Iterate over all bodies
+	inline std::map<std::string, BodyContainer>::const_iterator begin() const {return systemBodies.begin();}
+    //! Iterate over all bodies
+    inline std::map<std::string, BodyContainer>::const_iterator end() const {return systemBodies.end();}
 
-	std::unique_ptr<SSystemIterator> createIterator();
-	std::unique_ptr<SSystemIteratorVector> createIteratorVector();
+    //! Iterate over visible bodies, from the farthest to the closest
+    inline std::vector<Body *>::const_iterator beginSorted() const {return sortedRenderedBodies.begin();}
+    //! Iterate over visible bodies, from the farthest to the closest
+    inline std::vector<Body *>::const_iterator endSorted() const {return sortedRenderedBodies.end();}
 
     void selectSystem();
 
     static Vec3d getCenterPos() {return currentCenterPos;}
+
+    // Call computeDraw on all visible bodies and sort them
+    void computeDraw(const Projector *prj, const Navigator *nav);
 protected:
+    inline void hideBody(Body *body) {
+        if (renderedBodies.erase(body))
+            sortedRenderedBodies.erase(std::find(sortedRenderedBodies.begin(), sortedRenderedBodies.end(), body));
+    }
+    inline void showBody(Body *body) {
+        if (renderedBodies.insert(body).second)
+            sortedRenderedBodies.push_back(body);
+    }
     static Vec3d currentCenterPos;
-	ObjLMgr* objLMgr=nullptr;					// represents the light objects of the ss
-	std::shared_ptr<Body> bodyTrace=nullptr; //returns the body that is selected by bodyTrace
-	std::shared_ptr<OrbitCreator> orbitCreator = nullptr;
-	std::shared_ptr<AnchorManager> anchorManager = nullptr;
-    std::shared_ptr<Body> centerObject = nullptr;
+	ObjLMgr *objLMgr=nullptr;					// represents the light objects of the ss
+	std::shared_ptr<Body> bodyTrace; //returns the body that is selected by bodyTrace
+	std::shared_ptr<OrbitCreator> orbitCreator;
+	std::shared_ptr<AnchorManager> anchorManager;
+    std::shared_ptr<Body> centerObject;
     Vec3d centerPos;
 	Vec3i ringsInit;
     static bool initGuard;
@@ -193,16 +212,15 @@ protected:
 	bool flagHideSatellites = false;
 
 	// load one object from a hash
-	virtual void addBody(stringHash_t & param, bool deletable);
-
-	std::shared_ptr<ProtoSystem::BodyContainer> findBodyContainer(const std::string &name);
-	std::shared_ptr<Body> findBody(const std::string &name);
+	virtual void addBody(stringHash_t param, bool deletable);
+    void hideBodyRecursive(Body *body);
 
 	// determine the planet type: Sun, planet, moon, dwarf, asteroid ...
 	BODY_TYPE setPlanetType (const std::string &str);
 
-	std::map< std::string, std::shared_ptr<BodyContainer>> systemBodies; //Map containing the bodies and related information. the key is their english name
-	std::vector<std::shared_ptr<BodyContainer>> renderedBodies; //Contains bodies that are not hidden
+	std::map<std::string, BodyContainer> systemBodies; //Map containing the bodies and related information. the key is their english name
+	std::set<Body *> renderedBodies; //Contains bodies that are not hidden
+    std::vector<Body *> sortedRenderedBodies;
 };
 
 #endif

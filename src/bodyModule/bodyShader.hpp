@@ -98,6 +98,10 @@ public:
 		return &shaderArtificial;
 	};
 
+	// Used when a global depth shape is required
+	static drawState_t *getShaderDepthTrace() {
+		return &depthTrace;
+	}
 protected:
 	static drawState_t shaderBump;
 	static drawState_t shaderNight; //, shaderMoonNight;
@@ -105,11 +109,19 @@ protected:
 	static drawState_t shaderRinged;
 	static drawState_t myMoon; //, shaderMoonBump, shaderMoonNormal;
 	static drawState_t shaderArtificial;
+	static drawState_t depthTrace;
 };
 
 typedef Mat4f mat4;
 typedef Vec3f vec3;
 typedef Vec3i ivec3;
+
+struct depthTraceInfo {
+	mat4 ModelViewMatrix;
+	vec3 clipping_fov;
+	float planetScaledRadius;
+	float planetOneMinusOblateness;
+};
 
 typedef struct {
 	mat4 ModelViewMatrix;

@@ -7,13 +7,19 @@
 #pragma optionNV(fastprecision off)
 
 
+layout (push_constant) uniform uMat {
+	layout (offset=16) mat4 ModelViewMatrix;
+	vec3 clipping_fov;
+};
 
-//~ //layout
-layout (location=0)in vec3 position;
+layout (location=0) in vec3 position;
+layout (location=0) out vec3 pos;
+
+#include <fisheye.glsl>
 
 void main()
 {
-	//~ gl_Position = ModelViewProjectionMatrix * posToFisheye(position);
-	gl_Position = vec4(position,1.0);
+	pos = position;
+	gl_Position = fisheyeProjectClamped(position, clipping_fov);
 }
 

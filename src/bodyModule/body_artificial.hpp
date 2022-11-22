@@ -45,7 +45,7 @@ public:
 	           const std::string& model_name,
 	           bool _deleteable,
 	           double orbit_bounding_radius,
-			   std::shared_ptr<BodyTexture> _bodyTexture
+			   const BodyTexture &_bodyTexture
 	          );
 
 	virtual ~Artificial();

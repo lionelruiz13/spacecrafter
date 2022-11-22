@@ -6,9 +6,6 @@
 #pragma optimize(off)
 #pragma optionNV(fastprecision off)
 
-
-//#define M_PI 3.14159265358979323846
-
 layout (push_constant) uniform ubo {
 	layout (offset=16) mat4 ModelViewMatrix;
 	vec3 clipping_fov;
@@ -18,39 +15,34 @@ layout (push_constant) uniform ubo {
 
 //layout
 layout (lines) in;
-layout (line_strip, max_vertices = 2) out;
+layout (line_strip, max_vertices = 16) out;
 
-#define TOLERANCE 0.4
+layout (location=0) in vec3 position[];
+
+#define TOLERANCE 1.2
 
 void main(void)
 {
-	vec4 pos1, pos2; //, pos3, pos4;
+	vec4 pos1 = gl_in[0].gl_Position;
+	vec4 pos2 = gl_in[1].gl_Position;
+	float spacing = distance(vec2(pos1), vec2(pos2));
 
-	pos1 = fisheyeProject(vec3(gl_in[0].gl_Position), clipping_fov);
-	pos2 = fisheyeProject(vec3(gl_in[1].gl_Position), clipping_fov);
-	//~ pos3 = gl_in[2].gl_Position;
-	//~ pos4 = gl_in[2].gl_Position;
+	if (spacing > TOLERANCE)
+		return;
 
-	if (clipping_fov[2] < 300. || length(pos1.xy - pos2.xy) < TOLERANCE) { // && pos3.w==1.0 && pos4.w==1.0 ) {
-		//~ pos1.z = 0.0; pos2.z = 0.0;
+	gl_Position = pos1;
+	EmitVertex();
 
-		//first
-		gl_Position = pos1;
+	int nbLines = clamp(int(spacing * 32), 1, 15);
+	vec3 pos = position[0];
+	vec3 shift = (position[1] - pos) / nbLines;
+	while (--nbLines > 0) {
+		pos += shift;
+		gl_Position = fisheyeProjectClamped(pos, clipping_fov);
 		EmitVertex();
-
-		//second
-		gl_Position = pos2;
-		EmitVertex();
-
-		//~ //first
-		//~ gl_Position = pos3;
-		//~ EmitVertex();
-
-		//~ //second
-		//~ gl_Position = pos4;
-		//~ EmitVertex();
-
-
-		EndPrimitive();
 	}
+	gl_Position = pos2;
+	EmitVertex();
+	EndPrimitive();
 }
+

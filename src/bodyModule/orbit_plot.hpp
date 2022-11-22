@@ -60,7 +60,8 @@ public:
 		return orbit_fader;
 	}
 
-	virtual void computeOrbit(double date);
+	virtual void computeOrbit(double date, bool force = false);
+	double computeOrbitBoundingRadius() const;
 
 	void init();
 

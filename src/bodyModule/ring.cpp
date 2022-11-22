@@ -36,7 +36,7 @@
 #include "tools/app_settings.hpp"
 #include "../planetsephems/sideral_time.h"
 #include "ojmModule/ojml.hpp"
-
+#include "bodyModule/bodyShader.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/Resource/VertexArray.hpp"
 #include "EntityCore/Resource/VertexBuffer.hpp"
@@ -128,6 +128,16 @@ void Ring::createSC_context()
 	pipeline->bindShader("ring_planet.frag.spv");
 	pipeline->build();
 
+	pipelineDepthTrace = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_MULTISAMPLE_DEPTH, BodyShader::getShaderDepthTrace()->layout);
+	pipelineDepthTrace->setCullMode(false);
+	pipelineDepthTrace->setBlendMode(BLEND_NONE);
+	pipelineDepthTrace->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+	pipelineDepthTrace->bindVertex(*vertex);
+	pipelineDepthTrace->removeVertexEntry(1);
+	pipelineDepthTrace->bindShader("body_depth_trace.vert.spv");
+	pipelineDepthTrace->setSpecializedConstant(7, context.isFloat64Supported);
+	pipelineDepthTrace->build("depthTraceRing");
+
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get(), -1, false, true);
 	uniform = std::make_unique<SharedBuffer<RingUniform>>(*context.uniformMgr);
 	set->bindUniform(uniform, 0);
@@ -176,6 +186,10 @@ void Ring::createAsteroidRing()
 	tex->getDimensions(width, height);
     bool nonPersistant = false;
 	uint8_t *pData = (uint8_t *) tex->acquireContent(nonPersistant);
+	if (pData == nullptr) {
+		cLog::get()->write("Failed to acquire texture content for asteroid ring generation", LOG_TYPE::L_WARNING);
+		return;
+	}
 	uint8_t *pDataLoop = pData + 3; // Use alpha from R G B A
 
 	std::vector<float> probability;
@@ -224,9 +238,11 @@ void Ring::createAsteroidRing()
 
 Ring::~Ring(void)
 {
+	if (threadAsteroid.joinable())
+		threadAsteroid.join();
 }
 
-void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
+void Ring::draw(VkCommandBuffer cmd, const Projector* prj, float observerDistanceToBody, const Mat4d& mat,double screen_sz, Vec3f& _lightDirection, Vec3f& _planetPosition, float planetRadius)
 {
 	if (!fullyInitialized)
 		initialize();
@@ -279,6 +295,17 @@ void Ring::draw(VkCommandBuffer &cmd, const Projector* prj, float observerDistan
 	}
 }
 
+void Ring::drawDepthTrace(VkCommandBuffer cmd, VkPipelineLayout layout)
+{
+	pipelineDepthTrace->bind(cmd);
+	vkCmdPushConstants(cmd, layout, VK_SHADER_STAGE_VERTEX_BIT, offsetof(depthTraceInfo, planetScaledRadius), sizeof(float), &mc);
+	lowUP->draw(cmd);
+	// Restore previous state
+	BodyShader::getShaderDepthTrace()->pipeline->bind(cmd);
+	const VkDeviceSize zero = 0;
+	vkCmdBindVertexBuffers(cmd, 0, 1, &Context::instance->ojmBufferMgr->getBuffer(), &zero);
+}
+
 // class Ring2D
 Ring2D::Ring2D(float _r_min, float _r_max, int _slices, int _stacks, bool h, VertexArray &base)
 {
@@ -293,7 +320,7 @@ Ring2D::~Ring2D()
 {
 }
 
-void Ring2D::draw(VkCommandBuffer &cmd)
+void Ring2D::draw(VkCommandBuffer cmd)
 {
 	m_dataGL->bind(cmd);
 	vkCmdDraw(cmd, m_dataGL->getVertexCount(), 1, 0, 0);

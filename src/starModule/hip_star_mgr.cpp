@@ -342,6 +342,7 @@ void HipStarMgr::createShaderParams(int width,int height)
 	pipelineStarsReuse->build();
 
 	m_pipelineFBO = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, m_layoutFBO.get());
+	m_pipelineFBO->setDepthStencilMode();
 	m_pipelineFBO->bindVertex(*m_drawFBO_GL);
 	m_pipelineFBO->setBlendMode(BLEND_ADD);
 	m_pipelineFBO->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);

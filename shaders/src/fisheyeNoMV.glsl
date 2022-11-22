@@ -16,7 +16,12 @@ vec4 fisheyeProjectNoMV(vec3 win, in vec3 clipping_fov)
 
     float depth = sqrt(rq1 + win.z*win.z);
 
-	win /= sqrt(rq1)+1e-30; // Don't divide by zero
+    if (rq1 < 1e-30f) {
+        depth = (depth - zNear) / (zFar-zNear);
+        return vec4(0.f, 0.f, depth, 1.f);
+    }
+
+	win /= sqrt(rq1);
 	float a;
 
 	if (usingDouble && subgroupAny((clipping_fov[2] < 0.03f) || (win.z > 5.f))) { // Don't use both atan and my_atan in a subgroup, it would reduce performances
