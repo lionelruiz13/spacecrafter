@@ -888,7 +888,7 @@ double Body::calculateBoundingRadius()
         case SHADER_MOON_NORMAL_TES:
         case SHADER_NORMAL_TES:
         case SHADER_NIGHT_TES:
-            d *= bodyTesselation->getPlanetAltimetryFactor();
+            d *= 1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor();
             break;
         default:;
     }
@@ -1096,7 +1096,16 @@ bool Body::drawGL(Projector* prj, const Navigator* nav, const Observer* observat
 void Body::drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj)
 {
     if (isVisibleOnScreen()) {
-        depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), (float) radius, (float) one_minus_oblateness};
+        float _radius = radius;
+        switch (myShader) {
+            case SHADER_MOON_NORMAL_TES:
+            case SHADER_NORMAL_TES:
+            case SHADER_NIGHT_TES:
+                _radius *= 1 + 0.01 * bodyTesselation->getPlanetAltimetryFactor();
+                break;
+            default:;
+        }
+        depthTraceInfo pdata {mat.convert(), prj->getClippingFov(), _radius, (float) one_minus_oblateness};
         BodyShader::getShaderDepthTrace()->layout->pushConstant(cmdBodyDepth, 0, &pdata);
         currentObj->draw(cmdBodyDepth, 1);
     }

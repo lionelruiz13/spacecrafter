@@ -259,8 +259,10 @@ void Moon::selectShader()
 
 void Moon::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
-    if (changed)
+    if (changed) {
         defineSet();
+        updateBoundingRadii();
+    }
 
     if (depthTest)
         drawState->pipeline->bind(cmd);

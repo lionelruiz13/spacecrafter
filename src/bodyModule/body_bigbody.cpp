@@ -254,15 +254,20 @@ double BigBody::calculateBoundingRadius()
 	if (rings && d < rings->getOuterRadius())
         d = rings->getOuterRadius();
 
-    if (d > Body::calculateBoundingRadius())
-	   boundingRadius = d;
+	if (Body::calculateBoundingRadius() < d)
+		boundingRadius = d;
+
+	if (boundingRadiusWithOrbit < boundingRadius)
+		boundingRadiusWithOrbit = boundingRadius;
 	return boundingRadius;
 }
 
 void BigBody::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest)
 {
-    if (changed)
+    if (changed) {
         selectShader();
+        updateBoundingRadii();
+    }
     if (depthTest)
         drawState->pipeline[pipelineOffset].bind(cmd);
     else
@@ -526,8 +531,10 @@ Set &BigBody::getSet(float screen_sz)
 void BigBody::preload(int keepFrames)
 {
     int tmp = s_texture::setBigTextureLifetime(keepFrames);
-    if (changed)
+    if (changed) {
         selectShader();
+        updateBoundingRadii();
+    }
     if (rings)
         rings->preload();
     getSet(2048); // Assume the big texture is used for such screen_sz
