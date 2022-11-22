@@ -42,12 +42,8 @@ void SolarSystemSelected::setSelected(const Object &obj)
 {
 	if (obj.getType() == OBJECT_BODY){
 		selected = obj;
-		for(auto it = ssystem->createIterator(); !it->end(); (*it)++){
-			if (selected == it->current()->second->body.get())
-				it->current()->second->body->setFlagHints(true);
-		}
-	}
-	else{
+        selected.as<Body>()->setFlagHints(true);
+    } else {
 		selected = Object();
 	}
 	// Undraw other objects hints, orbit, trails etc..
@@ -85,12 +81,11 @@ void SolarSystemSelected::setFlagHints(bool b)
 {
 	flagHints = b;
 
+    for (auto &v : *ssystem)
+        v.second.body->setFlagHints(b);
     if (flagIsolateSelected && !b) {
-        for (auto &v : *ssystem)
-            v.second.body->setFlagHints(selected == (selected == v.second.body));
-    } else {
-        for (auto &v : *ssystem)
-            v.second.body->setFlagHints(b);
+        if (auto body = selected.as<Body>())
+            body->setFlagHints(true);
     }
 }
 

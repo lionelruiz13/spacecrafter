@@ -103,6 +103,11 @@ public:
 
 	static void initTextures();
 	static void deleteTextures();
+
+	template<class T>
+	T *as() const {
+		return dynamic_cast<T *>(rep);
+	}
 	// static void deleteShaders();
 private:
 	ObjectBase *rep;
