@@ -42,7 +42,8 @@ void SolarSystemSelected::setSelected(const Object &obj)
 {
 	if (obj.getType() == OBJECT_BODY){
 		selected = obj;
-        selected.as<Body>()->setFlagHints(true);
+		if (flagHints && flagIsolateSelected)
+        	selected.as<Body>()->setFlagHints(true);
     } else {
 		selected = Object();
 	}
@@ -74,18 +75,27 @@ void SolarSystemSelected::setFlagTrails(bool b)
 void SolarSystemSelected::setFlagIsolateSelected(bool b)
 {
 	flagIsolateSelected = b;
-	setFlagHints(!b);
+
+	if (b) {
+		selected.as<Body>()->setFlagHints(true);
+		for (auto &v : *ssystem)
+			v.second.body->setFlagHints(false);
+	} else
+		setFlagHints(flagHints);
 }
 
 void SolarSystemSelected::setFlagHints(bool b)
 {
 	flagHints = b;
 
-    for (auto &v : *ssystem)
-        v.second.body->setFlagHints(b);
-    if (flagIsolateSelected && !b) {
-        if (auto body = selected.as<Body>())
+	if (flagIsolateSelected && b) {
+		if (auto body = selected.as<Body>())
             body->setFlagHints(true);
+		for (auto &v : *ssystem)
+			v.second.body->setFlagHints(false);
+	} else {
+        for (auto &v : *ssystem)
+			v.second.body->setFlagHints(b);
     }
 }
 
