@@ -9,11 +9,11 @@ layout (triangle_strip, max_vertices = 4) out;
 #include <cam_block_only.glsl>
 
 layout(location=0) in vec2 pos[];
-layout(location=1) in vec3 Color[];
+layout(location=1) in vec4 Color[];
 layout(location=2) in float rmag[];
 
 layout(location=0) out vec2 TexCoord;
-layout(location=1) flat out vec3 ColorOut;
+layout(location=1) flat out vec4 ColorOut;
 
 void main(void)
 {
