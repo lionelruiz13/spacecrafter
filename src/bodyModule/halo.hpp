@@ -26,6 +26,7 @@
 #include <vector>
 #include <memory>
 #include "EntityCore/SubBuffer.hpp"
+#include "tools/fader.hpp"
 
 constexpr int HALO_STRIDE = 8*sizeof(float);
 
@@ -84,6 +85,7 @@ private:
 		int initialOffset = 0;
 		int offset = 0; // vertex offset of the next packed draw
 		int size = 0; // current vertex count of the next packed draw
+		LinearFader fader;
 	};
 	static HaloContext *global;
 

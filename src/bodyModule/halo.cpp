@@ -39,6 +39,7 @@ void Halo::beginDraw()
 		global->set->bindTexture(global->tex_halo->getTexture(), 0);
 		global->last_tex_halo = global->tex_halo.get();
 	}
+	global->fader = true;
 }
 
 void Halo::nextDraw(VkCommandBuffer &cmd)
@@ -74,6 +75,7 @@ void Halo::endDraw()
 		size = global->vertex->getVertexCount() / 2 * (HALO_STRIDE);
 	}
 	context.transfer->planCopyBetween(global->staging, global->vertex->get(), size, offset, offset);
+	global->fader = false;
 }
 
 void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
@@ -86,7 +88,7 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	data.pos[0] = body->screenPos[0];
 	data.pos[1] = body->screenPos[1];
 	data.Color = body->myColor->getHalo() * cmag;
-	data.Color[3] = 1.;
+	data.Color[3] = global->fader.getInterstate();
 	data.rmag = rmag;
 }
 
