@@ -41,7 +41,7 @@ Text::Text(const std::string &_name, const std::string &_text, float _altitude, 
 	textFont =_myFont;
 	textAlign = _textAlign;
 	fader = true;
-	text_fader.setDuration(3000);
+	text_fader.setDuration(2000);
 	text_fader = _textFader;
 	fade_out = _textFader;
 
