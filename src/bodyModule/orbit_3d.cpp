@@ -25,7 +25,7 @@
 #include "EntityCore/Resource/PipelineLayout.hpp"
 #include "EntityCore/Resource/VertexBuffer.hpp"
 
-Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments, 1)
+Orbit3D::Orbit3D(Body* _body, int segments) : OrbitPlot(_body, segments, ORBIT_ADDITIONNAL_POINTS)
 {
 }
 
@@ -57,27 +57,56 @@ void Orbit3D::drawOrbit(VkCommandBuffer &cmd, const Navigator * nav, const Proje
 	orbitSegments = static_cast<float *>(context.transfer->planCopy(orbit->get()));
 	computeShader();
 
-	vkCmdDraw(cmd, ORBIT_POINTS + body->close_orbit, 1, 0, 0);
+	vkCmdDraw(cmd, ORBIT_POINTS + ORBIT_ADDITIONNAL_POINTS, 1, 0, 0);
 }
 
 void Orbit3D::computeShader()
 {
-	// only draw moon orbits as zoom in
-	Vec3d onscreen;
-
-	int i = 0;
-
-	while(i < ORBIT_POINTS) {
-
-		*(orbitSegments++) = orbitPoint[i][0];
-		*(orbitSegments++) = orbitPoint[i][1];
-		*(orbitSegments++) = orbitPoint[i][2];
-		i++;
+	for ( int n=0; n<ORBIT_POINTS/2-1; n++) {
+		*(orbitSegments++) = orbitPoint[n][0];
+		*(orbitSegments++) = orbitPoint[n][1];
+		*(orbitSegments++) = orbitPoint[n][2];
 	}
 
+	//-------------------------------------------------------------------------
+	//
+	// management of the point passing through the center of the planet
+	//
+	//-------------------------------------------------------------------------
+	//HERE insertion of the point passing through the center of the planet
+	body->orbit_position= body->get_ecliptic_pos();
+	Vec3f center(body->orbit_position[0]-body->radius/10,
+				 body->orbit_position[1]-body->radius/10,
+			 	 body->orbit_position[2]-0*body->radius/10);
+	float coef = 1.f;
+	for (int n = 1; n<(ORBIT_ADDITIONNAL_POINTS / 2 + 1); n++) {
+		coef /= 1.3f;
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS/2-1][0] * coef + center[0] * (1.f - coef);
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS/2-1][1] * coef + center[1] * (1.f - coef);
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS/2-1][2] * coef + center[2] * (1.f - coef);
+	}
+	*(orbitSegments++) = center[0];
+	*(orbitSegments++) = center[1];
+	*(orbitSegments++) = center[2];
+	for (int n = 1; n<(ORBIT_ADDITIONNAL_POINTS / 2 + 1); n++) {
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS/2+1][0] * coef + center[0] * (1.f - coef);
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS/2+1][1] * coef + center[1] * (1.f - coef);
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS/2+1][2] * coef + center[2] * (1.f - coef);
+		coef *= 1.3f;
+	}
+//-------------------------------------------------------------------------
+	for ( int n= ORBIT_POINTS/2+1; n< ORBIT_POINTS; n++) {
+		*(orbitSegments++) = orbitPoint[n][0];
+		*(orbitSegments++) = orbitPoint[n][1];
+		*(orbitSegments++) = orbitPoint[n][2];
+	}
+	//fermer la boucle
 	if (body->close_orbit) {
 		*(orbitSegments++) = orbitPoint[0][0];
 		*(orbitSegments++) = orbitPoint[0][1];
 		*(orbitSegments++) = orbitPoint[0][2];
-	}
-}
+	} else {
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS-1][0];
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS-1][1];
+		*(orbitSegments++) = orbitPoint[ORBIT_POINTS-1][2];
+	}}

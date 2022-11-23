@@ -188,9 +188,16 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
         VkClearRect clearRect {VulkanMgr::instance->getScreenRect(), 0, 1};
         vkCmdClearAttachments(cmdBodyDepth, 1, &clearAttachment, 1, &clearRect);
     }
-    std::for_each(ssystem->beginSorted(), ssystem->endSorted(), [cmdBodyDepth, cmdOrbit, observatory, nav, prj](Body *body) {
-        body->drawOrbit(cmdBodyDepth, cmdOrbit, observatory, nav, prj);
-    });
+    if (drawHomePlanet) {
+        std::for_each(ssystem->beginSorted(), ssystem->endSorted(), [cmdBodyDepth, cmdOrbit, observatory, nav, prj](Body *body) {
+            body->drawOrbit(cmdBodyDepth, cmdOrbit, observatory, nav, prj);
+        });
+    } else {
+        std::for_each(ssystem->beginSorted(), ssystem->endSorted(), [cmdBodyDepth, cmdOrbit, observatory, nav, prj](Body *body) {
+            if (!observatory->isOnBody(body))
+                body->drawOrbit(cmdBodyDepth, cmdOrbit, observatory, nav, prj);
+        });
+    }
     frame.compile(cmdBodyDepth);
     frame.compile(cmdOrbit);
     frame.toExecute(cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
