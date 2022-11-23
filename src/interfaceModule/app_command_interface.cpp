@@ -2134,7 +2134,24 @@ int AppCommandInterface::commandText()
 					else
 						textParam.fader = false;
 				}
-				media->textAdd(argName, textParam);
+				std::string argWrite = args[W_WRITE];
+				if (argWrite.empty()) {
+					media->textAdd(argName, textParam);
+				}
+				else if (argWrite == W_TWICE) {
+					media->textAdd(argName, textParam);
+					textParam.azimuth += 180;
+					argName += "2";
+					media->textAdd(argName, textParam);
+				} else if (argWrite == W_THRICE) {
+					media->textAdd(argName, textParam);
+					textParam.azimuth += 120;
+					argName += "2";
+					media->textAdd(argName, textParam);
+					textParam.azimuth += 120;
+					argName += "3";
+					media->textAdd(argName, textParam);
+				}
 				// test if user specifies argDisplay
 				if (!argDisplay.empty()) {
 					if ( Utility::isTrue(argDisplay) )

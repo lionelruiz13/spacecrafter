@@ -77,6 +77,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_FILENAME                  "filename"
 #define W_SIZE                      "size"
 #define W_ACTION                    "action"
+#define W_WRITE                     "write"
 #define W_SNAPSHOT                  "snapshot"
 #define W_RECORD                    "record"
 #define W_VOLUME                    "volume"
