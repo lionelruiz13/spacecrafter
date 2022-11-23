@@ -43,7 +43,7 @@ void SolarSystemSelected::setSelected(const Object &obj)
 	if (obj.getType() == OBJECT_BODY){
 		selected = obj;
 		if (flagHints && flagIsolateSelected)
-        	selected.as<Body>()->setFlagHints(true);
+        	selected.as<Body>()->setFlagHints(!selected.as<Body>()->getFlagHints());
     } else {
 		selected = Object();
 	}
