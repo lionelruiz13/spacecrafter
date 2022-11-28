@@ -2184,8 +2184,6 @@ int AppCommandInterface::commandText()
 			media->textDisplay(argName+"2",true);
 			media->textDisplay(argName+"3",true);
 		} else {
-			std::cout << "name:" << argName << "\n";
-			std::cout << "name:" << argName+"2" << "\n";
 			media->textDisplay(argName,false);
 			media->textDisplay(argName+"2",false);
 			media->textDisplay(argName+"3",false);
