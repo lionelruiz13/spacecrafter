@@ -2154,10 +2154,19 @@ int AppCommandInterface::commandText()
 				}
 				// test if user specifies argDisplay
 				if (!argDisplay.empty()) {
-					if ( Utility::isTrue(argDisplay) )
+					if ( Utility::isTrue(argDisplay) ) {
 						media->textDisplay(argName,true);
-					else
+						if (argWrite == W_TWICE)
+							media->textDisplay(argName+"2",true);
+						if (argWrite == W_THRICE)
+							media->textDisplay(argName+"3",true);
+					} else {
 						media->textDisplay(argName,false);
+						if (argWrite == W_TWICE)
+							media->textDisplay(argName+"2",false);
+						if (argWrite == W_THRICE)
+							media->textDisplay(argName+"3",false);
+					}
 					return executeCommandStatus();
 				}
 				return executeCommandStatus();
@@ -2170,10 +2179,17 @@ int AppCommandInterface::commandText()
 
 	// test argDisplay in independent command
 	if (!argDisplay.empty()) {
-		if ( Utility::isTrue(argDisplay) )
+		if ( Utility::isTrue(argDisplay) ) {
 			media->textDisplay(argName,true);
-		else
+			media->textDisplay(argName+"2",true);
+			media->textDisplay(argName+"3",true);
+		} else {
+			std::cout << "name:" << argName << "\n";
+			std::cout << "name:" << argName+"2" << "\n";
 			media->textDisplay(argName,false);
+			media->textDisplay(argName+"2",false);
+			media->textDisplay(argName+"3",false);
+		}
 		return executeCommandStatus();
 	}
 
