@@ -76,10 +76,10 @@ Moon::Moon(std::shared_ptr<Body> parent,
 	//more adding could be placed here for the constructor of Moon
 	selectShader();
 	orbitPlot = std::make_unique<Orbit3D>(this);
-    if (orbit_bounding_radius <= 0) {
-        orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
-        orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
-    }
+    // if (orbit_bounding_radius <= 0) {
+    //     orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
+    //     orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
+    // }
 }
 
 Moon::~Moon()

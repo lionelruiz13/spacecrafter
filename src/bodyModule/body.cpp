@@ -894,14 +894,14 @@ double Body::calculateBoundingRadius()
     }
     boundingRadius = d;
 
-    for (auto it : satellites) {
-        if (it->orbit_bounding_radius > 0) {
-            double tmp = it->boundingRadius + it->orbit_bounding_radius;
-            if (d < tmp)
-                d = tmp;
-        }
-    }
-    boundingRadiusWithOrbit = d;
+    // for (auto it : satellites) {
+    //     if (it->orbit_bounding_radius > 0) {
+    //         double tmp = it->boundingRadius + it->orbit_bounding_radius;
+    //         if (d < tmp)
+    //             d = tmp;
+    //     }
+    // }
+    // boundingRadiusWithOrbit = d;
 	return boundingRadius;
 }
 

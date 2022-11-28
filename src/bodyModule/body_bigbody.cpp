@@ -78,10 +78,10 @@ BigBody::BigBody(std::shared_ptr<Body> parent,
 	}
     trail = std::make_unique<Trail>(this,1460);
     orbitPlot = std::make_unique<Orbit3D>(this);
-    if (orbit_bounding_radius <= 0) {
-        orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
-        orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
-    }
+    // if (orbit_bounding_radius <= 0) {
+    //     orbitPlot->computeOrbit(CoreLink::instance->getJDay(), true);
+    //     orbit_bounding_radius = orbitPlot->computeOrbitBoundingRadius();
+    // }
 }
 
 BigBody::~BigBody()
@@ -257,8 +257,8 @@ double BigBody::calculateBoundingRadius()
 	if (Body::calculateBoundingRadius() < d)
 		boundingRadius = d;
 
-	if (boundingRadiusWithOrbit < boundingRadius)
-		boundingRadiusWithOrbit = boundingRadius;
+	// if (boundingRadiusWithOrbit < boundingRadius)
+	// 	boundingRadiusWithOrbit = boundingRadius;
 	return boundingRadius;
 }
 

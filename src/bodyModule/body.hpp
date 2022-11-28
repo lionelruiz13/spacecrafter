@@ -325,9 +325,9 @@ public:
 		return boundingRadius;
 	}
 
-	double getBoundingRadiusWithOrbit() const {
-		return boundingRadiusWithOrbit;
-	}
+	// double getBoundingRadiusWithOrbit() const {
+	// 	return boundingRadiusWithOrbit;
+	// }
 
 	// Return the radius of a circle containing the object on screen
 	virtual float getOnScreenSize(const Projector* prj, const Navigator * nav, bool orb_only = false) override;
@@ -452,6 +452,11 @@ public:
 		return screen_sz > 2 && isVisible;
 	}
 
+	//! Return true if this body need orbit occlusion
+	inline bool needOrbitDepth() {
+		return isVisible && screen_sz > 10;
+	}
+
 	virtual bool needBucket(const Observer *obs);
 protected:
 
@@ -560,7 +565,7 @@ protected:
 
 	double orbit_bounding_radius; // AU calculated at load time for elliptical orbits at least DIGITALIS
 	double boundingRadius;  // Cached AU value for use with depth buffer
-	double boundingRadiusWithOrbit;  // Cached AU value for use with depth buffer
+	// double boundingRadiusWithOrbit;  // Cached AU value for use with depth buffer
 
 	static std::shared_ptr<s_texture> defaultTexMap;  		// Default texture map for bodies if none supplied
 	static std::shared_ptr<s_texture> tex_eclipse_map;  	// for moon shadow lookups

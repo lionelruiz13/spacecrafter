@@ -124,10 +124,21 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
     bool newBucket = true;
 	double dist;
 
+    //! Computing orbit bucket need drawHomePlanet
+    depthBucket orbitBucket{.znear = 1e10, .zfar = 0};
+
     const auto _end = ssystem->endSorted();
 	for (auto it = ssystem->beginSorted(); it != _end; ++it) {
         auto &body = **it;
 		dist = body.getDistance();
+        if (body.needOrbitDepth()) {
+            // Add this body to the orbit depth bucket
+            const double bounding = body.getBoundingRadius() * 1.01;
+            if (orbitBucket.znear > dist - bounding)
+                orbitBucket.znear = dist - bounding;
+            if (orbitBucket.zfar < dist + bounding)
+                orbitBucket.zfar = dist + bounding;
+        }
 		if (dist < dbiter->znear) {
 			//~ std::cout << "Change of bucket for " << (*iter)->englishName << " which has as parent " << (*iter)->body->getParent()->getEnglishName() << std::endl;
 			//~ std::cout << "Change of bucket for " << (*iter)->englishName << std::endl;
@@ -163,12 +174,10 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 	}
 	Halo::endDraw();
 
-    // We should configure the clipping planes to include the body and his satellites - observatory->getHomeBody()
-    if (Body *home = observatory->getHomeBody().get()) {
-        double dist = home->getEarthEquPos(nav).length();
-        double range = home->getBoundingRadiusWithOrbit();
-        prj->setClippingPlanes(std::max(dist - range, 0.00000001), dist + range);
-    }
+    // We should configure the clipping planes to include the relevant bodies for orbit tracing
+    if (orbitBucket.zfar == 0)
+        orbitBucket = backup;
+    prj->setClippingPlanes(std::max(orbitBucket.znear, 0.00000001), orbitBucket.zfar);
 
     // Draw the orbits
     if (cmds[0] == -1) {
