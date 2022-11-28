@@ -424,16 +424,19 @@ void Observer::setEyeRelativeMode(bool mode)
 	if (flag_eye_relative_mode == mode)
 		return;
 	const double JD = CoreLink::instance->getJDay();
-	if (mode) {
-		anchorAlt->setHeliocentricEclipticPos(getHeliocentricPosition(JD));
+	Mat4d viewCorrection; // Correction to apply to the view in order to keep it visually unchanged
+	if (mode) { // Enter eye relative mode
 		CoreLink::instance->timeLock();
-	} else {
+		anchorAlt->setHeliocentricEclipticPos(getHeliocentricPosition(JD));
+		viewCorrection = anchor->getRotEquatorialToVsop87() * anchor->getRotLocalToEquatorial(JD, latitude, longitude, altitude);
+	} else { // Leave eye relative mode
 		CoreLink::instance->timeUnlock();
+		viewCorrection = (anchorAlt->getRotEquatorialToVsop87() * anchorAlt->getRotLocalToEquatorial(JD, latitude, longitude, altitude)).transpose();
 	}
-	auto local_vision = getRotLocalToEquatorial(JD) * CoreLink::instance->getLocalVision();
+	CoreLink::instance->setLocalVision(viewCorrection * CoreLink::instance->getLocalVision());
 	flag_eye_relative_mode = mode;
 	anchor.swap(anchorAlt);
-	CoreLink::instance->setLocalVision(getRotLocalToEquatorial(JD).transpose() * local_vision);
+
 }
 
 void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
