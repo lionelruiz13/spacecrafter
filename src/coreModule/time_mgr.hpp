@@ -81,7 +81,8 @@ public:
 
 	//! Release a time lock
 	inline void unlockTime() {
-		// assert(--timeLockCount >= 0);
+		// --timeLockCount;
+		// assert(timeLockCount >= 0);
 	}
 
 	// double getTimeMultiplier() const {

@@ -144,6 +144,7 @@ void SolarSystemModule::update(int delta_time)
 	// std::future<void> c = std::async(std::launch::async, &SolarSystemModule::hipStarMgrPreDraw, this);
 
     // Update faders
+    core->update(delta_time);
 	core->skyGridMgr->update(delta_time);
 	core->skyLineMgr->update(delta_time);
 	core->skyDisplayMgr->update(delta_time);

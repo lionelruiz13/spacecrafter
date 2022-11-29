@@ -892,6 +892,13 @@ public:
 		instance = nullptr;
 	};
 
+	void startTicking(Tickable<CoreLink> *arg) {
+		core->updateList.push_back(arg);
+	}
+	void stopTicking(Tickable<CoreLink> *arg) {
+		core->updateList.remove(arg);
+	}
+
 	static CoreLink *instance;
 private:
     std::shared_ptr<Core> core;

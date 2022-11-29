@@ -76,6 +76,7 @@ void InUniverseModule::update(int delta_time)
 	// Move the view direction and/or fov
 	core->updateMove(delta_time);
 	// Update faders
+	core->update(delta_time);
 	core->skyDisplayMgr->update(delta_time);
 
 	core->tully->update(delta_time);

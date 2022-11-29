@@ -609,10 +609,10 @@ void StarNavigator::draw(const Navigator * nav, const Projector* prj, bool scali
 		matrix = nav->getHelioToEyeMat().convert() * Mat4f::xrotation(-M_PI_2-23.4392803055555555556*M_PI/180);
 	drawRaw(matrix);
 
-	if (!names_fader.getInterstate())
+	if (names_fader.isZero())
 		return;
 
-	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
+	const float names_brightness = fader.getInterstate() * names_fader;
 
 	for (auto &s: listGlobalStarVisible) {
 		Vec3f spos(-s->posXYZ[0], s->posXYZ[1], s->posXYZ[2]);

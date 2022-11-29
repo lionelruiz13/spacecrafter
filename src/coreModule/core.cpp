@@ -1926,3 +1926,8 @@ void Core::unSelect(void) {
 float Core::getPlanetsSizeLimit(void) const {
 	return (ssystemFactory->getSizeLimit()-starGetSizeLimit());
 }
+
+void Core::update(int delta_time) {
+	const float deltaSeconds = delta_time / 1000.f;
+   	updateList.remove_if([deltaSeconds](auto *obj){return obj->update(deltaSeconds);});
+}

@@ -138,6 +138,7 @@ void StellarSystemModule::update(int delta_time)
     asyncUpdateBegin({sunPos, moonPos});
 
     // Update faders
+    core->update(delta_time);
 	core->skyGridMgr->update(delta_time);
 	core->skyLineMgr->update(delta_time);
 	core->skyDisplayMgr->update(delta_time);

@@ -723,7 +723,7 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	// Set temporary static variable for optimization
 	if (flagStarTwinkle) twinkle_amount = twinkleAmount*twinkle_param;
 	else twinkle_amount = 0;
-	const float names_brightness = names_fader.getInterstate() * fader.getInterstate();
+	const float names_brightness = fader.getInterstate() * names_fader;
 
 	float rcmag_table[2*256];
 
@@ -743,7 +743,7 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 		last_max_search_level = it->first;
 
 		unsigned int max_mag_star_name = 0;
-		if (names_fader.getInterstate()) {
+		if (names_fader.isNonZero()) {
 			int x = (int)((maxMagStarName-mag_min)/k);
 			if (x > 0) max_mag_star_name = x;
 		}

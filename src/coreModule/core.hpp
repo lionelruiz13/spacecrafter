@@ -76,6 +76,7 @@
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/translator.hpp"
+#include "EntityCore/Executor/Tickable.hpp"
 
 class StarNavigator;
 class BodyDecor;
@@ -108,6 +109,7 @@ class ConstellationMgr;
 class SSystemFactory;
 class StarGalaxy;
 class VolumObj3D;
+class CoreLink;
 
 //!  @brief Main class for application core processing.
 //!
@@ -447,6 +449,8 @@ public:
 		return selected_body_name;
 	}
 
+	// Update tickable elements
+	void update(int delta_time);
 private:
 	struct ViewZoomMove {
 		double deltaAlt, deltaAz, deltaFov, deltaHeight;	// View movement
@@ -542,6 +546,7 @@ private:
 	std::unique_ptr<StarLines> starLines;			// allows to draw lines in the galaxy
 	std::unique_ptr<OjmMgr> ojmMgr;					// represents obj3D
 	std::unique_ptr<UBOCam> uboCam;
+	std::list<Tickable<CoreLink> *> updateList;
 	GeodesicGrid* geodesic_grid;
 	BodyDecor* bodyDecor = nullptr;
 	MODULE currentModule = MODULE::SOLAR_SYSTEM;

@@ -31,6 +31,7 @@
 #include <tuple>
 #include <memory>
 
+#include "tools/auto_fader.hpp"
 #include "tools/fader.hpp"
 #include "tools/object_type.hpp"
 #include "tools/object.hpp"
@@ -176,7 +177,6 @@ public:
 	//! Update any time-dependent features.
 	//! Includes fading in and out stars and labels when they are turned on and off.
 	virtual void update(double deltaTime) {
-		names_fader.update(deltaTime);
 		fader.update(deltaTime);
 	}
 
@@ -221,7 +221,7 @@ public:
 	//! Sets the time it takes for star names to fade and off.
 	//! @param duration the time in seconds.
 	void setNamesFadeDuration(float duration) {
-		names_fader.setDuration((int) (duration * 1000.f));
+		names_fader.setDuration(duration);
 	}
 
 	//! Loads common names for stars from a file.
@@ -259,7 +259,7 @@ public:
 
 	//! Get display flag for Star names (labels).
 	bool getFlagNames(void) const {
-		return names_fader==true;
+		return names_fader.finalState();
 	}
 
 	void setSelected(Object star);
@@ -471,7 +471,7 @@ private:
 	void drawStarName( Projector* prj );
 	int getHPFromStarName(const std::string& name) const;
 
-	LinearFader names_fader;
+	ALinearFader names_fader;
 
 	float starSizeLimit;
 	float objectSizeLimit;

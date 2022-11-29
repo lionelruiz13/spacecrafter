@@ -1152,7 +1152,8 @@ void Body::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 
 void Body::drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator *nav, const Mat4f &mat, float screen_sz, bool depthTest)
 {
-    if (hasAtmosphere && screen_sz > 10 && get_angular_size(prj, nav) > 2) { // Avoid graphical glitch with too small angular size
+    if (hasAtmosphere && screen_sz > 10 && get_angular_size(prj, nav) > 2 // Avoid graphical glitch with too small angular size
+     && distance > radius * atmosphereParams->atmosphereRadiusFactor * 1.01) { // Avoid graphical glitch when too close of the atmosphere
         if (!atmExt) // AtmExt creation is fast AND never grouped
             atmExt = std::make_unique<AtmExt>(this, currentObj, atmosphereParams->tableAtmosphere);
         atmExt->draw(cmd, prj, nav, mat, eye_sun, eye_planet, one_minus_oblateness, Vec2i(bodyTesselation->getMinTesLevel(), bodyTesselation->getMaxTesLevel()), radius, radius * atmosphereParams->atmosphereRadiusFactor, screen_sz, depthTest);
