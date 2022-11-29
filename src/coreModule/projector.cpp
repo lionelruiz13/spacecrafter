@@ -54,7 +54,7 @@ Projector::Projector(const int width, const int height, double _fov)
 	                   0., 1., 0., 0.,
 	                   0., 0., -1, 0.,
 	                   0., 0., 0., 1.);
-	min_fov = 0.001;
+	min_fov = 0.0001;
 	max_fov = 359.9;
 	setFov(_fov);
 }
