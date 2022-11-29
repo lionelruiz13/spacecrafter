@@ -109,14 +109,19 @@ Body::Body(std::shared_ptr<Body> parent,
             case CENTER:
             case SUN:
             case STAR:
+                is_satellite = false;
+                break;
+            default:
                 is_satellite = true;
         }
 		if (parent->getBodyType() == CENTER || (parent->getBodyType() == SUN && !parent->parent))
             tAround = tACenter;
 		else
             tAround = tABody;
-	} else
+	} else {
 		tAround = tANothing;
+        is_satellite = false;
+    }
 
 	ecliptic_pos= v3dNull;
 	rot_local_to_parent = Mat4d::identity();

@@ -20,15 +20,13 @@
 #ifndef HALO_HPP
 #define HALO_HPP
 
-#include "tools/fader.hpp"
-
 #include "tools/vecmath.hpp"
 #include <vector>
 #include <memory>
 #include "EntityCore/SubBuffer.hpp"
 #include "tools/fader.hpp"
 
-constexpr int HALO_STRIDE = 8*sizeof(float);
+constexpr int HALO_STRIDE = 6*sizeof(float);
 
 class Body;
 class Navigator;
@@ -60,17 +58,21 @@ public:
 
 	static void createSC_context();
 	static void destroySC_context();
+
+	//! Prepair drawing halos in a batch
 	static void beginDraw();
-	static void nextDraw(VkCommandBuffer &cmd);
+	//! Process halo draws in the given CommandBuffer and prepair the next batch
+	static void nextDraw(VkCommandBuffer cmd);
+	//! Finalize and submit halo drawings
 	static void endDraw();
 
 private:
 	Body * body;
 
 	struct HaloContext {
-		struct alignas(HALO_STRIDE) pData_t {
+		struct pData_t {
 			Vec2f pos;
-			Vec4f Color;
+			Vec3f Color;
 			float rmag;
 		} *pData;
 		std::unique_ptr<VertexArray> pattern;
@@ -85,7 +87,6 @@ private:
 		int initialOffset = 0;
 		int offset = 0; // vertex offset of the next packed draw
 		int size = 0; // current vertex count of the next packed draw
-		LinearFader fader;
 	};
 	static HaloContext *global;
 

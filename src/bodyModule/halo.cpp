@@ -39,10 +39,9 @@ void Halo::beginDraw()
 		global->set->bindTexture(global->tex_halo->getTexture(), 0);
 		global->last_tex_halo = global->tex_halo.get();
 	}
-	global->fader = true;
 }
 
-void Halo::nextDraw(VkCommandBuffer &cmd)
+void Halo::nextDraw(VkCommandBuffer cmd)
 {
 	if (global->size) {
 		global->pipeline->bind(cmd);
@@ -64,18 +63,17 @@ void Halo::endDraw()
 		frame.compile(cmd);
 		frame.toExecute(cmd, PASS_MULTISAMPLE_DEPTH);
 	}
-	int size = (global->offset - global->initialOffset) * (HALO_STRIDE);
-	const int offset = global->initialOffset * (HALO_STRIDE);
+	int size = (global->offset - global->initialOffset) * HALO_STRIDE;
+	const int offset = global->initialOffset * HALO_STRIDE;
 	global->initialOffset = (global->initialOffset) ? 0 : global->offset;
 	global->offset = global->initialOffset;
 	if (size == 0)
 		return;
-	if ((int)(size / (HALO_STRIDE)) > global->vertex->getVertexCount() / 2) {
-		cLog::get()->write("Too many bodies are drawn (" + std::to_string(size / (HALO_STRIDE)) + " > " + std::to_string(global->vertex->getVertexCount() / 2) + "), THIS MAY CAUSE GRAPHICAL GLITCHES !", LOG_TYPE::L_WARNING);
-		size = global->vertex->getVertexCount() / 2 * (HALO_STRIDE);
+	if ((int)(size / HALO_STRIDE) > global->vertex->getVertexCount() / 2) {
+		cLog::get()->write("Too many bodies are drawn (" + std::to_string(size / HALO_STRIDE) + " > " + std::to_string(global->vertex->getVertexCount() / 2) + "), THIS MAY CAUSE GRAPHICAL GLITCHES !", LOG_TYPE::L_WARNING);
+		size = global->vertex->getVertexCount() / 2 * HALO_STRIDE;
 	}
 	context.transfer->planCopyBetween(global->staging, global->vertex->get(), size, offset, offset);
-	global->fader = false;
 }
 
 void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
@@ -88,7 +86,6 @@ void Halo::drawHalo(const Navigator* nav, const Projector* prj, const ToneReprod
 	data.pos[0] = body->screenPos[0];
 	data.pos[1] = body->screenPos[1];
 	data.Color = body->myColor->getHalo() * cmag;
-	data.Color[3] = global->fader.getInterstate();
 	data.rmag = rmag;
 }
 
@@ -164,7 +161,7 @@ void Halo::createSC_context()
 	global->pattern = std::make_unique<VertexArray>(vkmgr, context.ojmAlignment);
 	global->pattern->createBindingEntry(HALO_STRIDE);
 	global->pattern->addInput(VK_FORMAT_R32G32_SFLOAT);
-	global->pattern->addInput(VK_FORMAT_R32G32B32A32_SFLOAT);
+	global->pattern->addInput(VK_FORMAT_R32G32B32_SFLOAT);
 	global->pattern->addInput(VK_FORMAT_R32_SFLOAT);
 	//! Note : 16384 is enough while there is no more than 8192 halo drawn per frame
 	global->vertex = global->pattern->createBuffer(0, 16384, context.ojmBufferMgr.get());
