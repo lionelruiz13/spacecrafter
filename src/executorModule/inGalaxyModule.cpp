@@ -96,7 +96,6 @@ void InGalaxyModule::update(int delta_time)
 	// Update faders
 	core->update(delta_time);
 	core->skyDisplayMgr->update(delta_time);
-	core->starNav->update(delta_time);
 	core->starLines->update(delta_time);
 	core->milky_way->update(delta_time);
 	core->dso3d->update(delta_time);

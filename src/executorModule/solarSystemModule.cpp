@@ -151,7 +151,6 @@ void SolarSystemModule::update(int delta_time)
 	core->asterisms->update(delta_time);
 	core->atmosphere->update(delta_time);
 	core->landscape->update(delta_time);
-	core->hip_stars->update(delta_time);
 	core->nebulas->update(delta_time);
 	core->cardinals_points->update(delta_time);
 	core->milky_way->update(delta_time);

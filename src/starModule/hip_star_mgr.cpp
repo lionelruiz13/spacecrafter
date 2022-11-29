@@ -177,7 +177,7 @@ HipStarMgr::HipStarMgr(int width,int height) :
 	mag_converter(new MagConverter(*this)),
 	fontSize(13.)
 {
-	fader.setDuration(3000);
+	fader.setDuration(3);
 	setMagConverterMaxScaled60DegMag(6.5f);
 	if (hip_index == 0 || mag_converter == 0) {
 		std::cerr << "ERROR: HipStarMgr::HipStarMgr: no memory" << std::endl;
@@ -707,11 +707,13 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	starNameToDraw.clear();
 	double twinkle_param=1.;
 	nbStarsToDraw[drawIdx] = 0;
-	if (altitude>2000) twinkle_param=std::max(0.,1.-(altitude-2000.)/50000.);
+	if (altitude>2000)
+		twinkle_param=std::max(0.,1.-(altitude-2000.)/50000.);
 	current_JDay = timeMgr->getJulian();
 
 	// If stars are turned off don't waste time below projecting all stars just to draw disembodied labels
-	if(!fader.getInterstate()) return 0.;
+	if (fader.isZero())
+		return 0.;
 	vertexData = (float *) Context::instance->stagingMgr->getPtr(staging[drawIdx]);
 
 	int max_search_level = getMaxSearchLevel(eye, prj);
@@ -723,7 +725,7 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 	// Set temporary static variable for optimization
 	if (flagStarTwinkle) twinkle_amount = twinkleAmount*twinkle_param;
 	else twinkle_amount = 0;
-	const float names_brightness = fader.getInterstate() * names_fader;
+	const float names_brightness = fader * names_fader;
 
 	float rcmag_table[2*256];
 
@@ -738,7 +740,7 @@ double HipStarMgr::preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* 
 					return 0.; //goto exit_loop;
 				}
 			}
-			rcmag_table[2*i] *= fader.getInterstate();
+			rcmag_table[2*i] *= fader;
 		}
 		last_max_search_level = it->first;
 

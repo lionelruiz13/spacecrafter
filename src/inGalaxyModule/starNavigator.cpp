@@ -66,7 +66,6 @@ StarNavigator::StarNavigator() : nbStars(0)
 	set->bindTexture(starTexture->getTexture(), 0);
 	old_pos = v3fNull;
 
-	fader.setDuration(3000);
 	pool= new ThreadPool(std::thread::hardware_concurrency());
 
 	computeRCMagTable();

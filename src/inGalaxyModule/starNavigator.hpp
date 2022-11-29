@@ -56,7 +56,7 @@ class StarManager;
 
 typedef std::tuple<double, double, const std::string , const Vec4f > starDBtoDraw;
 
-class StarNavigator: public NoCopy , public ModuleFont, public ModuleFader<LinearFader> {
+class StarNavigator: public NoCopy , public ModuleFont {
 public:
 	StarNavigator();
 	~StarNavigator();
@@ -93,10 +93,9 @@ public:
 	//! Build draw command
 	void build();
 
-	//! Update any time-dependent features.
-	//! Includes fading in and out stars and labels when they are turned on and off.
-	virtual void update(double deltaTime) {
-		fader.update(deltaTime);
+	void setFaderDuration(float duration) {
+		fader.setDuration(duration);
+		names_fader.setDuration(duration);
 	}
 
 	//! Translate text.
@@ -152,6 +151,11 @@ public:
 		names_fader.setDuration(duration);
 	}
 
+	//! Set display flag for Stars
+	void setFlagShow(bool b) {
+		fader=b;
+	}
+
 	//! Set display flag for Star names (labels).
 	void setFlagNames(bool b) {
 		names_fader=b;
@@ -184,7 +188,8 @@ private:
 
 	void drawStarName(const Projector* prj);
 
-	ALinearFader names_fader;
+	ALinearFader fader;
+	ALinearFader names_fader{false, 3};
 	bool starsFader = true;
 	std::vector<starDBtoDraw> starNameToDraw;
 

@@ -150,7 +150,7 @@ private:
 //! which points from the observer (at the centre of the geodesic sphere)
 //! to the position of the star as observed on the celestial sphere.
 class HipStarMgr;
-class HipStarMgr: public NoCopy , public ModuleFont, public ModuleFader<LinearFader> {
+class HipStarMgr: public NoCopy , public ModuleFont, public AModuleFader<ALinearFader> {
 public:
 	HipStarMgr(int width,int height);
 	virtual ~HipStarMgr(void);
@@ -173,12 +173,6 @@ public:
 
 	//! compute the stars and the star selection indicator if necessary in buffer.
 	virtual double preDraw(GeodesicGrid* grid, ToneReproductor* eye, Projector* prj, Navigator* nav, TimeMgr* timeMgr, float altitude, bool atmosphere);
-
-	//! Update any time-dependent features.
-	//! Includes fading in and out stars and labels when they are turned on and off.
-	virtual void update(double deltaTime) {
-		fader.update(deltaTime);
-	}
 
 	//! Translate text.
 	virtual void updateI18n(Translator& trans);

@@ -62,6 +62,31 @@ protected:
 };
 
 template <class faderType>
+class AModuleFader {
+public:
+	// Fix fader duration (in s) beteween states
+	void setFaderDuration(float duration) {
+		fader.setDuration(duration);
+	}
+	//! Set display flag for Module
+	void setFlagShow(bool b) {
+		fader = b;
+	}
+	//! Get display flag for Module
+	bool getFlagShow() const {
+		return fader.finalState();
+	}
+	//! Inverse fader
+	void flipFlagShow() {
+		fader = !fader.finalState();
+	}
+
+protected:
+    faderType fader;
+};
+
+
+template <class faderType>
 class ModuleFader {
 public:
 	// Fix fader duration (in s) beteween states
