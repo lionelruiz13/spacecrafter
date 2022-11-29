@@ -2158,14 +2158,18 @@ int AppCommandInterface::commandText()
 						media->textDisplay(argName,true);
 						if (argWrite == W_TWICE)
 							media->textDisplay(argName+"2",true);
-						if (argWrite == W_THRICE)
+						if (argWrite == W_THRICE) {
+							media->textDisplay(argName+"2",true);
 							media->textDisplay(argName+"3",true);
+						}
 					} else {
 						media->textDisplay(argName,false);
 						if (argWrite == W_TWICE)
 							media->textDisplay(argName+"2",false);
-						if (argWrite == W_THRICE)
+						if (argWrite == W_THRICE) {
+							media->textDisplay(argName+"2",false);
 							media->textDisplay(argName+"3",false);
+						}
 					}
 					return executeCommandStatus();
 				}
