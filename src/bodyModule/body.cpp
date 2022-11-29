@@ -87,7 +87,6 @@ Body::Body(std::shared_ptr<Body> parent,
 	albedo(_albedo), axis_rotation(0.),
 	tex_map(nullptr), tex_norm(nullptr), eye_sun(0.0f, 0.0f, 0.0f),
 	lastJD(J2000), deltaJD(JD_SECOND/4), orbit(std::move(_orbit)), parent(parent), close_orbit(close_orbit),
-	is_satellite(parent && parent->getBodyType() != CENTER && parent->getBodyType() != SUN),
     orbit_bounding_radius(orbit_bounding_radius), boundingRadius(-1), sun_half_angle(0.0)
 	// tailFactors(-1., -1.), // mark "invalid"
 	// tailActive(false),
@@ -106,6 +105,12 @@ Body::Body(std::shared_ptr<Body> parent,
 	initialScale= 1.0;
 	if (parent) {
         parent->satellites.push_back(this);
+        switch (parent->getBodyType()) {
+            case CENTER:
+            case SUN:
+            case STAR:
+                is_satellite = true;
+        }
 		if (parent->getBodyType() == CENTER || (parent->getBodyType() == SUN && !parent->parent))
             tAround = tACenter;
 		else
@@ -435,8 +440,7 @@ double Body::getSatellitesFov(const Navigator * nav) const
 
 double Body::getParentSatellitesFov(const Navigator *nav) const
 {
-	if (parent && parent->parent) return parent->getSatellitesFov(nav);
-	return -1.0;
+    return (is_satellite) ? parent->getSatellitesFov(nav) : -1.0;
 }
 
 // Set the orbital elements
@@ -529,18 +533,20 @@ void Body::compute_trans_matrix(double jd)
 Mat4d Body::getRotEquatorialToVsop87(void) const
 {
 	Mat4d rval = rot_local_to_parent;
-	if (parent) for (std::shared_ptr<Body> p=parent; p->parent; p=p->parent) {
-			rval = p->rot_local_to_parent * rval;
-		}
+
+    for (Body *p = parent.get(); p; p = p->parent.get()) {
+        rval = p->rot_local_to_parent * rval;
+    }
 	return rval;
 }
 
 void Body::setRotEquatorialToVsop87(const Mat4d &m)
 {
 	Mat4d a = Mat4d::identity();
-	if (parent) for (std::shared_ptr<Body> p=parent; p->parent; p=p->parent) {
-			a = p->rot_local_to_parent * a;
-		}
+
+    for (Body *p = parent.get(); p; p = p->parent.get()) {
+        a = p->rot_local_to_parent * a;
+    }
 	rot_local_to_parent = a.transpose() * m;
 }
 
@@ -576,7 +582,8 @@ std::string Body::getTypePlanet(const BODY_TYPE str)  const
 // Compute the z rotation to use from equatorial to geographic coordinates
 double Body::getSiderealTime(double jd) const
 {
-	if (englishName=="Earth") return get_apparent_sidereal_time(jd);
+	if (englishName=="Earth")
+        return get_apparent_sidereal_time(jd);
 
 	double t = jd - re.epoch;
 	double rotations = t / (double) re.period;
@@ -596,13 +603,9 @@ Vec3d Body::get_ecliptic_pos() const
 Vec3d Body::get_heliocentric_ecliptic_pos() const
 {
 	Vec3d pos = ecliptic_pos;
-	std::shared_ptr<Body> p = parent;
 
-	while (p && p->parent) {
+	for (Body *p = parent.get(); p; p = p->parent.get())
 		pos += p->ecliptic_pos;
-		p = p->parent;
-	}
-
 	return pos;
 }
 
@@ -610,11 +613,8 @@ Vec3d Body::get_heliocentric_ecliptic_pos() const
 void Body::set_heliocentric_ecliptic_pos(const Vec3d &pos)
 {
 	ecliptic_pos = pos;
-	std::shared_ptr<Body> p = parent;
-	if (p) while (p->parent) {
-			ecliptic_pos -= p->ecliptic_pos;
-			p = p->parent;
-		}
+    for (Body *p = parent.get(); p; p = p->parent.get())
+		ecliptic_pos -= p->ecliptic_pos;
 }
 
 
@@ -1156,21 +1156,13 @@ void Body::drawAtmExt(VkCommandBuffer cmd, const Projector *prj, const Navigator
 
 Vec3d Body::getPositionAtDate(double jDate) const
 {
+    Vec3d pos{};
+    Vec3d tmp;
 
-	double * v = new double[3];
-	std::shared_ptr<const Body> b = shared_from_this();
-
-	this->getOrbit()->positionAtTimevInVSOP87Coordinates(jDate, v);
-	Vec3d pos = Vec3d(v[0], v[1], v[2]);
-
-	while(b->getParent()!=nullptr) {
-		b = b->getParent();
-		b->getOrbit()->positionAtTimevInVSOP87Coordinates(jDate, v);
-		pos +=  Vec3d(v[0], v[1], v[2]);
-	}
-	//we don't need v anymore
-	delete[] v;
-
+    for (const Body *b = this; b && b->getOrbit(); b = b->parent.get()) {
+        b->getOrbit()->positionAtTimevInVSOP87Coordinates(jDate, tmp);
+        pos += tmp;
+    }
 	return pos;
 }
 

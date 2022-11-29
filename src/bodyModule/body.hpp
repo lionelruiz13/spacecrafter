@@ -559,7 +559,7 @@ protected:
 	LinearFader visibilityFader;  // allows related lines and labels to fade in/out
 
 	bool close_orbit; // whether to close orbit loop
-	bool is_satellite;  // whether has a Body as a parent
+	bool is_satellite = false;  // whether has a Body as a parent
 
 	TURN_AROUND tAround;
 

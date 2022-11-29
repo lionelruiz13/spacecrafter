@@ -36,7 +36,7 @@ class ProtoSystem;
  * \class SolarSystemSelected
  *
  * \brief Set the selected object in solar system
- * 
+ *
  * Acts on select flags
  *
 */
@@ -47,9 +47,15 @@ public:
     ~SolarSystemSelected();
 
 	void changeSystem(ProtoSystem * _ssystem) {
+        const bool flagPlanetsOrbits_ = flagPlanetsOrbits;
+        const bool flagSatellitesOrbits_ = flagSatellitesOrbits;
+        setFlagPlanetsOrbits(false);
+        setFlagSatellitesOrbits(false);
 		ssystem = _ssystem;
+        setFlagPlanetsOrbits(flagPlanetsOrbits_);
+    	setFlagSatellitesOrbits(flagSatellitesOrbits_);
 	}
-	
+
 	//! Get selected object's pointer
 	Object getSelected(void) const {
 		return selected;
