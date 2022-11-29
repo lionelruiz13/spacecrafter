@@ -118,10 +118,8 @@ App::App( SDLFacade* const sdl )
 
 	// Display splash screen earlier
 	appDraw = std::make_unique<AppDraw>();
-	if (!VulkanMgr::instance->getSwapchainView().empty()) {
-		appDraw->initSplash();
-		context.stat->capture(Capture::INIT_SPLASH);
-	}
+	appDraw->initSplash();
+	context.stat->capture(Capture::INIT_SPLASH);
 	flushFrames = conf.getBoolean(SCS_RENDERING, SCK_FLUSH_FRAMES);
 
 	finalizeInitVulkan(conf);
@@ -531,12 +529,15 @@ void App::firstInit()
 
 	context.stat->capture(Capture::INIT_FONT);
 
+	appDraw->initSplash(); // Avoid overloading the transfer manager
 	core->init(conf);
 	context.stat->capture(Capture::INIT_CORE);
+	appDraw->initSplash(); // Avoid overloading the transfer manager
 	ui->init(conf);
 	ui->localizeTui();
 	ui->initTui();
 	context.stat->capture(Capture::INIT_UI);
+	appDraw->initSplash(); // Avoid overloading the transfer manager
 
 	appDraw->createSC_context();
 	media->initVR360();
@@ -571,6 +572,7 @@ void App::firstInit()
 	cLog::get()->mark();
 
 	this->init();
+	initialized = true;
 }
 
 
@@ -857,7 +859,7 @@ void App::submitFrame(App *self, int id)
 {
 	VkCommandBuffer mainCmd = self->context.frame[id]->getMainHandle();
 	vkCmdEndRenderPass(mainCmd);
-	if (self->media) { // Is initialized
+	if (self->initialized) { // Is initialized
 		self->context.waitFrameSync[0].semaphore = self->context.semaphores[self->context.helper->getLastFrameIdx()];
 		self->media->playerRecordUpdateDependency(mainCmd);
 		if (self->context.starUsed[id]) {

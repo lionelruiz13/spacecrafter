@@ -180,6 +180,7 @@ private:
 	std::vector<std::unique_ptr<Texture>> multisampleImage;
 	std::unique_ptr<Texture> depthBuffer;
 	bool flushFrames = false; // Flush every frames, reduce framerates but potentially remove some graphical glitches
+	bool initialized = false;
 
 	// Main elements of the stel_app
 	AppSettings* settings = nullptr;		 			//! base for the software constants

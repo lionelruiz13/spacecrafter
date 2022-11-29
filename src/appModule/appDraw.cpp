@@ -160,30 +160,35 @@ void AppDraw::initSplash()
     VulkanMgr &vkmgr = *VulkanMgr::instance;
     if (vkmgr.getSwapchainView().empty()) {
         cLog::get()->write("No swapchain available, skip splash screen.", LOG_TYPE::L_DEBUG);
+        return;
     }
-    layout = std::make_unique<PipelineLayout>(vkmgr);
-    layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
-    layout->buildLayout();
-    layout->build();
+    if (!layout) {
+        layout = std::make_unique<PipelineLayout>(vkmgr);
+        layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
+        layout->buildLayout();
+        layout->build();
 
-    // This is not the main SpaceCrafter loop, don't invoke s_texture mechanics
-    texture = std::make_unique<Texture>(vkmgr, *context.stagingMgr, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, std::string("splash/spacecrafter.png"));
-    texture->init();
+        // This is not the main SpaceCrafter loop, don't invoke s_texture mechanics
+        texture = std::make_unique<Texture>(vkmgr, *context.stagingMgr, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, std::string("splash/spacecrafter.png"));
+        texture->init();
+
+        pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
+        pipeline->setBlendMode(BLEND_NONE);
+        pipeline->setDepthStencilMode();
+        pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+        pipeline->bindShader("splash.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
+        pipeline->bindShader("splash.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
+        pipeline->build();
+    }
+
     Set set(vkmgr, *context.setMgr, layout.get()); // If not temporary, not destroyed
     set.bindTexture(*texture, 0);
     set.update();
 
-    pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_FOREGROUND, layout.get());
-    pipeline->setBlendMode(BLEND_NONE);
-    pipeline->setDepthStencilMode();
-    pipeline->setTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
-    pipeline->bindShader("splash.vert.spv", VK_SHADER_STAGE_VERTEX_BIT);
-    pipeline->bindShader("splash.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
-    pipeline->build();
-
-    context.lastFrameIdx = 2;
+    context.lastFrameIdx = context.frameIdx;
     context.waitFrameSync[0].semaphore = context.semaphores[context.lastFrameIdx];
     vkAcquireNextImageKHR(vkmgr.refDevice, vkmgr.getSwapchain(), UINT32_MAX, context.waitFrameSync[0].semaphore, VK_NULL_HANDLE, &context.frameIdx);
+    vkWaitForFences(vkmgr.refDevice, 1, &context.fences[context.lastFrameIdx], VK_TRUE, UINT32_MAX);
     vkResetFences(vkmgr.refDevice, 1, &context.fences[context.frameIdx]);
 
     FrameMgr &frame = *context.frame[context.frameIdx];
