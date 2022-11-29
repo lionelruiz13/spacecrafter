@@ -25,7 +25,7 @@ layout (location=0) out vec2 TexCoord;
 void main(void)
 {
 	vec2 pos0 = pos[0].xy;
-	if (main_clipping_fov[2] < 300.0 || (length(pos0 - pos[1].xy) + length(pos0 - pos[2].xy)) < TOLERANCE) {
+	if (main_clipping_fov[2] < 2.7 || (length(pos0 - pos[1].xy) + length(pos0 - pos[2].xy)) < TOLERANCE) {
 		// delete triangles with too many spaced points
 
 		for (int i =0; i<3; i++) {

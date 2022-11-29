@@ -9,7 +9,7 @@ do
     if [ $(date -r $src +%s) != "$(date -r $dst +%s)" ]
     then
         echo "compile $src"
-        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $src +%Y%m%d%H%M.%S)" $dst
+        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $dst +%Y%m%d%H%M.%S)" $src
     fi
 done
 echo "==============================================="
@@ -20,7 +20,7 @@ do
     if [ $(date -r $src +%s) != "$(date -r $dst +%s)" ]
     then
         echo "compile $src"
-        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $src +%Y%m%d%H%M.%S)" $dst
+        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $dst +%Y%m%d%H%M.%S)" $src
     fi
 done
 echo "==============================================="
@@ -31,7 +31,7 @@ do
     if [ $(date -r $src +%s) != "$(date -r $dst +%s)" ]
     then
         echo "compile $src"
-        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $src +%Y%m%d%H%M.%S)" $dst
+        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $dst +%Y%m%d%H%M.%S)" $src
     fi
 done
 echo "==============================================="
@@ -42,7 +42,7 @@ do
     if [ $(date -r $src +%s) != "$(date -r $dst +%s)" ]
     then
         echo "compile $src"
-        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $src +%Y%m%d%H%M.%S)" $dst
+        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $dst +%Y%m%d%H%M.%S)" $src
     fi
 done
 echo "==============================================="
@@ -53,7 +53,7 @@ do
     if [ $(date -r $src +%s) != "$(date -r $dst +%s)" ]
     then
         echo "compile $src"
-        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $src +%Y%m%d%H%M.%S)" $dst
+        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $dst +%Y%m%d%H%M.%S)" $src
     fi
 done
 echo "==============================================="
@@ -64,7 +64,7 @@ do
     if [ $(date -r $src +%s) != "$(date -r $dst +%s)" ]
     then
         echo "compile $src ($(date -r $src +%s) != $(date -r $dst +%s)"
-        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $src +%Y%m%d%H%M.%S)" $dst
+        glslc $src -o $dst -I . --target-env="vulkan1.1" && touch -cmt "$(date -r $dst +%Y%m%d%H%M.%S)" $src
     fi
 done
 echo "==============================================="

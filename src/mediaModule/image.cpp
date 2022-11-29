@@ -574,7 +574,7 @@ void Image::drawUnified(bool drawUp, const Navigator * nav, const Projector * pr
 	uVert.clipping_fov = prj->getClippingFov();
 
 	if (image_pos_type==IMG_POSITION::POS_DOME)
-		uVert.clipping_fov[2] = 180;
+		uVert.clipping_fov[2] = M_PI_2;
 
 	PipelineLayout *layout;
 	if (imageTexture->isYUV()) {

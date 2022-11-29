@@ -68,14 +68,14 @@ void Axis::computeAxis(const Projector* prj, const Mat4d& mat)
 	float rq1 = pos[0]*pos[0]+pos[1]*pos[1];
 	float depth = (sqrt(rq1 + pos[2]*pos[2]) - clipping_fov[0]) / (clipping_fov[1] - clipping_fov[0]);
 	pos /= sqrt(rq1)+1e-30; // Don't divide by zero
-	float f = (atan(pos[2]) / M_PI + 0.5f) * 360. / clipping_fov[2];
+	float f = (atan(pos[2]) / M_PI + 0.5f) * M_PI / clipping_fov[2];
 	pPosAxis[0] = Vec3d(pos[0] * f, pos[1] * f, depth);
 
 	pos = mat * Vec3d(0, 0, -1.4 * body->radius);
 	rq1 = pos[0]*pos[0]+pos[1]*pos[1];
 	depth = (sqrt(rq1 + pos[2]*pos[2]) - clipping_fov[0]) / (clipping_fov[1] - clipping_fov[0]);
 	pos /= sqrt(rq1)+1e-30; // Don't divide by zero
-	f = (atan(pos[2]) / M_PI + 0.5f) * 360. / clipping_fov[2];
+	f = (atan(pos[2]) / M_PI + 0.5f) * M_PI / clipping_fov[2];
 	pPosAxis[1] = Vec3d(pos[0] * f, pos[1] * f, depth);
 }
 

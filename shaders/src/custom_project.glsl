@@ -6,7 +6,7 @@ vec4 custom_project(vec4 invec)
 	float zFar=main_clipping_fov[1];
 	float fov=main_clipping_fov[2];
 
-	float fisheye_scale_factor = 1.0/fov*180.0/M_PI*2.0;
+	float fisheye_scale_factor = 1.0/fov;
 	float viewport_center_x=viewport_center[0];
 	float viewport_center_y=viewport_center[1];
 	float viewport_radius=viewport_center[2];

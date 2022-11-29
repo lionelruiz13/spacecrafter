@@ -27,7 +27,7 @@ void main(void)
 	vec4 pos2 = gl_in[1].gl_Position;
 	float spacing = distance(vec2(pos1), vec2(pos2));
 
-	if (clipping_fov.z > 30 && spacing > TOLERANCE)
+	if (clipping_fov.z > 0.3 && spacing > TOLERANCE)
 		return;
 
 	gl_Position = pos1;
@@ -45,4 +45,3 @@ void main(void)
 	EmitVertex();
 	EndPrimitive();
 }
-

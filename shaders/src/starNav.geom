@@ -29,7 +29,7 @@ vec4 custom_project(vec4 invec)
 	float zFar=main_clipping_fov[1] * 8.f; // 16000.f
 	float fov=main_clipping_fov[2];
 
-	float fisheye_scale_factor = 1.0/fov*180.0/M_PI*2.0;
+	float fisheye_scale_factor = 1.0/fov;
 	float viewport_center_x=viewport_center[0];
 	float viewport_center_y=viewport_center[1];
 	float viewport_radius=viewport_center[2];
@@ -67,7 +67,7 @@ vec4 custom_project(vec4 invec)
         win.y = viewport_center_y + win.y * f;
 
         win.z = (abs(depth) - zNear) / (zFar-zNear);
-        if (a<0.9*M_PI) 
+        if (a<0.9*M_PI)
 			win.w = 1.0;
         else
 			win.w = -1.0;
@@ -86,21 +86,21 @@ void main()
 		TexCoord= vec2(1.0f, .0f);
 		TexColor= color[0];
 		EmitVertex();
-		
+
 		// en haut à droite
 		gl_Position   = MVP2D * ( pos +vec4( mag[0], mag[0], 0.0, 0.0) );
                 gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(1.0f, 1.0f);
 		TexColor= color[0];
-		EmitVertex();    
-		
+		EmitVertex();
+
 		// en Bas à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -mag[0], -mag[0], 0.0, 0.0) );
                 gl_Position.z = max(pos.z * 8.f, 1.f);
 		TexCoord= vec2(0.0f, 0.0f);
 		TexColor= color[0];
 		EmitVertex();
-		
+
 		// en haut à gauche
 		gl_Position   = MVP2D * ( pos +vec4( -mag[0], mag[0], 0.0, 0.0) );
                 gl_Position.z = max(pos.z * 8.f, 1.f);

@@ -21,7 +21,7 @@ void main(void)
 {
 	vec2 dist = gl_in[1].gl_Position.xy - gl_in[0].gl_Position.xy;
 
-	if (main_clipping_fov[2] < 300.0 || dot(dist, dist) < SQUARED_TOLERANCE) {
+	if (main_clipping_fov[2] < 2.7 || dot(dist, dist) < SQUARED_TOLERANCE) {
 		gl_Position = gl_in[0].gl_Position;
 		indiceOut = indice[0];
 		EmitVertex();

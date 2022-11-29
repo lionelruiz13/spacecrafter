@@ -259,7 +259,7 @@ public:
 
 	//! return float zNear, zFar and fov direct for GLSL usage
 	Vec3f getClippingFov () const {
-		return Vec3f((float) zNear, (float) zFar, (float) fov);
+		return Vec3f((float) zNear, (float) zFar, (float) fov*(M_PI/360.f));
 	}
 
 	Mat4f getMatLocalToEye() const {

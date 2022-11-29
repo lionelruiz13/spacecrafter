@@ -34,7 +34,7 @@ void main()
                         distance(gl_in[0].gl_Position.xy, gl_in[2].gl_Position.xy),
                         distance(gl_in[0].gl_Position.xy, gl_in[1].gl_Position.xy));
 
-        float Visible = float(visible[0] & visible[1] & visible[2] | int(clipping_fov.z > 270.));
+        float Visible = float(visible[0] & visible[1] & visible[2] | int(clipping_fov.z > 2.5));
         tes = clamp(tes * 32, 1., 64.) * Visible;
 
         gl_TessLevelOuter[0] = tes[0];

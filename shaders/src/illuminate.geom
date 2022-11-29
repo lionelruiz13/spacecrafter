@@ -40,7 +40,7 @@ void main(void)
 	vec2 dist2 = dist1 - pos3.xy;
 	dist1 -= pos2.xy;
 
-	if (main_clipping_fov[2] < 300.0 || ((dot(dist1, dist1) + dot(dist2, dist2)) < TOLERANCE)) {
+	if (main_clipping_fov[2] < 2.7 || ((dot(dist1, dist1) + dot(dist2, dist2)) < TOLERANCE)) {
 
 		gl_Position = MVP2D * pos1;
 		texCoordOut = texCoord[0];

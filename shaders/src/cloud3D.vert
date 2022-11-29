@@ -34,7 +34,7 @@ void main()
     positionOut = pos;
     colorOut = color;
     invmodelOut = invmodel;
-    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, 180));
+    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, 3.1415926));
     visible = int(gl_Position.z >= 0.);
     outLodFactor = lodFactor;
 }
