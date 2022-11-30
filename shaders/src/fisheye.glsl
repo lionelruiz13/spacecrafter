@@ -30,5 +30,5 @@ vec4 fisheyeProjectClamped(vec3 invec, vec3 clipping_fov)
 		f = M_PI - f;
 	f /= rq * clipping_fov.z;
     depth = (depth - clipping_fov.x) / (clipping_fov.y - clipping_fov.x);
-    return vec4(win.x * f, win.y * f, depth, 1.);
+    return vec4(win.x * f, win.y * f, clamp(depth, 0, 1), 1.);
 }
