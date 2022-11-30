@@ -19,7 +19,7 @@ layout (line_strip, max_vertices = 16) out;
 
 layout (location=0) in vec3 position[];
 
-#define TOLERANCE 1.2
+#define TOLERANCE 3
 
 void main(void)
 {
