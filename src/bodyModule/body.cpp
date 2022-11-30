@@ -558,26 +558,28 @@ void Body::setRotEquatorialToVsop87(const Mat4d &m)
 std::string Body::getTypePlanet(const BODY_TYPE str)  const
 {
 	switch (str) {
-		case 0 :
+		case SUN:
 			return "sun";
-		case 1 :
+		case PLANET:
 			return "planet";
-		case 2 :
+		case MOON:
 			return "moon";
-		case 3 :
+		case DWARF:
 			return "dwarf planet";
-		case 4 :
+		case ASTEROID:
 			return "asteroid";
-		case 5 :
+		case KBO:
 			return "kuiper belt object";
-		case 6 :
+		case COMET:
 			return "comet";
-		case 7 :
+		case ARTIFICIAL:
 			return "artificial";
-		case 8 :
+		case OBSERVER:
 			return "observer";
-		case 9 :
+		case CENTER:
 			return "center";
+        case STAR:
+            return "star";
 		default :
 			return "unknown";
 	}
