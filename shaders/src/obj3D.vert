@@ -32,6 +32,6 @@ void main()
     positionOut = pos;
     dataOut = data;
     invmodelOut = invmodel;
-    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, 180));
+    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, M_PI/2));
     visible = int(gl_Position.z >= 0.);
 }

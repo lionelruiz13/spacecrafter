@@ -21,5 +21,5 @@ void main()
     texOut = (position + 1) / 2;
     vec3 pos = vec3(ModelViewMatrix * vec4(position, 1.f));
     posOut = pos;
-    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, 180));
+    gl_Position = fisheyeProjectNoMV(pos, vec3(clipping_fov.x, clipping_fov.y, M_PI/2));
 }
