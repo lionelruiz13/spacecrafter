@@ -58,7 +58,7 @@
 
 #define NB_ASTEROIDS 400000
 
-double Ring::fadingFactor = 40;
+double Ring::fadingFactor = 40*120;
 
 Ring::Ring(double radius_min,double radius_max,const std::string &texname, const Vec3i &_init)
 	:radius_min(radius_min),radius_max(radius_max)
