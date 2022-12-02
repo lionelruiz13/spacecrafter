@@ -2146,11 +2146,11 @@ int AppCommandInterface::commandText()
 				} else if (argWrite == W_THRICE) {
 					media->textAdd(argName, textParam);
 					textParam.azimuth += 120;
-					argName += "2";
-					media->textAdd(argName, textParam);
+					//argName += "2";
+					media->textAdd(argName+"2", textParam);
 					textParam.azimuth += 120;
-					argName += "3";
-					media->textAdd(argName, textParam);
+					//argName += "3";
+					media->textAdd(argName+"3", textParam);
 				}
 				// test if user specifies argDisplay
 				if (!argDisplay.empty()) {
