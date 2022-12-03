@@ -2093,7 +2093,7 @@ int AppCommandInterface::commandText()
 		}
 
 		if (argAction==W_UPDATE) {
-			media->textNameUpdate(argName, argString);
+			media->textNameUpdate(argName+"1", argString);
 			return executeCommandStatus();
 		} else
 		if (argAction== W_LOAD) {
@@ -2136,26 +2136,23 @@ int AppCommandInterface::commandText()
 				}
 				std::string argWrite = args[W_WRITE];
 				if (argWrite.empty()) {
-					media->textAdd(argName, textParam);
+					media->textAdd(argName+"1", textParam);
 				}
 				else if (argWrite == W_TWICE) {
-					media->textAdd(argName, textParam);
+					media->textAdd(argName+"1", textParam);
 					textParam.azimuth += 180;
-					argName += "2";
-					media->textAdd(argName, textParam);
+					media->textAdd(argName+"2", textParam);
 				} else if (argWrite == W_THRICE) {
-					media->textAdd(argName, textParam);
+					media->textAdd(argName+"1", textParam);
 					textParam.azimuth += 120;
-					//argName += "2";
 					media->textAdd(argName+"2", textParam);
 					textParam.azimuth += 120;
-					//argName += "3";
 					media->textAdd(argName+"3", textParam);
 				}
 				// test if user specifies argDisplay
 				if (!argDisplay.empty()) {
 					if ( Utility::isTrue(argDisplay) ) {
-						media->textDisplay(argName,true);
+						media->textDisplay(argName+"1",true);
 						if (argWrite == W_TWICE)
 							media->textDisplay(argName+"2",true);
 						if (argWrite == W_THRICE) {
@@ -2163,7 +2160,7 @@ int AppCommandInterface::commandText()
 							media->textDisplay(argName+"3",true);
 						}
 					} else {
-						media->textDisplay(argName,false);
+						media->textDisplay(argName+"1",false);
 						if (argWrite == W_TWICE)
 							media->textDisplay(argName+"2",false);
 						if (argWrite == W_THRICE) {
@@ -2184,11 +2181,11 @@ int AppCommandInterface::commandText()
 	// test argDisplay in independent command
 	if (!argDisplay.empty()) {
 		if ( Utility::isTrue(argDisplay) ) {
-			media->textDisplay(argName,true);
+			media->textDisplay(argName+"1",true);
 			media->textDisplay(argName+"2",true);
 			media->textDisplay(argName+"3",true);
 		} else {
-			media->textDisplay(argName,false);
+			media->textDisplay(argName+"1",false);
 			media->textDisplay(argName+"2",false);
 			media->textDisplay(argName+"3",false);
 		}
