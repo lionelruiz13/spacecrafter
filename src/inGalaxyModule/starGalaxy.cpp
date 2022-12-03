@@ -219,11 +219,12 @@ void StarGalaxy::loadCatalog(const std::string &filename)
 {
     std::ifstream file(filename);
 	std::vector<VertexEntry> tmp;
-    float x, y, z;
+	Vec3f pos;
+    // float x, y, z;
 	int colorID =  rand()%128; // A "random" initial value
     while (file) {
         int t = -1;
-		file >> t >> x >> y >> z;
+		file >> t >> pos.v[0] >> pos.v[1] >> pos.v[2];
 		colorID = (colorID + 7) % 32;
 		switch (t) {
 			case 1:
@@ -248,7 +249,9 @@ void StarGalaxy::loadCatalog(const std::string &filename)
 			default:
 				continue;
 		}
-		tmp.push_back({{x * scaling, y * scaling, z * scaling}, color_table[colorID]});
+		pos *= scaling;
+		pos = Mat4f::translation(Vec3f( -0.0001, -0.0001, -0.005)) * Mat4f::yawPitchRoll(90, 0, 0) *pos;
+		tmp.push_back({pos, color_table[colorID]});
     }
 	nbStars = tmp.size();
 	vertex = vertexArray->createBuffer(0, nbStars, Context::instance->globalBuffer.get(), nullptr);
