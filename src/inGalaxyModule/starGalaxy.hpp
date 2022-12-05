@@ -62,9 +62,11 @@ private:
     struct UniformData {
         Mat4f MV;
         Vec3f clipping_fov;
+        float fading;
     };
     SharedBuffer<UniformData> global;
-    float scaling = 0.0000008;
+    const float scaling = 0.0000008;
+    const float opacityAdjustment = 1e8 * scaling;
 };
 
 #endif /* end of include guard: STAR_GALAXY_HPP */

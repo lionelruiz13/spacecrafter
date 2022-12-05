@@ -7,15 +7,15 @@ layout (location = 0) flat out vec4 colorOut;
 layout (binding=0, set=0) uniform uMat {
 	mat4 ModelViewMatrix;
 	vec3 clipping_fov;
+	float fading;
 };
 
 #include <fisheye.glsl>
 
 void main()
 {
-	vec4 pos = fisheyeProject(position, clipping_fov);
-	float alpha = 1 - pos.z;
-	colorOut = vec4(color, alpha);
+	vec4 pos = fisheyeProjectClamped(position, clipping_fov);
+	colorOut = vec4(color, fading);
 	gl_Position = pos;
 	gl_PointSize = 1.5;
 }

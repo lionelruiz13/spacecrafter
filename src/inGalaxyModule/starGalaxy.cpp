@@ -204,8 +204,11 @@ StarGalaxy::~StarGalaxy() {}
 void StarGalaxy::draw(const Navigator * nav, const Projector* prj)
 {
 	FrameMgr &frame = *Context::instance->frame[Context::instance->frameIdx];
-    global->MV = nav->getHelioToEyeMat().convert();
+	Mat4f mat = nav->getHelioToEyeMat().convert();
+    global->MV = mat;
     global->clipping_fov = prj->getClippingFov();
+	float tmp = opacityAdjustment / mat.getTranslation().length() / prj->getFov();
+	global->fading = (tmp < 1) ? tmp : 1;
 	auto &cmd = frame.begin(cmds[Context::instance->frameIdx], PASS_MULTISAMPLE_DEPTH);
 	pipeline->bind(cmd);
     layout->bindSet(cmd, *set);
