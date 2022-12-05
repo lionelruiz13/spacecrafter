@@ -66,7 +66,7 @@ private:
     };
     SharedBuffer<UniformData> global;
     const float scaling = 0.0000008;
-    const float opacityAdjustment = 1e8 * scaling;
+    const float opacityAdjustment = 5E5 * scaling;
 };
 
 #endif /* end of include guard: STAR_GALAXY_HPP */
