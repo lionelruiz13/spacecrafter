@@ -24,12 +24,11 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
-#define VR360_FADER_DURATION 3000
+#define VR360_FADER_DURATION 3
 
-VR360::VR360()
+VR360::VR360() :
+	uniform(*Context::instance->uniformMgr), showFader(false, VR360_FADER_DURATION)
 {
-	showFader = false;
-	showFader.setDuration(VR360_FADER_DURATION);
 }
 
 void VR360::init()
@@ -78,7 +77,7 @@ void VR360::createSC_context()
 	layout->setTextureLocation(0, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(1, &PipelineLayout::DEFAULT_SAMPLER);
 	layout->setTextureLocation(2, &PipelineLayout::DEFAULT_SAMPLER);
-	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT, 3);
+	layout->setUniformLocation(VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 3);
 	layout->buildLayout();
 	layout->build();
 	pipeline = std::make_unique<Pipeline>(vkmgr, *context.render, PASS_BACKGROUND, layout.get());
@@ -91,8 +90,7 @@ void VR360::createSC_context()
 	pipeline->bindShader("vr360.frag.spv");
 	pipeline->build();
 	set = std::make_unique<Set>(vkmgr, *context.setMgr, layout.get());
-	uModelViewMatrix = std::make_unique<SharedBuffer<Mat4f>>(*context.uniformMgr);
-	set->bindUniform(uModelViewMatrix, 3);
+	set->bindUniform(uniform, 3);
 }
 
 // void VR360::deleteShader()
@@ -114,16 +112,14 @@ void VR360::display(bool alive)
 	else {
 		event = new ScriptEvent( AppSettings::Instance()->getScriptDir()+"internal/clearVR360.sts");
 		EventRecorder::getInstance()->queue(event);
-		showFader = false;
-		showFader.update(VR360_FADER_DURATION);
+		showFader.setNoDelay(false);
 	}
 	isAlive = alive;
 }
 
 void VR360::displayStop()
 {
-	showFader = false;
-	showFader.update(VR360_FADER_DURATION);
+	showFader.setNoDelay(false);
 	isAlive = false;
 }
 
@@ -167,10 +163,11 @@ void VR360::draw(const Projector* prj, const Navigator* nav)
 		return;
 	sync->inUse = true;
 
-	*uModelViewMatrix = (nav->getJ2000ToEyeMat() *
+	uniform->mat = (nav->getJ2000ToEyeMat() *
 	                     Mat4d::xrotation(M_PI)*
 	                     Mat4d::yrotation(M_PI)*
 	                     Mat4d::zrotation(M_PI/180*270)).convert();
+	uniform->fading = showFader;
 
 	Context::instance->frame[Context::instance->frameIdx]->toExecute(cmds[Context::instance->frameIdx], PASS_BACKGROUND);
 }

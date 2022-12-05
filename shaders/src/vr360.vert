@@ -12,7 +12,10 @@ layout (location=1)in vec2 texcoord;
 layout (location=2)in vec3 normal;
 
 //fisheye projection inclusion
-layout (binding=3, set=1) uniform uModelViewMatrix {mat4 ModelViewMatrix;};
+layout (binding=3, set=1) uniform udata {
+	mat4 ModelViewMatrix;
+	float fader;
+};
 #include <fisheye.glsl>
 
 // for main_clipping_fov

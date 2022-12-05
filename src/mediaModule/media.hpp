@@ -112,7 +112,6 @@ public:
 	}
 
 	void faderUpdate(float delta_time) {
-		vr360->update(delta_time);
 		viewPort->update(delta_time);
 	}
 
@@ -367,7 +366,7 @@ public:
 		viewPort->build(frameIdx);
 		viewPort->setTexture(player->getYUV_VideoTexture());
 	}
-	
+
 	void playerUpdate() {
 		player->update();
 	}

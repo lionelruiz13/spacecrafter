@@ -19,7 +19,7 @@
 
 #include <memory>
 //
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 #include "mediaModule/media_base.hpp"
 #include "tools/no_copy.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
@@ -58,11 +58,6 @@ public:
 	//! build draw command
 	void build();
 
-	//! update faders of the classe
-	void update(int delta_time) {
-		showFader.update(delta_time);
-	}
-
 	//! ccreation of shaders
 	void createSC_context();
 private:
@@ -74,17 +69,22 @@ private:
 	bool isAlive = false;
 	bool canDraw = false;
 
+	struct UniformData {
+		Mat4f mat;
+		float fading;
+	};
+
 	//std::unique_ptr<shaderProgram> shaderVR360;
 	std::unique_ptr<Pipeline> pipeline;
 	std::unique_ptr<PipelineLayout> layout;
 	std::unique_ptr<Set> set;
 	std::shared_ptr<VideoSync> sync;
-	std::unique_ptr<SharedBuffer<Mat4f>> uModelViewMatrix;
+	SharedBuffer<UniformData> uniform;
 	VkCommandBuffer cmds[3];
 
 	TYPE typeVR360 = TYPE::V_NONE;
 
-	LinearFader showFader;
+	ALinearFader showFader;
 };
 
 #endif  //__VR360_HPP__
