@@ -57,7 +57,7 @@ void Orbit2D::drawOrbit(VkCommandBuffer &cmd, const Navigator * nav, const Proje
 		float fov;
 	} pushData;
 	pushData.mat = mat.convert();
-	pushData.fov = prj->getFov();
+	pushData.fov = prj->getFov() * (M_PI / 360.f);
 	layoutOrbit2d->pushConstant(cmd, 0, &color);
 	layoutOrbit2d->pushConstant(cmd, 1, &pushData);
 	vkCmdDraw(cmd, ORBIT_POINTS + ORBIT_ADDITIONNAL_POINTS, 1, 0, 0);
