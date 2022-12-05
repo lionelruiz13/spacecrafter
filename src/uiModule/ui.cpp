@@ -443,7 +443,12 @@ void UI::handleJoyHat(SDL_JoyHatEvent E)
 
 void UI::moveMouseAlt(double x)
 {
-	int distZ=sqrt((posMouseX-m_sdl->getDisplayWidth()/2)*(posMouseX-m_sdl->getDisplayWidth()/2)+(posMouseY-m_sdl->getDisplayHeight()/2)*(posMouseY-m_sdl->getDisplayHeight()/2));
+	int distZ=sqrt(
+		(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
+	  * (posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
+	  + (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
+	  * (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
+  	);
 	if (distZ<1)
 		distZ=1;
 
@@ -451,19 +456,25 @@ void UI::moveMouseAlt(double x)
 		x = x>0 ? 1 : -1;
 	}
 
-	posMouseX = posMouseX+x*(posMouseY-m_sdl->getDisplayHeight()/2)/distZ/2;
-	posMouseY = posMouseY-x*(posMouseX-m_sdl->getDisplayWidth()/2)/distZ/2;
+	posMouseX = posMouseY+x*(posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)/distZ/2;
+	posMouseY = posMouseX-x*(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)/distZ/2;
 	m_sdl->warpMouseInWindow(posMouseX, posMouseY);
 	handleMove(posMouseX , posMouseY);
 }
 
 void UI::moveMouseAz(double x)
 {
-	int distZ=sqrt((posMouseX-m_sdl->getDisplayWidth()/2)*(posMouseX-m_sdl->getDisplayWidth()/2)+(posMouseY-m_sdl->getDisplayHeight()/2)*(posMouseY-m_sdl->getDisplayHeight()/2));
+	int distZ=sqrt(
+		(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
+	  * (posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
+	  + (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
+	  * (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
+  	);
+	std::cout << "X=" << posMouseX << '\t' << "Y=" << posMouseY << "\tSize : (" << VulkanMgr::instance->getSwapChainExtent().width << 'x' << VulkanMgr::instance->getSwapChainExtent().height << ")\n";
 	if (distZ<1)
 		distZ=1;
-	posMouseX = posMouseX+x*(posMouseX-m_sdl->getDisplayWidth()/2-1)/distZ/2; //-1 put to avoid no movement if already centered
-	posMouseY = posMouseY+x*(posMouseY-m_sdl->getDisplayHeight()/2-1)/distZ/2; //-1 put to avoid no movement if already centered
+	posMouseX = posMouseX+x*(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2-1)/distZ/2; //-1 put to avoid no movement if already centered
+	posMouseY = posMouseY+x*(posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2-1)/distZ/2; //-1 put to avoid no movement if already centered
 	m_sdl->warpMouseInWindow(posMouseX, posMouseY);
 	handleMove(posMouseX , posMouseY);
 }
