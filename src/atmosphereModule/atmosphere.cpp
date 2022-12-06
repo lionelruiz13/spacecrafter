@@ -140,13 +140,13 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 	float min_mw_lum = 0.13;
 
 	// no need to calculate if not visible
-	if (!fader.getInterstate()) {
+	if (fader.isZero()) {
 		atm_intensity = 0;
 		world_adaptation_luminance = 3.75f + lightPollutionLuminance;
 		milkyway_adaptation_luminance = min_mw_lum;  // brighter than without atm, since no drawing addition of atm brightness
 		return;
 	} else {
-		atm_intensity = fader.getInterstate();
+		atm_intensity = fader;
 	}
 
 	skylight_struct2 b2;
@@ -244,7 +244,7 @@ void Atmosphere::computeColor(double JD, Vec3d sunPos, Vec3d moonPos, float moon
 
 void Atmosphere::draw()
 {
-	if (!fader.getInterstate())
+	if (fader.isZero())
 		return;
 
 	Context::instance->transfer->planCopyBetween(stagingSkyColor, skyColor->get());

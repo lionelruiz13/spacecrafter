@@ -33,7 +33,7 @@
 #include <vector>
 #include <memory>
 #include "atmosphereModule/atmosphere_commun.hpp"
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 
 
 #include "tools/vecmath.hpp"
@@ -66,17 +66,13 @@ public:
 	//! Draw the atmosphere using the precalc values stored in tab_sky
 	void draw();
 
-	void update(int delta_time) {
-		fader.update(delta_time);
-	}
-
 	//! Set fade in/out duration in seconds
 	void setFaderDuration(float duration) {
-		fader.setDuration((int)(duration*1000.f));
+		fader.setDuration(duration);
 	}
 	//! Get fade in/out duration in seconds
 	float getFaderDuration() {
-		return fader.getDuration()/1000.f;
+		return fader.getDuration();
 	}
 
 	//set default_fader duration
@@ -95,12 +91,12 @@ public:
 
 	//! Get whether atmosphere is displayed
 	bool getFlagShow() const {
-		return fader;
+		return fader.finalState();
 	}
 
 	//! flip whether to display atmosphere
 	void flipFlagShow() {
-		fader = !fader;
+		fader = !fader.finalState();
 	}
 
 	//! tells you actual atm intensity due to eclipses + fader
@@ -110,7 +106,7 @@ public:
 
 	//! let's you know how far faded in or out the atm is (0-1)
 	float getFadeIntensity() {
-		return fader.getInterstate();
+		return fader;
 	}
 
 	float getWorldAdaptationLuminance() const { //unused
@@ -151,7 +147,7 @@ private:
 	float milkyway_adaptation_luminance = 0.f;
 	float atm_intensity = 0.f;
 
-	ParabolicFader fader;
+	AParabolicFader fader;
 	float lightPollutionLuminance = 0.f; 	//! light pollution simulation, add to svn 20070220
 
 	std::unique_ptr<Pipeline> pipeline;
