@@ -94,9 +94,9 @@ public:
 
 	void drawGravityUi(MODULE module);	// Draw simple gravity text ui.
 	// Handle mouse clics
-	int handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_VALUE state);
+	int handleClic(const std::pair<uint16_t, uint16_t> &pos, s_gui::S_GUI_VALUE button, s_gui::S_GUI_VALUE state);
 	// Handle mouse move
-	int handleMove(int x, int y);
+	int handleMove(const std::pair<uint16_t, uint16_t> &newPos);
 	// Handle key press and release
 	int handleKeys(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_GUI_VALUE state);
 
@@ -243,7 +243,8 @@ private:
 	double MouseCursorTimeout;  // seconds to hide cursor when not used.  0 means no timeout
 	bool is_dragging, has_dragged;
 	int previous_x, previous_y;
-	int posMouseX, posMouseY;
+	std::pair<uint16_t, uint16_t> posMouse; // Mouse position (screen coordinates)
+	std::pair<float, float> nposMouse; // Mouse position (normalized viewport coordinates)
 	bool FlagMouseUsableInScript;
 	double MouseTimeLeft;  // for cursor timeout (seconds)
 	int MouseZoom;					//! représente la valeur du zoom

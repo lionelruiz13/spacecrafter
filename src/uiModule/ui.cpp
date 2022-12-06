@@ -66,7 +66,9 @@ UI::UI(std::shared_ptr<Core> _core, CoreLink * _coreLink, App * _app, SDLFacade 
 	tui_root(nullptr),
 	key_Modifier(NONE) ,
 	KeyTimeLeft(0) ,
-	deltaSpeed(DeltaSpeed::NO)
+	deltaSpeed(DeltaSpeed::NO),
+	posMouse(_m_sdl->getDisplayWidth()/2 , _m_sdl->getDisplayHeight()/2),
+	nposMouse(VulkanMgr::instance->screenToRect(posMouse))
 {
 	if (!_core) {
 		cLog::get()->write("UI.CPP CRITICAL : In stel_ui constructor, invalid core.",LOG_TYPE::L_ERROR);
@@ -244,23 +246,29 @@ void UI::saveCurrentConfig(InitParser &conf)
 }
 
 /*******************************************************************************/
-int UI::handleMove(int x, int y)
+int UI::handleMove(const std::pair<uint16_t, uint16_t> &newPos)
 {
+	if (newPos != posMouse) {
+		posMouse = newPos;
+		nposMouse = VulkanMgr::instance->screenToRect(newPos);
+	}
+
 	// core->setMouse(x,y);
 	// Do not allow use of mouse while script is playing otherwise script can get confused
-	if (scriptInterface->isScriptPlaying() && ! FlagMouseUsableInScript) return 0;
+	if (scriptInterface->isScriptPlaying() && !FlagMouseUsableInScript)
+		return 0;
 
 	// Show cursor
 	SDL_ShowCursor(1);
 	MouseTimeLeft = MouseCursorTimeout*1000;
 
 	if (is_dragging) {
-		if ((has_dragged || sqrtf((x-previous_x)*(x-previous_x)+(y-previous_y)*(y-previous_y))>4.)) {
+		if (has_dragged || ((posMouse.first-previous_x)*(posMouse.first-previous_x)+(posMouse.second-previous_y)*(posMouse.second-previous_y) > 16)) {
 			has_dragged = true;
 			core->setFlagTracking(false);
-			core->dragView(previous_x, previous_y, x, y);
-			previous_x = x;
-			previous_y = y;
+			core->dragView(previous_x, previous_y, posMouse.first, posMouse.second);
+			previous_x = posMouse.first;
+			previous_y = posMouse.second;
 			return 1;
 		}
 	}
@@ -308,7 +316,7 @@ void UI::toggle(UI_FLAG layerValue)
 // SHOW_LATLON, SHOW_FOV, SHOW_PLANETNAME
 
 /*******************************************************************************/
-int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_VALUE state)
+int UI::handleClic(const std::pair<uint16_t, uint16_t> &pos, s_gui::S_GUI_VALUE button, s_gui::S_GUI_VALUE state)
 {
 	// Do not allow use of mouse while script is playing otherwise script can get confused
 	if (scriptInterface->isScriptPlaying() && ! FlagMouseUsableInScript) return 0;
@@ -327,8 +335,8 @@ int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_V
 			if (state==s_gui::S_GUI_PRESSED) {
 				is_dragging = true;
 				has_dragged = false;
-				previous_x = x;
-				previous_y = y;
+				previous_x = pos.first;
+				previous_y = pos.second;
 			} else {
 				is_dragging = false;
 			}
@@ -376,7 +384,7 @@ int UI::handleClic(Uint16 x, Uint16 y, s_gui::S_GUI_VALUE button, s_gui::S_GUI_V
 				return 1;
 			}
 			// Try to select object at that position
-			core->findAndSelect(x, y);
+			core->findAndSelect(pos.first, pos.second);
 		}
 	}
 	return 0;
@@ -443,40 +451,34 @@ void UI::handleJoyHat(SDL_JoyHatEvent E)
 
 void UI::moveMouseAlt(double x)
 {
-	int distZ=sqrt(
-		(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
-	  * (posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
-	  + (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
-	  * (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
-  	);
-	if (distZ<1)
-		distZ=1;
+	// This is rotation
+	x /= 128;
+	float tmp = nposMouse.first * nposMouse.first + nposMouse.second * nposMouse.second;
+	x /= std::pow(tmp, 0.8);
 
-	if(abs(x) < 1){
-		x = x>0 ? 1 : -1;
-	}
+	tmp = nposMouse.second * x;
+	nposMouse.second += -nposMouse.first * x;
+	nposMouse.first += tmp;
 
-	posMouseX = posMouseY+x*(posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)/distZ/2;
-	posMouseY = posMouseX-x*(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)/distZ/2;
-	m_sdl->warpMouseInWindow(posMouseX, posMouseY);
-	handleMove(posMouseX , posMouseY);
+	tmp = sqrtf(1 + x*x);
+	nposMouse.first /= tmp;
+	nposMouse.second /= tmp;
+	posMouse = VulkanMgr::instance->rectToScreen(nposMouse);
+	m_sdl->warpMouseInWindow(posMouse.first, posMouse.second);
 }
 
 void UI::moveMouseAz(double x)
 {
-	int distZ=sqrt(
-		(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
-	  * (posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2)
-	  + (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
-	  * (posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2)
-  	);
-	std::cout << "X=" << posMouseX << '\t' << "Y=" << posMouseY << "\tSize : (" << VulkanMgr::instance->getSwapChainExtent().width << 'x' << VulkanMgr::instance->getSwapChainExtent().height << ")\n";
-	if (distZ<1)
-		distZ=1;
-	posMouseX = posMouseX+x*(posMouseX-VulkanMgr::instance->getSwapChainExtent().width/2-1)/distZ/2; //-1 put to avoid no movement if already centered
-	posMouseY = posMouseY+x*(posMouseY-VulkanMgr::instance->getSwapChainExtent().height/2-1)/distZ/2; //-1 put to avoid no movement if already centered
-	m_sdl->warpMouseInWindow(posMouseX, posMouseY);
-	handleMove(posMouseX , posMouseY);
+	// This is distance to center
+	x /= 64;
+	x /= sqrtf(nposMouse.first * nposMouse.first + nposMouse.second * nposMouse.second);
+	x += 1;
+	if (x < 0)
+		return;
+	nposMouse.first *= x;
+	nposMouse.second *= x;
+	posMouse = VulkanMgr::instance->rectToScreen(nposMouse);
+	m_sdl->warpMouseInWindow(posMouse.first, posMouse.second);
 }
 
 void UI::moveLat(double x)
@@ -658,15 +660,15 @@ void UI::turnDown()
 
 void UI::leftClick()
 {
-	handleClic(posMouseX, posMouseY, s_gui::S_GUI_MOUSE_LEFT, s_gui::S_GUI_PRESSED);
-	handleClic(posMouseX, posMouseY, s_gui::S_GUI_MOUSE_LEFT, s_gui::S_GUI_RELEASED);
+	handleClic(posMouse, s_gui::S_GUI_MOUSE_LEFT, s_gui::S_GUI_PRESSED);
+	handleClic(posMouse, s_gui::S_GUI_MOUSE_LEFT, s_gui::S_GUI_RELEASED);
 	this->executeCommand("define a -1");
 }
 
 void UI::rightClick()
 {
-	handleClic(posMouseX, posMouseY, s_gui::S_GUI_MOUSE_RIGHT, s_gui::S_GUI_PRESSED);
-	handleClic(posMouseX, posMouseY, s_gui::S_GUI_MOUSE_RIGHT, s_gui::S_GUI_RELEASED);
+	handleClic(posMouse, s_gui::S_GUI_MOUSE_RIGHT, s_gui::S_GUI_PRESSED);
+	handleClic(posMouse, s_gui::S_GUI_MOUSE_RIGHT, s_gui::S_GUI_RELEASED);
 }
 
 void UI::executeCommand(const std::string& command)
@@ -751,7 +753,7 @@ void UI::handleInputs(SDL_Event E)
 				default :
 					bt=s_gui::S_GUI_MOUSE_LEFT;
 			}
-			handleClic(E.button.x,E.button.y,bt,s_gui::S_GUI_PRESSED);
+			handleClic({E.button.x, E.button.y}, bt,s_gui::S_GUI_PRESSED);
 			break;
 
 		case SDL_MOUSEWHEEL:
@@ -759,7 +761,7 @@ void UI::handleInputs(SDL_Event E)
 				bt=s_gui::S_GUI_MOUSE_WHEELUP;
 			else
 				bt=s_gui::S_GUI_MOUSE_WHEELDOWN;
-			handleClic(E.button.x,E.button.y,bt,s_gui::S_GUI_PRESSED);
+			handleClic({E.button.x, E.button.y}, bt,s_gui::S_GUI_PRESSED);
 			break;
 
 		case SDL_MOUSEBUTTONUP:
@@ -777,13 +779,11 @@ void UI::handleInputs(SDL_Event E)
 				default :
 					bt=s_gui::S_GUI_MOUSE_LEFT;
 			}
-			handleClic(E.button.x,E.button.y,bt,s_gui::S_GUI_RELEASED);
+			handleClic({E.button.x, E.button.y}, bt,s_gui::S_GUI_RELEASED);
 			break;
 
 		case SDL_MOUSEMOTION:
-			posMouseX=E.motion.x;
-			posMouseY=E.motion.y;
-			handleMove(E.motion.x,E.motion.y);
+			handleMove({E.motion.x, E.motion.y});
 			break;
 
 		case SDL_KEYDOWN:
