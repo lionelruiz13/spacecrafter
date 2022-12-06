@@ -99,7 +99,6 @@ void InGalaxyModule::update(int delta_time)
 	core->starLines->update(delta_time);
 	core->milky_way->update(delta_time);
 	core->dso3d->update(delta_time);
-	core->landscape->update(delta_time);
 
 	// Give the updated standard projection matrices to the projector
 	// NEEDED before atmosphere compute color

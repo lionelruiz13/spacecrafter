@@ -65,7 +65,7 @@
 #include "coreModule/time_mgr.hpp"
 #include "mainModule/define_key.hpp"
 #include "starModule/hip_star_mgr.hpp"
-
+#include "coreModule/landscape.hpp"
 #include "eventModule/EventScriptHandler.hpp"
 #include "eventModule/AppCommandHandler.hpp"
 #include "eventModule/EventScreenFaderHandler.hpp"

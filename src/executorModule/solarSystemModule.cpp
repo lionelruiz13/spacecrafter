@@ -24,7 +24,7 @@
 
 #include <iostream>
 #include <future>
-
+#include "coreModule/landscape.hpp"
 #include "solarSystemModule.hpp"
 #include "eventModule/event.hpp"
 #include "eventModule/event_recorder.hpp"
@@ -149,9 +149,6 @@ void SolarSystemModule::update(int delta_time)
 	core->skyLineMgr->update(delta_time);
 	core->skyDisplayMgr->update(delta_time);
 	core->asterisms->update(delta_time);
-	core->landscape->update(delta_time);
-	core->nebulas->update(delta_time);
-	core->cardinals_points->update(delta_time);
 	core->milky_way->update(delta_time);
 	core->starLines->update(delta_time);
 	core->oort->update(delta_time);

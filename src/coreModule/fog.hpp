@@ -31,7 +31,7 @@
 #include <memory>
 
 #include "tools/vecmath.hpp"
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 #include "tools/utility.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
@@ -47,14 +47,10 @@ class Pipeline;
 class PipelineLayout;
 class Set;
 
-class Fog : public NoCopy, public ModuleFader<LinearFader> {
+class Fog : public NoCopy, public AModuleFader<ALinearFader> {
 public:
 	Fog(float _radius);
 	~Fog();
-
-	void update(int delta_time) {
-		fader.update(delta_time);
-	}
 
 	void setAltAngle(float _value) {
 		alt_angle= _value;

@@ -31,7 +31,7 @@
 #include <memory>
 
 #include "tools/vecmath.hpp"
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 #include "tools/utility.hpp"
 
 #include "tools/no_copy.hpp"
@@ -51,7 +51,7 @@ class Set;
 class Fog;
 
 // Class which manages the displaying of the Landscape
-class Landscape: public NoCopy, public ModuleFader<LinearFader> {
+class Landscape: public NoCopy, public AModuleFader<ALinearFader> {
 
 public:
 	enum class LANDSCAPE_TYPE : char {
@@ -94,8 +94,6 @@ public:
 	std::string getDescription() const {
 		return description;
 	}
-
-	void update(int delta_time);
 
 	virtual void setRotation(float rotation) {
 		rotate_z = rotation;

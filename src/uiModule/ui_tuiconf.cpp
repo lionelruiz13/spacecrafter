@@ -31,7 +31,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
-
+#include "coreModule/landscape.hpp"
 #include "appModule/app.hpp"
 #include "appModule/space_date.hpp"
 #include "mainModule/sdl_facade.hpp"

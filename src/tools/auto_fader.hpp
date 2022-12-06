@@ -3,7 +3,6 @@
 
 #include "EntityCore/Executor/AFader.hpp"
 #include "coreModule/coreLink.hpp"
-#include "coreModule/core.hpp"
 
 class LinearInterp {
 public:

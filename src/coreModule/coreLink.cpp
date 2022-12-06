@@ -32,6 +32,7 @@
 #include "atmosphereModule/atmosphere.hpp"
 #include "coreModule/nebula_mgr.hpp"
 #include "coreModule/constellation_mgr.hpp"
+#include "coreModule/landscape.hpp"
 #include "starModule/hip_star_mgr.hpp"
 #include "bodyModule/ssystem_factory.hpp"
 #include "inGalaxyModule/dsoNavigator.hpp"
@@ -1272,4 +1273,38 @@ void CoreLink::planetSetSizeScale(std::string name, float f) {
 
 void CoreLink::planetTesselation(std::string name, int value) {
 	core->ssystemFactory->planetTesselation(name,value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Fog---------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+//! Set flag for displaying Fog
+void CoreLink::fogSetFlag(bool b) {
+	core->landscape->fogSetFlagShow(b);
+}
+//! Get flag for displaying Fog
+bool CoreLink::fogGetFlag() const {
+	return core->landscape->fogGetFlagShow();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Landscape---------------------------
+////////////////////////////////////////////////////////////////////////////////
+
+//! Get flag for displaying Landscape
+void CoreLink::landscapeSetFlag(bool b) {
+	core->landscape->setFlagShow(b);
+}
+//! Get flag for displaying Landscape
+bool CoreLink::landscapeGetFlag() const {
+	return core->landscape->getFlagShow();
+}
+
+void CoreLink::rotateLandscape(double rotation) {
+	core->landscape->setRotation(rotation);
+}
+
+std::string CoreLink::landscapeGetName() {
+ 	return core->landscape->getName();
 }

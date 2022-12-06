@@ -156,11 +156,11 @@ void NebulaMgr::removeSupplementalNebulae()
 // Draw all the Nebulae
 void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproductor* eye, double sky_brightness)
 {
-	if(!fader) return;
+	if (fader.isZero()) return;
 
-	Nebula::setHintsBrightness(hintsFader.getInterstate());
-	Nebula::setNebulaBrightness(fader.getInterstate());
-	Nebula::setTextBrightness(textFader.getInterstate());
+	Nebula::setHintsBrightness(hintsFader);
+	Nebula::setNebulaBrightness(fader);
+	Nebula::setTextBrightness(textFader);
 
 	//cout << "Draw Nebulaes" << endl;
 
@@ -187,7 +187,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	Nebula::beginDraw(prj);
 	for (const auto &n : nebGrid) {
 		// improve performance by skipping if too small to see
-		if ( n->getAngularSize()>size_limit|| (hintsFader.getInterstate()>0.0001 && n->getMag() <= getMaxMagHints())) {
+		if ( n->getAngularSize()>size_limit|| (hintsFader && n->getMag() <= getMaxMagHints())) {
 			// Refactor this by refactoring projectJ2000 and his dependencies
 			//prj->projectJ2000(n->XYZ_, win);
 			n->setXY(prj);
@@ -243,8 +243,7 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 
 	pipelineHint->bind(cmd);
 	layoutHint->bindSets(cmd, {*context.uboSet, *setHint});
-	float fader = hintsFader.getInterstate();
-	layoutHint->pushConstant(cmd, 0, &fader);
+	layoutHint->pushConstant(cmd, 0, &hintsFader);
 	vertexHint->bind(cmd);
 	vkCmdBindIndexBuffer(cmd, indexHint.buffer, indexHint.offset, VK_INDEX_TYPE_UINT16);
 	vkCmdDrawIndexed(cmd, nbDraw * 6, 1, 0, 0, 0);

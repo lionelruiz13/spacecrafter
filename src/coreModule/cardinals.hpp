@@ -30,7 +30,7 @@
 
 #include <string>
 #include <fstream>
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 #include "tools/vecmath.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/ScModule.hpp"
@@ -40,14 +40,10 @@ class s_font;
 class Translator;
 
 //! Class which manages the cardinal points displaying
-class Cardinals: public NoCopy , public ModuleColor, public ModuleFont , public ModuleFader<LinearFader> {
+class Cardinals: public NoCopy , public ModuleColor, public ModuleFont , public AModuleFader<ALinearFader> {
 public:
 	Cardinals(float _radius = 1.);
 	virtual ~Cardinals();
-
-	void update(int delta_time) {
-		fader.update(delta_time);
-	}
 
 	void draw(const Projector* prj, double latitude, bool gravityON = false) const;
 

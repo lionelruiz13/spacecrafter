@@ -112,13 +112,6 @@ bool Landscape::fogGetFlagShow() const
 	return fog->getFlagShow();
 }
 
-void Landscape::update(int delta_time)
-{
-	fader.update(delta_time);
-	fog->update(delta_time);
-}
-
-
 void Landscape::createSC_context()
 {
 	VulkanMgr &vkmgr = *VulkanMgr::instance;
@@ -269,8 +262,7 @@ std::string Landscape::getLandscapeNames(const std::string& landscape_file)
 void Landscape::draw(const Projector* prj, const Navigator* nav)
 {
 	Context &context = *Context::instance;
-	if (!valid_landscape) return;
-	if (!fader.getInterstate()) return;
+	if (fader.isZero() || !valid_landscape) return;
 
 	if (haveNightTex && sky_brightness < 0.25) {
 		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx + 3], PASS_FOREGROUND);
@@ -280,7 +272,7 @@ void Landscape::draw(const Projector* prj, const Navigator* nav)
 		context.frame[context.frameIdx]->toExecute(cmds[context.frameIdx], PASS_FOREGROUND);
 	}
 	uFrag->get().sky_brightness = fmin(sky_brightness,1.0);
-	uFrag->get().fader = fader.getInterstate();
+	uFrag->get().fader = fader;
 	*uMV = (nav->getLocalToEyeMat() * Mat4d::zrotation(-rotate_z)).convert();
 
 	fog->draw(prj,nav);

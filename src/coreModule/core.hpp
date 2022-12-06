@@ -39,7 +39,7 @@
 //#include "coreModule/constellation_mgr.hpp"
 //#include "inGalaxyModule/dso3d.hpp"
 //#include "coreModule/illuminate_mgr.hpp"
-#include "coreModule/landscape.hpp"
+// #include "coreModule/landscape.hpp"
 //#include "coreModule/meteor_mgr.hpp"
 //#include "coreModule/milkyway.hpp"
 //#include "coreModule/nebula_mgr.hpp"

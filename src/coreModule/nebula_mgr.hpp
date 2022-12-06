@@ -30,7 +30,7 @@
 #include <vector>
 #include <memory>
 #include "tools/object.hpp"
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 #include "tools/SphereGrid.hpp"
 #include "coreModule/nebula.hpp"
 #include "tools/no_copy.hpp"
@@ -48,7 +48,7 @@ class Set;
   * \brief NebulaMgr handles all deepsky_objects DSO.
   */
 
-class NebulaMgr : public NoCopy, public ModuleFont, public ModuleFader<LinearFader> {
+class NebulaMgr : public NoCopy, public ModuleFont, public AModuleFader<ALinearFader> {
 public:
 	NebulaMgr();
 	virtual ~NebulaMgr();
@@ -68,13 +68,6 @@ public:
 
 	//! Draw all the DSO
 	void draw(const Projector *prj, const Navigator *nav, ToneReproductor *eye, double sky_brightness);
-
-	//!Update Fader from DSO
-	void update(int delta_time) {
-		hintsFader.update(delta_time);
-		fader.update(delta_time);
-		textFader.update(delta_time);
-	}
 
 	//! search deepskyObject by name M83, NGC 1123, IC1234 ...
 	//! \return a object
@@ -100,7 +93,7 @@ public:
 
 	//!set the fade duration from Hints DSO
 	void setHintsFadeDuration(float duration) {
-		hintsFader.setDuration((int) (duration * 1000.f));
+		hintsFader.setDuration(duration);
 	}
 
 	//!set the Flag Hints for DSO
@@ -109,7 +102,7 @@ public:
 	}
 	//!get the Flag Hints value for DSO
 	bool getFlagHints(void) const {
-		return hintsFader;
+		return hintsFader.finalState();
 	}
 
 	//! Define the default Label Color for DSO font
@@ -185,7 +178,7 @@ public:
 
 	//! get current status of Nebulas Names
 	bool getNebulaNames() {
-		return textFader;
+		return textFader.finalState();
 	}
 
 	void setSelected(Object ojb);
@@ -241,8 +234,8 @@ protected:
 private:
 	bool loadDeepskyObjectFromCat(const std::string& cat); //!< load DSO with reading file cat
 
-	LinearFader hintsFader;			//!< Hint about position and number of dso
-	LinearFader textFader;			//!< Display names smoothly
+	ALinearFader hintsFader;			//!< Hint about position and number of dso
+	ALinearFader textFader;			//!< Display names smoothly
 
 	#ifdef _MSC_VER // MSVC is not C++11 compliant, using copy for moving in resize and reserve
 	typedef SphereGrid<std::shared_ptr<Nebula>> nebGrid_t;

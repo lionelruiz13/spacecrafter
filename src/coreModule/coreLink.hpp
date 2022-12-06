@@ -603,35 +603,22 @@ public:
 	////////////////////////////////////////////////////////////////////////////////
 
 	//! Set flag for displaying Fog
-	void fogSetFlag(bool b) {
-		core->landscape->fogSetFlagShow(b);
-	}
+	void fogSetFlag(bool b);
 	//! Get flag for displaying Fog
-	bool fogGetFlag() const {
-		return core->landscape->fogGetFlagShow();
-	}
+	bool fogGetFlag() const;
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Landscape---------------------------
 	////////////////////////////////////////////////////////////////////////////////
 
 	//! Get flag for displaying Landscape
-	void landscapeSetFlag(bool b) {
-		core->landscape->setFlagShow(b);
-	}
+	void landscapeSetFlag(bool b);
 	//! Get flag for displaying Landscape
-	bool landscapeGetFlag() const {
-		return core->landscape->getFlagShow();
-	}
+	bool landscapeGetFlag() const;
 
-	void rotateLandscape(double rotation) {
-		core->landscape->setRotation(rotation);
-	}
+	void rotateLandscape(double rotation);
 
-
-	std::string landscapeGetName() {
-	 	return core->landscape->getName();
-	}
+	std::string landscapeGetName();
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Milky Way---------------------------
