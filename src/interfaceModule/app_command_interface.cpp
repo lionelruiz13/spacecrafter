@@ -3320,6 +3320,17 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 		return executeCommandStatus();
 	}
 
+	if (argAction == W_ROTATE) {
+		auto &target = args[W_TARGET];
+		if (target.empty()) {
+			debug_message = "command 'camera' : missing target";
+			return executeCommandStatus();
+		}
+		auto &duration = args[W_DURATION];
+		stcore->lookAnchor(target, duration.empty() ? 2 : evalDouble(duration));
+		return executeCommandStatus();
+	}
+
 	if(argAction == W_ALIGN_WITH){
 
 		std::string argBody = args[W_BODY];

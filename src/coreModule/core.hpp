@@ -191,6 +191,9 @@ public:
 	//! Get wether the current simulation time is the real world time
 	bool getIsTimeNow(void) const;
 
+	//! Look at observatory position
+	void lookAnchor(const std::string &name, double duration);
+
 	//! Set object tracking
 	void setFlagTracking(bool b);
 	//! Get object tracking
