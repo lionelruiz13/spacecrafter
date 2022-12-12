@@ -123,4 +123,14 @@ void Artificial::drawBody(VkCommandBuffer cmd, const Projector* prj, const Navig
     uLight->get().Position = eye_sun;
 }
 
+void Artificial::drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj)
+{
+    if (isVisibleOnScreen()) {
+        // TODO : Draw ojm trace
+    }
+    if (orbitPlot)
+        orbitPlot->drawOrbit(cmdOrbit, nav, prj, parent_mat);
+}
+
+
 #endif /* end of include guard: BODY_ARTIFICIAL_HPP_ */

@@ -52,6 +52,7 @@ public:
 
 	virtual void selectShader ();
 
+	virtual void drawOrbit(VkCommandBuffer cmdBodyDepth, VkCommandBuffer cmdOrbit, const Observer* observatory, const Navigator* nav, const Projector* prj) override;
 protected :
 	void createSC_context();
 
