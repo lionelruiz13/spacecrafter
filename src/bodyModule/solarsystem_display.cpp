@@ -60,7 +60,7 @@ void SolarSystemDisplay::computePreDraw(const Projector * prj, const Navigator *
         if (!body.isVisibleOnScreen()) // Only reserve a bucket for visible body
             continue;
 
-		double bounding = body.getBoundingRadius() * 1.5;
+		double bounding = body.getBoundingRadius() * 11.1;
 
 		if (bounding <= 0) // Check if it has a bounding
             continue;
@@ -133,7 +133,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 		dist = body.getDistance();
         if (body.needOrbitDepth()) {
             // Add this body to the orbit depth bucket
-            const double bounding = body.getBoundingRadius() * 1.5;
+            const double bounding = body.getBoundingRadius() * 11.1;
             if (orbitBucket.znear > dist - bounding)
                 orbitBucket.znear = dist - bounding;
             if (orbitBucket.zfar < dist + bounding)
