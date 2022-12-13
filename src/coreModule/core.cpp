@@ -1928,8 +1928,10 @@ float Core::getPlanetsSizeLimit(void) const {
 }
 
 void Core::update(int delta_time) {
-	const float deltaSeconds = delta_time / 1000.f;
-   	updateList.remove_if([deltaSeconds](auto *obj){return obj->update(deltaSeconds);});
+	if (flagEnableTransition) {
+		const float deltaSeconds = delta_time / 1000.f;
+	   	updateList.remove_if([deltaSeconds](auto *obj){return obj->update(deltaSeconds);});
+	}
 }
 
 void Core::lookAnchor(const std::string &name, double duration)

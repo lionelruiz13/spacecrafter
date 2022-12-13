@@ -34,7 +34,7 @@ enum class SC_COMMAND : char {SC_ADD = 30, SC_AUDIO, SC_MODE, SC_BODY_TRACE, SC_
                               SC_DSO, SC_DSO3D, SC_EXTERNASC_VIEWER, SC_FONT, SC_FLAG, SC_GET, SC_HEADING, SC_ILLUMINATE, SC_IMAGE, SC_LANDSCAPE, SC_SCREEN_FADER, SC_LOOK, SC_MEDIA, SC_METEORS,
                               SC_MOVETO, SC_MULTIPLY, SC_DIVIDE, SC_TANGENT, SC_TRUNC, SC_SINUS, SC_PERSONAL, SC_PERSONEQ, SC_PLANET_SCALE, SC_POSITION, SC_PRINT, SC_RANDOM,
                               SC_SCRIPT, SC_SEARCH, SC_SELECT, SC_SET, SC_SHUTDOWN, SC_SKY_CULTURE, SC_STAR_LINES, SC_STRUCT, SC_SUNTRACE, SC_SUB, SC_TEXT,
-                              SC_TIMERATE, SC_WAIT, SC_ZOOMR
+                              SC_TIMERATE, SC_TRANSITION, SC_WAIT, SC_ZOOMR
                              };
 
 enum class FLAG_VALUES: char { FV_TOGGLE, FV_ON, FV_OFF};
@@ -286,6 +286,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define W_STAR_NAVIGATOR            "star_navigator"
 #define W_STAR_NAME                 "star_name"
 #define W_STAR_POS                  "star_pos"
+#define W_SKIP                      "skip"
 #define W_TERMINATION               "termination"
 #define W_PRELOAD					"preload"
 
@@ -346,6 +347,7 @@ enum class SC_RESERVED_VAR: char {LONGITUDE=0, LATITUDE, ALTITUDE, SUN_ALTITUDE,
 #define ACP_CN_SUNTRACE                             "suntrace"
 #define ACP_CN_TEXT                                 "text"
 #define ACP_CN_TIMERATE                             "timerate"
+#define ACP_CN_TRANSITION                           "transition"
 #define ACP_CN_WAIT                                 "wait"
 #define ACP_CN_ZOOM                                 "zoom"
 

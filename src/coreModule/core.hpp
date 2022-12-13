@@ -262,6 +262,13 @@ public:
 	bool getFlagManualAutoZoom(void) {
 		return FlagManualZoom;
 	}
+	//! Set whether transition is enabled or not
+	void setFlagEnableTransition(bool b) {
+		flagEnableTransition = b;
+	}
+	bool getFlagEnableTransition() const {
+		return flagEnableTransition;
+	}
 
 	// Viewing direction function : 1 move, 0 stop.
 	void turnRight(int);
@@ -563,6 +570,7 @@ private:
 	bool flagNav = false; 				// define the NAV version edition
 	bool FlagManualZoom;				// Define whether auto zoom can go further
 	bool firstTime= true;               // For init to track if reload or first time setup
+	bool flagEnableTransition = true;
 	ViewZoomMove vzm;					// var for ViewZoomMove
 	float InitFov;						// Default viewing FOV
 	Vec3d InitViewPos;					// Default viewing direction

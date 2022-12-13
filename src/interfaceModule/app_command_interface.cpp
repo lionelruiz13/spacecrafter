@@ -271,6 +271,7 @@ int AppCommandInterface::executeCommand(const std::string &_commandline, uint64_
 		case SC_COMMAND::SC_SUNTRACE :	return commandSuntrace(); break;
 		case SC_COMMAND::SC_TEXT :	return commandText(); break;
 		case SC_COMMAND::SC_TIMERATE :	return commandTimerate(); break;
+		case SC_COMMAND::SC_TRANSITION :	return commandTransition(); break;
 		case SC_COMMAND::SC_WAIT :	return commandWait(wait); break;
 		case SC_COMMAND::SC_ZOOMR :	return commandZoom(wait); break;
 		// for g++ warning
@@ -3807,5 +3808,27 @@ int AppCommandInterface::commandRandom()
 	}
 	if (status == false)
 		debug_message= _("unknown random parameter");
+	return executeCommandStatus();
+}
+
+int AppCommandInterface::commandTransition()
+{
+	std::string action = std::move(args[W_ACTION]);
+	if (action == W_SKIP) {
+		float duration = evalDouble(args[W_DURATION]);
+		if (!duration)
+			duration = 3600; // Ensure transitions complete now
+		if (!stcore->getFlagEnableTransition()) {
+			stcore->setFlagEnableTransition(true);
+			stcore->update(duration);
+			stcore->setFlagEnableTransition(false);
+		} else
+			stcore->update(duration);
+	} else if (action == W_PAUSE) {
+		stcore->setFlagEnableTransition(false);
+	} else if (action == W_RESUME) {
+		stcore->setFlagEnableTransition(true);
+	} else
+		debug_message = _("command 'transition': unknown argument");
 	return executeCommandStatus();
 }

@@ -89,6 +89,7 @@ void AppCommandInit::initialiseCommandsName(std::map<const std::string, SC_COMMA
 	m_commands[ACP_CN_SUNTRACE] = SC_COMMAND::SC_SUNTRACE;
 	m_commands[ACP_CN_TEXT] = SC_COMMAND::SC_TEXT;
 	m_commands[ACP_CN_TIMERATE] = SC_COMMAND::SC_TIMERATE;
+	m_commands[ACP_CN_TRANSITION] = SC_COMMAND::SC_TRANSITION;
 	m_commands[ACP_CN_WAIT] = SC_COMMAND::SC_WAIT;
 	m_commands[ACP_CN_ZOOM] = SC_COMMAND::SC_ZOOMR;
 

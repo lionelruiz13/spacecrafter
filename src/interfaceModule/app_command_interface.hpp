@@ -124,6 +124,7 @@ protected:
 	int commandSuntrace();
 	int commandText();
 	int commandTimerate();
+	int commandTransition();
 	int commandUncomment();
 	int commandWait(uint64_t &wait);
 	int commandZoom(uint64_t &wait);
