@@ -81,7 +81,7 @@ void SolarSystem::registerFont(s_font* _font)
 // This is a the private method
 void SolarSystem::addBody(stringHash_t param, bool deletable)
 {
-	const std::string &englishName = param["name"];
+	const std::string englishName = param["name"];
 	BODY_TYPE typePlanet = setPlanetType(param["type"]);
 
 	ProtoSystem::addBody(std::move(param), deletable);
