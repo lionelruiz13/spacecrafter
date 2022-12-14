@@ -167,7 +167,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	// StateGL::enable(GL_BLEND);
 	// StateGL::BlendFunc(GL_ONE, GL_ONE);
 
-	Vec3f pXYZ;
+	// Vec3f pXYZ;
 
 	// Find the star zones which are in the screen
 	// FOV is currently measured vertically, so need to adjust for wide screens
@@ -180,7 +180,7 @@ void NebulaMgr::draw(const Projector* prj, const Navigator * nav, ToneReproducto
 	// Print all the stars of all the selected zones
 	// speed up the computation of n->getOnScreenSize(prj, nav)>5:
 	const float size_limit = 5.0 * (M_PI/180.0) * (prj->getFov()/prj->getViewportHeight());
-	Vec3d win;
+	// Vec3d win;
 
 	float *data = (float *) Context::instance->transfer->beginPlanCopy(vertexHint->get().size);
 	nbDraw = 0;
@@ -243,7 +243,8 @@ void NebulaMgr::drawAllHint(const Projector* prj)
 
 	pipelineHint->bind(cmd);
 	layoutHint->bindSets(cmd, {*context.uboSet, *setHint});
-	layoutHint->pushConstant(cmd, 0, &hintsFader);
+	float fading = hintsFader;
+	layoutHint->pushConstant(cmd, 0, &fading);
 	vertexHint->bind(cmd);
 	vkCmdBindIndexBuffer(cmd, indexHint.buffer, indexHint.offset, VK_INDEX_TYPE_UINT16);
 	vkCmdDrawIndexed(cmd, nbDraw * 6, 1, 0, 0, 0);
