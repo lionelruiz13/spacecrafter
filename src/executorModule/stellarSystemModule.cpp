@@ -141,7 +141,6 @@ void StellarSystemModule::update(int delta_time)
     core->update(delta_time);
 	core->skyGridMgr->update(delta_time);
 	core->skyLineMgr->update(delta_time);
-	core->skyDisplayMgr->update(delta_time);
 	core->asterisms->update(delta_time);
 	core->milky_way->update(delta_time);
 	core->starLines->update(delta_time);

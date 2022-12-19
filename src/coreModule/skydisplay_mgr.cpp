@@ -59,13 +59,6 @@ SkyDisplayMgr::~SkyDisplayMgr()
 	SkyDisplay::destroySC_context();
 }
 
-void SkyDisplayMgr::update(int delta_time)
-{
-	for (auto it=m_map.begin(); it!=m_map.end(); ++it) {
-		it->second->update(delta_time);
-	}
-}
-
 void SkyDisplayMgr::clear(SKYDISPLAY_NAME nameObj)
 {
 	auto it=m_map.find(nameObj);

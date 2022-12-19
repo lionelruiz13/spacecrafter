@@ -30,7 +30,7 @@
 #include <memory>
 #include <vector>
 
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 #include "tools/no_copy.hpp"
 #include "tools/vecmath.hpp"
 
@@ -67,12 +67,8 @@ public:
 		return color;
 	}
 
-	void update(int delta_time) {
-		fader.update(delta_time);
-	}
-
 	void setFaderDuration(float duration) {
-		fader.setDuration((int)(duration*1000.f));
+		fader.setDuration(duration);
 	}
 
 	void setFlagShow(bool b) {
@@ -80,11 +76,11 @@ public:
 	}
 
 	bool getFlagShow(void) const {
-		return fader;
+		return fader.finalState();
 	}
 
 	void flipFlagShow() {
-		fader = !fader;
+		fader = !fader.finalState();
 	}
 
 	virtual void loadData(const std::string& filename){};
@@ -108,7 +104,7 @@ protected:
 	double aperson;
 	bool (Projector::*proj_func)(const Vec3d&, Vec3d&) const;
 	void draw_text(const Projector *prj,const Navigator *nav);
-	LinearFader fader;
+	ALinearFader fader;
 	Vec3d pt0, pt1, pt2, pt3, pt4, pt5;
 
 	static s_font* skydisplay_font;

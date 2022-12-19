@@ -205,10 +205,10 @@ void SkyDisplay::draw_text(const Projector *prj, const Navigator *nav)
 
 void SkyDisplay::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate()) {
+	if (fader.isZero() || m_dataSize <= 0) {
 		return;
 	}
-	uFrag->get().fader = fader.getInterstate();
+	uFrag->get().fader = fader;
 	*uMat = (ptype == AL) ? prj->getMatLocalToEye() : prj->getMatEarthEquToEye();
 	Context::instance->frame[Context::instance->frameIdx]->toExecute(getCommand(), PASS_MULTISAMPLE_DEPTH);
 }
@@ -322,9 +322,8 @@ SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 
 void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate()) {
+	if (fader.isZero() || m_dataSize <= 0)
 		return;
-	}
 
 	Vec3f punts;
 	clear();
@@ -391,10 +390,10 @@ SkyCoords::SkyCoords() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)
 {
-	if (!fader.getInterstate())
+	if (fader.isZero() || m_dataSize <= 0)
 		return;
 
-	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
+	Vec4f colorT (color[0], color[1], color[2], fader);
 
 	double tempDE, tempRA;
 	float alt, az, aza, alta, ra, dec, mn;
@@ -560,10 +559,10 @@ SkyMouse::SkyMouse() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)
 {
-	if (!fader.getInterstate())
+	if (fader.isZero() || m_dataSize <= 0)
 		return;
 
-	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
+	Vec4f colorT (color[0], color[1], color[2], fader);
 	int x,y;
 	SDL_GetMouseState(&x,&y);
 	Vec3d equPos = prj->getCursorPosEqu(x, y);
@@ -732,11 +731,11 @@ SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate()) {
+	if (fader.isZero() || m_dataSize <= 0) {
 		return;
 	}
 
-	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
+	Vec4f colorT (color[0], color[1], color[2], fader);
 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
 	// for Selected position
 	// calculate alt az position
@@ -837,10 +836,10 @@ SkyLoxodromy::SkyLoxodromy() : SkyDisplay(PROJECTION_TYPE::EQ)
 
 void SkyLoxodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate() or (equPos == oldEquPos)) {
+	if (fader.isZero() || (equPos == oldEquPos)) {
 		return;
 	}
-	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
+	Vec4f colorT (color[0], color[1], color[2], fader);
 	double de1, ra1, de2, ra2, dem, ram;
 	// for Old position
 	Utility::rectToSphe(&ra1, &de1, oldEquPos);
@@ -903,11 +902,11 @@ SkyOrthodromy::SkyOrthodromy() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (!fader.getInterstate()) {
+	if (fader.isZero()) {
 		return;
 	}
 
-	Vec4f colorT (color[0], color[1], color[2], fader.getInterstate());
+	Vec4f colorT (color[0], color[1], color[2], fader);
 	double tempDE, tempRA, azt, altt, alt1, alt2, az1, az2;
 	// for Selected position
 	// calculate alt az position
@@ -948,7 +947,7 @@ void SkyOrthodromy::draw(const Projector *prj, const Navigator *nav, Vec3d equPo
 		if (az1-az2 != 0)
 		  altt = atan(((tan(alt2) * sin(azt - az1)) / sin(az2 - az1)) + (tan(alt1) * sin(az2 - azt)) / sin(az2 - az1));
 		else
-		  altt = M_PI/2.;		  
+		  altt = M_PI/2.;
 		Utility::spheToRect(azt, altt, pt1);
 		if (i == 12)
 			pt5 = pt1;

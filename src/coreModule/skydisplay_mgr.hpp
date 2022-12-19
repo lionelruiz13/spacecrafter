@@ -53,7 +53,6 @@ public:
 	void build();
 	void draw(const Projector *prj,const Navigator *nav, Vec3d equPos, Vec3d oldEquPos);
 	void drawPerson(const Projector *prj,const Navigator *nav);
-	void update(int delta_time);
 	void clear(SKYDISPLAY_NAME nameObj);
 	void loadData(SKYDISPLAY_NAME nameObj, const std::string& filename);
 	void loadString(SKYDISPLAY_NAME nameObj, const std::string& dataStr);
