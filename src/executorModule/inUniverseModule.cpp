@@ -90,7 +90,7 @@ void InUniverseModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 	Event* event = new ScreenFaderInterludeEvent(
-		ScreenFaderInterludeEvent::DOWN, minAltToGoDown,1.1*minAltToGoDown, observer->getAltitude());
+		ScreenFaderInterludeEvent::DOWN, minAltToGoDown,1.3*minAltToGoDown, observer->getAltitude());
 	EventRecorder::getInstance()->queue(event);
 }
 
