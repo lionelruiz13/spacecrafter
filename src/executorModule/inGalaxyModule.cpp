@@ -109,7 +109,7 @@ void InGalaxyModule::update(int delta_time)
 	                                    core->navigation->geTdomeMat(),
 	                                    core->navigation->getDomeFixedMat());
 	Event* event = new ScreenFaderInterludeEvent(
-		ScreenFaderInterludeEvent::UP, maxAltToGoUp/10.0,maxAltToGoUp, observer->getAltitude());
+		ScreenFaderInterludeEvent::UP, maxAltToGoUp/2.0,maxAltToGoUp, observer->getAltitude());
 	EventRecorder::getInstance()->queue(event);
 }
 
