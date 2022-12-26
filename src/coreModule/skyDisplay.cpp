@@ -41,7 +41,7 @@
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
 
-#define NB_MAX_POINTS 4194304
+#define NB_MAX_POINTS 1024*1024
 
 const float deg2rad = 3.1415926 / 180.; // Convert deg to radian
 const float rad2deg = 180. / 3.1415926; // Converd radian to deg
@@ -322,7 +322,7 @@ SkyNautic::SkyNautic(PROJECTION_TYPE ptype) : SkyDisplay(ptype)
 
 void SkyNautic::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (fader.isZero() || m_dataSize <= 0)
+	if (fader.isZero())
 		return;
 
 	Vec3f punts;
@@ -731,7 +731,7 @@ SkyAngDist::SkyAngDist() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyAngDist::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldEquPos)
 {
-	if (fader.isZero() || m_dataSize <= 0) {
+	if (fader.isZero()) {
 		return;
 	}
 
