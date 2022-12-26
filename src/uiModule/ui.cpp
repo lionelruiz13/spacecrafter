@@ -1884,6 +1884,7 @@ int UI::handleKeyPressed(SDL_Scancode key, Uint16 mod, Uint16 unicode, s_gui::S_
 					break;
 				case CTRL :
 					this->executeCommand("select planet home_planet pointer off");
+					this->executeCommand("body action preload name home_planet");
 					event = new FlagEvent( FLAG_NAMES::FN_TRACK_OBJECT , FLAG_VALUES::FV_ON);
 					EventRecorder::getInstance()->queue(event);
 					break;
