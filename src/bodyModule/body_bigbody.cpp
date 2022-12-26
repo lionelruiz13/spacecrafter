@@ -525,7 +525,7 @@ Set &BigBody::getSet(float screen_sz)
             // Not handled !
             return *set;
     }
-    return (bigSet && screen_sz > 512) ? *bigSet : *set;
+    return bigSet ? *bigSet : *set;
 }
 
 void BigBody::preload(int keepFrames)
