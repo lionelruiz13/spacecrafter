@@ -26,7 +26,7 @@
 
 #include "bodyModule/trail.hpp"
 #include "bodyModule/axis.hpp"
-#include "bodyModule/orbit_2d.hpp"
+#include "bodyModule/orbit_3d.hpp"
 #include "bodyModule/hints.hpp"
 #include "bodyModule/halo.hpp"
 #include "coreModule/projector.hpp"
@@ -69,11 +69,11 @@ SmallBody::SmallBody(std::shared_ptr<Body> parent,
 {
 	if (_typePlanet == COMET) {
 		trail = std::make_unique<Trail>(this,2920);
-		orbitPlot = std::make_unique<Orbit2D>(this, 4800);
+		orbitPlot = std::make_unique<Orbit3D>(this, 4800);
 	}
 	else {
 		trail = std::make_unique<Trail>(this, 60);
-		orbitPlot = std::make_unique<Orbit2D>(this);
+		orbitPlot = std::make_unique<Orbit3D>(this, 320);
 	}
 }
 
