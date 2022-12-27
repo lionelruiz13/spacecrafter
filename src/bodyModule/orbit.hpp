@@ -33,6 +33,9 @@ public:
 		positionAtTimevInVSOP87Coordinates(JD, JD, v);
 	}
 
+	// As fastPositionAtTimevInVSOP87Coordinates is const, give a chance to cache some datas
+	virtual void prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double &deltaJD) {}
+
 	// If possible, do faster (and less accurate) calculation for orbits
 	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const {
 		positionAtTimevInVSOP87Coordinates(JD, JD, v);
@@ -140,6 +143,10 @@ public:
 
 	// Compute the orbit for a specified Julian date and return an "application compliant" function
 	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+	// Prepair orbit computation around JD0 and rectify the deltaJD
+	virtual void prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double &deltaJD) override;
+	// Override position for orbit computation so they are more equally spaced
+	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
 	// //! updating comet tails is a bit expensive. try not to overdo it.
 	// virtual bool getUpdateTails() const override{ return updateTails; }
 	// virtual void setUpdateTails(const bool update) override{ updateTails=update; }
@@ -156,6 +163,9 @@ private:
 	const double o;
 	const double t0;
 	const double n;
+	double orbitJDCorrection;
+	Vec3d d1;
+	Vec3d d2;
 	double rotate_to_vsop87[9];
 	bool updateTails; //!< flag to signal that comet tails must be recomputed.
 };

@@ -63,8 +63,6 @@ public:
 	virtual void computeOrbit(double date, bool force = false);
 	double computeOrbitBoundingRadius() const;
 
-	void init();
-
 protected:
 
 	void initDraw();
@@ -73,7 +71,7 @@ protected:
 
 	int ORBIT_POINTS;
 
-	double delta_orbitJD;
+	double delta_orbitJD = -1;
 	double last_orbitJD = 0;
 	bool orbit_cached = false;
 	Vec3d * orbitPoint;

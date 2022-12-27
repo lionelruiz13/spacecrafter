@@ -43,17 +43,47 @@
 
 static void InitHyp(double q,double n,double e,double dt,double &a1,double &a2)
 {
-	const double a = q/(e-1.0);
-	const double M = n * dt;
+	const double M = n*dt;
 	double H = M;
-	for (;;) { // Newton
-		const double Hp = H;
-		H = H-(e*sinh(H)-H-M)/(e*cosh(H)-1);
-		if (fabs(H - Hp) < EPSILON) break;
+	{
+		double tmp;
+		do {
+			tmp = (e*sinh(H)-H-M)/(e*cosh(H)-1);
+			H -= tmp;
+		} while (fabs(tmp) >= EPSILON);
 	}
+	const double a = q/(e-1.0);
 	const double h1 = q*sqrt((e+1.0)/(e-1.0));
 	a1 = a*(e-cosh(H));
 	a2 = h1*sinh(H);
+}
+
+static void InitHypLinear(double q,double n,double e,double dt,double &a1,double &a2)
+{
+	const double M = n*dt;
+	const double a = q/(e-1.0);
+	const double h1 = q*sqrt((e+1.0)/(e-1.0));
+	a1 = a*(e-cosh(M));
+	a2 = h1*sinh(M);
+}
+
+static double InitHypLinearCorrection(double n,double e,double dt, double &deltaTime)
+{
+	const double M = n*dt;
+	double H = M;
+	{
+		double tmp;
+		do {
+			tmp = (e*sinh(H)-H-M)/(e*cosh(H)-1);
+			H -= tmp;
+		} while (fabs(tmp) >= EPSILON);
+	}
+	double tmp1 = H-n*deltaTime;
+	tmp1 += M-e*sinh(tmp1); // M-M1
+	double tmp2 = H+n*deltaTime;
+	tmp2 += M-e*sinh(tmp2); // M-M2
+	deltaTime = std::min(fabs(tmp1), fabs(tmp2))/n;
+	return (H-M)/n;
 }
 
 static void InitPar(double q,double n,double dt,double &a1,double &a2)
@@ -69,20 +99,61 @@ static void InitPar(double q,double n,double dt,double &a1,double &a2)
 
 static void InitEll(double q,double n,double e,double dt,double &a1,double &a2)
 {
-	const double a = q/(1.0-e);
 	double M = fmod(n*dt,2*M_PI);
-	if (M < 0.0) M += 2.0*M_PI;
+	if (M < 0.0)
+		M += 2.0*M_PI;
 	double H = M;
-	for (;;) { // Newton
-		const double Hp = H;
-		H = H-(M-H+e*sin(H))/(e*cos(H)-1);
-		if (fabs(H-Hp) < EPSILON) break;
+	{
+		double tmp;
+		do {
+			tmp = (M-H+e*sin(H))/(e*cos(H)-1);
+			H -= tmp;
+		} while (fabs(tmp) >= EPSILON);
 	}
+
+	const double a = q/(1.0-e);
 	const double h1 = q*sqrt((1.0+e)/(1.0-e));
 	a1 = a*(cos(H)-e);
 	a2 = h1*sin(H);
 }
 
+static void InitEllLinear(double q,double n,double e,double dt,double &a1,double &a2)
+{
+	const double a = q/(1.0-e);
+	const double h1 = q*sqrt((1.0+e)/(1.0-e));
+	double M = fmod(n*dt, 2*M_PI);
+	if (M < 0)
+		M += 2*M_PI;
+	a1 = a*(cos(M)-e);
+	a2 = h1*sin(M);
+}
+
+static double InitEllLinearCorrection(double n,double e,double dt, double &deltaTime)
+{
+	double M = fmod(n*dt,2*M_PI);
+	if (M < 0.0)
+		M += 2.0*M_PI;
+	double H = M;
+	{
+		double tmp;
+		do {
+			tmp = (M-H+e*sin(H))/(e*cos(H)-1);
+			H -= tmp;
+		} while (fabs(tmp) >= EPSILON);
+	}
+	double tmp1 = H-n*deltaTime;
+	tmp1 = fmod(M-(tmp1-e*sin(tmp1)), 2*M_PI); // M-M1
+	if (tmp1 < 0)
+		tmp1 += 2*M_PI;
+	double tmp2 = H+n*deltaTime;
+	tmp2 = fmod(tmp2-e*sin(tmp2)-M, 2*M_PI); // M2-M
+	if (tmp2 < 0)
+		tmp2 += 2*M_PI;
+	deltaTime = std::min(tmp1, tmp2)/n;
+	return (H-M)/n;
+}
+
+/*
 static void Init3D(double i,double Omega,double o,double a1,double a2, double &x1,double &x2,double &x3)
 {
 	const double co = cos(o);
@@ -100,7 +171,7 @@ static void Init3D(double i,double Omega,double o,double a1,double a2, double &x
 	x1 = d11*a1+d12*a2;
 	x2 = d21*a1+d22*a2;
 	x3 = d31*a1+d32*a2;
-}
+} //*/
 
 CometOrbit::CometOrbit(double pericenter_distance,
                        double eccentricity,
@@ -123,6 +194,17 @@ CometOrbit::CometOrbit(double pericenter_distance,
 	const double s_nod = sin(parent_rot_ascendingnode);
 	const double cj = cos(parent_rot_J2000_longitude);
 	const double sj = sin(parent_rot_J2000_longitude);
+
+	const double co = cos(o);
+	const double so = sin(o);
+	const double cOm = cos(Om);
+	const double sOm = sin(Om);
+	const double ci = cos(i);
+	const double si = sin(i);
+
+	d1.set(-so*sOm*ci+co*cOm, so*cOm*ci+co*sOm, so*si);
+	d2.set(-co*sOm*ci-so*cOm, co*cOm*ci-so*sOm, co*si);
+
 	rotate_to_vsop87[0] =  c_nod*cj-s_nod*c_obl*sj;
 	rotate_to_vsop87[1] = -c_nod*sj-s_nod*c_obl*cj;
 	rotate_to_vsop87[2] =           s_nod*s_obl;
@@ -149,19 +231,53 @@ void CometOrbit::positionAtTimevInVSOP87Coordinates(double JD0, double JD, doubl
 	// setUpdateTails(true);
 }
 
+void CometOrbit::prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double &deltaJD)
+{
+	JD0-=t0;
+	std::cout << "DeltaJD " << deltaJD << " -> ";
+	if (e < 1.0) {
+		orbitJDCorrection = InitEllLinearCorrection(n,e,JD0, deltaJD);
+	} else if (e > 1.0) {
+		orbitJDCorrection = InitHypLinearCorrection(n,e,JD0, deltaJD);
+	} else {
+		orbitJDCorrection = 0;
+	}
+	std::cout << deltaJD;
+	std::cout << "\nOrigin=" << JD0 << " Correction=" << orbitJDCorrection << " meaning M=" << n*JD0 << std::endl;
+	orbitJDCorrection -= t0;
+}
+
+void CometOrbit::fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const
+{
+	double a1,a2;
+	if (e < 1.0) {
+		InitEllLinear(q,n,e,JD+orbitJDCorrection,a1,a2);
+	} else if (e > 1.0) {
+		InitHypLinear(q,n,e,JD+orbitJDCorrection,a1,a2);
+	} else
+		InitPar(q,n,JD+orbitJDCorrection,a1,a2);
+
+	Vec3d pos = d1*a1 + d2*a2;
+	v[0] = rotate_to_vsop87[0]*pos[0] + rotate_to_vsop87[1]*pos[1] + rotate_to_vsop87[2]*pos[2];
+	v[1] = rotate_to_vsop87[3]*pos[0] + rotate_to_vsop87[4]*pos[1] + rotate_to_vsop87[5]*pos[2];
+	v[2] = rotate_to_vsop87[6]*pos[0] + rotate_to_vsop87[7]*pos[1] + rotate_to_vsop87[8]*pos[2];
+}
+
 Vec3d CometOrbit::positionAtTime(double JD) const
 {
-
 	JD -= t0;
 	double a1,a2;
 
-	if (e < 1.0) InitEll(q,n,e,JD,a1,a2);
-	else if (e > 1.0) InitHyp(q,n,e,JD,a1,a2);
-	else InitPar(q,n,JD,a1,a2);
-	Vec3d p;
-	Init3D(i,Om,o,a1,a2,p[0],p[1],p[2]);
+	if (e < 1.0) {
+		InitEll(q,n,e,JD,a1,a2);
+	} else if (e > 1.0) {
+		InitHyp(q,n,e,JD,a1,a2);
+	} else
+		InitPar(q,n,JD,a1,a2);
+	// Vec3d p;
+	// Init3D(i,Om,o,a1,a2,p[0],p[1],p[2]);
 
-	return p;
+	return d1*a1 + d2*a2;
 
 }
 

@@ -42,11 +42,6 @@ OrbitPlot::~OrbitPlot()
 	delete[] orbitPoint;
 }
 
-void OrbitPlot::init()
-{
-	delta_orbitJD = body->re.sidereal_period/ORBIT_POINTS;
-}
-
 void OrbitPlot::initDraw()
 {
 	if (!orbit)
@@ -104,22 +99,24 @@ void OrbitPlot::computeOrbit(double date, bool force)
 	// Large performance advantage from avoiding object overhead
 	OsculatingFunctionType *oscFunc = body->orbit->getOsculatingFunction();
 
+	if (delta_orbitJD < 0)
+		delta_orbitJD = body->re.sidereal_period/ORBIT_POINTS;
 
 	// for performance only update orbit points if visible
 	if ((body->visibilityFader.getInterstate()>0.000001 && delta_orbitJD > 0 && (fabs(last_orbitJD-date)>delta_orbitJD || !orbit_cached)) || force) {
 		// calculate orbit first (for line drawing)
-		double date_increment = body->re.sidereal_period/ORBIT_POINTS;
 		double calc_date;
 		//	  int delta_points = (int)(0.5 + (date - last_orbitJD)/date_increment);
 		int delta_points;
 
 		if ( date > last_orbitJD ) {
-			delta_points = (int)(0.5 + (date - last_orbitJD)/date_increment);
+			delta_points = (int)(0.5 + (date - last_orbitJD)/delta_orbitJD);
+		} else {
+			delta_points = (int)(-0.5 + (date - last_orbitJD)/delta_orbitJD);
 		}
-		else {
-			delta_points = (int)(-0.5 + (date - last_orbitJD)/date_increment);
-		}
-		double new_date = last_orbitJD + delta_points*date_increment;
+		double new_date = last_orbitJD + delta_points*delta_orbitJD;
+		const double date_increment = delta_orbitJD = body->re.sidereal_period/ORBIT_POINTS;
+		body->orbit->prepairFastPositionAtTimevInVSOP87Coordinates(date, delta_orbitJD);
 
 		//printf( "Updating orbit coordinates for %s (delta %f) (%d points)\n", name.c_str(), delta_orbitJD, delta_points);
 		//cout << englishName << ": " << delta_points << "  " << orbit_cached << endl;
@@ -135,55 +132,43 @@ void OrbitPlot::computeOrbit(double date, bool force)
 						(*oscFunc)(date,calc_date,orbitPoint[d]);
 					else
 						body->orbit->fastPositionAtTimevInVSOP87Coordinates(date,calc_date,orbitPoint[d]);
-				}
-				else {
+				} else {
 					orbitPoint[d] = orbitPoint[d+delta_points];
 				}
 			}
-
 			last_orbitJD = new_date;
+		} else if ( delta_points < 0 && abs(delta_points) < ORBIT_POINTS && orbit_cached) {
+			for ( int d=ORBIT_POINTS-1; d>=0; d-- ) {
+				if (d + delta_points < 0 ) {
+					// calculate new points
+					calc_date = new_date + (d-ORBIT_POINTS/2)*date_increment;
 
-		}
-		else {
-			if ( delta_points < 0 && abs(delta_points) < ORBIT_POINTS && orbit_cached) {
-				for ( int d=ORBIT_POINTS-1; d>=0; d-- ) {
-					if (d + delta_points < 0 ) {
-						// calculate new points
-						calc_date = new_date + (d-ORBIT_POINTS/2)*date_increment;
-
-						if(oscFunc)
-							(*oscFunc)(date,calc_date,orbitPoint[d]);
-						else
-							body->orbit->fastPositionAtTimevInVSOP87Coordinates(date,calc_date,orbitPoint[d]);
-					}
-					else {
-						orbitPoint[d] = orbitPoint[d+delta_points];
-					}
-				}
-
-				last_orbitJD = new_date;
-
-			}
-			else {
-				if ( delta_points || !orbit_cached ) {
-					// update all points (less efficient)
-					for ( int d=0; d<ORBIT_POINTS; d++ ) {
-						calc_date = date + (d-ORBIT_POINTS/2)*date_increment;
-
-						if(oscFunc)
-							(*oscFunc)(date,calc_date,orbitPoint[d]);
-						else
-							body->orbit->fastPositionAtTimevInVSOP87Coordinates(date,calc_date,orbitPoint[d]);
-					}
-
-					last_orbitJD = date;
-
-					// \todo remove this for efficiency?  Can cause rendering issues near body though
-					// If orbit is largely constant through time cache it
-					if (body->orbit->isStable(date))
-						orbit_cached = 1;
+					if(oscFunc)
+						(*oscFunc)(date,calc_date,orbitPoint[d]);
+					else
+						body->orbit->fastPositionAtTimevInVSOP87Coordinates(date,calc_date,orbitPoint[d]);
+				} else {
+					orbitPoint[d] = orbitPoint[d+delta_points];
 				}
 			}
+			last_orbitJD = new_date;
+		} else if ( delta_points || !orbit_cached ) {
+			// update all points (less efficient)
+			for ( int d=0; d<ORBIT_POINTS; d++ ) {
+				calc_date = date + (d-ORBIT_POINTS/2)*date_increment;
+
+				if(oscFunc)
+					(*oscFunc)(date,calc_date,orbitPoint[d]);
+				else
+					body->orbit->fastPositionAtTimevInVSOP87Coordinates(date,calc_date,orbitPoint[d]);
+			}
+
+			last_orbitJD = date;
+
+			// \todo remove this for efficiency?  Can cause rendering issues near body though
+			// If orbit is largely constant through time cache it
+			if (body->orbit->isStable(date))
+				orbit_cached = 1;
 		}
 	}
 }
