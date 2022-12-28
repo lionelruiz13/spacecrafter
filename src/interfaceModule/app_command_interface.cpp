@@ -2095,6 +2095,13 @@ int AppCommandInterface::commandText()
 
 		if (argAction==W_UPDATE) {
 			media->textNameUpdate(argName+"1", argString);
+			std::string argWrite = args[W_WRITE];
+			if (argWrite == W_TWICE)
+				media->textNameUpdate(argName+"2",argString);
+			if (argWrite == W_THRICE) {
+				media->textNameUpdate(argName+"2",argString);
+				media->textNameUpdate(argName+"3",argString);
+			}
 			return executeCommandStatus();
 		} else
 		if (argAction== W_LOAD) {
