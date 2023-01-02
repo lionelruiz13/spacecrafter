@@ -1,7 +1,7 @@
 -------------------- SPACECRAFTER INSTALLATION INSTRUCTIONS ---------------------
 
 ===============================================================================
-        COMPILATION from the source package (spacecrafter-XXX.tgz)
+        COMPILATION from the source package (spacecrafterXXXX-master.zip)
 ===============================================================================
 If you can't find a suited binary package or if you are curious you can also 
 compile the software by yourself.
@@ -16,26 +16,17 @@ Spacecrafter requires :
 - SDL2_mixer-dev
 - SDL2_net-dev
 - SDL2_ttf-dev
-- GLEW
-- GL
+- Vulkan libraries
 
 Once they are installed you are ready to compile Spacecrafter sources:
 
-Untar the tar.gz archive:
-~$ tar -xzf spacecrafter-XXX.tar.gz
-~$ cd spacecrafter-XXX
+Unzip the archive:
+~$ unzip spacecrafterXXXX-master.zip
+~$ cd spacecrafterXXXX-master
+~$ sh install_dependancies_<type your OS ubuntu or mageia>.sh
 
 Then type:
-~$ cd build
-~$ cmake ..
-~$ make -j <number of core you have on your computer>
+~$ sh install_src.sh -j<number of core you have on your computer>
 
-To fully install Spacecrafter (so that it will be launch-able from everywhere) 
-type as root:
-~$ make install
-On Ubuntu system ~# sudo make install
-
-Then to launch a local version of the program type:
-~$ ./src/spacecrafter
-
-
+Then to launch the software type:
+~$ spacecrafter
