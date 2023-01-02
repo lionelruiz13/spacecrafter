@@ -2077,7 +2077,9 @@ int AppCommandInterface::commandText()
 	argName = evalString(argName);
 
 	if (argAction==W_DROP) {
-		media->textDel(argName);
+		media->textDel(argName+"1");
+		media->textDel(argName+"2");
+		media->textDel(argName+"3");
 		return executeCommandStatus();
 	}
 
@@ -2103,8 +2105,7 @@ int AppCommandInterface::commandText()
 				media->textNameUpdate(argName+"3",argString);
 			}
 			return executeCommandStatus();
-		} else
-		if (argAction== W_LOAD) {
+		} else if (argAction== W_LOAD) {
 			std::string argAzimuth = args[W_AZIMUTH];
 			std::string argAltitude = args[W_ALTITUDE];
 			if( !argAzimuth.empty() && !argAltitude.empty()) {
