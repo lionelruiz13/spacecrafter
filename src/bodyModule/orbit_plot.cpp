@@ -105,8 +105,6 @@ void OrbitPlot::computeOrbit(double date)
 
 	// for performance only update orbit points if visible
 	if (body->visibilityFader.getInterstate()>0.000001 && delta_orbitJD.second > 0 && (!orbit_cached || deltaTime < delta_orbitJD.first || deltaTime > delta_orbitJD.second)) {
-		if (body->getEnglishName() == "S1 ")
-			std::cout << "HERE !\n";
 
 		// calculate orbit first (for line drawing)
 		double calc_date;
@@ -125,16 +123,15 @@ void OrbitPlot::computeOrbit(double date)
 				} else if (deltaTime > 0 && deltaTime < delta_orbitJD.second * 1.6) {
 					delta_points = 1;
 					date = last_orbitJD + delta_orbitJD.second;
-				} else {
-					std::cout << body->getEnglishName() << " : deltaJD {" << delta_orbitJD.first << ", " << delta_orbitJD.second << "} ";
-					// Multiple points are passed
+				} else { // Multiple points has changed
+					// std::cout << body->getEnglishName() << " : deltaJD {" << delta_orbitJD.first << ", " << delta_orbitJD.second << "} ";
 					((CometOrbit &) *body->orbit).deltaJDToOrbitJD(last_orbitJD, deltaTime);
 					delta_points = deltaTime/date_increment + (date > last_orbitJD) - 0.5;
-					std::cout << "delta_points = " << delta_points << '\n';
-					std::cout << "date = " << date << " --> ";
+					// std::cout << "delta_points = " << delta_points << '\n';
+					// std::cout << "date = " << date << " --> ";
 					date = last_orbitJD + delta_points*date_increment;
 					((CometOrbit &) *body->orbit).orbitJDToJD(date);
-					std::cout << date << '\n';
+					// std::cout << date << '\n';
 				}
 			}
 
