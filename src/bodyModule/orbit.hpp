@@ -34,7 +34,9 @@ public:
 	}
 
 	// As fastPositionAtTimevInVSOP87Coordinates is const, give a chance to cache some datas
-	virtual void prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double &deltaJD) {}
+	virtual std::pair<double, double> prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD) {
+		return {-deltaJD, deltaJD};
+	}
 
 	// If possible, do faster (and less accurate) calculation for orbits
 	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const {
@@ -144,9 +146,11 @@ public:
 	// Compute the orbit for a specified Julian date and return an "application compliant" function
 	virtual void positionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
 	// Prepair orbit computation around JD0 and rectify the deltaJD
-	virtual void prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double &deltaJD) override;
+	virtual std::pair<double, double> prepairFastPositionAtTimevInVSOP87Coordinates(double JD0, double deltaJD) override;
 	// Override position for orbit computation so they are more equally spaced
 	virtual void fastPositionAtTimevInVSOP87Coordinates(double JD0, double JD, double *v) const;
+	void deltaJDToOrbitJD(double JD, double &deltaJD) const;
+	void orbitJDToJD(double &JD) const;
 	// //! updating comet tails is a bit expensive. try not to overdo it.
 	// virtual bool getUpdateTails() const override{ return updateTails; }
 	// virtual void setUpdateTails(const bool update) override{ updateTails=update; }

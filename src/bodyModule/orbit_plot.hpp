@@ -60,7 +60,7 @@ public:
 		return orbit_fader;
 	}
 
-	virtual void computeOrbit(double date, bool force = false);
+	virtual void computeOrbit(double date);
 	double computeOrbitBoundingRadius() const;
 
 protected:
@@ -71,8 +71,8 @@ protected:
 
 	int ORBIT_POINTS;
 
-	double delta_orbitJD = -1;
-	double last_orbitJD = 0;
+	std::pair<double, double> delta_orbitJD = {-1, -1};
+	double last_orbitJD;
 	bool orbit_cached = false;
 	Vec3d * orbitPoint;
 
