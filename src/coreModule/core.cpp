@@ -771,26 +771,26 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		unsigned int hpnum;
 		std::istringstream istr(id);
 		istr >> hpnum;
-		selected_object = hip_stars->searchHP(hpnum).get();
-		asterisms->setSelected(selected_object);
-		hip_stars->setSelected(selected_object);
-		ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		selectObject(hip_stars->searchHP(hpnum).get());
+		// asterisms->setSelected(selected_object);
+		// hip_stars->setSelected(selected_object);
+		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="star") {
-		selected_object = hip_stars->search(id).get();
-		asterisms->setSelected(selected_object);
-		hip_stars->setSelected(selected_object);
-		ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		selectObject(hip_stars->search(id).get());
+		// asterisms->setSelected(selected_object);
+		// hip_stars->setSelected(selected_object);
+		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
 
 	} else if (type=="planet") {
 		ssystemFactory->setSelected(id); //setPlanetsSelected(id);
-		selected_object = ssystemFactory->getSelected();
-		asterisms->setSelected(Object());
+		selectObject(ssystemFactory->getSelected());
+		// asterisms->setSelected(Object());
 
 	} else if (type=="nebula") {
-		selected_object = nebulas->search(id);
-		ssystemFactory->setSelected(""); //setPlanetsSelected("");
-		asterisms->setSelected(Object());
+		selectObject(nebulas->search(id));
+		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		// asterisms->setSelected(Object());
 
 	} else if (type=="constellation") {
 
@@ -803,7 +803,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 	} else if (type=="constellation_star") {
 		// For Find capability, select a star in constellation so can center view on constellation
 		asterisms->setSelected(id);
-		selected_object = asterisms->getSelected().getBrightestStarInConstellation().get();
+		selectObject(asterisms->getSelected().getBrightestStarInConstellation().get());
 		// what is this?
 		// 1) Find the hp-number of the 1st star in the selected constellation,
 		// 2) find the star of this hpnumber
@@ -811,7 +811,7 @@ bool Core::selectObject(const std::string &type, const std::string &id)
 		//		const unsigned int hpnum = asterisms->getFirstSelectedHP();
 		//		selected_object = hip_stars->searchHP(hpnum);
 		//		asterisms->setSelected(selected_object);
-		ssystemFactory->setSelected(""); //setPlanetsSelected("");
+		// ssystemFactory->setSelected(""); //setPlanetsSelected("");
 		//		// Some stars are shared, so now force constellation
 		//		asterisms->setSelected(id);
 	} else {
