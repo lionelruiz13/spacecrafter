@@ -312,10 +312,6 @@ public:
 		textMgr->setColor(v);
 	}
 
-	void textUpdate(int delta_time) {
-		textMgr->update(delta_time);
-	}
-
 	void textDraw() {
 		textMgr->draw(prj);
 	}

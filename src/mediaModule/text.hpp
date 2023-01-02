@@ -27,7 +27,7 @@
 
 #include "tools/s_font.hpp"
 #include "tools/s_font_common.hpp"
-#include "tools/fader.hpp"
+#include "tools/auto_fader.hpp"
 #include "coreModule/projector.hpp"
 #include <vector>
 
@@ -53,24 +53,20 @@ public:
 
 	//! hide or not the text on the display
 	void setDisplay(bool b) {
-		fader=b;
-		if (!b)
-			text_fader=b;
+		if (smooth)
+			fader=b;
+		else
+			fader.setNoDelay(b);
 	}
 
 	//! indicates the state of the text with respect to the display
 	bool getDisplay() const {
-		return fader;
+		return fader.finalState();
 	}
 
 	//! Set display flag for text fader.
-	void setFlagTextFader(bool b) {
-		text_fader=b;
-	}
-
-	//! Get display flag for text fader.
-	bool getFlagTextFader(void) const {
-		return text_fader==true;
+	void setSmooth(bool b) {
+		smooth = b;
 	}
 
 	//! returns the name of the text
@@ -84,17 +80,14 @@ public:
 	//! displays the text on the screen
 	void draw(const Projector* prj);
 
-	//! updates the state of the display fader
-	void update(int delta_time);
-
 private:
 	std::string name;
 	std::string text;
 	Vec4f textColor;
 	float altitude;
 	float azimuth;
-	BooleanFader fader;
-	LinearFader text_fader;
+	bool smooth;
+	ALinearFader fader;
 	s_font* textFont;
 	TEXT_ALIGN textAlign;
 	bool fade_out;

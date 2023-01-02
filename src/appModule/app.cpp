@@ -622,7 +622,6 @@ void App::update(int delta_time)
 	context.stat->capture(Capture::MEDIA_IMAGE_UPDATE);
 
 	media->playerUpdate();
-	media->textUpdate(delta_time);
 	context.stat->capture(Capture::MEDIA_PLAYER_UPDATE);
 	screenFader->update(delta_time);
 	media->faderUpdate(delta_time);

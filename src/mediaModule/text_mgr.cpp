@@ -61,14 +61,6 @@ TextMgr::~TextMgr()
 }
 
 
-void TextMgr::update(int delta_time)
-{
-	for (auto iter = textUsr.begin(); iter != textUsr.end(); ++iter) {
-		(*iter).second->update(delta_time);
-	}
-}
-
-
 void TextMgr::add(const std::string& name, const TEXT_MGR_PARAM& textParam)
 {
 	auto it = textUsr.find(name);
