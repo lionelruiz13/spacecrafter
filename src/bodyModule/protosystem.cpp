@@ -786,7 +786,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 		return;
 	}
 
-	if (!param["has_atmosphere"].empty()) {
+	if (!param["has_atmosphere"].empty() || !param["atmosphere_lim_landscape"].empty()) {
 		AtmosphereParams* tmp = nullptr;
 		tmp = new(AtmosphereParams);
 		tmp->hasAtmosphere = Utility::strToBool(param["has_atmosphere"], false);
