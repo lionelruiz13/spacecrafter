@@ -3422,9 +3422,9 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 			bool result;
 
 			if(argTime.empty())
-				result = coreLink->cameraMoveToPoint(stod(argX), stod(argY), stod(argZ));
+				result = coreLink->cameraMoveToPoint(evalDouble(argX), evalDouble(argY), evalDouble(argZ));
 			else {
-				result = coreLink->cameraMoveToPoint(stod(argX), stod(argY), stod(argZ),stod(argTime));
+				result = coreLink->cameraMoveToPoint(evalDouble(argX), evalDouble(argY), evalDouble(argZ),evalDouble(argTime));
 				wait = evalInt(argTime)*1000;
 			}
 
@@ -3447,9 +3447,9 @@ int AppCommandInterface::commandCamera(uint64_t &wait)
 			bool result;
 
 			if(argAltitude.empty())
-				result = coreLink->cameraMoveToBody(argBodyName, stod(argTime));
+				result = coreLink->cameraMoveToBody(argBodyName, evalDouble(argTime));
 			else
-				result = coreLink->cameraMoveToBody(argBodyName, stod(argTime), stod(argAltitude));
+				result = coreLink->cameraMoveToBody(argBodyName, evalDouble(argTime), evalDouble(argAltitude));
 
 			if (!result)
 				debug_message = "error move_to body";
