@@ -390,7 +390,7 @@ SkyCoords::SkyCoords() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyCoords::draw(const Projector *prj, const Navigator *nav, Vec3d equPos, Vec3d oldPos)
 {
-	if (fader.isZero() || m_dataSize <= 0)
+	if (fader.isZero())
 		return;
 
 	Vec4f colorT (color[0], color[1], color[2], fader);
