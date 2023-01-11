@@ -26,6 +26,7 @@
 #include "bodyModule/ssystem_iterator.hpp"
 #include "bodyModule/solarsystem.hpp"
 #include "bodyModule/halo.hpp"
+#include "bodyModule/tail.hpp"
 #include "navModule/navigator.hpp"
 #include "navModule/observer.hpp"
 #include "coreModule/projector.hpp"
@@ -106,6 +107,7 @@ void SolarSystemDisplay::draw(Projector * prj, const Navigator * nav, const Obse
 		return; // 0;
 
 	Halo::beginDraw();
+    Tail::beginDraw(prj->getFov());
     auto &context = *Context::instance;
     context.helper->nextDraw(PASS_MULTISAMPLE_DEPTH);
 

@@ -777,6 +777,37 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 			                        currentOBJ,
 			                        orbit_bounding_radius,
 									bodyTexture);
+			if (!param["apparent_magnitude"].empty() && !param["slope"].empty()) {
+				static_cast<SmallBody &>(*p).setAbsoluteMagnitudeAndSlope(Utility::strToFloat(param["apparent_magnitude"]), Utility::strToFloat(param["slope"]));
+				static_cast<SmallBody &>(*p).bindTail({
+					Utility::strToFloat(param["dust_tail_trace_JD"], 30),
+					Utility::strToFloat(param["dust_tail_ejection_force"], 0.5),
+					Vec3f{
+						Utility::strToFloat(param["dust_tail_radius_xx_coef"], -2),
+						Utility::strToFloat(param["dust_tail_radius_x_coef"], 1),
+						Utility::strToFloat(param["dust_tail_radius_base_coef"], 2),
+					},
+					Vec3f{
+						Utility::strToFloat(param["dust_tail_color_red"], 0.5),
+						Utility::strToFloat(param["dust_tail_color_green"], 0.5),
+						Utility::strToFloat(param["dust_tail_color_blue"], 0.5),
+					}
+				});
+				static_cast<SmallBody &>(*p).bindTail({
+					Utility::strToFloat(param["gaz_tail_trace_JD"], 1),
+					Utility::strToFloat(param["gaz_tail_ejection_force"], 30),
+					Vec3f{
+						Utility::strToFloat(param["gaz_tail_radius_xx_coef"], -1),
+						Utility::strToFloat(param["gaz_tail_radius_x_coef"], 0.5),
+						Utility::strToFloat(param["gaz_tail_radius_base_coef"], 2),
+					},
+					Vec3f{
+						Utility::strToFloat(param["gaz_tail_color_red"], 0.3),
+						Utility::strToFloat(param["gaz_tail_color_green"], 0.3),
+						Utility::strToFloat(param["gaz_tail_color_blue"], 0.7),
+					}
+				});
+			}
 			break;
 		default:
 			cLog::get()->write("Undefined body", LOG_TYPE::L_ERROR);

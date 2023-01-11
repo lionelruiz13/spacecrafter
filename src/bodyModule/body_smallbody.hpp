@@ -24,9 +24,12 @@
 
 #include "bodyModule/body.hpp"
 #include "EntityCore/Resource/SharedBuffer.hpp"
+#include "bodyModule/tail.hpp"
+#include "tools/sc_const.hpp"
 
 class Ring;
 class Set;
+class Tail;
 
 class SmallBody : public Body {
 
@@ -50,15 +53,44 @@ public:
 
 	virtual void selectShader ();
 
+	// For the tail
+	void setAbsoluteMagnitudeAndSlope(float magnitude, float slope);
+
+	// Bind a tail to this body
+	void bindTail(Tail &&newTail) {
+	   tails.push_back(std::move(newTail));
+	}
+
+	// Formula found at http://www.projectpluto.com/update7b.htm#comet_tail_formula
+	Vec2f getComaDiameterAndTailLengthAU(const float r) {
+		if (abs(lastR / r - 1) > 0.0001) { // Avoid recomputing it if almost the same
+			const float mhelio = absoluteMagnitude + slopeParameter * log10(r);
+			float tmp = powf(10.f, -r);
+			const float Do = powf(10.0f, ((-0.0033f*mhelio - 0.07f) * mhelio + 3.25f)) * (1.f - tmp);
+			tmp *= tmp;
+			const float common = (1.f - tmp);
+			tmp *= tmp;
+			const float Lo = powf(10.0f, ((-0.0075f*mhelio - 0.19f) * mhelio + 2.1f)) * (1.f - tmp) * 1000.f;
+			cachedComaDiameterAndTailLengthAU.set(Do * common, Lo * common);
+			lastR = r;
+		}
+		return cachedComaDiameterAndTailLengthAU;
+	}
 protected :
 	void defineSet();
 	//! Return set to bind, may change at every frame
 	virtual Set &getSet(float screen_sz) override;
 	virtual void drawBody(VkCommandBuffer cmd, const Projector* prj, const Navigator * nav, const Mat4d& mat, float screen_sz, bool depthTest);
+	virtual void drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye) override;
 
 	std::unique_ptr<Set> set;
 	std::unique_ptr<SharedBuffer<globalVertProj>> uGlobalVertProj; // night bump normal
 	std::unique_ptr<SharedBuffer<globalFrag>> uGlobalFrag; // night bump normal
 	std::unique_ptr<SharedBuffer<Vec3f>> uUmbraColor; // bump
+	std::vector<Tail> tails;
+	float absoluteMagnitude = -99.f;
+	float slopeParameter = -10.f;
+	float lastR = 0;
+	Vec2f cachedComaDiameterAndTailLengthAU;
 	bool initialized = false;
 };

@@ -698,21 +698,6 @@ void Body::translateName(Translator& trans)
 	nameI18 = trans.translateUTF8(englishName);
 }
 
-// Formula found at http://www.projectpluto.com/update7b.htm#comet_tail_formula
-// adpat this formul to spacecrafter
-// Vec2f Body::getComaDiameterAndTailLengthAU() const
-// {
-// 	const float r = static_cast<float>(getHeliocentricEclipticPos().norm());
-
-// 	const float Do = powf(10.0f, ((-0.0033f*mhelio - 0.07f) * mhelio + 3.25f));
-// 	const float common = 1.0f - powf(10.0f, (-2.0f*r));
-// 	const float D = Do * common * (1.0f - powf(10.0f, -r)) * (1000.0f*AU_KMf);
-// 	const float Lo = powf(10.0f, ((-0.0075f*mhelio - 0.19f) * mhelio + 2.1f));
-// 	const float L = Lo*(1.0f-powf(10.0f, -4.0f*r)) * common * (1e6f*AU_KMf);
-// 	return Vec2f(D, L);
-// }
-
-
 // adapt to vulkan ???
 // void Body::computeComa(const float diameter)
 // {

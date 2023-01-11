@@ -32,7 +32,7 @@
 #include "coreModule/projector.hpp"
 #include "navModule/navigator.hpp"
 #include "bodyModule/body_color.hpp"
-
+#include "bodyModule/tail.hpp"
 #include "bodyModule/ring.hpp"
 #include "tools/context.hpp"
 #include "EntityCore/EntityCore.hpp"
@@ -70,8 +70,7 @@ SmallBody::SmallBody(std::shared_ptr<Body> parent,
 	if (_typePlanet == COMET) {
 		trail = std::make_unique<Trail>(this,2920);
 		orbitPlot = std::make_unique<Orbit3D>(this, 4800);
-	}
-	else {
+	} else {
 		trail = std::make_unique<Trail>(this, 60);
 		orbitPlot = std::make_unique<Orbit3D>(this, 320);
 	}
@@ -211,4 +210,19 @@ void SmallBody::drawBody(VkCommandBuffer cmd, const Projector* prj, const Naviga
     uGlobalFrag->get().SunHalfAngle = sun_half_angle;
 
 	currentObj->draw(cmd, screen_sz);
+}
+
+void SmallBody::setAbsoluteMagnitudeAndSlope(float magnitude, float slope)
+{
+    absoluteMagnitude = magnitude;
+    slopeParameter = slope;
+}
+
+void SmallBody::drawHalo(const Navigator* nav, const Projector* prj, const ToneReproductor* eye)
+{
+	if (isVisible && flags.flag_halo && this->getOnScreenSize(prj, nav) < 10) {
+        halo->drawHalo(nav, prj, eye);
+	}
+    for (auto &tail : tails)
+        tail.draw(nav, this, eye_planet, eye_sun, radius, lastJD);
 }

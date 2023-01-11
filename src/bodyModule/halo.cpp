@@ -25,6 +25,7 @@
 #include "tools/context.hpp"
 #include "tools/log.hpp"
 #include "EntityCore/EntityCore.hpp"
+#include "tail.hpp"
 
 Halo::HaloContext *Halo::global = nullptr;
 
@@ -51,12 +52,13 @@ void Halo::nextDraw(VkCommandBuffer cmd)
 		global->offset += global->size;
 		global->size = 0;
 	}
+	Tail::drawBatch(cmd);
 }
 
 void Halo::endDraw()
 {
 	Context &context = *Context::instance;
-	if (global->size) {
+	if (global->size || Tail::shouldDraw()) {
 		auto &frame = *context.frame[context.frameIdx];
 		auto &cmd = frame.begin(global->cmds[context.frameIdx], PASS_MULTISAMPLE_DEPTH);
 		nextDraw(cmd);
@@ -67,6 +69,7 @@ void Halo::endDraw()
 	const int offset = global->initialOffset * HALO_STRIDE;
 	global->initialOffset = (global->initialOffset) ? 0 : global->offset;
 	global->offset = global->initialOffset;
+	Tail::endDraw();
 	if (size == 0)
 		return;
 	if ((int)(size / HALO_STRIDE) > global->vertex->getVertexCount() / 2) {
