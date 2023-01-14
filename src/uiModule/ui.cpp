@@ -139,6 +139,8 @@ void UI::init(const InitParser& conf)
 	cLog::get()->write("Landscape : "+default_landscape ,LOG_TYPE::L_INFO);
 
 	// initial.sts commands
+	coreLink->setEyeRelativeMode(false);
+
 	app->switchMode("in_solarsystem");
 	core->setHomePlanet("Earth");
 	double lati = coreLink->observatoryGetLatitude();
@@ -192,7 +194,6 @@ void UI::init(const InitParser& conf)
 	coreLink->bodyTraceClear();
 	coreLink->bodyTraceSetFlag(false);
 	coreLink->setFlagSunScaled(false);
-	coreLink->setEyeRelativeMode(false);
 	coreLink->clearRadiants();
 
 	Event* event = new ScreenFaderEvent(ScreenFaderEvent::FIX, 0);
@@ -208,9 +209,9 @@ void UI::init(const InitParser& conf)
 	core->removeSupplementalSolarSystemBodies();
 	coreLink->initialSolarSystemBodies();
 
-	FilePath myFile  = FilePath("stopmusic.sh", FilePath::TFP::DATA);
-	std::string action="sh "+ myFile.toString() + " &";
-	CallSystem::useSystemCommand(action);
+	//FilePath myFile  = FilePath("stopmusic.sh", FilePath::TFP::DATA);
+	//std::string action="sh "+ myFile.toString() + " &";
+	//CallSystem::useSystemCommand(action);
 	CallSystem::killAllPidFrom("vlc");
 	CallSystem::killAllPidFrom("mplayer");
 
