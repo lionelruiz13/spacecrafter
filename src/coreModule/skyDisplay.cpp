@@ -559,7 +559,7 @@ SkyMouse::SkyMouse() : SkyDisplay(PROJECTION_TYPE::AL)
 
 void SkyMouse::draw(const Projector *prj, const Navigator *nav, Vec3d _equPos, Vec3d _oldPos)
 {
-	if (fader.isZero() || m_dataSize <= 0)
+	if (fader.isZero())
 		return;
 
 	Vec4f colorT (color[0], color[1], color[2], fader);
