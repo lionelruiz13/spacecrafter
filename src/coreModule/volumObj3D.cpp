@@ -55,8 +55,8 @@ const char *_names[] = {
 struct VolumObj3D::Shared {
     Shared() :
         vertexArray(vkmgr), inVertexArray(vkmgr, context.ojmAlignment),
-        layout({{vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}}),
-        pipeline({PCA, PCA, PCA, PCA, PCA, PCA, PCA, PCA})
+        layout{{vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}, {vkmgr}},
+        pipeline{PCA, PCA, PCA, PCA, PCA, PCA, PCA, PCA}
     {
         // Specialization constants
         const float colorScale = 2;
