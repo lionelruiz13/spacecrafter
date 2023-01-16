@@ -67,24 +67,11 @@ private:
         Vec3f invScale; // Inverse of the box scale, unit is sample
         float fov; // fov in radian
     };
-    struct InRay {
-        Vec3f camCoord;
-        int zScale;
-    };
-    struct Shared {
-        Shared();
-        ~Shared();
-        std::unique_ptr<Pipeline> pipeline, inPipeline;
-        std::unique_ptr<PipelineLayout> layout, inLayout;
-        std::unique_ptr<VertexArray> vertexArray, inVertexArray;
-        std::unique_ptr<VertexBuffer> vertex;
-        ObjL *obj;
-        SubBuffer index;
-    };
+    struct Shared;
     SharedBuffer<Transform> transform;
     SharedBuffer<Ray> ray;
     SharedBuffer<InTransform> inTransform;
-    SharedBuffer<InRay> inRay;
+    SharedBuffer<Vec3f> inCamCoord;
     std::unique_ptr<s_texture> mapTexture;
     std::unique_ptr<s_texture> colorTexture;
     std::unique_ptr<Set> set, inSet;
@@ -92,6 +79,7 @@ private:
     Mat4f model;
     int cmds[3] {-1, -1, -1};
     int rayPoints = 512;
+    uint8_t selected; // Selected pipeline
     bool isLoaded = false;
     static std::weak_ptr<Shared> refShared;
 };

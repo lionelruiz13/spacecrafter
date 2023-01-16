@@ -12,8 +12,7 @@ layout (binding=1) uniform ubo {
     vec3 camCoord; // Position of the camera in the volumetric object in [0, 1]
 };
 
-layout (binding=2) uniform sampler3D mapTexture;
-layout (binding=3) uniform sampler3D colorTexture;
+layout (binding=2) uniform sampler3D colorTexture;
 
 layout(constant_id=0) const float colorScale = 2;
 layout(constant_id=1) const bool z_reflection = false;
@@ -54,14 +53,18 @@ void main()
         coord.z *= 2;
         dir.z *= 2;
     }
-    vec4 color = vec4(0);
+    vec3 color = vec3(0);
+    float opacity = 0;
     while (t-- >= 0) {
-        color += texture(colorTexture, coord) * (texture(mapTexture, coord).x * (1.f - color.a) / colorScale);
-        if (color.a > 0.99f) { // Avoid processing for less than 1% of the color processing
-            color /= color.a;
-            break;
+        vec4 tmp = texture(colorTexture, coord);
+        float factor = tmp.a * (1.f - opacity) / colorScale;
+        color += vec3(tmp) * factor;
+        opacity += factor;
+        if (opacity > 0.99f) { // Avoid processing for less than 1% of the color processing
+            fragColor = vec4(color / opacity, 1);
+            return;
         }
         coord += dir;
     }
-    fragColor = color;
+    fragColor = vec4(color, opacity);
 }
