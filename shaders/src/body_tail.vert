@@ -16,30 +16,38 @@ layout (location=5) in vec3 coefRadius;
 layout (location=6) in vec3 color;
 layout (location=7) in mat3 ModelViewMatrix;
 
-layout (location=0) out vec3 outNormal;
-layout (location=1) out vec3 outViewDirection;
-layout (location=2) out vec3 outColor;
-layout (location=3) out float outTimeOffset;
+// layout (location=0) out vec3 outNormal;
+// layout (location=1) out vec3 outViewDirection;
+layout (location=0) out vec3 outColor;
+layout (location=1) out float outAlpha;
 
 #include <fisheye2DNoMV.glsl>
 
 void main()
 {
-    outColor = color;
-    outTimeOffset = timeOffset;
     // Transform normals
     vec3 pos = ModelViewMatrix * normal;
-    outNormal = pos;
+    vec3 expand = (expandCorrection * timeOffset + expandDirection) * timeOffset;
+    outColor = color;
+    // if (normal.z > 0.001) {
+    //     outAlpha = (dot(normalize(offset), pos)) / -2;
+    // } else {
+        outAlpha = (1 - timeOffset) / 2;
+    // }
+    if (timeOffset > 0) {
+        vec3 tmp = normalize(expand);
+        pos = normalize(pos - tmp * dot(pos, tmp));
+    }
+    // outNormal = pos;
     // Scale normal by radius
     pos *= (coefRadius.x * timeOffset + coefRadius.y) * timeOffset + coefRadius.z;
-    // Apply expansion offset
-    pos += (expandCorrection * timeOffset + expandDirection) * timeOffset;
-    // Apply base offset
-    pos += offset;
+    // Apply base and expansion offset
+    pos += expand + offset;
     // vec3 tmp = normalize(expandDirection);
     // vec3 viewDirection = normalize(pos);
     // outViewDirection = normalize((-dot(tmp, tmp) / dot(viewDirection, tmp)) * viewDirection + tmp);
-    outViewDirection = pos;
+    // outViewDirection = pos;
+    // Compensate deviation
     // Project final position
     gl_Position = vec4(fisheye2DNoMV(pos, fov), 0, 1);
 }

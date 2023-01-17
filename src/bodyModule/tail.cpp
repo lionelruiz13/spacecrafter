@@ -92,9 +92,9 @@ struct TailContext {
         // Generate the indices
         index = context.indexBufferMgr->acquireBuffer(NB_TAIL_LINES * NB_TAIL_LINE_INDICES * sizeof(uint16_t));
         auto *ptr = context.transfer->planCopy<uint16_t>(index);
-        for (int i = 0; i++ < NB_TAIL_LINES;) {
+        for (int i = 0; i < NB_TAIL_LINES; ++i) {
             *(ptr++) = 0;
-            for (int j = 0; j < NB_TAIL_LINES * (NB_TAIL_LINES / 4 + NB_TAIL_LENGTH); j += NB_TAIL_LINES) {
+            for (int j = 1; j < NB_TAIL_LINES * (NB_TAIL_LINES / 4 + NB_TAIL_LENGTH); j += NB_TAIL_LINES) {
                 *(ptr++) = j + i;
                 *(ptr++) = j + (i+1) % NB_TAIL_LINES;
             }
@@ -170,9 +170,9 @@ void Tail::draw(const Navigator *nav, SmallBody *body, const Vec3f &eye_planet, 
     // We must find out a way to rotate to the initial direction
     Vec3f initialDirection = nav->getHelioToEyeMat().multiplyWithoutTranslation(cachedExpansionInitial);
     Vec3f directionCorrection = nav->getHelioToEyeMat().multiplyWithoutTranslation(cachedExpansionCorrection);
-    Vec3f tmp = initialDirection;
-    tmp.normalize();
-    Mat4f m = Mat4f::rotation({0, 0, 1}, tmp);
+    Vec3f tmp = initialDirection + directionCorrection / NB_TAIL_LENGTH;
+    tmp /= sqrt(tmp[0] * tmp[0] + tmp[1] * tmp[1]);
+    Mat4f m = Mat4f::zrotation(tmp[1], tmp[0]) * Mat4f::xrotation(M_PI_2 - atan(-tmp[2]));
     shared->datas.push_back({eye_planet, initialDirection, directionCorrection, cachedCoefRadius, color, {{m.r[0], m.r[1], m.r[2]}, {m.r[4], m.r[5], m.r[6]}, {m.r[8], m.r[9], m.r[10]}}});
 }
 
