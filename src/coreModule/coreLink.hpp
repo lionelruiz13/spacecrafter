@@ -804,6 +804,8 @@ public:
 
 	void setEyeRelativeMode(bool mode) {
 		core->observatory->setEyeRelativeMode(mode);
+		if (!mode)
+			core->setBodyDecor();
 	}
 
 	bool getEyeRelativeMode() const {

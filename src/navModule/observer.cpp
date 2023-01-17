@@ -67,7 +67,7 @@ void Observer::setAltitude(double a) {
 
 Vec3d Observer::getHeliocentricPosition(double JD) const
 {
-	return (flag_eye_relative_mode) ? anchor->getHeliocentricEclipticPos() : Mat4d::translation(getObserverCenterPoint()) * getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0., 0., getDistanceFromCenter());
+	return (flag_eye_relative_mode) ? anchor->getHeliocentricEclipticPos() : Mat4d::translation(anchor->getHeliocentricEclipticPos()) * getRotEquatorialToVsop87() * getRotLocalToEquatorial(JD) * Vec3d(0., 0., getDistanceFromCenter());
 }
 
 Vec3d Observer::getObserverCenterPoint(void) const
@@ -442,7 +442,15 @@ void Observer::setEyeRelativeMode(bool mode)
 void Observer::setAnchorPoint(std::shared_ptr<AnchorPoint> _anchor)
 {
 	if (flag_eye_relative_mode) {
-		anchorAlt = _anchor;
+		anchorAlt = std::move(_anchor);
+		setDistanceFromCenter(getDistanceFromCenter());
+		auto relPos = anchor->getHeliocentricEclipticPos() - anchorAlt->getHeliocentricEclipticPos();
+		relPos = anchorAlt->getRotEquatorialToVsop87().transpose() * relPos;
+		Utility::rectToSphe(&longitude, &latitude, relPos);
+		longitude *= 180/M_PI;
+		latitude *= 180/M_PI;
+		if (anchorAlt->isOnBody())
+			longitude -= anchorAlt->getBody()->getSiderealTime(CoreLink::instance->getJDay());
 	} else
-		anchor = _anchor;
+		anchor = std::move(_anchor);
 }
