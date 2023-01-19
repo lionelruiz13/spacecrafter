@@ -228,6 +228,7 @@ void StarGalaxy::loadCatalog(const std::string &filename)
     while (file) {
         int t = -1;
 		file >> t >> pos.v[0] >> pos.v[1] >> pos.v[2];
+		if (pos.v[2]>0) pos.v[2]+=200; else pos.v[2]-=200;
 		colorID = (colorID + 7) % 32;
 		switch (t) {
 			case 1:
