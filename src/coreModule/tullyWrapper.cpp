@@ -32,7 +32,10 @@ std::string TullyWrapper::getInfoString(const Navigator *nav) const
 	std::stringstream oss;
 	oss.setf(std::ios::fixed, std::ios::floatfield);
 	oss.precision(2);
-	oss << "Magnitude: " << getMag(nav) << std::endl;
+
+	std::string typeGal="Galaxy";
+	//if (typeGalaxy==9) typeGal="Globular Cluster";
+	oss << "Type: " << typeGal;
 	oss << "J2000" << " " << "RA/DE: " << Utility::printAngleHMS(ra_j2000,true) << " / " << Utility::printAngleDMS(dec_j2000,true) << std::endl;
 	oss << "Equ of date" << " " << "RA/DE: " << Utility::printAngleHMS(ra_equ) << " / " << Utility::printAngleDMS(dec_equ) << std::endl;
 
@@ -51,8 +54,10 @@ std::string TullyWrapper::getShortInfoString(const Navigator *nav) const
 	std::stringstream oss;
 	oss.setf(std::ios::fixed, std::ios::floatfield);
 	oss.precision(2);
-	oss << "Magnitude: " << getMag(nav);
-	oss << " Name: " << name;
+	std::string typeGal="Galaxy";
+	//if (typeGalaxy==9) typeGal="Globular Cluster";
+	oss << "Type: " << typeGal;
+	oss << " - Name: " << name;
 	return oss.str();
 }
 
@@ -60,4 +65,3 @@ float TullyWrapper::getMag(const Navigator *nav) const
 {
 	return 0;
 }
-
