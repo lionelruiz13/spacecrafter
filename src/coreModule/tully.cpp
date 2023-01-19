@@ -569,8 +569,8 @@ void Tully::draw(double distance, const Navigator *nav, const Projector *prj) no
 		Vec3d screenposd;
 		prj->projectEarthEqu(pos, screenposd);
 
-        distanceGal=sqrt((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
-		if (distanceGal < 0.01) {
+        distanceGal=((x-a)*(x-a)+(y-b)*(y-b)+(z-c)*(z-c));
+		if (distanceGal < 0.1) {
 			std::string galaxyName = nameTully[i];
 			if (!galaxyName.empty()) {
 				// Vec4f Color(HipStarMgr::color_table[int(colorTully[i*3+0]*255)][0]*0.75,
