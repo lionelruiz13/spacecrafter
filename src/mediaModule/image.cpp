@@ -555,7 +555,7 @@ static int decalages(int i, int howManyDisplay)
 	// display the original first: direct 0
 	//if (howManyDisplay==3 && i==0) return 0;
 	if (howManyDisplay==3 && i==1) return 120;
-	if (howManyDisplay==3 && i==2) return 180;
+	if (howManyDisplay==3 && i==2) return 240;
 	//in all other cases
 	return 0;
 }
