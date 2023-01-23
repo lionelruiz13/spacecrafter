@@ -783,6 +783,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 				b.bindTail({
 					Utility::strToFloat(param["gaz_tail_trace_jd"], 1),
 					Utility::strToFloat(param["gaz_tail_ejection_force"], 30),
+					Utility::strToFloat(param["gaz_tail_ejection_linearity"], 1),
 					Vec3f{
 						Utility::strToFloat(param["gaz_tail_radius_xx_coef"], -1),
 						Utility::strToFloat(param["gaz_tail_radius_x_coef"], 0.5),
@@ -797,6 +798,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 				b.bindTail({
 					Utility::strToFloat(param["dust_tail_trace_jd"], 30),
 					Utility::strToFloat(param["dust_tail_ejection_force"], 0.5),
+					Utility::strToFloat(param["dust_tail_ejection_linearity"], 1),
 					Vec3f{
 						Utility::strToFloat(param["dust_tail_radius_xx_coef"], -2),
 						Utility::strToFloat(param["dust_tail_radius_x_coef"], 1),
@@ -812,6 +814,7 @@ void ProtoSystem::addBody(stringHash_t param, bool deletable)
 					b.bindTail({
 						Utility::strToFloat(param["extra_tail_trace_jd"], 30),
 						Utility::strToFloat(param["extra_tail_ejection_force"], 0.5),
+						Utility::strToFloat(param["extra_tail_ejection_linearity"], 1),
 						Vec3f{
 							Utility::strToFloat(param["extra_tail_radius_xx_coef"], -2),
 							Utility::strToFloat(param["extra_tail_radius_x_coef"], 1),

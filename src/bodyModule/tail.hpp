@@ -34,7 +34,7 @@ class Navigator;
 
 class Tail {
 public:
-    Tail(float deltaTraceJD = 30, float ejectionForce = 0.5, const Vec3f &coefRadius = {-2, 1, 2}, const Vec3f &color = {0.5, 0.5, 0.5});
+    Tail(float deltaTraceJD = 30, float ejectionForce = 0.5, float ejectionLinearity = 1, const Vec3f &coefRadius = {-2, 1, 2}, const Vec3f &color = {0.5, 0.5, 0.5});
     ~Tail();
 
     void draw(const Navigator *nav, SmallBody *body, const Vec3f &eye_planet, const Vec3f &eye_sun, float radius, float JD);
@@ -47,6 +47,7 @@ public:
 protected:
     float deltaTraceJD = 30;
     float ejectionForce = 0.5;
+    float ejectionLinearity;
     Vec3f coefRadius = {-2, 1, 2};
     Vec3f color = {0.5, 0.5, 0.5};
 private:

@@ -126,8 +126,8 @@ struct TailContext {
 std::weak_ptr<TailContext> Tail::globalRef;
 TailContext *Tail::global;
 
-Tail::Tail(float deltaTraceJD, float ejectionForce, const Vec3f &coefRadius, const Vec3f &color) :
-    deltaTraceJD(deltaTraceJD), ejectionForce(ejectionForce), coefRadius(coefRadius), color(color)
+Tail::Tail(float deltaTraceJD, float ejectionForce, float ejectionLinearity, const Vec3f &coefRadius, const Vec3f &color) :
+    deltaTraceJD(deltaTraceJD), ejectionForce(ejectionForce), ejectionLinearity(ejectionLinearity), coefRadius(coefRadius), color(color)
 {
     if (globalRef.expired()) {
         globalRef = shared = std::make_shared<TailContext>();
@@ -150,20 +150,20 @@ void Tail::draw(const Navigator *nav, SmallBody *body, const Vec3f &eye_planet, 
         return;
     direction /= distToSun;
 
+    JD = CoreLink::instance->getJDay();
     if (JD != lastJD) {
-        Vec3f currentPos = body->get_heliocentric_ecliptic_pos();
+        Vec3f currentPos = body->getPositionAtDate(JD);
         Vec3f halfPos = body->getPositionAtDate(JD-deltaTraceJD/2);
         Vec3f pastPos = body->getPositionAtDate(JD-deltaTraceJD);
 
-        Vec3f velocity = (halfPos - currentPos) * 2;
-        Vec3f velocityCorrection = velocity + (halfPos - pastPos) * 2;
-        velocity += velocityCorrection;
+        Vec3f velocityCorrection = halfPos * 2 - currentPos - pastPos;
+        Vec3f velocity = (pastPos - currentPos) + velocityCorrection;
 
         currentPos.normalize();
         pastPos.normalize();
-        const float factors = ejectionForce * tailFactor[1] * deltaTraceJD;
-        cachedExpansionInitial = velocity + currentPos * factors;
-        cachedExpansionCorrection = velocityCorrection * -2 + (pastPos - currentPos) * factors;
+        const float factors = ejectionForce * tailFactor[1];
+        cachedExpansionInitial = velocity + currentPos * (ejectionLinearity * factors);
+        cachedExpansionCorrection = velocityCorrection * -2 + (pastPos - currentPos * ejectionLinearity) * factors;
         cachedCoefRadius = coefRadius * tailFactor[0];
         lastJD = JD;
     }
