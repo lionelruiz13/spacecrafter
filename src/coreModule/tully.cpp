@@ -475,7 +475,7 @@ std::vector<ObjectBaseP> Tully::searchAround(Vec3d v, double limitFov, const Nav
 		tmp.normalize();
 		float dotProduct = tmp.dot(v);
 		if (dotProduct > cosLimitFov)
-			result.push_back(new TullyWrapper(pos, nameTully[i], OBJECT_STAR_CLUSTER));
+			result.push_back(new TullyWrapper(pos, nameTully[i], texTully[i], OBJECT_STAR_CLUSTER));
 	}
 	return result;
 }

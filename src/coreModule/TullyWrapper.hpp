@@ -29,7 +29,7 @@
 
 class TullyWrapper : public ObjectBase {
 public:
-    TullyWrapper(Vec3f pos, std::string name, OBJECT_TYPE type) : pos(pos), name(name), type(type) {}
+    TullyWrapper(Vec3f pos, std::string name, int typeGalaxy, OBJECT_TYPE type) : pos(pos), name(name), typeGalaxy(typeGalaxy), type(type) {}
     virtual ~TullyWrapper() = default;
 
     virtual void retain() override {
@@ -77,5 +77,6 @@ private:
     int refCount = 0;
 	Vec3f pos;
     std::string name;
+    int typeGalaxy;
     OBJECT_TYPE type;
 };
