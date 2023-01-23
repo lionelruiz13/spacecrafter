@@ -46,24 +46,10 @@ JoypadController::JoypadController(UI * _ui) noexcept
 	SDL_JoystickUpdate();
 	SDL_JoystickEventState(SDL_ENABLE);
 
-	nbrAxis = SDL_JoystickNumAxes(joystick);
 	nbrButtons = SDL_JoystickNumButtons(joystick);
 	nbrHats = SDL_JoystickNumHats(joystick);
 
-	axisValues = new double[nbrAxis];
-	axisActions = new joy_axis_action[nbrAxis];
-	axisAltActions = new joy_axis_action[nbrAxis];
-	axisSensitivity = new double[nbrAxis];
-	axisDeadZone = new double[nbrAxis];
-	axisIsStick = new bool[nbrAxis];
-
-
-	for (int i = 0; i < nbrAxis; i++) {
-		axisValues[i] = 0;
-		axisSensitivity[i] = 0;
-		axisDeadZone[i] = 0;
-		axisIsStick[i] = false;
-	}
+	axis.resize(SDL_JoystickNumAxes(joystick));
 
 	buttonActions = new joy_button_action[nbrButtons];
 	buttonAltActions = new joy_button_action[nbrButtons];
@@ -84,14 +70,8 @@ JoypadController::~JoypadController()
 	cLog::get()->write("delete JoypadController", LOG_TYPE::L_INFO);
 	SDL_JoystickClose(joystick);
 	joystick = nullptr;
-	delete[] axisActions;
-	delete[] axisAltActions;
 	delete[] buttonActions;
 	delete[] buttonAltActions;
-	delete[] axisValues;
-	delete[] axisSensitivity;
-	delete[] axisDeadZone;
-	delete[] axisIsStick;
 	delete[] hatActions;
 	delete[] hatAltActions;
 	delete[] hatValues;
@@ -121,14 +101,16 @@ void JoypadController::init(const std::string &_configName) noexcept
 		cLog::get()->write("Joypad: config detected", LOG_TYPE::L_INFO);
 	}
 
-	for (int i = 0; i < nbrAxis; i++) {
+	for (uint32_t i = 0; i < axis.size(); ++i) {
+		auto &a = axis[i];
 		std::string actionStr = conf.getStr(model,"AXIS" + std::to_string(i));
-		axisActions[i] = getAxisActionFromString(actionStr);
-		actionStr = conf.getStr(model,"AXIS" + std::to_string(i) + "_ALT");
-		axisAltActions[i] = actionStr.empty() ? axisActions[i] : getAxisActionFromString(actionStr);
-		axisDeadZone[i] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_DEADZONE");
-		axisSensitivity[i] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_SENSITIVITY");
-		axisIsStick[i] = conf.getBoolean(model,"AXIS" + std::to_string(i) + "_IS_STICK");
+		a.action[0] = getAxisActionFromString(actionStr);
+		actionStr = conf.getStr(model,"AXIS" + std::to_string(i) + "_ALT", actionStr);
+		a.action[1] = getAxisActionFromString(actionStr);
+		a.deadZone = conf.getDouble(model,"AXIS" + std::to_string(i) + "_DEADZONE");
+		a.sensitivity[0] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_SENSITIVITY");
+		a.sensitivity[1] = conf.getDouble(model,"AXIS" + std::to_string(i) + "_SENSITIVITY_ALT", a.sensitivity[0]);
+		a.isStick = conf.getBoolean(model,"AXIS" + std::to_string(i) + "_IS_STICK");
 	}
 
 	for (int i = 0; i < nbrButtons; i++) {
@@ -201,20 +183,18 @@ void JoypadController::handle(const SDL_Event &E) noexcept
  */
 void JoypadController::handleDeal() noexcept
 {
-
-	for (int i = 0; i < nbrAxis; i++) {
-
-		if(axisIsStick[i]) {
-			if (abs(axisValues[i])> axisDeadZone[i]) {
-				joy_axis_action axis_action = (mode ? axisAltActions : axisActions)[i];
+	for (auto &a : axis) {
+		if (a.isStick) {
+			if (abs(a.value) > a.deadZone) {
+				joy_axis_action axis_action = a.action[mode];
 				if(axis_action.action != nullptr)
-					(ui->*axis_action.action)(((axisValues[i]>0)-(axisValues[i]<0))*(abs(axisValues[i])-axisDeadZone[i])/(axisSensitivity[i]-axisDeadZone[i]));
+					(ui->*axis_action.action)(((a.value>0)-(a.value<0))*(abs(a.value)-a.deadZone)/(a.sensitivity[mode]-a.deadZone));
 			}
 		} else {
-			if ((axisValues[i] + 32768.0) > axisDeadZone[i]) {
-				joy_axis_action axis_action = (mode ? axisAltActions : axisActions)[i];
+			if ((a.value + 32768.0) > a.deadZone) {
+				joy_axis_action axis_action = a.action[mode];
 				if(axis_action.action != nullptr)
-					(ui->*axis_action.action)((axisValues[i] + 32768.0-axisDeadZone[i])/(axisSensitivity[i]-axisDeadZone[i]));
+					(ui->*axis_action.action)((a.value + 32768.0-a.deadZone)/(a.sensitivity[mode]-a.deadZone));
 			}
 		}
 	}
@@ -304,11 +284,10 @@ void JoypadController::handleJoyHat(const SDL_JoyHatEvent &E) noexcept
 * resets all controlls to their deault values
 * default is 0 for axis and -32768 for triggers
 */
-void JoypadController::purge() noexcept{
-	for (int i = 0; i < nbrAxis; i++){
-		axisValues[i] = axisIsStick[i] ? 0.0 : -32768.0;
-	}
-
+void JoypadController::purge() noexcept
+{
+	for (auto &a : axis)
+		a.value = a.isStick ? 0. : -32768.;
 }
 
 /*

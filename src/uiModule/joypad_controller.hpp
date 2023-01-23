@@ -119,9 +119,9 @@ private:
 	/*
 	 * Handles value changes from the joypad axis
 	 */
-	void handleAxisEvent(const SDL_JoyAxisEvent &E) noexcept{
-		axisValues[E.axis]= E.value;
-	};
+	void handleAxisEvent(const SDL_JoyAxisEvent &E) noexcept {
+		axis[E.axis].value = E.value;
+	}
 
 	void handleJoyButtonUp(const SDL_JoyButtonEvent &E) noexcept;
 
@@ -157,12 +157,18 @@ private:
 
 	SDL_Joystick* joystick=nullptr;
 
-	int nbrAxis;
 	int nbrButtons;
 	int nbrHats;
 
-	joy_axis_action* axisActions;					//actions to perform for each axis
-	joy_axis_action* axisAltActions;				//alternate actions to perform for each axis
+	struct JoyAxis {
+		joy_axis_action action[2];
+		double sensitivity[2] = {};
+		double value = 0;
+		double deadZone = 0;
+		bool isStick = false;
+	};
+
+	std::vector<JoyAxis> axis;
 	joy_button_action* buttonActions; 				//actions to perform for each button
 	joy_button_action* buttonAltActions; 			//alternate actions to perform for each button
 	std::map<Uint8, std::vector<std::string>> buttonCommand; 	//commands associated with their button code
@@ -170,10 +176,6 @@ private:
 	joy_button_action* hatAltActions;				//alternate actions to perform for each hat
 
 	Uint8 *hatValues;
-	double *axisValues; 							//values of the controller's axises
-	double *axisSensitivity;
-	double *axisDeadZone;
-	bool * axisIsStick;
 	bool mode = false; // false = default, true = alternate
 };
 #endif //_JOYPAD_CONTROLLER_HPP_
